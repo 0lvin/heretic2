@@ -354,9 +354,9 @@ ifeq ($(OSTYPE), Windows)
 client:
 	@echo "===> Processing shader sourcecode"
 ifeq ($(RUN_GLSL_VALIDATOR),yes)
-	@echo "#version 330" | cat - src/client/refresh/pathtracer.glsl | $(GLSL_VALIDATOR)
+	@echo "#version 330" | cat - ./src/client/refresh/pathtracer.glsl | $(GLSL_VALIDATOR)
 endif
-	sh stringifyshaders.sh
+	sh ./stringifyshaders.sh
 	@echo "===> Building quake2.exe"
 	${Q}mkdir -p release
 	$(MAKE) release/quake2.exe
@@ -395,8 +395,10 @@ release/quake2.exe : LDFLAGS += -mwindows -lopengl32
 else # not Windows
 client:
 	@echo "===> Processing shader sourcecode"
-	@echo "#version 330" | cat - src/client/refresh/pathtracer.glsl | $(GLSL_VALIDATOR)
-	sh stringifyshaders.sh
+ifeq ($(RUN_GLSL_VALIDATOR),yes)
+	@echo "#version 330" | cat - ./src/client/refresh/pathtracer.glsl | $(GLSL_VALIDATOR)
+endif
+	sh ./stringifyshaders.sh
 	@echo "===> Building quake2"
 	${Q}mkdir -p release
 	$(MAKE) release/quake2

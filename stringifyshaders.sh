@@ -1,3 +1,4 @@
+#!/bin/sh
 SHADERPATH='./src/client/refresh/'
 SOURCE=$SHADERPATH'pathtracer.glsl'
 DEST=$SHADERPATH'generated/pathtracing_shader_source.h'
