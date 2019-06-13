@@ -1380,7 +1380,7 @@ R_Init(void *hinstance, void *hWnd)
 
 	if (err != GL_NO_ERROR)
 	{
-		VID_Printf(PRINT_ALL, "glGetError() = 0x%x\n", err);
+		VID_Printf(PRINT_ALL, "Entering R_Init: glGetError() = 0x%x\n", err);
 	}
 	
 	gl_config.version_major = 0;
@@ -1602,6 +1602,8 @@ R_Init(void *hinstance, void *hWnd)
 		gl_config.shaders = false;
 	}
 	
+	CHECK_GL_ERROR();
+	
 	/* -------------------------- GL_ARB_vertex_shader ------------------------- */
 	
 	gl_config.vertex_shaders = false;
@@ -1810,6 +1812,21 @@ R_Init(void *hinstance, void *hWnd)
 		gl_config.texture_rg = false;
 	}
 	
+	/* -------------------------- NV_multisample_filter_hint ------------------------- */
+	
+	gl_config.multisample_filter_hint = false;
+	
+	if (strstr(gl_config.extensions_string, "NV_multisample_filter_hint"))
+	{
+		VID_Printf(PRINT_ALL, "...using NV_multisample_filter_hint\n");
+		gl_config.multisample_filter_hint = true;
+	}
+	else
+	{
+		VID_Printf(PRINT_ALL, "...NV_multisample_filter_hint not found\n");
+		gl_config.multisample_filter_hint = false;
+	}
+	
 	/* ---------------------- GL_ARB_map_buffer_range ---------------------- */
 
 	gl_config.map_buffer_range = false;
@@ -1823,13 +1840,14 @@ R_Init(void *hinstance, void *hWnd)
 		GET_PROC_ADDRESS(glFlushMappedBufferRange);
 		GET_PROC_ADDRESS(glMapBufferRange);
 
-		}
+	}
 	else
 	{
 		VID_Printf(PRINT_ALL, "...GL_ARB_map_buffer_range not found\n");
 		gl_config.map_buffer_range = false;
 	}
 	
+
 	/* ----------------------------- GL_VERSION_1_2 ---------------------------- */
 
 	if (R_VersionOfGLIsGreaterThanOrEqualTo(1, 2))
@@ -1843,6 +1861,8 @@ R_Init(void *hinstance, void *hWnd)
 
 	}
 	
+	CHECK_GL_ERROR();
+
 	R_SetDefaultState();
 
 	R_InitImages();
@@ -1856,7 +1876,7 @@ R_Init(void *hinstance, void *hWnd)
 
 	if (err != GL_NO_ERROR)
 	{
-		VID_Printf(PRINT_ALL, "glGetError() = 0x%x\n", err);
+		VID_Printf(PRINT_ALL, "Exiting R_Init: glGetError() = 0x%x\n", err);
 	}
 
 	return true;

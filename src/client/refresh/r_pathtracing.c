@@ -3434,6 +3434,8 @@ InitRandom(void)
 	glTexImage1D(GL_TEXTURE_1D, 0, GL_RG16, PT_RAND_TEXTURE_SIZE, 0, GL_RG, GL_UNSIGNED_SHORT, texels);
 	glBindTexture(GL_TEXTURE_1D, 0);
 	
+	CHECK_GL_ERROR();
+
 	glGenTextures(1, &pt_bluenoise_texture);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, pt_bluenoise_texture);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -3442,6 +3444,8 @@ InitRandom(void)
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	qglTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, PT_BLUENOISE_TEXTURE_WIDTH, PT_BLUENOISE_TEXTURE_HEIGHT, num_layers, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	CHECK_GL_ERROR();
 
 	for (i = 0; i < num_layers; ++i)
 	{
@@ -3453,6 +3457,7 @@ InitRandom(void)
 		if (loaded)
 		{
 			qglTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, pic);
+			CHECK_GL_ERROR();
 		}
 		else
 		{
@@ -3573,6 +3578,8 @@ CreateShaderPrograms(void)
 	qglCompileShaderARB(vertex_shader);
 	qglGetObjectParameterivARB(vertex_shader, GL_OBJECT_COMPILE_STATUS_ARB, &status);
 	
+	CHECK_GL_ERROR();
+
 	if (status != GL_TRUE)
 	{
 		VID_Printf(PRINT_ALL, "R_InitPathtracing: Vertex shader failed to compile\n");
@@ -3596,6 +3603,8 @@ CreateShaderPrograms(void)
 	qglAttachObjectARB(pt_program_handle, vertex_shader);
 	qglAttachObjectARB(pt_program_handle, fragment_shader);
 	
+	CHECK_GL_ERROR();
+
 	/* Link the shader program. */
 	qglLinkProgramARB(pt_program_handle);
 	qglGetObjectParameterivARB(pt_program_handle, GL_OBJECT_LINK_STATUS_ARB, &status);
@@ -3632,6 +3641,8 @@ CreateShaderPrograms(void)
 	qglUniform1iARB(qglGetUniformLocationARB(pt_program_handle, "bluenoise"), 			PT_TEXTURE_UNIT_BLUENOISE);
 	qglUniform1iARB(qglGetUniformLocationARB(pt_program_handle, "taa_world"), 			PT_TEXTURE_UNIT_TAA_WORLD);
 	
+	CHECK_GL_ERROR();
+
 	/* Get the locations of uniforms which do need to be change during rendering. */
 	
 	pt_frame_counter_loc = qglGetUniformLocationARB(pt_program_handle, "frame");
@@ -3649,6 +3660,8 @@ CreateShaderPrograms(void)
 	pt_shadow_ray_node_offset_loc = qglGetUniformLocationARB(pt_program_handle, "shadow_ray_node_offset");
 	
 	qglUseProgramObjectARB(0);
+	
+	CHECK_GL_ERROR();
 }
 	
 static void
@@ -3675,6 +3688,8 @@ void
 R_InitPathtracing(void)
 {
 	ClearPathtracerState();
+
+	CHECK_GL_ERROR();
 
 	/* Initialise the console variables. */
 	
@@ -3724,6 +3739,8 @@ R_InitPathtracing(void)
 	CreateShaderPrograms();
 	
 	glGenTextures(1, &pt_taa_world_texture);
+	
+	CHECK_GL_ERROR();
 }
 
 void

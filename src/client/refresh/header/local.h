@@ -96,6 +96,10 @@
 /* fall over */
 #define ROLL 2
 
+#define STRINGIFY2(x) #x
+#define STRINGIFY(x) STRINGIFY2(x)
+#define CHECK_GL_ERROR() { GLuint err = glGetError(); if (err != GL_NO_ERROR) {	VID_Printf(PRINT_ALL, "OpenGL Error at " __FILE__ " line " STRINGIFY(__LINE__) ": glGetError() = 0x%x\n", err); } }
+
 char *strlwr(char *s);
 extern viddef_t vid;
 
@@ -418,6 +422,7 @@ typedef struct
 	qboolean vertex_buffer_objects;
 	qboolean texture_rg;
 	qboolean map_buffer_range;
+	qboolean multisample_filter_hint;
 
 	GLint version_major;
 	GLint version_minor;

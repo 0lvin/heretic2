@@ -1472,6 +1472,8 @@ R_InitImages(void)
 
 		intensitytable[i] = j;
 	}
+	
+	CHECK_GL_ERROR();
 }
 
 void
