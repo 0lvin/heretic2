@@ -129,7 +129,7 @@ in vec4 texcoords[8], color;
 
 // Globals.
 vec4 out_pln;
-vec3 bluenoise_sample = texture(bluenoise, vec3(gl_FragCoord.st / vec2(BLUENOISE_TEX_WIDTH, BLUENOISE_TEX_HEIGHT), mod(frame, RAND_TEX_LAYERS))).rgb;
+vec3 bluenoise_sample;
 
 // Produces a pair of random numbers.
 vec2 rand(int index)
@@ -508,6 +508,8 @@ float bumpHeightForDiffuseTexel(vec2 st)
 
 void main()
 {
+	bluenoise_sample = texture(bluenoise, vec3(gl_FragCoord.st / vec2(BLUENOISE_TEX_WIDTH, BLUENOISE_TEX_HEIGHT), mod(frame, RAND_TEX_LAYERS))).rgb;
+
 	vec4 pln;
 
 	gl_FragColor = vec4(0);

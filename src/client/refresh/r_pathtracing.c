@@ -2971,6 +2971,8 @@ R_UpdatePathtracerForCurrentFrame(void)
 	PT_ASSERT(pt_num_vertices 				<= PT_MAX_VERTICES);
 	PT_ASSERT(pt_num_entitylights 		<= PT_MAX_ENTITY_LIGHTS);
 	PT_ASSERT(pt_num_lights 				<= PT_MAX_TRI_LIGHTS);
+	
+	CHECK_GL_ERROR();
 }
 	
 static void
@@ -3641,6 +3643,26 @@ CreateShaderPrograms(void)
 	qglUniform1iARB(qglGetUniformLocationARB(pt_program_handle, "bluenoise"), 			PT_TEXTURE_UNIT_BLUENOISE);
 	qglUniform1iARB(qglGetUniformLocationARB(pt_program_handle, "taa_world"), 			PT_TEXTURE_UNIT_TAA_WORLD);
 	
+	VID_Printf(PRINT_DEVELOPER, "Pathtracer CreateShaderPrograms:\n");
+
+	VID_Printf(PRINT_DEVELOPER, "diffuse_texture loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "diffuse_texture"));
+	VID_Printf(PRINT_DEVELOPER, "bsp_planes loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_planes"));
+	VID_Printf(PRINT_DEVELOPER, "bsp_branches loc              = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_branches"));
+	VID_Printf(PRINT_DEVELOPER, "tri_nodes0 loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes0"));
+	VID_Printf(PRINT_DEVELOPER, "tri_nodes1 loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes1"));
+	VID_Printf(PRINT_DEVELOPER, "tri_vertices loc              = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_vertices"));
+	VID_Printf(PRINT_DEVELOPER, "triangles loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "triangles"));
+	VID_Printf(PRINT_DEVELOPER, "tri_nodes0_prev loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes0_prev"));
+	VID_Printf(PRINT_DEVELOPER, "tri_nodes1_prev loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes1_prev"));
+	VID_Printf(PRINT_DEVELOPER, "tri_vertices_prev loc         = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_vertices_prev"));
+	VID_Printf(PRINT_DEVELOPER, "triangles_prev loc            = %d\n", qglGetUniformLocationARB(pt_program_handle, "triangles_prev"));
+	VID_Printf(PRINT_DEVELOPER, "lights loc                    = %d\n", qglGetUniformLocationARB(pt_program_handle, "lights"));
+	VID_Printf(PRINT_DEVELOPER, "lightrefs loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "lightrefs"));
+	VID_Printf(PRINT_DEVELOPER, "bsp_lightrefs loc             = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_lightrefs"));
+	VID_Printf(PRINT_DEVELOPER, "randtex loc                   = %d\n", qglGetUniformLocationARB(pt_program_handle, "randtex"));
+	VID_Printf(PRINT_DEVELOPER, "bluenoise loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "bluenoise"));
+	VID_Printf(PRINT_DEVELOPER, "taa_world loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "taa_world"));
+
 	CHECK_GL_ERROR();
 
 	/* Get the locations of uniforms which do need to be change during rendering. */
@@ -3658,6 +3680,20 @@ CreateShaderPrograms(void)
 	pt_gamma_loc = qglGetUniformLocationARB(pt_program_handle, "gamma");
 	pt_bump_factor_loc = qglGetUniformLocationARB(pt_program_handle, "bump_factor");
 	pt_shadow_ray_node_offset_loc = qglGetUniformLocationARB(pt_program_handle, "shadow_ray_node_offset");
+
+	VID_Printf(PRINT_DEVELOPER, "pt_frame_counter_loc          = %d\n", pt_frame_counter_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_entity_to_world_loc        = %d\n", pt_entity_to_world_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_ao_radius_loc              = %d\n", pt_ao_radius_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_ao_color_loc               = %d\n", pt_ao_color_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_bounce_factor_loc          = %d\n", pt_bounce_factor_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_view_origin_loc            = %d\n", pt_view_origin_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_previous_view_origin_loc   = %d\n", pt_previous_view_origin_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_current_world_matrix_loc   = %d\n", pt_current_world_matrix_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_previous_world_matrix_loc  = %d\n", pt_previous_world_matrix_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_exposure_loc               = %d\n", pt_exposure_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_gamma_loc                  = %d\n", pt_gamma_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_bump_factor_loc            = %d\n", pt_bump_factor_loc);
+	VID_Printf(PRINT_DEVELOPER, "pt_shadow_ray_node_offset_loc = %d\n", pt_shadow_ray_node_offset_loc);
 	
 	qglUseProgramObjectARB(0);
 	
