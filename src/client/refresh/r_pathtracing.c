@@ -3416,7 +3416,7 @@ InitRandom(void)
 	byte *pic = NULL;
 	qboolean loaded = false;
 
-	VID_Printf(PRINT_DEVELOPER, "InitRandom: Random number lookup texture has %d layers.", num_layers);
+	VID_Printf(PRINT_DEVELOPER, "InitRandom: Random number lookup texture has %d layers.\n", num_layers);
 
 	static GLushort texels[PT_RAND_TEXTURE_SIZE * 2];
 
