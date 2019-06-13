@@ -3411,7 +3411,7 @@ static void
 InitRandom(void)
 {
 	int i, width, height;
-	char image_name[256];
+	char image_name[512];
 	const int num_layers = GetBlueNoiseTextureLayers();
 	byte *pic = NULL;
 	qboolean loaded = false;
@@ -3461,7 +3461,7 @@ InitRandom(void)
 		}
 		else
 		{
-			VID_Printf(PRINT_ALL, "InitRandom: Could not find blue noise texture image \"\".\n", image_name);
+			VID_Printf(PRINT_ALL, "InitRandom: Could not find blue noise texture image \"%s\".\n", image_name);
 		}
 	}
 	
