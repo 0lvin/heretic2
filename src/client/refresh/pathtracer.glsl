@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016,2017 Edd Biddulph
+ * Copyright (C) 2016,2017,2019,2020 Edd Biddulph
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,6 +120,7 @@ uniform float	bounce_factor = 0.75;
 uniform float	exposure = 1.5;
 uniform float	gamma = 2.2;
 uniform float	bump_factor = 0.045;
+uniform int		rand_tex_layer = 0;
 
 // node offset for restricting the way in which shadows are received from triangle meshes.
 uniform int shadow_ray_node_offset = 0;
@@ -508,7 +509,7 @@ float bumpHeightForDiffuseTexel(vec2 st)
 
 void main()
 {
-	bluenoise_sample = texture(bluenoise, vec3(gl_FragCoord.st / vec2(BLUENOISE_TEX_WIDTH, BLUENOISE_TEX_HEIGHT), mod(frame, RAND_TEX_LAYERS))).rgb;
+	bluenoise_sample = texture(bluenoise, vec3(gl_FragCoord.st / vec2(BLUENOISE_TEX_WIDTH, BLUENOISE_TEX_HEIGHT), rand_tex_layer)).rgb;
 
 	vec4 pln;
 

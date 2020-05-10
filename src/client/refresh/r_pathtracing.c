@@ -166,6 +166,7 @@ static GLint pt_exposure_loc = -1;
 static GLint pt_gamma_loc = -1;
 static GLint pt_bump_factor_loc = -1;
 static GLint pt_shadow_ray_node_offset_loc = -1;
+static GLint pt_rand_tex_layer_loc = -1;
 
 static unsigned long int pt_bsp_texture_width = 0, pt_bsp_texture_height = 0;
 
@@ -386,6 +387,7 @@ ClearPathtracerState(void)
 	pt_gamma_loc = -1;
 	pt_bump_factor_loc = -1;
 	pt_shadow_ray_node_offset_loc = -1;
+	pt_rand_tex_layer_loc = -1;
 	
 	pt_last_update_ms = -1;
 	
@@ -2932,6 +2934,7 @@ R_UpdatePathtracerForCurrentFrame(void)
 	qglUniform1fARB(pt_gamma_loc, gl_pt_gamma->value);
 	qglUniform1fARB(pt_bump_factor_loc, gl_pt_bump_factor->value);
 	qglUniform1iARB(pt_shadow_ray_node_offset_loc, pt_num_nodes);
+	qglUniform1iARB(pt_rand_tex_layer_loc, r_framecount % GetBlueNoiseTextureLayers());
 
 	for (i = 0; i < 3; ++i)
 		pt_previous_view_origin[i] = r_newrefdef.vieworg[i];
@@ -3503,6 +3506,7 @@ FreeShaderPrograms(void)
 	pt_gamma_loc = -1;
 	pt_bump_factor_loc = -1;
 	pt_shadow_ray_node_offset_loc = -1;
+	pt_rand_tex_layer_loc = -1;
 
 	if (vertex_shader)
 	{
@@ -3680,6 +3684,7 @@ CreateShaderPrograms(void)
 	pt_gamma_loc = qglGetUniformLocationARB(pt_program_handle, "gamma");
 	pt_bump_factor_loc = qglGetUniformLocationARB(pt_program_handle, "bump_factor");
 	pt_shadow_ray_node_offset_loc = qglGetUniformLocationARB(pt_program_handle, "shadow_ray_node_offset");
+	pt_rand_tex_layer_loc = qglGetUniformLocationARB(pt_program_handle, "rand_tex_layer");
 
 	VID_Printf(PRINT_DEVELOPER, "pt_frame_counter_loc          = %d\n", pt_frame_counter_loc);
 	VID_Printf(PRINT_DEVELOPER, "pt_entity_to_world_loc        = %d\n", pt_entity_to_world_loc);
@@ -3694,7 +3699,8 @@ CreateShaderPrograms(void)
 	VID_Printf(PRINT_DEVELOPER, "pt_gamma_loc                  = %d\n", pt_gamma_loc);
 	VID_Printf(PRINT_DEVELOPER, "pt_bump_factor_loc            = %d\n", pt_bump_factor_loc);
 	VID_Printf(PRINT_DEVELOPER, "pt_shadow_ray_node_offset_loc = %d\n", pt_shadow_ray_node_offset_loc);
-	
+	VID_Printf(PRINT_DEVELOPER, "pt_rand_tex_layer_loc         = %d\n", pt_rand_tex_layer_loc);
+
 	qglUseProgramObjectARB(0);
 	
 	CHECK_GL_ERROR();
