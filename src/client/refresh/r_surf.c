@@ -68,19 +68,19 @@ R_TextureAnimation(mtexinfo_t *tex)
 void
 R_DrawGLPoly(glpoly_t *p)
 {
-	int i;
 	float *v;
 
-	glBegin(GL_POLYGON);
 	v = p->verts[0];
 
-	for (i = 0; i < p->numverts; i++, v += VERTEXSIZE)
-	{
-		glTexCoord2f(v[3], v[4]);
-		glVertex3fv(v);
-	}
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
-	glEnd();
+    glVertexPointer( 3, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v );
+    glTexCoordPointer( 2, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v+3 );
+    glDrawArrays( GL_TRIANGLE_FAN, 0, p->numverts );
+
+    glDisableClientState( GL_VERTEX_ARRAY );
+    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 }
 
 void
@@ -100,16 +100,27 @@ R_DrawGLFlowingPoly(msurface_t *fa)
 		scroll = -64.0;
 	}
 
-	glBegin(GL_POLYGON);
-	v = p->verts[0];
+    GLfloat tex[2*p->numverts];
+    unsigned int index_tex = 0;
 
-	for (i = 0; i < p->numverts; i++, v += VERTEXSIZE)
-	{
-		glTexCoord2f((v[3] + scroll), v[4]);
-		glVertex3fv(v);
-	}
+    v = p->verts [ 0 ];
 
-	glEnd();
+	for ( i = 0; i < p->numverts; i++, v += VERTEXSIZE )
+    {
+        tex[index_tex++] = v [ 3 ] + scroll;
+        tex[index_tex++] = v [ 4 ];
+    }
+    v = p->verts [ 0 ];
+
+    glEnableClientState( GL_VERTEX_ARRAY );
+    glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+    glVertexPointer( 3, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v );
+    glTexCoordPointer( 2, GL_FLOAT, 0, tex );
+    glDrawArrays( GL_TRIANGLE_FAN, 0, p->numverts );
+
+    glDisableClientState( GL_VERTEX_ARRAY );
+    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 }
 
 void
@@ -141,12 +152,23 @@ R_DrawTriangleOutlines(void)
 			{
 				for (j = 2; j < p->numverts; j++)
 				{
-					glBegin(GL_LINE_STRIP);
-					glVertex3fv(p->verts[0]);
-					glVertex3fv(p->verts[j - 1]);
-					glVertex3fv(p->verts[j]);
-					glVertex3fv(p->verts[0]);
-					glEnd();
+                    GLfloat vtx[12];
+                    unsigned int k;
+
+                    for (k=0; k<3; k++)
+                    {
+                       vtx[0+k] = p->verts [ 0 ][ k ];
+                        vtx[3+k] = p->verts [ j - 1 ][ k ];
+                        vtx[6+k] = p->verts [ j ][ k ];
+                        vtx[9+k] = p->verts [ 0 ][ k ];
+                    }
+
+                    glEnableClientState( GL_VERTEX_ARRAY );
+
+                    glVertexPointer( 3, GL_FLOAT, 0, vtx );
+                    glDrawArrays( GL_LINE_STRIP, 0, 4 );
+
+                    glDisableClientState( GL_VERTEX_ARRAY );
 				}
 			}
 		}
@@ -164,7 +186,6 @@ R_DrawGLPolyChain(glpoly_t *p, float soffset, float toffset)
 		for ( ; p != 0; p = p->chain)
 		{
 			float *v;
-			int j;
 
 			v = p->verts[0];
 
@@ -174,15 +195,15 @@ R_DrawGLPolyChain(glpoly_t *p, float soffset, float toffset)
 				return;
 			}
 
-			glBegin(GL_POLYGON);
+            glEnableClientState( GL_VERTEX_ARRAY );
+            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
-			for (j = 0; j < p->numverts; j++, v += VERTEXSIZE)
-			{
-				glTexCoord2f(v[5], v[6]);
-				glVertex3fv(v);
-			}
+            glVertexPointer( 3, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v );
+            glTexCoordPointer( 2, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v+5 );
+            glDrawArrays( GL_TRIANGLE_FAN, 0, p->numverts );
 
-			glEnd();
+            glDisableClientState( GL_VERTEX_ARRAY );
+            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		}
 	}
 	else
@@ -192,16 +213,28 @@ R_DrawGLPolyChain(glpoly_t *p, float soffset, float toffset)
 			float *v;
 			int j;
 
-			glBegin(GL_POLYGON);
 			v = p->verts[0];
 
-			for (j = 0; j < p->numverts; j++, v += VERTEXSIZE)
+            GLfloat tex[2*p->numverts];
+            unsigned int index_tex = 0;
+
+			for ( j = 0; j < p->numverts; j++, v += VERTEXSIZE )
 			{
-				glTexCoord2f(v[5] - soffset, v[6] - toffset);
-				glVertex3fv(v);
+			    tex[index_tex++] = v [ 5 ] - soffset;
+			    tex[index_tex++] = v [ 6 ] - toffset;
 			}
 
-			glEnd();
+			v = p->verts [ 0 ];
+
+            glEnableClientState( GL_VERTEX_ARRAY );
+            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+            glVertexPointer( 3, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v );
+            glTexCoordPointer( 2, GL_FLOAT, 0, tex );
+            glDrawArrays( GL_TRIANGLE_FAN, 0, p->numverts );
+
+            glDisableClientState( GL_VERTEX_ARRAY );
+            glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		}
 	}
 }
@@ -408,7 +441,7 @@ R_RenderBrushPoly(msurface_t *fa)
 		/* warp texture, no lightmaps */
 		R_TexEnv(GL_MODULATE);
 		glColor4f(gl_state.inverse_intensity, gl_state.inverse_intensity,
-				gl_state.inverse_intensity, 1.0F);
+				gl_state.inverse_intensity, 1.0f);
 		R_EmitWaterPolys(fa);
 		R_TexEnv(GL_REPLACE);
 
@@ -680,7 +713,7 @@ R_DrawTextureChains(void)
 	R_TexEnv(GL_REPLACE);
 }
 
-static void
+void
 R_RenderLightmappedPoly(msurface_t *surf)
 {
 	int i, nv = surf->polys->numverts;
@@ -790,16 +823,35 @@ R_RenderLightmappedPoly(msurface_t *surf)
 			for (p = surf->polys; p; p = p->chain)
 			{
 				v = p->verts[0];
-				glBegin(GL_POLYGON);
 
-				for (i = 0; i < nv; i++, v += VERTEXSIZE)
+                GLfloat tex[2*nv];
+                unsigned int index_tex = 0;
+
+				for ( i = 0; i < nv; i++, v += VERTEXSIZE )
 				{
-					qglMultiTexCoord2fARB(GL_TEXTURE0_ARB, (v[3] + scroll), v[4]);
-					qglMultiTexCoord2fARB(GL_TEXTURE1_ARB, v[5], v[6]);
-					glVertex3fv(v);
+					tex[index_tex++] = v [ 3 ] + scroll;
+					tex[index_tex++] = v [ 4 ];
 				}
 
-				glEnd();
+                v = p->verts [ 0 ];
+
+                R_SelectTexture( GL_TEXTURE0 );
+                glEnableClientState( GL_VERTEX_ARRAY );
+                glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+                glVertexPointer( 3, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v );
+                glTexCoordPointer( 2, GL_FLOAT, 0, tex );
+
+                R_SelectTexture( GL_TEXTURE1 );
+                glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+                glTexCoordPointer( 2, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v+5 );
+
+                glDrawArrays( GL_TRIANGLE_FAN, 0, nv );
+
+                glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+                R_SelectTexture( GL_TEXTURE0 );
+                glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+                glDisableClientState( GL_VERTEX_ARRAY );
 			}
 		}
 		else
@@ -807,16 +859,24 @@ R_RenderLightmappedPoly(msurface_t *surf)
 			for (p = surf->polys; p; p = p->chain)
 			{
 				v = p->verts[0];
-				glBegin(GL_POLYGON);
 
-				for (i = 0; i < nv; i++, v += VERTEXSIZE)
-				{
-					qglMultiTexCoord2fARB(GL_TEXTURE0_ARB, v[3], v[4]);
-					qglMultiTexCoord2fARB(GL_TEXTURE1_ARB, v[5], v[6]);
-					glVertex3fv(v);
-				}
+                R_SelectTexture( GL_TEXTURE0 );
+                glEnableClientState( GL_VERTEX_ARRAY );
+                glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
-				glEnd();
+                glVertexPointer( 3, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v );
+                glTexCoordPointer( 2, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v+3 );
+
+                R_SelectTexture( GL_TEXTURE1 );
+                glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+                glTexCoordPointer( 2, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v+5 );
+
+                glDrawArrays( GL_TRIANGLE_FAN, 0, nv );
+
+                glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+                R_SelectTexture( GL_TEXTURE0 );
+                glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+                glDisableClientState( GL_VERTEX_ARRAY );
 			}
 		}
 	}
@@ -841,16 +901,35 @@ R_RenderLightmappedPoly(msurface_t *surf)
 			for (p = surf->polys; p; p = p->chain)
 			{
 				v = p->verts[0];
-				glBegin(GL_POLYGON);
 
-				for (i = 0; i < nv; i++, v += VERTEXSIZE)
+                GLfloat tex[2*nv];
+                unsigned int index_tex = 0;
+
+				for ( i = 0; i < nv; i++, v += VERTEXSIZE )
 				{
-					qglMultiTexCoord2fARB(GL_TEXTURE0_ARB, (v[3] + scroll), v[4]);
-					qglMultiTexCoord2fARB(GL_TEXTURE1_ARB, v[5], v[6]);
-					glVertex3fv(v);
+					tex[index_tex++] = v [ 3 ] + scroll;
+					tex[index_tex++] = v [ 4 ];
 				}
 
-				glEnd();
+                v = p->verts [ 0 ];
+
+                R_SelectTexture( GL_TEXTURE0 );
+                glEnableClientState( GL_VERTEX_ARRAY );
+                glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+                glVertexPointer( 3, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v );
+                glTexCoordPointer( 2, GL_FLOAT, 0, tex );
+
+                R_SelectTexture( GL_TEXTURE1 );
+                glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+                glTexCoordPointer( 2, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v+5 );
+
+                glDrawArrays( GL_TRIANGLE_FAN, 0, nv );
+
+                glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+                R_SelectTexture( GL_TEXTURE0 );
+                glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+                glDisableClientState( GL_VERTEX_ARRAY );
 			}
 		}
 		else
@@ -858,16 +937,23 @@ R_RenderLightmappedPoly(msurface_t *surf)
 			for (p = surf->polys; p; p = p->chain)
 			{
 				v = p->verts[0];
-				glBegin(GL_POLYGON);
 
-				for (i = 0; i < nv; i++, v += VERTEXSIZE)
-				{
-					qglMultiTexCoord2fARB(GL_TEXTURE0_ARB, v[3], v[4]);
-					qglMultiTexCoord2fARB(GL_TEXTURE1_ARB, v[5], v[6]);
-					glVertex3fv(v);
-				}
+                R_SelectTexture( GL_TEXTURE0 );
+                glEnableClientState( GL_VERTEX_ARRAY );
+                glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
-				glEnd();
+                glVertexPointer( 3, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v );
+                glTexCoordPointer( 2, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v+3 );
+
+                R_SelectTexture( GL_TEXTURE1 );
+                glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+                glTexCoordPointer( 2, GL_FLOAT, VERTEXSIZE*sizeof(GLfloat), v+5 );
+                glDrawArrays( GL_TRIANGLE_FAN, 0, nv );
+
+                glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+                R_SelectTexture( GL_TEXTURE0 );
+                glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+                glDisableClientState( GL_VERTEX_ARRAY );
 			}
 		}
 	}
@@ -991,7 +1077,7 @@ R_DrawBrushModel(entity_t *e)
 		glEnable(GL_POLYGON_OFFSET_FILL);
 	}
 
-	glColor3f(1, 1, 1);
+	glColor4f(1, 1, 1, 1);
 	memset(gl_lms.lightmap_surfaces, 0, sizeof(gl_lms.lightmap_surfaces));
 
 	VectorSubtract(r_newrefdef.vieworg, e->origin, modelorg);
@@ -1264,7 +1350,7 @@ R_DrawWorld(void)
 
 	gl_state.currenttextures[0] = gl_state.currenttextures[1] = -1;
 
-	glColor3f(1, 1, 1);
+	glColor4f(1, 1, 1, 1);
 	memset(gl_lms.lightmap_surfaces, 0, sizeof(gl_lms.lightmap_surfaces));
 	R_ClearSkyBox();
 
