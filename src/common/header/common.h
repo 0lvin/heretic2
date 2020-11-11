@@ -33,7 +33,7 @@
 #include "crc.h"
 
 /* Should have 4 characters. */
-#define YQ2VERSION "5.34"
+#define YQ2VERSION "5.35pre"
 #define BASEDIRNAME "baseq2"
 
 #ifndef OSTYPE
@@ -42,6 +42,10 @@
 
 #ifndef ARCH
 #error ARCH should be defined by the build system
+#endif
+
+#ifndef BUILD_DATE
+#define BUILD_DATE __DATE__
 #endif
 
 #ifdef _WIN32

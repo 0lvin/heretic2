@@ -207,7 +207,7 @@ void
 InitGame(void)
 {
 	gi.dprintf("Game is starting up.\n");
-	gi.dprintf("Game is %s built on %s.\n", GAMEVERSION, __DATE__);
+	gi.dprintf("Game is %s built on %s.\n", GAMEVERSION, BUILD_DATE);
 
 	gun_x = gi.cvar("gun_x", "0", 0);
 	gun_y = gi.cvar("gun_y", "0", 0);
@@ -223,7 +223,7 @@ InitGame(void)
 	/* latched vars */
 	sv_cheats = gi.cvar("cheats", "0", CVAR_SERVERINFO | CVAR_LATCH);
 	gi.cvar("gamename", GAMEVERSION, CVAR_SERVERINFO | CVAR_LATCH);
-	gi.cvar("gamedate", __DATE__, CVAR_SERVERINFO | CVAR_LATCH);
+	gi.cvar("gamedate", BUILD_DATE, CVAR_SERVERINFO | CVAR_LATCH);
 	maxclients = gi.cvar("maxclients", "4", CVAR_SERVERINFO | CVAR_LATCH);
 	maxspectators = gi.cvar("maxspectators", "4", CVAR_SERVERINFO);
 	deathmatch = gi.cvar("deathmatch", "0", CVAR_LATCH);
@@ -838,17 +838,17 @@ ReadGame(const char *filename)
 		if (strcmp(str_game, GAMEVERSION))
 		{
 			fclose(f);
-			gi.error("Savegame from an other game.so.\n");
+			gi.error("Savegame from another game.so.\n");
 		}
 		else if (strcmp(str_os, OSTYPE))
 		{
 			fclose(f);
-			gi.error("Savegame from an other os.\n");
+			gi.error("Savegame from another os.\n");
 		}
 		else if (strcmp(str_arch, ARCH))
 		{
 			fclose(f);
-			gi.error("Savegame from an other architecure.\n");
+			gi.error("Savegame from another architecture.\n");
 		}
 	}
 	else if (!strcmp(str_ver, "YQ2-1"))
@@ -856,12 +856,12 @@ ReadGame(const char *filename)
 		if (strcmp(str_game, GAMEVERSION))
 		{
 			fclose(f);
-			gi.error("Savegame from an other game.so.\n");
+			gi.error("Savegame from another game.so.\n");
 		}
 		else if (strcmp(str_os, OSTYPE_1))
 		{
 			fclose(f);
-			gi.error("Savegame from an other os.\n");
+			gi.error("Savegame from another os.\n");
 		}
 
 		if (!strcmp(str_os, "Windows"))
@@ -870,7 +870,7 @@ ReadGame(const char *filename)
 			if (strcmp(str_arch, "i386"))
 			{
 				fclose(f);
-				gi.error("Savegame from an other architecure.\n");
+				gi.error("Savegame from another architecture.\n");
 			}
 		}
 		else
@@ -878,7 +878,7 @@ ReadGame(const char *filename)
 			if (strcmp(str_arch, ARCH_1))
 			{
 				fclose(f);
-				gi.error("Savegame from an other architecure.\n");
+				gi.error("Savegame from another architecture.\n");
 			}
 		}
 	}
