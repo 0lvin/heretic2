@@ -62,25 +62,25 @@
 
 #define MOUSE_MAX 3000
 #define MOUSE_MIN 40
- 
+
 /* Globals */
 static int mouse_x, mouse_y;
 static int old_mouse_x, old_mouse_y;
 static qboolean mlooking;
 
 /* CVars */
-cvar_t *vid_fullscreen;
+extern cvar_t *vid_fullscreen;
 static cvar_t *in_grab;
 static cvar_t *in_mouse;
 static cvar_t *exponential_speedup;
-cvar_t *freelook;
-cvar_t *lookstrafe;
-cvar_t *m_forward;
+extern cvar_t *freelook;
+extern cvar_t *lookstrafe;
+extern cvar_t *m_forward;
 static cvar_t *m_filter;
-cvar_t *m_pitch;
-cvar_t *m_side;
-cvar_t *m_yaw;
-cvar_t *sensitivity;
+extern cvar_t *m_pitch;
+extern cvar_t *m_side;
+extern cvar_t *m_yaw;
+extern cvar_t *sensitivity;
 static cvar_t *windowed_mouse;
 
 /* ------------------------------------------------------------------ */
@@ -448,7 +448,7 @@ IN_Update(void)
 	 */
 	GLimp_GrabInput(want_grab);
 }
- 
+
 /*
  * Move handling
  */
@@ -528,7 +528,7 @@ IN_Move(usercmd_t *cmd)
 		mouse_x = mouse_y = 0;
 	}
 }
- 
+
 /* ------------------------------------------------------------------ */
 
 /*

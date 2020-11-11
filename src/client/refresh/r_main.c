@@ -140,13 +140,13 @@ cvar_t *gl_anisotropic_avail;
 cvar_t *gl_lockpvs;
 cvar_t *gl_msaa_samples;
 
-cvar_t *vid_fullscreen;
-cvar_t *vid_gamma;
+//cvar_t *vid_fullscreen;
+//cvar_t *vid_gamma;
 
-cvar_t *gl_stereo;
-cvar_t *gl_stereo_separation;
+static cvar_t *gl_stereo;
+static cvar_t *gl_stereo_separation;
 cvar_t *gl_stereo_anaglyph_colors;
-cvar_t *gl_stereo_convergence;
+static cvar_t *gl_stereo_convergence;
 
 /*
  * Returns true if the box is completely outside the frustom
@@ -364,7 +364,7 @@ R_DrawEntitiesOnList(void)
 	{
 		R_CaptureWorldForTAA();
 	}
-	
+
 	/* draw transparent entities
 	   we could sort these if it ever
 	   becomes a problem... */
@@ -1036,15 +1036,15 @@ R_RenderView(refdef_t *fd)
 	R_SetupGL();
 
 	R_MarkLeaves(); /* done here so we know if we're in water */
-	
+
 	if (gl_pt_enable->value)
 	{
 		R_UpdatePathtracerForCurrentFrame();
 		R_DrawPathtracerDepthPrePass();
 	}
-	
+
 	R_DrawWorld();
-	
+
 	R_DrawEntitiesOnList();
 
 	R_RenderDlights();
@@ -1370,11 +1370,11 @@ R_Init(void *hinstance, void *hWnd)
 	Q_strlcpy(vendor_buffer, gl_config.vendor_string, sizeof(vendor_buffer));
 	Q_strlwr(vendor_buffer);
 
-	
-	
+
+
 	/* Get the major and minor version numbers of the context. For a context with version
 		less than 3.0 this will fail, so that case needs to be checked for. */
-		
+
 	/* First deal with any error which already occured. */
 	err = glGetError();
 
@@ -1382,7 +1382,7 @@ R_Init(void *hinstance, void *hWnd)
 	{
 		VID_Printf(PRINT_ALL, "Entering R_Init: glGetError() = 0x%x\n", err);
 	}
-	
+
 	gl_config.version_major = 0;
 	gl_config.version_minor = 0;
 
@@ -1403,7 +1403,7 @@ R_Init(void *hinstance, void *hWnd)
 	}
 
 
-	
+
 	Cvar_Set("scr_drawall", "0");
 	gl_config.allow_cds = true;
 
@@ -1546,13 +1546,13 @@ R_Init(void *hinstance, void *hWnd)
 	}
 
 	/* ------------------------- GL_ARB_shader_objects ------------------------- */
-	
+
 	gl_config.shaders = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_shader_objects"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_shader_objects\n");
-		
+
 		gl_config.shaders = true;
 
 		GET_PROC_ADDRESS(glAttachObjectARB);
@@ -1601,17 +1601,17 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...GL_ARB_shader_objects not found\n");
 		gl_config.shaders = false;
 	}
-	
+
 	CHECK_GL_ERROR();
-	
+
 	/* -------------------------- GL_ARB_vertex_shader ------------------------- */
-	
+
 	gl_config.vertex_shaders = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_vertex_shader"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_vertex_shader\n");
-		
+
 		gl_config.vertex_shaders = true;
 
 		GET_PROC_ADDRESS(glBindAttribLocationARB);
@@ -1624,11 +1624,11 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...GL_ARB_vertex_shader not found\n");
 		gl_config.vertex_shaders = false;
 	}
-	
+
 	/* -------------------------- GL_ARB_fragment_shader ------------------------- */
-	
+
 	gl_config.fragment_shaders = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_fragment_shader"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_fragment_shader\n");
@@ -1639,11 +1639,11 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...GL_ARB_fragment_shader not found\n");
 		gl_config.fragment_shaders = false;
 	}
-	
+
 	/* -------------------------- GL_ARB_texture_float ------------------------- */
-	
+
 	gl_config.float_textures = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_texture_float"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_texture_float\n");
@@ -1656,7 +1656,7 @@ R_Init(void *hinstance, void *hWnd)
 	}
 
 	/* -------------------------- GL_ATI_texture_float ------------------------- */
-	
+
 	if (!gl_config.float_textures)
 	{
 		if (strstr(gl_config.extensions_string, "GL_ATI_texture_float"))
@@ -1669,17 +1669,17 @@ R_Init(void *hinstance, void *hWnd)
 			VID_Printf(PRINT_ALL, "...GL_ATI_texture_float not found\n");
 		}
 	}
-	
+
 	/* -------------------------- GL_ARB_texture_buffer_object ------------------------- */
-	
+
 	gl_config.texture_buffer_objects = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_texture_buffer_object"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_texture_buffer_object\n");
-		
+
 		gl_config.texture_buffer_objects = true;
-		
+
 		GET_PROC_ADDRESS(glTexBufferARB);
 
 	}
@@ -1688,7 +1688,7 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...GL_ARB_texture_buffer_object not found\n");
 		gl_config.texture_buffer_objects = false;
 	}
-	
+
 	/* -------------------------- GL_EXT_texture_buffer_object ------------------------- */
 
 	if (!gl_config.texture_buffer_objects)
@@ -1696,9 +1696,9 @@ R_Init(void *hinstance, void *hWnd)
 		if (strstr(gl_config.extensions_string, "GL_EXT_texture_buffer_object"))
 		{
 			VID_Printf(PRINT_ALL, "...using GL_EXT_texture_buffer_object\n");
-			
+
 			gl_config.texture_buffer_objects = true;
-			
+
 			GET_PROC_ADDRESS(glTexBufferEXT);
 
 		}
@@ -1708,11 +1708,11 @@ R_Init(void *hinstance, void *hWnd)
 			gl_config.texture_buffer_objects = false;
 		}
 	}
-	
+
 	/* -------------------------- GL_ARB_texture_buffer_object_rgb32 ------------------------- */
-	
+
 	gl_config.texture_buffer_objects_rgb = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_texture_buffer_object_rgb32"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_texture_buffer_object_rgb32\n");
@@ -1723,7 +1723,7 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...GL_ARB_texture_buffer_object_rgb32 not found\n");
 		gl_config.texture_buffer_objects_rgb = false;
 	}
-	
+
 	/* ----------------------------- GL_VERSION_3_1 ---------------------------- */
 
 	if (R_VersionOfGLIsGreaterThanOrEqualTo(3, 1))
@@ -1731,7 +1731,7 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...using OpenGL 3.1 features\n");
 
 		gl_config.texture_buffer_objects = true;
-		
+
 		GET_PROC_ADDRESS(glDrawArraysInstanced);
 		GET_PROC_ADDRESS(glDrawElementsInstanced);
 		GET_PROC_ADDRESS(glPrimitiveRestartIndex);
@@ -1741,13 +1741,13 @@ R_Init(void *hinstance, void *hWnd)
 	/* ---------------------- GL_ARB_vertex_buffer_object ---------------------- */
 
 	gl_config.vertex_buffer_objects = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_vertex_buffer_object"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_vertex_buffer_object\n");
-		
+
 		gl_config.vertex_buffer_objects = true;
-		
+
 		GET_PROC_ADDRESS(glBindBufferARB);
 		GET_PROC_ADDRESS(glBufferDataARB);
 		GET_PROC_ADDRESS(glBufferSubDataARB);
@@ -1766,15 +1766,15 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...GL_ARB_vertex_buffer_object not found\n");
 		gl_config.vertex_buffer_objects = false;
 	}
-	
+
 	/* ----------------------------- GL_VERSION_1_5 ---------------------------- */
-	
+
 	if (R_VersionOfGLIsGreaterThanOrEqualTo(1, 5))
 	{
 		VID_Printf(PRINT_ALL, "...using OpenGL 1.5 features\n");
 
 		gl_config.vertex_buffer_objects = true;
-		
+
 		GET_PROC_ADDRESS(glBeginQuery);
 		GET_PROC_ADDRESS(glBindBuffer);
 		GET_PROC_ADDRESS(glBufferData);
@@ -1796,11 +1796,11 @@ R_Init(void *hinstance, void *hWnd)
 		GET_PROC_ADDRESS(glUnmapBuffer);
 
 	}
-	
+
 	/* -------------------------- GL_ARB_texture_rg ------------------------- */
-	
+
 	gl_config.texture_rg = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_texture_rg"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_texture_rg\n");
@@ -1811,11 +1811,11 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...GL_ARB_texture_rg not found\n");
 		gl_config.texture_rg = false;
 	}
-	
+
 	/* -------------------------- NV_multisample_filter_hint ------------------------- */
-	
+
 	gl_config.multisample_filter_hint = false;
-	
+
 	if (strstr(gl_config.extensions_string, "NV_multisample_filter_hint"))
 	{
 		VID_Printf(PRINT_ALL, "...using NV_multisample_filter_hint\n");
@@ -1826,17 +1826,17 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...NV_multisample_filter_hint not found\n");
 		gl_config.multisample_filter_hint = false;
 	}
-	
+
 	/* ---------------------- GL_ARB_map_buffer_range ---------------------- */
 
 	gl_config.map_buffer_range = false;
-	
+
 	if (strstr(gl_config.extensions_string, "GL_ARB_map_buffer_range"))
 	{
 		VID_Printf(PRINT_ALL, "...using GL_ARB_map_buffer_range\n");
-		
+
 		gl_config.map_buffer_range = true;
-		
+
 		GET_PROC_ADDRESS(glFlushMappedBufferRange);
 		GET_PROC_ADDRESS(glMapBufferRange);
 
@@ -1846,7 +1846,7 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "...GL_ARB_map_buffer_range not found\n");
 		gl_config.map_buffer_range = false;
 	}
-	
+
 
 	/* ----------------------------- GL_VERSION_1_2 ---------------------------- */
 
@@ -1860,7 +1860,7 @@ R_Init(void *hinstance, void *hWnd)
 		GET_PROC_ADDRESS(glTexSubImage3D);
 
 	}
-	
+
 	CHECK_GL_ERROR();
 
 	R_SetDefaultState();
@@ -1871,7 +1871,7 @@ R_Init(void *hinstance, void *hWnd)
 	Draw_InitLocal();
 
 	R_InitPathtracing();
-	
+
 	err = glGetError();
 
 	if (err != GL_NO_ERROR)
@@ -1896,7 +1896,7 @@ R_Shutdown(void)
 	R_ShutdownImages();
 
 	R_ShutdownPathtracing();
-	
+
 	/* shutdown OS specific OpenGL stuff like contexts, etc.  */
 	GLimp_Shutdown();
 
