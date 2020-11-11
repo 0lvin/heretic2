@@ -62,7 +62,7 @@
 
 #define MOUSE_MAX 3000
 #define MOUSE_MIN 40
-
+ 
 /* Globals */
 static int mouse_x, mouse_y;
 static int old_mouse_x, old_mouse_y;
@@ -453,7 +453,7 @@ IN_Update(void)
 	 */
 	GLimp_GrabInput(want_grab);
 }
-
+ 
 /*
  * Move handling
  */
@@ -533,7 +533,7 @@ IN_Move(usercmd_t *cmd)
 		mouse_x = mouse_y = 0;
 	}
 }
-
+ 
 /* ------------------------------------------------------------------ */
 
 /*

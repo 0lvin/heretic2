@@ -260,7 +260,7 @@ R_SetDefaultState(void)
 	if (gl_msaa_samples->value)
 	{
 		glEnable(GL_MULTISAMPLE);
-		
+
 		if(gl_config.multisample_filter_hint)
 		{
 			glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);

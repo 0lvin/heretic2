@@ -371,7 +371,6 @@ void R_TextureAlphaMode(char *string);
 void R_TextureSolidMode(char *string);
 int Scrap_AllocBlock(int w, int h, int *x, int *y);
 
-
 /*
  * Pathtracing
  */
@@ -388,7 +387,6 @@ void R_CaptureWorldForTAA(void);
 
 qboolean R_PathtracingIsSupportedByGL(void);
 qboolean R_VersionOfGLIsGreaterThanOrEqualTo(int major, int minor);
-
 
 /* GL extension emulation functions */
 void R_DrawParticles2(int n,

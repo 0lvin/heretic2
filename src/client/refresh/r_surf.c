@@ -462,7 +462,7 @@ R_RenderBrushPoly(msurface_t *fa)
 	{
 		R_DrawGLPoly(fa->polys);
 	}
-	
+
 	if (!gl_pt_enable->value)
 	{		
 		/* check for lightmap modification */
@@ -592,7 +592,7 @@ R_DrawAlphaSurfaces(void)
 			else
 				qglMultiTexCoord4fARB(GL_TEXTURE3_ARB, 0, 0, 0, 0);
 		}
-	
+
 		if (s->flags & SURF_DRAWTURB)
 		{
 			R_EmitWaterPolys(s);
@@ -614,7 +614,7 @@ R_DrawAlphaSurfaces(void)
 		/* Restore the blending state. */
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
-	
+
 	R_TexEnv(GL_REPLACE);
 	glColor4f(1, 1, 1, 1);
 	glDisable(GL_BLEND);
@@ -765,7 +765,7 @@ R_RenderLightmappedPoly(msurface_t *surf)
 			}
 		}
 	}
-	
+
 	if (is_dynamic && !gl_pt_enable->value)
 	{
 		unsigned temp[128 * 128];
@@ -1107,14 +1107,14 @@ R_DrawBrushModel(entity_t *e)
 		
 		R_SetGLStateForPathtracing(e, entity_to_world_matrix);
 	}
-	
+
 	R_DrawInlineBModel();
 	
 	if (gl_pt_enable->value)
 	{
 		R_ClearGLStateForPathtracing();
 	}
-	
+
 	R_EnableMultitexture(false);
 
 	glPopMatrix();
@@ -1282,7 +1282,7 @@ R_DrawWorld(void)
 
 		R_SetGLStateForPathtracing(NULL, identity_matrix);
 	}
-	
+
 	currentmodel = r_worldmodel;
 
 	VectorCopy(r_newrefdef.vieworg, modelorg);

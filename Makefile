@@ -92,9 +92,7 @@ OSX_APP:=yes
 # case of presence.
 CONFIG_FILE := config.mk
 
-
 RUN_GLSL_VALIDATOR:=no
-
 
 # ----------
 
@@ -376,7 +374,7 @@ endif
 	@echo "===> Copying required data files"
 	${Q}mkdir -p release/baseq2
 	cp -r ./stuff/baseq2/* ./release/baseq2/
-   
+
 build/client/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)

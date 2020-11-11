@@ -1530,12 +1530,12 @@ R_Init(void *hinstance, void *hWnd)
 		if (gl_ext_multitexture->value)
 		{
 			VID_Printf(PRINT_ALL, "...using GL_ARB_multitexture\n");
-			GET_PROC_ADDRESS(glMultiTexCoord2fARB);
-			GET_PROC_ADDRESS(glMultiTexCoord2fvARB);
-			GET_PROC_ADDRESS(glMultiTexCoord3fARB);
-			GET_PROC_ADDRESS(glMultiTexCoord4fARB);
-			GET_PROC_ADDRESS(glActiveTextureARB);
-			GET_PROC_ADDRESS(glClientActiveTextureARB);
+			qglMultiTexCoord2fARB = ( void * ) GLimp_GetProcAddress ( "glMultiTexCoord2fARB" );
+			qglMultiTexCoord2fvARB = (void * ) GLimp_GetProcAddress( "glMultiTexCoord2fvARB" );
+			qglMultiTexCoord3fARB = (void * ) GLimp_GetProcAddress( "glMultiTexCoord3fARB" );
+			qglMultiTexCoord4fARB = (void * ) GLimp_GetProcAddress( "glMultiTexCoord4fARB" );
+			qglActiveTextureARB = ( void * ) GLimp_GetProcAddress ( "glActiveTextureARB" );
+			qglClientActiveTextureARB = ( void * ) GLimp_GetProcAddress ( "glClientActiveTextureARB" );
 		}
 		else
 		{
@@ -1940,7 +1940,7 @@ R_Init(void *hinstance, void *hWnd)
 
 	if (err != GL_NO_ERROR)
 	{
-		VID_Printf(PRINT_ALL, "Exiting R_Init: glGetError() = 0x%x\n", err);
+		VID_Printf(PRINT_ALL, "glGetError() = 0x%x\n", err);
 	}
 
 	return true;

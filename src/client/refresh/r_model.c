@@ -1039,7 +1039,7 @@ R_BeginRegistration(char *model)
 	r_worldmodel = Mod_ForName(fullname, true);
 
 	r_viewcluster = -1;
-	
+
 	R_PreparePathtracer();
 }
 

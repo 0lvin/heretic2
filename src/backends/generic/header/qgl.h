@@ -161,7 +161,6 @@ extern void ( APIENTRY *qglMultiTexCoord4fARB) ( GLenum, GLfloat, GLfloat, GLflo
 extern void ( APIENTRY *qglActiveTextureARB ) ( GLenum );
 extern void ( APIENTRY *qglClientActiveTextureARB ) ( GLenum );
 
-
 /* ------------------------- GL_ARB_shader_objects ------------------------- */
 
 #ifndef GL_ARB_shader_objects

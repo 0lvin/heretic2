@@ -950,7 +950,6 @@ R_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
 	}
 }
 
-
 /* This function was taken directly the common utility functions used by qrad3. */
 static vec_t
 ColorNormalize (vec3_t in, vec3_t out)
