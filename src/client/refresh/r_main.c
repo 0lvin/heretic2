@@ -1440,8 +1440,6 @@ R_Init(void *hinstance, void *hWnd)
 	Q_strlcpy(vendor_buffer, gl_config.vendor_string, sizeof(vendor_buffer));
 	Q_strlwr(vendor_buffer);
 
-
-
 	/* Get the major and minor version numbers of the context. For a context with version
 		less than 3.0 this will fail, so that case needs to be checked for. */
 
@@ -1471,11 +1469,6 @@ R_Init(void *hinstance, void *hWnd)
 		glGetIntegerv(GL_MINOR_VERSION, &gl_config.version_minor);
 		VID_Printf(PRINT_ALL, "\n\nGL version is %d.%d", gl_config.version_major, gl_config.version_minor);
 	}
-
-
-
-	Cvar_Set("scr_drawall", "0");
-	gl_config.allow_cds = true;
 
 	VID_Printf(PRINT_ALL, "\n\nProbing for OpenGL extensions:\n");
 
@@ -1538,6 +1531,7 @@ R_Init(void *hinstance, void *hWnd)
 		{
 			VID_Printf(PRINT_ALL, "...using GL_ARB_multitexture\n");
 			GET_PROC_ADDRESS(glMultiTexCoord2fARB);
+			GET_PROC_ADDRESS(glMultiTexCoord2fvARB);
 			GET_PROC_ADDRESS(glMultiTexCoord3fARB);
 			GET_PROC_ADDRESS(glMultiTexCoord4fARB);
 			GET_PROC_ADDRESS(glActiveTextureARB);

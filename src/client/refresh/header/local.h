@@ -407,13 +407,13 @@ typedef struct
 	const char *version_string;
 	const char *extensions_string;
 
-	qboolean allow_cds;
 	qboolean mtexcombine;
 
 	qboolean anisotropic;
-	qboolean tex_npot;
 	float max_anisotropy;
-	
+
+	qboolean tex_npot;
+
 	qboolean shaders;
 	qboolean vertex_shaders;
 	qboolean fragment_shaders;
@@ -442,6 +442,7 @@ typedef struct
 
 	int currenttextures[2];
 	int currenttmu;
+	GLenum currenttarget;
 
 	float camera_separation;
 	enum stereo_modes stereo_mode;
