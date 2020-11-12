@@ -148,57 +148,11 @@ R_SetTexturePalette(unsigned palette[256])
 void
 R_EnableMultitexture(qboolean enable)
 {
-	if (!gl_config.multitexture)
-	{
-		return;
-	}
-
-	if (enable)
-	{
-		R_SelectTexture(GL_TEXTURE1_ARB);
-		glEnable(GL_TEXTURE_2D);
-		R_TexEnv(GL_REPLACE);
-	}
-	else
-	{
-		R_SelectTexture(GL_TEXTURE1_ARB);
-		glDisable(GL_TEXTURE_2D);
-		R_TexEnv(GL_REPLACE);
-	}
-
-	R_SelectTexture(GL_TEXTURE0_ARB);
-	R_TexEnv(GL_REPLACE);
 }
 
 void
 R_SelectTexture(GLenum texture)
 {
-	int tmu;
-
-	if (!gl_config.multitexture)
-	{
-		return;
-	}
-
-	if (texture == GL_TEXTURE0_ARB)
-	{
-		tmu = 0;
-	}
-	else
-	{
-		tmu = 1;
-	}
-
-	if (tmu == gl_state.currenttmu)
-	{
-		return;
-	}
-
-	gl_state.currenttmu = tmu;
-	gl_state.currenttarget = texture;
-
-	qglActiveTextureARB(texture);
-	qglClientActiveTextureARB(texture);
 }
 
 void
