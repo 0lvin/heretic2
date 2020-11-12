@@ -421,7 +421,7 @@ R_BlendLightmaps(void)
 			}
 		}
 	}
-	
+
 	/* restore state */
 	glDisable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -594,9 +594,9 @@ R_DrawAlphaSurfaces(void)
 	if (gl_pt_enable->value)
 	{
 		static const float identity_matrix[16] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
-		
+
 		R_SetGLStateForPathtracing(NULL, identity_matrix);
-		
+
 		/* Simulate GL_MODULATE using blending functions. */
 		glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE);
 	}
@@ -652,7 +652,7 @@ R_DrawAlphaSurfaces(void)
 	if (gl_pt_enable->value)
 	{
 		R_ClearGLStateForPathtracing();
-		
+
 		/* Restore the blending state. */
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
@@ -756,6 +756,7 @@ R_DrawInlineBModel(void)
 
 	if (!(currententity->flags & RF_TRANSLUCENT))
 	{
+
 		R_BlendLightmaps();
 	}
 	else
@@ -846,16 +847,16 @@ R_DrawBrushModel(entity_t *e)
 	if (gl_pt_enable->value && !(currententity->flags & (RF_FULLBRIGHT | RF_TRANSLUCENT | RF_BEAM | RF_NOSHADOW | RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE | RF_SHELL_HALF_DAM)))
 	{
 		float entity_to_world_matrix[16];
-		
+
 		e->angles[2] = -e->angles[2];
 		R_ConstructEntityToWorldMatrix(entity_to_world_matrix, currententity);
 		e->angles[2] = -e->angles[2];
-		
+
 		R_SetGLStateForPathtracing(e, entity_to_world_matrix);
 	}
 
 	R_DrawInlineBModel();
-	
+
 	if (gl_pt_enable->value)
 	{
 		R_ClearGLStateForPathtracing();
@@ -1033,10 +1034,9 @@ R_DrawWorld(void)
 
 	glColor4f(1, 1, 1, 1);
 	memset(gl_lms.lightmap_surfaces, 0, sizeof(gl_lms.lightmap_surfaces));
+
 	R_ClearSkyBox();
-
 	R_RecursiveWorldNode(r_worldmodel->nodes);
-
 	R_DrawTextureChains();
 
 	if (gl_pt_enable->value)

@@ -1516,18 +1516,6 @@ R_Init(void *hinstance, void *hWnd)
 		VID_Printf(PRINT_ALL, "Disabled\n");
 	}
 
-	// ----
-
-	/* Multitexturing */
-	VID_Printf(PRINT_ALL, " - Multitexturing: ");
-
-	if (strstr(gl_config.extensions_string, "GL_ARB_multitexture"))
-	{
-		qglMultiTexCoord3fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord3fARB");
-		qglMultiTexCoord4fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord4fARB");
-		qglActiveTextureARB = (void *)GLimp_GetProcAddress("glActiveTextureARB");
-	}
-
 	// --------
 
 	/* Anisotropic */
@@ -1565,6 +1553,16 @@ R_Init(void *hinstance, void *hWnd)
 	}
 
 	// ----
+
+	/* Multitexturing */
+	VID_Printf(PRINT_ALL, " - Multitexturing: ");
+
+	if (strstr(gl_config.extensions_string, "GL_ARB_multitexture"))
+	{
+		qglMultiTexCoord3fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord3fARB");
+		qglMultiTexCoord4fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord4fARB");
+		qglActiveTextureARB = (void *)GLimp_GetProcAddress("glActiveTextureARB");
+	}
 
 	/* ------------------------- GL_ARB_shader_objects ------------------------- */
 
