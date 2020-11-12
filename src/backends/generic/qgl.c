@@ -44,13 +44,9 @@ void (APIENTRY *qglPointParameterfvARB)(GLenum param, const GLfloat *value);
 void (APIENTRY *qglColorTableEXT)(GLenum, GLenum, GLsizei, GLenum, GLenum,
 		const GLvoid *);
 
-void ( APIENTRY *qgl3DfxSetPaletteEXT ) ( GLuint * );
-void ( APIENTRY *qglMultiTexCoord2fARB ) ( GLenum, GLfloat, GLfloat );
-void ( APIENTRY *qglMultiTexCoord2fvARB) ( GLenum, GLfloat* );
 void ( APIENTRY *qglMultiTexCoord3fARB ) ( GLenum, GLfloat, GLfloat, GLfloat );
 void ( APIENTRY *qglMultiTexCoord4fARB ) ( GLenum, GLfloat, GLfloat, GLfloat, GLfloat );
 void ( APIENTRY *qglActiveTextureARB ) ( GLenum );
-void ( APIENTRY *qglClientActiveTextureARB ) ( GLenum );
 
 /* ------------------------- GL_ARB_shader_objects ------------------------- */
 
@@ -171,13 +167,9 @@ void QGL_EXT_Reset ( void )
 	qglPointParameterfARB     = NULL;
 	qglPointParameterfvARB    = NULL;
 	qglColorTableEXT          = NULL;
-	qgl3DfxSetPaletteEXT      = NULL;
-	qglMultiTexCoord2fARB     = NULL;
-	qglMultiTexCoord2fvARB    = NULL;
 	qglMultiTexCoord3fARB     = NULL;
 	qglMultiTexCoord4fARB     = NULL;
 	qglActiveTextureARB       = NULL;
-	qglClientActiveTextureARB = NULL;
    
 	/* ------------------------- GL_ARB_shader_objects ------------------------- */
 
