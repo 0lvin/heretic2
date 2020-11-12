@@ -1347,8 +1347,8 @@ R_VersionOfGLIsGreaterThanOrEqualTo(int major, int minor)
 int
 R_Init(void *hinstance, void *hWnd)
 {
-	int err;
 	int j;
+	int err;
 	extern float r_turbsin[256];
 
 	Swap_Init();
