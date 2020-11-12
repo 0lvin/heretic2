@@ -81,8 +81,6 @@ R_InitParticleTexture(void)
 
 	r_notexture = R_LoadPic("***r_notexture***", (byte *)data,
 			8, 0, 8, 0, it_wall, 32);
-
-	CHECK_GL_ERROR();
 }
 
 void
@@ -200,16 +198,13 @@ R_SetDefaultState(void)
 	glDisable(GL_BLEND);
 
 	glColor4f(1, 1, 1, 1);
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glShadeModel(GL_FLAT);
-
-	CHECK_GL_ERROR();
 
 	R_TextureMode(gl_texturemode->string);
 	R_TextureAlphaMode(gl_texturealphamode->string);
 	R_TextureSolidMode(gl_texturesolidmode->string);
-
-	CHECK_GL_ERROR();
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
@@ -217,17 +212,11 @@ R_SetDefaultState(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	CHECK_GL_ERROR();
-
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	CHECK_GL_ERROR();
 
 	R_TexEnv(GL_REPLACE);
 
-	CHECK_GL_ERROR();
-
-	if (qglPointParameterfEXT)
+	if (gl_config.pointparameters)
 	{
 		float attenuations[3];
 
@@ -240,22 +229,16 @@ R_SetDefaultState(void)
 		   i915.so. That the points are squares and not circles
 		   is not a problem by Quake II! */
 		glEnable(GL_POINT_SMOOTH);
-		qglPointParameterfEXT(GL_POINT_SIZE_MIN_EXT,
-				gl_particle_min_size->value);
-		qglPointParameterfEXT(GL_POINT_SIZE_MAX_EXT,
-				gl_particle_max_size->value);
-		qglPointParameterfvEXT(GL_DISTANCE_ATTENUATION_EXT, attenuations);
+		qglPointParameterfARB(GL_POINT_SIZE_MIN_EXT, gl_particle_min_size->value);
+		qglPointParameterfARB(GL_POINT_SIZE_MAX_EXT, gl_particle_max_size->value);
+		qglPointParameterfvARB(GL_DISTANCE_ATTENUATION_EXT, attenuations);
 	}
 
-	CHECK_GL_ERROR();
-
-	if (qglColorTableEXT && gl_ext_palettedtexture->value)
+	if (gl_config.palettedtexture)
 	{
 		glEnable(GL_SHARED_TEXTURE_PALETTE_EXT);
 		R_SetTexturePalette(d_8to24table);
 	}
-
-	CHECK_GL_ERROR();
 
 	if (gl_msaa_samples->value)
 	{

@@ -39,10 +39,8 @@
 /*
  * GL extensions
  */
-void (APIENTRY *qglLockArraysEXT)(int, int);
-void (APIENTRY *qglUnlockArraysEXT)(void);
-void (APIENTRY *qglPointParameterfEXT)(GLenum param, GLfloat value);
-void (APIENTRY *qglPointParameterfvEXT)(GLenum param, const GLfloat *value);
+void (APIENTRY *qglPointParameterfARB)(GLenum param, GLfloat value);
+void (APIENTRY *qglPointParameterfvARB)(GLenum param, const GLfloat *value);
 void (APIENTRY *qglColorTableEXT)(GLenum, GLenum, GLsizei, GLenum, GLenum,
 		const GLvoid *);
 
@@ -170,10 +168,8 @@ PFNGLTEXSUBIMAGE3DPROC qglTexSubImage3D;
 
 void QGL_EXT_Reset ( void )
 {
-	qglLockArraysEXT          = NULL;
-	qglUnlockArraysEXT 	      = NULL;
-	qglPointParameterfEXT     = NULL;
-	qglPointParameterfvEXT    = NULL;
+	qglPointParameterfARB     = NULL;
+	qglPointParameterfvARB    = NULL;
 	qglColorTableEXT          = NULL;
 	qgl3DfxSetPaletteEXT      = NULL;
 	qglMultiTexCoord2fARB     = NULL;

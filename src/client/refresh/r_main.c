@@ -97,9 +97,9 @@ cvar_t *gl_particle_att_b;
 cvar_t *gl_particle_att_c;
 
 cvar_t *gl_ext_swapinterval;
-cvar_t *gl_ext_palettedtexture;
-cvar_t *gl_ext_multitexture;
-cvar_t *gl_ext_pointparameters;
+cvar_t *gl_palettedtexture;
+cvar_t *gl_multitexture;
+cvar_t *gl_pointparameters;
 cvar_t *gl_ext_compiled_vertex_array;
 cvar_t *gl_ext_mtexcombine;
 
@@ -532,7 +532,7 @@ R_DrawParticles(void)
 	qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
 	qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
 
-	if (gl_ext_pointparameters->value && qglPointParameterfEXT && !(stereo_split_tb || stereo_split_lr))
+	if (gl_config.pointparameters && !(stereo_split_tb || stereo_split_lr))
 	{
 		int i;
 		unsigned char color[4];
@@ -1268,9 +1268,9 @@ R_Register(void)
 	gl_vertex_arrays = Cvar_Get("gl_vertex_arrays", "0", CVAR_ARCHIVE);
 
 	gl_ext_swapinterval = Cvar_Get("gl_ext_swapinterval", "1", CVAR_ARCHIVE);
-	gl_ext_palettedtexture = Cvar_Get("gl_ext_palettedtexture", "0", CVAR_ARCHIVE);
-	gl_ext_multitexture = Cvar_Get("gl_ext_multitexture", "0", CVAR_ARCHIVE);
-	gl_ext_pointparameters = Cvar_Get("gl_ext_pointparameters", "1", CVAR_ARCHIVE);
+	gl_palettedtexture = Cvar_Get("gl_palettedtexture", "0", CVAR_ARCHIVE);
+	gl_multitexture = Cvar_Get("gl_multitexture", "0", CVAR_ARCHIVE);
+	gl_pointparameters = Cvar_Get("gl_pointparameters", "1", CVAR_ARCHIVE);
 	gl_ext_compiled_vertex_array = Cvar_Get("gl_ext_compiled_vertex_array", "1", CVAR_ARCHIVE);
 	gl_ext_mtexcombine = Cvar_Get("gl_ext_mtexcombine", "1", CVAR_ARCHIVE);
 
@@ -1369,8 +1369,6 @@ int
 R_Init(void *hinstance, void *hWnd)
 {
 #define GET_PROC_ADDRESS(x) q##x = ( void * ) GLimp_GetProcAddress ( #x ); if (!q##x) { VID_Printf(PRINT_ALL, #x " was not found!\n"); return -1; }
-	char renderer_buffer[1000];
-	char vendor_buffer[1000];
 	int err;
 	int j;
 	extern float r_turbsin[256];
@@ -1423,22 +1421,35 @@ R_Init(void *hinstance, void *hWnd)
 
 	VID_MenuInit();
 
+	// --------
+
 	/* get our various GL strings */
 	VID_Printf(PRINT_ALL, "\nOpenGL setting:\n", gl_config.vendor_string);
+
 	gl_config.vendor_string = (char *)glGetString(GL_VENDOR);
 	VID_Printf(PRINT_ALL, "GL_VENDOR: %s\n", gl_config.vendor_string);
+
 	gl_config.renderer_string = (char *)glGetString(GL_RENDERER);
 	VID_Printf(PRINT_ALL, "GL_RENDERER: %s\n", gl_config.renderer_string);
+
 	gl_config.version_string = (char *)glGetString(GL_VERSION);
 	VID_Printf(PRINT_ALL, "GL_VERSION: %s\n", gl_config.version_string);
+
 	gl_config.extensions_string = (char *)glGetString(GL_EXTENSIONS);
 	VID_Printf(PRINT_ALL, "GL_EXTENSIONS: %s\n", gl_config.extensions_string);
 
-	Q_strlcpy(renderer_buffer, gl_config.renderer_string, sizeof(renderer_buffer));
-	Q_strlwr(renderer_buffer);
+	sscanf(gl_config.version_string, "%d.%d", &gl_config.major_version, &gl_config.minor_version);
 
-	Q_strlcpy(vendor_buffer, gl_config.vendor_string, sizeof(vendor_buffer));
-	Q_strlwr(vendor_buffer);
+	if (gl_config.major_version == 1)
+	{
+		if (gl_config.minor_version < 4)
+		{
+			QGL_Shutdown();
+			VID_Printf(PRINT_ALL, "Support for OpenGL 1.4 wasn't found\n");
+
+			return -1;
+		}
+	}
 
 	/* Get the major and minor version numbers of the context. For a context with version
 		less than 3.0 this will fail, so that case needs to be checked for. */
@@ -1472,103 +1483,141 @@ R_Init(void *hinstance, void *hWnd)
 
 	VID_Printf(PRINT_ALL, "\n\nProbing for OpenGL extensions:\n");
 
-	/* grab extensions */
-	if (strstr(gl_config.extensions_string, "GL_EXT_compiled_vertex_array"))
+	// ----
+
+	/* Point parameters */
+	VID_Printf(PRINT_ALL, " - Point parameters: ");
+
+	if (strstr(gl_config.extensions_string, "GL_ARB_point_parameters"))
 	{
-		VID_Printf(PRINT_ALL, "...using GL_EXT_compiled_vertex_array\n");
-		qglLockArraysEXT = ( void * ) GLimp_GetProcAddress ( "glLockArraysEXT" );
-		qglUnlockArraysEXT = ( void * ) GLimp_GetProcAddress ( "glUnlockArraysEXT" );
-	}
-	else
-	{
-		VID_Printf(PRINT_ALL, "...GL_EXT_compiled_vertex_array not found\n");
+			qglPointParameterfARB = (void (APIENTRY *)(GLenum, GLfloat))GLimp_GetProcAddress ( "glPointParameterfARB" );
+			qglPointParameterfvARB = (void (APIENTRY *)(GLenum, const GLfloat *))GLimp_GetProcAddress ( "glPointParameterfvARB" );
 	}
 
-	if (strstr(gl_config.extensions_string, "GL_EXT_point_parameters"))
+	gl_config.pointparameters = false;
+
+	if (gl_pointparameters->value)
 	{
-		if (gl_ext_pointparameters->value)
+		if (qglPointParameterfARB && qglPointParameterfvARB)
 		{
-			VID_Printf(PRINT_ALL, "...using GL_EXT_point_parameters\n");
-			qglPointParameterfEXT = (void (APIENTRY *)(GLenum, GLfloat))
-				GLimp_GetProcAddress ( "glPointParameterfEXT" );
-			qglPointParameterfvEXT = (void (APIENTRY *)(GLenum, const GLfloat *))
-				GLimp_GetProcAddress ( "glPointParameterfvEXT" );
+			gl_config.pointparameters = true;
+			VID_Printf(PRINT_ALL, "Okay\n");
 		}
 		else
 		{
-			VID_Printf(PRINT_ALL, "...ignoring GL_EXT_point_parameters\n");
+			VID_Printf(PRINT_ALL, "Failed\n");
 		}
 	}
 	else
 	{
-		VID_Printf(PRINT_ALL, "...GL_EXT_point_parameters not found\n");
+		VID_Printf(PRINT_ALL, "Disabled\n");
 	}
 
-	if (!qglColorTableEXT &&
-		strstr(gl_config.extensions_string, "GL_EXT_paletted_texture") &&
+	// ----
+
+	/* Paletted texture */
+	VID_Printf(PRINT_ALL, " - Paletted texture: ");
+
+	if (strstr(gl_config.extensions_string, "GL_EXT_paletted_texture") &&
 		strstr(gl_config.extensions_string, "GL_EXT_shared_texture_palette"))
 	{
-		if (gl_ext_palettedtexture->value)
+			qglColorTableEXT = (void (APIENTRY *)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid * ))
+					GLimp_GetProcAddress ("glColorTableEXT");
+	}
+
+	gl_config.palettedtexture = false;
+
+	if (gl_palettedtexture->value)
+	{
+		if (qglColorTableEXT)
 		{
-			VID_Printf(PRINT_ALL, "...using GL_EXT_shared_texture_palette\n");
-			qglColorTableEXT =
-				(void (APIENTRY *)(GLenum, GLenum, GLsizei, GLenum, GLenum,
-						const GLvoid * ) ) GLimp_GetProcAddress ("glColorTableEXT");
+			gl_config.palettedtexture = true;
+			VID_Printf(PRINT_ALL, "Okay\n");
 		}
 		else
 		{
-			VID_Printf(PRINT_ALL, "...ignoring GL_EXT_shared_texture_palette\n");
+			VID_Printf(PRINT_ALL, "Failed\n");
 		}
 	}
 	else
 	{
-		VID_Printf(PRINT_ALL, "...GL_EXT_shared_texture_palette not found\n");
+		VID_Printf(PRINT_ALL, "Disabled\n");
 	}
+
+	// ----
+
+	/* Multitexturing */
+	VID_Printf(PRINT_ALL, " - Multitexturing: ");
 
 	if (strstr(gl_config.extensions_string, "GL_ARB_multitexture"))
 	{
-		if (gl_ext_multitexture->value)
+		qglMultiTexCoord2fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord2fARB");
+		qglMultiTexCoord2fvARB = (void *)GLimp_GetProcAddress("glMultiTexCoord2fvARB");
+		qglMultiTexCoord3fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord3fARB");
+		qglMultiTexCoord4fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord4fARB");
+		qglActiveTextureARB = (void *)GLimp_GetProcAddress("glActiveTextureARB");
+		qglClientActiveTextureARB = (void *)GLimp_GetProcAddress("glClientActiveTextureARB");
+	}
+
+	gl_config.multitexture = false;
+
+	if (gl_multitexture->value)
+	{
+		if (qglMultiTexCoord2fARB && qglMultiTexCoord2fvARB && qglActiveTextureARB && qglClientActiveTextureARB)
 		{
-			VID_Printf(PRINT_ALL, "...using GL_ARB_multitexture\n");
-			qglMultiTexCoord2fARB = ( void * ) GLimp_GetProcAddress ( "glMultiTexCoord2fARB" );
-			qglMultiTexCoord2fvARB = (void * ) GLimp_GetProcAddress( "glMultiTexCoord2fvARB" );
-			qglMultiTexCoord3fARB = (void * ) GLimp_GetProcAddress( "glMultiTexCoord3fARB" );
-			qglMultiTexCoord4fARB = (void * ) GLimp_GetProcAddress( "glMultiTexCoord4fARB" );
-			qglActiveTextureARB = ( void * ) GLimp_GetProcAddress ( "glActiveTextureARB" );
-			qglClientActiveTextureARB = ( void * ) GLimp_GetProcAddress ( "glClientActiveTextureARB" );
+			gl_config.multitexture = true;
+			VID_Printf(PRINT_ALL, "Okay\n");
 		}
 		else
 		{
-			VID_Printf(PRINT_ALL, "...ignoring GL_ARB_multitexture\n");
+			VID_Printf(PRINT_ALL, "Failed\n");
 		}
 	}
 	else
 	{
-		VID_Printf(PRINT_ALL, "...GL_ARB_multitexture not found\n");
+		VID_Printf(PRINT_ALL, "Disabled\n");
 	}
 
-	gl_config.anisotropic = false;
+	// ----
+
+	/* Anisotropic */
+	VID_Printf(PRINT_ALL, " - Anisotropic: ");
 
 	if (strstr(gl_config.extensions_string, "GL_EXT_texture_filter_anisotropic"))
 	{
-		VID_Printf(PRINT_ALL, "...using GL_EXT_texture_filter_anisotropic\n");
 		gl_config.anisotropic = true;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gl_config.max_anisotropy);
 		Cvar_SetValue("gl_anisotropic_avail", gl_config.max_anisotropy);
+
+		VID_Printf(PRINT_ALL, "%ux\n", (int)gl_config.max_anisotropy);
 	}
 	else
 	{
-		VID_Printf(PRINT_ALL, "...GL_EXT_texture_filter_anisotropic not found\n");
 		gl_config.anisotropic = false;
 		gl_config.max_anisotropy = 0.0;
 		Cvar_SetValue("gl_anisotropic_avail", 0.0);
+
+		VID_Printf(PRINT_ALL, "Failed\n");
 	}
+
+	// ----
+
+	/* Non power of two textures */
+	VID_Printf(PRINT_ALL, " - Non power of two textures: ");
+
 
 	if (strstr(gl_config.extensions_string, "GL_ARB_texture_non_power_of_two"))
 	{
-		VID_Printf(PRINT_ALL, "...using GL_ARB_texture_non_power_of_two\n");
-		gl_config.tex_npot = true;
+		gl_config.npottextures = true;
+		VID_Printf(PRINT_ALL, "Okay\n");
 	}
+	else
+	{
+		gl_config.npottextures = false;
+		VID_Printf(PRINT_ALL, "Failed\n");
+	}
+
+	// ----
 
 	gl_config.mtexcombine = false;
 
@@ -1588,6 +1637,8 @@ R_Init(void *hinstance, void *hWnd)
 	{
 		VID_Printf(PRINT_ALL, "...GL_ARB_texture_env_combine not found\n");
 	}
+
+	// ----
 
 	if (!gl_config.mtexcombine)
 	{

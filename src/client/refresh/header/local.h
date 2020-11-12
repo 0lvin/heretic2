@@ -225,9 +225,9 @@ extern cvar_t *gl_overbrightbits;
 extern cvar_t *gl_vertex_arrays;
 
 extern cvar_t *gl_ext_swapinterval;
-extern cvar_t *gl_ext_palettedtexture;
-extern cvar_t *gl_ext_multitexture;
-extern cvar_t *gl_ext_pointparameters;
+extern cvar_t *gl_palettedtexture;
+extern cvar_t *gl_multitexture;
+extern cvar_t *gl_pointparameters;
 extern cvar_t *gl_ext_compiled_vertex_array;
 extern cvar_t *gl_ext_mtexcombine;
 
@@ -399,18 +399,29 @@ void R_DrawParticles2(int n,
 
 typedef struct
 {
-	int renderer;
 	const char *renderer_string;
 	const char *vendor_string;
 	const char *version_string;
 	const char *extensions_string;
 
-	qboolean mtexcombine;
+	int major_version;
+	int minor_version;
+
+	// ----
 
 	qboolean anisotropic;
-	float max_anisotropy;
+	qboolean multitexture;
+	qboolean npottextures;
+	qboolean palettedtexture;
+	qboolean pointparameters;
 
-	qboolean tex_npot;
+
+	qboolean mtexcombine;
+
+	// ----
+
+
+	float max_anisotropy;
 
 	qboolean shaders;
 	qboolean vertex_shaders;
@@ -425,6 +436,7 @@ typedef struct
 
 	GLint version_major;
 	GLint version_minor;
+
 } glconfig_t;
 
 typedef struct
