@@ -280,10 +280,7 @@ extern float r_world_matrix[16];
 
 void R_TranslatePlayerSkin(int playernum);
 void R_Bind(int texnum);
-void R_MBind(GLenum target, int texnum);
 void R_TexEnv(GLenum value);
-void R_EnableMultitexture(qboolean enable);
-void R_SelectTexture(GLenum);
 
 void R_LightPoint(vec3_t p, vec3_t color);
 void R_PushDlights(void);

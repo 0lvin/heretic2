@@ -308,7 +308,6 @@ R_BlendLightmaps(void)
 						if (gl_overbrightbits->value)
 						{
 							R_TexEnv(GL_COMBINE_EXT);
-							R_SelectTexture(GL_TEXTURE1);
 							glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_EXT, gl_overbrightbits->value);
 						}
 
@@ -368,7 +367,6 @@ R_BlendLightmaps(void)
 							if (gl_overbrightbits->value)
 							{
 								R_TexEnv(GL_COMBINE_EXT);
-								R_SelectTexture(GL_TEXTURE1);
 								glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_EXT, gl_overbrightbits->value);
 							}
 	
@@ -413,7 +411,6 @@ R_BlendLightmaps(void)
 					if (gl_overbrightbits->value)
 					{
 						R_TexEnv(GL_COMBINE_EXT);
-						R_SelectTexture(GL_TEXTURE1);
 						glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_EXT, gl_overbrightbits->value);
 					}
 	
@@ -478,7 +475,6 @@ R_RenderBrushPoly(msurface_t *fa)
 		if (gl_overbrightbits->value)
 		{
 			R_TexEnv(GL_COMBINE_EXT);
-			R_SelectTexture(GL_TEXTURE1);
 			glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_EXT, 1);
 		}
 		else
@@ -705,167 +701,6 @@ R_DrawTextureChains(void)
 }
 
 void
-R_RenderLightmappedPoly(msurface_t *surf)
-{
-	int i;
-	int map;
-	int nv;
-	int smax;
-	int tmax;
-	float scroll;
-	float *v;
-	glpoly_t *p;
-	image_t *image;
-	qboolean is_dynamic;
-	unsigned lmtex;
-	unsigned temp[128 * 128];
-
-	if (gl_pt_enable->value && qglMultiTexCoord3fARB)
-	{
-		if (surf->flags & SURF_PLANEBACK)
-			qglMultiTexCoord3fARB(GL_TEXTURE2_ARB, -surf->plane->normal[0], -surf->plane->normal[1], -surf->plane->normal[2]);
-		else
-			qglMultiTexCoord3fARB(GL_TEXTURE2_ARB, surf->plane->normal[0], surf->plane->normal[1], surf->plane->normal[2]);
-
-		qglMultiTexCoord4fARB(GL_TEXTURE4_ARB, surf->texinfo->vecs[0][0], surf->texinfo->vecs[0][1], surf->texinfo->vecs[0][2], gl_pt_specular_factor->value);
-		qglMultiTexCoord3fARB(GL_TEXTURE5_ARB, surf->texinfo->vecs[1][0], surf->texinfo->vecs[1][1], surf->texinfo->vecs[1][2]);
-
-		if ((surf->texinfo->flags & SURF_LIGHT) && !(surf->texinfo->flags & SURF_WARP) && surf->texinfo->radiance > 0)
-			qglMultiTexCoord4fARB(GL_TEXTURE3_ARB, image->reflectivity[0] * surf->texinfo->radiance, image->reflectivity[1] * surf->texinfo->radiance, image->reflectivity[2] * surf->texinfo->radiance, 1);
-		else
-			qglMultiTexCoord4fARB(GL_TEXTURE3_ARB, 0, 0, 0, 1);
-	}
-	
-	if (!gl_pt_enable->value)
-	{
-		image = R_TextureAnimation(surf->texinfo);
-		is_dynamic = false;
-		lmtex = surf->lightmaptexturenum;
-		nv = surf->polys->numverts;
-	
-		// Any dynamic lights on this surface?
-		for (map = 0; map < MAXLIGHTMAPS && surf->styles[map] != 255; map++)
-		{
-			if (r_newrefdef.lightstyles[surf->styles[map]].white != surf->cached_light[map])
-			{
-				if (!(surf->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP)))
-				{
-					is_dynamic = true;
-				}
-			}
-		}
-
-		// Normal dynamic lights
-		if (surf->dlightframe == r_framecount)
-		{
-			if (gl_dynamic->value)
-			{
-				if (!(surf->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP)))
-				{
-					is_dynamic = true;
-				}
-			}
-		}
-	}
-
-	if (is_dynamic && !gl_pt_enable->value)
-	{
-		// Dynamic lights on a surface
-		if (((surf->styles[map] >= 32) || (surf->styles[map] == 0)) && (surf->dlightframe != r_framecount))
-		{
-			smax = (surf->extents[0] >> 4) + 1;
-			tmax = (surf->extents[1] >> 4) + 1;
-
-			R_BuildLightMap(surf, (void *) temp, smax * 4);
-			R_SetCacheState(surf);
-			R_MBind(GL_TEXTURE1_ARB, gl_state.lightmap_textures + surf->lightmaptexturenum);
-
-			lmtex = surf->lightmaptexturenum;
-
-			glTexSubImage2D(GL_TEXTURE_2D, 0, surf->light_s, surf->light_t, smax,
-							tmax, GL_LIGHTMAP_FORMAT, GL_UNSIGNED_BYTE, temp);
-		}
-		else // Normal dynamic lights
-		{
-			smax = (surf->extents[0] >> 4) + 1;
-			tmax = (surf->extents[1] >> 4) + 1;
-
-			R_BuildLightMap(surf, (void *) temp, smax * 4);
-			R_MBind(GL_TEXTURE1_ARB, gl_state.lightmap_textures + 0);
-
-			lmtex = 0;
-
-			glTexSubImage2D(GL_TEXTURE_2D, 0, surf->light_s, surf->light_t, smax,
-							tmax, GL_LIGHTMAP_FORMAT, GL_UNSIGNED_BYTE, temp);
-		}
-
-		c_brush_polys++;
-
-		R_MBind(GL_TEXTURE0_ARB, image->texnum);
-		R_MBind(GL_TEXTURE1_ARB, gl_state.lightmap_textures + lmtex);
-	}
-	else // No dynamic lights
-	{
-		c_brush_polys++;
-
-		R_MBind(GL_TEXTURE0_ARB, image->texnum);
-		R_MBind(GL_TEXTURE1_ARB, gl_state.lightmap_textures + lmtex);
-	}
-
-	if (surf->texinfo->flags & SURF_FLOWING)
-	{
-		scroll = -64 * ((r_newrefdef.time / 40.0) - (int) (r_newrefdef.time / 40.0));
-
-		if (scroll == 0.0)
-		{
-			scroll = -64.0;
-		}
-
-		for (p = surf->polys; p; p = p->chain)
-		{
-			v = p->verts[0];
-			glBegin(GL_POLYGON);
-
-			for (i = 0; i < nv; i++, v += VERTEXSIZE)
-			{
-				qglMultiTexCoord2fARB(GL_TEXTURE0, (v[3] + scroll), v[4]);
-				qglMultiTexCoord2fvARB(GL_TEXTURE1, &v[5]);
-				glVertex3fv(v);
-			}
-
-			glEnd();
-		}
-	}
-	else
-	{
-		for (p = surf->polys; p; p = p->chain)
-		{
-			v = p->verts[0];
-
-			// Polygon
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, GL_FLOAT, VERTEXSIZE * sizeof(GLfloat), v);
-
-			// Texture
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			qglClientActiveTextureARB(GL_TEXTURE0_ARB);
-			glTexCoordPointer(2, GL_FLOAT, VERTEXSIZE * sizeof(GLfloat), v + 3);
-
-			// Lightmap
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			qglClientActiveTextureARB(GL_TEXTURE1_ARB);
-			glTexCoordPointer(2, GL_FLOAT, VERTEXSIZE * sizeof(GLfloat), v + 5);
-
-			// Draw the crap
-			glDrawArrays(GL_TRIANGLE_FAN, 0, p->numverts);
-
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		}
-	}
-}
-
-void
 R_DrawInlineBModel(void)
 {
 	int i, k;
@@ -914,9 +749,7 @@ R_DrawInlineBModel(void)
 			}
 			else
 			{
-				R_EnableMultitexture(false);
 				R_RenderBrushPoly(psurf);
-				R_EnableMultitexture(true);
 			}
 		}
 	}
@@ -999,12 +832,7 @@ R_DrawBrushModel(entity_t *e)
 	e->angles[0] = -e->angles[0];
 	e->angles[2] = -e->angles[2];
 
-	R_EnableMultitexture(true);
-
-	R_SelectTexture(GL_TEXTURE0_ARB);
-
 	R_TexEnv(GL_REPLACE);
-	R_SelectTexture(GL_TEXTURE1);
 
 	if (gl_lightmap->value)
 	{
@@ -1032,8 +860,6 @@ R_DrawBrushModel(entity_t *e)
 	{
 		R_ClearGLStateForPathtracing();
 	}
-
-	R_EnableMultitexture(false);
 
 	glPopMatrix();
 

@@ -146,16 +146,6 @@ R_SetTexturePalette(unsigned palette[256])
 }
 
 void
-R_EnableMultitexture(qboolean enable)
-{
-}
-
-void
-R_SelectTexture(GLenum texture)
-{
-}
-
-void
 R_TexEnv(GLenum mode)
 {
 	static int lastmodes[2] = {-1, -1};
@@ -184,32 +174,6 @@ R_Bind(int texnum)
 
 	gl_state.currenttextures[gl_state.currenttmu] = texnum;
 	glBindTexture(GL_TEXTURE_2D, texnum);
-}
-
-void
-R_MBind(GLenum target, int texnum)
-{
-	if (target != gl_state.currenttarget)
-	{
-		R_SelectTexture(target);
-	}
-
-	if (target == GL_TEXTURE0_ARB)
-	{
-		if (gl_state.currenttextures[0] == texnum)
-		{
-			return;
-		}
-	}
-	else
-	{
-		if (gl_state.currenttextures[1] == texnum)
-		{
-			return;
-		}
-	}
-
-	R_Bind(texnum);
 }
 
 void
