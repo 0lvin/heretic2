@@ -219,11 +219,9 @@ extern cvar_t *gl_overbrightbits;
 
 extern cvar_t *gl_vertex_arrays;
 
-extern cvar_t *gl_ext_swapinterval;
 extern cvar_t *gl_palettedtexture;
 extern cvar_t *gl_multitexture;
 extern cvar_t *gl_pointparameters;
-extern cvar_t *gl_ext_compiled_vertex_array;
 extern cvar_t *gl_mtexcombine;
 
 extern cvar_t *gl_particle_min_size;
@@ -233,10 +231,7 @@ extern cvar_t *gl_particle_att_a;
 extern cvar_t *gl_particle_att_b;
 extern cvar_t *gl_particle_att_c;
 
-extern cvar_t *gl_nosubimage;
-extern cvar_t *gl_bitdepth;
 extern cvar_t *gl_mode;
-
 extern cvar_t *gl_customwidth;
 extern cvar_t *gl_customheight;
 
@@ -249,25 +244,18 @@ extern cvar_t *gl_dynamic;
 extern cvar_t *gl_nobind;
 extern cvar_t *gl_round_down;
 extern cvar_t *gl_picmip;
-extern cvar_t *gl_skymip;
 extern cvar_t *gl_showtris;
 extern cvar_t *gl_finish;
 extern cvar_t *gl_ztrick;
 extern cvar_t *gl_zfix;
 extern cvar_t *gl_clear;
 extern cvar_t *gl_cull;
-extern cvar_t *gl_poly;
-extern cvar_t *gl_texsort;
 extern cvar_t *gl_polyblend;
 extern cvar_t *gl_flashblend;
-extern cvar_t *gl_lightmaptype;
 extern cvar_t *gl_modulate;
-extern cvar_t *gl_playermip;
 extern cvar_t *gl_drawbuffer;
-extern cvar_t *gl_3dlabs_broken;
 extern cvar_t *gl_swapinterval;
 extern cvar_t *gl_anisotropic;
-extern cvar_t *gl_anisotropic_avail;
 extern cvar_t *gl_texturemode;
 extern cvar_t *gl_texturealphamode;
 extern cvar_t *gl_texturesolidmode;
@@ -283,7 +271,6 @@ extern cvar_t *intensity;
 extern cvar_t *gl_pt_enable;
 extern cvar_t *gl_pt_specular_factor;
 
-extern int gl_lightmap_format;
 extern int gl_solid_format;
 extern int gl_alpha_format;
 extern int gl_tex_solid_format;
