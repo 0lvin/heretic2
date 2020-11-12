@@ -76,7 +76,6 @@ cvar_t *gl_drawworld;
 cvar_t *gl_speeds;
 cvar_t *gl_fullbright;
 cvar_t *gl_novis;
-cvar_t *gl_nocull;
 cvar_t *gl_lerpmodels;
 cvar_t *gl_lefthand;
 cvar_t *gl_farsee;
@@ -145,7 +144,7 @@ R_CullBox(vec3_t mins, vec3_t maxs)
 {
 	int i;
 
-	if (gl_nocull->value)
+	if (!gl_cull->value)
 	{
 		return false;
 	}
@@ -1210,7 +1209,6 @@ R_Register(void)
 	gl_drawentities = Cvar_Get("gl_drawentities", "1", 0);
 	gl_drawworld = Cvar_Get("gl_drawworld", "1", 0);
 	gl_novis = Cvar_Get("gl_novis", "0", 0);
-	gl_nocull = Cvar_Get("gl_nocull", "0", 0);
 	gl_lerpmodels = Cvar_Get("gl_lerpmodels", "1", 0);
 	gl_speeds = Cvar_Get("gl_speeds", "0", 0);
 
@@ -1587,7 +1585,6 @@ R_Init(void *hinstance, void *hWnd)
 	{
 		gl_config.anisotropic = true;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gl_config.max_anisotropy);
-		Cvar_SetValue("gl_anisotropic_avail", gl_config.max_anisotropy);
 
 		VID_Printf(PRINT_ALL, "%ux\n", (int)gl_config.max_anisotropy);
 	}
@@ -1595,7 +1592,6 @@ R_Init(void *hinstance, void *hWnd)
 	{
 		gl_config.anisotropic = false;
 		gl_config.max_anisotropy = 0.0;
-		Cvar_SetValue("gl_anisotropic_avail", 0.0);
 
 		VID_Printf(PRINT_ALL, "Failed\n");
 	}
