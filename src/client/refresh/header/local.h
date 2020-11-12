@@ -82,8 +82,6 @@
 #define REF_VERSION "Yamagi Quake II OpenGL Refresher (+Pathtracing)"
 #define MAX_LBM_HEIGHT 480
 #define BACKFACE_EPSILON 0.01
-#define DYNAMIC_LIGHT_WIDTH 128
-#define DYNAMIC_LIGHT_HEIGHT 128
 #define LIGHTMAP_BYTES 4
 #define MAX_LIGHTMAPS 128
 #define GL_LIGHTMAP_FORMAT GL_RGBA
@@ -97,11 +95,8 @@
 /* fall over */
 #define ROLL 2
 
-#define STRINGIFY2(x) #x
-#define STRINGIFY(x) STRINGIFY2(x)
-#define CHECK_GL_ERROR() { GLuint err = glGetError(); if (err != GL_NO_ERROR) {	VID_Printf(PRINT_ALL, "OpenGL Error at " __FILE__ " line " STRINGIFY(__LINE__) ": glGetError() = 0x%x\n", err); } }
+#define CHECK_GL_ERROR() { GLuint err = glGetError(); if (err != GL_NO_ERROR) {	VID_Printf(PRINT_ALL, "OpenGL Error at %s line %d: glGetError() = 0x%x\n", __FILE__, __LINE__, err); } }
 
-char *strlwr(char *s);
 extern viddef_t vid;
 
 /*

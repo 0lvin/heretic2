@@ -46,9 +46,6 @@
 
 #define GL_SHARED_TEXTURE_PALETTE_EXT 0x81FB
 
-#define GL_TEXTURE0_SGIS 0x835E
-#define GL_TEXTURE1_SGIS 0x835F
-
 #define GL_TEXTURE0_ARB 0x84C0
 #define GL_TEXTURE1_ARB 0x84C1
 #define GL_TEXTURE2_ARB 0x84C2
@@ -134,7 +131,14 @@
 #define GL_CLAMP_TO_BORDER 0x812D
 #endif
 
-/* QGL main functions */
+#ifdef _WIN32
+GLAPI void APIENTRY glActiveTextureARB( GLenum texture );
+GLAPI void APIENTRY glClientActiveTextureARB( GLenum texture );
+GLAPI void APIENTRY glMultiTexCoord2fARB(GLenum target, GLfloat s, GLfloat t);
+GLAPI void APIENTRY glMultiTexCoord2fvARB(GLenum target, const GLfloat *v);
+#endif
+
+// =======================================================================
 
 /*
  * This is responsible for setting up our QGL extension pointers
