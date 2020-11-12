@@ -1523,12 +1523,9 @@ R_Init(void *hinstance, void *hWnd)
 
 	if (strstr(gl_config.extensions_string, "GL_ARB_multitexture"))
 	{
-		qglMultiTexCoord2fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord2fARB");
-		qglMultiTexCoord2fvARB = (void *)GLimp_GetProcAddress("glMultiTexCoord2fvARB");
 		qglMultiTexCoord3fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord3fARB");
 		qglMultiTexCoord4fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord4fARB");
 		qglActiveTextureARB = (void *)GLimp_GetProcAddress("glActiveTextureARB");
-		qglClientActiveTextureARB = (void *)GLimp_GetProcAddress("glClientActiveTextureARB");
 	}
 
 	// --------
