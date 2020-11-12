@@ -486,7 +486,7 @@ CL_InitLocal(void)
 	cl_predict = Cvar_Get("cl_predict", "1", 0);
 	cl_maxfps = Cvar_Get("cl_maxfps", "60", CVAR_ARCHIVE);
 	cl_drawfps = Cvar_Get("cl_drawfps", "0", CVAR_ARCHIVE);
-	cl_async = Cvar_Get("cl_async", "0", CVAR_ARCHIVE);
+	cl_async = Cvar_Get("cl_async", "1", CVAR_ARCHIVE);
 
 	cl_upspeed = Cvar_Get("cl_upspeed", "200", 0);
 	cl_forwardspeed = Cvar_Get("cl_forwardspeed", "200", 0);
@@ -707,14 +707,20 @@ CL_UpdateWindowedMouse(void)
 	}
 }
 
+qboolean GLimp_VsyncEnabled(void);
+int GLimp_GetRefreshRate(void);
+
 void
 CL_Frame(int msec)
 {
+	int nfps;
+	int rfps;
+
 	static int lasttimecalled;
 
-	static int packetdelta = 0;
-	static int renderdelta = 0;
-	static int miscdelta = 0;
+	static int packetdelta = 1000;
+	static int renderdelta = 1000;
+	static int miscdelta = 1000;
 
 	qboolean packetframe = true;
 	qboolean renderframe = true;
@@ -724,6 +730,24 @@ CL_Frame(int msec)
 	{
 		return;
 	}
+
+	// Target render frame rate
+	if (GLimp_VsyncEnabled())
+	{
+		rfps = GLimp_GetRefreshRate();
+
+		if (rfps > gl_maxfps->value)
+		{
+			rfps = (int)gl_maxfps->value;
+		}
+	}
+	else
+	{
+		rfps = (int)gl_maxfps->value;
+	}
+
+	// The network framerate must not be higher then the render framerate
+	nfps = (cl_maxfps->value > rfps) ? rfps : cl_maxfps->value;
 
 	// Adjust deltas
 	packetdelta += msec;
@@ -764,7 +788,7 @@ CL_Frame(int msec)
 		if (cl_async->value)
 		{
 			// Network frames
-			if (packetdelta < (1000.0f / cl_maxfps->value))
+			if (packetdelta < (1000.0f / nfps))
 			{
 				packetframe = false;
 			}
@@ -774,7 +798,7 @@ CL_Frame(int msec)
 			}
 
 			// Render frames
-			if (renderdelta < (1000.0f / gl_maxfps->value))
+			if (renderdelta < (1000.0f / rfps))
 			{
 				renderframe = false;
 			}
@@ -788,7 +812,7 @@ CL_Frame(int msec)
 		else
 		{
 			// Cap frames at gl_maxfps
-			if (renderdelta < (1000.0f / gl_maxfps->value))
+			if (renderdelta < (1000.0f / rfps))
 			{
 				renderframe = false;
 				packetframe = false;
@@ -859,7 +883,7 @@ CL_Frame(int msec)
 			VID_CheckChanges();
 		}
 
-		CL_PredictMovement(); // TODO: Make called function async
+		CL_PredictMovement();
 
 		if (!cl.refresh_prepped && (cls.state == ca_active))
 		{
