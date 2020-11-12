@@ -1368,7 +1368,6 @@ R_VersionOfGLIsGreaterThanOrEqualTo(int major, int minor)
 int
 R_Init(void *hinstance, void *hWnd)
 {
-#define GET_PROC_ADDRESS(x) q##x = ( void * ) GLimp_GetProcAddress ( #x ); if (!q##x) { VID_Printf(PRINT_ALL, #x " was not found!\n"); return -1; }
 	int err;
 	int j;
 	extern float r_turbsin[256];
@@ -1580,6 +1579,28 @@ R_Init(void *hinstance, void *hWnd)
 
 	// ----
 
+	/* Multi texturing combine */
+	VID_Printf(PRINT_ALL, " - Multi texturing combine: ");
+
+	if (strstr(gl_config.extensions_string, "GL_ARB_texture_env_combine") && gl_config.multitexture)
+	{
+		if (gl_mtexcombine->value)
+		{
+			gl_config.mtexcombine = true;
+			VID_Printf(PRINT_ALL, "Okay\n");
+		}
+		else
+		{
+			VID_Printf(PRINT_ALL, "Disabled\n");
+		}
+	}
+	else
+	{
+		VID_Printf(PRINT_ALL, "Failed\n");
+	}
+
+	// --------
+
 	/* Anisotropic */
 	VID_Printf(PRINT_ALL, " - Anisotropic: ");
 
@@ -1618,29 +1639,9 @@ R_Init(void *hinstance, void *hWnd)
 
 	// ----
 
-	/* Multi texturing combine */
-	VID_Printf(PRINT_ALL, " - Multi texturing combine: ");
-
-	if (strstr(gl_config.extensions_string, "GL_ARB_texture_env_combine"))
-	{
-		if (gl_mtexcombine->value)
-		{
-			gl_config.mtexcombine = true;
-			VID_Printf(PRINT_ALL, "Okay");
-		}
-		else
-		{
-			VID_Printf(PRINT_ALL, "Disabled\n");
-		}
-	}
-	else
-	{
-		VID_Printf(PRINT_ALL, "Failed\n");
-	}
-
-	// --------
-
 	/* ------------------------- GL_ARB_shader_objects ------------------------- */
+
+#define GET_PROC_ADDRESS(x) q##x = ( void * ) GLimp_GetProcAddress ( #x ); if (!q##x) { VID_Printf(PRINT_ALL, #x " was not found!\n"); return -1; }
 
 	gl_config.shaders = false;
 
@@ -1953,8 +1954,8 @@ R_Init(void *hinstance, void *hWnd)
 		GET_PROC_ADDRESS(glDrawRangeElements);
 		GET_PROC_ADDRESS(glTexImage3D);
 		GET_PROC_ADDRESS(glTexSubImage3D);
-
 	}
+#undef GET_PROC_ADDRESS
 
 	CHECK_GL_ERROR();
 
@@ -1967,15 +1968,7 @@ R_Init(void *hinstance, void *hWnd)
 
 	R_InitPathtracing();
 
-	err = glGetError();
-
-	if (err != GL_NO_ERROR)
-	{
-		VID_Printf(PRINT_ALL, "glGetError() = 0x%x\n", err);
-	}
-
 	return true;
-#undef GET_PROC_ADDRESS
 }
 
 void
