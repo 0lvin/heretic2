@@ -1,0 +1,147 @@
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 2016 Daniel Gibson
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Local header for the OpenGL3 refresher.
+ *
+ * =======================================================================
+ */
+
+
+#ifndef SRC_CLIENT_REFRESH_GL3_HEADER_LOCAL_H_
+#define SRC_CLIENT_REFRESH_GL3_HEADER_LOCAL_H_
+
+#ifdef IN_IDE_PARSER
+  // this is just a hack to get proper auto-completion in IDEs:
+  // using system headers for their parsers/indexers but glad for real build
+  // (in glad glFoo is just a #define to glad_glFoo or sth, which screws up autocompletion)
+  // (you may have to configure your IDE to #define IN_IDE_PARSER, but not for building!)
+  #define GL_GLEXT_PROTOTYPES 1
+  #include <GL/gl.h>
+  #include <GL/glext.h>
+#else
+  #include <glad/glad.h>
+#endif
+
+#include "../../ref_shared.h"
+
+#define STUB(msg) \
+	R_Printf(PRINT_ALL, "STUB: %s() %s\n", __FUNCTION__, msg )
+
+typedef struct
+{
+	const char *renderer_string;
+	const char *vendor_string;
+	const char *version_string;
+	const char *glsl_version_string;
+	//const char *extensions_string; deprecated in GL3
+
+	int major_version;
+	int minor_version;
+
+	// ----
+
+	qboolean anisotropic; // is GL_EXT_texture_filter_anisotropic supported?
+	qboolean debug_output; // is GL_ARB_debug_output supported?
+
+	// ----
+
+	float max_anisotropy;
+} gl3config_t;
+
+typedef struct
+{
+	// TODO: what of this do we need?
+	float inverse_intensity;
+	qboolean fullscreen;
+
+	int prev_mode;
+
+	unsigned char *d_16to8table;
+
+	int lightmap_textures;
+
+	int currenttextures[2];
+	int currenttmu;
+	//GLenum currenttarget;
+
+	//float camera_separation;
+	//enum stereo_modes stereo_mode;
+
+	//qboolean hwgamma;
+} gl3state_t;
+
+
+typedef struct gl3image_s
+{
+	// TODO: what of this is actually needed?
+	char name[MAX_QPATH];               /* game path, including extension */
+	imagetype_t type;
+	int width, height;                  /* source image */
+	int upload_width, upload_height;    /* after power of two and picmip */
+	int registration_sequence;          /* 0 = free */
+	struct msurface_s *texturechain;    /* for sort-by-texture world drawing */
+	int texnum;                         /* gl texture binding */
+	float sl, tl, sh, th;               /* 0,0 - 1,1 unless part of the scrap */
+	qboolean scrap;
+	qboolean has_alpha;
+
+	qboolean paletted;
+} gl3image_t;
+
+extern gl3config_t gl3config;
+extern gl3state_t gl3state;
+
+extern viddef_t vid;
+
+extern int gl_filter_min;
+extern int gl_filter_max;
+
+extern int GL3_PrepareForWindow(void);
+extern int GL3_InitContext(void* win);
+extern void GL3_EndFrame(void);
+extern void GL3_ShutdownWindow(qboolean contextOnly);
+
+extern void GL3_ScreenShot(void);
+extern void GL3_SetDefaultState(void);
+
+extern void GL3_Mod_Modellist_f(void);
+
+extern void GL3_Draw_InitLocal(void);
+extern int GL3_Draw_GetPalette(void);
+
+extern gl3image_t * GL3_FindImage(char *name, imagetype_t type);
+extern void GL3_TextureMode(char *string);
+extern void GL3_ImageList_f(void);
+
+extern cvar_t *gl_msaa_samples;
+extern cvar_t *gl_swapinterval;
+extern cvar_t *gl_retexturing;
+extern cvar_t *vid_fullscreen;
+extern cvar_t *gl_mode;
+extern cvar_t *gl_customwidth;
+extern cvar_t *gl_customheight;
+extern cvar_t *vid_gamma;
+extern cvar_t *gl_anisotropic;
+
+extern cvar_t *gl3_debugcontext;
+
+#endif /* SRC_CLIENT_REFRESH_GL3_HEADER_LOCAL_H_ */
