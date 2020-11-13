@@ -302,7 +302,7 @@ R_PathtracingIsSupportedByGL(void)
 static void
 PrintMissingGLFeaturesMessageAndDisablePathtracing()
 {
-	VID_Printf(PRINT_ALL, "ERROR: The OpenGL features necessary for pathtracing are not available.\n");
+	ri.Con_Printf(PRINT_ALL, "ERROR: The OpenGL features necessary for pathtracing are not available.\n");
 
 	if (gl_pt_enable)
 		Cvar_ForceSet(gl_pt_enable->name, "0");
@@ -1731,7 +1731,7 @@ AddAliasModel(entity_t *entity, model_t *model)
 	if ((entity->frame >= alias_header->num_frames) ||
 		(entity->frame < 0))
 	{
-		VID_Printf(PRINT_DEVELOPER, "Pathtracer: AddAliasModel %s: no such frame %d\n",
+		ri.Con_Printf(PRINT_DEVELOPER, "Pathtracer: AddAliasModel %s: no such frame %d\n",
 				model->name, entity->frame);
 		entity->frame = 0;
 		entity->oldframe = 0;
@@ -1740,7 +1740,7 @@ AddAliasModel(entity_t *entity, model_t *model)
 	if ((entity->oldframe >= alias_header->num_frames) ||
 		(entity->oldframe < 0))
 	{
-		VID_Printf(PRINT_DEVELOPER, "Pathtracer: AddAliasModel %s: no such oldframe %d\n",
+		ri.Con_Printf(PRINT_DEVELOPER, "Pathtracer: AddAliasModel %s: no such oldframe %d\n",
 				model->name, entity->oldframe);
 		entity->frame = 0;
 		entity->oldframe = 0;
@@ -2277,7 +2277,7 @@ EnsureEntityLightDoesNotIntersectWalls(entitylight_t *entity)
 
 	if (!leaf || leaf->contents == CONTENTS_SOLID || leaf->cluster == -1)
 	{
-		VID_Printf(PRINT_DEVELOPER, "EnsureEntityLightDoesNotIntersectWalls: Entity's origin is within a wall.\n");
+		ri.Con_Printf(PRINT_DEVELOPER, "EnsureEntityLightDoesNotIntersectWalls: Entity's origin is within a wall.\n");
 		entity->radius = 0;
 		return;
 	}
@@ -2962,7 +2962,7 @@ R_UpdatePathtracerForCurrentFrame(void)
 	{
 		end_ms = Sys_Milliseconds();
 
-		VID_Printf(PRINT_ALL, "pt_stats: f=%7d, n=%7d, t=%7d, v=%7d, w=%7d, l=%7d, c=%7d, r=%7d\n", r_framecount, pt_num_nodes,
+		ri.Con_Printf(PRINT_ALL, "pt_stats: f=%7d, n=%7d, t=%7d, v=%7d, w=%7d, l=%7d, c=%7d, r=%7d\n", r_framecount, pt_num_nodes,
 						pt_num_triangles - pt_dynamic_triangles_offset, pt_num_vertices - pt_dynamic_vertices_offset, pt_written_nodes, pt_num_lights - pt_dynamic_lights_offset,
 						end_ms - start_ms, refresh_ms);
 	}
@@ -3165,7 +3165,7 @@ ParseEntityDictionary(char *data)
 
 		if (!data)
 		{
-			VID_Printf(ERR_DROP, "ParseEntityDictionary: EOF without closing brace\n");
+			ri.Con_Printf(ERR_DROP, "ParseEntityDictionary: EOF without closing brace\n");
 		}
 
 		Q_strlcpy(keyname, com_token, sizeof(keyname));
@@ -3175,12 +3175,12 @@ ParseEntityDictionary(char *data)
 
 		if (!data)
 		{
-			VID_Printf(ERR_DROP, "ParseEntityDictionary: EOF without closing brace\n");
+			ri.Con_Printf(ERR_DROP, "ParseEntityDictionary: EOF without closing brace\n");
 		}
 
 		if (com_token[0] == '}')
 		{
-			VID_Printf(ERR_DROP, "ParseEntityDictionary: closing brace without data\n");
+			ri.Con_Printf(ERR_DROP, "ParseEntityDictionary: closing brace without data\n");
 		}
 
 		if (!Q_stricmp(keyname, "classname"))
@@ -3265,7 +3265,7 @@ ParseStaticEntityLights(char *entitystring)
 
 		if (com_token[0] != '{')
 		{
-			VID_Printf(ERR_DROP, "ParseStaticEntityLights: found %s when expecting {\n", com_token);
+			ri.Con_Printf(ERR_DROP, "ParseStaticEntityLights: found %s when expecting {\n", com_token);
 			return;
 		}
 
@@ -3297,13 +3297,13 @@ R_PreparePathtracer(void)
 
 	if (r_worldmodel == NULL)
 	{
-		VID_Printf(PRINT_ALL, "R_PreparePathtracer: r_worldmodel is NULL!\n");
+		ri.Con_Printf(PRINT_ALL, "R_PreparePathtracer: r_worldmodel is NULL!\n");
 		return;
 	}
 
 	if (r_worldmodel->numnodes == 0)
 	{
-		VID_Printf(PRINT_ALL, "R_PreparePathtracer: r_worldmodel->numnodes is zero!\n");
+		ri.Con_Printf(PRINT_ALL, "R_PreparePathtracer: r_worldmodel->numnodes is zero!\n");
 		return;
 	}
 
@@ -3358,15 +3358,15 @@ R_PreparePathtracer(void)
 	if (gl_pt_static_entity_lights_enable->value)
 		ParseStaticEntityLights(Mod_EntityString());
 
-	VID_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: %d static entity light-emitters\n", pt_num_entitylights);
+	ri.Con_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: %d static entity light-emitters\n", pt_num_entitylights);
 
 	AddStaticLights();
 
-	VID_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: %d static trilights\n", pt_num_lights);
+	ri.Con_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: %d static trilights\n", pt_num_lights);
 
 	AddStaticBSP();
 
-	VID_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: Static BSP texture size is %dx%d\n", pt_bsp_texture_width, pt_bsp_texture_height);
+	ri.Con_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: Static BSP texture size is %dx%d\n", pt_bsp_texture_width, pt_bsp_texture_height);
 
 	UploadTextureBufferData(pt_trilights_buffer, pt_trilight_data, 0, pt_num_lights * 4 * sizeof(pt_trilight_data[0]));
 	UploadTextureBufferData(pt_lightref_buffer, pt_trilight_references, 0, pt_num_trilight_references * sizeof(pt_trilight_references[0]));
@@ -3421,7 +3421,7 @@ InitRandom(void)
 	byte *pic = NULL;
 	qboolean loaded = false;
 
-	VID_Printf(PRINT_DEVELOPER, "InitRandom: Random number lookup texture has %d layers.\n", num_layers);
+	ri.Con_Printf(PRINT_DEVELOPER, "InitRandom: Random number lookup texture has %d layers.\n", num_layers);
 
 	static GLushort texels[PT_RAND_TEXTURE_SIZE * 2];
 
@@ -3466,7 +3466,7 @@ InitRandom(void)
 		}
 		else
 		{
-			VID_Printf(PRINT_ALL, "InitRandom: Could not find blue noise texture image \"%s\".\n", image_name);
+			ri.Con_Printf(PRINT_ALL, "InitRandom: Could not find blue noise texture image \"%s\".\n", image_name);
 		}
 	}
 
@@ -3485,7 +3485,7 @@ PrintObjectInfoLog(GLhandleARB object)
 	{
 		info_log_buffer = (GLcharARB*)Z_Malloc(info_log_length * sizeof(GLcharARB));
 		qglGetInfoLogARB(object, info_log_length, NULL, info_log_buffer);
-		VID_Printf(PRINT_ALL, info_log_buffer);
+		ri.Con_Printf(PRINT_ALL, info_log_buffer);
 		Z_Free(info_log_buffer);
 	}
 }
@@ -3588,7 +3588,7 @@ CreateShaderPrograms(void)
 
 	if (status != GL_TRUE)
 	{
-		VID_Printf(PRINT_ALL, "R_InitPathtracing: Vertex shader failed to compile\n");
+		ri.Con_Printf(PRINT_ALL, "R_InitPathtracing: Vertex shader failed to compile\n");
 		PrintObjectInfoLog(vertex_shader);
 		return;
 	}
@@ -3601,7 +3601,7 @@ CreateShaderPrograms(void)
 
 	if (status != GL_TRUE)
 	{
-		VID_Printf(PRINT_ALL, "R_InitPathtracing: Fragment shader failed to compile\n");
+		ri.Con_Printf(PRINT_ALL, "R_InitPathtracing: Fragment shader failed to compile\n");
 		PrintObjectInfoLog(fragment_shader);
 		return;
 	}
@@ -3617,7 +3617,7 @@ CreateShaderPrograms(void)
 
 	if (status != GL_TRUE)
 	{
-		VID_Printf(PRINT_ALL, "R_InitPathtracing: Program failed to link\n");
+		ri.Con_Printf(PRINT_ALL, "R_InitPathtracing: Program failed to link\n");
 		PrintObjectInfoLog(pt_program_handle);
 		return;
 	}
@@ -3647,25 +3647,25 @@ CreateShaderPrograms(void)
 	qglUniform1iARB(qglGetUniformLocationARB(pt_program_handle, "bluenoise"), 			PT_TEXTURE_UNIT_BLUENOISE);
 	qglUniform1iARB(qglGetUniformLocationARB(pt_program_handle, "taa_world"), 			PT_TEXTURE_UNIT_TAA_WORLD);
 
-	VID_Printf(PRINT_DEVELOPER, "Pathtracer CreateShaderPrograms:\n");
+	ri.Con_Printf(PRINT_DEVELOPER, "Pathtracer CreateShaderPrograms:\n");
 
-	VID_Printf(PRINT_DEVELOPER, "diffuse_texture loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "diffuse_texture"));
-	VID_Printf(PRINT_DEVELOPER, "bsp_planes loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_planes"));
-	VID_Printf(PRINT_DEVELOPER, "bsp_branches loc              = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_branches"));
-	VID_Printf(PRINT_DEVELOPER, "tri_nodes0 loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes0"));
-	VID_Printf(PRINT_DEVELOPER, "tri_nodes1 loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes1"));
-	VID_Printf(PRINT_DEVELOPER, "tri_vertices loc              = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_vertices"));
-	VID_Printf(PRINT_DEVELOPER, "triangles loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "triangles"));
-	VID_Printf(PRINT_DEVELOPER, "tri_nodes0_prev loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes0_prev"));
-	VID_Printf(PRINT_DEVELOPER, "tri_nodes1_prev loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes1_prev"));
-	VID_Printf(PRINT_DEVELOPER, "tri_vertices_prev loc         = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_vertices_prev"));
-	VID_Printf(PRINT_DEVELOPER, "triangles_prev loc            = %d\n", qglGetUniformLocationARB(pt_program_handle, "triangles_prev"));
-	VID_Printf(PRINT_DEVELOPER, "lights loc                    = %d\n", qglGetUniformLocationARB(pt_program_handle, "lights"));
-	VID_Printf(PRINT_DEVELOPER, "lightrefs loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "lightrefs"));
-	VID_Printf(PRINT_DEVELOPER, "bsp_lightrefs loc             = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_lightrefs"));
-	VID_Printf(PRINT_DEVELOPER, "randtex loc                   = %d\n", qglGetUniformLocationARB(pt_program_handle, "randtex"));
-	VID_Printf(PRINT_DEVELOPER, "bluenoise loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "bluenoise"));
-	VID_Printf(PRINT_DEVELOPER, "taa_world loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "taa_world"));
+	ri.Con_Printf(PRINT_DEVELOPER, "diffuse_texture loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "diffuse_texture"));
+	ri.Con_Printf(PRINT_DEVELOPER, "bsp_planes loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_planes"));
+	ri.Con_Printf(PRINT_DEVELOPER, "bsp_branches loc              = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_branches"));
+	ri.Con_Printf(PRINT_DEVELOPER, "tri_nodes0 loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes0"));
+	ri.Con_Printf(PRINT_DEVELOPER, "tri_nodes1 loc                = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes1"));
+	ri.Con_Printf(PRINT_DEVELOPER, "tri_vertices loc              = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_vertices"));
+	ri.Con_Printf(PRINT_DEVELOPER, "triangles loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "triangles"));
+	ri.Con_Printf(PRINT_DEVELOPER, "tri_nodes0_prev loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes0_prev"));
+	ri.Con_Printf(PRINT_DEVELOPER, "tri_nodes1_prev loc           = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_nodes1_prev"));
+	ri.Con_Printf(PRINT_DEVELOPER, "tri_vertices_prev loc         = %d\n", qglGetUniformLocationARB(pt_program_handle, "tri_vertices_prev"));
+	ri.Con_Printf(PRINT_DEVELOPER, "triangles_prev loc            = %d\n", qglGetUniformLocationARB(pt_program_handle, "triangles_prev"));
+	ri.Con_Printf(PRINT_DEVELOPER, "lights loc                    = %d\n", qglGetUniformLocationARB(pt_program_handle, "lights"));
+	ri.Con_Printf(PRINT_DEVELOPER, "lightrefs loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "lightrefs"));
+	ri.Con_Printf(PRINT_DEVELOPER, "bsp_lightrefs loc             = %d\n", qglGetUniformLocationARB(pt_program_handle, "bsp_lightrefs"));
+	ri.Con_Printf(PRINT_DEVELOPER, "randtex loc                   = %d\n", qglGetUniformLocationARB(pt_program_handle, "randtex"));
+	ri.Con_Printf(PRINT_DEVELOPER, "bluenoise loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "bluenoise"));
+	ri.Con_Printf(PRINT_DEVELOPER, "taa_world loc                 = %d\n", qglGetUniformLocationARB(pt_program_handle, "taa_world"));
 
 	CHECK_GL_ERROR();
 
@@ -3686,20 +3686,20 @@ CreateShaderPrograms(void)
 	pt_shadow_ray_node_offset_loc = qglGetUniformLocationARB(pt_program_handle, "shadow_ray_node_offset");
 	pt_rand_tex_layer_loc = qglGetUniformLocationARB(pt_program_handle, "rand_tex_layer");
 
-	VID_Printf(PRINT_DEVELOPER, "pt_frame_counter_loc          = %d\n", pt_frame_counter_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_entity_to_world_loc        = %d\n", pt_entity_to_world_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_ao_radius_loc              = %d\n", pt_ao_radius_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_ao_color_loc               = %d\n", pt_ao_color_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_bounce_factor_loc          = %d\n", pt_bounce_factor_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_view_origin_loc            = %d\n", pt_view_origin_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_previous_view_origin_loc   = %d\n", pt_previous_view_origin_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_current_world_matrix_loc   = %d\n", pt_current_world_matrix_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_previous_world_matrix_loc  = %d\n", pt_previous_world_matrix_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_exposure_loc               = %d\n", pt_exposure_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_gamma_loc                  = %d\n", pt_gamma_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_bump_factor_loc            = %d\n", pt_bump_factor_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_shadow_ray_node_offset_loc = %d\n", pt_shadow_ray_node_offset_loc);
-	VID_Printf(PRINT_DEVELOPER, "pt_rand_tex_layer_loc         = %d\n", pt_rand_tex_layer_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_frame_counter_loc          = %d\n", pt_frame_counter_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_entity_to_world_loc        = %d\n", pt_entity_to_world_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_ao_radius_loc              = %d\n", pt_ao_radius_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_ao_color_loc               = %d\n", pt_ao_color_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_bounce_factor_loc          = %d\n", pt_bounce_factor_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_view_origin_loc            = %d\n", pt_view_origin_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_previous_view_origin_loc   = %d\n", pt_previous_view_origin_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_current_world_matrix_loc   = %d\n", pt_current_world_matrix_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_previous_world_matrix_loc  = %d\n", pt_previous_world_matrix_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_exposure_loc               = %d\n", pt_exposure_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_gamma_loc                  = %d\n", pt_gamma_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_bump_factor_loc            = %d\n", pt_bump_factor_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_shadow_ray_node_offset_loc = %d\n", pt_shadow_ray_node_offset_loc);
+	ri.Con_Printf(PRINT_DEVELOPER, "pt_rand_tex_layer_loc         = %d\n", pt_rand_tex_layer_loc);
 
 	qglUseProgramObjectARB(0);
 
@@ -3711,19 +3711,19 @@ RecompileShaderPrograms(void)
 {
 	FreeShaderPrograms();
 	CreateShaderPrograms();
-	VID_Printf(PRINT_ALL, "Shaders recompiled.\n");
+	ri.Con_Printf(PRINT_ALL, "Shaders recompiled.\n");
 }
 
 static void
 PrintStaticInfo(void)
 {
-	VID_Printf(PRINT_ALL, "%6d trilight references\n", pt_num_trilight_references);
-	VID_Printf(PRINT_ALL, "%6d clusters\n", pt_num_clusters);
-	VID_Printf(PRINT_ALL, "%6d used nonstatic lightstyles\n", pt_num_used_nonstatic_lightstyles);
-	VID_Printf(PRINT_ALL, "%6d static vertices\n", pt_dynamic_vertices_offset);
-	VID_Printf(PRINT_ALL, "%6d static triangles\n", pt_dynamic_triangles_offset);
-	VID_Printf(PRINT_ALL, "%6d static entity lights\n", pt_dynamic_entitylights_offset);
-	VID_Printf(PRINT_ALL, "%6d static trilights\n", pt_dynamic_lights_offset);
+	ri.Con_Printf(PRINT_ALL, "%6d trilight references\n", pt_num_trilight_references);
+	ri.Con_Printf(PRINT_ALL, "%6d clusters\n", pt_num_clusters);
+	ri.Con_Printf(PRINT_ALL, "%6d used nonstatic lightstyles\n", pt_num_used_nonstatic_lightstyles);
+	ri.Con_Printf(PRINT_ALL, "%6d static vertices\n", pt_dynamic_vertices_offset);
+	ri.Con_Printf(PRINT_ALL, "%6d static triangles\n", pt_dynamic_triangles_offset);
+	ri.Con_Printf(PRINT_ALL, "%6d static entity lights\n", pt_dynamic_entitylights_offset);
+	ri.Con_Printf(PRINT_ALL, "%6d static trilights\n", pt_dynamic_lights_offset);
 }
 
 void
