@@ -712,7 +712,7 @@ R_DrawInlineBModel(void)
 	dlight_t *lt;
 
 	/* calculate dynamic lighting for bmodel */
-	if (!gl_flashblend->value)
+	if (!gl1_flashblend->value)
 	{
 		lt = r_newrefdef.dlights;
 
@@ -1075,7 +1075,7 @@ R_MarkLeaves(void)
 
 	/* development aid to let you run around
 	   and see exactly where the pvs ends */
-	if (gl_lockpvs->value)
+	if (r_lockpvs->value)
 	{
 		return;
 	}

@@ -86,7 +86,7 @@ cvar_t *gl_msaa_samples;
 cvar_t *gl_swapinterval;
 cvar_t *gl_retexturing;
 cvar_t *vid_fullscreen;
-cvar_t *gl_mode;
+cvar_t *r_mode;
 cvar_t *r_customwidth;
 cvar_t *r_customheight;
 cvar_t *vid_gamma;
@@ -99,7 +99,7 @@ cvar_t *gl3_particle_fade_factor;
 cvar_t *gl3_particle_square;
 
 cvar_t *gl_lefthand;
-cvar_t *gl_farsee;
+cvar_t *r_farsee;
 
 cvar_t *gl3_intensity;
 cvar_t *gl3_intensity_2D;
@@ -111,7 +111,7 @@ cvar_t *r_drawentities;
 cvar_t *r_drawworld;
 cvar_t *gl_nolerp_list;
 cvar_t *gl_nobind;
-cvar_t *gl_lockpvs;
+cvar_t *r_lockpvs;
 cvar_t *r_novis;
 cvar_t *r_speeds;
 cvar_t *gl_finish;
@@ -119,7 +119,7 @@ cvar_t *gl_finish;
 cvar_t *gl_cull;
 cvar_t *gl_zfix;
 cvar_t *r_fullbright;
-cvar_t *gl_modulate;
+cvar_t *r_modulate;
 cvar_t *gl_lightmap;
 cvar_t *gl_shadows;
 // no gl_stencilshadows, always use stencil (if available)
@@ -195,14 +195,14 @@ static void
 GL3_Register(void)
 {
 	gl_lefthand = ri.Cvar_Get("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
-	gl_farsee = ri.Cvar_Get("gl_farsee", "0", CVAR_LATCH | CVAR_ARCHIVE);
+	r_farsee = ri.Cvar_Get("gl_farsee", "0", CVAR_LATCH | CVAR_ARCHIVE);
 
 	gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
 	gl_swapinterval = ri.Cvar_Get("gl_swapinterval", "1", CVAR_ARCHIVE);
 	gl_msaa_samples = ri.Cvar_Get ( "gl_msaa_samples", "0", CVAR_ARCHIVE );
 	gl_retexturing = ri.Cvar_Get("gl_retexturing", "1", CVAR_ARCHIVE);
 	gl3_debugcontext = ri.Cvar_Get("gl3_debugcontext", "0", 0);
-	gl_mode = ri.Cvar_Get("gl_mode", "4", CVAR_ARCHIVE);
+	r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
 	r_customwidth = ri.Cvar_Get("r_customwidth", "1024", CVAR_ARCHIVE);
 	r_customheight = ri.Cvar_Get("r_customheight", "768", CVAR_ARCHIVE);
 	gl3_particle_size = ri.Cvar_Get("gl3_particle_size", "40", CVAR_ARCHIVE);
@@ -232,11 +232,11 @@ GL3_Register(void)
 	gl_lightmap = ri.Cvar_Get("gl_lightmap", "0", 0);
 	gl_shadows = ri.Cvar_Get("gl_shadows", "0", CVAR_ARCHIVE);
 
-	gl_modulate = ri.Cvar_Get("gl_modulate", "1", CVAR_ARCHIVE);
+	r_modulate = ri.Cvar_Get("gl_modulate", "1", CVAR_ARCHIVE);
 	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	r_clear = ri.Cvar_Get("r_clear", "0", 0);
 	gl_cull = ri.Cvar_Get("gl_cull", "1", 0);
-	gl_lockpvs = ri.Cvar_Get("gl_lockpvs", "0", 0);
+	r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 0);
 	r_novis = ri.Cvar_Get("r_novis", "0", 0);
 	r_speeds = ri.Cvar_Get("r_speeds", "0", 0);
 	gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
@@ -263,7 +263,7 @@ GL3_Register(void)
 	gl_particle_att_c = ri.Cvar_Get("gl_particle_att_c", "0.01", CVAR_ARCHIVE);
 
 	//gl_modulate = ri.Cvar_Get("gl_modulate", "1", CVAR_ARCHIVE);
-	//gl_mode = ri.Cvar_Get("gl_mode", "4", CVAR_ARCHIVE);
+	//r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
 	//gl_lightmap = ri.Cvar_Get("gl_lightmap", "0", 0);
 	//gl_shadows = ri.Cvar_Get("gl_shadows", "0", CVAR_ARCHIVE);
 	//gl_stencilshadow = ri.Cvar_Get("gl_stencilshadow", "0", CVAR_ARCHIVE);
@@ -278,13 +278,13 @@ GL3_Register(void)
 	r_clear = ri.Cvar_Get("r_clear", "0", 0);
 //	gl_cull = ri.Cvar_Get("gl_cull", "1", 0);
 	gl_polyblend = ri.Cvar_Get("gl_polyblend", "1", 0);
-	//gl_flashblend = ri.Cvar_Get("gl_flashblend", "0", 0);
+	//gl1_flashblend = ri.Cvar_Get("gl1_flashblend", "0", 0);
 
 	//gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
 	gl_texturealphamode = ri.Cvar_Get("gl_texturealphamode", "default", CVAR_ARCHIVE);
 	gl_texturesolidmode = ri.Cvar_Get("gl_texturesolidmode", "default", CVAR_ARCHIVE);
 	//gl_anisotropic = ri.Cvar_Get("gl_anisotropic", "0", CVAR_ARCHIVE);
-	//gl_lockpvs = ri.Cvar_Get("gl_lockpvs", "0", 0);
+	//r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 0);
 
 	//gl_palettedtexture = ri.Cvar_Get("gl_palettedtexture", "0", CVAR_ARCHIVE); NOPE.
 	gl_pointparameters = ri.Cvar_Get("gl_pointparameters", "1", CVAR_ARCHIVE);
@@ -364,23 +364,23 @@ GL3_SetMode(void)
 	fullscreen = (int)vid_fullscreen->value;
 
 	vid_fullscreen->modified = false;
-	gl_mode->modified = false;
+	r_mode->modified = false;
 
 	/* a bit hackish approach to enable custom resolutions:
 	   Glimp_SetMode needs these values set for mode -1 */
 	vid.width = r_customwidth->value;
 	vid.height = r_customheight->value;
 
-	if ((err = SetMode_impl(&vid.width, &vid.height, gl_mode->value,
+	if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value,
 					 fullscreen)) == rserr_ok)
 	{
-		if (gl_mode->value == -1)
+		if (r_mode->value == -1)
 		{
 			gl3state.prev_mode = 4; /* safe default for custom mode */
 		}
 		else
 		{
-			gl3state.prev_mode = gl_mode->value;
+			gl3state.prev_mode = r_mode->value;
 		}
 	}
 	else
@@ -391,7 +391,7 @@ GL3_SetMode(void)
 			vid_fullscreen->modified = false;
 			R_Printf(PRINT_ALL, "ref_gl3::GL3_SetMode() - fullscreen unavailable in this mode\n");
 
-			if ((err = SetMode_impl(&vid.width, &vid.height, gl_mode->value, 0)) == rserr_ok)
+			if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
 			{
 				return true;
 			}
@@ -406,20 +406,20 @@ GL3_SetMode(void)
 				ri.Cvar_SetValue("gl_msaa_samples", 0.0f);
 				gl_msaa_samples->modified = false;
 
-				if ((err = SetMode_impl(&vid.width, &vid.height, gl_mode->value, 0)) == rserr_ok)
+				if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
 				{
 					return true;
 				}
 			}
-			if(gl_mode->value == gl3state.prev_mode)
+			if(r_mode->value == gl3state.prev_mode)
 			{
 				// trying again would result in a crash anyway, give up already
 				// (this would happen if your initing fails at all and your resolution already was 640x480)
 				return false;
 			}
 
-			ri.Cvar_SetValue("gl_mode", gl3state.prev_mode);
-			gl_mode->modified = false;
+			ri.Cvar_SetValue("r_mode", gl3state.prev_mode);
+			r_mode->modified = false;
 		}
 
 		/* try setting it back to something safe */
@@ -1242,7 +1242,7 @@ SetupGL(void)
 	/* set up projection matrix (eye coordinates -> clip coordinates) */
 	{
 		float screenaspect = (float)gl3_newrefdef.width / gl3_newrefdef.height;
-		float dist = (gl_farsee->value == 0) ? 4096.0f : 8192.0f;
+		float dist = (r_farsee->value == 0) ? 4096.0f : 8192.0f;
 		gl3_projectionMatrix = GL3_MYgluPerspective(gl3_newrefdef.fov_y, screenaspect, 4, dist);
 	}
 
@@ -1446,7 +1446,7 @@ GL3_RenderView(refdef_t *fd)
 
 	GL3_DrawEntitiesOnList();
 
-	// kick the silly gl_flashblend poly lights
+	// kick the silly gl1_flashblend poly lights
 	// GL3_RenderDlights();
 
 	GL3_DrawParticles();
@@ -1608,7 +1608,7 @@ void
 GL3_BeginFrame(float camera_separation)
 {
 	/* change modes if necessary */
-	if (gl_mode->modified)
+	if (r_mode->modified)
 	{
 		vid_fullscreen->modified = true;
 	}

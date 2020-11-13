@@ -172,7 +172,7 @@ extern int r_viewcluster, r_viewcluster2, r_oldviewcluster, r_oldviewcluster2;
 
 extern cvar_t *r_norefresh;
 extern cvar_t *gl_lefthand;
-extern cvar_t *gl_farsee;
+extern cvar_t *r_farsee;
 extern cvar_t *r_drawentities;
 extern cvar_t *r_drawworld;
 extern cvar_t *r_speeds;
@@ -193,7 +193,7 @@ extern cvar_t *gl_particle_att_a;
 extern cvar_t *gl_particle_att_b;
 extern cvar_t *gl_particle_att_c;
 
-extern cvar_t *gl_mode;
+extern cvar_t *r_mode;
 extern cvar_t *r_customwidth;
 extern cvar_t *r_customheight;
 
@@ -216,8 +216,8 @@ extern cvar_t *gl_zfix;
 extern cvar_t *r_clear;
 extern cvar_t *gl_cull;
 extern cvar_t *gl_polyblend;
-extern cvar_t *gl_flashblend;
-extern cvar_t *gl_modulate;
+extern cvar_t *gl1_flashblend;
+extern cvar_t *r_modulate;
 extern cvar_t *gl_drawbuffer;
 extern cvar_t *gl_swapinterval;
 extern cvar_t *gl_anisotropic;
@@ -225,7 +225,7 @@ extern cvar_t *gl_texturemode;
 extern cvar_t *gl_texturealphamode;
 extern cvar_t *gl_texturesolidmode;
 extern cvar_t *gl_saturatelighting;
-extern cvar_t *gl_lockpvs;
+extern cvar_t *r_lockpvs;
 extern cvar_t *gl_msaa_samples;
 
 extern cvar_t *vid_fullscreen;
