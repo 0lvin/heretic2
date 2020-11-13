@@ -108,6 +108,7 @@ CreateShaderProgram(int numShaders, const GLuint* shaders)
 	glBindAttribLocation(shaderProgram, GL3_ATTRIB_POSITION, "position");
 	glBindAttribLocation(shaderProgram, GL3_ATTRIB_TEXCOORD, "texCoord");
 	glBindAttribLocation(shaderProgram, GL3_ATTRIB_LMTEXCOORD, "lmTexCoord");
+	glBindAttribLocation(shaderProgram, GL3_ATTRIB_COLOR, "vertColor");
 
 	// the following line is not necessary/implicit (as there's only one output)
 	// glBindFragDataLocation(shaderProgram, 0, "outColor"); XXX would this even be here?
@@ -258,6 +259,7 @@ static const char* vertexCommon3D = MULTILINE_STRING(#version 150\n
 		in vec3 position;   // GL3_ATTRIB_POSITION
 		in vec2 texCoord;   // GL3_ATTRIB_TEXCOORD
 		in vec2 lmTexCoord; // GL3_ATTRIB_LMTEXCOORD
+		in vec4 vertColor;  // GL3_ATTRIB_COLOR
 
 		out vec2 passTexCoord;
 
@@ -266,6 +268,7 @@ static const char* vertexCommon3D = MULTILINE_STRING(#version 150\n
 		{
 			mat4 transProj;
 			mat4 transModelView; // TODO: or maybe transViewProj and transModel ??
+			vec2 lmOffset;
 			float scroll; // for SURF_FLOWING
 			float time;
 			float alpha;
@@ -292,6 +295,7 @@ static const char* fragmentCommon3D = MULTILINE_STRING(#version 150\n
 		{
 			mat4 transProj;
 			mat4 transModelView; // TODO: or maybe transViewProj and transModel ??
+			vec2 lmOffset;
 			float scroll; // for SURF_FLOWING
 			float time;
 			float alpha;
@@ -309,6 +313,18 @@ static const char* vertexSrc3D = MULTILINE_STRING(
 		}
 );
 
+static const char* vertexSrc3Dlm = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from vertexCommon3D
+
+		void main()
+		{
+			//passTexCoord = texCoord;
+			passTexCoord = lmTexCoord-lmOffset;
+			gl_Position = transProj * transModelView * vec4(position, 1.0);
+		}
+);
+
 static const char* fragmentSrc3D = MULTILINE_STRING(
 
 		// it gets attributes and uniforms from fragmentCommon3D
@@ -320,6 +336,77 @@ static const char* fragmentSrc3D = MULTILINE_STRING(
 			vec4 texel = texture(tex, passTexCoord);
 
 			// TODO: something about GL_BLEND vs GL_ALPHATEST etc
+
+			// apply gamma correction and intensity
+			texel.rgb *= intensity;
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+			outColor.a = texel.a*alpha; // I think alpha shouldn't be modified by gamma and intensity
+		}
+);
+
+static const char* fragmentSrc3Dcolor = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from fragmentCommon3D
+
+		void main()
+		{
+			vec4 texel = color;
+
+			// apply gamma correction and intensity
+			// texel.rgb *= intensity; TODO: use intensity here? (this is used for beams)
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+			outColor.a = texel.a*alpha; // I think alpha shouldn't be modified by gamma and intensity
+		}
+);
+
+static const char* fragmentSrc3Dsky = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from fragmentCommon3D
+
+		uniform sampler2D tex;
+
+		void main()
+		{
+			vec4 texel = texture(tex, passTexCoord);
+
+			// TODO: something about GL_BLEND vs GL_ALPHATEST etc
+
+			// apply gamma correction
+			// texel.rgb *= intensity; // TODO: really no intensity for sky?
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+			outColor.a = texel.a*alpha; // I think alpha shouldn't be modified by gamma and intensity
+		}
+);
+
+static const char* fragmentSrc3Dsprite = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from fragmentCommon3D
+
+		uniform sampler2D tex;
+
+		void main()
+		{
+			vec4 texel = texture(tex, passTexCoord);
+
+			// apply gamma correction and intensity
+			texel.rgb *= intensity;
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+			outColor.a = texel.a*alpha; // I think alpha shouldn't be modified by gamma and intensity
+		}
+);
+
+static const char* fragmentSrc3DspriteAlpha = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from fragmentCommon3D
+
+		uniform sampler2D tex;
+
+		void main()
+		{
+			vec4 texel = texture(tex, passTexCoord);
+
+			if(texel.a <= 0.666)
+				discard;
 
 			// apply gamma correction and intensity
 			texel.rgb *= intensity;
@@ -351,6 +438,107 @@ static const char* vertexSrc3Dflow = MULTILINE_STRING(
 		{
 			passTexCoord = texCoord + vec2(0, scroll);
 			gl_Position = transProj * transModelView * vec4(position, 1.0);
+		}
+);
+
+static const char* vertexSrcAlias = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from vertexCommon3D
+
+		out vec4 passColor;
+
+		void main()
+		{
+			passColor = vertColor;
+			passTexCoord = texCoord;
+			gl_Position = transProj * transModelView * vec4(position, 1.0);
+		}
+);
+
+static const char* fragmentSrcAlias = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from fragmentCommon3D
+
+		uniform sampler2D tex;
+
+		in vec4 passColor;
+
+		void main()
+		{
+			vec4 texel = texture(tex, passTexCoord);
+
+			// apply gamma correction and intensity
+			texel.rgb *= intensity;
+			texel.a *= alpha; // is alpha even used here?
+
+			// TODO: is this really equivalent to GL_MODULATE's behavior of texture vs glColor()?
+			texel *= passColor;
+
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+			outColor.a = texel.a; // I think alpha shouldn't be modified by gamma and intensity
+		}
+);
+
+static const char* fragmentSrcAliasColor = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from fragmentCommon3D
+
+		in vec4 passColor;
+
+		void main()
+		{
+			vec4 texel = passColor;
+
+			// apply gamma correction and intensity
+			// texel.rgb *= intensity; // TODO: color-only rendering probably shouldn't use intensity?
+			texel.a *= alpha; // is alpha even used here?
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+			outColor.a = texel.a; // I think alpha shouldn't be modified by gamma and intensity
+		}
+);
+
+static const char* vertexSrcParticles = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from vertexCommon3D
+
+		out vec4 passColor;
+
+		void main()
+		{
+			passColor = vertColor;
+			gl_Position = transProj * transModelView * vec4(position, 1.0);
+
+			// abusing texCoord for pointSize, pointDist for particles
+			float pointDist = texCoord.y*0.1; // with factor 0.1 it looks good.
+
+			// 1.4 to make them a bit bigger, they look smaller due to fading (see fragment shader)
+			gl_PointSize = 1.4*texCoord.x/pointDist;
+		}
+);
+
+static const char* fragmentSrcParticles = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from fragmentCommon3D
+
+		in vec4 passColor;
+
+		void main()
+		{
+			vec2 offsetFromCenter = 2.0*(gl_PointCoord - vec2(0.5, 0.5)); // normalize so offset is between 0 and 1 instead 0 and 0.5
+			float distSquared = dot(offsetFromCenter, offsetFromCenter);
+			if(distSquared > 1.0) // this makes sure the particle is round
+				discard;
+
+			vec4 texel = passColor;
+
+			// apply gamma correction and intensity
+			//texel.rgb *= intensity; TODO: intensity? Probably not?
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+
+			// I want the particles to fade out towards the edge, the following seems to look nice
+			texel.a *= min(1.0, 1.2*(1.0 - distSquared));
+
+			outColor.a = texel.a; // I think alpha shouldn't be modified by gamma and intensity
 		}
 );
 
@@ -598,6 +786,16 @@ qboolean GL3_InitShaders(void)
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for textured 3D rendering!\n");
 		return false;
 	}
+	if(!initShader3D(&gl3state.si3DcolorOnly, vertexSrc3D, fragmentSrc3Dcolor))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for flat-colored 3D rendering!\n");
+		return false;
+	}
+	if(!initShader3D(&gl3state.si3Dlm, vertexSrc3Dlm, fragmentSrc3D))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for blending 3D lightmaps rendering!\n");
+		return false;
+	}
 	if(!initShader3D(&gl3state.si3Dturb, vertexSrc3Dwater, fragmentSrc3D))
 	{
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for water rendering!\n");
@@ -608,6 +806,37 @@ qboolean GL3_InitShaders(void)
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for scrolling textures 3D rendering!\n");
 		return false;
 	}
+	if(!initShader3D(&gl3state.si3Dsky, vertexSrc3D, fragmentSrc3Dsky))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for sky rendering!\n");
+		return false;
+	}
+	if(!initShader3D(&gl3state.si3Dsprite, vertexSrc3D, fragmentSrc3Dsprite))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for sprite rendering!\n");
+		return false;
+	}
+	if(!initShader3D(&gl3state.si3DspriteAlpha, vertexSrc3D, fragmentSrc3DspriteAlpha))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for alpha-tested sprite rendering!\n");
+		return false;
+	}
+	if(!initShader3D(&gl3state.si3Dalias, vertexSrcAlias, fragmentSrcAlias))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for rendering textured models!\n");
+		return false;
+	}
+	if(!initShader3D(&gl3state.si3DaliasColor, vertexSrcAlias, fragmentSrcAliasColor))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for rendering flat-colored models!\n");
+		return false;
+	}
+	if(!initShader3D(&gl3state.siParticle, vertexSrcParticles, fragmentSrcParticles))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for rendering particles!\n");
+		return false;
+	}
+
 	gl3state.currentShaderProgram = 0;
 
 	return true;
@@ -615,36 +844,38 @@ qboolean GL3_InitShaders(void)
 
 void GL3_ShutdownShaders(void)
 {
-	if(gl3state.si2D.shaderProgram != 0)
-		glDeleteProgram(gl3state.si2D.shaderProgram);
-	memset(&gl3state.si2D, 0, sizeof(gl3ShaderInfo_t));
+	const gl3ShaderInfo_t siZero = {0};
+	for(gl3ShaderInfo_t* si = &gl3state.si2D; si <= &gl3state.siParticle; ++si)
+	{
+		if(si->shaderProgram != 0)  glDeleteProgram(si->shaderProgram);
+		*si = siZero;
+	}
 
-	if(gl3state.si2Dcolor.shaderProgram != 0)
-		glDeleteProgram(gl3state.si2Dcolor.shaderProgram);
-	memset(&gl3state.si2Dcolor, 0, sizeof(gl3ShaderInfo_t));
-
-	if(gl3state.si3D.shaderProgram != 0)
-		glDeleteProgram(gl3state.si3D.shaderProgram);
-	memset(&gl3state.si3D, 0, sizeof(gl3ShaderInfo_t));
-
+	// let's (ab)use the fact that all 3 UBO handles are consecutive fields
+	// of the gl3state struct
 	glDeleteBuffers(3, &gl3state.uniCommonUBO);
 	gl3state.uniCommonUBO = gl3state.uni2DUBO = gl3state.uni3DUBO = 0;
 }
 
+static inline void
+updateUBO(GLuint ubo, GLsizeiptr size, void* data)
+{
+	// TODO: use glMapBufferRange() or something else instead?
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+	glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW);
+}
+
 void GL3_UpdateUBOCommon(void)
 {
-	glBindBuffer(GL_UNIFORM_BUFFER, gl3state.uniCommonUBO);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(gl3state.uniCommonData), &gl3state.uniCommonData, GL_DYNAMIC_DRAW);
+	updateUBO(gl3state.uniCommonUBO, sizeof(gl3state.uniCommonData), &gl3state.uniCommonData);
 }
 
 void GL3_UpdateUBO2D(void)
 {
-	glBindBuffer(GL_UNIFORM_BUFFER, gl3state.uni2DUBO);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(gl3state.uni2DData), &gl3state.uni2DData, GL_DYNAMIC_DRAW);
+	updateUBO(gl3state.uni2DUBO, sizeof(gl3state.uni2DData), &gl3state.uni2DData);
 }
 
 void GL3_UpdateUBO3D(void)
 {
-	glBindBuffer(GL_UNIFORM_BUFFER, gl3state.uni3DUBO);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(gl3state.uni3DData), &gl3state.uni3DData, GL_DYNAMIC_DRAW);
+	updateUBO(gl3state.uni3DUBO, sizeof(gl3state.uni3DData), &gl3state.uni3DData);
 }

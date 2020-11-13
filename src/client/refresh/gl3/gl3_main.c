@@ -86,6 +86,7 @@ cvar_t *gl_anisotropic;
 cvar_t *gl_texturemode;
 cvar_t *gl_drawbuffer;
 cvar_t *gl_clear;
+cvar_t *gl_particle_size;
 
 cvar_t *gl_lefthand;
 cvar_t *gl_farsee;
@@ -96,6 +97,7 @@ cvar_t *gl_overbrightbits;
 
 cvar_t *gl_norefresh;
 cvar_t *gl_drawentities;
+cvar_t *gl_drawworld;
 cvar_t *gl_nolerp_list;
 cvar_t *gl_nobind;
 cvar_t *gl_lockpvs;
@@ -106,7 +108,6 @@ cvar_t *gl_finish;
 cvar_t *gl_cull;
 cvar_t *gl_zfix;
 cvar_t *gl_fullbright;
-cvar_t *gl_flashblend;
 cvar_t *gl_modulate;
 cvar_t *gl_lightmap;
 cvar_t *gl_shadows; // TODO: do we really need 2 cvars for shadows here?
@@ -120,9 +121,6 @@ cvar_t *gl3_debugcontext;
 // equivalent to R_z * R_y * R_x where R_x is the trans matrix for rotating around X axis for aroundXdeg
 static hmm_mat4 rotAroundAxisZYX(float aroundZdeg, float aroundYdeg, float aroundXdeg)
 {
-#if 0
-	// TODO: make sure this code is equivalent to the naive multiplications below
-
 	// Naming of variables is consistent with http://planning.cs.uiuc.edu/node102.html
 	// and https://de.wikipedia.org/wiki/Roll-Nick-Gier-Winkel#.E2.80.9EZY.E2.80.B2X.E2.80.B3-Konvention.E2.80.9C
 	float alpha = HMM_ToRadians(aroundZdeg);
@@ -131,7 +129,7 @@ static hmm_mat4 rotAroundAxisZYX(float aroundZdeg, float aroundYdeg, float aroun
 
 	float sinA = HMM_SinF(alpha);
 	float cosA = HMM_CosF(alpha);
-	// TODO: or sincosf(alpha, &sinA, &cosA); ?? (not standard conform)
+	// TODO: or sincosf(alpha, &sinA, &cosA); ?? (not a standard function)
 	float sinB = HMM_SinF(beta);
 	float cosB = HMM_CosF(beta);
 	float sinG = HMM_SinF(gamma);
@@ -139,54 +137,29 @@ static hmm_mat4 rotAroundAxisZYX(float aroundZdeg, float aroundYdeg, float aroun
 
 	hmm_mat4 ret = {{
 		{ cosA*cosB,                  sinA*cosB,                   -sinB,    0 }, // first *column*
-		{ cosA*sinB*sinG - sinA*cosG, sinA*sinB*sinG + cosA*cosG, cosB*sinG, 0 }, // cosA*sinB und cosA*sinG 2x genutzt
-		{ cosA*sinB*cosG + sinA*sinG, sinA*sinB*cosG - cosA*sinG, cosB*cosG, 0 }, // sinA*sinB und sinA*cosG auch
-		{  0,                          0,                          0,        1 }  // sinB*sinG und sinB*cosG auch
+		{ cosA*sinB*sinG - sinA*cosG, sinA*sinB*sinG + cosA*cosG, cosB*sinG, 0 },
+		{ cosA*sinB*cosG + sinA*sinG, sinA*sinB*cosG - cosA*sinG, cosB*cosG, 0 },
+		{  0,                          0,                          0,        1 }
 	}};
 
 	return ret;
-#else
-	hmm_mat4 ret = HMM_Rotate(aroundZdeg, HMM_Vec3(0, 0, 1));
-	ret = HMM_MultiplyMat4(ret, HMM_Rotate(aroundYdeg, HMM_Vec3(0, 1, 0)));
-	ret = HMM_MultiplyMat4(ret, HMM_Rotate(aroundXdeg, HMM_Vec3(1, 0, 0)));
-
-	return ret;
-#endif
 }
 
 void
 GL3_RotateForEntity(entity_t *e)
 {
-	STUB_ONCE("TODO: Implement for OpenGL3!");
-
 	// angles: pitch (around y), yaw (around z), roll (around x)
 	// rot matrices to be multiplied in order Z, Y, X (yaw, pitch, roll)
-	hmm_mat4 rotMat = rotAroundAxisZYX(e->angles[1], -e->angles[0], -e->angles[2]);
+	hmm_mat4 transMat = rotAroundAxisZYX(e->angles[1], -e->angles[0], -e->angles[2]);
 
-	// TODO: or use gl3state.uni3DData.transModelViewMat4 instead of gl3_world_matrix?
+	for(int i=0; i<3; ++i)
+	{
+		transMat.Elements[3][i] = e->origin[i]; // set translation
+	}
 
-#if 1
-	hmm_mat4 transMat = HMM_Translate( HMM_Vec3(e->origin[0], e->origin[1], e->origin[2]) );
-	hmm_mat4 modelViewMat = HMM_MultiplyMat4(gl3state.uni3DData.transModelViewMat4, transMat);
-	modelViewMat = HMM_MultiplyMat4(modelViewMat, rotMat);
-#else
-	// TODO: I /think/ I could just set the translation in the end instead of multiplying above
-	hmm_mat4 modelViewMat = HMM_MultiplyMat4(gl3state.uni3DData.transModelViewMat4, rotMat);
-	for(int i=0; i<3; ++i)  modelViewMat.Elements[3][i] = e->origin[i];
-#endif
+	gl3state.uni3DData.transModelViewMat4 = HMM_MultiplyMat4(gl3state.uni3DData.transModelViewMat4, transMat);
 
-	gl3state.uni3DData.transModelViewMat4 = modelViewMat;
 	GL3_UpdateUBO3D();
-
-#if 0
-	glTranslatef(e->origin[0], e->origin[1], e->origin[2]);
-
-	// angles: pitch (around y), yaw (around z), roll (around x)
-
-	glRotatef(e->angles[1], 0, 0, 1); // yaw
-	glRotatef(-e->angles[0], 0, 1, 0); // pitch
-	glRotatef(-e->angles[2], 1, 0, 0); // roll
-#endif // 0
 }
 
 
@@ -223,9 +196,11 @@ GL3_Register(void)
 	gl_mode = ri.Cvar_Get("gl_mode", "4", CVAR_ARCHIVE);
 	gl_customwidth = ri.Cvar_Get("gl_customwidth", "1024", CVAR_ARCHIVE);
 	gl_customheight = ri.Cvar_Get("gl_customheight", "768", CVAR_ARCHIVE);
+	gl_particle_size = ri.Cvar_Get("gl_particle_size", "40", CVAR_ARCHIVE);
 
 	gl_norefresh = ri.Cvar_Get("gl_norefresh", "0", 0);
 	gl_drawentities = ri.Cvar_Get("gl_drawentities", "1", 0);
+	gl_drawworld = ri.Cvar_Get("gl_drawworld", "1", 0);
 	gl_fullbright = ri.Cvar_Get("gl_fullbright", "0", 0);
 
 	/* don't bilerp characters and crosshairs */
@@ -246,7 +221,6 @@ GL3_Register(void)
 	gl_shadows = ri.Cvar_Get("gl_shadows", "0", CVAR_ARCHIVE);
 	gl_stencilshadow = ri.Cvar_Get("gl_stencilshadow", "0", CVAR_ARCHIVE);
 
-	gl_flashblend = ri.Cvar_Get("gl_flashblend", "0", 0);
 	gl_modulate = ri.Cvar_Get("gl_modulate", "1", CVAR_ARCHIVE);
 	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	gl_clear = ri.Cvar_Get("gl_clear", "0", 0);
@@ -265,7 +239,7 @@ GL3_Register(void)
 	//gl_norefresh = ri.Cvar_Get("gl_norefresh", "0", 0);
 	//gl_fullbright = ri.Cvar_Get("gl_fullbright", "0", 0);
 	//gl_drawentities = ri.Cvar_Get("gl_drawentities", "1", 0);
-	gl_drawworld = ri.Cvar_Get("gl_drawworld", "1", 0);
+	//gl_drawworld = ri.Cvar_Get("gl_drawworld", "1", 0);
 	//gl_novis = ri.Cvar_Get("gl_novis", "0", 0);
 	//gl_lerpmodels = ri.Cvar_Get("gl_lerpmodels", "1", 0); NOTE: screw this, it looks horrible without
 	//gl_speeds = ri.Cvar_Get("gl_speeds", "0", 0);
@@ -275,7 +249,7 @@ GL3_Register(void)
 
 	gl_particle_min_size = ri.Cvar_Get("gl_particle_min_size", "2", CVAR_ARCHIVE);
 	gl_particle_max_size = ri.Cvar_Get("gl_particle_max_size", "40", CVAR_ARCHIVE);
-	gl_particle_size = ri.Cvar_Get("gl_particle_size", "40", CVAR_ARCHIVE);
+	//gl_particle_size = ri.Cvar_Get("gl_particle_size", "40", CVAR_ARCHIVE);
 	gl_particle_att_a = ri.Cvar_Get("gl_particle_att_a", "0.01", CVAR_ARCHIVE);
 	gl_particle_att_b = ri.Cvar_Get("gl_particle_att_b", "0.0", CVAR_ARCHIVE);
 	gl_particle_att_c = ri.Cvar_Get("gl_particle_att_c", "0.01", CVAR_ARCHIVE);
@@ -290,6 +264,7 @@ GL3_Register(void)
 	gl_round_down = ri.Cvar_Get("gl_round_down", "1", 0);
 	gl_picmip = ri.Cvar_Get("gl_picmip", "0", 0);
 	gl_showtris = ri.Cvar_Get("gl_showtris", "0", 0);
+	gl_showbbox = Cvar_Get("gl_showbbox", "0", 0);
 	//gl_ztrick = ri.Cvar_Get("gl_ztrick", "0", 0); NOTE: dump this.
 	//gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	//gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
@@ -539,6 +514,8 @@ GL3_Init(void)
 		R_Printf(PRINT_ALL, " - OpenGL Debug Output: Not Supported\n");
 	}
 
+	// generate texture handles for all possible lightmaps
+	glGenTextures(MAX_LIGHTMAPS, gl3state.lightmap_textureIDs);
 
 	GL3_SetDefaultState();
 
@@ -587,8 +564,6 @@ GL3_Shutdown(void)
 static void
 GL3_DrawBeam(entity_t *e)
 {
-	STUB_ONCE("TODO: Implement!");
-#if 0
 	int i;
 	float r, g, b;
 
@@ -599,8 +574,7 @@ GL3_DrawBeam(entity_t *e)
 	vec3_t start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
 	vec3_t oldorigin, origin;
 
-	GLfloat vtx[3*NUM_BEAM_SEGS*4];
-	unsigned int index_vtx = 0;
+	gl3_3D_vtx_t verts[NUM_BEAM_SEGS*4];
 	unsigned int pointb;
 
 	oldorigin[0] = e->oldorigin[0];
@@ -626,14 +600,16 @@ GL3_DrawBeam(entity_t *e)
 	for (i = 0; i < 6; i++)
 	{
 		RotatePointAroundVector(start_points[i], normalized_direction, perpvec,
-				(360.0 / NUM_BEAM_SEGS) * i);
+		                        (360.0 / NUM_BEAM_SEGS) * i);
 		VectorAdd(start_points[i], origin, start_points[i]);
 		VectorAdd(start_points[i], direction, end_points[i]);
 	}
 
-	glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glDepthMask(GL_FALSE);
+
+	GL3_UseProgram(gl3state.si3DcolorOnly.shaderProgram);
 
 	r = (LittleLong(d_8to24table[e->skinnum & 0xFF])) & 0xFF;
 	g = (LittleLong(d_8to24table[e->skinnum & 0xFF]) >> 8) & 0xFF;
@@ -643,48 +619,35 @@ GL3_DrawBeam(entity_t *e)
 	g *= 1 / 255.0F;
 	b *= 1 / 255.0F;
 
-	glColor4f(r, g, b, e->alpha);
+	gl3state.uniCommonData.color = HMM_Vec4(r, g, b, e->alpha);
+	GL3_UpdateUBOCommon();
 
 	for ( i = 0; i < NUM_BEAM_SEGS; i++ )
 	{
-		vtx[index_vtx++] = start_points [ i ][ 0 ];
-		vtx[index_vtx++] = start_points [ i ][ 1 ];
-		vtx[index_vtx++] = start_points [ i ][ 2 ];
-
-		vtx[index_vtx++] = end_points [ i ][ 0 ];
-		vtx[index_vtx++] = end_points [ i ][ 1 ];
-		vtx[index_vtx++] = end_points [ i ][ 2 ];
+		VectorCopy(start_points[i], verts[4*i+0].pos);
+		VectorCopy(end_points[i], verts[4*i+1].pos);
 
 		pointb = ( i + 1 ) % NUM_BEAM_SEGS;
-		vtx[index_vtx++] = start_points [ pointb ][ 0 ];
-		vtx[index_vtx++] = start_points [ pointb ][ 1 ];
-		vtx[index_vtx++] = start_points [ pointb ][ 2 ];
 
-		vtx[index_vtx++] = end_points [ pointb ][ 0 ];
-		vtx[index_vtx++] = end_points [ pointb ][ 1 ];
-		vtx[index_vtx++] = end_points [ pointb ][ 2 ];
+		VectorCopy(start_points[pointb], verts[4*i+2].pos);
+		VectorCopy(end_points[pointb], verts[4*i+3].pos);
 	}
 
-	glEnableClientState( GL_VERTEX_ARRAY );
+	GL3_BindVAO(gl3state.vao3D);
+	GL3_BindVBO(gl3state.vbo3D);
 
-	glVertexPointer( 3, GL_FLOAT, 0, vtx );
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STREAM_DRAW);
 	glDrawArrays( GL_TRIANGLE_STRIP, 0, NUM_BEAM_SEGS*4 );
 
-	glDisableClientState( GL_VERTEX_ARRAY );
-
-	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
-#endif // 0
 }
 
 static void
 GL3_DrawSpriteModel(entity_t *e)
 {
-	STUB_ONCE("TODO: Implement!");
-#if 0
 	float alpha = 1.0F;
-	vec3_t point[4];
+	gl3_3D_vtx_t verts[4];
 	dsprframe_t *frame;
 	float *up, *right;
 	dsprite_t *psprite;
@@ -705,72 +668,64 @@ GL3_DrawSpriteModel(entity_t *e)
 		alpha = e->alpha;
 	}
 
-	if (alpha != 1.0F)
+	if (alpha != gl3state.uni3DData.alpha)
 	{
-		glEnable(GL_BLEND);
+		gl3state.uni3DData.alpha = alpha;
+		GL3_UpdateUBO3D();
 	}
 
-	glColor4f(1, 1, 1, alpha);
-
-	R_Bind(currentmodel->skins[e->frame]->texnum);
-
-	R_TexEnv(GL_MODULATE);
+	GL3_Bind(currentmodel->skins[e->frame]->texnum);
 
 	if (alpha == 1.0)
 	{
-		glEnable(GL_ALPHA_TEST);
+		// use shader with alpha test
+		GL3_UseProgram(gl3state.si3DspriteAlpha.shaderProgram);
 	}
 	else
 	{
-		glDisable(GL_ALPHA_TEST);
+		glEnable(GL_BLEND);
+
+		GL3_UseProgram(gl3state.si3Dsprite.shaderProgram);
 	}
 
-	GLfloat tex[] = {
-		0, 1,
-		0, 0,
-		1, 0,
-		1, 1
-	};
+	verts[0].texCoord[0] = 0;
+	verts[0].texCoord[1] = 1;
+	verts[1].texCoord[0] = 0;
+	verts[1].texCoord[1] = 0;
+	verts[2].texCoord[0] = 1;
+	verts[2].texCoord[1] = 0;
+	verts[3].texCoord[0] = 1;
+	verts[3].texCoord[1] = 1;
 
-	VectorMA( e->origin, -frame->origin_y, up, point[0] );
-	VectorMA( point[0], -frame->origin_x, right, point[0] );
+	VectorMA( e->origin, -frame->origin_y, up, verts[0].pos );
+	VectorMA( verts[0].pos, -frame->origin_x, right, verts[0].pos );
 
-	VectorMA( e->origin, frame->height - frame->origin_y, up, point[1] );
-	VectorMA( point[1], -frame->origin_x, right, point[1] );
+	VectorMA( e->origin, frame->height - frame->origin_y, up, verts[1].pos );
+	VectorMA( verts[1].pos, -frame->origin_x, right, verts[1].pos );
 
-	VectorMA( e->origin, frame->height - frame->origin_y, up, point[2] );
-	VectorMA( point[2], frame->width - frame->origin_x, right, point[2] );
+	VectorMA( e->origin, frame->height - frame->origin_y, up, verts[2].pos );
+	VectorMA( verts[2].pos, frame->width - frame->origin_x, right, verts[2].pos );
 
-	VectorMA( e->origin, -frame->origin_y, up, point[3] );
-	VectorMA( point[3], frame->width - frame->origin_x, right, point[3] );
+	VectorMA( e->origin, -frame->origin_y, up, verts[3].pos );
+	VectorMA( verts[3].pos, frame->width - frame->origin_x, right, verts[3].pos );
 
-	glEnableClientState( GL_VERTEX_ARRAY );
-	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	GL3_BindVAO(gl3state.vao3D);
+	GL3_BindVBO(gl3state.vbo3D);
 
-	glVertexPointer( 3, GL_FLOAT, 0, point );
-	glTexCoordPointer( 2, GL_FLOAT, 0, tex );
-	glDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
-
-	glDisableClientState( GL_VERTEX_ARRAY );
-	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-
-	glDisable(GL_ALPHA_TEST);
-	R_TexEnv(GL_REPLACE);
+	glBufferData(GL_ARRAY_BUFFER, 4*sizeof(gl3_3D_vtx_t), verts, GL_STREAM_DRAW);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 	if (alpha != 1.0F)
 	{
 		glDisable(GL_BLEND);
+		gl3state.uni3DData.alpha = 1.0f;
+		GL3_UpdateUBO3D();
 	}
-
-	glColor4f(1, 1, 1, 1);
-#endif // 0
 }
 
 static void
 GL3_DrawNullModel(void)
 {
-	STUB_ONCE("TODO: Implement!");
-#if 0
 	vec3_t shadelight;
 
 	if (currententity->flags & RF_FULLBRIGHT)
@@ -779,58 +734,111 @@ GL3_DrawNullModel(void)
 	}
 	else
 	{
-		R_LightPoint(currententity->origin, shadelight);
+		GL3_LightPoint(currententity->origin, shadelight);
 	}
 
-	glPushMatrix();
-	R_RotateForEntity(currententity);
+	hmm_mat4 origMVmat = gl3state.uni3DData.transModelViewMat4;
+	GL3_RotateForEntity(currententity);
 
-	glDisable(GL_TEXTURE_2D);
-	glColor4f( shadelight[0], shadelight[1], shadelight[2], 1 );
+	gl3state.uniCommonData.color = HMM_Vec4( shadelight[0], shadelight[1], shadelight[2], 1 );
+	GL3_UpdateUBOCommon();
 
-	GLfloat vtxA[] = {
-			0, 0, -16,
-			16 * cos( 0 * M_PI / 2 ), 16 * sin( 0 * M_PI / 2 ), 0,
-			16 * cos( 1 * M_PI / 2 ), 16 * sin( 1 * M_PI / 2 ), 0,
-			16 * cos( 2 * M_PI / 2 ), 16 * sin( 2 * M_PI / 2 ), 0,
-			16 * cos( 3 * M_PI / 2 ), 16 * sin( 3 * M_PI / 2 ), 0,
-			16 * cos( 4 * M_PI / 2 ), 16 * sin( 4 * M_PI / 2 ), 0
+	GL3_UseProgram(gl3state.si3DcolorOnly.shaderProgram);
+
+	GL3_BindVAO(gl3state.vao3D);
+	GL3_BindVBO(gl3state.vbo3D);
+
+	gl3_3D_vtx_t vtxA[6] = {
+		{{0, 0, -16}, {0,0}, {0,0}},
+		{{16 * cos( 0 * M_PI / 2 ), 16 * sin( 0 * M_PI / 2 ), 0}, {0,0}, {0,0}},
+		{{16 * cos( 1 * M_PI / 2 ), 16 * sin( 1 * M_PI / 2 ), 0}, {0,0}, {0,0}},
+		{{16 * cos( 2 * M_PI / 2 ), 16 * sin( 2 * M_PI / 2 ), 0}, {0,0}, {0,0}},
+		{{16 * cos( 3 * M_PI / 2 ), 16 * sin( 3 * M_PI / 2 ), 0}, {0,0}, {0,0}},
+		{{16 * cos( 4 * M_PI / 2 ), 16 * sin( 4 * M_PI / 2 ), 0}, {0,0}, {0,0}}
 	};
 
-	glEnableClientState( GL_VERTEX_ARRAY );
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vtxA), vtxA, GL_STREAM_DRAW);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
-	glVertexPointer( 3, GL_FLOAT, 0, vtxA );
-	glDrawArrays( GL_TRIANGLE_FAN, 0, 6 );
-
-	glDisableClientState( GL_VERTEX_ARRAY );
-
-	GLfloat vtxB[] = {
-			0, 0, 16,
-			16 * cos( 4 * M_PI / 2 ), 16 * sin( 4 * M_PI / 2 ), 0,
-			16 * cos( 3 * M_PI / 2 ), 16 * sin( 3 * M_PI / 2 ), 0,
-			16 * cos( 2 * M_PI / 2 ), 16 * sin( 2 * M_PI / 2 ), 0,
-			16 * cos( 1 * M_PI / 2 ), 16 * sin( 1 * M_PI / 2 ), 0,
-			16 * cos( 0 * M_PI / 2 ), 16 * sin( 0 * M_PI / 2 ), 0
+	gl3_3D_vtx_t vtxB[6] = {
+		{{0, 0, 16}, {0,0}, {0,0}},
+		vtxA[5], vtxA[4], vtxA[3], vtxA[2], vtxA[1]
 	};
 
-	glEnableClientState( GL_VERTEX_ARRAY );
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vtxB), vtxB, GL_STREAM_DRAW);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
-	glVertexPointer( 3, GL_FLOAT, 0, vtxB );
-	glDrawArrays( GL_TRIANGLE_FAN, 0, 6 );
+	gl3state.uni3DData.transModelViewMat4 = origMVmat;
+	GL3_UpdateUBO3D();
+}
 
-	glDisableClientState( GL_VERTEX_ARRAY );
+static void
+GL3_DrawParticles(void)
+{
+	// TODO: stereo
+	//qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
+	//qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
 
-	glColor4f(1, 1, 1, 1);
-	glPopMatrix();
-	glEnable(GL_TEXTURE_2D);
-#endif // 0
+	//if (gl_config.pointparameters && !(stereo_split_tb || stereo_split_lr))
+	{
+		int i;
+		int numParticles = gl3_newrefdef.num_particles;
+		unsigned char color[4];
+		const particle_t *p;
+		// assume the size looks good with window height 600px and scale according to real resolution
+		float pointSize = gl_particle_size->value * (float)gl3_newrefdef.height/600.0f;
+
+		typedef struct part_vtx {
+			GLfloat pos[3];
+			GLfloat size;
+			GLfloat dist;
+			GLfloat color[4];
+		} part_vtx;
+		assert(sizeof(part_vtx)==9*sizeof(float)); // remember to update GL3_SurfInit() if this changes!
+
+		part_vtx buf[numParticles];
+
+		// FIXME: viewOrg could be in UBO
+		vec3_t viewOrg;
+		VectorCopy(gl3_newrefdef.vieworg, viewOrg);
+
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glEnable(GL_PROGRAM_POINT_SIZE);
+
+		GL3_UseProgram(gl3state.siParticle.shaderProgram);
+
+		for ( i = 0, p = gl3_newrefdef.particles; i < numParticles; i++, p++ )
+		{
+			*(int *) color = d_8to24table [ p->color & 0xFF ];
+			part_vtx* cur = &buf[i];
+			vec3_t offset; // between viewOrg and particle position
+			VectorSubtract(viewOrg, p->origin, offset);
+
+			VectorCopy(p->origin, cur->pos);
+			cur->size = pointSize;
+			cur->dist = VectorLength(offset);
+
+			for(int j=0; j<3; ++j)  cur->color[j] = color[j]/255.0f;
+
+			cur->color[3] = p->alpha;
+		}
+
+		GL3_BindVAO(gl3state.vaoParticle);
+		GL3_BindVBO(gl3state.vboParticle);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(part_vtx)*numParticles, buf, GL_STREAM_DRAW);
+		glDrawArrays(GL_POINTS, 0, numParticles);
+
+
+		glDisable(GL_BLEND);
+		glDepthMask(GL_TRUE);
+		glDisable(GL_PROGRAM_POINT_SIZE);
+	}
 }
 
 static void
 GL3_DrawEntitiesOnList(void)
 {
-	STUB_ONCE("TODO: Implement!");
-
 	int i;
 
 	if (!gl_drawentities->value)
@@ -880,7 +888,6 @@ GL3_DrawEntitiesOnList(void)
 		}
 	}
 
-#if 1
 	/* draw transparent entities
 	   we could sort these if it ever
 	   becomes a problem... */
@@ -928,7 +935,6 @@ GL3_DrawEntitiesOnList(void)
 	}
 
 	glDepthMask(1); /* back to writing */
-#endif // 0
 }
 
 static int
@@ -1115,6 +1121,43 @@ static hmm_mat4 rotAroundAxisXYZ(float aroundXdeg, float aroundYdeg, float aroun
 	return ret;
 }
 
+// equivalent to R_MYgluPerspective() but returning a matrix instead of setting internal OpenGL state
+static hmm_mat4
+GL3_MYgluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
+{
+	// calculation of left, right, bottom, top is from R_MYgluPerspective() of old gl backend
+	// which seems to be slightly different from the real gluPerspective()
+	// and thus also from HMM_Perspective()
+	GLdouble left, right, bottom, top;
+	float A, B, C, D;
+
+	top = zNear * tan(fovy * M_PI / 360.0);
+	bottom = -top;
+
+	left = bottom * aspect;
+	right = top * aspect;
+
+	// TODO:  stereo stuff
+	// left += - gl_stereo_convergence->value * (2 * gl_state.camera_separation) / zNear;
+	// right += - gl_stereo_convergence->value * (2 * gl_state.camera_separation) / zNear;
+
+	// the following emulates glFrustum(left, right, bottom, top, zNear, zFar)
+	// see https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml
+	A = (right+left)/(right-left);
+	B = (top+bottom)/(top-bottom);
+	C = -(zFar+zNear)/(zFar-zNear);
+	D = -(2.0*zFar*zNear)/(zFar-zNear);
+
+	hmm_mat4 ret = {{
+		{ (2.0*zNear)/(right-left), 0, 0, 0 }, // first *column*
+		{ 0, (2.0*zNear)/(top-bottom), 0, 0 },
+		{ A, B, C, -1.0 },
+		{ 0, 0, D, 0 }
+	}};
+
+	return ret;
+}
+
 static void
 SetupGL(void)
 {
@@ -1151,15 +1194,8 @@ SetupGL(void)
 	{
 		float screenaspect = (float)gl3_newrefdef.width / gl3_newrefdef.height;
 		float dist = (gl_farsee->value == 0) ? 4096.0f : 8192.0f;
-		gl3_projectionMatrix = HMM_Perspective(gl3_newrefdef.fov_y, screenaspect, 4, dist);
+		gl3_projectionMatrix = GL3_MYgluPerspective(gl3_newrefdef.fov_y, screenaspect, 4, dist);
 	}
-
-#if 0
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	R_MYgluPerspective(gl3_newrefdef.fov_y, screenaspect, 4, dist);
-#endif // 0
 
 	glCullFace(GL_FRONT);
 
@@ -1192,21 +1228,6 @@ SetupGL(void)
 
 	GL3_UpdateUBO3D();
 
-#if 0
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glRotatef(-90, 1, 0, 0); /* put Z going up */
-	glRotatef(90, 0, 0, 1); /* put Z going up */
-	glRotatef(-gl3_newrefdef.viewangles[2], 1, 0, 0);
-	glRotatef(-gl3_newrefdef.viewangles[0], 0, 1, 0);
-	glRotatef(-gl3_newrefdef.viewangles[1], 0, 0, 1);
-	glTranslatef(-gl3_newrefdef.vieworg[0], -gl3_newrefdef.vieworg[1],
-			-gl3_newrefdef.vieworg[2]);
-
-	glGetFloatv(GL_MODELVIEW_MATRIX, r_world_matrix);
-#endif // 0
-
 	/* set drawing parms */
 	if (gl_cull->value)
 	{
@@ -1222,6 +1243,8 @@ SetupGL(void)
 	//glDisable(GL_ALPHA_TEST);
 	glEnable(GL_DEPTH_TEST);
 }
+
+extern int c_visible_lightmaps, c_visible_textures;
 
 /*
  * gl3_newrefdef must be set before the first call
@@ -1379,14 +1402,15 @@ GL3_RenderView(refdef_t *fd)
 	GL3_DrawWorld();
 
 	GL3_DrawEntitiesOnList();
-#if 0 // TODO !!
-	GL3_RenderDlights();
 
-	R_DrawParticles();
-#endif // 0
+	// kick the silly gl_flashblend poly lights
+	// GL3_RenderDlights();
+
+	GL3_DrawParticles();
+
 	GL3_DrawAlphaSurfaces();
-#if 0
-	R_Flash();
+
+	// Note: R_Flash() is now GL3_Draw_Flash() and called from GL3_RenderFrame()
 
 	if (gl_speeds->value)
 	{
@@ -1394,8 +1418,6 @@ GL3_RenderView(refdef_t *fd)
 				c_brush_polys, c_alias_polys, c_visible_textures,
 				c_visible_lightmaps);
 	}
-
-#endif // 0
 
 #if 0 // TODO: stereo stuff
 	switch (gl_state.stereo_mode) {
@@ -1474,13 +1496,14 @@ GL3_SetLightLevel(void)
 	}
 }
 
-
 static void
 GL3_RenderFrame(refdef_t *fd)
 {
 	GL3_RenderView(fd);
 	GL3_SetLightLevel();
 	GL3_SetGL2D();
+
+	GL3_Draw_Flash(v_blend);
 }
 
 
@@ -1616,6 +1639,12 @@ GL3_BeginFrame(float camera_separation)
 		gl_anisotropic->modified = false;
 	}
 
+	if(gl_swapinterval->modified)
+	{
+		gl_swapinterval->modified = false;
+		GL3_SetSwapInterval();
+	}
+
 	STUB_ONCE("TODO: texture-alpha/solid-mode stuff??")
 #if 0
 	if (gl_texturealphamode->modified)
@@ -1681,6 +1710,7 @@ GetRefAPI(refimport_t imp)
 	re.PrepareForWindow = GL3_PrepareForWindow;
 	re.InitContext = GL3_InitContext;
 	re.ShutdownWindow = GL3_ShutdownWindow;
+	re.IsVSyncActive = GL3_IsVsyncActive;
 
 	re.BeginRegistration = GL3_BeginRegistration;
 	re.RegisterModel = GL3_RegisterModel;

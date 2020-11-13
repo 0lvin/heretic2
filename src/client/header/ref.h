@@ -109,7 +109,7 @@ typedef struct {
 	int			num_entities;
 	entity_t	*entities;
 
-	int			num_dlights;
+	int			num_dlights; // <= 32 (MAX_DLIGHTS)
 	dlight_t	*dlights;
 
 	int			num_particles;
@@ -147,6 +147,9 @@ typedef struct
 	// shuts down rendering (OpenGL) context, calls
 	// VID_ShutdownWindow() to shut down window as well, if !contextOnly
 	void	(EXPORT *ShutdownWindow)(qboolean contextOnly);
+
+	// returns true if vsync is active, else false
+	qboolean (EXPORT *IsVSyncActive)(void);
 
 	// All data that will be used in a level should be
 	// registered before rendering any frames to prevent disk hits,
