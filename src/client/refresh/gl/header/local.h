@@ -170,17 +170,17 @@ extern vec3_t r_origin;
 extern refdef_t r_newrefdef;
 extern int r_viewcluster, r_viewcluster2, r_oldviewcluster, r_oldviewcluster2;
 
-extern cvar_t *gl_norefresh;
+extern cvar_t *r_norefresh;
 extern cvar_t *gl_lefthand;
 extern cvar_t *gl_farsee;
-extern cvar_t *gl_drawentities;
-extern cvar_t *gl_drawworld;
-extern cvar_t *gl_speeds;
-extern cvar_t *gl_fullbright;
-extern cvar_t *gl_novis;
-extern cvar_t *gl_lerpmodels;
+extern cvar_t *r_drawentities;
+extern cvar_t *r_drawworld;
+extern cvar_t *r_speeds;
+extern cvar_t *r_fullbright;
+extern cvar_t *r_novis;
+extern cvar_t *r_lerpmodels;
 
-extern cvar_t *gl_lightlevel;
+extern cvar_t *r_lightlevel;
 extern cvar_t *gl_overbrightbits;
 
 extern cvar_t *gl_palettedtexture;
@@ -194,8 +194,8 @@ extern cvar_t *gl_particle_att_b;
 extern cvar_t *gl_particle_att_c;
 
 extern cvar_t *gl_mode;
-extern cvar_t *gl_customwidth;
-extern cvar_t *gl_customheight;
+extern cvar_t *r_customwidth;
+extern cvar_t *r_customheight;
 
 extern cvar_t *gl_retexturing;
 
@@ -213,7 +213,7 @@ extern cvar_t *gl_showbbox;
 extern cvar_t *gl_finish;
 extern cvar_t *gl_ztrick;
 extern cvar_t *gl_zfix;
-extern cvar_t *gl_clear;
+extern cvar_t *r_clear;
 extern cvar_t *gl_cull;
 extern cvar_t *gl_polyblend;
 extern cvar_t *gl_flashblend;

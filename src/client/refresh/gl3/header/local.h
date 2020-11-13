@@ -483,29 +483,29 @@ extern cvar_t *gl_swapinterval;
 extern cvar_t *gl_retexturing;
 extern cvar_t *vid_fullscreen;
 extern cvar_t *gl_mode;
-extern cvar_t *gl_customwidth;
-extern cvar_t *gl_customheight;
+extern cvar_t *r_customwidth;
+extern cvar_t *r_customheight;
 
 extern cvar_t *gl_nolerp_list;
 extern cvar_t *gl_nobind;
 extern cvar_t *gl_lockpvs;
-extern cvar_t *gl_novis;
+extern cvar_t *r_novis;
 
 extern cvar_t *gl_cull;
 extern cvar_t *gl_zfix;
-extern cvar_t *gl_fullbright;
+extern cvar_t *r_fullbright;
 
-extern cvar_t *gl_norefresh;
+extern cvar_t *r_norefresh;
 extern cvar_t *gl_lefthand;
 extern cvar_t *gl_farsee;
-extern cvar_t *gl_drawworld;
+extern cvar_t *r_drawworld;
 
 extern cvar_t *vid_gamma;
 extern cvar_t *gl3_intensity;
 extern cvar_t *gl3_intensity_2D;
 extern cvar_t *gl_anisotropic;
 
-extern cvar_t *gl_lightlevel;
+extern cvar_t *r_lightlevel;
 extern cvar_t *gl3_overbrightbits;
 extern cvar_t *gl3_particle_fade_factor;
 extern cvar_t *gl3_particle_square;

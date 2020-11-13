@@ -251,7 +251,7 @@ R_BlendLightmaps(void)
 	msurface_t *surf, *newdrawsurf = 0;
 
 	/* don't bother if we're set to fullbright */
-	if (gl_fullbright->value)
+	if (r_fullbright->value)
 	{
 		return;
 	}
@@ -1006,7 +1006,7 @@ R_DrawWorld(void)
 {
 	entity_t ent;
 
-	if (!gl_drawworld->value)
+	if (!r_drawworld->value)
 	{
 		return;
 	}
@@ -1067,7 +1067,7 @@ R_MarkLeaves(void)
 
 	if ((r_oldviewcluster == r_viewcluster) &&
 		(r_oldviewcluster2 == r_viewcluster2) &&
-		!gl_novis->value &&
+		!r_novis->value &&
 		(r_viewcluster != -1))
 	{
 		return;
@@ -1084,7 +1084,7 @@ R_MarkLeaves(void)
 	r_oldviewcluster = r_viewcluster;
 	r_oldviewcluster2 = r_viewcluster2;
 
-	if (gl_novis->value || (r_viewcluster == -1) || !r_worldmodel->vis)
+	if (r_novis->value || (r_viewcluster == -1) || !r_worldmodel->vis)
 	{
 		/* mark everything */
 		for (i = 0; i < r_worldmodel->numleafs; i++)

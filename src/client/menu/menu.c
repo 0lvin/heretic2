@@ -1650,6 +1650,7 @@ static const char *idcredits[] = {
 	"Yamagi Burmeister",
 	"Daniel Gibson",
 	"Sander van Dijk",
+	"Denis Pauk",
 	"",
 	"+GPU-BASED PATHTRACING ENHANCEMENTS BY",
 	"Edd Biddulph",

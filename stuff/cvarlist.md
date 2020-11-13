@@ -27,7 +27,7 @@ General:
   If *cl_async* is set to `0` *gl_maxfps* is the same as *cl_maxfps*, use
   *cl_maxfps* to set the framerate.
 
-* **cl_drawfps**: Shows the framecounter. The shown value is rather
+* **cl_showfps**: Shows the framecounter. The shown value is rather
   inaccurate and gets less precise with higher framerates, as it only
   measures full milliseconds.
 
@@ -104,15 +104,15 @@ Graphics (all renderers):
   and `16`. Anisotropic filtering gives a huge improvement to texture
   quality by a negligible performance impact.
 
-* **gl_consolescale** / **gl_hudscale** / **gl_menuscale**, **crosshair_scale**:
+* **r_consolescale** / **r_hudscale** / **r_menuscale**, **crosshair_scale**:
   Scale the console, the HUD, the menu and the crosshair. The value given
   is the scale factor, a factor of `1` means no scaling. Values greater
   `1` make the objects bigger, values lower 1 smaller. The special value
   `-1` sets the optimal scaling factor for the current resolution.
 
-* **gl_customheight** / **gl_customwidth**: Specifies a custom
-  resolution, the windows will be *gl_customheight* pixels high and
-  *gl_customwidth* pixels wide. Set *gl_mode* to `-1` to use the custom
+* **r_customheight** / **r_customwidth**: Specifies a custom
+  resolution, the windows will be *r_customheight* pixels high and
+  *r_customwidth* pixels wide. Set *gl_mode* to `-1` to use the custom
   resolution.
 
 * **gl_farsee**: Normally Quake II renders only up to 4096 units. If set

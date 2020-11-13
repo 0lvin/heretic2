@@ -70,17 +70,17 @@ int r_viewcluster, r_viewcluster2, r_oldviewcluster, r_oldviewcluster2;
 extern qboolean have_stencil;
 unsigned r_rawpalette[256];
 
-cvar_t *gl_norefresh;
-cvar_t *gl_drawentities;
-cvar_t *gl_drawworld;
-cvar_t *gl_speeds;
-cvar_t *gl_fullbright;
-cvar_t *gl_novis;
-cvar_t *gl_lerpmodels;
+cvar_t *r_norefresh;
+cvar_t *r_drawentities;
+cvar_t *r_drawworld;
+cvar_t *r_speeds;
+cvar_t *r_fullbright;
+cvar_t *r_novis;
+cvar_t *r_lerpmodels;
 cvar_t *gl_lefthand;
 cvar_t *gl_farsee;
 
-cvar_t *gl_lightlevel;
+cvar_t *r_lightlevel;
 cvar_t *gl_overbrightbits;
 
 cvar_t *gl_particle_min_size;
@@ -99,8 +99,8 @@ cvar_t *gl_shadows;
 cvar_t *gl_stencilshadow;
 cvar_t *gl_mode;
 
-cvar_t *gl_customwidth;
-cvar_t *gl_customheight;
+cvar_t *r_customwidth;
+cvar_t *r_customheight;
 
 cvar_t *gl_retexturing;
 
@@ -116,7 +116,7 @@ cvar_t *gl_showbbox;
 cvar_t *gl_ztrick;
 cvar_t *gl_zfix;
 cvar_t *gl_finish;
-cvar_t *gl_clear;
+cvar_t *r_clear;
 cvar_t *gl_cull;
 cvar_t *gl_polyblend;
 cvar_t *gl_flashblend;
@@ -321,7 +321,7 @@ R_DrawEntitiesOnList(void)
 {
 	int i;
 
-	if (!gl_drawentities->value)
+	if (!r_drawentities->value)
 	{
 		return;
 	}
@@ -852,7 +852,7 @@ R_Clear(void)
 	{
 		static int trickframe;
 
-		if (gl_clear->value)
+		if (r_clear->value)
 		{
 			glClear(GL_COLOR_BUFFER_BIT | stencilFlags);
 		}
@@ -874,7 +874,7 @@ R_Clear(void)
 	}
 	else
 	{
-		if (gl_clear->value)
+		if (r_clear->value)
 		{
 			glClear(GL_COLOR_BUFFER_BIT | stencilFlags | GL_DEPTH_BUFFER_BIT);
 		}
@@ -1068,7 +1068,7 @@ R_RenderView(refdef_t *fd)
 	}
 
 
-	if (gl_norefresh->value)
+	if (r_norefresh->value)
 	{
 		return;
 	}
@@ -1080,7 +1080,7 @@ R_RenderView(refdef_t *fd)
 		ri.Sys_Error(ERR_DROP, "R_RenderView: NULL worldmodel");
 	}
 
-	if (gl_speeds->value)
+	if (r_speeds->value)
 	{
 		c_brush_polys = 0;
 		c_alias_polys = 0;
@@ -1119,7 +1119,7 @@ R_RenderView(refdef_t *fd)
 
 	R_Flash();
 
-	if (gl_speeds->value)
+	if (r_speeds->value)
 	{
 		R_Printf(PRINT_ALL, "%4i wpoly %4i epoly %i tex %i lmaps\n",
 				c_brush_polys, c_alias_polys, c_visible_textures,
@@ -1179,22 +1179,22 @@ R_SetLightLevel(void)
 	{
 		if (shadelight[0] > shadelight[2])
 		{
-			gl_lightlevel->value = 150 * shadelight[0];
+			r_lightlevel->value = 150 * shadelight[0];
 		}
 		else
 		{
-			gl_lightlevel->value = 150 * shadelight[2];
+			r_lightlevel->value = 150 * shadelight[2];
 		}
 	}
 	else
 	{
 		if (shadelight[1] > shadelight[2])
 		{
-			gl_lightlevel->value = 150 * shadelight[1];
+			r_lightlevel->value = 150 * shadelight[1];
 		}
 		else
 		{
-			gl_lightlevel->value = 150 * shadelight[2];
+			r_lightlevel->value = 150 * shadelight[2];
 		}
 	}
 }
@@ -1212,15 +1212,15 @@ R_Register(void)
 {
 	gl_lefthand = ri.Cvar_Get("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
 	gl_farsee = ri.Cvar_Get("gl_farsee", "0", CVAR_LATCH | CVAR_ARCHIVE);
-	gl_norefresh = ri.Cvar_Get("gl_norefresh", "0", 0);
-	gl_fullbright = ri.Cvar_Get("gl_fullbright", "0", 0);
-	gl_drawentities = ri.Cvar_Get("gl_drawentities", "1", 0);
-	gl_drawworld = ri.Cvar_Get("gl_drawworld", "1", 0);
-	gl_novis = ri.Cvar_Get("gl_novis", "0", 0);
-	gl_lerpmodels = ri.Cvar_Get("gl_lerpmodels", "1", 0);
-	gl_speeds = ri.Cvar_Get("gl_speeds", "0", 0);
+	r_norefresh = ri.Cvar_Get("r_norefresh", "0", 0);
+	r_fullbright = ri.Cvar_Get("r_fullbright", "0", 0);
+	r_drawentities = ri.Cvar_Get("r_drawentities", "1", 0);
+	r_drawworld = ri.Cvar_Get("r_drawworld", "1", 0);
+	r_novis = ri.Cvar_Get("r_novis", "0", 0);
+	r_lerpmodels = ri.Cvar_Get("r_lerpmodels", "1", 0);
+	r_speeds = ri.Cvar_Get("r_speeds", "0", 0);
 
-	gl_lightlevel = ri.Cvar_Get("gl_lightlevel", "0", 0);
+	r_lightlevel = ri.Cvar_Get("r_lightlevel", "0", 0);
 	gl_overbrightbits = ri.Cvar_Get("gl_overbrightbits", "0", CVAR_ARCHIVE);
 
 	gl_particle_min_size = ri.Cvar_Get("gl_particle_min_size", "2", CVAR_ARCHIVE);
@@ -1244,7 +1244,7 @@ R_Register(void)
 	gl_ztrick = ri.Cvar_Get("gl_ztrick", "0", 0);
 	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
-	gl_clear = ri.Cvar_Get("gl_clear", "0", 0);
+	r_clear = ri.Cvar_Get("r_clear", "0", 0);
 	gl_cull = ri.Cvar_Get("gl_cull", "1", 0);
 	gl_polyblend = ri.Cvar_Get("gl_polyblend", "1", 0);
 	gl_flashblend = ri.Cvar_Get("gl_flashblend", "0", 0);
@@ -1266,8 +1266,8 @@ R_Register(void)
 	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 	vid_gamma = ri.Cvar_Get("vid_gamma", "1.2", CVAR_ARCHIVE);
 
-	gl_customwidth = ri.Cvar_Get("gl_customwidth", "1024", CVAR_ARCHIVE);
-	gl_customheight = ri.Cvar_Get("gl_customheight", "768", CVAR_ARCHIVE);
+	r_customwidth = ri.Cvar_Get("r_customwidth", "1024", CVAR_ARCHIVE);
+	r_customheight = ri.Cvar_Get("r_customheight", "768", CVAR_ARCHIVE);
 	gl_msaa_samples = ri.Cvar_Get ( "gl_msaa_samples", "0", CVAR_ARCHIVE );
 
 	gl_retexturing = ri.Cvar_Get("gl_retexturing", "1", CVAR_ARCHIVE);
@@ -1325,8 +1325,8 @@ R_SetMode(void)
 
 	/* a bit hackish approach to enable custom resolutions:
 	   Glimp_SetMode needs these values set for mode -1 */
-	vid.width = gl_customwidth->value;
-	vid.height = gl_customheight->value;
+	vid.width = r_customwidth->value;
+	vid.height = r_customheight->value;
 
 	if ((err = SetMode_impl(&vid.width, &vid.height, gl_mode->value,
 					 fullscreen)) == rserr_ok)

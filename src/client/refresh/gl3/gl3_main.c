@@ -87,13 +87,13 @@ cvar_t *gl_swapinterval;
 cvar_t *gl_retexturing;
 cvar_t *vid_fullscreen;
 cvar_t *gl_mode;
-cvar_t *gl_customwidth;
-cvar_t *gl_customheight;
+cvar_t *r_customwidth;
+cvar_t *r_customheight;
 cvar_t *vid_gamma;
 cvar_t *gl_anisotropic;
 cvar_t *gl_texturemode;
 cvar_t *gl_drawbuffer;
-cvar_t *gl_clear;
+cvar_t *r_clear;
 cvar_t *gl3_particle_size;
 cvar_t *gl3_particle_fade_factor;
 cvar_t *gl3_particle_square;
@@ -103,22 +103,22 @@ cvar_t *gl_farsee;
 
 cvar_t *gl3_intensity;
 cvar_t *gl3_intensity_2D;
-cvar_t *gl_lightlevel;
+cvar_t *r_lightlevel;
 cvar_t *gl3_overbrightbits;
 
-cvar_t *gl_norefresh;
-cvar_t *gl_drawentities;
-cvar_t *gl_drawworld;
+cvar_t *r_norefresh;
+cvar_t *r_drawentities;
+cvar_t *r_drawworld;
 cvar_t *gl_nolerp_list;
 cvar_t *gl_nobind;
 cvar_t *gl_lockpvs;
-cvar_t *gl_novis;
-cvar_t *gl_speeds;
+cvar_t *r_novis;
+cvar_t *r_speeds;
 cvar_t *gl_finish;
 
 cvar_t *gl_cull;
 cvar_t *gl_zfix;
-cvar_t *gl_fullbright;
+cvar_t *r_fullbright;
 cvar_t *gl_modulate;
 cvar_t *gl_lightmap;
 cvar_t *gl_shadows;
@@ -205,16 +205,16 @@ GL3_Register(void)
 	gl_retexturing = ri.Cvar_Get("gl_retexturing", "1", CVAR_ARCHIVE);
 	gl3_debugcontext = ri.Cvar_Get("gl3_debugcontext", "0", 0);
 	gl_mode = ri.Cvar_Get("gl_mode", "4", CVAR_ARCHIVE);
-	gl_customwidth = ri.Cvar_Get("gl_customwidth", "1024", CVAR_ARCHIVE);
-	gl_customheight = ri.Cvar_Get("gl_customheight", "768", CVAR_ARCHIVE);
+	r_customwidth = ri.Cvar_Get("r_customwidth", "1024", CVAR_ARCHIVE);
+	r_customheight = ri.Cvar_Get("r_customheight", "768", CVAR_ARCHIVE);
 	gl3_particle_size = ri.Cvar_Get("gl3_particle_size", "40", CVAR_ARCHIVE);
 	gl3_particle_fade_factor = ri.Cvar_Get("gl3_particle_fade_factor", "1.2", CVAR_ARCHIVE);
 	gl3_particle_square = ri.Cvar_Get("gl3_particle_square", "0", CVAR_ARCHIVE);
 
-	gl_norefresh = ri.Cvar_Get("gl_norefresh", "0", 0);
-	gl_drawentities = ri.Cvar_Get("gl_drawentities", "1", 0);
-	gl_drawworld = ri.Cvar_Get("gl_drawworld", "1", 0);
-	gl_fullbright = ri.Cvar_Get("gl_fullbright", "0", 0);
+	r_norefresh = ri.Cvar_Get("r_norefresh", "0", 0);
+	r_drawentities = ri.Cvar_Get("r_drawentities", "1", 0);
+	r_drawworld = ri.Cvar_Get("r_drawworld", "1", 0);
+	r_fullbright = ri.Cvar_Get("r_fullbright", "0", 0);
 
 	/* don't bilerp characters and crosshairs */
 	gl_nolerp_list = ri.Cvar_Get("gl_nolerp_list", "pics/conchars.pcx pics/ch1.pcx pics/ch2.pcx pics/ch3.pcx", 0);
@@ -228,7 +228,7 @@ GL3_Register(void)
 	gl3_intensity = ri.Cvar_Get("gl3_intensity", "1.5", CVAR_ARCHIVE);
 	gl3_intensity_2D = ri.Cvar_Get("gl3_intensity_2D", "1.5", CVAR_ARCHIVE);
 
-	gl_lightlevel = ri.Cvar_Get("gl_lightlevel", "0", 0);
+	r_lightlevel = ri.Cvar_Get("r_lightlevel", "0", 0);
 	gl3_overbrightbits = ri.Cvar_Get("gl3_overbrightbits", "1.3", CVAR_ARCHIVE);
 
 	gl_lightmap = ri.Cvar_Get("gl_lightmap", "0", 0);
@@ -236,11 +236,11 @@ GL3_Register(void)
 
 	gl_modulate = ri.Cvar_Get("gl_modulate", "1", CVAR_ARCHIVE);
 	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
-	gl_clear = ri.Cvar_Get("gl_clear", "0", 0);
+	r_clear = ri.Cvar_Get("r_clear", "0", 0);
 	gl_cull = ri.Cvar_Get("gl_cull", "1", 0);
 	gl_lockpvs = ri.Cvar_Get("gl_lockpvs", "0", 0);
-	gl_novis = ri.Cvar_Get("gl_novis", "0", 0);
-	gl_speeds = ri.Cvar_Get("gl_speeds", "0", 0);
+	r_novis = ri.Cvar_Get("r_novis", "0", 0);
+	r_speeds = ri.Cvar_Get("r_speeds", "0", 0);
 	gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
 
 	gl_dynamic = ri.Cvar_Get("gl_dynamic", "1", 0);
@@ -249,15 +249,15 @@ GL3_Register(void)
 #if 0 // TODO!
 	//gl_lefthand = ri.Cvar_Get("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
 	//gl_farsee = ri.Cvar_Get("gl_farsee", "0", CVAR_LATCH | CVAR_ARCHIVE);
-	//gl_norefresh = ri.Cvar_Get("gl_norefresh", "0", 0);
-	//gl_fullbright = ri.Cvar_Get("gl_fullbright", "0", 0);
-	//gl_drawentities = ri.Cvar_Get("gl_drawentities", "1", 0);
-	//gl_drawworld = ri.Cvar_Get("gl_drawworld", "1", 0);
-	//gl_novis = ri.Cvar_Get("gl_novis", "0", 0);
-	//gl_lerpmodels = ri.Cvar_Get("gl_lerpmodels", "1", 0); NOTE: screw this, it looks horrible without
-	//gl_speeds = ri.Cvar_Get("gl_speeds", "0", 0);
+	//r_norefresh = ri.Cvar_Get("r_norefresh", "0", 0);
+	//r_fullbright = ri.Cvar_Get("r_fullbright", "0", 0);
+	//r_drawentities = ri.Cvar_Get("r_drawentities", "1", 0);
+	//r_drawworld = ri.Cvar_Get("r_drawworld", "1", 0);
+	//r_novis = ri.Cvar_Get("r_novis", "0", 0);
+	//r_lerpmodels = ri.Cvar_Get("r_lerpmodels", "1", 0); NOTE: screw this, it looks horrible without
+	//r_speeds = ri.Cvar_Get("r_speeds", "0", 0);
 
-	//gl_lightlevel = ri.Cvar_Get("gl_lightlevel", "0", 0);
+	//r_lightlevel = ri.Cvar_Get("r_lightlevel", "0", 0);
 	//gl_overbrightbits = ri.Cvar_Get("gl_overbrightbits", "0", CVAR_ARCHIVE);
 
 	gl_particle_min_size = ri.Cvar_Get("gl_particle_min_size", "2", CVAR_ARCHIVE);
@@ -281,7 +281,7 @@ GL3_Register(void)
 	//gl_ztrick = ri.Cvar_Get("gl_ztrick", "0", 0); NOTE: dump this.
 	//gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	//gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
-	gl_clear = ri.Cvar_Get("gl_clear", "0", 0);
+	r_clear = ri.Cvar_Get("r_clear", "0", 0);
 //	gl_cull = ri.Cvar_Get("gl_cull", "1", 0);
 	gl_polyblend = ri.Cvar_Get("gl_polyblend", "1", 0);
 	//gl_flashblend = ri.Cvar_Get("gl_flashblend", "0", 0);
@@ -303,8 +303,8 @@ GL3_Register(void)
 	//vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 	//vid_gamma = ri.Cvar_Get("vid_gamma", "1.0", CVAR_ARCHIVE);
 
-	//gl_customwidth = ri.Cvar_Get("gl_customwidth", "1024", CVAR_ARCHIVE);
-	//gl_customheight = ri.Cvar_Get("gl_customheight", "768", CVAR_ARCHIVE);
+	//r_customwidth = ri.Cvar_Get("r_customwidth", "1024", CVAR_ARCHIVE);
+	//r_customheight = ri.Cvar_Get("r_customheight", "768", CVAR_ARCHIVE);
 	//gl_msaa_samples = ri.Cvar_Get ( "gl_msaa_samples", "0", CVAR_ARCHIVE );
 
 	//gl_retexturing = ri.Cvar_Get("gl_retexturing", "1", CVAR_ARCHIVE);
@@ -374,8 +374,8 @@ GL3_SetMode(void)
 
 	/* a bit hackish approach to enable custom resolutions:
 	   Glimp_SetMode needs these values set for mode -1 */
-	vid.width = gl_customwidth->value;
-	vid.height = gl_customheight->value;
+	vid.width = r_customwidth->value;
+	vid.height = r_customheight->value;
 
 	if ((err = SetMode_impl(&vid.width, &vid.height, gl_mode->value,
 					 fullscreen)) == rserr_ok)
@@ -892,7 +892,7 @@ GL3_DrawEntitiesOnList(void)
 {
 	int i;
 
-	if (!gl_drawentities->value)
+	if (!r_drawentities->value)
 	{
 		return;
 	}
@@ -1415,7 +1415,7 @@ GL3_RenderView(refdef_t *fd)
 	}
 #endif // 0 (stereo stuff)
 
-	if (gl_norefresh->value)
+	if (r_norefresh->value)
 	{
 		return;
 	}
@@ -1427,7 +1427,7 @@ GL3_RenderView(refdef_t *fd)
 		ri.Sys_Error(ERR_DROP, "R_RenderView: NULL worldmodel");
 	}
 
-	if (gl_speeds->value)
+	if (r_speeds->value)
 	{
 		c_brush_polys = 0;
 		c_alias_polys = 0;
@@ -1461,7 +1461,7 @@ GL3_RenderView(refdef_t *fd)
 
 	// Note: R_Flash() is now GL3_Draw_Flash() and called from GL3_RenderFrame()
 
-	if (gl_speeds->value)
+	if (r_speeds->value)
 	{
 		R_Printf(PRINT_ALL, "%4i wpoly %4i epoly %i tex %i lmaps\n",
 				c_brush_polys, c_alias_polys, c_visible_textures,
@@ -1525,22 +1525,22 @@ GL3_SetLightLevel(void)
 	{
 		if (shadelight[0] > shadelight[2])
 		{
-			gl_lightlevel->value = 150 * shadelight[0];
+			r_lightlevel->value = 150 * shadelight[0];
 		}
 		else
 		{
-			gl_lightlevel->value = 150 * shadelight[2];
+			r_lightlevel->value = 150 * shadelight[2];
 		}
 	}
 	else
 	{
 		if (shadelight[1] > shadelight[2])
 		{
-			gl_lightlevel->value = 150 * shadelight[1];
+			r_lightlevel->value = 150 * shadelight[1];
 		}
 		else
 		{
-			gl_lightlevel->value = 150 * shadelight[2];
+			r_lightlevel->value = 150 * shadelight[2];
 		}
 	}
 }
@@ -1575,7 +1575,7 @@ GL3_Clear(void)
 #endif // 0
 
 
-	if (gl_clear->value)
+	if (r_clear->value)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | stencilFlags | GL_DEPTH_BUFFER_BIT);
 	}

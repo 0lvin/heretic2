@@ -28,6 +28,33 @@
 
 cvar_t *cvar_vars;
 
+
+typedef struct
+{
+	char *old;
+	char *new;
+} replacement_t;
+
+/* An ugly hack to rewrite CVARs loaded from config.cfg */
+replacement_t replacements[] = {
+	{"cl_drawfps", "cl_showfps"},
+	{"gl_drawentities", "r_drawentities"},
+	{"gl_drawworld", "r_drawworld"},
+	{"gl_fullbright", "r_fullbright"},
+	{"gl_lerpmodels", "r_lerpmodels"},
+	{"gl_lightlevel", "r_lightlevel"},
+	{"gl_norefresh", "r_norefresh"},
+	{"gl_novis", "r_novis"},
+	{"gl_speeds", "r_speeds"},
+	{"gl_clear", "r_clear"},
+	{"gl_consolescale", "r_consolescale"},
+	{"gl_hudscale", "r_hudscale"},
+	{"gl_menuscale", "r_scale"},
+	{"gl_customheight", "r_customheight"},
+	{"gl_customwidth", "r_customheight"}
+};
+
+
 static qboolean
 Cvar_InfoValidate(char *s)
 {
@@ -53,9 +80,21 @@ static cvar_t *
 Cvar_FindVar(const char *var_name)
 {
 	cvar_t *var;
+	int i;
 
 	for (var = cvar_vars; var; var = var->next)
 	{
+		/* An ugly hack to rewrite changed CVARs */
+		for (i = 0; i < sizeof(replacements) / sizeof(replacement_t); i++)
+		{
+			if (!strcmp(var_name, replacements[i].old))
+			{
+				Com_Printf("cvar %s ist deprecated, use %s instead\n", replacements[i].old, replacements[i].new);
+
+				var_name = replacements[i].new;
+			}
+		}
+
 		if (!strcmp(var_name, var->name))
 		{
 			return var;
@@ -93,40 +132,6 @@ Cvar_VariableString(const char *var_name)
 	}
 
 	return var->string;
-}
-
-char *
-Cvar_CompleteVariable(char *partial)
-{
-	cvar_t *cvar;
-	int len;
-
-	len = (int)strlen(partial);
-
-	if (!len)
-	{
-		return NULL;
-	}
-
-	/* check exact match */
-	for (cvar = cvar_vars; cvar; cvar = cvar->next)
-	{
-		if (!strcmp(partial, cvar->name))
-		{
-			return cvar->name;
-		}
-	}
-
-	/* check partial match */
-	for (cvar = cvar_vars; cvar; cvar = cvar->next)
-	{
-		if (!strncmp(partial, cvar->name, len))
-		{
-			return cvar->name;
-		}
-	}
-
-	return NULL;
 }
 
 /*
@@ -408,8 +413,8 @@ Cvar_Command(void)
 void
 Cvar_Set_f(void)
 {
-	int c;
-	int flags;
+	char *firstarg;
+	int c, flags, i;
 
 	c = Cmd_Argc();
 
@@ -417,6 +422,17 @@ Cvar_Set_f(void)
 	{
 		Com_Printf("usage: set <variable> <value> [u / s]\n");
 		return;
+	}
+
+	firstarg = Cmd_Argv(1);
+
+	/* An ugly hack to rewrite changed CVARs */
+	for (i = 0; i < sizeof(replacements) / sizeof(replacement_t); i++)
+	{
+		if (!strcmp(firstarg, replacements[i].old))
+		{
+			firstarg = replacements[i].new;
+		}
 	}
 
 	if (c == 4)
@@ -437,12 +453,11 @@ Cvar_Set_f(void)
 			return;
 		}
 
-		Cvar_FullSet(Cmd_Argv(1), Cmd_Argv(2), flags);
+		Cvar_FullSet(firstarg, Cmd_Argv(2), flags);
 	}
-
 	else
 	{
-		Cvar_Set(Cmd_Argv(1), Cmd_Argv(2));
+		Cvar_Set(firstarg, Cmd_Argv(2));
 	}
 }
 
@@ -595,11 +610,11 @@ Cvar_Fini(void)
 
 	for (var = cvar_vars; var;)
 	{
-		cvar_t *c = var;
+		cvar_t *c = var->next;
 		Z_Free(var->string);
 		Z_Free(var->name);
 		Z_Free(var);
-		var = c->next;
+        var = c;
 	}
 
 	Cmd_RemoveCommand("cvarlist");

@@ -44,7 +44,7 @@ cvar_t *cl_noskins;
 cvar_t *cl_footsteps;
 cvar_t *cl_timeout;
 cvar_t *cl_predict;
-cvar_t *cl_drawfps;
+cvar_t *cl_showfps;
 cvar_t *cl_gun;
 cvar_t *cl_add_particles;
 cvar_t *cl_add_lights;
@@ -483,7 +483,7 @@ CL_InitLocal(void)
 	cl_footsteps = Cvar_Get("cl_footsteps", "1", 0);
 	cl_noskins = Cvar_Get("cl_noskins", "0", 0);
 	cl_predict = Cvar_Get("cl_predict", "1", 0);
-	cl_drawfps = Cvar_Get("cl_drawfps", "0", CVAR_ARCHIVE);
+	cl_showfps = Cvar_Get("cl_showfps", "0", CVAR_ARCHIVE);
 
 	cl_upspeed = Cvar_Get("cl_upspeed", "200", 0);
 	cl_forwardspeed = Cvar_Get("cl_forwardspeed", "200", 0);
@@ -515,7 +515,7 @@ CL_InitLocal(void)
 	rcon_client_password = Cvar_Get("rcon_password", "", 0);
 	rcon_address = Cvar_Get("rcon_address", "", 0);
 
-	cl_lightlevel = Cvar_Get("gl_lightlevel", "0", 0);
+	cl_lightlevel = Cvar_Get("r_lightlevel", "0", 0);
 
 	/* userinfo */
 	name = Cvar_Get("name", "unnamed", CVAR_USERINFO | CVAR_ARCHIVE);
@@ -632,9 +632,9 @@ typedef struct
 cheatvar_t cheatvars[] = {
 	{"timescale", "1"},
 	{"timedemo", "0"},
-	{"gl_drawworld", "1"},
+	{"r_drawworld", "1"},
 	{"cl_testlights", "0"},
-	{"gl_fullbright", "0"},
+	{"r_fullbright", "0"},
 	{"gl_drawflat", "0"},
 	{"paused", "0"},
 	{"fixedtime", "0"},

@@ -50,9 +50,9 @@ cvar_t *scr_graphscale;
 cvar_t *scr_graphshift;
 cvar_t *scr_drawall;
 
-cvar_t *gl_hudscale; /* named for consistency with R1Q2 */
-cvar_t *gl_consolescale;
-cvar_t *gl_menuscale;
+cvar_t *r_hudscale; /* named for consistency with R1Q2 */
+cvar_t *r_consolescale;
+cvar_t *r_menuscale;
 
 typedef struct
 {
@@ -64,7 +64,7 @@ dirty_t scr_dirty, scr_old_dirty[2];
 char crosshair_pic[MAX_QPATH];
 int crosshair_width, crosshair_height;
 
-extern cvar_t *cl_drawfps;
+extern cvar_t *cl_showfps;
 extern cvar_t *crosshair_scale;
 
 void SCR_TimeRefresh_f(void);
@@ -431,9 +431,9 @@ SCR_Init(void)
 	scr_graphscale = Cvar_Get("graphscale", "1", 0);
 	scr_graphshift = Cvar_Get("graphshift", "0", 0);
 	scr_drawall = Cvar_Get("scr_drawall", "0", 0);
-	gl_hudscale = Cvar_Get("gl_hudscale", "-1", CVAR_ARCHIVE);
-	gl_consolescale = Cvar_Get("gl_consolescale", "-1", CVAR_ARCHIVE);
-	gl_menuscale = Cvar_Get("gl_menuscale", "-1", CVAR_ARCHIVE);
+	r_hudscale = Cvar_Get("r_hudscale", "-1", CVAR_ARCHIVE);
+	r_consolescale = Cvar_Get("r_consolescale", "-1", CVAR_ARCHIVE);
+	r_menuscale = Cvar_Get("r_menuscale", "-1", CVAR_ARCHIVE);
 
 	/* register our commands */
 	Cmd_AddCommand("timerefresh", SCR_TimeRefresh_f);
@@ -1430,7 +1430,7 @@ SCR_Framecounter(void) {
 
 	float scale = SCR_GetConsoleScale();
 
-	if (cl_drawfps->value == 1) {
+	if (cl_showfps->value == 1) {
 		// Calculate average of frames.
 		int avg = 0;
 		int num = 0;
@@ -1446,7 +1446,7 @@ SCR_Framecounter(void) {
 		char str[10];
 		snprintf(str, sizeof(str), "%3.2ffps", (1000.0 * 1000.0) / (avg / num));
 		DrawStringScaled(viddef.width - scale*(strlen(str)*8 + 2), 0, str, scale);
-	} else if (cl_drawfps->value >= 2) {
+	} else if (cl_showfps->value >= 2) {
 		// Calculate average of frames.
 		int avg = 0;
 		int num = 0;
@@ -1478,7 +1478,7 @@ SCR_Framecounter(void) {
 		         (1000.0 * 1000.0) / min, (1000.0 * 1000.0) / max, (1000.0 * 1000.0) / (avg / num));
 		DrawStringScaled(viddef.width - scale*(strlen(str)*8 + 2), 0, str, scale);
 
-		if (cl_drawfps->value > 2)
+		if (cl_showfps->value > 2)
 		{
 			snprintf(str, sizeof(str), "Max: %5.2fms, Min: %5.2fms, Avg: %5.2fms",
 			         0.001f*min, 0.001f*max, 0.001f*(avg / num));
@@ -1725,17 +1725,17 @@ SCR_GetHUDScale(void)
 	{
 		scale = 1;
 	}
-	else if (gl_hudscale->value < 0)
+	else if (r_hudscale->value < 0)
 	{
 		scale = SCR_GetDefaultScale();
 	}
-	else if (gl_hudscale->value == 0) /* HACK: allow scale 0 to hide the HUD */
+	else if (r_hudscale->value == 0) /* HACK: allow scale 0 to hide the HUD */
 	{
 		scale = 0;
 	}
 	else
 	{
-		scale = SCR_ClampScale(gl_hudscale->value);
+		scale = SCR_ClampScale(r_hudscale->value);
 	}
 
 	return scale;
@@ -1750,13 +1750,13 @@ SCR_GetConsoleScale(void)
 	{
 		scale = 1;
 	}
-	else if (gl_consolescale->value < 0)
+	else if (r_consolescale->value < 0)
 	{
 		scale = SCR_GetDefaultScale();
 	}
 	else
 	{
-		scale = SCR_ClampScale(gl_consolescale->value);
+		scale = SCR_ClampScale(r_consolescale->value);
 	}
 
 	return scale;
@@ -1771,13 +1771,13 @@ SCR_GetMenuScale(void)
 	{
 		scale = 1;
 	}
-	else if (gl_menuscale->value < 0)
+	else if (r_menuscale->value < 0)
 	{
 		scale = SCR_GetDefaultScale();
 	}
 	else
 	{
-		scale = SCR_ClampScale(gl_menuscale->value);
+		scale = SCR_ClampScale(r_menuscale->value);
 	}
 
 	return scale;
