@@ -1748,9 +1748,9 @@ AddAliasModel(entity_t *entity, model_t *model)
 		entity->oldframe = 0;
 	}
 
-	/* Disable interpolation if the gl_lerpmodels Cvar is zero. */
+	/* Disable interpolation if the r_lerpmodels Cvar is zero. */
 
-	if (!gl_lerpmodels->value)
+	if (!r_lerpmodels->value)
 	{
 		entity->backlerp = 0;
 	}
@@ -2482,7 +2482,7 @@ R_DrawPathtracerDepthPrePass(void)
 	int element_count;
 	triangle_mesh_state_t *current_trimesh_state = pt_triangle_mesh_states + ((r_framecount + 1) % PT_TRIANGLE_MESH_STATES);
 
-	if (!gl_pt_depth_prepass_enable->value || !current_trimesh_state->vertex_buffer || !current_trimesh_state->triangle_buffer || pt_num_shadow_triangles == 0 || !gl_drawentities->value)
+	if (!gl_pt_depth_prepass_enable->value || !current_trimesh_state->vertex_buffer || !current_trimesh_state->triangle_buffer || pt_num_shadow_triangles == 0 || !r_drawentities->value)
 		return;
 
 	glEnable(GL_POLYGON_OFFSET_FILL);
