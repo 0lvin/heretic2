@@ -80,7 +80,7 @@
 /* fall over */
 #define ROLL 2
 
-#define CHECK_GL_ERROR() { GLuint err = glGetError(); if (err != GL_NO_ERROR) {	ri.Con_Printf(PRINT_ALL, "OpenGL Error at %s line %d: glGetError() = 0x%x\n", __FILE__, __LINE__, err); } }
+#define CHECK_GL_ERROR() { GLuint err = glGetError(); if (err != GL_NO_ERROR) {	ri.Con_Printf(PRINT_ALL, "%s: OpenGL Error at %s:%d  glGetError() = 0x%x\n", __FUNC__, __FILE__, __LINE__, err); } }
 
 extern viddef_t vid;
 

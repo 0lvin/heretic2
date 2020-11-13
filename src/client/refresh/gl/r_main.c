@@ -127,8 +127,8 @@ cvar_t *gl_anisotropic;
 cvar_t *gl_lockpvs;
 cvar_t *gl_msaa_samples;
 
-//cvar_t *vid_fullscreen;
-//cvar_t *vid_gamma;
+cvar_t *vid_fullscreen;
+cvar_t *vid_gamma;
 
 static cvar_t *gl_stereo;
 static cvar_t *gl_stereo_separation;

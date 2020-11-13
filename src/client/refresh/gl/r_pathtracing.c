@@ -28,7 +28,9 @@
 
 #include <assert.h>
 
-#include "../header/local.h"
+#include "header/local.h"
+
+#include <SDL2/SDL.h>
 
 #define PT_MAX_TRI_NODES					16384
 #define PT_MAX_TRIANGLES					16384
@@ -305,7 +307,7 @@ PrintMissingGLFeaturesMessageAndDisablePathtracing()
 	ri.Con_Printf(PRINT_ALL, "ERROR: The OpenGL features necessary for pathtracing are not available.\n");
 
 	if (gl_pt_enable)
-		Cvar_ForceSet(gl_pt_enable->name, "0");
+		ri.Cvar_Set(gl_pt_enable->name, "0");
 }
 
 static void
@@ -2378,7 +2380,7 @@ AddSingleEntity(entity_t *entity)
 		case mod_sprite:
 			break;
 		default:
-			VID_Error(ERR_DROP, "Bad modeltype");
+			ri.Sys_Error(ERR_DROP, "Bad modeltype");
 			break;
 	}
 }
@@ -2600,7 +2602,7 @@ R_UpdatePathtracerForCurrentFrame(void)
 
 	if (gl_pt_stats_enable->value)
 	{
-		ms = Sys_Milliseconds();
+		ms = SDL_GetTicks();
 		start_ms = ms;
 
 		if (pt_last_update_ms != -1)
@@ -2960,7 +2962,7 @@ R_UpdatePathtracerForCurrentFrame(void)
 	/* Print the stats if necessary. */
 	if (gl_pt_stats_enable->value)
 	{
-		end_ms = Sys_Milliseconds();
+		end_ms = SDL_GetTicks();
 
 		ri.Con_Printf(PRINT_ALL, "pt_stats: f=%7d, n=%7d, t=%7d, v=%7d, w=%7d, l=%7d, c=%7d, r=%7d\n", r_framecount, pt_num_nodes,
 						pt_num_triangles - pt_dynamic_triangles_offset, pt_num_vertices - pt_dynamic_vertices_offset, pt_written_nodes, pt_num_lights - pt_dynamic_lights_offset,
@@ -3054,9 +3056,9 @@ AddStaticBSP()
 
 	num_texels = pt_bsp_texture_width * pt_bsp_texture_height;
 
-	tex_node_data = (float*)Z_Malloc(num_texels * 4 * sizeof(float));
-	tex_child_data = (unsigned char*)Z_Malloc(num_texels * 4);
-	tex_light_data = (int*)Z_Malloc(num_texels * 4 * sizeof(int));
+	tex_node_data = (float*)malloc(num_texels * 4 * sizeof(float));
+	tex_child_data = (unsigned char*)malloc(num_texels * 4);
+	tex_light_data = (int*)malloc(num_texels * 4 * sizeof(int));
 
 	for (i = 0; i < r_worldmodel->numnodes; ++i)
 	{
@@ -3125,9 +3127,9 @@ AddStaticBSP()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32I, pt_bsp_texture_width, pt_bsp_texture_height, 0, GL_RGBA_INTEGER, GL_INT, tex_light_data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	Z_Free(tex_node_data);
-	Z_Free(tex_child_data);
-	Z_Free(tex_light_data);
+	free(tex_node_data);
+	free(tex_child_data);
+	free(tex_light_data);
 }
 
 
@@ -3483,10 +3485,10 @@ PrintObjectInfoLog(GLhandleARB object)
 
 	if (info_log_length > 0)
 	{
-		info_log_buffer = (GLcharARB*)Z_Malloc(info_log_length * sizeof(GLcharARB));
+		info_log_buffer = (GLcharARB*)malloc(info_log_length * sizeof(GLcharARB));
 		qglGetInfoLogARB(object, info_log_length, NULL, info_log_buffer);
 		ri.Con_Printf(PRINT_ALL, info_log_buffer);
-		Z_Free(info_log_buffer);
+		free(info_log_buffer);
 	}
 }
 
@@ -3735,7 +3737,7 @@ R_InitPathtracing(void)
 
 	/* Initialise the console variables. */
 
-#define GET_PT_CVAR(x, d) x = Cvar_Get( #x, d, CVAR_ARCHIVE); PT_ASSERT(x != NULL);
+#define GET_PT_CVAR(x, d) x = ri.Cvar_Get( #x, d, CVAR_ARCHIVE); PT_ASSERT(x != NULL);
 	GET_PT_CVAR(gl_pt_enable, "0")
 	GET_PT_CVAR(gl_pt_stats_enable, "0")
 	GET_PT_CVAR(gl_pt_bounces, "0")
@@ -3765,8 +3767,8 @@ R_InitPathtracing(void)
 	GET_PT_CVAR(gl_pt_specular_factor, "0.75")
 #undef GET_PT_CVAR
 
-	Cmd_AddCommand("gl_pt_recompile_shaders", RecompileShaderPrograms);
-	Cmd_AddCommand("gl_pt_print_static_info", PrintStaticInfo);
+	ri.Cmd_AddCommand("gl_pt_recompile_shaders", RecompileShaderPrograms);
+	ri.Cmd_AddCommand("gl_pt_print_static_info", PrintStaticInfo);
 
 	if (!R_PathtracingIsSupportedByGL())
 	{
@@ -3822,8 +3824,8 @@ R_ShutdownPathtracing(void)
 		BindTextureUnit(PT_TEXTURE_UNIT_TAA_WORLD, 			GL_TEXTURE_2D,			0);
 	}
 
-	Cmd_RemoveCommand("gl_pt_recompile_shaders");
-	Cmd_RemoveCommand("gl_pt_print_static_info");
+	ri.Cmd_RemoveCommand("gl_pt_recompile_shaders");
+	ri.Cmd_RemoveCommand("gl_pt_print_static_info");
 
 	FreeModelData();
 	FreeShaderPrograms();

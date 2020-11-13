@@ -898,7 +898,7 @@ Mod_LoadEntityString(lump_t *l)
 
 	if (l->filelen > MAX_MAP_ENTSTRING)
 	{
-		VID_Error(ERR_DROP, "Mod_LoadEntityString: Map has too large entity lump");
+		ri.Sys_Error(ERR_DROP, "Mod_LoadEntityString: Map has too large entity lump");
 	}
 
 	memcpy(map_entitystring, mod_base + l->fileofs, l->filelen);
