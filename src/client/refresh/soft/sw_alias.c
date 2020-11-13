@@ -271,14 +271,14 @@ R_AliasPreparePoints (void)
 				continue;	// completely clipped
 
 			// insert s/t coordinates
-			pfv[0]->s = pstverts[ptri->index_st[0]].s << 16;
-			pfv[0]->t = pstverts[ptri->index_st[0]].t << 16;
+			pfv[0]->s = pstverts[ptri->index_st[0]].s << SHIFT16XYZ;
+			pfv[0]->t = pstverts[ptri->index_st[0]].t << SHIFT16XYZ;
 
-			pfv[1]->s = pstverts[ptri->index_st[1]].s << 16;
-			pfv[1]->t = pstverts[ptri->index_st[1]].t << 16;
+			pfv[1]->s = pstverts[ptri->index_st[1]].s << SHIFT16XYZ;
+			pfv[1]->t = pstverts[ptri->index_st[1]].t << SHIFT16XYZ;
 
-			pfv[2]->s = pstverts[ptri->index_st[2]].s << 16;
-			pfv[2]->t = pstverts[ptri->index_st[2]].t << 16;
+			pfv[2]->s = pstverts[ptri->index_st[2]].s << SHIFT16XYZ;
+			pfv[2]->t = pstverts[ptri->index_st[2]].t << SHIFT16XYZ;
 
 			if ( ! (pfv[0]->flags | pfv[1]->flags | pfv[2]->flags) )
 			{	// totally unclipped
@@ -306,14 +306,14 @@ R_AliasPreparePoints (void)
 				continue;	// completely clipped
 
 			// insert s/t coordinates
-			pfv[0]->s = pstverts[ptri->index_st[0]].s << 16;
-			pfv[0]->t = pstverts[ptri->index_st[0]].t << 16;
+			pfv[0]->s = pstverts[ptri->index_st[0]].s << SHIFT16XYZ;
+			pfv[0]->t = pstverts[ptri->index_st[0]].t << SHIFT16XYZ;
 
-			pfv[1]->s = pstverts[ptri->index_st[1]].s << 16;
-			pfv[1]->t = pstverts[ptri->index_st[1]].t << 16;
+			pfv[1]->s = pstverts[ptri->index_st[1]].s << SHIFT16XYZ;
+			pfv[1]->t = pstverts[ptri->index_st[1]].t << SHIFT16XYZ;
 
-			pfv[2]->s = pstverts[ptri->index_st[2]].s << 16;
-			pfv[2]->t = pstverts[ptri->index_st[2]].t << 16;
+			pfv[2]->s = pstverts[ptri->index_st[2]].s << SHIFT16XYZ;
+			pfv[2]->t = pstverts[ptri->index_st[2]].t << SHIFT16XYZ;
 
 			if ( ! (pfv[0]->flags | pfv[1]->flags | pfv[2]->flags) )
 			{	// totally unclipped
@@ -723,12 +723,22 @@ void R_AliasDrawModel (void)
 	if ( r_lerpmodels->value == 0 )
 		currententity->backlerp = 0;
 
+	float oldAliasxscale = aliasxscale;
+	float oldAliasyscale = aliasyscale;
+
 	if ( currententity->flags & RF_WEAPONMODEL )
 	{
+		if ( r_lefthand->value == 2.0F )
+		{
+			return;
+		}
+
+		float fov = 2.0*tan(r_gunfov->value*((4.0/3.0)*M_PI/360.0));
+		aliasxscale = ((float)r_refdef.vrect.width / fov) * r_aliasuvscale;
+		aliasyscale = aliasxscale;
+
 		if ( r_lefthand->value == 1.0F )
 			aliasxscale = -aliasxscale;
-		else if ( r_lefthand->value == 2.0F )
-			return;
 	}
 
 	/*
@@ -742,9 +752,10 @@ void R_AliasDrawModel (void)
 	// trivial accept status
 	if ( R_AliasCheckBBox() == BBOX_TRIVIAL_REJECT )
 	{
-		if ( ( currententity->flags & RF_WEAPONMODEL ) && ( r_lefthand->value == 1.0F ) )
+		if ( currententity->flags & RF_WEAPONMODEL )
 		{
-			aliasxscale = -aliasxscale;
+			aliasxscale = oldAliasxscale;
+			aliasyscale = oldAliasyscale;
 		}
 		return;
 	}
@@ -754,6 +765,8 @@ void R_AliasDrawModel (void)
 	{
 		R_Printf( PRINT_ALL, "R_AliasDrawModel %s: NULL skin found\n",
 			currentmodel->name);
+		aliasxscale = oldAliasxscale;
+		aliasyscale = oldAliasyscale;
 		return;
 	}
 
@@ -845,14 +858,15 @@ void R_AliasDrawModel (void)
 	R_AliasSetUpLerpData( s_pmdl, currententity->backlerp );
 
 	if (currententity->flags & RF_DEPTHHACK)
-		s_ziscale = (float)0x8000 * (float)0x10000 * 3.0;
+		s_ziscale = (float)0x8000 * (float)SHIFT16XYZ_MULT * 3.0;
 	else
-		s_ziscale = (float)0x8000 * (float)0x10000;
+		s_ziscale = (float)0x8000 * (float)SHIFT16XYZ_MULT;
 
 	R_AliasPreparePoints ();
 
-	if ( ( currententity->flags & RF_WEAPONMODEL ) && ( r_lefthand->value == 1.0F ) )
+	if ( currententity->flags & RF_WEAPONMODEL )
 	{
-		aliasxscale = -aliasxscale;
+		aliasxscale = oldAliasxscale;
+		aliasyscale = oldAliasyscale;
 	}
 }

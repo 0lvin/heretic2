@@ -26,7 +26,11 @@
  */
 
 #include "header/common.h"
-#include "../common/header/glob.h"
+#include "header/glob.h"
+
+#ifdef OGG
+#include "../client/sound/header/vorbis.h"
+#endif
 
 #ifdef ZIP
  #include "unzip/unzip.h"
@@ -558,16 +562,13 @@ FS_Read(void *buffer, int size, fileHandle_t f)
 			else
 			{
 				/* Already tried once. */
-				Com_Error(ERR_FATAL,
-						va("FS_Read: 0 bytes read from '%s'", handle->name));
+				Com_Error(ERR_FATAL, "FS_Read: 0 bytes read from '%s'", handle->name);
 				return size - remaining;
 			}
 		}
 		else if (r == -1)
 		{
-			Com_Error(ERR_FATAL,
-					"FS_Read: -1 bytes read from '%s'",
-					handle->name);
+			Com_Error(ERR_FATAL, "FS_Read: -1 bytes read from '%s'", handle->name);
 		}
 
 		remaining -= r;
@@ -1307,6 +1308,24 @@ FS_Dir_f(void)
 
 // --------
 
+const char*
+FS_GetNextRawPath(const char* lastRawPath)
+{
+	assert(fs_rawPath != NULL && "Don't call this if before FS_InitFilesystem()");
+	if(lastRawPath == NULL)
+	{
+		return fs_rawPath->path;
+	}
+	for(fsRawPath_t* rp = fs_rawPath; rp != NULL; rp = rp->next)
+	{
+		if(rp->path == lastRawPath)
+		{
+			return (rp->next != NULL) ? rp->next->path : NULL;
+		}
+	}
+	return NULL;
+}
+
 void
 FS_AddDirToSearchPath(char *dir, qboolean create) {
 	char **list;
@@ -1556,6 +1575,12 @@ FS_BuildGameSpecificSearchPath(char *dir)
 
 	// the gamedir has changed, so read in the corresponding configs
 	Qcommon_ExecConfigs(false);
+
+#if !defined(DEDICATED_ONLY) && defined(OGG)
+	// this function is called whenever the game cvar changes => the player wants to switch to another mod
+	// in that case the list of music tracks needs to be loaded again (=> tracks are possibly from the new mod dir)
+	OGG_InitTrackList();
+#endif
 }
 
 // --------
@@ -1647,6 +1672,13 @@ FS_InitFilesystem(void)
 	{
 		FS_BuildGameSpecificSearchPath(fs_gamedirvar->string);
 	}
+#if !defined(DEDICATED_ONLY) && defined(OGG)
+	else
+	{
+		// no mod, but we still need to get the list of OGG tracks for background music
+		OGG_InitTrackList();
+	}
+#endif
 
 	// Debug output
 	Com_Printf("Using '%s' for writing.\n", fs_gamedir);

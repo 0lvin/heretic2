@@ -34,6 +34,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/select.h> /* for fd_set */
 
 #ifdef __APPLE__
 #include <mach/clock.h>
@@ -434,6 +435,37 @@ Sys_Mkdir(char *path)
 	mkdir(path, 0755);
 }
 
+qboolean
+Sys_IsDir(const char *path)
+{
+	struct stat sb;
+
+	if (stat(path, &sb) != -1)
+	{
+		if (S_ISDIR(sb.st_mode))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+qboolean
+Sys_IsFile(const char *path)
+{
+	struct stat sb;
+
+	if (stat(path, &sb) != -1)
+	{
+		if (S_ISREG(sb.st_mode))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
 
 char *
 Sys_GetHomeDir(void)

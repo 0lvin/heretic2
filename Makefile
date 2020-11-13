@@ -136,6 +136,10 @@ else
 COMPILER := unknown
 endif
 
+# Used to detect libraries. Override to foobar-linux-gnu-pkg-config when
+# cross-compiling.
+PKG_CONFIG ?= pkg-config
+
 # Disable CDA for SDL2
 ifeq ($(WITH_SDL2),yes)
 ifeq ($(WITH_CDA),yes)
@@ -265,8 +269,8 @@ endif # SDL2
 ifneq ($(YQ2_OSTYPE), Windows)
 ifneq ($(YQ2_OSTYPE), Darwin)
 ifeq ($(WITH_X11GAMMA),yes)
-X11CFLAGS := $(shell pkg-config x11 --cflags)
-X11CFLAGS += $(shell pkg-config xxf86vm --cflags)
+X11CFLAGS := $(shell $(PKG_CONFIG) x11 --cflags)
+X11CFLAGS += $(shell $(PKG_CONFIG) xxf86vm --cflags)
 endif
 endif
 endif
@@ -335,9 +339,9 @@ endif # Darwin
 ifneq ($(YQ2_OSTYPE), Windows)
 ifneq ($(YQ2_OSTYPE), Darwin)
 ifeq ($(WITH_X11GAMMA),yes)
-X11LDFLAGS := $(shell pkg-config x11 --libs)
-X11LDFLAGS += $(shell pkg-config xxf86vm --libs)
-X11LDFLAGS += $(shell pkg-config xrandr --libs)
+X11LDFLAGS := $(shell $(PKG_CONFIG) x11 --libs)
+X11LDFLAGS += $(shell $(PKG_CONFIG) xxf86vm --libs)
+X11LDFLAGS += $(shell $(PKG_CONFIG) xrandr --libs)
 endif
 endif
 endif
@@ -524,12 +528,8 @@ ifeq ($(WITH_SDL2),yes)
 release/quake2 : CFLAGS += -DSDL2
 endif
 
-ifneq ($(YQ2_OSTYPE), Darwin)
-release/ref_gl1.so : LDFLAGS += -lGL
-endif
-
 ifeq ($(YQ2_OSTYPE), FreeBSD)
-release/quake2 : LDFLAGS += -Wl,-z,origin,-rpath='$$ORIGIN/lib'
+release/quake2 : LDFLAGS += -Wl,-z,origin,-rpath='$$ORIGIN/lib' -lexecinfo
 else ifeq ($(YQ2_OSTYPE), Linux)
 release/quake2 : LDFLAGS += -Wl,-z,origin,-rpath='$$ORIGIN/lib'
 endif
@@ -589,6 +589,10 @@ ifeq ($(WITH_ZIP),yes)
 release/q2ded : CFLAGS += $(ZIPCFLAGS) -DZIP -DNOUNCRYPT
 release/q2ded : LDFLAGS += -lz
 endif
+
+ifeq ($(YQ2_OSTYPE), FreeBSD)
+release/q2ded : LDFLAGS += -lexecinfo
+endif
 endif
 
 # ----------
@@ -632,7 +636,7 @@ ref_gl1:
 
 
 release/ref_gl1.so : CFLAGS += -fPIC
-release/ref_gl1.so : LDFLAGS += -shared
+release/ref_gl1.so : LDFLAGS += -shared -lGL
 
 ifeq ($(WITH_SDL2),yes)
 release/ref_gl1.so : CFLAGS += -DSDL2

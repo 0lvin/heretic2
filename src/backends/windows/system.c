@@ -464,6 +464,38 @@ Sys_Mkdir(char *path)
 	CreateDirectoryW(wpath, NULL);
 }
 
+qboolean
+Sys_IsDir(const char *path)
+{
+	WCHAR wpath[MAX_OSPATH] = {0};
+	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
+
+	DWORD fileAttributes = GetFileAttributesW(wpath);
+	if (fileAttributes == INVALID_FILE_ATTRIBUTES)
+	{
+		return false;
+	}
+
+	return (fileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+}
+
+qboolean
+Sys_IsFile(const char *path)
+{
+	WCHAR wpath[MAX_OSPATH] = {0};
+	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
+
+	DWORD fileAttributes = GetFileAttributesW(wpath);
+	if (fileAttributes == INVALID_FILE_ATTRIBUTES)
+	{
+		return false;
+	}
+
+	// I guess the assumption that if it's not a file or device
+	// then it's a directory is good enough for us?
+	return (fileAttributes & (FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_DEVICE)) == 0;
+}
+
 char *
 Sys_GetHomeDir(void)
 {
@@ -472,14 +504,6 @@ Sys_GetHomeDir(void)
 	char profile[MAX_PATH];
 	static char gdir[MAX_OSPATH];
 	WCHAR uprofile[MAX_PATH];
-
-	/* The following lines implement a horrible
-	   hack to connect the UTF-16 WinAPI to the
-	   ASCII Quake II. While this should work in
-	   most cases, it'll fail if the "Windows to
-	   DOS filename translation" is switched off.
-	   In that case the function will return NULL
-	   and no homedir is used. */
 
 	/* Get the path to "My Documents" directory */
 	SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, 0, uprofile);

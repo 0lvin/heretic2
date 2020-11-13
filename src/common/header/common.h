@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "7.20"
+#define YQ2VERSION "7.21"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -51,16 +51,6 @@
  #define CFGDIR "YamagiQ2"
 #else
  #define CFGDIR ".yq2"
-#endif
-
-#ifdef _WIN32
- #define LIBGL "opengl32.dll"
-#elif defined __OpenBSD__
- #define LIBGL "libGL.so"
-#elif defined __APPLE__
- #define LIBGL "/System/Library/Frameworks/OpenGL.framework/OpenGL"
-#else
- #define LIBGL "libGL.so.1"
 #endif
 
 /* ================================================================== */
@@ -686,6 +676,7 @@ void FS_BuildGameSpecificSearchPath(char *dir);
 char *FS_Gamedir(void);
 char *FS_NextPath(char *prevpath);
 int FS_LoadFile(char *path, void **buffer);
+const char* FS_GetNextRawPath(const char* lastRawPath);
 
 /* a null buffer will just return the file length without loading */
 /* a -1 length is not present */
@@ -708,13 +699,13 @@ void FS_CreatePath(char *path);
 #define PRINT_ALL 0
 #define PRINT_DEVELOPER 1   /* only print when "developer 1" */
 
-void Com_BeginRedirect(int target, char *buffer, int buffersize, void (*flush));
+void Com_BeginRedirect(int target, char *buffer, int buffersize, void (*flush)(int, char *));
 void Com_EndRedirect(void);
 void Com_Printf(char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 void Com_DPrintf(char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 void Com_VPrintf(int print_level, const char *fmt, va_list argptr); /* print_level is PRINT_ALL or PRINT_DEVELOPER */
-void Com_MDPrintf(char *fmt, ...);
-void Com_Error(int code, char *fmt, ...);
+void Com_MDPrintf(char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+void Com_Error(int code, char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 void Com_Quit(void);
 
 int Com_ServerState(void);              /* this should have just been a cvar... */

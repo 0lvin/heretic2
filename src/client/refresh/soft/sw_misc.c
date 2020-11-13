@@ -26,8 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "header/local.h"
 
-#define NUM_MIPS	4
-
 cvar_t	*sw_mipcap;
 cvar_t	*sw_mipscale;
 
@@ -40,7 +38,7 @@ static int	r_frustum_indexes[4*6];
 static float	basemip[NUM_MIPS-1] = {1.0, 0.5*0.8, 0.25*0.8};
 int	d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle;
 float	xcenter, ycenter;
-int	d_pix_min, d_pix_max, d_pix_shift;
+int	d_pix_min, d_pix_max, d_pix_mul;
 
 /*
 ================
@@ -56,14 +54,15 @@ D_ViewChanged (void)
 
 	d_zwidth = vid.width;
 
-	d_pix_min = r_refdef.vrect.width / 320;
+	d_pix_min = r_refdef.vrect.height / 240;
 	if (d_pix_min < 1)
 		d_pix_min = 1;
 
-	d_pix_max = (int)((float)r_refdef.vrect.width / (320.0 / 4.0) + 0.5);
-	d_pix_shift = 8 - (int)((float)r_refdef.vrect.width / 320.0 + 0.5);
+	d_pix_max = (int)((float)r_refdef.vrect.height / (240.0 / 4.0) + 0.5);
 	if (d_pix_max < 1)
 		d_pix_max = 1;
+
+	d_pix_mul = (int)((float)r_refdef.vrect.height / 240.0 + 0.5);
 
 	d_vrectx = r_refdef.vrect.x;
 	d_vrecty = r_refdef.vrect.y;
@@ -340,6 +339,8 @@ void R_SetupFrame (void)
 	// current viewleaf
 	if ( !( r_newrefdef.rdflags & RDF_NOWORLDMODEL ) )
 	{
+		// Determine what is the current view cluster (walking the BSP tree)
+		// and store it in r_viewcluster
 		r_viewleaf = Mod_PointInLeaf (r_origin, r_worldmodel);
 		r_viewcluster = r_viewleaf->cluster;
 	}
@@ -354,11 +355,11 @@ void R_SetupFrame (void)
 		// warp into off screen buffer
 		vrect.x = 0;
 		vrect.y = 0;
-		vrect.width = r_newrefdef.width < WARP_WIDTH ? r_newrefdef.width : WARP_WIDTH;
-		vrect.height = r_newrefdef.height < WARP_HEIGHT ? r_newrefdef.height : WARP_HEIGHT;
+		vrect.width = r_newrefdef.width;
+		vrect.height = r_newrefdef.height;
 
 		d_viewbuffer = r_warpbuffer;
-		r_screenwidth = WARP_WIDTH;
+		r_screenwidth = vid.width;
 	}
 	else
 	{

@@ -1199,36 +1199,22 @@ CDShuffleFunc(void *unused)
     Cvar_SetValue("cd_shuffle", s_options_cdshuffle_box.curvalue);
 
 #ifdef OGG
-    cvar_t *ogg;
-    ogg = Cvar_Get("ogg_enable", "1", CVAR_ARCHIVE);
+    cvar_t *ogg_enable= Cvar_Get("ogg_enable", "1", CVAR_ARCHIVE);
+	int track = (int)strtol(cl.configstrings[CS_CDTRACK], (char **)NULL, 10);
 
     if (s_options_cdshuffle_box.curvalue)
     {
-        Cvar_Set("ogg_sequence", "random");
-
-        if (ogg->value)
-        {
-            OGG_ParseCmd("?");
-        }
+        Cvar_Set("cd_shuffle", "1");
     }
     else
     {
-        Cvar_Set("ogg_sequence", "loop");
-
-        if (ogg->value)
-        {
-            if ((int)strtol(cl.configstrings[CS_CDTRACK], (char **)NULL, 10) < 10)
-            {
-                char tmp[3] = {'0', cl.configstrings[CS_CDTRACK][0], '\0'};
-                OGG_ParseCmd(tmp);
-            }
-            else
-            {
-                OGG_ParseCmd(cl.configstrings[CS_CDTRACK]);
-            }
-        }
+        Cvar_Set("cd_shuffle", "0");
     }
 
+	if (ogg_enable->value)
+	{
+		OGG_PlayTrack(track);
+	}
 #endif
 }
 
@@ -1256,17 +1242,11 @@ EnableOGGMusic(void *unused)
         CDAudio_Stop();
 #endif
         OGG_Init();
+	    OGG_InitTrackList();
         OGG_Stop();
 
-        if ((int)strtol(cl.configstrings[CS_CDTRACK], (char **)NULL, 10) < 10)
-        {
-            char tmp[3] = "0";
-            OGG_ParseCmd(strcat(tmp, cl.configstrings[CS_CDTRACK]));
-        }
-        else
-        {
-            OGG_ParseCmd(cl.configstrings[CS_CDTRACK]);
-        }
+        int track = (int)strtol(cl.configstrings[CS_CDTRACK], (char **)NULL, 10);
+        OGG_PlayTrack(track);
     }
     else
     {
