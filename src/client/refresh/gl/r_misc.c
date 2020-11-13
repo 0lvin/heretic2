@@ -24,7 +24,7 @@
  * =======================================================================
  */
 
-#include "../header/local.h"
+#include "header/local.h"
 
 byte dottexture[8][8] = {
 	{0, 0, 0, 0, 0, 0, 0, 0},
@@ -92,9 +92,7 @@ R_ScreenShot(void)
 	int i, c;
 	FILE *f;
 
-	/* create the scrnshots directory if it doesn't exist */
-	Com_sprintf(checkname, sizeof(checkname), "%s/scrnshot", FS_Gamedir());
-	Sys_Mkdir(checkname);
+	/* FS_InitFilesystem() made sure the screenshots dir exists */
 
 	/* find a file name to save it to */
 	strcpy(picname, "quake00.tga");
@@ -104,7 +102,7 @@ R_ScreenShot(void)
 		picname[5] = i / 10 + '0';
 		picname[6] = i % 10 + '0';
 		Com_sprintf(checkname, sizeof(checkname), "%s/scrnshot/%s",
-			   	FS_Gamedir(), picname);
+			   	ri.FS_Gamedir(), picname);
 		f = fopen(checkname, "rb");
 
 		if (!f)

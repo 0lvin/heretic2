@@ -1,6 +1,31 @@
-// SDL-specific OpenGL shit formerly in refresh.c
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 2016 Daniel Gibson
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * SDL-specific OpenGL shit formerly in refresh.c
+ *
+ * =======================================================================
+ */
 
-#include "../header/local.h"
+#include "header/local.h"
 
 #ifdef SDL2
 #include <SDL2/SDL.h>
@@ -321,15 +346,15 @@ int RI_PrepareForWindow(void)
 
 		if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1) < 0)
 		{
-			Com_Printf("MSAA is unsupported: %s\n", SDL_GetError());
-			Cvar_SetValue ("gl_msaa_samples", 0);
+			ri.Con_Printf(PRINT_ALL, "MSAA is unsupported: %s\n", SDL_GetError());
+			ri.Cvar_SetValue ("gl_msaa_samples", 0);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 		}
 		else if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, msaa_samples) < 0)
 		{
-			Com_Printf("MSAA %ix is unsupported: %s\n", msaa_samples, SDL_GetError());
-			Cvar_SetValue("gl_msaa_samples", 0);
+			ri.Con_Printf(PRINT_ALL, "MSAA %ix is unsupported: %s\n", msaa_samples, SDL_GetError());
+			ri.Cvar_SetValue("gl_msaa_samples", 0);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 		}
@@ -368,7 +393,7 @@ int RI_InitContext(void* win)
 	{
 		if (SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &msaa_samples) == 0)
 		{
-			Cvar_SetValue("gl_msaa_samples", msaa_samples);
+			ri.Cvar_SetValue("gl_msaa_samples", msaa_samples);
 		}
 	}
 

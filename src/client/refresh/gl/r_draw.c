@@ -24,7 +24,7 @@
  * =======================================================================
  */
 
-#include "../header/local.h"
+#include "header/local.h"
 
 image_t *draw_chars;
 
@@ -39,7 +39,7 @@ void
 Draw_InitLocal(void)
 {
 	/* don't bilerp characters and crosshairs */
-	gl_nolerp_list = Cvar_Get("gl_nolerp_list", "pics/conchars.pcx pics/ch1.pcx pics/ch2.pcx pics/ch3.pcx", 0);
+	gl_nolerp_list = ri.Cvar_Get("gl_nolerp_list", "pics/conchars.pcx pics/ch1.pcx pics/ch2.pcx pics/ch3.pcx", 0);
 
 	/* load console characters */
 	draw_chars = R_FindImage("pics/conchars.pcx", it_pic);
@@ -347,7 +347,7 @@ RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data)
 {
 	GLfloat tex[8];
 	byte *source;
-	float hscale;
+	float hscale = 1.0f;
 	int frac, fracstep;
 	int i, j, trows;
 	int row;

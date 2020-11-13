@@ -24,7 +24,7 @@
  * =======================================================================
  */
 
-#include "../header/local.h"
+#include "header/local.h"
 
 #define MAX_MOD_KNOWN 512
 
@@ -249,7 +249,7 @@ Mod_ForName(char *name, qboolean crash)
 	strcpy(mod->name, name);
 
 	/* load the file */
-	modfilelen = FS_LoadFile(mod->name, (void **)&buf);
+	modfilelen = ri.FS_LoadFile(mod->name, (void **)&buf);
 
 	if (!buf)
 	{
@@ -291,7 +291,7 @@ Mod_ForName(char *name, qboolean crash)
 
 	loadmodel->extradatasize = Hunk_End();
 
-	FS_FreeFile(buf);
+	ri.FS_FreeFile(buf);
 
 	return mod;
 }
@@ -1029,7 +1029,7 @@ RI_BeginRegistration(char *model)
 	/* explicitly free the old map if different
 	   this guarantees that mod_known[0] is the
 	   world map */
-	flushmap = Cvar_Get("flushmap", "0", 0);
+	flushmap = ri.Cvar_Get("flushmap", "0", 0);
 
 	if (strcmp(mod_known[0].name, fullname) || flushmap->value)
 	{

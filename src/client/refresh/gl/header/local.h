@@ -32,19 +32,8 @@
 #include <ctype.h>
 #include <math.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-#if defined(__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-
-#include "../../header/ref.h"
-// FIXME: can we avoid including qgl.h here? it's specific to the gl1 backend
-#include "../gl/qgl.h"
+#include "../../../header/ref.h"
+#include "qgl.h"
 
 #ifndef GL_COLOR_INDEX8_EXT
  #define GL_COLOR_INDEX8_EXT GL_COLOR_INDEX
@@ -448,11 +437,6 @@ extern glconfig_t gl_config;
 extern glstate_t gl_state;
 
 /*
- * Initializes the SDL OpenGL context
- */
-int GLimp_Init(void);
-
-/*
  * Shuts the render context and SDL window down
  * (if contextOnly, the window will not be shutdown)
  */
@@ -463,10 +447,5 @@ void RI_ShutdownWindow(qboolean contextOnly);
  * or NULL if the function is not found.
  */
 void *GLimp_GetProcAddress (const char* proc);
-
-/*
- * (Un)grab Input
- */
-void GLimp_GrabInput(qboolean grab);
 
 #endif
