@@ -129,14 +129,14 @@ typedef struct
 	// if api_version is different, the dll cannot be used
 	int		api_version;
 
-	// called when the library is loaded - FIXME: remove arguments, not used anyway
-	int		(EXPORT *Init) ( void *hinstance, void *wndproc );
+	// called when the library is loaded
+	qboolean (EXPORT *Init) (void);
 
 	// called before the library is unloaded
 	void	(EXPORT *Shutdown) (void);
 
 	// called by GLimp_InitGraphics() before creating window,
-	// returns flags for SDL window creation
+	// returns flags for SDL window creation, returns -1 on error
 	int		(EXPORT *PrepareForWindow)(void);
 
 	// called by GLimp_InitGraphics() *after* creating window,
@@ -205,7 +205,7 @@ typedef struct
 	char	*(IMPORT *Cmd_Argv) (int i);
 	void	(IMPORT *Cmd_ExecuteText) (int exec_when, char *text);
 
-	void	(IMPORT *Con_Printf) (int print_level, char *str, ...) __attribute__ ((format (printf, 2, 3)));
+	void	(IMPORT *Com_VPrintf) (int print_level, const char *fmt, va_list argptr);
 
 	// files will be memory mapped read only
 	// the returned buffer may be part of a larger pak file,

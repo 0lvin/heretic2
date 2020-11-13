@@ -80,7 +80,7 @@
 /* fall over */
 #define ROLL 2
 
-#define CHECK_GL_ERROR() { GLuint err = glGetError(); if (err != GL_NO_ERROR) {	ri.Con_Printf(PRINT_ALL, "%s: OpenGL Error at %s:%d  glGetError() = 0x%x\n", __FUNC__, __FILE__, __LINE__, err); } }
+#define CHECK_GL_ERROR() { GLuint err = glGetError(); if (err != GL_NO_ERROR) {	R_Printf(PRINT_ALL, "%s: OpenGL Error at %s:%d  glGetError() = 0x%x\n", __func__, __FILE__, __LINE__, err); } }
 
 extern viddef_t vid;
 
@@ -447,5 +447,7 @@ void RI_ShutdownWindow(qboolean contextOnly);
  * or NULL if the function is not found.
  */
 void *GLimp_GetProcAddress (const char* proc);
+
+void R_Printf(int level, const char* msg, ...) __attribute__ ((format (printf, 2, 3)));
 
 #endif
