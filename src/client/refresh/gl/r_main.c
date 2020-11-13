@@ -113,7 +113,7 @@ cvar_t *gl1_round_down;
 cvar_t *gl1_picmip;
 cvar_t *gl_showtris;
 cvar_t *gl_showbbox;
-cvar_t *gl_ztrick;
+cvar_t *gl1_ztrick;
 cvar_t *gl_zfix;
 cvar_t *gl_finish;
 cvar_t *r_clear;
@@ -121,10 +121,10 @@ cvar_t *gl_cull;
 cvar_t *gl1_polyblend;
 cvar_t *gl1_flashblend;
 cvar_t *gl1_saturatelighting;
-cvar_t *gl_swapinterval;
+cvar_t *r_vsync;
 cvar_t *gl_texturemode;
-cvar_t *gl_texturealphamode;
-cvar_t *gl_texturesolidmode;
+cvar_t *gl1_texturealphamode;
+cvar_t *gl1_texturesolidmode;
 cvar_t *gl_anisotropic;
 cvar_t *r_lockpvs;
 cvar_t *gl_msaa_samples;
@@ -848,7 +848,7 @@ R_Clear(void)
 		stencilFlags |= GL_STENCIL_BUFFER_BIT;
 	}
 
-	if (gl_ztrick->value)
+	if (gl1_ztrick->value)
 	{
 		static int trickframe;
 
@@ -1241,7 +1241,7 @@ R_Register(void)
 	gl1_picmip = ri.Cvar_Get("gl1_picmip", "0", 0);
 	gl_showtris = ri.Cvar_Get("gl_showtris", "0", 0);
 	gl_showbbox = ri.Cvar_Get("gl_showbbox", "0", 0);
-	gl_ztrick = ri.Cvar_Get("gl_ztrick", "0", 0);
+	gl1_ztrick = ri.Cvar_Get("gl1_ztrick", "0", 0);
 	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
 	r_clear = ri.Cvar_Get("r_clear", "0", 0);
@@ -1250,8 +1250,8 @@ R_Register(void)
 	gl1_flashblend = ri.Cvar_Get("gl1_flashblend", "0", 0);
 
 	gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
-	gl_texturealphamode = ri.Cvar_Get("gl_texturealphamode", "default", CVAR_ARCHIVE);
-	gl_texturesolidmode = ri.Cvar_Get("gl_texturesolidmode", "default", CVAR_ARCHIVE);
+	gl1_texturealphamode = ri.Cvar_Get("gl1_texturealphamode", "default", CVAR_ARCHIVE);
+	gl1_texturesolidmode = ri.Cvar_Get("gl1_texturesolidmode", "default", CVAR_ARCHIVE);
 	gl_anisotropic = ri.Cvar_Get("gl_anisotropic", "0", CVAR_ARCHIVE);
 	r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 0);
 
@@ -1259,7 +1259,7 @@ R_Register(void)
 	gl1_pointparameters = ri.Cvar_Get("gl1_pointparameters", "1", CVAR_ARCHIVE);
 
 	gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
-	gl_swapinterval = ri.Cvar_Get("gl_swapinterval", "1", CVAR_ARCHIVE);
+	r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
 
 	gl1_saturatelighting = ri.Cvar_Get("gl1_saturatelighting", "0", 0);
 
@@ -2090,21 +2090,21 @@ RI_BeginFrame(float camera_separation)
 		gl_anisotropic->modified = false;
 	}
 
-	if (gl_texturealphamode->modified)
+	if (gl1_texturealphamode->modified)
 	{
-		R_TextureAlphaMode(gl_texturealphamode->string);
-		gl_texturealphamode->modified = false;
+		R_TextureAlphaMode(gl1_texturealphamode->string);
+		gl1_texturealphamode->modified = false;
 	}
 
-	if (gl_texturesolidmode->modified)
+	if (gl1_texturesolidmode->modified)
 	{
-		R_TextureSolidMode(gl_texturesolidmode->string);
-		gl_texturesolidmode->modified = false;
+		R_TextureSolidMode(gl1_texturesolidmode->string);
+		gl1_texturesolidmode->modified = false;
 	}
 
-	if (gl_swapinterval->modified)
+	if (r_vsync->modified)
 	{
-		gl_swapinterval->modified = false;
+		r_vsync->modified = false;
 		RI_SetSwapInterval();
 	}
 

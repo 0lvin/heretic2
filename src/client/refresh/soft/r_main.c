@@ -145,6 +145,10 @@ cvar_t	*r_dspeeds;
 cvar_t	*r_fullbright;
 cvar_t  *r_lerpmodels;
 cvar_t  *r_novis;
+cvar_t  *r_modulate;
+cvar_t  *r_vsync;
+cvar_t  *r_customwidth;
+cvar_t  *r_customheight;
 
 cvar_t	*r_speeds;
 cvar_t	*r_lightlevel;	//FIXME HACK
@@ -284,6 +288,10 @@ void R_Register (void)
 	r_lightlevel = ri.Cvar_Get ("r_lightlevel", "0", 0);
 	r_lerpmodels = ri.Cvar_Get( "r_lerpmodels", "1", 0 );
 	r_novis = ri.Cvar_Get( "r_novis", "0", 0 );
+	r_modulate = ri.Cvar_Get("r_modulate", "1", CVAR_ARCHIVE);
+	r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
+	r_customwidth = ri.Cvar_Get("r_customwidth", "1024", CVAR_ARCHIVE);
+	r_customheight = ri.Cvar_Get("r_customheight", "768", CVAR_ARCHIVE);
 
 	vid_fullscreen = ri.Cvar_Get( "vid_fullscreen", "0", CVAR_ARCHIVE );
 	vid_gamma = ri.Cvar_Get( "vid_gamma", "1.0", CVAR_ARCHIVE );
@@ -1100,9 +1108,15 @@ void RE_BeginFrame( float camera_separation )
 		sw_overbrightbits->modified = false;
 	}
 
-	while (r_mode->modified || vid_fullscreen->modified)
+	while (r_mode->modified || vid_fullscreen->modified || r_vsync->modified)
 	{
 		rserr_t err;
+
+		if (r_mode->value == -1)
+		{
+			vid.width = r_customwidth->value;
+			vid.height = r_customheight->value;
+		}
 
 		/*
 		** if this returns rserr_invalid_fullscreen then it set the mode but not as a
@@ -1115,12 +1129,13 @@ void RE_BeginFrame( float camera_separation )
 			sw_state.prev_mode = r_mode->value;
 			vid_fullscreen->modified = false;
 			r_mode->modified = false;
+			r_vsync->modified = false;
 		}
 		else
 		{
 			if ( err == rserr_invalid_mode )
 			{
-				ri.Cvar_SetValue( "sw_mode", sw_state.prev_mode );
+				ri.Cvar_SetValue( "r_mode", sw_state.prev_mode );
 				R_Printf( PRINT_ALL, "ref_soft::RE_BeginFrame() - could not set mode\n" );
 			}
 			else if ( err == rserr_invalid_fullscreen )
@@ -1361,7 +1376,14 @@ void R_Printf(int level, const char* msg, ...)
 
 qboolean RE_IsVsyncActive(void)
 {
-	return true;
+	if (r_vsync->value)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 /*
@@ -1621,7 +1643,15 @@ static qboolean CreateSDLWindow(int flags, int w, int h)
 	// TODO: support fullscreen on different displays with SDL_WINDOWPOS_UNDEFINED_DISPLAY(displaynum)
 	window = SDL_CreateWindow("Yamagi Quake II", windowPos, windowPos, w, h, flags);
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (r_vsync->value)
+	{
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	}
+	else
+	{
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	}
+
 	surface = SDL_CreateRGBSurface(0, w, h, bpp, Rmask, Gmask, Bmask, Amask);
 
 	texture = SDL_CreateTexture(renderer,
@@ -1970,7 +2000,7 @@ rserr_t SWimp_SetMode(int *pwidth, int *pheight, int mode, qboolean fullscreen )
 
 	R_Printf (PRINT_ALL, "setting mode %d:", mode );
 
-	if ( !ri.Vid_GetModeInfo( pwidth, pheight, mode ) )
+	if ((mode != -1) && !ri.Vid_GetModeInfo( pwidth, pheight, mode ) )
 	{
 		R_Printf( PRINT_ALL, " invalid mode\n" );
 		return rserr_invalid_mode;

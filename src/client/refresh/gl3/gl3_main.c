@@ -83,7 +83,7 @@ const hmm_mat4 gl3_identityMat4 = {{
 }};
 
 cvar_t *gl_msaa_samples;
-cvar_t *gl_swapinterval;
+cvar_t *r_vsync;
 cvar_t *gl_retexturing;
 cvar_t *vid_fullscreen;
 cvar_t *r_mode;
@@ -196,7 +196,7 @@ GL3_Register(void)
 	r_farsee = ri.Cvar_Get("gl_farsee", "0", CVAR_LATCH | CVAR_ARCHIVE);
 
 	gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
-	gl_swapinterval = ri.Cvar_Get("gl_swapinterval", "1", CVAR_ARCHIVE);
+	r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
 	gl_msaa_samples = ri.Cvar_Get ( "gl_msaa_samples", "0", CVAR_ARCHIVE );
 	gl_retexturing = ri.Cvar_Get("gl_retexturing", "1", CVAR_ARCHIVE);
 	gl3_debugcontext = ri.Cvar_Get("gl3_debugcontext", "0", 0);
@@ -267,7 +267,7 @@ GL3_Register(void)
 	//gl_nobind = ri.Cvar_Get("gl_nobind", "0", 0);
 	gl_showtris = ri.Cvar_Get("gl_showtris", "0", 0);
 	gl_showbbox = Cvar_Get("gl_showbbox", "0", 0);
-	//gl_ztrick = ri.Cvar_Get("gl_ztrick", "0", 0); NOTE: dump this.
+	//gl1_ztrick = ri.Cvar_Get("gl1_ztrick", "0", 0); NOTE: dump this.
 	//gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	//gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
 	r_clear = ri.Cvar_Get("r_clear", "0", 0);
@@ -275,8 +275,8 @@ GL3_Register(void)
 	//gl1_flashblend = ri.Cvar_Get("gl1_flashblend", "0", 0);
 
 	//gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
-	gl_texturealphamode = ri.Cvar_Get("gl_texturealphamode", "default", CVAR_ARCHIVE);
-	gl_texturesolidmode = ri.Cvar_Get("gl_texturesolidmode", "default", CVAR_ARCHIVE);
+	gl1_texturealphamode = ri.Cvar_Get("gl1_texturealphamode", "default", CVAR_ARCHIVE);
+	gl1_texturesolidmode = ri.Cvar_Get("gl1_texturesolidmode", "default", CVAR_ARCHIVE);
 	//gl_anisotropic = ri.Cvar_Get("gl_anisotropic", "0", CVAR_ARCHIVE);
 	//r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 0);
 
@@ -284,7 +284,7 @@ GL3_Register(void)
 	gl1_pointparameters = ri.Cvar_Get("gl1_pointparameters", "1", CVAR_ARCHIVE);
 
 	//gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
-	//gl_swapinterval = ri.Cvar_Get("gl_swapinterval", "1", CVAR_ARCHIVE);
+	//r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
 
 
 	//vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
@@ -1693,9 +1693,9 @@ GL3_BeginFrame(float camera_separation)
 		gl_anisotropic->modified = false;
 	}
 
-	if(gl_swapinterval->modified)
+	if(r_vsync->modified)
 	{
-		gl_swapinterval->modified = false;
+		r_vsync->modified = false;
 		GL3_SetSwapInterval();
 	}
 
