@@ -317,7 +317,7 @@ static const char* vertexSrc3D = MULTILINE_STRING(
 		}
 );
 
-static const char* vertexSrc3Dlm = MULTILINE_STRING(
+static const char* vertexSrc3DlmOnly = MULTILINE_STRING(
 
 		// it gets attributes and uniforms from vertexCommon3D
 
@@ -332,8 +332,6 @@ static const char* vertexSrc3Dlm = MULTILINE_STRING(
 static const char* fragmentSrc3D = MULTILINE_STRING(
 
 		// it gets attributes and uniforms from fragmentCommon3D
-		// TODO: will prolly need another version of this without lightmap,
-		// also shaders for that for flow (and more?) for translucent things that have no lightmap
 
 		uniform sampler2D tex;
 
@@ -351,11 +349,15 @@ static const char* fragmentSrc3D = MULTILINE_STRING(
 static const char* fragmentSrc3Dlm = MULTILINE_STRING(
 
 		// it gets attributes and uniforms from fragmentCommon3D
-		// TODO: will prolly need another version of this without lightmap,
-		// also shaders for that for flow (and more?) for translucent things that have no lightmap
 
 		uniform sampler2D tex;
-		uniform sampler2D lightmap;
+
+		uniform sampler2D lightmap0;
+		uniform sampler2D lightmap1;
+		uniform sampler2D lightmap2;
+		uniform sampler2D lightmap3;
+
+		uniform vec4 lmScales[4];
 
 		in vec2 passLMcoord;
 
@@ -363,12 +365,15 @@ static const char* fragmentSrc3Dlm = MULTILINE_STRING(
 		{
 			vec4 texel = texture(tex, passTexCoord);
 
-
 			// apply intensity
 			texel.rgb *= intensity;
 
 			// apply lightmap
-			vec4 lmTex = texture(lightmap, passLMcoord);
+			vec4 lmTex = texture(lightmap0, passLMcoord) * lmScales[0];
+			lmTex     += texture(lightmap1, passLMcoord) * lmScales[1];
+			lmTex     += texture(lightmap2, passLMcoord) * lmScales[2];
+			lmTex     += texture(lightmap3, passLMcoord) * lmScales[3];
+
 			lmTex.rgb *= overbrightbits;
 			outColor = lmTex*texel;
 			outColor.rgb = pow(outColor.rgb, vec3(gamma)); // apply gamma correction to result
@@ -599,6 +604,7 @@ initShader2D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 
 	//shaderInfo->uniColor = shaderInfo->uniProjMatrix = shaderInfo->uniModelViewMatrix = -1;
 	shaderInfo->shaderProgram = 0;
+	shaderInfo->uniLmScales = -1;
 
 	shaders2D[0] = CompileShader(GL_VERTEX_SHADER, vertSrc, NULL);
 	if(shaders2D[0] == 0)  return false;
@@ -681,6 +687,7 @@ initShader3D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 {
 	GLuint shaders3D[2] = {0};
 	GLuint prog = 0;
+	int i=0;
 
 	if(shaderInfo->shaderProgram != 0)
 	{
@@ -689,6 +696,7 @@ initShader3D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 	}
 
 	shaderInfo->shaderProgram = 0;
+	shaderInfo->uniLmScales = -1;
 
 	shaders3D[0] = CompileShader(GL_VERTEX_SHADER, vertexCommon3D, vertSrc);
 	if(shaders3D[0] == 0)  return false;
@@ -751,16 +759,34 @@ initShader3D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 		goto err_cleanup;
 	}
 
-	// make sure texture is GL_TEXTURE0 and lightmap is GL_TEXTURE1
+	// make sure texture is GL_TEXTURE0
 	GLint texLoc = glGetUniformLocation(prog, "tex");
 	if(texLoc != -1)
 	{
 		glUniform1i(texLoc, 0);
 	}
-	GLint lmLoc = glGetUniformLocation(prog, "lightmap");
-	if(lmLoc != -1)
+
+	// ..  and the 4 lightmap texture use GL_TEXTURE1..4
+	for(i=0; i<4; ++i)
 	{
-		glUniform1i(lmLoc, 1);
+		char lmName[10] = "lightmapX";
+		lmName[8] = '0'+i;
+		GLint lmLoc = glGetUniformLocation(prog, lmName);
+		if(lmLoc != -1)
+		{
+			glUniform1i(lmLoc, i+1); // lightmap0 belongs to GL_TEXTURE1, lightmap1 to GL_TEXTURE2 etc
+		}
+	}
+
+	GLint lmScalesLoc = glGetUniformLocation(prog, "lmScales");
+	shaderInfo->uniLmScales = lmScalesLoc;
+	if(lmScalesLoc != -1)
+	{
+		GLfloat scales[4][4] = {0};
+
+		for(i=0; i<4; ++i)  scales[0][i] = 1.0f;
+
+		glUniform4fv(lmScalesLoc, 4, scales[0]);
 	}
 
 	shaderInfo->shaderProgram = prog;
@@ -814,6 +840,7 @@ static void initUBOs(void)
 	glBindBuffer(GL_UNIFORM_BUFFER, gl3state.uni3DUBO);
 	glBindBufferBase(GL_UNIFORM_BUFFER, GL3_BINDINGPOINT_UNI3D, gl3state.uni3DUBO);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(gl3state.uni3DData), &gl3state.uni3DData, GL_DYNAMIC_DRAW);
+	gl3state.currentUBO = gl3state.uni3DUBO;
 }
 
 qboolean GL3_InitShaders(void)
@@ -830,9 +857,14 @@ qboolean GL3_InitShaders(void)
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for color-only 2D rendering!\n");
 		return false;
 	}
-	if(!initShader3D(&gl3state.si3D, vertexSrc3D, fragmentSrc3Dlm))
+	if(!initShader3D(&gl3state.si3Dlm, vertexSrc3D, fragmentSrc3Dlm))
 	{
-		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for textured 3D rendering!\n");
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for textured 3D rendering with lightmap!\n");
+		return false;
+	}
+	if(!initShader3D(&gl3state.si3Dtrans, vertexSrc3D, fragmentSrc3D))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for rendering translucent 3D things!\n");
 		return false;
 	}
 	if(!initShader3D(&gl3state.si3DcolorOnly, vertexSrc3D, fragmentSrc3Dcolor))
@@ -852,9 +884,14 @@ qboolean GL3_InitShaders(void)
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for water rendering!\n");
 		return false;
 	}
-	if(!initShader3D(&gl3state.si3Dflow, vertexSrc3Dflow, fragmentSrc3Dlm))
+	if(!initShader3D(&gl3state.si3DlmFlow, vertexSrc3Dflow, fragmentSrc3Dlm))
 	{
-		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for scrolling textures 3D rendering!\n");
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for scrolling textured 3D rendering with lightmap!\n");
+		return false;
+	}
+	if(!initShader3D(&gl3state.si3DtransFlow, vertexSrc3Dflow, fragmentSrc3D))
+	{
+		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for scrolling textured translucent 3D rendering!\n");
 		return false;
 	}
 	if(!initShader3D(&gl3state.si3Dsky, vertexSrc3D, fragmentSrc3Dsky))
@@ -911,9 +948,31 @@ void GL3_ShutdownShaders(void)
 static inline void
 updateUBO(GLuint ubo, GLsizeiptr size, void* data)
 {
+	if(gl3state.currentUBO != ubo)
+	{
+		gl3state.currentUBO = ubo;
+		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+	}
+
 	// TODO: use glMapBufferRange() or something else instead?
-	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+
+	// http://docs.gl/gl3/glBufferSubData says  "When replacing the entire data store,
+	// consider using glBufferSubData rather than completely recreating the data store
+	// with glBufferData. This avoids the cost of reallocating the data store."
+	// no idea why glBufferData() doesn't just do that when size doesn't change, but whatever..
+	// however, it also says glBufferSubData() might cause a stall so I DON'T KNOW!
+	// by just looking at the fps, glBufferData() and glBufferSubData() make no difference
+	// TODO: STREAM instead DYNAMIC?
+#if 0
 	glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW);
+#elif 1
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, size, data);
+#else // with my current nvidia-driver, the following *really* makes it slower. (<200fps instead of ~500)
+	glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_DYNAMIC_DRAW); // orphan
+	GLvoid* ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+	memcpy(ptr, data, size);
+	glUnmapBuffer(GL_UNIFORM_BUFFER);
+#endif
 }
 
 void GL3_UpdateUBOCommon(void)

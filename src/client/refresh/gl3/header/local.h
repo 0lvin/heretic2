@@ -106,6 +106,7 @@ typedef struct
 typedef struct
 {
 	GLuint shaderProgram;
+	GLint uniLmScales;
 } gl3ShaderInfo_t;
 
 typedef struct
@@ -144,7 +145,8 @@ enum {
 	BLOCK_WIDTH = 128,
 	BLOCK_HEIGHT = 128,
 	LIGHTMAP_BYTES = 4,
-	MAX_LIGHTMAPS = 128
+	MAX_LIGHTMAPS = 128,
+	MAX_LIGHTMAPS_PER_SURFACE = MAXLIGHTMAPS // 4
 };
 
 typedef struct
@@ -160,7 +162,7 @@ typedef struct
 	// "So color textures start at 0, the dynamic lightmap texture is always 1024 and the static lighmap are 1025 up to 1036."
 	// yes, dynamic lightmap is 1024, but I think there can be 127 dynamic lightmaps (MAX_LIGHTMAPS == 128)
 	//int lightmap_textures;
-	GLuint lightmap_textureIDs[MAX_LIGHTMAPS]; // instead of lightmap_textures+i use lightmap_textureIDs[i]
+	GLuint lightmap_textureIDs[MAX_LIGHTMAPS][MAX_LIGHTMAPS_PER_SURFACE]; // instead of lightmap_textures+i use lightmap_textureIDs[i]
 
 	//int currenttextures[2];
 	GLuint currenttexture; // bound to GL_TEXTURE0
@@ -177,20 +179,23 @@ typedef struct
 	GLuint currentVAO;
 	GLuint currentVBO;
 	GLuint currentShaderProgram;
+	GLuint currentUBO;
 
 	// NOTE: make sure si2D is always the first shaderInfo (or adapt GL3_ShutdownShaders())
-	gl3ShaderInfo_t si2D; // shader for rendering 2D with textures
+	gl3ShaderInfo_t si2D;      // shader for rendering 2D with textures
 	gl3ShaderInfo_t si2Dcolor; // shader for rendering 2D with flat colors
-	gl3ShaderInfo_t si3D;
-	gl3ShaderInfo_t si3DcolorOnly; // used for beams
-	gl3ShaderInfo_t si3Dturb; // for water etc
-	gl3ShaderInfo_t si3Dflow; // for flowing/scrolling things (conveyor, ..?)
-	gl3ShaderInfo_t si3Dsky;
-	gl3ShaderInfo_t si3Dsprite; // for sprites
+	gl3ShaderInfo_t si3Dlm;        // a regular opaque face (e.g. from brush) with lightmap
+	// TODO: lm-only variants for gl_lightmap 1
+	gl3ShaderInfo_t si3Dtrans;     // transparent is always w/o lightmap
+	gl3ShaderInfo_t si3DcolorOnly; // used for beams - no lightmaps
+	gl3ShaderInfo_t si3Dturb;      // for water etc - always without lightmap
+	gl3ShaderInfo_t si3DlmFlow;    // for flowing/scrolling things with lightmap (conveyor, ..?)
+	gl3ShaderInfo_t si3DtransFlow; // for transparent flowing/scrolling things (=> no lightmap)
+	gl3ShaderInfo_t si3Dsky;       // guess what..
+	gl3ShaderInfo_t si3Dsprite;    // for sprites
 	gl3ShaderInfo_t si3DspriteAlpha; // for sprites with alpha-testing
-	//gl3ShaderInfo_t si3Dlm; // for blended lightmaps TODO: prolly remove and use multitexturing
 
-	gl3ShaderInfo_t si3Dalias; // for models
+	gl3ShaderInfo_t si3Dalias;      // for models
 	gl3ShaderInfo_t si3DaliasColor; // for models w/ flat colors
 
 	// NOTE: make sure siParticle is always the last shaderInfo (or adapt GL3_ShutdownShaders())
@@ -429,8 +434,8 @@ extern void GL3_AddSkySurface(msurface_t *fa);
 // gl3_surf.c
 extern void GL3_SurfInit(void);
 extern void GL3_SurfShutdown(void);
-extern void GL3_DrawGLPoly(glpoly_t *p);
-extern void GL3_DrawGLFlowingPoly(msurface_t *fa);
+extern void GL3_DrawGLPoly(glpoly_t *p, qboolean withAlpha);
+extern void GL3_DrawGLFlowingPoly(msurface_t *fa, qboolean withAlpha);
 extern void GL3_DrawTriangleOutlines(void);
 extern void GL3_DrawAlphaSurfaces(void);
 extern void GL3_DrawBrushModel(entity_t *e);
