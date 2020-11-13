@@ -46,6 +46,11 @@
 #include <dirent.h>
 #include <time.h>
 
+#ifdef __APPLE__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 #include "../../common/header/common.h"
 #include "../../common/header/glob.h"
 #include "../generic/header/input.h"
@@ -82,19 +87,49 @@ Sys_Init(void)
 long long
 Sys_Microseconds(void)
 {
-	static struct timespec last;
+#ifdef __APPLE__
+	// OSX didn't have clock_gettime() until recently, so use Mach's clock_get_time()
+	// instead. fortunately its mach_timespec_t seems identical to POSIX struct timespec
+	// so lots of code can be shared
+	clock_serv_t cclock;
+	mach_timespec_t now;
+	static mach_timespec_t first;
+
+	host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
+	clock_get_time(cclock, &now);
+	mach_port_deallocate(mach_task_self(), cclock);
+
+#else // not __APPLE__ - other Unix-likes will hopefully support clock_gettime()
+
 	struct timespec now;
-
+	static struct timespec first;
+  #ifdef _POSIX_MONOTONIC_CLOCK
 	clock_gettime(CLOCK_MONOTONIC, &now);
+  #else
+	clock_gettime(CLOCK_REALTIME, &now);
+  #endif
 
-	if(last.tv_sec == 0)
+#endif // not __APPLE__
+
+	if(first.tv_sec == 0)
 	{
-		clock_gettime(CLOCK_MONOTONIC, &last);
-		return last.tv_nsec / 1000ll;
+		long long nsec = now.tv_nsec;
+		long long sec = now.tv_sec;
+		// set back first by 1ms so neither this function nor Sys_Milliseconds()
+		// (which calls this) will ever return 0
+		nsec -= 1000000; 
+		if(nsec < 0)
+		{
+			nsec += 1000000000ll; // 1s in ns => definitely positive now
+			--sec;
+		}
+
+		first.tv_sec = sec;
+		first.tv_nsec = nsec;
 	}
 
-	long long sec = now.tv_sec - last.tv_sec;
-	long long nsec = now.tv_nsec - last.tv_nsec;
+	long long sec = now.tv_sec - first.tv_sec;
+	long long nsec = now.tv_nsec - first.tv_nsec;
 
 	if(nsec < 0)
 	{

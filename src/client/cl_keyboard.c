@@ -106,6 +106,49 @@ keyname_t keynames[] = {
 	{"MOUSE4", K_MOUSE4},
 	{"MOUSE5", K_MOUSE5},
 
+	{"JOY1", K_JOY1},
+	{"JOY2", K_JOY2},
+	{"JOY3", K_JOY3},
+	{"JOY4", K_JOY4},
+	{"JOY5", K_JOY5},
+	{"JOY6", K_JOY6},
+	{"JOY7", K_JOY7},
+	{"JOY8", K_JOY8},
+	{"JOY9", K_JOY9},
+	{"JOY10", K_JOY10},
+	{"JOY11", K_JOY11},
+	{"JOY12", K_JOY12},
+	{"JOY13", K_JOY13},
+	{"JOY14", K_JOY14},
+	{"JOY15", K_JOY15},
+	{"JOY16", K_JOY16},
+	{"JOY17", K_JOY17},
+	{"JOY18", K_JOY18},
+	{"JOY19", K_JOY19},
+	{"JOY20", K_JOY20},
+	{"JOY21", K_JOY21},
+	{"JOY22", K_JOY22},
+	{"JOY23", K_JOY23},
+	{"JOY24", K_JOY24},
+	{"JOY25", K_JOY25},
+	{"JOY26", K_JOY26},
+	{"JOY27", K_JOY27},
+	{"JOY28", K_JOY28},
+	{"JOY29", K_JOY29},
+	{"JOY30", K_JOY30},
+	{"JOY31", K_JOY31},
+	{"JOY32", K_JOY32},
+
+	{"HAT_UP", K_HAT_UP},
+	{"HAT_RIGHT", K_HAT_RIGHT},
+	{"HAT_DOWN", K_HAT_DOWN},
+	{"HAT_LEFT", K_HAT_LEFT},
+
+	{"TRIG_LEFT", K_TRIG_LEFT},
+	{"TRIG_RIGHT", K_TRIG_RIGHT},
+
+	{"JOY_BACK", K_JOY_BACK},
+
 	{"AUX1", K_AUX1},
 	{"AUX2", K_AUX2},
 	{"AUX3", K_AUX3},
@@ -562,7 +605,7 @@ Key_Message(int key)
 }
 
 /*
- * Returns a key number to be used to index 
+ * Returns a key number to be used to index
  * keybindings[] by looking at the given string.
  * Single ascii characters return themselves, while
  * the K_* names are matched up.
@@ -715,7 +758,7 @@ Key_Bind_f(void)
 	}
 
 	/* don't allow binding escape or the special console keys */
-	if(b == K_ESCAPE || b == '^' || b == '`' || b == '~')
+	if(b == K_ESCAPE || b == '^' || b == '`' || b == '~' || b == K_JOY_BACK)
 	{
 		if(doneWithDefaultCfg)
 		{
@@ -773,7 +816,7 @@ Key_WriteBindings(FILE *f)
 	{
 		if (keybindings[i] && keybindings[i][0])
 		{
-			fprintf(f, "bind %s \"%s\"\n", 
+			fprintf(f, "bind %s \"%s\"\n",
 					Key_KeynumToString(i), keybindings[i]);
 		}
 	}
@@ -1061,12 +1104,12 @@ Key_Event(int key, qboolean down, qboolean special)
 	}
 
 	/* Key is unbound */
-	if ((key >= 200) && !keybindings[key] && (cls.key_dest != key_console))
+	if ((key >= K_MOUSE1 && key != K_JOY_BACK) && !keybindings[key] && (cls.key_dest != key_console))
 	{
 		Com_Printf("%s is unbound, hit F4 to set.\n", Key_KeynumToString(key));
 	}
 
-    /* While in attract loop all keys besides F1 to F12 (to
+	/* While in attract loop all keys besides F1 to F12 (to
 	   allow quick load and the like) are treated like escape. */
 	if (cl.attractloop && (cls.key_dest != key_menu) &&
 		!((key >= K_F1) && (key <= K_F12)))
@@ -1081,10 +1124,11 @@ Key_Event(int key, qboolean down, qboolean special)
 	   - moves one menu level up
 	   - closes the menu
 	   - closes the help computer
-	   - closes the chat window */
+	   - closes the chat window
+	   Fully same logic for K_JOY_BACK */
 	if (!cls.disable_screen)
 	{
-		if (key == K_ESCAPE)
+		if (key == K_ESCAPE || key == K_JOY_BACK)
 		{
 			if (!down)
 			{

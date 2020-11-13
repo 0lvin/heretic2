@@ -57,7 +57,6 @@ cvar_t *cl_showclamp;
 
 cvar_t *cl_paused;
 
-cvar_t *lookspring;
 cvar_t *lookstrafe;
 cvar_t *sensitivity;
 
@@ -92,6 +91,11 @@ client_state_t cl;
 centity_t cl_entities[MAX_EDICTS];
 
 entity_state_t cl_parse_entities[MAX_PARSE_ENTITIES];
+
+/*Evil hack against too many power screen and power
+  shield impact sounds. For example if the player
+  fires his shotgun onto a Brain. */
+int num_power_sounds;
 
 extern cvar_t *allow_download;
 extern cvar_t *allow_download_players;
@@ -490,7 +494,6 @@ CL_InitLocal(void)
 
 	cl_run = Cvar_Get("cl_run", "0", CVAR_ARCHIVE);
 	freelook = Cvar_Get("freelook", "1", CVAR_ARCHIVE);
-	lookspring = Cvar_Get("lookspring", "0", CVAR_ARCHIVE);
 	lookstrafe = Cvar_Get("lookstrafe", "0", CVAR_ARCHIVE);
 	sensitivity = Cvar_Get("sensitivity", "3", CVAR_ARCHIVE);
 
@@ -734,6 +737,9 @@ CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, 
 	{
 		cls.netchan.last_received = Sys_Milliseconds();
 	}
+
+	// Reset power shield / power screen sound counter.
+	num_power_sounds = 0;
 
 	if (!cl_timedemo->value)
 	{
