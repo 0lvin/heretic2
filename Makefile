@@ -254,7 +254,7 @@ LDFLAGS := -L/usr/local/lib -lm
 else ifeq ($(YQ2_OSTYPE),OpenBSD)
 LDFLAGS := -L/usr/local/lib -lm
 else ifeq ($(YQ2_OSTYPE),Windows)
-LDFLAGS := -L/usr/lib -lws2_32 -lwinmm
+LDFLAGS := -L/usr/lib -lws2_32 -lwinmm -static-libgcc
 else ifeq ($(YQ2_OSTYPE), Darwin)
 LDFLAGS := $(OSX_ARCH) -lm
 endif
@@ -455,8 +455,12 @@ else
 release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so.1"' -DDLOPEN_OPENAL
 endif
 else # !DLOPEN_OPENAL
-release/quake2 : CFLAGS += -DUSE_OPENAL -I/usr/local/opt/openal-soft/include
-release/quake2 : LDFLAGS += -lopenal -L/usr/local/opt/openal-soft/lib
+release/quake2 : CFLAGS += -DUSE_OPENAL
+release/quake2 : LDFLAGS += -lopenal
+ifeq ($(YQ2_OSTYPE), Darwin)
+release/quake2 : CFLAGS += -I/usr/local/opt/openal-soft/include
+release/quake2 : LDFLAGS += -L/usr/local/opt/openal-soft/lib
+endif # Darwin
 endif # !DLOPEN_OPENAL
 endif # WITH_OPENAL
 
@@ -842,7 +846,8 @@ REFGL1_OBJS_ := \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
-	src/common/shared/shared.o 
+	src/common/shared/shared.o \
+	src/common/md4.o
 	
 ifeq ($(YQ2_OSTYPE), Windows)
 REFGL1_OBJS_ += \
@@ -873,7 +878,8 @@ REFGL3_OBJS_ := \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
-	src/common/shared/shared.o
+	src/common/shared/shared.o \
+	src/common/md4.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
 REFGL3_OBJS_ += \
