@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "7.01"
+#define YQ2VERSION "7.02"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -475,6 +475,8 @@ void Cvar_WriteVariables(char *path);
 
 void Cvar_Init(void);
 
+void Cvar_Fini(void);
+
 char *Cvar_Userinfo(void);
 
 /* returns an info string containing all the CVAR_USERINFO cvars */
@@ -643,7 +645,7 @@ void Pmove(pmove_t *pmove);
 
 #define SFF_INPACK 0x20
 
-extern int file_from_pak;
+extern qboolean file_from_pak;
 
 typedef int fileHandle_t;
 
@@ -680,7 +682,7 @@ char **FS_ListFiles2(char *findname, int *numfiles,
 void FS_FreeList(char **list, int nfiles);
 
 void FS_InitFilesystem(void);
-void FS_SetGamedir(char *dir);
+void FS_BuildGameSpecificSearchPath(char *dir);
 char *FS_Gamedir(void);
 char *FS_NextPath(char *prevpath);
 int FS_LoadFile(char *path, void **buffer);
@@ -726,7 +728,9 @@ extern cvar_t *modder;
 extern cvar_t *dedicated;
 extern cvar_t *host_speeds;
 extern cvar_t *log_stats;
-extern cvar_t *portable;
+
+/* Hack for portable client */
+extern qboolean is_portable;
 
 extern FILE *log_stats_file;
 
@@ -764,19 +768,19 @@ void Sys_Error(char *error, ...);
 void Sys_Quit(void);
 char *Sys_GetHomeDir(void);
 const char *Sys_GetBinaryDir(void);
-void Sys_Sleep(int msec);
-
+long long Sys_Microseconds(void);
 void Sys_FreeLibrary(void *handle);
 void *Sys_LoadLibrary(const char *path, const char *sym, void **handle);
 void *Sys_GetProcAddress(void *handle, const char *sym);
 void Sys_RedirectStdout(void);
+void Sys_SetupFPU(void);
 
 /* CLIENT / SERVER SYSTEMS */
 
 void CL_Init(void);
 void CL_Drop(void);
 void CL_Shutdown(void);
-void CL_Frame(int msec);
+void CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, qboolean renderframe);
 void Con_Print(char *text);
 void SCR_BeginLoadingPlaque(void);
 

@@ -47,7 +47,7 @@ set(yquake2IncludeDirectories)
 set(yquake2LinkerDirectories)
 set(yquake2LinkerFlags)
 set(yquake2ClientLinkerFlags)
-set(yquake2RendererLinkerFlags)
+set(yquake2OpenGLLinkerFlags)
 set(yquake2SDLLinkerFlags)
 set(yquake2ZLibLinkerFlags)
 
@@ -93,7 +93,7 @@ endif()
 
 find_package(OpenGL REQUIRED)
 list(APPEND yquake2IncludeDirectories ${OPENGL_INCLUDE_DIR})
-list(APPEND yquake2RendererLinkerFlags ${OPENGL_LIBRARIES})
+list(APPEND yquake2OpenGLLinkerFlags ${OPENGL_LIBRARIES})
 
 if(${ZIP_SUPPORT})
 	find_package(ZLIB REQUIRED)
@@ -144,6 +144,21 @@ list(APPEND yquake2LinkerFlags ${CMAKE_DL_LIBS})
 include_directories(${yquake2IncludeDirectories} ${CMAKE_SOURCE_DIR}/src/client/refresh/gl3/glad/include)
 link_directories(${yquake2LinkerDirectories})
 
+# If we're building with gcc for i386 let's define -ffloat-store.
+# This helps the old and crappy x87 FPU to produce correct values.
+# Would be nice if Clang had something comparable.
+if ("${ARCH}" STREQUAL "i386")
+	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffloat-store")
+	endif()
+endif()
+
+# Force SSE math on x86_64. All sane compilers should do this
+# anyway, just to protect us from broken Linux distros.
+if ("${ARCH}" STREQUAL "x86_64")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mfpmath=sse")
+endif()
+
 set(Backends-Generic-Source
 	${BACKENDS_SRC_DIR}/generic/misc.c
 	${BACKENDS_SRC_DIR}/generic/qal.c
@@ -174,7 +189,7 @@ set(Backends-Unix-Header
 	)
 
 set(Backends-Windows-Source
-	${BACKENDS_SRC_DIR}/generic/misc.c
+	${BACKENDS_SRC_DIR}/generic/frame.c
 	${BACKENDS_SRC_DIR}/windows/icon.rc
 	${BACKENDS_SRC_DIR}/windows/network.c
 	${BACKENDS_SRC_DIR}/windows/system.c
@@ -322,7 +337,7 @@ set(Client-Source
 	${COMMON_SRC_DIR}/glob.c
 	${COMMON_SRC_DIR}/md4.c
 	${COMMON_SRC_DIR}/movemsg.c
-	${COMMON_SRC_DIR}/misc.c
+	${COMMON_SRC_DIR}/frame.c
 	${COMMON_SRC_DIR}/netchan.c
 	${COMMON_SRC_DIR}/pmove.c
 	${COMMON_SRC_DIR}/szone.c
@@ -377,7 +392,7 @@ set(Server-Source
 	${COMMON_SRC_DIR}/filesystem.c
 	${COMMON_SRC_DIR}/glob.c
 	${COMMON_SRC_DIR}/md4.c
-	${COMMON_SRC_DIR}/misc.c
+	${COMMON_SRC_DIR}/frame.c
 	${COMMON_SRC_DIR}/movemsg.c
 	${COMMON_SRC_DIR}/netchan.c
 	${COMMON_SRC_DIR}/pmove.c
@@ -535,4 +550,4 @@ set_target_properties(ref_gl3 PROPERTIES
 		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release
 		)
-target_link_libraries(ref_gl3 ${yquake2LinkerFlags} ${yquake2OpenGLLinkerFlags} ${yquake2SDLLinkerFlags})
+target_link_libraries(ref_gl3 ${yquake2LinkerFlags} ${yquake2SDLLinkerFlags})

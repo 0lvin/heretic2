@@ -79,6 +79,19 @@ typedef struct
 menulayer_t m_layers[MAX_MENU_DEPTH];
 int m_menudepth;
 
+static qboolean
+M_IsGame(const char *gamename)
+{
+	cvar_t *game = Cvar_Get("game", "", CVAR_LATCH | CVAR_SERVERINFO);
+
+	if (strcmp(game->string, gamename) == 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 static void
 M_Banner(char *name)
 {
@@ -1920,15 +1933,12 @@ M_Credits_Key(int key)
     return menu_out_sound;
 }
 
-extern int Developer_searchpath(void);
-
 static void
 M_Menu_Credits_f(void)
 {
     int n;
     int count;
     char *p;
-    int isdeveloper = 0;
 
     creditsBuffer = NULL;
     count = FS_LoadFile("credits", (void **)&creditsBuffer);
@@ -1974,14 +1984,12 @@ M_Menu_Credits_f(void)
     }
     else
     {
-        isdeveloper = Developer_searchpath();
-
-        if (isdeveloper == 1) /* Xatrix - The Reckoning */
+        if (M_IsGame("xatrix")) /* Xatrix - The Reckoning */
         {
             credits = xatcredits;
         }
 
-        else if (isdeveloper == 2) /* Rogue - Ground Zero */
+        else if (M_IsGame("rogue")) /* Rogue - Ground Zero */
         {
             credits = roguecredits;
         }
@@ -2614,8 +2622,8 @@ JoinServer_MenuInit(void)
 
     s_joinserver_server_title.generic.type = MTYPE_SEPARATOR;
     s_joinserver_server_title.generic.name = "connect to...";
-    s_joinserver_server_title.generic.x = 80 * scale;
-    s_joinserver_server_title.generic.y = 30;
+	s_joinserver_server_title.generic.y = 30;
+	s_joinserver_server_title.generic.x = 80 * scale;
 
     for (i = 0; i < MAX_LOCAL_SERVERS; i++)
     {
@@ -2703,7 +2711,7 @@ RulesChangeFunc(void *self)
     }
 
     /* Ground Zero game modes */
-    else if (Developer_searchpath() == 2)
+    else if (M_IsGame("rogue"))
     {
         if (s_rules_box.curvalue == 2)
         {
@@ -2733,7 +2741,7 @@ StartServerActionFunc(void *self)
     Cvar_SetValue("fraglimit", ClampCvar(0, fraglimit, fraglimit));
     Cvar_Set("hostname", s_hostname_field.buffer);
 
-    if ((s_rules_box.curvalue < 2) || (Developer_searchpath() != 2))
+    if ((s_rules_box.curvalue < 2) || M_IsGame("rogue"))
     {
         Cvar_SetValue("deathmatch", (float)!s_rules_box.curvalue);
         Cvar_SetValue("coop", (float)s_rules_box.curvalue);
@@ -2822,38 +2830,23 @@ StartServer_MenuInit(void)
         "tag",
         0
     };
+
     char *buffer;
-    char mapsname[1024];
     char *s;
     int length;
     int i;
-    FILE *fp;
     float scale = SCR_GetMenuScale();
 
     /* initialize list of maps once, reuse it afterwards (=> it isn't freed) */
     if (mapnames == NULL)
     {
         /* load the list of map names */
-        Com_sprintf(mapsname, sizeof(mapsname), "%s/maps.lst", FS_Gamedir());
-
-        if ((fp = fopen(mapsname, "rb")) == 0)
+        if ((length = FS_LoadFile("maps.lst", (void **)&buffer)) == -1)
         {
-            if ((length = FS_LoadFile("maps.lst", (void **)&buffer)) == -1)
-            {
-                Com_Error(ERR_DROP, "couldn't find maps.lst\n");
-            }
-        }
-        else
-        {
-            fseek(fp, 0, SEEK_END);
-            length = ftell(fp);
-            fseek(fp, 0, SEEK_SET);
-            buffer = malloc(length);
-            fread(buffer, length, 1, fp);
+            Com_Error(ERR_DROP, "couldn't find maps.lst\n");
         }
 
         s = buffer;
-
         i = 0;
 
         while (i < length)
@@ -2899,17 +2892,7 @@ StartServer_MenuInit(void)
         }
 
         mapnames[nummaps] = 0;
-
-        if (fp != 0)
-        {
-            fclose(fp);
-            fp = 0;
-            free(buffer);
-        }
-        else
-        {
-            FS_FreeFile(buffer);
-        }
+        FS_FreeFile(buffer);
     }
 
     /* initialize the menu stuff */
@@ -2928,7 +2911,7 @@ StartServer_MenuInit(void)
     s_rules_box.generic.name = "rules";
 
     /* Ground Zero games only available with rogue game */
-    if (Developer_searchpath() == 2)
+    if (M_IsGame("rogue"))
     {
         s_rules_box.itemnames = dm_coop_names_rogue;
     }
@@ -3211,7 +3194,7 @@ DMFlagCallback(void *self)
     {
         bit = DF_QUAD_DROP;
     }
-    else if (Developer_searchpath() == 2)
+    else if (M_IsGame("rogue"))
     {
         if (f == &s_no_mines_box)
         {
@@ -3387,7 +3370,7 @@ DMOptions_MenuInit(void)
     s_friendlyfire_box.itemnames = yes_no_names;
     s_friendlyfire_box.curvalue = (dmflags & DF_NO_FRIENDLY_FIRE) == 0;
 
-    if (Developer_searchpath() == 2)
+    if (M_IsGame("rogue"))
     {
         s_no_mines_box.generic.type = MTYPE_SPINCONTROL;
         s_no_mines_box.generic.x = 0;
@@ -3438,7 +3421,7 @@ DMOptions_MenuInit(void)
     Menu_AddItem(&s_dmoptions_menu, &s_quad_drop_box);
     Menu_AddItem(&s_dmoptions_menu, &s_friendlyfire_box);
 
-    if (Developer_searchpath() == 2)
+    if (M_IsGame("rogueg"))
     {
         Menu_AddItem(&s_dmoptions_menu, &s_no_mines_box);
         Menu_AddItem(&s_dmoptions_menu, &s_no_nukes_box);

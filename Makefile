@@ -127,6 +127,15 @@ else
 YQ2_ARCH ?= $(shell uname -m | sed -e 's/i.86/i386/' -e 's/amd64/x86_64/' -e 's/^arm.*/arm/')
 endif
 
+# Detect the compiler
+ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
+COMPILER := clang
+else ifeq ($(shell $(CC) -v 2>&1 | grep -c "gcc version"), 1)
+COMPILER := gcc
+else
+COMPILER := unknown
+endif
+
 # Disable CDA for SDL2
 ifeq ($(WITH_SDL2),yes)
 ifeq ($(WITH_CDA),yes)
@@ -185,6 +194,23 @@ CFLAGS += -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\"
 # https://reproducible-builds.org/specs/source-date-epoch/
 ifdef SOURCE_DATE_EPOCH
 CFLAGS += -DBUILD_DATE=\"$(shell date --utc --date="@${SOURCE_DATE_EPOCH}" +"%b %_d %Y" | sed -e 's/ /\\ /g')\"
+endif
+
+# ----------
+
+# If we're building with gcc for i386 let's define -ffloat-store.
+# This helps the old and crappy x87 FPU to produce correct values.
+# Would be nice if Clang had something comparable.
+ifeq ($(YQ2_ARCH), i386)
+ifeq ($(COMPILER), gcc)
+CFLAGS += -ffloat-store
+endif
+endif
+
+# Force SSE math on x86_64. All sane compilers should do this
+# anyway, just to protect us from broken Linux distros.
+ifeq ($(YQ2_ARCH), x86_64)
+CFLAGS += -mfpmath=sse
 endif
 
 # ----------
@@ -262,8 +288,8 @@ endif
 CFLAGS += -fvisibility=hidden
 LDFLAGS += -fvisibility=hidden
 
-ifneq ($(YQ2_OSTYPE), Darwin)
-# for some reason the OSX linker doesn't support this
+ifneq ($(YQ2_OSTYPE), $(filter $(YQ2_OSTYPE), Darwin, OpenBSD))
+# for some reason the OSX & OpenBSD linker doesn't support this
 LDFLAGS += -Wl,--no-undefined
 endif
 
@@ -789,7 +815,7 @@ CLIENT_OBJS_ := \
 	src/common/glob.o \
 	src/common/md4.o \
 	src/common/movemsg.o \
-	src/common/misc.o \
+	src/common/frame.o \
 	src/common/netchan.o \
 	src/common/pmove.o \
 	src/common/szone.o \
@@ -902,7 +928,7 @@ SERVER_OBJS_ := \
 	src/common/filesystem.o \
 	src/common/glob.o \
 	src/common/md4.o \
-	src/common/misc.o \
+	src/common/frame.o \
 	src/common/movemsg.o \
 	src/common/netchan.o \
 	src/common/pmove.o \
