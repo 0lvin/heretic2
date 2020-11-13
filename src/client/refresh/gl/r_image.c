@@ -152,7 +152,7 @@ R_TexEnv(GLenum mode)
 
 	if (mode != lastmodes[gl_state.currenttmu])
 	{
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mode);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mode); // FIXME: shouldn't this be glTexEnvi() ?
 		lastmodes[gl_state.currenttmu] = mode;
 	}
 }
@@ -954,10 +954,9 @@ R_LoadPic(char *name, byte *pic, int width, int realwidth,
 
 	qboolean nolerp = false;
 
-	cvar_t* nolerp_var = ri.Cvar_Get("gl_nolerp_list", NULL, 0); // FIXME: isn't this cached somewhere?!
-	if(nolerp_var != NULL && nolerp_var->string != NULL)
+	if(gl_nolerp_list != NULL && gl_nolerp_list->string != NULL)
 	{
-		nolerp = strstr(nolerp_var->string, name) != NULL;
+		nolerp = strstr(gl_nolerp_list->string, name) != NULL;
 	}
 
 	/* find a free image_t */
@@ -1089,6 +1088,41 @@ R_LoadPic(char *name, byte *pic, int width, int realwidth,
 	return image;
 }
 
+static image_t *
+LoadWal(char *origname)
+{
+	miptex_t *mt;
+	int width, height, ofs;
+	image_t *image;
+	char name[256];
+
+	Q_strlcpy(name, origname, sizeof(name));
+
+	/* Add the extension */
+	if (strcmp(COM_FileExtension(name), "wal"))
+	{
+		Q_strlcat(name, ".wal", sizeof(name));
+	}
+
+	ri.FS_LoadFile(name, (void **)&mt);
+
+	if (!mt)
+	{
+		R_Printf(PRINT_ALL, "LoadWal: can't load %s\n", name);
+		return r_notexture;
+	}
+
+	width = LittleLong(mt->width);
+	height = LittleLong(mt->height);
+	ofs = LittleLong(mt->offsets[0]);
+
+	image = R_LoadPic(name, (byte *)mt + ofs, width, 0, height, 0, it_wall, 8);
+
+	ri.FS_FreeFile((void *)mt);
+
+	return image;
+}
+
 /*
  * Finds or loads the given image
  */
@@ -1097,7 +1131,7 @@ R_FindImage(char *name, imagetype_t type)
 {
 	image_t *image;
 	int i, len;
-	byte *pic, *palette;
+	byte *pic;
 	int width, height;
 	char *ptr;
 	char namewe[256];
@@ -1145,7 +1179,6 @@ R_FindImage(char *name, imagetype_t type)
 
 	/* load the pic from disk */
 	pic = NULL;
-	palette = NULL;
 
 	if (strcmp(ext, "pcx") == 0)
 	{
@@ -1170,7 +1203,7 @@ R_FindImage(char *name, imagetype_t type)
 			else
 			{
 				/* PCX if no TGA/PNG/JPEG available (exists always) */
-				LoadPCX(name, &pic, &palette, &width, &height);
+				LoadPCX(name, &pic, NULL, &width, &height);
 
 				if (!pic)
 				{
@@ -1184,7 +1217,7 @@ R_FindImage(char *name, imagetype_t type)
 		}
 		else /* gl_retexture is not set */
 		{
-			LoadPCX(name, &pic, &palette, &width, &height);
+			LoadPCX(name, &pic, NULL, &width, &height);
 
 			if (!pic)
 			{
@@ -1261,9 +1294,10 @@ R_FindImage(char *name, imagetype_t type)
 		 * if (realwidth == 0 || realheight == 0) return NULL;
 		 */
 
-		LoadSTB(name, ext, &pic, &width, &height);
-		image = R_LoadPic(name, pic, width, realwidth,
-				height, realheight, type, 32);
+		if(LoadSTB(name, ext, &pic, &width, &height))
+		{
+			image = R_LoadPic(name, pic, width, realwidth, height, realheight, type, 32);
+		}
 	}
 	else
 	{
@@ -1273,11 +1307,6 @@ R_FindImage(char *name, imagetype_t type)
 	if (pic)
 	{
 		free(pic);
-	}
-
-	if (palette)
-	{
-		free(palette);
 	}
 
 	return image;

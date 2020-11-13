@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
- * Copyright (C) 2016 Daniel Gibson
+ * Copyright (C) 2016-2017 Daniel Gibson
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,8 +71,8 @@ int GL3_PrepareForWindow(void)
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-	// SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // TODO
-	int contextFlags = 0; // SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG TODO
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	int contextFlags = SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG;
 	if(gl3_debugcontext && gl3_debugcontext->value)
 	{
 		contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
@@ -118,13 +118,30 @@ int GL3_PrepareForWindow(void)
 	return flags;
 }
 
+enum {
+	// for some reason my driver calls the DebugCallback with the following severity
+	// even though I think it shouldn't for the extension I'm using?
+	// anyway, my gl headers don't know GL_DEBUG_SEVERITY_NOTIFICATION_* so I define it here
+	QGL_DEBUG_SEVERITY_NOTIFICATION = 0x826B
+};
+
 static void
 DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-                  const GLchar *message, const void *userParam)
+              const GLchar *message, const void *userParam)
 {
 	const char* sourceStr = "Source: Unknown";
 	const char* typeStr = "Type: Unknown";
 	const char* severityStr = "Severity: Unknown";
+	switch(severity)
+	{
+		case QGL_DEBUG_SEVERITY_NOTIFICATION:
+			// severityStr = "Severity: Note";    break;
+			return; // ignore these
+
+		case GL_DEBUG_SEVERITY_HIGH_ARB:   severityStr = "Severity: High";   break;
+		case GL_DEBUG_SEVERITY_MEDIUM_ARB: severityStr = "Severity: Medium"; break;
+		case GL_DEBUG_SEVERITY_LOW_ARB:    severityStr = "Severity: Low";    break;
+	}
 	switch(source)
 	{
 #define SRCCASE(X)  case GL_DEBUG_SOURCE_ ## X ## _ARB: sourceStr = "Source: " #X; break;
@@ -147,12 +164,6 @@ DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei le
 		TYPECASE(OTHER);
 #undef TYPECASE
 	}
-	switch(severity)
-	{
-		case GL_DEBUG_SEVERITY_HIGH_ARB:   severityStr = "Severity: High";   break;
-		case GL_DEBUG_SEVERITY_MEDIUM_ARB: severityStr = "Severity: Medium"; break;
-		case GL_DEBUG_SEVERITY_LOW_ARB:    severityStr = "Severity: Low";    break;
-	}
 
 	// use PRINT_ALL - this is only called with gl3_debugcontext != 0 anyway.
 	R_Printf(PRINT_ALL, "GLDBG %s %s %s: %s\n", sourceStr, typeStr, severityStr, message);
@@ -161,6 +172,7 @@ DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei le
 int GL3_InitContext(void* win)
 {
 	int msaa_samples = 0, stencil_bits = 0;
+	char title[40] = {0};
 
 	if(win == NULL)
 	{
@@ -227,6 +239,14 @@ int GL3_InitContext(void* win)
 		// TODO: the following line could control verboseness (in that case we'd get all the low prio messages)
 		// glDebugMessageControlARB(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW_ARB, 0, NULL, true);
 	}
+
+	/* Window title - set here so we can display renderer name in it */
+	snprintf(title, sizeof(title), "Yamagi Quake II %s - OpenGL 3.2", YQ2VERSION);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	SDL_SetWindowTitle(window, title);
+#else
+	SDL_WM_SetCaption(title, title);
+#endif
 
 	return true;
 }

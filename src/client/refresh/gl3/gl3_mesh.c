@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2016,2017 Edd Biddulph
  * Copyright (C) 1997-2001 Id Software, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -30,12 +29,12 @@
 #define NUMVERTEXNORMALS 162
 #define SHADEDOT_QUANT 16
 
-float r_avertexnormals[NUMVERTEXNORMALS][3] = {
+static float r_avertexnormals[NUMVERTEXNORMALS][3] = {
 #include "../constants/anorms.h"
 };
 
 /* precalculated dot products for quantized angles */
-float r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
+static float r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "../constants/anormtab.h"
 };
 
@@ -47,8 +46,8 @@ float *shadedots = r_avertexnormal_dots[0];
 extern vec3_t lightspot;
 extern qboolean have_stencil;
 
-void
-R_LerpVerts(int nverts, dtrivertx_t *v, dtrivertx_t *ov,
+static void
+LerpVerts(int nverts, dtrivertx_t *v, dtrivertx_t *ov,
 		dtrivertx_t *verts, float *lerp, float move[3],
 		float frontv[3], float backv[3])
 {
@@ -82,56 +81,14 @@ R_LerpVerts(int nverts, dtrivertx_t *v, dtrivertx_t *ov,
 	}
 }
 
-static void
-SetNormalForPathtracer(float* p0, float* p1, float *p2)
-{
-	float n[3], l, e0[3], e1[3], desired_length, ratio;
-	static const int perm[4] = { 1, 2, 0, 1 };
-	int i;
-
-	/* Get the edge vectors. */
-	for (i = 0; i < 3; ++i)
-	{
-		e0[i] = p2[i] - p0[i];
-		e1[i] = p1[i] - p0[i];
-	}
-
-	/* Perform a cross product on the edge vectors. */
-	for (i = 0; i < 3; ++i)
-		n[i] = e0[perm[i]] * e1[perm[i + 1]] - e0[perm[i + 1]] * e1[perm[i]];
-
-	/* Get the length of the cross product. */
-	l = sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-	
-	/* Normalize. */
-	if (l > 0)
-	{
-		/* Reduce the length of the normal to transparently shorten epsilon offsets when shading entities. */
-		desired_length = 0.25f;
-		ratio = desired_length / l;
-
-		for (i = 0; i < 3; ++i)
-			n[i] *= ratio;
-	}
-	else
-	{
-		for (i = 0; i < 3; ++i)
-			n[i] = 0;
-	}
-
-	/* Set the normal. */
-	if (qglMultiTexCoord3fARB)
-		qglMultiTexCoord3fARB(GL_TEXTURE2_ARB, n[0], n[1], n[2]);
-}
-
 /*
  * Interpolates between two frames and origins
  */
-void
-R_DrawAliasFrameLerp(dmdl_t *paliashdr, float backlerp)
+static void
+DrawAliasFrameLerp(dmdl_t *paliashdr, float backlerp)
 {
-    unsigned short total;
-    GLenum type;
+	unsigned short total;
+	GLenum type;
 	float l;
 	daliasframe_t *frame, *oldframe;
 	dtrivertx_t *v, *ov, *verts;
@@ -144,7 +101,6 @@ R_DrawAliasFrameLerp(dmdl_t *paliashdr, float backlerp)
 	int i;
 	int index_xyz;
 	float *lerp;
-	float *st0, *st1, *st2, *xyz0, *xyz1, *xyz2;
 
 	frame = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 							  + currententity->frame * paliashdr->framesize);
@@ -169,7 +125,8 @@ R_DrawAliasFrameLerp(dmdl_t *paliashdr, float backlerp)
 		(RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE |
 		 RF_SHELL_HALF_DAM))
 	{
-		glDisable(GL_TEXTURE_2D);
+		//glDisable(GL_TEXTURE_2D);
+		STUB_ONCE("TODO: OpenGL: use color-only shader!");
 	}
 
 	frontlerp = 1.0 - backlerp;
@@ -197,224 +154,7 @@ R_DrawAliasFrameLerp(dmdl_t *paliashdr, float backlerp)
 
 	lerp = s_lerped[0];
 
-	R_LerpVerts(paliashdr->num_xyz, v, ov, verts, lerp, move, frontv, backv);
-
-	if (gl_pt_enable->value && !(currententity->flags & (RF_FULLBRIGHT | RF_TRANSLUCENT | RF_BEAM | RF_NOSHADOW | RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE | RF_SHELL_HALF_DAM)))
-	{
-		glBegin(GL_TRIANGLES);
-
-		while (1)
-		{
-			/* get the vertex count and primitive type */
-			count = *order++;
-
-			if (!count)
-			{
-				break; /* done */
-			}
-
-			st0 = st1 = st2 = xyz0 = xyz1 = xyz2 = NULL;
-
-			if (count < 0)
-			{
-				/* Triangle fan. */
-				count = -count;
-
-				do
-				{
-					if (!st2 && !xyz2)
-					{
-						st2 = st1;
-						xyz2 = xyz1;
-					}
-					st1 = st0;
-					xyz1 = xyz0;
-					st0 = (float *)order;
-					xyz0 = s_lerped[order[2]];
-					order += 3;
-
-					if (st0 && st1 && st2 && xyz0 && xyz1 && xyz2)
-					{
-						SetNormalForPathtracer(xyz2, xyz1, xyz0);
-
-						glTexCoord2fv(st2);
-						glVertex3fv(xyz2);
-						glTexCoord2fv(st1);
-						glVertex3fv(xyz1);
-						glTexCoord2fv(st0);
-						glVertex3fv(xyz0);
-					}
-				}
-				while (--count);
-			}
-			else
-			{
-				/* Triangle strip. */
-				i = 0;
-				do
-				{
-					st2 = st1;
-					xyz2 = xyz1;
-					st1 = st0;
-					xyz1 = xyz0;
-					st0 = (float *)order;
-					xyz0 = s_lerped[order[2]];
-					order += 3;
-
-					if (st0 && st1 && st2 && xyz0 && xyz1 && xyz2)
-					{
-						if (i & 1)
-						{
-							SetNormalForPathtracer(xyz0, xyz1, xyz2);
-
-							glTexCoord2fv(st0);
-							glVertex3fv(xyz0);
-							glTexCoord2fv(st1);
-							glVertex3fv(xyz1);
-							glTexCoord2fv(st2);
-							glVertex3fv(xyz2);
-						}
-						else
-						{
-							SetNormalForPathtracer(xyz2, xyz1, xyz0);
-
-							glTexCoord2fv(st2);
-							glVertex3fv(xyz2);
-							glTexCoord2fv(st1);
-							glVertex3fv(xyz1);
-							glTexCoord2fv(st0);
-							glVertex3fv(xyz0);
-						}
-					}
-					
-					++i;
-				}
-				while (--count);
-			}
-			
-		}
-
-		glEnd();
-	}
-	else
-
-		while (1)
-		{
-			/* get the vertex count and primitive type */
-			count = *order++;
-
-			if (!count)
-			{
-				break; /* done */
-			}
-
-			if (count < 0)
-			{
-				count = -count;
-
-                type = GL_TRIANGLE_FAN;
-			}
-			else
-			{
-                type = GL_TRIANGLE_STRIP;
-			}
-
-			total = count;
-			GLfloat vtx[3*total];
-			GLfloat tex[2*total];
-			GLfloat clr[4 * total];
-			unsigned int index_vtx = 0;
-			unsigned int index_tex = 0;
-			unsigned int index_clr = 0;
-
-			if (currententity->flags &
-				(RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE))
-			{
-				do
-				{
-					index_xyz = order[2];
-					order += 3;
-
-					clr[index_clr++] = shadelight[0];
-					clr[index_clr++] = shadelight[1];
-					clr[index_clr++] = shadelight[2];
-					clr[index_clr++] = alpha;
-
-					vtx[index_vtx++] = s_lerped[index_xyz][0];
-					vtx[index_vtx++] = s_lerped[index_xyz][1];
-					vtx[index_vtx++] = s_lerped[index_xyz][2];
-				}
-				while (--count);
-			}
-			else
-			{
-				do
-				{
-					/* texture coordinates come from the draw list */
-					tex[index_tex++] = ((float *) order)[0];
-					tex[index_tex++] = ((float *) order)[1];
-
-					index_xyz = order[2];
-					order += 3;
-
-					/* normals and vertexes come from the frame list */
-					l = shadedots[verts[index_xyz].lightnormalindex];
-
-					clr[index_clr++] = l * shadelight[0];
-					clr[index_clr++] = l * shadelight[1];
-					clr[index_clr++] = l * shadelight[2];
-					clr[index_clr++] = alpha;
-
-					vtx[index_vtx++] = s_lerped[index_xyz][0];
-					vtx[index_vtx++] = s_lerped[index_xyz][1];
-					vtx[index_vtx++] = s_lerped[index_xyz][2];
-				}
-				while (--count);
-			}
-
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glEnableClientState(GL_COLOR_ARRAY);
-
-			glVertexPointer(3, GL_FLOAT, 0, vtx);
-			glTexCoordPointer(2, GL_FLOAT, 0, tex);
-			glColorPointer(4, GL_FLOAT, 0, clr);
-			glDrawArrays(type, 0, total);
-
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-			glDisableClientState(GL_COLOR_ARRAY);
-		}
-
-	if (currententity->flags &
-		(RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE |
-		 RF_SHELL_DOUBLE | RF_SHELL_HALF_DAM))
-	{
-		glEnable(GL_TEXTURE_2D);
-	}
-}
-
-void
-R_DrawAliasShadow(dmdl_t *paliashdr, int posenum)
-{
-    unsigned short total;
-    GLenum type;
-	int *order;
-	vec3_t point;
-	float height = 0, lheight;
-	int count;
-
-	lheight = currententity->origin[2] - lightspot[2];
-	order = (int *)((byte *)paliashdr + paliashdr->ofs_glcmds);
-	height = -lheight + 0.1f;
-
-	/* stencilbuffer shadows */
-	if (have_stencil && gl_stencilshadow->value)
-	{
-		glEnable(GL_STENCIL_TEST);
-		glStencilFunc(GL_EQUAL, 1, 2);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-	}
+	LerpVerts(paliashdr->num_xyz, v, ov, verts, lerp, move, frontv, backv);
 
 	while (1)
 	{
@@ -429,17 +169,142 @@ R_DrawAliasShadow(dmdl_t *paliashdr, int posenum)
 		if (count < 0)
 		{
 			count = -count;
-			
-            type = GL_TRIANGLE_FAN;
+
+			type = GL_TRIANGLE_FAN;
 		}
 		else
 		{
-            type = GL_TRIANGLE_STRIP;
+			type = GL_TRIANGLE_STRIP;
 		}
 
-        total = count;
-        GLfloat vtx[3*total];
-        unsigned int index_vtx = 0;
+		total = count;
+		GLfloat vtx[3*total];
+		GLfloat tex[2*total];
+		GLfloat clr[4 * total];
+		unsigned int index_vtx = 0;
+		unsigned int index_tex = 0;
+		unsigned int index_clr = 0;
+
+		if (currententity->flags &
+			(RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE))
+		{
+			do
+			{
+				index_xyz = order[2];
+				order += 3;
+
+				clr[index_clr++] = shadelight[0];
+				clr[index_clr++] = shadelight[1];
+				clr[index_clr++] = shadelight[2];
+				clr[index_clr++] = alpha;
+
+				vtx[index_vtx++] = s_lerped[index_xyz][0];
+				vtx[index_vtx++] = s_lerped[index_xyz][1];
+				vtx[index_vtx++] = s_lerped[index_xyz][2];
+			}
+			while (--count);
+		}
+		else
+		{
+			do
+			{
+				/* texture coordinates come from the draw list */
+				tex[index_tex++] = ((float *) order)[0];
+				tex[index_tex++] = ((float *) order)[1];
+
+				index_xyz = order[2];
+				order += 3;
+
+				/* normals and vertexes come from the frame list */
+				l = shadedots[verts[index_xyz].lightnormalindex];
+
+				clr[index_clr++] = l * shadelight[0];
+				clr[index_clr++] = l * shadelight[1];
+				clr[index_clr++] = l * shadelight[2];
+				clr[index_clr++] = alpha;
+
+				vtx[index_vtx++] = s_lerped[index_xyz][0];
+				vtx[index_vtx++] = s_lerped[index_xyz][1];
+				vtx[index_vtx++] = s_lerped[index_xyz][2];
+			}
+			while (--count);
+		}
+
+		STUB_ONCE("TODO: OpenGL!");
+#if 0
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glEnableClientState(GL_COLOR_ARRAY);
+
+		glVertexPointer(3, GL_FLOAT, 0, vtx);
+		glTexCoordPointer(2, GL_FLOAT, 0, tex);
+		glColorPointer(4, GL_FLOAT, 0, clr);
+		glDrawArrays(type, 0, total);
+
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_COLOR_ARRAY);
+#endif // 0
+	}
+
+	if (currententity->flags &
+		(RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE |
+		 RF_SHELL_DOUBLE | RF_SHELL_HALF_DAM))
+	{
+		STUB_ONCE("TODO: OpenGL: use textured shader!");
+		//glEnable(GL_TEXTURE_2D);
+	}
+}
+
+static void
+DrawAliasShadow(dmdl_t *paliashdr, int posenum)
+{
+	unsigned short total;
+	GLenum type;
+	int *order;
+	vec3_t point;
+	float height = 0, lheight;
+	int count;
+
+	lheight = currententity->origin[2] - lightspot[2];
+	order = (int *)((byte *)paliashdr + paliashdr->ofs_glcmds);
+	height = -lheight + 0.1f;
+
+	/* stencilbuffer shadows */
+	STUB_ONCE("TODO: OpenGL: stencil shadows!");
+#if 0
+	if (have_stencil && gl_stencilshadow->value)
+	{
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_EQUAL, 1, 2);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+	}
+#endif // 0
+
+	while (1)
+	{
+		/* get the vertex count and primitive type */
+		count = *order++;
+
+		if (!count)
+		{
+			break; /* done */
+		}
+
+		if (count < 0)
+		{
+			count = -count;
+
+			type = GL_TRIANGLE_FAN;
+		}
+		else
+		{
+			type = GL_TRIANGLE_STRIP;
+		}
+
+		total = count;
+		GLfloat vtx[3*total];
+		unsigned int index_vtx = 0;
 
 		do
 		{
@@ -450,31 +315,35 @@ R_DrawAliasShadow(dmdl_t *paliashdr, int posenum)
 			point[1] -= shadevector[1] * (point[2] + lheight);
 			point[2] = height;
 
-            vtx[index_vtx++] = point [ 0 ];
-            vtx[index_vtx++] = point [ 1 ];
-            vtx[index_vtx++] = point [ 2 ];
+			vtx[index_vtx++] = point [ 0 ];
+			vtx[index_vtx++] = point [ 1 ];
+			vtx[index_vtx++] = point [ 2 ];
 
 			order += 3;
 		}
 		while (--count);
 
-        glEnableClientState( GL_VERTEX_ARRAY );
+		STUB_ONCE("TODO: OpenGL!");
+#if 0
+		glEnableClientState( GL_VERTEX_ARRAY );
 
-        glVertexPointer( 3, GL_FLOAT, 0, vtx );
-        glDrawArrays( type, 0, total );
+		glVertexPointer( 3, GL_FLOAT, 0, vtx );
+		glDrawArrays( type, 0, total );
 
-        glDisableClientState( GL_VERTEX_ARRAY );
+		glDisableClientState( GL_VERTEX_ARRAY );
+#endif // 0
 	}
 
 	/* stencilbuffer shadows */
 	if (have_stencil && gl_stencilshadow->value)
 	{
-		glDisable(GL_STENCIL_TEST);
+		STUB_ONCE("TODO: OpenGL: stencil shadows!");
+		//glDisable(GL_STENCIL_TEST);
 	}
 }
 
 static qboolean
-R_CullAliasModel(vec3_t bbox[8], entity_t *e)
+CullAliasModel(vec3_t bbox[8], entity_t *e)
 {
 	int i;
 	vec3_t mins, maxs;
@@ -626,17 +495,17 @@ R_CullAliasModel(vec3_t bbox[8], entity_t *e)
 }
 
 void
-R_DrawAliasModel(entity_t *e)
+GL3_DrawAliasModel(entity_t *e)
 {
 	int i;
 	dmdl_t *paliashdr;
 	float an;
 	vec3_t bbox[8];
-	image_t *skin;
+	gl3image_t *skin;
 
 	if (!(e->flags & RF_WEAPONMODEL))
 	{
-		if (R_CullAliasModel(bbox, e))
+		if (CullAliasModel(bbox, e))
 		{
 			return;
 		}
@@ -696,7 +565,7 @@ R_DrawAliasModel(entity_t *e)
 	}
 	else
 	{
-		R_LightPoint(currententity->origin, shadelight);
+		GL3_LightPoint(currententity->origin, shadelight);
 
 		/* player lighting hack for communication back to server */
 		if (currententity->flags & RF_WEAPONMODEL)
@@ -752,7 +621,7 @@ R_DrawAliasModel(entity_t *e)
 		float scale;
 		float min;
 
-		scale = 0.1 * sin(r_newrefdef.time * 7);
+		scale = 0.1 * sin(gl3_newrefdef.time * 7);
 
 		for (i = 0; i < 3; i++)
 		{
@@ -767,20 +636,19 @@ R_DrawAliasModel(entity_t *e)
 	}
 
 
-    // Apply gl_overbrightbits to the mesh. If we don't do this they will appear slightly dimmer relative to walls.
-    if (gl_overbrightbits->value)
-    {
-        for (i = 0; i < 3; ++i)
-        {
-            shadelight[i] *= gl_overbrightbits->value;
-        }
-    }
-    
+	// Apply gl_overbrightbits to the mesh. If we don't do this they will appear slightly dimmer relative to walls.
+	if (gl_overbrightbits->value)
+	{
+		for (i = 0; i < 3; ++i)
+		{
+			shadelight[i] *= gl_overbrightbits->value;
+		}
+	}
+
 
 
 	/* ir goggles color override */
-	if (r_newrefdef.rdflags & RDF_IRGOGGLES && currententity->flags &
-		RF_IR_VISIBLE)
+	if ((gl3_newrefdef.rdflags & RDF_IRGOGGLES) && (currententity->flags & RF_IR_VISIBLE))
 	{
 		shadelight[0] = 1.0;
 		shadelight[1] = 0.0;
@@ -799,11 +667,13 @@ R_DrawAliasModel(entity_t *e)
 	/* locate the proper data */
 	c_alias_polys += paliashdr->num_tris;
 
+	STUB_ONCE("TODO: OpenGL3 stuff!");
+#if 0
 	/* draw all the triangles */
 	if (currententity->flags & RF_DEPTHHACK)
 	{
 		/* hack the depth range to prevent view model from poking into walls */
-		glDepthRange(gldepthmin, gldepthmin + 0.3 * (gldepthmax - gldepthmin));
+		glDepthRange(gl3depthmin, gl3depthmin + 0.3 * (gl3depthmax - gl3depthmin));
 	}
 
 	if ((currententity->flags & RF_WEAPONMODEL) && (gl_lefthand->value == 1.0F))
@@ -815,8 +685,8 @@ R_DrawAliasModel(entity_t *e)
 		glPushMatrix();
 		glLoadIdentity();
 		glScalef(-1, 1, 1);
-		R_MYgluPerspective(r_newrefdef.fov_y,
-				(float)r_newrefdef.width / r_newrefdef.height,
+		R_MYgluPerspective(gl3_newrefdef.fov_y,
+				(float)gl3_newrefdef.width / gl3_newrefdef.height,
 				4, 4096);
 		glMatrixMode(GL_MODELVIEW);
 
@@ -825,8 +695,9 @@ R_DrawAliasModel(entity_t *e)
 
 	glPushMatrix();
 	e->angles[PITCH] = -e->angles[PITCH];
-	R_RotateForEntity(e);
+	GL3_RotateForEntity(e);
 	e->angles[PITCH] = -e->angles[PITCH];
+#endif // 0
 
 	/* select skin */
 	if (currententity->skin)
@@ -852,11 +723,13 @@ R_DrawAliasModel(entity_t *e)
 
 	if (!skin)
 	{
-		skin = r_notexture; /* fallback... */
+		skin = gl3_notexture; /* fallback... */
 	}
 
-	R_Bind(skin->texnum);
+	GL3_Bind(skin->texnum);
 
+	STUB_ONCE("TODO: OpenGL3 stuff!");
+#if 0
 	/* draw it */
 	glShadeModel(GL_SMOOTH);
 
@@ -866,6 +739,7 @@ R_DrawAliasModel(entity_t *e)
 	{
 		glEnable(GL_BLEND);
 	}
+#endif // 0
 
 	if ((currententity->frame >= paliashdr->num_frames) ||
 		(currententity->frame < 0))
@@ -885,57 +759,21 @@ R_DrawAliasModel(entity_t *e)
 		currententity->oldframe = 0;
 	}
 
+	/* Fuck this, gl_lerpmodels 0 looks horrible anyway
 	if (!gl_lerpmodels->value)
 	{
 		currententity->backlerp = 0;
 	}
+	*/
 
-	if (gl_pt_enable->value && !(currententity->flags & (RF_FULLBRIGHT | RF_TRANSLUCENT | RF_BEAM | RF_NOSHADOW | RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE | RF_SHELL_HALF_DAM)))
-	{
-		float entity_to_world_matrix[16];
+	DrawAliasFrameLerp(paliashdr, currententity->backlerp);
 
-		R_ConstructEntityToWorldMatrix(entity_to_world_matrix, currententity);
-
-		R_SetGLStateForPathtracing(currententity, entity_to_world_matrix);
-		
-		if (qglMultiTexCoord3fARB)
-		{
-			/* Assume that alias models never need to be treated as direct light-emitters. */
-			qglMultiTexCoord4fARB(GL_TEXTURE3_ARB, 0, 0, 0, 0);
-			
-			/* An objectspace-to-tangentspace transformation isn't available, so just set the tangent vectors to zero to effectively disable bumpmapping. */
-			qglMultiTexCoord4fARB(GL_TEXTURE4_ARB, 0, 0, 0, 1024);
-			qglMultiTexCoord3fARB(GL_TEXTURE5_ARB, 0, 0, 0);
-		}
-	}
-	
-	R_DrawAliasFrameLerp(paliashdr, currententity->backlerp);
-
-	if (gl_pt_enable->value)
-		R_ClearGLStateForPathtracing();
-	
+	STUB_ONCE("TODO: even more OpenGL3 stuff!");
+#if 0
 	R_TexEnv(GL_REPLACE);
 	glShadeModel(GL_FLAT);
 
 	glPopMatrix();
-
-	if (gl_showbbox->value)
-	{
-		glDisable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDisable(GL_TEXTURE_2D);
-		glBegin(GL_TRIANGLE_STRIP);
-
-		for (i = 0; i < 8; i++)
-		{
-			glVertex3fv(bbox[i]);
-		}
-
-		glEnd();
-		glEnable(GL_TEXTURE_2D);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glEnable(GL_CULL_FACE);
-	}
 
 	if ((currententity->flags & RF_WEAPONMODEL) && (gl_lefthand->value == 1.0F))
 	{
@@ -967,12 +805,13 @@ R_DrawAliasModel(entity_t *e)
 		glDisable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		glColor4f(0, 0, 0, 0.5f);
-		R_DrawAliasShadow(paliashdr, currententity->frame);
+		DrawAliasShadow(paliashdr, currententity->frame);
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
 		glPopMatrix();
 	}
 
 	glColor4f(1, 1, 1, 1);
+#endif // 0
 }
 

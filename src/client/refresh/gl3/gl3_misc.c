@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
- * Copyright (C) 2016 Daniel Gibson
+ * Copyright (C) 2016-2017 Daniel Gibson
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,19 @@
 
 #include "header/local.h"
 
+gl3image_t *gl3_notexture; /* use for bad textures */
+gl3image_t *gl3_particletexture; /* little dot for particles */
+
 void
 GL3_SetDefaultState(void)
 {
 	glClearColor(1, 0, 0.5, 0.5);
 	glDisable(GL_MULTISAMPLE);
 	glCullFace(GL_FRONT);
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 
+	// TODO: this must be done in shader instead,
+	// see https://www.khronos.org/opengl/wiki/Transparency_Sorting#Alpha_test
 	//glEnable(GL_ALPHA_TEST);
 	//glAlphaFunc(GL_GREATER, 0.666);
 
@@ -91,6 +96,54 @@ GL3_SetDefaultState(void)
 		glEnable(GL_MULTISAMPLE);
 		// glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST); TODO what is this for?
 	}
+}
+
+static byte dottexture[8][8] = {
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 1, 1, 0, 0, 0, 0},
+	{0, 1, 1, 1, 1, 0, 0, 0},
+	{0, 1, 1, 1, 1, 0, 0, 0},
+	{0, 0, 1, 1, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+void
+GL3_InitParticleTexture(void)
+{
+	int x, y;
+	byte data[8][8][4];
+
+	/* particle texture */
+	for (x = 0; x < 8; x++)
+	{
+		for (y = 0; y < 8; y++)
+		{
+			data[y][x][0] = 255;
+			data[y][x][1] = 255;
+			data[y][x][2] = 255;
+			data[y][x][3] = dottexture[x][y] * 255;
+		}
+	}
+
+	gl3_particletexture = GL3_LoadPic("***particle***", (byte *)data,
+	                                  8, 0, 8, 0, it_sprite, 32);
+
+	/* also use this for bad textures, but without alpha */
+	for (x = 0; x < 8; x++)
+	{
+		for (y = 0; y < 8; y++)
+		{
+			data[y][x][0] = dottexture[x & 3][y & 3] * 255;
+			data[y][x][1] = 0;
+			data[y][x][2] = 0;
+			data[y][x][3] = 255;
+		}
+	}
+
+	gl3_notexture = GL3_LoadPic("***r_notexture***", (byte *)data,
+	                            8, 0, 8, 0, it_wall, 32);
 }
 
 void

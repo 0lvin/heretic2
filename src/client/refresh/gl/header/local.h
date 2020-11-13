@@ -66,7 +66,6 @@
 #define BLOCK_WIDTH 128
 #define BLOCK_HEIGHT 128
 #define REF_VERSION "Yamagi Quake II OpenGL Refresher (+Pathtracing)"
-#define MAX_LBM_HEIGHT 480
 #define BACKFACE_EPSILON 0.01
 #define LIGHTMAP_BYTES 4
 #define MAX_LIGHTMAPS 128
@@ -200,6 +199,8 @@ extern cvar_t *gl_customheight;
 
 extern cvar_t *gl_retexturing;
 
+extern cvar_t *gl_nolerp_list;
+
 extern cvar_t *gl_lightmap;
 extern cvar_t *gl_shadows;
 extern cvar_t *gl_stencilshadow;
@@ -292,10 +293,6 @@ int Draw_GetPalette(void);
 void R_ResampleTexture(unsigned *in, int inwidth, int inheight,
 		unsigned *out, int outwidth, int outheight);
 
-image_t *LoadWal(char *name);
-
-void GetWalInfo(char *name, int *width, int *height);
-void GetPCXInfo(char *filename, int *width, int *height);
 image_t *R_LoadPic(char *name, byte *pic, int width, int realwidth,
 		int height, int realheight, imagetype_t type, int bits);
 image_t *R_FindImage(char *name, imagetype_t type);

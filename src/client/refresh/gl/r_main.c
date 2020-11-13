@@ -104,6 +104,8 @@ cvar_t *gl_customheight;
 
 cvar_t *gl_retexturing;
 
+cvar_t *gl_nolerp_list;
+
 cvar_t *gl_dynamic;
 cvar_t *gl_modulate;
 cvar_t *gl_nobind;
@@ -176,7 +178,7 @@ void
 R_DrawSpriteModel(entity_t *e)
 {
 	float alpha = 1.0F;
-    vec3_t point[4];
+	vec3_t point[4];
 	dsprframe_t *frame;
 	float *up, *right;
 	dsprite_t *psprite;
@@ -1124,6 +1126,8 @@ R_RenderView(refdef_t *fd)
 	}
 
 	switch (gl_state.stereo_mode) {
+		case STEREO_MODE_NONE:
+			break;
 		case STEREO_MODE_ANAGLYPH:
 			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 			break;
@@ -1137,7 +1141,8 @@ R_RenderView(refdef_t *fd)
 	}
 }
 
-enum opengl_special_buffer_modes GL_GetSpecialBufferModeForStereoMode(enum stereo_modes stereo_mode) {
+enum opengl_special_buffer_modes
+GL_GetSpecialBufferModeForStereoMode(enum stereo_modes stereo_mode) {
 	switch (stereo_mode) {
 		case STEREO_MODE_NONE:
 		case STEREO_SPLIT_HORIZONTAL:
@@ -1266,6 +1271,8 @@ R_Register(void)
 
 	gl_retexturing = ri.Cvar_Get("gl_retexturing", "1", CVAR_ARCHIVE);
 
+	/* don't bilerp characters and crosshairs */
+	gl_nolerp_list = ri.Cvar_Get("gl_nolerp_list", "pics/conchars.pcx pics/ch1.pcx pics/ch2.pcx pics/ch3.pcx", 0);
 
 	gl_stereo = ri.Cvar_Get( "gl_stereo", "0", CVAR_ARCHIVE );
 	gl_stereo_separation = ri.Cvar_Get( "gl_stereo_separation", "-0.4", CVAR_ARCHIVE );
@@ -2002,6 +2009,8 @@ RI_BeginFrame(float camera_separation)
 	}
 
 	/* go into 2D mode */
+
+	// FIXME: just call R_SetGL2D();
 
 	int x, w, y, h;
 	qboolean drawing_left_eye = gl_state.camera_separation < 0;

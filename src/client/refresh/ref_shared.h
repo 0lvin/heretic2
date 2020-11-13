@@ -48,11 +48,23 @@ typedef enum
 	it_sky
 } imagetype_t;
 
+typedef enum
+{
+	mod_bad,
+	mod_brush,
+	mod_sprite,
+	mod_alias
+} modtype_t;
+
+#define MAX_LBM_HEIGHT 480
+
 extern void R_Printf(int level, const char* msg, ...) __attribute__ ((format (printf, 2, 3)));
 
 extern void LoadPCX(char *origname, byte **pic, byte **palette, int *width, int *height);
 extern void GetPCXInfo(char *filename, int *width, int *height);
 
 extern qboolean LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *height);
+
+extern void GetWalInfo(char *name, int *width, int *height);
 
 #endif /* SRC_CLIENT_REFRESH_REF_SHARED_H_ */

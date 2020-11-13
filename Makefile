@@ -173,7 +173,7 @@ CFLAGS += $(OSX_ARCH)
 else
 #CFLAGS := -O2 -fno-strict-aliasing -fomit-frame-pointer \
 		  -Wall -pipe -g -ggdb -MMD -fwrapv
-CFLAGS := -O0 -fno-strict-aliasing \
+CFLAGS := -O2 -fno-strict-aliasing \
 		  -Wall -pipe -g -ggdb -MMD -fwrapv
 endif
 
@@ -283,7 +283,7 @@ SDLLDFLAGS := -lSDL
 endif # SDL2
 else ifeq ($(OSTYPE), Darwin)
 ifeq ($(WITH_SDL2),yes)
-SDLLDFLAGS := -lSDL2 -framework OpenGL -framework Cocoa
+SDLLDFLAGS := -lSDL2
 else # not SDL2
 SDLLDFLAGS := -lSDL -framework OpenGL -framework Cocoa
 endif # SDL2
@@ -580,7 +580,7 @@ ifeq ($(WITH_SDL2),yes)
 release/ref_gl.dylib : CFLAGS += -DSDL2
 endif
 
-release/ref_gl.dylib : LDFLAGS += -shared
+release/ref_gl.dylib : LDFLAGS += -shared -framework OpenGL
 
 else # not Windows or Darwin
 
@@ -630,6 +630,8 @@ ref_gl3:
 ifeq ($(WITH_SDL2),yes)
 release/ref_gl3.dylib : CFLAGS += -DSDL2
 endif
+
+release/ref_gl3.dylib : LDFLAGS += -shared
 
 else # not Windows or Darwin
 
@@ -848,9 +850,9 @@ REFGL_OBJS_ := \
 	src/client/refresh/gl/r_warp.o \
 	src/client/refresh/gl/r_pathtracing.o \
 	src/client/refresh/gl/r_sdl.o \
-	src/client/refresh/files/md2.o \
+	src/client/refresh/gl/r_md2.o \
+	src/client/refresh/gl/r_sp2.o \
 	src/client/refresh/files/pcx.o \
-	src/client/refresh/files/sp2.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/common/shared/flash.o \
@@ -870,23 +872,25 @@ endif
 REFGL3_OBJS_ := \
 	src/client/refresh/gl3/gl3_draw.o \
 	src/client/refresh/gl3/gl3_image.o \
+	src/client/refresh/gl3/gl3_light.o \
+	src/client/refresh/gl3/gl3_lightmap.o \
 	src/client/refresh/gl3/gl3_main.o \
+	src/client/refresh/gl3/gl3_mesh.o \
 	src/client/refresh/gl3/gl3_misc.o \
 	src/client/refresh/gl3/gl3_model.o \
 	src/client/refresh/gl3/gl3_sdl.o \
+	src/client/refresh/gl3/gl3_surf.o \
+	src/client/refresh/gl3/gl3_warp.o \
+	src/client/refresh/gl3/gl3_shaders.o \
+	src/client/refresh/gl3/gl3_md2.o \
+	src/client/refresh/gl3/gl3_sp2.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
+	src/client/refresh/files/wal.o \
 	src/common/shared/flash.o \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o
 
-# TODO: filetype support for gl3 renderer - can we reuse same code?
-REFGL3_TODO_ := \
-	src/client/refresh/files/md2.o \
-	src/client/refresh/files/pcx.o \
-	src/client/refresh/files/sp2.o \
-	src/client/refresh/files/wal.o 
-	
 # TODO: glad_dbg support
 REFGL3_OBJS_ += \
 	src/client/refresh/gl3/glad/src/glad.o

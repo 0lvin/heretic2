@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
- * Copyright (C) 2016 Daniel Gibson
+ * Copyright (C) 2016-2017 Daniel Gibson
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,9 @@ glmode_t modes[] = {
 int gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
 int gl_filter_max = GL_LINEAR;
 
+gl3image_t gl3textures[MAX_GL3TEXTURES];
+int numgl3textures;
+
 void
 GL3_TextureMode(char *string)
 {
@@ -85,29 +88,387 @@ GL3_TextureMode(char *string)
 		ri.Cvar_SetValue("gl_anisotropic", 0.0);
 	}
 
-#if 0 // TODO!
-	image_t *glt;
+	gl3image_t *glt;
 
 	/* change all the existing mipmap texture objects */
-	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
+	for (i = 0, glt = gl3textures; i < numgl3textures; i++, glt++)
 	{
 		if ((glt->type != it_pic) && (glt->type != it_sky))
 		{
-			R_Bind(glt->texnum);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-					gl_filter_min);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-					gl_filter_max);
+			GL3_Bind(glt->texnum);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 			/* Set anisotropic filter if supported and enabled */
-			if (gl_config.anisotropic && gl_anisotropic->value)
+			if (gl3config.anisotropic && gl_anisotropic->value)
 			{
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-						gl_anisotropic->value);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_anisotropic->value);
 			}
 		}
 	}
+}
+
+void
+GL3_Bind(int texnum)
+{
+	extern gl3image_t *draw_chars;
+
+	if (gl_nobind->value && draw_chars) /* performance evaluation option */
+	{
+		texnum = draw_chars->texnum;
+	}
+
+	if (gl3state.currenttexture == texnum)
+	{
+		return;
+	}
+
+	gl3state.currenttexture = texnum;
+	glBindTexture(GL_TEXTURE_2D, texnum);
+}
+
+/*
+ * Returns has_alpha
+ */
+qboolean
+GL3_Upload32(unsigned *data, int width, int height, qboolean mipmap)
+{
+	qboolean res;
+
+	int samples;
+	int i, c;
+	byte *scan;
+	int comp;
+
+	c = width * height;
+	scan = ((byte *)data) + 3;
+	samples = gl3_solid_format;
+	comp = gl3_tex_solid_format;
+
+	for (i = 0; i < c; i++, scan += 4)
+	{
+		if (*scan != 255)
+		{
+			samples = gl3_alpha_format;
+			comp = gl3_tex_alpha_format;
+			break;
+		}
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, comp, width, height,
+	             0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	res = (samples == gl3_alpha_format);
+
+	if (mipmap)
+	{
+		// TODO: some hardware may require mipmapping disabled for NPOT textures!
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	}
+	else
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	}
+
+	if (mipmap && gl3config.anisotropic && gl_anisotropic->value)
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_anisotropic->value);
+	}
+
+	return res;
+}
+
+
+/*
+ * Returns has_alpha
+ */
+qboolean
+GL3_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
+{
+	unsigned trans[512 * 256];
+	int i, s;
+	int p;
+
+	s = width * height;
+
+	if (s > sizeof(trans) / 4)
+	{
+		ri.Sys_Error(ERR_DROP, "GL3_Upload8: too large");
+	}
+
+	for (i = 0; i < s; i++)
+	{
+		p = data[i];
+		trans[i] = d_8to24table[p];
+
+		/* transparent, so scan around for
+		   another color to avoid alpha fringes */
+		if (p == 255)
+		{
+			if ((i > width) && (data[i - width] != 255))
+			{
+				p = data[i - width];
+			}
+			else if ((i < s - width) && (data[i + width] != 255))
+			{
+				p = data[i + width];
+			}
+			else if ((i > 0) && (data[i - 1] != 255))
+			{
+				p = data[i - 1];
+			}
+			else if ((i < s - 1) && (data[i + 1] != 255))
+			{
+				p = data[i + 1];
+			}
+			else
+			{
+				p = 0;
+			}
+
+			/* copy rgb components */
+			((byte *)&trans[i])[0] = ((byte *)&d_8to24table[p])[0];
+			((byte *)&trans[i])[1] = ((byte *)&d_8to24table[p])[1];
+			((byte *)&trans[i])[2] = ((byte *)&d_8to24table[p])[2];
+		}
+	}
+
+	return GL3_Upload32(trans, width, height, mipmap);
+}
+
+/*
+ * This is also used as an entry point for the generated r_notexture
+ */
+gl3image_t *
+GL3_LoadPic(char *name, byte *pic, int width, int realwidth,
+            int height, int realheight, imagetype_t type, int bits)
+{
+	gl3image_t *image = NULL;
+	GLuint texNum=0;
+	int i;
+
+	qboolean nolerp = false;
+
+	if (gl_nolerp_list != NULL && gl_nolerp_list->string != NULL)
+	{
+		nolerp = strstr(gl_nolerp_list->string, name) != NULL;
+	}
+	/* find a free gl3image_t */
+	for (i = 0, image = gl3textures; i < numgl3textures; i++, image++)
+	{
+		if (image->texnum == 0)
+		{
+			break;
+		}
+	}
+
+	if (i == numgl3textures)
+	{
+		if (numgl3textures == MAX_GL3TEXTURES)
+		{
+			ri.Sys_Error(ERR_DROP, "MAX_GLTEXTURES");
+		}
+
+		numgl3textures++;
+	}
+
+	image = &gl3textures[i];
+
+	if (strlen(name) >= sizeof(image->name))
+	{
+		ri.Sys_Error(ERR_DROP, "GL3_LoadPic: \"%s\" is too long", name);
+	}
+
+	strcpy(image->name, name);
+	image->registration_sequence = registration_sequence;
+
+	image->width = width;
+	image->height = height;
+	image->type = type;
+
+	if ((type == it_skin) && (bits == 8))
+	{
+		//R_FloodFillSkin(pic, width, height);
+		STUB_ONCE("TODO: Implement and call GL3_FloodFillSkin()!");
+	}
+
+	image->scrap = false; // FIXME: not sure if we need scrap anymore..
+
+	glGenTextures(1, &texNum);
+
+	image->texnum = texNum;
+
+	// glActiveTexture(GL_TEXTURE0); TODO: useful if we need >1 texture in the fragment shader
+	GL3_Bind(texNum);
+
+	if (bits == 8)
+	{
+		image->has_alpha = GL3_Upload8(pic, width, height,
+					(image->type != it_pic && image->type != it_sky),
+					image->type == it_sky);
+	}
+	else
+	{
+		image->has_alpha = GL3_Upload32((unsigned *)pic, width, height,
+					(image->type != it_pic && image->type != it_sky));
+	}
+
+	// TODO: I don't think we even need image->upload_*
+	image->upload_width = width; // upload_width; /* after power of 2 and scales */
+	image->upload_height = height; // upload_height;
+	//image->paletted = uploaded_paletted;
+
+	if (realwidth && realheight)
+	{
+		if ((realwidth <= image->width) && (realheight <= image->height))
+		{
+			image->width = realwidth;
+			image->height = realheight;
+		}
+		else
+		{
+			R_Printf(PRINT_DEVELOPER,
+					"Warning, image '%s' has hi-res replacement smaller than the original! (%d x %d) < (%d x %d)\n",
+					name, image->width, image->height, realwidth, realheight);
+		}
+	}
+
+	image->sl = 0;
+	image->sh = 1;
+	image->tl = 0;
+	image->th = 1;
+
+	if (nolerp)
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	}
+#if 0 // TODO: do we need the scrap? (probably not)
+	/* load little pics into the scrap */
+	if (!nolerp && (image->type == it_pic) && (bits == 8) &&
+		(image->width < 64) && (image->height < 64))
+	{
+		int x, y;
+		int i, j, k;
+		int texnum;
+
+		texnum = Scrap_AllocBlock(image->width, image->height, &x, &y);
+
+		if (texnum == -1)
+		{
+			goto nonscrap;
+		}
+
+		scrap_dirty = true;
+
+		/* copy the texels into the scrap block */
+		k = 0;
+
+		for (i = 0; i < image->height; i++)
+		{
+			for (j = 0; j < image->width; j++, k++)
+			{
+				scrap_texels[texnum][(y + i) * BLOCK_WIDTH + x + j] = pic[k];
+			}
+		}
+
+		image->texnum = TEXNUM_SCRAPS + texnum;
+		image->scrap = true;
+		image->has_alpha = true;
+		image->sl = (x + 0.01) / (float)BLOCK_WIDTH;
+		image->sh = (x + image->width - 0.01) / (float)BLOCK_WIDTH;
+		image->tl = (y + 0.01) / (float)BLOCK_WIDTH;
+		image->th = (y + image->height - 0.01) / (float)BLOCK_WIDTH;
+	}
+	else
+	{
+	nonscrap:
+		image->scrap = false;
+		image->texnum = TEXNUM_IMAGES + (image - gltextures);
+		R_Bind(image->texnum);
+
+		if (bits == 8)
+		{
+			image->has_alpha = R_Upload8(pic, width, height,
+						(image->type != it_pic && image->type != it_sky),
+						image->type == it_sky);
+		}
+		else
+		{
+			image->has_alpha = R_Upload32((unsigned *)pic, width, height,
+						(image->type != it_pic && image->type != it_sky));
+		}
+
+		image->upload_width = upload_width; /* after power of 2 and scales */
+		image->upload_height = upload_height;
+		image->paletted = uploaded_paletted;
+
+		if (realwidth && realheight)
+		{
+			if ((realwidth <= image->width) && (realheight <= image->height))
+			{
+				image->width = realwidth;
+				image->height = realheight;
+			}
+			else
+			{
+				R_Printf(PRINT_DEVELOPER,
+						"Warning, image '%s' has hi-res replacement smaller than the original! (%d x %d) < (%d x %d)\n",
+						name, image->width, image->height, realwidth, realheight);
+			}
+		}
+
+		image->sl = 0;
+		image->sh = 1;
+		image->tl = 0;
+		image->th = 1;
+
+		if (nolerp)
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
+	}
 #endif // 0
+	return image;
+}
+
+static gl3image_t *
+LoadWal(char *origname)
+{
+	miptex_t *mt;
+	int width, height, ofs;
+	gl3image_t *image;
+	char name[256];
+
+	Q_strlcpy(name, origname, sizeof(name));
+
+	/* Add the extension */
+	if (strcmp(COM_FileExtension(name), "wal"))
+	{
+		Q_strlcat(name, ".wal", sizeof(name));
+	}
+
+	ri.FS_LoadFile(name, (void **)&mt);
+
+	if (!mt)
+	{
+		R_Printf(PRINT_ALL, "LoadWal: can't load %s\n", name);
+		return gl3_notexture;
+	}
+
+	width = LittleLong(mt->width);
+	height = LittleLong(mt->height);
+	ofs = LittleLong(mt->offsets[0]);
+
+	image = GL3_LoadPic(name, (byte *)mt + ofs, width, 0, height, 0, it_wall, 8);
+
+	ri.FS_FreeFile((void *)mt);
+
+	return image;
 }
 
 /*
@@ -116,10 +477,9 @@ GL3_TextureMode(char *string)
 gl3image_t *
 GL3_FindImage(char *name, imagetype_t type)
 {
-#if 0
 	gl3image_t *image;
 	int i, len;
-	byte *pic, *palette;
+	byte *pic;
 	int width, height;
 	char *ptr;
 	char namewe[256];
@@ -156,7 +516,7 @@ GL3_FindImage(char *name, imagetype_t type)
 	}
 
 	/* look for it */
-	for (i = 0, image = gltextures; i < numgltextures; i++, image++)
+	for (i = 0, image = gl3textures; i < numgl3textures; i++, image++)
 	{
 		if (!strcmp(name, image->name))
 		{
@@ -167,7 +527,6 @@ GL3_FindImage(char *name, imagetype_t type)
 
 	/* load the pic from disk */
 	pic = NULL;
-	palette = NULL;
 
 	if (strcmp(ext, "pcx") == 0)
 	{
@@ -186,13 +545,13 @@ GL3_FindImage(char *name, imagetype_t type)
 			   || LoadSTB(namewe, "jpg", &pic, &width, &height) )
 			{
 				/* upload tga or png or jpg */
-				image = R_LoadPic(name, pic, width, realwidth, height,
+				image = GL3_LoadPic(name, pic, width, realwidth, height,
 						realheight, type, 32);
 			}
 			else
 			{
 				/* PCX if no TGA/PNG/JPEG available (exists always) */
-				LoadPCX(name, &pic, &palette, &width, &height);
+				LoadPCX(name, &pic, NULL, &width, &height);
 
 				if (!pic)
 				{
@@ -201,19 +560,19 @@ GL3_FindImage(char *name, imagetype_t type)
 				}
 
 				/* Upload the PCX */
-				image = R_LoadPic(name, pic, width, 0, height, 0, type, 8);
+				image = GL3_LoadPic(name, pic, width, 0, height, 0, type, 8);
 			}
 		}
 		else /* gl_retexture is not set */
 		{
-			LoadPCX(name, &pic, &palette, &width, &height);
+			LoadPCX(name, &pic, NULL, &width, &height);
 
 			if (!pic)
 			{
 				return NULL;
 			}
 
-			image = R_LoadPic(name, pic, width, 0, height, 0, type, 8);
+			image = GL3_LoadPic(name, pic, width, 0, height, 0, type, 8);
 		}
 	}
 	else if (strcmp(ext, "wal") == 0)
@@ -234,8 +593,7 @@ GL3_FindImage(char *name, imagetype_t type)
 			   || LoadSTB(namewe, "jpg", &pic, &width, &height) )
 			{
 				/* upload tga or png or jpg */
-				image = R_LoadPic(name, pic, width, realwidth, height,
-						realheight, type, 32);
+				image = GL3_LoadPic(name, pic, width, realwidth, height, realheight, type, 32);
 			}
 			else
 			{
@@ -283,9 +641,10 @@ GL3_FindImage(char *name, imagetype_t type)
 		 * if (realwidth == 0 || realheight == 0) return NULL;
 		 */
 
-		LoadSTB(name, ext, &pic, &width, &height);
-		image = R_LoadPic(name, pic, width, realwidth,
-				height, realheight, type, 32);
+		if(LoadSTB(name, ext, &pic, &width, &height))
+		{
+			image = GL3_LoadPic(name, pic, width, realwidth, height, realheight, type, 32);
+		}
 	}
 	else
 	{
@@ -297,14 +656,7 @@ GL3_FindImage(char *name, imagetype_t type)
 		free(pic);
 	}
 
-	if (palette)
-	{
-		free(palette);
-	}
-
 	return image;
-#endif // 0
-	return NULL;
 }
 
 gl3image_t *
@@ -313,32 +665,109 @@ GL3_RegisterSkin(char *name)
 	return GL3_FindImage(name, it_skin);
 }
 
+/*
+ * Any image that was not touched on
+ * this registration sequence
+ * will be freed.
+ */
+void
+GL3_FreeUnusedImages(void)
+{
+	int i;
+	gl3image_t *image;
 
+	/* never free r_notexture or particle texture */
+	gl3_notexture->registration_sequence = registration_sequence;
+	gl3_particletexture->registration_sequence = registration_sequence;
+
+	for (i = 0, image = gl3textures; i < numgl3textures; i++, image++)
+	{
+		if (image->registration_sequence == registration_sequence)
+		{
+			continue; /* used this sequence */
+		}
+
+		if (!image->registration_sequence)
+		{
+			continue; /* free image_t slot */
+		}
+
+		if (image->type == it_pic)
+		{
+			continue; /* don't free pics */
+		}
+
+		/* free it */
+		glDeleteTextures(1, &image->texnum);
+		memset(image, 0, sizeof(*image));
+	}
+}
+
+void
+GL3_ShutdownImages(void)
+{
+	int i;
+	gl3image_t *image;
+
+	for (i = 0, image = gl3textures; i < numgl3textures; i++, image++)
+	{
+		if (!image->registration_sequence)
+		{
+			continue; /* free image_t slot */
+		}
+
+		/* free it */
+		glDeleteTextures(1, &image->texnum);
+		memset(image, 0, sizeof(*image));
+	}
+}
+
+static qboolean IsNPOT(int v)
+{
+	unsigned int uv = v;
+	// just try all the power of two values between 1 and 1 << 15 (32k)
+	for(unsigned int i=0; i<16; ++i)
+	{
+		unsigned int pot = (1u << i);
+		if(uv & pot)
+		{
+			return uv != pot;
+		}
+	}
+
+	return true;
+}
 
 void
 GL3_ImageList_f(void)
 {
-	R_Printf(PRINT_ALL, "TODO: Implement R_ImageList_f()\n");
-#if 0 // TODO!
-	int i;
-	image_t *image;
-	int texels;
-	const char *palstrings[2] = {
-		"RGB",
-		"PAL"
+	int i, texels=0;
+	gl3image_t *image;
+	const char *formatstrings[2] = {
+		"RGB ",
+		"RGBA"
+	};
+
+	const char* potstrings[2] = {
+		" POT", "NPOT"
 	};
 
 	R_Printf(PRINT_ALL, "------------------\n");
-	texels = 0;
 
-	for (i = 0, image = gltextures; i < numgltextures; i++, image++)
+	for (i = 0, image = gl3textures; i < numgl3textures; i++, image++)
 	{
-		if (image->texnum <= 0)
+		int w, h;
+		qboolean isNPOT = false;
+		if (image->texnum == 0)
 		{
 			continue;
 		}
+		w = image->upload_width;
+		h = image->upload_height;
 
-		texels += image->upload_width * image->upload_height;
+		isNPOT = IsNPOT(w) || IsNPOT(h);
+
+		texels += w*h;
 
 		switch (image->type)
 		{
@@ -354,16 +783,17 @@ GL3_ImageList_f(void)
 			case it_pic:
 				R_Printf(PRINT_ALL, "P");
 				break;
+			case it_sky:
+				R_Printf(PRINT_ALL, "Y");
+				break;
 			default:
-				R_Printf(PRINT_ALL, " ");
+				R_Printf(PRINT_ALL, "?");
 				break;
 		}
 
-		R_Printf(PRINT_ALL, " %3i %3i %s: %s\n",
-				image->upload_width, image->upload_height,
-				palstrings[image->paletted], image->name);
+		R_Printf(PRINT_ALL, " %3i %3i %s %s: %s\n", w, h,
+		         formatstrings[image->has_alpha], potstrings[isNPOT], image->name);
 	}
 
 	R_Printf(PRINT_ALL, "Total texel count (not counting mipmaps): %i\n", texels);
-#endif
 }
