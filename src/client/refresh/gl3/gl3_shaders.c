@@ -109,6 +109,8 @@ CreateShaderProgram(int numShaders, const GLuint* shaders)
 	glBindAttribLocation(shaderProgram, GL3_ATTRIB_TEXCOORD, "texCoord");
 	glBindAttribLocation(shaderProgram, GL3_ATTRIB_LMTEXCOORD, "lmTexCoord");
 	glBindAttribLocation(shaderProgram, GL3_ATTRIB_COLOR, "vertColor");
+	glBindAttribLocation(shaderProgram, GL3_ATTRIB_NORMAL, "normal");
+	glBindAttribLocation(shaderProgram, GL3_ATTRIB_LIGHTFLAGS, "lightFlags");
 
 	// the following line is not necessary/implicit (as there's only one output)
 	// glBindFragDataLocation(shaderProgram, 0, "outColor"); XXX would this even be here?
@@ -190,6 +192,7 @@ static const char* fragmentSrc2D = MULTILINE_STRING(#version 150\n
 		{
 			float gamma;
 			float intensity;
+			float intensity2D; // for HUD, menu etc
 
 			vec4 color;
 		};
@@ -208,7 +211,7 @@ static const char* fragmentSrc2D = MULTILINE_STRING(#version 150\n
 				discard;
 
 			// apply gamma correction and intensity
-			texel.rgb *= intensity;
+			texel.rgb *= intensity2D;
 			outColor.rgb = pow(texel.rgb, vec3(gamma));
 			outColor.a = texel.a; // I think alpha shouldn't be modified by gamma and intensity
 		}
@@ -238,6 +241,7 @@ static const char* fragmentSrc2Dcolor = MULTILINE_STRING(#version 150\n
 		{
 			float gamma;
 			float intensity;
+			float intensity2D; // for HUD, menus etc
 
 			vec4 color;
 		};
@@ -246,7 +250,7 @@ static const char* fragmentSrc2Dcolor = MULTILINE_STRING(#version 150\n
 
 		void main()
 		{
-			vec3 col = color.rgb * intensity;
+			vec3 col = color.rgb * intensity2D;
 			outColor.rgb = pow(col, vec3(gamma));
 			outColor.a = color.a;
 		}
@@ -260,20 +264,26 @@ static const char* vertexCommon3D = MULTILINE_STRING(#version 150\n
 		in vec2 texCoord;   // GL3_ATTRIB_TEXCOORD
 		in vec2 lmTexCoord; // GL3_ATTRIB_LMTEXCOORD
 		in vec4 vertColor;  // GL3_ATTRIB_COLOR
+		in vec3 normal;     // GL3_ATTRIB_NORMAL
+		in uint lightFlags; // GL3_ATTRIB_LIGHTFLAGS
 
 		out vec2 passTexCoord;
-		out vec2 passLMcoord;
 
 		// for UBO shared between all 3D shaders
 		layout (std140) uniform uni3D
 		{
 			mat4 transProj;
-			mat4 transModelView; // TODO: or maybe transViewProj and transModel ??
-			vec2 lmOffset;
+			mat4 transView;
+			mat4 transModel;
+
 			float scroll; // for SURF_FLOWING
 			float time;
 			float alpha;
 			float overbrightbits;
+			float particleFadeFactor;
+			float _pad_1; // AMDs legacy windows driver needs this, otherwise uni3D has wrong size
+			float _pad_2;
+			float _pad_3;
 		};
 );
 
@@ -288,6 +298,7 @@ static const char* fragmentCommon3D = MULTILINE_STRING(#version 150\n
 		{
 			float gamma; // this is 1.0/vid_gamma
 			float intensity;
+			float intensity2D; // for HUD, menus etc
 
 			vec4 color; // really?
 
@@ -296,12 +307,17 @@ static const char* fragmentCommon3D = MULTILINE_STRING(#version 150\n
 		layout (std140) uniform uni3D
 		{
 			mat4 transProj;
-			mat4 transModelView; // TODO: or maybe transViewProj and transModel ??
-			vec2 lmOffset;
+			mat4 transView;
+			mat4 transModel;
+
 			float scroll; // for SURF_FLOWING
 			float time;
 			float alpha;
 			float overbrightbits;
+			float particleFadeFactor;
+			float _pad_1; // AMDs legacy windows driver needs this, otherwise uni3D has wrong size
+			float _pad_2;
+			float _pad_3;
 		};
 );
 
@@ -312,20 +328,64 @@ static const char* vertexSrc3D = MULTILINE_STRING(
 		void main()
 		{
 			passTexCoord = texCoord;
-			passLMcoord = lmTexCoord;
-			gl_Position = transProj * transModelView * vec4(position, 1.0);
+			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
 		}
 );
 
-static const char* vertexSrc3DlmOnly = MULTILINE_STRING(
+static const char* vertexSrc3Dflow = MULTILINE_STRING(
 
 		// it gets attributes and uniforms from vertexCommon3D
 
 		void main()
 		{
-			//passTexCoord = texCoord;
-			passTexCoord = lmTexCoord-lmOffset;
-			gl_Position = transProj * transModelView * vec4(position, 1.0);
+			passTexCoord = texCoord + vec2(scroll, 0);
+			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
+		}
+);
+
+static const char* vertexSrc3Dlm = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from vertexCommon3D
+
+		out vec2 passLMcoord;
+		out vec3 passWorldCoord;
+		out vec3 passNormal;
+		flat out uint passLightFlags;
+
+		void main()
+		{
+			passTexCoord = texCoord;
+			passLMcoord = lmTexCoord;
+			vec4 worldCoord = transModel * vec4(position, 1.0);
+			passWorldCoord = worldCoord.xyz;
+			vec4 worldNormal = transModel * vec4(normal, 0.0f);
+			passNormal = normalize(worldNormal.xyz);
+			passLightFlags = lightFlags;
+
+			gl_Position = transProj * transView * worldCoord;
+		}
+);
+
+static const char* vertexSrc3DlmFlow = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from vertexCommon3D
+
+		out vec2 passLMcoord;
+		out vec3 passWorldCoord;
+		out vec3 passNormal;
+		flat out uint passLightFlags;
+
+		void main()
+		{
+			passTexCoord = texCoord + vec2(scroll, 0);
+			passLMcoord = lmTexCoord;
+			vec4 worldCoord = transModel * vec4(position, 1.0);
+			passWorldCoord = worldCoord.xyz;
+			vec4 worldNormal = transModel * vec4(normal, 0.0f);
+			passNormal = normalize(worldNormal.xyz);
+			passLightFlags = lightFlags;
+
+			gl_Position = transProj * transView * worldCoord;
 		}
 );
 
@@ -346,9 +406,42 @@ static const char* fragmentSrc3D = MULTILINE_STRING(
 		}
 );
 
+static const char* fragmentSrc3Dwater = MULTILINE_STRING(
+
+		// it gets attributes and uniforms from fragmentCommon3D
+
+		uniform sampler2D tex;
+
+		void main()
+		{
+			vec4 texel = texture(tex, passTexCoord);
+
+			// apply intensity and gamma
+			texel.rgb *= intensity*0.5;
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+			outColor.a = texel.a*alpha; // I think alpha shouldn't be modified by gamma and intensity
+		}
+);
+
 static const char* fragmentSrc3Dlm = MULTILINE_STRING(
 
 		// it gets attributes and uniforms from fragmentCommon3D
+
+		struct DynLight { // gl3UniDynLight in C
+			vec3 lightOrigin;
+			float _pad;
+			//vec3 lightColor;
+			//float lightIntensity;
+			vec4 lightColor; // .a is intensity; this way it also works on OSX...
+			// (otherwise lightIntensity always contained 1 there)
+		};
+
+		layout (std140) uniform uniLights
+		{
+			DynLight dynLights[32];
+			uint numDynLights;
+			uint _pad1; uint _pad2; uint _pad3; // FFS, AMD!
+		};
 
 		uniform sampler2D tex;
 
@@ -360,6 +453,9 @@ static const char* fragmentSrc3Dlm = MULTILINE_STRING(
 		uniform vec4 lmScales[4];
 
 		in vec2 passLMcoord;
+		in vec3 passWorldCoord;
+		in vec3 passNormal;
+		flat in uint passLightFlags;
 
 		void main()
 		{
@@ -374,11 +470,37 @@ static const char* fragmentSrc3Dlm = MULTILINE_STRING(
 			lmTex     += texture(lightmap2, passLMcoord) * lmScales[2];
 			lmTex     += texture(lightmap3, passLMcoord) * lmScales[3];
 
+			if(passLightFlags != 0u)
+			{
+				// TODO: or is hardcoding 32 better?
+				for(uint i=0u; i<numDynLights; ++i)
+				{
+					// I made the following up, it's probably not too cool..
+					// it basically checks if the light is on the right side of the surface
+					// and, if it is, sets intensity according to distance between light and pixel on surface
+
+					// dyn light number i does not affect this plane, just skip it
+					if((passLightFlags & (1u << i)) == 0u)  continue;
+
+					float intens = dynLights[i].lightColor.a;
+
+					vec3 lightToPos = dynLights[i].lightOrigin - passWorldCoord;
+					float distLightToPos = length(lightToPos);
+					float fact = max(0, intens - distLightToPos - 52);
+
+					// also factor in angle between light and point on surface
+					fact *= max(0, dot(passNormal, lightToPos/distLightToPos));
+
+
+					lmTex.rgb += dynLights[i].lightColor.rgb * fact * (1.0/256.0);
+				}
+			}
+
 			lmTex.rgb *= overbrightbits;
 			outColor = lmTex*texel;
 			outColor.rgb = pow(outColor.rgb, vec3(gamma)); // apply gamma correction to result
+
 			outColor.a = 1; // lightmaps aren't used with translucent surfaces
-					//texel.a*alpha; // I think alpha shouldn't be modified by gamma and intensity
 		}
 );
 
@@ -465,18 +587,7 @@ static const char* vertexSrc3Dwater = MULTILINE_STRING(
 			tc *= 1.0/64.0; // do this last
 			passTexCoord = tc;
 
-			gl_Position = transProj * transModelView * vec4(position, 1.0);
-		}
-);
-
-static const char* vertexSrc3Dflow = MULTILINE_STRING(
-
-		// it gets attributes and uniforms from vertexCommon3D
-		void main()
-		{
-			passTexCoord = texCoord + vec2(0, scroll);
-			passLMcoord = lmTexCoord;
-			gl_Position = transProj * transModelView * vec4(position, 1.0);
+			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
 		}
 );
 
@@ -490,7 +601,7 @@ static const char* vertexSrcAlias = MULTILINE_STRING(
 		{
 			passColor = vertColor*overbrightbits;
 			passTexCoord = texCoord;
-			gl_Position = transProj * transModelView * vec4(position, 1.0);
+			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
 		}
 );
 
@@ -509,9 +620,7 @@ static const char* fragmentSrcAlias = MULTILINE_STRING(
 			// apply gamma correction and intensity
 			texel.rgb *= intensity;
 			texel.a *= alpha; // is alpha even used here?
-
-			// TODO: is this really equivalent to GL_MODULATE's behavior of texture vs glColor()?
-			texel *= passColor;
+			texel *= min(vec4(3.0), passColor);
 
 			outColor.rgb = pow(texel.rgb, vec3(gamma));
 			outColor.a = texel.a; // I think alpha shouldn't be modified by gamma and intensity
@@ -545,13 +654,12 @@ static const char* vertexSrcParticles = MULTILINE_STRING(
 		void main()
 		{
 			passColor = vertColor;
-			gl_Position = transProj * transModelView * vec4(position, 1.0);
+			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
 
 			// abusing texCoord for pointSize, pointDist for particles
 			float pointDist = texCoord.y*0.1; // with factor 0.1 it looks good.
 
-			// 1.4 to make them a bit bigger, they look smaller due to fading (see fragment shader)
-			gl_PointSize = 1.4*texCoord.x/pointDist;
+			gl_PointSize = texCoord.x/pointDist;
 		}
 );
 
@@ -575,7 +683,7 @@ static const char* fragmentSrcParticles = MULTILINE_STRING(
 			outColor.rgb = pow(texel.rgb, vec3(gamma));
 
 			// I want the particles to fade out towards the edge, the following seems to look nice
-			texel.a *= min(1.0, 1.2*(1.0 - distSquared));
+			texel.a *= min(1.0, particleFadeFactor*(1.0 - distSquared));
 
 			outColor.a = texel.a; // I think alpha shouldn't be modified by gamma and intensity
 		}
@@ -587,7 +695,8 @@ static const char* fragmentSrcParticles = MULTILINE_STRING(
 enum {
 	GL3_BINDINGPOINT_UNICOMMON,
 	GL3_BINDINGPOINT_UNI2D,
-	GL3_BINDINGPOINT_UNI3D
+	GL3_BINDINGPOINT_UNI3D,
+	GL3_BINDINGPOINT_UNILIGHTS
 };
 
 static qboolean
@@ -746,6 +855,7 @@ initShader3D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 		if(blockSize != sizeof(gl3state.uni3DData))
 		{
 			R_Printf(PRINT_ALL, "WARNING: OpenGL driver disagrees with us about UBO size of 'uni3D'\n");
+			R_Printf(PRINT_ALL, "         driver says %d, we expect %d\n", blockSize, (int)sizeof(gl3state.uni3DData));
 
 			goto err_cleanup;
 		}
@@ -758,6 +868,22 @@ initShader3D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 
 		goto err_cleanup;
 	}
+	blockIndex = glGetUniformBlockIndex(prog, "uniLights");
+	if(blockIndex != GL_INVALID_INDEX)
+	{
+		GLint blockSize;
+		glGetActiveUniformBlockiv(prog, blockIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
+		if(blockSize != sizeof(gl3state.uniLightsData))
+		{
+			R_Printf(PRINT_ALL, "WARNING: OpenGL driver disagrees with us about UBO size of 'uniLights'\n");
+			R_Printf(PRINT_ALL, "         OpenGL says %d, we say %d\n", blockSize, (int)sizeof(gl3state.uniLightsData));
+
+			goto err_cleanup;
+		}
+
+		glUniformBlockBinding(prog, blockIndex, GL3_BINDINGPOINT_UNILIGHTS);
+	}
+	// else: as uniLights is only used in the LM shaders, it's ok if it's missing
 
 	// make sure texture is GL_TEXTURE0
 	GLint texLoc = glGetUniformLocation(prog, "tex");
@@ -767,9 +893,9 @@ initShader3D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 	}
 
 	// ..  and the 4 lightmap texture use GL_TEXTURE1..4
+	char lmName[10] = "lightmapX";
 	for(i=0; i<4; ++i)
 	{
-		char lmName[10] = "lightmapX";
 		lmName[8] = '0'+i;
 		GLint lmLoc = glGetUniformLocation(prog, lmName);
 		if(lmLoc != -1)
@@ -782,11 +908,11 @@ initShader3D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 	shaderInfo->uniLmScales = lmScalesLoc;
 	if(lmScalesLoc != -1)
 	{
-		GLfloat scales[4][4] = {0};
+		shaderInfo->lmScales[0] = HMM_Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-		for(i=0; i<4; ++i)  scales[0][i] = 1.0f;
+		for(i=1; i<4; ++i)  shaderInfo->lmScales[i] = HMM_Vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-		glUniform4fv(lmScalesLoc, 4, scales[0]);
+		glUniform4fv(lmScalesLoc, 4, shaderInfo->lmScales[0].Elements);
 	}
 
 	shaderInfo->shaderProgram = prog;
@@ -810,7 +936,8 @@ err_cleanup:
 static void initUBOs(void)
 {
 	gl3state.uniCommonData.gamma = 1.0f/vid_gamma->value;
-	gl3state.uniCommonData.intensity = intensity->value;
+	gl3state.uniCommonData.intensity = gl3_intensity->value;
+	gl3state.uniCommonData.intensity2D = gl3_intensity_2D->value;
 	gl3state.uniCommonData.color = HMM_Vec4(1, 1, 1, 1);
 
 	glGenBuffers(1, &gl3state.uniCommonUBO);
@@ -828,19 +955,26 @@ static void initUBOs(void)
 
 	// the matrices will be set to something more useful later, before being used
 	gl3state.uni3DData.transProjMat4 = HMM_Mat4();
-	gl3state.uni3DData.transModelViewMat4 = HMM_Mat4();
-	gl3state.uni3DData.lmOffset = HMM_Vec2(0.0f, 0.0f);
+	gl3state.uni3DData.transViewMat4 = HMM_Mat4();
+	gl3state.uni3DData.transModelMat4 = gl3_identityMat4;
 	gl3state.uni3DData.scroll = 0.0f;
 	gl3state.uni3DData.time = 0.0f;
 	gl3state.uni3DData.alpha = 1.0f;
 	// gl_overbrightbits 0 means "no scaling" which is equivalent to multiplying with 1
-	gl3state.uni3DData.overbrightbits = (gl_overbrightbits->value <= 0.0f) ? 1.0f : gl_overbrightbits->value;
+	gl3state.uni3DData.overbrightbits = (gl3_overbrightbits->value <= 0.0f) ? 1.0f : gl3_overbrightbits->value;
+	gl3state.uni3DData.particleFadeFactor = gl3_particle_fade_factor->value;
 
 	glGenBuffers(1, &gl3state.uni3DUBO);
 	glBindBuffer(GL_UNIFORM_BUFFER, gl3state.uni3DUBO);
 	glBindBufferBase(GL_UNIFORM_BUFFER, GL3_BINDINGPOINT_UNI3D, gl3state.uni3DUBO);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(gl3state.uni3DData), &gl3state.uni3DData, GL_DYNAMIC_DRAW);
-	gl3state.currentUBO = gl3state.uni3DUBO;
+
+	glGenBuffers(1, &gl3state.uniLightsUBO);
+	glBindBuffer(GL_UNIFORM_BUFFER, gl3state.uniLightsUBO);
+	glBindBufferBase(GL_UNIFORM_BUFFER, GL3_BINDINGPOINT_UNILIGHTS, gl3state.uniLightsUBO);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(gl3state.uniLightsData), &gl3state.uniLightsData, GL_DYNAMIC_DRAW);
+
+	gl3state.currentUBO = gl3state.uniLightsUBO;
 }
 
 qboolean GL3_InitShaders(void)
@@ -857,7 +991,7 @@ qboolean GL3_InitShaders(void)
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for color-only 2D rendering!\n");
 		return false;
 	}
-	if(!initShader3D(&gl3state.si3Dlm, vertexSrc3D, fragmentSrc3Dlm))
+	if(!initShader3D(&gl3state.si3Dlm, vertexSrc3Dlm, fragmentSrc3Dlm))
 	{
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for textured 3D rendering with lightmap!\n");
 		return false;
@@ -879,12 +1013,12 @@ qboolean GL3_InitShaders(void)
 		return false;
 	}
 	*/
-	if(!initShader3D(&gl3state.si3Dturb, vertexSrc3Dwater, fragmentSrc3D))
+	if(!initShader3D(&gl3state.si3Dturb, vertexSrc3Dwater, fragmentSrc3Dwater))
 	{
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for water rendering!\n");
 		return false;
 	}
-	if(!initShader3D(&gl3state.si3DlmFlow, vertexSrc3Dflow, fragmentSrc3Dlm))
+	if(!initShader3D(&gl3state.si3DlmFlow, vertexSrc3DlmFlow, fragmentSrc3Dlm))
 	{
 		R_Printf(PRINT_ALL, "WARNING: Failed to create shader program for scrolling textured 3D rendering with lightmap!\n");
 		return false;
@@ -939,10 +1073,10 @@ void GL3_ShutdownShaders(void)
 		*si = siZero;
 	}
 
-	// let's (ab)use the fact that all 3 UBO handles are consecutive fields
+	// let's (ab)use the fact that all 4 UBO handles are consecutive fields
 	// of the gl3state struct
-	glDeleteBuffers(3, &gl3state.uniCommonUBO);
-	gl3state.uniCommonUBO = gl3state.uni2DUBO = gl3state.uni3DUBO = 0;
+	glDeleteBuffers(4, &gl3state.uniCommonUBO);
+	gl3state.uniCommonUBO = gl3state.uni2DUBO = gl3state.uni3DUBO = gl3state.uniLightsUBO = 0;
 }
 
 static inline void
@@ -954,25 +1088,42 @@ updateUBO(GLuint ubo, GLsizeiptr size, void* data)
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	}
 
-	// TODO: use glMapBufferRange() or something else instead?
-
 	// http://docs.gl/gl3/glBufferSubData says  "When replacing the entire data store,
 	// consider using glBufferSubData rather than completely recreating the data store
 	// with glBufferData. This avoids the cost of reallocating the data store."
 	// no idea why glBufferData() doesn't just do that when size doesn't change, but whatever..
 	// however, it also says glBufferSubData() might cause a stall so I DON'T KNOW!
-	// by just looking at the fps, glBufferData() and glBufferSubData() make no difference
+	// on Linux/nvidia, by just looking at the fps, glBufferData() and glBufferSubData() make no difference
 	// TODO: STREAM instead DYNAMIC?
-#if 0
+
+#if 1
+	// this seems to be reasonably fast everywhere.. glMapBuffer() seems to be a bit faster on OSX though..
 	glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW);
-#elif 1
+#elif 0
+	// on OSX this is super slow (200fps instead of 470-500), BUT it is as fast as glBufferData() when orphaning first
+	// nvidia/linux-blob doesn't care about this vs glBufferData()
+	// AMD open source linux (R3 370) is also slower here (not as bad as OSX though)
+	// intel linux doesn't seem to care either (maybe 3% faster, but that might be imagination)
+	// AMD Windows legacy driver (Radeon HD 6950) doesn't care, all 3 alternatives seem to be equally fast
+	//glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_DYNAMIC_DRAW); // orphan
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, size, data);
-#else // with my current nvidia-driver, the following *really* makes it slower. (<200fps instead of ~500)
+#else
+	// with my current nvidia-driver (GTX 770, 375.39), the following *really* makes it slower. (<140fps instead of ~850)
+	// on OSX (Intel Haswell Iris Pro, OSX 10.11) this is fastest (~500fps instead of ~470)
+	// on Linux/intel (Ivy Bridge HD-4000, Linux 4.4) this might be a tiny bit faster than the alternatives..
 	glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_DYNAMIC_DRAW); // orphan
 	GLvoid* ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
 	memcpy(ptr, data, size);
 	glUnmapBuffer(GL_UNIFORM_BUFFER);
 #endif
+
+	// TODO: another alternative: glMapBufferRange() and each time update a different part
+	//       of buffer asynchronously (GL_MAP_UNSYNCHRONIZED_BIT) => ringbuffer style
+	//       when starting again from the beginning, synchronization must happen I guess..
+	//       also, orphaning might be necessary
+	//       and somehow make sure the new range is used by the UBO => glBindBufferRange()
+	//  see http://git.quintin.ninja/mjones/Dolphin/blob/4a463f4588e2968c499236458c5712a489622633/Source/Plugins/Plugin_VideoOGL/Src/ProgramShaderCache.cpp#L207
+	//   or https://github.com/dolphin-emu/dolphin/blob/master/Source/Core/VideoBackends/OGL/ProgramShaderCache.cpp
 }
 
 void GL3_UpdateUBOCommon(void)
@@ -988,4 +1139,9 @@ void GL3_UpdateUBO2D(void)
 void GL3_UpdateUBO3D(void)
 {
 	updateUBO(gl3state.uni3DUBO, sizeof(gl3state.uni3DData), &gl3state.uni3DData);
+}
+
+void GL3_UpdateUBOLights(void)
+{
+	updateUBO(gl3state.uniLightsUBO, sizeof(gl3state.uniLightsData), &gl3state.uniLightsData);
 }

@@ -351,10 +351,7 @@ SCR_CalcVrect(void)
 	size = scr_viewsize->value;
 
 	scr_vrect.width = viddef.width * size / 100;
-	scr_vrect.width &= ~1;
-
 	scr_vrect.height = viddef.height * size / 100;
-	scr_vrect.height &= ~1;
 
 	scr_vrect.x = (viddef.width - scr_vrect.width) / 2;
 	scr_vrect.y = (viddef.height - scr_vrect.height) / 2;
@@ -949,7 +946,7 @@ SCR_DrawFieldScaled(int x, int y, int color, int width, int value, float factor)
 	}
 
 	SCR_AddDirtyPoint(x, y);
-	SCR_AddDirtyPoint(x + (width * CHAR_WIDTH + 2)*factor, y + 23);
+	SCR_AddDirtyPoint(x + (width * CHAR_WIDTH + 2)*factor, y + factor*24);
 
 	Com_sprintf(num, sizeof(num), "%i", value);
 	l = (int)strlen(num);

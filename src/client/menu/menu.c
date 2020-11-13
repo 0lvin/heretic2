@@ -31,7 +31,7 @@
 
 #include <ctype.h>
 #include "../header/client.h"
-#include "../header/keyboard.h"
+#include "../sound/header/local.h"
 #include "header/qmenu.h"
 
 static int m_main_cursor;
@@ -150,6 +150,13 @@ M_PushMenu(void (*draw)(void), const char *(*key)(int))
     {
         Cvar_Set("paused", "1");
     }
+
+#ifdef USE_OPENAL
+    if (cl.cinematic_file)
+    {
+        AL_UnqueueRawSamples();
+    }
+#endif
 
     /* if this menu is already open (and on top),
        close it => toggling behaviour */

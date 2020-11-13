@@ -539,8 +539,8 @@ R_DrawParticles(void)
 		glEnable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
 
-		// assume the particle size looks good with window height 600px and scale according to real resolution
-		glPointSize(gl_particle_size->value * (float)r_newrefdef.height/600.0f);
+		// assume the particle size looks good with window height 480px and scale according to real resolution
+		glPointSize(gl_particle_size->value * (float)r_newrefdef.height/480.0f);
 
 		for ( i = 0, p = r_newrefdef.particles; i < r_newrefdef.num_particles; i++, p++ )
 		{
@@ -1264,7 +1264,7 @@ R_Register(void)
 	gl_saturatelighting = ri.Cvar_Get("gl_saturatelighting", "0", 0);
 
 	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
-	vid_gamma = ri.Cvar_Get("vid_gamma", "1.0", CVAR_ARCHIVE);
+	vid_gamma = ri.Cvar_Get("vid_gamma", "1.2", CVAR_ARCHIVE);
 
 	gl_customwidth = ri.Cvar_Get("gl_customwidth", "1024", CVAR_ARCHIVE);
 	gl_customheight = ri.Cvar_Get("gl_customheight", "768", CVAR_ARCHIVE);
@@ -1355,9 +1355,15 @@ R_SetMode(void)
 		}
 		else if (err == rserr_invalid_mode)
 		{
+			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - invalid mode\n");
+			if(gl_mode->value == gl_state.prev_mode)
+			{
+				// trying again would result in a crash anyway, give up already
+				// (this would happen if your initing fails at all and your resolution already was 640x480)
+				return false;
+			}
 			ri.Cvar_SetValue("gl_mode", gl_state.prev_mode);
 			gl_mode->modified = false;
-			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - invalid mode\n");
 		}
 
 		/* try setting it back to something safe */
@@ -1391,18 +1397,19 @@ RI_Init()
 		r_turbsin[j] *= 0.5;
 	}
 
+	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
+	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
+
 	/* Options */
 	R_Printf(PRINT_ALL, "Refresher build options:\n");
 
 	R_Printf(PRINT_ALL, " + Retexturing support\n");
 
 #ifdef X11GAMMA
-	R_Printf(PRINT_ALL, " + Gamma via X11\n");
+	R_Printf(PRINT_ALL, " + Gamma via X11\n\n");
 #else
-	R_Printf(PRINT_ALL, " - Gamma via X11\n");
+	R_Printf(PRINT_ALL, " - Gamma via X11\n\n");
 #endif
-
-	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
 
 	Draw_GetPalette();
 

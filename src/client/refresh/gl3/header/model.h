@@ -27,9 +27,6 @@
 #ifndef SRC_CLIENT_REFRESH_GL3_HEADER_MODEL_H_
 #define SRC_CLIENT_REFRESH_GL3_HEADER_MODEL_H_
 
-// TODO: maybe lots of these things should get a gl3_ prefix and might
-//       need to be adapted and so on
-
 enum {
 	SIDE_FRONT = 0,
 	SIDE_BACK = 1,
@@ -41,10 +38,25 @@ enum {
 	SURF_DRAWSKY = 4,
 	SURF_DRAWTURB = 0x10,
 	SURF_DRAWBACKGROUND = 0x40,
-	SURF_UNDERWATER = 0x80,
-
-	VERTEXSIZE  = 7
+	SURF_UNDERWATER = 0x80
 };
+
+// used for vertex array elements when drawing brushes, sprites, sky and more
+// (ok, it has the layout used for rendering brushes, but is not used there)
+typedef struct gl3_3D_vtx_s {
+	vec3_t pos;
+	float texCoord[2];
+	float lmTexCoord[2]; // lightmap texture coordinate (sometimes unused)
+	vec3_t normal;
+	GLuint lightFlags; // bit i set means: dynlight i affects surface
+} gl3_3D_vtx_t;
+
+// used for vertex array elements when drawing models
+typedef struct gl3_alias_vtx_s {
+	GLfloat pos[3];
+	GLfloat texCoord[2];
+	GLfloat color[4];
+} gl3_alias_vtx_t;
 
 /* in memory representation */
 typedef struct
@@ -83,7 +95,7 @@ typedef struct glpoly_s
 	struct  glpoly_s *chain;
 	int numverts;
 	int flags; /* for SURF_UNDERWATER (not needed anymore?) */
-	float verts[4][VERTEXSIZE]; /* variable sized (xyz s1t1 s2t2) */
+	gl3_3D_vtx_t vertices[4]; /* variable sized */
 } glpoly_t;
 
 typedef struct msurface_s
@@ -104,7 +116,7 @@ typedef struct msurface_s
 
 	glpoly_t *polys;                /* multiple if warped */
 	struct  msurface_s *texturechain;
-	struct  msurface_s *lightmapchain;
+	// struct  msurface_s *lightmapchain; not used/needed anymore
 
 	mtexinfo_t *texinfo;
 
@@ -113,8 +125,9 @@ typedef struct msurface_s
 	int dlightbits;
 
 	int lightmaptexturenum;
-	byte styles[MAXLIGHTMAPS];
-	float cached_light[MAXLIGHTMAPS];       /* values currently used in lightmap */
+	byte styles[MAXLIGHTMAPS]; // MAXLIGHTMAPS = MAX_LIGHTMAPS_PER_SURFACE (defined in local.h)
+	// I think cached_light is not used/needed anymore
+	//float cached_light[MAXLIGHTMAPS];       /* values currently used in lightmap */
 	byte *samples;                          /* [numstyles*surfsize] */
 } msurface_t;
 

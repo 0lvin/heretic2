@@ -38,16 +38,14 @@
   #include <GL/gl.h>
   #include <GL/glext.h>
 #else
-  #include <glad/glad.h>
+  #include "../glad/include/glad/glad.h"
 #endif
 
 #include "../../ref_shared.h"
 
 #include "HandmadeMath.h"
 
-#define STUB(msg) \
-	R_Printf(PRINT_ALL, "STUB: %s() %s\n", __FUNCTION__, msg)
-
+#if 0 // only use this for development ..
 #define STUB_ONCE(msg) do { \
 		static int show=1; \
 		if(show) { \
@@ -55,6 +53,9 @@
 			R_Printf(PRINT_ALL, "STUB: %s() %s\n", __FUNCTION__, msg); \
 		} \
 	} while(0);
+#else // .. so make this a no-op in released code
+#define STUB_ONCE(msg)
+#endif
 
 // a wrapper around glVertexAttribPointer() to stay sane
 // (caller doesn't have to cast to GLintptr and then void*)
@@ -64,13 +65,20 @@ qglVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normaliz
 	glVertexAttribPointer(index, size, type, normalized, stride, (const void*)offset);
 }
 
+static inline void
+qglVertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset)
+{
+	glVertexAttribIPointer(index, size, type, stride, (void*)offset);
+}
+
 // attribute locations for vertex shaders
 enum {
 	GL3_ATTRIB_POSITION   = 0,
 	GL3_ATTRIB_TEXCOORD   = 1, // for normal texture
 	GL3_ATTRIB_LMTEXCOORD = 2, // for lightmap
 	GL3_ATTRIB_COLOR      = 3, // per-vertex color
-	// TODO: more? maybe normal and color?
+	GL3_ATTRIB_NORMAL     = 4, // vertex normal
+	GL3_ATTRIB_LIGHTFLAGS = 5  // uint, each set bit means "dyn light i affects this surface"
 };
 
 // TODO: do we need the following configurable?
@@ -92,6 +100,7 @@ typedef struct
 
 	int major_version;
 	int minor_version;
+	qboolean compat_profile;
 
 	// ----
 
@@ -107,16 +116,18 @@ typedef struct
 {
 	GLuint shaderProgram;
 	GLint uniLmScales;
+	hmm_vec4 lmScales[4];
 } gl3ShaderInfo_t;
 
 typedef struct
 {
 	GLfloat gamma;
 	GLfloat intensity;
+	GLfloat intensity2D; // for HUD, menus etc
 
 		// entries of std140 UBOs are aligned to multiples of their own size
 		// so we'll need to pad accordingly for following vec4
-		GLfloat _padding[2];
+		GLfloat _padding;
 
 	hmm_vec4 color;
 } gl3UniCommon_t;
@@ -129,55 +140,69 @@ typedef struct
 typedef struct
 {
 	hmm_mat4 transProjMat4;
-	hmm_mat4 transModelViewMat4;
-
-	hmm_vec2 lmOffset;
+	hmm_mat4 transViewMat4;
+	hmm_mat4 transModelMat4;
 
 	GLfloat scroll; // for SURF_FLOWING
 	GLfloat time; // for warping surfaces like water & possibly other things
 	GLfloat alpha; // for translucent surfaces (water, glass, ..)
-	GLfloat overbrightbits; // gl_overbrightbits, applied to lightmaps (and elsewhere to models)
+	GLfloat overbrightbits; // gl3_overbrightbits, applied to lightmaps (and elsewhere to models)
+	GLfloat particleFadeFactor; // gl3_particle_fade_factor, higher => less fading out towards edges
 
-		GLfloat _padding[2]; // again, some padding to ensure this has right size
+		GLfloat _padding[3]; // again, some padding to ensure this has right size
 } gl3Uni3D_t;
 
+extern const hmm_mat4 gl3_identityMat4;
+
+typedef struct
+{
+	vec3_t origin;
+	GLfloat _padding;
+	vec3_t color;
+	GLfloat intensity;
+} gl3UniDynLight;
+
+typedef struct
+{
+	gl3UniDynLight dynLights[MAX_DLIGHTS];
+	GLuint numDynLights;
+	GLfloat _padding[3];
+} gl3UniLights_t;
+
 enum {
-	BLOCK_WIDTH = 128,
-	BLOCK_HEIGHT = 128,
+	// width and height used to be 128, so now we should be able to get the same lightmap data
+	// that used 32 lightmaps before into one, so 4 lightmaps should be enough
+	BLOCK_WIDTH = 1024,
+	BLOCK_HEIGHT = 512,
 	LIGHTMAP_BYTES = 4,
-	MAX_LIGHTMAPS = 128,
+	MAX_LIGHTMAPS = 4,
 	MAX_LIGHTMAPS_PER_SURFACE = MAXLIGHTMAPS // 4
 };
 
 typedef struct
 {
 	// TODO: what of this do we need?
-	float inverse_intensity;
 	qboolean fullscreen;
 
 	int prev_mode;
 
 	unsigned char *d_16to8table;
 
-	// "So color textures start at 0, the dynamic lightmap texture is always 1024 and the static lighmap are 1025 up to 1036."
-	// yes, dynamic lightmap is 1024, but I think there can be 127 dynamic lightmaps (MAX_LIGHTMAPS == 128)
-	//int lightmap_textures;
+	// each lightmap consists of 4 sub-lightmaps allowing changing shadows on the same surface
+	// used for switching on/off light and stuff like that.
+	// most surfaces only have one really and the remaining for are filled with dummy data
 	GLuint lightmap_textureIDs[MAX_LIGHTMAPS][MAX_LIGHTMAPS_PER_SURFACE]; // instead of lightmap_textures+i use lightmap_textureIDs[i]
 
-	//int currenttextures[2];
 	GLuint currenttexture; // bound to GL_TEXTURE0
 	int currentlightmap; // lightmap_textureIDs[currentlightmap] bound to GL_TEXTURE1
 	GLuint currenttmu; // GL_TEXTURE0 or GL_TEXTURE1
-	//int currenttmu; // 0 for textures, 1 for lightmaps
-	//GLenum currenttarget;
 
 	//float camera_separation;
 	//enum stereo_modes stereo_mode;
 
-	//qboolean hwgamma;
-
 	GLuint currentVAO;
 	GLuint currentVBO;
+	GLuint currentEBO;
 	GLuint currentShaderProgram;
 	GLuint currentUBO;
 
@@ -201,17 +226,19 @@ typedef struct
 	// NOTE: make sure siParticle is always the last shaderInfo (or adapt GL3_ShutdownShaders())
 	gl3ShaderInfo_t siParticle; // for particles. surprising, right?
 
-	GLuint vao3D, vbo3D; // for brushes etc, using 7 floats as vertex input (x,y,z, s,t, lms,lmt)
-	GLuint vaoAlias, vboAlias; // for models, using 9 floats as (x,y,z, s,t, r,g,b,a)
+	GLuint vao3D, vbo3D; // for brushes etc, using 1 floats as vertex input (x,y,z, s,t, lms,lmt, normX,normY,normZ)
+	GLuint vaoAlias, vboAlias, eboAlias; // for models, using 9 floats as (x,y,z, s,t, r,g,b,a)
 	GLuint vaoParticle, vboParticle; // for particles, using 9 floats (x,y,z, size,distance, r,g,b,a)
 
 	// UBOs and their data
 	gl3UniCommon_t uniCommonData;
 	gl3Uni2D_t uni2DData;
 	gl3Uni3D_t uni3DData;
+	gl3UniLights_t uniLightsData;
 	GLuint uniCommonUBO;
 	GLuint uni2DUBO;
 	GLuint uni3DUBO;
+	GLuint uniLightsUBO;
 
 } gl3state_t;
 
@@ -236,19 +263,17 @@ extern int c_brush_polys, c_alias_polys;
  */
 typedef struct image_s
 {
-	// TODO: what of this is actually needed?
 	char name[MAX_QPATH];               /* game path, including extension */
 	imagetype_t type;
 	int width, height;                  /* source image */
-	int upload_width, upload_height;    /* after power of two and picmip */
+	//int upload_width, upload_height;    /* after power of two and picmip */
 	int registration_sequence;          /* 0 = free */
 	struct msurface_s *texturechain;    /* for sort-by-texture world drawing */
 	GLuint texnum;                      /* gl texture binding */
 	float sl, tl, sh, th;               /* 0,0 - 1,1 unless part of the scrap */
-	qboolean scrap;
+	// qboolean scrap; // currently unused
 	qboolean has_alpha;
 
-	//qboolean paletted;
 } gl3image_t;
 
 enum {MAX_GL3TEXTURES = 1024};
@@ -261,30 +286,14 @@ typedef struct
 	int internal_format;
 	int current_lightmap_texture; // index into gl3state.lightmap_textureIDs[]
 
-	msurface_t *lightmap_surfaces[MAX_LIGHTMAPS];
+	//msurface_t *lightmap_surfaces[MAX_LIGHTMAPS]; - no more lightmap chains, lightmaps are rendered multitextured
 
 	int allocated[BLOCK_WIDTH];
 
 	/* the lightmap texture data needs to be kept in
 	   main memory so texsubimage can update properly */
-	byte lightmap_buffer[4 * BLOCK_WIDTH * BLOCK_HEIGHT];
+	byte lightmap_buffers[MAX_LIGHTMAPS_PER_SURFACE][4 * BLOCK_WIDTH * BLOCK_HEIGHT];
 } gl3lightmapstate_t;
-
-// used for vertex array elements when drawing brushes, sprites, sky and more
-// (ok, it has the layout used for rendering brushes, but is not used there)
-typedef struct gl3_3D_vtx_s {
-	vec3_t pos;
-	float texCoord[2];
-	float lmTexCoord[2]; // lightmap texture coordinate (sometimes unused)
-} gl3_3D_vtx_t;
-
-// used for vertex array elements when drawing models
-typedef struct gl3_alias_vtx_s {
-	GLfloat pos[3];
-	GLfloat texCoord[2];
-	GLfloat color[4];
-} gl3_alias_vtx_t;
-
 
 extern gl3model_t *gl3_worldmodel;
 extern gl3model_t *currentmodel;
@@ -335,6 +344,16 @@ GL3_BindVBO(GLuint vbo)
 	}
 }
 
+static inline void
+GL3_BindEBO(GLuint ebo)
+{
+	if(ebo != gl3state.currentEBO)
+	{
+		gl3state.currentEBO = ebo;
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	}
+}
+
 extern qboolean GL3_CullBox(vec3_t mins, vec3_t maxs);
 extern void GL3_RotateForEntity(entity_t *e);
 
@@ -377,7 +396,7 @@ extern void GL3_Draw_CharScaled(int x, int y, int num, float scale);
 extern void GL3_Draw_TileClear(int x, int y, int w, int h, char *pic);
 extern void GL3_Draw_Fill(int x, int y, int w, int h, int c);
 extern void GL3_Draw_FadeScreen(void);
-extern void GL3_Draw_Flash(const float color[4]);
+extern void GL3_Draw_Flash(const float color[4], float x, float y, float w, float h);
 extern void GL3_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data);
 
 // gl3_image.c
@@ -407,14 +426,13 @@ extern void GL3_ImageList_f(void);
 extern void GL3_MarkLights(dlight_t *light, int bit, mnode_t *node);
 extern void GL3_PushDlights(void);
 extern void GL3_LightPoint(vec3_t p, vec3_t color);
-extern void GL3_SetCacheState(msurface_t *surf);
-extern void GL3_BuildLightMap(msurface_t *surf, byte *dest, int stride);
+extern void GL3_BuildLightMap(msurface_t *surf, int offsetInLMbuf, int stride);
 
 // gl3_lightmap.c
 #define GL_LIGHTMAP_FORMAT GL_RGBA
 
 extern void GL3_LM_InitBlock(void);
-extern void GL3_LM_UploadBlock(qboolean dynamic);
+extern void GL3_LM_UploadBlock(void);
 extern qboolean GL3_LM_AllocBlock(int w, int h, int *x, int *y);
 extern void GL3_LM_BuildPolygonFromSurface(msurface_t *fa);
 extern void GL3_LM_CreateSurfaceLightmap(msurface_t *surf);
@@ -434,8 +452,8 @@ extern void GL3_AddSkySurface(msurface_t *fa);
 // gl3_surf.c
 extern void GL3_SurfInit(void);
 extern void GL3_SurfShutdown(void);
-extern void GL3_DrawGLPoly(glpoly_t *p, qboolean withAlpha);
-extern void GL3_DrawGLFlowingPoly(msurface_t *fa, qboolean withAlpha);
+extern void GL3_DrawGLPoly(msurface_t *fa);
+extern void GL3_DrawGLFlowingPoly(msurface_t *fa);
 extern void GL3_DrawTriangleOutlines(void);
 extern void GL3_DrawAlphaSurfaces(void);
 extern void GL3_DrawBrushModel(entity_t *e);
@@ -444,6 +462,9 @@ extern void GL3_MarkLeaves(void);
 
 // gl3_mesh.c
 extern void GL3_DrawAliasModel(entity_t *e);
+extern void GL3_ResetShadowAliasModels(void);
+extern void GL3_DrawAliasShadows(void);
+extern void GL3_ShutdownMeshes(void);
 
 // gl3_shaders.c
 
@@ -452,6 +473,7 @@ extern void GL3_ShutdownShaders(void);
 extern void GL3_UpdateUBOCommon(void);
 extern void GL3_UpdateUBO2D(void);
 extern void GL3_UpdateUBO3D(void);
+extern void GL3_UpdateUBOLights(void);
 
 // ############ Cvars ###########
 
@@ -478,15 +500,17 @@ extern cvar_t *gl_farsee;
 extern cvar_t *gl_drawworld;
 
 extern cvar_t *vid_gamma;
-extern cvar_t *intensity;
+extern cvar_t *gl3_intensity;
+extern cvar_t *gl3_intensity_2D;
 extern cvar_t *gl_anisotropic;
 
 extern cvar_t *gl_lightlevel;
-extern cvar_t *gl_overbrightbits;
+extern cvar_t *gl3_overbrightbits;
+extern cvar_t *gl3_particle_fade_factor;
 
 extern cvar_t *gl_modulate;
 extern cvar_t *gl_lightmap;
-extern cvar_t *gl_stencilshadow;
+extern cvar_t *gl_shadows;
 
 extern cvar_t *gl_dynamic;
 

@@ -35,6 +35,8 @@ cvar_t *developer;
 cvar_t *modder;
 cvar_t *timescale;
 cvar_t *fixedtime;
+cvar_t *portable;
+
 #ifndef DEDICATED_ONLY
 cvar_t *showtrace;
 #endif
@@ -210,6 +212,14 @@ Qcommon_Init(int argc, char **argv)
 	   the settings of the config files */
 	Cbuf_AddEarlyCommands(false);
 	Cbuf_Execute();
+
+	/* Be portable, don't add HOME to the search path
+	 * This is needed by Sys_RedirectStdout() on Windows*/
+	portable = Cvar_Get("portable", "0", 0);
+
+#ifndef DEDICATED_ONLY
+	Sys_RedirectStdout();
+#endif
 
 	FS_InitFilesystem();
 

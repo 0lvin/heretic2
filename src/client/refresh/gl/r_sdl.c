@@ -393,7 +393,9 @@ int RI_InitContext(void* win)
 		return false;
 	}
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 	window = (SDL_Window*)win;
+
 	context = SDL_GL_CreateContext(window);
 	if(context == NULL)
 	{
@@ -401,6 +403,12 @@ int RI_InitContext(void* win)
 		window = NULL;
 		return false;
 	}
+#else // SDL 1.2
+
+	window = (SDL_Surface*)win;
+	// context is created implicitly with window, nothing to do here
+
+#endif
 
 	if (gl_msaa_samples->value)
 	{
@@ -474,19 +482,24 @@ RI_ShutdownWindow(qboolean contextOnly)
 	   current. This may help some broken
 	   video drivers like the AMD Catalyst
 	   to avoid artifacts in unused screen
-	   areas. */
+	   areas.
+	   Only do this if we have a context, though. */
 	if (window)
 	{
-		glClearColor(0.0, 0.0, 0.0, 0.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		RI_EndFrame();
-
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		if(context)
 		{
+			glClearColor(0.0, 0.0, 0.0, 0.0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			RI_EndFrame();
+
 			SDL_GL_DeleteContext(context);
 			context = NULL;
 		}
+#else // SDL 1.2
+		glClearColor(0.0, 0.0, 0.0, 0.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		RI_EndFrame();
 #endif
 	}
 

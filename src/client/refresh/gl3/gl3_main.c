@@ -29,10 +29,16 @@
 #include "../../header/ref.h"
 #include "header/local.h"
 
+#ifndef __SSE__
+#define HANDMADE_MATH_NO_SSE
+#endif
 #define HANDMADE_MATH_IMPLEMENTATION
 #include "header/HandmadeMath.h"
 
-// TODO: put this in local.h ?
+#define DG_DYNARR_IMPLEMENTATION
+#include "header/DG_dynarr.h"
+
+
 #define REF_VERSION "Yamagi Quake II OpenGL3 Refresher"
 
 refimport_t ri;
@@ -62,8 +68,6 @@ vec3_t gl3_origin;
 
 hmm_mat4 gl3_projectionMatrix; // eye cord -> clip coord
 hmm_mat4 gl3_world_matrix; // the view matrix: world coord -> eye coord
-// TODO: I don't know yet if we'll also need a model matrix (model coord -> world coord) here.
-
 
 int gl3_visframecount; /* bumped when going to a new PVS */
 int gl3_framecount; /* used for dlight push checking */
@@ -73,6 +77,13 @@ int c_brush_polys, c_alias_polys;
 static float v_blend[4]; /* final blending color */
 
 int gl3_viewcluster, gl3_viewcluster2, gl3_oldviewcluster, gl3_oldviewcluster2;
+
+const hmm_mat4 gl3_identityMat4 = {{
+		{1, 0, 0, 0},
+		{0, 1, 0, 0},
+		{0, 0, 1, 0},
+		{0, 0, 0, 1},
+}};
 
 cvar_t *gl_msaa_samples;
 cvar_t *gl_swapinterval;
@@ -86,14 +97,16 @@ cvar_t *gl_anisotropic;
 cvar_t *gl_texturemode;
 cvar_t *gl_drawbuffer;
 cvar_t *gl_clear;
-cvar_t *gl_particle_size;
+cvar_t *gl3_particle_size;
+cvar_t *gl3_particle_fade_factor;
 
 cvar_t *gl_lefthand;
 cvar_t *gl_farsee;
 
-cvar_t *intensity;
+cvar_t *gl3_intensity;
+cvar_t *gl3_intensity_2D;
 cvar_t *gl_lightlevel;
-cvar_t *gl_overbrightbits;
+cvar_t *gl3_overbrightbits;
 
 cvar_t *gl_norefresh;
 cvar_t *gl_drawentities;
@@ -110,8 +123,8 @@ cvar_t *gl_zfix;
 cvar_t *gl_fullbright;
 cvar_t *gl_modulate;
 cvar_t *gl_lightmap;
-cvar_t *gl_shadows; // TODO: do we really need 2 cvars for shadows here?
-cvar_t *gl_stencilshadow;
+cvar_t *gl_shadows;
+// no gl_stencilshadows, always use stencil (if available)
 
 cvar_t *gl_dynamic;
 
@@ -157,7 +170,7 @@ GL3_RotateForEntity(entity_t *e)
 		transMat.Elements[3][i] = e->origin[i]; // set translation
 	}
 
-	gl3state.uni3DData.transModelViewMat4 = HMM_MultiplyMat4(gl3state.uni3DData.transModelViewMat4, transMat);
+	gl3state.uni3DData.transModelMat4 = HMM_MultiplyMat4(gl3state.uni3DData.transModelMat4, transMat);
 
 	GL3_UpdateUBO3D();
 }
@@ -196,7 +209,8 @@ GL3_Register(void)
 	gl_mode = ri.Cvar_Get("gl_mode", "4", CVAR_ARCHIVE);
 	gl_customwidth = ri.Cvar_Get("gl_customwidth", "1024", CVAR_ARCHIVE);
 	gl_customheight = ri.Cvar_Get("gl_customheight", "768", CVAR_ARCHIVE);
-	gl_particle_size = ri.Cvar_Get("gl_particle_size", "40", CVAR_ARCHIVE);
+	gl3_particle_size = ri.Cvar_Get("gl3_particle_size", "40", CVAR_ARCHIVE);
+	gl3_particle_fade_factor = ri.Cvar_Get("gl3_particle_fade_factor", "1.2", CVAR_ARCHIVE);
 
 	gl_norefresh = ri.Cvar_Get("gl_norefresh", "0", 0);
 	gl_drawentities = ri.Cvar_Get("gl_drawentities", "1", 0);
@@ -211,15 +225,15 @@ GL3_Register(void)
 	gl_anisotropic = ri.Cvar_Get("gl_anisotropic", "0", CVAR_ARCHIVE);
 
 	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
-	vid_gamma = ri.Cvar_Get("vid_gamma", "1.0", CVAR_ARCHIVE);
-	intensity = ri.Cvar_Get("intensity", "2.0", CVAR_ARCHIVE);
+	vid_gamma = ri.Cvar_Get("vid_gamma", "1.2", CVAR_ARCHIVE);
+	gl3_intensity = ri.Cvar_Get("gl3_intensity", "1.5", CVAR_ARCHIVE);
+	gl3_intensity_2D = ri.Cvar_Get("gl3_intensity_2D", "1.5", CVAR_ARCHIVE);
 
 	gl_lightlevel = ri.Cvar_Get("gl_lightlevel", "0", 0);
-	gl_overbrightbits = ri.Cvar_Get("gl_overbrightbits", "0", CVAR_ARCHIVE);
+	gl3_overbrightbits = ri.Cvar_Get("gl3_overbrightbits", "1.3", CVAR_ARCHIVE);
 
 	gl_lightmap = ri.Cvar_Get("gl_lightmap", "0", 0);
 	gl_shadows = ri.Cvar_Get("gl_shadows", "0", CVAR_ARCHIVE);
-	gl_stencilshadow = ri.Cvar_Get("gl_stencilshadow", "0", CVAR_ARCHIVE);
 
 	gl_modulate = ri.Cvar_Get("gl_modulate", "1", CVAR_ARCHIVE);
 	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
@@ -382,7 +396,7 @@ GL3_SetMode(void)
 		{
 			ri.Cvar_SetValue("vid_fullscreen", 0);
 			vid_fullscreen->modified = false;
-			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - fullscreen unavailable in this mode\n");
+			R_Printf(PRINT_ALL, "ref_gl3::GL3_SetMode() - fullscreen unavailable in this mode\n");
 
 			if ((err = SetMode_impl(&vid.width, &vid.height, gl_mode->value, false)) == rserr_ok)
 			{
@@ -391,15 +405,23 @@ GL3_SetMode(void)
 		}
 		else if (err == rserr_invalid_mode)
 		{
+			R_Printf(PRINT_ALL, "ref_gl3::GL3_SetMode() - invalid mode\n");
+
+			if(gl_mode->value == gl3state.prev_mode)
+			{
+				// trying again would result in a crash anyway, give up already
+				// (this would happen if your initing fails at all and your resolution already was 640x480)
+				return false;
+			}
+
 			ri.Cvar_SetValue("gl_mode", gl3state.prev_mode);
 			gl_mode->modified = false;
-			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - invalid mode\n");
 		}
 
 		/* try setting it back to something safe */
 		if ((err = SetMode_impl(&vid.width, &vid.height, gl3state.prev_mode, false)) != rserr_ok)
 		{
-			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - could not revert to safe mode\n");
+			R_Printf(PRINT_ALL, "ref_gl3::GL3_SetMode() - could not revert to safe mode\n");
 			return false;
 		}
 	}
@@ -407,17 +429,21 @@ GL3_SetMode(void)
 	return true;
 }
 
+// only needed (and allowed!) if using OpenGL compatibility profile, it's not in 3.2 core
+enum { QGL_POINT_SPRITE = 0x8861 };
+
 static qboolean
 GL3_Init(void)
 {
 	Swap_Init(); // FIXME: for fucks sake, this doesn't have to be done at runtime!
 
+	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
+	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
+
 	/* Options */
 	R_Printf(PRINT_ALL, "Refresher build options:\n");
+	R_Printf(PRINT_ALL, " + Retexturing support\n\n");
 
-	R_Printf(PRINT_ALL, " + Retexturing support\n");
-
-	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
 
 	if(sizeof(float) != sizeof(GLfloat))
 	{
@@ -431,9 +457,6 @@ GL3_Init(void)
 	GL3_Draw_GetPalette();
 
 	GL3_Register();
-
-	/* initialize our QGL dynamic bindings */
-	//QGL_Init();
 
 	/* initialize OS-specific parts of OpenGL */
 	if (!ri.GLimp_Init())
@@ -449,7 +472,6 @@ GL3_Init(void)
 	/* create the window and set up the context */
 	if (!GL3_SetMode())
 	{
-		//QGL_Shutdown();
 		R_Printf(PRINT_ALL, "ref_gl3::R_Init() - could not R_SetMode()\n");
 		return false;
 	}
@@ -497,6 +519,7 @@ GL3_Init(void)
 		R_Printf(PRINT_ALL, "Not supported\n");
 	}
 
+#ifdef SDL2
 	if(gl3config.debug_output)
 	{
 		R_Printf(PRINT_ALL, " - OpenGL Debug Output: Supported ");
@@ -512,6 +535,18 @@ GL3_Init(void)
 	else
 	{
 		R_Printf(PRINT_ALL, " - OpenGL Debug Output: Not Supported\n");
+	}
+#else // SDL1.2 - no debug output
+	R_Printf(PRINT_ALL, " - OpenGL Debug Output: Not Supported when using SDL1.2\n");
+#endif
+
+	if(gl3config.compat_profile)
+	{
+		// for some fucking reason particles (GL_POINT) don't work in compatibility profiles
+		// without setting this.. SDL1.2 only gives compat profiles and we might wanna support
+		// them for SDL2 as well, so broken screengrab software etc that uses GL1 functions still works
+		// (GL_POINT_SPRITE is not even part of 3.2core, it was only in GL2 and was deprecated afterwards)
+		glEnable(QGL_POINT_SPRITE);
 	}
 
 	// generate texture handles for all possible lightmaps
@@ -551,11 +586,17 @@ GL3_Shutdown(void)
 	ri.Cmd_RemoveCommand("imagelist");
 	ri.Cmd_RemoveCommand("gl_strings");
 
-	GL3_Mod_FreeAll();
-	GL3_ShutdownImages();
-	GL3_SurfShutdown();
-	GL3_Draw_ShutdownLocal();
-	GL3_ShutdownShaders();
+	// only call all these if we have an OpenGL context and the gl function pointers
+	// randomly chose one function that should always be there to test..
+	if(glDeleteBuffers != NULL)
+	{
+		GL3_Mod_FreeAll();
+		GL3_ShutdownMeshes();
+		GL3_ShutdownImages();
+		GL3_SurfShutdown();
+		GL3_Draw_ShutdownLocal();
+		GL3_ShutdownShaders();
+	}
 
 	/* shutdown OS specific OpenGL stuff like contexts, etc.  */
 	GL3_ShutdownWindow(false);
@@ -737,7 +778,7 @@ GL3_DrawNullModel(void)
 		GL3_LightPoint(currententity->origin, shadelight);
 	}
 
-	hmm_mat4 origMVmat = gl3state.uni3DData.transModelViewMat4;
+	hmm_mat4 origModelMat = gl3state.uni3DData.transModelMat4;
 	GL3_RotateForEntity(currententity);
 
 	gl3state.uniCommonData.color = HMM_Vec4( shadelight[0], shadelight[1], shadelight[2], 1 );
@@ -768,7 +809,7 @@ GL3_DrawNullModel(void)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vtxB), vtxB, GL_STREAM_DRAW);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
 
-	gl3state.uni3DData.transModelViewMat4 = origMVmat;
+	gl3state.uni3DData.transModelMat4 = origModelMat;
 	GL3_UpdateUBO3D();
 }
 
@@ -779,14 +820,14 @@ GL3_DrawParticles(void)
 	//qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
 	//qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
 
-	//if (gl_config.pointparameters && !(stereo_split_tb || stereo_split_lr))
+	//if (!(stereo_split_tb || stereo_split_lr))
 	{
 		int i;
 		int numParticles = gl3_newrefdef.num_particles;
 		unsigned char color[4];
 		const particle_t *p;
-		// assume the size looks good with window height 600px and scale according to real resolution
-		float pointSize = gl_particle_size->value * (float)gl3_newrefdef.height/600.0f;
+		// assume the size looks good with window height 480px and scale according to real resolution
+		float pointSize = gl3_particle_size->value * (float)gl3_newrefdef.height/480.0f;
 
 		typedef struct part_vtx {
 			GLfloat pos[3];
@@ -798,7 +839,7 @@ GL3_DrawParticles(void)
 
 		part_vtx buf[numParticles];
 
-		// FIXME: viewOrg could be in UBO
+		// TODO: viewOrg could be in UBO
 		vec3_t viewOrg;
 		VectorCopy(gl3_newrefdef.vieworg, viewOrg);
 
@@ -845,6 +886,8 @@ GL3_DrawEntitiesOnList(void)
 	{
 		return;
 	}
+
+	GL3_ResetShadowAliasModels();
 
 	/* draw non-transparent first */
 	for (i = 0; i < gl3_newrefdef.num_entities; i++)
@@ -934,7 +977,10 @@ GL3_DrawEntitiesOnList(void)
 		}
 	}
 
+	GL3_DrawAliasShadows();
+
 	glDepthMask(1); /* back to writing */
+
 }
 
 static int
@@ -1094,7 +1140,6 @@ GL3_SetGL2D(void)
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
-	// glColor4f(1, 1, 1, 1); // FIXME: change to GL3 code!
 }
 
 // equivalent to R_x * R_y * R_z where R_x is the trans matrix for rotating around X axis for aroundXdeg
@@ -1222,7 +1267,8 @@ SetupGL(void)
 	}
 
 	gl3state.uni3DData.transProjMat4 = gl3_projectionMatrix;
-	gl3state.uni3DData.transModelViewMat4 = gl3_world_matrix;
+	gl3state.uni3DData.transViewMat4 = gl3_world_matrix;
+	gl3state.uni3DData.transModelMat4 = gl3_identityMat4;
 
 	gl3state.uni3DData.time = gl3_newrefdef.time;
 
@@ -1238,9 +1284,6 @@ SetupGL(void)
 		glDisable(GL_CULL_FACE);
 	}
 
-	STUB_ONCE("Should I do anything about disabling GL_BLEND and GL_ALPHA_TEST?");
-	//glDisable(GL_BLEND);
-	//glDisable(GL_ALPHA_TEST);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -1369,14 +1412,10 @@ GL3_RenderView(refdef_t *fd)
 
 	gl3_newrefdef = *fd;
 
-	STUB_ONCE("TODO: Implement!");
-
-
 	if (!gl3_worldmodel && !(gl3_newrefdef.rdflags & RDF_NOWORLDMODEL))
 	{
 		ri.Sys_Error(ERR_DROP, "R_RenderView: NULL worldmodel");
 	}
-
 
 	if (gl_speeds->value)
 	{
@@ -1503,7 +1542,13 @@ GL3_RenderFrame(refdef_t *fd)
 	GL3_SetLightLevel();
 	GL3_SetGL2D();
 
-	GL3_Draw_Flash(v_blend);
+	if(v_blend[3] != 0.0f)
+	{
+		int x = (vid.width - gl3_newrefdef.width)/2;
+		int y = (vid.height - gl3_newrefdef.height)/2;
+
+		GL3_Draw_Flash(v_blend, x, y, gl3_newrefdef.width, gl3_newrefdef.height);
+	}
 }
 
 
@@ -1548,7 +1593,7 @@ GL3_Clear(void)
 	}
 
 	/* stencilbuffer shadows */
-	if (gl_shadows->value && have_stencil && gl_stencilshadow->value)
+	if (gl_shadows->value && have_stencil)
 	{
 		glClearStencil(1);
 		glClear(GL_STENCIL_BUFFER_BIT);
@@ -1580,30 +1625,39 @@ GL3_BeginFrame(float camera_separation)
 	}
 #endif // 0
 
-	if (vid_gamma->modified || intensity->modified)
+	if (vid_gamma->modified || gl3_intensity->modified || gl3_intensity_2D->modified)
 	{
 		vid_gamma->modified = false;
-		intensity->modified = false;
+		gl3_intensity->modified = false;
+		gl3_intensity_2D->modified = false;
 
 		gl3state.uniCommonData.gamma = 1.0f/vid_gamma->value;
-		gl3state.uniCommonData.intensity = intensity->value;
+		gl3state.uniCommonData.intensity = gl3_intensity->value;
+		gl3state.uniCommonData.intensity2D = gl3_intensity_2D->value;
 		GL3_UpdateUBOCommon();
 	}
 
 	// in GL3, overbrightbits can have any positive value
-	// TODO: rename to gl3_overbrightbits?
-	if (gl_overbrightbits->modified)
+	if (gl3_overbrightbits->modified)
 	{
-		gl_overbrightbits->modified = false;
+		gl3_overbrightbits->modified = false;
 
-		if(gl_overbrightbits->value < 0.0f)
+		if(gl3_overbrightbits->value < 0.0f)
 		{
 			ri.Cvar_Set("gl_overbrightbits", "0");
 		}
 
-		gl3state.uni3DData.overbrightbits = (gl_overbrightbits->value <= 0.0f) ? 1.0f : gl_overbrightbits->value;
+		gl3state.uni3DData.overbrightbits = (gl3_overbrightbits->value <= 0.0f) ? 1.0f : gl3_overbrightbits->value;
 		GL3_UpdateUBO3D();
 	}
+
+	if(gl3_particle_fade_factor->modified)
+	{
+		gl3_particle_fade_factor->modified = false;
+		gl3state.uni3DData.particleFadeFactor = gl3_particle_fade_factor->value;
+		GL3_UpdateUBO3D();
+	}
+
 
 	/* go into 2D mode */
 
@@ -1641,21 +1695,6 @@ GL3_BeginFrame(float camera_separation)
 		gl_swapinterval->modified = false;
 		GL3_SetSwapInterval();
 	}
-
-	STUB_ONCE("TODO: texture-alpha/solid-mode stuff??")
-#if 0
-	if (gl_texturealphamode->modified)
-	{
-		R_TextureAlphaMode(gl_texturealphamode->string);
-		gl_texturealphamode->modified = false;
-	}
-
-	if (gl_texturesolidmode->modified)
-	{
-		R_TextureSolidMode(gl_texturesolidmode->string);
-		gl_texturesolidmode->modified = false;
-	}
-#endif // 0
 
 	/* clear screen if desired */
 	GL3_Clear();

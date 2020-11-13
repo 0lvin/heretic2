@@ -942,6 +942,11 @@ FS_AddHomeAsGameDirectory(char *dir)
 	char gdir[MAX_OSPATH];
 	size_t len;
 
+	if (portable->value)
+	{
+		return;
+	}
+
 	home = Sys_GetHomeDir();
 
 	if (home == NULL)
@@ -1080,6 +1085,13 @@ FS_SetGamedir(char *dir)
 	if (!*dir || !strcmp(dir, ".") || strstr(dir, "..") || strstr(dir, "/"))
 	{
 		Com_Printf("Gamedir should be a single filename, not a path.\n");
+		return;
+	}
+
+    /* Do not set BASEDIR as gamedir. It was already set by FS_InitFilesystem()
+     * and setting it again f*cks the search pathes up. Yes, this a hack. */
+	if(!Q_stricmp(dir, BASEDIRNAME))
+	{
 		return;
 	}
 

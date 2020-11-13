@@ -71,6 +71,9 @@ R_SubdividePolygon(int numverts, float *verts, msurface_t *warpface)
 	float s, t;
 	vec3_t total;
 	float total_s, total_t;
+	vec3_t normal;
+
+	VectorCopy(warpface->plane->normal, normal);
 
 	if (numverts > 60)
 	{
@@ -150,7 +153,7 @@ R_SubdividePolygon(int numverts, float *verts, msurface_t *warpface)
 	}
 
 	/* add a point in the center to help keep warp valid */
-	poly = Hunk_Alloc(sizeof(glpoly_t) + ((numverts - 4) + 2) * VERTEXSIZE * sizeof(float));
+	poly = Hunk_Alloc(sizeof(glpoly_t) + ((numverts - 4) + 2) * sizeof(gl3_3D_vtx_t));
 	poly->next = warpface->polys;
 	warpface->polys = poly;
 	poly->numverts = numverts + 2;
@@ -160,7 +163,7 @@ R_SubdividePolygon(int numverts, float *verts, msurface_t *warpface)
 
 	for (i = 0; i < numverts; i++, verts += 3)
 	{
-		VectorCopy(verts, poly->verts[i + 1]);
+		VectorCopy(verts, poly->vertices[i + 1].pos);
 		s = DotProduct(verts, warpface->texinfo->vecs[0]);
 		t = DotProduct(verts, warpface->texinfo->vecs[1]);
 
@@ -168,16 +171,20 @@ R_SubdividePolygon(int numverts, float *verts, msurface_t *warpface)
 		total_t += t;
 		VectorAdd(total, verts, total);
 
-		poly->verts[i + 1][3] = s;
-		poly->verts[i + 1][4] = t;
+		poly->vertices[i + 1].texCoord[0] = s;
+		poly->vertices[i + 1].texCoord[1] = t;
+		VectorCopy(normal, poly->vertices[i + 1].normal);
+		poly->vertices[i + 1].lightFlags = 0;
 	}
 
-	VectorScale(total, (1.0 / numverts), poly->verts[0]);
-	poly->verts[0][3] = total_s / numverts;
-	poly->verts[0][4] = total_t / numverts;
+	VectorScale(total, (1.0 / numverts), poly->vertices[0].pos);
+	poly->vertices[0].texCoord[0] = total_s / numverts;
+	poly->vertices[0].texCoord[1] = total_t / numverts;
+	VectorCopy(normal, poly->vertices[0].normal);
 
 	/* copy first vertex to last */
-	memcpy(poly->verts[i + 1], poly->verts[1], sizeof(poly->verts[0]));
+	//memcpy(poly->vertices[i + 1], poly->vertices[1], sizeof(poly->vertices[0]));
+	poly->vertices[i + 1] = poly->vertices[1];
 }
 
 /*
@@ -249,7 +256,7 @@ GL3_EmitWaterPolys(msurface_t *fa)
 	for (bp = fa->polys; bp != NULL; bp = bp->next)
 	{
 		int numverts = bp->numverts;
-		glBufferData(GL_ARRAY_BUFFER, VERTEXSIZE*sizeof(GLfloat)*numverts, bp->verts[0], GL_STREAM_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(gl3_3D_vtx_t)*numverts, bp->vertices, GL_STREAM_DRAW);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, numverts);
 	}
 }
@@ -574,7 +581,7 @@ GL3_AddSkySurface(msurface_t *fa)
 	{
 		for (i = 0; i < p->numverts; i++)
 		{
-			VectorSubtract(p->verts[i], gl3_origin, verts[i]);
+			VectorSubtract(p->vertices[i].pos, gl3_origin, verts[i]);
 		}
 
 		ClipSkyPolygon(p->numverts, verts[0], 0);
@@ -599,7 +606,7 @@ MakeSkyVec(float s, float t, int axis, gl3_3D_vtx_t* vert)
 	vec3_t v, b;
 	int j, k;
 
-	float dist = (gl_farsee->value == 0) ? 2300.0f : 4096.0f; // TODO: really dist?
+	float dist = (gl_farsee->value == 0) ? 2300.0f : 4096.0f;
 
 	b[0] = s * dist;
 	b[1] = t * dist;
@@ -674,18 +681,18 @@ GL3_DrawSkyBox(void)
 	}
 
 	// glPushMatrix();
-	hmm_mat4 origMVmat = gl3state.uni3DData.transModelViewMat4;
+	hmm_mat4 origModelMat = gl3state.uni3DData.transModelMat4;
 
 	// glTranslatef(gl3_origin[0], gl3_origin[1], gl3_origin[2]);
 	hmm_vec3 transl = HMM_Vec3(gl3_origin[0], gl3_origin[1], gl3_origin[2]);
-	hmm_mat4 modMVmat = HMM_MultiplyMat4(origMVmat, HMM_Translate(transl));
+	hmm_mat4 modMVmat = HMM_MultiplyMat4(origModelMat, HMM_Translate(transl));
 	if(skyrotate != 0.0f)
 	{
 		// glRotatef(gl3_newrefdef.time * skyrotate, skyaxis[0], skyaxis[1], skyaxis[2]);
 		hmm_vec3 rotAxis = HMM_Vec3(skyaxis[0], skyaxis[1], skyaxis[2]);
 		modMVmat = HMM_MultiplyMat4(modMVmat, HMM_Rotate(gl3_newrefdef.time * skyrotate, rotAxis));
 	}
-	gl3state.uni3DData.transModelViewMat4 = modMVmat;
+	gl3state.uni3DData.transModelMat4 = modMVmat;
 	GL3_UpdateUBO3D();
 
 	GL3_UseProgram(gl3state.si3Dsky.shaderProgram);
@@ -724,6 +731,6 @@ GL3_DrawSkyBox(void)
 	}
 
 	// glPopMatrix();
-	gl3state.uni3DData.transModelViewMat4 = origMVmat;
+	gl3state.uni3DData.transModelMat4 = origModelMat;
 	GL3_UpdateUBO3D();
 }

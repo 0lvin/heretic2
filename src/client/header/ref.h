@@ -141,6 +141,7 @@ typedef struct
 
 	// called by GLimp_InitGraphics() *after* creating window,
 	// passing the SDL_Window* (void* so we don't spill SDL.h here)
+	// (or SDL_Surface* for SDL1.2, another reason to use void*)
 	// returns true (1) on success
 	int		(EXPORT *InitContext)(void* sdl_window);
 
@@ -176,10 +177,8 @@ typedef struct
 	struct image_s * (EXPORT *DrawFindPic)(char *name);
 
 	void	(EXPORT *DrawGetPicSize) (int *w, int *h, char *name);	// will return 0 0 if not found
-	//void	(EXPORT *DrawPic) (int x, int y, char *name); - apparently not used anymore
 	void 	(EXPORT *DrawPicScaled) (int x, int y, char *pic, float factor);
 	void	(EXPORT *DrawStretchPic) (int x, int y, int w, int h, char *name);
-	void	(EXPORT *DrawChar) (int x, int y, int c);
 	void	(EXPORT *DrawCharScaled)(int x, int y, int num, float scale);
 	void	(EXPORT *DrawTileClear) (int x, int y, int w, int h, char *name);
 	void	(EXPORT *DrawFill) (int x, int y, int w, int h, int c);
