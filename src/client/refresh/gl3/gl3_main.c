@@ -255,12 +255,12 @@ GL3_Register(void)
 	//r_lightlevel = ri.Cvar_Get("r_lightlevel", "0", 0);
 	//gl_overbrightbits = ri.Cvar_Get("gl_overbrightbits", "0", CVAR_ARCHIVE);
 
-	gl_particle_min_size = ri.Cvar_Get("gl_particle_min_size", "2", CVAR_ARCHIVE);
-	gl_particle_max_size = ri.Cvar_Get("gl_particle_max_size", "40", CVAR_ARCHIVE);
-	//gl_particle_size = ri.Cvar_Get("gl_particle_size", "40", CVAR_ARCHIVE);
-	gl_particle_att_a = ri.Cvar_Get("gl_particle_att_a", "0.01", CVAR_ARCHIVE);
-	gl_particle_att_b = ri.Cvar_Get("gl_particle_att_b", "0.0", CVAR_ARCHIVE);
-	gl_particle_att_c = ri.Cvar_Get("gl_particle_att_c", "0.01", CVAR_ARCHIVE);
+	gl1_particle_min_size = ri.Cvar_Get("gl1_particle_min_size", "2", CVAR_ARCHIVE);
+	gl1_particle_max_size = ri.Cvar_Get("gl1_particle_max_size", "40", CVAR_ARCHIVE);
+	//gl1_particle_size = ri.Cvar_Get("gl1_particle_size", "40", CVAR_ARCHIVE);
+	gl1_particle_att_a = ri.Cvar_Get("gl1_particle_att_a", "0.01", CVAR_ARCHIVE);
+	gl1_particle_att_b = ri.Cvar_Get("gl1_particle_att_b", "0.0", CVAR_ARCHIVE);
+	gl1_particle_att_c = ri.Cvar_Get("gl1_particle_att_c", "0.01", CVAR_ARCHIVE);
 
 	//gl_modulate = ri.Cvar_Get("gl_modulate", "1", CVAR_ARCHIVE);
 	//r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
@@ -268,8 +268,6 @@ GL3_Register(void)
 	//gl_shadows = ri.Cvar_Get("gl_shadows", "0", CVAR_ARCHIVE);
 	//gl_stencilshadow = ri.Cvar_Get("gl_stencilshadow", "0", CVAR_ARCHIVE);
 	//gl_nobind = ri.Cvar_Get("gl_nobind", "0", 0);
-	gl_round_down = ri.Cvar_Get("gl_round_down", "1", 0);
-	gl_picmip = ri.Cvar_Get("gl_picmip", "0", 0);
 	gl_showtris = ri.Cvar_Get("gl_showtris", "0", 0);
 	gl_showbbox = Cvar_Get("gl_showbbox", "0", 0);
 	//gl_ztrick = ri.Cvar_Get("gl_ztrick", "0", 0); NOTE: dump this.
@@ -277,7 +275,6 @@ GL3_Register(void)
 	//gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
 	r_clear = ri.Cvar_Get("r_clear", "0", 0);
 //	gl_cull = ri.Cvar_Get("gl_cull", "1", 0);
-	gl_polyblend = ri.Cvar_Get("gl_polyblend", "1", 0);
 	//gl1_flashblend = ri.Cvar_Get("gl1_flashblend", "0", 0);
 
 	//gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
@@ -286,13 +283,12 @@ GL3_Register(void)
 	//gl_anisotropic = ri.Cvar_Get("gl_anisotropic", "0", CVAR_ARCHIVE);
 	//r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 0);
 
-	//gl_palettedtexture = ri.Cvar_Get("gl_palettedtexture", "0", CVAR_ARCHIVE); NOPE.
-	gl_pointparameters = ri.Cvar_Get("gl_pointparameters", "1", CVAR_ARCHIVE);
+	//gl1_palettedtexture = ri.Cvar_Get("gl1_palettedtexture", "0", CVAR_ARCHIVE); NOPE.
+	gl1_pointparameters = ri.Cvar_Get("gl1_pointparameters", "1", CVAR_ARCHIVE);
 
 	//gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
 	//gl_swapinterval = ri.Cvar_Get("gl_swapinterval", "1", CVAR_ARCHIVE);
 
-	gl_saturatelighting = ri.Cvar_Get("gl_saturatelighting", "0", 0);
 
 	//vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 	//vid_gamma = ri.Cvar_Get("vid_gamma", "1.0", CVAR_ARCHIVE);

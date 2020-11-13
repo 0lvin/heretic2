@@ -83,15 +83,15 @@ cvar_t *r_farsee;
 cvar_t *r_lightlevel;
 cvar_t *gl1_overbrightbits;
 
-cvar_t *gl_particle_min_size;
-cvar_t *gl_particle_max_size;
-cvar_t *gl_particle_size;
-cvar_t *gl_particle_att_a;
-cvar_t *gl_particle_att_b;
-cvar_t *gl_particle_att_c;
+cvar_t *gl1_particle_min_size;
+cvar_t *gl1_particle_max_size;
+cvar_t *gl1_particle_size;
+cvar_t *gl1_particle_att_a;
+cvar_t *gl1_particle_att_b;
+cvar_t *gl1_particle_att_c;
 
-cvar_t *gl_palettedtexture;
-cvar_t *gl_pointparameters;
+cvar_t *gl1_palettedtexture;
+cvar_t *gl1_pointparameters;
 
 cvar_t *gl_drawbuffer;
 cvar_t *gl_lightmap;
@@ -109,8 +109,8 @@ cvar_t *gl_nolerp_list;
 cvar_t *gl1_dynamic;
 cvar_t *r_modulate;
 cvar_t *gl_nobind;
-cvar_t *gl_round_down;
-cvar_t *gl_picmip;
+cvar_t *gl1_round_down;
+cvar_t *gl1_picmip;
 cvar_t *gl_showtris;
 cvar_t *gl_showbbox;
 cvar_t *gl_ztrick;
@@ -118,9 +118,9 @@ cvar_t *gl_zfix;
 cvar_t *gl_finish;
 cvar_t *r_clear;
 cvar_t *gl_cull;
-cvar_t *gl_polyblend;
+cvar_t *gl1_polyblend;
 cvar_t *gl1_flashblend;
-cvar_t *gl_saturatelighting;
+cvar_t *gl1_saturatelighting;
 cvar_t *gl_swapinterval;
 cvar_t *gl_texturemode;
 cvar_t *gl_texturealphamode;
@@ -540,7 +540,7 @@ R_DrawParticles(void)
 		glDisable(GL_TEXTURE_2D);
 
 		// assume the particle size looks good with window height 480px and scale according to real resolution
-		glPointSize(gl_particle_size->value * (float)r_newrefdef.height/480.0f);
+		glPointSize(gl1_particle_size->value * (float)r_newrefdef.height/480.0f);
 
 		for ( i = 0, p = r_newrefdef.particles; i < r_newrefdef.num_particles; i++, p++ )
 		{
@@ -580,7 +580,7 @@ R_DrawParticles(void)
 void
 R_PolyBlend(void)
 {
-	if (!gl_polyblend->value)
+	if (!gl1_polyblend->value)
 	{
 		return;
 	}
@@ -1223,12 +1223,12 @@ R_Register(void)
 	r_lightlevel = ri.Cvar_Get("r_lightlevel", "0", 0);
 	gl1_overbrightbits = ri.Cvar_Get("gl1_overbrightbits", "0", CVAR_ARCHIVE);
 
-	gl_particle_min_size = ri.Cvar_Get("gl_particle_min_size", "2", CVAR_ARCHIVE);
-	gl_particle_max_size = ri.Cvar_Get("gl_particle_max_size", "40", CVAR_ARCHIVE);
-	gl_particle_size = ri.Cvar_Get("gl_particle_size", "40", CVAR_ARCHIVE);
-	gl_particle_att_a = ri.Cvar_Get("gl_particle_att_a", "0.01", CVAR_ARCHIVE);
-	gl_particle_att_b = ri.Cvar_Get("gl_particle_att_b", "0.0", CVAR_ARCHIVE);
-	gl_particle_att_c = ri.Cvar_Get("gl_particle_att_c", "0.01", CVAR_ARCHIVE);
+	gl1_particle_min_size = ri.Cvar_Get("gl1_particle_min_size", "2", CVAR_ARCHIVE);
+	gl1_particle_max_size = ri.Cvar_Get("gl1_particle_max_size", "40", CVAR_ARCHIVE);
+	gl1_particle_size = ri.Cvar_Get("gl1_particle_size", "40", CVAR_ARCHIVE);
+	gl1_particle_att_a = ri.Cvar_Get("gl1_particle_att_a", "0.01", CVAR_ARCHIVE);
+	gl1_particle_att_b = ri.Cvar_Get("gl1_particle_att_b", "0.0", CVAR_ARCHIVE);
+	gl1_particle_att_c = ri.Cvar_Get("gl1_particle_att_c", "0.01", CVAR_ARCHIVE);
 
 	r_modulate = ri.Cvar_Get("r_modulate", "1", CVAR_ARCHIVE);
 	r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
@@ -1237,8 +1237,8 @@ R_Register(void)
 	gl_stencilshadow = ri.Cvar_Get("gl_stencilshadow", "0", CVAR_ARCHIVE);
 	gl1_dynamic = ri.Cvar_Get("gl1_dynamic", "1", 0);
 	gl_nobind = ri.Cvar_Get("gl_nobind", "0", 0);
-	gl_round_down = ri.Cvar_Get("gl_round_down", "1", 0);
-	gl_picmip = ri.Cvar_Get("gl_picmip", "0", 0);
+	gl1_round_down = ri.Cvar_Get("gl1_round_down", "1", 0);
+	gl1_picmip = ri.Cvar_Get("gl1_picmip", "0", 0);
 	gl_showtris = ri.Cvar_Get("gl_showtris", "0", 0);
 	gl_showbbox = ri.Cvar_Get("gl_showbbox", "0", 0);
 	gl_ztrick = ri.Cvar_Get("gl_ztrick", "0", 0);
@@ -1246,7 +1246,7 @@ R_Register(void)
 	gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
 	r_clear = ri.Cvar_Get("r_clear", "0", 0);
 	gl_cull = ri.Cvar_Get("gl_cull", "1", 0);
-	gl_polyblend = ri.Cvar_Get("gl_polyblend", "1", 0);
+	gl1_polyblend = ri.Cvar_Get("gl1_polyblend", "1", 0);
 	gl1_flashblend = ri.Cvar_Get("gl1_flashblend", "0", 0);
 
 	gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
@@ -1255,13 +1255,13 @@ R_Register(void)
 	gl_anisotropic = ri.Cvar_Get("gl_anisotropic", "0", CVAR_ARCHIVE);
 	r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 0);
 
-	gl_palettedtexture = ri.Cvar_Get("gl_palettedtexture", "0", CVAR_ARCHIVE);
-	gl_pointparameters = ri.Cvar_Get("gl_pointparameters", "1", CVAR_ARCHIVE);
+	gl1_palettedtexture = ri.Cvar_Get("gl1_palettedtexture", "0", CVAR_ARCHIVE);
+	gl1_pointparameters = ri.Cvar_Get("gl1_pointparameters", "1", CVAR_ARCHIVE);
 
 	gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
 	gl_swapinterval = ri.Cvar_Get("gl_swapinterval", "1", CVAR_ARCHIVE);
 
-	gl_saturatelighting = ri.Cvar_Get("gl_saturatelighting", "0", 0);
+	gl1_saturatelighting = ri.Cvar_Get("gl1_saturatelighting", "0", 0);
 
 	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 	vid_gamma = ri.Cvar_Get("vid_gamma", "1.2", CVAR_ARCHIVE);
@@ -1525,7 +1525,7 @@ RI_Init()
 
 	gl_config.pointparameters = false;
 
-	if (gl_pointparameters->value)
+	if (gl1_pointparameters->value)
 	{
 		if (qglPointParameterfARB && qglPointParameterfvARB)
 		{
@@ -1556,7 +1556,7 @@ RI_Init()
 
 	gl_config.palettedtexture = false;
 
-	if (gl_palettedtexture->value)
+	if (gl1_palettedtexture->value)
 	{
 		if (qglColorTableEXT)
 		{

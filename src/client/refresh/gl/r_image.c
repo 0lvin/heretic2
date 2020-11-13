@@ -599,7 +599,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 	{
 	}
 
-	if (gl_round_down->value && (scaled_width > width) && mipmap)
+	if (gl1_round_down->value && (scaled_width > width) && mipmap)
 	{
 		scaled_width >>= 1;
 	}
@@ -608,7 +608,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 	{
 	}
 
-	if (gl_round_down->value && (scaled_height > height) && mipmap)
+	if (gl1_round_down->value && (scaled_height > height) && mipmap)
 	{
 		scaled_height >>= 1;
 	}
@@ -616,8 +616,8 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 	/* let people sample down the world textures for speed */
 	if (mipmap)
 	{
-		scaled_width >>= (int)gl_picmip->value;
-		scaled_height >>= (int)gl_picmip->value;
+		scaled_width >>= (int)gl1_picmip->value;
+		scaled_height >>= (int)gl1_picmip->value;
 	}
 
 	/* don't ever bother with >256 textures */
@@ -669,7 +669,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 	{
 		if (!mipmap)
 		{
-			if (qglColorTableEXT && gl_palettedtexture->value &&
+			if (qglColorTableEXT && gl1_palettedtexture->value &&
 				(samples == gl_solid_format))
 			{
 				uploaded_paletted = true;
@@ -699,7 +699,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 
 	R_LightScaleTexture(scaled, scaled_width, scaled_height, !mipmap);
 
-	if (qglColorTableEXT && gl_palettedtexture->value &&
+	if (qglColorTableEXT && gl1_palettedtexture->value &&
 		(samples == gl_solid_format))
 	{
 		uploaded_paletted = true;
@@ -740,7 +740,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 
 			miplevel++;
 
-			if (qglColorTableEXT && gl_palettedtexture->value &&
+			if (qglColorTableEXT && gl1_palettedtexture->value &&
 				(samples == gl_solid_format))
 			{
 				uploaded_paletted = true;
