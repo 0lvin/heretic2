@@ -113,6 +113,7 @@ fsPackTypes_t fs_packtypes[] = {
 #endif
 };
 
+char datadir[MAX_OSPATH];
 char fs_gamedir[MAX_OSPATH];
 qboolean file_from_pak;
 
@@ -134,6 +135,49 @@ typedef struct fsRawPath_s {
 } fsRawPath_t;
 
 fsRawPath_t *fs_rawPath;
+
+// --------
+
+#ifdef ZIP
+#if _WIN32
+/*
+ * We need some trickery to make minizip Unicode compatible...
+ */
+
+#include <windows.h>
+#include "unzip/ioapi.h"
+
+zlib_filefunc_def zlib_file_api;
+
+static voidpf ZCALLBACK fopen_file_func_utf(voidpf opaque, const char *filename, int mode)
+{
+	FILE* file = NULL;
+	WCHAR *mode_fopen = NULL;
+	WCHAR wfilename[MAX_OSPATH];
+
+	if ((mode & ZLIB_FILEFUNC_MODE_READWRITEFILTER) == ZLIB_FILEFUNC_MODE_READ)
+	{
+		mode_fopen = L"rb";
+	}
+	else if (mode & ZLIB_FILEFUNC_MODE_EXISTING)
+	{
+		mode_fopen = L"r+b";
+	}
+	else if (mode & ZLIB_FILEFUNC_MODE_CREATE)
+	{
+		mode_fopen = L"wb";
+	}
+
+	if (!((filename == NULL) || (mode_fopen == NULL)))
+	{
+		MultiByteToWideChar(CP_UTF8, 0, filename, -1, wfilename, sizeof(wfilename));
+		file = _wfopen((const wchar_t *) wfilename, mode_fopen);
+	}
+
+	return file;
+}
+#endif
+#endif
 
 // --------
 
@@ -389,7 +433,7 @@ FS_FOpenFile(const char *name, fileHandle_t *f, qboolean gamedir_only)
 					{
 						/* PAK */
 						file_from_pak = true;
-						handle->file = fopen(pack->name, "rb");
+						handle->file = Q_fopen(pack->name, "rb");
 
 						if (handle->file)
 						{
@@ -402,7 +446,12 @@ FS_FOpenFile(const char *name, fileHandle_t *f, qboolean gamedir_only)
 					{
 						/* PK3 */
 						file_from_pak = true;
+
+#ifdef _WIN32
+						handle->zip = unzOpen2(pack->name, &zlib_file_api);
+#else
 						handle->zip = unzOpen(pack->name);
+#endif
 
 						if (handle->zip)
 						{
@@ -428,12 +477,12 @@ FS_FOpenFile(const char *name, fileHandle_t *f, qboolean gamedir_only)
 			/* Search in a directory tree. */
 			Com_sprintf(path, sizeof(path), "%s/%s", search->path, handle->name);
 
-			handle->file = fopen(path, "rb");
+			handle->file = Q_fopen(path, "rb");
 
 			if (!handle->file)
 			{
 				Q_strlwr(path);
-				handle->file = fopen(path, "rb");
+				handle->file = Q_fopen(path, "rb");
 			}
 
 			if (!handle->file)
@@ -668,7 +717,7 @@ FS_LoadPAK(const char *packPath)
 	dpackheader_t header; /* PAK file header. */
 	dpackfile_t info[MAX_FILES_IN_PACK]; /* PAK info. */
 
-	handle = fopen(packPath, "rb");
+	handle = Q_fopen(packPath, "rb");
 
 	if (handle == NULL)
 	{
@@ -742,7 +791,11 @@ FS_LoadPK3(const char *packPath)
 	unz_file_info info; /* Zip file info. */
 	unz_global_info global; /* Zip file global info. */
 
+#ifdef _WIN32
+	handle = unzOpen2(packPath, &zlib_file_api);
+#else
 	handle = unzOpen(packPath);
+#endif
 
 	if (handle == NULL)
 	{
@@ -1325,7 +1378,7 @@ FS_AddDirToSearchPath(char *dir, qboolean create) {
 		Com_sprintf(path, sizeof(path), "%s/*.%s", dir, fs_packtypes[i].suffix);
 
 		// Nothing here, next pak type please.
-		if ((list = FS_ListFiles(path, &nfiles, 0, SFF_SUBDIR)) == NULL)
+		if ((list = FS_ListFiles(path, &nfiles, 0, 0)) == NULL)
 		{
 			continue;
 		}
@@ -1409,20 +1462,17 @@ FS_BuildGameSpecificSearchPath(char *dir)
 	fsRawPath_t *search;
 	fsSearchPath_t *next;
 
-	// This is against PEBCAK. The user may give us paths like
-	// xatrix/ or even /home/stupid/quake2/xatrix.
-	if (!*dir || !strcmp(dir, ".") || strstr(dir, "..") || strstr(dir, "/") || strstr(dir, "\\"))
+	// empty string means baseq2
+	if(dir[0] == '\0')
 	{
-		Com_Printf("Gamedir should be a single filename, not a path.\n");
-		return;
+		dir = BASEDIRNAME;
 	}
 
-	// BASEDIR is already added as a generic directory. Adding it
-	// again as a specialised directory breaks the logic in other
-	// parts of the code. This may happen if the user does something
-	// like ./quake2 +set game baseq2
-	if(!Q_stricmp(dir, BASEDIRNAME))
+	// This is against PEBCAK. The user may give us paths like
+	// xatrix/ or even /home/stupid/quake2/xatrix.
+	if (!strcmp(dir, ".") || strstr(dir, "..") || strstr(dir, "/") || strstr(dir, "\\"))
 	{
+		Com_Printf("Gamedir should be a single filename, not a path.\n");
 		return;
 	}
 
@@ -1503,6 +1553,9 @@ FS_BuildGameSpecificSearchPath(char *dir)
 	// render dll doesn't link the filesystem stuff.
 	Com_sprintf(path, sizeof(path), "%s/scrnshot", fs_gamedir);
 	Sys_Mkdir(path);
+
+	// the gamedir has changed, so read in the corresponding configs
+	Qcommon_ExecConfigs(false);
 }
 
 // --------
@@ -1538,7 +1591,7 @@ void FS_BuildRawPath(void) {
 	}
 
 	// Add $basedir/
-	FS_AddDirToRawPath(fs_basedir->string, false);
+	FS_AddDirToRawPath(datadir, false);
 
 	// Add SYSTEMDIR
 #ifdef SYSTEMWIDE
@@ -1568,6 +1621,23 @@ FS_InitFilesystem(void)
 	fs_cddir = Cvar_Get("cddir", "", CVAR_NOSET);
 	fs_gamedirvar = Cvar_Get("game", "", CVAR_LATCH | CVAR_SERVERINFO);
 	fs_debug = Cvar_Get("fs_debug", "0", 0);
+
+	// Deprecation warning, can be removed at a later time.
+	if (strcmp(fs_basedir->string, ".") != 0)
+	{
+		Com_Printf("+set basedir is deprecated, use -datadir instead\n");
+		strcpy(datadir, fs_basedir->string);
+	}
+	else if (strlen(datadir) == 0)
+	{
+		strcpy(datadir, ".");
+	}
+
+#ifdef _WIN32
+	// setup minizip for Unicode compatibility
+	fill_fopen_filefunc(&zlib_file_api);
+	zlib_file_api.zopen_file = fopen_file_func_utf;
+#endif
 
 	// Build search path
 	FS_BuildRawPath();

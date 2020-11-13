@@ -189,13 +189,15 @@ CL_CheckForResend(void)
 void
 CL_Connect_f(void)
 {
-	char *server;
+	char server[256];
 
 	if (Cmd_Argc() != 2)
 	{
 		Com_Printf("usage: connect <server>\n");
 		return;
 	}
+
+	Q_strlcpy(server, Cmd_Argv(1), sizeof(server));
 
 	if (Com_ServerState())
 	{
@@ -204,15 +206,7 @@ CL_Connect_f(void)
 		SV_Shutdown("Server quit\n", false);
 	}
 
-	else
-	{
-		CL_Disconnect();
-	}
-
-	server = Cmd_Argv(1);
-
 	NET_Config(true); /* allow remote */
-
 	CL_Disconnect();
 
 	cls.state = ca_connecting;
@@ -284,6 +278,8 @@ CL_Rcon_f(void)
 
 	NET_SendPacket(NS_CLIENT, strlen(message) + 1, message, to);
 }
+
+void CL_WriteConfiguration(void);
 
 /*
  * Goes from a connected state to full screen
@@ -357,6 +353,12 @@ CL_Disconnect(void)
 	cls.state = ca_disconnected;
 
 	snd_is_underwater = false;
+
+	// save config for old game/mod
+	CL_WriteConfiguration();
+
+	// we disconnected, so revert to default game/mod (might have been different mod on MP server)
+	Cvar_Set("game", userGivenGame);
 }
 
 void
@@ -494,7 +496,7 @@ CL_PingServers_f(void)
 	int i;
 	netadr_t adr;
 	char name[32];
-	char *adrstring;
+	const char *adrstring;
 	cvar_t *noudp;
 	cvar_t *noipx;
 
@@ -530,7 +532,7 @@ CL_PingServers_f(void)
 	for (i = 0; i < 16; i++)
 	{
 		Com_sprintf(name, sizeof(name), "adr%i", i);
-		adrstring = (char *)Cvar_VariableString(name);
+		adrstring = Cvar_VariableString(name);
 
 		if (!adrstring || !adrstring[0])
 		{

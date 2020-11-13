@@ -144,12 +144,12 @@ Com_VPrintf(int print_level, const char *fmt, va_list argptr)
 
 				if (logfile_active->value > 2)
 				{
-					logfile = fopen(name, "a");
+					logfile = Q_fopen(name, "a");
 				}
 
 				else
 				{
-					logfile = fopen(name, "w");
+					logfile = Q_fopen(name, "w");
 				}
 			}
 
@@ -243,7 +243,6 @@ Com_Error(int code, char *fmt, ...)
 		recursive = false;
 		longjmp(abortframe, -1);
 	}
-
 	else if (code == ERR_DROP)
 	{
 		Com_Printf("********************\nERROR: %s\n********************\n",
@@ -255,7 +254,6 @@ Com_Error(int code, char *fmt, ...)
 		recursive = false;
 		longjmp(abortframe, -1);
 	}
-
 	else
 	{
 		SV_Shutdown(va("Server fatal crashed: %s\n", msg), false);

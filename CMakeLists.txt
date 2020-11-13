@@ -100,6 +100,10 @@ if(${ZIP_SUPPORT})
 	list(APPEND yquake2IncludeDirectories ${ZLIB_INCLUDE_DIRS})
 	list(APPEND yquake2ZLibLinkerFlags ${ZLIB_LIBRARIES})
 	add_definitions(-DZIP -DNOUNCRYPT)
+
+	if(NOT CMAKE_SYSTEM_NAME MATCHES "Linux" OR NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
+		add_definitions(-DIOAPI_NO_64)
+	endif()
 endif()
 
 if(${OGG_SUPPORT})
@@ -184,25 +188,21 @@ set(Backends-Unix-Source
 	${BACKENDS_SRC_DIR}/unix/shared/hunk.c
 	)
 
-set(Backends-Unix-Header
-	${BACKENDS_SRC_DIR}/unix/header/unix.h
-	)
-
 set(Backends-Windows-Source
 	${BACKENDS_SRC_DIR}/generic/frame.c
 	${BACKENDS_SRC_DIR}/windows/icon.rc
+	${BACKENDS_SRC_DIR}/windows/main.c
 	${BACKENDS_SRC_DIR}/windows/network.c
 	${BACKENDS_SRC_DIR}/windows/system.c
-	${BACKENDS_SRC_DIR}/windows/shared/mem.c
+	${BACKENDS_SRC_DIR}/windows/shared/hunk.c
 	)
 
 set(Backends-Windows-Header
 	${BACKENDS_SRC_DIR}/windows/header/resource.h
-	${BACKENDS_SRC_DIR}/windows/header/winquake.h
 	)
 
 set(REF-Windows-Source
-	${BACKENDS_SRC_DIR}/windows/shared/mem.c
+	${BACKENDS_SRC_DIR}/windows/shared/hunk.c
 	)
 
 set(REF-Unix-Source
@@ -214,7 +214,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	set(Platform-Specific-Source ${Backends-Windows-Source} ${Backends-Windows-Header})
 	set(REF-Platform-Specific-Source ${REF-Windows-Source})
 else()
-	set(Platform-Specific-Source ${Backends-Unix-Source} ${Backends-Unix-Header})
+	set(Platform-Specific-Source ${Backends-Unix-Source})
 	set(REF-Platform-Specific-Source ${REF-Unix-Source})
 endif()
 
@@ -458,6 +458,7 @@ set(GL1-Header
 	${REF_SRC_DIR}/gl1/header/local.h
 	${REF_SRC_DIR}/gl1/header/model.h
 	${REF_SRC_DIR}/gl1/header/qgl.h
+	${BACKENDS_SRC_DIR}/generic/header/stb_image_write.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
 
@@ -496,27 +497,28 @@ set(GL3-Header
 	${REF_SRC_DIR}/gl3/header/HandmadeMath.h
 	${REF_SRC_DIR}/gl3/header/local.h
 	${REF_SRC_DIR}/gl3/header/model.h
+	${BACKENDS_SRC_DIR}/generic/header/stb_image_write.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
 
 set(SOFT-Source
-	${REF_SRC_DIR}/soft/r_aclip.c
-	${REF_SRC_DIR}/soft/r_alias.c
-	${REF_SRC_DIR}/soft/r_bsp.c
-	${REF_SRC_DIR}/soft/r_draw.c
-	${REF_SRC_DIR}/soft/r_edge.c
-	${REF_SRC_DIR}/soft/r_image.c
-	${REF_SRC_DIR}/soft/r_light.c
-	${REF_SRC_DIR}/soft/r_main.c
-	${REF_SRC_DIR}/soft/r_misc.c
-	${REF_SRC_DIR}/soft/r_model.c
-	${REF_SRC_DIR}/soft/r_part.c
-	${REF_SRC_DIR}/soft/r_poly.c
-	${REF_SRC_DIR}/soft/r_polyse.c
-	${REF_SRC_DIR}/soft/r_rast.c
-	${REF_SRC_DIR}/soft/r_scan.c
-	${REF_SRC_DIR}/soft/r_sprite.c
-	${REF_SRC_DIR}/soft/r_surf.c
+	${REF_SRC_DIR}/soft/sw_aclip.c
+	${REF_SRC_DIR}/soft/sw_alias.c
+	${REF_SRC_DIR}/soft/sw_bsp.c
+	${REF_SRC_DIR}/soft/sw_draw.c
+	${REF_SRC_DIR}/soft/sw_edge.c
+	${REF_SRC_DIR}/soft/sw_image.c
+	${REF_SRC_DIR}/soft/sw_light.c
+	${REF_SRC_DIR}/soft/sw_main.c
+	${REF_SRC_DIR}/soft/sw_misc.c
+	${REF_SRC_DIR}/soft/sw_model.c
+	${REF_SRC_DIR}/soft/sw_part.c
+	${REF_SRC_DIR}/soft/sw_poly.c
+	${REF_SRC_DIR}/soft/sw_polyse.c
+	${REF_SRC_DIR}/soft/sw_rast.c
+	${REF_SRC_DIR}/soft/sw_scan.c
+	${REF_SRC_DIR}/soft/sw_sprite.c
+	${REF_SRC_DIR}/soft/sw_surf.c
 	${REF_SRC_DIR}/files/pcx.c
 	${REF_SRC_DIR}/files/stb.c
 	${REF_SRC_DIR}/files/wal.c
@@ -525,22 +527,42 @@ set(SOFT-Source
 	)
 
 set(SOFT-Header
-	${REF_SRC_DIR}/soft/header/adivtab.h
+	${REF_SRC_DIR}/constants/adivtab.h
 	${REF_SRC_DIR}/soft/header/local.h
 	${REF_SRC_DIR}/soft/header/model.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
 
-# Main Quake 2 executable
-add_executable(quake2 ${Client-Source} ${Client-Header} ${Platform-Specific-Source}
-		${Backends-Generic-Source} ${Backends-Generic-Header})
-set_target_properties(quake2 PROPERTIES
-	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release
-	)
+# Wrapper for the Windows binary
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	target_link_libraries(quake2 ${yquake2LinkerFlags} ${yquake2ClientLinkerFlags}
+	set(Wrapper-Source
+	src/win-wrapper/wrapper.c
+	${BACKENDS_SRC_DIR}/windows/icon.rc
+	)
+endif()
+
+# Main Quake 2 executable
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	add_executable(yquake2 ${Client-Source} ${Client-Header} ${Platform-Specific-Source}
+			${Backends-Generic-Source} ${Backends-Generic-Header})
+	set_target_properties(yquake2 PROPERTIES
+			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release
+			)
+	target_link_libraries(yquake2 ${yquake2LinkerFlags} ${yquake2ClientLinkerFlags}
 			${yquake2SDLLinkerFlags} ${yquake2ZLibLinkerFlags} ws2_32 winmm)
+
+	# Wrapper for the Windows binary
+	add_executable(quake2 ${Wrapper-Source})
+	set_target_properties(quake2 PROPERTIES
+			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release
+			)
 else()
+	add_executable(quake2 ${Client-Source} ${Client-Header} ${Platform-Specific-Source}
+			${Backends-Generic-Source} ${Backends-Generic-Header})
+	set_target_properties(quake2 PROPERTIES
+			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release
+			)
 	target_link_libraries(quake2 ${yquake2LinkerFlags} ${yquake2ClientLinkerFlags}
 			${yquake2SDLLinkerFlags} ${yquake2ZLibLinkerFlags})
 endif()

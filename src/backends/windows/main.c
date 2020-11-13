@@ -25,24 +25,25 @@
  * =======================================================================
  */
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
+#include <windows.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_Main.h>
 
 #include "../../common/header/common.h"
 
-void registerHandler(void);
-
+/*
+ * Windows main function. Containts the
+ * initialization code and the main loop
+ */
 int
 main(int argc, char **argv)
 {
-	// register signal handler
-	registerHandler();
-
-	// Setup FPU if necessary
+	// Setup FPU if necessary.
 	Sys_SetupFPU();
 
-	// Implement command line options that the rather
+	// Force DPI awareness.
+	Sys_SetHighDPIMode();
+
 	// crappy argument parser can't parse.
 	for (int i = 0; i < argc; i++)
 	{
@@ -58,18 +59,21 @@ main(int argc, char **argv)
 			// Mkay, did the user give us an argument?
 			if (i != (argc - 1))
 			{
-				// Check if it exists.
-				struct stat sb;
+				DWORD attrib;
+				WCHAR wpath[MAX_OSPATH];
 
-				if (stat(argv[i + 1], &sb) == 0)
+				MultiByteToWideChar(CP_UTF8, 0, argv[i + 1], -1, wpath, MAX_OSPATH);
+				attrib = GetFileAttributesW(wpath);
+
+				if (attrib != INVALID_FILE_ATTRIBUTES)
 				{
-					if (!S_ISDIR(sb.st_mode))
+					if (!(attrib & FILE_ATTRIBUTE_DIRECTORY))
 					{
 						printf("-datadir %s is not a directory\n", argv[i + 1]);
 						return 1;
 					}
 
-					realpath(argv[i + 1], datadir);
+					Q_strlcpy(datadir, argv[i + 1], MAX_OSPATH);
 				}
 				else
 				{
@@ -85,38 +89,14 @@ main(int argc, char **argv)
 		}
 	}
 
-	/* Prevent running Quake II as root. Only very mad
-	   minded or stupid people even think about it. :) */
-	if (getuid() == 0)
-	{
-		printf("Quake II shouldn't be run as root! Backing out to save your ass. If\n");
-		printf("you really know what you're doing, edit src/unix/main.c and remove\n");
-		printf("this check. But don't complain if Quake II eats your dog afterwards!\n");
+	// Need to redirect stdout before anything happens.
+#ifndef DEDICATED_ONLY
+	Sys_RedirectStdout();
+#endif
 
-		return 1;
-	}
-
-	// Enforce the real UID to prevent setuid crap
-	if (getuid() != geteuid())
-	{
-		printf("The effective UID is not the real UID! Your binary is probably marked\n");
-		printf("'setuid'. That is not good idea, please fix it :) If you really know\n");
-		printf("what you're doing edit src/unix/main.c and remove this check. Don't\n");
-		printf("complain if Quake II eats your dog afterwards!\n");
-
-		return 1;
-	}
-
-	// enforce C locale
-	setenv("LC_ALL", "C", 1);
-
-	/// Do not delay reads on stdin
-	fcntl(fileno(stdin), F_SETFL, fcntl(fileno(stdin), F_GETFL, NULL) | FNDELAY);
-
-	// Initialize the game.
+	// Call the initialization code.
 	// Never returns.
 	Qcommon_Init(argc, argv);
 
 	return 0;
 }
-

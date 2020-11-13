@@ -178,7 +178,7 @@ CL_Record_f(void)
 
 	Com_Printf("recording to %s.\n", name);
 	FS_CreatePath(name);
-	cls.demofile = fopen(name, "wb");
+	cls.demofile = Q_fopen(name, "wb");
 
 	if (!cls.demofile)
 	{
@@ -365,7 +365,7 @@ CL_Skins_f(void)
 
 		SCR_UpdateScreen();
 
-		Sys_SendKeyEvents();  /* pump message loop */
+		IN_Update();  /* pump message loop */
 
 		CL_ParseClientinfo(i);
 	}
@@ -462,6 +462,11 @@ CL_Precache_f(void)
 	precache_model_skin = 0;
 
 	CL_RequestNextDownload();
+}
+
+void CL_CurrentMap_f(void)
+{
+	Com_Printf("%s\n", cl.configstrings[CS_MODELS + 1]);
 }
 
 void
@@ -563,6 +568,8 @@ CL_InitLocal(void)
 
 	Cmd_AddCommand("download", CL_Download_f);
 
+	Cmd_AddCommand("currentmap", CL_CurrentMap_f);
+
 	/* forward to server commands
 	 * the only thing this does is allow command completion
 	 * to work -- all unknown commands are automatically
@@ -604,7 +611,7 @@ CL_WriteConfiguration(void)
 
 	Com_sprintf(path, sizeof(path), "%s/config.cfg", FS_Gamedir());
 
-	f = fopen(path, "w");
+	f = Q_fopen(path, "w");
 
 	if (!f)
 	{
@@ -755,7 +762,7 @@ CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, 
 	{
 		CL_ReadPackets();
 		CL_UpdateWindowedMouse();
-		Sys_SendKeyEvents();
+		IN_Update();
 		Cbuf_Execute();
 		CL_FixCvarCheats();
 

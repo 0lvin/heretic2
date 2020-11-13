@@ -80,7 +80,8 @@ replacement_t replacements[] = {
 	{"gl_swapinterval", "r_vsync"},
 	{"gl_texturealphamode", "gl1_texturealphamode"},
 	{"gl_texturesolidmode", "gl1_texturesolidmode"},
-	{"gl_ztrick", "gl1_ztrick"}
+	{"gl_ztrick", "gl1_ztrick"},
+	{"intensity", "gl1_intensity"}
 };
 
 
@@ -111,19 +112,19 @@ Cvar_FindVar(const char *var_name)
 	cvar_t *var;
 	int i;
 
+	/* An ugly hack to rewrite changed CVARs */
+	for (i = 0; i < sizeof(replacements) / sizeof(replacement_t); i++)
+	{
+		if (!strcmp(var_name, replacements[i].old))
+		{
+			Com_Printf("cvar %s ist deprecated, use %s instead\n", replacements[i].old, replacements[i].new);
+
+			var_name = replacements[i].new;
+		}
+	}
+
 	for (var = cvar_vars; var; var = var->next)
 	{
-		/* An ugly hack to rewrite changed CVARs */
-		for (i = 0; i < sizeof(replacements) / sizeof(replacement_t); i++)
-		{
-			if (!strcmp(var_name, replacements[i].old))
-			{
-				Com_Printf("cvar %s ist deprecated, use %s instead\n", replacements[i].old, replacements[i].new);
-
-				var_name = replacements[i].new;
-			}
-		}
-
 		if (!strcmp(var_name, var->name))
 		{
 			return var;
@@ -204,6 +205,13 @@ Cvar_Get(char *var_name, char *var_value, int flags)
 		}
 	}
 
+	// if $game is the default one ("baseq2"), then use "" instead because
+	// other code assumes this behavior (e.g. FS_BuildGameSpecificSearchPath())
+	if(strcmp(var_name, "game") == 0 && strcmp(var_value, BASEDIRNAME) == 0)
+	{
+		var_value = "";
+	}
+
 	var = Z_Malloc(sizeof(*var));
 	var->name = CopyString(var_name);
 	var->string = CopyString(var_value);
@@ -245,6 +253,13 @@ Cvar_Set2(char *var_name, char *value, qboolean force)
 		}
 	}
 
+	// if $game is the default one ("baseq2"), then use "" instead because
+	// other code assumes this behavior (e.g. FS_BuildGameSpecificSearchPath())
+	if(strcmp(var_name, "game") == 0 && strcmp(value, BASEDIRNAME) == 0)
+	{
+		value = "";
+	}
+
 	if (!force)
 	{
 		if (var->flags & CVAR_NOSET)
@@ -263,8 +278,8 @@ Cvar_Set2(char *var_name, char *value, qboolean force)
 				}
 
 				Z_Free(var->latched_string);
+				var->latched_string = NULL;
 			}
-
 			else
 			{
 				if (strcmp(value, var->string) == 0)
@@ -278,7 +293,6 @@ Cvar_Set2(char *var_name, char *value, qboolean force)
 				Com_Printf("%s will be changed for next game.\n", var_name);
 				var->latched_string = CopyString(value);
 			}
-
 			else
 			{
 				var->string = CopyString(value);
@@ -293,7 +307,6 @@ Cvar_Set2(char *var_name, char *value, qboolean force)
 			return var;
 		}
 	}
-
 	else
 	{
 		if (var->latched_string)
@@ -352,6 +365,13 @@ Cvar_FullSet(char *var_name, char *value, int flags)
 	if (var->flags & CVAR_USERINFO)
 	{
 		userinfo_modified = true;
+	}
+
+	// if $game is the default one ("baseq2"), then use "" instead because
+	// other code assumes this behavior (e.g. FS_BuildGameSpecificSearchPath())
+	if(strcmp(var_name, "game") == 0 && strcmp(value, BASEDIRNAME) == 0)
+	{
+		value = "";
 	}
 
 	Z_Free(var->string);
@@ -432,6 +452,14 @@ Cvar_Command(void)
 		return true;
 	}
 
+	/* Another evil hack: The user has just changed 'game' trough
+	   the console. We reset userGivenGame to that value, otherwise
+	   we would revert to the initialy given game at disconnect. */
+	if (strcmp(v->name, "game") == 0)
+	{
+		Q_strlcpy(userGivenGame, Cmd_Argv(1), sizeof(userGivenGame));
+	}
+
 	Cvar_Set(v->name, Cmd_Argv(1));
 	return true;
 }
@@ -501,7 +529,7 @@ Cvar_WriteVariables(char *path)
 	char buffer[1024];
 	FILE *f;
 
-	f = fopen(path, "a");
+	f = Q_fopen(path, "a");
 
 	for (var = cvar_vars; var; var = var->next)
 	{

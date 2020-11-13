@@ -2088,6 +2088,11 @@ static menuseparator_s s_blankline;
 static void
 StartGame(void)
 {
+	if (cls.state != ca_disconnected && cls.state != ca_uninitialized)
+	{
+		CL_Disconnect();
+	}
+
     /* disable updates and start the cinematic going */
     cl.servercount = -1;
     M_ForceMenuOff();
@@ -3847,7 +3852,7 @@ PlayerConfig_ScanDirectories(void)
 	s_numplayermodels = 0;
 
 	/* get a list of directories */
-	if ((dirnames = FS_ListFiles2("players/*", &ndirs, SFF_SUBDIR, 0)) == NULL)
+	if ((dirnames = FS_ListFiles2("players/*", &ndirs, 0, 0)) == NULL)
 	{
 		return false;
 	}
@@ -3894,7 +3899,7 @@ PlayerConfig_ScanDirectories(void)
 		strcpy(scratch, dirnames[i]);
 		strcat(scratch, "/*.pcx");
 
-		if ((pcxnames = FS_ListFiles2(scratch, &npcxfiles, 0, SFF_SUBDIR | SFF_HIDDEN | SFF_SYSTEM)) == NULL)
+		if ((pcxnames = FS_ListFiles2(scratch, &npcxfiles, 0, 0)) == NULL)
 		{
 			free(dirnames[i]);
 			dirnames[i] = 0;
@@ -4383,6 +4388,15 @@ M_Init(void)
     Cmd_AddCommand("menu_options", M_Menu_Options_f);
     Cmd_AddCommand("menu_keys", M_Menu_Keys_f);
     Cmd_AddCommand("menu_quit", M_Menu_Quit_f);
+
+    /* initialize the server address book cvars (adr0, adr1, ...)
+     * so the entries are not lost if you don't open the address book */
+    for (int index = 0; index < NUM_ADDRESSBOOK_ENTRIES; index++)
+    {
+        char buffer[20];
+        Com_sprintf(buffer, sizeof(buffer), "adr%d", index);
+        Cvar_Get(buffer, "", CVAR_ARCHIVE);
+    }
 }
 
 void

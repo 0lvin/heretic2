@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "7.11pre"
+#define YQ2VERSION "7.20"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -531,7 +531,7 @@ qboolean NET_CompareAdr(netadr_t a, netadr_t b);
 qboolean NET_CompareBaseAdr(netadr_t a, netadr_t b);
 qboolean NET_IsLocalAddress(netadr_t adr);
 char *NET_AdrToString(netadr_t a);
-qboolean NET_StringToAdr(char *s, netadr_t *a);
+qboolean NET_StringToAdr(const char *s, netadr_t *a);
 void NET_Sleep(int msec);
 
 /*=================================================================== */
@@ -732,6 +732,12 @@ extern cvar_t *log_stats;
 /* Hack for portable client */
 extern qboolean is_portable;
 
+/* Hack fo external datadir */
+extern char datadir[MAX_OSPATH];
+
+/* Hack for working 'game' cmd */
+extern char userGivenGame[MAX_QPATH];
+
 extern FILE *log_stats_file;
 
 /* host_speeds times */
@@ -746,6 +752,8 @@ void *Z_TagMalloc(int size, int tag);
 void Z_FreeTags(int tag);
 
 void Qcommon_Init(int argc, char **argv);
+void Qcommon_ExecConfigs(qboolean addEarlyCmds);
+const char* Qcommon_GetInitialGame(void);
 void Qcommon_Frame(int msec);
 void Qcommon_Shutdown(void);
 
@@ -754,26 +762,6 @@ extern vec3_t bytedirs[NUMVERTEXNORMALS];
 
 /* this is in the client code, but can be used for debugging from server */
 void SCR_DebugGraph(float value, int color);
-
-/* NON-PORTABLE OSTYPE SERVICES */
-
-void Sys_Init(void);
-void Sys_UnloadGame(void);
-void *Sys_GetGameAPI(void *parms);
-
-char *Sys_ConsoleInput(void);
-void Sys_ConsoleOutput(char *string);
-void Sys_SendKeyEvents(void);
-void Sys_Error(char *error, ...);
-void Sys_Quit(void);
-char *Sys_GetHomeDir(void);
-const char *Sys_GetBinaryDir(void);
-long long Sys_Microseconds(void);
-void Sys_FreeLibrary(void *handle);
-void *Sys_LoadLibrary(const char *path, const char *sym, void **handle);
-void *Sys_GetProcAddress(void *handle, const char *sym);
-void Sys_RedirectStdout(void);
-void Sys_SetupFPU(void);
 
 /* CLIENT / SERVER SYSTEMS */
 
@@ -787,5 +775,38 @@ void SCR_BeginLoadingPlaque(void);
 void SV_Init(void);
 void SV_Shutdown(char *finalmsg, qboolean reconnect);
 void SV_Frame(int msec);
+
+/* ======================================================================= */
+
+// Platform specific functions.
+
+// system.c
+char *Sys_ConsoleInput(void);
+void Sys_ConsoleOutput(char *string);
+void Sys_Error(char *error, ...);
+void Sys_Quit(void);
+void Sys_Init(void);
+char *Sys_GetHomeDir(void);
+long long Sys_Microseconds(void);
+void Sys_Nanosleep(int);
+void *Sys_GetProcAddress(void *handle, const char *sym);
+void Sys_FreeLibrary(void *handle);
+void *Sys_LoadLibrary(const char *path, const char *sym, void **handle);
+void *Sys_GetGameAPI(void *parms);
+void Sys_UnloadGame(void);
+void Sys_GetWorkDir(char *buffer, size_t len);
+qboolean Sys_SetWorkDir(char *path);
+
+// Windows only (system.c)
+#ifdef _WIN32
+void Sys_RedirectStdout(void);
+void Sys_SetHighDPIMode(void);
+#endif
+
+// misc.c
+const char *Sys_GetBinaryDir(void);
+void Sys_SetupFPU(void);
+
+/* ======================================================================= */
 
 #endif

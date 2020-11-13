@@ -19,7 +19,7 @@
  *
  * =======================================================================
  *
- * Generic frame handling.
+ * Platform independent initialization, main loop and frame handling.
  *
  * =======================================================================
  */
@@ -34,6 +34,7 @@ cvar_t *timescale;
 cvar_t *fixedtime;
 cvar_t *cl_maxfps;
 cvar_t *dedicated;
+cvar_t *busywait;
 
 extern cvar_t *logfile_active;
 extern jmp_buf abortframe; /* an ERR_DROP occured, exit the entire frame */
@@ -69,7 +70,130 @@ void Key_Init(void);
 void SCR_EndLoadingPlaque(void);
 #endif
 
+// Is the game portable?
+qboolean is_portable;
+
+// Game given by user
+char userGivenGame[MAX_QPATH];
+
 // ----
+
+static void
+Qcommon_Buildstring(void)
+{
+	int i;
+	int verLen;
+	const char* versionString;
+
+
+	versionString = va("Yamagi Quake II v%s", YQ2VERSION);
+	verLen = strlen(versionString);
+
+	printf("\n%s\n", versionString);
+
+	for( i = 0; i < verLen; ++i)
+	{
+		printf("=");
+	}
+
+	printf("\n");
+
+
+#ifndef DEDICATED_ONLY
+	printf("Client build options:\n");
+#ifdef SDL2
+	printf(" + SDL2\n");
+#else
+	printf(" - SDL2 (using 1.2)\n");
+#endif
+
+#ifdef CDA
+	printf(" + CD audio\n");
+#else
+	printf(" - CD audio\n");
+#endif
+#ifdef OGG
+	printf(" + OGG/Vorbis\n");
+#else
+	printf(" - OGG/Vorbis\n");
+#endif
+#ifdef USE_OPENAL
+	printf(" + OpenAL audio\n");
+#else
+	printf(" - OpenAL audio\n");
+#endif
+#ifdef ZIP
+	printf(" + Zip file support\n");
+#else
+	printf(" - Zip file support\n");
+#endif
+#endif
+
+	printf("Platform: %s\n", YQ2OSTYPE);
+	printf("Architecture: %s\n", YQ2ARCH);
+}
+
+#ifndef DEDICATED_ONLY
+#define FRAMEDELAY 5
+#else
+#define FRAMEDELAY 850
+#endif
+
+void
+Qcommon_Mainloop(void)
+{
+	long long newtime;
+	long long oldtime = Sys_Microseconds();
+
+	/* The mainloop. The legend. */
+	while (1)
+	{
+		// Throttle the game a little bit.
+		if (busywait->value)
+		{
+			long long spintime = Sys_Microseconds();
+
+			while (1)
+			{
+#if defined (__GNUC__) && (__i386 || __x86_64__)
+				/* Give the CPU a hint that this is a very tight
+				   spinloop. One PAUSE instruction each loop is
+				   enough to reduce power consumption and head
+				   dispersion a lot, it's 95°C against 67°C on
+				   a Kaby Lake laptop. */
+				asm("pause");
+#endif
+
+				if (Sys_Microseconds() - spintime >= FRAMEDELAY)
+				{
+					break;
+				}
+			}
+		}
+		else
+		{
+			Sys_Nanosleep(FRAMEDELAY * 1000);
+		}
+
+		newtime = Sys_Microseconds();
+		Qcommon_Frame(newtime - oldtime);
+		oldtime = newtime;
+	}
+}
+
+void Qcommon_ExecConfigs(qboolean gameStartUp)
+{
+	Cbuf_AddText("exec default.cfg\n");
+	Cbuf_AddText("exec yq2.cfg\n");
+	Cbuf_AddText("exec config.cfg\n");
+	if(gameStartUp)
+	{
+		// only when the game is first started we execute autoexec.cfg and set the cvars from commandline
+		Cbuf_AddText("exec autoexec.cfg\n");
+		Cbuf_AddEarlyCommands(true);
+	}
+	Cbuf_Execute();
+}
 
 void
 Qcommon_Init(int argc, char **argv)
@@ -79,6 +203,12 @@ Qcommon_Init(int argc, char **argv)
 	{
 		Sys_Error("Error during initialization");
 	}
+
+	// Print the build and version string
+	Qcommon_Buildstring();
+
+	// Seed PRNG
+	randk_seed();
 
 	// Initialize zone malloc().
 	z_chain.next = z_chain.prev = &z_chain;
@@ -101,16 +231,24 @@ Qcommon_Init(int argc, char **argv)
 	Cbuf_AddEarlyCommands(false);
 	Cbuf_Execute();
 
+	// remember the initial game name that might have been set on commandline
+	{
+		cvar_t* gameCvar = Cvar_Get("game", "", CVAR_LATCH | CVAR_SERVERINFO);
+		const char* game = "";
+
+		if(gameCvar->string && gameCvar->string[0])
+		{
+			game = gameCvar->string;
+		}
+
+		Q_strlcpy(userGivenGame, game, sizeof(userGivenGame));
+	}
+
 	// The filesystems needs to be initialized after the cvars.
 	FS_InitFilesystem();
 
 	// Add and execute configuration files.
-	Cbuf_AddText("exec default.cfg\n");
-	Cbuf_AddText("exec yq2.cfg\n");
-	Cbuf_AddText("exec config.cfg\n");
-	Cbuf_AddText("exec autoexec.cfg\n");
-	Cbuf_AddEarlyCommands(true);
-	Cbuf_Execute();
+	Qcommon_ExecConfigs(true);
 
 	// Zone malloc statistics.
 	Cmd_AddCommand("z_stats", Z_Stats_f);
@@ -122,8 +260,6 @@ Qcommon_Init(int argc, char **argv)
 	developer = Cvar_Get("developer", "0", 0);
 	fixedtime = Cvar_Get("fixedtime", "0", 0);
 
-
-
 	logfile_active = Cvar_Get("logfile", "1", CVAR_ARCHIVE);
 	modder = Cvar_Get("modder", "0", 0);
 	timescale = Cvar_Get("timescale", "1", 0);
@@ -131,6 +267,7 @@ Qcommon_Init(int argc, char **argv)
 	char *s;
 	s = va("%s %s %s %s", YQ2VERSION, YQ2ARCH, BUILD_DATE, YQ2OSTYPE);
 	Cvar_Get("version", s, CVAR_SERVERINFO | CVAR_NOSET);
+	busywait = Cvar_Get("busywait", "1", CVAR_ARCHIVE);
 
 #ifndef DEDICATED_ONLY
 	cl_async = Cvar_Get("cl_async", "1", CVAR_ARCHIVE);
@@ -186,6 +323,9 @@ Qcommon_Init(int argc, char **argv)
 
 	Com_Printf("==== Yamagi Quake II Initialized ====\n\n");
 	Com_Printf("*************************************\n\n");
+
+	// Call the main loop
+	Qcommon_Mainloop();
 }
 
 #ifndef DEDICATED_ONLY
@@ -231,6 +371,16 @@ Qcommon_Frame(int msec)
 	   microseconds. */
 	qboolean renderframe = true;
 
+	// Average time needed to process a render frame.
+	static int avgrenderframetime;
+	static int renderframetimes[60];
+	static qboolean last_was_renderframe;
+
+	// Average time needed to process a packet frame.
+	static int avgpacketframetime;
+	static int packetframetimes[60];
+	static qboolean last_was_packetframe;
+
 
 	/* In case of ERR_DROP we're jumping here. Don't know
 	   if that' really save but it seems to work. So leave
@@ -253,7 +403,7 @@ Qcommon_Frame(int msec)
 				log_stats_file = 0;
 			}
 
-			log_stats_file = fopen("stats.log", "w");
+			log_stats_file = Q_fopen("stats.log", "w");
 
 			if (log_stats_file)
 			{
@@ -329,7 +479,82 @@ Qcommon_Frame(int msec)
 		rfps = (int)vid_maxfps->value;
 	}
 
-	pfps = (cl_maxfps->value > rfps) ? rfps : cl_maxfps->value;
+	/* The target render frame rate may be too high. The current
+	   scene may be more complex than the previous one and SDL
+	   may give us a 1 or 2 frames too low display refresh rate.
+	   Add a security magin of 5%, e.g. 60fps * 0.95 = 57fps. */
+	pfps = (cl_maxfps->value > rfps) ? floor(rfps * 0.95) : cl_maxfps->value;
+
+
+	/* Calculate average time spend to process a render
+	   frame. This is highly depended on the GPU and the
+	   scenes complexity. Take the last 60 pure render
+	   frames (frames that are only render frames and
+	   nothing else) into account and add a security
+	   margin of 2%. */
+	if (last_was_renderframe && !last_was_packetframe)
+	{
+		int measuredframes = 0;
+		static int renderframenum;
+
+		renderframetimes[renderframenum] = msec;
+
+		for (int i = 0; i < 60; i++)
+		{
+			if (renderframetimes[i] != 0)
+			{
+				avgrenderframetime += renderframetimes[i];
+				measuredframes++;
+			}
+		}
+
+		avgrenderframetime /= measuredframes;
+		avgrenderframetime += (avgrenderframetime * 0.02f);
+
+		renderframenum++;
+
+		if (renderframenum > 59)
+		{
+			renderframenum = 0;
+		}
+
+		last_was_renderframe = false;
+	}
+
+	/* Calculate the average time spend to process a packet
+	   frame. Packet frames are mostly dependend on the CPU
+	   speed and the network delay. Take the last 60 pure
+	   packet frames (frames that are only packet frames ans
+	   nothing else) into account and add a security margin
+	   of 2%. */
+	if (last_was_packetframe && last_was_renderframe)
+	{
+		int measuredframes = 0;
+		static int packetframenum;
+
+		packetframetimes[packetframenum] = msec;
+
+		for (int i = 0; i < 60; i++)
+		{
+			if (packetframetimes[i] != 0)
+			{
+				avgpacketframetime += packetframetimes[i];
+				measuredframes++;
+			}
+		}
+
+		avgpacketframetime /= measuredframes;
+		avgpacketframetime += (avgpacketframetime * 0.02f);
+
+		packetframenum++;
+
+		if (packetframenum > 59)
+		{
+			packetframenum = 0;
+		}
+
+		last_was_packetframe = false;
+	}
 
 
 	// Calculate timings.
@@ -341,12 +566,12 @@ Qcommon_Frame(int msec)
 	if (!cl_timedemo->value) {
 		if (cl_async->value) {
 			// Network frames..
-			if (packetdelta < (1000000.0f / pfps)) {
+			if (packetdelta < ((1000000.0f - avgpacketframetime) / pfps)) {
 				packetframe = false;
 			}
 
 			// Render frames.
-			if (renderdelta < (1000000.0f / rfps)) {
+			if (renderdelta < ((1000000.0f - avgrenderframetime) / rfps)) {
 				renderframe = false;
 			}
 		} else {
@@ -418,13 +643,15 @@ Qcommon_Frame(int msec)
 	}
 
 
-	// Reset deltas if necessary.
+	// Reset deltas and mark frame.
 	if (packetframe) {
 		packetdelta = 0;
+		last_was_packetframe = true;
 	}
 
 	if (renderframe) {
 		renderdelta = 0;
+		last_was_renderframe = true;
 	}
 }
 #else

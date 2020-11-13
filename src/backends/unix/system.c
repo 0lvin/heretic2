@@ -19,32 +19,21 @@
  *
  * =======================================================================
  *
- * This file implements all system dependend generic funktions
+ * This file implements all system dependent generic functions.
  *
  * =======================================================================
  */
 
-#include <unistd.h>
-#include <signal.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <dirent.h>
+#include <dlfcn.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <sys/stat.h>
 #include <string.h>
-#include <ctype.h>
-#include <sys/wait.h>
-#include <sys/mman.h>
-#include <errno.h>
-#include <dlfcn.h>
-#include <dirent.h>
 #include <time.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #ifdef __APPLE__
 #include <mach/clock.h>
@@ -54,231 +43,38 @@
 #include "../../common/header/common.h"
 #include "../../common/header/glob.h"
 #include "../generic/header/input.h"
-#include "header/unix.h"
 
-unsigned sys_frame_time;
+// Pointer to game library
 static void *game_library;
 
-static char findbase[MAX_OSPATH];
-static char findpath[MAX_OSPATH];
-static char findpattern[MAX_OSPATH];
-static DIR *fdir;
-
+// Evil hack to determine if stdin is available
 qboolean stdin_active = true;
+
+// Console logfile
 extern FILE	*logfile;
 
-static qboolean
-CompareAttributes(char *path, char *name, unsigned musthave, unsigned canthave)
-{
-	/* . and .. never match */
-	if ((strcmp(name, ".") == 0) || (strcmp(name, "..") == 0))
-	{
-		return false;
-	}
-
-	return true;
-}
+/* ================================================================ */
 
 void
-Sys_Init(void)
-{
-}
-
-long long
-Sys_Microseconds(void)
-{
-#ifdef __APPLE__
-	// OSX didn't have clock_gettime() until recently, so use Mach's clock_get_time()
-	// instead. fortunately its mach_timespec_t seems identical to POSIX struct timespec
-	// so lots of code can be shared
-	clock_serv_t cclock;
-	mach_timespec_t now;
-	static mach_timespec_t first;
-
-	host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
-	clock_get_time(cclock, &now);
-	mach_port_deallocate(mach_task_self(), cclock);
-
-#else // not __APPLE__ - other Unix-likes will hopefully support clock_gettime()
-
-	struct timespec now;
-	static struct timespec first;
-  #ifdef _POSIX_MONOTONIC_CLOCK
-	clock_gettime(CLOCK_MONOTONIC, &now);
-  #else
-	clock_gettime(CLOCK_REALTIME, &now);
-  #endif
-
-#endif // not __APPLE__
-
-	if(first.tv_sec == 0)
-	{
-		long long nsec = now.tv_nsec;
-		long long sec = now.tv_sec;
-		// set back first by 1ms so neither this function nor Sys_Milliseconds()
-		// (which calls this) will ever return 0
-		nsec -= 1000000;
-		if(nsec < 0)
-		{
-			nsec += 1000000000ll; // 1s in ns => definitely positive now
-			--sec;
-		}
-
-		first.tv_sec = sec;
-		first.tv_nsec = nsec;
-	}
-
-	long long sec = now.tv_sec - first.tv_sec;
-	long long nsec = now.tv_nsec - first.tv_nsec;
-
-	if(nsec < 0)
-	{
-		nsec += 1000000000ll; // 1s in ns
-		--sec;
-	}
-
-	return sec*1000000ll + nsec/1000ll;
-}
-
-int
-Sys_Milliseconds(void)
-{
-	return (int)(Sys_Microseconds()/1000ll);
-}
-
-void
-Sys_Mkdir(char *path)
-{
-	mkdir(path, 0755);
-}
-
-char *
-Sys_GetCurrentDirectory(void)
-{
-	static char dir[MAX_OSPATH];
-
-	if (!getcwd(dir, sizeof(dir)))
-	{
-		Sys_Error("Couldn't get current working directory");
-	}
-
-	return dir;
-}
-
-char *
-Sys_FindFirst(char *path, unsigned musthave, unsigned canhave)
-{
-	struct dirent *d;
-	char *p;
-
-	if (fdir)
-	{
-		Sys_Error("Sys_BeginFind without close");
-	}
-
-	strcpy(findbase, path);
-
-	if ((p = strrchr(findbase, '/')) != NULL)
-	{
-		*p = 0;
-		strcpy(findpattern, p + 1);
-	}
-	else
-	{
-		strcpy(findpattern, "*");
-	}
-
-	if (strcmp(findpattern, "*.*") == 0)
-	{
-		strcpy(findpattern, "*");
-	}
-
-	if ((fdir = opendir(findbase)) == NULL)
-	{
-		return NULL;
-	}
-
-	while ((d = readdir(fdir)) != NULL)
-	{
-		if (!*findpattern || glob_match(findpattern, d->d_name))
-		{
-			if (CompareAttributes(findbase, d->d_name, musthave, canhave))
-			{
-				sprintf(findpath, "%s/%s", findbase, d->d_name);
-				return findpath;
-			}
-		}
-	}
-
-	return NULL;
-}
-
-char *
-Sys_FindNext(unsigned musthave, unsigned canhave)
-{
-	struct dirent *d;
-
-	if (fdir == NULL)
-	{
-		return NULL;
-	}
-
-	while ((d = readdir(fdir)) != NULL)
-	{
-		if (!*findpattern || glob_match(findpattern, d->d_name))
-		{
-			if (CompareAttributes(findbase, d->d_name, musthave, canhave))
-			{
-				sprintf(findpath, "%s/%s", findbase, d->d_name);
-				return findpath;
-			}
-		}
-	}
-
-	return NULL;
-}
-
-void
-Sys_FindClose(void)
-{
-	if (fdir != NULL)
-	{
-		closedir(fdir);
-	}
-
-	fdir = NULL;
-}
-
-void
-Sys_ConsoleOutput(char *string)
-{
-	fputs(string, stdout);
-}
-
-void
-Sys_Printf(char *fmt, ...)
+Sys_Error(char *error, ...)
 {
 	va_list argptr;
-	char text[1024];
-	unsigned char *p;
+	char string[1024];
 
-	va_start(argptr, fmt);
-	vsnprintf(text, 1024, fmt, argptr);
+	/* change stdin to non blocking */
+	fcntl(0, F_SETFL, fcntl(0, F_GETFL, 0) & ~FNDELAY);
+
+#ifndef DEDICATED_ONLY
+	CL_Shutdown();
+#endif
+	Qcommon_Shutdown();
+
+	va_start(argptr, error);
+	vsnprintf(string, 1024, error, argptr);
 	va_end(argptr);
+	fprintf(stderr, "Error: %s\n", string);
 
-	for (p = (unsigned char *)text; *p; p++)
-	{
-		*p &= 0x7f;
-
-		if (((*p > 128) || (*p < 32)) && (*p != 10) && (*p != 13) && (*p != 9))
-		{
-			printf("[%02x]", *p);
-		}
-		else
-		{
-			putc(*p, stdout);
-		}
-	}
+	exit(1);
 }
 
 void
@@ -303,48 +99,11 @@ Sys_Quit(void)
 }
 
 void
-Sys_Error(char *error, ...)
+Sys_Init(void)
 {
-	va_list argptr;
-	char string[1024];
-
-	/* change stdin to non blocking */
-	fcntl(0, F_SETFL, fcntl(0, F_GETFL, 0) & ~FNDELAY);
-
-#ifndef DEDICATED_ONLY
-	CL_Shutdown();
-#endif
-	Qcommon_Shutdown();
-
-	va_start(argptr, error);
-	vsnprintf(string, 1024, error, argptr);
-	va_end(argptr);
-	fprintf(stderr, "Error: %s\n", string);
-
-	exit(1);
 }
 
-/*
- * returns -1 if not present
- */
-int
-Sys_FileTime(char *path)
-{
-	struct  stat buf;
-
-	if (stat(path, &buf) == -1)
-	{
-		return -1;
-	}
-
-	return buf.st_mtime;
-}
-
-void
-floating_point_exception_handler(int whatever)
-{
-	signal(SIGFPE, floating_point_exception_handler);
-}
+/* ================================================================ */
 
 char *
 Sys_ConsoleInput(void)
@@ -393,6 +152,180 @@ Sys_ConsoleInput(void)
 }
 
 void
+Sys_ConsoleOutput(char *string)
+{
+	fputs(string, stdout);
+}
+
+/* ================================================================ */
+
+long long
+Sys_Microseconds(void)
+{
+#ifdef __APPLE__
+	// OSX didn't have clock_gettime() until recently, so use Mach's clock_get_time()
+	// instead. fortunately its mach_timespec_t seems identical to POSIX struct timespec
+	// so lots of code can be shared
+	clock_serv_t cclock;
+	mach_timespec_t now;
+	static mach_timespec_t first;
+
+	host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
+	clock_get_time(cclock, &now);
+	mach_port_deallocate(mach_task_self(), cclock);
+
+#else // not __APPLE__ - other Unix-likes will hopefully support clock_gettime()
+
+	struct timespec now;
+	static struct timespec first;
+#ifdef _POSIX_MONOTONIC_CLOCK
+	clock_gettime(CLOCK_MONOTONIC, &now);
+#else
+	clock_gettime(CLOCK_REALTIME, &now);
+#endif
+
+#endif // not __APPLE__
+
+	if(first.tv_sec == 0)
+	{
+		long long nsec = now.tv_nsec;
+		long long sec = now.tv_sec;
+		// set back first by 1ms so neither this function nor Sys_Milliseconds()
+		// (which calls this) will ever return 0
+		nsec -= 1000000;
+		if(nsec < 0)
+		{
+			nsec += 1000000000ll; // 1s in ns => definitely positive now
+			--sec;
+		}
+
+		first.tv_sec = sec;
+		first.tv_nsec = nsec;
+	}
+
+	long long sec = now.tv_sec - first.tv_sec;
+	long long nsec = now.tv_nsec - first.tv_nsec;
+
+	if(nsec < 0)
+	{
+		nsec += 1000000000ll; // 1s in ns
+		--sec;
+	}
+
+	return sec*1000000ll + nsec/1000ll;
+}
+
+int
+Sys_Milliseconds(void)
+{
+	return (int)(Sys_Microseconds()/1000ll);
+}
+
+void
+Sys_Nanosleep(int nanosec)
+{
+	struct timespec t = {0, nanosec};
+	nanosleep(&t, NULL);
+}
+
+/* ================================================================ */
+
+/* The musthave and canhave arguments are unused in YQ2. We
+   can't remove them since Sys_FindFirst() and Sys_FindNext()
+   are defined in shared.h and may be used in custom game DLLs. */
+
+static char findbase[MAX_OSPATH];
+static char findpath[MAX_OSPATH];
+static char findpattern[MAX_OSPATH];
+static DIR *fdir;
+
+char *
+Sys_FindFirst(char *path, unsigned musthave, unsigned canhave)
+{
+	struct dirent *d;
+	char *p;
+
+	if (fdir)
+	{
+		Sys_Error("Sys_BeginFind without close");
+	}
+
+	strcpy(findbase, path);
+
+	if ((p = strrchr(findbase, '/')) != NULL)
+	{
+		*p = 0;
+		strcpy(findpattern, p + 1);
+	}
+	else
+	{
+		strcpy(findpattern, "*");
+	}
+
+	if (strcmp(findpattern, "*.*") == 0)
+	{
+		strcpy(findpattern, "*");
+	}
+
+	if ((fdir = opendir(findbase)) == NULL)
+	{
+		return NULL;
+	}
+
+	while ((d = readdir(fdir)) != NULL)
+	{
+		if (!*findpattern || glob_match(findpattern, d->d_name))
+		{
+			if ((strcmp(d->d_name, ".") != 0) || (strcmp(d->d_name, "..") != 0))
+			{
+				sprintf(findpath, "%s/%s", findbase, d->d_name);
+				return findpath;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+char *
+Sys_FindNext(unsigned musthave, unsigned canhave)
+{
+	struct dirent *d;
+
+	if (fdir == NULL)
+	{
+		return NULL;
+	}
+
+	while ((d = readdir(fdir)) != NULL)
+	{
+		if (!*findpattern || glob_match(findpattern, d->d_name))
+		{
+			if ((strcmp(d->d_name, ".") != 0) || (strcmp(d->d_name, "..") != 0))
+			{
+				sprintf(findpath, "%s/%s", findbase, d->d_name);
+				return findpath;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+void
+Sys_FindClose(void)
+{
+	if (fdir != NULL)
+	{
+		closedir(fdir);
+	}
+
+	fdir = NULL;
+}
+
+/* ================================================================ */
+
+void
 Sys_UnloadGame(void)
 {
 	if (game_library)
@@ -403,9 +336,6 @@ Sys_UnloadGame(void)
 	game_library = NULL;
 }
 
-/*
- * Loads the game dll
- */
 void *
 Sys_GetGameAPI(void *parms)
 {
@@ -414,11 +344,11 @@ Sys_GetGameAPI(void *parms)
 	char name[MAX_OSPATH];
 	char *path;
 	char *str_p;
-    #ifdef __APPLE__
-        const char *gamename = "game.dylib";
-    #else
-        const char *gamename = "game.so";
-    #endif
+#ifdef __APPLE__
+	const char *gamename = "game.dylib";
+#else
+	const char *gamename = "game.so";
+#endif
 
 	setreuid(getuid(), getuid());
 	setegid(getgid());
@@ -496,16 +426,14 @@ Sys_GetGameAPI(void *parms)
 	return GetGameAPI(parms);
 }
 
-void
-Sys_SendKeyEvents(void)
-{
-#ifndef DEDICATED_ONLY
-	IN_Update();
-#endif
+/* ================================================================ */
 
-	/* grab frame time */
-	sys_frame_time = Sys_Milliseconds();
+void
+Sys_Mkdir(char *path)
+{
+	mkdir(path, 0755);
 }
+
 
 char *
 Sys_GetHomeDir(void)
@@ -525,6 +453,8 @@ Sys_GetHomeDir(void)
 	return gdir;
 }
 
+/* ================================================================ */
+
 void *
 Sys_GetProcAddress(void *handle, const char *sym)
 {
@@ -543,6 +473,15 @@ Sys_GetProcAddress(void *handle, const char *sym)
 #endif
     }
     return dlsym(handle, sym);
+}
+
+void
+Sys_FreeLibrary(void *handle)
+{
+	if (handle && dlclose(handle))
+	{
+		Com_Error(ERR_FATAL, "dlclose failed on %p: %s", handle, dlerror());
+	}
 }
 
 void *
@@ -583,21 +522,26 @@ Sys_LoadLibrary(const char *path, const char *sym, void **handle)
 	return entry;
 }
 
+/* ================================================================ */
+
 void
-Sys_FreeLibrary(void *handle)
+Sys_GetWorkDir(char *buffer, size_t len)
 {
-	if (handle && dlclose(handle))
+	if (getcwd(buffer, len) != 0)
 	{
-		Com_Error(ERR_FATAL, "dlclose failed on %p: %s", handle, dlerror());
+		return;
 	}
+
+	buffer[0] = '\0';
 }
 
-/*
- * Just a dummy. There's no need on unixoid systems to
- * redirect stdout and stderr.
- */
-void
-Sys_RedirectStdout(void)
+qboolean
+Sys_SetWorkDir(char *path)
 {
-	return;
+	if (chdir(path) == 0)
+	{
+		return true;
+	}
+
+	return false;
 }

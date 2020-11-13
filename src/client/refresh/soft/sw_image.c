@@ -22,8 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #define	MAX_RIMAGES	1024
-image_t		r_images[MAX_RIMAGES];
-int		numr_images;
+static image_t		r_images[MAX_RIMAGES];
+static int		numr_images;
 
 
 /*
@@ -72,7 +72,8 @@ void	R_ImageList_f (void)
 
 //=======================================================
 
-image_t *R_FindFreeImage (void)
+static image_t
+*R_FindFreeImage (void)
 {
 	image_t		*image;
 	int			i;
@@ -100,7 +101,8 @@ R_LoadPic
 
 ================
 */
-image_t *R_LoadPic (char *name, byte *pic, int width, int height, imagetype_t type)
+static image_t*
+R_LoadPic (char *name, byte *pic, int width, int height, imagetype_t type)
 {
 	image_t *image;
 	int i, c;
@@ -136,7 +138,8 @@ image_t *R_LoadPic (char *name, byte *pic, int width, int height, imagetype_t ty
 R_LoadWal
 ================
 */
-image_t *R_LoadWal (char *name)
+static image_t *
+R_LoadWal (char *name)
 {
 	miptex_t	*mt;
 	int			ofs;
@@ -185,7 +188,6 @@ image_t	*R_FindImage (char *name, imagetype_t type)
 	int		i, len;
 	byte	*pic, *palette;
 	int		width, height;
-	char *ptr;
 
 	if (!name)
 		return NULL; // ri.Sys_Error (ERR_DROP, "R_FindImage: NULL name");
@@ -194,6 +196,8 @@ image_t	*R_FindImage (char *name, imagetype_t type)
 		return NULL; // ri.Sys_Error (ERR_DROP, "R_FindImage: bad name: %s", name);
 
 #ifndef _WIN32
+	char *ptr;
+
 	// fix backslashes
 	while ((ptr=strchr(name,'\\'))) {
 	  *ptr = '/';
@@ -238,19 +242,6 @@ image_t	*R_FindImage (char *name, imagetype_t type)
 
 	return image;
 }
-
-
-
-/*
-===============
-RE_RegisterSkin
-===============
-*/
-struct image_s *RE_RegisterSkin (char *name)
-{
-	return R_FindImage (name, it_skin);
-}
-
 
 /*
 ================

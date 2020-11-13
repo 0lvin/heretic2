@@ -233,6 +233,25 @@ endif
 
 # ----------
 
+# Just set IOAPI_NO_64 on everything that's not Linux or Windows,
+# otherwise minizip will use fopen64(), fseek64() and friends that
+# may be unavailable. This is - of course - not really correct, in
+# a better world we would set -DIOAPI_NO_64 to force everything to
+# fopen(), fseek() and so on and -D_FILE_OFFSET_BITS=64 to let the
+# libc headers do their work. Currently we can't do that because
+# Quake II uses nearly everywere int instead of off_t...
+#
+# This may have the side effect that ZIP files larger than 2GB are
+# unsupported. But I doubt that anyone has such large files, they
+# would likely hit other internal limits.
+ifneq ($(YQ2_OSTYPE),Windows)
+ifneq ($(YQ2_OSTYPE),Linux)
+ZIPCFLAGS += -DIOAPI_NO_64
+endif
+endif
+
+# ----------
+
 # Extra CFLAGS for SDL
 ifeq ($(WITH_SDL2),yes)
 SDLCFLAGS := $(shell sdl2-config --cflags)
@@ -399,8 +418,10 @@ ifeq ($(RUN_GLSL_VALIDATOR),yes)
 	@echo "#version 330" | cat - ./src/client/refresh/gl1/pathtracer.glsl | $(GLSL_VALIDATOR)
 endif
 	sh ./stringifyshaders.sh
-	@echo "===> Building quake2.exe"
+	@echo "===> Building yquake2.exe"
 	${Q}mkdir -p release
+	$(MAKE) release/yquake2.exe
+	@echo "===> Building quake2.exe Wrapper"
 	$(MAKE) release/quake2.exe
 	@echo "===> Copying required data files"
 	${Q}mkdir -p release/baseq2
@@ -412,28 +433,28 @@ build/client/%.o: %.c
 	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
 
 ifeq ($(WITH_CDA),yes)
-release/quake2.exe : CFLAGS += -DCDA
+release/yquake2.exe : CFLAGS += -DCDA
 endif
 
 ifeq ($(WITH_OGG),yes)
-release/quake2.exe : CFLAGS += -DOGG
-release/quake2.exe : LDFLAGS += -lvorbisfile -lvorbis -logg
+release/yquake2.exe : CFLAGS += -DOGG
+release/yquake2.exe : LDFLAGS += -lvorbisfile -lvorbis -logg
 endif
 
 ifeq ($(WITH_OPENAL),yes)
-release/quake2.exe : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"openal32.dll"' -DDLOPEN_OPENAL
+release/yquake2.exe : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"openal32.dll"' -DDLOPEN_OPENAL
 endif
 
 ifeq ($(WITH_ZIP),yes)
-release/quake2.exe : CFLAGS += -DZIP -DNOUNCRYPT
-release/quake2.exe : LDFLAGS += -lz
+release/yquake2.exe : CFLAGS += -DZIP -DNOUNCRYPT
+release/yquake2.exe : LDFLAGS += -lz
 endif
 
 ifeq ($(WITH_SDL2),yes)
-release/quake2.exe : CFLAGS += -DSDL2
+release/yquake2.exe : CFLAGS += -DSDL2
 endif
 
-release/quake2.exe : LDFLAGS += -mwindows
+release/yquake2.exe : LDFLAGS += -mwindows
 
 else # not Windows
 
@@ -491,7 +512,7 @@ endif # !DLOPEN_OPENAL
 endif # WITH_OPENAL
 
 ifeq ($(WITH_ZIP),yes)
-release/quake2 : CFLAGS += -DZIP -DNOUNCRYPT
+release/quake2 : CFLAGS += $(ZIPCFLAGS) -DZIP -DNOUNCRYPT
 release/quake2 : LDFLAGS += -lz
 endif
 
@@ -565,7 +586,7 @@ build/server/%.o: %.c
 release/q2ded : CFLAGS += -DDEDICATED_ONLY -Wno-unused-result
 
 ifeq ($(WITH_ZIP),yes)
-release/q2ded : CFLAGS += -DZIP -DNOUNCRYPT
+release/q2ded : CFLAGS += $(ZIPCFLAGS) -DZIP -DNOUNCRYPT
 release/q2ded : LDFLAGS += -lz
 endif
 endif
@@ -886,9 +907,10 @@ CLIENT_OBJS_ := \
 
 ifeq ($(YQ2_OSTYPE), Windows)
 CLIENT_OBJS_ += \
+	src/backends/windows/main.o \
 	src/backends/windows/network.o \
 	src/backends/windows/system.o \
-	src/backends/windows/shared/mem.o
+	src/backends/windows/shared/hunk.o
 else
 CLIENT_OBJS_ += \
 	src/backends/unix/main.o \
@@ -925,7 +947,7 @@ REFGL1_OBJS_ := \
 
 ifeq ($(YQ2_OSTYPE), Windows)
 REFGL1_OBJS_ += \
-	src/backends/windows/shared/mem.o
+	src/backends/windows/shared/hunk.o
 else # not Windows
 REFGL1_OBJS_ += \
 	src/backends/unix/shared/hunk.o
@@ -957,7 +979,7 @@ REFGL3_OBJS_ := \
 
 ifeq ($(YQ2_OSTYPE), Windows)
 REFGL3_OBJS_ += \
-	src/backends/windows/shared/mem.o
+	src/backends/windows/shared/hunk.o
 else # not Windows
 REFGL3_OBJS_ += \
 	src/backends/unix/shared/hunk.o
@@ -966,23 +988,23 @@ endif
 # ----------
 
 REFSOFT_OBJS_ := \
-	src/client/refresh/soft/r_aclip.o \
-	src/client/refresh/soft/r_alias.o \
-	src/client/refresh/soft/r_bsp.o \
-	src/client/refresh/soft/r_draw.o \
-	src/client/refresh/soft/r_edge.o \
-	src/client/refresh/soft/r_image.o \
-	src/client/refresh/soft/r_light.o \
-	src/client/refresh/soft/r_main.o \
-	src/client/refresh/soft/r_misc.o \
-	src/client/refresh/soft/r_model.o \
-	src/client/refresh/soft/r_part.o \
-	src/client/refresh/soft/r_poly.o \
-	src/client/refresh/soft/r_polyse.o \
-	src/client/refresh/soft/r_rast.o \
-	src/client/refresh/soft/r_scan.o \
-	src/client/refresh/soft/r_sprite.o \
-	src/client/refresh/soft/r_surf.o \
+	src/client/refresh/soft/sw_aclip.o \
+	src/client/refresh/soft/sw_alias.o \
+	src/client/refresh/soft/sw_bsp.o \
+	src/client/refresh/soft/sw_draw.o \
+	src/client/refresh/soft/sw_edge.o \
+	src/client/refresh/soft/sw_image.o \
+	src/client/refresh/soft/sw_light.o \
+	src/client/refresh/soft/sw_main.o \
+	src/client/refresh/soft/sw_misc.o \
+	src/client/refresh/soft/sw_model.o \
+	src/client/refresh/soft/sw_part.o \
+	src/client/refresh/soft/sw_poly.o \
+	src/client/refresh/soft/sw_polyse.o \
+	src/client/refresh/soft/sw_rast.o \
+	src/client/refresh/soft/sw_scan.o \
+	src/client/refresh/soft/sw_sprite.o \
+	src/client/refresh/soft/sw_surf.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
@@ -991,7 +1013,7 @@ REFSOFT_OBJS_ := \
 
 ifeq ($(YQ2_OSTYPE), Windows)
 REFSOFT_OBJS_ += \
-	src/backends/windows/shared/mem.o
+	src/backends/windows/shared/hunk.o
 else # not Windows
 REFSOFT_OBJS_ += \
 	src/backends/unix/shared/hunk.o
@@ -1034,9 +1056,10 @@ SERVER_OBJS_ := \
 
 ifeq ($(YQ2_OSTYPE), Windows)
 SERVER_OBJS_ += \
+	src/backends/windows/main.o \
 	src/backends/windows/network.o \
 	src/backends/windows/system.o \
-	src/backends/windows/shared/mem.o
+	src/backends/windows/shared/hunk.o
 else # not Windows
 SERVER_OBJS_ += \
 	src/backends/unix/main.o \
@@ -1079,9 +1102,13 @@ GAME_DEPS= $(GAME_OBJS:.o=.d)
 
 # release/quake2
 ifeq ($(YQ2_OSTYPE), Windows)
-release/quake2.exe : $(CLIENT_OBJS) icon
+release/yquake2.exe : $(CLIENT_OBJS) icon
 	@echo "===> LD $@"
 	${Q}$(CC) build/icon/icon.res $(CLIENT_OBJS) $(LDFLAGS) $(SDLLDFLAGS) -o $@
+	$(Q)strip $@
+# the wrappper, quick'n'dirty
+release/quake2.exe : src/win-wrapper/wrapper.c icon
+	$(Q)$(CC) -Wall -mwindows build/icon/icon.res src/win-wrapper/wrapper.c -o $@
 	$(Q)strip $@
 else
 release/quake2 : $(CLIENT_OBJS)
@@ -1093,7 +1120,7 @@ endif
 ifeq ($(YQ2_OSTYPE), Windows)
 release/q2ded.exe : $(SERVER_OBJS) icon
 	@echo "===> LD $@.exe"
-	${Q}$(CC) build/icon/icon.res $(SERVER_OBJS) $(LDFLAGS) -o $@
+	${Q}$(CC) build/icon/icon.res $(SERVER_OBJS) $(LDFLAGS) $(SDLLDFLAGS) -o $@
 	$(Q)strip $@
 else
 release/q2ded : $(SERVER_OBJS)

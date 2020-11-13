@@ -19,52 +19,34 @@
  *
  * =======================================================================
  *
- * This file is the starting point of the program and implements
- * several support functions and the main loop.
+ * This file implements all system dependent generic functions.
  *
  * =======================================================================
  */
 
+#include <conio.h>
+#include <direct.h>
 #include <errno.h>
 #include <float.h>
 #include <fcntl.h>
-#include <stdio.h>
-#include <direct.h>
 #include <io.h>
-#include <conio.h>
 #include <shlobj.h>
+#include <stdio.h>
+#include <windows.h>
 
 #include "../../common/header/common.h"
 #include "../generic/header/input.h"
 #include "header/resource.h"
-#include "header/winquake.h"
 
-#define MAX_NUM_ARGVS 128
-
-int starttime;
-qboolean ActiveApp;
-qboolean Minimized;
-
+// stdin and stdout handles
 static HANDLE hinput, houtput;
-static HANDLE qwclsemaphore;
 
-HINSTANCE global_hInstance;
+// Game library handle
 static HINSTANCE game_library;
 
-unsigned int sys_msg_time;
-unsigned int sys_frame_time;
-
+// Buffer for the dedicated server console
 static char console_text[256];
-static int console_textlen;
-
-char findbase[MAX_OSPATH];
-char findpath[MAX_OSPATH];
-int findhandle;
-
-int argc;
-char *argv[MAX_NUM_ARGVS];
-
-qboolean is_portable;
+static size_t console_textlen;
 
 /* ================================================================ */
 
@@ -87,11 +69,6 @@ Sys_Error(char *error, ...)
 
 	MessageBox(NULL, text, "Error", 0 /* MB_OK */);
 
-	if (qwclsemaphore)
-	{
-		CloseHandle(qwclsemaphore);
-	}
-
 	/* Close stdout and stderr */
 #ifndef DEDICATED_ONLY
 	fclose(stdout);
@@ -111,7 +88,6 @@ Sys_Quit(void)
 #endif
 
 	Qcommon_Shutdown();
-	CloseHandle(qwclsemaphore);
 
 	if (dedicated && dedicated->value)
 	{
@@ -124,10 +100,10 @@ Sys_Quit(void)
 	fclose(stderr);
 #endif
 
+	printf("------------------------------------\n");
+
 	exit(0);
 }
-
-/* ================================================================ */
 
 void
 Sys_Init(void)
@@ -147,8 +123,8 @@ Sys_Init(void)
 	   above. Testing older version would be a
 	   PITA. */
 	if (!((vinfo.dwMajorVersion > 5) ||
-		  ((vinfo.dwMajorVersion == 5) &&
-		   (vinfo.dwMinorVersion >= 1))))
+		((vinfo.dwMajorVersion == 5) &&
+			(vinfo.dwMinorVersion >= 1))))
 	{
 		Sys_Error("Yamagi Quake II needs Windows XP or higher!\n");
 	}
@@ -162,6 +138,8 @@ Sys_Init(void)
 		houtput = GetStdHandle(STD_OUTPUT_HANDLE);
 	}
 }
+
+/* ================================================================ */
 
 char *
 Sys_ConsoleInput(void)
@@ -278,121 +256,7 @@ Sys_ConsoleOutput(char *string)
 	}
 }
 
-void
-Sys_SendKeyEvents(void)
-{
-#ifndef DEDICATED_ONLY
-	IN_Update();
-#endif
-
-	/* grab frame time */
-	sys_frame_time = timeGetTime();
-}
-
 /* ================================================================ */
-
-void
-Sys_UnloadGame(void)
-{
-	if (!FreeLibrary(game_library))
-	{
-		Com_Error(ERR_FATAL, "FreeLibrary failed for game library");
-	}
-
-	game_library = NULL;
-}
-
-void *
-Sys_GetGameAPI(void *parms)
-{
-	void *(*GetGameAPI)(void *);
-	char name[MAX_OSPATH];
-	char *path = NULL;
-
-	if (game_library)
-	{
-		Com_Error(ERR_FATAL, "Sys_GetGameAPI without Sys_UnloadingGame");
-	}
-
-	/* now run through the search paths */
-	path = NULL;
-
-	while (1)
-	{
-		path = FS_NextPath(path);
-
-		if (!path)
-		{
-			return NULL; /* couldn't find one anywhere */
-		}
-
-		/* Try game.dll */
-		Com_sprintf(name, sizeof(name), "%s/%s", path, "game.dll");
-		game_library = LoadLibrary(name);
-
-		if (game_library)
-		{
-			Com_DPrintf("LoadLibrary (%s)\n", name);
-			break;
-		}
-
-		/* Try gamex86.dll as fallback */
- 		Com_sprintf(name, sizeof(name), "%s/%s", path, "gamex86.dll");
-		game_library = LoadLibrary(name);
-
-		if (game_library)
-		{
-			Com_DPrintf("LoadLibrary (%s)\n", name);
-			break;
-		}
-	}
-
-	GetGameAPI = (void *)GetProcAddress(game_library, "GetGameAPI");
-
-	if (!GetGameAPI)
-	{
-		Sys_UnloadGame();
-		return NULL;
-	}
-
-	return GetGameAPI(parms);
-}
-
-/* ======================================================================= */
-
-void
-ParseCommandLine(LPSTR lpCmdLine)
-{
-	argc = 1;
-	argv[0] = "exe";
-
-	while (*lpCmdLine && (argc < MAX_NUM_ARGVS))
-	{
-		while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
-		{
-			lpCmdLine++;
-		}
-
-		if (*lpCmdLine)
-		{
-			argv[argc] = lpCmdLine;
-			argc++;
-
-			while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
-			{
-				lpCmdLine++;
-			}
-
-			if (*lpCmdLine)
-			{
-				*lpCmdLine = 0;
-				lpCmdLine++;
-			}
-		}
-	}
-}
-
-/* ======================================================================= */
 
 long long
 Sys_Microseconds(void)
@@ -429,12 +293,7 @@ Sys_Milliseconds(void)
 }
 
 void
-Sys_Sleep(int msec)
-{
-	Sleep(msec);
-}
-
-void Sys_Nanosleep(int nanosec)
+Sys_Nanosleep(int nanosec)
 {
 	HANDLE timer;
 	LARGE_INTEGER li;
@@ -450,145 +309,159 @@ void Sys_Nanosleep(int nanosec)
 	CloseHandle(timer);
 }
 
-/* ======================================================================= */
+/* ================================================================ */
 
-static qboolean
-CompareAttributes(unsigned found, unsigned musthave, unsigned canthave)
-{
-	if ((found & _A_RDONLY) && (canthave & SFF_RDONLY))
-	{
-		return false;
-	}
+/* The musthave and canhave arguments are unused in YQ2. We
+   can't remove them since Sys_FindFirst() and Sys_FindNext()
+   are defined in shared.h and may be used in custom game DLLs. */
 
-	if ((found & _A_HIDDEN) && (canthave & SFF_HIDDEN))
-	{
-		return false;
-	}
-
-	if ((found & _A_SYSTEM) && (canthave & SFF_SYSTEM))
-	{
-		return false;
-	}
-
-	if ((found & _A_SUBDIR) && (canthave & SFF_SUBDIR))
-	{
-		return false;
-	}
-
-	if ((found & _A_ARCH) && (canthave & SFF_ARCH))
-	{
-		return false;
-	}
-
-	if ((musthave & SFF_RDONLY) && !(found & _A_RDONLY))
-	{
-		return false;
-	}
-
-	if ((musthave & SFF_HIDDEN) && !(found & _A_HIDDEN))
-	{
-		return false;
-	}
-
-	if ((musthave & SFF_SYSTEM) && !(found & _A_SYSTEM))
-	{
-		return false;
-	}
-
-	if ((musthave & SFF_SUBDIR) && !(found & _A_SUBDIR))
-	{
-		return false;
-	}
-
-	if ((musthave & SFF_ARCH) && !(found & _A_ARCH))
-	{
-		return false;
-	}
-
-	return true;
-}
+// File searching
+static char findbase[MAX_OSPATH];
+static char findpath[MAX_OSPATH];
+static HANDLE findhandle;
 
 char *
 Sys_FindFirst(char *path, unsigned musthave, unsigned canthave)
 {
-	struct _finddata_t findinfo;
-
 	if (findhandle)
 	{
 		Sys_Error("Sys_BeginFind without close");
 	}
 
-	findhandle = 0;
-
 	COM_FilePath(path, findbase);
-	findhandle = _findfirst(path, &findinfo);
 
-	if (findhandle == -1)
+	WCHAR wpath[MAX_OSPATH] = {0};
+	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
+
+	WIN32_FIND_DATAW findinfo;
+	findhandle = FindFirstFileW(wpath, &findinfo);
+
+	if (findhandle == INVALID_HANDLE_VALUE)
 	{
 		return NULL;
 	}
 
-	if (!CompareAttributes(findinfo.attrib, musthave, canthave))
-	{
-		return NULL;
-	}
+	CHAR cFileName[MAX_OSPATH];
+	WideCharToMultiByte(CP_UTF8, 0, findinfo.cFileName, -1, cFileName, MAX_OSPATH, NULL, NULL);
 
-	Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findinfo.name);
+	Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, cFileName);
 	return findpath;
 }
 
 char *
 Sys_FindNext(unsigned musthave, unsigned canthave)
 {
-	struct _finddata_t findinfo;
+	WIN32_FIND_DATAW findinfo;
 
-	if (findhandle == -1)
+	if (findhandle == INVALID_HANDLE_VALUE)
 	{
 		return NULL;
 	}
 
-	if (_findnext(findhandle, &findinfo) == -1)
+	if (!FindNextFileW(findhandle, &findinfo))
 	{
 		return NULL;
 	}
 
-	if (!CompareAttributes(findinfo.attrib, musthave, canthave))
-	{
-		return NULL;
-	}
+	CHAR cFileName[MAX_OSPATH];
+	WideCharToMultiByte(CP_UTF8, 0, findinfo.cFileName, -1, cFileName, MAX_OSPATH, NULL, NULL);
 
-	Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, findinfo.name);
+	Com_sprintf(findpath, sizeof(findpath), "%s/%s", findbase, cFileName);
 	return findpath;
 }
 
 void
 Sys_FindClose(void)
 {
-	if (findhandle != -1)
+	if (findhandle != INVALID_HANDLE_VALUE)
 	{
-		_findclose(findhandle);
+		FindClose(findhandle);
 	}
 
 	findhandle = 0;
 }
 
+/* ================================================================ */
+
+void
+Sys_UnloadGame(void)
+{
+	if (!FreeLibrary(game_library))
+	{
+		Com_Error(ERR_FATAL, "FreeLibrary failed for game library");
+	}
+
+	game_library = NULL;
+}
+
+void *
+Sys_GetGameAPI(void *parms)
+{
+	void *(*GetGameAPI)(void *);
+	char name[MAX_OSPATH];
+	WCHAR wname[MAX_OSPATH];
+	char *path = NULL;
+
+	if (game_library)
+	{
+		Com_Error(ERR_FATAL, "Sys_GetGameAPI without Sys_UnloadingGame");
+	}
+
+	/* now run through the search paths */
+	path = NULL;
+
+	while (1)
+	{
+		path = FS_NextPath(path);
+
+		if (!path)
+		{
+			return NULL; /* couldn't find one anywhere */
+		}
+
+		/* Try game.dll */
+		Com_sprintf(name, sizeof(name), "%s/%s", path, "game.dll");
+		MultiByteToWideChar(CP_UTF8, 0, name, -1, wname, MAX_OSPATH);
+		game_library = LoadLibraryW(wname);
+
+		if (game_library)
+		{
+			Com_DPrintf("LoadLibrary (%s)\n", name);
+			break;
+		}
+
+		/* Try gamex86.dll as fallback */
+ 		Com_sprintf(name, sizeof(name), "%s/%s", path, "gamex86.dll");
+		MultiByteToWideChar(CP_UTF8, 0, name, -1, wname, MAX_OSPATH);
+		game_library = LoadLibraryW(wname);
+
+		if (game_library)
+		{
+			Com_DPrintf("LoadLibrary (%s)\n", name);
+			break;
+		}
+	}
+
+	GetGameAPI = (void *)GetProcAddress(game_library, "GetGameAPI");
+
+	if (!GetGameAPI)
+	{
+		Sys_UnloadGame();
+		return NULL;
+	}
+
+	return GetGameAPI(parms);
+}
+
+/* ======================================================================= */
+
 void
 Sys_Mkdir(char *path)
 {
-	_mkdir(path);
-}
+	WCHAR wpath[MAX_OSPATH] = {0};
+	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
 
-char *
-Sys_GetCurrentDirectory(void)
-{
-	static char dir[MAX_OSPATH];
-
-	if (!_getcwd(dir, sizeof(dir)))
-	{
-		Sys_Error("Couldn't get current working directory");
-	}
-
-	return dir;
+	CreateDirectoryW(wpath, NULL);
 }
 
 char *
@@ -597,9 +470,7 @@ Sys_GetHomeDir(void)
 	char *cur;
 	char *old;
 	char profile[MAX_PATH];
-	int len;
 	static char gdir[MAX_OSPATH];
-	WCHAR sprofile[MAX_PATH];
 	WCHAR uprofile[MAX_PATH];
 
 	/* The following lines implement a horrible
@@ -613,24 +484,7 @@ Sys_GetHomeDir(void)
 	/* Get the path to "My Documents" directory */
 	SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, 0, uprofile);
 
-	/* Create a UTF-16 DOS path */
-    len = GetShortPathNameW(uprofile, sprofile, sizeof(sprofile));
-
-	if (len == 0)
-	{
-		return NULL;
-	}
-
-	/* Since the DOS path contains no UTF-16 characters, just convert it to ASCII */
-	WideCharToMultiByte(CP_ACP, 0, sprofile, -1, profile, sizeof(profile), NULL, NULL);
-
-	if (len == 0)
-	{
-		return NULL;
-	}
-
-	/* Check if path is too long */
-    if ((len + strlen(CFGDIR) + 3) >= 256)
+	if (WideCharToMultiByte(CP_UTF8, 0, uprofile, -1, profile, sizeof(profile), NULL, NULL) == 0)
 	{
 		return NULL;
 	}
@@ -658,14 +512,114 @@ Sys_GetHomeDir(void)
 	return gdir;
 }
 
+/* ======================================================================= */
+
+void *
+Sys_GetProcAddress(void *handle, const char *sym)
+{
+	return GetProcAddress(handle, sym);
+}
+
+void
+Sys_FreeLibrary(void *handle)
+{
+	if (!handle)
+	{
+		return;
+	}
+
+	if (!FreeLibrary(handle))
+	{
+		Com_Error(ERR_FATAL, "FreeLibrary failed on %p", handle);
+	}
+}
+
+void *
+Sys_LoadLibrary(const char *path, const char *sym, void **handle)
+{
+	HMODULE module;
+	void *entry;
+	WCHAR wpath[MAX_OSPATH];
+
+	*handle = NULL;
+
+	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
+	module = LoadLibraryW(wpath);
+
+	if (!module)
+	{
+		Com_Printf("%s failed: LoadLibrary returned %lu on %s\n",
+		           __func__, GetLastError(), path);
+		return NULL;
+	}
+
+	if (sym)
+	{
+		entry = GetProcAddress(module, sym);
+
+		if (!entry)
+		{
+			Com_Printf("%s failed: GetProcAddress returned %lu on %s\n",
+			           __func__, GetLastError(), path);
+			FreeLibrary(module);
+			return NULL;
+		}
+	}
+	else
+	{
+		entry = NULL;
+	}
+
+	*handle = module;
+
+	Com_DPrintf("%s succeeded: %s\n", __func__, path);
+
+	return entry;
+}
+
+/* ======================================================================= */
+
+void
+Sys_GetWorkDir(char *buffer, size_t len)
+{
+	WCHAR wbuffer[MAX_OSPATH];
+
+	if (GetCurrentDirectoryW(sizeof(wbuffer), wbuffer) != 0)
+	{
+		WideCharToMultiByte(CP_UTF8, 0, wbuffer, -1, buffer, len, NULL, NULL);
+		return;
+	}
+
+	buffer[0] = '\0';
+}
+
+qboolean
+Sys_SetWorkDir(char *path)
+{
+	WCHAR wpath[MAX_OSPATH];
+
+	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, sizeof(wpath));
+
+	if (SetCurrentDirectoryW(wpath) != 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/* ======================================================================= */
+
+// This one is Windows specific.
+
 void
 Sys_RedirectStdout(void)
 {
-	char *cur;
-	char *old;
 	char dir[MAX_OSPATH];
 	char path_stdout[MAX_OSPATH];
 	char path_stderr[MAX_OSPATH];
+	WCHAR wpath_stdout[MAX_OSPATH];
+	WCHAR wpath_stderr[MAX_OSPATH];
 	const char *tmp;
 
 	if (is_portable) {
@@ -681,29 +635,19 @@ Sys_RedirectStdout(void)
 		return;
 	}
 
-	cur = old = dir;
-
-	while (cur != NULL)
-	{
-		if ((cur - old) > 1)
-		{
-			*cur = '\0';
-			Sys_Mkdir(dir);
-			*cur = '/';
-		}
-
-		old = cur;
-		cur = strchr(old + 1, '/');
-	}
-
 	snprintf(path_stdout, sizeof(path_stdout), "%s/%s", dir, "stdout.txt");
 	snprintf(path_stderr, sizeof(path_stderr), "%s/%s", dir, "stderr.txt");
 
-	freopen(path_stdout, "w", stdout);
-	freopen(path_stderr, "w", stderr);
+	MultiByteToWideChar(CP_UTF8, 0, path_stdout, -1, wpath_stdout, sizeof(wpath_stdout));
+	MultiByteToWideChar(CP_UTF8, 0, path_stderr, -1, wpath_stderr, sizeof(wpath_stderr));
+
+	_wfreopen(wpath_stdout, L"w", stdout);
+	_wfreopen(wpath_stderr, L"w", stderr);
 }
 
 /* ======================================================================= */
+
+// This one is windows specific.
 
 typedef enum YQ2_PROCESS_DPI_AWARENESS {
 	YQ2_PROCESS_DPI_UNAWARE = 0,
@@ -746,186 +690,3 @@ Sys_SetHighDPIMode(void)
 		SetProcessDPIAware();
 	}
 }
-
-/* ======================================================================= */
-
-/*
- * Windows main function. Containts the
- * initialization code and the main loop
- */
-int WINAPI
-WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-		LPSTR lpCmdLine, int nCmdShow)
-{
-	MSG msg;
-	long long oldtime, newtime;
-
-	/* Previous instances do not exist in Win32 */
-	if (hPrevInstance)
-	{
-		return 0;
-	}
-
-	/* Make the current instance global */
-	global_hInstance = hInstance;
-
-	/* Setup FPU if necessary */
-	Sys_SetupFPU();
-
-	/* Force DPI awareness */
-	Sys_SetHighDPIMode();
-
-	/* Parse the command line arguments */
-	ParseCommandLine(lpCmdLine);
-
-	/* Are we portable? */
-	for (int i = 0; i < argc; i++) {
-		if (strcmp(argv[i], "-portable") == 0) {
-			is_portable = true;
-		}
-	}
-
-	/* Need to redirect stdout before anything happens. */
-#ifndef DEDICATED_ONLY
-	Sys_RedirectStdout();
-#endif
-
-	printf("Yamagi Quake II v%s\n", YQ2VERSION);
-	printf("=====================\n\n");
-
-#ifndef DEDICATED_ONLY
-	printf("Client build options:\n");
-#ifdef SDL2
-	printf(" + SDL2\n");
-#else
-	printf(" - SDL2 (using 1.2)\n");
-#endif
-#ifdef CDA
-	printf(" + CD audio\n");
-#else
-	printf(" - CD audio\n");
-#endif
-#ifdef OGG
-	printf(" + OGG/Vorbis\n");
-#else
-	printf(" - OGG/Vorbis\n");
-#endif
-#ifdef USE_OPENAL
-	printf(" + OpenAL audio\n");
-#else
-	printf(" - OpenAL audio\n");
-#endif
-#ifdef ZIP
-	printf(" + Zip file support\n");
-#else
-	printf(" - Zip file support\n");
-#endif
-#endif
-
-	printf("Platform: %s\n", YQ2OSTYPE);
-	printf("Architecture: %s\n", YQ2ARCH);
-
-
-	/* Seed PRNG */
-	randk_seed();
-
-	/* Call the initialization code */
-	Qcommon_Init(argc, argv);
-
-	/* Save our time */
-	oldtime = Sys_Microseconds();
-
-	/* The legendary main loop */
-	while (1)
-	{
-		/* If at a full screen console, don't update unless needed */
-		if (Minimized || (dedicated && dedicated->value))
-		{
-			Sleep(1);
-		}
-
-		while (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
-		{
-			if (!GetMessage(&msg, NULL, 0, 0))
-			{
-				Com_Quit();
-			}
-
-			sys_msg_time = msg.time;
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		// Throttle the game a little bit
-		Sys_Nanosleep(5000);
-
-		newtime = Sys_Microseconds();
-		Qcommon_Frame(newtime - oldtime);
-		oldtime = newtime;
-	}
-
-	/* never gets here */
-	return TRUE;
-}
-
-void
-Sys_FreeLibrary(void *handle)
-{
-	if (!handle)
-	{
-		return;
-	}
-
-	if (!FreeLibrary(handle))
-	{
-		Com_Error(ERR_FATAL, "FreeLibrary failed on %p", handle);
-	}
-}
-
-void *
-Sys_LoadLibrary(const char *path, const char *sym, void **handle)
-{
-	HMODULE module;
-	void *entry;
-
-	*handle = NULL;
-
-	module = LoadLibraryA(path);
-
-	if (!module)
-	{
-		Com_Printf("%s failed: LoadLibrary returned %lu on %s\n",
-				__func__, GetLastError(), path);
-		return NULL;
-	}
-
-	if (sym)
-	{
-		entry = GetProcAddress(module, sym);
-
-		if (!entry)
-		{
-			Com_Printf("%s failed: GetProcAddress returned %lu on %s\n",
-					__func__, GetLastError(), path);
-			FreeLibrary(module);
-			return NULL;
-		}
-	}
-	else
-	{
-		entry = NULL;
-	}
-
-	*handle = module;
-
-	Com_DPrintf("%s succeeded: %s\n", __func__, path);
-
-	return entry;
-}
-
-void *
-Sys_GetProcAddress(void *handle, const char *sym)
-{
-	return GetProcAddress(handle, sym);
-}
-
