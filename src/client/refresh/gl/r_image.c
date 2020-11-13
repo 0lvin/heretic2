@@ -24,7 +24,7 @@
  * =======================================================================
  */
 
-#include "header/local.h"
+#include "../header/local.h"
 
 image_t gltextures[MAX_GLTEXTURES];
 int numgltextures;
@@ -1277,7 +1277,7 @@ R_FindImage(char *name, imagetype_t type)
 }
 
 struct image_s *
-R_RegisterSkin(char *name)
+RI_RegisterSkin(char *name)
 {
 	return R_FindImage(name, it_skin);
 }

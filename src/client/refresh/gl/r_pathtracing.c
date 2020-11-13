@@ -28,7 +28,7 @@
 
 #include <assert.h>
 
-#include "header/local.h"
+#include "../header/local.h"
 
 #define PT_MAX_TRI_NODES					16384
 #define PT_MAX_TRIANGLES					16384
