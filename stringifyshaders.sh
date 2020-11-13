@@ -1,5 +1,5 @@
 #!/bin/sh
-SHADERPATH='./src/client/refresh/gl/'
+SHADERPATH='./src/client/refresh/gl1/'
 SOURCE=$SHADERPATH'pathtracer.glsl'
 DEST=$SHADERPATH'generated/pathtracing_shader_source.h'
 mkdir -p $SHADERPATH'generated'
