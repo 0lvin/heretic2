@@ -34,7 +34,6 @@ cvar_t *timescale;
 cvar_t *fixedtime;
 cvar_t *cl_maxfps;
 cvar_t *dedicated;
-cvar_t *busywait;
 
 extern cvar_t *logfile_active;
 extern jmp_buf abortframe; /* an ERR_DROP occured, exit the entire frame */
@@ -42,6 +41,7 @@ extern zhead_t z_chain;
 
 #ifndef DEDICATED_ONLY
 FILE *log_stats_file;
+cvar_t *busywait;
 cvar_t *cl_async;
 cvar_t *cl_timedemo;
 cvar_t *vid_maxfps;
@@ -106,22 +106,28 @@ Qcommon_Buildstring(void)
 #ifndef DEDICATED_ONLY
 	printf("Client build options:\n");
 
+#ifdef USE_CURL
+	printf(" + cURL HTTP downloads\n");
+#else
+	printf(" - cURL HTTP downloads\n");
+#endif
+
 #ifdef USE_OPENAL
 	printf(" + OpenAL audio\n");
 #else
 	printf(" - OpenAL audio\n");
+#endif
+
+#ifdef SYSTEMWIDE
+	printf(" + Systemwide installation\n");
+#else
+	printf(" - Systemwide installation\n");
 #endif
 #endif
 
 	printf("Platform: %s\n", YQ2OSTYPE);
 	printf("Architecture: %s\n", YQ2ARCH);
 }
-
-#ifndef DEDICATED_ONLY
-#define FRAMEDELAY 5
-#else
-#define FRAMEDELAY 850
-#endif
 
 void
 Qcommon_Mainloop(void)
@@ -132,6 +138,7 @@ Qcommon_Mainloop(void)
 	/* The mainloop. The legend. */
 	while (1)
 	{
+#ifndef DEDICATED_ONLY
 		// Throttle the game a little bit.
 		if (busywait->value)
 		{
@@ -139,16 +146,18 @@ Qcommon_Mainloop(void)
 
 			while (1)
 			{
-#if defined (__GNUC__) && (__i386 || __x86_64__)
 				/* Give the CPU a hint that this is a very tight
 				   spinloop. One PAUSE instruction each loop is
 				   enough to reduce power consumption and head
 				   dispersion a lot, it's 95°C against 67°C on
 				   a Kaby Lake laptop. */
+#if defined (__GNUC__) && (__i386 || __x86_64__)
 				asm("pause");
+#elif defined(__aarch64__) || (defined(__ARM_ARCH) && __ARM_ARCH >= 7) || defined(__ARM_ARCH_6K__)
+				asm("yield");
 #endif
 
-				if (Sys_Microseconds() - spintime >= FRAMEDELAY)
+				if (Sys_Microseconds() - spintime >= 5)
 				{
 					break;
 				}
@@ -156,8 +165,11 @@ Qcommon_Mainloop(void)
 		}
 		else
 		{
-			Sys_Nanosleep(FRAMEDELAY * 1000);
+			Sys_Nanosleep(5000);
 		}
+#else
+		Sys_Nanosleep(850000);
+#endif
 
 		newtime = Sys_Microseconds();
 		Qcommon_Frame(newtime - oldtime);
@@ -170,12 +182,14 @@ void Qcommon_ExecConfigs(qboolean gameStartUp)
 	Cbuf_AddText("exec default.cfg\n");
 	Cbuf_AddText("exec yq2.cfg\n");
 	Cbuf_AddText("exec config.cfg\n");
-	if(gameStartUp)
+	Cbuf_AddText("exec autoexec.cfg\n");
+
+	if (gameStartUp)
 	{
-		// only when the game is first started we execute autoexec.cfg and set the cvars from commandline
-		Cbuf_AddText("exec autoexec.cfg\n");
+		/* Process cmd arguments only startup. */
 		Cbuf_AddEarlyCommands(true);
 	}
+
 	Cbuf_Execute();
 }
 
@@ -195,6 +209,8 @@ static qboolean checkForHelp(int argc, char **argv)
 				printf("Yamagi Quake II v%s\n", YQ2VERSION);
 				printf("Most interesting commandline arguments:\n");
 				printf("-h or --help: Show this help\n");
+				printf("-cfgdir <path>\n");
+				printf("  set the name of your config directory\n");
 				printf("-datadir <path>\n");
 				printf("  set path to your Quake2 game data (the directory baseq2/ is in)\n");
 				printf("-portable\n");
@@ -313,9 +329,9 @@ Qcommon_Init(int argc, char **argv)
 	char *s;
 	s = va("%s %s %s %s", YQ2VERSION, YQ2ARCH, BUILD_DATE, YQ2OSTYPE);
 	Cvar_Get("version", s, CVAR_SERVERINFO | CVAR_NOSET);
-	busywait = Cvar_Get("busywait", "1", CVAR_ARCHIVE);
 
 #ifndef DEDICATED_ONLY
+	busywait = Cvar_Get("busywait", "1", CVAR_ARCHIVE);
 	cl_async = Cvar_Get("cl_async", "1", CVAR_ARCHIVE);
 	cl_timedemo = Cvar_Get("timedemo", "0", 0);
 	dedicated = Cvar_Get("dedicated", "0", CVAR_NOSET);

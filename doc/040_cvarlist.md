@@ -43,13 +43,20 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 
 ## General
 
-* **busywait**: By default this is set to `1`. causing Quake II to spin
+* **aimfix**: Fix aiming. When set to to `0` (the default) aiming is
+  slightly inaccurate, bullets and the like have a little drift. When
+  set to `1` they hit exactly were the crosshair is.
+
+* **busywait**: By default this is set to `1`, causing Quake II to spin
   in a very tight loop until it's time to process the next frame. This
   is a very accurate way to determine the internal timing, but comes with
   a relatively high CPU usage. If set to `0` Quake II lays itself to
   sleep and tells the operating system to send a wakeup signal when it's
   time for the next frame. The later is more CPU friendly but rather
   inaccurate, especially on Windows. Use with care.
+
+* **cl_anglekicks**: If set to `0` angle kicks (weapon recoil, damage
+  hits and the like) are ignored. Cheat protected. Defaults to `1`.
 
 * **cl_async**: If set to `1` (the default) the client is asynchronous.
   The client framerate is fixed, the renderer framerate is variable.
@@ -62,7 +69,7 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
   * In case that the vsync is active, *vid_maxfps* must not be lower
 	than the display refresh rate.
 
-  Both contraints are enforced.
+  Both constraints are enforced.
 
   If *cl_async* is set to `0` *vid_maxfps* is the same as *cl_maxfps*,
   use *cl_maxfps* to set the framerate.
@@ -83,9 +90,22 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
   during gameplay and released otherwise (in menu, videos, console or if
   game is paused).
 
+* **coop_pickup_weapons**: In coop a weapon can be picked up only once.
+  For example, if the player already has the shotgun they cannot pickup
+  a second shotgun found at a later time, thus not getting the ammo that
+  comes with it. This breaks the balacing. If set to `1` a weapon can be
+  picked up if a) the player doesn't have it or b) it wasn't already
+  picked up by another player. Defaults to `1`.
+
+* **coop_elevator_delay**: In coop it's often hard to get on the same
+  elevator together, because they're immediately triggered once the
+  first player steps on it. This cvar sets a delay for the elevator to
+  wait before moving, so other players have some time to get on it.
+  Defaults to `1.0` (seconds).
+
 * **coop_baseq2 (Ground Zero only)**: In Ground Zero, entity spawnflags
   (which difficulty modes / game modes level entities spawn in) are
-  interpeted a bit differently. In original Quake 2, if an entity is
+  interpreted a bit differently. In original Quake 2, if an entity is
   set to not spawn on any difficulty, it is treated as deathmatch-only,
   however, in Ground Zero this same condition is treated as coop-only.
   This causes maps made for original Quake 2, including the entire
@@ -96,6 +116,23 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
   not work correctly when this cvar is enabled so remember to
   disable it again before playing Ground Zero maps in co-op. By
   default this cvar is disabled (set to 0).
+
+* **g_disruptor (Ground Zero only)**: This boolean cvar controls the
+  availability of the Disruptor weapon to players. The Disruptor is
+  a weapon that was cut from Ground Zero during development but all
+  of its code and assets were still present in the source code and
+  the released game. This is basically a player-held version of the
+  2nd Widow boss' tracker weapon - a black-ish ball of energy.
+  When this cvar is set to 1 you can use the "give Disruptor" and
+  "give rounds X" commands to give yourself the weapon and its ammo,
+  and its items, weapon_disintegrator and ammo_disruptor, can be
+  spawned in maps (in fact, some official Ground Zero maps contain
+  these entities). This cvar is set to 0 by default.
+
+* **nextdemo**: Defines the next command to run after maps from the
+  `nextserver` list. By default this is set to the empty string.
+
+* **nextserver**: Used for looping the introduction demos.
 
 ## Audio
 
@@ -114,8 +151,8 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
   0.  Setting this cvar to `1` disables this behavior, the music keeps
   playing.
 
-* **s_doppler**: If set to `1` (the default) doppler effects are
-  enabled. This is only supported by the OpenAL sound backend.
+* **s_doppler**: If set to `1` doppler effects are enabled. This is only
+  supported by the OpenAL sound backend.
 
 * **s_openal**: Use OpenAL for sound playback. This is enabled by
   default. OpenAL gives a huge quality boost over the classic sound
@@ -153,7 +190,8 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 * **r_gunfov**: The weapons are rendered with a custom field of view,
   independently of the global **fov**, so they are not distorted at high
   FOVs.  A value of `75` should look identical to the old code at `fov
-  90`, it defaults to `80` because that looks a bit better.
+  90`, it defaults to `80` because that looks a bit better. Set to `-1`
+  for the same value as `fov`.
 
 * **horplus**: If set to 1 (the default) the horplus algorithm is used
   to calculate an optimal horizontal and vertical field of view,
@@ -192,6 +230,7 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 
 * **r_vsync**: Enables the vsync: frames are synchronized with
   display refresh rate, should (but doesn't always) prevent tearing.
+  Set to `1` for normal vsync and `2` for adaptive vsync.
 
 
 ## Graphics (GL renderers only)
@@ -281,6 +320,12 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 * **gl3_particle_square**: If set to `1`, particles are rendered as
   squares, like in the old software renderer or Quake 1. Default is `0`.
 
+## Graphics (Software only)
+
+* **sw_gunzposition**: Z offset for the gun. In the original code this
+  was always `0`, which will draw the gun too near to the player if a
+  custom gun field of few is used. Defaults to `8`, which is more or
+  less optimal for the default gun field of view of 80.
 
 ## cvar operations
 

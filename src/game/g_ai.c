@@ -445,7 +445,7 @@ FoundTarget(edict_t *self)
 		level.sight_entity->light_level = 128;
 	}
 
-	self->show_hostile = (int)level.time + 1; /* wake up other monsters */
+	self->show_hostile = level.time + 1; /* wake up other monsters */
 
 	VectorCopy(self->enemy->s.origin, self->monsterinfo.last_sighting);
 	self->monsterinfo.trail_time = level.time;
@@ -624,7 +624,7 @@ FindTarget(edict_t *self)
 
 		if (r == RANGE_NEAR)
 		{
-			if ((client->show_hostile < (int)level.time) && !infront(self, client))
+			if ((client->show_hostile < level.time) && !infront(self, client))
 			{
 				return false;
 			}
@@ -986,7 +986,7 @@ ai_checkattack(edict_t *self)
 			}
 			else
 			{
-				self->show_hostile = (int)level.time + 1;
+				self->show_hostile = level.time + 1;
 				return false;
 			}
 		}
@@ -1059,7 +1059,7 @@ ai_checkattack(edict_t *self)
 	}
 
 	/* wake up other monsters */
-	self->show_hostile = (int)level.time + 1;
+	self->show_hostile = level.time + 1;
 
 	/* check knowledge of enemy */
 	enemy_vis = visible(self, self->enemy);
@@ -1141,13 +1141,23 @@ ai_run(edict_t *self, float dist)
 
 	if (self->monsterinfo.aiflags & AI_SOUND_TARGET)
 	{
-		VectorSubtract(self->s.origin, self->enemy->s.origin, v);
-
-		if (VectorLength(v) < 64)
+		/* Special case: Some projectiles like grenades or rockets are
+		   classified as an enemy. When they explode they generate a
+		   sound entity, triggering this code path. Since they're gone
+		   after the explosion their entity pointer is NULL. Therefor
+		   self->enemy is also NULL and we're crashing. Work around
+		   this by predending that the enemy is still there, and move
+		   to it. */
+		if (self->enemy)
 		{
-			self->monsterinfo.aiflags |= (AI_STAND_GROUND | AI_TEMP_STAND_GROUND);
-			self->monsterinfo.stand(self);
-			return;
+			VectorSubtract(self->s.origin, self->enemy->s.origin, v);
+
+			if (VectorLength(v) < 64)
+			{
+				self->monsterinfo.aiflags |= (AI_STAND_GROUND | AI_TEMP_STAND_GROUND);
+				self->monsterinfo.stand(self);
+				return;
+			}
 		}
 
 		M_MoveToGoal(self, dist);

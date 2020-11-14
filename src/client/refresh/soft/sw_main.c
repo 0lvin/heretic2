@@ -47,6 +47,7 @@ static int	vid_zminu, vid_zminv, vid_zmaxu, vid_zmaxv;
 static vec3_t	lastvieworg;
 static vec3_t	lastviewangles;
 qboolean	fastmoving;
+static qboolean	palette_changed;
 
 refimport_t	ri;
 
@@ -146,6 +147,8 @@ static cvar_t	*sw_overbrightbits;
 cvar_t	*sw_custom_particles;
 cvar_t	*sw_texture_filtering;
 cvar_t	*sw_retexturing;
+cvar_t	*sw_gunzposition;
+static cvar_t	*sw_partialrefresh;
 
 cvar_t	*r_drawworld;
 static cvar_t	*r_drawentities;
@@ -371,6 +374,17 @@ R_RegisterVariables (void)
 	sw_custom_particles = ri.Cvar_Get("sw_custom_particles", "0", CVAR_ARCHIVE);
 	sw_texture_filtering = ri.Cvar_Get("sw_texture_filtering", "0", CVAR_ARCHIVE);
 	sw_retexturing = ri.Cvar_Get("sw_retexturing", "0", CVAR_ARCHIVE);
+	sw_gunzposition = ri.Cvar_Get("sw_gunzposition", "8", CVAR_ARCHIVE);
+
+	// On MacOS texture is cleaned up after render and code have to copy a whole
+	// screen to texture, other platforms save previous texture content and can be
+	// copied only changed parts
+#if defined(__APPLE__)
+	sw_partialrefresh = ri.Cvar_Get("sw_partialrefresh", "0", CVAR_ARCHIVE);
+#else
+	sw_partialrefresh = ri.Cvar_Get("sw_partialrefresh", "1", CVAR_ARCHIVE);
+#endif
+
 	r_mode = ri.Cvar_Get( "r_mode", "0", CVAR_ARCHIVE );
 
 	r_lefthand = ri.Cvar_Get( "hand", "0", CVAR_USERINFO | CVAR_ARCHIVE );
@@ -423,6 +437,9 @@ R_Init
 static qboolean
 RE_Init(void)
 {
+	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
+	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
+
 	R_RegisterVariables ();
 	R_InitImages ();
 	Mod_Init ();
@@ -454,8 +471,6 @@ RE_Init(void)
 
 	// create the window
 	ri.Vid_MenuInit();
-
-	R_Printf(PRINT_ALL, "ref_soft version: "REF_VERSION"\n");
 
 	return true;
 }
@@ -558,7 +573,7 @@ R_ReallocateMapBuffers (void)
 		surface_p = &surfaces[2];	// background is surface 1,
 						//  surface 0 is a dummy
 
-		R_Printf(PRINT_ALL, "Allocated %d surfaces\n", r_cnumsurfs);
+		R_Printf(PRINT_ALL, "Allocated %d surfaces.\n", r_cnumsurfs);
 	}
 
 	if (!r_numallocatedlights || r_outoflights)
@@ -588,7 +603,7 @@ R_ReallocateMapBuffers (void)
 		// set limits
 		blocklight_max = &blocklights[r_numallocatedlights];
 
-		R_Printf(PRINT_ALL, "Allocated %d lights\n", r_numallocatedlights);
+		R_Printf(PRINT_ALL, "Allocated %d lights.\n", r_numallocatedlights);
 	}
 
 	if (!r_numallocatededges || r_outofedges)
@@ -619,7 +634,7 @@ R_ReallocateMapBuffers (void)
 		edge_max = &r_edges[r_numallocatededges];
 		edge_p = r_edges;
 
-		R_Printf(PRINT_ALL, "Allocated %d edges\n", r_numallocatededges);
+		R_Printf(PRINT_ALL, "Allocated %d edges.\n", r_numallocatededges);
 	}
 
 	if (!r_numallocatedverts || r_outofverts)
@@ -647,7 +662,7 @@ R_ReallocateMapBuffers (void)
 		}
 		finalverts_max = &finalverts[r_numallocatedverts];
 
-		R_Printf(PRINT_ALL, "Allocated %d verts\n", r_numallocatedverts);
+		R_Printf(PRINT_ALL, "Allocated %d verts.\n", r_numallocatedverts);
 	}
 
 	if (!r_numallocatedtriangles || r_outoftriangles)
@@ -675,7 +690,7 @@ R_ReallocateMapBuffers (void)
 		}
 		triangles_max = &triangle_spans[r_numallocatedtriangles];
 
-		R_Printf(PRINT_ALL, "Allocated %d triangles\n", r_numallocatedtriangles);
+		R_Printf(PRINT_ALL, "Allocated %d triangles.\n", r_numallocatedtriangles);
 	}
 
 	if (!r_numallocatededgebasespans || r_outedgebasespans)
@@ -704,7 +719,7 @@ R_ReallocateMapBuffers (void)
 		}
 		max_span_p = &edge_basespans[r_numallocatededgebasespans];
 
-		R_Printf(PRINT_ALL, "Allocated %d edgespans\n", r_numallocatededgebasespans);
+		R_Printf(PRINT_ALL, "Allocated %d edgespans.\n", r_numallocatededgebasespans);
 	}
 }
 
@@ -1410,6 +1425,9 @@ static rserr_t	SWimp_SetMode(int *pwidth, int *pheight, int mode, int fullscreen
 static void
 RE_BeginFrame( float camera_separation )
 {
+	// pallete without changes
+	palette_changed = false;
+
 	while (r_mode->modified || vid_fullscreen->modified || r_vsync->modified)
 	{
 		RE_SetMode();
@@ -1480,7 +1498,7 @@ RE_SetMode(void)
 			vid_fullscreen->modified = false;
 			R_Printf(PRINT_ALL, "%s() - fullscreen unavailable in this mode\n", __func__);
 
-			if ((err = SWimp_SetMode(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
+			if ((SWimp_SetMode(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
 			{
 				return true;
 			}
@@ -1501,7 +1519,7 @@ RE_SetMode(void)
 		}
 
 		/* try setting it back to something safe */
-		if ((err = SWimp_SetMode(&vid.width, &vid.height, sw_state.prev_mode, 0)) != rserr_ok)
+		if ((SWimp_SetMode(&vid.width, &vid.height, sw_state.prev_mode, 0)) != rserr_ok)
 		{
 			R_Printf(PRINT_ALL, "%s() - could not revert to safe mode\n", __func__);
 			return false;
@@ -1519,12 +1537,20 @@ R_GammaCorrectAndSetPalette( const unsigned char *palette )
 {
 	int i;
 
+	// Replace palette
 	for ( i = 0; i < 256; i++ )
 	{
-		sw_state.currentpalette[i*4+0] = sw_state.gammatable[palette[i*4+2]]; // blue
-		sw_state.currentpalette[i*4+1] = sw_state.gammatable[palette[i*4+1]]; // green
-		sw_state.currentpalette[i*4+2] = sw_state.gammatable[palette[i*4+0]]; // red
-		sw_state.currentpalette[i*4+3] = 0xFF; // alpha
+		if (sw_state.currentpalette[i*4+0] != sw_state.gammatable[palette[i*4+2]] ||
+			sw_state.currentpalette[i*4+1] != sw_state.gammatable[palette[i*4+1]] ||
+			sw_state.currentpalette[i*4+2] != sw_state.gammatable[palette[i*4+0]])
+		{
+			sw_state.currentpalette[i*4+0] = sw_state.gammatable[palette[i*4+2]]; // blue
+			sw_state.currentpalette[i*4+1] = sw_state.gammatable[palette[i*4+1]]; // green
+			sw_state.currentpalette[i*4+2] = sw_state.gammatable[palette[i*4+0]]; // red
+
+			sw_state.currentpalette[i*4+3] = 0xFF; // alpha
+			palette_changed = true;
+		}
 	}
 }
 
@@ -2073,7 +2099,7 @@ RE_BufferDifferenceEnd(int vmin, int vmax)
 		back_buffer --;
 		front_buffer --;
 	} while (back_buffer > back_min && *back_buffer == *front_buffer);
-        // +1 for fully cover changes
+	// +1 for fully cover changes
 	return (pixel_t*)back_buffer - swap_frames[0] + sizeof(int);
 }
 
@@ -2109,7 +2135,16 @@ RE_FlushFrame(int vmin, int vmax)
 		Com_Printf("Can't lock texture: %s\n", SDL_GetError());
 		return;
 	}
-	RE_CopyFrame (pixels, pitch / sizeof(Uint32), vmin, vmax);
+	if (sw_partialrefresh->value)
+	{
+		RE_CopyFrame (pixels, pitch / sizeof(Uint32), vmin, vmax);
+	}
+	else
+	{
+		// On MacOS texture is cleaned up after render,
+		// code have to copy a whole screen to the texture
+		RE_CopyFrame (pixels, pitch / sizeof(Uint32), 0, vid.height * vid.width);
+	}
 	SDL_UnlockTexture(texture);
 
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
@@ -2161,20 +2196,24 @@ RE_EndFrame (void)
 		vmax = vid.height * vid.width;
 	}
 
-	// search real begin/end of difference
-	vmin = RE_BufferDifferenceStart(vmin, vmax);
-
-	// no differences found
-	if (vmin >= vmax)
+	// if palette changed need to flush whole buffer
+	if (!palette_changed)
 	{
-		return;
-	}
+		// search real begin/end of difference
+		vmin = RE_BufferDifferenceStart(vmin, vmax);
 
-	// search difference end
-	vmax = RE_BufferDifferenceEnd(vmin, vmax);
-	if (vmax > (vid.height * vid.width))
-	{
-		vmax = vid.height * vid.width;
+		// no differences found
+		if (vmin >= vmax)
+		{
+			return;
+		}
+
+		// search difference end
+		vmax = RE_BufferDifferenceEnd(vmin, vmax);
+		if (vmax > (vid.height * vid.width))
+		{
+			vmax = vid.height * vid.width;
+		}
 	}
 
 	RE_FlushFrame(vmin, vmax);
@@ -2188,7 +2227,7 @@ SWimp_SetMode(int *pwidth, int *pheight, int mode, int fullscreen )
 {
 	rserr_t retval = rserr_ok;
 
-	R_Printf (PRINT_ALL, "setting mode %d:", mode );
+	R_Printf (PRINT_ALL, "Setting mode %d:", mode );
 
 	if ((mode >= 0) && !ri.Vid_GetModeInfo( pwidth, pheight, mode ) )
 	{
@@ -2206,7 +2245,7 @@ SWimp_SetMode(int *pwidth, int *pheight, int mode, int fullscreen )
 		}
 	}
 
-	R_Printf(PRINT_ALL, " %d %d\n", *pwidth, *pheight);
+	R_Printf(PRINT_ALL, " %dx%d (vid_fullscreen %i)\n", *pwidth, *pheight, fullscreen);
 
 	if (!ri.GLimp_InitGraphics(fullscreen, pwidth, pheight))
 	{

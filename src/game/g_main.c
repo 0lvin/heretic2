@@ -40,6 +40,8 @@ edict_t *g_edicts;
 
 cvar_t *deathmatch;
 cvar_t *coop;
+cvar_t *coop_pickup_weapons;
+cvar_t *coop_elevator_delay;
 cvar_t *dmflags;
 cvar_t *skill;
 cvar_t *fraglimit;
@@ -79,6 +81,8 @@ cvar_t *flood_waitdelay;
 cvar_t *sv_maplist;
 
 cvar_t *gib_on;
+
+cvar_t *aimfix;
 
 void SpawnEntities(char *mapname, char *entities, char *spawnpoint);
 void ClientThink(edict_t *ent, usercmd_t *cmd);

@@ -35,6 +35,9 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/select.h> /* for fd_set */
+#ifndef FNDELAY
+#define FNDELAY O_NDELAY
+#endif
 
 #ifdef __APPLE__
 #include <mach/clock.h>
@@ -49,6 +52,9 @@ static void *game_library;
 
 // Evil hack to determine if stdin is available
 qboolean stdin_active = true;
+
+// Config dir
+char cfgdir[MAX_OSPATH] = CFGDIR;
 
 // Console logfile
 extern FILE	*logfile;
@@ -355,7 +361,7 @@ Sys_GetGameAPI(void *parms)
 		Com_Error(ERR_FATAL, "Sys_GetGameAPI without Sys_UnloadingGame");
 	}
 
-	Com_Printf("LoadLibrary(\"%s\")\n", gamename);
+	Com_Printf("Loading library: %s\n", gamename);
 
 	/* now run through the search paths */
 	path = NULL;
@@ -387,12 +393,12 @@ Sys_GetGameAPI(void *parms)
 
 		if (game_library)
 		{
-			Com_MDPrintf("LoadLibrary (%s)\n", name);
+			Com_MDPrintf("Loading library: %s\n", name);
 			break;
 		}
 		else
 		{
-			Com_Printf("LoadLibrary (%s):", name);
+			Com_Printf("Loading library: %s\n: ", name);
 
 			path = (char *)dlerror();
 			str_p = strchr(path, ':');   /* skip the path (already shown) */
@@ -476,7 +482,7 @@ Sys_GetHomeDir(void)
 		return NULL;
 	}
 
-	snprintf(gdir, sizeof(gdir), "%s/%s/", home, CFGDIR);
+	snprintf(gdir, sizeof(gdir), "%s/%s/", home, cfgdir);
 
 	return gdir;
 }

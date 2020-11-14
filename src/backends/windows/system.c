@@ -44,6 +44,9 @@ static HANDLE hinput, houtput;
 // Game library handle
 static HINSTANCE game_library;
 
+// Config dir
+char cfgdir[MAX_OSPATH] = CFGDIR;
+
 // Buffer for the dedicated server console
 static char console_text[256];
 static size_t console_textlen;
@@ -421,7 +424,7 @@ Sys_GetGameAPI(void *parms)
 
 		if (game_library)
 		{
-			Com_DPrintf("LoadLibrary (%s)\n", name);
+			Com_DPrintf("Loading library: %s\n", name);
 			break;
 		}
 
@@ -432,7 +435,7 @@ Sys_GetGameAPI(void *parms)
 
 		if (game_library)
 		{
-			Com_DPrintf("LoadLibrary (%s)\n", name);
+			Com_DPrintf("Loading library: %s\n", name);
 			break;
 		}
 	}
@@ -526,7 +529,7 @@ Sys_GetHomeDir(void)
 		}
 	}
 
-	snprintf(gdir, sizeof(gdir), "%s/%s/", profile, CFGDIR);
+	snprintf(gdir, sizeof(gdir), "%s/%s/", profile, cfgdir);
 
 	return gdir;
 }
@@ -714,6 +717,9 @@ Sys_RedirectStdout(void)
 
 	_wfreopen(wpath_stdout, L"w", stdout);
 	_wfreopen(wpath_stderr, L"w", stderr);
+
+	setvbuf(stdout, (char *)NULL, _IOLBF, BUFSIZ);
+	setvbuf(stderr, (char *)NULL, _IOLBF, BUFSIZ);
 }
 
 /* ======================================================================= */

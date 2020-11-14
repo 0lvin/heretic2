@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <stdarg.h>
 
-#define REF_VERSION	"SOFT 0.01"
+#define REF_VERSION	"Yamagi Quake II Software Refresher"
 
 // up / down
 #define PITCH	0
@@ -419,6 +419,7 @@ extern cvar_t	*sw_mipscale;
 extern cvar_t	*sw_stipplealpha;
 extern cvar_t	*sw_surfcacheoverride;
 extern cvar_t	*sw_waterwarp;
+extern cvar_t	*sw_gunzposition;
 
 extern cvar_t	*r_fullbright;
 extern cvar_t	*r_lefthand;
