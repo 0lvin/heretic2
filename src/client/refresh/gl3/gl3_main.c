@@ -363,8 +363,7 @@ GL3_SetMode(void)
 	vid.width = r_customwidth->value;
 	vid.height = r_customheight->value;
 
-	if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value,
-					 fullscreen)) == rserr_ok)
+	if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value, fullscreen)) == rserr_ok)
 	{
 		if (r_mode->value == -1)
 		{
@@ -454,13 +453,6 @@ GL3_Init(void)
 
 	GL3_Register();
 
-	/* initialize OS-specific parts of OpenGL */
-	if (!ri.GLimp_Init())
-	{
-		//QGL_Shutdown();
-		return false;
-	}
-
 	/* set our "safe" mode */
 	gl3state.prev_mode = 4;
 	//gl_state.stereo_mode = gl1_stereo->value;
@@ -515,7 +507,6 @@ GL3_Init(void)
 		R_Printf(PRINT_ALL, "Not supported\n");
 	}
 
-#ifdef SDL2
 	if(gl3config.debug_output)
 	{
 		R_Printf(PRINT_ALL, " - OpenGL Debug Output: Supported ");
@@ -532,9 +523,6 @@ GL3_Init(void)
 	{
 		R_Printf(PRINT_ALL, " - OpenGL Debug Output: Not Supported\n");
 	}
-#else // SDL1.2 - no debug output
-	R_Printf(PRINT_ALL, " - OpenGL Debug Output: Not Supported when using SDL1.2\n");
-#endif
 
 	if(gl3config.compat_profile)
 	{
