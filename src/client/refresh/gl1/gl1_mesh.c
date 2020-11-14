@@ -45,7 +45,6 @@ vec3_t shadevector;
 float shadelight[3];
 float *shadedots = r_avertexnormal_dots[0];
 extern vec3_t lightspot;
-extern qboolean have_stencil;
 
 void
 R_LerpVerts(int nverts, dtrivertx_t *v, dtrivertx_t *ov,
@@ -409,7 +408,7 @@ R_DrawAliasShadow(dmdl_t *paliashdr, int posenum)
 	height = -lheight + 0.1f;
 
 	/* stencilbuffer shadows */
-	if (have_stencil && gl1_stencilshadow->value)
+	if (gl_state.stencil && gl1_stencilshadow->value)
 	{
 		glEnable(GL_STENCIL_TEST);
 		glStencilFunc(GL_EQUAL, 1, 2);
@@ -467,7 +466,7 @@ R_DrawAliasShadow(dmdl_t *paliashdr, int posenum)
 	}
 
 	/* stencilbuffer shadows */
-	if (have_stencil && gl1_stencilshadow->value)
+	if (gl_state.stencil && gl1_stencilshadow->value)
 	{
 		glDisable(GL_STENCIL_TEST);
 	}
