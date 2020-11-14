@@ -36,7 +36,7 @@ cvar_t *cl_http_filelists;
 cvar_t *cl_http_proxy;
 cvar_t *cl_http_max_connections;
 
-dlquirks_t dlquirks = { .error = false, .filelist = true, .gamedir = '\0' };
+dlquirks_t dlquirks = { .error = false, .filelist = true, .gamedir = {'\0'} };
 
 typedef enum
 {
@@ -87,7 +87,13 @@ static size_t CL_HTTP_Recv(void *ptr, size_t size, size_t nmemb, void *stream)
 	else if (dl->position + bytes >= dl->fileSize)
 	{
 		dl->fileSize *= 2;
-		realloc(dl->tempBuffer, dl->fileSize);
+		char *tempBuffer = realloc(dl->tempBuffer, dl->fileSize);
+		if (!tempBuffer) {
+			free(dl->tempBuffer);
+			dl->tempBuffer = 0;
+			return 0;
+		}
+		dl->tempBuffer = tempBuffer;
 	}
 
 	memcpy (dl->tempBuffer + dl->position, ptr, bytes);
@@ -249,15 +255,14 @@ static void CL_StartHTTPDownload (dlqueue_t *entry, dlhandle_t *dl)
 	Com_sprintf(dl->URL, sizeof(dl->URL), "%s%s", cls.downloadServer, escapedFilePath);
 
 	qcurl_easy_setopt(dl->curl, CURLOPT_ENCODING, "");
+	qcurl_easy_setopt(dl->curl, CURLOPT_WRITEDATA, dl);
 
 	if (dl->file)
 	{
-		qcurl_easy_setopt(dl->curl, CURLOPT_WRITEDATA, dl);
 		qcurl_easy_setopt(dl->curl, CURLOPT_WRITEFUNCTION, CL_HTTP_CurlWriteCB);
 	}
 	else
 	{
-		qcurl_easy_setopt(dl->curl, CURLOPT_WRITEDATA, dl);
 		qcurl_easy_setopt(dl->curl, CURLOPT_WRITEFUNCTION, CL_HTTP_Recv);
 	}
 
@@ -968,6 +973,7 @@ void CL_SetHTTPServer (const char *URL)
 	// Remove trailing / from URL if any.
 	size_t urllen = strlen(URL);
 	char *cleanURL = strdup(URL);
+	YQ2_COM_CHECK_OOM(cleanURL, "strdup(URL)", strlen(URL))
 
 	if (cleanURL[urllen - 1] == '/')
 	{
@@ -1062,6 +1068,9 @@ qboolean CL_QueueHTTPDownload(const char *quakePath, qboolean gamedirForFilelist
 	}
 
 	q->next = malloc(sizeof(*q));
+
+	YQ2_COM_CHECK_OOM(q->next, "malloc(sizeof(*q))", sizeof(*q))
+
 	q = q->next;
 	q->next = NULL;
 	q->state = DLQ_STATE_NOT_STARTED;

@@ -75,7 +75,7 @@ RotatePointAroundVector(vec3_t dst, const vec3_t dir,
 	im[2][1] = m[1][2];
 
 	memset(zrot, 0, sizeof(zrot));
-	zrot[0][0] = zrot[1][1] = zrot[2][2] = 1.0F;
+	zrot[2][2] = 1.0F;
 
 	zrot[0][0] = (float)cos(DEG2RAD(degrees));
 	zrot[0][1] = (float)sin(DEG2RAD(degrees));
@@ -867,9 +867,12 @@ void
 Swap_Init(void)
 {
 	byte swaptest[2] = {1, 0};
+	short swapTestShort;
+	assert(sizeof(short) == 2);
+	memcpy(&swapTestShort, swaptest, 2);
 
 	/* set the byte swapping variables in a portable manner */
-	if (*(short *)swaptest == 1)
+	if (swapTestShort == 1)
 	{
 		bigendien = false;
 		_BigShort = ShortSwap;
@@ -892,7 +895,7 @@ Swap_Init(void)
 		Com_Printf("Byte ordering: big endian\n\n");
 	}
 
-	if (LittleShort(*(short *)swaptest) != 1)
+	if (LittleShort(swapTestShort) != 1)
 		assert("Error in the endian conversion!");
 }
 
@@ -1242,11 +1245,6 @@ Info_ValueForKey(char *s, char *key)
 
 		while (*s != '\\' && *s)
 		{
-			if (!*s)
-			{
-				return "";
-			}
-
 			*o++ = *s++;
 		}
 
@@ -1307,11 +1305,6 @@ Info_RemoveKey(char *s, char *key)
 
 		while (*s != '\\' && *s)
 		{
-			if (!*s)
-			{
-				return;
-			}
-
 			*o++ = *s++;
 		}
 
@@ -1365,7 +1358,7 @@ Info_SetValueForKey(char *s, char *key, char *value)
 
 	if (strstr(key, ";"))
 	{
-		Com_Printf("Can't use keys or values with a semicolon\n");
+		Com_Printf("Can't use keys with a semicolon\n");
 		return;
 	}
 

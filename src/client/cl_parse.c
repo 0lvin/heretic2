@@ -798,6 +798,16 @@ CL_ParseFrame(void)
 			}
 
 			cl.sound_prepped = true;
+
+			if (paused_at_load)
+			{
+				if (cl_loadpaused->value == 1)
+				{
+					Cvar_Set("paused", "0");
+				}
+
+				paused_at_load = false;
+			}
 		}
 
 		/* fire entity events */
@@ -849,7 +859,7 @@ CL_ParseServerData(void)
 	/* set gamedir */
 	if ((*str && (!fs_gamedirvar->string || !*fs_gamedirvar->string ||
 		  strcmp(fs_gamedirvar->string, str))) ||
-		(!*str && (fs_gamedirvar->string || *fs_gamedirvar->string)))
+		(!*str && (fs_gamedirvar->string && !*fs_gamedirvar->string)))
 	{
 		Cvar_Set("game", str);
 	}

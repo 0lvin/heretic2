@@ -31,7 +31,6 @@ static unsigned char	*r_source, *r_sourcemax;
 static unsigned		*r_lightptr;
 
 void R_BuildLightMap (drawsurf_t *drawsurf);
-extern	unsigned	blocklights[1024];	// allow some very large lightmaps
 
 static int	sc_size;
 static surfcache_t	*sc_rover;
@@ -179,6 +178,12 @@ R_DrawSurface (drawsurf_t *drawsurf)
 	{
 		r_lightptr = blocklights + u;
 
+		if (r_lightptr >= blocklight_max)
+		{
+			r_outoflights = true;
+			continue;
+		}
+
 		prowdestbase = pcolumndest;
 
 		pbasesource = basetptr + soffset;
@@ -229,6 +234,12 @@ R_InitCaches (void)
 
 	sc_size = size;
 	sc_base = (surfcache_t *)malloc(size);
+	if (!sc_base)
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: Can't allocate cache.", __func__);
+		// code never returns after ERR_FATAL
+		return;
+	}
 	sc_rover = sc_base;
 
 	sc_base->next = NULL;

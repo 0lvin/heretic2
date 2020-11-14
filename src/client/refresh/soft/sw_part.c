@@ -101,6 +101,15 @@ R_DrawParticle(particle_t *pparticle, int level)
 	** render the appropriate pixels
 	*/
 	count = pix;
+	if ((pz[(vid.width * count / 2) + (count / 2)]) > izi)
+	{
+		// looks like under some object
+		return;
+	}
+
+	// zbuffer particles damage
+	VID_DamageZBuffer(u, v);
+	VID_DamageZBuffer(u + count, v + count);
 
 	if (custom_particle == 0)
 	{

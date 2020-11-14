@@ -33,8 +33,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 
-cvar_t *vid_displayrefreshrate;
 int glimp_refreshRate = -1;
+
+static cvar_t *vid_displayrefreshrate;
+static cvar_t *vid_displayindex;
+static cvar_t *vid_rate;
 
 static int last_flags = 0;
 static int last_display = 0;
@@ -42,24 +45,164 @@ static int last_position_x = SDL_WINDOWPOS_UNDEFINED;
 static int last_position_y = SDL_WINDOWPOS_UNDEFINED;
 static SDL_Window* window = NULL;
 static qboolean initSuccessful = false;
+static char **displayindices = NULL;
+static int num_displays = 0;
 
-// --------
+/*
+ * Resets the display index Cvar if out of bounds
+ */
+static void
+ClampDisplayIndexCvar(void)
+{
+	if (vid_displayindex->value < 0 || vid_displayindex->value >= num_displays)
+	{
+		Cvar_SetValue("vid_displayindex", 0);
+	}
+}
+
+static void
+ClearDisplayIndices(void)
+{
+	if ( displayindices )
+	{
+		for ( int i = 0; i < num_displays; i++ )
+		{
+			free( displayindices[ i ] );
+		}
+
+		free( displayindices );
+		displayindices = NULL;
+	}
+}
 
 static qboolean
 CreateSDLWindow(int flags, int w, int h)
 {
-	window = SDL_CreateWindow("Yamagi Quake II",
-				  last_position_x, last_position_y,
-				  w, h, flags);
-	if (window)
+	if (SDL_WINDOWPOS_ISUNDEFINED(last_position_x) || SDL_WINDOWPOS_ISUNDEFINED(last_position_y) || last_position_x < 0 ||last_position_y < 24)
 	{
-		/* save current display as default */
-		last_display = SDL_GetWindowDisplayIndex(window);
-		SDL_GetWindowPosition(window,
-				      &last_position_x, &last_position_y);
+		last_position_x = last_position_y = SDL_WINDOWPOS_UNDEFINED_DISPLAY((int)vid_displayindex->value);
 	}
 
-	return window != NULL;
+	window = SDL_CreateWindow("Yamagi Quake II", last_position_x, last_position_y, w, h, flags);
+
+	if (window)
+	{
+
+		/* save current display as default */
+		last_display = SDL_GetWindowDisplayIndex(window);
+		SDL_GetWindowPosition(window, &last_position_x, &last_position_y);
+
+		/* Check if we're really in the requested diplay mode. There is
+		   (or was) an SDL bug were SDL switched into the wrong mode
+		   without giving an error code. See the bug report for details:
+		   https://bugzilla.libsdl.org/show_bug.cgi?id=4700 */
+		SDL_DisplayMode real_mode;
+
+		if (SDL_GetWindowDisplayMode(window, &real_mode) != 0)
+		{
+			SDL_DestroyWindow(window);
+			window = NULL;
+
+			Com_Printf("Can't get display mode: %s\n", SDL_GetError());
+
+			return false;
+		}
+
+		/* SDL_WINDOW_FULLSCREEN_DESKTOP implies SDL_WINDOW_FULLSCREEN! */
+		if (((flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) == SDL_WINDOW_FULLSCREEN)
+				&& ((real_mode.w != w) || (real_mode.h != h)))
+		{
+
+			Com_Printf("Current display mode isn't requested display mode\n");
+			Com_Printf("Likely SDL bug #4700, trying to work around it\n");
+
+			/* Mkay, try to hack around that. */
+			SDL_DisplayMode wanted_mode = {};
+
+			wanted_mode.w = w;
+			wanted_mode.h = h;
+
+			if (SDL_SetWindowDisplayMode(window, &wanted_mode) != 0)
+			{
+				SDL_DestroyWindow(window);
+				window = NULL;
+
+				Com_Printf("Can't force resolution to %ix%i: %s\n", w, h, SDL_GetError());
+
+				return false;
+			}
+
+			/* The SDL doku says, that SDL_SetWindowSize() shouldn't be
+			   used on fullscreen windows. But at least in my test with
+			   SDL 2.0.9 the subsequent SDL_GetWindowDisplayMode() fails
+			   if I don't call it. */
+			SDL_SetWindowSize(window, wanted_mode.w, wanted_mode.h);
+
+			if (SDL_GetWindowDisplayMode(window, &real_mode) != 0)
+			{
+				SDL_DestroyWindow(window);
+				window = NULL;
+
+				Com_Printf("Can't get display mode: %s\n", SDL_GetError());
+
+				return false;
+			}
+
+			if ((real_mode.w != w) || (real_mode.h != h))
+			{
+				SDL_DestroyWindow(window);
+				window = NULL;
+
+				Com_Printf("Can't get display mode: %s\n", SDL_GetError());
+
+				return false;
+			}
+		}
+
+		/* Normally SDL stays at desktop refresh rate or chooses something
+		   sane. Some player may want to override that.
+
+		   Reminder: SDL_WINDOW_FULLSCREEN_DESKTOP implies SDL_WINDOW_FULLSCREEN! */
+		if ((flags & (SDL_WINDOW_FULLSCREEN | SDL_WINDOW_FULLSCREEN_DESKTOP)) == SDL_WINDOW_FULLSCREEN)
+		{
+			if (vid_rate->value > 0)
+			{
+				SDL_DisplayMode closest_mode;
+				SDL_DisplayMode requested_mode = real_mode;
+
+				requested_mode.refresh_rate = (int)vid_rate->value;
+
+				if (SDL_GetClosestDisplayMode(last_display, &requested_mode, &closest_mode) == NULL)
+				{
+					Com_Printf("SDL was unable to find a mode close to %ix%i@%i\n", w, h, requested_mode.refresh_rate);
+					Cvar_SetValue("vid_rate", -1);
+				}
+				else
+				{
+					Com_Printf("User requested %ix%i@%i, setting closest mode %ix%i@%i\n", 
+							w, h, requested_mode.refresh_rate, w, h, closest_mode.refresh_rate);
+
+					if (SDL_SetWindowDisplayMode(window, &closest_mode) != 0)
+					{
+						Com_Printf("Couldn't switch to mode %ix%i@%i, staying at current mode\n",
+								w, h, closest_mode.refresh_rate);
+						Cvar_SetValue("vid_rate", -1);
+					}
+					else
+					{
+						Cvar_SetValue("vid_rate", closest_mode.refresh_rate);
+					}
+				}
+
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
 }
 
 static int
@@ -100,6 +243,61 @@ GetWindowSize(int* w, int* h)
 	*h = m.h;
 
 	return true;
+}
+
+static void
+InitDisplayIndices()
+{
+	displayindices = malloc((num_displays + 1) * sizeof(char *));
+
+	for ( int i = 0; i < num_displays; i++ )
+	{
+		/* There are a maximum of 10 digits in 32 bit int + 1 for the NULL terminator. */
+		displayindices[ i ] = malloc(11 * sizeof( char ));
+		YQ2_COM_CHECK_OOM(displayindices[i], "malloc()", 11 * sizeof( char ))
+
+		snprintf( displayindices[ i ], 11, "%d", i );
+	}
+
+	/* The last entry is NULL to indicate the list of strings ends. */
+	displayindices[ num_displays ] = 0;
+}
+
+/*
+ * Lists all available display modes.
+ */
+static void
+PrintDisplayModes(void)
+{
+	int curdisplay = window ? SDL_GetWindowDisplayIndex(window) : 0;
+
+	// On X11 (at least for me)
+	// curdisplay is always -1.
+	// DG: probably because window was NULL?
+	if (curdisplay < 0) {
+		curdisplay = 0;
+	}
+
+	int nummodes = SDL_GetNumDisplayModes(curdisplay);
+
+	if (nummodes < 1)
+	{
+		Com_Printf("Can't get display modes: %s\n", SDL_GetError());
+		return;
+	}
+
+	for (int i = 0; i < nummodes; i++)
+	{
+		SDL_DisplayMode mode;
+
+		if (SDL_GetDisplayMode(curdisplay, i, &mode) != 0)
+		{
+			Com_Printf("Can't get display mode: %s\n", SDL_GetError());
+			return;
+		}
+
+		Com_Printf(" - Mode %2i: %ix%i@%i\n", i, mode.w, mode.h, mode.refresh_rate);
+	}
 }
 
 /*
@@ -144,12 +342,23 @@ void GLimp_GrabInput(qboolean grab);
 static void
 ShutdownGraphics(void)
 {
+	ClampDisplayIndexCvar();
+
 	if (window)
 	{
 		/* save current display as default */
 		last_display = SDL_GetWindowDisplayIndex(window);
-		SDL_GetWindowPosition(window,
+
+		/* or if current display isn't the desired default */
+		if (last_display != vid_displayindex->value) {
+			last_position_x = last_position_y = SDL_WINDOWPOS_UNDEFINED;
+			last_display = vid_displayindex->value;
+		}
+		else {
+			SDL_GetWindowPosition(window,
 				      &last_position_x, &last_position_y);
+		}
+
 		/* cleanly ungrab input (needs window) */
 		GLimp_GrabInput(false);
 		SDL_DestroyWindow(window);
@@ -172,6 +381,8 @@ qboolean
 GLimp_Init(void)
 {
 	vid_displayrefreshrate = Cvar_Get("vid_displayrefreshrate", "-1", CVAR_ARCHIVE);
+	vid_displayindex = Cvar_Get("vid_displayindex", "0", CVAR_ARCHIVE);
+	vid_rate = Cvar_Get("vid_rate", "-1", CVAR_ARCHIVE);
 
 	if (!SDL_WasInit(SDL_INIT_VIDEO))
 	{
@@ -187,6 +398,13 @@ GLimp_Init(void)
 		SDL_GetVersion(&version);
 		Com_Printf("SDL version is: %i.%i.%i\n", (int)version.major, (int)version.minor, (int)version.patch);
 		Com_Printf("SDL video driver is \"%s\".\n", SDL_GetCurrentVideoDriver());
+
+		num_displays = SDL_GetNumVideoDisplays();
+		InitDisplayIndices();
+		ClampDisplayIndexCvar();
+		Com_Printf("SDL didplay modes:\n");
+
+		PrintDisplayModes();
 	}
 
 	return true;
@@ -210,6 +428,8 @@ GLimp_Shutdown(void)
 	{
 		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	}
+
+	ClearDisplayIndices();
 }
 
 /*
@@ -318,7 +538,9 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 				/* Try to recover */
 				Cvar_SetValue("r_mode", 4);
 				Cvar_SetValue("vid_fullscreen", 0);
+				Cvar_SetValue("vid_rate", -1);
 
+				fullscreen = 0;
 				*pwidth = width = 640;
 				*pheight = height = 480;
 				flags &= ~fs_flag;
@@ -337,6 +559,27 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 
 	last_flags = flags;
 
+	/* Now that we've got a working window print it's mode. */
+	int curdisplay = SDL_GetWindowDisplayIndex(window);
+
+    if (curdisplay < 0) {
+		curdisplay = 0;
+	}
+
+	SDL_DisplayMode mode;
+
+	if (SDL_GetCurrentDisplayMode(curdisplay, &mode) != 0)
+	{
+		Com_Printf("Can't get current display mode: %s\n", SDL_GetError());
+	}
+	else
+	{
+		Com_Printf("Real display mode: %ix%i@%i (vid_fullscreen: %i)\n", mode.w, mode.h,
+				mode.refresh_rate, fullscreen);
+	}
+
+
+    /* Initialize rendering context. */
 	if (!re.InitContext(window))
 	{
 		/* InitContext() should have logged an error. */
@@ -393,7 +636,7 @@ GLimp_GrabInput(qboolean grab)
  *   is enabled. The price are small and hard to notice timing
  *   problems.
  *
- * * SDL returns only full integer. In most cases they're rounded
+ * * SDL returns only full integers. In most cases they're rounded
  *   up, but in some cases - likely depending on the GPU driver -
  *   they're rounded down. If the value is rounded up, we'll see
  *   some small and nard to notice timing problems. If the value
@@ -445,8 +688,7 @@ GLimp_GetDesktopMode(int *pwidth, int *pheight)
 	{
 		/* save current display as default */
 		last_display = SDL_GetWindowDisplayIndex(window);
-		SDL_GetWindowPosition(window,
-				      &last_position_x, &last_position_y);
+		SDL_GetWindowPosition(window, &last_position_x, &last_position_y);
 	}
 
 	if (last_display < 0)
@@ -467,4 +709,22 @@ GLimp_GetDesktopMode(int *pwidth, int *pheight)
 	*pwidth = mode.w;
 	*pheight = mode.h;
 	return true;
+}
+
+const char**
+GLimp_GetDisplayIndices(void)
+{
+	return (const char**)displayindices;
+}
+
+int
+GLimp_GetNumVideoDisplays(void)
+{
+	return num_displays;
+}
+
+int
+GLimp_GetWindowDisplayIndex(void)
+{
+	return last_display;
 }

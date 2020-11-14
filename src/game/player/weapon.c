@@ -123,12 +123,22 @@ PlayerNoise(edict_t *who, vec3_t where, int type)
 
 	if ((type == PNOISE_SELF) || (type == PNOISE_WEAPON))
 	{
+		if (level.framenum <= (level.sound_entity_framenum + 3))
+		{
+			return;
+		}
+
 		noise = who->mynoise;
 		level.sound_entity = noise;
 		level.sound_entity_framenum = level.framenum;
 	}
 	else
 	{
+		if (level.framenum <= (level.sound2_entity_framenum + 3))
+		{
+			return;
+		}
+
 		noise = who->mynoise2;
 		level.sound2_entity = noise;
 		level.sound2_entity_framenum = level.framenum;
@@ -653,6 +663,9 @@ weapon_grenade_fire(edict_t *ent, qboolean held)
 	if (is_quad)
 	{
 		damage *= 4;
+
+		gi.sound(ent, CHAN_ITEM, gi.soundindex(
+				"items/damage3.wav"), 1, ATTN_NORM, 0);
 	}
 
 	VectorSet(offset, 8, 8, ent->viewheight - 8);

@@ -135,6 +135,37 @@ Cvar_FindVar(const char *var_name)
 	return NULL;
 }
 
+static qboolean
+Cvar_IsFloat(const char *s)
+{
+    int c, dot = '.';
+
+    if (*s == '-')
+	{
+        s++;
+    }
+
+    if (!*s)
+	{
+        return false;
+    }
+
+    do {
+        c = *s++;
+
+        if (c == dot)
+		{
+            dot = 0;
+        }
+		else if (!(c >= '0' || c <= '9'))
+		{
+            return false;
+        }
+    } while (*s);
+
+    return true;
+}
+
 float
 Cvar_VariableValue(char *var_name)
 {
@@ -189,6 +220,7 @@ Cvar_Get(char *var_name, char *var_value, int flags)
 	if (var)
 	{
 		var->flags |= flags;
+		var->default_string = CopyString(var_value);
 		return var;
 	}
 
@@ -216,6 +248,7 @@ Cvar_Get(char *var_name, char *var_value, int flags)
 	var = Z_Malloc(sizeof(*var));
 	var->name = CopyString(var_name);
 	var->string = CopyString(var_value);
+	var->default_string = CopyString(var_value);
 	var->modified = true;
 	var->value = strtod(var->string, (char **)NULL);
 
@@ -649,13 +682,164 @@ Cvar_Serverinfo(void)
 }
 
 /*
+ * Increments the given cvar by 1 or adds the
+ * optional given float value to it.
+ */
+void Cvar_Inc_f(void)
+{
+	char string[MAX_QPATH];
+    cvar_t *var;
+    float value;
+
+    if (Cmd_Argc() < 2)
+	{
+        Com_Printf("Usage: %s <cvar> [value]\n", Cmd_Argv(0));
+        return;
+    }
+
+    var = Cvar_FindVar(Cmd_Argv(1));
+
+    if (!var)
+	{
+        Com_Printf("%s is not a cvar\n", Cmd_Argv(1));
+        return;
+    }
+
+    if (!Cvar_IsFloat(var->string))
+	{
+        Com_Printf("\"%s\" is \"%s\", can't %s\n", var->name, var->string, Cmd_Argv(0));
+        return;
+    }
+
+    value = 1;
+
+    if (Cmd_Argc() > 2) {
+        value = atof(Cmd_Argv(2));
+    }
+
+    if (!strcmp(Cmd_Argv(0), "dec")) {
+        value = -value;
+    }
+
+	Com_sprintf(string, sizeof(string), "%f", var->value + value);
+    Cvar_Set(var->name, string);
+}
+
+/*
+ * Resets a cvar to its default value.
+ */
+void Cvar_Reset_f(void)
+{
+    cvar_t *var;
+
+    if (Cmd_Argc() < 2)
+	{
+        Com_Printf("Usage: %s <cvar>\n", Cmd_Argv(0));
+        return;
+    }
+
+    var = Cvar_FindVar(Cmd_Argv(1));
+
+    if (!var)
+	{
+        Com_Printf("%s is not a cvar\n", Cmd_Argv(1));
+        return;
+    }
+
+	Com_Printf("%s: %s\n", var->name, var->default_string);
+    Cvar_Set(var->name, var->default_string);
+}
+
+/*
+ * Resets all known cvar (with the exception of `game') to
+ * their default values.
+ */
+void Cvar_ResetAll_f(void)
+{
+    cvar_t *var;
+
+    for (var = cvar_vars; var; var = var->next)
+	{
+        if ((var->flags & CVAR_NOSET))
+		{
+            continue;
+		}
+		else if (strcmp(var->name, "game") == 0)
+		{
+            continue;
+		}
+
+        Cvar_Set(var->name, var->default_string);
+    }
+}
+
+/*
+ * Toggles a cvar between 0 and 1 or the given values.
+ */
+void Cvar_Toggle_f(void)
+{
+    cvar_t *var;
+    int i, argc = Cmd_Argc();
+
+    if (argc < 2)
+	{
+        Com_Printf("Usage: %s <cvar> [values]\n", Cmd_Argv(0));
+        return;
+    }
+
+    var = Cvar_FindVar(Cmd_Argv(1));
+
+    if (!var)
+	{
+        Com_Printf("%s is not a cvar\n", Cmd_Argv(1));
+        return;
+    }
+
+    if (argc < 3)
+	{
+        if (!strcmp(var->string, "0"))
+		{
+            Cvar_Set(var->name, "1");
+        }
+		else if (!strcmp(var->string, "1"))
+		{
+            Cvar_Set(var->name, "0");
+        }
+		else
+		{
+            Com_Printf("\"%s\" is \"%s\", can't toggle\n", var->name, var->string);
+        }
+
+        return;
+    }
+
+    for (i = 0; i < argc - 2; i++)
+	{
+        if (!Q_stricmp(var->string, Cmd_Argv(2 + i)))
+		{
+            i = (i + 1) % (argc - 2);
+            Cvar_Set(var->name, Cmd_Argv(2 + i));
+
+            return;
+        }
+    }
+
+    Com_Printf("\"%s\" is \"%s\", can't cycle\n", var->name, var->string);
+}
+
+/*
  * Reads in all archived cvars
  */
 void
 Cvar_Init(void)
 {
-	Cmd_AddCommand("set", Cvar_Set_f);
 	Cmd_AddCommand("cvarlist", Cvar_List_f);
+	Cmd_AddCommand("dec", Cvar_Inc_f);
+	Cmd_AddCommand("inc", Cvar_Inc_f);
+	Cmd_AddCommand("reset", Cvar_Reset_f);
+	Cmd_AddCommand("resetall", Cvar_ResetAll_f);
+	Cmd_AddCommand("set", Cvar_Set_f);
+	Cmd_AddCommand("toggle", Cvar_Toggle_f);
 }
 
 /*
@@ -676,6 +860,11 @@ Cvar_Fini(void)
 	}
 
 	Cmd_RemoveCommand("cvarlist");
+	Cmd_RemoveCommand("dec");
+	Cmd_RemoveCommand("inc");
+	Cmd_RemoveCommand("reset");
+	Cmd_RemoveCommand("resetall");
 	Cmd_RemoveCommand("set");
+	Cmd_RemoveCommand("toggle");
 }
 

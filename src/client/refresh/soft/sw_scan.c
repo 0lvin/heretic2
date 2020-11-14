@@ -184,7 +184,7 @@ TurbulentPow2
 =============
 */
 void
-TurbulentPow2 (espan_t *pspan)
+TurbulentPow2 (espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv)
 {
 	float	spancountminus1;
 	float	sdivzpow2stepu, tdivzpow2stepu, zipow2stepu;
@@ -338,7 +338,7 @@ NonTurbulentPow2 - this is for drawing scrolling textures. they're warping water
 =============
 */
 void
-NonTurbulentPow2 (espan_t *pspan)
+NonTurbulentPow2 (espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv)
 {
 	float spancountminus1;
 	float sdivzpow2stepu, tdivzpow2stepu, zipow2stepu;
@@ -590,7 +590,7 @@ D_DrawSpansPow2
 =============
 */
 void
-D_DrawSpansPow2 (espan_t *pspan)
+D_DrawSpansPow2 (espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv)
 {
 	int 	spancount;
 	pixel_t	*pbase;
@@ -719,7 +719,7 @@ D_DrawSpansPow2 (espan_t *pspan)
 			}
 
 			// Drawing phrase
-			if (texture_filtering == 0)
+			if (texture_filtering == 0 || fastmoving)
 			{
 				pdest = D_DrawSpan(pdest, pbase, s, t, sstep, tstep,
 						   spancount);
@@ -742,7 +742,7 @@ D_DrawZSpans
 =============
 */
 void
-D_DrawZSpans (espan_t *pspan)
+D_DrawZSpans (espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv)
 {
 	zvalue_t	izistep;
 	int		safe_step;
@@ -759,6 +759,15 @@ D_DrawZSpans (espan_t *pspan)
 		zvalue_t	*pdest;
 		float		zi;
 		float		du, dv;
+
+		if (!VID_CheckDamageZBuffer(pspan->u, pspan->v, pspan->count, 0))
+		{
+			continue;
+		}
+
+		// solid map walls damage
+		VID_DamageZBuffer(pspan->u, pspan->v);
+		VID_DamageZBuffer(pspan->u + pspan->count, pspan->v);
 
 		pdest = d_pzbuffer + (vid.width * pspan->v) + pspan->u;
 

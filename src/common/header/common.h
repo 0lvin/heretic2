@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "7.41"
+#define YQ2VERSION "7.42"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -52,6 +52,22 @@
 #else
  #define CFGDIR ".yq2"
 #endif
+
+// stuff to align variables/arrays
+#if __STDC_VERSION__ >= 201112L // C11 or newer
+	#define YQ2_ALIGNAS_SIZE(SIZE)  _Alignas(SIZE)
+	#define YQ2_ALIGNAS_TYPE(TYPE)  _Alignas(TYPE)
+#elif defined(__GNUC__) // GCC and clang should support this attribute
+	#define YQ2_ALIGNAS_SIZE(SIZE)  __attribute__(( __aligned__(SIZE) ))
+	#define YQ2_ALIGNAS_TYPE(TYPE)  __attribute__(( __aligned__(__alignof__(TYPE)) ))
+#elif defined(_MSC_VER)
+	#define YQ2_ALIGNAS_SIZE(SIZE)  __declspec( align(SIZE) )
+	#define YQ2_ALIGNAS_TYPE(TYPE)  __declspec( align( __alignof(TYPE) ) )
+#else
+	#warning "Please add a case for your compiler here to align correctly"
+	#define YQ2_ALIGNAS_TYPE(TYPE)
+#endif
+
 
 /* ================================================================== */
 
@@ -712,6 +728,21 @@ void Com_VPrintf(int print_level, const char *fmt, va_list argptr); /* print_lev
 void Com_MDPrintf(char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 void Com_Error(int code, char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 void Com_Quit(void);
+
+/* Ugly hack: Apprently (our?) MinGW-gcc under Windows
+   doesn't support %zd and requires %Id. */
+#ifdef WIN32
+#define YQ2_COM_PRIdS "%Id"
+#else
+#define YQ2_COM_PRIdS "%zd"
+#endif
+
+// terminate yq2 (with Com_Error()) if VAR is NULL (after malloc() or similar)
+// and print message about it
+#define YQ2_COM_CHECK_OOM(VAR, ALLOC_FN_NAME, ALLOC_SIZE) \
+	if(VAR == NULL) { \
+		Com_Error(ERR_FATAL, "%s for " YQ2_COM_PRIdS " bytes failed in %s() (%s == NULL)! Out of Memory?!\n", \
+		                     ALLOC_FN_NAME, (size_t)ALLOC_SIZE, __func__, #VAR); }
 
 int Com_ServerState(void);              /* this should have just been a cvar... */
 void Com_SetServerState(int state);
