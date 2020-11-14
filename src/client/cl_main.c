@@ -425,17 +425,29 @@ CL_Userinfo_f(void)
 void
 CL_Snd_Restart_f(void)
 {
+	OGG_SaveState();
+
 	S_Shutdown();
 	S_Init();
+
 	CL_RegisterSounds();
+
+	OGG_InitTrackList();
+	OGG_RecoverState();
 }
 
 int precache_check;
 int precache_spawncount;
 int precache_tex;
 int precache_model_skin;
-
 byte *precache_model;
+
+void CL_ResetPrecacheCheck (void)
+{
+	precache_check = CS_MODELS;
+	precache_model = 0;
+	precache_model_skin = 0;
+}
 
 /*
  * The server will send this command right
@@ -540,6 +552,13 @@ CL_InitLocal(void)
 	Cvar_Get("spectator", "0", CVAR_USERINFO);
 
 	cl_vwep = Cvar_Get("cl_vwep", "1", CVAR_ARCHIVE);
+
+#ifdef USE_CURL
+	cl_http_proxy = Cvar_Get("cl_http_proxy", "", 0);
+	cl_http_filelists = Cvar_Get("cl_http_filelists", "1", 0);
+	cl_http_downloads = Cvar_Get("cl_http_downloads", "1", CVAR_ARCHIVE);
+	cl_http_max_connections = Cvar_Get("cl_http_max_connections", "4", 0);
+#endif
 
 	/* register our commands */
 	Cmd_AddCommand("cmd", CL_ForwardToServer_f);
@@ -757,7 +776,15 @@ CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, 
 		}
 	}
 
-	// Update input stuff
+	// Run HTTP downloads more often while connecting.
+#ifdef USE_CURL
+	if (cls.state == ca_connected)
+	{
+		CL_RunHTTPDownloads();
+	}
+#endif
+
+	// Update input stuff.
 	if (packetframe || renderframe)
 	{
 		CL_ReadPackets();
@@ -786,6 +813,11 @@ CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, 
 	{
 		CL_SendCmd();
 		CL_CheckForResend();
+
+		// Run HTTP downloads during game.
+#ifdef USE_CURL
+		CL_RunHTTPDownloads();
+#endif
 	}
 
 	if (renderframe)
@@ -880,6 +912,10 @@ CL_Init(void)
 
 	M_Init();
 
+#ifdef USE_CURL
+	CL_InitHTTPDownloads();
+#endif
+
 	cls.disable_screen = true; /* don't draw yet */
 
 	CL_InitLocal();
@@ -901,6 +937,10 @@ CL_Shutdown(void)
 	}
 
 	isdown = true;
+
+#ifdef USE_CURL
+	CL_HTTP_Cleanup(true);
+#endif
 
 	CL_WriteConfiguration();
 

@@ -26,15 +26,14 @@
 
 #include "header/local.h"
 
-extern int modfilelen;
-
 void
-LoadSP2(model_t *mod, void *buffer)
+LoadSP2(model_t *mod, void *buffer, int modfilelen)
 {
 	dsprite_t *sprin, *sprout;
 	int i;
 
 	sprin = (dsprite_t *)buffer;
+	mod->extradata = Hunk_Begin(modfilelen);
 	sprout = Hunk_Alloc(modfilelen);
 
 	sprout->ident = LittleLong(sprin->ident);

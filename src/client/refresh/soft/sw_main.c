@@ -46,7 +46,6 @@ char		skyname[MAX_QPATH];
 vec3_t		skyaxis;
 
 refdef_t	r_newrefdef;
-model_t		*currentmodel;
 
 model_t		*r_worldmodel;
 
@@ -123,17 +122,14 @@ static cvar_t	*sw_aliasstats;
 cvar_t	*sw_clearcolor;
 cvar_t	*sw_drawflat;
 cvar_t	*sw_draworder;
-static cvar_t	*sw_maxedges;
-static cvar_t	*sw_maxsurfs;
 static cvar_t  *r_mode;
-static cvar_t	*sw_reportedgeout;
-static cvar_t	*sw_reportsurfout;
 cvar_t  *sw_stipplealpha;
 cvar_t	*sw_surfcacheoverride;
 cvar_t	*sw_waterwarp;
 static cvar_t	*sw_overbrightbits;
 cvar_t	*sw_custom_particles;
 cvar_t	*sw_texture_filtering;
+cvar_t	*sw_retexturing;
 
 cvar_t	*r_drawworld;
 static cvar_t	*r_drawentities;
@@ -155,8 +151,6 @@ static cvar_t	*vid_gamma;
 //PGM
 static cvar_t	*r_lockpvs;
 //PGM
-
-#define	STRINGER(x) "x"
 
 // sw_vars.c
 
@@ -196,53 +190,11 @@ zvalue_t	*d_pzbuffer;
 
 qboolean	insubmodel;
 
-static struct texture_buffer {
-	image_t	image;
-	byte	buffer[1024];
-} r_notexture_buffer;
-
 static void Draw_GetPalette (void);
 static void RE_BeginFrame( float camera_separation );
 static void Draw_BuildGammaTable(void);
 static void RE_EndFrame(void);
 static void R_DrawBeam(const entity_t *e);
-
-/*
-==================
-R_InitTextures
-==================
-*/
-static void
-R_InitTextures (void)
-{
-	int		x,y, m;
-
-	// create a simple checkerboard texture for the default
-	r_notexture_mip = &r_notexture_buffer.image;
-
-	r_notexture_mip->width = r_notexture_mip->height = 16;
-	r_notexture_mip->pixels[0] = r_notexture_buffer.buffer;
-	r_notexture_mip->pixels[1] = r_notexture_mip->pixels[0] + 16*16;
-	r_notexture_mip->pixels[2] = r_notexture_mip->pixels[1] + 8*8;
-	r_notexture_mip->pixels[3] = r_notexture_mip->pixels[2] + 4*4;
-
-	for (m=0 ; m<4 ; m++)
-	{
-		byte	*dest;
-
-		dest = r_notexture_mip->pixels[m];
-		for (y=0 ; y< (16>>m) ; y++)
-			for (x=0 ; x< (16>>m) ; x++)
-			{
-				if (  (y< (8>>m) ) ^ (x< (8>>m) ) )
-
-					*dest++ = 0;
-				else
-					*dest++ = 0xff;
-			}
-	}
-}
-
 
 /*
 ================
@@ -266,24 +218,21 @@ void R_ImageList_f(void);
 static void R_ScreenShot_f(void);
 
 static void
-R_Register (void)
+R_RegisterVariables (void)
 {
 	sw_aliasstats = ri.Cvar_Get ("sw_polymodelstats", "0", 0);
 	sw_clearcolor = ri.Cvar_Get ("sw_clearcolor", "2", 0);
 	sw_drawflat = ri.Cvar_Get ("sw_drawflat", "0", 0);
 	sw_draworder = ri.Cvar_Get ("sw_draworder", "0", 0);
-	sw_maxedges = ri.Cvar_Get ("sw_maxedges", STRINGER(MAXSTACKSURFACES), 0);
-	sw_maxsurfs = ri.Cvar_Get ("sw_maxsurfs", "0", 0);
 	sw_mipcap = ri.Cvar_Get ("sw_mipcap", "0", 0);
 	sw_mipscale = ri.Cvar_Get ("sw_mipscale", "1", 0);
-	sw_reportedgeout = ri.Cvar_Get ("sw_reportedgeout", "0", 0);
-	sw_reportsurfout = ri.Cvar_Get ("sw_reportsurfout", "0", 0);
 	sw_stipplealpha = ri.Cvar_Get( "sw_stipplealpha", "0", CVAR_ARCHIVE );
 	sw_surfcacheoverride = ri.Cvar_Get ("sw_surfcacheoverride", "0", 0);
 	sw_waterwarp = ri.Cvar_Get ("sw_waterwarp", "1", 0);
 	sw_overbrightbits = ri.Cvar_Get("sw_overbrightbits", "1.0", CVAR_ARCHIVE);
 	sw_custom_particles = ri.Cvar_Get("sw_custom_particles", "0", CVAR_ARCHIVE);
 	sw_texture_filtering = ri.Cvar_Get("sw_texture_filtering", "0", CVAR_ARCHIVE);
+	sw_retexturing = ri.Cvar_Get("sw_retexturing", "0", CVAR_ARCHIVE);
 	r_mode = ri.Cvar_Get( "r_mode", "0", CVAR_ARCHIVE );
 
 	r_lefthand = ri.Cvar_Get( "hand", "0", CVAR_USERINFO | CVAR_ARCHIVE );
@@ -337,10 +286,10 @@ R_Init
 static qboolean
 RE_Init(void)
 {
+	R_RegisterVariables ();
 	R_InitImages ();
 	Mod_Init ();
 	Draw_InitLocal ();
-	R_InitTextures ();
 
 	view_clipplanes[0].leftedge = true;
 	view_clipplanes[1].rightedge = true;
@@ -354,7 +303,6 @@ RE_Init(void)
 
 	r_aliasuvscale = 1.0;
 
-	R_Register ();
 	Draw_GetPalette ();
 
 	// create the window
@@ -430,16 +378,11 @@ R_ReallocateMapBuffers (void)
 
 		if (r_outofsurfaces)
 		{
-			//R_Printf(PRINT_ALL, "%s: not enough %d(+%d) surfaces\n",
-			//		     __func__, r_cnumsurfs, r_outofsurfaces);
 			r_cnumsurfs *= 2;
 		}
 
 		if (r_cnumsurfs < NUMSTACKSURFACES)
 			r_cnumsurfs = NUMSTACKSURFACES;
-
-		if (r_cnumsurfs < sw_maxsurfs->value)
-			r_cnumsurfs = sw_maxsurfs->value;
 
 		lsurfs = malloc (r_cnumsurfs * sizeof(surf_t));
 		if (!lsurfs)
@@ -469,16 +412,11 @@ R_ReallocateMapBuffers (void)
 
 		if (r_outofedges)
 		{
-			//R_Printf(PRINT_ALL, "%s: not enough %d(+%d) edges\n",
-			//		    __func__, r_numallocatededges, r_outofedges * 2 / 3);
 			r_numallocatededges *= 2;
 		}
 
 		if (r_numallocatededges < NUMSTACKEDGES)
 			r_numallocatededges = NUMSTACKEDGES;
-
-		if (r_numallocatededges < sw_maxedges->value)
-		    r_numallocatededges = sw_maxedges->value;
 
 		r_edges = malloc (r_numallocatededges * sizeof(edge_t));
 		if (!r_edges)
@@ -504,8 +442,6 @@ R_ReallocateMapBuffers (void)
 
 		if (r_outofverts)
 		{
-			//R_Printf(PRINT_ALL, "%s: not enough %d(+%d) finalverts\n",
-			//		    __func__, r_numallocatedverts, r_outofverts);
 			r_numallocatedverts *= 2;
 		}
 
@@ -533,8 +469,6 @@ R_ReallocateMapBuffers (void)
 
 		if (r_outoftriangles)
 		{
-			//R_Printf(PRINT_ALL, "%s: not enough %d(+%d) triangles\n",
-			//		    __func__, r_numallocatedtriangles, r_outoftriangles);
 			r_numallocatedtriangles *= 2;
 		}
 
@@ -642,7 +576,7 @@ R_DrawEntitiesOnList (void)
 	// all bmodels have already been drawn by the edge list
 	for (i=0 ; i<r_newrefdef.num_entities ; i++)
 	{
-		currententity = &r_newrefdef.entities[i];
+		entity_t *currententity = &r_newrefdef.entities[i];
 
 		if ( currententity->flags & RF_TRANSLUCENT )
 		{
@@ -655,12 +589,12 @@ R_DrawEntitiesOnList (void)
 			modelorg[0] = -r_origin[0];
 			modelorg[1] = -r_origin[1];
 			modelorg[2] = -r_origin[2];
-			VectorCopy( vec3_origin, r_entorigin );
-			R_DrawBeam( currententity );
+			VectorCopy(vec3_origin, r_entorigin);
+			R_DrawBeam(currententity);
 		}
 		else
 		{
-			currentmodel = currententity->model;
+			const model_t *currentmodel = currententity->model;
 			if (!currentmodel)
 			{
 				R_DrawNullModel();
@@ -672,11 +606,11 @@ R_DrawEntitiesOnList (void)
 			switch (currentmodel->type)
 			{
 			case mod_sprite:
-				R_DrawSprite ();
+				R_DrawSprite(currententity, currentmodel);
 				break;
 
 			case mod_alias:
-				R_AliasDrawModel ();
+				R_AliasDrawModel(currententity, currentmodel);
 				break;
 
 			default:
@@ -690,7 +624,7 @@ R_DrawEntitiesOnList (void)
 
 	for (i=0 ; i<r_newrefdef.num_entities ; i++)
 	{
-		currententity = &r_newrefdef.entities[i];
+		entity_t *currententity = &r_newrefdef.entities[i];
 
 		if ( !( currententity->flags & RF_TRANSLUCENT ) )
 			continue;
@@ -700,12 +634,12 @@ R_DrawEntitiesOnList (void)
 			modelorg[0] = -r_origin[0];
 			modelorg[1] = -r_origin[1];
 			modelorg[2] = -r_origin[2];
-			VectorCopy( vec3_origin, r_entorigin );
-			R_DrawBeam( currententity );
+			VectorCopy(vec3_origin, r_entorigin);
+			R_DrawBeam(currententity);
 		}
 		else
 		{
-			currentmodel = currententity->model;
+			const model_t *currentmodel = currententity->model;
 			if (!currentmodel)
 			{
 				R_DrawNullModel();
@@ -717,11 +651,11 @@ R_DrawEntitiesOnList (void)
 			switch (currentmodel->type)
 			{
 			case mod_sprite:
-				R_DrawSprite ();
+				R_DrawSprite(currententity, currentmodel);
 				break;
 
 			case mod_alias:
-				R_AliasDrawModel ();
+				R_AliasDrawModel(currententity, currentmodel);
 				break;
 
 			default:
@@ -908,8 +842,8 @@ R_DrawBEntitiesOnList (void)
 
 	for (i=0 ; i<r_newrefdef.num_entities ; i++)
 	{
-		currententity = &r_newrefdef.entities[i];
-		currentmodel = currententity->model;
+		entity_t *currententity = &r_newrefdef.entities[i];
+		const model_t *currentmodel = currententity->model;
 		if (!currentmodel)
 			continue;
 		if (currentmodel->nummodelsurfaces == 0)
@@ -939,7 +873,7 @@ R_DrawBEntitiesOnList (void)
 		r_pcurrentvertbase = currentmodel->vertexes;
 
 		// FIXME: stop transforming twice
-		R_RotateBmodel ();
+		R_RotateBmodel(currententity);
 
 		// calculate dynamic lighting for bmodel
 		R_PushDlights (currentmodel);
@@ -948,14 +882,14 @@ R_DrawBEntitiesOnList (void)
 		{
 			// not a leaf; has to be clipped to the world BSP
 			r_clipflags = clipflags;
-			R_DrawSolidClippedSubmodelPolygons (currentmodel, topnode);
+			R_DrawSolidClippedSubmodelPolygons(currententity, currentmodel, topnode);
 		}
 		else
 		{
 			// falls entirely in one leaf, so we just put all the
 			// edges in the edge list and let 1/z sorting handle
 			// drawing order
-			R_DrawSubmodelPolygons (currentmodel, clipflags, topnode);
+			R_DrawSubmodelPolygons(currententity, currentmodel, clipflags, topnode);
 		}
 
 		// put back world rotation and frustum clipping
@@ -1079,7 +1013,7 @@ R_CalcPalette (void)
 //=======================================================================
 
 static void
-R_SetLightLevel (void)
+R_SetLightLevel (const entity_t *currententity)
 {
 	vec3_t		light;
 
@@ -1090,7 +1024,7 @@ R_SetLightLevel (void)
 	}
 
 	// save off light value for server to look at (BIG HACK!)
-	R_LightPoint (r_newrefdef.vieworg, light);
+	R_LightPoint (currententity, r_newrefdef.vieworg, light);
 	r_lightlevel->value = 150.0 * light[0];
 }
 
@@ -1107,7 +1041,9 @@ RE_RenderFrame (refdef_t *fd)
 	r_newrefdef = *fd;
 
 	if (!r_worldmodel && !( r_newrefdef.rdflags & RDF_NOWORLDMODEL ) )
-		ri.Sys_Error (ERR_FATAL,"R_RenderView: NULL worldmodel");
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: NULL worldmodel", __func__);
+	}
 
 	VectorCopy (fd->vieworg, r_refdef.vieworg);
 	VectorCopy (fd->viewangles, r_refdef.viewangles);
@@ -1135,7 +1071,7 @@ RE_RenderFrame (refdef_t *fd)
 	}
 
 	// Draw enemies, barrel etc...
-	// Use Z-Buffer in read mode only.
+	// Use Z-Buffer mostly in read mode only.
 	R_DrawEntitiesOnList ();
 
 	if (r_dspeeds->value)
@@ -1151,10 +1087,10 @@ RE_RenderFrame (refdef_t *fd)
 		dp_time2 = SDL_GetTicks();
 
 	// Perform pixel palette blending ia the pics/colormap.pcx lower part lookup table.
-	R_DrawAlphaSurfaces();
+	R_DrawAlphaSurfaces(&r_worldentity);
 
 	// Save off light value for server to look at (BIG HACK!)
-	R_SetLightLevel ();
+	R_SetLightLevel (&r_worldentity);
 
 	if (r_dowarp)
 		D_WarpScreen ();
@@ -1176,12 +1112,6 @@ RE_RenderFrame (refdef_t *fd)
 
 	if (r_dspeeds->value)
 		R_PrintDSpeeds ();
-
-	if (sw_reportsurfout->value && r_outofsurfaces)
-		R_Printf(PRINT_ALL,"Short %d surfaces\n", r_outofsurfaces);
-
-	if (sw_reportedgeout->value && r_outofedges)
-		R_Printf(PRINT_ALL,"Short roughly %d edges\n", r_outofedges * 2 / 3);
 
 	R_ReallocateMapBuffers();
 }
@@ -1265,19 +1195,21 @@ RE_BeginFrame( float camera_separation )
 			if ( err == rserr_invalid_mode )
 			{
 				ri.Cvar_SetValue( "r_mode", sw_state.prev_mode );
-				R_Printf( PRINT_ALL, "ref_soft::RE_BeginFrame() - could not set mode\n" );
+				R_Printf(PRINT_ALL, "%s: could not set mode", __func__);
 			}
 			else if ( err == rserr_invalid_fullscreen )
 			{
 				R_InitGraphics( vid.width, vid.height );
 
 				ri.Cvar_SetValue( "vid_fullscreen", 0);
-				R_Printf( PRINT_ALL, "ref_soft::RE_BeginFrame() - fullscreen unavailable in this mode\n" );
+				R_Printf(PRINT_ALL, "%s: fullscreen unavailable in this mode",
+						__func__);
 				sw_state.prev_mode = r_mode->value;
 			}
 			else
 			{
-				ri.Sys_Error( ERR_FATAL, "ref_soft::RE_BeginFrame() - catastrophic mode change failure\n" );
+				ri.Sys_Error(ERR_FATAL, "%s: Catastrophic mode change failure",
+						__func__);
 			}
 		}
 	}

@@ -26,6 +26,10 @@
 # User configurable options
 # -------------------------
 
+# Enables HTTP support through cURL. Used for
+# HTTP download.
+WITH_CURL:=yes
+
 # Enables the optional OpenAL sound system.
 # To use it your system needs libopenal.so.1
 # or openal32.dll (we recommend openal-soft)
@@ -368,6 +372,10 @@ build/client/%.o: %.c
 
 release/yquake2.exe : LDFLAGS += -mwindows
 
+ifeq ($(WITH_CURL),yes)
+release/yquake2.exe : CFLAGS += -DUSE_CURL
+endif
+
 ifeq ($(WITH_OPENAL),yes)
 release/yquake2.exe : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"openal32.dll"'
 endif
@@ -385,10 +393,10 @@ endif
 	$(MAKE) release/quake2
 
 ifeq ($(YQ2_OSTYPE), Darwin)
-build/client/%.o : %.m
+build/client/%.o : %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
-	${Q}$(CC) $(OSX_ARCH) -x objective-c -c $< -o $@
+	${Q}$(CC) $(OSX_ARCH) -x objective-c -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE)  $< -o $@
 else
 build/client/%.o: %.c
 	@echo "===> CC $<"
@@ -397,6 +405,10 @@ build/client/%.o: %.c
 endif
 
 release/quake2 : CFLAGS += -Wno-unused-result
+
+ifeq ($(WITH_CURL),yes)
+release/quake2 : CFLAGS += -DUSE_CURL
+endif
 
 ifeq ($(WITH_OPENAL),yes)
 ifeq ($(YQ2_OSTYPE), OpenBSD)
@@ -705,6 +717,8 @@ CLIENT_OBJS_ := \
 	src/client/cl_screen.o \
 	src/client/cl_tempentities.o \
 	src/client/cl_view.o \
+	src/client/curl/download.o \
+	src/client/curl/qcurl.o \
 	src/client/input/sdl.o \
 	src/client/menu/menu.o \
 	src/client/menu/qmenu.o \
@@ -846,7 +860,7 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/soft/sw_model.o \
 	src/client/refresh/soft/sw_part.o \
 	src/client/refresh/soft/sw_poly.o \
-	src/client/refresh/soft/sw_polyse.o \
+	src/client/refresh/soft/sw_polyset.o \
 	src/client/refresh/soft/sw_rast.o \
 	src/client/refresh/soft/sw_scan.o \
 	src/client/refresh/soft/sw_sprite.o \

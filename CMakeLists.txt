@@ -44,6 +44,7 @@ endif()
 string(REPLACE "-O3" "-O2" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 
 # Compilation time options.
+option(CURL_SUPPORT "cURL support" ON)
 option(OPENAL_SUPPORT "OpenAL support" ON)
 option(SYSTEMWIDE_SUPPORT "Enable systemwide installation of game assets" OFF)
 
@@ -107,6 +108,12 @@ if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "FreeBSD")
 	find_library(EXECINFO_LIBRARIES execinfo /usr/lib /usr/local/lib)
 	list(APPEND yquake2ClientLinkerFlags ${EXECINFO_LIBRARIES})
 	list(APPEND yquake2ServerLinkerFlags ${EXECINFO_LIBRARIES})
+endif()
+
+# cURL support.
+if (${CURL_SUPPORT})
+	find_package(CURL REQUIRED)
+	add_definitions(-DUSE_CURL)
 endif()
 
 # OpenAL support.
@@ -302,6 +309,8 @@ set(Client-Source
 	${CLIENT_SRC_DIR}/cl_screen.c
 	${CLIENT_SRC_DIR}/cl_tempentities.c
 	${CLIENT_SRC_DIR}/cl_view.c
+	${CLIENT_SRC_DIR}/curl/download.c
+	${CLIENT_SRC_DIR}/curl/qcurl.c
 	${CLIENT_SRC_DIR}/input/sdl.c
 	${CLIENT_SRC_DIR}/menu/menu.c
 	${CLIENT_SRC_DIR}/menu/qmenu.c
@@ -352,6 +361,8 @@ set(Client-Header
 	${CLIENT_SRC_DIR}/header/console.h
 	${CLIENT_SRC_DIR}/header/keyboard.h
 	${CLIENT_SRC_DIR}/header/screen.h
+	${CLIENT_SRC_DIR}/curl/header/download.h
+	${CLIENT_SRC_DIR}/curl/header/qcurl.h
 	${CLIENT_SRC_DIR}/input/header/input.h
 	${CLIENT_SRC_DIR}/menu/header/qmenu.h
 	${CLIENT_SRC_DIR}/sound/header/local.h
@@ -510,7 +521,7 @@ set(SOFT-Source
 	${REF_SRC_DIR}/soft/sw_model.c
 	${REF_SRC_DIR}/soft/sw_part.c
 	${REF_SRC_DIR}/soft/sw_poly.c
-	${REF_SRC_DIR}/soft/sw_polyse.c
+	${REF_SRC_DIR}/soft/sw_polyset.c
 	${REF_SRC_DIR}/soft/sw_rast.c
 	${REF_SRC_DIR}/soft/sw_scan.c
 	${REF_SRC_DIR}/soft/sw_sprite.c
@@ -524,7 +535,9 @@ set(SOFT-Source
 	)
 
 set(SOFT-Header
-	${REF_SRC_DIR}/constants/adivtab.h
+	${REF_SRC_DIR}/ref_shared.h
+	${REF_SRC_DIR}/files/stb_image.h
+	${REF_SRC_DIR}/files/stb_image_resize.h
 	${REF_SRC_DIR}/soft/header/local.h
 	${REF_SRC_DIR}/soft/header/model.h
 	${COMMON_SRC_DIR}/header/shared.h

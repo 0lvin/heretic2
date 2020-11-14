@@ -40,9 +40,9 @@ byte *mod_base;
 static int	numentitychars;
 static char map_entitystring[MAX_MAP_ENTSTRING];
 
-void LoadSP2(model_t *mod, void *buffer);
-void Mod_LoadBrushModel(model_t *mod, void *buffer);
-void LoadMD2(model_t *mod, void *buffer);
+void LoadSP2(model_t *mod, void *buffer, int modfilelen);
+void Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen);
+void LoadMD2(model_t *mod, void *buffer, int modfilelen);
 void LM_BuildPolygonFromSurface(msurface_t *fa);
 void LM_CreateSurfaceLightmap(msurface_t *surf);
 void LM_EndBuildingLightmaps(void);
@@ -66,7 +66,7 @@ Mod_PointInLeaf(vec3_t p, model_t *model)
 
 	if (!model || !model->nodes)
 	{
-		ri.Sys_Error(ERR_DROP, "Mod_PointInLeaf: bad model");
+		ri.Sys_Error(ERR_DROP, "%s: bad model", __func__);
 	}
 
 	node = model->nodes;
@@ -151,7 +151,7 @@ Mod_ForName(char *name, qboolean crash)
 
 	if (!name[0])
 	{
-		ri.Sys_Error(ERR_DROP, "Mod_ForName: NULL name");
+		ri.Sys_Error(ERR_DROP, "%s: NULL name", __func__);
 	}
 
 	/* inline models are grabbed only from worldmodel */
@@ -161,7 +161,8 @@ Mod_ForName(char *name, qboolean crash)
 
 		if ((i < 1) || !r_worldmodel || (i >= r_worldmodel->numsubmodels))
 		{
-			ri.Sys_Error(ERR_DROP, "bad inline model number");
+			ri.Sys_Error(ERR_DROP, "%s: bad inline model number",
+					__func__);
 		}
 
 		return &mod_inline[i];
@@ -209,7 +210,8 @@ Mod_ForName(char *name, qboolean crash)
 	{
 		if (crash)
 		{
-			ri.Sys_Error(ERR_DROP, "Mod_NumForName: %s not found", mod->name);
+			ri.Sys_Error(ERR_DROP, "%s: %s not found",
+					__func__, mod->name);
 		}
 
 		memset(mod->name, 0, sizeof(mod->name));
@@ -222,24 +224,20 @@ Mod_ForName(char *name, qboolean crash)
 	switch (LittleLong(*(unsigned *)buf))
 	{
 		case IDALIASHEADER:
-			loadmodel->extradata = Hunk_Begin(0x200000);
-			LoadMD2(mod, buf);
+			LoadMD2(mod, buf, modfilelen);
 			break;
 
 		case IDSPRITEHEADER:
-			loadmodel->extradata = Hunk_Begin(0x10000);
-			LoadSP2(mod, buf);
+			LoadSP2(mod, buf, modfilelen);
 			break;
 
 		case IDBSPHEADER:
-			loadmodel->extradata = Hunk_Begin(0x1000000);
-			Mod_LoadBrushModel(mod, buf);
+			Mod_LoadBrushModel(mod, buf, modfilelen);
 			break;
 
 		default:
-			ri.Sys_Error(ERR_DROP,
-				"Mod_NumForName: unknown fileid for %s",
-				mod->name);
+			ri.Sys_Error(ERR_DROP, "%s: unknown fileid for %s",
+					__func__, mod->name);
 			break;
 	}
 
@@ -297,8 +295,8 @@ Mod_LoadVertexes(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -326,8 +324,8 @@ Mod_LoadSubmodels(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -364,8 +362,8 @@ Mod_LoadEdges(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -394,8 +392,8 @@ Mod_LoadTexinfo(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -523,8 +521,8 @@ Mod_LoadFaces(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -558,7 +556,8 @@ Mod_LoadFaces(lump_t *l)
 
 		if ((ti < 0) || (ti >= loadmodel->numtexinfo))
 		{
-			ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: bad texinfo number");
+			ri.Sys_Error(ERR_DROP, "%s: bad texinfo number",
+					__func__);
 		}
 
 		out->texinfo = loadmodel->texinfo + ti;
@@ -637,8 +636,8 @@ Mod_LoadNodes(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -691,8 +690,8 @@ Mod_LoadLeafs(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -703,6 +702,8 @@ Mod_LoadLeafs(lump_t *l)
 
 	for (i = 0; i < count; i++, in++, out++)
 	{
+		unsigned firstleafface;
+
 		for (j = 0; j < 3; j++)
 		{
 			out->minmaxs[j] = LittleShort(in->mins[j]);
@@ -715,9 +716,16 @@ Mod_LoadLeafs(lump_t *l)
 		out->cluster = LittleShort(in->cluster);
 		out->area = LittleShort(in->area);
 
-		out->firstmarksurface = loadmodel->marksurfaces +
-								LittleShort(in->firstleafface);
-		out->nummarksurfaces = LittleShort(in->numleaffaces);
+		// make unsigned long from signed short
+		firstleafface = LittleShort(in->firstleafface) & 0xFFFF;
+		out->nummarksurfaces = LittleShort(in->numleaffaces) & 0xFFFF;
+
+		out->firstmarksurface = loadmodel->marksurfaces + firstleafface;
+		if ((firstleafface + out->nummarksurfaces) > loadmodel->nummarksurfaces)
+		{
+			ri.Sys_Error(ERR_DROP, "%s: wrong marksurfaces position in %s",
+				__func__, loadmodel->name);
+		}
 	}
 }
 
@@ -732,8 +740,8 @@ Mod_LoadMarksurfaces(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -748,7 +756,8 @@ Mod_LoadMarksurfaces(lump_t *l)
 
 		if ((j < 0) || (j >= loadmodel->numsurfaces))
 		{
-			ri.Sys_Error(ERR_DROP, "Mod_ParseMarksurfaces: bad surface number");
+			ri.Sys_Error(ERR_DROP, "%s: bad surface number",
+					__func__);
 		}
 
 		out[i] = loadmodel->surfaces + j;
@@ -765,16 +774,16 @@ Mod_LoadSurfedges(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 
 	if ((count < 1) || (count >= MAX_MAP_SURFEDGES))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: bad surfedges count in %s: %i",
-				loadmodel->name, count);
+		ri.Sys_Error(ERR_DROP, "%s: bad surfedges count in %s: %i",
+				__func__, loadmodel->name, count);
 	}
 
 	out = Hunk_Alloc(count * sizeof(*out));
@@ -801,8 +810,8 @@ Mod_LoadPlanes(lump_t *l)
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "MOD_LoadBmodel: funny lump size in %s",
-				loadmodel->name);
+		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -844,13 +853,21 @@ Mod_LoadEntityString(lump_t *l)
 	memcpy(map_entitystring, mod_base + l->fileofs, l->filelen);
 }
 
-void
-Mod_LoadBrushModel(model_t *mod, void *buffer)
+Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen)
 {
 	int i;
 	dheader_t *header;
 	mmodel_t *bm;
 
+	/* Because Quake II is is sometimes so ... "optimized" this
+	 * is going to be somewhat dirty. The map data contains indices
+	 * that we're converting into pointers. Yeah. No comments. The
+	 * indices are 32 bit long, they just encode the offset between
+	 * the hunks base address and the position in the hunk, so 32 bit
+	 * pointers should be enough. But let's play save, waste some
+	 * allocations and just take the plattforms pointer size instead
+	 * of relying on assumptions. */
+	loadmodel->extradata = Hunk_Begin(modfilelen * sizeof(void*));
 	loadmodel->type = mod_brush;
 
 	if (loadmodel != mod_known)
@@ -864,8 +881,8 @@ Mod_LoadBrushModel(model_t *mod, void *buffer)
 
 	if (i != BSPVERSION)
 	{
-		ri.Sys_Error(ERR_DROP, "Mod_LoadBrushModel: %s has wrong version number (%i should be %i)",
-				mod->name, i, BSPVERSION);
+		ri.Sys_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
+				__func__, mod->name, i, BSPVERSION);
 	}
 
 	/* swap all the lumps */
@@ -911,7 +928,8 @@ Mod_LoadBrushModel(model_t *mod, void *buffer)
 
 		if (starmod->firstnode >= loadmodel->numnodes)
 		{
-			ri.Sys_Error(ERR_DROP, "Inline model %i has bad firstnode", i);
+			ri.Sys_Error(ERR_DROP, "%s: Inline model %i has bad firstnode",
+					__func__, i);
 		}
 
 		VectorCopy(bm->maxs, starmod->maxs);

@@ -32,6 +32,7 @@
 #include <io.h>
 #include <shlobj.h>
 #include <stdio.h>
+#include <wchar.h>
 #include <windows.h>
 
 #include "../../common/header/common.h"
@@ -533,6 +534,58 @@ Sys_GetHomeDir(void)
 	snprintf(gdir, sizeof(gdir), "%s/%s/", profile, CFGDIR);
 
 	return gdir;
+}
+
+void
+Sys_Remove(const char *path)
+{
+	WCHAR wpath[MAX_OSPATH] = {0};
+	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
+
+	_wremove(wpath);
+}
+
+int
+Sys_Rename(const char *from, const char *to)
+{
+	WCHAR wfrom[MAX_OSPATH] = {0};
+	MultiByteToWideChar(CP_UTF8, 0, from, -1, wfrom, MAX_OSPATH);
+
+	WCHAR wto[MAX_OSPATH] = {0};
+	MultiByteToWideChar(CP_UTF8, 0, to, -1, wto, MAX_OSPATH);
+
+	return _wrename(wfrom, wto);
+}
+
+void
+Sys_RemoveDir(const char *path)
+{
+	WCHAR wpath[MAX_OSPATH] = {0};
+	WCHAR wpathwithwildcard[MAX_OSPATH] = {0};
+	WCHAR wpathwithfilename[MAX_OSPATH] = {0};
+	WIN32_FIND_DATAW fd;
+	
+	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
+
+	wcscat_s(wpathwithwildcard, MAX_OSPATH, wpath);
+	wcscat_s(wpathwithwildcard, MAX_OSPATH, L"\\*.*");
+	
+	HANDLE hFind = FindFirstFileW(wpathwithwildcard, &fd);
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			wmemset(wpathwithfilename, 0, MAX_OSPATH);
+			wcscat_s(wpathwithfilename, MAX_OSPATH, wpath);
+			wcscat_s(wpathwithfilename, MAX_OSPATH, fd.cFileName);
+			
+			DeleteFileW(wpathwithfilename);
+		}
+		while (FindNextFileW(hFind, &fd));
+		FindClose(hFind);
+	}
+	
+	RemoveDirectoryW(wpath);
 }
 
 /* ======================================================================= */

@@ -21,22 +21,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "header/local.h"
 
-static int		lightleft, blocksize, sourcetstep;
-static int		lightright, lightleftstep, lightrightstep, blockdivshift;
+static int		sourcetstep;
 static void		*prowdestbase;
 static unsigned char	*pbasesource;
 static int		r_stepback;
 static int		r_lightwidth;
-static int		r_numhblocks, r_numvblocks;
+static int		r_numvblocks;
 static unsigned char	*r_source, *r_sourcemax;
 static unsigned		*r_lightptr;
 
-static void R_DrawSurfaceBlock8_anymip (int level, int surfrowbytes);
-
 void R_BuildLightMap (drawsurf_t *drawsurf);
 extern	unsigned	blocklights[1024];	// allow some very large lightmaps
-
-static	float	surfscale;
 
 static int	sc_size;
 static surfcache_t	*sc_rover;
@@ -50,11 +45,14 @@ Returns the proper texture for a given time and base texture
 ===============
 */
 static image_t *
-R_TextureAnimation (mtexinfo_t *tex)
+R_TextureAnimation (const entity_t *currententity, mtexinfo_t *tex)
 {
 	int c;
 
 	if (!tex->next)
+		return tex->image;
+
+	if (!currententity)
 		return tex->image;
 
 	c = currententity->frame % tex->numframes;
@@ -65,6 +63,60 @@ R_TextureAnimation (mtexinfo_t *tex)
 	}
 
 	return tex->image;
+}
+
+
+/*
+================
+R_DrawSurfaceBlock8_anymip
+================
+*/
+static void
+R_DrawSurfaceBlock8_anymip (int level, int surfrowbytes)
+{
+	int		v, i, b, lightstep, lighttemp, light, size;
+	unsigned char	pix, *psource, *prowdest;
+
+	size = 1 << level;
+	psource = pbasesource;
+	prowdest = prowdestbase;
+
+	for (v=0 ; v<r_numvblocks ; v++)
+	{
+		int	lightleft, lightright;
+		int	lightleftstep, lightrightstep;
+
+		// FIXME: use delta rather than both right and left, like ASM?
+		lightleft = r_lightptr[0];
+		lightright = r_lightptr[1];
+		r_lightptr += r_lightwidth;
+		lightleftstep = (r_lightptr[0] - lightleft) >> level;
+		lightrightstep = (r_lightptr[1] - lightright) >> level;
+
+		for (i=0 ; i<size ; i++)
+		{
+			lighttemp = lightleft - lightright;
+			lightstep = lighttemp >> level;
+
+			light = lightright;
+
+			for (b=(size-1); b>=0; b--)
+			{
+				pix = psource[b];
+				prowdest[b] = ((unsigned char *)vid_colormap)
+						[(light & 0xFF00) + pix];
+				light += lightstep;
+			}
+
+			psource += sourcetstep;
+			lightright += lightrightstep;
+			lightleft += lightleftstep;
+			prowdest += surfrowbytes;
+		}
+
+		if (psource >= r_sourcemax)
+			psource -= r_stepback;
+	}
 }
 
 
@@ -80,8 +132,11 @@ R_DrawSurface (drawsurf_t *drawsurf)
 	int		smax, tmax, twidth;
 	int		u;
 	int		soffset, basetoffset, texwidth;
+	int		blocksize;
 	unsigned char	*pcolumndest;
 	image_t		*mt;
+	int		blockdivshift;
+	int		r_numhblocks;
 
 	mt = drawsurf->image;
 
@@ -101,9 +156,6 @@ R_DrawSurface (drawsurf_t *drawsurf)
 	r_numvblocks = drawsurf->surfheight >> blockdivshift;
 
 	//==============================
-
-	// TODO: only needs to be set when there is a display settings change
-	// blocksize = blocksize;
 
 	smax = mt->width >> drawsurf->surfmip;
 	twidth = texwidth;
@@ -143,60 +195,6 @@ R_DrawSurface (drawsurf_t *drawsurf)
 
 
 //=============================================================================
-
-/*
-================
-R_DrawSurfaceBlock8_anymip
-================
-*/
-static void
-R_DrawSurfaceBlock8_anymip (int level, int surfrowbytes)
-{
-	int		v, i, b, lightstep, lighttemp, light, size;
-	unsigned char	pix, *psource, *prowdest;
-
-	size = 1 << level;
-	psource = pbasesource;
-	prowdest = prowdestbase;
-
-	for (v=0 ; v<r_numvblocks ; v++)
-	{
-		// FIXME: make these locals?
-		// FIXME: use delta rather than both right and left, like ASM?
-		lightleft = r_lightptr[0];
-		lightright = r_lightptr[1];
-		r_lightptr += r_lightwidth;
-		lightleftstep = (r_lightptr[0] - lightleft) >> level;
-		lightrightstep = (r_lightptr[1] - lightright) >> level;
-
-		for (i=0 ; i<size ; i++)
-		{
-			lighttemp = lightleft - lightright;
-			lightstep = lighttemp >> level;
-
-			light = lightright;
-
-			for (b=(size-1); b>=0; b--)
-			{
-				pix = psource[b];
-				prowdest[b] = ((unsigned char *)vid_colormap)
-						[(light & 0xFF00) + pix];
-				light += lightstep;
-			}
-
-			psource += sourcetstep;
-			lightright += lightrightstep;
-			lightleft += lightleftstep;
-			prowdest += surfrowbytes;
-		}
-
-		if (psource >= r_sourcemax)
-			psource -= r_stepback;
-	}
-}
-
-//============================================================================
-
 
 /*
 ================
@@ -275,16 +273,22 @@ D_SCAlloc (int width, int size)
 	surfcache_t	*new;
 
 	if ((width < 0) || (width > 256))
-		ri.Sys_Error (ERR_FATAL,"D_SCAlloc: bad cache width %d\n", width);
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: bad cache width %d\n", __func__, width);
+	}
 
 	if ((size <= 0) || (size > 0x10000))
-		ri.Sys_Error (ERR_FATAL,"D_SCAlloc: bad cache size %d\n", size);
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: bad cache size %d\n", __func__, size);
+	}
 
 	// Add header size
 	size += ((char*)sc_base->data - (char*)sc_base);
 	size = (size + 3) & ~3;
 	if (size > sc_size)
-		ri.Sys_Error (ERR_FATAL,"D_SCAlloc: %i > cache size of %i",size, sc_size);
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: %i > cache size of %i", __func__, size, sc_size);
+	}
 
 	// if there is not size bytes after the rover, reset to the start
 	if ( !sc_rover || (byte *)sc_rover - (byte *)sc_base > sc_size - size)
@@ -302,7 +306,9 @@ D_SCAlloc (int width, int size)
 		// free another
 		sc_rover = sc_rover->next;
 		if (!sc_rover)
-			ri.Sys_Error (ERR_FATAL,"D_SCAlloc: hit the end of memory");
+		{
+			ri.Sys_Error(ERR_FATAL, "%s: hit the end of memory", __func__);
+		}
 		if (sc_rover->owner)
 			*sc_rover->owner = NULL;
 
@@ -344,14 +350,15 @@ D_CacheSurface
 ================
 */
 surfcache_t *
-D_CacheSurface (msurface_t *surface, int miplevel)
+D_CacheSurface (const entity_t *currententity, msurface_t *surface, int miplevel)
 {
 	surfcache_t	*cache;
+	float		surfscale;
 
 	//
 	// if the surface is animating or flashing, flush the cache
 	//
-	r_drawsurf.image = R_TextureAnimation (surface->texinfo);
+	r_drawsurf.image = R_TextureAnimation (currententity, surface->texinfo);
 	r_drawsurf.lightadj[0] = r_newrefdef.lightstyles[surface->styles[0]].white*128;
 	r_drawsurf.lightadj[1] = r_newrefdef.lightstyles[surface->styles[1]].white*128;
 	r_drawsurf.lightadj[2] = r_newrefdef.lightstyles[surface->styles[2]].white*128;
