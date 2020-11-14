@@ -356,7 +356,6 @@ typedef struct
 	float max_anisotropy;
 
 	qboolean shaders;
-	qboolean vertex_shaders;
 	qboolean fragment_shaders;
 	qboolean float_textures;
 	qboolean texture_buffer_objects;

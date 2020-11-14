@@ -178,36 +178,24 @@ typedef void ( APIENTRY * PFNGLCOMPILESHADERARBPROC) (GLhandleARB shaderObj);
 typedef GLhandleARB ( APIENTRY * PFNGLCREATEPROGRAMOBJECTARBPROC) (void);
 typedef GLhandleARB ( APIENTRY * PFNGLCREATESHADEROBJECTARBPROC) (GLenum shaderType);
 typedef void ( APIENTRY * PFNGLDELETEOBJECTARBPROC) (GLhandleARB obj);
-typedef void ( APIENTRY * PFNGLGETACTIVEUNIFORMARBPROC) (GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei* length, GLint *size, GLenum *type, GLcharARB *name);
-typedef void ( APIENTRY * PFNGLGETATTACHEDOBJECTSARBPROC) (GLhandleARB containerObj, GLsizei maxCount, GLsizei* count, GLhandleARB *obj);
 typedef void ( APIENTRY * PFNGLGETINFOLOGARBPROC) (GLhandleARB obj, GLsizei maxLength, GLsizei* length, GLcharARB *infoLog);
-typedef void ( APIENTRY * PFNGLGETOBJECTPARAMETERFVARBPROC) (GLhandleARB obj, GLenum pname, GLfloat* params);
 typedef void ( APIENTRY * PFNGLGETOBJECTPARAMETERIVARBPROC) (GLhandleARB obj, GLenum pname, GLint* params);
-typedef void ( APIENTRY * PFNGLGETSHADERSOURCEARBPROC) (GLhandleARB obj, GLsizei maxLength, GLsizei* length, GLcharARB *source);
 typedef GLint ( APIENTRY * PFNGLGETUNIFORMLOCATIONARBPROC) (GLhandleARB programObj, const GLcharARB* name);
-typedef void ( APIENTRY * PFNGLGETUNIFORMFVARBPROC) (GLhandleARB programObj, GLint location, GLfloat* params);
-typedef void ( APIENTRY * PFNGLGETUNIFORMIVARBPROC) (GLhandleARB programObj, GLint location, GLint* params);
 typedef void ( APIENTRY * PFNGLLINKPROGRAMARBPROC) (GLhandleARB programObj);
 typedef void ( APIENTRY * PFNGLSHADERSOURCEARBPROC) (GLhandleARB shaderObj, GLsizei count, const GLcharARB ** string, const GLint *length);
 typedef void ( APIENTRY * PFNGLUNIFORM1FARBPROC) (GLint location, GLfloat v0);
-typedef void ( APIENTRY * PFNGLUNIFORM1FVARBPROC) (GLint location, GLsizei count, const GLfloat* value);
 typedef void ( APIENTRY * PFNGLUNIFORM1IARBPROC) (GLint location, GLint v0);
-typedef void ( APIENTRY * PFNGLUNIFORM1IVARBPROC) (GLint location, GLsizei count, const GLint* value);
 typedef void ( APIENTRY * PFNGLUNIFORM2FARBPROC) (GLint location, GLfloat v0, GLfloat v1);
 typedef void ( APIENTRY * PFNGLUNIFORM2FVARBPROC) (GLint location, GLsizei count, const GLfloat* value);
 typedef void ( APIENTRY * PFNGLUNIFORM2IARBPROC) (GLint location, GLint v0, GLint v1);
 typedef void ( APIENTRY * PFNGLUNIFORM2IVARBPROC) (GLint location, GLsizei count, const GLint* value);
 typedef void ( APIENTRY * PFNGLUNIFORM3FARBPROC) (GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-typedef void ( APIENTRY * PFNGLUNIFORM3FVARBPROC) (GLint location, GLsizei count, const GLfloat* value);
-typedef void ( APIENTRY * PFNGLUNIFORM3IARBPROC) (GLint location, GLint v0, GLint v1, GLint v2);
-typedef void ( APIENTRY * PFNGLUNIFORM3IVARBPROC) (GLint location, GLsizei count, const GLint* value);
 typedef void ( APIENTRY * PFNGLUNIFORM4FARBPROC) (GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
 typedef void ( APIENTRY * PFNGLUNIFORM4FVARBPROC) (GLint location, GLsizei count, const GLfloat* value);
 typedef void ( APIENTRY * PFNGLUNIFORM4IARBPROC) (GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
 typedef void ( APIENTRY * PFNGLUNIFORM4IVARBPROC) (GLint location, GLsizei count, const GLint* value);
 typedef void ( APIENTRY * PFNGLUNIFORMMATRIX4FVARBPROC) (GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
 typedef void ( APIENTRY * PFNGLUSEPROGRAMOBJECTARBPROC) (GLhandleARB programObj);
-typedef void ( APIENTRY * PFNGLVALIDATEPROGRAMARBPROC) (GLhandleARB programObj);
 
 #endif /* GL_ARB_shader_objects */
 
@@ -216,55 +204,16 @@ extern PFNGLCOMPILESHADERARBPROC qglCompileShaderARB;
 extern PFNGLCREATEPROGRAMOBJECTARBPROC qglCreateProgramObjectARB;
 extern PFNGLCREATESHADEROBJECTARBPROC qglCreateShaderObjectARB;
 extern PFNGLDELETEOBJECTARBPROC qglDeleteObjectARB;
-extern PFNGLGETACTIVEUNIFORMARBPROC qglGetActiveUniformARB;
-extern PFNGLGETATTACHEDOBJECTSARBPROC qglGetAttachedObjectsARB;
 extern PFNGLGETINFOLOGARBPROC qglGetInfoLogARB;
-extern PFNGLGETOBJECTPARAMETERFVARBPROC qglGetObjectParameterfvARB;
 extern PFNGLGETOBJECTPARAMETERIVARBPROC qglGetObjectParameterivARB;
-extern PFNGLGETSHADERSOURCEARBPROC qglGetShaderSourceARB;
 extern PFNGLGETUNIFORMLOCATIONARBPROC qglGetUniformLocationARB;
-extern PFNGLGETUNIFORMFVARBPROC qglGetUniformfvARB;
-extern PFNGLGETUNIFORMIVARBPROC qglGetUniformivARB;
 extern PFNGLLINKPROGRAMARBPROC qglLinkProgramARB;
 extern PFNGLSHADERSOURCEARBPROC qglShaderSourceARB;
 extern PFNGLUNIFORM1FARBPROC qglUniform1fARB;
-extern PFNGLUNIFORM1FVARBPROC qglUniform1fvARB;
 extern PFNGLUNIFORM1IARBPROC qglUniform1iARB;
-extern PFNGLUNIFORM1IVARBPROC qglUniform1ivARB;
 extern PFNGLUNIFORM3FARBPROC qglUniform3fARB;
-extern PFNGLUNIFORM3FVARBPROC qglUniform3fvARB;
-extern PFNGLUNIFORM3IARBPROC qglUniform3iARB;
-extern PFNGLUNIFORM3IVARBPROC qglUniform3ivARB;
 extern PFNGLUNIFORMMATRIX4FVARBPROC qglUniformMatrix4fvARB;
 extern PFNGLUSEPROGRAMOBJECTARBPROC qglUseProgramObjectARB;
-extern PFNGLVALIDATEPROGRAMARBPROC qglValidateProgramARB;
-
-
-
-/* -------------------------- GL_ARB_vertex_shader ------------------------- */
-
-#ifndef GL_ARB_vertex_shader
-#define GL_ARB_vertex_shader 1
-
-#define GL_VERTEX_SHADER_ARB 0x8B31
-#define GL_MAX_VERTEX_UNIFORM_COMPONENTS_ARB 0x8B4A
-#define GL_MAX_VARYING_FLOATS_ARB 0x8B4B
-#define GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB 0x8B4C
-#define GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS_ARB 0x8B4D
-#define GL_OBJECT_ACTIVE_ATTRIBUTES_ARB 0x8B89
-#define GL_OBJECT_ACTIVE_ATTRIBUTE_MAX_LENGTH_ARB 0x8B8A
-
-typedef void ( APIENTRY * PFNGLBINDATTRIBLOCATIONARBPROC) (GLhandleARB programObj, GLuint index, const GLcharARB* name);
-typedef void ( APIENTRY * PFNGLGETACTIVEATTRIBARBPROC) (GLhandleARB programObj, GLuint index, GLsizei maxLength, GLsizei* length, GLint *size, GLenum *type, GLcharARB *name);
-typedef GLint ( APIENTRY * PFNGLGETATTRIBLOCATIONARBPROC) (GLhandleARB programObj, const GLcharARB* name);
-
-#endif /* GL_ARB_vertex_shader */
-
-extern PFNGLBINDATTRIBLOCATIONARBPROC qglBindAttribLocationARB;
-extern PFNGLGETACTIVEATTRIBARBPROC qglGetActiveAttribARB;
-extern PFNGLGETATTRIBLOCATIONARBPROC qglGetAttribLocationARB;
-
-
 
 /* ------------------------- GL_ARB_fragment_shader ------------------------ */
 
@@ -494,18 +443,11 @@ extern PFNGLTEXBUFFEREXTPROC qglTexBufferEXT;
 #define GL_BUFFER_MAP_LENGTH 0x9120
 #define GL_BUFFER_MAP_OFFSET 0x9121
 
-typedef void ( APIENTRY * PFNGLDRAWARRAYSINSTANCEDPROC) (GLenum mode, GLint first, GLsizei count, GLsizei primcount);
-typedef void ( APIENTRY * PFNGLDRAWELEMENTSINSTANCEDPROC) (GLenum mode, GLsizei count, GLenum type, const void* indices, GLsizei primcount);
-typedef void ( APIENTRY * PFNGLPRIMITIVERESTARTINDEXPROC) (GLuint buffer);
 typedef void ( APIENTRY * PFNGLTEXBUFFERPROC) (GLenum target, GLenum internalFormat, GLuint buffer);
 
 #endif /* GL_VERSION_3_1 */
 
-extern PFNGLDRAWARRAYSINSTANCEDPROC qglDrawArraysInstanced;
-extern PFNGLDRAWELEMENTSINSTANCEDPROC qglDrawElementsInstanced;
-extern PFNGLPRIMITIVERESTARTINDEXPROC qglPrimitiveRestartIndex;
 extern PFNGLTEXBUFFERPROC qglTexBuffer;
-
 
 /* ---------------------- GL_ARB_vertex_buffer_object ---------------------- */
 
@@ -552,10 +494,6 @@ typedef void ( APIENTRY * PFNGLBUFFERDATAARBPROC) (GLenum target, GLsizeiptrARB 
 typedef void ( APIENTRY * PFNGLBUFFERSUBDATAARBPROC) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const void *data);
 typedef void ( APIENTRY * PFNGLDELETEBUFFERSARBPROC) (GLsizei n, const GLuint* buffers);
 typedef void ( APIENTRY * PFNGLGENBUFFERSARBPROC) (GLsizei n, GLuint* buffers);
-typedef void ( APIENTRY * PFNGLGETBUFFERPARAMETERIVARBPROC) (GLenum target, GLenum pname, GLint* params);
-typedef void ( APIENTRY * PFNGLGETBUFFERPOINTERVARBPROC) (GLenum target, GLenum pname, void** params);
-typedef void ( APIENTRY * PFNGLGETBUFFERSUBDATAARBPROC) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, void *data);
-typedef GLboolean ( APIENTRY * PFNGLISBUFFERARBPROC) (GLuint buffer);
 typedef void * ( APIENTRY * PFNGLMAPBUFFERARBPROC) (GLenum target, GLenum access);
 typedef GLboolean ( APIENTRY * PFNGLUNMAPBUFFERARBPROC) (GLenum target);
 
@@ -566,10 +504,6 @@ extern PFNGLBUFFERDATAARBPROC qglBufferDataARB;
 extern PFNGLBUFFERSUBDATAARBPROC qglBufferSubDataARB;
 extern PFNGLDELETEBUFFERSARBPROC qglDeleteBuffersARB;
 extern PFNGLGENBUFFERSARBPROC qglGenBuffersARB;
-extern PFNGLGETBUFFERPARAMETERIVARBPROC qglGetBufferParameterivARB;
-extern PFNGLGETBUFFERPOINTERVARBPROC qglGetBufferPointervARB;
-extern PFNGLGETBUFFERSUBDATAARBPROC qglGetBufferSubDataARB;
-extern PFNGLISBUFFERARBPROC qglIsBufferARB;
 extern PFNGLMAPBUFFERARBPROC qglMapBufferARB;
 extern PFNGLUNMAPBUFFERARBPROC qglUnmapBufferARB;
 
@@ -632,43 +566,21 @@ extern PFNGLUNMAPBUFFERARBPROC qglUnmapBufferARB;
 typedef ptrdiff_t GLintptr;
 typedef ptrdiff_t GLsizeiptr;
 
-typedef void ( APIENTRY * PFNGLBEGINQUERYPROC) (GLenum target, GLuint id);
 typedef void ( APIENTRY * PFNGLBINDBUFFERPROC) (GLenum target, GLuint buffer);
 typedef void ( APIENTRY * PFNGLBUFFERDATAPROC) (GLenum target, GLsizeiptr size, const void* data, GLenum usage);
 typedef void ( APIENTRY * PFNGLBUFFERSUBDATAPROC) (GLenum target, GLintptr offset, GLsizeiptr size, const void* data);
 typedef void ( APIENTRY * PFNGLDELETEBUFFERSPROC) (GLsizei n, const GLuint* buffers);
-typedef void ( APIENTRY * PFNGLDELETEQUERIESPROC) (GLsizei n, const GLuint* ids);
-typedef void ( APIENTRY * PFNGLENDQUERYPROC) (GLenum target);
 typedef void ( APIENTRY * PFNGLGENBUFFERSPROC) (GLsizei n, GLuint* buffers);
-typedef void ( APIENTRY * PFNGLGENQUERIESPROC) (GLsizei n, GLuint* ids);
-typedef void ( APIENTRY * PFNGLGETBUFFERPARAMETERIVPROC) (GLenum target, GLenum pname, GLint* params);
-typedef void ( APIENTRY * PFNGLGETBUFFERPOINTERVPROC) (GLenum target, GLenum pname, void** params);
-typedef void ( APIENTRY * PFNGLGETBUFFERSUBDATAPROC) (GLenum target, GLintptr offset, GLsizeiptr size, void* data);
-typedef void ( APIENTRY * PFNGLGETQUERYOBJECTIVPROC) (GLuint id, GLenum pname, GLint* params);
-typedef void ( APIENTRY * PFNGLGETQUERYOBJECTUIVPROC) (GLuint id, GLenum pname, GLuint* params);
-typedef void ( APIENTRY * PFNGLGETQUERYIVPROC) (GLenum target, GLenum pname, GLint* params);
-typedef GLboolean ( APIENTRY * PFNGLISBUFFERPROC) (GLuint buffer);
 typedef void* ( APIENTRY * PFNGLMAPBUFFERPROC) (GLenum target, GLenum access);
 typedef GLboolean ( APIENTRY * PFNGLUNMAPBUFFERPROC) (GLenum target);
 
 #endif /* GL_VERSION_1_5 */
 
-extern PFNGLBEGINQUERYPROC qglBeginQuery;
 extern PFNGLBINDBUFFERPROC qglBindBuffer;
 extern PFNGLBUFFERDATAPROC qglBufferData;
 extern PFNGLBUFFERSUBDATAPROC qglBufferSubData;
 extern PFNGLDELETEBUFFERSPROC qglDeleteBuffers;
-extern PFNGLDELETEQUERIESPROC qglDeleteQueries;
-extern PFNGLENDQUERYPROC qglEndQuery;
 extern PFNGLGENBUFFERSPROC qglGenBuffers;
-extern PFNGLGENQUERIESPROC qglGenQueries;
-extern PFNGLGETBUFFERPARAMETERIVPROC qglGetBufferParameteriv;
-extern PFNGLGETBUFFERPOINTERVPROC qglGetBufferPointerv;
-extern PFNGLGETBUFFERSUBDATAPROC qglGetBufferSubData;
-extern PFNGLGETQUERYOBJECTIVPROC qglGetQueryObjectiv;
-extern PFNGLGETQUERYOBJECTUIVPROC qglGetQueryObjectuiv;
-extern PFNGLGETQUERYIVPROC qglGetQueryiv;
-extern PFNGLISBUFFERPROC qglIsBuffer;
 extern PFNGLMAPBUFFERPROC qglMapBuffer;
 extern PFNGLUNMAPBUFFERPROC qglUnmapBuffer;
 

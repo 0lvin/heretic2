@@ -55,35 +55,21 @@ PFNGLCOMPILESHADERARBPROC qglCompileShaderARB;
 PFNGLCREATEPROGRAMOBJECTARBPROC qglCreateProgramObjectARB;
 PFNGLCREATESHADEROBJECTARBPROC qglCreateShaderObjectARB;
 PFNGLDELETEOBJECTARBPROC qglDeleteObjectARB;
-PFNGLGETACTIVEUNIFORMARBPROC qglGetActiveUniformARB;
-PFNGLGETATTACHEDOBJECTSARBPROC qglGetAttachedObjectsARB;
 PFNGLGETINFOLOGARBPROC qglGetInfoLogARB;
-PFNGLGETOBJECTPARAMETERFVARBPROC qglGetObjectParameterfvARB;
 PFNGLGETOBJECTPARAMETERIVARBPROC qglGetObjectParameterivARB;
-PFNGLGETSHADERSOURCEARBPROC qglGetShaderSourceARB;
 PFNGLGETUNIFORMLOCATIONARBPROC qglGetUniformLocationARB;
-PFNGLGETUNIFORMFVARBPROC qglGetUniformfvARB;
-PFNGLGETUNIFORMIVARBPROC qglGetUniformivARB;
 PFNGLLINKPROGRAMARBPROC qglLinkProgramARB;
 PFNGLSHADERSOURCEARBPROC qglShaderSourceARB;
 PFNGLUNIFORM1FARBPROC qglUniform1fARB;
-PFNGLUNIFORM1FVARBPROC qglUniform1fvARB;
 PFNGLUNIFORM1IARBPROC qglUniform1iARB;
-PFNGLUNIFORM1IVARBPROC qglUniform1ivARB;
 PFNGLUNIFORM3FARBPROC qglUniform3fARB;
-PFNGLUNIFORM3FVARBPROC qglUniform3fvARB;
-PFNGLUNIFORM3IARBPROC qglUniform3iARB;
-PFNGLUNIFORM3IVARBPROC qglUniform3ivARB;
 PFNGLUNIFORM4FARBPROC qglUniform4fARB;
 PFNGLUNIFORMMATRIX4FVARBPROC qglUniformMatrix4fvARB;
 PFNGLUSEPROGRAMOBJECTARBPROC qglUseProgramObjectARB;
-PFNGLVALIDATEPROGRAMARBPROC qglValidateProgramARB;
 
 /* -------------------------- GL_ARB_vertex_shader ------------------------- */
 
 PFNGLBINDATTRIBLOCATIONARBPROC qglBindAttribLocationARB;
-PFNGLGETACTIVEATTRIBARBPROC qglGetActiveAttribARB;
-PFNGLGETATTRIBLOCATIONARBPROC qglGetAttribLocationARB;
 
 /* ---------------------- GL_ARB_texture_buffer_object --------------------- */
 
@@ -95,9 +81,6 @@ PFNGLTEXBUFFEREXTPROC qglTexBufferEXT;
 
 /* ----------------------------- GL_VERSION_3_1 ---------------------------- */
 
-PFNGLDRAWARRAYSINSTANCEDPROC qglDrawArraysInstanced;
-PFNGLDRAWELEMENTSINSTANCEDPROC qglDrawElementsInstanced;
-PFNGLPRIMITIVERESTARTINDEXPROC qglPrimitiveRestartIndex;
 PFNGLTEXBUFFERPROC qglTexBuffer;
 
 
@@ -108,31 +91,16 @@ PFNGLBUFFERDATAARBPROC qglBufferDataARB;
 PFNGLBUFFERSUBDATAARBPROC qglBufferSubDataARB;
 PFNGLDELETEBUFFERSARBPROC qglDeleteBuffersARB;
 PFNGLGENBUFFERSARBPROC qglGenBuffersARB;
-PFNGLGETBUFFERPARAMETERIVARBPROC qglGetBufferParameterivARB;
-PFNGLGETBUFFERPOINTERVARBPROC qglGetBufferPointervARB;
-PFNGLGETBUFFERSUBDATAARBPROC qglGetBufferSubDataARB;
-PFNGLISBUFFERARBPROC qglIsBufferARB;
 PFNGLMAPBUFFERARBPROC qglMapBufferARB;
 PFNGLUNMAPBUFFERARBPROC qglUnmapBufferARB;
 
 /* ----------------------------- GL_VERSION_1_5 ---------------------------- */
 
-PFNGLBEGINQUERYPROC qglBeginQuery;
 PFNGLBINDBUFFERPROC qglBindBuffer;
 PFNGLBUFFERDATAPROC qglBufferData;
 PFNGLBUFFERSUBDATAPROC qglBufferSubData;
 PFNGLDELETEBUFFERSPROC qglDeleteBuffers;
-PFNGLDELETEQUERIESPROC qglDeleteQueries;
-PFNGLENDQUERYPROC qglEndQuery;
 PFNGLGENBUFFERSPROC qglGenBuffers;
-PFNGLGENQUERIESPROC qglGenQueries;
-PFNGLGETBUFFERPARAMETERIVPROC qglGetBufferParameteriv;
-PFNGLGETBUFFERPOINTERVPROC qglGetBufferPointerv;
-PFNGLGETBUFFERSUBDATAPROC qglGetBufferSubData;
-PFNGLGETQUERYOBJECTIVPROC qglGetQueryObjectiv;
-PFNGLGETQUERYOBJECTUIVPROC qglGetQueryObjectuiv;
-PFNGLGETQUERYIVPROC qglGetQueryiv;
-PFNGLISBUFFERPROC qglIsBuffer;
 PFNGLMAPBUFFERPROC qglMapBuffer;
 PFNGLUNMAPBUFFERPROC qglUnmapBuffer;
 
@@ -163,35 +131,21 @@ void QGL_EXT_Reset ( void )
 	qglCreateProgramObjectARB = NULL;
 	qglCreateShaderObjectARB = NULL;
 	qglDeleteObjectARB = NULL;
-	qglGetActiveUniformARB = NULL;
-	qglGetAttachedObjectsARB = NULL;
 	qglGetInfoLogARB = NULL;
-	qglGetObjectParameterfvARB = NULL;
 	qglGetObjectParameterivARB = NULL;
-	qglGetShaderSourceARB = NULL;
 	qglGetUniformLocationARB = NULL;
-	qglGetUniformfvARB = NULL;
-	qglGetUniformivARB = NULL;
 	qglLinkProgramARB = NULL;
 	qglShaderSourceARB = NULL;
 	qglUniform1fARB = NULL;
-	qglUniform1fvARB = NULL;
 	qglUniform1iARB = NULL;
-	qglUniform1ivARB = NULL;
 	qglUniform3fARB = NULL;
-	qglUniform3fvARB = NULL;
-	qglUniform3iARB = NULL;
-	qglUniform3ivARB = NULL;
 	qglUniformMatrix4fvARB = NULL;
 	qglUseProgramObjectARB = NULL;
-	qglValidateProgramARB = NULL;	
 
 	/* -------------------------- GL_ARB_vertex_shader ------------------------- */
-	
+
 	qglBindAttribLocationARB = NULL;
-	qglGetActiveAttribARB = NULL;
-	qglGetAttribLocationARB = NULL;
-	
+
 	/* ---------------------- GL_ARB_texture_buffer_object --------------------- */
 
 	qglTexBufferARB = NULL;
@@ -202,9 +156,6 @@ void QGL_EXT_Reset ( void )
 	
 	/* ----------------------------- GL_VERSION_3_1 ---------------------------- */
 
-	qglDrawArraysInstanced = NULL;
-	qglDrawElementsInstanced = NULL;
-	qglPrimitiveRestartIndex = NULL;
 	qglTexBuffer = NULL;
 
 	/* ---------------------- GL_ARB_vertex_buffer_object ---------------------- */
@@ -214,31 +165,16 @@ void QGL_EXT_Reset ( void )
 	qglBufferSubDataARB = NULL;
 	qglDeleteBuffersARB = NULL;
 	qglGenBuffersARB = NULL;
-	qglGetBufferParameterivARB = NULL;
-	qglGetBufferPointervARB = NULL;
-	qglGetBufferSubDataARB = NULL;
-	qglIsBufferARB = NULL;
 	qglMapBufferARB = NULL;
 	qglUnmapBufferARB = NULL;
 	
 	/* ----------------------------- GL_VERSION_1_5 ---------------------------- */
 
-	qglBeginQuery = NULL;
 	qglBindBuffer = NULL;
 	qglBufferData = NULL;
 	qglBufferSubData = NULL;
 	qglDeleteBuffers = NULL;
-	qglDeleteQueries = NULL;
-	qglEndQuery = NULL;
 	qglGenBuffers = NULL;
-	qglGenQueries = NULL;
-	qglGetBufferParameteriv = NULL;
-	qglGetBufferPointerv = NULL;
-	qglGetBufferSubData = NULL;
-	qglGetQueryObjectiv = NULL;
-	qglGetQueryObjectuiv = NULL;
-	qglGetQueryiv = NULL;
-	qglIsBuffer = NULL;
 	qglMapBuffer = NULL;
 	qglUnmapBuffer = NULL;
 	

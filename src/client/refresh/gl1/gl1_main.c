@@ -1622,29 +1622,16 @@ RI_Init()
 		GET_PROC_ADDRESS(glCreateProgramObjectARB);
 		GET_PROC_ADDRESS(glCreateShaderObjectARB);
 		GET_PROC_ADDRESS(glDeleteObjectARB);
-		GET_PROC_ADDRESS(glGetActiveUniformARB);
-		GET_PROC_ADDRESS(glGetAttachedObjectsARB);
 		GET_PROC_ADDRESS(glGetInfoLogARB);
-		GET_PROC_ADDRESS(glGetObjectParameterfvARB);
 		GET_PROC_ADDRESS(glGetObjectParameterivARB);
-		GET_PROC_ADDRESS(glGetShaderSourceARB);
 		GET_PROC_ADDRESS(glGetUniformLocationARB);
-		GET_PROC_ADDRESS(glGetUniformfvARB);
-		GET_PROC_ADDRESS(glGetUniformivARB);
 		GET_PROC_ADDRESS(glLinkProgramARB);
 		GET_PROC_ADDRESS(glShaderSourceARB);
 		GET_PROC_ADDRESS(glUniform1fARB);
-		GET_PROC_ADDRESS(glUniform1fvARB);
 		GET_PROC_ADDRESS(glUniform1iARB);
-		GET_PROC_ADDRESS(glUniform1ivARB);
 		GET_PROC_ADDRESS(glUniform3fARB);
-		GET_PROC_ADDRESS(glUniform3fvARB);
-		GET_PROC_ADDRESS(glUniform3iARB);
-		GET_PROC_ADDRESS(glUniform3ivARB);
 		GET_PROC_ADDRESS(glUniformMatrix4fvARB);
 		GET_PROC_ADDRESS(glUseProgramObjectARB);
-		GET_PROC_ADDRESS(glValidateProgramARB);
-
 	}
 	else
 	{
@@ -1653,27 +1640,6 @@ RI_Init()
 	}
 
 	CHECK_GL_ERROR();
-
-	/* -------------------------- GL_ARB_vertex_shader ------------------------- */
-
-	gl_config.vertex_shaders = false;
-
-	if (strstr(gl_config.extensions_string, "GL_ARB_vertex_shader"))
-	{
-		R_Printf(PRINT_ALL, "...using GL_ARB_vertex_shader\n");
-
-		gl_config.vertex_shaders = true;
-
-		GET_PROC_ADDRESS(glBindAttribLocationARB);
-		GET_PROC_ADDRESS(glGetActiveAttribARB);
-		GET_PROC_ADDRESS(glGetAttribLocationARB);
-
-	}
-	else
-	{
-		R_Printf(PRINT_ALL, "...GL_ARB_vertex_shader not found\n");
-		gl_config.vertex_shaders = false;
-	}
 
 	/* -------------------------- GL_ARB_fragment_shader ------------------------- */
 
@@ -1782,9 +1748,6 @@ RI_Init()
 
 		gl_config.texture_buffer_objects = true;
 
-		GET_PROC_ADDRESS(glDrawArraysInstanced);
-		GET_PROC_ADDRESS(glDrawElementsInstanced);
-		GET_PROC_ADDRESS(glPrimitiveRestartIndex);
 		GET_PROC_ADDRESS(glTexBuffer);
 	}
 
@@ -1803,10 +1766,6 @@ RI_Init()
 		GET_PROC_ADDRESS(glBufferSubDataARB);
 		GET_PROC_ADDRESS(glDeleteBuffersARB);
 		GET_PROC_ADDRESS(glGenBuffersARB);
-		GET_PROC_ADDRESS(glGetBufferParameterivARB);
-		GET_PROC_ADDRESS(glGetBufferPointervARB);
-		GET_PROC_ADDRESS(glGetBufferSubDataARB);
-		GET_PROC_ADDRESS(glIsBufferARB);
 		GET_PROC_ADDRESS(glMapBufferARB);
 		GET_PROC_ADDRESS(glUnmapBufferARB);
 
@@ -1825,22 +1784,11 @@ RI_Init()
 
 		gl_config.vertex_buffer_objects = true;
 
-		GET_PROC_ADDRESS(glBeginQuery);
 		GET_PROC_ADDRESS(glBindBuffer);
 		GET_PROC_ADDRESS(glBufferData);
 		GET_PROC_ADDRESS(glBufferSubData);
 		GET_PROC_ADDRESS(glDeleteBuffers);
-		GET_PROC_ADDRESS(glDeleteQueries);
-		GET_PROC_ADDRESS(glEndQuery);
 		GET_PROC_ADDRESS(glGenBuffers);
-		GET_PROC_ADDRESS(glGenQueries);
-		GET_PROC_ADDRESS(glGetBufferParameteriv);
-		GET_PROC_ADDRESS(glGetBufferPointerv);
-		GET_PROC_ADDRESS(glGetBufferSubData);
-		GET_PROC_ADDRESS(glGetQueryObjectiv);
-		GET_PROC_ADDRESS(glGetQueryObjectuiv);
-		GET_PROC_ADDRESS(glGetQueryiv);
-		GET_PROC_ADDRESS(glIsBuffer);
 		GET_PROC_ADDRESS(glMapBuffer);
 		GET_PROC_ADDRESS(glUnmapBuffer);
 
