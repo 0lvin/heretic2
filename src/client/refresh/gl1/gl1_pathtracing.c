@@ -2590,6 +2590,8 @@ R_UpdatePathtracerForCurrentFrame(void)
 		return;
 	}
 
+	CHECK_GL_ERROR();
+
 	BindTextureUnit(PT_TEXTURE_UNIT_TRI_NODES0, 		GL_TEXTURE_BUFFER, 	current_trimesh_state->node0_texture);
 	BindTextureUnit(PT_TEXTURE_UNIT_TRI_NODES1, 		GL_TEXTURE_BUFFER, 	current_trimesh_state->node1_texture);
 	BindTextureUnit(PT_TEXTURE_UNIT_TRI_VERTICES, 	GL_TEXTURE_BUFFER, 	current_trimesh_state->vertex_texture);
