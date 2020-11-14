@@ -1604,14 +1604,14 @@ RI_Init()
 
 	if (strstr(gl_config.extensions_string, "GL_ARB_multitexture"))
 	{
-		qglMultiTexCoord3fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord3fARB");
-		qglMultiTexCoord4fARB = (void *)GLimp_GetProcAddress("glMultiTexCoord4fARB");
-		qglActiveTextureARB = (void *)GLimp_GetProcAddress("glActiveTextureARB");
+		qglMultiTexCoord3fARB = (void *)RI_GetProcAddress("glMultiTexCoord3fARB");
+		qglMultiTexCoord4fARB = (void *)RI_GetProcAddress("glMultiTexCoord4fARB");
+		qglActiveTextureARB = (void *)RI_GetProcAddress("glActiveTextureARB");
 	}
 
 	/* ------------------------- GL_ARB_shader_objects ------------------------- */
 
-#define GET_PROC_ADDRESS(x) q##x = ( void * ) GLimp_GetProcAddress ( #x ); if (!q##x) { R_Printf(PRINT_ALL, #x " was not found!\n"); return -1; }
+#define GET_PROC_ADDRESS(x) q##x = ( void * ) RI_GetProcAddress ( #x ); if (!q##x) { R_Printf(PRINT_ALL, #x " was not found!\n"); return -1; }
 
 	gl_config.shaders = false;
 
