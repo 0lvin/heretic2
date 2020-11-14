@@ -55,10 +55,8 @@ PFNGLCOMPILESHADERARBPROC qglCompileShaderARB;
 PFNGLCREATEPROGRAMOBJECTARBPROC qglCreateProgramObjectARB;
 PFNGLCREATESHADEROBJECTARBPROC qglCreateShaderObjectARB;
 PFNGLDELETEOBJECTARBPROC qglDeleteObjectARB;
-PFNGLDETACHOBJECTARBPROC qglDetachObjectARB;
 PFNGLGETACTIVEUNIFORMARBPROC qglGetActiveUniformARB;
 PFNGLGETATTACHEDOBJECTSARBPROC qglGetAttachedObjectsARB;
-PFNGLGETHANDLEARBPROC qglGetHandleARB;
 PFNGLGETINFOLOGARBPROC qglGetInfoLogARB;
 PFNGLGETOBJECTPARAMETERFVARBPROC qglGetObjectParameterfvARB;
 PFNGLGETOBJECTPARAMETERIVARBPROC qglGetObjectParameterivARB;
@@ -72,20 +70,11 @@ PFNGLUNIFORM1FARBPROC qglUniform1fARB;
 PFNGLUNIFORM1FVARBPROC qglUniform1fvARB;
 PFNGLUNIFORM1IARBPROC qglUniform1iARB;
 PFNGLUNIFORM1IVARBPROC qglUniform1ivARB;
-PFNGLUNIFORM2FARBPROC qglUniform2fARB;
-PFNGLUNIFORM2FVARBPROC qglUniform2fvARB;
-PFNGLUNIFORM2IARBPROC qglUniform2iARB;
-PFNGLUNIFORM2IVARBPROC qglUniform2ivARB;
 PFNGLUNIFORM3FARBPROC qglUniform3fARB;
 PFNGLUNIFORM3FVARBPROC qglUniform3fvARB;
 PFNGLUNIFORM3IARBPROC qglUniform3iARB;
 PFNGLUNIFORM3IVARBPROC qglUniform3ivARB;
 PFNGLUNIFORM4FARBPROC qglUniform4fARB;
-PFNGLUNIFORM4FVARBPROC qglUniform4fvARB;
-PFNGLUNIFORM4IARBPROC qglUniform4iARB;
-PFNGLUNIFORM4IVARBPROC qglUniform4ivARB;
-PFNGLUNIFORMMATRIX2FVARBPROC qglUniformMatrix2fvARB;
-PFNGLUNIFORMMATRIX3FVARBPROC qglUniformMatrix3fvARB;
 PFNGLUNIFORMMATRIX4FVARBPROC qglUniformMatrix4fvARB;
 PFNGLUSEPROGRAMOBJECTARBPROC qglUseProgramObjectARB;
 PFNGLVALIDATEPROGRAMARBPROC qglValidateProgramARB;
@@ -144,19 +133,15 @@ PFNGLGETQUERYOBJECTIVPROC qglGetQueryObjectiv;
 PFNGLGETQUERYOBJECTUIVPROC qglGetQueryObjectuiv;
 PFNGLGETQUERYIVPROC qglGetQueryiv;
 PFNGLISBUFFERPROC qglIsBuffer;
-PFNGLISQUERYPROC qglIsQuery;
 PFNGLMAPBUFFERPROC qglMapBuffer;
 PFNGLUNMAPBUFFERPROC qglUnmapBuffer;
 
 /* ------------------------ GL_ARB_map_buffer_range ------------------------ */
 
-PFNGLFLUSHMAPPEDBUFFERRANGEPROC qglFlushMappedBufferRange;
 PFNGLMAPBUFFERRANGEPROC qglMapBufferRange;
 
 /* ----------------------------- GL_VERSION_1_2 ---------------------------- */
 
-PFNGLCOPYTEXSUBIMAGE3DPROC qglCopyTexSubImage3D;
-PFNGLDRAWRANGEELEMENTSPROC qglDrawRangeElements;
 PFNGLTEXIMAGE3DPROC qglTexImage3D;
 PFNGLTEXSUBIMAGE3DPROC qglTexSubImage3D;
 
@@ -178,10 +163,8 @@ void QGL_EXT_Reset ( void )
 	qglCreateProgramObjectARB = NULL;
 	qglCreateShaderObjectARB = NULL;
 	qglDeleteObjectARB = NULL;
-	qglDetachObjectARB = NULL;
 	qglGetActiveUniformARB = NULL;
 	qglGetAttachedObjectsARB = NULL;
-	qglGetHandleARB = NULL;
 	qglGetInfoLogARB = NULL;
 	qglGetObjectParameterfvARB = NULL;
 	qglGetObjectParameterivARB = NULL;
@@ -195,20 +178,10 @@ void QGL_EXT_Reset ( void )
 	qglUniform1fvARB = NULL;
 	qglUniform1iARB = NULL;
 	qglUniform1ivARB = NULL;
-	qglUniform2fARB = NULL;
-	qglUniform2fvARB = NULL;
-	qglUniform2iARB = NULL;
-	qglUniform2ivARB = NULL;
 	qglUniform3fARB = NULL;
 	qglUniform3fvARB = NULL;
 	qglUniform3iARB = NULL;
 	qglUniform3ivARB = NULL;
-	qglUniform4fARB = NULL;
-	qglUniform4fvARB = NULL;
-	qglUniform4iARB = NULL;
-	qglUniform4ivARB = NULL;
-	qglUniformMatrix2fvARB = NULL;
-	qglUniformMatrix3fvARB = NULL;
 	qglUniformMatrix4fvARB = NULL;
 	qglUseProgramObjectARB = NULL;
 	qglValidateProgramARB = NULL;	
@@ -266,19 +239,15 @@ void QGL_EXT_Reset ( void )
 	qglGetQueryObjectuiv = NULL;
 	qglGetQueryiv = NULL;
 	qglIsBuffer = NULL;
-	qglIsQuery = NULL;
 	qglMapBuffer = NULL;
 	qglUnmapBuffer = NULL;
 	
 	/* ------------------------ GL_ARB_map_buffer_range ------------------------ */
 
-	qglFlushMappedBufferRange = NULL;
 	qglMapBufferRange = NULL;
 	
 	/* ----------------------------- GL_VERSION_1_2 ---------------------------- */
 
-	qglCopyTexSubImage3D = NULL;
-	qglDrawRangeElements = NULL;
 	qglTexImage3D = NULL;
 	qglTexSubImage3D = NULL;
 }

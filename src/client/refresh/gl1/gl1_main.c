@@ -1622,10 +1622,8 @@ RI_Init()
 		GET_PROC_ADDRESS(glCreateProgramObjectARB);
 		GET_PROC_ADDRESS(glCreateShaderObjectARB);
 		GET_PROC_ADDRESS(glDeleteObjectARB);
-		GET_PROC_ADDRESS(glDetachObjectARB);
 		GET_PROC_ADDRESS(glGetActiveUniformARB);
 		GET_PROC_ADDRESS(glGetAttachedObjectsARB);
-		GET_PROC_ADDRESS(glGetHandleARB);
 		GET_PROC_ADDRESS(glGetInfoLogARB);
 		GET_PROC_ADDRESS(glGetObjectParameterfvARB);
 		GET_PROC_ADDRESS(glGetObjectParameterivARB);
@@ -1639,20 +1637,10 @@ RI_Init()
 		GET_PROC_ADDRESS(glUniform1fvARB);
 		GET_PROC_ADDRESS(glUniform1iARB);
 		GET_PROC_ADDRESS(glUniform1ivARB);
-		GET_PROC_ADDRESS(glUniform2fARB);
-		GET_PROC_ADDRESS(glUniform2fvARB);
-		GET_PROC_ADDRESS(glUniform2iARB);
-		GET_PROC_ADDRESS(glUniform2ivARB);
 		GET_PROC_ADDRESS(glUniform3fARB);
 		GET_PROC_ADDRESS(glUniform3fvARB);
 		GET_PROC_ADDRESS(glUniform3iARB);
 		GET_PROC_ADDRESS(glUniform3ivARB);
-		GET_PROC_ADDRESS(glUniform4fARB);
-		GET_PROC_ADDRESS(glUniform4fvARB);
-		GET_PROC_ADDRESS(glUniform4iARB);
-		GET_PROC_ADDRESS(glUniform4ivARB);
-		GET_PROC_ADDRESS(glUniformMatrix2fvARB);
-		GET_PROC_ADDRESS(glUniformMatrix3fvARB);
 		GET_PROC_ADDRESS(glUniformMatrix4fvARB);
 		GET_PROC_ADDRESS(glUseProgramObjectARB);
 		GET_PROC_ADDRESS(glValidateProgramARB);
@@ -1853,7 +1841,6 @@ RI_Init()
 		GET_PROC_ADDRESS(glGetQueryObjectuiv);
 		GET_PROC_ADDRESS(glGetQueryiv);
 		GET_PROC_ADDRESS(glIsBuffer);
-		GET_PROC_ADDRESS(glIsQuery);
 		GET_PROC_ADDRESS(glMapBuffer);
 		GET_PROC_ADDRESS(glUnmapBuffer);
 
@@ -1899,7 +1886,6 @@ RI_Init()
 
 		gl_config.map_buffer_range = true;
 
-		GET_PROC_ADDRESS(glFlushMappedBufferRange);
 		GET_PROC_ADDRESS(glMapBufferRange);
 
 	}
@@ -1916,8 +1902,6 @@ RI_Init()
 	{
 		R_Printf(PRINT_ALL, "...using OpenGL 1.2 features\n");
 
-		GET_PROC_ADDRESS(glCopyTexSubImage3D);
-		GET_PROC_ADDRESS(glDrawRangeElements);
 		GET_PROC_ADDRESS(glTexImage3D);
 		GET_PROC_ADDRESS(glTexSubImage3D);
 	}
