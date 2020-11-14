@@ -26,7 +26,7 @@
  */
 
 #include "header/client.h"
-#include "../backends/generic/header/input.h"
+#include "input/header/input.h"
 
 void CL_ForwardToServer_f(void);
 void CL_Changing_f(void);
@@ -906,9 +906,8 @@ CL_Shutdown(void)
 
 	Key_WriteConsoleHistory();
 
-#ifdef OGG
 	OGG_Stop();
-#endif
+
 	S_Shutdown();
 	IN_Shutdown();
 	VID_Shutdown();

@@ -36,8 +36,6 @@ typedef struct {
 	int	*prightedgevert2;
 } edgetable;
 
-aliastriangleparms_t aliastriangleparms;
-
 static int	ubasestep, errorterm, erroradjustup, erroradjustdown;
 
 static int	r_p0[6], r_p1[6], r_p2[6];
@@ -64,24 +62,24 @@ static edgetable edgetables[12] = {
 // FIXME: some of these can become statics
 static int	a_sstepxfrac, a_tstepxfrac, r_lstepx, a_ststepxwhole;
 static int	r_sstepx, r_tstepx, r_lstepy, r_sstepy, r_tstepy;
-static int	r_zistepx, r_zistepy;
+static zvalue_t	r_zistepx, r_zistepy;
 static int	d_aspancount, d_countextrastep;
 
-static spanpackage_t	*a_spans;
 static spanpackage_t	*d_pedgespanpackage;
 
-spanpackage_t	*triangle_spans;
+spanpackage_t	*triangle_spans, *triangles_max;
 
 static int	ystart;
 static pixel_t	*d_pdest, *d_ptex;
 static zvalue_t	*d_pz;
-static int	d_sfrac, d_tfrac, d_light, d_zi;
+static int	d_sfrac, d_tfrac, d_light;
+static zvalue_t	d_zi;
 static int	d_ptexextrastep, d_sfracextrastep;
 static int	d_tfracextrastep, d_lightextrastep, d_pdestextrastep;
 static int	d_lightbasestep, d_pdestbasestep, d_ptexbasestep;
 static int	d_sfracbasestep, d_tfracbasestep;
-static int	d_ziextrastep, d_zibasestep;
-static int	d_pzextrastep, d_pzbasestep;
+static zvalue_t	d_ziextrastep, d_zibasestep;
+static zvalue_t	d_pzextrastep, d_pzbasestep;
 
 typedef struct {
 	int		quotient;
@@ -110,45 +108,47 @@ static void R_PolysetScanLeftEdge_C(int height);
 // ======================
 // PGM
 // 64 65 66 67 68 69 70 71   72 73 74 75 76 77 78 79
-static byte irtable[256] = { 79, 78, 77, 76, 75, 74, 73, 72,		// black/white
-			     71, 70, 69, 68, 67, 66, 65, 64,
-			     64, 65, 66, 67, 68, 69, 70, 71,		// dark taupe
-			     72, 73, 74, 75, 76, 77, 78, 79,
+static const byte irtable[256] = {
+	79, 78, 77, 76, 75, 74, 73, 72,		// black/white
+	71, 70, 69, 68, 67, 66, 65, 64,
+	64, 65, 66, 67, 68, 69, 70, 71,		// dark taupe
+	72, 73, 74, 75, 76, 77, 78, 79,
 
-			     64, 65, 66, 67, 68, 69, 70, 71,		// slate grey
-			     72, 73, 74, 75, 76, 77, 78, 79,
-			     208, 208, 208, 208, 208, 208, 208, 208,	// unused?'
-			     64, 66, 68, 70, 72, 74, 76, 78,		// dark yellow
+	64, 65, 66, 67, 68, 69, 70, 71,		// slate grey
+	72, 73, 74, 75, 76, 77, 78, 79,
+	208, 208, 208, 208, 208, 208, 208, 208,	// unused?'
+	64, 66, 68, 70, 72, 74, 76, 78,		// dark yellow
 
-			     64, 65, 66, 67, 68, 69, 70, 71,		// dark red
-			     72, 73, 74, 75, 76, 77, 78, 79,
-			     64, 65, 66, 67, 68, 69, 70, 71,		// grey/tan
-			     72, 73, 74, 75, 76, 77, 78, 79,
+	64, 65, 66, 67, 68, 69, 70, 71,		// dark red
+	72, 73, 74, 75, 76, 77, 78, 79,
+	64, 65, 66, 67, 68, 69, 70, 71,		// grey/tan
+	72, 73, 74, 75, 76, 77, 78, 79,
 
-			     64, 66, 68, 70, 72, 74, 76, 78,		// chocolate
-			     68, 67, 66, 65, 64, 65, 66, 67,		// mauve / teal
-			     68, 69, 70, 71, 72, 73, 74, 75,
-			     76, 76, 77, 77, 78, 78, 79, 79,
+	64, 66, 68, 70, 72, 74, 76, 78,		// chocolate
+	68, 67, 66, 65, 64, 65, 66, 67,		// mauve / teal
+	68, 69, 70, 71, 72, 73, 74, 75,
+	76, 76, 77, 77, 78, 78, 79, 79,
 
-			     64, 65, 66, 67, 68, 69, 70, 71,		// more mauve
-			     72, 73, 74, 75, 76, 77, 78, 79,
-			     64, 65, 66, 67, 68, 69, 70, 71,		// olive
-			     72, 73, 74, 75, 76, 77, 78, 79,
+	64, 65, 66, 67, 68, 69, 70, 71,		// more mauve
+	72, 73, 74, 75, 76, 77, 78, 79,
+	64, 65, 66, 67, 68, 69, 70, 71,		// olive
+	72, 73, 74, 75, 76, 77, 78, 79,
 
-			     64, 65, 66, 67, 68, 69, 70, 71,		// maroon
-			     72, 73, 74, 75, 76, 77, 78, 79,
-			     64, 65, 66, 67, 68, 69, 70, 71,		// sky blue
-			     72, 73, 74, 75, 76, 77, 78, 79,
+	64, 65, 66, 67, 68, 69, 70, 71,		// maroon
+	72, 73, 74, 75, 76, 77, 78, 79,
+	64, 65, 66, 67, 68, 69, 70, 71,		// sky blue
+	72, 73, 74, 75, 76, 77, 78, 79,
 
-			     64, 65, 66, 67, 68, 69, 70, 71,		// olive again
-			     72, 73, 74, 75, 76, 77, 78, 79,
-			     64, 65, 66, 67, 68, 69, 70, 71,		// nuclear green
-			     64, 65, 66, 67, 68, 69, 70, 71,		// bright yellow
+	64, 65, 66, 67, 68, 69, 70, 71,		// olive again
+	72, 73, 74, 75, 76, 77, 78, 79,
+	64, 65, 66, 67, 68, 69, 70, 71,		// nuclear green
+	64, 65, 66, 67, 68, 69, 70, 71,		// bright yellow
 
-			     64, 65, 66, 67, 68, 69, 70, 71,		// fire colors
-			     72, 73, 74, 75, 76, 77, 78, 79,
-			     208, 208, 64, 64, 70, 71, 72, 64,		// mishmash1
-			     66, 68, 70, 64, 65, 66, 67, 68};		// mishmash2
+	64, 65, 66, 67, 68, 69, 70, 71,		// fire colors
+	72, 73, 74, 75, 76, 77, 78, 79,
+	208, 208, 64, 64, 70, 71, 72, 64,		// mishmash1
+	66, 68, 70, 64, 65, 66, 67, 68};		// mishmash2
+
 // PGM
 // ======================
 
@@ -181,24 +181,24 @@ R_DrawTriangle
 ================
 */
 void
-R_DrawTriangle( void )
+R_DrawTriangle(const finalvert_t *a, const finalvert_t *b, const finalvert_t *c)
 {
 	int dv1_ab, dv0_ac;
 	int dv0_ab, dv1_ac;
 
 	/*
-	d_xdenom = ( aliastriangleparms.a->v[1] - aliastriangleparms.b->v[1] ) * ( aliastriangleparms.a->v[0] - aliastriangleparms.c->v[0] ) -
-			   ( aliastriangleparms.a->v[0] - aliastriangleparms.b->v[0] ) * ( aliastriangleparms.a->v[1] - aliastriangleparms.c->v[1] );
+	d_xdenom = ( a->v[1] - b->v[1] ) * ( a->v[0] - c->v[0] ) -
+			   ( a->v[0] - b->v[0] ) * ( a->v[1] - c->v[1] );
 	*/
 
-	dv0_ab = aliastriangleparms.a->u - aliastriangleparms.b->u;
-	dv1_ab = aliastriangleparms.a->v - aliastriangleparms.b->v;
+	dv0_ab = a->u - b->u;
+	dv1_ab = a->v - b->v;
 
 	if ( !( dv0_ab | dv1_ab ) )
 		return;
 
-	dv0_ac = aliastriangleparms.a->u - aliastriangleparms.c->u;
-	dv1_ac = aliastriangleparms.a->v - aliastriangleparms.c->v;
+	dv0_ac = a->u - c->u;
+	dv1_ac = a->v - c->v;
 
 	if ( !( dv0_ac | dv1_ac ) )
 		return;
@@ -207,34 +207,56 @@ R_DrawTriangle( void )
 
 	if ( d_xdenom < 0 )
 	{
-		a_spans = triangle_spans;
+		r_p0[0] = a->u;	// u
+		r_p0[1] = a->v;	// v
+		r_p0[2] = a->s;	// s
+		r_p0[3] = a->t;	// t
+		r_p0[4] = a->l;	// light
+		r_p0[5] = a->zi;	// iz
 
-		r_p0[0] = aliastriangleparms.a->u;	// u
-		r_p0[1] = aliastriangleparms.a->v;	// v
-		r_p0[2] = aliastriangleparms.a->s;	// s
-		r_p0[3] = aliastriangleparms.a->t;	// t
-		r_p0[4] = aliastriangleparms.a->l;	// light
-		r_p0[5] = aliastriangleparms.a->zi;	// iz
+		r_p1[0] = b->u;
+		r_p1[1] = b->v;
+		r_p1[2] = b->s;
+		r_p1[3] = b->t;
+		r_p1[4] = b->l;
+		r_p1[5] = b->zi;
 
-		r_p1[0] = aliastriangleparms.b->u;
-		r_p1[1] = aliastriangleparms.b->v;
-		r_p1[2] = aliastriangleparms.b->s;
-		r_p1[3] = aliastriangleparms.b->t;
-		r_p1[4] = aliastriangleparms.b->l;
-		r_p1[5] = aliastriangleparms.b->zi;
-
-		r_p2[0] = aliastriangleparms.c->u;
-		r_p2[1] = aliastriangleparms.c->v;
-		r_p2[2] = aliastriangleparms.c->s;
-		r_p2[3] = aliastriangleparms.c->t;
-		r_p2[4] = aliastriangleparms.c->l;
-		r_p2[5] = aliastriangleparms.c->zi;
+		r_p2[0] = c->u;
+		r_p2[1] = c->v;
+		r_p2[2] = c->s;
+		r_p2[3] = c->t;
+		r_p2[4] = c->l;
+		r_p2[5] = c->zi;
 
 		R_PolysetSetEdgeTable ();
 		R_RasterizeAliasPolySmooth ();
 	}
 }
 
+static void
+R_PushEdgesSpan()
+{
+	if (d_pedgespanpackage >= triangles_max)
+	{
+		// no space any more
+		r_outoftriangles++;
+		return;
+	}
+
+	d_pedgespanpackage->pdest = d_pdest;
+	d_pedgespanpackage->pz = d_pz;
+	d_pedgespanpackage->count = d_aspancount;
+	d_pedgespanpackage->ptex = d_ptex;
+
+	d_pedgespanpackage->sfrac = d_sfrac;
+	d_pedgespanpackage->tfrac = d_tfrac;
+
+	// FIXME: need to clamp l, s, t, at both ends?
+	d_pedgespanpackage->light = d_light;
+	d_pedgespanpackage->zi = d_zi;
+
+	d_pedgespanpackage++;
+}
 
 /*
 ===================
@@ -246,19 +268,7 @@ R_PolysetScanLeftEdge_C(int height)
 {
 	do
 	{
-		d_pedgespanpackage->pdest = d_pdest;
-		d_pedgespanpackage->pz = d_pz;
-		d_pedgespanpackage->count = d_aspancount;
-		d_pedgespanpackage->ptex = d_ptex;
-
-		d_pedgespanpackage->sfrac = d_sfrac;
-		d_pedgespanpackage->tfrac = d_tfrac;
-
-		// FIXME: need to clamp l, s, t, at both ends?
-		d_pedgespanpackage->light = d_light;
-		d_pedgespanpackage->zi = d_zi;
-
-		d_pedgespanpackage++;
+		R_PushEdgesSpan();
 
 		errorterm += erroradjustup;
 		if (errorterm >= 0)
@@ -357,8 +367,6 @@ R_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 {
 	int		tm, tn;
 	adivtab_t	*ptemp;
-
-	// TODO: implement x86 version
 
 	errorterm = -1;
 
@@ -460,7 +468,7 @@ R_PolysetDrawSpans8_33( spanpackage_t *pspanpackage)
 	byte		*lptex;
 	int		lsfrac, ltfrac;
 	int		llight;
-	int		lzi;
+	zvalue_t	lzi;
 	zvalue_t	*lpz;
 
 	do
@@ -572,7 +580,7 @@ R_PolysetDrawSpans8_66(spanpackage_t *pspanpackage)
 	pixel_t		*lptex;
 	int		lsfrac, ltfrac;
 	int		llight;
-	int		lzi;
+	zvalue_t	lzi;
 	zvalue_t	*lpz;
 
 	do
@@ -636,7 +644,7 @@ void
 R_PolysetDrawSpansConstant8_66( spanpackage_t *pspanpackage)
 {
 	pixel_t		*lpdest;
-	int		lzi;
+	zvalue_t	lzi;
 	zvalue_t	*lpz;
 
 	do
@@ -703,7 +711,7 @@ R_PolysetDrawSpans8_Opaque (spanpackage_t *pspanpackage)
 			pixel_t		*lpdest;
 			pixel_t		*lptex;
 			int		llight;
-			int		lzi;
+			zvalue_t	lzi;
 			zvalue_t	*lpz;
 
 			lpdest = pspanpackage->pdest;
@@ -781,7 +789,7 @@ R_RasterizeAliasPolySmooth (void)
 	//
 	// scan out the top (and possibly only) part of the left edge
 	//
-	d_pedgespanpackage = a_spans;
+	d_pedgespanpackage = triangle_spans;
 
 	ystart = plefttop[1];
 	d_aspancount = plefttop[0] - prighttop[0];
@@ -795,35 +803,23 @@ R_RasterizeAliasPolySmooth (void)
 	d_light = plefttop[4];
 	d_zi = plefttop[5];
 
-	d_pdest = d_viewbuffer + ystart * r_screenwidth + plefttop[0];
-	d_pz = d_pzbuffer + ystart * d_zwidth + plefttop[0];
+	d_pdest = d_viewbuffer + ystart * vid.width + plefttop[0];
+	d_pz = d_pzbuffer + ystart * vid.width + plefttop[0];
 
 	if (initialleftheight == 1)
 	{
-		d_pedgespanpackage->pdest = d_pdest;
-		d_pedgespanpackage->pz = d_pz;
-		d_pedgespanpackage->count = d_aspancount;
-		d_pedgespanpackage->ptex = d_ptex;
-
-		d_pedgespanpackage->sfrac = d_sfrac;
-		d_pedgespanpackage->tfrac = d_tfrac;
-
-		// FIXME: need to clamp l, s, t, at both ends?
-		d_pedgespanpackage->light = d_light;
-		d_pedgespanpackage->zi = d_zi;
-
-		d_pedgespanpackage++;
+		R_PushEdgesSpan();
 	}
 	else
 	{
 		R_PolysetSetUpForLineScan(plefttop[0], plefttop[1],
 					  pleftbottom[0], pleftbottom[1]);
 		{
-			d_pzbasestep = d_zwidth + ubasestep;
+			d_pzbasestep = vid.width + ubasestep;
 			d_pzextrastep = d_pzbasestep + 1;
 		}
 
-		d_pdestbasestep = r_screenwidth + ubasestep;
+		d_pdestbasestep = vid.width + ubasestep;
 		d_pdestextrastep = d_pdestbasestep + 1;
 
 		// TODO: can reuse partial expressions here
@@ -885,35 +881,23 @@ R_RasterizeAliasPolySmooth (void)
 		d_light = plefttop[4];
 		d_zi = plefttop[5];
 
-		d_pdest = d_viewbuffer + ystart * r_screenwidth + plefttop[0];
-		d_pz = d_pzbuffer + ystart * d_zwidth + plefttop[0];
+		d_pdest = d_viewbuffer + ystart * vid.width + plefttop[0];
+		d_pz = d_pzbuffer + ystart * vid.width + plefttop[0];
 
 		if (height == 1)
 		{
-			d_pedgespanpackage->pdest = d_pdest;
-			d_pedgespanpackage->pz = d_pz;
-			d_pedgespanpackage->count = d_aspancount;
-			d_pedgespanpackage->ptex = d_ptex;
-
-			d_pedgespanpackage->sfrac = d_sfrac;
-			d_pedgespanpackage->tfrac = d_tfrac;
-
-			// FIXME: need to clamp l, s, t, at both ends?
-			d_pedgespanpackage->light = d_light;
-			d_pedgespanpackage->zi = d_zi;
-
-			d_pedgespanpackage++;
+			R_PushEdgesSpan();
 		}
 		else
 		{
 			R_PolysetSetUpForLineScan(plefttop[0], plefttop[1],
 								  pleftbottom[0], pleftbottom[1]);
 
-			d_pdestbasestep = r_screenwidth + ubasestep;
+			d_pdestbasestep = vid.width + ubasestep;
 			d_pdestextrastep = d_pdestbasestep + 1;
 
 			{
-				d_pzbasestep = d_zwidth + ubasestep;
+				d_pzbasestep = vid.width + ubasestep;
 				d_pzextrastep = d_pzbasestep + 1;
 			}
 
@@ -951,15 +935,21 @@ R_RasterizeAliasPolySmooth (void)
 
 	// scan out the top (and possibly only) part of the right edge, updating the
 	// count field
-	d_pedgespanpackage = a_spans;
+	d_pedgespanpackage = triangle_spans;
 
 	R_PolysetSetUpForLineScan(prighttop[0], prighttop[1],
 						  prightbottom[0], prightbottom[1]);
 	d_aspancount = 0;
 	d_countextrastep = ubasestep + 1;
-	originalcount = a_spans[initialrightheight].count;
-	a_spans[initialrightheight].count = -999999; // mark end of the spanpackages
-	(*d_pdrawspans) (a_spans);
+	if ((triangle_spans + initialrightheight) >= triangles_max)
+	{
+		// we dont have enough triangles for save full height
+		r_outoftriangles++;
+		return;
+	}
+	originalcount = triangle_spans[initialrightheight].count;
+	triangle_spans[initialrightheight].count = -999999; // mark end of the spanpackages
+	(*d_pdrawspans) (triangle_spans);
 
 	// scan out the bottom part of the right edge, if it exists
 	if (pedgetable->numrightedges == 2)
@@ -967,7 +957,7 @@ R_RasterizeAliasPolySmooth (void)
 		int				height;
 		spanpackage_t	*pstart;
 
-		pstart = a_spans + initialrightheight;
+		pstart = triangle_spans + initialrightheight;
 		pstart->count = originalcount;
 
 		d_aspancount = prightbottom[0] - prighttop[0];
@@ -981,7 +971,14 @@ R_RasterizeAliasPolySmooth (void)
 							  prightbottom[0], prightbottom[1]);
 
 		d_countextrastep = ubasestep + 1;
-		a_spans[initialrightheight + height].count = -999999; // mark end of the spanpackages
+
+		if ((triangle_spans + initialrightheight + height) >= triangles_max)
+		{
+			// we dont have enough triangles for save full height
+			r_outoftriangles++;
+			return;
+		}
+		triangle_spans[initialrightheight + height].count = -999999; // mark end of the spanpackages
 		(*d_pdrawspans) (pstart);
 	}
 }

@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
-# Enforce "Debug" as standard build type
+# Enforce "Debug" as standard build type.
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
 
-# CMake project configuration
+# CMake project configuration.
 project(yquake2)
 
-# Cmake module search path
+# Cmake module search path.
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/stuff/cmake/modules ${CMAKE_MODULE_PATH})
 
 if(YQUAKE2LIBS)
@@ -22,26 +22,32 @@ if(YQUAKE2LIBS)
 	set(ENV{SDL2DIR} ${YQUAKE2LIBS})
 endif()
 
-# Add extended path for FreeBSD and Homebrew on OS X
+# Add extended path for FreeBSD and Homebrew on OS X.
 list(APPEND CMAKE_PREFIX_PATH /usr/local)
 
-# Enforce compiler flags (GCC / Clang compatible, yquake2
-# won't build with another compiler anyways)
+# Enforce compiler flags:
 #  -Wall                -> More warnings
 #  -fno-strict-aliasing -> Quake 2 is far away from strict aliasing
 #  -fwrapv              -> Make signed integer overflows defined
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -fno-strict-aliasing -fwrapv")
 
+# Switch of some annoying warnings
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-missing-braces")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	if (CMAKE_CXX_COMPILER_VERSION GREATER 7.99)
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format-truncation -Wno-format-overflow")
+	endif()
+endif()
+
 # Use -O2 as maximum optimization level. -O3 has it's problems with yquake2.
 string(REPLACE "-O3" "-O2" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
 
-# yquake2 compilation options
-option(ZIP_SUPPORT "ZIP support" ON)
-option(OGG_SUPPORT "OGG Vorbis playback support (Music)" ON)
+# Compilation time options.
 option(OPENAL_SUPPORT "OpenAL support" ON)
 option(SYSTEMWIDE_SUPPORT "Enable systemwide installation of game assets" OFF)
 
-# These variables will act as our list of include folders and linker flags
+# These variables will act as our list of include folders and linker flags.
 set(yquake2IncludeDirectories)
 set(yquake2LinkerDirectories)
 set(yquake2LinkerFlags)
@@ -60,64 +66,54 @@ set(SERVER_SRC_DIR ${SOURCE_DIR}/server)
 set(CLIENT_SRC_DIR ${SOURCE_DIR}/client)
 set(REF_SRC_DIR ${SOURCE_DIR}/client/refresh)
 
-# Operating system
+# Operating system.
 set(YQ2OSTYPE "${CMAKE_SYSTEM_NAME}" CACHE STRING "Override operation system type")
 add_definitions(-DYQ2OSTYPE="${YQ2OSTYPE}")
 
-# Architecture string
+# Architecture string.
 set(YQ2ARCH "${CMAKE_SYSTEM_PROCESSOR}" CACHE STRING "Override CPU architecture")
 string(REGEX REPLACE "amd64" "x86_64" ARCH ${YQ2ARCH})
 string(REGEX REPLACE "i.86" "i386" ARCH ${ARCH})
 string(REGEX REPLACE "^arm.*" "arm" ARCH ${ARCH})
 add_definitions(-DYQ2ARCH="${ARCH}")
 
-# Systemwide installation of game assets
+# Systemwide installation of game assets.
 if(${SYSTEMWIDE_SUPPORT})
     add_definitions(-DSYSTEMWIDE)
 endif()
 
+# We need to pass some options to minizip / unzip.
+add_definitions(-DNOUNCRYPT)
+
+if(NOT CMAKE_SYSTEM_NAME MATCHES "Linux" OR NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
+	add_definitions(-DIOAPI_NO_64)
+endif()
+
 # Required libraries to build the different components of the binaries. Find
 # them and add the include/linker directories and flags (in case the package
-# manager find it in a weird place)
+# manager find it in a weird place).
 find_package(SDL2 REQUIRED)
 list(APPEND yquake2IncludeDirectories "${SDL2_INCLUDE_DIR}/..")
 list(APPEND yquake2SDLLinkerFlags ${SDL2_LIBRARY})
 
+# We need an OpenGL implementation.
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 list(APPEND yquake2IncludeDirectories ${OPENGL_INCLUDE_DIR})
 list(APPEND yquake2OpenGLLinkerFlags ${OPENGL_LIBRARIES})
 
+# FreeBSD needs libexecinfo.
 if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "FreeBSD")
 	find_library(EXECINFO_LIBRARIES execinfo /usr/lib /usr/local/lib)
 	list(APPEND yquake2ClientLinkerFlags ${EXECINFO_LIBRARIES})
 	list(APPEND yquake2ServerLinkerFlags ${EXECINFO_LIBRARIES})
 endif()
 
-if(${ZIP_SUPPORT})
-	find_package(ZLIB REQUIRED)
-	list(APPEND yquake2IncludeDirectories ${ZLIB_INCLUDE_DIRS})
-	list(APPEND yquake2ZLibLinkerFlags ${ZLIB_LIBRARIES})
-	add_definitions(-DZIP -DNOUNCRYPT)
-
-	if(NOT CMAKE_SYSTEM_NAME MATCHES "Linux" OR NOT CMAKE_SYSTEM_NAME MATCHES "Windows")
-		add_definitions(-DIOAPI_NO_64)
-	endif()
-endif()
-
-if(${OGG_SUPPORT})
-	find_package(OggVorbis)
-	if(${OGGVORBIS_FOUND})
-		add_definitions(-DOGG)
-		list(APPEND yquake2IncludeDirectories ${VORBIS_INCLUDE_DIR})
-		list(APPEND yquake2ClientLinkerFlags ${OGG_LIBRARY} ${VORBIS_LIBRARY} ${VORBISFILE_LIBRARY})
-	endif()
-endif()
-
+# OpenAL support.
 if(${OPENAL_SUPPORT})
 	find_package(OpenAL)
 
-	# TODO: OS X is still missing here
-	if(${OPENAL_FOUND} AND NOT(${CMAKE_SYSTEM_NAME} MATCHES "Darwin"))
+	if(${OPENAL_FOUND})
 		list(APPEND yquake2IncludeDirectories "${OPENAL_INCLUDE_DIR}")
 		list(APPEND yquake2ClientLinkerFlags ${OPENAL_LIBRARY})
 
@@ -133,6 +129,7 @@ if(${OPENAL_SUPPORT})
 	endif()
 endif()
 
+# General linker flags.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	list(APPEND yquake2LinkerFlags "-lm -static-libgcc")
 else()
@@ -163,21 +160,9 @@ endif()
 
 set(Backends-Generic-Source
 	${BACKENDS_SRC_DIR}/generic/misc.c
-	${BACKENDS_SRC_DIR}/generic/qal.c
-	${BACKENDS_SRC_DIR}/generic/vid.c
-
-	${BACKENDS_SRC_DIR}/sdl/input.c
-	${BACKENDS_SRC_DIR}/sdl/refresh.c
-	${BACKENDS_SRC_DIR}/sdl/sound.c
-	)
-
-set(Backends-Generic-Header
-	${BACKENDS_SRC_DIR}/generic/header/input.h
-	${BACKENDS_SRC_DIR}/generic/header/qal.h
 	)
 
 set(Backends-Unix-Source
-	${BACKENDS_SRC_DIR}/generic/misc.c
 	${BACKENDS_SRC_DIR}/unix/main.c
 	${BACKENDS_SRC_DIR}/unix/network.c
 	${BACKENDS_SRC_DIR}/unix/signalhandler.c
@@ -317,13 +302,18 @@ set(Client-Source
 	${CLIENT_SRC_DIR}/cl_screen.c
 	${CLIENT_SRC_DIR}/cl_tempentities.c
 	${CLIENT_SRC_DIR}/cl_view.c
+	${CLIENT_SRC_DIR}/input/sdl.c
 	${CLIENT_SRC_DIR}/menu/menu.c
 	${CLIENT_SRC_DIR}/menu/qmenu.c
 	${CLIENT_SRC_DIR}/menu/videomenu.c
 	${CLIENT_SRC_DIR}/sound/ogg.c
 	${CLIENT_SRC_DIR}/sound/openal.c
+	${CLIENT_SRC_DIR}/sound/qal.c
+	${CLIENT_SRC_DIR}/sound/sdl.c
 	${CLIENT_SRC_DIR}/sound/sound.c
 	${CLIENT_SRC_DIR}/sound/wave.c
+	${CLIENT_SRC_DIR}/vid/glimp_sdl.c
+	${CLIENT_SRC_DIR}/vid/vid.c
 	${COMMON_SRC_DIR}/argproc.c
 	${COMMON_SRC_DIR}/clientserver.c
 	${COMMON_SRC_DIR}/collision.c
@@ -343,6 +333,7 @@ set(Client-Source
 	${COMMON_SRC_DIR}/shared/rand.c
 	${COMMON_SRC_DIR}/shared/shared.c
 	${COMMON_SRC_DIR}/unzip/ioapi.c
+	${COMMON_SRC_DIR}/unzip/miniz.c
 	${COMMON_SRC_DIR}/unzip/unzip.c
 	${SERVER_SRC_DIR}/sv_cmd.c
 	${SERVER_SRC_DIR}/sv_conless.c
@@ -360,13 +351,17 @@ set(Client-Header
 	${CLIENT_SRC_DIR}/header/client.h
 	${CLIENT_SRC_DIR}/header/console.h
 	${CLIENT_SRC_DIR}/header/keyboard.h
-	${CLIENT_SRC_DIR}/header/ref.h
 	${CLIENT_SRC_DIR}/header/screen.h
-	${CLIENT_SRC_DIR}/header/vid.h
+	${CLIENT_SRC_DIR}/input/header/input.h
 	${CLIENT_SRC_DIR}/menu/header/qmenu.h
 	${CLIENT_SRC_DIR}/sound/header/local.h
+	${CLIENT_SRC_DIR}/sound/header/qal.h
 	${CLIENT_SRC_DIR}/sound/header/sound.h
+	${CLIENT_SRC_DIR}/sound/header/stb_vorbis.h
 	${CLIENT_SRC_DIR}/sound/header/vorbis.h
+	${CLIENT_SRC_DIR}/vid/header/ref.h
+	${CLIENT_SRC_DIR}/vid/header/stb_image_write.h
+	${CLIENT_SRC_DIR}/vid/header/vid.h
 	${COMMON_SRC_DIR}/header/common.h
 	${COMMON_SRC_DIR}/header/crc.h
 	${COMMON_SRC_DIR}/header/files.h
@@ -374,6 +369,8 @@ set(Client-Header
 	${COMMON_SRC_DIR}/header/shared.h
 	${COMMON_SRC_DIR}/header/zone.h
 	${COMMON_SRC_DIR}/unzip/ioapi.h
+	${COMMON_SRC_DIR}/unzip/miniz.h
+	${COMMON_SRC_DIR}/unzip/minizconf.h
 	${COMMON_SRC_DIR}/unzip/unzip.h
 	${SERVER_SRC_DIR}/header/server.h
 	)
@@ -397,6 +394,7 @@ set(Server-Source
 	${COMMON_SRC_DIR}/shared/rand.c
 	${COMMON_SRC_DIR}/shared/shared.c
 	${COMMON_SRC_DIR}/unzip/ioapi.c
+	${COMMON_SRC_DIR}/unzip/miniz.c
 	${COMMON_SRC_DIR}/unzip/unzip.c
 	${SERVER_SRC_DIR}/sv_cmd.c
 	${SERVER_SRC_DIR}/sv_conless.c
@@ -418,6 +416,8 @@ set(Server-Header
 	${COMMON_SRC_DIR}/header/shared.h
 	${COMMON_SRC_DIR}/header/zone.h
 	${COMMON_SRC_DIR}/unzip/ioapi.h
+	${COMMON_SRC_DIR}/unzip/miniz.h
+	${COMMON_SRC_DIR}/unzip/minizconf.h
 	${COMMON_SRC_DIR}/unzip/unzip.h
 	${SERVER_SRC_DIR}/header/server.h
 	)
@@ -455,7 +455,6 @@ set(GL1-Header
 	${REF_SRC_DIR}/gl1/header/local.h
 	${REF_SRC_DIR}/gl1/header/model.h
 	${REF_SRC_DIR}/gl1/header/qgl.h
-	${BACKENDS_SRC_DIR}/generic/header/stb_image_write.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
 
@@ -495,7 +494,6 @@ set(GL3-Header
 	${REF_SRC_DIR}/gl3/header/HandmadeMath.h
 	${REF_SRC_DIR}/gl3/header/local.h
 	${REF_SRC_DIR}/gl3/header/model.h
-	${BACKENDS_SRC_DIR}/generic/header/stb_image_write.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
 
@@ -544,7 +542,7 @@ endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	add_executable(yquake2 ${Client-Source} ${Client-Header} ${Platform-Specific-Source}
-			${Backends-Generic-Source} ${Backends-Generic-Header})
+			${Backends-Generic-Source})
 	set_target_properties(yquake2 PROPERTIES
 			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release
 			)
@@ -558,7 +556,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 			)
 else()
 	add_executable(quake2 ${Client-Source} ${Client-Header} ${Platform-Specific-Source}
-			${Backends-Generic-Source} ${Backends-Generic-Header})
+			${Backends-Generic-Source})
 	set_target_properties(quake2 PROPERTIES
 			RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release
 			)
@@ -567,7 +565,8 @@ else()
 endif()
 
 # Quake 2 Dedicated Server
-add_executable(q2ded ${Server-Source} ${Server-Header} ${Platform-Specific-Source})
+add_executable(q2ded ${Server-Source} ${Server-Header} ${Platform-Specific-Source}
+		${Backends-Generic-Source})
 set_target_properties(q2ded PROPERTIES
 	COMPILE_DEFINITIONS "DEDICATED_ONLY"
 	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release

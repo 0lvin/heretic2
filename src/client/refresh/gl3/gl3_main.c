@@ -26,7 +26,7 @@
  */
 
 
-#include "../../header/ref.h"
+#include "../ref_shared.h"
 #include "header/local.h"
 
 #define HANDMADE_MATH_IMPLEMENTATION
@@ -434,11 +434,6 @@ GL3_Init(void)
 
 	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
 	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
-
-	/* Options */
-	R_Printf(PRINT_ALL, "Refresher build options:\n");
-	R_Printf(PRINT_ALL, " + Retexturing support\n\n");
-
 
 	if(sizeof(float) != sizeof(GLfloat))
 	{

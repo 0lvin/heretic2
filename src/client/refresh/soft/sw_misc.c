@@ -30,7 +30,7 @@ float		d_scalemip[NUM_MIPS-1];
 static mleaf_t	*r_viewleaf;
 
 static int	r_frustum_indexes[4*6];
-static float	basemip[NUM_MIPS-1] = {1.0, 0.5*0.8, 0.25*0.8};
+static const float	basemip[NUM_MIPS-1] = {1.0, 0.5*0.8, 0.25*0.8};
 int	d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle;
 float	xcenter, ycenter;
 int	d_pix_min, d_pix_max, d_pix_mul;
@@ -46,8 +46,6 @@ D_ViewChanged (void)
 	scale_for_mip = xscale;
 	if (yscale > xscale)
 		scale_for_mip = yscale;
-
-	d_zwidth = vid.width;
 
 	d_pix_min = r_refdef.vrect.height / 240;
 	if (d_pix_min < 1)
@@ -360,7 +358,6 @@ R_SetupFrame (void)
 		vrect.height = r_newrefdef.height;
 
 		d_viewbuffer = r_warpbuffer;
-		r_screenwidth = vid.width;
 	}
 	else
 	{
@@ -370,7 +367,6 @@ R_SetupFrame (void)
 		vrect.height = r_newrefdef.height;
 
 		d_viewbuffer = vid_buffer;
-		r_screenwidth = vid.width;
 	}
 
 	R_ViewChanged (&vrect);
@@ -392,6 +388,7 @@ R_SetupFrame (void)
 	r_outofsurfaces = 0;
 	r_outofverts = 0;
 	r_outofedges = 0;
+	r_outoftriangles = 0;
 
 	// d_setup
 	d_minmip = sw_mipcap->value;

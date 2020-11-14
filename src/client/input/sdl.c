@@ -29,9 +29,9 @@
 
 #include <SDL2/SDL.h>
 
+#include "header/input.h"
 #include "../../client/header/keyboard.h"
 #include "../../client/header/client.h"
-#include "../generic/header/input.h"
 
 // ----
 
@@ -354,9 +354,6 @@ IN_TranslateSDLtoQ2Key(unsigned int keysym)
 }
 
 /* ------------------------------------------------------------------ */
-
-extern void GLimp_GrabInput(qboolean grab);
-extern int glimp_refreshRate;
 
 /*
  * Updates the input queue state. Called every

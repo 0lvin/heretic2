@@ -35,8 +35,8 @@
 #ifdef USE_OPENAL
 
 #include "../header/client.h"
-#include "../../backends/generic/header/qal.h"
 #include "header/local.h"
+#include "header/qal.h"
 #include "header/vorbis.h"
 
 /* translates from AL coordinate system to quake */
@@ -681,9 +681,7 @@ AL_Update(void)
 	AL_AddLoopSounds();
 
 	/* add music */
-#ifdef OGG
 	OGG_Stream();
-#endif
 
 	AL_StreamUpdate();
 	AL_IssuePlaysounds();

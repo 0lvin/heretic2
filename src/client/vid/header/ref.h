@@ -27,7 +27,7 @@
 #ifndef CL_REF_H
 #define CL_REF_H
 
-#include "../../common/header/common.h"
+#include "../../../common/header/common.h"
 #include "vid.h"
 
 #define	MAX_DLIGHTS		32
@@ -117,7 +117,7 @@ typedef struct {
 } refdef_t;
 
 // FIXME: bump API_VERSION?
-#define	API_VERSION		4
+#define	API_VERSION		5
 #define EXPORT
 #define IMPORT
 
@@ -226,7 +226,6 @@ typedef struct
 
 	qboolean	(IMPORT *Vid_GetModeInfo)(int *width, int *height, int mode);
 	void		(IMPORT *Vid_MenuInit)( void );
-	void		(IMPORT *Vid_NewWindow)( int width, int height );
 	// called with image data of width*height pixel which comp bytes per pixel (must be 3 or 4 for RGB or RGBA)
 	// expects the pixels data to be row-wise, starting at top left
 	void		(IMPORT *Vid_WriteScreenshot)( int width, int height, int comp, const void* data );

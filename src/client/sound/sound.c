@@ -29,8 +29,8 @@
  */
 
 #include "../header/client.h"
-#include "../../backends/generic/header/qal.h"
 #include "header/local.h"
+#include "header/qal.h"
 #include "header/vorbis.h"
 
 /* During registration it is possible to have more sounds
@@ -1084,9 +1084,7 @@ S_Init(void)
 	num_sfx = 0;
 	paintedtime = 0;
 
-#ifdef OGG
 	OGG_Init();
-#endif
 
 	Com_Printf("Sound sampling rate: %i\n", sound.speed);
 	S_StopAllSounds();
@@ -1110,10 +1108,7 @@ S_Shutdown(void)
 	}
 
 	S_StopAllSounds();
-
-#ifdef OGG
 	OGG_Shutdown();
-#endif
 
 	/* free all sounds */
 	for (i = 0, sfx = known_sfx; i < num_sfx; i++, sfx++)

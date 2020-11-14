@@ -25,7 +25,7 @@
  */
 
 #include "header/client.h"
-#include "../backends/generic/header/input.h"
+#include "input/header/input.h"
 
 void CL_DownloadFileName(char *dest, int destlen, char *fn);
 void CL_ParseDownload(void);
@@ -1078,7 +1078,6 @@ CL_ParseConfigString(void)
 	{
 		CL_SetLightstyle(i - CS_LIGHTS);
 	}
-#ifdef OGG
 	else if (i == CS_CDTRACK)
 	{
 		if (cl.refresh_prepped)
@@ -1086,7 +1085,6 @@ CL_ParseConfigString(void)
 			OGG_PlayTrack((int)strtol(cl.configstrings[CS_CDTRACK], (char **)NULL, 10));
 		}
 	}
-#endif
 	else if ((i >= CS_MODELS) && (i < CS_MODELS + MAX_MODELS))
 	{
 		if (cl.refresh_prepped)

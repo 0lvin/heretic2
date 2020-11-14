@@ -26,7 +26,7 @@
  */
 
 #include "header/client.h"
-#include "../backends/generic/header/input.h"
+#include "input/header/input.h"
 
 extern cvar_t *vid_renderer;
 
@@ -630,9 +630,7 @@ SCR_PlayCinematic(char *arg)
 	In_FlushQueue();
 
 	/* make sure background music is not playing */
-#ifdef OGG
 	OGG_Stop();
-#endif
 
 	cl.cinematicframe = 0;
 	dot = strstr(arg, ".");

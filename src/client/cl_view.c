@@ -25,7 +25,7 @@
  */
 
 #include "header/client.h"
-#include "../backends/generic/header/input.h"
+#include "input/header/input.h"
 
 /* development tools for weapons */
 int gun_frame;
@@ -361,11 +361,10 @@ CL_PrepRefresh(void)
 	cl.refresh_prepped = true;
 	cl.force_refdef = true; /* make sure we have a valid refdef */
 
-#if defined(OGG)
+	/* start the cd track */
 	int track = (int)strtol(cl.configstrings[CS_CDTRACK], (char **)NULL, 10);
 
-	/* start the cd track */
-	if (Cvar_VariableValue("cd_shuffle"))
+	if (Cvar_VariableValue("ogg_shuffle"))
 	{
 		OGG_PlayTrack(track);
 	}
@@ -373,7 +372,6 @@ CL_PrepRefresh(void)
 	{
 		OGG_PlayTrack(track);
 	}
-#endif
 }
 
 float

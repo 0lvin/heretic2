@@ -3,19 +3,17 @@
 #	+ modifications to support pathtracing						#
 #                                                        #
 # Just type "make" to compile the                        #
-#  - SDL Client (quake2)                                 #
+#  - Client (quake2)                                     #
 #  - Server (q2ded)                                      #
 #  - Quake II Game (baseq2)                              #
+#  - Renderer libraries (gl1, gl3, soft)                 #
 #                                                        #
 # Base dependencies:                                     #
 #  - SDL 2.0                                             #
 #  - libGL                                               #
 #                                                        #
-# Further dependencies:                                  #
-#  - libogg                                              #
-#  - libvorbis                                           #
+# Optional dependencies:                                 #
 #  - OpenAL                                              #
-#  - zlib                                                #
 #                                                        #
 # Platforms:                                             #
 #  - FreeBSD                                             #
@@ -28,26 +26,11 @@
 # User configurable options
 # -------------------------
 
-# Enables OGG/Vorbis support. OGG/Vorbis files can be
-# used as a substitute of CD audio playback. Adds
-# dependencies to libogg, libvorbis and libvorbisfile.
-WITH_OGG:=yes
-
 # Enables the optional OpenAL sound system.
 # To use it your system needs libopenal.so.1
 # or openal32.dll (we recommend openal-soft)
 # installed
 WITH_OPENAL:=yes
-
-# Enables optional runtime loading of OpenAL (dlopen or
-# similar). If set to "no", the library is linked in at
-# compile time in the normal way. On Windows this option
-# is ignored, OpenAL is always loaded at runtime.
-DLOPEN_OPENAL:=yes
-
-# Enables opening of ZIP files (also known as .pk3 paks).
-# Adds a dependency to libz
-WITH_ZIP:=yes
 
 # Enable systemwide installation of game assets
 WITH_SYSTEMWIDE:=no
@@ -109,18 +92,21 @@ else
 YQ2_ARCH ?= $(shell uname -m | sed -e 's/i.86/i386/' -e 's/amd64/x86_64/' -e 's/^arm.*/arm/')
 endif
 
+# On Windows / MinGW $(CC) is undefined by default.
+ifeq ($(YQ2_OSTYPE),Windows)
+CC := gcc
+endif
+
 # Detect the compiler
 ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
 COMPILER := clang
-else ifeq ($(shell $(CC) -v 2>&1 | grep -c "gcc version"), 1)
+COMPILERVER := $(shell $(CC)  -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/')
+else ifeq ($(shell $(CC) -v 2>&1 | grep -c -E "(gcc version|gcc-Version)"), 1)
 COMPILER := gcc
+COMPILERVER := $(shell $(CC)  -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/')
 else
 COMPILER := unknown
 endif
-
-# Used to detect libraries. Override to foobar-linux-gnu-pkg-config when
-# cross-compiling.
-PKG_CONFIG ?= pkg-config
 
 ifeq ($(RUN_GLSL_VALIDATOR),yes)
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -149,6 +135,9 @@ endif
 #
 # -MMD to generate header dependencies. (They cannot be
 #  generated if building universal binaries on OSX)
+#
+# -fwrapv for defined integer wrapping. MSVC6 did this
+#  and the game code requires it.
 ifeq ($(YQ2_OSTYPE), Darwin)
 CFLAGS := -O2 -fno-strict-aliasing -fomit-frame-pointer \
 		  -Wall -pipe -g -fwrapv
@@ -160,11 +149,28 @@ endif
 
 # ----------
 
+# Switch of some annoying warnings.
+ifeq ($(COMPILER), clang)
+	# -Wno-missing-braces because otherwise clang complains
+	#  about totally valid 'vec3_t bla = {0}' constructs.
+	CFLAGS += -Wno-missing-braces
+else ifeq ($(COMPILER), gcc)
+	# GCC 8.0 or higher.
+	ifeq ($(shell test $(COMPILERVER) -ge 80000; echo $$?),0)
+	    # -Wno-format-truncation and -Wno-format-overflow
+		# because GCC spams about 50 false positives.
+    	CFLAGS += -Wno-format-truncation -Wno-format-overflow
+	endif
+endif
+
+# ----------
+
 # Defines the operating system and architecture
 CFLAGS += -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\"
 
 # ----------
 
+# Fore reproduceable builds, look here for details:
 # https://reproducible-builds.org/specs/source-date-epoch/
 ifdef SOURCE_DATE_EPOCH
 CFLAGS += -DBUILD_DATE=\"$(shell date --utc --date="@${SOURCE_DATE_EPOCH}" +"%b %_d %Y" | sed -e 's/ /\\ /g')\"
@@ -189,20 +195,12 @@ endif
 
 # ----------
 
-# Systemwide installation
+# Systemwide installation.
 ifeq ($(WITH_SYSTEMWIDE),yes)
 CFLAGS += -DSYSTEMWIDE
 ifneq ($(WITH_SYSTEMDIR),"")
 CFLAGS += -DSYSTEMDIR=\"$(WITH_SYSTEMDIR)\"
 endif
-endif
-
-# ----------
-
-# On Windows / MinGW $(CC) is
-# undefined by default.
-ifeq ($(YQ2_OSTYPE),Windows)
-CC := gcc
 endif
 
 # ----------
@@ -224,9 +222,12 @@ ZIPCFLAGS += -DIOAPI_NO_64
 endif
 endif
 
+# We don't support encrypted ZIP files.
+ZIPCFLAGS += -DNOUNCRYPT
+
 # ----------
 
-# Extra CFLAGS for SDL
+# Extra CFLAGS for SDL.
 SDLCFLAGS := $(shell sdl2-config --cflags)
 
 # ----------
@@ -244,7 +245,7 @@ endif
 
 # ----------
 
-# Extra includes for GLAD
+# Local includes for GLAD.
 GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad/include
 
 # ----------
@@ -262,12 +263,15 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 LDFLAGS := $(OSX_ARCH) -lm
 endif
 
+# Keep symbols hidden.
 CFLAGS += -fvisibility=hidden
 LDFLAGS += -fvisibility=hidden
 
-ifneq ($(YQ2_OSTYPE), $(filter $(YQ2_OSTYPE), Darwin OpenBSD))
-# for some reason the OSX & OpenBSD linker doesn't support this
+ifneq ($(YQ2_OSTYPE), Darwin)
+ifneq ($(YQ2_OSTYPE), OpenBSD)
+# for some reason the OSX & OpenBSD linker doesn't support this...
 LDFLAGS += -Wl,--no-undefined
+endif
 endif
 
 # ----------
@@ -279,11 +283,15 @@ else # not Darwin
 SDLLDFLAGS := $(shell sdl2-config --libs)
 endif # Darwin
 
+# The renderer libs don't need libSDL2main, libmingw32 or -mwindows.
+ifeq ($(YQ2_OSTYPE), Windows)
+DLL_SDLLDFLAGS = $(subst -mwindows,,$(subst -lmingw32,,$(subst -lSDL2main,,$(SDLLDFLAGS))))
+endif
+
 # ----------
 
 # When make is invoked by "make VERBOSE=1" print
 # the compiler and linker commands.
-
 ifdef VERBOSE
 Q :=
 else
@@ -307,7 +315,6 @@ config:
 	@echo "Build configuration"
 	@echo "============================"
 	@echo "WITH_OPENAL = $(WITH_OPENAL)"
-	@echo "WITH_ZIP = $(WITH_ZIP)"
 	@echo "WITH_SYSTEMWIDE = $(WITH_SYSTEMWIDE)"
 	@echo "WITH_SYSTEMDIR = $(WITH_SYSTEMDIR)"
 	@echo "============================"
@@ -315,8 +322,7 @@ config:
 
 # ----------
 
-# Special target to compile
-# the icon on Windows
+# Special target to compile the icon on Windows
 ifeq ($(YQ2_OSTYPE), Windows)
 icon:
 	@echo "===> WR build/icon/icon.res"
@@ -358,23 +364,13 @@ endif
 build/client/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
-	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
-
-ifeq ($(WITH_OGG),yes)
-release/yquake2.exe : CFLAGS += -DOGG
-release/yquake2.exe : LDFLAGS += -lvorbisfile -lvorbis -logg
-endif
-
-ifeq ($(WITH_OPENAL),yes)
-release/yquake2.exe : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"openal32.dll"' -DDLOPEN_OPENAL
-endif
-
-ifeq ($(WITH_ZIP),yes)
-release/yquake2.exe : CFLAGS += -DZIP -DNOUNCRYPT
-release/yquake2.exe : LDFLAGS += -lz
-endif
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
 release/yquake2.exe : LDFLAGS += -mwindows
+
+ifeq ($(WITH_OPENAL),yes)
+release/yquake2.exe : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"openal32.dll"'
+endif
 
 else # not Windows
 
@@ -388,48 +384,33 @@ endif
 	${Q}mkdir -p release
 	$(MAKE) release/quake2
 
-build/client/%.o: %.c
-	@echo "===> CC $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
-
 ifeq ($(YQ2_OSTYPE), Darwin)
 build/client/%.o : %.m
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) $(OSX_ARCH) -x objective-c -c $< -o $@
+else
+build/client/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 endif
 
 release/quake2 : CFLAGS += -Wno-unused-result
 
-ifeq ($(WITH_OGG),yes)
-release/quake2 : CFLAGS += -DOGG
-release/quake2 : LDFLAGS += -lvorbis -lvorbisfile -logg
-endif
-
 ifeq ($(WITH_OPENAL),yes)
-ifeq ($(DLOPEN_OPENAL),yes)
 ifeq ($(YQ2_OSTYPE), OpenBSD)
-release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so"' -DDLOPEN_OPENAL
+release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so"'
 else ifeq ($(YQ2_OSTYPE), Darwin)
-release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.dylib"' -I/usr/local/opt/openal-soft/include -DDLOPEN_OPENAL
+release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.dylib"' -I/usr/local/opt/openal-soft/include
 release/quake2 : LDFLAGS += -L/usr/local/opt/openal-soft/lib -rpath /usr/local/opt/openal-soft/lib
 else
-release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so.1"' -DDLOPEN_OPENAL
+release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so.1"'
 endif
-else # !DLOPEN_OPENAL
-release/quake2 : CFLAGS += -DUSE_OPENAL
-release/quake2 : LDFLAGS += -lopenal
-ifeq ($(YQ2_OSTYPE), Darwin)
-release/quake2 : CFLAGS += -I/usr/local/opt/openal-soft/include
-release/quake2 : LDFLAGS += -L/usr/local/opt/openal-soft/lib -rpath /usr/local/opt/openal-soft/lib
-endif # Darwin
-endif # !DLOPEN_OPENAL
-endif # WITH_OPENAL
+endif
 
-ifeq ($(WITH_ZIP),yes)
-release/quake2 : CFLAGS += $(ZIPCFLAGS) -DZIP -DNOUNCRYPT
-release/quake2 : LDFLAGS += -lz
+ifeq ($(YQ2_OSTYPE), FreeBSD)
+release/quake2 : LDFLAGS += -lexecinfo
 endif
 
 ifeq ($(YQ2_OSTYPE), FreeBSD)
@@ -467,16 +448,12 @@ server:
 build/server/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
-	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+	${Q}$(CC) -c $(CFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
 release/q2ded.exe : CFLAGS += -DDEDICATED_ONLY
-release/q2ded.exe : LDFLAGS += -lz
 
-ifeq ($(WITH_ZIP),yes)
-release/q2ded.exe : CFLAGS += -DZIP -DNOUNCRYPT
-release/q2ded.exe : LDFLAGS += -lz
-endif
 else # not Windows
+
 server:
 	@echo "===> Building q2ded"
 	${Q}mkdir -p release
@@ -485,14 +462,9 @@ server:
 build/server/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
-	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+	${Q}$(CC) -c $(CFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
 release/q2ded : CFLAGS += -DDEDICATED_ONLY -Wno-unused-result
-
-ifeq ($(WITH_ZIP),yes)
-release/q2ded : CFLAGS += $(ZIPCFLAGS) -DZIP -DNOUNCRYPT
-release/q2ded : LDFLAGS += -lz
-endif
 
 ifeq ($(YQ2_OSTYPE), FreeBSD)
 release/q2ded : LDFLAGS += -lexecinfo
@@ -510,10 +482,6 @@ ref_gl1:
 	$(MAKE) release/ref_gl1.dll
 
 release/ref_gl1.dll : LDFLAGS += -lopengl32 -shared
-
-# don't want the dll to link against libSDL2main or libmingw32, and no -mwindows either
-# that's for the .exe only
-DLL_SDLLDFLAGS = $(subst -mwindows,,$(subst -lmingw32,,$(subst -lSDL2main,,$(SDLLDFLAGS))))
 
 else ifeq ($(YQ2_OSTYPE), Darwin)
 
@@ -534,7 +502,7 @@ ref_gl1:
 release/ref_gl1.so : CFLAGS += -fPIC
 release/ref_gl1.so : LDFLAGS += -shared -lGL
 
-endif # OS specific ref_gl1 shit
+endif # OS specific ref_gl1 stuff
 
 build/ref_gl1/%.o: %.c
 	@echo "===> CC $<"
@@ -572,7 +540,7 @@ ref_gl3:
 release/ref_gl3.so : CFLAGS += -fPIC
 release/ref_gl3.so : LDFLAGS += -shared
 
-endif # OS specific ref_gl3 shit
+endif # OS specific ref_gl3 stuff
 
 build/ref_gl3/%.o: %.c
 	@echo "===> CC $<"
@@ -608,7 +576,7 @@ ref_soft:
 release/ref_soft.so : CFLAGS += -fPIC
 release/ref_soft.so : LDFLAGS += -shared
 
-endif # OS specific ref_soft shit
+endif # OS specific ref_soft stuff
 
 build/ref_soft/%.o: %.c
 	@echo "===> CC $<"
@@ -630,7 +598,9 @@ build/baseq2/%.o: %.c
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
 release/baseq2/game.dll : LDFLAGS += -shared
+
 else ifeq ($(YQ2_OSTYPE), Darwin)
+
 game:
 	@echo "===> Building baseq2/game.dylib"
 	${Q}mkdir -p release/baseq2
@@ -643,7 +613,9 @@ build/baseq2/%.o: %.c
 
 release/baseq2/game.dylib : CFLAGS += -fPIC
 release/baseq2/game.dylib : LDFLAGS += -shared
+
 else # not Windows or Darwin
+
 game:
 	@echo "===> Building baseq2/game.so"
 	${Q}mkdir -p release/baseq2
@@ -716,11 +688,6 @@ GAME_OBJS_ = \
 # Used by the client
 CLIENT_OBJS_ := \
 	src/backends/generic/misc.o \
-	src/backends/generic/qal.o \
-	src/backends/generic/vid.o \
-	src/backends/sdl/input.o \
-	src/backends/sdl/refresh.o \
-	src/backends/sdl/sound.o \
 	src/client/cl_cin.o \
 	src/client/cl_console.o \
 	src/client/cl_download.o \
@@ -738,13 +705,18 @@ CLIENT_OBJS_ := \
 	src/client/cl_screen.o \
 	src/client/cl_tempentities.o \
 	src/client/cl_view.o \
+	src/client/input/sdl.o \
 	src/client/menu/menu.o \
 	src/client/menu/qmenu.o \
 	src/client/menu/videomenu.o \
+	src/client/sound/sdl.o \
 	src/client/sound/ogg.o \
 	src/client/sound/openal.o \
+	src/client/sound/qal.o \
 	src/client/sound/sound.o \
 	src/client/sound/wave.o \
+	src/client/vid/glimp_sdl.o \
+	src/client/vid/vid.o \
 	src/common/argproc.o \
 	src/common/clientserver.o \
 	src/common/collision.o \
@@ -764,6 +736,7 @@ CLIENT_OBJS_ := \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
 	src/common/unzip/ioapi.o \
+	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
@@ -897,6 +870,7 @@ endif
 
 # Used by the server
 SERVER_OBJS_ := \
+	src/backends/generic/misc.o \
 	src/common/argproc.o \
 	src/common/clientserver.o \
 	src/common/collision.o \
@@ -915,6 +889,7 @@ SERVER_OBJS_ := \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
 	src/common/unzip/ioapi.o \
+	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
@@ -925,8 +900,7 @@ SERVER_OBJS_ := \
 	src/server/sv_save.o \
 	src/server/sv_send.o \
 	src/server/sv_user.o \
-	src/server/sv_world.o \
-	src/backends/generic/misc.o
+	src/server/sv_world.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
 SERVER_OBJS_ += \
@@ -945,7 +919,7 @@ endif
 
 # ----------
 
-# Rewrite pathes to our object directory
+# Rewrite pathes to our object directory.
 CLIENT_OBJS = $(patsubst %,build/client/%,$(CLIENT_OBJS_))
 REFGL1_OBJS = $(patsubst %,build/ref_gl1/%,$(REFGL1_OBJS_))
 REFGL3_OBJS = $(patsubst %,build/ref_gl3/%,$(REFGL3_OBJS_))
@@ -955,7 +929,7 @@ GAME_OBJS = $(patsubst %,build/baseq2/%,$(GAME_OBJS_))
 
 # ----------
 
-# Generate header dependencies
+# Generate header dependencies.
 CLIENT_DEPS= $(CLIENT_OBJS:.o=.d)
 REFGL1_DEPS= $(REFGL1_OBJS:.o=.d)
 REFGL3_DEPS= $(REFGL3_OBJS:.o=.d)
@@ -963,9 +937,7 @@ REFSOFT_DEPS= $(REFSOFT_OBJS:.o=.d)
 SERVER_DEPS= $(SERVER_OBJS:.o=.d)
 GAME_DEPS= $(GAME_OBJS:.o=.d)
 
-# ----------
-
-# Suck header dependencies in
+# Suck header dependencies in.
 -include $(CLIENT_DEPS)
 -include $(REFGL1_DEPS)
 -include $(REFGL3_DEPS)
@@ -980,7 +952,6 @@ release/yquake2.exe : $(CLIENT_OBJS) icon
 	@echo "===> LD $@"
 	${Q}$(CC) build/icon/icon.res $(CLIENT_OBJS) $(LDFLAGS) $(SDLLDFLAGS) -o $@
 	$(Q)strip $@
-# the wrappper, quick'n'dirty
 release/quake2.exe : src/win-wrapper/wrapper.c icon
 	$(Q)$(CC) -Wall -mwindows build/icon/icon.res src/win-wrapper/wrapper.c -o $@
 	$(Q)strip $@

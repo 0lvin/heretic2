@@ -28,7 +28,7 @@
  */
 
 #include "../../common/header/common.h"
-#include "../../client/header/ref.h"
+#include "header/ref.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
@@ -36,6 +36,7 @@
 cvar_t *vid_displayrefreshrate;
 int glimp_refreshRate = -1;
 
+static int last_flags = 0;
 static SDL_Window* window = NULL;
 static qboolean initSuccessful = false;
 
@@ -185,6 +186,8 @@ GLimp_Init(void)
 void
 GLimp_Shutdown(void)
 {
+	ShutdownGraphics();
+
 	if (SDL_WasInit(SDL_INIT_EVERYTHING) == SDL_INIT_VIDEO)
 	{
 		SDL_Quit();
@@ -217,10 +220,10 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 	}
 
 	/* Only do this if we already have a working window and a fully
-       initialized rendering backend GLimp_InitGraphics() is also
-       called when recovering if creating GL context fails or the
-       one we got is unusable. */
-	if (initSuccessful && GetWindowSize(&curWidth, &curHeight) 
+	initialized rendering backend GLimp_InitGraphics() is also
+	called when recovering if creating GL context fails or the
+	one we got is unusable. */
+	if (initSuccessful && GetWindowSize(&curWidth, &curHeight)
 			&& (curWidth == width) && (curHeight == height))
 	{
 		/* If we want fullscreen, but aren't */
@@ -246,10 +249,20 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 		window = NULL;
 	}
 
-	/* Create the window */
-	VID_NewWindow(width, height);
+	/* We need the window size for the menu, the HUD, etc. */
+	viddef.width = width;
+	viddef.height = height;
 
-	/* Let renderer prepare things (set OpenGL attributes) */
+	if(last_flags != -1 && (last_flags & SDL_WINDOW_OPENGL))
+	{
+		/* Reset SDL. */
+		SDL_GL_ResetAttributes();
+	}
+
+	/* Let renderer prepare things (set OpenGL attributes).
+	   FIXME: This is no longer necessary, the renderer
+	   could and should pass the flags when calling this
+	   function. */
 	flags = re.PrepareForWindow();
 
 	if (flags == -1)
@@ -292,8 +305,6 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 				Cvar_SetValue("r_mode", 4);
 				Cvar_SetValue("vid_fullscreen", 0);
 
-				VID_NewWindow(width, height);
-
 				*pwidth = width = 640;
 				*pheight = height = 480;
 				flags &= ~fs_flag;
@@ -310,6 +321,8 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 		}
 	}
 
+	last_flags = flags;
+
 	if (!re.InitContext(window))
 	{
 		/* InitContext() should have logged an error. */
@@ -325,6 +338,16 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 	initSuccessful = true;
 
 	return true;
+}
+
+/*
+ * Shuts the window down.
+ */
+void
+GLimp_ShutdownGraphics(void)
+{
+	SDL_GL_ResetAttributes();
+	ShutdownGraphics();
 }
 
 /*
