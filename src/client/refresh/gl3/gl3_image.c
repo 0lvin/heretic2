@@ -64,7 +64,7 @@ GL3_TextureMode(char *string)
 
 	if (i == num_modes)
 	{
-		R_Printf(PRINT_ALL, "bad filter name\n");
+		R_Printf(PRINT_ALL, "bad filter name '%s' (probably from gl_texturemode)\n", string);
 		return;
 	}
 
@@ -90,13 +90,20 @@ GL3_TextureMode(char *string)
 
 	gl3image_t *glt;
 
-	/* change all the existing mipmap texture objects */
+	const char* nolerplist = gl_nolerp_list->string;
+
+	/* change all the existing texture objects */
 	for (i = 0, glt = gl3textures; i < numgl3textures; i++, glt++)
 	{
-		if ((glt->type != it_pic) && (glt->type != it_sky))
+		if (nolerplist != NULL && strstr(nolerplist, glt->name) != NULL)
 		{
-			GL3_SelectTMU(GL_TEXTURE0);
-			GL3_Bind(glt->texnum);
+			continue; /* those (by default: font and crosshairs) always only use GL_NEAREST */
+		}
+
+		GL3_SelectTMU(GL_TEXTURE0);
+		GL3_Bind(glt->texnum);
+		if ((glt->type != it_pic) && (glt->type != it_sky)) /* mipmapped texture */
+		{
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
@@ -105,6 +112,13 @@ GL3_TextureMode(char *string)
 			{
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_anisotropic->value);
 			}
+		}
+		else /* texture has no mipmaps */
+		{
+			// we can't use gl_filter_min which might be GL_*_MIPMAP_*
+			// also, there's no anisotropic filtering for textures w/o mipmaps
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		}
 	}
 }
@@ -194,7 +208,7 @@ GL3_Upload32(unsigned *data, int width, int height, qboolean mipmap)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
-	else
+	else // if the texture has no mipmaps, we can't use gl_filter_min which might be GL_*_MIPMAP_*
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
@@ -298,21 +312,16 @@ FloodFillSkin(byte *skin, int skinwidth, int skinheight)
 	byte fillcolor = *skin; /* assume this is the pixel to fill */
 	floodfill_t fifo[FLOODFILL_FIFO_SIZE];
 	int inpt = 0, outpt = 0;
-	int filledcolor = -1;
+	int filledcolor = 0;
 	int i;
 
-	if (filledcolor == -1)
+	/* attempt to find opaque black */
+	for (i = 0; i < 256; ++i)
 	{
-		filledcolor = 0;
-
-		/* attempt to find opaque black */
-		for (i = 0; i < 256; ++i)
+		if (LittleLong(d_8to24table[i]) == (255 << 0)) /* alpha 1.0 */
 		{
-			if (LittleLong(d_8to24table[i]) == (255 << 0)) /* alpha 1.0 */
-			{
-				filledcolor = i;
-				break;
-			}
+			filledcolor = i;
+			break;
 		}
 	}
 

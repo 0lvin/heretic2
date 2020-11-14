@@ -62,15 +62,14 @@ int sys_frame_time;
 qboolean joy_altselector_pressed = false;
 
 // Console Variables
-extern cvar_t *vid_fullscreen;
-extern cvar_t *freelook;
-extern cvar_t *lookstrafe;
-extern cvar_t *m_forward;
-extern cvar_t *m_pitch;
-extern cvar_t *m_side;
+cvar_t *freelook;
+cvar_t *lookstrafe;
+cvar_t *m_forward;
+cvar_t *m_pitch;
+cvar_t *m_side;
 cvar_t *m_up;
-extern cvar_t *m_yaw;
-extern cvar_t *sensitivity;
+cvar_t *m_yaw;
+cvar_t *sensitivity;
 
 static cvar_t *exponential_speedup;
 static cvar_t *in_grab;
@@ -1213,16 +1212,16 @@ IN_Init(void)
 	joystick_yaw = joystick_pitch = joystick_forwardmove = joystick_sidemove = 0;
 
 	exponential_speedup = Cvar_Get("exponential_speedup", "0", CVAR_ARCHIVE);
-	freelook = Cvar_Get("freelook", "1", 0);
+	freelook = Cvar_Get("freelook", "1", CVAR_ARCHIVE);
 	in_grab = Cvar_Get("in_grab", "2", CVAR_ARCHIVE);
-	lookstrafe = Cvar_Get("lookstrafe", "0", 0);
+	lookstrafe = Cvar_Get("lookstrafe", "0", CVAR_ARCHIVE);
 	m_filter = Cvar_Get("m_filter", "0", CVAR_ARCHIVE);
 	m_up = Cvar_Get("m_up", "1", 0);
 	m_forward = Cvar_Get("m_forward", "1", 0);
 	m_pitch = Cvar_Get("m_pitch", "0.022", 0);
 	m_side = Cvar_Get("m_side", "0.8", 0);
 	m_yaw = Cvar_Get("m_yaw", "0.022", 0);
-	sensitivity = Cvar_Get("sensitivity", "3", 0);
+	sensitivity = Cvar_Get("sensitivity", "3", CVAR_ARCHIVE);
 
 	joy_haptic_magnitude = Cvar_Get("joy_haptic_magnitude", "0.0", CVAR_ARCHIVE);
 
@@ -1246,7 +1245,6 @@ IN_Init(void)
 	joy_axis_triggerleft_threshold = Cvar_Get("joy_axis_triggerleft_threshold", "0.15", CVAR_ARCHIVE);
 	joy_axis_triggerright_threshold = Cvar_Get("joy_axis_triggerright_threshold", "0.15", CVAR_ARCHIVE);
 
-	vid_fullscreen = Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 	windowed_mouse = Cvar_Get("windowed_mouse", "1", CVAR_USERINFO | CVAR_ARCHIVE);
 
 	Cmd_AddCommand("+mlook", IN_MLookDown);

@@ -45,6 +45,25 @@ static byte dottexture[16][16] = {
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
+static byte squaretexture[16][16] = {
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+};
+
 static byte notex[4][4] = {
 	{0, 0, 0, 0},
 	{0, 0, 1, 1},
@@ -76,7 +95,15 @@ R_InitParticleTexture(void)
 			partData[y][x][0] = 255;
 			partData[y][x][1] = 255;
 			partData[y][x][2] = 255;
-			partData[y][x][3] = dottexture[x][y] * 85;
+
+			if (!gl1_particle_square->value)
+			{
+				partData[y][x][3] = dottexture[x][y] * 85;
+			}
+			else
+			{
+				partData[y][x][3] = squaretexture[x][y] * 85;
+			}
 		}
 	}
 
@@ -189,11 +216,6 @@ R_SetDefaultState(void)
 		attenuations[1] = gl1_particle_att_b->value;
 		attenuations[2] = gl1_particle_att_c->value;
 
-		/* GL_POINT_SMOOTH is not implemented by some OpenGL
-		   drivers, especially the crappy Mesa3D backends like
-		   i915.so. That the points are squares and not circles
-		   is not a problem by Quake II! */
-		glEnable(GL_POINT_SMOOTH);
 		qglPointParameterfARB(GL_POINT_SIZE_MIN_EXT, gl1_particle_min_size->value);
 		qglPointParameterfARB(GL_POINT_SIZE_MAX_EXT, gl1_particle_max_size->value);
 		qglPointParameterfvARB(GL_DISTANCE_ATTENUATION_EXT, attenuations);
@@ -224,4 +246,3 @@ R_SetDefaultState(void)
 	
 	CHECK_GL_ERROR();
 }
-

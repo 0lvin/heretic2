@@ -89,6 +89,7 @@ cvar_t *gl1_particle_size;
 cvar_t *gl1_particle_att_a;
 cvar_t *gl1_particle_att_b;
 cvar_t *gl1_particle_att_c;
+cvar_t *gl1_particle_square;
 
 cvar_t *gl1_palettedtexture;
 cvar_t *gl1_pointparameters;
@@ -430,7 +431,7 @@ R_DrawParticles2(int num_particles, const particle_t particles[],
 	int i;
 	vec3_t up, right;
 	float scale;
-	byte color[4];
+	YQ2_ALIGNAS_TYPE(unsigned) byte color[4];
 
 	GLfloat vtx[3*num_particles*3];
 	GLfloat tex[2*num_particles*3];
@@ -464,7 +465,7 @@ R_DrawParticles2(int num_particles, const particle_t particles[],
 			scale = 1 + scale * 0.004;
 		}
 
-		*(int *) color = colortable [ p->color ];
+		*(unsigned *) color = colortable [ p->color ];
 
 		for (j=0; j<3; j++) // Copy the color for each point
 		{
@@ -527,7 +528,7 @@ R_DrawParticles(void)
 	if (gl_config.pointparameters && !(stereo_split_tb || stereo_split_lr))
 	{
 		int i;
-		unsigned char color[4];
+		YQ2_ALIGNAS_TYPE(unsigned) byte color[4];
 		const particle_t *p;
 
 		GLfloat vtx[3*r_newrefdef.num_particles];
@@ -1230,6 +1231,7 @@ R_Register(void)
 	gl1_particle_att_a = ri.Cvar_Get("gl1_particle_att_a", "0.01", CVAR_ARCHIVE);
 	gl1_particle_att_b = ri.Cvar_Get("gl1_particle_att_b", "0.0", CVAR_ARCHIVE);
 	gl1_particle_att_c = ri.Cvar_Get("gl1_particle_att_c", "0.01", CVAR_ARCHIVE);
+	gl1_particle_square = ri.Cvar_Get("gl1_particle_square", "0", CVAR_ARCHIVE);
 
 	r_modulate = ri.Cvar_Get("r_modulate", "1", CVAR_ARCHIVE);
 	r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
@@ -1353,18 +1355,7 @@ R_SetMode(void)
 	}
 	else
 	{
-		if (err == rserr_invalid_fullscreen)
-		{
-			ri.Cvar_SetValue("vid_fullscreen", 0);
-			vid_fullscreen->modified = false;
-			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - fullscreen unavailable in this mode\n");
-
-			if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
-			{
-				return true;
-			}
-		}
-		else if (err == rserr_invalid_mode)
+		if (err == rserr_invalid_mode)
 		{
 			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - invalid mode\n");
 			if (gl_msaa_samples->value != 0.0f)
@@ -2050,6 +2041,26 @@ RI_BeginFrame(float camera_separation)
 	glEnable(GL_ALPHA_TEST);
 	glColor4f(1, 1, 1, 1);
 
+	if (gl_config.pointparameters && gl1_particle_square->modified)
+	{
+		R_InitParticleTexture();
+
+		/* GL_POINT_SMOOTH is not implemented by some OpenGL
+		   drivers, especially the crappy Mesa3D backends like
+		   i915.so. That the points are squares and not circles
+		   is not a problem by Quake II! */
+		if (gl1_particle_square->value)
+		{
+			glDisable(GL_POINT_SMOOTH);
+		}
+		else
+		{
+			glEnable(GL_POINT_SMOOTH);
+		}
+
+		gl1_particle_square->modified = false;
+	}
+
 	/* draw buffer stuff */
 	if (gl_drawbuffer->modified)
 	{
@@ -2313,7 +2324,7 @@ Sys_Error(char *error, ...)
 	char text[4096]; // MAXPRINTMSG == 4096
 
 	va_start(argptr, error);
-	vsprintf(text, error, argptr);
+	vsnprintf(text, sizeof(text), error, argptr);
 	va_end(argptr);
 
 	ri.Sys_Error(ERR_FATAL, "%s", text);
