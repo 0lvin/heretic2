@@ -823,7 +823,8 @@ char *bindnames[][2] =
     {"invdrop", "drop item"},
     {"invprev", "prev item"},
     {"invnext", "next item"},
-    {"cmd help", "help computer"}
+    {"cmd help", "help computer"},
+    {"+joyaltselector", "enable alt joy keys"}
 };
 #define NUM_BINDNAMES (sizeof bindnames / sizeof bindnames[0])
 
@@ -1558,6 +1559,9 @@ static const char *idcredits[] = {
 	"Steve Rosenthal",
 	"Marty Stratton",
 	"Henk Hartong",
+	"",
+	"+PATCHES AUTHORS",
+	"eliasm",
 	"",
 	"+YAMAGI QUAKE II BY",
 	"Yamagi Burmeister",
@@ -3109,6 +3113,7 @@ StartServer_MenuInit(void)
     s_hostname_field.length = 12;
     s_hostname_field.visible_length = 12;
     strcpy(s_hostname_field.buffer, Cvar_VariableString("hostname"));
+    s_hostname_field.cursor = strlen(s_hostname_field.buffer);
 
     s_startserver_dmoptions_action.generic.type = MTYPE_ACTION;
     s_startserver_dmoptions_action.generic.name = " deathmatch flags";

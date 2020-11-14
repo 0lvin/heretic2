@@ -98,6 +98,15 @@ DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei le
  */
 void GL3_EndFrame(void)
 {
+	if(gl3config.useBigVBO)
+	{
+		// I think this is a good point to orphan the VBO and get a fresh one
+		GL3_BindVAO(gl3state.vao3D);
+		GL3_BindVBO(gl3state.vbo3D);
+		glBufferData(GL_ARRAY_BUFFER, gl3state.vbo3Dsize, NULL, GL_STREAM_DRAW);
+		gl3state.vbo3DcurOffset = 0;
+	}
+
 	SDL_GL_SwapWindow(window);
 }
 
@@ -170,7 +179,7 @@ int GL3_PrepareForWindow(void)
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	if (SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8) < 0)
+	if (SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8) == 0)
 	{
 		gl3config.stencil = true;
 	}
@@ -270,12 +279,12 @@ int GL3_InitContext(void* win)
 		}
 	}
 
-	// Check if we've got 8 stencil bits
+	// Check if we've got at least 8 stencil bits
 	int stencil_bits = 0;
 
 	if (gl3config.stencil)
 	{
-		if (SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &stencil_bits) != 8)
+		if (SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &stencil_bits) < 0 || stencil_bits < 8)
 		{
 			gl3config.stencil = false;
 		}

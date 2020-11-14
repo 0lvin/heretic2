@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // models are the only shared resource between a client and server running
 // on the same machine.
 
+#include <limits.h>
 #include "header/local.h"
 
 model_t	*loadmodel;
@@ -365,14 +366,11 @@ Mod_LoadVertexes (lump_t *l)
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc((count+8)*sizeof(*out));		// extra for skybox
-        /*
-         * PATCH: eliasm
-         *
-         * This patch fixes the problem where the games dumped core
-         * when changing levels.
-         */
-        memset( out, 0, (count + 6) * sizeof( *out ) );
-        /* END OF PATCH */
+	/*
+	 * Fix for the problem where the games dumped core
+	 * when changing levels.
+	 */
+	memset( out, 0, (count + 6) * sizeof( *out ) );
 
 	loadmodel->vertexes = out;
 	loadmodel->numvertexes = count;
@@ -512,15 +510,12 @@ Mod_LoadTexinfo (lump_t *l)
 		if (next > 0)
 			out->next = loadmodel->texinfo + next;
 		/*
-		 * PATCH: eliasm
-		 *
-		 * This patch fixes the problem where the game
+		 * Fix for the problem where the game
 		 * domed core when loading a new level.
 		 */
 		else {
 			out->next = NULL;
 		}
-		/* END OF PATCH */
 
 		Com_sprintf (name, sizeof(name), "textures/%s.wal", in->texture);
 		out->image = R_FindImage (name, it_wall);
@@ -556,8 +551,8 @@ CalcSurfaceExtents (msurface_t *s)
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	mins[0] = mins[1] = 999999;
-	maxs[0] = maxs[1] = -99999;
+	mins[0] = mins[1] = INT_MAX; // Set maximum values for world range
+	maxs[0] = maxs[1] = INT_MIN; // Set minimal values for world range
 
 	tex = s->texinfo;
 
@@ -683,7 +678,6 @@ Mod_LoadFaces (lump_t *l)
 		}
 
 		//==============
-		//PGM
 		// this marks flowing surfaces as turbulent, but with the new
 		// SURF_FLOW flag.
 		if (out->texinfo->flags & SURF_FLOWING)
@@ -696,7 +690,6 @@ Mod_LoadFaces (lump_t *l)
 			}
 			continue;
 		}
-		//PGM
 		//==============
 	}
 }
@@ -940,6 +933,27 @@ Mod_LoadPlanes (lump_t *l)
 }
 
 
+// calculate the size that Hunk_Alloc(), called by Mod_Load*() from Mod_LoadBrushModel(),
+// will use (=> includes its padding), so we'll know how big the hunk needs to be
+// extra is used for skybox, which adds 6 surfaces
+static int calcLumpHunkSize(const lump_t *l, int inSize, int outSize, int extra)
+{
+	if (l->filelen % inSize)
+	{
+		// Mod_Load*() will error out on this because of "funny size"
+		// don't error out here because in Mod_Load*() it can print the functionname
+		// (=> tells us what kind of lump) before shutting down the game
+		return 0;
+	}
+
+	int count = l->filelen / inSize + extra;
+	int size = count * outSize;
+
+	// round to cacheline, like Hunk_Alloc() does
+	size = (size + 31) & ~31;
+	return size;
+}
+
 /*
 =================
 Mod_LoadBrushModel
@@ -952,17 +966,6 @@ Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen)
 	dheader_t	*header;
 	dmodel_t 	*bm;
 
-	/* Because Quake II is is sometimes so ... "optimized" this
-	 * is going to be somewhat dirty. The map data contains indices
-	 * that we're converting into pointers. Yeah. No comments. The
-	 * indices are 32 bit long, they just encode the offset between
-	 * the hunks base address and the position in the hunk, so 32 bit
-	 * pointers should be enough. But let's play save, waste some
-	 * allocations and just take the plattforms pointer size instead
-	 * of relying on assumptions. */
-	loadmodel->extradata = Hunk_Begin(modfilelen * sizeof(void*));
-
-	loadmodel->type = mod_brush;
 	if (loadmodel != mod_known)
 		ri.Sys_Error(ERR_DROP, "Loaded a brush model after the world");
 
@@ -980,6 +983,36 @@ Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen)
 
 	for (i=0 ; i<sizeof(dheader_t)/4 ; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
+
+	// calculate the needed hunksize from the lumps
+	int hunkSize = 0;
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_VERTEXES], sizeof(dvertex_t), sizeof(mvertex_t), 8);
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_EDGES], sizeof(dedge_t), sizeof(medge_t), 13);
+	float surfEdgeCount = header->lumps[LUMP_SURFEDGES].filelen/sizeof(int);
+	if(surfEdgeCount < MAX_MAP_SURFEDGES) // else it errors out later anyway
+		hunkSize += calcLumpHunkSize(&header->lumps[LUMP_SURFEDGES], sizeof(int), sizeof(int), 24);
+
+	// lighting is a special case, because we keep only 1 byte out of 3 (=> no colored lighting in soft renderer)
+	{
+		int size = header->lumps[LUMP_LIGHTING].filelen/3;
+		size = (size + 31) & ~31;
+		hunkSize += size;
+	}
+
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_PLANES], sizeof(dplane_t), sizeof(mplane_t), 6);
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_TEXINFO], sizeof(texinfo_t), sizeof(mtexinfo_t), 6);
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_FACES], sizeof(dface_t), sizeof(msurface_t), 6);
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_LEAFFACES], sizeof(short), sizeof(msurface_t *), 0); // yes, out is indeeed a pointer!
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_VISIBILITY], 1, 1, 0);
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_LEAFS], sizeof(dleaf_t), sizeof(mleaf_t), 0);
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_NODES], sizeof(dnode_t), sizeof(mnode_t), 0);
+	hunkSize += calcLumpHunkSize(&header->lumps[LUMP_MODELS], sizeof(dmodel_t), sizeof(dmodel_t), 0);
+
+	hunkSize += 1048576; // 1MB extra just in case
+
+	loadmodel->extradata = Hunk_Begin(hunkSize);
+
+	loadmodel->type = mod_brush;
 
 	// load into heap
 	Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
@@ -1299,9 +1332,7 @@ RE_RegisterModel (char *name)
 			pheader = (dmdl_t *)mod->extradata;
 			for (i=0 ; i<pheader->num_skins ; i++)
 				mod->skins[i] = R_FindImage ((char *)pheader + pheader->ofs_skins + i*MAX_SKINNAME, it_skin);
-			//PGM
 			mod->numframes = pheader->num_frames;
-			//PGM
 		}
 		else if (mod->type == mod_brush)
 		{

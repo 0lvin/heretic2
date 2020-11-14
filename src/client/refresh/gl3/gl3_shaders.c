@@ -488,8 +488,14 @@ static const char* fragmentSrc3Dlm = MULTILINE_STRING(
 					float distLightToPos = length(lightToPos);
 					float fact = max(0, intens - distLightToPos - 52);
 
+					// move the light source a bit further above the surface
+					// => helps if the lightsource is so close to the surface (e.g. grenades, rockets)
+					//    that the dot product below would return 0
+					// (light sources that are below the surface are filtered out by lightFlags)
+					lightToPos += passNormal*32.0;
+
 					// also factor in angle between light and point on surface
-					fact *= max(0, dot(passNormal, lightToPos/distLightToPos));
+					fact *= max(0, dot(passNormal, normalize(lightToPos)));
 
 
 					lmTex.rgb += dynLights[i].lightColor.rgb * fact * (1.0/256.0);
@@ -620,7 +626,7 @@ static const char* fragmentSrcAlias = MULTILINE_STRING(
 			// apply gamma correction and intensity
 			texel.rgb *= intensity;
 			texel.a *= alpha; // is alpha even used here?
-			texel *= min(vec4(3.0), passColor);
+			texel *= min(vec4(1.5), passColor);
 
 			outColor.rgb = pow(texel.rgb, vec3(gamma));
 			outColor.a = texel.a; // I think alpha shouldn't be modified by gamma and intensity
@@ -697,7 +703,12 @@ static const char* fragmentSrcParticlesSquare = MULTILINE_STRING(
 
 		void main()
 		{
-			outColor = passColor;
+			// outColor = passColor;
+			// so far we didn't use gamma correction for square particles, but this way
+			// uniCommon is referenced so hopefully Intels Ivy Bridge HD4000 GPU driver
+			// for Windows stops shitting itself (see https://github.com/yquake2/yquake2/issues/391)
+			outColor.rgb = pow(passColor.rgb, vec3(gamma));
+			outColor.a = passColor.a;
 		}
 );
 
