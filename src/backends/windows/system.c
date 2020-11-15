@@ -454,7 +454,7 @@ Sys_GetGameAPI(void *parms)
 /* ======================================================================= */
 
 void
-Sys_Mkdir(char *path)
+Sys_Mkdir(const char *path)
 {
 	WCHAR wpath[MAX_OSPATH] = {0};
 	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
@@ -586,6 +586,23 @@ Sys_RemoveDir(const char *path)
 	RemoveDirectoryW(wpath);
 }
 
+void
+Sys_Realpath(const char *in, char *out, size_t size)
+{
+	WCHAR win[MAX_OSPATH] = {0};
+	WCHAR wconverted[MAX_OSPATH] = {0};
+
+	MultiByteToWideChar(CP_UTF8, 0, in, -1, win, sizeof(win));
+	_wfullpath(wconverted, win, size);
+
+	if (wconverted == NULL)
+	{
+		Com_Error(ERR_FATAL, "Couldn't get realpath for %s\n", in);
+	}
+
+	WideCharToMultiByte(CP_UTF8, 0, wconverted, -1, out, size, NULL, NULL);
+}
+
 /* ======================================================================= */
 
 void *
@@ -708,6 +725,8 @@ Sys_RedirectStdout(void)
 	{
 		return;
 	}
+
+	Sys_Mkdir(tmp);
 
 	snprintf(path_stdout, sizeof(path_stdout), "%s/%s", dir, "stdout.txt");
 	snprintf(path_stderr, sizeof(path_stderr), "%s/%s", dir, "stderr.txt");

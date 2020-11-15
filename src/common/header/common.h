@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "7.45"
+#define YQ2VERSION "8.00pre"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -821,6 +821,7 @@ void *Sys_GetGameAPI(void *parms);
 void Sys_UnloadGame(void);
 void Sys_GetWorkDir(char *buffer, size_t len);
 qboolean Sys_SetWorkDir(char *path);
+void Sys_Realpath(const char *in, char *out, size_t size);
 
 // Windows only (system.c)
 #ifdef _WIN32

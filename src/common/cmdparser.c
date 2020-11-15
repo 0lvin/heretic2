@@ -26,6 +26,8 @@
  * =======================================================================
  */
 
+#include <ctype.h>
+
 #include "header/common.h"
 
 #define MAX_ALIAS_NAME 32
@@ -786,12 +788,6 @@ Cmd_Exists(char *cmd_name)
 	return false;
 }
 
-int
-qsort_strcomp(const void *s1, const void *s2)
-{
-	return strcmp(*(char **)s1, *(char **)s2);
-}
-
 char *
 Cmd_CompleteCommand(char *partial)
 {
@@ -877,7 +873,7 @@ Cmd_CompleteCommand(char *partial)
 		}
 
 		/* Sort it */
-		qsort(pmatch, i, sizeof(pmatch[0]), qsort_strcomp);
+		qsort(pmatch, i, sizeof(pmatch[0]), Q_sort_strcomp);
 
 		Com_Printf("\n\n");
 
@@ -945,12 +941,12 @@ Cmd_CompleteMapCommand(char *partial)
 			mapName = strtok(mapName, ".");
 
 			/* check for exact match */
-			if (!strcmp(partial, mapName))
+			if (!Q_strcasecmp(partial, mapName))
 			{
 				strcpy(retval, partial);
 			}
 			/* check for partial match */
-			else if (!strncmp(partial, mapName, len))
+			else if (!Q_strncasecmp(partial, mapName, len))
 			{
 				pmatch[nbMatches] = mapName;
 				nbMatches++;
@@ -975,7 +971,7 @@ Cmd_CompleteMapCommand(char *partial)
 			{
 				for (k = 1; k < nbMatches; k++)
 				{
-					if (j >= strlen(pmatch[k]) || pmatch[0][j] != pmatch[k][j])
+					if (j >= strlen(pmatch[k]) || tolower(pmatch[0][j]) != tolower(pmatch[k][j]))
 					{
 						partialFillContinue = false;
 						break;
