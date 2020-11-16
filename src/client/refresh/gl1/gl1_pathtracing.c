@@ -180,38 +180,41 @@ float pt_previous_world_matrix[16];
 float pt_previous_proj_matrix[16];
 float pt_previous_view_origin[3];
 
+#define MULTILINE_STRING(...) #__VA_ARGS__
+
 /*
  * Shader source code
  */
 
-static const GLcharARB* vertex_shader_source =
-	"#version 120\n"
-	"uniform mat4 entity_to_world = mat4(1);\n"
-	"uniform vec3 view_origin = vec3(0);\n"
-	"varying vec4 texcoords[8], color;\n"
-	"void main()\n"
-	"{\n"
-	"	gl_Position = ftransform();\n"
-	"	texcoords[0] = gl_MultiTexCoord0;\n"
-	"	texcoords[1] = entity_to_world * gl_Vertex;\n"
-	"	texcoords[2].xyz = vec3(0.0, 0.0, 0.0);\n"
-	"	texcoords[3].xyz = mat3(entity_to_world) * gl_MultiTexCoord2.xyz;\n"
-	"	texcoords[4] = gl_MultiTexCoord3;\n"
-	"	texcoords[5].w = gl_MultiTexCoord4.w;\n"
-	"	if (gl_MultiTexCoord4.xyz != vec3(0) && gl_MultiTexCoord5.xyz != vec3(0))\n"
-	"	{\n"
-	"		texcoords[5].xyz = normalize(gl_MultiTexCoord4.xyz);\n"
-	"		texcoords[6].xyz = normalize(gl_MultiTexCoord5.xyz);\n"
-	"	}\n"
-	"	else\n"
-	"	{\n"
-	"		texcoords[5].xyz = vec3(0);\n"
-	"		texcoords[6].xyz = vec3(0);\n"
-	"	}\n"
-	"	texcoords[7].xyz = texcoords[1].xyz - view_origin.xyz;\n"
-	"	color = gl_Color;\n"
-	"}\n"
-	"\n";
+static const GLcharARB* vertex_shader_source = MULTILINE_STRING(#version 120\n
+		uniform mat4 entity_to_world = mat4(1);
+		uniform vec3 view_origin = vec3(0);
+		varying vec4 texcoords[8], color;
+		void main()
+		{
+			gl_Position = ftransform();
+			texcoords[0] = gl_MultiTexCoord0;
+			texcoords[1] = entity_to_world * gl_Vertex;
+			texcoords[2].xyz = vec3(0.0, 0.0, 0.0);
+			texcoords[3].xyz = mat3(entity_to_world) * gl_MultiTexCoord2.xyz;
+			texcoords[4] = gl_MultiTexCoord3;
+			texcoords[5].w = gl_MultiTexCoord4.w;
+			if (gl_MultiTexCoord4.xyz != vec3(0) && gl_MultiTexCoord5.xyz != vec3(0))
+			{
+				texcoords[5].xyz = normalize(gl_MultiTexCoord4.xyz);
+				texcoords[6].xyz = normalize(gl_MultiTexCoord5.xyz);
+			}
+			else
+			{
+				texcoords[5].xyz = vec3(0);
+				texcoords[6].xyz = vec3(0);
+			}
+			texcoords[7].xyz = texcoords[1].xyz - view_origin.xyz;
+			color = gl_Color;
+		}
+);
+
+#undef MULTILINE_STRING
 
 static const GLcharARB* fragment_shader_main_source = ""
 #include "generated/pathtracing_shader_source.h"
