@@ -975,7 +975,7 @@ R_RenderView(refdef_t *fd)
 						// Decode the colour name from its character.
 						for (eye = 0; eye < 2; ++eye) {
 							colour = 0;
-							switch (toupper(gl1_stereo_anaglyph_colors->string[eye])) {
+							switch (toupper((unsigned char)gl1_stereo_anaglyph_colors->string[eye])) {
 								case 'B': ++colour; // 001 Blue
 								case 'G': ++colour; // 010 Green
 								case 'C': ++colour; // 011 Cyan
@@ -2192,6 +2192,17 @@ extern void RI_SetPalette(const unsigned char *palette);
 extern qboolean RI_IsVSyncActive(void);
 extern void RI_EndFrame(void);
 
+/*
+=====================
+RI_EndWorldRenderpass
+=====================
+*/
+static qboolean
+RI_EndWorldRenderpass( void )
+{
+	return true;
+}
+
 Q2_DLL_EXPORTED refexport_t
 GetRefAPI(refimport_t imp)
 {
@@ -2232,6 +2243,7 @@ GetRefAPI(refimport_t imp)
 
 	re.SetPalette = RI_SetPalette;
 	re.BeginFrame = RI_BeginFrame;
+	re.EndWorldRenderpass = RI_EndWorldRenderpass;
 	re.EndFrame = RI_EndFrame;
 
 	return re;

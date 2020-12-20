@@ -437,9 +437,6 @@ R_Init
 static qboolean
 RE_Init(void)
 {
-	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
-	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
-
 	R_RegisterVariables ();
 	R_InitImages ();
 	Mod_Init ();
@@ -471,6 +468,8 @@ RE_Init(void)
 
 	// create the window
 	ri.Vid_MenuInit();
+
+	R_Printf(PRINT_ALL, "ref_soft version: "REF_VERSION"\n");
 
 	return true;
 }
@@ -1479,6 +1478,7 @@ RE_SetMode(void)
 	if ((err = SWimp_SetMode(&vid.width, &vid.height, r_mode->value, fullscreen)) == rserr_ok)
 	{
 		R_InitGraphics( vid.width, vid.height );
+
 		if (r_mode->value == -1)
 		{
 			sw_state.prev_mode = 4; /* safe default for custom mode */
@@ -1498,7 +1498,7 @@ RE_SetMode(void)
 			vid_fullscreen->modified = false;
 			R_Printf(PRINT_ALL, "%s() - fullscreen unavailable in this mode\n", __func__);
 
-			if ((SWimp_SetMode(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
+			if ((err = SWimp_SetMode(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
 			{
 				return true;
 			}
@@ -1519,7 +1519,7 @@ RE_SetMode(void)
 		}
 
 		/* try setting it back to something safe */
-		if ((SWimp_SetMode(&vid.width, &vid.height, sw_state.prev_mode, 0)) != rserr_ok)
+		if ((err = SWimp_SetMode(&vid.width, &vid.height, sw_state.prev_mode, 0)) != rserr_ok)
 		{
 			R_Printf(PRINT_ALL, "%s() - could not revert to safe mode\n", __func__);
 			return false;
@@ -1789,6 +1789,17 @@ static int RE_PrepareForWindow(void)
 }
 
 /*
+=====================
+RE_EndWorldRenderpass
+=====================
+*/
+static qboolean
+RE_EndWorldRenderpass( void )
+{
+	return true;
+}
+
+/*
 ===============
 GetRefAPI
 ===============
@@ -1834,6 +1845,7 @@ GetRefAPI(refimport_t imp)
 
 	refexport.SetPalette = RE_SetPalette;
 	refexport.BeginFrame = RE_BeginFrame;
+	refexport.EndWorldRenderpass = RE_EndWorldRenderpass;
 	refexport.EndFrame = RE_EndFrame;
 
 	Swap_Init ();

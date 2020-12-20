@@ -123,11 +123,12 @@ static int last_haptic_efffect_pos = 0;
 static struct hapric_effects_cache last_haptic_efffect[HAPTIC_EFFECT_LAST];
 
 // Joystick sensitivity
-static cvar_t *joy_yawsensitivity;
-static cvar_t *joy_pitchsensitivity;
-static cvar_t *joy_forwardsensitivity;
-static cvar_t *joy_sidesensitivity;
-static cvar_t *joy_upsensitivity;
+cvar_t *joy_yawsensitivity;
+cvar_t *joy_pitchsensitivity;
+cvar_t *joy_forwardsensitivity;
+cvar_t *joy_sidesensitivity;
+cvar_t *joy_upsensitivity;
+cvar_t *joy_expo;
 
 // Joystick direction settings
 static cvar_t *joy_axis_leftx;
@@ -576,7 +577,7 @@ IN_Update(void)
 						}
 						else
 						{
-							Com_Printf("Pressed unknown key with SDL_Keycode %d, SDL_Scancode %d.\n", kc, (int)sc);
+							Com_DPrintf("Pressed unknown key with SDL_Keycode %d, SDL_Scancode %d.\n", kc, (int)sc);
 						}
 					}
 				}
@@ -680,6 +681,9 @@ IN_Update(void)
 				{
 					fix_value = 0.0f;
 				}
+
+				// Apply expo
+				fix_value = pow(fix_value, joy_expo->value);
 
 				axis_value = (int) (32767 * ((axis_value < 0) ? -fix_value : fix_value));
 
@@ -816,16 +820,6 @@ IN_Update(void)
 	// We need to save the frame time so other subsystems
 	// know the exact time of the last input events.
 	sys_frame_time = Sys_Milliseconds();
-}
-
-/*
- * Removes all pending events from SDLs queue.
- */
-void
-In_FlushQueue(void)
-{
-	SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
-	Key_MarkAllUp();
 }
 
 /*
@@ -975,6 +969,17 @@ static void
 IN_JoyAltSelectorUp(void)
 {
 	joy_altselector_pressed = false;
+}
+
+/*
+ * Removes all pending events from SDLs queue.
+ */
+void
+In_FlushQueue(void)
+{
+	SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
+	Key_MarkAllUp();
+	IN_JoyAltSelectorUp();
 }
 
 /* ------------------------------------------------------------------ */
@@ -1348,6 +1353,7 @@ IN_Init(void)
 	joy_forwardsensitivity = Cvar_Get("joy_forwardsensitivity", "1.0", CVAR_ARCHIVE);
 	joy_sidesensitivity = Cvar_Get("joy_sidesensitivity", "1.0", CVAR_ARCHIVE);
 	joy_upsensitivity = Cvar_Get("joy_upsensitivity", "1.0", CVAR_ARCHIVE);
+	joy_expo = Cvar_Get("joy_expo", "2.0", CVAR_ARCHIVE);
 
 	joy_axis_leftx = Cvar_Get("joy_axis_leftx", "sidemove", CVAR_ARCHIVE);
 	joy_axis_lefty = Cvar_Get("joy_axis_lefty", "forwardmove", CVAR_ARCHIVE);
