@@ -37,7 +37,6 @@ int registration_sequence;
 byte *mod_base;
 
 /* Only required for pathtracing. */
-static int	numentitychars;
 static char map_entitystring[MAX_MAP_ENTSTRING];
 
 void LoadSP2(model_t *mod, void *buffer, int modfilelen);
@@ -134,7 +133,6 @@ Mod_Modellist_f(void)
 void
 Mod_Init(void)
 {
-	numentitychars = 0;
 	map_entitystring[0] = 0;
 	memset(mod_novis, 0xff, sizeof(mod_novis));
 }
@@ -412,7 +410,7 @@ Mod_LoadTexinfo(lump_t *l)
 
 		/* Load the radiance value for pathtracing. */
 		out->radiance = in->value;
-		
+
 		out->flags = LittleLong(in->flags);
 		next = LittleLong(in->nexttexinfo);
 
@@ -947,8 +945,6 @@ static int calcLumpHunkSize(const lump_t *l, int inSize, int outSize)
 void
 Mod_LoadEntityString(lump_t *l)
 {
-	numentitychars = l->filelen;
-
 	if (l->filelen > MAX_MAP_ENTSTRING)
 	{
 		ri.Sys_Error(ERR_DROP, "Mod_LoadEntityString: Map has too large entity lump");
@@ -1062,7 +1058,6 @@ void
 Mod_Free(model_t *mod)
 {
 	/* Clear the entity string. */
-	numentitychars = 0;
 	map_entitystring[0] = 0;
 
 	Hunk_Free(mod->extradata);
