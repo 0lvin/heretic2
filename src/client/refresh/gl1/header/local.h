@@ -65,7 +65,7 @@
 #define MAX_SCRAPS 1
 #define BLOCK_WIDTH 128
 #define BLOCK_HEIGHT 128
-#define REF_VERSION "Yamagi Quake II OpenGL Refresher (+Pathtracing)"
+#define REF_VERSION "Yamagi Quake II OpenGL Refresher"
 #define BACKFACE_EPSILON 0.01
 #define LIGHTMAP_BYTES 4
 #define MAX_LIGHTMAPS 128
@@ -116,7 +116,7 @@ typedef struct image_s
 	qboolean has_alpha;
 
 	qboolean paletted;
-	
+
 	/* Surface reflectivity for pathtracing. */
 	vec3_t reflectivity;
 } image_t;
@@ -311,7 +311,7 @@ int Scrap_AllocBlock(int w, int h, int *x, int *y);
 /*
  * Pathtracing
  */
- 
+
 void R_InitPathtracing(void);
 void R_ShutdownPathtracing(void);
 void R_PreparePathtracer(void);
@@ -355,15 +355,10 @@ typedef struct
 
 	float max_anisotropy;
 
-	qboolean shaders;
-	qboolean fragment_shaders;
 	qboolean float_textures;
 	qboolean texture_buffer_objects;
 	qboolean texture_buffer_objects_rgb;
-	qboolean vertex_buffer_objects;
-	qboolean texture_rg;
 	qboolean map_buffer_range;
-	qboolean multisample_filter_hint;
 
 	GLint version_major;
 	GLint version_minor;
