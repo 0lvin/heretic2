@@ -269,17 +269,17 @@ static void Mod_LoadVisibility (model_t *mod, lump_t *l)
 
 	if (!l->filelen)
 	{
-		loadmodel->vis = NULL;
+		mod->vis = NULL;
 		return;
 	}
-	loadmodel->vis = Hunk_Alloc ( l->filelen);
-	memcpy (loadmodel->vis, mod_base + l->fileofs, l->filelen);
+	mod->vis = Hunk_Alloc ( l->filelen);
+	memcpy (mod->vis, mod_base + l->fileofs, l->filelen);
 
-	loadmodel->vis->numclusters = LittleLong (loadmodel->vis->numclusters);
-	for (i=0 ; i<loadmodel->vis->numclusters ; i++)
+	mod->vis->numclusters = LittleLong (mod->vis->numclusters);
+	for (i=0 ; i<mod->vis->numclusters ; i++)
 	{
-		loadmodel->vis->bitofs[i][0] = LittleLong (loadmodel->vis->bitofs[i][0]);
-		loadmodel->vis->bitofs[i][1] = LittleLong (loadmodel->vis->bitofs[i][1]);
+		mod->vis->bitofs[i][0] = LittleLong (mod->vis->bitofs[i][0]);
+		mod->vis->bitofs[i][1] = LittleLong (mod->vis->bitofs[i][1]);
 	}
 }
 
@@ -301,8 +301,8 @@ static void Mod_LoadVertexes (model_t *mod, lump_t *l)
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	loadmodel->vertexes = out;
-	loadmodel->numvertexes = count;
+	mod->vertexes = out;
+	mod->numvertexes = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -348,8 +348,8 @@ static void Mod_LoadSubmodels (model_t *mod, lump_t *l)
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	loadmodel->submodels = out;
-	loadmodel->numsubmodels = count;
+	mod->submodels = out;
+	mod->numsubmodels = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -383,8 +383,8 @@ static void Mod_LoadEdges (model_t *mod, lump_t *l)
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( (count + 1) * sizeof(*out));
 
-	loadmodel->edges = out;
-	loadmodel->numedges = count;
+	mod->edges = out;
+	mod->numedges = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -411,8 +411,8 @@ static void Mod_LoadTexinfo (model_t *mod, lump_t *l)
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	loadmodel->texinfo = out;
-	loadmodel->numtexinfo = count;
+	mod->texinfo = out;
+	mod->numtexinfo = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -427,7 +427,7 @@ static void Mod_LoadTexinfo (model_t *mod, lump_t *l)
 		out->flags = LittleLong (in->flags);
 		next = LittleLong (in->nexttexinfo);
 		if (next > 0)
-			out->next = loadmodel->texinfo + next;
+			out->next = mod->texinfo + next;
 		else
 		    out->next = NULL;
 		Com_sprintf (name, sizeof(name), "textures/%s.wal", in->texture);
@@ -449,7 +449,7 @@ static void Mod_LoadTexinfo (model_t *mod, lump_t *l)
 	// count animation frames
 	for (i=0 ; i<count ; i++)
 	{
-		out = &loadmodel->texinfo[i];
+		out = &mod->texinfo[i];
 		out->numframes = 1;
 		for (step = out->next ; step && step != out ; step=step->next)
 			out->numframes++;
@@ -463,7 +463,7 @@ CalcSurfaceExtents
 Fills in s->texturemins[] and s->extents[]
 ================
 */
-static void CalcSurfaceExtents (msurface_t *s)
+static void CalcSurfaceExtents (model_t *mod, msurface_t *s)
 {
 	float	mins[2], maxs[2], val;
 	int		i,j;
@@ -480,11 +480,11 @@ static void CalcSurfaceExtents (msurface_t *s)
 	{
 		int	e;
 
-		e = loadmodel->surfedges[s->firstedge+i];
+		e = mod->surfedges[s->firstedge+i];
 		if (e >= 0)
-			v = &loadmodel->vertexes[loadmodel->edges[e].v[0]];
+			v = &mod->vertexes[mod->edges[e].v[0]];
 		else
-			v = &loadmodel->vertexes[loadmodel->edges[-e].v[1]];
+			v = &mod->vertexes[mod->edges[-e].v[1]];
 
 		for (j=0 ; j<2 ; j++)
 		{
@@ -532,8 +532,8 @@ static void Mod_LoadFaces (model_t *mod, lump_t *l)
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc(count * sizeof(*out));
 
-	loadmodel->surfaces = out;
-	loadmodel->numsurfaces = count;
+	mod->surfaces = out;
+	mod->numsurfaces = count;
 
 	Vk_BeginBuildingLightmaps(loadmodel);
 
@@ -553,14 +553,14 @@ static void Mod_LoadFaces (model_t *mod, lump_t *l)
 		if (side)
 			out->flags |= SURF_PLANEBACK;
 
-		out->plane = loadmodel->planes + planenum;
+		out->plane = mod->planes + planenum;
 
 		ti = LittleShort(in->texinfo);
-		if (ti < 0 || ti >= loadmodel->numtexinfo)
+		if (ti < 0 || ti >= mod->numtexinfo)
 			ri.Sys_Error(ERR_DROP, "%s: bad texinfo number", __func__);
-		out->texinfo = loadmodel->texinfo + ti;
+		out->texinfo = mod->texinfo + ti;
 
-		CalcSurfaceExtents(out);
+		CalcSurfaceExtents(mod, out);
 
 		// lighting info
 
@@ -570,7 +570,7 @@ static void Mod_LoadFaces (model_t *mod, lump_t *l)
 		if (i == -1)
 			out->samples = NULL;
 		else
-			out->samples = loadmodel->lightdata + i;
+			out->samples = mod->lightdata + i;
 
 		// set the drawing flags
 
@@ -634,8 +634,8 @@ static void Mod_LoadNodes (model_t *mod, lump_t *l)
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	loadmodel->nodes = out;
-	loadmodel->numnodes = count;
+	mod->nodes = out;
+	mod->numnodes = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -648,7 +648,7 @@ static void Mod_LoadNodes (model_t *mod, lump_t *l)
 		}
 
 		p = LittleLong(in->planenum);
-		out->plane = loadmodel->planes + p;
+		out->plane = mod->planes + p;
 
 		out->firstsurface = LittleShort (in->firstface);
 		out->numsurfaces = LittleShort (in->numfaces);
@@ -658,13 +658,13 @@ static void Mod_LoadNodes (model_t *mod, lump_t *l)
 		{
 			p = LittleLong (in->children[j]);
 			if (p >= 0)
-				out->children[j] = loadmodel->nodes + p;
+				out->children[j] = mod->nodes + p;
 			else
-				out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
+				out->children[j] = (mnode_t *)(mod->leafs + (-1 - p));
 		}
 	}
 
-	Mod_SetParent (loadmodel->nodes, NULL);	// sets nodes and leafs
+	Mod_SetParent (mod->nodes, NULL);	// sets nodes and leafs
 }
 
 /*
@@ -776,7 +776,7 @@ static void Mod_LoadSurfedges (model_t *mod, lump_t *l)
 	count = l->filelen / sizeof(*in);
 	if (count < 1 || count >= MAX_MAP_SURFEDGES)
 		ri.Sys_Error (ERR_DROP, "%s: bad surfedges count in %s: %i",
-		__func__, loadmodel->name, count);
+		__func__, mod->name, count);
 
 	out = Hunk_Alloc ( count*sizeof(*out));
 
