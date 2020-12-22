@@ -3363,7 +3363,7 @@ R_PreparePathtracer(void)
 	}
 
 	if (gl_pt_static_entity_lights_enable->value)
-		ParseStaticEntityLights(Mod_EntityString());
+		ParseStaticEntityLights(r_worldmodel->entitystring);
 
 	R_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: %d static entity light-emitters\n", pt_num_entitylights);
 

@@ -36,9 +36,6 @@ int mod_numknown;
 int registration_sequence;
 byte *mod_base;
 
-/* Only required for pathtracing. */
-static char map_entitystring[MAX_MAP_ENTSTRING];
-
 void LoadSP2(model_t *mod, void *buffer, int modfilelen);
 void Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen);
 void LoadMD2(model_t *mod, void *buffer, int modfilelen);
@@ -49,12 +46,6 @@ void LM_BeginBuildingLightmaps(model_t *m);
 
 /* the inline * models from the current map are kept seperate */
 model_t mod_inline[MAX_MOD_KNOWN];
-
-char *
-Mod_EntityString(void)
-{
-	return map_entitystring;
-}
 
 mleaf_t *
 Mod_PointInLeaf(vec3_t p, model_t *model)
@@ -133,7 +124,6 @@ Mod_Modellist_f(void)
 void
 Mod_Init(void)
 {
-	map_entitystring[0] = 0;
 	memset(mod_novis, 0xff, sizeof(mod_novis));
 }
 
@@ -956,9 +946,12 @@ Mod_LoadEntityString(lump_t *l)
 		ri.Sys_Error(ERR_DROP, "Mod_LoadEntityString: Map has too large entity lump");
 	}
 
-	memcpy(map_entitystring, mod_base + l->fileofs, l->filelen);
+	loadmodel->entitystring = Hunk_Alloc(l->filelen) + 1;
+
+	memcpy(loadmodel->entitystring, mod_base + l->fileofs, l->filelen);
 }
 
+void
 Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen)
 {
 	int i;
@@ -1063,9 +1056,6 @@ Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen)
 void
 Mod_Free(model_t *mod)
 {
-	/* Clear the entity string. */
-	map_entitystring[0] = 0;
-
 	Hunk_Free(mod->extradata);
 	memset(mod, 0, sizeof(*mod));
 }
