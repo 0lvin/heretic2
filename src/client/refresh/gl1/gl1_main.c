@@ -1464,36 +1464,6 @@ RI_Init()
 		}
 	}
 
-	/* Get the major and minor version numbers of the context. For a context with version
-		less than 3.0 this will fail, so that case needs to be checked for. */
-
-	/* First deal with any error which already occured. */
-	err = glGetError();
-
-	if (err != GL_NO_ERROR)
-	{
-		R_Printf(PRINT_ALL, "Entering R_Init: glGetError() = 0x%x\n", err);
-	}
-
-	gl_config.version_major = 0;
-	gl_config.version_minor = 0;
-
-	glGetIntegerv(GL_MAJOR_VERSION, &gl_config.version_major);
-
-	err = glGetError();
-
-	if (err != GL_NO_ERROR)
-	{
-		gl_config.version_major = 0;
-		gl_config.version_minor = 0;
-		R_Printf(PRINT_ALL, "\n\nglGetIntegerv(GL_MAJOR_VERSION) failed with glGetError() = 0x%x, GL version is assumed to be less than 3.0", err);
-	}
-	else
-	{
-		glGetIntegerv(GL_MINOR_VERSION, &gl_config.version_minor);
-		R_Printf(PRINT_ALL, "\n\nGL version is %d.%d", gl_config.version_major, gl_config.version_minor);
-	}
-
 	R_Printf(PRINT_ALL, "\n\nProbing for OpenGL extensions:\n");
 
 	// ----
@@ -1594,6 +1564,35 @@ RI_Init()
 	}
 
 	// ----
+	/* Get the major and minor version numbers of the context. For a context with version
+		less than 3.0 this will fail, so that case needs to be checked for. */
+
+	/* First deal with any error which already occured. */
+	err = glGetError();
+
+	if (err != GL_NO_ERROR)
+	{
+		R_Printf(PRINT_ALL, "Entering R_Init: glGetError() = 0x%x\n", err);
+	}
+
+	gl_config.version_major = 0;
+	gl_config.version_minor = 0;
+
+	glGetIntegerv(GL_MAJOR_VERSION, &gl_config.version_major);
+
+	err = glGetError();
+
+	if (err != GL_NO_ERROR)
+	{
+		gl_config.version_major = 0;
+		gl_config.version_minor = 0;
+		R_Printf(PRINT_ALL, "\n\nglGetIntegerv(GL_MAJOR_VERSION) failed with glGetError() = 0x%x, GL version is assumed to be less than 3.0", err);
+	}
+	else
+	{
+		glGetIntegerv(GL_MINOR_VERSION, &gl_config.version_minor);
+		R_Printf(PRINT_ALL, "\n\nGL version is %d.%d", gl_config.version_major, gl_config.version_minor);
+	}
 
 	/* Multitexturing */
 	R_Printf(PRINT_ALL, " - Multitexturing: ");

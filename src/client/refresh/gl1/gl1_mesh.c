@@ -143,7 +143,6 @@ R_DrawAliasFrameLerp(dmdl_t *paliashdr, float backlerp)
 	int i;
 	int index_xyz;
 	float *lerp;
-	float *st0, *st1, *st2, *xyz0, *xyz1, *xyz2;
 
 	frame = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 							  + currententity->frame * paliashdr->framesize);
@@ -200,6 +199,8 @@ R_DrawAliasFrameLerp(dmdl_t *paliashdr, float backlerp)
 
 	if (gl_pt_enable->value && !(currententity->flags & (RF_FULLBRIGHT | RF_TRANSLUCENT | RF_BEAM | RF_NOSHADOW | RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE | RF_SHELL_HALF_DAM)))
 	{
+		float *st0, *st1, *st2, *xyz0, *xyz1, *xyz2;
+
 		glBegin(GL_TRIANGLES);
 
 		while (1)
