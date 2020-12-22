@@ -3373,7 +3373,7 @@ R_PreparePathtracer(void)
 
 	AddStaticBSP();
 
-	R_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: Static BSP texture size is %dx%d\n", pt_bsp_texture_width, pt_bsp_texture_height);
+	R_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: Static BSP texture size is %ldx%ld\n", pt_bsp_texture_width, pt_bsp_texture_height);
 
 	UploadTextureBufferData(pt_trilights_buffer, pt_trilight_data, 0, pt_num_lights * 4 * sizeof(pt_trilight_data[0]));
 	UploadTextureBufferData(pt_lightref_buffer, pt_trilight_references, 0, pt_num_trilight_references * sizeof(pt_trilight_references[0]));

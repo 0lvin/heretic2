@@ -123,7 +123,7 @@ void QGL_EXT_Reset ( void )
 	qglMultiTexCoord3fARB     = NULL;
 	qglMultiTexCoord4fARB     = NULL;
 	qglActiveTextureARB       = NULL;
-   
+
 	/* ------------------------- GL_ARB_shader_objects ------------------------- */
 
 	qglAttachObjectARB = NULL;
@@ -153,7 +153,7 @@ void QGL_EXT_Reset ( void )
 	/* ---------------------- GL_EXT_texture_buffer_object --------------------- */
 
 	qglTexBufferEXT = NULL;
-	
+
 	/* ----------------------------- GL_VERSION_3_1 ---------------------------- */
 
 	qglTexBuffer = NULL;
@@ -167,7 +167,7 @@ void QGL_EXT_Reset ( void )
 	qglGenBuffersARB = NULL;
 	qglMapBufferARB = NULL;
 	qglUnmapBufferARB = NULL;
-	
+
 	/* ----------------------------- GL_VERSION_1_5 ---------------------------- */
 
 	qglBindBuffer = NULL;
@@ -177,11 +177,11 @@ void QGL_EXT_Reset ( void )
 	qglGenBuffers = NULL;
 	qglMapBuffer = NULL;
 	qglUnmapBuffer = NULL;
-	
+
 	/* ------------------------ GL_ARB_map_buffer_range ------------------------ */
 
 	qglMapBufferRange = NULL;
-	
+
 	/* ----------------------------- GL_VERSION_1_2 ---------------------------- */
 
 	qglTexImage3D = NULL;

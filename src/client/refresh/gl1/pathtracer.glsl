@@ -23,7 +23,7 @@
  *
  * =======================================================================
  */
- 
+
 #ifndef NUM_BOUNCES
 # define NUM_BOUNCES 0
 #endif
@@ -35,7 +35,7 @@
 #ifndef NUM_LIGHT_SAMPLES
 # define NUM_LIGHT_SAMPLES 1
 #endif
-	
+
 #ifndef NUM_SKY_SAMPLES
 # define NUM_SKY_SAMPLES 1
 #endif
@@ -142,7 +142,7 @@ vec2 rand(int index)
 vec2 boxInterval(vec3 ro, vec3 rd, vec3 size)
 {
 	vec3 mins = (size * -sign(rd) - ro) / rd;
-	vec3 maxs = (size * +sign(rd) - ro) / rd;	
+	vec3 maxs = (size * +sign(rd) - ro) / rd;
 	return vec2(max(max(mins.x, mins.y), mins.z), min(min(maxs.x, maxs.y), maxs.z));
 }
 
@@ -190,7 +190,7 @@ bool traceRayShadowTri(vec3 ro, vec3 rd, float maxdist,
 				if (sign(d0) == sign(d1) && sign(d0) == sign(d2) && t < maxdist && t > 0.0)
 					return false;
 			}
-			
+
 			// Step to the immediate next node.
 			++node;
 		}
@@ -199,7 +199,7 @@ bool traceRayShadowTri(vec3 ro, vec3 rd, float maxdist,
 			// The ray does not intersect this node, so skip over all the nodes contained within it.
 			node = n0.w;
 		}
-		
+
 	} while (node > 0);
 #endif
 
@@ -224,7 +224,7 @@ float traceRayBSP(vec3 org, vec3 dir, float t0, float max_t)
 		vec2  node = other_node;
 		float t1 = other_t1;
 		vec4 pln0 = other_pln0;
-		
+
 		// Reset the stack.
 		other_node = vec2(0);
 		other_t1 = max_t;
@@ -234,9 +234,9 @@ float traceRayBSP(vec3 org, vec3 dir, float t0, float max_t)
 		{
 			vec4 pln = texture(bsp_planes, node);
 			vec4 children = texture(bsp_branches, node);
-			
+
 			// Perform ray-plane intersection and order the children according to traversal order.
-			
+
 			float t = dot(pln.xyz, dir);
 
 			children = (t > 0.0) ? children.zwxy : children.xyzw;
@@ -247,8 +247,8 @@ float traceRayBSP(vec3 org, vec3 dir, float t0, float max_t)
 			{
 				// The near node is intersected.
 				node = children.xy;
-				
-				if (t < t1) 
+
+				if (t < t1)
 				{
 					// Both children need to be visited, so push the further children onto the stack.
 					other_t1 = t1;
@@ -263,14 +263,14 @@ float traceRayBSP(vec3 org, vec3 dir, float t0, float max_t)
 				// Only the far node is intersected.
 				node = children.zw;
 			}
-			
+
 			if (node.y == 1.0)
 			{
 				 return t0;
 			}
-			
+
 		} while (node != vec2(0));
-		
+
 		// Store the plane of intersection and push the current ray traversal point just beyond it.
 		out_pln = pln0;
 		t0 = t1 + EPS;
@@ -286,21 +286,21 @@ bool traceRayShadowBSP(vec3 org, vec3 dir, float t0, float max_t)
 	return traceRayBSP(org, dir, t0, max_t) >= max_t;
 }
 
-// Returns the light list head references for the given point. The X component points to the 
+// Returns the light list head references for the given point. The X component points to the
 // direct light list and the Y component points to the skyportal list.
 ivec2 getLightRef(vec3 p)
 {
 	vec2 node = vec2(0), prev_node;
 	float d;
-	
+
 	// Travel down the BSP.
 	do
 	{
 		vec4 pln = texture(bsp_planes, node);
 		vec4 children = texture(bsp_branches, node);
-		
+
 		d = dot(pln.xyz, p) - pln.w;
-		
+
 		if (d < 0.0)
 		{
 			prev_node = node;
@@ -314,11 +314,11 @@ ivec2 getLightRef(vec3 p)
 
 		if (node.y == 1.0)
 			 return ivec2(0);
-		
+
 	} while (node != vec2(0));
-	
+
 	ivec4 light_indices = texture(bsp_lightrefs, prev_node);
-	
+
 	return d < 0.0 ? light_indices.yw : light_indices.xz;
 }
 
@@ -328,7 +328,7 @@ vec3 sampleDirectLightForMirrorBRDF(vec3 rp, vec3 rd, vec3 rn, int oli)
 	oli = oli < 0 ? -oli : +oli;
 	int li = oli;
 	int ref = texelFetch(lightrefs, li).r;
-	
+
 	if (ref != -1)
 	{
 		vec3 refl_dir = reflect(rd, rn);
@@ -347,12 +347,12 @@ vec3 sampleDirectLightForMirrorBRDF(vec3 rp, vec3 rd, vec3 rn, int oli)
 			vec3 n = normalize(cross(p1 - p0, p2 - p0));
 
 			float t = dot(p0 - rp, n) / dot(refl_dir, n);
-			
+
 			float d = dot(refl_dir, n);
 			vec3 sp2 = rp + refl_dir * t;
-			
+
 			if (d > 0.0 && t > 0.0 && t < max_t && dot(p0 - sp2, n) < 0.1 && dot(p0 - sp2, n) > -1e-3)
-			{	
+			{
 				float s1 = dot(cross(p1 - sp2, p2 - sp2), n);
 
 				if (dot(light.rgb, vec3(1)) < 0.0 && s1 < 0.0)
@@ -375,10 +375,10 @@ vec3 sampleDirectLightForMirrorBRDF(vec3 rp, vec3 rd, vec3 rn, int oli)
 
 			++li;
 			ref = texelFetch(lightrefs, li).r;
-			
+
 		} while (ref != -1);
 	}
-	
+
 	return vec3(0);
 }
 
@@ -393,11 +393,11 @@ vec3 sampleDirectLight(vec3 rp, vec3 rn, int oli)
 	oli = oli < 0 ? -oli : +oli;
 	int li = oli;
 	int ref = texelFetch(lightrefs, li).r;
-	
+
 	if (ref != -1)
 	{
 		float wsum = 0.0;
-		
+
 		// Visit each referenced light and sum up the importance weights for the purpose of weight normalisation.
 		do
 		{
@@ -419,20 +419,20 @@ vec3 sampleDirectLight(vec3 rp, vec3 rn, int oli)
 			wsum += w;
 			++li;
 			ref = texelFetch(lightrefs, li).r;
-			
+
 		} while (ref != -1);
-		
+
 		// Sample the set of lightsources using importance sampling.
 		for (int light_sample = 0; light_sample < NUM_LIGHT_SAMPLES; ++light_sample)
 		{
 			li = oli;
 			ref = texelFetch(lightrefs, li).r;
-			
+
 			vec3 p0, p1, p2, n;
 
 			// Choose a lightsource randomly, with each lightsource having a probability of being chosen
 			// proportional to it's importance weight.
-			
+
 			float x = rand(light_sample).x * wsum, w=1.0;
 			vec4 j = vec4(0);
 
@@ -440,31 +440,31 @@ vec3 sampleDirectLight(vec3 rp, vec3 rn, int oli)
 			{
 				vec4 light=texelFetch(lights, ref);
 				ivec2 tri = texelFetch(triangles, floatBitsToInt(light.w)).xy;
-				
+
 				p0 = texelFetch(tri_vertices, tri.x & 0xffff).xyz;
 				p1 = texelFetch(tri_vertices, tri.x >> 16).xyz;
 				p2 = texelFetch(tri_vertices, tri.y & 0xffff).xyz;
-				
+
 				n = cross(p2 - p0, p1 - p0);
-				
+
 				// Calculate the importance weight.
 				float d = distance(rp, (p0 + p1 + p2) / 3.0);
 				float pd = dot(normalize(rp - (p0 + p1 + p2) / 3.0), n);
-				
+
 				w = length(light.rgb) * max(0.0, pd) / (d * d);
-				
+
 				x -= w;
-				
+
 				if (x < 0.0)
 				{
 					// This lightsource has been chosen.
 					j = light;
 					break;
 				}
-				
+
 				++li;
 				ref = texelFetch(lightrefs, li).r;
-				
+
 			} while (ref != -1);
 
 #if NUM_SHADOW_SAMPLES > 0
@@ -475,15 +475,15 @@ vec3 sampleDirectLight(vec3 rp, vec3 rn, int oli)
 				vec3 sn = rn.xyz;
 				vec3 lp = p0;
 				vec2 uv = rand(shadow_sample);
-				
+
 				// Flip the barycentric coordinates if this is a triangle, don't if it's a parallelogram.
 				if ((uv.x + uv.y) > 1.0 && dot(j.rgb, vec3(1)) > 0.0)
 					uv = vec2(1) - uv;
-				
+
 				lp += (p1 - p0) * uv.x + (p2 - p0) * uv.y;
-				
+
 				float ld = distance(sp, lp);
-				
+
 				vec3 l = (lp - sp) / ld;
 				float ndotl = dot(l, sn), lndotl = dot(-l, n);
 				if (ndotl > 0.0 && lndotl > 0.0)
@@ -530,7 +530,7 @@ void main()
 
 	vec2 bump_gradients = vec2(bumpHeightForDiffuseTexel(texcoords[0].st + vec2(bump_texel_size.x, 0.0)) - bump_height0,
 										bumpHeightForDiffuseTexel(texcoords[0].st + vec2(0.0, bump_texel_size.y)) - bump_height0) / bump_texel_size;
-				
+
 	vec3 shading_normal = normalize(pln.xyz - (texcoords[5].xyz * bump_gradients.x + texcoords[6].xyz * bump_gradients.y) * bump_factor);
 #else
 	vec3 shading_normal = normalize(pln.xyz);
@@ -538,20 +538,20 @@ void main()
 
 	float fresnel = texcoords[5].w * mix(0.9, 0.3, pow(clamp(1.0 - dot(shading_normal, -normalize(texcoords[7].xyz)), 0.0, 1.0), 4.0));
 	bool brdf_mirror = fresnel < bluenoise_sample.b;
-		
+
 	// Sample the direct light at this point.
 	int rpli = getLightRef(rp).x;
 	vec3 r = brdf_mirror ? sampleDirectLightForMirrorBRDF(rp, normalize(texcoords[7].xyz), shading_normal, rpli) : sampleDirectLight(rp, shading_normal, rpli);
 
 	// Add the emissive light (light emitted towards the eye immediately from this surface).
 	r += texcoords[4].rgb;
-	
+
 #if NUM_BOUNCES > 0 || NUM_AO_SAMPLES > 0 || NUM_SKY_SAMPLES > 0
 	// Make an orthonormal basis for the primary ray intersection point.
 	vec3 u = normalize(cross(pln.xyz, pln.zxy));
 	vec3 v = cross(pln.xyz, u);
 #endif
-	
+
 #if NUM_AO_SAMPLES > 0
 	{
 		// Apply importance-sampled (lambert diffuse BRDF) ambient occlusion.
@@ -559,13 +559,13 @@ void main()
 		for (int ao_sample = 0; ao_sample < NUM_AO_SAMPLES; ++ao_sample)
 		{
 			vec2 rr = rand(ao_sample);
-			
+
 			float r1 = 2.0 * PI * rr.x;
 			float r2s = sqrt(rr.y);
 
 			// Lambert diffuse BRDF.
 			vec3 rd = u * cos(r1) * r2s + v * sin(r1) * r2s + pln.xyz * sqrt(1.0 - rr.y);
-				
+
 			if (traceRayShadowBSP(rp, rd, EPS * 16, ao_radius) && traceRayShadowTri(rp, rd, ao_radius, tri_nodes0, tri_nodes1, tri_vertices, triangles, shadow_ray_node_offset))
 				ao += 1.0;
 		}
@@ -599,17 +599,17 @@ void main()
 			rd = normalize(u * cos(r1) * r2s + v * sin(r1) * r2s + pln.xyz * sqrt(1.0 - rr.y));
 			factor = clamp(dot(rd, shading_normal) / dot(rd, pln.xyz), 0.1, 2.0);
 		}
-		
+
 		// Trace a ray against the BSP. This intersection point is later used for secondary bounces and testing
 		// for containment in skyportals polygons (skyportals aren't sampled directly).
 		t = traceRayBSP(rp, rd, EPS * 16, MAXT) - 1.0;
 
 		if ((dot(out_pln.xyz, rp) - out_pln.w) < 0.0)
 			out_pln *= -1.0;
-		
+
 		sp = rp + rd * max(0.0, t);
 	}
-	
+
 #if NUM_BOUNCES > 0
 	// Test for intersection with triangle meshes. This is done so bounce light can be shadowed
 	// by triangle meshes. It is only done if the ray has travelled a significant distance during the bounce.
@@ -640,15 +640,15 @@ void main()
 					{
 						vec4 light = texelFetch(lights, ref);
 						ivec2 tri = texelFetch(triangles, floatBitsToInt(light.w)).xy;
-						
+
 						vec3 p0 = texelFetch(tri_vertices, tri.x & 0xffff).xyz;
 						vec3 p1 = texelFetch(tri_vertices, tri.x >> 16).xyz;
 						vec3 p2 = texelFetch(tri_vertices, tri.y & 0xffff).xyz;
-						
+
 						vec3 n = normalize(cross(p1 - p0, p2 - p0));
-						
+
 						vec3 sp2 = sp;
-						
+
 						float s1 = dot(cross(p1 - sp2, p2 - sp2), n);
 
 						// If the skyportal is a parallelogram and the subtriangle opposing the reflected
@@ -670,10 +670,10 @@ void main()
 							// The sample point is contained by this polygon, so add the light contribution.
 							sky_r += abs(light.rgb) * clamp(dot(rd, shading_normal) / dot(rd, pln.xyz), 0.1, 2.0);
 						}
-						
+
 						++li;
 						ref = texelFetch(lightrefs, li).r;
-						
+
 					} while (ref != -1);
 				}
 			}
@@ -690,7 +690,7 @@ void main()
 			rd = normalize(u * cos(r1) * r2s + v * sin(r1) * r2s + pln.xyz * sqrt(1.0 - rr.y));
 
 			t = traceRayBSP(rp, rd, EPS * 16, MAXT) - 1.0;
-			
+
 			sp = rp + rd * max(0.0, t);
 #endif
 		}
@@ -720,20 +720,20 @@ void main()
 
 			if (!traceRayShadowTri(rp, rd, t, tri_nodes0, tri_nodes1, tri_vertices, triangles, shadow_ray_node_offset))
 				break;
-			
+
 			if ((dot(out_pln.xyz, rp) - out_pln.w) < 0.0)
 				out_pln *= -1.0;
-			
+
 			rp = rp + rd * max(0.0, t);
-			
+
 			// Simulate (achromatic) absorption of light at the surface.
 			factor *= bounce_factor;
-			
+
 			int li = getLightRef(rp).x;
 			pln = out_pln;
 			r += factor * sampleDirectLight(rp, out_pln.xyz, li);
 			out_pln = pln;
-			
+
 #if NUM_BOUNCES > 2
 			u = normalize(cross(out_pln.xyz, out_pln.zxy));
 			v = cross(out_pln.xyz, u);
@@ -748,7 +748,7 @@ void main()
 	gl_FragColor.rgb += r / 1024.;
 
 	gl_FragColor.a = color.a;
-	
+
 #if DIFFUSE_MAP_ENABLE
 	// Multiply the gathered light with the diffuse albedo.
 	gl_FragColor.rgb *= texture(diffuse_texture, texcoords[0].st).rgb + vec3(1e-2);
@@ -759,17 +759,17 @@ void main()
 
 	// Gamma.
 	gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0 / gamma));
-	
+
 #if TAA_ENABLE
 	if (texcoords[4].w > 0.0)
 	{
 		// Apply TAA.
-		
+
 		vec4 clip = previous_world_matrix * texcoords[1];
 		vec2 ndc = clip.xy / clip.w * 0.5 + vec2(0.5);
-		
+
 		rp = texcoords[1].xyz + texcoords[3].xyz * EPS * 16;
-		
+
 		// Check if the fragment was visible in the previous frame. If not, then the information in the previous framebuffer does not match and it cannot be reused.
       // Zero is passed as the node offset to traceRayShadowTri so that the viewmodel always participates in the disocclusion test. This is necessary to prevent ghosting on the viewmodel.
 		vec3 disocclusion_test_ray = normalize(previous_view_origin - rp);
@@ -777,7 +777,7 @@ void main()
 		bool previously_visible = traceRayShadowBSP(rp, disocclusion_test_ray, EPS * 16, disocclusion_test_distance) &&
 				traceRayShadowTri(rp, disocclusion_test_ray, disocclusion_test_distance, tri_nodes0_prev, tri_nodes1_prev, tri_vertices_prev, triangles_prev, 0) &&
 				dot(normalize(texcoords[3].xyz), disocclusion_test_ray) > 0.01;
-		
+
 		gl_FragColor.rgb = mix(gl_FragColor.rgb, texture(taa_world, ndc).rgb,
 				all(greaterThan(ndc, vec2(0))) && all(lessThan(ndc, vec2(1))) && previously_visible ? 0.45 * texcoords[4].w : 0.0);
 	}

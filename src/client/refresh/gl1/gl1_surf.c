@@ -280,7 +280,7 @@ R_BlendLightmaps(void)
 	}
 
 	if (!gl_pt_enable->value)
-	{		
+	{
 		/* render static lightmaps first */
 		for (i = 1; i < MAX_LIGHTMAPS; i++)
 		{
@@ -364,7 +364,7 @@ R_BlendLightmaps(void)
 								R_TexEnv(GL_COMBINE_EXT);
 								glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_EXT, gl1_overbrightbits->value);
 							}
-	
+
 							R_DrawGLPolyChain(drawsurf->polys,
 									(drawsurf->light_s - drawsurf->dlight_s) * (1.0 / 128.0),
 									(drawsurf->light_t - drawsurf->dlight_t) * (1.0 / 128.0));
@@ -408,7 +408,7 @@ R_BlendLightmaps(void)
 						R_TexEnv(GL_COMBINE_EXT);
 						glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE_EXT, gl1_overbrightbits->value);
 					}
-	
+
 					R_DrawGLPolyChain(surf->polys,
 							(surf->light_s - surf->dlight_s) * (1.0 / 128.0),
 							(surf->light_t - surf->dlight_t) * (1.0 / 128.0));
@@ -449,7 +449,7 @@ R_RenderBrushPoly(msurface_t *fa)
 		else
 			qglMultiTexCoord4fARB(GL_TEXTURE3_ARB, 0, 0, 0, 0);
 	}
-	
+
 	if (fa->flags & SURF_DRAWTURB)
 	{
 		R_Bind(image->texnum);
@@ -501,7 +501,7 @@ R_RenderBrushPoly(msurface_t *fa)
 	}
 
 	if (!gl_pt_enable->value)
-	{		
+	{
 		/* check for lightmap modification */
 		for (maps = 0; maps < MAXLIGHTMAPS && fa->styles[maps] != 255; maps++)
 		{
@@ -521,7 +521,7 @@ R_RenderBrushPoly(msurface_t *fa)
 			{
 				if (!(fa->texinfo->flags &
 					  (SURF_SKY | SURF_TRANS33 |
-						SURF_TRANS66 | SURF_WARP)))
+					   SURF_TRANS66 | SURF_WARP)))
 				{
 					is_dynamic = true;
 				}
@@ -596,7 +596,7 @@ R_DrawAlphaSurfaces(void)
 		/* Simulate GL_MODULATE using blending functions. */
 		glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE);
 	}
-	
+
 	for (s = r_alpha_surfaces; s; s = s->texturechain)
 	{
 		R_Bind(s->texinfo->image->texnum);

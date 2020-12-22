@@ -232,13 +232,13 @@ R_SetDefaultState(void)
 		glEnable(GL_MULTISAMPLE);
 		glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 	}
-	
+
 	CHECK_GL_ERROR();
 
 	if (qglUseProgramObjectARB)
 	{
 		qglUseProgramObjectARB(0);
 	}
-	
+
 	CHECK_GL_ERROR();
 }

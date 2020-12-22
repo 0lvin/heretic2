@@ -3,4 +3,3 @@
 *.mk
 *.user
 *.d
-/src/client/refresh/gl1/generated/*

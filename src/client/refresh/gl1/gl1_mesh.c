@@ -101,7 +101,7 @@ SetNormalForPathtracer(float* p0, float* p1, float *p2)
 
 	/* Get the length of the cross product. */
 	l = sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-	
+
 	/* Normalize. */
 	if (l > 0)
 	{
@@ -285,12 +285,12 @@ R_DrawAliasFrameLerp(dmdl_t *paliashdr, float backlerp)
 							glVertex3fv(xyz0);
 						}
 					}
-					
+
 					++i;
 				}
 				while (--count);
 			}
-			
+
 		}
 
 		glEnd();
@@ -911,23 +911,23 @@ R_DrawAliasModel(entity_t *e)
 		R_ConstructEntityToWorldMatrix(entity_to_world_matrix, currententity);
 
 		R_SetGLStateForPathtracing(currententity, entity_to_world_matrix);
-		
+
 		if (qglMultiTexCoord3fARB)
 		{
 			/* Assume that alias models never need to be treated as direct light-emitters. */
 			qglMultiTexCoord4fARB(GL_TEXTURE3_ARB, 0, 0, 0, 0);
-			
+
 			/* An objectspace-to-tangentspace transformation isn't available, so just set the tangent vectors to zero to effectively disable bumpmapping. */
 			qglMultiTexCoord4fARB(GL_TEXTURE4_ARB, 0, 0, 0, 1024);
 			qglMultiTexCoord3fARB(GL_TEXTURE5_ARB, 0, 0, 0);
 		}
 	}
-	
+
 	R_DrawAliasFrameLerp(paliashdr, currententity->backlerp);
 
 	if (gl_pt_enable->value)
 		R_ClearGLStateForPathtracing();
-	
+
 	R_TexEnv(GL_REPLACE);
 	glShadeModel(GL_FLAT);
 
