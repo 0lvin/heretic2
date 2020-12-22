@@ -1,6 +1,5 @@
 # ------------------------------------------------------ #
 # Makefile for the "Yamagi Quake 2 Client"               #
-#	+ modifications to support pathtracing						#
 #                                                        #
 # Just type "make" to compile the                        #
 #  - Client (quake2)                                     #
@@ -64,8 +63,6 @@ WITH_REFVK:=yes
 # case of presence.
 CONFIG_FILE:=config.mk
 
-RUN_GLSL_VALIDATOR:=no
-
 # ----------
 
 # In case a of a configuration file being present, we'll just use it
@@ -113,14 +110,6 @@ COMPILER := gcc
 COMPILERVER := $(shell $(CC)  -dumpversion | sed -e 's/\.\([0-9][0-9]\)/\1/g' -e 's/\.\([0-9]\)/0\1/g' -e 's/^[0-9]\{3,4\}$$/&00/')
 else
 COMPILER := unknown
-endif
-
-ifeq ($(RUN_GLSL_VALIDATOR),yes)
-ifeq ($(YQ2_OSTYPE), Windows)
-GLSL_VALIDATOR := glslangValidator.exe -S frag -
-else
-GLSL_VALIDATOR := glslangValidator -S frag -
-endif
 endif
 
 # ASAN includes DEBUG
@@ -393,18 +382,12 @@ clean:
 cleanall:
 	@echo "===> CLEAN"
 	${Q}rm -Rf build release
-	${Q}rm -Rf ./src/client/refresh/gl1/generated
 
 # ----------
 
 # The client
 ifeq ($(YQ2_OSTYPE), Windows)
 client:
-	@echo "===> Processing shader sourcecode"
-ifeq ($(RUN_GLSL_VALIDATOR),yes)
-	@echo "#version 330" | cat - ./src/client/refresh/gl1/pathtracer.glsl | $(GLSL_VALIDATOR)
-endif
-	sh ./stringifyshaders.sh
 	@echo "===> Building yquake2.exe"
 	${Q}mkdir -p release
 	$(MAKE) release/yquake2.exe
@@ -436,11 +419,6 @@ endif
 else # not Windows
 
 client:
-	@echo "===> Processing shader sourcecode"
-ifeq ($(RUN_GLSL_VALIDATOR),yes)
-	@echo "#version 330" | cat - ./src/client/refresh/gl1/pathtracer.glsl | $(GLSL_VALIDATOR)
-endif
-	sh ./stringifyshaders.sh
 	@echo "===> Building quake2"
 	${Q}mkdir -p release
 	$(MAKE) release/quake2

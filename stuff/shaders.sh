@@ -23,3 +23,7 @@ glslangValidator --variable-name postprocess_vert_spv -V shaders/postprocess.ver
 glslangValidator --variable-name postprocess_frag_spv -V shaders/postprocess.frag -o ../src/client/refresh/vk/spirv/postprocess_frag.c
 glslangValidator --variable-name world_warp_vert_spv -V shaders/world_warp.vert -o ../src/client/refresh/vk/spirv/world_warp_vert.c
 glslangValidator --variable-name world_warp_frag_spv -V shaders/world_warp.frag -o ../src/client/refresh/vk/spirv/world_warp_frag.c
+
+echo "#version 330" | cat - shaders/pathtracer.frag | glslangValidator --stdin -S frag
+echo '/* This is an automatically-generated file. Do not edit! */' > ../src/client/refresh/gl1/header/gl1_pathtracing_shader.h
+sed -r 's/\\/\\\\/g; s/^/"/g; s/$/\\n"/g' shaders/pathtracer.frag >> ../src/client/refresh/gl1/header/gl1_pathtracing_shader.h

@@ -217,7 +217,7 @@ static const GLcharARB* vertex_shader_source = MULTILINE_STRING(#version 120\n
 #undef MULTILINE_STRING
 
 static const GLcharARB* fragment_shader_main_source = ""
-#include "generated/pathtracing_shader_source.h"
+#include "header/gl1_pathtracing_shader.h"
 	;
 
 

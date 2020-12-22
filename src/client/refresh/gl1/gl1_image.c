@@ -868,11 +868,6 @@ CalcReflectivityForPathtracing(image_t *image, const byte *pic, int bits)
 	image->reflectivity[1] = 0.5;
 	image->reflectivity[2] = 0.5;
 
-	/* Since qrad3 doesn't seem to support non-paletted textures then we assume that
-		the reflectivty for this texture doesn't matter. */
-	if (bits != 8)
-		return;
-
 	/* The reflectivity is only relevant for wall textures. */
 	if (image->type != it_wall)
 		return;
@@ -880,13 +875,32 @@ CalcReflectivityForPathtracing(image_t *image, const byte *pic, int bits)
 	texels = image->width * image->height;
 	color[0] = color[1] = color[2] = 0;
 
-	for (j=0 ; j<texels ; j++)
+	/* Since qrad3 doesn't seem to support non-paletted textures then we assume that
+		the reflectivty for this texture doesn't matter. */
+	if (bits == 8)
 	{
-		texel = pic[j];
-		rgb24 = d_8to24table[texel];
-		color[0] += rgb24 & 255;
-		color[1] += (rgb24 >> 8) & 255;
-		color[2] += (rgb24 >> 16) & 255;
+		for (j=0 ; j<texels ; j++)
+		{
+			texel = pic[j];
+			rgb24 = d_8to24table[texel];
+			color[0] += rgb24 & 255;
+			color[1] += (rgb24 >> 8) & 255;
+			color[2] += (rgb24 >> 16) & 255;
+		}
+	}
+	else if (bits == 32)
+	{
+		unsigned *trans = (unsigned*) pic;
+		for (j=0 ; j<texels ; j++)
+		{
+			color[0] += ((byte *)&trans[j])[0];
+			color[1] += ((byte *)&trans[j])[1];
+			color[2] += ((byte *)&trans[j])[2];
+		}
+	}
+	else
+	{
+		return;
 	}
 
 	for (j=0 ; j<3 ; j++)
