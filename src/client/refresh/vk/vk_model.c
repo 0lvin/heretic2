@@ -23,9 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <limits.h>
 #include "header/local.h"
 
-static void Mod_LoadSpriteModel(model_t *mod, void *buffer, int modfilelen);
-static void Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen);
-static void Mod_LoadAliasModel(model_t *mod, void *buffer, int modfilelen);
+static void Mod_LoadSpriteModel(model_t *loadmodel, void *buffer, int modfilelen);
+static void Mod_LoadBrushModel(model_t *loadmodel, void *buffer, int modfilelen);
+static void Mod_LoadAliasModel(model_t *loadmodel, void *buffer, int modfilelen);
 static void Mod_Free (model_t *mod);
 
 
@@ -254,15 +254,15 @@ static model_t *Mod_ForName (char *name, model_t *parent_model, qboolean crash)
 Mod_LoadLighting
 =================
 */
-static void Mod_LoadLighting (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadLighting (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	if (!l->filelen)
 	{
-		mod->lightdata = NULL;
+		loadmodel->lightdata = NULL;
 		return;
 	}
-	mod->lightdata = Hunk_Alloc ( l->filelen);
-	memcpy (mod->lightdata, mod_base + l->fileofs, l->filelen);
+	loadmodel->lightdata = Hunk_Alloc ( l->filelen);
+	memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
 }
 
 
@@ -271,23 +271,23 @@ static void Mod_LoadLighting (model_t *mod, byte *mod_base, lump_t *l)
 Mod_LoadVisibility
 =================
 */
-static void Mod_LoadVisibility (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadVisibility (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	int		i;
 
 	if (!l->filelen)
 	{
-		mod->vis = NULL;
+		loadmodel->vis = NULL;
 		return;
 	}
-	mod->vis = Hunk_Alloc ( l->filelen);
-	memcpy (mod->vis, mod_base + l->fileofs, l->filelen);
+	loadmodel->vis = Hunk_Alloc ( l->filelen);
+	memcpy (loadmodel->vis, mod_base + l->fileofs, l->filelen);
 
-	mod->vis->numclusters = LittleLong (mod->vis->numclusters);
-	for (i=0 ; i<mod->vis->numclusters ; i++)
+	loadmodel->vis->numclusters = LittleLong (loadmodel->vis->numclusters);
+	for (i=0 ; i<loadmodel->vis->numclusters ; i++)
 	{
-		mod->vis->bitofs[i][0] = LittleLong (mod->vis->bitofs[i][0]);
-		mod->vis->bitofs[i][1] = LittleLong (mod->vis->bitofs[i][1]);
+		loadmodel->vis->bitofs[i][0] = LittleLong (loadmodel->vis->bitofs[i][0]);
+		loadmodel->vis->bitofs[i][1] = LittleLong (loadmodel->vis->bitofs[i][1]);
 	}
 }
 
@@ -297,7 +297,7 @@ static void Mod_LoadVisibility (model_t *mod, byte *mod_base, lump_t *l)
 Mod_LoadVertexes
 =================
 */
-static void Mod_LoadVertexes (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadVertexes (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	dvertex_t	*in;
 	mvertex_t	*out;
@@ -308,14 +308,14 @@ static void Mod_LoadVertexes (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	mod->vertexes = out;
-	mod->numvertexes = count;
+	loadmodel->vertexes = out;
+	loadmodel->numvertexes = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -349,7 +349,7 @@ static float RadiusFromBounds (vec3_t mins, vec3_t maxs)
 Mod_LoadSubmodels
 =================
 */
-static void Mod_LoadSubmodels (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadSubmodels (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	dmodel_t	*in;
 	mmodel_t	*out;
@@ -359,14 +359,14 @@ static void Mod_LoadSubmodels (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	mod->submodels = out;
-	mod->numsubmodels = count;
+	loadmodel->submodels = out;
+	loadmodel->numsubmodels = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -388,7 +388,7 @@ static void Mod_LoadSubmodels (model_t *mod, byte *mod_base, lump_t *l)
 Mod_LoadEdges
 =================
 */
-static void Mod_LoadEdges (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadEdges (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	dedge_t *in;
 	medge_t *out;
@@ -398,14 +398,14 @@ static void Mod_LoadEdges (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( (count + 1) * sizeof(*out));
 
-	mod->edges = out;
-	mod->numedges = count;
+	loadmodel->edges = out;
+	loadmodel->numedges = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -419,7 +419,7 @@ static void Mod_LoadEdges (model_t *mod, byte *mod_base, lump_t *l)
 Mod_LoadTexinfo
 =================
 */
-static void Mod_LoadTexinfo (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadTexinfo (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	texinfo_t *in;
 	mtexinfo_t *out, *step;
@@ -431,14 +431,14 @@ static void Mod_LoadTexinfo (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	mod->texinfo = out;
-	mod->numtexinfo = count;
+	loadmodel->texinfo = out;
+	loadmodel->numtexinfo = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -453,7 +453,7 @@ static void Mod_LoadTexinfo (model_t *mod, byte *mod_base, lump_t *l)
 		out->flags = LittleLong (in->flags);
 		next = LittleLong (in->nexttexinfo);
 		if (next > 0)
-			out->next = mod->texinfo + next;
+			out->next = loadmodel->texinfo + next;
 		else
 		    out->next = NULL;
 		Com_sprintf (name, sizeof(name), "textures/%s.wal", in->texture);
@@ -475,7 +475,7 @@ static void Mod_LoadTexinfo (model_t *mod, byte *mod_base, lump_t *l)
 	// count animation frames
 	for (i=0 ; i<count ; i++)
 	{
-		out = &mod->texinfo[i];
+		out = &loadmodel->texinfo[i];
 		out->numframes = 1;
 		for (step = out->next ; step && step != out ; step=step->next)
 			out->numframes++;
@@ -489,7 +489,7 @@ CalcSurfaceExtents
 Fills in s->texturemins[] and s->extents[]
 ================
 */
-static void CalcSurfaceExtents (model_t *mod, msurface_t *s)
+static void CalcSurfaceExtents (model_t *loadmodel, msurface_t *s)
 {
 	float	mins[2], maxs[2], val;
 	int		i;
@@ -506,11 +506,11 @@ static void CalcSurfaceExtents (model_t *mod, msurface_t *s)
 		int e, j;
 		mvertex_t *v;
 
-		e = mod->surfedges[s->firstedge+i];
+		e = loadmodel->surfedges[s->firstedge+i];
 		if (e >= 0)
-			v = &mod->vertexes[mod->edges[e].v[0]];
+			v = &loadmodel->vertexes[loadmodel->edges[e].v[0]];
 		else
-			v = &mod->vertexes[mod->edges[-e].v[1]];
+			v = &loadmodel->vertexes[loadmodel->edges[-e].v[1]];
 
 		for (j=0 ; j<2 ; j++)
 		{
@@ -621,7 +621,7 @@ static int calcTexinfoAndFacesSize(const lump_t *fl, byte *mod_base, const lump_
 Mod_LoadFaces
 =================
 */
-static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadFaces (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	dface_t		*in;
 	msurface_t 	*out;
@@ -632,16 +632,16 @@ static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc(count * sizeof(*out));
 
-	mod->surfaces = out;
-	mod->numsurfaces = count;
+	loadmodel->surfaces = out;
+	loadmodel->numsurfaces = count;
 
-	Vk_BeginBuildingLightmaps(mod);
+	Vk_BeginBuildingLightmaps(loadmodel);
 
 	for (surfnum = 0; surfnum<count; surfnum++, in++, out++)
 	{
@@ -664,16 +664,16 @@ static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
 		if (side)
 			out->flags |= SURF_PLANEBACK;
 
-		out->plane = mod->planes + planenum;
+		out->plane = loadmodel->planes + planenum;
 
 		ti = LittleShort(in->texinfo);
-		if (ti < 0 || ti >= mod->numtexinfo)
+		if (ti < 0 || ti >= loadmodel->numtexinfo)
 		{
 			ri.Sys_Error(ERR_DROP, "%s: bad texinfo number", __func__);
 		}
-		out->texinfo = mod->texinfo + ti;
+		out->texinfo = loadmodel->texinfo + ti;
 
-		CalcSurfaceExtents(mod, out);
+		CalcSurfaceExtents(loadmodel, out);
 
 		// lighting info
 
@@ -683,7 +683,7 @@ static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
 		if (i == -1)
 			out->samples = NULL;
 		else
-			out->samples = mod->lightdata + i;
+			out->samples = loadmodel->lightdata + i;
 
 		// set the drawing flags
 
@@ -695,7 +695,7 @@ static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
 				out->extents[i] = 16384;
 				out->texturemins[i] = -8192;
 			}
-			Vk_SubdivideSurface(out, mod);	// cut up polygon for warps
+			Vk_SubdivideSurface(out, loadmodel);	// cut up polygon for warps
 		}
 
 		if (out->texinfo->flags & SURF_SKY)
@@ -708,7 +708,7 @@ static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
 			Vk_CreateSurfaceLightmap(out);
 
 		if (!(out->texinfo->flags & SURF_WARP))
-			Vk_BuildPolygonFromSurface(out, mod);
+			Vk_BuildPolygonFromSurface(out, loadmodel);
 
 	}
 
@@ -735,7 +735,7 @@ static void Mod_SetParent (mnode_t *node, mnode_t *parent)
 Mod_LoadNodes
 =================
 */
-static void Mod_LoadNodes (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadNodes (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	int			i, j, count;
 	dnode_t		*in;
@@ -746,14 +746,14 @@ static void Mod_LoadNodes (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	mod->nodes = out;
-	mod->numnodes = count;
+	loadmodel->nodes = out;
+	loadmodel->numnodes = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -766,7 +766,7 @@ static void Mod_LoadNodes (model_t *mod, byte *mod_base, lump_t *l)
 		}
 
 		p = LittleLong(in->planenum);
-		out->plane = mod->planes + p;
+		out->plane = loadmodel->planes + p;
 
 		out->firstsurface = LittleShort (in->firstface);
 		out->numsurfaces = LittleShort (in->numfaces);
@@ -776,13 +776,13 @@ static void Mod_LoadNodes (model_t *mod, byte *mod_base, lump_t *l)
 		{
 			p = LittleLong (in->children[j]);
 			if (p >= 0)
-				out->children[j] = mod->nodes + p;
+				out->children[j] = loadmodel->nodes + p;
 			else
-				out->children[j] = (mnode_t *)(mod->leafs + (-1 - p));
+				out->children[j] = (mnode_t *)(loadmodel->leafs + (-1 - p));
 		}
 	}
 
-	Mod_SetParent (mod->nodes, NULL);	// sets nodes and leafs
+	Mod_SetParent (loadmodel->nodes, NULL);	// sets nodes and leafs
 }
 
 /*
@@ -790,7 +790,7 @@ static void Mod_LoadNodes (model_t *mod, byte *mod_base, lump_t *l)
 Mod_LoadLeafs
 =================
 */
-static void Mod_LoadLeafs (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadLeafs (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	dleaf_t 	*in;
 	mleaf_t 	*out;
@@ -801,14 +801,14 @@ static void Mod_LoadLeafs (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	mod->leafs = out;
-	mod->numleafs = count;
+	loadmodel->leafs = out;
+	loadmodel->numleafs = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -828,11 +828,11 @@ static void Mod_LoadLeafs (model_t *mod, byte *mod_base, lump_t *l)
 		firstleafface = LittleShort(in->firstleafface) & 0xFFFF;
 		out->nummarksurfaces = LittleShort(in->numleaffaces) & 0xFFFF;
 
-		out->firstmarksurface = mod->marksurfaces + firstleafface;
-		if ((firstleafface + out->nummarksurfaces) > mod->nummarksurfaces)
+		out->firstmarksurface = loadmodel->marksurfaces + firstleafface;
+		if ((firstleafface + out->nummarksurfaces) > loadmodel->nummarksurfaces)
 		{
 			ri.Sys_Error(ERR_DROP, "%s: wrong marksurfaces position in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 		}
 
 		// gl underwater warp
@@ -855,7 +855,7 @@ static void Mod_LoadLeafs (model_t *mod, byte *mod_base, lump_t *l)
 Mod_LoadMarksurfaces
 =================
 */
-static void Mod_LoadMarksurfaces (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadMarksurfaces (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	int		i, count;
 	short		*in;
@@ -866,25 +866,25 @@ static void Mod_LoadMarksurfaces (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	mod->marksurfaces = out;
-	mod->nummarksurfaces = count;
+	loadmodel->marksurfaces = out;
+	loadmodel->nummarksurfaces = count;
 
 	for ( i=0 ; i<count ; i++)
 	{
 		int	j;
 
 		j = LittleShort(in[i]);
-		if (j < 0 ||  j >= mod->numsurfaces)
+		if (j < 0 ||  j >= loadmodel->numsurfaces)
 		{
 			ri.Sys_Error(ERR_DROP, "%s: bad surface number", __func__);
 		}
-		out[i] = mod->surfaces + j;
+		out[i] = loadmodel->surfaces + j;
 	}
 }
 
@@ -893,7 +893,7 @@ static void Mod_LoadMarksurfaces (model_t *mod, byte *mod_base, lump_t *l)
 Mod_LoadSurfedges
 =================
 */
-static void Mod_LoadSurfedges (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadSurfedges (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	int		i, count;
 	int		*in, *out;
@@ -902,18 +902,18 @@ static void Mod_LoadSurfedges (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	if (count < 1 || count >= MAX_MAP_SURFEDGES)
 		ri.Sys_Error (ERR_DROP, "%s: bad surfedges count in %s: %i",
-		__func__, mod->name, count);
+		__func__, loadmodel->name, count);
 
 	out = Hunk_Alloc ( count*sizeof(*out));
 
-	mod->surfedges = out;
-	mod->numsurfedges = count;
+	loadmodel->surfedges = out;
+	loadmodel->numsurfedges = count;
 
 	for ( i=0 ; i<count ; i++)
 		out[i] = LittleLong (in[i]);
@@ -925,7 +925,7 @@ static void Mod_LoadSurfedges (model_t *mod, byte *mod_base, lump_t *l)
 Mod_LoadPlanes
 =================
 */
-static void Mod_LoadPlanes (model_t *mod, byte *mod_base, lump_t *l)
+static void Mod_LoadPlanes (model_t *loadmodel, byte *mod_base, lump_t *l)
 {
 	int			i;
 	cplane_t	*out;
@@ -937,14 +937,14 @@ static void Mod_LoadPlanes (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	count = l->filelen / sizeof(*in);
 	out = Hunk_Alloc ( count*2*sizeof(*out));
 
-	mod->planes = out;
-	mod->numplanes = count;
+	loadmodel->planes = out;
+	loadmodel->numplanes = count;
 
 	for ( i=0 ; i<count ; i++, in++, out++)
 	{
@@ -990,17 +990,14 @@ static int calcLumpHunkSize(const lump_t *l, int inSize, int outSize)
 Mod_LoadBrushModel
 =================
 */
-static void Mod_LoadBrushModel (model_t *mod, void *buffer, int modfilelen)
+static void Mod_LoadBrushModel (model_t *loadmodel, void *buffer, int modfilelen)
 {
 	int			i;
 	dheader_t	*header;
 	mmodel_t 	*bm;
 	byte		*mod_base;
-	model_t	*loadmodel;
 
-	loadmodel = mod;
-
-	if (mod != &mod_known[0])
+	if (loadmodel != &mod_known[0])
 		ri.Sys_Error(ERR_DROP, "%s: Loaded a brush model after the world", __func__);
 
 	header = (dheader_t *)buffer;
@@ -1010,7 +1007,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer, int modfilelen)
 	if (i != BSPVERSION)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
-				__func__, mod->name, i, BSPVERSION);
+				__func__, loadmodel->name, i, BSPVERSION);
 	}
 
 	/* swap all the lumps */
@@ -1042,28 +1039,28 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer, int modfilelen)
 	loadmodel->type = mod_brush;
 
 	// load into heap
-	Mod_LoadVertexes (mod, mod_base, &header->lumps[LUMP_VERTEXES]);
-	Mod_LoadEdges (mod, mod_base, &header->lumps[LUMP_EDGES]);
-	Mod_LoadSurfedges (mod, mod_base, &header->lumps[LUMP_SURFEDGES]);
-	Mod_LoadLighting (mod, mod_base, &header->lumps[LUMP_LIGHTING]);
-	Mod_LoadPlanes (mod, mod_base, &header->lumps[LUMP_PLANES]);
-	Mod_LoadTexinfo (mod, mod_base, &header->lumps[LUMP_TEXINFO]);
-	Mod_LoadFaces (mod, mod_base, &header->lumps[LUMP_FACES]);
-	Mod_LoadMarksurfaces (mod, mod_base, &header->lumps[LUMP_LEAFFACES]);
-	Mod_LoadVisibility (mod, mod_base, &header->lumps[LUMP_VISIBILITY]);
-	Mod_LoadLeafs (mod, mod_base, &header->lumps[LUMP_LEAFS]);
-	Mod_LoadNodes (mod, mod_base, &header->lumps[LUMP_NODES]);
-	Mod_LoadSubmodels (mod, mod_base, &header->lumps[LUMP_MODELS]);
-	mod->numframes = 2;		// regular and alternate animation
+	Mod_LoadVertexes (loadmodel, mod_base, &header->lumps[LUMP_VERTEXES]);
+	Mod_LoadEdges (loadmodel, mod_base, &header->lumps[LUMP_EDGES]);
+	Mod_LoadSurfedges (loadmodel, mod_base, &header->lumps[LUMP_SURFEDGES]);
+	Mod_LoadLighting (loadmodel, mod_base, &header->lumps[LUMP_LIGHTING]);
+	Mod_LoadPlanes (loadmodel, mod_base, &header->lumps[LUMP_PLANES]);
+	Mod_LoadTexinfo (loadmodel, mod_base, &header->lumps[LUMP_TEXINFO]);
+	Mod_LoadFaces (loadmodel, mod_base, &header->lumps[LUMP_FACES]);
+	Mod_LoadMarksurfaces (loadmodel, mod_base, &header->lumps[LUMP_LEAFFACES]);
+	Mod_LoadVisibility (loadmodel, mod_base, &header->lumps[LUMP_VISIBILITY]);
+	Mod_LoadLeafs (loadmodel, mod_base, &header->lumps[LUMP_LEAFS]);
+	Mod_LoadNodes (loadmodel, mod_base, &header->lumps[LUMP_NODES]);
+	Mod_LoadSubmodels (loadmodel, mod_base, &header->lumps[LUMP_MODELS]);
+	loadmodel->numframes = 2;		// regular and alternate animation
 
 	//
 	// set up the submodels
 	//
-	for (i = 0; i < mod->numsubmodels; i++)
+	for (i = 0; i < loadmodel->numsubmodels; i++)
 	{
 		model_t	*starmod;
 
-		bm = &mod->submodels[i];
+		bm = &loadmodel->submodels[i];
 		starmod = &mod_inline[i];
 
 		*starmod = *loadmodel;
@@ -1104,7 +1101,7 @@ ALIAS MODELS
 Mod_LoadAliasModel
 =================
 */
-static void Mod_LoadAliasModel (model_t *mod, void *buffer, int modfilelen)
+static void Mod_LoadAliasModel (model_t *loadmodel, void *buffer, int modfilelen)
 {
 	int		i, j;
 	dmdl_t		*pinmodel, *pheader;
@@ -1120,17 +1117,17 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer, int modfilelen)
 	if (version != ALIAS_VERSION)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
-				__func__, mod->name, version, ALIAS_VERSION);
+				__func__, loadmodel->name, version, ALIAS_VERSION);
 	}
 
 	ofs_end = LittleLong(pinmodel->ofs_end);
 	if (ofs_end < 0 || ofs_end > modfilelen)
 	{
-		ri.Sys_Error(ERR_DROP, "%s: model %s file size(%d) too small, should be %d", mod->name,
+		ri.Sys_Error(ERR_DROP, "%s: model %s file size(%d) too small, should be %d", loadmodel->name,
 				__func__, modfilelen, ofs_end);
 	}
 
-	mod->extradata = Hunk_Begin(modfilelen);
+	loadmodel->extradata = Hunk_Begin(modfilelen);
 	pheader = Hunk_Alloc(ofs_end);
 
 	// byte swap the header fields and sanity check
@@ -1139,38 +1136,38 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer, int modfilelen)
 
 	if (pheader->skinheight > MAX_LBM_HEIGHT)
 	{
-		ri.Sys_Error(ERR_DROP, "%s: model %s has a skin taller than %d", mod->name,
+		ri.Sys_Error(ERR_DROP, "%s: model %s has a skin taller than %d", loadmodel->name,
 				__func__, MAX_LBM_HEIGHT);
 	}
 
 	if (pheader->num_xyz <= 0)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: model %s has no vertices",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	if (pheader->num_xyz > MAX_VERTS)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: model %s has too many vertices",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	if (pheader->num_st <= 0)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: model %s has no st vertices",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	if (pheader->num_tris <= 0)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: model %s has no triangles",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	if (pheader->num_frames <= 0)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: model %s has no frames",
-				__func__, mod->name);
+				__func__, loadmodel->name);
 	}
 
 	//
@@ -1224,7 +1221,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer, int modfilelen)
 
 	}
 
-	mod->type = mod_alias;
+	loadmodel->type = mod_alias;
 
 	//
 	// load the glcmds
@@ -1240,16 +1237,16 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer, int modfilelen)
 		pheader->num_skins*MAX_SKINNAME);
 	for (i=0 ; i<pheader->num_skins ; i++)
 	{
-		mod->skins[i] = Vk_FindImage ((char *)pheader + pheader->ofs_skins + i*MAX_SKINNAME
+		loadmodel->skins[i] = Vk_FindImage ((char *)pheader + pheader->ofs_skins + i*MAX_SKINNAME
 			, it_skin);
 	}
 
-	mod->mins[0] = -32;
-	mod->mins[1] = -32;
-	mod->mins[2] = -32;
-	mod->maxs[0] = 32;
-	mod->maxs[1] = 32;
-	mod->maxs[2] = 32;
+	loadmodel->mins[0] = -32;
+	loadmodel->mins[1] = -32;
+	loadmodel->mins[2] = -32;
+	loadmodel->maxs[0] = 32;
+	loadmodel->maxs[1] = 32;
+	loadmodel->maxs[2] = 32;
 }
 
 /*
@@ -1265,13 +1262,13 @@ SPRITE MODELS
 Mod_LoadSpriteModel
 =================
 */
-static void Mod_LoadSpriteModel (model_t *mod, void *buffer, int modfilelen)
+static void Mod_LoadSpriteModel (model_t *loadmodel, void *buffer, int modfilelen)
 {
 	dsprite_t	*sprin, *sprout;
 	int			i;
 
 	sprin = (dsprite_t *)buffer;
-	mod->extradata = Hunk_Begin(modfilelen);
+	loadmodel->extradata = Hunk_Begin(modfilelen);
 	sprout = Hunk_Alloc(modfilelen);
 
 	sprout->ident = LittleLong (sprin->ident);
@@ -1281,13 +1278,13 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer, int modfilelen)
 	if (sprout->version != SPRITE_VERSION)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
-				__func__, mod->name, sprout->version, SPRITE_VERSION);
+				__func__, loadmodel->name, sprout->version, SPRITE_VERSION);
 	}
 
 	if (sprout->numframes > MAX_MD2SKINS)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: %s has too many frames (%i > %i)",
-				__func__, mod->name, sprout->numframes, MAX_MD2SKINS);
+				__func__, loadmodel->name, sprout->numframes, MAX_MD2SKINS);
 	}
 
 	// byte swap everything
@@ -1298,11 +1295,11 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer, int modfilelen)
 		sprout->frames[i].origin_x = LittleLong (sprin->frames[i].origin_x);
 		sprout->frames[i].origin_y = LittleLong (sprin->frames[i].origin_y);
 		memcpy (sprout->frames[i].name, sprin->frames[i].name, MAX_SKINNAME);
-		mod->skins[i] = Vk_FindImage (sprout->frames[i].name,
+		loadmodel->skins[i] = Vk_FindImage (sprout->frames[i].name,
 			it_sprite);
 	}
 
-	mod->type = mod_sprite;
+	loadmodel->type = mod_sprite;
 }
 
 //=============================================================================
