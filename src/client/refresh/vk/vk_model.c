@@ -23,8 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <limits.h>
 #include "header/local.h"
 
-model_t	*loadmodel;
-
 static void Mod_LoadSpriteModel(model_t *mod, void *buffer, int modfilelen);
 static void Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen);
 static void Mod_LoadAliasModel(model_t *mod, void *buffer, int modfilelen);
@@ -209,8 +207,6 @@ static model_t *Mod_ForName (char *name, model_t *parent_model, qboolean crash)
 		memset (mod->name, 0, sizeof(mod->name));
 		return NULL;
 	}
-
-	loadmodel = mod;
 
 	//
 	// fill it in
@@ -636,7 +632,7 @@ static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
 	if (l->filelen % sizeof(*in))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, loadmodel->name);
+				__func__, mod->name);
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -645,7 +641,7 @@ static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
 	mod->surfaces = out;
 	mod->numsurfaces = count;
 
-	Vk_BeginBuildingLightmaps(loadmodel);
+	Vk_BeginBuildingLightmaps(mod);
 
 	for (surfnum = 0; surfnum<count; surfnum++, in++, out++)
 	{
@@ -712,7 +708,7 @@ static void Mod_LoadFaces (model_t *mod, byte *mod_base, lump_t *l)
 			Vk_CreateSurfaceLightmap(out);
 
 		if (!(out->texinfo->flags & SURF_WARP))
-			Vk_BuildPolygonFromSurface(out, loadmodel);
+			Vk_BuildPolygonFromSurface(out, mod);
 
 	}
 
@@ -1000,6 +996,9 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer, int modfilelen)
 	dheader_t	*header;
 	mmodel_t 	*bm;
 	byte		*mod_base;
+	model_t	*loadmodel;
+
+	loadmodel = mod;
 
 	if (mod != &mod_known[0])
 		ri.Sys_Error(ERR_DROP, "%s: Loaded a brush model after the world", __func__);
