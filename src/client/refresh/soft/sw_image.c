@@ -127,7 +127,7 @@ R_RestoreMips(image_t *image, int min_mips)
 {
 	int i;
 
-	for (i=min_mip; i<(NUM_MIPS-1); i++)
+	for (i=min_mips; i<(NUM_MIPS-1); i++)
 	{
 		R_ImageShrink(image->pixels[i], image->pixels[i + 1],
 			      image->width >> i, image->width >> (i + 1),
