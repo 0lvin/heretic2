@@ -129,6 +129,7 @@ void Mod_Init (void)
 	memset (mod_novis, 0xff, sizeof(mod_novis));
 	mod_numknown = 0;
 	mod_loaded = 0;
+	mod_max = 0;
 }
 
 /*

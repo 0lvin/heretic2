@@ -1460,6 +1460,7 @@ void	Vk_InitImages (void)
 
 	numvktextures = 0;
 	img_loaded = 0;
+	image_max = 0;
 	registration_sequence = 1;
 
 	// init intensity conversions
