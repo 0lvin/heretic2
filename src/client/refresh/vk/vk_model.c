@@ -25,11 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 YQ2_ALIGNAS_TYPE(int) static byte mod_novis[MAX_MAP_LEAFS/8];
 
 #define	MAX_MOD_KNOWN	512
-model_t	mod_known[MAX_MOD_KNOWN];
-int		mod_numknown;
+static model_t	mod_known[MAX_MOD_KNOWN];
+static int		mod_numknown = 0;
+static int		mod_loaded = 0;
 
 // the inline * models from the current map are kept seperate
-model_t	mod_inline[MAX_MOD_KNOWN];
+static model_t	mod_inline[MAX_MOD_KNOWN];
 
 int		registration_sequence;
 
@@ -43,7 +44,7 @@ mleaf_t *Mod_PointInLeaf (vec3_t p, model_t *model)
 	mnode_t		*node;
 
 	if (!model || !model->nodes)
-		ri.Sys_Error (ERR_DROP, "Mod_PointInLeaf: bad model");
+		ri.Sys_Error (ERR_DROP, "%s: bad model", __func__);
 
 	node = model->nodes;
 	while (1)
@@ -111,7 +112,7 @@ void Mod_Modellist_f (void)
 			 mod->extradatasize, mod->name, in_use);
 		total += mod->extradatasize;
 	}
-	R_Printf(PRINT_ALL, "Total resident: %i\n", total);
+	R_Printf(PRINT_ALL, "Total resident: %i in %d models\n", total, mod_loaded);
 }
 
 /*
@@ -122,6 +123,8 @@ Mod_Init
 void Mod_Init (void)
 {
 	memset (mod_novis, 0xff, sizeof(mod_novis));
+	mod_numknown = 0;
+	mod_loaded = 0;
 }
 
 /*
@@ -131,8 +134,25 @@ Mod_Free
 */
 static void Mod_Free (model_t *mod)
 {
+	if (!mod->extradata)
+	{
+		// looks as empty model
+		memset (mod, 0, sizeof(*mod));
+		return;
+	}
+
+	if (vk_validation->value)
+	{
+		R_Printf(PRINT_ALL, "%s: Unload %s[%d]\n", __func__, mod->name, mod_loaded);
+	}
+
 	Hunk_Free (mod->extradata);
 	memset (mod, 0, sizeof(*mod));
+	mod_loaded --;
+	if (mod_loaded < 0)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: Broken unload", __func__);
+	}
 }
 
 /*
@@ -442,12 +462,6 @@ static void CalcSurfaceExtents (model_t *loadmodel, msurface_t *s)
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
 	}
 }
-
-
-void Vk_BuildPolygonFromSurface(msurface_t *fa, model_t *currentmodel);
-void Vk_CreateSurfaceLightmap (msurface_t *surf);
-void Vk_EndBuildingLightmaps (void);
-void Vk_BeginBuildingLightmaps (model_t *m);
 
 static int calcTexinfoAndFacesSize(const lump_t *fl, byte *mod_base, const lump_t *tl)
 {
@@ -1276,8 +1290,19 @@ static model_t *Mod_ForName (char *name, model_t *parent_model, qboolean crash)
 					__func__, mod->name);
 		}
 
+		if (vk_validation->value)
+		{
+			R_Printf(PRINT_ALL, "%s: Can't load %s\n", __func__, mod->name);
+		}
 		memset (mod->name, 0, sizeof(mod->name));
 		return NULL;
+	}
+
+	// update count of loaded models
+	mod_loaded ++;
+	if (vk_validation->value)
+	{
+		R_Printf(PRINT_ALL, "%s: Load %s[%d]\n", __func__, mod->name, mod_loaded);
 	}
 
 	//
@@ -1387,6 +1412,11 @@ struct model_s *RE_RegisterModel (char *name)
 	return mod;
 }
 
+static qboolean
+Mod_HasFreeSpace(void)
+{
+	return mod_loaded < (MAX_MOD_KNOWN / 2);
+}
 
 /*
 =====================
@@ -1398,6 +1428,12 @@ void RE_EndRegistration (void)
 {
 	int		i;
 	model_t	*mod;
+
+	if (Mod_HasFreeSpace() && Vk_ImageHasFreeSpace())
+	{
+		// should be enought space for load next maps
+		return;
+	}
 
 	for (i=0, mod=mod_known ; i<mod_numknown ; i++, mod++)
 	{
