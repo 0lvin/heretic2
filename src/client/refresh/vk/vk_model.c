@@ -28,6 +28,7 @@ YQ2_ALIGNAS_TYPE(int) static byte mod_novis[MAX_MAP_LEAFS/8];
 static model_t	mod_known[MAX_MOD_KNOWN];
 static int		mod_numknown = 0;
 static int		mod_loaded = 0;
+static int		mod_max = 0;
 
 // the inline * models from the current map are kept seperate
 static model_t	mod_inline[MAX_MOD_KNOWN];
@@ -115,7 +116,7 @@ void Mod_Modellist_f (void)
 		total += mod->extradatasize;
 	}
 	R_Printf(PRINT_ALL, "Total resident: %i in %d models\n", total, mod_loaded);
-	R_Printf(PRINT_ALL, "Used %d models.\n", used);
+	R_Printf(PRINT_ALL, "Used %d of %d models.\n", used, mod_max);
 }
 
 /*
@@ -1433,8 +1434,13 @@ Mod_HasFreeSpace(void)
 		}
 	}
 
+	if (mod_max < used)
+	{
+		mod_max = used;
+	}
+
 	// should same size of free slots as currently used
-	return (mod_loaded + used) < MAX_MOD_KNOWN;
+	return (mod_loaded + mod_max) < MAX_MOD_KNOWN;
 }
 
 /*

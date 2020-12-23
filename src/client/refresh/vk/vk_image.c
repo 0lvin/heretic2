@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 image_t		vktextures[MAX_VKTEXTURES];
 int		numvktextures = 0;
 static int		img_loaded = 0;
+static int		image_max = 0;
+
 // texture for storing raw image data (cinematics, endscreens, etc.)
 qvktexture_t vk_rawTexture = QVVKTEXTURE_INIT;
 
@@ -576,7 +578,7 @@ void	Vk_ImageList_f (void)
 			image->width, image->height, in_use);
 	}
 	R_Printf(PRINT_ALL, "Total texel count (not counting mipmaps): %i in %d images\n", texels, img_loaded);
-	R_Printf(PRINT_ALL, "Used %d images\n", used);
+	R_Printf(PRINT_ALL, "Used %d of %d images.\n", used, image_max);
 }
 
 typedef struct
@@ -1342,6 +1344,11 @@ qboolean Vk_ImageHasFreeSpace(void)
 		{
 			used ++;
 		}
+	}
+
+	if (image_max < used)
+	{
+		image_max = used;
 	}
 
 	// should same size of free slots as currently used
