@@ -531,12 +531,12 @@ Vk_ImageList_f
 */
 void	Vk_ImageList_f (void)
 {
-	int		i;
+	int		i, used, texels;
 	image_t	*image;
-	int		texels;
 
 	R_Printf(PRINT_ALL, "------------------\n");
 	texels = 0;
+	used = 0;
 
 	for (i = 0, image = vktextures; i < numvktextures; i++, image++)
 	{
@@ -548,6 +548,7 @@ void	Vk_ImageList_f (void)
 		if (image->registration_sequence == registration_sequence)
 		{
 			in_use = "*";
+			used++;
 		}
 
 		texels += image->upload_width*image->upload_height;
@@ -575,6 +576,7 @@ void	Vk_ImageList_f (void)
 			image->width, image->height, in_use);
 	}
 	R_Printf(PRINT_ALL, "Total texel count (not counting mipmaps): %i in %d images\n", texels, img_loaded);
+	R_Printf(PRINT_ALL, "Used %d images\n", used);
 }
 
 typedef struct
@@ -1327,7 +1329,23 @@ struct image_s *RE_RegisterSkin (char *name)
 
 qboolean Vk_ImageHasFreeSpace(void)
 {
-	return img_loaded < (MAX_VKTEXTURES / 2);
+	int		i, used;
+	image_t	*image;
+
+	used = 0;
+
+	for (i = 0, image = vktextures; i < numvktextures; i++, image++)
+	{
+		if (!image->name[0])
+			continue;
+		if (image->registration_sequence == registration_sequence)
+		{
+			used ++;
+		}
+	}
+
+	// should same size of free slots as currently used
+	return (img_loaded + used) < MAX_VKTEXTURES;
 }
 
 /*
@@ -1345,7 +1363,7 @@ void Vk_FreeUnusedImages (void)
 
 	if (Vk_ImageHasFreeSpace())
 	{
-		// should be enought space for load next images
+		// should be enough space for load next images
 		return;
 	}
 

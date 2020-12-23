@@ -91,11 +91,12 @@ Mod_Modellist_f
 */
 void Mod_Modellist_f (void)
 {
-	int		i;
+	int		i, total, used;
 	model_t	*mod;
-	int		total;
 
 	total = 0;
+	used = 0;
+
 	R_Printf(PRINT_ALL,"Loaded models:\n");
 	for (i=0, mod=mod_known ; i < mod_numknown ; i++, mod++)
 	{
@@ -104,6 +105,7 @@ void Mod_Modellist_f (void)
 		if (mod->registration_sequence == registration_sequence)
 		{
 			in_use = "*";
+			used ++;
 		}
 
 		if (!mod->name[0])
@@ -113,6 +115,7 @@ void Mod_Modellist_f (void)
 		total += mod->extradatasize;
 	}
 	R_Printf(PRINT_ALL, "Total resident: %i in %d models\n", total, mod_loaded);
+	R_Printf(PRINT_ALL, "Used %d models.\n", used);
 }
 
 /*
@@ -1415,7 +1418,23 @@ struct model_s *RE_RegisterModel (char *name)
 static qboolean
 Mod_HasFreeSpace(void)
 {
-	return mod_loaded < (MAX_MOD_KNOWN / 2);
+	int		i, used;
+	model_t	*mod;
+
+	used = 0;
+
+	for (i=0, mod=mod_known ; i<mod_numknown ; i++, mod++)
+	{
+		if (!mod->name[0])
+			continue;
+		if (mod->registration_sequence == registration_sequence)
+		{
+			used ++;
+		}
+	}
+
+	// should same size of free slots as currently used
+	return (mod_loaded + used) < MAX_MOD_KNOWN;
 }
 
 /*
@@ -1431,7 +1450,7 @@ void RE_EndRegistration (void)
 
 	if (Mod_HasFreeSpace() && Vk_ImageHasFreeSpace())
 	{
-		// should be enought space for load next maps
+		// should be enough space for load next maps
 		return;
 	}
 
