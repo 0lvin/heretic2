@@ -91,10 +91,6 @@ static cvar_t *gl_pt_shadow_samples 					= NULL;
 static cvar_t *gl_pt_light_samples 						= NULL;
 static cvar_t *gl_pt_sky_enable 							= NULL;
 static cvar_t *gl_pt_sky_samples 						= NULL;
-static cvar_t *gl_pt_ao_enable 							= NULL;
-static cvar_t *gl_pt_ao_radius 							= NULL;
-static cvar_t *gl_pt_ao_color 							= NULL;
-static cvar_t *gl_pt_translucent_surfaces_enable	= NULL;
 static cvar_t *gl_pt_lightstyles_enable 				= NULL;
 static cvar_t *gl_pt_dlights_enable 					= NULL;
 static cvar_t *gl_pt_brushmodel_shadows_enable 		= NULL;
@@ -151,8 +147,6 @@ static GLuint pt_taa_world_texture = 0;
 
 static GLint pt_frame_counter_loc = -1;
 static GLint pt_entity_to_world_loc = -1;
-static GLint pt_ao_radius_loc = -1;
-static GLint pt_ao_color_loc = -1;
 static GLint pt_bounce_factor_loc = -1;
 static GLint pt_view_origin_loc = -1;
 static GLint pt_previous_view_origin_loc = -1;
@@ -375,8 +369,6 @@ ClearPathtracerState(void)
 
 	pt_frame_counter_loc = -1;
 	pt_entity_to_world_loc = -1;
-	pt_ao_radius_loc = -1;
-	pt_ao_color_loc = -1;
 	pt_bounce_factor_loc = -1;
 	pt_view_origin_loc = -1;
 	pt_previous_view_origin_loc = -1;
@@ -2732,8 +2724,6 @@ R_UpdatePathtracerForCurrentFrame(void)
 
 	/* Update the configuration uniform variables. */
 	qglUseProgramObjectARB(pt_program_handle);
-	qglUniform1fARB(pt_ao_radius_loc, gl_pt_ao_radius->value);
-	qglUniform3fARB(pt_ao_color_loc, gl_pt_ao_color->value, gl_pt_ao_color->value, gl_pt_ao_color->value);
 	qglUniform1fARB(pt_bounce_factor_loc, gl_pt_bounce_factor->value);
 	qglUniform1iARB(pt_frame_counter_loc, r_framecount);
 	qglUniform3fARB(pt_view_origin_loc, r_newrefdef.vieworg[0], r_newrefdef.vieworg[1], r_newrefdef.vieworg[2]);
@@ -3143,8 +3133,6 @@ FreeShaderPrograms(void)
 {
 	pt_frame_counter_loc = -1;
 	pt_entity_to_world_loc = -1;
-	pt_ao_radius_loc = -1;
-	pt_ao_color_loc = -1;
 	pt_bounce_factor_loc = -1;
 	pt_view_origin_loc = -1;
 	pt_previous_view_origin_loc = -1;
@@ -3315,8 +3303,6 @@ CreateShaderPrograms(void)
 
 	pt_frame_counter_loc = qglGetUniformLocationARB(pt_program_handle, "frame");
 	pt_entity_to_world_loc = qglGetUniformLocationARB(pt_program_handle, "entity_to_world");
-	pt_ao_radius_loc = qglGetUniformLocationARB(pt_program_handle, "ao_radius");
-	pt_ao_color_loc = qglGetUniformLocationARB(pt_program_handle, "ao_color");
 	pt_bounce_factor_loc = qglGetUniformLocationARB(pt_program_handle, "bounce_factor");
 	pt_view_origin_loc = qglGetUniformLocationARB(pt_program_handle, "view_origin");
 	pt_previous_view_origin_loc = qglGetUniformLocationARB(pt_program_handle, "previous_view_origin");
@@ -3330,8 +3316,6 @@ CreateShaderPrograms(void)
 
 	R_Printf(PRINT_DEVELOPER, "pt_frame_counter_loc          = %d\n", pt_frame_counter_loc);
 	R_Printf(PRINT_DEVELOPER, "pt_entity_to_world_loc        = %d\n", pt_entity_to_world_loc);
-	R_Printf(PRINT_DEVELOPER, "pt_ao_radius_loc              = %d\n", pt_ao_radius_loc);
-	R_Printf(PRINT_DEVELOPER, "pt_ao_color_loc               = %d\n", pt_ao_color_loc);
 	R_Printf(PRINT_DEVELOPER, "pt_bounce_factor_loc          = %d\n", pt_bounce_factor_loc);
 	R_Printf(PRINT_DEVELOPER, "pt_view_origin_loc            = %d\n", pt_view_origin_loc);
 	R_Printf(PRINT_DEVELOPER, "pt_previous_view_origin_loc   = %d\n", pt_previous_view_origin_loc);
@@ -3383,10 +3367,6 @@ R_InitPathtracing(void)
 	GET_PT_CVAR(gl_pt_light_samples, "1")
 	GET_PT_CVAR(gl_pt_sky_enable, "1")
 	GET_PT_CVAR(gl_pt_sky_samples, "1")
-	GET_PT_CVAR(gl_pt_ao_enable, "0")
-	GET_PT_CVAR(gl_pt_ao_radius, "150")
-	GET_PT_CVAR(gl_pt_ao_color, "1")
-	GET_PT_CVAR(gl_pt_translucent_surfaces_enable, "1")
 	GET_PT_CVAR(gl_pt_lightstyles_enable, "1")
 	GET_PT_CVAR(gl_pt_dlights_enable, "1")
 	GET_PT_CVAR(gl_pt_brushmodel_shadows_enable, "1")

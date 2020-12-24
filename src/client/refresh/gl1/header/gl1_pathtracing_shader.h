@@ -95,8 +95,6 @@
 "\n"
 "// Uniform attributes.\n"
 "uniform int		frame = 0;\n"
-"uniform float	ao_radius = 150.0;\n"
-"uniform vec3	ao_color = vec3(1);\n"
 "uniform float	bounce_factor = 0.75;\n"
 "uniform float	exposure = 1.5;\n"
 "uniform float	gamma = 2.2;\n"

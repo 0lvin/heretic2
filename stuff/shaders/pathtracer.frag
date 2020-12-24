@@ -94,8 +94,6 @@ uniform vec3 previous_view_origin = vec3(0);
 
 // Uniform attributes.
 uniform int		frame = 0;
-uniform float	ao_radius = 150.0;
-uniform vec3	ao_color = vec3(1);
 uniform float	bounce_factor = 0.75;
 uniform float	exposure = 1.5;
 uniform float	gamma = 2.2;
