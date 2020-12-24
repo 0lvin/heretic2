@@ -212,9 +212,6 @@ typedef struct model_s
 
 	int extradatasize;
 	void *extradata;
-
-	/* Only required for pathtracing. */
-	char* entitystring;
 } model_t;
 
 void Mod_Init(void);

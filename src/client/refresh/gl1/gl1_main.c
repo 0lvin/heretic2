@@ -369,11 +369,6 @@ R_DrawEntitiesOnList(void)
 		}
 	}
 
-	if (gl_pt_enable->value)
-	{
-		R_CaptureWorldForTAA();
-	}
-
 	/* draw transparent entities
 	   we could sort these if it ever
 	   becomes a problem... */

@@ -939,19 +939,6 @@ static int calcLumpHunkSize(const lump_t *l, int inSize, int outSize)
 }
 
 void
-Mod_LoadEntityString(lump_t *l)
-{
-	if (l->filelen > MAX_MAP_ENTSTRING)
-	{
-		ri.Sys_Error(ERR_DROP, "Mod_LoadEntityString: Map has too large entity lump");
-	}
-
-	loadmodel->entitystring = Hunk_Alloc(l->filelen) + 1;
-
-	memcpy(loadmodel->entitystring, mod_base + l->fileofs, l->filelen);
-}
-
-void
 Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen)
 {
 	int i;
@@ -1014,9 +1001,6 @@ Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen)
 	Mod_LoadLeafs(&header->lumps[LUMP_LEAFS]);
 	Mod_LoadNodes(&header->lumps[LUMP_NODES]);
 	Mod_LoadSubmodels(&header->lumps[LUMP_MODELS]);
-
-	/* Only required for pathtracing, so static lighting properties are accessible. */
-	Mod_LoadEntityString(&header->lumps[LUMP_ENTITIES]);
 
 	mod->numframes = 2; /* regular and alternate animation */
 

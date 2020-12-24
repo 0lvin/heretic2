@@ -24,10 +24,6 @@
  * =======================================================================
  */
 
-#ifndef NUM_BOUNCES
-# define NUM_BOUNCES 0
-#endif
-
 #ifndef NUM_SHADOW_SAMPLES
 # define NUM_SHADOW_SAMPLES 1
 #endif
@@ -38,10 +34,6 @@
 
 #ifndef NUM_SKY_SAMPLES
 # define NUM_SKY_SAMPLES 1
-#endif
-
-#ifndef NUM_AO_SAMPLES
-# define NUM_AO_SAMPLES 0
 #endif
 
 #ifndef TRI_SHADOWS_ENABLE
@@ -62,10 +54,6 @@
 
 #ifndef BLUENOISE_TEX_HEIGHT
 # define BLUENOISE_TEX_HEIGHT 64
-#endif
-
-#ifndef TAA_ENABLE
-# define TAA_ENABLE 0
 #endif
 
 #ifndef BUMP_ENABLE
@@ -89,14 +77,6 @@ uniform isamplerBuffer 	tri_nodes0;
 uniform isamplerBuffer 	tri_nodes1;
 uniform samplerBuffer 	tri_vertices;
 uniform isamplerBuffer 	triangles;
-
-#if TAA_ENABLE
-// Triangle mesh data from the previous frame.
-uniform isamplerBuffer 	tri_nodes0_prev;
-uniform isamplerBuffer 	tri_nodes1_prev;
-uniform samplerBuffer 	tri_vertices_prev;
-uniform isamplerBuffer 	triangles_prev;
-#endif
 
 // Lightsource data.
 uniform samplerBuffer 	lights;
@@ -546,44 +526,21 @@ void main()
 	// Add the emissive light (light emitted towards the eye immediately from this surface).
 	r += texcoords[4].rgb;
 
-#if NUM_BOUNCES > 0 || NUM_AO_SAMPLES > 0 || NUM_SKY_SAMPLES > 0
+#if NUM_SKY_SAMPLES > 0
 	// Make an orthonormal basis for the primary ray intersection point.
 	vec3 u = normalize(cross(pln.xyz, pln.zxy));
 	vec3 v = cross(pln.xyz, u);
 #endif
 
-#if NUM_AO_SAMPLES > 0
-	{
-		// Apply importance-sampled (lambert diffuse BRDF) ambient occlusion.
-		float ao = 0.0;
-		for (int ao_sample = 0; ao_sample < NUM_AO_SAMPLES; ++ao_sample)
-		{
-			vec2 rr = rand(ao_sample);
-
-			float r1 = 2.0 * PI * rr.x;
-			float r2s = sqrt(rr.y);
-
-			// Lambert diffuse BRDF.
-			vec3 rd = u * cos(r1) * r2s + v * sin(r1) * r2s + pln.xyz * sqrt(1.0 - rr.y);
-
-			if (traceRayShadowBSP(rp, rd, EPS * 16, ao_radius) && traceRayShadowTri(rp, rd, ao_radius, tri_nodes0, tri_nodes1, tri_vertices, triangles, shadow_ray_node_offset))
-				ao += 1.0;
-		}
-		gl_FragColor.rgb += ao_color * ao / float(NUM_AO_SAMPLES);
-	}
-#endif
-
-#if NUM_BOUNCES > 0 || NUM_SKY_SAMPLES > 0
+#if NUM_SKY_SAMPLES > 0
 
 	vec3 sp, rd;
 	float t;
 	float factor = bounce_factor;
 
-#if NUM_BOUNCES == 0
 	// If there are no secondary bounces and there are no visible skyportals then there is no
 	// need to sample the BRDF and trace a ray with it.
 	if (rpli < 0)
-#endif
 	{
 		if (brdf_mirror)
 		{
@@ -609,16 +566,6 @@ void main()
 
 		sp = rp + rd * max(0.0, t);
 	}
-
-#if NUM_BOUNCES > 0
-	// Test for intersection with triangle meshes. This is done so bounce light can be shadowed
-	// by triangle meshes. It is only done if the ray has travelled a significant distance during the bounce.
-	if (t > 1e-4 && traceRayShadowTri(rp, rd, t, tri_nodes0, tri_nodes1, tri_vertices, triangles, shadow_ray_node_offset))
-	{
-		int li = getLightRef(sp).x;
-		r += factor * sampleDirectLight(sp, out_pln.xyz, li);
-	}
-#endif
 
 #if NUM_SKY_SAMPLES > 0
 	if (rpli < 0)
@@ -698,50 +645,6 @@ void main()
 	}
 #endif
 
-#if NUM_BOUNCES > 1
-	{
-		if ((dot(out_pln.xyz, rp) - out_pln.w) < 0.0)
-			out_pln *= -1.0;
-
-		// Trace secondary rays to gather bounce light from surrounding surfaces. This does not include sky light.
-		float factor = bounce_factor;
-		rp = sp;
-		for (int bounce = 1; bounce < NUM_BOUNCES; ++bounce)
-		{
-			vec2 rr = rand(bounce);
-
-			float r1 = 2.0 * PI * rr.x;
-			float r2s = sqrt(rr.y);
-
-			// Lambert diffuse BRDF.
-			vec3 rd = normalize(u * cos(r1) * r2s + v * sin(r1) * r2s + out_pln.xyz * sqrt(1.0 - rr.y));
-
-			t = traceRayBSP(rp, rd, EPS * 16, MAXT) - 1.0;
-
-			if (!traceRayShadowTri(rp, rd, t, tri_nodes0, tri_nodes1, tri_vertices, triangles, shadow_ray_node_offset))
-				break;
-
-			if ((dot(out_pln.xyz, rp) - out_pln.w) < 0.0)
-				out_pln *= -1.0;
-
-			rp = rp + rd * max(0.0, t);
-
-			// Simulate (achromatic) absorption of light at the surface.
-			factor *= bounce_factor;
-
-			int li = getLightRef(rp).x;
-			pln = out_pln;
-			r += factor * sampleDirectLight(rp, out_pln.xyz, li);
-			out_pln = pln;
-
-#if NUM_BOUNCES > 2
-			u = normalize(cross(out_pln.xyz, out_pln.zxy));
-			v = cross(out_pln.xyz, u);
-#endif
-		}
-	}
-#endif
-
 #endif
 
 	// Apply an arbitrary scaling to empirically match the output of qrad3.
@@ -759,27 +662,4 @@ void main()
 
 	// Gamma.
 	gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0 / gamma));
-
-#if TAA_ENABLE
-	if (texcoords[4].w > 0.0)
-	{
-		// Apply TAA.
-
-		vec4 clip = previous_world_matrix * texcoords[1];
-		vec2 ndc = clip.xy / clip.w * 0.5 + vec2(0.5);
-
-		rp = texcoords[1].xyz + texcoords[3].xyz * EPS * 16;
-
-		// Check if the fragment was visible in the previous frame. If not, then the information in the previous framebuffer does not match and it cannot be reused.
-      // Zero is passed as the node offset to traceRayShadowTri so that the viewmodel always participates in the disocclusion test. This is necessary to prevent ghosting on the viewmodel.
-		vec3 disocclusion_test_ray = normalize(previous_view_origin - rp);
-		float disocclusion_test_distance = distance(rp, previous_view_origin);
-		bool previously_visible = traceRayShadowBSP(rp, disocclusion_test_ray, EPS * 16, disocclusion_test_distance) &&
-				traceRayShadowTri(rp, disocclusion_test_ray, disocclusion_test_distance, tri_nodes0_prev, tri_nodes1_prev, tri_vertices_prev, triangles_prev, 0) &&
-				dot(normalize(texcoords[3].xyz), disocclusion_test_ray) > 0.01;
-
-		gl_FragColor.rgb = mix(gl_FragColor.rgb, texture(taa_world, ndc).rgb,
-				all(greaterThan(ndc, vec2(0))) && all(lessThan(ndc, vec2(1))) && previously_visible ? 0.45 * texcoords[4].w : 0.0);
-	}
-#endif
 }

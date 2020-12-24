@@ -87,8 +87,6 @@
 cvar_t *gl_pt_enable          = NULL;
 cvar_t *gl_pt_specular_factor = NULL;
 
-static cvar_t *gl_pt_stats_enable						= NULL;
-static cvar_t *gl_pt_bounces 								= NULL;
 static cvar_t *gl_pt_shadow_samples 					= NULL;
 static cvar_t *gl_pt_light_samples 						= NULL;
 static cvar_t *gl_pt_sky_enable 							= NULL;
@@ -96,7 +94,6 @@ static cvar_t *gl_pt_sky_samples 						= NULL;
 static cvar_t *gl_pt_ao_enable 							= NULL;
 static cvar_t *gl_pt_ao_radius 							= NULL;
 static cvar_t *gl_pt_ao_color 							= NULL;
-static cvar_t *gl_pt_ao_samples 							= NULL;
 static cvar_t *gl_pt_translucent_surfaces_enable	= NULL;
 static cvar_t *gl_pt_lightstyles_enable 				= NULL;
 static cvar_t *gl_pt_dlights_enable 					= NULL;
@@ -104,13 +101,10 @@ static cvar_t *gl_pt_brushmodel_shadows_enable 		= NULL;
 static cvar_t *gl_pt_aliasmodel_shadows_enable 		= NULL;
 static cvar_t *gl_pt_bounce_factor 						= NULL;
 static cvar_t *gl_pt_diffuse_map_enable 				= NULL;
-static cvar_t *gl_pt_static_entity_lights_enable 	= NULL;
 static cvar_t *gl_pt_depth_prepass_enable 			= NULL;
-static cvar_t *gl_pt_taa_enable 							= NULL;
 static cvar_t *gl_pt_exposure 							= NULL;
 static cvar_t *gl_pt_gamma 								= NULL;
 static cvar_t *gl_pt_bump_factor 						= NULL;
-static cvar_t *gl_pt_brushlights_enable				= NULL;
 static cvar_t *gl_pt_bump_enable							= NULL;
 
 /*
@@ -1900,13 +1894,8 @@ AddBrushModel(entity_t *entity, model_t *model)
 	vec4_t vertex;
 	int first_surface_triangle_index;
 	float surface_aabb_min[3], surface_aabb_max[3];
-	trilight_t *light;
-	int light_index, first_light_index;
+	int first_light_index;
 	short *mapped_references = NULL;
-	int cluster;
-	float *box;
-	byte *vis;
-	qboolean emitting_light;
 	float polygon_area, triangle_area;
 
 	PT_ASSERT(entity != NULL);
@@ -1974,7 +1963,6 @@ AddBrushModel(entity_t *entity, model_t *model)
 
 		poly_offset = pt_num_vertices;
 		first_surface_triangle_index = pt_num_triangles;
-		emitting_light = gl_pt_brushlights_enable->value && !(psurf->texinfo->flags & SURF_WARP) && (psurf->texinfo->flags & SURF_LIGHT) != 0 && psurf->texinfo->radiance > 0;
 		first_light_index = pt_num_lights;
 		polygon_area = 0;
 
@@ -2049,21 +2037,6 @@ AddBrushModel(entity_t *entity, model_t *model)
 				triangle_area = TriangleArea(ind[0], ind[1], ind[2]);
 				polygon_area += triangle_area;
 
-				/* Add a light-emitting triangle if necessary and possible. */
-				if (emitting_light && pt_num_lights < PT_MAX_TRI_LIGHTS)
-				{
-					light_index = pt_num_lights++;
-					light = pt_trilights + light_index;
-
-					light->quad = false;
-					light->triangle_index = node->triangle_index;
-					light->surface = psurf;
-					light->entity = NULL;
-
-					/* area_fraction is divided by polygon_area later. */
-					light->area_fraction = triangle_area;
-				}
-
 				pt_triangle_data[node->triangle_index * 2 + 0] = ind[0] | (ind[1] << 16);
 				pt_triangle_data[node->triangle_index * 2 + 1] = ind[2];
 			}
@@ -2093,88 +2066,6 @@ AddBrushModel(entity_t *entity, model_t *model)
 				if (entity_aabb_max[j] < surface_aabb_max[j])
 					entity_aabb_max[j] = surface_aabb_max[j];
 			}
-
-			if (emitting_light)
-			{
-				/* Adjust the area fractions of the lights. */
-				for (j = first_light_index; j < pt_num_lights; ++j)
-					pt_trilights[j].area_fraction /= polygon_area;
-
-				if (!mapped_references)
-					mapped_references = (short*)MapTextureBuffer(pt_lightref_buffer, GL_WRITE_ONLY);
-
-				if (mapped_references)
-				{
-					/* The PVS's of each intersecting cluster are merged together into one PVS within which light references are added. */
-
-					static byte merged_vis[MAX_MAP_LEAFS / 8];
-
-					memset(merged_vis, 0, sizeof(merged_vis));
-
-					for (cluster = 0; cluster < pt_num_clusters; ++cluster)
-					{
-						/* Test the bounding box of this cluster against the bounding box of the surface. If there is no overlap then skip it. */
-
-						box = pt_cluster_bounding_boxes + cluster * 6;
-
-						if (	box[0] > surface_aabb_max[0] || box[3] < surface_aabb_min[0] ||
-								box[1] > surface_aabb_max[1] || box[4] < surface_aabb_min[1] ||
-								box[2] > surface_aabb_max[2] || box[5] < surface_aabb_min[2])
-								continue;
-
-						/* Get the PVS bits for this cluster. */
-
-						vis = Mod_ClusterPVS(cluster, r_worldmodel);
-
-						PT_ASSERT(vis != NULL);
-						PT_ASSERT(r_worldmodel->vis != NULL);
-
-						/* Merge in the PVS. */
-
-						for (m = 0; m < (r_worldmodel->vis->numclusters + 7) >> 3; ++m)
-							merged_vis[m] |= vis[m];
-					}
-
-					/* Visit every cluster which is visible to the surface. The individual leaves don't	matter because
-						they were already assigned an index to the first reference in their respective clusters. */
-
-					for (cluster = 0; cluster < pt_num_clusters; ++cluster)
-					{
-						/* If this cluster is visible then update it's reference list. */
-
-						box = pt_cluster_bounding_boxes + cluster * 6;
-
-						if (merged_vis[cluster >> 3] & (1 << (cluster & 7)) && BOX_ON_PLANE_SIDE(box, box + 3, psurf->plane) != ((psurf->flags & SURF_PLANEBACK) ? 1 : 2))
-						{
-							/* Locate the end of the list, where dynamic light references can be appended. */
-
-							k = labs(pt_cluster_light_references[cluster * 2 + 0]);
-
-							while (pt_trilight_references[k] != -1)
-								++k;
-
-							k += pt_cluster_dynamic_ref_counts[cluster];
-
-							/* Add a reference to the light reference list of this cluster, for each light within this surface. */
-
-							for (j = first_light_index; j < pt_num_lights; ++j)
-							{
-								/* Ensure that there is at least one end-of-list marker. */
-
-								if (	(k + 1) >= PT_MAX_TRI_LIGHT_REFS || pt_trilight_references[k + 1] != -1 ||
-										pt_cluster_dynamic_ref_counts[cluster] >= PT_MAX_CLUSTER_DLIGHTS)
-									continue;
-
-								/* Insert the reference. */
-
-								mapped_references[k++] = j;
-								pt_cluster_dynamic_ref_counts[cluster]++;
-							}
-						}
-					}
-
-				}
-			}
 		}
 
 	}
@@ -2186,16 +2077,6 @@ AddBrushModel(entity_t *entity, model_t *model)
 	}
 
 	BuildAndWriteEntityNodesHierarchy(first_node_index, num_added_nodes, entity_aabb_min, entity_aabb_max);
-}
-
-
-static void
-ParseEntityVector(vec3_t vec, const char* str)
-{
-	PT_ASSERT(vec != NULL);
-	PT_ASSERT(str != NULL);
-
-	sscanf (str, "%f %f %f", &vec[0], &vec[1], &vec[2]);
 }
 
 static void
@@ -2223,74 +2104,6 @@ ClearEntityLight(entitylight_t *entity)
 	entity->light_index = 0;
 
 	ClearEntityLightClusterList(entity);
-}
-
-static qboolean
-SphereIntersectsAnySolidLeaf(vec3_t origin, float radius)
-{
-	mnode_t *node_stack[PT_MAX_BSP_TREE_DEPTH];
-	int stack_size;
-	mnode_t *node;
-	float d;
-	cplane_t *plane;
-	model_t *model;
-
-	stack_size = 0;
-	model = r_worldmodel;
-
-	node_stack[stack_size++] = model->nodes;
-
-	while (stack_size > 0)
-	{
-		node = node_stack[--stack_size];
-
-		if (node->contents != -1)
-		{
-			if (node->contents == CONTENTS_SOLID || ((mleaf_t*)node)->cluster == -1)
-				return true;
-			else
-				continue;
-		}
-
-		plane = node->plane;
-		d = DotProduct(origin, plane->normal) - plane->dist;
-
-		if (d > -radius)
-		{
-			if (stack_size < PT_MAX_BSP_TREE_DEPTH)
-				node_stack[stack_size++] = node->children[0];
-		}
-
-		if (d < +radius)
-		{
-			if (stack_size < PT_MAX_BSP_TREE_DEPTH)
-				node_stack[stack_size++] = node->children[1];
-		}
-	}
-
-	return false;
-}
-
-static void
-EnsureEntityLightDoesNotIntersectWalls(entitylight_t *entity)
-{
-	mleaf_t *leaf;
-
-	PT_ASSERT(entity != NULL);
-
-	leaf = Mod_PointInLeaf(entity->origin, r_worldmodel);
-
-	if (!leaf || leaf->contents == CONTENTS_SOLID || leaf->cluster == -1)
-	{
-		R_Printf(PRINT_DEVELOPER, "EnsureEntityLightDoesNotIntersectWalls: Entity's origin is within a wall.\n");
-		entity->radius = 0;
-		return;
-	}
-
-	/* If the entity intersects a solid wall then reduce it's radius by half repeatedly until either
-		it becomes free or it becomes too small. */
-	while (SphereIntersectsAnySolidLeaf(entity->origin, entity->radius) && entity->radius > 1.0f / 8.0f)
-		entity->radius /= 2.0f;
 }
 
 static void
@@ -2580,7 +2393,6 @@ R_UpdatePathtracerForCurrentFrame(void)
 	short *mapped_references;
 	byte *vis;
 	float* cached;
-	int start_ms = 0, end_ms = 0, refresh_ms = 0, ms = 0;
 	float max_component, influence_box_size;
 	float *box;
 
@@ -2604,17 +2416,6 @@ R_UpdatePathtracerForCurrentFrame(void)
 	BindTextureUnit(PT_TEXTURE_UNIT_TRI_NODES1_PREV, 		GL_TEXTURE_BUFFER, 	previous_trimesh_state->node1_texture);
 	BindTextureUnit(PT_TEXTURE_UNIT_TRI_VERTICES_PREV, 	GL_TEXTURE_BUFFER, 	previous_trimesh_state->vertex_texture);
 	BindTextureUnit(PT_TEXTURE_UNIT_TRIANGLES_PREV, 		GL_TEXTURE_BUFFER, 	previous_trimesh_state->triangle_texture);
-
-	if (gl_pt_stats_enable->value)
-	{
-		ms = SDL_GetTicks();
-		start_ms = ms;
-
-		if (pt_last_update_ms != -1)
-			refresh_ms = ms - pt_last_update_ms;
-
-		pt_last_update_ms = ms;
-	}
 
 	/* Clear the dynamic (moving) lightsource data by re-visiting the data ranges which were updated in the previous frame.
 		There is no need to update the lightsource data itself as it's only necessary to remove the references. */
@@ -2964,16 +2765,6 @@ R_UpdatePathtracerForCurrentFrame(void)
 
 	qglUseProgramObjectARB(0);
 
-	/* Print the stats if necessary. */
-	if (gl_pt_stats_enable->value)
-	{
-		end_ms = SDL_GetTicks();
-
-		R_Printf(PRINT_ALL, "pt_stats: f=%7d, n=%7d, t=%7d, v=%7d, w=%7d, l=%7d, c=%7d, r=%7d\n", r_framecount, pt_num_nodes,
-						pt_num_triangles - pt_dynamic_triangles_offset, pt_num_vertices - pt_dynamic_vertices_offset, pt_written_nodes, pt_num_lights - pt_dynamic_lights_offset,
-						end_ms - start_ms, refresh_ms);
-	}
-
 	PT_ASSERT(pt_num_nodes 					<= PT_MAX_TRI_NODES);
 	PT_ASSERT(pt_written_nodes 			<= PT_MAX_TRI_NODES);
 	PT_ASSERT(pt_num_triangles 			<= PT_MAX_TRIANGLES);
@@ -3137,153 +2928,6 @@ AddStaticBSP()
 	free(tex_light_data);
 }
 
-
-/* Parses a single entity and extracts the fields which are interesting for the purposes of
-	pathtracing. This function is mostly based on ED_ParseEdict from g_spawn.c, and mimics some
-	of the logic of CreateDirectLights from qrad3's lightmap.c */
-static char *
-ParseEntityDictionary(char *data)
-{
-	char keyname[256];
-	const char *com_token;
-	char classname[256];
-	char origin[256];
-	char color[256];
-	char light[256];
-	char style[256];
-	entitylight_t *entity;
-
-	classname[0] = 0;
-	origin[0] = 0;
-	color[0] = 0;
-	light[0] = 0;
-	style[0] = 0;
-
-	/* go through all the dictionary pairs */
-	while (1)
-	{
-		/* parse key */
-		com_token = COM_Parse(&data);
-
-		if (com_token[0] == '}')
-		{
-			break;
-		}
-
-		if (!data)
-		{
-			R_Printf(ERR_DROP, "ParseEntityDictionary: EOF without closing brace\n");
-		}
-
-		Q_strlcpy(keyname, com_token, sizeof(keyname));
-
-		/* parse value */
-		com_token = COM_Parse(&data);
-
-		if (!data)
-		{
-			R_Printf(ERR_DROP, "ParseEntityDictionary: EOF without closing brace\n");
-		}
-
-		if (com_token[0] == '}')
-		{
-			R_Printf(ERR_DROP, "ParseEntityDictionary: closing brace without data\n");
-		}
-
-		if (!Q_stricmp(keyname, "classname"))
-		{
-			Q_strlcpy(classname, com_token, sizeof(classname));
-		}
-		else if (!Q_stricmp(keyname, "origin"))
-		{
-			Q_strlcpy(origin, com_token, sizeof(origin));
-		}
-		else if (!Q_stricmp(keyname, "_color"))
-		{
-			Q_strlcpy(color, com_token, sizeof(color));
-		}
-		else if (!Q_stricmp(keyname, "_light") || !Q_stricmp(keyname, "light"))
-		{
-			Q_strlcpy(light, com_token, sizeof(light));
-		}
-		else if (!Q_stricmp(keyname, "_style") || !Q_stricmp(keyname, "style"))
-		{
-			Q_strlcpy(style, com_token, sizeof(style));
-		}
-	}
-
-	if (!Q_stricmp(classname, "light") && pt_num_entitylights < PT_MAX_ENTITY_LIGHTS)
-	{
-		entity = pt_entitylights + pt_num_entitylights++;
-
-		ClearEntityLight(entity);
-
-		ParseEntityVector(entity->origin, origin);
-
-		if (color[0])
-			ParseEntityVector(entity->color, color);
-		else
-			entity->color[0] = entity->color[1] = entity->color[2] = 1.0;
-
-		entity->intensity = atof(light);
-		entity->style = atof(style);
-
-		/* The default radius is set to stay within the QUAKED bounding box specified for lights in g_misc.c */
-		entity->radius = 8;
-
-		/* Enforce the same defaults and restrictions that qrad3 enforces. */
-
-		if (entity->intensity == 0)
-			entity->intensity = 300;
-
-		if (entity->style < 0 || entity->style >= MAX_LIGHTSTYLES)
-			entity->style = 0;
-
-		EnsureEntityLightDoesNotIntersectWalls(entity);
-		BuildClusterListForEntityLight(entity);
-	}
-
-	return data;
-}
-
-
-/* Parses the entities from the given string (which should have been taken directly from the
-	entities lump of a map). This function is mostly based on SpawnEntities from g_spawn.c */
-static void
-ParseStaticEntityLights(char *entitystring)
-{
-	const char *com_token;
-
-	if (!entitystring)
-	{
-		return;
-	}
-
-	/* parse ents */
-	while (1)
-	{
-		/* parse the opening brace */
-		com_token = COM_Parse(&entitystring);
-
-		if (!entitystring)
-		{
-			break;
-		}
-
-		if (com_token[0] != '{')
-		{
-			R_Printf(ERR_DROP, "ParseStaticEntityLights: found %s when expecting {\n", com_token);
-			return;
-		}
-
-		if (pt_num_entitylights >= PT_MAX_ENTITY_LIGHTS)
-			break;
-
-		entitystring = ParseEntityDictionary(entitystring);
-	}
-
-}
-
 void
 R_PreparePathtracer(void)
 {
@@ -3361,9 +3005,6 @@ R_PreparePathtracer(void)
 			}
 		}
 	}
-
-	if (gl_pt_static_entity_lights_enable->value)
-		ParseStaticEntityLights(r_worldmodel->entitystring);
 
 	R_Printf(PRINT_DEVELOPER, "R_PreparePathtracer: %d static entity light-emitters\n", pt_num_entitylights);
 
@@ -3543,29 +3184,23 @@ ConstructFragmentShaderSource(GLhandleARB shader)
 
 	/* Make a single string which sets all of the configuration variables which are hard-coded into the shader. */
 	snprintf(config, sizeof(config),
-			"#define NUM_BOUNCES %d\n"
 			"#define NUM_SHADOW_SAMPLES %d\n"
 			"#define NUM_LIGHT_SAMPLES %d\n"
 			"#define NUM_SKY_SAMPLES %d\n"
-			"#define NUM_AO_SAMPLES %d\n"
 			"#define TRI_SHADOWS_ENABLE %d\n"
 			"#define DIFFUSE_MAP_ENABLE %d\n"
 			"#define RAND_TEX_LAYERS %d\n"
 			"#define BLUENOISE_TEX_WIDTH %d\n"
 			"#define BLUENOISE_TEX_HEIGHT %d\n"
-			"#define TAA_ENABLE %d\n"
 			"#define BUMP_ENABLE %d\n",
-			MAX(0, (int)gl_pt_bounces->value),
 			MAX(0, (int)gl_pt_shadow_samples->value),
 			MAX(0, (int)gl_pt_light_samples->value),
 			gl_pt_sky_enable->value ? MAX(0, (int)gl_pt_sky_samples->value) : 0,
-			gl_pt_ao_enable->value ? MAX(0, (int)gl_pt_ao_samples->value) : 0,
 			MAX(0, (int)gl_pt_aliasmodel_shadows_enable->value | (int)gl_pt_brushmodel_shadows_enable->value),
 			MAX(0, (int)gl_pt_diffuse_map_enable->value),
 			MAX(1, GetBlueNoiseTextureLayers()),
 			PT_BLUENOISE_TEXTURE_WIDTH,
 			PT_BLUENOISE_TEXTURE_HEIGHT,
-			MAX(0, (int)gl_pt_taa_enable->value),
 			MAX(0, (int)gl_pt_bump_enable->value)
 		);
 
@@ -3744,8 +3379,6 @@ R_InitPathtracing(void)
 
 #define GET_PT_CVAR(x, d) x = ri.Cvar_Get( #x, d, CVAR_ARCHIVE); PT_ASSERT(x != NULL);
 	GET_PT_CVAR(gl_pt_enable, "0")
-	GET_PT_CVAR(gl_pt_stats_enable, "0")
-	GET_PT_CVAR(gl_pt_bounces, "0")
 	GET_PT_CVAR(gl_pt_shadow_samples, "1")
 	GET_PT_CVAR(gl_pt_light_samples, "1")
 	GET_PT_CVAR(gl_pt_sky_enable, "1")
@@ -3753,7 +3386,6 @@ R_InitPathtracing(void)
 	GET_PT_CVAR(gl_pt_ao_enable, "0")
 	GET_PT_CVAR(gl_pt_ao_radius, "150")
 	GET_PT_CVAR(gl_pt_ao_color, "1")
-	GET_PT_CVAR(gl_pt_ao_samples, "1")
 	GET_PT_CVAR(gl_pt_translucent_surfaces_enable, "1")
 	GET_PT_CVAR(gl_pt_lightstyles_enable, "1")
 	GET_PT_CVAR(gl_pt_dlights_enable, "1")
@@ -3761,13 +3393,10 @@ R_InitPathtracing(void)
 	GET_PT_CVAR(gl_pt_aliasmodel_shadows_enable, "1")
 	GET_PT_CVAR(gl_pt_bounce_factor, "0.75")
 	GET_PT_CVAR(gl_pt_diffuse_map_enable, "1")
-	GET_PT_CVAR(gl_pt_static_entity_lights_enable, "0")
 	GET_PT_CVAR(gl_pt_depth_prepass_enable, "1")
-	GET_PT_CVAR(gl_pt_taa_enable, "0")
 	GET_PT_CVAR(gl_pt_exposure, "1.3")
 	GET_PT_CVAR(gl_pt_gamma, "2.2")
 	GET_PT_CVAR(gl_pt_bump_factor, "0.045")
-	GET_PT_CVAR(gl_pt_brushlights_enable, "0")
 	GET_PT_CVAR(gl_pt_bump_enable, "1")
 	GET_PT_CVAR(gl_pt_specular_factor, "0.75")
 #undef GET_PT_CVAR
@@ -3790,20 +3419,6 @@ R_InitPathtracing(void)
 	glGenTextures(1, &pt_taa_world_texture);
 
 	CHECK_GL_ERROR();
-}
-
-void
-R_CaptureWorldForTAA(void)
-{
-	if (!gl_pt_taa_enable->value)
-		return;
-
-	glBindTexture(GL_TEXTURE_2D, pt_taa_world_texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, r_newrefdef.width, r_newrefdef.height, 0);
 }
 
 void
