@@ -835,12 +835,16 @@ static vec_t
 ColorNormalize (vec3_t in, vec3_t out)
 {
 	float	max, scale;
+	int	i;
 
-	max = in[0];
-	if (in[1] > max)
-		max = in[1];
-	if (in[2] > max)
-		max = in[2];
+	max = 0;
+	for (i = 0; i < 3; i++)
+	{
+		if (in[i] > max)
+		{
+			max = in[i];
+		}
+	}
 
 	if (max == 0)
 		return 0;
