@@ -45,7 +45,8 @@ qvkdevice_t vk_device = {
 	.gfxFamilyIndex = -1,
 	.presentFamilyIndex = -1,
 	.transferFamilyIndex = -1,
-	.screenshotSupported = false
+	.screenshotSupported = false,
+	.raytracingpipelineSupported = false,
 };
 
 // Vulkan swapchain

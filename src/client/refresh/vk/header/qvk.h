@@ -48,6 +48,7 @@ typedef struct
 	int presentFamilyIndex;
 	int transferFamilyIndex;
 	qboolean screenshotSupported;
+	qboolean raytracingpipelineSupported;
 } qvkdevice_t;
 
 // Vulkan swapchain

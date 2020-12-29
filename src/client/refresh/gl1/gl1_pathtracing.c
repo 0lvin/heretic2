@@ -139,7 +139,6 @@ static GLuint pt_lightref_buffer = 0;
 static GLuint pt_lightref_texture = 0;
 static GLuint pt_rand_texture = 0;
 static GLuint pt_bluenoise_texture = 0;
-static GLuint pt_taa_world_texture = 0;
 
 /*
  * Uniform locations
@@ -365,7 +364,6 @@ ClearPathtracerState(void)
 	pt_lightref_texture = 0;
 	pt_rand_texture = 0;
 	pt_bluenoise_texture = 0;
-	pt_taa_world_texture = 0;
 
 	pt_frame_counter_loc = -1;
 	pt_entity_to_world_loc = -1;
@@ -3027,7 +3025,6 @@ R_PreparePathtracer(void)
 	BindTextureUnit(PT_TEXTURE_UNIT_BSP_LIGHTREFS,	GL_TEXTURE_2D, 		pt_bsp_lightref_texture);
 	BindTextureUnit(PT_TEXTURE_UNIT_RANDTEX, 			GL_TEXTURE_1D,			pt_rand_texture);
 	BindTextureUnit(PT_TEXTURE_UNIT_BLUENOISE, 		GL_TEXTURE_2D_ARRAY,	pt_bluenoise_texture);
-	BindTextureUnit(PT_TEXTURE_UNIT_TAA_WORLD, 		GL_TEXTURE_2D,			pt_taa_world_texture);
 }
 
 static void
@@ -3396,8 +3393,6 @@ R_InitPathtracing(void)
 	InitRandom();
 	CreateShaderPrograms();
 
-	glGenTextures(1, &pt_taa_world_texture);
-
 	CHECK_GL_ERROR();
 }
 
@@ -3430,8 +3425,6 @@ R_ShutdownPathtracing(void)
 	FreeModelData();
 	FreeShaderPrograms();
 	FreeRandom();
-
-	glDeleteTextures(1, &pt_taa_world_texture);
 
 	ClearPathtracerState();
 }
