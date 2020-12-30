@@ -121,8 +121,15 @@ static void getBestPhysicalDevice(const VkPhysicalDevice *devices, int preferred
 				vk_device.physical = devices[i];
 				vk_device.properties = deviceProperties;
 				vk_device.features = deviceFeatures;
-				vk_device.raytracingpipelineSupported = deviceExtensionsSupported(
+
+#if VK_HEADER_VERSION >= 162
+				vk_device.rayTracingpipelineSupported = deviceExtensionsSupported(
 					&devices[i], VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+
+				vk_device.accelerationStructureSupported = deviceExtensionsSupported(
+					&devices[i], VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+#endif
+
 				return;
 			}
 		}
@@ -160,9 +167,14 @@ static qboolean selectPhysicalDevice(int preferredDeviceIdx)
 		R_Printf(PRINT_ALL, "...anisotropy filtering is unsupported.\n");
 	}
 
-	if (!vk_device.raytracingpipelineSupported)
+	if (!vk_device.rayTracingpipelineSupported)
 	{
 		R_Printf(PRINT_ALL, "...ray tracing is unsupported.\n");
+	}
+
+	if (!vk_device.accelerationStructureSupported)
+	{
+		R_Printf(PRINT_ALL, "...accelletion structure is unsupported.\n");
 	}
 
 	return true;
