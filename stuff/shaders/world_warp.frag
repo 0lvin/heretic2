@@ -11,7 +11,8 @@ layout(push_constant) uniform PushConstant
 	layout(offset = 80) float scrHeight;
 } pc;
 
-layout(set = 0, binding = 0) uniform sampler2D sTexture;
+layout(set = 0, binding = 0) uniform sampler2D worldTexture;
+layout(set = 1, binding = 0) uniform sampler2D uiTexture;
 
 layout(location = 0) out vec4 fragmentColor;
 
@@ -32,5 +33,5 @@ void main()
 		uv += distortion;
 	}
 
-	fragmentColor = texture(sTexture, uv);
+	fragmentColor = texture(uiTexture, uv);
 }
