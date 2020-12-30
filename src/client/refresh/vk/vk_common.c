@@ -385,7 +385,7 @@ static VkResult CreateFramebuffers()
 			.pNext = NULL,
 			.flags = 0,
 			.renderPass = vk_renderpasses[RP_WORLD_WARP].rp,
-			.attachmentCount = 2,
+			.attachmentCount = 3,
 			.width = vk_swapchain.extent.width,
 			.height = vk_swapchain.extent.height,
 			.layers = 1
@@ -404,7 +404,7 @@ static VkResult CreateFramebuffers()
 	};
 
 	VkImageView worldAttachments[] = { vk_colorbuffer.imageView, vk_depthbuffer.imageView, vk_msaaColorbuffer.imageView };
-	VkImageView warpAttachments[]  = { vk_colorbuffer.imageView, vk_colorbufferWarp.imageView };
+	VkImageView warpAttachments[]  = { vk_colorbuffer.imageView, vk_colorbuffer.imageView, vk_colorbufferWarp.imageView };
 	VkImageView finalAttachments[]  = { vk_colorbuffer.imageView, vk_colorbufferWarp.imageView };
 
 	fbCreateInfos[RP_WORLD].pAttachments = worldAttachments;
@@ -538,6 +538,18 @@ static VkResult CreateRenderpasses()
 			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		},
+		// color attachment - input from RP_UI renderpass
+		{
+			.flags = 0,
+			.format = vk_swapchain.format,
+			.samples = VK_SAMPLE_COUNT_1_BIT,
+			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+			.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		},
 		// color attachment output - warped/postprocessed image that ends up in RP_UI
 		{
 			.flags = 0,
@@ -554,7 +566,7 @@ static VkResult CreateRenderpasses()
 
 	VkAttachmentReference warpAttachmentRef = {
 		// output color
-		.attachment = 1,
+		.attachment = 2,
 		.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
 	};
 
@@ -746,7 +758,7 @@ static VkResult CreateRenderpasses()
 			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
 			.pNext = NULL,
 			.flags = 0,
-			.attachmentCount = 2,
+			.attachmentCount = 3,
 			.pAttachments = warpAttachments,
 			.subpassCount = 1,
 			.pSubpasses = &warpSubpassDesc,
@@ -778,8 +790,8 @@ static VkResult CreateRenderpasses()
 	}
 
 	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_WORLD].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: World");
-	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_WORLD_WARP].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: UI");
-	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_UI].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: Warp Postprocess");
+	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_WORLD_WARP].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: Warp");
+	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_UI].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: UI");
 	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_FINAL_IMAGE].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: Final Image");
 
 	return VK_SUCCESS;
