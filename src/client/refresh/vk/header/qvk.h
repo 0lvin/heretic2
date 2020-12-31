@@ -252,10 +252,11 @@ extern qvkpipeline_t vk_shadowsPipelineStrip;
 extern qvkpipeline_t vk_shadowsPipelineFan;
 extern qvkpipeline_t vk_worldWarpPipeline;
 extern qvkpipeline_t vk_postprocessPipeline;
-extern qvkpipeline_t vk_finalscreenPipeline;
 
 // color buffer containing main game/world view
 extern qvktexture_t vk_colorbuffer;
+// Depth buffer
+extern qvktexture_t vk_depthbuffer;
 // color buffer with postprocessed game view
 extern qvktexture_t vk_colorbufferWarp;
 // indicator if the frame is currently being rendered

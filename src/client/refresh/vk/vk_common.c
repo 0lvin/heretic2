@@ -148,7 +148,6 @@ qvkpipeline_t vk_shadowsPipelineStrip = QVKPIPELINE_INIT;
 qvkpipeline_t vk_shadowsPipelineFan = QVKPIPELINE_INIT;
 qvkpipeline_t vk_worldWarpPipeline = QVKPIPELINE_INIT;
 qvkpipeline_t vk_postprocessPipeline = QVKPIPELINE_INIT;
-qvkpipeline_t vk_finalscreenPipeline = QVKPIPELINE_INIT;
 
 // samplers
 static VkSampler vk_samplers[S_SAMPLER_CNT];
@@ -1498,7 +1497,6 @@ void QVk_Shutdown( void )
 		QVk_DestroyPipeline(&vk_shadowsPipelineFan);
 		QVk_DestroyPipeline(&vk_worldWarpPipeline);
 		QVk_DestroyPipeline(&vk_postprocessPipeline);
-		QVk_DestroyPipeline(&vk_finalscreenPipeline);
 		QVk_FreeBuffer(&vk_texRectVbo);
 		QVk_FreeBuffer(&vk_colorRectVbo);
 		QVk_FreeBuffer(&vk_rectIbo);

@@ -986,10 +986,9 @@ qboolean RE_EndWorldRenderpass(void)
 	// finish rendering world view to offsceen buffer
 	vkCmdEndRenderPass(vk_activeCmdbuffer);
 
-#if 1
 	// apply postprocessing effects (underwater view warp if the player is submerged in liquid) to offscreen buffer
 	QVk_BeginRenderpass(RP_WORLD_WARP);
-	const float pushConsts[] = { (r_newrefdef.rdflags & RDF_UNDERWATER) ? r_newrefdef.time : 0.f, viewsize->value / 100, vid.width, vid.height };
+	const float pushConsts[] = { (r_newrefdef.rdflags & RDF_UNDERWATER) ? r_newrefdef.time : 0.f, viewsize->value / 100, vid.width, vid.height, 0.5f };
 	const VkDescriptorSet warpDescriptorSet[] = {
 		vk_colorbuffer.descriptorSet,
 		vk_colorbuffer.descriptorSet
@@ -1004,15 +1003,6 @@ qboolean RE_EndWorldRenderpass(void)
 
 	// start drawing UI
 	QVk_BeginRenderpass(RP_UI);
-#else
-	// start drawing UI
-	QVk_BeginRenderpass(RP_UI);
-
-	float clearArea[] = { (float)r_newrefdef.x / vid.width, (float)r_newrefdef.y / vid.height,
-						  (float)r_newrefdef.width / vid.width, (float)r_newrefdef.height / vid.height,
-						  .3f, .3f, .3f, 1.f };
-	QVk_DrawColorRect(clearArea, sizeof(clearArea), RP_UI);
-#endif
 
 	return true;
 }

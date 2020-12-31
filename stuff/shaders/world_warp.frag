@@ -9,6 +9,7 @@ layout(push_constant) uniform PushConstant
 	layout(offset = 72) float scale;
 	layout(offset = 76) float scrWidth;
 	layout(offset = 80) float scrHeight;
+	layout(offset = 84) float depthTreshold;
 } pc;
 
 layout(set = 0, binding = 0) uniform sampler2D worldTexture;
@@ -22,9 +23,9 @@ void main()
 {
 	vec2 uv = vec2(gl_FragCoord.x / pc.scrWidth, gl_FragCoord.y / pc.scrHeight);
 
-	vec4 color = texture(uiTexture, uv);
+	float depth = gl_FragCoord.z;
 
-	if (color[3] < 0)
+	if (depth < depthTreshold)
 	{
 		if (pc.time > 0)
 		{
@@ -41,6 +42,6 @@ void main()
 	}
 	else
 	{
-		fragmentColor = color;
+		fragmentColor = vec4(0.5f, 0.5f, 0.5f, 0.5f);
 	}
 }
