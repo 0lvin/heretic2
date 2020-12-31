@@ -198,8 +198,7 @@ typedef enum
 	RP_WORLD = 0,      // renders game world to offscreen buffer
 	RP_UI = 1,         // render UI elements and game console
 	RP_WORLD_WARP = 2, // perform postprocessing on RP_WORLD (underwater screen warp)
-	RP_FINAL_IMAGE = 3, // final image for render
-	RP_COUNT = 4
+	RP_COUNT = 3
 } qvkrenderpasstype_t;
 
 // Vulkan constants: command and dynamic buffer count

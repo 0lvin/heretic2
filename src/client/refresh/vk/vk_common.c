@@ -79,12 +79,6 @@ qvkrenderpass_t vk_renderpasses[RP_COUNT] = {
 		.rp = VK_NULL_HANDLE,
 		.colorLoadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
 		.sampleCount = VK_SAMPLE_COUNT_1_BIT
-	},
-	// RP_FINAL_IMAGE
-	{
-		.rp = VK_NULL_HANDLE,
-		.colorLoadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
-		.sampleCount = VK_SAMPLE_COUNT_1_BIT
 	}
 };
 
@@ -389,27 +383,14 @@ static VkResult CreateFramebuffers()
 			.width = vk_swapchain.extent.width,
 			.height = vk_swapchain.extent.height,
 			.layers = 1
-		},
-		// RP_FINAL_IMAGE: warped main world view (postprocessing) framebuffer
-		{
-			.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-			.pNext = NULL,
-			.flags = 0,
-			.renderPass = vk_renderpasses[RP_FINAL_IMAGE].rp,
-			.attachmentCount = 2,
-			.width = vk_swapchain.extent.width,
-			.height = vk_swapchain.extent.height,
-			.layers = 1
 		}
 	};
 
 	VkImageView worldAttachments[] = { vk_colorbuffer.imageView, vk_depthbuffer.imageView, vk_msaaColorbuffer.imageView };
 	VkImageView warpAttachments[]  = { vk_colorbuffer.imageView, vk_colorbuffer.imageView, vk_colorbufferWarp.imageView };
-	VkImageView finalAttachments[]  = { vk_colorbuffer.imageView, vk_colorbufferWarp.imageView };
 
 	fbCreateInfos[RP_WORLD].pAttachments = worldAttachments;
 	fbCreateInfos[RP_WORLD_WARP].pAttachments = warpAttachments;
-	fbCreateInfos[RP_FINAL_IMAGE].pAttachments = finalAttachments;
 
 	for (size_t i = 0; i < vk_swapchain.imageCount; ++i)
 	{
@@ -422,8 +403,7 @@ static VkResult CreateFramebuffers()
 			const char *objectNames[] = {
 				"RP_WORLD",
 				"RP_UI",
-				"RP_WORLD_WARP",
-				"RP_FINAL_IMAGE"
+				"RP_WORLD_WARP"
 			};
 
 			QVk_DebugSetObjectName((uint64_t)vk_framebuffers[j][i],
@@ -654,59 +634,9 @@ static VkResult CreateRenderpasses()
 	};
 
 	/*
-	 * final screen
-	 */
-	VkAttachmentDescription finalAttachments[] = {
-		// color attachment - input from RP_WORLD renderpass
-		{
-			.flags = 0,
-			.format = vk_swapchain.format,
-			.samples = VK_SAMPLE_COUNT_1_BIT,
-			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
-			.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		},
-		// color attachment output - warped/postprocessed image that ends up in RP_UI
-		{
-			.flags = 0,
-			.format = vk_swapchain.format,
-			.samples = VK_SAMPLE_COUNT_1_BIT,
-			.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		}
-	};
-
-	VkAttachmentReference finalAttachmentRef = {
-		// output color
-		.attachment = 1,
-		.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
-	};
-
-	// world view postprocess writes to a separate color buffer
-	VkSubpassDescription finalSubpassDesc = {
-		.flags = 0,
-		.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
-		.inputAttachmentCount = 0,
-		.pInputAttachments = NULL,
-		.colorAttachmentCount = 1,
-		.pColorAttachments = &finalAttachmentRef,
-		.pResolveAttachments = NULL,
-		.pDepthStencilAttachment = NULL,
-		.preserveAttachmentCount = 0,
-		.pPreserveAttachments = NULL
-	};
-
-	/*
 	 * create the render passes
 	 */
-	// we're using 4 render passes which depend on each other ((main color -> warp/postprocessing) + ui -> final image)
+	// we're using 3 render passes which depend on each other (main color -> warp/postprocessing -> ui)
 	VkSubpassDependency subpassDeps[2] = {
 		{
 		.srcSubpass = VK_SUBPASS_EXTERNAL,
@@ -765,18 +695,6 @@ static VkResult CreateRenderpasses()
 			.dependencyCount = 2,
 			.pDependencies = subpassDeps
 		},
-		// Final Image rendering (RP_FINAL_IMAGE)
-		{
-			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-			.pNext = NULL,
-			.flags = 0,
-			.attachmentCount = 2,
-			.pAttachments = finalAttachments,
-			.subpassCount = 1,
-			.pSubpasses = &finalSubpassDesc,
-			.dependencyCount = 2,
-			.pDependencies = subpassDeps
-		},
 	};
 
 	for (int i = 0; i < RP_COUNT; ++i)
@@ -792,7 +710,6 @@ static VkResult CreateRenderpasses()
 	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_WORLD].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: World");
 	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_WORLD_WARP].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: Warp");
 	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_UI].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: UI");
-	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_FINAL_IMAGE].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: Final Image");
 
 	return VK_SUCCESS;
 }
@@ -1522,15 +1439,6 @@ static void CreatePipelines()
 	QVk_DebugSetObjectName((uint64_t)vk_postprocessPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: world postprocess");
 	QVk_DebugSetObjectName((uint64_t)vk_postprocessPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: world postprocess");
 
-	// final image postprocessing pipeline
-	VK_LOAD_VERTFRAG_SHADERS(shaders, postprocess, postprocess);
-	vk_finalscreenPipeline.depthTestEnable = VK_FALSE;
-	vk_finalscreenPipeline.depthWriteEnable = VK_FALSE;
-	vk_finalscreenPipeline.cullMode = VK_CULL_MODE_NONE;
-	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoNull, &vk_finalscreenPipeline, &vk_renderpasses[RP_FINAL_IMAGE], shaders, 2);
-	QVk_DebugSetObjectName((uint64_t)vk_finalscreenPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: final postprocess");
-	QVk_DebugSetObjectName((uint64_t)vk_finalscreenPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: final postprocess");
-
 	// final shader cleanup
 	vkDestroyShaderModule(vk_device.logical, shaders[0].module, NULL);
 	vkDestroyShaderModule(vk_device.logical, shaders[1].module, NULL);
@@ -2214,16 +2122,6 @@ void QVk_BeginRenderpass(qvkrenderpasstype_t rpType)
 			.renderArea.extent = vk_swapchain.extent,
 			.clearValueCount = 1,
 			.pClearValues = clearColors
-		},
-		// RP_FINAL_IMAGE
-		{
-			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-			.renderPass = vk_renderpasses[RP_FINAL_IMAGE].rp,
-			.framebuffer = vk_framebuffers[RP_FINAL_IMAGE][vk_imageIndex],
-			.renderArea.offset = { 0, 0 },
-			.renderArea.extent = vk_swapchain.extent,
-			.clearValueCount = 1,
-			.pClearValues = clearColors
 		}
 	};
 
@@ -2237,10 +2135,6 @@ void QVk_BeginRenderpass(qvkrenderpasstype_t rpType)
 	if (rpType == RP_WORLD_WARP) {
 		QVk_DebugLabelEnd(&vk_commandbuffers[vk_activeBufferIdx]);
 		QVk_DebugLabelBegin(&vk_commandbuffers[vk_activeBufferIdx], "Draw View Warp", 1.f, 0.f, .5f);
-	}
-	if (rpType == RP_FINAL_IMAGE) {
-		QVk_DebugLabelEnd(&vk_commandbuffers[vk_activeBufferIdx]);
-		QVk_DebugLabelBegin(&vk_commandbuffers[vk_activeBufferIdx], "Draw Final Image", 1.f, 0.f, .5f);
 	}
 
 	vkCmdBeginRenderPass(vk_commandbuffers[vk_activeBufferIdx], &renderBeginInfo[rpType], VK_SUBPASS_CONTENTS_INLINE);

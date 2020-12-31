@@ -22,16 +22,25 @@ void main()
 {
 	vec2 uv = vec2(gl_FragCoord.x / pc.scrWidth, gl_FragCoord.y / pc.scrHeight);
 
-	if (pc.time > 0)
+	vec4 color = texture(uiTexture, uv);
+
+	if (color[3] < 0)
 	{
-		float sx = pc.scale - abs(pc.scrWidth  / 2.0 - gl_FragCoord.x) * 2.0 / pc.scrWidth;
-		float sy = pc.scale - abs(pc.scrHeight / 2.0 - gl_FragCoord.y) * 2.0 / pc.scrHeight;
-		float xShift = 2.0 * pc.time + uv.y * PI * 10;
-		float yShift = 2.0 * pc.time + uv.x * PI * 10;
-		vec2 distortion = vec2(sin(xShift) * sx, sin(yShift) * sy) * 0.00666;
+		if (pc.time > 0)
+		{
+			float sx = pc.scale - abs(pc.scrWidth  / 2.0 - gl_FragCoord.x) * 2.0 / pc.scrWidth;
+			float sy = pc.scale - abs(pc.scrHeight / 2.0 - gl_FragCoord.y) * 2.0 / pc.scrHeight;
+			float xShift = 2.0 * pc.time + uv.y * PI * 10;
+			float yShift = 2.0 * pc.time + uv.x * PI * 10;
+			vec2 distortion = vec2(sin(xShift) * sx, sin(yShift) * sy) * 0.00666;
 
-		uv += distortion;
+			uv += distortion;
+		}
+
+		fragmentColor = texture(worldTexture, uv);
 	}
-
-	fragmentColor = texture(uiTexture, uv);
+	else
+	{
+		fragmentColor = color;
+	}
 }
