@@ -456,10 +456,16 @@ Sys_GetGameAPI(void *parms)
 void
 Sys_Mkdir(const char *path)
 {
-	WCHAR wpath[MAX_OSPATH] = {0};
-	MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
+	if (!Sys_IsDir(path))
+	{
+		WCHAR wpath[MAX_OSPATH] = {0};
+		MultiByteToWideChar(CP_UTF8, 0, path, -1, wpath, MAX_OSPATH);
 
-	CreateDirectoryW(wpath, NULL);
+		if (CreateDirectoryW(wpath, NULL) == 0)
+		{
+			Com_Error(ERR_FATAL, "Couldn't create dir %s\n", path);
+		}
+	}
 }
 
 qboolean
@@ -530,6 +536,7 @@ Sys_GetHomeDir(void)
 	}
 
 	snprintf(gdir, sizeof(gdir), "%s/%s/", profile, cfgdir);
+	Sys_Mkdir(gdir);
 
 	return gdir;
 }
@@ -725,8 +732,6 @@ Sys_RedirectStdout(void)
 	{
 		return;
 	}
-
-	Sys_Mkdir(tmp);
 
 	snprintf(path_stdout, sizeof(path_stdout), "%s/%s", dir, "stdout.txt");
 	snprintf(path_stderr, sizeof(path_stderr), "%s/%s", dir, "stderr.txt");

@@ -434,7 +434,13 @@ Sys_GetGameAPI(void *parms)
 void
 Sys_Mkdir(const char *path)
 {
-	mkdir(path, 0755);
+	if (!Sys_IsDir(path))
+	{
+		if (mkdir(path, 0755) != 0)
+		{
+			Com_Error(ERR_FATAL, "Couldn't create dir %s\n", path);
+		}
+	}
 }
 
 qboolean
@@ -483,6 +489,7 @@ Sys_GetHomeDir(void)
 	}
 
 	snprintf(gdir, sizeof(gdir), "%s/%s/", home, cfgdir);
+	Sys_Mkdir(gdir);
 
 	return gdir;
 }
