@@ -255,6 +255,8 @@ extern qvkpipeline_t vk_postprocessPipeline;
 
 // color buffer containing main game/world view
 extern qvktexture_t vk_colorbuffer;
+// depth buffer containing main game/world view
+extern qvktexture_t vk_depthbuffer;
 // Depth buffer
 extern qvktexture_t vk_depthbuffer;
 // color buffer with postprocessed game view

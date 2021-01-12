@@ -1024,7 +1024,7 @@ qboolean RE_EndWorldRenderpass(void)
 	};
 	const VkDescriptorSet warpDescriptorSet[] = {
 		vk_colorbuffer.descriptorSet,
-		vk_colorbuffer.descriptorSet
+		vk_depthbuffer.descriptorSet
 	};
 	vkCmdPushConstants(vk_activeCmdbuffer, vk_worldWarpPipeline.layout,
 		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(pushConsts), pushConsts);

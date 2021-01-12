@@ -88,9 +88,9 @@ VkCommandPool vk_transferCommandPool = VK_NULL_HANDLE;
 VkDescriptorPool vk_descriptorPool = VK_NULL_HANDLE;
 static VkCommandPool vk_stagingCommandPool[NUM_DYNBUFFERS] = { VK_NULL_HANDLE, VK_NULL_HANDLE };
 // Vulkan image views
-VkImageView *vk_imageviews = NULL;
+static VkImageView *vk_imageviews = NULL;
 // Vulkan framebuffers
-VkFramebuffer *vk_framebuffers[RP_COUNT];
+static VkFramebuffer *vk_framebuffers[RP_COUNT];
 // color buffer containing main game/world view
 qvktexture_t vk_colorbuffer = QVVKTEXTURE_INIT;
 // color buffer with postprocessed game view
@@ -98,29 +98,29 @@ qvktexture_t vk_colorbufferWarp = QVVKTEXTURE_INIT;
 // depth buffer
 qvktexture_t vk_depthbuffer = QVVKTEXTURE_INIT;
 // depth buffer for UI renderpass
-qvktexture_t vk_ui_depthbuffer = QVVKTEXTURE_INIT;
+static qvktexture_t vk_ui_depthbuffer = QVVKTEXTURE_INIT;
 // render target for MSAA resolve
-qvktexture_t vk_msaaColorbuffer = QVVKTEXTURE_INIT;
+static qvktexture_t vk_msaaColorbuffer = QVVKTEXTURE_INIT;
 // viewport and scissor
 VkViewport vk_viewport = { .0f, .0f, .0f, .0f, .0f, .0f };
 VkRect2D vk_scissor = { { 0, 0 }, { 0, 0 } };
 
 // Vulkan command buffers
-VkCommandBuffer *vk_commandbuffers = NULL;
+static VkCommandBuffer *vk_commandbuffers = NULL;
 // command buffer double buffering fences
-VkFence vk_fences[NUM_CMDBUFFERS];
+static VkFence vk_fences[NUM_CMDBUFFERS];
 // semaphore: signal when next image is available for rendering
-VkSemaphore vk_imageAvailableSemaphores[NUM_CMDBUFFERS];
+static VkSemaphore vk_imageAvailableSemaphores[NUM_CMDBUFFERS];
 // semaphore: signal when rendering to current command buffer is complete
-VkSemaphore vk_renderFinishedSemaphores[NUM_CMDBUFFERS];
+static VkSemaphore vk_renderFinishedSemaphores[NUM_CMDBUFFERS];
 // tracker variables
 VkCommandBuffer vk_activeCmdbuffer = VK_NULL_HANDLE;
 // index of active command buffer
 int vk_activeBufferIdx = 0;
 // index of currently acquired image
-uint32_t vk_imageIndex = 0;
+static uint32_t vk_imageIndex = 0;
 // index of currently used staging buffer
-int vk_activeStagingBuffer = 0;
+static int vk_activeStagingBuffer = 0;
 // started rendering frame?
 qboolean vk_frameStarted = false;
 
@@ -386,7 +386,7 @@ static VkResult CreateFramebuffers()
 	};
 
 	VkImageView worldAttachments[] = { vk_colorbuffer.imageView, vk_depthbuffer.imageView, vk_msaaColorbuffer.imageView };
-	VkImageView warpAttachments[]  = { vk_colorbuffer.imageView, vk_colorbuffer.imageView, vk_colorbufferWarp.imageView };
+	VkImageView warpAttachments[]  = { vk_colorbuffer.imageView, vk_depthbuffer.imageView, vk_colorbufferWarp.imageView };
 
 	fbCreateInfos[RP_WORLD].pAttachments = worldAttachments;
 	fbCreateInfos[RP_WORLD_WARP].pAttachments = warpAttachments;
@@ -517,17 +517,17 @@ static VkResult CreateRenderpasses()
 			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		},
-		// color attachment - input from RP_UI renderpass
+		// depth attachment - input from RP_WORLD renderpass
 		{
 			.flags = 0,
-			.format = vk_swapchain.format,
-			.samples = VK_SAMPLE_COUNT_1_BIT,
-			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+			.format = QVk_FindDepthFormat(),
+			.samples = vk_renderpasses[RP_WORLD].sampleCount,
+			.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
 			.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
 			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+			.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		},
 		// color attachment output - warped/postprocessed image that ends up in RP_UI
 		{
@@ -1948,10 +1948,14 @@ qboolean QVk_Init(SDL_Window *window)
 	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo, &vk_colorbufferWarp.descriptorSet));
 	QVk_UpdateTextureSampler(&vk_colorbufferWarp, S_NEAREST);
 
+	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo, &vk_depthbuffer.descriptorSet));
+
 	QVk_DebugSetObjectName((uint64_t)vk_colorbuffer.descriptorSet,
 		VK_OBJECT_TYPE_DESCRIPTOR_SET, "Descriptor Set: World Color Buffer");
 	QVk_DebugSetObjectName((uint64_t)vk_colorbufferWarp.descriptorSet,
 		VK_OBJECT_TYPE_DESCRIPTOR_SET, "Descriptor Set: Warp Postprocess Color Buffer");
+	QVk_DebugSetObjectName((uint64_t)vk_depthbuffer.descriptorSet,
+		VK_OBJECT_TYPE_DESCRIPTOR_SET, "Descriptor Set: World Depth Buffer");
 	return true;
 }
 
@@ -2119,7 +2123,7 @@ void QVk_BeginRenderpass(qvkrenderpasstype_t rpType)
 			.framebuffer = vk_framebuffers[RP_WORLD_WARP][vk_imageIndex],
 			.renderArea.offset = { 0, 0 },
 			.renderArea.extent = vk_swapchain.extent,
-			.clearValueCount = 1,
+			.clearValueCount = 2,
 			.pClearValues = clearColors
 		}
 	};
