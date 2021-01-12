@@ -81,6 +81,10 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
   loading. If set to `0` pause mode is never entered, this is the
   Vanilla Quake II behaviour.
 
+* **cl_r1q2_lightstyle**: Since the first release Yamagi Quake II used
+  the R1Q2 colors for the dynamic lights of rockets. Set to `0` to get
+  the Vanilla Quake II colors. Defaults to `1`.
+
 * **cl_showfps**: Shows the framecounter. Set to `2` for more and to
   `3` for even more informations.
 
@@ -404,6 +408,12 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 * **vk_shadows**: Draw experimental entity shadows. (default: `0`)
 
 * **vk_picmip**: Shrink factor for the textures. (default: `0`)
+
+* **vk_pixel_size**: Pixel size when rendering the world, used to simulate
+  lower screen resolutions. The value represents the length, in pixels, of the
+  side of each pixel block. For example, with size 2 pixels are 2x2 squares,
+  and at 1600x1200 the image is effectively an upscaled 800x600 image.
+  (default: `1`)
 
 * **vk_dynamic**: Use dynamic lighting. (default: `1`)
 
