@@ -14,7 +14,7 @@ layout(push_constant) uniform PushConstant
 } pc;
 
 layout(set = 0, binding = 0) uniform sampler2D sTexture;
-layout(set = 1, binding = 0) uniform sampler2D uiTexture;
+layout(set = 1, binding = 0) uniform sampler2D depthTexture;
 
 layout(location = 0) out vec4 fragmentColor;
 
@@ -37,5 +37,12 @@ void main()
 
 	uv /= pc.pixelSize;
 
-	fragmentColor = texture(sTexture, uv);
+	if (texture(depthTexture, uv)[0] != 0.0f)
+	{
+		fragmentColor = texture(sTexture, uv);
+	}
+	else
+	{
+		discard;
+	}
 }
