@@ -126,9 +126,12 @@ qboolean vk_frameStarted = false;
 
 // render pipelines
 qvkpipeline_t vk_drawTexQuadPipeline = QVKPIPELINE_INIT;
-qvkpipeline_t vk_drawColorQuadPipeline[2]  = { QVKPIPELINE_INIT, QVKPIPELINE_INIT };
-qvkpipeline_t vk_drawModelPipelineStrip[2] = { QVKPIPELINE_INIT, QVKPIPELINE_INIT };
-qvkpipeline_t vk_drawModelPipelineFan[2]   = { QVKPIPELINE_INIT, QVKPIPELINE_INIT };
+qvkpipeline_t vk_drawColorQuadPipeline[RP_COUNT]  = {
+	QVKPIPELINE_INIT, QVKPIPELINE_INIT, QVKPIPELINE_INIT };
+qvkpipeline_t vk_drawModelPipelineStrip[RP_COUNT] = {
+	QVKPIPELINE_INIT, QVKPIPELINE_INIT, QVKPIPELINE_INIT };
+qvkpipeline_t vk_drawModelPipelineFan[RP_COUNT]   = {
+	QVKPIPELINE_INIT, QVKPIPELINE_INIT, QVKPIPELINE_INIT };
 qvkpipeline_t vk_drawNoDepthModelPipelineStrip = QVKPIPELINE_INIT;
 qvkpipeline_t vk_drawNoDepthModelPipelineFan = QVKPIPELINE_INIT;
 qvkpipeline_t vk_drawLefthandModelPipelineStrip = QVKPIPELINE_INIT;
@@ -150,7 +153,7 @@ qvkpipeline_t vk_worldWarpPipeline = QVKPIPELINE_INIT;
 qvkpipeline_t vk_postprocessPipeline = QVKPIPELINE_INIT;
 
 // samplers
-static VkSampler vk_samplers[S_SAMPLER_CNT];
+static VkSampler vk_samplers[S_SAMPLER_CNT * 2];
 
 // Vulkan function pointers
 PFN_vkCreateDebugUtilsMessengerEXT qvkCreateDebugUtilsMessengerEXT;
@@ -249,6 +252,12 @@ static VkDescriptorSet *vk_swapDescriptorSets[NUM_SWAPBUFFER_SLOTS];
 VkDescriptorSetLayout vk_uboDescSetLayout;
 VkDescriptorSetLayout vk_samplerDescSetLayout;
 VkDescriptorSetLayout vk_samplerLightmapDescSetLayout;
+
+static const char *renderpassObjectNames[] = {
+	"RP_WORLD",
+	"RP_UI",
+	"RP_WORLD_WARP"
+};
 
 VkFormat QVk_FindDepthFormat()
 {
@@ -399,15 +408,9 @@ static VkResult CreateFramebuffers()
 		for (int j = 0; j < RP_COUNT; ++j)
 		{
 			VkResult res = vkCreateFramebuffer(vk_device.logical, &fbCreateInfos[j], NULL, &vk_framebuffers[j][i]);
-			const char *objectNames[] = {
-				"RP_WORLD",
-				"RP_UI",
-				"RP_WORLD_WARP"
-			};
-
 			QVk_DebugSetObjectName((uint64_t)vk_framebuffers[j][i],
 				VK_OBJECT_TYPE_FRAMEBUFFER, va("Framebuffer #" YQ2_COM_PRIdS "for Render Pass %s",
-					i, objectNames[j]));
+					i, renderpassObjectNames[j]));
 
 			if (res != VK_SUCCESS)
 			{
@@ -435,12 +438,14 @@ static VkResult CreateRenderpasses()
 			.flags = 0,
 			.format = vk_swapchain.format,
 			.samples = VK_SAMPLE_COUNT_1_BIT,
-			.loadOp = msaaEnabled ? VK_ATTACHMENT_LOAD_OP_DONT_CARE : vk_renderpasses[RP_WORLD].colorLoadOp,
-			// if MSAA is enabled, we don't need to preserve rendered texture data since it's kept by MSAA resolve attachment
-			.storeOp = msaaEnabled ? VK_ATTACHMENT_STORE_OP_DONT_CARE : VK_ATTACHMENT_STORE_OP_STORE,
+			// The color attachment is loaded from the previous frame and stored
+			// after the frame is drawn to mask geometry errors in the skybox
+			// that may leave some pixels without coverage.
+			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
 			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		},
 		// depth attachment
@@ -511,7 +516,7 @@ static VkResult CreateRenderpasses()
 			.format = vk_swapchain.format,
 			.samples = VK_SAMPLE_COUNT_1_BIT,
 			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
-			.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
 			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
 			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
@@ -704,11 +709,9 @@ static VkResult CreateRenderpasses()
 			R_Printf(PRINT_ALL, "%s(): renderpass #%d create error: %s\n", __func__, i, QVk_GetError(res));
 			return res;
 		}
+		QVk_DebugSetObjectName((uint64_t)vk_renderpasses[i].rp, VK_OBJECT_TYPE_RENDER_PASS,
+			va("Render Pass: %s",  renderpassObjectNames[i]));
 	}
-
-	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_WORLD].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: World");
-	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_WORLD_WARP].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: Warp");
-	QVk_DebugSetObjectName((uint64_t)vk_renderpasses[RP_UI].rp, VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: UI");
 
 	return VK_SUCCESS;
 }
@@ -731,7 +734,7 @@ static void CreateDrawBuffers()
 	if (vk_renderpasses[RP_WORLD].sampleCount > 1)
 	{
 		QVk_CreateColorBuffer(vk_renderpasses[RP_WORLD].sampleCount, &vk_msaaColorbuffer,
-			0);
+			VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT);
 		R_Printf(PRINT_ALL, "...created MSAAx%d color buffer\n",
 			vk_renderpasses[RP_WORLD].sampleCount);
 	}
@@ -831,7 +834,7 @@ static void CreateDescriptorSetLayouts()
 }
 
 // internal helper
-static void CreateSamplers()
+static void CreateSamplersHelper(VkSampler *samplers, VkSamplerAddressMode addressMode)
 {
 	VkSamplerCreateInfo samplerInfo = {
 		.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
@@ -840,9 +843,9 @@ static void CreateSamplers()
 		.magFilter = VK_FILTER_NEAREST,
 		.minFilter = VK_FILTER_NEAREST,
 		.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST,
-		.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT,
-		.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT,
-		.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+		.addressModeU = addressMode,
+		.addressModeV = addressMode,
+		.addressModeW = addressMode,
 		.mipLodBias = 0.f,
 		.anisotropyEnable = VK_FALSE,
 		.maxAnisotropy = 1.f,
@@ -854,22 +857,22 @@ static void CreateSamplers()
 		.unnormalizedCoordinates = VK_FALSE
 	};
 
-	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &vk_samplers[S_NEAREST]));
-	QVk_DebugSetObjectName((uint64_t)vk_samplers[S_NEAREST], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_NEAREST");
+	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &samplers[S_NEAREST]));
+	QVk_DebugSetObjectName((uint64_t)samplers[S_NEAREST], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_NEAREST");
 
 	samplerInfo.maxLod = FLT_MAX;
-	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &vk_samplers[S_MIPMAP_NEAREST]));
-	QVk_DebugSetObjectName((uint64_t)vk_samplers[S_MIPMAP_NEAREST], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_MIPMAP_NEAREST");
+	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &samplers[S_MIPMAP_NEAREST]));
+	QVk_DebugSetObjectName((uint64_t)samplers[S_MIPMAP_NEAREST], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_MIPMAP_NEAREST");
 
 	samplerInfo.magFilter = VK_FILTER_LINEAR;
 	samplerInfo.minFilter = VK_FILTER_LINEAR;
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &vk_samplers[S_MIPMAP_LINEAR]));
-	QVk_DebugSetObjectName((uint64_t)vk_samplers[S_MIPMAP_LINEAR], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_MIPMAP_LINEAR");
+	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &samplers[S_MIPMAP_LINEAR]));
+	QVk_DebugSetObjectName((uint64_t)samplers[S_MIPMAP_LINEAR], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_MIPMAP_LINEAR");
 
 	samplerInfo.maxLod = 1.f;
-	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &vk_samplers[S_LINEAR]));
-	QVk_DebugSetObjectName((uint64_t)vk_samplers[S_LINEAR], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_LINEAR");
+	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &samplers[S_LINEAR]));
+	QVk_DebugSetObjectName((uint64_t)samplers[S_LINEAR], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_LINEAR");
 
 	// aniso samplers
 	assert((vk_device.properties.limits.maxSamplerAnisotropy > 1.f) && "maxSamplerAnisotropy is 1");
@@ -884,29 +887,36 @@ static void CreateSamplers()
 	}
 	samplerInfo.maxLod = 1.f;
 
-	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &vk_samplers[S_ANISO_NEAREST]));
-	QVk_DebugSetObjectName((uint64_t)vk_samplers[S_ANISO_NEAREST], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_ANISO_NEAREST");
+	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &samplers[S_ANISO_NEAREST]));
+	QVk_DebugSetObjectName((uint64_t)samplers[S_ANISO_NEAREST], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_ANISO_NEAREST");
 
 	samplerInfo.maxLod = FLT_MAX;
-	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &vk_samplers[S_ANISO_MIPMAP_NEAREST]));
-	QVk_DebugSetObjectName((uint64_t)vk_samplers[S_ANISO_MIPMAP_NEAREST], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_ANISO_MIPMAP_NEAREST");
+	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &samplers[S_ANISO_MIPMAP_NEAREST]));
+	QVk_DebugSetObjectName((uint64_t)samplers[S_ANISO_MIPMAP_NEAREST], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_ANISO_MIPMAP_NEAREST");
 
 	samplerInfo.magFilter = VK_FILTER_LINEAR;
 	samplerInfo.minFilter = VK_FILTER_LINEAR;
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &vk_samplers[S_ANISO_MIPMAP_LINEAR]));
-	QVk_DebugSetObjectName((uint64_t)vk_samplers[S_ANISO_MIPMAP_LINEAR], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_ANISO_MIPMAP_LINEAR");
+	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &samplers[S_ANISO_MIPMAP_LINEAR]));
+	QVk_DebugSetObjectName((uint64_t)samplers[S_ANISO_MIPMAP_LINEAR], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_ANISO_MIPMAP_LINEAR");
 
 	samplerInfo.maxLod = 1.f;
-	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &vk_samplers[S_ANISO_LINEAR]));
-	QVk_DebugSetObjectName((uint64_t)vk_samplers[S_ANISO_LINEAR], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_ANISO_LINEAR");
+	VK_VERIFY(vkCreateSampler(vk_device.logical, &samplerInfo, NULL, &samplers[S_ANISO_LINEAR]));
+	QVk_DebugSetObjectName((uint64_t)samplers[S_ANISO_LINEAR], VK_OBJECT_TYPE_SAMPLER, "Sampler: S_ANISO_LINEAR");
+}
+
+// internal helper
+static void CreateSamplers()
+{
+	CreateSamplersHelper(vk_samplers, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+	CreateSamplersHelper(vk_samplers + S_SAMPLER_CNT, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
 }
 
 // internal helper
 static void DestroySamplers()
 {
 	int i;
-	for (i = 0; i < S_SAMPLER_CNT; ++i)
+	for (i = 0; i < S_SAMPLER_CNT * 2; ++i)
 	{
 		if (vk_samplers[i] != VK_NULL_HANDLE)
 			vkDestroySampler(vk_device.logical, vk_samplers[i], NULL);
@@ -1252,7 +1262,7 @@ static void CreatePipelines()
 
 	// draw particles pipeline (using a texture)
 	VK_LOAD_VERTFRAG_SHADERS(shaders, particle, basic);
-	vk_drawParticlesPipeline.depthWriteEnable = VK_FALSE;
+	vk_drawParticlesPipeline.depthWriteEnable = VK_TRUE;
 	vk_drawParticlesPipeline.blendOpts.blendEnable = VK_TRUE;
 	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoRGB_RGBA_RG, &vk_drawParticlesPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawParticlesPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: textured particles");
@@ -1261,7 +1271,7 @@ static void CreatePipelines()
 	// draw particles pipeline (using point list)
 	VK_LOAD_VERTFRAG_SHADERS(shaders, point_particle, point_particle);
 	vk_drawPointParticlesPipeline.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
-	vk_drawPointParticlesPipeline.depthWriteEnable = VK_FALSE;
+	vk_drawPointParticlesPipeline.depthWriteEnable = VK_TRUE;
 	vk_drawPointParticlesPipeline.blendOpts.blendEnable = VK_TRUE;
 	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGBA, &vk_drawPointParticlesPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPointParticlesPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: point particles");
@@ -1269,16 +1279,16 @@ static void CreatePipelines()
 
 	// colored quad pipeline
 	VK_LOAD_VERTFRAG_SHADERS(shaders, basic_color_quad, basic_color_quad);
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < RP_COUNT; ++i)
 	{
 		vk_drawColorQuadPipeline[i].depthTestEnable = VK_FALSE;
 		vk_drawColorQuadPipeline[i].blendOpts.blendEnable = VK_TRUE;
 		QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRG, &vk_drawColorQuadPipeline[i], &vk_renderpasses[i], shaders, 2);
+		QVk_DebugSetObjectName((uint64_t)vk_drawColorQuadPipeline[i].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+			va("Pipeline Layout: colored quad (%s)", renderpassObjectNames[i]));
+		QVk_DebugSetObjectName((uint64_t)vk_drawColorQuadPipeline[i].pl, VK_OBJECT_TYPE_PIPELINE,
+			va("Pipeline: colored quad (%s)", renderpassObjectNames[i]));
 	}
-	QVk_DebugSetObjectName((uint64_t)vk_drawColorQuadPipeline[0].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: colored quad (RP_WORLD)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawColorQuadPipeline[0].pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: colored quad (RP_WORLD)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawColorQuadPipeline[1].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: colored quad (RP_UI)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawColorQuadPipeline[1].pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: colored quad (RP_UI)");
 
 	// untextured null model
 	VK_LOAD_VERTFRAG_SHADERS(shaders, nullmodel, basic_color_quad);
@@ -1290,24 +1300,24 @@ static void CreatePipelines()
 
 	// textured model
 	VK_LOAD_VERTFRAG_SHADERS(shaders, model, model);
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < RP_COUNT; ++i)
 	{
 		vk_drawModelPipelineStrip[i].topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 		vk_drawModelPipelineStrip[i].blendOpts.blendEnable = VK_TRUE;
 		QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RGBA_RG, &vk_drawModelPipelineStrip[i], &vk_renderpasses[i], shaders, 2);
+		QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineStrip[i].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+			va("Pipeline Layout: draw model: strip (%s)", renderpassObjectNames[i]));
+		QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineStrip[i].pl, VK_OBJECT_TYPE_PIPELINE,
+			va("Pipeline: draw model: strip (%s)", renderpassObjectNames[i]));
 
 		vk_drawModelPipelineFan[i].topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		vk_drawModelPipelineFan[i].blendOpts.blendEnable = VK_TRUE;
 		QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RGBA_RG, &vk_drawModelPipelineFan[i], &vk_renderpasses[i], shaders, 2);
+		QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[i].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+			va("Pipeline Layout: draw model: fan (%s)", renderpassObjectNames[i]));
+		QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[i].pl, VK_OBJECT_TYPE_PIPELINE,
+			va("Pipeline: draw model: fan (%s)", renderpassObjectNames[i]));
 	}
-	QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineStrip[0].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: draw model: strip (RP_WORLD)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineStrip[0].pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: draw model: strip (RP_WORLD)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineStrip[1].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: draw model: strip (RP_UI)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineStrip[1].pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: draw model: strip (RP_UI)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[0].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: draw model: fan (RP_WORLD)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[0].pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: draw model: fan (RP_WORLD)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[1].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: draw model: fan (RP_UI)");
-	QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[1].pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: draw model: fan (RP_UI)");
 
 	// dedicated model pipelines for translucent objects with depth write disabled
 	vk_drawNoDepthModelPipelineStrip.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
@@ -1471,7 +1481,7 @@ void QVk_Shutdown( void )
 	{
 		R_Printf(PRINT_ALL, "Shutting down Vulkan\n");
 
-		for (int i = 0; i < 2; ++i)
+		for (int i = 0; i < RP_COUNT; ++i)
 		{
 			QVk_DestroyPipeline(&vk_drawColorQuadPipeline[i]);
 			QVk_DestroyPipeline(&vk_drawModelPipelineStrip[i]);
@@ -1943,12 +1953,16 @@ qboolean QVk_Init(SDL_Window *window)
 		.pSetLayouts = &vk_samplerDescSetLayout
 	};
 
-	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo, &vk_colorbuffer.descriptorSet));
-	QVk_UpdateTextureSampler(&vk_colorbuffer, S_NEAREST);
-	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo, &vk_colorbufferWarp.descriptorSet));
-	QVk_UpdateTextureSampler(&vk_colorbufferWarp, S_NEAREST);
+	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo,
+		&vk_colorbuffer.descriptorSet));
+	QVk_UpdateTextureSampler(&vk_colorbuffer, S_NEAREST, false);
+	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo,
+		&vk_colorbufferWarp.descriptorSet));
+	QVk_UpdateTextureSampler(&vk_colorbufferWarp, S_NEAREST, false);
 
-	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo, &vk_depthbuffer.descriptorSet));
+	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo,
+		&vk_depthbuffer.descriptorSet));
+	QVk_UpdateDepthSampler(&vk_depthbuffer);
 
 	QVk_DebugSetObjectName((uint64_t)vk_colorbuffer.descriptorSet,
 		VK_OBJECT_TYPE_DESCRIPTOR_SET, "Descriptor Set: World Color Buffer");
@@ -1956,6 +1970,7 @@ qboolean QVk_Init(SDL_Window *window)
 		VK_OBJECT_TYPE_DESCRIPTOR_SET, "Descriptor Set: Warp Postprocess Color Buffer");
 	QVk_DebugSetObjectName((uint64_t)vk_depthbuffer.descriptorSet,
 		VK_OBJECT_TYPE_DESCRIPTOR_SET, "Descriptor Set: World Depth Buffer");
+
 	return true;
 }
 
@@ -2252,7 +2267,7 @@ static uint8_t *QVk_GetIndexBuffer(VkDeviceSize size, VkDeviceSize *dstOffset)
 uint8_t *QVk_GetUniformBuffer(VkDeviceSize size, uint32_t *dstOffset, VkDescriptorSet *dstUboDescriptorSet)
 {
 	// 0x100 alignment is required by Vulkan spec
-	const uint32_t aligned_size = ROUNDUP(size, 256);
+	const uint32_t aligned_size = ROUNDUP(size, 0x100);
 
 	if (vk_dynUniformBuffers[vk_activeDynBufferIdx].currentOffset + UNIFORM_ALLOC_SIZE > vk_config.uniform_buffer_size)
 	{
@@ -2389,12 +2404,16 @@ void QVk_SubmitStagingBuffers()
 	}
 }
 
-VkSampler QVk_UpdateTextureSampler(qvktexture_t *texture, qvksampler_t samplerType)
+VkSampler QVk_UpdateTextureSampler(qvktexture_t *texture, qvksampler_t samplerType, qboolean clampToEdge)
 {
-	assert((vk_samplers[samplerType] != VK_NULL_HANDLE) && "Sampler is VK_NULL_HANDLE!");
+	const int samplerIndex = samplerType + (clampToEdge ? S_SAMPLER_CNT : 0);
+
+	assert((vk_samplers[samplerIndex] != VK_NULL_HANDLE) && "Sampler is VK_NULL_HANDLE!");
+
+	texture->clampToEdge = clampToEdge;
 
 	VkDescriptorImageInfo dImgInfo = {
-		.sampler = vk_samplers[samplerType],
+		.sampler = vk_samplers[samplerIndex],
 		.imageView = texture->imageView,
 		.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 	};
@@ -2414,7 +2433,43 @@ VkSampler QVk_UpdateTextureSampler(qvktexture_t *texture, qvksampler_t samplerTy
 
 	vkUpdateDescriptorSets(vk_device.logical, 1, &writeSet, 0, NULL);
 
-	return vk_samplers[samplerType];
+	return vk_samplers[samplerIndex];
+}
+
+VkSampler QVk_UpdateDepthSampler(qvktexture_t *texture)
+{
+	qvksampler_t samplerType = S_NEAREST;
+	const int samplerIndex = samplerType;
+
+	assert((vk_samplers[samplerIndex] != VK_NULL_HANDLE) && "Sampler is VK_NULL_HANDLE!");
+
+	texture->clampToEdge = false;
+
+	VkDescriptorImageInfo dImgInfo = {
+		.sampler = vk_samplers[samplerIndex],
+		.imageView = texture->imageView,
+		.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+	};
+
+	VkWriteDescriptorSet writeSet = {
+		.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+		.pNext = NULL,
+		.dstSet = texture->descriptorSet,
+		.dstBinding = 0,
+		.dstArrayElement = 0,
+		.descriptorCount = 1,
+		.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		.pImageInfo = &dImgInfo,
+		.pBufferInfo = NULL,
+		.pTexelBufferView = NULL
+	};
+
+	/// VK_ERROR: Validation Error: [ VUID-VkDescriptorImageInfo-imageView-01976 ] Object 0: handle = 0xd000000000d0, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0xafbd9dc7 | vkUpdateDescriptorSets() failed write update validation for VkDescriptorSet 0xd000000000d0[] with error: Write update to VkDescriptorSet 0xd000000000d0[] allocated with VkDescriptorSetLayout 0x360000000036[Descriptor Set Layout: Sampler] binding #0 failed with error message: Attempted write update to combined image sampler descriptor failed due to: ImageView (VkImageView 0x170000000017[Image View: World Depth Buffer]) has layout VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL and is using depth/stencil image of format VK_FORMAT_D32_SFLOAT_S8_UINT but it has both STENCIL and DEPTH aspects set, which is illegal. When using a depth/stencil image in a descriptor set, please only set either VK_IMAGE_ASPECT_DEPTH_BIT or VK_IMAGE_ASPECT_STENCIL_BIT depending on whether it will be used for depth reads or stencil reads respectively.. The Vulkan spec states: If imageView is created from a depth/stencil image, the aspectMask used to create the imageView must include either VK_IMAGE_ASPECT_DEPTH_BIT or VK_IMAGE_ASPECT_STENCIL_BIT but not both (https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#VUID-VkDescriptorImageInfo-imageView-01976) (validation)
+	/// VK_ERROR: Validation Error: [ VUID-VkWriteDescriptorSet-descriptorType-00337 ] Object 0: handle = 0xd000000000d0, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0x95f3717f | vkUpdateDescriptorSets() failed write update validation for VkDescriptorSet 0xd000000000d0[] with error: Write update to VkDescriptorSet 0xd000000000d0[] allocated with VkDescriptorSetLayout 0x360000000036[Descriptor Set Layout: Sampler] binding #0 failed with error message: Attempted write update to combined image sampler descriptor failed due to: ImageView (VkImageView 0x170000000017[Image View: World Depth Buffer]) with usage mask 0x20 being used for a descriptor update of type VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER does not have VK_IMAGE_USAGE_SAMPLED_BIT set.. The Vulkan spec states: If descriptorType is VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE or VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, the imageView member of each element of pImageInfo must have been created with VK_IMAGE_USAGE_SAMPLED_BIT set (https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#VUID-VkWriteDescriptorSet-descriptorType-00337) (validation)
+
+	vkUpdateDescriptorSets(vk_device.logical, 1, &writeSet, 0, NULL);
+
+	return vk_samplers[samplerIndex];
 }
 
 void QVk_DrawColorRect(float *ubo, VkDeviceSize uboSize, qvkrenderpasstype_t rpType)
