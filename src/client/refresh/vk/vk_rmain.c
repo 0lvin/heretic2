@@ -1040,7 +1040,6 @@ qboolean RE_EndWorldRenderpass(void)
 		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(pushConsts), pushConsts);
 	assert(vk_depthbuffer.format == VK_FORMAT_D32_SFLOAT_S8_UINT);
 	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_worldWarpPipeline.layout, 0, 2, warpDescriptorSet, 0, NULL);
-	/// VK_ERROR: Validation Error: [ VUID-vkCmdDraw-None-02699 ] Object 0: handle = 0xc000000000c0, name = Descriptor Set: World Depth Buffer, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0x1608dec0 | VkDescriptorSet 0xc000000000c0[Descriptor Set: World Depth Buffer] encountered the following validation error at vkCmdDraw() time: Descriptor in binding #0 index 0 is being used in draw but has never been updated via vkUpdateDescriptorSets() or a similar call. The Vulkan spec states: Descriptors in each bound descriptor set, specified via vkCmdBindDescriptorSets, must be valid if they are statically used by the VkPipeline bound to the pipeline bind point used by this command (https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#VUID-vkCmdDraw-None-02699) (validation)
 
 	QVk_BindPipeline(&vk_worldWarpPipeline);
 	// Restore full viewport for future steps.

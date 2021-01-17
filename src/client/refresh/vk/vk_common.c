@@ -252,6 +252,7 @@ static VkDescriptorSet *vk_swapDescriptorSets[NUM_SWAPBUFFER_SLOTS];
 VkDescriptorSetLayout vk_uboDescSetLayout;
 VkDescriptorSetLayout vk_samplerDescSetLayout;
 VkDescriptorSetLayout vk_samplerLightmapDescSetLayout;
+VkDescriptorSetLayout vk_samplerDepthDescSetLayout;
 
 static const char *renderpassObjectNames[] = {
 	"RP_WORLD",
@@ -531,7 +532,7 @@ static VkResult CreateRenderpasses()
 			.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
 			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+			.initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
 			.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		},
 		// color attachment output - warped/postprocessed image that ends up in RP_UI
@@ -720,9 +721,9 @@ static VkResult CreateRenderpasses()
 static void CreateDrawBuffers()
 {
 	QVk_CreateDepthBuffer(vk_renderpasses[RP_WORLD].sampleCount,
-		&vk_depthbuffer);
+		&vk_depthbuffer, VK_IMAGE_USAGE_SAMPLED_BIT);
 	R_Printf(PRINT_ALL, "...created world depth buffer\n");
-	QVk_CreateDepthBuffer(VK_SAMPLE_COUNT_1_BIT, &vk_ui_depthbuffer);
+	QVk_CreateDepthBuffer(VK_SAMPLE_COUNT_1_BIT, &vk_ui_depthbuffer, 0);
 	R_Printf(PRINT_ALL, "...created UI depth buffer\n");
 	QVk_CreateColorBuffer(VK_SAMPLE_COUNT_1_BIT, &vk_colorbuffer,
 		VK_IMAGE_USAGE_SAMPLED_BIT);
@@ -827,10 +828,14 @@ static void CreateDescriptorSetLayouts()
 	VK_VERIFY(vkCreateDescriptorSetLayout(vk_device.logical, &layoutInfo, NULL, &vk_samplerDescSetLayout));
 	// secondary sampler: lightmaps
 	VK_VERIFY(vkCreateDescriptorSetLayout(vk_device.logical, &layoutInfo, NULL, &vk_samplerLightmapDescSetLayout));
+	// depth
+	layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	VK_VERIFY(vkCreateDescriptorSetLayout(vk_device.logical, &layoutInfo, NULL, &vk_samplerDepthDescSetLayout));
 
 	QVk_DebugSetObjectName((uint64_t)vk_uboDescSetLayout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Descriptor Set Layout: UBO");
 	QVk_DebugSetObjectName((uint64_t)vk_samplerDescSetLayout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Descriptor Set Layout: Sampler");
 	QVk_DebugSetObjectName((uint64_t)vk_samplerLightmapDescSetLayout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Descriptor Set Layout: Sampler + Lightmap");
+	QVk_DebugSetObjectName((uint64_t)vk_samplerDepthDescSetLayout, VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT, "Descriptor Set Layout: Depth");
 }
 
 // internal helper
@@ -1247,7 +1252,7 @@ static void CreatePipelines()
 
 	// shared descriptor set layouts
 	VkDescriptorSetLayout samplerUboDsLayouts[] = { vk_samplerDescSetLayout, vk_uboDescSetLayout };
-	VkDescriptorSetLayout samplerUboMergeDsLayouts[] = { vk_samplerDescSetLayout, vk_samplerLightmapDescSetLayout };
+	VkDescriptorSetLayout samplerUboMergeDsLayouts[] = { vk_samplerDescSetLayout, vk_samplerDepthDescSetLayout };
 	VkDescriptorSetLayout samplerUboLmapDsLayouts[] = { vk_samplerDescSetLayout, vk_uboDescSetLayout, vk_samplerLightmapDescSetLayout };
 
 	// shader array (vertex and fragment, no compute... yet)
@@ -1542,6 +1547,8 @@ void QVk_Shutdown( void )
 			vkDestroyDescriptorSetLayout(vk_device.logical, vk_samplerDescSetLayout, NULL);
 		if (vk_samplerLightmapDescSetLayout != VK_NULL_HANDLE)
 			vkDestroyDescriptorSetLayout(vk_device.logical, vk_samplerLightmapDescSetLayout, NULL);
+		if (vk_samplerDepthDescSetLayout != VK_NULL_HANDLE)
+			vkDestroyDescriptorSetLayout(vk_device.logical, vk_samplerDepthDescSetLayout, NULL);
 		for (int i = 0; i < RP_COUNT; i++)
 		{
 			if (vk_renderpasses[i].rp != VK_NULL_HANDLE)
@@ -1602,6 +1609,7 @@ void QVk_Shutdown( void )
 		vk_uboDescSetLayout = VK_NULL_HANDLE;
 		vk_samplerDescSetLayout = VK_NULL_HANDLE;
 		vk_samplerLightmapDescSetLayout = VK_NULL_HANDLE;
+		vk_samplerDepthDescSetLayout = VK_NULL_HANDLE;
 		vk_transferCommandPool = VK_NULL_HANDLE;
 		vk_activeBufferIdx = 0;
 		vk_imageIndex = 0;
@@ -1960,6 +1968,7 @@ qboolean QVk_Init(SDL_Window *window)
 		&vk_colorbufferWarp.descriptorSet));
 	QVk_UpdateTextureSampler(&vk_colorbufferWarp, S_NEAREST, false);
 
+	dsAllocInfo.pSetLayouts = &vk_samplerDepthDescSetLayout;
 	VK_VERIFY(vkAllocateDescriptorSets(vk_device.logical, &dsAllocInfo,
 		&vk_depthbuffer.descriptorSet));
 	QVk_UpdateDepthSampler(&vk_depthbuffer);
@@ -2448,7 +2457,7 @@ VkSampler QVk_UpdateDepthSampler(qvktexture_t *texture)
 	VkDescriptorImageInfo dImgInfo = {
 		.sampler = vk_samplers[samplerIndex],
 		.imageView = texture->imageView,
-		.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		.imageLayout = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL
 	};
 
 	VkWriteDescriptorSet writeSet = {
@@ -2463,9 +2472,6 @@ VkSampler QVk_UpdateDepthSampler(qvktexture_t *texture)
 		.pBufferInfo = NULL,
 		.pTexelBufferView = NULL
 	};
-
-	/// VK_ERROR: Validation Error: [ VUID-VkDescriptorImageInfo-imageView-01976 ] Object 0: handle = 0xd000000000d0, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0xafbd9dc7 | vkUpdateDescriptorSets() failed write update validation for VkDescriptorSet 0xd000000000d0[] with error: Write update to VkDescriptorSet 0xd000000000d0[] allocated with VkDescriptorSetLayout 0x360000000036[Descriptor Set Layout: Sampler] binding #0 failed with error message: Attempted write update to combined image sampler descriptor failed due to: ImageView (VkImageView 0x170000000017[Image View: World Depth Buffer]) has layout VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL and is using depth/stencil image of format VK_FORMAT_D32_SFLOAT_S8_UINT but it has both STENCIL and DEPTH aspects set, which is illegal. When using a depth/stencil image in a descriptor set, please only set either VK_IMAGE_ASPECT_DEPTH_BIT or VK_IMAGE_ASPECT_STENCIL_BIT depending on whether it will be used for depth reads or stencil reads respectively.. The Vulkan spec states: If imageView is created from a depth/stencil image, the aspectMask used to create the imageView must include either VK_IMAGE_ASPECT_DEPTH_BIT or VK_IMAGE_ASPECT_STENCIL_BIT but not both (https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#VUID-VkDescriptorImageInfo-imageView-01976) (validation)
-	/// VK_ERROR: Validation Error: [ VUID-VkWriteDescriptorSet-descriptorType-00337 ] Object 0: handle = 0xd000000000d0, type = VK_OBJECT_TYPE_DESCRIPTOR_SET; | MessageID = 0x95f3717f | vkUpdateDescriptorSets() failed write update validation for VkDescriptorSet 0xd000000000d0[] with error: Write update to VkDescriptorSet 0xd000000000d0[] allocated with VkDescriptorSetLayout 0x360000000036[Descriptor Set Layout: Sampler] binding #0 failed with error message: Attempted write update to combined image sampler descriptor failed due to: ImageView (VkImageView 0x170000000017[Image View: World Depth Buffer]) with usage mask 0x20 being used for a descriptor update of type VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER does not have VK_IMAGE_USAGE_SAMPLED_BIT set.. The Vulkan spec states: If descriptorType is VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE or VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, the imageView member of each element of pImageInfo must have been created with VK_IMAGE_USAGE_SAMPLED_BIT set (https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#VUID-VkWriteDescriptorSet-descriptorType-00337) (validation)
 
 	vkUpdateDescriptorSets(vk_device.logical, 1, &writeSet, 0, NULL);
 
