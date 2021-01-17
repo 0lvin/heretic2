@@ -2457,7 +2457,7 @@ VkSampler QVk_UpdateDepthSampler(qvktexture_t *texture)
 	VkDescriptorImageInfo dImgInfo = {
 		.sampler = vk_samplers[samplerIndex],
 		.imageView = texture->imageView,
-		.imageLayout = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL
+		.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 	};
 
 	VkWriteDescriptorSet writeSet = {
