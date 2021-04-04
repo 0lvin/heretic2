@@ -27,22 +27,9 @@
 #ifndef REF_MODEL_H
 #define REF_MODEL_H
 
-#define SIDE_FRONT 0
-#define SIDE_BACK 1
-#define SIDE_ON 2
+#include "../../ref_shared_model.h"
 
-#define SURF_PLANEBACK 2
-#define SURF_DRAWSKY 4
-#define SURF_DRAWTURB 0x10
-#define SURF_DRAWBACKGROUND 0x40
-#define SURF_UNDERWATER 0x80
 #define VERTEXSIZE 7
-
-/* in memory representation */
-typedef struct
-{
-	vec3_t position;
-} mvertex_t;
 
 typedef struct
 {
@@ -53,12 +40,6 @@ typedef struct
 	int visleafs; /* not including the solid leaf 0 */
 	int firstface, numfaces;
 } mmodel_t;
-
-typedef struct
-{
-	unsigned short v[2];
-	unsigned int cachededgeoffset;
-} medge_t;
 
 typedef struct mtexinfo_s
 {

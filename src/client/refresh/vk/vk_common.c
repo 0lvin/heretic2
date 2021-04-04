@@ -47,6 +47,8 @@ qvkdevice_t vk_device = {
 	.gfxFamilyIndex = -1,
 	.presentFamilyIndex = -1,
 	.transferFamilyIndex = -1,
+	.rayTracingpipelineSupported = false,
+	.accelerationStructureSupported = false,
 	.screenshotSupported = false
 };
 
@@ -205,7 +207,9 @@ PFN_vkCmdInsertDebugUtilsLabelEXT qvkInsertDebugUtilsLabelEXT;
 enum {
 	SHADER_VERT_INDEX = 0,
 	SHADER_FRAG_INDEX = 1,
-	SHADER_INDEX_SIZE = 2
+	SHADER_TESS_CTRL_INDEX = 2,
+	SHADER_TESS_EVAL_INDEX = 3,
+	SHADER_INDEX_SIZE = 4
 };
 
 #define VK_LOAD_VERTFRAG_SHADERS(shaders, namevert, namefrag) \
@@ -214,6 +218,17 @@ enum {
 	shaders[SHADER_FRAG_INDEX] = QVk_CreateShader(namefrag##_frag_spv, namefrag##_frag_size, VK_SHADER_STAGE_FRAGMENT_BIT); \
 	QVk_DebugSetObjectName((uint64_t)shaders[SHADER_VERT_INDEX].module, VK_OBJECT_TYPE_SHADER_MODULE, "Shader Module: "#namevert".vert"); \
 	QVk_DebugSetObjectName((uint64_t)shaders[SHADER_FRAG_INDEX].module, VK_OBJECT_TYPE_SHADER_MODULE, "Shader Module: "#namefrag".frag");
+
+#define VK_LOAD_VERTFRAGTESS_SHADERS(shaders, namevert, namefrag, nametessctr, nametese) \
+	DestroyShaderModule(shaders); \
+	shaders[SHADER_VERT_INDEX] = QVk_CreateShader(namevert##_vert_spv, namevert##_vert_size, VK_SHADER_STAGE_VERTEX_BIT); \
+	shaders[SHADER_FRAG_INDEX] = QVk_CreateShader(namefrag##_frag_spv, namefrag##_frag_size, VK_SHADER_STAGE_FRAGMENT_BIT); \
+	shaders[SHADER_TESS_CTRL_INDEX]= QVk_CreateShader(nametessctr##_tesc_spv, nametessctr##_tesc_size, VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT); \
+	shaders[SHADER_TESS_EVAL_INDEX]= QVk_CreateShader(nametese##_tese_spv, nametese##_tese_size, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT); \
+	QVk_DebugSetObjectName((uint64_t)shaders[SHADER_VERT_INDEX].module, VK_OBJECT_TYPE_SHADER_MODULE, "Shader Module: "#namevert".vert"); \
+	QVk_DebugSetObjectName((uint64_t)shaders[SHADER_FRAG_INDEX].module, VK_OBJECT_TYPE_SHADER_MODULE, "Shader Module: "#namefrag".frag"); \
+	QVk_DebugSetObjectName((uint64_t)shaders[SHADER_TESS_CTRL_INDEX].module, VK_OBJECT_TYPE_SHADER_MODULE, "Shader Module: "#nametessctr".tesc"); \
+	QVk_DebugSetObjectName((uint64_t)shaders[SHADER_TESS_EVAL_INDEX].module, VK_OBJECT_TYPE_SHADER_MODULE, "Shader Module: "#nametese".tese");
 
 // global static buffers (reused, never changing)
 static qvkbuffer_t vk_texRectVbo;
@@ -1296,6 +1311,11 @@ static void CreatePipelines()
 	VK_VERTINFO(RGB_RGBA_RG, sizeof(float) * 9,	VK_INPUTATTR_DESC(0, VK_FORMAT_R32G32B32_SFLOAT, 0),
 												VK_INPUTATTR_DESC(1, VK_FORMAT_R32G32B32A32_SFLOAT, sizeof(float) * 3),
 												VK_INPUTATTR_DESC(2, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 7));
+
+	VK_VERTINFO(RGB_RGBA_RG_TES, sizeof(float) * 12,	VK_INPUTATTR_DESC(0, VK_FORMAT_R32G32B32_SFLOAT, 0),
+												VK_INPUTATTR_DESC(1, VK_FORMAT_R32G32B32A32_SFLOAT, sizeof(float) * 3),
+												VK_INPUTATTR_DESC(2, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 7),
+												VK_INPUTATTR_DESC(3, VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 9));
 	// no vertices passed to the pipeline (postprocessing)
 	VkPipelineVertexInputStateCreateInfo vertInfoNull = VK_NULL_VERTEXINPUT_CINF;
 
@@ -1311,7 +1331,9 @@ static void CreatePipelines()
 	for (int i = 0; i < RP_COUNT; ++i)
 	{
 		vk_drawTexQuadPipeline[i].depthTestEnable = VK_FALSE;
-		QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRG_RG, &vk_drawTexQuadPipeline[i], &vk_renderpasses[i], shaders, 2);
+		QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRG_RG,
+			&vk_drawTexQuadPipeline[i], &vk_renderpasses[i],
+			shaders, 2, VK_FALSE);
 		QVk_DebugSetObjectName((uint64_t)vk_drawTexQuadPipeline[i].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT,
 			va("Pipeline Layout: textured quad (%s)", renderpassObjectNames[i]));
 		QVk_DebugSetObjectName((uint64_t)vk_drawTexQuadPipeline[i].pl, VK_OBJECT_TYPE_PIPELINE,
@@ -1322,7 +1344,9 @@ static void CreatePipelines()
 	VK_LOAD_VERTFRAG_SHADERS(shaders, particle, basic);
 	vk_drawParticlesPipeline.depthWriteEnable = VK_TRUE;
 	vk_drawParticlesPipeline.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoRGB_RGBA_RG, &vk_drawParticlesPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoRGB_RGBA_RG,
+		&vk_drawParticlesPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawParticlesPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: textured particles");
 	QVk_DebugSetObjectName((uint64_t)vk_drawParticlesPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: textured particles");
 
@@ -1331,7 +1355,9 @@ static void CreatePipelines()
 	vk_drawPointParticlesPipeline.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 	vk_drawPointParticlesPipeline.depthWriteEnable = VK_TRUE;
 	vk_drawPointParticlesPipeline.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGBA, &vk_drawPointParticlesPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGBA,
+		&vk_drawPointParticlesPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPointParticlesPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: point particles");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPointParticlesPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: point particles");
 
@@ -1341,7 +1367,9 @@ static void CreatePipelines()
 	{
 		vk_drawColorQuadPipeline[i].depthTestEnable = VK_FALSE;
 		vk_drawColorQuadPipeline[i].blendOpts.blendEnable = VK_TRUE;
-		QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRG, &vk_drawColorQuadPipeline[i], &vk_renderpasses[i], shaders, 2);
+		QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRG,
+			&vk_drawColorQuadPipeline[i], &vk_renderpasses[i],
+			shaders, 2, VK_FALSE);
 		QVk_DebugSetObjectName((uint64_t)vk_drawColorQuadPipeline[i].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT,
 			va("Pipeline Layout: colored quad (%s)", renderpassObjectNames[i]));
 		QVk_DebugSetObjectName((uint64_t)vk_drawColorQuadPipeline[i].pl, VK_OBJECT_TYPE_PIPELINE,
@@ -1352,42 +1380,59 @@ static void CreatePipelines()
 	VK_LOAD_VERTFRAG_SHADERS(shaders, nullmodel, basic_color_quad);
 	vk_drawNullModelPipeline.cullMode = VK_CULL_MODE_NONE;
 	vk_drawNullModelPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGB, &vk_drawNullModelPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGB,
+		&vk_drawNullModelPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawNullModelPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: null model");
 	QVk_DebugSetObjectName((uint64_t)vk_drawNullModelPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: null model");
 
 	// textured model
-	VK_LOAD_VERTFRAG_SHADERS(shaders, model, model);
+	VK_LOAD_VERTFRAGTESS_SHADERS(shaders, model, model, model, model);
+	VkBool32 tessellaton_enabled = vk_device.features.tessellationShader && (vk_retexturing->value >= 2);
 	for (int i = 0; i < RP_COUNT; ++i)
 	{
-		vk_drawModelPipelineFan[i].topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		vk_drawModelPipelineFan[i].topology = tessellaton_enabled ? VK_PRIMITIVE_TOPOLOGY_PATCH_LIST : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		vk_drawModelPipelineFan[i].blendOpts.blendEnable = VK_TRUE;
-		QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RGBA_RG, &vk_drawModelPipelineFan[i], &vk_renderpasses[i], shaders, 2);
-		QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[i].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+		QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RGBA_RG_TES,
+			&vk_drawModelPipelineFan[i], &vk_renderpasses[i],
+			shaders, tessellaton_enabled ? 4 : 2, tessellaton_enabled);
+		QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[i].layout,
+			VK_OBJECT_TYPE_PIPELINE_LAYOUT,
 			va("Pipeline Layout: draw model: fan (%s)", renderpassObjectNames[i]));
-		QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[i].pl, VK_OBJECT_TYPE_PIPELINE,
+		QVk_DebugSetObjectName((uint64_t)vk_drawModelPipelineFan[i].pl,
+			VK_OBJECT_TYPE_PIPELINE,
 			va("Pipeline: draw model: fan (%s)", renderpassObjectNames[i]));
 	}
 
 	// dedicated model pipelines for translucent objects with depth write disabled
-	vk_drawNoDepthModelPipelineFan.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	vk_drawNoDepthModelPipelineFan.topology = tessellaton_enabled ? VK_PRIMITIVE_TOPOLOGY_PATCH_LIST : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	vk_drawNoDepthModelPipelineFan.depthWriteEnable = VK_FALSE;
 	vk_drawNoDepthModelPipelineFan.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RGBA_RG, &vk_drawNoDepthModelPipelineFan, &vk_renderpasses[RP_WORLD], shaders, 2);
-	QVk_DebugSetObjectName((uint64_t)vk_drawNoDepthModelPipelineFan.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: translucent model: fan");
-	QVk_DebugSetObjectName((uint64_t)vk_drawNoDepthModelPipelineFan.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: translucent model: fan");
+	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RGBA_RG_TES,
+		&vk_drawNoDepthModelPipelineFan, &vk_renderpasses[RP_WORLD],
+		shaders, tessellaton_enabled ? 4 : 2, tessellaton_enabled);
+	QVk_DebugSetObjectName((uint64_t)vk_drawNoDepthModelPipelineFan.layout,
+		VK_OBJECT_TYPE_PIPELINE_LAYOUT,
+		"Pipeline Layout: translucent model: fan");
+	QVk_DebugSetObjectName((uint64_t)vk_drawNoDepthModelPipelineFan.pl,
+		VK_OBJECT_TYPE_PIPELINE,
+		"Pipeline: translucent model: fan");
 
 	// dedicated model pipelines for when left-handed weapon model is drawn
-	vk_drawLefthandModelPipelineFan.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+	vk_drawLefthandModelPipelineFan.topology = tessellaton_enabled ? VK_PRIMITIVE_TOPOLOGY_PATCH_LIST : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	vk_drawLefthandModelPipelineFan.cullMode = VK_CULL_MODE_FRONT_BIT;
-	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RGBA_RG, &vk_drawLefthandModelPipelineFan, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RGBA_RG_TES,
+		&vk_drawLefthandModelPipelineFan, &vk_renderpasses[RP_WORLD],
+		shaders, tessellaton_enabled ? 4 : 2, tessellaton_enabled);
 	QVk_DebugSetObjectName((uint64_t)vk_drawLefthandModelPipelineFan.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: left-handed model: fan");
 	QVk_DebugSetObjectName((uint64_t)vk_drawLefthandModelPipelineFan.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: left-handed model: fan");
 
 	// draw sprite pipeline
 	VK_LOAD_VERTFRAG_SHADERS(shaders, sprite, basic);
 	vk_drawSpritePipeline.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoRGB_RG, &vk_drawSpritePipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoRGB_RG,
+		&vk_drawSpritePipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawSpritePipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: sprite");
 	QVk_DebugSetObjectName((uint64_t)vk_drawSpritePipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: sprite");
 
@@ -1395,14 +1440,18 @@ static void CreatePipelines()
 	VK_LOAD_VERTFRAG_SHADERS(shaders, polygon, basic);
 	vk_drawPolyPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	vk_drawPolyPipeline.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RG, &vk_drawPolyPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RG,
+		&vk_drawPolyPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: polygon");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: polygon");
 
 	// draw lightmapped polygon
 	VK_LOAD_VERTFRAG_SHADERS(shaders, polygon_lmap, polygon_lmap);
 	vk_drawPolyLmapPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	QVk_CreatePipeline(samplerUboLmapDsLayouts, 3, &vertInfoRGB_RG_RG, &vk_drawPolyLmapPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboLmapDsLayouts, 3, &vertInfoRGB_RG_RG,
+		&vk_drawPolyLmapPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyLmapPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: lightmapped polygon");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyLmapPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: lightmapped polygon");
 
@@ -1410,7 +1459,9 @@ static void CreatePipelines()
 	VK_LOAD_VERTFRAG_SHADERS(shaders, polygon_warp, basic);
 	vk_drawPolyWarpPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	vk_drawPolyWarpPipeline.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(samplerUboLmapDsLayouts, 2, &vertInfoRGB_RG, &vk_drawPolyWarpPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboLmapDsLayouts, 2, &vertInfoRGB_RG,
+		&vk_drawPolyWarpPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyWarpPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: warped polygon (liquids)");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyWarpPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: warped polygon (liquids)");
 
@@ -1419,7 +1470,7 @@ static void CreatePipelines()
 	vk_drawPolySolidWarpPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	QVk_CreatePipeline(samplerUboLmapDsLayouts, 2, &vertInfoRGB_RG,
 		&vk_drawPolySolidWarpPipeline, &vk_renderpasses[RP_WORLD],
-		shaders, 2);
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolySolidWarpPipeline.layout,
 		VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: warped solid polygon (liquids)");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolySolidWarpPipeline.pl,
@@ -1430,13 +1481,17 @@ static void CreatePipelines()
 	vk_drawBeamPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 	vk_drawBeamPipeline.depthWriteEnable = VK_FALSE;
 	vk_drawBeamPipeline.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB, &vk_drawBeamPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB,
+		&vk_drawBeamPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawBeamPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: beam");
 	QVk_DebugSetObjectName((uint64_t)vk_drawBeamPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: beam");
 
 	// draw skybox pipeline
 	VK_LOAD_VERTFRAG_SHADERS(shaders, skybox, basic);
-	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RG, &vk_drawSkyboxPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RG,
+		&vk_drawSkyboxPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawSkyboxPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: skybox");
 	QVk_DebugSetObjectName((uint64_t)vk_drawSkyboxPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: skybox");
 
@@ -1450,7 +1505,9 @@ static void CreatePipelines()
 	vk_drawDLightPipeline.blendOpts.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
 	vk_drawDLightPipeline.blendOpts.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 	vk_drawDLightPipeline.blendOpts.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGB, &vk_drawDLightPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGB,
+		&vk_drawDLightPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_drawDLightPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: dynamic light");
 	QVk_DebugSetObjectName((uint64_t)vk_drawDLightPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: dynamic light");
 
@@ -1460,7 +1517,9 @@ static void CreatePipelines()
 	vk_showTrisPipeline.depthTestEnable = VK_FALSE;
 	vk_showTrisPipeline.depthWriteEnable = VK_FALSE;
 	vk_showTrisPipeline.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
-	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGB, &vk_showTrisPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB_RGB,
+		&vk_showTrisPipeline, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_showTrisPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: show triangles");
 	QVk_DebugSetObjectName((uint64_t)vk_showTrisPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: show triangles");
 
@@ -1468,7 +1527,9 @@ static void CreatePipelines()
 	VK_LOAD_VERTFRAG_SHADERS(shaders, shadows, basic_color_quad);
 	vk_shadowsPipelineFan.blendOpts.blendEnable = VK_TRUE;
 	vk_shadowsPipelineFan.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB, &vk_shadowsPipelineFan, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(&vk_uboDescSetLayout, 1, &vertInfoRGB,
+		&vk_shadowsPipelineFan, &vk_renderpasses[RP_WORLD],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_shadowsPipelineFan.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: draw shadows: fan");
 	QVk_DebugSetObjectName((uint64_t)vk_shadowsPipelineFan.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: draw shadows: fan");
 
@@ -1477,7 +1538,9 @@ static void CreatePipelines()
 	vk_worldWarpPipeline.depthTestEnable = VK_FALSE;
 	vk_worldWarpPipeline.depthWriteEnable = VK_FALSE;
 	vk_worldWarpPipeline.cullMode = VK_CULL_MODE_NONE;
-	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoNull, &vk_worldWarpPipeline, &vk_renderpasses[RP_WORLD_WARP], shaders, 2);
+	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoNull,
+		&vk_worldWarpPipeline, &vk_renderpasses[RP_WORLD_WARP],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_worldWarpPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: underwater view warp");
 	QVk_DebugSetObjectName((uint64_t)vk_worldWarpPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: underwater view warp");
 
@@ -1486,7 +1549,9 @@ static void CreatePipelines()
 	vk_postprocessPipeline.depthTestEnable = VK_FALSE;
 	vk_postprocessPipeline.depthWriteEnable = VK_FALSE;
 	vk_postprocessPipeline.cullMode = VK_CULL_MODE_NONE;
-	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoNull, &vk_postprocessPipeline, &vk_renderpasses[RP_UI], shaders, 2);
+	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoNull,
+		&vk_postprocessPipeline, &vk_renderpasses[RP_UI],
+		shaders, 2, VK_FALSE);
 	QVk_DebugSetObjectName((uint64_t)vk_postprocessPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: world postprocess");
 	QVk_DebugSetObjectName((uint64_t)vk_postprocessPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: world postprocess");
 

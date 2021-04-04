@@ -1063,6 +1063,7 @@ Vk_LoadPic(char *name, byte *pic, int width, int realwidth,
 	image->upload_width = upload_width;		// after power of 2 and scales
 	image->upload_height = upload_height;
 
+	// TODO: change format here
 	QVk_CreateTexture(&image->vk_texture, (unsigned char*)texBuffer,
 		image->upload_width, image->upload_height,
 		nolerp ? S_NEAREST : vk_current_sampler, (type == it_sky));

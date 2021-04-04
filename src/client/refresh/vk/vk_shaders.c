@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "spirv/basic_color_quad_frag.c"
 #include "spirv/model_vert.c"
 #include "spirv/model_frag.c"
+#include "spirv/model_tesc.c"
+#include "spirv/model_tese.c"
 #include "spirv/nullmodel_vert.c"
 #include "spirv/particle_vert.c"
 #include "spirv/point_particle_vert.c"
@@ -53,6 +55,8 @@ const size_t basic_color_quad_frag_size = sizeof(basic_color_quad_frag_spv);
 
 const size_t model_vert_size = sizeof(model_vert_spv);
 const size_t model_frag_size = sizeof(model_frag_spv);
+const size_t model_tesc_size = sizeof(model_tesc_spv);
+const size_t model_tese_size = sizeof(model_tese_spv);
 
 const size_t nullmodel_vert_size = sizeof(nullmodel_vert_spv);
 

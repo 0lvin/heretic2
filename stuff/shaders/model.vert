@@ -4,6 +4,7 @@
 layout(location = 0) in vec3 inVertex;
 layout(location = 1) in vec4 inColor;
 layout(location = 2) in vec2 inTexCoord;
+layout(location = 3) in vec3 inNormal;
 
 layout(push_constant) uniform PushConstant
 {
@@ -19,14 +20,12 @@ layout(set = 1, binding = 0) uniform UniformBufferObject
 layout(location = 0) out vec4 color;
 layout(location = 1) out vec2 texCoord;
 layout(location = 2) out int textured;
-
-out gl_PerVertex {
-    vec4 gl_Position;
-};
+layout(location = 3) out vec3 outNormal;
 
 void main() {
     gl_Position = pc.vpMatrix * ubo.model * vec4(inVertex, 1.0);
     color = inColor;
     texCoord = inTexCoord;
     textured = ubo.textured;
+    outNormal = inNormal;
 }

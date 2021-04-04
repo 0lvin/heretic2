@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef __VK_MODEL_H__
 #define __VK_MODEL_H__
 
+#include "../../ref_shared_model.h"
+
 /*
 
 d*_t structures are on-disk representations
@@ -36,33 +38,6 @@ BRUSH MODELS
 
 ==============================================================================
 */
-
-
-//
-// in memory representation
-//
-typedef struct
-{
-	vec3_t		position;
-} mvertex_t;
-
-
-#define	SIDE_FRONT	0
-#define	SIDE_BACK	1
-#define	SIDE_ON		2
-
-
-#define	SURF_PLANEBACK		2
-#define	SURF_DRAWSKY		4
-#define	SURF_DRAWTURB		0x10
-#define	SURF_DRAWBACKGROUND	0x40
-#define	SURF_UNDERWATER		0x80
-
-typedef struct
-{
-	unsigned short	v[2];
-	unsigned int	cachededgeoffset;
-} medge_t;
 
 typedef struct mtexinfo_s
 {

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -47,6 +47,12 @@ extern const size_t model_vert_size;
 
 extern const uint32_t model_frag_spv[];
 extern const size_t model_frag_size;
+
+extern const uint32_t model_tesc_spv[];
+extern const size_t model_tesc_size;
+
+extern const uint32_t model_tese_spv[];
+extern const size_t model_tese_size;
 
 // null model
 extern const uint32_t nullmodel_vert_spv[];

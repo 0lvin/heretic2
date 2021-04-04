@@ -47,6 +47,7 @@ typedef struct {
 	vec3_t vertex;
 	float color[4];
 	float texCoord[2];
+	vec3_t normal;
 } modelvert;
 
 typedef struct {
@@ -397,6 +398,13 @@ static void Vk_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp, image_t *s
 				vertList[pipelineIdx][vertIdx].texCoord[0] = 0.f;
 				vertList[pipelineIdx][vertIdx].texCoord[1] = 0.f;
 
+				// normals and vertexes come from the frame list
+				memcpy(
+					&vertList[pipelineIdx][vertIdx].normal,
+					&r_avertexnormals[verts[index_xyz].lightnormalindex],
+					sizeof(vec3_t)
+				);
+
 				vertList[pipelineIdx][vertIdx].color[0] = shadelight[0];
 				vertList[pipelineIdx][vertIdx].color[1] = shadelight[1];
 				vertList[pipelineIdx][vertIdx].color[2] = shadelight[2];
@@ -435,6 +443,11 @@ static void Vk_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp, image_t *s
 
 				// normals and vertexes come from the frame list
 				l = shadedots[verts[index_xyz].lightnormalindex];
+				memcpy(
+					&vertList[pipelineIdx][vertIdx].normal,
+					&r_avertexnormals[verts[index_xyz].lightnormalindex],
+					sizeof(vec3_t)
+				);
 
 				vertList[pipelineIdx][vertIdx].color[0] = l * shadelight[0];
 				vertList[pipelineIdx][vertIdx].color[1] = l * shadelight[1];

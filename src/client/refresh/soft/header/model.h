@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef __MODEL__
 #define __MODEL__
 
+#include "../../ref_shared_model.h"
+
 /*
 
 d*_t structures are on-disk representations
@@ -38,29 +40,11 @@ BRUSH MODELS
 */
 
 
-//
-// in memory representation
-//
-typedef struct
-{
-	vec3_t		position;
-} mvertex_t;
-
+/* in memory representation */
 
 // FIXME: differentiate from texinfo SURF_ flags
-#define	SURF_PLANEBACK		0x02
-#define	SURF_DRAWSKY		0x04	// sky brush face
-#define SURF_DRAWTURB		0x10
-#define SURF_DRAWBACKGROUND	0x40
-#define SURF_DRAWSKYBOX		0x80	// sky box
-
-#define SURF_FLOW		0x100
-
-typedef struct
-{
-	unsigned short	v[2];
-	unsigned int	cachededgeoffset;
-} medge_t;
+#define SURF_DRAWSKYBOX		0x100	// sky box
+#define SURF_FLOW		0x200
 
 typedef struct mtexinfo_s
 {

@@ -48,8 +48,11 @@ qvkshader_t QVk_CreateShader(const uint32_t *shaderSrc, size_t shaderCodeSize, V
 	return shader;
 }
 
-void QVk_CreatePipeline(const VkDescriptorSetLayout *descriptorLayout, const uint32_t descLayoutCount, const VkPipelineVertexInputStateCreateInfo *vertexInputInfo,
-						qvkpipeline_t *pipeline, const qvkrenderpass_t *renderpass, const qvkshader_t *shaders, uint32_t shaderCount)
+void QVk_CreatePipeline(const VkDescriptorSetLayout *descriptorLayout, const uint32_t descLayoutCount,
+						const VkPipelineVertexInputStateCreateInfo *vertexInputInfo,
+						qvkpipeline_t *pipeline, const qvkrenderpass_t *renderpass,
+						const qvkshader_t *shaders, uint32_t shaderCount,
+						VkBool32 tessellatonEnabled)
 {
 	VkPipelineShaderStageCreateInfo *ssCreateInfos = (VkPipelineShaderStageCreateInfo *)malloc(shaderCount * sizeof(VkPipelineShaderStageCreateInfo));
 	for (int i = 0; i < shaderCount; i++)
@@ -183,6 +186,11 @@ void QVk_CreatePipeline(const VkDescriptorSetLayout *descriptorLayout, const uin
 
 	VK_VERIFY(vkCreatePipelineLayout(vk_device.logical, &plCreateInfo, NULL, &pipeline->layout));
 
+	VkPipelineTessellationStateCreateInfo tessellationState = {
+		.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
+		.patchControlPoints = 3
+	};
+
 	// create THE pipeline
 	VkGraphicsPipelineCreateInfo pCreateInfo = {
 		.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
@@ -192,7 +200,7 @@ void QVk_CreatePipeline(const VkDescriptorSetLayout *descriptorLayout, const uin
 		.pStages = ssCreateInfos,
 		.pVertexInputState = vertexInputInfo,
 		.pInputAssemblyState = &iaCreateInfo,
-		.pTessellationState = NULL,
+		.pTessellationState = tessellatonEnabled ? &tessellationState : NULL,
 		.pViewportState = &vpCreateInfo,
 		.pRasterizationState = &rCreateInfo,
 		.pMultisampleState = &msCreateInfo,

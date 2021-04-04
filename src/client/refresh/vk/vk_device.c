@@ -121,6 +121,14 @@ static void getBestPhysicalDevice(const VkPhysicalDevice *devices, int preferred
 				vk_device.physical = devices[i];
 				vk_device.properties = deviceProperties;
 				vk_device.features = deviceFeatures;
+
+#if VK_HEADER_VERSION >= 162
+				vk_device.rayTracingpipelineSupported = deviceExtensionsSupported(
+					&devices[i], VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
+
+				vk_device.accelerationStructureSupported = deviceExtensionsSupported(
+					&devices[i], VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+#endif
 				return;
 			}
 		}
@@ -158,6 +166,21 @@ static qboolean selectPhysicalDevice(int preferredDeviceIdx)
 		R_Printf(PRINT_ALL, "...anisotropy filtering is unsupported.\n");
 	}
 
+	if (!vk_device.rayTracingpipelineSupported)
+	{
+		R_Printf(PRINT_ALL, "...ray tracing is unsupported.\n");
+	}
+
+	if (!vk_device.accelerationStructureSupported)
+	{
+		R_Printf(PRINT_ALL, "...accelletion structure is unsupported.\n");
+	}
+
+	if (!vk_device.features.tessellationShader)
+	{
+		R_Printf(PRINT_ALL, "...tesselation is unsupported.\n");
+	}
+
 	return true;
 }
 
@@ -189,6 +212,7 @@ static VkResult createLogicalDevice()
 
 	VkPhysicalDeviceFeatures wantedDeviceFeatures = {
 		.samplerAnisotropy = vk_device.features.samplerAnisotropy,
+		.tessellationShader = vk_device.features.tessellationShader,
 		.fillModeNonSolid  = vk_device.features.fillModeNonSolid,  // for wireframe rendering
 		.sampleRateShading = vk_device.features.sampleRateShading, // for sample shading
 	};

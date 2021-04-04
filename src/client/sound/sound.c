@@ -205,6 +205,55 @@ S_IsSilencedMuzzleFlash(const wavinfo_t* info, const void* raw_data, const char*
 	return true;
 }
 
+static int
+S_LoadAudio(char *path, void **buffer)
+{
+#if 0
+	int	len;
+	char namewe[256];
+	const char* ext;
+
+	if (!path)
+	{
+		return 0;
+	}
+
+	ext = COM_FileExtension(path);
+	if(!ext[0])
+	{
+		/* file has no extension */
+		return 0;
+	}
+
+	len = strlen(path);
+
+	/* Remove the extension */
+	memset(namewe, 0, 256);
+	memcpy(namewe, path, len - (strlen(ext) + 1));
+
+	if (len < 5)
+	{
+		return 0;
+	}
+
+	if (!strcmp(ext, "wav"))
+	{
+		char filename[MAX_QPATH];
+
+		Q_strlcpy(filename, namewe, sizeof(filename));
+
+		/* Add the extension */
+		Q_strlcat(filename, ".", sizeof(filename));
+		Q_strlcat(filename, "ogg", sizeof(filename));
+
+		Com_Printf("%s load ogg?\n", filename);
+
+	}
+#endif
+
+	return FS_LoadFile(path, buffer);
+}
+
 /*
  * Loads one sample into memory
  */
@@ -251,7 +300,7 @@ S_LoadSound(sfx_t *s)
 		Com_sprintf(namebuffer, sizeof(namebuffer), "sound/%s", name);
 	}
 
-	size = FS_LoadFile(namebuffer, (void **)&data);
+	size = S_LoadAudio(namebuffer, (void **)&data);
 
 	if (!data)
 	{
