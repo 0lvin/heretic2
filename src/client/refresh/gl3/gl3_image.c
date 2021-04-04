@@ -715,6 +715,62 @@ LoadM8(char *origname, imagetype_t type)
 	return image;
 }
 
+static gl3image_t *
+LoadM32(char *origname, imagetype_t type)
+{
+	m32tex_t	*mt;
+	int		width, height, ofs, size;
+	gl3image_t	*image;
+	char name[256];
+
+	Q_strlcpy(name, origname, sizeof(name));
+
+	/* Add the extension */
+	if (strcmp(COM_FileExtension(name), "m32"))
+	{
+		Q_strlcat(name, ".m32", sizeof(name));
+	}
+
+	size = ri.FS_LoadFile(name, (void **)&mt);
+
+	if (!mt)
+	{
+		R_Printf(PRINT_ALL, "%s: can't load %s\n", __func__, name);
+		return gl3_notexture;
+	}
+
+	if (size < sizeof(m8tex_t))
+	{
+		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return gl3_notexture;
+	}
+
+	if (LittleLong (mt->version) != M32_VERSION)
+	{
+		R_Printf(PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
+		ri.FS_FreeFile ((void *)mt);
+		return gl3_notexture;
+	}
+
+	width = LittleLong (mt->width[0]);
+	height = LittleLong (mt->height[0]);
+	ofs = LittleLong (mt->offsets[0]);
+
+	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
+	    (((size - ofs) / height) < width))
+	{
+		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return gl3_notexture;
+	}
+
+	image = GL3_LoadPic(name, (byte *)mt + ofs, width, 0, height, 0, type, 32);
+	ri.FS_FreeFile ((void *)mt);
+
+	return image;
+}
+
 /*
  * Finds or loads the given image
  */
@@ -819,7 +875,7 @@ GL3_FindImage(char *name, imagetype_t type)
 			image = GL3_LoadPic(name, pic, width, 0, height, 0, type, 8);
 		}
 	}
-	else if (strcmp(ext, "wal") == 0 || strcmp(ext, "m8") == 0)
+	else if (strcmp(ext, "wal") == 0 || strcmp(ext, "m8") == 0 || strcmp(ext, "m32") == 0)
 	{
 		if (r_retexturing->value)
 		{
@@ -827,6 +883,10 @@ GL3_FindImage(char *name, imagetype_t type)
 			if (strcmp(ext, "m8") == 0)
 			{
 				GetM8Info(name, &realwidth, &realheight);
+			}
+			else if (strcmp(ext, "m32") == 0)
+			{
+				GetM32Info(name, &realwidth, &realheight);
 			}
 			else
 			{
@@ -851,6 +911,10 @@ GL3_FindImage(char *name, imagetype_t type)
 			{
 				image = LoadM8(namewe, type);
 			}
+			else if (strcmp(ext, "m32") == 0)
+			{
+				image = LoadM32(namewe, type);
+			}
 			else
 			{
 				/* WAL if no TGA/PNG/JPEG available (exists always) */
@@ -866,6 +930,16 @@ GL3_FindImage(char *name, imagetype_t type)
 		else if (strcmp(ext, "m8") == 0)
 		{
 			image = LoadM8(name, type);
+
+			if (!image)
+			{
+				/* No texture found */
+				return NULL;
+			}
+		}
+		else if (strcmp(ext, "m32") == 0)
+		{
+			image = LoadM32(name, type);
 
 			if (!image)
 			{

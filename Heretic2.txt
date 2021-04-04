@@ -1,0 +1,6 @@
+.m8 - http://www.geocities.ws/jimmyvalavanis/programming/gformats/m8.html
+      https://github.com/TTimo/GtkRadiant/blob/master/plugins/imagem8/m8.h
+
+.m32 - https://github.com/TTimo/GtkRadiant/blob/master/plugins/imagem8/m32.h
+
+Common staff: https://sites.google.com/site/heretichides/create-your-own-add-on-game/09-miscellanea

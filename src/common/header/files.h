@@ -44,7 +44,7 @@ typedef struct
 	int dirlen;
 } dpackheader_t;
 
-#define MAX_FILES_IN_PACK 4096
+#define MAX_FILES_IN_PACK 8192
 
 /* PCX files are used for as many images as possible */
 
@@ -243,6 +243,36 @@ typedef struct m8tex_s
 	int contents;
 	int value;
 } m8tex_t;
+
+/* .M32 texture file format */
+
+#define M32_VERSION     0x4
+#define M32_MIP_LEVELS  16
+
+typedef struct
+{
+	int version;
+	char name[128];
+	char altname[128];                          // texture substitution
+	char animname[128];                         // next frame in animation chain
+	char damagename[128];                       // image that should be shown when damaged
+	unsigned width[M32_MIP_LEVELS], height[M32_MIP_LEVELS];
+	unsigned offsets[M32_MIP_LEVELS];
+	int flags;
+	int contents;
+	int value;
+	float scale_x, scale_y;
+	int mip_scale;
+
+	// detail texturing info
+	char dt_name[128];                  // detailed texture name
+	float dt_scale_x, dt_scale_y;
+	float dt_u, dt_v;
+	float dt_alpha;
+	int dt_src_blend_mode, dt_dst_blend_mode;
+
+	int unused[20];                                 // future expansion to maintain compatibility with h2
+} m32tex_t;
 
 /* .BSP file format */
 

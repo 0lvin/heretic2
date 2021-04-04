@@ -25,12 +25,17 @@
  */
 
 #include "header/server.h"
- 
+
 #ifndef DEDICATED_ONLY
 void SCR_DebugGraph(float value, int color);
 #endif
- 
+
 game_export_t *ge;
+
+#define MESSAGES_SIZE 256
+static char *messagesIndex[MESSAGES_SIZE];
+static char *messagesBuffer;
+static char * translate_text(char msg[1024]);
 
 /*
  * Sends the contents of the mutlicast buffer to a single client
@@ -127,6 +132,7 @@ void
 PF_centerprintf(edict_t *ent, char *fmt, ...)
 {
 	char msg[1024];
+
 	va_list argptr;
 	int n;
 
@@ -142,7 +148,7 @@ PF_centerprintf(edict_t *ent, char *fmt, ...)
 	va_end(argptr);
 
 	MSG_WriteByte(&sv.multicast, svc_centerprint);
-	MSG_WriteString(&sv.multicast, msg);
+	MSG_WriteString(&sv.multicast, translate_text(msg));
 	PF_Unicast(ent, true);
 }
 
@@ -222,55 +228,55 @@ PF_Configstring(int index, char *val)
 void
 PF_WriteChar(int c)
 {
-	MSG_WriteChar(&sv.multicast, c); 
+	MSG_WriteChar(&sv.multicast, c);
 }
 
 void
 PF_WriteByte(int c)
 {
-	MSG_WriteByte(&sv.multicast, c); 
+	MSG_WriteByte(&sv.multicast, c);
 }
 
 void
 PF_WriteShort(int c)
 {
-	MSG_WriteShort(&sv.multicast, c); 
+	MSG_WriteShort(&sv.multicast, c);
 }
 
 void
 PF_WriteLong(int c)
 {
-	MSG_WriteLong(&sv.multicast, c); 
+	MSG_WriteLong(&sv.multicast, c);
 }
 
 void
 PF_WriteFloat(float f)
 {
-	MSG_WriteFloat(&sv.multicast, f); 
+	MSG_WriteFloat(&sv.multicast, f);
 }
 
 void
 PF_WriteString(char *s)
 {
-	MSG_WriteString(&sv.multicast, s); 
+	MSG_WriteString(&sv.multicast, s);
 }
 
 void
 PF_WritePos(vec3_t pos)
 {
-	MSG_WritePos(&sv.multicast, pos); 
+	MSG_WritePos(&sv.multicast, pos);
 }
 
 void
 PF_WriteDir(vec3_t dir)
 {
-	MSG_WriteDir(&sv.multicast, dir); 
+	MSG_WriteDir(&sv.multicast, dir);
 }
 
 void
 PF_WriteAngle(float f)
 {
-	MSG_WriteAngle(&sv.multicast, f); 
+	MSG_WriteAngle(&sv.multicast, f);
 }
 
 /*
@@ -366,7 +372,68 @@ SV_ShutdownGameProgs(void)
 
 	ge->Shutdown();
 	Sys_UnloadGame();
+	if (messagesBuffer)
+	{
+		FS_FreeFile(messagesBuffer);
+	}
 	ge = NULL;
+}
+
+static void
+InitMessages(void)
+{
+    int count;
+    char *p;
+
+    messagesBuffer = NULL;
+    count = FS_LoadFile("levelmsg.txt", (void **)&messagesBuffer);
+
+    if (count != -1)
+    {
+        int n;
+        p = messagesBuffer;
+
+        // MESSAGES_SIZE - 1 - last pointer should be NULL
+        for (n = 0; n < MESSAGES_SIZE - 1; n++)
+        {
+            messagesIndex[n] = p;
+
+            while (*p != '\r' && *p != '\n')
+            {
+                p++;
+
+                if (--count == 0)
+                {
+                    break;
+                }
+            }
+
+            if (*p == '\r')
+            {
+                *p++ = 0;
+
+                if (--count == 0)
+                {
+                    break;
+                }
+            }
+
+            *p++ = 0;
+
+            if (--count == 0)
+            {
+                // no messages any more
+                // move one step futher for set NULL
+                n ++;
+                break;
+            }
+        }
+        messagesIndex[n] = 0;
+    }
+    else
+    {
+		memset(messagesIndex, 0, sizeof(messagesIndex));
+    }
 }
 
 /*
@@ -384,6 +451,8 @@ SV_InitGameProgs(void)
 	}
 
 	Com_Printf("-------- game initialization -------\n");
+
+	InitMessages();
 
 	/* load a new game dll */
 	import.multicast = SV_Multicast;
@@ -460,3 +529,40 @@ SV_InitGameProgs(void)
 	Com_Printf("------------------------------------\n\n");
 }
 
+static char *
+translate_text(char msg[1024])
+{
+	if (msg[0] == ';')
+	{
+		// commendted line
+		return msg;
+	}
+
+	if (strspn(msg, "1234567890") == strlen(msg))
+	{
+		int message_id = atoi(msg) - 1;
+		if (message_id >= 0 && message_id < MESSAGES_SIZE && messagesIndex[message_id])
+		{
+			char *curr;
+			int sharp_pos = strcspn(messagesIndex[message_id], "#");
+			// copy text  message to output buffer
+			memcpy(msg, messagesIndex[message_id], sharp_pos);
+			msg[sharp_pos] = 0;
+			curr = msg;
+			while (*curr)
+			{
+				if (*curr == '@')
+					*curr = '\n';
+				curr ++;
+			}
+			// check that we have some sound
+			if (sharp_pos < strlen(messagesIndex[message_id]))
+			{
+				char sound[256];
+				strcpy(sound, messagesIndex[message_id] + sharp_pos + 1);
+				Com_Printf("Sound %s\n", sound);
+			}
+		}
+	}
+	return msg;
+}

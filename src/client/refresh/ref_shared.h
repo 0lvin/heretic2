@@ -89,6 +89,7 @@ extern void scale3x(const byte *src, byte *dst, int width, int height);
 
 extern void GetWalInfo(char *name, int *width, int *height);
 extern void GetM8Info(char *name, int *width, int *height);
+extern void GetM32Info(char *name, int *width, int *height);
 
 extern float Mod_RadiusFromBounds(const vec3_t mins, const vec3_t maxs);
 extern const byte* Mod_DecompressVis(const byte *in, int row);
