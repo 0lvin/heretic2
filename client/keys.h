@@ -1,22 +1,3 @@
-/*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 
 //
 // these are the key numbers that should be passed to Key_Event
@@ -71,7 +52,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define K_KP_SLASH		172
 #define K_KP_MINUS		173
 #define K_KP_PLUS		174
+#define K_KP_NUMLOCK	175
 
+#define	K_CAPSLOCK		254
 #define K_PAUSE			255
 
 //
@@ -130,9 +113,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define K_MWHEELUP		240
 
 extern char		*keybindings[256];
+extern char		*keybindings_double[256];
 extern	int		key_repeats[256];
 
-extern	int	anykeydown;
+extern	qboolean	anykeydown;
 extern char chat_buffer[];
 extern	int chat_bufferlen;
 extern	qboolean	chat_team;
@@ -140,7 +124,9 @@ extern	qboolean	chat_team;
 void Key_Event (int key, qboolean down, unsigned time);
 void Key_Init (void);
 void Key_WriteBindings (FILE *f);
+void Key_WriteBindings_Double (FILE *f);
 void Key_SetBinding (int keynum, char *binding);
+void Key_SetDoubleBinding (int keynum, char *binding);
 void Key_ClearStates (void);
 int Key_GetKey (void);
 
