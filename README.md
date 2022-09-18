@@ -1,3 +1,15 @@
+Project is fork of Yamagi Quake II with additional hacks for Heretic 2 support.
+
+Some code can be not GPL based and retrived from
+[H2 Toolkit](https://www.quaddicted.com/files/idgames2/planetquake/hereticii/files/Ht2Toolkit_v1.06.exe)
+or other places.
+
+Assets:
+ * [Linux/Loki](https://archive.org/embed/heretic-2-linux)
+ * [Demo](https://archive.org/details/h2_demo_us)
+
+------------
+
 # Yamagi Quake II
 
 Yamagi Quake II is an enhanced client for id Software's Quake
@@ -21,6 +33,6 @@ version can be found here: [doc/010_index.md](doc/010_index.md)
 ## Releases
 
 The official releases (including Windows binaries) can be found at our
-homepage: https://www.yamagi.org/quake2  
+homepage: https://www.yamagi.org/quake2
 **Unsupported** preview builds for Windows can be found at
 https://deponie.yamagi.org/quake2/misc/
