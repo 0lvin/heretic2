@@ -210,8 +210,8 @@ R_LoadPic
 
 ================
 */
-static image_t *
-R_LoadPic (char *name, byte *pic, int width, int realwidth, int height, int realheight,
+image_t *
+R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, int realheight,
 	size_t data_size, imagetype_t type)
 {
 	image_t	*image;
