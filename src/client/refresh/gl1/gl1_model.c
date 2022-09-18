@@ -213,7 +213,7 @@ static model_t *
 Mod_ForName (char *name, model_t *parent_model, qboolean crash)
 {
 	model_t *mod;
-	unsigned *buf;
+	void *buf;
 	int i;
 
 	if (!name[0])
@@ -271,7 +271,7 @@ Mod_ForName (char *name, model_t *parent_model, qboolean crash)
 	strcpy(mod->name, name);
 
 	/* load the file */
-	modfilelen = ri.FS_LoadFile(mod->name, (void **)&buf);
+	modfilelen = Mod_LoadFile (mod->name, &buf);
 
 	if (!buf)
 	{

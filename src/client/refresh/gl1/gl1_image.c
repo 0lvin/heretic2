@@ -856,7 +856,7 @@ R_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
  * This is also used as an entry point for the generated r_notexture
  */
 image_t *
-R_LoadPic(char *name, byte *pic, int width, int realwidth,
+R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		int height, int realheight, imagetype_t type, int bits)
 {
 	image_t *image;
