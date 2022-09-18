@@ -1,0 +1,917 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/glut.h>
+
+typedef unsigned char byte;
+typedef unsigned short ushort;
+typedef unsigned int uint;
+typedef signed long long int llong;
+typedef unsigned long long int ullong;
+
+/* Vectors */
+typedef float vec2_t[2];
+typedef float vec3_t[3];
+
+/* Quaternion (x, y, z, w) */
+typedef float quat4_t[4];
+
+/**
+ * Basic quaternion operations.
+ */
+
+static void
+Quat_computeW (quat4_t q)
+{
+	float t = 1.0f - (q[0] * q[0]) - (q[1] * q[1]) - (q[2] * q[2]);
+
+	if (t < 0.0f)
+		q[3] = 0.0f;
+	else
+		q[3] = -sqrt (t);
+}
+
+static void
+Quat_normalize (quat4_t q)
+{
+	/* compute magnitude of the quaternion */
+	float mag = sqrt ((q[0] * q[0]) + (q[1] * q[1])
+		+ (q[2] * q[2]) + (q[3] * q[3]));
+
+	/* check for bogus length, to protect against divide by zero */
+	if (mag > 0.0f)
+	{
+		/* normalize it */
+		float oneOverMag = 1.0f / mag;
+
+		q[0] *= oneOverMag;
+		q[1] *= oneOverMag;
+		q[2] *= oneOverMag;
+		q[3] *= oneOverMag;
+	}
+}
+
+static void
+Quat_multQuat (const quat4_t qa, const quat4_t qb, quat4_t out)
+{
+	out[3] = (qa[3] * qb[3]) - (qa[0] * qb[0]) - (qa[1] * qb[1]) - (qa[2] * qb[2]);
+	out[0] = (qa[0] * qb[3]) + (qa[3] * qb[0]) + (qa[1] * qb[2]) - (qa[2] * qb[1]);
+	out[1] = (qa[1] * qb[3]) + (qa[3] * qb[1]) + (qa[2] * qb[0]) - (qa[0] * qb[2]);
+	out[2] = (qa[2] * qb[3]) + (qa[3] * qb[2]) + (qa[0] * qb[1]) - (qa[1] * qb[0]);
+}
+
+static void
+Quat_multVec (const quat4_t q, const vec3_t v, quat4_t out)
+{
+	out[3] = - (q[0] * v[0]) - (q[1] * v[1]) - (q[2] * v[2]);
+	out[0] =   (q[3] * v[0]) + (q[1] * v[2]) - (q[2] * v[1]);
+	out[1] =   (q[3] * v[1]) + (q[2] * v[0]) - (q[0] * v[2]);
+	out[2] =   (q[3] * v[2]) + (q[0] * v[1]) - (q[1] * v[0]);
+}
+
+static void
+Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
+{
+	quat4_t tmp, inv, final;
+
+	inv[0] = -q[0];
+	inv[1] = -q[1];
+	inv[2] = -q[2];
+	inv[3] =  q[3];
+
+	Quat_normalize (inv);
+
+	Quat_multVec (q, in, tmp);
+	Quat_multQuat (tmp, inv, final);
+
+	out[0] = final[0];
+	out[1] = final[1];
+	out[2] = final[2];
+}
+
+#ifndef min
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifndef max
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef clamp
+#define clamp(val, minval, maxval) max(minval, min(val, maxval))
+#endif
+
+#include "util.h"
+#include "geom.h"
+#include "iqm.h"
+
+// don't need HDR stuff
+#define STBI_NO_LINEAR
+#define STBI_NO_HDR
+// make sure STB_image uses standard malloc(), as we'll use standard free() to deallocate
+#define STBI_MALLOC(sz)	malloc(sz)
+#define STBI_REALLOC(p,sz)	realloc(p,sz)
+#define STBI_FREE(p)	free(p)
+// Switch of the thread local stuff. Breaks mingw under Windows.
+#define STBI_NO_THREAD_LOCALS
+// include implementation part of stb_image into this file
+#define STB_IMAGE_IMPLEMENTATION
+#include "../src/client/refresh/files/stb_image.h"
+
+#define FUNCNAME(name) name##1
+#define DEFPIXEL uint OP(r, 0);
+#define PIXELOP OP(r, 0);
+#define BPP 1
+#include "scale.h"
+
+#define FUNCNAME(name) name##2
+#define DEFPIXEL uint OP(r, 0), OP(g, 1);
+#define PIXELOP OP(r, 0); OP(g, 1);
+#define BPP 2
+#include "scale.h"
+
+#define FUNCNAME(name) name##3
+#define DEFPIXEL uint OP(r, 0), OP(g, 1), OP(b, 2);
+#define PIXELOP OP(r, 0); OP(g, 1); OP(b, 2);
+#define BPP 3
+#include "scale.h"
+
+#define FUNCNAME(name) name##4
+#define DEFPIXEL uint OP(r, 0), OP(g, 1), OP(b, 2), OP(a, 3);
+#define PIXELOP OP(r, 0); OP(g, 1); OP(b, 2); OP(a, 3);
+#define BPP 4
+#include "scale.h"
+
+static void
+scaletexture(byte *src, uint sw, uint sh, uint bpp, uint pitch, byte *dst, uint dw, uint dh)
+{
+	if (sw == dw*2 && sh == dh*2)
+	{
+		switch(bpp)
+		{
+			case 1:
+				return halvetexture1(src, sw, sh, pitch, dst);
+			case 2:
+				return halvetexture2(src, sw, sh, pitch, dst);
+			case 3:
+				return halvetexture3(src, sw, sh, pitch, dst);
+			case 4:
+				return halvetexture4(src, sw, sh, pitch, dst);
+		}
+	}
+	else if (sw < dw || sh < dh || sw&(sw-1) || sh&(sh-1) || dw&(dw-1) || dh&(dh-1))
+	{
+		switch(bpp)
+		{
+			case 1: return scaletexture1(src, sw, sh, pitch, dst, dw, dh);
+			case 2: return scaletexture2(src, sw, sh, pitch, dst, dw, dh);
+			case 3: return scaletexture3(src, sw, sh, pitch, dst, dw, dh);
+			case 4: return scaletexture4(src, sw, sh, pitch, dst, dw, dh);
+		}
+	}
+	else
+	{
+		switch(bpp)
+		{
+			case 1: return shifttexture1(src, sw, sh, pitch, dst, dw, dh);
+			case 2: return shifttexture2(src, sw, sh, pitch, dst, dw, dh);
+			case 3: return shifttexture3(src, sw, sh, pitch, dst, dw, dh);
+			case 4: return shifttexture4(src, sw, sh, pitch, dst, dw, dh);
+		}
+	}
+}
+
+static int
+formatsize(GLenum format)
+{
+	switch(format)
+	{
+		case GL_LUMINANCE:
+		case GL_ALPHA: return 1;
+		case GL_LUMINANCE_ALPHA: return 2;
+		case GL_RGB: return 3;
+		case GL_RGBA: return 4;
+		default: return 4;
+	}
+}
+
+static void
+resizetexture(int w, int h, bool mipmap, int &tw, int &th)
+{
+	GLint sizelimit = 4096;
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &sizelimit);
+	w = min(w, sizelimit);
+	h = min(h, sizelimit);
+	if (mipmap || w & (w-1) || h & (h-1))
+	{
+		tw = th = 1;
+
+		while(tw < w)
+			tw *= 2;
+		while(th < h)
+			th *= 2;
+		if (w < tw - tw/4)
+			tw /= 2;
+		if (h < th - th/4)
+			th /= 2;
+	}
+	else
+	{
+		tw = w;
+		th = h;
+	}
+}
+
+static void
+uploadtexture(GLenum internal, int tw, int th, GLenum format, GLenum type, void *pixels, int pw, int ph, bool mipmap)
+{
+	int bpp = formatsize(format);
+	byte *buf = NULL;
+
+	if (pw!=tw || ph!=th)
+	{
+		buf = (byte*)malloc(sizeof(byte[tw*th*bpp]));
+		scaletexture((byte *)pixels, pw, ph, bpp, pw*bpp, buf, tw, th);
+	}
+
+	for(int level = 0;; level++)
+	{
+		byte *src = buf ? buf : (byte *)pixels;
+
+		glTexImage2D(GL_TEXTURE_2D, level, internal, tw, th, 0, format, type, src);
+
+		if (!mipmap || max(tw, th) <= 1)
+			break;
+
+		int srcw = tw, srch = th;
+		if (tw > 1) tw /= 2;
+		if (th > 1) th /= 2;
+		if (!buf)
+			buf = (byte*)malloc(sizeof(byte[tw*th*bpp]));
+
+		scaletexture(src, srcw, srch, bpp, srcw*bpp, buf, tw, th);
+	}
+
+	if (buf)
+		free(buf);
+}
+
+static void
+createtexture(int tnum, int w, int h, void *pixels, int clamp, int filter, GLenum component = GL_RGB, int pw = 0, int ph = 0)
+{
+	glBindTexture(GL_TEXTURE_2D, tnum);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+		clamp&1 ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+		clamp&2 ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+		filter ? GL_LINEAR : GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+		filter > 1 ? GL_LINEAR_MIPMAP_LINEAR : (filter ? GL_LINEAR : GL_NEAREST));
+
+	GLenum format = component, type = GL_UNSIGNED_BYTE;
+	switch(component)
+	{
+		case GL_RGB5:
+		case GL_RGB8:
+		case GL_RGB16:
+			format = GL_RGB;
+			break;
+
+		case GL_RGBA8:
+		case GL_RGBA16:
+			format = GL_RGBA;
+			break;
+	}
+
+	if (!pw)
+		pw = w;
+	if (!ph)
+		ph = h;
+	int tw = w, th = h;
+	bool mipmap = filter > 1;
+	if (pixels)
+		resizetexture(w, h, mipmap, tw, th);
+	uploadtexture(component, tw, th, format, type, pixels, pw, ph, mipmap && pixels);
+}
+
+static GLuint
+loadtexture(const char *name, int clamp)
+{
+	int w, h, b;
+	byte *data = stbi_load(name, &w, &h, &b, STBI_rgb_alpha);
+	if (!data) {
+		printf("%s: failed loading\n", name);
+		return 0;
+	}
+
+	printf("Checks %dx%d %d\n", w, h, b);
+	GLenum format = GL_RGBA;
+	if (!format) {
+		printf("%s: failed loading\n", name);
+		free(data);
+		return 0;
+	}
+
+	GLuint tex;
+	glGenTextures(1, &tex);
+	createtexture(tex, w, h, data, clamp, 2, format);
+
+	free(data);
+	return tex;
+}
+
+// Note that while this demo stores pointer directly into mesh data in a buffer
+// of the entire IQM file's data, it is recommended that you copy the data and
+// convert it into a more suitable internal representation for whichever 3D
+// engine you use.
+byte *meshdata = NULL, *animdata = NULL;
+float *inposition = NULL, *innormal = NULL, *intangent = NULL, *intexcoord = NULL;
+byte *inblendindex = NULL, *inblendweight = NULL, *incolor = NULL;
+float *outposition = NULL, *outnormal = NULL, *outtangent = NULL, *outbitangent = NULL;
+int nummeshes = 0, numtris = 0, numverts = 0, numjoints = 0, numframes = 0, numanims = 0;
+iqmtriangle *tris = NULL, *adjacency = NULL;
+iqmmesh *meshes = NULL;
+GLuint *textures = NULL;
+iqmjoint *joints = NULL;
+iqmpose *poses = NULL;
+iqmanim *anims = NULL;
+iqmbounds *bounds = NULL;
+Matrix3x4 *baseframe = NULL, *inversebaseframe = NULL, *outframe = NULL, *frames = NULL;
+
+static void
+cleanupiqm()
+{
+	if (textures)
+	{
+		glDeleteTextures(nummeshes, textures);
+		free(textures);
+	}
+	free(outposition);
+	free(outnormal);
+	free(outtangent);
+	free(outbitangent);
+	free(baseframe);
+	free(inversebaseframe);
+	free(outframe);
+	free(frames);
+}
+
+static bool
+loadiqmmeshes(const char *filename, const iqmheader &hdr, byte *buf)
+{
+	if (meshdata)
+		return false;
+
+	lilswap((uint *)&buf[hdr.ofs_vertexarrays], hdr.num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
+	lilswap((uint *)&buf[hdr.ofs_triangles], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+	lilswap((uint *)&buf[hdr.ofs_meshes], hdr.num_meshes*sizeof(iqmmesh)/sizeof(uint));
+	lilswap((uint *)&buf[hdr.ofs_joints], hdr.num_joints*sizeof(iqmjoint)/sizeof(uint));
+	if (hdr.ofs_adjacency)
+		lilswap((uint *)&buf[hdr.ofs_adjacency], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+
+	meshdata = buf;
+	nummeshes = hdr.num_meshes;
+	numtris = hdr.num_triangles;
+	numverts = hdr.num_vertexes;
+	numjoints = hdr.num_joints;
+	outposition = (float*)malloc(sizeof(float[3*numverts]));
+	outnormal = (float*)malloc(sizeof(float[3*numverts]));
+	outtangent = (float*)malloc(sizeof(float[3*numverts]));
+	outbitangent = (float*)malloc(sizeof(float[3*numverts]));
+	outframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr.num_joints]));
+	textures = (GLuint*)malloc(sizeof(GLuint[nummeshes]));
+	memset(textures, 0, nummeshes*sizeof(GLuint));
+
+	printf("%s: load: %d vertex arrays \n", __func__, hdr.num_vertexarrays);
+	printf("%s: load: %d vertex ofs \n", __func__, hdr.ofs_vertexarrays);
+	printf("%s: load: %d text ofs \n", __func__, hdr.ofs_text);
+
+	const char *str = hdr.ofs_text ? (char *)&buf[hdr.ofs_text] : "";
+	iqmvertexarray *vas = (iqmvertexarray *)&buf[hdr.ofs_vertexarrays];
+
+	for(int i = 0; i < (int)hdr.num_vertexarrays; i++)
+	{
+		iqmvertexarray &va = vas[i];
+
+		printf("%s: load: %d type vertex\n", __func__, va.type);
+
+		switch(va.type)
+		{
+			case IQM_POSITION:
+				if (va.format != IQM_FLOAT || va.size != 3)
+					return false;
+				inposition = (float *)&buf[va.offset];
+				lilswap(inposition, 3*hdr.num_vertexes);
+				break;
+			case IQM_NORMAL:
+				if (va.format != IQM_FLOAT || va.size != 3)
+					return false;
+				innormal = (float *)&buf[va.offset];
+				lilswap(innormal, 3*hdr.num_vertexes);
+				break;
+			case IQM_TANGENT:
+				if (va.format != IQM_FLOAT || va.size != 4)
+					return false;
+				intangent = (float *)&buf[va.offset];
+				lilswap(intangent, 4*hdr.num_vertexes);
+				break;
+			case IQM_TEXCOORD:
+				if (va.format != IQM_FLOAT || va.size != 2)
+					return false;
+				intexcoord = (float *)&buf[va.offset];
+				lilswap(intexcoord, 2*hdr.num_vertexes);
+				break;
+			case IQM_BLENDINDEXES:
+				if (va.format != IQM_UBYTE || va.size != 4)
+					return false;
+				inblendindex = (byte *)&buf[va.offset];
+				break;
+			case IQM_BLENDWEIGHTS:
+				if (va.format != IQM_UBYTE || va.size != 4)
+					return false;
+				inblendweight = (byte *)&buf[va.offset];
+				break;
+			case IQM_COLOR:
+				if (va.format != IQM_UBYTE || va.size != 4)
+					return false;
+				incolor = (byte *)&buf[va.offset];
+				break;
+		}
+	}
+
+	tris = (iqmtriangle *)&buf[hdr.ofs_triangles];
+	meshes = (iqmmesh *)&buf[hdr.ofs_meshes];
+	joints = (iqmjoint *)&buf[hdr.ofs_joints];
+	if (hdr.ofs_adjacency)
+		adjacency = (iqmtriangle *)&buf[hdr.ofs_adjacency];
+
+	baseframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr.num_joints]));
+	inversebaseframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr.num_joints]));
+	for(int i = 0; i < (int)hdr.num_joints; i++)
+	{
+		iqmjoint &j = joints[i];
+		quat4_t q;
+		q[0] = j.rotate[0];
+		q[1] = j.rotate[1];
+		q[2] = j.rotate[2];
+		q[3] = j.rotate[3];
+
+		Quat_normalize(q);
+
+		Matrix3x3 rot;
+		Matrix3x3_mul_float(Vec4(q), Vec3(j.scale), &rot);
+
+		baseframe[i].a = Vec4(rot.a, j.translate[0]);
+		baseframe[i].b = Vec4(rot.b, j.translate[1]);
+		baseframe[i].c = Vec4(rot.c, j.translate[2]);
+
+		Matrix3x4_invert(baseframe[i], &inversebaseframe[i]);
+		if (j.parent >= 0)
+		{
+			Matrix3x4_mul(baseframe[j.parent], baseframe[i], &baseframe[i]);
+			Matrix3x4_mul(inversebaseframe[i], inversebaseframe[j.parent], &inversebaseframe[i]);
+		}
+	}
+
+	for(int i = 0; i < (int)hdr.num_meshes; i++)
+	{
+		iqmmesh &m = meshes[i];
+		printf("%s: loaded mesh: %s\n", filename, &str[m.name]);
+		textures[i] = loadtexture(&str[m.material], 0);
+		if (textures[i])
+			printf("%s: loaded material: %s\n", filename, &str[m.material]);
+	}
+
+	return true;
+}
+
+static bool
+loadiqmanims(const char *filename, const iqmheader &hdr, byte *buf)
+{
+	if ((int)hdr.num_poses != numjoints)
+		return false;
+
+	if (animdata)
+	{
+		if (animdata != meshdata) free(animdata);
+		free(frames);
+		animdata = NULL;
+		anims = NULL;
+		frames = 0;
+		numframes = 0;
+		numanims = 0;
+	}
+
+	lilswap((uint *)&buf[hdr.ofs_poses], hdr.num_poses*sizeof(iqmpose)/sizeof(uint));
+	lilswap((uint *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint));
+	lilswap((ushort *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
+	if (hdr.ofs_bounds)
+		lilswap((uint *)&buf[hdr.ofs_bounds], hdr.num_frames*sizeof(iqmbounds)/sizeof(uint));
+
+	animdata = buf;
+	numanims = hdr.num_anims;
+	numframes = hdr.num_frames;
+
+	const char *str = hdr.ofs_text ? (char *)&buf[hdr.ofs_text] : "";
+	anims = (iqmanim *)&buf[hdr.ofs_anims];
+	poses = (iqmpose *)&buf[hdr.ofs_poses];
+	frames = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr.num_frames * hdr.num_poses]));
+	ushort *framedata = (ushort *)&buf[hdr.ofs_frames];
+	if (hdr.ofs_bounds)
+		bounds = (iqmbounds *)&buf[hdr.ofs_bounds];
+
+	for(int i = 0; i < (int)hdr.num_frames; i++)
+	{
+		for(int j = 0; j < (int)hdr.num_poses; j++)
+		{
+			iqmpose &p = poses[j];
+			quat4_t rotate;
+			vec3_t translate, scale;
+
+			translate[0] = p.channeloffset[0];
+			if (p.mask&0x01)
+				translate[0] += *framedata++ * p.channelscale[0];
+			translate[1] = p.channeloffset[1];
+			if (p.mask&0x02)
+				translate[1] += *framedata++ * p.channelscale[1];
+			translate[2] = p.channeloffset[2];
+			if (p.mask&0x04)
+				translate[2] += *framedata++ * p.channelscale[2];
+			rotate[0] = p.channeloffset[3];
+			if (p.mask&0x08)
+				rotate[0] += *framedata++ * p.channelscale[3];
+			rotate[1] = p.channeloffset[4];
+			if (p.mask&0x10)
+				rotate[1] += *framedata++ * p.channelscale[4];
+			rotate[2] = p.channeloffset[5];
+			if (p.mask&0x20)
+				rotate[2] += *framedata++ * p.channelscale[5];
+			rotate[3] = p.channeloffset[6];
+			if (p.mask&0x40)
+				rotate[3] += *framedata++ * p.channelscale[6];
+			scale[0] = p.channeloffset[7];
+			if (p.mask&0x80)
+				scale[0] += *framedata++ * p.channelscale[7];
+			scale[1] = p.channeloffset[8];
+			if (p.mask&0x100)
+				scale[1] += *framedata++ * p.channelscale[8];
+			scale[2] = p.channeloffset[9];
+			if (p.mask&0x200)
+				scale[2] += *framedata++ * p.channelscale[9];
+
+			// Concatenate each pose with the inverse base pose to avoid doing this at animation time.
+			// If the joint has a parent, then it needs to be pre-concatenated with its parent's base pose.
+			// Thus it all negates at animation time like so:
+			//	 (parentPose * parentInverseBasePose) * (parentBasePose * childPose * childInverseBasePose) =>
+			//	 parentPose * (parentInverseBasePose * parentBasePose) * childPose * childInverseBasePose =>
+			//	 parentPose * childPose * childInverseBasePose
+
+			Quat_normalize(rotate);
+
+			Matrix3x3 rot;
+			Matrix3x4 m;
+
+			Matrix3x3_mul_float(Vec4(rotate), Vec3(scale[0], scale[1], scale[2]), &rot);
+			m.a = Vec4(rot.a, translate[0]);
+			m.b = Vec4(rot.b, translate[1]);
+			m.c = Vec4(rot.c, translate[2]);
+
+			if (p.parent >= 0) {
+				Matrix3x4 tmp;
+
+				Matrix3x4_mul(baseframe[p.parent], m, &tmp);
+				Matrix3x4_mul(tmp, inversebaseframe[j], &frames[i*hdr.num_poses + j]);
+			}
+			else
+			{
+				Matrix3x4_mul(m, inversebaseframe[j], &frames[i*hdr.num_poses + j]);
+			}
+		}
+	}
+
+	for(int i = 0; i < (int)hdr.num_anims; i++)
+	{
+		printf("%s: loaded anim: %s\n", filename, &str[anims[i].name]);
+	}
+
+	return true;
+}
+
+static bool
+loadiqm(const char *filename)
+{
+	FILE *f = fopen(filename, "rb");
+	if (!f)
+		return false;
+
+	byte *buf = NULL;
+	iqmheader hdr;
+	if (fread(&hdr, 1, sizeof(hdr), f) != sizeof(hdr) || memcmp(hdr.magic, IQM_MAGIC, sizeof(hdr.magic)))
+		goto error;
+	lilswap(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint));
+	if (hdr.version != IQM_VERSION)
+		goto error;
+	if (hdr.filesize > (16<<20))
+		goto error; // sanity check... don't load files bigger than 16 MB
+	buf = (byte*)malloc(sizeof(byte[hdr.filesize]));
+	if (fread(buf + sizeof(hdr), 1, hdr.filesize - sizeof(hdr), f) != hdr.filesize - sizeof(hdr))
+		goto error;
+
+	if (hdr.num_meshes > 0 && !loadiqmmeshes(filename, hdr, buf))
+		goto error;
+	if (hdr.num_anims > 0 && !loadiqmanims(filename, hdr, buf))
+		goto error;
+
+	fclose(f);
+	return true;
+
+error:
+	printf("%s: error while loading\n", filename);
+	if (buf != meshdata && buf != animdata)
+		free(buf);
+	fclose(f);
+	return false;
+}
+
+// Note that this animates all attributes (position, normal, tangent, bitangent)
+// for expository purposes, even though this demo does not use all of them for rendering.
+static void
+animateiqm(float curframe)
+{
+	if (!numframes)
+		return;
+
+	int frame1 = (int)floor(curframe);
+	frame1 %= numframes;
+	Matrix3x4 *mat1 = &frames[frame1 * numjoints];
+	// Interpolate matrixes between the two closest frames and concatenate with parent matrix if necessary.
+	// Concatenate the result with the inverse of the base pose.
+	// You would normally do animation blending and inter-frame blending here in a 3D engine.
+	for(int i = 0; i < numjoints; i++)
+	{
+		if (joints[i].parent >= 0)
+		{
+			Matrix3x4_mul(outframe[joints[i].parent], mat1[i], &outframe[i]);
+		}
+		else
+		{
+			outframe[i] = mat1[i];
+		}
+	}
+	// The actual vertex generation based on the matrixes follows...
+	const Vec3 *srcpos = (const Vec3 *)inposition,
+		*srcnorm = (const Vec3 *)innormal;
+	const Vec4 *srctan = (const Vec4 *)intangent;
+	Vec3 *dstpos = (Vec3 *)outposition,
+		*dstnorm = (Vec3 *)outnormal,
+		*dsttan = (Vec3 *)outtangent,
+		*dstbitan = (Vec3 *)outbitangent;
+	const byte *index = inblendindex, *weight = inblendweight;
+	for(int i = 0; i < numverts; i++)
+	{
+		// Blend matrixes for this vertex according to its blend weights.
+		// the first index/weight is always present, and the weights are
+		// guaranteed to add up to 255. So if only the first weight is
+		// presented, you could optimize this case by skipping any weight
+		// multiplies and intermediate storage of a blended matrix.
+		// There are only at most 4 weights per vertex, and they are in
+		// sorted order from highest weight to lowest weight. Weights with
+		// 0 values, which are always at the end, are unused.
+		Matrix3x4 mat = outframe[index[0]];
+		Matrix3x4_mul_float(mat, weight[0]/255.0f, &mat);
+		for(int j = 1; j < 4 && weight[j]; j++)
+		{
+			Matrix3x4 tmp = outframe[index[j]];
+			Matrix3x4_mul_float(tmp, weight[j]/255.0f, &tmp);
+			Matrix3x4_plus(tmp, mat, &mat);
+		}
+
+		// Transform attributes by the blended matrix.
+		// Position uses the full 3x4 transformation matrix.
+		// Normals and tangents only use the 3x3 rotation part
+		// of the transformation matrix.
+		(*dstpos)[0] = mat.a.dot(*srcpos);
+		(*dstpos)[1] = mat.b.dot(*srcpos);
+		(*dstpos)[2] = mat.c.dot(*srcpos);
+
+		// Note that if the matrix includes non-uniform scaling, normal vectors
+		// must be transformed by the inverse-transpose of the matrix to have the
+		// correct relative scale. Note that invert(mat) = adjoint(mat)/determinant(mat),
+		// and since the absolute scale is not important for a vector that will later
+		// be renormalized, the adjoint-transpose matrix will work fine, which can be
+		// cheaply generated by 3 cross-products.
+		//
+		// If you don't need to use joint scaling in your models, you can simply use the
+		// upper 3x3 part of the position matrix instead of the adjoint-transpose shown
+		// here.
+		Matrix3x3 matnorm;
+		matnorm.a = mat.b.cross3(mat.c);
+		matnorm.b = mat.c.cross3(mat.a);
+		matnorm.c = mat.a.cross3(mat.b);
+
+		(*dstnorm)[0] = matnorm.a.dot(*srcnorm);
+		(*dstnorm)[1] = matnorm.b.dot(*srcnorm);
+		(*dstnorm)[2] = matnorm.c.dot(*srcnorm);
+		// Note that input tangent data has 4 coordinates,
+		// so only transform the first 3 as the tangent vector.
+		(*dsttan)[0] = matnorm.a.dot(Vec3(*srctan));
+		(*dsttan)[1] = matnorm.b.dot(Vec3(*srctan));
+		(*dsttan)[2] = matnorm.c.dot(Vec3(*srctan));
+		// Note that bitangent = cross(normal, tangent) * sign,
+		// where the sign is stored in the 4th coordinate of the input tangent data.
+		*dstbitan = dstnorm->cross(*dsttan) * srctan->w;
+
+		srcpos++;
+		srcnorm++;
+		srctan++;
+		dstpos++;
+		dstnorm++;
+		dsttan++;
+		dstbitan++;
+
+		index += 4;
+		weight += 4;
+	}
+}
+
+static void
+renderiqm()
+{
+	static const GLfloat zero[4] = { 0, 0, 0, 0 },
+						 one[4] = { 1, 1, 1, 1 },
+						 ambientcol[4] = { 0.5f, 0.5f, 0.5f, 1 },
+						 diffusecol[4] = { 0.5f, 0.5f, 0.5f, 1 },
+						 lightdir[4] = { cosf(radians(-60)), 0, sinf(radians(-60)), 0 };
+
+	glPushMatrix();
+
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, zero);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, zero);
+	glMaterialfv(GL_FRONT, GL_EMISSION, zero);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, one);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, zero);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientcol);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffusecol);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightdir);
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+
+	glColor3f(1, 1, 1);
+	glVertexPointer(3, GL_FLOAT, 0, numframes > 0 ? outposition : inposition);
+	glNormalPointer(GL_FLOAT, 0, numframes > 0 ? outnormal : innormal);
+	glTexCoordPointer(2, GL_FLOAT, 0, intexcoord);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	if (incolor)
+	{
+		glColorPointer(4, GL_UNSIGNED_BYTE, 0, incolor);
+
+		glEnableClientState(GL_COLOR_ARRAY);
+	}
+
+	glEnable(GL_TEXTURE_2D);
+
+	for(int i = 0; i < nummeshes; i++)
+	{
+		iqmmesh &m = meshes[i];
+		glBindTexture(GL_TEXTURE_2D, textures[i]);
+		glDrawElements(GL_TRIANGLES, 3*m.num_triangles, GL_UNSIGNED_INT, &tris[m.first_triangle]);
+	}
+
+	glDisable(GL_TEXTURE_2D);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	if (incolor) glDisableClientState(GL_COLOR_ARRAY);
+
+	glDisable(GL_NORMALIZE);
+	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
+
+	glPopMatrix();
+}
+
+static void
+initgl()
+{
+	glClearColor(0, 0, 0, 0);
+	glClearDepth(1);
+	glDisable(GL_FOG);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+}
+
+int scrw = 0, scrh = 0;
+
+static void
+reshapefunc(int w, int h)
+{
+	scrw = w;
+	scrh = h;
+	glViewport(0, 0, w, h);
+}
+
+float camyaw = -90, campitch = 0, camroll = 0;
+Vec3 campos(20, 0, 5);
+
+static void
+setupcamera()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	GLdouble aspect = double(scrw)/scrh,
+			 fov = radians(90),
+			 fovy = 2*atan2(tan(fov/2), aspect),
+			 nearplane = 1e-2f, farplane = 1000,
+			 ydist = nearplane * tan(fovy/2), xdist = ydist * aspect;
+	glFrustum(-xdist, xdist, -ydist, ydist, nearplane, farplane);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glRotatef(camroll, 0, 0, 1);
+	glRotatef(campitch, -1, 0, 0);
+	glRotatef(camyaw, 0, 1, 0);
+	glRotatef(-90, 1, 0, 0);
+	glScalef(1, -1, 1);
+	glTranslatef(-campos.x, -campos.y, -campos.z);
+}
+
+float animate = 0;
+
+static void
+timerfunc(int val)
+{
+	animate += 10*val/1000.0f;
+	glutPostRedisplay();
+	glutTimerFunc(35, timerfunc, 35);
+}
+
+static void
+displayfunc()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	setupcamera();
+
+	animateiqm(animate);
+
+	printf("%s: frame: %.2f\n", __func__, animate);
+
+	renderiqm();
+
+	glutSwapBuffers();
+}
+
+static void
+keyboardfunc(byte c, int x, int y)
+{
+	switch(c)
+	{
+	case 27:
+		exit(EXIT_SUCCESS);
+		break;
+	}
+}
+
+int main(int argc, char **argv)
+{
+	glutInitWindowSize(640, 480);
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB);
+	glutCreateWindow("IQM Demo");
+
+	atexit(cleanupiqm);
+	for(int i = 1; i < argc; i++)
+	{
+		if (!loadiqm(argv[i]))
+			return EXIT_FAILURE;
+	}
+	if (!meshdata && !loadiqm("mrfixit.iqm")) return EXIT_FAILURE;
+
+	initgl();
+
+	glutTimerFunc(35, timerfunc, 35);
+	glutReshapeFunc(reshapefunc);
+	glutDisplayFunc(displayfunc);
+	glutKeyboardFunc(keyboardfunc);
+	glutMainLoop();
+
+	return EXIT_SUCCESS;
+}
