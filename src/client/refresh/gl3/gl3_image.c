@@ -775,7 +775,7 @@ LoadM32(char *origname, imagetype_t type)
  * Finds or loads the given image
  */
 gl3image_t *
-GL3_FindImage(char *name, imagetype_t type)
+GL3_FindImage(const char *name, imagetype_t type)
 {
 	gl3image_t *image;
 	int i, len;
