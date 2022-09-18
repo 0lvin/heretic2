@@ -283,7 +283,7 @@ R_LoadWal
 ================
 */
 static image_t *
-R_LoadWal (char *name, imagetype_t type)
+R_LoadWal (const char *name, imagetype_t type)
 {
 	miptex_t	*mt;
 	int		ofs;
@@ -432,7 +432,7 @@ R_LoadM8
 ================
 */
 static image_t *
-R_LoadM8 (char *name, imagetype_t type)
+R_LoadM8 (const char *name, imagetype_t type)
 {
 	m8tex_t	*mt;
 	int		ofs, file_size;
@@ -509,7 +509,7 @@ R_LoadM8 (char *name, imagetype_t type)
 }
 
 static image_t	*
-R_LoadHiColorImage(char *name, const char* namewe, const char *ext, imagetype_t type)
+R_LoadHiColorImage(const char *name, const char* namewe, const char *ext, imagetype_t type)
 {
 	image_t	*image = NULL;
 	byte *pic = NULL;
@@ -629,7 +629,7 @@ R_LoadHiColorImage(char *name, const char* namewe, const char *ext, imagetype_t 
 }
 
 static image_t	*
-R_LoadImage(char *name, const char* namewe, const char *ext, imagetype_t type)
+R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t type)
 {
 	image_t	*image = NULL;
 
@@ -708,7 +708,7 @@ Finds or loads the given image
 ===============
 */
 image_t	*
-R_FindImage(char *name, imagetype_t type)
+R_FindImage(const char *name, imagetype_t type)
 {
 	image_t	*image;
 	int	i, len;

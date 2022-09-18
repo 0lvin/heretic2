@@ -556,6 +556,21 @@ Mod_LoadFile(char *name, void **buffer)
 	return ri.FS_LoadFile (name, buffer);
 }
 
+/*
+==============================================================================
+
+SPRITE MODELS
+
+==============================================================================
+*/
+
+/*
+=================
+Mod_LoadSP2
+
+support for .sp2 sprites
+====
+*/
 dsprite_t*
 Mod_LoadSP2 (const char *mod_name, const void *buffer, int modfilelen, void **extradata)
 {
