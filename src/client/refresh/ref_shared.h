@@ -77,8 +77,8 @@ typedef enum
 
 extern void R_Printf(int level, const char* msg, ...) PRINTF_ATTR(2, 3);
 
-extern void LoadPCX(char *origname, byte **pic, byte **palette, int *width, int *height);
-extern void GetPCXInfo(char *filename, int *width, int *height);
+extern void LoadPCX(const char *origname, byte **pic, byte **palette, int *width, int *height);
+extern void GetPCXInfo(const char *filename, int *width, int *height);
 
 extern qboolean LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *height);
 extern qboolean ResizeSTB(const byte *input_pixels, int input_width, int input_height,
@@ -87,9 +87,9 @@ extern void SmoothColorImage(unsigned *dst, size_t size, size_t rstep);
 extern void scale2x(const byte *src, byte *dst, int width, int height);
 extern void scale3x(const byte *src, byte *dst, int width, int height);
 
-extern void GetWalInfo(char *name, int *width, int *height);
-extern void GetM8Info(char *name, int *width, int *height);
-extern void GetM32Info(char *name, int *width, int *height);
+extern void GetWalInfo(const char *name, int *width, int *height);
+extern void GetM8Info(const char *name, int *width, int *height);
+extern void GetM32Info(const char *name, int *width, int *height);
 
 extern float Mod_RadiusFromBounds(const vec3_t mins, const vec3_t maxs);
 extern const byte* Mod_DecompressVis(const byte *in, int row);
@@ -99,5 +99,7 @@ typedef void (*image_load_t)(const char *name, byte *pic, int width, int realwid
 	int height, int realheight, imagetype_t type, int bits);
 dmdl_t *Mod_LoadDMDL (const char *mod_name, const void *buf, int modfilelen,
 	void **extradata, image_load_t image_load);
+dsprite_t *Mod_LoadSP2 (const char *mod_name, const void *buffer, int modfilelen,
+	void **extradata);
 int Mod_LoadFile(char *name, void **buffer);
 #endif /* SRC_CLIENT_REFRESH_REF_SHARED_H_ */

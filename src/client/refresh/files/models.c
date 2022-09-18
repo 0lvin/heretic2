@@ -555,3 +555,44 @@ Mod_LoadFile(char *name, void **buffer)
 	}
 	return ri.FS_LoadFile (name, buffer);
 }
+
+dsprite_t*
+Mod_LoadSP2 (const char *mod_name, const void *buffer, int modfilelen, void **extradata)
+{
+	dsprite_t *sprin, *sprout;
+	int i;
+
+	sprin = (dsprite_t *)buffer;
+	*extradata = Hunk_Begin(modfilelen);
+	sprout = Hunk_Alloc(modfilelen);
+
+	sprout->ident = LittleLong(sprin->ident);
+	sprout->version = LittleLong(sprin->version);
+	sprout->numframes = LittleLong(sprin->numframes);
+
+	if (sprout->version != SPRITE_VERSION)
+	{
+		R_Printf(PRINT_ALL, "%s has wrong version number (%i should be %i)",
+				mod_name, sprout->version, SPRITE_VERSION);
+		return NULL;
+	}
+
+	if (sprout->numframes > MAX_MD2SKINS)
+	{
+		R_Printf(PRINT_ALL, "%s has too many frames (%i > %i)",
+				mod_name, sprout->numframes, MAX_MD2SKINS);
+		return NULL;
+	}
+
+	/* byte swap everything */
+	for (i = 0; i < sprout->numframes; i++)
+	{
+		sprout->frames[i].width = LittleLong(sprin->frames[i].width);
+		sprout->frames[i].height = LittleLong(sprin->frames[i].height);
+		sprout->frames[i].origin_x = LittleLong(sprin->frames[i].origin_x);
+		sprout->frames[i].origin_y = LittleLong(sprin->frames[i].origin_y);
+		memcpy(sprout->frames[i].name, sprin->frames[i].name, MAX_SKINNAME);
+	}
+
+	return sprout;
+}

@@ -31,12 +31,21 @@
  */
 
 void
-GetWalInfo(char *name, int *width, int *height)
+GetWalInfo(const char *origname, int *width, int *height)
 {
 	miptex_t *mt;
 	int size;
+	char filename[256];
 
-	size = ri.FS_LoadFile(name, (void **)&mt);
+	Q_strlcpy(filename, origname, sizeof(filename));
+
+	/* Add the extension */
+	if (strcmp(COM_FileExtension(filename), "wal"))
+	{
+		Q_strlcat(filename, ".wal", sizeof(filename));
+	}
+
+	size = ri.FS_LoadFile(filename, (void **)&mt);
 
 	if (!mt)
 	{
@@ -58,18 +67,25 @@ GetWalInfo(char *name, int *width, int *height)
 }
 
 void
-GetM8Info(char *name, int *width, int *height)
+GetM8Info(const char *origname, int *width, int *height)
 {
 	m8tex_t *mt;
 	int size;
+	char filename[256];
 
-	size = ri.FS_LoadFile(name, (void **)&mt);
+	Q_strlcpy(filename, origname, sizeof(filename));
 
+	/* Add the extension */
+	if (strcmp(COM_FileExtension(filename), "m8"))
+	{
+		Q_strlcat(filename, ".m8", sizeof(filename));
+	}
+
+	size = ri.FS_LoadFile(filename, (void **)&mt);
 	if (!mt)
 	{
 		return;
 	}
-
 
 	if (size < sizeof(m8tex_t) || LittleLong (mt->version) != M8_VERSION)
 	{
@@ -86,18 +102,26 @@ GetM8Info(char *name, int *width, int *height)
 }
 
 void
-GetM32Info(char *name, int *width, int *height)
+GetM32Info(const char *origname, int *width, int *height)
 {
 	m32tex_t *mt;
 	int size;
+	char filename[256];
 
-	size = ri.FS_LoadFile(name, (void **)&mt);
+	Q_strlcpy(filename, origname, sizeof(filename));
+
+	/* Add the extension */
+	if (strcmp(COM_FileExtension(filename), "m32"))
+	{
+		Q_strlcat(filename, ".m32", sizeof(filename));
+	}
+
+	size = ri.FS_LoadFile(filename, (void **)&mt);
 
 	if (!mt)
 	{
 		return;
 	}
-
 
 	if (size < sizeof(m32tex_t) || LittleLong (mt->version) != M32_VERSION)
 	{

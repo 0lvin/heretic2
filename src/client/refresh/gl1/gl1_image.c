@@ -1208,7 +1208,7 @@ LoadM32(char *origname, imagetype_t type)
  * Finds or loads the given image
  */
 image_t *
-R_FindImage(char *name, imagetype_t type)
+R_FindImage(const char *name, imagetype_t type)
 {
 	image_t *image;
 	int i, len;

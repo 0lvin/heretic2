@@ -285,7 +285,7 @@ int Draw_GetPalette(void);
 
 image_t *R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		int height, int realheight, imagetype_t type, int bits);
-image_t *R_FindImage(char *name, imagetype_t type);
+image_t *R_FindImage(const char *name, imagetype_t type);
 void R_TextureMode(char *string);
 void R_ImageList_f(void);
 

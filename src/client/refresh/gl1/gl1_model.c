@@ -35,7 +35,6 @@ static int mod_numknown;
 static int mod_max = 0;
 int registration_sequence;
 
-void LoadSP2(model_t *mod, void *buffer, int modfilelen);
 static void Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen);
 void LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa);
 void LM_CreateSurfaceLightmap(msurface_t *surf);
@@ -194,6 +193,29 @@ Mod_AliasModelFixup(model_t *mod, const dmdl_t *pheader)
 	mod->maxs[2] = 32;
 }
 
+/*
+=================
+Mod_SP2Fixup
+=================
+*/
+static void
+Mod_SP2Fixup(model_t *mod, const dsprite_t *sprout)
+{
+	mod->type = mod_alias;
+
+	if (sprout)
+	{
+		int i;
+
+		/* byte swap everything */
+		for (i = 0; i < sprout->numframes; i++)
+		{
+			mod->skins[i] = R_FindImage(sprout->frames[i].name,
+					it_sprite);
+		}
+	}
+}
+
 static void
 Mod_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		int height, int realheight, imagetype_t type,
@@ -306,7 +328,17 @@ Mod_ForName (char *name, model_t *parent_model, qboolean crash)
 			break;
 
 		case IDSPRITEHEADER:
-			LoadSP2(mod, buf, modfilelen);
+			{
+				const dsprite_t *pheader;
+				pheader = Mod_LoadSP2(mod->name, buf, modfilelen, &(mod->extradata));
+				if (!pheader)
+				{
+					ri.Sys_Error(ERR_DROP, "%s: Failed to load %s",
+						__func__, mod->name);
+				}
+
+				Mod_SP2Fixup(mod, pheader);
+			}
 			break;
 
 		case IDBSPHEADER:
