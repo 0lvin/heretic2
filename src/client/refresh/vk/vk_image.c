@@ -1421,7 +1421,7 @@ Vk_LoadHiColorImage(char *name, const char* namewe, const char *ext, imagetype_t
 }
 
 static image_t*
-Vk_LoadImage(char *name, const char* namewe, const char *ext, imagetype_t type)
+Vk_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t type)
 {
 	image_t	*image = NULL;
 
@@ -1494,7 +1494,7 @@ Vk_FindImage
 Finds or loads the given image
 ===============
 */
-image_t	*Vk_FindImage (char *name, imagetype_t type)
+image_t	*Vk_FindImage (const char *name, imagetype_t type)
 {
 	image_t	*image;
 	int	i, len;

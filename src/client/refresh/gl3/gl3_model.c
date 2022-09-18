@@ -1000,7 +1000,7 @@ Mod_SP2Fixup
 static void
 Mod_SP2Fixup(gl3model_t *mod, const dsprite_t *sprout)
 {
-	mod->type = mod_alias;
+	mod->type = mod_sprite;
 
 	if (sprout)
 	{

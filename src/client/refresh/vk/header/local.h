@@ -240,7 +240,7 @@ struct image_s *RE_RegisterSkin (char *name);
 image_t *Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		    int height, int realheight, imagetype_t type,
 		    int bits);
-image_t	*Vk_FindImage (char *name, imagetype_t type);
+image_t	*Vk_FindImage (const char *name, imagetype_t type);
 void	Vk_TextureMode( char *string );
 void	Vk_LmapTextureMode( char *string );
 void	Vk_ImageList_f (void);

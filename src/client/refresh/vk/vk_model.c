@@ -1040,57 +1040,26 @@ Mod_AliasModelFixup(model_t *mod, const dmdl_t *pheader)
 }
 
 /*
-==============================================================================
-
-SPRITE MODELS
-
-==============================================================================
-*/
-
-/*
 =================
-Mod_LoadSpriteModel
+Mod_SP2Fixup
 =================
 */
 static void
-Mod_LoadSpriteModel (model_t *mod, const void *buffer, int modfilelen)
+Mod_SP2Fixup(model_t *mod, const dsprite_t *sprout)
 {
-	dsprite_t	*sprin, *sprout;
-	int			i;
-
-	sprin = (dsprite_t *)buffer;
-	mod->extradata = Hunk_Begin(modfilelen);
-	sprout = Hunk_Alloc(modfilelen);
-
-	sprout->ident = LittleLong (sprin->ident);
-	sprout->version = LittleLong (sprin->version);
-	sprout->numframes = LittleLong (sprin->numframes);
-
-	if (sprout->version != SPRITE_VERSION)
-	{
-		ri.Sys_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
-				__func__, mod->name, sprout->version, SPRITE_VERSION);
-	}
-
-	if (sprout->numframes > MAX_MD2SKINS)
-	{
-		ri.Sys_Error(ERR_DROP, "%s: %s has too many frames (%i > %i)",
-				__func__, mod->name, sprout->numframes, MAX_MD2SKINS);
-	}
-
-	// byte swap everything
-	for (i=0 ; i<sprout->numframes ; i++)
-	{
-		sprout->frames[i].width = LittleLong (sprin->frames[i].width);
-		sprout->frames[i].height = LittleLong (sprin->frames[i].height);
-		sprout->frames[i].origin_x = LittleLong (sprin->frames[i].origin_x);
-		sprout->frames[i].origin_y = LittleLong (sprin->frames[i].origin_y);
-		memcpy (sprout->frames[i].name, sprin->frames[i].name, MAX_SKINNAME);
-		mod->skins[i] = Vk_FindImage (sprout->frames[i].name,
-			it_sprite);
-	}
-
 	mod->type = mod_sprite;
+
+	if (sprout)
+	{
+		int i;
+
+		/* byte swap everything */
+		for (i = 0; i < sprout->numframes; i++)
+		{
+			mod->skins[i] = Vk_FindImage (sprout->frames[i].name,
+					it_sprite);
+		}
+	}
 }
 
 static void
@@ -1217,7 +1186,17 @@ Mod_ForName (const char *name, model_t *parent_model, qboolean crash)
 		break;
 
 	case IDSPRITEHEADER:
-		Mod_LoadSpriteModel(mod, buf, modfilelen);
+		{
+			const dsprite_t *pheader;
+			pheader = Mod_LoadSP2(mod->name, buf, modfilelen, &(mod->extradata));
+			if (!pheader)
+			{
+				ri.Sys_Error(ERR_DROP, "%s: Failed to load %s",
+					__func__, mod->name);
+			}
+
+			Mod_SP2Fixup(mod, pheader);
+		}
 		break;
 
 	case IDBSPHEADER:
