@@ -37,7 +37,6 @@ int registration_sequence;
 
 void LoadSP2(model_t *mod, void *buffer, int modfilelen);
 static void Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen);
-void LoadMD2(model_t *mod, void *buffer, int modfilelen);
 void LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa);
 void LM_CreateSurfaceLightmap(msurface_t *surf);
 void LM_EndBuildingLightmaps(void);
@@ -167,6 +166,47 @@ Mod_Init(void)
 }
 
 /*
+=================
+Mod_AliasModelFixup
+=================
+*/
+static void
+Mod_AliasModelFixup(model_t *mod, const dmdl_t *pheader)
+{
+	mod->type = mod_alias;
+
+	if (pheader)
+	{
+		int i;
+
+		for (i=0 ; i<pheader->num_skins ; i++)
+		{
+			mod->skins[i] = R_FindImage((char *)pheader + pheader->ofs_skins + i*MAX_SKINNAME,
+				it_skin);
+		}
+	}
+
+	mod->mins[0] = -32;
+	mod->mins[1] = -32;
+	mod->mins[2] = -32;
+	mod->maxs[0] = 32;
+	mod->maxs[1] = 32;
+	mod->maxs[2] = 32;
+}
+
+static void
+Mod_LoadPic(const char *name, byte *pic, int width, int realwidth,
+		int height, int realheight, imagetype_t type,
+		int bits)
+{
+	if (!R_LoadPic(name, pic, width, realwidth, height, realheight, type, bits))
+	{
+		ri.Sys_Error(ERR_DROP, "%s: Can't load %s",
+				__func__, name);
+	}
+}
+
+/*
  * Loads in a model for the given name
  */
 static model_t *
@@ -249,7 +289,20 @@ Mod_ForName (char *name, model_t *parent_model, qboolean crash)
 	switch (LittleLong(*(unsigned *)buf))
 	{
 		case IDALIASHEADER:
-			LoadMD2(mod, buf, modfilelen);
+			/* fall through */
+		case IDMDLHEADER:
+			{
+				const dmdl_t *pheader;
+
+				pheader = Mod_LoadDMDL(mod->name, buf, modfilelen, &(mod->extradata), Mod_LoadPic);
+				if (!pheader)
+				{
+					ri.Sys_Error(ERR_DROP, "%s: Failed to load %s",
+						__func__, mod->name);
+				}
+
+				Mod_AliasModelFixup(mod, pheader);
+			};
 			break;
 
 		case IDSPRITEHEADER:
