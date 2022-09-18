@@ -440,7 +440,7 @@ GL3_SelectTMU(GLenum tmu)
 extern void GL3_TextureMode(char *string);
 extern void GL3_Bind(GLuint texnum);
 extern void GL3_BindLightmap(int lightmapnum);
-extern gl3image_t *GL3_LoadPic(char *name, byte *pic, int width, int realwidth,
+extern gl3image_t *GL3_LoadPic(const char *name, byte *pic, int width, int realwidth,
                                int height, int realheight, imagetype_t type, int bits);
 extern gl3image_t *GL3_FindImage(char *name, imagetype_t type);
 extern gl3image_t *GL3_RegisterSkin(char *name);

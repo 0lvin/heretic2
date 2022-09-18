@@ -1000,8 +1000,8 @@ REFGL3_OBJS_ := \
 	src/client/refresh/gl3/gl3_surf.o \
 	src/client/refresh/gl3/gl3_warp.o \
 	src/client/refresh/gl3/gl3_shaders.o \
-	src/client/refresh/gl3/gl3_md2.o \
 	src/client/refresh/gl3/gl3_sp2.o \
+	src/client/refresh/files/models.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \

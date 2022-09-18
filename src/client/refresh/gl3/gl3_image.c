@@ -375,7 +375,7 @@ FloodFillSkin(byte *skin, int skinwidth, int skinheight)
  * This is also used as an entry point for the generated r_notexture
  */
 gl3image_t *
-GL3_LoadPic(char *name, byte *pic, int width, int realwidth,
+GL3_LoadPic(const char *name, byte *pic, int width, int realwidth,
             int height, int realheight, imagetype_t type, int bits)
 {
 	gl3image_t *image = NULL;
