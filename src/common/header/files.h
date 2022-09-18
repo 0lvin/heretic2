@@ -65,6 +65,50 @@ typedef struct
 	unsigned char data;   /* unbounded */
 } pcx_t;
 
+/* .MDL triangle model file format */
+
+#define IDMDLHEADER (('O' << 24) + ('P' << 16) + ('D' << 8) + 'I')
+#define MDL_VERSION 6
+
+/* Texture coords */
+struct mdl_texcoord_t
+{
+	int onseam;
+	int s;
+	int t;
+};
+
+/* Triangle info */
+struct mdl_triangle_t
+{
+	int facesfront;  /* 0 = backface, 1 = frontface */
+	int vertex[3];   /* vertex indices */
+};
+
+/* MDL header */
+typedef struct mdl_header_t
+{
+	int ident;            /* magic number: "IDPO" */
+	int version;          /* version: 6 */
+
+	vec3_t scale;         /* scale factor */
+	vec3_t translate;     /* translation vector */
+	float boundingradius;
+	vec3_t eyeposition;   /* eyes' position */
+
+	int num_skins;        /* number of textures */
+	int skinwidth;        /* texture width */
+	int skinheight;       /* texture height */
+
+	int num_xyz;          /* number of vertices */
+	int num_tris;         /* number of triangles */
+	int num_frames;       /* number of frames */
+
+	int synctype;         /* 0 = synchron, 1 = random */
+	int flags;            /* state flag */
+	float size;           /* average size of triangles */
+} dmdlo_t;
+
 /* .MD2 triangle model file format */
 
 #define IDALIASHEADER (('2' << 24) + ('P' << 16) + ('D' << 8) + 'I')
@@ -76,22 +120,22 @@ typedef struct
 #define MAX_MD2SKINS 32
 #define MAX_SKINNAME 64
 
-typedef struct
+typedef struct md2_texCoord_t
 {
 	short s;
 	short t;
 } dstvert_t;
 
-typedef struct
+typedef struct md2_triangle_t
 {
-	short index_xyz[3];
-	short index_st[3];
+	short index_xyz[3]; /* vertex indices of the triangle */
+	short index_st[3];  /* tex. coord. indices */
 } dtriangle_t;
 
-typedef struct
+typedef struct mdl_vertex_t
 {
-	byte v[3]; /* scaled byte to fit in frame mins/maxs */
-	byte lightnormalindex;
+	byte v[3];             /* position, scaled byte to fit in frame mins/maxs */
+	byte lightnormalindex; /* normal vector index */
 } dtrivertx_t;
 
 #define DTRIVERTX_V0 0
@@ -100,7 +144,7 @@ typedef struct
 #define DTRIVERTX_LNI 3
 #define DTRIVERTX_SIZE 4
 
-typedef struct
+typedef struct md2_frame_t
 {
 	float scale[3];       /* multiply byte verts by this */
 	float translate[3];   /* then add this */
@@ -116,27 +160,28 @@ typedef struct
  * - a vertex consists of a floating point s, a floating point t,
  *   and an integer vertex index. */
 
-typedef struct
+/* MD2 header */
+typedef struct md2_header_t
 {
-	int ident;
-	int version;
+	int ident;      /* magic number: "IDP2" */
+	int version;    /* version: must be 8 */
 
-	int skinwidth;
-	int skinheight;
+	int skinwidth;  /* texture width */
+	int skinheight; /* texture height */
 	int framesize;  /* byte size of each frame */
 
-	int num_skins;
-	int num_xyz;
+	int num_skins;  /* number of skins */
+	int num_xyz;    /* number of vertices per frame */
 	int num_st;     /* greater than num_xyz for seams */
-	int num_tris;
+	int num_tris;   /* number of triangles */
 	int num_glcmds; /* dwords in strip/fan command list */
-	int num_frames;
+	int num_frames; /* number of frames */
 
 	int ofs_skins;  /* each skin is a MAX_SKINNAME string */
 	int ofs_st;     /* byte offset from start for stverts */
 	int ofs_tris;   /* offset for dtriangles */
 	int ofs_frames; /* offset for first frame */
-	int ofs_glcmds;
+	int ofs_glcmds; /* offset for strip/fan command list */
 	int ofs_end;    /* end of file */
 } dmdl_t;
 
@@ -204,7 +249,7 @@ typedef struct m8tex_s
 #define IDBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'I') /* little-endian "IBSP" */
 #define BSPVERSION 38
 
-/* upper design bounds: leaffaces, leafbrushes, planes, and 
+/* upper design bounds: leaffaces, leafbrushes, planes, and
  * verts are still bounded by 16 bit short limits */
 #define MAX_MAP_MODELS 1024
 #define MAX_MAP_BRUSHES 8192
@@ -362,12 +407,12 @@ typedef struct texinfo_s
 {
 	float vecs[2][4]; /* [s/t][xyz offset] */
 	int flags;        /* miptex flags + overrides light emission, etc */
-	int value;           
+	int value;
 	char texture[32]; /* texture name (textures*.wal) */
 	int nexttexinfo;  /* for animations, -1 = end of chain */
 } texinfo_t;
 
-/* note that edge 0 is never used, because negative edge 
+/* note that edge 0 is never used, because negative edge
    nums are used for counterclockwise use of the edge in
    a face */
 typedef struct
@@ -423,8 +468,8 @@ typedef struct
 #define ANGLE_UP -1
 #define ANGLE_DOWN -2
 
-/* the visibility lump consists of a header with a count, then 
- * byte offsets for the PVS and PHS of each cluster, then the raw 
+/* the visibility lump consists of a header with a count, then
+ * byte offsets for the PVS and PHS of each cluster, then the raw
  * compressed bit vectors */
 #define DVIS_PVS 0
 #define DVIS_PHS 1
