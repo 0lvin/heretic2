@@ -8,6 +8,15 @@ Assets:
  * [Linux/Loki](https://archive.org/embed/heretic-2-linux)
  * [Demo](https://archive.org/details/h2_demo_us)
 
+Code parts:
+ * `fm`: https://sourceforge.net/p/quark/code/HEAD/tree/runtime/trunk/plugins/ie_fm_import.py
+ * `.m8` - http://www.geocities.ws/jimmyvalavanis/programming/gformats/m8.html
+      https://github.com/TTimo/GtkRadiant/blob/master/plugins/imagem8/m8.h
+
+ * `.m32` - https://github.com/TTimo/GtkRadiant/blob/master/plugins/imagem8/m32.h
+
+General info: https://sites.google.com/site/heretichides/create-your-own-add-on-game/09-miscellanea
+
 ------------
 
 # Yamagi Quake II
