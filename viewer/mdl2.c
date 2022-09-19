@@ -564,18 +564,24 @@ init (const char *filename)
 	fread(buffer, i, 1, fp);
 	fclose(fp);
 
-	/* Load MDL model file */
-	if (ReadMDLModel (buffer, &mmdfile))
+	switch (*(unsigned *)buffer)
 	{
-		free(buffer);
-		return;
-	}
-
-	/* Load MD2 model file */
-	if (ReadMD2Model (buffer, &mmdfile))
-	{
-		free(buffer);
-		return;
+		/* Load MD2 model file */
+		case IDMDLHEADER:
+			if (ReadMDLModel (buffer, &mmdfile))
+			{
+				free(buffer);
+				return;
+			};
+			break;
+		/* Load MDL model file */
+		case IDALIASHEADER:
+			if (ReadMD2Model (buffer, &mmdfile))
+			{
+				free(buffer);
+				return;
+			};
+			break;
 	}
 
 	exit (EXIT_FAILURE);
