@@ -529,6 +529,8 @@ Animate (int start, int end, int *frame, float *interp)
 	}
 }
 
+#define HLPOLYHEADER (('T' << 24) + ('S' << 16) + ('D' << 8) + 'I')
+
 static void
 init (const char *filename)
 {
@@ -582,6 +584,12 @@ init (const char *filename)
 				return;
 			};
 			break;
+		/* Load HL1 models */
+		case HLPOLYHEADER:
+			printf("Half Life is unsupported\n");
+			break;
+		default:
+			printf("Unknow model type: 0x%x\n", *(unsigned *)buffer);
 	}
 
 	exit (EXIT_FAILURE);
