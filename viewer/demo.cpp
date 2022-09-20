@@ -122,68 +122,9 @@ Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
 #define STB_IMAGE_IMPLEMENTATION
 #include "../src/client/refresh/files/stb_image.h"
 
-#define FUNCNAME(name) name##1
-#define DEFPIXEL uint OP(r, 0);
-#define PIXELOP OP(r, 0);
-#define BPP 1
-#include "scale.h"
-
-#define FUNCNAME(name) name##2
-#define DEFPIXEL uint OP(r, 0), OP(g, 1);
-#define PIXELOP OP(r, 0); OP(g, 1);
-#define BPP 2
-#include "scale.h"
-
-#define FUNCNAME(name) name##3
-#define DEFPIXEL uint OP(r, 0), OP(g, 1), OP(b, 2);
-#define PIXELOP OP(r, 0); OP(g, 1); OP(b, 2);
-#define BPP 3
-#include "scale.h"
-
-#define FUNCNAME(name) name##4
-#define DEFPIXEL uint OP(r, 0), OP(g, 1), OP(b, 2), OP(a, 3);
-#define PIXELOP OP(r, 0); OP(g, 1); OP(b, 2); OP(a, 3);
-#define BPP 4
-#include "scale.h"
-
-static void
-scaletexture(byte *src, uint sw, uint sh, uint bpp, uint pitch, byte *dst, uint dw, uint dh)
-{
-	if (sw == dw*2 && sh == dh*2)
-	{
-		switch(bpp)
-		{
-			case 1:
-				return halvetexture1(src, sw, sh, pitch, dst);
-			case 2:
-				return halvetexture2(src, sw, sh, pitch, dst);
-			case 3:
-				return halvetexture3(src, sw, sh, pitch, dst);
-			case 4:
-				return halvetexture4(src, sw, sh, pitch, dst);
-		}
-	}
-	else if (sw < dw || sh < dh || sw&(sw-1) || sh&(sh-1) || dw&(dw-1) || dh&(dh-1))
-	{
-		switch(bpp)
-		{
-			case 1: return scaletexture1(src, sw, sh, pitch, dst, dw, dh);
-			case 2: return scaletexture2(src, sw, sh, pitch, dst, dw, dh);
-			case 3: return scaletexture3(src, sw, sh, pitch, dst, dw, dh);
-			case 4: return scaletexture4(src, sw, sh, pitch, dst, dw, dh);
-		}
-	}
-	else
-	{
-		switch(bpp)
-		{
-			case 1: return shifttexture1(src, sw, sh, pitch, dst, dw, dh);
-			case 2: return shifttexture2(src, sw, sh, pitch, dst, dw, dh);
-			case 3: return shifttexture3(src, sw, sh, pitch, dst, dw, dh);
-			case 4: return shifttexture4(src, sw, sh, pitch, dst, dw, dh);
-		}
-	}
-}
+// include resize implementation
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "../src/client/refresh/files/stb_image_resize.h"
 
 static int
 formatsize(GLenum format)
@@ -235,7 +176,8 @@ uploadtexture(GLenum internal, int tw, int th, GLenum format, GLenum type, void 
 	if (pw!=tw || ph!=th)
 	{
 		buf = (byte*)malloc(sizeof(byte[tw*th*bpp]));
-		scaletexture((byte *)pixels, pw, ph, bpp, pw*bpp, buf, tw, th);
+		stbir_resize_uint8((byte *)pixels, pw, ph, 0,
+				buf, tw, th, 0, bpp);
 	}
 
 	for(int level = 0;; level++)
@@ -253,7 +195,8 @@ uploadtexture(GLenum internal, int tw, int th, GLenum format, GLenum type, void 
 		if (!buf)
 			buf = (byte*)malloc(sizeof(byte[tw*th*bpp]));
 
-		scaletexture(src, srcw, srch, bpp, srcw*bpp, buf, tw, th);
+		stbir_resize_uint8(src, srcw, srch, 0,
+				buf, tw, th, 0, bpp);
 	}
 
 	if (buf)
