@@ -31,12 +31,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
-typedef unsigned char byte;
-
-/* Vector */
-typedef float vec3_t[3];
-
+#include "../src/common/header/shared.h"
 #include "../src/common/header/files.h"
 /* Model frame in memory */
 struct mem_frame_t
@@ -59,6 +56,15 @@ struct mem_glcmd_t
 static vec3_t anorms_table[162] = {
 #include "../src/client/refresh/constants/anorms.h"
 };
+
+void
+Com_Printf (char *msg, ...)
+{
+	va_list argptr;
+	va_start(argptr, msg);
+	vprintf(msg, argptr);
+	va_end(argptr);
+}
 
 static void
 RenderPacket(float interp, struct mem_glcmd_t *packet,
