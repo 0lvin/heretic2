@@ -53,6 +53,20 @@ struct mem_glcmd_t
 	int index;
 };
 
+static GLuint skins[16];
+static int skin_count = 0;
+
+static void
+insert_skin(char *name, GLuint tex_id)
+{
+	if (skin_count >= 16)
+	{
+		return;
+	}
+
+	skins[skin_count] = tex_id;
+}
+
 /* Texture name in memory */
 struct mem_skin_t
 {
@@ -66,7 +80,6 @@ struct mem_model_t
 	struct mem_frame_t *frames;
 	int *glcmds;
 
-	GLuint *tex_id;
 	int num_frames;
 	int num_skins;
 };
@@ -250,8 +263,6 @@ ReadMDLModel (const byte *buffer, struct mem_model_t *mdl)
 		malloc (sizeof (struct mem_skin_t) * header->num_skins);
 	mdl->frames = (struct mem_frame_t *)
 		malloc (sizeof (struct mem_frame_t) * header->num_frames);
-	mdl->tex_id = (GLuint *)
-		malloc (sizeof (GLuint) * header->num_skins);
 	mdl->glcmds = (int *)
 		malloc (
 		(3 * header->num_tris) * sizeof(struct mem_glcmd_t) + /* 3 vert */
@@ -287,7 +298,7 @@ ReadMDLModel (const byte *buffer, struct mem_model_t *mdl)
 			header->skinwidth * header->skinheight);
 		curr_pos += header->skinwidth * header->skinheight;
 
-		mdl->tex_id[i] = MakeTextureFromSkin (i, mdl, header, data);
+		insert_skin("Abc", MakeTextureFromSkin (i, mdl, header, data));
 
 		free (data);
 	}
@@ -411,8 +422,6 @@ ReadMD2Model (const byte *buffer, struct mem_model_t *mdl)
 		malloc (sizeof (struct mem_skin_t) * header->num_skins);
 	mdl->frames = (struct mem_frame_t *)
 		malloc (sizeof (struct mem_frame_t) * header->num_frames);
-	mdl->tex_id = (GLuint *)
-		malloc (sizeof (GLuint) * header->num_skins);
 	mdl->glcmds = (int *)malloc (sizeof (int) * header->num_glcmds);
 
 	/* Read model data */
@@ -473,13 +482,10 @@ FreeModel (struct mem_model_t *mdl)
 		mdl->glcmds = NULL;
 	}
 
-	if (mdl->tex_id)
+	if (skin_count)
 	{
 		/* Delete OpenGL textures */
-		glDeleteTextures (mdl->num_skins, mdl->tex_id);
-
-		free (mdl->tex_id);
-		mdl->tex_id = NULL;
+		glDeleteTextures (skin_count, skins);
 	}
 
 	if (mdl->frames)
@@ -510,9 +516,9 @@ RenderFrameItp (int n, float interp, const struct mem_model_t *mdl)
 		return;
 
 	/* Enable model's texture */
-	if (mdl->num_skins)
+	if (skin_count)
 	{
-		glBindTexture (GL_TEXTURE_2D, mdl->tex_id[iskin % mdl->num_skins]);
+		glBindTexture (GL_TEXTURE_2D, skins[iskin % skin_count]);
 	}
 
 	/* pglcmds points at the start of the command list */
@@ -660,7 +666,7 @@ display ()
 static void
 keyboard (unsigned char key, int x, int y)
 {
-	iskin += mmdfile.num_skins;
+	iskin += skin_count;
 	xrotate += 360;
 	yrotate += 360;
 
@@ -695,15 +701,9 @@ keyboard (unsigned char key, int x, int y)
 			break;
 	}
 
-	iskin %= mmdfile.num_skins;
+	iskin %= skin_count;
 	xrotate %= 360;
 	yrotate %= 360;
-
-	if (mmdfile.num_skins)
-	{
-		printf("Selected skin %d: %s %d,%d \n",
-			iskin, mmdfile.skins[iskin].name, xrotate, yrotate);
-	}
 }
 
 int
