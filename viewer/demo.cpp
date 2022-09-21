@@ -7,6 +7,9 @@
 #include <GL/glext.h>
 #include <GL/glut.h>
 
+// #include "../src/common/header/shared.h"
+// #include "../src/common/header/files.h"
+
 typedef unsigned char byte;
 typedef unsigned short ushort;
 typedef unsigned int uint;
@@ -105,7 +108,6 @@ Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
 #define clamp(val, minval, maxval) max(minval, min(val, maxval))
 #endif
 
-#include "util.h"
 #include "geom.h"
 #include "iqm.h"
 
@@ -270,18 +272,57 @@ cleanupiqm()
 	free(frames);
 }
 
+static void
+lilswap_uint(uint *buf, int len)
+{
+/*
+	int i;
+
+	for(i=0; i < len; i++)
+	{
+		buf[i] = LittleLong(buf[i]);
+	}
+*/
+}
+
+static void
+lilswap_float(float *buf, int len)
+{
+/*
+	int i;
+
+	for(i=0; i < len; i++)
+	{
+		buf[i] = LittleFloat(buf[i]);
+	}
+*/
+}
+
+static void
+lilswap_short(ushort *buf, int len)
+{
+/*
+	int i;
+
+	for(i=0; i < len; i++)
+	{
+		buf[i] = LittleShort(buf[i]);
+	}
+*/
+}
+
 static bool
 loadiqmmeshes(const char *filename, const iqmheader &hdr, byte *buf)
 {
 	if (meshdata)
 		return false;
 
-	lilswap((uint *)&buf[hdr.ofs_vertexarrays], hdr.num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
-	lilswap((uint *)&buf[hdr.ofs_triangles], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
-	lilswap((uint *)&buf[hdr.ofs_meshes], hdr.num_meshes*sizeof(iqmmesh)/sizeof(uint));
-	lilswap((uint *)&buf[hdr.ofs_joints], hdr.num_joints*sizeof(iqmjoint)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr.ofs_vertexarrays], hdr.num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr.ofs_triangles], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr.ofs_meshes], hdr.num_meshes*sizeof(iqmmesh)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr.ofs_joints], hdr.num_joints*sizeof(iqmjoint)/sizeof(uint));
 	if (hdr.ofs_adjacency)
-		lilswap((uint *)&buf[hdr.ofs_adjacency], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+		lilswap_uint((uint *)&buf[hdr.ofs_adjacency], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
 
 	meshdata = buf;
 	nummeshes = hdr.num_meshes;
@@ -315,25 +356,25 @@ loadiqmmeshes(const char *filename, const iqmheader &hdr, byte *buf)
 				if (va.format != IQM_FLOAT || va.size != 3)
 					return false;
 				inposition = (float *)&buf[va.offset];
-				lilswap(inposition, 3*hdr.num_vertexes);
+				lilswap_float(inposition, 3*hdr.num_vertexes);
 				break;
 			case IQM_NORMAL:
 				if (va.format != IQM_FLOAT || va.size != 3)
 					return false;
 				innormal = (float *)&buf[va.offset];
-				lilswap(innormal, 3*hdr.num_vertexes);
+				lilswap_float(innormal, 3*hdr.num_vertexes);
 				break;
 			case IQM_TANGENT:
 				if (va.format != IQM_FLOAT || va.size != 4)
 					return false;
 				intangent = (float *)&buf[va.offset];
-				lilswap(intangent, 4*hdr.num_vertexes);
+				lilswap_float(intangent, 4*hdr.num_vertexes);
 				break;
 			case IQM_TEXCOORD:
 				if (va.format != IQM_FLOAT || va.size != 2)
 					return false;
 				intexcoord = (float *)&buf[va.offset];
-				lilswap(intexcoord, 2*hdr.num_vertexes);
+				lilswap_float(intexcoord, 2*hdr.num_vertexes);
 				break;
 			case IQM_BLENDINDEXES:
 				if (va.format != IQM_UBYTE || va.size != 4)
@@ -416,11 +457,11 @@ loadiqmanims(const char *filename, const iqmheader &hdr, byte *buf)
 		numanims = 0;
 	}
 
-	lilswap((uint *)&buf[hdr.ofs_poses], hdr.num_poses*sizeof(iqmpose)/sizeof(uint));
-	lilswap((uint *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint));
-	lilswap((ushort *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
+	lilswap_uint((uint *)&buf[hdr.ofs_poses], hdr.num_poses*sizeof(iqmpose)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint));
+	lilswap_short((ushort *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
 	if (hdr.ofs_bounds)
-		lilswap((uint *)&buf[hdr.ofs_bounds], hdr.num_frames*sizeof(iqmbounds)/sizeof(uint));
+		lilswap_uint((uint *)&buf[hdr.ofs_bounds], hdr.num_frames*sizeof(iqmbounds)/sizeof(uint));
 
 	animdata = buf;
 	numanims = hdr.num_anims;
@@ -522,7 +563,7 @@ loadiqm(const char *filename)
 	iqmheader hdr;
 	if (fread(&hdr, 1, sizeof(hdr), f) != sizeof(hdr) || memcmp(hdr.magic, IQM_MAGIC, sizeof(hdr.magic)))
 		goto error;
-	lilswap(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint));
+	lilswap_uint(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint));
 	if (hdr.version != IQM_VERSION)
 		goto error;
 	if (hdr.filesize > (16<<20))
