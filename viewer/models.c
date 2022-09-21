@@ -23,8 +23,10 @@
  *
  * =======================================================================
  */
+#include "../src/client/refresh/ref_shared.h"
 
-#include "../ref_shared.h"
+typedef void (*image_load_t)(const char *name, byte *pic, int width, int realwidth,
+	int height, int realheight, imagetype_t type, int bits);
 
 /*
 =================
@@ -126,8 +128,7 @@ Mod_LoadDLModel (const char *mod_name, const void *buffer, int modfilelen, void 
 		return NULL;
 	}
 
-	*extradata = Hunk_Begin(ofs_end);
-	pheader = Hunk_Alloc(ofs_end);
+	*extradata = pheader = malloc(max(modfilelen, ofs_end));
 
 	/* copy back all values */
 	pheader->ident = IDALIASHEADER;
@@ -361,8 +362,7 @@ Mod_LoadAliasModel (const char *mod_name, const void *buffer, int modfilelen, vo
 		return NULL;
 	}
 
-	*extradata = Hunk_Begin(modfilelen);
-	pheader = Hunk_Alloc(ofs_end);
+	*extradata = pheader = malloc(max(modfilelen, ofs_end));
 
 	// byte swap the header fields and sanity check
 	for (i=0 ; i<sizeof(dmdl_t)/sizeof(int) ; i++)
@@ -508,56 +508,6 @@ Mod_LoadDMDL (const char *mod_name, const void *buf, int modfilelen, void **extr
 }
 
 /*
-=================
-Mod_LoadFile
-=================
-*/
-int
-Mod_LoadFile(char *name, void **buffer)
-{
-	const char* ext;
-
-	*buffer = NULL;
-
-	if (!name)
-	{
-		return -1;
-	}
-
-	ext = COM_FileExtension(name);
-	if(!ext[0])
-	{
-		/* file has no extension */
-		return -1;
-	}
-
-	if (!strcmp(ext, "md2"))
-	{
-		char namewe[256], newname[256];
-		int filesize, len;
-
-		len = strlen(name);
-		if (len < 5)
-		{
-			return -1;
-		}
-
-		/* Remove the extension */
-		memset(namewe, 0, 256);
-		memcpy(namewe, name, len - (strlen(ext) + 1));
-
-		/* Check Quake model */
-		snprintf(newname, sizeof(newname), "%s.mdl", namewe);
-		filesize = ri.FS_LoadFile (name, buffer);
-		if (filesize > 0)
-		{
-			return filesize;
-		}
-	}
-	return ri.FS_LoadFile (name, buffer);
-}
-
-/*
 ==============================================================================
 
 SPRITE MODELS
@@ -579,8 +529,8 @@ Mod_LoadSP2 (const char *mod_name, const void *buffer, int modfilelen, void **ex
 	int i;
 
 	sprin = (dsprite_t *)buffer;
-	*extradata = Hunk_Begin(modfilelen);
-	sprout = Hunk_Alloc(modfilelen);
+
+	*extradata = sprout = malloc(modfilelen);
 
 	sprout->ident = LittleLong(sprin->ident);
 	sprout->version = LittleLong(sprin->version);

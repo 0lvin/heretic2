@@ -35,7 +35,8 @@
 
 #include "../src/common/header/shared.h"
 #include "../src/common/header/files.h"
-/* Model frame in memory */
+
+/* Model frame in memory ~ daliasframe_t replacement */
 struct mem_frame_t
 {
 	vec3_t scale;
@@ -52,10 +53,38 @@ struct mem_glcmd_t
 	int index;
 };
 
+/* Texture name in memory */
+struct mem_skin_t
+{
+	char name[64]; /* texture file name */
+};
+
+/* MD2 model structure in memory */
+struct mem_model_t
+{
+	struct mem_skin_t *skins;
+	struct mem_frame_t *frames;
+	int *glcmds;
+
+	GLuint *tex_id;
+	int num_frames;
+	int num_skins;
+};
+
 /* Table of precalculated normals */
 static vec3_t anorms_table[162] = {
 #include "../src/client/refresh/constants/anorms.h"
 };
+
+static int iskin = 0, yrotate = -90, xrotate = -90;
+
+void R_Printf(int level, const char* msg, ...)
+{
+	va_list argptr;
+	va_start(argptr, msg);
+	vprintf(msg, argptr);
+	va_end(argptr);
+}
 
 void
 Com_Printf (char *msg, ...)
@@ -142,26 +171,6 @@ RenderPacketWithFrame(int *pglcmds, struct mem_frame_t *frames, int n,
 	}
 }
 
-/* Texture name in memory */
-struct mem_skin_t
-{
-	char name[64]; /* texture file name */
-	GLubyte *data;  /* texture data */
-};
-
-/* MD2 model structure in memory */
-struct mem_model_t
-{
-	struct mem_skin_t *skins;
-	struct mem_frame_t *frames;
-	int *glcmds;
-
-	GLuint *tex_id;
-	int iskin;
-	int num_frames;
-	int num_skins;
-};
-
 /* Palette */
 static unsigned char colormap[256][3] = {
 #include "colormap.h"
@@ -176,7 +185,7 @@ static struct mem_model_t mmdfile;
  */
 static GLuint
 MakeTextureFromSkin (int n, const struct mem_model_t *mdl,
-	struct mdl_header_t *header)
+	struct mdl_header_t *header, byte *data)
 {
 	int i;
 	GLuint id;
@@ -187,9 +196,9 @@ MakeTextureFromSkin (int n, const struct mem_model_t *mdl,
 	/* Convert indexed 8 bits texture to RGB 24 bits */
 	for (i = 0; i < header->skinwidth * header->skinheight; ++i)
 	{
-		pixels[(i * 3) + 0] = colormap[mdl->skins[n].data[i]][0];
-		pixels[(i * 3) + 1] = colormap[mdl->skins[n].data[i]][1];
-		pixels[(i * 3) + 2] = colormap[mdl->skins[n].data[i]][2];
+		pixels[(i * 3) + 0] = colormap[data[i]][0];
+		pixels[(i * 3) + 1] = colormap[data[i]][1];
+		pixels[(i * 3) + 2] = colormap[data[i]][2];
 	}
 
 	/* Generate OpenGL texture */
@@ -249,8 +258,6 @@ ReadMDLModel (const byte *buffer, struct mem_model_t *mdl)
 		(header->num_tris * sizeof(int)) + /* triangles count */
 		sizeof(int) /* final zero */);
 
-	mdl->iskin = 0;
-
 	memset(mdl->skins, 0, sizeof (struct mem_skin_t) * header->num_skins);
 
 	curr_pos = buffer + sizeof (struct mdl_header_t);
@@ -259,8 +266,9 @@ ReadMDLModel (const byte *buffer, struct mem_model_t *mdl)
 	for (i = 0; i < header->num_skins; ++i)
 	{
 		int skin_type;
+		byte	*data;
 
-		mdl->skins[i].data = (GLubyte *)malloc (sizeof (GLubyte)
+		data = (byte *)malloc (sizeof (byte)
 			* header->skinwidth * header->skinheight);
 
 		/* skip type / int */
@@ -275,14 +283,13 @@ ReadMDLModel (const byte *buffer, struct mem_model_t *mdl)
 			return 0;
 		}
 
-		memcpy(mdl->skins[i].data, curr_pos,
+		memcpy(data, curr_pos,
 			header->skinwidth * header->skinheight);
 		curr_pos += header->skinwidth * header->skinheight;
 
-		mdl->tex_id[i] = MakeTextureFromSkin (i, mdl, header);
+		mdl->tex_id[i] = MakeTextureFromSkin (i, mdl, header, data);
 
-		free (mdl->skins[i].data);
-		mdl->skins[i].data = NULL;
+		free (data);
 	}
 	mdl->num_skins = header->num_skins;
 
@@ -505,7 +512,7 @@ RenderFrameItp (int n, float interp, const struct mem_model_t *mdl)
 	/* Enable model's texture */
 	if (mdl->num_skins)
 	{
-		glBindTexture (GL_TEXTURE_2D, mdl->tex_id[mdl->iskin % mdl->num_skins]);
+		glBindTexture (GL_TEXTURE_2D, mdl->tex_id[iskin % mdl->num_skins]);
 	}
 
 	/* pglcmds points at the start of the command list */
@@ -534,8 +541,6 @@ Animate (int start, int end, int *frame, float *interp)
 			*frame = start;
 	}
 }
-
-#define HLPOLYHEADER (('T' << 24) + ('S' << 16) + ('D' << 8) + 'I')
 
 static void
 init (const char *filename)
@@ -642,8 +647,8 @@ display ()
 	Animate (0, mmdfile.num_frames - 1, &n, &interp);
 
 	glTranslatef (0.0f, 0.0f, -100.0f);
-	glRotatef (-90.0f, 1.0, 0.0, 0.0);
-	glRotatef (-90.0f, 0.0, 0.0, 1.0);
+	glRotatef (xrotate, 1.0, 0.0, 0.0);
+	glRotatef (yrotate, 0.0, 0.0, 1.0);
 
 	/* Draw the model */
 	RenderFrameItp (n, interp, &mmdfile);
@@ -655,16 +660,34 @@ display ()
 static void
 keyboard (unsigned char key, int x, int y)
 {
-	mmdfile.iskin += mmdfile.num_skins;
+	iskin += mmdfile.num_skins;
+	xrotate += 360;
+	yrotate += 360;
 
 	switch (key)
 	{
 		case '+':
-			mmdfile.iskin++;
+			iskin++;
 			break;
 
 		case '-':
-			mmdfile.iskin--;
+			iskin--;
+			break;
+
+		case 'w':
+			xrotate += 5;
+			break;
+
+		case 's':
+			xrotate -= 5;
+			break;
+
+		case 'd':
+			yrotate += 5;
+			break;
+
+		case 'a':
+			yrotate -= 5;
 			break;
 
 		case 27: /* escape */
@@ -672,11 +695,14 @@ keyboard (unsigned char key, int x, int y)
 			break;
 	}
 
-	mmdfile.iskin %= mmdfile.num_skins;
+	iskin %= mmdfile.num_skins;
+	xrotate %= 360;
+	yrotate %= 360;
 
 	if (mmdfile.num_skins)
 	{
-		printf("Selected skin %d: %s\n", mmdfile.iskin, mmdfile.skins[mmdfile.iskin].name);
+		printf("Selected skin %d: %s %d,%d \n",
+			iskin, mmdfile.skins[iskin].name, xrotate, yrotate);
 	}
 }
 

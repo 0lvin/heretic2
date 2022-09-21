@@ -65,7 +65,7 @@ typedef struct
 	unsigned char data;   /* unbounded */
 } pcx_t;
 
-/* .MDL triangle model file format */
+/* .MDL(Quake) triangle model file format */
 
 #define IDMDLHEADER (('O' << 24) + ('P' << 16) + ('D' << 8) + 'I')
 #define MDL_VERSION 6
@@ -109,7 +109,10 @@ typedef struct mdl_header_t
 	float size;           /* average size of triangles */
 } dmdlo_t;
 
-/* .MD2 triangle model file format */
+/* .MDL(HalfLife) triangle model file format */
+#define HLPOLYHEADER (('T' << 24) + ('S' << 16) + ('D' << 8) + 'I')
+
+/* .MD2(Quake2) triangle model file format */
 
 #define IDALIASHEADER (('2' << 24) + ('P' << 16) + ('D' << 8) + 'I')
 #define ALIAS_VERSION 8

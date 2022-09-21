@@ -38,8 +38,8 @@ endif
 
 all: view-quake iqm-demo
 
-view-quake: mdl2.c ../src/common/shared/shared.c ../src/common/header/files.h ../src/common/header/shared.h
-	gcc -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ../src/common/shared/shared.c mdl2.c -g -Wall -lm -lGL -lGLU -lglut -o view-quake
+view-quake: mdl2.c models.c ../src/common/shared/shared.c ../src/common/header/files.h ../src/common/header/shared.h
+	gcc -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ../src/common/shared/shared.c models.c mdl2.c -g -Wall -lm -lGL -lGLU -lglut -o view-quake
 
 iqm-demo: demo.cpp util.h geom.h iqm.h
 	g++ demo.cpp -g -Wall -lGL -lGLU -lglut -o iqm-demo
