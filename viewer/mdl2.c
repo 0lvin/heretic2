@@ -35,6 +35,7 @@
 
 #include "../src/common/header/shared.h"
 #include "../src/common/header/files.h"
+#include "../src/client/refresh/ref_shared.h"
 
 /* Model frame in memory ~ daliasframe_t replacement */
 struct mem_frame_t
@@ -56,15 +57,50 @@ struct mem_glcmd_t
 static GLuint skins[16];
 static int skin_count = 0;
 
+/* Palette */
+static unsigned char colormap[256][3] = {
+#include "colormap.h"
+};
+
 static void
-insert_skin(char *name, GLuint tex_id)
+insert_skin(const char *name, byte *data, int width, int realwidth,
+	int height, int realheight, imagetype_t type, int bits)
 {
 	if (skin_count >= 16)
 	{
 		return;
 	}
 
-	skins[skin_count] = tex_id;
+	int i;
+	GLuint id;
+
+	GLubyte *pixels = (GLubyte *)
+		malloc (width * height * 3);
+
+	/* Convert indexed 8 bits texture to RGB 24 bits */
+	for (i = 0; i < width * height; ++i)
+	{
+		pixels[(i * 3) + 0] = colormap[data[i]][0];
+		pixels[(i * 3) + 1] = colormap[data[i]][1];
+		pixels[(i * 3) + 2] = colormap[data[i]][2];
+	}
+
+	/* Generate OpenGL texture */
+	glGenTextures (1, &id);
+	glBindTexture (GL_TEXTURE_2D, id);
+
+	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	gluBuild2DMipmaps (GL_TEXTURE_2D, GL_RGB, width,
+		height, GL_RGB, GL_UNSIGNED_BYTE,
+		pixels);
+
+	/* OpenGL has its own copy of image data */
+	free (pixels);
+	skins[skin_count] = id;
 }
 
 /* Texture name in memory */
@@ -184,53 +220,8 @@ RenderPacketWithFrame(int *pglcmds, struct mem_frame_t *frames, int n,
 	}
 }
 
-/* Palette */
-static unsigned char colormap[256][3] = {
-#include "colormap.h"
-};
-
 /*** An MD2 model ***/
 static struct mem_model_t mmdfile;
-
-
-/**
- * Make a texture given a skin index 'n'.
- */
-static GLuint
-MakeTextureFromSkin (int n, const struct mem_model_t *mdl,
-	struct mdl_header_t *header, byte *data)
-{
-	int i;
-	GLuint id;
-
-	GLubyte *pixels = (GLubyte *)
-		malloc (header->skinwidth * header->skinheight * 3);
-
-	/* Convert indexed 8 bits texture to RGB 24 bits */
-	for (i = 0; i < header->skinwidth * header->skinheight; ++i)
-	{
-		pixels[(i * 3) + 0] = colormap[data[i]][0];
-		pixels[(i * 3) + 1] = colormap[data[i]][1];
-		pixels[(i * 3) + 2] = colormap[data[i]][2];
-	}
-
-	/* Generate OpenGL texture */
-	glGenTextures (1, &id);
-	glBindTexture (GL_TEXTURE_2D, id);
-
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	gluBuild2DMipmaps (GL_TEXTURE_2D, GL_RGB, header->skinwidth,
-		header->skinheight, GL_RGB, GL_UNSIGNED_BYTE,
-		pixels);
-
-	/* OpenGL has its own copy of image data */
-	free (pixels);
-	return id;
-}
 
 /**
  * Load an MDL model from file.
@@ -298,8 +289,10 @@ ReadMDLModel (const byte *buffer, struct mem_model_t *mdl)
 			header->skinwidth * header->skinheight);
 		curr_pos += header->skinwidth * header->skinheight;
 
-		insert_skin("Abc", MakeTextureFromSkin (i, mdl, header, data));
-
+		insert_skin("ABC", data,
+					header->skinwidth, header->skinwidth,
+					header->skinheight, header->skinheight,
+					0, 8);
 		free (data);
 	}
 	mdl->num_skins = header->num_skins;
