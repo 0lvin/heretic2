@@ -6,14 +6,6 @@
 #undef swap
 #endif
 
-template<class T>
-static inline void swap(T &a, T &b)
-{
-	T t = a;
-	a = b;
-	b = t;
-}
-
 #define radians(x) (( x * M_PI ) / 180)
 
 static inline bool islittleendian() {
@@ -66,35 +58,9 @@ template<class T> inline void endianswap(T *buf, int len) {
 		*buf = endianswap(*buf);
 }
 
-template<class T> inline T lilswap(T n) {
-	return islittleendian() ? n : endianswap(n);
-}
-
 template<class T> inline void lilswap(T *buf, int len) {
 	if (!islittleendian())
 		endianswap(buf, len);
-}
-
-template<class T> inline T bigswap(T n) {
-	return islittleendian() ? endianswap(n) : n;
-}
-
-template<class T> inline void bigswap(T *buf, int len) {
-	if (islittleendian())
-		endianswap(buf, len);
-}
-
-template<class T> T getval(FILE *f) {
-	T n;
-	return fread(&n, 1, sizeof(n), f) == sizeof(n) ? n : 0;
-}
-
-template<class T> T getlil(FILE *f) {
-	return lilswap(getval<T>(f));
-}
-
-template<class T> T getbig(FILE *f) {
-	return bigswap(getval<T>(f));
 }
 
 #endif
