@@ -502,6 +502,13 @@ Mod_LoadDMDL (const char *mod_name, const void *buf, int modfilelen, void **extr
 	case IDMDLHEADER:
 		return Mod_LoadDLModel(mod_name, buf, modfilelen, extradata, image_load);
 
+	case HLPOLYHEADER:
+		R_Printf(PRINT_ALL, "%s: Can't load Half Life model %s\n",
+			__func__, mod_name);
+
+		printf("Half Life is unsupported\n");
+		return NULL;
+
 	default:
 		return NULL;
 	}

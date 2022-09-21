@@ -37,15 +37,6 @@
 #include "../src/common/header/files.h"
 #include "../src/client/refresh/ref_shared.h"
 
-/* Model frame in memory ~ daliasframe_t replacement */
-struct mem_frame_t
-{
-	vec3_t scale;
-	vec3_t translate;
-	char name[16];
-	dtrivertx_t *verts;  /* vertex list of the frame */
-};
-
 /* GL command packet in memory */
 struct mem_glcmd_t
 {
@@ -103,22 +94,8 @@ insert_skin(const char *name, byte *data, int width, int realwidth,
 	skins[skin_count] = id;
 }
 
-/* Texture name in memory */
-struct mem_skin_t
-{
-	char name[64]; /* texture file name */
-};
-
-/* MD2 model structure in memory */
-struct mem_model_t
-{
-	struct mem_skin_t *skins;
-	struct mem_frame_t *frames;
-	int *glcmds;
-
-	int num_frames;
-	int num_skins;
-};
+dmdl_t *mem_mod;
+void *extradata;
 
 /* Table of precalculated normals */
 static vec3_t anorms_table[162] = {
@@ -146,10 +123,10 @@ Com_Printf (char *msg, ...)
 
 static void
 RenderPacket(float interp, struct mem_glcmd_t *packet,
-	struct mem_frame_t *pframe1, struct mem_frame_t *pframe2)
+	const daliasframe_t *pframe1, const daliasframe_t *pframe2)
 {
 	vec3_t v_curr, v_next, v, norm;
-	dtrivertx_t *pvert1, *pvert2;
+	const dtrivertx_t *pvert1, *pvert2;
 	float *n_curr, *n_next;
 
 	pvert1 = &pframe1->verts[packet->index];
@@ -185,10 +162,11 @@ RenderPacket(float interp, struct mem_glcmd_t *packet,
 }
 
 static void
-RenderPacketWithFrame(int *pglcmds, struct mem_frame_t *frames, int n,
-	int num_frames, float interp)
+RenderPacketWithFrame(const dmdl_t *mod, int n, float interp)
 {
 	int i;
+	int *pglcmds = (int*)((byte*)mod + mod->ofs_glcmds);
+	int num_frames = mod->num_frames;
 
 	/* Draw the model */
 	while ((i = *(pglcmds++)) != 0)
@@ -207,11 +185,13 @@ RenderPacketWithFrame(int *pglcmds, struct mem_frame_t *frames, int n,
 		for (/* Nothing */; i > 0; --i, pglcmds += 3)
 		{
 			struct mem_glcmd_t *packet;
-			struct mem_frame_t *pframe1, *pframe2;
+			const daliasframe_t *pframe1, *pframe2;
+			const byte *pframes;
 
+			pframes = (byte*)mod + mod->ofs_frames;
 			packet = (struct mem_glcmd_t *)pglcmds;
-			pframe1 = &frames[n];
-			pframe2 = &frames[(n + 1) % num_frames];
+			pframe1 = (const daliasframe_t*)(pframes + mod->framesize * n);
+			pframe2 = (const daliasframe_t*)(pframes + mod->framesize * ((n + 1) % num_frames));
 
 			RenderPacket(interp, packet, pframe1, pframe2);
 		}
@@ -220,279 +200,18 @@ RenderPacketWithFrame(int *pglcmds, struct mem_frame_t *frames, int n,
 	}
 }
 
-/*** An MD2 model ***/
-static struct mem_model_t mmdfile;
-
-/**
- * Load an MDL model from file.
- *
- * Note: MDL format stores model's data in little-endian ordering.  On
- * big-endian machines, you'll have to perform proper conversions.
- */
-static int
-ReadMDLModel (const byte *buffer, struct mem_model_t *mdl)
-{
-	int i;
-	const byte *curr_pos;
-	struct mdl_triangle_t *triangles;
-	struct mdl_texcoord_t *texcoords;
-	struct mdl_header_t *header;
-
-	/* Read header */
-	header = (struct mdl_header_t *)buffer;
-
-	if ((header->ident != IDMDLHEADER) ||
-		(header->version != MDL_VERSION))
-	{
-		/* Error! */
-		fprintf (stderr, "Error: bad version or identifier\n");
-		return 0;
-	}
-
-	/* Memory allocations */
-	mdl->skins = (struct mem_skin_t *)
-		malloc (sizeof (struct mem_skin_t) * header->num_skins);
-	mdl->frames = (struct mem_frame_t *)
-		malloc (sizeof (struct mem_frame_t) * header->num_frames);
-	mdl->glcmds = (int *)
-		malloc (
-		(3 * header->num_tris) * sizeof(struct mem_glcmd_t) + /* 3 vert */
-		(header->num_tris * sizeof(int)) + /* triangles count */
-		sizeof(int) /* final zero */);
-
-	memset(mdl->skins, 0, sizeof (struct mem_skin_t) * header->num_skins);
-
-	curr_pos = buffer + sizeof (struct mdl_header_t);
-
-	/* Read texture data */
-	for (i = 0; i < header->num_skins; ++i)
-	{
-		int skin_type;
-		byte	*data;
-
-		data = (byte *)malloc (sizeof (byte)
-			* header->skinwidth * header->skinheight);
-
-		/* skip type / int */
-		/* 0 = simple, !0 = group */
-		/* this program can't read models composed of group frames! */
-		memcpy(&skin_type, curr_pos, sizeof (skin_type));
-		curr_pos += sizeof (skin_type);
-
-		if (skin_type)
-		{
-			printf("unsupported skin type %d\n", skin_type);
-			return 0;
-		}
-
-		memcpy(data, curr_pos,
-			header->skinwidth * header->skinheight);
-		curr_pos += header->skinwidth * header->skinheight;
-
-		insert_skin("ABC", data,
-					header->skinwidth, header->skinwidth,
-					header->skinheight, header->skinheight,
-					0, 8);
-		free (data);
-	}
-	mdl->num_skins = header->num_skins;
-
-	texcoords = (struct mdl_texcoord_t*)curr_pos;
-	curr_pos += sizeof (struct mdl_texcoord_t) * header->num_xyz;
-
-	triangles = (struct mdl_triangle_t*)curr_pos;
-	curr_pos += sizeof (struct mdl_triangle_t) * header->num_tris;
-
-	/* Read frames */
-	for (i = 0; i < header->num_frames; ++i)
-	{
-		int frame_type;
-
-		/* Memory allocation for vertices of this frame */
-		mdl->frames[i].verts = (dtrivertx_t *)
-			malloc (sizeof (dtrivertx_t) * header->num_xyz);
-
-		mdl->frames[i].scale[0] = header->scale[0];
-		mdl->frames[i].scale[1] = header->scale[1];
-		mdl->frames[i].scale[2] = header->scale[2];
-
-		mdl->frames[i].translate[0] = header->translate[0];
-		mdl->frames[i].translate[1] = header->translate[1];
-		mdl->frames[i].translate[2] = header->translate[2];
-
-		/* Read frame data */
-		/* skip type / int */
-		/* 0 = simple, !0 = group */
-		/* this program can't read models composed of group frames! */
-		memcpy(&frame_type, curr_pos, sizeof (frame_type));
-		curr_pos += sizeof (frame_type);
-
-		if (frame_type)
-		{
-			printf("unsupported frame type %d\n", frame_type);
-			return 0;
-		}
-		/* skip bboxmin, bouding box min */
-		curr_pos += sizeof(dtrivertx_t);
-		/* skip bboxmax, bouding box max */
-		curr_pos += sizeof(dtrivertx_t);
-
-		memcpy(mdl->frames[i].name, curr_pos, sizeof (char) * 16);
-		curr_pos += sizeof (char) * 16;
-
-		memcpy(mdl->frames[i].verts, curr_pos,
-			sizeof (dtrivertx_t) * header->num_xyz);
-		curr_pos += sizeof (dtrivertx_t) * header->num_xyz;
-	}
-	mdl->num_frames = header->num_frames;
-
-	int j, *curr_com = mdl->glcmds;
-
-	/* Draw each triangle */
-	for (i = 0; i < header->num_tris; ++i)
-	{
-		*curr_com = 3;
-		curr_com++;
-
-		/* Draw each vertex */
-		for (j = 0; j < 3; ++j)
-		{
-			struct mem_glcmd_t packet;
-
-			packet.index = triangles[i].vertex[j];
-
-			/* Compute texture coordinates */
-			packet.s = texcoords[packet.index].s;
-			packet.t = texcoords[packet.index].t;
-
-			if (!triangles[i].facesfront &&
-				texcoords[packet.index].onseam)
-			{
-				packet.s += header->skinwidth * 0.5f; /* Backface */
-			}
-
-			/* Scale s and t to range from 0.0 to 1.0 */
-			packet.s = (packet.s + 0.5) / header->skinwidth;
-			packet.t = (packet.t + 0.5) / header->skinheight;
-
-			memcpy(curr_com, &packet, sizeof(struct mem_glcmd_t));
-			curr_com  += (sizeof(struct mem_glcmd_t) / sizeof(int));
-		}
-	}
-
-	*curr_com = 0;
-	curr_com++;
-
-	return 1;
-}
-
-/**
- * Load an MD2 model from file.
- *
- * Note: MD2 format stores model's data in little-endian ordering.	On
- * big-endian machines, you'll have to perform proper conversions.
- */
-static int
-ReadMD2Model (const byte *buffer, struct mem_model_t *mdl)
-{
-	int i;
-	const byte *curr_pos;
-	struct md2_header_t *header;
-
-	/* Read header */
-	header = (struct md2_header_t *)buffer;
-
-	if ((header->ident != IDALIASHEADER) ||
-		(header->version != ALIAS_VERSION))
-	{
-		/* Error! */
-		fprintf (stderr, "Error: bad version or identifier\n");
-		return 0;
-	}
-
-	/* Memory allocations */
-	mdl->skins = (struct mem_skin_t *)
-		malloc (sizeof (struct mem_skin_t) * header->num_skins);
-	mdl->frames = (struct mem_frame_t *)
-		malloc (sizeof (struct mem_frame_t) * header->num_frames);
-	mdl->glcmds = (int *)malloc (sizeof (int) * header->num_glcmds);
-
-	/* Read model data */
-	memcpy(mdl->skins, buffer + header->ofs_skins,
-		MAX_SKINNAME * header->num_skins);
-
-	for(i=0; i<header->num_skins; i++)
-	{
-		char names[MAX_SKINNAME + 1];
-
-		strncpy(names, mdl->skins[i].name, MAX_SKINNAME);
-		printf("skin%d: %s\n", i, names);
-	}
-	mdl->num_frames = header->num_skins;
-
-	memcpy(mdl->glcmds, buffer + header->ofs_glcmds,
-		sizeof (int) * header->num_glcmds);
-
-	/* Read frames */
-	curr_pos = buffer + header->ofs_frames;
-	for (i = 0; i < header->num_frames; ++i)
-	{
-		/* Memory allocation for vertices of this frame */
-		mdl->frames[i].verts = (dtrivertx_t *)
-			malloc (sizeof (dtrivertx_t) * header->num_xyz);
-
-		/* Read frame data */
-		memcpy(mdl->frames[i].scale, curr_pos, sizeof (vec3_t));
-		curr_pos += sizeof (vec3_t);
-		memcpy(mdl->frames[i].translate, curr_pos, sizeof (vec3_t));
-		curr_pos += sizeof (vec3_t);
-		memcpy(mdl->frames[i].name, curr_pos, 16);
-		curr_pos += 16;
-		memcpy(mdl->frames[i].verts, curr_pos,
-			sizeof (dtrivertx_t) * header->num_xyz);
-		curr_pos += sizeof (dtrivertx_t) * header->num_xyz;
-	}
-	mdl->num_frames = header->num_frames;
-
-	return 1;
-}
-
 /**
  * Free resources allocated for the model.
  */
 static void
-FreeModel (struct mem_model_t *mdl)
+FreeModel (dmdl_t *mod)
 {
-	if (mdl->skins)
-	{
-		free (mdl->skins);
-		mdl->skins = NULL;
-	}
-
-	if (mdl->glcmds)
-	{
-		free (mdl->glcmds);
-		mdl->glcmds = NULL;
-	}
+	free(mod);
 
 	if (skin_count)
 	{
 		/* Delete OpenGL textures */
 		glDeleteTextures (skin_count, skins);
-	}
-
-	if (mdl->frames)
-	{
-		int i;
-
-		for (i = 0; i < mdl->num_frames; ++i)
-		{
-			free (mdl->frames[i].verts);
-			mdl->frames[i].verts = NULL;
-		}
-
-		free (mdl->frames);
-		mdl->frames = NULL;
 	}
 }
 
@@ -502,10 +221,10 @@ FreeModel (struct mem_model_t *mdl)
  * interp is the interpolation percent. (from 0.0 to 1.0)
  */
 static void
-RenderFrameItp (int n, float interp, const struct mem_model_t *mdl)
+RenderFrameItp (int n, float interp, const dmdl_t *mod)
 {
 	/* Check if n is in a valid range */
-	if ((n < 0) || (n > mdl->num_frames))
+	if ((n < 0) || (n > mod->num_frames))
 		return;
 
 	/* Enable model's texture */
@@ -515,8 +234,7 @@ RenderFrameItp (int n, float interp, const struct mem_model_t *mdl)
 	}
 
 	/* pglcmds points at the start of the command list */
-	RenderPacketWithFrame(mdl->glcmds, mdl->frames, n,
-		mdl->num_frames, interp);
+	RenderPacketWithFrame(mod, n, interp);
 }
 
 /**
@@ -576,31 +294,12 @@ init (const char *filename)
 	fread(buffer, i, 1, fp);
 	fclose(fp);
 
-	switch (*(unsigned *)buffer)
+	mem_mod = Mod_LoadDMDL (filename, buffer, i, &extradata, insert_skin);
+	if (mem_mod)
 	{
-		/* Load MD2 model file */
-		case IDMDLHEADER:
-			if (ReadMDLModel (buffer, &mmdfile))
-			{
-				free(buffer);
-				return;
-			};
-			break;
-		/* Load MDL model file */
-		case IDALIASHEADER:
-			if (ReadMD2Model (buffer, &mmdfile))
-			{
-				free(buffer);
-				return;
-			};
-			break;
-		/* Load HL1 models */
-		case HLPOLYHEADER:
-			printf("Half Life is unsupported\n");
-			break;
-		default:
-			printf("Unknow model type: 0x%x\n", *(unsigned *)buffer);
-	}
+		free(buffer);
+		return;
+	};
 
 	exit (EXIT_FAILURE);
 }
@@ -608,7 +307,7 @@ init (const char *filename)
 static void
 cleanup ()
 {
-	FreeModel (&mmdfile);
+	FreeModel (mem_mod);
 }
 
 static void
@@ -643,14 +342,14 @@ display ()
 
 	/* Animate model from frames 0 to num_frames-1 */
 	interp += 10 * (curent_time - last_time);
-	Animate (0, mmdfile.num_frames - 1, &n, &interp);
+	Animate (0, mem_mod->num_frames - 1, &n, &interp);
 
 	glTranslatef (0.0f, 0.0f, -100.0f);
 	glRotatef (xrotate, 1.0, 0.0, 0.0);
 	glRotatef (yrotate, 0.0, 0.0, 1.0);
 
 	/* Draw the model */
-	RenderFrameItp (n, interp, &mmdfile);
+	RenderFrameItp (n, interp, mem_mod);
 
 	glutSwapBuffers ();
 	glutPostRedisplay ();
@@ -707,6 +406,9 @@ main (int argc, char *argv[])
 		fprintf (stderr, "usage: %s <filename.md2>\n", argv[0]);
 		return 0;
 	}
+
+	// quake swap prepere
+	Swap_Init();
 
 	glutInit (&argc, argv);
 	glutInitDisplayMode (GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
