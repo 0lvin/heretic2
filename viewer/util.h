@@ -1,13 +1,6 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-
-#ifdef swap
-#undef swap
-#endif
-
-#define radians(x) (( x * M_PI ) / 180)
-
 static inline bool islittleendian() {
 	union {
 		int i;

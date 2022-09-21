@@ -126,20 +126,6 @@ Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "../src/client/refresh/files/stb_image_resize.h"
 
-static int
-formatsize(GLenum format)
-{
-	switch(format)
-	{
-		case GL_LUMINANCE:
-		case GL_ALPHA: return 1;
-		case GL_LUMINANCE_ALPHA: return 2;
-		case GL_RGB: return 3;
-		case GL_RGBA: return 4;
-		default: return 4;
-	}
-}
-
 static void
 resizetexture(int w, int h, bool mipmap, int &tw, int &th)
 {
@@ -669,7 +655,7 @@ renderiqm()
 						 one[4] = { 1, 1, 1, 1 },
 						 ambientcol[4] = { 0.5f, 0.5f, 0.5f, 1 },
 						 diffusecol[4] = { 0.5f, 0.5f, 0.5f, 1 },
-						 lightdir[4] = { cosf(radians(-60)), 0, sinf(radians(-60)), 0 };
+						 lightdir[4] = { cosf(( -60 * M_PI ) / 180), 0, sinf(( -60 * M_PI ) / 180), 0 };
 
 	glPushMatrix();
 
@@ -758,7 +744,7 @@ setupcamera()
 	glLoadIdentity();
 
 	GLdouble aspect = double(scrw)/scrh,
-			 fov = radians(90),
+			 fov = ( 90 * M_PI ) / 180,
 			 fovy = 2*atan2(tan(fov/2), aspect),
 			 nearplane = 1e-2f, farplane = 1000,
 			 ydist = nearplane * tan(fovy/2), xdist = ydist * aspect;
