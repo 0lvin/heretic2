@@ -168,9 +168,9 @@ resizetexture(int w, int h, bool mipmap, int &tw, int &th)
 }
 
 static void
-uploadtexture(GLenum internal, int tw, int th, GLenum format, GLenum type, void *pixels, int pw, int ph, bool mipmap)
+uploadtexture(int tw, int th, void *pixels, int pw, int ph, bool mipmap)
 {
-	int bpp = formatsize(format);
+	int bpp = 4;
 	byte *buf = NULL;
 
 	if (pw!=tw || ph!=th)
@@ -184,7 +184,7 @@ uploadtexture(GLenum internal, int tw, int th, GLenum format, GLenum type, void 
 	{
 		byte *src = buf ? buf : (byte *)pixels;
 
-		glTexImage2D(GL_TEXTURE_2D, level, internal, tw, th, 0, format, type, src);
+		glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, tw, th, 0, GL_RGBA, GL_UNSIGNED_BYTE, src);
 
 		if (!mipmap || max(tw, th) <= 1)
 			break;
@@ -204,7 +204,7 @@ uploadtexture(GLenum internal, int tw, int th, GLenum format, GLenum type, void 
 }
 
 static void
-createtexture(int tnum, int w, int h, void *pixels, int clamp, int filter, GLenum component = GL_RGB, int pw = 0, int ph = 0)
+createtexture(int tnum, int w, int h, void *pixels, int clamp, int filter, int pw = 0, int ph = 0)
 {
 	glBindTexture(GL_TEXTURE_2D, tnum);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -217,21 +217,6 @@ createtexture(int tnum, int w, int h, void *pixels, int clamp, int filter, GLenu
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 		filter > 1 ? GL_LINEAR_MIPMAP_LINEAR : (filter ? GL_LINEAR : GL_NEAREST));
 
-	GLenum format = component, type = GL_UNSIGNED_BYTE;
-	switch(component)
-	{
-		case GL_RGB5:
-		case GL_RGB8:
-		case GL_RGB16:
-			format = GL_RGB;
-			break;
-
-		case GL_RGBA8:
-		case GL_RGBA16:
-			format = GL_RGBA;
-			break;
-	}
-
 	if (!pw)
 		pw = w;
 	if (!ph)
@@ -240,7 +225,7 @@ createtexture(int tnum, int w, int h, void *pixels, int clamp, int filter, GLenu
 	bool mipmap = filter > 1;
 	if (pixels)
 		resizetexture(w, h, mipmap, tw, th);
-	uploadtexture(component, tw, th, format, type, pixels, pw, ph, mipmap && pixels);
+	uploadtexture(tw, th, pixels, pw, ph, mipmap && pixels);
 }
 
 static GLuint
@@ -254,16 +239,10 @@ loadtexture(const char *name, int clamp)
 	}
 
 	printf("Checks %dx%d %d\n", w, h, b);
-	GLenum format = GL_RGBA;
-	if (!format) {
-		printf("%s: failed loading\n", name);
-		free(data);
-		return 0;
-	}
 
 	GLuint tex;
 	glGenTextures(1, &tex);
-	createtexture(tex, w, h, data, clamp, 2, format);
+	createtexture(tex, w, h, data, clamp, 2);
 
 	free(data);
 	return tex;
