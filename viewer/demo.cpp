@@ -108,7 +108,137 @@ Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
 #define clamp(val, minval, maxval) max(minval, min(val, maxval))
 #endif
 
-#include "geom.h"
+struct Vec3
+{
+	union
+	{
+		struct { float x, y, z; };
+		float v[3];
+	};
+
+	Vec3() {}
+	Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
+	explicit Vec3(const float *v) : x(v[0]), y(v[1]), z(v[2]) {}
+
+	float &operator[](int i) { return v[i]; }
+
+	Vec3 operator*(float k) const { return Vec3(x*k, y*k, z*k); }
+
+	Vec3 &operator*=(const Vec3 &o) { x *= o.x; y *= o.y; z *= o.z; return *this; }
+	Vec3 &operator/=(float k) { x /= k; y /= k; z /= k; return *this; }
+	Vec3 cross(const Vec3 &o) const { return Vec3(y*o.z-z*o.y, z*o.x-x*o.z, x*o.y-y*o.x); }
+};
+
+static float
+Vec3_dot(const Vec3 in1, const Vec3 in2)
+{
+	return in1.x * in2.x + in1.y * in2.y + in1.z * in2.z;
+}
+
+struct Vec4
+{
+	struct { float x, y, z, w; };
+
+	Vec4() {}
+	Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+
+	Vec4 operator+(const Vec4 &o) const { return Vec4(x+o.x, y+o.y, z+o.z, w+o.w); }
+	Vec4 operator*(float k) const { return Vec4(x*k, y*k, z*k, w*k); }
+};
+
+void Vec4_addw(const Vec4 in1, float in2, Vec4 *out)
+{
+	out->x = in1.x;
+	out->y = in1.y;
+	out->z = in1.z;
+	out->w = in1.w + in2;
+}
+
+float Vec4_dot(const Vec4 in1, const Vec3 in2)
+{
+	return in1.x * in2.x + in1.y * in2.y + in1.z * in2.z + in1.w;
+}
+
+void Vec4_cross3(const Vec4 in1, const Vec4 in2, Vec3 *out)
+{
+	out->x = in1.y * in2.z - in1.z * in2.y;
+	out->y = in1.z * in2.x - in1.x * in2.z;
+	out->z = in1.x * in2.y - in1.y * in2.x;
+};
+
+struct Matrix3x3
+{
+	Vec3 a, b, c;
+};
+
+struct Matrix3x4
+{
+	Vec4 a, b, c;
+};
+
+void Matrix3x4_plus(const Matrix3x4 in1, const Matrix3x4 in2, Matrix3x4 *out)
+{
+	out->a = in1.a + in2.a;
+	out->b = in1.b + in2.b;
+	out->c = in1.c + in2.c;
+}
+
+void Matrix3x4_invert(const Matrix3x4 o, Matrix3x4 *out)
+{
+	Matrix3x3 invrot;
+	invrot.a = Vec3(o.a.x, o.b.x, o.c.x);
+	invrot.b = Vec3(o.a.y, o.b.y, o.c.y);
+	invrot.c = Vec3(o.a.z, o.b.z, o.c.z);
+	invrot.a /= Vec3_dot(invrot.a, invrot.a);
+	invrot.b /= Vec3_dot(invrot.b, invrot.b);
+	invrot.c /= Vec3_dot(invrot.c, invrot.c);
+	Vec3 trans(o.a.w, o.b.w, o.c.w);
+
+	out->a.x = invrot.a.x;
+	out->a.y = invrot.a.y;
+	out->a.z = invrot.a.z;
+	out->a.w = -Vec3_dot(invrot.a, trans);
+
+	out->b.x = invrot.b.x;
+	out->b.y = invrot.b.y;
+	out->b.z = invrot.b.z;
+	out->b.w = -Vec3_dot(invrot.b, trans);
+
+	out->c.x = invrot.c.x;
+	out->c.y = invrot.c.y;
+	out->c.z = invrot.c.z;
+	out->c.w = -Vec3_dot(invrot.c, trans);
+}
+
+void Matrix3x3_mul_float(const vec3_t q, const Vec3 scale, Matrix3x3 *out)
+{
+	float x = q[0], y = q[1], z = q[2], w = q[3],
+		  tx = 2*x, ty = 2*y, tz = 2*z,
+		  txx = tx*x, tyy = ty*y, tzz = tz*z,
+		  txy = tx*y, txz = tx*z, tyz = ty*z,
+		  twx = tx*w, twy = ty*w, twz = tz*w;
+	(*out).a = Vec3(1 - (tyy + tzz), txy - twz, txz + twy);
+	(*out).b = Vec3(txy + twz, 1 - (txx + tzz), tyz - twx);
+	(*out).c = Vec3(txz - twy, tyz + twx, 1 - (txx + tyy));
+	(*out).a *= scale;
+	(*out).b *= scale;
+	(*out).c *= scale;
+}
+
+void Matrix3x4_mul(const Matrix3x4 in1, const Matrix3x4 in2, Matrix3x4 *out)
+{
+	Vec4_addw(Vec4(in2.a*in1.a.x + in2.b*in1.a.y + in2.c*in1.a.z), in1.a.w, &(*out).a);
+	Vec4_addw(Vec4(in2.a*in1.b.x + in2.b*in1.b.y + in2.c*in1.b.z), in1.b.w, &(*out).b);
+	Vec4_addw(Vec4(in2.a*in1.c.x + in2.b*in1.c.y + in2.c*in1.c.z), in1.c.w, &(*out).c);
+}
+
+void Matrix3x4_mul_float(const Matrix3x4 in1, float in2, Matrix3x4 *out)
+{
+	out->a = in1.a * in2;
+	out->b = in1.b * in2;
+	out->c = in1.c * in2;
+}
+
 #include "iqm.h"
 
 // don't need HDR stuff
@@ -414,11 +544,22 @@ loadiqmmeshes(const char *filename, const iqmheader &hdr, byte *buf)
 		Quat_normalize(q);
 
 		Matrix3x3 rot;
-		Matrix3x3_mul_float(Vec4(q), Vec3(j.scale), &rot);
+		Matrix3x3_mul_float(q, Vec3(j.scale), &rot);
 
-		baseframe[i].a = Vec4(rot.a, j.translate[0]);
-		baseframe[i].b = Vec4(rot.b, j.translate[1]);
-		baseframe[i].c = Vec4(rot.c, j.translate[2]);
+		baseframe[i].a.x = rot.a.x;
+		baseframe[i].a.y = rot.a.y;
+		baseframe[i].a.z = rot.a.z;
+		baseframe[i].a.w = j.translate[0];
+
+		baseframe[i].b.x = rot.b.x;
+		baseframe[i].b.y = rot.b.y;
+		baseframe[i].b.z = rot.b.z;
+		baseframe[i].b.w = j.translate[1];
+
+		baseframe[i].c.x = rot.c.x;
+		baseframe[i].c.y = rot.c.y;
+		baseframe[i].c.z = rot.c.z;
+		baseframe[i].c.w = j.translate[2];
 
 		Matrix3x4_invert(baseframe[i], &inversebaseframe[i]);
 		if (j.parent >= 0)
@@ -526,10 +667,22 @@ loadiqmanims(const char *filename, const iqmheader &hdr, byte *buf)
 			Matrix3x3 rot;
 			Matrix3x4 m;
 
-			Matrix3x3_mul_float(Vec4(rotate), Vec3(scale[0], scale[1], scale[2]), &rot);
-			m.a = Vec4(rot.a, translate[0]);
-			m.b = Vec4(rot.b, translate[1]);
-			m.c = Vec4(rot.c, translate[2]);
+			Matrix3x3_mul_float(rotate, Vec3(scale[0], scale[1], scale[2]), &rot);
+
+			m.a.x = rot.a.x;
+			m.a.y = rot.a.y;
+			m.a.z = rot.a.z;
+			m.a.w = translate[0];
+
+			m.b.x = rot.b.x;
+			m.b.y = rot.b.y;
+			m.b.z = rot.b.z;
+			m.b.w = translate[1];
+
+			m.c.x = rot.c.x;
+			m.c.y = rot.c.y;
+			m.c.z = rot.c.z;
+			m.c.w = translate[2];
 
 			if (p.parent >= 0) {
 				Matrix3x4 tmp;
@@ -645,9 +798,9 @@ animateiqm(float curframe)
 		// Position uses the full 3x4 transformation matrix.
 		// Normals and tangents only use the 3x3 rotation part
 		// of the transformation matrix.
-		(*dstpos)[0] = mat.a.dot(*srcpos);
-		(*dstpos)[1] = mat.b.dot(*srcpos);
-		(*dstpos)[2] = mat.c.dot(*srcpos);
+		(*dstpos)[0] = Vec4_dot(mat.a, *srcpos);
+		(*dstpos)[1] = Vec4_dot(mat.b, *srcpos);
+		(*dstpos)[2] = Vec4_dot(mat.c, *srcpos);
 
 		// Note that if the matrix includes non-uniform scaling, normal vectors
 		// must be transformed by the inverse-transpose of the matrix to have the
@@ -660,18 +813,18 @@ animateiqm(float curframe)
 		// upper 3x3 part of the position matrix instead of the adjoint-transpose shown
 		// here.
 		Matrix3x3 matnorm;
-		matnorm.a = mat.b.cross3(mat.c);
-		matnorm.b = mat.c.cross3(mat.a);
-		matnorm.c = mat.a.cross3(mat.b);
+		Vec4_cross3(mat.b, mat.c, &matnorm.a);
+		Vec4_cross3(mat.c, mat.a, &matnorm.b);
+		Vec4_cross3(mat.a, mat.b, &matnorm.c);
 
-		(*dstnorm)[0] = matnorm.a.dot(*srcnorm);
-		(*dstnorm)[1] = matnorm.b.dot(*srcnorm);
-		(*dstnorm)[2] = matnorm.c.dot(*srcnorm);
+		(*dstnorm)[0] = Vec3_dot(matnorm.a, *srcnorm);
+		(*dstnorm)[1] = Vec3_dot(matnorm.b, *srcnorm);
+		(*dstnorm)[2] = Vec3_dot(matnorm.c, *srcnorm);
 		// Note that input tangent data has 4 coordinates,
 		// so only transform the first 3 as the tangent vector.
-		(*dsttan)[0] = matnorm.a.dot(Vec3(*srctan));
-		(*dsttan)[1] = matnorm.b.dot(Vec3(*srctan));
-		(*dsttan)[2] = matnorm.c.dot(Vec3(*srctan));
+		(*dsttan)[0] = Vec3_dot(matnorm.a, Vec3(srctan->x, srctan->y, srctan->z));
+		(*dsttan)[1] = Vec3_dot(matnorm.b, Vec3(srctan->x, srctan->y, srctan->z));
+		(*dsttan)[2] = Vec3_dot(matnorm.c, Vec3(srctan->x, srctan->y, srctan->z));
 		// Note that bitangent = cross(normal, tangent) * sign,
 		// where the sign is stored in the 4th coordinate of the input tangent data.
 		*dstbitan = dstnorm->cross(*dsttan) * srctan->w;
