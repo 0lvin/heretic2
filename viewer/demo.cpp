@@ -23,11 +23,12 @@ typedef float vec3_t[3];
 /* Quaternion (x, y, z, w) */
 typedef float quat4_t[4];
 
-typedef vec3_t Matrix3x3[3];
+typedef vec3_t vec3x3_t[3];
+typedef quat4_t quat4x3_t[3];
 
 struct Matrix3x4
 {
-	quat4_t v[3];
+	quat4x3_t v;
 
 	quat4_t &operator[](int i) { return v[i]; }
 };
@@ -234,7 +235,7 @@ Quat_cross3(const quat4_t in1, const quat4_t in2, vec3_t out)
 };
 
 static void
-Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, quat4_t out[3])
+Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, quat4x3_t out)
 {
 	int i;
 
@@ -245,9 +246,9 @@ Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, quat4_t out[3])
 }
 
 static void
-Matrix3x4_invert(Matrix3x4 o, quat4_t out[3])
+Matrix3x4_invert(Matrix3x4 o, quat4x3_t out)
 {
-	Matrix3x3 invrot;
+	vec3x3_t invrot;
 	vec3_t trans;
 	int i;
 
@@ -288,7 +289,7 @@ Matrix3x4_invert(Matrix3x4 o, quat4_t out[3])
 }
 
 static void
-Matrix3x3_mul(const vec3_t q, const vec3_t scale, Matrix3x3 out)
+Matrix3x3_mul(const vec3_t q, const vec3_t scale, vec3x3_t out)
 {
 	int i;
 	float x = q[0], y = q[1], z = q[2], w = q[3],
@@ -334,7 +335,7 @@ Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 }
 
 static void
-Matrix3x4_mul_float(Matrix3x4 in1, float in2, quat4_t out[3])
+Matrix3x4_mul_float(Matrix3x4 in1, float in2, quat4x3_t out)
 {
 	int i;
 
@@ -646,7 +647,7 @@ loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 		memcpy(&q, &joints[i].rotate, sizeof(quat4_t));
 		Quat_normalize(q);
 
-		Matrix3x3 rot;
+		vec3x3_t rot;
 		Matrix3x3_mul(q, j->scale, rot);
 
 		int k;
@@ -763,7 +764,7 @@ loadiqmanims(const char *filename, const iqmheader *hdr, byte *buf)
 
 			Quat_normalize(rotate);
 
-			Matrix3x3 rot;
+			vec3x3_t rot;
 			Matrix3x4 m;
 
 			Matrix3x3_mul(rotate, scale, rot);
@@ -906,7 +907,7 @@ animateiqm(float curframe)
 		// If you don't need to use joint scaling in your models, you can simply use the
 		// upper 3x3 part of the position matrix instead of the adjoint-transpose shown
 		// here.
-		Matrix3x3 matnorm;
+		vec3x3_t matnorm;
 		Quat_cross3(mat[1], mat[2], matnorm[0]);
 		Quat_cross3(mat[2], mat[0], matnorm[1]);
 		Quat_cross3(mat[0], mat[1], matnorm[2]);
