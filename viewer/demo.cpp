@@ -197,16 +197,16 @@ Quat_mul_float(const quat4_t in1, float in2, quat4_t out)
 }
 
 static void
-Quat_addw(const quat4_t in1, float in2, quat4_t *out)
+Quat_addw(const quat4_t in1, float in2, quat4_t out)
 {
 	int i;
 
 	for(i=0; i<4; i++)
 	{
-		(*out)[i] = in1[i];
+		out[i] = in1[i];
 	}
 
-	(*out)[3] += in2;
+	out[3] += in2;
 }
 
 static float
@@ -329,7 +329,7 @@ Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 			Quat_mul_float(in2[i], in1[j][i], tmp);
 			Quat_add(sum, tmp, sum);
 		}
-		Quat_addw(sum, in1[j][3], &(*out)[j]);
+		Quat_addw(sum, in1[j][3], (*out)[j]);
 	}
 }
 
