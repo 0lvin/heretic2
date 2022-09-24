@@ -174,7 +174,8 @@ Vec3_dot(const vec3_t in1, const vec3_t in2)
 	return dot;
 }
 
-void Quat_add(const quat4_t in1, const quat4_t in2, quat4_t out)
+static void
+Quat_add(const quat4_t in1, const quat4_t in2, quat4_t out)
 {
 	int i;
 
@@ -184,7 +185,8 @@ void Quat_add(const quat4_t in1, const quat4_t in2, quat4_t out)
 	}
 }
 
-void Quat_mul_float(const quat4_t in1, float in2, quat4_t out)
+static void
+Quat_mul_float(const quat4_t in1, float in2, quat4_t out)
 {
 	int i;
 
@@ -194,7 +196,8 @@ void Quat_mul_float(const quat4_t in1, float in2, quat4_t out)
 	}
 }
 
-void Quat_addw(const quat4_t in1, float in2, quat4_t *out)
+static void
+Quat_addw(const quat4_t in1, float in2, quat4_t *out)
 {
 	int i;
 
@@ -206,7 +209,8 @@ void Quat_addw(const quat4_t in1, float in2, quat4_t *out)
 	(*out)[3] += in2;
 }
 
-float Quat_dot(const quat4_t in1, const vec3_t in2)
+static float
+Quat_dot(const quat4_t in1, const vec3_t in2)
 {
 	float dot = 0;
 	int i;
@@ -221,14 +225,16 @@ float Quat_dot(const quat4_t in1, const vec3_t in2)
 	return dot;
 }
 
-void Quat_cross3(const quat4_t in1, const quat4_t in2, vec3_t out)
+static void
+Quat_cross3(const quat4_t in1, const quat4_t in2, vec3_t out)
 {
 	out[0] = in1[1] * in2[2] - in1[2] * in2[1];
 	out[1] = in1[2] * in2[0] - in1[0] * in2[2];
 	out[2] = in1[0] * in2[1] - in1[1] * in2[0];
 };
 
-void Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
+static void
+Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 {
 	int i;
 
@@ -238,7 +244,8 @@ void Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 	}
 }
 
-void Matrix3x4_invert(Matrix3x4 o, Matrix3x4 *out)
+static void
+Matrix3x4_invert(Matrix3x4 o, Matrix3x4 *out)
 {
 	Matrix3x3 invrot;
 	vec3_t trans;
@@ -280,7 +287,8 @@ void Matrix3x4_invert(Matrix3x4 o, Matrix3x4 *out)
 	}
 }
 
-void Matrix3x3_mul(const vec3_t q, const vec3_t scale, Matrix3x3 out)
+static void
+Matrix3x3_mul(const vec3_t q, const vec3_t scale, Matrix3x3 out)
 {
 	int i;
 	float x = q[0], y = q[1], z = q[2], w = q[3],
@@ -305,7 +313,8 @@ void Matrix3x3_mul(const vec3_t q, const vec3_t scale, Matrix3x3 out)
 	}
 }
 
-void Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
+static void
+Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 {
 	int j;
 	for(j=0; j<3; j++)
@@ -324,7 +333,8 @@ void Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 	}
 }
 
-void Matrix3x4_mul_float(Matrix3x4 in1, float in2, Matrix3x4 *out)
+static void
+Matrix3x4_mul_float(Matrix3x4 in1, float in2, Matrix3x4 *out)
 {
 	int i;
 
