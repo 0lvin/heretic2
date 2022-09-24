@@ -140,13 +140,13 @@ Vec3_mul(const vec3_t in1, const vec3_t in2, vec3_t out)
 }
 
 static void
-Vec3_mul_float(const vec3_t in1, const float in2, vec3_t *out)
+Vec3_mul_float(const vec3_t in1, const float in2, vec3_t out)
 {
 	int i;
 
 	for(i=0; i<3; i++)
 	{
-		(*out)[i] = in1[i] * in2;
+		out[i] = in1[i] * in2;
 	}
 }
 
@@ -926,7 +926,7 @@ animateiqm(float curframe)
 		// Note that bitangent = cross(normal, tangent) * sign,
 		// where the sign is stored in the 4th coordinate of the input tangent data.
 		Vec3_cross(*dstnorm, *dsttan, *dstbitan);
-		Vec3_mul_float(*dstbitan, (*srctan)[3], dstbitan);
+		Vec3_mul_float(*dstbitan, (*srctan)[3], *dstbitan);
 
 		srcpos++;
 		srcnorm++;
