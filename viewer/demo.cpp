@@ -240,7 +240,7 @@ Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 
 	for(i=0; i<3; i++)
 	{
-		Quat_add(in1[i], in2[i], ((*out)[i]));
+		Quat_add(in1[i], in2[i], (*out)[i]);
 	}
 }
 
