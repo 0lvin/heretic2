@@ -19,10 +19,18 @@ typedef unsigned long long int ullong;
 /* Vectors */
 typedef float vec2_t[2];
 typedef float vec3_t[3];
-typedef vec3_t Matrix3x3[3];
 
 /* Quaternion (x, y, z, w) */
 typedef float quat4_t[4];
+
+typedef vec3_t Matrix3x3[3];
+
+struct Matrix3x4
+{
+	quat4_t v[3];
+
+	quat4_t &operator[](int i) { return v[i]; }
+};
 
 /**
  * Basic quaternion operations.
@@ -81,10 +89,12 @@ static void
 Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
 {
 	quat4_t tmp, inv, final;
+	int i;
 
-	inv[0] = -q[0];
-	inv[1] = -q[1];
-	inv[2] = -q[2];
+	for(i=0; i<3; i++)
+	{
+		inv[i] = -q[i];
+	}
 	inv[3] =  q[3];
 
 	Quat_normalize (inv);
@@ -92,9 +102,10 @@ Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
 	Quat_multVec (q, in, tmp);
 	Quat_multQuat (tmp, inv, final);
 
-	out[0] = final[0];
-	out[1] = final[1];
-	out[2] = final[2];
+	for(i=0; i<3; i++)
+	{
+		out[i] = final[i];
+	}
 }
 
 #ifndef min
@@ -110,192 +121,217 @@ Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
 #endif
 
 static void
-Vec3_cross(const vec3_t in1, const vec3_t in2, vec3_t *out)
+Vec3_cross(const vec3_t in1, const vec3_t in2, vec3_t out)
 {
-	(*out)[0] = in1[1] * in2[2] - in1[2] * in2[1];
-	(*out)[1] = in1[2] * in2[0] - in1[0] * in2[2];
-	(*out)[2] = in1[0] * in2[1] - in1[1] * in2[0];
+	out[0] = in1[1] * in2[2] - in1[2] * in2[1];
+	out[1] = in1[2] * in2[0] - in1[0] * in2[2];
+	out[2] = in1[0] * in2[1] - in1[1] * in2[0];
 }
 
 static void
-Vec3_mul(const vec3_t in1, const vec3_t in2, vec3_t *out)
+Vec3_mul(const vec3_t in1, const vec3_t in2, vec3_t out)
 {
-	(*out)[0] = in1[0] * in2[0];
-	(*out)[1] = in1[1] * in2[1];
-	(*out)[2] = in1[2] * in2[2];
+	int i;
+
+	for(i=0; i<3; i++)
+	{
+		out[i] = in1[i] * in2[i];
+	}
 }
 
 static void
 Vec3_mul_float(const vec3_t in1, const float in2, vec3_t *out)
 {
-	(*out)[0] = in1[0] * in2;
-	(*out)[1] = in1[1] * in2;
-	(*out)[2] = in1[2] * in2;
+	int i;
+
+	for(i=0; i<3; i++)
+	{
+		(*out)[i] = in1[i] * in2;
+	}
 }
 
 static void
 Vec3_div_float(const vec3_t in1, const float in2, vec3_t *out)
 {
-	(*out)[0] = in1[0] / in2;
-	(*out)[1] = in1[1] / in2;
-	(*out)[2] = in1[2] / in2;
+	int i;
+
+	for(i=0; i<3; i++)
+	{
+		(*out)[i] = in1[i] / in2;
+	}
 }
 
 static float
 Vec3_dot(const vec3_t in1, const vec3_t in2)
 {
-	return in1[0] * in2[0] + in1[1] * in2[1] + in1[2] * in2[2];
-}
+	float dot = 0;
+	int i;
 
-void Vec4_add(const quat4_t in1, const quat4_t in2, quat4_t *out)
-{
-	(*out)[0] = in1[0] + in2[0];
-	(*out)[1] = in1[1] + in2[1];
-	(*out)[2] = in1[2] + in2[2];
-	(*out)[3] = in1[3] + in2[3];
-}
-
-void Vec4_mul_float(const quat4_t in1, float in2, quat4_t *out)
-{
-	(*out)[0] = in1[0] * in2;
-	(*out)[1] = in1[1] * in2;
-	(*out)[2] = in1[2] * in2;
-	(*out)[3] = in1[3] * in2;
-}
-
-void Vec4_addw(const quat4_t in1, float in2, quat4_t *out)
-{
-	(*out)[0] = in1[0];
-	(*out)[1] = in1[1];
-	(*out)[2] = in1[2];
-	(*out)[3] = in1[3] + in2;
-}
-
-float Vec4_dot(const quat4_t in1, const vec3_t in2)
-{
-	return in1[0] * in2[0] + in1[1] * in2[1] + in1[2] * in2[2] + in1[3];
-}
-
-void Vec4_cross3(const quat4_t in1, const quat4_t in2, vec3_t *out)
-{
-	(*out)[0] = in1[1] * in2[2] - in1[2] * in2[1];
-	(*out)[1] = in1[2] * in2[0] - in1[0] * in2[2];
-	(*out)[2] = in1[0] * in2[1] - in1[1] * in2[0];
-};
-
-struct Matrix3x4
-{
-	union
+	for(i=0; i<3; i++)
 	{
-		struct { quat4_t a, b, c; };
-		quat4_t v[3];
-	};
-
-	quat4_t &operator[](int i) { return v[i]; }
-};
-
-void Matrix3x4_plus(const Matrix3x4 in1, const Matrix3x4 in2, Matrix3x4 *out)
-{
-	Vec4_add(in1.a, in2.a, &((*out)[0]));
-	Vec4_add(in1.b, in2.b, &((*out)[1]));
-	Vec4_add(in1.c, in2.c, &((*out)[2]));
+		dot += in1[i] * in2[i];
+	}
+	return dot;
 }
 
-void Matrix3x4_invert(const Matrix3x4 o, Matrix3x4 *out)
+void Quat_add(const quat4_t in1, const quat4_t in2, quat4_t out)
+{
+	int i;
+
+	for(i=0; i<4; i++)
+	{
+		out[i] = in1[i] + in2[i];
+	}
+}
+
+void Quat_mul_float(const quat4_t in1, float in2, quat4_t out)
+{
+	int i;
+
+	for(i=0; i<4; i++)
+	{
+		out[i] = in1[i] * in2;
+	}
+}
+
+void Quat_addw(const quat4_t in1, float in2, quat4_t *out)
+{
+	int i;
+
+	for(i=0; i<4; i++)
+	{
+		(*out)[i] = in1[i];
+	}
+
+	(*out)[3] += in2;
+}
+
+float Quat_dot(const quat4_t in1, const vec3_t in2)
+{
+	float dot = 0;
+	int i;
+
+	for(i=0; i<3; i++)
+	{
+		dot += in1[i] * in2[i];
+	}
+
+	dot += in1[3];
+
+	return dot;
+}
+
+void Quat_cross3(const quat4_t in1, const quat4_t in2, vec3_t out)
+{
+	out[0] = in1[1] * in2[2] - in1[2] * in2[1];
+	out[1] = in1[2] * in2[0] - in1[0] * in2[2];
+	out[2] = in1[0] * in2[1] - in1[1] * in2[0];
+};
+
+void Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
+{
+	int i;
+
+	for(i=0; i<3; i++)
+	{
+		Quat_add(in1[i], in2[i], ((*out)[i]));
+	}
+}
+
+void Matrix3x4_invert(Matrix3x4 o, Matrix3x4 *out)
 {
 	Matrix3x3 invrot;
-	float dot;
-
-	invrot[0][0] = o.a[0];
-	invrot[0][1] = o.b[0];
-	invrot[0][2] = o.c[0];
-	invrot[1][0] = o.a[1];
-	invrot[1][1] = o.b[1];
-	invrot[1][2] = o.c[1];
-	invrot[2][0] = o.a[2];
-	invrot[2][1] = o.b[2];
-	invrot[2][2] = o.c[2];
-
-	dot = Vec3_dot(invrot[0], invrot[0]);
-	Vec3_div_float(invrot[0], dot, &invrot[0]);
-	dot = Vec3_dot(invrot[1], invrot[1]);
-	Vec3_div_float(invrot[1], dot, &invrot[1]);
-	dot = Vec3_dot(invrot[2], invrot[2]);
-	Vec3_div_float(invrot[2], dot, &invrot[2]);
-
 	vec3_t trans;
-	trans[0] = o.a[3];
-	trans[1] = o.b[3];
-	trans[2] = o.c[3];
+	int i;
 
-	(*out)[0][0] = invrot[0][0];
-	(*out)[0][1] = invrot[0][1];
-	(*out)[0][2] = invrot[0][2];
-	(*out)[0][3] = -Vec3_dot(invrot[0], trans);
+	for(i=0; i<3; i++)
+	{
+		int j;
 
-	(*out)[1][0] = invrot[1][0];
-	(*out)[1][1] = invrot[1][1];
-	(*out)[1][2] = invrot[1][2];
-	(*out)[1][3] = -Vec3_dot(invrot[1], trans);
+		for(j=0; j<3; j++)
+		{
+			invrot[i][j] = o[j][i];
+		}
+	}
 
-	(*out)[2][0] = invrot[2][0];
-	(*out)[2][1] = invrot[2][1];
-	(*out)[2][2] = invrot[2][2];
-	(*out)[2][3] = -Vec3_dot(invrot[2], trans);
+	for(i=0; i<3; i++)
+	{
+		float dot;
+
+		dot = Vec3_dot(invrot[i], invrot[i]);
+		Vec3_div_float(invrot[i], dot, &invrot[i]);
+	}
+
+	for(i=0; i<3; i++)
+	{
+		trans[i] = o[i][3];
+	}
+
+	for(i=0; i<3; i++)
+	{
+		int j;
+
+		for(j=0; j<3; j++)
+		{
+			(*out)[i][j] = invrot[i][j];
+		}
+
+		(*out)[i][3] = -Vec3_dot(invrot[i], trans);
+	}
 }
 
-void Matrix3x3_mul_float(const vec3_t q, const vec3_t scale, Matrix3x3 *out)
+void Matrix3x3_mul(const vec3_t q, const vec3_t scale, Matrix3x3 out)
 {
+	int i;
 	float x = q[0], y = q[1], z = q[2], w = q[3],
 		  tx = 2*x, ty = 2*y, tz = 2*z,
 		  txx = tx*x, tyy = ty*y, tzz = tz*z,
 		  txy = tx*y, txz = tx*z, tyz = ty*z,
 		  twx = tx*w, twy = ty*w, twz = tz*w;
 
-	(*out)[0][0] = 1 - (tyy + tzz);
-	(*out)[0][1] = txy - twz;
-	(*out)[0][2] = txz + twy;
-	(*out)[1][0] = txy + twz;
-	(*out)[1][1] = 1 - (txx + tzz);
-	(*out)[1][2] = tyz - twx;
-	(*out)[2][0] = txz - twy;
-	(*out)[2][1] = tyz + twx;
-	(*out)[2][2] = 1 - (txx + tyy);
-	Vec3_mul((*out)[0], scale, &(*out)[0]);
-	Vec3_mul((*out)[1], scale, &(*out)[1]);
-	Vec3_mul((*out)[2], scale, &(*out)[2]);
+	out[0][0] = 1 - (tyy + tzz);
+	out[0][1] = txy - twz;
+	out[0][2] = txz + twy;
+	out[1][0] = txy + twz;
+	out[1][1] = 1 - (txx + tzz);
+	out[1][2] = tyz - twx;
+	out[2][0] = txz - twy;
+	out[2][1] = tyz + twx;
+	out[2][2] = 1 - (txx + tyy);
+
+	for(i=0; i<3; i++)
+	{
+		Vec3_mul(out[i], scale, out[i]);
+	}
 }
 
-void Matrix3x4_mul(const Matrix3x4 in1, const Matrix3x4 in2, Matrix3x4 *out)
+void Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 {
-	quat4_t tmp, sum;
-	Vec4_mul_float(in2.a, in1.a[0], &sum);
-	Vec4_mul_float(in2.b, in1.a[1], &tmp);
-	Vec4_add(sum, tmp, &sum);
-	Vec4_mul_float(in2.c, in1.a[2], &tmp);
-	Vec4_add(sum, tmp, &sum);
-	Vec4_addw(sum, in1.a[3], &(*out)[0]);
+	int j;
+	for(j=0; j<3; j++)
+	{
+		quat4_t sum = {0};
+		int i;
 
-	Vec4_mul_float(in2.a, in1.b[0], &sum);
-	Vec4_mul_float(in2.b, in1.b[1], &tmp);
-	Vec4_add(sum, tmp, &sum);
-	Vec4_mul_float(in2.c, in1.b[2], &tmp);
-	Vec4_add(sum, tmp, &sum);
-	Vec4_addw(sum, in1.b[3], &(*out)[1]);
+		for(i=0; i<3; i++)
+		{
+			quat4_t tmp;
 
-	Vec4_mul_float(in2.a, in1.c[0], &sum);
-	Vec4_mul_float(in2.b, in1.c[1], &tmp);
-	Vec4_add(sum, tmp, &sum);
-	Vec4_mul_float(in2.c, in1.c[2], &tmp);
-	Vec4_add(sum, tmp, &sum);
-	Vec4_addw(sum, in1.c[3], &(*out)[2]);
+			Quat_mul_float(in2[i], in1[j][i], tmp);
+			Quat_add(sum, tmp, sum);
+		}
+		Quat_addw(sum, in1[j][3], &(*out)[j]);
+	}
 }
 
-void Matrix3x4_mul_float(const Matrix3x4 in1, float in2, Matrix3x4 *out)
+void Matrix3x4_mul_float(Matrix3x4 in1, float in2, Matrix3x4 *out)
 {
-	Vec4_mul_float(in1.a, in2, &((*out)[0]));
-	Vec4_mul_float(in1.b, in2, &((*out)[1]));
-	Vec4_mul_float(in1.c, in2, &((*out)[2]));
+	int i;
+
+	for(i=0; i<3; i++)
+	{
+		Quat_mul_float(in1[i], in2, (*out)[i]);
+	}
 }
 
 #include "iqm.h"
@@ -501,154 +537,147 @@ lilswap_short(ushort *buf, int len)
 }
 
 static bool
-loadiqmmeshes(const char *filename, const iqmheader &hdr, byte *buf)
+loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 {
 	if (meshdata)
 		return false;
 
-	lilswap_uint((uint *)&buf[hdr.ofs_vertexarrays], hdr.num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
-	lilswap_uint((uint *)&buf[hdr.ofs_triangles], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
-	lilswap_uint((uint *)&buf[hdr.ofs_meshes], hdr.num_meshes*sizeof(iqmmesh)/sizeof(uint));
-	lilswap_uint((uint *)&buf[hdr.ofs_joints], hdr.num_joints*sizeof(iqmjoint)/sizeof(uint));
-	if (hdr.ofs_adjacency)
-		lilswap_uint((uint *)&buf[hdr.ofs_adjacency], hdr.num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_vertexarrays], hdr->num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_triangles], hdr->num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_meshes], hdr->num_meshes*sizeof(iqmmesh)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_joints], hdr->num_joints*sizeof(iqmjoint)/sizeof(uint));
+	if (hdr->ofs_adjacency)
+		lilswap_uint((uint *)&buf[hdr->ofs_adjacency], hdr->num_triangles*sizeof(iqmtriangle)/sizeof(uint));
 
 	meshdata = buf;
-	nummeshes = hdr.num_meshes;
-	numtris = hdr.num_triangles;
-	numverts = hdr.num_vertexes;
-	numjoints = hdr.num_joints;
+	nummeshes = hdr->num_meshes;
+	numtris = hdr->num_triangles;
+	numverts = hdr->num_vertexes;
+	numjoints = hdr->num_joints;
 	outposition = (float*)malloc(sizeof(float[3*numverts]));
 	outnormal = (float*)malloc(sizeof(float[3*numverts]));
 	outtangent = (float*)malloc(sizeof(float[3*numverts]));
 	outbitangent = (float*)malloc(sizeof(float[3*numverts]));
-	outframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr.num_joints]));
+	outframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr->num_joints]));
 	textures = (GLuint*)malloc(sizeof(GLuint[nummeshes]));
 	memset(textures, 0, nummeshes*sizeof(GLuint));
 
-	printf("%s: load: %d vertex arrays \n", __func__, hdr.num_vertexarrays);
-	printf("%s: load: %d vertex ofs \n", __func__, hdr.ofs_vertexarrays);
-	printf("%s: load: %d text ofs \n", __func__, hdr.ofs_text);
+	printf("%s: load: %d vertex arrays \n", __func__, hdr->num_vertexarrays);
+	printf("%s: load: %d vertex ofs \n", __func__, hdr->ofs_vertexarrays);
+	printf("%s: load: %d text ofs \n", __func__, hdr->ofs_text);
 
-	const char *str = hdr.ofs_text ? (char *)&buf[hdr.ofs_text] : "";
-	iqmvertexarray *vas = (iqmvertexarray *)&buf[hdr.ofs_vertexarrays];
+	const char *str = hdr->ofs_text ? (char *)&buf[hdr->ofs_text] : "";
+	iqmvertexarray *vas = (iqmvertexarray *)&buf[hdr->ofs_vertexarrays];
 
-	for(int i = 0; i < (int)hdr.num_vertexarrays; i++)
+	for(int i = 0; i < (int)hdr->num_vertexarrays; i++)
 	{
-		iqmvertexarray &va = vas[i];
+		iqmvertexarray *va = &vas[i];
 
-		printf("%s: load: %d type vertex\n", __func__, va.type);
+		printf("%s: load: %d type vertex\n", __func__, va->type);
 
-		switch(va.type)
+		switch(va->type)
 		{
 			case IQM_POSITION:
-				if (va.format != IQM_FLOAT || va.size != 3)
+				if (va->format != IQM_FLOAT || va->size != 3)
 					return false;
-				inposition = (float *)&buf[va.offset];
-				lilswap_float(inposition, 3*hdr.num_vertexes);
+				inposition = (float *)&buf[va->offset];
+				lilswap_float(inposition, 3*hdr->num_vertexes);
 				break;
 			case IQM_NORMAL:
-				if (va.format != IQM_FLOAT || va.size != 3)
+				if (va->format != IQM_FLOAT || va->size != 3)
 					return false;
-				innormal = (float *)&buf[va.offset];
-				lilswap_float(innormal, 3*hdr.num_vertexes);
+				innormal = (float *)&buf[va->offset];
+				lilswap_float(innormal, 3*hdr->num_vertexes);
 				break;
 			case IQM_TANGENT:
-				if (va.format != IQM_FLOAT || va.size != 4)
+				if (va->format != IQM_FLOAT || va->size != 4)
 					return false;
-				intangent = (float *)&buf[va.offset];
-				lilswap_float(intangent, 4*hdr.num_vertexes);
+				intangent = (float *)&buf[va->offset];
+				lilswap_float(intangent, 4*hdr->num_vertexes);
 				break;
 			case IQM_TEXCOORD:
-				if (va.format != IQM_FLOAT || va.size != 2)
+				if (va->format != IQM_FLOAT || va->size != 2)
 					return false;
-				intexcoord = (float *)&buf[va.offset];
-				lilswap_float(intexcoord, 2*hdr.num_vertexes);
+				intexcoord = (float *)&buf[va->offset];
+				lilswap_float(intexcoord, 2*hdr->num_vertexes);
 				break;
 			case IQM_BLENDINDEXES:
-				if (va.format != IQM_UBYTE || va.size != 4)
+				if (va->format != IQM_UBYTE || va->size != 4)
 					return false;
-				inblendindex = (byte *)&buf[va.offset];
+				inblendindex = (byte *)&buf[va->offset];
 				break;
 			case IQM_BLENDWEIGHTS:
-				if (va.format != IQM_UBYTE || va.size != 4)
+				if (va->format != IQM_UBYTE || va->size != 4)
 					return false;
-				inblendweight = (byte *)&buf[va.offset];
+				inblendweight = (byte *)&buf[va->offset];
 				break;
 			case IQM_COLOR:
-				if (va.format != IQM_UBYTE || va.size != 4)
+				if (va->format != IQM_UBYTE || va->size != 4)
 					return false;
-				incolor = (byte *)&buf[va.offset];
+				incolor = (byte *)&buf[va->offset];
 				break;
 		}
 	}
 
-	tris = (iqmtriangle *)&buf[hdr.ofs_triangles];
-	meshes = (iqmmesh *)&buf[hdr.ofs_meshes];
-	joints = (iqmjoint *)&buf[hdr.ofs_joints];
-	if (hdr.ofs_adjacency)
-		adjacency = (iqmtriangle *)&buf[hdr.ofs_adjacency];
-
-	baseframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr.num_joints]));
-	inversebaseframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr.num_joints]));
-	for(int i = 0; i < (int)hdr.num_joints; i++)
+	tris = (iqmtriangle *)&buf[hdr->ofs_triangles];
+	meshes = (iqmmesh *)&buf[hdr->ofs_meshes];
+	joints = (iqmjoint *)&buf[hdr->ofs_joints];
+	if (hdr->ofs_adjacency)
 	{
-		iqmjoint &j = joints[i];
-		quat4_t q;
-		q[0] = j.rotate[0];
-		q[1] = j.rotate[1];
-		q[2] = j.rotate[2];
-		q[3] = j.rotate[3];
+		adjacency = (iqmtriangle *)&buf[hdr->ofs_adjacency];
+	}
 
+	baseframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr->num_joints]));
+	inversebaseframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr->num_joints]));
+	for(int i = 0; i < (int)hdr->num_joints; i++)
+	{
+		iqmjoint *j = &joints[i];
+		quat4_t q;
+		memcpy(&q, &joints[i].rotate, sizeof(quat4_t));
 		Quat_normalize(q);
 
 		Matrix3x3 rot;
-		Matrix3x3_mul_float(q, j.scale, &rot);
+		Matrix3x3_mul(q, j->scale, rot);
 
-		baseframe[i][0][0] = rot[0][0];
-		baseframe[i][0][1] = rot[0][1];
-		baseframe[i][0][2] = rot[0][2];
-		baseframe[i][0][3] = j.translate[0];
-
-		baseframe[i][1][0] = rot[1][0];
-		baseframe[i][1][1] = rot[1][1];
-		baseframe[i][1][2] = rot[1][2];
-		baseframe[i][1][3] = j.translate[1];
-
-		baseframe[i][2][0] = rot[2][0];
-		baseframe[i][2][1] = rot[2][1];
-		baseframe[i][2][2] = rot[2][2];
-		baseframe[i][2][3] = j.translate[2];
+		int k;
+		for(k=0; k < 3; k++)
+		{
+			memcpy(&baseframe[i][k][0], &rot[k][0], sizeof(vec3_t));
+			baseframe[i][k][3] = j->translate[k];
+		}
 
 		Matrix3x4_invert(baseframe[i], &inversebaseframe[i]);
-		if (j.parent >= 0)
+		if (j->parent >= 0)
 		{
-			Matrix3x4_mul(baseframe[j.parent], baseframe[i], &baseframe[i]);
-			Matrix3x4_mul(inversebaseframe[i], inversebaseframe[j.parent], &inversebaseframe[i]);
+			Matrix3x4_mul(baseframe[j->parent], baseframe[i], &baseframe[i]);
+			Matrix3x4_mul(inversebaseframe[i], inversebaseframe[j->parent], &inversebaseframe[i]);
 		}
 	}
 
-	for(int i = 0; i < (int)hdr.num_meshes; i++)
+	for(int i = 0; i < (int)hdr->num_meshes; i++)
 	{
-		iqmmesh &m = meshes[i];
-		printf("%s: loaded mesh: %s\n", filename, &str[m.name]);
-		textures[i] = loadtexture(&str[m.material], 0);
+		iqmmesh *m = &meshes[i];
+		printf("%s: loaded mesh: %s\n", filename, &str[m->name]);
+		textures[i] = loadtexture(&str[m->material], 0);
 		if (textures[i])
-			printf("%s: loaded material: %s\n", filename, &str[m.material]);
+			printf("%s: loaded material: %s\n", filename, &str[m->material]);
 	}
 
 	return true;
 }
 
 static bool
-loadiqmanims(const char *filename, const iqmheader &hdr, byte *buf)
+loadiqmanims(const char *filename, const iqmheader *hdr, byte *buf)
 {
-	if ((int)hdr.num_poses != numjoints)
+	if ((int)hdr->num_poses != numjoints)
 		return false;
 
 	if (animdata)
 	{
-		if (animdata != meshdata) free(animdata);
+		if (animdata != meshdata)
+		{
+			free(animdata);
+		}
 		free(frames);
 		animdata = NULL;
 		anims = NULL;
@@ -657,31 +686,32 @@ loadiqmanims(const char *filename, const iqmheader &hdr, byte *buf)
 		numanims = 0;
 	}
 
-	lilswap_uint((uint *)&buf[hdr.ofs_poses], hdr.num_poses*sizeof(iqmpose)/sizeof(uint));
-	lilswap_uint((uint *)&buf[hdr.ofs_anims], hdr.num_anims*sizeof(iqmanim)/sizeof(uint));
-	lilswap_short((ushort *)&buf[hdr.ofs_frames], hdr.num_frames*hdr.num_framechannels);
-	if (hdr.ofs_bounds)
-		lilswap_uint((uint *)&buf[hdr.ofs_bounds], hdr.num_frames*sizeof(iqmbounds)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_poses], hdr->num_poses*sizeof(iqmpose)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_anims], hdr->num_anims*sizeof(iqmanim)/sizeof(uint));
+	lilswap_short((ushort *)&buf[hdr->ofs_frames], hdr->num_frames*hdr->num_framechannels);
+	if (hdr->ofs_bounds)
+		lilswap_uint((uint *)&buf[hdr->ofs_bounds], hdr->num_frames*sizeof(iqmbounds)/sizeof(uint));
 
 	animdata = buf;
-	numanims = hdr.num_anims;
-	numframes = hdr.num_frames;
+	numanims = hdr->num_anims;
+	numframes = hdr->num_frames;
 
-	const char *str = hdr.ofs_text ? (char *)&buf[hdr.ofs_text] : "";
-	anims = (iqmanim *)&buf[hdr.ofs_anims];
-	poses = (iqmpose *)&buf[hdr.ofs_poses];
-	frames = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr.num_frames * hdr.num_poses]));
-	ushort *framedata = (ushort *)&buf[hdr.ofs_frames];
-	if (hdr.ofs_bounds)
-		bounds = (iqmbounds *)&buf[hdr.ofs_bounds];
+	const char *str = hdr->ofs_text ? (char *)&buf[hdr->ofs_text] : "";
+	anims = (iqmanim *)&buf[hdr->ofs_anims];
+	poses = (iqmpose *)&buf[hdr->ofs_poses];
+	frames = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr->num_frames * hdr->num_poses]));
+	ushort *framedata = (ushort *)&buf[hdr->ofs_frames];
+	if (hdr->ofs_bounds)
+		bounds = (iqmbounds *)&buf[hdr->ofs_bounds];
 
-	for(int i = 0; i < (int)hdr.num_frames; i++)
+	for(int i = 0; i < (int)hdr->num_frames; i++)
 	{
-		for(int j = 0; j < (int)hdr.num_poses; j++)
+		for(int j = 0; j < (int)hdr->num_poses; j++)
 		{
 			iqmpose &p = poses[j];
 			quat4_t rotate;
 			vec3_t translate, scale;
+			int k;
 
 			translate[0] = p.channeloffset[0];
 			if (p.mask&0x01)
@@ -726,37 +756,28 @@ loadiqmanims(const char *filename, const iqmheader &hdr, byte *buf)
 			Matrix3x3 rot;
 			Matrix3x4 m;
 
-			Matrix3x3_mul_float(rotate, scale, &rot);
+			Matrix3x3_mul(rotate, scale, rot);
 
-			m[0][0] = rot[0][0];
-			m[0][1] = rot[0][1];
-			m[0][2] = rot[0][2];
-			m[0][3] = translate[0];
-
-			m[1][0] = rot[1][0];
-			m[1][1] = rot[1][1];
-			m[1][2] = rot[1][2];
-			m[1][3] = translate[1];
-
-			m[2][0] = rot[2][0];
-			m[2][1] = rot[2][1];
-			m[2][2] = rot[2][2];
-			m[2][3] = translate[2];
+			for(k=0; k<3; k++)
+			{
+				memcpy(&m[k][0], &rot[k][0], sizeof(vec3_t));
+				m[k][3] = translate[k];
+			}
 
 			if (p.parent >= 0) {
 				Matrix3x4 tmp;
 
 				Matrix3x4_mul(baseframe[p.parent], m, &tmp);
-				Matrix3x4_mul(tmp, inversebaseframe[j], &frames[i*hdr.num_poses + j]);
+				Matrix3x4_mul(tmp, inversebaseframe[j], &frames[i*hdr->num_poses + j]);
 			}
 			else
 			{
-				Matrix3x4_mul(m, inversebaseframe[j], &frames[i*hdr.num_poses + j]);
+				Matrix3x4_mul(m, inversebaseframe[j], &frames[i*hdr->num_poses + j]);
 			}
 		}
 	}
 
-	for(int i = 0; i < (int)hdr.num_anims; i++)
+	for(int i = 0; i < (int)hdr->num_anims; i++)
 	{
 		printf("%s: loaded anim: %s\n", filename, &str[anims[i].name]);
 	}
@@ -784,9 +805,9 @@ loadiqm(const char *filename)
 	if (fread(buf + sizeof(hdr), 1, hdr.filesize - sizeof(hdr), f) != hdr.filesize - sizeof(hdr))
 		goto error;
 
-	if (hdr.num_meshes > 0 && !loadiqmmeshes(filename, hdr, buf))
+	if (hdr.num_meshes > 0 && !loadiqmmeshes(filename, &hdr, buf))
 		goto error;
-	if (hdr.num_anims > 0 && !loadiqmanims(filename, hdr, buf))
+	if (hdr.num_anims > 0 && !loadiqmanims(filename, &hdr, buf))
 		goto error;
 
 	fclose(f);
@@ -836,6 +857,7 @@ animateiqm(float curframe)
 	const byte *index = inblendindex, *weight = inblendweight;
 	for(int i = 0; i < numverts; i++)
 	{
+		int k;
 		// Blend matrixes for this vertex according to its blend weights.
 		// the first index/weight is always present, and the weights are
 		// guaranteed to add up to 255. So if only the first weight is
@@ -861,9 +883,10 @@ animateiqm(float curframe)
 		// Position uses the full 3x4 transformation matrix.
 		// Normals and tangents only use the 3x3 rotation part
 		// of the transformation matrix.
-		(*dstpos)[0] = Vec4_dot(mat[0], *srcpos);
-		(*dstpos)[1] = Vec4_dot(mat[1], *srcpos);
-		(*dstpos)[2] = Vec4_dot(mat[2], *srcpos);
+		for(k=0; k<3; k++)
+		{
+			(*dstpos)[k] = Quat_dot(mat[k], *srcpos);
+		}
 
 		// Note that if the matrix includes non-uniform scaling, normal vectors
 		// must be transformed by the inverse-transpose of the matrix to have the
@@ -876,25 +899,23 @@ animateiqm(float curframe)
 		// upper 3x3 part of the position matrix instead of the adjoint-transpose shown
 		// here.
 		Matrix3x3 matnorm;
-		vec3_t tmp;
-		Vec4_cross3(mat[1], mat[2], &matnorm[0]);
-		Vec4_cross3(mat[2], mat[0], &matnorm[1]);
-		Vec4_cross3(mat[0], mat[1], &matnorm[2]);
+		Quat_cross3(mat[1], mat[2], matnorm[0]);
+		Quat_cross3(mat[2], mat[0], matnorm[1]);
+		Quat_cross3(mat[0], mat[1], matnorm[2]);
 
-		(*dstnorm)[0] = Vec3_dot(matnorm[0], *srcnorm);
-		(*dstnorm)[1] = Vec3_dot(matnorm[1], *srcnorm);
-		(*dstnorm)[2] = Vec3_dot(matnorm[2], *srcnorm);
+		for(k=0; k<3; k++)
+		{
+			(*dstnorm)[k] = Vec3_dot(matnorm[k], *srcnorm);
+		}
 		// Note that input tangent data has 4 coordinates,
 		// so only transform the first 3 as the tangent vector.
-		tmp[0] = (*srctan)[0];
-		tmp[1] = (*srctan)[1];
-		tmp[2] = (*srctan)[2];
-		(*dsttan)[0] = Vec3_dot(matnorm[0], tmp);
-		(*dsttan)[1] = Vec3_dot(matnorm[1], tmp);
-		(*dsttan)[2] = Vec3_dot(matnorm[2], tmp);
+		for(k=0; k<3; k++)
+		{
+			(*dsttan)[k] = Vec3_dot(matnorm[k], *srctan);
+		}
 		// Note that bitangent = cross(normal, tangent) * sign,
 		// where the sign is stored in the 4th coordinate of the input tangent data.
-		Vec3_cross(*dstnorm, *dsttan, dstbitan);
+		Vec3_cross(*dstnorm, *dsttan, *dstbitan);
 		Vec3_mul_float(*dstbitan, (*srctan)[3], dstbitan);
 
 		srcpos++;
@@ -1005,11 +1026,11 @@ setupcamera()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	GLdouble aspect = double(scrw)/scrh,
-			 fov = ( 90 * M_PI ) / 180,
-			 fovy = 2*atan2(tan(fov/2), aspect),
+	GLdouble aspect = double(scrw) / scrh,
+			 fov = (90 * M_PI) / 180,
+			 fovy = 2 * atan2(tan(fov / 2), aspect),
 			 nearplane = 1e-2f, farplane = 1000,
-			 ydist = nearplane * tan(fovy/2), xdist = ydist * aspect;
+			 ydist = nearplane * tan(fovy / 2), xdist = ydist * aspect;
 	glFrustum(-xdist, xdist, -ydist, ydist, nearplane, farplane);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -1028,7 +1049,7 @@ float animate = 0;
 static void
 timerfunc(int val)
 {
-	animate += 10*val/1000.0f;
+	animate += 10 * val / 1000.0f;
 	glutPostRedisplay();
 	glutTimerFunc(35, timerfunc, 35);
 }
