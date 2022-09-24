@@ -235,7 +235,7 @@ Quat_cross3(const quat4_t in1, const quat4_t in2, vec3_t out)
 };
 
 static void
-Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, quat4x3_t out)
+Matrix3x4_plus(quat4x3_t in1, quat4x3_t in2, quat4x3_t out)
 {
 	int i;
 
@@ -335,7 +335,7 @@ Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, quat4x3_t out)
 }
 
 static void
-Matrix3x4_mul_float(Matrix3x4 in1, float in2, quat4x3_t out)
+Matrix3x4_mul_float(quat4x3_t in1, float in2, quat4x3_t out)
 {
 	int i;
 
@@ -877,15 +877,15 @@ animateiqm(float curframe)
 		// There are only at most 4 weights per vertex, and they are in
 		// sorted order from highest weight to lowest weight. Weights with
 		// 0 values, which are always at the end, are unused.
-		Matrix3x4 mat;
+		quat4x3_t mat;
 
-		Matrix3x4_mul_float(outframe[index[0]], weight[0]/255.0f, mat.v);
+		Matrix3x4_mul_float(outframe[index[0]].v, weight[0]/255.0f, mat);
 		for(int j = 1; j < 4 && weight[j]; j++)
 		{
-			Matrix3x4 tmp;
+			quat4x3_t tmp;
 
-			Matrix3x4_mul_float(outframe[index[j]], weight[j]/255.0f, tmp.v);
-			Matrix3x4_plus(tmp, mat, mat.v);
+			Matrix3x4_mul_float(outframe[index[j]].v, weight[j]/255.0f, tmp);
+			Matrix3x4_plus(tmp, mat, mat);
 		}
 
 		// Transform attributes by the blended matrix.
