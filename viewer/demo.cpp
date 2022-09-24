@@ -234,13 +234,13 @@ Quat_cross3(const quat4_t in1, const quat4_t in2, vec3_t out)
 };
 
 static void
-Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
+Matrix3x4_plus(Matrix3x4 in1, Matrix3x4 in2, quat4_t out[3])
 {
 	int i;
 
 	for(i=0; i<3; i++)
 	{
-		Quat_add(in1[i], in2[i], (*out)[i]);
+		Quat_add(in1[i], in2[i], out[i]);
 	}
 }
 
@@ -884,7 +884,7 @@ animateiqm(float curframe)
 			Matrix3x4 tmp;
 
 			Matrix3x4_mul_float(outframe[index[j]], weight[j]/255.0f, tmp.v);
-			Matrix3x4_plus(tmp, mat, &mat);
+			Matrix3x4_plus(tmp, mat, mat.v);
 		}
 
 		// Transform attributes by the blended matrix.
