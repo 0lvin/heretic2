@@ -151,13 +151,13 @@ Vec3_mul_float(const vec3_t in1, const float in2, vec3_t out)
 }
 
 static void
-Vec3_div_float(const vec3_t in1, const float in2, vec3_t *out)
+Vec3_div_float(const vec3_t in1, const float in2, vec3_t out)
 {
 	int i;
 
 	for(i=0; i<3; i++)
 	{
-		(*out)[i] = in1[i] / in2;
+		out[i] = in1[i] / in2;
 	}
 }
 
@@ -266,7 +266,7 @@ Matrix3x4_invert(Matrix3x4 o, Matrix3x4 *out)
 		float dot;
 
 		dot = Vec3_dot(invrot[i], invrot[i]);
-		Vec3_div_float(invrot[i], dot, &invrot[i]);
+		Vec3_div_float(invrot[i], dot, invrot[i]);
 	}
 
 	for(i=0; i<3; i++)
