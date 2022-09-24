@@ -334,13 +334,13 @@ Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 }
 
 static void
-Matrix3x4_mul_float(Matrix3x4 in1, float in2, Matrix3x4 *out)
+Matrix3x4_mul_float(Matrix3x4 in1, float in2, quat4_t out[3])
 {
 	int i;
 
 	for(i=0; i<3; i++)
 	{
-		Quat_mul_float(in1[i], in2, (*out)[i]);
+		Quat_mul_float(in1[i], in2, out[i]);
 	}
 }
 
@@ -878,12 +878,12 @@ animateiqm(float curframe)
 		// 0 values, which are always at the end, are unused.
 		Matrix3x4 mat;
 
-		Matrix3x4_mul_float(outframe[index[0]], weight[0]/255.0f, &mat);
+		Matrix3x4_mul_float(outframe[index[0]], weight[0]/255.0f, mat.v);
 		for(int j = 1; j < 4 && weight[j]; j++)
 		{
 			Matrix3x4 tmp;
 
-			Matrix3x4_mul_float(outframe[index[j]], weight[j]/255.0f, &tmp);
+			Matrix3x4_mul_float(outframe[index[j]], weight[j]/255.0f, tmp.v);
 			Matrix3x4_plus(tmp, mat, &mat);
 		}
 
