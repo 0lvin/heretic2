@@ -19,6 +19,7 @@ typedef unsigned long long int ullong;
 /* Vectors */
 typedef float vec2_t[2];
 typedef float vec3_t[3];
+typedef vec3_t Matrix3x3[3];
 
 /* Quaternion (x, y, z, w) */
 typedef float quat4_t[4];
@@ -108,135 +109,193 @@ Quat_rotatePoint (const quat4_t q, const vec3_t in, vec3_t out)
 #define clamp(val, minval, maxval) max(minval, min(val, maxval))
 #endif
 
-struct Vec3
+static void
+Vec3_cross(const vec3_t in1, const vec3_t in2, vec3_t *out)
 {
-	union
-	{
-		struct { float x, y, z; };
-		float v[3];
-	};
+	(*out)[0] = in1[1] * in2[2] - in1[2] * in2[1];
+	(*out)[1] = in1[2] * in2[0] - in1[0] * in2[2];
+	(*out)[2] = in1[0] * in2[1] - in1[1] * in2[0];
+}
 
-	Vec3() {}
-	Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
-	explicit Vec3(const float *v) : x(v[0]), y(v[1]), z(v[2]) {}
+static void
+Vec3_mul(const vec3_t in1, const vec3_t in2, vec3_t *out)
+{
+	(*out)[0] = in1[0] * in2[0];
+	(*out)[1] = in1[1] * in2[1];
+	(*out)[2] = in1[2] * in2[2];
+}
 
-	float &operator[](int i) { return v[i]; }
+static void
+Vec3_mul_float(const vec3_t in1, const float in2, vec3_t *out)
+{
+	(*out)[0] = in1[0] * in2;
+	(*out)[1] = in1[1] * in2;
+	(*out)[2] = in1[2] * in2;
+}
 
-	Vec3 operator*(float k) const { return Vec3(x*k, y*k, z*k); }
-
-	Vec3 &operator*=(const Vec3 &o) { x *= o.x; y *= o.y; z *= o.z; return *this; }
-	Vec3 &operator/=(float k) { x /= k; y /= k; z /= k; return *this; }
-	Vec3 cross(const Vec3 &o) const { return Vec3(y*o.z-z*o.y, z*o.x-x*o.z, x*o.y-y*o.x); }
-};
+static void
+Vec3_div_float(const vec3_t in1, const float in2, vec3_t *out)
+{
+	(*out)[0] = in1[0] / in2;
+	(*out)[1] = in1[1] / in2;
+	(*out)[2] = in1[2] / in2;
+}
 
 static float
-Vec3_dot(const Vec3 in1, const Vec3 in2)
+Vec3_dot(const vec3_t in1, const vec3_t in2)
 {
-	return in1.x * in2.x + in1.y * in2.y + in1.z * in2.z;
+	return in1[0] * in2[0] + in1[1] * in2[1] + in1[2] * in2[2];
 }
 
-struct Vec4
+void Vec4_add(const quat4_t in1, const quat4_t in2, quat4_t *out)
 {
-	struct { float x, y, z, w; };
-
-	Vec4() {}
-	Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-
-	Vec4 operator+(const Vec4 &o) const { return Vec4(x+o.x, y+o.y, z+o.z, w+o.w); }
-	Vec4 operator*(float k) const { return Vec4(x*k, y*k, z*k, w*k); }
-};
-
-void Vec4_addw(const Vec4 in1, float in2, Vec4 *out)
-{
-	out->x = in1.x;
-	out->y = in1.y;
-	out->z = in1.z;
-	out->w = in1.w + in2;
+	(*out)[0] = in1[0] + in2[0];
+	(*out)[1] = in1[1] + in2[1];
+	(*out)[2] = in1[2] + in2[2];
+	(*out)[3] = in1[3] + in2[3];
 }
 
-float Vec4_dot(const Vec4 in1, const Vec3 in2)
+void Vec4_mul_float(const quat4_t in1, float in2, quat4_t *out)
 {
-	return in1.x * in2.x + in1.y * in2.y + in1.z * in2.z + in1.w;
+	(*out)[0] = in1[0] * in2;
+	(*out)[1] = in1[1] * in2;
+	(*out)[2] = in1[2] * in2;
+	(*out)[3] = in1[3] * in2;
 }
 
-void Vec4_cross3(const Vec4 in1, const Vec4 in2, Vec3 *out)
+void Vec4_addw(const quat4_t in1, float in2, quat4_t *out)
 {
-	out->x = in1.y * in2.z - in1.z * in2.y;
-	out->y = in1.z * in2.x - in1.x * in2.z;
-	out->z = in1.x * in2.y - in1.y * in2.x;
-};
+	(*out)[0] = in1[0];
+	(*out)[1] = in1[1];
+	(*out)[2] = in1[2];
+	(*out)[3] = in1[3] + in2;
+}
 
-struct Matrix3x3
+float Vec4_dot(const quat4_t in1, const vec3_t in2)
 {
-	Vec3 a, b, c;
+	return in1[0] * in2[0] + in1[1] * in2[1] + in1[2] * in2[2] + in1[3];
+}
+
+void Vec4_cross3(const quat4_t in1, const quat4_t in2, vec3_t *out)
+{
+	(*out)[0] = in1[1] * in2[2] - in1[2] * in2[1];
+	(*out)[1] = in1[2] * in2[0] - in1[0] * in2[2];
+	(*out)[2] = in1[0] * in2[1] - in1[1] * in2[0];
 };
 
 struct Matrix3x4
 {
-	Vec4 a, b, c;
+	union
+	{
+		struct { quat4_t a, b, c; };
+		quat4_t v[3];
+	};
+
+	quat4_t &operator[](int i) { return v[i]; }
 };
 
 void Matrix3x4_plus(const Matrix3x4 in1, const Matrix3x4 in2, Matrix3x4 *out)
 {
-	out->a = in1.a + in2.a;
-	out->b = in1.b + in2.b;
-	out->c = in1.c + in2.c;
+	Vec4_add(in1.a, in2.a, &((*out)[0]));
+	Vec4_add(in1.b, in2.b, &((*out)[1]));
+	Vec4_add(in1.c, in2.c, &((*out)[2]));
 }
 
 void Matrix3x4_invert(const Matrix3x4 o, Matrix3x4 *out)
 {
 	Matrix3x3 invrot;
-	invrot.a = Vec3(o.a.x, o.b.x, o.c.x);
-	invrot.b = Vec3(o.a.y, o.b.y, o.c.y);
-	invrot.c = Vec3(o.a.z, o.b.z, o.c.z);
-	invrot.a /= Vec3_dot(invrot.a, invrot.a);
-	invrot.b /= Vec3_dot(invrot.b, invrot.b);
-	invrot.c /= Vec3_dot(invrot.c, invrot.c);
-	Vec3 trans(o.a.w, o.b.w, o.c.w);
+	float dot;
 
-	out->a.x = invrot.a.x;
-	out->a.y = invrot.a.y;
-	out->a.z = invrot.a.z;
-	out->a.w = -Vec3_dot(invrot.a, trans);
+	invrot[0][0] = o.a[0];
+	invrot[0][1] = o.b[0];
+	invrot[0][2] = o.c[0];
+	invrot[1][0] = o.a[1];
+	invrot[1][1] = o.b[1];
+	invrot[1][2] = o.c[1];
+	invrot[2][0] = o.a[2];
+	invrot[2][1] = o.b[2];
+	invrot[2][2] = o.c[2];
 
-	out->b.x = invrot.b.x;
-	out->b.y = invrot.b.y;
-	out->b.z = invrot.b.z;
-	out->b.w = -Vec3_dot(invrot.b, trans);
+	dot = Vec3_dot(invrot[0], invrot[0]);
+	Vec3_div_float(invrot[0], dot, &invrot[0]);
+	dot = Vec3_dot(invrot[1], invrot[1]);
+	Vec3_div_float(invrot[1], dot, &invrot[1]);
+	dot = Vec3_dot(invrot[2], invrot[2]);
+	Vec3_div_float(invrot[2], dot, &invrot[2]);
 
-	out->c.x = invrot.c.x;
-	out->c.y = invrot.c.y;
-	out->c.z = invrot.c.z;
-	out->c.w = -Vec3_dot(invrot.c, trans);
+	vec3_t trans;
+	trans[0] = o.a[3];
+	trans[1] = o.b[3];
+	trans[2] = o.c[3];
+
+	(*out)[0][0] = invrot[0][0];
+	(*out)[0][1] = invrot[0][1];
+	(*out)[0][2] = invrot[0][2];
+	(*out)[0][3] = -Vec3_dot(invrot[0], trans);
+
+	(*out)[1][0] = invrot[1][0];
+	(*out)[1][1] = invrot[1][1];
+	(*out)[1][2] = invrot[1][2];
+	(*out)[1][3] = -Vec3_dot(invrot[1], trans);
+
+	(*out)[2][0] = invrot[2][0];
+	(*out)[2][1] = invrot[2][1];
+	(*out)[2][2] = invrot[2][2];
+	(*out)[2][3] = -Vec3_dot(invrot[2], trans);
 }
 
-void Matrix3x3_mul_float(const vec3_t q, const Vec3 scale, Matrix3x3 *out)
+void Matrix3x3_mul_float(const vec3_t q, const vec3_t scale, Matrix3x3 *out)
 {
 	float x = q[0], y = q[1], z = q[2], w = q[3],
 		  tx = 2*x, ty = 2*y, tz = 2*z,
 		  txx = tx*x, tyy = ty*y, tzz = tz*z,
 		  txy = tx*y, txz = tx*z, tyz = ty*z,
 		  twx = tx*w, twy = ty*w, twz = tz*w;
-	(*out).a = Vec3(1 - (tyy + tzz), txy - twz, txz + twy);
-	(*out).b = Vec3(txy + twz, 1 - (txx + tzz), tyz - twx);
-	(*out).c = Vec3(txz - twy, tyz + twx, 1 - (txx + tyy));
-	(*out).a *= scale;
-	(*out).b *= scale;
-	(*out).c *= scale;
+
+	(*out)[0][0] = 1 - (tyy + tzz);
+	(*out)[0][1] = txy - twz;
+	(*out)[0][2] = txz + twy;
+	(*out)[1][0] = txy + twz;
+	(*out)[1][1] = 1 - (txx + tzz);
+	(*out)[1][2] = tyz - twx;
+	(*out)[2][0] = txz - twy;
+	(*out)[2][1] = tyz + twx;
+	(*out)[2][2] = 1 - (txx + tyy);
+	Vec3_mul((*out)[0], scale, &(*out)[0]);
+	Vec3_mul((*out)[1], scale, &(*out)[1]);
+	Vec3_mul((*out)[2], scale, &(*out)[2]);
 }
 
 void Matrix3x4_mul(const Matrix3x4 in1, const Matrix3x4 in2, Matrix3x4 *out)
 {
-	Vec4_addw(Vec4(in2.a*in1.a.x + in2.b*in1.a.y + in2.c*in1.a.z), in1.a.w, &(*out).a);
-	Vec4_addw(Vec4(in2.a*in1.b.x + in2.b*in1.b.y + in2.c*in1.b.z), in1.b.w, &(*out).b);
-	Vec4_addw(Vec4(in2.a*in1.c.x + in2.b*in1.c.y + in2.c*in1.c.z), in1.c.w, &(*out).c);
+	quat4_t tmp, sum;
+	Vec4_mul_float(in2.a, in1.a[0], &sum);
+	Vec4_mul_float(in2.b, in1.a[1], &tmp);
+	Vec4_add(sum, tmp, &sum);
+	Vec4_mul_float(in2.c, in1.a[2], &tmp);
+	Vec4_add(sum, tmp, &sum);
+	Vec4_addw(sum, in1.a[3], &(*out)[0]);
+
+	Vec4_mul_float(in2.a, in1.b[0], &sum);
+	Vec4_mul_float(in2.b, in1.b[1], &tmp);
+	Vec4_add(sum, tmp, &sum);
+	Vec4_mul_float(in2.c, in1.b[2], &tmp);
+	Vec4_add(sum, tmp, &sum);
+	Vec4_addw(sum, in1.b[3], &(*out)[1]);
+
+	Vec4_mul_float(in2.a, in1.c[0], &sum);
+	Vec4_mul_float(in2.b, in1.c[1], &tmp);
+	Vec4_add(sum, tmp, &sum);
+	Vec4_mul_float(in2.c, in1.c[2], &tmp);
+	Vec4_add(sum, tmp, &sum);
+	Vec4_addw(sum, in1.c[3], &(*out)[2]);
 }
 
 void Matrix3x4_mul_float(const Matrix3x4 in1, float in2, Matrix3x4 *out)
 {
-	out->a = in1.a * in2;
-	out->b = in1.b * in2;
-	out->c = in1.c * in2;
+	Vec4_mul_float(in1.a, in2, &((*out)[0]));
+	Vec4_mul_float(in1.b, in2, &((*out)[1]));
+	Vec4_mul_float(in1.c, in2, &((*out)[2]));
 }
 
 #include "iqm.h"
@@ -544,22 +603,22 @@ loadiqmmeshes(const char *filename, const iqmheader &hdr, byte *buf)
 		Quat_normalize(q);
 
 		Matrix3x3 rot;
-		Matrix3x3_mul_float(q, Vec3(j.scale), &rot);
+		Matrix3x3_mul_float(q, j.scale, &rot);
 
-		baseframe[i].a.x = rot.a.x;
-		baseframe[i].a.y = rot.a.y;
-		baseframe[i].a.z = rot.a.z;
-		baseframe[i].a.w = j.translate[0];
+		baseframe[i][0][0] = rot[0][0];
+		baseframe[i][0][1] = rot[0][1];
+		baseframe[i][0][2] = rot[0][2];
+		baseframe[i][0][3] = j.translate[0];
 
-		baseframe[i].b.x = rot.b.x;
-		baseframe[i].b.y = rot.b.y;
-		baseframe[i].b.z = rot.b.z;
-		baseframe[i].b.w = j.translate[1];
+		baseframe[i][1][0] = rot[1][0];
+		baseframe[i][1][1] = rot[1][1];
+		baseframe[i][1][2] = rot[1][2];
+		baseframe[i][1][3] = j.translate[1];
 
-		baseframe[i].c.x = rot.c.x;
-		baseframe[i].c.y = rot.c.y;
-		baseframe[i].c.z = rot.c.z;
-		baseframe[i].c.w = j.translate[2];
+		baseframe[i][2][0] = rot[2][0];
+		baseframe[i][2][1] = rot[2][1];
+		baseframe[i][2][2] = rot[2][2];
+		baseframe[i][2][3] = j.translate[2];
 
 		Matrix3x4_invert(baseframe[i], &inversebaseframe[i]);
 		if (j.parent >= 0)
@@ -667,22 +726,22 @@ loadiqmanims(const char *filename, const iqmheader &hdr, byte *buf)
 			Matrix3x3 rot;
 			Matrix3x4 m;
 
-			Matrix3x3_mul_float(rotate, Vec3(scale[0], scale[1], scale[2]), &rot);
+			Matrix3x3_mul_float(rotate, scale, &rot);
 
-			m.a.x = rot.a.x;
-			m.a.y = rot.a.y;
-			m.a.z = rot.a.z;
-			m.a.w = translate[0];
+			m[0][0] = rot[0][0];
+			m[0][1] = rot[0][1];
+			m[0][2] = rot[0][2];
+			m[0][3] = translate[0];
 
-			m.b.x = rot.b.x;
-			m.b.y = rot.b.y;
-			m.b.z = rot.b.z;
-			m.b.w = translate[1];
+			m[1][0] = rot[1][0];
+			m[1][1] = rot[1][1];
+			m[1][2] = rot[1][2];
+			m[1][3] = translate[1];
 
-			m.c.x = rot.c.x;
-			m.c.y = rot.c.y;
-			m.c.z = rot.c.z;
-			m.c.w = translate[2];
+			m[2][0] = rot[2][0];
+			m[2][1] = rot[2][1];
+			m[2][2] = rot[2][2];
+			m[2][3] = translate[2];
 
 			if (p.parent >= 0) {
 				Matrix3x4 tmp;
@@ -763,17 +822,17 @@ animateiqm(float curframe)
 		}
 		else
 		{
-			outframe[i] = mat1[i];
+			memcpy(&outframe[i], &mat1[i], sizeof(Matrix3x4));
 		}
 	}
 	// The actual vertex generation based on the matrixes follows...
-	const Vec3 *srcpos = (const Vec3 *)inposition,
-		*srcnorm = (const Vec3 *)innormal;
-	const Vec4 *srctan = (const Vec4 *)intangent;
-	Vec3 *dstpos = (Vec3 *)outposition,
-		*dstnorm = (Vec3 *)outnormal,
-		*dsttan = (Vec3 *)outtangent,
-		*dstbitan = (Vec3 *)outbitangent;
+	const vec3_t *srcpos = (const vec3_t *)inposition,
+		*srcnorm = (const vec3_t *)innormal;
+	const quat4_t *srctan = (const quat4_t *)intangent;
+	vec3_t *dstpos = (vec3_t *)outposition,
+		*dstnorm = (vec3_t *)outnormal,
+		*dsttan = (vec3_t *)outtangent,
+		*dstbitan = (vec3_t *)outbitangent;
 	const byte *index = inblendindex, *weight = inblendweight;
 	for(int i = 0; i < numverts; i++)
 	{
@@ -785,11 +844,15 @@ animateiqm(float curframe)
 		// There are only at most 4 weights per vertex, and they are in
 		// sorted order from highest weight to lowest weight. Weights with
 		// 0 values, which are always at the end, are unused.
-		Matrix3x4 mat = outframe[index[0]];
+		Matrix3x4 mat;
+
+		memcpy(&mat, &outframe[index[0]], sizeof(Matrix3x4));
 		Matrix3x4_mul_float(mat, weight[0]/255.0f, &mat);
 		for(int j = 1; j < 4 && weight[j]; j++)
 		{
-			Matrix3x4 tmp = outframe[index[j]];
+			Matrix3x4 tmp;
+
+			memcpy(&tmp, &outframe[index[j]], sizeof(Matrix3x4));
 			Matrix3x4_mul_float(tmp, weight[j]/255.0f, &tmp);
 			Matrix3x4_plus(tmp, mat, &mat);
 		}
@@ -798,9 +861,9 @@ animateiqm(float curframe)
 		// Position uses the full 3x4 transformation matrix.
 		// Normals and tangents only use the 3x3 rotation part
 		// of the transformation matrix.
-		(*dstpos)[0] = Vec4_dot(mat.a, *srcpos);
-		(*dstpos)[1] = Vec4_dot(mat.b, *srcpos);
-		(*dstpos)[2] = Vec4_dot(mat.c, *srcpos);
+		(*dstpos)[0] = Vec4_dot(mat[0], *srcpos);
+		(*dstpos)[1] = Vec4_dot(mat[1], *srcpos);
+		(*dstpos)[2] = Vec4_dot(mat[2], *srcpos);
 
 		// Note that if the matrix includes non-uniform scaling, normal vectors
 		// must be transformed by the inverse-transpose of the matrix to have the
@@ -813,21 +876,26 @@ animateiqm(float curframe)
 		// upper 3x3 part of the position matrix instead of the adjoint-transpose shown
 		// here.
 		Matrix3x3 matnorm;
-		Vec4_cross3(mat.b, mat.c, &matnorm.a);
-		Vec4_cross3(mat.c, mat.a, &matnorm.b);
-		Vec4_cross3(mat.a, mat.b, &matnorm.c);
+		vec3_t tmp;
+		Vec4_cross3(mat[1], mat[2], &matnorm[0]);
+		Vec4_cross3(mat[2], mat[0], &matnorm[1]);
+		Vec4_cross3(mat[0], mat[1], &matnorm[2]);
 
-		(*dstnorm)[0] = Vec3_dot(matnorm.a, *srcnorm);
-		(*dstnorm)[1] = Vec3_dot(matnorm.b, *srcnorm);
-		(*dstnorm)[2] = Vec3_dot(matnorm.c, *srcnorm);
+		(*dstnorm)[0] = Vec3_dot(matnorm[0], *srcnorm);
+		(*dstnorm)[1] = Vec3_dot(matnorm[1], *srcnorm);
+		(*dstnorm)[2] = Vec3_dot(matnorm[2], *srcnorm);
 		// Note that input tangent data has 4 coordinates,
 		// so only transform the first 3 as the tangent vector.
-		(*dsttan)[0] = Vec3_dot(matnorm.a, Vec3(srctan->x, srctan->y, srctan->z));
-		(*dsttan)[1] = Vec3_dot(matnorm.b, Vec3(srctan->x, srctan->y, srctan->z));
-		(*dsttan)[2] = Vec3_dot(matnorm.c, Vec3(srctan->x, srctan->y, srctan->z));
+		tmp[0] = (*srctan)[0];
+		tmp[1] = (*srctan)[1];
+		tmp[2] = (*srctan)[2];
+		(*dsttan)[0] = Vec3_dot(matnorm[0], tmp);
+		(*dsttan)[1] = Vec3_dot(matnorm[1], tmp);
+		(*dsttan)[2] = Vec3_dot(matnorm[2], tmp);
 		// Note that bitangent = cross(normal, tangent) * sign,
 		// where the sign is stored in the 4th coordinate of the input tangent data.
-		*dstbitan = dstnorm->cross(*dsttan) * srctan->w;
+		Vec3_cross(*dstnorm, *dsttan, dstbitan);
+		Vec3_mul_float(*dstbitan, (*srctan)[3], dstbitan);
 
 		srcpos++;
 		srcnorm++;
@@ -929,7 +997,7 @@ reshapefunc(int w, int h)
 }
 
 float camyaw = -90, campitch = 0, camroll = 0;
-Vec3 campos(20, 0, 5);
+vec3_t campos = {20, 0, 5};
 
 static void
 setupcamera()
@@ -952,7 +1020,7 @@ setupcamera()
 	glRotatef(camyaw, 0, 1, 0);
 	glRotatef(-90, 1, 0, 0);
 	glScalef(1, -1, 1);
-	glTranslatef(-campos.x, -campos.y, -campos.z);
+	glTranslatef(-campos[0], -campos[1], -campos[2]);
 }
 
 float animate = 0;
@@ -973,8 +1041,6 @@ displayfunc()
 	setupcamera();
 
 	animateiqm(animate);
-
-	printf("%s: frame: %.2f\n", __func__, animate);
 
 	renderiqm();
 
