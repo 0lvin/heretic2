@@ -878,8 +878,7 @@ animateiqm(float curframe)
 		// 0 values, which are always at the end, are unused.
 		Matrix3x4 mat;
 
-		memcpy(&mat, &outframe[index[0]], sizeof(Matrix3x4));
-		Matrix3x4_mul_float(mat, weight[0]/255.0f, &mat);
+		Matrix3x4_mul_float(outframe[index[0]], weight[0]/255.0f, &mat);
 		for(int j = 1; j < 4 && weight[j]; j++)
 		{
 			Matrix3x4 tmp;
