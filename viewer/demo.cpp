@@ -315,7 +315,7 @@ Matrix3x3_mul(const vec3_t q, const vec3_t scale, vec3x3_t out)
 }
 
 static void
-Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
+Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, quat4x3_t out)
 {
 	int j;
 	for(j=0; j<3; j++)
@@ -330,7 +330,7 @@ Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, Matrix3x4 *out)
 			Quat_mul_float(in2[i], in1[j][i], tmp);
 			Quat_add(sum, tmp, sum);
 		}
-		Quat_addw(sum, in1[j][3], (*out)[j]);
+		Quat_addw(sum, in1[j][3], out[j]);
 	}
 }
 
@@ -660,8 +660,8 @@ loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 		Matrix3x4_invert(baseframe[i], inversebaseframe[i].v);
 		if (j->parent >= 0)
 		{
-			Matrix3x4_mul(baseframe[j->parent], baseframe[i], &baseframe[i]);
-			Matrix3x4_mul(inversebaseframe[i], inversebaseframe[j->parent], &inversebaseframe[i]);
+			Matrix3x4_mul(baseframe[j->parent], baseframe[i], baseframe[i].v);
+			Matrix3x4_mul(inversebaseframe[i], inversebaseframe[j->parent], inversebaseframe[i].v);
 		}
 	}
 
@@ -778,12 +778,12 @@ loadiqmanims(const char *filename, const iqmheader *hdr, byte *buf)
 			if (p.parent >= 0) {
 				Matrix3x4 tmp;
 
-				Matrix3x4_mul(baseframe[p.parent], m, &tmp);
-				Matrix3x4_mul(tmp, inversebaseframe[j], &frames[i*hdr->num_poses + j]);
+				Matrix3x4_mul(baseframe[p.parent], m, tmp.v);
+				Matrix3x4_mul(tmp, inversebaseframe[j], frames[i*hdr->num_poses + j].v);
 			}
 			else
 			{
-				Matrix3x4_mul(m, inversebaseframe[j], &frames[i*hdr->num_poses + j]);
+				Matrix3x4_mul(m, inversebaseframe[j], frames[i*hdr->num_poses + j].v);
 			}
 		}
 	}
@@ -850,7 +850,7 @@ animateiqm(float curframe)
 	{
 		if (joints[i].parent >= 0)
 		{
-			Matrix3x4_mul(outframe[joints[i].parent], mat1[i], &outframe[i]);
+			Matrix3x4_mul(outframe[joints[i].parent], mat1[i], outframe[i].v);
 		}
 		else
 		{
