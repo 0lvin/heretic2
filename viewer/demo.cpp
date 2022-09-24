@@ -883,8 +883,7 @@ animateiqm(float curframe)
 		{
 			Matrix3x4 tmp;
 
-			memcpy(&tmp, &outframe[index[j]], sizeof(Matrix3x4));
-			Matrix3x4_mul_float(tmp, weight[j]/255.0f, &tmp);
+			Matrix3x4_mul_float(outframe[index[j]], weight[j]/255.0f, &tmp);
 			Matrix3x4_plus(tmp, mat, &mat);
 		}
 
