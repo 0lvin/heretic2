@@ -246,7 +246,7 @@ Matrix3x4_plus(quat4x3_t in1, quat4x3_t in2, quat4x3_t out)
 }
 
 static void
-Matrix3x4_invert(Matrix3x4 o, quat4x3_t out)
+Matrix3x4_invert(quat4x3_t o, quat4x3_t out)
 {
 	vec3x3_t invrot;
 	vec3_t trans;
@@ -657,7 +657,7 @@ loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 			baseframe[i][k][3] = j->translate[k];
 		}
 
-		Matrix3x4_invert(baseframe[i], inversebaseframe[i].v);
+		Matrix3x4_invert(baseframe[i].v, inversebaseframe[i].v);
 		if (j->parent >= 0)
 		{
 			Matrix3x4_mul(baseframe[j->parent], baseframe[i], baseframe[i].v);
