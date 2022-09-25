@@ -24,14 +24,12 @@
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * gcc -Wall -ansi -lGL -lGLU -lglut md2.c -o md2
  */
 
 #include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
 
 #include "../src/common/header/shared.h"
 #include "../src/common/header/files.h"
@@ -103,23 +101,6 @@ static vec3_t anorms_table[162] = {
 };
 
 static int iskin = 0, yrotate = -90, xrotate = -90;
-
-void R_Printf(int level, const char* msg, ...)
-{
-	va_list argptr;
-	va_start(argptr, msg);
-	vprintf(msg, argptr);
-	va_end(argptr);
-}
-
-void
-Com_Printf (char *msg, ...)
-{
-	va_list argptr;
-	va_start(argptr, msg);
-	vprintf(msg, argptr);
-	va_end(argptr);
-}
 
 static void
 RenderPacket(float interp, struct mem_glcmd_t *packet,

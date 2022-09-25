@@ -1,3 +1,4 @@
 *.o
 view-quake
-iqm-demo
+view-iqm
+view-md5

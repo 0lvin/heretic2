@@ -36,10 +36,17 @@ YQ2_ARCH ?= $(shell uname -m)
 endif
 endif
 
-all: view-quake iqm-demo
+CFLAGS = -g -Wall -lm -lGL -lGLU -lglut
+COMMON_FILES = ../src/common/shared/shared.c models.c render.c
+COMMON_HEADERS =  ../src/common/header/files.h ../src/common/header/shared.h iqm.h
 
-view-quake: mdl2.c models.c ../src/common/shared/shared.c ../src/common/header/files.h ../src/common/header/shared.h
-	gcc -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ../src/common/shared/shared.c models.c mdl2.c -g -Wall -lm -lGL -lGLU -lglut -o view-quake
+all: view-quake view-iqm view-md5
 
-iqm-demo: demo.c iqm.h
-	gcc demo.c -g -Wall -lm -lGL -lGLU -lglut -o iqm-demo
+view-quake: mdl2.c ${COMMON_FILES} ${COMMON_HEADERS}
+	gcc -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ${COMMON_FILES} mdl2.c ${CFLAGS} -o view-quake
+
+view-iqm: iqm.c ${COMMON_FILES} ${COMMON_HEADERS}
+	gcc -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ${COMMON_FILES} iqm.c ${CFLAGS} -o view-iqm
+
+view-md5: md5model.h md5anim.c md5mesh.c
+	gcc -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" md5anim.c md5mesh.c ${CFLAGS} -o view-md5
