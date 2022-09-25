@@ -329,7 +329,7 @@ Mod_LoadDLModel (const char *mod_name, const void *buffer, int modfilelen, void 
 
 /*
 =================
-Mod_LoadAliasModel
+Mod_LoadAliasModel/Mod_LoadMD2
 =================
 */
 static dmdl_t *

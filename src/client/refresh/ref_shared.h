@@ -102,4 +102,5 @@ dmdl_t *Mod_LoadDMDL (const char *mod_name, const void *buf, int modfilelen,
 dsprite_t *Mod_LoadSP2 (const char *mod_name, const void *buffer, int modfilelen,
 	void **extradata);
 int Mod_LoadFile(char *name, void **buffer);
+
 #endif /* SRC_CLIENT_REFRESH_REF_SHARED_H_ */
