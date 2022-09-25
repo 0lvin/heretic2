@@ -7,8 +7,8 @@
 #include <GL/glext.h>
 #include <GL/glut.h>
 
-// #include "../src/common/header/shared.h"
-// #include "../src/common/header/files.h"
+#include "../src/common/header/shared.h"
+#include "../src/common/header/files.h"
 
 typedef unsigned char byte;
 typedef unsigned short ushort;
@@ -25,13 +25,6 @@ typedef float quat4_t[4];
 
 typedef vec3_t vec3x3_t[3];
 typedef quat4_t quat4x3_t[3];
-
-struct Matrix3x4
-{
-	quat4x3_t v;
-
-	quat4_t &operator[](int i) { return v[i]; }
-};
 
 /**
  * Basic quaternion operations.
@@ -235,7 +228,7 @@ Quat_cross3(const quat4_t in1, const quat4_t in2, vec3_t out)
 };
 
 static void
-Matrix3x4_plus(quat4x3_t in1, quat4x3_t in2, quat4x3_t out)
+Matrix3x4_plus(const quat4x3_t in1, const quat4x3_t in2, quat4x3_t out)
 {
 	int i;
 
@@ -315,7 +308,7 @@ Matrix3x3_mul(const vec3_t q, const vec3_t scale, vec3x3_t out)
 }
 
 static void
-Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, quat4x3_t out)
+Matrix3x4_mul(const quat4x3_t in1, const quat4x3_t in2, quat4x3_t out)
 {
 	int j;
 	for(j=0; j<3; j++)
@@ -335,7 +328,7 @@ Matrix3x4_mul(Matrix3x4 in1, Matrix3x4 in2, quat4x3_t out)
 }
 
 static void
-Matrix3x4_mul_float(quat4x3_t in1, float in2, quat4x3_t out)
+Matrix3x4_mul_float(const quat4x3_t in1, float in2, quat4x3_t out)
 {
 	int i;
 
@@ -365,7 +358,7 @@ Matrix3x4_mul_float(quat4x3_t in1, float in2, quat4x3_t out)
 #include "../src/client/refresh/files/stb_image_resize.h"
 
 static void
-resizetexture(int w, int h, bool mipmap, int &tw, int &th)
+resizetexture(int w, int h, qboolean mipmap, int *tw, int *th)
 {
 	GLint sizelimit = 4096;
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &sizelimit);
@@ -373,26 +366,26 @@ resizetexture(int w, int h, bool mipmap, int &tw, int &th)
 	h = min(h, sizelimit);
 	if (mipmap || w & (w-1) || h & (h-1))
 	{
-		tw = th = 1;
+		*tw = *th = 1;
 
-		while(tw < w)
-			tw *= 2;
-		while(th < h)
-			th *= 2;
-		if (w < tw - tw/4)
-			tw /= 2;
-		if (h < th - th/4)
-			th /= 2;
+		while(*tw < w)
+			*tw *= 2;
+		while(*th < h)
+			*th *= 2;
+		if (w < *tw - *tw/4)
+			*tw /= 2;
+		if (h < *th - *th/4)
+			*th /= 2;
 	}
 	else
 	{
-		tw = w;
-		th = h;
+		*tw = w;
+		*th = h;
 	}
 }
 
 static void
-uploadtexture(int tw, int th, void *pixels, int pw, int ph, bool mipmap)
+uploadtexture(int tw, int th, void *pixels, int pw, int ph, qboolean mipmap)
 {
 	int bpp = 4;
 	byte *buf = NULL;
@@ -428,8 +421,10 @@ uploadtexture(int tw, int th, void *pixels, int pw, int ph, bool mipmap)
 }
 
 static void
-createtexture(int tnum, int w, int h, void *pixels, int clamp, int filter, int pw = 0, int ph = 0)
+createtexture(int tnum, int w, int h, void *pixels, int clamp, int filter)
 {
+	int pw, ph;
+
 	glBindTexture(GL_TEXTURE_2D, tnum);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
@@ -441,14 +436,13 @@ createtexture(int tnum, int w, int h, void *pixels, int clamp, int filter, int p
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 		filter > 1 ? GL_LINEAR_MIPMAP_LINEAR : (filter ? GL_LINEAR : GL_NEAREST));
 
-	if (!pw)
-		pw = w;
-	if (!ph)
-		ph = h;
+	pw = w;
+	ph = h;
+
 	int tw = w, th = h;
-	bool mipmap = filter > 1;
+	qboolean mipmap = filter > 1;
 	if (pixels)
-		resizetexture(w, h, mipmap, tw, th);
+		resizetexture(w, h, mipmap, &tw, &th);
 	uploadtexture(tw, th, pixels, pw, ph, mipmap && pixels);
 }
 
@@ -481,14 +475,14 @@ float *inposition = NULL, *innormal = NULL, *intangent = NULL, *intexcoord = NUL
 byte *inblendindex = NULL, *inblendweight = NULL, *incolor = NULL;
 float *outposition = NULL, *outnormal = NULL, *outtangent = NULL, *outbitangent = NULL;
 int nummeshes = 0, numtris = 0, numverts = 0, numjoints = 0, numframes = 0, numanims = 0;
-iqmtriangle *tris = NULL, *adjacency = NULL;
-iqmmesh *meshes = NULL;
+struct iqmtriangle *tris = NULL, *adjacency = NULL;
+struct iqmmesh *meshes = NULL;
 GLuint *textures = NULL;
-iqmjoint *joints = NULL;
-iqmpose *poses = NULL;
-iqmanim *anims = NULL;
-iqmbounds *bounds = NULL;
-Matrix3x4 *baseframe = NULL, *inversebaseframe = NULL, *outframe = NULL, *frames = NULL;
+struct iqmjoint *joints = NULL;
+struct iqmpose *poses = NULL;
+struct iqmanim *anims = NULL;
+struct iqmbounds *bounds = NULL;
+quat4x3_t *baseframe = NULL, *inversebaseframe = NULL, *outframe = NULL, *frames = NULL;
 
 static void
 cleanupiqm()
@@ -547,18 +541,18 @@ lilswap_short(ushort *buf, int len)
 */
 }
 
-static bool
-loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
+static qboolean
+loadiqmmeshes(const char *filename, const struct iqmheader *hdr, byte *buf)
 {
 	if (meshdata)
 		return false;
 
-	lilswap_uint((uint *)&buf[hdr->ofs_vertexarrays], hdr->num_vertexarrays*sizeof(iqmvertexarray)/sizeof(uint));
-	lilswap_uint((uint *)&buf[hdr->ofs_triangles], hdr->num_triangles*sizeof(iqmtriangle)/sizeof(uint));
-	lilswap_uint((uint *)&buf[hdr->ofs_meshes], hdr->num_meshes*sizeof(iqmmesh)/sizeof(uint));
-	lilswap_uint((uint *)&buf[hdr->ofs_joints], hdr->num_joints*sizeof(iqmjoint)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_vertexarrays], hdr->num_vertexarrays*sizeof(struct iqmvertexarray)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_triangles], hdr->num_triangles*sizeof(struct iqmtriangle)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_meshes], hdr->num_meshes*sizeof(struct iqmmesh)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_joints], hdr->num_joints*sizeof(struct iqmjoint)/sizeof(uint));
 	if (hdr->ofs_adjacency)
-		lilswap_uint((uint *)&buf[hdr->ofs_adjacency], hdr->num_triangles*sizeof(iqmtriangle)/sizeof(uint));
+		lilswap_uint((uint *)&buf[hdr->ofs_adjacency], hdr->num_triangles*sizeof(struct iqmtriangle)/sizeof(uint));
 
 	meshdata = buf;
 	nummeshes = hdr->num_meshes;
@@ -569,7 +563,7 @@ loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 	outnormal = (float*)malloc(sizeof(float[3*numverts]));
 	outtangent = (float*)malloc(sizeof(float[3*numverts]));
 	outbitangent = (float*)malloc(sizeof(float[3*numverts]));
-	outframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr->num_joints]));
+	outframe = (quat4x3_t*)malloc(sizeof(quat4x3_t[hdr->num_joints]));
 	textures = (GLuint*)malloc(sizeof(GLuint[nummeshes]));
 	memset(textures, 0, nummeshes*sizeof(GLuint));
 
@@ -578,11 +572,11 @@ loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 	printf("%s: load: %d text ofs \n", __func__, hdr->ofs_text);
 
 	const char *str = hdr->ofs_text ? (char *)&buf[hdr->ofs_text] : "";
-	iqmvertexarray *vas = (iqmvertexarray *)&buf[hdr->ofs_vertexarrays];
+	struct iqmvertexarray *vas = (struct iqmvertexarray *)&buf[hdr->ofs_vertexarrays];
 
 	for(int i = 0; i < (int)hdr->num_vertexarrays; i++)
 	{
-		iqmvertexarray *va = &vas[i];
+		struct iqmvertexarray *va = &vas[i];
 
 		printf("%s: load: %d type vertex\n", __func__, va->type);
 
@@ -630,19 +624,19 @@ loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 		}
 	}
 
-	tris = (iqmtriangle *)&buf[hdr->ofs_triangles];
-	meshes = (iqmmesh *)&buf[hdr->ofs_meshes];
-	joints = (iqmjoint *)&buf[hdr->ofs_joints];
+	tris = (struct iqmtriangle *)&buf[hdr->ofs_triangles];
+	meshes = (struct iqmmesh *)&buf[hdr->ofs_meshes];
+	joints = (struct iqmjoint *)&buf[hdr->ofs_joints];
 	if (hdr->ofs_adjacency)
 	{
-		adjacency = (iqmtriangle *)&buf[hdr->ofs_adjacency];
+		adjacency = (struct iqmtriangle *)&buf[hdr->ofs_adjacency];
 	}
 
-	baseframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr->num_joints]));
-	inversebaseframe = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr->num_joints]));
+	baseframe = (quat4x3_t*)malloc(sizeof(quat4x3_t[hdr->num_joints]));
+	inversebaseframe = (quat4x3_t*)malloc(sizeof(quat4x3_t[hdr->num_joints]));
 	for(int i = 0; i < (int)hdr->num_joints; i++)
 	{
-		iqmjoint *j = &joints[i];
+		struct iqmjoint *j = &joints[i];
 		quat4_t q;
 		memcpy(&q, &joints[i].rotate, sizeof(quat4_t));
 		Quat_normalize(q);
@@ -657,17 +651,22 @@ loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 			baseframe[i][k][3] = j->translate[k];
 		}
 
-		Matrix3x4_invert(baseframe[i].v, inversebaseframe[i].v);
+		Matrix3x4_invert(baseframe[i], inversebaseframe[i]);
 		if (j->parent >= 0)
 		{
-			Matrix3x4_mul(baseframe[j->parent], baseframe[i], baseframe[i].v);
-			Matrix3x4_mul(inversebaseframe[i], inversebaseframe[j->parent], inversebaseframe[i].v);
+			quat4x3_t tmp;
+
+			memcpy(&tmp, &baseframe[i], sizeof(quat4x3_t));
+			Matrix3x4_mul(baseframe[j->parent], tmp, baseframe[i]);
+
+			memcpy(&tmp, &inversebaseframe[i], sizeof(quat4x3_t));
+			Matrix3x4_mul(tmp, inversebaseframe[j->parent], inversebaseframe[i]);
 		}
 	}
 
 	for(int i = 0; i < (int)hdr->num_meshes; i++)
 	{
-		iqmmesh *m = &meshes[i];
+		struct iqmmesh *m = &meshes[i];
 		printf("%s: loaded mesh: %s\n", filename, &str[m->name]);
 		textures[i] = loadtexture(&str[m->material], 0);
 		if (textures[i])
@@ -677,8 +676,8 @@ loadiqmmeshes(const char *filename, const iqmheader *hdr, byte *buf)
 	return true;
 }
 
-static bool
-loadiqmanims(const char *filename, const iqmheader *hdr, byte *buf)
+static qboolean
+loadiqmanims(const char *filename, const struct iqmheader *hdr, byte *buf)
 {
 	if ((int)hdr->num_poses != numjoints)
 		return false;
@@ -697,63 +696,63 @@ loadiqmanims(const char *filename, const iqmheader *hdr, byte *buf)
 		numanims = 0;
 	}
 
-	lilswap_uint((uint *)&buf[hdr->ofs_poses], hdr->num_poses*sizeof(iqmpose)/sizeof(uint));
-	lilswap_uint((uint *)&buf[hdr->ofs_anims], hdr->num_anims*sizeof(iqmanim)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_poses], hdr->num_poses*sizeof(struct iqmpose)/sizeof(uint));
+	lilswap_uint((uint *)&buf[hdr->ofs_anims], hdr->num_anims*sizeof(struct iqmanim)/sizeof(uint));
 	lilswap_short((ushort *)&buf[hdr->ofs_frames], hdr->num_frames*hdr->num_framechannels);
 	if (hdr->ofs_bounds)
-		lilswap_uint((uint *)&buf[hdr->ofs_bounds], hdr->num_frames*sizeof(iqmbounds)/sizeof(uint));
+		lilswap_uint((uint *)&buf[hdr->ofs_bounds], hdr->num_frames*sizeof(struct iqmbounds)/sizeof(uint));
 
 	animdata = buf;
 	numanims = hdr->num_anims;
 	numframes = hdr->num_frames;
 
 	const char *str = hdr->ofs_text ? (char *)&buf[hdr->ofs_text] : "";
-	anims = (iqmanim *)&buf[hdr->ofs_anims];
-	poses = (iqmpose *)&buf[hdr->ofs_poses];
-	frames = (Matrix3x4*)malloc(sizeof(Matrix3x4[hdr->num_frames * hdr->num_poses]));
+	anims = (struct iqmanim *)&buf[hdr->ofs_anims];
+	poses = (struct iqmpose *)&buf[hdr->ofs_poses];
+	frames = (quat4x3_t*)malloc(sizeof(quat4x3_t[hdr->num_frames * hdr->num_poses]));
 	ushort *framedata = (ushort *)&buf[hdr->ofs_frames];
 	if (hdr->ofs_bounds)
-		bounds = (iqmbounds *)&buf[hdr->ofs_bounds];
+		bounds = (struct iqmbounds *)&buf[hdr->ofs_bounds];
 
 	for(int i = 0; i < (int)hdr->num_frames; i++)
 	{
 		for(int j = 0; j < (int)hdr->num_poses; j++)
 		{
-			iqmpose &p = poses[j];
+			struct iqmpose *p = &poses[j];
 			quat4_t rotate;
 			vec3_t translate, scale;
 			int k;
 
-			translate[0] = p.channeloffset[0];
-			if (p.mask&0x01)
-				translate[0] += *framedata++ * p.channelscale[0];
-			translate[1] = p.channeloffset[1];
-			if (p.mask&0x02)
-				translate[1] += *framedata++ * p.channelscale[1];
-			translate[2] = p.channeloffset[2];
-			if (p.mask&0x04)
-				translate[2] += *framedata++ * p.channelscale[2];
-			rotate[0] = p.channeloffset[3];
-			if (p.mask&0x08)
-				rotate[0] += *framedata++ * p.channelscale[3];
-			rotate[1] = p.channeloffset[4];
-			if (p.mask&0x10)
-				rotate[1] += *framedata++ * p.channelscale[4];
-			rotate[2] = p.channeloffset[5];
-			if (p.mask&0x20)
-				rotate[2] += *framedata++ * p.channelscale[5];
-			rotate[3] = p.channeloffset[6];
-			if (p.mask&0x40)
-				rotate[3] += *framedata++ * p.channelscale[6];
-			scale[0] = p.channeloffset[7];
-			if (p.mask&0x80)
-				scale[0] += *framedata++ * p.channelscale[7];
-			scale[1] = p.channeloffset[8];
-			if (p.mask&0x100)
-				scale[1] += *framedata++ * p.channelscale[8];
-			scale[2] = p.channeloffset[9];
-			if (p.mask&0x200)
-				scale[2] += *framedata++ * p.channelscale[9];
+			translate[0] = p->channeloffset[0];
+			if (p->mask&0x01)
+				translate[0] += *framedata++ * p->channelscale[0];
+			translate[1] = p->channeloffset[1];
+			if (p->mask&0x02)
+				translate[1] += *framedata++ * p->channelscale[1];
+			translate[2] = p->channeloffset[2];
+			if (p->mask&0x04)
+				translate[2] += *framedata++ * p->channelscale[2];
+			rotate[0] = p->channeloffset[3];
+			if (p->mask&0x08)
+				rotate[0] += *framedata++ * p->channelscale[3];
+			rotate[1] = p->channeloffset[4];
+			if (p->mask&0x10)
+				rotate[1] += *framedata++ * p->channelscale[4];
+			rotate[2] = p->channeloffset[5];
+			if (p->mask&0x20)
+				rotate[2] += *framedata++ * p->channelscale[5];
+			rotate[3] = p->channeloffset[6];
+			if (p->mask&0x40)
+				rotate[3] += *framedata++ * p->channelscale[6];
+			scale[0] = p->channeloffset[7];
+			if (p->mask&0x80)
+				scale[0] += *framedata++ * p->channelscale[7];
+			scale[1] = p->channeloffset[8];
+			if (p->mask&0x100)
+				scale[1] += *framedata++ * p->channelscale[8];
+			scale[2] = p->channeloffset[9];
+			if (p->mask&0x200)
+				scale[2] += *framedata++ * p->channelscale[9];
 
 			// Concatenate each pose with the inverse base pose to avoid doing this at animation time.
 			// If the joint has a parent, then it needs to be pre-concatenated with its parent's base pose.
@@ -765,7 +764,7 @@ loadiqmanims(const char *filename, const iqmheader *hdr, byte *buf)
 			Quat_normalize(rotate);
 
 			vec3x3_t rot;
-			Matrix3x4 m;
+			quat4x3_t m;
 
 			Matrix3x3_mul(rotate, scale, rot);
 
@@ -775,15 +774,15 @@ loadiqmanims(const char *filename, const iqmheader *hdr, byte *buf)
 				m[k][3] = translate[k];
 			}
 
-			if (p.parent >= 0) {
-				Matrix3x4 tmp;
+			if (p->parent >= 0) {
+				quat4x3_t tmp;
 
-				Matrix3x4_mul(baseframe[p.parent], m, tmp.v);
-				Matrix3x4_mul(tmp, inversebaseframe[j], frames[i*hdr->num_poses + j].v);
+				Matrix3x4_mul(baseframe[p->parent], m, tmp);
+				Matrix3x4_mul(tmp, inversebaseframe[j], frames[i*hdr->num_poses + j]);
 			}
 			else
 			{
-				Matrix3x4_mul(m, inversebaseframe[j], frames[i*hdr->num_poses + j].v);
+				Matrix3x4_mul(m, inversebaseframe[j], frames[i*hdr->num_poses + j]);
 			}
 		}
 	}
@@ -796,7 +795,7 @@ loadiqmanims(const char *filename, const iqmheader *hdr, byte *buf)
 	return true;
 }
 
-static bool
+static qboolean
 loadiqm(const char *filename)
 {
 	FILE *f = fopen(filename, "rb");
@@ -804,7 +803,7 @@ loadiqm(const char *filename)
 		return false;
 
 	byte *buf = NULL;
-	iqmheader hdr;
+	struct iqmheader hdr;
 	if (fread(&hdr, 1, sizeof(hdr), f) != sizeof(hdr) || memcmp(hdr.magic, IQM_MAGIC, sizeof(hdr.magic)))
 		goto error;
 	lilswap_uint(&hdr.version, (sizeof(hdr) - sizeof(hdr.magic))/sizeof(uint));
@@ -842,7 +841,7 @@ animateiqm(float curframe)
 
 	int frame1 = (int)floor(curframe);
 	frame1 %= numframes;
-	Matrix3x4 *mat1 = &frames[frame1 * numjoints];
+	quat4x3_t *mat1 = &frames[frame1 * numjoints];
 	// Interpolate matrixes between the two closest frames and concatenate with parent matrix if necessary.
 	// Concatenate the result with the inverse of the base pose.
 	// You would normally do animation blending and inter-frame blending here in a 3D engine.
@@ -850,11 +849,11 @@ animateiqm(float curframe)
 	{
 		if (joints[i].parent >= 0)
 		{
-			Matrix3x4_mul(outframe[joints[i].parent], mat1[i], outframe[i].v);
+			Matrix3x4_mul(outframe[joints[i].parent], mat1[i], outframe[i]);
 		}
 		else
 		{
-			memcpy(&outframe[i], &mat1[i], sizeof(Matrix3x4));
+			memcpy(&outframe[i], &mat1[i], sizeof(quat4x3_t));
 		}
 	}
 	// The actual vertex generation based on the matrixes follows...
@@ -879,12 +878,12 @@ animateiqm(float curframe)
 		// 0 values, which are always at the end, are unused.
 		quat4x3_t mat;
 
-		Matrix3x4_mul_float(outframe[index[0]].v, weight[0]/255.0f, mat);
+		Matrix3x4_mul_float(outframe[index[0]], weight[0]/255.0f, mat);
 		for(int j = 1; j < 4 && weight[j]; j++)
 		{
 			quat4x3_t tmp;
 
-			Matrix3x4_mul_float(outframe[index[j]].v, weight[j]/255.0f, tmp);
+			Matrix3x4_mul_float(outframe[index[j]], weight[j]/255.0f, tmp);
 			Matrix3x4_plus(tmp, mat, mat);
 		}
 
@@ -984,9 +983,9 @@ renderiqm()
 
 	for(int i = 0; i < nummeshes; i++)
 	{
-		iqmmesh &m = meshes[i];
+		struct iqmmesh *m = &meshes[i];
 		glBindTexture(GL_TEXTURE_2D, textures[i]);
-		glDrawElements(GL_TRIANGLES, 3*m.num_triangles, GL_UNSIGNED_INT, &tris[m.first_triangle]);
+		glDrawElements(GL_TRIANGLES, 3 * m->num_triangles, GL_UNSIGNED_INT, &tris[m->first_triangle]);
 	}
 
 	glDisable(GL_TEXTURE_2D);
@@ -1035,7 +1034,7 @@ setupcamera()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	GLdouble aspect = double(scrw) / scrh,
+	GLdouble aspect = (double)scrw / scrh,
 			 fov = (90 * M_PI) / 180,
 			 fovy = 2 * atan2(tan(fov / 2), aspect),
 			 nearplane = 1e-2f, farplane = 1000,
