@@ -103,12 +103,148 @@ void ReadLevel(char *filename);
 void InitGame(void);
 void G_RunFrame(void);
 
+/* ========================================================= */
+
+/* Heretic 2 support codes */
+#define MESSAGES_SIZE 256
+static char *messagesIndex[MESSAGES_SIZE];
+static char *messagesBuffer;
+
+/* Translate messages */
+char *
+translate_text(char msg[1024], int *sound_index)
+{
+	if (msg[0] == ';')
+	{
+		// commendted line
+		return msg;
+	}
+
+	if (strspn(msg, "1234567890") == strlen(msg))
+	{
+		int message_id = atoi(msg) - 1;
+		if (message_id >= 0 && message_id < MESSAGES_SIZE && messagesIndex[message_id])
+		{
+			char *curr;
+			int sharp_pos = strcspn(messagesIndex[message_id], "#");
+			// copy text  message to output buffer
+			memcpy(msg, messagesIndex[message_id], sharp_pos);
+			msg[sharp_pos] = 0;
+			curr = msg;
+			while (*curr)
+			{
+				if (*curr == '@')
+					*curr = '\n';
+				curr ++;
+			}
+			// check that we have some sound
+			if (sharp_pos < strlen(messagesIndex[message_id]))
+			{
+				char sound[256];
+				char* fix;
+
+				strcpy(sound, messagesIndex[message_id] + sharp_pos + 1);
+				fix = sound;
+				while (*fix)
+				{
+					if (*fix == '\\')
+					{
+						*fix = '/';
+					}
+					fix++;
+				}
+
+				*sound_index = gi.soundindex(sound);
+			}
+		}
+	}
+	return msg;
+}
+
+void
+InitMessages(void)
+{
+	int count = -1;
+	char *p;
+	FILE *f;
+
+	messagesBuffer = NULL;
+
+	f = Q_fopen("levelmsg.txt", "rb");
+
+	if (!f)
+	{
+		gi.error("Couldn't open levelmsg.txt");
+	}
+	else
+	{
+		fseek (f, 0, SEEK_END);
+		count = ftell(f);
+		messagesBuffer = gi.TagMalloc(count + 32, TAG_GAME);
+		fseek (f, 0, SEEK_SET);
+		fread(messagesBuffer, count, 1, f);
+		fclose(f);
+	}
+
+	if (count != -1)
+	{
+		int n;
+
+		p = messagesBuffer;
+
+		// MESSAGES_SIZE - 1 - last pointer should be NULL
+		for (n = 0; n < MESSAGES_SIZE - 1; n++)
+		{
+			messagesIndex[n] = p;
+
+			while (*p != '\r' && *p != '\n')
+			{
+				p++;
+
+				if (--count == 0)
+				{
+					break;
+				}
+			}
+
+			if (*p == '\r')
+			{
+				*p++ = 0;
+
+				if (--count == 0)
+				{
+					break;
+				}
+			}
+
+			*p++ = 0;
+
+			if (--count == 0)
+			{
+				// no messages any more
+				// move one step futher for set NULL
+				n ++;
+				break;
+			}
+		}
+		messagesIndex[n] = 0;
+
+		gi.dprintf("Heretic2 %d messages loaded.\n", n);
+	}
+	else
+	{
+		memset(messagesIndex, 0, sizeof(messagesIndex));
+	}
+}
+
 /* =================================================================== */
 
 void
 ShutdownGame(void)
 {
 	gi.dprintf("==== ShutdownGame ====\n");
+
+	memset(messagesIndex, 0, sizeof(messagesIndex));
 
 	gi.FreeTags(TAG_LEVEL);
 	gi.FreeTags(TAG_GAME);

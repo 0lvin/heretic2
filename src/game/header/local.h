@@ -1095,4 +1095,8 @@ struct edict_s
 	monsterinfo_t monsterinfo;
 };
 
+/* Heretic 2 */
+void InitMessages(void);
+char *translate_text(char msg[1024], int *sound_index);
+
 #endif /* GAME_LOCAL_H */
