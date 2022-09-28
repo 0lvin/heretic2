@@ -164,17 +164,21 @@ translate_text(char msg[1024], int *sound_index)
 void
 InitMessages(void)
 {
+	char filename[MAX_OSPATH];
 	int count = -1;
+	cvar_t *game;
 	char *p;
 	FILE *f;
 
 	messagesBuffer = NULL;
 
-	f = Q_fopen("levelmsg.txt", "rb");
+	game = gi.cvar("game", "", 0);
+	sprintf(filename, "%s/levelmsg.txt", game->string);
+	f = Q_fopen(filename, "rb");
 
 	if (!f)
 	{
-		gi.error("Couldn't open levelmsg.txt");
+		gi.dprintf("Couldn't open %s\n", filename);
 	}
 	else
 	{
