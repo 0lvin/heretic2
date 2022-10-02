@@ -37,10 +37,10 @@ void
 GL3_Draw_InitLocal(void)
 {
 	/* load console characters */
-	draw_chars = GL3_FindImage("pics/conchars.pcx", it_pic);
+	draw_chars = GL3_FindImage("pics/conchars.m32", it_pic);
 	if (!draw_chars)
 	{
-		ri.Sys_Error(ERR_FATAL, "Couldn't load pics/conchars.pcx");
+		ri.Sys_Error(ERR_FATAL, "Couldn't load pics/conchars.m32");
 	}
 
 	// set up attribute layout for 2D textured rendering

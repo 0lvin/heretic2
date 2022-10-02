@@ -186,7 +186,7 @@ Mod_LoadPic(const char *name, byte *pic, int width, int realwidth,
 				__func__, name, bits);
 	}
 
-	if (!R_LoadPic(name, pic, width, realwidth, height, realheight, width * height, type))
+	if (!R_LoadPic(name, pic, width, realwidth, height, realheight, width * height, type, bits))
 	{
 		ri.Sys_Error(ERR_DROP, "%s: Can't load %s",
 				__func__, name);

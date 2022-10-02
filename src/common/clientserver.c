@@ -113,7 +113,7 @@ Com_VPrintf(int print_level, const char *fmt, va_list argptr)
 			{
 				switch(c)
 				{
-					// no idea if the following two are ever sent here, but in conchars.pcx they look like this
+					// no idea if the following two are ever sent here, but in conchars.m32 they look like this
 					// so do the replacements.. won't hurt I guess..
 					case 0x10:
 						msg[i] = '[';

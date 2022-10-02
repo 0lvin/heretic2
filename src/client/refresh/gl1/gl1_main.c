@@ -536,7 +536,7 @@ R_DrawParticles(void)
 		int i;
 		YQ2_ALIGNAS_TYPE(unsigned) byte color[4];
 		const particle_t *p;
- 
+
 		YQ2_VLA(GLfloat, vtx, 3 * r_newrefdef.num_particles);
 		YQ2_VLA(GLfloat, clr, 4 * r_newrefdef.num_particles);
 
@@ -1282,7 +1282,7 @@ R_Register(void)
 	r_scale8bittextures = ri.Cvar_Get("r_scale8bittextures", "0", CVAR_ARCHIVE);
 
 	/* don't bilerp characters and crosshairs */
-	gl_nolerp_list = ri.Cvar_Get("r_nolerp_list", "pics/conchars.pcx pics/ch1.pcx pics/ch2.pcx pics/ch3.pcx", CVAR_ARCHIVE);
+	gl_nolerp_list = ri.Cvar_Get("r_nolerp_list", "pics/conchars.m32 pics/ch1.pcx pics/ch2.pcx pics/ch3.pcx", CVAR_ARCHIVE);
 	/* textures that should always be filtered, even if r_2D_unfiltered or an unfiltered gl mode is used */
 	r_lerp_list = ri.Cvar_Get("r_lerp_list", "", CVAR_ARCHIVE);
 	/* don't bilerp any 2D elements */

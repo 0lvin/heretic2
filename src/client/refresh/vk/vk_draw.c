@@ -31,10 +31,10 @@ Draw_InitLocal
 */
 void Draw_InitLocal (void)
 {
-	draw_chars = Vk_FindImage("pics/conchars.pcx", it_pic);
+	draw_chars = Vk_FindImage("pics/conchars.m32", it_pic);
 	if (!draw_chars)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.pcx", __func__);
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.m32", __func__);
 	}
 }
 
@@ -91,7 +91,7 @@ image_t	*RE_Draw_FindPic (char *name)
 	{
 		char	fullname[MAX_QPATH];
 
-		Com_sprintf(fullname, sizeof(fullname), "pics/%s.pcx", name);
+		Com_sprintf(fullname, sizeof(fullname), "pics/%s.m32", name);
 		vk = Vk_FindImage(fullname, it_pic);
 	}
 	else

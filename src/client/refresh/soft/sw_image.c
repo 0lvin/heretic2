@@ -204,6 +204,31 @@ Get_BestImageSize(const image_t *image, int *req_width, int *req_height)
 	}
 }
 
+static byte *d_16to8table = NULL; // 16 to 8 bit conversion table
+
+static void
+R_Convert32To8bit(const unsigned char* pic_in, pixel_t* pic_out, size_t size)
+{
+	size_t i;
+
+	if (!d_16to8table)
+		return;
+
+	for(i=0; i < size; i++)
+	{
+		unsigned int r, g, b, c;
+
+		r = ( pic_in[0] >> 3 ) & 31;
+		g = ( pic_in[1] >> 2 ) & 63;
+		b = ( pic_in[2] >> 3 ) & 31;
+
+		c = r | ( g << 5 ) | ( b << 11 );
+
+		pic_out[i] = d_16to8table[c & 0xFFFF];
+		pic_in += 4;
+	}
+}
+
 /*
 ================
 R_LoadPic
@@ -212,7 +237,7 @@ R_LoadPic
 */
 image_t *
 R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, int realheight,
-	size_t data_size, imagetype_t type)
+	size_t data_size, imagetype_t type, int bits)
 {
 	image_t	*image;
 	size_t	size, full_size;
@@ -245,13 +270,22 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 	}
 
 	image->transparent = false;
+	if (bits == 32)
+	{
+		R_Convert32To8bit(image->pixels[0], pic, data_size);
+	}
+	else
+	{
+		memcpy(image->pixels[0], pic, data_size);
+	}
+
 	if (type != it_wall)
 	{
 		size_t i;
 
 		for (i=0 ; i<size ; i++)
 		{
-			if (pic[i] == 255)
+			if (image->pixels[0][i] == 255)
 			{
 				image->transparent = true;
 				break;
@@ -263,7 +297,6 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 	{
 		data_size = full_size;
 	}
-	memcpy(image->pixels[0], pic, data_size);
 
 	// restore mips
 	R_RestoreImagePointers(image, 0);
@@ -320,14 +353,12 @@ R_LoadWal (const char *name, imagetype_t type)
 	image = R_LoadPic(name, (byte *)mt + ofs,
 					width, width,
 					height, height,
-					(file_size - ofs), type);
+					(file_size - ofs), type, 8);
 
 	ri.FS_FreeFile((void *)mt);
 
 	return image;
 }
-
-static byte *d_16to8table = NULL; // 16 to 8 bit conversion table
 
 /*
  * Apply color light to texture pixel
@@ -368,29 +399,6 @@ R_ApplyLight(pixel_t pix, const light3_t light)
 	i_c = b_r | ( b_g << 5 ) | ( b_b << 11 );
 
 	return d_16to8table[i_c & 0xFFFF];
-}
-
-static void
-R_Convert32To8bit(const unsigned char* pic_in, pixel_t* pic_out, size_t size)
-{
-	size_t i;
-
-	if (!d_16to8table)
-		return;
-
-	for(i=0; i < size; i++)
-	{
-		unsigned int r, g, b, c;
-
-		r = ( pic_in[0] >> 3 ) & 31;
-		g = ( pic_in[1] >> 2 ) & 63;
-		b = ( pic_in[2] >> 3 ) & 31;
-
-		c = r | ( g << 5 ) | ( b << 11 );
-
-		pic_out[i] = d_16to8table[c & 0xFFFF];
-		pic_in += 4;
-	}
 }
 
 static void
@@ -442,22 +450,21 @@ R_LoadM8 (const char *name, imagetype_t type)
 	file_size = ri.FS_LoadFile (name, (void **)&mt);
 	if (!mt)
 	{
-		R_Printf(PRINT_ALL, "%s: can't load %s\n", __func__, name);
-		return r_notexture_mip;
+		return NULL;
 	}
 
 	if (file_size < sizeof(m8tex_t))
 	{
 		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
 		ri.FS_FreeFile ((void *)mt);
-		return r_notexture_mip;
+		return NULL;
 	}
 
 	if (LittleLong (mt->version) != M8_VERSION)
 	{
 		R_Printf(PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
 		ri.FS_FreeFile ((void *)mt);
-		return r_notexture_mip;
+		return NULL;
 	}
 
 	image = R_FindFreeImage ();
@@ -503,8 +510,69 @@ R_LoadM8 (const char *name, imagetype_t type)
 		memcpy ( image->pixels[0], (byte *)mt + ofs, size);
 	}
 
+	image->mip_levels = NUM_MIPS;
+
 	R_FixPalette(image->pixels[0], size, mt->palette);
 	ri.FS_FreeFile ((void *)mt);
+	return image;
+}
+
+static image_t *
+R_LoadM32(char *origname, imagetype_t type)
+{
+	m32tex_t	*mt;
+	int		width, height, ofs, size;
+	image_t	*image;
+	char name[256];
+
+	Q_strlcpy(name, origname, sizeof(name));
+
+	/* Add the extension */
+	if (strcmp(COM_FileExtension(name), "m32"))
+	{
+		Q_strlcat(name, ".m32", sizeof(name));
+	}
+
+	size = ri.FS_LoadFile(name, (void **)&mt);
+
+	if (!mt)
+	{
+		return NULL;
+	}
+
+	if (size < sizeof(m32tex_t))
+	{
+		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return NULL;
+	}
+
+	if (LittleLong (mt->version) != M32_VERSION)
+	{
+		R_Printf(PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
+		ri.FS_FreeFile ((void *)mt);
+		return NULL;
+	}
+
+	width = LittleLong (mt->width[0]);
+	height = LittleLong (mt->height[0]);
+	ofs = LittleLong (mt->offsets[0]);
+
+	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
+	    (((size - ofs) / height) < (width * 4)))
+	{
+		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return r_notexture_mip;
+	}
+
+	image = R_LoadPic(name, (byte *)mt + ofs,
+		width, width,
+		height, height,
+		(size - ofs) / 4, // real size of texture in file
+		type, 32);
+	ri.FS_FreeFile ((void *)mt);
+
 	return image;
 }
 
@@ -530,6 +598,11 @@ R_LoadHiColorImage(const char *name, const char* namewe, const char *ext, imaget
 	{
 		/* Get size of the original texture */
 		GetM8Info(name, &realwidth, &realheight);
+	}
+	else if (strcmp(ext, "m32") == 0)
+	{
+		/* Get size of the original texture */
+		GetM32Info(name, &realwidth, &realheight);
 	}
 
 	/* try to load a tga, png or jpg (in that order/priority) */
@@ -604,7 +677,7 @@ R_LoadHiColorImage(const char *name, const char* namewe, const char *ext, imaget
 					image = R_LoadPic(name, pic8,
 								uploadwidth, realwidth,
 								uploadheight, realheight,
-								uploadwidth * uploadheight, type);
+								uploadwidth * uploadheight, type, 8);
 				}
 				free(pic32);
 			}
@@ -614,7 +687,7 @@ R_LoadHiColorImage(const char *name, const char* namewe, const char *ext, imaget
 				image = R_LoadPic(name, pic8,
 								width, width,
 								height, height,
-								width * height, type);
+								width * height, type, 8);
 			}
 			free(pic8);
 		}
@@ -670,7 +743,7 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 				image = R_LoadPic(name, scaled,
 								width, realwidth,
 								height, realheight,
-								width * height, type);
+								width * height, type, 8);
 				free(scaled);
 			}
 			else
@@ -678,7 +751,7 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 				image = R_LoadPic(name, pic,
 								width, width,
 								height, height,
-								width * height, type);
+								width * height, type, 8);
 			}
 
 			if (palette)
@@ -694,6 +767,10 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 		else if (strcmp(ext, "m8") == 0)
 		{
 			image = R_LoadM8 (name, type);
+		}
+		else if (strcmp(ext, "m32") == 0)
+		{
+			image = R_LoadM32 (name, type);
 		}
 	}
 

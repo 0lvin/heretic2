@@ -38,6 +38,21 @@ RE_Draw_FindPic (char *name)
 	if (name[0] != '/' && name[0] != '\\')
 	{
 		char fullname[MAX_QPATH];
+		image_t *image;
+
+		Com_sprintf (fullname, sizeof(fullname), "pics/misc/%s.m32", name);
+		image = R_FindImage (fullname, it_pic);
+		if (image)
+		{
+			return image;
+		}
+
+		Com_sprintf (fullname, sizeof(fullname), "pics/misc/%s.m8", name);
+		image = R_FindImage (fullname, it_pic);
+		if (image)
+		{
+			return image;
+		}
 
 		Com_sprintf (fullname, sizeof(fullname), "pics/%s.pcx", name);
 		return R_FindImage (fullname, it_pic);
@@ -59,7 +74,7 @@ Draw_InitLocal (void)
 	draw_chars = RE_Draw_FindPic ("conchars");
 	if (!draw_chars)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.pcx", __func__);
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.m32", __func__);
 	}
 }
 

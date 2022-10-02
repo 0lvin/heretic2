@@ -1350,7 +1350,7 @@ Vk_LoadM32(char *origname, imagetype_t type)
 	ofs = LittleLong (mt->offsets[0]);
 
 	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
-	    (((size - ofs) / height) < width))
+	    (((size - ofs) / height) < (width * 4)))
 	{
 		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
 		ri.FS_FreeFile((void *)mt);
