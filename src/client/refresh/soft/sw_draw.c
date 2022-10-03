@@ -42,14 +42,14 @@ RE_Draw_FindPic (char *name)
 
 		Com_sprintf (fullname, sizeof(fullname), "pics/misc/%s.m32", name);
 		image = R_FindImage (fullname, it_pic);
-		if (image)
+		if (image && image != r_notexture_mip)
 		{
 			return image;
 		}
 
 		Com_sprintf (fullname, sizeof(fullname), "pics/misc/%s.m8", name);
 		image = R_FindImage (fullname, it_pic);
-		if (image)
+		if (image && image != r_notexture_mip)
 		{
 			return image;
 		}

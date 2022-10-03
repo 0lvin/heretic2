@@ -246,7 +246,7 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 
 	/* data_size/size are unsigned */
 	if (!pic || data_size == 0 || width <= 0 || height <= 0 || size == 0)
-		return NULL;
+		return r_notexture_mip;
 
 	image = R_FindFreeImage();
 	if (strlen(name) >= sizeof(image->name))
@@ -266,7 +266,13 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 	{
 		ri.Sys_Error(ERR_FATAL, "%s: Can't allocate image.", __func__);
 		// code never returns after ERR_FATAL
-		return NULL;
+		return r_notexture_mip;
+	}
+
+	// some file types can have more data in file than code needs
+	if (data_size > full_size)
+	{
+		data_size = full_size;
 	}
 
 	image->transparent = false;
@@ -291,11 +297,6 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 				break;
 			}
 		}
-	}
-
-	if (data_size > full_size)
-	{
-		data_size = full_size;
 	}
 
 	// restore mips
@@ -326,7 +327,7 @@ R_LoadWal (const char *name, imagetype_t type)
 	file_size = ri.FS_LoadFile (name, (void **)&mt);
 	if (!mt)
 	{
-		R_Printf(PRINT_ALL, "%s: can't load %s\n", __func__, name);
+		// Package does not have such file
 		return r_notexture_mip;
 	}
 
@@ -443,77 +444,55 @@ static image_t *
 R_LoadM8 (const char *name, imagetype_t type)
 {
 	m8tex_t	*mt;
-	int		ofs, file_size;
-	image_t		*image;
-	int		size;
+	int		ofs, size, height, width;
+	image_t		*image = NULL;
 
-	file_size = ri.FS_LoadFile (name, (void **)&mt);
+	size = ri.FS_LoadFile (name, (void **)&mt);
 	if (!mt)
 	{
-		return NULL;
+		return r_notexture_mip;
 	}
 
-	if (file_size < sizeof(m8tex_t))
+	if (size < sizeof(m8tex_t))
 	{
 		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
 		ri.FS_FreeFile ((void *)mt);
-		return NULL;
+		return r_notexture_mip;
 	}
 
 	if (LittleLong (mt->version) != M8_VERSION)
 	{
 		R_Printf(PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
 		ri.FS_FreeFile ((void *)mt);
-		return NULL;
+		return r_notexture_mip;
 	}
 
-	image = R_FindFreeImage ();
-	strcpy (image->name, name);
-	image->width = LittleLong (mt->width[0]);
-	image->height = LittleLong (mt->height[0]);
-	image->asset_width = image->width;
-	image->asset_height = image->height;
-	image->type = type;
-	image->registration_sequence = registration_sequence;
 	ofs = LittleLong (mt->offsets[0]);
-	size = image->width * image->height * (256+64+16+4)/256;
+	width = LittleLong (mt->width[0]);
+	height = LittleLong (mt->height[0]);
 
-	if ((ofs <= 0) || (image->width <= 0) || (image->height <= 0) ||
-	    ((file_size - ofs) / image->width < image->height))
+	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
+	    ((size - ofs) / width < height))
 	{
 		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
 		ri.FS_FreeFile((void *)mt);
 		return r_notexture_mip;
 	}
 
-	image->pixels[0] = malloc (size);
-	image->pixels[1] = image->pixels[0] + image->width*image->height;
-	image->pixels[2] = image->pixels[1] + image->width*image->height/4;
-	image->pixels[3] = image->pixels[2] + image->width*image->height/16;
+	image = R_LoadPic(name, (byte *)mt + ofs,
+		width, width,
+		height, height,
+		(size - ofs), // real size of texture in file
+		type, 8);
 
-	if (size > (file_size - ofs))
+	if (image)
 	{
-		memcpy(image->pixels[0], (byte *)mt + ofs, file_size - ofs);
-		// looks short, restore everything from first image
-		R_ImageShrink(image->pixels[0], image->pixels[1],
-			      image->height, image->height/2,
-			      image->width, image->width/2);
-		R_ImageShrink(image->pixels[1], image->pixels[2],
-			      image->height/2, image->height/4,
-			      image->width/2, image->width/4);
-		R_ImageShrink(image->pixels[2], image->pixels[3],
-			      image->height/4, image->height/8,
-			      image->width/4, image->width/8);
-	}
-	else
-	{
-		memcpy ( image->pixels[0], (byte *)mt + ofs, size);
+		R_FixPalette(image->pixels[0], R_GetImageMipsSize(width * height),
+			mt->palette);
 	}
 
-	image->mip_levels = NUM_MIPS;
-
-	R_FixPalette(image->pixels[0], size, mt->palette);
 	ri.FS_FreeFile ((void *)mt);
+
 	return image;
 }
 
@@ -537,21 +516,21 @@ R_LoadM32(char *origname, imagetype_t type)
 
 	if (!mt)
 	{
-		return NULL;
+		return r_notexture_mip;
 	}
 
 	if (size < sizeof(m32tex_t))
 	{
 		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
 		ri.FS_FreeFile((void *)mt);
-		return NULL;
+		return r_notexture_mip;
 	}
 
 	if (LittleLong (mt->version) != M32_VERSION)
 	{
 		R_Printf(PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
 		ri.FS_FreeFile ((void *)mt);
-		return NULL;
+		return r_notexture_mip;
 	}
 
 	width = LittleLong (mt->width[0]);
@@ -630,7 +609,7 @@ R_LoadHiColorImage(const char *name, const char* namewe, const char *ext, imaget
 			{
 				ri.Sys_Error(ERR_FATAL, "%s: Can't allocate image.", __func__);
 				// code never returns after ERR_FATAL
-				return NULL;
+				return r_notexture_mip;
 			}
 
 			if (width != realwidth || height != realheight)
@@ -722,7 +701,7 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 
 			LoadPCX (name, &pic, &palette, &width, &height);
 			if (!pic)
-				return NULL;
+				return r_notexture_mip;
 
 			if (r_scale8bittextures->value && type == it_pic)
 			{
@@ -735,7 +714,7 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 
 				scaled = malloc(width * height * 4);
 				if (!scaled)
-					return NULL;
+					return r_notexture_mip;
 
 				scale2x(pic, scaled, width, height);
 				width *= 2;
@@ -795,7 +774,7 @@ R_FindImage(const char *name, imagetype_t type)
 
 	if (!name)
 	{
-		return NULL;
+		return r_notexture_mip;
 	}
 
 	/* just return white image if show lighmap only */
@@ -808,7 +787,7 @@ R_FindImage(const char *name, imagetype_t type)
 	if(!ext[0])
 	{
 		/* file has no extension */
-		return NULL;
+		return r_notexture_mip;
 	}
 
 	len = strlen(name);
@@ -819,7 +798,7 @@ R_FindImage(const char *name, imagetype_t type)
 
 	if (len < 5)
 	{
-		return NULL;
+		return r_notexture_mip;
 	}
 
 	/* fix backslashes */
