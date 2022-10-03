@@ -246,7 +246,7 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 
 	/* data_size/size are unsigned */
 	if (!pic || data_size == 0 || width <= 0 || height <= 0 || size == 0)
-		return r_notexture_mip;
+		return NULL;
 
 	image = R_FindFreeImage();
 	if (strlen(name) >= sizeof(image->name))
@@ -266,7 +266,7 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 	{
 		ri.Sys_Error(ERR_FATAL, "%s: Can't allocate image.", __func__);
 		// code never returns after ERR_FATAL
-		return r_notexture_mip;
+		return NULL;
 	}
 
 	// some file types can have more data in file than code needs
@@ -609,7 +609,7 @@ R_LoadHiColorImage(const char *name, const char* namewe, const char *ext, imaget
 			{
 				ri.Sys_Error(ERR_FATAL, "%s: Can't allocate image.", __func__);
 				// code never returns after ERR_FATAL
-				return r_notexture_mip;
+				return NULL;
 			}
 
 			if (width != realwidth || height != realheight)
@@ -701,7 +701,7 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 
 			LoadPCX (name, &pic, &palette, &width, &height);
 			if (!pic)
-				return r_notexture_mip;
+				return NULL;
 
 			if (r_scale8bittextures->value && type == it_pic)
 			{
@@ -714,7 +714,7 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 
 				scaled = malloc(width * height * 4);
 				if (!scaled)
-					return r_notexture_mip;
+					return NULL;
 
 				scale2x(pic, scaled, width, height);
 				width *= 2;
@@ -774,7 +774,7 @@ R_FindImage(const char *name, imagetype_t type)
 
 	if (!name)
 	{
-		return r_notexture_mip;
+		return NULL;
 	}
 
 	/* just return white image if show lighmap only */
@@ -787,7 +787,7 @@ R_FindImage(const char *name, imagetype_t type)
 	if(!ext[0])
 	{
 		/* file has no extension */
-		return r_notexture_mip;
+		return NULL;
 	}
 
 	len = strlen(name);
@@ -798,7 +798,7 @@ R_FindImage(const char *name, imagetype_t type)
 
 	if (len < 5)
 	{
-		return r_notexture_mip;
+		return NULL;
 	}
 
 	/* fix backslashes */
