@@ -882,9 +882,8 @@ CL_ParseServerData(void)
 	{
 		/* seperate the printfs so the server
 		 * message can have a color */
-		// "\033[31m () \033[39m"
 		Com_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
-		Com_Printf("%c>%s<\n", 2, str);
+		Com_Printf("%c%s\n", 2, str);
 
 		/* need to prep refresh at next oportunity */
 		cl.refresh_prepped = false;
