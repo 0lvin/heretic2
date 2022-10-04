@@ -207,7 +207,8 @@ Get_BestImageSize(const image_t *image, int *req_width, int *req_height)
 static byte *d_16to8table = NULL; // 16 to 8 bit conversion table
 
 static void
-R_Convert32To8bit(const unsigned char* pic_in, pixel_t* pic_out, size_t size)
+R_Convert32To8bit(const unsigned char* pic_in, pixel_t* pic_out, size_t size,
+	qboolean transparent)
 {
 	size_t i;
 
@@ -216,15 +217,23 @@ R_Convert32To8bit(const unsigned char* pic_in, pixel_t* pic_out, size_t size)
 
 	for(i=0; i < size; i++)
 	{
-		unsigned int r, g, b, c;
+		if (pic_in[3] > 128 || !transparent)
+		{
+			unsigned int r, g, b, c;
 
-		r = ( pic_in[0] >> 3 ) & 31;
-		g = ( pic_in[1] >> 2 ) & 63;
-		b = ( pic_in[2] >> 3 ) & 31;
+			r = ( pic_in[0] >> 3 ) & 31;
+			g = ( pic_in[1] >> 2 ) & 63;
+			b = ( pic_in[2] >> 3 ) & 31;
 
-		c = r | ( g << 5 ) | ( b << 11 );
+			c = r | ( g << 5 ) | ( b << 11 );
 
-		pic_out[i] = d_16to8table[c & 0xFFFF];
+			pic_out[i] = d_16to8table[c & 0xFFFF];
+		}
+		else
+		{
+			pic_out[i] = TRANSPARENT_COLOR;
+		}
+
 		pic_in += 4;
 	}
 }
@@ -278,7 +287,7 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 	image->transparent = false;
 	if (bits == 32)
 	{
-		R_Convert32To8bit(image->pixels[0], pic, data_size);
+		R_Convert32To8bit(pic, image->pixels[0], data_size, type != it_wall);
 	}
 	else
 	{
@@ -291,7 +300,7 @@ R_LoadPic (const char *name, byte *pic, int width, int realwidth, int height, in
 
 		for (i=0 ; i<size ; i++)
 		{
-			if (image->pixels[0][i] == 255)
+			if (image->pixels[0][i] == TRANSPARENT_COLOR)
 			{
 				image->transparent = true;
 				break;
@@ -652,7 +661,9 @@ R_LoadHiColorImage(const char *name, const char* namewe, const char *ext, imaget
 				if (ResizeSTB(pic, width, height,
 					      pic32, uploadwidth, uploadheight))
 				{
-					R_Convert32To8bit(pic32, pic8, uploadwidth * uploadheight);
+					R_Convert32To8bit(pic32, pic8,
+								uploadwidth * uploadheight,
+								type != it_wall);
 					image = R_LoadPic(name, pic8,
 								uploadwidth, realwidth,
 								uploadheight, realheight,
@@ -662,7 +673,9 @@ R_LoadHiColorImage(const char *name, const char* namewe, const char *ext, imaget
 			}
 			else
 			{
-				R_Convert32To8bit(pic, pic8, width * height);
+				R_Convert32To8bit(pic, pic8,
+								width * height,
+								type != it_wall);
 				image = R_LoadPic(name, pic8,
 								width, width,
 								height, height,
