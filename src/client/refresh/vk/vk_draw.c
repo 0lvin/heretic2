@@ -31,10 +31,10 @@ Draw_InitLocal
 */
 void Draw_InitLocal (void)
 {
-	draw_chars = Vk_FindImage("pics/conchars.m32", it_pic);
+	draw_chars = RE_Draw_FindPic ("conchars");
 	if (!draw_chars)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.m32", __func__);
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.pcx", __func__);
 	}
 }
 
@@ -85,19 +85,32 @@ RE_Draw_FindPic
 */
 image_t	*RE_Draw_FindPic (char *name)
 {
-	image_t *vk;
-
 	if (name[0] != '/' && name[0] != '\\')
 	{
-		char	fullname[MAX_QPATH];
+		char fullname[MAX_QPATH];
+		image_t *image;
 
-		Com_sprintf(fullname, sizeof(fullname), "pics/%s.m32", name);
-		vk = Vk_FindImage(fullname, it_pic);
+		Com_sprintf (fullname, sizeof(fullname), "pics/misc/%s.m32", name);
+		image = Vk_FindImage(fullname, it_pic);
+		if (image && image != r_notexture)
+		{
+			return image;
+		}
+
+		Com_sprintf (fullname, sizeof(fullname), "pics/misc/%s.m8", name);
+		image = Vk_FindImage(fullname, it_pic);
+		if (image && image != r_notexture)
+		{
+			return image;
+		}
+
+		Com_sprintf (fullname, sizeof(fullname), "pics/%s.pcx", name);
+		return Vk_FindImage(fullname, it_pic);
 	}
 	else
-		vk = Vk_FindImage(name + 1, it_pic);
-
-	return vk;
+	{
+		return Vk_FindImage(name+1, it_pic);
+	}
 }
 
 /*

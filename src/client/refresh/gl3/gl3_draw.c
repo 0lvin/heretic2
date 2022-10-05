@@ -33,14 +33,45 @@ gl3image_t *draw_chars;
 
 static GLuint vbo2D = 0, vao2D = 0, vao2Dcolor = 0; // vao2D is for textured rendering, vao2Dcolor for color-only
 
+gl3image_t *
+GL3_Draw_FindPic(char *name)
+{
+	if ((name[0] != '/') && (name[0] != '\\'))
+	{
+		char fullname[MAX_QPATH];
+		gl3image_t *image;
+
+		Com_sprintf (fullname, sizeof(fullname), "pics/misc/%s.m32", name);
+		image = GL3_FindImage(fullname, it_pic);
+		if (image && image != gl3_notexture)
+		{
+			return image;
+		}
+
+		Com_sprintf (fullname, sizeof(fullname), "pics/misc/%s.m8", name);
+		image = GL3_FindImage(fullname, it_pic);
+		if (image && image != gl3_notexture)
+		{
+			return image;
+		}
+
+		Com_sprintf (fullname, sizeof(fullname), "pics/%s.pcx", name);
+		return GL3_FindImage(fullname, it_pic);
+	}
+	else
+	{
+		return GL3_FindImage(name + 1, it_pic);
+	}
+}
+
 void
 GL3_Draw_InitLocal(void)
 {
 	/* load console characters */
-	draw_chars = GL3_FindImage("pics/conchars.m32", it_pic);
+	draw_chars = GL3_Draw_FindPic ("conchars");
 	if (!draw_chars)
 	{
-		ri.Sys_Error(ERR_FATAL, "Couldn't load pics/conchars.m32");
+		ri.Sys_Error(ERR_FATAL, "Couldn't load pics/conchars.pcx");
 	}
 
 	// set up attribute layout for 2D textured rendering
@@ -157,25 +188,6 @@ GL3_Draw_CharScaled(int x, int y, int num, float scale)
 	GL3_UseProgram(gl3state.si2D.shaderProgram);
 	GL3_Bind(draw_chars->texnum);
 	drawTexturedRectangle(x, y, scaledSize, scaledSize, fcol, frow, fcol+size, frow+size);
-}
-
-gl3image_t *
-GL3_Draw_FindPic(char *name)
-{
-	gl3image_t *gl;
-	char fullname[MAX_QPATH];
-
-	if ((name[0] != '/') && (name[0] != '\\'))
-	{
-		Com_sprintf(fullname, sizeof(fullname), "pics/%s.pcx", name);
-		gl = GL3_FindImage(fullname, it_pic);
-	}
-	else
-	{
-		gl = GL3_FindImage(name + 1, it_pic);
-	}
-
-	return gl;
 }
 
 void

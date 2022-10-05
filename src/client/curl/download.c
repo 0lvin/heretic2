@@ -388,7 +388,7 @@ static void CL_CheckAndQueueDownload(char *path)
 	}
 
 	// Files starting with @ are game local. For example the code
-	// wouldn't download conchars.m32 because it already exists in
+	// wouldn't download conchars.pcx because it already exists in
 	// the global scope. If it's prefixed with @ it's downloaded
 	// anyways if it doesn't exists in the current game dir.
 	qboolean gameLocal = false;

@@ -58,7 +58,9 @@ RE_Draw_FindPic (char *name)
 		return R_FindImage (fullname, it_pic);
 	}
 	else
+	{
 		return R_FindImage (name+1, it_pic);
+	}
 }
 
 
@@ -74,7 +76,7 @@ Draw_InitLocal (void)
 	draw_chars = RE_Draw_FindPic ("conchars");
 	if (!draw_chars)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.m32", __func__);
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.pcx", __func__);
 	}
 }
 
