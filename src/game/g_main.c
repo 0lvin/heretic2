@@ -111,13 +111,13 @@ static char *messagesIndex[MESSAGES_SIZE];
 static char *messagesBuffer;
 
 /* Translate messages */
-char *
-translate_text(char msg[1024], int *sound_index)
+void
+translate_text(char *msg, int *sound_index)
 {
 	if (msg[0] == ';')
 	{
 		// commendted line
-		return msg;
+		return;
 	}
 
 	if (strspn(msg, "1234567890") == strlen(msg))
@@ -154,11 +154,13 @@ translate_text(char msg[1024], int *sound_index)
 					fix++;
 				}
 
-				*sound_index = gi.soundindex(sound);
+				if (sound_index)
+				{
+					*sound_index = gi.soundindex(sound);
+				}
 			}
 		}
 	}
-	return msg;
 }
 
 void

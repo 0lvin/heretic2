@@ -105,23 +105,29 @@ Com_VPrintf(int print_level, const char *fmt, va_list argptr)
 		Con_Print(msg);
 	#endif
 
-		/* change console color */
-		switch(msg[0])
+		if (!strcmp(YQ2OSTYPE, "Linux"))
 		{
-			// red
-			case 0x01:
-				Sys_ConsoleOutput("\033[40m\033[31;1m");
-				break;
-			// green
-			case 0x02:
-				Sys_ConsoleOutput("\033[40m\033[32;1m");
-				break;
-			// white
-			default:
-				Sys_ConsoleOutput("\033[40m\033[37;1m");
-				break;
+			/* change console color */
+			switch(msg[0])
+			{
+				// red
+				case 0x01:
+					Sys_ConsoleOutput("\033[40m\033[31;1m");
+					msgLen --;
+					memmove(msg, msg + 1, msgLen);
+					break;
+				// green
+				case 0x02:
+					Sys_ConsoleOutput("\033[40m\033[32;1m");
+					msgLen --;
+					memmove(msg, msg + 1, msgLen);
+					break;
+				// white
+				default:
+					Sys_ConsoleOutput("\033[40m\033[37;1m");
+					break;
+			}
 		}
-
 
 		// remove unprintable characters
 		for(i=0; i<msgLen; ++i)

@@ -1713,7 +1713,8 @@ door_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface
 	self->touch_debounce_time = level.time + 5.0;
 
 	strncpy(msg, self->message, sizeof(msg));
-	gi.centerprintf(other, "%s", translate_text(msg, &sound_index));
+	translate_text(msg, &sound_index);
+	gi.centerprintf(other, "%s", msg);
 	if (sound_index)
 	{
 		gi.sound(other, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);

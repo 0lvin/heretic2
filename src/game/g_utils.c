@@ -250,7 +250,8 @@ G_UseTargets(edict_t *ent, edict_t *activator)
 
 		strncpy(msg, ent->message, sizeof(msg));
 
-		gi.centerprintf(activator, "%s", translate_text(msg, &sound_index));
+		translate_text(msg, &sound_index);
+		gi.centerprintf(activator, "%s", msg);
 
 		if (sound_index)
 		{
