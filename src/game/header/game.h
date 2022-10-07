@@ -181,6 +181,10 @@ typedef struct
 	void (*AddCommandString)(char *text);
 
 	void (*DebugGraph)(float value, int color);
+
+	/* Load files from pak */
+	int (*FS_LoadFile) (char *name, void **buf);
+	void (*FS_FreeFile) (void *buf);
 } game_import_t;
 
 /* functions exported by the game subsystem */

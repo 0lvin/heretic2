@@ -166,81 +166,63 @@ translate_text(char *msg, int *sound_index)
 void
 InitMessages(void)
 {
-	char filename[MAX_OSPATH];
-	int count = -1;
-	cvar_t *game;
+	int size = -1, n;
 	char *p;
-	FILE *f;
 
 	messagesBuffer = NULL;
+	memset(messagesIndex, 0, sizeof(messagesIndex));
 
-	game = gi.cvar("game", "", 0);
-	sprintf(filename, "%s/levelmsg.txt", game->string);
-	f = Q_fopen(filename, "rb");
-
-	if (!f)
+	size = gi.FS_LoadFile("levelmsg.txt", (void **)&p);
+	if (size < 1)
 	{
-		gi.dprintf("Couldn't open %s\n", filename);
-	}
-	else
-	{
-		fseek (f, 0, SEEK_END);
-		count = ftell(f);
-		messagesBuffer = gi.TagMalloc(count + 32, TAG_GAME);
-		fseek (f, 0, SEEK_SET);
-		fread(messagesBuffer, count, 1, f);
-		fclose(f);
+		gi.dprintf("Couldn't open levelmsg.txt\n");
+		return;
 	}
 
-	if (count != -1)
+	messagesBuffer = gi.TagMalloc(size, TAG_GAME);
+	memcpy(messagesBuffer, p, size);
+	gi.FS_FreeFile ((void *)p);
+
+	p = messagesBuffer;
+
+	// MESSAGES_SIZE - 1 - last pointer should be NULL
+	for (n = 0; n < MESSAGES_SIZE - 1; n++)
 	{
-		int n;
+		messagesIndex[n] = p;
 
-		p = messagesBuffer;
-
-		// MESSAGES_SIZE - 1 - last pointer should be NULL
-		for (n = 0; n < MESSAGES_SIZE - 1; n++)
+		while (*p != '\r' && *p != '\n')
 		{
-			messagesIndex[n] = p;
+			p++;
 
-			while (*p != '\r' && *p != '\n')
+			if (--size == 0)
 			{
-				p++;
-
-				if (--count == 0)
-				{
-					break;
-				}
-			}
-
-			if (*p == '\r')
-			{
-				*p++ = 0;
-
-				if (--count == 0)
-				{
-					break;
-				}
-			}
-
-			*p++ = 0;
-
-			if (--count == 0)
-			{
-				// no messages any more
-				// move one step futher for set NULL
-				n ++;
 				break;
 			}
 		}
-		messagesIndex[n] = 0;
 
-		gi.dprintf("Heretic2 %d messages loaded.\n", n);
+		if (*p == '\r')
+		{
+			*p++ = 0;
+
+			if (--size == 0)
+			{
+				break;
+			}
+		}
+
+		*p++ = 0;
+
+		if (--size == 0)
+		{
+			// no messages any more
+			// move one step futher for set NULL
+			n ++;
+			break;
+		}
 	}
-	else
-	{
-		memset(messagesIndex, 0, sizeof(messagesIndex));
-	}
+	messagesIndex[n] = 0;
+
+	gi.dprintf("Heretic2 %d messages loaded.\n", n);
 }
 
 /* =================================================================== */
