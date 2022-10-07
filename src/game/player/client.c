@@ -991,6 +991,9 @@ InitClientPersistant(gclient_t *client)
 	client->pers.max_slugs = 50;
 
 	client->pers.connected = true;
+
+	/* chase cam */
+	client->pers.chasetoggle = 1; // default to on
 }
 
 void
@@ -1480,6 +1483,20 @@ respawn(edict_t *self)
 		return;
 	}
 
+	/* re-enable chase cam */
+	if (self->crosshair) {
+			G_FreeEdict(self->crosshair);
+	}
+	self->crosshair = NULL;
+	if (self->client->oldplayer) {
+			G_FreeEdict (self->client->oldplayer);
+	}
+	self->client->oldplayer = NULL;
+	if (self->client->chasecam) {
+			G_FreeEdict (self->client->chasecam);
+	}
+	self->client->chasecam = NULL;
+
 	if (deathmatch->value || coop->value)
 	{
 		/* spectator's don't leave bodies */
@@ -1560,6 +1577,15 @@ spectator_respawn(edict_t *ent)
 			gi.unicast(ent, true);
 			return;
 		}
+
+		/* chase cam */
+		if (ent->client->chasetoggle) {
+			ChasecamRemove (ent, OPTION_OFF);
+			ent->client->pers.chasetoggle = 1;
+		} else {
+			ent->client->pers.chasetoggle = 0;
+
+		}
 	}
 	else
 	{
@@ -1638,6 +1664,9 @@ PutClientInServer(edict_t *ent)
 	client_persistant_t saved;
 	client_respawn_t resp;
 
+	/* chase cam */
+	int  chasetoggle;
+
 	/* find a spawn point do it before setting
 	   health back up, so farthest ranging
 	   doesn't count this client */
@@ -1645,6 +1674,7 @@ PutClientInServer(edict_t *ent)
 
 	index = ent - g_edicts - 1;
 	client = ent->client;
+	chasetoggle = client->pers.chasetoggle; // chase cam
 
 	/* deathmatch wipes most client data every spawn */
 	if (deathmatch->value)
@@ -1671,6 +1701,10 @@ PutClientInServer(edict_t *ent)
 	else
 	{
 		memset(&resp, 0, sizeof(resp));
+
+		/* chase cam */
+		memcpy (userinfo, client->pers.userinfo, sizeof(userinfo));
+		ClientUserinfoChanged (ent, userinfo);
 	}
 
 	memcpy(userinfo, client->pers.userinfo, sizeof(userinfo));
@@ -1687,6 +1721,7 @@ PutClientInServer(edict_t *ent)
 	}
 
 	client->resp = resp;
+	client->pers.chasetoggle = chasetoggle; // chase cam
 
 	/* copy some data from the client to the entity */
 	FetchClientEntData(ent);
@@ -1711,6 +1746,10 @@ PutClientInServer(edict_t *ent)
 	ent->watertype = 0;
 	ent->flags &= ~FL_NO_KNOCKBACK;
 	ent->svflags = 0;
+
+	/* chase cam */
+	ent->svflags &= ~SVF_NOCLIENT;
+	ent->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
 
 	VectorCopy(mins, ent->mins);
 	VectorCopy(maxs, ent->maxs);
@@ -1795,6 +1834,13 @@ PutClientInServer(edict_t *ent)
 	}
 
 	gi.linkentity(ent);
+
+	/* chase cam */
+	ent->client->chasetoggle = 0;
+	//If chasetoggle set then turn on (delayed start of 5 frames - 0.5s)
+	if (ent->client->pers.chasetoggle && !ent->client->chasetoggle) {
+		ent->client->delayedstart = 3; // vanilla = 5
+	}
 
 	/* force the current weapon up */
 	client->newweapon = client->pers.weapon;
@@ -2108,6 +2154,11 @@ ClientDisconnect(edict_t *ent)
 		return;
 	}
 
+	/* chase cam */
+	if (ent->client->chasetoggle) {
+		ChasecamRemove (ent, OPTION_OFF);
+	}
+
 	gi.bprintf(PRINT_HIGH, "%s disconnected\n", ent->client->pers.netname);
 
 	/* send effect */
@@ -2205,6 +2256,11 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	if (level.intermissiontime)
 	{
+		/* chase cam */
+		if (client->chasetoggle) {
+			ChasecamRemove (ent, OPTION_OFF);
+		}
+
 		client->ps.pmove.pm_type = PM_FREEZE;
 
 		/* can exit intermission after five seconds */
@@ -2215,6 +2271,35 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		}
 
 		return;
+	}
+
+	/* chase cam */
+	if (client->chasetoggle) {
+		ent->client->ps.pmove.pm_flags |= PMF_NO_PREDICTION;
+	}
+	else {
+		ent->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
+	}
+
+	/* chase cam */
+	//+use now does the cool look around stuff but only in SP games
+	if ((ucmd->buttons & BUTTON_USE) && (!deathmatch->value)) {
+			client->use = 1;
+			if ((ucmd->forwardmove < 0) && (client->zoom < 60))
+					client->zoom++;
+			else if ((ucmd->forwardmove > 0) && (client->zoom > -40))
+					client->zoom--;
+			ucmd->forwardmove = 0;
+			ucmd->sidemove = 0;
+	} else if (client->use) {
+			//client->zoom = 0;
+			if (client->oldplayer) {
+				// set angles
+				for (i=0 ; i<3 ; i++) {
+					ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->oldplayer->s.angles[i] - ent->client->resp.cmd_angles[i]);
+				}
+			}
+			client->use = 0;
 	}
 
 	pm_passent = ent;
@@ -2443,6 +2528,12 @@ ClientBeginServerFrame(edict_t *ent)
 	}
 
 	client = ent->client;
+
+	/* chase cam */
+	if (client->delayedstart > 0)
+			client->delayedstart--;
+	if (client->delayedstart == 1)
+			ChasecamStart (ent);
 
 	if (deathmatch->value &&
 		(client->pers.spectator != client->resp.spectator) &&

@@ -1923,6 +1923,10 @@ ClientCommand(edict_t *ent)
 	{
 		Cmd_PlayerList_f(ent);
 	}
+	else if (Q_stricmp (cmd, "thirdperson") == 0)
+	{
+		Cmd_Chasecam_Toggle(ent);
+	}
 	else if (Q_stricmp(cmd, "teleport") == 0)
 	{
 		Cmd_Teleport_f(ent);

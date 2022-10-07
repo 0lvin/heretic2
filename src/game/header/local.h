@@ -849,6 +849,9 @@ typedef struct
 	int helpchanged;
 
 	qboolean spectator; /* client is a spectator */
+
+	/* chase camera */
+	int chasetoggle;
 } client_persistant_t;
 
 /* client data that stays across deathmatch respawns */
@@ -946,6 +949,14 @@ struct gclient_s
 
 	edict_t *chase_target; /* player we are chasing */
 	qboolean update_chase; /* need to update chase info? */
+
+	/* chase cam */
+	int     chasetoggle;
+	edict_t *chasecam;
+	edict_t *oldplayer;
+	int     use;
+	int     zoom;
+	int     delayedstart;
 };
 
 struct edict_s
@@ -1093,6 +1104,26 @@ struct edict_s
 	/* common data blocks */
 	moveinfo_t moveinfo;
 	monsterinfo_t monsterinfo;
+
+	/* chase cam */
+	int     chasedist1;
+	int     chasedist2;
+	edict_t *crosshair;
 };
+
+/* chasecam */
+extern  cvar_t  *tpp;
+extern  cvar_t  *crossh;
+extern void CheckChasecam_Viewent (edict_t *ent);
+extern void Cmd_Chasecam_Toggle (edict_t *ent);
+extern void ChasecamRemove (edict_t *ent, int opt);
+extern void ChasecamStart (edict_t *ent);
+extern void Cmd_ToggleHud ();
+extern char *single_statusbar;
+extern void MakeFakeCrosshair (edict_t *ent);
+extern void UpdateFakeCrosshair (edict_t *ent);
+extern void DestroyFakeCrosshair (edict_t *ent);
+#define OPTION_OFF        0
+#define OPTION_BACKGROUND 1
 
 #endif /* GAME_LOCAL_H */

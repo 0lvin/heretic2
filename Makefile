@@ -826,6 +826,7 @@ GAME_OBJS_ = \
 	src/game/monster/soldier/soldier.o \
 	src/game/monster/supertank/supertank.o \
 	src/game/monster/tank/tank.o \
+	src/game/player/chase.o \
 	src/game/player/client.o \
 	src/game/player/hud.o \
 	src/game/player/trail.o \
