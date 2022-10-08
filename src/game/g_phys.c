@@ -54,15 +54,18 @@
 edict_t *
 SV_TestEntityPosition(edict_t *ent)
 {
+	trace_t trace;
+	int mask;
+
 	if (!ent)
 	{
 		return NULL;
 	}
 
-	trace_t trace;
-	int mask;
-
-	if (ent->clipmask)
+	/* dead bodies are supposed to not be solid so lets
+	   ensure they only collide with BSP during pushmoves
+	*/
+	if (ent->clipmask && !(ent->svflags & SVF_DEADMONSTER))
 	{
 		mask = ent->clipmask;
 	}
@@ -76,11 +79,6 @@ SV_TestEntityPosition(edict_t *ent)
 
 	if (trace.startsolid)
 	{
-        if ((ent->svflags & SVF_DEADMONSTER) && (trace.ent->client || (trace.ent->svflags & SVF_MONSTER)))
-		{
-			return NULL;
-		}
-
 		return g_edicts;
 	}
 
@@ -526,10 +524,15 @@ retry:
 
 	trace = gi.trace(start, ent->mins, ent->maxs, end, ent, mask);
 
-	if (trace.startsolid || trace.allsolid)
+	/* startsolid treats different-content volumes
+	   as continuous, like the bbox of a monster/player
+	   and the floor of an elevator. So do another trace
+	   that only collides with BSP so that we make a best
+	   effort to keep these entities inside non-solid space
+	*/
+	if (trace.startsolid && (mask & ~MASK_SOLID))
 	{
-		mask ^= CONTENTS_DEADMONSTER;
-		trace = gi.trace (start, ent->mins, ent->maxs, end, ent, mask);
+		trace = gi.trace (start, ent->mins, ent->maxs, end, ent, MASK_SOLID);
 	}
 
 	VectorCopy(trace.endpos, ent->s.origin);
@@ -581,8 +584,8 @@ typedef struct
 	vec3_t angles;
 } pushed_t;
 
-pushed_t pushed[MAX_EDICTS], *pushed_p;
-edict_t *obstacle;
+static pushed_t pushed[MAX_EDICTS], *pushed_p;
+static edict_t *obstacle;
 
 /*
  * Objects need to be moved back on a failed push,
@@ -1005,8 +1008,12 @@ SV_Physics_Toss(edict_t *ent)
 
 	if (!wasinwater && isinwater)
 	{
-		gi.positioned_sound(old_origin, g_edicts, CHAN_AUTO,
-				gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
+		/* don't play splash sound for entities already in water on level start */
+		if (level.framenum > 3)
+		{
+			gi.positioned_sound(old_origin, g_edicts, CHAN_AUTO,
+					gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
+		}
 	}
 	else if (wasinwater && !isinwater)
 	{

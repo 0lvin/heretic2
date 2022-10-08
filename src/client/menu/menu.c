@@ -1607,6 +1607,8 @@ static menulist_s s_gyro_mode_box;
 static menulist_s s_turning_axis_box;
 static menuslider_s s_gyro_yawsensitivity_slider;
 static menuslider_s s_gyro_pitchsensitivity_slider;
+static menulist_s s_gyro_invertyaw_box;
+static menulist_s s_gyro_invertpitch_box;
 static menuseparator_s s_calibrating_text[2];
 static menuaction_s s_calibrate_gyro;
 
@@ -1652,6 +1654,18 @@ TurningAxisFunc(void *unused)
 }
 
 static void
+InvertGyroYawFunc(void *unused)
+{
+	Cvar_SetValue("gyro_yawsensitivity", -Cvar_VariableValue("gyro_yawsensitivity"));
+}
+
+static void
+InvertGyroPitchFunc(void *unused)
+{
+	Cvar_SetValue("gyro_pitchsensitivity", -Cvar_VariableValue("gyro_pitchsensitivity"));
+}
+
+static void
 Gyro_MenuInit(void)
 {
 	static const char *gyro_modes[] =
@@ -1667,6 +1681,13 @@ Gyro_MenuInit(void)
 	{
 		"yaw (turn)",
 		"roll (lean)",
+		0
+	};
+
+	static const char *yesno_names[] =
+	{
+		"no",
+		"yes",
 		0
 	};
 
@@ -1699,6 +1720,7 @@ Gyro_MenuInit(void)
 	s_gyro_yawsensitivity_slider.cvar = "gyro_yawsensitivity";
 	s_gyro_yawsensitivity_slider.minvalue = 0.1f;
 	s_gyro_yawsensitivity_slider.maxvalue = 8.0f;
+	s_gyro_yawsensitivity_slider.abs = true;
 
 	s_gyro_pitchsensitivity_slider.generic.type = MTYPE_SLIDER;
 	s_gyro_pitchsensitivity_slider.generic.x = 0;
@@ -1707,6 +1729,23 @@ Gyro_MenuInit(void)
 	s_gyro_pitchsensitivity_slider.cvar = "gyro_pitchsensitivity";
 	s_gyro_pitchsensitivity_slider.minvalue = 0.1f;
 	s_gyro_pitchsensitivity_slider.maxvalue = 8.0f;
+	s_gyro_pitchsensitivity_slider.abs = true;
+
+	s_gyro_invertyaw_box.generic.type = MTYPE_SPINCONTROL;
+	s_gyro_invertyaw_box.generic.x = 0;
+	s_gyro_invertyaw_box.generic.y = (y += 10);
+	s_gyro_invertyaw_box.generic.name = "invert yaw";
+	s_gyro_invertyaw_box.generic.callback = InvertGyroYawFunc;
+	s_gyro_invertyaw_box.itemnames = yesno_names;
+	s_gyro_invertyaw_box.curvalue = (Cvar_VariableValue("gyro_yawsensitivity") < 0);
+
+	s_gyro_invertpitch_box.generic.type = MTYPE_SPINCONTROL;
+	s_gyro_invertpitch_box.generic.x = 0;
+	s_gyro_invertpitch_box.generic.y = (y += 10);
+	s_gyro_invertpitch_box.generic.name = "invert pitch";
+	s_gyro_invertpitch_box.generic.callback = InvertGyroPitchFunc;
+	s_gyro_invertpitch_box.itemnames = yesno_names;
+	s_gyro_invertpitch_box.curvalue = (Cvar_VariableValue("gyro_pitchsensitivity") < 0);
 
 	s_calibrating_text[0].generic.type = MTYPE_SEPARATOR;
 	s_calibrating_text[0].generic.x = 48 * scale + 32;
@@ -1728,6 +1767,8 @@ Gyro_MenuInit(void)
 	Menu_AddItem(&s_gyro_menu, (void *)&s_turning_axis_box);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_yawsensitivity_slider);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_pitchsensitivity_slider);
+	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_invertyaw_box);
+	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_invertpitch_box);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_calibrating_text[0]);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_calibrating_text[1]);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_calibrate_gyro);
@@ -2467,6 +2508,7 @@ static const char *idcredits[] = {
 	"Sander van Dijk",
 	"Denis Pauk",
 	"Bjorn Alfredsson",
+	"Jaime Moreira",
 	"",
 	"Quake II(tm) (C)1997 Id Software, Inc.",
 	"All Rights Reserved.  Distributed by",
@@ -3275,11 +3317,58 @@ static menuaction_s s_savegame_actions[MAX_SAVESLOTS + 1]; // One for quick
 static qboolean menukeyitem_delete = false;
 
 static void
-DeleteSaveGameFunc(void * self)
+PromptDeleteSaveFunc(menuframework_s *m)
 {
-    menuaction_s * a = ( menuaction_s * )self;
-    menukeyitem_delete = true;
-    Menu_SetStatusBar( a->generic.parent, "are you sure you want to delete? y\\n" );
+	menucommon_s *item = Menu_ItemAtCursor(m);
+	if (item == NULL || item->type != MTYPE_ACTION)
+	{
+		return;
+	}
+
+	if (item->localdata[0] == -1)
+	{
+		if (m_quicksavevalid)
+		{
+			menukeyitem_delete = true;
+		}
+	}
+	else
+	{
+		if (m_savevalid[item->localdata[0] - m_loadsave_page * MAX_SAVESLOTS])
+		{
+			menukeyitem_delete = true;
+		}
+	}
+
+	if (menukeyitem_delete)
+	{
+		Menu_SetStatusBar( m, "are you sure you want to delete? y\\n" );
+	}
+}
+
+static qboolean
+ExecDeleteSaveFunc(menuframework_s *m, int menu_key)
+{
+	menucommon_s *item = Menu_ItemAtCursor(m);
+	menukeyitem_delete = false;
+
+	if (menu_key == K_ENTER || menu_key == 'y' || menu_key == 'Y')
+	{
+		char name[MAX_OSPATH] = {0};
+		if (item->localdata[0] == -1)	// quicksave
+		{
+			Com_sprintf(name, sizeof(name), "%s/save/quick/", FS_Gamedir());
+		}
+		else
+		{
+			Com_sprintf(name, sizeof(name), "%s/save/save%d/", FS_Gamedir(),
+						item->localdata[0]);
+		}
+		Sys_RemoveDir(name);
+		return true;
+	}
+	Menu_SetStatusBar( m, m_loadsave_statusbar );
+	return false;
 }
 
 static void
@@ -3461,26 +3550,13 @@ LoadGame_MenuKey(int key)
 {
     static menuframework_s *m = &s_loadgame_menu;
     int menu_key = Key_GetMenuKey(key);
-    menucommon_s * item = NULL;
 
-    if (menukeyitem_delete) {
-
-        item = Menu_ItemAtCursor( m );
-        menukeyitem_delete = false;
-
-        if ( menu_key == K_ENTER || menu_key == 'y' || menu_key == 'Y' ) {
-
-            char name[MAX_OSPATH] = { 0 };
-
-            Com_sprintf( name, sizeof( name ), "%s/save/save%d/", FS_Gamedir(),
-                item->localdata[0] );
-            Sys_RemoveDir( name );
-            LoadGame_MenuInit();
-
-        } else {
-            Menu_SetStatusBar( &s_loadgame_menu, m_loadsave_statusbar );
+    if (menukeyitem_delete)
+    {
+        if (ExecDeleteSaveFunc(m, menu_key))
+        {
+             LoadGame_MenuInit();
         }
-
         return menu_move_sound;
     }
 
@@ -3513,14 +3589,7 @@ LoadGame_MenuKey(int key)
         return menu_move_sound;
 
     case K_BACKSPACE:
-		if ((item = Menu_ItemAtCursor(m)) != NULL)
-		{
-			if (item->type == MTYPE_ACTION)
-			{
-                            DeleteSaveGameFunc( item );
-			}
-		}
-
+		PromptDeleteSaveFunc(m);
 		return menu_move_sound;
 
     default:
@@ -3625,7 +3694,6 @@ SaveGame_MenuKey(int key)
 {
     static menuframework_s *m = &s_savegame_menu;
     int menu_key = Key_GetMenuKey(key);
-    menucommon_s * item = NULL;
 
     if (m_popup_string)
     {
@@ -3633,24 +3701,12 @@ SaveGame_MenuKey(int key)
         return NULL;
     }
 
-    if (menukeyitem_delete) {
-
-        item = Menu_ItemAtCursor( m );
-        menukeyitem_delete = false;
-
-        if ( menu_key == K_ENTER || menu_key == 'y' || menu_key == 'Y' ) {
-
-            char name[MAX_OSPATH] = { 0 };
-
-            Com_sprintf( name, sizeof( name ), "%s/save/save%d/", FS_Gamedir(),
-                item->localdata[0] );
-            Sys_RemoveDir( name );
+    if (menukeyitem_delete)
+    {
+        if (ExecDeleteSaveFunc(m, menu_key))
+        {
             SaveGame_MenuInit();
-
-        } else {
-            Menu_SetStatusBar( &s_savegame_menu, m_loadsave_statusbar );
         }
-
         return menu_move_sound;
     }
 
@@ -3683,15 +3739,9 @@ SaveGame_MenuKey(int key)
         return menu_move_sound;
 
     case K_BACKSPACE:
-		if ((item = Menu_ItemAtCursor(m)) != NULL)
-		{
-			if (item->type == MTYPE_ACTION)
-			{
-                            DeleteSaveGameFunc( item );
-			}
-		}
-
+		PromptDeleteSaveFunc(m);
 		return menu_move_sound;
+
     default:
         s_loadgame_menu.cursor = s_savegame_menu.cursor;
         break;
@@ -5725,8 +5775,8 @@ PlayerConfig_AnimateModel(entity_t *entity, int curTime)
     cvar_t *cl_start_frame, *cl_end_frame;
     int startFrame, endFrame;
 
-    cl_start_frame = Cvar_Get("cl_model_preview_start", "-1", CVAR_ARCHIVE);
-    cl_end_frame = Cvar_Get("cl_model_preview_end", "-1", CVAR_ARCHIVE);
+    cl_start_frame = Cvar_Get("cl_model_preview_start", "84", CVAR_ARCHIVE);
+    cl_end_frame = Cvar_Get("cl_model_preview_end", "94", CVAR_ARCHIVE);
     startFrame = cl_start_frame->value;
     endFrame = cl_end_frame->value;
 
