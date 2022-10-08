@@ -672,6 +672,93 @@ AdaptFov(float fov, float w, float h)
 }
 
 /*
+===============
+CL_OffsetThirdPersonView
+
+===============
+*/
+#define FOCUS_DISTANCE  512
+#define VectorMA2(v, s, b, o)   ((o)[0]=(v)[0]+(b)[0]*(s),(o)[1]=(v)[1]+(b)[1]*(s),(o)[2]=(v)[2]+(b)[2]*(s))
+static void
+CL_OffsetThirdPersonView(void) {
+	vec3_t forward, right, up;
+	vec3_t view;
+	vec3_t focusAngles;
+	trace_t trace;
+	static vec3_t mins = { -4, -4, -4 };
+	static vec3_t maxs = { 4, 4, 4 };
+	vec3_t focusPoint;
+	float focusDist;
+	float forwardScale, sideScale;
+
+#if 0
+	cl.refdef.vieworg[2] += cg.predictedPlayerState.viewheight;
+#endif
+
+	VectorCopy( cl.refdef.viewangles, focusAngles );
+
+#if 0
+	// if dead, look at killer
+	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
+		focusAngles[YAW] = cg.predictedPlayerState.stats[STAT_DEAD_YAW];
+		cl.refdef.viewangles[YAW] = cg.predictedPlayerState.stats[STAT_DEAD_YAW];
+	}
+#endif
+
+	if ( focusAngles[PITCH] > 45 ) {
+		focusAngles[PITCH] = 45;        // don't go too far overhead
+	}
+	AngleVectors( focusAngles, forward, NULL, NULL );
+
+	VectorMA2( cl.refdef.vieworg, FOCUS_DISTANCE, forward, focusPoint );
+
+	VectorCopy( cl.refdef.vieworg, view );
+
+	view[2] += 8;
+
+	cl.refdef.viewangles[PITCH] *= 0.5;
+
+	AngleVectors( cl.refdef.viewangles, forward, right, up );
+
+#if 1
+	float cg_thirdPersonAngle = 0.0f;
+	float cg_thirdPersonRange = 128.0f;
+#endif
+
+	forwardScale = cos( cg_thirdPersonAngle / 180 * M_PI );
+	sideScale = sin( cg_thirdPersonAngle / 180 * M_PI );
+
+	VectorMA2(view, -cg_thirdPersonRange * forwardScale, forward, view);
+	VectorMA2(view, -cg_thirdPersonRange * sideScale, right, view);
+
+	// trace a ray from the origin to the viewpoint to make sure the view isn't
+	// in a solid block.  Use an 8 by 8 block to prevent the view from near clipping anything
+
+	trace = CM_BoxTrace( cl.refdef.vieworg, view, mins, maxs,  0, MASK_PLAYERSOLID);
+
+	if ( trace.fraction != 1.0 ) {
+		VectorCopy( trace.endpos, view );
+		view[2] += ( 1.0 - trace.fraction ) * 32;
+		// try another trace to this position, because a tunnel may have the ceiling
+		// close enogh that this is poking out
+
+		trace = CM_BoxTrace( cl.refdef.vieworg, view, mins, maxs, 0, MASK_PLAYERSOLID);
+		VectorCopy( trace.endpos, view );
+	}
+
+	VectorCopy( view, cl.refdef.vieworg );
+
+	// select pitch to look at focus point from vieword
+	VectorSubtract( focusPoint, cl.refdef.vieworg, focusPoint );
+	focusDist = sqrt( focusPoint[0] * focusPoint[0] + focusPoint[1] * focusPoint[1] );
+	if ( focusDist < 1 ) {
+		focusDist = 1;  // should never happen
+	}
+	cl.refdef.viewangles[PITCH] = -180 / M_PI * atan2( focusPoint[2], focusDist );
+	cl.refdef.viewangles[YAW] -= cg_thirdPersonAngle;
+}
+
+/*
  * Sets cl.refdef view values
  */
 void
@@ -763,6 +850,8 @@ CL_CalcViewValues(void)
 					ps->viewangles[i], lerp);
 		}
 	}
+
+	CL_OffsetThirdPersonView();
 
 	if (cl_kickangles->value)
 	{
