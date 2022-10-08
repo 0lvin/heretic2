@@ -19,7 +19,7 @@ Code parts:
 
 General info: https://sites.google.com/site/heretichides/create-your-own-add-on-game/09-miscellanea
 
-Before use unpack gamemsg.txt,levelmsg.txt from pak
+Code reimplementation https://github.com/jmarshall23/Heretic2
 ------------
 
 # Yamagi Quake II
