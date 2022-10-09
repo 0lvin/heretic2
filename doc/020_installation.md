@@ -126,6 +126,9 @@ The Quake II distributed by GOG.com contains the soundtrack, it just
 needs to be copied into the game data directory. The target directory is
 just *music/*, next to *baseq2/*. **Not** inside *baseq2/*.
 
+Unixoid systems are case sensitive. On them the files should be named
+*TrackXX.ogg* with a capital T. Otherwise the game won't find them.
+
 
 ### Alternate Startup Configuration
 
@@ -147,6 +150,16 @@ to spawn some monsters, removing DM-only items that spawn in unreachable
 areas in single player /co-op, and so on. You can find detailed
 changelogs for each map by opening the .ent files with a text editor and
 reading the comment section at the top (lines starting with "//").
+
+
+### Monster Footstep Sounds
+
+Yamagi Quake II has optional support for monster footstep sounds. These
+require some custom audio files. Download the pak file with the sounds
+from https://deponie.yamagi.org/quake2/assets/footsteps.pkz and copy
+the file into the *baseq2/* directory.
+
+The footstep sounds are included with the official Windows release.
 
 
 #### Download And Setup
@@ -207,6 +220,11 @@ platform:
 - Most Linux distributions and BSD systems provide Yamagi Quake II
   packages. Theses packages may be outdated, see below for compiling
   the executables.
+
+**Please note:** The addons needs their own game library. The libraries
+are included with the official Windows release. Linux distributions
+often package them in a distinced package. If you want to compile from
+source, have a look at the README files supplied with the addons.
 
 
 ### Windows
