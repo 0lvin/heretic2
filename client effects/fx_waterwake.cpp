@@ -11,7 +11,7 @@
 #include "ResourceManager.h"
 #include "FX.h"
 #include "Vector.h"
-#include "angles.h"
+#include "Angles.h"
 #include "g_playstats.h"
 #include "random.h"
 

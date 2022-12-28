@@ -14,9 +14,9 @@
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "Random.h"
-#include "vector.h"
-#include "fx.h"
+#include "random.h"
+#include "Vector.h"
+#include "FX.h"
 #include "g_HitLocation.h"
 #include "g_misc.h"
 

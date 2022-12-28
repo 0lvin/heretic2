@@ -1,6 +1,6 @@
 #include "qcommon.h"
 #include "assert.h"
-#include "vector.h"
+#include "Vector.h"
 
 //
 // reading functions

@@ -6,10 +6,10 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
+#include "FX.h"
 #include "Angles.h"
 #include "Utilities.h"
-#include "vector.h"
+#include "Vector.h"
 #include "random.h"
 #include "decals.h"
 #include "p_main.h"
@@ -57,7 +57,7 @@ edict_t *HellboltReflect(edict_t *self, edict_t *other, vec3_t vel)
    	hellbolt->reflect_debounce_time = self->reflect_debounce_time -1;
 	hellbolt->reflected_time=self->reflected_time;
 	VectorNormalize2(vel, hellbolt->movedir);
-	vectoangles(hellbolt->movedir, hellbolt->s.angles);
+	vectoAngles.hellbolt->movedir, hellbolt->s.angles);
    	G_LinkMissile(hellbolt); 
    	gi.CreateEffect(&hellbolt->s, FX_WEAPON_HELLBOLT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "t", hellbolt->velocity);
 

@@ -3,14 +3,14 @@
 // In game, animating rope
 
 #include "g_local.h"
-#include "vector.h"
+#include "Vector.h"
 #include "random.h"
 #include "timing.h" // for time based sway
 #include "p_main.h"
 #include "p_anims.h"
-#include "fx.h"
+#include "FX.h"
 #include "p_anim_branch.h"
-#include "utilities.h"
+#include "Utilities.h"
 #include "p_animactor.h"
 #include "m_chicken_anim.h"
 #include "cl_strings.h"

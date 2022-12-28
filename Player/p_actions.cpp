@@ -7,7 +7,7 @@
 
 #include <windows.h>
 
-#include "player.h"
+#include "Player.h"
 #include "p_types.h"
 #include "p_actions.h"
 #include "p_main.h"
@@ -16,10 +16,10 @@
 #include "g_items.h"
 #include "surfaceprops.h"
 #include "m_player.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
-#include "reference.h"
-#include "vector.h"
+#include "Reference.h"
+#include "Vector.h"
 #include "g_playstats.h"
 #include "p_anim_data.h"
 #include "q_shared.h"

@@ -11,12 +11,12 @@
 #include "FX.h"
 #include "Vector.h"
 #include "Matrix.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
 #include "Reference.h"
 #include "ce_DLight.h"
 #include "q_Sprite.h"
-#include "particle.h"
+#include "Particle.h"
 #include "g_playstats.h"
 
 enum 

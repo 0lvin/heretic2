@@ -6,9 +6,9 @@
 // Copyright 1998 Raven Software
 ==============================================================================
 */
-#include "fx.h"
+#include "FX.h"
 #include "g_local.h"
-#include "vector.h"
+#include "Vector.h"
 #include "random.h"
 
 

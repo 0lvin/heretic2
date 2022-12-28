@@ -15,7 +15,7 @@
 #include "random.h"
 #include "q_Sprite.h"
 #include "Utilities.h"
-#include "reference.h"
+#include "Reference.h"
 #include "Matrix.h"
 #include "g_playstats.h"
 

@@ -11,7 +11,7 @@
 #include "FX.h"
 #include "ResourceManager.h"
 #include "Client Entities.h"
-#include "Random.h"
+#include "random.h"
 #include "Vector.h"
 #include "g_playstats.h"
 

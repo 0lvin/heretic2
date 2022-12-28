@@ -6,9 +6,9 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_playstats.h"
 #include "p_actions.h"
 

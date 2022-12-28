@@ -12,10 +12,10 @@
 #include "ResourceManager.h"
 #include "FX.h"
 #include "Vector.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
 #include "Angles.h"
-#include "ce_Dlight.h"
+#include "ce_DLight.h"
 #include "g_items.h"
 
 #define BOB_HEIGHT				6.0

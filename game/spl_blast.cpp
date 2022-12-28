@@ -6,10 +6,10 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
+#include "FX.h"
 #include "Angles.h"
 #include "Utilities.h"
-#include "vector.h"
+#include "Vector.h"
 #include "random.h"
 #include "g_playstats.h"
 #include "m_beast.h"

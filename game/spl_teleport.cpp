@@ -7,11 +7,11 @@
 // Written by Jake Simpson
 
 #include "g_local.h"
-#include "fx.h"
+#include "FX.h"
 #include "Angles.h"
 #include "Utilities.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_teleport.h"
 #include "p_main.h"
 #include "g_playstats.h"

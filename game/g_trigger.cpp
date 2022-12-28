@@ -1,7 +1,7 @@
 #include "g_local.h"
 #include "Vector.h"
 #include "g_DefaultMessageHandler.h"
-#include "fx.h"
+#include "FX.h"
 #include "g_playstats.h"
 #include "cl_strings.h"
 

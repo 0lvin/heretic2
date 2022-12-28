@@ -5,15 +5,15 @@
 // Created by JJS
 
 //#include "p_types.h"
-#include "player.h"
+#include "Player.h"
 #include "g_local.h"
 #include "p_weapon.h"
 #include "m_player.h"
-#include "fx.h"
+#include "FX.h"
 #include "matrix.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_skeletons.h"
-#include "angles.h"
+#include "Angles.h"
 
 void SpellCastPowerup(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);
 void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);

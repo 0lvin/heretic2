@@ -47,10 +47,10 @@ GORGON
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
 #include "buoy.h"
-#include "vector.h"
+#include "Vector.h"
 
 #include "g_misc.h"
 #include "m_gorgon.h"

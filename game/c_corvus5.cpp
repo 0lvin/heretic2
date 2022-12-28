@@ -12,10 +12,10 @@ Copyright 1998 Raven Software
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
 #include "buoy.h"
-#include "vector.h"
+#include "Vector.h"
 
 #include "c_corvus5.h"
 #include "c_corvus5_anim.h"

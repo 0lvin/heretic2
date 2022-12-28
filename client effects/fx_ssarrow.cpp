@@ -9,13 +9,13 @@
 #include "Particle.h"
 #include "ResourceManager.h"
 #include "FX.h"
-#include "angles.h"
+#include "Angles.h"
 #include "Vector.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
 #include "motion.h"
 #include "Reference.h"
-#include "ce_Dlight.h"
+#include "ce_DLight.h"
 
 #define	NUM_SSARROW_MODELS	2
 static struct model_s *ssarrow_models[NUM_SSARROW_MODELS];

@@ -4,7 +4,7 @@
 #include "ResourceManager.h"
 #include "FX.h"
 #include "Vector.h"
-#include "Random.h"
+#include "random.h"
 
 void FXTestBBox(centity_t *owner, int type, int flags, vec3_t origin)
 {

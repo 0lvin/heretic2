@@ -1,17 +1,17 @@
 // g_weapon.c - generic weapon handling code for all player weapons
 
 //#include "p_types.h"
-#include "player.h"
+#include "Player.h"
 #include "g_local.h"
 #include "p_weapon.h"
 #include "m_player.h"
-#include "fx.h"
+#include "FX.h"
 #include "matrix.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_skeletons.h"
-#include "angles.h"
+#include "Angles.h"
 #include "Reference.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
 #include "g_items.h"
 #include "g_playstats.h"
@@ -245,7 +245,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 				// Check angle
 				VectorSubtract(Caster->s.origin, trace.ent->s.origin, hitdir);
 				VectorNormalize(hitdir);
-				vectoangles(hitdir, hitangles);
+				vectoAngles.hitdir, hitangles);
 				diffangles[YAW] = hitangles[YAW] - trace.ent->client->aimangles[YAW];
 				if (diffangles[YAW] > 180.0)
 					diffangles[YAW] -= 360.0;

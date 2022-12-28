@@ -7,8 +7,8 @@
 // By Jake Simpson
 
 #include "g_local.h"
-#include "fx.h"
-#include "vector.h"
+#include "FX.h"
+#include "Vector.h"
 #include "random.h"
 #include "decals.h"
 #include "Utilities.h"

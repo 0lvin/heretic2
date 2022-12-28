@@ -5,7 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
+#include "Player.h"
 #include "p_types.h"
 #include "p_actions.h"
 #include "p_anim_branch.h"
@@ -15,8 +15,8 @@
 #include "p_main.h"
 #include "p_ctrl.h"
 #include "m_player.h"
-#include "fx.h"
-#include "reference.h"
+#include "FX.h"
+#include "Reference.h"
 
 
 //NOTENOTE: This value is applied generically to all player move functions that travel along 

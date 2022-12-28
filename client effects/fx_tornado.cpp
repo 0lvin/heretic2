@@ -13,12 +13,12 @@
 #include "FX.h"
 #include "Vector.h"
 #include "Matrix.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
 #include "Reference.h"
 #include "ce_DLight.h"
 #include "g_playstats.h"
-#include "q_sprite.h"
+#include "q_Sprite.h"
 
 
 #define TORN_RADIUS			80

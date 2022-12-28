@@ -20,8 +20,8 @@
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "Random.h"
-#include "vector.h"
+#include "random.h"
+#include "Vector.h"
 #include "m_stats.h"
 
 

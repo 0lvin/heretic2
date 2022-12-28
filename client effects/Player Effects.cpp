@@ -3,7 +3,7 @@
 #include "Particle.h"
 #include "ResourceManager.h"
 #include "FX.h"
-#include "Random.h"
+#include "random.h"
 #include "Reference.h"
 #include "Utilities.h"
 #include "g_playstats.h"

@@ -11,10 +11,10 @@
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
 #include "buoy.h"
-#include "vector.h"
+#include "Vector.h"
 
 #include "m_plaguessithra.h"
 #include "m_plaguessithra_anim.h"

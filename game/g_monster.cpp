@@ -3,14 +3,14 @@
 #include "g_local.h"
 #include "FX.h"
 #include "g_DefaultMessageHandler.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_playstats.h"
 
 #include "random.h"
 
 //JWEIER START INCLUDES
 #include "g_misc.h"
-#include "utilities.h"
+#include "Utilities.h"
 //JWEIER END INCLUDES
 #include "g_HitLocation.h"
 #include "mg_guide.h"

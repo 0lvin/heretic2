@@ -5,7 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
+#include "Player.h"
 #include "p_types.h"
 #include "p_actions.h"
 #include "p_anim_data.h"
@@ -14,11 +14,11 @@
 #include "p_anim_branch.h"
 #include "p_ctrl.h"
 #include "p_main.h"
-#include "angles.h"
+#include "Angles.h"
 #include "g_teleport.h"
-#include "vector.h"
-#include "utilities.h"
-#include "fx.h"
+#include "Vector.h"
+#include "Utilities.h"
+#include "FX.h"
 
 #define PLAYER_SCREAM_THRESHOLD	-600
 

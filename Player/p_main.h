@@ -8,7 +8,7 @@
 #ifndef _P_MAIN2_H_
 #define _P_MAIN2_H_
 
-#include "h2common.h"
+#include "H2Common.h"
 #include "p_types.h"
 
 #define PLAYER_FLAG_NONE				0x00000000

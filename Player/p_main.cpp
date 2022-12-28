@@ -5,17 +5,17 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
+#include "Player.h"
 #include "p_animactor.h"
 #include "p_anim_data.h"
 #include "p_anims.h"
 #include "p_main.h"
 #include "p_weapon.h"
 #include "p_types.h"
-#include "fx.h"
+#include "FX.h"
 #include "m_player.h"
-#include "reference.h"
-#include "vector.h"
+#include "Reference.h"
+#include "Vector.h"
 
 //FIXME:  Include header
 

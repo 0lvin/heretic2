@@ -11,9 +11,9 @@
 */
 #include "g_local.h"
 #include "g_misc.h"
-#include "fx.h"
+#include "FX.h"
 #include "g_DefaultMessageHandler.h"
-#include "vector.h"
+#include "Vector.h"
 
 int BREAK_KILLALL		= 1;
 int BREAK_NOLINK	    = 2;

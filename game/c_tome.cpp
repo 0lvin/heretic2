@@ -12,9 +12,9 @@ Copyright 1998 Raven Software
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 
 #include "c_tome.h"
 #include "c_tome_anim.h"

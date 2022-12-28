@@ -11,10 +11,10 @@
 #include "ResourceManager.h"
 #include "FX.h"
 #include "Vector.h"
-#include "Random.h"
+#include "random.h"
 #include "Reference.h"
 #include "Utilities.h"
-#include "ce_dlight.h"
+#include "ce_DLight.h"
 
 #define TOME_RADIUS 5.0
 #define TOME_SCALE	10.0

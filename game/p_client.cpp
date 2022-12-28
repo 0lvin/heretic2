@@ -10,7 +10,7 @@
 #include "Angles.h"
 #include "compfmod.h"
 #include "FX.h"
-#include "vector.h"
+#include "Vector.h"
 #include "random.h"
 #include "Utilities.h"
 #include "g_playstats.h"

@@ -7,7 +7,7 @@
 #include "FX.h"
 #include "random.h"
 #include "g_monster.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_teleport.h"
 #include "g_HitLocation.h"
 #include "m_stats.h"
@@ -987,7 +987,7 @@ void ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
 	int i1;
 	gitem_t	*item;
 	edict_t *newitem;
-	vec3_t forward, holdangles,holdorigin;
+	vec3_t forward, holdAngles.holdorigin;
 	float delta;
 	
 	if ((!self->target) || (!self->style))
@@ -998,7 +998,7 @@ void ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
 	self->style = 0;	// Show spitter has been used
 
 	delta =(float) 360 / self->count;
-	VectorCopy(owner->s.angles,holdangles);
+	VectorCopy(owner->s.Angles.holdangles);
 	holdangles[YAW]= 0;
 
 	for (i1 = 0;i1 < self->count;++i1)

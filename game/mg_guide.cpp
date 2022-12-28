@@ -25,11 +25,11 @@
 #include "Angles.h"
 #include "Utilities.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 #include "buoy.h"
 #include "g_monster.h"
 #include "m_stats.h"
-#include "fx.h"
+#include "FX.h"
 #include "mg_guide.h"
 
 #define	BUOY_SEARCH_TIME		10//10 seconds between choosing a buoy and getting there

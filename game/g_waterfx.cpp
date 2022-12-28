@@ -2,9 +2,9 @@
 // 1. Fountain
 
 #include "g_local.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 
 #define OBJ_INVULNERABLE	1
 #define OBJ_ANIMATE			2

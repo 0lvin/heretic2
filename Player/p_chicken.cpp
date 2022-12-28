@@ -14,16 +14,16 @@
 //
 //==============================================================================
 
-#include "player.h"
+#include "Player.h"
 #include "g_Physics.h"
 #include "g_teleport.h"
 #include "g_Skeletons.h"
 #include "p_types.h"
 #include "p_anims.h"
 #include "p_chicken.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 #include "Utilities.h"
 #include "p_main.h"
 

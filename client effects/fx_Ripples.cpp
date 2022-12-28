@@ -12,7 +12,7 @@
 #include "Vector.h"
 #include "random.h"
 #include "Utilities.h"
-#include "Ambient effects.h"
+#include "ambient effects.h"
 
 #define	SCALE		0.01F
 #define DELTA_SCALE	1.0F

@@ -1,7 +1,7 @@
 #include "q_shared.h"
 #include "g_local.h"
 #include "matrix.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_HitLocation.h"
 #include "random.h"
 

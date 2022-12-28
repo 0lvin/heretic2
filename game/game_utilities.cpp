@@ -12,7 +12,7 @@
 #include "Vector.h"
 #include "g_HitLocation.h"
 #include "g_Physics.h"
-#include "Random.h"
+#include "random.h"
 #include "FX.H"
 #include "p_main.h"
 

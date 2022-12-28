@@ -13,9 +13,9 @@
 #include "Vector.h"
 #include "ce_DLight.h"
 #include "Angles.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
-#include "q_sprite.h"
+#include "q_Sprite.h"
 #include "g_playstats.h"
 
 #define	NUM_HELL_MODELS	2

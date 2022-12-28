@@ -1,7 +1,7 @@
 #include "g_local.h"
 #include "FX.h"
-#include "Random.h"
-#include "vector.h"
+#include "random.h"
+#include "Vector.h"
 #include "cl_strings.h"
 
 /*QUAK-ED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)

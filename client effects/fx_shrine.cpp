@@ -8,7 +8,7 @@
 #include "Particle.h"
 #include "ResourceManager.h"
 #include "FX.h"
-#include "Random.h"
+#include "random.h"
 #include "Vector.h"
 #include "string.h"
 #include "Utilities.h"

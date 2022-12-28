@@ -17,10 +17,10 @@ TBEAST
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
 #include "buoy.h"
-#include "vector.h"
+#include "Vector.h"
 
 #include "p_actions.h"
 #include "p_anims.h"

@@ -17,15 +17,15 @@
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
 #include "buoy.h"
-#include "vector.h"
+#include "Vector.h"
 
 #include "m_mother.h"
 #include "m_mother_anim.h"
 #include "g_misc.h"
-#include "angles.h"
+#include "Angles.h"
 #include "c_ai.h"
 #include "m_stats.h"
 

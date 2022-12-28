@@ -5,7 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
+#include "Player.h"
 #include "p_types.h"
 #include "p_animactor.h"
 #include "p_anim_branch.h"
@@ -13,11 +13,11 @@
 #include "p_anims.h"
 #include "p_main.h"
 #include "g_Skeletons.h"
-#include "angles.h"
-#include "fx.h"
+#include "Angles.h"
+#include "FX.h"
 #include "random.h"
-#include "vector.h"
-#include "effectflags.h"
+#include "Vector.h"
+#include "EffectFlags.h"
 
 PLAYER_API void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
 {

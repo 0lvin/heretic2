@@ -5,7 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
+#include "Player.h"
 #include "p_types.h"
 #include "p_main.h"
 #include "p_weapon.h"

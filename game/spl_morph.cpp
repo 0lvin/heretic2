@@ -17,15 +17,15 @@
 #include "g_volume_effect.h"
 #include "m_chicken.h"
 #include "m_chicken_anim.h"
-#include "angles.h"
-#include "fx.h"
+#include "Angles.h"
+#include "FX.h"
 #include "matrix.h"
-#include "vector.h"
+#include "Vector.h"
 #include "Utilities.h"
 #include "p_main.h"
 #include "p_anims.h"
 #include "random.h"
-#include "h2common.h"
+#include "H2Common.h"
 
 #define ARROW_SPEED			400.0F
 #define ARROW_RADIUS			2.0F

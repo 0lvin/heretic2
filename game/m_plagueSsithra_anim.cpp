@@ -18,7 +18,7 @@
 #include "m_plaguessithra.h"
 #include "g_monster.h"
 #include "c_ai.h"
-#include "vector.h"
+#include "Vector.h"
 
 void old_ai_run (edict_t *self, float dist);
 void ai_run (edict_t *self, float dist);

@@ -4,7 +4,7 @@
 #include "ResourceManager.h"
 #include "FX.h"
 #include "Vector.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
 #include "q_Sprite.h"
 

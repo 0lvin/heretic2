@@ -13,9 +13,9 @@
 #include "Matrix.h"
 #include "random.h"
 #include "Utilities.h"
-#include "Ambient effects.h"
-#include "ce_Dlight.h"
-#include "reference.h"
+#include "ambient effects.h"
+#include "ce_DLight.h"
+#include "Reference.h"
 #include "g_playstats.h"
 
 #define CLOUD_GEN_RAD	30.0

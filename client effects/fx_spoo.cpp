@@ -13,7 +13,7 @@
 #include "Vector.h"
 #include "ce_DLight.h"
 #include "random.h"
-#include "utilities.h"
+#include "Utilities.h"
 
 #define	NUM_SPOO_MODELS	2
 static struct model_s *spoo_models[NUM_SPOO_MODELS];

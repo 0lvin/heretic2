@@ -5,7 +5,7 @@
 #include "g_HitLocation.h"
 #include "g_DefaultMessageHandler.h"
 #include "FX.h"
-#include "vector.h"
+#include "Vector.h"
 #include "random.h"
 #include "g_misc.h"
 #include "p_main.h"

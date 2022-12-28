@@ -11,7 +11,7 @@
 #include "FX.h"
 #include "Vector.h"
 #include "Matrix.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
 #include "Reference.h"
 #include "ce_DLight.h"

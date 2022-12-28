@@ -11,7 +11,7 @@
 #include "ResourceManager.h"
 #include "FX.h"
 #include "Vector.h"
-#include "Random.h"
+#include "random.h"
 #include "g_playstats.h"
 
 #define	NUM_SPLASH_MODELS	2

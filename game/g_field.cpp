@@ -1,6 +1,6 @@
 #include "g_local.h"
 //#include "p_types.h"
-#include "player.h"
+#include "Player.h"
 #include "Vector.h"
 #include "p_actions.h"
 #include "g_DefaultMessageHandler.h"

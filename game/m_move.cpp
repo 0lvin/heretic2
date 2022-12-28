@@ -2,7 +2,7 @@
 
 #include "g_local.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 
 #define	STEPSIZE	18
 

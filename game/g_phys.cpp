@@ -2,7 +2,7 @@
 
 #include "g_local.h"
 #include "Message.h"
-#include "vector.h"
+#include "Vector.h"
 
 
 #define KNOCKBACK_SCALING 0.5

@@ -5,7 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
+#include "Player.h"
 #include "p_types.h"
 #include "p_actions.h"
 #include "p_anims.h"
@@ -13,7 +13,7 @@
 #include "p_main.h"
 #include "surfaceprops.h"
 #include "random.h"
-#include "fx.h"
+#include "FX.h"
 
 PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 {

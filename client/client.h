@@ -16,7 +16,7 @@
 #include "console.h"
 #include "cdaudio.h"
 #include "q_ClientServer.h"
-#include "player.h"
+#include "Player.h"
 #include "LevelMaps.h"
 
 // ********************************************************************************************
@@ -63,7 +63,7 @@ typedef struct
 
 	entity_state_t				*s1;			// pointer to the corresponding entity_state_t in
 												// cl_parse_entities.
-	
+
 	int							serverframe;	// if not current, this ent isn't in the frame
 
 	int							flags;			// What freaking flags go in here??!?!
@@ -77,7 +77,7 @@ typedef struct
 
 	struct client_entity_s		*effects;		// client effects, only has meaning within the
 												// Client Effects DLL
-	
+
 	struct LERPedReferences_s	*referenceInfo;
 } centity_t;
 
@@ -272,7 +272,7 @@ typedef struct
 	float		m_menualpha;
 	float		m_menuscale;
 
-	byte		esc_cinematic;		// Flag to show player wants to leave cinematic 
+	byte		esc_cinematic;		// Flag to show player wants to leave cinematic
 
 // screen rendering information
 	float		disable_screen;		// showing loading plaque between levels
@@ -362,7 +362,7 @@ extern client_fx_export_t fxe;
 //
 // these are the data and functions imported by the client fx module
 //
-typedef struct 
+typedef struct
 {
 	client_state_t	*cl;
 	client_static_t *cls;
@@ -543,7 +543,7 @@ extern	cdlight_t	cl_dlights[MAX_DLIGHTS];
 
 // the cl_parse_entities must be large enough to hold UPDATE_BACKUP frames of
 // entities, so that when a delta compressed message arives from the server
-// it can be un-deltad from the original 
+// it can be un-deltad from the original
 #define	MAX_PARSE_ENTITIES	1024
 GAME_DECLSPEC extern	entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
 

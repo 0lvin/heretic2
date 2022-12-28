@@ -5,15 +5,15 @@
 // Copyright 1998 Raven Software
 //
 
-#include "fx.h"
+#include "FX.h"
 #include "g_local.h"
 #include "g_misc.h"
 #include "g_DefaultMessageHandler.h"
-#include "vector.h"
+#include "Vector.h"
 #include "m_plagueElf_anim.h"
 //#include "m_plaguessithra_anim.h"		// Can't do this because NUM_MESH_NODES is in all tris headers
-#include "Random.h"
-#include "angles.h"
+#include "random.h"
+#include "Angles.h"
 #include "g_playstats.h"
 #include "m_stats.h"
 

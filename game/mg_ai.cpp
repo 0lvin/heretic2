@@ -10,14 +10,14 @@
 #include <assert.h>
 #include "g_local.h"
 #include "g_monster.h"
-#include "Random.h"
-#include "vector.h"
+#include "random.h"
+#include "Vector.h"
 #include "buoy.h"
 #include "g_HitLocation.h"
 #include "Utilities.h"
 #include "m_stats.h"
 #include "g_playstats.h"
-#include "fx.h"
+#include "FX.h"
 
 #define	STEPSIZE 18
 #define YAW_IDEAL		1

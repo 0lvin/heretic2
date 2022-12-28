@@ -1,4 +1,4 @@
-#include "ce_Dlight.h"
+#include "ce_DLight.h"
 #include "ResourceManager.h"
 
 ResourceManager_t DLightMngr;

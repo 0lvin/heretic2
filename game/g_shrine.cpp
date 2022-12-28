@@ -7,7 +7,7 @@
 #include "g_local.h"
 #include "g_itemstats.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 #include "p_actions.h"
 #include "p_anims.h"
 #include "p_main.h"
@@ -252,12 +252,12 @@ void G_PlayerActionShrineEffect(playerinfo_t *playerinfo)
 }
 
 // ************************************************************************************************
-// PlayerRandomShrineEffect
+// Playerrandom.hrineEffect
 // ------------------------
 // Called from the random Shrine - which one do we want to do?
 // ************************************************************************************************
 
-void PlayerRandomShrineEffect(edict_t *self, int value)
+void Playerrandom.hrineEffect(edict_t *self, int value)
 {
 	switch(value)
 	{
@@ -1902,7 +1902,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 	if (deathmatch->value || (other->flags & FL_CHICKEN) || (other->client->playerinfo.flags & PLAYER_FLAG_WATER))
 	{
-		PlayerRandomShrineEffect(other, random_shrine_num);
+		Playerrandom.hrineEffect(other, random_shrine_num);
 	}
 	else
 	{

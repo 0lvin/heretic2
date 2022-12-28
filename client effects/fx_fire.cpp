@@ -11,10 +11,10 @@
 #include "ResourceManager.h"
 #include "FX.h"
 #include "Vector.h"
-#include "Random.h"
+#include "random.h"
 #include "Reference.h"
 #include "Utilities.h"
-#include "ce_dlight.h"
+#include "ce_DLight.h"
 #include "g_playstats.h"
 
 #define FLARE_COUNT			16

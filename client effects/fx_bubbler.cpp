@@ -13,7 +13,7 @@
 #include "Vector.h"
 #include "random.h"
 #include "Utilities.h"
-#include "Ambient effects.h"
+#include "ambient effects.h"
 #include "motion.h"
 
 #define	BUBBLE_MAX_DURATION	2.0F

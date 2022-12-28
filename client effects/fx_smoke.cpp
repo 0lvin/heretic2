@@ -12,10 +12,10 @@
 #include "Vector.h"
 #include "EffectFlags.h"
 #include "Particle.h"
-#include "Random.h"
-#include "Motion.h"
+#include "random.h"
+#include "motion.h"
 #include "Utilities.h"
-#include "fx.h"
+#include "FX.h"
 
 #define	NUM_SMOKE_MODELS	1
 static struct model_s *smoke_models[NUM_SMOKE_MODELS];

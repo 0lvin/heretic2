@@ -4,9 +4,9 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
-#include "vector.h"
-#include "angles.h"
+#include "FX.h"
+#include "Vector.h"
+#include "Angles.h"
 #include "matrix.h"
 #include "g_volume_effect.h"
 #include "Utilities.h"

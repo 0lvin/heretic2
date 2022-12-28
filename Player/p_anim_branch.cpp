@@ -5,17 +5,17 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
+#include "Player.h"
 #include "p_types.h"
 #include "p_actions.h"
 #include "p_anims.h"
 #include "g_items.h"
 #include "p_main.h"
 #include "p_weapon.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
-#include "vector.h"
-#include "g_physics.h"
+#include "Vector.h"
+#include "g_Physics.h"
 #include "p_anim_data.h"
 #include "m_player.h"
 #include "g_playstats.h"

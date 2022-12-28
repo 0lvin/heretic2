@@ -1,6 +1,6 @@
 #include "g_local.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_playstats.h"
 #include "g_itemstats.h"
 #include "qcommon.h"

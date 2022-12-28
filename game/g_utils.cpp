@@ -4,7 +4,7 @@
 #include "FX.h"
 #include "g_Skeletons.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_BoundingForm.h"
 #include "g_Physics.h"
 

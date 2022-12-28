@@ -9,14 +9,14 @@
 #include "p_item.h"
 #include "g_items.h"
 //#include "p_types.h"
-#include "player.h"
+#include "Player.h"
 #include "p_weapon.h"
 #include "g_weapon.h"
 #include "p_anims.h"
 #include "p_anim_data.h"
-#include "fx.h"
+#include "FX.h"
 #include "random.h"
-#include "vector.h"
+#include "Vector.h"
 #include "g_itemstats.h"
 
 #define HEALTH_IGNORE_MAX	1

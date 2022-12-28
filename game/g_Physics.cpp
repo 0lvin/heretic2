@@ -12,7 +12,7 @@
 #include "random.h"
 #include "p_anim_branch.h"
 #include "p_anims.h"
-#include "fx.h"
+#include "FX.h"
 #include "g_playstats.h"
 #include "p_actions.h"
 

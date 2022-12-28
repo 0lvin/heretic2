@@ -12,10 +12,10 @@
 #include "ResourceManager.h"
 #include "FX.h"
 #include "Vector.h"
-#include "Random.h"
+#include "random.h"
 #include "Utilities.h"
 #include "Angles.h"
-#include "q_sprite.h"
+#include "q_Sprite.h"
 #include "ce_DLight.h"
 #include "g_playstats.h"
 

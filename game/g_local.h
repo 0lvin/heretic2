@@ -20,7 +20,7 @@
 #define	GAME_INCLUDE
 
 #include "game.h"
-#include "player.h"
+#include "Player.h"
 
 // The "gameversion" client command will print this plus compile date.
 

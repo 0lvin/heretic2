@@ -11,7 +11,7 @@
 #include "Particle.h"
 #include "ResourceManager.h"
 #include "FX.h"
-#include "FX_DustPuff.h"
+#include "fx_dustpuff.h"
 #include "Vector.h"
 #include "Utilities.h"
 #include "Angles.h"

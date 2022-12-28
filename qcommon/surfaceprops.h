@@ -9,7 +9,7 @@
 #define _SURFACEPROPS_H_
 
 //#include "p_types.h"
-#include "player.h"
+#include "Player.h"
 
 #define MAX_SURFACE_MAT_NAMES 256
 

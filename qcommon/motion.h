@@ -1,5 +1,5 @@
 #include "H2Common.h"
-#include "q_typedef.h"
+#include "q_Typedef.h"
 
 H2COMMON_API float GetTimeToReachDistance(float, float, float);
 H2COMMON_API float GetDistanceOverTime(float, float, float);

@@ -2,7 +2,7 @@
 #include "Client Entities.h"
 #include "FX.h"
 #include "Particle.h"
-#include "Random.h"
+#include "random.h"
 
 void ItemRespawn(centity_t *owner, int type, int flags, vec3_t origin)
 {

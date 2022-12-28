@@ -6,7 +6,7 @@
 #include "q_ClientServer.h"
 #include "q_Physics.h"
 #include "g_playstats.h"
-#include "utilities.h"
+#include "Utilities.h"
 #include "p_anims.h"
 #include "FX.h"
 

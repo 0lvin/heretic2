@@ -9,7 +9,7 @@
 //
 //==============================================================================
 
-#include "player.h"
+#include "Player.h"
 #include "p_types.h"
 #include "p_anims.h"
 #include "p_actions.h"
