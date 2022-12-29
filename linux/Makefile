@@ -10,27 +10,51 @@ VERSION=3.21
 VERSION_FN=$(VERSION)$(GLIBC)
 RPM_RELEASE=6
 
-ifneq (,$(findstring libc6,$(shell if [ -e /lib/libc.so.6* ];then echo libc6;fi)))
-GLIBC=-glibc
+# Detect the OS
+ifdef SystemRoot
+OSTYPE ?= Windows
 else
-GLIBC=
+OSTYPE ?= $(shell uname -s)
 endif
 
-ifneq (,$(findstring alpha,$(shell uname -m)))
-ARCH=axp
-RPMARCH=alpha
-else
-ARCH=i386
-RPMARCH=i386
+# Special case for MinGW
+ifneq (,$(findstring MINGW,$(OSTYPE)))
+OSTYPE := Windows
 endif
+
+# Detect the architecture
+ifeq ($(OSTYPE), Windows)
+ifdef MINGW_CHOST
+ifeq ($(MINGW_CHOST), x86_64-w64-mingw32)
+ARCH ?= x86_64
+else # i686-w64-mingw32
+ARCH ?= i386
+endif
+else # windows, but MINGW_CHOST not defined
+ifdef PROCESSOR_ARCHITEW6432
+# 64 bit Windows
+ARCH ?= $(PROCESSOR_ARCHITEW6432)
+else
+# 32 bit Windows
+ARCH ?= $(PROCESSOR_ARCHITECTURE)
+endif
+endif # windows but MINGW_CHOST not defined
+else
+ifneq ($(OSTYPE), Darwin)
+# Normalize some abiguous ARCH strings
+ARCH ?= $(shell uname -m | sed -e 's/i.86/i386/' -e 's/amd64/x86_64/' -e 's/arm64/aarch64/' -e 's/^arm.*/arm/')
+else
+ARCH ?= $(shell uname -m)
+endif
+endif
+
 NOARCH=noarch
 
 MOUNT_DIR=..
-VWEP_DIR=/grog/Projects/Quake2/vwep
 QUAKE2_DIR=/grog/Projects/Quake2Master
 
-BUILD_DEBUG_DIR=debug$(ARCH)$(GLIBC)
-BUILD_RELEASE_DIR=release$(ARCH)$(GLIBC)
+BUILD_DEBUG_DIR=Debug
+BUILD_RELEASE_DIR=Release
 CLIENT_DIR=$(MOUNT_DIR)/client
 SERVER_DIR=$(MOUNT_DIR)/server
 REF_SOFT_DIR=$(MOUNT_DIR)/ref_soft
@@ -40,12 +64,6 @@ LINUX_DIR=$(MOUNT_DIR)/linux
 GAME_DIR=$(MOUNT_DIR)/game
 NULL_DIR=$(MOUNT_DIR)/null
 CTF_DIR=$(MOUNT_DIR)/ctf
-XATRIX_DIR=$(MOUNT_DIR)/xatrix
-ROGUE_DIR=$(MOUNT_DIR)/rogue
-
-MESA_DIR=/usr/local/src/Mesa-2.6
-
-EGCS=/usr/local/egcs-1.1.2/bin/gcc
 
 CC=gcc
 BASE_CFLAGS=-Dstricmp=strcasecmp
@@ -64,9 +82,9 @@ SVGALDFLAGS=-lvga -lm
 XLDFLAGS=-L/usr/X11R6/lib -lX11 -lXext -lXxf86dga
 XCFLAGS=
 
-GLLDFLAGS=-L/usr/X11R6/lib -L/usr/local/lib -L$(MESA_DIR)/lib -lX11 -lXext -lvga -lm
-GLXLDFLAGS=-L/usr/X11R6/lib -L/usr/local/lib -L$(MESA_DIR)/lib -lX11 -lXext -lXxf86dga -lXxf86vm -lm
-GLCFLAGS=-I$(MESA_DIR)/include -I/usr/include/glide
+GLLDFLAGS=-L/usr/X11R6/lib -L/usr/local/lib -lX11 -lXext -lvga -lm
+GLXLDFLAGS=-L/usr/X11R6/lib -L/usr/local/lib -lX11 -lXext -lXxf86dga -lXxf86vm -lm
+GLCFLAGS=-I/usr/include/glide
 
 SHLIBEXT=so
 
@@ -90,23 +108,11 @@ DO_SHLIB_AS=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -DELF -x assembler-with-cpp -o $@ -c 
 # SETUP AND BUILD
 #############################################################################
 
-ifeq ($(ARCH),axp)
-TARGETS=$(BUILDDIR)/q2ded \
-	$(BUILDDIR)/game.$(SHLIBEXT) \
-	$(BUILDDIR)/ctf/game.$(SHLIBEXT) \
-#	$(BUILDDIR)/xatrix/game.$(SHLIBEXT) \
-#	$(BUILDDIR)/rogue/game.$(SHLIBEXT)
-else
 TARGETS=$(BUILDDIR)/quake2 \
 	$(BUILDDIR)/game.$(SHLIBEXT) \
 	$(BUILDDIR)/ref_glx.$(SHLIBEXT) \
-#	$(BUILDDIR)/ctf/game.$(SHLIBEXT) \
-#	$(BUILDDIR)/ref_soft.$(SHLIBEXT) \
-#	$(BUILDDIR)/ref_softx.$(SHLIBEXT) \
-#	$(BUILDDIR)/ref_gl.$(SHLIBEXT) \
-#	$(BUILDDIR)/xatrix/game.$(SHLIBEXT) \
-#	$(BUILDDIR)/rogue/game.$(SHLIBEXT)
-endif
+	$(BUILDDIR)/q2ded \
+#	$(BUILDDIR)/ctf/game.$(SHLIBEXT)
 
 build_debug:
 	@-mkdir $(BUILD_DEBUG_DIR) \
@@ -115,9 +121,7 @@ build_debug:
 		$(BUILD_DEBUG_DIR)/ref_soft \
 		$(BUILD_DEBUG_DIR)/ref_gl \
 		$(BUILD_DEBUG_DIR)/game \
-		$(BUILD_DEBUG_DIR)/ctf \
-#		$(BUILD_DEBUG_DIR)/xatrix \
-#		$(BUILD_DEBUG_DIR)/rogue
+		$(BUILD_DEBUG_DIR)/ctf
 	$(MAKE) targets BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
 
 build_release:
@@ -127,9 +131,7 @@ build_release:
 		$(BUILD_RELEASE_DIR)/ref_soft \
 		$(BUILD_RELEASE_DIR)/ref_gl \
 		$(BUILD_RELEASE_DIR)/game \
-		$(BUILD_RELEASE_DIR)/ctf \
-#		$(BUILD_RELEASE_DIR)/xatrix \
-#		$(BUILD_RELEASE_DIR)/rogue
+		$(BUILD_RELEASE_DIR)/ctf
 	$(MAKE) targets BUILDDIR=$(BUILD_RELEASE_DIR) CFLAGS="$(RELEASE_CFLAGS)"
 
 all: build_debug build_release
@@ -192,15 +194,8 @@ QUAKE2_OBJS = \
 	$(BUILDDIR)/client/q_shared.o \
 	$(BUILDDIR)/client/pmove.o
 
-ifeq ($(ARCH),axp)
-QUAKE2_AS_OBJS =  #blank
-else
-QUAKE2_AS_OBJS = \
-	$(BUILDDIR)/client/snd_mixa.o
-endif
-
 $(BUILDDIR)/quake2 : $(QUAKE2_OBJS) $(QUAKE2_AS_OBJS)
-	$(CC) $(CFLAGS) -o $@ $(QUAKE2_OBJS) $(QUAKE2_AS_OBJS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $(QUAKE2_OBJS) $(LDFLAGS)
 
 $(BUILDDIR)/client/cl_cin.o :     $(CLIENT_DIR)/cl_cin.c
 	$(DO_CC)
@@ -330,9 +325,6 @@ $(BUILDDIR)/client/vid_so.o :     $(LINUX_DIR)/vid_so.c
 
 $(BUILDDIR)/client/snd_linux.o :  $(LINUX_DIR)/snd_linux.c
 	$(DO_CC)
-
-$(BUILDDIR)/client/snd_mixa.o :   $(LINUX_DIR)/snd_mixa.s
-	$(DO_AS)
 
 $(BUILDDIR)/client/sys_linux.o :  $(LINUX_DIR)/sys_linux.c
 	$(DO_CC)
@@ -768,483 +760,6 @@ $(BUILDDIR)/ctf/q_shared.o :   $(CTF_DIR)/q_shared.c
 	$(DO_SHLIB_DEBUG_CC)
 
 #############################################################################
-# XATRIX
-#############################################################################
-
-XATRIX_OBJS = \
-	$(BUILDDIR)/xatrix/g_ai.o \
-	$(BUILDDIR)/xatrix/g_cmds.o \
-	$(BUILDDIR)/xatrix/g_chase.o \
-	$(BUILDDIR)/xatrix/g_combat.o \
-	$(BUILDDIR)/xatrix/g_func.o \
-	$(BUILDDIR)/xatrix/g_items.o \
-	$(BUILDDIR)/xatrix/g_main.o \
-	$(BUILDDIR)/xatrix/g_misc.o \
-	$(BUILDDIR)/xatrix/g_monster.o \
-	$(BUILDDIR)/xatrix/g_phys.o \
-	$(BUILDDIR)/xatrix/g_save.o \
-	$(BUILDDIR)/xatrix/g_spawn.o \
-	$(BUILDDIR)/xatrix/g_svcmds.o \
-	$(BUILDDIR)/xatrix/g_target.o \
-	$(BUILDDIR)/xatrix/g_trigger.o \
-	$(BUILDDIR)/xatrix/g_turret.o \
-	$(BUILDDIR)/xatrix/g_utils.o \
-	$(BUILDDIR)/xatrix/g_weapon.o \
-	$(BUILDDIR)/xatrix/m_actor.o \
-	$(BUILDDIR)/xatrix/m_berserk.o \
-	$(BUILDDIR)/xatrix/m_boss2.o \
-	$(BUILDDIR)/xatrix/m_boss3.o \
-	$(BUILDDIR)/xatrix/m_boss31.o \
-	$(BUILDDIR)/xatrix/m_boss32.o \
-	$(BUILDDIR)/xatrix/m_boss5.o \
-	$(BUILDDIR)/xatrix/m_brain.o \
-	$(BUILDDIR)/xatrix/m_chick.o \
-	$(BUILDDIR)/xatrix/m_fixbot.o \
-	$(BUILDDIR)/xatrix/m_flash.o \
-	$(BUILDDIR)/xatrix/m_flipper.o \
-	$(BUILDDIR)/xatrix/m_float.o \
-	$(BUILDDIR)/xatrix/m_flyer.o \
-	$(BUILDDIR)/xatrix/m_gekk.o \
-	$(BUILDDIR)/xatrix/m_gladb.o \
-	$(BUILDDIR)/xatrix/m_gladiator.o \
-	$(BUILDDIR)/xatrix/m_gunner.o \
-	$(BUILDDIR)/xatrix/m_hover.o \
-	$(BUILDDIR)/xatrix/m_infantry.o \
-	$(BUILDDIR)/xatrix/m_insane.o \
-	$(BUILDDIR)/xatrix/m_medic.o \
-	$(BUILDDIR)/xatrix/m_move.o \
-	$(BUILDDIR)/xatrix/m_mutant.o \
-	$(BUILDDIR)/xatrix/m_parasite.o \
-	$(BUILDDIR)/xatrix/m_soldier.o \
-	$(BUILDDIR)/xatrix/m_supertank.o \
-	$(BUILDDIR)/xatrix/m_tank.o \
-	$(BUILDDIR)/xatrix/p_client.o \
-	$(BUILDDIR)/xatrix/p_hud.o \
-	$(BUILDDIR)/xatrix/p_trail.o \
-	$(BUILDDIR)/xatrix/p_view.o \
-	$(BUILDDIR)/xatrix/p_weapon.o \
-	$(BUILDDIR)/xatrix/q_shared.o
-
-$(BUILDDIR)/xatrix/game.$(SHLIBEXT) : $(XATRIX_OBJS)
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(XATRIX_OBJS)
-
-$(BUILDDIR)/xatrix/g_ai.o :        $(XATRIX_DIR)/g_ai.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_cmds.o :      $(XATRIX_DIR)/g_cmds.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_chase.o :    $(XATRIX_DIR)/g_chase.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_combat.o :    $(XATRIX_DIR)/g_combat.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_func.o :      $(XATRIX_DIR)/g_func.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_items.o :     $(XATRIX_DIR)/g_items.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_main.o :      $(XATRIX_DIR)/g_main.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_misc.o :      $(XATRIX_DIR)/g_misc.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_monster.o :   $(XATRIX_DIR)/g_monster.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_phys.o :      $(XATRIX_DIR)/g_phys.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_save.o :      $(XATRIX_DIR)/g_save.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_spawn.o :     $(XATRIX_DIR)/g_spawn.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_svcmds.o :    $(XATRIX_DIR)/g_svcmds.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_target.o :    $(XATRIX_DIR)/g_target.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_trigger.o :   $(XATRIX_DIR)/g_trigger.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_turret.o :    $(XATRIX_DIR)/g_turret.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_utils.o :     $(XATRIX_DIR)/g_utils.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/g_weapon.o :    $(XATRIX_DIR)/g_weapon.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_actor.o :     $(XATRIX_DIR)/m_actor.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_berserk.o :   $(XATRIX_DIR)/m_berserk.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_boss2.o :     $(XATRIX_DIR)/m_boss2.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_boss3.o :     $(XATRIX_DIR)/m_boss3.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_boss31.o :    $(XATRIX_DIR)/m_boss31.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_boss32.o :    $(XATRIX_DIR)/m_boss32.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_boss5.o :     $(XATRIX_DIR)/m_boss5.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_brain.o :     $(XATRIX_DIR)/m_brain.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_chick.o :     $(XATRIX_DIR)/m_chick.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_fixbot.o :    $(XATRIX_DIR)/m_fixbot.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_flash.o :     $(XATRIX_DIR)/m_flash.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_flipper.o :   $(XATRIX_DIR)/m_flipper.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_float.o :     $(XATRIX_DIR)/m_float.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_flyer.o :     $(XATRIX_DIR)/m_flyer.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_gekk.o :      $(XATRIX_DIR)/m_gekk.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_gladb.o :     $(XATRIX_DIR)/m_gladb.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_gladiator.o : $(XATRIX_DIR)/m_gladiator.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_gunner.o :    $(XATRIX_DIR)/m_gunner.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_hover.o :     $(XATRIX_DIR)/m_hover.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_infantry.o :  $(XATRIX_DIR)/m_infantry.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_insane.o :    $(XATRIX_DIR)/m_insane.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_medic.o :     $(XATRIX_DIR)/m_medic.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_move.o :      $(XATRIX_DIR)/m_move.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_mutant.o :    $(XATRIX_DIR)/m_mutant.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_parasite.o :  $(XATRIX_DIR)/m_parasite.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_soldier.o :   $(XATRIX_DIR)/m_soldier.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_supertank.o : $(XATRIX_DIR)/m_supertank.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/m_tank.o :      $(XATRIX_DIR)/m_tank.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/p_client.o :    $(XATRIX_DIR)/p_client.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/p_hud.o :       $(XATRIX_DIR)/p_hud.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/p_trail.o :     $(XATRIX_DIR)/p_trail.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/p_view.o :      $(XATRIX_DIR)/p_view.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/p_weapon.o :    $(XATRIX_DIR)/p_weapon.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/xatrix/q_shared.o :    $(XATRIX_DIR)/q_shared.c
-	$(DO_SHLIB_DEBUG_CC)
-
-#############################################################################
-# ROGUE
-#############################################################################
-
-ROGUE_OBJS = \
-	$(BUILDDIR)/rogue/dm_ball.o \
-	$(BUILDDIR)/rogue/dm_tag.o \
-	$(BUILDDIR)/rogue/g_ai.o \
-	$(BUILDDIR)/rogue/g_chase.o \
-	$(BUILDDIR)/rogue/g_cmds.o \
-	$(BUILDDIR)/rogue/g_combat.o \
-	$(BUILDDIR)/rogue/g_func.o \
-	$(BUILDDIR)/rogue/g_items.o \
-	$(BUILDDIR)/rogue/g_main.o \
-	$(BUILDDIR)/rogue/g_misc.o \
-	$(BUILDDIR)/rogue/g_monster.o \
-	$(BUILDDIR)/rogue/g_newai.o \
-	$(BUILDDIR)/rogue/g_newdm.o \
-	$(BUILDDIR)/rogue/g_newfnc.o \
-	$(BUILDDIR)/rogue/g_newtarg.o \
-	$(BUILDDIR)/rogue/g_newtrig.o \
-	$(BUILDDIR)/rogue/g_newweap.o \
-	$(BUILDDIR)/rogue/g_phys.o \
-	$(BUILDDIR)/rogue/g_save.o \
-	$(BUILDDIR)/rogue/g_spawn.o \
-	$(BUILDDIR)/rogue/g_sphere.o \
-	$(BUILDDIR)/rogue/g_svcmds.o \
-	$(BUILDDIR)/rogue/g_target.o \
-	$(BUILDDIR)/rogue/g_trigger.o \
-	$(BUILDDIR)/rogue/g_turret.o \
-	$(BUILDDIR)/rogue/g_utils.o \
-	$(BUILDDIR)/rogue/g_weapon.o \
-	$(BUILDDIR)/rogue/m_actor.o \
-	$(BUILDDIR)/rogue/m_berserk.o \
-	$(BUILDDIR)/rogue/m_boss2.o \
-	$(BUILDDIR)/rogue/m_boss3.o \
-	$(BUILDDIR)/rogue/m_boss31.o \
-	$(BUILDDIR)/rogue/m_boss32.o \
-	$(BUILDDIR)/rogue/m_brain.o \
-	$(BUILDDIR)/rogue/m_carrier.o \
-	$(BUILDDIR)/rogue/m_chick.o \
-	$(BUILDDIR)/rogue/m_flash.o \
-	$(BUILDDIR)/rogue/m_flipper.o \
-	$(BUILDDIR)/rogue/m_float.o \
-	$(BUILDDIR)/rogue/m_flyer.o \
-	$(BUILDDIR)/rogue/m_gladiator.o \
-	$(BUILDDIR)/rogue/m_gunner.o \
-	$(BUILDDIR)/rogue/m_hover.o \
-	$(BUILDDIR)/rogue/m_infantry.o \
-	$(BUILDDIR)/rogue/m_insane.o \
-	$(BUILDDIR)/rogue/m_medic.o \
-	$(BUILDDIR)/rogue/m_move.o \
-	$(BUILDDIR)/rogue/m_mutant.o \
-	$(BUILDDIR)/rogue/m_parasite.o \
-	$(BUILDDIR)/rogue/m_soldier.o \
-	$(BUILDDIR)/rogue/m_stalker.o \
-	$(BUILDDIR)/rogue/m_supertank.o \
-	$(BUILDDIR)/rogue/m_tank.o \
-	$(BUILDDIR)/rogue/m_turret.o \
-	$(BUILDDIR)/rogue/m_widow.o \
-	$(BUILDDIR)/rogue/m_widow2.o \
-	$(BUILDDIR)/rogue/p_client.o \
-	$(BUILDDIR)/rogue/p_hud.o \
-	$(BUILDDIR)/rogue/p_trail.o \
-	$(BUILDDIR)/rogue/p_view.o \
-	$(BUILDDIR)/rogue/p_weapon.o \
-	$(BUILDDIR)/rogue/q_shared.o
-
-$(BUILDDIR)/rogue/game.$(SHLIBEXT) : $(ROGUE_OBJS)
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(ROGUE_OBJS)
-
-$(BUILDDIR)/rogue/dm_ball.o :      $(ROGUE_DIR)/dm_ball.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/dm_tag.o :       $(ROGUE_DIR)/dm_tag.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_ai.o :         $(ROGUE_DIR)/g_ai.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_chase.o :      $(ROGUE_DIR)/g_chase.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_cmds.o :       $(ROGUE_DIR)/g_cmds.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_combat.o :     $(ROGUE_DIR)/g_combat.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_func.o :       $(ROGUE_DIR)/g_func.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_items.o :      $(ROGUE_DIR)/g_items.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_main.o :       $(ROGUE_DIR)/g_main.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_misc.o :       $(ROGUE_DIR)/g_misc.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_monster.o :    $(ROGUE_DIR)/g_monster.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_newai.o :      $(ROGUE_DIR)/g_newai.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_newdm.o :      $(ROGUE_DIR)/g_newdm.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_newfnc.o :     $(ROGUE_DIR)/g_newfnc.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_newtarg.o :    $(ROGUE_DIR)/g_newtarg.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_newtrig.o :    $(ROGUE_DIR)/g_newtrig.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_newweap.o :    $(ROGUE_DIR)/g_newweap.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_phys.o :       $(ROGUE_DIR)/g_phys.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_save.o :       $(ROGUE_DIR)/g_save.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_spawn.o :      $(ROGUE_DIR)/g_spawn.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_sphere.o :     $(ROGUE_DIR)/g_sphere.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_svcmds.o :     $(ROGUE_DIR)/g_svcmds.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_target.o :     $(ROGUE_DIR)/g_target.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_trigger.o :    $(ROGUE_DIR)/g_trigger.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_turret.o :     $(ROGUE_DIR)/g_turret.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_utils.o :      $(ROGUE_DIR)/g_utils.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/g_weapon.o :     $(ROGUE_DIR)/g_weapon.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_actor.o :      $(ROGUE_DIR)/m_actor.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_berserk.o :    $(ROGUE_DIR)/m_berserk.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_boss2.o :      $(ROGUE_DIR)/m_boss2.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_boss3.o :      $(ROGUE_DIR)/m_boss3.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_boss31.o :     $(ROGUE_DIR)/m_boss31.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_boss32.o :     $(ROGUE_DIR)/m_boss32.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_brain.o :      $(ROGUE_DIR)/m_brain.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_carrier.o :    $(ROGUE_DIR)/m_carrier.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_chick.o :      $(ROGUE_DIR)/m_chick.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_flash.o :      $(ROGUE_DIR)/m_flash.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_flipper.o :    $(ROGUE_DIR)/m_flipper.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_float.o :      $(ROGUE_DIR)/m_float.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_flyer.o :      $(ROGUE_DIR)/m_flyer.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_gladiator.o :  $(ROGUE_DIR)/m_gladiator.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_gunner.o :     $(ROGUE_DIR)/m_gunner.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_hover.o :      $(ROGUE_DIR)/m_hover.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_infantry.o :   $(ROGUE_DIR)/m_infantry.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_insane.o :     $(ROGUE_DIR)/m_insane.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_medic.o :      $(ROGUE_DIR)/m_medic.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_move.o :       $(ROGUE_DIR)/m_move.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_mutant.o :     $(ROGUE_DIR)/m_mutant.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_parasite.o :   $(ROGUE_DIR)/m_parasite.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_soldier.o :    $(ROGUE_DIR)/m_soldier.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_stalker.o :    $(ROGUE_DIR)/m_stalker.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_supertank.o :  $(ROGUE_DIR)/m_supertank.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_tank.o :       $(ROGUE_DIR)/m_tank.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_turret.o :     $(ROGUE_DIR)/m_turret.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_widow.o :      $(ROGUE_DIR)/m_widow.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/m_widow2.o :     $(ROGUE_DIR)/m_widow2.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/p_client.o :     $(ROGUE_DIR)/p_client.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/p_hud.o :        $(ROGUE_DIR)/p_hud.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/p_trail.o :      $(ROGUE_DIR)/p_trail.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/p_view.o :       $(ROGUE_DIR)/p_view.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/p_weapon.o :     $(ROGUE_DIR)/p_weapon.c
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/rogue/q_shared.o :     $(ROGUE_DIR)/q_shared.c
-	$(DO_SHLIB_DEBUG_CC)
-
-
-
-
-#############################################################################
 # REF_SOFT
 #############################################################################
 
@@ -1350,39 +865,6 @@ $(BUILDDIR)/ref_soft/r_sprite.o :     $(REF_SOFT_DIR)/r_sprite.c
 $(BUILDDIR)/ref_soft/r_surf.o :       $(REF_SOFT_DIR)/r_surf.c
 	$(DO_SHLIB_CC)
 
-$(BUILDDIR)/ref_soft/r_aclipa.o :     $(LINUX_DIR)/r_aclipa.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/r_draw16.o :     $(LINUX_DIR)/r_draw16.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/r_drawa.o :      $(LINUX_DIR)/r_drawa.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/r_edgea.o :      $(LINUX_DIR)/r_edgea.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/r_scana.o :      $(LINUX_DIR)/r_scana.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/r_spr8.o :       $(LINUX_DIR)/r_spr8.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/r_surf8.o :      $(LINUX_DIR)/r_surf8.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/math.o :         $(LINUX_DIR)/math.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/d_polysa.o :     $(LINUX_DIR)/d_polysa.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/r_varsa.o :      $(LINUX_DIR)/r_varsa.s
-	$(DO_SHLIB_AS)
-
-$(BUILDDIR)/ref_soft/sys_dosa.o :     $(LINUX_DIR)/sys_dosa.s
-	$(DO_SHLIB_AS)
-
 $(BUILDDIR)/ref_soft/q_shared.o :     $(GAME_DIR)/q_shared.c
 	$(DO_SHLIB_DEBUG_CC)
 
@@ -1394,9 +876,6 @@ $(BUILDDIR)/ref_soft/glob.o :         $(LINUX_DIR)/glob.c
 
 $(BUILDDIR)/ref_soft/rw_svgalib.o :   $(LINUX_DIR)/rw_svgalib.c
 	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/ref_soft/d_copy.o :       $(LINUX_DIR)/d_copy.s
-	$(DO_SHLIB_AS)
 
 $(BUILDDIR)/ref_soft/rw_in_svgalib.o : $(LINUX_DIR)/rw_in_svgalib.c
 	$(DO_SHLIB_CC)
@@ -1498,7 +977,6 @@ RPMROOT=/usr/src/redhat
 RPM = rpm
 RPMFLAGS = -bb
 INSTALLDIR = /usr/local/games/quake2
-TDFXGL_DIR = /home/zoid/3dfxgl
 TMPDIR = /var/tmp
 
 ifeq ($(ARCH),axp)
@@ -1514,12 +992,12 @@ rpm: quake2.axp.spec
 	cp quake2.axp.spec $(RPMROOT)/SPECS/.
 	cd $(RPMROOT)/SPECS; $(RPM) $(RPMFLAGS) quake2.axp.spec
 	rm -rf $(RPMDIR)
-	mv $(RPMROOT)/RPMS/$(RPMARCH)/q2ded-$(VERSION_FN)-$(RPM_RELEASE).$(RPMARCH).rpm archives/.
+	mv $(RPMROOT)/RPMS/$(ARCH)/q2ded-$(VERSION_FN)-$(RPM_RELEASE).$(ARCH).rpm archives/.
 
 tar:
 	if [ ! -d archives ];then mkdir archives;fi
 	$(MAKE) copyfiles COPYDIR=$(RPMDIR)
-	cd $(RPMDIR); tar czvf q2ded-$(VERSION_FN)-$(RPMARCH)-unknown-linux2.0.tar.gz *
+	cd $(RPMDIR); tar czvf q2ded-$(VERSION_FN)-$(ARCH)-unknown-linux2.0.tar.gz *
 	mv $(RPMDIR)/*.tar.gz archives/.
 	rm -rf $(RPMDIR)
 
@@ -1536,14 +1014,6 @@ copyfiles:
 	chmod 755 $(COPYDIR)/ctf
 	cp $(BUILD_RELEASE_DIR)/ctf/game.$(SHLIBEXT) $(COPYDIR)/ctf
 	chmod 755 $(COPYDIR)/ctf/game.$(SHLIBEXT)
-	-mkdir $(COPYDIR)/xatrix
-	chmod 755 $(COPYDIR)/xatrix
-	cp $(BUILD_RELEASE_DIR)/xatrix/game.$(SHLIBEXT) $(COPYDIR)/xatrix
-	chmod 755 $(COPYDIR)/xatrix/game.$(SHLIBEXT)
-	-mkdir $(COPYDIR)/rogue
-	chmod 755 $(COPYDIR)/rogue
-	cp $(BUILD_RELEASE_DIR)/rogue/game.$(SHLIBEXT) $(COPYDIR)/rogue
-	chmod 755 $(COPYDIR)/rogue/game.$(SHLIBEXT)
 	cp $(MOUNT_DIR)/linux/readme.axp $(COPYDIR)/README
 	cp $(MOUNT_DIR)/readme.txt $(COPYDIR)
 	cp $(MOUNT_DIR)/$(VERSION)_Changes.txt $(COPYDIR)
@@ -1556,8 +1026,6 @@ else
 
 # rpm-quake2-patch
 rpm:   rpm-quake2 rpm-quake2-data rpm-quake2-video \
-		rpm-quake2-xatrix rpm-quake2-xatrix-video \
-		rpm-quake2-rogue rpm-quake2-rogue-video \
 		rpm-quake2-ctf
 
 PATCHDIR = $(TMPDIR)/quake2-patch-$(VERSION_FN)
@@ -1591,15 +1059,7 @@ rpm-quake2: quake2.spec
 	-mkdir $(QUAKE2INSTDIR)/ctf
 	chmod 1777 $(QUAKE2INSTDIR)/ctf
 	cp $(BUILD_RELEASE_DIR)/ctf/game.$(SHLIBEXT) $(QUAKE2INSTDIR)/ctf
-	-mkdir $(QUAKE2INSTDIR)/xatrix
-	chmod 1777 $(QUAKE2INSTDIR)/xatrix
-	cp $(BUILD_RELEASE_DIR)/xatrix/game.$(SHLIBEXT) $(QUAKE2INSTDIR)/xatrix
-	-mkdir $(QUAKE2INSTDIR)/rogue
-	chmod 1777 $(QUAKE2INSTDIR)/rogue
-	cp $(BUILD_RELEASE_DIR)/rogue/game.$(SHLIBEXT) $(QUAKE2INSTDIR)/rogue
 	-mkdirhier $(QUAKE2DIR)/usr/lib
-	cp $(TDFXGL_DIR)/release$(ARCH)$(GLIBC)/lib3dfxgl.so $(QUAKE2DIR)/usr/lib/lib3dfxgl.so
-	cp $(MESA_DIR)/lib/libMesaGL.so.2.6 $(QUAKE2DIR)/usr/lib/libMesaGL.so.2.6
 	cp $(MOUNT_DIR)/linux/README $(QUAKE2INSTDIR)
 	cp $(MOUNT_DIR)/readme.txt $(QUAKE2INSTDIR)
 	-mkdir $(QUAKE2DIR)/etc
@@ -1794,77 +1254,6 @@ rpm-quake2-video: quake2-video.spec
 	rm -rf $(TMPDIR)/quake2-video-$(VERSION)
 	mv $(RPMROOT)/RPMS/$(NOARCH)/quake2-video-$(VERSION)-$(RPM_RELEASE).$(NOARCH).rpm archives/.
 
-QUAKE2XATRIXDIR = $(TMPDIR)/quake2-xatrix-$(VERSION)/$(INSTALLDIR)
-rpm-quake2-xatrix: quake2-xatrix.spec
-	touch $(RPMROOT)/SOURCES/quake2-xatrix-$(VERSION).tar.gz
-	if [ ! -d archives ];then mkdir archives;fi
-	-mkdirhier $(QUAKE2XATRIXDIR)/xatrix/docs
-	cp $(QUAKE2_DIR)/xatrix/pak0.pak			$(QUAKE2XATRIXDIR)/xatrix/.
-	cp $(QUAKE2_DIR)/xatrix/docs/license.doc	$(QUAKE2XATRIXDIR)/xatrix/docs/.
-	cp $(QUAKE2_DIR)/xatrix/docs/license.txt	$(QUAKE2XATRIXDIR)/xatrix/docs/.
-	cp $(QUAKE2_DIR)/xatrix/docs/manual.doc		$(QUAKE2XATRIXDIR)/xatrix/docs/.
-	cp $(QUAKE2_DIR)/xatrix/docs/manual.txt		$(QUAKE2XATRIXDIR)/xatrix/docs/.
-	cp $(QUAKE2_DIR)/xatrix/docs/readme.htm		$(QUAKE2XATRIXDIR)/xatrix/docs/.
-	cp $(QUAKE2_DIR)/xatrix/docs/readme.txt		$(QUAKE2XATRIXDIR)/xatrix/docs/.
-	cp $(QUAKE2_DIR)/xatrix/docs/release.htm	$(QUAKE2XATRIXDIR)/xatrix/docs/.
-	cp $(QUAKE2_DIR)/xatrix/docs/release.txt	$(QUAKE2XATRIXDIR)/xatrix/docs/.
-	cp $< $(RPMROOT)/SPECS/.
-	cd $(RPMROOT)/SPECS; $(RPM) $(RPMFLAGS) $<
-	rm -rf $(TMPDIR)/quake2-xatrix-$(VERSION)
-	mv $(RPMROOT)/RPMS/$(NOARCH)/quake2-xatrix-$(VERSION)-$(RPM_RELEASE).$(NOARCH).rpm archives/.
-
-QUAKE2XATRIXVIDEODIR = $(TMPDIR)/quake2-xatrix-video-$(VERSION)/$(INSTALLDIR)
-rpm-quake2-xatrix-video : quake2-xatrix-video.spec
-	touch $(RPMROOT)/SOURCES/quake2-xatrix-video-$(VERSION).tar.gz
-	if [ ! -d archives ];then mkdir archives;fi
-	-mkdirhier $(QUAKE2XATRIXVIDEODIR)/xatrix/video
-	cp $(QUAKE2_DIR)/xatrix/video/idlog.cin		$(QUAKE2XATRIXVIDEODIR)/xatrix/video/.
-	cp $(QUAKE2_DIR)/xatrix/video/logo.cin		$(QUAKE2XATRIXVIDEODIR)/xatrix/video/.
-	cp $(QUAKE2_DIR)/xatrix/video/xin.cin		$(QUAKE2XATRIXVIDEODIR)/xatrix/video/.
-	cp $(QUAKE2_DIR)/xatrix/video/xout.cin		$(QUAKE2XATRIXVIDEODIR)/xatrix/video/.
-	cp $(QUAKE2_DIR)/xatrix/video/xu1.cin		$(QUAKE2XATRIXVIDEODIR)/xatrix/video/.
-	cp $(QUAKE2_DIR)/xatrix/video/xu2.cin		$(QUAKE2XATRIXVIDEODIR)/xatrix/video/.
-	cp $(QUAKE2_DIR)/xatrix/video/xu3.cin		$(QUAKE2XATRIXVIDEODIR)/xatrix/video/.
-	cp $(QUAKE2_DIR)/xatrix/video/xu4.cin		$(QUAKE2XATRIXVIDEODIR)/xatrix/video/.
-	cp $< $(RPMROOT)/SPECS/.
-	cd $(RPMROOT)/SPECS; $(RPM) $(RPMFLAGS) $<
-	rm -rf $(TMPDIR)/quake2-xatrix-video-$(VERSION)
-	mv $(RPMROOT)/RPMS/$(NOARCH)/quake2-xatrix-video-$(VERSION)-$(RPM_RELEASE).$(NOARCH).rpm archives/.
-
-QUAKE2ROGUEDIR = $(TMPDIR)/quake2-rogue-$(VERSION)/$(INSTALLDIR)
-rpm-quake2-rogue: quake2-rogue.spec
-	touch $(RPMROOT)/SOURCES/quake2-rogue-$(VERSION).tar.gz
-	if [ ! -d archives ];then mkdir archives;fi
-	-mkdirhier $(QUAKE2ROGUEDIR)/rogue/docs
-	cp $(QUAKE2_DIR)/rogue/pak0.pak				$(QUAKE2ROGUEDIR)/rogue/.
-	cp $(QUAKE2_DIR)/rogue/docs/license.doc		$(QUAKE2ROGUEDIR)/rogue/docs/.
-	cp $(QUAKE2_DIR)/rogue/docs/license.txt		$(QUAKE2ROGUEDIR)/rogue/docs/.
-	cp $(QUAKE2_DIR)/rogue/docs/readme.htm		$(QUAKE2ROGUEDIR)/rogue/docs/.
-	cp $(QUAKE2_DIR)/rogue/docs/readme.txt		$(QUAKE2ROGUEDIR)/rogue/docs/.
-	cp $(QUAKE2_DIR)/rogue/docs/release.htm		$(QUAKE2ROGUEDIR)/rogue/docs/.
-	cp $(QUAKE2_DIR)/rogue/docs/release.txt		$(QUAKE2ROGUEDIR)/rogue/docs/.
-	cp $< $(RPMROOT)/SPECS/.
-	cd $(RPMROOT)/SPECS; $(RPM) $(RPMFLAGS) $<
-	rm -rf $(TMPDIR)/quake2-rogue-$(VERSION)
-	mv $(RPMROOT)/RPMS/$(NOARCH)/quake2-rogue-$(VERSION)-$(RPM_RELEASE).$(NOARCH).rpm archives/.
-
-QUAKE2ROGUEVIDEODIR = $(TMPDIR)/quake2-rogue-video-$(VERSION)/$(INSTALLDIR)
-rpm-quake2-rogue-video: quake2-rogue-video.spec
-	touch $(RPMROOT)/SOURCES/quake2-rogue-video-$(VERSION).tar.gz
-	if [ ! -d archives ];then mkdir archives;fi
-	-mkdirhier $(QUAKE2ROGUEVIDEODIR)/rogue/video
-	cp $(QUAKE2_DIR)/rogue/video/logo.cin		$(QUAKE2ROGUEVIDEODIR)/rogue/video/.
-	cp $(QUAKE2_DIR)/rogue/video/rend.cin		$(QUAKE2ROGUEVIDEODIR)/rogue/video/.
-	cp $(QUAKE2_DIR)/rogue/video/reu1_.cin		$(QUAKE2ROGUEVIDEODIR)/rogue/video/.
-	cp $(QUAKE2_DIR)/rogue/video/reu2_.cin		$(QUAKE2ROGUEVIDEODIR)/rogue/video/.
-	cp $(QUAKE2_DIR)/rogue/video/reu3_.cin		$(QUAKE2ROGUEVIDEODIR)/rogue/video/.
-	cp $(QUAKE2_DIR)/rogue/video/reu4_.cin		$(QUAKE2ROGUEVIDEODIR)/rogue/video/.
-	cp $(QUAKE2_DIR)/rogue/video/rintro.cin		$(QUAKE2ROGUEVIDEODIR)/rogue/video/.
-	cp $< $(RPMROOT)/SPECS/.
-	cd $(RPMROOT)/SPECS; $(RPM) $(RPMFLAGS) $<
-	rm -rf $(TMPDIR)/quake2-rogue-video-$(VERSION)
-	mv $(RPMROOT)/RPMS/$(NOARCH)/quake2-rogue-video-$(VERSION)-$(RPM_RELEASE).$(NOARCH).rpm archives/.
-
 QUAKE2CTFDIR = $(TMPDIR)/quake2-ctf-$(VERSION)/$(INSTALLDIR)
 rpm-quake2-ctf: quake2-ctf.spec
 	touch $(RPMROOT)/SOURCES/quake2-ctf-$(VERSION).tar.gz
@@ -1896,7 +1285,6 @@ copyfiles:
 	cp $(BUILD_RELEASE_DIR)/quake2 $(COPYDIR)/quake2
 	strip $(COPYDIR)/quake2
 	-mkdir $(COPYDIR)/baseq2
-#	cp -R $(VWEP_DIR)/baseq2 $(COPYDIR)/.
 #	for x in `find $(COPYDIR)/baseq2 -type d`; do chmod 755 $$x;done
 #	for x in `find $(COPYDIR)/baseq2 -type f`; do chmod 644 $$x;done
 	chmod 1777 $(COPYDIR)/baseq2
@@ -1908,14 +1296,6 @@ copyfiles:
 #	-mkdir $(COPYDIR)/ctf
 #	chmod 1777 $(COPYDIR)/ctf
 #	cp $(BUILD_RELEASE_DIR)/ctf/game.$(SHLIBEXT) $(COPYDIR)/ctf
-	-mkdir $(COPYDIR)/xatrix
-	chmod 1777 $(COPYDIR)/xatrix
-	cp $(BUILD_RELEASE_DIR)/xatrix/game.$(SHLIBEXT) $(COPYDIR)/xatrix
-	-mkdir $(COPYDIR)/rogue
-	chmod 1777 $(COPYDIR)/rogue
-	cp $(BUILD_RELEASE_DIR)/rogue/game.$(SHLIBEXT) $(COPYDIR)/rogue
-	cp $(TDFXGL_DIR)/release$(ARCH)$(GLIBC)/lib3dfxgl.so $(COPYDIR)
-	cp $(MESA_DIR)/lib/libMesaGL.so.2.6 $(COPYDIR)
 	cd $(COPYDIR); ln -sf libMesaGL.so.2.6 libMesaGL.so.2
 	cd $(COPYDIR); ln -sf libMesaGL.so.2 libMesaGL.so
 	cd $(COPYDIR); ln -sf libMesaGL.so libGL.so
@@ -1933,18 +1313,6 @@ quake2-data.spec: $(MOUNT_DIR)/linux/quake2-data.spec.sh
 	sh $< $(VERSION) $(RPM_RELEASE) $(NOARCH) $(INSTALLDIR) > $@
 
 quake2-video.spec: $(MOUNT_DIR)/linux/quake2-video.spec.sh
-	sh $< $(VERSION) $(RPM_RELEASE) $(NOARCH) $(INSTALLDIR) > $@
-
-quake2-xatrix.spec: $(MOUNT_DIR)/linux/quake2-xatrix.spec.sh
-	sh $< $(VERSION) $(RPM_RELEASE) $(NOARCH) $(INSTALLDIR) > $@
-
-quake2-xatrix-video.spec: $(MOUNT_DIR)/linux/quake2-xatrix-video.spec.sh
-	sh $< $(VERSION) $(RPM_RELEASE) $(NOARCH) $(INSTALLDIR) > $@
-
-quake2-rogue.spec: $(MOUNT_DIR)/linux/quake2-rogue.spec.sh
-	sh $< $(VERSION) $(RPM_RELEASE) $(NOARCH) $(INSTALLDIR) > $@
-
-quake2-rogue-video.spec: $(MOUNT_DIR)/linux/quake2-rogue-video.spec.sh
 	sh $< $(VERSION) $(RPM_RELEASE) $(NOARCH) $(INSTALLDIR) > $@
 
 quake2-ctf.spec: $(MOUNT_DIR)/linux/quake2-ctf.spec.sh
@@ -1970,11 +1338,8 @@ clean2:
 	-rm -f \
 	$(QUAKE2_OBJS) \
 	$(Q2DED_OBJS) \
-	$(QUAKE2_AS_OBJS) \
 	$(GAME_OBJS) \
 	$(CTF_OBJS) \
-	$(XATRIX_OBJS) \
-	$(ROGUE_OBJS) \
 	$(REF_SOFT_OBJS) \
 	$(REF_SOFT_X11_OBJS) \
 	$(REF_GL_OBJS) \
