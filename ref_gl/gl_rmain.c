@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -25,8 +25,6 @@ void R_Clear (void);
 viddef_t	vid;
 
 refimport_t	ri;
-
-int GL_TEXTURE0, GL_TEXTURE1;
 
 model_t		*r_worldmodel;
 
@@ -134,6 +132,8 @@ cvar_t	*gl_3dlabs_broken;
 cvar_t	*vid_fullscreen;
 cvar_t	*vid_gamma;
 cvar_t	*vid_ref;
+
+int qgl_gltexture0, qgl_gltexture1;
 
 /*
 =================
@@ -258,7 +258,7 @@ void R_DrawSpriteModel (entity_t *e)
 	VectorMA (e->origin, -frame->origin_y, up, point);
 	VectorMA (point, frame->width - frame->origin_x, right, point);
 	qglVertex3fv (point);
-	
+
 	qglEnd ();
 
 	qglDisable (GL_ALPHA_TEST);
@@ -426,7 +426,7 @@ void GL_DrawParticles( int num_particles, const particle_t particles[], const un
 	for ( p = particles, i=0 ; i < num_particles ; i++,p++)
 	{
 		// hack a scale up to keep particles from disapearing
-		scale = ( p->origin[0] - r_origin[0] ) * vpn[0] + 
+		scale = ( p->origin[0] - r_origin[0] ) * vpn[0] +
 			    ( p->origin[1] - r_origin[1] ) * vpn[1] +
 			    ( p->origin[2] - r_origin[2] ) * vpn[2];
 
@@ -444,13 +444,13 @@ void GL_DrawParticles( int num_particles, const particle_t particles[], const un
 		qglVertex3fv( p->origin );
 
 		qglTexCoord2f( 1.0625, 0.0625 );
-		qglVertex3f( p->origin[0] + up[0]*scale, 
-			         p->origin[1] + up[1]*scale, 
+		qglVertex3f( p->origin[0] + up[0]*scale,
+			         p->origin[1] + up[1]*scale,
 					 p->origin[2] + up[2]*scale);
 
 		qglTexCoord2f( 0.0625, 1.0625 );
-		qglVertex3f( p->origin[0] + right[0]*scale, 
-			         p->origin[1] + right[1]*scale, 
+		qglVertex3f( p->origin[0] + right[0]*scale,
+			         p->origin[1] + right[1]*scale,
 					 p->origin[2] + right[2]*scale);
 	}
 
@@ -853,10 +853,10 @@ void R_RenderView (refdef_t *fd)
 	if (r_speeds->value)
 	{
 		ri.Con_Printf (PRINT_ALL, "%4i wpoly %4i epoly %i tex %i lmaps\n",
-			c_brush_polys, 
-			c_alias_polys, 
-			c_visible_textures, 
-			c_visible_lightmaps); 
+			c_brush_polys,
+			c_alias_polys,
+			c_visible_textures,
+			c_visible_lightmaps);
 	}
 }
 
@@ -913,7 +913,7 @@ static void GL_DrawStereoPattern( void )
 			GL_DrawColoredStereoLinePair( 1, 1, 0, 12);
 			GL_DrawColoredStereoLinePair( 0, 1, 0, 14);
 		qglEnd();
-		
+
 		GLimp_EndFrame();
 	}
 }
@@ -1103,7 +1103,7 @@ R_Init
 ===============
 */
 int R_Init( void *hinstance, void *hWnd )
-{	
+{
 	char renderer_buffer[1000];
 	char vendor_buffer[1000];
 	int		err;
@@ -1159,7 +1159,7 @@ int R_Init( void *hinstance, void *hWnd )
 	gl_config.version_string = qglGetString (GL_VERSION);
 	ri.Con_Printf (PRINT_ALL, "GL_VERSION: %s\n", gl_config.version_string );
 	gl_config.extensions_string = qglGetString (GL_EXTENSIONS);
-	ri.Con_Printf (PRINT_ALL, "GL_EXTENSIONS: %s\n", gl_config.extensions_string );
+	// ri.Con_Printf (PRINT_ALL, "GL_EXTENSIONS: %s\n", gl_config.extensions_string );
 
 	strcpy( renderer_buffer, gl_config.renderer_string );
 	strlwr( renderer_buffer );
@@ -1198,7 +1198,7 @@ int R_Init( void *hinstance, void *hWnd )
 			ri.Cvar_Set( "gl_monolightmap", "A" );
 			ri.Con_Printf( PRINT_ALL, "...using gl_monolightmap 'a'\n" );
 		}
-		else if ( gl_config.renderer & GL_RENDERER_POWERVR ) 
+		else if ( gl_config.renderer & GL_RENDERER_POWERVR )
 		{
 			ri.Cvar_Set( "gl_monolightmap", "0" );
 		}
@@ -1210,7 +1210,7 @@ int R_Init( void *hinstance, void *hWnd )
 
 	// power vr can't have anything stay in the framebuffer, so
 	// the screen needs to redraw the tiled background every frame
-	if ( gl_config.renderer & GL_RENDERER_POWERVR ) 
+	if ( gl_config.renderer & GL_RENDERER_POWERVR )
 	{
 		ri.Cvar_Set( "scr_drawall", "1" );
 	}
@@ -1249,7 +1249,7 @@ int R_Init( void *hinstance, void *hWnd )
 	/*
 	** grab extensions
 	*/
-	if ( strstr( gl_config.extensions_string, "GL_EXT_compiled_vertex_array" ) || 
+	if ( strstr( gl_config.extensions_string, "GL_EXT_compiled_vertex_array" ) ||
 		 strstr( gl_config.extensions_string, "GL_SGI_compiled_vertex_array" ) )
 	{
 		ri.Con_Printf( PRINT_ALL, "...enabling GL_EXT_compiled_vertex_array\n" );
@@ -1312,7 +1312,7 @@ int R_Init( void *hinstance, void *hWnd )
 #endif
 
 	if ( !qglColorTableEXT &&
-		strstr( gl_config.extensions_string, "GL_EXT_paletted_texture" ) && 
+		strstr( gl_config.extensions_string, "GL_EXT_paletted_texture" ) &&
 		strstr( gl_config.extensions_string, "GL_EXT_shared_texture_palette" ) )
 	{
 		if ( gl_ext_palettedtexture->value )
@@ -1338,8 +1338,8 @@ int R_Init( void *hinstance, void *hWnd )
 			qglMTexCoord2fSGIS = ( void * ) qwglGetProcAddress( "glMultiTexCoord2fARB" );
 			qglActiveTextureARB = ( void * ) qwglGetProcAddress( "glActiveTextureARB" );
 			qglClientActiveTextureARB = ( void * ) qwglGetProcAddress( "glClientActiveTextureARB" );
-			GL_TEXTURE0 = GL_TEXTURE0_ARB;
-			GL_TEXTURE1 = GL_TEXTURE1_ARB;
+			qgl_gltexture0 = GL_TEXTURE0_ARB;
+			qgl_gltexture1 = GL_TEXTURE1_ARB;
 		}
 		else
 		{
@@ -1350,6 +1350,9 @@ int R_Init( void *hinstance, void *hWnd )
 	{
 		ri.Con_Printf( PRINT_ALL, "...GL_ARB_multitexture not found\n" );
 	}
+
+	qgl_gltexture0 = GL_TEXTURE0;
+	qgl_gltexture1 = GL_TEXTURE1;
 
 	if ( strstr( gl_config.extensions_string, "GL_SGIS_multitexture" ) )
 	{
@@ -1362,8 +1365,8 @@ int R_Init( void *hinstance, void *hWnd )
 			ri.Con_Printf( PRINT_ALL, "...using GL_SGIS_multitexture\n" );
 			qglMTexCoord2fSGIS = ( void * ) qwglGetProcAddress( "glMTexCoord2fSGIS" );
 			qglSelectTextureSGIS = ( void * ) qwglGetProcAddress( "glSelectTextureSGIS" );
-			GL_TEXTURE0 = GL_TEXTURE0_SGIS;
-			GL_TEXTURE1 = GL_TEXTURE1_SGIS;
+			qgl_gltexture0 = GL_TEXTURE0_SGIS;
+			qgl_gltexture1 = GL_TEXTURE1_SGIS;
 		}
 		else
 		{
@@ -1400,7 +1403,7 @@ R_Shutdown
 ===============
 */
 void R_Shutdown (void)
-{	
+{
 	ri.Cmd_RemoveCommand ("modellist");
 	ri.Cmd_RemoveCommand ("screenshot");
 	ri.Cmd_RemoveCommand ("imagelist");
