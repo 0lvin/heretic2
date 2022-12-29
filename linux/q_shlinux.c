@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -17,6 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+#define _GNU_SOURCE
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -41,7 +42,7 @@ void *Hunk_Begin (int maxsize)
 	// reserve a huge chunk of memory, but don't commit any yet
 	maxhunksize = maxsize + sizeof(int);
 	curhunksize = 0;
-	membase = mmap(0, maxhunksize, PROT_READ|PROT_WRITE, 
+	membase = mmap(0, maxhunksize, PROT_READ|PROT_WRITE,
 		MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 	if (membase == NULL || membase == (byte *)-1)
 		Sys_Error("unable to virtual allocate %d bytes", maxsize);
@@ -66,13 +67,45 @@ void *Hunk_Alloc (int size)
 
 int Hunk_End (void)
 {
-	byte *n;
+	byte *n = NULL;
 
-	n = mremap(membase, maxhunksize, curhunksize + sizeof(int), 0);
+#if defined(__linux__)
+	n = (byte *)mremap(membase, maxhunksize, curhunksize + sizeof(size_t), 0);
+#elif defined(__NetBSD__)
+	n = (byte *)mremap(membase, maxhunksize, NULL, curhunksize + sizeof(size_t), 0);
+#else
+ #ifndef round_page
+ size_t page_size = sysconf(_SC_PAGESIZE);
+ #define round_page(x) ((((size_t)(x)) + page_size-1) & ~(page_size-1))
+ #endif
+
+	size_t old_size = round_page(maxhunksize);
+	size_t new_size = round_page(curhunksize + sizeof(size_t));
+
+	if (new_size > old_size)
+	{
+		/* Can never happen. If it happens something's very wrong. */
+		n = 0;
+	}
+	else if (new_size < old_size)
+	{
+		/* Hunk is to big, we need to shrink it. */
+		n = munmap(membase + new_size, old_size - new_size) + membase;
+	}
+	else
+	{
+		/* No change necessary. */
+		n = membase;
+	}
+#endif
+
 	if (n != membase)
-		Sys_Error("Hunk_End:  Could not remap virtual block (%d)", errno);
-	*((int *)membase) = curhunksize + sizeof(int);
-	
+	{
+		Sys_Error("Hunk_End: Could not remap virtual block (%d)", errno);
+	}
+
+	*((size_t *)membase) = curhunksize + sizeof(size_t);
+
 	return curhunksize;
 }
 
@@ -103,7 +136,7 @@ int Sys_Milliseconds (void)
 	static int		secbase;
 
 	gettimeofday(&tp, &tzp);
-	
+
 	if (!secbase)
 	{
 		secbase = tp.tv_sec;
@@ -111,7 +144,7 @@ int Sys_Milliseconds (void)
 	}
 
 	curtime = (tp.tv_sec - secbase)*1000 + tp.tv_usec/1000;
-	
+
 	return curtime;
 }
 
@@ -178,7 +211,7 @@ char *Sys_FindFirst (char *path, unsigned musthave, unsigned canhave)
 
 	if (strcmp(findpattern, "*.*") == 0)
 		strcpy(findpattern, "*");
-	
+
 	if ((fdir = opendir(findbase)) == NULL)
 		return NULL;
 	while ((d = readdir(fdir)) != NULL) {

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdarg.h>
 #include <stdio.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include "../ref_gl/gl_local.h"
 
@@ -51,7 +52,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <X11/keysym.h>
 #include <X11/cursorfont.h>
 
-#include <X11/extensions/xf86dga.h>
+#include <X11/extensions/Xxf86dga.h>
 #include <X11/extensions/xf86vmode.h>
 
 glwstate_t glw_state;
@@ -108,7 +109,7 @@ static cvar_t *freelook;
 
 static Cursor CreateNullCursor(Display *display, Window root)
 {
-    Pixmap cursormask; 
+    Pixmap cursormask;
     XGCValues xgc;
     GC gc;
     XColor dummycolour;
@@ -145,7 +146,7 @@ static void install_grabs(void)
 	if (in_dgamouse->value) {
 		int MajorVersion, MinorVersion;
 
-		if (!XF86DGAQueryVersion(dpy, &MajorVersion, &MinorVersion)) { 
+		if (!XF86DGAQueryVersion(dpy, &MajorVersion, &MinorVersion)) {
 			// unable to query, probalby not supported
 			ri.Con_Printf( PRINT_ALL, "Failed to detect XF86DGA Mouse\n" );
 			ri.Cvar_Set( "in_dgamouse", "0" );
@@ -194,12 +195,12 @@ static void Force_CenterView_f (void)
 	in_state->viewangles[PITCH] = 0;
 }
 
-static void RW_IN_MLookDown (void) 
-{ 
-	mlooking = true; 
+static void RW_IN_MLookDown (void)
+{
+	mlooking = true;
 }
 
-static void RW_IN_MLookUp (void) 
+static void RW_IN_MLookUp (void)
 {
 	mlooking = false;
 	in_state->IN_CenterView_fp ();
@@ -256,7 +257,7 @@ void RW_IN_Move (usercmd_t *cmd)
 {
 	if (!mouse_avail)
 		return;
-   
+
 	if (m_filter->value)
 	{
 		mx = (mx + old_mouse_x) * 0.5;
@@ -270,13 +271,13 @@ void RW_IN_Move (usercmd_t *cmd)
 	my *= sensitivity->value;
 
 // add mouse X/Y movement to cmd
-	if ( (*in_state->in_strafe_state & 1) || 
+	if ( (*in_state->in_strafe_state & 1) ||
 		(lookstrafe->value && mlooking ))
 		cmd->sidemove += m_side->value * mx;
 	else
 		in_state->viewangles[YAW] -= m_yaw->value * mx;
 
-	if ( (mlooking || freelook->value) && 
+	if ( (mlooking || freelook->value) &&
 		!(*in_state->in_strafe_state & 1))
 	{
 		in_state->viewangles[PITCH] += m_pitch->value * my;
@@ -289,7 +290,7 @@ void RW_IN_Move (usercmd_t *cmd)
 	mx = my = 0;
 }
 
-static void IN_DeactivateMouse( void ) 
+static void IN_DeactivateMouse( void )
 {
 	if (!mouse_avail || !dpy || !win)
 		return;
@@ -300,7 +301,7 @@ static void IN_DeactivateMouse( void )
 	}
 }
 
-static void IN_ActivateMouse( void ) 
+static void IN_ActivateMouse( void )
 {
 	if (!mouse_avail || !dpy || !win)
 		return;
@@ -406,13 +407,13 @@ static int XLateKey(XKeyEvent *ev)
 		case XK_Shift_L:
 		case XK_Shift_R:	key = K_SHIFT;		break;
 
-		case XK_Execute: 
-		case XK_Control_L: 
+		case XK_Execute:
+		case XK_Control_L:
 		case XK_Control_R:	key = K_CTRL;		 break;
 
-		case XK_Alt_L:	
-		case XK_Meta_L: 
-		case XK_Alt_R:	
+		case XK_Alt_L:
+		case XK_Meta_L:
+		case XK_Alt_R:
 		case XK_Meta_R: key = K_ALT;			break;
 
 		case XK_KP_Begin: key = K_KP_5;	break;
@@ -453,7 +454,7 @@ static int XLateKey(XKeyEvent *ev)
 			if (key >= 'A' && key <= 'Z')
 				key = key - 'A' + 'a';
 			break;
-	} 
+	}
 
 	return key;
 }
@@ -466,7 +467,7 @@ static void HandleEvents(void)
 	qboolean dowarp = false;
 	int mwx = vid.width/2;
 	int mwy = vid.height/2;
-   
+
 	if (!dpy)
 		return;
 
@@ -486,8 +487,8 @@ static void HandleEvents(void)
 				if (dgamouse) {
 					mx += (event.xmotion.x + win_x) * 2;
 					my += (event.xmotion.y + win_y) * 2;
-				} 
-				else 
+				}
+				else
 				{
 					mx += ((int)event.xmotion.x - mwx) * 2;
 					my += ((int)event.xmotion.y - mwy) * 2;
@@ -536,7 +537,7 @@ static void HandleEvents(void)
 			break;
 		}
 	}
-	   
+
 	if (dowarp) {
 		/* move the mouse to the window center again */
 		XWarpPointer(dpy,None,win,0,0,0,0, vid.width/2,vid.height/2);
@@ -644,7 +645,7 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 
 	// Get video mode list
 	MajorVersion = MinorVersion = 0;
-	if (!XF86VidModeQueryVersion(dpy, &MajorVersion, &MinorVersion)) { 
+	if (!XF86VidModeQueryVersion(dpy, &MajorVersion, &MinorVersion)) {
 		vidmode_ext = false;
 	} else {
 		ri.Con_Printf(PRINT_ALL, "Using XFree86-VidModeExtension Version %d.%d\n",
@@ -660,7 +661,7 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 
 	if (vidmode_ext) {
 		int best_fit, best_dist, dist, x, y;
-		
+
 		XF86VidModeGetAllModeLines(dpy, scrnum, &num_vidmodes, &vidmodes);
 
 		// Are we going fullscreen?  If so, let's change video mode
@@ -703,7 +704,7 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 	attr.colormap = XCreateColormap(dpy, root, visinfo->visual, AllocNone);
 	attr.event_mask = X_MASK;
 	if (vidmode_active) {
-		mask = CWBackPixel | CWColormap | CWSaveUnder | CWBackingStore | 
+		mask = CWBackPixel | CWColormap | CWSaveUnder | CWBackingStore |
 			CWEventMask | CWOverrideRedirect;
 		attr.override_redirect = True;
 		attr.backing_store = NotUseful;
@@ -776,7 +777,7 @@ void GLimp_Shutdown( void )
 ** GLimp_Init
 **
 ** This routine is responsible for initializing the OS specific portions
-** of OpenGL.  
+** of OpenGL.
 */
 int GLimp_Init( void *hinstance, void *wndproc )
 {
@@ -794,7 +795,7 @@ void GLimp_BeginFrame( float camera_seperation )
 
 /*
 ** GLimp_EndFrame
-** 
+**
 ** Responsible for doing a swapbuffers and possibly for other stuff
 ** as yet to be determined.  Probably better not to make this a GLimp
 ** function and instead do a call to GLimp_SwapBuffers.

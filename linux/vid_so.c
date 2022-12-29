@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -43,12 +43,10 @@ cvar_t		*vid_fullscreen;
 
 // Global variables used internally by this module
 viddef_t	viddef;				// global video state; used by other modules
-void		*reflib_library;		// Handle to refresh DLL 
+void		*reflib_library;		// Handle to refresh DLL
 qboolean	reflib_active = 0;
 
 #define VID_NUM_MODES ( sizeof( vid_modes ) / sizeof( vid_modes[0] ) )
-
-const char so_file[] = "/etc/quake2.conf";
 
 /** KEYBOARD **************************************************************/
 
@@ -85,7 +83,7 @@ void VID_Printf (int print_level, char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 	static qboolean	inupdate;
-	
+
 	va_start (argptr,fmt);
 	vsprintf (msg,fmt,argptr);
 	va_end (argptr);
@@ -101,7 +99,7 @@ void VID_Error (int err_level, char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 	static qboolean	inupdate;
-	
+
 	va_start (argptr,fmt);
 	vsprintf (msg,fmt,argptr);
 	va_end (argptr);
@@ -204,11 +202,11 @@ qboolean VID_LoadRefresh( char *name )
 {
 	refimport_t	ri;
 	GetRefAPI_t	GetRefAPI;
-	char	fn[MAX_OSPATH];
+	char	fn[MAX_OSPATH] = ".";
 	struct stat st;
 	extern uid_t saved_euid;
 	FILE *fp;
-	
+
 	if ( reflib_active )
 	{
 		if (KBD_Close_fp)
@@ -225,15 +223,6 @@ qboolean VID_LoadRefresh( char *name )
 
 	//regain root
 	seteuid(saved_euid);
-
-	if ((fp = fopen(so_file, "r")) == NULL) {
-		Com_Printf( "LoadLibrary(\"%s\") failed: can't open %s (required for location of ref libraries)\n", name, so_file);
-		return false;
-	}
-	fgets(fn, sizeof(fn), fp);
-	fclose(fp);
-	while (*fn && isspace(fn[strlen(fn) - 1]))
-		fn[strlen(fn) - 1] = 0;
 
 	strcat(fn, "/");
 	strcat(fn, name);
@@ -352,7 +341,7 @@ qboolean VID_LoadRefresh( char *name )
 VID_CheckChanges
 
 This function gets called once just before drawing each frame, and it's sole purpose in life
-is to check to see if any of the video mode parameters have changed, and if they have to 
+is to check to see if any of the video mode parameters have changed, and if they have to
 update the rendering DLL and/or video mode to match.
 ============
 */
@@ -430,7 +419,7 @@ void VID_Init (void)
 
 	/* Disable the 3Dfx splash screen */
 	putenv("FX_GLIDE_NO_SPLASH=0");
-		
+
 	/* Start the graphics mode and load refresh DLL */
 	VID_CheckChanges();
 }
@@ -494,7 +483,7 @@ void IN_Move (usercmd_t *cmd)
 
 void IN_Frame (void)
 {
-	if (RW_IN_Activate_fp) 
+	if (RW_IN_Activate_fp)
 	{
 		if ( !cl.refresh_prepped || cls.key_dest == key_console || cls.key_dest == key_menu)
 			RW_IN_Activate_fp(false);
