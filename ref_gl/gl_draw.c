@@ -326,6 +326,7 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 	float		hscale;
 	int			row;
 	float		t;
+	unsigned *dest;
 
 	GL_Bind (0);
 
@@ -341,57 +342,23 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 	}
 	t = rows*hscale / 256;
 
-	if ( !qglColorTableEXT )
+	for (i=0 ; i<trows ; i++)
 	{
-		unsigned *dest;
-
-		for (i=0 ; i<trows ; i++)
+		row = (int)(i*hscale);
+		if (row > rows)
+			break;
+		source = data + cols*row;
+		dest = &image32[i*256];
+		fracstep = cols*0x10000/256;
+		frac = fracstep >> 1;
+		for (j=0 ; j<256 ; j++)
 		{
-			row = (int)(i*hscale);
-			if (row > rows)
-				break;
-			source = data + cols*row;
-			dest = &image32[i*256];
-			fracstep = cols*0x10000/256;
-			frac = fracstep >> 1;
-			for (j=0 ; j<256 ; j++)
-			{
-				dest[j] = r_rawpalette[source[frac>>16]];
-				frac += fracstep;
-			}
+			dest[j] = r_rawpalette[source[frac>>16]];
+			frac += fracstep;
 		}
-
-		glTexImage2D (GL_TEXTURE_2D, 0, gl_tex_solid_format, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, image32);
 	}
-	else
-	{
-		unsigned char *dest;
 
-		for (i=0 ; i<trows ; i++)
-		{
-			row = (int)(i*hscale);
-			if (row > rows)
-				break;
-			source = data + cols*row;
-			dest = &image8[i*256];
-			fracstep = cols*0x10000/256;
-			frac = fracstep >> 1;
-			for (j=0 ; j<256 ; j++)
-			{
-				dest[j] = source[frac>>16];
-				frac += fracstep;
-			}
-		}
-
-		glTexImage2D( GL_TEXTURE_2D,
-			           0,
-					   GL_COLOR_INDEX8_EXT,
-					   256, 256,
-					   0,
-					   GL_COLOR_INDEX,
-					   GL_UNSIGNED_BYTE,
-					   image8 );
-	}
+	glTexImage2D (GL_TEXTURE_2D, 0, gl_tex_solid_format, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, image32);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
