@@ -49,5 +49,5 @@
 - Fixed NoSuchFrame/BAD_MODELTYPE errors when doing a vid_restart while
   connected.
 - NoSuchFrame errors now include model name to assist in debugging user mods.
-- Fixed the remote status query response (ServerInfo) to not include error 
+- Fixed the remote status query response (ServerInfo) to not include error
   messages and be more consistent.

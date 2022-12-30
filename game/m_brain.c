@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -220,7 +220,7 @@ mframe_t brain_frames_walk2 [] =
 	ai_walk,	4,	brain_walk2_cycle,
 	ai_walk,	-1,	NULL,
 	ai_walk,	-1,	NULL,
-	ai_walk,	-8,	NULL,		
+	ai_walk,	-8,	NULL,
 	ai_walk,	0,	NULL,
 	ai_walk,	1,	NULL,
 	ai_walk,	5,	NULL,
@@ -669,7 +669,7 @@ void SP_monster_brain (edict_t *self)
 
 	gi.linkentity (self);
 
-	self->monsterinfo.currentmove = &brain_move_stand;	
+	self->monsterinfo.currentmove = &brain_move_stand;
 	self->monsterinfo.scale = MODEL_SCALE;
 
 	walkmonster_start (self);

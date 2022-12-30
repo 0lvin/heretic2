@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -30,7 +30,7 @@ cvar_t		*con_notifytime;
 extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
 extern	int		key_linepos;
-		
+
 
 void DrawString (int x, int y, char *s)
 {
@@ -91,9 +91,9 @@ void Con_ToggleConsole_f (void)
 	else
 	{
 		M_ForceMenuOff ();
-		cls.key_dest = key_console;	
+		cls.key_dest = key_console;
 
-		if (Cvar_VariableValue ("maxclients") == 1 
+		if (Cvar_VariableValue ("maxclients") == 1
 			&& Com_ServerState ())
 			Cvar_Set ("paused", "1");
 	}
@@ -118,7 +118,7 @@ void Con_ToggleChat_f (void)
 	}
 	else
 		cls.key_dest = key_console;
-	
+
 	Con_ClearNotify ();
 }
 
@@ -132,7 +132,7 @@ void Con_Clear_f (void)
 	memset (con.text, ' ', CON_TEXTSIZE);
 }
 
-						
+
 /*
 ================
 Con_Dump_f
@@ -198,7 +198,7 @@ void Con_Dump_f (void)
 	fclose (f);
 }
 
-						
+
 /*
 ================
 Con_ClearNotify
@@ -207,12 +207,12 @@ Con_ClearNotify
 void Con_ClearNotify (void)
 {
 	int		i;
-	
+
 	for (i=0 ; i<NUM_CON_TIMES ; i++)
 		con.times[i] = 0;
 }
 
-						
+
 /*
 ================
 Con_MessageMode_f
@@ -271,7 +271,7 @@ void Con_CheckResize (void)
 			numlines = con.totallines;
 
 		numchars = oldwidth;
-	
+
 		if (con.linewidth < numchars)
 			numchars = con.linewidth;
 
@@ -306,7 +306,7 @@ void Con_Init (void)
 	con.linewidth = -1;
 
 	Con_CheckResize ();
-	
+
 	Com_Printf ("Console initialized.\n");
 
 //
@@ -386,7 +386,7 @@ void Con_Print (char *txt)
 			cr = false;
 		}
 
-		
+
 		if (!con.x)
 		{
 			Con_Linefeed ();
@@ -414,7 +414,7 @@ void Con_Print (char *txt)
 				con.x = 0;
 			break;
 		}
-		
+
 	}
 }
 
@@ -467,18 +467,18 @@ void Con_DrawInput (void)
 		return;		// don't draw anything (always draw if not active)
 
 	text = key_lines[edit_line];
-	
+
 // add the cursor frame
 	text[key_linepos] = 10+((int)(cls.realtime>>8)&1);
-	
+
 // fill out remainder with spaces
 	for (i=key_linepos+1 ; i< con.linewidth ; i++)
 		text[i] = ' ';
-		
+
 //	prestep if horizontally scrolling
 	if (key_linepos >= con.linewidth)
 		text += 1 + key_linepos - con.linewidth;
-		
+
 // draw it
 	y = con.vislines-16;
 
@@ -518,7 +518,7 @@ void Con_DrawNotify (void)
 		if (time > con_notifytime->value*1000)
 			continue;
 		text = con.text + (i % con.totallines)*con.linewidth;
-		
+
 		for (x = 0 ; x < con.linewidth ; x++)
 			re.DrawChar ( (x+1)<<3, v, text[x]);
 
@@ -551,7 +551,7 @@ void Con_DrawNotify (void)
 		re.DrawChar ( (x+skip)<<3, v, 10+((cls.realtime>>8)&1));
 		v += 8;
 	}
-	
+
 	if (v)
 	{
 		SCR_AddDirtyPoint (0,0);
@@ -594,7 +594,7 @@ void Con_DrawConsole (float frac)
 
 // draw the text
 	con.vislines = lines;
-	
+
 #if 0
 	rows = (lines-8)>>3;		// rows of text to draw
 
@@ -611,11 +611,11 @@ void Con_DrawConsole (float frac)
 	// draw arrows to show the buffer is backscrolled
 		for (x=0 ; x<con.linewidth ; x+=4)
 			re.DrawChar ( (x+1)<<3, y, '^');
-	
+
 		y -= 8;
 		rows--;
 	}
-	
+
 	row = con.display;
 	for (i=0 ; i<rows ; i++, y-=8, row--)
 	{
@@ -623,7 +623,7 @@ void Con_DrawConsole (float frac)
 			break;
 		if (con.current - row >= con.totallines)
 			break;		// past scrollback wrap point
-			
+
 		text = con.text + (row % con.totallines)*con.linewidth;
 
 		for (x=0 ; x<con.linewidth ; x++)
@@ -657,7 +657,7 @@ void Con_DrawConsole (float frac)
 			n = 0;
 		else
 			n = y * cls.downloadpercent / 100;
-			
+
 		for (j = 0; j < y; j++)
 			if (j == n)
 				dlbar[i++] = '\x83';

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -105,13 +105,13 @@ qboolean SNDDMA_Init(void)
 	}
 
     if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info)==-1)
-    {   
+    {
         perror("GETOSPACE");
 		Com_Printf("Um, can't do GETOSPACE?\n");
 		close(audio_fd);
 		return 0;
     }
-    
+
 // set sample bits & speed
 
     dma.samplebits = (int)sndbits->value;
@@ -132,7 +132,7 @@ qboolean SNDDMA_Init(void)
 	dma.channels = (int)sndchannels->value;
 	if (dma.channels < 1 || dma.channels > 2)
 		dma.channels = 2;
-	
+
 	dma.samples = info.fragstotal * info.fragsize / (dma.samplebits/8);
 	dma.submission_chunk = 1;
 

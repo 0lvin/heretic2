@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -32,7 +32,7 @@ int		rand1k_index = 0;
 
 // TODO: put in span spilling to shrink list size
 // !!! if this is changed, it must be changed in d_polysa.s too !!!
-#define DPS_MAXSPANS			MAXHEIGHT+1	
+#define DPS_MAXSPANS			MAXHEIGHT+1
 									// 1 extra for spanpackage that marks end
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
@@ -141,7 +141,7 @@ byte irtable[256] = { 79, 78, 77, 76, 75, 74, 73, 72,		// black/white
 					  72, 73, 74, 75, 76, 77, 78, 79,
 					  208, 208, 208, 208, 208, 208, 208, 208,	// unused?'
 					  64, 66, 68, 70, 72, 74, 76, 78,		// dark yellow
-					  
+
 					  64, 65, 66, 67, 68, 69, 70, 71,		// dark red
 					  72, 73, 74, 75, 76, 77, 78, 79,
 					  64, 65, 66, 67, 68, 69, 70, 71,		// grey/tan
@@ -150,7 +150,7 @@ byte irtable[256] = { 79, 78, 77, 76, 75, 74, 73, 72,		// black/white
 					  64, 66, 68, 70, 72, 74, 76, 78,		// chocolate
 					  68, 67, 66, 65, 64, 65, 66, 67,		// mauve / teal
 					  68, 69, 70, 71, 72, 73, 74, 75,
-					  76, 76, 77, 77, 78, 78, 79, 79,		
+					  76, 76, 77, 77, 78, 78, 79, 79,
 
 					  64, 65, 66, 67, 68, 69, 70, 71,		// more mauve
 					  72, 73, 74, 75, 76, 77, 78, 79,
@@ -161,7 +161,7 @@ byte irtable[256] = { 79, 78, 77, 76, 75, 74, 73, 72,		// black/white
 					  72, 73, 74, 75, 76, 77, 78, 79,
 					  64, 65, 66, 67, 68, 69, 70, 71,		// sky blue
 					  72, 73, 74, 75, 76, 77, 78, 79,
-					  
+
 					  64, 65, 66, 67, 68, 69, 70, 71,		// olive again
 					  72, 73, 74, 75, 76, 77, 78, 79,
 					  64, 65, 66, 67, 68, 69, 70, 71,		// nuclear green
@@ -183,7 +183,7 @@ void R_PolysetUpdateTables (void)
 {
 	int		i;
 	byte	*s;
-	
+
 	if (r_affinetridesc.skinwidth != skinwidth ||
 		r_affinetridesc.pskin != skinstart)
 	{
@@ -463,7 +463,7 @@ void R_PolysetCalcGradients( int skinwidth )
 
 	__asm fild  dword ptr d_xdenom    ; d_xdenom
 	__asm fdivr one                   ; 1 / d_xdenom
-	__asm fst   xstepdenominv         ; 
+	__asm fst   xstepdenominv         ;
 	__asm fmul  negative_one          ; -( 1 / d_xdenom )
 
 // ceil () for light so positive steps are exaggerated, negative steps

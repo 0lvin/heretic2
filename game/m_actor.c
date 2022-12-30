@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -481,7 +481,7 @@ void SP_misc_actor (edict_t *self)
 /*QUAKED target_actor (.5 .3 0) (-8 -8 -8) (8 8 8) JUMP SHOOT ATTACK x HOLD BRUTAL
 JUMP			jump in set direction upon reaching this target
 SHOOT			take a single shot at the pathtarget
-ATTACK			attack pathtarget until it or actor is dead 
+ATTACK			attack pathtarget until it or actor is dead
 
 "target"		next target_actor
 "pathtarget"	target of any action to be taken at this point
@@ -499,7 +499,7 @@ void target_actor_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 	if (other->movetarget != self)
 		return;
-	
+
 	if (other->enemy)
 		return;
 
@@ -523,7 +523,7 @@ void target_actor_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	{
 		other->velocity[0] = self->movedir[0] * self->speed;
 		other->velocity[1] = self->movedir[1] * self->speed;
-		
+
 		if (other->groundentity)
 		{
 			other->groundentity = NULL;

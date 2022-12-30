@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -196,7 +196,7 @@ mmove_t	floater_move_stand2 = {FRAME_stand201, FRAME_stand252, floater_frames_st
 
 void floater_stand (edict_t *self)
 {
-	if (random() <= 0.5)		
+	if (random() <= 0.5)
 		self->monsterinfo.currentmove = &floater_move_stand1;
 	else
 		self->monsterinfo.currentmove = &floater_move_stand2;
@@ -204,35 +204,35 @@ void floater_stand (edict_t *self)
 
 mframe_t floater_frames_activate [] =
 {
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
-	ai_move,	0,	NULL,	
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
+	ai_move,	0,	NULL,
 	ai_move,	0,	NULL
 };
 mmove_t floater_move_activate = {FRAME_actvat01, FRAME_actvat31, floater_frames_activate, NULL};
@@ -556,7 +556,7 @@ void floater_attack(edict_t *self)
 
 void floater_melee(edict_t *self)
 {
-	if (random() < 0.5)		
+	if (random() < 0.5)
 		self->monsterinfo.currentmove = &floater_move_attack3;
 	else
 		self->monsterinfo.currentmove = &floater_move_attack2;
@@ -652,11 +652,11 @@ void SP_monster_floater (edict_t *self)
 
 	gi.linkentity (self);
 
-	if (random() <= 0.5)		
-		self->monsterinfo.currentmove = &floater_move_stand1;	
+	if (random() <= 0.5)
+		self->monsterinfo.currentmove = &floater_move_stand1;
 	else
-		self->monsterinfo.currentmove = &floater_move_stand2;	
-	
+		self->monsterinfo.currentmove = &floater_move_stand2;
+
 	self->monsterinfo.scale = MODEL_SCALE;
 
 	flymonster_start (self);

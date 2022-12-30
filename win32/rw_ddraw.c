@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -97,7 +97,7 @@ ri.Con_Printf( PRINT_ALL, "Initializing DirectDraw\n");
 	sww_state.modex = false;
 
 	ri.Con_Printf( PRINT_ALL, "...setting exclusive mode: ");
-	if ( ( ddrval = sww_state.lpDirectDraw->lpVtbl->SetCooperativeLevel( sww_state.lpDirectDraw, 
+	if ( ( ddrval = sww_state.lpDirectDraw->lpVtbl->SetCooperativeLevel( sww_state.lpDirectDraw,
 																		 sww_state.hWnd,
 																		 DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN ) ) != DD_OK )
 	{
@@ -126,14 +126,14 @@ ri.Con_Printf( PRINT_ALL, "Initializing DirectDraw\n");
 		/*
 		** reset to normal cooperative level
 		*/
-		sww_state.lpDirectDraw->lpVtbl->SetCooperativeLevel( sww_state.lpDirectDraw, 
+		sww_state.lpDirectDraw->lpVtbl->SetCooperativeLevel( sww_state.lpDirectDraw,
 															 sww_state.hWnd,
 															 DDSCL_NORMAL );
 
-		/*															 
+		/*
 		** set exclusive mode
 		*/
-		if ( ( ddrval = sww_state.lpDirectDraw->lpVtbl->SetCooperativeLevel( sww_state.lpDirectDraw, 
+		if ( ( ddrval = sww_state.lpDirectDraw->lpVtbl->SetCooperativeLevel( sww_state.lpDirectDraw,
 																			 sww_state.hWnd,
 																			 DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN | DDSCL_NOWINDOWCHANGES | DDSCL_ALLOWMODEX ) ) != DD_OK )
 		{
@@ -245,7 +245,7 @@ ri.Con_Printf( PRINT_ALL, "Initializing DirectDraw\n");
 	*/
 	memset( &ddsd, 0, sizeof( ddsd ) );
 	ddsd.dwSize = sizeof( ddsd );
-	
+
 ri.Con_Printf( PRINT_ALL, "...locking backbuffer: " );
 	if ( ( ddrval = sww_state.lpddsOffScreenBuffer->lpVtbl->Lock( sww_state.lpddsOffScreenBuffer, NULL, &ddsd, DDLOCK_WAIT, NULL ) ) != DD_OK )
 	{

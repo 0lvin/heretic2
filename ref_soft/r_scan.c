@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -127,7 +127,7 @@ void Turbulent8 (espan_t *pspan)
 	fixed16_t		snext, tnext;
 	float			sdivz, tdivz, zi, z, du, dv, spancountminus1;
 	float			sdivz16stepu, tdivz16stepu, zi16stepu;
-	
+
 	r_turb_turb = sintable + ((int)(r_newrefdef.time*SPEED)&(CYCLE-1));
 
 	r_turb_sstep = 0;	// keep compiler happy
@@ -262,7 +262,7 @@ void NonTurbulent8 (espan_t *pspan)
 	fixed16_t		snext, tnext;
 	float			sdivz, tdivz, zi, z, du, dv, spancountminus1;
 	float			sdivz16stepu, tdivz16stepu, zi16stepu;
-	
+
 //	r_turb_turb = sintable + ((int)(r_newrefdef.time*SPEED)&(CYCLE-1));
 	r_turb_turb = blanktable;
 

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -52,7 +52,7 @@ void mutant_step (edict_t *self)
 	int		n;
 	n = (rand() + 1) % 3;
 	if (n == 0)
-		gi.sound (self, CHAN_VOICE, sound_step1, 1, ATTN_NORM, 0);		
+		gi.sound (self, CHAN_VOICE, sound_step1, 1, ATTN_NORM, 0);
 	else if (n == 1)
 		gi.sound (self, CHAN_VOICE, sound_step2, 1, ATTN_NORM, 0);
 	else
@@ -629,7 +629,7 @@ void SP_monster_mutant (edict_t *self)
 	sound_step2 = gi.soundindex ("mutant/step2.wav");
 	sound_step3 = gi.soundindex ("mutant/step3.wav");
 	sound_thud = gi.soundindex ("mutant/thud1.wav");
-	
+
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 	self->s.modelindex = gi.modelindex ("models/monsters/mutant/tris.md2");
@@ -655,7 +655,7 @@ void SP_monster_mutant (edict_t *self)
 	self->monsterinfo.checkattack = mutant_checkattack;
 
 	gi.linkentity (self);
-	
+
 	self->monsterinfo.currentmove = &mutant_move_stand;
 
 	self->monsterinfo.scale = MODEL_SCALE;

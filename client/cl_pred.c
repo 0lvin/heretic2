@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -52,7 +52,7 @@ void CL_CheckPredictionError (void)
 	else
 	{
 		if (cl_showmiss->value && (delta[0] || delta[1] || delta[2]) )
-			Com_Printf ("prediction miss on %i: %i\n", cl.frame.serverframe, 
+			Com_Printf ("prediction miss on %i: %i\n", cl.frame.serverframe,
 			delta[0] + delta[1] + delta[2]);
 
 		VectorCopy (cl.frame.playerstate.pmove.origin, cl.predicted_origins[frame]);
@@ -230,7 +230,7 @@ void CL_PredictMovement (void)
 	{
 		if (cl_showmiss->value)
 			Com_Printf ("exceeded CMD_BACKUP\n");
-		return;	
+		return;
 	}
 
 	// copy current state to pmove

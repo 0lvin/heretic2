@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -40,7 +40,7 @@ int	d_vrectx, d_vrecty, d_vrectright_particle, d_vrectbottom_particle;
 int	d_pix_min, d_pix_max, d_pix_shift;
 
 int		d_scantable[MAXHEIGHT];
-short	*zspantable[MAXHEIGHT]; 
+short	*zspantable[MAXHEIGHT];
 
 /*
 ================
@@ -136,7 +136,7 @@ void R_PrintTimes (void)
 	r_time2 = Sys_Milliseconds ();
 
 	ms = r_time2 - r_time1;
-	
+
 	ri.Con_Printf (PRINT_ALL,"%5i ms %3i/%3i/%3i poly %3i surf\n",
 				ms, c_faceclip, r_polycount, r_drawnpolycount, c_surf);
 	c_surf = 0;
@@ -188,7 +188,7 @@ void R_TransformFrustum (void)
 {
 	int		i;
 	vec3_t	v, v2;
-	
+
 	for (i=0 ; i<4 ; i++)
 	{
 		v[0] = screenedge[i].normal[2];
@@ -218,7 +218,7 @@ void TransformVector (vec3_t in, vec3_t out)
 {
 	out[0] = DotProduct(in,vright);
 	out[1] = DotProduct(in,vup);
-	out[2] = DotProduct(in,vpn);		
+	out[2] = DotProduct(in,vpn);
 }
 
 #else
@@ -280,7 +280,7 @@ R_TransformPlane
 void R_TransformPlane (mplane_t *p, float *normal, float *dist)
 {
 	float	d;
-	
+
 	d = DotProduct (r_origin, p->normal);
 	*dist = p->dist - d;
 // TODO: when we have rotating entities, this will need to use the view matrix
@@ -363,7 +363,7 @@ void R_ViewChanged (vrect_t *vr)
 
 	xOrigin = r_refdef.xOrigin;
 	yOrigin = r_refdef.yOrigin;
-	
+
 // values for perspective projection
 // if math were exact, the values would range from 0.5 to to range+0.5
 // hopefully they wll be in the 0.000001 to range+.999999 and truncate
@@ -392,26 +392,26 @@ void R_ViewChanged (vrect_t *vr)
 	screenedge[0].normal[1] = 0;
 	screenedge[0].normal[2] = 1;
 	screenedge[0].type = PLANE_ANYZ;
-	
+
 // right side clip
 	screenedge[1].normal[0] =
 			1.0 / ((1.0-xOrigin)*r_refdef.horizontalFieldOfView);
 	screenedge[1].normal[1] = 0;
 	screenedge[1].normal[2] = 1;
 	screenedge[1].type = PLANE_ANYZ;
-	
+
 // top side clip
 	screenedge[2].normal[0] = 0;
 	screenedge[2].normal[1] = -1.0 / (yOrigin*verticalFieldOfView);
 	screenedge[2].normal[2] = 1;
 	screenedge[2].type = PLANE_ANYZ;
-	
+
 // bottom side clip
 	screenedge[3].normal[0] = 0;
 	screenedge[3].normal[1] = 1.0 / ((1.0-yOrigin)*verticalFieldOfView);
-	screenedge[3].normal[2] = 1;	
+	screenedge[3].normal[2] = 1;
 	screenedge[3].type = PLANE_ANYZ;
-	
+
 	for (i=0 ; i<4 ; i++)
 		VectorNormalize (screenedge[i].normal);
 
@@ -434,7 +434,7 @@ void R_SetupFrame (void)
 		r_fullbright->modified = false;
 		D_FlushCaches ();	// so all lighting changes
 	}
-	
+
 	r_framecount++;
 
 
@@ -476,7 +476,7 @@ void R_SetupFrame (void)
 		d_viewbuffer = (void *)vid.buffer;
 		r_screenwidth = vid.rowbytes;
 	}
-	
+
 	R_ViewChanged (&vrect);
 
 // start off with just the four screen edge clip planes
@@ -530,22 +530,22 @@ void R_SurfacePatch (void)
 #endif	// !id386
 
 
-/* 
-============================================================================== 
- 
-						SCREEN SHOTS 
- 
-============================================================================== 
-*/ 
+/*
+==============================================================================
+
+						SCREEN SHOTS
+
+==============================================================================
+*/
 
 
-/* 
-============== 
-WritePCXfile 
-============== 
-*/ 
+/*
+==============
+WritePCXfile
+==============
+*/
 void WritePCXfile (char *filename, byte *data, int width, int height,
-	int rowbytes, byte *palette) 
+	int rowbytes, byte *palette)
 {
 	int			i, j, length;
 	pcx_t		*pcx;
@@ -574,7 +574,7 @@ void WritePCXfile (char *filename, byte *data, int width, int height,
 
 // pack the image
 	pack = &pcx->data;
-	
+
 	for (i=0 ; i<height ; i++)
 	{
 		for (j=0 ; j<width ; j++)
@@ -590,13 +590,13 @@ void WritePCXfile (char *filename, byte *data, int width, int height,
 
 		data += rowbytes - width;
 	}
-			
+
 // write the palette
 	*pack++ = 0x0c;	// palette ID byte
 	for (i=0 ; i<768 ; i++)
 		*pack++ = *palette++;
-		
-// write output file 
+
+// write output file
 	length = pack - (byte *)pcx;
 	f = fopen (filename, "wb");
 	if (!f)
@@ -608,19 +608,19 @@ void WritePCXfile (char *filename, byte *data, int width, int height,
 	}
 
 	free (pcx);
-} 
- 
+}
 
 
-/* 
-================== 
+
+/*
+==================
 R_ScreenShot_f
-================== 
-*/  
-void R_ScreenShot_f (void) 
-{ 
-	int			i; 
-	char		pcxname[80]; 
+==================
+*/
+void R_ScreenShot_f (void)
+{
+	int			i;
+	char		pcxname[80];
 	char		checkname[MAX_OSPATH];
 	FILE		*f;
 	byte		palette[768];
@@ -629,24 +629,24 @@ void R_ScreenShot_f (void)
 	Com_sprintf (checkname, sizeof(checkname), "%s/scrnshot", ri.FS_Gamedir());
 	Sys_Mkdir (checkname);
 
-// 
-// find a file name to save it to 
-// 
+//
+// find a file name to save it to
+//
 	strcpy(pcxname,"quake00.pcx");
-		
-	for (i=0 ; i<=99 ; i++) 
-	{ 
-		pcxname[5] = i/10 + '0'; 
-		pcxname[6] = i%10 + '0'; 
+
+	for (i=0 ; i<=99 ; i++)
+	{
+		pcxname[5] = i/10 + '0';
+		pcxname[6] = i%10 + '0';
 		Com_sprintf (checkname, sizeof(checkname), "%s/scrnshot/%s", ri.FS_Gamedir(), pcxname);
 		f = fopen (checkname, "r");
 		if (!f)
 			break;	// file doesn't exist
 		fclose (f);
-	} 
-	if (i==100) 
+	}
+	if (i==100)
 	{
-		ri.Con_Printf (PRINT_ALL, "R_ScreenShot_f: Couldn't create a PCX"); 
+		ri.Con_Printf (PRINT_ALL, "R_ScreenShot_f: Couldn't create a PCX");
 		return;
 	}
 
@@ -658,13 +658,13 @@ void R_ScreenShot_f (void)
 		palette[i*3+2] = sw_state.currentpalette[i*4+2];
 	}
 
-// 
-// save the pcx file 
-// 
+//
+// save the pcx file
+//
 
 	WritePCXfile (checkname, vid.buffer, vid.width, vid.height, vid.rowbytes,
 				  palette);
 
 	ri.Con_Printf (PRINT_ALL, "Wrote %s\n", checkname);
-} 
+}
 

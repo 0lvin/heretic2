@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -220,7 +220,7 @@ enum svc_ops_e
 	svc_stufftext,				// [string] stuffed into client's console buffer, should be \n terminated
 	svc_serverdata,				// [long] protocol ...
 	svc_configstring,			// [short] [string]
-	svc_spawnbaseline,		
+	svc_spawnbaseline,
 	svc_centerprint,			// [string] to put in center of the screen
 	svc_download,				// [short] size [size bytes]
 	svc_playerinfo,				// variable
@@ -237,7 +237,7 @@ enum svc_ops_e
 enum clc_ops_e
 {
 	clc_bad,
-	clc_nop, 		
+	clc_nop,
 	clc_move,				// [[usercmd_t]
 	clc_userinfo,			// [[userinfo string]
 	clc_stringcmd			// [string] message

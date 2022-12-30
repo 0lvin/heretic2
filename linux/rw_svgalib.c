@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -88,7 +88,7 @@ int i;
 
 	for (i=0 ; i<num_modes ; i++)
 	{
-		if (modes[i].bytesperpixel != 1 && modes[i].colors != 256) 
+		if (modes[i].bytesperpixel != 1 && modes[i].colors != 256)
 			modes[i].width = 0;
 	}
 
@@ -158,7 +158,7 @@ static qboolean SWimp_InitGraphics( qboolean fullscreen )
 	ri.Con_Printf (PRINT_ALL, "Setting VGAMode: %d\n", current_mode );
 
 //	Cvar_SetValue ("vid_mode", (float)modenum);
-	
+
 	VGA_width = modes[current_mode].width;
 	VGA_height = modes[current_mode].height;
 	VGA_planar = modes[current_mode].bytesperpixel == 0;
@@ -218,7 +218,7 @@ void SWimp_EndFrame (void)
 					vid.buffer + offset,
 					((total-offset>0x10000)?0x10000:(total-offset)));
 		}
-	} 
+	}
 }
 
 /*
@@ -264,7 +264,7 @@ void SWimp_SetPalette( const unsigned char *palette )
 
     if ( !palette )
         palette = ( const unsigned char * ) sw_state.currentpalette;
- 
+
 	if (vga_getcolors() == 256)
 	{
 		tp = tmppal;

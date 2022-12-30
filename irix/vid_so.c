@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -49,7 +49,7 @@ cvar_t		*vid_fullscreen;
 
 // Global variables used internally by this module
 viddef_t	viddef;				// global video state; used by other modules
-void		*reflib_library;		// Handle to refresh DLL 
+void		*reflib_library;		// Handle to refresh DLL
 qboolean	reflib_active = 0;
 
 #define VID_NUM_MODES ( sizeof( vid_modes ) / sizeof( vid_modes[0] ) )
@@ -89,7 +89,7 @@ void VID_Printf (int print_level, char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 	static qboolean	inupdate;
-	
+
 	va_start (argptr,fmt);
 	vsprintf (msg,fmt,argptr);
 	va_end (argptr);
@@ -105,7 +105,7 @@ void VID_Error (int err_level, char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 	static qboolean	inupdate;
-	
+
 	va_start (argptr,fmt);
 	vsprintf (msg,fmt,argptr);
 	va_end (argptr);
@@ -233,7 +233,7 @@ qboolean VID_LoadRefresh( char *name )
 
 #ifndef REF_HARD_LINKED
 	getcwd(curpath, sizeof(curpath));
-	
+
 	Com_Printf( "------- Loading %s -------\n", name );
 
 	// now run through the search paths
@@ -358,7 +358,7 @@ qboolean VID_LoadRefresh( char *name )
 VID_CheckChanges
 
 This function gets called once just before drawing each frame, and it's sole purpose in life
-is to check to see if any of the video mode parameters have changed, and if they have to 
+is to check to see if any of the video mode parameters have changed, and if they have to
 update the rendering DLL and/or video mode to match.
 ============
 */
@@ -431,7 +431,7 @@ void VID_Init (void)
 
 	/* Disable the 3Dfx splash screen */
 	putenv("FX_GLIDE_NO_SPLASH=0");
-		
+
 	/* Start the graphics mode and load refresh DLL */
 	VID_CheckChanges();
 }

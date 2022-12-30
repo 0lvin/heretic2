@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -75,7 +75,7 @@ extern cvar_t *ctf;
 #define CTF_TEAM1_SKIN "ctf_r"
 #define CTF_TEAM2_SKIN "ctf_b"
 
-#define DF_CTF_FORCEJOIN	131072	
+#define DF_CTF_FORCEJOIN	131072
 #define DF_ARMOR_PROTECT	262144
 #define DF_CTF_NO_TECH      524288
 

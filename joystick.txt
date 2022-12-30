@@ -32,18 +32,18 @@ Advanced Controller Directions:
 Optionally you can:
 Create or modify quake2\baseq2\autoexec.cfg to include an exec to your configuration file (i.e. 'exec adva3d.cfg').  This will automatically load your configuration file each time you launch Quake 2.
 From then on, just launch Quake 2.
-  
+
 
 Details:
 (This may be more information than you ever wanted to know.)
 Standard Joystick Support
 The standard joystick support has been enhanced to provide the following:
-1. proportional movement (the farther you move the stick, the faster you move) 
+1. proportional movement (the farther you move the stick, the faster you move)
 2. support for up to 32 buttons (JOY1-JOY4 and AUX5-AUX32)
 3. sensitivity setting for each control (allows tuning and inverting the control direction)
 4. dead-zone setting for each control
 
-The default joystick setting is for joystick left/right movement to control turning and for joystick forward/backward movement to control moving forward/backward.  For optional strafing, add the 'sidestep' feature to one of your buttons (via the Customize menu).  For optional looking, add the 'mouse look' feature to one of your buttons (also via the Customize menu).  
+The default joystick setting is for joystick left/right movement to control turning and for joystick forward/backward movement to control moving forward/backward.  For optional strafing, add the 'sidestep' feature to one of your buttons (via the Customize menu).  For optional looking, add the 'mouse look' feature to one of your buttons (also via the Customize menu).
 
 Additionally, there are several features that you can set from the Options menu.  'Always Run' allows you change your maximum speed from walking to running.  'Invert Mouse' allows you to change the direction the joystick has to move to when looking up and down.  'Lookspring' enables automatic look-forward-when-moving.  And, 'Lookstrafe' automatically enables strafing when the 'mouse look' button is pressed.
 

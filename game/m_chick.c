@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -150,8 +150,8 @@ mframe_t chick_frames_start_run [] =
 	ai_run, 1,  NULL,
 	ai_run, 0,  NULL,
 	ai_run, 0,	 NULL,
-	ai_run, -1, NULL, 
-	ai_run, -1, NULL, 
+	ai_run, -1, NULL,
+	ai_run, -1, NULL,
 	ai_run, 0,  NULL,
 	ai_run, 1,  NULL,
 	ai_run, 3,  NULL,
@@ -346,7 +346,7 @@ mframe_t chick_frames_death1 [] =
 	ai_move, 0,  NULL,
 	ai_move, 0,  NULL,
 	ai_move, 0,  NULL
-	
+
 };
 mmove_t chick_move_death1 = {FRAME_death101, FRAME_death112, chick_frames_death1, chick_dead};
 
@@ -464,7 +464,7 @@ void ChickRocket (edict_t *self)
 	VectorNormalize (dir);
 
 	monster_fire_rocket (self, start, dir, 50, 500, MZ2_CHICK_ROCKET_1);
-}	
+}
 
 void Chick_PreAttack1 (edict_t *self)
 {
@@ -537,7 +537,7 @@ void chick_rerocket(edict_t *self)
 					self->monsterinfo.currentmove = &chick_move_attack1;
 					return;
 				}
-	}	
+	}
 	self->monsterinfo.currentmove = &chick_move_end_attack1;
 }
 
@@ -576,7 +576,7 @@ void chick_reslash(edict_t *self)
 	{
 		if (range (self, self->enemy) == RANGE_MELEE)
 			if (random() <= 0.9)
-			{				
+			{
 				self->monsterinfo.currentmove = &chick_move_slash;
 				return;
 			}
@@ -596,7 +596,7 @@ void chick_slash(edict_t *self)
 
 
 mframe_t chick_frames_start_slash [] =
-{	
+{
 	ai_charge, 1,	NULL,
 	ai_charge, 8,	NULL,
 	ai_charge, 3,	NULL
@@ -631,21 +631,21 @@ void SP_monster_chick (edict_t *self)
 		return;
 	}
 
-	sound_missile_prelaunch	= gi.soundindex ("chick/chkatck1.wav");	
-	sound_missile_launch	= gi.soundindex ("chick/chkatck2.wav");	
-	sound_melee_swing		= gi.soundindex ("chick/chkatck3.wav");	
-	sound_melee_hit			= gi.soundindex ("chick/chkatck4.wav");	
-	sound_missile_reload	= gi.soundindex ("chick/chkatck5.wav");	
-	sound_death1			= gi.soundindex ("chick/chkdeth1.wav");	
-	sound_death2			= gi.soundindex ("chick/chkdeth2.wav");	
-	sound_fall_down			= gi.soundindex ("chick/chkfall1.wav");	
-	sound_idle1				= gi.soundindex ("chick/chkidle1.wav");	
-	sound_idle2				= gi.soundindex ("chick/chkidle2.wav");	
-	sound_pain1				= gi.soundindex ("chick/chkpain1.wav");	
-	sound_pain2				= gi.soundindex ("chick/chkpain2.wav");	
-	sound_pain3				= gi.soundindex ("chick/chkpain3.wav");	
-	sound_sight				= gi.soundindex ("chick/chksght1.wav");	
-	sound_search			= gi.soundindex ("chick/chksrch1.wav");	
+	sound_missile_prelaunch	= gi.soundindex ("chick/chkatck1.wav");
+	sound_missile_launch	= gi.soundindex ("chick/chkatck2.wav");
+	sound_melee_swing		= gi.soundindex ("chick/chkatck3.wav");
+	sound_melee_hit			= gi.soundindex ("chick/chkatck4.wav");
+	sound_missile_reload	= gi.soundindex ("chick/chkatck5.wav");
+	sound_death1			= gi.soundindex ("chick/chkdeth1.wav");
+	sound_death2			= gi.soundindex ("chick/chkdeth2.wav");
+	sound_fall_down			= gi.soundindex ("chick/chkfall1.wav");
+	sound_idle1				= gi.soundindex ("chick/chkidle1.wav");
+	sound_idle2				= gi.soundindex ("chick/chkidle2.wav");
+	sound_pain1				= gi.soundindex ("chick/chkpain1.wav");
+	sound_pain2				= gi.soundindex ("chick/chkpain2.wav");
+	sound_pain3				= gi.soundindex ("chick/chkpain3.wav");
+	sound_sight				= gi.soundindex ("chick/chksght1.wav");
+	sound_search			= gi.soundindex ("chick/chksrch1.wav");
 
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;

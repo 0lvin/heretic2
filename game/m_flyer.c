@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -297,7 +297,7 @@ mframe_t flyer_frames_rollleft [] =
 mmove_t flyer_move_rollleft = {FRAME_rollf01, FRAME_rollf09, flyer_frames_rollleft, NULL};
 
 mframe_t flyer_frames_pain3 [] =
-{	
+{
 		ai_move, 0, NULL,
 		ai_move, 0, NULL,
 		ai_move, 0, NULL,
@@ -328,7 +328,7 @@ mframe_t flyer_frames_pain1 [] =
 };
 mmove_t flyer_move_pain1 = {FRAME_pain101, FRAME_pain109, flyer_frames_pain1, flyer_run};
 
-mframe_t flyer_frames_defense [] = 
+mframe_t flyer_frames_defense [] =
 {
 		ai_move, 0, NULL,
 		ai_move, 0, NULL,
@@ -361,7 +361,7 @@ mframe_t flyer_frames_bankleft [] =
 		ai_move, 0, NULL,
 		ai_move, 0, NULL
 };
-mmove_t flyer_move_bankleft = {FRAME_bankl01, FRAME_bankl07, flyer_frames_bankleft, NULL};		
+mmove_t flyer_move_bankleft = {FRAME_bankl01, FRAME_bankl07, flyer_frames_bankleft, NULL};
 
 
 void flyer_fire (edict_t *self, int flash_number)
@@ -378,7 +378,7 @@ void flyer_fire (edict_t *self, int flash_number)
 		effect = 0;
 	AngleVectors (self->s.angles, forward, right, NULL);
 	G_ProjectSource (self->s.origin, monster_flash_offset[flash_number], forward, right, start);
-	
+
 	VectorCopy (self->enemy->s.origin, end);
 	end[2] += self->enemy->viewheight;
 	VectorSubtract (end, start, dir);
@@ -472,13 +472,13 @@ mframe_t flyer_frames_loop_melee [] =
 		ai_charge, 0, NULL,
 		ai_charge, 0, NULL,
 		ai_charge, 0, NULL		// Loop Ends
-		
+
 };
 mmove_t flyer_move_loop_melee = {FRAME_attak107, FRAME_attak118, flyer_frames_loop_melee, flyer_check_melee};
 
 void flyer_loop_melee (edict_t *self)
 {
-/*	if (random() <= 0.5)	
+/*	if (random() <= 0.5)
 		self->monsterinfo.currentmove = &flyer_move_attack1;
 	else */
 	self->monsterinfo.currentmove = &flyer_move_loop_melee;
@@ -488,7 +488,7 @@ void flyer_loop_melee (edict_t *self)
 
 void flyer_attack (edict_t *self)
 {
-/*	if (random() <= 0.5)	
+/*	if (random() <= 0.5)
 		self->monsterinfo.currentmove = &flyer_move_attack1;
 	else */
 	self->monsterinfo.currentmove = &flyer_move_attack2;
@@ -566,7 +566,7 @@ void flyer_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	gi.sound (self, CHAN_VOICE, sound_die, 1, ATTN_NORM, 0);
 	BecomeExplosion1(self);
 }
-	
+
 
 /*QUAKED monster_flyer (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
 */
@@ -619,7 +619,7 @@ void SP_monster_flyer (edict_t *self)
 
 	gi.linkentity (self);
 
-	self->monsterinfo.currentmove = &flyer_move_stand;	
+	self->monsterinfo.currentmove = &flyer_move_stand;
 	self->monsterinfo.scale = MODEL_SCALE;
 
 	flymonster_start (self);

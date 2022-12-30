@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -254,7 +254,7 @@ void CL_Record_f (void)
 			buf.cursize = 0;
 		}
 
-		MSG_WriteByte (&buf, svc_spawnbaseline);		
+		MSG_WriteByte (&buf, svc_spawnbaseline);
 		MSG_WriteDeltaEntity (&nullstate, &cl_entities[i].baseline, &buf, true, true);
 	}
 
@@ -349,7 +349,7 @@ void CL_ForwardToServer_f (void)
 		Com_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
 		return;
 	}
-	
+
 	// don't forward the first argument
 	if (Cmd_Argc() > 1)
 	{
@@ -498,9 +498,9 @@ void CL_Connect_f (void)
 	if (Cmd_Argc() != 2)
 	{
 		Com_Printf ("usage: connect <server>\n");
-		return;	
+		return;
 	}
-	
+
 	if (Com_ServerState ())
 	{	// if running a local server, kill it and reissue
 		SV_Shutdown (va("Server quit\n", msg), false);
@@ -578,7 +578,7 @@ void CL_Rcon_f (void)
 		if (to.port == 0)
 			to.port = BigShort (PORT_SERVER);
 	}
-	
+
 	NET_SendPacket (NS_CLIENT, strlen(message)+1, message, to);
 }
 
@@ -622,7 +622,7 @@ void CL_Disconnect (void)
 	if (cl_timedemo && cl_timedemo->value)
 	{
 		int	time;
-		
+
 		time = Sys_Milliseconds () - cl.timedemo_start;
 		if (time > 0)
 			Com_Printf ("%i frames, %3.1f seconds: %3.1f fps\n", cl.timedemo_frames,
@@ -757,7 +757,7 @@ void CL_Reconnect_f (void)
 		Com_Printf ("reconnecting...\n");
 		cls.state = ca_connected;
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, "new");		
+		MSG_WriteString (&cls.netchan.message, "new");
 		return;
 	}
 
@@ -862,7 +862,7 @@ void CL_Skins_f (void)
 	{
 		if (!cl.configstrings[CS_PLAYERSKINS+i][0])
 			continue;
-		Com_Printf ("client %i: %s\n", i, cl.configstrings[CS_PLAYERSKINS+i]); 
+		Com_Printf ("client %i: %s\n", i, cl.configstrings[CS_PLAYERSKINS+i]);
 		SCR_UpdateScreen ();
 		Sys_SendKeyEvents ();	// pump message loop
 		CL_ParseClientinfo (i);
@@ -881,7 +881,7 @@ void CL_ConnectionlessPacket (void)
 {
 	char	*s;
 	char	*c;
-	
+
 	MSG_BeginReading (&net_message);
 	MSG_ReadLong (&net_message);	// skip the -1
 
@@ -903,7 +903,7 @@ void CL_ConnectionlessPacket (void)
 		}
 		Netchan_Setup (NS_CLIENT, &cls.netchan, net_from, cls.quakePort);
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message, "new");	
+		MSG_WriteString (&cls.netchan.message, "new");
 		cls.state = ca_connected;
 		return;
 	}
@@ -1036,7 +1036,7 @@ void CL_ReadPackets (void)
 	}
 	else
 		cl.timeoutcount = 0;
-	
+
 }
 
 
@@ -1179,14 +1179,14 @@ void CL_RequestNextDownload (void)
 
 				while (precache_model_skin - 1 < LittleLong(pheader->num_skins)) {
 					if (!CL_CheckOrDownloadFile((char *)precache_model +
-						LittleLong(pheader->ofs_skins) + 
+						LittleLong(pheader->ofs_skins) +
 						(precache_model_skin - 1)*MAX_SKINNAME)) {
 						precache_model_skin++;
 						return; // started a download
 					}
 					precache_model_skin++;
 				}
-				if (precache_model) { 
+				if (precache_model) {
 					FS_FreeFile(precache_model);
 					precache_model = 0;
 				}
@@ -1196,7 +1196,7 @@ void CL_RequestNextDownload (void)
 		}
 		precache_check = CS_SOUNDS;
 	}
-	if (precache_check >= CS_SOUNDS && precache_check < CS_SOUNDS+MAX_SOUNDS) { 
+	if (precache_check >= CS_SOUNDS && precache_check < CS_SOUNDS+MAX_SOUNDS) {
 		if (allow_download_sounds->value) {
 			if (precache_check == CS_SOUNDS)
 				precache_check++; // zero is blank
@@ -1325,10 +1325,10 @@ void CL_RequestNextDownload (void)
 				int n = precache_check++ - ENV_CNT - 1;
 
 				if (n & 1)
-					Com_sprintf(fn, sizeof(fn), "env/%s%s.pcx", 
+					Com_sprintf(fn, sizeof(fn), "env/%s%s.pcx",
 						cl.configstrings[CS_SKY], env_suf[n/2]);
 				else
-					Com_sprintf(fn, sizeof(fn), "env/%s%s.tga", 
+					Com_sprintf(fn, sizeof(fn), "env/%s%s.tga",
 						cl.configstrings[CS_SKY], env_suf[n/2]);
 				if (!CL_CheckOrDownloadFile(fn))
 					return; // started a download
@@ -1613,7 +1613,7 @@ void CL_FixCvarCheats (void)
 	int			i;
 	cheatvar_t	*var;
 
-	if ( !strcmp(cl.configstrings[CS_MAXCLIENTS], "1") 
+	if ( !strcmp(cl.configstrings[CS_MAXCLIENTS], "1")
 		|| !cl.configstrings[CS_MAXCLIENTS][0] )
 		return;		// single player can cheat
 
@@ -1736,7 +1736,7 @@ void CL_Frame (int msec)
 
 	// update audio
 	S_Update (cl.refdef.vieworg, cl.v_forward, cl.v_right, cl.v_up);
-	
+
 	CDAudio_Update();
 
 	// advance local effects for next frame
@@ -1784,22 +1784,22 @@ void CL_Init (void)
 
 	// all archived variables will now be loaded
 
-	Con_Init ();	
+	Con_Init ();
 #if defined __linux__ || defined __sgi
-	S_Init ();	
+	S_Init ();
 	VID_Init ();
 #else
 	VID_Init ();
 	S_Init ();	// sound must be initialized after window is created
 #endif
-	
+
 	V_Init ();
-	
+
 	net_message.data = net_message_buffer;
 	net_message.maxsize = sizeof(net_message_buffer);
 
-	M_Init ();	
-	
+	M_Init ();
+
 	SCR_Init ();
 	cls.disable_screen = true;	// don't draw yet
 
@@ -1825,7 +1825,7 @@ to run quit through here before the final handoff to the sys code.
 void CL_Shutdown(void)
 {
 	static qboolean isdown = false;
-	
+
 	if (isdown)
 	{
 		printf ("recursive shutdown\n");
@@ -1833,7 +1833,7 @@ void CL_Shutdown(void)
 	}
 	isdown = true;
 
-	CL_WriteConfiguration (); 
+	CL_WriteConfiguration ();
 
 	CDAudio_Shutdown ();
 	S_Shutdown();
