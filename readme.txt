@@ -1,3 +1,8 @@
+Customized Quake2 engine with Heretic2 code parts.
+
+Heretic 2 SDK code based on [Ht2Toolkit](https://www.quaddicted.com/files/idgames2/planetquake/hereticii/files/Ht2Toolkit_v1.06.exe)
+
+======
 
 This is the complete source code for Quake 2, version 3.21, buildable with
 visual C++ 6.0.  The linux version should be buildable, but we haven't
