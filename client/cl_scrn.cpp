@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -164,7 +164,7 @@ void SCR_DrawDebugGraph (void)
 	//	v = values[i].value;
 	//	color = values[i].color;
 	//	v = v*scr_graphscale->value + scr_graphshift->value;
-	//	
+	//
 	//	if (v < 0)
 	//		v += scr_graphheight->value * (1+(int)(-v/scr_graphheight->value));
 	//	h = (int)v % (int)scr_graphheight->value;
@@ -218,7 +218,7 @@ void SCR_CenterPrint (char *str)
 	Com_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
 
 	s = str;
-	do	
+	do
 	{
 	// scan the width of the line
 		for (l=0 ; l<40 ; l++)
@@ -264,12 +264,12 @@ void SCR_DrawCenterString (void)
 	start = scr_centerstring;
 // jmarshall
 	//if (scr_center_lines <= 4)
-	//	
+	//
 	//else
 	//	y = 48;
 	y = viddef.height * 0.9f;
 // jmarshall end
-	do	
+	do
 	{
 	// scan the width of the line
 		for (l=0 ; l<40 ; l++)
@@ -284,7 +284,7 @@ void SCR_DrawCenterString (void)
 				return;
 		}
 		SCR_AddDirtyPoint (x, y+8);
-			
+
 		y += 8;
 
 		while (*start && *start != '\n')
@@ -299,7 +299,7 @@ void SCR_DrawCenterString (void)
 void SCR_CheckDrawCenterString (void)
 {
 	scr_centertime_off -= cls.frametime;
-	
+
 	if (scr_centertime_off <= 0)
 		return;
 
@@ -443,7 +443,7 @@ SCR_DrawNet
 */
 void SCR_DrawNet (void)
 {
-	if (cls.netchan.outgoing_sequence - cls.netchan.incoming_acknowledged 
+	if (cls.netchan.outgoing_sequence - cls.netchan.incoming_acknowledged
 		< CMD_BACKUP-1)
 		return;
 
@@ -477,7 +477,7 @@ SCR_DrawLoading
 void SCR_DrawLoading (void)
 {
 	int		w, h;
-		
+
 	if (!scr_draw_loading)
 		return;
 
@@ -502,7 +502,7 @@ void SCR_RunConsole (void)
 		scr_conlines = 0.5;		// half screen
 	else
 		scr_conlines = 0;				// none visible
-	
+
 	if (scr_conlines < scr_con_current)
 	{
 		scr_con_current -= scr_conspeed->value*cls.frametime;
@@ -527,7 +527,7 @@ SCR_DrawConsole
 void SCR_DrawConsole (void)
 {
 	Con_CheckResize ();
-	
+
 	if (cls.state == ca_disconnected || cls.state == ca_connecting)
 	{	// forced full screen console
 		Con_DrawConsole (1.0);
@@ -778,7 +778,7 @@ void SCR_TileClear (void)
 
 
 #define STAT_MINUS		10	// num frame for '-' stats digit
-char		*sb_nums[2][11] = 
+char		*sb_nums[2][11] =
 {
 	{"num_0", "num_1", "num_2", "num_3", "num_4", "num_5",
 	"num_6", "num_7", "num_8", "num_9", "num_minus"},
@@ -1092,7 +1092,7 @@ void SCR_RenderBar(int x, int y, int statnum, int statvalue, int statval2)
 
 /*
 ================
-SCR_ExecuteLayoutString 
+SCR_ExecuteLayoutString
 
 ================
 */
@@ -1169,7 +1169,7 @@ void SCR_ExecuteLayoutString (char *s)
 			continue;
 		}
 		if (!strcmp(token, "pic"))
-		{	
+		{
 			SCR_DrawPic(x, y, &s, 0);
 			continue;
 		}
@@ -1307,7 +1307,7 @@ void SCR_UpdateScreen (void)
 		numframes = 2;
 		separation[0] = -cl_stereo_separation->value / 2;
 		separation[1] =  cl_stereo_separation->value / 2;
-	}		
+	}
 	else
 	{
 		separation[0] = 0;
@@ -1329,7 +1329,7 @@ void SCR_UpdateScreen (void)
 			re.DrawPic ((viddef.width-w)/2, (viddef.height-h)/2, "loading", 1.0f);
 //			re.EndFrame();
 //			return;
-		} 
+		}
 		// if a cinematic is supposed to be running, handle menus
 		// and console specially
 		else if (cl.cinematictime > 0)
@@ -1363,7 +1363,7 @@ void SCR_UpdateScreen (void)
 ////				return;
 //			}
 		}
-		else 
+		else
 		{
 
 			// make sure the game palette is active

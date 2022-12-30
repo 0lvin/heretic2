@@ -22,7 +22,7 @@
 //
 //	WALK1       : a normal straight line
 //
-//	MELEE1      : Attack at feet 
+//	MELEE1      : Attack at feet
 //	MELEE2      : Attack in air
 //
 //	RUN1        : chasing an enemy straight ahead
@@ -125,7 +125,7 @@ void rat_death(edict_t *self, G_Message_t *msg)
 		// Big enough death to be thrown back
 		if (irand(0,10) < 5)
 			SetAnim(self, ANIM_DIE2);
-		else 
+		else
 			SetAnim(self, ANIM_DIE1);
 		return;
 	}
@@ -147,7 +147,7 @@ void rat_death(edict_t *self, G_Message_t *msg)
 		{
 			SetAnim(self, ANIM_DIE1);
 		}
-		else 
+		else
 		{
 			SetAnim(self, ANIM_DIE2);
 		}
@@ -171,7 +171,7 @@ void rat_run(edict_t *self, G_Message_t *msg)
 		if(self->monsterinfo.attack_finished < level.time)
 		{
 			len = VectorLength(vec);
-			
+
 			if (len < 150 && len > 50)
 			{
 				if (delta < 10)
@@ -237,7 +237,7 @@ void rat_melee(edict_t *self, G_Message_t *msg)
 }
 
 //----------------------------------------------------------------------
-//  Rat Watch - which watch animation to use? 
+//  Rat Watch - which watch animation to use?
 //----------------------------------------------------------------------
 void rat_watch(edict_t *self, G_Message_t *msg)
 {
@@ -245,7 +245,7 @@ void rat_watch(edict_t *self, G_Message_t *msg)
 	{
 		SetAnim(self, ANIM_WATCH1);
 	}
-	else 
+	else
 	{
 		SetAnim(self, ANIM_WATCH2);
 	}
@@ -310,7 +310,7 @@ void rat_eat(edict_t *self, G_Message_t *msg)
 	{
 		SetAnim(self, ANIM_EATING3);
 	}
-	else 
+	else
 	{
 		SetAnim(self, ANIM_EATING2);
 	}
@@ -412,14 +412,14 @@ void ratbite (edict_t *self)
 	startpos[2] += self->viewheight;
 
 	VectorCopy(self->enemy->s.origin, endpos);
-	
+
 	endpos[0]+=flrand(-4, 4);
 	endpos[1]+=flrand(-4, 4);
 	endpos[2]+=flrand(-4, 4);
 
 	VectorSubtract(endpos, startpos, dir);
 	len = VectorNormalize(dir);
-		
+
 	if (len < (self->maxs[0] + self->enemy->maxs[0] + 45))	// A hit
 	{
 		gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_MONSTERSOLID,&trace);
@@ -480,11 +480,11 @@ void rat_pause (edict_t *self)
 		{
 			G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
 		}
-		else	// Close enough to Attack 
+		else	// Close enough to Attack
 		{
 			G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 		}
-		
+
 		return;
 	}
 
@@ -555,7 +555,7 @@ void rat_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 			dir[2] = 0;
 			VectorNormalize(dir);
 			VectorScale(dir, 64, dir);
-			
+
 			dir[2] = 150;
 			VectorCopy(dir, ent->velocity);
 		}*/
@@ -629,7 +629,7 @@ void rat_ai_run (edict_t *self, float dist)
 
 	if (!self->enemy)
 		return;
-	
+
 	if (self->monsterinfo.aiflags & AI_FLEE||self->monsterinfo.aiflags & AI_COWARD)
 	{
 		if(!self->count)
@@ -664,25 +664,25 @@ void RatStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/rat/tris.fm");
 
-	sounds[SND_BITEHIT1] = gi.soundindex ("monsters/rat/meleehit1.wav");	
-	sounds[SND_BITEMISS1] = gi.soundindex ("monsters/rat/meleemiss1.wav");	
-	sounds[SND_BITEMISS2] = gi.soundindex ("monsters/rat/meleemiss2.wav");	
-	sounds[SND_HISS] = gi.soundindex ("monsters/rat/hiss.wav");	
-	sounds[SND_SCRATCH] = gi.soundindex ("monsters/rat/scratch.wav");	
-	sounds[SND_PAIN1] = gi.soundindex ("monsters/rat/pain1.wav");	
-	sounds[SND_PAIN2] = gi.soundindex ("monsters/rat/pain2.wav");	
+	sounds[SND_BITEHIT1] = gi.soundindex ("monsters/rat/meleehit1.wav");
+	sounds[SND_BITEMISS1] = gi.soundindex ("monsters/rat/meleemiss1.wav");
+	sounds[SND_BITEMISS2] = gi.soundindex ("monsters/rat/meleemiss2.wav");
+	sounds[SND_HISS] = gi.soundindex ("monsters/rat/hiss.wav");
+	sounds[SND_SCRATCH] = gi.soundindex ("monsters/rat/scratch.wav");
+	sounds[SND_PAIN1] = gi.soundindex ("monsters/rat/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex ("monsters/rat/pain2.wav");
 
-	sounds[SND_CHATTER1] = gi.soundindex ("monsters/rat/chatter1.wav");	
-	sounds[SND_CHATTER2] = gi.soundindex ("monsters/rat/chatter2.wav");	
-	sounds[SND_CHATTER3] = gi.soundindex ("monsters/rat/chatter3.wav");	
+	sounds[SND_CHATTER1] = gi.soundindex ("monsters/rat/chatter1.wav");
+	sounds[SND_CHATTER2] = gi.soundindex ("monsters/rat/chatter2.wav");
+	sounds[SND_CHATTER3] = gi.soundindex ("monsters/rat/chatter3.wav");
 
-	sounds[SND_CHEW1] = gi.soundindex ("monsters/rat/chew1.wav");	
-	sounds[SND_CHEW2] = gi.soundindex ("monsters/rat/chew2.wav");	
-	sounds[SND_CHEW3] = gi.soundindex ("monsters/rat/chew3.wav");	
+	sounds[SND_CHEW1] = gi.soundindex ("monsters/rat/chew1.wav");
+	sounds[SND_CHEW2] = gi.soundindex ("monsters/rat/chew2.wav");
+	sounds[SND_CHEW3] = gi.soundindex ("monsters/rat/chew3.wav");
 
-	sounds[SND_SWALLOW] = gi.soundindex ("monsters/rat/swallow.wav");	
+	sounds[SND_SWALLOW] = gi.soundindex ("monsters/rat/swallow.wav");
 
-	sounds[SND_DIE] = gi.soundindex ("monsters/rat/death1.wav");	
+	sounds[SND_DIE] = gi.soundindex ("monsters/rat/death1.wav");
 	sounds[SND_GIB] = gi.soundindex ("monsters/rat/gib.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
@@ -693,7 +693,7 @@ void RatStaticsInit()
 
 /*QUAKED monster_rat (1 .5 0) (-16 -16 -0) (16 16 32) AMBUSH ASLEEP EATING 8 16 32 64 FIXED(na) WANDER(na) MELEE_LEAD STALK COWARD EXTRA1 EXTRA2 EXTRA3 EXTRA4
 
-The rat 
+The rat
 
 AMBUSH - Will not be woken up by other monsters or shots from player
 
@@ -713,7 +713,7 @@ void SP_monster_rat (edict_t *self)
 {
 	// Generic Monster Initialization
 	if (!monster_start(self))		// Failed initialization
-		return;	
+		return;
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_RAT;
@@ -735,8 +735,8 @@ void SP_monster_rat (edict_t *self)
 	self->solid=SOLID_BBOX;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
-	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
+
 	//Init this to -1 because we can't check for supporters in this function
 	self->monsterinfo.supporters = -1;
 

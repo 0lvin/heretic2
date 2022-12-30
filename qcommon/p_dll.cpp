@@ -19,7 +19,7 @@ PLAYER_API player_export_t GetPlayerAPI(void);
 
 player_export_t	playerExport;
 
-// Handle to player DLL. 
+// Handle to player DLL.
 
 static HINSTANCE player_library = NULL;
 

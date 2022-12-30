@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -124,7 +124,7 @@ void CL_ParseProjectiles (void)
 
 		pr.present = true;
 
-		// find if this projectile already exists from previous frame 
+		// find if this projectile already exists from previous frame
 		for (j = 0; j < MAX_PROJECTILES; j++) {
 			if (cl_projectiles[j].modelindex) {
 				if (cl_projectiles[j].num == pr.num) {
@@ -176,7 +176,7 @@ void CL_AddProjectiles (void)
 		// interpolate origin
 		for (j=0 ; j<3 ; j++)
 		{
-			ent.origin[j] = ent.oldorigin[j] = pr->oldorigin[j] + cl.lerpfrac * 
+			ent.origin[j] = ent.oldorigin[j] = pr->oldorigin[j] + cl.lerpfrac *
 				(pr->origin[j] - pr->oldorigin[j]);
 
 		}
@@ -252,7 +252,7 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int number, int bi
 	if (bits & U_CLIENT_EFFECTS)
 	{
 		extern ResourceManager_t FXBufMgnr;
-		
+
 		int numEffects = MSG_ReadShort(&net_message);
 
 		if (numEffects == -1)
@@ -303,7 +303,7 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int number, int bi
 	//	to->modelindex4 = MSG_ReadByte (&net_message);
 
 
-		
+
 	if (bits & U_FRAME8)
 		to->frame = MSG_ReadByte (&net_message);
 	if (bits & U_FRAME16)
@@ -338,7 +338,7 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int number, int bi
 		to->origin[1] = MSG_ReadCoord (&net_message);
 	if (bits & U_ORIGIN3)
 		to->origin[2] = MSG_ReadCoord (&net_message);
-		
+
 	if (bits & U_ANGLE1) {
 		MSG_ReadCoord(&net_message); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		to->angles[0] = MSG_ReadAngle(&net_message);
@@ -464,7 +464,7 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 			if (cl_shownet->value == 3)
 				Com_Printf ("   unchanged: %i\n", oldnum);
 			CL_DeltaEntity (newframe, oldnum, oldstate, 0);
-			
+
 			oldindex++;
 
 			if (oldindex >= oldframe->num_entities)
@@ -477,7 +477,7 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 		}
 
 		if (bits & U_REMOVE)
-		{				
+		{
 			// the entity present in oldframe is not in the current frame
 			if (cl_shownet->value == 3)
 				Com_Printf ("   remove: %i\n", newnum);
@@ -489,11 +489,11 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 			fxe.RemoveClientEffects(&cl_entities[newnum]);
 
 			if (oldframe)
-			{				
+			{
 				if (oldindex >= oldframe->num_entities)
 					oldnum = 99999;
 				else
-				{					
+				{
 					oldstate = &cl_parse_entities[(oldframe->parse_entities + oldindex) & (MAX_PARSE_ENTITIES - 1)];
 					oldnum = oldstate->number;
 				}
@@ -535,7 +535,7 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 		if (cl_shownet->value == 3)
 			Com_Printf ("   unchanged: %i\n", oldnum);
 		CL_DeltaEntity (newframe, oldnum, oldstate, 0);
-		
+
 		oldindex++;
 
 		if (oldindex >= oldframe->num_entities)
@@ -610,7 +610,7 @@ void CL_ParsePlayerstate (frame_t *oldframe, frame_t *newframe)
 	if (flags & PS_M_ORIGIN_XY)
 	{
 		state->pmove.origin[0] = MSG_ReadShort (&net_message);
-		state->pmove.origin[1] = MSG_ReadShort (&net_message);		
+		state->pmove.origin[1] = MSG_ReadShort (&net_message);
 	}
 
 	if (flags & PS_VIEWHEIGHT)
@@ -626,7 +626,7 @@ void CL_ParsePlayerstate (frame_t *oldframe, frame_t *newframe)
 	if (flags & PS_M_VELOCITY_XY)
 	{
 		state->pmove.velocity[0] = MSG_ReadShort (&net_message);
-		state->pmove.velocity[1] = MSG_ReadShort (&net_message);		
+		state->pmove.velocity[1] = MSG_ReadShort (&net_message);
 	}
 
 	if (flags & PS_M_VELOCITY_Z)
@@ -774,7 +774,7 @@ void CL_ParseFrame (void)
 	// If the frame is delta compressed from data that we
 	// no longer have available, we must suck up the rest of
 	// the frame, but not use it, then ask for a non-compressed
-	// message 
+	// message
 	if (cl.frame.deltaframe <= 0)
 	{
 		cl.frame.valid = true;		// uncompressed frame
@@ -801,7 +801,7 @@ void CL_ParseFrame (void)
 			cl.frame.valid = true;	// valid delta parse
 	}
 
-	// clamp time 
+	// clamp time
 	if (cl.time > cl.frame.servertime)
 		cl.time = cl.frame.servertime;
 	else if (cl.time < cl.frame.servertime - 100)
@@ -854,7 +854,7 @@ void CL_ParseFrame (void)
 				SCR_EndLoadingPlaque ();	// get rid of loading plaque
 		}
 		cl.sound_prepped = true;	// can start mixing ambient sounds
-	
+
 		// fire entity events
 		CL_FireEntityEvents (&cl.frame);
 		CL_CheckPredictionError ();
@@ -911,7 +911,7 @@ struct model_s *S_RegisterSexedModel (entity_state_t *ent, char *base)
 				Com_sprintf (buffer, sizeof(buffer), "players/male/weapon.md2");
 				mdl = re.RegisterModel(buffer);
 			}
-		} 
+		}
 	}
 
 	return mdl;
@@ -980,7 +980,7 @@ void CL_OffsetThirdPersonView(void) {
 		view[2] += (1.0 - trace.fraction) * 32;
 		// try another trace to this position, because a tunnel may have the ceiling
 		// close enogh that this is poking out
-	
+
 		trace = CM_BoxTrace(cl.refdef.vieworg, view, mins, maxs, 0, MASK_PLAYERSOLID);
 		VectorCopy(trace.endpos, view);
 	}
@@ -1049,7 +1049,7 @@ void CL_CalcViewValues(void)
 	//		cl.refdef.vieworg[2] -= cl.predicted_step * (100 - delta) * 0.01;
 	//}
 	//else
-	//{	
+	//{
 	//}
 // jmarshall
 	if (ps->remote_id != -1)
@@ -1065,7 +1065,7 @@ void CL_CalcViewValues(void)
 		//for (i=0 ; i<3 ; i++)
 		//	cl.refdef.viewangles[i] += LerpAngle (ops->kick_angles[i], ps->kick_angles[i], lerp);
 
-		
+
 	}
 	else if(cl.refdef.entities)
 	{
@@ -1074,7 +1074,7 @@ void CL_CalcViewValues(void)
 			cl.refdef.entities[0]->origin[i] = cl.refdef.vieworg[i] = ops->pmove.origin[i] * 0.125
 			+ lerp * (ps->pmove.origin[i] * 0.125
 				- (ops->pmove.origin[i] * 0.125));
-		
+
 
 
 			// if not running a demo or on a locked frame, add the local angle movement
@@ -1087,7 +1087,7 @@ void CL_CalcViewValues(void)
 		{	// just use interpolated values
 			for (i = 0; i < 3; i++)
 				cl.refdef.entities[0]->angles[i] = cl.refdef.viewangles[i] = LerpAngle(ops->viewangles[i], ps->viewangles[i], lerp);
-		}		
+		}
 
 		CL_OffsetThirdPersonView();
 	}
@@ -1097,7 +1097,7 @@ void CL_CalcViewValues(void)
 	// interpolate field of view
 	cl.refdef.fov_x = ops->fov + lerp * (ps->fov - ops->fov);
 
-	
+
 
 	// don't interpolate blend color
 	//for (i=0 ; i<4 ; i++)
@@ -1141,7 +1141,7 @@ void CL_AddEntities (void)
 //	CL_AddParticles ();
 //	CL_AddDLights ();
 //	CL_AddLightStyles ();
-		
+
 // jmarshall - this is in client effects.dll
 	fxe.AddPacketEntities(&cl.frame); // CL_AddPacketEntities (&cl.frame);
 	fxe.AddEffects(false);

@@ -43,7 +43,7 @@ void SpellLightningShieldAttack(edict_t *self)
 	{	// Only attack monsters and players in deathmatch
 		if (found == self)		// don't hurt yourself
 			continue;
-		
+
 
 		// don't target team members in team deathmatching, if they are on the same team, and friendly fire is not enabled.
 		if ((found->client && (int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS)) && !((int)dmflags->value & DF_HURT_FRIENDS) && deathmatch->value)
@@ -63,21 +63,21 @@ void SpellLightningShieldAttack(edict_t *self)
 		if (onefound)
 		{
 			if (irand(0, (SHIELD_ATTACK_CHANCE-1)) != 0)									// Don't attack everything we find.
-				continue;				
+				continue;
 		}
 		else
 		{	// More likely to find one if none found yet.
 			if (irand(0, (SHIELD_ATTACK_CHANCE-2)) != 0)									// Don't attack everything we find.
-				continue;				
+				continue;
 		}
 
 		VectorSubtract(found->s.origin, self->s.origin, dir);
 		VectorNormalize(dir);
 		damage = irand(SHIELD_DAMAGE_MIN, SHIELD_DAMAGE_MAX);
 
-		T_Damage(found, self, self, dir, vec3_origin, vec3_origin, damage, 0, DAMAGE_SPELL,MOD_SHIELD); 
-		
-		gi.CreateEffect(NULL, FX_LIGHTNING, 0, 
+		T_Damage(found, self, self, dir, vec3_origin, vec3_origin, damage, 0, DAMAGE_SPELL,MOD_SHIELD);
+
+		gi.CreateEffect(NULL, FX_LIGHTNING, 0,
 				self->s.origin, "vbb", found->s.origin, (byte)SHIELD_LIGHTNING_WIDTH, (byte)0);
 
 		// Do a nasty looking blast at the impact point
@@ -87,7 +87,7 @@ void SpellLightningShieldAttack(edict_t *self)
 
 		onefound = true;
 	}
-}	
+}
 
 
 

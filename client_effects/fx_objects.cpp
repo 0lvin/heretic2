@@ -61,7 +61,7 @@ void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		ballnum = i;
 		subexplosion = CreatePhoenixSmallExplosion(origin);
-		VectorSet(subexplosion->velocity, 
+		VectorSet(subexplosion->velocity,
 						flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED),
 						flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED),
 						flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED));
@@ -91,14 +91,14 @@ void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	explosion->dlight = CE_DLight_new(color, 150.0F, 0.0F);
 	explosion->Update = FXPhoenixExplosionBallThink;
 	AddEffect(NULL, explosion);
-	
+
 	// Add some glowing blast particles.
 	VectorScale(dir,BARREL_EXPLODE_SPEED,dir);
 	for(i = 0; i < BARREL_EXPLODE_BITS; i++)
 	{
 		spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 2000);
-		VectorSet(spark->velocity,	flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED), 
-									flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED), 
+		VectorSet(spark->velocity,	flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED),
+									flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED),
 									flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED));
 		VectorAdd(spark->velocity, dir, spark->velocity);
 		spark->acceleration[2] = BARREL_EXPLODE_GRAVITY;

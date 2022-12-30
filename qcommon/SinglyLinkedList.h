@@ -10,7 +10,7 @@
 #include "H2Common.h"
 #include "GenericUnions.h"
 
-// jmarshall 
+// jmarshall
 typedef struct SinglyLinkedListNode_s
 {
 	GenericUnion4_t value;

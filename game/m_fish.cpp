@@ -220,7 +220,7 @@ float M_ChangeFishYaw (edict_t *ent)
 	float	current;
 	float	move;
 	float	speed;
-	
+
 	current = anglemod(ent->s.angles[YAW]);
 	ideal = ent->movedir[YAW];
 
@@ -249,7 +249,7 @@ float M_ChangeFishYaw (edict_t *ent)
 		if (move < -speed)
 			move = -speed;
 	}
-	
+
 	ent->s.angles[YAW] = anglemod (current + move);
 	return move;
 }
@@ -266,7 +266,7 @@ float M_ChangeFishPitch (edict_t *ent)
 	float	current;
 	float	move;
 	float	speed;
-	
+
 	current = anglemod(ent->s.angles[PITCH]);
 	ideal = ent->movedir[PITCH];
 
@@ -295,7 +295,7 @@ float M_ChangeFishPitch (edict_t *ent)
 		if (move < -speed)
 			move = -speed;
 	}
-	
+
 	ent->s.angles[PITCH] = anglemod (current + move);
 	return move;
 }
@@ -489,7 +489,7 @@ void fish_blocked(edict_t *self, struct trace_s *trace)
 		//we would be able to bite him, then sure, otherwise, just bounce us off and set him as the enemy
 		else
 		{
-			// first decide if this guy is dead 
+			// first decide if this guy is dead
 			if (trace->ent->deadflag == DEAD_DEAD)
 			{
 			  	fish_bounce_direction(self);
@@ -513,7 +513,7 @@ void fish_blocked(edict_t *self, struct trace_s *trace)
 				}
 			}
 		}
-			
+
 	}
 	// we hit a wall, or something
 	// reverse our direction, and the randomise a cone of projection out from that,
@@ -667,7 +667,7 @@ void fish_pain(edict_t *self, G_Message_t *msg)
 {
 	int				temp, damage;
 	qboolean		force_pain;
-	
+
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
 	if(!force_pain)
@@ -787,7 +787,7 @@ void fish_dead(edict_t *self)
 
 	self->think = fish_deadfloat;
 	self->nextthink = level.time + 0.1;
-			
+
 	// stop the fish making bubbles
 	gi.RemoveEffects(&self->s, FX_WATER_BUBBLE);
 	if (self->PersistantCFX)
@@ -817,7 +817,7 @@ void fishbite (edict_t *self)
 		if (irand(0, 1))
 		{
 			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEHIT1], 1, ATTN_NORM, 0);
-		}	
+		}
 		else
 		{
 			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEHIT2], 1, ATTN_NORM, 0);
@@ -1013,16 +1013,16 @@ void FishStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/fish/tris.fm");
 
-	sounds[SND_PAIN1] = gi.soundindex ("monsters/fish/pain1.wav");	
-	sounds[SND_PAIN2] = gi.soundindex ("monsters/fish/pain2.wav");	
-	sounds[SND_DIE] = gi.soundindex ("monsters/fish/death1.wav");	
+	sounds[SND_PAIN1] = gi.soundindex ("monsters/fish/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex ("monsters/fish/pain2.wav");
+	sounds[SND_DIE] = gi.soundindex ("monsters/fish/death1.wav");
 	sounds[SND_GIB] = gi.soundindex ("monsters/fish/gib.wav");
-	sounds[SND_BITEHIT1] = gi.soundindex ("monsters/fish/meleehit1.wav");	
-	sounds[SND_BITEHIT2] = gi.soundindex ("monsters/fish/meleehit2.wav");	
-	sounds[SND_BITEMISS1] = gi.soundindex ("monsters/fish/meleemiss1.wav");	
-	sounds[SND_BITEMISS2] = gi.soundindex ("monsters/fish/meleemiss2.wav");	
-	sounds[SND_GROWL1] = gi.soundindex ("monsters/fish/growl1.wav");	
-	sounds[SND_GROWL2] = gi.soundindex ("monsters/fish/growl2.wav");	
+	sounds[SND_BITEHIT1] = gi.soundindex ("monsters/fish/meleehit1.wav");
+	sounds[SND_BITEHIT2] = gi.soundindex ("monsters/fish/meleehit2.wav");
+	sounds[SND_BITEMISS1] = gi.soundindex ("monsters/fish/meleemiss1.wav");
+	sounds[SND_BITEMISS2] = gi.soundindex ("monsters/fish/meleemiss2.wav");
+	sounds[SND_GROWL1] = gi.soundindex ("monsters/fish/growl1.wav");
+	sounds[SND_GROWL2] = gi.soundindex ("monsters/fish/growl2.wav");
 	sounds[SND_GROWL3] = gi.soundindex ("monsters/fish/growl3.wav");
 	sounds[SND_SPLASH] = gi.soundindex("player/breaststroke.wav");
 
@@ -1037,7 +1037,7 @@ void FishStaticsInit()
 	classStatics[CID_FISH].resInfo = &resInfo;
 }
 
-/*QUAKED monster_fish (1 .5 0) (-25 -25 -14) (25 25 14) 
+/*QUAKED monster_fish (1 .5 0) (-25 -25 -14) (25 25 14)
 
 The fish
 
@@ -1073,7 +1073,7 @@ void SP_monster_fish (edict_t *self)
 	self->clipmask = MASK_MONSTERSOLID;
 	self->materialtype = MAT_FLESH;
 	self->flags |= FL_SWIM|FL_NO_KNOCKBACK;
-	
+
 	self->s.effects|=EF_CAMERA_NO_CLIP;
 
 	// random skin of three
@@ -1101,7 +1101,7 @@ void SP_monster_fish (edict_t *self)
 	self->s.frame = 0;
 
 	self->oldenemy_debounce_time = -1;
-	
+
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_FISH;
 	self->think = fish_check_distance;
@@ -1120,7 +1120,7 @@ void SP_monster_fish (edict_t *self)
 	self->s.modelindex = classStatics[CID_FISH].resInfo->modelIndex;
 
 	self->shrine_type = 0;
-	
+
 	if (self->s.scale == 1)
 		self->s.scale = self->monsterinfo.scale = MODEL_SCALE * flrand(0.5,1.0);
 
@@ -1140,7 +1140,7 @@ void SP_monster_fish (edict_t *self)
 
 	SetAnim(self, ANIM_STAND1);
 
-	gi.linkentity(self); 
+	gi.linkentity(self);
 
 	M_CatagorizePosition(self);
 }

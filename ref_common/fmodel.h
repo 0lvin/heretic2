@@ -100,7 +100,7 @@ typedef struct
 #define FM_TRI_NAME		"tris"
 #define FM_TRI_VER		1
 
-typedef struct 
+typedef struct
 {
 	short	index_xyz[3];
 	short	index_st[3];

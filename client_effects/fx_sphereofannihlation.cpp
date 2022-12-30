@@ -101,7 +101,7 @@ static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self,cen
 	{
 		TrailLength+=2.0;
 	}
-	
+
 	PerpendicularVector(Right,Trail);
 	CrossProduct(Trail,Right,Up);
 
@@ -144,11 +144,11 @@ static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self,cen
 			TrailEnt->d_scale = -0.5;
 
 		TrailEnt->radius=70.0;
-				
+
 		AddEffect(NULL,TrailEnt);
 
 		TrailLength-=DeltaTrailLength;
-		
+
 		VectorAdd(TrailStart,Trail,TrailStart);
 	}
 
@@ -199,7 +199,7 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	SphereThinker->radius = 70.0;
 	SphereThinker->Update = FXSphereOfAnnihilationSphereThink;
 	SphereThinker->AddToView = LinkedEntityUpdatePlacement;
-	
+
 	AddEffect(Owner, SphereThinker);
 }
 
@@ -233,7 +233,7 @@ static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self
 							   Self->r.origin,
 							   NULL,
 							   dur);
-		
+
 		Spark->r.model = sphere_models + 2;
 		Spark->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
 		Spark->r.color.r=irand(128, 180);
@@ -242,7 +242,7 @@ static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self
 		Spark->Scale=flrand(0.8, 1.0);
 		Spark->radius=20.0;
 		Spark->d_scale = -1.5;
-		
+
 		AddEffect(NULL,Spark);
 	}
 
@@ -257,7 +257,7 @@ static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self
 		Self->velocity[1]*=3.0;
 		Self->velocity[1]+=6.0*(Owner->origin[1]-Self->r.origin[1]);
 		Self->velocity[1]*=0.265;
-		
+
 		Self->velocity[2]*=3.0;
 		Self->velocity[2]+=6.0*(Owner->origin[2]-Self->r.origin[2]);
 		Self->velocity[2]*=0.265;
@@ -265,7 +265,7 @@ static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self
 		return(true);
 	}
 	else
-	{	
+	{
 		return(false);
 	}
 }
@@ -291,7 +291,7 @@ static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_
 	// If the spell is still building, create some swirling blue Glowballs.
 
 	if(Owner->current.effects&EF_MARCUS_FLAG1)
-	{	
+	{
 		// 'Self->extra' refers to the caster's centity_t.
 
 		if (Self->extra)
@@ -306,7 +306,7 @@ static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_
 								  50);
 
 		Glowball->flags|=CEF_DONT_LINK;
-		
+
 		// Make me spawn from my caster's left / right hands (alternating).
 		// assuming we aren't a reflection type glowball
 		if (Self->extra)
@@ -333,7 +333,7 @@ static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_
 			{
 				vec3_t fwd_ofs;
 
-				VectorScale(Forward, 16, fwd_ofs);//Hard-coded for Celestial Watcher(monster_elflord), 
+				VectorScale(Forward, 16, fwd_ofs);//Hard-coded for Celestial Watcher(monster_elflord),
 				Matrix3MultByVec3(RotationMatrix,
 								  fwd_ofs,
 								  Glowball->r.origin);
@@ -369,13 +369,13 @@ static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_
 
 		if(!(Self->color.g&1))
 			Glowball->velocity[1]=-Glowball->velocity[1];
-		
+
 		Glowball->velocity[2]=flrand(-200.0, 100.0);
 
 		VectorClear(Glowball->acceleration);
 
 		// Fill in the rest of my info.
-		
+
 		Glowball->r.model = sphere_models + 2;
 		Glowball->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
 		Glowball->r.color.r= irand(128, 180);
@@ -466,7 +466,7 @@ static qboolean FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s 
 		Self->r.angles[1]+=(M_PI/27.0);
 
 		Self->radius=FX_SPHERE_EXPLOSION_BASE_RADIUS*Self->r.scale;
-		
+
 		Multiplier=1.0-Frac/(Self->NoOfAnimFrames-1);
 
 		Self->dlight->intensity=(Self->radius/0.7);
@@ -476,7 +476,7 @@ static qboolean FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s 
 		Self->dlight->color.b=255*Multiplier;
 
 		Self->alpha=Multiplier;
-		
+
 		return(true);
 	}
 }
@@ -511,9 +511,9 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 	Explosion->NoOfAnimFrames=(int)Size;
 	Explosion->AnimSpeed=1.0;
 	Explosion->radius=FX_SPHERE_EXPLOSION_BASE_RADIUS*Explosion->r.scale;
-	Explosion->dlight=CE_DLight_new(LightColor,Explosion->radius/0.7,0);	
+	Explosion->dlight=CE_DLight_new(LightColor,Explosion->radius/0.7,0);
 	Explosion->Update=FXSphereOfAnnihilationSphereExplodeThink;
-	
+
 	AddEffect(NULL,Explosion);
 
 	FXSphereOfAnnihilationSphereExplodeThink(Explosion,NULL);
@@ -535,7 +535,7 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 		ce = ClientParticle_new(PART_16x16_SPARK_B, LightColor, 600);
 
 		VectorCopy(Dir,ce->velocity);
-		
+
 		ce->scale=flrand(16.0, 32.0);
 
 		ce->velocity[0]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
@@ -617,7 +617,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 		VectorScale(right, 0.4*SPHERE_LASER_SPEED, beam->velocity);		// Move to the right
 		VectorScale(right, -SPHERE_LASER_SPEED, beam->acceleration);
 	}
-	AddEffect(NULL, beam); 
+	AddEffect(NULL, beam);
 
 	count = GetScaledCount((int)(25 + size * 2.5), 0.3);
 
@@ -625,7 +625,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	for(i=0; i < count;i++)
 	{
 		ce = ClientParticle_new(PART_16x16_SPARK_B, LightColor, 666);
-	
+
 		ce->scale=flrand(8, 24.0) + size*2;
 		ce->scale *=0.4;
 		ce->acceleration[2] = 0;
@@ -686,7 +686,7 @@ static qboolean FXSpherePlayerExplodeThink(struct client_entity_s *self,centity_
 	{
 		self->dlight->intensity=(FX_SPHERE_EXPLOSION_BASE_RADIUS*self->r.scale*1.7);
 	}
-		
+
 	return(true);
 }
 
@@ -697,7 +697,7 @@ static qboolean FXSpherePlayerExplodeAddToView(struct client_entity_s *self,cent
 	self->r.angles[1]+=(M_PI/27.0)*(fxi.cl->time-self->lastThinkTime)/50.0;
 
 	self->lastThinkTime = fxi.cl->time;
-		
+
 	return(true);
 }
 
@@ -709,7 +709,7 @@ static qboolean FXSpherePlayerExplodeGlowballThink(client_entity_t *glowball,cen
 	// Update the angle of the spark.
 	VectorMA(glowball->direction, (float)(fxi.cl->time-glowball->lastThinkTime)/1000.0, glowball->velocity2, glowball->direction);
 
-	glowball->radius = ((SPHERE_RADIUS_MAX-SPHERE_RADIUS_MIN) * 
+	glowball->radius = ((SPHERE_RADIUS_MAX-SPHERE_RADIUS_MIN) *
 							((fxi.cl->time - glowball->SpawnDelay) / 100.0) / (SPHERE_MAX_CHARGES+2));
 
 	// Update the position of the spark.
@@ -767,7 +767,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	explosion->updateTime = ((explosion->SpawnInfo+1)*100);
 	explosion->nextEventTime = fxi.cl->time + explosion->updateTime;
 	explosion->lastThinkTime = fxi.cl->time;
-	
+
 	AddEffect(NULL, explosion);
 
 	FXSpherePlayerExplodeThink(explosion,NULL);

@@ -74,7 +74,7 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self,centity_t *Owner)
 			return true;
 		}
 	}
-	else 
+	else
 	{	// If we're not on a time limit, check the EF flag
 		if (!(Owner->current.effects & EF_TRAILS_ENABLED))
 		{
@@ -135,7 +135,7 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self,centity_t *Owner)
 		ce = ClientParticle_new(part_type, color, 400);
 		VectorCopy(Real_Trailstart,ce->origin);
 		ce->scale = 8.0F;
-		ce->acceleration[2] = 0.0f; 
+		ce->acceleration[2] = 0.0f;
 		VectorSet(ce->velocity, flrand(-8.0, 8.0), flrand(-8.0, 8.0), flrand(-8.0, 8.0));
 
 		AddParticleToList(Self, ce);
@@ -182,15 +182,15 @@ void FXSpellHands(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 		Trail->Update=FXSpellHandsThink;
 		Trail->SpawnInfo= ((Flags&(CEF_FLAG7|CEF_FLAG8)) >> 6);
-		Trail->AddToView = LinkedEntityUpdatePlacement;			
-		
+		Trail->AddToView = LinkedEntityUpdatePlacement;
+
 		if (lifetime > 0)
 			Trail->LifeTime = fxi.cl->time + (lifetime * 100);
 		else
 			Trail->LifeTime = -1;
 
 		Trail->refPoint = I;
-		
+
 		// Hack: used as a counter.
 		Trail->AnimSpeed=0.0;
 

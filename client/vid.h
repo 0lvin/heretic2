@@ -13,7 +13,7 @@ typedef struct vrect_s
 
 typedef struct
 {
-	int			 	width;		
+	int			 	width;
 	int				height;
 	byte			*pixels;
 } viddef_t;

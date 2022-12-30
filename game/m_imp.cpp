@@ -52,17 +52,17 @@ void imp_blocked (edict_t *self, struct trace_s *trace);
 
 static animmove_t *animations[NUM_ANIMS] =
 {
-	&imp_move_die1, 
+	&imp_move_die1,
 	&imp_move_fly1,
 	&imp_move_flyback,
 	&imp_move_hover1,
-	&imp_move_fireball,	
+	&imp_move_fireball,
 	&imp_move_dive_go,
 	&imp_move_dive_loop,
 	&imp_move_dive_end,
 	&imp_move_dive_out,
 	&imp_move_pain1,
-	&imp_move_tumble,	
+	&imp_move_tumble,
 	&imp_move_perch,
 	&imp_move_takeoff,
 	&imp_move_dup,
@@ -127,7 +127,7 @@ int imp_check_move(edict_t *self, float dist)
 	vec3_t	vec, vf;
 
 	VectorCopy(self->s.origin, vec);
-	
+
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 	VectorMA(vec, dist, vf, vec);
 
@@ -149,7 +149,7 @@ void imp_ai_glide (edict_t *self, float fd, float rd, float ud)
 {
 	vec3_t	vec, vf, vr, nvec;
 	float	yaw_delta, roll, dot, rdot;
-	
+
 	if (!self->enemy)
 		return;
 
@@ -162,7 +162,7 @@ void imp_ai_glide (edict_t *self, float fd, float rd, float ud)
 
 	dot  = DotProduct(vf, nvec);
 	rdot = DotProduct(vr, nvec);
-	
+
 	self->ideal_yaw = vectoyaw(vec);
 
 	M_ChangeYaw(self);
@@ -171,7 +171,7 @@ void imp_ai_glide (edict_t *self, float fd, float rd, float ud)
 
 	//If enough, roll the creature to simulate gliding
 	if (Q_fabs(yaw_delta) > self->yaw_speed)
-	{		
+	{
 		if (dot < 0)
 		{
 			roll = Q_fabs(yaw_delta / 4);
@@ -180,7 +180,7 @@ void imp_ai_glide (edict_t *self, float fd, float rd, float ud)
 		{
 			roll = yaw_delta / 4;
 		}
-		
+
 		//Going right?
 		if (roll > 0)
 		{
@@ -190,7 +190,7 @@ void imp_ai_glide (edict_t *self, float fd, float rd, float ud)
 		}
 		else
 		{
-			self->s.angles[ROLL] += roll;	
+			self->s.angles[ROLL] += roll;
 			if (self->s.angles[ROLL] < -65)
 				self->s.angles[ROLL] = -65;
 		}
@@ -202,9 +202,9 @@ void imp_ai_glide (edict_t *self, float fd, float rd, float ud)
 }
 
 void imp_ai_fly (edict_t *self, float fd, float rd, float ud)
-{	
+{
 	vec3_t	vec, vf, vr, vu;
-	
+
 	if (!self->enemy)
 		return;
 
@@ -230,7 +230,7 @@ void imp_ai_fly (edict_t *self, float fd, float rd, float ud)
 
 	//Add in the movements relative to the creature's facing
 	AngleVectors(self->s.angles, vf, vr, vu);
-	
+
 	VectorMA(self->velocity, fd, vf, self->velocity);
 	VectorMA(self->velocity, rd, vr, self->velocity);
 	VectorMA(self->velocity, ud, vu, self->velocity);
@@ -254,10 +254,10 @@ void imp_ai_hover(edict_t *self, float dist)
 	self->velocity[0] *= 0.8;
 	self->velocity[1] *= 0.8;
 	self->velocity[2] *= 0.8;
-	
+
 	//Make sure we're not tilted after a turn
 	self->s.angles[ROLL] *= 0.25;
-	
+
 	//Find our ideal yaw to the player and correc to it
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 	self->ideal_yaw = vectoyaw(vec);
@@ -289,7 +289,7 @@ void imp_ai_pirch(edict_t *self)
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 	len = VectorNormalize(vec);
-	
+
 	if (len < 150)
 	{
 		SetAnim(self, ANIM_TAKEOFF);
@@ -354,7 +354,7 @@ void imp_fix_angles(edict_t *self)
 	if (pitch_delta > 0)
 	{
 		self->s.angles[PITCH] -= pitch_delta / 2;
-	
+
 		if (self->s.angles[PITCH] < 2)
 		{
 			self->s.angles[PITCH] = 0;
@@ -363,7 +363,7 @@ void imp_fix_angles(edict_t *self)
 	else
 	{
 		self->s.angles[PITCH] += pitch_delta / 2;
-	
+
 		if (self->s.angles[PITCH] > 2)
 		{
 			self->s.angles[PITCH] = 0;
@@ -374,7 +374,7 @@ void imp_fix_angles(edict_t *self)
 	if (roll_delta > 0)
 	{
 		self->s.angles[ROLL] -= roll_delta / 2;
-	
+
 		if (self->s.angles[ROLL] < 2)
 		{
 			self->s.angles[ROLL] = 0;
@@ -383,7 +383,7 @@ void imp_fix_angles(edict_t *self)
 	else
 	{
 		self->s.angles[ROLL] += roll_delta / 15;
-	
+
 		if (self->s.angles[ROLL] > 2)
 		{
 			self->s.angles[ROLL] = 0;
@@ -406,7 +406,7 @@ void imp_death_pain (edict_t *self, G_Message_t *msg)
 	}
 }
 
-//receiver for MSG_DEATH 
+//receiver for MSG_DEATH
 void imp_die(edict_t *self, G_Message_t *msg)
 {
 	if(self->monsterinfo.aiflags&AI_DONT_THINK)
@@ -421,12 +421,12 @@ void imp_die(edict_t *self, G_Message_t *msg)
 
 	VectorSet(self->mins, -16, -16, 0);
 	VectorSet(self->maxs, 16, 16, 16);
-	
+
 	if(self->health <= -40) //gib death
 	{
 		BecomeDebris(self);
 		self->think = NULL;
-		self->nextthink = 0;	
+		self->nextthink = 0;
 		gi.linkentity (self);
 		return;
 	}
@@ -443,7 +443,7 @@ void imp_pain(edict_t *self, G_Message_t *msg)
 {
 	int				temp, damage;
 	qboolean		force_pain;
-	
+
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
 	if (self->curAnimID == ANIM_PERCH)
@@ -466,7 +466,7 @@ void imp_pain(edict_t *self, G_Message_t *msg)
 	}
 }
 
-//receiver for MSG_STAND, MSG_HOVER 
+//receiver for MSG_STAND, MSG_HOVER
 //FIXME -- is MSG_HOVER redundant?
 void imp_hover(edict_t *self, G_Message_t *msg)
 {
@@ -573,7 +573,7 @@ qboolean imp_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr, 
 			return true;
 		}
 	}
-	
+
 	//Check up and down
 	VectorCopy(self->s.origin, goalpos);
 
@@ -604,7 +604,7 @@ qboolean imp_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr, 
 			return true;
 		}
 	}
-		
+
 	//Check forward and back
 	VectorCopy(self->s.origin, goalpos);
 
@@ -647,7 +647,7 @@ qboolean imp_check_swoop(edict_t *self, vec3_t goal)
 
 	//Find the difference in the target's height and the creature's height
 	zd = Q_fabs(self->enemy->s.origin[2] - self->s.origin[2]);
-	
+
 	if (zd < IMP_MIN_SSWOOP_DIST)
 		return false;
 
@@ -686,7 +686,7 @@ void move_imp_dive(edict_t *self)
 
 	//Find out the Z and Horizontal deltas to target
 	zd = Q_fabs(self->s.origin[2] - self->enemy->s.origin[2]);
-	
+
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 
 	VectorCopy(self->s.origin, vec);
@@ -731,7 +731,7 @@ void move_imp_dive_end(edict_t *self)
 {
 	vec3_t	vec, vf, vr, vu, nvec;
 	float	hd, fd, dot;
-	
+
 	VectorCopy(self->s.origin, vec);
 	vec[2] = self->enemy->s.origin[2];
 
@@ -742,7 +742,7 @@ void move_imp_dive_end(edict_t *self)
 	M_ChangeYaw(self);
 
 	AngleVectors(self->s.angles, vf, vr, vu);
-	
+
 	self->velocity[2] *= 0.75;
 
 	self->monsterinfo.jump_time *= IMP_SWOOP_INCR;
@@ -776,7 +776,7 @@ void move_imp_dive_end(edict_t *self)
 	}
 
 	VectorMA(self->velocity, fd, vf, self->velocity);
-	
+
 	//Are we about to hit the target?
 /*	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 	dist = VectorLength(vec);
@@ -818,7 +818,7 @@ void imp_check_dodge(edict_t *self)
 		//We're only interested in his projectiles
 		if (ent->owner != self->enemy)
 			continue;
-		
+
 		VectorCopy(ent->velocity, projvec);
 		VectorNormalize(projvec);
 
@@ -894,8 +894,8 @@ void imp_check_dodge(edict_t *self)
 			VectorMA(self->velocity, irand(300, 500), ddir, self->velocity);
 			self->monsterinfo.misc_debounce_time = level.time + irand(2,4);
 		}
-	}	
-	
+	}
+
 	imp_ai_glide(self, 0, 0, 0);
 }
 
@@ -906,7 +906,7 @@ void move_imp_hover(edict_t *self)
 	edict_t		*ent = NULL;
 	vec3_t		goal, dodgedir, mins, maxs, vf, vr, vu, vec, projvec, goalpos;
 	float		dist, zd, dodgedot, enemy_dist;
-	
+
 
 	if (!self->enemy)
 	{
@@ -922,7 +922,7 @@ void move_imp_hover(edict_t *self)
 
 	VectorSubtract(goal, self->s.origin, goal);
 	dist = VectorLength(goal);
-	
+
 	//Face target
 	self->ideal_yaw = vectoyaw(goal);
 	M_ChangeYaw(self);
@@ -940,12 +940,12 @@ void move_imp_hover(edict_t *self)
 		//If not, try looking from a bit to the side in all six directions
 		if (trace.ent != self->enemy)
 		{
-			
+
 			//Setup the directions
 			AngleVectors(self->s.angles, vf, vr, vu);
 
 			canmove = imp_check_directions(self, self->enemy->s.origin, vf, vr, vu, IMP_CHECK_DIST, goal);
-			
+
 			//If we can see him from one of these, go there
 			if (canmove)
 			{
@@ -953,7 +953,7 @@ void move_imp_hover(edict_t *self)
 				return;
 			}
 
-			
+
 			//Otherwise just flap around and wait, perhaps lower yourself a bit if high up
 			self->velocity[0] = flrand(-IMP_DRIFT_AMOUNT_X, IMP_DRIFT_AMOUNT_X);
 			self->velocity[1] = flrand(-IMP_DRIFT_AMOUNT_Y, IMP_DRIFT_AMOUNT_Y);
@@ -974,7 +974,7 @@ void move_imp_hover(edict_t *self)
 				//We're only interested in his projectiles
 				if (ent->owner != self->enemy)
 					continue;
-				
+
 				VectorCopy(ent->velocity, projvec);
 				VectorNormalize(projvec);
 
@@ -1043,10 +1043,10 @@ void move_imp_hover(edict_t *self)
 			//If all else fails, then just pick a random direction to nudge yourself to
 			else
 			{
-				
+
 				//Find the difference in the target's height and the creature's height
 				zd = Q_fabs(self->enemy->s.origin[2] - self->s.origin[2]);
-		
+
 				//We can't swoop because we're too low, so fly upwards if possible
 				if (zd < IMP_MIN_SSWOOP_DIST)
 				{
@@ -1064,7 +1064,7 @@ void move_imp_hover(edict_t *self)
 				}
 				else
 				{
-					//Otherwise just flap around and wait, perhaps lower yourself a bit if high up					
+					//Otherwise just flap around and wait, perhaps lower yourself a bit if high up
 					self->velocity[0] = flrand(-IMP_DRIFT_AMOUNT_X, IMP_DRIFT_AMOUNT_X);
 					self->velocity[1] = flrand(-IMP_DRIFT_AMOUNT_Y, IMP_DRIFT_AMOUNT_Y);
 					self->velocity[2] = flrand(-IMP_DRIFT_AMOUNT_Z, IMP_DRIFT_AMOUNT_Z);
@@ -1104,7 +1104,7 @@ void move_imp_hover(edict_t *self)
 	}
 
 	return;
-} 
+}
 
 //New physics call that modifies the imp's velocity and angles based on aerodynamics
 void imp_flight_model(edict_t *self)
@@ -1112,10 +1112,10 @@ void imp_flight_model(edict_t *self)
 }
 
 void move_imp_fly(edict_t *self)
-{	
+{
 	edict_t *dummy;
 	dummy = self;
-	
+
 	if(!irand(0,3))
 		imp_check_dodge(self);
 
@@ -1207,7 +1207,7 @@ edict_t *ImpFireballReflect(edict_t *self, edict_t *other, vec3_t vel)
 				FX_IMP_FIRE,
 				fireball->velocity);
 
-	G_LinkMissile(fireball); 
+	G_LinkMissile(fireball);
 
 	G_SetToFree(self);
 
@@ -1218,7 +1218,7 @@ edict_t *ImpFireballReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 
 void fireball_blocked( edict_t *self, trace_t *trace )
-{	
+{
 	if(trace->surface)
 	{
 		if(trace->surface->flags & SURF_SKY)
@@ -1250,7 +1250,7 @@ void fireball_blocked( edict_t *self, trace_t *trace )
 	{
 		vec3_t	hitDir;
 		float	damage = flrand(2,5);
-	
+
 		if(self->dmg)
 			damage += self->dmg;
 		VectorCopy( self->velocity, hitDir );
@@ -1285,7 +1285,7 @@ void imp_fireball (edict_t *self)
 	proj->reflect_debounce_time = MAX_REFLECT;
 
 	proj->owner = self;
-	
+
 	proj->dmg = irand(10, 20);
 
 	AngleVectors(self->s.angles, vf, vr, NULL);
@@ -1327,7 +1327,7 @@ void imp_fireball (edict_t *self)
 				FX_IMP_FIRE,
 				proj->velocity);
 
-	gi.linkentity(proj); 
+	gi.linkentity(proj);
 }
 
 /*===============================================================
@@ -1352,13 +1352,13 @@ void ImpStaticsInit()
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
-	sounds[SND_GIB]=gi.soundindex("misc/fleshbreak.wav");	
-	sounds[SND_FLAP]=gi.soundindex("monsters/imp/fly.wav");	
-	sounds[SND_SCREAM]=gi.soundindex("monsters/imp/up.wav");	
-	sounds[SND_DIVE]=gi.soundindex("monsters/imp/swoop.wav");	
-	sounds[SND_DEATH]=gi.soundindex("monsters/imp/die.wav");	
-	sounds[SND_HIT]=gi.soundindex("monsters/imp/swoophit.wav");	
-	sounds[SND_ATTACK]=gi.soundindex("monsters/imp/fireball.wav");	
+	sounds[SND_GIB]=gi.soundindex("misc/fleshbreak.wav");
+	sounds[SND_FLAP]=gi.soundindex("monsters/imp/fly.wav");
+	sounds[SND_SCREAM]=gi.soundindex("monsters/imp/up.wav");
+	sounds[SND_DIVE]=gi.soundindex("monsters/imp/swoop.wav");
+	sounds[SND_DEATH]=gi.soundindex("monsters/imp/die.wav");
+	sounds[SND_HIT]=gi.soundindex("monsters/imp/swoophit.wav");
+	sounds[SND_ATTACK]=gi.soundindex("monsters/imp/fireball.wav");
 	sounds[SND_FIZZLE]=gi.soundindex("monsters/imp/fout.wav");
 	sounds[SND_FBHIT]=gi.soundindex("monsters/imp/fbfire.wav");
 
@@ -1431,7 +1431,7 @@ void SP_monster_imp(edict_t *self)
 	self->clipmask = MASK_MONSTERSOLID;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
 	self->svflags |= SVF_TAKE_NO_IMPACT_DMG;
 
@@ -1445,7 +1445,7 @@ void SP_monster_imp(edict_t *self)
 	if (!self->s.scale)
 		self->monsterinfo.scale = self->s.scale = flrand(0.7, 1.2);
 
-	self->monsterinfo.otherenemyname = "monster_rat";	
+	self->monsterinfo.otherenemyname = "monster_rat";
 
 	if (self->spawnflags & MSF_PERCHING)
 	{
@@ -1461,7 +1461,7 @@ void SP_monster_imp(edict_t *self)
 
 	if(!self->missile_range)
 		self->missile_range = AttackRangesForClass[self->classID * 4 + 1];
-	
+
 	if(!self->min_missile_range)
 		self->min_missile_range = AttackRangesForClass[self->classID * 4 + 2];
 

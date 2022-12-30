@@ -96,10 +96,10 @@ client_fx_export_t GetfxAPI (client_fx_import_t import)
 
 	// In the client code in the executable the following functions are called first.
 	_export.AddPacketEntities = AddServerEntities;
-	
+
 	// Secondly....
 	_export.AddEffects = AddEffects;
-	
+
 	// Thirdly (if any independent effects exist).
 	_export.ParseClientEffects = ParseEffects;
 
@@ -239,7 +239,7 @@ void AddEffects(qboolean freeze)
 	// Add all effects which are attatched to entities, that have no model.
 
 	for(i = 0, owner = fxi.server_entities; i < MAX_NETWORKABLE_EDICTS; ++i, ++owner)
-	{	
+	{
 		// gak, think something else need to be done... maybe a list of centities with effects.
 
 		if(owner->effects && (owner->current.effects & EF_ALWAYS_ADD_EFFECTS))
@@ -266,7 +266,7 @@ PostRenderUpdate
 void PostRenderUpdate(void)
 {
 	void CL_RunLightStyles(void);
-	
+
 	int i;
 	centity_t *owner;
 	int	num_free_active = 0;
@@ -573,7 +573,7 @@ void ParseEffects(centity_t *owner)
 		   (fxi.EffectEventIdTimeArray[eventId]<=*fxi.leveltime)&&(fxi.EffectEventIdTimeArray[eventId]!=0.0))
 		{
 			// The client-effect has already been started by client-prediction, so just skip it.
-			
+
 			DummyEffectParams(owner,flags,effect);
 
 			goto SkipEffect;
@@ -691,7 +691,7 @@ void AddServerEntities(frame_t *frame)
 		}
 
 		// Setup effects, renderfx, skinnum and clientnum stuff.
-		
+
 		if(isPredictedPlayer)
 		{
 			cent->current.effects = effects = fxi.predictinfo->effects;
@@ -719,7 +719,7 @@ void AddServerEntities(frame_t *frame)
 		// Handle flex-model nodes.
 
 		ent->fmnodeinfo = sv_ents_fmnodeinfos[pnum];
-// jmarshall - removed legacy prediction.		
+// jmarshall - removed legacy prediction.
 		//if(isPredictedPlayer)
 		//{
 		//	memcpy(ent->fmnodeinfo,fxi.predictinfo->fmnodeinfo,sizeof(s1->fmnodeinfo));
@@ -732,7 +732,7 @@ void AddServerEntities(frame_t *frame)
 // jmarshall end
 
 		// What's going on here?
-// jmarshall - removed legacy prediction.		
+// jmarshall - removed legacy prediction.
 		//if(isPredictedPlayer)
 		//{
 		//	// Deal with predicted origin.
@@ -761,10 +761,10 @@ void AddServerEntities(frame_t *frame)
 	  	VectorCopy(ent->origin, ent->oldorigin);
 		VectorCopy(cent->origin, cent->lerp_origin);
 
-		// Set model. 
+		// Set model.
 
 		if (s1->modelindex == 255)
-		{	
+		{
 			// Use custom model and skin for player.
 
 			ci = &fxi.cl->clientinfo[clientnum];
@@ -816,7 +816,7 @@ void AddServerEntities(frame_t *frame)
 		// Calculate angles.
 
 		if (effects & EF_MACE_ROTATE)
-		{	
+		{
 			// Some bonus items auto-rotate.
 
 			ent->angles[0] = macerotate * 2;
@@ -824,7 +824,7 @@ void AddServerEntities(frame_t *frame)
 			ent->angles[2] = 0;
 		}
 		else if (effects & EF_ROTATE)
-		{	
+		{
 			// Some bonus items auto-rotate.
 
 			ent->angles[0] = 0;
@@ -832,7 +832,7 @@ void AddServerEntities(frame_t *frame)
 			ent->angles[2] = 0;
 		}
 		else
-		{	
+		{
 			// Interpolate angles.
 
 			float	a1, a2;

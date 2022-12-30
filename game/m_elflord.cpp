@@ -78,7 +78,7 @@ void elflord_projectile_blocked( edict_t *self, trace_t *trace )
 
 	if ( (!stricmp(trace->ent->classname, "elflord_projectile")) || (trace->ent == self->owner) )
 		return;
-	
+
 	VectorNormalize2(self->velocity, vel);
 
 	if (trace->ent && trace->ent->takedamage)
@@ -87,14 +87,14 @@ void elflord_projectile_blocked( edict_t *self, trace_t *trace )
 	}
 
 	//Create the star explosion
-	gi.CreateEffect(	NULL, 
-						FX_CWATCHER, 
+	gi.CreateEffect(	NULL,
+						FX_CWATCHER,
 						0,
 						trace->endpos,
 						"bv",
 						CW_STAR_HIT,
 						trace->plane.normal);
-	
+
 	self->think = G_FreeEdict;
 	self->nextthink = level.time + 0.1;
 }
@@ -121,7 +121,7 @@ void elford_Attack( edict_t *self )
 		projectile->solid = SOLID_BBOX;
 		projectile->movetype = PHYSICSTYPE_FLY;
 		projectile->clipmask = MASK_SHOT;
-		
+
 		AngleVectors(self->s.angles, vf, vr, NULL);
 		VectorCopy(self->s.origin, projectile->s.origin);
 		VectorMA(projectile->s.origin, 48, vf, projectile->s.origin);
@@ -130,12 +130,12 @@ void elford_Attack( edict_t *self )
 
 		VectorSet(projectile->mins, -2, -2, -2);
 		VectorSet(projectile->maxs,  2,  2,  2);
-		
+
 		projectile->owner = self;
 		projectile->svflags |= SVF_ALWAYS_SEND;
-		
+
 		VectorCopy(self->enemy->s.origin, org);
-		
+
 		M_PredictTargetPosition(self->enemy, self->enemy->velocity, skill->value * 2, org);
 
 		org[2] += self->enemy->viewheight;
@@ -154,14 +154,14 @@ void elford_Attack( edict_t *self )
 
 		gi.linkentity(projectile);
 
-		gi.CreateEffect(	&projectile->s, 
-							FX_CWATCHER, 
+		gi.CreateEffect(	&projectile->s,
+							FX_CWATCHER,
 							CEF_OWNERS_ORIGIN,
 							projectile->s.origin,
 							"bv",
 							CW_STAR,
 							self->s.origin);
-		
+
 		projectile->isBlocking = projectile->bounced = projectile->isBlocked = elflord_projectile_blocked;
 	}
 
@@ -197,7 +197,7 @@ void elflord_StartBeam(edict_t *self)
 	beam->movetype = PHYSICSTYPE_NONE;
 	beam->owner = self;
 	beam->svflags |= SVF_ALWAYS_SEND;
-	
+
 	VectorMA(self->s.origin, 640, self->pos1, endpos);
 	gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SHOT, &trace);
 
@@ -207,14 +207,14 @@ void elflord_StartBeam(edict_t *self)
 
 	gi.linkentity(beam);
 
-	gi.CreateEffect(	&beam->s, 
-						FX_CWATCHER, 
+	gi.CreateEffect(	&beam->s,
+						FX_CWATCHER,
 						CEF_OWNERS_ORIGIN,
 						beam->s.origin,
 						"bv",
 						CW_BEAM,
 						self->pos2);
-	
+
 	gi.sound(self, CHAN_VOICE, sounds[SND_BEAM], 0.5, ATTN_NONE, 0);
 
 	self->targetEnt = beam;
@@ -242,11 +242,11 @@ void elflord_decell(edict_t *self, float value)
 		self->velocity[1] *= value;
 		self->velocity[2] *= value;
 
-		if (fabs(self->velocity[0]) < 1.0) 
+		if (fabs(self->velocity[0]) < 1.0)
 			self->velocity[0] = 0.0;
-		if (fabs(self->velocity[1]) < 1.0) 
+		if (fabs(self->velocity[1]) < 1.0)
 			self->velocity[1] = 0.0;
-		if (fabs(self->velocity[2]) < 1.0) 
+		if (fabs(self->velocity[2]) < 1.0)
 			self->velocity[2] = 0.0;
 	}
 }
@@ -326,15 +326,15 @@ void elflord_flymove (edict_t *self, float dist)
 		return;
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, forward);
-	
+
 	self->ideal_yaw = vectoyaw(forward);
-	
+
 	M_ChangeYaw(self);
-	
+
 	AngleVectors(self->s.angles, forward, NULL, NULL);
-	
+
 	VectorMA(self->velocity, dist, forward, self->velocity);
-	
+
 	self->velocity[2] = self->enemy->s.origin[2] + 100 - self->absmin[2];
 
 	if(!elfLordCheckAttack(self))
@@ -399,7 +399,7 @@ void elflord_soa_charge(edict_t *self)
 void elflord_soa_go(edict_t *self)
 {
 	vec3_t forward;
-	
+
 	gi.sound(self, CHAN_VOICE, sounds[SND_SAFIRE], 1, ATTN_NORM, 0);
 	self->show_hostile = false;
 
@@ -481,7 +481,7 @@ void elflord_FindMoveTarget (edict_t *self)
 
 		if (irand(0,1))
 			continue;
-		
+
 		//TODO: Determine a velocity to get us here
 		VectorCopy(movetarg->s.origin, target);
 		target[2] = self->s.origin[2];
@@ -527,7 +527,7 @@ void elflord_track(edict_t *self)
 		//Remove the beam
 		self->targetEnt->think = G_FreeEdict;
 		self->targetEnt->nextthink = level.time + 0.1;
-		
+
 		//Don't finish what we were doing
 		SetAnim(self, ANIM_HOVER);
 		return;
@@ -547,12 +547,12 @@ void elflord_track(edict_t *self)
 	gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SHOT, &trace);
 
 	if (trace.ent && trace.ent->takedamage)
-	{ 
+	{
 		T_Damage(trace.ent, self, self, newdir, trace.endpos, trace.plane.normal, irand(ELFLORD_BEAM_MIN_DAMAGE, ELFLORD_BEAM_MAX_DAMAGE), 0, DAMAGE_NORMAL, MOD_DIED);
 	}
 
 	VectorCopy(trace.endpos, self->targetEnt->s.origin);
-	
+
 	vectoangles(newdir, self->s.angles);
 
 	ai_charge2(self, 0);
@@ -609,10 +609,10 @@ void elflord_MoveToFinalPosition( edict_t *self )
 
 qboolean elfLordCheckAttack (edict_t *self)
 {
-	int		chance, 
-			p_chance = 0, 
-			soa_chance = 0,  
-			beam_chance = 0, 
+	int		chance,
+			p_chance = 0,
+			soa_chance = 0,
+			beam_chance = 0,
 			move_chance = 0;
 
 	if (!M_ValidTarget(self, self->enemy))
@@ -773,9 +773,9 @@ void ElflordStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/elflord/tris.fm");
 
-	sounds[SND_PAIN1] = gi.soundindex ("monsters/elflord/pain1.wav");	
-	sounds[SND_PAIN2] = gi.soundindex ("monsters/elflord/pain2.wav");	
-	sounds[SND_DIE] = gi.soundindex ("monsters/elflord/death1.wav");	
+	sounds[SND_PAIN1] = gi.soundindex ("monsters/elflord/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex ("monsters/elflord/pain2.wav");
+	sounds[SND_DIE] = gi.soundindex ("monsters/elflord/death1.wav");
 
 	//use sphere sounds
 	sounds[SND_SACHARGE] = gi.soundindex ("weapons/SphereGrow.wav");
@@ -803,7 +803,7 @@ Celestial Watcher
 void SP_monster_elflord (edict_t *self)
 {
 	// Generic Monster Initialization
-	if (!flymonster_start(self))		
+	if (!flymonster_start(self))
 		return;							// Failed initialization
 
 	self->msgHandler = DefaultMsgHandler;

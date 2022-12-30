@@ -52,7 +52,7 @@ qboolean AttemptRemoveSelf(client_entity_t *self, centity_t *owner)
 		if(self->r.depth > r_farclipdist->value)
 		{
 			return false;
-		}		
+		}
 	}
 
 	self->updateTime = 400;
@@ -379,7 +379,7 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 				QPostMessage(self, MSG_COLLISION, "g", trace);	// _this will be processed next
 				return true;
 			}
-			
+
 			material = self->SpawnInfo & SIF_FLAG_MASK;
 			if(material!=MAT_WOOD)//wood floats, everything else can keep sinking
 			{//bubbles and blurp sound
@@ -545,7 +545,7 @@ void AdvanceParticle(client_particle_t *p, int ms)
 // -----------------------------------------------------------------
 // We don`t have access to "sv_gravity" so we keep a local client fx
 // copy. It is set to same default as on the server.
-		
+
 float GetGravity()
 {
 	return(-clfx_gravity->value);
@@ -556,7 +556,7 @@ float GetGravity()
 // Tells if we have not rendered _this reference point for a while.
 qboolean RefPointsValid(centity_t *owner)
 {
-	if (owner->referenceInfo==NULL || 
+	if (owner->referenceInfo==NULL ||
 			owner->current.renderfx & RF_IGNORE_REFS ||			// This one is necessary in case we're a chicken.
 			owner->referenceInfo->lastUpdate - fxi.cl->time > REF_MINCULLTIME)
 		return false;
@@ -610,7 +610,7 @@ void InsertInCircularList(client_entity_t *self)
 				RemoveEffectFromList(prev,NULL);
 				break;
 			}
-			prev = &(*prev)->next; 
+			prev = &(*prev)->next;
 		}
 	}
 	// add in new one

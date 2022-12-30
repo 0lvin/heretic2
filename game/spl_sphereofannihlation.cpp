@@ -61,7 +61,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 	// whether or not I have been released. Would like a dedicated value in the 'edict_t' but this
 	// is unlikely to happen, sooooo...
 
-	// if we have released, or we are dead, or a chicken, release the sphere 
+	// if we have released, or we are dead, or a chicken, release the sphere
 	if(*(qboolean *)Self->combattarget && !(Self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
 		&& (Self->owner->client && !(Self->owner->client->playerinfo.edictflags & FL_CHICKEN)) &&
 		(!(Self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))
@@ -79,7 +79,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 		// detect if we have teleported, since we need to move with the player if thats so
 		if(Self->owner->client)
 		{
-			VectorCopy(Self->owner->s.origin, Self->s.origin);	
+			VectorCopy(Self->owner->s.origin, Self->s.origin);
 			Self->s.origin[0] += Forward[0]*20.0;
 			Self->s.origin[1] += Forward[1]*20.0;
 	   		Self->s.origin[2] += Self->owner->viewheight-5.0;
@@ -117,7 +117,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 			GetAimVelocity(Self->owner->enemy, Self->s.origin, SPHERE_FLY_SPEED, Self->owner->client->aimangles, Self->velocity);
 		}
 		VectorNormalize2(Self->velocity, Self->movedir);
-		
+
 		Self->movetype=MOVETYPE_FLYMISSILE;
 		Self->solid=SOLID_BBOX;
 		Self->health=0;
@@ -125,7 +125,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 		Self->dmg_radius = SPHERE_RADIUS_MIN + (SPHERE_RADIUS_PER_CHARGE * Self->count);
 		Self->touch=SphereOfAnnihilationTouch;
 		Self->think=NULL;
-			
+
 	   	VectorSet(Self->mins, -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS);
 		VectorSet(Self->maxs, SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS);
 
@@ -175,7 +175,7 @@ static void SpherePowerLaserThink(edict_t *Self)
 		if(level.fighting_beast)
 		{
 			edict_t *ent;
-			
+
 			if(ent = check_hit_beast(startPos, tr.endpos))
 				tr.ent = ent;
 		}
@@ -270,7 +270,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *Self)
 
 	if(*(qboolean *)Self->combattarget && !(Self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
 		&& (Self->owner->client && !(Self->owner->client->playerinfo.edictflags & FL_CHICKEN)) &&
-		(!(Self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))	
+		(!(Self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))
 	{
 		if (Self->count < SPHERE_MAX_CHARGES)
 		{
@@ -285,7 +285,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *Self)
 		// detect if we have teleported, since we need to move with the player if thats so
 		if(Self->owner->client)
 		{
-			VectorCopy(Self->owner->s.origin, Self->s.origin);	
+			VectorCopy(Self->owner->s.origin, Self->s.origin);
 			Self->s.origin[0] += Forward[0]*20.0;
 			Self->s.origin[1] += Forward[1]*20.0;
 	   		Self->s.origin[2] += Self->owner->viewheight-5.0;
@@ -313,7 +313,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *Self)
 		laser->fire_timestamp = level.time;
 		G_LinkMissile(laser);
 		SpherePowerLaserThink(laser);
-				
+
 		laser = G_Spawn();
 		laser->owner = Self->owner;
 		laser->count = Self->count-SPHERE_COUNT_MIN;
@@ -363,7 +363,7 @@ edict_t *SphereReflect(edict_t *self, edict_t *other, vec3_t vel)
    	VectorCopy(self->maxs, Sphere->maxs);
 
    	VectorCopy(self->s.origin, Sphere->s.origin);
-   	G_LinkMissile(Sphere); 
+   	G_LinkMissile(Sphere);
 
    	gi.CreateEffect(&Sphere->s,
    				FX_WEAPON_SPHERE,
@@ -380,7 +380,7 @@ edict_t *SphereReflect(edict_t *self, edict_t *other, vec3_t vel)
    				-1);
 
 
-   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
    	G_SetToFree(self);
 
    	// Do a nasty looking blast at the impact point
@@ -469,7 +469,7 @@ static void SphereOfAnnihilationTouch(edict_t *self, edict_t *Other, cplane_t *P
 		Other->fire_timestamp = level.time;
 		gi.CreateEffect(&Other->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vec3_origin);
 	}
-		
+
 	SphereExplodeThink(explosion);
 }
 
@@ -501,14 +501,14 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 
 	if(Caster->client)
 	{
-		VectorCopy(Caster->s.origin, Sphere->s.origin);	
+		VectorCopy(Caster->s.origin, Sphere->s.origin);
 		Sphere->s.origin[0] += AimDir[0]*20.0;
 		Sphere->s.origin[1] += AimDir[1]*20.0;
 		Sphere->s.origin[2] += Caster->viewheight-5.0;
 	}
 	else
-		VectorCopy(StartPos, Sphere->s.origin);	
-	
+		VectorCopy(StartPos, Sphere->s.origin);
+
 	VectorCopy(AimAngles,Sphere->s.angles);
 
 	Sphere->avelocity[YAW]=100.0;
@@ -542,7 +542,7 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 			Sphere->think=SphereWatcherGrowThink;
 	}
 
-	gi.linkentity(Sphere); 
+	gi.linkentity(Sphere);
 
 	if(!Caster->client)
 		flags = 0;
@@ -592,7 +592,7 @@ void SphereWatcherFlyThink(edict_t *Self)
 	Self->count++;
 
 	if(Self->count > 20)
-	{	
+	{
 		// End the circling...
 		G_SetToFree(Self);
 	}
@@ -618,12 +618,12 @@ static void SphereWatcherGrowThink(edict_t *Self)
 	// whether or not I have been released. Would like a dedicated value in the 'edict_t' but this
 	// is unlikely to happen, sooooo...
 
-	// if we have released, or we are dead, or a chicken, release the sphere 
+	// if we have released, or we are dead, or a chicken, release the sphere
 	if(*(qboolean *)Self->combattarget && !(Self->owner->deadflag & (DEAD_DYING|DEAD_DEAD)))
 	{
 
 		Self->count+=irand(1,2);
-		
+
 		if((Self->count>10)&&(Self->s.scale<SPHERE_MAX_SCALE))
 		{
 			if(Self->count>20)
@@ -669,21 +669,21 @@ static void SphereWatcherGrowThink(edict_t *Self)
 			GetAimVelocity(Self->owner->enemy, Self->s.origin, SPHERE_FLY_SPEED, Self->s.angles, Self->velocity);
 		}
 		VectorNormalize2(Self->velocity, Self->movedir);
-		
+
 		Self->movetype=MOVETYPE_FLYMISSILE;
 		Self->solid=SOLID_BBOX;
 		Self->health=0;
 		Self->count=0;
-		Self->dmg=	SPHERE_WATCHER_DAMAGE_MIN + 
+		Self->dmg=	SPHERE_WATCHER_DAMAGE_MIN +
 					(SPHERE_WATCHER_DAMAGE_RANGE*((Self->s.scale-SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE));
-		Self->dmg_radius = 
-					SPHERE_WATCHER_EXPLOSION_RADIUS_MIN + 
-					(SPHERE_WATCHER_EXPLOSION_RADIUS_MAX - SPHERE_WATCHER_EXPLOSION_RADIUS_MIN) * 
+		Self->dmg_radius =
+					SPHERE_WATCHER_EXPLOSION_RADIUS_MIN +
+					(SPHERE_WATCHER_EXPLOSION_RADIUS_MAX - SPHERE_WATCHER_EXPLOSION_RADIUS_MIN) *
 							(Self->s.scale-SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE;
 		Self->touch=SphereWatcherTouch;
 		Self->think=SphereWatcherFlyThink;
 		Self->nextthink=level.time+0.1;
-			
+
 	   	VectorSet(Self->mins, -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS);
 		VectorSet(Self->maxs, SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS);
 
@@ -727,7 +727,7 @@ edict_t *SphereWatcherReflect(edict_t *self, edict_t *other, vec3_t vel)
    	VectorCopy(self->maxs, Sphere->maxs);
 
    	VectorCopy(self->s.origin, Sphere->s.origin);
-   	G_LinkMissile(Sphere); 
+   	G_LinkMissile(Sphere);
 
    	gi.CreateEffect(&Sphere->s,
    				FX_WEAPON_SPHERE,
@@ -744,7 +744,7 @@ edict_t *SphereWatcherReflect(edict_t *self, edict_t *other, vec3_t vel)
    				-1);
 
 
-   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
    	G_SetToFree(self);
 
    	// Do a nasty looking blast at the impact point

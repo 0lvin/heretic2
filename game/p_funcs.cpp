@@ -35,23 +35,23 @@ void PlayerClimbSound(playerinfo_t *playerinfo, char *name)
 {
 	if(playerinfo->isclient)
 	{
-		playerinfo->CL_Sound(	SND_PRED_ID53,		
-								playerinfo->origin, 
-								CHAN_VOICE, 
-								name, 
-								0.75, 
-								ATTN_NORM, 
+		playerinfo->CL_Sound(	SND_PRED_ID53,
+								playerinfo->origin,
+								CHAN_VOICE,
+								name,
+								0.75,
+								ATTN_NORM,
 								0);
 	}
 	else
 	{
 		playerinfo->G_Sound(	SND_PRED_ID53,
 								playerinfo->leveltime,
-								(edict_t *)playerinfo->self, 
-								CHAN_VOICE, 
-								playerinfo->G_SoundIndex(name), 
-								0.75, 
-								ATTN_NORM, 
+								(edict_t *)playerinfo->self,
+								CHAN_VOICE,
+								playerinfo->G_SoundIndex(name),
+								0.75,
+								ATTN_NORM,
 								0);
 	}
 }
@@ -72,7 +72,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 		playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
 		VectorCopy(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,playerinfo->velocity);
 		threshold = VectorLengthSquared(playerinfo->velocity);
-		
+
 		if (threshold < 300*300)
 		{
 			AngleVectors(playerinfo->aimangles, vf, NULL, NULL);
@@ -94,7 +94,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 		PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFWD);
-		
+
 		return;
 	}
 
@@ -103,7 +103,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 		AngleVectors(playerinfo->angles, NULL, vr, NULL);
 		VectorScale(vr, -32, vr);
 		VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vr,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
-		
+
 		switch (playerinfo->lowerseq)
 		{
 		case ASEQ_CLIMB_HOLD_R:
@@ -129,7 +129,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 		AngleVectors(playerinfo->angles, NULL, vr, NULL);
 		VectorScale(vr, 32, vr);
 		VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vr,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
-		
+
 		switch (playerinfo->lowerseq)
 		{
 		case ASEQ_CLIMB_HOLD_R:
@@ -185,7 +185,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 			AngleVectors(playerinfo->angles, NULL, vr, NULL);
 			VectorScale(vr, -64, vr);
 			VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vr,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
-			
+
 			switch (playerinfo->lowerseq)
 			{
 			case ASEQ_CLIMB_HOLD_R:
@@ -216,11 +216,11 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		if (((edict_t *)playerinfo->self)->targetEnt->rope_grab->monsterinfo.flee_finished < level.time)
 		{
 			((edict_t *)playerinfo->self)->targetEnt->rope_grab->monsterinfo.flee_finished = level.time + 2;
-		
+
 			AngleVectors(playerinfo->angles, NULL, vr, NULL);
 			VectorScale(vr, 64, vr);
 			VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vr,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
-			
+
 			switch (playerinfo->lowerseq)
 			{
 			case ASEQ_CLIMB_HOLD_R:
@@ -246,7 +246,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 			}
 		}
 	}
-	
+
 	if (playerinfo->seqcmd[ACMDL_FWD])
 	{
 		VectorCopy(playerinfo->origin, endpoint);
@@ -258,7 +258,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID,&trace);
 
 		if (trace.fraction < 1.0)
-		{	
+		{
 			// We bumped into something.
 
 			((edict_t *)playerinfo->self)->targetEnt->rope_grab->viewheight = ((edict_t *)playerinfo->self)->targetEnt->rope_grab->accel;
@@ -275,7 +275,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 			case ASEQ_CLIMB_SETTLE_L:
 				return ASEQ_CLIMB_HOLD_L;
 				break;
-			
+
 			case ASEQ_CLIMB_UP_L:
 			case ASEQ_CLIMB_DOWN_R:
 			case ASEQ_CLIMB_UP_START_L:
@@ -361,14 +361,14 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID,&trace);
 
 		if (trace.fraction < 1.0 || trace.endpos[2] < ((edict_t *)playerinfo->self)->targetEnt->rope_end->s.origin[2])
-		{	
+		{
 			// We bumped into something or have come to the end of the rope
 
 			((edict_t *)playerinfo->self)->targetEnt->rope_grab->viewheight = ((edict_t *)playerinfo->self)->targetEnt->rope_grab->accel;
 
 			switch (playerinfo->lowerseq)
 			{
-			
+
 			case ASEQ_CLIMB_HOLD_R:
 			case ASEQ_CLIMB_SETTLE_R:
 				return ASEQ_CLIMB_HOLD_R;
@@ -379,7 +379,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 			case ASEQ_CLIMB_SETTLE_L:
 				return ASEQ_CLIMB_HOLD_L;
 				break;
-			
+
 			case ASEQ_CLIMB_UP_L:
 			case ASEQ_CLIMB_DOWN_R:
 			case ASEQ_CLIMB_UP_START_L:
@@ -442,7 +442,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 
 			return ASEQ_CLIMB_DOWN_START_L;
 			break;
-		
+
 		case ASEQ_CLIMB_HOLD_L:
 		case ASEQ_CLIMB_UP_R:
 		case ASEQ_CLIMB_SETTLE_R:
@@ -468,7 +468,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		((edict_t *)playerinfo->self)->targetEnt->rope_grab->s.effects &= ~EF_ALTCLIENTFX;
 		((edict_t *)playerinfo->self)->targetEnt->enemy = NULL;
 		((edict_t *)playerinfo->self)->targetEnt = NULL;
-		
+
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 
 		return ASEQ_JUMPFWD;
@@ -487,7 +487,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		case ASEQ_CLIMB_SETTLE_L:
 			return ASEQ_CLIMB_HOLD_L;
 			break;
-		
+
 		case ASEQ_CLIMB_UP_L:
 		case ASEQ_CLIMB_DOWN_R:
 		case ASEQ_CLIMB_UP_START_L:
@@ -536,13 +536,13 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 		check_dist = 64;
 
 	rope = (edict_t *)playerinfo->targetEnt;
-	
+
 	//Get the position of the rope's end
 	VectorCopy(rope->rope_end->s.origin, rope_end);
-	
+
 	VectorCopy(rope->s.origin, rope_top);
 	rope_top[2] += rope->maxs[2];
-	
+
   	//If we're above the rope then we can't grab it
 	if (playerinfo->origin[2] > rope_top[2])
 	{
@@ -612,8 +612,8 @@ void G_PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2
 	if(!playerinfo->isclient)
 	{
 		// Pull Corvus into the rope.
-		G_PlayerActionCheckRopeGrab(playerinfo,1);	
-			
+		G_PlayerActionCheckRopeGrab(playerinfo,1);
+
 		if (playerinfo->targetEnt)
 		{
 			//Update the rope's information about the player's position
@@ -652,7 +652,7 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 
 	if(!grabtrace.ent->item)
 		return(false);
-		
+
 	if(grabtrace.ent->item->flags!=IT_PUZZLE)
 		return(false);
 
@@ -715,7 +715,7 @@ void PushPull_stop(edict_t *self)
 
 	playerinfo=&self->target_ent->client->playerinfo;
 
-	if((playerinfo->lowerseq!=ASEQ_PUSH)&&(playerinfo->lowerseq!=ASEQ_PULL)) 
+	if((playerinfo->lowerseq!=ASEQ_PUSH)&&(playerinfo->lowerseq!=ASEQ_PULL))
 		VectorClear(self->velocity);
 	else if (Vec3IsZero(self->target_ent->velocity))
 		VectorClear(self->target_ent->velocity);
@@ -770,7 +770,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 	t = NULL;
 	t = G_Find(t,FOFS(targetname),((edict_t *)playerinfo->self)->target);
 
-	if (!t)  
+	if (!t)
 		return(false);
 
 // 	if (!(strcmp(t->classname,"func_train")==0))
@@ -795,7 +795,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 		// Both these vectors are normalized so result is cos of angle
 		dot = DotProduct(v, forward);
 
-		// 41 degree range either way 
+		// 41 degree range either way
 		if (dot > 0.75)
 			return(true);
 	}
@@ -844,7 +844,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 	t = NULL;
 	t = G_Find(t,FOFS(targetname),self->target);
 
-	if (!t)  
+	if (!t)
 		return(false);
 
  	if (t->classID == CID_LEVER)
@@ -857,7 +857,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 		return(false);
 
 	if (len1 < MAX_PUSH_LEVER_RANGE)
-	{		
+	{
 		VectorCopy(((edict_t *)playerinfo->self)->client->playerinfo.aimangles, dir);
 		dir[PITCH] = 0;
 
@@ -867,9 +867,9 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 		// Both these vectors are normalized so result is cos of angle
 		dot = DotProduct(v, forward);
 
-		// 41 degree range either way 
+		// 41 degree range either way
 		if (dot > 0.70)
-			return(true); 
+			return(true);
 	}
 
 	return(false);
@@ -905,7 +905,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 			if (((edict_t *)playerinfo->self)->client->tele_count--)
 			{
 				((edict_t *)playerinfo->self)->s.color.a -= TELE_FADE_OUT;
-				
+
 				return(true);
 			}
 			else
@@ -917,7 +917,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 					Perform_Teleport((edict_t *)playerinfo->self);
 				}
 				else
-				{	
+				{
 					if(playerinfo->edictflags & FL_CHICKEN)
 					{
 						// We're set as a chicken.
@@ -971,11 +971,11 @@ void PlayerChickenDeath(edict_t *self)
 	//gi.sound (self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->client->playerinfo.deadflag = DEAD_DEAD;
-	gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" ); 
+	gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
 
 	// fix that respawning bug
 	self->morph_timer = level.time -1;
-	
+
 	// Reset our thinking.
 
 	self->think = self->oldthink;
@@ -1017,7 +1017,7 @@ void PlayerChickenDeath(edict_t *self)
 // Set the player model's joint angles.
 // ************************************************************************************************
 
-void G_SetJointAngles(playerinfo_t *playerinfo) 
+void G_SetJointAngles(playerinfo_t *playerinfo)
 {
 	edict_t *self;
 
@@ -1075,8 +1075,8 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 
 	AngleVectors(playerinfo->aimangles, vf, NULL, NULL);
 	VectorMA(playerinfo->origin, 64, vf, endpos);
-	
-	
+
+
 	//Account for step height
 	VectorSet(mins, playerinfo->mins[0], playerinfo->mins[1], playerinfo->mins[2] + 18);
 
@@ -1139,7 +1139,7 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 	ent=(edict_t *)playerinfo->self;
 
 	ent->pain_debounce_time=level.time;
-	
+
 	if(delta > 50)
 		damage = delta - 30;
 	else if((damage = (delta - 30) * 0.8) < 1.0f)
@@ -1205,7 +1205,7 @@ void G_PlayerVaultKick(playerinfo_t *playerinfo)
 	//Ignore pitch
 	VectorSet(vf, 0, self->s.angles[YAW], 0);
 	AngleVectors(vf, vf, NULL, NULL);
-	
+
 	//Move ahead by a small amount
 	VectorMA(self->s.origin, VAULTKICK_DIST, vf, endpos);
 

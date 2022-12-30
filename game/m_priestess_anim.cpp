@@ -62,7 +62,7 @@ animmove_t priestess_move_attack1_end = {4,priestess_frames_attack1_end, prieste
 
 //Attack 2
 
-animframe_t priestess_frames_attack2[] = 
+animframe_t priestess_frames_attack2[] =
 {
 	FRAME_attackB1,	  NULL, 0, 0, 0, ai_charge, 2,  NULL,
 	FRAME_attackB2,	  NULL, 0, 0, 0, ai_charge, 2,  NULL,
@@ -86,7 +86,7 @@ animframe_t priestess_frames_attack2[] =
 };
 animmove_t priestess_move_attack2 = {19,priestess_frames_attack2, priestess_pause};
 
-animframe_t priestess_frames_pounce_attack[] = 
+animframe_t priestess_frames_pounce_attack[] =
 {
 	FRAME_atttrans1,  NULL, 0, 0, 0, ai_charge, 0,  NULL,
 	FRAME_atttrans2,  NULL, 0, 0, 0, ai_charge, 0,  NULL,

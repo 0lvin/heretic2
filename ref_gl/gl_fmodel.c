@@ -282,7 +282,7 @@ void Mod_SerializeSkeleton(fmdl_t *fmodel, int version, int length, char *buffer
 	m_numClusters = *(++basei);
 
 	fmodel->rootCluster = CreateSkeleton(fmodel->skeletalType);
-	
+
 
 	//m_jointConstraintAngles = new rangeVector_t[m_numClusters];
 	////m_modelJointAngles = new D3DVECTOR[m_numClusters];
@@ -299,7 +299,7 @@ void Mod_SerializeSkeleton(fmdl_t *fmodel, int version, int length, char *buffer
 		//m_modelJointAngles[i].x = 0;
 		//m_modelJointAngles[i].y = 0;
 		//m_modelJointAngles[i].z = 0;
-	
+
 		runningTotalVertices += *(++basei);
 		//m_skeletalClusters[i].numVerticies = runningTotalVertices;
 		//m_skeletalClusters[i].verticies = (int*)malloc(m_skeletalClusters[i].numVerticies * sizeof(int));
@@ -441,7 +441,7 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 			Mod_SerializeReferences(fmodel, version, size, buffer);
 			break;
 		default:
-			ri.Com_Error(ERR_FATAL, "Unknown block %s\n", blockname);			
+			ri.Com_Error(ERR_FATAL, "Unknown block %s\n", blockname);
 		}
 		filesize -= size;
 		buffer += size;
@@ -551,7 +551,7 @@ void R_RenderFlexNode(int startCmd, int numCmds, fmdl_t* model, vec3_t *frame_ve
 
 				oldposition[0] = (old_frame_vertexes[vert_index][0] * oldframe->scale[0]) + oldframe->translate[0];
 				oldposition[1] = (old_frame_vertexes[vert_index][1] * oldframe->scale[1]) + oldframe->translate[1];
-				oldposition[2] = (old_frame_vertexes[vert_index][2] * oldframe->scale[2]) + oldframe->translate[2];				
+				oldposition[2] = (old_frame_vertexes[vert_index][2] * oldframe->scale[2]) + oldframe->translate[2];
 
 				if (shouldRender)
 				{
@@ -563,7 +563,7 @@ void R_RenderFlexNode(int startCmd, int numCmds, fmdl_t* model, vec3_t *frame_ve
 		}
 
 		if (shouldRender)
-			glEnd();		
+			glEnd();
 
 		if (command[0] == 0)
 		{
@@ -623,7 +623,7 @@ void R_RenderFlexModel(fmdl_t *model, fmnodeinfo_t *nodeinfo, int currentFrame, 
 			continue;
 
 		R_RenderFlexNode(model->mesh_nodes[i].start_glcmds, model->mesh_nodes[i].num_glcmds, model, frame_vertexes, old_frame_vertexes, frame, oldframe, currentFrame, oldframenum, backlerp);
-	}	
+	}
 }
 
 /*

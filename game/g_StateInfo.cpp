@@ -1,4 +1,4 @@
-#include "g_StateInfo.h" 
+#include "g_StateInfo.h"
 #include "ResourceManager.h"
 #include "g_local.h"
 
@@ -29,5 +29,5 @@ ActionInfo_t *ActionInfo_new()
 
 void ActionInfo_delete(ActionInfo_t *toDelete)
 {
-	ResMngr_DeallocateResource(&ActionInfoMngr, toDelete, sizeof(*toDelete));	
+	ResMngr_DeallocateResource(&ActionInfoMngr, toDelete, sizeof(*toDelete));
 }

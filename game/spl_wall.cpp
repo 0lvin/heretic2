@@ -67,7 +67,7 @@ edict_t *CreateFireBlast(vec3_t startpos, vec3_t angles, edict_t *owner, int hea
 
 	wall->health = health;					// Can bounce 3 times
 
-	wall->fire_timestamp = timestamp;		// This marks the wall with a more-or-less unique value so the wall 
+	wall->fire_timestamp = timestamp;		// This marks the wall with a more-or-less unique value so the wall
 											//		doesn't damage twice.
 
 	gi.linkentity(wall);
@@ -98,8 +98,8 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 		{
 			if(trace->ent != self->owner)		// No damage to casting player
 			{
-				T_Damage(trace->ent, self, self->owner, self->movedir, self->s.origin, vec3_origin, 
-						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL); 
+				T_Damage(trace->ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
+						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
 				gi.CreateEffect(&(trace->ent->s), FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 				gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/FirewallDamage.wav"),1,ATTN_NORM,0);
@@ -109,18 +109,18 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 		}
 	}
 
-	if (self->health > 0 && !(trace->contents & CONTENTS_WATER) && 
+	if (self->health > 0 && !(trace->contents & CONTENTS_WATER) &&
 			(trace->plane.normal[2] > FIREWALL_DOT_MIN || trace->plane.normal[2] < -FIREWALL_DOT_MIN))
 	dot = DotProduct(self->movedir, trace->plane.normal);
 	speed = VectorLength(self->velocity);
 	if (dot < 0 && dot > -0.67)	// slide on all but the most extreme angles.
 	{
 		VectorMA(self->movedir, -dot, trace->plane.normal, surfvel);	// Vel then holds the velocity negated by the impact.
-		factor = VectorNormalize2(surfvel, surfvect);					// Yes, there is the tiniest chance this could be a zero vect, 
+		factor = VectorNormalize2(surfvel, surfvect);					// Yes, there is the tiniest chance this could be a zero vect,
 		if (factor > 0)
 		{
 			VectorMA(self->s.origin, 16.0, surfvect, testpos);				// test distance
-			
+
 			gi.trace(self->s.origin, self->mins, self->maxs, testpos, self, MASK_SHOT, &newtrace);
 			if (newtrace.fraction > 0.99)
 			{	// If this is successful, then we can make another fireblast moving in the new direction.
@@ -155,7 +155,7 @@ void FireBlastThink(edict_t *self)
 
 	// find all the entities in the volume
 	while(ent = findinbounds(ent, min, max))
-	{					
+	{
 //		if ((!(ent->svflags & SVF_MONSTER) && !(ent->client && deathmatch->value)) || (ent->svflags & SVF_DEADMONSTER))
 		if(!ent->takedamage)
 		{	// Anything that takes damage now.
@@ -171,8 +171,8 @@ void FireBlastThink(edict_t *self)
 
 		if(ent != self->owner)		// No damage to casting player
 		{
-			T_Damage(ent, self, self->owner, self->movedir, self->s.origin, vec3_origin, 
-					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL); 
+			T_Damage(ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
+					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
 			gi.CreateEffect(&ent->s, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 			gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/FirewallDamage.wav"),1,ATTN_NORM,0);
@@ -202,7 +202,7 @@ void FireBlastStartThink(edict_t *self)
 void CastFireBlast(edict_t *caster, vec3_t startpos, vec3_t aimangles)
 {
 	edict_t	*wall;
-	vec3_t	newpos, fwd;	
+	vec3_t	newpos, fwd;
 	trace_t trace;
 
 	wall = G_Spawn();
@@ -256,7 +256,7 @@ edict_t *CreateFireWall(vec3_t startpos, vec3_t angles, edict_t *owner, int heal
 	VectorCopy(angles, wall->s.angles);
 	AngleVectors(angles, wall->movedir, right, NULL);
 
-	if (deathmatch->value)				
+	if (deathmatch->value)
 	{
 		flags |= CEF_FLAG8;
 		VectorScale(wall->movedir, FIREWAVE_DM_SPEED, wall->velocity);		// Goes faster in deathmatch
@@ -311,7 +311,7 @@ edict_t *CreateFireWall(vec3_t startpos, vec3_t angles, edict_t *owner, int heal
 
 void WallMissileWormThink(edict_t *self)
 {
-	T_DamageRadius(self, self->owner, self->owner, 64.0, 
+	T_DamageRadius(self, self->owner, self->owner, 64.0,
 			FIREWAVE_WORM_DAMAGE, FIREWAVE_WORM_DAMAGE, DAMAGE_FIRE, MOD_FIREWALL);
 
 	G_SetToFree(self);
@@ -340,14 +340,14 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 		{
 			if(trace->ent != self->owner)		// No damage to casting player
 			{
-				T_Damage(trace->ent, self, self->owner, self->movedir, self->s.origin, vec3_origin, 
-						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL); 
+				T_Damage(trace->ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
+						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
 				gi.CreateEffect(&(trace->ent->s), FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 				trace->ent->fire_timestamp = self->fire_timestamp;
 
 				gi.CreateEffect(NULL, FX_WEAPON_FIREWAVEWORM, 0, trace->ent->s.origin, "t", self->movedir);
-				
+
 				worm = G_Spawn();
 				VectorCopy(trace->ent->s.origin, worm->s.origin);
 				worm->think = WallMissileWormThink;
@@ -362,18 +362,18 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 		}
 	}
 
-	if (self->health > 0 && !(trace->contents & CONTENTS_WATER) && 
+	if (self->health > 0 && !(trace->contents & CONTENTS_WATER) &&
 			(trace->plane.normal[2] > FIREWALL_DOT_MIN || trace->plane.normal[2] < -FIREWALL_DOT_MIN))
 	dot = DotProduct(self->movedir, trace->plane.normal);
 	speed = VectorLength(self->velocity);
 	if (dot < 0 && dot > -0.67)	// slide on all but the most extreme angles.
 	{
 		VectorMA(self->movedir, -dot, trace->plane.normal, surfvel);	// Vel then holds the velocity negated by the impact.
-		factor = VectorNormalize2(surfvel, surfvect);					// Yes, there is the tiniest chance this could be a zero vect, 
+		factor = VectorNormalize2(surfvel, surfvect);					// Yes, there is the tiniest chance this could be a zero vect,
 		if (factor > 0)
 		{
 			VectorMA(self->s.origin, 16.0, surfvect, testpos);				// test distance
-			
+
 			gi.trace(self->s.origin, self->mins, self->maxs, testpos, self, MASK_SOLID, &newtrace);
 			if (newtrace.fraction > 0.99)
 			{	// If this is successful, then we can make another fireblast moving in the new direction.
@@ -407,7 +407,7 @@ void WallMissileThink(edict_t *self)
 
 	// find all the entities in the volume
 	while(ent = findinbounds(ent, min, max))
-	{					
+	{
 //		if ((!(ent->svflags & SVF_MONSTER) && !(ent->client && deathmatch->value)) || (ent->svflags & SVF_DEADMONSTER))
 		if(!ent->takedamage)
 		{	// Anything that takes damage now.
@@ -423,14 +423,14 @@ void WallMissileThink(edict_t *self)
 
 		if(ent != self->owner)		// No damage to casting player
 		{
-			T_Damage(ent, self, self->owner, self->movedir, self->s.origin, vec3_origin, 
-					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL); 
+			T_Damage(ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
+					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
 			gi.CreateEffect(&ent->s, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 			ent->fire_timestamp = self->fire_timestamp;
 
 			gi.CreateEffect(NULL, FX_WEAPON_FIREWAVEWORM, 0, ent->s.origin, "t", self->movedir);
-			
+
 			worm = G_Spawn();
 			VectorCopy(ent->s.origin, worm->s.origin);
 			worm->think = WallMissileWormThink;
@@ -465,7 +465,7 @@ void WallMissileStartThink(edict_t *self)
 void CastFireWall(edict_t *caster, vec3_t startpos, vec3_t aimangles)
 {	// Big wall is powered up
 	edict_t	*wall;
-	vec3_t	fwd, right, spawnpos;	
+	vec3_t	fwd, right, spawnpos;
 	trace_t	trace;
 
 	AngleVectors(aimangles, fwd, right, NULL);
@@ -523,7 +523,7 @@ void SpellCastWall(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_t un
 	vec3_t	castpos;
 
 	VectorCopy(startpos, castpos);
-	
+
 	if (caster->client->playerinfo.powerup_timer <= level.time)
 	{	// Not powered up.
 		castpos[2] += 16;	// Aim higher than powered up version.

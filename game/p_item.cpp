@@ -25,7 +25,7 @@ void SpellCastDropTornado(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 
 void Use_Defence(playerinfo_t *playerinfo, gitem_t *defence)
 {
-	playerinfo->pers.lastdefence = playerinfo->pers.defence;	
+	playerinfo->pers.lastdefence = playerinfo->pers.defence;
 	playerinfo->pers.defence=defence;
 
 	if(playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
@@ -59,7 +59,7 @@ void DefenceThink_Powerup(edict_t *Caster, char *Format,...)
 	playerinfo_t *playerinfo;
 	playerinfo = &Caster->client->playerinfo;
 
-	SpellCastPowerup(Caster, Caster->s.origin, NULL,NULL, 0.0F); 
+	SpellCastPowerup(Caster, Caster->s.origin, NULL,NULL, 0.0F);
 
 	assert(playerinfo->def_ammo_index);
 
@@ -74,7 +74,7 @@ void DefenceThink_RingOfRepulsion(edict_t *Caster, char *Format,...)
 	playerinfo_t *playerinfo;
 	playerinfo = &Caster->client->playerinfo;
 
-	SpellCastBlueRing(Caster, Caster->s.origin, NULL,NULL, 0.0F); 
+	SpellCastBlueRing(Caster, Caster->s.origin, NULL,NULL, 0.0F);
 
 	assert(playerinfo->def_ammo_index);
 

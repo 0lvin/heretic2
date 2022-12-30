@@ -50,10 +50,10 @@ typedef enum MonsterSpawnerID_e
 	MS_MAX
 } MonsterSpawnerID_t;
 
-struct 
+struct
 {
 	char	*name;
-} MonsterSpawnerClassname [] = 
+} MonsterSpawnerClassname [] =
 {
 	"monster_nothing",
 	"monster_rat",				// MS_RAT
@@ -86,7 +86,7 @@ struct
 	"monster_palace_plague_guard_invisible", //MS_INVISIBLE_PALACE_PLAGUE_GUARD,
 };
 
-int CIDForSpawnerStyle[MS_MAX] = 
+int CIDForSpawnerStyle[MS_MAX] =
 {
 	CID_NONE,
 	CID_RAT,
@@ -258,7 +258,7 @@ void TrainAngleMove_Calc(edict_t *self, edict_t *ent, vec3_t dest)
 	{
 		return;
 	}
-	
+
 	if (Vec3IsZero(ent->s.angles))
 	{
 		return;
@@ -334,10 +334,10 @@ void AngleMove_Begin (edict_t *ent)
 		VectorSubtract (ent->moveinfo.end_angles, ent->s.angles, destdelta);
 	else
 		VectorSubtract (ent->moveinfo.start_angles, ent->s.angles, destdelta);
-	
+
 	// calculate length of vector
 	len = VectorLength (destdelta);
-	
+
 	// divide by speed to get time to reach dest
 	traveltime = len / ent->moveinfo.speed;
 
@@ -584,7 +584,7 @@ void plat_blocked (edict_t *self, edict_t *other)
 
 
 void Use_Plat (edict_t *ent, edict_t *other, edict_t *activator)
-{ 
+{
 	if (ent->think)
 		return;		// already down
 	plat_go_down (ent);
@@ -595,7 +595,7 @@ void Touch_Plat_Center (edict_t *ent, edict_t *other, cplane_t *plane, csurface_
 {
 	if (!other->client)
 		return;
-		
+
 	if (other->health <= 0)
 		return;
 
@@ -613,14 +613,14 @@ void plat_spawn_inside_trigger (edict_t *ent)
 
 //
 // middle trigger
-//	
+//
 	trigger = G_Spawn();
 
 	trigger->touch = Touch_Plat_Center;
 	trigger->movetype = PHYSICSTYPE_NONE;
 	trigger->solid = SOLID_TRIGGER;
 	trigger->enemy = ent;
-	
+
 	tmin[0] = ent->mins[0] + 25;
 	tmin[1] = ent->mins[1] + 25;
 	tmin[2] = ent->mins[2];
@@ -633,7 +633,7 @@ void plat_spawn_inside_trigger (edict_t *ent)
 
 	if (ent->spawnflags & PLAT_LOW_TRIGGER)
 		tmax[2] = tmin[2] + 8;
-	
+
 	if (tmax[0] - tmin[0] <= 0)
 	{
 		tmin[0] = (ent->mins[0] + ent->maxs[0]) *0.5;
@@ -644,7 +644,7 @@ void plat_spawn_inside_trigger (edict_t *ent)
 		tmin[1] = (ent->mins[1] + ent->maxs[1]) *0.5;
 		tmax[1] = tmin[1] + 1;
 	}
-	
+
 	VectorCopy (tmin, trigger->mins);
 	VectorCopy (tmax, trigger->maxs);
 
@@ -777,7 +777,7 @@ void SP_func_plat (edict_t *ent)
 		VectorCopy (ent->pos2, ent->s.origin);
 		ent->moveinfo.state = STATE_BOTTOM;
 	}
-	ent->moveinfo.speed = ent->speed;			 
+	ent->moveinfo.speed = ent->speed;
 	ent->moveinfo.accel = ent->accel;
 	ent->moveinfo.decel = ent->decel;
 	ent->moveinfo.wait = ent->wait;
@@ -796,7 +796,7 @@ void SP_func_plat (edict_t *ent)
 	gi.setmodel (ent, ent->model);
 	gi.linkentity (ent);
 
-	plat_spawn_inside_trigger (ent);	// the "start moving" trigger	
+	plat_spawn_inside_trigger (ent);	// the "start moving" trigger
 
 }
 
@@ -824,7 +824,7 @@ void rotate_sounds (edict_t *ent)
 	{
 		ent->moveinfo.sound_start = gi.soundindex  ("objects/spankers.wav");
 	}
-	else 
+	else
 	{
 		ent->moveinfo.sound_start = 0;
 		ent->moveinfo.sound_middle = 0;
@@ -934,7 +934,7 @@ void SP_func_rotating (edict_t *ent)
 	VectorSubtract(ent->maxs, ent->mins, ent->s.bmodel_origin);
 	Vec3ScaleAssign(0.5, ent->s.bmodel_origin);
 	VectorAdd(ent->mins, ent->s.bmodel_origin, ent->s.bmodel_origin);
-	
+
 	gi.setmodel (ent, ent->model);
 	gi.linkentity (ent);
 }
@@ -1078,7 +1078,7 @@ void SP_func_button (edict_t *ent)
 	gi.linkentity(ent);
 
 	button_sounds(ent);
-	
+
 //	ent->health = 5;
 	if (!ent->speed)
 		ent->speed = 40;
@@ -1213,7 +1213,7 @@ void door_go_down (edict_t *self)
 		self->takedamage = DAMAGE_YES;
 		self->health = self->max_health;
 	}
-	
+
 	self->moveinfo.state = STATE_DOWN;
 	if (strcmp(self->classname, "func_door") == 0)
 		Move_Calc (self, self->moveinfo.start_origin, door_hit_bottom);
@@ -1235,7 +1235,7 @@ void door_go_up (edict_t *self, edict_t *activator)
 
 		return;
 	}
-	
+
 	if (!(self->flags & FL_TEAMSLAVE))
 	{
 		if (self->moveinfo.sound_start)
@@ -1253,7 +1253,7 @@ void door_go_up (edict_t *self, edict_t *activator)
 	door_use_areaportals (self, true);
 }
 
-/* 
+/*
 qboolean smart_door_side_check (edict_t *self, edict_t *activator)
 
   By Dan Kramer, da Man.  Stolen wholesale from SoF (No Kill I, Rick!)
@@ -1308,7 +1308,7 @@ void door_use (edict_t *self, edict_t *other, edict_t *activator)
 			}
 		}
 	}
-	
+
 	if (self->flags & FL_TEAMSLAVE)
 		return;
 
@@ -1326,7 +1326,7 @@ void door_use (edict_t *self, edict_t *other, edict_t *activator)
 			return;
 		}
 	}
-	
+
 	// trigger all paired doors
 	for (ent = self ; ent ; ent = ent->teamchain)
 	{
@@ -1419,7 +1419,7 @@ void Think_SpawnDoorTrigger (edict_t *ent)
 		AddPointToBounds (other->absmax, mins, maxs);
 	}
 
-	// expand 
+	// expand
 	mins[0] -= 60;
 	mins[1] -= 60;
 	maxs[0] += 60;
@@ -1464,7 +1464,7 @@ void door_blocked  (edict_t *self, edict_t *other)
 
 // if a door has a negative wait, it would never come back if blocked, (unless -2)
 // so let it just squash the object to death real fast
-	if ((self->moveinfo.wait >= 0) || (self->moveinfo.wait == -2)) 
+	if ((self->moveinfo.wait >= 0) || (self->moveinfo.wait == -2))
 	{
 		if (self->moveinfo.state == STATE_DOWN)
 		{
@@ -1532,85 +1532,85 @@ void door_sounds (edict_t *ent)
 		ent->moveinfo.sound_start = gi.soundindex  ("doors/bigcreak.wav");
 		break;
 	case DS_SWINGBRIDGE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/stoneloop.wav"); 
-		ent->moveinfo.sound_middle = 0; 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/stoneloop.wav");
+		ent->moveinfo.sound_middle = 0;
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/stoneend.wav");
 		break;
 	case DS_MEDIUMWOOD:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk2.wav"); 
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/creak4.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk2.wav");
+		ent->moveinfo.sound_middle = gi.soundindex  ("doors/creak4.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/doorclose1.wav");
 		break;
 	case DS_HUGEWOOD:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk1.wav"); 
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/creak2.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk1.wav");
+		ent->moveinfo.sound_middle = gi.soundindex  ("doors/creak2.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/doorshut1.wav");
 		break;
 	case DS_MEDIUMSTONE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk7.wav"); 
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/stndoor.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk7.wav");
+		ent->moveinfo.sound_middle = gi.soundindex  ("doors/stndoor.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud7.wav");
 		break;
 	case DS_LARGESTONE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk6.wav"); 
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/stoneloop.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk6.wav");
+		ent->moveinfo.sound_middle = gi.soundindex  ("doors/stoneloop.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud3.wav");
 		break;
 	case DS_MEDIUMMETAL:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk3.wav"); 
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/metal1.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk3.wav");
+		ent->moveinfo.sound_middle = gi.soundindex  ("doors/metal1.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud2.wav");
 		break;
 	case DS_FASTSLIDING:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/fastdoor.wav"); 
-		ent->moveinfo.sound_middle = 0; 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/fastdoor.wav");
+		ent->moveinfo.sound_middle = 0;
 		ent->moveinfo.sound_end = 0;
 		break;
 	case DS_METALSLIDING:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk5.wav"); 
-		ent->moveinfo.sound_middle = 0; 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk5.wav");
+		ent->moveinfo.sound_middle = 0;
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud2.wav");
 		break;
 	case DS_HUGESTONE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk5.wav"); 
-		ent->moveinfo.sound_middle = gi.soundindex  ("objects/creak2a.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk5.wav");
+		ent->moveinfo.sound_middle = gi.soundindex  ("objects/creak2a.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud4.wav");
 		break;
 	case DS_HUGEELEVATOR:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/elevatorstart.wav"); 
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/elevatormove.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/elevatorstart.wav");
+		ent->moveinfo.sound_middle = gi.soundindex  ("doors/elevatormove.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("doors/elevatorstop.wav");
 		break;
 	case DS_CRANEWAREHOUSE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk6.wav"); 
-		ent->moveinfo.sound_middle = gi.soundindex  ("objects/winch2.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk6.wav");
+		ent->moveinfo.sound_middle = gi.soundindex  ("objects/winch2.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("objects/cratedown.wav");
 		break;
 	case DS_HAMMERPUMP:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/oilpump.wav"); 
-		ent->moveinfo.sound_middle = 0; 
+		ent->moveinfo.sound_start = gi.soundindex  ("objects/oilpump.wav");
+		ent->moveinfo.sound_middle = 0;
 		ent->moveinfo.sound_end = 0;
 		break;
 	case DS_METALTABLE:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/slabslide.wav"); 
-		ent->moveinfo.sound_middle = 0; 
+		ent->moveinfo.sound_start = gi.soundindex  ("objects/slabslide.wav");
+		ent->moveinfo.sound_middle = 0;
 		ent->moveinfo.sound_end = 0;
 		break;
 	case DS_LABTABLE:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/globebottomstart.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("objects/globebottomstart.wav");
 		ent->moveinfo.sound_end = gi.soundindex  ("objects/globebottomend.wav");
 		break;
 	case DS_PISTON:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/piston.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("objects/piston.wav");
 		break;
 	case DS_CLANG:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/klang.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("objects/klang.wav");
 		break;
 	case DS_UNDERWATER:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/submerge.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("objects/submerge.wav");
 		break;
 	case DS_BAM:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/bam1.wav"); 
+		ent->moveinfo.sound_start = gi.soundindex  ("objects/bam1.wav");
 		break;
 	default:
 		ent->moveinfo.sound_start = 0;
@@ -1669,7 +1669,7 @@ void SP_func_door (edict_t *self)
 	self->solid = SOLID_BSP;
 	self->blocked = door_blocked;
 	self->use = door_use;
-	
+
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_FUNC_DOOR;
 
@@ -1722,7 +1722,7 @@ void SP_func_door (edict_t *self)
 		gi.soundindex ("misc/talk.wav");
 		self->isBlocking = door_touch;
 	}
-	
+
 	self->moveinfo.speed = self->speed;
 	self->moveinfo.accel = self->accel;
 	self->moveinfo.decel = self->decel;
@@ -1865,7 +1865,7 @@ void SP_func_door_rotating (edict_t *ent)
 		ent->die = door_killed;
 		ent->max_health = ent->health;
 	}
-	
+
 	if (ent->targetname && ent->message)
 	{
 		gi.soundindex ("misc/talk.wav");
@@ -2018,7 +2018,7 @@ speed -	default 100
 dmg	  -	default	2
 noise -	looping file to play when the train is in motion
 - objects/piston.wav for large steam pistons in ogle2 and cloudlabs
-- objects/winch2.wav for wooden ore hauler going across river  
+- objects/winch2.wav for wooden ore hauler going across river
 
 rotate - speed train should rotate at
 wait - -1 : stop and don't move again until triggered
@@ -2027,7 +2027,7 @@ wait - -1 : stop and don't move again until triggered
 file - specifies the train is a model.  This is the exact directory of the model.
 count - number of frames in animation (only if a model)
 example   models/objects/broom/tris.fm
-materialtype - 
+materialtype -
 	0 = MAT_WOOD
 	1 = MAT_GREYSTONE (default)
 	2 = MAT_CLOTH
@@ -2123,7 +2123,7 @@ void train_wait (edict_t *self)
 	{
 		train_next (self);
 	}
-	
+
 }
 
 void train_next (edict_t *self)
@@ -2176,7 +2176,7 @@ again:
 
 
 	if (self->spawnflags & 8)	// Has an origin
-		VectorCopy (ent->s.origin, dest);   
+		VectorCopy (ent->s.origin, dest);
 	else						// No origin
 		VectorSubtract (ent->s.origin, self->mins, dest);
 	self->moveinfo.state = STATE_TOP;
@@ -2235,7 +2235,7 @@ void func_train_find (edict_t *self)
 	self->target = ent->target;
 	if (Vec3NotZero(self->s.origin))
 		VectorCopy (ent->s.origin, self->s.origin);
-	else 
+	else
 		VectorSubtract (ent->s.origin, self->mins, self->s.origin);
 	gi.linkentity (self);
 
@@ -2339,7 +2339,7 @@ void SP_func_train (edict_t *self)
 
 	VectorSubtract(self->maxs, self->mins, space);
 	spacecube = space[0] * space[1] * space[2];
-	self->mass = spacecube / 64;   // 
+	self->mass = spacecube / 64;   //
 
 	VectorSubtract(self->maxs, self->mins, self->s.bmodel_origin);
 	Vec3ScaleAssign(0.5, self->s.bmodel_origin);
@@ -2680,7 +2680,7 @@ void SP_func_door_secret (edict_t *ent)
 		gi.soundindex ("misc/talk.wav");
 		ent->isBlocking = door_touch;
 	}
-	
+
 	ent->classname = "func_door";
 
 }
@@ -2726,7 +2726,7 @@ void monsterspawner_go (edict_t *self)
 	monster->bypass_missile_chance = self->bypass_missile_chance;
 	monster->jump_chance = self->jump_chance;
 	monster->wakeup_distance = self->wakeup_distance;
-	
+
 	monster->s.scale = self->s.scale;
 
 	VectorScale(STDMinsForClass[monster->classID], monster->s.scale, monster->mins);
@@ -2758,7 +2758,7 @@ void monsterspawner_go (edict_t *self)
 			G_FreeEdict(monster);
 			return;
 		}
-		
+
 pickbuoy:
 		num_attempts++;//avoid infinite loops
 		if(num_attempts>100)
@@ -2794,18 +2794,18 @@ pickbuoy:
 				G_FreeEdict(monster);
 				return;//can't find a buoy for player
 			}
-			
+
 			end_buoy = &level.buoy_list[end_buoy_index];
 		}
 
 		//step5: make sure the buoy is within 1/2 the mintel (no more than 10) buoys of the player's buoy
 		monster->lastbuoy = NULL_BUOY;
-		
+
 		if(monster->mintel > 7)
 			o_mintel = 7;
 		else if(monster->mintel < 3)
 			o_mintel = 3;
-		else			
+		else
 			o_mintel = monster->mintel;
 
 		monster->mintel = ceil(monster->mintel * 0.5);
@@ -2815,7 +2815,7 @@ pickbuoy:
 			goto pickbuoy;//can't make connection within 1/2 mintel steps
 		}
 		monster->mintel = o_mintel;
-			
+
 		//step6: make sure nothing blocking is standing there
 		monster->clipmask = MASK_MONSTERSOLID;
 		if(!MG_MonsterAttemptTeleport(monster, start_buoy->origin, true))//ignorLOS since we checked above and can't see smonster at this point yet
@@ -2864,7 +2864,7 @@ void monsterspawner_use(edict_t *self, edict_t *other, edict_t *activator)
 /*QUAKED func_monsterspawner (0 .5 .8) (-8 -8 -8) (8 8 8) ONDEATH RANDOMBUOY PEACEFUL
 Triggerable monster spawner
 -----SPAWNFLAGS--------------
-ONDEATH - the next monster will not spawn until the current one is dead  
+ONDEATH - the next monster will not spawn until the current one is dead
 RANDOMBUOY - the monster will be teleported to a random buoy that the player cannot see
 PEACEFUL - Monsters are NOT spawned agry at ent that triggered spawner (monstrers will spawn angry only if the spawner was triggered by a player)
 -----------KEYS--------------

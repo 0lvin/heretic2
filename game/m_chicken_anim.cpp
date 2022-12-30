@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "m_chicken_anim.h"
@@ -25,7 +25,7 @@
 
 // FOR BAD GUYS ONLY
 /*----------------------------------------------------------------------
-  Chicken Standing - 
+  Chicken Standing -
 -----------------------------------------------------------------------*/
 animframe_t chicken_frames_stand1 [] =
 {
@@ -39,7 +39,7 @@ animframe_t chicken_frames_stand1 [] =
 animmove_t chicken_move_stand1 = {6, chicken_frames_stand1, chicken_pause};
 
 /*----------------------------------------------------------------------
-  Chicken running - 
+  Chicken running -
 -----------------------------------------------------------------------*/
 animframe_t chicken_frames_run [] =
 {
@@ -53,7 +53,7 @@ animframe_t chicken_frames_run [] =
 animmove_t chicken_move_run = {6, chicken_frames_run, chicken_pause};
 
 /*----------------------------------------------------------------------
-  Chicken walking - 
+  Chicken walking -
 -----------------------------------------------------------------------*/
 animframe_t chicken_frames_walk [] =
 {
@@ -69,7 +69,7 @@ animframe_t chicken_frames_walk [] =
 animmove_t chicken_move_walk = {8, chicken_frames_walk, chicken_pause};
 
 /*----------------------------------------------------------------------
-  Chicken cluck - 
+  Chicken cluck -
 -----------------------------------------------------------------------*/
 animframe_t chicken_frames_cluck [] =
 {
@@ -96,7 +96,7 @@ animframe_t chicken_frames_cluck [] =
 animmove_t chicken_move_cluck = {19, chicken_frames_cluck, chicken_eat_again};
 
 /*----------------------------------------------------------------------
-  Chicken attacking - 
+  Chicken attacking -
 -----------------------------------------------------------------------*/
 animframe_t chicken_frames_attack [] =
 {
@@ -111,7 +111,7 @@ animframe_t chicken_frames_attack [] =
 animmove_t chicken_move_attack = {6, chicken_frames_attack, chicken_pause};
 
 /*----------------------------------------------------------------------
-  Chicken eating - 
+  Chicken eating -
 -----------------------------------------------------------------------*/
 animframe_t chicken_frames_eat [] =
 {
@@ -149,7 +149,7 @@ animframe_t chicken_frames_eat [] =
 animmove_t chicken_move_eat = {29, chicken_frames_eat, chicken_eat_again};
 
 /*----------------------------------------------------------------------
-  Chicken jumping - 
+  Chicken jumping -
 -----------------------------------------------------------------------*/
 animframe_t chicken_frames_jump [] =
 {

@@ -1,4 +1,4 @@
-#include "g_MoveInfo.h" 
+#include "g_MoveInfo.h"
 #include "ResourceManager.h"
 #include "g_local.h"
 
@@ -31,5 +31,5 @@ MoveInfo_t *MoveInfo_new()
 
 void MoveInfo_delete(MoveInfo_t *toDelete)
 {
-	ResMngr_DeallocateResource(&MoveInfoMngr, toDelete, sizeof(*toDelete));	
+	ResMngr_DeallocateResource(&MoveInfoMngr, toDelete, sizeof(*toDelete));
 }

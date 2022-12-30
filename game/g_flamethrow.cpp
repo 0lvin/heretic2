@@ -1,6 +1,6 @@
 // G_flamethrow.c
 // Heretic II
-// 
+//
 // jweier
 
 #include "g_local.h"
@@ -107,10 +107,10 @@ void flamethrower_touch( edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	if (other->takedamage)
 	{
 		if (self->spawnflags & FLAMETHROWER_STEAM)
-			T_Damage(other, self, self, dir, other->s.origin, plane->normal, self->dmg, 0, 
+			T_Damage(other, self, self, dir, other->s.origin, plane->normal, self->dmg, 0,
 					DAMAGE_AVOID_ARMOR|DAMAGE_NO_BLOOD,MOD_DIED);
 		else
-			T_Damage(other, self, self, dir, other->s.origin, plane->normal, self->dmg, 0, 
+			T_Damage(other, self, self, dir, other->s.origin, plane->normal, self->dmg, 0,
 					DAMAGE_FIRE|DAMAGE_FIRE_LINGER|DAMAGE_AVOID_ARMOR|DAMAGE_NO_BLOOD,MOD_DIED);
 	}
 
@@ -159,7 +159,7 @@ void SP_flamethrower(edict_t *self)
 
 	self->svflags |= SVF_NOCLIENT;
 	gi.setmodel (self, self->model);
-	
+
 	self->use = flamethrower_use;
 	self->touch = flamethrower_touch;
 	gi.linkentity (self);

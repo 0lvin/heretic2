@@ -21,7 +21,7 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *slope);
 void MG_PostDeathThink (edict_t *self);
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
-/* 
+/*
 ============
 CanDamage
 
@@ -41,13 +41,13 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 		VectorAdd (targ->absmin, targ->absmax, dest);
 		VectorScale (dest, 0.5, dest);
 		gi.trace (inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
-		
+
 		if (trace.fraction == 1.0)
 			return true;
-		
+
 		if (trace.ent == targ)
 			return true;
-		
+
 		return false;
 	}
 
@@ -61,7 +61,7 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 	// If there are no edges, let's skip the rest of these checks..
 	if (Vec3IsZero(targ->mins) || Vec3IsZero(targ->maxs))
 		return false;
-	
+
 	// First figure out which two sides of the victim to check.
 	VectorSubtract(inflictor->s.origin, targ->s.origin, diff);
 
@@ -131,13 +131,13 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 		VectorAdd (targ->absmin, targ->absmax, dest);
 		VectorScale (dest, 0.5, dest);
 		gi.trace (origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
-		
+
 		if (trace.fraction == 1.0)
 			return true;
-		
+
 		if (trace.ent == targ)
 			return true;
-		
+
 		return false;
 	}
 
@@ -151,7 +151,7 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 	// If there are no edges, let's skip the rest of these checks..
 	if (Vec3IsZero(targ->mins) || Vec3IsZero(targ->maxs))
 		return false;
-	
+
 	// First figure out which two sides of the victim to check.
 	VectorSubtract(origin, targ->s.origin, diff);
 
@@ -238,7 +238,7 @@ void SpawnReward(edict_t *self, edict_t *attacker)
 			return;
 		}
 	}
-	
+
 	//Only intelligent monsters produce items, not creatures (and not Ogles)
 	if ( (self->classID == CID_RAT) || (self->classID == CID_HARPY) || (self->classID == CID_GKROKON) || (self->classID == CID_GORGON) || (self->classID == CID_FISH) || (self->classID == CID_OGLE) )
 		return;
@@ -265,7 +265,7 @@ void SpawnReward(edict_t *self, edict_t *attacker)
 	def_amount = attacker->client->playerinfo.pers.inventory.Items[index];
 
 	def_chance = (def_amount < def_max) ? ( (float) def_amount / (float) def_max ) : 9999;
-	
+
 	//We don't need anything
 	if ( (health_chance == 9999) && (off_chance == 9999) && (def_chance == 9999))
 		return;
@@ -307,7 +307,7 @@ void SpawnReward(edict_t *self, edict_t *attacker)
 	SpawnItem(newitem, item);
 
 	VectorCopy(newitem->s.origin,holdorigin);
-	
+
 	//Make the effect
 	gi.CreateEffect(NULL, FX_PICKUP, 0, holdorigin, "");
 }
@@ -324,7 +324,7 @@ void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, v
 
 	if (targ->classID == CID_MORK)
 	{
-		targ->die(targ, inflictor, attacker, damage, vec3_origin);		
+		targ->die(targ, inflictor, attacker, damage, vec3_origin);
 		return;
 	}
 
@@ -336,7 +336,7 @@ void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, v
 		attacker->monsterinfo.aiflags &= ~AI_STRAIGHT_TO_ENEMY;
 	}
 
-	if (targ->classID != CID_BBRUSH)	
+	if (targ->classID != CID_BBRUSH)
 		targ->enemy = attacker;
 
 	if ((targ->svflags & SVF_MONSTER) && (targ->deadflag != DEAD_DEAD))
@@ -344,10 +344,10 @@ void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, v
 		MG_RemoveBuoyEffects(targ);
 		//What about if off ledge or on steep slope- slide off?
 		pitch_roll_for_slope(targ, NULL);
-	
+
 		targ->dead_size = Q_fabs( (targ->maxs[2] - targ->mins[2]) ) * 0.5;
 		MG_PostDeathThink(targ);
-		
+
 		if(!(targ->svflags & SVF_WAIT_NOTSOLID))
 			targ->svflags |= SVF_DEADMONSTER;	// now treat as a different content type
 		if (!(targ->monsterinfo.aiflags & AI_GOOD_GUY))
@@ -363,7 +363,7 @@ void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, v
 			SpawnReward(targ, attacker);
 	}
 	if (targ->movetype == PHYSICSTYPE_PUSH || targ->movetype == PHYSICSTYPE_STOP || targ->movetype == PHYSICSTYPE_NONE)
-	{	
+	{
 		// Doors, triggers, breakable brushes, etc. die with their own KillBrush() routine.
 		if (targ->classID == CID_BBRUSH)
 		{
@@ -411,7 +411,7 @@ void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, v
 		else
 			G_QPostMessage(targ,MSG_DEATH,PRI_DIRECTIVE,"eeei",targ,inflictor,attacker,damage);
 	}
-	
+
 	if(Vec3IsZero(targ->velocity) && (damage != 12345))
 	{//fall back some!
 		VectorSubtract(targ->s.origin, inflictor->s.origin, hitdir);
@@ -553,10 +553,10 @@ qboolean CheckTeamDamage (edict_t *targ, edict_t *attacker)
 qboolean flammable (edict_t *targ)
 {
 	if(targ->materialtype == MAT_CLOTH||
-		targ->materialtype == MAT_FLESH||	
-		targ->materialtype == MAT_POTTERY||	
-		targ->materialtype == MAT_LEAF||	
-		targ->materialtype == MAT_WOOD||	
+		targ->materialtype == MAT_FLESH||
+		targ->materialtype == MAT_POTTERY||
+		targ->materialtype == MAT_LEAF||
+		targ->materialtype == MAT_WOOD||
 		targ->materialtype == MAT_INSECT)
 		return (true);
 
@@ -573,8 +573,8 @@ attacker	entity that caused the inflictor to damage targ
 
 example:	targ=monster, inflictor=rocket, attacker=player
 
-dir			direction of the attack:  
-					Directional vector (velocity is acceptable), in the direction the force is GOING.  
+dir			direction of the attack:
+					Directional vector (velocity is acceptable), in the direction the force is GOING.
 					Normalized in the function, if (0,0,0) then vector from inflictor to target is used.
 					Used for knockback (scale force by this vector)
 					Also used for blood and puffs when objects are struck
@@ -598,7 +598,7 @@ DAMAGE_NO_PROTECTION	kills godmode, armor, everything
 DAMAGE_DISMEMBER		to force MSG_DISMEMBER to be used
 ============
 */
-void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir, vec3_t ppoint, vec3_t pnormal, 
+void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir, vec3_t ppoint, vec3_t pnormal,
 			  int damage, int knockback, int dflags,int MeansOfDeath)
 {
 	vec3_t			hit_spot;
@@ -702,12 +702,12 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		VectorCopy(pnormal, normal);
 	else
 		VectorSet(normal, 0, 0, 1);
-	
+
 	if(ppoint)
 		VectorCopy(ppoint, point);
 	else
 		VectorCopy(inflictor->s.origin, point);
-	
+
 	if (deathmatch->value == 0)
 	{	// Not deathmatch game.
 		// In easy skill-level, the player only takes half damage.
@@ -724,12 +724,12 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			temp = 4.0-skill->value;
 			if (temp < 1.0)
 				damage = (int)(damage * 4.0);
-			else 
+			else
 				damage = ceil(damage * 2.0 / (4.0 - skill->value));		// Skill 0: 1/2 damage, skill 1: 2/3 damage, skill 2: full
 		}
 	}
 
-	if (!damage && ((int)(dmflags->value) & DF_HURT_FRIENDS)&&(!(dflags&DAMAGE_HURT_FRIENDLY)) 
+	if (!damage && ((int)(dmflags->value) & DF_HURT_FRIENDS)&&(!(dflags&DAMAGE_HURT_FRIENDLY))
 		&& !(deathmatch->value && ((int)(dmflags->value) & (DF_MODELTEAMS|DF_SKINTEAMS))))
 		damage = 1;
 
@@ -746,7 +746,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			targ->client->playerinfo.pers.armor_count &&
 			(dflags != DAMAGE_SUFFOCATION) &&
 			(dflags != DAMAGE_SLIME) &&
-			(dflags != DAMAGE_LAVA)) 
+			(dflags != DAMAGE_LAVA))
 		{
 			if (targ->client->playerinfo.pers.armortype == ARMOR_TYPE_SILVER)
 				info = &silver_armor_info;
@@ -769,7 +769,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 							point,
 							"d",
 							normal);
-				
+
 			if (dflags & DAMAGE_SPELL)
 				gi.sound(targ,CHAN_WEAPON,gi.soundindex("weapons/spellric.wav"),2,ATTN_NORM,0);
 			else
@@ -788,7 +788,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	  			damage = 1;
 				armorabsorb = 1;
 			}
-			else 
+			else
 			{	// Everything not taken by the player is taken by the armor
 				armorabsorb -= damage;
 				if (armorabsorb > targ->client->playerinfo.pers.armor_count)
@@ -826,17 +826,17 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 //		damage *= 2;
 
 	if (targ->flags & FL_NO_KNOCKBACK || targ->svflags & SVF_BOSS ||
-			(targ->svflags & SVF_MONSTER && sv_freezemonsters->value == 2.0))	// Freezemonster = 2 means no knockback 
-	{			
+			(targ->svflags & SVF_MONSTER && sv_freezemonsters->value == 2.0))	// Freezemonster = 2 means no knockback
+	{
 		knockback = 0;
 	}
 
 	// Figure  out the knockback momentum to impart to the target.
 	if (!(dflags & DAMAGE_NO_KNOCKBACK) && !(targ->svflags & SVF_BOSS))
 	{//hey, knockback of less than about 25 isn't going to do squat...
-		if ((knockback) && 
-				(targ->movetype != PHYSICSTYPE_NONE) && 
-				(targ->movetype != PHYSICSTYPE_PUSH) && 
+		if ((knockback) &&
+				(targ->movetype != PHYSICSTYPE_NONE) &&
+				(targ->movetype != PHYSICSTYPE_PUSH) &&
 				(targ->movetype != PHYSICSTYPE_STOP))
 		{
 			vec3_t	kvel;
@@ -915,7 +915,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 					}
 
 				}
-			} 
+			}
 
 			//so knockback doesn't gib them unless it really really should
 			if(force<300)
@@ -940,9 +940,9 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 		take = 0;
 	}
-	
+
 	// If target and attacker are on the same team, don't inflict any damage.
-	
+
 	if(CheckTeamDamage (targ, attacker))
 		return;
 
@@ -960,7 +960,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				duration = orig_dmg*0.4;
 			else
 				duration = orig_dmg*0.2;
-	
+
 			if (!duration)
 			{
 				duration = 1;
@@ -986,7 +986,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 						targ->fire_damage_time = level.time + duration * 0.25;//burn for 3.2 seconds- length of effect, if effect length changed, this should too!
 					else
 						targ->fire_damage_time = level.time + duration * 0.5;//burn for 3.2 seconds- length of effect, if effect length changed, this should too!
-	
+
 					if (!was_dead)
 						targ->s.effects &= ~EF_DISABLE_EXTRA_FX;	// The flag causes the fire to stop generating.
 					targ->s.effects |= EF_ON_FIRE;
@@ -1005,7 +1005,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			{
 				int bloodamt;
 				vec3_t vel, diff, loc;
-				
+
 				if (take > 80)
 					bloodamt = 20;
 				else
@@ -1059,7 +1059,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		}
 
 		targ->health -= take;
-			
+
 		if(targ!=attacker && violence > VIOLENCE_BLOOD)//can't dismember yourself
 		{
 			if(attacker==inflictor)
@@ -1076,7 +1076,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 // jmarshall
 			if(dflags&DAMAGE_DISMEMBER)
 				hl = (HitLocation_t)(((int)hl) | hl_MeleeHit);//only melee can dismember Add the 16th bit to it for melee hit
-// jmarshall end			
+// jmarshall end
 			if(!(targ->svflags & SVF_PARTS_GIBBED) && !(dflags & DAMAGE_SUFFOCATION) && !(dflags & DAMAGE_BLEEDING))
 			{//don't dismember someone who's already gibbed or gibbing, no dismember damage from suffocation or bleeding
 				if(dflags&DAMAGE_DOUBLE_DISMEMBER)
@@ -1142,7 +1142,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				return;
 
 			Killed (targ, inflictor, attacker, take, point, MeansOfDeath);
-			
+
 			return;
 		}
 	}
@@ -1163,14 +1163,14 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 		M_ReactToDamage (targ, attacker);
 
-		if (!(targ->monsterinfo.aiflags & AI_DUCKED) && (take) && 
+		if (!(targ->monsterinfo.aiflags & AI_DUCKED) && (take) &&
 			(targ->pain_debounce_time  < level.time))
 		{
 			if(targ->classID == CID_ASSASSIN)
 				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", inflictor, attacker, force_pain, take, hl);
 			else
 				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", targ, attacker, force_pain, take, hl);
-			
+
 			// In Nightmare skill-level, monsters don't go into pain frames often.
 
 			if (skill->value >= 3)
@@ -1215,7 +1215,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 // --------------
 // ************************************************************************************************
 
-void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius, 
+void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
 							float maxdamage, float mindamage, int dflags,int MeansOfDeath)
 {
 	float	points, dist;
@@ -1241,7 +1241,7 @@ void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, floa
 
 			T_Damage(damageenemy, inflictor, attacker, dir, hitspot, vec3_origin,
 					(int)maxdamage, (int)maxdamage, DAMAGE_RADIUS|dflags,MeansOfDeath);
-		} 
+		}
 	}
 	while ((ent = findradius(ent, inflictor->s.origin, radius)) != NULL)
 	{
@@ -1293,7 +1293,7 @@ void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, floa
 
 
 // Same function, except the origin point of the damage doesn't have to be the same as the inflictor's
-void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius, 
+void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
 							float maxdamage, float mindamage, int dflags,int MeansOfDeath)
 {
 	float	points, dist;
@@ -1326,7 +1326,7 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 		VectorScale(v, -1, dir);
 		// Scale from maxdamage at center to mindamage at outer edge
 		points = maxdamage - ((maxdamage-mindamage) * (dist/radius));
- 
+
 		if (points > 0)
 		{
 			if (CanDamageFromLoc (ent, inflictor, origin))

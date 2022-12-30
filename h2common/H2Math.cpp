@@ -17,7 +17,7 @@ H2COMMON_API float DistanceSquared(vec3_t p1, vec3_t p2) {
 	float a, b, c, result;
 
 	VectorSubtract(p2, p1, v);
-	
+
 	a = v[0] * v[0];
 	b = v[1] * v[1];
 	c = v[2] * v[2];

@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "c_siernan1_anim.h"
@@ -23,13 +23,13 @@
 
 /************************************************************************
 /************************************************************************
-// 
+//
 //  Cinematic Frames
-// 
+//
 /************************************************************************
 /*************************************************************************/
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action1 [] =
 {
@@ -59,7 +59,7 @@ animframe_t siernan1_frames_c_action1 [] =
 animmove_t siernan1_move_c_action1 = {21, siernan1_frames_c_action1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action2 [] =
 {
@@ -88,7 +88,7 @@ animframe_t siernan1_frames_c_action2 [] =
 animmove_t siernan1_move_c_action2 = {20, siernan1_frames_c_action2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action3 [] =
 {
@@ -114,7 +114,7 @@ animmove_t siernan1_move_c_action3 = {16, siernan1_frames_c_action3, ai_c_cyclee
 
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action4 [] =
 {
@@ -134,7 +134,7 @@ animframe_t siernan1_frames_c_action4 [] =
 animmove_t siernan1_move_c_action4 = {11, siernan1_frames_c_action4, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action5 [] =
 {
@@ -182,7 +182,7 @@ animmove_t siernan1_move_c_action5 = {37, siernan1_frames_c_action5, ai_c_cyclee
 
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action6 [] =
 {
@@ -329,7 +329,7 @@ animmove_t siernan1_move_c_action6 = {136, siernan1_frames_c_action6, ai_c_cycle
 
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action7 [] =
 {
@@ -406,7 +406,7 @@ animframe_t siernan1_frames_c_action7 [] =
 animmove_t siernan1_move_c_action7 = {68, siernan1_frames_c_action7, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action8 [] =
 {
@@ -496,7 +496,7 @@ animframe_t siernan1_frames_c_action8 [] =
 animmove_t siernan1_move_c_action8 = {81, siernan1_frames_c_action8, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action9 [] =
 {
@@ -623,7 +623,7 @@ animframe_t siernan1_frames_c_action9 [] =
 animmove_t siernan1_move_c_action9 = {117, siernan1_frames_c_action9, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action10 [] =
 {
@@ -776,7 +776,7 @@ animframe_t siernan1_frames_c_action10 [] =
 animmove_t siernan1_move_c_action10 = {143, siernan1_frames_c_action10, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action11 [] =
 {
@@ -885,7 +885,7 @@ animframe_t siernan1_frames_c_action11 [] =
 animmove_t siernan1_move_c_action11 = {100, siernan1_frames_c_action11, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action12 [] =
 {
@@ -917,7 +917,7 @@ animmove_t siernan1_move_c_action12 = {22, siernan1_frames_c_action12, ai_c_cycl
 
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_action13 [] =
 {
@@ -935,51 +935,51 @@ animframe_t siernan1_frames_c_action13 [] =
 animmove_t siernan1_move_c_action13 = {9, siernan1_frames_c_action13, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_idle1 [] =
 {
-	FRAME_Idle1, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle2, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle3, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle4, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle5, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle6, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle7, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle8, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle9, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle10, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle11, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle12, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle13, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle14, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle15, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle16, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle17, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle18, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle19, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle20, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle21, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle22, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle23, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle24, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
+	FRAME_Idle1, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle2, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle3, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle4, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle5, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle6, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle7, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle8, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle9, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle10, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle11, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle12, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle13, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle14, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle15, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle16, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle17, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle18, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle19, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle20, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle21, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle22, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle23, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle24, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
 };
 
 animmove_t siernan1_move_c_idle1 = {24, siernan1_frames_c_idle1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_idle2 [] =
 {
-	FRAME_Idle24, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Idle24, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
+	FRAME_Idle24, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Idle24, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
 };
 
 animmove_t siernan1_move_c_idle2 = {2, siernan1_frames_c_idle2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_idle3 [] =
 {
@@ -990,7 +990,7 @@ animframe_t siernan1_frames_c_idle3 [] =
 animmove_t siernan1_move_c_idle3 = {2, siernan1_frames_c_idle3, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_idle4 [] =
 {
@@ -1001,7 +1001,7 @@ animframe_t siernan1_frames_c_idle4 [] =
 animmove_t siernan1_move_c_idle4 = {2, siernan1_frames_c_idle4, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_idle5 [] =
 {
@@ -1012,52 +1012,52 @@ animframe_t siernan1_frames_c_idle5 [] =
 animmove_t siernan1_move_c_idle5 = {2, siernan1_frames_c_idle5, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_walk1 [] =
 {
-	FRAME_walk1, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk2, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk3, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk4, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk5, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk6, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk7, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk8, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk9, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk10, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk11, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
-	FRAME_walk12, ai_c_move, 2, 0, 0,  NULL, 0, NULL, 
+	FRAME_walk1, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk2, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk3, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk4, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk5, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk6, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk7, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk8, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk9, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk10, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk11, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
+	FRAME_walk12, ai_c_move, 2, 0, 0,  NULL, 0, NULL,
 };
 
 animmove_t siernan1_move_c_walk1 = {12, siernan1_frames_c_walk1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_walkstart [] =
 {
-	FRAME_strtwalk1, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_strtwalk2, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_strtwalk3, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_strtwalk4, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_strtwalk5, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_strtwalk6, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
+	FRAME_strtwalk1, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_strtwalk2, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_strtwalk3, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_strtwalk4, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_strtwalk5, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_strtwalk6, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
 };
 
 animmove_t siernan1_move_c_walkstart = {6, siernan1_frames_c_walkstart, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan1_frames_c_walkstop1 [] =
 {
-	FRAME_stpwalk1, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_stpwalk2, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_stpwalk3, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_stpwalk4, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_stpwalk5, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
+	FRAME_stpwalk1, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_stpwalk2, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_stpwalk3, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_stpwalk4, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_stpwalk5, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
 };
 
 animmove_t siernan1_move_c_walkstop1 = {5, siernan1_frames_c_walkstop1, ai_c_cycleend};

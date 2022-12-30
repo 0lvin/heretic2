@@ -35,7 +35,7 @@ extern player_export_t	playerExport;	// interface to player DLL.
 // ****************************************************************************
 
 void MaceballThink(edict_t *self)
-{	
+{
 	vec3_t movevect;
 	qboolean killme=false;
 
@@ -89,7 +89,7 @@ void MaceballThink(edict_t *self)
 // Maceball bounce
 // ****************************************************************************
 
-static vec3_t BoxNormals[6] = 
+static vec3_t BoxNormals[6] =
 {
 	{ 0.0, 0.0, 1.0 },		// up
 	{ 0.0, 0.0, -1.0 },		// down
@@ -140,7 +140,7 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 		else
 		if (trace->ent->svflags & SVF_BOSS)
 		{
-			T_Damage(trace->ent, self, self->owner, movevect, trace->endpos, movevect, 
+			T_Damage(trace->ent, self, self->owner, movevect, trace->endpos, movevect,
 					MACEBALL_BOSS_DAMAGE, MACEBALL_BOSS_DAMAGE, 0,MOD_P_IRONDOOM);
 			self->deadflag = DEAD_DYING;
 		}
@@ -175,11 +175,11 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 						}
    					}
    				}
-   				
+
    			}
    			if (no_teleport)
    			{
-   				T_Damage(trace->ent, self, self->owner, movevect, trace->endpos, movevect, 
+   				T_Damage(trace->ent, self, self->owner, movevect, trace->endpos, movevect,
    	 				self->dmg, self->dmg, 0,MOD_P_IRONDOOM);
 				// if we hit a player or a monster, kill this maceball
 				if (trace->ent->client || (trace->ent->svflags & SVF_MONSTER))

@@ -67,7 +67,7 @@ void fire_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 
 	self->touch_debounce_time = level.time + 1;
 
-	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 0, 
+	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 0,
 			DAMAGE_AVOID_ARMOR|DAMAGE_FIRE|DAMAGE_FIRE_LINGER, MOD_BURNT);
 }
 
@@ -106,7 +106,7 @@ void SpawnFlame(edict_t *self,vec3_t origin)
 	byte scale;
 
 	// NOTE - LIMIT ON SCALE is x 8.
-	
+
 	if (self->s.scale >= 8.0)
 		scale = 255;
 	else
@@ -377,7 +377,7 @@ void SP_light_walltorch (edict_t *self)
 	{
 		VectorCopy(self->s.origin,holdorigin);
 		holdorigin[2] += 28;
-		SpawnFlame(self,holdorigin);		
+		SpawnFlame(self,holdorigin);
 	}
 
 	TorchInit(self);
@@ -410,7 +410,7 @@ void SP_light_floortorch (edict_t *self)
 	{
 		VectorCopy(self->s.origin,holdorigin);
 		holdorigin[2] += 33;
-		SpawnFlame(self,holdorigin);	
+		SpawnFlame(self,holdorigin);
 	}
 
 	TorchInit(self);
@@ -483,9 +483,9 @@ INVULNERABLE - N/A
 ANIMATE - N/A
 EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
-NOHALO - turns off halo effect							
+NOHALO - turns off halo effect
 -----------------------------------
-style 
+style
 - 0 yellow light
 - 1 green light
 
@@ -554,7 +554,7 @@ void SP_light_chandelier2 (edict_t *self)
 }
 
 /*QUAKED light_chandelier3 (1 .5 0) (-34 -34 -80) (34 34 0)  INVULNERABLE ANIMATE EXPLODING STARTOFF
-A  thin gold chandelier 
+A  thin gold chandelier
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
 ANIMATE - N/A
@@ -756,7 +756,7 @@ void SP_light_buglight (edict_t *self)
 }
 
 
-/*QUAKED env_sun1 (1 .5 0) (-12 -12 0) (12 12 38) INVULNERABLE ANIMATE  EXPLODING  
+/*QUAKED env_sun1 (1 .5 0) (-12 -12 0) (12 12 38) INVULNERABLE ANIMATE  EXPLODING
 Places two suns in the world and attaches a lens flare to them.
 One sun is blue, the other is yellow
 */
@@ -766,7 +766,7 @@ void SP_env_sun1 (edict_t *self)
 
 	self->solid = SOLID_NOT;
 	self->movetype = PHYSICSTYPE_NONE;
-	
+
 //	VectorSet(origin, 200, -100, 4000);
 
 //	gi.CreatePersistantEffect(NULL, FX_LENSFLARE, CEF_FLAG7, origin, "bbbbf", -1, (byte) 64, (byte) 64, (byte) 146, 0.75);

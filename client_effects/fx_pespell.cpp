@@ -64,7 +64,7 @@ static qboolean FXPESpellTrailThink(struct client_entity_s *self, centity_t *own
 	{
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
 		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	
+
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
 
@@ -82,7 +82,7 @@ static qboolean FXPESpellTrailThink(struct client_entity_s *self, centity_t *own
 		TrailEnt->d_scale = flrand(-1.0, -1.25);
 		TrailEnt->updateTime = (TrailEnt->alpha * 1000.0) / -TrailEnt->d_scale;
 		TrailEnt->radius = 20.0;
-		
+
 		AddEffect(NULL,TrailEnt);
 	}
 
@@ -99,7 +99,7 @@ static qboolean FXPESpellTrailThink(struct client_entity_s *self, centity_t *own
 void FXPESpellGo(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
-	client_entity_t	*missile;	
+	client_entity_t	*missile;
 	paletteRGBA_t	LightColor;
 	float			lightsize;
 
@@ -108,7 +108,7 @@ void FXPESpellGo(centity_t *owner, int type, int flags, vec3_t origin, vec3_t ve
 	missile->flags |= CEF_NO_DRAW;
 	LightColor.c = 0xff20a0ff;		// Orange light
 	lightsize = 120.0;
-	
+
 	VectorCopy(vel, missile->velocity);
 	VectorNormalize2(vel, dir);
 	AnglesFromDir(dir, missile->r.angles);
@@ -122,7 +122,7 @@ void FXPESpellGo(centity_t *owner, int type, int flags, vec3_t origin, vec3_t ve
 
 	AddEffect(owner, missile);
 
-	fxi.S_StartSound(missile->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell.wav"), 
+	fxi.S_StartSound(missile->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell.wav"),
 			1, ATTN_NORM, 0);
 }
 
@@ -142,7 +142,7 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 	paletteRGBA_t	LightColor;
 	byte			powerup = 0;
 	float			lightrad;
-	
+
 	if(flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
@@ -178,16 +178,16 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 		SmokePuff->r.frame=0;
 
 		SmokePuff->d_alpha= -0.4;
-			
+
 		SmokePuff->radius=20.0;
 
 		if(!i)
 		{//precache _this?
-			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spellhit.wav"), 
+			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spellhit.wav"),
 					1, ATTN_NORM, 0);
 			SmokePuff->dlight=CE_DLight_new(LightColor,lightrad,0.0f);
 			VectorClear(SmokePuff->velocity);
-		}	
+		}
 
 		AddEffect(NULL,SmokePuff);
 	}
@@ -215,7 +215,7 @@ static qboolean FXPESpell2TrailThink(struct client_entity_s *self, centity_t *ow
 	{
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
 		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	
+
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
 
@@ -235,7 +235,7 @@ static qboolean FXPESpell2TrailThink(struct client_entity_s *self, centity_t *ow
 		TrailEnt->d_scale = flrand(-1.0, -1.25);
 		TrailEnt->updateTime = (TrailEnt->alpha * 1000.0) / -TrailEnt->d_scale;
 		TrailEnt->radius = 20.0;
-		
+
 		AddEffect(NULL,TrailEnt);
 	}
 
@@ -252,7 +252,7 @@ static qboolean FXPESpell2TrailThink(struct client_entity_s *self, centity_t *ow
 void FXPESpell2Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
-	client_entity_t	*missile;	
+	client_entity_t	*missile;
 	paletteRGBA_t	LightColor;
 	float			lightsize;
 
@@ -261,7 +261,7 @@ void FXPESpell2Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t v
 	missile->flags |= CEF_NO_DRAW;
 	LightColor.c = 0xffff0077;		// purple
 	lightsize = 120.0;
-	
+
 	VectorCopy(vel, missile->velocity);
 	VectorNormalize2(vel, dir);
 	AnglesFromDir(dir, missile->r.angles);
@@ -275,7 +275,7 @@ void FXPESpell2Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t v
 
 	AddEffect(owner, missile);
 
-	fxi.S_StartSound(missile->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell2.wav"), 
+	fxi.S_StartSound(missile->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell2.wav"),
 			1, ATTN_NORM, 0);
 }
 
@@ -295,7 +295,7 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 	paletteRGBA_t	LightColor;
 	byte			powerup = 0;
 	float			lightrad;
-	
+
 	if(flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
@@ -332,16 +332,16 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		SmokePuff->r.frame=0;
 
 		SmokePuff->d_alpha= -0.4;
-			
+
 		SmokePuff->radius=20.0;
 
 		if(!i)
 		{//precache _this?
-			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell2hit.wav"), 
+			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell2hit.wav"),
 					1, ATTN_NORM, 0);
 			SmokePuff->dlight=CE_DLight_new(LightColor,lightrad,0.0f);
 			VectorClear(SmokePuff->velocity);
-		}	
+		}
 
 		AddEffect(NULL,SmokePuff);
 	}
@@ -369,7 +369,7 @@ static qboolean FXPESpell3TrailThink(struct client_entity_s *self, centity_t *ow
 	{
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
 		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	
+
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
 
@@ -387,7 +387,7 @@ static qboolean FXPESpell3TrailThink(struct client_entity_s *self, centity_t *ow
 		TrailEnt->d_scale = flrand(-1.0, -1.25);
 		TrailEnt->updateTime = (TrailEnt->alpha * 1000.0) / -TrailEnt->d_scale;
 		TrailEnt->radius = 20.0;
-		
+
 		AddEffect(NULL,TrailEnt);
 	}
 
@@ -404,7 +404,7 @@ static qboolean FXPESpell3TrailThink(struct client_entity_s *self, centity_t *ow
 void FXPESpell3Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
-	client_entity_t	*missile;	
+	client_entity_t	*missile;
 	paletteRGBA_t	LightColor;
 	float			lightsize;
 
@@ -413,7 +413,7 @@ void FXPESpell3Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t v
 	missile->flags |= CEF_NO_DRAW;
 	LightColor.c = 0xffff6611;		// cyan
 	lightsize = 120.0;
-	
+
 	VectorCopy(vel, missile->velocity);
 	VectorNormalize2(vel, dir);
 	AnglesFromDir(dir, missile->r.angles);
@@ -427,7 +427,7 @@ void FXPESpell3Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t v
 
 	AddEffect(owner, missile);
 
-	fxi.S_StartSound(missile->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell3.wav"), 
+	fxi.S_StartSound(missile->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell3.wav"),
 			1, ATTN_NORM, 0);
 }
 
@@ -447,7 +447,7 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 	paletteRGBA_t	LightColor;
 	byte			powerup = 0;
 	float			lightrad;
-	
+
 	if(flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
@@ -485,16 +485,16 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		SmokePuff->r.frame=0;
 
 		SmokePuff->d_alpha= -0.4;
-			
+
 		SmokePuff->radius=20.0;
 
 		if(!i)
 		{//precache _this?
-			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell3hit.wav"), 
+			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell3hit.wav"),
 					1, ATTN_NORM, 0);
 			SmokePuff->dlight=CE_DLight_new(LightColor,lightrad,0.0f);
 			VectorClear(SmokePuff->velocity);
-		}	
+		}
 
 		AddEffect(NULL,SmokePuff);
 	}
@@ -529,7 +529,7 @@ void FXPESpell(centity_t *owner, int type, int flags, vec3_t origin)
 		case FX_PE_EXPLODE_SPELL2:
 			FXPESpell2Explode(owner, type, flags, origin, vel);
 			break;
-		
+
 		case FX_PE_MAKE_SPELL3:
 			FXCWStars(owner, type, flags, origin);
 			//FXPESpell3Go(owner, type, flags, origin, vel);

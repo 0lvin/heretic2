@@ -44,7 +44,7 @@ _inline float Vec3Normalize(vec3a_t v1)
 	mag = (float)sqrt(mag);
 
 	imag /= mag;
-	
+
 	v1[0] *= imag;
 	v1[1] *= imag;
 	v1[2] *= imag;
@@ -72,7 +72,7 @@ _inline double Vec3dNormalize(vec3d_t v1)
 	mag = (float)sqrt(mag);
 
 	imag /= mag;
-	
+
 	v1[0] *= imag;
 	v1[1] *= imag;
 	v1[2] *= imag;

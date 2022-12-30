@@ -28,7 +28,7 @@ void Perform_Teleport(edict_t *self)
 
 	//Get the player off the rope
 	self->client->playerinfo.flags |= PLAYER_FLAG_RELEASEROPE;
-	
+
 	//physically move the player, bearing in mind thats what a teleport is
 	VectorCopy (self->client->tele_dest, self->client->playerinfo.origin);
 	VectorCopy (self->client->tele_dest, self->s.origin);
@@ -49,7 +49,7 @@ void Perform_Teleport(edict_t *self)
 
 	// unlink to make sure it can't possibly interfere with KillBox - we don't want to collide with ourselves
 	gi.unlinkentity (self);
-	
+
 	// kill anything at the destination
 	KillBox (self);
 
@@ -87,7 +87,7 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	vec3_t	dest_v, dest_v_angles;
 	int	rand_targ, i;
 	edict_t  *dest = NULL;
-	
+
 	// if we aren't a player, forget it
 	if (!other->client)
 		return;
@@ -104,7 +104,7 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 		SelectSpawnPoint(other,dest_v, dest_v_angles);
 		// dest coors to teleport to
 		VectorCopy(dest_v,other->client->tele_dest);
-		// angles we should start at 
+		// angles we should start at
 		VectorCopy(dest_v_angles,other->client->tele_angles);
 	}
 	// we do have a specific destination in mind
@@ -210,7 +210,7 @@ void SpellCastTeleport(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t A
 
 	// dest coors to teleport to
 	VectorCopy(dest,caster->client->tele_dest);
-	// angles we should start at 
+	// angles we should start at
 	VectorCopy(dest_angles,caster->client->tele_angles);
 	// time taken over dematerialisation
 	caster->client->tele_count = TELE_TIME_OUT;

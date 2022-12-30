@@ -10,7 +10,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "m_fish_anim.h"
@@ -22,7 +22,7 @@
 
 
 /*----------------------------------------------------------------------
-  Fish Melee1 - 
+  Fish Melee1 -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_melee [] =
 {
@@ -46,7 +46,7 @@ animmove_t fish_move_melee = {14, fish_frames_melee, fish_pause};
 
 
 /*----------------------------------------------------------------------
-  Fish bite - 
+  Fish bite -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_bite [] =
 {
@@ -62,7 +62,7 @@ animframe_t fish_frames_bite [] =
 animmove_t fish_move_bite = {7, fish_frames_bite, fish_pause};
 
 /*----------------------------------------------------------------------
-  Fish Run1 - 
+  Fish Run1 -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_run1 [] =
 {
@@ -79,7 +79,7 @@ animframe_t fish_frames_run1 [] =
 animmove_t fish_move_run1 = {8, fish_frames_run1, finished_runswim};
 
 /*----------------------------------------------------------------------
-  Fish Run2 - 
+  Fish Run2 -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_run2 [] =
 {
@@ -97,7 +97,7 @@ animframe_t fish_frames_run2 [] =
 animmove_t fish_move_run2 = {9, fish_frames_run2, fish_run};
 
 /*----------------------------------------------------------------------
-  Fish Run3 - 
+  Fish Run3 -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_run3 [] =
 {
@@ -115,7 +115,7 @@ animframe_t fish_frames_run3 [] =
 animmove_t fish_move_run3 = {9, fish_frames_run3, fish_run};
 
 /*----------------------------------------------------------------------
-  Fish Walk1 - 
+  Fish Walk1 -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_walk1 [] =
 {
@@ -186,7 +186,7 @@ animframe_t fish_frames_walk3 [] =
 animmove_t fish_move_walk3 = {9, fish_frames_walk3, fish_walk};
 
 /*----------------------------------------------------------------------
-  Fish Stand1 - 
+  Fish Stand1 -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_stand1 [] =
 {
@@ -222,7 +222,7 @@ animmove_t fish_move_stand1 = {24, fish_frames_stand1, fish_idle };
 
 
 /*----------------------------------------------------------------------
-  Fish Pain1 - 
+  Fish Pain1 -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_pain1 [] =
 {
@@ -237,7 +237,7 @@ animframe_t fish_frames_pain1 [] =
 animmove_t fish_move_pain1 = {7, fish_frames_pain1, finished_fish_pain };
 
 /*----------------------------------------------------------------------
-  Fish Death1 - 
+  Fish Death1 -
 -----------------------------------------------------------------------*/
 animframe_t fish_frames_death [] =
 {

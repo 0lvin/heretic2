@@ -35,7 +35,7 @@ void KillBrushOrdered(edict_t *self)
 
 	do
 	{
-	  if (self.count >= headNum) 
+	  if (self.count >= headNum)
 		self.th_die();
 
 	  self = self.enemy;
@@ -46,9 +46,9 @@ void KillBrushOrdered(edict_t *self)
 void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage)
 {
 	edict_t *starte, *other;
-	
+
 	starte = targ;
-	
+
 	if (starte->spawnflags & BREAK_KILLALL)
 	{
 		do
@@ -60,12 +60,12 @@ void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage)
 			targ = other;
 		} while ( (targ != starte) );
 	}
-//	else if (targ->spawnflags & BREAK_HIERARCH) 
+//	else if (targ->spawnflags & BREAK_HIERARCH)
 //	{
 //		;
 //		KillBrushOrdered(targ);
 //	}
-	else 
+	else
 	{
 		G_QPostMessage(targ,MSG_DEATH,PRI_DIRECTIVE,"eeei",targ,inflictor,attacker,damage);
 	}
@@ -81,7 +81,7 @@ void KillBrushUse(edict_t *targ,edict_t *inflictor,edict_t *attacker)
 	G_QPostMessage(targ,MSG_DEATH,PRI_DIRECTIVE,"eeei",targ,inflictor,attacker,0);
 }
 
-void BBrushStaticsInit(void) 
+void BBrushStaticsInit(void)
 {
 	classStatics[CID_BBRUSH].msgReceivers[MSG_DEATH] = DefaultObjectDieHandler;
 }
@@ -141,24 +141,24 @@ void LinkBreakables(edict_t *self)
 
 	if (self->enemy) // already linked by another breakable
 	{
-		return;		
+		return;
 	}
-	
+
 	VectorCopy(self->mins,cmins);
 	VectorCopy(self->maxs,cmaxs);
-	
+
 	t = ent = self;
-	
+
 	do
 	{
 		ent->owner = self;			// master breakable
 
-		if (ent->health) 
+		if (ent->health)
 		{
 			self->health = ent->health;
 		}
 
-		if (ent->targetname) 
+		if (ent->targetname)
 		{
 			self->targetname = ent->targetname;
 		}
@@ -174,15 +174,15 @@ void LinkBreakables(edict_t *self)
 		}
 
 		if (ent->spawnflags & BREAK_NOLINK)
-			continue;	
+			continue;
 
 		if (EntitiesTouching(self,t))
-		{		
-			if (t->enemy) 
+		{
+			if (t->enemy)
 			{
 				return;
 			}
-			
+
 			ent->enemy = t;
 			ent = t;
 		}
@@ -191,13 +191,13 @@ void LinkBreakables(edict_t *self)
 
 /*QUAKED breakable_brush (1 .5 0) ? KILLALL NOLINK ORDERED TRANSLUCENT INVULNERABLE INVISIBLE PUSHPULL NOTPLAYERDAMAGE
 
-	A brush that explodes. 
+	A brush that explodes.
 
 NOTPLAYERDAMAGE - players cannot damage this brush
 
-KILLALL - kills any brushes touching this one 
+KILLALL - kills any brushes touching this one
 
-HIERARCH - kills any brushes touching this one 
+HIERARCH - kills any brushes touching this one
 
 NOLINK - can touch a KILLALL brush and not be linked to it
 
@@ -205,9 +205,9 @@ INVULNERABLE - if set it can't be hurt
 
 *** VARIABLES ***
 health - amount of damage the brush can take before exploding
-materialtype - 
+materialtype -
 0 = STONE
-1 = GREYSTONE (default)map 
+1 = GREYSTONE (default)map
 2 = CLOTH
 3 = METAL
 4 = FLESH
@@ -266,7 +266,7 @@ void SP_breakable_brush (edict_t *ent)
 	// Use size to calculate mass
 	VectorSubtract(ent->maxs, ent->mins, space);
 	spacecube = space[0] * space[1] * space[2];
-	ent->mass = spacecube / 64;   // 
+	ent->mass = spacecube / 64;   //
 
 	ent->nextthink = level.time + FRAMETIME;
 	ent->think = LinkBreakables;

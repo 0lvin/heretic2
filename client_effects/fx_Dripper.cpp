@@ -51,7 +51,7 @@ qboolean FXDripThinkSolid(client_entity_t *drip, centity_t *owner)
 	color.c = 0xffffffff;
 	DoWaterSplash(mist, color, DRIP_NUM_SPLASHES);
 
-	AddEffect(NULL, mist); 
+	AddEffect(NULL, mist);
 
 	fxi.S_StartSound(origin, -1, CHAN_AUTO,
 		fxi.S_RegisterSound(va("ambient/soliddrop%c.wav", irand('1', '3'))), 1, ATTN_STATIC, 0);
@@ -80,7 +80,7 @@ qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
 	mist->d_alpha = -8.0F;
 //	mist->velocity[0] = flrand(-20.0F, 20.0F);
 //	mist->velocity[1] = flrand(-20.0F, 20.0F);
-	AddEffect(NULL, mist); 
+	AddEffect(NULL, mist);
 
 	color.c = 0xffffffff;
 	DoWaterSplash(mist, color, DRIP_NUM_SPLASHES);
@@ -156,7 +156,7 @@ static qboolean FXDripperParticleSpawner(client_entity_t *spawner, centity_t *ow
 		break;
 	}
 
-	AddEffect(NULL, drip); 
+	AddEffect(NULL, drip);
 	return(true);
 }
 
@@ -184,6 +184,6 @@ void FXDripper(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	dripper->SpawnData = trace.endpos[2] + 4.0F;
 	dripper->SpawnInfo = trace.contents;
 
-	AddEffect(Owner, dripper); 
+	AddEffect(Owner, dripper);
 }
 // end

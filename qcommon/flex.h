@@ -1,4 +1,4 @@
-// Generic flexible format 
+// Generic flexible format
 
 typedef struct
 {

@@ -80,7 +80,7 @@ void morcalavin_check_lightning2(edict_t *self)
 {
 	vec3_t	vel, org, org2;
 	float	dist;
-	
+
 	if (!self->owner->enemy)
 	{
 		self->nextthink = level.time + 0.1;
@@ -92,8 +92,8 @@ void morcalavin_check_lightning2(edict_t *self)
 
 	if (dist < 72)
 	{
-		T_Damage(self->owner->enemy, self, self->owner, vel, vec3_origin, vec3_origin, 2, 0, DAMAGE_SPELL, MOD_SHIELD); 
-		
+		T_Damage(self->owner->enemy, self, self->owner, vel, vec3_origin, vec3_origin, 2, 0, DAMAGE_SPELL, MOD_SHIELD);
+
 		VectorNormalize2(self->velocity, vel);
 
 		VectorMA(self->s.origin, 600*FRAMETIME, vel, org);
@@ -101,7 +101,7 @@ void morcalavin_check_lightning2(edict_t *self)
 		VectorCopy(self->owner->enemy->s.origin, org2);
 		org2[2] += irand(-16, 32);
 
-		gi.CreateEffect(NULL, FX_LIGHTNING, 0, 
+		gi.CreateEffect(NULL, FX_LIGHTNING, 0,
 				org, "vbb", org2, (byte) irand(2,4), (byte) 0);
 	}
 
@@ -127,7 +127,7 @@ void morcalavin_big_shot( edict_t *self )
 	proj->movetype = PHYSICSTYPE_FLY;
 	proj->gravity = 0;
 	proj->clipmask = MASK_SHOT;
-	
+
 	proj->think = morcalavin_check_lightning2;
 	proj->nextthink = level.time + 0.1;
 
@@ -158,7 +158,7 @@ void morcalavin_big_shot( edict_t *self )
 					"bv",
 					FX_MORK_MISSILE,
 					proj->s.origin);
-    
+
 	gi.sound (self, CHAN_AUTO, sounds[SND_PPCHARGE], 1, ATTN_NORM, 0);
 }
 
@@ -198,7 +198,7 @@ void morcalavin_proj_track( edict_t *self )
 
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + 0.1;
-		
+
 		return;
 	}
 
@@ -259,7 +259,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	proj->s.scale = 1.0;
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
-	
+
 	proj->delay = 1.0;
 	proj->bounced = morcalavin_proj1_blocked;
 	proj->isBlocking = morcalavin_proj1_blocked;
@@ -268,7 +268,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	proj->s.effects=EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	proj->enemy = self->enemy;
 
-	VectorSet(proj->mins, -2.0, -2.0, -2.0);	
+	VectorSet(proj->mins, -2.0, -2.0, -2.0);
 	VectorSet(proj->maxs,  2.0,  2.0,  2.0);
 	VectorCopy(self->s.origin, proj->s.origin);
 
@@ -279,7 +279,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	ang[ROLL] += roll;
 
 	AngleVectors(ang, vf, vr, vu);
-	VectorMA(self->s.origin, 24, vf, proj->s.origin);	
+	VectorMA(self->s.origin, 24, vf, proj->s.origin);
 	VectorMA(proj->s.origin, -16, vr, proj->s.origin);
 	VectorMA(proj->s.origin, 52, vu,  proj->s.origin);
 
@@ -287,7 +287,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	proj->ideal_yaw = 300;
 
 	proj->think = morcalavin_proj_track;
-	
+
 	if (skill->value < 1)
 		proj->nextthink = level.time + 2;
 	else
@@ -309,7 +309,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 -----------------------------------------------*/
 
 void morcalavin_proj2_blocked( edict_t *self, trace_t *trace )
-{	
+{
 	edict_t	*proj;
 	vec3_t	hitDir;
 	byte	exp;
@@ -340,7 +340,7 @@ void morcalavin_proj2_blocked( edict_t *self, trace_t *trace )
 					vec3_origin,
 					(unsigned char) exp);
 
-		gi.linkentity(proj); 
+		gi.linkentity(proj);
 
 		G_SetToFree(self);
 
@@ -355,12 +355,12 @@ void morcalavin_proj2_blocked( edict_t *self, trace_t *trace )
 		T_Damage( trace->ent, self, self->owner, hitDir, self->s.origin, trace->plane.normal, 40, 0, DAMAGE_SPELL | DAMAGE_NO_KNOCKBACK,MOD_DIED );
 	}
 
-	gi.CreateEffect(NULL, 
-					FX_M_EFFECTS, 
-					0, 
-					self->s.origin, 
-					"bv", 
-					FX_MORK_MISSILE_HIT, 
+	gi.CreateEffect(NULL,
+					FX_M_EFFECTS,
+					0,
+					self->s.origin,
+					"bv",
+					FX_MORK_MISSILE_HIT,
 					trace->plane.normal);
 
 	self->think = G_FreeEdict;
@@ -372,7 +372,7 @@ void morcalavin_proj2_blocked( edict_t *self, trace_t *trace )
 -----------------------------------------------*/
 
 void morcalavin_proj3_blocked( edict_t *self, trace_t *trace )
-{	
+{
 	edict_t	*proj;
 	vec3_t	hitDir;
 	byte	exp;
@@ -403,7 +403,7 @@ void morcalavin_proj3_blocked( edict_t *self, trace_t *trace )
 					vec3_origin,
 					(unsigned char) exp);
 
-		gi.linkentity(proj); 
+		gi.linkentity(proj);
 
 		G_SetToFree(self);
 
@@ -418,12 +418,12 @@ void morcalavin_proj3_blocked( edict_t *self, trace_t *trace )
 		T_Damage( trace->ent, self, self->owner, hitDir, self->s.origin, trace->plane.normal, irand(3,5), 0, DAMAGE_SPELL | DAMAGE_NO_KNOCKBACK,MOD_DIED );
 	}
 
-	gi.CreateEffect(NULL, 
-					FX_M_EFFECTS, 
-					0, 
-					self->s.origin, 
-					"bv", 
-					FX_MORK_MISSILE_HIT, 
+	gi.CreateEffect(NULL,
+					FX_M_EFFECTS,
+					0,
+					self->s.origin,
+					"bv",
+					FX_MORK_MISSILE_HIT,
 					trace->plane.normal);
 
 	self->think = G_FreeEdict;
@@ -434,7 +434,7 @@ void morcalavin_check_lightning(edict_t *self)
 {
 	vec3_t	vel, org, org2;
 	float	dist;
-	
+
 	if (!self->owner || !self->owner->enemy)
 	{
 		self->nextthink = level.time + 0.1;
@@ -446,8 +446,8 @@ void morcalavin_check_lightning(edict_t *self)
 
 	if (dist < 150)
 	{
-		T_Damage(self->owner->enemy, self, self->owner, vel, vec3_origin, vec3_origin, irand(2,4), 0, DAMAGE_SPELL, MOD_SHIELD); 
-		
+		T_Damage(self->owner->enemy, self, self->owner, vel, vec3_origin, vec3_origin, irand(2,4), 0, DAMAGE_SPELL, MOD_SHIELD);
+
 		VectorNormalize2(self->velocity, vel);
 
 		VectorMA(self->s.origin, 400*FRAMETIME, vel, org);
@@ -455,7 +455,7 @@ void morcalavin_check_lightning(edict_t *self)
 		VectorCopy(self->owner->enemy->s.origin, org2);
 		org2[2] += irand(-16, 32);
 
-		gi.CreateEffect(NULL, FX_LIGHTNING, 0, 
+		gi.CreateEffect(NULL, FX_LIGHTNING, 0,
 				org, "vbb", org2, (byte) irand(2,4), (byte) 0);
 
 		if (skill->value < 1)
@@ -476,7 +476,7 @@ void morcalavin_missile_update(edict_t *self)
 	vec3_t	vf, vr, endpos;
 
 	AngleVectors(self->owner->s.angles, vf, vr, NULL);
-	
+
 	switch( self->owner->s.frame )
 	{
 	case FRAME_atakc3:
@@ -496,31 +496,31 @@ void morcalavin_missile_update(edict_t *self)
 		VectorMA(self->s.origin, 14, vr, self->s.origin);
 		self->s.origin[2] += 28;
 		break;
-	
+
 	case FRAME_atakc6:
 		VectorMA(self->owner->s.origin, 15, vf, self->s.origin);
 		VectorMA(self->s.origin, 14, vr, self->s.origin);
 		self->s.origin[2] += 32;
 		break;
-	
+
 	case FRAME_atakc7:
 		VectorMA(self->owner->s.origin, 15, vf, self->s.origin);
 		VectorMA(self->s.origin, 14, vr, self->s.origin);
 		self->s.origin[2] += 36;
 		break;
-	
+
 	case FRAME_atakc8:
 		VectorMA(self->owner->s.origin, 14, vf, self->s.origin);
 		VectorMA(self->s.origin, 14, vr, self->s.origin);
 		self->s.origin[2] += 37;
 		break;
-	
+
 	case FRAME_atakc9:
 		VectorMA(self->owner->s.origin, 14, vf, self->s.origin);
 		VectorMA(self->s.origin, 14, vr, self->s.origin);
 		self->s.origin[2] += 38;
 		break;
-	
+
 	case FRAME_atakc10:
 		VectorMA(self->owner->s.origin, 14, vf, self->s.origin);
 		VectorMA(self->s.origin, 14, vr, self->s.origin);
@@ -587,7 +587,7 @@ void morcalavin_start_missile(edict_t *self)
 	proj->movetype = PHYSICSTYPE_FLY;
 	proj->gravity = 0;
 	proj->clipmask = MASK_SHOT;
-	
+
 	proj->think = morcalavin_missile_update;
 	proj->nextthink = level.time + 0.1;
 
@@ -614,7 +614,7 @@ void morcalavin_start_missile(edict_t *self)
 					"bv",
 					FX_MORK_MISSILE,
 					proj->s.origin);
-    
+
 	gi.sound (self, CHAN_AUTO, sounds[SND_PPCHARGE], 1, ATTN_NORM, 0);
 }
 
@@ -628,7 +628,7 @@ void morcalavin_release_missile(edict_t *self)
 -----------------------------------------------*/
 
 void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
-{	
+{
 	edict_t	*proj;
 	vec3_t	hitDir;
 	int		damage;
@@ -663,7 +663,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 					vec3_origin,
 					(unsigned char) exp);
 
-		gi.linkentity(proj); 
+		gi.linkentity(proj);
 
 		G_SetToFree(self);
 
@@ -710,13 +710,13 @@ void create_morcalavin_proj(edict_t *self,edict_t *proj)
 	proj->s.scale = 1.0;
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
-	
+
 	proj->isBlocked = proj->isBlocking = proj->bounced = morcalavin_proj1_blocked;
 
 	proj->s.effects=EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	proj->enemy = self->enemy;
 
-	VectorSet(proj->mins, -2.0, -2.0, -2.0);	
+	VectorSet(proj->mins, -2.0, -2.0, -2.0);
 	VectorSet(proj->maxs,  2.0,  2.0,  2.0);
 	VectorCopy(self->s.origin, proj->s.origin);
 }
@@ -746,7 +746,7 @@ void morcalavin_taunt_shot(edict_t *self)
 
 	VectorSubtract(predPos, startOfs, vf);
 	VectorNormalize(vf);
-	
+
 	vectoangles( vf, angles );
 
 	// Spawn the projectile
@@ -754,7 +754,7 @@ void morcalavin_taunt_shot(edict_t *self)
 
 	create_morcalavin_proj(self,proj);
 	proj->owner = self;
-	
+
 	VectorCopy(startOfs, proj->s.origin);
 	VectorCopy(angles, ang);
 
@@ -777,7 +777,7 @@ void morcalavin_taunt_shot(edict_t *self)
 				FX_MORK_TRACKING_MISSILE,
 				proj->s.origin);
 
-	gi.linkentity(proj); 
+	gi.linkentity(proj);
 }
 
 void morcalavin_phase_out (edict_t *self)
@@ -790,7 +790,7 @@ void morcalavin_phase_out (edict_t *self)
 		self->pre_think = morcalavin_phase_out;
 		self->next_pre_think = level.time + 0.05;
 	}
-	else 
+	else
 	{
 		self->s.color.a = 0;
 		self->pre_think = NULL;
@@ -801,18 +801,18 @@ void morcalavin_phase_out (edict_t *self)
 void morcalavin_phase_in (edict_t *self)
 {
 	int	interval = 12;
-	
+
 	if(self->s.color.a < 255 - interval)
 	{
 		self->s.color.a += irand(interval/2, interval);
 		self->pre_think = morcalavin_phase_in;
 		self->next_pre_think = level.time + 0.05;
 	}
-	else 
+	else
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
 		self->s.color.c = 0xffffffff;
-		
+
 		if(self->health <= 0 || self->monsterinfo.lefty >= 6)
 		{
 			self->pre_think = NULL;
@@ -898,7 +898,7 @@ void projectile_homethink (edict_t *self)
 
 	oldvelmult = turnspeed;
 	newveldiv = 1/(oldvelmult + 1);
-	
+
 	VectorScale(olddir, oldvelmult, olddir);
 	VectorAdd(olddir, huntdir, newdir);
 	VectorScale(newdir, newveldiv, newdir);
@@ -943,7 +943,7 @@ void morcalavin_proj1_think( edict_t *self )
 -----------------------------------------------*/
 
 void beam_blocked( edict_t *self, trace_t *trace )
-{	
+{
 //	edict_t	*proj;
 
 	/*
@@ -971,7 +971,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 					proj->velocity);
 
 		proj->reflect_debounce_time = self->reflect_debounce_time -1;
-		gi.linkentity(proj); 
+		gi.linkentity(proj);
 
 		G_SetToFree(self);
 
@@ -982,7 +982,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 	{
 		vec3_t	hitDir;
 		float	damage = flrand(MORK_DMG_PROJ1_MIN, MORK_DMG_PROJ1_MAX);
-	
+
 		if(self->dmg)
 			damage += self->dmg;
 		VectorCopy( self->velocity, hitDir );
@@ -1027,7 +1027,7 @@ void morcalavin_beam( edict_t *self)
 	proj->isBlocked = beam_blocked;
 
 	proj->owner = self;
-	
+
 	AngleVectors(self->s.angles, vf, vr, NULL);
 	VectorMA(proj->s.origin, 48,  vf, proj->s.origin);
 	VectorMA(proj->s.origin, -20, vr, proj->s.origin);
@@ -1036,7 +1036,7 @@ void morcalavin_beam( edict_t *self)
 	VectorSet(endpos, self->enemy->s.origin[0], self->enemy->s.origin[1], self->enemy->s.origin[2] + self->enemy->viewheight);
 	VectorSubtract(endpos, proj->s.origin, Forward);
 	VectorNormalize(Forward);
-	
+
 	VectorScale(Forward, 1250, proj->velocity);
 
 	vectoangles(proj->velocity, proj->s.angles);
@@ -1058,7 +1058,7 @@ void morcalavin_beam( edict_t *self)
 				proj->s.angles);
 
 
-	gi.linkentity(proj); 
+	gi.linkentity(proj);
 }
 
 
@@ -1079,7 +1079,7 @@ void morcalavin_beam2( edict_t *self)
 	proj->isBlocked = beam_blocked;
 
 	proj->owner = self;
-	
+
 	AngleVectors(self->s.angles, vf, vr, NULL);
 	VectorMA(proj->s.origin, 48,  vf, proj->s.origin);
 	VectorMA(proj->s.origin, -20, vr, proj->s.origin);
@@ -1087,7 +1087,7 @@ void morcalavin_beam2( edict_t *self)
 
 	VectorSubtract(self->enemy->s.origin, proj->s.origin, Forward);
 	VectorNormalize(Forward);
-	
+
 	VectorScale(Forward, 1250, proj->velocity);
 
 	vectoangles(proj->velocity, proj->s.angles);
@@ -1109,7 +1109,7 @@ void morcalavin_beam2( edict_t *self)
 				proj->s.angles);
 
 
-	gi.linkentity(proj); 
+	gi.linkentity(proj);
 }
 
 /*-----------------------------------------------
@@ -1118,12 +1118,12 @@ void morcalavin_beam2( edict_t *self)
 
 void morcalavin_ground_attack( edict_t *self )
 {
-	gi.CreateEffect(NULL, 
-					FX_M_EFFECTS, 
-					0, 
-					self->s.origin, 
-					"bv", 
-					FX_GROUND_ATTACK, 
+	gi.CreateEffect(NULL,
+					FX_M_EFFECTS,
+					0,
+					self->s.origin,
+					"bv",
+					FX_GROUND_ATTACK,
 					self->enemy->s.origin);
 }
 
@@ -1149,7 +1149,7 @@ void morcalavin_quake(edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	//Create the effect
 	AngleVectors(self->s.angles, vf, vr, NULL);
-	
+
 	VectorMA(self->s.origin, 44, vf, org);
 	VectorMA(org, -14, vr, org);
 	org[2] += self->mins[2];
@@ -1168,7 +1168,7 @@ void morcalavin_quake(edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 		//Knock the player down
 		KnockDownPlayer(&self->enemy->client->playerinfo);
 
-		//Denote we've done so to follow it with an attack		
+		//Denote we've done so to follow it with an attack
 		self->monsterinfo.flee_finished = true;
 	}
 }
@@ -1211,7 +1211,7 @@ void morcalavin_pause( edict_t *self )
 
 	self->takedamage = DAMAGE_YES;
 	self->mood_think(self);
-	
+
 	switch (self->ai_mood)
 	{
 		case AI_MOOD_ATTACK:
@@ -1339,7 +1339,7 @@ void mork_ai_hover (edict_t *self, float dist)
 		if(trace.fraction<1.0)
 		{
 			desired_vel = (1 - trace.fraction) * dist;
-			
+
 			if(self->velocity[2] < desired_vel)
 				self->velocity[2] = desired_vel;
 
@@ -1389,7 +1389,7 @@ void mork_ai_run (edict_t *self, float dist)
 
 void morcalavin_run(edict_t *self, G_Message_t *msg)
 {//if can't move, go into a float for a bit
-	
+
 	if (self->health <= 0)
 		return;
 
@@ -1490,7 +1490,7 @@ void morcalavinStaticsInit()
 	classStatics[CID_MORK].msgReceivers[MSG_RUN] = morcalavin_run;
 	classStatics[CID_MORK].msgReceivers[MSG_EVADE] = morcalavin_evade;
 	classStatics[CID_MORK].msgReceivers[MSG_DEATH] = morcalavin_death;
-	
+
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/morcalavin/tris.fm");
@@ -1498,49 +1498,49 @@ void morcalavinStaticsInit()
 	resInfo.sounds = sounds;
 
 //quake attack
-	sounds[SND_QUAKE]=gi.soundindex("monsters/mork/quake.wav");	
+	sounds[SND_QUAKE]=gi.soundindex("monsters/mork/quake.wav");
 //straightt-fire beam
-	sounds[SND_BEAM]=gi.soundindex("monsters/mork/beam.wav");	
-	sounds[SND_BEAMHIT]=gi.soundindex("monsters/mork/beamhit.wav");	
+	sounds[SND_BEAM]=gi.soundindex("monsters/mork/beam.wav");
+	sounds[SND_BEAMHIT]=gi.soundindex("monsters/mork/beamhit.wav");
 //homing balls
-	sounds[SND_HOMING]=gi.soundindex("monsters/mork/homing.wav");	
-	sounds[SND_HOMEHIT]=gi.soundindex("monsters/mork/homehit.wav");	
+	sounds[SND_HOMING]=gi.soundindex("monsters/mork/homing.wav");
+	sounds[SND_HOMEHIT]=gi.soundindex("monsters/mork/homehit.wav");
 //power Puff
-	sounds[SND_PPCHARGE]=gi.soundindex("monsters/mork/ppcharge.wav");	
-	sounds[SND_PPFIRE]=gi.soundindex("monsters/mork/ppfire.wav");	
-	sounds[SND_PPEXPLODE]=gi.soundindex("monsters/mork/ppexplode.wav");	
+	sounds[SND_PPCHARGE]=gi.soundindex("monsters/mork/ppcharge.wav");
+	sounds[SND_PPFIRE]=gi.soundindex("monsters/mork/ppfire.wav");
+	sounds[SND_PPEXPLODE]=gi.soundindex("monsters/mork/ppexplode.wav");
 //Lightning from eyes
-	sounds[SND_LIGHTNING]=gi.soundindex("monsters/mork/lightning.wav");	
-	sounds[SND_LGHTNGHIT]=gi.soundindex("monsters/mork/lghtnghit.wav");	
+	sounds[SND_LIGHTNING]=gi.soundindex("monsters/mork/lightning.wav");
+	sounds[SND_LGHTNGHIT]=gi.soundindex("monsters/mork/lghtnghit.wav");
 //Shove
-	sounds[SND_FORCEWALL]=gi.soundindex("monsters/mork/forcewall.wav");	
+	sounds[SND_FORCEWALL]=gi.soundindex("monsters/mork/forcewall.wav");
 //Shield
-	sounds[SND_MAKESHIELD]=gi.soundindex("monsters/mork/makeshield.wav");	
-	sounds[SND_SHIELDHIT]=gi.soundindex("monsters/mork/shieldhit.wav");	
-	sounds[SND_SHIELDPULSE]=gi.soundindex("monsters/mork/shieldpulse.wav");	
-	sounds[SND_SHIELDGONE]=gi.soundindex("monsters/mork/shieldgone.wav");	
-	sounds[SND_SHIELDBREAK]=gi.soundindex("monsters/mork/shieldbreak.wav");	
+	sounds[SND_MAKESHIELD]=gi.soundindex("monsters/mork/makeshield.wav");
+	sounds[SND_SHIELDHIT]=gi.soundindex("monsters/mork/shieldhit.wav");
+	sounds[SND_SHIELDPULSE]=gi.soundindex("monsters/mork/shieldpulse.wav");
+	sounds[SND_SHIELDGONE]=gi.soundindex("monsters/mork/shieldgone.wav");
+	sounds[SND_SHIELDBREAK]=gi.soundindex("monsters/mork/shieldbreak.wav");
 //Fly forward
-	sounds[SND_RUSH]=gi.soundindex("monsters/mork/rush.wav");	
-//hurt and get up	
-	sounds[SND_FALL]=gi.soundindex("monsters/mork/fall.wav");	
-	sounds[SND_REVIVE]=gi.soundindex("monsters/mork/revive.wav");	
+	sounds[SND_RUSH]=gi.soundindex("monsters/mork/rush.wav");
+//hurt and get up
+	sounds[SND_FALL]=gi.soundindex("monsters/mork/fall.wav");
+	sounds[SND_REVIVE]=gi.soundindex("monsters/mork/revive.wav");
 //strafing beams attack
-	sounds[SND_STRAFEON]=gi.soundindex("monsters/mork/strafeon.wav");	
-	sounds[SND_STRFSWNG]=gi.soundindex("monsters/mork/strfswng.wav");	
-	sounds[SND_STRAFEOFF]=gi.soundindex("monsters/mork/strafeoff.wav");	
+	sounds[SND_STRAFEON]=gi.soundindex("monsters/mork/strafeon.wav");
+	sounds[SND_STRFSWNG]=gi.soundindex("monsters/mork/strfswng.wav");
+	sounds[SND_STRAFEOFF]=gi.soundindex("monsters/mork/strafeoff.wav");
 //hurt/kill player laugh
-	sounds[SND_LAUGH]=gi.soundindex("monsters/mork/laugh.wav");	
-	
+	sounds[SND_LAUGH]=gi.soundindex("monsters/mork/laugh.wav");
+
 //Taunts
-	sounds[TAUNT_LAUGH1] =gi.soundindex("monsters/mork/laugh1.wav");	
-	sounds[TAUNT_LAUGH2] =gi.soundindex("monsters/mork/laugh2.wav");	
-	sounds[TAUNT_LAUGH3] =gi.soundindex("monsters/mork/laugh3.wav");	
-	sounds[TAUNT_LAUGH4] =gi.soundindex("monsters/mork/laugh4.wav");	
-	
-	sounds[TAUNT_BELLY1] =gi.soundindex("monsters/mork/belly.wav");	
-	sounds[TAUNT_BELLY2] =gi.soundindex("monsters/mork/belly2.wav");	
-	sounds[TAUNT_BELLY3] =gi.soundindex("monsters/mork/digest.wav");	
+	sounds[TAUNT_LAUGH1] =gi.soundindex("monsters/mork/laugh1.wav");
+	sounds[TAUNT_LAUGH2] =gi.soundindex("monsters/mork/laugh2.wav");
+	sounds[TAUNT_LAUGH3] =gi.soundindex("monsters/mork/laugh3.wav");
+	sounds[TAUNT_LAUGH4] =gi.soundindex("monsters/mork/laugh4.wav");
+
+	sounds[TAUNT_BELLY1] =gi.soundindex("monsters/mork/belly.wav");
+	sounds[TAUNT_BELLY2] =gi.soundindex("monsters/mork/belly2.wav");
+	sounds[TAUNT_BELLY3] =gi.soundindex("monsters/mork/digest.wav");
 
 	classStatics[CID_MORK].resInfo = &resInfo;
 }
@@ -1592,15 +1592,15 @@ qboolean morcalavin_choose_teleport_destination(edict_t *self)
 		tracedist = irand(self->min_missile_range, self->missile_range);
 		VectorMA(startpos, -tracedist, forward, endpos);
 		noblockent = self->enemy;
-		
+
 		gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID, &trace);
-		
+
 		if(trace.fraction*tracedist < 100)//min origin lerp dist
 			continue;
 
 		if(trace.allsolid || trace.startsolid)
 			continue;
-		
+
 		if(vhlen(trace.endpos, self->enemy->s.origin)>=128)
 		{
 			VectorCopy(trace.endpos, startpos);
@@ -1625,7 +1625,7 @@ void morcalavin_teleport_attack(edict_t *self)
 
 	//Find a valid point away from the player
 	morcalavin_choose_teleport_destination(self);
-	
+
 	//Start the animation for the attack
 	if (self->monsterinfo.lefty == 8)
 		SetAnim(self, ANIM_ATTACK4);
@@ -1633,7 +1633,7 @@ void morcalavin_teleport_attack(edict_t *self)
 		SetAnim(self, ANIM_ATTACK2);
 
 	//Play the teleport in sound fx
-	gi.sound(self, CHAN_AUTO, sounds[SND_MAKESHIELD], 1, ATTN_NORM, 0);	
+	gi.sound(self, CHAN_AUTO, sounds[SND_MAKESHIELD], 1, ATTN_NORM, 0);
 
 	//Start phasing back in
 	morcalavin_init_phase_in(self);
@@ -1667,7 +1667,7 @@ void morcalavin_teleport_attack(edict_t *self)
 void morcalavin_postthink(edict_t *self)
 {
 	int chance;
-	
+
 	if (!self->monsterinfo.lefty)
 		MG_CheckEvade(self);
 
@@ -1722,21 +1722,21 @@ void morcalavin_postthink(edict_t *self)
 			self->monsterinfo.jump_time = level.time + 8.0;
 			self->monsterinfo.lefty++;
 			break;
-		
+
 		case 3:
 			gi.sound(self, CHAN_AUTO, sounds[TAUNT_BELLY2], 1, ATTN_NONE, 0);
 			self->monsterinfo.sound_start = -1;
 			self->monsterinfo.jump_time = level.time + 5.0;
 			self->monsterinfo.lefty++;
 			break;
-		
+
 		case 4:
 			gi.sound(self, CHAN_AUTO, sounds[TAUNT_BELLY3], 1, ATTN_NONE, 0);
 			self->monsterinfo.sound_start = -1;
 			self->monsterinfo.jump_time = level.time + 7.0;
 			self->monsterinfo.lefty++;
 			break;
-		
+
 		case 5:
 			chance = irand(0,6);
 			switch (chance)
@@ -1760,11 +1760,11 @@ void morcalavin_postthink(edict_t *self)
 			self->monsterinfo.sound_start = -1;
 			self->monsterinfo.jump_time = level.time + 1.0;
 			break;
-		
+
 		case 6:
 			self->monsterinfo.jump_time = -1;
 			gi.sound(self, CHAN_AUTO, sounds[TAUNT_LAUGH1], 1, ATTN_NONE, 0);
-			
+
 			if (!self->targetEnt)
 			{
 #ifdef _DEVEL
@@ -1775,7 +1775,7 @@ void morcalavin_postthink(edict_t *self)
 			}
 
 			self->svflags &= ~SVF_NO_AUTOTARGET;
-		
+
 			if (self->delay)
 			{
 				self->monsterinfo.sound_start = self->monsterinfo.attack_finished = level.time + ( self->delay );
@@ -1789,7 +1789,7 @@ void morcalavin_postthink(edict_t *self)
 				self->monsterinfo.attack_finished = level.time + 2.0;
 				self->delay = 2;
 			}
-			
+
 			self->monsterinfo.lefty++;
 			break;
 
@@ -1837,7 +1837,7 @@ int	morcalavin_resist_death (edict_t *self, edict_t *inflictor, edict_t *attacke
 
 	gi.sound(self, CHAN_VOICE, sounds[SND_FALL], 1, ATTN_NORM, 0);
 	SetAnim(self, ANIM_FALL);
-	
+
 	self->s.color.a = 0xFFFFFFFF;
 	self->pre_think = NULL;
 	self->next_pre_think = -1;
@@ -1929,7 +1929,7 @@ void SP_monster_morcalavin (edict_t *self)
 	self->s.modelindex = classStatics[CID_MORK].resInfo->modelIndex;
 	self->s.skinnum=0;
 
-	self->monsterinfo.otherenemyname = "player";	
+	self->monsterinfo.otherenemyname = "player";
 
 	self->post_think = morcalavin_postthink;
 	self->next_post_think = level.time + 0.1;
@@ -1959,7 +1959,7 @@ void SP_monster_morcalavin (edict_t *self)
 
 /*QUAKED obj_morcalavin_barrier (1 .5 0) ? ?
 
-The magical barrier that prevents the player from entering the tome area and defeating 
+The magical barrier that prevents the player from entering the tome area and defeating
 Morcalavin
 
 */
@@ -2022,7 +2022,7 @@ void morcalavin_barrier_touch(edict_t *self, edict_t *other, cplane_t *plane, cs
 			if (self->delay < level.time)
 			{
 				self->delay = level.time + 0.5;
-				
+
 				gi.CreateEffect( NULL,
 								 FX_WEAPON_STAFF_STRIKE,
 								 0,
@@ -2039,7 +2039,7 @@ void morcalavin_barrier_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	//Become visible again
 	self->svflags &= ~SVF_NOCLIENT;
-	
+
 	//Never do this again
 	self->use = NULL;
 

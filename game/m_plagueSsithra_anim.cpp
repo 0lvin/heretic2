@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "m_plaguessithra_anim.h"
@@ -243,7 +243,7 @@ animframe_t ssithra_frames_dive1 [] =
 animmove_t ssithra_move_dive1 = {26, ssithra_frames_dive1, ssithra_decide_swimforward};
 
 /*----------------------------------------------------------------------
-  Ssithra duckshoot 
+  Ssithra duckshoot
 -----------------------------------------------------------------------*/
 animframe_t ssithra_frames_unduck [] =
 {
@@ -278,7 +278,7 @@ animframe_t ssithra_frames_duckshoot1 [] =
 animmove_t ssithra_move_duckshoot1 = {11, ssithra_frames_duckshoot1, ssithraCheckUnDuck};
 
 /*----------------------------------------------------------------------
-  Ssithra duck 
+  Ssithra duck
 -----------------------------------------------------------------------*/
 animframe_t ssithra_frames_duck1 [] =
 {//oops, duckframes same as duckshoot?
@@ -479,7 +479,7 @@ animframe_t ssithra_frames_pain_a1 [] =
 animmove_t ssithra_move_pain_a1 = {2, ssithra_frames_pain_a1, ssithra_pain_react};
 
 /*----------------------------------------------------------------------
-  Ssithra shoot 
+  Ssithra shoot
 -----------------------------------------------------------------------*/
 animframe_t ssithra_frames_shoot1 [] =
 {
@@ -1195,7 +1195,7 @@ animframe_t ssithra_c_frames_walk1 [] =
 animmove_t ssithra_c_move_walk1 = {14, ssithra_c_frames_walk1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra backpedal - 
+  Ssithra backpedal -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_backpedal1 [] =
 {
@@ -1214,7 +1214,7 @@ animmove_t ssithra_c_move_backpedal1 = {10, ssithra_c_frames_backpedal1, ai_c_cy
 
 
 /*----------------------------------------------------------------------
-  Ssithra bound - 
+  Ssithra bound -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_action1 [] =
 {
@@ -1328,7 +1328,7 @@ animframe_t ssithra_c_frames_action2 [] =
 animmove_t ssithra_c_move_action2 = {26, ssithra_c_frames_action2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra duckshoot 
+  Ssithra duckshoot
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_action3 [] =
 {
@@ -1356,7 +1356,7 @@ animframe_t ssithra_c_frames_action5 [] =
 animmove_t ssithra_c_move_action5 = {6, ssithra_c_frames_action5, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra duck 
+  Ssithra duck
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_action6 [] =
 {//oops, duckframes same as duckshoot?
@@ -1402,7 +1402,7 @@ animframe_t ssithra_c_frames_action7[] =
 animmove_t ssithra_c_move_action7 = {8, ssithra_c_frames_action7, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra idle2 - 
+  Ssithra idle2 -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_idle2 [] =
 {
@@ -1450,7 +1450,7 @@ animframe_t ssithra_c_frames_idle2 [] =
 animmove_t ssithra_c_move_idle2 = {40, ssithra_c_frames_idle2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra idle3 - 
+  Ssithra idle3 -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_idle3 [] =
 {
@@ -1483,7 +1483,7 @@ animframe_t ssithra_c_frames_idle3 [] =
 animmove_t ssithra_c_move_idle3 = {24, ssithra_c_frames_idle3, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra attack1 - 
+  Ssithra attack1 -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_attack1 [] =
 {
@@ -1556,7 +1556,7 @@ animframe_t ssithra_c_frames_pain1 [] =
 animmove_t ssithra_c_move_pain1 = {2, ssithra_c_frames_pain1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra shoot 
+  Ssithra shoot
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_attack3 [] =
 {
@@ -1590,7 +1590,7 @@ animframe_t ssithra_c_frames_action9 [] =
 animmove_t ssithra_c_move_action9 = {10, ssithra_c_frames_action9, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra startle - 
+  Ssithra startle -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_action10 [] =
 {
@@ -1636,7 +1636,7 @@ animframe_t ssithra_c_frames_action10 [] =
 animmove_t ssithra_c_move_action10 = {38, ssithra_c_frames_action10, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra startle - 
+  Ssithra startle -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_action11 [] =
 {
@@ -1664,7 +1664,7 @@ animframe_t ssithra_c_frames_action11 [] =
 animmove_t ssithra_c_move_action11 = {20, ssithra_c_frames_action11, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra startle - 
+  Ssithra startle -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_action12 [] =
 {
@@ -1716,7 +1716,7 @@ animframe_t ssithra_c_frames_swim1 [] =
 animmove_t ssithra_c_move_swim1 = {15, ssithra_c_frames_swim1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra water_death -  
+  Ssithra water_death -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_death1 [] =
 {
@@ -1801,7 +1801,7 @@ animframe_t ssithra_frames_idle4 [] =
 animmove_t ssithra_move_idle4 = {20, ssithra_frames_idle4, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra water_pain_a - 
+  Ssithra water_pain_a -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_pain2 [] =
 {
@@ -1811,7 +1811,7 @@ animframe_t ssithra_c_frames_pain2 [] =
 animmove_t ssithra_c_move_pain2 = {2, ssithra_c_frames_pain2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Ssithra water_pain_b - 
+  Ssithra water_pain_b -
 -----------------------------------------------------------------------*/
 animframe_t ssithra_c_frames_pain3 [] =
 {

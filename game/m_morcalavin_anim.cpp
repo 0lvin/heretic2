@@ -65,7 +65,7 @@ animmove_t morcalavin_move_attack1 = {13, morcalavin_frames_attack1, morcalavin_
 
 //Attack 2
 
-animframe_t morcalavin_frames_attack2[] = 
+animframe_t morcalavin_frames_attack2[] =
 {
 	FRAME_atakb1,	NULL, 0, 0, 0, ai_charge, 0,  NULL,
 	FRAME_atakb1,	NULL, 0, 0, 0, ai_charge, 0,  NULL,
@@ -93,7 +93,7 @@ animframe_t morcalavin_frames_attack2[] =
 };
 animmove_t morcalavin_move_attack2 = {22,morcalavin_frames_attack2, morcalavin_fade_out};
 
-animframe_t morcalavin_frames_attack2b[] = 
+animframe_t morcalavin_frames_attack2b[] =
 {
 	FRAME_atakb1,	NULL, 0, 0, 0, ai_charge, 0,  NULL,
 	FRAME_atakb2,	NULL, 0, 0, 0, ai_charge, 0,  NULL,
@@ -116,7 +116,7 @@ animframe_t morcalavin_frames_attack2b[] =
 animmove_t morcalavin_move_attack2b = {17,morcalavin_frames_attack2b, morcalavin_pause};
 //Attack 3
 
-animframe_t morcalavin_frames_attack3[] = 
+animframe_t morcalavin_frames_attack3[] =
 {
 	FRAME_atakc1,	NULL, 0, 0, 0, ai_charge, 0,  NULL,
 	FRAME_atakc2,	NULL, 0, 0, 0, ai_charge, 0,  NULL,
@@ -144,7 +144,7 @@ animmove_t morcalavin_move_attack3 = {21,morcalavin_frames_attack3, morcalavin_p
 
 
 
-animframe_t morcalavin_frames_def1[] = 
+animframe_t morcalavin_frames_def1[] =
 {
 	FRAME_defnsa1,	  NULL, 0, 0, 0, ai_charge, 0,  NULL,
 	FRAME_defnsa2,	  NULL, 0, 0, 0, ai_charge, 0,  NULL,
@@ -171,7 +171,7 @@ animframe_t morcalavin_frames_def1[] =
 };
 animmove_t morcalavin_move_def1 = {21,morcalavin_frames_def1, morcalavin_pause};
 
-animframe_t morcalavin_frames_def2[] = 
+animframe_t morcalavin_frames_def2[] =
 {
 	FRAME_defnsb1,	 NULL, 0, 0, 0, ai_charge, 0,  NULL,
 	FRAME_defnsb2,	 NULL, 0, 0, 0, ai_charge, 0,  NULL,
@@ -249,7 +249,7 @@ animframe_t morcalavin_frames_getup[] =
 };
 animmove_t morcalavin_move_getup = {14,morcalavin_frames_getup, morcalavin_retort};
 
-animframe_t morcalavin_frames_retort[] = 
+animframe_t morcalavin_frames_retort[] =
 {
 	FRAME_getupb1,	 NULL, 0, 0, 0, mork_ai_hover, 120,  NULL,
 	FRAME_getupb2,	 NULL, 0, 0, 0, mork_ai_hover, 120,  NULL,

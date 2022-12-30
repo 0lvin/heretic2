@@ -25,7 +25,7 @@
 #define TELE_HEIGHT			10.0
 #define TELE_RAD	 		56.0
 
-#define	NUM_TELEPORT_MODELS	2		  
+#define	NUM_TELEPORT_MODELS	2
 static struct model_s *tele_models[NUM_TELEPORT_MODELS];
 void PreCacheTeleport()
 {
@@ -84,7 +84,7 @@ void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 	count = GetScaledCount(NUM_TELE_PARTS, 0.3);
 	for(i = 0; i < count; i++)
 	{
-		temp_col = irand(0, 255); 
+		temp_col = irand(0, 255);
 		*col1 = *col2 = temp_col;
 		*col3 = 255;
 		color.a = 255;
@@ -135,7 +135,7 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 		teleport_fx->r.model = tele_models + 1;
 	}
 
-	teleport_fx->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA; 
+	teleport_fx->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	teleport_fx->r.frame = 0;
 	teleport_fx->r.scale = 0.5;
 	teleport_fx->d_scale = 3.0;
@@ -149,7 +149,7 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 	count = GetScaledCount(NUM_TELE_PARTS, 0.3);
 	for(i = 0; i < count; i++)
 	{
-		temp_col = irand(0, 255); 
+		temp_col = irand(0, 255);
 		*col1 = *col2 = temp_col;
 		*col3 = 255;
 		color.a = 1;

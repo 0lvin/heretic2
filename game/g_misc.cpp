@@ -73,7 +73,7 @@ int SilverSpringSoundID[AS_MAX] =
 {
 	AS_NOTHING,
 	AS_FIRE,
-	AS_WATERLAPPING,	
+	AS_WATERLAPPING,
 	AS_SEAGULLS,
 	AS_OCEAN,
 	AS_BIRDS,
@@ -132,7 +132,7 @@ DebrisSound_t DebrisSound [NUM_MAT]=
 
 
 /*QUAKED func_group (0 0 0) ?
-	
+
 	Used to group brushes together just for editor convenience.
 */
 
@@ -173,7 +173,7 @@ void VelocityForDamage (int damage, vec3_t v)
 
 	if (damage < 50)
 		VectorScale (v, 0.7, v);
-	else 
+	else
 		VectorScale (v, 1.2, v);
 }
 
@@ -382,8 +382,8 @@ void SpawnDebris(edict_t *self, float size, vec3_t origin)
 			self->materialtype = MAT_POTTERY;
 
 	if (DebrisSound[self->materialtype].Name)
-		gi.sound (self, CHAN_VOICE, gi.soundindex(DebrisSound[self->materialtype].Name) , 
-			2, ATTN_NORM, 0);	
+		gi.sound (self, CHAN_VOICE, gi.soundindex(DebrisSound[self->materialtype].Name) ,
+			2, ATTN_NORM, 0);
 }
 
 void BecomeDebris2(edict_t *self, float damage)
@@ -459,9 +459,9 @@ void BecomeDebris2(edict_t *self, float damage)
 //			self->solid = SOLID_NOT;		// This causes the breakable brushes to generate a sound
 			VectorMA(self->absmin,0.5,self->size,self->s.origin);
 		}
-		
+
 		size = VectorLength(self->size) * 3;
-		
+
 		if(self->solid == SOLID_BSP)
 			size *= 3;
 		else if(self->classID == CID_MOTHER)
@@ -495,7 +495,7 @@ void SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 	float		mag, size;
 	int			flags = 0;
 	int			violence=VIOLENCE_DEFAULT;
-	
+
 	mag = VectorLength(self->mins);
 
 	mat = (byte)(self->materialtype);
@@ -556,12 +556,12 @@ void SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 void DefaultObjectDieHandler(edict_t *self, G_Message_t *msg)
 {
 	edict_t *inflictor;
-	
+
 	G_ParseMsgParms(msg, "ee", &inflictor, &inflictor);
 
 	G_UseTargets(self, inflictor);
 
-	if (self->target_ent)		
+	if (self->target_ent)
 		BecomeDebris(self->target_ent);
 
 	BecomeDebris(self);
@@ -589,14 +589,14 @@ void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int 
 		flags = CEF_FLAG6;
 	else
 		flags = 0;
-	
+
 	if(self->materialtype == MAT_INSECT)
 		flags |= CEF_FLAG8;
 
 	if(give_head_to_harpy && take_head_from == self)
 	{
 		harpy_take_head(give_head_to_harpy, self, BodyPart, frame, flags);
-		SprayDebris(self, *spot, 5, damage);		
+		SprayDebris(self, *spot, 5, damage);
 		return;
 	}
 
@@ -635,7 +635,7 @@ void ThrowWeapon(edict_t *self, vec3_t *spot, int BodyPart, float damage, int fr
 }
 
 /*QUAKED path_corner (.5 .3 0) (-8 -8 -8) (8 8 8) TELEPORT
----------KEYS---------------	
+---------KEYS---------------
 target -  target name of next path corner
 pathtarget - used when an entity that has this path_corner targeted touches it
 angles - used to make the brush rotate. The brush MUST have an origin brush in it. It is an
@@ -655,7 +655,7 @@ void path_corner_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface
 
 	if (other->movetarget != self)
 		return;
-	
+
 	if (other->enemy)
 		return;
 
@@ -734,7 +734,7 @@ void SP_path_corner (edict_t *self)
 }
 
 /*QUAKED point_combat (0.5 0.3 0) (-8 -8 -8) (8 8 8) Hold
-	
+
 	Makes this the target of a monster and it will head here
 	when first activated before going after the activator.  If
 	hold is selected, it will stay here.
@@ -804,7 +804,7 @@ void SP_point_combat (edict_t *self)
 
 
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)
-	
+
 	Used as a positional target for spotlights, etc.
 */
 void SP_info_null (edict_t *self)
@@ -829,7 +829,7 @@ void SP_info_notnull (edict_t *self)
 
 
 /*QUAKED func_wall (0 .5 .8) ? TRIGGER_SPAWN TOGGLE START_ON ANIMATED ANIMATED_FAST
-	
+
 	This is just a solid wall if not inhibited
 
 	TRIGGER_SPAWN	the wall will not be present until triggered
@@ -911,7 +911,7 @@ void SP_func_wall (edict_t *self)
 
 
 /*QUAKED func_object (0 .5 .8) ? TRIGGER_SPAWN ANIMATED ANIMATED_FAST
-	
+
 	This is solid bmodel that will fall if it's support it removed.
 */
 
@@ -989,7 +989,7 @@ void ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
 	edict_t *newitem;
 	vec3_t forward, holdAngles.holdorigin;
 	float delta;
-	
+
 	if ((!self->target) || (!self->style))
 	{
 		return;
@@ -1194,9 +1194,9 @@ Stepping onto this disc will teleport players to the targeted misc_teleporter_de
 -------  FIELDS  ------------------
 NO_MODEL - makes teleporter invisible
 DEATHMATCH_RANDOM - makes the teleporter dump you at random spawn points in deathmatch
-START_OFF - Pad has no effect, and won't teleport you anywhere till its activated 
-MULT_DEST - pad is targeted at more than one destination 
----------- KEYS -----------------  
+START_OFF - Pad has no effect, and won't teleport you anywhere till its activated
+MULT_DEST - pad is targeted at more than one destination
+---------- KEYS -----------------
 style - number of destinations this pad has.
 
 */
@@ -1282,7 +1282,7 @@ void misc_magic_portal_touch (edict_t *self, edict_t *other, cplane_t *plane, cs
 
 	if (level.time < self->touch_debounce_time)
 		return;
-	
+
 	if (!other->client)		// Not a player
 		return;
 
@@ -1306,15 +1306,15 @@ void misc_magic_portal_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (level.time < self->impact_debounce_time)
 		return;
-	
+
 	if (self->solid == SOLID_NOT)
-	{	
+	{
 		int style = self->style;
 		int count = self->count;
 		// We aren't engaged yet.  Make solid and start the effect.
 		self->solid = SOLID_TRIGGER;
 		self->touch = misc_magic_portal_touch;
-		self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_MAGIC_PORTAL, CEF_BROADCAST, self->s.origin, 
+		self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_MAGIC_PORTAL, CEF_BROADCAST, self->s.origin,
 								"vbb", self->s.angles, (byte)style, (byte)count);
 		self->s.effects &= ~EF_DISABLE_EXTRA_FX;
 	}
@@ -1420,7 +1420,7 @@ void soundambient_think(edict_t *self)
 	case AS_WATERLAPPING:
 		self->s.sound = gi.soundindex("ambient/waterlap.wav");
 		break;
-	case AS_OCEAN:	
+	case AS_OCEAN:
 		self->s.sound = gi.soundindex("ambient/ocean.wav");
 		break;
 	case AS_SMALLFOUNTAIN:
@@ -1530,7 +1530,7 @@ void sound_ambient_init(edict_t *self)
 	// if we are asked to do a sound of type zero, free this edict, since its obviously bogus
 	if (!self->style)
 	{
-		gi.dprintf("Bogus ambient sound at x:%f y:%f z:%f\n",self->s.origin[0], self->s.origin[1],self->s.origin[2]); 
+		gi.dprintf("Bogus ambient sound at x:%f y:%f z:%f\n",self->s.origin[0], self->s.origin[1],self->s.origin[2]);
 		G_SetToFree(self);
 		return;
 	}
@@ -1539,7 +1539,7 @@ void sound_ambient_init(edict_t *self)
 	if (self->spawnflags & 1)
 	{
 		VectorClear(self->s.origin);
-	}	
+	}
 	else
 		// if we are here, then this ambient sound should have an origin
 		assert(Vec3NotZero(self->s.origin));
@@ -1559,7 +1559,7 @@ NON_LOCAL - sound occurs everywhere in the level - attenuation is not operative 
 wait    amount of seconds to wait + or - 50% before spawning sound again (default is 10 seconds)
 START_OFF - starts off, can be triggered on
 -------  KEYS  ------------------
-style  
+style
 1 - Cauldron bubbling (looping sound)
 2 - wind, low, eerie (looping)
 3 - wind, low, noisy (looping)
@@ -1571,9 +1571,9 @@ style
 
 attenuation  (how quickly sound drops off from origin)
    0 - heard over entire level (default)
-   1 - 
-   2 - 
-   3 - diminish very rapidly with distance 
+   1 -
+   2 -
+   3 - diminish very rapidly with distance
 
 volume   range of .1 to 1   (default .5)
   0 - silent
@@ -1595,7 +1595,7 @@ NON_LOCAL - sound occurs everywhere in the level - attenuation is not operative 
 wait    amount of seconds to wait + or - 50% before spawning sound again (default is 10 seconds)
 START_OFF - starts off, can be triggered on
 -------  KEYS  ------------------
-style  
+style
 1 - Mud pool bubbling (looping)
 2 - Rocks falling (3 sounds)
 3 - wind, low, eerie (looping)
@@ -1606,9 +1606,9 @@ style
 
 attenuation  (how quickly sound drops off from origin)
    0 - heard over entire level (default)
-   1 - 
-   2 - 
-   3 - diminish very rapidly with distance 
+   1 -
+   2 -
+   3 - diminish very rapidly with distance
 
 volume   range of .1 to 1   (default .5)
   0 - silent
@@ -1630,7 +1630,7 @@ NON_LOCAL - sound occurs everywhere in the level - attenuation is not operative 
 wait    amount of seconds to wait + or - 50% before spawning sound again (default is 10 seconds)
 START_OFF - starts off, can be triggered on
 -------  KEYS  ------------------
-style   
+style
 1 - gong
 2 - wind, low, eerie (looping)
 3 - wind, low, noisy (looping)
@@ -1642,9 +1642,9 @@ style
 
 attenuation  (how quickly sound drops off from origin)
    0 - heard over entire level (default)
-   1 - 
-   2 - 
-   3 - diminish very rapidly with distance 
+   1 -
+   2 -
+   3 - diminish very rapidly with distance
 
 volume   range of .1 to 1   (default .5)
   0 - silent
@@ -1666,18 +1666,18 @@ NON_LOCAL - sound occurs everywhere in the level - attenuation is not operative 
 wait    amount of seconds to wait + or - 50% before spawning sound again (default is 10 seconds)
 START_OFF - starts off, can be triggered on
 -------  KEYS  ------------------
-style  
+style
 1 - small fountain (constant loop)
 2 - large fountain (constant loop)
 3 - water running out of sewer (constant loop)
 4 - rushing waterway outside (constant loop)
-5 - wind chime 
+5 - wind chime
 
 attenuation  (how quickly sound drops off from origin)
    0 - heard over entire level (default)
-   1 - 
-   2 - 
-   3 - diminish very rapidly with distance 
+   1 -
+   2 -
+   3 - diminish very rapidly with distance
 
 volume   range of .1 to 1   (default .5)
   0 - silent
@@ -1698,7 +1698,7 @@ NON_LOCAL - sound occurs everywhere in the level - attenuation is not operative 
 wait    amount of seconds to wait + or - 50% before spawning sound again (default is 10 seconds)
 START_OFF - starts off, can be triggered on
 -------  KEYS  ------------------
-style   
+style
 1 - bird, quick, high pitch
 2 - bird, low, medium pitch
 3 - huge waterfall
@@ -1714,9 +1714,9 @@ style
 
 attenuation  (how quickly sound drops off from origin)
    0 - heard over entire level (default)
-   1 - 
-   2 - 
-   3 - diminish very rapidly with distance 
+   1 -
+   2 -
+   3 - diminish very rapidly with distance
 
 volume   range of .1 to 1   (default .5)
   0 - silent
@@ -1736,7 +1736,7 @@ NON_LOCAL - sound occurs everywhere in the level - attenuation is not operative 
 wait    amount of seconds to wait + or - 50% before spawning sound again (default is 10 seconds)
 START_OFF - starts off, can be triggered on
 -------  KEYS  ------------------
-style :  
+style :
 1 - fire (looping)
 2 - water lapping (looping)
 3 - seagulls (2 random calls)
@@ -1746,7 +1746,7 @@ style :
 7 - frogs (2 random ribbets)
 8 - distant women/children crying (4 total)
 9 - mosquitoes (2 random sounds)
-10 - bubbles 
+10 - bubbles
 11 - bell tolling
 12 - footsteps (3 random sounds)
 13 - moans/screams/coughing (5 random sounds)
@@ -1758,9 +1758,9 @@ style :
 
 attenuation  (how quickly sound drops off from origin)
 0 - heard over entire level (default)
-1 - 
-2 - 
-3 - diminish very rapidly with distance 
+1 -
+2 -
+3 - diminish very rapidly with distance
 
 volume   range of .1 to 1   (default .5)
   0 - silent
@@ -1800,10 +1800,10 @@ void remove_camera(edict_t *Self)
 		for(i=0;i<game.maxclients;i++)
 		{
 			cl_ent=g_edicts+1+i;
-	
+
 			if(!cl_ent->inuse)
 				continue;
-	
+
 			cl_ent->client->RemoteCameraLockCount--;
 		}
 	}
@@ -1846,21 +1846,21 @@ void misc_remote_camera_think(edict_t *Self)
 				for(i=0;i<3;i++)
 					Self->activator->client->ps.remote_vieworigin[i]=Self->s.origin[i];
 			}
-		}	
+		}
 		else
 		{
 			// For all clients.
 
 			int		i;
 			edict_t *cl_ent;
-	
+
 			for(i=0;i<game.maxclients;i++)
 			{
 				cl_ent=g_edicts+1+i;
-		
+
 				if(!cl_ent->inuse)
 					continue;
-		
+
 				if(cl_ent->client->RemoteCameraNumber==Self->s.number)
 				{
 					int j;
@@ -1875,7 +1875,7 @@ void misc_remote_camera_think(edict_t *Self)
 	// ********************************************************************************************
 	// Find my target entity and then orientate myself to look at it.
 	// ********************************************************************************************
-	
+
 	if(Self->targetEnt=G_Find(NULL,FOFS(targetname),Self->target))
 	{
 		// Calculate the angles from myself to my target.
@@ -1907,18 +1907,18 @@ void misc_remote_camera_think(edict_t *Self)
 
 			int		i;
 			edict_t *cl_ent;
-	
+
 			for(i=0;i<game.maxclients;i++)
 			{
 				cl_ent=g_edicts+1+i;
-		
+
 				if(!cl_ent->inuse)
 					continue;
 
 				if(cl_ent->client->RemoteCameraNumber==Self->s.number)
 				{
 					int j;
-					
+
 					for(j=0;j<3;j++)
 						cl_ent->client->ps.remote_viewangles[j]=Self->s.angles[j];
 				}
@@ -1937,7 +1937,7 @@ void misc_remote_camera_think(edict_t *Self)
 		Self->delay-=0.1;
 
 		if (Self->delay >= 0.0)
-		{	
+		{
 			Self->nextthink=level.time+0.1;
 		}
 		else
@@ -1960,10 +1960,10 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 		if(Self->spawnflags&2)
 		{
 			// I am a scripted camera, so free myself before returning.
-	
+
 			remove_camera(Self);
 		}
-		
+
 		return;
 	}
 
@@ -1990,14 +1990,14 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 
 		int		i;
 		edict_t *cl_ent;
-	
+
 		for(i=0;i<game.maxclients;i++)
 		{
 			cl_ent=g_edicts+1+i;
-		
+
 			if(!cl_ent->inuse)
 				continue;
-	
+
 			cl_ent->client->RemoteCameraLockCount++;
 
 			cl_ent->client->RemoteCameraNumber=Self->s.number;
@@ -2030,16 +2030,16 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 
 			int		i,j;
 			edict_t *cl_ent;
-	
+
 			Self->enemy=NULL;
 
 			for(i=0;i<game.maxclients;i++)
 			{
 				cl_ent=g_edicts+1+i;
-		
+
 				if(!cl_ent->inuse)
 					continue;
-		
+
 				for(j=0;j<3;j++)
 					cl_ent->client->ps.remote_vieworigin[j]=Self->s.origin[j];
 			}
@@ -2071,21 +2071,21 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 					for(i=0;i<3;i++)
 						Self->activator->client->ps.remote_vieworigin[i]=Self->s.origin[i];
 				}
-			}	
+			}
 			else
 			{
 				// For all clients.
 
 				int		i;
 				edict_t *cl_ent;
-		
+
 				for(i=0;i<game.maxclients;i++)
 				{
 					cl_ent=g_edicts+1+i;
-			
+
 					if(!cl_ent->inuse)
 						continue;
-			
+
 					if(cl_ent->client->RemoteCameraNumber==Self->s.number)
 					{
 						int j;
@@ -2131,14 +2131,14 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 		for(i=0;i<game.maxclients;i++)
 		{
 			cl_ent=g_edicts+1+i;
-	
+
 			if(!cl_ent->inuse)
 				continue;
 
 			if(cl_ent->client->RemoteCameraNumber==Self->s.number)
 			{
 				int j;
-				
+
 				for(j=0;j<3;j++)
 					cl_ent->client->ps.remote_viewangles[j]=Self->s.angles[j];
 			}
@@ -2148,7 +2148,7 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 	// ********************************************************************************************
 	// Setup next think stuff.
 	// ********************************************************************************************
-	
+
 	Self->think=misc_remote_camera_think;
 	Self->nextthink=level.time + FRAMETIME;
 }
@@ -2160,12 +2160,12 @@ void SP_misc_remote_camera(edict_t *Self)
 	if(!Self->target)
 	{
 		gi.dprintf("Object 'misc_remote_camera' without a target.\n");
-		
+
 		G_FreeEdict(Self);
-		
+
 		return;
 	}
-	
+
 	Self->movetype = PHYSICSTYPE_NONE;
 	Self->solid=SOLID_NOT;
 	VectorSet(Self->mins,-4,-4,-4);
@@ -2173,7 +2173,7 @@ void SP_misc_remote_camera(edict_t *Self)
 	Self->count=0;
 
 	Self->use=Use_misc_remote_camera;
-	
+
 	gi.linkentity(Self);
 }
 

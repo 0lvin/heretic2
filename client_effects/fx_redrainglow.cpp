@@ -41,7 +41,7 @@ static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owne
 			return true;
 		}
 	}
-	else 
+	else
 	{	// If we're not on a time limit, check the EF flag
 		if (!(owner->current.effects & EF_TRAILS_ENABLED))
 		{
@@ -139,7 +139,7 @@ void FXRedRainGlow(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->flags|=CEF_NO_DRAW | CEF_OWNERS_ORIGIN | CEF_ADDITIVE_PARTS;
 
 	glow->Update = FXRedRainGlowThink;
-	glow->AddToView = LinkedEntityUpdatePlacement;			
+	glow->AddToView = LinkedEntityUpdatePlacement;
 	glow->radius = 128;
 	if (flags & CEF_FLAG6)
 	{	// powered up, green-yellow glow.
@@ -152,7 +152,7 @@ void FXRedRainGlow(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 	if (r_detail->value != DETAIL_LOW)
 		glow->dlight = CE_DLight_new(glow->color, 150.0F, 0.0F);
-	
+
   	if (lifetime > 0)
   		glow->LifeTime = fxi.cl->time + (lifetime * 100);
   	else

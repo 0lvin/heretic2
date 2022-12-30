@@ -413,7 +413,7 @@ void smk_huff16_free(struct smk_huff16_t* big)
 {
 	/* Sanity check: do not double-free */
 	smk_assert(big);
- 
+
 	/* free the subtree */
 	if (big->t)
 		smk_huff8_free(big->t);

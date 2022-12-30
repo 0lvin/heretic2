@@ -36,7 +36,7 @@ static void ResMngr_CreateBlock(ResourceManager_t *resource)
 	temp->size = _blockSize;
 	temp->next = resource->blockList;
 
-	resource->blockList = temp; 
+	resource->blockList = temp;
 
 	resource->free = (char **)(block);
 
@@ -103,7 +103,7 @@ H2COMMON_API void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t 
 	++resource->numResourcesAllocated;
 #endif
 
-	assert(resource->free);	// constructor not called; possibly due to a static object 
+	assert(resource->free);	// constructor not called; possibly due to a static object
 								// containing a static ResourceManagerFastLarge member being
 								// constructed before its own static members
 

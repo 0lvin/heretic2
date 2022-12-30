@@ -449,7 +449,7 @@ double CMatrix::Matricies3dFromDirAndUp(vec3a_t direction, vec3a_t up, matrix3d_
 		temp = (dot2-dot1)*RAD_TO_ANGLE;
 
 #if 0
-		assert(fabs(temp)/90.0 <= 0.1);	// greater than 10% error created by rotation of 
+		assert(fabs(temp)/90.0 <= 0.1);	// greater than 10% error created by rotation of
 										// up vector into world coordiantes
 #else
 		temp = fabs(temp);	// 0.1 for pelf, 0.024 for beetle
@@ -660,7 +660,7 @@ float CMatrix::Matricies3FromDirAndUp(vec3a_t direction, vec3a_t up, matrix3_t f
 		temp = (dot2-dot1)*RAD_TO_ANGLE;
 
 #if 0
-		assert(fabs(temp)/90.0 <= 0.1);	// greater than 10% error created by rotation of 
+		assert(fabs(temp)/90.0 <= 0.1);	// greater than 10% error created by rotation of
 										// up vector into world coordiantes
 #else
 		temp = fabs(temp);	// 0.1 for pelf, 0.024 for beetle

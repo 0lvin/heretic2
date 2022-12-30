@@ -52,13 +52,13 @@ size_t SetParms(SinglyLinkedList_t *_this, char *format, va_list marker, qboolea
 //			parm.t_edict_p = va_arg(marker, edict_t*);
 //			break;
 
-					// _this is pretty nasty, _this may be an indication that something 
-					// needs to be rethought currently _this is only used in the 
+					// _this is pretty nasty, _this may be an indication that something
+					// needs to be rethought currently _this is only used in the
 					// ICScript_Advance
 
 					// It does keep the code all in one place, which is nice
 
-			if(entsAsNames)	
+			if(entsAsNames)
 			{
 				int j = 0;
 				edict_t *ent = NULL;

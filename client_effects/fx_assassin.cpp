@@ -23,19 +23,19 @@ void PreCacheTPortSmoke()
 void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	int			numPuffs, i;
-	client_entity_t		*TPortSmoke;	
+	client_entity_t		*TPortSmoke;
 	client_particle_t	*ce;
-	
+
 	TPortSmoke = ClientEntity_new(Type, Flags|CEF_NO_DRAW, Origin, NULL, 1650);
 
 	TPortSmoke->r.color.r = 255;
 	TPortSmoke->r.color.g = 255;
 	TPortSmoke->r.color.b = 255;
 	TPortSmoke->r.color.a = 128;
-	
+
 	TPortSmoke->radius = 10.0F;
 
-	AddEffect(NULL, TPortSmoke); 
+	AddEffect(NULL, TPortSmoke);
 
 	if (r_detail->value >= DETAIL_HIGH)
 		numPuffs = irand(20,30);
@@ -44,7 +44,7 @@ void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		numPuffs = irand(10,20);
 	else
 		numPuffs = irand(8,13);
-	
+
 	fxi.S_StartSound(Origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/assassin/smoke.wav"), 1, ATTN_NORM, 0);
 	for (i = 0; i < numPuffs; i++)
 	{
@@ -101,11 +101,11 @@ static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t
 
 void FXAssassinUseWallSkin(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
-	client_entity_t		*assskinupdater;	
-	
+	client_entity_t		*assskinupdater;
+
 	assskinupdater = ClientEntity_new(Type, CEF_NO_DRAW, Origin, NULL, 100);
 
 	assskinupdater->Update = FXAssSkinUpdaterThink;
-	AddEffect(Owner, assskinupdater); 
+	AddEffect(Owner, assskinupdater);
 }
 // end

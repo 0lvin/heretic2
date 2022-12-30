@@ -49,7 +49,7 @@ void AddParticleToList(client_entity_t *ce, client_particle_t *fx)
 	// INSTRUCTIONS TO FIX
 	// Find the client effect that called _this spawn function (one level up in call stack)
 	// Either (a) tell the person who wrote the bugged code in the first place to correct it
-	// or (b) emulate the ViewStatusChanged functionality of the fire or the fountain (_this is a 
+	// or (b) emulate the ViewStatusChanged functionality of the fire or the fountain (_this is a
 	// 5 minute fix at most)
 	{
 		int					i = 0;
@@ -107,7 +107,7 @@ int AddParticlesToView(client_entity_t *ce)
 
 	numparticles = 0;
 	cull_parts = (r_detail->value == DETAIL_LOW);
-	maxdepth2 = r_farclipdist->value * r_farclipdist->value;  
+	maxdepth2 = r_farclipdist->value * r_farclipdist->value;
 	mindepth2 = r_nearclipdist->value * r_nearclipdist->value;
 
 	for(prev = &ce->p_root, current = ce->p_root; current; current = current->next)
@@ -117,10 +117,10 @@ int AddParticlesToView(client_entity_t *ce)
 		d_msec = ParticleUpdateTime - current->startTime;
 		d_time = d_msec * 0.001f;
 		alpha = (int)current->color.a + Q_ftol(d_time * current->d_alpha);
-		
+
 		if (alpha > 255 && ((current->type & PFL_PULSE_ALPHA) || (ce->flags & CEF_PULSE_ALPHA)))
 		{	// PULSE ALPHA means that once alpha is at max, reverse and head back down.
-			alpha = 255 - (alpha - 255);	// A weird thing to do, but necessary because the alpha is 
+			alpha = 255 - (alpha - 255);	// A weird thing to do, but necessary because the alpha is
 											// based off a dtime from the CREATION of the particle
 		}
 		//add to additive particle list
@@ -214,7 +214,7 @@ int AddParticlesToView(client_entity_t *ce)
 			{
 				part_info = 0;
 			}
-				
+
 		}
 		switch(part_info)
 		{
@@ -268,15 +268,15 @@ int UpdateParticles(client_entity_t *ce)
 		d_time = d_msec * 0.001f;
 
 		alpha = (int)current->color.a + Q_ftol(d_time * current->d_alpha);
-		
+
 		if (alpha > 255 && ((ce->flags & CEF_PULSE_ALPHA) || (current->type & PFL_PULSE_ALPHA)))
 		{	// PULSE ALPHA means that once alpha is at max, reverse and head back down.
-			alpha = 255 - (alpha - 255);	// A weird thing to do, but necessary because the alpha is 
+			alpha = 255 - (alpha - 255);	// A weird thing to do, but necessary because the alpha is
 											// based off a dtime from the CREATION of the particle
 		}
-		
+
 		if(alpha <= 0)
-		{ 
+		{
 			*prev = current->next;
 
 			ResMngr_DeallocateResource(&ParticleMngr, current, sizeof(*current));
@@ -297,7 +297,7 @@ void FreeParticles(client_entity_t *ce)
 {
 	client_particle_t	*current;
 	client_particle_t	**prev;
-	
+
 	for(prev = &ce->p_root, current = ce->p_root; current; current = current->next)
 	{
 		*prev = current->next;

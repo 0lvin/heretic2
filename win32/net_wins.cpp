@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -191,7 +191,7 @@ qboolean	NET_StringToSockaddr (char *s, struct sockaddr *sadr)
 	char	*colon;
 	int		val;
 	char	copy[128];
-	
+
 	memset (sadr, 0, sizeof(*sadr));
 
 	if ((strlen(s) >= 23) && (s[8] == ':') && (s[21] == ':'))	// check for an IPX address
@@ -214,7 +214,7 @@ qboolean	NET_StringToSockaddr (char *s, struct sockaddr *sadr)
 	else
 	{
 		((struct sockaddr_in *)sadr)->sin_family = AF_INET;
-		
+
 		((struct sockaddr_in *)sadr)->sin_port = 0;
 
 		strcpy (copy, s);
@@ -223,9 +223,9 @@ qboolean	NET_StringToSockaddr (char *s, struct sockaddr *sadr)
 			if (*colon == ':')
 			{
 				*colon = 0;
-				((struct sockaddr_in *)sadr)->sin_port = htons((short)atoi(colon+1));	
+				((struct sockaddr_in *)sadr)->sin_port = htons((short)atoi(colon+1));
 			}
-		
+
 		if (copy[0] >= '0' && copy[0] <= '9')
 		{
 			*(int *)&((struct sockaddr_in *)sadr)->sin_addr = inet_addr(copy);
@@ -237,7 +237,7 @@ qboolean	NET_StringToSockaddr (char *s, struct sockaddr *sadr)
 			*(int *)&((struct sockaddr_in *)sadr)->sin_addr = *(int *)h->h_addr_list[0];
 		}
 	}
-	
+
 	return true;
 }
 
@@ -257,7 +257,7 @@ idnewt:28000
 qboolean	NET_StringToAdr (char *s, netadr_t *a)
 {
 	struct sockaddr sadr;
-	
+
 	if (!strcmp (s, "localhost"))
 	{
 		memset (a, 0, sizeof(*a));
@@ -267,7 +267,7 @@ qboolean	NET_StringToAdr (char *s, netadr_t *a)
 
 	if (!NET_StringToSockaddr (s, &sadr))
 		return false;
-	
+
 	SockadrToNetadr (&sadr, a);
 
 	return true;
@@ -749,10 +749,10 @@ NET_Init
 */
 void NET_Init (void)
 {
-	WORD	wVersionRequested; 
+	WORD	wVersionRequested;
 	int		r;
 
-	wVersionRequested = MAKEWORD(1, 1); 
+	wVersionRequested = MAKEWORD(1, 1);
 
 	r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
 

@@ -96,7 +96,7 @@ typedef struct
 	short	t;
 } dstvert_t;
 
-typedef struct 
+typedef struct
 {
 	short	index_xyz[3];
 	short	index_st[3];
@@ -160,7 +160,7 @@ typedef struct
 	int			ofs_st;			// byte offset from start for stverts
 	int			ofs_tris;		// offset for dtriangles
 	int			ofs_frames;		// offset for first frame
-	int			ofs_glcmds;	
+	int			ofs_glcmds;
 	int			ofs_end;		// end of file
 
 } dmdl_t;
@@ -177,12 +177,12 @@ typedef struct dcompmdl_s
 	char *mat;
 	char *frames;
 	char *base;
-	float *ctranslate;	
-	float *cscale;	
+	float *ctranslate;
+	float *cscale;
 	char data[1];
 } dcompmdl_t;
 
-typedef struct 
+typedef struct
 {
 	dcompmdl_t compModInfo;
 	int rootCluster;
@@ -299,7 +299,7 @@ typedef struct miptex32_s
 	char		animname[128];			// next frame in animation chain
 	char		damagename[128];		// image that should be shown when damaged
 	unsigned	width[MIPLEVELS], height[MIPLEVELS];
-	unsigned	offsets[MIPLEVELS];		
+	unsigned	offsets[MIPLEVELS];
 	int			flags;
 	int			contents;
 	int			value;
@@ -393,7 +393,7 @@ typedef struct
 typedef struct
 {
 	int			ident;
-	int			version;	
+	int			version;
 	lump_t		lumps[HEADER_LUMPS];
 } dheader_t;
 
@@ -513,7 +513,7 @@ typedef struct
 	short		side;
 
 	int			firstedge;		// we must support > 64k edges
-	short		numedges;	
+	short		numedges;
 	short		texinfo;
 
 // lighting info

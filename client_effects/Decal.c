@@ -75,7 +75,7 @@ void CL_UpdateDecals(void)
 	{
 		if(decallist[i].flags)
 		{
-			if(decallist[i].flags & DECALFLAG_TIMED)			
+			if(decallist[i].flags & DECALFLAG_TIMED)
 			{
 				if(fxi.cl->time > decallist[i].removetime)
 				{
@@ -91,7 +91,7 @@ void CL_UpdateDecals(void)
 }
 
 #if 1
-// later we may want to add bound checks or the like here 
+// later we may want to add bound checks or the like here
 void CL_AddDecals(void)
 {
 	int i;

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -122,7 +122,7 @@ QUAKE2_API void Com_Printf (char *fmt, ...)
 	}
 
 	Con_Print (msg);
-		
+
 	// also echo to debugging console
 	Sys_ConsoleOutput (msg);
 
@@ -130,7 +130,7 @@ QUAKE2_API void Com_Printf (char *fmt, ...)
 	if (logfile_active && logfile_active->value)
 	{
 		char	name[MAX_QPATH];
-		
+
 		if (!logfile)
 		{
 			Com_sprintf (name, sizeof(name), "%s/qconsole.log", FS_Gamedir ());
@@ -155,14 +155,14 @@ QUAKE2_API void Com_DPrintf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
-		
+
 	if (!developer || !developer->value)
 		return;			// don't confuse non-developers with techie stuff...
 
 	va_start (argptr,fmt);
 	vsprintf (msg,fmt,argptr);
 	va_end (argptr);
-	
+
 	Com_Printf ("%s", msg);
 }
 
@@ -188,7 +188,7 @@ QUAKE2_API void Com_Error (int code, char *fmt, ...)
 	va_start (argptr,fmt);
 	vsprintf (msg,fmt,argptr);
 	va_end (argptr);
-	
+
 	if (code == ERR_DISCONNECT)
 	{
 		CL_Drop ();
@@ -291,7 +291,7 @@ void MSG_WriteData(sizebuf_t* sb, byte* data, int len)
 void MSG_WriteChar (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < -128 || c > 127)
 		Com_Error (ERR_FATAL, "MSG_WriteChar: range error");
@@ -304,7 +304,7 @@ void MSG_WriteChar (sizebuf_t *sb, int c)
 void MSG_WriteByte (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < 0 || c > 255)
 		Com_Error (ERR_FATAL, "MSG_WriteByte: range error");
@@ -317,7 +317,7 @@ void MSG_WriteByte (sizebuf_t *sb, int c)
 void MSG_WriteShort (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 #ifdef PARANOID
 	if (c < ((short)0x8000) || c > (short)0x7fff)
 		Com_Error (ERR_FATAL, "MSG_WriteShort: range error");
@@ -331,7 +331,7 @@ void MSG_WriteShort (sizebuf_t *sb, int c)
 void MSG_WriteLong (sizebuf_t *sb, int c)
 {
 	byte	*buf;
-	
+
 	buf = (byte*)SZ_GetSpace (sb, 4);
 	buf[0] = c&0xff;
 	buf[1] = (c>>8)&0xff;
@@ -346,11 +346,11 @@ void MSG_WriteFloat (sizebuf_t *sb, float f)
 		float	f;
 		int	l;
 	} dat;
-	
-	
+
+
 	dat.f = f;
 	dat.l = LittleLong (dat.l);
-	
+
 	SZ_Write (sb, &dat.l, 4);
 }
 
@@ -418,7 +418,7 @@ void MSG_WriteDeltaUsercmd (sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
 		MSG_WriteShort (buf, cmd->angles[1]);
 	if (bits & CM_ANGLE3)
 		MSG_WriteShort (buf, cmd->angles[2]);
-	
+
 	if (bits & CM_FORWARD)
 		MSG_WriteShort (buf, cmd->forwardmove);
 	if (bits & CM_SIDE)
@@ -440,7 +440,7 @@ void MSG_WriteDir (sizebuf_t *sb, vec3_t dir)
 {
 	int		i, best;
 	float	d, bestd;
-	
+
 	if (!dir)
 	{
 		MSG_WriteByte (sb, 0);
@@ -504,7 +504,7 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 		bits |= U_ORIGIN3;
 
 	if ( to->angles[0] != from->angles[0] )
-		bits |= U_ANGLE1;		
+		bits |= U_ANGLE1;
 	if ( to->angles[1] != from->angles[1] )
 		bits |= U_ANGLE2;
 	if ( to->angles[2] != from->angles[2] )
@@ -512,7 +512,7 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 
 	if (to->clientEffects.numEffects != from->clientEffects.numEffects || to->clientEffects.isPersistant)
 		bits |= U_CLIENT_EFFECTS;
-		
+
 	if ( to->skinnum != from->skinnum )
 	{
 		if ((unsigned)to->skinnum < 256)
@@ -522,7 +522,7 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 		else
 			bits |= (U_SKIN8|U_SKIN16);
 	}
-		
+
 	if ( to->frame != from->frame )
 	{
 		if (to->frame < 256)
@@ -540,7 +540,7 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 		else
 			bits |= U_EFFECTS8|U_EFFECTS16;
 	}
-	
+
 	if ( to->renderfx != from->renderfx )
 	{
 		if (to->renderfx < 256)
@@ -550,14 +550,14 @@ void MSG_WriteDeltaEntity (entity_state_t *from, entity_state_t *to, sizebuf_t *
 		else
 			bits |= U_RENDERFX8|U_RENDERFX16;
 	}
-	
+
 	if ( to->solid != from->solid )
 		bits |= U_SOLID;
 
 	// event is not delta compressed, just 0 compressed
 	//if ( to->event  )
 	//	bits |= U_EVENT;
-	
+
 	if ( to->modelindex != from->modelindex )
 		bits |= U_MODEL;
 	//if ( to->modelindex2 != from->modelindex2 )
@@ -736,48 +736,48 @@ void MSG_BeginReading (sizebuf_t *msg)
 int MSG_ReadChar (sizebuf_t *msg_read)
 {
 	int	c;
-	
+
 	if (msg_read->readcount+1 > msg_read->cursize)
 		c = -1;
 	else
 		c = (signed char)msg_read->data[msg_read->readcount];
 	msg_read->readcount++;
-	
+
 	return c;
 }
 
 int MSG_ReadByte (sizebuf_t *msg_read)
 {
 	int	c;
-	
+
 	if (msg_read->readcount+1 > msg_read->cursize)
 		c = -1;
 	else
 		c = (unsigned char)msg_read->data[msg_read->readcount];
 	msg_read->readcount++;
-	
+
 	return c;
 }
 
 int MSG_ReadShort (sizebuf_t *msg_read)
 {
 	int	c;
-	
+
 	if (msg_read->readcount+2 > msg_read->cursize)
 		c = -1;
-	else		
+	else
 		c = (short)(msg_read->data[msg_read->readcount]
 		+ (msg_read->data[msg_read->readcount+1]<<8));
-	
+
 	msg_read->readcount += 2;
-	
+
 	return c;
 }
 
 int MSG_ReadLong (sizebuf_t *msg_read)
 {
 	int	c;
-	
+
 	if (msg_read->readcount+4 > msg_read->cursize)
 		c = -1;
 	else
@@ -785,9 +785,9 @@ int MSG_ReadLong (sizebuf_t *msg_read)
 		+ (msg_read->data[msg_read->readcount+1]<<8)
 		+ (msg_read->data[msg_read->readcount+2]<<16)
 		+ (msg_read->data[msg_read->readcount+3]<<24);
-	
+
 	msg_read->readcount += 4;
-	
+
 	return c;
 }
 
@@ -799,7 +799,7 @@ float MSG_ReadFloat (sizebuf_t *msg_read)
 		float	f;
 		int	l;
 	} dat;
-	
+
 	if (msg_read->readcount+4 > msg_read->cursize)
 		dat.f = -1;
 	else
@@ -810,17 +810,17 @@ float MSG_ReadFloat (sizebuf_t *msg_read)
 		dat.b[3] =	msg_read->data[msg_read->readcount+3];
 	}
 	msg_read->readcount += 4;
-	
+
 	dat.l = LittleLong (dat.l);
 
-	return dat.f;	
+	return dat.f;
 }
 
 char *MSG_ReadString (sizebuf_t *msg_read)
 {
 	static char	string[2048];
 	int		l,c;
-	
+
 	l = 0;
 	do
 	{
@@ -830,9 +830,9 @@ char *MSG_ReadString (sizebuf_t *msg_read)
 		string[l] = c;
 		l++;
 	} while (l < sizeof(string)-1);
-	
+
 	string[l] = 0;
-	
+
 	return string;
 }
 
@@ -840,7 +840,7 @@ char *MSG_ReadStringLine (sizebuf_t *msg_read)
 {
 	static char	string[2048];
 	int		l,c;
-	
+
 	l = 0;
 	do
 	{
@@ -850,9 +850,9 @@ char *MSG_ReadStringLine (sizebuf_t *msg_read)
 		string[l] = c;
 		l++;
 	} while (l < sizeof(string)-1);
-	
+
 	string[l] = 0;
-	
+
 	return string;
 }
 
@@ -885,7 +885,7 @@ void MSG_ReadDeltaUsercmd (sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move
 	memcpy (move, from, sizeof(*move));
 
 	bits = MSG_ReadLong (msg_read);
-		
+
 // read current angles
 	if (bits & CM_ANGLE1)
 		move->angles[0] = MSG_ReadShort (msg_read);
@@ -893,7 +893,7 @@ void MSG_ReadDeltaUsercmd (sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move
 		move->angles[1] = MSG_ReadShort (msg_read);
 	if (bits & CM_ANGLE3)
 		move->angles[2] = MSG_ReadShort (msg_read);
-		
+
 // read movement
 	if (bits & CM_FORWARD)
 		move->forwardmove = MSG_ReadShort (msg_read);
@@ -901,7 +901,7 @@ void MSG_ReadDeltaUsercmd (sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move
 		move->sidemove = MSG_ReadShort (msg_read);
 	if (bits & CM_UP)
 		move->upmove = MSG_ReadShort (msg_read);
-	
+
 // read buttons
 	if (bits & CM_BUTTONS)
 		move->buttons = MSG_ReadByte (msg_read);
@@ -944,35 +944,35 @@ void SZ_Clear (sizebuf_t *buf)
 void *SZ_GetSpace (sizebuf_t *buf, int length)
 {
 	void	*data;
-	
+
 	if (buf->cursize + length > buf->maxsize)
 	{
 		if (!buf->allowoverflow)
 			Com_Error (ERR_FATAL, "SZ_GetSpace: overflow without allowoverflow set");
-		
+
 		if (length > buf->maxsize)
 			Com_Error (ERR_FATAL, "SZ_GetSpace: %i is > full buffer size", length);
-			
+
 		Com_Printf ("SZ_GetSpace: overflow\n");
-		SZ_Clear (buf); 
+		SZ_Clear (buf);
 		buf->overflowed = true;
 	}
 
 	data = buf->data + buf->cursize;
 	buf->cursize += length;
-	
+
 	return data;
 }
 
 void SZ_Write (sizebuf_t *buf, void *data, int length)
 {
-	memcpy (SZ_GetSpace(buf,length),data,length);		
+	memcpy (SZ_GetSpace(buf,length),data,length);
 }
 
 void SZ_Print (sizebuf_t *buf, char *data)
 {
 	int		len;
-	
+
 	len = strlen(data)+1;
 
 	if (buf->cursize)
@@ -1001,13 +1001,13 @@ where the given parameter apears, or 0 if not present
 int COM_CheckParm (char *parm)
 {
 	int		i;
-	
+
 	for (i=1 ; i<com_argc ; i++)
 	{
 		if (!strcmp (parm,com_argv[i]))
 			return i;
 	}
-		
+
 	return 0;
 }
 
@@ -1073,7 +1073,7 @@ void COM_AddParm (char *parm)
 int	memsearch (byte *start, int count, int search)
 {
 	int		i;
-	
+
 	for (i=0 ; i<count ; i++)
 		if (start[i] == search)
 			return i;
@@ -1084,7 +1084,7 @@ int	memsearch (byte *start, int count, int search)
 char *CopyString (char *in)
 {
 	char	*out;
-	
+
 	out = (char *)Z_Malloc (strlen(in)+1);
 	strcpy (out, in);
 	return out;
@@ -1218,7 +1218,7 @@ Z_TagMalloc
 void *Z_TagMalloc (int size, int tag)
 {
 	zhead_t	*z;
-	
+
 	size = size + sizeof(zhead_t);
 	z = (zhead_t *)malloc(size);
 	if (!z)
@@ -1535,7 +1535,7 @@ void Qcommon_Init (int argc, char **argv)
 		SCR_EndLoadingPlaque ();
 	}
 
-	Com_Printf ("====== Heretic II fully initialized ======\n\n");	
+	Com_Printf ("====== Heretic II fully initialized ======\n\n");
 }
 
 /*
@@ -1609,12 +1609,12 @@ void Qcommon_Frame (int msec)
 	SV_Frame (msec);
 
 	if (host_speeds->value)
-		time_between = Sys_Milliseconds ();		
+		time_between = Sys_Milliseconds ();
 
 	CL_Frame (msec);
 
 	if (host_speeds->value)
-		time_after = Sys_Milliseconds ();		
+		time_after = Sys_Milliseconds ();
 
 
 	if (host_speeds->value)
@@ -1630,7 +1630,7 @@ void Qcommon_Frame (int msec)
 		cl -= rf;
 		Com_Printf ("all:%3i sv:%3i gm:%3i cl:%3i rf:%3i\n",
 			all, sv, gm, cl, rf);
-	}	
+	}
 }
 
 /*

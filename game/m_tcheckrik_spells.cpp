@@ -58,7 +58,7 @@ static void InsectStaffThink(edict_t *self)
 	}
 
 	// Give myself a velocity of 500 in my forward direction.
-	
+
 	VectorScale(Forward,INSECT_STAFF_AIMED_SPEED,self->velocity);
 
 	self->think = NULL;
@@ -96,7 +96,7 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 		Vec3ScaleAssign(INSECT_STAFF_SPEED,InsectStaff->velocity);
 		vectoangles(InsectStaff->velocity, InsectStaff->s.angles);
 
-		G_LinkMissile(InsectStaff); 
+		G_LinkMissile(InsectStaff);
 
 		gi.CreateEffect(&InsectStaff->s,
 					FX_I_EFFECTS,
@@ -189,7 +189,7 @@ void SpellCastInsectStaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 
 	InsectStaff = G_Spawn();
 
-	VectorCopy(StartPos, InsectStaff->s.origin);	
+	VectorCopy(StartPos, InsectStaff->s.origin);
 	VectorCopy(AimAngles, InsectStaff->s.angles);
 	VectorScale(AimDir, INSECT_STAFF_SPEED, InsectStaff->velocity);
 	AngleVectors(AimAngles, forward, NULL,NULL);
@@ -201,7 +201,7 @@ void SpellCastInsectStaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 	InsectStaff->owner = Caster;
 	InsectStaff->enemy = Caster->enemy;
 
-	G_LinkMissile(InsectStaff); 
+	G_LinkMissile(InsectStaff);
 
 	if(power)
 	{
@@ -251,7 +251,7 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 		G_FreeEdict(self);
 		return;
 	}
-		
+
 	if (self->owner->client)
 		AngleVectors(self->owner->client->aimangles,Forward,NULL,Up);
 	else
@@ -265,7 +265,7 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 //		self->svflags |= SVF_NOCLIENT;
 
 		self->count+=irand(1,2);
-		
+
 		if((self->count>10)&&(self->s.scale<GLOBE_MAX_SCALE))
 		{
 			if(self->count>20)
@@ -312,11 +312,11 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 
 	Globe=G_Spawn();
 
-	VectorCopy(Caster->s.origin,Globe->s.origin);	
+	VectorCopy(Caster->s.origin,Globe->s.origin);
 	Globe->s.origin[0]+=AimDir[0]*20.0;
 	Globe->s.origin[1]+=AimDir[1]*20.0;
 	Globe->s.origin[2]+=Caster->viewheight-5.0;
-	
+
 	vectoangles(AimAngles,Globe->s.angles);
 
 	Globe->avelocity[YAW]=100.0;
@@ -339,7 +339,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 	Globe->nextthink=level.time+0.1;
 	Globe->think=GlobeOfOuchinessGrowThink;
 
-	G_LinkMissile(Globe); 
+	G_LinkMissile(Globe);
 
 	VectorSet(tempvec, (float)(Caster->s.number), 0, 0);
 
@@ -411,7 +411,7 @@ edict_t *SpearProjReflect(edict_t *self, edict_t *other, vec3_t vel)
 	AnglesFromDir(spearproj->movedir, spearproj->s.angles);
 	spearproj->reflect_debounce_time = self->reflect_debounce_time -1;
 	spearproj->reflected_time=self->reflected_time;
-	G_LinkMissile(spearproj); 
+	G_LinkMissile(spearproj);
 
 	spearproj->health = self->health;
 	spearproj->think = self->think;
@@ -444,7 +444,7 @@ edict_t *SpearProjReflect(edict_t *self, edict_t *other, vec3_t vel)
 			spearproj->velocity);
 	}
 
-	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	return(spearproj);
@@ -459,7 +459,7 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 {
 	byte	makeScorch = 0;
 
-	// did we hit the sky ? 
+	// did we hit the sky ?
 	if(surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
@@ -484,7 +484,7 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 		if(level.fighting_beast)
 		{
 			if(other->classID == CID_TBEAST)
-			{	
+			{
 				if(other->enemy != self->owner)
 				{
 					other->enemy = self->owner;
@@ -613,12 +613,12 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 		case 1:
 			VectorAverage(forward, right, forward);
 			break;
-		
+
 		case 2:
 			Vec3ScaleAssign(-1, right);
 			VectorAverage(forward, right, forward);
 			break;
-		
+
 		case 3:
 			VectorAverage(forward, up, forward);
 			break;
@@ -646,7 +646,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 	create_spearproj(spearproj);
 	spearproj->reflect_debounce_time = MAX_REFLECT;
 
-	G_LinkMissile(spearproj); 
+	G_LinkMissile(spearproj);
 
 	gi.trace(spearproj->s.origin, vec3_origin, vec3_origin, spearproj->s.origin, caster, MASK_PLAYERSOLID,&trace);
 	if (trace.startsolid)

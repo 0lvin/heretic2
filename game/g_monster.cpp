@@ -64,7 +64,7 @@ void DeadMsgHandler(edict_t *self, G_Message_t *msg)
 
 /*-------------------------------------------------------------------------
 	DyingMsgHandler
-	
+
 	Allows only dimemberment to still be called
 -------------------------------------------------------------------------*/
 
@@ -170,7 +170,7 @@ void M_MonsterCatPos (edict_t *ent)
 //
 	point[0] = ent->s.origin[0];
 	point[1] = ent->s.origin[1];
-	point[2] = ent->s.origin[2] + ent->mins[2] + 1;	
+	point[2] = ent->s.origin[2] + ent->mins[2] + 1;
 	cont = gi.pointcontents (point);
 
 	if (!(cont & MASK_WATER))
@@ -210,7 +210,7 @@ void M_CatagorizePosition (edict_t *ent)
 //
 	point[0] = ent->s.origin[0];
 	point[1] = ent->s.origin[1];
-	point[2] = ent->s.origin[2] + ent->mins[2] + 1;	
+	point[2] = ent->s.origin[2] + ent->mins[2] + 1;
 	cont = gi.pointcontents (point);
 
 	if (!(cont & MASK_WATER))
@@ -262,7 +262,7 @@ void M_WorldEffects (edict_t *ent)
 				}
 			}
 		}
-		else 
+		else
 		{
 			if (ent->waterlevel > 0 || (ent->monsterinfo.aiflags&AI_SWIM_OK))
 			{
@@ -281,12 +281,12 @@ void M_WorldEffects (edict_t *ent)
 			}
 		}
 	}
-	
+
 	if (ent->waterlevel == 0)
 	{
 		// INWATER is set whether in lava, slime or water.
 		if (ent->flags & FL_INWATER)
-		{	
+		{
 			if (ent->flags & FL_INLAVA)
 			{
 				gi.sound (ent, CHAN_BODY, gi.soundindex("player/inlava.wav"), 1, ATTN_NORM, 0);
@@ -297,7 +297,7 @@ void M_WorldEffects (edict_t *ent)
 				gi.sound (ent, CHAN_BODY, gi.soundindex("player/muckexit.wav"), 1, ATTN_NORM, 0);
 				ent->flags &= ~FL_INSLIME;
 			}
-			else 
+			else
 			{
 				gi.sound (ent, CHAN_BODY, gi.soundindex("player/Water Exit.wav"), 1, ATTN_NORM, 0);
 			}
@@ -323,21 +323,21 @@ void M_WorldEffects (edict_t *ent)
 			T_Damage (ent, world, world, vec3_origin, ent->s.origin, vec3_origin, 4*ent->waterlevel, 0, DAMAGE_SLIME,MOD_SLIME);
 		}
 	}
-	
+
 	if ( !(ent->flags & FL_INWATER) )
-	{	
+	{
 		if (ent->watertype & CONTENTS_LAVA)
 		{
 			gi.sound (ent, CHAN_BODY, gi.soundindex("player/inlava.wav"), 1, ATTN_NORM, 0);
 			ent->flags |= FL_INLAVA;
 		}
-		else 
+		else
 			if (ent->watertype & CONTENTS_SLIME)
 		{
 			gi.sound (ent, CHAN_BODY, gi.soundindex("player/muckin.wav"), 1, ATTN_NORM, 0);
 			ent->flags |= FL_INSLIME;
 		}
-		else 
+		else
 		{
 			gi.sound (ent, CHAN_BODY, gi.soundindex("player/Water Enter.wav"), 1, ATTN_NORM, 0);
 		}
@@ -370,7 +370,7 @@ void M_droptofloor (edict_t *ent)
 	ent->s.origin[2] += 1.0;
 	VectorCopy (ent->s.origin, end);
 	end[2] -= 256;
-	
+
 	gi.trace (ent->s.origin, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID,&trace);
 
 	if(trace.allsolid||trace.startsolid)
@@ -405,7 +405,7 @@ void M_droptofloor (edict_t *ent)
 }
 
 /* ------------------------------------------------------------------------------
-	M_MoveFrame - unless a nextframe is specified, advance to the next frame listed in 
+	M_MoveFrame - unless a nextframe is specified, advance to the next frame listed in
 	the Animation Frame Array.   Execute any aifunction or think function specified
 	with the given frame.
  --------------------------------------------------------------------------------*/
@@ -416,7 +416,7 @@ void M_MoveFrame (edict_t *self)
 	int		index;
 	qboolean wasnewphys = false;
 
-	
+
 	if(self->movetype < NUM_PHYSICSTYPES)
 		wasnewphys = true;
 
@@ -438,7 +438,7 @@ void M_MoveFrame (edict_t *self)
 	{
 		//Post a message and make the monster speak
 		G_QPostMessage(self, MSG_VOICE_PUPPET, PRI_DIRECTIVE, "i", self->monsterinfo.sound_pending);
-		
+
 		//Sound queue is free
 		self->monsterinfo.sound_pending = 0;
 	}
@@ -448,7 +448,7 @@ void M_MoveFrame (edict_t *self)
 		return;
 
 	// Forcing the next frame index - usually the start of an animation
-	if (self->monsterinfo.nextframeindex > -1)   
+	if (self->monsterinfo.nextframeindex > -1)
 	{
 		self->monsterinfo.currframeindex = self->monsterinfo.nextframeindex;
 		self->monsterinfo.nextframeindex = -1;
@@ -462,7 +462,7 @@ void M_MoveFrame (edict_t *self)
 				self->monsterinfo.currframeindex = 0;
 		}
 
-		// 
+		//
 		if (self->monsterinfo.currframeindex == (move->numframes - 1))
 		{
 			if (move->endfunc)
@@ -483,13 +483,13 @@ void M_MoveFrame (edict_t *self)
 	self->s.frame = move->frame[index].framenum;
 
 	//this is consistent with the animmove_t in the monster anims.
-	//currently all of the *real* movement happens in the 
+	//currently all of the *real* movement happens in the
 	//"actionfunc" instead of the move func
 	if(!(self->monsterinfo.aiflags & AI_DONT_THINK))
 	{
 		if(move->frame[index].movefunc)
-		{	
-			move->frame[index].movefunc(self, move->frame[index].var1, move->frame[index].var2, 
+		{
+			move->frame[index].movefunc(self, move->frame[index].var1, move->frame[index].var2,
 				move->frame[index].var3);
 		}
 
@@ -549,7 +549,7 @@ void monster_use (edict_t *self, edict_t *other, edict_t *activator)
 		return;
 	if (!(activator->client) && !(activator->monsterinfo.aiflags & AI_GOOD_GUY))
 		return;
-	
+
 // delay reaction so if the monster is teleported, its sound is still heard
 	//self->targetname = "";//so can only be used once...???
 	self->enemy = activator;
@@ -719,7 +719,7 @@ qboolean monster_start (edict_t *self)
 	self->clipmask = MASK_MONSTERSOLID;
 	if(!self->materialtype)
 		self->materialtype = MAT_FLESH;
-	
+
 	// Stop the camera clipping with monsters, except the trial beast.
 
 	if(self->classID!=CID_TBEAST)
@@ -732,11 +732,11 @@ qboolean monster_start (edict_t *self)
 	//					CEF_OWNERS_ORIGIN,
 	//					self->s.origin,
 	//					"f",
-	//					G_MonsterShadow[self->classID].scale);	
+	//					G_MonsterShadow[self->classID].scale);
 	//}
 // jmarshall end
 
-	
+
 	self->s.skinnum = 0;
 	self->deadflag = DEAD_NO;
 	self->svflags &= ~SVF_DEADMONSTER;
@@ -764,7 +764,7 @@ qboolean monster_start (edict_t *self)
 	self->s.frame = 1;
 
 	self->oldenemy_debounce_time = -1;
-	
+
 	return true;
 }
 
@@ -823,7 +823,7 @@ void monster_start_go (edict_t *self)
 
 	if(!self->wakeup_distance)
 		self->wakeup_distance = MAX_SIGHT_PLAYER_DIST;
-	
+
 	volume = VectorLength(self->size);
 	if(volume < 32)
 		self->svflags |= SVF_DO_NO_IMPACT_DMG;
@@ -932,7 +932,7 @@ void monster_start_go (edict_t *self)
 		else
 		{
 			self->monsterinfo.pausetime = 100000000;
-			if (self->monsterinfo.aiflags & AI_EATING) 
+			if (self->monsterinfo.aiflags & AI_EATING)
 			{
 				G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
 			}
@@ -963,7 +963,7 @@ void walkmonster_start_go (edict_t *self)
 			if (!M_walkmove (self, 0, 0))
 				gi.dprintf ("%s in solid at %s\n", self->classname, vtos(self->s.origin));
 	}
-	
+
 	if (!self->yaw_speed)
 		self->yaw_speed = 20;
 	self->viewheight = 25;
@@ -1019,7 +1019,7 @@ qboolean flymonster_start (edict_t *self)
 
 	if (!monster_start(self))
 		return false;			// Failed initialization
-	else 
+	else
 		return true;
 }
 
@@ -1047,7 +1047,7 @@ qboolean swimmonster_start (edict_t *self)
 	self->flags |= FL_SWIM;
 	self->think = swimmonster_start_go;
 	M_CatagorizePosition (self);
-	
+
 	if (!monster_start(self))
 		return false;			// Failed initialization
 	else
@@ -1138,8 +1138,8 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 
 		Tests to see whether the thing touching it is on its head, and if so, it tries to correct that situation.
 
-		Returns:	
-		
+		Returns:
+
 		All parameters are passed to the function from the touch callback
 
 ======================================================================================================================*/
@@ -1165,7 +1165,7 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 			//We want the full magnitude of the vector, not just drop magnitude
 			VectorCopy(other->velocity, dir);
 			dropmag = VectorNormalize(dir);
-			
+
 			//Do damage to the thing getting hit based on how hard the collision was
 //			T_Damage (self, other, other, dir, pos2, vec3_origin, 1 + (dropmag/FALLDAMAGE_MODIFIER), 0, DAMAGE_NO_BLOOD | DAMAGE_NO_KNOCKBACK);
 			if(!irand(0, 9))//10% chance
@@ -1180,7 +1180,7 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 			}
 
 			//Setup a random velocity for the first entity
-			other->velocity[0] = flrand(100.0, 150.0);			
+			other->velocity[0] = flrand(100.0, 150.0);
 			other->velocity[1] = flrand(100.0, 150.0);
 			other->velocity[2] += 110;
 
@@ -1203,7 +1203,7 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 		Returns:	"trace.ent" if a valid entity is struck (may not be intended target)
 					"NULL" if nothing hit
 					"attacker" if hit a wall, but no entity (used for spark effects)
-		
+
 		attacker	-	the entity attacking
 		max_dist	-	the distance it checks forward
 		trace		-	passed parameter filled with the trace information (can be overkill, or very useful)
@@ -1213,7 +1213,7 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 edict_t	*M_CheckMeleeHit( edict_t *attacker, float max_dist, trace_t *trace )
 {
 	vec3_t		targPos, vf;
-	
+
 	//Trace forward the maximum amount of the melee distance
 	AngleVectors(attacker->s.angles, vf, NULL, NULL);
 	VectorMA(attacker->s.origin, max_dist, vf, targPos);
@@ -1229,11 +1229,11 @@ edict_t	*M_CheckMeleeHit( edict_t *attacker, float max_dist, trace_t *trace )
 			//Can take damage, so pass it back
 			if (trace->ent->takedamage)
 			{
-				//VectorCopy(trace.endpos, hitPos);		
+				//VectorCopy(trace.endpos, hitPos);
 				return trace->ent;
 			}
 		}
-		
+
 		//Wasn't an entity, but we were blocked (world brush)
 		return attacker;
 	}
@@ -1247,7 +1247,7 @@ edict_t	*M_CheckMeleeHit( edict_t *attacker, float max_dist, trace_t *trace )
 	edict_t *M_CheckMeleeLineHit
 
 		Test a melee attack along a directed line.
-				
+
 		Returns:	"trace.ent" if a valid entity is struck (may not be intended target)
 					"NULL" if nothing hit
 					"attacker" if hit a wall, but no entity (used for spark effects)
@@ -1267,11 +1267,11 @@ edict_t	*M_CheckMeleeLineHit( edict_t *attacker, vec3_t start, vec3_t end, vec3_
 
 	//Apply the offsets to the positions passed
 	AngleVectors(attacker->s.angles, vf, vr, vu);
-	
+
 	VectorMA(attacker->s.origin, start[0], vf, startv);
 	VectorMA(startv, start[1], vr, startv);
 	VectorMA(startv, start[2], vu, startv);
-	
+
 	VectorMA(attacker->s.origin, end[0], vf, endv);
 	VectorMA(endv, end[1], vr, endv);
 	VectorMA(endv, end[2], vu, endv);
@@ -1308,7 +1308,7 @@ edict_t	*M_CheckMeleeLineHit( edict_t *attacker, vec3_t start, vec3_t end, vec3_
 			if (trace->ent->takedamage)
 				return trace->ent;
 		}
-		
+
 		//Wasn't an entity, but we were blocked (world brush)
 		return attacker;
 	}
@@ -1324,7 +1324,7 @@ edict_t	*M_CheckMeleeLineHit( edict_t *attacker, vec3_t start, vec3_t end, vec3_
 		Make sure we have a live enemy, and then return a distance to him.
 
 		Returns:	distance to target
-				
+
 		self	-	what's attacking
 		target	-	what were looking for
 
@@ -1337,7 +1337,7 @@ float M_DistanceToTarget ( edict_t *self, edict_t *target )
 	assert (target);
 
 	VectorSubtract(target->s.origin, self->s.origin, vec);
-	
+
 	return VectorLength(vec);
 }
 
@@ -1346,7 +1346,7 @@ float M_DistanceToTarget ( edict_t *self, edict_t *target )
 	qboolean M_ValidTarget
 
 		Make sure we have a live enemy, and then return a distance to it.
-				
+
 		Returns:	true if the enemy is valid, false if it is dead.
 
 		self	-	what's attacking
@@ -1358,7 +1358,7 @@ qboolean M_ValidOldEnemy (edict_t *self)
 {
 	if (!self->oldenemy)
 		return false;
-	
+
 	if (self->oldenemy->health <= 0 || self->oldenemy == self)
 		return false;
 
@@ -1405,7 +1405,7 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 
 	if(!target)
 		return false;
-	
+
 	//See if the target has died
 	if (target->health <= 0 || target == self)
 	{
@@ -1487,12 +1487,12 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 
 		Predicts where the target will be a few frames later based on current velocity and facing, and predicts where
 		the attacker will be at that same time.  It then decides whether or not it will be able to melee from there.
-		This is necessary for melee striking creatures who tend to run up to the player, swing, then stand for a few 
+		This is necessary for melee striking creatures who tend to run up to the player, swing, then stand for a few
 		frames while the player backs up.
-				
+
 		NOTE:	Does not detect whether or not a target and attacker will collide during the course of movement, but ai_run will
 				find this for us.
-		 
+
 		Returns:	0 - target will be out of range at end of movements (suggest: run after)
 					1 - target will be within range at the end of the movements at current velocities (suggest: continue motion)
 
@@ -1509,7 +1509,7 @@ int M_PredictTargetEvasion( edict_t *attacker, edict_t *target, vec3_t pursue_ve
 {
 	vec3_t		pTargetPos, pAttackPos, targetMove, attackMove, vec;
 	float		dist, targetDist, attackDist;
-	
+
 	//Setup the movement directions
 	VectorCopy(pursue_vel, attackMove);
 	VectorCopy(evade_vel,  targetMove);
@@ -1517,7 +1517,7 @@ int M_PredictTargetEvasion( edict_t *attacker, edict_t *target, vec3_t pursue_ve
 	//Setup the distances of attack
 	attackDist = VectorNormalize(attackMove);
 	targetDist = VectorNormalize(targetMove);
-	
+
 	//Obtain movement per frame, then apply it over the number of predicted frames
 	attackDist = pred_frames * (attackDist * FRAMETIME);
 	targetDist = pred_frames * (targetDist * FRAMETIME);
@@ -1541,10 +1541,10 @@ int M_PredictTargetEvasion( edict_t *attacker, edict_t *target, vec3_t pursue_ve
 	vec3_t M_PredictTargetPosition
 
 		Predicts where the target will be a few frames later based on current velocity and facing.
-				
+
 		NOTE:	Does not detect whether or not a target and attacker will collide during the course of movement, but ai_run will
 				find this for us.
-		 
+
 		Returns:	Position the target may be at in the predicted period
 
 		target		-   what's being pursued
@@ -1558,13 +1558,13 @@ void M_PredictTargetPosition( edict_t *target, vec3_t evade_vel, float pred_fram
 {
 	vec3_t	targetMove;
 	float	targetDist;
-	
+
 	//Setup the movement directions
 	VectorCopy(evade_vel,  targetMove);
 
 	//Setup the distances of attack
 	targetDist = VectorNormalize(targetMove);
-	
+
 	//Obtain movement per frame, then apply it over the number of predicted frames
 	targetDist = pred_frames * (targetDist * FRAMETIME);
 
@@ -1577,8 +1577,8 @@ void M_PredictTargetPosition( edict_t *target, vec3_t evade_vel, float pred_fram
 
 		Sets various states and sets up the monster to play his death frames.  Passing -1 in the sound field will
 		skip the sound playing
-				
-		Returns:	
+
+		Returns:
 
 		self	-	the entity dying
 		sound	-	the sound ID to play, -1 if no sound
@@ -1595,7 +1595,7 @@ void M_StartDeath( edict_t *self,  int animID)
 		return;
 	}*/
 
-	//Dead but still being hit	
+	//Dead but still being hit
 	if(self->deadflag == DEAD_DEAD)
 		return;
 
@@ -1616,8 +1616,8 @@ void M_StartDeath( edict_t *self,  int animID)
 	void M_EndDeath
 
 		The monster is dead completely.  Set all information to reflect this.
-				
-		Returns:	
+
+		Returns:
 
 		self	-	the entity that is dead
 
@@ -1642,7 +1642,7 @@ void M_EndDeath( edict_t *self)
 		gi.RemoveEffects(&self->s, 0);
 	}
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
-	
+
 	gi.linkentity (self);
 }
 
@@ -1652,7 +1652,7 @@ void M_EndDeath( edict_t *self)
 	int M_FindSupport
 
 		Look for monsters of a similar race around the current position of this monster.
-				
+
 		Returns:	Number of monsters around the current monster
 
 		range	-	The radius to check inside
@@ -1686,7 +1686,7 @@ int M_FindSupport( edict_t *self, int range )
 	qboolean M_FindSupport
 
 		Look for monsters of a similar race and if they are already trying to alert others
-				
+
 		Returns:	Whether or not to alert other monsters
 
 		range	-	The radius to check inside
@@ -1732,7 +1732,7 @@ void M_jump(edict_t *self, G_Message_t *msg)
 
 	if (!self->goalentity)
 		return;
-	
+
 	if(self->spawnflags&MSF_FIXED)
 		return;
 
@@ -1820,7 +1820,7 @@ float MG_ChangePitch(edict_t *self, float ideal, float speed)
 {
 	float	current;
 	float	move;
-	
+
 	current = anglemod(self->s.angles[PITCH]);
 	ideal = anglemod(ideal);
 
@@ -1848,7 +1848,7 @@ float MG_ChangePitch(edict_t *self, float ideal, float speed)
 		if (move < -speed)
 			move = -speed;
 	}
-	
+
 	self->s.angles[PITCH] = anglemod (current + move);
 	return move;
 }
@@ -1856,12 +1856,12 @@ float MG_ChangePitch(edict_t *self, float ideal, float speed)
 float MG_ChangePitchForZVel(edict_t *self, float speed, float cap_vel, float max_angle)
 {
 	float	ideal;
-	
+
 	ideal = self->velocity[PITCH];
 
 	if(fabs(ideal) > cap_vel)
 	{
-		if(ideal > 0)	
+		if(ideal > 0)
 			ideal = max_angle;
 		else
 			ideal = -max_angle;
@@ -1883,7 +1883,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 {
 	vec3_t		targVec;
 	qboolean	charge_enemy = false;
-	
+
 	if(self->monsterinfo.aiflags&AI_STRAIGHT_TO_ENEMY && self->enemy)
 		charge_enemy = true;
 
@@ -1892,7 +1892,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
 			gi.dprintf("Vec to navgoal!\n");
-#endif		
+#endif
 		if(self->buoy_index < 0 || self->buoy_index > level.active_buoys)
 		{
 #ifdef _DEVEL
@@ -1901,7 +1901,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 			VectorClear(vec);
 			return;
 		}
-		
+
 		VectorCopy(level.buoy_list[self->buoy_index].origin, self->monsterinfo.nav_goal);
 		VectorSubtract(self->monsterinfo.nav_goal, self->s.origin, vec);
 	}
@@ -1911,7 +1911,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 		if(MGAI_DEBUG)
 			gi.dprintf("Vec to goalentity!\n");
 #endif
-		
+
 		if(self->goalentity == self->enemy && self->ai_mood_flags & AI_MOOD_FLAG_PREDICT)
 		{//predict where he's goin
 			M_PredictTargetPosition( self->enemy, self->enemy->velocity, 8, targVec);
@@ -1928,7 +1928,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
 			gi.dprintf("Vec to enemy!\n");
-#endif		
+#endif
 		if (self->ai_mood_flags & AI_MOOD_FLAG_PREDICT)
 		{//predict where he's goin
 			M_PredictTargetPosition( self->enemy, self->enemy->velocity, 8, targVec);
@@ -1945,12 +1945,12 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
 			gi.dprintf("No goal to face!\n");
-#endif		
+#endif
 		VectorClear(vec);
 		return;
 	}
 
-	VectorNormalize(vec);	
+	VectorNormalize(vec);
 }
 
 /*====================================================================================================================
@@ -1958,7 +1958,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	void M_ShowLifeMeter
 
 		Overides the lung meter and displays the creature's life meter to all clients
-				
+
 		Returns:	Nothing
 
 ======================================================================================================================*/
@@ -1972,7 +1972,7 @@ void M_ShowLifeMeter( edict_t *self, int value, int max_value )
 
 	//Update all clients
 	for (i = 0 ; i < maxclients->value  ; i++)
-	{	
+	{
 		ps = &game.clients[i].ps;
 
 		ps->stats[STAT_LIFEBAR_XSIZE]  = (max_value / LIFEBAR_SCALE);

@@ -6,7 +6,7 @@
 
 typedef float vec3_t[3];
 
-typedef struct 
+typedef struct
 {
 	int		numnormals;
 	vec3_t	normalsum;

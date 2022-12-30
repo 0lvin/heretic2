@@ -65,7 +65,7 @@ enum {
 };
 
 // Morcalavin Reference Points
-enum 
+enum
 {
 	MORK_STAFFREF,//0
 	MORK_RFOOTREF,//1

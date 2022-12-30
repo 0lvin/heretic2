@@ -64,7 +64,7 @@ float	pm_friction = 6;
 float	pm_waterfriction = 1;
 float	pm_waterspeed = 400;
 
-#define MIN_WALK_NORMAL 0.7f 
+#define MIN_WALK_NORMAL 0.7f
 
 /*
 
@@ -563,7 +563,7 @@ void PM_StepSlideMove(qboolean gravity) {
 	VectorCopy(pml.velocity, start_v);
 
 	if (PM_SlideMove(gravity) == 0) {
-		return;		// we got exactly where we wanted to go first try	
+		return;		// we got exactly where we wanted to go first try
 	}
 
 	VectorCopy(start_o, down);
@@ -879,7 +879,7 @@ int __cdecl PM_SetVelInLiquid(float a1)
 	vel[1] = pml.forward[1] * v15 + pml.right[1] * v16;
 	vel[2] = v15 * pml.forward[2] + v16 * pml.right[2];
 	PM_AddCurrents(vel);
-	PM_BoundVelocity(vel, norm, v3, 0);	
+	PM_BoundVelocity(vel, norm, v3, 0);
 	PM_Accelerate(vel, pm_airaccelerate, 10.0);
 	if (pm->groundentity)
 	{
@@ -1018,7 +1018,7 @@ void Pmove(pmove_t* pmove, qboolean isServer)
 		pm->cmd.forwardmove = 0;
 		pm->cmd.sidemove = 0;
 		pm->cmd.upmove = 0;
-	}	
+	}
 
 	PM_GroundTrace();
 
@@ -1031,7 +1031,7 @@ void Pmove(pmove_t* pmove, qboolean isServer)
 		PM_WaterSurfMove();
 	}
 	else if (pm->waterlevel == 2)
-	{		
+	{
 		if (pm->viewangles[0] > 40.0)
 		{
 			PM_WaterMove();
@@ -1063,7 +1063,7 @@ void Pmove(pmove_t* pmove, qboolean isServer)
 	pm->s.velocity[1] = pml.velocity[1] * 8.0f;
 	pm->s.velocity[2] = pml.velocity[2] * 8.0f;
 
-	// jmarshall: TODO: I believe this is used for first person view. 
+	// jmarshall: TODO: I believe this is used for first person view.
 	pm->cmd.aimangles[0] = pm->cmd.angles[0];
 	pm->cmd.aimangles[1] = pm->cmd.angles[1];
 	pm->cmd.aimangles[2] = pm->cmd.angles[2];

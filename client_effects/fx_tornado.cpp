@@ -177,7 +177,7 @@ void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 	client_entity_t		*glow;
 	paletteRGBA_t		color;
 	int					dur = 60;
-			
+
 	flags &= ~CEF_OWNERS_ORIGIN;
 
 	if (r_detail->value == DETAIL_NORMAL)
@@ -222,7 +222,7 @@ void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(NULL, burst);
 
 	count = GetScaledCount(BALL_EX_PART_NUM, 0.4);
-	// create a bunch of exploding particles 
+	// create a bunch of exploding particles
 	for (i=0; i< count; i++)
 	{
 		rad[PITCH] = flrand(0, 360.0);
@@ -343,8 +343,8 @@ static qboolean FXTornadoThink(struct client_entity_s *self,centity_t *owner)
   		//Spawn a hit explosion of lines
 		TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, self->flags & ~CEF_NO_DRAW, self->origin, 0, 1000);
 
-		TrailEnt->r.model = torn_models + 2; 
-			
+		TrailEnt->r.model = torn_models + 2;
+
 		TrailEnt->r.spriteType = SPRITE_LINE;
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -374,7 +374,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self,centity_t *owner)
 		DirFromAngles(angles,dir);
 
 		VectorRandomCopy(dir, TrailEnt->velocity, 1.25);
-			
+
 		VectorCopy(self->origin, TrailEnt->r.startpos);
 		VectorMA(TrailEnt->r.startpos, irand(16,32), TrailEnt->velocity, TrailEnt->r.endpos);
 
@@ -397,7 +397,7 @@ void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 	client_entity_t		*glow;
 	paletteRGBA_t			color;
 	int					dur = 60;
-			
+
 	flags &= ~CEF_OWNERS_ORIGIN;
 
 	origin[2]+=60;
@@ -425,7 +425,7 @@ void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 
 	glow->yaw = flrand(-3.14, 3.14);
 	glow->SpawnData = flrand(-3.14, 3.14);
-	
+
 	if (flags & CEF_FLAG7)
 	{
 		glow->r.model = torn_models + 1;
@@ -470,11 +470,11 @@ void FXTornado(centity_t *owner,int type,int flags, vec3_t origin)
 {
 	client_entity_t		*torn;
 	paletteRGBA_t			color;
-			
+
 	flags &= ~CEF_OWNERS_ORIGIN;
 
-	torn = ClientEntity_new(type, 
-							flags | CEF_ADDITIVE_PARTS|CEF_PULSE_ALPHA|CEF_CHECK_OWNER|CEF_DONT_LINK|CEF_NO_DRAW, 
+	torn = ClientEntity_new(type,
+							flags | CEF_ADDITIVE_PARTS|CEF_PULSE_ALPHA|CEF_CHECK_OWNER|CEF_DONT_LINK|CEF_NO_DRAW,
 							origin, 0, TORN_DUR);
 	torn->Update = FXTornadoStart;
 	torn->radius = 128;

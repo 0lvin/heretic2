@@ -1,5 +1,5 @@
 #if 0
-#include "g_PhysicsInfo.h" 
+#include "g_PhysicsInfo.h"
 #include "ResourceManager.h"
 #include "g_BoundingForm.h"
 
@@ -40,6 +40,6 @@ void PhysicsInfo_delete(PhysicsInfo_t *toDelete)
 		BoundingForm_delete(toDelete->intentBoundingForm);
 	}
 
-	ResMngr_DeallocateResource(&PhysicsInfoMngr, toDelete, sizeof(*toDelete));	
+	ResMngr_DeallocateResource(&PhysicsInfoMngr, toDelete, sizeof(*toDelete));
 }
 #endif

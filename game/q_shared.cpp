@@ -759,7 +759,7 @@ H2COMMON_API void Swap_Init(void)
 {
 	byte	swaptest[2] = { 1,0 };
 
-	// set the byte swapping variables in a portable manner	
+	// set the byte swapping variables in a portable manner
 	if (*(short*)swaptest == 1)
 	{
 		bigendien = false;

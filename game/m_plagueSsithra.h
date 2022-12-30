@@ -79,7 +79,7 @@ typedef enum SoundID_e
 	SND_SIGHT4,
 	SND_SIGHT5,
 	SND_SIGHT6,
-	
+
 	SND_ARROW_CHARGE,
 	SND_ARROW_FIRE,
 

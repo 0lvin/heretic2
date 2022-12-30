@@ -64,7 +64,7 @@ void InitPlayerinfo(edict_t *ent)
 {
 	// Client side function callbacks (approximating functionality of server function callbacks).
 
-	ent->client->playerinfo.CL_Sound=NULL;	
+	ent->client->playerinfo.CL_Sound=NULL;
 	ent->client->playerinfo.CL_Trace=NULL;
 	ent->client->playerinfo.CL_CreateEffect=NULL;
 
@@ -78,8 +78,8 @@ void InitPlayerinfo(edict_t *ent)
 
 	// Server (game) function callbacks that have no client side equivalent.
 
-	ent->client->playerinfo.G_SoundIndex=gi.soundindex;	
-	ent->client->playerinfo.G_SoundRemove=gi.soundremove;	
+	ent->client->playerinfo.G_SoundIndex=gi.soundindex;
+	ent->client->playerinfo.G_SoundRemove=gi.soundremove;
 	ent->client->playerinfo.G_UseTargets=G_UseTargets;
 	ent->client->playerinfo.G_GetEntityStatePtr=G_GetEntityStatePtr;
 	ent->client->playerinfo.G_BranchLwrClimbing=G_BranchLwrClimbing;
@@ -108,7 +108,7 @@ void InitPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.G_UseItem=Cmd_Use_f;
 
 	// Common client & server (game) function callbacks.
-	
+
 	ent->client->playerinfo.PointContents=gi.pointcontents;
 	ent->client->playerinfo.SetJointAngles=G_SetJointAngles;
 	ent->client->playerinfo.ResetJointAngles=G_ResetJointAngles;
@@ -122,7 +122,7 @@ void InitPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.PlayerActionRedRainBowAttack=G_PlayerActionRedRainBowAttack;
 	ent->client->playerinfo.PlayerActionPhoenixBowAttack=G_PlayerActionPhoenixBowAttack;
 	ent->client->playerinfo.PlayerActionHellstaffAttack=G_PlayerActionHellstaffAttack;
-	ent->client->playerinfo.PlayerActionSpellDefensive=G_PlayerActionSpellDefensive;	
+	ent->client->playerinfo.PlayerActionSpellDefensive=G_PlayerActionSpellDefensive;
 	ent->client->playerinfo.G_EntIsAButton=G_EntIsAButton;
 	ent->client->playerinfo.irand=ClientServerRand;
 
@@ -148,11 +148,11 @@ void SetupPlayerinfo(edict_t *ent)
 	// Pointer to the associated player's edict_t.
 
 	ent->client->playerinfo.self=ent;
-	
+
 	// Game .dll variables.
 
 	ent->client->playerinfo.leveltime=level.time;
-	
+
 	// Server variables.
 
 	ent->client->playerinfo.sv_gravity=sv_gravity->value;
@@ -165,7 +165,7 @@ void SetupPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.groundentity=ent->groundentity;
 
 	// Pointer to entity_state_t of player's enemy edict.
-	
+
 	if(ent->enemy)
 		ent->client->playerinfo.enemystate=&ent->enemy->s;
 	else
@@ -194,7 +194,7 @@ void SetupPlayerinfo(edict_t *ent)
 	// Jake 9/28/98
 	// need to reget this constantly, since it changes on the fly.
 
-	memcpy(&ent->client->playerinfo.pcmd,&ent->client->pcmd,sizeof(usercmd_t));	
+	memcpy(&ent->client->playerinfo.pcmd,&ent->client->pcmd,sizeof(usercmd_t));
 
 	if (sv_cinematicfreeze->value)
 	{
@@ -222,7 +222,7 @@ void SetupPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.nextthink=ent->nextthink;
 	ent->client->playerinfo.viewheight=ent->viewheight;
 	ent->client->playerinfo.watertype=ent->watertype;
-	ent->client->playerinfo.waterlevel=ent->waterlevel;		
+	ent->client->playerinfo.waterlevel=ent->waterlevel;
 	ent->client->playerinfo.deadflag=ent->deadflag;
 	ent->client->playerinfo.movetype=ent->movetype;
 	ent->client->playerinfo.edictflags=ent->flags;
@@ -255,7 +255,7 @@ void SetupPlayerinfo(edict_t *ent)
 void WritePlayerinfo(edict_t *ent)
 {
 	int	i;
-	
+
 	// ********************************************************************************************
 	// Inputs & outputs.
 	// ********************************************************************************************
@@ -387,10 +387,10 @@ void PlayerTimerUpdate(edict_t *ent)
 	{
 		// Were we relfective last frame?
 
-		if (playerinfo->renderfx &RF_REFLECTION) 
+		if (playerinfo->renderfx &RF_REFLECTION)
 		{
 			playerinfo->renderfx &= ~RF_REFLECTION;
-			
+
 			// Unset the skin.
 
 			PlayerUpdateModelAttributes(&ent->client->playerinfo);
@@ -424,9 +424,9 @@ void P_DamageFeedback (edict_t *player)
 
 	if (client->damage_blood)
 		client->ps.stats[STAT_FLASHES]|=1;
-	
+
 	// Total up the points of damage shot at the player this frame.
-	
+
 	if((count=client->damage_blood)==0)
 	{
 		// Didn't take any damage.
@@ -445,7 +445,7 @@ void P_DamageFeedback (edict_t *player)
 	{
 		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
 			PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
-		
+
 		if (count <= 4)
 			PlayerPlayPain(&client->playerinfo, 2);
 		else
@@ -457,7 +457,7 @@ void P_DamageFeedback (edict_t *player)
 	// Reset the player's pain_debounce_time.
 
 	if (level.time > player->pain_debounce_time)
-		player->pain_debounce_time = level.time + 0.7;		
+		player->pain_debounce_time = level.time + 0.7;
 
 	// Clear damage totals.
 
@@ -515,7 +515,7 @@ void P_WorldEffects (void)
 			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/muckin.wav"), 1, ATTN_NORM, 0);
 			current_player->flags |= FL_INSLIME;
 		}
-		else 
+		else
 		{
 			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/Water Enter.wav"),1,ATTN_NORM,0);
 		}
@@ -559,7 +559,7 @@ void P_WorldEffects (void)
 			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/muckexit.wav"), 1, ATTN_NORM, 0);
 			current_player->flags &= ~FL_INSLIME;
 		}
-		else 
+		else
 		{
 			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/Water Exit.wav"), 1, ATTN_NORM, 0);
 		}
@@ -605,7 +605,7 @@ void P_WorldEffects (void)
 			vec3_t	Angles,
 					Temp;
 			byte	angle_byte;
-			
+
 			VectorCopy(current_player->velocity,Temp);
 
 			VectorNormalize(Temp);
@@ -622,7 +622,7 @@ void P_WorldEffects (void)
 							FX_WATER_WAKE,
 							0,
 							Origin,
-							"sbv",							
+							"sbv",
 							(short)current_player->s.number,
 							angle_byte,
 							current_player->velocity);
@@ -636,7 +636,7 @@ void P_WorldEffects (void)
 	if (old_waterlevel == 3 && waterlevel != 3)
 	{
 		if (current_player->air_finished < level.time)
-		{	
+		{
 			// Gasp for air.
 			if (irand(0,1))
 				gi.sound (current_player, CHAN_BODY, gi.soundindex("*gasp1.wav"), 1, ATTN_NORM, 0);
@@ -645,7 +645,7 @@ void P_WorldEffects (void)
 
 		}
 		else  if (current_player->air_finished < level.time + 11)
-		{	
+		{
 			// Broke surface, low on air
 			gi.sound (current_player, CHAN_BODY, gi.soundindex("*waterresurface.wav"), 1, ATTN_NORM, 0);
 		}
@@ -664,11 +664,11 @@ void P_WorldEffects (void)
 			current_player->dmg=25;
 
 			// Play a gurp sound instead of a normal pain sound.
-			
+
 			if (irand(0, 1))
 				gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning2.wav"), 1, ATTN_NORM, 0);		
+				gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning2.wav"), 1, ATTN_NORM, 0);
 
 			current_player->pain_debounce_time = level.time;
 
@@ -681,10 +681,10 @@ void P_WorldEffects (void)
 					 current_player->dmg,
 					 0,
 					 DAMAGE_SUFFOCATION,
-					 MOD_SLIME);		
+					 MOD_SLIME);
 		}
 		else if ((current_player->air_finished + current_player->client->playerinfo.lungs_timer) < level.time)
-		{	
+		{
 			// If out of air, start drowning.
 
 			if (current_player->client->next_drown_time < level.time && current_player->health > 0)
@@ -699,11 +699,11 @@ void P_WorldEffects (void)
 					current_player->dmg = 15;
 
 				// Play a gurp sound instead of a normal pain sound.
-				
+
 				if (irand(0, 1))
 					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning1.wav"), 1, ATTN_NORM, 0);
 				else
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning2.wav"), 1, ATTN_NORM, 0);		
+					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning2.wav"), 1, ATTN_NORM, 0);
 
 				current_player->pain_debounce_time = level.time;
 
@@ -718,7 +718,7 @@ void P_WorldEffects (void)
 						 DAMAGE_SUFFOCATION,
 						 MOD_WATER);
 			}
-			
+
 		}
 		// else, we aren't drowning yet, but we may well need to decrement the amount of extra lungs we have from shrines
 		// since we still have lungs, reset air finished till we don't anymore.
@@ -762,7 +762,7 @@ void P_WorldEffects (void)
 		if (current_player->health > 0 && current_player->pain_debounce_time <= level.time)
 		{
 			gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/lavadamage.wav"), 1, ATTN_NORM, 0);
-			
+
 			current_player->pain_debounce_time = level.time + 1;
 		}
 
@@ -807,7 +807,7 @@ void ClientEndServerFrame (edict_t *ent)
 {
 	float	bobtime;
 	int		i,index;
-	
+
 	current_player = ent;
 	current_client = ent->client;
 
@@ -819,7 +819,7 @@ void ClientEndServerFrame (edict_t *ent)
 	{
 		current_client->ps.fov=75;
 		G_SetStats(ent);
-		
+
 		return;
 	}
 
@@ -853,7 +853,7 @@ void ClientEndServerFrame (edict_t *ent)
 
 		ent->s.angles[YAW] = ent->client->v_angle[YAW];
 		ent->s.angles[ROLL] = 0.0;
-	}	
+	}
 
 	// ********************************************************************************************
 	// Handle calcs for cyclic effects like walking / swimming.
@@ -869,7 +869,7 @@ void ClientEndServerFrame (edict_t *ent)
 		current_client->bobtime = 0;
 	}
 	else if(ent->groundentity && !current_player->waterlevel)
-	{	
+	{
 		// So bobbing only cycles when on ground.
 
 		if(xyspeed > 210)
@@ -901,7 +901,7 @@ void ClientEndServerFrame (edict_t *ent)
 	// ********************************************************************************************
 
 	SetupPlayerinfo(ent);
-	
+
 	PlayerFallingDamage(&ent->client->playerinfo);
 	P_DamageFeedback(ent);
 
@@ -929,7 +929,7 @@ void ClientEndServerFrame (edict_t *ent)
 			PrintLocalBuoyInfo(ent->s.origin);
 		}
 	}
-	
+
 	PlayerUpdate(&ent->client->playerinfo);
 	AnimUpdateFrame(&ent->client->playerinfo);
 	PlayerTimerUpdate(ent);
@@ -950,7 +950,7 @@ void ClientEndServerFrame (edict_t *ent)
 	if(ent->client->playerinfo.showscores && deathmatch->value && (!(level.framenum&31)))
 	{
 		DeathmatchScoreboardMessage(ent,ent->enemy,false);
-		
+
 		gi.unicast(ent,false);
 	}
 
@@ -978,7 +978,7 @@ void ClientEndServerFrame (edict_t *ent)
 			current_client->ps.inventory_remaining[i]=current_client->playerinfo.pers.inventory.Items[index];
 
 			current_client->playerinfo.pers.old_inventory.Items[index]=current_client->playerinfo.pers.inventory.Items[index];
-			
+
 			i++;
 		}
 	}
@@ -1047,7 +1047,7 @@ void ClientEndServerFrame (edict_t *ent)
 
 	current_client->ps.upperidle=(byte)((current_client->playerinfo.upperidle==true)?1:0);
 	current_client->ps.loweridle=(byte)((current_client->playerinfo.loweridle==true)?1:0);
-	
+
 	current_client->ps.uppermove_index=current_client->playerinfo.uppermove_index;
 	current_client->ps.lowermove_index=current_client->playerinfo.lowermove_index;
 
@@ -1055,7 +1055,7 @@ void ClientEndServerFrame (edict_t *ent)
 	current_client->ps.defense=(byte)ITEM_INDEX(current_client->playerinfo.pers.defence);
 	current_client->ps.lastweapon=(byte)ITEM_INDEX(current_client->playerinfo.pers.lastweapon);
 	current_client->ps.lastdefense=(byte)ITEM_INDEX(current_client->playerinfo.pers.lastdefence);
-	current_client->ps.weaponready=(byte)current_client->playerinfo.pers.weaponready;	
+	current_client->ps.weaponready=(byte)current_client->playerinfo.pers.weaponready;
 	current_client->ps.switchtoweapon=(byte)current_client->playerinfo.switchtoweapon;
 	current_client->ps.newweapon=(byte)ITEM_INDEX(current_client->playerinfo.pers.newweapon);
 	current_client->ps.weap_ammo_index=(byte)current_client->playerinfo.weap_ammo_index;

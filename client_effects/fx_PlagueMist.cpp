@@ -88,7 +88,7 @@ void FXPlagueMist(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		mist_think_time = 125;
 	else
 		mist_think_time = 150;
-	
+
 	pm = ClientEntity_new(Type, Flags, Origin, NULL, mist_think_time);
 	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_PLAGUEMIST].formatString, pm->direction, &lifetime);
 
@@ -97,9 +97,9 @@ void FXPlagueMist(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	pm->flags |= CEF_NO_DRAW | CEF_NOMOVE;
 
 	if(Owner)
-		AddEffect(Owner, pm); 
+		AddEffect(Owner, pm);
 	else
-		AddEffect(NULL, pm); 
+		AddEffect(NULL, pm);
 }
 
 // end

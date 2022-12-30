@@ -50,9 +50,9 @@ void BeeStaticsInit()
 	resInfo.animations = animations; */
 	resInfo.modelIndex = gi.modelindex("models/monsters/bee/tris.fm");
 
-	sounds[SND_BUZZ1] = gi.soundindex ("monsters/bee/buzz1.wav");	
-	sounds[SND_BUZZ2] = gi.soundindex ("monsters/bee/buzz2.wav");	
-	sounds[SND_STING] = gi.soundindex ("monsters/bee/sting.wav");	
+	sounds[SND_BUZZ1] = gi.soundindex ("monsters/bee/buzz1.wav");
+	sounds[SND_BUZZ2] = gi.soundindex ("monsters/bee/buzz2.wav");
+	sounds[SND_STING] = gi.soundindex ("monsters/bee/sting.wav");
 	sounds[SND_GIB] = gi.soundindex ("monsters/bee/gib.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
@@ -60,7 +60,7 @@ void BeeStaticsInit()
 
 }
 
-/*QUAKED monster_bee (1 .5 0) (-16 -16 -24) (16 16 16) 
+/*QUAKED monster_bee (1 .5 0) (-16 -16 -24) (16 16 16)
 The bee
 */
 void SP_monster_bee(edict_t *self)
@@ -101,10 +101,10 @@ void SP_monster_bee(edict_t *self)
 		self->s.scale = self->monsterinfo.scale = MODEL_SCALE;
 	}
 */
-	self->monsterinfo.otherenemyname = "monster_rat";	
+	self->monsterinfo.otherenemyname = "monster_rat";
 
 //	AI_SpawnGuide(self);
 
 //	self->use = ogle_use;
-	
+
 }

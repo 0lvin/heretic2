@@ -178,7 +178,7 @@ void SP_obj_barrel_metal(edict_t *ent);
 void SP_obj_basket(edict_t *ent);
 void SP_obj_bench(edict_t *ent);
 void SP_obj_bigcrystal(edict_t *self);
-void SP_obj_biotank (edict_t *self); 
+void SP_obj_biotank (edict_t *self);
 void SP_obj_bloodsplat(edict_t *ent);
 void SP_obj_bookclosed(edict_t *ent);
 void SP_obj_bookopen(edict_t *ent);
@@ -366,7 +366,7 @@ void shrine_speed (edict_t *ent);
 
 void SP_script_runner (edict_t *ent);
 
-spawn_t	spawns[]= 
+spawn_t	spawns[]=
 {
 	// Quake2 specific spawns.
 	{"info_player_start", SP_info_player_start,-1},
@@ -447,8 +447,8 @@ spawn_t	spawns[]=
 
 	{"monster_gorgon",SP_monster_gorgon,CID_GORGON},
 	{"monster_rat",SP_monster_rat,CID_RAT},
-	{"monster_plagueElf", SP_monster_plagueElf,CID_PLAGUEELF}, 
-	{"monster_fish", SP_monster_fish,CID_FISH}, 
+	{"monster_plagueElf", SP_monster_plagueElf,CID_PLAGUEELF},
+	{"monster_fish", SP_monster_fish,CID_FISH},
 	{"monster_harpy", SP_monster_harpy,CID_HARPY},
 	{"monster_spreader", SP_monster_spreader,CID_SPREADER},
 	{"monster_assassin",SP_monster_assassin,CID_ASSASSIN},
@@ -459,8 +459,8 @@ spawn_t	spawns[]=
 #if !DEMO_CODE
 	{"monster_gorgon_leader",SP_monster_gorgon_leader,CID_GORGON},
 	{"monster_rat_giant",SP_monster_rat_giant,CID_RAT},
-	{"monster_palace_plague_guard", SP_monster_palace_plague_guard,CID_PLAGUEELF}, 
-	{"monster_palace_plague_guard_invisible", SP_monster_palace_plague_guard_invisible,CID_PLAGUEELF}, 
+	{"monster_palace_plague_guard", SP_monster_palace_plague_guard,CID_PLAGUEELF},
+	{"monster_palace_plague_guard_invisible", SP_monster_palace_plague_guard_invisible,CID_PLAGUEELF},
 	{"monster_elflord", SP_monster_elflord,CID_ELFLORD},
 	{"monster_ssithra",SP_monster_plague_ssithra,CID_SSITHRA},
 	{"monster_mssithra",SP_monster_mssithra,CID_MSSITHRA},
@@ -692,7 +692,7 @@ spawn_t	spawns[]=
 	{"obj_woodpile",SP_obj_woodpile,CID_OBJECT},
 
 	{"obj_morcalavin_barrier",SP_obj_morcalavin_barrier,CID_OBJECT},
-	
+
 	{"flamethrower",SP_flamethrower,CID_FLAMETHROWER},
 
 	{"item_spitter", SP_item_spitter,-1},
@@ -750,7 +750,7 @@ void ED_CallSpawn (edict_t *ent)
 		{	// found it
 			if((s->CID != -1) && !Cid_init[s->CID])	 	// Need to call once per level that item is on
 			{
-				classStaticsInits[s->CID]();	
+				classStaticsInits[s->CID]();
 				Cid_init[s->CID] = -1;
 				ent->classID = s->CID;						// Make sure classID is set
 			}

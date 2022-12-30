@@ -1,4 +1,4 @@
-//														  
+//
 // Heretic II
 // Copyright 1998 Raven Software
 //
@@ -43,12 +43,12 @@ qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner)
 	while (count--)
 	{
 		color.c = 0xFFFFFFFF;
-		
+
 		flame = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), color, 2000);
 		flame->d_scale = flrand(-10.0, -5.0);
 		flame->d_alpha = flrand(-600.0, -560.0);
 		flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
-	
+
 		radius = self->r.scale * FIRE_SPAWN_RADIUS;
 		VectorCopy(self->direction, flame->velocity);
 		VectorSet(flame->origin, irand(-2,2), irand(-2,2), irand(-2,2));
@@ -107,12 +107,12 @@ static qboolean FXFlamethrower_steam_trail(client_entity_t *self, centity_t *own
 			color.c = 0x33777777;
 		else
 			color.c = 0x50FFFFFF;
-		
+
 		flame = ClientParticle_new(PART_32x32_STEAM, color, 2000);
 
 		flame->d_alpha = flrand(-200.0, -150.0);
 		flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
-	
+
 		radius = self->r.scale * FIRE_SPAWN_RADIUS;
 		VectorCopy(self->direction, flame->velocity);
 		VectorSet(flame->origin, irand(-2,2), irand(-2,2), irand(-2,2));
@@ -150,11 +150,11 @@ void FXFlamethrower(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// create the dummy entity, so particles can be attached
 	glow = ClientEntity_new(type, (flags | CEF_NO_DRAW | CEF_ADDITIVE_PARTS) , origin, 0, 17);
-	
+
 	VectorScale(dir, distance, glow->direction);
 	glow->radius = 100;
 	glow->LifeTime = fxi.cl->time + 1000;
-	
+
 	//Steam?
 	if (flags & CEF_FLAG6)
 	{
@@ -170,13 +170,13 @@ void FXFlamethrower(centity_t *owner, int type, int flags, vec3_t origin)
 		fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("misc/flamethrow.wav"), 1, ATTN_NORM, 0);
 		glow->Update = FXFlamethrower_trail;
 	}
-	
+
 	AddEffect(NULL, glow);
 }
 
 
 
-							    
+
 // put out there just so we can make the real effect match _this
 void FXflametest(centity_t *owner, int type, int flags, vec3_t origin)
 {

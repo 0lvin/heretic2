@@ -74,7 +74,7 @@ void create_gkrokon_spoo(edict_t *Spoo)
 	Spoo->dmg=1.0;
 	Spoo->clipmask = MASK_SHOT;
 	Spoo->nextthink = level.time + FRAMETIME;
-	VectorSet(Spoo->mins,-1.0,-1.0,-1.0);	
+	VectorSet(Spoo->mins,-1.0,-1.0,-1.0);
 	VectorSet(Spoo->maxs,1.0,1.0,1.0);
 	Spoo->s.effects = EF_CAMERA_NO_CLIP;
 }
@@ -100,9 +100,9 @@ edict_t *GkrokonSpooReflect(edict_t *self, edict_t *other, vec3_t vel)
 	VectorCopy(vel, Spoo->velocity);
 	VectorNormalize2(vel, Spoo->movedir);
 	AnglesFromDir(Spoo->movedir, Spoo->s.angles);
-	
+
 	gi.linkentity(Spoo);
-	
+
 	gi.CreateEffect(&Spoo->s,
 			FX_SPOO,
 			CEF_OWNERS_ORIGIN,
@@ -124,7 +124,7 @@ edict_t *GkrokonSpooReflect(edict_t *self, edict_t *other, vec3_t vel)
 void GkrokonSpooTouch2(edict_t *self,trace_t *trace)
 {
 	GkrokonSpooTouch(self,trace->ent,(cplane_t *)&trace->plane,(csurface_t *)trace->surface);
-}	
+}
 
 /*-----------------------------------------------
 	GkrokonSpooTouch
@@ -162,10 +162,10 @@ void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *S
 		VectorMA(self->s.origin,-16.0,self->movedir,self->s.origin);
 	}
 
-	T_DamageRadius(self, self->owner, self, 5.0, 
+	T_DamageRadius(self, self->owner, self, 5.0,
 					self->dmg, self->dmg/4, DAMAGE_NO_KNOCKBACK|DAMAGE_ATTACKER_IMMUNE,MOD_DIED);
 
-	gi.RemoveEffects(&self->s, 0);	
+	gi.RemoveEffects(&self->s, 0);
 
 	if(IsDecalApplicable(self, Other, self->s.origin, Surface, Plane, planeDir))
 	{
@@ -215,24 +215,24 @@ void GkrokonSpoo(edict_t *self)
 	Spoo->enemy=self->enemy;
 	Spoo->owner=self;
 	AngleVectors(self->s.angles,Forward,NULL,up);
-	VectorCopy(self->s.origin,Spoo->s.origin);	
+	VectorCopy(self->s.origin,Spoo->s.origin);
 	VectorMA(Spoo->s.origin,-16,Forward,Spoo->s.origin);
 	Spoo->s.origin[2]+=12.0;
 	VectorCopy(self->movedir,Spoo->movedir);
 	vectoangles(Forward,Spoo->s.angles);
-	
+
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vf);
 	edist = VectorNormalize(vf);
 
 	if (DotProduct(vf, Forward) < 0.5)
 		return;
-	
+
 	VectorScale(vf,GKROKON_SPOO_SPEED,Spoo->velocity);
 	Spoo->velocity[2] += GKROKON_SPOO_ARC;
 	Spoo->velocity[2] += (edist - 256);
 	vectoangles(Spoo->velocity, Spoo->s.angles);
 
-	gi.linkentity(Spoo); 
+	gi.linkentity(Spoo);
 
 	gi.sound(Spoo,CHAN_WEAPON,sounds[SND_SPOO],1,ATTN_NORM,0);
 
@@ -277,7 +277,7 @@ void GkrokonBite(edict_t *self, float value)
 	edict_t *victim;
 	vec3_t	soff, eoff, mins, maxs, bloodDir, direction;
 	int		damage = irand(GKROKON_DMG_BITE_MIN, GKROKON_DMG_BITE_MAX);
-	
+
 	VectorSet(mins, -2, -2, -2);
 	VectorSet(maxs,  2,  2,  2);
 
@@ -296,7 +296,7 @@ void GkrokonBite(edict_t *self, float value)
 	VectorSubtract(soff, eoff, bloodDir);
 	VectorNormalize(bloodDir);
 
-	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);	
+	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);
 
 	if (victim)
 	{
@@ -312,7 +312,7 @@ void GkrokonBite(edict_t *self, float value)
 		else
 		{
 			//Hurt whatever we were whacking away at
-			T_Damage(victim, self, self, direction, trace.endpos, bloodDir, 
+			T_Damage(victim, self, self, direction, trace.endpos, bloodDir,
 					damage, damage, DAMAGE_NORMAL,MOD_DIED);
 
 			if (irand(0,1))
@@ -341,7 +341,7 @@ void gkrokonSound(edict_t *self, float channel, float sndindex, float atten)
 }
 
 /*-----------------------------------------------
-	gkrokonRandomWalkSound 
+	gkrokonRandomWalkSound
 -----------------------------------------------*/
 
 void gkrokonRandomWalkSound (edict_t *self)
@@ -393,7 +393,7 @@ void beetle_idle_sound(edict_t *self)
 	case 1:
 		gkrokonSound(self, CHAN_BODY, SND_IDLE2, ATTN_NORM);
 		break;
-	
+
 	default:
 		break;
 	}
@@ -468,7 +468,7 @@ void beetle_run(edict_t *self, G_Message_t *Msg)
 
 	if (M_ValidTarget(self, self->enemy))
 	{
-		dist = M_DistanceToTarget(self, self->enemy);	
+		dist = M_DistanceToTarget(self, self->enemy);
 
 		chance = irand(0,100);
 
@@ -580,7 +580,7 @@ void beetle_missile(edict_t *self,G_Message_t *Msg)
 		else
 		{
 			if(self->spawnflags&MSF_FIXED)
-				SetAnim(self, ANIM_DELAY);	
+				SetAnim(self, ANIM_DELAY);
 			else
 				SkitterAway(self);
 		}
@@ -602,9 +602,9 @@ void beetle_pain(edict_t *self,G_Message_t *Msg)
 {
 	int	temp, damage;
 	int	force_damage;
-	
+
 	G_ParseMsgParms(Msg, "eeiii", &temp, &temp, &force_damage, &damage, &temp);
-	
+
 	//Weighted random based on health compared to the maximum it was at
 	if (force_damage||((flrand(0, self->max_health+50) > self->health) && irand(0,2)))
 	{
@@ -685,13 +685,13 @@ void beetle_death(edict_t *self,G_Message_t *Msg)
 
 	gi.sound (self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
 }
-	
+
 int Bit_for_MeshNode_gk [NUM_MESH_NODES] =
 {
 	BIT_WAIT1,
 	BIT_SHELLA_P1,
-	BIT_SPIKE_P1,	
-	BIT_HEAD_P1,	
+	BIT_SPIKE_P1,
+	BIT_HEAD_P1,
 	BIT_RPINCHERA_P1,
 	BIT_RPINCHERB_P1,
 	BIT_LPINCHERA_P1,
@@ -749,7 +749,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			{
 				if(irand(0, 4))
 				{
-					self->s.fmnodeinfo[MESH__HEAD_P1].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH__HEAD_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__HEAD_P1].skin = self->s.skinnum+1;
 				}
 			}
@@ -767,7 +767,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			{
 				if(irand(0, 4))
 				{
-					self->s.fmnodeinfo[MESH__SPIKE_P1].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH__SPIKE_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__SPIKE_P1].skin = self->s.skinnum+1;
 				}
 			}
@@ -778,12 +778,12 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				VectorMA(gore_spot,-10,right,gore_spot);
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 			}
-	
+
 			if(!(self->s.fmnodeinfo[MESH__RPINCHERA_P1].flags & FMNI_USE_SKIN))
 			{
 				if(irand(0, 4))
 				{
-					self->s.fmnodeinfo[MESH__RPINCHERA_P1].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH__RPINCHERA_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__RPINCHERA_P1].skin = self->s.skinnum+1;
 				}
 			}
@@ -794,12 +794,12 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				VectorMA(gore_spot,-10,right,gore_spot);
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 			}
-			
+
 			if(!(self->s.fmnodeinfo[MESH__LPINCHERA_P1].flags & FMNI_USE_SKIN))
 			{
 				if(irand(0, 4))
 				{
-					self->s.fmnodeinfo[MESH__LPINCHERA_P1].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH__LPINCHERA_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__LPINCHERA_P1].skin = self->s.skinnum+1;
 				}
 			}
@@ -810,12 +810,12 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				VectorMA(gore_spot,-10,right,gore_spot);
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 			}
-			
+
 			if(!(self->s.fmnodeinfo[MESH__RPINCHERB_P1].flags & FMNI_USE_SKIN))
 			{
 				if(irand(0, 4))
 				{
-					self->s.fmnodeinfo[MESH__RPINCHERB_P1].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH__RPINCHERB_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__RPINCHERB_P1].skin = self->s.skinnum+1;
 				}
 			}
@@ -831,7 +831,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			{
 				if(irand(0, 4))
 				{
-					self->s.fmnodeinfo[MESH__LPINCHERB_P1].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH__LPINCHERB_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__LPINCHERB_P1].skin = self->s.skinnum+1;
 				}
 			}
@@ -846,7 +846,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_TorsoBack://split in half?
 			if(self->s.fmnodeinfo[MESH__ABDOMEN_P1].flags & FMNI_NO_DRAW)
 				break;
-			self->s.fmnodeinfo[MESH__ABDOMEN_P1].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__ABDOMEN_P1].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__ABDOMEN_P1].skin = self->s.skinnum+1;
 			break;
 
@@ -868,7 +868,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__LARM_P1].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__LARM_P1].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LARM_P1].skin = self->s.skinnum+1;
 			}
 			break;
@@ -890,7 +890,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__RARM_P1].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__RARM_P1].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RARM_P1].skin = self->s.skinnum+1;
 			}
 			break;
@@ -901,7 +901,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			{
 				if(self->s.fmnodeinfo[MESH__LTHIGH_P1].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__LTHIGH_P1].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__LTHIGH_P1].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LTHIGH_P1].skin = self->s.skinnum+1;
 				break;
 			}
@@ -944,7 +944,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__SPIKE_P1].flags&FMNI_NO_DRAW)			
+	if(self->s.fmnodeinfo[MESH__SPIKE_P1].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
@@ -958,7 +958,7 @@ void beetle_dead_pain (edict_t *self, G_Message_t *msg)
 	{
 		// We get gibbed.
 		gi.sound(self,CHAN_BODY,sounds[SND_GIB],1,ATTN_NORM,0);
-		
+
 		self->think = BecomeDebris;
 		self->nextthink = level.time + FRAMETIME;
 
@@ -977,7 +977,7 @@ void beetle_dead_pain (edict_t *self, G_Message_t *msg)
 void GkrokonStaticsInit(void)
 {
 	classStatics[CID_GKROKON].msgReceivers[MSG_STAND]=beetle_stand;
-	classStatics[CID_GKROKON].msgReceivers[MSG_RUN]=beetle_run;	
+	classStatics[CID_GKROKON].msgReceivers[MSG_RUN]=beetle_run;
 	classStatics[CID_GKROKON].msgReceivers[MSG_DEATH_PAIN] = beetle_dead_pain;
 	classStatics[CID_GKROKON].msgReceivers[MSG_CHECK_MOOD] = beetle_check_mood;
 	classStatics[CID_GKROKON].msgReceivers[MSG_FALLBACK] = beetle_skitter;
@@ -994,22 +994,22 @@ void GkrokonStaticsInit(void)
 	resInfo.modelIndex=gi.modelindex("models/monsters/gkrokon/tris.fm");
 
 	sounds[SND_PAIN1]=gi.soundindex("monsters/beetle/pain1.wav");
-	sounds[SND_PAIN2]=gi.soundindex("monsters/beetle/pain2.wav");	
-	sounds[SND_DIE]=gi.soundindex("monsters/beetle/death.wav");	
+	sounds[SND_PAIN2]=gi.soundindex("monsters/beetle/pain2.wav");
+	sounds[SND_DIE]=gi.soundindex("monsters/beetle/death.wav");
 	sounds[SND_GIB]=gi.soundindex("monsters/insect/gib.wav");
-	sounds[SND_SPOO]=gi.soundindex("monsters/beetle/spoo.wav");	
-	sounds[SND_IDLE1]=gi.soundindex("monsters/beetle/idle1.wav");	
-	sounds[SND_IDLE2]=gi.soundindex("monsters/beetle/idle2.wav");	
-	sounds[SND_SIGHT]=gi.soundindex("monsters/beetle/sight.wav");	
-	sounds[SND_WALK1]=gi.soundindex("monsters/beetle/walk1.wav");	
-	sounds[SND_WALK2]=gi.soundindex("monsters/beetle/walk2.wav");	
-	sounds[SND_FLEE]=gi.soundindex("monsters/beetle/flee.wav");	
-	sounds[SND_ANGRY]=gi.soundindex("monsters/beetle/angry.wav");	
-	sounds[SND_EATING]=gi.soundindex("monsters/beetle/eating.wav");	
-	sounds[SND_BITEHIT1]=gi.soundindex("monsters/beetle/meleehit1.wav");	
-	sounds[SND_BITEHIT2]=gi.soundindex("monsters/beetle/meleehit2.wav");	
-	sounds[SND_BITEMISS1]=gi.soundindex("monsters/beetle/meleemiss1.wav");	
-	sounds[SND_BITEMISS2]=gi.soundindex("monsters/beetle/meleemiss2.wav");	
+	sounds[SND_SPOO]=gi.soundindex("monsters/beetle/spoo.wav");
+	sounds[SND_IDLE1]=gi.soundindex("monsters/beetle/idle1.wav");
+	sounds[SND_IDLE2]=gi.soundindex("monsters/beetle/idle2.wav");
+	sounds[SND_SIGHT]=gi.soundindex("monsters/beetle/sight.wav");
+	sounds[SND_WALK1]=gi.soundindex("monsters/beetle/walk1.wav");
+	sounds[SND_WALK2]=gi.soundindex("monsters/beetle/walk2.wav");
+	sounds[SND_FLEE]=gi.soundindex("monsters/beetle/flee.wav");
+	sounds[SND_ANGRY]=gi.soundindex("monsters/beetle/angry.wav");
+	sounds[SND_EATING]=gi.soundindex("monsters/beetle/eating.wav");
+	sounds[SND_BITEHIT1]=gi.soundindex("monsters/beetle/meleehit1.wav");
+	sounds[SND_BITEHIT2]=gi.soundindex("monsters/beetle/meleehit2.wav");
+	sounds[SND_BITEMISS1]=gi.soundindex("monsters/beetle/meleemiss1.wav");
+	sounds[SND_BITEMISS2]=gi.soundindex("monsters/beetle/meleemiss2.wav");
 
 	resInfo.numSounds=NUM_SOUNDS;
 	resInfo.sounds=sounds;
@@ -1095,11 +1095,11 @@ void SP_Monster_Gkrokon(edict_t *self)
 	self->monsterinfo.dismember = beetle_dismember;
 
 	self->s.renderfx |= RF_FRAMELERP;
-	
+
 	self->touch = M_Touch;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
 	self->monsterinfo.attack_finished = level.time;
 
@@ -1112,7 +1112,7 @@ void SP_Monster_Gkrokon(edict_t *self)
 	self->timestamp = 0;
 
 	self->monsterinfo.searchType = SEARCH_COMMON;
-	
+
 	MG_InitMoods(self);
 
 	// Check our spawnflags to see what our initial behaviour should be.
@@ -1141,9 +1141,9 @@ void GkrokonPause(edict_t *self)
 	switch (self->ai_mood)
 	{
 	case AI_MOOD_ATTACK:
-		G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);		
+		G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);
 		break;
-		
+
 	case AI_MOOD_PURSUE:
 	case AI_MOOD_NAVIGATE:
 	case AI_MOOD_FLEE:

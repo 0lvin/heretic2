@@ -186,11 +186,11 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 		case 0:
 			soundname = "monsters/superchicken/jump1.wav";
 			break;
-		
+
 		case 1:
 			soundname = "monsters/superchicken/jump2.wav";
 			break;
-		
+
 		case 2:
 			soundname = "monsters/superchicken/jump3.wav";
 			break;
@@ -207,11 +207,11 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 		case 0:
 			soundname = "monsters/chicken/jump1.wav";
 			break;
-		
+
 		case 1:
 			soundname = "monsters/chicken/jump2.wav";
 			break;
-		
+
 		case 2:
 			soundname = "monsters/chicken/jump3.wav";
 			break;
@@ -226,7 +226,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 		playerinfo->CL_Sound(SND_PRED_ID49,playerinfo->origin, CHAN_WEAPON, soundname, 1.0, ATTN_NORM, 0);
 	else
 		playerinfo->G_Sound(SND_PRED_ID49,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, playerinfo->G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
-	
+
 	return ASEQ_FALL;
 }
 
@@ -237,7 +237,7 @@ void PlayerChickenCheckFlap ( playerinfo_t *playerinfo )
 	if (playerinfo->seqcmd[ACMDL_JUMP])
 	{
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
-		
+
 		AngleVectors(playerinfo->angles, vf, NULL, NULL);
 		vf[2] = 0;
 
@@ -269,7 +269,7 @@ void PlayerChickenFlap ( playerinfo_t *playerinfo )
 	vec3_t	vf;
 
 	playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
-	
+
 	AngleVectors(playerinfo->angles, vf, NULL, NULL);
 	vf[2] = 0;
 

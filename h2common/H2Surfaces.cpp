@@ -266,7 +266,7 @@ char *surfacePropNames[256] =
 H2COMMON_API char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo)
 {
 	csurface_t *groundSurface;
-	char *result = NULL; 
+	char *result = NULL;
 
 	//result = *(char **)(a1 + 256);
 	groundSurface = playerinfo->GroundSurface; // jmarshall - check this.

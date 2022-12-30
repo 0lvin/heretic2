@@ -34,14 +34,14 @@ static qboolean FXHaloThink(struct client_entity_s *self,centity_t *Owner)
 {
 	float			dot, dist, camdist;
 
-	vec3_t			mins = { 0, 0, 0}, 
+	vec3_t			mins = { 0, 0, 0},
 					maxs = { 0, 0, 0},
 					pos1, pos2,
 					ent_vec, light_vec, res_vec, org;
-	
+
 	trace_t			trace;
 	entity_state_t	*es;
-	
+
 	// Effect will be deleted if CEF_DISAPPEARED flag set
 	self->flags &= ~CEF_DISAPPEARED;
 	// Default to nodraw
@@ -50,7 +50,7 @@ static qboolean FXHaloThink(struct client_entity_s *self,centity_t *Owner)
 	AngleVectors (fxi.cl->refdef.viewangles, pos1, NULL, NULL);
 	VectorSubtract (self->r.origin, fxi.cl->refdef.vieworg, pos2);
 	VectorNormalize (pos2);
-	
+
 	dot = DotProduct (pos1, pos2);
 
 	if (dot < 0.75)
@@ -63,20 +63,20 @@ static qboolean FXHaloThink(struct client_entity_s *self,centity_t *Owner)
 
 	if (dist > 1024)
 	{
-		return true;		
+		return true;
 	}
 
 	//Determine Visibility
-	fxi.Trace(	self->r.origin, 
-				mins, 
-				maxs, 
-				fxi.cl->refdef.vieworg, 
-				(CONTENTS_SOLID | CONTENTS_MONSTER | CONTENTS_DEADMONSTER), 
-				CEF_CLIP_TO_ALL, 
+	fxi.Trace(	self->r.origin,
+				mins,
+				maxs,
+				fxi.cl->refdef.vieworg,
+				(CONTENTS_SOLID | CONTENTS_MONSTER | CONTENTS_DEADMONSTER),
+				CEF_CLIP_TO_ALL,
 				&trace);
 
 	if (trace.fraction < 1.0)	//Hit something
-	{	
+	{
 		if ((trace.ent != ((struct edict_s *)-1)))	//Model
 		{
 			es = (entity_state_t *) trace.ent;
@@ -93,7 +93,7 @@ static qboolean FXHaloThink(struct client_entity_s *self,centity_t *Owner)
 				camdist = VectorNormalize(pos1);
 
 				dist = VectorNormalize(ent_vec);
-								
+
 				VectorNormalize(light_vec);
 				VectorMA(self->r.origin, dist, light_vec, res_vec);
 				VectorSubtract(org, res_vec, pos1);
@@ -124,14 +124,14 @@ static qboolean FXHaloThink(struct client_entity_s *self,centity_t *Owner)
 			else
 			{
 				return true;
-			}			
+			}
 		}
 		else	//Hit a brush
 		{
 			return true;
 		}
 	}
-			
+
 	self->flags &= ~CEF_NO_DRAW;
 
 	if (self->alpha < 0.5)
@@ -170,23 +170,23 @@ void FXHalo(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	{
 	case CEF_FLAG7:
 		halo->r.color.r = 90;
-		halo->r.color.g = 90;		
+		halo->r.color.g = 90;
 		halo->r.color.b = 175;
 		break;
 	case CEF_FLAG8:
 		halo->r.color.r = 190;
-		halo->r.color.g = 180;		
+		halo->r.color.g = 180;
 		halo->r.color.b = 16;
 		break;
 	case CEF_FLAG7|CEF_FLAG8:
 		halo->r.color.r = 255;
-		halo->r.color.g = 255;		
+		halo->r.color.g = 255;
 		halo->r.color.b = 255;
 		break;
 	case 0:
 	default:
 		halo->r.color.r = 148;
-		halo->r.color.g = 132;		
+		halo->r.color.g = 132;
 		halo->r.color.b = 82;
 		break;
 	}

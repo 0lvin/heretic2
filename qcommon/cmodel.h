@@ -57,7 +57,7 @@ void		CM_ReadPortalState (FILE *f);
 // cmodel2.c
 // ************************
 
-trace_t	CM_Box_Trace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs, int headnode, 
+trace_t	CM_Box_Trace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs, int headnode,
 	int brushmask);
 
 #endif // CMODEL_H

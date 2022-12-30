@@ -63,8 +63,8 @@ static void RipperExplodeBallThink(edict_t *self)
    			// did we hit something that reflects ?
 			if(!EntReflecting(trace.ent, true, true))
 			{
-   				T_Damage(trace.ent, self, self->owner, self->movedir, trace.endpos, vec3_origin, 
-   						self->dmg, 0, DAMAGE_SPELL | DAMAGE_EXTRA_BLOOD,MOD_IRONDOOM); 
+   				T_Damage(trace.ent, self, self->owner, self->movedir, trace.endpos, vec3_origin,
+   						self->dmg, 0, DAMAGE_SPELL | DAMAGE_EXTRA_BLOOD,MOD_IRONDOOM);
 
 				if (trace.ent->svflags & SVF_MONSTER)
 				{
@@ -145,7 +145,7 @@ static void RipperImpact(edict_t *caster, edict_t *other, vec3_t startpos, vec3_
 	}
 
 	// Shoot out ripper balls
-	curyaw = (angles[YAW]*ANGLE_TO_RAD) + (RIPPER_BALL_ANGLE*0.5);		
+	curyaw = (angles[YAW]*ANGLE_TO_RAD) + (RIPPER_BALL_ANGLE*0.5);
 														// Add half an increment so that the balls don't come right back.
 														// STORE THE CURRENT YAW IN RADIANS FOR SIN/COS OPERATIONS
 
@@ -161,7 +161,7 @@ static void RipperImpact(edict_t *caster, edict_t *other, vec3_t startpos, vec3_
 		ripper->movedir[1] = sin(curyaw);
 		ripper->movedir[2] = 0.0;
 
-		// Place the ball		
+		// Place the ball
 		VectorCopy(hitpos, ripper->s.origin);
 		VectorScale(ripper->movedir, RIPPER_EXPLODE_SPEED, ripper->velocity);
 
@@ -206,15 +206,15 @@ static void RipperImpact(edict_t *caster, edict_t *other, vec3_t startpos, vec3_
 	// So we send this with:
 	//	--The position of the caster (for the launch trail effect)
 	//	--The byte angle to shoot things at.
-	//	--All eight entity numbers to attach things to.  
+	//	--All eight entity numbers to attach things to.
 	//		Okay, so I only need seven (the eighth comes with the effect), but for consistency I'm going to send all eight.
 	//	(NOTE: Further optimization would maybe pass a pitch and distance, and make the yaw precise, but that would save
 	//		little and make things more confusing than they are...)
 	//	Currently this sends 29 bytes plus the entity it's attached to.
 	//		This is down from (12 plus the entity) times eight, plus another effect for impact, plus another for the trail.
-	gi.CreateEffect(&ripper->s, FX_WEAPON_RIPPEREXPLODE, CEF_OWNERS_ORIGIN, NULL, "vbssssssss", 
-			startpos, 
-			byaw, 
+	gi.CreateEffect(&ripper->s, FX_WEAPON_RIPPEREXPLODE, CEF_OWNERS_ORIGIN, NULL, "vbssssssss",
+			startpos,
+			byaw,
 			ballarray[0],
 			ballarray[1],
 			ballarray[2],
@@ -246,7 +246,7 @@ void SpellCastRipper(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t 
 		RipperImpact(caster, trace.ent, caster->s.origin, trace.endpos, AimAngles);
 		return;
 	}
-	
+
 	// Get the forward angle
 	AngleVectors(AimAngles, forward, NULL, NULL);
 
@@ -256,7 +256,7 @@ void SpellCastRipper(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t 
 	if(level.fighting_beast)
 	{
 		edict_t *ent;
-		
+
 		if(ent = check_hit_beast(StartPos, trace.endpos))
 			trace.ent = ent;
 	}

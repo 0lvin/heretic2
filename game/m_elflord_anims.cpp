@@ -66,7 +66,7 @@ animframe_t elflord_frames_run [] =
 };
 animmove_t elflord_move_run = {11, elflord_frames_run, NULL};
 
-animframe_t elflord_frames_charge [] = 
+animframe_t elflord_frames_charge [] =
 {
 	FRAME_charge3, NULL, 0, 0, 0, elflord_flymove, 12, NULL,
 	FRAME_charge4, NULL, 0, 0, 0, elflord_flymove, 12, NULL,
@@ -82,14 +82,14 @@ animframe_t elflord_frames_charge [] =
 };
 animmove_t elflord_move_charge = {11, elflord_frames_charge, elfLordPause};
 
-animframe_t elflord_frames_charge_trans [] = 
+animframe_t elflord_frames_charge_trans [] =
 {
 	FRAME_charge1, NULL, 0, 0, 0, elflord_flymove, 8, NULL,
 	FRAME_charge2, NULL, 0, 0, 0, elflord_flymove, 8, NULL,
 };
 animmove_t elflord_move_charge_trans = {2, elflord_frames_charge_trans, elfLordGoCharge};
 
-animframe_t elflord_frames_floatback[] = 
+animframe_t elflord_frames_floatback[] =
 {
 	FRAME_ftback1,  NULL, 0, 0, 0, elflord_flymove, -1,  NULL,
 	FRAME_ftback2,  NULL, 0, 0, 0, elflord_flymove, -2,  NULL,
@@ -105,7 +105,7 @@ animframe_t elflord_frames_floatback[] =
 };
 animmove_t elflord_move_floatback = {11, elflord_frames_floatback, elfLordPause};
 
-animframe_t elflord_frames_dodgeright[] = 
+animframe_t elflord_frames_dodgeright[] =
 {
 	FRAME_dgrite1, NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_dgrite2, NULL, 0, 0, 0, ai_charge2, 0, NULL,
@@ -117,7 +117,7 @@ animframe_t elflord_frames_dodgeright[] =
 };
 animmove_t elflord_move_dodgeright = {7, elflord_frames_dodgeright, elfLordPause};
 
-animframe_t elflord_frames_dodgeleft[] = 
+animframe_t elflord_frames_dodgeleft[] =
 {
 	FRAME_dgleft1, NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_dgleft2, NULL, 0, 0, 0, ai_charge2, 0, NULL,
@@ -129,7 +129,7 @@ animframe_t elflord_frames_dodgeleft[] =
 };
 animmove_t elflord_move_dodgeleft = {7, elflord_frames_dodgeleft, elfLordPause};
 
-animframe_t elflord_frames_soa_begin[] = 
+animframe_t elflord_frames_soa_begin[] =
 {
 	FRAME_attkb1, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_attkb2, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -154,19 +154,19 @@ animframe_t elflord_frames_soa_begin[] =
 };
 animmove_t elflord_move_soa_begin = {20, elflord_frames_soa_begin, elfLordPause};
 
-animframe_t elflord_frames_soa_loop[] = 
+animframe_t elflord_frames_soa_loop[] =
 {
 	FRAME_attka1, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t elflord_move_soa_loop = {1, elflord_frames_soa_loop, elflord_soa_end};
 
-animframe_t elflord_frames_soa_end[] = 
+animframe_t elflord_frames_soa_end[] =
 {
 	FRAME_attka1, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t elflord_move_soa_end = {2, elflord_frames_soa_end, elfLordPause};
 
-animframe_t elflord_frames_ls[] = 
+animframe_t elflord_frames_ls[] =
 {
 	FRAME_attkb1, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_attkb2, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -217,7 +217,7 @@ animframe_t elflord_frames_ls[] =
 	FRAME_attkb16, NULL, 0, 0, 0, NULL, 0, elflord_track,
 	FRAME_attkb16, NULL, 0, 0, 0, NULL, 0, elflord_track,
 	FRAME_attkb16, NULL, 0, 0, 0, NULL, 0, elflord_track,
-//	
+//
 	FRAME_attkb17, NULL, 0, 0, 0, NULL, 0, elflord_FixAngles,
 	FRAME_attkb18, NULL, 0, 0, 0, NULL, 0, elflord_FixAngles,
 	FRAME_attkb19, NULL, 0, 0, 0, NULL, 0, elflord_EndBeam,
@@ -225,7 +225,7 @@ animframe_t elflord_frames_ls[] =
 };
 animmove_t elflord_move_ls = {50, elflord_frames_ls, elfLordPause};
 
-animframe_t elflord_frames_pain[] = 
+animframe_t elflord_frames_pain[] =
 {
 	FRAME_pain1, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_pain2, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -237,7 +237,7 @@ animframe_t elflord_frames_pain[] =
 };
 animmove_t elflord_move_pain = {7, elflord_frames_pain, elfLordPause};
 
-animframe_t elflord_frames_death_btrans[] = 
+animframe_t elflord_frames_death_btrans[] =
 {
 	FRAME_death1, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_death2, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -248,7 +248,7 @@ animframe_t elflord_frames_death_btrans[] =
 };
 animmove_t elflord_move_death_btrans = {6, elflord_frames_death_btrans, NULL};
 
-animframe_t elflord_frames_death_loop[] = 
+animframe_t elflord_frames_death_loop[] =
 {
 	FRAME_death7, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_death8, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -263,7 +263,7 @@ animframe_t elflord_frames_death_loop[] =
 };
 animmove_t elflord_move_death_loop = {10, elflord_frames_death_loop, M_EndDeath};
 
-animframe_t elflord_frames_shield[] = 
+animframe_t elflord_frames_shield[] =
 {
 	FRAME_shield1, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_shield2, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -291,7 +291,7 @@ animframe_t elflord_frames_shield[] =
 };
 animmove_t elflord_move_shield = {23, elflord_frames_shield, elfLordPause};
 
-animframe_t elflord_frames_attack[] = 
+animframe_t elflord_frames_attack[] =
 {
 	FRAME_newatk1,  NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_newatk2,  NULL, 0, 0, 0, ai_charge2, 0, NULL,

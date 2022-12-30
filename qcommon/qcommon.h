@@ -19,7 +19,7 @@
 
 #ifdef _HERETIC2_
 #define GAME_DECLSPEC    __declspec(dllexport)
-#else 
+#else
 #define GAME_DECLSPEC    __declspec(dllimport)
 #endif
 
@@ -115,7 +115,7 @@ void	MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
 extern	qboolean		bigendien;
 extern int		sz_line;
 extern char		*sz_filename;
-#define set_sz_data	sz_filename = __FILE__; sz_line = __LINE__; 
+#define set_sz_data	sz_filename = __FILE__; sz_line = __LINE__;
 
 //============================================================================
 
@@ -200,7 +200,7 @@ enum svc_ops_e
 	svc_stufftext,				// [string] stuffed into client's console buffer, should be \n terminated
 	svc_serverdata,				// [long] protocol ...
 	svc_configstring,			// [short] [string]
-	svc_spawnbaseline,		
+	svc_spawnbaseline,
 	svc_centerprint,			// [string] to put in center of the screen
 	svc_gamemsg_centerprint,  	// line number of [string] in strings.txt file
 	svc_gamemsgvar_centerprint,	// line number of [string] in strings.txt file, along with var to insert
@@ -229,7 +229,7 @@ enum svc_ops_e
 enum clc_ops_e
 {
 	clc_bad,
-	clc_nop, 		
+	clc_nop,
 	clc_move,				// [[usercmd_t]
 	clc_userinfo,			// [[userinfo string]
 	clc_stringcmd,			// [string] message
@@ -305,7 +305,7 @@ enum clc_ops_e
 #define PS_WEAPON				(1 << 51)
 #define PS_DEFENSE				(1 << 52)
 #define PS_LASTWEAPON			(1 << 53)
-#define PS_LASTDEFENSE			(1 << 54)	
+#define PS_LASTDEFENSE			(1 << 54)
 #define PS_WEAPONREADY			(1 << 55)
 
 #define PS_SWITCHTOWEAPON		(1 << 56)
@@ -629,7 +629,7 @@ void Activate_Screen_Flash(int color);
 void Deactivate_Screen_Flash(void);
 
 // return screen flash value
-int Is_Screen_Flashing(void);  
+int Is_Screen_Flashing(void);
 
 // set up a screen shaking
 void Activate_Screen_Shake(float intensity, float duration, float current_time, int flags);
@@ -812,7 +812,7 @@ Common between server and client so prediction matches
 
 ==============================================================
 */
-				  
+
 void Pmove(pmove_t *pmove, qboolean isServer);
 
 /*

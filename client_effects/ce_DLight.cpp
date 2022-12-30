@@ -32,5 +32,5 @@ struct CE_DLight_s *CE_DLight_new(paletteRGBA_t color, float intensity, float d_
 
 void CE_DLight_delete(struct CE_DLight_s *toDelete)
 {
-	ResMngr_DeallocateResource(&DLightMngr, toDelete, sizeof(*toDelete));	
+	ResMngr_DeallocateResource(&DLightMngr, toDelete, sizeof(*toDelete));
 }

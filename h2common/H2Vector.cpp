@@ -178,8 +178,8 @@ H2COMMON_API void DirAndUpFromAngles(vec3_t angles, vec3_t direction, vec3_t up)
 }
 
 H2COMMON_API void vectoangles(vec3_t vec, vec3_t angles) {
-	float *v2; 
-	vec3_t v3; 
+	float *v2;
+	vec3_t v3;
 
 	if (*vec != 0.0 || vec[1] != 0.0 || vec[2] != 0.0)
 	{
@@ -214,7 +214,7 @@ H2COMMON_API void DirFromAngles(vec3_t angles, vec3_t direction)
 	v6 = cos(v5);
 	direction[1] = v8 * v6;
 	direction[2] = sin(v5);
-} 
+}
 
 H2COMMON_API void VectorAverage(vec3_t veca, vec3_t vecb, vec3_t vecc)
 {

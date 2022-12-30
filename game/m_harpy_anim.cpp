@@ -51,11 +51,11 @@ harpy flying backwards 1
 ------------------------------------------------------*/
 animframe_t harpy_frames_flyback1[] =
 {
-	FRAME_flyback1, harpy_ai_fly, -32, 0, 16, NULL, 0, harpy_flap_fast_noise, 
-	FRAME_flyback2, harpy_ai_fly, -64, 0, 64, NULL, 0, move_harpy_fly, 
-	FRAME_flyback3, harpy_ai_fly, -52, 0, 54, NULL, 0, move_harpy_fly, 
-	FRAME_flyback4, harpy_ai_fly, -48, 0, 48, NULL, 0, move_harpy_fly, 
-	FRAME_flyback5, harpy_ai_fly, -42, 0, 32, NULL, 0, move_harpy_fly, 
+	FRAME_flyback1, harpy_ai_fly, -32, 0, 16, NULL, 0, harpy_flap_fast_noise,
+	FRAME_flyback2, harpy_ai_fly, -64, 0, 64, NULL, 0, move_harpy_fly,
+	FRAME_flyback3, harpy_ai_fly, -52, 0, 54, NULL, 0, move_harpy_fly,
+	FRAME_flyback4, harpy_ai_fly, -48, 0, 48, NULL, 0, move_harpy_fly,
+	FRAME_flyback5, harpy_ai_fly, -42, 0, 32, NULL, 0, move_harpy_fly,
 	FRAME_flyback6, harpy_ai_fly, -36, 0, 24, NULL, 0, move_harpy_fly
 };
 animmove_t harpy_move_flyback1 = { 6, harpy_frames_flyback1, harpy_pause};
@@ -93,7 +93,7 @@ animmove_t harpy_move_tumble = {8, harpy_frames_tumble, NULL};
 /*-------------------------------------------------------
 harpy hovering and screaming
 -------------------------------------------------------*/
-animframe_t harpy_frames_hoverscream[] = 
+animframe_t harpy_frames_hoverscream[] =
 {
 	FRAME_hoverscream1, NULL, 0, 0, 0, harpy_ai_hover, 2, harpy_flap_noise,
 	FRAME_hoverscream2, NULL, 0, 0, 0, harpy_ai_hover, 1, NULL,
@@ -118,7 +118,7 @@ animmove_t harpy_move_hoverscream = {16, harpy_frames_hoverscream, move_harpy_ho
 /*-------------------------------------------------------
 harpy diving and attacking
 -------------------------------------------------------*/
-animframe_t harpy_frames_dive_go[] = 
+animframe_t harpy_frames_dive_go[] =
 {
 	FRAME_dive01, NULL, 0, 0, 0, NULL, 0, harpy_dive_noise,
 	FRAME_dive02, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -126,10 +126,10 @@ animframe_t harpy_frames_dive_go[] =
 	FRAME_dive04, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_dive05, NULL, 0, 0, 0, NULL, 0, move_harpy_dive,
 	FRAME_dive06, NULL, 0, 0, 0, NULL, 0, move_harpy_dive,
-}; 
+};
 animmove_t harpy_move_dive_go = {6, harpy_frames_dive_go, harpy_dive_loop};
 
-animframe_t harpy_frames_dive_loop[] = 
+animframe_t harpy_frames_dive_loop[] =
 {
 	FRAME_dive07, NULL, 0, 0, 0, NULL, 0, move_harpy_dive,
 	FRAME_dive08, NULL, 0, 0, 0, NULL, 0, move_harpy_dive,
@@ -140,7 +140,7 @@ animframe_t harpy_frames_dive_loop[] =
 };
 animmove_t harpy_move_dive_loop = {6, harpy_frames_dive_loop, NULL};
 
-animframe_t harpy_frames_dive_trans[] = 
+animframe_t harpy_frames_dive_trans[] =
 {
 	FRAME_dive13, NULL, 0, 0, 0, NULL, 0, move_harpy_dive_end,
 	FRAME_dive14, NULL, 0, 0, 0, NULL, 0, move_harpy_dive_end,
@@ -150,13 +150,13 @@ animframe_t harpy_frames_dive_trans[] =
 };
 animmove_t harpy_move_dive_trans = {5, harpy_frames_dive_trans, harpy_hit_loop};
 
-animframe_t harpy_frames_dive_hit_loop[] = 
+animframe_t harpy_frames_dive_hit_loop[] =
 {
 	FRAME_dive18, NULL, 0, 0, 0, NULL, 0, move_harpy_dive_end,
 };
 animmove_t harpy_move_dive_hit_loop = {1, harpy_frames_dive_hit_loop, NULL};
 
-animframe_t harpy_frames_dive_end[] = 
+animframe_t harpy_frames_dive_end[] =
 {
 	FRAME_dive19, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_dive20, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -176,7 +176,7 @@ animmove_t harpy_move_dive_end = {11, harpy_frames_dive_end, harpy_flyback};
 /*-------------------------------------------------------
 harpy attacking up close
 -------------------------------------------------------*/
-animframe_t harpy_frames_closeattack[] = 
+animframe_t harpy_frames_closeattack[] =
 {
     FRAME_dive17, NULL, 0, 0, 0, NULL, 6, harpy_hit,
 //	FRAME_dive18, NULL, 0, 0, 0, NULL, 6, NULL,
@@ -371,7 +371,7 @@ animframe_t harpy_frames_pirch9_idle [] =
 };
 animmove_t harpy_move_pirch9_idle = { 10, harpy_frames_pirch9_idle, NULL};
 
-animframe_t	harpy_frames_takeoff [] = 
+animframe_t	harpy_frames_takeoff [] =
 {
 	FRAME_takeoff1, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_takeoff3, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -384,7 +384,7 @@ animframe_t	harpy_frames_takeoff [] =
 };
 animmove_t harpy_move_takeoff = { 8, harpy_frames_takeoff, harpy_pause};
 
-animframe_t	harpy_frames_circle [] = 
+animframe_t	harpy_frames_circle [] =
 {
 	FRAME_glide1, harpy_ai_circle, 32, 0, 0, NULL, 0, NULL,
 	FRAME_glide2, harpy_ai_circle, 32, 0, 0, NULL, 0, NULL,
@@ -401,7 +401,7 @@ animframe_t	harpy_frames_circle [] =
 };
 animmove_t harpy_move_circle = { 12, harpy_frames_circle, harpy_pause};
 
-animframe_t	harpy_frames_circle_flap [] = 
+animframe_t	harpy_frames_circle_flap [] =
 {
 	FRAME_fly1, harpy_ai_circle, 32, 0, 0, NULL, 0, harpy_flap_noise,
 	FRAME_fly2, harpy_ai_circle, 48, 0, 0, NULL, 0, NULL,

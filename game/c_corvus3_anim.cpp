@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "c_corvus3_anim.h"
@@ -26,9 +26,9 @@ void corvus3_invisible (edict_t *self);
 
 /************************************************************************
 /************************************************************************
-// 
+//
 //  Cinematic Frames
-// 
+//
 /************************************************************************
 /*************************************************************************/
 
@@ -1905,33 +1905,33 @@ animframe_t corvus3_frames_c_action20 [] =
 animmove_t corvus3_move_c_action20 = {48, corvus3_frames_c_action20, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Corvus Standing - 
+  Corvus Standing -
 -----------------------------------------------------------------------*/
 animframe_t corvus3_frames_c_idle1 [] =
 {
-	FRAME_Breath1, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath2, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath3, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath4, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath5, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath6, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath7, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath8, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath9, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath10, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath11, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath12, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath13, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath14, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath15, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath16, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath17, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath18, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath19, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath20, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath21, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath22, ai_c_move, 0, 0, 0,  NULL, 0, NULL, 
-	FRAME_Breath23, ai_c_move, 0, 0, 0,  NULL, 0, NULL 
+	FRAME_Breath1, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath2, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath3, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath4, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath5, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath6, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath7, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath8, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath9, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath10, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath11, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath12, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath13, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath14, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath15, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath16, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath17, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath18, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath19, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath20, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath21, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath22, ai_c_move, 0, 0, 0,  NULL, 0, NULL,
+	FRAME_Breath23, ai_c_move, 0, 0, 0,  NULL, 0, NULL
 
 };
 
@@ -1940,7 +1940,7 @@ animmove_t corvus3_move_c_idle1 = {23, corvus3_frames_c_idle1, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
-  Corvus 
+  Corvus
 -----------------------------------------------------------------------*/
 animframe_t corvus3_frames_c_idle2 [] =
 {
@@ -1974,7 +1974,7 @@ animmove_t corvus3_move_c_idle2 = {24, corvus3_frames_c_idle2, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
-  Corvus 
+  Corvus
 -----------------------------------------------------------------------*/
 animframe_t corvus3_frames_c_idle3 [] =
 {
@@ -2010,14 +2010,14 @@ animmove_t corvus3_move_c_idle3 = {24, corvus3_frames_c_idle3, ai_c_cycleend};
   Corvus - starting his pivot to the left
 -----------------------------------------------------------------------*/
 animframe_t corvus3_frames_c_pivotleftgo [] =
-{	
+{
 	FRAME_Lpivot1, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 	FRAME_Lpivot2, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t corvus3_move_c_pivotleftgo = {2, corvus3_frames_c_pivotleftgo, ai_c_cycleend};
 
 animframe_t corvus3_frames_c_pivotleft [] =
-{	
+{
 	FRAME_Lpivot3, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 	FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
@@ -2025,7 +2025,7 @@ animmove_t corvus3_move_c_pivotleft = {2, corvus3_frames_c_pivotleft, ai_c_cycle
 
 
 animframe_t corvus3_frames_c_pivotleftstop [] =
-{	
+{
 	FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t corvus3_move_c_pivotleftstop = {1, corvus3_frames_c_pivotleftstop, ai_c_cycleend};
@@ -2036,14 +2036,14 @@ animmove_t corvus3_move_c_pivotleftstop = {1, corvus3_frames_c_pivotleftstop, ai
   Corvus - starting his pivot to the right
 -----------------------------------------------------------------------*/
 animframe_t corvus3_frames_c_pivotrightgo [] =
-{	
+{
 	FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 	FRAME_Lpivot3, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t corvus3_move_c_pivotrightgo = {2, corvus3_frames_c_pivotrightgo, ai_c_cycleend};
 
 animframe_t corvus3_frames_c_pivotright [] =
-{	
+{
 	FRAME_Lpivot2, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 	FRAME_Lpivot1, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
@@ -2051,14 +2051,14 @@ animmove_t corvus3_move_c_pivotright = {2, corvus3_frames_c_pivotright, ai_c_cyc
 
 
 animframe_t corvus3_frames_c_pivotrightstop [] =
-{	
+{
 	FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t corvus3_move_c_pivotrightstop = {1, corvus3_frames_c_pivotrightstop, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
-  Corvus 
+  Corvus
 -----------------------------------------------------------------------*/
 animframe_t corvus3_frames_c_walk1 [] =
 {
@@ -2074,7 +2074,7 @@ animframe_t corvus3_frames_c_walk1 [] =
 animmove_t corvus3_move_c_walk1 = {8, corvus3_frames_c_walk1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Corvus 
+  Corvus
 -----------------------------------------------------------------------*/
 animframe_t corvus3_frames_c_walk2 [] =
 {
@@ -2099,7 +2099,7 @@ animframe_t corvus3_frames_c_walk2 [] =
 animmove_t corvus3_move_c_walk2 = {16, corvus3_frames_c_walk2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Corvus 
+  Corvus
 -----------------------------------------------------------------------*/
 animframe_t corvus3_frames_c_walk3 [] =
 {

@@ -72,7 +72,7 @@ void PhysicsCheckWaterTransition(edict_t *self)
 		size = 10;
 	else if(size>255)
 		size = 255;
-	
+
 	gi.CreateEffect(NULL,
 					FX_WATER_ENTRYSPLASH,
 					CEF_FLAG6 | CEF_FLAG7,
@@ -222,7 +222,7 @@ static void Physics_StepMove(edict_t *self)
 		MoveEntity_Slide(self);
 	}
 	else
-	{	
+	{
 		if(!hasVel)
 		{	// not going anywhere without vel
 			return;
@@ -347,7 +347,7 @@ void DoImpactDamage(edict_t *self, trace_t *trace)
 
 	if(self->impact_debounce_time>level.time)
 		return;
-	
+
 	if(self->svflags&SVF_DO_NO_IMPACT_DMG)
 		return;
 
@@ -525,10 +525,10 @@ void HandleForcefulCollision(edict_t *forcer, edict_t *forcee, vec3_t move, int 
 	}
 	else
 	{
-		hitWorld = false;	
+		hitWorld = false;
 		VectorScale(move, FRAMES_PER_SECOND*0.5, vel);
 	}
-	
+
 	knockback = VectorNormalize2(vel, dir);
 
 	knockback *= forcer->mass;
@@ -581,7 +581,7 @@ void MoveEntity_Bounce(edict_t *self, FormMove_t *formMove)
 		if(self->elasticity > ELASTICITY_SLIDE)
 		{
 			if((self->velocity[2] < 60.0) && (formMove->trace.plane.normal[2] > GROUND_NORMAL))
-			{	
+			{
 				SetGroundEntFromTrace(self, &formMove->trace);
 
 				VectorClear(self->velocity);
@@ -624,13 +624,13 @@ void MoveEntity_Slide(edict_t *self)
 	gravity = self->gravity * sv_gravity->value;
 	base_friction = self->friction * sv_friction->value;
 //	gi.dprintf("Gravity %f, Friction %f, to be applied\n", gravity, friction);
-	
+
 //	gi.dprintf("Velocity %f, %f, %f\n", self->velocity[0], self->velocity[1], self->velocity[2]);
 //	gi.dprintf("speed in %f\n", VectorLength(self->velocity));
-	
+
 	VectorCopy(self->velocity, original_velocity);
 	VectorCopy(self->velocity, primal_velocity);
-	
+
 //	self->groundentity = NULL;
 
 	groundNormal = self->groundNormal;
@@ -668,7 +668,7 @@ void MoveEntity_Slide(edict_t *self)
 				if(groundNormal[2] >= GROUND_NORMAL)
 				{
 					if(groundNormal[2] >= (gravity / (friction + gravity)))
-					{	// can't slide									
+					{	// can't slide
 						if(bumpcount)
 						{	// not going anywhere
 	//						gi.dprintf("no vel on no slide slope\n");
@@ -681,12 +681,12 @@ void MoveEntity_Slide(edict_t *self)
 						}
 						else
 						{	// check in calling func
-							assert(0);				
+							assert(0);
 						}
 					}
 				}
 
-				// ( |gravity| X groundNormal ) X groundNormal yeilds the vector in the 
+				// ( |gravity| X groundNormal ) X groundNormal yeilds the vector in the
 				//direction of gravity applied to the the slope of groundNormal
 				gdir[0] = groundNormal[0]*groundNormal[2];
 				gdir[1] = groundNormal[1]*groundNormal[2];
@@ -696,7 +696,7 @@ void MoveEntity_Slide(edict_t *self)
 
 				dot = DotProduct(gdir, groundNormal);
 
-				if(dot < -FLOAT_ZERO_EPSILON)	
+				if(dot < -FLOAT_ZERO_EPSILON)
 				{	// floating point error, shit, fudge it away from the plane a bit
 //					gi.dprintf("Dot %f, Fudge for bump %i and plane %i\n", dot, bumpcount, i);
 					fudgeIndex = i;
@@ -773,7 +773,7 @@ void MoveEntity_Slide(edict_t *self)
 //			gi.dprintf("Move slid, accel %f\n", faccel);
 			dot = DotProduct(gdir, groundNormal);
 
-			if(dot < -FLOAT_ZERO_EPSILON)	
+			if(dot < -FLOAT_ZERO_EPSILON)
 			{	// floating point error, shit, fudge it away from the plane a bit
 //				gi.dprintf("Dot %f, Fudge for bump %i and plane %i\n", dot, bumpcount, i);
 				fudgeIndex = i;
@@ -841,7 +841,7 @@ void MoveEntity_Slide(edict_t *self)
 		if(formMove.trace.allsolid)
 		{	// entity is trapped in another solid
 			VectorClear(self->velocity);
-			
+
 			self->s.origin[2] += 20;
 
 //			gi.dprintf("self %d, trace allsolid\n", self->s.number);
@@ -937,7 +937,7 @@ void MoveEntity_Slide(edict_t *self)
 		}
 
 		timeRemaining -= timeMoved;
-		
+
 		// clipped to another plane
 		assert(numplanes < MAX_CLIP_PLANES);
 
@@ -1002,7 +1002,7 @@ void MoveEntity_Slide(edict_t *self)
 
 			dot = DotProduct(dir, planes[i]);
 
-			if(dot < -FLOAT_ZERO_EPSILON)	
+			if(dot < -FLOAT_ZERO_EPSILON)
 			{	// floating point error, shit, fudge it away from the plane a bit
 //				gi.dprintf("Dot %f, Fudge for bump %i and plane %i\n", dot, bumpcount, i);
 				fudgeIndex = i;
@@ -1055,7 +1055,7 @@ void MoveEntity_Slide(edict_t *self)
 //			gi.dprintf("Speed %f\n", VectorLength(new_velocity));
 
 //			gi.dprintf("Bounce dot %f\n", dot);
-			
+
 			for(j = 0; j < numplanes; ++j)
 			{
 				if(j != i)
@@ -1072,7 +1072,7 @@ void MoveEntity_Slide(edict_t *self)
 				break;	// acceptable slide
 			}
 		}
-		
+
 		if (i != numplanes)
 		{	// good slide
 			VectorCopy (new_velocity, self->velocity);
@@ -1350,7 +1350,7 @@ qboolean CheckFooting(edict_t *self, vec3_t origin)
 	start[0] = stop[0] = (mins[0] + maxs[0])*0.5;
 	start[1] = stop[1] = (mins[1] + maxs[1])*0.5;
 	start[2] = mins[2];
-	
+
 	stop[2] = start[2] - 2*stepHeight;
 
 	VectorClear(formMove.mins);
@@ -1369,19 +1369,19 @@ qboolean CheckFooting(edict_t *self, vec3_t origin)
 	}
 
 	mid = bottom = formMove.trace.endpos[2];
-	
+
 	for(x = 0; x <= 1; ++x)
 	{
 		for(y = 0; y <= 1; ++y)
 		{
 			start[0] = stop[0] = x ? maxs[0] : mins[0];
 			start[1] = stop[1] = y ? maxs[1] : mins[1];
-			
+
 			formMove.start = start;
 			formMove.end = stop;
 
 			gi.TraceBoundingForm(&formMove);
-			
+
 			if(formMove.trace.fraction != 1.0 && formMove.trace.endpos[2] > bottom)
 			{
 				bottom = formMove.trace.endpos[2];
@@ -1408,7 +1408,7 @@ static void DiscreteMove_Step_FailedDueToCollision(edict_t *self, vec3_t move, F
 
 //---------------------------------------------------------------------------------
 // Attempts to move self as specified by move.  Allows walking on slopes up to
-// GROUND_NORMAL, steps up or down to classStatics[self->classID].self->stepHeight, 
+// GROUND_NORMAL, steps up or down to classStatics[self->classID].self->stepHeight,
 // will drio off edges up to classStatics[self->classID].self->dropHeight,
 // won't enter water higher than level 2
 //
@@ -1620,7 +1620,7 @@ void CreateMove_Step(edict_t *self, vec3_t move, float dist)
 
 	cosYaw = cos(yaw);
 	sinYaw = sin(yaw);
-	
+
 	move[0] = cosYaw;
 	move[1] = sinYaw;
 	move[2] = 0;
@@ -1729,7 +1729,7 @@ qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, f
 			}
 			else
 			{
-//				gi.dprintf("trace startsolid in CheckAnimMove, bad normal\n");			
+//				gi.dprintf("trace startsolid in CheckAnimMove, bad normal\n");
 			}
 		}
 		else
@@ -1769,9 +1769,9 @@ qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, f
 	{
 		if(recursionLevel)
 		{
-			// don't try to step on recursive calls if the surface isn't ground, or 
+			// don't try to step on recursive calls if the surface isn't ground, or
 			// it was only able to move a little forward
-			if(formMove.trace.plane.normal[2] <= GROUND_NORMAL || 
+			if(formMove.trace.plane.normal[2] <= GROUND_NORMAL ||
 				tempDist < stepHeight)
 			{
 				return false;
@@ -1850,9 +1850,9 @@ qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, f
 
 		if(recursionLevel)
 		{
-			// don't try to step on recursive calls if the surface isn't ground, or 
+			// don't try to step on recursive calls if the surface isn't ground, or
 			// it was only able to move a little forward
-			if(stepFormMove.trace.plane.normal[2] <= GROUND_NORMAL || 
+			if(stepFormMove.trace.plane.normal[2] <= GROUND_NORMAL ||
 				tempDist < stepHeight)
 			{
 				return false;
@@ -1923,7 +1923,7 @@ edict_t	*TestEntityPosition(edict_t *self)
 	{
 		return g_edicts;
 	}
-		
+
 	return NULL;
 }
 
@@ -2217,7 +2217,7 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 
 			++pushed_p;
 
-			// try moving the contacted entity 
+			// try moving the contacted entity
 
 			if(check->client)
 			{	// FIXME: doesn't rotate monsters?
@@ -2309,7 +2309,7 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 				continue;
 			}
 		}
-		
+
 		// save off the obstacle so we can call the block function
 		obstacle = check;
 

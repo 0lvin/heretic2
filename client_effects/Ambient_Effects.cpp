@@ -36,7 +36,7 @@ void WaterSplash(centity_t *owner, int type, int flags, vec3_t origin)
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPLASH].formatString, &cnt);
 
 	effect = ClientEntity_new(type, flags, origin, NULL, 500);
-	effect->flags |= CEF_NO_DRAW | CEF_NOMOVE; 
+	effect->flags |= CEF_NO_DRAW | CEF_NOMOVE;
 
 	AddEffect(NULL, effect);
 
@@ -121,7 +121,7 @@ qboolean CreateFlyParticles(client_entity_t *_this, centity_t *owner)
 		angle = ltime * avelocities[i][2];
 		sr = sin(angle);
 		cr = cos(angle);
-	
+
 		forward[0] = cp*cy;
 		forward[1] = cp*sy;
 		forward[2] = -sp;

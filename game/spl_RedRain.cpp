@@ -42,23 +42,23 @@ void RedRainThink(edict_t *self)
 
 	// find all the entities in the volume
 	while(victim = findinblocking(victim, self))
-	{					
-		if(victim != self->owner && victim->takedamage && 
-				(victim->client || victim->svflags & SVF_MONSTER) && !(victim->svflags & SVF_DEADMONSTER))		
+	{
+		if(victim != self->owner && victim->takedamage &&
+				(victim->client || victim->svflags & SVF_MONSTER) && !(victim->svflags & SVF_DEADMONSTER))
 		{	// No damage to casting player
 			VectorSubtract(self->pos1, victim->s.origin, vec);
 			VectorNormalize(vec);
 			VectorMA(victim->s.origin, victim->maxs[0], vec, hitpos);
-			
+
 			if (victim->svflags & SVF_BOSS)
 			{
-				T_Damage(victim, self, self->owner, vec3_origin, hitpos, vec3_origin, 
-						rad_dmg/2, 0, DAMAGE_SPELL,MOD_STORM); 
+				T_Damage(victim, self, self->owner, vec3_origin, hitpos, vec3_origin,
+						rad_dmg/2, 0, DAMAGE_SPELL,MOD_STORM);
 			}
 			else
 			{
-				T_Damage(victim, self, self->owner, vec3_origin, hitpos, vec3_origin, 
-						rad_dmg, 0, DAMAGE_SPELL,MOD_STORM); 
+				T_Damage(victim, self, self->owner, vec3_origin, hitpos, vec3_origin,
+						rad_dmg, 0, DAMAGE_SPELL,MOD_STORM);
 			}
 		}
 	}
@@ -104,9 +104,9 @@ void RedRainThink(edict_t *self)
 			}
 			if (victim)
 			{	// Try to zap somebody with lightning
-				VectorSet(startpos, 
-							flrand(-rradius*0.6, rradius*0.6), 
-							flrand(-rradius*0.6, rradius*0.6), 
+				VectorSet(startpos,
+							flrand(-rradius*0.6, rradius*0.6),
+							flrand(-rradius*0.6, rradius*0.6),
 							self->maxs[2]);
 				VectorAdd(startpos, self->s.origin, startpos);
 				VectorSet(endpos,
@@ -122,7 +122,7 @@ void RedRainThink(edict_t *self)
 					VectorNormalize(diffpos);
 					if (!poweredup)
 					{
-						gi.CreateEffect(NULL, FX_LIGHTNING, CEF_FLAG6, 
+						gi.CreateEffect(NULL, FX_LIGHTNING, CEF_FLAG6,
 								startpos, "vbb", endpos, (byte)RED_RAIN_LIGHTNING_WIDTH, (byte)0);
 						gi.sound(victim,CHAN_WEAPON,gi.soundindex("weapons/Lightning.wav"),1,ATTN_NORM,0);
 
@@ -131,21 +131,21 @@ void RedRainThink(edict_t *self)
 
 						if(!(EntReflecting(victim, true, true)))
 						{
-							T_Damage(victim, self, self->owner, diffpos, endpos, vec3_origin, 
-									irand(RED_RAIN_DMG_LIGHTNING_MIN, RED_RAIN_DMG_LIGHTNING_MAX), 0, DAMAGE_SPELL,MOD_STORM); 
+							T_Damage(victim, self, self->owner, diffpos, endpos, vec3_origin,
+									irand(RED_RAIN_DMG_LIGHTNING_MIN, RED_RAIN_DMG_LIGHTNING_MAX), 0, DAMAGE_SPELL,MOD_STORM);
 						}
 					}
 					else
 					{
-						gi.CreateEffect(NULL, FX_POWER_LIGHTNING, 0, 
+						gi.CreateEffect(NULL, FX_POWER_LIGHTNING, 0,
 								startpos, "vb", endpos, (byte)POWER_RAIN_LIGHTNING_WIDTH);
 						gi.sound(victim,CHAN_WEAPON,gi.soundindex("weapons/LightningPower.wav"),1,ATTN_NORM,0);
 
 						if(!(EntReflecting(victim, true, true)))
 						{
-							damage = irand(POWER_RAIN_DMG_LIGHTNING_MIN, POWER_RAIN_DMG_LIGHTNING_MAX); 
-							
-							T_DamageRadiusFromLoc(endpos, self, self->owner, self->owner, POWER_RAIN_DMG_LIGHTNING_RADIUS, 
+							damage = irand(POWER_RAIN_DMG_LIGHTNING_MIN, POWER_RAIN_DMG_LIGHTNING_MAX);
+
+							T_DamageRadiusFromLoc(endpos, self, self->owner, self->owner, POWER_RAIN_DMG_LIGHTNING_RADIUS,
 									damage, damage*0.25, DAMAGE_SPELL,MOD_P_STORM);
 						}
 					}
@@ -153,31 +153,31 @@ void RedRainThink(edict_t *self)
 			}
 			else
 			{
-				VectorSet(startpos, 
-							flrand(-rradius*0.75, rradius*0.75), 
-							flrand(-rradius*0.75, rradius*0.75), 
+				VectorSet(startpos,
+							flrand(-rradius*0.75, rradius*0.75),
+							flrand(-rradius*0.75, rradius*0.75),
 							self->maxs[2]);
 				VectorAdd(startpos, self->s.origin, startpos);
-				VectorSet(endpos, 
-							flrand(-rradius, rradius), 
-							flrand(-rradius, rradius), 
+				VectorSet(endpos,
+							flrand(-rradius, rradius),
+							flrand(-rradius, rradius),
 							self->mins[2]);
 				VectorAdd(endpos, self->s.origin, endpos);
 				if (!poweredup)
 				{
-					gi.CreateEffect(NULL, FX_LIGHTNING, CEF_FLAG6, 
+					gi.CreateEffect(NULL, FX_LIGHTNING, CEF_FLAG6,
 							startpos, "vbb", endpos, (byte)RED_RAIN_LIGHTNING_WIDTH, (byte)0);
 					gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/Lightning.wav"), 2, ATTN_NORM,0);
 				}
 				else
 				{
-					gi.CreateEffect(NULL, FX_POWER_LIGHTNING, 0, 
+					gi.CreateEffect(NULL, FX_POWER_LIGHTNING, 0,
 							startpos, "vb", endpos, (byte)POWER_RAIN_LIGHTNING_WIDTH);
 					gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/LightningPower.wav"), 2, ATTN_NORM,0);
 
 					// The lightning does radius damage even if no target.
-					damage = irand(POWER_RAIN_DMG_LIGHTNING_MIN, POWER_RAIN_DMG_LIGHTNING_MAX); 
-					T_DamageRadiusFromLoc(endpos, self, self->owner, self->owner, POWER_RAIN_DMG_LIGHTNING_RADIUS, 
+					damage = irand(POWER_RAIN_DMG_LIGHTNING_MIN, POWER_RAIN_DMG_LIGHTNING_MAX);
+					T_DamageRadiusFromLoc(endpos, self, self->owner, self->owner, POWER_RAIN_DMG_LIGHTNING_RADIUS,
 							damage, damage*0.25, DAMAGE_SPELL,MOD_P_STORM);
 				}
 			}
@@ -209,11 +209,11 @@ edict_t *RedRainMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 	VectorCopy(vel, redarrow->velocity);
 	redarrow->reflect_debounce_time = self->reflect_debounce_time -1;
 	redarrow->reflected_time=self->reflected_time;
-	G_LinkMissile(redarrow); 
-	gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE, 
+	G_LinkMissile(redarrow);
+	gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE,
 			CEF_OWNERS_ORIGIN|(redarrow->health<<5)|CEF_FLAG8, NULL, "t", redarrow->velocity);
 
-	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
@@ -317,7 +317,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	gi.trace(org, damagearea->mins, damagearea->maxs, end, damagearea, MASK_SOLID,&trace);
 //	if(trace.startsolid)						// Startsolids mean that the area is too close to a wall
 //		damagearea->mins[2] = -1.0;
-//	else 
+//	else
 	if (trace.fraction == 1.0F)
 		damagearea->mins[2] = -MAX_REDRAINFALLDIST;			// Put the bounds down all the way
 	else
@@ -326,7 +326,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	// Put the bounds of the damage area out to the max position now.
 	damagearea->mins[0] = damagearea->mins[1] = -radius;
 	damagearea->maxs[0] = damagearea->maxs[1] = radius;
-	
+
 	VectorSet(damagearea->pos1, damagearea->s.origin[0], damagearea->s.origin[1], damagearea->maxs[2]);
 
 	gi.linkentity(damagearea);
@@ -334,7 +334,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	// Start the red rain
 	// Send along the health as a flag, to indicate if powered up.
 	gi.CreateEffect(&damagearea->s, FX_WEAPON_REDRAIN, CEF_BROADCAST|(self->health<<5), org, "");
-	
+
 //	gi.sound(damagearea, CHAN_VOICE, gi.soundindex("weapons/RedRainFall.wav"), 2, ATTN_NORM,0);
 	damagearea->s.sound = gi.soundindex("weapons/RedRainFall.wav");
 	damagearea->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
@@ -426,7 +426,7 @@ void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 
 	create_redarrow(redarrow);
 	redarrow->reflect_debounce_time = MAX_REFLECT;
-	
+
 	redarrow->owner = Caster;
 	G_LinkMissile(redarrow);
 
@@ -459,12 +459,12 @@ void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	// Create the missile and trail effect only if we successfully launch the missile
 	if (powerup)
 	{	// Magenta trail
-		gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6, 
+		gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6,
 					NULL, "t", redarrow->velocity);
 	}
 	else
 	{	// Red trail
-		gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE, CEF_OWNERS_ORIGIN, 
+		gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE, CEF_OWNERS_ORIGIN,
 					NULL, "t", redarrow->velocity);
 	}
 }

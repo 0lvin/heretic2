@@ -18,16 +18,16 @@ H2COMMON_API void SLList_DefaultCon(SinglyLinkedList_t *this_ptr)
 }
 H2COMMON_API void SLList_Des(SinglyLinkedList_t* this_ptr)
 {
-	SinglyLinkedListNode_t* node; 
+	SinglyLinkedListNode_t* node;
 
 	node = this_ptr->front;
 	while (node != this_ptr->rearSentinel)
 	{
 		node = node->next;
-		ResMngr_AllocateResource(&globalResourceManager, 0); // jmarshall: why are these here? 
+		ResMngr_AllocateResource(&globalResourceManager, 0); // jmarshall: why are these here?
 	}
 	this_ptr->current = this_ptr->rearSentinel;
-	ResMngr_AllocateResource(&globalResourceManager, 0); // jmarshall: why are these here? 
+	ResMngr_AllocateResource(&globalResourceManager, 0); // jmarshall: why are these here?
 }
 
 H2COMMON_API qboolean SLList_AtEnd(SinglyLinkedList_t *this_ptr)
@@ -95,7 +95,7 @@ H2COMMON_API void SLList_PushEmpty(SinglyLinkedList_t *this_ptr)
 
 H2COMMON_API void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
 {
-	SinglyLinkedListNode_t* newNode; 
+	SinglyLinkedListNode_t* newNode;
 
 	newNode = (SinglyLinkedListNode_t*)ResMngr_AllocateResource(&globalResourceManager, 0);
 	newNode->value = toInsert;
@@ -105,8 +105,8 @@ H2COMMON_API void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_
 
 H2COMMON_API GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr)
 {
-	GenericUnion4_t value; 
-	SinglyLinkedListNode_t* nextNode; 
+	GenericUnion4_t value;
+	SinglyLinkedListNode_t* nextNode;
 	SinglyLinkedListNode_t* currentNode;
 	SinglyLinkedListNode_t* frontNode;
 
@@ -123,7 +123,7 @@ H2COMMON_API GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr)
 
 H2COMMON_API void SLList_Chop(SinglyLinkedList_t *this_ptr)
 {
-	SinglyLinkedList_t* currentNode; 
+	SinglyLinkedList_t* currentNode;
 	SinglyLinkedList_t* nextNode;
 
 	nextNode = (SinglyLinkedList_t*)this_ptr->current->next;
@@ -145,7 +145,7 @@ H2COMMON_API void SLList_Chop(SinglyLinkedList_t *this_ptr)
 
 H2COMMON_API void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
 {
-	SinglyLinkedListNode_t* newNode; 
+	SinglyLinkedListNode_t* newNode;
 
 	newNode = (SinglyLinkedListNode_t*)ResMngr_AllocateResource(&globalResourceManager, 0);
 	newNode->value = toInsert;

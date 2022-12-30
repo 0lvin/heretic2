@@ -35,14 +35,14 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self,centity_t *owner)
 	//vec3_t			org, dir;
 	//float			len;
 	int				count;
-	
+
 	count = GetScaledCount(8, 0.85);
 
 	/*
 	//Setup the common origin
 	VectorCopy(self->startpos, org);
 
-	//Get the direction 
+	//Get the direction
 	VectorSubtract(owner->current.origin, self->startpos, dir);
 	len = VectorNormalize(dir);
 
@@ -52,7 +52,7 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self,centity_t *owner)
 	//Get the increment vector
 	VectorScale(dir, len, dir);
 	*/
-	
+
 	while (count--)
 	{
 		//VectorAdd(org, dir, org);
@@ -64,13 +64,13 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self,centity_t *owner)
 								  1000);
 
 		TrailEnt->r.model = spoo_models + irand(0,1);
-		
+
 		TrailEnt->r.origin[0] += flrand(-3.0F, 3.0F);
 		TrailEnt->r.origin[1] += flrand(-3.0F, 3.0F);
 		TrailEnt->r.origin[2] += flrand(-3.0F, 3.0F);
 
 		VectorSet(TrailEnt->velocity, flrand(-64.0F, 64.0F), flrand(-64.0F, 64.0F), -64.0F);
-		
+
 		TrailEnt->r.scale = 0.65;
 		TrailEnt->alpha = 1.0f;
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_FULLBRIGHT;
@@ -122,24 +122,24 @@ void FXSpooSplat(centity_t *owner,int type,int Flags,vec3_t origin)
 								  1000);
 
 		TrailEnt->r.model = spoo_models + irand(0,1);
-		
+
 		VectorRandomCopy(dir, TrailEnt->velocity, 16.0f);
 		VectorNormalize(TrailEnt->velocity);
 		VectorScale(TrailEnt->velocity, flrand(100.0f, 200.0f), TrailEnt->velocity);
 
 		VectorSet(TrailEnt->acceleration, 0, 0, -128);
-		
+
 		TrailEnt->r.scale = flrand(0.75, 1.0);
 		TrailEnt->alpha=1.0;
-		
+
 		TrailEnt->r.flags |= RF_TRANSLUCENT;
-		
+
 		TrailEnt->r.frame=0;
 		TrailEnt->d_scale=flrand( -1.25, -1.0);
 		TrailEnt->d_alpha=flrand(-1, -0.5);
 		TrailEnt->color.c = 0xA0FFFFFF;
 		TrailEnt->radius=20.0;
-	
+
 		AddEffect(NULL,TrailEnt);
 	}
 }

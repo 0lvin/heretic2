@@ -48,7 +48,7 @@ qboolean ParticleTrailAI(client_entity_t *_this, centity_t *owner)
 	assert(owner);
 
 	effect = ClientEntity_new(FX_PUFF, CEF_NO_DRAW, owner->current.old_origin, NULL, PARTICLE_TRAIL_PUFF_TIME);
-	
+
 	effect->flags |= CEF_NO_DRAW;
 
 	for(i = 0; i < 40; i++)
@@ -62,7 +62,7 @@ qboolean ParticleTrailAI(client_entity_t *_this, centity_t *owner)
 
 	AddEffect(NULL, effect); // add the puff to the world
 
-	return true;// actual puff spawner only goes away when it owner has a 
+	return true;// actual puff spawner only goes away when it owner has a
 				// FX_REMOVE_EFFECTS sent on it
 }
 
@@ -75,11 +75,11 @@ void GenericGibTrail(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t *effect;
 
 	effect = ClientEntity_new(type, flags, origin, NULL, PARTICLE_TRAIL_THINK_TIME);
-	
+
 	effect->flags |= CEF_NO_DRAW;
 
 	effect->color.c = 0xFF2020FF;
-	
+
 	effect->Update = ParticleTrailAI;
 
 	assert(owner);
@@ -97,7 +97,7 @@ qboolean PebbleUpdate(struct client_entity_s *self, centity_t *owner)
 	self->acceleration[2] -= 75;
 	self->r.angles[0] += ANGLE_360*d_time;
 	self->r.angles[1] += ANGLE_360*d_time;
-	
+
 	self->lastThinkTime = fxi.cl->time;
 
 	if (curTime > self->LifeTime)
@@ -113,7 +113,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 	byte				count;
 	int					i, chance ;
 	float speed;
-	
+
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_OGLE_HITPUFF].formatString, dir);			// normalized direction vector
 
 	speed = VectorNormalize(dir);
@@ -133,21 +133,21 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 		{
 			VectorRandomCopy(dir, work, 0.5);
 			VectorScale(work, speed, effect->velocity);
-			effect->acceleration[2] = flrand(10.0, 50.0);  
+			effect->acceleration[2] = flrand(10.0, 50.0);
 		}
 		else
 		{
 			VectorRandomCopy(dir, work, 0.5);
-			
+
 			if (flags & CEF_FLAG6)
 			{
 				VectorScale(work, flrand(8.0, 12.0), effect->velocity);
-				effect->acceleration[2] = flrand(10.0, 50.0);  
+				effect->acceleration[2] = flrand(10.0, 50.0);
 			}
 			else
 			{
 				VectorScale(work, 4.0, effect->velocity);
-				effect->acceleration[2] = flrand(10.0, 50.0);  
+				effect->acceleration[2] = flrand(10.0, 50.0);
 			}
 		}
 
@@ -195,7 +195,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 			VectorRandomCopy(dir, work, 0.5);
 			VectorScale(work, flrand(8.0, 16.0), effect->velocity);
 		}
-		
+
 		if (flags & CEF_FLAG6 || speed > 1.0f)
 		{
 			effect->acceleration[0] += flrand(-75.0, 75.0);
@@ -242,7 +242,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 
 		VectorRandomCopy(dir, work, 0.5);
 		VectorScale(work, 50.0, effect->velocity);
-		effect->acceleration[2] = -100.0;									  
+		effect->acceleration[2] = -100.0;
 		effect->alpha = 0.5;
 		effect->r.scale = 0.1;
 		effect->d_scale = 1.0;
@@ -255,7 +255,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 	if (flags & CEF_FLAG6)
 	{	// High-intensity impact point.
 		effect = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 250);
-		
+
 		effect->r.model = genfx_models + 5;
 		effect->r.frame = 0;
 		effect->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -325,7 +325,7 @@ void CreateWaterParticles(client_entity_t *self)
 	for(i = 0; i < (WATER_DENSITY * r_detail->value); i++)
 	{
 		p = ClientParticle_new(PART_4x4_WHITE | PFL_SOFT_MASK, self->color, 1000000);
-		
+
 		SetupWaterParticle(p, false);
 
 		AddParticleToList(self, p);
@@ -350,7 +350,7 @@ void UpdateWaterParticles(client_entity_t *self)
 
 		addVal =  SINEAMT/128.0 * cl_turbsin[(int)((fxi.cl->time*0.001 + (self->origin[0] * 2.3 + p->origin[1])*.0015)*SINESCALE) & 255];
 		addVal += SINEAMT/256.0 * cl_turbsin[(int)((fxi.cl->time*0.002 + (self->origin[1] * 2.3 + p->origin[0])*.0015)*SINESCALE) & 255];
-				
+
 		p->origin[2] += addVal;
 		p->duration = fxi.cl->time + 10000000;
 	}
@@ -399,7 +399,7 @@ void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 	int					num_parts, i;
 	paletteRGBA_t		LightColor={200, 255, 255, 140};//RGBA
 
-	VectorSubtract(owner->referenceInfo->references[refpt].placement.origin, 
+	VectorSubtract(owner->referenceInfo->references[refpt].placement.origin,
 			owner->referenceInfo->oldReferences[refpt].placement.origin,
 			diff);
 	VectorSubtract(owner->origin, self->endpos, diff2);
@@ -426,7 +426,7 @@ void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 
 		VectorSet(p->origin, flrand(-4, 4), flrand(-4, 4), flrand(-4, 4));
 		VectorAdd(handpt, p->origin, p->origin);
-		
+
 		p->scale = flrand(0.75, 1.5);
 		p->color.a = irand(100, 200);
 
@@ -477,14 +477,14 @@ qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
 
 
 void FXWaterParticles(centity_t *owner, int type, int flags, vec3_t origin)
-{			
+{
 	client_entity_t *effect;
 
 	assert(owner);
 
 	// Spawn static water particle handler
 	effect = ClientEntity_new(type, flags | CEF_NO_DRAW | CEF_ABSOLUTE_PARTS| CEF_OWNERS_ORIGIN | CEF_VIEWSTATUSCHANGED, origin, NULL, PARTICLE_TRAIL_THINK_TIME);
-	
+
 	effect->AddToView = LinkedEntityUpdatePlacement;
 	effect->radius = 100.0;
 	effect->Update = WaterParticleGeneratorUpdate;
@@ -519,10 +519,10 @@ int DirectionalUpdate (client_entity_t *self, centity_t *owner)
 	self->flags &= ~CEF_NO_DRAW;
 
 	VectorAdd(owner->lerp_origin, self->startpos, self->r.origin);
-	
+
 	addVal =  SINEAMT/2.0 * cl_turbsin[(int)((fxi.cl->time*0.001 + (self->r.origin[0] * 2.3 + self->startpos[1])*.0015)*SINESCALE) & 255];
 	addVal += SINEAMT/4.0 * cl_turbsin[(int)((fxi.cl->time*0.002 + (self->r.origin[1] * 2.3 + self->startpos[0])*.0015)*SINESCALE) & 255];
-			
+
 	self->r.origin[2] += addVal;
 
 	part = ClientParticle_new(self->classID, color, 100);
@@ -538,14 +538,14 @@ int DirectionalUpdate (client_entity_t *self, centity_t *owner)
 	part->duration = (color.a * 100.0) / -part->d_alpha;		// time taken to reach zero alpha
 
 	AddParticleToList(self, part);
-	
+
 	self->updateTime = 20;
 
 	return (true);
 }
 
 void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
-{			
+{
 	client_entity_t *effect;
 	int				rflags;
 
@@ -556,7 +556,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 	// Spawn each directional
 	//NORTH
 	effect = ClientEntity_new(type, flags, origin, NULL, 25);
-	
+
 	effect->r.model = compass_models;
 	effect->r.frame = 0;
 	effect->classID = PART_16x16_SPARK_C;
@@ -569,7 +569,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 
 	//EAST
 	effect = ClientEntity_new(type, flags, origin, NULL, 50);
-	
+
 	effect->r.model = compass_models;
 	effect->r.frame = 1;
 	effect->classID = PART_16x16_SPARK_Y;
@@ -582,7 +582,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 
 	//SOUTH
 	effect = ClientEntity_new(type, flags, origin, NULL, 75);
-	
+
 	effect->r.model = compass_models;
 	effect->r.frame = 2;
 	effect->classID = PART_16x16_SPARK_G;
@@ -595,7 +595,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 
 	//WEST
 	effect = ClientEntity_new(type, flags, origin, NULL, 100);
-	
+
 	effect->r.model = compass_models;
 	effect->r.frame = 3;
 	effect->classID = PART_16x16_SPARK_R;
@@ -704,7 +704,7 @@ static qboolean FXLeaderThink(struct client_entity_s *self, centity_t *owner)
 	}
 
 	// if we are ghosted, don't do the effect
-	if ((owner->current.renderfx & RF_TRANS_GHOST) || (owner->current.effects & EF_CLIENT_DEAD)) 
+	if ((owner->current.renderfx & RF_TRANS_GHOST) || (owner->current.effects & EF_CLIENT_DEAD))
 		return(true);
 
    	// create the ring of particles that goes up
@@ -713,14 +713,14 @@ static qboolean FXLeaderThink(struct client_entity_s *self, centity_t *owner)
    	// figure out how many particles we are going to use
 
    	ce = ClientParticle_new(PART_16x16_SPARK_Y, color, 800);
-   	ce->acceleration[2] = 0.0; 
+   	ce->acceleration[2] = 0.0;
    	VectorSet(ce->origin, LEADER_RAD * cos(self->Scale), LEADER_RAD * sin(self->Scale), 4);
    	ce->scale = 8.0F;
    	AddParticleToList(self, ce);
    	// create the ring of particles that goes down
 
    	ce = ClientParticle_new(PART_16x16_SPARK_Y, color, 800);
-   	ce->acceleration[2] = 0.0; 
+   	ce->acceleration[2] = 0.0;
    	VectorSet(ce->origin, LEADER_RAD * cos(self->Scale+3.14), LEADER_RAD * sin(self->Scale+3.14), 4);
    	ce->scale = 8.0F;
    	AddParticleToList(self, ce);
@@ -735,7 +735,7 @@ static qboolean FXLeaderThink(struct client_entity_s *self, centity_t *owner)
 void FXLeader(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
-														  
+
 	glow = ClientEntity_new(type, flags | CEF_NO_DRAW | CEF_ADDITIVE_PARTS, origin, 0, 60);
 
 	VectorClear(glow->origin);
@@ -743,7 +743,7 @@ void FXLeader(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->LifeTime = TOTAL_LEADER_EFFECTS;
 	glow->AddToView = LinkedEntityUpdatePlacement;
 	glow->Scale = 0;
-	
+
 	AddEffect(owner, glow);
 
 }
@@ -767,10 +767,10 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self,centity_t *owner)
 
 	// This tells if we are wasting our time, because the reference points are culled.
 	if (!RefPointsValid(owner))
-		return true; 
+		return true;
 
 	// if we are ghosted, don't do the effect
-	if ((owner->current.renderfx & RF_TRANS_GHOST) || (owner->current.effects & EF_CLIENT_DEAD)) 
+	if ((owner->current.renderfx & RF_TRANS_GHOST) || (owner->current.effects & EF_CLIENT_DEAD))
 		return(true);
 
 	if (!(owner->current.effects & EF_SPEED_ACTIVE))
@@ -789,7 +789,7 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self,centity_t *owner)
 
 	if (Vec3NotZero(self->origin))
 	{
-		
+
 		// create small particles
 		count = GetScaledCount(5, 0.5);
 		VectorSubtract(self->origin, origin, diff);
@@ -806,13 +806,13 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self,centity_t *owner)
 	  		color.c = 0xffffff40;
 
 			flame = ClientParticle_new(PART_32x32_STEAM, color, hand_flame_dur);
-			VectorSet(	flame->origin, 
-						flrand(-FOOTTRAIL_RADIUS, FOOTTRAIL_RADIUS), 
-						flrand(-FOOTTRAIL_RADIUS, FOOTTRAIL_RADIUS), 
+			VectorSet(	flame->origin,
+						flrand(-FOOTTRAIL_RADIUS, FOOTTRAIL_RADIUS),
+						flrand(-FOOTTRAIL_RADIUS, FOOTTRAIL_RADIUS),
 						flrand(-FOOTTRAIL_RADIUS, FOOTTRAIL_RADIUS));
 			VectorAdd(flame->origin, self->origin, flame->origin);
 			VectorAdd(flame->origin, curpos, flame->origin);
-		
+
 			flame->scale = FOOTTRAIL_SCALE;
 			VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(5.0, 15.0));
 			flame->acceleration[2] = FOOTTRAIL_ACCEL;
@@ -824,10 +824,10 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self,centity_t *owner)
 			Vec3SubtractAssign(diff, curpos);
 		}
 	}
-  
+
 	VectorCopy(origin, self->origin);
 
-	
+
 	return(true);
 }
 
@@ -865,7 +865,7 @@ void FXFeetTrail(centity_t *owner,int type,int flags,vec3_t origin)
 		trail->Update=FXFeetTrailThink;
 		trail->flags|=CEF_NO_DRAW | CEF_OWNERS_ORIGIN | CEF_ABSOLUTE_PARTS;
 		trail->radius = 40;
-		trail->AddToView = LinkedEntityUpdatePlacement;			
+		trail->AddToView = LinkedEntityUpdatePlacement;
 		trail->refPoint = i;
 		trail->color.c = 0xe5007fff;
 

@@ -478,7 +478,7 @@ ALuint S_LoadReverbEffect( void )
 	ALuint effect = 0;
 	ALenum err;
 	EFXEAXREVERBPROPERTIES reverb = EFX_REVERB_PRESET_GENERIC;
-	
+
 	/* Define a macro to help load the function pointers. */
 #define LOAD_PROC(T, x)  ((x) = (T)alGetProcAddress(#x))
 	LOAD_PROC(LPALGENEFFECTS, alGenEffects);

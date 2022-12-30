@@ -319,7 +319,7 @@ typedef enum
 
 	// Always keep these last to test alignment
 	GM_HELP1					= 331,
-	GM_HELP2					
+	GM_HELP2
 } GameMsg_t;
 
 

@@ -211,7 +211,7 @@ typedef struct
 
 	void (*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t *passent, int contentmask,trace_t *tr);
 	int		(*pointcontents) (vec3_t point);
-	
+
 	// Potentially visible / invisible set routines.
 
 	qboolean	(*inPVS) (vec3_t p1, vec3_t p2);
@@ -345,7 +345,7 @@ typedef struct
 	void		(*WriteLevel) (char *filename);
 	void		(*ReadLevel) (char *filename);
 
-	// 
+	//
 
 	qboolean	(*ClientConnect) (edict_t *ent, char *userinfo);
 	void		(*ClientBegin) (edict_t *ent);
@@ -360,7 +360,7 @@ typedef struct
 
 	// ServerCommand will be called when an "sv <command>" command is issued on the server console.
 	// The game can issue gi.argc() / gi.argv() commands to get the rest of the parameters.
-	
+
 	void		(*ServerCommand) (void);
 
 	// Global variables shared between game and server. The edict array is allocated in the game dll

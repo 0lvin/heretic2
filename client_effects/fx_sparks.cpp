@@ -64,7 +64,7 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 		VectorRandomCopy(dir, work, 0.5);
 		VectorScale(work, irand(100.0, 125.0), effect->velocity);
 		effect->acceleration[2] = flrand(-200.0, -100.0);
-		
+
 		if (type == FX_BLOCK_SPARKS)
 			effect->r.scale = 0.5;
 		else
@@ -83,7 +83,7 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 
 		effect->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-		effect->r.model = spark_models + MODEL_SPARKSTREAK;	
+		effect->r.model = spark_models + MODEL_SPARKSTREAK;
 		effect->r.spriteType = SPRITE_LINE;
 		effect->r.tile = 1.0;
 		effect->r.scale = 2;
@@ -92,7 +92,7 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 
 		VectorRandomCopy(dir, work, 0.5);
 		VectorScale(work, irand(100.0, 125.0), effect->velocity);
-		
+
 		VectorCopy(origin, effect->r.endpos);
 		VectorMA(effect->r.endpos, irand(8, 16), work, effect->r.startpos);
 
@@ -126,7 +126,7 @@ qboolean FireSparkSpawnerUpdate(client_entity_t *spawner, centity_t *owner)
 	VectorMA(spawner->startpos2, (float)(spawner->LifeTime)/5, diffvec, pos);
 
 	spawner->LifeTime++;
-	
+
 	if(spawner->LifeTime >= 5)
 	{
 		FireSparks(NULL, FX_SPARKS, spawner->SpawnInfo, pos, spawner->direction);
@@ -161,7 +161,7 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 		effect->Update = FireSparkSpawnerUpdate;
 		if(owner->current.effects & EF_MARCUS_FLAG1)
 			effect->SpawnInfo |= CEF_FLAG7;
-		
+
 		AddEffect(owner, effect);
 		return;
 	}
@@ -196,7 +196,7 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 			flame->scale = flrand(5, 10);
 			VectorScale(work, 20.0, flame->velocity);
 			flame->velocity[2] += 30;
-			flame->acceleration[2] = 2.0f;									  
+			flame->acceleration[2] = 2.0f;
 
 			flame->d_scale = flrand(-10.0, -5.0);
 			flame->d_alpha = -10.0f;
@@ -207,13 +207,13 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 			flame->scale = flrand(3, 5);
 			VectorScale(work, 50.0, flame->velocity);
 			flame->velocity[2] += 50;
-			flame->acceleration[2] = -200.0f;									  
+			flame->acceleration[2] = -200.0f;
 
 			flame->d_scale = flrand(-2.0, -3.0);
 			flame->d_alpha = 0.0f;
 			flame->duration = (flame->scale * 1000.0) / -flame->d_scale;		// time taken to reach zero alpha
 		}
-		
+
 		flame->origin[2] -= 8;//HACK!!!!
 
 		AddParticleToList(effect, flame);

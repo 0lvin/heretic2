@@ -72,10 +72,10 @@ void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 
 	self->d_scale=1.1;
 	self->d_alpha=-0.8;
-		
+
 	AddEffect(NULL, self);
 
-	if (vel > 320.0) 
+	if (vel > 320.0)
 		vel=320.0;
 	// splashies too
 	if (r_detail->value >= DETAIL_HIGH)

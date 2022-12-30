@@ -32,7 +32,7 @@ void PrecacheSsithraArrow()
 	arrow_models[2] = fxi.RegisterModel("models/objects/projectiles/sitharrow/tris.fm");//projectile model
 }
 
-enum 
+enum
 {
 	FX_SS_MAKE_ARROW,
 	FX_SS_MAKE_ARROW2,
@@ -60,7 +60,7 @@ static qboolean FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t
 	while(i--)
 	{
 		TrailEnt = ClientEntity_new(FX_SSITHRA_ARROW, 0, self->r.origin, NULL, 1000);
-	
+
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
 
@@ -89,7 +89,7 @@ static qboolean FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t
 		TrailEnt->d_scale = flrand(-1.0, -1.25);
 		TrailEnt->updateTime = (TrailEnt->alpha * 1000.0) / -TrailEnt->d_scale;
 		TrailEnt->radius = 20.0;
-		
+
 		AddEffect(NULL,TrailEnt);
 	}
 
@@ -106,7 +106,7 @@ static qboolean FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t
 void FXDoSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
-	client_entity_t	*missile;	
+	client_entity_t	*missile;
 	paletteRGBA_t	LightColor;
 	float			lightsize;
 
@@ -118,7 +118,7 @@ void FXDoSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin, vec3
 	missile->r.scale = 1.0;
 	LightColor.c = 0xff2040ff;		// Orange light
 	lightsize = 120.0;
-	
+
 	VectorCopy(vel, missile->velocity);
 	VectorNormalize2(vel, dir);
 	AnglesFromDir(dir, missile->r.angles);
@@ -135,7 +135,7 @@ void FXDoSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin, vec3
 void FXDoSsithraArrow2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
-	client_entity_t	*missile;	
+	client_entity_t	*missile;
 	paletteRGBA_t	LightColor;
 	float			lightsize;
 
@@ -148,7 +148,7 @@ void FXDoSsithraArrow2(centity_t *owner, int type, int flags, vec3_t origin, vec
 	missile->r.scale = 1.5;
 	LightColor.c = 0xff0000ff;		// Red light
 	lightsize = 160.0;
-	
+
 	VectorCopy(vel, missile->velocity);
 	VectorNormalize2(vel, dir);
 	AnglesFromDir(dir, missile->r.angles);
@@ -177,7 +177,7 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 	int				i;
 	paletteRGBA_t	LightColor;
 	float			lightrad;
-	
+
 	Vec3ScaleAssign(32.0, dir);
 
 	i = GetScaledCount(irand(8, 12), 0.8);
@@ -210,16 +210,16 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 		SmokePuff->r.frame=0;
 
 		SmokePuff->d_alpha= -0.4;
-			
+
 		SmokePuff->radius=20.0;
 
 		if(!i)
 		{
-			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/SsithraArrowImpact.wav"), 
+			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/SsithraArrowImpact.wav"),
 					1, ATTN_NORM, 0);
 			SmokePuff->dlight=CE_DLight_new(LightColor,lightrad,0.0f);
 			VectorClear(SmokePuff->velocity);
-		}	
+		}
 
 		AddEffect(NULL,SmokePuff);
 	}
@@ -232,7 +232,7 @@ void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3
 	int				i;
 	paletteRGBA_t	LightColor;
 	float			lightrad;
-	
+
 	Vec3ScaleAssign(32.0, dir);
 
 	i = GetScaledCount(irand(12, 16), 0.8);
@@ -258,16 +258,16 @@ void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3
 		SmokePuff->r.frame=0;
 
 		SmokePuff->d_alpha= -0.4;
-			
+
 		SmokePuff->radius=20.0;
 
 		if(!i)
 		{
-			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/FireballPowerImpact.wav"), 
+			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/FireballPowerImpact.wav"),
 					1, ATTN_NORM, 0);
 			SmokePuff->dlight=CE_DLight_new(LightColor,lightrad,0.0f);
 			VectorClear(SmokePuff->velocity);
-		}	
+		}
 
 		AddEffect(NULL,SmokePuff);
 	}

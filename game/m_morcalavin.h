@@ -50,7 +50,7 @@ typedef enum SoundID_e
 	SND_SHIELDBREAK,
 //Fly forward
 	SND_RUSH,
-//hurt and get up	
+//hurt and get up
 	SND_FALL,
 	SND_REVIVE,
 //strafing beams attack
@@ -69,7 +69,7 @@ typedef enum SoundID_e
 	TAUNT_BELLY1,
 	TAUNT_BELLY2,
 	TAUNT_BELLY3,
-	
+
 	NUM_SOUNDS
 } SoundID_t;
 

@@ -41,7 +41,7 @@ edict_t *PhoenixMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 	VectorCopy(vel, phoenix->velocity);
 	G_LinkMissile(phoenix);
 	gi.CreateEffect(&phoenix->s, FX_WEAPON_PHOENIXMISSILE, CEF_OWNERS_ORIGIN | (phoenix->health << 5) | CEF_FLAG8, NULL, "t", phoenix->velocity);
-	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// travel sound on the weapon itself - the one on the original arrow will be deleted when the object is removed.
@@ -64,8 +64,8 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 {
 	int			makeScorch;
 	vec3_t		planedir;
-			    
-	// did we hit the sky ? 
+
+	// did we hit the sky ?
 	if(surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
@@ -96,19 +96,19 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	if(self->health == 1)
 	{	// must be powered up version - storing in health is not so good, though
 		// Powered up Phoenix will NOT damage the shooter.
-		T_DamageRadius(self, self->owner, NULL, PHOENIX_EXPLODE_RADIUS_POWER, 
-						PHOENIX_EXPLODE_DAMAGE_POWER, PHOENIX_EXPLODE_DAMAGE_POWER>>4, 
+		T_DamageRadius(self, self->owner, NULL, PHOENIX_EXPLODE_RADIUS_POWER,
+						PHOENIX_EXPLODE_DAMAGE_POWER, PHOENIX_EXPLODE_DAMAGE_POWER>>4,
 						DAMAGE_NORMAL|DAMAGE_FIRE|DAMAGE_EXTRA_KNOCKBACK|DAMAGE_POWERPHOENIX|DAMAGE_ENEMY_MAX|DAMAGE_PHOENIX,
 						MOD_P_PHOENIX_SPL);
 	}
 	else
 	{
-		T_DamageRadius(self, self->owner, NULL, PHOENIX_EXPLODE_RADIUS, 
-						PHOENIX_EXPLODE_DAMAGE, PHOENIX_EXPLODE_DAMAGE>>4, 
+		T_DamageRadius(self, self->owner, NULL, PHOENIX_EXPLODE_RADIUS,
+						PHOENIX_EXPLODE_DAMAGE, PHOENIX_EXPLODE_DAMAGE>>4,
 						DAMAGE_NORMAL|DAMAGE_FIRE|DAMAGE_EXTRA_KNOCKBACK|DAMAGE_ENEMY_MAX|DAMAGE_PHOENIX,
 						MOD_PHOENIX_SPL);
 	}
-	
+
 	AlertMonsters (self, self->owner, 3, false);
 
 	// Attempt to apply a scorchmark decal to the thing I hit.

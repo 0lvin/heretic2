@@ -5,7 +5,7 @@ int					Cid_init[NUM_CLASSIDS];
 
 void RatStaticsInit();
 void GorgonStaticsInit();
-void PlagueElfStaticsInit(); 
+void PlagueElfStaticsInit();
 void GkrokonStaticsInit();
 void FishStaticsInit();
 void ObjectStaticsInit();
@@ -58,7 +58,7 @@ void Corvus7StaticsInit();
 void Corvus8StaticsInit();
 void Corvus9StaticsInit();
 
-void (*classStaticsInits[NUM_CLASSIDS])() = 
+void (*classStaticsInits[NUM_CLASSIDS])() =
 {
 	NULL,
 	RatStaticsInit,

@@ -82,14 +82,14 @@ enum FunctionTypes
 	FUNC_GET_ACTIVATOR,
 };
 
-enum VariableT 
-{ 
-	TypeINT = 0, 
-	TypeFLOAT, 
-	TypeVECTOR, 
-	TypeENTITY, 
+enum VariableT
+{
+	TypeINT = 0,
+	TypeFLOAT,
+	TypeVECTOR,
+	TypeENTITY,
 	TypeSTRING,
-	TypeUNKNOWN, 
+	TypeUNKNOWN,
 };
 
 enum FeatureTypes

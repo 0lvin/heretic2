@@ -43,14 +43,14 @@ void FogDensity_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 
 		if (!self->target)
 		{
-			ps->fog_density = 0.0;		
+			ps->fog_density = 0.0;
 			return;
 		}
 		ps->fog_density = strtod(self->target, NULL);
 	}
 }
 
-/*QUAKED trigger_fogdensity (.5 .5 .5) ? 
+/*QUAKED trigger_fogdensity (.5 .5 .5) ?
 Sets the value of r_fog_density
 and the fog color
 ---------KEY----------------
@@ -78,7 +78,7 @@ void SP_trigger_fogdensity(edict_t *self)
 void push_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	vec3_t forward,up;
-	
+
 	if(other->health > 0)
 	{
 		if (other->client)	// A player???
@@ -435,7 +435,7 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 
 	if(self->spawnflags&TSF_BUOY_FIXED)
 		monster->ai_mood_flags|=AI_MOOD_FLAG_GOTO_FIXED;
-		
+
 	if(self->spawnflags&TSF_BUOY_STAND)
 		monster->ai_mood_flags|=AI_MOOD_FLAG_GOTO_STAND;
 

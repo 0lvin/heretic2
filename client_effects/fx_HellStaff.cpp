@@ -37,7 +37,7 @@ void PreCacheHellstaff()
 void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			vel;
-	client_entity_t	*hellbolt;	
+	client_entity_t	*hellbolt;
 	paletteRGBA_t	lightcolor = {255, 128, 64, 255};
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLBOLT].formatString, vel);
@@ -48,7 +48,7 @@ void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 		Vec3ScaleAssign(HELLBOLT_SPEED,vel);
 
 	hellbolt = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 10000);
-	
+
 	hellbolt->r.model = hell_models;
 	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	hellbolt->r.frame = irand(0, 1);
@@ -127,7 +127,7 @@ void HellLaserBurn(vec3_t loc, vec3_t fwd, vec3_t right, vec3_t up)
 	blast = ClientEntity_new(-1, CEF_NO_DRAW | CEF_ADDITIVE_PARTS, loc, NULL, 1000);
 	blast->radius = 32.0;
 
-	// We're not gonna put any sound on the laser impact.	
+	// We're not gonna put any sound on the laser impact.
 //	fxi.S_StartSound(blast->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/HellLaserHit.wav"), 1, ATTN_NORM, 0);
 	blast->dlight = CE_DLight_new(lightcolor, 150.0f, -300.0f);
 	VectorClear(blast->velocity);
@@ -203,9 +203,9 @@ void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	beam->alpha = 0.95;
 	beam->d_alpha = -3.0;
 	VectorCopy(origin, beam->r.startpos);
-	VectorCopy(endpos, beam->r.endpos); 
+	VectorCopy(endpos, beam->r.endpos);
 	beam->r.spriteType = SPRITE_LINE;
-	AddEffect(NULL, beam); 
+	AddEffect(NULL, beam);
 
 	//make the line beam halo
 	beam2 = ClientEntity_new(-1, CEF_DONT_LINK, origin, NULL, 500);
@@ -221,7 +221,7 @@ void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	VectorCopy(origin, beam2->r.startpos);
 	VectorCopy(endpos, beam2->r.endpos);
 	beam2->r.spriteType = SPRITE_LINE;
-	AddEffect(NULL, beam2); 
+	AddEffect(NULL, beam2);
 
 	count = GetScaledCount((int)(len/16.0), 0.3);
 	VectorScale(fwd, len/(float)count, dpos);
@@ -235,9 +235,9 @@ void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 		spark->d_scale = -2.0*spark->scale;
 		spark->acceleration[2] = 80.0;
 		VectorCopy(curpos, spark->origin);
-		VectorSet(spark->velocity, 
-				flrand(-HELLLASER_SPEED, HELLLASER_SPEED), 
-				flrand(-HELLLASER_SPEED, HELLLASER_SPEED), 
+		VectorSet(spark->velocity,
+				flrand(-HELLLASER_SPEED, HELLLASER_SPEED),
+				flrand(-HELLLASER_SPEED, HELLLASER_SPEED),
 				flrand(-HELLLASER_SPEED, HELLLASER_SPEED));
  		AddParticleToList(beam, spark);
 		VectorAdd(curpos, dpos, curpos);
@@ -247,7 +247,7 @@ void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	VectorNormalize(dir);
 	if	(flags & CEF_FLAG7)
 		FXClientScorchmark(beam->r.endpos, dir);
-	
+
 	if	(flags & CEF_FLAG6)
 		HellLaserBurn(endpos, fwd, right, up);
 }

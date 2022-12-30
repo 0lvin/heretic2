@@ -119,7 +119,7 @@ edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mi
 					VectorCopy(endpos, *resultpos);
 				else
 					VectorMA(curpos, skipamount, vect, *resultpos);
-				
+
 				return(trace.ent);
 			}
 			else
@@ -151,7 +151,7 @@ edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mi
 					VectorCopy(endpos, *resultpos);
 				else
 					VectorMA(trace.endpos, skipamount, vect, *resultpos);
-				
+
 				return(trace.ent);
 			}
 			else
@@ -352,7 +352,7 @@ edict_t *findinblocking(edict_t *from, edict_t *checkent)
 		if (from == checkent)
 			continue;
 		return from;
-	} 
+	}
 }
 
 /*
@@ -397,7 +397,7 @@ edict_t *findradius (edict_t *from, vec3_t org, float rad)
 		if (elen > max2)
 			continue;
 		return from;
-	} 
+	}
 }
 
 /*
@@ -446,7 +446,7 @@ edict_t *finddistance (edict_t *from, vec3_t org, float mindist, float maxdist)
 		if (elen < min2)
 			continue;
 		return from;
-	} 
+	}
 }
 
 edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max)
@@ -576,8 +576,8 @@ void G_UseTargets (edict_t *ent, edict_t *activator)
 		t->killtarget = ent->killtarget;
 		return;
 	}
-	
-	
+
+
 //
 // print the message
 //
@@ -726,7 +726,7 @@ void G_SetMovedir (vec3_t angles, vec3_t movedir)
 float vectoyaw (vec3_t vec)
 {
 	float	yaw;
-	
+
 	if (vec[YAW] == 0 && vec[PITCH] == 0)
 		yaw = 0;
 	else
@@ -742,7 +742,7 @@ float vectoyaw (vec3_t vec)
 char *G_CopyString (char *in)
 {
 	char	*out;
-	
+
 	out = (char *)gi.TagMalloc (strlen(in)+1, TAG_LEVEL);
 	strcpy (out, in);
 	return out;
@@ -808,7 +808,7 @@ edict_t *G_Spawn (void)
 		assert(0);
 		gi.error ("ED_Alloc: Spawning more than %d edicts", game.maxentities);
 	}
-		
+
 	globals.num_edicts++;
 	G_InitEdict (e);
 	return e;
@@ -997,9 +997,9 @@ qboolean KillBox (edict_t *ent)
 
 		// nail it
 		if (current->takedamage)
-			T_Damage (current, ent, ent, vec3_origin, ent->s.origin, vec3_origin, 100000, 0, 
+			T_Damage (current, ent, ent, vec3_origin, ent->s.origin, vec3_origin, 100000, 0,
 					  DAMAGE_NO_PROTECTION|DAMAGE_AVOID_ARMOR|DAMAGE_HURT_FRIENDLY,MOD_TELEFRAG);
-	
+
 	}
 
 	return true;		// all clear
@@ -1070,15 +1070,15 @@ edict_t *oldfindradius (edict_t *from, vec3_t org, float rad)
 // LinkMissile(edict_t *self)
 //
 // This is a way to kinda "cheat" the system.
-// We don't want missiles to be considered for collision, 
+// We don't want missiles to be considered for collision,
 // yet we want them to collide with other things.
-// So when we link the entity (for rendering, etc) we set 
+// So when we link the entity (for rendering, etc) we set
 // SOLID_NOT so certain things don't happen.
 // ========================================
 void G_LinkMissile(edict_t *self)
 {
     int oldsolid;
-	
+
 	oldsolid=self->solid;
 
 //  self->solid=SOLID_NOT; // comment this line out for old behaviour

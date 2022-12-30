@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "c_ai.h"
@@ -159,7 +159,7 @@ animframe_t assassin_frames_newdaggerb [] =
 animmove_t assassin_move_newdaggerb = {17, assassin_frames_newdaggerb, assassin_pause};
 //===========================================================================
 
-// ASSASSIN EVASION	
+// ASSASSIN EVASION
 
 //=============================================================================
 
@@ -299,24 +299,24 @@ animmove_t assassin_move_dodge_left = {6, assassin_frames_dodge_left, assassin_p
 //==============================================================================
 
 /*----------------------------------------------------------------------
-  assassin DeathA 
+  assassin DeathA
 -----------------------------------------------------------------------*/
 animframe_t assassin_frames_deatha [] =
 {
-	FRAME_deatha1, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deatha2, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deatha3, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deatha4, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deatha5, NULL, 0, 0, 0, NULL, 0, NULL,    
-	FRAME_deatha6, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deatha7, NULL, 0, 0, 0, NULL, 0, NULL,    
-	FRAME_deatha8, NULL, 0, 0, 0, NULL, 0, MG_NoBlocking,    
-	FRAME_deatha9, NULL, 0, 0, 0, NULL, 0, NULL,    
-	FRAME_deatha10, NULL, 0, 0, 0, NULL, 0, NULL,   
-	FRAME_deatha11, NULL, 0, 0, 0, NULL, 0, NULL,   
-	FRAME_deatha12, NULL, 0, 0, 0, NULL, 0, NULL,   
-	FRAME_deatha13, NULL, 0, 0, 0, NULL, 0, NULL,   
-	FRAME_deatha14, NULL, 0, 0, 0, NULL, 1, NULL   
+	FRAME_deatha1, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha3, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha5, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha7, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha8, NULL, 0, 0, 0, NULL, 0, MG_NoBlocking,
+	FRAME_deatha9, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha11, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha12, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha13, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deatha14, NULL, 0, 0, 0, NULL, 1, NULL
 };
 animmove_t assassin_move_deatha = {14, assassin_frames_deatha, assassin_dead};
 
@@ -325,20 +325,20 @@ animmove_t assassin_move_deatha = {14, assassin_frames_deatha, assassin_dead};
 -------------------------------------------------------------------------*/
 animframe_t assassin_frames_deathb [] =
 {
-	FRAME_deathb1, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deathb2, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deathb3, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deathb4, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deathb5, NULL, 0, 0, 0, NULL, 0, NULL,    
-	FRAME_deathb6, NULL, 0, 0, 0, NULL, 0, MG_NoBlocking,  
-	FRAME_deathb7, NULL, 0, 0, 0, NULL, 0, NULL,    
-	FRAME_deathb8, NULL, 0, 0, 0, NULL, 0, NULL,    
-	FRAME_deathb9, NULL, 0, 0, 0, NULL, 0, NULL,    
-	FRAME_deathb10, NULL, 0, 0, 0, NULL, 0, NULL,   
-	FRAME_deathb11, NULL, 0, 0, 0, NULL, 0, NULL,   
-	FRAME_deathb12, NULL, 0, 0, 0, NULL, 0, NULL,   
-	FRAME_deathb13, NULL, 0, 0, 0, NULL, 0, NULL,  
-	FRAME_deathb14, NULL, 0, 0, 0, NULL, 0, NULL,   
+	FRAME_deathb1, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb3, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb5, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb6, NULL, 0, 0, 0, NULL, 0, MG_NoBlocking,
+	FRAME_deathb7, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb9, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb11, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb12, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb13, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_deathb14, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_deathb15, NULL, 0, 0, 0, NULL, 1, NULL
 };
 animmove_t assassin_move_deathb = {15, assassin_frames_deathb, assassin_dead};
@@ -450,21 +450,21 @@ animmove_t assassin_move_backflip = {12, assassin_frames_backflip, assassin_go_b
 
 animframe_t assassin_frames_backspring [] =
 {
-	FRAME_newbackspring1, NULL, 0, 0, 0, ai_charge2, -4, assassingrowl, 
-	FRAME_newbackspring2, NULL, 0, 0, 0, ai_charge2, -8, NULL, 
-	FRAME_newbackspring3, NULL, 0, 0, 0, ai_charge2, -12, NULL, 
-	FRAME_newbackspring4, NULL, 0, 0, 0, ai_charge2, -12, NULL, 
-	FRAME_newbackspring5, NULL, 0, 0, 0, ai_charge2, -16, NULL, 
-	FRAME_newbackspring6, NULL, 0, 0, 0, ai_charge2, -18, NULL, 
-	FRAME_newbackspring7, NULL, 0, 0, 0, ai_charge2, -24, NULL, 
-	FRAME_newbackspring8, NULL, 0, 0, 0, ai_charge2, -16, NULL, 
-	FRAME_newbackspring9, NULL, 0, 0, 0, ai_charge2, -12, NULL, 
-	FRAME_newbackspring10, NULL, 0, 0, 0, ai_charge2, -12, NULL, 
-	FRAME_newbackspring11, NULL, 0, 0, 0, ai_charge2, -10, NULL, 
-	FRAME_newbackspring12, NULL, 0, 0, 0, ai_charge2, -8, NULL, 
-	FRAME_newbackspring13, NULL, 0, 0, 0, ai_charge2, -4, NULL, 
-	FRAME_newbackspring14, NULL, 0, 0, 0, ai_charge2, -2, NULL, 
-	FRAME_newbackspring15, NULL, 0, 0, 0, ai_charge2, 0, NULL, 
+	FRAME_newbackspring1, NULL, 0, 0, 0, ai_charge2, -4, assassingrowl,
+	FRAME_newbackspring2, NULL, 0, 0, 0, ai_charge2, -8, NULL,
+	FRAME_newbackspring3, NULL, 0, 0, 0, ai_charge2, -12, NULL,
+	FRAME_newbackspring4, NULL, 0, 0, 0, ai_charge2, -12, NULL,
+	FRAME_newbackspring5, NULL, 0, 0, 0, ai_charge2, -16, NULL,
+	FRAME_newbackspring6, NULL, 0, 0, 0, ai_charge2, -18, NULL,
+	FRAME_newbackspring7, NULL, 0, 0, 0, ai_charge2, -24, NULL,
+	FRAME_newbackspring8, NULL, 0, 0, 0, ai_charge2, -16, NULL,
+	FRAME_newbackspring9, NULL, 0, 0, 0, ai_charge2, -12, NULL,
+	FRAME_newbackspring10, NULL, 0, 0, 0, ai_charge2, -12, NULL,
+	FRAME_newbackspring11, NULL, 0, 0, 0, ai_charge2, -10, NULL,
+	FRAME_newbackspring12, NULL, 0, 0, 0, ai_charge2, -8, NULL,
+	FRAME_newbackspring13, NULL, 0, 0, 0, ai_charge2, -4, NULL,
+	FRAME_newbackspring14, NULL, 0, 0, 0, ai_charge2, -2, NULL,
+	FRAME_newbackspring15, NULL, 0, 0, 0, ai_charge2, 0, NULL,
 };
 animmove_t assassin_move_backspring = {15, assassin_frames_backspring, assassin_pause};
 
@@ -518,7 +518,7 @@ animmove_t assassin_move_frontflip = {10, assassin_frames_frontflip, assassin_go
 
 
 /*----------------------------------------------------------------------
-  assassin Running - assassin running 
+  assassin Running - assassin running
 -----------------------------------------------------------------------*/
 animframe_t assassin_frames_run [] =
 {//recalc movement values with new anim
@@ -537,25 +537,25 @@ animmove_t assassin_move_run = {10, assassin_frames_run, assassin_pause};
 
 animframe_t assassin_frames_walk [] =
 {
-	FRAME_newwalk1, NULL, 0, 0, 0, ai_walk, 6, NULL, 
-	FRAME_newwalk2, NULL, 0, 0, 0, ai_walk, 6, NULL, 
-	FRAME_newwalk3, NULL, 0, 0, 0, ai_walk, 6, NULL, 
+	FRAME_newwalk1, NULL, 0, 0, 0, ai_walk, 6, NULL,
+	FRAME_newwalk2, NULL, 0, 0, 0, ai_walk, 6, NULL,
+	FRAME_newwalk3, NULL, 0, 0, 0, ai_walk, 6, NULL,
 };
 animmove_t assassin_move_walk = {3, assassin_frames_walk, assasin_walk_loop_go};
 
 animframe_t assassin_frames_walk_loop [] =
 {
-	FRAME_newwalk4, NULL, 0, 0, 0, assassin_ai_walk, 8, assassingrowl, 
-	FRAME_newwalk5, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk6, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk7, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk8, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk9, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk10, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk11, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk12, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk13, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
-	FRAME_newwalk14, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL, 
+	FRAME_newwalk4, NULL, 0, 0, 0, assassin_ai_walk, 8, assassingrowl,
+	FRAME_newwalk5, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk6, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk7, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk8, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk9, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk10, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk11, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk12, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk13, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
+	FRAME_newwalk14, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL,
 };
 animmove_t assassin_move_walk_loop = {11, assassin_frames_walk_loop, assassin_pause};
 
@@ -566,21 +566,21 @@ animmove_t assassin_move_walk_loop = {11, assassin_frames_walk_loop, assassin_pa
 //=============================================================================
 
 /*----------------------------------------------------------------------
-  assassin Pain - assassin gets hit 
+  assassin Pain - assassin gets hit
 -----------------------------------------------------------------------*/
 
 animframe_t assassin_frames_pain1 [] =
-{	
+{
 	FRAME_painb1,	NULL, 0, 0, 0, ai_move, -16, assassinsqueal,
 };
 animmove_t assassin_move_pain1 = {1, assassin_frames_pain1, assassin_post_pain};
 
 
 /*----------------------------------------------------------------------
-  assassin Pain - assassin gets hit 
+  assassin Pain - assassin gets hit
 -----------------------------------------------------------------------*/
 animframe_t assassin_frames_pain2 [] =
-{	
+{
 	FRAME_painb1,	NULL, 0, 0, 0, ai_move, -10, assassinsqueal,
 	FRAME_painb2,	NULL, 0, 0, 0, ai_move, -8, NULL,
 	FRAME_painb3,	NULL, 0, 0, 0, ai_move, -6, NULL,
@@ -600,35 +600,35 @@ animmove_t assassin_move_pain2 = {5, assassin_frames_pain2, assassin_post_pain};
 
 animframe_t assassin_frames_stand [] =
 {
-	FRAME_newidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newidle2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newidle3, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newidle4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newidle5, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newidle6, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newidle7, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newidle8, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newidle9, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newidle10, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newidle11, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newidle12, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newidle2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newidle3, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newidle4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newidle5, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newidle6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newidle7, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newidle8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newidle9, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newidle10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newidle11, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newidle12, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_stand = {12, assassin_frames_stand, assassin_pause};
 
 animframe_t assassin_frames_delay [] =
 {
-	FRAME_newidle1, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle2, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle3, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle4, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle5, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle6, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle7, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle8, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle9, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle10, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle11, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
-	FRAME_newidle12, NULL, 0, 0, 0, NULL, 0, assassin_pause, 
+	FRAME_newidle1, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle2, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle3, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle4, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle5, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle6, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle7, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle8, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle9, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle10, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle11, NULL, 0, 0, 0, NULL, 0, assassin_pause,
+	FRAME_newidle12, NULL, 0, 0, 0, NULL, 0, assassin_pause,
 };
 animmove_t assassin_move_delay = {12, assassin_frames_delay, assassin_pause};
 
@@ -636,203 +636,203 @@ animmove_t assassin_move_delay = {12, assassin_frames_delay, assassin_pause};
 
 animframe_t assassin_frames_crouch_trans [] =
 {
-	FRAME_newcrchtrn1, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchtrn2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchtrn3, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchtrn4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchtrn5, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrchtrn1, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchtrn2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchtrn3, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchtrn4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchtrn5, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_trans = {5, assassin_frames_crouch_trans, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_idle [] =
 {
-	FRAME_newcrouchidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newcrouchidle2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrouchidle3, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrouchidle4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrouchidle5, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrouchidle6, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrouchidle7, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrouchidle8, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrouchidle9, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrouchidle10, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrouchidle11, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrouchidle12, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrouchidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newcrouchidle2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrouchidle3, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrouchidle4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrouchidle5, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrouchidle6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrouchidle7, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrouchidle8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrouchidle9, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrouchidle10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrouchidle11, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrouchidle12, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_idle = {12, assassin_frames_crouch_idle, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_look_right[] =
 {
-	FRAME_newcrchlkrit1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newcrchlkrit2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit3, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit5, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit6, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit7, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit8, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit9, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit10, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit11, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit12, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrchlkrit1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newcrchlkrit2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit3, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit5, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit7, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit9, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit11, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit12, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_look_right = {12, assassin_frames_crouch_look_right, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_look_right_idle[] =
 {
-	FRAME_newcrhlkrtidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newcrhlkrtidle2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrhlkrtidle3, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrhlkrtidle4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrhlkrtidle5, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrhlkrtidle6, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrhlkrtidle7, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrhlkrtidle8, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrhlkrtidle9, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrhlkrtidle10, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrhlkrtidle11, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrhlkrtidle12, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrhlkrtidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newcrhlkrtidle2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrhlkrtidle3, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrhlkrtidle4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrhlkrtidle5, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrhlkrtidle6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrhlkrtidle7, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrhlkrtidle8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrhlkrtidle9, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrhlkrtidle10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrhlkrtidle11, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrhlkrtidle12, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_look_right_idle = {12, assassin_frames_crouch_look_right_idle, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_look_l2r[] =
 {
-	FRAME_newcrchlklr1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newcrchlklr2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr3, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr5, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr6, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr7, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr8, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr9, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr10, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr11, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr12, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrchlklr1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newcrchlklr2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr3, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr5, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr7, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr9, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr11, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr12, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_look_l2r = {12, assassin_frames_crouch_look_l2r, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_look_left[] =
 {
-	FRAME_newcrchlklft1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newcrchlklft2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft3, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft5, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft6, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft7, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft8, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft9, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft10, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft11, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft12, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrchlklft1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newcrchlklft2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft3, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft5, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft7, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft9, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft11, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft12, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_look_left = {12, assassin_frames_crouch_look_left, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_look_left_idle[] =
 {
-	FRAME_newlkleftidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newlkleftidle2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newlkleftidle3, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newlkleftidle4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newlkleftidle5, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newlkleftidle6, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newlkleftidle7, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newlkleftidle8, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newlkleftidle9, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newlkleftidle10, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newlkleftidle11, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newlkleftidle12, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newlkleftidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newlkleftidle2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newlkleftidle3, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newlkleftidle4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newlkleftidle5, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newlkleftidle6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newlkleftidle7, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newlkleftidle8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newlkleftidle9, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newlkleftidle10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newlkleftidle11, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newlkleftidle12, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_look_left_idle = {12, assassin_frames_crouch_look_left_idle, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_look_r2l[] =
 {
-	FRAME_newcrchlklr12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newcrchlklr11, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr10, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr9, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr8, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr7, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr6, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr5, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr4, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr3, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklr2, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklr1, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrchlklr12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newcrchlklr11, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr10, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr9, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr8, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr7, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr6, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr5, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr4, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr3, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklr2, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklr1, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_look_r2l = {12, assassin_frames_crouch_look_r2l, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_look_r2c[] =
 {
-	FRAME_newcrchlkrit12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newcrchlkrit11, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit10, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit9, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit8, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit7, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit6, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit5, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit4, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit3, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlkrit2, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlkrit1, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrchlkrit12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newcrchlkrit11, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit10, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit9, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit8, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit7, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit6, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit5, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit4, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit3, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlkrit2, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlkrit1, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_look_r2c = {12, assassin_frames_crouch_look_r2c, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_look_l2c[] =
 {
-	FRAME_newcrchlklft12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_newcrchlklft11, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft10, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft9, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft8, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft7, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft6, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft5, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft4, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft3, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchlklft2, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_newcrchlklft1, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrchlklft12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_newcrchlklft11, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft10, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft9, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft8, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft7, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft6, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft5, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft4, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft3, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchlklft2, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_newcrchlklft1, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_look_l2c = {12, assassin_frames_crouch_look_l2c, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_end[] =
 {
-	FRAME_newcrchtrn5, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchtrn4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchtrn3, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchtrn2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_newcrchtrn1, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_newcrchtrn5, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchtrn4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchtrn3, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchtrn2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_newcrchtrn1, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_end = {5, assassin_frames_crouch_end, assassin_crouch_idle_decision};
 
 animframe_t assassin_frames_crouch_poke[] =
 {
-	FRAME_poke1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl, 
-	FRAME_poke2, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke3, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke4, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke5, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke6, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke7, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke8, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke9, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke10, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke11, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke12, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke13, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke14, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke15, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke16, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke17, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke18, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke19, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke20, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke21, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke22, NULL, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_poke23, NULL, 0, 0, 0, ai_stand, 0, NULL, 
-	FRAME_poke24, NULL, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_poke1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl,
+	FRAME_poke2, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke3, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke4, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke5, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke6, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke7, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke8, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke9, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke10, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke11, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke12, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke13, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke14, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke15, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke16, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke17, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke18, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke19, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke20, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke21, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke22, NULL, 0, 0, 0, NULL, 0, NULL,
+	FRAME_poke23, NULL, 0, 0, 0, ai_stand, 0, NULL,
+	FRAME_poke24, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_crouch_poke = {24, assassin_frames_crouch_poke, assassin_crouch_idle_decision};
 /*----------------------------------------------------------------------
@@ -864,27 +864,27 @@ animmove_t assassin_move_cloak = {3, assassin_frames_cloak, assassinUnCrouch};
 
 /************************************************************************
 /************************************************************************
-// 
+//
 //  Cinematic Frames
-// 
+//
 /************************************************************************
 /*************************************************************************/
 
 animframe_t assassin_frames_c_idle1 [] =
 {
-	FRAME_ataka1, ai_c_move, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_ataka2, ai_c_move, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_ataka3, ai_c_move, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_ataka4, ai_c_move, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_ataka3, ai_c_move, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_ataka2, ai_c_move, 0, 0, 0, NULL, 0, NULL, 
-	FRAME_ataka1, ai_c_move, 0, 0, 0, NULL, 0, NULL, 
+	FRAME_ataka1, ai_c_move, 0, 0, 0, NULL, 0, NULL,
+	FRAME_ataka2, ai_c_move, 0, 0, 0, NULL, 0, NULL,
+	FRAME_ataka3, ai_c_move, 0, 0, 0, NULL, 0, NULL,
+	FRAME_ataka4, ai_c_move, 0, 0, 0, NULL, 0, NULL,
+	FRAME_ataka3, ai_c_move, 0, 0, 0, NULL, 0, NULL,
+	FRAME_ataka2, ai_c_move, 0, 0, 0, NULL, 0, NULL,
+	FRAME_ataka1, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t assassin_move_c_idle1 = {7, assassin_frames_c_idle1, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
-  assassin Running - assassin running 
+  assassin Running - assassin running
 -----------------------------------------------------------------------*/
 animframe_t assassin_frames_c_run1 [] =
 {

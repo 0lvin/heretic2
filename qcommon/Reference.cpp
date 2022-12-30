@@ -41,7 +41,7 @@ int referenceRootNameOffsets[NUM_REFERENCED] =
 	18,	// MORCALAVIN
 };
 
-int numReferences[NUM_REFERENCED] = 
+int numReferences[NUM_REFERENCED] =
 {
 	NUM_REFERENCES_CORVUS,
 	NUM_REFERENCES_INSECT,

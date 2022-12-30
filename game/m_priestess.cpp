@@ -56,7 +56,7 @@ enum {
 	AS_JUMP_LEFT,
 } HighPriestessAttackStates_e;
 
-enum 
+enum
 {
 	HP_STAFF_INIT,
 	HP_STAFF_TRAIL,
@@ -276,7 +276,7 @@ void priestess_teleport_return ( edict_t *self )
 
 	if ( (self->movetarget) && (self->movetarget != self->enemy) )
 		G_FreeEdict(self->movetarget);
-	
+
 	VectorCopy(self->monsterinfo.nav_goal, start);
 	VectorCopy(self->monsterinfo.nav_goal, end);
 	start[2] += 36;
@@ -311,7 +311,7 @@ void priestess_teleport_return ( edict_t *self )
 void priestess_proj1_drunken( edict_t *self )
 {
 	VectorRandomCopy(self->velocity, self->velocity, 64);
-	
+
 	self->nextthink = level.time + 0.1;
 }
 
@@ -353,7 +353,7 @@ void priestess_proj1_think( edict_t *self )
 
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + 0.1;
-		
+
 		return;
 	}
 
@@ -365,7 +365,7 @@ void priestess_proj1_think( edict_t *self )
 
 	oldvelmult = 1.2;
 	newveldiv = 1/(oldvelmult + 1);
-	
+
 	VectorScale(olddir, oldvelmult, olddir);
 	VectorAdd(olddir, huntdir, newdir);
 	VectorScale(newdir, newveldiv, newdir);
@@ -417,7 +417,7 @@ void priestess_proj2_think( edict_t *self )
 	if (self->monsterinfo.attack_finished < level.time)
 	{
 		gi.sound (self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
-	
+
 		gi.CreateEffect(&self->s,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
@@ -428,7 +428,7 @@ void priestess_proj2_think( edict_t *self )
 
 		self->think = G_FreeEdict;
 		self->nextthink = level.time + 0.1;
-		
+
 		return;
 	}
 
@@ -446,7 +446,7 @@ void priestess_proj2_think( edict_t *self )
 -----------------------------------------------*/
 
 void priestess_proj1_blocked( edict_t *self, trace_t *trace )
-{	
+{
 	edict_t	*proj;
 	vec3_t	hitDir;
 	int		damage;
@@ -477,7 +477,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 		case AS_LIGHT_MISSILE:
 			exp = HPMISSILE1_EXPLODE;
 			break;
-		
+
 		case AS_BROODS_SACRIFICE:
 			exp = HPMISSILE3_EXPLODE;
 			break;
@@ -495,7 +495,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 					vec3_origin,
 					(unsigned char) exp);
 
-		gi.linkentity(proj); 
+		gi.linkentity(proj);
 
 		G_SetToFree(self);
 
@@ -510,7 +510,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 		damage = irand(HP_DMG_FURY_MIN, HP_DMG_FURY_MAX);
 		gi.sound (self, CHAN_AUTO, sounds[SND_HOMINGHIT], 1, ATTN_NORM, 0);
 		break;
-	
+
 	case AS_BROODS_SACRIFICE:
 		exp = HPMISSILE3_EXPLODE;
 		damage = irand(HP_DMG_BROOD_MIN, HP_DMG_BROOD_MAX);
@@ -526,7 +526,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 	case AS_LIGHT_MISSILE:
 		exp = HPMISSILE1_EXPLODE;
 		damage = irand(HP_DMG_MISSILE_MIN, HP_DMG_MISSILE_MAX);
-		gi.sound (self, CHAN_AUTO, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);		
+		gi.sound (self, CHAN_AUTO, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
 		break;
 
 	default:
@@ -578,7 +578,7 @@ void priestess_proj1_touch( edict_t *self, edict_t *other, cplane_t *plane, csur
 		damage = irand(HP_DMG_FURY_MIN, HP_DMG_FURY_MAX);
 		gi.sound (self, CHAN_AUTO, sounds[SND_HOMINGHIT], 1, ATTN_NORM, 0);
 		break;
-	
+
 	case AS_BROODS_SACRIFICE:
 		exp = HPMISSILE3_EXPLODE;
 		damage = irand(HP_DMG_BROOD_MIN, HP_DMG_BROOD_MAX);
@@ -636,7 +636,7 @@ void create_priestess_proj(edict_t *self,edict_t *proj)
 	proj->s.scale = 1.0;
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
-	
+
 	proj->bounced = priestess_proj1_blocked;
 	proj->isBlocking = priestess_proj1_blocked;
 	proj->isBlocked = priestess_proj1_blocked;
@@ -645,7 +645,7 @@ void create_priestess_proj(edict_t *self,edict_t *proj)
 	proj->s.effects=EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	proj->enemy = self->enemy;
 
-	VectorSet(proj->mins, -2.0, -2.0, -2.0);	
+	VectorSet(proj->mins, -2.0, -2.0, -2.0);
 	VectorSet(proj->maxs,  2.0,  2.0,  2.0);
 	VectorCopy(self->s.origin, proj->s.origin);
 }
@@ -676,7 +676,7 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	VectorSubtract(predPos, startOfs, vf);
 	VectorNormalize(vf);
-	
+
 	vectoangles( vf, angles );
 
 	i = irand(2,3);
@@ -689,7 +689,7 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 		proj->monsterinfo.attack_state = AS_LIGHT_MISSILE;
 		create_priestess_proj(self,proj);
 		proj->owner = self;
-		
+
 		VectorCopy(startOfs, proj->s.origin);
 		VectorCopy(angles, ang);
 
@@ -716,7 +716,7 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 					proj->velocity,
 					HPMISSILE2);
 
-		gi.linkentity(proj); 
+		gi.linkentity(proj);
 	}
 }
 
@@ -738,11 +738,11 @@ void priestess_fire2( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	proj->monsterinfo.attack_state = AS_QUEENS_FURY;
 	proj->owner = self;
-	
+
 	AngleVectors(self->s.angles, vf, vr, NULL);
 
 	VectorCopy(self->s.origin, proj->s.origin);
-	
+
 	VectorMA(self->s.origin, 30, vf, proj->s.origin);
 	VectorMA(proj->s.origin, 8,	 vr, proj->s.origin);
 	proj->s.origin[2] += 56;
@@ -777,7 +777,7 @@ void priestess_fire2( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 				proj->s.origin,
 				HPMISSILE1);
 
-	gi.linkentity(proj); 
+	gi.linkentity(proj);
 }
 
 /*-----------------------------------------------
@@ -802,12 +802,12 @@ void priestess_fire3( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	proj->monsterinfo.attack_state = AS_BROODS_SACRIFICE;
 	proj->owner = self;
-	
+
 	AngleVectors(self->s.angles, vf, vr, NULL);
 	VectorNormalize(vf);
 
 	VectorCopy(self->s.origin, proj->s.origin);
-	
+
 	VectorMA(self->s.origin, 30, vf, proj->s.origin);
 	VectorMA(proj->s.origin, 8,	 vr, proj->s.origin);
 	proj->s.origin[2] += 56;
@@ -850,7 +850,7 @@ void priestess_fire3( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 				proj->velocity,
 				HPMISSILE3);
 
-	gi.linkentity(proj); 
+	gi.linkentity(proj);
 }
 
 /*-----------------------------------------------
@@ -875,7 +875,7 @@ void priestess_fire4( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 	AngleVectors(self->s.angles, vf, vr, NULL);
 
 	VectorCopy(self->s.origin, startPos);
-	
+
 	VectorMA(self->s.origin, 30, vf, startPos);
 	VectorMA(startPos, 8, vr, startPos);
 	startPos[2] += 56;
@@ -888,11 +888,11 @@ void priestess_fire4( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 				"vb",
 				startPos,
 				HPMISSILE4);
-	
+
 	AngleVectors(self->s.angles, vf, vr, NULL);
 
 	VectorCopy(self->s.origin, startPos);
-	
+
 	VectorMA(self->s.origin, 30, vf, startPos);
 	VectorMA(startPos, 8, vr, startPos);
 	startPos[2] += 56;
@@ -908,7 +908,7 @@ void priestess_fire4( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 		if (trace.ent == self->enemy)
 		{
-			T_Damage(trace.ent, self, self, vf, trace.endpos, trace.plane.normal, 
+			T_Damage(trace.ent, self, self, vf, trace.endpos, trace.plane.normal,
 					irand(HP_DMG_FIRE_MIN, HP_DMG_FIRE_MAX), 0, DAMAGE_DISMEMBER,MOD_DIED);
 
 			gi.sound (self, CHAN_AUTO, sounds[SND_ZAPHIT], 1, ATTN_NORM, 0);
@@ -987,7 +987,7 @@ void priestess_attack1_pause( edict_t *self )
 }
 
 /*-----------------------------------------------
-	priestess_attack3_loop 
+	priestess_attack3_loop
 -----------------------------------------------*/
 
 void priestess_attack3_loop ( edict_t *self )
@@ -1000,7 +1000,7 @@ void priestess_attack3_loop ( edict_t *self )
 	AngleVectors(self->s.angles, vf, vr, NULL);
 
 	VectorCopy(self->s.origin, spawnSpot);
-	
+
 	VectorMA(self->s.origin, 30, vf, spawnSpot);
 	VectorMA(spawnSpot, 8,	 vr, spawnSpot);
 	spawnSpot[2] += 56;
@@ -1015,12 +1015,12 @@ void priestess_attack3_loop ( edict_t *self )
 		switch ( self->monsterinfo.attack_state )
 		{
 		case AS_QUEENS_FURY:
-			
+
 			self->monsterinfo.attack_state += irand(1,2);
 			break;
 
 		case AS_BROODS_SACRIFICE:
-			
+
 			if (irand(0,1))
 				self->monsterinfo.attack_state = AS_QUEENS_FURY;
 			else
@@ -1046,9 +1046,9 @@ void priestess_attack3_loop ( edict_t *self )
 					"vb",
 					vec3_origin,
 					HPMISSILE1_LIGHT);
-		
+
 		break;
-	
+
 	case AS_BROODS_SACRIFICE:
 		self->monsterinfo.attack_finished = level.time + 2;
 		gi.CreateEffect(NULL,
@@ -1108,7 +1108,7 @@ void priestess_attack3_loop_fire ( edict_t *self )
 		break;
 
 	case AS_BROODS_SACRIFICE:
-	
+
 		if (self->monsterinfo.search_time < level.time)
 		{
 			priestess_fire3( self, 0, 0, 0 );
@@ -1117,7 +1117,7 @@ void priestess_attack3_loop_fire ( edict_t *self )
 		break;
 
 	case AS_HEAVENS_RAIN:
-		
+
 		priestess_fire4( self, 0, 0, 0 );
 		break;
 	}
@@ -1169,13 +1169,13 @@ void priestess_jump_attack ( edict_t *self )
 	//Find the vector to that spot and the length
 	VectorSubtract(predPos, self->s.origin, jumpVel);
 	moveDist = VectorNormalize(jumpVel);
-	
+
 	//Velocity is applied per tenth of a frame, so take the distance, divide by the number of frames in the air, and FRAMETIME
 	jumpDist = ( moveDist * PRIESTESS_JUMPFRAMES ) * FRAMETIME;
 
 	//Now get the height to keep her in the air long enough to complete this jump
 	hopDist = ( PRIESTESS_HOPDIST + ( ( sv_gravity->value * PRIESTESS_JUMPFRAMES ) / 4 ) ) * FRAMETIME;
-	
+
 	//Setup the vector for the jump
 	VectorScale( jumpVel, jumpDist, jumpVel );
 	jumpVel[2] = hopDist;
@@ -1199,13 +1199,13 @@ void priestess_pounce ( edict_t *self )
 	//Find the vector to that spot and the length
 	VectorSubtract(predPos, self->s.origin, jumpVel);
 	moveDist = VectorNormalize(jumpVel);
-	
+
 	//Velocity is applied per tenth of a frame, so take the distance, divide by the number of frames in the air, and FRAMETIME
 	jumpDist = ( moveDist * PRIESTESS_JUMPFRAMES ) * FRAMETIME;
 
 	//Now get the height to keep her in the air long enough to complete this jump
 	hopDist = ( PRIESTESS_HOPDIST + ( ( sv_gravity->value * PRIESTESS_JUMPFRAMES ) / 4 ) ) * FRAMETIME;
-	
+
 	//Setup the vector for the jump
 	VectorScale( jumpVel, jumpDist, jumpVel );
 	jumpVel[2] = hopDist;
@@ -1243,14 +1243,14 @@ void priestess_strike ( edict_t *self, float damage )
 		VectorSet(eoff, 16*5, 4,	4);
 		break;
 	}
-	
+
 	VectorSet(mins, -4, -4, -4);
 	VectorSet(maxs,  4,  4,  4);
 
 	VectorSubtract(soff, eoff, bloodDir);
 	VectorNormalize(bloodDir);
 
-	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);	
+	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);
 
 	//Did something get hit?
 	if (victim)
@@ -1272,7 +1272,7 @@ void priestess_strike ( edict_t *self, float damage )
 	{
 		//Play swoosh sound
 		gi.sound (self, CHAN_AUTO, sounds[SND_SWIPEMISS], 1, ATTN_NORM, 0);
-	}	
+	}
 }
 
 /*-----------------------------------------------
@@ -1397,7 +1397,7 @@ void priestess_pause( edict_t *self )
 			else if (chance < 80 && self->monsterinfo.attack_state != AS_POUNCE)
 			{
 				self->monsterinfo.attack_state = AS_POUNCE;
-				
+
 				if (len > 256)
 					SetAnim(self, ANIM_JUMP_POUNCE);
 				else
@@ -1413,7 +1413,7 @@ void priestess_pause( edict_t *self )
 				self->monsterinfo.attack_state = AS_JUMP_RIGHT;
 				SetAnim(self, ANIM_JUMP_RIGHT);
 			}
-			else 
+			else
 			{
 				self->monsterinfo.attack_state = AS_JUMP_LEFT;
 				SetAnim(self, ANIM_JUMP_LEFT);
@@ -1428,7 +1428,7 @@ void priestess_pause( edict_t *self )
 		//SetAnim(self, ANIM_ATTACK1_GO);
 		//SetAnim(self, ANIM_JUMP_ATTACK);
 		//SetAnim(self, ANIM_JUMP_POUNCE);
-		 
+
 		return;
 	}
 
@@ -1453,14 +1453,14 @@ void priestess_dead( edict_t *self )
 
 	self->mood_nextthink = -1;//never mood_think again
 	self->maxs[2] = self->mins[2] + 16;
-	
+
 	if (self->PersistantCFX)
 	{
 		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_PRIESTESS);
 		self->PersistantCFX = 0;
 	}
 	gi.RemoveEffects(&self->s, 0);
-	
+
 	gi.linkentity (self);
 
 	self->think = G_FreeEdict;
@@ -1492,7 +1492,7 @@ void priestess_death( edict_t *self, G_Message_t *msg )
 	self->max_health = 0;
 
 	M_ShowLifeMeter( self, 0, 0);
-	
+
 	SetAnim(self, ANIM_DEATH);
 }
 
@@ -1547,7 +1547,7 @@ void priestess_pain(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
-	if (self->curAnimID == ANIM_ATTACK3_GO || self->curAnimID == ANIM_ATTACK3_LOOP || 
+	if (self->curAnimID == ANIM_ATTACK3_GO || self->curAnimID == ANIM_ATTACK3_LOOP ||
 		self->curAnimID == ANIM_SHIELD_GO)
 		return;
 
@@ -1597,32 +1597,32 @@ void HighPriestessStaticsInit()
 	classStatics[CID_HIGHPRIESTESS].msgReceivers[MSG_EVADE] = priestess_evade;
 	classStatics[CID_HIGHPRIESTESS].msgReceivers[MSG_DEATH] = priestess_death;
 	classStatics[CID_HIGHPRIESTESS].msgReceivers[MSG_PAIN] = priestess_pain;
-	
+
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/highpriestess/tris.fm");
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
-	sounds[SND_PAIN1]=gi.soundindex("monsters/highpriestess/pain1.wav");	
-	sounds[SND_PAIN2]=gi.soundindex("monsters/highpriestess/pain2.wav");	
-	sounds[SND_FALL]=gi.soundindex("monsters/highpriestess/fall.wav");	
-	sounds[SND_3BALLATK]=gi.soundindex("monsters/highpriestess/3ballatk.wav");	
-	sounds[SND_BALLHIT]=gi.soundindex("monsters/highpriestess/ballhit.wav");	
-	sounds[SND_WHIRL]=gi.soundindex("weapons/stafftwirl_2.wav");	
-	sounds[SND_BUGS]=gi.soundindex("monsters/highpriestess/bugs.wav");	
-	sounds[SND_BUGBUZZ]=gi.soundindex("monsters/highpriestess/bugbuzz.wav");	
-	sounds[SND_BUGHIT]=gi.soundindex("monsters/highpriestess/bughit.wav");	
-	sounds[SND_ZAP]=gi.soundindex("monsters/highpriestess/zap.wav");	
-	sounds[SND_ZAPHIT]=gi.soundindex("monsters/highpriestess/zaphit.wav");	
-	sounds[SND_HOMINGATK]=gi.soundindex("monsters/highpriestess/homatk.wav");	
-	sounds[SND_HOMINGHIT]=gi.soundindex("monsters/highpriestess/homhit.wav");	
-	sounds[SND_TPORT_IN]=gi.soundindex("monsters/highpriestess/tportin.wav");	
-	sounds[SND_TPORT_OUT]=gi.soundindex("monsters/highpriestess/tpotout.wav");	
-	sounds[SND_SWIPE]=gi.soundindex("weapons/staffswing_2.wav");	
-	sounds[SND_SWIPEHIT]=gi.soundindex("weapons/staffhit_2.wav");	
-	sounds[SND_SWIPEMISS]=gi.soundindex("monsters/seraph/guard/attack_miss.wav");	
-	sounds[SND_SWIPEWALL]=gi.soundindex("weapons/staffhitwall.wav");	
+	sounds[SND_PAIN1]=gi.soundindex("monsters/highpriestess/pain1.wav");
+	sounds[SND_PAIN2]=gi.soundindex("monsters/highpriestess/pain2.wav");
+	sounds[SND_FALL]=gi.soundindex("monsters/highpriestess/fall.wav");
+	sounds[SND_3BALLATK]=gi.soundindex("monsters/highpriestess/3ballatk.wav");
+	sounds[SND_BALLHIT]=gi.soundindex("monsters/highpriestess/ballhit.wav");
+	sounds[SND_WHIRL]=gi.soundindex("weapons/stafftwirl_2.wav");
+	sounds[SND_BUGS]=gi.soundindex("monsters/highpriestess/bugs.wav");
+	sounds[SND_BUGBUZZ]=gi.soundindex("monsters/highpriestess/bugbuzz.wav");
+	sounds[SND_BUGHIT]=gi.soundindex("monsters/highpriestess/bughit.wav");
+	sounds[SND_ZAP]=gi.soundindex("monsters/highpriestess/zap.wav");
+	sounds[SND_ZAPHIT]=gi.soundindex("monsters/highpriestess/zaphit.wav");
+	sounds[SND_HOMINGATK]=gi.soundindex("monsters/highpriestess/homatk.wav");
+	sounds[SND_HOMINGHIT]=gi.soundindex("monsters/highpriestess/homhit.wav");
+	sounds[SND_TPORT_IN]=gi.soundindex("monsters/highpriestess/tportin.wav");
+	sounds[SND_TPORT_OUT]=gi.soundindex("monsters/highpriestess/tpotout.wav");
+	sounds[SND_SWIPE]=gi.soundindex("weapons/staffswing_2.wav");
+	sounds[SND_SWIPEHIT]=gi.soundindex("weapons/staffhit_2.wav");
+	sounds[SND_SWIPEMISS]=gi.soundindex("monsters/seraph/guard/attack_miss.wav");
+	sounds[SND_SWIPEWALL]=gi.soundindex("weapons/staffhitwall.wav");
 
 	classStatics[CID_HIGHPRIESTESS].resInfo = &resInfo;
 }
@@ -1674,7 +1674,7 @@ void SP_monster_high_priestess (edict_t *self)
 	self->s.skinnum = 0;
 
 	self->monsterinfo.jump_time = level.time + 15;
-	self->monsterinfo.otherenemyname = "monster_rat";	
+	self->monsterinfo.otherenemyname = "monster_rat";
 
 	if (self->monsterinfo.scale)
 	{

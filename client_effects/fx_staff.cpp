@@ -19,7 +19,7 @@
 #include "Particle.h"
 #include "g_playstats.h"
 
-enum 
+enum
 {
 	STAFF_TRAIL,
 	STAFF_HALO,
@@ -79,7 +79,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 1000);
 
 		TrailEnt->r.model = staffhit_models + 1;
-		
+
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		TrailEnt->r.scale = flrand(0.75, 1.0);
 		TrailEnt->alpha = 0.75;
@@ -106,7 +106,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 500);
 
 			TrailEnt->r.model = staffhit_models + 2;
-			
+
 			TrailEnt->r.spriteType = SPRITE_LINE;
 
 			TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -124,7 +124,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			TrailEnt->r.color.a = 64 + irand(16, 128);
 
 			VectorRandomCopy(dir, TrailEnt->velocity, 1.25);
-			
+
 			VectorCopy(Origin, TrailEnt->r.endpos);
 			VectorMA(TrailEnt->r.endpos, irand(8,16), TrailEnt->velocity, TrailEnt->r.startpos);
 
@@ -150,14 +150,14 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 			white = irand(32, 64);
 
-			TrailEnt->r.color.r = TrailEnt->r.color.g = TrailEnt->r.color.b = white; 
+			TrailEnt->r.color.r = TrailEnt->r.color.g = TrailEnt->r.color.b = white;
 			TrailEnt->r.color.a = 128;
 
 			VectorRandomCopy(dir, TrailEnt->velocity, 1.25);
-			
+
 			VectorCopy(Origin, TrailEnt->r.endpos);
 			VectorMA(TrailEnt->r.endpos, irand(16,48), TrailEnt->velocity, TrailEnt->r.startpos);
-			
+
 			VectorScale(TrailEnt->velocity, irand(10,50), TrailEnt->velocity);
 			TrailEnt->velocity[2] += 64;
 
@@ -174,7 +174,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 1000);
 
 		TrailEnt->r.model = staffhit_models + 1;
-		
+
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		TrailEnt->r.scale = flrand(0.75, 1.0);
 		TrailEnt->alpha = 0.75;
@@ -182,7 +182,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		TrailEnt->d_scale = -2.0;
 		TrailEnt->r.frame = 1;
 		TrailEnt->r.color.c = 0xFF888888;
-		
+
 		TrailEnt->dlight = CE_DLight_new(TrailEnt->r.color, 150.0F, -100.0F);
 
 		AddEffect(NULL, TrailEnt);
@@ -195,7 +195,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 500);
 
 			TrailEnt->r.model = staffhit_models;
-			
+
 			TrailEnt->r.spriteType = SPRITE_LINE;
 
 			TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -213,7 +213,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			TrailEnt->r.color.a = 64 + irand(16, 128);
 
 			VectorRandomCopy(dir, TrailEnt->velocity, 1.25);
-			
+
 			VectorCopy(Origin, TrailEnt->r.startpos);
 			VectorMA(TrailEnt->r.startpos, irand(16,48), TrailEnt->velocity, TrailEnt->r.endpos);
 
@@ -257,7 +257,7 @@ static qboolean FXStaffElementThink(struct client_entity_s *Self,centity_t *owne
 		Self->r.color.r=Self->color.r*Multiplier;
 		Self->r.color.b=Self->color.g*Multiplier;
 		Self->r.color.g=Self->color.b*Multiplier;
-		
+
 		Self->r.frame=FrameNo+1;
 
 		return(true);
@@ -309,7 +309,7 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self,centity_t *owner
 
 	if (Q_fabs(diff[0] + diff[1] + diff[2]) < .1)
 		return(true);
-	
+
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
 	if(NoOfIntervals > 40)
 		return(false);
@@ -333,15 +333,15 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self,centity_t *owner
 	while (NoOfIntervals >= 0)
 	{
 		VectorMA(curpivot, STAFF_LENGTH, adjnormal, newpoint);
-		
+
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 2000);
-		
+
 		VectorCopy(newpoint, TrailEnt->origin);
-		
+
 		model = irand(0,100);
-		
+
 		TrailEnt->r.model = staff_models + STAFF_TRAIL2;
-		
+
 		TrailEnt->r.frame = 0;
 
 		TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -382,13 +382,13 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self,centity_t *owner
 		TrailEnt->r.origin[2] = owner->origin[2] + origin[2];
 
 		AddEffect(NULL,TrailEnt);
-		
+
 		if (!irand(0,3))
 		{
 			TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 5000);
-	
+
 			TrailEnt->r.model = staff_models + STAFF_TRAIL_SMOKE;
-			
+
 			TrailEnt->r.frame = 0;
 
 			TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -405,7 +405,7 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self,centity_t *owner
 
 			white = irand(32, 64);
 
-			TrailEnt->r.color.r = TrailEnt->r.color.g = TrailEnt->r.color.b = white; 
+			TrailEnt->r.color.r = TrailEnt->r.color.g = TrailEnt->r.color.b = white;
 			TrailEnt->r.color.a = 128;
 
 			//Attach a dynamic light to the last one
@@ -497,13 +497,13 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self,centity_t *owner
 	while (NoOfIntervals >= 0)
 	{
 		VectorMA(curpivot, STAFF_LENGTH, adjnormal, newpoint);
-		
+
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 500);
-		
+
 		VectorCopy(newpoint, TrailEnt->origin);
-		
+
 		TrailEnt->r.model = staff_models + STAFF_TRAIL3;
-		
+
 		TrailEnt->r.frame = 0;
 
 		TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD;
@@ -513,7 +513,7 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self,centity_t *owner
 
 		TrailEnt->alpha = 0.75;
 		TrailEnt->d_alpha = -4;
-		
+
 		if (owner->current.effects & EF_BLOOD_ENABLED)
 		{
 			white = irand(128, 208);
@@ -539,8 +539,8 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self,centity_t *owner
 			TrailEnt->dlight = CE_DLight_new(TrailEnt->r.color, 100.0F, -100.0F);
 		}
 
-		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;			
-		
+		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
+
 		AddEffect(owner,TrailEnt);
 
 		VectorAdd(curpivot, dpivot, curpivot);
@@ -608,20 +608,20 @@ static qboolean FXStaffThink(struct client_entity_s *Self,centity_t *owner)
 	{
 		//Get the position of _this sprite
 		VectorMA(curpivot, STAFF_LENGTH, adjnormal, newpoint);
-		
+
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 1500);
-		
+
 		VectorCopy(newpoint, TrailEnt->origin);
-		
+
 		TrailEnt->r.model = staff_models;
 		TrailEnt->r.frame = 1;
-		
+
 		TrailEnt->r.flags = RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
-	
+
 		TrailEnt->d_scale = -0.5;
 		TrailEnt->alpha = 0.5;
 		TrailEnt->d_alpha = -1.0;
-		
+
 		if (owner->current.effects & EF_BLOOD_ENABLED)
 		{
 			TrailEnt->r.color.c=0x50000018;
@@ -632,9 +632,9 @@ static qboolean FXStaffThink(struct client_entity_s *Self,centity_t *owner)
 			TrailEnt->r.color = Self->color;
 			TrailEnt->r.scale=Self->xscale;
 		}
-		
-		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;			
-		
+
+		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
+
 		AddEffect(owner,TrailEnt);
 
 		//
@@ -752,7 +752,7 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self,centity_t *owner
 		color = 0xff20ff20;
 		break;
 	}
-		
+
 	VectorSubtract(endpt, startpt, diff);
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
 
@@ -769,13 +769,13 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self,centity_t *owner
 		TrailEnt->r.model = staff_models + Self->classID;
 		TrailEnt->alpha=0.8 - (Self->NoOfAnimFrames*0.1);
 		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
-		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;			
+		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
 		if(Self->classID == STAFF_TRAIL || Self->refPoint == STAFF_TYPE_HELL)
 		{
 			TrailEnt->r.frame=1;
 			TrailEnt->d_scale=-0.25;
 			TrailEnt->d_alpha=-0.1;
-			TrailEnt->color.c=color;		  
+			TrailEnt->color.c=color;
 			TrailEnt->r.scale=Self->NoOfAnimFrames*.05;
 			TrailEnt->AnimSpeed=0.20;
 			TrailEnt->NoOfAnimFrames=2;
@@ -818,7 +818,7 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self,centity_t *owner
 
 			TrailEnt->alpha = 0.75;
 			TrailEnt->d_alpha = -4;
-			
+
 			if (owner->current.effects & EF_BLOOD_ENABLED)
 			{
 				TrailEnt->r.color.c = 0x50000018;
@@ -930,7 +930,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	stafffx->AnimSpeed=0.20;
 	stafffx->NoOfAnimFrames=2;
 	stafffx->Update=FXStaffElementThink;
-	stafffx->AddToView=OffsetLinkedEntityUpdatePlacement;			
+	stafffx->AddToView=OffsetLinkedEntityUpdatePlacement;
 	AddEffect(owner,stafffx);
 	FXStaffElementThink(stafffx,owner);
 
@@ -954,7 +954,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		stafffx->AnimSpeed=0.20;
 		stafffx->NoOfAnimFrames=2;
 		stafffx->Update=FXStaffElementThink;
-		stafffx->AddToView=OffsetLinkedEntityUpdatePlacement;			
+		stafffx->AddToView=OffsetLinkedEntityUpdatePlacement;
 		AddEffect(owner,stafffx);
 		FXStaffElementThink(stafffx,owner);
 	}
@@ -997,7 +997,7 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self,centity_t *owner
 		color = 0xff20ff20;
 		break;
 	}
-		
+
 	VectorSubtract(endpt, startpt, diff);
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
 
@@ -1014,7 +1014,7 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self,centity_t *owner
 		TrailEnt->r.model = staff_models + Self->classID;
 		TrailEnt->alpha=0.6 - (Self->NoOfAnimFrames*0.1);
 		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
-		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;			
+		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
 		if(Self->classID == STAFF_TRAIL || Self->refPoint == STAFF_TYPE_HELL)
 		{
 			TrailEnt->r.frame=1;
@@ -1062,7 +1062,7 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self,centity_t *owner
 
 			TrailEnt->alpha = 0.75;
 			TrailEnt->d_alpha = -4;
-			
+
 			if (owner->current.effects & EF_BLOOD_ENABLED)
 			{
 				TrailEnt->r.color.c = 0x50000018;

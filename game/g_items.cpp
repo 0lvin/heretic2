@@ -98,7 +98,7 @@ void PreRespawnThink(edict_t *ent)
 	int delay;
 	float clients;
 
-	// The equation for respawn:  
+	// The equation for respawn:
 	//		--The respawn times should be normal for 8 players.
 	//		--For 32 players the respawn should be halved
 	//		--For 2 players the respawn should be doubled.
@@ -236,7 +236,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 			count = AMMO_COUNT_MOST;
 
 		player->client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
-		
+
 		if(count)
 		{
 			newitem = FindItem(item->ammo);
@@ -258,7 +258,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 
 		return(true);
 	}
-	else 
+	else
 	{
 		// We already have it...
 
@@ -281,7 +281,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 				newitem = FindItemByClassname("item_ammo_phoenix");
 				count = AMMO_COUNT_PHOENIXBOW;
 			}
-			else 
+			else
 			{
 				newitem = FindItemByClassname("item_mana_offensive_half");
 				count = AMMO_COUNT_MOST;
@@ -300,7 +300,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 				return(false);
 			}
 		}
-		else	
+		else
 		{
 			// ...but we're not able to pick it up.
 
@@ -324,7 +324,7 @@ qboolean Pickup_Weapon(edict_t *ent,edict_t *other)
 	if(AddWeaponToInventory(ent->item,other))
 	{
 		gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
-		
+
 		return(true);
 	}
 	else
@@ -356,7 +356,7 @@ qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
 
 		return(true);
 	}
-	else 
+	else
 	{
 		// We already have it...
 
@@ -440,7 +440,7 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 	{
 		item = FindItemByClassname("item_mana_offensive_half");
 		max = ent->client->playerinfo.pers.max_offmana;
-		
+
 		bo = Add_AmmoToInventory (ent,item,count,max);
 
 		item = FindItemByClassname("item_mana_defensive_half");
@@ -578,7 +578,7 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 		player_repair_skin(other);
 
 	gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
-	
+
 	return(true);
 }
 
@@ -627,7 +627,7 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 
 		return;
 	}
-	
+
 	gi.sound(other, CHAN_ITEM, gi.soundindex(ent->item->pickup_sound), 1, ATTN_NORM, 0);
 
 	gi.CreateEffect(NULL, FX_PICKUP, 0, ent->s.origin, "");
@@ -636,16 +636,16 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 
 	// Handle respawn / removal of the item.
 
-	if(((ent->item->pickup==Pickup_Weapon)||(ent->item->pickup==Pickup_Defense)||(ent->item->pickup==Pickup_Puzzle))&& 
+	if(((ent->item->pickup==Pickup_Weapon)||(ent->item->pickup==Pickup_Defense)||(ent->item->pickup==Pickup_Puzzle))&&
 	   ((deathmatch->value&&((int)dmflags->value&DF_WEAPONS_STAY))||coop->value))
 	{
-		// The item is a weapon or a defence or a puzzle piece AND (deathmatch rule DF_WEAPONS_STAY 
+		// The item is a weapon or a defence or a puzzle piece AND (deathmatch rule DF_WEAPONS_STAY
 		// is on OR we are playing coop), so just return right now, as we don't care about respawn
 		// or removal.
 
 		return;
 	}
-	
+
 	if(ent->flags&FL_RESPAWN)
 	{
 		// The item should respawn.
@@ -722,7 +722,7 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	VectorSet (dropped->maxs, 15, 15, 15);
 	gi.setmodel (dropped, dropped->item->world_model);
 	dropped->solid = SOLID_TRIGGER;
-	dropped->movetype = PHYSICSTYPE_NONE;  
+	dropped->movetype = PHYSICSTYPE_NONE;
 	dropped->touch = drop_temp_touch;
 	dropped->owner = ent;
 
@@ -872,7 +872,7 @@ void SpawnItemEffect(edict_t *ent, gitem_t *item)
 	{
 		ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_PICKUP_DEFENSE, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
 	}
-	else 
+	else
 	{
 		if (ent->item->tag)
 			ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_PICKUP_HEALTH, CEF_FLAG6|CEF_BROADCAST, ent->s.origin, "");
@@ -893,7 +893,7 @@ void itemsdroptofloor (edict_t *ent)
 	trace_t		tr;
 	vec3_t		dest;
 
-	ent->movetype = PHYSICSTYPE_STATIC;  
+	ent->movetype = PHYSICSTYPE_STATIC;
 	ent->solid = SOLID_TRIGGER;
 	ent->touch = Touch_Item;
 	ent->think = NULL;
@@ -1061,7 +1061,7 @@ gitem_t	*IsItem(edict_t *ent)
 		}
 
 		if(!strcmp(item->classname, ent->classname))
-		{	
+		{
 			// Found it.
 
 			return item;
@@ -1160,7 +1160,7 @@ Pickup for the Mace Balls weapon.
 	playerExport.p_itemlist[9].pickup=Pickup_Weapon;
 	playerExport.p_itemlist[9].use=Weapon_EquipSpell;
 	playerExport.p_itemlist[9].weaponthink=WeaponThink_Maceballs;
-	
+
 	// item_defense_powerup
 	// This can't be placed in the editor
 
@@ -1176,7 +1176,7 @@ Pickup for the Ring of Repulsion defensive spell.
 	playerExport.p_itemlist[11].pickup=Pickup_Defense;
 	playerExport.p_itemlist[11].use=Use_Defence;
 	playerExport.p_itemlist[11].weaponthink=DefenceThink_RingOfRepulsion;
-	
+
 	// item_defense_shield
 /*QUAKED item_defense_shield (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
 Pickup for the Shield defensive spell.
@@ -1218,7 +1218,7 @@ Pickup for the Meteor Barrier defensive spell.
 Pickup for the offensive mana (50 points).
 */
 	playerExport.p_itemlist[16].pickup=Pickup_Mana;
-	
+
 	// item_mana_offensive_full
 /*QUAKED item_mana_offensive_full (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
 Pickup for the offensive mana (100 points).

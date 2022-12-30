@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "c_siernan2_anim.h"
@@ -23,13 +23,13 @@
 
 /************************************************************************
 /************************************************************************
-// 
+//
 //  Cinematic Frames
-// 
+//
 /************************************************************************
 /*************************************************************************/
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan2_frames_c_action1 [] =
 {
@@ -169,7 +169,7 @@ animframe_t siernan2_frames_c_action1 [] =
 animmove_t siernan2_move_c_action1 = {130, siernan2_frames_c_action1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan2_frames_c_action2 [] =
 {
@@ -299,7 +299,7 @@ animframe_t siernan2_frames_c_action2 [] =
 animmove_t siernan2_move_c_action2 = {120, siernan2_frames_c_action2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
-  Siernan 
+  Siernan
 -----------------------------------------------------------------------*/
 animframe_t siernan2_frames_c_idle1 [] =
 {

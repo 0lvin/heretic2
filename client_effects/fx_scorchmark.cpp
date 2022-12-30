@@ -67,7 +67,7 @@ void FXClientScorchmark(vec3_t origin, vec3_t dir)
 	// no scorchmarks in low detail mode
 	if (r_detail->value == DETAIL_LOW)
 		return;
-	
+
 	if(GetTruePlane(origin, dir))
 	{
 		scorchmark = ClientEntity_new(FX_SCORCHMARK, CEF_NOMOVE, origin, dir, 1000);
@@ -79,7 +79,7 @@ void FXClientScorchmark(vec3_t origin, vec3_t dir)
 		scorchmark->r.scale = 0.6;
 
 		scorchmark->Update = EndLessLoop;
-		
+
 		AddEffect(NULL, scorchmark);
 		InsertInCircularList(scorchmark);
 	}
@@ -107,7 +107,7 @@ void FXScorchmark(centity_t *owner, int type, int flags, vec3_t origin)
 		scorchmark->r.scale = 0.6;
 
 		scorchmark->Update = EndLessLoop;
-		
+
 		AddEffect(NULL, scorchmark);
 		InsertInCircularList(scorchmark);
 	}

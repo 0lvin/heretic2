@@ -23,7 +23,7 @@ void waterdrip_go(edict_t *self)
 		frame = 1;
 	}
 
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_DRIPPER, CEF_BROADCAST, 
+	self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_DRIPPER, CEF_BROADCAST,
 		self->s.origin, "bb", self->count, frame);
 
 	self->think = NULL;
@@ -120,7 +120,7 @@ void SP_env_water_fountain(edict_t *self)
 	byte	frame;
 	short	drop;
 
-	if (self->targetname) 
+	if (self->targetname)
 	{
 		self->use = fountain_use;
 	}
@@ -254,14 +254,14 @@ void SP_obj_fishhead2 (edict_t *self)
 }
 
 /*QUAK-ED obj_stalactite1 (1 .5 0) (-24 -24 -99) (24 24 99) DRIP  DARKSKIN
-	
+
 	A big long thick stalactite. These point down.
 
 	DARKSKIN - if checked it uses the dark skin
 	Also spawns a drip at the end
 	Use the "count" field as number of drips per min
 */
-void SP_obj_stalactite1(edict_t *self) 
+void SP_obj_stalactite1(edict_t *self)
 {
 	vec3_t	origin;
 
@@ -277,10 +277,10 @@ void SP_obj_stalactite1(edict_t *self)
 
 	self->movetype = PHYSICSTYPE_NONE;
 	self->solid = SOLID_BBOX;
-	
+
 	VectorSet(self->mins, -24, -24, -99);
 	VectorSet(self->maxs, 24, 24, 99);
-	
+
 	self->s.modelindex = gi.modelindex("models/objects/stalactite/stalact1/tris.fm");
 	if (self->spawnflags & 2)
 		self->s.skinnum = 1;
@@ -313,10 +313,10 @@ void SP_obj_stalactite2(edict_t *self)
 
 	self->movetype = PHYSICSTYPE_NONE;
 	self->solid = SOLID_BBOX;
-	
+
 	VectorSet(self->mins,-60,-60,-64);
 	VectorSet(self->maxs,60,60,64);
-	
+
 	self->s.modelindex = gi.modelindex("models/objects/stalactite/stalact2/tris.fm");
 	if (self->spawnflags & 2)
 		self->s.skinnum = 1;
@@ -348,14 +348,14 @@ void SP_obj_stalactite3(edict_t *self)
 
 	self->movetype = PHYSICSTYPE_NONE;
 	self->solid = SOLID_BBOX;
-	
+
 	VectorSet(self->mins, -23, -23, -98);
 	VectorSet(self->maxs, 23, 23, 98);
-	
+
 	self->s.modelindex = gi.modelindex("models/objects/stalactite/stalact3/tris.fm");
 	if (self->spawnflags & 2)
 		self->s.skinnum = 1;
-	
+
 	gi.linkentity(self);
 }
 
@@ -381,7 +381,7 @@ Makes bubbles
 count - bubbles spawned per minute
 */
 void SP_env_bubbler(edict_t *self)
-{	
+{
 	if(!self->count)
 		self->count = 120;
 	VectorSet(self->mins, -5, -5, -5);

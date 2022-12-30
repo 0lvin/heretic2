@@ -86,7 +86,7 @@ H2COMMON_API void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t 
 
 	//	assert(size == resource->resSize);
 
-	assert(resource->free);	// constructor not called; possibly due to a static object 
+	assert(resource->free);	// constructor not called; possibly due to a static object
 								// containing a static ResourceManagerFastLarge member being
 								// constructed before its own static members
 

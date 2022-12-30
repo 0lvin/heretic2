@@ -43,13 +43,13 @@ void SpellCastBlast(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aimd
 		if(level.fighting_beast)
 		{
 			edict_t *ent;
-			
+
 			if(ent = check_hit_beast(startpos, trace.endpos))
 				trace.ent = ent;
 		}
 
 		if (trace.ent && trace.ent->takedamage && !(EntReflecting(trace.ent, true, true)))
-		{	
+		{
 			if(deathmatch->value)
 				damage = irand(BLAST_DMG_MIN*0.75, BLAST_DMG_MAX*0.75);
 			else
@@ -70,7 +70,7 @@ void SpellCastBlast(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aimd
 	syaw = (short)(aimangles[YAW]*(65536.0/360.0));
 	spitch = (short)(aimangles[PITCH]*(65536.0/360.0));
 
-	gi.CreateEffect(NULL, FX_WEAPON_BLAST, 0, startpos, 
+	gi.CreateEffect(NULL, FX_WEAPON_BLAST, 0, startpos,
 					"sssssss", syaw, spitch, distance[0], distance[1], distance[2], distance[3], distance[4]);
 }
 

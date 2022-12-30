@@ -29,7 +29,7 @@ qboolean visible_pos (edict_t *self, vec3_t spot2);
 void create_ssith_arrow(edict_t *Arrow);
 qboolean ssithraCheckInWater (edict_t *self);
 
-enum 
+enum
 {
 	FX_SS_MAKE_ARROW,
 	FX_SS_MAKE_ARROW2,
@@ -197,7 +197,7 @@ void ssithra_walk(edict_t *self, G_Message_t *msg)
 {
 	if(self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
-	else 
+	else
 		SetAnim(self, ANIM_WALK1);
 }
 
@@ -401,7 +401,7 @@ void ssithraCheckRipple (edict_t *self)
 qboolean ssithraCheckInWater (edict_t *self)
 {
 	qboolean inwater = false;
-	
+
 	if(self->flags & FL_INWATER)
 	{
 		if(!(self->flags & FL_INLAVA))
@@ -480,7 +480,7 @@ void ssithra_check_namor(edict_t *self)
 
 	if(!MG_GetTargOrg(self, targ_org))
 		return;
-	
+
 	enemy_inwater = (gi.pointcontents(targ_org)&CONTENTS_WATER);
 
 	if(!enemy_inwater)
@@ -541,7 +541,7 @@ void ssithraMsgJump(edict_t *self, G_Message_t *msg)
 {
 	if(self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
-	else 
+	else
 		ssithraWhichJump(self);
 }
 
@@ -565,14 +565,14 @@ void ssithraBoundCheck (edict_t *self)
 
 	AngleVectors(self->s.angles,forward,NULL,up);
 	VectorCopy(self->s.origin,startpos);
-	
+
 	VectorMA(startpos,48,forward,endpos);//forward
 	gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID,&trace);
 
 	VectorCopy(trace.endpos,startpos);
 	VectorMA(startpos,-128,up,endpos);//down
 	gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID|MASK_WATER,&trace);
-	
+
 	//If it's a step down or less, no jumpie
 	if(Q_fabs(trace.endpos[2] - self->s.origin[2]) <= 18)
 		return;
@@ -588,11 +588,11 @@ void ssithraBoundCheck (edict_t *self)
 		VectorCopy(self->maxs, maxs);
 		mins[2] = 0;
 		maxs[2] = 1;
-		
+
 		gi.trace(startpos, mins, maxs, endpos, self, MASK_SOLID,&trace);
 		if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 			ssithraWhichJump(self);
-		else	
+		else
 			SetAnim(self,ANIM_DIVE);
 	}
 	else
@@ -623,7 +623,7 @@ void ssithraDiveCheck (edict_t *self)
 	{
 		if(!self->goalentity)
 			return;
-		
+
 		VectorCopy(self->goalentity->s.origin, targ_org);
 		VectorCopy(self->goalentity->mins, targ_mins);
 	}
@@ -648,14 +648,14 @@ void ssithraDiveCheck (edict_t *self)
 
 	AngleVectors(self->s.angles,forward,NULL,up);
 	VectorCopy(self->s.origin,startpos);
-	
+
 	VectorMA(startpos,48,forward,endpos);//forward
 	gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID,&trace);
 
 	VectorCopy(trace.endpos,startpos);
 	VectorMA(startpos,-128,up,endpos);//down
 	gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID|MASK_WATER,&trace);
-	
+
 	if(trace.fraction == 1||trace.allsolid||trace.startsolid)
 		return;//too far to jump down, or in solid
 
@@ -667,12 +667,12 @@ void ssithraDiveCheck (edict_t *self)
 		VectorCopy(self->maxs, maxs);
 		mins[2] = 0;
 		maxs[2] = 1;
-		
+
 		gi.trace(startpos, mins, maxs, endpos, self, MASK_SOLID,&trace);
 
 		if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 			ssithraWhichJump(self);
-		else	
+		else
 			SetAnim(self, ANIM_DIVE);
 	}
 }
@@ -738,7 +738,7 @@ void ssithraNamorJump (edict_t *self)
 	//how high above water level is player?
 	enemyzdiff = targ_org[2] - trace.endpos[2];
 
-	//FIXME: aim a little to side if enemy close so don't 
+	//FIXME: aim a little to side if enemy close so don't
 	//land on top of him?  Or hit him if land on top?
 	ssithraJump(self,watersurfdist*2 + enemyzdiff*2 + 200, 100, 0);
 }
@@ -772,7 +772,7 @@ void ssithraCheckJump (edict_t *self)
 	{
 		if(!self->goalentity)
 			return;
-		
+
 		VectorCopy(self->goalentity->s.origin, targ_org);
 		VectorCopy(self->goalentity->mins, targ_mins);
 	}
@@ -814,7 +814,7 @@ void ssithraCheckJump (edict_t *self)
 			jump_fdist = 128;
 		else
 			jump_fdist = vhlen(targ_org, self->s.origin);
-		
+
 		if(jump_fdist > 128)
 			jump_fdist = 128;
 
@@ -830,7 +830,7 @@ void ssithraCheckJump (edict_t *self)
 			source2[2] -= 1024;
 			//trace down
 			gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
-			
+
 			if (trace.allsolid || trace.startsolid)
 			{
 #ifdef _DEVEL
@@ -893,7 +893,7 @@ void ssithraCheckJump (edict_t *self)
 					VectorSubtract(trace.endpos, self->s.origin, source2);
 					VectorNormalize(source2);
 					self->ideal_yaw = vectoyaw(source2);
-					
+
 					if (self->monsterinfo.jump_time < level.time)
 					{
 						ssithraWhichJump(self);
@@ -941,11 +941,11 @@ void ssithraCheckJump (edict_t *self)
 					VectorCopy(self->maxs, maxs);
 					mins[2] = 0;
 					maxs[2] = 1;
-					
+
 					gi.trace(source, mins, maxs, source2, self, MASK_SOLID,&trace);
 					if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 						ssithraWhichJump(self);
-					else	
+					else
 						SetAnim(self,ANIM_DIVE);
 
 					return;
@@ -977,7 +977,7 @@ void ssithraCheckJump (edict_t *self)
 					source2[2] -= 24;
 					//trace forward and down a little
 					gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
-					
+
 					if (trace.allsolid || trace.startsolid)
 						return;
 
@@ -1002,7 +1002,7 @@ void ssithraCheckJump (edict_t *self)
 							VectorSubtract(trace.endpos, self->s.origin, source2);
 							VectorNormalize(source2);
 							self->ideal_yaw = vectoyaw(source2);
-							
+
 							if (self->monsterinfo.jump_time < level.time)
 							{
 //								gi.dprintf("checkjump up ->whichjump\n");
@@ -1018,7 +1018,7 @@ void ssithraCheckJump (edict_t *self)
 				VectorCopy(self->s.origin, save_org);
 				can_move = M_walkmove (self, self->s.angles[YAW], 64);
 				VectorCopy(save_org, self->s.origin);
-				
+
 				if(can_move)
 					return;
 
@@ -1028,10 +1028,10 @@ void ssithraCheckJump (edict_t *self)
 				VectorCopy(self->mins, mins);
 				mins[2]+=24;//can clear it
 				gi.trace(source, mins, self->maxs, source2, self, MASK_SOLID,&trace);
-				
+
 				if(trace.allsolid||trace.startsolid)
 					return;
-				
+
 				if(trace.fraction<1 && trace.ent != self->enemy)
 					return;
 
@@ -1210,7 +1210,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	SprayDebris(self,p2, 6,200);
 
 //	gi.dprintf("sliding in half- making top\n");
-	
+
 	tophalf = G_Spawn();
 
 	tophalf->nextthink = level.time + FRAMETIME*10;
@@ -1326,7 +1326,7 @@ int ssithra_convert_hitloc_dead(edict_t *self, int hl)
 			else
 				return hl_TorsoBack;
 			break;
-		
+
 		case hl_TorsoFront://split in half?
 			if(fellback)
 			{
@@ -1338,7 +1338,7 @@ int ssithra_convert_hitloc_dead(edict_t *self, int hl)
 			else
 				return hl_Head;
 			break;
-		
+
 		case hl_TorsoBack://split in half?
 			if(fellback)
 				return hl_Head;
@@ -1350,19 +1350,19 @@ int ssithra_convert_hitloc_dead(edict_t *self, int hl)
 					return hl_LegUpperLeft;
 			}
 			break;
-		
+
 		case hl_ArmUpperLeft:
 				return hl_ArmLowerLeft;
 			break;
-		
+
 		case hl_ArmLowerLeft://left arm
 			return hl_ArmUpperLeft;
 			break;
-		
+
 		case hl_ArmUpperRight:
 			return hl_ArmLowerRight;
 			break;
-		
+
 		case hl_ArmLowerRight://right arm
 			return hl_ArmUpperRight;
 			break;
@@ -1370,15 +1370,15 @@ int ssithra_convert_hitloc_dead(edict_t *self, int hl)
 		case hl_LegUpperLeft:
 			return hl_LegLowerLeft;
 			break;
-		
+
 		case hl_LegLowerLeft://left leg
 			return hl_LegUpperLeft;
 			break;
-		
+
 		case hl_LegUpperRight:
 			return hl_LegLowerRight;
 			break;
-		
+
 		case hl_LegLowerRight://right leg
 			return hl_LegUpperRight;
 			break;
@@ -1601,14 +1601,14 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				self->s.fmnodeinfo[MESH__RIGHTARM].skin = self->s.skinnum+1;
 			}
 			break;
-		
+
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
 			if(self->health>0)
 			{//still alive
 				if(self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__LEFTLEG].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__LEFTLEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LEFTLEG].skin = self->s.skinnum+1;
 				break;
 			}
@@ -1656,7 +1656,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 		self->pain_debounce_time = 0;
 
 	if(self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW&&
-		self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)			
+		self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
 		self->ai_mood_flags &= ~AI_MOOD_FLAG_BACKSTAB;
@@ -1690,9 +1690,9 @@ void ssithra_pain(edict_t *self, G_Message_t *msg)
 	int inwater;
 	int				temp, damage;
 	qboolean		force_pain;
-	
 
-	if(self->deadflag == DEAD_DEAD) //Dead but still being hit	
+
+	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
@@ -1726,7 +1726,7 @@ void ssithra_pain(edict_t *self, G_Message_t *msg)
 		else//swimming
 			SetAnim(self, ANIM_WATER_PAIN_B);
 	}
-	else 
+	else
 	{
 		SetAnim(self, ANIM_PAIN_A);
 	}
@@ -1781,12 +1781,12 @@ void ssithra_death(edict_t *self, G_Message_t *msg)
 	}
 	self->msgHandler=DyingMsgHandler;
 
-	if(self->deadflag == DEAD_DEAD) //Dead but still being hit	
+	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
 	{
 //		gi.dprintf("already dead!\n");
 		return;
 	}
-	
+
 	self->deadflag = DEAD_DEAD;
 
 	if(self->health <= -80) //gib death
@@ -1852,7 +1852,7 @@ void ssithraWaterDead(edict_t *self)
 {
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
-			
+
 	self->think = fish_deadfloat;
 	self->nextthink = level.time + 0.1;
 
@@ -2000,7 +2000,7 @@ void ssithra_backup(edict_t *self, G_Message_t *msg)
 			SetAnim(self, ANIM_DELAY);
 			return;
 		}
-		
+
 		if (ssithraCheckInWater(self))
 		{
 			SetAnim(self, ANIM_WATER_SHOOT);
@@ -2024,14 +2024,14 @@ void ssithraSwipe (edict_t *self)
 
 	VectorSet(soff, 16, -16, 24);
 	VectorSet(eoff, 50, 0, -8);
-	
+
 	VectorSet(mins, -2, -2, -2);
 	VectorSet(maxs,  2,  2,  2);
 
 	VectorSubtract(soff, eoff, bloodDir);
 	VectorNormalize(bloodDir);
 
-	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);	
+	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);
 
 	if (victim)
 	{
@@ -2085,7 +2085,7 @@ void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	float damage;
 	vec3_t	normal;
 	edict_t	*Arrow;
-	
+
 	// are we reflecting ?
 	if(EntReflecting(other, true, true))
 	{
@@ -2124,7 +2124,7 @@ void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	else
 		damage = 0;
 
-	T_DamageRadius(self, self->owner, self->owner, SSITHRA_DMG_ARROW_RADIUS, 
+	T_DamageRadius(self, self->owner, self->owner, SSITHRA_DMG_ARROW_RADIUS,
 			(20 - damage*2), (30 - damage), DAMAGE_ATTACKER_IMMUNE,MOD_DIED);
 
 	VectorNormalize(self->velocity);
@@ -2132,7 +2132,7 @@ void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	gi.CreateEffect(NULL,
 		FX_SSITHRA_ARROW,
 		0,
-		self->s.origin, 
+		self->s.origin,
 		"bv",
 		FX_SS_EXPLODE_ARROW2,
 		self->velocity);
@@ -2210,7 +2210,7 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 	gi.CreateEffect(NULL,
 		FX_SSITHRA_ARROW,
 		0,
-		self->s.origin, 
+		self->s.origin,
 		"bv",
 		FX_SS_EXPLODE_ARROW,
 		self->velocity);
@@ -2248,7 +2248,7 @@ void ssithraDuckArrowTouch (edict_t *self,edict_t *other,cplane_t *plane,csurfac
 	}
 
 	//NOTENOTE: NO REFLECTION FOR THIS MISSILE!
-	
+
 	if(other->takedamage)
 	{
 		if (plane->normal)
@@ -2260,7 +2260,7 @@ void ssithraDuckArrowTouch (edict_t *self,edict_t *other,cplane_t *plane,csurfac
 	else
 	{
 		VectorClear(self->velocity);
-		
+
 		self->s.effects |= EF_MARCUS_FLAG1;
 
 		if (plane->normal)
@@ -2308,12 +2308,12 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 
 	Arrow->owner=self;
 	Arrow->enemy=self->enemy;
-	
+
 	Arrow->health = 0; // tell the touch function what kind of arrow we are;
 
 	AngleVectors(self->s.angles, Forward, right, NULL);
 
-	VectorCopy(self->s.origin,Arrow->s.origin);	
+	VectorCopy(self->s.origin,Arrow->s.origin);
 	VectorMA(Arrow->s.origin, 16, Forward, Arrow->s.origin);
 	VectorMA(Arrow->s.origin, -4, right, Arrow->s.origin);
 	Arrow->s.origin[2] += 16;
@@ -2359,8 +2359,8 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 		"bv",
 		FX_MSSITHRA_ARROW,
 		Arrow->velocity);
-	
-	G_LinkMissile(Arrow); 
+
+	G_LinkMissile(Arrow);
 
 	Arrow->nextthink=level.time+3;
 	Arrow->think=G_FreeEdict;//ssithraArrowThink;
@@ -2385,12 +2385,12 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 
 	Arrow->owner=self;
 	Arrow->enemy=self->enemy;
-	
+
 	Arrow->health = 0; // tell the touch function what kind of arrow we are;
 
 	AngleVectors(self->s.angles, Forward, right, NULL);
 
-	VectorCopy(self->s.origin,Arrow->s.origin);	
+	VectorCopy(self->s.origin,Arrow->s.origin);
 	VectorMA(Arrow->s.origin, 12*self->s.scale, Forward, Arrow->s.origin);
 	VectorMA(Arrow->s.origin, 4*self->s.scale, right, Arrow->s.origin);
 	Arrow->s.origin[2] += z_offs;
@@ -2438,8 +2438,8 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 					"bv",
 					FX_MSSITHRA_ARROW,
 					Arrow->velocity);
-	
-	G_LinkMissile(Arrow); 
+
+	G_LinkMissile(Arrow);
 
 	Arrow->nextthink=level.time+5;
 	Arrow->think=ssithraArrowExplode;
@@ -2454,7 +2454,7 @@ void ssithraStartDuckArrow(edict_t *self)
 	VectorMA(startpos, 4*self->s.scale, vr, startpos);
 
 	gi.sound(self, CHAN_WEAPON, Sounds[SND_ARROW_CHARGE] , 1, ATTN_NORM, 0);
-	
+
 	gi.CreateEffect(NULL,
 					FX_M_EFFECTS,
 					0,
@@ -2508,18 +2508,18 @@ void ssithraPanicArrow(edict_t *self)
 //	Arrow->s.modelindex=gi.modelindex("models/objects/projectiles/sitharrow/tris.fm");
 
 	create_ssith_arrow(Arrow);
-	
+
 	Arrow->owner=self;
 
 	Arrow->health = 1; // tell the touch function what kind of arrow we are;
 
 	VectorAdd(self->s.angles,self->v_angle_ofs,firedir);
 	AngleVectors(firedir,Forward,NULL,NULL);
-	VectorCopy(self->s.origin,Arrow->s.origin);	
+	VectorCopy(self->s.origin,Arrow->s.origin);
 	VectorMA(Arrow->s.origin,12,Forward,Arrow->s.origin);
 	VectorCopy(self->movedir,Arrow->movedir);
 	vectoangles(Forward,Arrow->s.angles);
-	
+
 	VectorScale(Forward,SSITHRA_SPOO_SPEED,Arrow->velocity);
 
 	vectoangles(Arrow->velocity, Arrow->s.angles);
@@ -2533,7 +2533,7 @@ void ssithraPanicArrow(edict_t *self)
 		FX_SS_MAKE_ARROW,
 		Arrow->velocity);
 
-	G_LinkMissile(Arrow); 
+	G_LinkMissile(Arrow);
 
 	Arrow->nextthink=level.time+3;
 	Arrow->think=G_FreeEdict;//ssithraArrowThink;
@@ -2641,14 +2641,14 @@ void ssithraUnCrouch(edict_t *self)
 
 void ssithra_evade (edict_t *self, G_Message_t *msg)
 {
-	edict_t			*projectile;		
+	edict_t			*projectile;
 	HitLocation_t	HitLocation;
 	int duck_chance, jump_chance;
 	int chance;
 	float eta;
 
 	G_ParseMsgParms(msg, "eif", &projectile, &HitLocation, &eta);
-	
+
 	switch(HitLocation)
 	{
 		case hl_Head:
@@ -2760,7 +2760,7 @@ qboolean SsithraCheckMood (edict_t *self)
 			ssithra_decide_stand(self);
 			return true;
 			break;
-			
+
 		case AI_MOOD_DELAY:
 #ifdef _DEVEL
 			if(MGAI_DEBUG)
@@ -2769,7 +2769,7 @@ qboolean SsithraCheckMood (edict_t *self)
 			SetAnim(self, ANIM_DELAY);
 			return true;
 			break;
-			
+
 		case AI_MOOD_WANDER:
 			if(ssithraCheckInWater(self))
 				SetAnim(self, ANIM_SWIMWANDER);
@@ -2825,7 +2825,7 @@ void ssithra_sight (edict_t *self, G_Message_t *msg)
 	//Have we already said something?
 	if (self->monsterinfo.supporters != -1)
 		return;
-	
+
 	G_ParseMsgParms(msg, "be", &sight_type, &enemy);
 
 	//See if we are the first to see the player
@@ -2844,7 +2844,7 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 	if(self->alert_time < level.time)
 	{//not looking around
 		if(!(alerter->alert_svflags&SVF_ALERT_NO_SHADE) && skill->value < 3.0 && !(self->monsterinfo.aiflags & AI_NIGHTVISION))
-		{//not a sound-alert, 
+		{//not a sound-alert,
 			if(enemy->light_level < flrand(6, 77))
 			{
 				return false;
@@ -2906,7 +2906,7 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 		else//spin around and wake up!
 			self->spawnflags |= MSF_SSITHRA_SPIN;
 	}
-	
+
 	if(checkent)
 	{//enemy of alert is behind me
 	}
@@ -2940,25 +2940,25 @@ void SsithraStaticsInit()
 	classStatics[CID_SSITHRA].msgReceivers[MSG_EVADE] = ssithra_evade;
 	classStatics[CID_SSITHRA].msgReceivers[MSG_CHECK_MOOD] = ssithra_check_mood;
 	classStatics[CID_SSITHRA].msgReceivers[MSG_VOICE_SIGHT] = ssithra_sight;
-	
+
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/ssithra/tris.fm");
 
 	Sounds[SND_PAIN1]=gi.soundindex("monsters/pssithra/pain1.wav");
-	Sounds[SND_PAIN2]=gi.soundindex("monsters/pssithra/pain2.wav");	
-	Sounds[SND_DIE]=gi.soundindex("monsters/pssithra/die.wav");	
+	Sounds[SND_PAIN2]=gi.soundindex("monsters/pssithra/pain2.wav");
+	Sounds[SND_DIE]=gi.soundindex("monsters/pssithra/die.wav");
 	Sounds[SND_GIB]=gi.soundindex("monsters/pssithra/gib.wav");
-	Sounds[SND_SWIPEHIT]=gi.soundindex("monsters/pssithra/swipehit.wav");	
-	Sounds[SND_ARROW1]=gi.soundindex("monsters/pssithra/arrow1.wav");	
-	Sounds[SND_ARROW2]=gi.soundindex("monsters/pssithra/arrow2.wav");	
-	Sounds[SND_GROWL1]=gi.soundindex("monsters/pssithra/growl1.wav");	
-	Sounds[SND_GROWL2] = gi.soundindex ("monsters/pssithra/growl2.wav");	
-	Sounds[SND_GROWL3] = gi.soundindex ("monsters/pssithra/growl3.wav");	
-	Sounds[SND_INWATER] = gi.soundindex ("monsters/pssithra/inwater.wav");	
-	Sounds[SND_NAMOR] = gi.soundindex ("monsters/pssithra/namor.wav");	
-	Sounds[SND_LAND] = gi.soundindex ("monsters/pssithra/land.wav");	
+	Sounds[SND_SWIPEHIT]=gi.soundindex("monsters/pssithra/swipehit.wav");
+	Sounds[SND_ARROW1]=gi.soundindex("monsters/pssithra/arrow1.wav");
+	Sounds[SND_ARROW2]=gi.soundindex("monsters/pssithra/arrow2.wav");
+	Sounds[SND_GROWL1]=gi.soundindex("monsters/pssithra/growl1.wav");
+	Sounds[SND_GROWL2] = gi.soundindex ("monsters/pssithra/growl2.wav");
+	Sounds[SND_GROWL3] = gi.soundindex ("monsters/pssithra/growl3.wav");
+	Sounds[SND_INWATER] = gi.soundindex ("monsters/pssithra/inwater.wav");
+	Sounds[SND_NAMOR] = gi.soundindex ("monsters/pssithra/namor.wav");
+	Sounds[SND_LAND] = gi.soundindex ("monsters/pssithra/land.wav");
 	Sounds[SND_SWIPE] = gi.soundindex ("monsters/pssithra/swipe.wav");
 	Sounds[SND_SWIM] = gi.soundindex ("monsters/pssithra/swim.wav");
 	Sounds[SND_SWIM2] = gi.soundindex ("monsters/pssithra/swim2.wav");
@@ -2981,7 +2981,7 @@ void SsithraStaticsInit()
 
 /*QUAKED monster_ssithra (1 .5 0) (-16 -16 -32) (16 16 26) AMBUSH ASLEEP 4 Namor Spin ToughGuy Clothed FIXED WANDER MELEE_LEAD STALK COWARD EXTRA1 EXTRA2 EXTRA3 EXTRA4
 
-The plague ssithra 
+The plague ssithra
 
 AMBUSH - Will not be woken up by other monsters or shots from player
 
@@ -3068,7 +3068,7 @@ void SP_monster_plague_ssithra (edict_t *self)
 	self->materialtype = MAT_FLESH;
 //	self->monsterinfo.aiflags |= AI_SWIM_OK;
 	self->flags |= FL_IMMUNE_SLIME;
-	
+
 	ssithraCheckInWater(self);
 
 	self->isBlocked = ssithra_blocked;
@@ -3089,13 +3089,13 @@ void SP_monster_plague_ssithra (edict_t *self)
 
 	self->monsterinfo.supporters = -1;
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 	self->viewheight = self->maxs[2]*0.8;
 
 	self->s.modelindex = classStatics[CID_SSITHRA].resInfo->modelIndex;
 
 	self->touch = M_Touch;
-	
+
 	if(self->spawnflags & MSF_SSITHRA_CLOTHED)
 		self->s.skinnum = 2;
 	else
@@ -3103,7 +3103,7 @@ void SP_monster_plague_ssithra (edict_t *self)
 
 	//scaling them up in code like this is bad for designers
 	self->s.scale = self->monsterinfo.scale = (MODEL_SCALE)+0.1;// + flrand(0.1, 0.3));
-	// Note that at less than 110% of the size 
+	// Note that at less than 110% of the size
 
 	//Turn off dismemberment caps, can't see them, so save some polys
 	self->s.fmnodeinfo[MESH__CAPLOWERTORSO].flags |= FMNI_NO_DRAW;
@@ -3193,7 +3193,7 @@ void SP_monster_plague_ssithra (edict_t *self)
 
 /*QUAKED obj_corpse_ssithra (1 .5 0) (-30 -12 -2) (30 12 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A dead plague ssithra
----------- KEYS -----------------  
+---------- KEYS -----------------
 style - skin of ssithra (default 0)
 0 - damage skin
 1 - some bad bad skin. (not used)

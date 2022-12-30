@@ -43,7 +43,7 @@ the bottom of the box to the end of the rope
 THE ENTITY MUST HAVE AN ORIGIN BRUSH
 
 ------------  FIELDS  -------------
-ROPE (default) 
+ROPE (default)
 VINE - use a vine model
 CHAIN - use a chain model
 TENDRIL - use a tendril model
@@ -106,11 +106,11 @@ qboolean UsedRightAttack(int instruction, edict_t *attacker, edict_t *projectile
 		case NATE_INSTRUCTION_SWIPE:
 			if(sequence == ASEQ_WSWORD_STD1||
 				sequence == ASEQ_WSWORD_STD2||
-				sequence == ASEQ_WSWORD_STEP2||	
-				sequence == ASEQ_WSWORD_STEP)	
+				sequence == ASEQ_WSWORD_STEP2||
+				sequence == ASEQ_WSWORD_STEP)
 				return (true);
 			break;
-		
+
 		case NATE_INSTRUCTION_SPIN:
 			if(sequence == ASEQ_WSWORD_SPIN || sequence == ASEQ_WSWORD_SPIN2)
 				return (true);
@@ -120,7 +120,7 @@ qboolean UsedRightAttack(int instruction, edict_t *attacker, edict_t *projectile
 			if(sequence == ASEQ_POLEVAULT2)
 				return (true);
 			break;
-		
+
 		case NATE_INSTRUCTION_FIREBALL:
 			if(!stricmp(projectile->classname, "Spell_FlyingFist"))
 				return (true);
@@ -142,7 +142,7 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 
 	if(!attacker->client)
 		return false;
-	
+
 	if(self->count == NUM_INSTRUCTIONS)
 	{
 		gi.gamemsg_centerprintf(attacker, GM_SIR_NATE_END);
@@ -178,10 +178,10 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 
 void sir_nate_of_the_embarassingly_shortshanks_use(edict_t *self, edict_t *other, edict_t *activator)
 {
-	
+
 	if(!activator->client)
 		return;
-	
+
 	gi.gamemsg_centerprintf(activator, (short)(self->dmg_radius+GM_SIR_NATE_GREETING));
 
 	self->dmg_radius++;
@@ -219,10 +219,10 @@ void rope_think(edict_t *self)
 				//Create the new rope that's attached to the player
 				self->rope_grab->s.effects |= EF_ALTCLIENTFX;
 
-				gi.CreateEffect(&self->enemy->s, 
-								FX_ROPE, CEF_BROADCAST | CEF_OWNERS_ORIGIN | CEF_FLAG6, 
-								rope_top, 
-								"ssbvvv", 
+				gi.CreateEffect(&self->enemy->s,
+								FX_ROPE, CEF_BROADCAST | CEF_OWNERS_ORIGIN | CEF_FLAG6,
+								rope_top,
+								"ssbvvv",
 								self->rope_grab->s.number,	//ID for the grab entity
 								self->rope_end->s.number,	//ID for the end entity
 								self->bloodType,			//Model type
@@ -232,10 +232,10 @@ void rope_think(edict_t *self)
 			}
 
 			gi.trace(self->rope_grab->s.origin, vec3_origin, vec3_origin, self->s.origin, self->enemy, MASK_SOLID,&trace);
-			
+
 			if ( (trace.fraction == 1) && (!trace.startsolid && !trace.allsolid) )
 				gi.trace(self->enemy->s.origin, self->enemy->mins, self->enemy->maxs, self->rope_grab->s.origin, self->enemy, MASK_PLAYERSOLID,&trace);
-			
+
 			//If the rope's movement is clear, move the player and the rope
 			if ( (trace.fraction == 1) && (!trace.startsolid && !trace.allsolid) )
 			{
@@ -286,7 +286,7 @@ void rope_end_think2( edict_t *self )
 		{
 			if ( (trace.ent) && (stricmp(trace.ent->classname, "worldspawn")) )
 			{
-				VectorScale(grab->velocity, -0.5, grab->velocity);		
+				VectorScale(grab->velocity, -0.5, grab->velocity);
 			}
 			else
 			{
@@ -312,7 +312,7 @@ void rope_end_think2( edict_t *self )
 
 	//Subtract away from the rope's velocity based on that distance
 	VectorScale(end_vec, -end_len*0.75, end_vec);
-	VectorSubtract(grab->velocity, end_vec, grab->velocity);	
+	VectorSubtract(grab->velocity, end_vec, grab->velocity);
 	VectorScale(grab->velocity, 0.99, grab->velocity);
 
 	//Move the rope based on the new velocity
@@ -327,7 +327,7 @@ void rope_end_think2( edict_t *self )
 
 	//Move the length of the rope in that direction from the top
 	VectorMA(rope_top, grab_len, end_vel, rope_end);
-		
+
 	//You're done
 	VectorCopy(rope_end, grab->s.origin);
 
@@ -361,7 +361,7 @@ void rope_end_think( edict_t *self )
 
 	//Subtract away from the rope's velocity based on that distance
 	VectorScale(end_vec, -end_len, end_vec);
-	VectorSubtract(grab->velocity, end_vec, grab->velocity);	
+	VectorSubtract(grab->velocity, end_vec, grab->velocity);
 	VectorScale(grab->velocity, 0.95, grab->velocity);
 
 	//Move the rope based on the new velocity
@@ -376,7 +376,7 @@ void rope_end_think( edict_t *self )
 
 	//Move the length of the rope in that direction from the top
 	VectorMA(rope_top, grab_len, end_vel, rope_end);
-		
+
 	//You're done
 	VectorCopy(rope_end, grab->s.origin);
 }
@@ -442,7 +442,7 @@ void rope_sway(edict_t *self)
 	VectorSubtract(rope_rest, grab->s.origin, v_rope);
 	VectorNormalize(v_rope);
 	dist = vhlen(rope_rest, grab->s.origin);
-	
+
 	//NOTENOTE: There's a fine line between a real pendulum motion here that comes to rest,
 	//			and a chaotic one that builds too much and runs amuck.. so don't monkey with
 	//			the values in here... ok?  --jweier
@@ -451,7 +451,7 @@ void rope_sway(edict_t *self)
 	VectorScale(v_rope, -dist, v_rope);
 	VectorSubtract(grab->velocity, v_rope, grab->velocity);
 	VectorScale(grab->velocity, 0.95, grab->velocity);
-	
+
 	//Move the rope based on the new velocity
 	VectorCopy(grab->velocity, v_dir);
 
@@ -464,11 +464,11 @@ void rope_sway(edict_t *self)
 
 	//Move the length of the rope in that direction from the top
 	VectorMA(rope_top, rope_len, v_rope, rope_end);
-	
+
 	VectorSubtract(v_dest, rope_top, v_rope);
 	VectorNormalize(v_rope);
 	VectorMA(rope_top, grab->viewheight, v_rope, grab_end);
-	
+
 	//You're done
 	VectorCopy(grab_end, grab->s.origin);
 
@@ -495,7 +495,7 @@ void rope_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 		//If we've got a player on the rope, and this guy isn't it, then don't let him grab
 		if (self->enemy && other != self->enemy)
 			return;
-		
+
 		self->enemy = other;
 		self->viewheight = other->s.origin[2];
 		other->targetEnt = self;
@@ -521,15 +521,15 @@ int hanging_chicken_pain(edict_t *self, edict_t *other, float kick, int damage)
 	VectorCopy(self->velocity, self->targetEnt->velocity);
 	VectorClear(self->velocity);
 	VectorClear(self->knockbackvel);
-	
+
 	self->svflags &= ~SVF_ONFIRE;
 
 	sir_nate_of_the_embarassingly_shortshanks_pain(self, other, kick, damage);
-	
+
 	if (damage < 100)
-		gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" ); 
+		gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
 	else
-		gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" ); 
+		gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
 
 	if (irand(0,1))
 		gi.sound (self, CHAN_AUTO, gi.soundindex("monsters/chicken/pain1.wav"), 1, ATTN_NORM, 0);
@@ -550,10 +550,10 @@ void hanging_chicken_think(edict_t *self)
 	VectorCopy(self->targetEnt->velocity, vec);
 	vec[2] = 0;
 	mag = VectorLength(vec);
-	
+
 	if (mag > 100)
 	{
-		self->dmg++;	
+		self->dmg++;
 		self->dmg = self->dmg & ((FRAME_cluck18-FRAME_cluck14)-1);
 		self->s.frame = FRAME_cluck14 + self->dmg;
 	}
@@ -632,7 +632,7 @@ void hanging_chicken_think(edict_t *self)
 
 					if (knockbacktime > trace.ent->client->playerinfo.knockbacktime)
 						trace.ent->client->playerinfo.knockbacktime = knockbacktime;
-				} 
+				}
 
 				if(force>100)
 				{
@@ -648,18 +648,18 @@ void hanging_chicken_think(edict_t *self)
 	VectorSubtract(self->targetEnt->owner->s.origin, self->s.origin, vec);
 	VectorNormalize(vec);
 	vectoangles(vec, angles);
-	
+
 	//interpolate the angles
 	for (i=0;i<2;i++)
 	{
 		d_ang = (angles[i]-self->s.angles[i]);
-		
+
 		if (i==PITCH)
 			continue;
 
 		if (d_ang == 0)
 			continue;
-		
+
 		if (d_ang > 0)
 		{
 			if (Q_fabs(d_ang) > 8)
@@ -700,7 +700,7 @@ void spawn_hanging_chicken(edict_t *self)
 
 	gi.setmodel(self, self->model);
 	self->svflags |= SVF_NOCLIENT;
- 
+
 	//We only need the vertical size from the designer
 	self->maxs[0] = 32;
 	self->maxs[1] = 32;
@@ -719,25 +719,25 @@ void spawn_hanging_chicken(edict_t *self)
 	end_ent->svflags |= SVF_ALWAYS_SEND;
 	end_ent->owner = self;
 	end_id	 = end_ent->s.number;
-	
+
 	VectorCopy(self->s.origin, end_ent->s.origin);
 	end_ent->s.origin[2] += self->mins[2];
 
 	VectorClear(end_ent->velocity);
 
 	gi.linkentity(end_ent);
-	
+
 	//gi.setmodel(end_ent, "models/objects/barrel/normal/tris.fm");
 
 	self->rope_end = end_ent;
-	
+
 	VectorCopy(self->s.origin, rope_end);
 	rope_end[2] += self->mins[2];
-			
+
 	model_type = RM_ROPE;
 
 	self->bloodType = end_ent->bloodType = model_type;
-	
+
 	VectorCopy(self->s.origin, rope_end);
 	rope_end[2] += self->mins[2];
 
@@ -745,17 +745,17 @@ void spawn_hanging_chicken(edict_t *self)
 
 	self->think = rope_end_think2;
 	self->nextthink = level.time + 0.1;
-	
+
 	gi.linkentity(self);
 
 	/////////////////////////////////////////////
 	//Now spawn the poor chicken
-	
+
 	chicken = G_Spawn();
-	
+
 	gi.setmodel(chicken, "models/monsters/chicken2/tris.fm");
 	chicken->enemy = self;
-	
+
 	//Hanging by feet
 	chicken->s.angles[PITCH] += 180;
 	chicken->pain = hanging_chicken_pain;
@@ -773,11 +773,11 @@ void spawn_hanging_chicken(edict_t *self)
 	chicken->clipmask = MASK_MONSTERSOLID;
 	chicken->svflags = SVF_DO_NO_IMPACT_DMG | SVF_ALLOW_AUTO_TARGET;
 	chicken->s.effects = EF_CAMERA_NO_CLIP;
-	
+
 	VectorCopy(self->rope_end->s.origin, chicken->s.origin);
 
 	chicken->targetEnt = self->rope_end;
-	
+
 	chicken->s.scale = 1;
 	chicken->classname = "NATE";
 	chicken->think = hanging_chicken_think;
@@ -795,7 +795,7 @@ void SP_obj_rope(edict_t *self)
 	vec3_t		rope_end;
 	short		grab_id, end_id;
 	byte		model_type;
-	
+
 	if (self->spawnflags & ROPEFLAG_HANGING_CHICKEN)
 	{
 		if(self->targetname)
@@ -808,7 +808,7 @@ void SP_obj_rope(edict_t *self)
 
 	gi.setmodel(self, self->model);
 	self->svflags |= SVF_NOCLIENT;
- 
+
 	//We only need the vertical size from the designer
 	self->maxs[0] = 32;
 	self->maxs[1] = 32;
@@ -834,7 +834,7 @@ void SP_obj_rope(edict_t *self)
 	VectorClear(end_ent->velocity);
 
 	gi.linkentity(end_ent);
-	
+
 	//gi.setmodel(end_ent, "models/objects/barrel/normal/tris.fm");
 
 	self->rope_end = end_ent;
@@ -849,7 +849,7 @@ void SP_obj_rope(edict_t *self)
 	gi.linkentity(grab_ent);
 
 	//gi.setmodel(grab_ent, "models/objects/barrel/normal/tris.fm");
-	
+
 	VectorCopy(self->s.origin, grab_ent->s.origin);
 	grab_ent->s.origin[2] += self->maxs[2] + 4;
 
@@ -857,7 +857,7 @@ void SP_obj_rope(edict_t *self)
 
 	VectorCopy(self->s.origin, rope_end);
 	rope_end[2] += self->mins[2];
-			
+
 	if (self->spawnflags & ROPEFLAG_CHAIN)
 	{
 		model_type = RM_CHAIN;
@@ -874,14 +874,14 @@ void SP_obj_rope(edict_t *self)
 	{
 		model_type = RM_ROPE;
 	}
-	
+
 	self->bloodType = grab_ent->bloodType = end_ent->bloodType = model_type;
-	
+
 	VectorCopy(self->s.origin, rope_end);
 	rope_end[2] += self->mins[2];
 
 	rope_sway(self);
-	
+
 	gi.CreatePersistantEffect(&self->s, FX_ROPE, CEF_BROADCAST, self->s.origin, "ssbvvv", grab_id, end_id, model_type, self->s.origin, grab_ent->s.origin, end_ent->s.origin );
 
 	self->think = rope_sway;

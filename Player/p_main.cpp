@@ -28,7 +28,7 @@ PLAYER_API void PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 	if(!complete_reset)
 		PlayerBasicAnimReset(playerinfo);
 	else
-		PlayerAnimReset(playerinfo);	
+		PlayerAnimReset(playerinfo);
 
 	playerinfo->flags=PLAYER_FLAG_NONE;
 }
@@ -98,7 +98,7 @@ PLAYER_API void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 		playerinfo->seqcmd[ACMDL_JUMP] = false;
 		playerinfo->seqcmd[ACMDL_CROUCH] = true;
 	}
-	else 
+	else
 	{
 		playerinfo->seqcmd[ACMDL_JUMP] = false;
 		playerinfo->seqcmd[ACMDL_CROUCH] = false;
@@ -221,12 +221,12 @@ int PlayerCheckSlide(playerinfo_t *playerinfo)
 		playerinfo->CL_Trace(startpos,mins,maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
 	else
 		playerinfo->G_Trace(startpos,mins,maxs,endpos,playerinfo->self,MASK_PLAYERSOLID,&trace);
-	
+
 	if (trace.fraction < 1)
 	{
 		dot = DotProduct(vf, trace.plane.normal);
 	}
-	
+
 	return false;
 }
 
@@ -234,7 +234,7 @@ PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo)
 {
 	int		slideseq;
 	vec3_t	endpos;
-	
+
 	if (playerinfo->deadflag==DEAD_DEAD || playerinfo->deadflag==DEAD_DYING)
 		return;
 
@@ -248,16 +248,16 @@ PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo)
 
 	VectorCopy(playerinfo->origin, endpos);
 	endpos[2] += playerinfo->mins[2];
-	
-	if ((playerinfo->PointContents(endpos) & (CONTENTS_SLIME|CONTENTS_LAVA))) 
+
+	if ((playerinfo->PointContents(endpos) & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 	}
-	
+
 	// At the very first point, evaluate whether we are in a water or air sequence, and then
 	// whether the player is in water or air.
 
 	else if (PlayerSeqData[playerinfo->lowerseq].playerflags & PLAYER_FLAG_WATER)
-	{	
+	{
 		// Then we SHOULD be in water for this particular move.
 
 		if ((playerinfo->waterlevel > 2) && (PlayerSeqData2[playerinfo->lowerseq].waterseq == ASEQ_SSWIM_IDLE))
@@ -267,11 +267,11 @@ PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo)
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_USWIM_IDLE);
 		}
 		else if (playerinfo->waterlevel < 1 || (playerinfo->waterlevel < 2 && playerinfo->groundentity))
-		{	
+		{
 			// If we are not in the water at all currently OR if our toes are in yet our feet are
 			// touching the ground then we abandon the water sequence. Waterseq here represents the
 			// proper sequence to go to when LEAVING water.
-		
+
 			//NOTENOTE: This is the offending code that killed the pullups out of water.  Here's a patch...
 
 			if (PlayerSeqData2[playerinfo->lowerseq].waterseq != ASEQ_NONE)
@@ -279,7 +279,7 @@ PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo)
 		}
 	}
 	else
-	{	
+	{
 		// We should NOT be in water for this particular move.
 
 		if ((playerinfo->waterlevel > 2) && (PlayerSeqData2[playerinfo->lowerseq].waterseq == ASEQ_SSWIM_IDLE))
@@ -289,7 +289,7 @@ PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo)
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_USWIM_IDLE);
 		}
 		else if (playerinfo->waterlevel >= 2)
-		{	
+		{
 			// We're now in water, go to the appropriate water sequence. Waterseq here represents
 			// the proper sequence to go to when ENTERING water.
 			if (PlayerSeqData2[playerinfo->lowerseq].waterseq != ASEQ_NONE)
@@ -354,60 +354,60 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	switch(playerinfo->pers.bowtype)
 	{
 		case BOW_TYPE_REDRAIN:
-			
+
 			playerinfo->fmnodeinfo[MESH__BOFF].flags &= ~FMNI_NO_DRAW;
 
 			// No special texture.
 
 			playerinfo->pers.altparts &= ~((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
-			
+
 			break;
-		
+
 		case BOW_TYPE_PHOENIX:
-			
+
 			playerinfo->fmnodeinfo[MESH__BOFF].flags &= ~FMNI_NO_DRAW;
 			playerinfo->pers.altparts |= ((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
-			
+
 			break;
-		
-		case BOW_TYPE_NONE:	
+
+		case BOW_TYPE_NONE:
 		default:
-			
+
 			playerinfo->fmnodeinfo[MESH__BOFF].flags |= FMNI_NO_DRAW;
-			
+
 			break;
 	}
 
 
-	
+
 	// Check staff for powerup.
 	// Until later in this function, have the staff default to on the player's belt.
-	
+
 	playerinfo->fmnodeinfo[MESH__RHANDHI].flags |= FMNI_NO_DRAW;
 	playerinfo->fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
 	playerinfo->fmnodeinfo[MESH__BLADSTF].flags |= FMNI_NO_DRAW;
-	
+
 	if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 		playerinfo->fmnodeinfo[MESH__STOFF].flags &= ~FMNI_NO_DRAW;
 
 	switch(playerinfo->pers.stafflevel)
-	{	
+	{
 		case STAFF_LEVEL_POWER1:
 		case STAFF_LEVEL_POWER2:
-			
+
 			// Use alternate power texture...
-			
+
 			playerinfo->pers.altparts |= ((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
-			
+
 			break;
-		
+
 		case STAFF_LEVEL_BASIC:
 		default:
-			
+
 			// No special texture
-			
+
 			playerinfo->pers.altparts &= ~((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
-		
+
 			break;
 	}
 
@@ -419,43 +419,43 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	switch(playerinfo->pers.helltype)
 	{
 		case HELL_TYPE_POWER:
-			
+
 			// Use alternate power texutre...
-			
+
 			playerinfo->pers.altparts |= (1<<MESH__HELSTF);
-			
+
 			break;
 
 		case HELL_TYPE_BASIC:
-			
+
 			playerinfo->pers.altparts &= ~(1<<MESH__HELSTF);
-			
+
 			break;
-		
+
 		case HELL_TYPE_NONE:
 		default:
-		
+
 			break;
 	}
-		
+
 	// Check if the player's a ghost.
 
 	if (playerinfo->ghost_timer > playerinfo->leveltime)
-	{	
+	{
 		// Set the ghost time.
-		
+
 		playerinfo->renderfx |= RF_TRANS_GHOST;
-		
+
 		ghost = true;
 
 	}
 	else
 	{
 		playerinfo->renderfx &= ~RF_TRANS_GHOST;
-		
+
 		ghost = false;
 	}
-	
+
 	// Check armor and level...
 
 	switch(playerinfo->pers.armortype)
@@ -463,7 +463,7 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 		case ARMOR_TYPE_SILVER:
 			playerinfo->fmnodeinfo[MESH__ARMOR].flags &= ~FMNI_NO_DRAW;
 			playerinfo->pers.altparts &= ~(1<<MESH__ARMOR);
-			
+
 			break;
 
 		case ARMOR_TYPE_GOLD:
@@ -474,26 +474,26 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 				playerinfo->fmnodeinfo[MESH__ARMOR].skin = playerinfo->skinnum;
 			else
 				playerinfo->fmnodeinfo[MESH__ARMOR].skin = playerinfo->skinnum+1;
-			
+
 			break;
 
 		case ARMOR_TYPE_NONE:
 		default:
-			
+
 			playerinfo->fmnodeinfo[MESH__ARMOR].flags |= FMNI_NO_DRAW;
-			
+
 			break;
 	}
-	
+
 	// First get the proper skin and set it.
 	// The reflection setting is very important to this.
 
 	if (playerinfo->reflect_timer > playerinfo->leveltime)
-	{	
+	{
 		// We are reflective.
 		playerinfo->skinnum = SKIN_REFLECTION;
 		playerinfo->renderfx |= RF_REFLECTION;
-	 
+
 		// No pain or power skins if alttex (metal texture).
 		// Also, make sure that the alternate skin is not used when the reflection map is on.
 
@@ -510,11 +510,11 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 		// First check if the first "node" is damaged, because it is an exception to the rest.
 
 		if (playerinfo->pers.altparts & (1<<MESH_BASE2))
-		{	
+		{
 			// The front of the body is damaged.
 			// This is a little weird, because the player's main skin is what defines the damage to the front chest node.
 			// Hence if the chest front is damaged, then the *default* skin becomes damaged, and all the *non* damaged skins are exlusions.
-			
+
 			//all the others will use this playerinfo->skinnum if damaged, playerinfo->skinnum - 1 if not
 			inverttex = true;
 
@@ -524,7 +524,7 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 			playerinfo->skinnum = 1;
 		}
 		else
-		{	
+		{
 			// Set the normal skin level.
 
 			//all the others will use this playerinfo->skinnum + 1 if damaged, playerinfo->skinnum if not
@@ -586,22 +586,22 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 		switch(playerinfo->pers.weaponready)
 		{
 			case WEAPON_READY_STAFFSTUB:
-				
+
 				// Staff in right hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_RARM))
 				{
 					playerinfo->fmnodeinfo[MESH__STOFF].flags |= FMNI_NO_DRAW;
 					playerinfo->fmnodeinfo[MESH__STAFACTV].flags &= ~FMNI_NO_DRAW;
 				}
-				
+
 				// Empty left hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 					playerinfo->fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
-				
+
 				break;
-			
+
 			case WEAPON_READY_SWORDSTAFF:
-				
+
 				// Staff in right hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_RARM))
 				{
@@ -609,7 +609,7 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 					playerinfo->fmnodeinfo[MESH__BLADSTF].flags &= ~FMNI_NO_DRAW;
 					playerinfo->fmnodeinfo[MESH__STAFACTV].flags &= ~FMNI_NO_DRAW;
 				}
-				
+
 				// Empty left hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 					playerinfo->fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
@@ -627,7 +627,7 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 				break;
 
 			case WEAPON_READY_HELLSTAFF:
-				
+
 				// Staff in right hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_RARM))
 				{
@@ -635,7 +635,7 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 					playerinfo->fmnodeinfo[MESH__HELSTF].flags &= ~FMNI_NO_DRAW;
 					playerinfo->fmnodeinfo[MESH__STAFACTV].flags &= ~FMNI_NO_DRAW;
 				}
-				
+
 				// Empty left hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 					playerinfo->fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
@@ -650,37 +650,37 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 												   "");
 				}
 				*/
-				
+
 				break;
 
 			case WEAPON_READY_BOW:
-				
+
 				// Empty right hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_RARM))
 					playerinfo->fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
-				
+
 				// Bow in left hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 				{
 					playerinfo->fmnodeinfo[MESH__BOFF].flags |= FMNI_NO_DRAW;
 					playerinfo->fmnodeinfo[MESH__BOWACTV].flags &= ~FMNI_NO_DRAW;
 				}
-				
+
 				break;
 
 			case WEAPON_READY_HANDS:
 			default:
-				
+
 				// Empty right hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_RARM))
 					playerinfo->fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
-				
+
 				// Empty left hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 					playerinfo->fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
-				
+
 				break;
-			
+
 		}
 	}
 }
@@ -688,20 +688,20 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 {
 	int powerlevel;
-/*	
+/*
 	// FIXME: This could be bad...
-	
+
 	if(playerinfo->handfxtype==handfx)
-	{	
+	{
 		// There should be nothing to do.
 
 		return;
 	}
-*/	
+*/
 	// Check currently in place effects.
 
 /*	switch(playerinfo->pers.handfxtype)
-	{	
+	{
 		case HANDFX_FIREBALL:
 		case HANDFX_MISSILE:
 		case HANDFX_MACEBALL:
@@ -711,7 +711,7 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 		case HANDFX_STAFF3:
 			// Do nothing, these effects end on their own anyway.
 			break;
-			
+
 		case HANDFX_SPHERE:
 			if(playerinfo->effects)
 				if(!playerinfo->isclient)
@@ -726,7 +726,7 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_REDRAIN:
 		case HANDFX_POWERREDRAIN:
-			
+
 			if(playerinfo->effects)
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID32,
@@ -737,10 +737,10 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 												 playerinfo->self,
 												 FX_WEAPON_REDRAINGLOW);
 			break;
-		
+
 		case HANDFX_PHOENIX:
 		case HANDFX_POWERPHOENIX:
-		
+
 			if(playerinfo->effects)
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID33,
@@ -751,12 +751,12 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 												 playerinfo->self,
 												 FX_FIREHANDS);
 			break;
-		
+
 		case HANDFX_NONE:
 		default:
 
 			// Nothing to remove.
-		
+
 			break;
 	}
 */
@@ -816,7 +816,7 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 											"b",
 											(byte)lifetime);
 			break;
-		
+
 		case HANDFX_FIREWALL:
 			if (lifetime == 0)
 				lifetime = 11;		// 1.1 seconds is normal fireball throw time
@@ -837,7 +837,7 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 											"b",
 											lifetime);
 			break;
-		
+
 		case HANDFX_STAFF1:
 		case HANDFX_STAFF2:
 		case HANDFX_STAFF3:
@@ -874,7 +874,7 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 											(byte)lifetime);
 			}
 			break;
-		
+
 		case HANDFX_SPHERE:
 			// Blue effect on both hands.
 			if (lifetime == 0)
@@ -921,7 +921,7 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 											-1);
 			}
 			break;
-		
+
 		case HANDFX_POWERREDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
 			if(!playerinfo->isclient)
@@ -940,9 +940,9 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 										    NULL,
 										    "b",
 										    -1);
-			
+
 			break;
-		
+
 		case HANDFX_PHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
 			if(!playerinfo->isclient)
@@ -980,18 +980,18 @@ void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 										    CEF_OWNERS_ORIGIN,
 										    NULL,
 										    "b",
-										    -1);			
+										    -1);
 			break;
 
 		case HANDFX_MACEBALL:
 			// Nothin' for these yet.
 			break;
-		
+
 		case HANDFX_NONE:
 		default:
-		
+
 			// Don't start anything.
-		  
+
 			break;
 	}
 }

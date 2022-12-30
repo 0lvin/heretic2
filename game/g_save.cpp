@@ -189,7 +189,7 @@ field_t		clientfields[] =
 	{"", CLOFS(playerinfo.pers.defence), F_ITEM},
 	{"", CLOFS(playerinfo.pers.lastdefence), F_ITEM},
 	{"", CLOFS(playerinfo.pers.newweapon), F_ITEM},
-						 
+
 	{NULL, 0, F_INT}
 };
 
@@ -226,7 +226,7 @@ void Load_Strings(void)
 	startp = buffer;
 	p =0;
 	for (i=1; p < (buffer + length) ;++i)
-	{			
+	{
 		if (i> MAX_MESSAGESTRINGS)
 		{
 			Com_Printf ("Too many strings\n");
@@ -260,10 +260,10 @@ void Load_Strings(void)
 				*p = '\n';
 		} while(p);
 
-		return_p +=2;	// Hop over 13 10 
+		return_p +=2;	// Hop over 13 10
 		startp = return_p;	// Advance to next string
 
-	} 
+	}
 }
 
 /*
@@ -308,7 +308,7 @@ void InitGame (void)
 	maxclients = gi.cvar ("maxclients", "4", CVAR_SERVERINFO | CVAR_LATCH);
 	deathmatch = gi.cvar ("deathmatch", "0", CVAR_LATCH);
 	coop = gi.cvar ("coop", "0", CVAR_LATCH);
-	
+
 	skill = gi.cvar ("skill", "1", CVAR_LATCH);
 	maxentities = gi.cvar ("maxentities", G_MAX_ENTITIES, CVAR_LATCH);
 
@@ -383,11 +383,11 @@ void InitGame (void)
 	// ********************************************************************************************
 	// Initialise the inventory items.
 	// ********************************************************************************************
-	
+
 	// Server side only elements.
 
 	G_InitItems();
-	
+
 	// ********************************************************************************************
 	// Initialise hep messages.
 	// ********************************************************************************************
@@ -565,7 +565,7 @@ void WriteClient (FILE *f, gclient_t *client)
 {
 	field_t		*field;
 	gclient_t	temp;
-	
+
 	// all of the ints, floats, and vectors stay as they are
 	temp = *client;
 
@@ -879,7 +879,7 @@ void ReadLevelLocals (FILE *f)
 	}
 
 
-	// set those console vars we should 
+	// set those console vars we should
 	sprintf(temp, "%f", level.far_clip_dist_f);
 	gi.cvar_set("r_farclipdist", temp);
 	sprintf(temp, "%f", level.fog);
@@ -935,7 +935,7 @@ void WriteLevel (char *filename)
 	for (i=0 ; i<globals.num_edicts ; i++)
 	{
 		ent = &g_edicts[i];
-	
+
 		// we don't want to not save player entities, even if they are not in use, since when we go from
 		// level to a level we've already been to, there maybe monsters that are targeting the player,
 		// and they have problems if they are targeted at a player that has no data in them, even if the player is
@@ -972,7 +972,7 @@ void WriteLevel (char *filename)
 		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
 			peffect->numEffects = 1;
 
-	} 
+	}
 }
 
 
@@ -1058,22 +1058,22 @@ void ReadLevel (char *filename)
 		ent->last_alert = NULL;
 		memset (&ent->area, 0, sizeof(ent->area));
 
-		// NOTE NOTE 
+		// NOTE NOTE
 		// Missiles must be linked in specially.  G_LinkMissile links as a SOLID_NOT, even though the entity is SOLID_BBOX
 		if (ent->movetype == MOVETYPE_FLYMISSILE && ent->solid == SOLID_BBOX)
-		{	
+		{
 			G_LinkMissile (ent);
 		}
 		else
 		{
 			gi.linkentity (ent);
 		}
-		
+
 		// Force the monsters just loaded to point at the right anim.
 
 		if((ent->classID > 0) && (!Cid_init[ent->classID]) && (ent->classID < NUM_CLASSIDS))	 	// Need to call once per level that item is on
 		{
-			classStaticsInits[ent->classID]();	
+			classStaticsInits[ent->classID]();
 			Cid_init[ent->classID] = -1;
 		}
 

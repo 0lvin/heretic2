@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -124,7 +124,7 @@ char	*SV_StatusString (void)
 		cl = &svs.clients[i];
 		if (cl->state == cs_connected || cl->state == cs_spawned )
 		{
-			Com_sprintf (player, sizeof(player), "%i %i \"%s\"\n", 
+			Com_sprintf (player, sizeof(player), "%i %i \"%s\"\n",
 				cl->edict->client->ps.stats[STAT_FRAGS], cl->ping, cl->name);
 			playerLength = strlen(player);
 			if (statusLength + playerLength >= sizeof(status) )
@@ -339,7 +339,7 @@ void SVC_DirectConnect (void)
 		if (cl->state == cs_free)
 			continue;
 		if (NET_CompareBaseAdr (adr, cl->netchan.remote_address)
-			&& ( cl->netchan.qport == qport 
+			&& ( cl->netchan.qport == qport
 			|| adr.port == cl->netchan.remote_address.port ) )
 		{
 			if (!NET_IsLocalAddress (adr) && (svs.realtime - cl->lastconnect) < ((int)sv_reconnect_limit->value * 1000))
@@ -370,7 +370,7 @@ void SVC_DirectConnect (void)
 		return;
 	}
 
-gotnewcl:	
+gotnewcl:
 	// build a new connection
 	// accept the new client
 	// this is the only place a client_t is ever initialized
@@ -384,8 +384,8 @@ gotnewcl:
 	// get the game a chance to reject this connection or modify the userinfo
 	if (!(ge->ClientConnect (ent, userinfo)))
 	{
-		if (*Info_ValueForKey (userinfo, "rejmsg")) 
-			Netchan_OutOfBandPrint (NS_SERVER, adr, "print\n%s\nConnection refused.\n",  
+		if (*Info_ValueForKey (userinfo, "rejmsg"))
+			Netchan_OutOfBandPrint (NS_SERVER, adr, "print\n%s\nConnection refused.\n",
 				Info_ValueForKey (userinfo, "rejmsg"));
 		else
 			Netchan_OutOfBandPrint (NS_SERVER, adr, "print\nConnection refused.\n" );
@@ -403,7 +403,7 @@ gotnewcl:
 	Netchan_Setup (NS_SERVER, &newcl->netchan , adr, qport);
 
 	newcl->state = cs_connected;
-	
+
 	SZ_Init (&newcl->datagram, newcl->datagram_buf, sizeof(newcl->datagram_buf) );
 	newcl->datagram.allowoverflow = true;
 	newcl->lastmessage = svs.realtime;	// don't timeout
@@ -583,7 +583,7 @@ void SV_GiveMsec (void)
 		cl = &svs.clients[i];
 		if (cl->state == cs_free )
 			continue;
-		
+
 		cl->commandMsec = 1800;		// 1600 + some slop
 	}
 }
@@ -641,7 +641,7 @@ void SV_ReadPackets (void)
 			}
 			break;
 		}
-		
+
 		if (i != maxclients->value)
 			continue;
 	}
@@ -682,11 +682,11 @@ void SV_CheckTimeouts (void)
 			cl->state = cs_free;	// can now be reused
 			continue;
 		}
-		if ( (cl->state == cs_connected || cl->state == cs_spawned) 
+		if ( (cl->state == cs_connected || cl->state == cs_spawned)
 			&& cl->lastmessage < droppoint)
 		{
 			SV_BroadcastPrintf (PRINT_HIGH, "%s timed out\n", cl->name);
-			SV_DropClient (cl); 
+			SV_DropClient (cl);
 			cl->state = cs_free;	// don't bother with zombie state
 		}
 	}
@@ -829,7 +829,7 @@ void Master_Heartbeat (void)
 	char		*string;
 	int			i;
 
-	
+
 	if (!dedicated->value)
 		return;		// only dedicated servers send heartbeats
 
@@ -902,7 +902,7 @@ void SV_UserinfoChanged (client_t *cl)
 
 	// call prog code to allow overrides
 	ge->ClientUserinfoChanged (cl->edict, cl->userinfo);
-	
+
 	// name for C code
 	strncpy (cl->name, Info_ValueForKey (cl->userinfo, "name"), sizeof(cl->name)-1);
 	// mask off high bit
@@ -994,7 +994,7 @@ void SV_FinalMessage (char *message, qboolean reconnect)
 {
 	int			i;
 	client_t	*cl;
-	
+
 	SZ_Clear (&net_message);
 	MSG_WriteByte (&net_message, svc_print);
 	MSG_WriteByte (&net_message, PRINT_HIGH);
