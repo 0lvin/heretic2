@@ -104,6 +104,7 @@ DO_GL_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(GLCFLAGS) -o $@ -c $<
 TARGETS=$(BUILDDIR)/quake2 \
 	$(BUILDDIR)/game/game.$(SHLIBEXT) \
 	$(BUILDDIR)/ref_glx.$(SHLIBEXT) \
+	$(BUILDDIR)/ref_softx.$(SHLIBEXT) \
 	$(BUILDDIR)/q2ded \
 	$(BUILDDIR)/ctf/game.$(SHLIBEXT)
 
@@ -388,18 +389,6 @@ REF_SOFT_OBJS = \
 	$(BUILDDIR)/ref_soft/r_scan.o \
 	$(BUILDDIR)/ref_soft/r_sprite.o \
 	$(BUILDDIR)/ref_soft/r_surf.o \
-	\
-	$(BUILDDIR)/ref_soft/r_aclipa.o \
-	$(BUILDDIR)/ref_soft/r_draw16.o \
-	$(BUILDDIR)/ref_soft/r_drawa.o \
-	$(BUILDDIR)/ref_soft/r_edgea.o \
-	$(BUILDDIR)/ref_soft/r_scana.o \
-	$(BUILDDIR)/ref_soft/r_spr8.o \
-	$(BUILDDIR)/ref_soft/r_surf8.o \
-	$(BUILDDIR)/ref_soft/math.o \
-	$(BUILDDIR)/ref_soft/d_polysa.o \
-	$(BUILDDIR)/ref_soft/r_varsa.o \
-	$(BUILDDIR)/ref_soft/sys_dosa.o \
 	\
 	$(BUILDDIR)/game/q_shared.o \
 	$(BUILDDIR)/linux/q_shlinux.o \

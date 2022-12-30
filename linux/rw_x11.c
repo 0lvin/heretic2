@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <stdint.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -89,8 +90,8 @@ int config_notify=0;
 int config_notify_width;
 int config_notify_height;
 
-typedef unsigned short PIXEL16;
-typedef unsigned long PIXEL24;
+typedef uint16_t PIXEL16;
+typedef uint32_t PIXEL24;
 static PIXEL16 st2d_8to16table[256];
 static PIXEL24 st2d_8to24table[256];
 static int shiftmask_fl=0;
