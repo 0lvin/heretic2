@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -96,7 +96,7 @@ qboolean SNDDMA_Init(void)
 	Com_Printf("Don't currently support %i kHz sample rate.  Using %i.\n",
 		   (int)s_khz->value, (int)(dma.speed/1000));
     }
-    
+
     sndchannels = Cvar_Get("sndchannels", "2", CVAR_ARCHIVE);
     dma.channels = (int)sndchannels->value;
     if (dma.channels != 2)
@@ -226,7 +226,7 @@ void SNDDMA_Submit(void)
     if (nPos + nFrames * dma.channels > QSND_BUFFER_SIZE)
     {
 	int nFramesAtEnd = (QSND_BUFFER_SIZE - nPos) >> (dma.channels - 1);
-	
+
 	alWriteFrames( sgisnd_aport, &dma_buffer[nPos], nFramesAtEnd );
 	nPos = 0;
 	nFramesLeft -= nFramesAtEnd;

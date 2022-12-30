@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -34,7 +34,7 @@ static qboolean s_systemcolors_saved;
 
 static HGDIOBJ previously_selected_GDI_obj;
 
-static int s_syspalindices[] = 
+static int s_syspalindices[] =
 {
   COLOR_ACTIVEBORDER,
   COLOR_ACTIVECAPTION,
@@ -196,7 +196,7 @@ qboolean DIB_Init( unsigned char **ppbuffer, int *ppitch )
 fail:
 	DIB_Shutdown();
 	return false;
-	
+
 }
 
 /*
@@ -307,7 +307,7 @@ void DIB_SetPalette( const unsigned char *_pal )
 		if ( sww_state.hpalOld == NULL )
 			sww_state.hpalOld = hpalOld;
 
-		if ( ( ret = RealizePalette( hDC ) ) != pLogPal->palNumEntries ) 
+		if ( ( ret = RealizePalette( hDC ) ) != pLogPal->palNumEntries )
 		{
 			ri.Sys_Error( ERR_FATAL, "DIB_SetPalette() - RealizePalette set %d entries\n", ret );
 		}

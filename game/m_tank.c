@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -111,7 +111,7 @@ mframe_t tank_frames_stand []=
 	ai_stand, 0, NULL
 };
 mmove_t	tank_move_stand = {FRAME_stand01, FRAME_stand30, tank_frames_stand, NULL};
-	
+
 void tank_stand (edict_t *self)
 {
 	self->monsterinfo.currentmove = &tank_move_stand;
@@ -299,7 +299,7 @@ void tank_pain (edict_t *self, edict_t *other, float kick, int damage)
 	if (damage <= 30)
 		if (random() > 0.2)
 			return;
-	
+
 	// If hard or nightmare, don't go into pain while attacking
 	if ( skill->value >= 2)
 	{
@@ -351,12 +351,12 @@ void TankBlaster (edict_t *self)
 	VectorSubtract (end, start, dir);
 
 	monster_fire_blaster (self, start, dir, 30, 800, flash_number, EF_BLASTER);
-}	
+}
 
 void TankStrike (edict_t *self)
 {
 	gi.sound (self, CHAN_WEAPON, sound_strike, 1, ATTN_NORM, 0);
-}	
+}
 
 void TankRocket (edict_t *self)
 {
@@ -382,7 +382,7 @@ void TankRocket (edict_t *self)
 	VectorNormalize (dir);
 
 	monster_fire_rocket (self, start, dir, 50, 550, flash_number);
-}	
+}
 
 void TankMachineGun (edict_t *self)
 {
@@ -418,7 +418,7 @@ void TankMachineGun (edict_t *self)
 	AngleVectors (dir, forward, NULL, NULL);
 
 	monster_fire_bullet (self, start, forward, 20, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_number);
-}	
+}
 
 
 mframe_t tank_frames_attack_blast [] =
@@ -453,7 +453,7 @@ mframe_t tank_frames_reattack_blast [] =
 };
 mmove_t tank_move_reattack_blast = {FRAME_attak111, FRAME_attak116, tank_frames_reattack_blast, tank_reattack_blaster};
 
-mframe_t tank_frames_attack_post_blast [] =	
+mframe_t tank_frames_attack_post_blast [] =
 {
 	ai_move, 0,		NULL,				// 17
 	ai_move, 0,		NULL,
@@ -557,7 +557,7 @@ mmove_t tank_move_attack_pre_rocket = {FRAME_attak301, FRAME_attak321, tank_fram
 
 mframe_t tank_frames_attack_fire_rocket [] =
 {
-	ai_charge, -3, NULL,			// Loop Start	22 
+	ai_charge, -3, NULL,			// Loop Start	22
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  TankRocket,		// 24
 	ai_charge, 0,  NULL,
@@ -570,7 +570,7 @@ mframe_t tank_frames_attack_fire_rocket [] =
 mmove_t tank_move_attack_fire_rocket = {FRAME_attak322, FRAME_attak330, tank_frames_attack_fire_rocket, tank_refire_rocket};
 
 mframe_t tank_frames_attack_post_rocket [] =
-{	
+{
 	ai_charge, 0,  NULL,			// 31
 	ai_charge, -1, NULL,
 	ai_charge, -1, NULL,
@@ -674,7 +674,7 @@ void tank_attack(edict_t *self)
 	{
 		if (r < 0.4)
 			self->monsterinfo.currentmove = &tank_move_attack_chain;
-		else 
+		else
 			self->monsterinfo.currentmove = &tank_move_attack_blast;
 	}
 	else if (range <= 250)
@@ -777,7 +777,7 @@ void tank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	self->takedamage = DAMAGE_YES;
 
 	self->monsterinfo.currentmove = &tank_move_death;
-	
+
 }
 
 
@@ -845,7 +845,7 @@ void SP_monster_tank (edict_t *self)
 	self->monsterinfo.idle = tank_idle;
 
 	gi.linkentity (self);
-	
+
 	self->monsterinfo.currentmove = &tank_move_stand;
 	self->monsterinfo.scale = MODEL_SCALE;
 

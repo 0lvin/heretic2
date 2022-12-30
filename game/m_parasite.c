@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -93,7 +93,7 @@ mframe_t parasite_frames_start_fidget [] =
 mmove_t parasite_move_start_fidget = {FRAME_stand18, FRAME_stand21, parasite_frames_start_fidget, parasite_do_fidget};
 
 mframe_t parasite_frames_fidget [] =
-{	
+{
 	ai_stand, 0, parasite_scratch,
 	ai_stand, 0, NULL,
 	ai_stand, 0, NULL,
@@ -127,7 +127,7 @@ void parasite_do_fidget (edict_t *self)
 }
 
 void parasite_refidget (edict_t *self)
-{ 
+{
 	if (random() <= 0.8)
 		self->monsterinfo.currentmove = &parasite_move_fidget;
 	else
@@ -135,7 +135,7 @@ void parasite_refidget (edict_t *self)
 }
 
 void parasite_idle (edict_t *self)
-{ 
+{
 	self->monsterinfo.currentmove = &parasite_move_start_fidget;
 }
 
@@ -188,7 +188,7 @@ mframe_t parasite_frames_start_run [] =
 mmove_t parasite_move_start_run = {FRAME_run01, FRAME_run02, parasite_frames_start_run, parasite_run};
 
 mframe_t parasite_frames_stop_run [] =
-{	
+{
 	ai_run, 20, NULL,
 	ai_run, 20,	NULL,
 	ai_run, 12, NULL,
@@ -199,7 +199,7 @@ mframe_t parasite_frames_stop_run [] =
 mmove_t parasite_move_stop_run = {FRAME_run10, FRAME_run15, parasite_frames_stop_run, NULL};
 
 void parasite_start_run (edict_t *self)
-{	
+{
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 		self->monsterinfo.currentmove = &parasite_move_stand;
 	else
@@ -235,7 +235,7 @@ mframe_t parasite_frames_start_walk [] =
 mmove_t parasite_move_start_walk = {FRAME_run01, FRAME_run02, parasite_frames_start_walk, NULL};
 
 mframe_t parasite_frames_stop_walk [] =
-{	
+{
 	ai_walk, 20, NULL,
 	ai_walk, 20,	NULL,
 	ai_walk, 12, NULL,
@@ -246,7 +246,7 @@ mframe_t parasite_frames_stop_walk [] =
 mmove_t parasite_move_stop_walk = {FRAME_run10, FRAME_run15, parasite_frames_stop_walk, NULL};
 
 void parasite_start_walk (edict_t *self)
-{	
+{
 	self->monsterinfo.currentmove = &parasite_move_start_walk;
 }
 
@@ -417,7 +417,7 @@ mframe_t parasite_frames_break [] =
 	ai_charge, 0,	NULL,		// slides
 	ai_charge, 0,	NULL,		// slides
 	ai_charge, 4,	NULL,
-	ai_charge, 11,	NULL,		
+	ai_charge, 11,	NULL,
 	ai_charge, -2,	NULL,
 	ai_charge, -5,	NULL,
 	ai_charge, 1,	NULL
@@ -425,7 +425,7 @@ mframe_t parasite_frames_break [] =
 mmove_t parasite_move_break = {FRAME_break01, FRAME_break32, parasite_frames_break, parasite_start_run};
 
 /*
-=== 
+===
 Break Stuff Ends
 ===
 */
@@ -511,9 +511,9 @@ void SP_monster_parasite (edict_t *self)
 		return;
 	}
 
-	sound_pain1 = gi.soundindex ("parasite/parpain1.wav");	
-	sound_pain2 = gi.soundindex ("parasite/parpain2.wav");	
-	sound_die = gi.soundindex ("parasite/pardeth1.wav");	
+	sound_pain1 = gi.soundindex ("parasite/parpain1.wav");
+	sound_pain2 = gi.soundindex ("parasite/parpain2.wav");
+	sound_die = gi.soundindex ("parasite/pardeth1.wav");
 	sound_launch = gi.soundindex("parasite/paratck1.wav");
 	sound_impact = gi.soundindex("parasite/paratck2.wav");
 	sound_suck = gi.soundindex("parasite/paratck3.wav");
@@ -545,7 +545,7 @@ void SP_monster_parasite (edict_t *self)
 
 	gi.linkentity (self);
 
-	self->monsterinfo.currentmove = &parasite_move_stand;	
+	self->monsterinfo.currentmove = &parasite_move_stand;
 	self->monsterinfo.scale = MODEL_SCALE;
 
 	walkmonster_start (self);

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -263,7 +263,7 @@ vec3_t	skyclip[6] = {
 	{0,-1,1},
 	{0,1,1},
 	{1,0,1},
-	{-1,0,1} 
+	{-1,0,1}
 };
 int	c_sky;
 
@@ -653,7 +653,7 @@ void R_SetSky (char *name, float rotate, vec3_t axis)
 			sky_min = 1.0/256;
 			sky_max = 255.0/256;
 		}
-		else	
+		else
 		{
 			sky_min = 1.0/512;
 			sky_max = 511.0/512;

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -129,7 +129,7 @@ mframe_t supertank_frames_stand []=
 	ai_stand, 0, NULL
 };
 mmove_t	supertank_move_stand = {FRAME_stand_1, FRAME_stand_60, supertank_frames_stand, NULL};
-	
+
 void supertank_stand (edict_t *self)
 {
 	self->monsterinfo.currentmove = &supertank_move_stand;
@@ -444,7 +444,7 @@ void supertank_reattack1(edict_t *self)
 		if (random() < 0.9)
 			self->monsterinfo.currentmove = &supertank_move_attack1;
 		else
-			self->monsterinfo.currentmove = &supertank_move_end_attack1;	
+			self->monsterinfo.currentmove = &supertank_move_end_attack1;
 	else
 		self->monsterinfo.currentmove = &supertank_move_end_attack1;
 }
@@ -515,7 +515,7 @@ void supertankRocket (edict_t *self)
 	VectorNormalize (dir);
 
 	monster_fire_rocket (self, start, dir, 50, 500, flash_number);
-}	
+}
 
 void supertankMachineGun (edict_t *self)
 {
@@ -545,7 +545,7 @@ void supertankMachineGun (edict_t *self)
   }
 
 	monster_fire_bullet (self, start, forward, 6, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_number);
-}	
+}
 
 
 void supertank_attack(edict_t *self)
@@ -709,7 +709,7 @@ void SP_monster_supertank (edict_t *self)
 	self->monsterinfo.sight = NULL;
 
 	gi.linkentity (self);
-	
+
 	self->monsterinfo.currentmove = &supertank_move_stand;
 	self->monsterinfo.scale = MODEL_SCALE;
 

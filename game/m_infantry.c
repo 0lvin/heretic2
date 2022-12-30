@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -223,7 +223,7 @@ void infantry_pain (edict_t *self, edict_t *other, float kick, int damage)
 		return;
 
 	self->pain_debounce_time = level.time + 3;
-	
+
 	if (skill->value == 3)
 		return;		// no pain anims in nightmare
 
@@ -570,11 +570,11 @@ void SP_monster_infantry (edict_t *self)
 	sound_weapon_cock = gi.soundindex ("infantry/infatck3.wav");
 	sound_punch_swing = gi.soundindex ("infantry/infatck2.wav");
 	sound_punch_hit = gi.soundindex ("infantry/melee2.wav");
-	
+
 	sound_sight = gi.soundindex ("infantry/infsght1.wav");
 	sound_search = gi.soundindex ("infantry/infsrch1.wav");
 	sound_idle = gi.soundindex ("infantry/infidle1.wav");
-	
+
 
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;

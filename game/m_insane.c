@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -433,7 +433,7 @@ mmove_t insane_move_struggle_cross = {FRAME_cross16, FRAME_cross30, insane_frame
 
 void insane_cross (edict_t *self)
 {
-	if (random() < 0.8)		
+	if (random() < 0.8)
 		self->monsterinfo.currentmove = &insane_move_cross;
 	else
 		self->monsterinfo.currentmove = &insane_move_struggle_cross;
@@ -503,10 +503,10 @@ void insane_pain (edict_t *self, edict_t *other, float kick, int damage)
 	// Don't go into pain frames if crucified.
 	if (self->spawnflags & 8)
 	{
-		self->monsterinfo.currentmove = &insane_move_struggle_cross;			
+		self->monsterinfo.currentmove = &insane_move_struggle_cross;
 		return;
 	}
-	
+
 	if  ( ((self->s.frame >= FRAME_crawl1) && (self->s.frame <= FRAME_crawl9)) || ((self->s.frame >= FRAME_stand99) && (self->s.frame <= FRAME_stand160)) )
 	{
 		self->monsterinfo.currentmove = &insane_move_crawl_pain;
@@ -530,7 +530,7 @@ void insane_checkdown (edict_t *self)
 		if (random() < 0.5)
 			self->monsterinfo.currentmove = &insane_move_uptodown;
 		else
-			self->monsterinfo.currentmove = &insane_move_jumpdown; 
+			self->monsterinfo.currentmove = &insane_move_jumpdown;
 }
 
 void insane_checkup (edict_t *self)
@@ -539,7 +539,7 @@ void insane_checkup (edict_t *self)
 	if ( (self->spawnflags & 4) && (self->spawnflags & 16) )
 		return;
 	if (random() < 0.5)
-		self->monsterinfo.currentmove = &insane_move_downtoup;				
+		self->monsterinfo.currentmove = &insane_move_downtoup;
 
 }
 
@@ -608,7 +608,7 @@ void insane_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	}
 	else
 	{
-		if ( ((self->s.frame >= FRAME_crawl1) && (self->s.frame <= FRAME_crawl9)) || ((self->s.frame >= FRAME_stand99) && (self->s.frame <= FRAME_stand160)) )		
+		if ( ((self->s.frame >= FRAME_crawl1) && (self->s.frame <= FRAME_crawl9)) || ((self->s.frame >= FRAME_stand99) && (self->s.frame <= FRAME_stand160)) )
 			self->monsterinfo.currentmove = &insane_move_crawl_death;
 		else
 			self->monsterinfo.currentmove = &insane_move_stand_death;
@@ -675,7 +675,7 @@ void SP_misc_insane (edict_t *self)
 		self->monsterinfo.aiflags |= AI_STAND_GROUND;
 
 	self->monsterinfo.currentmove = &insane_move_stand_normal;
-	
+
 	self->monsterinfo.scale = MODEL_SCALE;
 
 	if (self->spawnflags & 8)					// Crucified ?

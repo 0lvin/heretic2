@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -32,7 +32,7 @@ SV_FindIndex
 int SV_FindIndex (char *name, int start, int max, qboolean create)
 {
 	int		i;
-	
+
 	if (!name || !name[0])
 		return 0;
 
@@ -89,7 +89,7 @@ baseline will be transmitted
 void SV_CreateBaseline (void)
 {
 	edict_t			*svent;
-	int				entnum;	
+	int				entnum;
 
 	for (entnum = 1; entnum < ge->num_edicts ; entnum++)
 	{
@@ -218,7 +218,7 @@ void SV_SpawnServer (char *server, char *spawnpoint, server_state_t serverstate,
 	}
 
 	sv.time = 1000;
-	
+
 	strcpy (sv.name, server);
 	strcpy (sv.configstrings[CS_NAME], server);
 
@@ -239,7 +239,7 @@ void SV_SpawnServer (char *server, char *spawnpoint, server_state_t serverstate,
 	// clear physics interaction links
 	//
 	SV_ClearWorld ();
-	
+
 	for (i=1 ; i< CM_NumInlineModels() ; i++)
 	{
 		Com_sprintf (sv.configstrings[CS_MODELS+1+i], sizeof(sv.configstrings[CS_MODELS+1+i]),
@@ -249,7 +249,7 @@ void SV_SpawnServer (char *server, char *spawnpoint, server_state_t serverstate,
 
 	//
 	// spawn the rest of the entities on the map
-	//	
+	//
 
 	// precache and static commands can be issued during
 	// map initialization
@@ -266,7 +266,7 @@ void SV_SpawnServer (char *server, char *spawnpoint, server_state_t serverstate,
 	// all precaches are complete
 	sv.state = serverstate;
 	Com_SetServerState (sv.state);
-	
+
 	// create a baseline for more efficient communications
 	SV_CreateBaseline ();
 

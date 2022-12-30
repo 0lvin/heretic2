@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -90,7 +90,7 @@ Adds command text at the end of the buffer
 void Cbuf_AddText (char *text)
 {
 	int		l;
-	
+
 	l = strlen (text);
 
 	if (cmd_text.cursize + l >= cmd_text.maxsize)
@@ -126,10 +126,10 @@ void Cbuf_InsertText (char *text)
 	}
 	else
 		temp = NULL;	// shut up compiler
-		
+
 // add the entire text of the file
 	Cbuf_AddText (text);
-	
+
 // add the copied off data
 	if (templen)
 	{
@@ -215,11 +215,11 @@ void Cbuf_Execute (void)
 			if (text[i] == '\n')
 				break;
 		}
-			
-				
+
+
 		memcpy (line, text, i);
 		line[i] = 0;
-		
+
 // delete the text from the command buffer and move remaining commands down
 // this is necessary because commands (exec, alias) can insert data at the
 // beginning of the text buffer
@@ -235,7 +235,7 @@ void Cbuf_Execute (void)
 
 // execute the command line
 		Cmd_ExecuteString (line);
-		
+
 		if (cmd_wait)
 		{
 			// skip out while text still remains in buffer, leaving it
@@ -310,7 +310,7 @@ qboolean Cbuf_AddLateCommands (void)
 	}
 	if (!s)
 		return false;
-		
+
 	text = Z_Malloc (s+1);
 	text[0] = 0;
 	for (i=1 ; i<argc ; i++)
@@ -319,11 +319,11 @@ qboolean Cbuf_AddLateCommands (void)
 		if (i != argc-1)
 			strcat (text, " ");
 	}
-	
+
 // pull out the commands
 	build = Z_Malloc (s+1);
 	build[0] = 0;
-	
+
 	for (i=0 ; i<s-1 ; i++)
 	{
 		if (text[i] == '+')
@@ -335,7 +335,7 @@ qboolean Cbuf_AddLateCommands (void)
 
 			c = text[j];
 			text[j] = 0;
-			
+
 			strcat (build, text+i);
 			strcat (build, "\n");
 			text[j] = c;
@@ -346,7 +346,7 @@ qboolean Cbuf_AddLateCommands (void)
 	ret = (build[0] != 0);
 	if (ret)
 		Cbuf_AddText (build);
-	
+
 	Z_Free (text);
 	Z_Free (build);
 
@@ -386,7 +386,7 @@ void Cmd_Exec_f (void)
 		return;
 	}
 	Com_Printf ("execing %s\n",Cmd_Argv(1));
-	
+
 	// the file doesn't have a trailing 0, so we need to copy it off
 	f2 = Z_Malloc(len+1);
 	memcpy (f2, f, len);
@@ -409,7 +409,7 @@ Just prints the rest of the line to the console
 void Cmd_Echo_f (void)
 {
 	int		i;
-	
+
 	for (i=1 ; i<Cmd_Argc() ; i++)
 		Com_Printf ("%s ",Cmd_Argv(i));
 	Com_Printf ("\n");
@@ -460,7 +460,7 @@ void Cmd_Alias_f (void)
 		a->next = cmd_alias;
 		cmd_alias = a;
 	}
-	strcpy (a->name, s);	
+	strcpy (a->name, s);
 
 // copy the rest of the command line
 	cmd[0] = 0;		// start out with a null string
@@ -472,7 +472,7 @@ void Cmd_Alias_f (void)
 			strcat (cmd, " ");
 	}
 	strcat (cmd, "\n");
-	
+
 	a->value = CopyString (cmd);
 }
 
@@ -518,7 +518,7 @@ char	*Cmd_Argv (int arg)
 {
 	if ( (unsigned)arg >= cmd_argc )
 		return cmd_null_string;
-	return cmd_argv[arg];	
+	return cmd_argv[arg];
 }
 
 /*
@@ -573,7 +573,7 @@ char *Cmd_MacroExpandString (char *text)
 		token = COM_Parse (&start);
 		if (!start)
 			continue;
-	
+
 		token = Cvar_VariableString (token);
 
 		j = strlen(token);
@@ -625,10 +625,10 @@ void Cmd_TokenizeString (char *text, qboolean macroExpand)
 // clear the args from the last string
 	for (i=0 ; i<cmd_argc ; i++)
 		Z_Free (cmd_argv[i]);
-		
+
 	cmd_argc = 0;
 	cmd_args[0] = 0;
-	
+
 	// macro expand the text
 	if (macroExpand)
 		text = Cmd_MacroExpandString (text);
@@ -642,7 +642,7 @@ void Cmd_TokenizeString (char *text, qboolean macroExpand)
 		{
 			text++;
 		}
-		
+
 		if (*text == '\n')
 		{	// a newline seperates commands in the buffer
 			text++;
@@ -667,7 +667,7 @@ void Cmd_TokenizeString (char *text, qboolean macroExpand)
 				else
 					break;
 		}
-			
+
 		com_token = COM_Parse (&text);
 		if (!text)
 			return;
@@ -679,7 +679,7 @@ void Cmd_TokenizeString (char *text, qboolean macroExpand)
 			cmd_argc++;
 		}
 	}
-	
+
 }
 
 
@@ -691,14 +691,14 @@ Cmd_AddCommand
 void	Cmd_AddCommand (char *cmd_name, xcommand_t function)
 {
 	cmd_function_t	*cmd;
-	
+
 // fail if the command is a variable name
 	if (Cvar_VariableString(cmd_name)[0])
 	{
 		Com_Printf ("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
 		return;
 	}
-	
+
 // fail if the command already exists
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
@@ -774,12 +774,12 @@ char *Cmd_CompleteCommand (char *partial)
 	cmd_function_t	*cmd;
 	int				len;
 	cmdalias_t		*a;
-	
+
 	len = strlen(partial);
-	
+
 	if (!len)
 		return NULL;
-		
+
 // check for exact match
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 		if (!strcmp (partial,cmd->name))
@@ -809,12 +809,12 @@ FIXME: lookupnoadd the token to speed search?
 ============
 */
 void	Cmd_ExecuteString (char *text)
-{	
+{
 	cmd_function_t	*cmd;
 	cmdalias_t		*a;
 
 	Cmd_TokenizeString (text, true);
-			
+
 	// execute the command line
 	if (!Cmd_Argc())
 		return;		// no tokens
@@ -848,7 +848,7 @@ void	Cmd_ExecuteString (char *text)
 			return;
 		}
 	}
-	
+
 	// check cvars
 	if (Cvar_Command ())
 		return;

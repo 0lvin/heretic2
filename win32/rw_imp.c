@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -99,7 +99,7 @@ void VID_CreateWindow( int width, int height, int stylebits )
 
 	if (!sww_state.hWnd)
 		ri.Sys_Error (ERR_FATAL, "Couldn't create window");
-	
+
 	ShowWindow( sww_state.hWnd, SW_SHOWNORMAL );
 	UpdateWindow( sww_state.hWnd );
 	SetForegroundWindow( sww_state.hWnd );
@@ -183,7 +183,7 @@ void SWimp_EndFrame (void)
 //			RealizePalette(hdcScreen);
 		}
 
-	    
+
 		BitBlt( sww_state.hDC,
 			    0, 0,
 				vid.width,
@@ -214,15 +214,15 @@ void SWimp_EndFrame (void)
 		{
 			if ( ( rval = sww_state.lpddsBackBuffer->lpVtbl->BltFast( sww_state.lpddsBackBuffer,
 																	0, 0,
-																	sww_state.lpddsOffScreenBuffer, 
-																	&r, 
+																	sww_state.lpddsOffScreenBuffer,
+																	&r,
 																	DDBLTFAST_WAIT ) ) == DDERR_SURFACELOST )
 			{
 				sww_state.lpddsBackBuffer->lpVtbl->Restore( sww_state.lpddsBackBuffer );
 				sww_state.lpddsBackBuffer->lpVtbl->BltFast( sww_state.lpddsBackBuffer,
 															0, 0,
-															sww_state.lpddsOffScreenBuffer, 
-															&r, 
+															sww_state.lpddsOffScreenBuffer,
+															&r,
 															DDBLTFAST_WAIT );
 			}
 
@@ -237,22 +237,22 @@ void SWimp_EndFrame (void)
 		{
 			if ( ( rval = sww_state.lpddsBackBuffer->lpVtbl->BltFast( sww_state.lpddsFrontBuffer,
 																	0, 0,
-																	sww_state.lpddsOffScreenBuffer, 
-																	&r, 
+																	sww_state.lpddsOffScreenBuffer,
+																	&r,
 																	DDBLTFAST_WAIT ) ) == DDERR_SURFACELOST )
 			{
 				sww_state.lpddsBackBuffer->lpVtbl->Restore( sww_state.lpddsFrontBuffer );
 				sww_state.lpddsBackBuffer->lpVtbl->BltFast( sww_state.lpddsFrontBuffer,
 															0, 0,
-															sww_state.lpddsOffScreenBuffer, 
-															&r, 
+															sww_state.lpddsOffScreenBuffer,
+															&r,
 															DDBLTFAST_WAIT );
 			}
 		}
 
 		memset( &ddsd, 0, sizeof( ddsd ) );
 		ddsd.dwSize = sizeof( ddsd );
-	
+
 		sww_state.lpddsOffScreenBuffer->lpVtbl->Lock( sww_state.lpddsOffScreenBuffer, NULL, &ddsd, DDLOCK_WAIT, NULL );
 
 		vid.buffer = ddsd.lpSurface;
@@ -464,7 +464,7 @@ void Sys_SetFPCW( void )
 	__asm mov fpu_sp24_cw, eax
 
 	__asm and ah, 0f0h          ; ceil mode, 24-bit single precision
-	__asm or  ah, 008h          ; 
+	__asm or  ah, 008h          ;
 	__asm mov fpu_sp24_ceil_cw, eax
 }
 #endif

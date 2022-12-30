@@ -1,5 +1,5 @@
 #!gmake -j3
-# 
+#
 # MAKE="gmake -j8"
 #
 # Quake2 Makefile for Irix

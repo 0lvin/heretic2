@@ -22,7 +22,7 @@ Changes for 3.16
     allow_download_models - models download on/off
     allow_download_sounds - sounds download on/off
     allow_download_maps - maps download on/off
-  They can also be (more easily) set with a new Download Options menu 
+  They can also be (more easily) set with a new Download Options menu
   accessible in Multiplayer/Player Setup/Download Options
 - Changed checksumming code to be more portable and faster.
   The checksum in 3.15 was seriously broken.
@@ -39,14 +39,14 @@ Changes for 3.15
 
 - Added visible weapons support.  This is precached with a special symbol, i.e.
   gi.modelindex("#w_shotgun.md2") which causes the client to autobind it to
-  the players current weapon model.  Plug in player models can optionally 
+  the players current weapon model.  Plug in player models can optionally
   support the visible weapons.  Any that do not support it will use their
   default weapon.md2 files automatically.
   Visible weapons files for plug in player models are not downloaded
   automatically--only the default weapon.md2 (and skin) is.
   The Visible weapon models themselves are not included.  They can be
   downloaded from http://www.telefragged.com/vwep/
-- Rewrote the some of the net code to use optimized network packets for 
+- Rewrote the some of the net code to use optimized network packets for
   projectiles.  This is transparent to the game code, but improves netplay
   substancially.  The hyperblaster doesn't flood modem players anymore.
 - Rewrote the packet checksum code to be more portable and defeat proxy bots

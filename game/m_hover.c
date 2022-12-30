@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -422,7 +422,7 @@ void hover_reattack (edict_t *self)
 {
 	if (self->enemy->health > 0 )
 		if (visible (self, self->enemy) )
-			if (random() <= 0.6)		
+			if (random() <= 0.6)
 			{
 				self->monsterinfo.currentmove = &hover_move_attack1;
 				return;
@@ -578,15 +578,15 @@ void SP_monster_hover (edict_t *self)
 		return;
 	}
 
-	sound_pain1 = gi.soundindex ("hover/hovpain1.wav");	
-	sound_pain2 = gi.soundindex ("hover/hovpain2.wav");	
-	sound_death1 = gi.soundindex ("hover/hovdeth1.wav");	
-	sound_death2 = gi.soundindex ("hover/hovdeth2.wav");	
-	sound_sight = gi.soundindex ("hover/hovsght1.wav");	
-	sound_search1 = gi.soundindex ("hover/hovsrch1.wav");	
-	sound_search2 = gi.soundindex ("hover/hovsrch2.wav");	
+	sound_pain1 = gi.soundindex ("hover/hovpain1.wav");
+	sound_pain2 = gi.soundindex ("hover/hovpain2.wav");
+	sound_death1 = gi.soundindex ("hover/hovdeth1.wav");
+	sound_death2 = gi.soundindex ("hover/hovdeth2.wav");
+	sound_sight = gi.soundindex ("hover/hovsght1.wav");
+	sound_search1 = gi.soundindex ("hover/hovsrch1.wav");
+	sound_search2 = gi.soundindex ("hover/hovsrch2.wav");
 
-	gi.soundindex ("hover/hovatck1.wav");	
+	gi.soundindex ("hover/hovatck1.wav");
 
 	self->s.sound = gi.soundindex ("hover/hovidle1.wav");
 
@@ -613,7 +613,7 @@ void SP_monster_hover (edict_t *self)
 
 	gi.linkentity (self);
 
-	self->monsterinfo.currentmove = &hover_move_stand;	
+	self->monsterinfo.currentmove = &hover_move_stand;
 	self->monsterinfo.scale = MODEL_SCALE;
 
 	flymonster_start (self);

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -586,13 +586,13 @@ void SP_monster_gunner (edict_t *self)
 		return;
 	}
 
-	sound_death = gi.soundindex ("gunner/death1.wav");	
-	sound_pain = gi.soundindex ("gunner/gunpain2.wav");	
-	sound_pain2 = gi.soundindex ("gunner/gunpain1.wav");	
-	sound_idle = gi.soundindex ("gunner/gunidle1.wav");	
-	sound_open = gi.soundindex ("gunner/gunatck1.wav");	
-	sound_search = gi.soundindex ("gunner/gunsrch1.wav");	
-	sound_sight = gi.soundindex ("gunner/sight1.wav");	
+	sound_death = gi.soundindex ("gunner/death1.wav");
+	sound_pain = gi.soundindex ("gunner/gunpain2.wav");
+	sound_pain2 = gi.soundindex ("gunner/gunpain1.wav");
+	sound_idle = gi.soundindex ("gunner/gunidle1.wav");
+	sound_open = gi.soundindex ("gunner/gunatck1.wav");
+	sound_search = gi.soundindex ("gunner/gunsrch1.wav");
+	sound_sight = gi.soundindex ("gunner/sight1.wav");
 
 	gi.soundindex ("gunner/gunatck2.wav");
 	gi.soundindex ("gunner/gunatck3.wav");
@@ -621,7 +621,7 @@ void SP_monster_gunner (edict_t *self)
 
 	gi.linkentity (self);
 
-	self->monsterinfo.currentmove = &gunner_move_stand;	
+	self->monsterinfo.currentmove = &gunner_move_stand;
 	self->monsterinfo.scale = MODEL_SCALE;
 
 	walkmonster_start (self);
