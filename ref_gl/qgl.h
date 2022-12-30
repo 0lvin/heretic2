@@ -386,8 +386,7 @@ extern	void ( APIENTRY * qglColorTableEXT)( int, int, int, int, int, const void 
 extern	void ( APIENTRY * qglLockArraysEXT) (int , int);
 extern	void ( APIENTRY * qglUnlockArraysEXT) (void);
 
-extern	void ( APIENTRY * qglMTexCoord2fSGIS)( GLenum, GLfloat, GLfloat );
-extern	void ( APIENTRY * qglSelectTextureSGIS)( GLenum );
+extern	void ( APIENTRY * qglMultiTexCoord2fARB)( GLenum, GLfloat, GLfloat );
 
 extern	void ( APIENTRY * qglActiveTextureARB)( GLenum );
 extern	void ( APIENTRY * qglClientActiveTextureARB)( GLenum );
@@ -480,7 +479,5 @@ void Fake_glColorTableEXT( GLenum target, GLenum internalformat,
 #define GL_TEXTURE1_SGIS					0x835F
 #define GL_TEXTURE0_ARB						0x84C0
 #define GL_TEXTURE1_ARB						0x84C1
-
-extern int qgl_gltexture0, qgl_gltexture1;
 
 #endif
