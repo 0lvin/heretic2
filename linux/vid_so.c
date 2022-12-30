@@ -202,7 +202,7 @@ qboolean VID_LoadRefresh( char *name )
 {
 	refimport_t	ri;
 	GetRefAPI_t	GetRefAPI;
-	char	fn[MAX_OSPATH] = ".";
+	char	fn[MAX_OSPATH];
 	struct stat st;
 	extern uid_t saved_euid;
 	FILE *fp;
@@ -224,38 +224,26 @@ qboolean VID_LoadRefresh( char *name )
 	//regain root
 	seteuid(saved_euid);
 
-	strcat(fn, "/");
-	strcat(fn, name);
-
 	// permission checking
-	if (strstr(fn, "softx") == NULL) { // softx doesn't require root
-		if (stat(fn, &st) == -1) {
+	if (strstr(name, "softx") == NULL) { // softx doesn't require root
+		if (stat(name, &st) == -1) {
 			Com_Printf( "LoadLibrary(\"%s\") failed: %s\n", name, strerror(errno));
 			return false;
 		}
-#if 0
-		if (st.st_uid != 0) {
-			Com_Printf( "LoadLibrary(\"%s\") failed: ref is not owned by root\n", name);
-			return false;
-		}
-		if ((st.st_mode & 0777) & ~0700) {
-			Com_Printf( "LoadLibrary(\"%s\") failed: invalid permissions, must be 700 for security considerations\n", name);
-			return false;
-		}
-#endif
 	} else {
 		// softx requires we give up root now
 		setreuid(getuid(), getuid());
 		setegid(getgid());
 	}
 
+	snprintf(fn, sizeof(fn), "./%s", name);
 	if ( ( reflib_library = dlopen( fn, RTLD_LAZY | RTLD_GLOBAL ) ) == 0 )
 	{
 		Com_Printf( "LoadLibrary(\"%s\") failed: %s\n", name , dlerror());
 		return false;
 	}
 
-  Com_Printf( "LoadLibrary(\"%s\")\n", fn );
+	Com_Printf( "LoadLibrary(\"%s\")\n", name );
 
 	ri.Cmd_AddCommand = Cmd_AddCommand;
 	ri.Cmd_RemoveCommand = Cmd_RemoveCommand;
@@ -309,22 +297,12 @@ qboolean VID_LoadRefresh( char *name )
 	}
 
 	/* Init KBD */
-#if 1
 	if ((KBD_Init_fp = dlsym(reflib_library, "KBD_Init")) == NULL ||
 		(KBD_Update_fp = dlsym(reflib_library, "KBD_Update")) == NULL ||
 		(KBD_Close_fp = dlsym(reflib_library, "KBD_Close")) == NULL)
-		Sys_Error("No KBD functions in REF.\n");
-#else
 	{
-		void KBD_Init(void);
-		void KBD_Update(void);
-		void KBD_Close(void);
-
-		KBD_Init_fp = KBD_Init;
-		KBD_Update_fp = KBD_Update;
-		KBD_Close_fp = KBD_Close;
+		Sys_Error("No KBD functions in REF.\n");
 	}
-#endif
 	KBD_Init_fp(Do_Key_Event);
 
 	// give up root now
@@ -370,10 +348,11 @@ void VID_CheckChanges (void)
 		{
 			if ( strcmp (vid_ref->string, "soft") == 0 ||
 				strcmp (vid_ref->string, "softx") == 0 ) {
-Com_Printf("Refresh failed\n");
+				Com_Printf("Refresh failed\n");
 				sw_mode = Cvar_Get( "sw_mode", "0", 0 );
+
 				if (sw_mode->value != 0) {
-Com_Printf("Trying mode 0\n");
+					Com_Printf("Trying mode 0\n");
 					Cvar_SetValue("sw_mode", 0);
 					if ( !VID_LoadRefresh( name ) )
 						Com_Error (ERR_FATAL, "Couldn't fall back to software refresh!");

@@ -242,7 +242,7 @@ void *Sys_GetGameAPI (void *parms)
 		game_library = dlopen (name, RTLD_LAZY );
 		if (game_library)
 		{
-			Com_Printf ("LoadLibrary (%s)\n",name);
+			Com_Printf ("LoadLibrary (%s/%s)\n", path, gamename);
 			break;
 		}
 	}

@@ -3026,7 +3026,7 @@ qboolean QGL_Init( const char *dllname )
 		putenv( envbuffer );
 	}
 
-	if ( ( glw_state.OpenGLLib = dlopen( dllname, RTLD_LAZY | RTLD_GLOBAL ) ) == 0 )
+	if ( ( glw_state.OpenGLLib = dlopen( "libGL.so", RTLD_LAZY | RTLD_GLOBAL ) ) == 0 )
 	{
 		char	fn[MAX_OSPATH] = ".";
 		FILE *fp;
