@@ -395,17 +395,8 @@ REF_SOFT_OBJS = \
 	$(BUILDDIR)/linux/q_shlinux.o \
 	$(BUILDDIR)/linux/glob.o
 
-REF_SOFT_SVGA_OBJS = \
-	$(BUILDDIR)/linux/rw_svgalib.o \
-	$(BUILDDIR)/ref_soft/d_copy.o \
-	$(BUILDDIR)/linux/rw_in_svgalib.o
-
 REF_SOFT_X11_OBJS = \
 	$(BUILDDIR)/linux/rw_x11.o
-
-$(BUILDDIR)/ref_soft.$(SHLIBEXT) : $(REF_SOFT_OBJS) $(REF_SOFT_SVGA_OBJS)
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -Xlinker -Map -Xlinker map.out -o $@ $(REF_SOFT_OBJS) \
-		$(REF_SOFT_SVGA_OBJS) $(SVGALDFLAGS)
 
 $(BUILDDIR)/ref_softx.$(SHLIBEXT) : $(REF_SOFT_OBJS) $(REF_SOFT_X11_OBJS)
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_SOFT_OBJS) \
@@ -431,19 +422,8 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/linux/q_shlinux.o \
 	$(BUILDDIR)/linux/glob.o
 
-# TTimo: taking out Mesa
-REF_GL_FXMESA_OBJS = \
-	$(BUILDDIR)/linux/rw_in_svgalib.o
-
-#REF_GL_FXMESA_OBJS = \
-#	$(BUILDDIR)/linux/gl_fxmesa.o \
-#	$(BUILDDIR)/linux/rw_in_svgalib.o
-
 REF_GL_GLX_OBJS = \
 	$(BUILDDIR)/linux/gl_glx.o
-
-$(BUILDDIR)/ref_gl.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_FXMESA_OBJS)
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_GL_OBJS) $(REF_GL_FXMESA_OBJS) $(GLLDFLAGS)
 
 $(BUILDDIR)/ref_glx.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_GLX_OBJS)
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) $(GLXLDFLAGS)
@@ -470,5 +450,3 @@ clean2:
 	$(REF_SOFT_X11_OBJS) \
 	$(REF_GL_OBJS) \
 	$(REF_GL_GLX_OBJS)
-#	$(REF_GL_FXMESA_OBJS) \
-#	$(REF_SOFT_SVGA_OBJS) \
