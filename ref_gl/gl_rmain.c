@@ -1289,26 +1289,6 @@ int R_Init( void *hinstance, void *hWnd )
 		ri.Con_Printf( PRINT_ALL, "...GL_EXT_point_parameters not found\n" );
 	}
 
-#ifdef __linux__
-	if ( strstr( gl_config.extensions_string, "3DFX_set_global_palette" ))
-	{
-		if ( gl_ext_palettedtexture->value )
-		{
-			ri.Con_Printf( PRINT_ALL, "...using 3DFX_set_global_palette\n" );
-			qgl3DfxSetPaletteEXT = ( void ( APIENTRY * ) (GLuint *) )qwglGetProcAddress( "gl3DfxSetPaletteEXT" );
-			qglColorTableEXT = Fake_glColorTableEXT;
-		}
-		else
-		{
-			ri.Con_Printf( PRINT_ALL, "...ignoring 3DFX_set_global_palette\n" );
-		}
-	}
-	else
-	{
-		ri.Con_Printf( PRINT_ALL, "...3DFX_set_global_palette not found\n" );
-	}
-#endif
-
 	if ( !qglColorTableEXT &&
 		strstr( gl_config.extensions_string, "GL_EXT_paletted_texture" ) &&
 		strstr( gl_config.extensions_string, "GL_EXT_shared_texture_palette" ) )
