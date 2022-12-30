@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "fx.h"
 #include "q_typedef.h"
 #include "m_spreadermist.h"
@@ -47,7 +52,7 @@ void GenericRadiusDamageEntThink(edict_t *self)
 			}
 		}
 	}
-	
+
 	T_DamageRadius(self, self->owner, self->owner, self->dmg_radius, self->dmg, 1, self->bloodType,MOD_DIED);
 
 	self->dmg_radius -= self->speed;
@@ -95,24 +100,24 @@ edict_t *RadiusDamageEnt(	edict_t *posowner,//for position
 	self->classname = "plague_mist";
 
 	self->air_finished = level.time + lifetime;//when to die out
-	
+
 	if(thinkIncrement<=0)
 		self->wait = 0.1;//default to 10 fps
 	else
 		self->wait = thinkIncrement;//how oftern to think
-	
+
 	self->think = GenericRadiusDamageEntThink;//what to do
 	self->nextthink = level.time + self->wait;//next think
-	
+
 	self->activator = posowner;//for offsetting
 	if(attach)
 	{
 		vec3_t	forward, right, up;
 
 		AngleVectors(self->activator->s.angles, forward, right, up);
-		
+
 		VectorCopy(offset, self->v_angle_ofs);// where to keep me- offset in {f, r, u}
-		
+
 		VectorMA(self->activator->s.origin, self->v_angle_ofs[0], forward, self->s.origin);
 		VectorMA(self->s.origin, self->v_angle_ofs[1], right, self->s.origin);
 		VectorMA(self->s.origin, self->v_angle_ofs[2], up, self->s.origin);
@@ -132,7 +137,7 @@ edict_t *RadiusDamageEnt(	edict_t *posowner,//for position
 
 /*-------------------------------------------------------------------------
 	spreader_grenade_explode
--------------------------------------------------------------------------*/	
+-------------------------------------------------------------------------*/
 
 static void spreader_grenade_explode (edict_t *self)
 {
@@ -142,14 +147,14 @@ static void spreader_grenade_explode (edict_t *self)
 
 	self->dmg = 1;
 	VectorMA (self->s.origin, -0.02, self->velocity, origin);
-	gi.CreateEffect(NULL, FX_PLAGUEMISTEXPLODE, 0, origin, "b", 3500 / 50);	
+	gi.CreateEffect(NULL, FX_PLAGUEMISTEXPLODE, 0, origin, "b", 3500 / 50);
 	self->nextthink = level.time + 0.2;
 	self->monsterinfo.thinkinc = 0.2;
 	self->think = spreader_grenade_think;
 	gi.sound(self, CHAN_AUTO, classStatics[CID_SPREADER].resInfo->sounds[SND_BOMB],
 		1, ATTN_IDLE, 0);
 	PauseTime(self, SPREADER_GRENADE_TIME);
-	
+
 	self->bounced = NULL;
 	self->isBlocked = NULL;
 //	self->think = G_FreeEdict;
@@ -171,7 +176,7 @@ static void spreader_grenade_think(edict_t *self)
 {
 	edict_t *ent;
 	vec3_t temp;
-	
+
 	self->movetype = PHYSICSTYPE_NONE;
 	self->solid = SOLID_NOT;
 
@@ -183,18 +188,18 @@ static void spreader_grenade_think(edict_t *self)
 	{
 		ent = NULL;
 		while ((ent = findradius(ent, self->s.origin, self->dmg_radius)) != NULL)
-		{			
+		{
 			VectorCopy(ent->s.origin, temp);
 			temp[2] += 5;
 			if(!Q_stricmp(ent->classname, "monster_spreader"))
 				continue;
-			
+
 			if(!gi.inPVS(self->s.origin, ent->s.origin))
 				continue;
 
 			T_Damage(ent,self, self->owner, temp, self->s.origin, vec3_origin,self->dmg,
 					(int)0, DAMAGE_NO_BLOOD|DAMAGE_NO_KNOCKBACK|DAMAGE_ALIVE_ONLY|DAMAGE_AVOID_ARMOR,MOD_DIED);
-		}	
+		}
 	}
 
 	self->nextthink = level.time + FRAMETIME;
@@ -210,7 +215,7 @@ static void spreader_grenade_bounce ( edict_t *self, struct trace_s *trace )
 		VectorNormalize(vel);
 		VectorScale(vel, 100, vel);
 
-		vel[0] += flrand(-100, 100); 
+		vel[0] += flrand(-100, 100);
 		vel[1] += flrand(-100, 100);
 		vel[2] = flrand(10, 100);
 
@@ -241,7 +246,7 @@ static void spreader_grenade_bounce ( edict_t *self, struct trace_s *trace )
 /*-------------------------------------------------------------------------
 	spreader_grenade_touch
 -------------------------------------------------------------------------*/
-static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *plane, 
+static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *plane,
 							csurface_t *surf)
 {
 	vec3_t	vel;
@@ -253,13 +258,13 @@ static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *pla
 	{
 		G_FreeEdict (self);
 		return;
-	}		
+	}
 
 	VectorCopy(self->velocity, vel);
 	VectorNormalize(vel);
 	VectorScale(vel, 100, vel);
 
-	vel[0] += flrand(-100, 100); 
+	vel[0] += flrand(-100, 100);
 	vel[1] += flrand(-100, 100);
 	vel[2] = flrand(10, 100);
 
@@ -283,7 +288,7 @@ static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *pla
 	gi.CreateEffect(&self->s, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, self->s.origin, "vb", vel, 50);
 
 	spreader_grenade_explode (self);
-	
+
 	self->touch = NULL;
 	self->bounced = NULL;
 	self->isBlocked = NULL;
@@ -306,28 +311,28 @@ void spreader_mist(edict_t *self, float x, float y, float z)
 		return;//fixme: actually prevent these anims
 
 	// Converts degrees to radians for use with trig and matrix functions
-	yaw = self->s.angles[YAW] * ANGLE_TO_RAD;	
+	yaw = self->s.angles[YAW] * ANGLE_TO_RAD;
 
 	// Sets offset presuming yaw of zero
-	VectorSet(offset, x, y, z);		
+	VectorSet(offset, x, y, z);
 
 	// Creates a rotation matrix to rotate the point about the z axis
-	CreateYawMatrix(mat, yaw);		
+	CreateYawMatrix(mat, yaw);
 
 	// Rotates point about local z axis
-	Matrix3MultByVec3(mat, offset, rotoffset);	
+	Matrix3MultByVec3(mat, offset, rotoffset);
 
 	// Get normalized offset
-	VectorCopy(rotoffset, normalized);	
+	VectorCopy(rotoffset, normalized);
 	normalized[2] = 0.0F;
 	VectorNormalize(normalized);
 
 	// Add offset to owners origin
-	Vec3AddAssign(self->s.origin, rotoffset);	
+	Vec3AddAssign(self->s.origin, rotoffset);
 
 	// Get direction vector scaled by speed
-	VectorSet(velocity, cos(yaw) * 200.0F, sin(yaw) * 200.0F, 0);	
-		
+	VectorSet(velocity, cos(yaw) * 200.0F, sin(yaw) * 200.0F, 0);
+
 	gi.CreateEffect(NULL, FX_PLAGUEMIST, 0, rotoffset, "vb", velocity, 2050 / 50);
 
 	// create the volume effect for the damage
@@ -358,32 +363,32 @@ void spreader_mist_fast(edict_t *self, float x, float y, float z)
 	matrix3_t	mat;
 
 	// Converts degrees to radians for use with trig and matrix functions
-	yaw = self->s.angles[YAW] * ANGLE_TO_RAD;	
+	yaw = self->s.angles[YAW] * ANGLE_TO_RAD;
 
 	// Sets offset presuming yaw of zero
-	VectorSet(offset, x, y, z);		
+	VectorSet(offset, x, y, z);
 
 	// Creates a rotation matrix to rotate the point about the z axis
-	CreateYawMatrix(mat, yaw);		
+	CreateYawMatrix(mat, yaw);
 
 	// Rotates point about local z axis
-	Matrix3MultByVec3(mat, offset, rotoffset);	
+	Matrix3MultByVec3(mat, offset, rotoffset);
 
 	// Get normalized offset
-	VectorCopy(rotoffset, normalized);	
+	VectorCopy(rotoffset, normalized);
 	normalized[2] = 0.0F;
 	VectorNormalize(normalized);
 
 	// Add offset to owners origin
-	Vec3AddAssign(self->s.origin, rotoffset);	
+	Vec3AddAssign(self->s.origin, rotoffset);
 
 	// Get direction vector scaled by speed
-	VectorSet(velocity, cos(yaw) * 300.0F, sin(yaw) * 300.0F, 0);	
-		
+	VectorSet(velocity, cos(yaw) * 300.0F, sin(yaw) * 300.0F, 0);
+
 	gi.CreateEffect(NULL, FX_PLAGUEMIST, 0, rotoffset, "vb", velocity, 2050 / 50);
 
 	// create the volume effect for the damage
-	
+
 	//FIXME: Skill modifier here
 	RadiusDamageEnt(self,//owner
 					self,//damage-owner
@@ -400,10 +405,10 @@ void spreader_mist_fast(edict_t *self, float x, float y, float z)
 }
 
 /*-------------------------------------------------------------------------
-	spreader_toss_grenade -- this is where the grenade actually gets to 
-	come to life and become; sorry about the confusion between this and 
-	spreader_throw().  This is a "think func" for the 
-	spreader_move_attack1 animmove_t 
+	spreader_toss_grenade -- this is where the grenade actually gets to
+	come to life and become; sorry about the confusion between this and
+	spreader_throw().  This is a "think func" for the
+	spreader_move_attack1 animmove_t
 -------------------------------------------------------------------------*/
 void spreader_toss_grenade(edict_t *self) //self is the tosser
 {
@@ -416,7 +421,7 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	vec3_t	v;
 	vec3_t	predPos;
 	float	distance;
-	
+
 	if(self->monsterinfo.aiflags & AI_NO_MISSILE)
 		return;//fixme: actually prevent these anims
 
@@ -438,10 +443,10 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 
 	VectorScale (aim, distance, grenade->velocity);
 	VectorMA (grenade->velocity, flrand(100.0F, 125.0F), up, grenade->velocity);
-	
+
 	//FIXME: Difficulty modifier here
 	VectorMA (grenade->velocity, flrand(-10.0F, 10.0F), right, grenade->velocity);
-	
+
 	VectorSet (grenade->avelocity, flrand(300,600), flrand(300,600), flrand(300,600));
 
 	grenade->movetype = PHYSICSTYPE_STEP;
@@ -461,12 +466,12 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	//grenade->isBlocked = spreader_grenade_blocked;
 	//grenade->think = spreader_grenade_explode;
 	grenade->dmg = SPREADER_GRENADE_DAMAGE;
-	
+
 	//FIXME: difficulty modifier here
 	grenade->dmg_radius = SPREADER_GRENADE_RADIUS;
 	grenade->classname = "spreader_grenade";
 
 	grenade->s.effects |= EF_CAMERA_NO_CLIP;
-	gi.linkentity (grenade);	
+	gi.linkentity (grenade);
 }
 

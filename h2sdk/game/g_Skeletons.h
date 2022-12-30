@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef G_SKELETON_H
 #define G_SKELETON_H
 #include "g_Skeleton.h"

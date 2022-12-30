@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef G_EDICT_H
 #define G_EDICT_H
 
@@ -56,7 +61,7 @@ struct edict_s
 
 	solid_t				solid;
 	int					clipmask;
-	
+
 	edict_t				*owner;
 
 	vec3_t				mins, maxs;
@@ -109,14 +114,14 @@ struct edict_s
 	// Used to indicate teams, (a way to group things).
 
 	char				*team;			// Team name.
-	
+
 	union {
 	edict_t				*teamchain;
 	edict_t				*targetEnt;
 	edict_t				*slavechain;
 	edict_t				*rope_grab;		//Used to by the rope to hold the part of the rope which the player is holding
 	};
-	
+
 	union {
 	edict_t				*guidemaster;
 	edict_t				*teammaster;
@@ -127,19 +132,19 @@ struct edict_s
 	// Fields used by only one class of game entity (monster, player, poly, trigger, etc).
 
 	char				*model;			// Model name, which could instead be stored in
-	
+
 	char				*message;		// index to message_text for printing and wave files
 
 	char				*text_msg;		// Text printed to con for door, polys, triggers, etc.
-								
+
 	// These really all could be changed to ints or hashed or something (currently, we do a search
 	// on all the active edicts using strcmps). We should be able to assign indexes in the BSP, by
 	// doing the string strcmps at BSP time. The player seem to use any of the target stuff.
 
 	char				*target;		// Name of the entity's target.
 	char				*targetname;	// What other entities use to target-lock this entity.
-	char				*scripttarget; 
-	char				*killtarget;	// Used only in G_UseTargets, which fires all 
+	char				*scripttarget;
+	char				*killtarget;	// Used only in G_UseTargets, which fires all
 										// of its targets.
 	char				*pathtarget;	// Used by trains, also used by monsters in some
 										// way as well.
@@ -156,7 +161,7 @@ struct edict_s
 	union {
 	edict_t				*target_ent;	// Used by player, trains, and turrets. Monsters
 										// should be able to use this for current target as well.
-	edict_t				*slave;	
+	edict_t				*slave;
 	edict_t				*rope_end;		//Used by the rope to store the rope end entity
 	};
 
@@ -181,7 +186,7 @@ struct edict_s
 	// Used by just about every type of entity.
 
 	void				(*use)(edict_t *self, edict_t *other, edict_t *activator);
-								
+
 	int					health;			// Used by anything that can be destroyed.
 	int					max_health;		// Used by anything that can be destroyed.
 	int					bloodType;		// type of stuff to spawn off when hit
@@ -204,12 +209,12 @@ struct edict_s
 	int					viewheight;		// height above origin where eyesight is determined
 										// used by anything which can "see", player and monsters
 	float				reflected_time;	// used by objects to tell if they've been repulsed by something..
-	
+
 	// Except for a DAMAGE_AIM value in the turret and one commented out in the player this looks
 	// like a flag indicating if it takes damage anyone ever heard of using a bit for a flag, or
 	// even better a whole bunch of flags in an 'int'.
 
-	int					takedamage;	
+	int					takedamage;
 
 	// Unless something will do both normal and radius damage, we only need one field. In fact we
 	// may want to move this into class statics or something.
@@ -218,7 +223,7 @@ struct edict_s
 	float				dmg_radius;		// the radius of damage.
 
 	int					sounds;			// used by a trigger and a splash, could be a class static
-	
+
 	union {
 	int					count;			// used by polys, triggers, and items.
 	int					curr_model;		// used by player during cinematics
@@ -240,7 +245,7 @@ struct edict_s
 	edict_t				*last_buoyed_enemy;		// used by monsters.
 
 	int					noise_index;	// Used only by targets
-	
+
 	float				volume;			// used only by target_speaker
 
 	union {
@@ -279,11 +284,11 @@ struct edict_s
 
 	vec3_t				velocity;			// linear velocity
 	vec3_t				avelocity;			// angular velocity
-	vec3_t				knockbackvel;		
+	vec3_t				knockbackvel;
 
 	// Used for determining effects of liquids in the environment.
 
-	float				speed;			
+	float				speed;
 	int					watertype;		// Used to indicate current liquid actor is in.
 	int					waterlevel;		// Used by monsters and players and grenades.
 
@@ -305,11 +310,11 @@ struct edict_s
 	// Used by monsters and player.
 
 	int 				(*pain)(edict_t *self, edict_t *other, float kick, int damage);
-								
+
 	// Used by monsters, player, and some polys.
 
 	int  				(*die)(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
-								
+
 	// used by the Morph Ovum
 
 	void				(*oldthink)(edict_t *self);
@@ -333,7 +338,7 @@ struct edict_s
 	float				impact_debounce_time;	// impact damage debounce time
 
 	float				fire_damage_time;		// fire damage length
-	float				fire_timestamp;			// timestamp weapons and damaged entities, 
+	float				fire_timestamp;			// timestamp weapons and damaged entities,
 												//		so that the same weapon can't hurt an entity twice
 
 	// Used by shrines
@@ -371,7 +376,7 @@ struct edict_s
 	byte				mintel;			//number of buoys allowed to follow
 
 	char				*target2;
-	
+
 	vec3_t				last_org;
 
 	//next 4 in a table in m_stats

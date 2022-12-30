@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_DefaultMessageHandler.h"
 #include "g_Physics.h"
 #include "g_local.h"
@@ -8,25 +13,25 @@
 G_MsgReceiver_t DefaultMessageReceivers[NUM_MESSAGES] =
 {
 	NULL,								// MSG_STAND
-	NULL,								// MSG_CROUCH  
+	NULL,								// MSG_CROUCH
 	NULL,								// MSG_DUCKDOWN,
 	NULL,								// MSG_DUCKHOLD,
 	NULL,								// MSG_DUCKUP,
-	NULL,								// MSG_WALK    
-	NULL,								// MSG_RUN      
-	NULL,								// MSG_JUMP     
-	NULL,								// MSG_MELEE    
-	NULL,								// MSG_MISSILE  
-	NULL,								// MSG_WATCH    
-	NULL,								// MSG_EAT      
-	NULL,								// MSG_PAIN     
-	NULL,								// MSG_DEATH    
-	NULL,								// MSG_FLY      
-	NULL,								// MSG_FLYBACK  
-	NULL,								// MSG_HOVER    
-	NULL,								// MSG_FLEE     
+	NULL,								// MSG_WALK
+	NULL,								// MSG_RUN
+	NULL,								// MSG_JUMP
+	NULL,								// MSG_MELEE
+	NULL,								// MSG_MISSILE
+	NULL,								// MSG_WATCH
+	NULL,								// MSG_EAT
+	NULL,								// MSG_PAIN
+	NULL,								// MSG_DEATH
+	NULL,								// MSG_FLY
+	NULL,								// MSG_FLYBACK
+	NULL,								// MSG_HOVER
+	NULL,								// MSG_FLEE
 	NULL,								// MSG_FLYATTACK
-	DefaultReceiver_Repulse,			// MSG_REPULSE  
+	DefaultReceiver_Repulse,			// MSG_REPULSE
 	NULL,								// MSG_IDLE,
 	NULL,								// MSG_TOUCH,
 	NULL,								// MSG_FALLBACK,
@@ -115,7 +120,7 @@ void DefaultReceiver_SetAnim(edict_t *self, G_Message_t *msg)
 void DefaultReceiver_RemoveSelf(edict_t *self, G_Message_t *msg)
 {
 	self->think = G_FreeEdict;
-	
+
 	self->nextthink = 0;
 }
 

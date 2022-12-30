@@ -1,4 +1,8 @@
-
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // Top 2 bits are used for level of message
 #define MESSAGE_MASK	0x1fff
 
@@ -319,7 +323,7 @@ typedef enum
 
 	// Always keep these last to test alignment
 	GM_HELP1					= 331,
-	GM_HELP2					
+	GM_HELP2
 } GameMsg_t;
 
 

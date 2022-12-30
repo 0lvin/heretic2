@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 
@@ -94,7 +99,7 @@ void remove_non_cinematic_entites(edict_t *owner)
 			break;
 		if (!owner || (ent->owner && (ent->owner == owner)))
 		{
-			// kill the sphere grow sound 
+			// kill the sphere grow sound
 			gi.sound(ent, CHAN_WEAPON, gi.soundindex("misc/null.wav"), 1, ATTN_NORM,0);
 			// remove the entity
 			G_SetToFree(ent);
@@ -117,7 +122,7 @@ void remove_non_cinematic_entites(edict_t *owner)
 				gi.RemoveEffects(&ent->owner->s, FX_SPELL_METEORBARRIER+ent->health);
 				ent->PersistantCFX = 0;
 			}
-			// kill the meteorbarrier ambient sound 
+			// kill the meteorbarrier ambient sound
 			ent->owner->client->Meteors[ent->health] = NULL;
 
 			// now we've been cast, remove us from the count of meteors the caster owns, and turn off his looping sound if need be
@@ -211,7 +216,7 @@ void reinstate_non_cinematic_entites(edict_t *owner)
 
 			if (ent->client->playerinfo.cin_shield_timer > ent->client->playerinfo.cinematic_starttime)
 			{
-				ent->client->playerinfo.shield_timer = 
+				ent->client->playerinfo.shield_timer =
 					ent->client->playerinfo.cin_shield_timer + level.time - ent->client->playerinfo.cinematic_starttime;
 				ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_SPELL_LIGHTNINGSHIELD, CEF_OWNERS_ORIGIN|CEF_BROADCAST, NULL, "");
 			}
@@ -230,7 +235,7 @@ void reinstate_non_cinematic_entites(edict_t *owner)
 			WritePlayerinfo_effects(ent);
 
 		}
-		
+
 		ent->client->playerinfo.c_mode = 0;	// Show cinematic mode is off
 		ent->s.modelindex = ent->curr_model;
 		ent->solid = SOLID_BBOX;
@@ -244,7 +249,7 @@ void GetEdictCenter(edict_t *self, vec3_t out)
 	Vec3AddAssign(self->s.origin, out);
 }
 
-float NormalizeAngle(float angle) 
+float NormalizeAngle(float angle)
 {
 #if	1
 	// Returns the remainder
@@ -267,12 +272,12 @@ float NormalizeAngle(float angle)
 	}
 
 	while (angle < -ANGLE_180)
-	{ 
+	{
 		angle += ANGLE_360;
 	}
 
 	while (angle >= ANGLE_180)
-	{ 
+	{
 		angle -= ANGLE_360;
 	}
 #endif
@@ -316,7 +321,7 @@ float AddNormalizedAngles(float angle1, float angle2)
 		}
 	}
 
-	return sum;	
+	return sum;
 }
 
 qboolean ok_to_autotarget(edict_t *shooter, edict_t *target)
@@ -347,13 +352,13 @@ qboolean ok_to_autotarget(edict_t *shooter, edict_t *target)
 		if(target->client && ((int)dmflags->value & DF_HURT_FRIENDS))
 			return(true);
 		else
-		if((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET))) 
+		if((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET)))
 			return(false);
 	}
 	else
 	{
 		// Find just monsters in single player / coop. - unless the hurt friends flag is set
-		if((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET))) 
+		if((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET)))
 			return(false);
 	}
 
@@ -395,7 +400,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 	assert(nearDist>=0.0);
 
 	if(LOSStartPos)
-	{	
+	{
 		if(!BBMin)
 			VectorClear(_BBMin);
 		else
@@ -463,7 +468,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 					// skip to the next entity.
 
 					if(LOSStartPos)
-					{	
+					{
 						if(gi.inPVS(LOSStartPos, TempVec))
 						{//cheaper than a trace
 							gi.trace(LOSStartPos,				// Start pos.
@@ -541,7 +546,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 	assert(nearDist>=0.0);
 
 	if(LOSStartPos)
-	{	
+	{
 		if(!BBMin)
 			VectorClear(_BBMin);
 		else
@@ -615,7 +620,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 					// skip to the next entity.
 
 					if(LOSStartPos)
-					{	
+					{
 							gi.trace(LOSStartPos,				// Start pos.
 										   _BBMin,					// Bounding box min.
 										   _BBMax,					// Bounding box max.
@@ -910,7 +915,7 @@ void GetAimVelocity(edict_t *enemy, vec3_t org, vec_t speed, vec3_t AimAngles, v
 			out[2] += enemy->maxs[2] /2;
 
 		Vec3AddAssign(enemy->s.origin, out);
-		Vec3SubtractAssign(org, out);																					
+		Vec3SubtractAssign(org, out);
 		VectorNormalize(out);
 	}
 	else
@@ -956,7 +961,7 @@ qboolean ThinkTime(edict_t *self)
 	}
 	// Need an epsilon value to account for floating point error
 	// The epsilon can be large because level.time goes up in increments of 0.1
-	if((self->nextthink - level.time) > TIME_EPSILON) 
+	if((self->nextthink - level.time) > TIME_EPSILON)
 	{
 		return(false);
 	}

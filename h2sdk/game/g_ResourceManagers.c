@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 void InitMsgMngr();
 void ReleaseMsgMngr();
 #if	G_NEW_SYSTEM

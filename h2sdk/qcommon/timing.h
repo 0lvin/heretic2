@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "H2Common.h"
 
 H2COMMON_API void TIMING_ResetCount();

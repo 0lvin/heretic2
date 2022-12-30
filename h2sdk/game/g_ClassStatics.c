@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #include "g_ClassStatics.h"
 
 G_ClassStatics_t	classStatics[NUM_CLASSIDS];
@@ -5,7 +11,7 @@ int					Cid_init[NUM_CLASSIDS];
 
 void RatStaticsInit();
 void GorgonStaticsInit();
-void PlagueElfStaticsInit(); 
+void PlagueElfStaticsInit();
 void GkrokonStaticsInit();
 void FishStaticsInit();
 void ObjectStaticsInit();
@@ -58,7 +64,7 @@ void Corvus7StaticsInit();
 void Corvus8StaticsInit();
 void Corvus9StaticsInit();
 
-void (*classStaticsInits[NUM_CLASSIDS])() = 
+void (*classStaticsInits[NUM_CLASSIDS])() =
 {
 	NULL,
 	RatStaticsInit,

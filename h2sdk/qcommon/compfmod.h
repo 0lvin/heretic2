@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef COMPFMOD_H
 #define COMPFMOD_H
 

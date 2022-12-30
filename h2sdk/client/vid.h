@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 // vid.h -- video driver defs
 
 #define	MIN_GAMMA	0.1			// These also need to be defined in gl_local.h
@@ -13,7 +19,7 @@ typedef struct vrect_s
 
 typedef struct
 {
-	int			 	width;		
+	int			 	width;
 	int				height;
 	byte			*pixels;
 } viddef_t;

@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "Client Effects.h"
 #include "Client Entities.h"
 #include "Particle.h"
@@ -19,10 +24,10 @@ qboolean PlayerFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 
 	if(owner->current.modelindex!=255)
 		return(false);
-	
+
 	// Enable all Corvus' reference points.
 
-	self->refMask |= CORVUS_MASK;	
+	self->refMask |= CORVUS_MASK;
 
 	EnableRefPoints(owner->referenceInfo, self->refMask);
 
@@ -58,7 +63,7 @@ void FXPlayerPersistant(centity_t *owner, int type, int flags, vec3_t origin)
 	flags |= CEF_NO_DRAW;
 
 	self = ClientEntity_new(type, flags, origin, NULL, 17);
-	
+
 	self->Update = NULL;
 	self->AddToView = PlayerFirstSeenInit;
 

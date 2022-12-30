@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "q_Typedef.h"
 
 typedef struct G_SkeletalJoint_s

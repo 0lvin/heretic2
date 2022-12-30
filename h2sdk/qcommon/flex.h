@@ -1,4 +1,9 @@
-// Generic flexible format 
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+// Generic flexible format
 
 typedef struct
 {

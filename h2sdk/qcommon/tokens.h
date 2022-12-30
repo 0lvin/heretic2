@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // tokens for config strings
 // sounds
 #define TOKEN_S_AMBIENT		254

@@ -1,7 +1,12 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 typedef enum AnimID_e
-{	
+{
 	ANIM_PAIN,
-	ANIM_STAND,	
+	ANIM_STAND,
 	NUM_ANIMS
 } AnimID_t;
 
@@ -15,7 +20,7 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t mother_move_pain; 
+extern animmove_t mother_move_pain;
 extern animmove_t mother_move_stand;
 
 void mother_pause (edict_t *self);

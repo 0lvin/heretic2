@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "EffectFlags.h"
 
 // ************************************************************************************************
@@ -9,10 +14,10 @@
 typedef enum FX_Types_e
 {	// NOTE We currently have 126 client effects, we cannot exceed 32768 - ha !! Like we'll ever reach that !
 	FX_REMOVE_EFFECTS=0,			// special fx type for removing client fx
-	FX_TEST,						
-	FX_EXPLOSION1,					
-	FX_EXPLOSION2,					
-	FX_SPLASH,						
+	FX_TEST,
+	FX_EXPLOSION1,
+	FX_EXPLOSION2,
+	FX_SPLASH,
 	FX_GIB_TRAIL,					//5
 	FX_BLOOD,
 	FX_BLOOD_TRAIL,
@@ -26,7 +31,7 @@ typedef enum FX_Types_e
 	FX_PICKUP_AMMO,					//15
 	FX_WEAPON_FLYINGFIST,
 	FX_WEAPON_FLYINGFISTEXPLODE,
-	FX_SPELL_BLUERING,				
+	FX_SPELL_BLUERING,
 	FX_SPELL_METEORBARRIER,			// there is a reason for this - we create 4 different persistant effects
 	FX_SPELL_METEORBARRIER1,		//20
 	FX_SPELL_METEORBARRIER2,
@@ -36,7 +41,7 @@ typedef enum FX_Types_e
 	FX_SPELL_LIGHTNINGSHIELD,		//25
 	FX_WEAPON_SPHERE,
 	FX_WEAPON_SPHEREGLOWBALLS,
-	FX_WEAPON_SPHEREEXPLODE, 
+	FX_WEAPON_SPHEREEXPLODE,
 	FX_WEAPON_SPHEREPOWER,
 	FX_WEAPON_SPHEREPLAYEREXPLODE, 	//30
 	FX_WEAPON_MAGICMISSILE,
@@ -44,12 +49,12 @@ typedef enum FX_Types_e
 	FX_WEAPON_BLAST,
 	FX_WEAPON_REDRAINMISSILE,
 	FX_WEAPON_REDRAIN,				//35
-	FX_WEAPON_REDRAINGLOW, 		   
+	FX_WEAPON_REDRAINGLOW,
 	FX_WEAPON_MACEBALL,
 	FX_WEAPON_MACEBALLBOUNCE,
-	FX_WEAPON_MACEBALLEXPLODE, 
+	FX_WEAPON_MACEBALLEXPLODE,
 	FX_WEAPON_PHOENIXMISSILE,		//40
-	FX_WEAPON_PHOENIXEXPLODE, 
+	FX_WEAPON_PHOENIXEXPLODE,
 	FX_SPELL_MORPHMISSILE,
 	FX_SPELL_MORPHMISSILE_INITIAL,
 	FX_SPELL_MORPHEXPLODE,
@@ -57,27 +62,27 @@ typedef enum FX_Types_e
 	FX_WEAPON_FIREWAVEWORM,
 	FX_WEAPON_FIREBURST,
 	FX_WEAPON_RIPPEREXPLODE,
-	FX_WATER_ENTRYSPLASH,				                  
-	FX_WATER_RIPPLES,				//50	                  
-	FX_WATER_WAKE,						                  
+	FX_WATER_ENTRYSPLASH,
+	FX_WATER_RIPPLES,				//50
+	FX_WATER_WAKE,
 	FX_BUBBLER,
-	FX_SCORCHMARK,						                  
-	FX_DEBRIS,							                  
-	FX_FLESH_DEBRIS,				//55			                  
-	FX_SHADOW,							                  
-	FX_ANIMATE,							  
-	FX_FOUNTAIN,						  
-	FX_WATERFALLBASE,						  
-	FX_DRIPPER,						//60	                  
-	FX_MIST,							                  
-	FX_PLAGUEMIST,						                  
-	FX_PLAGUEMISTEXPLODE,				                  
-	FX_SPELLHANDS,						                  
-	FX_LENSFLARE,					//65	                  
-	FX_STAFF,							                  
-	FX_SPOO,							                  
-	FX_HALO,							  
-	FX_REMOTE_CAMERA,				
+	FX_SCORCHMARK,
+	FX_DEBRIS,
+	FX_FLESH_DEBRIS,				//55
+	FX_SHADOW,
+	FX_ANIMATE,
+	FX_FOUNTAIN,
+	FX_WATERFALLBASE,
+	FX_DRIPPER,						//60
+	FX_MIST,
+	FX_PLAGUEMIST,
+	FX_PLAGUEMISTEXPLODE,
+	FX_SPELLHANDS,
+	FX_LENSFLARE,					//65
+	FX_STAFF,
+	FX_SPOO,
+	FX_HALO,
+	FX_REMOTE_CAMERA,
 	FX_WEAPON_HELLBOLT,				//70
 	FX_WEAPON_HELLBOLTEXPLODE,
 	FX_WEAPON_HELLSTAFF_POWER,
@@ -94,7 +99,7 @@ typedef enum FX_Types_e
 	FX_DUST,
 	FX_ENVSMOKE,
 	FX_SPOO_SPLAT,					//85
-	FX_BODYPART,	
+	FX_BODYPART,
 	FX_PLAYER_TELEPORT_OUT,
 	FX_PLAYER_PERSISTANT,
 	FX_PLAYER_TORCH,
@@ -134,9 +139,9 @@ typedef enum FX_Types_e
 	FX_MAGIC_PORTAL,
 	FX_TB_EFFECTS,
 	FX_TEST_BBOX,					//125
-	FX_THROWWEAPON,	
-	FX_SSITHRA_ARROW,	
-	FX_PE_SPELL,	
+	FX_THROWWEAPON,
+	FX_SSITHRA_ARROW,
+	FX_PE_SPELL,
 	FX_LIGHTNING_HIT,
 	FX_FOOTSTEP,					//130
 	FX_FALLSHORT,
@@ -149,10 +154,10 @@ typedef enum FX_Types_e
 	FX_TORNADO,
 	FX_TORNADO_BALL,
 	FX_TORNADO_BALL_EXPLODE,		//140
-	FX_FOOT_TRAIL,					
+	FX_FOOT_TRAIL,
 	FX_BLOCK_SPARKS,
 	FX_CROSSHAIR,
-	
+
 	NUM_FX,
 
 	// not spawnable in the Game DLL,
@@ -195,7 +200,7 @@ typedef enum MaterialID_e
 	MAT_STONE,			// 0
 	MAT_GREYSTONE,		// 1
 	MAT_CLOTH,			// 2
-	MAT_METAL,			// 3 
+	MAT_METAL,			// 3
 	MAT_FLESH,			// 4
 	MAT_POTTERY,		// 5
 	MAT_GLASS,			// 6
@@ -230,7 +235,7 @@ enum
 #define SPELLHANDS_SHIFT		16
 #define SPELLHANDS_MASK_COLOUR	0x00ff0000
 #define SPELLHANDS_MASK_REFPTS	0x0000ffff
-		
+
 // ************************************************************************************************
 // All this crap below is to be pulled out at some point REAL soon.
 // ************************************************************************************************

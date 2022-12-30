@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 #include "FX.h"
 #include "Random.h"
@@ -25,7 +30,7 @@ void target_explosion_explode (edict_t *self)
 
 	gi.CreateEffect(NULL, FX_EXPLOSION1, 0, self->s.origin, NULL);
 
-	T_DamageRadius(self, self->activator, NULL, self->dmg+40, 
+	T_DamageRadius(self, self->activator, NULL, self->dmg+40,
 					self->dmg, self->dmg/4, DAMAGE_NORMAL,MOD_DIED);
 
 	save = self->delay;
@@ -65,7 +70,7 @@ map - the map to change to
 
 newmap is the map the player is changing to
 $ - has to be there
-target is the targetname of the info_player_start to go to. 
+target is the targetname of the info_player_start to go to.
 
 If an info_player_start is not given a random one on the level is chosen
 
@@ -97,7 +102,7 @@ void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
 	}
 
 	// if going to a new unit, clear cross triggers
-	if (strstr(self->map, "*"))	
+	if (strstr(self->map, "*"))
 		game.serverflags &= ~(SFL_CROSS_TRIGGER_MASK);
 
 	gi.dprintf("***\n*** Unit complete. ***\n***\n");
@@ -138,10 +143,10 @@ Set "sounds" to one of the following:
 
 void use_target_splash (edict_t *self, edict_t *other, edict_t *activator)
 {
-	gi.CreateEffect(NULL, FX_SPLASH, 0, self->s.origin, "b", self->count); 
+	gi.CreateEffect(NULL, FX_SPLASH, 0, self->s.origin, "b", self->count);
 
 	if (self->dmg)
-		T_DamageRadius(self, activator, NULL, self->dmg+40, 
+		T_DamageRadius(self, activator, NULL, self->dmg+40,
 						self->dmg, self->dmg/4, DAMAGE_NORMAL,MOD_DIED);
 }
 

@@ -1,4 +1,8 @@
-
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 int		CDAudio_Init(void);
 void	CDAudio_Shutdown(void);
 void	CDAudio_Play(int track, qboolean looping);

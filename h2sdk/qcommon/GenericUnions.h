@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef GENERICUNIONS_H
 #define GENERICUNIONS_H
 

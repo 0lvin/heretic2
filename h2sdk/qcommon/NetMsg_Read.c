@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "qcommon.h"
 #include "assert.h"
 #include "vector.h"
@@ -15,48 +20,48 @@ void MSG_BeginReading (sizebuf_t *msg)
 int MSG_ReadChar (sizebuf_t *msg_read)
 {
 	int	c;
-	
+
 	if (msg_read->readcount+1 > msg_read->cursize)
 		c = -1;
 	else
 		c = (signed char)msg_read->data[msg_read->readcount];
 	msg_read->readcount++;
-	
+
 	return c;
 }
 
 int MSG_ReadByte (sizebuf_t *msg_read)
 {
 	int	c;
-	
+
 	if (msg_read->readcount+1 > msg_read->cursize)
 		c = -1;
 	else
 		c = (unsigned char)msg_read->data[msg_read->readcount];
 	msg_read->readcount++;
-	
+
 	return c;
 }
 
 int MSG_ReadShort (sizebuf_t *msg_read)
 {
 	int	c;
-	
+
 	if (msg_read->readcount+2 > msg_read->cursize)
 		c = -1;
-	else		
+	else
 		c = (short)(msg_read->data[msg_read->readcount]
 		+ (msg_read->data[msg_read->readcount+1]<<8));
-	
+
 	msg_read->readcount += 2;
-	
+
 	return c;
 }
 
 int MSG_ReadLong (sizebuf_t *msg_read)
 {
 	int	c;
-	
+
 	if (msg_read->readcount+4 > msg_read->cursize)
 		c = -1;
 	else
@@ -64,9 +69,9 @@ int MSG_ReadLong (sizebuf_t *msg_read)
 		+ (msg_read->data[msg_read->readcount+1]<<8)
 		+ (msg_read->data[msg_read->readcount+2]<<16)
 		+ (msg_read->data[msg_read->readcount+3]<<24);
-	
+
 	msg_read->readcount += 4;
-	
+
 	return c;
 }
 
@@ -78,7 +83,7 @@ float MSG_ReadFloat (sizebuf_t *msg_read)
 		float	f;
 		int	l;
 	} dat;
-	
+
 	if (msg_read->readcount+4 > msg_read->cursize)
 	{
 		assert(0);
@@ -92,17 +97,17 @@ float MSG_ReadFloat (sizebuf_t *msg_read)
 		dat.b[3] =	msg_read->data[msg_read->readcount+3];
 	}
 	msg_read->readcount += 4;
-	
+
 	dat.l = LittleLong (dat.l);
 
-	return dat.f;	
+	return dat.f;
 }
 
 char *MSG_ReadString (sizebuf_t *msg_read)
 {
 	static char	string[2048];
 	int		l,c;
-	
+
 	l = 0;
 	do
 	{
@@ -112,9 +117,9 @@ char *MSG_ReadString (sizebuf_t *msg_read)
 		string[l] = c;
 		l++;
 	} while (l < sizeof(string)-1);
-	
+
 	string[l] = 0;
-	
+
 	return string;
 }
 
@@ -122,7 +127,7 @@ char *MSG_ReadStringLine (sizebuf_t *msg_read)
 {
 	static char	string[2048];
 	int		l,c;
-	
+
 	l = 0;
 	do
 	{
@@ -132,9 +137,9 @@ char *MSG_ReadStringLine (sizebuf_t *msg_read)
 		string[l] = c;
 		l++;
 	} while (l < sizeof(string)-1);
-	
+
 	string[l] = 0;
-	
+
 	return string;
 }
 
@@ -174,9 +179,9 @@ void MSG_ReadDeltaUsercmd (sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move
 	// Read delta bits.
 
 	bits=MSG_ReadShort(msg_read);
-		
+
 	// Read angles.
-	
+
 	if (bits & CM_ANGLE1)
 		move->angles[0] = MSG_ReadShort (msg_read);
 	if (bits & CM_ANGLE2)
@@ -185,7 +190,7 @@ void MSG_ReadDeltaUsercmd (sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move
 		move->angles[2] = MSG_ReadShort (msg_read);
 
 	// Read aimangles.
-	
+
 	if (bits & CM_AIMANGLE1)
 		move->aimangles[0] = MSG_ReadShort (msg_read);
 	if (bits & CM_AIMANGLE2)
@@ -210,16 +215,16 @@ void MSG_ReadDeltaUsercmd (sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move
 		move->camera_viewangles[1] = MSG_ReadShort (msg_read);
 	if (bits & CM_CAMERAVIEWANGLES3)
 		move->camera_viewangles[2] = MSG_ReadShort (msg_read);
-	
+
 	// Read movement.
-	
+
 	if (bits & CM_FORWARD)
 		move->forwardmove = MSG_ReadShort (msg_read);
 	if (bits & CM_SIDE)
 		move->sidemove = MSG_ReadShort (msg_read);
 	if (bits & CM_UP)
 		move->upmove = MSG_ReadShort (msg_read);
-	
+
 	// Read buttons.
 
 	if (bits & CM_BUTTONS)

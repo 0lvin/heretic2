@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef Q_TYPEDEF_H
 #define Q_TYPEDEF_H
 

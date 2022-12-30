@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef _G_TELEPORT_H_
 #define _G_TELEPORT_H_
 
@@ -16,7 +21,7 @@
 
 #define DEATHMATCH_RANDOM	2
 
-void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);			 
+void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 void SpellCastTeleport(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value);
 void CleanUpTeleport(edict_t *self);
 void Perform_Teleport(edict_t *self);

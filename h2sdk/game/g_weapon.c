@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // g_weapon.c - generic weapon handling code for all player weapons
 
 //#include "p_types.h"
@@ -66,7 +71,7 @@ static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJo
 	Matrix3FromAngles(LowerbackJointAngles,LowerRotationMatrix);
 
 	UpperbackJointAngles[PITCH]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,PITCH);
-	UpperbackJointAngles[YAW]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,YAW);	
+	UpperbackJointAngles[YAW]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,YAW);
 	UpperbackJointAngles[ROLL]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,ROLL);
 	Matrix3FromAngles(UpperbackJointAngles,UpperRotationMatrix);
 
@@ -94,12 +99,12 @@ static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJo
 
 	Matrix3MultByVec3(UpperRotationMatrix,StartPos,StartPos);
 	VectorAdd(StartPos,LowerJointToUpperJoint,StartPos);
-	
+
 	// Add in the contribution from the model's origin to the lower joint.
 
 	Matrix3MultByVec3(LowerRotationMatrix,StartPos,StartPos);
 	VectorAdd(OriginToLowerJoint,StartPos,StartPos);
-	
+
 	// Finally, add on the model's origin to give the correct start position for the flying-fist.
 
 	VectorAdd(StartPos,Caster->s.origin,StartPos);
@@ -155,7 +160,7 @@ vec3_t swordpositions[23] =
 	{	20,		0,		-48	},	// 22	spikedown8
 };
 
-int sworddamage[STAFF_LEVEL_MAX][2] = 
+int sworddamage[STAFF_LEVEL_MAX][2] =
 {	//	MIN		MAX
 	{	0,						0						},		// STAFF_LEVEL_NONE
 	{	SWORD_DMG_MIN,			SWORD_DMG_MAX			},		// STAFF_LEVEL_BASIC
@@ -231,7 +236,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 	if(level.fighting_beast)
 	{
 		edict_t *ent;
-		
+
 		if(ent = check_hit_beast(startpos, trace.endpos))
 			trace.ent = ent;
 	}
@@ -253,7 +258,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 					diffangles[YAW] += 360.0;
 				diffangles[PITCH] = hitangles[PITCH] - trace.ent->client->aimangles[PITCH];
 
-				if (diffangles[YAW] > -60.0 && 
+				if (diffangles[YAW] > -60.0 &&
 						diffangles[YAW] < 60.0 &&
 						diffangles[PITCH] > -45.0 &&
 						diffangles[PITCH] < 75.0)
@@ -463,7 +468,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 				}
 
 				T_Damage (trace.ent, Caster, Caster, fwd, trace.endpos, hitdir, damage, damage*4, dflags,MOD_STAFF);
-				
+
 				// If we hit a monster, stick a trail of blood on the staff...
 				if (trace.ent->svflags & SVF_MONSTER)
 				{
@@ -494,7 +499,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 									"db",
 									trace.plane.normal,
 									powerlevel);
-					
+
 					gi.sound(Caster,CHAN_AUTO,gi.soundindex("weapons/staffhit_2.wav"),1,ATTN_NORM,0);
 					break;
 
@@ -506,7 +511,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 									"db",
 									trace.plane.normal,
 									powerlevel);
-					
+
 					gi.sound(Caster,CHAN_AUTO,gi.soundindex("weapons/staffhit_3.wav"),1,ATTN_NORM,0);
 					break;
 				}
@@ -564,7 +569,7 @@ void WeaponThink_FlyingFist(edict_t *Caster,char *Format,...)
 	// Set up the Magic-missile's starting position and aiming angles then cast the spell.
 
 	Weapon_CalcStartPos(OriginToLowerJoint,OriginToUpperJoint,DefaultStartPos,StartPos,Caster);
-	
+
 	AngleVectors(Caster->client->aimangles,Forward,NULL,NULL);
 
 	StartPos[2] += Caster->viewheight - 14.0;
@@ -574,8 +579,8 @@ void WeaponThink_FlyingFist(edict_t *Caster,char *Format,...)
 	if (Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.weap_ammo_index] > 0)
 	{
 		if (!(deathmatch->value && ((int)dmflags->value & DF_INFINITE_MANA)))
-				Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.weap_ammo_index] -= 
-						Caster->client->playerinfo.pers.weapon->quantity;	
+				Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.weap_ammo_index] -=
+						Caster->client->playerinfo.pers.weapon->quantity;
 	}
 }
 
@@ -595,7 +600,7 @@ void WeaponThink_Maceballs(edict_t *caster, char *format,...)
 			fwd;
 
 	assert(caster->client);
-	
+
 	if (caster->client->playerinfo.powerup_timer > level.time)
 	{
 		// Set up the ball's starting position and aiming angles then cast the spell.
@@ -607,7 +612,7 @@ void WeaponThink_Maceballs(edict_t *caster, char *format,...)
 		SpellCastMaceball(caster, startpos, caster->client->aimangles, NULL, 0.0);
 		// Giant iron dooms require lotsa mana, but yer average ripper needs far less.
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index] -= 
+			caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index] -=
 					caster->client->playerinfo.pers.weapon->quantity * 2.0;
 	}
 	else
@@ -620,7 +625,7 @@ void WeaponThink_Maceballs(edict_t *caster, char *format,...)
 
 		SpellCastRipper(caster, startpos, caster->client->aimangles, NULL);
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index] -= 
+			caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index] -=
 					caster->client->playerinfo.pers.weapon->quantity;		// Un-powered
 	}
 }
@@ -665,7 +670,7 @@ void WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
 	DefaultStartPos[1] += MISSILE_SEP*missilepos;
 	Weapon_CalcStartPos(OriginToLowerJoint,OriginToUpperJoint,DefaultStartPos,StartPos,caster);
 	StartPos[2] += caster->viewheight - 14.0;
-	
+
 	VectorCopy(caster->client->aimangles, fireangles);
 	fireangles[YAW] += missilepos*MISSILE_YAW;
 	fireangles[PITCH] += missilepos*MISSILE_PITCH;
@@ -743,7 +748,7 @@ void WeaponThink_RedRainBow(edict_t *caster,char *Format,...)
 	VectorMA(caster->s.origin, 25.0F, Forward, StartPos);
 	VectorMA(StartPos, 6.0F, Right, StartPos);
 	StartPos[2] += caster->viewheight + 4.0;
-	
+
 	SpellCastRedRain(caster, StartPos, caster->client->aimangles, NULL, 0.0F);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
@@ -763,7 +768,7 @@ void WeaponThink_PhoenixBow(edict_t *caster,char *Format,...)
 	VectorMA(caster->s.origin, 25.0F, Forward, StartPos);
 	VectorMA(StartPos, 6.0F, Right, StartPos);
 	StartPos[2] += caster->viewheight + 4.0;
-	
+
 	SpellCastPhoenix(caster, StartPos, caster->client->aimangles, Forward, 0.0F);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))

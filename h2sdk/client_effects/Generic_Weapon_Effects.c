@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "Client Effects.h"
 #include "Client Entities.h"
 #include "Particle.h"
@@ -38,7 +43,7 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
    		TrailEnt=ClientEntity_new(Type, Flags & ~CEF_NO_DRAW, Origin, 0, 500);
 
    		TrailEnt->r.model = armorhit_models;
-   		
+
    		TrailEnt->r.spriteType = SPRITE_LINE;
 
    		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -54,7 +59,7 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
    		TrailEnt->r.color.a = 64 + irand(16, 128);
 
    		VectorRandomCopy(dir, TrailEnt->velocity, 1.0);
-   		
+
    		VectorCopy(Origin, TrailEnt->r.endpos);
    		VectorMA(TrailEnt->r.endpos, irand(6,8), TrailEnt->velocity, TrailEnt->r.startpos);
 

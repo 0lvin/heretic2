@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #ifndef FX_DUSTPUFF_H
 #define FX_DUSTPUFFS_H
 

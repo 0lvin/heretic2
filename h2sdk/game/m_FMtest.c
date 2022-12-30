@@ -1,8 +1,13 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 #include "Random.h"
 #include "vector.h"
 
-void MakeSolidObject(edict_t *ent, char *Model, float MinX, float MinY, float MinZ, 
+void MakeSolidObject(edict_t *ent, char *Model, float MinX, float MinY, float MinZ,
 					 float MaxX, float MaxY, float MaxZ)
 {
 	ent->movetype = PHYSICSTYPE_NONE;
@@ -54,19 +59,19 @@ void SP_misc_flag (edict_t *ent)
 	ent->nextthink = level.time + flrand(0.0F, 1.0F);
 
 /*	ent->s.fmnodeinfo[1].skin = 2;
-	
+
 	ent->s.fmnodeinfo[0].color.r = 255;
 	ent->s.fmnodeinfo[0].color.a = 120;
 	ent->s.fmnodeinfo[0].flags |= FMNI_USE_COLOR;
-	
+
 	ent->s.fmnodeinfo[1].color.g = 255;
 	ent->s.fmnodeinfo[1].color.a = 255;
 	ent->s.fmnodeinfo[1].flags |= FMNI_USE_COLOR;
-	
+
 	ent->s.fmnodeinfo[2].color.b = 255;
 	ent->s.fmnodeinfo[2].color.a = 200;
 	ent->s.fmnodeinfo[2].flags |= FMNI_USE_COLOR;
-	
+
 	ent->s.fmnodeinfo[3].color.r = 255;
 	ent->s.fmnodeinfo[3].color.g = 255;
 	ent->s.fmnodeinfo[3].color.a = 80;

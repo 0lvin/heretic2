@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // m_move.c -- monster movement
 
 #include "g_local.h"
@@ -23,7 +28,7 @@ qboolean M_CheckBottom (edict_t *ent)
 	trace_t	trace;
 	int		x, y;
 	float	mid, bottom;
-	
+
 	VectorAdd (ent->s.origin, ent->mins, mins);
 	VectorAdd (ent->s.origin, ent->maxs, maxs);
 
@@ -49,7 +54,7 @@ realcheck:
 // check it for real...
 //
 	start[2] = mins[2];
-	
+
 // the midpoint must be within 16 of the bottom
 	start[0] = stop[0] = (mins[0] + maxs[0])*0.5;
 	start[1] = stop[1] = (mins[1] + maxs[1])*0.5;
@@ -59,16 +64,16 @@ realcheck:
 	if (trace.fraction == 1.0)
 		return false;
 	mid = bottom = trace.endpos[2];
-	
-// the corners must be within 16 of the midpoint	
+
+// the corners must be within 16 of the midpoint
 	for	(x=0 ; x<=1 ; x++)
 		for	(y=0 ; y<=1 ; y++)
 		{
 			start[0] = stop[0] = x ? maxs[0] : mins[0];
 			start[1] = stop[1] = y ? maxs[1] : mins[1];
-			
+
 			gi.trace (start, vec3_origin, vec3_origin, stop, ent, MASK_MONSTERSOLID,&trace);
-			
+
 			if (trace.fraction != 1.0 && trace.endpos[2] > bottom)
 				bottom = trace.endpos[2];
 			if (trace.fraction == 1.0 || mid - trace.endpos[2] > STEPSIZE)
@@ -93,7 +98,7 @@ qboolean M_CheckTop (edict_t *ent)
 {
 	vec3_t	mins, maxs, start;
 	int		x, y;
-	
+
 	VectorAdd (ent->s.origin, ent->mins, mins);
 	VectorAdd (ent->s.origin, ent->maxs, maxs);
 
@@ -108,8 +113,8 @@ qboolean M_CheckTop (edict_t *ent)
 			start[1] = y ? maxs[1] : mins[1];
 			if (gi.pointcontents (start) == CONTENTS_SOLID)
 				return false;
-		}	
-	return true;		
+		}
+	return true;
 }
 
 /*
@@ -134,7 +139,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 	vec3_t		test;
 	int			contents;
 
-// try the move	
+// try the move
 	VectorCopy (ent->s.origin, oldorg);
 	VectorAdd (ent->s.origin, move, neworg);
 
@@ -176,7 +181,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 				}
 			}
 			gi.trace (ent->s.origin, ent->mins, ent->maxs, neworg, ent, MASK_MONSTERSOLID,&trace);
-	
+
 			// fly monsters don't enter water voluntarily
 			if (ent->flags & FL_FLY)
 			{
@@ -221,11 +226,11 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 				}
 				return true;
 			}
-			
+
 			if (!ent->enemy)
 				break;
 		}
-		
+
 		return false;
 	}
 
@@ -284,7 +289,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 				G_TouchTriggers (ent);
 			}
 //			ent->groundentity = NULL;
-//	SV_Printf ("fall down\n"); 
+//	SV_Printf ("fall down\n");
 			return true;
 		}
 		QPostMessage(ent, MSG_BLOCKED, PRI_DIRECTIVE, NULL);
@@ -293,7 +298,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 
 // check point traces down for dangling corners
 	VectorCopy (trace.endpos, ent->s.origin);
-	
+
 	if (!M_CheckBottom (ent))
 	{
 		if ( ent->flags & FL_PARTIALGROUND )
@@ -313,7 +318,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 
 	if ( ent->flags & FL_PARTIALGROUND )
 	{
-//		SV_Printf ("back on ground\n"); 
+//		SV_Printf ("back on ground\n");
 		ent->flags &= ~FL_PARTIALGROUND;
 	}
 	ent->groundentity = trace.ent;
@@ -343,7 +348,7 @@ float M_ChangeYaw (edict_t *ent)
 	float	current;
 	float	move;
 	float	speed;
-	
+
 	current = anglemod(ent->s.angles[YAW]);
 	ideal = ent->ideal_yaw;
 
@@ -372,7 +377,7 @@ float M_ChangeYaw (edict_t *ent)
 		if (move < -speed)
 			move = -speed;
 	}
-	
+
 	ent->s.angles[YAW] = anglemod (current + move);
 	return move;
 }
@@ -384,16 +389,16 @@ M_ChangePitch
 ===============
 */
 void M_ChangePitch (edict_t *ent)
-{	
+{
 	float	current;
-	float	move;	
-	
+	float	move;
+
 	current = anglemod(ent->s.angles[PITCH]);
-	
+
 	if (current == ent->ideal_pitch)
 		return;
 
-	move = ent->ideal_pitch - current;	
+	move = ent->ideal_pitch - current;
 	if (ent->ideal_pitch > current)
 	{
 		if (move >= 180)
@@ -405,7 +410,7 @@ void M_ChangePitch (edict_t *ent)
 			move = move + 360;
 	}
 	//FIXME do we need a pitchspeed?
-	
+
 	ent->s.angles[PITCH] = anglemod (current + move);
 }
 
@@ -424,10 +429,10 @@ qboolean SV_StepDirection (edict_t *ent, float yaw, float dist)
 {
 	vec3_t		move, oldorigin;
 	float		delta;
-	
+
 	ent->ideal_yaw = yaw;
 	M_ChangeYaw (ent);
-	
+
 	yaw = yaw*M_PI*2 / 360;
 	move[0] = cos(yaw)*dist;
 	move[1] = sin(yaw)*dist;
@@ -459,7 +464,7 @@ SV_FixCheckBottom
 void SV_FixCheckBottom (edict_t *ent)
 {
 //	SV_Printf ("SV_FixCheckBottom\n");
-	
+
 	ent->flags |= FL_PARTIALGROUND;
 }
 
@@ -507,7 +512,7 @@ void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 			tdir = d[2] == 90 ? 45 : 315;
 		else
 			tdir = d[2] == 90 ? 135 : 215;
-			
+
 		if (tdir != turnaround && SV_StepDirection(actor, tdir, dist))
 			return;
 	}
@@ -520,7 +525,7 @@ void SV_NewChaseDir (edict_t *actor, edict_t *enemy, float dist)
 		d[2]=tdir;
 	}
 
-	if (d[1]!=DI_NODIR && d[1]!=turnaround 
+	if (d[1]!=DI_NODIR && d[1]!=turnaround
 	&& SV_StepDirection(actor, d[1], dist))
 			return;
 
@@ -567,7 +572,7 @@ SV_CloseEnough
 qboolean SV_CloseEnough (edict_t *ent, edict_t *goal, float dist)
 {
 	int		i;
-	
+
 	for (i=0 ; i<3 ; i++)
 	{
 		if (goal->absmin[i] > ent->absmax[i] + dist)
@@ -588,7 +593,7 @@ M_MoveFromGoal
 void M_MoveAwayFromGoal (edict_t *ent, float dist)
 {
 	float	tdir, olddir, turnaround;
-	
+
 	olddir = anglemod( (int)(ent->ideal_yaw/45)*45 );
 	turnaround = anglemod(olddir - 180);
 
@@ -614,13 +619,13 @@ M_MoveToGoal
 void M_MoveToGoal (edict_t *ent, float dist)
 {
 	edict_t		*goal;
-	
+
 	goal = ent->goalentity;
 
 	if (!ent->groundentity && !(ent->flags & (FL_FLY|FL_SWIM)))
 		return;
 
-// This was commented out because it was causing monsters to get stuck on the edges of bounding 
+// This was commented out because it was causing monsters to get stuck on the edges of bounding
 // boxes and they'd keep running.
 
 // if the next step hits the enemy, return immediately
@@ -654,12 +659,12 @@ M_walkmove
 qboolean M_walkmove (edict_t *ent, float yaw, float dist)
 {
 	vec3_t	move;
-	
+
 	if (!ent->groundentity && !(ent->flags & (FL_FLY|FL_SWIM)))
 		return false;
 
 	yaw = yaw*M_PI*2 / 360;
-	
+
 	move[0] = cos(yaw)*dist;
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;

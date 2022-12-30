@@ -1,12 +1,17 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "client.h"
 #include "cl_strings.h"
 
 #define MAX_MAPS		26
 
-int coords_swamp[] = 
+int coords_swamp[] =
 {
 	196, 193,
-	202, 193, 
+	202, 193,
 	209, 197,
 	213, 209,
 	216, 216,
@@ -27,7 +32,7 @@ int coords_caves[] =
 };
 
 int coords_canyon[] =
-{ 
+{
 	299, 238,
 	300, 244,
 	303, 250,
@@ -65,7 +70,7 @@ level_map_info_t LevelMaps[MAX_MAPS] =
 {
 	0, 0,			NULL, NULL, 0, 0, 0, 0, 0, 0,												// level 0 - undefined
 	0, 0,			NULL, NULL, 0, 0, 0, 0, 0, 0,												// level 0 - undefined
-			        
+
 	1, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,187, 191, 0, NULL,		// SSDocks
 	1, 0,			"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,0, 0, 0, NULL,			// SSWarehouse
 	1, 0,			"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,0, 0, 0, NULL,			// SSTown
@@ -73,7 +78,7 @@ level_map_info_t LevelMaps[MAX_MAPS] =
 
 	2, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL,	GM_M_DARKMIRE, 0,0, 0, 6, coords_swamp,	// Dmireswamp
 
-	3, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,232, 218, 0, NULL,		// Andhealer	
+	3, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,232, 218, 0, NULL,		// Andhealer
 	3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL,			// AndSlums
 	3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL,			// Andplaza
 	3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL,			// AndAcademic

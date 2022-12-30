@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "m_ogle.h"
 #include "g_local.h"
 #include "m_ogle_anim.h"
@@ -201,7 +206,7 @@ animmove_t ogle_move_pain3 = {6,ogle_frames_pain3, ogle_pause};
 /*----------------------------------------------------
 	ogle rest anims
 
-	rest1_trans		- transition from work4 to leaning back on pick 
+	rest1_trans		- transition from work4 to leaning back on pick
 	rest1			- leaning back on pick, breating
 	rest1_wipe		- wipes brow from picking, returns to rest
 	rest2_wipe		- wipes brow from picking, returns to work

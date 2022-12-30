@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // Definitions required for the flexible cinematic format
 
 #define FC_HEADER_NAME		"cinematic header"

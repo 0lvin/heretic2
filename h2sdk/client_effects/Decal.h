@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 typedef float vec3_t[3];
 
 #define DECALFLAG_ACTIVE	1	// actually, any flag at all counts as active

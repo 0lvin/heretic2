@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "Client Effects.h"
 #include "Client Entities.h"
 #include "Particle.h"
@@ -16,9 +21,9 @@ void FXTestBBox(centity_t *owner, int type, int flags, vec3_t origin)
 	int	i, partid, max;
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_TEST_BBOX].formatString, &radius, &bottom, &top);
-	
+
 	cent = ClientEntity_new(type, CEF_NO_DRAW | CEF_ADDITIVE_PARTS, origin, NULL, 15000);
-	
+
 	AddEffect(NULL, cent);
 
 	if (flags&CEF_FLAG6)

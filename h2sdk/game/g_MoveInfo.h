@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #ifndef G_MOVEINFO_H
 #define G_MOVEINFO_H
 

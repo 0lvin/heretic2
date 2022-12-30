@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef MODELJONTS_H
 #define MODELJONTS_H
 

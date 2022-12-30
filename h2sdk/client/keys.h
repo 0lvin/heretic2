@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 
 //
 // these are the key numbers that should be passed to Key_Event

@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #include "g_local.h"
 
 typedef struct sv_entity_s
@@ -14,7 +20,7 @@ typedef struct sv_entity_s
 
 	// FIXME: move these fields to a server private sv_entity_t (probably not necessary)
 	link_t		area;				// linked to a division node or leaf (zeroed in g_save.c is currently the only use of this in the Game DLL)
-	
+
 	int			num_clusters;		// if -1, use headnode instead (not referenced in Game DLL)
 	int			clusternums[MAX_ENT_CLUSTERS];	// (not referenced in Game DLL)
 	int			headnode;			// unused if num_clusters != -1 (not referenced in Game DLL)

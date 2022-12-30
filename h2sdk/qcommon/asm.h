@@ -1,4 +1,10 @@
-// Some useful macros for coding assembler 
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
+// Some useful macros for coding assembler
 
 #define	cpuid __asm _emit 0fh __asm _emit 0a2h
 #define rdtsc __asm _emit 0fh __asm _emit 031h

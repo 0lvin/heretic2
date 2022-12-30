@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef VECTOR_H
 #define VECTOR_H
 
@@ -99,7 +104,7 @@ __inline int VectorCompare (vec3_t v1, vec3_t v2)
 {
 	if ((v1[0] != v2[0]) || (v1[1] != v2[1]) || (v1[2] != v2[2]))
 			return(false);
-			
+
 	return(true);
 }
 
@@ -115,7 +120,7 @@ __inline void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
 __inline vec_t VectorLength(vec3_t v)
 {
 	float	length;
-	
+
 	length = sqrt(DotProduct(v, v));
 
 	return length;
@@ -124,7 +129,7 @@ __inline vec_t VectorLength(vec3_t v)
 __inline vec_t VectorLengthSquared(vec3_t v)
 {
 	float	length;
-	
+
 	length = DotProduct(v, v);
 
 	return length;
@@ -327,7 +332,7 @@ _inline qboolean Vec3EqualsEpsilon(vec3_t v1, vec3_t v2)
 	{
 		return false;
 	}
-			
+
 	return true;
 }
 

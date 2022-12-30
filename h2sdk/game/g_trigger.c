@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 #include "Vector.h"
 #include "g_DefaultMessageHandler.h"
@@ -11,7 +16,7 @@
 #define TRIGGER_ANY			8
 
 #define PUZZLE_SHOWNO_INVENTORY 16
-#define PUZZLE_DONT_REMOVE		32	
+#define PUZZLE_DONT_REMOVE		32
 
 void Trigger_Deactivate(edict_t *self, G_Message_t *msg);
 void Trigger_Activate(edict_t *self, G_Message_t *msg);
@@ -160,7 +165,7 @@ void Trigger_Sounds(edict_t *self)
 		self->noise_index = gi.soundindex ("misc/secret.wav");
 	else if (self->sounds == 3)
 		self->noise_index = gi.soundindex ("misc/talk.wav");
-	else 
+	else
 		self->noise_index = 0;
 }
 
@@ -355,11 +360,11 @@ void trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 		for (i=0 ; i<maxclients->value ; i++)
 		{
 			ent = g_edicts + 1 + i;
-		
+
 			if (!ent->inuse)
 				continue;
-			
-			ent->client->playerinfo.pers.inventory.Items[index]=0;	
+
+			ent->client->playerinfo.pers.inventory.Items[index]=0;
 		}
 	}
 
@@ -412,7 +417,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 	{
 		return;
 	}
-	
+
 	self->count--;
 
 	if (self->count)
@@ -424,7 +429,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 		}
 		return;
 	}
-	
+
 	if (! (self->spawnflags & TRIGGER_COUNTER_NOMESSAGE))
 	{
 		gi.gamemsg_centerprintf(activator, GM_SEQCOMPLETE);
@@ -510,7 +515,7 @@ void trigger_playerpushbutton(edict_t *self, edict_t *other, cplane_t *plane, cs
 }
 
 /*QUAKED trigger_playerpushbutton (.5 .5 .5) ?
-Triggers player to know he is near a button. 
+Triggers player to know he is near a button.
 */
 void SP_trigger_PlayerPushButton(edict_t *self)
 {
@@ -713,7 +718,7 @@ void choose_CDTrack_touch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	// if we aren't a player, forget it
 	if (!other->client)
 		return;
-	
+
 	// make everyone play this track
 	everyone_play_track(self->style, self->spawnflags);
 	// kill this trigger
@@ -847,7 +852,7 @@ void lightning_use (edict_t *self, edict_t *other)
 	width=self->style;
 	if (width<1) width=6;
 	duration=(byte)(self->delay*10);
-	
+
 	G_UseTargets(self, self);
 
 	// Find the entities targeted by this entity.
@@ -886,9 +891,9 @@ TRIGGERED - starts trigger deactivated
 ANY - anything can activate it
 -------KEYS--------------------
 origin-- Starting point.
-target-- Ending point entity.  
+target-- Ending point entity.
          There may be more than one with a given targetname.
-delay-- (0-25.5) Sec. duration of lightning.  
+delay-- (0-25.5) Sec. duration of lightning.
          Leave this at zero for a normal strike
 materialtype-- 0=blue, 1=red
 style-- Width of bolt.  Red rain uses 6.
@@ -934,7 +939,7 @@ void quake_use (edict_t *self, edict_t *other)
 		self->touch = NULL;
 		self->nextthink = level.time + FRAMETIME;
 		self->think = G_FreeEdict;
-	}	 
+	}
 
 	// Because nextthink is multi_use for a trigger I have to create a new entity with the sound
 	// so I can then kill the sound at the right time
@@ -959,9 +964,9 @@ wait - amount of time until it will become active again (default 10). -1 makes i
 count - max number of pixels to shake screen (default 20)
 time - duration to the tenth of a second  (range 0 - 12.8) (default 2)
 style - direction of shake
-1 - SHAKE_LATERAL   
-2 - SHAKE_VERTICAL  
-4 - SHAKE_DEPTH     
+1 - SHAKE_LATERAL
+2 - SHAKE_VERTICAL
+4 - SHAKE_DEPTH
 7 - SHAKE_ALL_DIR  (default)
 */
 void SP_trigger_quake (edict_t *self)
@@ -1119,7 +1124,7 @@ void ClipDistance_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface
 	}
 }
 
-/*QUAKED trigger_farclip (0.5 0.5 0.5) ? 
+/*QUAKED trigger_farclip (0.5 0.5 0.5) ?
 Allows the console var Farclip to be reset - this is a toggle function - if triggered
 and far-clip is set to the default, it will be reset to the value passed in. If its the
 value passed in, its reset to the default. Be aware that there must be no teleport
@@ -1160,17 +1165,17 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 	if (deathmatch->value)
 		return;
-	
+
 	// Single player - just end, coop - restart if sv_loopcoop is set.
 
 	if(gi.cvar_variablevalue("sv_loopcoop") && coop->value )
-	{	
+	{
 		int		i;
 		edict_t	*ent;
 
 		for(i=0;i<maxclients->value;i++)
 		{
-			if((ent=(&g_edicts[i+1]))->inuse)	
+			if((ent=(&g_edicts[i+1]))->inuse)
 				gi.gamemsg_centerprintf(ent,GM_COOP_RESTARTING);
 		}
 
@@ -1180,7 +1185,7 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 	else
 	{
 		gi.AddCommandString ("endgame\n");
-		
+
 		G_SetToFree(self);
 	}
 }
@@ -1206,7 +1211,7 @@ void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
 
 		for(i=0;i<maxclients->value;i++)
 		{
-			if((ent=(&g_edicts[i+1]))->inuse)	
+			if((ent=(&g_edicts[i+1]))->inuse)
 				gi.gamemsg_centerprintf(ent,GM_COOP_RESTARTING);
 		}
 
@@ -1248,7 +1253,7 @@ void trigger_playerpushlever(edict_t *self, edict_t *other)
 	}
 }
 
-/*QUAKED trigger_playerpushlever (.5 .5 .5) ?  x1 x2 TRIGGERED 
+/*QUAKED trigger_playerpushlever (.5 .5 .5) ?  x1 x2 TRIGGERED
 Triggers player to know he is near a lever.
 */
 void SP_trigger_PlayerPushLever(edict_t *self)

@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 // input.h -- external (non-keyboard) input devices
 
 void IN_Init (void);

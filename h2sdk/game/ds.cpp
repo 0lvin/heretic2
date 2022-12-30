@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
@@ -63,12 +68,12 @@ int msg_animtype  [NUM_MESSAGES] =
 	MSG_C_ACTION20,
 	MSG_C_ATTACK1,
 	MSG_C_ATTACK2,
-	MSG_C_ATTACK3, 
-	MSG_C_BACKPEDAL1, 
-	MSG_C_DEATH1, 
-	MSG_C_DEATH2, 
-	MSG_C_DEATH3, 
-	MSG_C_DEATH4, 
+	MSG_C_ATTACK3,
+	MSG_C_BACKPEDAL1,
+	MSG_C_DEATH1,
+	MSG_C_DEATH2,
+	MSG_C_DEATH3,
+	MSG_C_DEATH4,
 	MSG_C_GIB1,
 	MSG_C_IDLE1,
 	MSG_C_IDLE2,
@@ -77,7 +82,7 @@ int msg_animtype  [NUM_MESSAGES] =
 	MSG_C_IDLE5,
 	MSG_C_IDLE6,
 	MSG_C_JUMP1,
-	MSG_C_PAIN1, 
+	MSG_C_PAIN1,
 	MSG_C_PAIN2,
 	MSG_C_PAIN3,
 	MSG_C_PIVOTLEFTGO,
@@ -103,8 +108,8 @@ int msg_animtype  [NUM_MESSAGES] =
 	MSG_C_WALK4,
 	MSG_C_WALKSTOP1,
 	MSG_C_WALKSTOP2,
-	MSG_C_ATTACK4, 
-	MSG_C_ATTACK5, 
+	MSG_C_ATTACK4,
+	MSG_C_ATTACK5,
 };
 
 #define MAX_CINESNDS 255
@@ -214,7 +219,7 @@ void *RF_FieldDef(FILE *FH, void *Data)
 #define RLID_SCRIPT				13
 #define RLID_FIELDDEF			14
 
-RestoreList_t ScriptRL[] = 
+RestoreList_t ScriptRL[] =
 {
 	{ RLID_INTVAR,				RF_IntVar },
 	{ RLID_FLOATVAR,			RF_FloatVar },
@@ -376,7 +381,7 @@ extern "C" void LoadScripts(FILE *FH, qboolean DoGlobals)
 		fread(&size, 1, sizeof(size), FH);
 
 		for(i=0;i<size;i++)
-		{	
+		{
 			GlobalVariables.PushBack((Variable *)RestoreObject(FH, ScriptRL, NULL));
 		}
 	}
@@ -392,7 +397,7 @@ extern "C" void LoadScripts(FILE *FH, qboolean DoGlobals)
 		fread(&size, 1, sizeof(size), FH);
 
 		for(i=0;i<size;i++)
-		{	
+		{
 			Scripts.PushBack((CScript *)RestoreObject(FH, ScriptRL, NULL));
 		}
 	}
@@ -682,11 +687,11 @@ void VectorVar::Write(FILE *FH, CScript *Script, int ID)
 	fwrite(Value, 1, sizeof(Value), FH);
 }
 
-void VectorVar::GetVectorValue(vec3_t &VecValue) 
-{ 
+void VectorVar::GetVectorValue(vec3_t &VecValue)
+{
 	VecValue[0] = Value[0];
 	VecValue[1] = Value[1];
-	VecValue[2] = Value[2]; 
+	VecValue[2] = Value[2];
 }
 
 void VectorVar::ReadValue(CScript *Script)
@@ -789,7 +794,7 @@ void VectorVar::operator =(Variable *VI)
 }
 
 bool VectorVar::operator ==(Variable *VI)
-{ 
+{
 	vec3_t vec;
 
 	if (VI->GetType() == TypeINT || VI->GetType() == TypeFLOAT)
@@ -802,12 +807,12 @@ bool VectorVar::operator ==(Variable *VI)
 
 		return (VectorCompare(Value, vec) == 1);	// VC6 gives a warning about converting int to bool
 	}
-	
+
 	return false;
 }
 
 bool VectorVar::operator !=(Variable *VI)
-{ 
+{
 	vec3_t vec;
 
 	if (VI->GetType() == TypeINT || VI->GetType() == TypeFLOAT)
@@ -820,12 +825,12 @@ bool VectorVar::operator !=(Variable *VI)
 
 		return !VectorCompare(Value, vec);
 	}
-	
+
 	return false;
 }
 
 bool VectorVar::operator <(Variable *VI)
-{ 
+{
 	vec3_t	vec;
 	float	compare;
 
@@ -847,7 +852,7 @@ bool VectorVar::operator <(Variable *VI)
 }
 
 bool VectorVar::operator <=(Variable *VI)
-{ 
+{
 	vec3_t	vec;
 	float	compare;
 
@@ -869,7 +874,7 @@ bool VectorVar::operator <=(Variable *VI)
 }
 
 bool VectorVar::operator >(Variable *VI)
-{ 
+{
 	vec3_t	vec;
 	float	compare;
 
@@ -891,7 +896,7 @@ bool VectorVar::operator >(Variable *VI)
 }
 
 bool VectorVar::operator >=(Variable *VI)
-{ 
+{
 	vec3_t	vec;
 	float	compare;
 
@@ -998,7 +1003,7 @@ void EntityVar::operator =(Variable *VI)
 }
 
 bool EntityVar::operator ==(Variable *VI)
-{ 
+{
 	if (VI->GetType() == TypeINT)
 	{
 		return GetIntValue() == VI->GetIntValue();
@@ -1007,12 +1012,12 @@ bool EntityVar::operator ==(Variable *VI)
 	{
 		return GetEdictValue() == VI->GetEdictValue();
 	}
-	
+
 	return false;
 }
 
 bool EntityVar::operator !=(Variable *VI)
-{ 
+{
 	if (VI->GetType() == TypeINT)
 	{
 		return GetIntValue() != VI->GetIntValue();
@@ -1021,7 +1026,7 @@ bool EntityVar::operator !=(Variable *VI)
 	{
 		return GetEdictValue() != VI->GetEdictValue();
 	}
-	
+
 	return false;
 }
 
@@ -1126,7 +1131,7 @@ void FieldVariableVar::Write(FILE *FH, CScript *Script, int ID)
 
 	index = Script->LookupVarIndex(Value);
 	fwrite(&index, 1, sizeof(index), FH);
-	
+
 	index = Script->LookupFieldIndex(Field);
 	fwrite(&index, 1, sizeof(index), FH);
 }
@@ -1147,33 +1152,33 @@ void FieldVariableVar::Debug(CScript *Script)
 	Value->Debug(Script);
 }
 
-int FieldVariableVar::GetIntValue(void) 
-{ 
-	return Field->GetIntValue(Value); 
+int FieldVariableVar::GetIntValue(void)
+{
+	return Field->GetIntValue(Value);
 }
 
-float FieldVariableVar::GetFloatValue(void) 
-{ 
-	return Field->GetFloatValue(Value); 
+float FieldVariableVar::GetFloatValue(void)
+{
+	return Field->GetFloatValue(Value);
 }
 
-void FieldVariableVar::GetVectorValue(vec3_t &VecValue) 
-{ 
-	Field->GetVectorValue(Value, VecValue); 
+void FieldVariableVar::GetVectorValue(vec3_t &VecValue)
+{
+	Field->GetVectorValue(Value, VecValue);
 }
 
-edict_t *FieldVariableVar::GetEdictValue(void) 
-{ 
-	return Field->GetEdictValue(Value); 
+edict_t *FieldVariableVar::GetEdictValue(void)
+{
+	return Field->GetEdictValue(Value);
 }
 
-char *FieldVariableVar::GetStringValue(void) 
-{ 
-	return Field->GetStringValue(Value); 
+char *FieldVariableVar::GetStringValue(void)
+{
+	return Field->GetStringValue(Value);
 }
 
 Variable *FieldVariableVar::operator +(Variable *VI)
-{ 
+{
 	Variable *Result, *Val;
 
 	Val = Field->GetValue(Value);
@@ -1185,8 +1190,8 @@ Variable *FieldVariableVar::operator +(Variable *VI)
 	return Result;
 }
 
-Variable *FieldVariableVar::operator -(Variable *VI) 
-{ 
+Variable *FieldVariableVar::operator -(Variable *VI)
+{
 	Variable *Result, *Val;
 
 	Val = Field->GetValue(Value);
@@ -1198,8 +1203,8 @@ Variable *FieldVariableVar::operator -(Variable *VI)
 	return Result;
 }
 
-Variable *FieldVariableVar::operator *(Variable *VI) 
-{ 
+Variable *FieldVariableVar::operator *(Variable *VI)
+{
 	Variable *Result, *Val;
 
 	Val = Field->GetValue(Value);
@@ -1211,8 +1216,8 @@ Variable *FieldVariableVar::operator *(Variable *VI)
 	return Result;
 }
 
-Variable *FieldVariableVar::operator /(Variable *VI) 
-{ 
+Variable *FieldVariableVar::operator /(Variable *VI)
+{
 	Variable *Result, *Val;
 
 	Val = Field->GetValue(Value);
@@ -1224,39 +1229,39 @@ Variable *FieldVariableVar::operator /(Variable *VI)
 	return Result;
 }
 
-void FieldVariableVar::operator =(Variable *VI) 
-{ 
+void FieldVariableVar::operator =(Variable *VI)
+{
 	Field->SetValue(Value, VI);
 }
 
-bool FieldVariableVar::operator ==(Variable *VI) 
-{ 
-	return (*Value) == VI; 
+bool FieldVariableVar::operator ==(Variable *VI)
+{
+	return (*Value) == VI;
 }
 
-bool FieldVariableVar::operator !=(Variable *VI) 
-{ 
-	return (*Value) != VI; 
+bool FieldVariableVar::operator !=(Variable *VI)
+{
+	return (*Value) != VI;
 }
 
-bool FieldVariableVar::operator <(Variable *VI) 
-{ 
-	return (*Value) < VI; 
+bool FieldVariableVar::operator <(Variable *VI)
+{
+	return (*Value) < VI;
 }
 
-bool FieldVariableVar::operator <=(Variable *VI) 
-{ 
-	return (*Value) <= VI; 
+bool FieldVariableVar::operator <=(Variable *VI)
+{
+	return (*Value) <= VI;
 }
 
-bool FieldVariableVar::operator >(Variable *VI) 
-{ 
-	return (*Value) > VI; 
+bool FieldVariableVar::operator >(Variable *VI)
+{
+	return (*Value) > VI;
 }
 
-bool FieldVariableVar::operator >=(Variable *VI) 
-{ 
-	return (*Value) >= VI; 
+bool FieldVariableVar::operator >=(Variable *VI)
+{
+	return (*Value) >= VI;
 }
 
 //==========================================================================
@@ -1308,14 +1313,14 @@ bool Signaler::Test(edict_t *Which, SignalT WhichType)
 	{
 		return false;
 	}
-	
+
 	Var->Signal(Which);
 
 	return true;
 }
 
 bool Signaler::operator ==(Signaler *SI)
-{ 
+{
 	if (Var == SI->GetVar())
 	{
 		return true;
@@ -1418,7 +1423,7 @@ FieldDef::FieldDef(CScript *Script)
 			break;
 		}
 	}
-	
+
 	if (!Found)
 	{
 #ifdef _DEVEL
@@ -1457,7 +1462,7 @@ FieldDef::FieldDef(FILE *FH, CScript *Script)
 			break;
 		}
 	}
-	
+
 	if (!Found)
 	{
 #ifdef _DEVEL
@@ -1562,7 +1567,7 @@ int FieldDef::GetIntValue(Variable *Var)
 
 	Dest = GetOffset(Var);
 
- 	if (FieldType != F_INT || !Dest) 
+ 	if (FieldType != F_INT || !Dest)
 	{
 		switch(Offset)
 		{
@@ -1687,7 +1692,7 @@ void FieldDef::SetValue(Variable *Var, Variable *Value)
 
 		return;
 	}
-	
+
 	switch(FieldType)
 	{
 		case F_INT:
@@ -2249,7 +2254,7 @@ void CScript::Write(FILE *FH)
 	}
 }
 
-int CScript::LookupVarIndex(Variable *Var) 
+int CScript::LookupVarIndex(Variable *Var)
 {
 	int i;
 
@@ -2914,7 +2919,7 @@ bool CScript::HandleWait(bool ForAll)
 
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -3024,7 +3029,7 @@ void CScript::HandlePrint(void)
 	ent = NULL;
 
 	Flags = ReadByte();
-	
+
 	Text = PopStack();
 	if (!Text)
 	{
@@ -3141,7 +3146,7 @@ void CScript::HandlePlaySound(void)
 	TimeDelayValue = 0.0;
 
 	Flags = ReadByte();
-	
+
 	SoundName = PopStack();
 	if (!SoundName)
 	{
@@ -3207,7 +3212,7 @@ void CScript::HandlePlaySound(void)
 		CinematicSound[CinematicSound_cnt].channel = ChannelValue;
 
 		if (CinematicSound_cnt < MAX_CINESNDS-1 )
-			++CinematicSound_cnt; 	
+			++CinematicSound_cnt;
 	}
 #endif
 
@@ -3278,9 +3283,9 @@ void CScript::HandleFeature(bool Enable)
 						{
 							if (CinematicSound[i].ent)	// Does the entity still exist
 							{
-								gi.sound(CinematicSound[i].ent, CinematicSound[i].channel, 
+								gi.sound(CinematicSound[i].ent, CinematicSound[i].channel,
 									null_snd, 1, ATTN_NORM, 0);
-									
+
 							}
 						}
 					}
@@ -4042,7 +4047,7 @@ void CScript::Error (char *error, ...)
 {
 	va_list argptr;
 	char	text[1024];
-	
+
 	va_start (argptr, error);
 	vsprintf (text, error, argptr);
 	va_end (argptr);
@@ -4066,7 +4071,7 @@ void CScript::DebugLine (char *debugtext, ...)
 {
 	va_list argptr;
 	char	text[1024];
-	
+
 	va_start (argptr, debugtext);
 	vsprintf (text, debugtext, argptr);
 	va_end (argptr);

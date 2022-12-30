@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "m_imp_anim.h"
 #include "g_local.h"
 #include "m_imp.h"
@@ -59,26 +64,26 @@ imp flying backwards 1
 ------------------------------------------------------*/
 animframe_t imp_frames_flyback[] =
 {
-	FRAME_impfly1, imp_ai_fly, -16, 0, 8, NULL, 0, imp_flap_noise, 
-	FRAME_impfly2, imp_ai_fly, -32, 0, 32, NULL, 0, move_imp_fly, 
-	FRAME_impfly3, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly, 
-	FRAME_impfly4, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly, 
-	FRAME_impfly5, imp_ai_fly, -21, 0, 16, NULL, 0, move_imp_fly, 
+	FRAME_impfly1, imp_ai_fly, -16, 0, 8, NULL, 0, imp_flap_noise,
+	FRAME_impfly2, imp_ai_fly, -32, 0, 32, NULL, 0, move_imp_fly,
+	FRAME_impfly3, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly,
+	FRAME_impfly4, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly,
+	FRAME_impfly5, imp_ai_fly, -21, 0, 16, NULL, 0, move_imp_fly,
 	FRAME_impfly6, imp_ai_fly, -18, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_impfly7, imp_ai_fly, -16, 0, 8, NULL, 0, imp_flap_noise, 
-	FRAME_impfly8, imp_ai_fly, -32, 0, 32, NULL, 0, move_imp_fly, 
-	FRAME_impfly9, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly, 
-	FRAME_impfly10, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly, 
-	FRAME_impfly11, imp_ai_fly, -21, 0, 16, NULL, 0, move_imp_fly, 
+	FRAME_impfly7, imp_ai_fly, -16, 0, 8, NULL, 0, imp_flap_noise,
+	FRAME_impfly8, imp_ai_fly, -32, 0, 32, NULL, 0, move_imp_fly,
+	FRAME_impfly9, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly,
+	FRAME_impfly10, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly,
+	FRAME_impfly11, imp_ai_fly, -21, 0, 16, NULL, 0, move_imp_fly,
 	FRAME_impfly12, imp_ai_fly, -18, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_impfly13, imp_ai_fly, -16, 0, 8, NULL, 0, imp_flap_noise, 
-	FRAME_impfly14, imp_ai_fly, -32, 0, 32, NULL, 0, move_imp_fly, 
-	FRAME_impfly15, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly, 
-	FRAME_impfly16, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly, 
-	FRAME_impfly17, imp_ai_fly, -21, 0, 16, NULL, 0, move_imp_fly, 
+	FRAME_impfly13, imp_ai_fly, -16, 0, 8, NULL, 0, imp_flap_noise,
+	FRAME_impfly14, imp_ai_fly, -32, 0, 32, NULL, 0, move_imp_fly,
+	FRAME_impfly15, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly,
+	FRAME_impfly16, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly,
+	FRAME_impfly17, imp_ai_fly, -21, 0, 16, NULL, 0, move_imp_fly,
 	FRAME_impfly18, imp_ai_fly, -18, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_impfly19, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly, 
-	FRAME_impfly20, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly, 
+	FRAME_impfly19, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly,
+	FRAME_impfly20, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly,
 };
 animmove_t imp_move_flyback = { 20, imp_frames_flyback, imp_pause};
 
@@ -88,21 +93,21 @@ imp hit from swoop
 ------------------------------------------------------*/
 animframe_t imp_frames_dive_end[] =
 {
-	FRAME_swpend1, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise, 
-	FRAME_swpend2, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly, 
-	FRAME_swpend3, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly, 
-	FRAME_swpend4, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly, 
-	FRAME_swpend5, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly, 
+	FRAME_swpend1, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise,
+	FRAME_swpend2, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly,
+	FRAME_swpend3, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly,
+	FRAME_swpend4, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly,
+	FRAME_swpend5, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly,
 	FRAME_swpend6, imp_ai_fly, -36, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_swpend7, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise, 
-	FRAME_swpend8, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly, 
-	FRAME_swpend9, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly, 
-	FRAME_swpend10, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly, 
-	FRAME_swpend11, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly, 
+	FRAME_swpend7, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise,
+	FRAME_swpend8, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly,
+	FRAME_swpend9, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly,
+	FRAME_swpend10, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly,
+	FRAME_swpend11, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly,
 	FRAME_swpend12, imp_ai_fly, -36, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_swpend13, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise, 
-	FRAME_swpend14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly, 
-	FRAME_swpend15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly, 
+	FRAME_swpend13, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise,
+	FRAME_swpend14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly,
+	FRAME_swpend15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly,
 };
 animmove_t imp_move_dive_end = { 15, imp_frames_dive_end, imp_flyback};
 
@@ -111,21 +116,21 @@ imp hit from swoop
 ------------------------------------------------------*/
 animframe_t imp_frames_dive_out[] =
 {
-	FRAME_swpout1, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise, 
-	FRAME_swpout2, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly, 
-	FRAME_swpout3, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly, 
-	FRAME_swpout4, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly, 
-	FRAME_swpout5, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly, 
+	FRAME_swpout1, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise,
+	FRAME_swpout2, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly,
+	FRAME_swpout3, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly,
+	FRAME_swpout4, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly,
+	FRAME_swpout5, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly,
 	FRAME_swpout6, imp_ai_fly, -36, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_swpout7, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise, 
-	FRAME_swpout8, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly, 
-	FRAME_swpout9, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly, 
-	FRAME_swpout10, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly, 
-	FRAME_swpout11, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly, 
+	FRAME_swpout7, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise,
+	FRAME_swpout8, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly,
+	FRAME_swpout9, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly,
+	FRAME_swpout10, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly,
+	FRAME_swpout11, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly,
 	FRAME_swpout12, imp_ai_fly, -36, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_swpout13, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise, 
-	FRAME_swpout14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly, 
-	FRAME_swpout15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly, 
+	FRAME_swpout13, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise,
+	FRAME_swpout14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly,
+	FRAME_swpout15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly,
 };
 animmove_t imp_move_dive_out = { 15, imp_frames_dive_out, imp_flyback};
 
@@ -185,7 +190,7 @@ animmove_t imp_move_tumble = {20, imp_frames_tumble, NULL};
 /*-------------------------------------------------------
 imp firing fireball
 -------------------------------------------------------*/
-animframe_t imp_frames_fireball[] = 
+animframe_t imp_frames_fireball[] =
 {
 	FRAME_impfir1, NULL, 0, 0, 0, imp_ai_hover, 2, imp_flap_noise,
 	FRAME_impfir2, NULL, 0, 0, 0, imp_ai_hover, 1, NULL,
@@ -217,7 +222,7 @@ animmove_t imp_move_fireball = {21, imp_frames_fireball, move_imp_hover};
 /*-------------------------------------------------------
 imp diving and attacking
 -------------------------------------------------------*/
-animframe_t imp_frames_dive_go[] = 
+animframe_t imp_frames_dive_go[] =
 {
 	FRAME_swoop1, NULL, 0, 0, 0, NULL, 0, imp_dive_noise,
 	FRAME_swoop2, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -239,10 +244,10 @@ animframe_t imp_frames_dive_go[] =
 	FRAME_swoop18, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive,
 	FRAME_swoop19, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive,
 	FRAME_swoop20, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive,
-}; 
+};
 animmove_t imp_move_dive_go = {6, imp_frames_dive_go, imp_dive_loop};
 
-animframe_t imp_frames_dive_loop[] = 
+animframe_t imp_frames_dive_loop[] =
 {
 	FRAME_swpcyc1, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive,
 	FRAME_swpcyc2, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive,
@@ -314,7 +319,7 @@ animframe_t imp_frames_perch[] =
 };
 animmove_t imp_move_perch = { 24, imp_frames_perch, NULL};
 
-animframe_t	imp_frames_takeoff [] = 
+animframe_t	imp_frames_takeoff [] =
 {
 	FRAME_impup1, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_impup2, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -345,19 +350,19 @@ animmove_t imp_move_takeoff = { 23, imp_frames_takeoff, imp_pause};
 animframe_t imp_frames_dup[] =
 {
 	FRAME_swpend6, imp_ai_fly, -36, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_swpend7, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise, 
-	FRAME_swpend8, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly, 
-	FRAME_swpend9, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly, 
-	FRAME_swpend10, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly, 
-	FRAME_swpend11, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly, 
+	FRAME_swpend7, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise,
+	FRAME_swpend8, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly,
+	FRAME_swpend9, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly,
+	FRAME_swpend10, imp_ai_fly, -48, 0, 48, NULL, 0, move_imp_fly,
+	FRAME_swpend11, imp_ai_fly, -42, 0, 32, NULL, 0, move_imp_fly,
 	FRAME_swpend12, imp_ai_fly, -36, 0, 24, NULL, 0, move_imp_fly,
-	FRAME_swpend13, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise, 
-	FRAME_swpend14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly, 
-	FRAME_swpend15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly, 
+	FRAME_swpend13, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise,
+	FRAME_swpend14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly,
+	FRAME_swpend15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly,
 };
 animmove_t imp_move_dup = { 10, imp_frames_dup, imp_pause};
 
-animframe_t imp_frames_ddown[] = 
+animframe_t imp_frames_ddown[] =
 {
 	FRAME_swoop1, NULL, 0, 0, 0, NULL, 0, imp_dive_noise,
 	FRAME_swoop2, NULL, 0, 0, 0, NULL, 0, NULL,
@@ -374,5 +379,5 @@ animframe_t imp_frames_ddown[] =
 	FRAME_swpout9, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_swpout12, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_swpout15, NULL, 0, 0, 0, NULL, 0, NULL,
-}; 
+};
 animmove_t imp_move_ddown = {15, imp_frames_ddown , imp_pause};

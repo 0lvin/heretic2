@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 /*
 ==============================
 
@@ -42,7 +47,7 @@ qboolean TB_CheckJump (edict_t *self);
 
 // AI Targeting Globals
 qboolean	enemy_vis;		// TRUE if enemy is visible
-qboolean	enemy_infront;	// TRUE if enemy is in front 
+qboolean	enemy_infront;	// TRUE if enemy is in front
 int			enemy_range;	// range from enemy RANGE_MELEE, RANGE_NEAR, RANGE_MID, RANGE_FAR
 float		enemy_yaw;		// ideal yaw to face enemy
 vec3_t	JUMP_MINS = {-8, -8, 0};
@@ -83,17 +88,17 @@ qboolean ahead (edict_t *self, edict_t *other)
 	vec3_t	vec;
 	float	dot;
 	vec3_t	forward, check_angles;
-	
+
 	if(Vec3NotZero(self->v_angle_ofs))
 		VectorAdd(self->v_angle_ofs,self->s.angles,check_angles);
 	else
 		VectorCopy(self->s.angles,check_angles);
-	
+
 	AngleVectors (check_angles, forward, NULL, NULL);
 	VectorSubtract (other->s.origin, self->s.origin, vec);
 	VectorNormalize (vec);
 	dot = DotProduct (vec, forward);
-	
+
 	if (dot > 0.8)
 		return true;
 	return false;
@@ -111,7 +116,7 @@ qboolean LOS (edict_t *self, vec3_t point1, vec3_t point2)
 	trace_t	trace;
 
 	gi.trace (point1, vec3_origin, vec3_origin, point2, self, MASK_SOLID,&trace);
-	
+
 	if (trace.fraction == 1.0)
 		return true;
 	return false;
@@ -132,7 +137,7 @@ qboolean visible_pos (edict_t *self, vec3_t spot2)
 	VectorCopy (self->s.origin, spot1);
 	spot1[2] += self->viewheight;
 	gi.trace (spot1, vec3_origin, vec3_origin, spot2, self, MASK_OPAQUE,&trace);
-	
+
 	if (trace.fraction == 1.0)
 		return true;
 	return false;
@@ -156,7 +161,7 @@ qboolean MG_CheckBottom (edict_t *ent)
 	qboolean	corner_ok[4];
 	qboolean	easy_ok[2][2];
 	qboolean	realcheck = false;
-	
+
 //normal corner checking
 	if(ent->classID==CID_TBEAST)
 	{
@@ -171,9 +176,9 @@ qboolean MG_CheckBottom (edict_t *ent)
 		VectorCopy (ent->maxs, maxs);
 
 		//some leniency is ok here, no?
-		mins[0] *= 0.75;	
-		mins[1] *= 0.75;	
-		maxs[0] *= 0.75;	
+		mins[0] *= 0.75;
+		mins[1] *= 0.75;
+		maxs[0] *= 0.75;
 		maxs[1] *= 0.75;
 
 		//keep corner checks within 16 of center
@@ -246,8 +251,8 @@ qboolean MG_CheckBottom (edict_t *ent)
 //
 	start[2] = mins[2];//bottom
 	stop[2] = start[2] - stepsize + 1;//2*STEPSIZE;//bottom - 36
-	
-// the corners must be within 16 of the midpoint	
+
+// the corners must be within 16 of the midpoint
 	corner = 0;
 	for	(x=0 ; x<=1 ; x++)
 	{
@@ -257,9 +262,9 @@ qboolean MG_CheckBottom (edict_t *ent)
 			{//don't trace the ones that were ok in the easy check
 				start[0] = stop[0] = x ? maxs[0] : mins[0];
 				start[1] = stop[1] = y ? maxs[1] : mins[1];
-				
+
 				gi.trace (start, vec3_origin, vec3_origin, stop, ent, MASK_MONSTERSOLID,&trace);
-				
+
 				if (trace.fraction >= 1.0)// || start[2] - trace.endpos[2] > STEPSIZE)
 				{//this point is off too high of a step
 					switch(corner)
@@ -322,7 +327,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 	qboolean	slip_under = false;
 
 	trace.succeeded = false;
-	// try the move	
+	// try the move
 	VectorCopy (self->s.origin, save_org);
 	if(self->monsterinfo.scale)
 	{//scale movement by monster's scale
@@ -367,7 +372,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 				}
 			}
 			gi.trace (self->s.origin, self->mins, self->maxs, test_org, self, MASK_MONSTERSOLID,&trace);
-	
+
 			// fly monsters don't enter water voluntarily
 			if (self->flags & FL_FLY)
 			{
@@ -412,11 +417,11 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 				}
 				return trace;//true
 			}
-			
+
 			if (!self->enemy)
 				break;
 		}
-		
+
 		return trace;
 	}
 //WALK MONSTERS
@@ -497,8 +502,8 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 				G_TouchTriggers (self);
 			}
 			self->groundentity = NULL;
-//	SV_Printf ("fall down\n"); 
-			trace.succeeded = true;	
+//	SV_Printf ("fall down\n");
+			trace.succeeded = true;
 			return trace;//true!
 		}
 		QPostMessage(self, MSG_BLOCKED, PRI_DIRECTIVE, NULL);
@@ -509,7 +514,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 	//DO THE MOVE!
 	//ok, put me there
 	VectorCopy (trace.endpos, self->s.origin);
-	
+
 	if(contents&MASK_WATER && self->flags & FL_AMPHIBIAN);
 	else if (!MG_CheckBottom(self))// && self->classID!=CID_TBEAST)
 	{//uh oh, not completely on solid ground
@@ -521,7 +526,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 				gi.linkentity (self);
 				G_TouchTriggers (self);
 			}
-			trace.succeeded = true;	
+			trace.succeeded = true;
 			return trace;//true!
 		}
 		//whoops, let's not make that move after all
@@ -563,7 +568,7 @@ float MG_ChangeWhichYaw (edict_t *self, qboolean ideal_yaw)
 	float	current;
 	float	move;
 	float	speed;
-	
+
 	current = anglemod(self->s.angles[YAW]);
 	if(ideal_yaw)
 		ideal = self->ideal_yaw;
@@ -595,7 +600,7 @@ float MG_ChangeWhichYaw (edict_t *self, qboolean ideal_yaw)
 		if (move < -speed)
 			move = -speed;
 	}
-	
+
 	//normal anglemod doesn't have the precision I need to slide along walls
 	self->s.angles[YAW] = anglemod_old(current + move);
 	return move;
@@ -609,7 +614,7 @@ float MG_ChangeYaw (edict_t *self)
 qboolean MG_GetGoalPos (edict_t *self, vec3_t goalpos)
 {
 	qboolean	charge_enemy = false;
-	
+
 	if(self->monsterinfo.aiflags&AI_STRAIGHT_TO_ENEMY && self->enemy)
 		charge_enemy = true;
 
@@ -622,7 +627,7 @@ qboolean MG_GetGoalPos (edict_t *self, vec3_t goalpos)
 #endif
 			return false;
 		}
-		
+
 		VectorCopy(level.buoy_list[self->buoy_index].origin, self->monsterinfo.nav_goal);
 		VectorCopy(self->monsterinfo.nav_goal, goalpos);
 	}
@@ -653,18 +658,18 @@ qboolean MG_GetGoalPos (edict_t *self, vec3_t goalpos)
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
 			gi.dprintf("No goal to face!\n");
-#endif		
+#endif
 		VectorClear(goalpos);
 		return false;
 	}
-	
+
 	return true;
 }
 
 float MG_FaceGoal (edict_t *self, qboolean doturn)
 {
 	vec3_t		vec, goalpos;
-	
+
 	if(MG_GetGoalPos(self, goalpos))
 	{
 		VectorSubtract(goalpos, self->s.origin, vec);
@@ -674,15 +679,15 @@ float MG_FaceGoal (edict_t *self, qboolean doturn)
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
 			gi.dprintf("No goal to face!\n");
-#endif		
+#endif
 		return false;
 	}
-	
+
 	self->ideal_yaw = vectoyaw(vec);
-	
+
 	if(doturn)
 		return MG_ChangeYaw(self);
-	
+
 	return 0;
 }
 
@@ -699,7 +704,7 @@ qboolean MG_StepDirection (edict_t *self, float yaw, float dist)
 {
 	vec3_t		move, forward, test_angles;
 	trace_t		trace;
-	
+
 	//find vector offset (move to add to origin)
 	test_angles[PITCH] = test_angles[ROLL] = 0;
 	test_angles[YAW] = yaw;
@@ -762,7 +767,7 @@ void MG_NewDir (edict_t *self, float dist)
 			test_ideal_yaw = d[2] == 90 ? 45 : 315;
 		else
 			test_ideal_yaw = d[2] == 90 ? 135 : 215;
-			
+
 		if (test_ideal_yaw != turnaround && MG_StepDirection(self, test_ideal_yaw, dist))
 			return;
 	}
@@ -775,7 +780,7 @@ void MG_NewDir (edict_t *self, float dist)
 		d[2]=test_ideal_yaw;
 	}
 
-	if (d[1]!=DI_NODIR && d[1]!=turnaround 
+	if (d[1]!=DI_NODIR && d[1]!=turnaround
 	&& MG_StepDirection(self, d[1], dist))
 			return;
 
@@ -825,17 +830,17 @@ qboolean infront_pos (edict_t *self, vec3_t pos)
 	vec3_t	vec;
 	float	dot;
 	vec3_t	forward, check_angles;
-	
+
 	if(Vec3NotZero(self->v_angle_ofs))
 		VectorAdd(self->v_angle_ofs,self->s.angles,check_angles);
 	else
 		VectorCopy(self->s.angles,check_angles);
-	
+
 	AngleVectors (check_angles, forward, NULL, NULL);
 	VectorSubtract (pos, self->s.origin, vec);
 	VectorNormalize (vec);
 	dot = DotProduct (vec, forward);
-	
+
 	if (dot > 0.3)
 		return true;
 	return false;
@@ -879,10 +884,10 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 	{
 		if(!self->goalentity)
 			return false;
-		
+
 		if (!(infront(self, self->goalentity)))
 			return false;
-		
+
 		if (self->goalentity->s.origin[2] < self->s.origin[2] - 28)
 		{
 			check_down = true;
@@ -939,7 +944,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 			source2[2] -= 1024;
 			//trace down
 			gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
-			
+
 			if (trace.allsolid || trace.startsolid)
 			{
 #ifdef _DEVEL
@@ -972,7 +977,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 					VectorSubtract(trace.endpos, self->s.origin, source2);
 					VectorNormalize(source2);
 					self->ideal_yaw = vectoyaw(source2);
-					
+
 					VectorMA(self->velocity, 300, vf, self->velocity);
 					self->velocity[2]+=150;
 
@@ -1007,7 +1012,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 		VectorCopy(self->s.origin, save_org);
 		can_move = M_walkmove (self, self->s.angles[YAW], 64);
 		VectorCopy(save_org, self->s.origin);
-		
+
 		if(can_move)
 			return false;
 		else
@@ -1023,10 +1028,10 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 			VectorCopy(self->mins, mins);
 			mins[2]+=24;//can clear it
 			gi.trace(source, mins, self->maxs, source2, self, MASK_SOLID,&trace);
-			
+
 			if((!trace.allsolid&&!trace.startsolid&&trace.fraction==1.0) || trace.ent == self->enemy)
 			{//Go for it!
-				
+
 				VectorMA(self->velocity, 500*trace.fraction, vf, self->velocity);
 				self->velocity[2] += 225;
 
@@ -1069,7 +1074,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 					source2[2] -= 24;
 					//trace forward and down a little
 					gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
-					
+
 					if (trace.allsolid || trace.startsolid)
 						return false;
 
@@ -1091,7 +1096,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 						source2[2] = 0;
 						VectorNormalize(source2);
 						self->ideal_yaw = vectoyaw(source2);
-						
+
 						VectorMA(self->s.origin, 64, source2, source);
 						gi.trace(self->s.origin, vec3_origin, vec3_origin, source, self, MASK_SOLID,&trace);
 
@@ -1137,7 +1142,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 ==================================================================
 MG_CheckJump()
 Checks to see if the enemy is not at the same level as monster
-or something is blocking the path of the monster.  If there is 
+or something is blocking the path of the monster.  If there is
 a clear jump arc to the enemy and the monster will not land in
 water or lava, the monster will attempt to jump the distance.
 ==================================================================
@@ -1187,10 +1192,10 @@ qboolean MG_CheckJump (edict_t *self)
 	{
 		if(!self->goalentity)
 			return false;
-		
+
 		if (!(infront(self, self->goalentity)))
 			return false;
-		
+
 		if(!self->goalentity->groundentity && self->classID != CID_GORGON)
 		{
 #ifdef _DEVEL
@@ -1392,7 +1397,7 @@ qboolean MG_CheckJump (edict_t *self)
 	}
 	else
 		self->nextthink = level.time + 0.3;
-	
+
 #ifdef _DEVEL
 	if(MGAI_DEBUG)
 		gi.dprintf("JUMP!!!\n");
@@ -1411,9 +1416,9 @@ trace_t MG_WalkMove (edict_t *self, float yaw, float dist)
 {
 	vec3_t	move, endpos;
 	trace_t trace;
-	
+
 	yaw = yaw*M_PI*2 / 360;
-	
+
 	move[0] = cos(yaw)*dist;
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
@@ -1442,9 +1447,9 @@ qboolean MG_BoolWalkMove (edict_t *self, float yaw, float dist)
 {
 	vec3_t	move;
 	trace_t trace;
-	
+
 	yaw = yaw*M_PI*2 / 360;
-	
+
 	move[0] = cos(yaw)*dist;
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
@@ -1469,9 +1474,9 @@ qboolean MG_TestMove (edict_t *self, float yaw, float dist)
 {
 	vec3_t	move;
 	trace_t trace;
-	
+
 	yaw = yaw*M_PI*2 / 360;
-	
+
 	move[0] = cos(yaw)*dist;
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
@@ -1492,7 +1497,7 @@ void MG_CheckEvade (edict_t *self)
 	edict_t	*ent = NULL;
 	vec3_t	total_dist;
 	float	eta;
-	
+
 	if(!skill->value)
 		return;
 	//else if(flrand(0, 3) > skill->value)
@@ -1573,11 +1578,11 @@ void old_ai_run (edict_t *self, float dist);
 void ai_run (edict_t *self, float dist)
 {
 	float	turnamt, i;
-	
+
 	//if dumb fleeing or fleeing and can't use buoys...
 	if((DEACTIVATE_BUOYS||!(self->monsterinfo.aiflags & AI_USING_BUOYS))
 				&&
-				(self->monsterinfo.aiflags & AI_COWARD || 
+				(self->monsterinfo.aiflags & AI_COWARD ||
 					(self->monsterinfo.aiflags&AI_FLEE
 					&&
 					self->monsterinfo.flee_finished >= level.time)
@@ -1619,7 +1624,7 @@ void ai_run (edict_t *self, float dist)
 		turnamt = Q_fabs(ai_face_goal(self));
 		return;
 	}
-	
+
 #ifdef _DEVEL
 	if(self->goalentity == self->enemy)
 	{
@@ -1639,7 +1644,7 @@ void ai_run (edict_t *self, float dist)
 		}
 		else
 			i = 0;
-	
+
 	if(self->classID!=CID_ASSASSIN)//does his own checks
 		if(classStatics[self->classID].msgReceivers[MSG_EVADE])
 		{//check for if going to be hit and evade
@@ -1706,7 +1711,7 @@ void body_phase_out (edict_t *self)
 		self->post_think = body_phase_out;
 		self->next_post_think = level.time + 0.05;
 	}
-	else 
+	else
 	{
 		self->s.color.a = 0;
 		self->post_think = NULL;
@@ -1838,7 +1843,7 @@ void MG_PostDeathThink (edict_t *self)
 			whichtrace = 4;
 		}
 	}
-	
+
 	//OK!  Now if two opposite sides are hanging, use a third if any, else, do nothing
 	if(cornerdist[FRONT] > MIN_DROP_DIST && cornerdist[BACK] > MIN_DROP_DIST)
 		frontbackbothclear = true;
@@ -1868,7 +1873,7 @@ void MG_PostDeathThink (edict_t *self)
 		else
 			return;
 	}
-	
+
 	switch(whichtrace)
 	{//check for stuck
 	case 1:
@@ -1908,7 +1913,7 @@ void MG_PostDeathThink (edict_t *self)
 				whichtrace = 0;
 		break;
 	}
-	
+
 	switch(whichtrace)
 	{
 	case 1:
@@ -1932,7 +1937,7 @@ void MG_PostDeathThink (edict_t *self)
 		self->next_post_think = level.time + 0.1;
 		return;
 		break;
-		
+
 	case 2:
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
@@ -1954,7 +1959,7 @@ void MG_PostDeathThink (edict_t *self)
 		self->next_post_think = level.time + 0.1;
 		return;
 		break;
-		
+
 	case 3:
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
@@ -1976,7 +1981,7 @@ void MG_PostDeathThink (edict_t *self)
 		self->next_post_think = level.time + 0.1;
 		return;
 		break;
-		
+
 	case 4:
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
@@ -2039,7 +2044,7 @@ void MG_PostDeathThink (edict_t *self)
 void MG_CheckLanded (edict_t *self, float next_anim)
 {
 	vec3_t pos;
-	
+
 #ifdef _DEVEL
 	if(MGAI_DEBUG)
 		gi.dprintf("self->velocity %f %f %f\n", self->velocity[0], self->velocity[1], self->velocity[2]);
@@ -2065,7 +2070,7 @@ void MG_InAirMove (edict_t *self, float fwdspd,float upspd,float rtspd)
 		return;
 
 	AngleVectors(self->s.angles, forward, right, up);
-	
+
 	VectorMA(self->velocity, upspd, up, self->velocity);
 	VectorMA(self->velocity, fwdspd, forward, self->velocity);
 	VectorMA(self->velocity, rtspd, right, self->velocity);
@@ -2108,7 +2113,7 @@ qboolean MG_GetTargOrg (edict_t *self, vec3_t targ_org)
 			VectorClear(targ_org);
 			return false;
 		}
-	
+
 		VectorCopy(self->goalentity->s.origin, targ_org);
 	}
 	return true;
@@ -2159,7 +2164,7 @@ qboolean ok_to_break (edict_t *target)
 	if(!target->takedamage)
 		return false;
 
-	if(target->health>MAX_BLOCKING_THING_HEALTH)//general damage for pots, barrels, etc. 
+	if(target->health>MAX_BLOCKING_THING_HEALTH)//general damage for pots, barrels, etc.
 		return false;
 
 	if(target->targetname)//supposed to be triggered for some reason
@@ -2259,7 +2264,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 
 	distloss = turnamt/self->yaw_speed * 0.8;//0.3;
 	adj_dist = dist - (dist * distloss);
-	
+
 	trace = MG_WalkMove(self, self->s.angles[YAW], dist);
 	if(trace.succeeded)
 	{
@@ -2290,7 +2295,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			hitworld = true;
 		else
 			hitworld = false;
-		
+
 		if(trace.ent == self->enemy)
 		{//bumped into enemy, go get him!
 			if(!(self->monsterinfo.aiflags & AI_COWARD) &&
@@ -2330,7 +2335,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			}
 		}
 
-/*			
+/*
 //FIXME: this needs to make sure they can break it
 //also: do not do this if the monsters' enemy is visible (MASK_SOLID check, though)
 		else if(!irand(0, 5))
@@ -2467,13 +2472,13 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 
 		vectoangles(trace.plane.normal, wall_angles);
 		AngleVectors(wall_angles, NULL, wall_right, NULL);
-		
+
 		if(goal_vis)
 		{//can see goal, turn towards IT first
 			VectorSubtract(self->goalentity->s.origin, self->s.origin, self_forward);
 			VectorNormalize(self_forward);
 		}
-		
+
 		//Get closest angle off that wall to move in
 		if(DotProduct(wall_right,self_forward)>0)
 		{
@@ -2494,13 +2499,13 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 
 		if(irand(0,10)<3)//30% chance of trying other way first
 			VectorScale(new_forward, -1, new_forward);
-		
+
 		self->best_move_yaw=vectoyaw(new_forward);
 
 		if(new_best_yaw && self->best_move_yaw == oby)
 		{
 			VectorScale(new_forward, -1, new_forward);
-		
+
 			self->best_move_yaw=vectoyaw(new_forward);
 		}
 
@@ -2519,13 +2524,13 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 		turnamt = Q_fabs(MG_ChangeWhichYaw(self, YAW_BEST_MOVE));
 		distloss = turnamt/self->yaw_speed * 0.8;//0.3;
 		adj_dist = dist - (dist * distloss);
-		
+
 		VectorCopy(new_forward, vf);
 		//AngleVectors(self->s.angles, vf, NULL, NULL);
 
 		VectorCopy(self->s.origin, source);
 		VectorMA(source, adj_dist, vf, source);
-		
+
 		gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
 
 		if (trace.fraction < 1||trace.allsolid||trace.startsolid)
@@ -2535,7 +2540,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 				gi.dprintf("turn other way\n");
 #endif
 			VectorScale(new_forward, -1, new_forward);
-			self->best_move_yaw=vectoyaw(new_forward);			
+			self->best_move_yaw=vectoyaw(new_forward);
 			//restore yaw
 			self->s.angles[YAW] = save_yaw;
 			//try new dir
@@ -2545,14 +2550,14 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 
 			VectorCopy(new_forward, vf);
 			//AngleVectors(self->s.angles, vf, NULL, NULL);
-	
+
 			VectorMA(source, adj_dist, vf, source);
 
 			//Account for STEPSIZE
 			mins[2] += stepsize;
 			if(mins[2] >= self->maxs[2])
 				mins[2] = self->maxs[2] - 1;
-			
+
 			gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
 			if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 			{//Uh oh!  Go straight away from wall
@@ -2578,7 +2583,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 #ifdef _DEVEL
 	if(MGAI_DEBUG)
 		gi.dprintf("Don't know what I hit, choosing newdir for a second\n");
-#endif	
+#endif
 	MG_NewDir(self, dist);
 	return false;
 }
@@ -2660,7 +2665,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 
 	distloss = turnamt/self->yaw_speed * 0.8;//0.3;
 	adj_dist = dist - (dist * distloss);
-	
+
 	MG_GetGoalPos(self, goalpos);
 
 	trace = MG_AirMove(self, goalpos, dist);
@@ -2688,7 +2693,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 			hitworld = true;
 		else
 			hitworld = false;
-		
+
 		if(trace.ent == self->enemy)
 		{//bumped into enemy, go get him!
 			if(!(self->monsterinfo.aiflags & AI_COWARD) &&
@@ -2813,13 +2818,13 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 
 		vectoangles(trace.plane.normal, wall_angles);
 		AngleVectors(wall_angles, NULL, wall_right, NULL);
-		
+
 		if(goal_vis)
 		{//can see goal, turn towards IT first
 			VectorSubtract(self->goalentity->s.origin, self->s.origin, self_forward);
 			VectorNormalize(self_forward);
 		}
-		
+
 		//Get closest angle off that wall to move in
 		if(DotProduct(wall_right,self_forward)>0)
 		{
@@ -2840,13 +2845,13 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 
 		if(irand(0,10)<3)//30% chance of trying other way first
 			VectorScale(new_forward, -1, new_forward);
-		
+
 		self->best_move_yaw=vectoyaw(new_forward);
 
 		if(new_best_yaw && self->best_move_yaw == oby)
 		{
 			VectorScale(new_forward, -1, new_forward);
-		
+
 			self->best_move_yaw=vectoyaw(new_forward);
 		}
 
@@ -2862,13 +2867,13 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 		turnamt = Q_fabs(MG_ChangeWhichYaw(self, YAW_BEST_MOVE));
 		distloss = turnamt/self->yaw_speed * 0.8;//0.3;
 		adj_dist = dist - (dist * distloss);
-		
+
 		VectorCopy(new_forward, vf);
 		//AngleVectors(self->s.angles, vf, NULL, NULL);
 
 		VectorCopy(self->s.origin, source);
 		VectorMA(source, adj_dist, vf, source);
-		
+
 		gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
 
 		if (trace.fraction < 1||trace.allsolid||trace.startsolid)
@@ -2878,7 +2883,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 				gi.dprintf("turn other way\n");
 #endif
 			VectorScale(new_forward, -1, new_forward);
-			self->best_move_yaw=vectoyaw(new_forward);			
+			self->best_move_yaw=vectoyaw(new_forward);
 			//restore yaw
 			self->s.angles[YAW] = save_yaw;
 			//try new dir
@@ -2888,7 +2893,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 
 			VectorCopy(new_forward, vf);
 			//AngleVectors(self->s.angles, vf, NULL, NULL);
-	
+
 			VectorMA(source, adj_dist, vf, source);
 
 			gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
@@ -2917,7 +2922,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 	if(MGAI_DEBUG)
 		gi.dprintf("Don't know what I hit, choosing newdir for a second\n");
 #endif
-	
+
 	MG_NewDir(self, dist);
 	return false;
 }

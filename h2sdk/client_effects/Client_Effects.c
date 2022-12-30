@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #include "Client Effects.h"
 #include "Client Entities.h"
 #include "FX.h"
@@ -5,7 +11,7 @@
 // NB. The assassin tport go is not precached
 
 ClientEffect_t clientEffectSpawners[NUM_FX] =
-{	
+{
 	// ***NOTE*** We currently have 113 client effects, and we don't want to exceed 32768!  Ha!
 
 	{ RemoveEffects,					NULL,					"s"			},
@@ -26,7 +32,7 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXAmmoPickup,						PreCacheItemAmmo,		"b"			},
 	{ FXFlyingFist,						PreCacheFist,			"t"			},
 	{ FXFlyingFistExplode,				NULL,					"d"			},
-	{ FXBlueRing,						PreCacheBluering,		NULL		},				
+	{ FXBlueRing,						PreCacheBluering,		NULL		},
 	{ FXMeteorBarrier,					PreCacheMeteor,			NULL		},	// see fx.h for an explanation of this
 	{ FXMeteorBarrier,					PreCacheMeteor,			NULL		},
 	{ FXMeteorBarrier,					PreCacheMeteor,			NULL		},
@@ -122,7 +128,7 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXChickenExplode,					NULL,					NULL		},
 	{ FXFlamethrower,					NULL,					"df"		},
 	{ FXTeleportPad,					NULL,					NULL		},	// 110 fx to here
-	{ FXQuake,							NULL,					"bbb"		},	// FX_QUAKE 
+	{ FXQuake,							NULL,					"bbb"		},	// FX_QUAKE
 	{ FXLightning,						PreCacheLightning,		"vbb"		},
 	{ FXPowerLightning,					PreCacheLightning,		"vb"		},
 	{ FXBubble,							PreCacheBubbler,		NULL		},
@@ -130,7 +136,7 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXWaterParticles,					PreCacheWaterParticles,	NULL		},	// FX_WATER_PARTICLES - 119
 	{ FXMEffects,						PreCacheMEffects,		"bv"		},	// FX_M_EFFECTS - 120 - all of Morcalavin's effects
 	{ FXHPStaff,						PreCacheHPStaff,		"bs"		},	// FX_HP_STAFF - 121 - staff effects for the high priestess
-	{ FXRandWaterBubble,				NULL,					NULL		},		 
+	{ FXRandWaterBubble,				NULL,					NULL		},
 	{ FXMagicPortal,					PreCachePortal,			"vbb"		},
 	{ FXTBEffects,						PreCacheTB,				"bv"		},	// FX_TB_EFFECTS - 124
 	{ FXTestBBox,						NULL,					"fff"		},
@@ -152,11 +158,11 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXFeetTrail,						NULL,					NULL		},
 	{ FXGenericSparks,					PreCacheSparks,			"d"			},
 	{ NULL,								NULL,					NULL		},	// FX_CROSSHAIR
-};	
+};
 
 CE_ClassStatics_t classStatics[NUM_CLASSIDS];
 
-void (*classStaticsInits[NUM_CLASSIDS])()= 
+void (*classStaticsInits[NUM_CLASSIDS])()=
 {
 	InitDebrisStatics
 };

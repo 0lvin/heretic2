@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "ce_DefaultMessageHandler.h"
 #include "Client Entities.h"
 

@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "q_shared.h"
 #include "g_local.h"
 #include "matrix.h"
@@ -18,13 +23,13 @@ static vec3_t LocationsBiped[hl_BipedPoints] =
 {
 	 0.00F,  0.00F,  0.24F,		// head
 	 0.16F,  0.00F,  0.10F,		// hl_TorsoFront
-	-0.16F,	 0.00F,  0.10F,		// hl_TorsoBack    
+	-0.16F,	 0.00F,  0.10F,		// hl_TorsoBack
 	 0.00F,	 0.35F,	 0.08F,		// hl_ArmUpperLeft
-	 0.00F,	 0.35F,	-0.04F,		// hl_ArmLowerLeft 
+	 0.00F,	 0.35F,	-0.04F,		// hl_ArmLowerLeft
 	 0.00F,	-0.35F,	 0.08F,		// hl_ArmUpperRight
 	 0.00F,	-0.35F,	-0.04F,		// hl_ArmLowerRight
-	 0.00F,	 0.20F,	-0.10F,		// hl_LegUpperLeft 
-  	 0.00F,	 0.20F,	-0.20F,		// hl_LegLowerLeft 
+	 0.00F,	 0.20F,	-0.10F,		// hl_LegUpperLeft
+  	 0.00F,	 0.20F,	-0.20F,		// hl_LegLowerLeft
 	 0.00F,	-0.20F,	-0.10F,		// hl_LegUpperRight
 	 0.00F,	-0.20F,	-0.20F,		// hl_LegLowerRight
 };
@@ -63,8 +68,8 @@ void GetWorkLocations(vec3_t *work, vec3_t scale, vec3_t origin, vec_t angle, in
 	matrix3_t	mat;
 
 	// Create a yaw matrix dependent on targets yaw
-	CreateYawMatrix(mat, angle); 
-	
+	CreateYawMatrix(mat, angle);
+
 	// Grab base of hit location table
 	loc = HitLocTypes[LocType].LocTable;
 
@@ -128,7 +133,7 @@ HitLocation_t T_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoin
 	VectorAdd(target->absmin, target->absmax, center);
 	Vec3ScaleAssign(0.5, center);
 
-	// Create a table of rotated offsets 
+	// Create a table of rotated offsets
 	GetWorkLocations(WorkLocations, target->size, center, target->s.angles[YAW], LocType);
 
 	// Find nearest point in table of rotated offsets to collision point
@@ -136,7 +141,7 @@ HitLocation_t T_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoin
 	return(result);
 }
 
-HitLocation_t HitLocationForVFLZone [TOTAL_ZONES] = 
+HitLocation_t HitLocationForVFLZone [TOTAL_ZONES] =
 {//Lateral:
 //	0-20(left),		20-40(lmid),	40-60(mid),		60-80(rmid),	80-100(right)
 //Vertical: Between 0% and 20% of height (Lower Leg/Feet)
@@ -254,7 +259,7 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 
 	VectorMA(point, hdist - tradius, dir, point);
 	//now a point on the surface of a cylinder with a radius of tradius
-	
+
 	VectorSubtract(point, tcenter, point_dir);
 	VectorNormalize(point_dir);
 

@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "H2Common.h"
 #include "q_Typedef.h"
 

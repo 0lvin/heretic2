@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 #include "g_Skeletons.h"
 #include "ArrayedList.h"
@@ -20,7 +25,7 @@ typedef struct
 
 #define MAX_CURRENT_LEVELS	29
 
-eax_level_info_t	eax_level_info[MAX_CURRENT_LEVELS] = 
+eax_level_info_t	eax_level_info[MAX_CURRENT_LEVELS] =
 {
 	{"ssdocks",			EAX_CITY_AND_SEWERS},
 	{"sswarehouse",		EAX_CITY_AND_SEWERS},
@@ -63,7 +68,7 @@ char *ED_NewString (char *string)
 {
 	char	*newb, *new_p;
 	int		i,l;
-	
+
 	l = strlen(string) + 1;
 
 	newb = gi.TagMalloc (l, TAG_LEVEL);
@@ -83,7 +88,7 @@ char *ED_NewString (char *string)
 		else
 			*new_p++ = string[i];
 	}
-	
+
 	return newb;
 }
 
@@ -178,7 +183,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 
 // go through all the dictionary pairs
 	while (1)
-	{	
+	{
 	// parse key
 		com_token = COM_Parse (&data);
 		if (com_token[0] == '}')
@@ -187,8 +192,8 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 			gi.error ("ED_ParseEntity: EOF without closing brace");
 
 		strncpy (keyname, com_token, sizeof(keyname)-1);
-		
-	// parse value	
+
+	// parse value
 		com_token = COM_Parse (&data);
 		if (!data)
 			gi.error ("ED_ParseEntity: EOF without closing brace");
@@ -196,7 +201,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		if (com_token[0] == '}')
 			gi.error ("ED_ParseEntity: closing brace without data");
 
-		init = true;	
+		init = true;
 
 	// keynames with a leading underscore are used for utility comments,
 	// and are immediately discarded by quake
@@ -360,7 +365,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean lo
 
 	while (1)
 	{
-		// parse the opening brace	
+		// parse the opening brace
 		com_token = COM_Parse (&entities);
 		if (!entities)
 			break;
@@ -372,7 +377,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean lo
 		else
 			ent = G_Spawn ();
 		entities = ED_ParseEdict (entities, ent);
-		
+
 		// remove things (except the world) from different skill levels or deathmatch
 		if (ent != g_edicts)
 		{
@@ -380,7 +385,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean lo
 			{
 				if ( ent->spawnflags & SPAWNFLAG_NOT_DEATHMATCH )
 				{
-					G_FreeEdict (ent);	
+					G_FreeEdict (ent);
 					inhibit++;
 					continue;
 				}
@@ -393,12 +398,12 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean lo
 					((skill->value >= 2) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
 					)
 					{
-						G_FreeEdict (ent);	
+						G_FreeEdict (ent);
 						inhibit++;
 						continue;
 					}
 			}
-			
+
 			// Check if it's a monster and if we're nomonster here...
 			if (sv_nomonsters && sv_nomonsters->value && strstr(ent->classname, "monster_"))
 			{
@@ -414,7 +419,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean lo
 		}
 
 		ED_CallSpawn (ent);
-	}	
+	}
 
 #ifdef _DEVEL
 	gi.dprintf ("%i entities inhibited\n", inhibit);
@@ -457,7 +462,7 @@ NOBODIES - In DM, no bodies will be left behind by players- for maps with large 
  5 EAX_FOREST,
  6 EAX_PSYCHOTIC,
 
-"offensive"		starting offensive weapons (flag bits): 
+"offensive"		starting offensive weapons (flag bits):
 
   1		- swordstaff
   2		- fireball
@@ -493,7 +498,7 @@ void SP_worldspawn (edict_t *ent)
 	// Reserve some spots for dead player bodies.
 
 	InitBodyQue ();
-	
+
 	if((ent->spawnflags & 1) && (deathmatch->value || coop->value))
 		level.body_que = -1;
 
@@ -528,11 +533,11 @@ void SP_worldspawn (edict_t *ent)
 		// the EAX default sound type for this level.
 		if (!stricmp(eax_level_info[i].level_name,  level.mapname))
 		{
-			Cvar_SetValue("EAX_default", (float)eax_level_info[i].default_preset);	
+			Cvar_SetValue("EAX_default", (float)eax_level_info[i].default_preset);
 			break;
 		}
 	}
-	
+
 	// if we didn't find it in the current level list, lets just set it to generic
 	if (i == MAX_CURRENT_LEVELS)
 		Cvar_SetValue("EAX_default", ent->s.scale);
@@ -567,7 +572,7 @@ void SP_worldspawn (edict_t *ent)
 
 	// Save away cooptimeout so it is accessible to the server (SV_) functions.
 
-	Cvar_SetValue("sv_cooptimeout",(!st.cooptimeout)?0:st.cooptimeout);	
+	Cvar_SetValue("sv_cooptimeout",(!st.cooptimeout)?0:st.cooptimeout);
 
 	//---------------
 
@@ -588,40 +593,40 @@ void SP_worldspawn (edict_t *ent)
 
 	// 0 normal
 	gi.configstring(CS_LIGHTS+0, "m");
-	
+
 	// 1 FLICKER (first variety)
 	gi.configstring(CS_LIGHTS+1, "mmnmmommommnonmmonqnmmo");
-	
+
 	// 2 SLOW STRONG PULSE
 	gi.configstring(CS_LIGHTS+2, "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba");
-	
+
 	// 3 CANDLE (first variety)
 	gi.configstring(CS_LIGHTS+3, "mmmmmaaaaammmmmaaaaaabcdefgabcdefg");
-	
+
 	// 4 FAST STROBE
 	gi.configstring(CS_LIGHTS+4, "mamamamamama");
-	
+
 	// 5 GENTLE PULSE 1
 	gi.configstring(CS_LIGHTS+5,"jklmnopqrstuvwxyzyxwvutsrqponmlkj");
-	
+
 	// 6 FLICKER (second variety)
 	gi.configstring(CS_LIGHTS+6, "nmonqnmomnmomomno");
-	
+
 	// 7 CANDLE (second variety)
 	gi.configstring(CS_LIGHTS+7, "mmmaaaabcdefgmmmmaaaammmaamm");
-	
+
 	// 8 CANDLE (third variety)
 	gi.configstring(CS_LIGHTS+8, "mmmaaammmaaammmabcdefaaaammmmabcdefmmmaaaa");
-	
+
 	// 9 SLOW STROBE (fourth variety)
 	gi.configstring(CS_LIGHTS+9, "aaaaaaaazzzzzzzz");
-	
+
 	// 10 FLUORESCENT FLICKER
 	gi.configstring(CS_LIGHTS+10, "mmamammmmammamamaaamammma");
 
 	// 11 SLOW PULSE NOT FADE TO BLACK
 	gi.configstring(CS_LIGHTS+11, "abcdefghijklmnopqrrqponmlkjihgfedcba");
-	
+
 	// styles 32-62 are assigned by the light program for switchable lights
 
 	// 63 testing

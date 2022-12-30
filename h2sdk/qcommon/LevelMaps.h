@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #pragma once
 
 // Level progression map only needs to work on the dmireswamp, kellcaves, canyon, oglemine1, and oglemine2.

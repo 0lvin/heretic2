@@ -1,7 +1,12 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #pragma once
 
 template <class V>
-class List 
+class List
 {
 	struct Node;
 	friend struct Node;
@@ -12,14 +17,14 @@ class List
 		V value;
 	};
 
-	Node *NewNode() 
+	Node *NewNode()
 	{
 		Node *r=new Node;
 		r->prev=r;
 		r->next=r;
 		return r;
 	}
-	Node *NewNode(const V& val,Node *n=0,Node *p=0) 
+	Node *NewNode(const V& val,Node *n=0,Node *p=0)
 	{
 		Node *r=new Node;
 		r->value=val;
@@ -55,7 +60,7 @@ public:
 		Erase(Begin(), End());
 		DelNode(Head);
 		Head = 0;
-		size = 0; 
+		size = 0;
 	}
 	int Size() const {return size;}
 	Iter Begin() {return Iter(Head->next);}
@@ -75,13 +80,13 @@ public:
 		S->next->prev=S->prev;
 		DelNode(S);
 		--size;
-		return (P); 
+		return (P);
 	}
 	Iter Erase(Iter F,Iter L)
 	{
 		while (F != L)
 			Erase(F++);
-		return (F); 
+		return (F);
 	}
 	void PushFront(const V& X) {Insert(Begin(), X); }
 	void PopFront() {Erase(Begin()); }

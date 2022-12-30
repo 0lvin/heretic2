@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef REFERENCE_H
 #define REFERENCE_H
 
@@ -65,7 +70,7 @@ enum {
 };
 
 // Morcalavin Reference Points
-enum 
+enum
 {
 	MORK_STAFFREF,//0
 	MORK_RFOOTREF,//1

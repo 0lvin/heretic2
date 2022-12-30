@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef _P_CHICKEN_H_
 #define _P_CHICKEN_H_
 

@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_Typedef.h"
 
 #define X 0
@@ -27,7 +32,7 @@ extern void QPlaySound(edict_t *self, int sound, int channel);
 
 extern void SetAnim(edict_t *self, int anim);
 
-extern void SpawnBlood(edict_t *target, edict_t *inflictor, vec3_t point, vec3_t normal, 
+extern void SpawnBlood(edict_t *target, edict_t *inflictor, vec3_t point, vec3_t normal,
 	int damage);
 extern void CalculateKnockBack(vec3_t dir, float knockback, int flags, float mass, vec3_t vel);
 extern void PostKnockBack(edict_t *target, vec3_t dir, float knockback, int flags);

@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef Q_CLIENTSERVER_H
 #define Q_CLIENTSERVER_H
 

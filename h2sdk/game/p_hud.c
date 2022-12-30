@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 #include "random.h"
 #include "vector.h"
@@ -30,7 +35,7 @@ qboolean PossessCorrectItem(edict_t *ent, gitem_t *item);
 
 #endif
 
-char *single_statusbar = 
+char *single_statusbar =
 "yb	-74 "
 "xl 16 "		// green mana
 "bar 8 16 60 "
@@ -64,7 +69,7 @@ char *single_statusbar =
 
 " yt 16 "
 
-"if 28 "		
+"if 28 "
 " xl 32 "
 " bar 26 60 16 " 	// Lung time left
 "endif "
@@ -74,7 +79,7 @@ char *single_statusbar =
 " bar 23 60 16 "	// Powerup time left
 "endif "
 
-"yt	16 "		
+"yt	16 "
 
 "xc 0 "				// Inventory Puzzle Item 1
 "pici 18 "
@@ -88,7 +93,7 @@ char *single_statusbar =
 "xc 120 "			// Puzzle 4
 "pici 21 "
 
-"if 31 "		
+"if 31 "
 " xl 32 "
 " gbar 29 "			// Boss Life Meter
 "endif "
@@ -129,7 +134,7 @@ char *dm_statusbar =
 
 " yt 16 "
 
-"if 28 "		
+"if 28 "
 " xl 32 "
 " bar 26 60 16 " // Lung time left
 "endif "
@@ -140,7 +145,7 @@ char *dm_statusbar =
 "endif "
 
 #if	0
-"xc 0 "			// Frag 
+"xc 0 "			// Frag
 "num 3 15 "
 #endif
 ;
@@ -165,10 +170,10 @@ void MoveClientToIntermission(edict_t *ent, qboolean log_file)
 	ent->client->ps.pmove.origin[2] = level.intermission_origin[2]*8;
 
 	VectorCopy(level.intermission_angle,ent->client->ps.viewangles);
-	
+
 	ent->client->ps.pmove.pm_type = PM_INTERMISSION;
 	ent->client->ps.rdflags &= ~RDF_UNDERWATER;
-	
+
 	// Clean up powerup info.
 
 	ent->client->invincible_framenum = 0;
@@ -184,7 +189,7 @@ void MoveClientToIntermission(edict_t *ent, qboolean log_file)
 	if(deathmatch->value)
 	{
 		DeathmatchScoreboardMessage(ent,NULL,log_file);
-	
+
 		gi.unicast(ent,true);
 	}
 }
@@ -230,28 +235,28 @@ void BeginIntermission(edict_t *targ)
 	// Find an intermission spot.
 
 	ent = G_Find (NULL, FOFS(classname), "info_player_intermission");
-	
+
 	if (!ent)
-	{	
+	{
 		// The map creator forgot to put in an intermission point.
 
 		ent = G_Find (NULL, FOFS(classname), "info_player_start");
-		
+
 		if (!ent)
 			ent = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
 	}
 	else
-	{	
+	{
 		// Chose one of four spots.
 
 		i = irand(0, 3);
-		
+
 		while (i--)
 		{
 			ent = G_Find (ent, FOFS(classname), "info_player_intermission");
-			
+
 			if (!ent)
-			{	
+			{
 				// Wrap around the list.
 
 				ent = G_Find (ent, FOFS(classname), "info_player_intermission");
@@ -323,7 +328,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 	team_scores_t	temp_point;
 	FILE		*f;
 	cvar_t		*host_name;
-	char		*game_types[3] = 
+	char		*game_types[3] =
 	{{"Cooperative"},
 	{"Death Match"},
 	{"Team Play Death Match"}};
@@ -355,7 +360,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 				if ((int)dmflags->value & (DF_MODELTEAMS | DF_SKINTEAMS))
 					game_type = 2;
 			}
-		   
+
 			secs = level.time;
 			hours = secs / (60*60);
 			secs -= hours * (60*60);
@@ -405,7 +410,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 				p++;
 			else
 			{
-				*p = 0;					
+				*p = 0;
 				p = &value[0];
 			}
 
@@ -464,10 +469,10 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 					team_scores[i] = team_scores[i+1];
 					team_scores[i+1] = temp_point;
 				}
-				
+
 			}
 		} while (bubble);
-		
+
 		// now display the data
 		real_total = total_team;
 		if (total_team > 10)
@@ -603,7 +608,7 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);
 
-	// close any file that needs to be 
+	// close any file that needs to be
 	if (log_file)
 	{
 		fprintf (f, "%s\n", log_file_footer->string);
@@ -729,7 +734,7 @@ void G_SetStats (edict_t *ent)
 	{
 		ps->stats[STAT_AMMO_ICON] = 0;
 	}
-	
+
 	// ********************************************************************************************
 	// Offensive mana.
 	// ********************************************************************************************
@@ -744,7 +749,7 @@ void G_SetStats (edict_t *ent)
 	// ********************************************************************************************
 	// Defensive mana.
 	// ********************************************************************************************
-	
+
 	ps->stats[STAT_DEFMANA_ICON]=gi.imageindex("icons/blue-mana.m8");
 	ps->stats[STAT_DEFMANA_BACK]=gi.imageindex("icons/blue-mana2.m8");
 	item = P_FindItem("Def-mana");
@@ -789,7 +794,7 @@ void G_SetStats (edict_t *ent)
 
 	// ********************************************************************************************
 	// Armour items.
-	// ********************************************************************************************	
+	// ********************************************************************************************
 
 	ps->stats[STAT_ARMOUR_ICON] = 0;
 	ps->stats[STAT_ARMOUR] = 0;
@@ -806,7 +811,7 @@ void G_SetStats (edict_t *ent)
 
 	// ********************************************************************************************
 	// Puzzle items.
-	// ********************************************************************************************	
+	// ********************************************************************************************
 
 	ps->stats[STAT_PUZZLE_ITEM1] = 0;
 	ps->stats[STAT_PUZZLE_ITEM2] = 0;
@@ -836,7 +841,7 @@ void G_SetStats (edict_t *ent)
 				}
 				count++;
 			 }
-		} 
+		}
 	}
 
 	// ********************************************************************************************

@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_Skeletons.h"
@@ -112,7 +117,7 @@ void ClientSetSkinType(edict_t *ent, char *skinname)
 	SetupPlayerinfo_effects(ent);
  	P_PlayerUpdateModelAttributes(playerinfo);
 	WritePlayerinfo_effects(ent);
-	
+
 }
 
 
@@ -287,13 +292,13 @@ void player_repair_skin (edict_t *self)
 					self->client->playerinfo.flags &= ~PLAYER_FLAG_NO_LARM;
 				else if(i == MESH__RARM)
 					self->client->playerinfo.flags &= ~PLAYER_FLAG_NO_RARM;
-				
+
 				to_fix--;
 				checked++;//to protect against infinite loops, this IS random after all
 			}
 		}
 	}
-	
+
 	SetupPlayerinfo_effects(self);
 	P_PlayerUpdateModelAttributes(&self->client->playerinfo);
 	WritePlayerinfo_effects(self);
@@ -596,7 +601,7 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH_BASE2);
-				self->s.fmnodeinfo[MESH_BASE2].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH_BASE2].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH_BASE2].skin = self->s.skinnum+1;
 			}
 			break;
@@ -634,7 +639,7 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH__BACK);
-				self->s.fmnodeinfo[MESH__BACK].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__BACK].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BACK].skin = self->s.skinnum+1;
 			}
 			break;
@@ -666,7 +671,7 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.4)
 //					player_dropweapon (self, (int)damage, BIT_BOWACTV);
 				self->client->playerinfo.pers.altparts |= (1<<MESH__LARM);
-				self->s.fmnodeinfo[MESH__LARM].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__LARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LARM].skin = self->s.skinnum+1;
 			}
 			break;
@@ -702,7 +707,7 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.75)
 //					player_dropweapon (self, (int)damage, BIT_HELSTF|BIT_BLADSTF);
 				self->client->playerinfo.pers.altparts |= (1<<MESH__RARM);
-				self->s.fmnodeinfo[MESH__RARM].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__RARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RARM].skin = self->s.skinnum+1;
 			}
 			break;
@@ -714,7 +719,7 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 				if(self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
 					break;
 				self->client->playerinfo.pers.altparts |= (1<<MESH__LLEG);
-				self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
 			}
 			else
@@ -798,7 +803,7 @@ void player_decap (edict_t *self, edict_t *other)
 	canthrownode_player(self, MESH__HEAD,&throw_nodes);
 
 	gore_spot[2]+=18;
-	
+
 	ThrowBodyPart(self, &gore_spot, throw_nodes, 0, 0);
 
 	VectorAdd(self->s.origin, gore_spot, gore_spot);
@@ -890,102 +895,102 @@ void player_leader_effect(void)
 
 static const short KillSelf[MOD_MAX] =
 {
-	0,			// MOD_UNKNOWN		 
+	0,			// MOD_UNKNOWN
 
-	0,			// MOD_STAFF		 
-	0,			// MOD_FIREBALL	 
-	0,			// MOD_MMISSILE	 
-	0,			// MOD_SPHERE		 
-	0,			// MOD_SPHERE_SPL	 
-	0,			// MOD_IRONDOOM	 
-	0,			// MOD_FIREWALL	 
-	0,			// MOD_STORM		 
-	0,			// MOD_PHOENIX		 
-	0,			// MOD_PHOENIX_SPL	 
-	0,			// MOD_HELLSTAFF	 
+	0,			// MOD_STAFF
+	0,			// MOD_FIREBALL
+	0,			// MOD_MMISSILE
+	0,			// MOD_SPHERE
+	0,			// MOD_SPHERE_SPL
+	0,			// MOD_IRONDOOM
+	0,			// MOD_FIREWALL
+	0,			// MOD_STORM
+	0,			// MOD_PHOENIX
+	0,			// MOD_PHOENIX_SPL
+	0,			// MOD_HELLSTAFF
 
-	0,			// MOD_P_STAFF		 
-	0,			// MOD_P_FIREBALL	 
-	0,			// MOD_P_MMISSILE	 
-	0,			// MOD_P_SPHERE	 
-	0,			// MOD_P_SPHERE_SPL 
-	0,			// MOD_P_IRONDOOM	 
-	0,			// MOD_P_FIREWALL	 
-	0,			// MOD_P_STORM		 
-	0,			// MOD_P_PHOENIX	 
+	0,			// MOD_P_STAFF
+	0,			// MOD_P_FIREBALL
+	0,			// MOD_P_MMISSILE
+	0,			// MOD_P_SPHERE
+	0,			// MOD_P_SPHERE_SPL
+	0,			// MOD_P_IRONDOOM
+	0,			// MOD_P_FIREWALL
+	0,			// MOD_P_STORM
+	0,			// MOD_P_PHOENIX
 	0,			// MOD_P_PHOENIX_SPL
-	0,			// MOD_P_HELLSTAFF	 
+	0,			// MOD_P_HELLSTAFF
 
-	0,			// MOD_KICKED		 
-	0,			// MOD_METEORS		 
-	0,			// MOD_ROR			 
-	0,			// MOD_SHIELD		 
-	0,			// MOD_CHICKEN		 
-	0,			// MOD_TELEFRAG	 
-	GM_OBIT_WATER,			// MOD_WATER		 
-	GM_OBIT_SLIME,			// MOD_SLIME		 
-	GM_OBIT_LAVA,			// MOD_LAVA		 
-	GM_OBIT_CRUSH,			// MOD_CRUSH		 
-	GM_OBIT_FALLING,		// MOD_FALLING		 
-	GM_OBIT_SUICIDE,		// MOD_SUICIDE		 
-	GM_OBIT_BARREL,			// MOD_BARREL		 
-	GM_OBIT_EXIT,			// MOD_EXIT		 
-	GM_OBIT_BURNT,			// MOD_BURNT		 
-	GM_OBIT_BLEED,			// MOD_BLEED		 
-	0,			// MOD_SPEAR		 
-	0,			// MOD_DIED		 
-	GM_OBIT_EXPL,			// MOD_KILLED_SLF	 
+	0,			// MOD_KICKED
+	0,			// MOD_METEORS
+	0,			// MOD_ROR
+	0,			// MOD_SHIELD
+	0,			// MOD_CHICKEN
+	0,			// MOD_TELEFRAG
+	GM_OBIT_WATER,			// MOD_WATER
+	GM_OBIT_SLIME,			// MOD_SLIME
+	GM_OBIT_LAVA,			// MOD_LAVA
+	GM_OBIT_CRUSH,			// MOD_CRUSH
+	GM_OBIT_FALLING,		// MOD_FALLING
+	GM_OBIT_SUICIDE,		// MOD_SUICIDE
+	GM_OBIT_BARREL,			// MOD_BARREL
+	GM_OBIT_EXIT,			// MOD_EXIT
+	GM_OBIT_BURNT,			// MOD_BURNT
+	GM_OBIT_BLEED,			// MOD_BLEED
+	0,			// MOD_SPEAR
+	0,			// MOD_DIED
+	GM_OBIT_EXPL,			// MOD_KILLED_SLF
 	0,			// MOD_DECAP
 	GM_OBIT_TORN_SELF	//MOD_TORN
 };
 
-static const short KillBy[MOD_MAX] = 
+static const short KillBy[MOD_MAX] =
 {
-	0,			// MOD_UNKNOWN		 
+	0,			// MOD_UNKNOWN
 
-	GM_OBIT_STAFF,			// MOD_STAFF		 
-	GM_OBIT_FIREBALL,	  	// MOD_FIREBALL	 
-	GM_OBIT_MMISSILE,	  	// MOD_MMISSILE	 
-	GM_OBIT_SPHERE,			// MOD_SPHERE		 
-	GM_OBIT_SPHERE_SPL,	  	// MOD_SPHERE_SPL	 
-	GM_OBIT_IRONDOOM,	  	// MOD_IRONDOOM	 
-	GM_OBIT_FIREWALL,	  	// MOD_FIREWALL	 
-	GM_OBIT_STORM,			// MOD_STORM		 
-	GM_OBIT_PHOENIX,	  	// MOD_PHOENIX		 
-	GM_OBIT_PHOENIX_SPL,  	// MOD_PHOENIX_SPL	 
-	GM_OBIT_HELLSTAFF,	  	// MOD_HELLSTAFF	 
+	GM_OBIT_STAFF,			// MOD_STAFF
+	GM_OBIT_FIREBALL,	  	// MOD_FIREBALL
+	GM_OBIT_MMISSILE,	  	// MOD_MMISSILE
+	GM_OBIT_SPHERE,			// MOD_SPHERE
+	GM_OBIT_SPHERE_SPL,	  	// MOD_SPHERE_SPL
+	GM_OBIT_IRONDOOM,	  	// MOD_IRONDOOM
+	GM_OBIT_FIREWALL,	  	// MOD_FIREWALL
+	GM_OBIT_STORM,			// MOD_STORM
+	GM_OBIT_PHOENIX,	  	// MOD_PHOENIX
+	GM_OBIT_PHOENIX_SPL,  	// MOD_PHOENIX_SPL
+	GM_OBIT_HELLSTAFF,	  	// MOD_HELLSTAFF
 
-	GM_OBIT_STAFF,			// MOD_P_STAFF		 
-	GM_OBIT_FIREBALL,		// MOD_P_FIREBALL	 
-	GM_OBIT_MMISSILE,		// MOD_P_MMISSILE	 
-	GM_OBIT_SPHERE,			// MOD_P_SPHERE	 
-	GM_OBIT_SPHERE_SPL,		// MOD_P_SPHERE_SPL 
-	GM_OBIT_IRONDOOM,		// MOD_P_IRONDOOM	 
-	GM_OBIT_FIREWALL,		// MOD_P_FIREWALL	 
-	GM_OBIT_STORM,			// MOD_P_STORM		 
-	GM_OBIT_PHOENIX,		// MOD_P_PHOENIX	 
+	GM_OBIT_STAFF,			// MOD_P_STAFF
+	GM_OBIT_FIREBALL,		// MOD_P_FIREBALL
+	GM_OBIT_MMISSILE,		// MOD_P_MMISSILE
+	GM_OBIT_SPHERE,			// MOD_P_SPHERE
+	GM_OBIT_SPHERE_SPL,		// MOD_P_SPHERE_SPL
+	GM_OBIT_IRONDOOM,		// MOD_P_IRONDOOM
+	GM_OBIT_FIREWALL,		// MOD_P_FIREWALL
+	GM_OBIT_STORM,			// MOD_P_STORM
+	GM_OBIT_PHOENIX,		// MOD_P_PHOENIX
 	GM_OBIT_PHOENIX_SPL,	// MOD_P_PHOENIX_SPL
-	GM_OBIT_HELLSTAFF,		// MOD_P_HELLSTAFF	 
+	GM_OBIT_HELLSTAFF,		// MOD_P_HELLSTAFF
 
-	GM_OBIT_KICKED,			// MOD_KICKED		 
-	GM_OBIT_METEORS,		// MOD_METEORS		 
-	GM_OBIT_ROR,			// MOD_ROR			 
-	GM_OBIT_SHIELD,			// MOD_SHIELD		 
-	GM_OBIT_CHICKEN,		// MOD_CHICKEN		 
-	GM_OBIT_TELEFRAG,		// MOD_TELEFRAG	 
-	0,			// MOD_WATER		 
-	0,			// MOD_SLIME		 
-	0,			// MOD_LAVA		 
-	0,			// MOD_CRUSH		 
-	0,			// MOD_FALLING		 
-	0,			// MOD_SUICIDE		 
-	0,			// MOD_BARREL		 
-	0,			// MOD_EXIT		 
-	GM_OBIT_BURNT,			// MOD_BURNT		 
-	GM_OBIT_BLEED,			// MOD_BLEED		 
-	0,			// MOD_SPEAR		 
-	0,			// MOD_DIED		 
-	0,			// MOD_KILLED_SLF	 
+	GM_OBIT_KICKED,			// MOD_KICKED
+	GM_OBIT_METEORS,		// MOD_METEORS
+	GM_OBIT_ROR,			// MOD_ROR
+	GM_OBIT_SHIELD,			// MOD_SHIELD
+	GM_OBIT_CHICKEN,		// MOD_CHICKEN
+	GM_OBIT_TELEFRAG,		// MOD_TELEFRAG
+	0,			// MOD_WATER
+	0,			// MOD_SLIME
+	0,			// MOD_LAVA
+	0,			// MOD_CRUSH
+	0,			// MOD_FALLING
+	0,			// MOD_SUICIDE
+	0,			// MOD_BARREL
+	0,			// MOD_EXIT
+	GM_OBIT_BURNT,			// MOD_BURNT
+	GM_OBIT_BLEED,			// MOD_BLEED
+	0,			// MOD_SPEAR
+	0,			// MOD_DIED
+	0,			// MOD_KILLED_SLF
 	0,			// MOD_DECAP
 	GM_OBIT_TORN	//MOD_TORN
 };
@@ -1010,7 +1015,7 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	if(deathmatch->value || coop->value)
 	{
 		self->enemy = attacker;
-		
+
 		if(attacker && attacker->client && attacker != self)
 		{
 			message = KillBy[self->client->meansofdeath];
@@ -1018,7 +1023,7 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			if(message)
 			{
 				gi.Obituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, attacker->s.number);
-				
+
 				if(deathmatch->value)
 				{
 					if(friendlyFire)
@@ -1034,7 +1039,7 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 		// Wasn't an awarded a frag, check for suicide messages.
 		message = KillSelf[self->client->meansofdeath];
-		
+
 		if(message)
 		{
 			gi.Obituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, 0);
@@ -1044,13 +1049,13 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 				self->client->resp.score--;
 			   	player_leader_effect();
 			}
-			
+
 			self->enemy = NULL;
 			return;
 		}
 	}
 
-	gi.Obituary(PRINT_MEDIUM, (short)(GM_OBIT_DIED + irand(0, 2)), self->s.number, 0);	
+	gi.Obituary(PRINT_MEDIUM, (short)(GM_OBIT_DIED + irand(0, 2)), self->s.number, 0);
 
 	if (deathmatch->value)
 	{
@@ -1076,7 +1081,7 @@ void player_make_gib(edict_t *self, edict_t *attacker)
 
 	mag = VectorLength(self->mins);
 	magb = Clamp(mag, 1.0, 255.0);
-   	
+
 	gi.CreateEffect(NULL,
 					FX_FLESH_DEBRIS,
    					0,
@@ -1130,7 +1135,7 @@ int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,v
 	}
 	// Get rid of the player's persistent effect.
 	if (self->PersistantCFX)
-	{	
+	{
 		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_DIE);
 		self->PersistantCFX = 0;
 	}
@@ -1162,7 +1167,7 @@ int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,v
 	// Create a persistant FX_REMOVE_EFFECTS effect - this is a special hack. If we just created
 	// a regular FX_REMOVE_EFFECTS effect, it will overwrite the next FX_PLAYER_PERSISTANT sent
 	// out. Luverly jubberly!!!
-	gi.CreatePersistantEffect(&self->s,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0); 
+	gi.CreatePersistantEffect(&self->s,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
 
 	// Get rid of all the stuff set up in PlayerFirstSeenInit...
 	gi.RemoveEffects(&self->s, FX_SHADOW);
@@ -1171,26 +1176,26 @@ int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,v
 
 	// Remove any shrine effects we have going.
 	PlayerKillShrineFX(self);
-	
+
 	// Remove any sound effects we may be generating.
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("misc/null.wav"), 1, ATTN_NORM,0);
 
 	if((self->health<-40) && !(self->flags & FL_CHICKEN))
-	{	
+	{
 		gi.sound(self,CHAN_BODY,gi.soundindex("*gib.wav"),1,ATTN_NORM,0);
-		
+
 		player_make_gib(self, attacker);
-	   
+
 		self->s.modelindex=0;
 		// Won`t get sent to client if mi 0 unless flag is set
 		self->svflags |= SVF_ALWAYS_SEND;
 		self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
 	   	self->deadflag=DEAD_DEAD;
-	   	
+
 		self->client->playerinfo.deadflag=DEAD_DEAD;
 	}
 	else
-	{	
+	{
 		// Make player die a normal death.
 
 		self->health=-1;
@@ -1199,11 +1204,11 @@ int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,v
 		{
 			self->client->respawn_time=level.time+1.0;
 			self->client->ps.pmove.pm_type=PM_DEAD;
-	
+
 			// If player died in a deathmatch or coop, show scores.
 
 			Cmd_Score_f(self);
-	
+
    			// Check if a chicken?
 
    			if (self->flags & FL_CHICKEN)
@@ -1230,7 +1235,7 @@ int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,v
 			else if ( self->fire_damage_time == -1 )
 			{
    				P_PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_B);
-				if (blood_level && (int)(blood_level->value) <= VIOLENCE_BLOOD)	// Don't scream bloody murder in Germany. 
+				if (blood_level && (int)(blood_level->value) <= VIOLENCE_BLOOD)	// Don't scream bloody murder in Germany.
 					gi.sound(self,CHAN_BODY,gi.soundindex("*death1.wav"),1,ATTN_NORM,0);
 				else
 					gi.sound(self,CHAN_BODY,gi.soundindex("*firedeath.wav"),1,ATTN_NORM,0);
@@ -1474,7 +1479,7 @@ edict_t *SelectCoopSpawnPoint (edict_t *ent)
 	while (1)
 	{
 		spot = G_Find (spot, FOFS(classname), "info_player_coop");
-			
+
 		if (!spot)
 			return NULL;	// we didn't have enough...
 
@@ -1486,11 +1491,11 @@ edict_t *SelectCoopSpawnPoint (edict_t *ent)
 		if (!target)
 			target = "";
 		if ( Q_stricmp(game.spawnpoint, target) == 0 )
-		{	
+		{
 			// This is a coop spawn point for one of the clients here.
 
 			index--;
-			
+
 			if (!index)
 				return spot;// this is it
 		}
@@ -1598,7 +1603,7 @@ int player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damag
 
 	mag = VectorLength(mins);
 	magb = Clamp(mag, 1.0, 255.0);
-   	
+
 	gi.CreateEffect(NULL,
 					FX_FLESH_DEBRIS,
    					0,
@@ -1646,11 +1651,11 @@ void CopyToBodyQue (edict_t *ent)
 	{
 		VectorCopy(ent->s.origin, origin);
 		origin[2] += (ent->mins[2] + 8.0f);
-		
+
 		// Put in the pretty effect when removing the corpse first.
 
 		gi.CreateEffect(NULL, FX_CORPSE_REMOVE, 0, origin, "");
-		
+
 		// No body que on this level.
 
 		return;
@@ -1725,8 +1730,8 @@ void respawn (edict_t *self)
 		// a regular FX_REMOVE_EFFECTS effect, it will overwrite the next FX_PLAYER_PERSISTANT sent
 		// out. Luverly jubberly!!!
 
-		gi.CreatePersistantEffect(&self->s,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0); 
-	
+		gi.CreatePersistantEffect(&self->s,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
+
 		if(deathmatch->value)
 		{
 			// Respawning in deathmatch always means a complete reset of the player's model.
@@ -1745,7 +1750,7 @@ void respawn (edict_t *self)
 		// Do the teleport sound.
 
 		gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
-	
+
 		// Add a teleportation effect.
 
 		gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
@@ -1775,8 +1780,8 @@ void SpawnInitialPlayerEffects(edict_t *ent)
 
 	// Don't need to keep track of this persistant effect, since its started but never stopped.
 
-	gi.CreatePersistantEffect(&ent->s, FX_PLAYER_PERSISTANT, 
-		CEF_BROADCAST | CEF_OWNERS_ORIGIN, NULL, ""); 
+	gi.CreatePersistantEffect(&ent->s, FX_PLAYER_PERSISTANT,
+		CEF_BROADCAST | CEF_OWNERS_ORIGIN, NULL, "");
 
 	if (deathmatch->value || coop->value)
 	   	player_leader_effect();
@@ -1810,7 +1815,7 @@ void SaveClientData (void)
 
 		game.clients[i].playerinfo.pers.mission_num1 = ent->client->ps.mission_num1;
 		game.clients[i].playerinfo.pers.mission_num2 = ent->client->ps.mission_num2;
-		
+
 		if(coop->value)
 			game.clients[i].playerinfo.pers.score=ent->client->resp.score;
 	}
@@ -1831,7 +1836,7 @@ void FetchClientEntData (edict_t *ent)
 
 	ent->client->ps.mission_num1 = ent->client->playerinfo.pers.mission_num1;
 	ent->client->ps.mission_num2 = ent->client->playerinfo.pers.mission_num2;
-	
+
 	if(coop->value)
 		ent->client->resp.score=ent->client->playerinfo.pers.score;
 }
@@ -1853,7 +1858,7 @@ void GiveLevelItems(edict_t *player)
 	weapon=NULL;
 
 	if(level.offensive_weapons&1)
-	{	
+	{
 		item=P_FindItem("staff");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1867,7 +1872,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.offensive_weapons&2)
-	{	
+	{
 		item=P_FindItem("fball");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1881,7 +1886,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.offensive_weapons&4)
-	{	
+	{
 		item=P_FindItem("hell");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1895,7 +1900,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.offensive_weapons&8)
-	{	
+	{
 		item=P_FindItem("array");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1909,7 +1914,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.offensive_weapons&16)
-	{	
+	{
 		item=P_FindItem("rain");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1923,7 +1928,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.offensive_weapons&32)
-	{	
+	{
 		item=P_FindItem("sphere");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1937,7 +1942,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.offensive_weapons&64)
-	{	
+	{
 		item=P_FindItem("phoen");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1951,7 +1956,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.offensive_weapons&128)
-	{	
+	{
 		item=P_FindItem("mace");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1965,7 +1970,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.offensive_weapons&256)
-	{	
+	{
 		item=P_FindItem("fwall");
 		if(AddWeaponToInventory(item,player))
 		{
@@ -1979,7 +1984,7 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.defensive_weapons&1)
-	{	
+	{
 		item=P_FindItem("ring");
 		AddDefenseToInventory(item,player);
 	}
@@ -1991,21 +1996,21 @@ void GiveLevelItems(edict_t *player)
 	}
 
 	if(level.defensive_weapons&4)
-	{	
+	{
 		item=P_FindItem("tele");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&8)
-	{	
+	{
 		item=P_FindItem("morph");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&16)
-	{	
+	{
 		item=P_FindItem("meteor");
-		AddDefenseToInventory(item,player);	
+		AddDefenseToInventory(item,player);
 	}
 
 	SetupPlayerinfo_effects(player);
@@ -2025,14 +2030,14 @@ void InitClientPersistant(edict_t *player)
 
 	client=player->client;
 
-	memset(&client->playerinfo.pers, 0, sizeof(client->playerinfo.pers));	
+	memset(&client->playerinfo.pers, 0, sizeof(client->playerinfo.pers));
 
 	// ********************************************************************************************
 	// Set up player's health.
 	// ********************************************************************************************
 
 	client->playerinfo.pers.health = 100;
-	
+
 	// ********************************************************************************************
 	// Set up maximums amounts for health, mana and ammo for bows and hellstaff.
 	// ********************************************************************************************
@@ -2085,7 +2090,7 @@ void InitClientPersistant(edict_t *player)
 	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = client->playerinfo.pers.max_defmana / 2;
 
 #ifdef G_NOAMMO
-	
+
 	// Start with all weapons if G_NOAMMO is defined.
 
 	gi.dprintf("Starting with unlimited ammo.\n");
@@ -2113,7 +2118,7 @@ void InitClientPersistant(edict_t *player)
 
 	item = P_FindItem("meteor");
 	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
-															   
+
 	item = P_FindItem("morph");
 	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
@@ -2213,7 +2218,7 @@ void PutClientInServer (edict_t *ent)
 	{
 		// Deathmatch always means a complete reset of the player's model.
 
-		complete_reset=1;		
+		complete_reset=1;
 	}
 
 	// ********************************************************************************************
@@ -2231,7 +2236,7 @@ void PutClientInServer (edict_t *ent)
 
 	if (client->playerinfo.pers.health <= 0)
 		InitClientPersistant(ent);
-	
+
 	client->resp = resp;
 
 	// Rsestore data that is persistant accross level changes.
@@ -2275,7 +2280,7 @@ void PutClientInServer (edict_t *ent)
 	ent->fire_timestamp = 0;
 
 	ent->model = "players/male/tris.fm";
-	
+
 	ent->pain = player_pain;
 	ent->die = player_die;
 	ent->waterlevel = 0;
@@ -2292,7 +2297,7 @@ void PutClientInServer (edict_t *ent)
 	// ********************************************************************************************
 	// Initialize the player's gclient_t and playerstate_t.
 	// ********************************************************************************************
-	
+
 	client->ps.pmove.origin[0] = spawn_origin[0]*8;
 	client->ps.pmove.origin[1] = spawn_origin[1]*8;
 	client->ps.pmove.origin[2] = spawn_origin[2]*8;
@@ -2328,8 +2333,8 @@ void PutClientInServer (edict_t *ent)
 
 	// Modelindex is always 255 for player models.
 
-	ent->s.modelindex=255;		
-	
+	ent->s.modelindex=255;
+
 	// Set up the model's origin, making sure it's off the ground.
 
 	VectorCopy (spawn_origin, ent->s.origin);
@@ -2346,7 +2351,7 @@ void PutClientInServer (edict_t *ent)
 	{
 		// could't spawn in?
 	}
-	
+
 	ent->s.effects=(EF_CAMERA_NO_CLIP|EF_SWAPFRAME|EF_JOINTED|EF_PLAYER);
 
 	// Set up skeletal info. Note, skeleton has been created already.
@@ -2360,11 +2365,11 @@ void PutClientInServer (edict_t *ent)
 	// ********************************************************************************************
 	// Initialize the player's playerinfo_t.
 	// ********************************************************************************************
-	
+
 	client->playerinfo.plaguelevel = plaguelevel;
 
 	// Set the player's current offensive and defensive ammo indexes.
-	
+
 	if (client->playerinfo.pers.weapon->ammo)
 		client->playerinfo.weap_ammo_index = ITEM_INDEX(P_FindItem(client->playerinfo.pers.weapon->ammo));
 
@@ -2387,7 +2392,7 @@ void PutClientInServer (edict_t *ent)
 	if(deathmatch->value||coop->value)
 	{
 		// Reset the player's fmodel nodes when spawning in deathmatch or coop.
-		
+
 		ResetPlayerBaseNodes(ent);
 
 		// Just in case we were on fire when we died.
@@ -2417,7 +2422,7 @@ void PutClientInServer (edict_t *ent)
 		// For blade only DMing, ensure we start with staff in our hand.
 
 		gitem_t *item;
-		
+
 		item=P_FindItem("staff");
 		client->playerinfo.pers.newweapon=item;
 		client->playerinfo.switchtoweapon=WEAPON_READY_SWORDSTAFF;
@@ -2493,16 +2498,16 @@ void ClientBegin (edict_t *ent)
 	if (ent->inuse == true)
 	{
 		// The client has cleared the client side cl.inputangles upon connecting to the server, which
-		// is different from the state when the game is saved, so we need to compensate with 
+		// is different from the state when the game is saved, so we need to compensate with
 		// delta_angles.
-		
+
 		for(i=0;i<3;i++)
 			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->v_angle[i]);
 
 		// The client has cleared the client side cl.viewangles upon connecting to the server, which
-		// is different from the state when the game is saved, so we need to compensate with 
+		// is different from the state when the game is saved, so we need to compensate with
 		// camara_delta_angles.
-		
+
 		for(i=0;i<3;i++)
 			ent->client->ps.pmove.camera_delta_angles[i]=
 				ANGLE2SHORT(ent->client->ps.viewangles[i])-ent->client->ps.pmove.delta_angles[i];
@@ -2523,7 +2528,7 @@ void ClientBegin (edict_t *ent)
 		ent->classname = "player";
 		InitClientResp (ent->client);
 		PutClientInServer (ent);
-	
+
 		// All resets should be partial, until ClientConnect() gets called again for a new game,
 		// respawn() occurs (which will do the correct reset type).
 
@@ -2787,7 +2792,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			default:
 				gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\male/Corvus", ent->client->playerinfo.pers.netname) );
 				break;
-			}	
+			}
 		}
 	}
 
@@ -2841,7 +2846,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo, qboolean loadgame)
 	// Check for a password.
 
 	value = Info_ValueForKey (userinfo, "password");
-	
+
 	if (strcmp(password->string, value) != 0)
 		return false;
 
@@ -3012,7 +3017,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 	level.current_entity = ent;
 	client = ent->client;
-		
+
 	CheckContinuousAutomaticEffects(ent);
 
 	// ********************************************************************************************
@@ -3024,7 +3029,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		client->ps.pmove.pm_type = PM_INTERMISSION;
 
 		// Can exit intermission after five seconds
-		
+
 		if (level.time > level.intermissiontime + 5.0 && (ucmd->buttons & BUTTON_ANY) )
 			level.exitintermission = true;
 
@@ -3086,7 +3091,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		pm.s.origin[i] = ent->s.origin[i]*8;
 		pm.s.velocity[i] = ent->velocity[i]*8;
 	}
-	
+
 	if (memcmp(&client->old_pmove, &pm.s, sizeof(pm.s)))
 	{
 		pm.snapinitial = true;
@@ -3131,12 +3136,12 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	// Handle lockmove cases.
 
 	if((client->playerinfo.flags&(PLAYER_FLAG_LOCKMOVE_WAS_SET|PLAYER_FLAG_USE_ENT_POS))&&!(client->ps.pmove.pm_flags&PMF_LOCKMOVE))
-	{ 
+	{
 		// Lockmove was set last frame, but isn't now, so we copy the player edict's origin and
 		// velocity values to the client for use in Pmove(). NOTE: Pmove() on the SERVER needs
 		// pointers to specify vectors to be read and written for the origin and velocity. So
 		// be careful if you screw around with this crazy code.
-				
+
 		client->playerinfo.flags &= ~PLAYER_FLAG_USE_ENT_POS;
 
 		VectorCopy(ent->s.origin, client->playerinfo.origin);
@@ -3153,7 +3158,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		{
 			client->playerinfo.velocity[2] -= SWIM_ADJUST_AMOUNT;
 		}
-		
+
 		if (client->playerinfo.seqcmd[ACMDL_JUMP])
 		{
 			client->playerinfo.velocity[2] += SWIM_ADJUST_AMOUNT;
@@ -3168,12 +3173,12 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			pm.s.w_flags |= WF_SINK;
 			client->playerinfo.velocity[2] -= SWIM_ADJUST_AMOUNT;
 		}
-		
+
 		if (client->playerinfo.seqcmd[ACMDL_JUMP])
 		{
 			client->playerinfo.velocity[2] += SWIM_ADJUST_AMOUNT;
 		}
-	}		
+	}
 
 	pm.origin = client->playerinfo.origin;
 	pm.velocity = client->playerinfo.velocity;
@@ -3186,7 +3191,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		VectorCopy(mins, ent->intentMins);
 		VectorCopy(maxs, ent->intentMaxs);
-		
+
 		ent->physicsFlags |= PF_RESIZE;
 
 		pm.intentMins = ent->intentMins;
@@ -3252,7 +3257,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	{
 		client->playerinfo.flags |= PLAYER_FLAG_COLLISION;
 	}
-	
+
 	if ((pm.s.c_flags & PC_SLIDING))
 	{
 		client->playerinfo.flags |= PLAYER_FLAG_SLIDE;
@@ -3320,7 +3325,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	if(!ent->deadflag)
 	{
 		VectorCopy(pm.viewangles,client->v_angle);
-		
+
 		client->aimangles[0]=SHORT2ANGLE(ucmd->aimangles[0]);
 		client->aimangles[1]=SHORT2ANGLE(ucmd->aimangles[1]);
 		client->aimangles[2]=SHORT2ANGLE(ucmd->aimangles[2]);
@@ -3358,26 +3363,26 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	// Save the light level that the player is standing on for monster sighting AI.
 
 	ent->light_level = ucmd->lightlevel;
-	
+
 	// ********************************************************************************************
 	// Handle autotargeting by looking for the nearest monster that:
 	// a) Lies in a 35 degree degree horizontal, 180 degree vertical cone from the player's facing.
 	// b) Lies within 0 to 500 meters of the player.
 	// c) Is visible (i.e. LOS exists from player to target).
 	// ********************************************************************************************
-	
+
 	// Get the origin of the LOS (from player to target) used in identifying potential targets.
 
 	VectorCopy(ent->s.origin,LOSOrigin);
 	LOSOrigin[2]+=ent->viewheight;
 
 	// Handle autotaiming etc.
-	
+
 	TargetEnt=ent->enemy=NULL;
 	client->ps.AutotargetEntityNum=0;
 
 	if(client->playerinfo.autoaim)
-	{	
+	{
 		// Autoaiming is active so look for an enemy to autotarget.
 
 		TargetEnt=FindNearestVisibleActorInFrustum(ent,

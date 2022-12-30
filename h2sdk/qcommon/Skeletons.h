@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include <stdlib.h> // for size_t
 
 #define JN_YAW_CHANGED		0x00000001

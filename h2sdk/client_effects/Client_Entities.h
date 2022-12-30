@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef CLIENT_ENTITIES_H
 #define CLIENT_ENTITIES_H
 
@@ -28,7 +33,7 @@ typedef struct client_entity_s
 	CE_MessageHandler_t msgHandler;
 
 	int			classID;
-	
+
 	entity_t r;							// ends up being sent to the renderer
 
 	struct client_entity_s *next;		// next client entity, if any
@@ -39,12 +44,12 @@ typedef struct client_entity_s
 
 	vec3_t origin;						// Used by (non-world) effects that
 										// have an owning centity_t.
-	
+
 	vec3_t velocity;
 	vec3_t acceleration;
 
 	union {
-		vec3_t direction;				
+		vec3_t direction;
 		vec3_t startpos;
 	};
 
@@ -69,7 +74,7 @@ typedef struct client_entity_s
 										// a float is needed so small d_alpha at high frame
 										// rate aren't lost completly due to rounding
 
-	float d_alpha;						
+	float d_alpha;
 
 	int effectID;
 
@@ -99,10 +104,10 @@ typedef struct client_entity_s
 
 	// For models only - NOTE - DO NOT UNION THESE - they are used internally
 	short		refMask;					// Current refpoints attached to client entity
-	short		refPoint;					// used for entites linked to one of another models 
-	
-	// anim stuff				// For CE spawners	
-	
+	short		refPoint;					// used for entites linked to one of another models
+
+	// anim stuff				// For CE spawners
+
 	union {
 		int		LifeTime;
 		int		nextEventTime;				// For user timed stuff.
@@ -116,14 +121,14 @@ typedef struct client_entity_s
 	};
 
 	union {
-		float	AnimSpeed;			
+		float	AnimSpeed;
 		float	SpawnData;
 		int		lastThinkTime;					// last time updated
 		float	yscale;
 	};
 
 	union {
-		int		NoOfAnimFrames;		
+		int		NoOfAnimFrames;
 		int		SpawnInfo;
 		float	yaw;
 	};

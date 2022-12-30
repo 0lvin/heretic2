@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef __DS
 #define __DS
 
@@ -7,11 +12,11 @@
 class CScript;
 
 enum ScriptConditionT
-{ 
+{
 	COND_READY,
-	COND_COMPLETED, 
-	COND_SUSPENDED, 
-	COND_WAIT_ALL, 
+	COND_COMPLETED,
+	COND_SUSPENDED,
+	COND_WAIT_ALL,
 	COND_WAIT_ANY,
 	COND_WAIT_TIME,
 };
@@ -393,7 +398,7 @@ public:
 
 //==========================================================================
 
-class CScript 
+class CScript
 {
 private:
 	char				Name[MAX_PATH];

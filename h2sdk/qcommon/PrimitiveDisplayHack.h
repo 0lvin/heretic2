@@ -1,14 +1,19 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef PRIMITIVEDISPLAYHACK_H
 #define PRIMITIVEDISPLAYHACK_H
 
 // **********************************************************************************
 //
 //	Develoment Display Aids
-// 
+//
 //	DO NOT use these for production code.  These are only usuable as development aids
 //	in single player mode.  These will not work in multiplayer.  Some are also not valid
 //	in the render DLL (AddServerParticle).
-// 
+//
 // **********************************************************************************
 
 #if 0

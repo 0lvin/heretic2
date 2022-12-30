@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef CMODEL_PRIVATE_H
 #define CMODEL_PRIVATE_H
 

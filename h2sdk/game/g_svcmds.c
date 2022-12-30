@@ -1,4 +1,8 @@
-
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 
 
@@ -11,7 +15,7 @@ void	Svcmd_Test_f (void)
 ==============================================================================
 
 PACKET FILTERING
- 
+
 
 You can add or remove addresses from the filter list with:
 
@@ -60,13 +64,13 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 	int		i, j;
 	byte	b[4];
 	byte	m[4];
-	
+
 	for (i=0 ; i<4 ; i++)
 	{
 		b[i] = 0;
 		m[i] = 0;
 	}
-	
+
 	for (i=0 ; i<4 ; i++)
 	{
 		if (*s < '0' || *s > '9')
@@ -74,7 +78,7 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 			gi.cprintf(NULL, PRINT_HIGH, "Bad filter address: %s\n", s);
 			return false;
 		}
-		
+
 		j = 0;
 		while (*s >= '0' && *s <= '9')
 		{
@@ -89,10 +93,10 @@ static qboolean StringToFilter (char *s, ipfilter_t *f)
 			break;
 		s++;
 	}
-	
+
 	f->mask = *(unsigned *)m;
 	f->compare = *(unsigned *)b;
-	
+
 	return true;
 }
 
@@ -120,7 +124,7 @@ qboolean SV_FilterPacket (char *from)
 			break;
 		i++, p++;
 	}
-	
+
 	in = *(unsigned *)m;
 
 	for (i=0 ; i<numipfilters ; i++)
@@ -139,7 +143,7 @@ SV_AddIP_f
 void SVCmd_AddIP_f (void)
 {
 	int		i;
-	
+
 	if (gi.argc() < 3) {
 		gi.cprintf(NULL, PRINT_HIGH, "Usage:  addip <ip-mask>\n");
 		return;
@@ -157,7 +161,7 @@ void SVCmd_AddIP_f (void)
 		}
 		numipfilters++;
 	}
-	
+
 	if (!StringToFilter (gi.argv(2), &ipfilters[i]))
 		ipfilters[i].compare = 0xffffffff;
 }
@@ -239,7 +243,7 @@ void SVCmd_WriteIP_f (void)
 		gi.cprintf (NULL, PRINT_HIGH, "Couldn't open %s\n", name);
 		return;
 	}
-	
+
 	fprintf(f, "set filterban %d\n", (int)filterban->value);
 
 	for (i=0 ; i<numipfilters ; i++)
@@ -247,7 +251,7 @@ void SVCmd_WriteIP_f (void)
 		*(unsigned *)b = ipfilters[i].compare;
 		fprintf (f, "sv addip %i.%i.%i.%i\n", b[0], b[1], b[2], b[3]);
 	}
-	
+
 	fclose (f);
 }
 

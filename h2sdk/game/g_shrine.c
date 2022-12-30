@@ -61,13 +61,13 @@ extern gitem_armor_t gold_armor_info;
 void PlayerKillShrineFX(edict_t *self)
 {
 	playerinfo_t *playerinfo;
-	
+
 	playerinfo=&self->client->playerinfo;
-	
+
 	assert(playerinfo);
 
 	// --- Remove Reflection
-	
+
 	// Remove time on the timer for the reflectivity.
 
 	self->client->playerinfo.reflect_timer = level.time - 1.0;
@@ -169,7 +169,7 @@ void PlayerRestartShrineFX(edict_t *self)
 		gi.RemoveEffects(&self->s, FX_TOME_OF_POWER);
 
 		// Create the light and the tome of power.
-		
+
 		gi.CreateEffect(&self->s, FX_TOME_OF_POWER, CEF_OWNERS_ORIGIN, NULL, "");
 	}
 
@@ -182,7 +182,7 @@ void PlayerRestartShrineFX(edict_t *self)
 		gi.RemoveEffects(&self->s, FX_FOOT_TRAIL);
 
 		// Create the light and the tome of power.
-		
+
 		gi.CreateEffect(&self->s, FX_FOOT_TRAIL, CEF_OWNERS_ORIGIN, NULL, "");
 	}
 
@@ -240,14 +240,14 @@ void G_PlayerActionShrineEffect(playerinfo_t *playerinfo)
 		case SHRINE_MANA:
 			player_shrine_mana_effect(self);
 			break;
-		
+
 		case SHRINE_SPEED:
 			player_shrine_speed_effect(self);
 			break;
-		
+
 		default:
 			player_shrine_mana_effect(self);
-			break;		
+			break;
 	}
 }
 
@@ -330,7 +330,7 @@ void DelayThink(edict_t *self)
 		// If we were gold in death match, we won't be again.
 
 		self->owner->touch = shrine_armor_silver_touch;
-	}	
+	}
 	else if (deathmatch->value && (self->oldtouch == shrine_armor_silver_touch) && !(irand(0,8)))
 	{
 		// 1 in 9 chance in death match an armor shrine turns gold.
@@ -364,13 +364,13 @@ void DelayThink(edict_t *self)
 	else
 	if (self->owner->touch == shrine_armor_silver_touch)
 		dest->style = 6;
-		
+
 	VectorScale(dest->s.angles, ANGLE_TO_RAD, offset);
 	DirFromAngles(offset, offset2);
 	dest->PersistantCFX=gi.CreatePersistantEffect(&dest->s,
 												  FX_SHRINE_BALL,
 												  CEF_BROADCAST,
-												  dest->s.origin, 
+												  dest->s.origin,
 												  "db",
 												  offset2,
 												  (byte)(dest->style-1));
@@ -403,7 +403,7 @@ void deal_with_shrine_node(edict_t *self)
 		delay->owner = self;
 		delay->classname = delay_text;
 		if (deathmatch->value)
-		// The equation for respawn:  
+		// The equation for respawn:
 		//		--The respawn times should be normal for 8 players.
 		//		--For 32 players the respawn should be halved
 		//		--For 2 players the respawn should be doubled.
@@ -480,7 +480,7 @@ void shrine_restore_player(edict_t *other)
 		// Turn off CFX too.
 		other->s.effects &= ~EF_ON_FIRE;
 	}
-	
+
 	// Stop bleeding.
 
 	other->client->playerinfo.flags &= ~PLAYER_FLAG_BLEED;
@@ -574,7 +574,7 @@ void shrine_heal_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface
 	}
 
 	// Decide whether to delete this shrine or disable it for a while.
-	
+
 	deal_with_shrine_node(self);
 }
 
@@ -804,7 +804,7 @@ void shrine_armor_gold_touch (edict_t *self, edict_t *other, cplane_t *plane, cs
 */
 
 void shrine_armor_gold (edict_t *ent)
-{	
+{
 	ent->movetype = PHYSICSTYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
@@ -922,7 +922,7 @@ void shrine_staff_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 */
 
 void shrine_staff (edict_t *ent)
-{	
+{
 	ent->movetype = PHYSICSTYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
@@ -1169,7 +1169,7 @@ void shrine_light (edict_t *ent)
 void player_shrine_mana_effect(edict_t *self)
 {
  	// Start up the shrine mana effect.
-	
+
 	gi.CreateEffect(&self->s, FX_SHRINE_MANA, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
@@ -1272,7 +1272,7 @@ void shrine_mana (edict_t *ent)
 void player_shrine_ghost_effect(edict_t *self)
 {
 	assert(self->client);
-	
+
 	// Start up the shrine ghost effect.
 
 	gi.CreateEffect(&self->s, FX_SHRINE_GHOST, CEF_OWNERS_ORIGIN, NULL, "");
@@ -1299,7 +1299,7 @@ void shrine_ghost_core(edict_t *self,edict_t *other)
 	other->client->playerinfo.ghost_timer = level.time + GHOST_DURATION;
 
 	// Update the model attributes for ghosting.
-	
+
 	SetupPlayerinfo_effects(other);
 	P_PlayerUpdateModelAttributes(&other->client->playerinfo);
 	WritePlayerinfo_effects(other);
@@ -1345,7 +1345,7 @@ void shrine_ghost_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	}
 
 	// Decide whether to delete this shrine or disable it for a while.
-	
+
 	deal_with_shrine_node(self);
 }
 
@@ -1412,7 +1412,7 @@ void shrine_reflect_core(edict_t *self,edict_t *other)
 		other->client->playerinfo.reflect_timer = level.time + REFLECT_DURATION_SINGLE;
 
 	// Update the model attributes for the reflection skin.
-	
+
 	SetupPlayerinfo_effects(other);
 	P_PlayerUpdateModelAttributes(&other->client->playerinfo);
 	WritePlayerinfo_effects(other);
@@ -1507,7 +1507,7 @@ void player_shrine_powerup_effect(edict_t *self)
 	// Start up the shrine powerup effect.
 
 	gi.CreateEffect(&self->s, FX_SHRINE_POWERUP, CEF_OWNERS_ORIGIN, NULL, "");
-	
+
 	// Do the SHRINE sound.
 
 	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine5.wav"),1,ATTN_NORM,0);
@@ -1582,7 +1582,7 @@ void shrine_powerup_touch (edict_t *self, edict_t *other, cplane_t *plane, csurf
 */
 
 void shrine_powerup (edict_t *ent)
-{	
+{
 	ent->movetype = PHYSICSTYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
@@ -1615,7 +1615,7 @@ void player_shrine_speed_effect(edict_t *self)
 	// Start up the shrine powerup effect.
 
 	gi.CreateEffect(&self->s, FX_SHRINE_SPEED, CEF_OWNERS_ORIGIN, NULL, "");
-	
+
 	// Do the SHRINE sound.
 
 	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine10.wav"),1,ATTN_NORM,0);
@@ -1696,7 +1696,7 @@ void shrine_speed_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 /*QUAKED shrine_speed (.5 .3 .5) ? PERMANENT
 */
 void shrine_speed (edict_t *ent)
-{	
+{
 	ent->movetype = PHYSICSTYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
@@ -1757,7 +1757,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	}
 	else
 	{
-		
+
 		// here's where we make the shrines clever. If we already have a shrine option, lets remove it from
 		// the possible shrine list
 		if (other->client->playerinfo.speed_timer < level.time)
@@ -1835,7 +1835,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 			break;
 
 		case SHRINE_ARMOR_SILVER:
-			
+
 			shrine_armor_silver_core(self,other);
 			gi.gamemsg_centerprintf(other, GM_CS_SILVER);
 
@@ -1843,7 +1843,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 		case SHRINE_ARMOR_GOLD:
 
-			shrine_armor_gold_core(self,other);			
+			shrine_armor_gold_core(self,other);
 			gi.gamemsg_centerprintf(other, GM_CS_GOLD);
 
 			break;
@@ -1873,14 +1873,14 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 			shrine_reflect_core(self,other);
 			gi.gamemsg_centerprintf(other, GM_CS_REFLECT);
-			
+
 			break;
 
 		case SHRINE_POWERUP:
-		
+
 			shrine_powerup_core(self,other);
 			gi.gamemsg_centerprintf(other, GM_CS_POWERUP);
-			
+
 			break;
 
 		case SHRINE_SPEED:
@@ -1893,7 +1893,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 			shrine_powerup_core(self,other);
 			gi.gamemsg_centerprintf(other, GM_CS_POWERUP);
-			
+
 			break;
 	}
 
@@ -1928,7 +1928,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 */
 
 void shrine_random(edict_t *ent)
-{	
+{
 	ent->movetype = PHYSICSTYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;

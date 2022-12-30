@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 typedef enum
 {
 	ITEM_TOWNKEY,

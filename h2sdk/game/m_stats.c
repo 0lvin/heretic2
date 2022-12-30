@@ -1,10 +1,15 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "m_stats.h"
 
 /*
 int AttackRangesForClass [NUM_ATTACKRANGES] =
 
 melee_range = How close an enemy must be to use melee attack.
-	If negative, how much distance the monster tries to keep 
+	If negative, how much distance the monster tries to keep
 	between itself and an enemy.
 missile_range = Maximum distance a monster will try to attack
 	from using it's ranged attack.
@@ -48,7 +53,7 @@ int AttackRangesForClass [NUM_ATTACKRANGES] =
 	0,		0,			0,			0,//	CID_CORVUS,
 	64,		1024,		64,			25,//	CID_MORK,
 	400,	1500,		100,		77,//	CID_TBEAST,//30
-	-64,	1024,		32,			20,//	CID_IMP, 
+	-64,	1024,		32,			20,//	CID_IMP,
 
 	0,		0,			0,			0,//	CID_SSITHRA_VICTIM,	//32
 	0,		0,			0,			0,//	CID_SSITHRA_SCOUT,	//33
@@ -302,7 +307,7 @@ vec3_t STDMinsForClass [NUM_CLASSIDS] =
 	0,		0,			0,//	CID_CORVUS,
 	0,		0,			0,//	CID_MORK,
 	0,		0,			0,//	CID_TBEAST,//30
-	-16,	-16,		0,//	CID_IMP, 
+	-16,	-16,		0,//	CID_IMP,
 
 	0,		0,			0,//	CID_SSITHRA_VICTIM,	//32
 	0,		0,			0,//	CID_SSITHRA_SCOUT,	//33
@@ -361,7 +366,7 @@ vec3_t STDMaxsForClass [NUM_CLASSIDS] =
 	0,		0,			0,//	CID_CORVUS,
 	0,		0,			0,//	CID_MORK,
 	0,		0,			0,//	CID_TBEAST,//30
-	16,		16,			32,//	CID_IMP, 
+	16,		16,			32,//	CID_IMP,
 
 	0,		0,			0,//	CID_SSITHRA_VICTIM,	//32
 	0,		0,			0,//	CID_SSITHRA_SCOUT,	//33

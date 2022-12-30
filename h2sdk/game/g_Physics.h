@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #ifndef G_PHYSICS_H
 #define G_PHYSICS_H
 
@@ -15,7 +21,7 @@
 
 #define PF_ROTATIONAL_FRICTION		0x00000001	// angular friction
 #define PF_RESIZE					0x00000002	// indicates the ents bounding form should be resized
-#define PF_FORCEFUL_COLLISIONS		0x00000004	// the ent will knockback of other ents, and get knockback during 
+#define PF_FORCEFUL_COLLISIONS		0x00000004	// the ent will knockback of other ents, and get knockback during
 												// collision resolution
 
 #define CH_ISBLOCKED				0x00000001

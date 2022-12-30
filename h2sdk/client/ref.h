@@ -1,8 +1,14 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #include "qcommon.h"
 
 // these are the maximum number that maybe rendered on any given frame
 #define	MAX_DLIGHTS		32
-#define	MAX_ENTITIES	128	
+#define	MAX_ENTITIES	128
 #define MAX_ALPHA_ENTITIES MAX_ENTITIES*2
 #define	MAX_SERVER_ENTITIES	MAX_ENTITIES
 #define	MAX_PARTICLES	4096
@@ -16,15 +22,15 @@ typedef struct entity_s
 	float				angles[3];
 
 	float				origin[3];
-	int					frame;			
+	int					frame;
 
 	float				scale;					// model scale
 
 	float				cl_scale;				// scale of model - but only for client entity models - not server side models
 												// required for scaling mins and maxs that are used to cull models - mins and maxs
 												// are scaled on the server side, but not on the client side when the models are loaded in
-	
-	float				depth;					// distance to the camera origin, gets set every 
+
+	float				depth;					// distance to the camera origin, gets set every
 												// frame by AddEffectsToView
 
 	paletteRGBA_t		color;
@@ -42,12 +48,12 @@ typedef struct entity_s
 	// info for fmodels and bmodels
 	struct {
 
-	float				oldorigin[3];	
+	float				oldorigin[3];
 	int					oldframe;
 
 	float				backlerp;				// 0.0 = current, 1.0 = old
 
-	int					skinnum;				
+	int					skinnum;
 	struct image_s		*skin;			// NULL for inline skin
 	struct image_s		**skins;		// Pointer to the list of clientinfo skins.
 	char				skinname[MAX_QPATH];		// For specific path to skin
@@ -96,7 +102,7 @@ typedef struct entity_s
 
 
 	};
-	
+
 } entity_t;
 
 #define ENTITY_FLAGS  68

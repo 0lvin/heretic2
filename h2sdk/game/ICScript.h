@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef ICSCRIPT_H
 #define ICSCRIPT_H
 
