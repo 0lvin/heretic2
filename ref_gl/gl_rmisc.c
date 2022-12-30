@@ -175,33 +175,33 @@ void GL_Strings_f( void )
 */
 void GL_SetDefaultState( void )
 {
-	qglClearColor (1,0, 0.5 , 0.5);
-	qglCullFace(GL_FRONT);
-	qglEnable(GL_TEXTURE_2D);
+	glClearColor (1,0, 0.5 , 0.5);
+	glCullFace(GL_FRONT);
+	glEnable(GL_TEXTURE_2D);
 
-	qglEnable(GL_ALPHA_TEST);
+	glEnable(GL_ALPHA_TEST);
 	qglAlphaFunc(GL_GREATER, 0.666);
 
-	qglDisable (GL_DEPTH_TEST);
-	qglDisable (GL_CULL_FACE);
-	qglDisable (GL_BLEND);
+	glDisable (GL_DEPTH_TEST);
+	glDisable (GL_CULL_FACE);
+	glDisable (GL_BLEND);
 
-	qglColor4f (1,1,1,1);
+	glColor4f (1,1,1,1);
 
-	qglPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-	qglShadeModel (GL_FLAT);
+	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+	glShadeModel (GL_FLAT);
 
 	GL_TextureMode( gl_texturemode->string );
 	GL_TextureAlphaMode( gl_texturealphamode->string );
 	GL_TextureSolidMode( gl_texturesolidmode->string );
 
-	qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-	qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
-	qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	qglBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	GL_TexEnv( GL_REPLACE );
 
@@ -213,7 +213,7 @@ void GL_SetDefaultState( void )
 		attenuations[1] = gl_particle_att_b->value;
 		attenuations[2] = gl_particle_att_c->value;
 
-		qglEnable( GL_POINT_SMOOTH );
+		glEnable( GL_POINT_SMOOTH );
 		qglPointParameterfEXT( GL_POINT_SIZE_MIN_EXT, gl_particle_min_size->value );
 		qglPointParameterfEXT( GL_POINT_SIZE_MAX_EXT, gl_particle_max_size->value );
 		qglPointParameterfvEXT( GL_DISTANCE_ATTENUATION_EXT, attenuations );
@@ -221,7 +221,7 @@ void GL_SetDefaultState( void )
 
 	if ( qglColorTableEXT && gl_ext_palettedtexture->value )
 	{
-		qglEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
+		glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
 
 		GL_SetTexturePalette( d_8to24table );
 	}
