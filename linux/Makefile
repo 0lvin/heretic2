@@ -79,12 +79,12 @@ endif
 DEBUG_CFLAGS=$(BASE_CFLAGS) -g
 LDFLAGS=-ldl -lm
 SVGALDFLAGS=-lvga -lm
-XLDFLAGS=-L/usr/X11R6/lib -lX11 -lXext -lXxf86dga
+XLDFLAGS=-lX11 -lXext -lXxf86dga
 XCFLAGS=
 
-GLLDFLAGS=-L/usr/X11R6/lib -L/usr/local/lib -lX11 -lXext -lvga -lm
-GLXLDFLAGS=-L/usr/X11R6/lib -L/usr/local/lib -lX11 -lXext -lXxf86dga -lXxf86vm -lm
-GLCFLAGS=-I/usr/include/glide
+GLLDFLAGS=-lGL -lX11 -lXext -lvga -lm
+GLXLDFLAGS=-lGL -lX11 -lXext -lXxf86dga -lXxf86vm -lm
+GLCFLAGS=
 
 SHLIBEXT=so
 

@@ -75,13 +75,13 @@ void GL_EnableMultitexture( qboolean enable )
 	if ( enable )
 	{
 		GL_SelectTexture( GL_TEXTURE1_ARB );
-		qglEnable( GL_TEXTURE_2D );
+		glEnable( GL_TEXTURE_2D );
 		GL_TexEnv( GL_REPLACE );
 	}
 	else
 	{
 		GL_SelectTexture( GL_TEXTURE1_ARB );
-		qglDisable( GL_TEXTURE_2D );
+		glDisable( GL_TEXTURE_2D );
 		GL_TexEnv( GL_REPLACE );
 	}
 	GL_SelectTexture( GL_TEXTURE0_ARB );
@@ -124,7 +124,7 @@ void GL_TexEnv( GLenum mode )
 
 	if ( mode != lastmodes[gl_state.currenttmu] )
 	{
-		qglTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mode );
+		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mode );
 		lastmodes[gl_state.currenttmu] = mode;
 	}
 }
@@ -138,7 +138,7 @@ void GL_Bind (int texnum)
 	if ( gl_state.currenttextures[gl_state.currenttmu] == texnum)
 		return;
 	gl_state.currenttextures[gl_state.currenttmu] = texnum;
-	qglBindTexture (GL_TEXTURE_2D, texnum);
+	glBindTexture (GL_TEXTURE_2D, texnum);
 }
 
 void GL_MBind( GLenum target, int texnum )
@@ -236,8 +236,8 @@ void GL_TextureMode( char *string )
 		if (glt->type != it_pic && glt->type != it_sky )
 		{
 			GL_Bind (glt->texnum);
-			qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-			qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		}
 	}
 }
@@ -1033,12 +1033,12 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 	if (mipmap)
 		gluBuild2DMipmaps (GL_TEXTURE_2D, samples, width, height, GL_RGBA, GL_UNSIGNED_BYTE, trans);
 	else if (scaled_width == width && scaled_height == height)
-		qglTexImage2D (GL_TEXTURE_2D, 0, comp, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
+		glTexImage2D (GL_TEXTURE_2D, 0, comp, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
 	else
 	{
 		gluScaleImage (GL_RGBA, width, height, GL_UNSIGNED_BYTE, trans,
 			scaled_width, scaled_height, GL_UNSIGNED_BYTE, scaled);
-		qglTexImage2D (GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
+		glTexImage2D (GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	}
 #else
 
@@ -1050,7 +1050,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 			{
 				uploaded_paletted = true;
 				GL_BuildPalettedTexture( paletted_texture, ( unsigned char * ) data, scaled_width, scaled_height );
-				qglTexImage2D( GL_TEXTURE_2D,
+				glTexImage2D( GL_TEXTURE_2D,
 							  0,
 							  GL_COLOR_INDEX8_EXT,
 							  scaled_width,
@@ -1062,7 +1062,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 			}
 			else
 			{
-				qglTexImage2D (GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+				glTexImage2D (GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			}
 			goto done;
 		}
@@ -1077,7 +1077,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 	{
 		uploaded_paletted = true;
 		GL_BuildPalettedTexture( paletted_texture, ( unsigned char * ) scaled, scaled_width, scaled_height );
-		qglTexImage2D( GL_TEXTURE_2D,
+		glTexImage2D( GL_TEXTURE_2D,
 					  0,
 					  GL_COLOR_INDEX8_EXT,
 					  scaled_width,
@@ -1089,7 +1089,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 	}
 	else
 	{
-		qglTexImage2D( GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled );
+		glTexImage2D( GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled );
 	}
 
 	if (mipmap)
@@ -1111,7 +1111,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 			{
 				uploaded_paletted = true;
 				GL_BuildPalettedTexture( paletted_texture, ( unsigned char * ) scaled, scaled_width, scaled_height );
-				qglTexImage2D( GL_TEXTURE_2D,
+				glTexImage2D( GL_TEXTURE_2D,
 							  miplevel,
 							  GL_COLOR_INDEX8_EXT,
 							  scaled_width,
@@ -1123,7 +1123,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 			}
 			else
 			{
-				qglTexImage2D (GL_TEXTURE_2D, miplevel, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
+				glTexImage2D (GL_TEXTURE_2D, miplevel, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 			}
 		}
 	}
@@ -1133,13 +1133,13 @@ done: ;
 
 	if (mipmap)
 	{
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 	else
 	{
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 
 	return (samples == gl_alpha_format);
@@ -1184,7 +1184,7 @@ qboolean GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboole
 		 gl_ext_palettedtexture->value &&
 		 is_sky )
 	{
-		qglTexImage2D( GL_TEXTURE_2D,
+		glTexImage2D( GL_TEXTURE_2D,
 					  0,
 					  GL_COLOR_INDEX8_EXT,
 					  width,
@@ -1194,8 +1194,8 @@ qboolean GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboole
 					  GL_UNSIGNED_BYTE,
 					  data );
 
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 	else
 	{
@@ -1450,7 +1450,7 @@ void GL_FreeUnusedImages (void)
 		if (image->type == it_pic)
 			continue;		// don't free pics
 		// free it
-		qglDeleteTextures (1, &image->texnum);
+		glDeleteTextures (1, &image->texnum);
 		memset (image, 0, sizeof(*image));
 	}
 }
@@ -1571,7 +1571,7 @@ void	GL_ShutdownImages (void)
 		if (!image->registration_sequence)
 			continue;		// free image_t slot
 		// free it
-		qglDeleteTextures (1, &image->texnum);
+		glDeleteTextures (1, &image->texnum);
 		memset (image, 0, sizeof(*image));
 	}
 }
