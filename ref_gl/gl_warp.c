@@ -638,7 +638,7 @@ void R_SetSky (char *name, float rotate, vec3_t axis)
 		if (gl_skymip->value || skyrotate)
 			gl_picmip->value++;
 
-		if ( qglColorTableEXT && gl_ext_palettedtexture->value )
+		if ( gl_ext_palettedtexture->value )
 			Com_sprintf (pathname, sizeof(pathname), "env/%s%s.pcx", skyname, suf[i]);
 		else
 			Com_sprintf (pathname, sizeof(pathname), "env/%s%s.tga", skyname, suf[i]);
