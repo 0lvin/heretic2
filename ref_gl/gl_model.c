@@ -27,6 +27,7 @@ int		modfilelen;
 void Mod_LoadSpriteModel (model_t *mod, void *buffer);
 void Mod_LoadBrushModel (model_t *mod, void *buffer);
 void Mod_LoadAliasModel (model_t *mod, void *buffer);
+void Mod_LoadMDLModel (model_t *mod, void *buffer);
 model_t *Mod_LoadModel (model_t *mod, qboolean crash);
 
 byte	mod_novis[MAX_MAP_LEAFS/8];
@@ -244,6 +245,11 @@ model_t *Mod_ForName (char *name, qboolean crash)
 
 	switch (LittleLong(*(unsigned *)buf))
 	{
+	case IDMDLHEADER:
+		loadmodel->extradata = Hunk_Begin (0x200000);
+		Mod_LoadMDLModel (mod, buf);
+		break;
+
 	case IDALIASHEADER:
 		loadmodel->extradata = Hunk_Begin (0x200000);
 		Mod_LoadAliasModel (mod, buf);
@@ -847,6 +853,294 @@ void Mod_LoadPlanes (lump_t *l)
 		out->signbits = bits;
 	}
 }
+
+/*
+=================
+Mod_LoadMDLModel
+=================
+*/
+void Mod_LoadMDLModel (model_t *mod, void *buffer)
+{
+	const dmdlo_t		*pinmodel;
+	int		version;
+	dmdl_t		*pheader;
+
+	/* local copy of all values */
+	int skinwidth, skinheight, framesize;
+	int num_skins, num_xyz, num_st, num_tris, num_glcmds, num_frames;
+	int ofs_skins, ofs_st, ofs_tris, ofs_frames, ofs_glcmds, ofs_end;
+
+	pinmodel = (dmdlo_t *)buffer;
+
+	version = LittleLong (pinmodel->version);
+	if (version != MDL_VERSION)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
+				__func__, mod->name, version, MDL_VERSION);
+	}
+
+	/* generate all offsets and sizes */
+	num_skins = LittleLong (pinmodel->num_skins);
+	skinwidth = LittleLong (pinmodel->skinwidth);
+	skinheight = LittleLong (pinmodel->skinheight);
+	num_xyz = LittleLong (pinmodel->num_xyz);
+	num_st = num_xyz;
+	num_tris = LittleLong (pinmodel->num_tris);
+	num_glcmds = (
+		(3 * num_tris) * sizeof(int) * 3 + /* 3 vert */
+		(num_tris * sizeof(int)) + /* triangles count */
+		sizeof(int) /* final zero */) / sizeof(int);
+	num_frames = LittleLong (pinmodel->num_frames);
+	framesize = sizeof(daliasframe_t) + sizeof (dtrivertx_t) * (num_xyz - 1);
+
+	ofs_skins = sizeof(dmdl_t); // just skip header and go
+	ofs_st = ofs_skins + num_skins * MAX_SKINNAME;
+	ofs_tris = ofs_st + num_st * sizeof(dstvert_t);
+	ofs_glcmds = ofs_tris + num_tris * sizeof(dtriangle_t);
+	ofs_frames = ofs_glcmds + num_glcmds * sizeof(int);
+	/* one less as single vertx in frame by default */
+	ofs_end = ofs_frames + framesize * num_frames;
+
+	/* validate */
+	if (skinheight > MAX_LBM_HEIGHT)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: model %s has a skin taller than %d",
+				__func__, mod->name, MAX_LBM_HEIGHT);
+	}
+
+	if (skinwidth > MAX_LBM_HEIGHT)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: model %s has a skin wider than %d",
+				__func__, mod->name, MAX_LBM_HEIGHT);
+	}
+
+	if (num_xyz <= 0)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: model %s has no vertices",
+				__func__, mod->name);
+	}
+
+	if (num_xyz > MAX_VERTS)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: model %s has too many vertices",
+				__func__, mod->name);
+	}
+
+	if (num_tris <= 0)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: model %s has no triangles",
+				__func__, mod->name);
+	}
+
+	if (num_frames <= 0)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: model %s has no frames",
+				__func__, mod->name);
+	}
+
+	if (modfilelen < ofs_end)
+	{
+		ri.Sys_Error (ERR_DROP, "%s: model %s is too big.",
+				__func__, mod->name);
+	}
+
+	pheader = Hunk_Alloc (ofs_end);
+
+	/* copy back all values */
+	pheader->ident = IDALIASHEADER;
+	pheader->version = ALIAS_VERSION;
+	pheader->skinwidth = skinwidth;
+	pheader->skinheight = skinheight;
+	pheader->framesize = framesize;
+
+	pheader->num_skins = num_skins;
+	pheader->num_xyz = num_xyz;
+	pheader->num_st = num_st;
+	pheader->num_tris = num_tris;
+	pheader->num_glcmds = num_glcmds;
+	pheader->num_frames = num_frames;
+
+	pheader->ofs_skins = ofs_skins;
+	pheader->ofs_st = ofs_st;
+	pheader->ofs_tris = ofs_tris;
+	pheader->ofs_frames = ofs_frames;
+	pheader->ofs_glcmds = ofs_glcmds;
+	pheader->ofs_end = ofs_end;
+
+	{
+		int i;
+		const byte *curr_pos;
+
+		struct mdl_triangle_t *triangles;
+		struct mdl_texcoord_t *texcoords;
+
+		curr_pos = (byte*)buffer + sizeof (struct mdl_header_t);
+
+		// register all skins
+		for (i = 0; i < num_skins; ++i)
+		{
+			char *out_pos;
+			int skin_type;
+
+			out_pos = (char*)pheader + sizeof(dmdl_t);
+			snprintf(out_pos + MAX_SKINNAME * i, MAX_SKINNAME, "%s#%d.tga", mod->name, i);
+
+			/* skip type / int */
+			/* 0 = simple, !0 = group */
+			/* this program can't read models composed of group frames! */
+			skin_type = LittleLong (((int *)curr_pos)[0]);
+			curr_pos += sizeof(int);
+			if (skin_type)
+			{
+				ri.Sys_Error (ERR_DROP, "%s: model %s has unsupported skin type %d",
+						__func__, mod->name, skin_type);
+			}
+
+			/* skip 8bit image */
+			curr_pos += skinwidth * skinheight;
+		}
+
+		/* texcoordinates */
+		{
+			dstvert_t *poutst = (dstvert_t *) ((byte *)pheader + ofs_st);
+
+			texcoords = (struct mdl_texcoord_t *)curr_pos;
+			curr_pos += sizeof (struct mdl_texcoord_t) * num_st;
+
+			for(i = 0; i < num_st; i++)
+			{
+				/* Compute texture coordinates */
+				poutst[i].s = LittleLong (texcoords[i].s);
+				poutst[i].t = LittleLong (texcoords[i].t);
+
+				if (texcoords[i].onseam)
+				{
+					poutst[i].s += skinwidth * 0.5f; /* Backface */
+				}
+
+				/* Scale s and t to range from 0.0 to 1.0 */
+				poutst[i].s = (poutst[i].s + 0.5) / skinwidth;
+				poutst[i].t = (poutst[i].t + 0.5) / skinheight;
+			}
+		}
+
+		/* triangles */
+		{
+			dtriangle_t *pouttri = (dtriangle_t *) ((byte *)pheader + ofs_tris);
+
+			triangles = (struct mdl_triangle_t *) curr_pos;
+			curr_pos += sizeof (struct mdl_triangle_t) * num_tris;
+
+			for (i=0 ; i<num_tris ; i++)
+			{
+				int j;
+
+				for (j=0 ; j<3 ; j++)
+				{
+					pouttri[i].index_xyz[j] = LittleLong (triangles[i].vertex[j]);
+					pouttri[i].index_st[j] = pouttri[i].index_xyz[j];
+				}
+			}
+		}
+
+		{
+			int *glcmds = (int *) ((byte *)pheader + ofs_glcmds);
+
+			/* commands */
+			int j, *curr_com = glcmds;
+
+			/* Draw each triangle */
+			for (i = 0; i < num_tris; ++i)
+			{
+				*curr_com = 3;
+				curr_com++;
+
+				/* Draw each vertex */
+				for (j = 0; j < 3; ++j)
+				{
+					float s,t;
+					int index;
+
+					index = triangles[i].vertex[j];
+
+					/* Compute texture coordinates */
+					s = LittleLong (texcoords[index].s);
+					t = LittleLong (texcoords[index].t);
+
+					if (!triangles[i].facesfront &&
+						texcoords[index].onseam)
+					{
+						s += skinwidth * 0.5f; /* Backface */
+					}
+
+					/* Scale s and t to range from 0.0 to 1.0 */
+					s = (s + 0.5) / skinwidth;
+					t = (t + 0.5) / skinheight;
+
+					memcpy(curr_com, &s, sizeof(s));
+					curr_com++;
+					memcpy(curr_com, &t, sizeof(t));
+					curr_com++;
+					memcpy(curr_com, &index, sizeof(index));
+					curr_com++;
+				}
+			}
+
+			*curr_com = 0;
+			curr_com++;
+		}
+
+		/* register all frames */
+		for (i = 0; i < num_frames; ++i)
+		{
+			daliasframe_t *frame;
+			int frame_type;
+
+			frame = (daliasframe_t *) ((byte *)pheader + ofs_frames + i * framesize);
+			frame->scale[0] = LittleFloat (pinmodel->scale[0]);
+			frame->scale[1] = LittleFloat (pinmodel->scale[1]);
+			frame->scale[2] = LittleFloat (pinmodel->scale[2]);
+
+			frame->translate[0] = LittleFloat (pinmodel->translate[0]);
+			frame->translate[1] = LittleFloat (pinmodel->translate[1]);
+			frame->translate[2] = LittleFloat (pinmodel->translate[2]);
+
+			/* Read frame data */
+			/* skip type / int */
+			/* 0 = simple, !0 = group */
+			/* this program can't read models composed of group frames! */
+			frame_type = LittleLong (((int *)curr_pos)[0]);
+			curr_pos += sizeof (frame_type);
+
+			if (frame_type)
+			{
+				ri.Sys_Error (ERR_DROP, "%s: model %s has unsupported frame type %d",
+						__func__, mod->name, frame_type);
+			}
+			/* skip bboxmin, bouding box min */
+			curr_pos += sizeof(dtrivertx_t);
+			/* skip bboxmax, bouding box max */
+			curr_pos += sizeof(dtrivertx_t);
+
+			memcpy(&frame->name, curr_pos, sizeof (char) * 16);
+			curr_pos += sizeof (char) * 16;
+
+			memcpy(&frame->verts[0], curr_pos,
+				sizeof (dtrivertx_t) * num_xyz);
+			curr_pos += sizeof (dtrivertx_t) * num_xyz;
+		}
+	}
+
+	mod->type = mod_alias;
+
+	mod->mins[0] = -32;
+	mod->mins[1] = -32;
+	mod->mins[2] = -32;
+	mod->maxs[0] = 32;
+	mod->maxs[1] = 32;
+	mod->maxs[2] = 32;
+}
+
 
 /*
 =================
