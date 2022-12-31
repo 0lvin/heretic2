@@ -1252,6 +1252,113 @@ image_t *GL_LoadWal (char *name)
 	return image;
 }
 
+static image_t *
+GL_LoadM8(char *name)
+{
+	m8tex_t *mt;
+	int width, height, ofs, size;
+	image_t *image;
+	unsigned char *image_buffer = NULL;
+
+	size = ri.FS_LoadFile(name, (void **)&mt);
+
+	if (!mt)
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s\n", __func__, name);
+		return r_notexture;
+	}
+
+	if (size < sizeof(m8tex_t))
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return r_notexture;
+	}
+
+	if (LittleLong (mt->version) != M8_VERSION)
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
+		ri.FS_FreeFile ((void *)mt);
+		return r_notexture;
+	}
+
+	width = LittleLong(mt->width[0]);
+	height = LittleLong(mt->height[0]);
+	ofs = LittleLong(mt->offsets[0]);
+
+	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
+	    (((size - ofs) / height) < width))
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return r_notexture;
+	}
+
+	image_buffer = malloc (width * height * 4);
+	for(int i=0; i<width * height; i++)
+	{
+		unsigned char value = *((byte *)mt + ofs + i);
+		image_buffer[i * 4 + 0] = mt->palette[value].r;
+		image_buffer[i * 4 + 1] = mt->palette[value].g;
+		image_buffer[i * 4 + 2] = mt->palette[value].b;
+		image_buffer[i * 4 + 3] = value == 255 ? 0 : 255;
+	}
+
+	image = GL_LoadPic(name, image_buffer, width, height, it_wall, 32);
+	free(image_buffer);
+
+	ri.FS_FreeFile((void *)mt);
+
+	return image;
+}
+
+
+static image_t *
+GL_LoadM32(char *name)
+{
+	m32tex_t	*mt;
+	int		width, height, ofs, size;
+	struct image_s	*image;
+
+	size = ri.FS_LoadFile(name, (void **)&mt);
+
+	if (!mt)
+	{
+		return NULL;
+	}
+
+	if (size < sizeof(m32tex_t))
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return NULL;
+	}
+
+	if (LittleLong (mt->version) != M32_VERSION)
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
+		ri.FS_FreeFile ((void *)mt);
+		return NULL;
+	}
+
+	width = LittleLong (mt->width[0]);
+	height = LittleLong (mt->height[0]);
+	ofs = LittleLong (mt->offsets[0]);
+
+	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
+	    (((size - ofs) / height) < (width * 4)))
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return NULL;
+	}
+
+	image = GL_LoadPic(name, (byte *)mt + ofs, width, height, it_wall, 32);
+	ri.FS_FreeFile ((void *)mt);
+
+	return image;
+}
+
 /*
 ===============
 GL_FindImage
@@ -1297,6 +1404,14 @@ image_t	*GL_FindImage (char *name, imagetype_t type)
 	else if (!strcmp(name+len-4, ".wal"))
 	{
 		image = GL_LoadWal (name);
+	}
+	else if (!strcmp(name+len-4, ".m32"))
+	{
+		image = GL_LoadM32 (name);
+	}
+	else if (!strcmp(name+len-3, ".m8"))
+	{
+		image = GL_LoadM8(name);
 	}
 	else if (!strcmp(name+len-4, ".tga"))
 	{

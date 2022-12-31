@@ -46,7 +46,7 @@ typedef struct
 	int		dirlen;
 } dpackheader_t;
 
-#define	MAX_FILES_IN_PACK	4096
+#define	MAX_FILES_IN_PACK	8192
 
 
 /*
@@ -207,6 +207,61 @@ typedef struct miptex_s
 } miptex_t;
 
 
+/* .M8 texture file format */
+
+
+#define M8_MIP_LEVELS 16
+#define M8_VERSION 0x2
+
+typedef struct {
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+} rgb_t;
+
+typedef struct m8tex_s
+{
+	unsigned version;
+	char name[32];
+	unsigned width[M8_MIP_LEVELS];
+	unsigned height[M8_MIP_LEVELS];
+	unsigned offsets[M8_MIP_LEVELS]; /* 16 mip maps stored */
+	char animname[32];           /* next frame in animation chain */
+	rgb_t palette[256];
+	int flags;
+	int contents;
+	int value;
+} m8tex_t;
+
+/* .M32 texture file format */
+
+#define M32_VERSION     0x4
+#define M32_MIP_LEVELS  16
+
+typedef struct m32tex_s
+{
+	int version;
+	char name[128];
+	char altname[128];                   // texture substitution
+	char animname[128];                  // next frame in animation chain
+	char damagename[128];                // image that should be shown when damaged
+	unsigned width[M32_MIP_LEVELS], height[M32_MIP_LEVELS];
+	unsigned offsets[M32_MIP_LEVELS];
+	int flags;
+	int contents;
+	int value;
+	float scale_x, scale_y;
+	int mip_scale;
+
+	// detail texturing info
+	char dt_name[128];                  // detailed texture name
+	float dt_scale_x, dt_scale_y;
+	float dt_u, dt_v;
+	float dt_alpha;
+	int dt_src_blend_mode, dt_dst_blend_mode;
+
+	int unused[20];                     // future expansion to maintain compatibility with h2
+} m32tex_t;
 
 /*
 ==============================================================================
