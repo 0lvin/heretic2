@@ -47,19 +47,19 @@ static qboolean FXShadowUpdate(struct client_entity_s *self,centity_t *owner)
 
 	VectorCopy(owner->origin, self->r.origin);
 	VectorCopy(owner->origin, startpos);
-		
+
 	startpos[2] += 4;
 	// Now trace from the startpos down
 	VectorCopy(startpos, endpos);
 	endpos[2] -= SHADOW_CHECK_DIST;
 
 	//Determine Visibility
-	fxi.Trace(	startpos, 
-				minmax, 
-				minmax, 
-				endpos, 
-				CONTENTS_SOLID, 
-				CEF_CLIP_TO_WORLD, 
+	fxi.Trace(	startpos,
+				minmax,
+				minmax,
+				endpos,
+				CONTENTS_SOLID,
+				CEF_CLIP_TO_WORLD,
 				&trace);
 
 	if (trace.startsolid || trace.fraction >= 1.0)
@@ -110,22 +110,22 @@ static qboolean FXShadowReferenceUpdate(struct client_entity_s *self,centity_t *
 	Matrix3FromAngles(owner->lerp_angles,rotmatrix);
 
 	Matrix3MultByVec3(rotmatrix, owner->referenceInfo->references[refpoint].placement.origin, startpos);
-	
-	// This may look weird, but by scaling the vector, I bring it closer to the center of the owner.  
+
+	// This may look weird, but by scaling the vector, I bring it closer to the center of the owner.
 	VectorScale(startpos, 0.5, startpos);
 	VectorAdd(owner->origin, startpos, startpos);
-		
+
 	// Now trace fromt the startpos down
 	VectorCopy(startpos, endpos);
 	endpos[2] -= SHADOW_REF_CHECK_DIST;
 
 	//Determine Visibility
-	fxi.Trace(	startpos, 
-				minmax, 
-				minmax, 
-				endpos, 
-				CONTENTS_SOLID, 
-				CEF_CLIP_TO_WORLD, 
+	fxi.Trace(	startpos,
+				minmax,
+				minmax,
+				endpos,
+				CONTENTS_SOLID,
+				CEF_CLIP_TO_WORLD,
 				&trace);
 
 	if (trace.startsolid || trace.fraction >= 1.0)
@@ -174,7 +174,7 @@ void FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	self->AddToView = FXShadowUpdate;
 
 	AddEffect(owner, self);
-	
+
 	FXShadowUpdate(self, owner);
 }
 

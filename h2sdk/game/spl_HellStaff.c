@@ -58,10 +58,10 @@ edict_t *HellboltReflect(edict_t *self, edict_t *other, vec3_t vel)
 	hellbolt->reflected_time=self->reflected_time;
 	VectorNormalize2(vel, hellbolt->movedir);
 	vectoangles(hellbolt->movedir, hellbolt->s.angles);
-   	G_LinkMissile(hellbolt); 
+   	G_LinkMissile(hellbolt);
    	gi.CreateEffect(&hellbolt->s, FX_WEAPON_HELLBOLT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "t", hellbolt->velocity);
 
-   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
    	G_SetToFree(self);
 
    	// Do a nasty looking blast at the impact point
@@ -80,7 +80,7 @@ static void HellboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 {
 	byte	makeScorch = 0;
 
-	// did we hit the sky ? 
+	// did we hit the sky ?
 	if(surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
@@ -104,7 +104,7 @@ static void HellboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 	if(other->takedamage)
 	{
-		T_Damage(other, self, self->owner, self->movedir, self->s.origin, plane->normal, self->dmg, self->dmg*2, 
+		T_Damage(other, self, self->owner, self->movedir, self->s.origin, plane->normal, self->dmg, self->dmg*2,
 					DAMAGE_SPELL, MOD_HELLSTAFF);
 	}
 	else
@@ -165,7 +165,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		if(level.fighting_beast)
 		{
 			edict_t *ent;
-			
+
 			if(ent = check_hit_beast(caster->s.origin, trace.endpos))
 				trace.ent = ent;
 		}
@@ -183,7 +183,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
   					VectorSubtract(trace.endpos, startpos, vect);
   					blen = (byte)(VectorLength(vect)/8.0);
 
-  					gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, 0, startpos, "tb", 
+  					gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, 0, startpos, "tb",
   						forward, blen);
   					// re-constitute aimangle
   					aimangles[1] += flrand(160,200);
@@ -193,12 +193,12 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
   				{
   					T_Damage(trace.ent, caster, caster, forward, trace.endpos, forward,
   							irand(HELLLASER_DAMAGE_MIN, HELLLASER_DAMAGE_MAX), 0, DAMAGE_SPELL,MOD_P_HELLSTAFF);
-  					gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER_BURN, CEF_FLAG6, trace.endpos, "t", 
+  					gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER_BURN, CEF_FLAG6, trace.endpos, "t",
   							forward);
   				}
 				tracebuddy = trace.ent;
 			}	// Don't trace again since there really should only be one thing between the player and startpos
-			
+
 			// Set up for main laser damaging loop.
 			laser_dist = HELLLASER_DIST;
 
@@ -210,7 +210,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 				if(level.fighting_beast)
 				{
 					edict_t *ent;
-					
+
 					if(ent = check_hit_beast(caster->s.origin, trace.endpos))
 						trace.ent = ent;
 				}
@@ -233,7 +233,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
   							VectorSubtract(trace.endpos, startpos, vect);
   							blen = (byte)(VectorLength(vect)/8.0);
 
-  							gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, 0, startpos, "tb", 
+  							gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, 0, startpos, "tb",
   								forward, blen);
   							// re-constitute aimangle
   							aimangles[1] += flrand(160,200);
@@ -243,7 +243,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
   						{
   							T_Damage(trace.ent, caster, caster, forward, trace.endpos, forward,
   									irand(HELLLASER_DAMAGE_MIN, HELLLASER_DAMAGE_MAX), 0, DAMAGE_SPELL,MOD_P_HELLSTAFF);
-  							gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER_BURN, CEF_FLAG6, trace.endpos, "t", 
+  							gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER_BURN, CEF_FLAG6, trace.endpos, "t",
   									forward);
   						}
 					}
@@ -281,12 +281,12 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 
 		// decide if we need a scorch mark or not
 		if(IsDecalApplicable(caster, trace.ent, caster->s.origin, trace.surface, &trace.plane, planedir))
-			gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, CEF_FLAG6|CEF_FLAG7, startpos, "tb", 
+			gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, CEF_FLAG6|CEF_FLAG7, startpos, "tb",
 					forward, blen);
 		else
-			gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, CEF_FLAG6, startpos, "tb", 
+			gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, CEF_FLAG6, startpos, "tb",
 					forward, blen);
-	}	
+	}
 	else
 	{	// Unpowered version of this weapon-- hellbolts.
 		// Spawn the hellbolt
@@ -318,7 +318,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		VectorNormalize2(hellbolt->velocity, hellbolt->movedir);
 		create_hellbolt(hellbolt);
 		hellbolt->reflect_debounce_time = MAX_REFLECT;
-		G_LinkMissile(hellbolt); 
+		G_LinkMissile(hellbolt);
 
 		// This alternation avoids cutting sounds out prematurely.
 		if (caster->client->playerinfo.flags & PLAYER_FLAG_ALTFIRE)

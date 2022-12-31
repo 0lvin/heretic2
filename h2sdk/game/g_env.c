@@ -13,7 +13,7 @@
 
 
 void env_dust_use(edict_t *self, edict_t *other, edict_t *activator)
-{	
+{
 	byte	count, magb;
 	float	mag;
 
@@ -46,7 +46,7 @@ void env_dust_use(edict_t *self, edict_t *other, edict_t *activator)
 
 }
 
-/*QUAKED env_dust (1 .5 0) ? 
+/*QUAKED env_dust (1 .5 0) ?
 Generates dust and rock over an area. This is triggerable.
 -------KEYS--------
 count - number of rocks (default 1 rock per 28 x 28 square)
@@ -167,7 +167,7 @@ void SP_env_smoke (edict_t *self)
 	}
 }
 
-/*QUAKED env_muck (1 .5 0) ? 
+/*QUAKED env_muck (1 .5 0) ?
 -------KEYS--------
 */
 void SP_env_muck (edict_t *self)

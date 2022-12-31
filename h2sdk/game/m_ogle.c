@@ -133,9 +133,9 @@ static ClassResourceInfo_t resInfo;
 int MG_SetFirstBuoy(edict_t *self);
 qboolean MG_WanderToNextBuoy(edict_t *self);
 
-/*QUAKED obj_corpse_ogle (1 .5 0) (-30 -12 -2) (30 12 2) pushing pick_up pick_down chisel_up chisel_down hammer_up hammer_down 
+/*QUAKED obj_corpse_ogle (1 .5 0) (-30 -12 -2) (30 12 2) pushing pick_up pick_down chisel_up chisel_down hammer_up hammer_down
 A dead ogle.
----------- KEYS -----------------  
+---------- KEYS -----------------
 style - skin of ogle (default 0)
 0 - damage skin
 1 - normal skin
@@ -212,7 +212,7 @@ void ogle_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -379,7 +379,7 @@ void ogle_c_anims(edict_t *self, G_Message_t *msg)
 			break;
 		default:
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -446,7 +446,7 @@ void ogle_mood_think ( edict_t *self )
 		if(self->enemy)
 		{
 			VectorSubtract (self->s.origin, self->enemy->s.origin, v);
-			
+
 			if (v[2] <= 40)
 				v[2] = 0;
 
@@ -455,7 +455,7 @@ void ogle_mood_think ( edict_t *self )
 			// Far enough to run after
 			if ((len > self->melee_range) || (self->monsterinfo.aiflags & AI_FLEE))
 				self->ai_mood = AI_MOOD_PURSUE;
-			else	// Close enough to Attack 
+			else	// Close enough to Attack
 			{
 				self->ai_mood = AI_MOOD_ATTACK;
 				self->ai_mood_flags |= AI_MOOD_FLAG_MELEE;
@@ -483,7 +483,7 @@ void ogle_cast_off_tools_of_oppression ( edict_t *self )
 		throw_nodes |= BPN_NAIL;
 		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
 		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
-		
+
 		throw_nodes |= BPN_HAMMER | BPN_HANDLE;
 		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
@@ -493,7 +493,7 @@ void ogle_cast_off_tools_of_oppression ( edict_t *self )
 	else if (!(self->s.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
 	{//Cast off the pick
 		throw_nodes |= BPN_PICK | BPN_HANDLE;
-		
+
 		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
@@ -502,7 +502,7 @@ void ogle_cast_off_tools_of_oppression ( edict_t *self )
 	else if (!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
 	{//Cast off the hammer
 		throw_nodes |= BPN_HAMMER | BPN_HANDLE;
-		
+
 		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
@@ -533,23 +533,23 @@ void ogle_use(edict_t *self, edict_t *other, edict_t *activator)
 	self->ai_mood = AI_MOOD_NORMAL;
 }
 
-//When the ogle is spawned, he checks around to figure out who his tormentor is 
+//When the ogle is spawned, he checks around to figure out who his tormentor is
 void ogle_init_overlord(edict_t *self)
 {
 	edict_t	*seraph = NULL;
-	
+
 	while((seraph = G_Find(seraph, FOFS(targetname), self->target)) != NULL)
 	{
 		if (seraph->classID != CID_SERAPH_OVERLORD)
 			continue;
-		
+
 		//Restore what we lost from monsterstart()
 		self->targetEnt = seraph;
 		self->nextthink = level.time + 0.1;
 		self->think = walkmonster_start_go;
 		self->use = ogle_use;
 		return;
-	}		
+	}
 
 	self->use = ogle_use;
 	self->think = walkmonster_start_go;
@@ -572,7 +572,7 @@ void ogle_sing (edict_t *self)
 			if(!ogle->monsterinfo.awake)
 				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS1], 0.25, ATTN_NORM, 0);
 		}
-		
+
 		self->monsterinfo.jump_time = level.time + 16;
 		break;
 
@@ -580,7 +580,7 @@ void ogle_sing (edict_t *self)
 		gi.sound (self, CHAN_VOICE, sounds[SND_SOLO1], 1, ATTN_NORM, 0);
 		self->monsterinfo.jump_time = level.time + 4;
 		break;
-	
+
 	case 2:
 		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
@@ -606,14 +606,14 @@ void ogle_sing (edict_t *self)
 	}
 
 	self->noise_index++;
-	
+
 	if (self->noise_index > 4)
 		self->noise_index = 0;
 }
 
 //High level AI interface
 void ogle_pause(edict_t *self)
-{	
+{
 	edict_t	*ogle = NULL;
 	int chance = irand(0,100);
 
@@ -633,7 +633,7 @@ void ogle_pause(edict_t *self)
 		}
 
 		//Switch up the animation speeds
-		if ( (self->curAnimID == ANIM_WORK1) || (self->curAnimID == ANIM_WORK2) ) 
+		if ( (self->curAnimID == ANIM_WORK1) || (self->curAnimID == ANIM_WORK2) )
 		{
 			if (irand(1,10) < 8)
 			{
@@ -654,7 +654,7 @@ void ogle_pause(edict_t *self)
 	case AI_MOOD_ATTACK:
 		QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 		break;
-	
+
 	case AI_MOOD_FLEE:
 	case AI_MOOD_PURSUE:
 	case AI_MOOD_NAVIGATE:
@@ -675,7 +675,7 @@ void ogle_pause(edict_t *self)
 	case AI_MOOD_NORMAL:
 		break;
 	case AI_MOOD_REST:
-		if ( (self->curAnimID != ANIM_REST1) && (self->curAnimID != ANIM_REST1_WIPE) && 
+		if ( (self->curAnimID != ANIM_REST1) && (self->curAnimID != ANIM_REST1_WIPE) &&
 			 (self->curAnimID != ANIM_REST1_TRANS) && (self->curAnimID != ANIM_REST2_WIPE) && (self->curAnimID != ANIM_REST3_WIPE) )
 		{
 			if ( (self->curAnimID == ANIM_WORK4) || (self->curAnimID == ANIM_WORK5) )
@@ -733,7 +733,7 @@ void ogle_rest(edict_t *self)
 	case ANIM_REST1_TRANS:
 		SetAnim(self, ANIM_REST1);
 		break;
-	
+
 	case ANIM_REST1:
 		if (chance < 20)
 			SetAnim(self, ANIM_REST1_WIPE);
@@ -755,7 +755,7 @@ void ogle_strike(edict_t *self)
 
 	VectorSet(soff, 0,  16, 8);
 	VectorSet(eoff, self->melee_range, 2,  8);
-	
+
 	VectorSet(mins, -4, -4, -4);
 	VectorSet(maxs,  4,  4,  4);
 
@@ -763,7 +763,7 @@ void ogle_strike(edict_t *self)
 	VectorSubtract(soff, eoff, bloodDir);
 	VectorNormalize(bloodDir);
 
-	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);	
+	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);
 
 	if (victim)
 	{
@@ -779,7 +779,7 @@ void ogle_strike(edict_t *self)
 				gi.sound (self, CHAN_WEAPON, sounds[SND_HAMMER_FLESH], 1, ATTN_NORM, 0);
 			else
 				gi.sound (self, CHAN_WEAPON, sounds[SND_PICK_FLESH], 1, ATTN_NORM, 0);
-				
+
 			T_Damage(victim, self, self, direction, trace.endpos, bloodDir, damage, damage*2, 0,MOD_DIED);
 		}
 	}
@@ -877,7 +877,7 @@ void ogle_pick_dust(edict_t *self)
 
 	AngleVectors(self->s.angles, vf, vr, vu);
 	VectorCopy(self->s.origin, dustPos);
-	
+
 	switch (self->curAnimID)
 	{
 	case ANIM_WORK3:
@@ -886,7 +886,7 @@ void ogle_pick_dust(edict_t *self)
 		VectorMA(dustPos, -4,  vu, dustPos);
 		VectorScale(vf, -1, vf);
 		break;
-		
+
 	case ANIM_WORK5:
 		VectorMA(dustPos, 42, vf, dustPos);
 		VectorMA(dustPos, 2,  vr, dustPos);
@@ -894,7 +894,7 @@ void ogle_pick_dust(edict_t *self)
 		VectorScale(vu, 1, vf);
 		type = CEF_FLAG6;
 		break;
-	
+
 	case ANIM_WORK4:
 		VectorMA(dustPos, 42, vf, dustPos);
 		VectorMA(dustPos, 4,  vr, dustPos);
@@ -955,7 +955,7 @@ void ogle_pain (edict_t *self, G_Message_t *msg)
 	qboolean	force_pain;
 
 	chance = irand(0,100);
-	
+
 	ParseMsgParms(msg, "eeiii", &targ, &attacker, &force_pain, &damage, &temp);
 
 //	if (attacker->client)
@@ -967,7 +967,7 @@ void ogle_pain (edict_t *self, G_Message_t *msg)
 		{
 			self->monsterinfo.aiflags |= AI_COWARD;
 			self->ai_mood = AI_MOOD_FLEE;
-			
+
 			QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
 			return;
 		}
@@ -1008,26 +1008,26 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 	case hl_Head:
-			self->s.fmnodeinfo[MESH__TORSO].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__TORSO].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__TORSO].skin = self->s.skinnum+1;
 		break;
 
 	case hl_TorsoFront:
 	case hl_TorsoBack:
-			self->s.fmnodeinfo[MESH__TORSO].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__TORSO].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__TORSO].skin = self->s.skinnum+1;
 		break;
 
 	case hl_ArmUpperLeft:
 		if(self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
 			break;
-		
+
 		if (dismember_ok)
 		{
 			AngleVectors(self->s.angles,NULL,right,NULL);
 			gore_spot[2]+=self->maxs[2]*0.3;
 			VectorMA(gore_spot,-8,right,gore_spot);
-			
+
 			throw_nodes |= BPN_LUPARM;
 			self->s.fmnodeinfo[MESH__LUPARM].flags |= FMNI_NO_DRAW;
 
@@ -1047,7 +1047,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		}
 		else
 		{
-			self->s.fmnodeinfo[MESH__LUPARM].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__LUPARM].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__LUPARM].skin = self->s.skinnum+1;
 		}
 
@@ -1056,13 +1056,13 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 	case hl_ArmLowerLeft:
 		if(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
 			break;
-		
+
 		if (dismember_ok)
 		{
 			AngleVectors(self->s.angles,NULL,right,NULL);
 			gore_spot[2]+=self->maxs[2]*0.3;
 			VectorMA(gore_spot,-8,right,gore_spot);
-			
+
 			throw_nodes |= BPN_L4ARM;
 			self->s.fmnodeinfo[MESH__L4ARM].flags |= FMNI_NO_DRAW;
 
@@ -1076,7 +1076,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		}
 		else
 		{
-			self->s.fmnodeinfo[MESH__L4ARM].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__L4ARM].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__L4ARM].skin = self->s.skinnum+1;
 		}
 
@@ -1085,13 +1085,13 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 	case hl_ArmUpperRight:
 		if(self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
 			break;
-		
+
 		if (dismember_ok)
 		{
 			AngleVectors(self->s.angles,NULL,right,NULL);
 			gore_spot[2]+=self->maxs[2]*0.3;
 			VectorMA(gore_spot,8,right,gore_spot);
-			
+
 			throw_nodes |= BPN_RUPARM;
 			self->s.fmnodeinfo[MESH__RUPARM].flags |= FMNI_NO_DRAW;
 
@@ -1126,7 +1126,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		}
 		else
 		{
-			self->s.fmnodeinfo[MESH__RUPARM].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__RUPARM].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__RUPARM].skin = self->s.skinnum+1;
 		}
 
@@ -1135,13 +1135,13 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 	case hl_ArmLowerRight:
 		if(self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
 			break;
-		
+
 		if (dismember_ok)
 		{
 			AngleVectors(self->s.angles,NULL,right,NULL);
 			gore_spot[2]+=self->maxs[2]*0.3;
 			VectorMA(gore_spot,8,right,gore_spot);
-			
+
 			throw_nodes |= BPN_R4ARM;
 			self->s.fmnodeinfo[MESH__R4ARM].flags |= FMNI_NO_DRAW;
 
@@ -1170,7 +1170,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		}
 		else
 		{
-			self->s.fmnodeinfo[MESH__R4ARM].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__R4ARM].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__R4ARM].skin = self->s.skinnum+1;
 		}
 
@@ -1178,13 +1178,13 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 
 	case hl_LegUpperLeft:
 	case hl_LegLowerLeft:
-			self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
 		break;
 
 	case hl_LegUpperRight:
 	case hl_LegLowerRight:
-			self->s.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
 		break;
 	}
@@ -1210,7 +1210,7 @@ void ogle_death(edict_t *self, G_Message_t *msg)
 	ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
 
 	M_StartDeath(self, ANIM_DEATH1);
-	
+
 	ogle_cast_off_tools_of_oppression ( self );
 
 	if (self->health < -80)
@@ -1220,7 +1220,7 @@ void ogle_death(edict_t *self, G_Message_t *msg)
 	else if (self->health < -10)
 	{
 		SetAnim(self, ANIM_DEATH2);
-		
+
 		VectorCopy(targ->velocity, vf);
 		VectorNormalize(vf);
 
@@ -1303,7 +1303,7 @@ qboolean ogle_findtarget (edict_t *self)
 			}
 		}
 	}*/
-	
+
 	found = NULL;
 	//help out other ogles
 	while(found = findradius(found, self->s.origin, 1024))
@@ -1408,9 +1408,9 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 		{
 			self->enemy = self->goalentity = NULL;
 			self->ai_mood = AI_MOOD_PURSUE;
-			
+
 			ogle_cast_off_tools_of_oppression( self );
-	
+
 			switch( change )
 			{
 			case 0:	SetAnim(self, ANIM_CELEBRATE1);	break;
@@ -1420,18 +1420,18 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 			case 4:	SetAnim(self, ANIM_CELEBRATE5);	break;
 			}
 		}
-		
+
 		return;
 	}
 	else if (self->enemy)
 	{
 		len = M_DistanceToTarget(self, self->enemy);
 
-		if (len < 40)	// close enough to swing, not necessarily hit						
+		if (len < 40)	// close enough to swing, not necessarily hit
 		{
-			SetAnim(self, ANIM_ATTACK1);		
+			SetAnim(self, ANIM_ATTACK1);
 		}
-		else if (len < 100)	// close enough to swing, not necessarily hit						
+		else if (len < 100)	// close enough to swing, not necessarily hit
 		{
 			VectorCopy(self->s.origin, start);
 			VectorCopy(self->enemy->s.origin, end);
@@ -1442,7 +1442,7 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 			mins[2]+=self->maxs[0]/2;//because this guys's mins are 0
 
 			gi.trace(start, mins, self->maxs, end, self, MASK_MONSTERSOLID,&trace);
-			
+
 			if(trace.ent==self->enemy)
 			{
 				if (irand(0,1))
@@ -1462,7 +1462,7 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 				}
 			}
 		}
-		else		
+		else
 		{
 			switch (self->curAnimID)
 			{
@@ -1472,7 +1472,7 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 			case ANIM_CHARGE4:
 			case ANIM_CHARGE5:
 				break;
-			
+
 			default:
 				switch (change)
 				{
@@ -1485,10 +1485,10 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 				break;
 			}
 		}
-	
+
 		return;
 	}
-	
+
 	QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 }
 
@@ -1501,7 +1501,7 @@ void ogle_check_leadsong (edict_t *self)
 		if(ogle->monsterinfo.ogleflags & OF_SONG_LEADER)
 			return;
 	}
-	
+
 	self->monsterinfo.ogleflags |= OF_SONG_LEADER;
 }
 
@@ -1533,7 +1533,7 @@ void ogle_push (edict_t *self, float dist)
 		if(trace.ent && trace.ent == found)
 		{
 			yaw = self->s.angles[YAW]*M_PI*2 / 360;
-			
+
 			move[0] = cos(yaw)*dist;
 			move[1] = sin(yaw)*dist;
 			move[2] = 0;
@@ -1624,31 +1624,31 @@ void OgleStaticsInit()
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
-	sounds[SND_PICK1]		=	gi.soundindex("monsters/ogle/pick1.wav");	
-	sounds[SND_PICK2]		=	gi.soundindex("monsters/ogle/pick2.wav");	
-	sounds[SND_SPIKE1]		=	gi.soundindex("monsters/ogle/spike1.wav");	
-	sounds[SND_SPIKE2]		=	gi.soundindex("monsters/ogle/spike2.wav");	
-	sounds[SND_HAMMER1]		=	gi.soundindex("monsters/ogle/hammer1.wav");	
-	sounds[SND_HAMMER2]		=	gi.soundindex("monsters/ogle/hammer2.wav");	
-	sounds[SND_PICK_FLESH]	=	gi.soundindex("monsters/ogle/pickflesh.wav");	
-	sounds[SND_HAMMER_FLESH]=	gi.soundindex("monsters/ogle/hammerflesh.wav");	
-	sounds[SND_WIPE_BROW]	=	gi.soundindex("monsters/ogle/wipebrow.wav");	
-	sounds[SND_ENRAGE1]		=	gi.soundindex("monsters/ogle/enrage1.wav");	
-	sounds[SND_ENRAGE2]		=	gi.soundindex("monsters/ogle/enrage2.wav");	
-	sounds[SND_DEATH]		=	gi.soundindex("monsters/ogle/death.wav");	
-	sounds[SND_CHEER1]		=	gi.soundindex("monsters/ogle/cheer1.wav");	
-	sounds[SND_CHEER2]		=	gi.soundindex("monsters/ogle/cheer2.wav");	
-	sounds[SND_CHEER3]		=	gi.soundindex("monsters/ogle/cheer3.wav");	
+	sounds[SND_PICK1]		=	gi.soundindex("monsters/ogle/pick1.wav");
+	sounds[SND_PICK2]		=	gi.soundindex("monsters/ogle/pick2.wav");
+	sounds[SND_SPIKE1]		=	gi.soundindex("monsters/ogle/spike1.wav");
+	sounds[SND_SPIKE2]		=	gi.soundindex("monsters/ogle/spike2.wav");
+	sounds[SND_HAMMER1]		=	gi.soundindex("monsters/ogle/hammer1.wav");
+	sounds[SND_HAMMER2]		=	gi.soundindex("monsters/ogle/hammer2.wav");
+	sounds[SND_PICK_FLESH]	=	gi.soundindex("monsters/ogle/pickflesh.wav");
+	sounds[SND_HAMMER_FLESH]=	gi.soundindex("monsters/ogle/hammerflesh.wav");
+	sounds[SND_WIPE_BROW]	=	gi.soundindex("monsters/ogle/wipebrow.wav");
+	sounds[SND_ENRAGE1]		=	gi.soundindex("monsters/ogle/enrage1.wav");
+	sounds[SND_ENRAGE2]		=	gi.soundindex("monsters/ogle/enrage2.wav");
+	sounds[SND_DEATH]		=	gi.soundindex("monsters/ogle/death.wav");
+	sounds[SND_CHEER1]		=	gi.soundindex("monsters/ogle/cheer1.wav");
+	sounds[SND_CHEER2]		=	gi.soundindex("monsters/ogle/cheer2.wav");
+	sounds[SND_CHEER3]		=	gi.soundindex("monsters/ogle/cheer3.wav");
 
 	sounds[SND_PAIN1]		=	gi.soundindex("monsters/ogle/oglemoan1.wav");
 	sounds[SND_PAIN2]		=	gi.soundindex("monsters/ogle/oglemoan2.wav");
-	
+
 	//Singing
-	sounds[SND_CHORUS1]		=	gi.soundindex("monsters/ogle/chorus1.wav");	
-	sounds[SND_CHORUS2]		=	gi.soundindex("monsters/ogle/chorus3.wav");	
-	sounds[SND_CHORUS3]		=	gi.soundindex("monsters/ogle/chorus5.wav");	
-	sounds[SND_SOLO1]		=	gi.soundindex("monsters/ogle/solo2.wav");	
-	sounds[SND_SOLO2]		=	gi.soundindex("monsters/ogle/solo4.wav");	
+	sounds[SND_CHORUS1]		=	gi.soundindex("monsters/ogle/chorus1.wav");
+	sounds[SND_CHORUS2]		=	gi.soundindex("monsters/ogle/chorus3.wav");
+	sounds[SND_CHORUS3]		=	gi.soundindex("monsters/ogle/chorus5.wav");
+	sounds[SND_SOLO1]		=	gi.soundindex("monsters/ogle/solo2.wav");
+	sounds[SND_SOLO2]		=	gi.soundindex("monsters/ogle/solo4.wav");
 
 	classStatics[CID_OGLE].resInfo = &resInfo;
 }
@@ -1713,7 +1713,7 @@ void SP_monster_ogle(edict_t *self)
 	self->msgHandler = DefaultMsgHandler;
 	self->monsterinfo.alert = NULL;//can't be woken up
 	self->monsterinfo.dismember = ogle_dismember;
-	
+
 	if (!self->health)
 		self->health = OGLE_HEALTH;
 
@@ -1727,7 +1727,7 @@ void SP_monster_ogle(edict_t *self)
 	self->solid=SOLID_BBOX;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
 	self->materialtype = MAT_FLESH;
 
@@ -1739,7 +1739,7 @@ void SP_monster_ogle(edict_t *self)
 		self->s.scale = self->monsterinfo.scale = MODEL_SCALE;
 	}
 
-	self->monsterinfo.otherenemyname = "monster_rat";	
+	self->monsterinfo.otherenemyname = "monster_rat";
 
 	MG_InitMoods(self);
 
@@ -1748,7 +1748,7 @@ void SP_monster_ogle(edict_t *self)
 	self->mood_think = ogle_mood_think;
 
 	self->use = ogle_use;
-	
+
 	chance = irand(0,4);
 
 	if (!self->monsterinfo.ogleflags)
@@ -1767,8 +1767,8 @@ void SP_monster_ogle(edict_t *self)
 				break;
 		}
 	}
-	
-	self->monsterinfo.attack_finished = level.time + irand(10,100);	
+
+	self->monsterinfo.attack_finished = level.time + irand(10,100);
 
 	if (self->monsterinfo.ogleflags & OF_PUSHING)
 	{
@@ -1796,7 +1796,7 @@ void SP_monster_ogle(edict_t *self)
 #endif
 			SetAnim(self, ANIM_WORK3);
 			self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
-		}	
+		}
 	}
 	else if (self->monsterinfo.ogleflags & OF_PICK_UP)
 	{

@@ -33,13 +33,13 @@ PLAYER_API void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 	// See if we're already using the weapon.
 	if(Weapon==playerinfo->pers.weapon)
 		return;
-	
+
 	//Make sure we have an arm to do it
 	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
 
 	// Change to this weapon and set the weapon owner's ammo_index to reflect this.
-	playerinfo->pers.lastweapon=playerinfo->pers.weapon;	
+	playerinfo->pers.lastweapon=playerinfo->pers.weapon;
 	playerinfo->pers.weapon=Weapon;
 
 	if(playerinfo->pers.weapon && playerinfo->pers.weapon->ammo)
@@ -64,7 +64,7 @@ PLAYER_API void Weapon_EquipSwordStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 	// See if we're already switching...
 	if(playerinfo->pers.newweapon != NULL)
 		return;
-	
+
 	//Make sure we have an arm to do it
 	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
@@ -88,7 +88,7 @@ PLAYER_API void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon)
 	// See if we're already using this particular spell.
 	if(Weapon==playerinfo->pers.weapon)
 		return;
-	
+
 	// See if we're already switching...
 	if(playerinfo->pers.newweapon != NULL)
 	{
@@ -116,7 +116,7 @@ PLAYER_API void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon)
 			return;
 		}
 	}
-	
+
 	playerinfo->pers.newweapon = Weapon;
 	playerinfo->switchtoweapon = WEAPON_READY_HANDS;
 }
@@ -130,17 +130,17 @@ PLAYER_API void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 {
 	gitem_t	*AmmoItem;
 	int		AmmoIndex;
-	
+
 	assert(playerinfo);
 
 	// See if we're already using the hell-staff.
 	if(Weapon==playerinfo->pers.weapon)
 		return;
-	
+
 	// See if we're already switching...
 	if(playerinfo->pers.newweapon != NULL)
 		return;
-	
+
 	//Make sure we have an arm to do it
 	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
@@ -178,14 +178,14 @@ PLAYER_API void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon)
 	// See if we're already using the bow.
 	if(Weapon==playerinfo->pers.weapon)
 		return;
-	
+
 	// See if we're already switching...
 	if(playerinfo->pers.newweapon != NULL)
 	{
 		if (playerinfo->switchtoweapon != WEAPON_READY_BOW)
 			return;
 	}
-							   
+
 	//Make sure we have an arm to do it
 	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
@@ -203,7 +203,7 @@ PLAYER_API void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon)
 		return;
 	}
 
-			   
+
 	playerinfo->pers.newweapon = Weapon;
 	playerinfo->switchtoweapon = WEAPON_READY_BOW;
 }
@@ -224,7 +224,7 @@ PLAYER_API void Weapon_EquipArmor(playerinfo_t *playerinfo,gitem_t *Weapon)
 		playerinfo->pers.armortype = ARMOR_TYPE_NONE;
  		PlayerUpdateModelAttributes(playerinfo);
 	}
-	else 
+	else
 	{
 		playerinfo->pers.armortype = ARMOR_TYPE_SILVER;
  		PlayerUpdateModelAttributes(playerinfo);

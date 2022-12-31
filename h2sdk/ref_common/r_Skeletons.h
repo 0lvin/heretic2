@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef M_SKELETON_H
 #define M_SKELETON_H
 #include "m_Skeleton.h"
@@ -21,10 +26,10 @@ void ClearSkeleton(ModelSkeleton_t *skel, int root);
 
 void SetupJointRotations(ModelSkeleton_t *skel, int jointIndex, int anglesIndex);
 void FinishJointRotations(ModelSkeleton_t *skel, int jointIndex);
-void LinearllyInterpolateJoints(ModelSkeleton_t *newSkel, int newIndex, 
+void LinearllyInterpolateJoints(ModelSkeleton_t *newSkel, int newIndex,
 	ModelSkeleton_t *oldSkel, int oldIndex, ModelSkeleton_t *liSkel, int liIndex,
 	float move[3], float frontv[3], float backv[3]);
 void SetupCompressedJoints(ModelSkeleton_t *liSkel, int liIndex,
 	float *lerp);
-void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelClusterIndex, int anglesIndex, 
+void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelClusterIndex, int anglesIndex,
 	vec3_t *modelVerticies);

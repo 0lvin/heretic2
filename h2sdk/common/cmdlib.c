@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 // cmdlib.c
 
 #include "cmdlib.h"
@@ -109,7 +115,7 @@ void Error (char *error, ...)
 	char	text[1024];
 	char	text2[1024];
 	int		err;
-	
+
 	err = GetLastError ();
 
 	va_start (argptr,error);
@@ -149,7 +155,7 @@ void Error (char *error, ...)
 	if (g_dokeypress)
 	{
 		_cputs("Failure! ... Hit a key: ");
-		getch(); 
+		getch();
 	}
 #endif
 	exit (1);
@@ -238,7 +244,7 @@ void SetQdirFromPath (char *path)
 		}
 	}
 
-#ifdef _QDATA		// Weird, but if the stuff is clipped out of the ART directory instead of BASE, then the 
+#ifdef _QDATA		// Weird, but if the stuff is clipped out of the ART directory instead of BASE, then the
 					// program should allow it.  The reason?  So artists can clip out of ART, then use -publish to copy to BASE.
 	len = strlen(ARTDIRNAME);
 
@@ -256,7 +262,7 @@ void SetQdirFromPath (char *path)
 				if (*c == '/' || *c == '\\')
 				{
 					strncpy(gamedir, path, c+1-path);	// Set the gamedir to the path including the "ART/" or "ART\"
-				
+
 					// Now, we need an alternate directory with BASE instead of ART.
 					strncpy(g_publishDir, qdir, qdirlen);
 					c = g_publishDir + qdirlen;
@@ -373,9 +379,9 @@ I_FloatTime
 double I_FloatTime (void)
 {
 	time_t	t;
-	
+
 	time (&t);
-	
+
 	return t;
 #if 0
 // more precise, less portable
@@ -384,13 +390,13 @@ double I_FloatTime (void)
 	static int		secbase;
 
 	gettimeofday(&tp, &tzp);
-	
+
 	if (!secbase)
 	{
 		secbase = tp.tv_sec;
 		return tp.tv_usec/1000000.0;
 	}
-	
+
 	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
 #endif
 }
@@ -430,10 +436,10 @@ returns -1 if not present
 int	FileTime (char *path)
 {
 	struct	stat	buf;
-	
+
 	if (stat (path,&buf) == -1)
 		return -1;
-	
+
 	return buf.st_mtime;
 }
 
@@ -450,13 +456,13 @@ char *COM_Parse (char *data)
 {
 	int		c;
 	int		len;
-	
+
 	len = 0;
 	com_token[0] = 0;
-	
+
 	if (!data)
 		return NULL;
-		
+
 // skip whitespace
 skipwhite:
 	while ( (c = *data) <= ' ')
@@ -468,7 +474,7 @@ skipwhite:
 		}
 		data++;
 	}
-	
+
 // skip // comments
 	if (c=='/' && data[1] == '/')
 	{
@@ -476,7 +482,7 @@ skipwhite:
 			data++;
 		goto skipwhite;
 	}
-	
+
 
 // handle quoted strings specially
 	if (c == '\"')
@@ -514,7 +520,7 @@ skipwhite:
 	if (c=='{' || c=='}'|| c==')'|| c=='(' || c=='\'' || c==':')
 			break;
 	} while (c>32);
-	
+
 	com_token[len] = 0;
 	return data;
 }
@@ -523,7 +529,7 @@ skipwhite:
 int Q_strncasecmp (char *s1, char *s2, int n)
 {
 	int		c1, c2;
-	
+
 	do
 	{
 		c1 = *s1++;
@@ -531,7 +537,7 @@ int Q_strncasecmp (char *s1, char *s2, int n)
 
 		if (!n--)
 			return 0;		// strings are equal until end point
-		
+
 		if (c1 != c2)
 		{
 			if (c1 >= 'a' && c1 <= 'z')
@@ -542,7 +548,7 @@ int Q_strncasecmp (char *s1, char *s2, int n)
 				return -1;		// strings not equal
 		}
 	} while (c1);
-	
+
 	return 0;		// strings are equal
 }
 
@@ -570,7 +576,7 @@ char *Q_strlower (char *start)
 	in = start;
 	while (*in)
 	{
-		*in = tolower(*in); 
+		*in = tolower(*in);
 		in++;
 	}
 	return start;
@@ -616,7 +622,7 @@ void ParseCommandLine (char *lpCmdLine)
 				*lpCmdLine = 0;
 				lpCmdLine++;
 			}
-			
+
 		}
 	}
 }
@@ -905,7 +911,7 @@ void ExtractFileName (char *path, char *dest)
 //
 // back up until a \ or the start
 //
-	while (src != path && *(src-1) != '/' 
+	while (src != path && *(src-1) != '/'
 		 && *(src-1) != '\\' )
 		src--;
 
@@ -1049,13 +1055,13 @@ int    BigLong (int l)
 float	LittleFloat (float l)
 {
 	union {byte b[4]; float f;} in, out;
-	
+
 	in.f = l;
 	out.b[0] = in.b[3];
 	out.b[1] = in.b[2];
 	out.b[2] = in.b[1];
 	out.b[3] = in.b[0];
-	
+
 	return out.f;
 }
 
@@ -1104,13 +1110,13 @@ int    LittleLong (int l)
 float	BigFloat (float l)
 {
 	union {byte b[4]; float f;} in, out;
-	
+
 	in.f = l;
 	out.b[0] = in.b[3];
 	out.b[1] = in.b[2];
 	out.b[2] = in.b[1];
 	out.b[3] = in.b[0];
-	
+
 	return out.f;
 }
 

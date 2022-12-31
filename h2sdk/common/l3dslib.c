@@ -1,4 +1,10 @@
 //
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
+//
 // l3dslib.c: library for loading triangles from an Alias triangle file
 //
 
@@ -75,7 +81,7 @@ void StoreAliasTriangles (void)
 			}
 		}
 	}
-	
+
 	totaltris += numtris;
 	numtris = 0;
 	vertsfound = 0;

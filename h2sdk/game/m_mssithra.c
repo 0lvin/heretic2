@@ -85,7 +85,7 @@ void mssithra_pain(edict_t *self, G_Message_t *msg)
 	int				temp, damage;
 	qboolean		force_pain;
 
-	if(self->deadflag == DEAD_DEAD) //Dead but still being hit	
+	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
 	ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
@@ -111,7 +111,7 @@ void mssithra_pain(edict_t *self, G_Message_t *msg)
 
 	if (self->flags&FL_INWATER)
 		self->flags |= FL_SWIM;
-	else 
+	else
 		self->flags &= ~FL_SWIM;
 
 	if(irand(0,10)<1)
@@ -145,7 +145,7 @@ void mssithra_death(edict_t *self, G_Message_t *msg)
 
 	if(self->deadflag == DEAD_DEAD)
 		return;
-	
+
 	self->deadflag = DEAD_DEAD;
 
 	gi.sound (self, CHAN_VOICE, Sounds[SND_DIE], 1, ATTN_NORM, 0);
@@ -153,7 +153,7 @@ void mssithra_death(edict_t *self, G_Message_t *msg)
 		self->flags |= FL_SWIM;
 	else
 		self->flags &= ~FL_SWIM;
-	
+
 	SetAnim(self, ANIM_DEATH1);
 
 	//Remove the life bar once dead
@@ -214,7 +214,7 @@ void mssithra_melee(edict_t *self, G_Message_t *msg)
 {
 	vec3_t	v;
 	float	len, melee_range, min_seperation, jump_range;
-	
+
 	if(M_ValidTarget(self, self->enemy))
 	{
 		VectorSubtract (self->s.origin, self->enemy->s.origin, v);
@@ -236,14 +236,14 @@ void mssithra_missile(edict_t *self, G_Message_t *msg)
 {//NEWSTUFF: jump closer to claw, loop shooting anims
 	vec3_t	v;
 	float	len, min_seperation, jump_range;
-	
+
 	if(M_ValidTarget(self, self->enemy))
 	{
 		VectorSubtract (self->s.origin, self->enemy->s.origin, v);
 		len = VectorLength (v);
 		jump_range = 128;
 		min_seperation = self->maxs[0] + self->enemy->maxs[0];
-		
+
 		if (irand(0,(skill->value+1)*2))
 		{
 			SetAnim(self, ANIM_SHOOT_TRANS);
@@ -261,7 +261,7 @@ void mssithraSwipe (edict_t *self)
 {
 	vec3_t	v, off, dir, org, ang;
 	float	len;
-	
+
 	if (self->enemy == NULL)	// If the player gets gibbed, enemy can be NULL.
 		return;
 
@@ -269,7 +269,7 @@ void mssithraSwipe (edict_t *self)
 	len = VectorLength (v);
 
 	if (len < (self->maxs[0] + self->enemy->maxs[0] + 45)  )	// A hit
-	{	
+	{
 		if (infront(self, self->enemy))
 		{
 			gi.sound (self, CHAN_WEAPON, Sounds[SND_SWIPEHIT], 1, ATTN_NORM, 0);
@@ -278,16 +278,16 @@ void mssithraSwipe (edict_t *self)
 			VectorCopy(self->s.angles, ang);
 			ang[YAW] += DEGREE_90;
 			AngleVectors(ang, dir, NULL, NULL);
-			T_Damage (self->enemy, self, self, dir, org, vec3_origin, 
+			T_Damage (self->enemy, self, self, dir, org, vec3_origin,
 					MSSITHRA_DMG_SWIPE, 0, DAMAGE_DISMEMBER,MOD_DIED);
 
 			if(self->enemy->health>0)//else don't gib?
-			{	
+			{
 				if(!irand(0,5))
 				{
 					if(!stricmp(self->enemy->classname, "player"))
 						P_KnockDownPlayer(&self->enemy->client->playerinfo);
-				}	
+				}
 			}
 			return;
 		}
@@ -337,11 +337,11 @@ edict_t *MssithraAlphaArrowReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	G_LinkMissile(arrow);
 
-	gi.CreateEffect(&arrow->s, 
-					FX_M_EFFECTS, 
-					CEF_OWNERS_ORIGIN | CEF_FLAG6, 
-					NULL, 
-					"bv", 
+	gi.CreateEffect(&arrow->s,
+					FX_M_EFFECTS,
+					CEF_OWNERS_ORIGIN | CEF_FLAG6,
+					NULL,
+					"bv",
 					FX_MSSITHRA_ARROW,
 					arrow->velocity);
 
@@ -383,7 +383,7 @@ void mssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csu
 		self->s.effects |= EF_ALTCLIENTFX;
 
 		VectorClear(self->velocity);
-		
+
 		if (plane->normal)
 			VectorCopy(plane->normal, self->movedir);
 
@@ -404,11 +404,11 @@ void create_ssithra_arrow(edict_t *Arrow)
 	Arrow->touch = mssithraAlphaArrowTouch;
 
 	Arrow->clipmask = MASK_SHOT;
-	
+
 	Arrow->s.effects |= EF_ALWAYS_ADD_EFFECTS | EF_CAMERA_NO_CLIP;
 	Arrow->svflags |= SVF_ALWAYS_SEND;
 
-	VectorSet(Arrow->mins,-1.0,-1.0,-1.0);	
+	VectorSet(Arrow->mins,-1.0,-1.0,-1.0);
 	VectorSet(Arrow->maxs,1.0,1.0,1.0);
 	Arrow->s.scale = 1.5;
 }
@@ -420,7 +420,7 @@ void mssithraArrow(edict_t *self)
 	edict_t	*Arrow;
 	float	spread;
 	int	num_shots = 3;
-	
+
 	if (!self->enemy)
 		return;
 
@@ -437,7 +437,7 @@ void mssithraArrow(edict_t *self)
 	gi.sound(self,CHAN_WEAPON,Sounds[SND_ARROW],1,ATTN_NORM,0);
 	self->monsterinfo.attack_finished = level.time + 0.4;
 
-	VectorCopy(self->s.origin,fire_spot);	
+	VectorCopy(self->s.origin,fire_spot);
 	fire_spot[2]+=self->maxs[2]*0.5;
 	AngleVectors(self->s.angles,Forward,Right,NULL);
 	VectorMA(fire_spot,72,Forward,fire_spot);
@@ -454,8 +454,8 @@ void mssithraArrow(edict_t *self)
 
 		create_ssithra_arrow(Arrow);
 		Arrow->reflect_debounce_time = MAX_REFLECT;
-		
-		VectorCopy(fire_spot,Arrow->s.origin);	
+
+		VectorCopy(fire_spot,Arrow->s.origin);
 		VectorCopy(self->movedir,Arrow->movedir);
 
 		//Increase the spread for lower levels
@@ -502,15 +502,15 @@ void mssithraArrow(edict_t *self)
 		Arrow->owner=self;
 		Arrow->enemy=self->enemy;
 
-		gi.CreateEffect(&Arrow->s, 
-						FX_M_EFFECTS, 
-						CEF_OWNERS_ORIGIN | CEF_FLAG6, 
-						NULL, 
-						"bv", 
+		gi.CreateEffect(&Arrow->s,
+						FX_M_EFFECTS,
+						CEF_OWNERS_ORIGIN | CEF_FLAG6,
+						NULL,
+						"bv",
 						FX_MSSITHRA_ARROW,
 						Arrow->velocity);
 
-		G_LinkMissile(Arrow); 
+		G_LinkMissile(Arrow);
 
 		Arrow->nextthink=level.time+5;
 		Arrow->think=G_FreeEdict;//mssithraArrowThink;
@@ -567,7 +567,7 @@ qboolean mssithraCheckMood (edict_t *self)
 
 	if (self->ai_mood == AI_MOOD_NORMAL)
 		return false;
-		
+
 	switch (self->ai_mood)
 	{
 	case AI_MOOD_ATTACK:
@@ -658,17 +658,17 @@ void MssithraStaticsInit()
 	resInfo.modelIndex = gi.modelindex("models/monsters/mutantsithra/tris.fm");
 
 	Sounds[SND_PAIN1]=gi.soundindex("monsters/mssithra/pain1.wav");
-	Sounds[SND_PAIN2]=gi.soundindex("monsters/mssithra/pain2.wav");	
-	Sounds[SND_DIE]=gi.soundindex("monsters/mssithra/death1.wav");	
+	Sounds[SND_PAIN2]=gi.soundindex("monsters/mssithra/pain2.wav");
+	Sounds[SND_DIE]=gi.soundindex("monsters/mssithra/death1.wav");
 	Sounds[SND_SWIPE] = gi.soundindex ("monsters/mssithra/swipe.wav");
-	Sounds[SND_SWIPEHIT]=gi.soundindex("monsters/mssithra/swipehit.wav");	
-	Sounds[SND_ARROW]=gi.soundindex("weapons/RedRainPowerFire.wav");	
+	Sounds[SND_SWIPEHIT]=gi.soundindex("monsters/mssithra/swipehit.wav");
+	Sounds[SND_ARROW]=gi.soundindex("weapons/RedRainPowerFire.wav");
 	Sounds[SND_AEXPLODE]=gi.soundindex("weapons/FlyingFistImpact.wav");
-	Sounds[SND_GROWL1]=gi.soundindex("monsters/mssithra/growl1.wav");	
-	Sounds[SND_GROWL2] = gi.soundindex ("monsters/mssithra/growl2.wav");	
-	Sounds[SND_GROWL3] = gi.soundindex ("monsters/mssithra/growl3.wav");	
-	Sounds[SND_ROAR]=gi.soundindex("monsters/mssithra/roar.wav");	
-	Sounds[SND_INWALL]=gi.soundindex("weapons/staffhitwall.wav");	
+	Sounds[SND_GROWL1]=gi.soundindex("monsters/mssithra/growl1.wav");
+	Sounds[SND_GROWL2] = gi.soundindex ("monsters/mssithra/growl2.wav");
+	Sounds[SND_GROWL3] = gi.soundindex ("monsters/mssithra/growl3.wav");
+	Sounds[SND_ROAR]=gi.soundindex("monsters/mssithra/roar.wav");
+	Sounds[SND_INWALL]=gi.soundindex("weapons/staffhitwall.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = Sounds;
@@ -678,7 +678,7 @@ void MssithraStaticsInit()
 
 /*QUAKED monster_mssithra (1 .5 0) (-36 -36 0) (36 36 96) AMBUSH ASLEEP 4 8 16 32 64 FIXED WANDER MELEE_LEAD STALK COWARD EXTRA1 EXTRA2 EXTRA3 EXTRA4
 
-The  mssithra 
+The  mssithra
 
 AMBUSH - Will not be woken up by other monsters or shots from player
 
@@ -765,12 +765,12 @@ void SP_monster_mssithra (edict_t *self)
 	self->solid=SOLID_BBOX;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
 	self->s.modelindex = classStatics[CID_MSSITHRA].resInfo->modelIndex;
 
 	self->s.skinnum = 0;
-	
+
 	if (!self->monsterinfo.scale)
 	{
 		self->s.scale = self->monsterinfo.scale = (MODEL_SCALE + 0.25);
@@ -788,7 +788,7 @@ void SP_monster_mssithra (edict_t *self)
 
 	//Turn the goofy bolts off!
 	self->s.fmnodeinfo[MESH__BOLTS].flags |= FMNI_NO_DRAW;
-	
+
 	self->dmg = 0;
 	self->svflags|=SVF_BOSS;
 }

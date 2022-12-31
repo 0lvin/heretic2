@@ -44,7 +44,7 @@ void tome_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -60,7 +60,7 @@ void tome_c_anims(edict_t *self, G_Message_t *msg)
 			self->monsterinfo.c_anim_flag |= C_ANIM_MOVE;
 			curr_anim = ANIM_C_IDLE1;
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -77,7 +77,7 @@ void TomeStaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	resInfo.modelIndex = gi.modelindex("models/spells/book/tris.fm");
 
 	classStatics[CID_C_TOME].resInfo = &resInfo;
@@ -91,7 +91,7 @@ The talking tome of power (sounds like a hot babe)
 void SP_character_tome (edict_t *self)
 {
 	VectorSet (self->mins, -4, -8, -12);
-	VectorSet (self->maxs, 4, 8, 12);	
+	VectorSet (self->maxs, 4, 8, 12);
 
 	c_character_init(self,CID_C_TOME);
 }

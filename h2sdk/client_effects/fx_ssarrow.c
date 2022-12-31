@@ -49,7 +49,7 @@ void FXSsithraArrowGlow(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->color.c = 0xff00ffff;
 	glow->dlight = CE_DLight_new(glow->color, 150.0F, 0.0F);
 	glow->Update = FXSsithraArrowGlowThink;
-	glow->AddToView = OffsetLinkedEntityUpdatePlacement;			
+	glow->AddToView = OffsetLinkedEntityUpdatePlacement;
 	glow->refMask = 1 << CORVUS_LEFTHAND;
 
 	AddEffect(owner, glow);

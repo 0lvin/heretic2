@@ -38,14 +38,14 @@ void PreCachePortal()
 
 int RandomSparkTypes [9] =
 {
-	PART_4x4_WHITE,        
-	PART_4x4_BLUE,         
-	PART_4x4_BLUE2,       
-	PART_4x4_BLUE3,       
+	PART_4x4_WHITE,
+	PART_4x4_BLUE,
+	PART_4x4_BLUE2,
+	PART_4x4_BLUE3,
 	PART_8x8_BLUE_X,
 	PART_8x8_BLUE_CIRCLE,
-	PART_8x8_BLUE_DIAMOND,  
-	PART_16x16_STAR,       
+	PART_8x8_BLUE_DIAMOND,
+	PART_16x16_STAR,
 	PART_16x16_SPARK_B,
 };
 
@@ -100,7 +100,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		ce->acceleration[2] = flrand(2, 5);
 		ce->scale = flrand(MIN_PART_SCALE, MAX_PART_SCALE);
 		ce->d_scale = -0.2F;
-		
+
 		if(!(self->flags & CEF_NO_DRAW))
 		{
 			ce->color.r = irand(100, 200);
@@ -145,7 +145,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		}
 		//FIXME: calculate correct duration
 
-		AddEffect(owner, ripple); 
+		AddEffect(owner, ripple);
 
 		self->SpawnInfo = 0;
 	}
@@ -199,7 +199,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 			line=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, 0, owner->current.origin, 0, 600);
 
 			line->r.model = portal_models + 2;
-			
+
 			line->r.spriteType = SPRITE_LINE;
 
 			line->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -250,7 +250,7 @@ void FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
 		portal->r.spriteType = SPRITE_DYNAMIC;
 		portal->r.flags |= RF_FIXED|RF_GLOW|RF_TRANSLUCENT|RF_TRANS_ADD_ALPHA|RF_TRANS_ADD;
 		portal->alpha = 0.75;
-		
+
 		if(1)
 		{
 			//top left

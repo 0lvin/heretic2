@@ -90,13 +90,13 @@ edict_t *FlyingFistReflect(edict_t *self, edict_t *other, vec3_t vel)
 	flyingfist->flags |= (self->flags & FL_NO_KNOCKBACK);
 	flyingfist->reflect_debounce_time = self->reflect_debounce_time -1; //so it doesn't infinitely reflect in one frame somehow
 	flyingfist->reflected_time=self->reflected_time;
-	G_LinkMissile(flyingfist); 
+	G_LinkMissile(flyingfist);
 
 	// create new trails for the new missile
 	gi.CreateEffect(&flyingfist->s, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
 					"t", flyingfist->velocity);
 
-	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
@@ -182,7 +182,7 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 			{
 				T_Damage(other, self, self->owner, self->movedir, self->s.origin, plane->normal,
 						damage>>1, damage, DAMAGE_SPELL|DAMAGE_EXTRA_KNOCKBACK,MOD_FIREBALL);		// Half goes directly to target, blast does rest.
-				T_DamageRadius(self, self->owner, self->owner, FIREBALL_RADIUS, 
+				T_DamageRadius(self, self->owner, self->owner, FIREBALL_RADIUS,
 						FIREBALL_DAMAGE_MAX_POWER, FIREBALL_DAMAGE_MIN_POWER, DAMAGE_SPELL,MOD_FIREBALL);
 			}
 		}
@@ -265,7 +265,7 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 
 	CreateFlyingFist(flyingfist);
 	flyingfist->reflect_debounce_time = MAX_REFLECT;
-	VectorCopy(startpos, flyingfist->s.origin);	
+	VectorCopy(startpos, flyingfist->s.origin);
 
 	if (wimpy)
 		flyingfist->flags |= FL_NO_KNOCKBACK;	// Just using the no knockback flag to indicate a wussy weapon.
@@ -287,7 +287,7 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 	// Remember velocity in case we have to reverse it
 	VectorNormalize2(flyingfist->velocity, flyingfist->movedir);
 
-	G_LinkMissile(flyingfist); 
+	G_LinkMissile(flyingfist);
 
 	// Make sure we don`t start in a solid
 	gi.trace(caster->s.origin, vec3_origin, vec3_origin, flyingfist->s.origin, caster, MASK_PLAYERSOLID,&trace);

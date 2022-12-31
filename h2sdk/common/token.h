@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 
 //**************************************************************************
 //**
@@ -43,7 +48,7 @@ typedef enum
 	TK_RPAREN,
 	TK_LBRACE,
 	TK_RBRACE,				// 10
-	TK_LBRACKET,			
+	TK_LBRACKET,
 	TK_RBRACKET,
 	TK_COLON,
 	TK_MESH,
@@ -64,24 +69,24 @@ typedef enum
 
 	TK_C_NAMED,
 	TK_OBJECT,				// 30
-	TK_C_TRI,				
+	TK_C_TRI,
 	TK_C_VERTICES,
 	TK_C_FACES,
 	TK_C_VERTEX,
 	TK_LIST,				// 35
-	TK_C_FACE,				
+	TK_C_FACE,
 
 	TK_C_HEXEN,
 	TK_C_TRIANGLES,
 	TK_C_VERSION,
 	TK_FACES,				// 40
-	TK_FACE,				
+	TK_FACE,
 	TK_ORIGIN,
 
 	TK_CLUSTERS,
 	TK_NUM_CLUSTER_VERTICES,
 	TK_NAME,				// 45
-	TK_CLUSTER_NAME,		
+	TK_CLUSTER_NAME,
 	TK_CLUSTER_STATE,
 
 	TK_ACTOR_DATA,

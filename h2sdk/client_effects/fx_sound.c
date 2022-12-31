@@ -94,8 +94,8 @@ static qboolean FXSoundthink(struct client_entity_s *self, centity_t *owner)
    				soundname = "ambient/femcry2.wav";
    			else if (chance < 3)
    				soundname = "ambient/kidcry1.wav";
-   			else 
-   				soundname = "ambient/kidcry2.wav"; 
+   			else
+   				soundname = "ambient/kidcry2.wav";
 			break;
 		case AS_MOSQUITOES:
    			chance = irand(0,1);
@@ -116,7 +116,7 @@ static qboolean FXSoundthink(struct client_entity_s *self, centity_t *owner)
    				soundname = "ambient/runaway1.wav";
    			else if (chance < 2)
    				soundname = "ambient/runaway2.wav";
-   			else 
+   			else
    				soundname = "ambient/sewerrun.wav";
 			break;
 		case AS_MOANS:
@@ -218,7 +218,7 @@ void FXSound(centity_t *owner,int type,int flags,vec3_t origin)
 	byte 					style, wait, attenuation,volume;
 	soundthinkinfo_t 	*soundinfo;
 
-  	self = ClientEntity_new(type, flags|CEF_NO_DRAW|CEF_NOMOVE, origin, 
+  	self = ClientEntity_new(type, flags|CEF_NO_DRAW|CEF_NOMOVE, origin,
 		NULL, 20);
 	self->flags &= ~CEF_OWNERS_ORIGIN;
 

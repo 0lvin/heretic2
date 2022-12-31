@@ -110,7 +110,7 @@ void FXSpellChange(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		VectorAdd(dir,spellbit->velocity, spellbit->velocity);
 		spellbit->d_scale=-2.0;
 		spellbit->scale = 6.0;
-		
+
 		AddParticleToList(spellpuff, spellbit);
 	}
 

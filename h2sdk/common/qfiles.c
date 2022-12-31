@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #include "qfiles.h"
 #include "scriplib.h"
 #include <windows.h>
@@ -31,7 +37,7 @@ void QFile_ReadMaterialTypes(char* filename)
 
 	LoadScriptFile(filename);
 	i = 0;
-	
+
 	while (i < 255)
 	{
 		GetScriptToken (true);

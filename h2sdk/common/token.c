@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 
 //**************************************************************************
 //**
@@ -294,7 +299,7 @@ tokenType_t TK_Beyond(tokenType_t tokType)
 	{
 		if(TK_Fetch() == TK_EOF)
 		{
-			Error("File '%s':\nCould not find token '%s'.\n",		// FIXME: TokenNames table not big enuff 
+			Error("File '%s':\nCould not find token '%s'.\n",		// FIXME: TokenNames table not big enuff
 				tk_SourceName, TokenNames[tokType]);
 		}
 	}

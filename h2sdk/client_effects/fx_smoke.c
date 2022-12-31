@@ -111,7 +111,7 @@ void FXEnvSmoke(centity_t *owner,int type,int flags,vec3_t origin)
 		fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("misc/fout.wav"), 1, ATTN_NORM, 0);
 		self->Update = FXSmokeSpawner2;
 		self->LifeTime = 33;
-		AddEffect(NULL, self); 
+		AddEffect(NULL, self);
 	}
 	else
 	{
@@ -122,7 +122,7 @@ void FXEnvSmoke(centity_t *owner,int type,int flags,vec3_t origin)
 		self->r.scale = 32.0 / scale;
 		self->updateTime = wait * 1000;
 		self->Update = FXSmokeSpawner;
-		AddEffect(owner, self); 
+		AddEffect(owner, self);
 	}
 }
 

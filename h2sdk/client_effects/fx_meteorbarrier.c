@@ -36,7 +36,7 @@ void PreCacheMeteor()
 
 static qboolean FXMeteorBarriertrailThink(struct client_entity_s *self, centity_t *owner)
 {
-	
+
 	vec3_t			org, delta;
 	float			length, alpha;
 	int				numtrails;

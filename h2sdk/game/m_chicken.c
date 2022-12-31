@@ -67,28 +67,28 @@ void ChickenStaticsInit()
 	resInfo.modelIndex = gi.modelindex("models/monsters/chicken2/tris.fm");
 
 	//for the cluck animation
-	sounds[SND_CLUCK1]= gi.soundindex ("monsters/chicken/cluck1.wav");	
-	sounds[SND_CLUCK2]= gi.soundindex ("monsters/chicken/cluck2.wav");	
+	sounds[SND_CLUCK1]= gi.soundindex ("monsters/chicken/cluck1.wav");
+	sounds[SND_CLUCK2]= gi.soundindex ("monsters/chicken/cluck2.wav");
 
 	//for getting hit - even though right now, it dies immediately - they want this changed
-	sounds[SND_PAIN1]= gi.soundindex ("monsters/chicken/pain1.wav");	
-	sounds[SND_PAIN2]= gi.soundindex ("monsters/chicken/pain2.wav");	
+	sounds[SND_PAIN1]= gi.soundindex ("monsters/chicken/pain1.wav");
+	sounds[SND_PAIN2]= gi.soundindex ("monsters/chicken/pain2.wav");
 
 	//for dying - we only ever get gibbed, so no other sound is required
-	sounds[SND_DIE]= gi.soundindex ("monsters/chicken/die.wav");	
+	sounds[SND_DIE]= gi.soundindex ("monsters/chicken/die.wav");
 
 	//for biting the player
-	sounds[SND_BITE1]= gi.soundindex ("monsters/chicken/bite1.wav");	
-	sounds[SND_BITE2]= gi.soundindex ("monsters/chicken/bite2.wav");	
+	sounds[SND_BITE1]= gi.soundindex ("monsters/chicken/bite1.wav");
+	sounds[SND_BITE2]= gi.soundindex ("monsters/chicken/bite2.wav");
 
 	//for pecking the ground
-	sounds[SND_PECK1]= gi.soundindex ("monsters/chicken/peck1.wav");	
-	sounds[SND_PECK2]= gi.soundindex ("monsters/chicken/peck2.wav");	
+	sounds[SND_PECK1]= gi.soundindex ("monsters/chicken/peck1.wav");
+	sounds[SND_PECK2]= gi.soundindex ("monsters/chicken/peck2.wav");
 
 	//and lastly, I thought it might be cool to have some cries for when the chicken jumps
-	sounds[SND_JUMP1]= gi.soundindex ("monsters/chicken/jump1.wav");	
-	sounds[SND_JUMP2]= gi.soundindex ("monsters/chicken/jump2.wav");	
-	sounds[SND_JUMP3]= gi.soundindex ("monsters/chicken/jump3.wav");	
+	sounds[SND_JUMP1]= gi.soundindex ("monsters/chicken/jump1.wav");
+	sounds[SND_JUMP2]= gi.soundindex ("monsters/chicken/jump2.wav");
+	sounds[SND_JUMP3]= gi.soundindex ("monsters/chicken/jump3.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
@@ -98,7 +98,7 @@ void ChickenStaticsInit()
 
 /*QUAKED monster_chicken (1 .5 0) (-16 -16 -0) (16 16 32) AMBUSH ASLEEP EATING
 
-The chicken 
+The chicken
 
 "wakeup_target" - monsters will fire this target the first time it wakes up (only once)
 
@@ -141,7 +141,7 @@ void SP_monster_chicken (edict_t *self)
 
  	QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 
-	gi.linkentity(self); 
+	gi.linkentity(self);
 
 }
 
@@ -155,7 +155,7 @@ void chicken_death(edict_t *self, G_Message_t *msg)
 	gi.sound (self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	BecomeDebris(self);
-	gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" ); 
+	gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
 
 }
 
@@ -207,14 +207,14 @@ void MorphChickenOut(edict_t *self)
 		// do the teleport sound
 		gi.sound(newent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 		// do the teleport effect
-		gi.CreateEffect(&newent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, NULL, "" ); 
+		gi.CreateEffect(&newent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, NULL, "" );
 		G_FreeEdict(self);
 	}
 }
 
 
 /*-------------------------------------------------------------------------
-	chicken checks to see if we are still a chicken, or is it time to return to 
+	chicken checks to see if we are still a chicken, or is it time to return to
 	our original shape ?
 -------------------------------------------------------------------------*/
 void chicken_check (edict_t *self)
@@ -225,7 +225,7 @@ void chicken_check (edict_t *self)
 		return;
 
 	//	make that pretty effect around us
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, NULL, "" ); 
+	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, NULL, "" );
 
 	// deal with the existing chicken
 	self->think = MorphChickenOut;
@@ -258,14 +258,14 @@ void chicken_bite (edict_t *self)
 
 	// determine if we've actually bitten the player, or just missed
 	if (len <= (self->maxs[0] + self->enemy->maxs[0] + 24)  )	// A hit
-	{	
+	{
 		VectorSet(off, 20.0, 0.0, 5.0);
 		VectorGetOffsetOrigin(off, self->s.origin, self->s.angles[YAW], org);
 		// this is not apparently used for anything ?
 		VectorClear(dir);
 		// cause us some damage.
 	 	T_Damage (self->enemy, self, self, dir, org, vec3_origin, 1, 0, 0,MOD_DIED);
-		
+
 		if(!irand(0,1))
 			gi.sound(self, CHAN_VOICE, sounds[SND_BITE1], 1, ATTN_NORM, 0);
 		else
@@ -297,7 +297,7 @@ void chicken_pause (edict_t *self)
 			{
 				QPostMessage(self, MSG_RUN,PRI_DIRECTIVE, NULL);
 			}
-			else	// Close enough to Attack 
+			else	// Close enough to Attack
 			{
 				QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 			}
@@ -359,7 +359,7 @@ void chicken_pause (edict_t *self)
 -------------------------------------------------------------------------*/
 void chicken_eat_again (edict_t *self)
 {
-	// a one in three chance we will peck again :) 
+	// a one in three chance we will peck again :)
 	if (irand(0,2))
 	 		QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
 	else
@@ -375,7 +375,7 @@ void chicken_attack(edict_t *self, G_Message_t *msg)
 }
 
 //----------------------------------------------------------------------
-//  Chicken jump 
+//  Chicken jump
 //----------------------------------------------------------------------
 void chicken_jump(edict_t *self, G_Message_t *msg)
 {
@@ -389,7 +389,7 @@ void chicken_jump(edict_t *self, G_Message_t *msg)
 }
 
 //----------------------------------------------------------------------
-//  Chicken Cluck 
+//  Chicken Cluck
 //----------------------------------------------------------------------
 void chicken_eat(edict_t *self, G_Message_t *msg)
 {
@@ -401,7 +401,7 @@ void chicken_eat(edict_t *self, G_Message_t *msg)
 }
 
 //----------------------------------------------------------------------
-//  Chicken Cluck 
+//  Chicken Cluck
 //----------------------------------------------------------------------
 void chicken_cluck(edict_t *self, G_Message_t *msg)
 {

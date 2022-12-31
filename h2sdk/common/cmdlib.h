@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 // cmdlib.h
 
 #ifndef __CMDLIB__

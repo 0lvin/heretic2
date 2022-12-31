@@ -52,15 +52,15 @@ void harpy_blocked (edict_t *self, struct trace_s *trace);
 
 int BPN_for_hitloc [hl_harpy_max] = {
 	0,
-	BPN_BACKSPIKES,//hl_backspikes	
+	BPN_BACKSPIKES,//hl_backspikes
 	BPN_HEAD|BPN_HORNS|BPN_HORN|BPN_NECKSPIKES,//hl_head
-	BPN_STINGER,//hl_stinger			
-	BPN_LWING,//hl_lwing			
-	BPN_LHAND,//hl_lefthand		
-	BPN_RWING,//hl_rwing			
-	BPN_RHAND,//hl_righthand	
-	BPN_LUARM|BPN_LLARM|BPN_LHAND,//hl_leftupperleg	
-	BPN_LLARM|BPN_LHAND,//hl_leftlowerleg	
+	BPN_STINGER,//hl_stinger
+	BPN_LWING,//hl_lwing
+	BPN_LHAND,//hl_lefthand
+	BPN_RWING,//hl_rwing
+	BPN_RHAND,//hl_righthand
+	BPN_LUARM|BPN_LLARM|BPN_LHAND,//hl_leftupperleg
+	BPN_LLARM|BPN_LHAND,//hl_leftlowerleg
 	BPN_RUARM|BPN_RLARM|BPN_RHAND,//hl_rightupperleg
 	BPN_RLARM|BPN_RHAND//hl_rightlowerleg
 };
@@ -68,26 +68,26 @@ int BPN_for_hitloc [hl_harpy_max] = {
 int MESH_for_hitloc [hl_harpy_max] =
 {
 	0,
-	MESH_BACKSPIKES,//hl_backspikes	
+	MESH_BACKSPIKES,//hl_backspikes
 	MESH_HEAD,//hl_head
-	MESH_STINGER,//hl_stinger			
-	MESH_LWING,//hl_lwing			
-	MESH_LHAND,//hl_lefthand		
-	MESH_RWING,//hl_rwing			
-	MESH_RHAND,//hl_righthand	
-	MESH_LUARM,//hl_leftupperleg	
-	MESH_LLARM,//hl_leftlowerleg	
+	MESH_STINGER,//hl_stinger
+	MESH_LWING,//hl_lwing
+	MESH_LHAND,//hl_lefthand
+	MESH_RWING,//hl_rwing
+	MESH_RHAND,//hl_righthand
+	MESH_LUARM,//hl_leftupperleg
+	MESH_LLARM,//hl_leftlowerleg
 	MESH_RUARM,//hl_rightupperleg
 	MESH_RLARM//hl_rightlowerleg
 };
 
 static animmove_t *animations[NUM_ANIMS] =
 {
-	&harpy_move_die1, 
+	&harpy_move_die1,
 	&harpy_move_fly1,
 	&harpy_move_flyback1,
 	&harpy_move_hover1,
-	&harpy_move_hoverscream,	
+	&harpy_move_hoverscream,
 	&harpy_move_dive_go,
 	&harpy_move_dive_loop,
 	&harpy_move_dive_end,
@@ -95,7 +95,7 @@ static animmove_t *animations[NUM_ANIMS] =
 	&harpy_move_glide,
 	&harpy_move_dive_trans,
 	&harpy_move_dive_hit_loop,
-	&harpy_move_tumble,	
+	&harpy_move_tumble,
 	&harpy_move_pirch1_idle,
 	&harpy_move_pirch2_idle,
 	&harpy_move_pirch3_idle,
@@ -208,9 +208,9 @@ void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, in
 
 	head->count = 8;
 	VectorMA(head->s.origin, head->count, down, head->s.origin);
-	
+
 	head->s.origin[2] += 100;
-	
+
 	gi.CreateEffect(&head->s,//owner
 					FX_BODYPART,//type
 					flags,//can't mess with this, sends only 1st byte and effects message
@@ -348,7 +348,7 @@ int harpy_check_move(edict_t *self, float dist)
 	vec3_t	vec, vf;
 
 	VectorCopy(self->s.origin, vec);
-	
+
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 	VectorMA(vec, dist, vf, vec);
 
@@ -377,13 +377,13 @@ void harpy_ai_circle (edict_t *self, float fd, float rd, float ud)
 	vec3_t	vf;
 
 	self->s.angles[ROLL] += flrand(-1.25, 1);
-	
+
 	if(self->s.angles[ROLL] < -45)
 		self->s.angles[ROLL] = -45;
 
 	if(self->s.angles[ROLL] > 0)
 		self->s.angles[ROLL] = 0;
-	
+
 	self->s.angles[YAW] = anglemod(self->s.angles[YAW] - (HARPY_CIRCLE_AMOUNT + (fd - 32)/4));
 
 	AngleVectors(self->s.angles, vf, NULL, NULL);
@@ -391,7 +391,7 @@ void harpy_ai_circle (edict_t *self, float fd, float rd, float ud)
 	Vec3ScaleAssign(0.5, self->velocity);
 
 	if(!irand(0, 150))
-		gi.sound(self, CHAN_VOICE, sounds[SND_SCREAM], 1, ATTN_NORM, 0);		
+		gi.sound(self, CHAN_VOICE, sounds[SND_SCREAM], 1, ATTN_NORM, 0);
 }
 
 //replaces ai_walk and ai_run for harpy
@@ -399,7 +399,7 @@ void harpy_ai_glide (edict_t *self, float fd, float rd, float ud)
 {
 	vec3_t	vec, vf, vr, nvec;
 	float	yaw_delta, roll, dot, rdot;
-	
+
 	if (!self->enemy)
 		return;
 
@@ -412,7 +412,7 @@ void harpy_ai_glide (edict_t *self, float fd, float rd, float ud)
 
 	dot  = DotProduct(vf, nvec);
 	rdot = DotProduct(vr, nvec);
-	
+
 	self->ideal_yaw = vectoyaw(vec);
 
 	M_ChangeYaw(self);
@@ -421,7 +421,7 @@ void harpy_ai_glide (edict_t *self, float fd, float rd, float ud)
 
 	//If enough, roll the creature to simulate gliding
 	if (Q_fabs(yaw_delta) > self->yaw_speed)
-	{		
+	{
 		if (dot < 0)
 		{
 			roll = Q_fabs(yaw_delta / 4);
@@ -430,7 +430,7 @@ void harpy_ai_glide (edict_t *self, float fd, float rd, float ud)
 		{
 			roll = yaw_delta / 4;
 		}
-		
+
 		//Going right?
 		if (roll > 0)
 		{
@@ -440,7 +440,7 @@ void harpy_ai_glide (edict_t *self, float fd, float rd, float ud)
 		}
 		else
 		{
-			self->s.angles[ROLL] += roll;	
+			self->s.angles[ROLL] += roll;
 			if (self->s.angles[ROLL] < -65)
 				self->s.angles[ROLL] = -65;
 		}
@@ -452,9 +452,9 @@ void harpy_ai_glide (edict_t *self, float fd, float rd, float ud)
 }
 
 void harpy_ai_fly (edict_t *self, float fd, float rd, float ud)
-{	
+{
 	vec3_t	vec, vf, vr, vu;
-	
+
 	if (!self->enemy)
 		return;
 
@@ -477,7 +477,7 @@ void harpy_ai_fly (edict_t *self, float fd, float rd, float ud)
 
 	//Add in the movements relative to the creature's facing
 	AngleVectors(self->s.angles, vf, vr, vu);
-	
+
 	VectorMA(self->velocity, fd, vf, self->velocity);
 	VectorMA(self->velocity, rd, vr, self->velocity);
 	VectorMA(self->velocity, ud, vu, self->velocity);
@@ -501,10 +501,10 @@ void harpy_ai_hover(edict_t *self, float dist)
 	self->velocity[0] *= 0.8;
 	self->velocity[1] *= 0.8;
 	self->velocity[2] *= 0.8;
-	
+
 	//Make sure we're not tilted after a turn
 	self->s.angles[ROLL] *= 0.25;
-	
+
 	//Find our ideal yaw to the player and correc to it
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 	self->ideal_yaw = vectoyaw(vec);
@@ -536,7 +536,7 @@ void harpy_ai_pirch(edict_t *self)
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 	len = VectorNormalize(vec);
-	
+
 	if (len < 150)
 	{
 		SetAnim(self, ANIM_TAKEOFF);
@@ -660,7 +660,7 @@ void harpy_fix_angles(edict_t *self)
 	if (pitch_delta > 0)
 	{
 		self->s.angles[PITCH] -= pitch_delta / 2;
-	
+
 		if (self->s.angles[PITCH] < 2)
 		{
 			self->s.angles[PITCH] = 0;
@@ -669,7 +669,7 @@ void harpy_fix_angles(edict_t *self)
 	else
 	{
 		self->s.angles[PITCH] += pitch_delta / 2;
-	
+
 		if (self->s.angles[PITCH] > 2)
 		{
 			self->s.angles[PITCH] = 0;
@@ -680,7 +680,7 @@ void harpy_fix_angles(edict_t *self)
 	if (roll_delta > 0)
 	{
 		self->s.angles[ROLL] -= roll_delta / 2;
-	
+
 		if (self->s.angles[ROLL] < 2)
 		{
 			self->s.angles[ROLL] = 0;
@@ -689,7 +689,7 @@ void harpy_fix_angles(edict_t *self)
 	else
 	{
 		self->s.angles[ROLL] += roll_delta / 15;
-	
+
 		if (self->s.angles[ROLL] > 2)
 		{
 			self->s.angles[ROLL] = 0;
@@ -703,7 +703,7 @@ void harpy_fix_angles(edict_t *self)
 
 ===============================================================*/
 
-//receiver for MSG_DEATH 
+//receiver for MSG_DEATH
 void harpy_dead_pain(edict_t *self, G_Message_t *msg)
 {
 	if(self->health <= -40) //gib death
@@ -711,7 +711,7 @@ void harpy_dead_pain(edict_t *self, G_Message_t *msg)
 		//harpy_throw_wings(self);
 		BecomeDebris(self);
 		self->think = NULL;
-		self->nextthink = 0;	
+		self->nextthink = 0;
 		gi.linkentity (self);
 		return;
 	}
@@ -734,12 +734,12 @@ void harpy_die(edict_t *self, G_Message_t *msg)
 
 	VectorSet(self->mins, -16, -16, 0);
 	VectorSet(self->maxs, 16, 16, 12);
-	
+
 	if(self->health <= -40) //gib death
 	{
 		//harpy_throw_wings(self);
 		gi.sound(self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
-		
+
 		BecomeDebris(self);
 		gi.linkentity (self);
 		return;
@@ -775,61 +775,61 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 	switch (HitLocation)
 	{
 		case hl_head:
-			
+
 			if (self->s.fmnodeinfo[MESH_HEAD].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
-			
+
 			if (irand(0,10) > 2)
 				dismember_ok = false;
-			
+
 			break;
-			
-		case hl_rightlowerleg: 
+
+		case hl_rightlowerleg:
 		case hl_rightupperleg:
-			
+
 			if (self->s.fmnodeinfo[MESH_RUARM].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
-			
+
 			if (irand(0,10) > 4)
 				dismember_ok = false;
-			
+
 			break;
-			
-		case hl_leftlowerleg: 
-		case hl_leftupperleg:	
-			
+
+		case hl_leftlowerleg:
+		case hl_leftupperleg:
+
 			if (self->s.fmnodeinfo[MESH_LUARM].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
-			
+
 			if (irand(0,10) > 4)
 				dismember_ok = false;
-			
+
 			break;
-			
-		case hl_rwing:	
-			
+
+		case hl_rwing:
+
 			if (self->s.fmnodeinfo[MESH_RWING].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
-			
+
 			if (irand(0,10) > 6)
 				dismember_ok = false;
-			
+
 			break;
-			
-		case hl_lwing:	
-			
+
+		case hl_lwing:
+
 			if (self->s.fmnodeinfo[MESH_LWING].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
-			
+
 			if (irand(0,10) > 6)
 				dismember_ok = false;
-			
+
 			break;
-			
-		default	:	
-			
+
+		default	:
+
 			dismember_ok = false;
-			
+
 			break;
 	}
 
@@ -837,48 +837,48 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 	{
 		VectorCopy(vec3_origin, gore_spot);
 		gore_spot[2]+=10;
-		
+
 		throw_nodes = BPN_for_hitloc[HitLocation];
 
 		MeshLoc = MESH_for_hitloc[HitLocation];
-	
+
 		ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly1);
-		
+
 		switch(MeshLoc)
 		{
-			case hl_head :			
-				
+			case hl_head :
+
 				self->s.fmnodeinfo[MESH_HEAD].flags |= FMNI_NO_DRAW;
 				self->s.fmnodeinfo[MESH_HORN].flags |= FMNI_NO_DRAW;
 				self->s.fmnodeinfo[MESH_HORNS].flags |= FMNI_NO_DRAW;
 				break;
-				
-			case hl_leftlowerleg : 	
-			case hl_leftupperleg :	
-				
+
+			case hl_leftlowerleg :
+			case hl_leftupperleg :
+
 				self->s.fmnodeinfo[MESH_LUARM].flags |= FMNI_NO_DRAW;
 				self->s.fmnodeinfo[MESH_LLARM].flags |= FMNI_NO_DRAW;
 				self->s.fmnodeinfo[MESH_LHAND].flags |= FMNI_NO_DRAW;
 				break;
-				
-			case hl_rightlowerleg :	
-			case hl_rightupperleg :	
-				
+
+			case hl_rightlowerleg :
+			case hl_rightupperleg :
+
 				self->s.fmnodeinfo[MESH_RUARM].flags |= FMNI_NO_DRAW;
 				self->s.fmnodeinfo[MESH_RLARM].flags |= FMNI_NO_DRAW;
 				self->s.fmnodeinfo[MESH_RHAND].flags |= FMNI_NO_DRAW;
 				break;
-				
-			default	:				
-				
+
+			default	:
+
 				self->s.fmnodeinfo[MeshLoc].flags |= FMNI_NO_DRAW;
 				break;
 		}
 
-		if (HitLocation == hl_rwing || HitLocation == hl_lwing || HitLocation == hl_head) 
+		if (HitLocation == hl_rwing || HitLocation == hl_lwing || HitLocation == hl_head)
 		{
 			self->monsterinfo.jump_time = level.time + 2;
-			
+
 			if (self->health > 0)
 			{
 				self->health = -1;
@@ -908,7 +908,7 @@ void harpy_pain(edict_t *self, G_Message_t *msg)
 {
 	int				temp, damage;
 	qboolean		force_pain;
-	
+
 	ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
 	if (self->curAnimID >= ANIM_PIRCH1 && self->curAnimID <= ANIM_PIRCH9)
@@ -928,7 +928,7 @@ void harpy_pain(edict_t *self, G_Message_t *msg)
 	}
 }
 
-//receiver for MSG_STAND, MSG_HOVER 
+//receiver for MSG_STAND, MSG_HOVER
 void harpy_hover(edict_t *self, G_Message_t *msg)
 {
 	//NOTENOTE: We use the animation IDs to make sure we don't reject a stand message after leaving these animations
@@ -944,7 +944,7 @@ void harpy_hover(edict_t *self, G_Message_t *msg)
 	}
 	else
 	{
-		gi.sound(self, CHAN_BODY, sounds[SND_SCREAM], 1, ATTN_NORM, 0);		
+		gi.sound(self, CHAN_BODY, sounds[SND_SCREAM], 1, ATTN_NORM, 0);
 		SetAnim(self, ANIM_HOVERSCREAM);
 	}
 }
@@ -964,7 +964,7 @@ void harpy_stand(edict_t *self, G_Message_t *msg)
 	}
 	else
 	{
-		gi.sound(self, CHAN_BODY, sounds[SND_SCREAM], 1, ATTN_NORM, 0);		
+		gi.sound(self, CHAN_BODY, sounds[SND_SCREAM], 1, ATTN_NORM, 0);
 		SetAnim(self, ANIM_HOVERSCREAM);
 	}
 }
@@ -1069,7 +1069,7 @@ qboolean harpy_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr
 			return true;
 		}
 	}
-	
+
 	//Check up and down
 	VectorCopy(self->s.origin, goalpos);
 
@@ -1100,7 +1100,7 @@ qboolean harpy_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr
 			return true;
 		}
 	}
-		
+
 	//Check forward and back
 	VectorCopy(self->s.origin, goalpos);
 
@@ -1143,7 +1143,7 @@ qboolean harpy_check_swoop(edict_t *self, vec3_t goal)
 
 	//Find the difference in the target's height and the creature's height
 	zd = Q_fabs(self->enemy->s.origin[2] - self->s.origin[2]);
-	
+
 	if (zd < HARPY_MIN_SSWOOP_DIST)
 		return false;
 
@@ -1183,7 +1183,7 @@ void move_harpy_dive(edict_t *self)
 	VectorSet(enemy_pos, self->enemy->s.origin[0], self->enemy->s.origin[1], self->enemy->s.origin[2] + flrand(self->maxs[2], self->enemy->maxs[2]));
 	//Find out the Z and Horizontal deltas to target
 	zd = Q_fabs(self->s.origin[2] - enemy_pos[2]);
-	
+
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 
 	VectorCopy(self->s.origin, vec);
@@ -1230,7 +1230,7 @@ void move_harpy_dive_end(edict_t *self)
 {
 	vec3_t	vec, vf, vr, vu, nvec, enemy_pos;
 	float	dist, hd, fd, dot;
-	
+
 	VectorSet(enemy_pos, self->enemy->s.origin[0], self->enemy->s.origin[1], self->enemy->s.origin[2] + flrand(self->maxs[2], self->enemy->maxs[2]));
 
 	VectorCopy(self->s.origin, vec);
@@ -1243,7 +1243,7 @@ void move_harpy_dive_end(edict_t *self)
 	M_ChangeYaw(self);
 
 	AngleVectors(self->s.angles, vf, vr, vu);
-	
+
 	self->velocity[2] *= 0.75;
 
 	self->monsterinfo.jump_time *= HARPY_SWOOP_INCR;
@@ -1277,7 +1277,7 @@ void move_harpy_dive_end(edict_t *self)
 	}
 
 	VectorMA(self->velocity, fd, vf, self->velocity);
-	
+
 	//Are we about to hit the target?
 	VectorSubtract(enemy_pos, self->s.origin, vec);
 	dist = VectorLength(vec);
@@ -1286,7 +1286,7 @@ void move_harpy_dive_end(edict_t *self)
 	{
 		SetAnim(self, ANIM_DIVE_END);
 		return;
-	}	
+	}
 
 	harpy_ai_glide(self, 0, 0, 0);
 }
@@ -1320,7 +1320,7 @@ void harpy_check_dodge(edict_t *self)
 		//We're only interested in his projectiles
 		if (ent->owner != self->enemy)
 			continue;
-		
+
 		//VectorCopy(ent->velocity, projvec);
 		VectorNormalize2(ent->velocity, projvec);
 
@@ -1358,8 +1358,8 @@ void harpy_check_dodge(edict_t *self)
 			VectorAdd(dodgedir, self->velocity, self->velocity);
 			self->monsterinfo.misc_debounce_time = level.time + irand(2,4);
 		}
-	}	
-	
+	}
+
 	harpy_ai_glide(self, 0, 0, 0);
 }
 
@@ -1370,7 +1370,7 @@ void move_harpy_hover(edict_t *self)
 	edict_t		*ent = NULL;
 	vec3_t		goal, dodgedir, mins, maxs, vf, vr, vu, vec, projvec, goalpos;
 	float		dist, zd, dodgedot;
-	
+
 	//gi.dprintf("move_harpy_hover: entered function\n");
 
 	if (!self->enemy)
@@ -1388,7 +1388,7 @@ void move_harpy_hover(edict_t *self)
 
 	VectorSubtract(goal, self->s.origin, goal);
 	dist = VectorLength(goal);
-	
+
 	//Face target
 	self->ideal_yaw = vectoyaw(goal);
 	M_ChangeYaw(self);
@@ -1408,12 +1408,12 @@ void move_harpy_hover(edict_t *self)
 		if (trace.ent != self->enemy)
 		{
 			//gi.dprintf("move_harpy_hover: lost line of sight to player\n");
-			
+
 			//Setup the directions
 			AngleVectors(self->s.angles, vf, vr, vu);
 
 			canmove = harpy_check_directions(self, self->enemy->s.origin, vf, vr, vu, HARPY_CHECK_DIST, goal);
-			
+
 			//If we can see him from one of these, go there
 			if (canmove)
 			{
@@ -1423,7 +1423,7 @@ void move_harpy_hover(edict_t *self)
 			}
 
 			//gi.dprintf("move_harpy_hover: no new direction found, bumping about\n");
-			
+
 			//Otherwise just flap around and wait, perhaps lower yourself a bit if high up
 			self->velocity[0] = flrand(-HARPY_DRIFT_AMOUNT_X, HARPY_DRIFT_AMOUNT_X);
 			self->velocity[1] = flrand(-HARPY_DRIFT_AMOUNT_Y, HARPY_DRIFT_AMOUNT_Y);
@@ -1444,7 +1444,7 @@ void move_harpy_hover(edict_t *self)
 				//We're only interested in his projectiles
 				if (ent->owner != self->enemy)
 					continue;
-				
+
 				VectorCopy(ent->velocity, projvec);
 				VectorNormalize(projvec);
 
@@ -1500,10 +1500,10 @@ void move_harpy_hover(edict_t *self)
 			else
 			{
 				//gi.dprintf("move_harpy_hover: swoop worthless\n");
-				
+
 				//Find the difference in the target's height and the creature's height
 				zd = Q_fabs(self->enemy->s.origin[2] - self->s.origin[2]);
-		
+
 				//We can't swoop because we're too low, so fly upwards if possible
 				if (zd < HARPY_MIN_SSWOOP_DIST)
 				{
@@ -1521,7 +1521,7 @@ void move_harpy_hover(edict_t *self)
 				}
 				else
 				{
-					//Otherwise just flap around and wait, perhaps lower yourself a bit if high up					
+					//Otherwise just flap around and wait, perhaps lower yourself a bit if high up
 					self->velocity[0] = flrand(-HARPY_DRIFT_AMOUNT_X, HARPY_DRIFT_AMOUNT_X);
 					self->velocity[1] = flrand(-HARPY_DRIFT_AMOUNT_Y, HARPY_DRIFT_AMOUNT_Y);
 					self->velocity[2] = flrand(-HARPY_DRIFT_AMOUNT_Z, HARPY_DRIFT_AMOUNT_Z);
@@ -1563,7 +1563,7 @@ void move_harpy_hover(edict_t *self)
 	}
 
 	return;
-} 
+}
 
 //New physics call that modifies the harpy's velocity and angles based on aerodynamics
 void harpy_flight_model(edict_t *self)
@@ -1571,10 +1571,10 @@ void harpy_flight_model(edict_t *self)
 }
 
 void move_harpy_fly(edict_t *self)
-{	
+{
 	edict_t *dummy;
 	dummy = self;
-	
+
 	return;
 }
 
@@ -1614,18 +1614,18 @@ void HarpyStaticsInit()
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
-	sounds[SND_GIB]=gi.soundindex("misc/fleshbreak.wav");	
-	sounds[SND_FLAP]=gi.soundindex("monsters/harpy/flap.wav");	
-	sounds[SND_SCREAM]=gi.soundindex("monsters/harpy/scream.wav");	
-	sounds[SND_FLAP_FAST]=gi.soundindex("monsters/harpy/flap_quick.wav");	
-	sounds[SND_DIVE]=gi.soundindex("monsters/harpy/dive.wav");	
-	sounds[SND_DEATH]=gi.soundindex("monsters/harpy/death.wav");	
-	sounds[SND_PAIN1]=gi.soundindex("monsters/harpy/pain1.wav");	
-	sounds[SND_PAIN2]=gi.soundindex("monsters/harpy/pain2.wav");	
-	sounds[SND_ATTACK]=gi.soundindex("monsters/harpy/attack.wav");	
-	
-	sounds[SND_IDLE1]=gi.soundindex("monsters/harpy/pain1.wav");	
-	sounds[SND_IDLE2]=gi.soundindex("monsters/harpy/pain2.wav");	
+	sounds[SND_GIB]=gi.soundindex("misc/fleshbreak.wav");
+	sounds[SND_FLAP]=gi.soundindex("monsters/harpy/flap.wav");
+	sounds[SND_SCREAM]=gi.soundindex("monsters/harpy/scream.wav");
+	sounds[SND_FLAP_FAST]=gi.soundindex("monsters/harpy/flap_quick.wav");
+	sounds[SND_DIVE]=gi.soundindex("monsters/harpy/dive.wav");
+	sounds[SND_DEATH]=gi.soundindex("monsters/harpy/death.wav");
+	sounds[SND_PAIN1]=gi.soundindex("monsters/harpy/pain1.wav");
+	sounds[SND_PAIN2]=gi.soundindex("monsters/harpy/pain2.wav");
+	sounds[SND_ATTACK]=gi.soundindex("monsters/harpy/attack.wav");
+
+	sounds[SND_IDLE1]=gi.soundindex("monsters/harpy/pain1.wav");
+	sounds[SND_IDLE2]=gi.soundindex("monsters/harpy/pain2.wav");
 
 	classStatics[CID_HARPY].resInfo = &resInfo;
 }
@@ -1671,7 +1671,7 @@ void SP_monster_harpy(edict_t *self)
 	self->clipmask = MASK_MONSTERSOLID;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
 	self->svflags |= SVF_TAKE_NO_IMPACT_DMG;
 	self->svflags |= SVF_DO_NO_IMPACT_DMG;
@@ -1689,13 +1689,13 @@ void SP_monster_harpy(edict_t *self)
 		self->monsterinfo.scale = self->s.scale = flrand(1.25, 1.75);
 	}
 
-	self->monsterinfo.otherenemyname = "monster_rat";	
+	self->monsterinfo.otherenemyname = "monster_rat";
 
 	self->monsterinfo.aiflags |= AI_NO_ALERT;//pay no attention to alert ents
 
 	if (self->spawnflags & MSF_PERCHING)
 	{
-		
+
 		self->s.origin[2] += 4;
 		SetAnim(self, ANIM_PIRCH5);
 	}

@@ -9,12 +9,12 @@
 //	AI :
 //
 //	STAND1		: Looking straight ahead
-//	
+//
 //	WALK1       : a normal straight line
 //  WALK2       : another normal straight line
 //
-//	MELEE1      : Attack 
-//	MELEE2      : Attack 
+//	MELEE1      : Attack
+//	MELEE2      : Attack
 //
 //  RUNATTACK   : Running and swinging
 //	RUN1        : chasing an enemy straight ahead
@@ -52,7 +52,7 @@ static animmove_t *animations[ NUM_ANIMS] =
 	&plagueElf_move_stand1,
 	&plagueElf_move_walk1,
 	&plagueElf_move_walk2,
-	&plagueElf_move_run1,	
+	&plagueElf_move_run1,
 	&plagueElf_move_runatk1,
 	&plagueElf_move_fjump,
 	&plagueElf_move_inair,
@@ -64,7 +64,7 @@ static animmove_t *animations[ NUM_ANIMS] =
 	&plagueElf_move_death3,
 	&plagueElf_move_death4,
 	&plagueElf_fist1,
-	&plagueElf_lean1, 
+	&plagueElf_lean1,
 	&plagueElf_shake1,
 	&plagueElf_move_pain1,
 	&plagueElf_delay,
@@ -79,7 +79,7 @@ static animmove_t *animations[ NUM_ANIMS] =
 	&plagueElf_cursing,
 	&plagueElf_point,
 	&plagueElf_scared,
-	
+
 	// Cinematics
 	&plagueElf_move_c_idle1,
 	&plagueElf_move_c_idle2,
@@ -114,7 +114,7 @@ int Bit_for_MeshNode_pe [12] =
 	BIT_HAMMER,
 	BIT_BODY,
 	BIT_L_LEG,
-	BIT_R_LEG,	
+	BIT_R_LEG,
 	BIT_R_ARM,
 	BIT_L_ARM,
 	BIT_HEAD
@@ -196,7 +196,7 @@ void plagueElf_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -269,7 +269,7 @@ void plagueElf_c_anims(edict_t *self, G_Message_t *msg)
 			break;
 		default:
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -278,7 +278,7 @@ void plagueElf_c_anims(edict_t *self, G_Message_t *msg)
 
 
 /*-------------------------------------------------------------------------
-	plagueelf_death_loop 
+	plagueelf_death_loop
 -------------------------------------------------------------------------*/
 
 void plagueelf_death_loop ( edict_t *self )
@@ -344,14 +344,14 @@ void plagueElf_strike (edict_t *self)
 		VectorSet(eoff, 50, 4, 4);
 		break;
 	}
-	
+
 	VectorSet(mins, -4, -4, -4);
 	VectorSet(maxs,  4,  4,  4);
 
 	VectorSubtract(soff, eoff, bloodDir);
 	VectorNormalize(bloodDir);
 
-	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);	
+	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);
 
 	if (victim)
 	{
@@ -367,7 +367,7 @@ void plagueElf_strike (edict_t *self)
 				gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACKHIT1], 1, ATTN_NORM, 0);
 			}
 			else //it's the hammer or handle
-				gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACKHIT2], 1, ATTN_NORM, 0);	
+				gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACKHIT2], 1, ATTN_NORM, 0);
 
 			damage = irand(PLAGUEELF_DMG_MIN, PLAGUEELF_DMG_MAX);
 
@@ -402,21 +402,21 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	pelf_init_phase_in(self);
 
 	ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
-	
+
 	// Big enough death to be thrown back
 	if(self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		if (irand(0,10) < 5)
 			SetAnim(self, ANIM_DIE2);
-		else 
+		else
 			SetAnim(self, ANIM_DIE1);
 		return;
 	}
 
 	self->msgHandler = DeadMsgHandler;
 
-	//Dead but still being hit	
-	if(self->deadflag == DEAD_DEAD) 
+	//Dead but still being hit
+	if(self->deadflag == DEAD_DEAD)
 		return;
 
 	self->deadflag = DEAD_DEAD;
@@ -449,7 +449,7 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 //		self->groundentity = NULL;
 		return;
 	}
-	
+
 	//regular death
 	if(self->count == 0)
 	{
@@ -460,7 +460,7 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 			SetAnim(self, ANIM_DIE2);
 		else if(chance == 2)
 			SetAnim(self, ANIM_DIE3);
-		else 
+		else
 			SetAnim(self, ANIM_DIE4);
 	}
 	else
@@ -471,7 +471,7 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 			SetAnim(self, ANIM_DIE2);
 		else if(self->count == 3)
 			SetAnim(self, ANIM_DIE3);
-		else 
+		else
 			SetAnim(self, ANIM_DIE4);
 	}
 }
@@ -495,7 +495,7 @@ void plagueElfdeathsqueal (edict_t *self)
 -------------------------------------------------------------------------*/
 void plagueElfgrowl (edict_t *self)
 {
-	int chance;	
+	int chance;
 
 	chance = irand(0, 10);
 
@@ -509,14 +509,14 @@ void plagueElfgrowl (edict_t *self)
 			gi.sound (self, CHAN_VOICE, sounds[SND_PANT], 1, ATTN_IDLE, 0);
 		else if (chance < 9)
 			gi.sound(self, CHAN_VOICE, sounds[SND_MOAN1], 1, ATTN_IDLE, 0);
-		else 
+		else
 			gi.sound(self, CHAN_VOICE, sounds[SND_MOAN2], 1, ATTN_IDLE, 0);
 	}
 }
 
 void plagueElfattack(edict_t *self)
 {
-	int chance, sound;	
+	int chance, sound;
 
 	chance = irand(0, 10);
 
@@ -584,7 +584,7 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 		gi.CreateEffect(&Spell->s,
 			FX_PE_SPELL,
 			CEF_OWNERS_ORIGIN,
-			NULL, 
+			NULL,
 			"bv",
 			self->red_rain_count,
 			Spell->velocity);
@@ -601,7 +601,7 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 		gi.CreateEffect(NULL,
 			FX_PE_SPELL,
 			0,
-			self->s.origin, 
+			self->s.origin,
 			"bv",
 			FX_PE_EXPLODE_SPELL,
 			self->velocity);
@@ -611,7 +611,7 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 		gi.CreateEffect(NULL,
 			FX_PE_SPELL,
 			0,
-			self->s.origin, 
+			self->s.origin,
 			"bv",
 			FX_PE_EXPLODE_SPELL2,
 			self->velocity);
@@ -621,7 +621,7 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 		gi.CreateEffect(NULL,
 			FX_PE_SPELL,
 			0,
-			self->s.origin, 
+			self->s.origin,
 			"bv",
 			FX_PE_EXPLODE_SPELL3,
 			self->velocity);
@@ -655,7 +655,7 @@ void plagueElf_spell(edict_t *self)
 {//fixme; adjust for up/down
 	vec3_t	Forward, right, firedir;
 	edict_t	*Spell;
-	
+
 	if (M_ValidTarget(self, self->enemy))
 	{
 		if(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
@@ -671,11 +671,11 @@ void plagueElf_spell(edict_t *self)
 
 		Spell->owner=self;
 		Spell->enemy=self->enemy;
-		
+
 		Spell->health = 0; // tell the touch function what kind of Spell we are;
 
 		AngleVectors(self->s.angles, Forward, right, NULL);
-		VectorCopy(self->s.origin,Spell->s.origin);	
+		VectorCopy(self->s.origin,Spell->s.origin);
 		VectorMA(Spell->s.origin, 4, Forward, Spell->s.origin);
 		VectorMA(Spell->s.origin, 8, right, Spell->s.origin);
 		Spell->s.origin[2] += 12;
@@ -707,12 +707,12 @@ void plagueElf_spell(edict_t *self)
 		gi.CreateEffect(&Spell->s,
 			FX_PE_SPELL,
 			CEF_OWNERS_ORIGIN,
-			NULL, 
+			NULL,
 			"bv",
 			Spell->red_rain_count,
 			Spell->velocity);
 
-		G_LinkMissile(Spell); 
+		G_LinkMissile(Spell);
 
 		Spell->nextthink=level.time+3;
 		Spell->think=G_FreeEdict;//plagueElfSpellThink;
@@ -727,7 +727,7 @@ void plagueElf_c_spell(edict_t *self)
 {//fixme; adjust for up/down
 	vec3_t	Forward, right, firedir, holdpos;
 	edict_t	*Spell;
-	
+
 	if(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)	// Was his arm lopped off?
 		return;
 
@@ -740,11 +740,11 @@ void plagueElf_c_spell(edict_t *self)
 
 	Spell->owner=self;
 //	Spell->enemy=self->enemy;
-	
+
 	Spell->health = 0; // tell the touch function what kind of Spell we are;
 
 	AngleVectors(self->s.angles, Forward, right, NULL);
-	VectorCopy(self->s.origin,Spell->s.origin);	
+	VectorCopy(self->s.origin,Spell->s.origin);
 	VectorMA(Spell->s.origin, 4, Forward, Spell->s.origin);
 	VectorMA(Spell->s.origin, 8, right, Spell->s.origin);
 	Spell->s.origin[2] += 12;
@@ -780,12 +780,12 @@ void plagueElf_c_spell(edict_t *self)
 	gi.CreateEffect(&Spell->s,
 		FX_PE_SPELL,
 		CEF_OWNERS_ORIGIN,
-		NULL, 
+		NULL,
 		"bv",
 		Spell->red_rain_count,
 		Spell->velocity);
 
-	G_LinkMissile(Spell); 
+	G_LinkMissile(Spell);
 
 	Spell->nextthink=level.time+3;
 	Spell->think=G_FreeEdict;//plagueElfSpellThink;
@@ -830,12 +830,12 @@ void plagueElf_melee(edict_t *self, G_Message_t *msg)
 		if (ret)
 		{
 			if(irand(0,10)<5)
-				SetAnim(self, ANIM_MELEE1);		
+				SetAnim(self, ANIM_MELEE1);
 			else
-				SetAnim(self, ANIM_MELEE2);		
+				SetAnim(self, ANIM_MELEE2);
 		}
-		else 
-		{	
+		else
+		{
 			if(self->spawnflags&MSF_FIXED)
 				SetAnim(self, ANIM_DELAY);
 			else
@@ -878,7 +878,7 @@ void plagueElf_chicken (edict_t *self, int coward, int flee, float fleetime)
 	float chance;
 
 	chance = flrand(0, 20 + skill->value * 10);
-	
+
 	if(chance<coward)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
@@ -1084,7 +1084,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			{
 				if(flrand(0,self->health)<damage*0.5)
 					plagueElf_dropweapon (self, (int)damage);
-				self->s.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
 			}
 			break;
@@ -1110,7 +1110,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__L_ARM].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__L_ARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__L_ARM].skin = self->s.skinnum+1;
 			}
 			break;
@@ -1137,7 +1137,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			{
 				if(flrand(0,self->health)<damage*0.75)
 					plagueElf_dropweapon (self, (int)damage);
-				self->s.fmnodeinfo[MESH__R_ARM].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__R_ARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__R_ARM].skin = self->s.skinnum+1;
 			}
 			break;
@@ -1148,7 +1148,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			{//still alive
 				if(self->s.fmnodeinfo[MESH__L_LEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__L_LEG].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__L_LEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__L_LEG].skin = self->s.skinnum+1;
 			}
 			else
@@ -1227,7 +1227,7 @@ void plagueElf_pain(edict_t *self, G_Message_t *msg)
 {
 	int				temp, damage;
 	qboolean		force_pain;
-	
+
 	ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
 	pelf_init_phase_in(self);
@@ -1411,7 +1411,7 @@ void plagueElf_run(edict_t *self, G_Message_t *msg)
 	{
 		if(self->spawnflags&MSF_FIXED)
 			SetAnim(self, ANIM_DELAY);
-		else 
+		else
 			SetAnim(self, ANIM_RUN1);
 	}
 	else//If our enemy is dead, we need to stand
@@ -1446,11 +1446,11 @@ void plagueElfsqueal (edict_t *self)
 	plagueElf_stand
 -------------------------------------------------------------------------*/
 void plagueElf_stand(edict_t *self, G_Message_t *msg)
-{	
+{
 	if (self->ai_mood == AI_MOOD_DELAY)
 		SetAnim(self, ANIM_DELAY);
 	else
-		SetAnim(self, ANIM_SHAKE1);	
+		SetAnim(self, ANIM_SHAKE1);
 
 	return;
 }
@@ -1465,11 +1465,11 @@ void plagueElf_walk(edict_t *self, G_Message_t *msg)
 
 	if(self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
-	else if(irand(0, 1))	
-		SetAnim(self, ANIM_WALK1);	
-	else	
-		SetAnim(self, ANIM_WALK2);	
-	return;	
+	else if(irand(0, 1))
+		SetAnim(self, ANIM_WALK1);
+	else
+		SetAnim(self, ANIM_WALK2);
+	return;
 }
 
 void plagueElf_go_run(edict_t *self)
@@ -1487,7 +1487,7 @@ void plagueElf_go_run(edict_t *self)
 */
 
 /*-----------------------------------------------
-	pelf_ChooseSightSound 	
+	pelf_ChooseSightSound
 -----------------------------------------------*/
 
 #define SE_ALONE	0
@@ -1514,7 +1514,7 @@ int pelf_ChooseSightSound ( edict_t *self, int event )
 }
 
 /*-----------------------------------------------
-	pelf_ChooseReponseSound 
+	pelf_ChooseReponseSound
 -----------------------------------------------*/
 
 int pelf_ChooseResponseSound ( edict_t *self, int event, int sound_id )
@@ -1534,7 +1534,7 @@ int pelf_ChooseResponseSound ( edict_t *self, int event, int sound_id )
 //plague elf has seen first target (usually player)
 
 /*-----------------------------------------------
-	pelf_SightSound 	
+	pelf_SightSound
 -----------------------------------------------*/
 #define PLAGUEELF_SUPPORT_RADIUS 200
 
@@ -1550,7 +1550,7 @@ void pelf_SightSound ( edict_t *self, G_Message_t *msg )
 	//Have we already said something?
 	if (self->monsterinfo.supporters != -1)
 		return;
-	
+
 	ParseMsgParms(msg, "be", &sight_type, &enemy);
 
 	//Find out how many elves are around (save this if we want it later)
@@ -1579,7 +1579,7 @@ void pelf_SightSound ( edict_t *self, G_Message_t *msg )
 			sound = pelf_ChooseSightSound(self, SE_GROUP);
 			self->monsterinfo.sound_finished = level.time + pelf_VoiceTimes[sound];
 			gi.sound(self, CHAN_VOICE, sounds[sound], 1, ATTN_NORM, 0);
-			
+
 			pelf_PollResponse( self, SE_GROUP, sound, self->monsterinfo.sound_finished - flrand(0.5, 0.25) );
 		}
 
@@ -1679,7 +1679,7 @@ void pelf_EchoResponse  ( edict_t *self, G_Message_t *msg )
 				SetAnim(self, ANIM_POINT);
 		}
 		break;
-	
+
 	case SE_GROUP:
 		self->monsterinfo.sound_pending = pelf_ChooseResponseSound( self, SE_GROUP, sound_id );
 		self->monsterinfo.sound_start = time;
@@ -1707,7 +1707,7 @@ void pelf_EchoResponse  ( edict_t *self, G_Message_t *msg )
 			pelf_PollResponse( self, SE_GROUP, self->monsterinfo.sound_pending, self->monsterinfo.sound_finished );
 
 		break;
-	}	
+	}
 }
 
 //Play a sound from a trigger or a pending sound event
@@ -1717,7 +1717,7 @@ void pelf_EchoSound ( edict_t *self, G_Message_t *msg )
 
 	ParseMsgParms(msg, "i", &sound);
 
-	gi.sound(self, CHAN_VOICE, sounds[sound], 1, ATTN_NORM, 0);	
+	gi.sound(self, CHAN_VOICE, sounds[sound], 1, ATTN_NORM, 0);
 }
 
 //
@@ -1746,7 +1746,7 @@ void pelf_phase_out (edict_t *self)
 		self->pre_think = pelf_phase_out;
 		self->next_pre_think = level.time + 0.05;
 	}
-	else 
+	else
 	{
 		if(!skill->value)
 			self->s.color.a = 50;
@@ -1761,14 +1761,14 @@ void pelf_init_phase_out (edict_t *self);
 void pelf_phase_in (edict_t *self)
 {
 	int	interval = 60;
-	
+
 	if(self->s.color.a < 255 - interval)
 	{
 		self->s.color.a += irand(interval/2, interval);
 		self->pre_think = pelf_phase_in;
 		self->next_pre_think = level.time + 0.05;
 	}
-	else 
+	else
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
 		self->s.color.c = 0xffffffff;
@@ -1846,7 +1846,7 @@ void PlagueElfStaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	//note that the name is different in the path
 	resInfo.modelIndex = gi.modelindex("models/monsters/plaguelf/tris.fm");
 
@@ -1870,7 +1870,7 @@ void PlagueElfStaticsInit()
 	sounds[SND_ATTACK2] = gi.soundindex("monsters/plagueElf/attack2.wav");
 	sounds[SND_DISMEMBER1] = gi.soundindex("monsters/plagueElf/loselimb1.wav");
 	sounds[SND_DISMEMBER2] = gi.soundindex("monsters/plagueElf/loselimb2.wav");
-	
+
 	//Plague elf voices
 	sounds[VOICE_SIGHT_EAT_FLESH1]	= gi.soundindex("monsters/plagueElf/voices/eatfleshb.wav");
 	sounds[VOICE_SIGHT_GET_HIM1]	= gi.soundindex("monsters/plagueElf/voices/gethimb.wav");
@@ -1884,7 +1884,7 @@ void PlagueElfStaticsInit()
 
 	sounds[VOICE_MISC_LEAVE_ME1]	= gi.soundindex("monsters/plagueElf/voices/leavemeb.wav");
 	sounds[VOICE_MISC_NO]			= gi.soundindex("monsters/plagueElf/voices/nomrj.wav");
-	
+
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
@@ -1895,7 +1895,7 @@ void PlagueElfStaticsInit()
 
 Missile - can fire a ranged attack
 
-The plagueElf 
+The plagueElf
 
 AMBUSH - Will not be woken up by other monsters or shots from player
 
@@ -1974,7 +1974,7 @@ void SP_monster_plagueElf (edict_t *self)
 
 	if (!walkmonster_start(self))		// Failed initialization
 		return;
-		
+
 	self->msgHandler = DefaultMsgHandler;
 	self->monsterinfo.dismember = plagueElf_dismember;
 
@@ -1991,7 +1991,7 @@ void SP_monster_plagueElf (edict_t *self)
 
 	self->movetype = PHYSICSTYPE_STEP;
 	VectorClear(self->knockbackvel);
-	
+
 	self->solid=SOLID_BBOX;
 
 	if(irand(0,1))
@@ -2000,16 +2000,16 @@ void SP_monster_plagueElf (edict_t *self)
 	self->s.origin[2] += 32;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 	self->viewheight = self->maxs[2]*0.8;
-	
+
 	self->s.modelindex = classStatics[CID_PLAGUEELF].resInfo->modelIndex;
 
 	// All skins are even numbers, pain skins are skin+1.
 	if (!self->s.skinnum)
 	{	// If the skin hasn't been touched, set it.
 		if (irand(0,1))
-			self->s.skinnum = 0;	
+			self->s.skinnum = 0;
 		else
 			self->s.skinnum = 2;
 	}
@@ -2048,7 +2048,7 @@ void SP_monster_plagueElf (edict_t *self)
 
 		if(!self->missile_range)
 			self->missile_range = 512;
-		
+
 //		if(!self->min_missile_range)
 			self->min_missile_range = 0;
 
@@ -2108,7 +2108,7 @@ void SP_monster_plagueElf (edict_t *self)
 
 Can fire 2 ranged attacks, has a new skin, toucgher, has armor?
 
-The plagueElf 
+The plagueElf
 
 AMBUSH - Will not be woken up by other monsters or shots from player
 
@@ -2183,7 +2183,7 @@ Can fire 2 ranged attacks, has a new skin, toucgher, has armor?
 
 Is invisible unless firing or hit
 
-The plagueElf 
+The plagueElf
 
 AMBUSH - Will not be woken up by other monsters or shots from player
 

@@ -304,10 +304,10 @@ void gorgon_eat(edict_t *self, G_Message_t *msg)
 		else
 			SetAnim(self, ANIM_EAT_PULLBACK);
 	}
-	else 
+	else
 	{
 		SetAnim(self, ANIM_EAT_TEAR);
-	} 
+	}
 
 	self->monsterinfo.misc_debounce_time = level.time + 5;
 }
@@ -318,13 +318,13 @@ void gorgon_eat(edict_t *self, G_Message_t *msg)
 void gorgon_watch(edict_t *self, G_Message_t *msg)
 {
 	int	chance;
-	
+
 	chance = irand(0, 100);
 	if (chance < 10)
 		SetAnim(self, ANIM_STAND2);
 	else if (chance < 20)
 		SetAnim(self, ANIM_STAND3);
-	else 
+	else
 		SetAnim(self, ANIM_STAND1);
 }
 
@@ -339,13 +339,13 @@ qboolean gorgon_check_attack(edict_t *self)
 
 	if (!clear_visible(self, self->enemy))
 		return false;
-	
+
 	VectorSubtract(self->enemy->s.origin, self->s.origin, v);
 	len = VectorNormalize(v);
 
 	if (len < 200)
 	{
-		self->show_hostile = level.time + 1;		// wake up other monsters		
+		self->show_hostile = level.time + 1;		// wake up other monsters
 		QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 
 		return true;
@@ -358,7 +358,7 @@ qboolean gorgon_check_attack(edict_t *self)
 			return true;
 		}
 	}
-	
+
 	if (!irand(0, 3))
 	{
 		AngleVectors(self->s.angles, vf, vr, NULL);
@@ -387,11 +387,11 @@ qboolean gorgon_check_attack(edict_t *self)
 				SetAnim(self, ANIM_EAT_TEAR);
 			else if (chance < 20)
 				SetAnim(self, ANIM_EAT_PULLBACK);
-			else 
+			else
 				SetAnim(self, ANIM_EAT_LOOP);
 			return true;
 		}
-		
+
 		return false;
 	}
 }
@@ -418,7 +418,7 @@ void gorgon_stand(edict_t *self, G_Message_t *msg)
 			SetAnim(self, ANIM_EAT_TEAR);
 		else if (chance < 20)
 			SetAnim(self, ANIM_EAT_PULLBACK);
-		else 
+		else
 			SetAnim(self, ANIM_EAT_LOOP);
 	}
 	else
@@ -428,7 +428,7 @@ void gorgon_stand(edict_t *self, G_Message_t *msg)
 			SetAnim(self, ANIM_STAND2);
 		else if (chance < 20)
 			SetAnim(self, ANIM_STAND3);
-		else 
+		else
 			SetAnim(self, ANIM_STAND1);
 	}
 
@@ -477,7 +477,7 @@ void gorgon_walk(edict_t *self, G_Message_t *msg)
 		VectorSubtract (self->s.origin, targ_org, v);
 		len = VectorLength (v);
 		// targ_org is within range and far enough above or below to warrant a jump
-		if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 18) || 
+		if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 18) ||
 			(self->s.origin[2] > targ_org[2] + 18)))
 		{
 			if(gorgon_check_jump(self))
@@ -529,7 +529,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 	seperation = self->enemy->maxs[0];
 	melee_range = self->melee_range;
 
-	
+
 	if (self->monsterinfo.attack_finished > level.time)
 	{//too soon to attack again
 //		gi.dprintf("Waiting for next attack\n");
@@ -551,7 +551,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 	{//melee
 //		gi.dprintf("Biting: ");
 		chance = flrand(0, 1);
-		
+
 		if(!stricmp(self->enemy->classname,"monster_rat"))
 		{
 			if(self->enemy->s.origin[2] > self->s.origin[2])
@@ -585,7 +585,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 //			gi.dprintf(" melee4\n");
 			SetAnim(self, ANIM_MELEE4);		// Pull back
 		}
-		
+
 		self->monsterinfo.attack_finished = level.time + flrand(0, 3 - skill->value);
 		return;
 	}
@@ -604,16 +604,16 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 //		gi.dprintf("Hopping forward\n");
 		VectorCopy(self->s.origin, source);
 		VectorMA(source, 64 * self->s.scale, forward, source);
-		
+
 		gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT,&trace);
-		
+
 		if (trace.ent == self->enemy || trace.fraction == 1)
 			SetAnim(self, ANIM_MELEE8);
 		else
 		{
 			VectorCopy(self->s.origin, source);
 			VectorMA(source, 32 * self->s.scale, forward, source);
-			
+
 			gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT,&trace);
 
 			if (trace.fraction == 1)
@@ -680,7 +680,7 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 		// Enemy is within range and far enough above or below to warrant a jump
 		if(infront_pos(self, targ_org))
 		{
-			if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 24) || 
+			if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 24) ||
 				(self->s.origin[2] > targ_org[2] + 24)))
 			{
 				if (abs(self->s.origin[2] - targ_org[2] - 24) < 200) // Can't jump more than 200 high
@@ -712,7 +712,7 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 	}
 	else
 	{
-		SetAnim(self, ANIM_RUN1);		// Run on 
+		SetAnim(self, ANIM_RUN1);		// Run on
 	}
 }
 
@@ -726,7 +726,7 @@ void gorgon_pain(edict_t *self, G_Message_t *msg)
 	edict_t		*tempent;
 	int			chance, temp, damage;
 	qboolean	force_pain;
-	
+
 	ParseMsgParms(msg, "eeiii", &tempent, &tempent, &force_pain, &damage, &temp);
 
 	if(!force_pain)
@@ -762,7 +762,7 @@ void gorgon_pain(edict_t *self, G_Message_t *msg)
 
 
 /*----------------------------------------------------------------------
-  Gorgon Die - choose death 
+  Gorgon Die - choose death
 -----------------------------------------------------------------------*/
 void gorgon_death_pain(edict_t *self, G_Message_t *msg)
 {
@@ -782,7 +782,7 @@ void gorgon_death(edict_t *self, G_Message_t *msg)
 		gi.sound(self, CHAN_VOICE, sounds[SND_DIE], 1, ATTN_NORM, 0);
 		if (irand(0,10) < 5)  // Big enough death to be thrown back
 			SetAnim(self, ANIM_DIE2);
-		else 
+		else
 			SetAnim(self, ANIM_DIE1);
 		return;
 	}
@@ -813,7 +813,7 @@ void gorgon_death(edict_t *self, G_Message_t *msg)
 
 	if (self->health <= -10)  // Big enough death to be thrown back
 		SetAnim(self, ANIM_DIE2);
-	else 
+	else
 		SetAnim(self, ANIM_DIE1);
 }
 
@@ -1018,9 +1018,9 @@ void gorgon_hop (edict_t *self)
 		self->movetype = PHYSICSTYPE_STEP;
 		self->velocity[2] = -10;
 	}
-	else 
+	else
 	{
-		if (self->monsterinfo.currentmove == &gorgon_move_melee6)	// hop left 
+		if (self->monsterinfo.currentmove == &gorgon_move_melee6)	// hop left
 		{
 			VectorCopy (self->s.angles, temp);
 			temp[YAW] -= 15;
@@ -1047,7 +1047,7 @@ void gorgon_hop (edict_t *self)
 			AngleVectors (temp, forward, NULL, NULL);
 			VectorScale (forward, -50*JUMP_SCALE, self->velocity);
 		}
-		
+
 		//self->movetype = PHYSICSTYPE_TOSS;
 		//self->groundentity = self;
 		self->velocity[2] += 175;
@@ -1144,13 +1144,13 @@ void gorgon_check_landed (edict_t *self)
 	vec3_t pos;
 	float save_yspeed;
 	int	contents;
-	
+
 	save_yspeed = self->yaw_speed;
 	self->yaw_speed *= 0.33;
 	self->best_move_yaw = vectoyaw(self->velocity);
 	MG_ChangeWhichYaw(self, false);//turn toward best_move_yaw, 1/3 as fast as if on ground
 	self->yaw_speed = save_yspeed;
-	
+
 	if(self->groundentity)
 	{
 		if(irand(0, 1))
@@ -1251,7 +1251,7 @@ qboolean gorgon_check_jump (edict_t *self)
 
 	self->jump_time = level.time + 0.5;
 
-	// calculate arc spot (the top of his jump arc) which will land monster at landing spot 
+	// calculate arc spot (the top of his jump arc) which will land monster at landing spot
 	VectorSubtract (self->s.origin, landing_spot,  v);
 	landing_spot_angles[PITCH] = 0;
 	landing_spot_angles[ROLL] = 0;
@@ -1268,7 +1268,7 @@ qboolean gorgon_check_jump (edict_t *self)
 	VectorSubtract (arc_spot,self->s.origin, v);  // Face monster to arc spot
 	vectoangles(v,angles);
 	self->best_move_yaw = angles[YAW];
-		
+
 	len = VectorLength (v);
 
 	hold = len / 200;
@@ -1354,7 +1354,7 @@ void gorgon_jump (edict_t *self)
 
 	self->jump_time = level.time + 0.5;
 
-	// calculate arc spot (the top of his jump arc) which will land monster at landing spot 
+	// calculate arc spot (the top of his jump arc) which will land monster at landing spot
 	VectorSubtract (self->s.origin, landing_spot,  v);
 	landing_spot_angles[PITCH] = 0;
 	landing_spot_angles[ROLL] = 0;
@@ -1371,7 +1371,7 @@ void gorgon_jump (edict_t *self)
 	VectorSubtract (arc_spot,self->s.origin, v);  // Face monster to arc spot
 	vectoangles(v,angles);
 	self->best_move_yaw = angles[YAW];
-		
+
 	len = VectorLength (v);
 
 	hold = len / 200;
@@ -1395,7 +1395,7 @@ void gorgon_evade (edict_t *self, G_Message_t *msg)
 	float eta;
 
 	ParseMsgParms(msg, "eif", &projectile, &HitLocation, &eta);
-	
+
 	if(eta<0.3)
 		return;//needs a .3 seconds to respond, minimum
 
@@ -1528,14 +1528,14 @@ void gorgon_evade (edict_t *self, G_Message_t *msg)
 		SetAnim(self, ANIM_MELEE6);//hop left
 		return;
 	}
-	
+
 	chance = irand(0, 100);
 	if(chance < dodgeright_chance)
 	{
 		SetAnim(self, ANIM_MELEE7);//hop left
 		return;
 	}
-	
+
 	chance = irand(0, 100);
 	if(chance < jump_chance)
 	{
@@ -1565,7 +1565,7 @@ void gorgon_ready_catch (edict_t *self)
 		SetAnim(self,ANIM_CATCH);
 		return;
 	}
-	
+
 	ok_zdist = 128 * (self->s.scale*0.5/2.5);
 	if(ok_zdist<48)
 		ok_zdist = 48;
@@ -1589,7 +1589,7 @@ void gorgon_throw_toy(edict_t *self)
 	if(self->enemy->movetype>NUM_PHYSICSTYPES)
 		self->enemy->movetype = PHYSICSTYPE_STEP;
 	VectorRandomCopy(vec3_origin,self->enemy->avelocity,300);
-	
+
 	if(stricmp(self->enemy->classname,"player"))
 		QPostMessage(self->enemy, MSG_DEATH, PRI_DIRECTIVE, NULL);
 
@@ -1620,7 +1620,7 @@ void gorgon_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorMA(enemy_ofs, ofsr, right, enemy_ofs);
 	VectorMA(enemy_ofs, ofsu, up, self->enemy->s.origin);
 	VectorSubtract(self->enemy->s.origin, self->s.origin, blooddir);
-	
+
 	VectorScale(blooddir, -1, enemy_face);
 	enemy_face[2]/=10;
 	vectoangles(enemy_face, self->enemy->s.angles);
@@ -1676,7 +1676,7 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorMA(endpos, ofsu, up, endpos);
 	gi.trace(startpos,vec3_origin,vec3_origin,endpos, self, MASK_SHOT,&trace);
 	VectorCopy(trace.endpos,endpos);
-	
+
 	VectorSubtract(self->enemy->s.origin, endpos, endpos);
 	enemy_dist = VectorLength(endpos);
 	if(enemy_dist>ok_zdist)
@@ -1874,7 +1874,7 @@ qboolean gorgonCheckSlipGo (edict_t *self, qboolean frompain)
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -1917,7 +1917,7 @@ void gorgonChooseDeath (edict_t *self)
 
 void gorgon_ai_swim (edict_t *self, float dist)
 {
-	vec3_t	dir = {0, 0, 0};	
+	vec3_t	dir = {0, 0, 0};
 	vec3_t	vec, angles;
 
 	gorgon_prethink(self);
@@ -1999,7 +1999,7 @@ void gorgon_prethink (edict_t *self)
 	{
 		self->gravity = 0.0f;
 		self->svflags |= SVF_TAKE_NO_IMPACT_DMG | SVF_DO_NO_IMPACT_DMG;
-	
+
 		if(!self->wait)
 		{
 			gi.CreateEffect(NULL, FX_WATER_ENTRYSPLASH, CEF_FLAG7,
@@ -2090,7 +2090,7 @@ void gorgon_ai_eat(edict_t *self, float crap)
 	case ANIM_EAT_UP:
 		SetAnim(self, ANIM_LOOK_AROUND);
 		break;
-	
+
 	case ANIM_EAT_LOOP:
 		if(irand(0, 1))
 			SetAnim(self, ANIM_EAT_LOOP);
@@ -2107,31 +2107,31 @@ void gorgon_ai_eat(edict_t *self, float crap)
 		else//fixme- check enemy
 			SetAnim(self, ANIM_EAT_RIGHT);
 		break;
-	
+
 	case ANIM_EAT_TEAR:
 		SetAnim(self, ANIM_EAT_LOOP);
 		break;
-	
+
 	case ANIM_EAT_PULLBACK:
 		SetAnim(self, ANIM_EAT_LOOP);
 		break;
-	
+
 	case ANIM_LOOK_AROUND:
 		SetAnim(self, ANIM_EAT_DOWN);
 		break;
-	
+
 	case ANIM_EAT_LEFT:
 		SetAnim(self, ANIM_EAT_LOOP);
 		break;
-	
+
 	case ANIM_EAT_RIGHT:
 		SetAnim(self, ANIM_EAT_LOOP);
 		break;
-	
+
 	case ANIM_EAT_SNAP:
 		SetAnim(self, ANIM_EAT_LOOP);
 		break;
-	
+
 	case ANIM_EAT_REACT:
 		SetAnim(self, ANIM_EAT_LOOP);
 		break;
@@ -2166,27 +2166,27 @@ void GorgonStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/gorgon/tris.fm");
 
-	sounds[SND_PAIN1]= gi.soundindex ("monsters/gorgon/pain1.wav");	
-	sounds[SND_PAIN2]= gi.soundindex ("monsters/gorgon/pain2.wav");	
-	sounds[SND_DIE]= gi.soundindex ("monsters/gorgon/death1.wav");	
+	sounds[SND_PAIN1]= gi.soundindex ("monsters/gorgon/pain1.wav");
+	sounds[SND_PAIN2]= gi.soundindex ("monsters/gorgon/pain2.wav");
+	sounds[SND_DIE]= gi.soundindex ("monsters/gorgon/death1.wav");
 	sounds[SND_GURGLE]= gi.soundindex ("monsters/gorgon/gurgle.wav");	//what is this for?
 	sounds[SND_GIB]= gi.soundindex ("monsters/gorgon/gib.wav");
 
-	sounds[SND_MELEEHIT1]= gi.soundindex ("monsters/gorgon/meleehit1.wav");	
-	sounds[SND_MELEEHIT2] = gi.soundindex ("monsters/gorgon/meleehit2.wav");	
-	sounds[SND_MELEEMISS1] = gi.soundindex ("monsters/gorgon/meleemiss1.wav");	
-	sounds[SND_MELEEMISS2] = gi.soundindex ("monsters/gorgon/meleemiss2.wav");	
+	sounds[SND_MELEEHIT1]= gi.soundindex ("monsters/gorgon/meleehit1.wav");
+	sounds[SND_MELEEHIT2] = gi.soundindex ("monsters/gorgon/meleehit2.wav");
+	sounds[SND_MELEEMISS1] = gi.soundindex ("monsters/gorgon/meleemiss1.wav");
+	sounds[SND_MELEEMISS2] = gi.soundindex ("monsters/gorgon/meleemiss2.wav");
 
-	sounds[SND_STEP1]  = gi.soundindex ("monsters/gorgon/footstep1.wav");	
-	sounds[SND_STEP2] = gi.soundindex ("monsters/gorgon/footstep2.wav");	
-	sounds[SND_STEP3]  = gi.soundindex ("monsters/gorgon/footstep3.wav");	
-	sounds[SND_STEP4]  = gi.soundindex ("monsters/gorgon/footstep4.wav");	
+	sounds[SND_STEP1]  = gi.soundindex ("monsters/gorgon/footstep1.wav");
+	sounds[SND_STEP2] = gi.soundindex ("monsters/gorgon/footstep2.wav");
+	sounds[SND_STEP3]  = gi.soundindex ("monsters/gorgon/footstep3.wav");
+	sounds[SND_STEP4]  = gi.soundindex ("monsters/gorgon/footstep4.wav");
 
-	sounds[SND_GROWL1]     = gi.soundindex ("monsters/gorgon/growl1.wav");	
-	sounds[SND_GROWL2]     = gi.soundindex ("monsters/gorgon/growl2.wav");	
-	sounds[SND_GROWL3]     = gi.soundindex ("monsters/gorgon/growl3.wav");	
+	sounds[SND_GROWL1]     = gi.soundindex ("monsters/gorgon/growl1.wav");
+	sounds[SND_GROWL2]     = gi.soundindex ("monsters/gorgon/growl2.wav");
+	sounds[SND_GROWL3]     = gi.soundindex ("monsters/gorgon/growl3.wav");
 
-	sounds[SND_LAND]     = gi.soundindex ("monsters/gorgon/land.wav");	
+	sounds[SND_LAND]     = gi.soundindex ("monsters/gorgon/land.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
@@ -2239,20 +2239,20 @@ void SP_monster_gorgon_leader (edict_t *self)
 	//self->touch = M_Touch;
 
 	self->s.skinnum = GORGON_SKIN;
-	
+
 	scale = 2;//flrand(0.9, 1.4);
-	
+
 	if (!self->s.scale)
 	{
 		self->monsterinfo.scale = self->s.scale = scale;
 	}
-	
+
 	self->monsterinfo.aiflags |= AI_NIGHTVISION;
 
 	VectorScale(self->mins, scale, self->mins);
 	VectorScale(self->maxs, scale, self->maxs);
 	QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
-	
+
 	MG_InitMoods(self);
 	self->svflags |= SVF_WAIT_NOTSOLID;
 }
@@ -2346,7 +2346,7 @@ void SP_monster_gorgon (edict_t *self)
 		self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
 	self->s.modelindex = classStatics[CID_GORGON].resInfo->modelIndex;
 
@@ -2372,7 +2372,7 @@ void SP_monster_gorgon (edict_t *self)
 			self->s.scale = flrand(GORGON_SCALE_MIN, GORGON_SCALE_MAX);
 		self->monsterinfo.scale = self->s.scale;
 	}
-	
+
 	self->max_health = self->health = MonsterHealth(self->health);
 
 	if (self->spawnflags & MSF_EATING)

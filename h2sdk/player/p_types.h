@@ -48,7 +48,7 @@ typedef struct
 // -----------
 // ************************************************************************************************
 
-typedef struct 
+typedef struct
 {
 	panimmove_t	*move;
 	short		fly;
@@ -92,8 +92,8 @@ enum weaponready_e
 	WEAPON_READY_NONE,
 	WEAPON_READY_HANDS,
 	WEAPON_READY_STAFFSTUB,
-	WEAPON_READY_SWORDSTAFF,	
-	WEAPON_READY_HELLSTAFF,	
+	WEAPON_READY_SWORDSTAFF,
+	WEAPON_READY_HELLSTAFF,
 	WEAPON_READY_BOW,
 	WEAPON_READY_MAX
 };
@@ -219,7 +219,7 @@ typedef struct gitem_s
 	void		(*use)(playerinfo_t *playerinfo, struct gitem_s *item);
 	void		(*drop)(struct edict_s *ent, struct gitem_s *item);
 	void		(*weaponthink)(struct edict_s *WeaponOwner,char *Format,...);
-	
+
 	char		*pickup_sound;
 	char		*world_model;
 	int			world_model_flags;
@@ -313,7 +313,7 @@ typedef struct
 
 	int			health;
 	int			max_health;
-	
+
 	short		mission_num1;
 	short		mission_num2;
 
@@ -328,7 +328,7 @@ typedef struct
 	float		armor_count; 		// Not used on client.
 	short		skintype;			// Skin index that reflects plague stages and alternate skins
 	unsigned int altparts;			// Missing hands, heads etc.
-	
+
 	// Inventory.
 
 	inventory_t	inventory;
@@ -392,7 +392,7 @@ typedef enum physicsType_e
 {
 	// new system
 	PHYSICSTYPE_NONE,			// MOVETYPE_NONE			0
-	PHYSICSTYPE_STATIC,	
+	PHYSICSTYPE_STATIC,
 	PHYSICSTYPE_NOCLIP,			// MOVETYPE_NOCLIP			2
 	PHYSICSTYPE_FLY,			// MOVETYPE_FLY				3
 	PHYSICSTYPE_STEP,			// MOVETYPE_WALK, MOVETYPE_STEP, MOVETYPE_TOSS, MOVETYPE_BOUNCE
@@ -438,18 +438,18 @@ typedef enum deadState_e
 
 typedef enum handfx_e
 {
-	HANDFX_NONE=0,		
-	HANDFX_FIREBALL,	
-	HANDFX_MISSILE,	
+	HANDFX_NONE=0,
+	HANDFX_FIREBALL,
+	HANDFX_MISSILE,
 	HANDFX_SPHERE,
 	HANDFX_MACEBALL,
-	HANDFX_FIREWALL,	
-	HANDFX_REDRAIN,	
-	HANDFX_POWERREDRAIN,	
-	HANDFX_PHOENIX,	
-	HANDFX_POWERPHOENIX,	
-	HANDFX_STAFF1,	
-	HANDFX_STAFF2,	
+	HANDFX_FIREWALL,
+	HANDFX_REDRAIN,
+	HANDFX_POWERREDRAIN,
+	HANDFX_PHOENIX,
+	HANDFX_POWERPHOENIX,
+	HANDFX_STAFF1,
+	HANDFX_STAFF2,
 	HANDFX_STAFF3,
 	HANDFX_MAX,
 } handfx_t;
@@ -587,7 +587,7 @@ typedef struct playerinfo_s
 	void (*CL_Trace)(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,int brushmask,int flags,trace_t *trace);
 	int (*CL_CreateEffect)(byte EventId,void *owner,unsigned short type,int flags,vec3_t position,char *format,...);
 	void (*CL_RemoveEffects)(byte EventId,void *owner,int fx);
-	
+
 	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
 
 	void (*G_L_Sound)(edict_t *entity,int sound_num);
@@ -597,7 +597,7 @@ typedef struct playerinfo_s
 	void (*G_RemoveEffects)(byte Eventid,entity_state_t *state,int type);
 
 	// Server (game) function callbacks that have no client side equivalent.
-	
+
 	int (*G_SoundIndex)(char *name);
 	void (*G_SoundRemove)(char *name);
 	void (*G_UseTargets)(edict_t *ent,edict_t *activator);
@@ -645,7 +645,7 @@ typedef struct playerinfo_s
 	void (*PlayerActionSpellDefensive)(playerinfo_t *playerinfo);
 	qboolean (*G_EntIsAButton)(edict_t *ent);
 	int (*irand)(playerinfo_t *playerinfo,int mn,int mx);
-	
+
 	// Indicates whether this playerinfo_t is held on the client or server.
 
 	qboolean			isclient;
@@ -724,7 +724,7 @@ typedef struct playerinfo_s
 	byte				meteor_count;
 
 	// Visible model attributes.
-	
+
 	byte				plaguelevel;			// Current plague level: 0=none, 2=max.
 
 
@@ -769,7 +769,7 @@ typedef struct playerinfo_s
 	float				viewheight;
 	float				knockbacktime;			// FIXME Used on client, but not transmitted yet?  --Pat
 	int					watertype;
-	int					waterlevel;	
+	int					waterlevel;
 	int					deadflag;
 	int					movetype;
 	int					edictflags;
@@ -804,7 +804,7 @@ typedef struct playerinfo_s
 	vec3_t				targetjointangles;
 	qboolean			showscores;				// Set layout stat.
 	qboolean			showpuzzleinventory;	// Set layout stat.
-	
+
 	// ********************************************************************************************
 	// Internal state info.
 	// ********************************************************************************************

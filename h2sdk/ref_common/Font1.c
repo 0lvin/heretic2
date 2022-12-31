@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 // TMix (c) Raven Software (Pagan).
 // 96 textures processed.
 // 56% of total area consumed

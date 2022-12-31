@@ -56,7 +56,7 @@ float CL_NormaliseAngle(float Angle)
 	int Count;
 
 	Count=(int)(Angle/360.0);
-		
+
 	Angle=Angle-(Count*360.0);
 
 	if(Angle>180.0)
@@ -78,7 +78,7 @@ float CL_NormaliseAngle(float Angle)
 void PlayerActionCheckBranchRunningStrafe ( playerinfo_t *playerinfo )
 {
 	int BranchLwrRunningStrafe(playerinfo_t *playerinfo);
-	
+
 	int ret;
 
 	ret = BranchLwrRunningStrafe(playerinfo);
@@ -112,7 +112,7 @@ void PlayerActionCheckStrafe ( playerinfo_t *playerinfo )
 			return;
 		}
 	}
-	
+
 	//Check backward advancement
 	if (playerinfo->seqcmd[ACMDL_BACK])
 	{
@@ -162,7 +162,7 @@ void PlayerActionCheckStrafe ( playerinfo_t *playerinfo )
 			return;
 		}
 	}
-	
+
 	//Check for change in strafe direction
 	if ( playerinfo->seqcmd[ACMDL_STRAFE_L] && playerinfo->lowerseq != ASEQ_STRAFEL)
 	{
@@ -176,7 +176,7 @@ void PlayerActionCheckStrafe ( playerinfo_t *playerinfo )
 		return;
 	}
 
-	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) ) 
+	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) )
 	{//We're just trying to go forward
 
 		//FORWARD
@@ -192,13 +192,13 @@ void PlayerActionCheckStrafe ( playerinfo_t *playerinfo )
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_WALKF_GO);
 			return;
 		}
-		
+
 		if (playerinfo->seqcmd[ACMDL_RUN_F])
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_RUNF_GO);
 			return;
 		}
-		
+
 		//BACKWARD
 
 		if (playerinfo->seqcmd[ACMDL_CREEP_B])
@@ -212,7 +212,7 @@ void PlayerActionCheckStrafe ( playerinfo_t *playerinfo )
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_WALKB);
 			return;
 		}
-		
+
 		PlayerAnimSetLowerSeq(playerinfo, SeqCtrl[playerinfo->lowerseq].ceaseseq);
 		return;
 	}
@@ -239,11 +239,11 @@ qboolean PlayerActionCheckCreepMoveForward( playerinfo_t *playerinfo )
 
 	//Scan out and down from the player
 	VectorCopy(playerinfo->origin, startpos);
-	
+
 	//Ignore the pitch of the player, we only want the yaw
 	VectorSet(ang, 0, playerinfo->angles[YAW], 0);
 	AngleVectors(ang, vf, NULL, NULL);
-	
+
 	//Trace ahead about one step
 	VectorMA(playerinfo->origin, CREEP_STEPDIST, vf, startpos);
 
@@ -256,7 +256,7 @@ qboolean PlayerActionCheckCreepMoveForward( playerinfo_t *playerinfo )
 		playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
 	else
 		playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID,&trace);
-	
+
 	//If it is...
 	if (trace.fraction == 1)
 	{
@@ -294,11 +294,11 @@ qboolean PlayerActionCheckCreepMoveBack( playerinfo_t *playerinfo )
 
 	//Scan out and down from the player
 	VectorCopy(playerinfo->origin, startpos);
-	
+
 	//Ignore the pitch of the player, we only want the yaw
 	VectorSet(ang, 0, playerinfo->angles[YAW], 0);
 	AngleVectors(ang, vf, NULL, NULL);
-	
+
 	//Trace ahead about one step
 	VectorMA(playerinfo->origin, -CREEP_STEPDIST, vf, startpos);
 
@@ -311,7 +311,7 @@ qboolean PlayerActionCheckCreepMoveBack( playerinfo_t *playerinfo )
 		playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
 	else
 		playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID,&trace);
-	
+
 	//If it is...
 	if (trace.fraction == 1)
 	{
@@ -367,17 +367,17 @@ void PlayerActionCheckUncrouchToFinishSeq(playerinfo_t *playerinfo)
 		sequence = playerinfo->lowerseq;
 	else
 		sequence = playerinfo->upperseq;
-	
+
 	switch(sequence)
 	{//choose a proper sequence to go into
 	case ASEQ_FORWARD_FLIP_L:
 	case ASEQ_FORWARD_FLIP_R:
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
-		PlayerAnimSetLowerSeq(playerinfo, ASEQ_ROLL_FROM_FFLIP);		
+		PlayerAnimSetLowerSeq(playerinfo, ASEQ_ROLL_FROM_FFLIP);
 		break;
 	default:
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
-		PlayerAnimSetLowerSeq(playerinfo, ASEQ_CROUCH);		
+		PlayerAnimSetLowerSeq(playerinfo, ASEQ_CROUCH);
 		break;
 	}
 }
@@ -415,7 +415,7 @@ void PlayerActionCheckDoubleJump( playerinfo_t *playerinfo )
 		case ASEQ_JUMPFWD:
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_FORWARD_FLIP_L_GO);
 			break;
-		
+
 		case ASEQ_JUMPBACK:
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPBACK);
 			break;
@@ -463,7 +463,7 @@ void PlayerActionCheckBowRefire( playerinfo_t *playerinfo )
 	else
 	if (!playerinfo->isclient&&!(Weapon_CurrentShotsLeft(playerinfo)))
 		playerinfo->G_WeapNext(playerinfo->self);
-		
+
 }
 
 /*-----------------------------------------------
@@ -558,7 +558,7 @@ void PlayerActionSpellArray(playerinfo_t *playerinfo, float value)
 void PlayerActionSpellSphereCreate(playerinfo_t *playerinfo, float value)
 {
 	PlayerSetHandFX(playerinfo, HANDFX_SPHERE, -1);
-	
+
 	playerinfo->chargingspell=true;
 	playerinfo->weaponcharge = 1;
 	playerinfo->PlayerActionSpellSphereCreate(playerinfo,&playerinfo->chargingspell);
@@ -572,9 +572,9 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 {
 	// Drain mana while charging. If mana depleted, then the branch will set to launch the thing.
 
-	if(playerinfo->seqcmd[ACMDU_ATTACK] && 
-			(playerinfo->weaponcharge < SPHERE_MAX_MANA_CHARGE) && 
-			((Weapon_CurrentShotsLeft(playerinfo)) || 
+	if(playerinfo->seqcmd[ACMDU_ATTACK] &&
+			(playerinfo->weaponcharge < SPHERE_MAX_MANA_CHARGE) &&
+			((Weapon_CurrentShotsLeft(playerinfo)) ||
 					(playerinfo->pers.inventory.Items[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
 	{
 		if (!(playerinfo->dmflags & DF_INFINITE_MANA))
@@ -591,7 +591,7 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 		switch((int)value)
 		{
 		case 1:
-			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSPHERE_FIRE1);		
+			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSPHERE_FIRE1);
 			break;
 		case 2:
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSPHERE_FIRE2);
@@ -726,19 +726,19 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 		case ITEM_WEAPON_MAGICMISSILE:
 			color=2;
 			break;
-		
+
 		case ITEM_WEAPON_SPHEREOFANNIHILATION:
 			color=3;
 			break;
-		
+
 		case ITEM_WEAPON_MACEBALLS:
 			color=4;
 			break;
-		
+
 		case ITEM_WEAPON_FIREWALL:
 			color=5;
 			break;
-		
+
 		default:
 			color=0;
 			break;
@@ -782,7 +782,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 	int color=0;
 
 	assert(playerinfo);
-	
+
 	if(playerinfo->edictflags & FL_CHICKEN)
 	{
 		// Don't allow us to muck about with arrows if we are a chicken.
@@ -791,23 +791,23 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 	}
 
 	assert(playerinfo->pers.newweapon);
-	
+
 	Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
 	playerinfo->pers.newweapon = NULL;
 
 	// Do some fancy effect.
-	
+
 	AngleVectors(playerinfo->angles, forward, right, NULL);
 	VectorMA(playerinfo->origin, -2.0, forward, spawnpoint);
 	VectorMA(spawnpoint, -7, right, spawnpoint);
 	spawnpoint[2] += playerinfo->viewheight - 16.0;
 
 	weapon = playerinfo->pers.weapon;
-	
+
 	if (weapon)
 	{
 		if (weapon->tag == ITEM_WEAPON_PHOENIXBOW)
-		{	
+		{
 			// Set the bow type to phoenix.
 
 			playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
@@ -891,9 +891,9 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		PlayerUpdateModelAttributes(playerinfo);
 		playerinfo->pers.newweapon = NULL;
 	}
-	
+
 	if (playerinfo->leveltime > 1.0)
-	{	
+	{
 		// Weapon Changing effects.
 
 		switch(playerinfo->pers.weaponready)
@@ -938,21 +938,21 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 			break;
 
 		case WEAPON_READY_BOW:
-			
+
 			// Make sure we have the right bow color
-			
+
 			weapon = playerinfo->pers.weapon;
-			
+
 			if (weapon)
-			{	
+			{
 				// There is a weapon.
 
 				if (weapon->tag == ITEM_WEAPON_REDRAINBOW)
-				{	
+				{
 					// Make sure we have the redrain visible.
 
 					if (playerinfo->pers.bowtype == BOW_TYPE_PHOENIX)
-					{	
+					{
 						// Uh oh, change the phoenix into a red rain.
 
 						playerinfo->pers.bowtype = BOW_TYPE_REDRAIN;
@@ -1008,11 +1008,11 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 					}
 				}
 				else if (weapon->tag == ITEM_WEAPON_PHOENIXBOW)
-				{	
+				{
 					// Make sure we have the phoenix visible.
 
 					if (playerinfo->pers.bowtype == BOW_TYPE_REDRAIN)
-					{	
+					{
 						// Uh oh, change the red rain to a phoenix.
 
 						playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
@@ -1068,11 +1068,11 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 					}
 				}
 			}
-			
+
 			break;
 
 		default:
-			
+
 			// No nothing.
 
 			break;
@@ -1147,7 +1147,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
-	
+
 		if(playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->G_Sound(SND_PRED_ID5,
@@ -1315,7 +1315,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 		else
 		{
 			playerinfo->G_Sound(SND_PRED_ID12,
-								playerinfo->leveltime,	
+								playerinfo->leveltime,
 								playerinfo->self,
 								CHAN_WEAPON,
 								playerinfo->G_SoundIndex("weapons/Staff Unready.wav"),
@@ -1371,7 +1371,7 @@ void PlayerActionSwordTrailStart(playerinfo_t *playerinfo, float value)
 	// Add a trail effect to the staff.
 	if (playerinfo->powerup_timer > playerinfo->leveltime)
 		powerlevel = playerinfo->pers.stafflevel + 1;
-	else 
+	else
 		powerlevel = playerinfo->pers.stafflevel;
 
 	if (powerlevel >= STAFF_LEVEL_MAX)
@@ -1529,7 +1529,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 		switch (basestep)
 		{
 		case STEP_CREEP:		// Creep
-			
+
 			if(irand(0,1))
 				strcat(WalkSound,"shuffle1.wav");
 			else
@@ -1537,7 +1537,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 			break;
 
 		case STEP_WALK:		// Walk
-			
+
 			if(irand(0,1))
 				strcat(WalkSound,"walk1.wav");
 			else
@@ -1545,7 +1545,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 			break;
 
 		case STEP_RUN:		// Run
-			
+
 			if(irand(0,1))
 				strcat(WalkSound,"run1.wav");
 			else
@@ -1553,7 +1553,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 			break;
 
 		case STEP_ROLL:		// Roll
-			
+
 			strcat(WalkSound,"roll.wav");
 			break;
 
@@ -1868,14 +1868,14 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(grabtrace.endpos, righthand);
 
 	if (grabtrace.fraction != 1.0)
-	{	
+	{
 		// Right hand is not clear.
 
 		return(false);
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
-	{	
+	{
 		// Right hand is not clear.
 		return(false);
 	}
@@ -1889,8 +1889,8 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	else
 		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
-	VectorCopy(grabtrace.endpos, lefthand);			
-	
+	VectorCopy(grabtrace.endpos, lefthand);
+
 	if (grabtrace.fraction != 1.0)
 	{	// Left hand is not clear.
 		return(false);
@@ -1906,20 +1906,20 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	// First we must figure out how far down to look.
 
 	if (playerinfo->velocity[2] < 0)
-	{	
+	{
 		// If the player is going down, then check his intended speed over the next .1 sec.
 
 		vertlength = (playerinfo->sv_gravity*.5-playerinfo->velocity[2])*.1;
 	}
 	else
-	{	
+	{
 		// If the player is going up, then check his velocity over the LAST .1 sec.
 
 		vertlength = (playerinfo->sv_gravity*.5+playerinfo->velocity[2])*.1;
 	}
-	
+
 	vertlength=Q_fabs(vertlength);
-	
+
 	if (vertlength < GRAB_HAND_VERTZONE)
 	{
 		vertlength = GRAB_HAND_VERTZONE;
@@ -1927,7 +1927,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	VectorCopy(righthand, endpoint);
 	endpoint[2] -= vertlength;
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
 	else
@@ -1936,13 +1936,13 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(grabtrace.endpos, righthand);
 
 	if (grabtrace.fraction == 1.0)
-	{	
+	{
 		// Right hand did not connect with a flat surface.
 		return(false);
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
-	{	
+	{
 		// Right hand did not connect with a flat surface.
 		return(false);
 	}
@@ -1954,7 +1954,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] -= vertlength;
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
 	else
@@ -1963,13 +1963,13 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(grabtrace.endpos, lefthand);
 
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
-	{	
+	{
 		// Left hand did not connect with a flat surface.
 		return(false);
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
-	{	
+	{
 		// Left hand did not connect with a flat surface.
 		return(false);
 	}
@@ -1984,7 +1984,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	VectorCopy(playerinfo->mins, playermin);
 	VectorCopy(playerinfo->maxs, playermax);
-	
+
 	// We need to take the player limits and extend them up to 83 in height.
 
 	playermax[2] = GRAB_HAND_HEIGHT;
@@ -2028,14 +2028,14 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	yaw = anglemod(yaw) - 180.0;
 
 	if (yaw > 30.0 || yaw < -30.0)
-	{	
+	{
 		// Bad angle.  Player should bounce.
 
 		return(false);
 	}
-	
 
-	//one more check, make sure we can fit in there! -- 
+
+	//one more check, make sure we can fit in there! --
 	//so we don't start climbing then fall back down- annoying
 	//get the z height
 	VectorCopy(playerinfo->origin, lastcheck_start);
@@ -2068,7 +2068,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 		playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&swingtrace);
 	else
 		playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&swingtrace);
-	
+
 	//Did we hit a wall underneath?
 	if (swingtrace.fraction == 1.0f && (!swingtrace.startsolid || !swingtrace.allsolid))
 		swingable = true;
@@ -2101,10 +2101,10 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	if (grabtrace.fraction == 1.0)
 	{
-		VectorCopy(endpoint, playerinfo->origin);		
+		VectorCopy(endpoint, playerinfo->origin);
 		playerinfo->offsetangles[YAW]=-((CL_NormaliseAngle(playerinfo->angles[YAW]))-playerinfo->grabangle);
 		playerinfo->angles[YAW] = playerinfo->grabangle;
-		
+
 		if (swingable)
 			return 2;
 
@@ -2136,27 +2136,27 @@ void PlayerActionCheckGrab(playerinfo_t *playerinfo, float value)
 	for(i=0;i<maxcheck;i++)
 	{
 		// Check 3 height zones for 3 results.
-		
+
 		switch(i)
 		{
 			case 0:
 				v_adjust = GRAB_HAND_HEIGHT - 58;
-				
+
 				break;
-			
+
 			case 1:
 				v_adjust = GRAB_HAND_HEIGHT - 29;
 
 				break;
-			
+
 			case 2:
 				v_adjust = GRAB_HAND_HEIGHT;
-				
+
 				break;
-			
+
 			default:
 				v_adjust = GRAB_HAND_HEIGHT;
-				
+
 				break;
 		}
 
@@ -2169,7 +2169,7 @@ void PlayerActionCheckGrab(playerinfo_t *playerinfo, float value)
 						PlayerAnimSetVault(playerinfo, ASEQ_OVERHANG);
 					else
 						PlayerAnimSetVault(playerinfo, ASEQ_PULLUP_WALL);
-					
+
 					return;
 
 					break;
@@ -2182,7 +2182,7 @@ void PlayerActionCheckGrab(playerinfo_t *playerinfo, float value)
 					break;
 
 				default:
-					
+
 					break;
 			}
 		}
@@ -2233,7 +2233,7 @@ void PlayerActionBowReadySound(playerinfo_t *playerinfo, float value)
 qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 {
 	if(!playerinfo->isclient)
-	{	
+	{
 		return(playerinfo->G_PlayerActionUsePuzzle(playerinfo));
 	}
 	else
@@ -2291,7 +2291,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	// --The plane must be at least wide enough at the point of intersection for the whole player.
 
 	// Skip it if we're not on the ground.
-	
+
 	if (playerinfo->groundentity == NULL)
 		return(false);
 
@@ -2301,14 +2301,14 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	endpoint[2] += GRAB_JUMP_HEIGHT;
 	VectorCopy(playerinfo->mins, playermin);
 	VectorCopy(playerinfo->maxs, playermax);
-	
+
 	// We need to take the player limits and extend them up to 83 in height (where the hands are).
 
 	playermax[2] = GRAB_HAND_HEIGHT;
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
-	else			
+	else
 		playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
@@ -2317,7 +2317,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	}
 
 	// Handheight is set to the maximum the hands can go above the current player's height.
-	
+
 	handheight = grabtrace.endpos[2] + GRAB_HAND_HEIGHT;
 
 	// Now we want to cast some rays.  If the two rays moving from the player's hands at "grab"
@@ -2345,13 +2345,13 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorMA(playerinfo->origin, -GRAB_HAND_WIDTH, right, lefthand);
 	lefthand[2] = handheight;
 	VectorMA(lefthand, GRAB_JUMP_HORZONE, forward, endpoint);
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
 	else
 		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
-	VectorCopy(grabtrace.endpos, lefthand);			
+	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0)
 	{	// Left hand is not clear.
 		return false;
@@ -2363,7 +2363,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	VectorCopy(righthand, endpoint);
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
 	else
@@ -2382,7 +2382,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
 	else
@@ -2404,26 +2404,26 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	// an obstruction.
 	VectorCopy(playerinfo->mins, playermin);
 	VectorCopy(playerinfo->maxs, playermax);
-	
+
 	// We need to take the player limits and extend them up to 83 in height.
 
 	playermax[2] = GRAB_HAND_HEIGHT;
 
 	VectorMA(playerinfo->origin, GRAB_JUMP_HORZONE, forward, endpoint);
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(playerinfo->origin,NULL,NULL,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
-	else		
+	else
 		playerinfo->G_Trace(playerinfo->origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
 	// Now, if the player is grabbing an overhang, this will not hit anything.
 
 	if (grabtrace.fraction >= 1.0)
-	{	
+	{
 		// Hit nothing, so do some more checks, by stretching the player up to the outcropping.
-		
+
 		// Bottom at the origin
-		
+
 		playermin[2] = 0.0;
 
 		// Stretch all the way up to where the grab is made.
@@ -2462,14 +2462,14 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	yaw = planedir[YAW] - playerinfo->angles[YAW];
 	yaw = anglemod(yaw) - 180.0;
 	if (yaw > 30.0 || yaw < -30.0)
-	{	
+	{
 		// Bad angle. Player should bounce.
 
 		return false;
 	}
 
 	// Now that we feel we have a viable jump, let's jump!
-	
+
 	return(true);
 }
 
@@ -2504,7 +2504,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 		VectorMA(playerinfo->origin, PUSH_HAND_WIDTH, right, righthand);
 		righthand[2] += PUSH_HAND_HEIGHT;
 		VectorMA(righthand, PUSH_HAND_HORZONE, forward, endpoint);
-		
+
 		playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
 		if ((grabtrace.fraction == 1) || (!grabtrace.ent))
@@ -2521,10 +2521,10 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 
 		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
-		VectorCopy(grabtrace.endpos, lefthand);			
+		VectorCopy(grabtrace.endpos, lefthand);
 
 		if ((grabtrace.fraction == 1.0) ||  (grabtrace.ent != holdent))
-		{	
+		{
 			// Left hand is not near to pushable object.
 
 			return(false);
@@ -2536,7 +2536,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 		yaw = planedir[YAW] - playerinfo->angles[YAW];
 		yaw = anglemod(yaw) - 180.0;
 		if (yaw > 30.0 || yaw < -30.0)
-		{	// 
+		{	//
 			return false;
 		}
 
@@ -2600,7 +2600,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		playerinfo->G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
 	if (grabtrace.fraction == 1.0)
-	{	
+	{
 		// Nothing in front of us.
 		return(false);
 	}
@@ -2611,7 +2611,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	}
 
 	// Sloped surfaces are not grabbable. Question: sloped away or towards?
-	
+
 	if (grabtrace.plane.normal[2] > .3)
 	{
 		return(false);
@@ -2632,7 +2632,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	yaw = planedir[YAW] - playerinfo->angles[YAW];
 	yaw = anglemod(yaw) - 180.0;
 	if (yaw > 30.0 || yaw < -30.0)
-	{	
+	{
 		// Bad angle. Player should bounce.
 		return(false);
 	}
@@ -2646,7 +2646,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorMA(playerinfo->origin, VAULT_HAND_WIDTH, right, righthand);
 	righthand[2] += VAULT_HAND_HEIGHT;
 	VectorMA(righthand, VAULT_HAND_HORZONE, forward, endpoint);
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
 	else
@@ -2654,7 +2654,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
-	{	
+	{
 		// Right hand is not clear.
 		return(false);
 	}
@@ -2668,9 +2668,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	else
 		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
-	VectorCopy(grabtrace.endpos, lefthand);			
+	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
-	{	
+	{
 		// Left hand is not clear.
 		return(false);
 	}
@@ -2681,7 +2681,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	VectorCopy(righthand, endpoint);
 	endpoint[2] -= VAULT_HAND_VERTZONE;
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
 	else
@@ -2689,7 +2689,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
-	{	
+	{
 		// Right hand did not connect with a flat surface.
 		return(false);
 	}
@@ -2709,7 +2709,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
-	{	
+	{
 		// Left hand did not connect with a flat surface.
 		return(false);
 	}
@@ -2722,7 +2722,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	// The fit check doesn't work when you are in muck, so check if you are.
 	if (!(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
-		//one more check, make sure we can fit in there! -- 
+		//one more check, make sure we can fit in there! --
 		//so we don't start climbing then fall back down- annoying
 		//get the z height
 		VectorCopy(playerinfo->origin, lastcheck_start);
@@ -2745,7 +2745,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		}
 	}
 
-	
+
 	grabfraction = grabtrace.fraction;
 
 	//Now see if the surface is eligible for a overhanging swing vault
@@ -2761,15 +2761,15 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&swingtrace);
 	else
 		playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&swingtrace);
-	
+
 	//Did we hit a wall underneath?
 	if (swingtrace.fraction == 1.0f && (!swingtrace.startsolid || !swingtrace.allsolid))
 		swingable = true;
-	
+
 	// Save the intended grab location (the endpoint).
 	playerinfo->grabloc[0] = ((lefthand[0] + righthand[0]) / 2.0);
 	playerinfo->grabloc[1] = ((lefthand[1] + righthand[1]) / 2.0);
-	
+
 	if (lefthand[2] > righthand[2])
 		playerinfo->grabloc[2] = lefthand[2];
 	else
@@ -2802,7 +2802,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 #define PLAYER_BLOCKING_DIST 17
 
 void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
-{	
+{
 	// We're letting go from a grab position.
 
 	trace_t trace;
@@ -2812,7 +2812,7 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 
 	AngleVectors(playerinfo->angles, pushdir, NULL, NULL);
 	VectorMA(playerinfo->origin, PLAYER_BLOCKING_DIST, pushdir, endpos);
-	
+
 	if(playerinfo->isclient)
 		playerinfo->CL_Trace(playerinfo->origin,
 							 NULL,
@@ -2828,7 +2828,7 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 								  endpos,
 								  playerinfo->self,
 								  MASK_PLAYERSOLID,&trace);
-	
+
 	// Now push in the opposite direction for a new location.
 
 	VectorMA(trace.endpos, -PLAYER_BLOCKING_DIST, pushdir, endpos);
@@ -2928,7 +2928,7 @@ void PlayerActionVaultSound(playerinfo_t *playerinfo, float value)
 							 CHAN_WEAPON,
 							 VaultSound,
 							 1.0,
-							 ATTN_NORM,					 
+							 ATTN_NORM,
 							 0);
 	}
 	else
@@ -3043,7 +3043,7 @@ void PlayerActionFlip(playerinfo_t *playerinfo, float value)
 void PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, float var3)
 {
 	assert(playerinfo);
-	
+
 	if(!playerinfo->isclient)
 		playerinfo->G_PlayerClimbingMoveFunc(playerinfo,height,var2,var3);
 }
@@ -3053,7 +3053,7 @@ void PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, 
 -----------------------------------------------*/
 
 void PlayerMoveFunc(playerinfo_t *playerinfo, float fwd, float right, float up)
-{	
+{
 	// Feeds velocity into the character as a thrust value, like player control (no effect if in
 	// the air).
 
@@ -3067,7 +3067,7 @@ void PlayerMoveFunc(playerinfo_t *playerinfo, float fwd, float right, float up)
 -----------------------------------------------*/
 
 void PlayerSwimMoveFunc(playerinfo_t *playerinfo, float fwd, float right, float up)
-{	
+{
 	// Feeds velocity into the character as a thrust value, like player control (no effect if in the air).
 	playerinfo->fwdvel = fwd;
 	playerinfo->sidevel = right;
@@ -3094,7 +3094,7 @@ void PlayerSwimMoveFunc(playerinfo_t *playerinfo, float fwd, float right, float 
 -----------------------------------------------*/
 
 void PlayerMoveUpperFunc(playerinfo_t *playerinfo, float fwd, float right, float up)
-{	
+{
 	// Feeds velocity into the character as a thrust value, like player control (not effect if in
 	// the air).
 
@@ -3111,13 +3111,13 @@ void PlayerMoveUpperFunc(playerinfo_t *playerinfo, float fwd, float right, float
 -----------------------------------------------*/
 
 void PlayerMoveForce(playerinfo_t *playerinfo, float fwd, float right, float up)
-{	
+{
 	// For things like jumps and the like, where the velocity is demanded, not a suggestion.
 
 	vec3_t fwdv, rightv;
-	
+
 	AngleVectors(playerinfo->angles, fwdv, rightv, NULL);
-	
+
 	VectorScale(fwdv, fwd, playerinfo->velocity);
 
 	if(right != 0)
@@ -3131,12 +3131,12 @@ void PlayerMoveForce(playerinfo_t *playerinfo, float fwd, float right, float up)
 -----------------------------------------------*/
 
 void PlayerJumpMoveForce(playerinfo_t *playerinfo, float fwd, float right, float up)
-{	
+{
 	//For things like jumps and the like, where the velocity is demanded, not a suggestion.
 	//NOTENOTE: Same as PlayerMoveForce, but uses where the player is looking (torso)
 
 	vec3_t fwdv, rightv, angles;
-	
+
 	VectorCopy(playerinfo->aimangles, angles);
 	angles[PITCH] = 0;
 
@@ -3183,7 +3183,7 @@ void PlayerJumpNudge(playerinfo_t *playerinfo, float fwd, float right, float up)
 	vec3_t vf, vr, vu;
 	vec3_t vel;
 	float ff,fr,fu, df, dr, du;
-	
+
 	AngleVectors(playerinfo->angles, vf, vr, vu);
 
 	VectorCopy(playerinfo->velocity, vel);
@@ -3255,7 +3255,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 	vec3_t		endpoint, vf, savepos;
 	vec3_t		playermin, playermax;
 	float		x, y, diff;
-	
+
 	assert(playerinfo);
 
 	if (endseq > 0)
@@ -3331,7 +3331,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 										  MASK_PLAYERSOLID,&trace);
 
 			if (trace.fraction < 1.0)
-			{	
+			{
 				// We bumped into something so drop down.
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_FALL);
 			}
@@ -3471,7 +3471,7 @@ void PlayerMoveAdd(playerinfo_t *playerinfo)
 	AngleVectors(playerinfo->angles, vf, vr, NULL);
 	VectorCopy(playerinfo->velocity, dir);
 	mag = VectorNormalize(dir);
-	
+
 	fmove = (DotProduct(dir, vf) * mag);
 	rmove = (DotProduct(dir, vr) * mag);
 
@@ -3617,7 +3617,7 @@ PLAYER_API void PlaySlap(playerinfo_t *playerinfo, float dist)
 	else
 	{
 		playerinfo->G_Sound(SND_PRED_ID23,
-							playerinfo->leveltime,	
+							playerinfo->leveltime,
 							playerinfo->self,
 							CHAN_BODY,
 							playerinfo->G_SoundIndex("player/idle slap.wav"),
@@ -3721,7 +3721,7 @@ void PlayerActionCheckCreep( playerinfo_t *playerinfo )
 	if ( (playerinfo->flags & PLAYER_FLAG_COLLISION) &&  (playerinfo->upperidle) && (playerinfo->seqcmd[ACMDL_FWD]) )
 	{
 		PlayerActionCheckVault(playerinfo, 0);
-		
+
 		if (curseq == ASEQ_VAULT_LOW)
 		{
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_VAULT_LOW);
@@ -3763,42 +3763,42 @@ void PlayerActionCheckCreep( playerinfo_t *playerinfo )
 			}
 		}
 	}
-	
+
 	//Check for a transition to a creeping strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_CREEP_F] && playerinfo->seqcmd[ACMDL_STRAFE_L] && curseq != ASEQ_CSTRAFE_LEFT)
 	{
 		playerinfo->lowerseq = ASEQ_CSTRAFE_LEFT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-	
+
 		return;
 	}
-	 
+
 	if ( playerinfo->seqcmd[ACMDL_CREEP_F] && playerinfo->seqcmd[ACMDL_STRAFE_R] && curseq != ASEQ_CSTRAFE_RIGHT)
 	{
 		playerinfo->lowerseq = ASEQ_CSTRAFE_RIGHT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-	
+
 		return;
 	}
-	
+
 	//Check for a transition to a creeping strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_CREEP_B] && playerinfo->seqcmd[ACMDL_STRAFE_L] && curseq != ASEQ_CSTRAFEB_LEFT)
 	{
 		playerinfo->lowerseq = ASEQ_CSTRAFEB_LEFT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-	
+
 		return;
 	}
-	 
+
 	if ( playerinfo->seqcmd[ACMDL_CREEP_B] && playerinfo->seqcmd[ACMDL_STRAFE_R] && curseq != ASEQ_CSTRAFEB_RIGHT)
 	{
 		playerinfo->lowerseq = ASEQ_CSTRAFEB_RIGHT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-	
+
 		return;
 	}
 
@@ -3853,7 +3853,7 @@ void PlayerActionCheckCreep( playerinfo_t *playerinfo )
 		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo, 0)) )
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
-			
+
 			if(playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID26, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0 );
 			else
@@ -3909,7 +3909,7 @@ void PlayerActionCheckCreep( playerinfo_t *playerinfo )
 			return;
 		}
 	}
-	
+
 	//All else has failed... did we just let go of everthing?
 	if (!playerinfo->seqcmd[ACMDL_FWD] && !playerinfo->seqcmd[ACMDL_BACK])
 	{
@@ -3925,7 +3925,7 @@ void PlayerActionCheckCreep( playerinfo_t *playerinfo )
 void PlayerActionCheckCreepUnStrafe( playerinfo_t *playerinfo )
 {
 	//Player has started running
-	if (playerinfo->buttons & BUTTON_RUN)	
+	if (playerinfo->buttons & BUTTON_RUN)
 	{
 		if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
@@ -4005,7 +4005,7 @@ void PlayerActionCheckCreepUnStrafe( playerinfo_t *playerinfo )
 		playerinfo->lowerseq = ASEQ_CSTRAFE_RIGHT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -4014,7 +4014,7 @@ void PlayerActionCheckCreepUnStrafe( playerinfo_t *playerinfo )
 		playerinfo->lowerseq = ASEQ_CSTRAFE_LEFT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -4091,7 +4091,7 @@ void PlayerActionCheckCreepBackUnStrafe( playerinfo_t *playerinfo )
 		playerinfo->lowerseq = ASEQ_CSTRAFEB_RIGHT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -4100,7 +4100,7 @@ void PlayerActionCheckCreepBackUnStrafe( playerinfo_t *playerinfo )
 		playerinfo->lowerseq = ASEQ_CSTRAFEB_LEFT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -4147,7 +4147,7 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 	if ( (playerinfo->flags & PLAYER_FLAG_COLLISION) && (playerinfo->upperidle) && (playerinfo->seqcmd[ACMDL_FWD]) )
 	{
 		PlayerActionCheckVault(playerinfo, 0);
-		
+
 		if (curseq == ASEQ_VAULT_LOW)
 		{
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_VAULT_LOW);
@@ -4173,19 +4173,19 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_JUMPFWD_WGO);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_BACK])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_JUMPBACK_WGO);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_JUMPLEFT_WGO);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_JUMPRIGHT_WGO);
@@ -4205,25 +4205,25 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CROUCH_WALK_B);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CROUCH_WALK_L);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CROUCH_WALK_R);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_FWD])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CROUCH_WALK_F);
 				return;
 			}
-				
+
 			//All else failed, we just want to crouch to the ground
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CROUCH_GO);
 			return;
@@ -4236,25 +4236,25 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_ROLL_B);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_ROLL_L);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_ROLL_R);
 				return;
 			}
-			
+
 			if (playerinfo->seqcmd[ACMDL_FWD])
 			{
 				PlayerAnimSetLowerSeq(playerinfo,  ASEQ_ROLLDIVEF_W);
 				return;
 			}
-				
+
 			//All else failed, we just want to crouch to the ground
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CROUCH_GO);
 			return;
@@ -4279,11 +4279,11 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 			playerinfo->lowerseq = ASEQ_WSTRAFE_LEFT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 			playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 			return;
 		}
 	}
-    
+
 	//Check for a transition to a walking or running strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_FWD] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
@@ -4302,11 +4302,11 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 			playerinfo->lowerseq = ASEQ_WSTRAFE_RIGHT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 			playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-			
+
 			return;
 		}
 	}
-    
+
 	//Check for a transition to a backward walking or running strafe	[High probability]
 	if ( playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_L] )
 	{
@@ -4325,7 +4325,7 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 			playerinfo->lowerseq = ASEQ_WSTRAFEB_LEFT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 			playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 			return;
 		}
 		return;
@@ -4349,7 +4349,7 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 			playerinfo->lowerseq = ASEQ_WSTRAFEB_RIGHT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 			playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-			
+
 			return;
 		}
 	}
@@ -4386,7 +4386,7 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) )
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
-			
+
 			if(playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID27, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0 );
 			else
@@ -4401,7 +4401,7 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 		PlayerActionUsePuzzle(playerinfo);
 
 		if ( (playerinfo->flags & PLAYER_FLAG_COLLISION) && (playerinfo->upperidle) && (PlayerActionCheckJumpGrab(playerinfo, 0)) )
-		{	
+		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPSTD_GO);
 			return;
 		}
@@ -4457,7 +4457,7 @@ void PlayerActionCheckWalk( playerinfo_t *playerinfo )
 void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo)
 {
 	//Player has started running
-	if (playerinfo->buttons & BUTTON_RUN)	
+	if (playerinfo->buttons & BUTTON_RUN)
 	{
 		if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
@@ -4490,7 +4490,7 @@ void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo)
 		{
 			PlayerActionCheckWalk(playerinfo);
 		}
-		
+
 		//Account for coincidental action
 		PlayerActionCheckWalk(playerinfo);
 		return;
@@ -4534,7 +4534,7 @@ void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo)
 		playerinfo->lowerseq = ASEQ_WSTRAFE_RIGHT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -4543,7 +4543,7 @@ void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo)
 		playerinfo->lowerseq = ASEQ_WSTRAFE_LEFT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -4589,7 +4589,7 @@ void PlayerActionCheckWalkBack( playerinfo_t *playerinfo )
 			playerinfo->lowerseq = ASEQ_WSTRAFEB_LEFT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 			playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 			return;
 		}
 	}
@@ -4608,7 +4608,7 @@ void PlayerActionCheckWalkBack( playerinfo_t *playerinfo )
 			playerinfo->lowerseq = ASEQ_WSTRAFEB_RIGHT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 			playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-			
+
 			return;
 		}
 	}
@@ -4623,7 +4623,7 @@ void PlayerActionCheckWalkBack( playerinfo_t *playerinfo )
 
 void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo)
 {
-	//Still pressing the same way and still 
+	//Still pressing the same way and still
 	if (playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_L] && playerinfo->lowerseq == ASEQ_WSTRAFEB_LEFT)
 	{
 		//Account for coincidental action
@@ -4665,7 +4665,7 @@ void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo)
 		playerinfo->lowerseq = ASEQ_WSTRAFEB_RIGHT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -4674,7 +4674,7 @@ void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo)
 		playerinfo->lowerseq = ASEQ_WSTRAFEB_LEFT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -4711,11 +4711,11 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 	int	curseq = playerinfo->lowerseq;
 
 	//Check for an upper sequence interruption due to a staff attack
-	if ((	playerinfo->seqcmd[ACMDU_ATTACK] && 
-			playerinfo->seqcmd[ACMDL_RUN_F]) &&  
-			(playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) && 
+	if ((	playerinfo->seqcmd[ACMDU_ATTACK] &&
+			playerinfo->seqcmd[ACMDL_RUN_F]) &&
+			(playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
 			(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) &&
-			!(playerinfo->edictflags & FL_CHICKEN))	
+			!(playerinfo->edictflags & FL_CHICKEN))
 	{
 		if (playerinfo->advancedstaff)
 		{
@@ -4738,7 +4738,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 	if ( (playerinfo->flags & PLAYER_FLAG_COLLISION) &&  (playerinfo->upperidle) && (playerinfo->seqcmd[ACMDL_FWD]) )
 	{
 		PlayerActionCheckVault(playerinfo, 0);
-		
+
 		if (curseq == ASEQ_VAULT_LOW)
 		{
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_VAULT_LOW);
@@ -4760,7 +4760,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 			playerinfo->lowerseq = ASEQ_RSTRAFE_LEFT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 			playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 			return;
 		}
 		else
@@ -4769,7 +4769,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 			return;
 		}
 	}
-    
+
 	//Check for a transition to a walking or running strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_FWD] && playerinfo->seqcmd[ACMDL_STRAFE_R] && curseq != ASEQ_RSTRAFE_RIGHT)
 	{
@@ -4778,7 +4778,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 			playerinfo->lowerseq = ASEQ_RSTRAFE_RIGHT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 			playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-			
+
 			return;
 		}
 		else
@@ -4825,7 +4825,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 			}
 		}
 	}
-    
+
 	//Check for a sudden transition to a walk	[Low probability]
 	if (playerinfo->seqcmd[ACMDL_WALK_F])
 	{
@@ -4851,13 +4851,13 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_ROLL_R);
 			return;
 		}
-		else	
+		else
 		{
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_ROLLDIVEF_W);
 			return;
 		}
 	}
-	
+
 	//Handle an action key press	[Low probability]
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
@@ -4865,7 +4865,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) )
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
-			
+
 			if(playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID28,	playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
 			else
@@ -4909,7 +4909,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 	{
 		if (playerinfo->seqcmd[ACMDL_RUN_B])
 		{
-			if (!(playerinfo->seqcmd[ACMDU_ATTACK]) && playerinfo->upperidle)			
+			if (!(playerinfo->seqcmd[ACMDU_ATTACK]) && playerinfo->upperidle)
 			{
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPSPRINGBGO);
 				return;
@@ -4944,7 +4944,7 @@ void PlayerActionCheckRunUnStrafe(playerinfo_t *playerinfo)
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSTRAFE_LEFT);
 			return;
 		}
-		
+
 		if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSTRAFE_RIGHT);
@@ -4952,7 +4952,7 @@ void PlayerActionCheckRunUnStrafe(playerinfo_t *playerinfo)
 		}
 	}
 
-	//Still pressing the same way and still 
+	//Still pressing the same way and still
 	if (playerinfo->seqcmd[ACMDL_FWD] && playerinfo->seqcmd[ACMDL_STRAFE_L] && playerinfo->lowerseq == ASEQ_RSTRAFE_LEFT)
 	{
 		//Account for coincidental action
@@ -5004,7 +5004,7 @@ void PlayerActionCheckRunUnStrafe(playerinfo_t *playerinfo)
 		playerinfo->lowerseq = ASEQ_RSTRAFE_RIGHT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -5013,7 +5013,7 @@ void PlayerActionCheckRunUnStrafe(playerinfo_t *playerinfo)
 		playerinfo->lowerseq = ASEQ_RSTRAFE_LEFT;
 		playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
 		playerinfo->lowerframeptr = playerinfo->lowermove->frame + playerinfo->lowerframe;
-		
+
 		return;
 	}
 
@@ -5067,7 +5067,7 @@ PLAYER_API void PlayerInterruptAction(playerinfo_t *playerinfo)
 	else
 	{
 		playerinfo->G_Sound(SND_PRED_ID31,
-							playerinfo->leveltime,	
+							playerinfo->leveltime,
 							playerinfo->self,
 							CHAN_WEAPON,
 							playerinfo->G_SoundIndex("misc/null.wav"),

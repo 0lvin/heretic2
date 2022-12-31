@@ -1,4 +1,10 @@
 //
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
+//
 // l3dslib.h: header file for loading triangles from a 3DS triangle file
 //
 void DefaultNodesList(mesh_node_t **nodesList, int *num_mesh_nodes, int *numtriangles);

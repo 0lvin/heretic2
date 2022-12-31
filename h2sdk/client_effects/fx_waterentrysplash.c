@@ -42,7 +42,7 @@ static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self,cent
 	// Have enough ripples been created yet? If not, create one, else free myself.
 
 	if(Self->NoOfAnimFrames>0)
-	{ 
+	{
 		// Create a water entry ripple.
 
 		EntryRipple=ClientEntity_new(FX_WATER_ENTRYSPLASH,
@@ -69,9 +69,9 @@ static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self,cent
 			EntryRipple->r.scale=SCALE;
 			EntryRipple->d_scale=1.0;
 		}
-		
-		AddEffect(NULL,EntryRipple);	
-		
+
+		AddEffect(NULL,EntryRipple);
+
 		Self->NoOfAnimFrames--;
 		return(true);
 	}
@@ -95,7 +95,7 @@ static void WaterEntryParticles(struct client_entity_s *Owner,float Radius,int N
 	DeltaTheta=(2*M_PI)/NumParticles;
 
 	for(Theta=0.0;Theta<(2*M_PI);Theta+=DeltaTheta)
-	{		
+	{
 		color.c=0xffffffff;
 		color.a = irand(128, 200);
 
@@ -114,7 +114,7 @@ static void WaterEntryParticles(struct client_entity_s *Owner,float Radius,int N
 		Particle->acceleration[2]=-PARTICLE_GRAVITY*3.5;
 
 		Particle->scale=flrand(0.5, 0.7);
-		Particle->d_alpha=-255.0;		
+		Particle->d_alpha=-255.0;
 		Particle->d_scale=-0.25;
 
 		AddParticleToList(Owner,Particle);
@@ -154,13 +154,13 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 	// Create a water entry ripple THINKER that will create the actual water entry ripples.
 
 	EntrySplashThinker=ClientEntity_new(Type,Flags,Origin,Dir,200);
-	
+
 	EntrySplashThinker->flags|=CEF_NO_DRAW;
 	EntrySplashThinker->NoOfAnimFrames=(int)NoOfRipples;
 	EntrySplashThinker->Update=FXWaterEntrySplashThinkerThink;
 	EntrySplashThinker->d_alpha=-0.8-(0.2-(0.2*((1.0/127.0)*(SplashSize&127))));
 
-	AddEffect(NULL,EntrySplashThinker);	
+	AddEffect(NULL,EntrySplashThinker);
 
 	// Create water entry particle splash if required.
 
@@ -175,7 +175,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 			splash->r.flags = RF_TRANSLUCENT;
 			splash->r.frame = 1;
 			splash->radius = 2.0;
-			splash->d_alpha=-2.0;		
+			splash->d_alpha=-2.0;
 			splash->d_scale=1.0;
 
 			splash->origin[0]=SPLASH_RADIUS*cos(Theta);
@@ -202,7 +202,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 			splash->r.flags = RF_TRANSLUCENT;
 			splash->r.frame = 1;
 			splash->radius = 2.0;
-			splash->d_alpha=-1.0;		
+			splash->d_alpha=-1.0;
 			splash->d_scale=-0.5;
 
 			splash->origin[0]=SPLASH_RADIUS*cos(Theta);
@@ -231,15 +231,15 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		splash->alpha=0.6;
 		splash->d_scale=2.0;
 		splash->d_alpha=EntrySplashThinker->d_alpha;
-		
-		AddEffect(NULL,splash);	
+
+		AddEffect(NULL,splash);
 	}
 	else if (Flags & CEF_FLAG7 && r_detail->value >= DETAIL_HIGH && Dir[2] >= 0.99)	// Horizontal splash
 	{	// Add little splooshies
 		int parts, i;
 		client_particle_t *part;
 		paletteRGBA_t color={0xff,0xff,0xff,0xff};
-		
+
 		// Create an extra, centered water entry ripple.
 		splash=ClientEntity_new(FX_WATER_ENTRYSPLASH, Flags&(~CEF_OWNERS_ORIGIN), Origin, Dir, 1200);
 
@@ -250,8 +250,8 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		splash->alpha=0.6;
 		splash->d_scale=1.0;
 		splash->d_alpha=EntrySplashThinker->d_alpha;
-		
-		AddEffect(NULL,splash);	
+
+		AddEffect(NULL,splash);
 
 		parts = SplashSize / 12;
 

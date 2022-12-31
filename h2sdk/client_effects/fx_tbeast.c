@@ -31,18 +31,18 @@ void PreCacheTB(void)
 static qboolean FXTBDustPuffThink(client_entity_t *DustPuff, centity_t *owner)
 {
 	DustPuff->flags &= ~CEF_DISAPPEARED;
-	
+
 	if (DustPuff->alpha <= 0)
 		return false;
-	
+
 	return(true);
 }
 
 void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 {
-	client_entity_t		*DustPuff;	
+	client_entity_t		*DustPuff;
 	vec3_t				angles, forward;
-	
+
 	VectorSet(angles, 0, inangle, 0);
 	DustPuff = ClientEntity_new(type, flags, origin, NULL, 100);
 
@@ -59,14 +59,14 @@ void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 	DustPuff->d_scale = 0.75F;
 	DustPuff->d_alpha = -1.0F;
 
-	AddEffect(NULL, DustPuff); 
+	AddEffect(NULL, DustPuff);
 }
 
 
 void FXTBDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	int			i;
-	
+
 	for (i = 0; i < 8; i++)
 	{
 		FXTBDustPuff(type,flags,origin, i * flrand(30, 60));
@@ -89,7 +89,7 @@ void FXTBEffects(centity_t *owner,int type,int flags, vec3_t org)
 	paletteRGBA_t	LightColor={0,0,255,255};
 	vec3_t			vel;
 	byte			fx_index;
-	
+
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_TB_EFFECTS].formatString, &fx_index, &vel);//fixme- make this 1 dir and 1 float
 
 	switch (fx_index)

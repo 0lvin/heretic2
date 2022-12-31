@@ -108,8 +108,8 @@ void FXPlagueMistExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	spawner->SpawnInfo = mist_life;
 
 	if(Owner)
-		AddEffect(Owner, spawner); 
+		AddEffect(Owner, spawner);
 	else
-		AddEffect(NULL, spawner); 
+		AddEffect(NULL, spawner);
 }
 // end

@@ -9,12 +9,12 @@
 //	AI :
 //
 //	STAND1		: Looking straight ahead
-//	
+//
 //	WALK1       : a normal straight line
 //  WALK2       : another normal straight line
 //
-//	MELEE1      : Attack 
-//	MELEE2      : Attack 
+//	MELEE1      : Attack
+//	MELEE2      : Attack
 //
 //  RUNATTACK   : Running and swinging
 //	RUN1        : chasing an enemy straight ahead
@@ -74,22 +74,22 @@ static animmove_t *animations[ NUM_ANIMS] =
 	&insect_move_knock1_end,
 	&insect_move_twitch,
 
-	// Cinematic 
+	// Cinematic
 	&insect_move_c_action1,
 	&insect_move_c_action2,
 	&insect_move_c_action3,
 	&insect_move_c_action4,
-	&insect_move_c_attack1, 
-	&insect_move_c_attack2, 
-	&insect_move_c_attack3, 
-	&insect_move_c_backpedal, 
-	&insect_move_c_death1, 
+	&insect_move_c_attack1,
+	&insect_move_c_attack2,
+	&insect_move_c_attack3,
+	&insect_move_c_backpedal,
+	&insect_move_c_death1,
 	&insect_move_c_idle1,
 	&insect_move_c_idle2,
 	&insect_move_c_idle3,
-	&insect_move_c_pain1, 
-	&insect_move_c_run, 
-	&insect_move_c_walk, 
+	&insect_move_c_pain1,
+	&insect_move_c_run,
+	&insect_move_c_walk,
 };
 
 static int Sounds[NUM_SOUNDS];
@@ -111,7 +111,7 @@ void insect_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -178,7 +178,7 @@ void insect_c_anims(edict_t *self, G_Message_t *msg)
 		default:
 			self = self;
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -261,17 +261,17 @@ void insectCut (edict_t *self, float attacktype)
 		gi.CreateEffect(NULL, FX_SPARKS, 0, trace.endpos, "d", hitangles);
 		gi.sound (self, CHAN_AUTO, Sounds[SND_SWIPEHITW], 1, ATTN_NORM, 0);
 //		gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/staffhitwall.wav"), 1, ATTN_NORM, 0);
-		return;		
+		return;
 	}
 
 	//hit someone, cut em!
-	
+
 	VectorSubtract(pos2, pos1, dir);
 	gi.sound (self, CHAN_AUTO, Sounds[SND_SWIPEHITF], 1, ATTN_NORM, 0);
 //	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/staffhit.wav"), 1, ATTN_NORM, 0);
 
 	T_Damage (trace.ent, self, self, dir, trace.endpos, vec3_origin, damage, damage*2, DAMAGE_DISMEMBER,MOD_DIED);
-	
+
 /*	gi.CreateEffect(&self->s,
 		FX_I_EFFECTS,
 		0,
@@ -379,8 +379,8 @@ void insect_flyback_move(edict_t *self)
 
 	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
 
-	if ( (	trace.fraction < 1 || trace.startsolid || trace.allsolid ) && 
-			self->curAnimID != ANIM_KNOCK1_END && 
+	if ( (	trace.fraction < 1 || trace.startsolid || trace.allsolid ) &&
+			self->curAnimID != ANIM_KNOCK1_END &&
 			self->curAnimID != ANIM_KNOCK1_GO)
 	{
 		self->elasticity = 1.1;
@@ -399,7 +399,7 @@ void insect_death(edict_t *self, G_Message_t *msg)
 
 	self->msgHandler = DeadMsgHandler;
 
-	if(self->deadflag == DEAD_DEAD) //Dead but still being hit	
+	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
 	gi.RemoveEffects(&self->s, FX_I_EFFECTS);
@@ -464,7 +464,7 @@ void insectdeathsqueal (edict_t *self)
 -------------------------------------------------------------------------*/
 void insectgrowl (edict_t *self)
 {
-	int chance;	
+	int chance;
 
 	chance = irand(0, 10);
 
@@ -474,14 +474,14 @@ void insectgrowl (edict_t *self)
 		{
 			if(self->mass == MASS_TC_MALE)
 				gi.sound (self, CHAN_WEAPON, Sounds[SND_GROWLM1], 1, ATTN_IDLE, 0);
-			else 
+			else
 				gi.sound (self, CHAN_WEAPON, Sounds[SND_GROWLF1], 1, ATTN_IDLE, 0);
 		}
-		else 
+		else
 		{
 			if(self->mass == MASS_TC_MALE)
 				gi.sound (self, CHAN_WEAPON, Sounds[SND_GROWLM2], 1, ATTN_IDLE, 0);
-			else 
+			else
 				gi.sound (self, CHAN_WEAPON, Sounds[SND_GROWLF2], 1, ATTN_IDLE, 0);
 		}
 	}
@@ -517,7 +517,7 @@ void insect_melee(edict_t *self, G_Message_t *msg)
 		if(irand(0, 1)&&self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW)
 			SetAnim(self, ANIM_SPEAR);
 		else// if(self->s.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
-			SetAnim(self, ANIM_SWORD);	
+			SetAnim(self, ANIM_SWORD);
 	}
 	else//if no staff, diff spell?
 		SetAnim(self, ANIM_SPELL);
@@ -558,7 +558,7 @@ void insect_melee(edict_t *self, G_Message_t *msg)
 					return;
 				}
 			}
-			SetAnim(self, ANIM_SWORD);	
+			SetAnim(self, ANIM_SWORD);
 		}
 		else//too close for female, back away(maybe attack anyway?)
 		{
@@ -593,7 +593,7 @@ void insect_missile(edict_t *self, G_Message_t *msg)
 					return;
 				}
 			}
-			SetAnim(self, ANIM_SPEAR);	
+			SetAnim(self, ANIM_SPEAR);
 		}
 		else
 		{
@@ -651,7 +651,7 @@ void insectSpell(edict_t *self, float whichspell)
 
 	if (!(self->spawnflags & MSF_INSECT_CINEMATIC))
 		ai_charge(self, 0);
-	
+
 	AngleVectors(self->s.angles, forward, right, NULL);
 	switch((int)whichspell)
 	{
@@ -733,21 +733,21 @@ void insectReleaseSpell (edict_t *self)
 int Bit_for_MeshNode_tc [16] =
 {
 	BIT_MASTER,
-	BIT_LLEG,			
-	BIT_HEAD,			
-	BIT_LMANDIBLE,		
-	BIT_RMANDIBLE,		
-	BIT_CROWN,			
-	BIT_L2NDARM,	
-	BIT_SPEAR,		
-	BIT_FEMHAND,	
-	BIT_SWORD,	
-	BIT_STAFF,		
-	BIT_GEM,	
+	BIT_LLEG,
+	BIT_HEAD,
+	BIT_LMANDIBLE,
+	BIT_RMANDIBLE,
+	BIT_CROWN,
+	BIT_L2NDARM,
+	BIT_SPEAR,
+	BIT_FEMHAND,
+	BIT_SWORD,
+	BIT_STAFF,
+	BIT_GEM,
 	BIT_R2NDARM,
-	BIT_RWINGS,	
-	BIT_LWINGS,	
-	BIT_RLEG		
+	BIT_RWINGS,
+	BIT_LWINGS,
+	BIT_RLEG
 };
 
 qboolean canthrownode_tc (edict_t *self, int BP, int *throw_nodes)
@@ -940,7 +940,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(flrand(0,self->health)<damage*0.5)
 				insect_dropweapon (self, 0);
-			self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 			break;
 		case hl_ArmUpperLeft:
@@ -948,7 +948,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 			{//female
 				if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 					return;
-				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				return;
 			}
@@ -958,7 +958,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					damage*=1.5;//greater chance to cut off if previously damaged
 				if(flrand(0,self->health)<damage*0.4)
 					insect_dropweapon (self, BIT_SWORD);
-				self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__L2NDARM].skin = self->s.skinnum+1;
 			}
 			break;
@@ -967,7 +967,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 			{//female
 				if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 					return;
-				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				return;
 			}
@@ -995,7 +995,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				{
 					if(flrand(0,self->health)<damage*0.4)
 						insect_dropweapon (self, BIT_SPEAR);
-					self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__L2NDARM].skin = self->s.skinnum+1;
 				}
 			}
@@ -1007,7 +1007,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					damage*=1.5;//greater chance to cut off if previously damaged
 				else
 				{
-					self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				}
 				if(flrand(0,self->health)<damage*0.4)
@@ -1017,7 +1017,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 			{
 				if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 					return;
-				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				return;
 			}
@@ -1030,7 +1030,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					damage*=1.5;//greater chance to cut off if previously damaged
 				else
 				{
-					self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				}
 				if(flrand(0,self->health)<damage*0.4)
@@ -1060,7 +1060,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				{
 					if(flrand(0,self->health)<damage*0.4)
 						insect_dropweapon (self, BIT_SPEAR);
-					self->s.fmnodeinfo[MESH__R2NDARM].flags |= FMNI_USE_SKIN;			
+					self->s.fmnodeinfo[MESH__R2NDARM].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__R2NDARM].skin = self->s.skinnum+1;
 				}
 			}
@@ -1072,7 +1072,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 			{//still alive
 				if(self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
 				break;
 			}
@@ -1150,7 +1150,7 @@ void insect_pain(edict_t *self, G_Message_t *msg)
 {
 	int				temp, damage;
 	int				force_damage;
-	
+
 	ParseMsgParms(msg, "eeiii", &temp, &temp, &force_damage, &damage, &temp);
 
 	if(!force_damage&&flrand(0,self->health)>damage)
@@ -1237,7 +1237,7 @@ void insect_pause (edict_t *self)
 			{
 				QPostMessage(self, MSG_RUN,PRI_DIRECTIVE, NULL);
 			}
-			else	// Close enough to Attack 
+			else	// Close enough to Attack
 			{
 				QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 			}
@@ -1246,8 +1246,8 @@ void insect_pause (edict_t *self)
 	else
 	{
 		//gi.dprintf("plageElf_pause:	Using High Level Functionality\n");
-		
-		
+
+
 		if(self->enemy)
 		{
 			if(self->enemy->classID == CID_TBEAST)
@@ -1297,11 +1297,11 @@ void insect_pause (edict_t *self)
 			SetAnim(self, ANIM_DELAY);
 			break;
 
-		
+
 		case AI_MOOD_WANDER:
 			QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 			break;
-		
+
 		case AI_MOOD_WALK:
 			QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 			break;
@@ -1388,11 +1388,11 @@ void insectsqueal (edict_t *self)
 	insect_stand
 -------------------------------------------------------------------------*/
 void insect_stand(edict_t *self, G_Message_t *msg)
-{	
+{
 	if (self->ai_mood == AI_MOOD_DELAY)
 		SetAnim(self, ANIM_DELAY);
 	else
-		SetAnim(self, ANIM_IDLE);	
+		SetAnim(self, ANIM_IDLE);
 
 	return;
 }
@@ -1405,7 +1405,7 @@ void insect_walk(edict_t *self, G_Message_t *msg)
 	if(self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
 	else
-		SetAnim(self, ANIM_WALK);	
+		SetAnim(self, ANIM_WALK);
 }
 
 
@@ -1426,10 +1426,10 @@ void insect_walk(edict_t *self, G_Message_t *msg)
 
 		if (zdiff >= 0 ) // On top
 		{
-			other->velocity[0] = flrand(75.0, 100.0);			
+			other->velocity[0] = flrand(75.0, 100.0);
 			other->velocity[1] = flrand(75.0, 100.0);
 			other->velocity[2] += 101;
-	
+
 			if (irand(0,1))
 				other->velocity[0] *= -1;
 
@@ -1547,27 +1547,27 @@ void TcheckrikStaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	//note that the name is different in the path
 	resInfo.modelIndex = gi.modelindex("models/monsters/tcheckrik/male/tris.fm");
 
 	Sounds[SND_PAINM]=gi.soundindex("monsters/insect/painm.wav");
-	Sounds[SND_PAINF]=gi.soundindex("monsters/insect/painf.wav");	
-	Sounds[SND_DIEM]=gi.soundindex("monsters/insect/deathm.wav");	
-	Sounds[SND_DIEF]=gi.soundindex("monsters/insect/deathf.wav");	
+	Sounds[SND_PAINF]=gi.soundindex("monsters/insect/painf.wav");
+	Sounds[SND_DIEM]=gi.soundindex("monsters/insect/deathm.wav");
+	Sounds[SND_DIEF]=gi.soundindex("monsters/insect/deathf.wav");
 	Sounds[SND_GIB]=gi.soundindex("monsters/insect/gib.wav");
-	Sounds[SND_SWIPE]=gi.soundindex("monsters/insect/swipe.wav");	
-	Sounds[SND_SWIPEHITF]=gi.soundindex("monsters/plagueelf/hookhit.wav");	
-	Sounds[SND_SWIPEHITW]=gi.soundindex("monsters/insect/swipehitw.wav");	
-	Sounds[SND_SPELLM]=gi.soundindex("monsters/insect/spellm.wav");	
-	Sounds[SND_SPELLM2]=gi.soundindex("monsters/insect/spellm2.wav");	
-	Sounds[SND_SPLPWRUPF]=gi.soundindex("monsters/insect/splpwrupf.wav");	
-	Sounds[SND_SPELLF]=gi.soundindex("monsters/insect/spellf.wav");	
-	Sounds[SND_GROWLM1]=gi.soundindex("monsters/insect/growlm1.wav");	
-	Sounds[SND_GROWLM2] = gi.soundindex ("monsters/insect/growlm2.wav");	
-	Sounds[SND_GROWLF1]=gi.soundindex("monsters/insect/growlf1.wav");	
-	Sounds[SND_GROWLF2] = gi.soundindex ("monsters/insect/growlf2.wav");	
-	Sounds[SND_THUD] = gi.soundindex ("monsters/insect/thud.wav");	
+	Sounds[SND_SWIPE]=gi.soundindex("monsters/insect/swipe.wav");
+	Sounds[SND_SWIPEHITF]=gi.soundindex("monsters/plagueelf/hookhit.wav");
+	Sounds[SND_SWIPEHITW]=gi.soundindex("monsters/insect/swipehitw.wav");
+	Sounds[SND_SPELLM]=gi.soundindex("monsters/insect/spellm.wav");
+	Sounds[SND_SPELLM2]=gi.soundindex("monsters/insect/spellm2.wav");
+	Sounds[SND_SPLPWRUPF]=gi.soundindex("monsters/insect/splpwrupf.wav");
+	Sounds[SND_SPELLF]=gi.soundindex("monsters/insect/spellf.wav");
+	Sounds[SND_GROWLM1]=gi.soundindex("monsters/insect/growlm1.wav");
+	Sounds[SND_GROWLM2] = gi.soundindex ("monsters/insect/growlm2.wav");
+	Sounds[SND_GROWLF1]=gi.soundindex("monsters/insect/growlf1.wav");
+	Sounds[SND_GROWLF2] = gi.soundindex ("monsters/insect/growlf2.wav");
+	Sounds[SND_THUD] = gi.soundindex ("monsters/insect/thud.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = Sounds;
@@ -1577,7 +1577,7 @@ void TcheckrikStaticsInit()
 
 /*QUAKED monster_tcheckrik_male (1 .5 0) (-16 -16 -32) (16 16 32) AMBUSH ASLEEP WALKING CINEMATIC BEAST_FODDER YELLOWJACKET 64 FIXED WANDER LEAD STALK COWARD EXTRA1 EXTRA2 EXTRA3 EXTRA4
 
-The insect 
+The insect
 
 AMBUSH - Will not be woken up by other monsters or shots from player
 
@@ -1646,7 +1646,7 @@ void SP_monster_tcheckrik_male (edict_t *self)
 
 	if (!monster_start(self))
 		return;					// Failed initialization
-		
+
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_TCHECKRIK;
 	self->think = walkmonster_start_go;
@@ -1663,15 +1663,15 @@ void SP_monster_tcheckrik_male (edict_t *self)
 
 	self->movetype = PHYSICSTYPE_STEP;
 	VectorClear(self->knockbackvel);
-	
+
 	self->solid=SOLID_BBOX;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 //	VectorSet (self->mins, -16, -16, -32);
-//	VectorSet (self->maxs, 16, 16, 32);	
+//	VectorSet (self->maxs, 16, 16, 32);
 	self->viewheight = self->maxs[2]*0.8;
-	
+
 	self->touch = M_Touch;
 
 	self->s.modelindex = gi.modelindex("models/monsters/tcheckrik/male/tris.fm");
@@ -1700,7 +1700,7 @@ void SP_monster_tcheckrik_male (edict_t *self)
 
 	if(self->spawnflags & MSF_INSECT_BEAST_FODDER)
 		self->s.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;//?
-	
+
 	//FIXME (somewhere: otherenemy should be more than just *one* kind
 	self->monsterinfo.otherenemyname = "monster_rat";
 
@@ -1741,7 +1741,7 @@ void SP_monster_tcheckrik_male (edict_t *self)
 
 /*QUAKED monster_tcheckrik_female (1 .5 0) (-16 -16 -32) (16 16 32) AMBUSH ASLEEP WALKING CINEMATIC 16 ALTERNATE 64 FIXED WANDER MELEE_LEAD STALK COWARD EXTRA1 EXTRA2 EXTRA3 EXTRA4
 
-The insect 
+The insect
 
 AMBUSH - Will not be woken up by other monsters or shots from player
 
@@ -1807,7 +1807,7 @@ void SP_monster_tcheckrik_female (edict_t *self)
 
 	if (!monster_start(self))
 		return;					// Failed initialization
-		
+
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_TCHECKRIK;
 	self->think = walkmonster_start_go;
@@ -1824,19 +1824,19 @@ void SP_monster_tcheckrik_female (edict_t *self)
 
 	self->movetype = PHYSICSTYPE_STEP;
 	VectorClear(self->knockbackvel);
-	
+
 	self->solid=SOLID_BBOX;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 	self->viewheight = self->maxs[2]*0.4;
-	
+
 	self->touch = M_Touch;
 
 	self->s.modelindex = gi.modelindex("models/monsters/tcheckrik/female/tris.fm");
 
 	// All skins are even numbers, pain skins are skin+1.
-	self->s.skinnum = 0;	
+	self->s.skinnum = 0;
 //	self->s.skinnum = 2;
 
 	if (!self->s.scale)
@@ -1854,9 +1854,9 @@ void SP_monster_tcheckrik_female (edict_t *self)
 	self->s.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;//?
 //	self->s.fmnodeinfo[MESH__SWORD].flags |= FMNI_NO_DRAW;//?
 	self->s.fmnodeinfo[MESH__SPEAR].flags |= FMNI_NO_DRAW;//?
-	
+
 //	self->s.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
-	
+
 	//FIXME (somewhere: otherenemy should be more than just *one* kind
 	self->monsterinfo.otherenemyname = "monster_rat";
 
@@ -1883,7 +1883,7 @@ void SP_monster_tcheckrik_female (edict_t *self)
 					"bv",
 					FX_I_RREFS,
 					vec3_origin);
-	
+
 	self->svflags |= SVF_WAIT_NOTSOLID;
 
 	if(self->spawnflags & MSF_INSECT_ALTERNATE)
