@@ -3,7 +3,7 @@
 
 // qcommon.h -- definitions common between client and server, but not game.dll
 
-#include "../game/q_shared.h"
+#include "../q2game/q_shared.h"
 
 
 #define	BASEDIRNAME	"base"
