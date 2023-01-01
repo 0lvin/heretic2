@@ -55,15 +55,6 @@ QUAKE2_DIR=/grog/Projects/Quake2Master
 
 BUILD_DEBUG_DIR=Debug
 BUILD_RELEASE_DIR=Release
-CLIENT_DIR=$(MOUNT_DIR)/client
-SERVER_DIR=$(MOUNT_DIR)/server
-REF_SOFT_DIR=$(MOUNT_DIR)/ref_soft
-REF_GL_DIR=$(MOUNT_DIR)/ref_gl
-COMMON_DIR=$(MOUNT_DIR)/qcommon
-LINUX_DIR=$(MOUNT_DIR)/linux
-Q2GAME_DIR=$(MOUNT_DIR)/q2game
-NULL_DIR=$(MOUNT_DIR)/null
-CTF_DIR=$(MOUNT_DIR)/ctf
 
 CC ?= gcc
 BASE_CFLAGS=-Dstricmp=strcasecmp
@@ -114,7 +105,7 @@ build_debug:
 		$(BUILD_DEBUG_DIR)/client \
 		$(BUILD_DEBUG_DIR)/null \
 		$(BUILD_DEBUG_DIR)/linux \
-		$(BUILD_DEBUG_DIR)/common \
+		$(BUILD_DEBUG_DIR)/qcommon \
 		$(BUILD_DEBUG_DIR)/server \
 		$(BUILD_DEBUG_DIR)/ded \
 		$(BUILD_DEBUG_DIR)/ref_soft \
@@ -128,7 +119,7 @@ build_release:
 		$(BUILD_RELEASE_DIR)/client \
 		$(BUILD_RELEASE_DIR)/null \
 		$(BUILD_RELEASE_DIR)/linux \
-		$(BUILD_RELEASE_DIR)/common \
+		$(BUILD_RELEASE_DIR)/qcommon \
 		$(BUILD_RELEASE_DIR)/server \
 		$(BUILD_RELEASE_DIR)/ded \
 		$(BUILD_RELEASE_DIR)/ref_soft \
@@ -145,31 +136,31 @@ targets: $(TARGETS)
 # COMPILE
 #############################################################################
 
-$(BUILDDIR)/client/%.o :          $(CLIENT_DIR)/%.c
+$(BUILDDIR)/client/%.o :          $(MOUNT_DIR)/client/%.c
 	$(DO_CC)
 
-$(BUILDDIR)/q2game/%.o :            $(Q2GAME_DIR)/%.c
+$(BUILDDIR)/q2game/%.o :          $(MOUNT_DIR)/q2game/%.c
 	$(DO_SHLIB_CC)
 
-$(BUILDDIR)/common/%.o :          $(COMMON_DIR)/%.c
+$(BUILDDIR)/qcommon/%.o :         $(MOUNT_DIR)/qcommon/%.c
+	$(DO_SHLIB_CC)
+
+$(BUILDDIR)/server/%.o :          $(MOUNT_DIR)/server/%.c
 	$(DO_CC)
 
-$(BUILDDIR)/server/%.o :          $(SERVER_DIR)/%.c
-	$(DO_CC)
-
-$(BUILDDIR)/ctf/%.o :             $(CTF_DIR)/%.c
+$(BUILDDIR)/ctf/%.o :             $(MOUNT_DIR)/ctf/%.c
 	$(DO_SHLIB_CC)
 
-$(BUILDDIR)/ref_soft/%.o :        $(REF_SOFT_DIR)/%.c
+$(BUILDDIR)/ref_soft/%.o :        $(MOUNT_DIR)/ref_soft/%.c
 	$(DO_SHLIB_CC)
 
-$(BUILDDIR)/ref_gl/%.o :          $(REF_GL_DIR)/%.c
+$(BUILDDIR)/ref_gl/%.o :          $(MOUNT_DIR)/ref_gl/%.c
 	$(DO_GL_SHLIB_CC)
 
-$(BUILDDIR)/linux/%.o :           $(LINUX_DIR)/%.c
+$(BUILDDIR)/linux/%.o :           $(MOUNT_DIR)/linux/%.c
 	$(DO_SHLIB_CC)
 
-$(BUILDDIR)/null/%.o :            $(NULL_DIR)/%.c
+$(BUILDDIR)/null/%.o :            $(MOUNT_DIR)/null/%.c
 	$(DO_CC)
 
 #############################################################################
@@ -198,14 +189,14 @@ QUAKE2_OBJS = \
 	$(BUILDDIR)/client/qmenu.o \
 	$(BUILDDIR)/q2game/m_flash.o \
 	\
-	$(BUILDDIR)/common/cmd.o \
-	$(BUILDDIR)/common/cmodel.o \
-	$(BUILDDIR)/common/common.o \
-	$(BUILDDIR)/common/crc.o \
-	$(BUILDDIR)/common/cvar.o \
-	$(BUILDDIR)/common/files.o \
-	$(BUILDDIR)/common/md4.o \
-	$(BUILDDIR)/common/net_chan.o \
+	$(BUILDDIR)/qcommon/cmd.o \
+	$(BUILDDIR)/qcommon/cmodel.o \
+	$(BUILDDIR)/qcommon/common.o \
+	$(BUILDDIR)/qcommon/crc.o \
+	$(BUILDDIR)/qcommon/cvar.o \
+	$(BUILDDIR)/qcommon/files.o \
+	$(BUILDDIR)/qcommon/md4.o \
+	$(BUILDDIR)/qcommon/net_chan.o \
 	\
 	$(BUILDDIR)/server/sv_ccmds.o \
 	$(BUILDDIR)/server/sv_ents.o \
@@ -225,8 +216,8 @@ QUAKE2_OBJS = \
 	$(BUILDDIR)/linux/glob.o \
 	$(BUILDDIR)/linux/net_udp.o \
 	\
-	$(BUILDDIR)/q2game/q_shared.o \
-	$(BUILDDIR)/common/pmove.o
+	$(BUILDDIR)/qcommon/q_shared.o \
+	$(BUILDDIR)/qcommon/pmove.o
 
 $(BUILDDIR)/quake2 : $(QUAKE2_OBJS) $(QUAKE2_AS_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(QUAKE2_OBJS) $(LDFLAGS)
@@ -237,14 +228,14 @@ $(BUILDDIR)/quake2 : $(QUAKE2_OBJS) $(QUAKE2_AS_OBJS)
 
 Q2DED_OBJS = \
 	\
-	$(BUILDDIR)/common/cmd.o \
-	$(BUILDDIR)/common/cmodel.o \
+	$(BUILDDIR)/qcommon/cmd.o \
+	$(BUILDDIR)/qcommon/cmodel.o \
 	$(BUILDDIR)/ded/common.o \
-	$(BUILDDIR)/common/crc.o \
-	$(BUILDDIR)/common/cvar.o \
-	$(BUILDDIR)/common/files.o \
-	$(BUILDDIR)/common/md4.o \
-	$(BUILDDIR)/common/net_chan.o \
+	$(BUILDDIR)/qcommon/crc.o \
+	$(BUILDDIR)/qcommon/cvar.o \
+	$(BUILDDIR)/qcommon/files.o \
+	$(BUILDDIR)/qcommon/md4.o \
+	$(BUILDDIR)/qcommon/net_chan.o \
 	\
 	$(BUILDDIR)/server/sv_ccmds.o \
 	$(BUILDDIR)/server/sv_ents.o \
@@ -260,8 +251,8 @@ Q2DED_OBJS = \
 	$(BUILDDIR)/linux/glob.o \
 	$(BUILDDIR)/linux/net_udp.o \
 	\
-	$(BUILDDIR)/q2game/q_shared.o \
-	$(BUILDDIR)/common/pmove.o \
+	$(BUILDDIR)/qcommon/q_shared.o \
+	$(BUILDDIR)/qcommon/pmove.o \
 	\
 	$(BUILDDIR)/null/cl_null.o \
 	$(BUILDDIR)/null/cd_null.o
@@ -270,10 +261,10 @@ $(BUILDDIR)/q2ded : $(Q2DED_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(Q2DED_OBJS) $(LDFLAGS)
 
 # dedicated
-$(BUILDDIR)/ded/common.o :     $(COMMON_DIR)/common.c
+$(BUILDDIR)/ded/common.o :     $(MOUNT_DIR)/qcommon/common.c
 	$(DO_CC) -DDEDICATED_ONLY
 
-$(BUILDDIR)/ded/sys_linux.o :  $(LINUX_DIR)/sys_linux.c
+$(BUILDDIR)/ded/sys_linux.o :  $(MOUNT_DIR)/linux/sys_linux.c
 	$(DO_CC) -DDEDICATED_ONLY
 
 #############################################################################
@@ -281,7 +272,7 @@ $(BUILDDIR)/ded/sys_linux.o :  $(LINUX_DIR)/sys_linux.c
 #############################################################################
 
 Q2GAME_OBJS = \
-	$(BUILDDIR)/q2game/q_shared.o \
+	$(BUILDDIR)/qcommon/q_shared.o \
 	$(BUILDDIR)/q2game/g_ai.o \
 	$(BUILDDIR)/q2game/p_client.o \
 	$(BUILDDIR)/q2game/g_cmds.o \
@@ -363,7 +354,7 @@ CTF_OBJS = \
 	$(BUILDDIR)/ctf/p_trail.o \
 	$(BUILDDIR)/ctf/p_view.o \
 	$(BUILDDIR)/ctf/p_weapon.o \
-	$(BUILDDIR)/ctf/q_shared.o
+	$(BUILDDIR)/qcommon/q_shared.o
 
 $(BUILDDIR)/ctf/game.$(SHLIBEXT) : $(CTF_OBJS)
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(CTF_OBJS)
@@ -391,7 +382,7 @@ REF_SOFT_OBJS = \
 	$(BUILDDIR)/ref_soft/r_sprite.o \
 	$(BUILDDIR)/ref_soft/r_surf.o \
 	\
-	$(BUILDDIR)/q2game/q_shared.o \
+	$(BUILDDIR)/qcommon/q_shared.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
 	$(BUILDDIR)/linux/glob.o
 
@@ -418,7 +409,7 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/ref_gl/gl_warp.o \
 	\
 	$(BUILDDIR)/linux/qgl_linux.o \
-	$(BUILDDIR)/q2game/q_shared.o \
+	$(BUILDDIR)/qcommon/q_shared.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
 	$(BUILDDIR)/linux/glob.o
 
