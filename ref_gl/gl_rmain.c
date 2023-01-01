@@ -1559,7 +1559,6 @@ void R_SetPalette ( const unsigned char *palette)
 			rp[i*4+3] = 0xff;
 		}
 	}
-	GL_SetTexturePalette( r_rawpalette );
 
 	glClearColor (0,0,0,0);
 	glClear (GL_COLOR_BUFFER_BIT);

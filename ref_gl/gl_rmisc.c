@@ -219,13 +219,6 @@ void GL_SetDefaultState( void )
 		glPointParameterfvEXT( GL_DISTANCE_ATTENUATION_EXT, attenuations );
 	}
 
-	if ( glColorTableEXT && gl_ext_palettedtexture->value )
-	{
-		glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
-
-		GL_SetTexturePalette( d_8to24table );
-	}
-
 	GL_UpdateSwapInterval();
 }
 
