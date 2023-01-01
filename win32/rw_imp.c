@@ -433,39 +433,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 ** RR = 11 = round to zero (truncate/towards 0)
 **
 */
-#if !id386
 void Sys_SetFPCW (void)
 {
 }
-#else
-unsigned fpu_ceil_cw, fpu_chop_cw, fpu_full_cw, fpu_cw, fpu_pushed_cw;
-unsigned fpu_sp24_cw, fpu_sp24_ceil_cw;
-
-void Sys_SetFPCW( void )
-{
-	__asm xor eax, eax
-
-	__asm fnstcw  word ptr fpu_cw
-	__asm mov ax, word ptr fpu_cw
-
-	__asm and ah, 0f0h
-	__asm or  ah, 003h          ; round to nearest mode, extended precision
-	__asm mov fpu_full_cw, eax
-
-	__asm and ah, 0f0h
-	__asm or  ah, 00fh          ; RTZ/truncate/chop mode, extended precision
-	__asm mov fpu_chop_cw, eax
-
-	__asm and ah, 0f0h
-	__asm or  ah, 00bh          ; ceil mode, extended precision
-	__asm mov fpu_ceil_cw, eax
-
-	__asm and ah, 0f0h          ; round to nearest, 24-bit single precision
-	__asm mov fpu_sp24_cw, eax
-
-	__asm and ah, 0f0h          ; ceil mode, 24-bit single precision
-	__asm or  ah, 008h          ;
-	__asm mov fpu_sp24_ceil_cw, eax
-}
-#endif
 

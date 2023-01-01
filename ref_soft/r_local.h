@@ -625,15 +625,6 @@ void R_TransformFrustum (void);
 void R_DrawSurfaceBlock16 (void);
 void R_DrawSurfaceBlock8 (void);
 
-#if     id386
-
-void R_DrawSurfaceBlock8_mip0 (void);
-void R_DrawSurfaceBlock8_mip1 (void);
-void R_DrawSurfaceBlock8_mip2 (void);
-void R_DrawSurfaceBlock8_mip3 (void);
-
-#endif
-
 void R_GenSkyTile (void *pdest);
 void R_GenSkyTile16 (void *pdest);
 void R_Surf8Patch (void);
@@ -656,8 +647,6 @@ extern void R_Surf8Start (void);
 extern void R_Surf8End (void);
 extern void R_Surf16Start (void);
 extern void R_Surf16End (void);
-extern void R_EdgeCodeStart (void);
-extern void R_EdgeCodeEnd (void);
 
 extern void R_RotateBmodel (void);
 
