@@ -3,6 +3,9 @@
 //
 // Heretic II
 //
+#ifndef REF_COMMON_SKELETONS_H
+#define REF_COMMON_SKELETONS_H
+
 #ifndef M_SKELETON_H
 #define M_SKELETON_H
 #include "m_Skeleton.h"
@@ -13,7 +16,7 @@
 #endif
 #ifndef SKELETONS_H
 #define SKELETONS_H
-#include "Skeletons.h"
+#include "../qcommon/Skeletons.h"
 #endif
 
 extern M_SkeletalCluster_t SkeletalClusters[MAX_ARRAYED_SKELETAL_JOINTS];
@@ -33,3 +36,5 @@ void SetupCompressedJoints(ModelSkeleton_t *liSkel, int liIndex,
 	float *lerp);
 void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelClusterIndex, int anglesIndex,
 	vec3_t *modelVerticies);
+
+#endif

@@ -56,6 +56,7 @@ QUAKE2_DIR=/grog/Projects/Quake2Master
 BUILD_DEBUG_DIR=Debug
 BUILD_RELEASE_DIR=Release
 
+
 CC ?= gcc
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
@@ -108,6 +109,7 @@ build_debug:
 		$(BUILD_DEBUG_DIR)/qcommon \
 		$(BUILD_DEBUG_DIR)/server \
 		$(BUILD_DEBUG_DIR)/ded \
+		$(BUILD_DEBUG_DIR)/ref_common \
 		$(BUILD_DEBUG_DIR)/ref_soft \
 		$(BUILD_DEBUG_DIR)/ref_gl \
 		$(BUILD_DEBUG_DIR)/q2game \
@@ -122,6 +124,7 @@ build_release:
 		$(BUILD_RELEASE_DIR)/qcommon \
 		$(BUILD_RELEASE_DIR)/server \
 		$(BUILD_RELEASE_DIR)/ded \
+		$(BUILD_RELEASE_DIR)/ref_common \
 		$(BUILD_RELEASE_DIR)/ref_soft \
 		$(BUILD_RELEASE_DIR)/ref_gl \
 		$(BUILD_RELEASE_DIR)/q2game \
@@ -149,6 +152,9 @@ $(BUILDDIR)/server/%.o :          $(MOUNT_DIR)/server/%.c
 	$(DO_CC)
 
 $(BUILDDIR)/ctf/%.o :             $(MOUNT_DIR)/ctf/%.c
+	$(DO_SHLIB_CC)
+
+$(BUILDDIR)/ref_common/%.o :      $(MOUNT_DIR)/ref_common/%.c
 	$(DO_SHLIB_CC)
 
 $(BUILDDIR)/ref_soft/%.o :        $(MOUNT_DIR)/ref_soft/%.c
@@ -407,6 +413,9 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/ref_gl/gl_rmisc.o \
 	$(BUILDDIR)/ref_gl/gl_rsurf.o \
 	$(BUILDDIR)/ref_gl/gl_warp.o \
+	$(BUILDDIR)/ref_gl/gl_fmodel.o \
+	$(BUILDDIR)/ref_common/r_Skeletons.o \
+	$(BUILDDIR)/qcommon/skeletons.o \
 	\
 	$(BUILDDIR)/linux/qgl_linux.o \
 	$(BUILDDIR)/qcommon/q_shared.o \

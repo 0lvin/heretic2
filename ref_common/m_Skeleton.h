@@ -3,10 +3,11 @@
 //
 // Heretic II
 //
-#include "Placement.h"
-#include "Matrix.h"
+#pragma once
 
-typedef int qboolean;
+#include "../qcommon/q_shared.h"
+#include "../qcommon/Placement.h"
+#include "../qcommon/Matrix.h"
 
 typedef struct M_SkeletalJoint_s
 {

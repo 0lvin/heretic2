@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <math.h>
 #include <stdarg.h>
 
-#include "../client/ref.h"
+#include "../ref_common/ref.h"
 
 #define REF_VERSION     "SOFT 0.01"
 
@@ -809,16 +809,6 @@ typedef struct swstate_s
 void R_IMFlatShadedQuad( vec3_t a, vec3_t b, vec3_t c, vec3_t d, int color, float alpha );
 
 extern swstate_t sw_state;
-
-/*
-====================================================================
-
-IMPORTED FUNCTIONS
-
-====================================================================
-*/
-
-extern  refimport_t     ri;
 
 /*
 ====================================================================

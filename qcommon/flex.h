@@ -5,6 +5,8 @@
 //
 // Generic flexible format
 
+#define RAVENFMHEADER		(('d'<<24)+('a'<<16)+('e'<<8)+'h')
+
 typedef struct
 {
 	char	ident[32];

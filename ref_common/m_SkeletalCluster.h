@@ -1,9 +1,4 @@
-//
-// Copyright 1998 Raven Software
-//
-// Heretic II
-//
-typedef int qboolean;
+#pragma once
 
 typedef struct M_SkeletalCluster_s
 {

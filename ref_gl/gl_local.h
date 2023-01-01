@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #endif
 
-#include "../client/ref.h"
+#include "../ref_common/ref.h"
 
 #include "qgl.h"
 
@@ -425,17 +425,6 @@ typedef struct
 
 extern glconfig_t  gl_config;
 extern glstate_t   gl_state;
-
-/*
-====================================================================
-
-IMPORTED FUNCTIONS
-
-====================================================================
-*/
-
-extern	refimport_t	ri;
-
 
 /*
 ====================================================================

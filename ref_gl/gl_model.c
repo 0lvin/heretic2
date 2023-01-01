@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // models.c -- model loading and caching
 
 #include "gl_local.h"
+#include "../qcommon/flex.h"
 
 model_t	*loadmodel;
 int		modfilelen;
@@ -245,6 +246,11 @@ model_t *Mod_ForName (char *name, qboolean crash)
 
 	switch (LittleLong(*(unsigned *)buf))
 	{
+	case RAVENFMHEADER:
+		loadmodel->extradata = Hunk_Begin(0x400000);
+		Mod_LoadFlexModel(mod, buf, modfilelen);
+		break;
+
 	case IDMDLHEADER:
 		loadmodel->extradata = Hunk_Begin (0x200000);
 		Mod_LoadMDLModel (mod, buf);
@@ -266,7 +272,8 @@ model_t *Mod_ForName (char *name, qboolean crash)
 		break;
 
 	default:
-		ri.Sys_Error (ERR_DROP,"Mod_NumForName: unknown fileid for %s", mod->name);
+		ri.Sys_Error (ERR_DROP,"Mod_NumForName: unknown fileid for %s: %x",
+			mod->name, LittleLong(*(unsigned *)buf));
 		break;
 	}
 

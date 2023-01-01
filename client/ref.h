@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define __REF_H
 
 #include "../qcommon/qcommon.h"
+#include "../qcommon/q_Typedef.h"
+#include "../qcommon/ArrayedList.h"
 
 #define	MAX_DLIGHTS		32
 #define	MAX_ENTITIES	128
@@ -75,6 +77,11 @@ typedef struct entity_s
 	struct image_s	*skin;			// NULL for inline skin
 	int		flags;
 
+	struct image_s		**skins;		// Pointer to the list of clientinfo skins.
+
+	fmnodeinfo_t		*fmnodeinfo;	// client entities which use a flexible model will need
+										// to fill this in, and then release it when they die
+										// happily most client entities are sprites
 } entity_t;
 
 #define ENTITY_FLAGS  68
@@ -185,11 +192,20 @@ typedef struct
 
 } refexport_t;
 
+typedef struct CL_SkeletalJoint_s
+{
+	int children;
+	vec3_t angles;
+} CL_SkeletalJoint_t;
+
 //
 // these are the functions imported by the refresh module
 //
 typedef struct
 {
+	struct CL_SkeletalJoint_s *skeletalJoints;
+	struct ArrayedListNode_s *jointNodes;
+
 	void	(*Sys_Error) (int err_level, char *str, ...);
 
 	void	(*Cmd_AddCommand) (char *name, void(*cmd)(void));

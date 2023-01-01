@@ -341,6 +341,9 @@ void R_DrawEntitiesOnList (void)
 			}
 			switch (currentmodel->type)
 			{
+			case mod_flex:
+				R_DrawFlexModel(currententity);
+				break;
 			case mod_alias:
 				R_DrawAliasModel (currententity);
 				break;
@@ -381,6 +384,9 @@ void R_DrawEntitiesOnList (void)
 			}
 			switch (currentmodel->type)
 			{
+			case mod_flex:
+				R_DrawFlexModel(currententity);
+				break;
 			case mod_alias:
 				R_DrawAliasModel (currententity);
 				break;

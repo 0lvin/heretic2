@@ -25,6 +25,8 @@ m*_t structures are in-memory
 
 */
 
+#include "../ref_common/fmodel.h"
+
 /*
 ==============================================================================
 
@@ -169,7 +171,7 @@ typedef struct mleaf_s
 // Whole model
 //
 
-typedef enum {mod_bad, mod_brush, mod_sprite, mod_alias } modtype_t;
+typedef enum {mod_bad, mod_brush, mod_sprite, mod_alias, mod_flex  } modtype_t;
 
 typedef struct model_s
 {
@@ -234,6 +236,8 @@ typedef struct model_s
 	dvis_t		*vis;
 
 	byte		*lightdata;
+
+	fmdl_t		*fmodel;
 
 	// for alias models and skins
 	image_t		*skins[MAX_MD2SKINS];

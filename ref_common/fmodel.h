@@ -17,7 +17,6 @@
 
 
 typedef unsigned char 		byte;
-typedef int	qboolean;
 typedef float vec3_t[3];
 
 #define	MAX_FM_TRIANGLES	2048
@@ -154,7 +153,10 @@ typedef struct
 	byte	tris[MAX_FM_TRIANGLES>>3];
 
 	struct {
-	short	*triIndicies;
+// jmarshall - 64bit
+	//short	*triIndicies;
+	int triIndicies; // Array of shorts?
+// jmarshall end
 	int		num_tris;
 	};
 
@@ -240,6 +242,31 @@ void Mod_RegisterFlexModel(struct model_s *mod);
 void R_DrawFlexModel (entity_t *e);
 
 void GL_LerpVert(vec3_t newPoint, vec3_t oldPoint, vec3_t interpolatedPoint, float move[3], float frontv[3], float backv[3]);
+
+
+// jmarshall
+enum
+{
+	FM_BLOCK_HEADER,
+	FM_BLOCK_SKIN,
+	FM_BLOCK_ST,
+	FM_BLOCK_TRIS,
+	FM_BLOCK_FRAMES,
+	FM_BLOCK_GLCMDS,
+	FM_BLOCK_MESHNODES,
+	FM_BLOCK_SHORTFRAMES,
+	FM_BLOCK_NORMAL,
+	FM_BLOCK_COMP,
+	FM_BLOCK_SKELETON,
+	FM_BLOCK_REFERENCES,
+};
+
+typedef struct
+{
+	char		blockid[32];
+	int			blocktype;
+} fmblock_t;
+// jmarshall end
 
 #endif
 

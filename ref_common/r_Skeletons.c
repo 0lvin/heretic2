@@ -6,7 +6,10 @@
 // Heretic II
 //
 
-#include "q_fmodel.h"
+#include "ref.h"
+#include "../qcommon/Vector.h"
+#include "r_Skeletons.h"
+#include "fmodel.h"
 
 #include <memory.h>
 

@@ -3,6 +3,10 @@
 //
 // Heretic II
 //
+#ifndef COMMON_ARRAYEDLIST_H
+#define COMMON_ARRAYEDLIST_H
+
+#include "q_shared.h"
 #include <assert.h>
 
 typedef struct ArrayedListNode_s
@@ -14,7 +18,7 @@ typedef struct ArrayedListNode_s
 
 #define ARRAYEDLISTNODE_NULL -1
 
-_inline int GetFreeNode(ArrayedListNode_t *nodeArray, int max)
+YQ2_ATTR_INLINE int GetFreeNode(ArrayedListNode_t *nodeArray, int max)
 {
 	int i;
 
@@ -31,7 +35,9 @@ _inline int GetFreeNode(ArrayedListNode_t *nodeArray, int max)
 	return -1;
 }
 
-_inline void FreeNode(ArrayedListNode_t *nodeArray, int index)
+YQ2_ATTR_INLINE void FreeNode(ArrayedListNode_t *nodeArray, int index)
 {
 	nodeArray[index].inUse = 0;
 }
+
+#endif
