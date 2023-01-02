@@ -1,5 +1,9 @@
-// G_flamethrow.c
+//
+// Copyright 1998 Raven Software
+//
 // Heretic II
+//
+// G_flamethrow.c
 //
 // jweier
 

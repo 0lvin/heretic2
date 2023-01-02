@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // game.h -- game dll information visible to server.
 
 #define WIN32_LEAN_AND_MEAN

@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef G_ITEMS_H
 #define G_ITEMS_H
 

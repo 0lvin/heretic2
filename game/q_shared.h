@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef QSHARED_H
 #define QSHARED_H
 // q_shared.h -- included first by ALL program modules (unfortuantly this is true for all code from id)

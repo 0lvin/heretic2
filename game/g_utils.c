@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // g_utils.c -- misc utility functions for game module
 
 #include "g_local.h"

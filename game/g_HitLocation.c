@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "q_shared.h"
 #include "g_local.h"
 #include "matrix.h"

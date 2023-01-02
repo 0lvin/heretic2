@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #define SCRIPT_VERSION 3
 
 #define NUM_PARMS 16

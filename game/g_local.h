@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // g_local.h -- local definitions for game module.
 
 #ifndef	G_LOCAL_H

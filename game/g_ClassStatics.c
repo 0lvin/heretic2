@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_ClassStatics.h"
 
 G_ClassStatics_t	classStatics[NUM_CLASSIDS];

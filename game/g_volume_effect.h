@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef _G_VOLUME_EFFECT_H_
 #define _G_VOLUME_EFFECT_H_
 

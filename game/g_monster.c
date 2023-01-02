@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_monster.h"
 #include "m_stats.h"
 #include "g_local.h"

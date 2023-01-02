@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_DefaultMessageHandler.h"
 #include "g_Physics.h"
 #include "g_local.h"

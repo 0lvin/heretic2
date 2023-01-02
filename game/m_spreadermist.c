@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "FX.h"
 #include "q_Typedef.h"
 #include "m_spreadermist.h"

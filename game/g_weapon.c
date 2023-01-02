@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // g_weapon.c - generic weapon handling code for all player weapons
 
 //#include "p_types.h"

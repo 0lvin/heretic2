@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 //Elf Lord header
 
 typedef enum AnimID_e

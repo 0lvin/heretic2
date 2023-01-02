@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_local.h"
 #include "m_morcalavin.h"
 #include "m_morcalavin_anim.h"

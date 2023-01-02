@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "g_MoveInfo.h"
 #include "ResourceManager.h"
 #include "g_local.h"

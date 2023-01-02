@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef G_NEW_SYSTEM_H
 #define G_NEW_SYSTEM_H
 

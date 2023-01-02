@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #if 0
 #include "g_PhysicsInfo.h"
 #include "ResourceManager.h"

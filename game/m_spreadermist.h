@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #ifndef _M_SPREADERMIST_H_
 #define _M_SPREADERMIST_H_
 

@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #include "m_ogle.h"
 #include "g_local.h"
 #include "m_ogle_anim.h"
