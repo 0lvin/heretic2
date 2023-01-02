@@ -28,16 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define REF_VERSION     "SOFT 0.01"
 
-// up / down
-#define PITCH   0
-
-// left / right
-#define YAW             1
-
-// fall over
-#define ROLL    2
-
-
 /*
 
   skins will be outline flood filled and mip mapped

@@ -5,25 +5,10 @@
 //
 #ifndef QSHARED_H
 #define QSHARED_H
-// q_shared.h -- included first by ALL program modules (unfortuantly this is true for all code from id)
 
-// unknown pragmas are SUPPOSED to be ignored, but....
-#pragma warning(disable : 4244)     // MIPS -- truncation from double to float in MSDEV
-#pragma warning(disable : 4018)     // signed/unsigned mismatch
-#pragma warning(disable : 4305)		// truncation from const double to float
-
-#include <direct.h>
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-
-#include "H2Common.h"
-#include "q_Typedef.h"
-//#include "player.h"
+#include "../qcommon/q_shared.h"
+#include "../qcommon/H2Common.h"
+#include "../qcommon/q_Typedef.h"
 
 #define DEMO_CODE		0
 

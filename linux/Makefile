@@ -58,6 +58,7 @@ BUILD_RELEASE_DIR=Release
 
 
 CC ?= gcc
+CXX ?= g++
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
 ifeq ($(ARCH),axp)
@@ -84,9 +85,8 @@ SHLIBCFLAGS=-fPIC
 SHLIBLDFLAGS=-shared
 
 DO_CC=$(CC) $(CFLAGS) -o $@ -c $<
-DO_DEBUG_CC=$(CC) $(DEBUG_CFLAGS) -o $@ -c $<
 DO_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
-DO_SHLIB_DEBUG_CC=$(CC) $(DEBUG_CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_SHLIB_CXX=$(CXX) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 DO_GL_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(GLCFLAGS) -o $@ -c $<
 
 #############################################################################
@@ -113,6 +113,7 @@ build_debug:
 		$(BUILD_DEBUG_DIR)/ref_soft \
 		$(BUILD_DEBUG_DIR)/ref_gl \
 		$(BUILD_DEBUG_DIR)/q2game \
+		$(BUILD_DEBUG_DIR)/game \
 		$(BUILD_DEBUG_DIR)/ctf
 	$(MAKE) targets BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
 
@@ -128,6 +129,7 @@ build_release:
 		$(BUILD_RELEASE_DIR)/ref_soft \
 		$(BUILD_RELEASE_DIR)/ref_gl \
 		$(BUILD_RELEASE_DIR)/q2game \
+		$(BUILD_RELEASE_DIR)/game \
 		$(BUILD_RELEASE_DIR)/ctf
 	$(MAKE) targets BUILDDIR=$(BUILD_RELEASE_DIR) CFLAGS="$(RELEASE_CFLAGS)"
 
@@ -144,6 +146,12 @@ $(BUILDDIR)/client/%.o :          $(MOUNT_DIR)/client/%.c
 
 $(BUILDDIR)/q2game/%.o :          $(MOUNT_DIR)/q2game/%.c
 	$(DO_SHLIB_CC)
+
+$(BUILDDIR)/game/%.o :            $(MOUNT_DIR)/game/%.c
+	$(DO_SHLIB_CC)
+
+$(BUILDDIR)/game/%.o :            $(MOUNT_DIR)/game/%.cpp
+	$(DO_SHLIB_CXX)
 
 $(BUILDDIR)/qcommon/%.o :         $(MOUNT_DIR)/qcommon/%.c
 	$(DO_SHLIB_CC)
@@ -329,6 +337,169 @@ Q2GAME_OBJS = \
 
 $(BUILDDIR)/q2game/game.$(SHLIBEXT) : $(Q2GAME_OBJS)
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q2GAME_OBJS)
+
+#############################################################################
+# GAME
+#############################################################################
+
+GAME_OBJS = \
+	$(BUILDDIR)/qcommon/q_shared.o \
+	$(BUILDDIR)/game/buoy.o \
+	$(BUILDDIR)/game/c_ai.o \
+	$(BUILDDIR)/game/c_corvus1_anim.o \
+	$(BUILDDIR)/game/c_corvus1.o \
+	$(BUILDDIR)/game/c_corvus2_anim.o \
+	$(BUILDDIR)/game/c_corvus2.o \
+	$(BUILDDIR)/game/c_corvus3_anim.o \
+	$(BUILDDIR)/game/c_corvus3.o \
+	$(BUILDDIR)/game/c_corvus4_anim.o \
+	$(BUILDDIR)/game/c_corvus4.o \
+	$(BUILDDIR)/game/c_corvus5_anim.o \
+	$(BUILDDIR)/game/c_corvus5.o \
+	$(BUILDDIR)/game/c_corvus6_anim.o \
+	$(BUILDDIR)/game/c_corvus6.o \
+	$(BUILDDIR)/game/c_corvus7_anim.o \
+	$(BUILDDIR)/game/c_corvus7.o \
+	$(BUILDDIR)/game/c_corvus8_anim.o \
+	$(BUILDDIR)/game/c_corvus8.o \
+	$(BUILDDIR)/game/c_corvus9_anim.o \
+	$(BUILDDIR)/game/c_corvus9.o \
+	$(BUILDDIR)/game/c_dranor_anim.o \
+	$(BUILDDIR)/game/c_dranor.o \
+	$(BUILDDIR)/game/c_elflord_anim.o \
+	$(BUILDDIR)/game/c_elflord.o \
+	$(BUILDDIR)/game/c_morcalavin_anim.o \
+	$(BUILDDIR)/game/c_morcalavin.o \
+	$(BUILDDIR)/game/c_priestess2_anim.o \
+	$(BUILDDIR)/game/c_priestess2.o \
+	$(BUILDDIR)/game/c_priestess_anim.o \
+	$(BUILDDIR)/game/c_priestess.o \
+	$(BUILDDIR)/game/c_siernan1_anim.o \
+	$(BUILDDIR)/game/c_siernan1.o \
+	$(BUILDDIR)/game/c_siernan2_anim.o \
+	$(BUILDDIR)/game/c_siernan2.o \
+	$(BUILDDIR)/game/c_ssithrascout_anim.o \
+	$(BUILDDIR)/game/c_ssithrascout.o \
+	$(BUILDDIR)/game/c_tome_anim.o \
+	$(BUILDDIR)/game/c_tome.o \
+	$(BUILDDIR)/game/c_victimSsithra_anim.o \
+	$(BUILDDIR)/game/c_victimSsithra.o \
+	$(BUILDDIR)/game/decals.o \
+	$(BUILDDIR)/game/ds.o \
+	$(BUILDDIR)/game/g_ai.o \
+	$(BUILDDIR)/game/g_breakable.o \
+	$(BUILDDIR)/game/g_ClassStatics.o \
+	$(BUILDDIR)/game/g_cmds.o \
+	$(BUILDDIR)/game/g_combat.o \
+	$(BUILDDIR)/game/g_DefaultMessageHandler.o \
+	$(BUILDDIR)/game/g_env.o \
+	$(BUILDDIR)/game/g_field.o \
+	$(BUILDDIR)/game/g_flamethrow.o \
+	$(BUILDDIR)/game/g_func.o \
+	$(BUILDDIR)/game/g_HitLocation.o \
+	$(BUILDDIR)/game/g_items.o \
+	$(BUILDDIR)/game/g_light.o \
+	$(BUILDDIR)/game/g_main.o \
+	$(BUILDDIR)/game/g_Message.o \
+	$(BUILDDIR)/game/g_misc.o \
+	$(BUILDDIR)/game/g_monster.o \
+	$(BUILDDIR)/game/g_MoveInfo.o \
+	$(BUILDDIR)/game/g_obj.o \
+	$(BUILDDIR)/game/g_phys.o \
+	$(BUILDDIR)/game/g_Physics.o \
+	$(BUILDDIR)/game/g_PhysicsInfo.o \
+	$(BUILDDIR)/game/g_ResourceManagers.o \
+	$(BUILDDIR)/game/g_rope.o \
+	$(BUILDDIR)/game/g_save.o \
+	$(BUILDDIR)/game/g_shrine.o \
+	$(BUILDDIR)/game/g_Skeletons.o \
+	$(BUILDDIR)/game/g_spawn.o \
+	$(BUILDDIR)/game/g_spawnf.o \
+	$(BUILDDIR)/game/g_StateInfo.o \
+	$(BUILDDIR)/game/g_svcmds.o \
+	$(BUILDDIR)/game/g_target.o \
+	$(BUILDDIR)/game/g_trigger.o \
+	$(BUILDDIR)/game/g_utils.o \
+	$(BUILDDIR)/game/g_waterfx.o \
+	$(BUILDDIR)/game/g_weapon.o \
+	$(BUILDDIR)/game/m_assassin_anim.o \
+	$(BUILDDIR)/game/m_assassin.o \
+	$(BUILDDIR)/game/m_beast_anim.o \
+	$(BUILDDIR)/game/m_beast.o \
+	$(BUILDDIR)/game/m_bee.o \
+	$(BUILDDIR)/game/m_chicken_anim.o \
+	$(BUILDDIR)/game/m_chicken.o \
+	$(BUILDDIR)/game/m_elflord_anims.o \
+	$(BUILDDIR)/game/m_elflord.o \
+	$(BUILDDIR)/game/m_fish_anim.o \
+	$(BUILDDIR)/game/m_fish.o \
+	$(BUILDDIR)/game/m_FMtest.o \
+	$(BUILDDIR)/game/mg_ai.o \
+	$(BUILDDIR)/game/mg_guide.o \
+	$(BUILDDIR)/game/m_gkrokon_anim.o \
+	$(BUILDDIR)/game/m_gkrokon.o \
+	$(BUILDDIR)/game/m_gorgon_anim.o \
+	$(BUILDDIR)/game/m_gorgon.o \
+	$(BUILDDIR)/game/m_harpy_anim.o \
+	$(BUILDDIR)/game/m_harpy.o \
+	$(BUILDDIR)/game/m_imp_anim.o \
+	$(BUILDDIR)/game/m_imp.o \
+	$(BUILDDIR)/game/m_morcalavin_anim.o \
+	$(BUILDDIR)/game/m_morcalavin.o \
+	$(BUILDDIR)/game/m_mother_anim.o \
+	$(BUILDDIR)/game/m_mother.o \
+	$(BUILDDIR)/game/m_move.o \
+	$(BUILDDIR)/game/m_mssithra_anim.o \
+	$(BUILDDIR)/game/m_mssithra.o \
+	$(BUILDDIR)/game/m_ogle_anim.o \
+	$(BUILDDIR)/game/m_ogle.o \
+	$(BUILDDIR)/game/m_plagueElf_anim.o \
+	$(BUILDDIR)/game/m_plagueElf.o \
+	$(BUILDDIR)/game/m_plagueSsithra_anim.o \
+	$(BUILDDIR)/game/m_plagueSsithra.o \
+	$(BUILDDIR)/game/m_priestess_anim.o \
+	$(BUILDDIR)/game/m_priestess.o \
+	$(BUILDDIR)/game/m_rat_anim.o \
+	$(BUILDDIR)/game/m_rat.o \
+	$(BUILDDIR)/game/m_seraph_anim.o \
+	$(BUILDDIR)/game/m_seraph.o \
+	$(BUILDDIR)/game/m_seraph_guard_anim.o \
+	$(BUILDDIR)/game/m_seraph_guard.o \
+	$(BUILDDIR)/game/m_spreader_anim.o \
+	$(BUILDDIR)/game/m_spreader.o \
+	$(BUILDDIR)/game/m_spreadermist.o \
+	$(BUILDDIR)/game/m_stats.o \
+	$(BUILDDIR)/game/m_tcheckrik_anim.o \
+	$(BUILDDIR)/game/m_tcheckrik.o \
+	$(BUILDDIR)/game/m_tcheckrik_spells.o \
+	$(BUILDDIR)/game/p_client.o \
+	$(BUILDDIR)/game/p_funcs.o \
+	$(BUILDDIR)/game/p_hud.o \
+	$(BUILDDIR)/game/p_item.o \
+	$(BUILDDIR)/game/p_view.o \
+	$(BUILDDIR)/game/q_shared.o \
+	$(BUILDDIR)/game/Script.o \
+	$(BUILDDIR)/game/spl_blast.o \
+	$(BUILDDIR)/game/spl_BlueRing.o \
+	$(BUILDDIR)/game/spl_flyingfist.o \
+	$(BUILDDIR)/game/spl_HellStaff.o \
+	$(BUILDDIR)/game/spl_maceballs.o \
+	$(BUILDDIR)/game/spl_magicmissile.o \
+	$(BUILDDIR)/game/spl_meteorbarrier.o \
+	$(BUILDDIR)/game/spl_morph.o \
+	$(BUILDDIR)/game/spl_Phoenix.o \
+	$(BUILDDIR)/game/spl_powerup.o \
+	$(BUILDDIR)/game/spl_RedRain.o \
+	$(BUILDDIR)/game/spl_ripper.o \
+	$(BUILDDIR)/game/spl_shield.o \
+	$(BUILDDIR)/game/spl_sphereofannihlation.o \
+	$(BUILDDIR)/game/spl_teleport.o \
+	$(BUILDDIR)/game/spl_tornado.o \
+	$(BUILDDIR)/game/spl_wall.o \
+	$(BUILDDIR)/game/Utilities.o
+
+$(BUILDDIR)/game/game.$(SHLIBEXT) : $(GAME_OBJS)
+	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(GAME_OBJS)
 
 #############################################################################
 # CTF

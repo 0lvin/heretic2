@@ -28,27 +28,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <GL/glu.h>
 #include <math.h>
 
-#ifndef __linux__
-#ifndef GL_COLOR_INDEX8_EXT
-#define GL_COLOR_INDEX8_EXT GL_COLOR_INDEX
-#endif
-#endif
-
 #include "../ref_common/ref.h"
 
 #include "qgl.h"
 
 #define	REF_VERSION	"GL 0.01"
-
-// up / down
-#define	PITCH	0
-
-// left / right
-#define	YAW		1
-
-// fall over
-#define	ROLL	2
-
 
 #ifndef __VIDDEF_T
 #define __VIDDEF_T
