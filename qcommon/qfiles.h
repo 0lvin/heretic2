@@ -428,6 +428,7 @@ typedef struct
 // these definitions also need to be in q_shared.h!
 
 // lower bits are stronger, and will eat weaker brushes completely
+#define	CONTENTS_EMPTY			0		// nothing
 #define	CONTENTS_SOLID			1		// an eye is never valid in a solid
 #define	CONTENTS_WINDOW			2		// translucent, but not watery
 #define	CONTENTS_AUX			4

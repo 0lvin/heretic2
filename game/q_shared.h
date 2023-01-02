@@ -11,9 +11,6 @@
 
 #define DEMO_CODE		0
 
-#define VectorCopy_Macro(a,b)			(b[0]=a[0],b[1]=a[1],b[2]=a[2])
-#define VectorSubtract_Macro(a,b,c)		(c[0]=a[0]-b[0],c[1]=a[1]-b[1],c[2]=a[2]-b[2])
-
 H2COMMON_API int Q_log2(int val);
 
 H2COMMON_API void ClearBounds (vec3_t mins, vec3_t maxs);
@@ -22,10 +19,6 @@ H2COMMON_API void AddPointToBounds (vec3_t v, vec3_t mins, vec3_t maxs);
 H2COMMON_API float	anglemod(float a);
 H2COMMON_API float	anglemod_old(float a);
 H2COMMON_API float LerpAngle (float a1, float a2, float frac);
-
-
-
-
 
 //=============================================
 
@@ -41,38 +34,16 @@ H2COMMON_API void Com_PageInMemory (byte *buffer, int size);
 
 //=============================================
 
-H2COMMON_API short	BigShort(short l);
-H2COMMON_API int    BigLong(int l);
-H2COMMON_API float	BigFloat(float f);
-
-#define LittleShort(x)	(x)
-#define LittleLong(x)	(x)
-#define LittleFloat(x)	(x)
-
 H2COMMON_API float Clamp(float src, float min, float max);
 H2COMMON_API int ClampI(int src, int min, int max);
 H2COMMON_API float Approach(float curr, float dest, float rate);
-H2COMMON_API char	*va(char *format, ...);
 
 //=============================================
 
-struct cplane_s;
 extern H2COMMON_API vec3_t vec3_origin;
 extern H2COMMON_API vec3_t vec3_up;
 
 cvar_t *Cvar_Get (char *var_name, char *value, int flags);
-
-/**************************************************************
- * palette info
- **************************************************************/
-
-typedef struct paletteRGB_s
-{
-	struct
-	{
-		byte r,g,b;
-	};
-} paletteRGB_t;
 
 /**************************************************************
  * additional info for flex models with mesh nodes
@@ -80,361 +51,11 @@ typedef struct paletteRGB_s
 
 #define MAX_FM_MESH_NODES	16		// also defined in ref_gl/fmodel.h
 
-typedef struct
-{
-	int				frame;
-	paletteRGBA_t	color;
-	byte			flags;
-	int				skin;
-} fmnodeinfo_t;
-
-// flags
-
-#define FMNI_USE_FRAME		(1<<0)
-#define FMNI_USE_COLOR		(1<<1)
-#define FMNI_USE_SKIN		(1<<2)
-#define FMNI_NO_LERP		(1<<3)
-#define FMNI_NO_DRAW		(1<<4)
-#define FMNI_USE_REFLECT	(1<<5)
-/*
-==============================================================
-
-COLLISION DETECTION
-
-==============================================================
-*/
-
-// ************************************************************************************************
-// CONTENTS_XXX
-// ------------
-// Contents flags.
-// ************************************************************************************************
-
-// Lower bits are stronger, and will eat weaker brushes completely.
-
-#define	CONTENTS_EMPTY			0x00000000	// nothing
-#define	CONTENTS_SOLID			0x00000001	// An eye is never valid in a solid.
-#define	CONTENTS_WINDOW			0x00000002	// Translucent, but not watery.
-#define	CONTENTS_ILLUSIONARY	0x00000004  // Was CONTENTS_AUX.
-#define	CONTENTS_LAVA			0x00000008
-#define	CONTENTS_SLIME			0x00000010
-#define	CONTENTS_WATER			0x00000020
-#define	CONTENTS_MIST			0x00000040
-#define	LAST_VISIBLE_CONTENTS	CONTENTS_MIST
-
-// Remaining contents are non-visible, and don't eat brushes.
-
-#define	CONTENTS_AREAPORTAL		0x00008000
-#define	CONTENTS_PLAYERCLIP		0x00010000
-#define	CONTENTS_MONSTERCLIP	0x00020000
-
-// Currents can be added to any other contents, and may be mixed.
-
-#define	CONTENTS_CURRENT_0		0x00040000
-#define	CONTENTS_CURRENT_90		0x00080000
-#define	CONTENTS_CURRENT_180	0x00100000
-#define	CONTENTS_CURRENT_270	0x00200000
-#define	CONTENTS_CURRENT_UP		0x00400000
-#define	CONTENTS_CURRENT_DOWN	0x00800000
-
-// Removed before bsping an entity.
-
-#define	CONTENTS_ORIGIN			0x01000000
-
-// Should never be on a brush, only in game (i.e. set by CM_ functions at map load time).
-
-#define	CONTENTS_MONSTER		0x02000000
-#define	CONTENTS_DEADMONSTER	0x04000000
-
-// Brushes to be added after vis leaves.
-
-#define	CONTENTS_DETAIL			0x08000000
-
-// Auto set if any surface has transparency, e.g. water.
-
-#define	CONTENTS_TRANSLUCENT	0x10000000
-
-// This flag is special in that it is not stored in the .bsp by QuakeEd. It is passed into the trace
-// functions to say that anything with CONTENTS_CAMERANOBLOCK should be ignored. So we can get away
-// with defining it = CONTENTS_CAMERANOBLOCK.
-
-#define	CONTENTS_CAMERABLOCK	0x20000000	// Was CONTENTS_LADDER.
-
-// This flag is special in that it is NOT passed into the trace functions, but may be stored in the
-//.bsp by QuakeEd to say that traces with CONTENTS_CAMERABLOCK as the mask will ignore any brushes
-// with this flag.
-
-#define	CONTENTS_CAMERANOBLOCK	0x40000000
-
-// Only do the trace against the world, not entities within it. Not stored in the .bsp and passed
-// only as an argument to trace fucntions.
-
-#define CONTENTS_WORLD_ONLY		0x80000000
-
-// ************************************************************************************************
-// MASK_XXX
-// --------
-// Contents masks.
-// ************************************************************************************************
-
-#define	MASK_ALL			0x7fffffff
-#define	MASK_SOLID			(CONTENTS_SOLID|CONTENTS_WINDOW)
-#define	MASK_PLAYERSOLID	(CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW|CONTENTS_MONSTER)
-#define	MASK_DEADSOLID		(CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW)
-#define	MASK_MONSTERSOLID	(CONTENTS_SOLID|CONTENTS_MONSTERCLIP|CONTENTS_WINDOW|CONTENTS_MONSTER)
-#define	MASK_WATER			(CONTENTS_WATER|CONTENTS_LAVA|CONTENTS_SLIME)
-#define	MASK_OPAQUE			(CONTENTS_SOLID|CONTENTS_SLIME|CONTENTS_LAVA)
-#define	MASK_SHOT			(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEADMONSTER)
-#define MASK_CURRENT		(CONTENTS_CURRENT_0|CONTENTS_CURRENT_90|CONTENTS_CURRENT_180|CONTENTS_CURRENT_270|CONTENTS_CURRENT_UP|CONTENTS_CURRENT_DOWN)
-#define MASK_DRIP			(CONTENTS_SOLID|CONTENTS_WATER|CONTENTS_LAVA|CONTENTS_SLIME|CONTENTS_WINDOW)
-
-// ************************************************************************************************
-// SURF_XXX
-// --------
-// ************************************************************************************************
-
-#define	SURF_LIGHT			0x1			// Value will hold the light strength.
-#define	SURF_SLICK			0x2			// Affects game physics.
-#define	SURF_SKY			0x4			// Don't draw, but add to skybox.
-#define	SURF_WARP			0x8			// Turbulent water warp.
-#define	SURF_TRANS33		0x10
-#define	SURF_TRANS66		0x20
-#define	SURF_FLOWING		0x40		// Scroll towards angle.
-#define	SURF_NODRAW			0x80		// Don't bother referencing the texture.
-#define	SURF_TALL_WALL		0x00000400	// Face doesn't get broken up as normal.
-#define	SURF_ALPHA_TEXTURE	0x00000800	// texture has alpha in it, and should show through in bsp process
-#define	SURF_ANIMSPEED		0x00001000	// value will hold the anim speed in fps
-#define SURF_UNDULATE		0x00002000	// rock surface up and down...
-#define SURF_QUAKE			0x00004000	// rock surface up and down when quake value on
-
-typedef struct csurface_s
-{
-	char		name[40];
-	int			flags;
-	int			value;
-} csurface_t;
-
-// ************************************************************************************************
-// trace_t
-// -------
-// A trace is returned when a box is swept through the world.
-// ************************************************************************************************
-
-typedef struct trace_s
-{
-	byte		allsolid;		// if true, plane is not valid
-	byte		startsolid;		// if true, the initial point was in a solid area
-	byte		succeeded;		// not always set, just in special cases, subjective
-	byte		architecture;	// set if the moved collided with world (not entities)
-								// needed because the player move code doesn`t know anything
-								// about the location or nature of edicts
-	float		fraction;		// time completed, 1.0 = didn't hit anything
-	vec3_t		endpos;			// final position
-	cplane_t	plane;			// surface normal at impact
-	csurface_t	*surface;		// surface hit
-	int			contents;		// contents on other side of surface hit
-	struct edict_s	*ent;		// not set by CM_*() functions
-} trace_t;
-
-// ************************************************************************************************
-// pmtype_t
-// --------
-// ************************************************************************************************
-
-// ************************************************************************************************
-// PMF_XXX
-// -------
-// These are pmove->pm_flags.
-// ************************************************************************************************
-
-#define	PMF_STANDSTILL		0x0001
-#define	PMF_ON_GROUND		0x0004
-#define	PMF_TIME_LAND		0x0008	// pm_time is time before rejump
-#define	PMF_TIME_TELEPORT	0x0010	// pm_time is non-moving time
-#define PMF_NO_PREDICTION	0x0020	// temporarily disables prediction (used for grappling hook)
-#define PMF_LOCKMOVE		0x0040
-#define PMF_LOCKTURN		0x0080
-
-#define PC_COLLISION		0x0001	// collided on a move
-#define PC_SLIDING			0x0002	// sliding down a steep slope
-
-#define	WF_SURFACE			0x0001	// On the surface
-#define	WF_DIVE				0x0002	// Dive on next animation
-#define	WF_DIVING			0x0004	// Currently diving
-#define	WF_SWIMFREE			0x0008	// Currently swimming freely underwater
-#define	WF_SINK				0x0010	// Sink below the surface of the water
-
-// ************************************************************************************************
-// pmove_state_t
-// -------------
-// This structure contains the information necessary for client side movement prediction. It MUST
-// be communicated bit-accurate from the server to the client to guarantee that prediction stays in
-// sync., so no floats are used. If any part of the game code modifies this struct, it will result
-// in a prediction error of some degree.
-// ************************************************************************************************
-
-typedef struct
-{
-	pmtype_t	pm_type;
-	short		origin[3];		// 12.3
-	short		velocity[3];	// 12.3
-	byte		pm_flags;		// ducked, jump_held, etc
-	byte		w_flags;		// water state
-	byte		c_flags;		// collision
-	byte		pm_time;		// each unit = 8 ms
-	short		gravity;
-	short		delta_angles[3];// Added to command angles to get view direction. Changed by spawns,
-								// rotating objects and teleporters.
-	short		camera_delta_angles[3];// Added to command angles to get view direction. Changed by spawns,
-								// rotating objects and teleporters.
-} pmove_state_t;
-
-// ************************************************************************************************
-// BUTTON_XXX
-// ----------
-// ************************************************************************************************
-
-#define	BUTTON_ATTACK		1
-#define	BUTTON_DEFEND		2
-#define	BUTTON_ACTION		4
-#define BUTTON_CREEP		8
-#define BUTTON_RUN			16
-#define BUTTON_AUTOAIM		32
-#define BUTTON_LOOKAROUND	64
-#define BUTTON_QUICKTURN	128
-#define BUTTON_INVENTORY	256
-#define	BUTTON_ANY			512	// Any key whatsoever.
-
-// ************************************************************************************************
-// usercmd_t
-// ---------
-// Sent to the server each client frame.
-// ************************************************************************************************
-
-typedef struct usercmd_s
-{
-	byte	msec;
-	short	buttons;
-	short	angles[3],
-			aimangles[3],
-			camera_vieworigin[3],camera_viewangles[3],
-			forwardmove,sidemove,upmove;
-	byte	prediction;
-	byte	lightlevel;	// Light level the player is standing on.
-} usercmd_t;
 
 // ************************************************************************************************
 // pmove_t
 // -------
 // ************************************************************************************************
-
-typedef struct
-{
-	// State (in / out).
-
-	pmove_state_t	s;
-
-	// Command (in).
-
-	usercmd_t		cmd;
-	qboolean		snapinitial;		// If s has been changed outside pmove.
-	qboolean		run_shrine;
-	qboolean		high_max;
-
-	// In and out.
-
-	float			waterheight;
-	float			desiredWaterHeight;
-
-	// Results (out).
-
-	int				numtouch;
-	struct edict_s	*touchents[MAXTOUCH];
-
-	float			viewheight;
-	vec3_t			viewangles;			// Clamped.
-	vec3_t			camera_viewangles;	// Camera angles from client.
-
-	float			*origin, *velocity;
-	vec3_t			mins, maxs;			// Bounding-box size.
-	float			*intentMins, *intentMaxs;
-
-	struct edict_s	*groundentity;
-	csurface_t		*GroundSurface;
-	cplane_t		GroundPlane;
-	int				GroundContents;
-
-	int				watertype;
-	int				waterlevel;
-	float			knockbackfactor;
-
-	// Callbacks to test the world.
-
-	void			(*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end,trace_t *trace);
-	int				(*pointcontents) (vec3_t point);
-
-	struct edict_s	*self;
-} pmove_t;
-
-// entity_state_t->renderfx flags
-#define	RF_MINLIGHT			0x00000001		// allways have some light (viewmodel)
-#define	RF_REFLECTION		0x00000002		// Use GL spherical mapping, if available
-#define	RF_WEAPONMODEL		0x00000004		// only draw through eyes
-#define	RF_FULLBRIGHT		0x00000008		// allways draw full intensity
-#define	RF_DEPTHHACK		0x00000010		// for view weapon Z crunching
-#define	RF_TRANSLUCENT		0x00000020
-#define	RF_FRAMELERP		0x00000040
-#define	RF_CUSTOMSKIN		0x00000080		// skin is an index in image_precache
-#define	RF_GLOW				0x00000100		// pulse lighting for bonus items
-#define RF_SCALE_XYZ		0x00000200
-#define RF_SCALE_XY			0x00000400
-#define RF_SCALE_Z			0x00000800
-#define RF_PRIMITIVE		0x00001000		// line, or other primitive runtime generated by the render DLL
-#define RF_FIXED			0x00002000		// the sprite has a fixed direction
-											// and up vector, by default, a
-											// sprite is always oriented to the
-											// view (no effect on models)
-#define RF_TRANS_ADD		0x00004000		// Additive transparency
-#define RF_TRANS_ADD_ALPHA	0x00008000		// Adds emulation of alpha for additive transparent objects using tint
-#define RF_TRANS_GHOST		0x00010000		// Like subtractive translucency
-#define RF_ALPHA_TEXTURE	0x00020000		// Object has an alpha texture map
-#define RF_NODEPTHTEST		0x00080000		// Turns off depth testing for sprites only
-#define RF_IGNORE_REFS		0x00100000		// don't update the ref points for a model
-#define RF_NODRAW			0x00200000
-#define	RF_CULL_LARGE		0x00400000		// If set on a poly that is really close to the near clip plane and occupies
-											// a signifiant amount of screen real-estate, the poly will be culled. Used
-											// for particles in software.
-
-#define RF_TRANS_ANY		(RF_TRANS_ADD | RF_TRANS_GHOST | RF_TRANSLUCENT)
-
-// player_state_t->refdef flags
-#define	RDF_UNDERWATER		0x00000001		// warp the screen as apropriate
-#define RDF_NOWORLDMODEL	0x00000002		// used for player configuration screen
-
-// sound channels
-// channel 0 never willingly overrides
-// other channels (1-7) allways override a playing sound on that channel
-#define	CHAN_AUTO               0
-#define	CHAN_WEAPON             1
-#define	CHAN_VOICE              2
-#define	CHAN_ITEM               3
-#define	CHAN_BODY               4
-#define CHAN_FOOTSTEP			5
-#define CHAN_FOOTSTEP2			6
-#define CHAN_WEAPON2			7
-// modifier flags
-#define	CHAN_NO_PHS_ADD			8	// send to all clients, not just ones in PHS (ATTN 0 will also do this)
-#define	CHAN_RELIABLE			16	// send by reliable message, not datagram
-
-
-// sound attenuation values
-#define	ATTN_NONE               0	// full volume the entire level
-#define	ATTN_NORM               1
-#define	ATTN_IDLE               2
-#define	ATTN_STATIC             3	// diminish very rapidly with distance
-#define ATTN_VERYSTATIC			4
-#define ATTN_LEFT				256
-#define ATTN_RIGHT				512
 
 // player_state->stats[] indexes
 #define STAT_HEALTH_ICON		0		// Icon for health

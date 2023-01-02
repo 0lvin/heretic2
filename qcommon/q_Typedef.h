@@ -106,4 +106,16 @@ typedef enum
 
 void Com_ColourPrintf (PalIdx_t colour, char *msg, ...);
 
+/**************************************************************
+ * palette info
+ **************************************************************/
+
+typedef struct paletteRGB_s
+{
+	struct
+	{
+		byte r,g,b;
+	};
+} paletteRGB_t;
+
 #endif

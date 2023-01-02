@@ -472,21 +472,34 @@ COLLISION DETECTION
 #define	CONTENTS_DEADMONSTER	0x4000000
 #define	CONTENTS_DETAIL			0x8000000	// brushes to be added after vis leafs
 #define	CONTENTS_TRANSLUCENT	0x10000000	// auto set if any surface has trans
+// This flag is special in that it is not stored in the .bsp by QuakeEd. It is passed into the trace
+// functions to say that anything with CONTENTS_CAMERANOBLOCK should be ignored. So we can get away
+// with defining it = CONTENTS_CAMERANOBLOCK.
+#define	CONTENTS_CAMERABLOCK	0x20000000	// Was CONTENTS_LADDER.
+// This flag is special in that it is NOT passed into the trace functions, but may be stored in the
+//.bsp by QuakeEd to say that traces with CONTENTS_CAMERABLOCK as the mask will ignore any brushes
+// with this flag.
+#define	CONTENTS_CAMERANOBLOCK	0x40000000
+// Only do the trace against the world, not entities within it. Not stored in the .bsp and passed
+// only as an argument to trace fucntions.
+#define CONTENTS_WORLD_ONLY		0x80000000
 #define	CONTENTS_LADDER			0x20000000
 
 
 
 #define	SURF_LIGHT		0x1		// value will hold the light strength
-
 #define	SURF_SLICK		0x2		// effects game physics
-
 #define	SURF_SKY		0x4		// don't draw, but add to skybox
 #define	SURF_WARP		0x8		// turbulent water warp
 #define	SURF_TRANS33	0x10
 #define	SURF_TRANS66	0x20
 #define	SURF_FLOWING	0x40	// scroll towards angle
 #define	SURF_NODRAW		0x80	// don't bother referencing the texture
-
+#define	SURF_TALL_WALL		0x00000400	// Face doesn't get broken up as normal.
+#define	SURF_ALPHA_TEXTURE	0x00000800	// texture has alpha in it, and should show through in bsp process
+#define	SURF_ANIMSPEED		0x00001000	// value will hold the anim speed in fps
+#define SURF_UNDULATE		0x00002000	// rock surface up and down...
+#define SURF_QUAKE			0x00004000	// rock surface up and down when quake value on
 
 
 // content masks
@@ -499,6 +512,7 @@ COLLISION DETECTION
 #define	MASK_OPAQUE				(CONTENTS_SOLID|CONTENTS_SLIME|CONTENTS_LAVA)
 #define	MASK_SHOT				(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEADMONSTER)
 #define MASK_CURRENT			(CONTENTS_CURRENT_0|CONTENTS_CURRENT_90|CONTENTS_CURRENT_180|CONTENTS_CURRENT_270|CONTENTS_CURRENT_UP|CONTENTS_CURRENT_DOWN)
+#define MASK_DRIP				(CONTENTS_SOLID|CONTENTS_WATER|CONTENTS_LAVA|CONTENTS_SLIME|CONTENTS_WINDOW)
 
 
 // gi.BoxEdicts() can return a list of either solid or trigger entities
@@ -537,7 +551,7 @@ typedef struct cmodel_s
 
 typedef struct csurface_s
 {
-	char		name[16];
+	char		name[40];
 	int			flags;
 	int			value;
 } csurface_t;
@@ -549,18 +563,21 @@ typedef struct mapsurface_s  // used internally due to name len probs //ZOID
 } mapsurface_t;
 
 // a trace is returned when a box is swept through the world
-typedef struct
+typedef struct trace_s
 {
-	qboolean	allsolid;	// if true, plane is not valid
-	qboolean	startsolid;	// if true, the initial point was in a solid area
-	float		fraction;	// time completed, 1.0 = didn't hit anything
-	vec3_t		endpos;		// final position
-	cplane_t	plane;		// surface normal at impact
-	csurface_t	*surface;	// surface hit
-	int			contents;	// contents on other side of surface hit
+	byte		allsolid;		// if true, plane is not valid
+	byte		startsolid;		// if true, the initial point was in a solid area
+	byte		succeeded;		// not always set, just in special cases, subjective
+	byte		architecture;	// set if the moved collided with world (not entities)
+								// needed because the player move code doesn`t know anything
+								// about the location or nature of edicts
+	float		fraction;		// time completed, 1.0 = didn't hit anything
+	vec3_t		endpos;			// final position
+	cplane_t	plane;			// surface normal at impact
+	csurface_t	*surface;		// surface hit
+	int			contents;		// contents on other side of surface hit
 	struct edict_s	*ent;		// not set by CM_*() functions
 } trace_t;
-
 
 
 // pmove_state_t is the information necessary for client side movement
@@ -577,13 +594,25 @@ typedef enum
 } pmtype_t;
 
 // pmove->pm_flags
-#define	PMF_DUCKED			1
-#define	PMF_JUMP_HELD		2
-#define	PMF_ON_GROUND		4
-#define	PMF_TIME_WATERJUMP	8	// pm_time is waterjump
-#define	PMF_TIME_LAND		16	// pm_time is time before rejump
-#define	PMF_TIME_TELEPORT	32	// pm_time is non-moving time
-#define PMF_NO_PREDICTION	64	// temporarily disables prediction (used for grappling hook)
+#define	PMF_DUCKED			0x0001
+#define	PMF_STANDSTILL		0x0002
+#define	PMF_JUMP_HELD		0x0004
+#define	PMF_ON_GROUND		0x0008
+#define	PMF_TIME_WATERJUMP	0x00010	// pm_time is waterjump
+#define	PMF_TIME_LAND		0x00020	// pm_time is time before rejump
+#define	PMF_TIME_TELEPORT	0x00040	// pm_time is non-moving time
+#define PMF_NO_PREDICTION	0x00080	// temporarily disables prediction (used for grappling hook)
+#define PMF_LOCKMOVE		0x00100
+#define PMF_LOCKTURN		0x00200
+
+#define PC_COLLISION		0x0001	// collided on a move
+#define PC_SLIDING			0x0002	// sliding down a steep slope
+
+#define	WF_SURFACE			0x0001	// On the surface
+#define	WF_DIVE				0x0002	// Dive on next animation
+#define	WF_DIVING			0x0004	// Currently diving
+#define	WF_SWIMFREE			0x0008	// Currently swimming freely underwater
+#define	WF_SINK				0x0010	// Sink below the surface of the water
 
 // this structure needs to be communicated bit-accurate
 // from the server to the client to guarantee that
@@ -597,32 +626,45 @@ typedef struct
 	short		origin[3];		// 12.3
 	short		velocity[3];	// 12.3
 	byte		pm_flags;		// ducked, jump_held, etc
+	byte		w_flags;		// water state
+	byte		c_flags;		// collision
 	byte		pm_time;		// each unit = 8 ms
 	short		gravity;
-	short		delta_angles[3];	// add to command angles to get view direction
-									// changed by spawns, rotating objects, and teleporters
+	short		delta_angles[3];// Added to command angles to get view direction. Changed by spawns,
+								// rotating objects and teleporters.
+	short		camera_delta_angles[3];// Added to command angles to get view direction. Changed by spawns,
+								// rotating objects and teleporters.
 } pmove_state_t;
-
 
 //
 // button bits
 //
 #define	BUTTON_ATTACK		1
-#define	BUTTON_USE			2
-#define	BUTTON_ANY			128			// any key whatsoever
+#define	BUTTON_DEFEND		2
+#define	BUTTON_ACTION		4
+#define	BUTTON_CREEP		8
+#define	BUTTON_RUN			16
+#define	BUTTON_AUTOAIM		32
+#define	BUTTON_LOOKAROUND	64
+#define	BUTTON_QUICKTURN	128
+#define	BUTTON_INVENTORY	256
+#define	BUTTON_USE			512
+#define	BUTTON_ANY			1024	// Any key whatsoever.
 
 
 // usercmd_t is sent to the server each client frame
 typedef struct usercmd_s
 {
 	byte	msec;
-	byte	buttons;
-	short	angles[3];
+	short	buttons;
+	short	angles[3],
+			aimangles[3],
+			camera_vieworigin[3],camera_viewangles[3];
 	short	forwardmove, sidemove, upmove;
+	byte	prediction;
 	byte	impulse;		// remove?
-	byte	lightlevel;		// light level the player is standing on
+	byte	lightlevel;	// Light level the player is standing on.
 } usercmd_t;
-
 
 #define	MAXTOUCH	32
 typedef struct
@@ -632,26 +674,42 @@ typedef struct
 
 	// command (in)
 	usercmd_t		cmd;
-	qboolean		snapinitial;	// if s has been changed outside pmove
+	qboolean		snapinitial;		// If s has been changed outside pmove.
+	qboolean		run_shrine;
+	qboolean		high_max;
+
+	// in and out
+	float			waterheight;
+	float			desiredWaterHeight;
 
 	// results (out)
-	int			numtouch;
+	int				numtouch;
 	struct edict_s	*touchents[MAXTOUCH];
 
-	vec3_t		viewangles;			// clamped
-	float		viewheight;
+	vec3_t			viewangles;			// clamped
+	float			viewheight;
 
-	vec3_t		mins, maxs;			// bounding box size
+	vec3_t			mins, maxs;			// bounding box size
+	vec3_t			camera_viewangles;	// Camera angles from client.
+
+	float			*origin, *velocity;
+	float			*intentMins, *intentMaxs;
 
 	struct edict_s	*groundentity;
-	int			watertype;
-	int			waterlevel;
+	csurface_t		*GroundSurface;
+	cplane_t		GroundPlane;
+	int				GroundContents;
+
+	int				watertype;
+	int				waterlevel;
+	float			knockbackfactor;
 
 	// callbacks to test the world
-	trace_t		(*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
-	int			(*pointcontents) (vec3_t point);
-} pmove_t;
+	trace_t			(*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
+	int				(*pointcontents) (vec3_t point);
 
+	struct edict_s	*self;
+} pmove_t;
 
 // entity_state_t->effects
 // Effects are things handled on the client side (lights, particles, frame animations)
@@ -695,19 +753,41 @@ typedef struct
 //ROGUE
 
 // entity_state_t->renderfx flags
-#define	RF_MINLIGHT			1		// allways have some light (viewmodel)
-#define	RF_VIEWERMODEL		2		// don't draw through eyes, only mirrors
-#define	RF_WEAPONMODEL		4		// only draw through eyes
-#define	RF_FULLBRIGHT		8		// allways draw full intensity
-#define	RF_DEPTHHACK		16		// for view weapon Z crunching
-#define	RF_TRANSLUCENT		32
-#define	RF_FRAMELERP		64
-#define RF_BEAM				128
-#define	RF_CUSTOMSKIN		256		// skin is an index in image_precache
-#define	RF_GLOW				512		// pulse lighting for bonus items
-#define RF_SHELL_RED		1024
-#define	RF_SHELL_GREEN		2048
-#define RF_SHELL_BLUE		4096
+#define	RF_MINLIGHT			0x00000001		// allways have some light (viewmodel)
+#define	RF_REFLECTION		0x00000002		// Use GL spherical mapping, if available
+#define	RF_WEAPONMODEL		0x00000004		// only draw through eyes
+#define	RF_FULLBRIGHT		0x00000008		// allways draw full intensity
+#define	RF_DEPTHHACK		0x00000010		// for view weapon Z crunching
+#define	RF_TRANSLUCENT		0x00000020
+#define	RF_FRAMELERP		0x00000040
+#define	RF_CUSTOMSKIN		0x00000080		// skin is an index in image_precache
+#define	RF_GLOW				0x00000100		// pulse lighting for bonus items
+#define RF_SCALE_XYZ		0x00000200
+#define RF_SCALE_XY			0x00000400
+#define RF_SCALE_Z			0x00000800
+#define RF_PRIMITIVE		0x00001000		// line, or other primitive runtime generated by the render DLL
+#define RF_FIXED			0x00002000		// the sprite has a fixed direction
+											// and up vector, by default, a
+											// sprite is always oriented to the
+											// view (no effect on models)
+#define RF_TRANS_ADD		0x00004000		// Additive transparency
+#define RF_TRANS_ADD_ALPHA	0x00008000		// Adds emulation of alpha for additive transparent objects using tint
+#define RF_TRANS_GHOST		0x00010000		// Like subtractive translucency
+#define RF_ALPHA_TEXTURE	0x00020000		// Object has an alpha texture map
+#define RF_NODEPTHTEST		0x00080000		// Turns off depth testing for sprites only
+#define RF_IGNORE_REFS		0x00100000		// don't update the ref points for a model
+#define RF_NODRAW			0x00200000
+#define	RF_CULL_LARGE		0x00400000		// If set on a poly that is really close to the near clip plane and occupies
+											// a signifiant amount of screen real-estate, the poly will be culled. Used
+											// for particles in software.
+#define	RF_VIEWERMODEL		0x00800000		// don't draw through eyes, only mirrors
+#define RF_BEAM				0x01000000
+#define RF_SHELL_RED		0x02000000
+#define	RF_SHELL_GREEN		0x04000000
+#define RF_SHELL_BLUE		0x08000000
+
+#define RF_TRANS_ANY		(RF_TRANS_ADD | RF_TRANS_GHOST | RF_TRANSLUCENT)
+
 
 //ROGUE
 #define RF_IR_VISIBLE		0x00008000		// 32768
