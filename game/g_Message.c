@@ -7,11 +7,11 @@
 //
 
 #include "g_Message.h"
-#include "Message.h"
+#include "../qcommon/Message.h"
 
 #include "g_local.h"
-#include "ResourceManager.h"
-#include "SinglyLinkedList.h"
+#include "../qcommon/ResourceManager.h"
+#include "../qcommon/SinglyLinkedList.h"
 
 static ResourceManager_t MsgMngr;
 

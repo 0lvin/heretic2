@@ -8,7 +8,7 @@
 #define G_PHYSICS_H
 
 #include "g_BoundingForm.h"
-#include "q_Physics.h"
+#include "../qcommon/q_Physics.h"
 
 #define	FRICTION_STOPSPEED			100
 #define FRICTION_SURFACE			6

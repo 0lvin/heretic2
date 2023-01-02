@@ -6,8 +6,8 @@
 // m_move.c -- monster movement
 
 #include "g_local.h"
-#include "random.h"
-#include "vector.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 
 #define	STEPSIZE	18
 

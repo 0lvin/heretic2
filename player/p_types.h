@@ -8,9 +8,9 @@
 #ifndef _P_TYPES_H_
 #define _P_TYPES_H_
 
-#include "q_shared.h"
-#include "q_clientserver.h"
-#include "g_itemstats.h"
+#include "../qcommon/q_shared.h"
+#include "../qcommon/q_ClientServer.h"
+#include "../game/g_itemstats.h"
 
 // Forward define 'playerinfo_t' for use in 'panimframe_t' and 'panimmove_t'.
 

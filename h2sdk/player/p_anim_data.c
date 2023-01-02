@@ -15,7 +15,7 @@
 #include "p_main.h"
 #include "p_ctrl.h"
 #include "m_player.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "reference.h"
 
 

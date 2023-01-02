@@ -5,7 +5,7 @@
 //
 #if 0
 #include "g_PhysicsInfo.h"
-#include "ResourceManager.h"
+#include "../qcommon/ResourceManager.h"
 #include "g_BoundingForm.h"
 
 #include <memory.h>

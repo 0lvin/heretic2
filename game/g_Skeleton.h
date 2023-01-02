@@ -3,7 +3,7 @@
 //
 // Heretic II
 //
-#include "q_Typedef.h"
+#include "../qcommon/q_Typedef.h"
 
 typedef struct G_SkeletalJoint_s
 {

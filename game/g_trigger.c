@@ -4,11 +4,11 @@
 // Heretic II
 //
 #include "g_local.h"
-#include "Vector.h"
+#include "../qcommon/Vector.h"
 #include "g_DefaultMessageHandler.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "g_playstats.h"
-#include "cl_strings.h"
+#include "../qcommon/cl_strings.h"
 
 #define TRIGGER_MONSTER		1
 #define TRIGGER_NOT_PLAYER	2

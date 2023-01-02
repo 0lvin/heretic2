@@ -7,13 +7,13 @@
 // Written by Jake Simpson
 
 #include "g_local.h"
-#include "fx.h"
-#include "Angles.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/Angles.h"
 #include "Utilities.h"
-#include "random.h"
-#include "vector.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 #include "g_teleport.h"
-#include "p_main.h"
+#include "../player/p_main.h"
 #include "g_playstats.h"
 
 extern void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles);

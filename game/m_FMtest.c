@@ -4,8 +4,8 @@
 // Heretic II
 //
 #include "g_local.h"
-#include "Random.h"
-#include "vector.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 
 void MakeSolidObject(edict_t *ent, char *Model, float MinX, float MinY, float MinZ,
 					 float MaxX, float MaxY, float MaxZ)

@@ -21,7 +21,7 @@
 #include "p_types.h"
 #include "p_anims.h"
 #include "p_chicken.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "random.h"
 #include "vector.h"
 #include "Utilities.h"

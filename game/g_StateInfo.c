@@ -4,7 +4,7 @@
 // Heretic II
 //
 #include "g_StateInfo.h"
-#include "ResourceManager.h"
+#include "../qcommon/ResourceManager.h"
 #include "g_local.h"
 
 static ResourceManager_t ActionInfoMngr;

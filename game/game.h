@@ -6,11 +6,7 @@
 
 // game.h -- game dll information visible to server.
 
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
-#include <windows.h>
-
-#include "q_ClientServer.h"
+#include "../qcommon/q_ClientServer.h"
 #include "g_NewSystem.h"
 #include "g_BoundingForm.h"
 

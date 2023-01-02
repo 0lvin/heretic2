@@ -4,9 +4,6 @@
 // Heretic II
 //
 #include "g_local.h"
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
-#include <windows.h>
 #include "ds.h"
 
 #define SCRIPT_SAVE_VERSION 2

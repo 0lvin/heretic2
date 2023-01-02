@@ -5,7 +5,7 @@
 //
 
 #include "g_MoveInfo.h"
-#include "ResourceManager.h"
+#include "../qcommon/ResourceManager.h"
 #include "g_local.h"
 
 static ResourceManager_t MoveInfoMngr;

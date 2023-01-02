@@ -16,7 +16,7 @@
 #include "g_items.h"
 #include "surfaceprops.h"
 #include "m_player.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "random.h"
 #include "reference.h"
 #include "vector.h"

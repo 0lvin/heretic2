@@ -3,15 +3,15 @@
 //
 // Heretic II
 //
-#include "fx.h"
-#include "q_typedef.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/q_Typedef.h"
 #include "m_spreadermist.h"
 #include "m_spreaderbomb_anim.h"
 #include "g_local.h"
-#include "vector.h"
-#include "angles.h"
-#include "random.h"
-#include "matrix.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/Angles.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Matrix.h"
 #include "g_volume_effect.h"
 #include "g_ClassStatics.h"
 #include "g_monster.h"

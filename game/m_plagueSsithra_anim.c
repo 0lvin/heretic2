@@ -14,11 +14,11 @@
 // WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
-#include "m_plaguessithra_anim.h"
-#include "m_plaguessithra.h"
+#include "m_plagueSsithra_anim.h"
+#include "m_plagueSsithra.h"
 #include "g_monster.h"
 #include "c_ai.h"
-#include "vector.h"
+#include "../qcommon/Vector.h"
 
 void old_ai_run (edict_t *self, float dist);
 void ai_run (edict_t *self, float dist);

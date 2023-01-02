@@ -6,8 +6,8 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
-#include "Vector.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/Vector.h"
 
 // ************************************************************************************************
 // IsDecalApplicable

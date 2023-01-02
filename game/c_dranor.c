@@ -10,12 +10,12 @@
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
-#include "random.h"
-#include "vector.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 
 #include "c_dranor_anim.h"
-#include "c_dranor.h"
+#include "c_Dranor.h"
 #include "c_ai.h"
 
 /*----------------------------------------------------------------------

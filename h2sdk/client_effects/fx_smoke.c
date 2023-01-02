@@ -15,7 +15,7 @@
 #include "Random.h"
 #include "Motion.h"
 #include "Utilities.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 
 #define	NUM_SMOKE_MODELS	1
 static struct model_s *smoke_models[NUM_SMOKE_MODELS];

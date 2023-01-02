@@ -6,7 +6,7 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "g_itemstats.h"
 
 

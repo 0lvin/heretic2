@@ -6,7 +6,7 @@
 #ifndef CE_MESSAGE_H
 #define CE_MESSAGE_H
 
-#include "SinglyLinkedList.h"
+#include "../qcommon/SinglyLinkedList.h"
 
 typedef enum CE_MsgID_e
 {

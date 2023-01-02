@@ -8,17 +8,17 @@
 // In game, animating rope
 
 #include "g_local.h"
-#include "vector.h"
-#include "random.h"
-#include "timing.h" // for time based sway
-#include "p_main.h"
-#include "p_anims.h"
-#include "fx.h"
-#include "p_anim_branch.h"
-#include "utilities.h"
-#include "p_animactor.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/random.h"
+#include "../qcommon/timing.h" // for time based sway
+#include "../player/p_main.h"
+#include "../player/p_anims.h"
+#include "../qcommon/FX.h"
+#include "../player/p_anim_branch.h"
+#include "Utilities.h"
+#include "../player/p_animactor.h"
 #include "m_chicken_anim.h"
-#include "cl_strings.h"
+#include "../qcommon/cl_strings.h"
 
 #define CHICKEN_KNOCKBACK	1
 

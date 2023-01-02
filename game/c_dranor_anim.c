@@ -16,7 +16,7 @@
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "c_dranor_anim.h"
-#include "c_dranor.h"
+#include "c_Dranor.h"
 #include "c_ai.h"
 
 

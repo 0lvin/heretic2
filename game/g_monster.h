@@ -9,7 +9,7 @@
 #define G_MONSTER_H
 
 #include "g_local.h"
-#include "Message.h"
+#include "../qcommon/Message.h"
 #include "g_ClassStatics.h"
 
 extern void M_WorldEffects (struct edict_s *ent);

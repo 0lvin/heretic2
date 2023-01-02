@@ -4,7 +4,7 @@
 // Heretic II
 //
 #include "q_shared.h"
-#include "random.h"
+#include "../qcommon/random.h"
 
 /*
 ==================

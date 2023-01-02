@@ -9,7 +9,7 @@
 #endif
 #ifndef SKELETONS_H
 #define SKELETONS_H
-#include "Skeletons.h"
+#include "../qcommon/Skeletons.h"
 #endif
 
 extern G_SkeletalJoint_t skeletalJoints[MAX_ARRAYED_SKELETAL_JOINTS];

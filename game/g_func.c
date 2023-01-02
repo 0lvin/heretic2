@@ -5,9 +5,9 @@
 //
 #include "g_local.h"
 #include "g_misc.h"
-#include "FX.h"
-#include "Random.h"
-#include "vector.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 #include "g_DefaultMessageHandler.h"
 #include "m_stats.h"
 #include "buoy.h"

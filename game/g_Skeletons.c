@@ -7,7 +7,7 @@
 //
 
 #include "g_Skeletons.h"
-#include "ArrayedList.h"
+#include "../qcommon/ArrayedList.h"
 
 #include "g_local.h"
 

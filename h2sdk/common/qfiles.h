@@ -4,7 +4,7 @@
 // Heretic II
 //
 
-#include "q_Typedef.h"
+#include "../qcommon/q_Typedef.h"
 
 //
 // qfiles.h: quake file formats

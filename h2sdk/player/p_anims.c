@@ -14,7 +14,7 @@
 #include "p_main.h"
 #include "g_Skeletons.h"
 #include "angles.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "random.h"
 #include "vector.h"
 #include "effectflags.h"

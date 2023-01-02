@@ -18,7 +18,7 @@
 #include "g_teleport.h"
 #include "vector.h"
 #include "utilities.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 
 #define PLAYER_SCREAM_THRESHOLD	-600
 

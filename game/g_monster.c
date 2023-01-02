@@ -6,16 +6,16 @@
 #include "g_monster.h"
 #include "m_stats.h"
 #include "g_local.h"
-#include "FX.h"
+#include "../qcommon/FX.h"
 #include "g_DefaultMessageHandler.h"
-#include "vector.h"
+#include "../qcommon/Vector.h"
 #include "g_playstats.h"
 
-#include "random.h"
+#include "../qcommon/random.h"
 
 //JWEIER START INCLUDES
 #include "g_misc.h"
-#include "utilities.h"
+#include "Utilities.h"
 //JWEIER END INCLUDES
 #include "g_HitLocation.h"
 #include "mg_guide.h"

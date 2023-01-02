@@ -16,7 +16,7 @@
 #include "Vector.h"
 #include "Particle.h"
 #include "Utilities.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 
 typedef struct RockChunk
 {

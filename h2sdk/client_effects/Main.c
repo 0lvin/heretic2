@@ -14,7 +14,7 @@
 #include "Client Entities.h"
 #include "Particle.h"
 #include "ce_DLight.h"
-#include "SinglyLinkedList.h"
+#include "../qcommon/SinglyLinkedList.h"
 #include "ce_Message.h"
 #include "Angles.h"
 #include "Vector.h"

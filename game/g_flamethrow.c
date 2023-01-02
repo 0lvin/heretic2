@@ -8,8 +8,8 @@
 // jweier
 
 #include "g_local.h"
-#include "Vector.h"
-#include "FX.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/FX.h"
 #include "g_playstats.h"
 #include "g_DefaultMessageHandler.h"
 

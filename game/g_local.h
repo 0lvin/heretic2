@@ -9,7 +9,7 @@
 #define G_LOCAL_H
 
 #include "q_shared.h"
-#include "q_ClientServer.h"
+#include "../qcommon/q_ClientServer.h"
 #include "buoy.h"
 
 #if 0
@@ -25,7 +25,7 @@
 #define	GAME_INCLUDE
 
 #include "game.h"
-#include "player.h"
+#include "../player/Player.h"
 
 // The "gameversion" client command will print this plus compile date.
 
@@ -1315,7 +1315,7 @@ typedef struct gclient_s
 #include "g_BoundingForm.h"
 #include "g_Edict.h"
 #ifdef __cplusplus	//this is for ds.cpp
-#include "Vector.h"
+#include "../qcommon/Vector.h"
 #endif
 qboolean FindTarget (edict_t *self);
 void MG_PostDeathThink (edict_t *self);

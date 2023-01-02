@@ -11,19 +11,19 @@
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
-#include "random.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/random.h"
 #include "buoy.h"
-#include "vector.h"
+#include "../qcommon/Vector.h"
 
 #include "m_mssithra.h"
 #include "m_mssithra_anim.h"
 #include "g_misc.h"
 #include "g_HitLocation.h"
-#include "p_anim_branch.h"
+#include "../player/p_anim_branch.h"
 #include "m_stats.h"
 #include "g_playstats.h"
-#include "p_actions.h"
+#include "../player/p_actions.h"
 
 void extrapolateFiredir (edict_t *self,vec3_t p1,float pspeed,edict_t *targ,float accept,vec3_t vec2);
 void create_ssithra_arrow(edict_t *Arrow);

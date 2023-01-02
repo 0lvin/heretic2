@@ -6,7 +6,7 @@
 #ifndef G_MESSAGE_H
 #define G_MESSAGE_H
 
-#include "SinglyLinkedList.h"
+#include "../qcommon/SinglyLinkedList.h"
 
 // Be sure to update DefaultMessageReceivers after adding a new message
 typedef enum G_MsgID_e

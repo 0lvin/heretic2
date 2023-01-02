@@ -4,14 +4,14 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
-#include "vector.h"
-#include "angles.h"
-#include "matrix.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/Angles.h"
+#include "../qcommon/Matrix.h"
 #include "g_volume_effect.h"
 #include "Utilities.h"
 #include "g_playstats.h"
-#include "random.h"
+#include "../qcommon/random.h"
 
 #define ARROW_RADIUS			2.0F
 #define ARROW_BACKUP			(45.0F - ARROW_RADIUS)

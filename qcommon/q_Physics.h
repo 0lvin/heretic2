@@ -8,7 +8,7 @@
 
 #include "H2Common.h"
 #include "q_Typedef.h"
-#include "q_Shared.h"	// for trace_t
+#include "q_shared.h"	// for trace_t
 
 #define ELASTICITY_NONE				0.0f
 #define ELASTICITY_SLIDE			1.0001f

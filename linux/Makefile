@@ -54,8 +54,6 @@ MOUNT_DIR=..
 QUAKE2_DIR=/grog/Projects/Quake2Master
 
 BUILD_DEBUG_DIR=Debug
-BUILD_RELEASE_DIR=Release
-
 
 CC ?= gcc
 CXX ?= g++
@@ -101,7 +99,7 @@ TARGETS= \
 	$(BUILDDIR)/q2ded \
 	$(BUILDDIR)/ctf/game.$(SHLIBEXT)
 
-build_debug:
+all:
 	-mkdir -p $(BUILD_DEBUG_DIR) \
 		$(BUILD_DEBUG_DIR)/client \
 		$(BUILD_DEBUG_DIR)/null \
@@ -116,24 +114,6 @@ build_debug:
 		$(BUILD_DEBUG_DIR)/game \
 		$(BUILD_DEBUG_DIR)/ctf
 	$(MAKE) targets BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
-
-build_release:
-	-mkdir -p $(BUILD_RELEASE_DIR) \
-		$(BUILD_RELEASE_DIR)/client \
-		$(BUILD_RELEASE_DIR)/null \
-		$(BUILD_RELEASE_DIR)/linux \
-		$(BUILD_RELEASE_DIR)/qcommon \
-		$(BUILD_RELEASE_DIR)/server \
-		$(BUILD_RELEASE_DIR)/ded \
-		$(BUILD_RELEASE_DIR)/ref_common \
-		$(BUILD_RELEASE_DIR)/ref_soft \
-		$(BUILD_RELEASE_DIR)/ref_gl \
-		$(BUILD_RELEASE_DIR)/q2game \
-		$(BUILD_RELEASE_DIR)/game \
-		$(BUILD_RELEASE_DIR)/ctf
-	$(MAKE) targets BUILDDIR=$(BUILD_RELEASE_DIR) CFLAGS="$(RELEASE_CFLAGS)"
-
-all: build_debug build_release
 
 targets: $(TARGETS)
 
@@ -603,13 +583,8 @@ $(BUILDDIR)/ref_glx.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_GLX_OBJS)
 # MISC
 #############################################################################
 
-clean: clean-debug clean-release
-
-clean-debug:
+clean:
 	$(MAKE) clean2 BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
-
-clean-release:
-	$(MAKE) clean2 BUILDDIR=$(BUILD_RELEASE_DIR) CFLAGS="$(DEBUG_CFLAGS)"
 
 clean2:
 	-rm -f \

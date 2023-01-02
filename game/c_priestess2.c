@@ -12,9 +12,9 @@ Copyright 1998 Raven Software
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
-#include "random.h"
-#include "vector.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 
 #include "c_priestess2.h"
 #include "c_priestess2_anim.h"

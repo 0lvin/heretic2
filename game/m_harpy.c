@@ -18,15 +18,15 @@ Copyright 1998 Raven Software
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "Random.h"
-#include "vector.h"
-#include "fx.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/FX.h"
 #include "g_HitLocation.h"
 #include "g_misc.h"
 #include "m_stats.h"
-#include "p_anim_branch.h"
-#include "p_anims.h"
-#include "p_actions.h"
+#include "../player/p_anim_branch.h"
+#include "../player/p_anims.h"
+#include "../player/p_actions.h"
 
 #define HARPY_CHECK_DIST		128
 #define	HARPY_COLLISION_DIST	148

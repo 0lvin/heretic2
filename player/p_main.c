@@ -12,7 +12,7 @@
 #include "p_main.h"
 #include "p_weapon.h"
 #include "p_types.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "m_player.h"
 #include "reference.h"
 #include "vector.h"

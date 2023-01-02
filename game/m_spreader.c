@@ -12,23 +12,23 @@
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "fx.h"
-#include "random.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/random.h"
 #include "buoy.h"
-#include "vector.h"
+#include "../qcommon/Vector.h"
 
 #include "g_Physics.h"
 
 #include "m_spreader.h"
 #include "m_spreader_anim.h"
 #include "m_spreadermist.h"
-#include "matrix.h"
-#include "Angles.h"
+#include "../qcommon/Matrix.h"
+#include "../qcommon/Angles.h"
 #include "g_misc.h"
 #include "g_HitLocation.h"
 #include "m_stats.h"
-#include "p_anim_branch.h"
-#include "p_anims.h"
+#include "../player/p_anim_branch.h"
+#include "../player/p_anims.h"
 
 // Stats
 /*#define SPREADER_HEALTH		(200.0)

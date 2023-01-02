@@ -9,9 +9,9 @@
 
 #include "g_local.h"
 #include "buoy.h"
-#include "vector.h"
-#include "random.h"
-#include "fx.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/random.h"
+#include "../qcommon/FX.h"
 #include "m_stats.h"
 
 #define SF_JUMP		1//make monster jump

@@ -6,11 +6,11 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
-#include "random.h"
-#include "vector.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 #include "g_playstats.h"
-#include "p_actions.h"
+#include "../player/p_actions.h"
 
 
 #define RING_THINKS	4		// This is a .4 seconds

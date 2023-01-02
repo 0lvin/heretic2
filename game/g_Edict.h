@@ -7,7 +7,7 @@
 #define G_EDICT_H
 
 #include "g_Message.h"
-#include "Message.h"
+#include "../qcommon/Message.h"
 #include "g_ClassStatics.h"
 #include "g_NewSystem.h"
 

@@ -6,7 +6,7 @@
 #ifndef _G_VOLUME_EFFECT_H_
 #define _G_VOLUME_EFFECT_H_
 
-#include "q_Typedef.h"
+#include "../qcommon/q_Typedef.h"
 #include "g_local.h"
 
 #define VE_FLAG1 			0x00000001	 	// place holder

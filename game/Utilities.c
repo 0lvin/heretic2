@@ -3,23 +3,19 @@
 //
 // Heretic II
 //
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
-
-#include <windows.h>
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
 
 #include "Utilities.h"
-#include "Angles.h"
+#include "../qcommon/Angles.h"
 #include "g_local.h"
-#include "Vector.h"
+#include "../qcommon/Vector.h"
 #include "g_HitLocation.h"
 #include "g_Physics.h"
-#include "Random.h"
-#include "FX.H"
-#include "p_main.h"
+#include "../qcommon/random.h"
+#include "../qcommon/FX.h"
+#include "../player/p_main.h"
 
 //kill specific entitys at the begining of a cinematic
 void remove_non_cinematic_entites(edict_t *owner)

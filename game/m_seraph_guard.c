@@ -14,17 +14,17 @@
 #include "g_DefaultMessageHandler.h"
 #include "Utilities.h"
 #include "g_monster.h"
-#include "Random.h"
-#include "vector.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 #include "g_misc.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 
 #include "g_HitLocation.h"
 #include "m_stats.h"
 #include "g_playstats.h"
-#include "p_anim_branch.h"
-#include "p_anims.h"
-#include "p_actions.h"
+#include "../player/p_anim_branch.h"
+#include "../player/p_anims.h"
+#include "../player/p_actions.h"
 
 void MG_InitMoods(edict_t *self);
 

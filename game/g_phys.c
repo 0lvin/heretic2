@@ -7,8 +7,8 @@
 // g_phys.c
 
 #include "g_local.h"
-#include "Message.h"
-#include "vector.h"
+#include "../qcommon/Message.h"
+#include "../qcommon/Vector.h"
 
 
 #define KNOCKBACK_SCALING 0.5

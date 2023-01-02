@@ -12,7 +12,7 @@
 #include "g_items.h"
 #include "p_main.h"
 #include "p_weapon.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "random.h"
 #include "vector.h"
 #include "g_physics.h"

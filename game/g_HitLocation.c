@@ -5,10 +5,10 @@
 //
 #include "q_shared.h"
 #include "g_local.h"
-#include "matrix.h"
-#include "vector.h"
+#include "../qcommon/Matrix.h"
+#include "../qcommon/Vector.h"
 #include "g_HitLocation.h"
-#include "random.h"
+#include "../qcommon/random.h"
 
 // Returns hit location (as defined in h file) assuming upright bipedal humanoid creature.
 // This will return incorrect results if called on a non humanoid (eg beetle) or a non

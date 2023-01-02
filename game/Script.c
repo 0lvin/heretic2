@@ -8,7 +8,7 @@
 
 #include "ICScript.h"
 #include "g_local.h"
-#include "SinglyLinkedList.h"
+#include "../qcommon/SinglyLinkedList.h"
 
 void ICScript_Con(ICScript_t *this_ptr, char *name)
 {

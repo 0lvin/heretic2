@@ -5,12 +5,12 @@
 // Copyright 1998 Raven Software
 //
 
-#include "fx.h"
-#include "effectflags.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/EffectFlags.h"
 #include "g_local.h"
 #include "g_misc.h"
 #include "g_DefaultMessageHandler.h"
-#include "vector.h"
+#include "../qcommon/Vector.h"
 
 #define LIGHT_STARTOFF	8
 

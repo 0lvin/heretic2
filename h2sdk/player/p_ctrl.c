@@ -13,7 +13,7 @@
 #include "p_main.h"
 #include "surfaceprops.h"
 #include "random.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 
 PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 {

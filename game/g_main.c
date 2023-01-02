@@ -5,19 +5,19 @@
 //
 #include "g_local.h"
 #include "g_Skeletons.h"
-#include "ArrayedList.h"
-#include "vector.h"
+#include "../qcommon/ArrayedList.h"
+#include "../qcommon/Vector.h"
 #include "g_Physics.h"
 #include "g_volume_effect.h"
-#include "PrimitiveDisplayHack.h"
+#include "../qcommon/PrimitiveDisplayHack.h"
 #include "q_shared.h"
-#include "timing.h"
-#include "fx.h"
+#include "../qcommon/timing.h"
+#include "../qcommon/FX.h"
 #include "Utilities.h"
-#include "random.h"
+#include "../qcommon/random.h"
 #include "g_playstats.h"
-#include "p_anims.h"
-#include "cl_strings.h"
+#include "../player/p_anims.h"
+#include "../qcommon/cl_strings.h"
 
 //Used for monster_speeds timing stuff
 #ifdef _DEVEL

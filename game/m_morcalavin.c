@@ -13,15 +13,15 @@
 #include "Utilities.h"
 #include "g_DefaultMessageHandler.h"
 #include "g_monster.h"
-#include "Random.h"
-#include "vector.h"
-#include "fx.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/FX.h"
 #include "g_HitLocation.h"
-#include "p_main.h"
+#include "../player/p_main.h"
 #include "g_misc.h"
 #include "m_stats.h"
 #include "g_playstats.h"
-#include "p_actions.h"
+#include "../player/p_actions.h"
 
 static int sounds[NUM_SOUNDS];
 static ClassResourceInfo_t resInfo;

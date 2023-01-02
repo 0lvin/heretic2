@@ -14,12 +14,12 @@
 // PRECOMPILED HEADER ABOVE
 // WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "g_monster.h"
-#include "vector.h"
+#include "../qcommon/Vector.h"
 #include "g_misc.h"
 #include "c_corvus1_anim.h"
-#include "p_main.h"
+#include "../player/p_main.h"
 
 
 

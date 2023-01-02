@@ -6,9 +6,9 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
-#include "vector.h"
-#include "random.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/random.h"
 #include "decals.h"
 #include "m_tcheckrik.h"
 #include "Utilities.h"

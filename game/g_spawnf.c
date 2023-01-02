@@ -5,9 +5,9 @@
 //
 #include "g_local.h"
 #include "g_Skeletons.h"
-#include "ArrayedList.h"
-#include "PrimitiveDisplayHack.h"
-#include "q_Physics.h"
+#include "../qcommon/ArrayedList.h"
+#include "../qcommon/PrimitiveDisplayHack.h"
+#include "../qcommon/q_Physics.h"
 #include "q_shared.h"
 
 void ED_CallSpawn (edict_t *ent);

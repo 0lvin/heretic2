@@ -6,9 +6,6 @@
 // Heretic II
 //
 
-#define WIN32_LEAN_AND_MEAN
-
-#include <windows.h>
 #include "player.h"
 #include "g_local.h"
 #include "qcommon.h"

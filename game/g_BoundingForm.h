@@ -6,7 +6,7 @@
 #ifndef G_BOUNDINGFORM_H
 #define G_BOUNDINGFORM_H
 
-#include "q_Typedef.h"
+#include "../qcommon/q_Typedef.h"
 
 // sides for a nonrotating box
 enum Box_BoundingForm_Sides_e

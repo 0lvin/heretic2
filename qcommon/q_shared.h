@@ -188,6 +188,8 @@ typedef unsigned char byte;
 #define PRINT_MEDIUM 1              /* death messages */
 #define PRINT_HIGH 2                /* critical messages */
 #define PRINT_CHAT 3                /* chat messages */
+#define	PRINT_CAPTION 4             /* captioning at bottom */
+#define	PRINT_TEAM 5                /* chat message to team members */
 
 #define ERR_FATAL 0                 /* exit the entire game with a popup window */
 #define ERR_DROP 1                  /* print to console and disconnect from game */
@@ -227,6 +229,8 @@ typedef	int	fixed16_t;
 #ifndef M_PI
 #define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
 #endif
+#define SQRT2				1.414213562
+#define TIME_EPSILON		0.01
 
 struct cplane_s;
 
@@ -301,7 +305,6 @@ void ProjectPointOnPlane( vec3_t dst, const vec3_t p, const vec3_t normal );
 void PerpendicularVector( vec3_t dst, const vec3_t src );
 void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees );
 
-
 //=============================================
 
 char *COM_SkipPath (char *pathname);
@@ -345,10 +348,15 @@ char	*va(char *format, ...);
 #define	MAX_INFO_VALUE		64
 #define	MAX_INFO_STRING		512
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 char *Info_ValueForKey (char *s, char *key);
 void Info_RemoveKey (char *s, char *key);
 void Info_SetValueForKey (char *s, char *key, char *value);
 qboolean Info_Validate (char *s);
+void Set_Com_Printf(void (*toSet) (char *fmt, ...));
 
 /*
 ==============================================================
@@ -389,6 +397,9 @@ void	Sys_FindClose (void);
 void Sys_Error (char *error, ...);
 void Com_Printf (char *msg, ...);
 
+#ifdef __cplusplus
+}
+#endif
 
 /*
 ==========================================================
@@ -1073,6 +1084,9 @@ typedef enum
 #define	CHAN_VOICE              2
 #define	CHAN_ITEM               3
 #define	CHAN_BODY               4
+#define CHAN_FOOTSTEP			5
+#define CHAN_FOOTSTEP2			6
+#define CHAN_WEAPON2			7
 // modifier flags
 #define	CHAN_NO_PHS_ADD			8	// send to all clients, not just ones in PHS (ATTN 0 will also do this)
 #define	CHAN_RELIABLE			16	// send by reliable message, not datagram
@@ -1083,7 +1097,9 @@ typedef enum
 #define	ATTN_NORM               1
 #define	ATTN_IDLE               2
 #define	ATTN_STATIC             3	// diminish very rapidly with distance
-
+#define ATTN_VERYSTATIC			4
+#define ATTN_LEFT				256
+#define ATTN_RIGHT				512
 
 // player_state->stats[] indexes
 #define STAT_HEALTH_ICON		0
@@ -1180,6 +1196,7 @@ ROGUE - VERSIONS
 #define	ANGLE2SHORT(x)	((int)((x)*65536/360) & 65535)
 #define	SHORT2ANGLE(x)	((x)*(360.0/65536))
 
+#define DEG2RAD( a ) ( a * M_PI ) / 180.0F
 
 //
 // config strings are a general means of communication from

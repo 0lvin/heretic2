@@ -4,10 +4,10 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
-#include "vector.h"
-#include "angles.h"
-#include "matrix.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/Angles.h"
+#include "../qcommon/Matrix.h"
 #include "g_volume_effect.h"
 #include "Utilities.h"
 #include "g_ClassStatics.h"

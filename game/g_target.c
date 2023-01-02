@@ -4,10 +4,10 @@
 // Heretic II
 //
 #include "g_local.h"
-#include "FX.h"
-#include "Random.h"
-#include "vector.h"
-#include "cl_strings.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/cl_strings.h"
 
 /*QUAK-ED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)
 Fire an origin based temp entity event to the clients.

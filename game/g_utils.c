@@ -6,10 +6,10 @@
 // g_utils.c -- misc utility functions for game module
 
 #include "g_local.h"
-#include "FX.h"
+#include "../qcommon/FX.h"
 #include "g_Skeletons.h"
-#include "random.h"
-#include "vector.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 #include "g_BoundingForm.h"
 #include "g_Physics.h"
 

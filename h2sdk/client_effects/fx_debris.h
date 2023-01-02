@@ -7,7 +7,7 @@
 #ifndef FX_DEBRIS_H
 #define FX_DEBRIS_H
 
-#include "q_Typedef.h"
+#include "../qcommon/q_Typedef.h"
 
 void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int material,
 	vec3_t dir, float ke,vec3_t mins,float scale, qboolean altskin);

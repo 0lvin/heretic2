@@ -3,10 +3,10 @@
 //
 // Heretic II
 //
-#include "q_shared.h"
+#ifndef QCOMMON_TYPEDEF_H
+#define QCOMMON_TYPEDEF_H
 
-#ifndef Q_TYPEDEF_H
-#define Q_TYPEDEF_H
+#include "q_shared.h"
 
 typedef vec_t vec2_t[2];
 typedef double vec3d_t[3];
@@ -56,5 +56,54 @@ typedef struct
 #define FMNI_NO_LERP		(1<<3)
 #define FMNI_NO_DRAW		(1<<4)
 #define FMNI_USE_REFLECT	(1<<5)
+
+//=============================================
+
+#define MAX_COLORS	33
+
+extern paletteRGBA_t TextPalette[MAX_COLORS];
+
+typedef enum
+{
+	P_BLACK,
+	P_RED,
+	P_GREEN,
+	P_YELLOW,
+	P_BLUE,
+	P_PURPLE,
+	P_CYAN,
+	P_WHITE,
+
+	P_HBLACK,
+	P_HRED,
+	P_HGREEN,
+	P_HYELLOW,
+	P_HBLUE,
+	P_HPURPLE,
+	P_HCYAN,
+	P_HWHITE,
+
+	P_DESIGNER,
+	P_PROGRAMMER,
+	P_OBJ_NORMAL,
+	P_OBJ_BOLD,
+	P_OBIT,
+	P_CAPTION,
+	P_CHAT,
+	P_TEAM,
+
+	P_VERSION,
+	P_FRAGS,
+	P_ALTFRAGS,
+	P_MENUFIELD,
+	P_MSGBOX,
+	P_HEADER,
+	P_CRED_TITLE,
+	P_CRED_CONTENT,
+	P_FRAGNAME
+
+} PalIdx_t;
+
+void Com_ColourPrintf (PalIdx_t colour, char *msg, ...);
 
 #endif

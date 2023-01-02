@@ -6,60 +6,10 @@
 #ifndef QSHARED_H
 #define QSHARED_H
 
-#include "../qcommon/q_shared.h"
-#include "../qcommon/H2Common.h"
 #include "../qcommon/q_Typedef.h"
+#include "../qcommon/H2Common.h"
 
 #define DEMO_CODE		0
-
-#ifdef QUAKE2_STATIC
-#define QUAKE2_API
-#else
-#ifdef QUAKE2
-#define QUAKE2_API __declspec(dllexport)
-#else
-#define QUAKE2_API __declspec(dllimport)
-#endif
-#endif
-
-#ifndef NULL
-#define NULL ((void *)0)
-#endif
-
-
-// angle indexes
-#define	PITCH				0		// up / down
-#define	YAW					1		// left / right
-#define	ROLL				2		// fall over
-
-#define	MAX_STRING_CHARS	1024	// max length of a string passed to Cmd_TokenizeString
-#define	MAX_STRING_TOKENS	80		// max tokens resulting from Cmd_TokenizeString
-#define	MAX_TOKEN_CHARS		128		// max length of an individual token
-
-#define	MAX_QPATH			64		// max length of a quake game pathname
-#define	MAX_OSPATH			128		// max length of a filesystem pathname
-
-// game print flags
-#define	PRINT_LOW			0		// pickup messages
-#define	PRINT_MEDIUM		1		// death messages
-#define	PRINT_HIGH			2		// critical messages
-#define	PRINT_CHAT			3		// chat messages
-#define	PRINT_CAPTION		4		// captioning at bottom
-#define	PRINT_TEAM			5		// chat message to team members
-
-#define	ERR_FATAL			0		// exit the entire game with a popup window
-#define	ERR_DROP			1		// print to console and disconnect from game
-#define	ERR_DISCONNECT		2		// don't kill server
-
-#define	PRINT_ALL			0
-#define PRINT_DEVELOPER		1		// only print when "developer 1"
-#define PRINT_ALERT			2
-
-#ifndef M_PI
-#define M_PI				3.14159265358979323846	// matches value in gcc v2 math.h
-#endif
-#define SQRT2				1.414213562
-#define TIME_EPSILON		0.01
 
 #define VectorCopy_Macro(a,b)			(b[0]=a[0],b[1]=a[1],b[2]=a[2])
 #define VectorSubtract_Macro(a,b,c)		(c[0]=a[0]-b[0],c[1]=a[1]-b[1],c[2]=a[2]-b[2])
@@ -73,70 +23,9 @@ H2COMMON_API float	anglemod(float a);
 H2COMMON_API float	anglemod_old(float a);
 H2COMMON_API float LerpAngle (float a1, float a2, float frac);
 
-int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplane_s *plane);
 
-#define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\
-	(((p)->type < 3)?						\
-	(										\
-		((p)->dist <= (emins)[(p)->type])?	\
-			1								\
-		:									\
-		(									\
-			((p)->dist >= (emaxs)[(p)->type])?\
-				2							\
-			:								\
-				3							\
-		)									\
-	)										\
-	:										\
-		BoxOnPlaneSide( (emins), (emaxs), (p)))
 
-//=============================================
 
-#define MAX_COLORS	33
-
-extern H2COMMON_API paletteRGBA_t TextPalette[MAX_COLORS];
-
-typedef enum
-{
-	P_BLACK			,
-	P_RED			,
-	P_GREEN			,
-	P_YELLOW		,
-	P_BLUE 			,
-	P_PURPLE		,
-	P_CYAN			,
-	P_WHITE			,
-
-	P_HBLACK		,
-	P_HRED			,
-	P_HGREEN  		,
-	P_HYELLOW		,
-	P_HBLUE   		,
-	P_HPURPLE		,
-	P_HCYAN			,
-	P_HWHITE 		,
-
-	P_DESIGNER		,
-	P_PROGRAMMER	,
-	P_OBJ_NORMAL	,
-	P_OBJ_BOLD		,
-	P_OBIT			,
-	P_CAPTION		,
-	P_CHAT			,
-	P_TEAM 			,
-
-	P_VERSION		,
-	P_FRAGS			,
-	P_ALTFRAGS		,
-	P_MENUFIELD		,
-	P_MSGBOX		,
-	P_HEADER		,
-	P_CRED_TITLE	,
-	P_CRED_CONTENT	,
-	P_FRAGNAME
-
-} PalIdx_t;
 
 //=============================================
 
@@ -167,101 +56,9 @@ H2COMMON_API char	*va(char *format, ...);
 
 //=============================================
 
-//
-// key / value info strings
-//
-#define	MAX_INFO_KEY		64
-#define	MAX_INFO_VALUE		64
-#define	MAX_INFO_STRING		512
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-H2COMMON_API char *Info_ValueForKey (char *s, char *key);
-H2COMMON_API void Info_RemoveKey (char *s, char *key);
-H2COMMON_API void Info_SetValueForKey (char *s, char *key, char *value);
-H2COMMON_API qboolean Info_Validate (char *s);
-H2COMMON_API void Set_Com_Printf(void (*toSet) (char *fmt, ...));
-
-/*
-==============================================================
-
-SYSTEM SPECIFIC
-
-==============================================================
-*/
-
 struct cplane_s;
 extern H2COMMON_API vec3_t vec3_origin;
 extern H2COMMON_API vec3_t vec3_up;
-
-extern	int	curtime;		// time returned by last Sys_Milliseconds
-
-int		Sys_Milliseconds (void);
-void	Sys_Mkdir (char *path);
-
-// large block stack allocation routines
-void	*Hunk_Begin (int maxsize);
-void	*Hunk_Alloc (int size);
-void	Hunk_Free (void *buf);
-int		Hunk_End (void);
-
-// directory searching
-#define SFF_ARCH    0x01
-#define SFF_HIDDEN  0x02
-#define SFF_RDONLY  0x04
-#define SFF_SUBDIR  0x08
-#define SFF_SYSTEM  0x10
-
-/*
-** pass in an attribute mask of things you wish to REJECT
-*/
-char	*Sys_FindFirst (char *path, unsigned musthave, unsigned canthave );
-char	*Sys_FindNext ( unsigned musthave, unsigned canthave );
-void	Sys_FindClose (void);
-
-
-// this is only here so the functions in q_shared.c and q_shwin.c can link
-void Sys_Error (char *error, ...);
-void Com_Printf (char *msg, ...);
-void Com_ColourPrintf (PalIdx_t colour, char *msg, ...);
-
-#ifdef __cplusplus
-}
-#endif
-
-/*
-==========================================================
-
-CVARS (console variables)
-
-==========================================================
-*/
-
-#ifndef CVAR
-#define	CVAR
-
-#define	CVAR_ARCHIVE	1	// set to cause it to be saved to vars.rc
-#define	CVAR_USERINFO	2	// added to userinfo  when changed
-#define	CVAR_SERVERINFO	4	// added to serverinfo when changed
-#define	CVAR_NOSET		8	// don't allow change from console at all,
-							// but can be set from the command line
-#define	CVAR_LATCH		16	// save changes until server restart
-
-// nothing outside the Cvar_*() functions should modify these fields!
-typedef struct cvar_s
-{
-	char		*name;
-	char		*string;
-	char		*latched_string;	// for CVAR_LATCH vars
-	int			flags;
-	qboolean	modified;	// set each time the cvar is changed
-	float		value;
-	struct cvar_s *next;
-} cvar_t;
-
-#endif		// CVAR
 
 cvar_t *Cvar_Get (char *var_name, char *value, int flags);
 
@@ -410,41 +207,6 @@ COLLISION DETECTION
 #define SURF_UNDULATE		0x00002000	// rock surface up and down...
 #define SURF_QUAKE			0x00004000	// rock surface up and down when quake value on
 
-// gi.BoxEdicts() can return a list of either solid or trigger entities
-// FIXME: eliminate AREA_ distinction?
-
-#define	AREA_SOLID		1
-#define	AREA_TRIGGERS	2
-
-
-// plane_t structure
-// !!! if this is changed, it must be changed in asm code too !!!
-typedef struct cplane_s
-{
-	vec3_t	normal;
-	float	dist;
-	byte	type;			// for fast side tests
-	byte	signbits;		// signx + (signy<<1) + (signz<<1)
-	byte	pad[2];
-} cplane_t;
-
-// structure offset for asm code
-#define CPLANE_NORMAL_X			0
-#define CPLANE_NORMAL_Y			4
-#define CPLANE_NORMAL_Z			8
-#define CPLANE_DIST				12
-#define CPLANE_TYPE				16
-#define CPLANE_SIGNBITS			17
-#define CPLANE_PAD0				18
-#define CPLANE_PAD1				19
-
-typedef struct cmodel_s
-{
-	vec3_t		mins, maxs;
-	vec3_t		origin;		// for sounds or lights
-	int			headnode;
-} cmodel_t;
-
 typedef struct csurface_s
 {
 	char		name[40];
@@ -478,16 +240,6 @@ typedef struct trace_s
 // pmtype_t
 // --------
 // ************************************************************************************************
-
-typedef enum
-{
-	PM_NORMAL,				// Can accelerate and turn, clips.
-	PM_SPECTATOR,			// Can accelerate and turn, no clip.
-	PM_DEAD,				// No acceleration or turning, dead.
-	PM_GIB,					// No acceleration or turning, dead, different bounding box.
-	PM_FREEZE,				// Running a server demo.
-	PM_INTERMISSION,		// An existing remote camera view is already underway.
-} pmtype_t;
 
 // ************************************************************************************************
 // PMF_XXX
@@ -575,8 +327,6 @@ typedef struct usercmd_s
 // pmove_t
 // -------
 // ************************************************************************************************
-
-#define	MAXTOUCH	32
 
 typedef struct
 {
@@ -687,9 +437,6 @@ typedef struct
 #define ATTN_RIGHT				512
 
 // player_state->stats[] indexes
-
-// * - MUST BE SEQUENTIAL !!!!!!!!
-
 #define STAT_HEALTH_ICON		0		// Icon for health
 #define	STAT_HEALTH				1		// Health value
 #define	STAT_AMMO_ICON			2		// Icon for ammo
@@ -767,7 +514,6 @@ typedef struct
 // the server to all connected clients.
 // Each config string can be at most MAX_QPATH characters.
 //
-
 #define	CS_NAME				0
 #define	CS_CDTRACK			1
 #define	CS_SKY				2

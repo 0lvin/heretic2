@@ -6,11 +6,11 @@
 //
 
 #include "g_local.h"
-#include "fx.h"
-#include "Angles.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/Angles.h"
 #include "Utilities.h"
-#include "vector.h"
-#include "random.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/random.h"
 #include "decals.h"
 #include "g_playstats.h"
 

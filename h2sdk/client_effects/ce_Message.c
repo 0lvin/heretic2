@@ -11,7 +11,7 @@
 
 #include "Client Entities.h"
 #include "ResourceManager.h"
-#include "SinglyLinkedList.h"
+#include "../qcommon/SinglyLinkedList.h"
 
 static ResourceManager_t MsgMngr;
 

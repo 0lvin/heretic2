@@ -7,9 +7,9 @@
 // 1. Fountain
 
 #include "g_local.h"
-#include "fx.h"
-#include "random.h"
-#include "vector.h"
+#include "../qcommon/FX.h"
+#include "../qcommon/random.h"
+#include "../qcommon/Vector.h"
 
 #define OBJ_INVULNERABLE	1
 #define OBJ_ANIMATE			2

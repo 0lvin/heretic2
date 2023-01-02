@@ -12,7 +12,7 @@
 #include "g_items.h"
 #include "p_anims.h"
 #include "p_anim_data.h"
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "random.h"
 #include "vector.h"
 #include "items.h"

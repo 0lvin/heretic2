@@ -7,7 +7,7 @@
 //
 
 #include "Message.h"
-#include "SinglyLinkedList.h"
+#include "../qcommon/SinglyLinkedList.h"
 
 void QueueMessage(MsgQueue_t *this, void *msg)
 {

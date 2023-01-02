@@ -5,14 +5,14 @@
 //
 #include "g_local.h"
 #include "g_Skeletons.h"
-#include "ArrayedList.h"
-#include "Message.h"
-#include "q_ClientServer.h"
-#include "q_Physics.h"
+#include "../qcommon/ArrayedList.h"
+#include "../qcommon/Message.h"
+#include "../qcommon/q_ClientServer.h"
+#include "../qcommon/q_Physics.h"
 #include "g_playstats.h"
-#include "utilities.h"
-#include "p_anims.h"
-#include "FX.h"
+#include "Utilities.h"
+#include "../player/p_anims.h"
+#include "../qcommon/FX.h"
 
 extern void	InitPlayerinfo(edict_t *ent);
 extern void LoadPersistantEffects(FILE *f);

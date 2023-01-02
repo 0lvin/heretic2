@@ -6,10 +6,10 @@
 // Copyright 1998 Raven Software
 ==============================================================================
 */
-#include "fx.h"
+#include "../qcommon/FX.h"
 #include "g_local.h"
-#include "vector.h"
-#include "random.h"
+#include "../qcommon/Vector.h"
+#include "../qcommon/random.h"
 
 
 void env_dust_use(edict_t *self, edict_t *other, edict_t *activator)

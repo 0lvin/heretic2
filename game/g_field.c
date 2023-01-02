@@ -4,12 +4,12 @@
 // Heretic II
 //
 #include "g_local.h"
-//#include "p_types.h"
-#include "player.h"
-#include "Vector.h"
-#include "p_actions.h"
+//#include "../player/p_types.h"
+#include "../player/Player.h"
+#include "../qcommon/Vector.h"
+#include "../player/p_actions.h"
 #include "g_DefaultMessageHandler.h"
-#include "p_main.h"
+#include "../player/p_main.h"
 #include "buoy.h"
 #include "m_stats.h"
 #include "g_teleport.h"

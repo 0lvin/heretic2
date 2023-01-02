@@ -14,8 +14,8 @@
 // WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
-#include "c_victimssithra_anim.h"
-#include "c_victimssithra.h"
+#include "c_victimSsithra_anim.h"
+#include "c_victimSsithra.h"
 #include "c_ai.h"
 
 //==============================================================================

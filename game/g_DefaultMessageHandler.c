@@ -6,7 +6,7 @@
 #include "g_DefaultMessageHandler.h"
 #include "g_Physics.h"
 #include "g_local.h"
-#include "Vector.h"
+#include "../qcommon/Vector.h"
 #include "Utilities.h"
 #include "g_HitLocation.h"
 
