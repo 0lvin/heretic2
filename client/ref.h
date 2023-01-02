@@ -1,4 +1,6 @@
 #include "../qcommon/qcommon.h"
+#include "../qcommon/q_Typedef.h"
+#include "../qcommon/ArrayedList.h"
 
 // these are the maximum number that maybe rendered on any given frame
 #define	MAX_DLIGHTS		32
@@ -97,6 +99,11 @@ typedef struct entity_s
 
 	};
 
+	struct image_s		**skins;		// Pointer to the list of clientinfo skins.
+
+	fmnodeinfo_t		*fmnodeinfo;	// client entities which use a flexible model will need
+										// to fill this in, and then release it when they die
+										// happily most client entities are sprites
 } entity_t;
 
 #define ENTITY_FLAGS  68
@@ -230,6 +237,12 @@ typedef struct
    void (*A3D_RenderGeometry) (void *pA3D, void *pGeom, void *pMat, void *pGeomStatus);
 #endif
 } refexport_t;
+
+typedef struct CL_SkeletalJoint_s
+{
+	int children;
+	vec3_t angles;
+} CL_SkeletalJoint_t;
 
 //
 // these are the functions imported by the refresh module

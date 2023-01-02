@@ -1,4 +1,11 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // Generic flexible format
+
+#define RAVENFMHEADER		(('d'<<24)+('a'<<16)+('e'<<8)+'h')
 
 typedef struct
 {

@@ -1,7 +1,5 @@
 #pragma once
 
-typedef int qboolean;
-
 typedef struct M_SkeletalCluster_s
 {
 	int children;		// must be the first field

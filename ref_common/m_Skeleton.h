@@ -1,9 +1,13 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 #pragma once
 
+#include "../qcommon/q_shared.h"
 #include "../qcommon/Placement.h"
 #include "../qcommon/Matrix.h"
-
-typedef int qboolean;
 
 typedef struct M_SkeletalJoint_s
 {

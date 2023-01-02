@@ -1,6 +1,12 @@
-#pragma once
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+#ifndef COMMON_SKELETONS_H
+#define COMMON_SKELETONS_H
 
-#include <stdlib.h> // for size_t
+#include "ArrayedList.h"
 
 #define JN_YAW_CHANGED		0x00000001
 #define JN_PITCH_CHANGED	0x00000002
@@ -83,3 +89,5 @@ extern int numNodesInSkeleton[];
 typedef void (*CreateSkeleton_t)(void *skeletalJoints, size_t jointSize, struct ArrayedListNode_s *jointNodes, int rootIndex);
 
 extern CreateSkeleton_t SkeletonCreators[NUM_SKELETONS];
+
+#endif

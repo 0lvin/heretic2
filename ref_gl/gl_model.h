@@ -237,6 +237,8 @@ typedef struct model_s
 
 	byte		*lightdata;
 
+	fmdl_t		*fmodel;
+
 	// for alias models and skins
 	image_t		*skins[MAX_MD2SKINS];
 

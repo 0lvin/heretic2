@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // q_shared.h -- included first by ALL program modules
 
+#ifndef COMMON_SHARED_H
+#define COMMON_SHARED_H
+
 #ifdef _WIN32
 // unknown pragmas are SUPPOSED to be ignored, but....
 #pragma warning(disable : 4244)     // MIPS
@@ -38,77 +41,180 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 
-typedef unsigned char 		byte;
-typedef enum {false, true}	qboolean;
-
-
-#ifndef NULL
-#define NULL ((void *)0)
+#ifdef true
+ #undef true
 #endif
 
+#ifdef false
+ #undef false
+#endif
 
-// angle indexes
-#define	PITCH				0		// up / down
-#define	YAW					1		// left / right
-#define	ROLL				2		// fall over
+typedef enum {false, true}  qboolean;
+typedef unsigned char byte;
 
-#define	MAX_STRING_CHARS	1024	// max length of a string passed to Cmd_TokenizeString
-#define	MAX_STRING_TOKENS	80		// max tokens resulting from Cmd_TokenizeString
-#define	MAX_TOKEN_CHARS		128		// max length of an individual token
+#ifndef NULL
+ #define NULL ((void *)0)
+#endif
 
-#define	MAX_QPATH			64		// max length of a quake game pathname
-#define	MAX_OSPATH			128		// max length of a filesystem pathname
+// stuff to align variables/arrays and for noreturn
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L // C11 or newer
+	#define YQ2_ALIGNAS_SIZE(SIZE)  _Alignas(SIZE)
+	#define YQ2_ALIGNAS_TYPE(TYPE)  _Alignas(TYPE)
+	// must be used as prefix (YQ2_ATTR_NORETURN void bla();)!
+	#define YQ2_ATTR_NORETURN       _Noreturn
+  #if defined(__GNUC__)
+	#define YQ2_ATTR_MALLOC         __attribute__ ((__malloc__))
+	#define YQ2_ATTR_INLINE         __attribute__((always_inline)) inline
+  #elif defined(_MSC_VER)
+	#define YQ2_ATTR_MALLOC         __declspec(restrict)
+	#define YQ2_ATTR_INLINE         __forceinline
+  #else
+	// no equivalent per see
+	#define YQ2_ATTR_MALLOC
+	#define YQ2_ATTR_INLINE         inline
+  #endif
+#elif defined(__GNUC__) // GCC and clang should support this attribute
+	#define YQ2_ALIGNAS_SIZE(SIZE)  __attribute__(( __aligned__(SIZE) ))
+	#define YQ2_ALIGNAS_TYPE(TYPE)  __attribute__(( __aligned__(__alignof__(TYPE)) ))
+	// must be used as prefix (YQ2_ATTR_NORETURN void bla();)!
+	#define YQ2_ATTR_NORETURN       __attribute__ ((noreturn))
+	#define YQ2_ATTR_MALLOC         __attribute__ ((__malloc__))
+	#define YQ2_ATTR_INLINE         __attribute__((always_inline)) inline
+#elif defined(_MSC_VER)
+	// Note: We prefer VS2019 16.8 or newer in C11 mode (/std:c11),
+	//       then the __STDC_VERSION__ >= 201112L case above is used
 
-//
-// per-level limits
-//
-#define	MAX_CLIENTS			256		// absolute limit
-#define	MAX_EDICTS			1024	// must change protocol to increase more
-#define	MAX_LIGHTSTYLES		256
-#define	MAX_MODELS			256		// these are sent over the net as bytes
-#define	MAX_SOUNDS			256		// so they cannot be blindly increased
-#define	MAX_IMAGES			256
-#define	MAX_ITEMS			256
-#define MAX_GENERAL			(MAX_CLIENTS*2)	// general config strings
+	#define YQ2_ALIGNAS_SIZE(SIZE)  __declspec(align(SIZE))
+	// FIXME: for some reason, the following line doesn't work
+	//#define YQ2_ALIGNAS_TYPE( TYPE )  __declspec(align(__alignof(TYPE)))
 
+  #ifdef _WIN64 // (hopefully) good enough workaround
+	#define YQ2_ALIGNAS_TYPE(TYPE)  __declspec(align(8))
+  #else // 32bit
+	#define YQ2_ALIGNAS_TYPE(TYPE)  __declspec(align(4))
+  #endif // _WIN64
 
-// game print flags
-#define	PRINT_LOW			0		// pickup messages
-#define	PRINT_MEDIUM		1		// death messages
-#define	PRINT_HIGH			2		// critical messages
-#define	PRINT_CHAT			3		// chat messages
+	// must be used as prefix (YQ2_ATTR_NORETURN void bla();)!
+	#define YQ2_ATTR_NORETURN       __declspec(noreturn)
+	#define YQ2_ATTR_MALLOC         __declspec(restrict)
+	#define YQ2_ATTR_INLINE         __forceinline
+#else
+	#warning "Please add a case for your compiler here to align correctly"
+	#define YQ2_ALIGNAS_SIZE(SIZE)
+	#define YQ2_ALIGNAS_TYPE(TYPE)
+	#define YQ2_ATTR_NORETURN
+	#define YQ2_ATTR_MALLOC
+	#define YQ2_ATTR_INLINE         inline
+#endif
 
+#if defined(__GNUC__)
+	/* ISO C11 _Noreturn can't be attached to function pointers, so
+	 * use the gcc/clang-specific version for function pointers, even
+	 * in C11 mode. MSVC __declspec(noreturn) seems to have the same
+	 * restriction as _Noreturn so can't be used here either. */
+	#define YQ2_ATTR_NORETURN_FUNCPTR  __attribute__ ((noreturn))
+#else
+	#define YQ2_ATTR_NORETURN_FUNCPTR  /* nothing */
+#endif
 
+/* angle indexes */
+#define PITCH 0                     /* up / down */
+#define YAW 1                       /* left / right */
+#define ROLL 2                      /* fall over */
 
-#define	ERR_FATAL			0		// exit the entire game with a popup window
-#define	ERR_DROP			1		// print to console and disconnect from game
-#define	ERR_DISCONNECT		2		// don't kill server
+#ifndef min
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
 
-#define	PRINT_ALL			0
-#define PRINT_DEVELOPER		1		// only print when "developer 1"
-#define PRINT_ALERT			2
+#define MAX_STRING_CHARS 2048       /* max length of a string passed to Cmd_TokenizeString */
+#define MAX_STRING_TOKENS 80        /* max tokens resulting from Cmd_TokenizeString */
+#define MAX_TOKEN_CHARS 1024        /* max length of an individual token */
 
-
-// destination class for gi.multicast()
-typedef enum
-{
-MULTICAST_ALL,
-MULTICAST_PHS,
-MULTICAST_PVS,
-MULTICAST_ALL_R,
-MULTICAST_PHS_R,
-MULTICAST_PVS_R
-} multicast_t;
-
+#define MAX_QPATH 64                /* max length of a quake game pathname */
 
 /*
-==============================================================
+ * DG: For some stupid reason, SV_WriteServerFile() and SV_ReadeServerFile() used
+ * MAX_OSPATH as buffer length for CVAR_LATCH CVARS and saved the whole buffer
+ * into $game/save/current/server.ssv, so changing MAX_OSPATH breaks savegames...
+ * Unfortunately, for some other fucking reason MAX_OSPATH was 128 for non-Windows
+ * which is just horrible.. so I introduced LATCH_CVAR_SAVELENGTH with the stupid
+ * values so I could bump MAX_OSPATH.
+ * TODO: whenever you break savegame compatibility next, make
+ *       LATCH_CVAR_SAVELENGTH system-independent (or remove it and hardcode a
+ *       sensible value in the two functions)
+ */
 
-MATHLIB
+#ifdef _WIN32
+ #define MAX_OSPATH 256             /* max length of a filesystem pathname (same as MAX_PATH) */
+ #define LATCH_CVAR_SAVELENGTH 256
 
-==============================================================
-*/
+ // by default dlls don't export any functions, use this to
+ // make a function visible (for GetGameAPI(), GetRefAPI() and similar)
+ #define Q2_DLL_EXPORTED  __declspec(dllexport)
+
+#else // not Win32 (Linux, BSD, Mac, ..)
+
+ #define MAX_OSPATH 4096            /* max length of a filesystem pathname */
+ #define LATCH_CVAR_SAVELENGTH 128
+
+ // by default our .so/.dylibs don't export any functions, use this to
+ // make a function visible (for GetGameAPI(), GetRefAPI() and similar)
+ #define Q2_DLL_EXPORTED  __attribute__((__visibility__("default")))
+#endif
+
+#ifdef _MSC_VER
+ #define PRINTF_ATTR(FMT, VARGS)
+#else // at least GCC/mingw and clang support this
+ #define PRINTF_ATTR(FMT, VARGS) __attribute__((format(printf, FMT , VARGS )))
+#endif
+
+/* per-level limits */
+#define MAX_CLIENTS 256             /* absolute limit */
+#define MAX_EDICTS 1024             /* must change protocol to increase more */
+#define MAX_LIGHTSTYLES 256
+#define MAX_MODELS 256              /* these are sent over the net as bytes */
+#define MAX_SOUNDS 256              /* so they cannot be blindly increased */
+#define MAX_IMAGES 256
+#define MAX_ITEMS 256
+#define MAX_GENERAL (MAX_CLIENTS * 2)       /* general config strings */
+
+/* game print flags */
+#define PRINT_LOW 0                 /* pickup messages */
+#define PRINT_MEDIUM 1              /* death messages */
+#define PRINT_HIGH 2                /* critical messages */
+#define PRINT_CHAT 3                /* chat messages */
+
+#define ERR_FATAL 0                 /* exit the entire game with a popup window */
+#define ERR_DROP 1                  /* print to console and disconnect from game */
+#define ERR_DISCONNECT 2            /* don't kill server */
+
+#define PRINT_ALL 0
+#define PRINT_DEVELOPER 1           /* only print when "developer 1" */
+#define PRINT_ALERT 2
+
+/* destination class for gi.multicast() */
+typedef enum
+{
+	MULTICAST_ALL,
+	MULTICAST_PHS,
+	MULTICAST_PVS,
+	MULTICAST_ALL_R,
+	MULTICAST_PHS_R,
+	MULTICAST_PVS_R
+} multicast_t;
+
+/*
+ * ==============================================================
+ *
+ * MATHLIB
+ *
+ * ==============================================================
+ */
 
 typedef float vec_t;
 typedef vec_t vec3_t[3];
@@ -126,22 +232,27 @@ struct cplane_s;
 
 extern vec3_t vec3_origin;
 
-#define	nanmask (255<<23)
+#define nanmask (255 << 23)
 
-#define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
+#define IS_NAN(x) (((*(int *)&x) & nanmask) == nanmask)
 
 // microsoft's fabs seems to be ungodly slow...
 float Q_fabs (float f);
 //#define	fabs(f) Q_fabs(f)
-#define Q_ftol( f ) ( long ) (f)
+// FIXME: use int instead of long, it's only used with int anyway?
+#define Q_ftol(f) (long)(f)
 
-#define DotProduct(x,y)			(x[0]*y[0]+x[1]*y[1]+x[2]*y[2])
-#define VectorSubtract(a,b,c)	(c[0]=a[0]-b[0],c[1]=a[1]-b[1],c[2]=a[2]-b[2])
-#define VectorAdd(a,b,c)		(c[0]=a[0]+b[0],c[1]=a[1]+b[1],c[2]=a[2]+b[2])
-#define VectorCopy(a,b)			(b[0]=a[0],b[1]=a[1],b[2]=a[2])
-#define VectorClear(a)			(a[0]=a[1]=a[2]=0)
-#define VectorNegate(a,b)		(b[0]=-a[0],b[1]=-a[1],b[2]=-a[2])
-#define VectorSet(v, x, y, z)	(v[0]=(x), v[1]=(y), v[2]=(z))
+#define DotProduct(x, y) (x[0] * y[0] + x[1] * y[1] + x[2] * y[2])
+#define VectorSubtract(a, b, c)	\
+	(c[0] = a[0] - b[0], c[1] = a[1] - b[1], c[2] =	\
+	 a[2] - b[2])
+#define VectorAdd(a, b, c) \
+	(c[0] = a[0] + b[0], c[1] = a[1] + b[1], c[2] =	\
+	 a[2] + b[2])
+#define VectorCopy(a, b) (b[0] = a[0], b[1] = a[1], b[2] = a[2])
+#define VectorClear(a) (a[0] = a[1] = a[2] = 0)
+#define VectorNegate(a, b) (b[0] = -a[0], b[1] = -a[1], b[2] = -a[2])
+#define VectorSet(v, x, y, z) (v[0] = (x), v[1] = (y), v[2] = (z))
 
 void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
 
@@ -251,6 +362,7 @@ extern	int	curtime;		// time returned by last Sys_Milliseconds
 
 int		Sys_Milliseconds (void);
 void	Sys_Mkdir (char *path);
+char	*strlwr (char *s);
 
 // large block stack allocation routines
 void	*Hunk_Begin (int maxsize);
@@ -1182,3 +1294,5 @@ typedef struct
 extern int vidref_val;
 // PGM
 // ==================
+
+#endif

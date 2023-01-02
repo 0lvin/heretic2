@@ -263,7 +263,8 @@ int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 
 		lightmap = surf->samples;
 		VectorCopy (vec3_origin, pointcolor);
-		if (lightmap)
+		/* No skin for model in multiplayer setup */
+		if (lightmap && r_newrefdef.lightstyles)
 		{
 			vec3_t scale;
 
@@ -305,7 +306,7 @@ void R_LightPoint (vec3_t p, vec3_t color)
 	vec3_t		dist;
 	float		add;
 
-	if (!r_worldmodel->lightdata)
+	if (!r_worldmodel || !r_worldmodel->lightdata)
 	{
 		color[0] = color[1] = color[2] = 1.0;
 		return;

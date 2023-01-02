@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // flexmodel.c
 //
 
@@ -38,7 +43,7 @@ void Mod_SerializeHeader(fmdl_t *fmodel, int version, int length, char *buffer)
 {
 	if (version != FM_HEADER_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid header version for block");
+		ri.Sys_Error (ERR_DROP, "Invalid header version for block");
 		return;
 	}
 
@@ -46,31 +51,31 @@ void Mod_SerializeHeader(fmdl_t *fmodel, int version, int length, char *buffer)
 
 	if (fmodel->header.num_xyz <= 0)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has no verts");
+		ri.Sys_Error (ERR_DROP, "Model has no verts");
 		return;
 	}
 
 	if (fmodel->header.num_xyz > MAX_FM_VERTS)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has too many vertices");
+		ri.Sys_Error (ERR_DROP, "Model has too many vertices");
 		return;
 	}
 
 	if (fmodel->header.num_st <= 0)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has no st verts\n");
+		ri.Sys_Error (ERR_DROP, "Model has no st verts\n");
 		return;
 	}
 
 	if (fmodel->header.num_tris <= 0)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has no tris\n");
+		ri.Sys_Error (ERR_DROP, "Model has no tris\n");
 		return;
 	}
 
 	if (fmodel->header.num_frames <= 0)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has no frames\n");
+		ri.Sys_Error (ERR_DROP, "Model has no frames\n");
 		return;
 	}
 }
@@ -84,7 +89,7 @@ void Mod_SerializeSkin(fmdl_t *fmodel, int version, int length, char *buffer)
 {
 	if (version != FM_SKIN_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid skin version!");
+		ri.Sys_Error (ERR_DROP, "Invalid skin version!");
 		return;
 	}
 
@@ -123,12 +128,12 @@ void Mod_SerializeFrames(fmdl_t *fmodel, int version, int length, char *buffer)
 
 	if (fmodel->frames != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate frames block!\n");
+		ri.Sys_Error (ERR_DROP, "Duplicate frames block!\n");
 		return;
 	}
 	if (version != FM_FRAME_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid header version for block");
+		ri.Sys_Error (ERR_DROP, "Invalid header version for block");
 		return;
 	}
 
@@ -160,21 +165,22 @@ void Mod_SerializeGLCmds(fmdl_t *fmodel, int version, int length, char *buffer)
 {
 	if (fmodel->glcmds != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate glCmds block!\n");
+		ri.Sys_Error (ERR_DROP, "Duplicate glCmds block!\n");
 		return;
 	}
 
 	if (version != FM_GLCMDS_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid header version for block");
+		ri.Sys_Error (ERR_DROP, "Invalid header version for block");
 		return;
 	}
 
 	int* poutcmd = (int *)Hunk_Alloc(sizeof(int) * fmodel->header.num_glcmds);
 	fmodel->glcmds = (int*)poutcmd;
 	int* pincmd = (int *)((byte *)buffer);
+
 	for (int i = 0; i < fmodel->header.num_glcmds; i++)
-		poutcmd[i] = (pincmd[i]);
+		poutcmd[i] = LittleLong (pincmd[i]);
 }
 
 /*
@@ -189,13 +195,13 @@ void Mod_SerializeMeshNodes(fmdl_t *fmodel, int version, int length, char *buffe
 
 	if (fmodel->mesh_nodes != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate mesh node block!\n");
+		ri.Sys_Error (ERR_DROP, "Duplicate mesh node block!\n");
 		return;
 	}
 
 	if (version != FM_MESH_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid mesh version");
+		ri.Sys_Error (ERR_DROP, "Invalid mesh version");
 		return;
 	}
 
@@ -228,12 +234,12 @@ void Mod_SerializeNormal(fmdl_t *fmodel, int version, int length, char *buffer)
 {
 	if (fmodel->lightnormalindex != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate light normal block!\n");
+		ri.Sys_Error (ERR_DROP, "Duplicate light normal block!\n");
 		return;
 	}
 	if (version != FM_NORMAL_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid normal version\n");
+		ri.Sys_Error (ERR_DROP, "Invalid normal version\n");
 		return;
 	}
 	fmodel->lightnormalindex = (byte *)Hunk_Alloc(fmodel->header.num_xyz * sizeof(byte));
@@ -266,12 +272,12 @@ void Mod_SerializeSkeleton(fmdl_t *fmodel, int version, int length, char *buffer
 
 	if (fmodel->skeletons != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate skeleton block!\n");
+		ri.Sys_Error (ERR_DROP, "Duplicate skeleton block!\n");
 		return;
 	}
 	if (version != FM_SKELETON_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid skeleton version\n");
+		ri.Sys_Error (ERR_DROP, "Invalid skeleton version\n");
 		return;
 	}
 
@@ -388,7 +394,7 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 
 		while (m_fmblocks[i].blocktype >= 0)
 		{
-			if (strcmpi(buffer, m_fmblocks[i].blockid) == 0)
+			if (Q_strncasecmp(buffer, m_fmblocks[i].blockid, sizeof(m_fmblocks[i].blockid)) == 0)
 			{
 				break;
 			}
@@ -441,7 +447,7 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 			Mod_SerializeReferences(fmodel, version, size, buffer);
 			break;
 		default:
-			ri.Com_Error(ERR_FATAL, "Unknown block %s\n", blockname);
+			ri.Sys_Error (ERR_DROP, "Unknown block %s\n", blockname);
 		}
 		filesize -= size;
 		buffer += size;
@@ -449,10 +455,6 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 
 	// Load in our skins.
 	mod->skins[0] = GL_FindImage(fmodel->skin_names, it_pic);
-	if (mod->skins[0] == nullptr)
-	{
-		ri.Con_Printf(PRINT_ALL, "GL_FindImage: failed to load %s\n", fmodel->skin_names);
-	}
 
 	mod->type = mod_flex;
 	mod->mins[0] = -32;
@@ -482,7 +484,7 @@ R_RenderFlexNode
 */
 void R_RenderFlexNode(int startCmd, int numCmds, fmdl_t* model, vec3_t *frame_vertexes, vec3_t *old_frame_vertexes, fmaliasframe_t* frame, fmaliasframe_t* oldframe, int currentFrame, int oldframenum, float backlerp)
 {
-	long* command = (long *)model->glcmds;
+	int* command = (int *)model->glcmds;
 	int cur_glcmnd = model->header.num_glcmds;
 
 	int cmdId = 0;
@@ -530,7 +532,6 @@ void R_RenderFlexNode(int startCmd, int numCmds, fmdl_t* model, vec3_t *frame_ve
 			st[1] = (*((float*)command)) * 1; command++; cmdId++;
 
 			vert_index = *command; command++; cmdId++;
-
 			if (oldframenum == currentFrame)
 			{
 				position[0] = (frame_vertexes[vert_index][0] * frame->scale[0]) + frame->translate[0];
@@ -622,7 +623,10 @@ void R_RenderFlexModel(fmdl_t *model, fmnodeinfo_t *nodeinfo, int currentFrame, 
 		if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)
 			continue;
 
-		R_RenderFlexNode(model->mesh_nodes[i].start_glcmds, model->mesh_nodes[i].num_glcmds, model, frame_vertexes, old_frame_vertexes, frame, oldframe, currentFrame, oldframenum, backlerp);
+		R_RenderFlexNode(model->mesh_nodes[i].start_glcmds,
+			model->mesh_nodes[i].num_glcmds, model,
+			frame_vertexes, old_frame_vertexes,
+			frame, oldframe, currentFrame, oldframenum, backlerp);
 	}
 }
 
@@ -686,12 +690,11 @@ void R_DrawFlexModel(entity_t *e)
 	R_LightPoint(e->origin, lightColor);
 	glColor3f(lightColor[0] * 3, lightColor[1] * 3, lightColor[2] * 3);
 
-
-	if (e->model[0]->skins[0])
+	if (e->model->skins[0])
 	{
-		GL_Bind(e->model[0]->skins[0]->texnum);
+		GL_Bind(e->model->skins[0]->texnum);
 	}
-	R_RenderFlexModel(e->model[0]->fmodel, e->fmnodeinfo, e->frame, e->oldframe, e->oldorigin, e->origin, e->angles, e->backlerp);
+	R_RenderFlexModel(e->model->fmodel, e->fmnodeinfo, e->frame, e->oldframe, e->oldorigin, e->origin, e->angles, e->backlerp);
 
 	GL_EnableMultitexture(false);
 

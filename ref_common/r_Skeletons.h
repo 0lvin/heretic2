@@ -1,4 +1,10 @@
-#pragma once
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+#ifndef REF_COMMON_SKELETONS_H
+#define REF_COMMON_SKELETONS_H
 
 #ifndef M_SKELETON_H
 #define M_SKELETON_H
@@ -30,3 +36,5 @@ void SetupCompressedJoints(ModelSkeleton_t *liSkel, int liIndex,
 	float *lerp);
 void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelClusterIndex, int anglesIndex,
 	vec3_t *modelVerticies);
+
+#endif

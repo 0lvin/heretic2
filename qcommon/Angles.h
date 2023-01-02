@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 // Angles in radians
 
 #define ANGLE_0			0.0F

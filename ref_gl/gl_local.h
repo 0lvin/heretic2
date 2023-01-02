@@ -32,8 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <math.h>
 
-#include "../client/ref.h"
-#include "../qcommon/Vector.h"
+#include "../ref_common/ref.h"
 
 #include "qgl.h"
 
@@ -434,17 +433,6 @@ void R_BookDrawPic(int w, int h, char *name, float scale);
 void R_DrawInitCinematic(int w, int h, char *overlay, char *backdrop);
 void R_DrawCloseCinematic();
 void R_DrawCinematic(int cols, int rows, byte *data, paletteRGB_t *palette, float alpha);
-
-/*
-====================================================================
-
-IMPORTED FUNCTIONS
-
-====================================================================
-*/
-
-extern	refimport_t	ri;
-
 
 /*
 ====================================================================

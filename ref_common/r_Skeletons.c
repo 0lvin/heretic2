@@ -6,11 +6,10 @@
 // Heretic II
 //
 
-#include "../ref_gl/gl_local.h"
-#include "../qcommon/Skeletons.h"
-#include "m_SkeletalCluster.h"
-#include "m_Skeleton.h"
-#include "../qcommon/ArrayedList.h"
+#include "ref.h"
+#include "../qcommon/Vector.h"
+#include "r_Skeletons.h"
+#include "fmodel.h"
 
 #include <memory.h>
 
@@ -21,8 +20,8 @@ extern void *Hunk_Alloc (int size);
 
 void CreateSkeletonAsHunk(int structure, ModelSkeleton_t *skel)
 {
-	skel->rootJoint = (M_SkeletalJoint_t *) Hunk_Alloc(numJointsInSkeleton[structure]*sizeof(M_SkeletalJoint_t));
-	skel->rootNode = (ArrayedListNode_t *) Hunk_Alloc(numNodesInSkeleton[structure]*sizeof(ArrayedListNode_t));
+	skel->rootJoint = Hunk_Alloc(numJointsInSkeleton[structure]*sizeof(M_SkeletalJoint_t));
+	skel->rootNode = Hunk_Alloc(numNodesInSkeleton[structure]*sizeof(ArrayedListNode_t));
 
 	SkeletonCreators[structure](skel->rootJoint, sizeof(M_SkeletalJoint_t), skel->rootNode, 0);
 }
@@ -82,16 +81,16 @@ static int GetRootIndex(int max, int numJoints)
 	return -1;
 }
 
-//int CreateSkeleton(int structure)
-//{
-//	int index;
-//
-//	index = GetRootIndex(MAX_ARRAYED_SKELETAL_JOINTS, numJointsInSkeleton[structure]);
-//
-//	SkeletonCreators[structure](SkeletalClusters, sizeof(M_SkeletalCluster_t), ClusterNodes, index);
-//
-//	return index;
-//}
+int CreateSkeleton(int structure)
+{
+	int index;
+
+	index = GetRootIndex(MAX_ARRAYED_SKELETAL_JOINTS, numJointsInSkeleton[structure]);
+
+	SkeletonCreators[structure](SkeletalClusters, sizeof(M_SkeletalCluster_t), ClusterNodes, index);
+
+	return index;
+}
 
 void ClearSkeleton(ModelSkeleton_t *skel, int root)
 {

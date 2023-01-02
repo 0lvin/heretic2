@@ -243,40 +243,36 @@ model_t *Mod_ForName (char *name, qboolean crash)
 
 
 	// call the apropriate loader
-	header_t *header = (header_t * )buf;
-	if (!strcmp(header->ident, FM_HEADER_NAME))
+	switch (LittleLong(*(unsigned *)buf))
 	{
+	case RAVENFMHEADER:
 		loadmodel->extradata = Hunk_Begin(0x400000);
 		Mod_LoadFlexModel(mod, buf, modfilelen);
-	}
-	else
-	{
-		switch (LittleLong(*(unsigned *)buf))
-		{
-		case IDMDLHEADER:
-			loadmodel->extradata = Hunk_Begin (0x200000);
-			Mod_LoadMDLModel (mod, buf);
-			break;
+		break;
 
-		case IDALIASHEADER:
-			loadmodel->extradata = Hunk_Begin(0x200000);
-			Mod_LoadAliasModel(mod, buf);
-			break;
+	case IDMDLHEADER:
+		loadmodel->extradata = Hunk_Begin (0x200000);
+		Mod_LoadMDLModel (mod, buf);
+		break;
 
-		case IDSPRITEHEADER:
-			loadmodel->extradata = Hunk_Begin(0x10000);
-			Mod_LoadSpriteModel(mod, buf);
-			break;
+	case IDALIASHEADER:
+		loadmodel->extradata = Hunk_Begin(0x200000);
+		Mod_LoadAliasModel(mod, buf);
+		break;
 
-		case IDBSPHEADER:
-			loadmodel->extradata = Hunk_Begin(0x1000000);
-			Mod_LoadBrushModel(mod, buf);
-			break;
+	case IDSPRITEHEADER:
+		loadmodel->extradata = Hunk_Begin(0x10000);
+		Mod_LoadSpriteModel(mod, buf);
+		break;
 
-		default:
-			ri.Sys_Error(ERR_DROP, "Mod_NumForName: unknown fileid for %s", mod->name);
-			break;
-		}
+	case IDBSPHEADER:
+		loadmodel->extradata = Hunk_Begin(0x1000000);
+		Mod_LoadBrushModel(mod, buf);
+		break;
+
+	default:
+		ri.Sys_Error(ERR_DROP, "Mod_NumForName: unknown fileid for %s", mod->name);
+		break;
 	}
 
 	loadmodel->extradatasize = Hunk_End ();

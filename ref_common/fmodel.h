@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 
 /*
 ========================================================================
@@ -12,7 +17,6 @@
 
 
 typedef unsigned char 		byte;
-typedef int	qboolean;
 typedef float vec3_t[3];
 
 #define	MAX_FM_TRIANGLES	2048
