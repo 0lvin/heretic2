@@ -37,16 +37,6 @@
 #endif
 #endif
 
-// These are the only 2 references to C_ONLY
-// id386 could do with removing
-#define C_ONLY 1
-
-#if defined _M_IX86 && !defined C_ONLY
-#define id386	1
-#else
-#define id386	0
-#endif
-
 #ifndef NULL
 #define NULL ((void *)0)
 #endif

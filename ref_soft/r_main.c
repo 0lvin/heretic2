@@ -142,9 +142,6 @@ cvar_t	*sw_lockpvs;
 
 #define	STRINGER(x) "x"
 
-
-#if	!id386
-
 // r_vars.c
 
 // all global and static refresh variables are collected in a contiguous block
@@ -183,8 +180,6 @@ short			*d_pzbuffer;
 unsigned int	d_zrowbytes;
 unsigned int	d_zwidth;
 
-
-#endif	// !id386
 
 byte	r_notexture_buffer[1024];
 
@@ -315,13 +310,6 @@ qboolean R_Init( void *hInstance, void *wndProc )
 
 	r_refdef.xOrigin = XCENTERING;
 	r_refdef.yOrigin = YCENTERING;
-
-// TODO: collect 386-specific code in one place
-#if	id386
-	Sys_MakeCodeWriteable ((long)R_EdgeCodeStart,
-					     (long)R_EdgeCodeEnd - (long)R_EdgeCodeStart);
-	Sys_SetFPCW ();		// get bit masks for FPCW	(FIXME: is this id386?)
-#endif	// id386
 
 	r_aliasuvscale = 1.0;
 

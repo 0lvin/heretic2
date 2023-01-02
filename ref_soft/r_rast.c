@@ -209,8 +209,6 @@ void R_EmitSkyBox (void)
 }
 
 
-#if	!id386
-
 /*
 ================
 R_EmitEdge
@@ -490,9 +488,6 @@ void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip)
 // add the edge
 	R_EmitEdge (pv0, pv1);
 }
-
-#endif	// !id386
-
 
 /*
 ================
