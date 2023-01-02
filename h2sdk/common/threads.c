@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 
 #include "cmdlib.h"
 #include "threads.h"
@@ -259,14 +264,14 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 		Error ("pthread_attr_create failed");
 	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
 		Error ("pthread_attr_setstacksize failed");
-	
+
 	for (i=0 ; i<numthreads ; i++)
 	{
   		if (pthread_create(&work_threads[i], attrib
 		, (pthread_startroutine_t)func, (pthread_addr_t)i) == -1)
 			Error ("pthread_create failed");
 	}
-		
+
 	for (i=0 ; i<numthreads ; i++)
 	{
 		if (pthread_join (work_threads[i], &status) == -1)
@@ -291,7 +296,7 @@ IRIX
 ===================================================================
 */
 
-#ifdef _MIPS_ISA 
+#ifdef _MIPS_ISA
 #define	USED
 
 #include <task.h>
@@ -359,9 +364,9 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 			Error ("sproc failed");
 		}
 	}
-		
+
 	func(i);
-			
+
 	for (i=0 ; i<numthreads-1 ; i++)
 		wait (NULL);
 
@@ -414,7 +419,7 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 	workcount = workcnt;
 	oldf = -1;
 	pacifier = showpacifier;
-	start = I_FloatTime (); 
+	start = I_FloatTime ();
 #ifdef NeXT
 	if (pacifier)
 		setbuf (stdout, NULL);

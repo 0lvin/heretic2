@@ -95,7 +95,7 @@ static void MeteorBarrierHuntThink(edict_t *self)
 	vec3_t	Heading, Dest;
 	float	dist;
 	trace_t	tr;
-	
+
 //	self->svflags &= ~SVF_ALWAYS_SEND;
 	if (deathmatch->value == 0 || self->accel == 0.0)			// These don't home in on an enemy in deathmatch... too powerful.
 	{
@@ -123,8 +123,8 @@ static void MeteorBarrierHuntThink(edict_t *self)
 			// don't let us over shoot the enemy
 			if (dist > (METEOR_HUNT_SPEED * 0.1))
 				VectorScale(self->movedir, METEOR_HUNT_SPEED, self->velocity);
-			
-			
+
+
 			self->nextthink = level.time + 0.1;
 			self->accel = 1.0;		// Signal that we have already gotten a target speed.
 		}
@@ -192,7 +192,7 @@ edict_t *MeteorBarrierReflect(edict_t *self, edict_t *other, vec3_t vel)
 	Meteor->reflected_time=self->reflected_time;
 	Meteor->s.effects |= EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
 	Meteor->svflags = SVF_ALWAYS_SEND;
-	gi.linkentity(Meteor); 
+	gi.linkentity(Meteor);
 
 	// remove the persistant effect from the persistant effect list
 	if (self->PersistantCFX)
@@ -208,7 +208,7 @@ edict_t *MeteorBarrierReflect(edict_t *self, edict_t *other, vec3_t vel)
 	// create a client effect for this new meteor
 	gi.CreateEffect(&Meteor->s, FX_SPELL_METEORBARRIER_TRAVEL, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "");
 
-	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
@@ -279,7 +279,7 @@ static void MeteorBarrierSearchThink(edict_t *self)
 	edict_t *NewTarg = NULL;
 	int		DoneSearching = 0;
 	trace_t	tr;
-	
+
 	// Only check for a target every so often as this reduces CPU requirements AND it looks much
 	// cooler.
 	// (using self->owner->enemy as the target would be much quicker...but not 360 degrees)
@@ -303,7 +303,7 @@ static void MeteorBarrierSearchThink(edict_t *self)
 			self->s.effects |= EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
 			self->targetname = self->enemy->classname;
 			self->alert_time = 0;
-	
+
 			// did we start up inside someone ? - check and see
 			gi.trace(self->s.origin, self->mins, self->maxs, self->s.origin, self, MASK_MONSTERSOLID, &tr);
 			if(tr.startsolid)
@@ -345,7 +345,7 @@ static void MeteorBarrierSearchThink(edict_t *self)
 		self->nextthink = level.time + 0.1;
 	}
 	else
-	{	
+	{
 		// My lifetime has expired so I die.
 		MeteorBarrierDie(self, METEOR_BARRIER_DIE_EXPLODE);
 	}
@@ -373,7 +373,7 @@ static void MeteorBarrierSearchInitThink(edict_t *self)
 		self->nextthink = level.time + 0.1;
 	}
 	else
-	{	
+	{
 		// My caster died so I die too.
 		MeteorBarrierDie(self, METEOR_BARRIER_DIE_EXPLODE);
 	}
@@ -408,7 +408,7 @@ void SpellCastMeteorBarrier(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec
 
 	cast = false;
 	for(I = 0; I < 4; I++)
-	{		
+	{
 		// If my caster is a player, then make sure they only have one instance of me active, then
 		if(Caster->client)
 		{

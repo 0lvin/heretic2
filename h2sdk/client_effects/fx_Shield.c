@@ -115,7 +115,7 @@ void FXLightningShield(centity_t *owner,int type,int flags,vec3_t origin)
 		shield->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		shield->r.model = shield_models;
 		shield->radius = SHIELD_RADIUS;
-		shield->AddToView = FXShieldSparkThink;			
+		shield->AddToView = FXShieldSparkThink;
 		shield->color.c = 0xffffffff;
 		shield->alpha = 0.1;
 		shield->d_alpha = 0.5;

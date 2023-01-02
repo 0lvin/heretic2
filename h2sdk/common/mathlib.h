@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #ifndef __MATHLIB__
 #define __MATHLIB__
 

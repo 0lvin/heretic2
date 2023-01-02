@@ -149,8 +149,8 @@ qboolean visible_to_client (edict_t *self)
 				ent->client->playerinfo.pcmd.camera_vieworigin[2] * 0.125);
 
 			VectorSet(temp->s.angles,
-				SHORT2ANGLE(ent->client->playerinfo.pcmd.camera_viewangles[0]), 
-				SHORT2ANGLE(ent->client->playerinfo.pcmd.camera_viewangles[1]), 
+				SHORT2ANGLE(ent->client->playerinfo.pcmd.camera_viewangles[0]),
+				SHORT2ANGLE(ent->client->playerinfo.pcmd.camera_viewangles[1]),
 				SHORT2ANGLE(ent->client->playerinfo.pcmd.camera_viewangles[2]));
 
 			if(infront_pos(temp, self->s.origin) && gi.inPVS(temp->s.origin, self->s.origin))
@@ -304,7 +304,7 @@ void tbeast_charge (edict_t *self, float force)
 	AngleVectors(self->s.angles, forward, NULL, NULL);
 	VectorSubtract(self->enemy->s.origin, self->s.origin, enemy_dir);
 	VectorNormalize(enemy_dir);
-	
+
 	if(DotProduct(forward, enemy_dir) < 0.75)//enemy not generally ahead
 		ai_charge(self, 0);
 
@@ -358,13 +358,13 @@ void tbeast_stand(edict_t *self, G_Message_t *msg)
 	{
 		if (clear_visible(self, self->enemy))
 			return;
-	
+
 		VectorSubtract(self->enemy->s.origin, self->s.origin, v);
 		len = VectorNormalize(v);
 
 		if (len < 200)
 		{
-			self->show_hostile = level.time + 1;		// wake up other monsters		
+			self->show_hostile = level.time + 1;		// wake up other monsters
 			QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 
 			return;
@@ -376,7 +376,7 @@ void tbeast_stand(edict_t *self, G_Message_t *msg)
 				tbeast_growl(self);
 			}
 		}
-		
+
 		if (!irand(0, 3))
 		{
 			tbeast_growl(self);
@@ -387,7 +387,7 @@ void tbeast_stand(edict_t *self, G_Message_t *msg)
 		{
 			if (self->monsterinfo.aiflags & AI_EATING)
 				SetAnim(self, ANIM_EATING);
-	
+
 			return;
 		}
 	}
@@ -421,7 +421,7 @@ void tbeast_walk(edict_t *self, G_Message_t *msg)
 		VectorSubtract (self->s.origin, targ_org, v);
 		len = VectorLength (v);
 		// targ_org is within range and far enough above or below to warrant a jump
-		if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 18) || 
+		if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 18) ||
 			(self->s.origin[2] > targ_org[2] + 18)))
 		{
 			gi.dprintf("Jump from walk at enemy\n");
@@ -477,7 +477,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 	len = VectorLength (v);
 
 	seperation = self->enemy->maxs[0];
-	
+
 	if ((len > 250 || !skill->value) && self->monsterinfo.attack_finished > level.time)
 	{//too soon to attack again
 		if (flrand(0, 1) < 0.9 && !skill->value)
@@ -493,7 +493,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 	{//melee
 //		gi.dprintf("Biting: ");
 		chance = flrand(0, 1);
-		
+
 		if(self->enemy->absmin[2] > melee_point[2] + 128)
 		{
 //			gi.dprintf(" snatch extra high\n");
@@ -509,7 +509,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 //			gi.dprintf(" snatch low\n");
 			SetAnim(self,ANIM_BITELOW);
 		}
-		
+
 		self->monsterinfo.attack_finished = level.time + flrand(2, 3);
 		return;
 	}
@@ -571,7 +571,7 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 /*	if(enemy_vis && ahead(self, self->enemy))
 	{
 		// Enemy is within range and far enough above or below to warrant a jump
-		if ((len > 40) && (len < 600) && ((self->s.origin[2] < self->enemy->s.origin[2] - 40) || 
+		if ((len > 40) && (len < 600) && ((self->s.origin[2] < self->enemy->s.origin[2] - 40) ||
 			(self->s.origin[2] > self->enemy->s.origin[2] + 40)))
 		{
 			if (abs(self->s.origin[2] - self->enemy->s.origin[2] - 40) < 200) // Can't jump more than 200 high
@@ -603,7 +603,7 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 		}
 		else
 		{
-			SetAnim(self, ANIM_WALK);		// Run on 
+			SetAnim(self, ANIM_WALK);		// Run on
 		}
 	}
 }
@@ -624,7 +624,7 @@ void tbeast_pain(edict_t *self, G_Message_t *msg)
 	edict_t		*tempent;
 	int			temp, damage;
 	qboolean	force_pain;
-	
+
 	if(self->health < 1000)
 		return;
 
@@ -651,7 +651,7 @@ void tbeast_pain(edict_t *self, G_Message_t *msg)
 
 
 /*----------------------------------------------------------------------
-  TBeast Die - choose death 
+  TBeast Die - choose death
 -----------------------------------------------------------------------*/
 void tbeast_death(edict_t *self, G_Message_t *msg)
 {
@@ -678,7 +678,7 @@ void tbeast_go_die (edict_t *self, edict_t *other, edict_t *activator)
 	gi.sound(self, CHAN_VOICE, sounds[SND_DIE], 1, ATTN_NONE, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_NO;
-	
+
 	self->solid = SOLID_NOT;
 	self->movetype = PHYSICSTYPE_NONE;
 	self->clipmask = 0;
@@ -689,7 +689,7 @@ void tbeast_go_die (edict_t *self, edict_t *other, edict_t *activator)
 //	self->mins[2] = -8;
 //	self->maxs[2] = self->mins[2] + 24;
 //	self->svflags |= SVF_DEADMONSTER;
-	
+
 	self->health = 0;
 	self->post_think = NULL;
 	self->next_post_think = -1;
@@ -727,7 +727,7 @@ void tbeast_footstep (edict_t *self)
 	trace_t		trace;
 
 	AngleVectors(self->s.angles, forward, right, up);
-	
+
 	leg_check_index = tbeast_inwalkframes(self);
 
 	if(leg_check_index > -1)
@@ -792,7 +792,7 @@ void tbeast_footstep (edict_t *self)
 				3,
 				1,
 				2);
-	
+
 	if (!irand(0,1))
 		gi.sound(self, CHAN_BODY, sounds[SND_STEP1], 1, ATTN_NORM, 0);
 	else
@@ -841,7 +841,7 @@ void tbeast_snort (edict_t *self)
 
 
 		Vec3ScaleAssign(-1, right);
-		
+
 		VectorMA(spot2, 72, right, spot2);//more than we want to get a nice vec
 		VectorSubtract(spot2, spot, vec);
 		VectorNormalize(vec);
@@ -866,12 +866,12 @@ qboolean tbeastCheckMood(edict_t *self)
 			else
 				QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 			break;
-		
+
 		case AI_MOOD_PURSUE:
 			self->wait = 0;
 			QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
 			break;
-		
+
 		case AI_MOOD_NAVIGATE:
 			SetAnim(self, ANIM_WALK);
 			break;
@@ -882,7 +882,7 @@ qboolean tbeastCheckMood(edict_t *self)
 			else
 				QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 			break;
-		
+
 		case AI_MOOD_DELAY:
 			QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 			break;
@@ -908,7 +908,7 @@ void tbeast_pause (edict_t *self)
 {
 	vec3_t	v;
 	float	len;
-	
+
 	if(self->enemy && self->enemy->classID != CID_TCHECKRIK && self->curAnimID == ANIM_STUN && self->pain_debounce_time > level.time + 7 && ahead(self, self->enemy))
 	{
 		tbeast_init_charge(self);
@@ -920,7 +920,7 @@ void tbeast_pause (edict_t *self)
 
 	if(!M_ValidTarget(self, self->enemy))
 		return;
-	
+
 	if(clear_visible(self, self->enemy))
 	{
 		VectorSubtract (self->s.origin, self->enemy->s.origin, v);
@@ -928,7 +928,7 @@ void tbeast_pause (edict_t *self)
 	}
 	else
 		len = 999999;
-	
+
 	if (len > 120)  // Far enough to run after
 	{
 		QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
@@ -1020,7 +1020,7 @@ void tbeast_land(edict_t *self)
 
 
 	VectorSet(up, flrand(-50,50), flrand(-50,50), flrand(50,300));
-	
+
 	VectorCopy(self->s.origin, pos);
 	pos[0] += flrand(-50,50);
 	pos[1] += flrand(-50,50);
@@ -1041,7 +1041,7 @@ void tbeast_land(edict_t *self)
 	pos[1] += flrand(-50,50);
 	pos[2] += self->mins[2];
 	gi.CreateEffect(NULL, FX_OGLE_HITPUFF, 0, pos, "v", up);
-	
+
 	gi.sound(self, CHAN_ITEM, sounds[SND_LAND], 1, ATTN_NORM, 0);
 
 	while(found = findradius(found, self->s.origin, 512))
@@ -1126,7 +1126,7 @@ qboolean CheckMoveFoot (edict_t *self, edict_t *foot, vec3_t dest)
 {
 	vec3_t	dir;
 	trace_t	trace;
-	
+
 	VectorSubtract(dest, foot->s.origin, dir);
 	VectorNormalize(dir);
 
@@ -1246,15 +1246,15 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 
 //try a jump of 186
 	end[2] += self->size[2];
-	
+
 	if(!skiplow)
 	{
 		gi.trace(start, self->mins, self->maxs, end, self, MASK_SOLID,&trace);
-		
+
 		if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 		{
 			AngleVectors(self->s.angles, forward, NULL, NULL);
-			
+
 			VectorCopy(end, start2);
 			VectorMA(end, 64, forward, end2);
 			VectorScale(self->maxs, 0.5, maxs);
@@ -1276,13 +1276,13 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 
 //try a jump of 372
 	end[2] += self->size[2];
-	
+
 	gi.trace(start, self->mins, self->maxs, end, self, MASK_SOLID,&trace);
-	
+
 	if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 	{
 		AngleVectors(self->s.angles, forward, NULL, NULL);
-		
+
 		VectorCopy(end, start2);
 		VectorMA(end, 64, forward, end2);
 		VectorScale(self->maxs, 0.5, maxs);
@@ -1366,7 +1366,7 @@ void tbeast_ready_catch (edict_t *self)
 
 	if(!self->targetEnt)
 		return;
-	
+
 	ok_zdist = 128;
 	if(ok_zdist<48)
 		ok_zdist = 48;
@@ -1389,7 +1389,7 @@ void tbeast_throw_toy(edict_t *self)
 	if(self->targetEnt->movetype>NUM_PHYSICSTYPES)
 		self->targetEnt->movetype = PHYSICSTYPE_STEP;
 	VectorRandomCopy(vec3_origin,self->targetEnt->avelocity,300);
-	
+
 	if(stricmp(self->targetEnt->classname,"player"))
 		QPostMessage(self->targetEnt, MSG_DEATH, PRI_DIRECTIVE, NULL);
 
@@ -1409,7 +1409,7 @@ void tbeast_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorMA(enemy_ofs, ofsr, right, enemy_ofs);
 	VectorMA(enemy_ofs, ofsu + TB_UP_OFFSET, up, self->targetEnt->s.origin);
 	VectorSubtract(self->targetEnt->s.origin, self->s.origin, blooddir);
-	
+
 	VectorScale(blooddir, -1, enemy_face);
 	enemy_face[2]/=10;
 	vectoangles(enemy_face, self->targetEnt->s.angles);
@@ -1474,7 +1474,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 				if(found->health<=0)
 					T_Damage (found, self, self, endpos, found->s.origin, endpos, 2000, 300, DAMAGE_DISMEMBER,MOD_DIED);
 				else
-					break;	
+					break;
 			}
 		}
 
@@ -1849,7 +1849,7 @@ int tbeast_inwalkframes(edict_t *self)
 
 	if(self->s.frame>=FRAME_wlklft1 && self->s.frame<=FRAME_wlklft18)
 		return self->monsterinfo.currframeindex;
-	
+
 	if(self->s.frame>=FRAME_wlkrt1 && self->s.frame<=FRAME_wlkrt18)
 		return self->monsterinfo.currframeindex;
 
@@ -1880,7 +1880,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 	int			count = 0;
 
 	AngleVectors(self->s.angles, forward, right, up);
-	
+
 	leg_check_index = tbeast_inwalkframes(self);
 
 	if(leg_check_index > -1)
@@ -1895,7 +1895,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 		VectorMA(self->s.origin, lfootoffset[0] + TB_FWD_OFFSET, forward, leftpos);
 		VectorMA(leftpos, lfootoffset[1] + TB_RT_OFFSET, right, leftpos);
 		VectorMA(leftpos, lfootoffset[2] + TB_UP_OFFSET, up, leftpos);
-		
+
 	//right leg
 		VectorCopy(GetRightFootOffsetForFrameIndex[leg_check_index], rfootoffset);
 		VectorMA(self->s.origin, rfootoffset[0] + TB_FWD_OFFSET, forward, rightpos);
@@ -1904,30 +1904,30 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 
 		if(right_front)
 		{//this is also the front check
-			VectorCopy(rightpos, frontpos);	
-			VectorCopy(leftpos, backpos);	
+			VectorCopy(rightpos, frontpos);
+			VectorCopy(leftpos, backpos);
 		}
 		else
 		{
-			VectorCopy(leftpos, frontpos);	
-			VectorCopy(rightpos, backpos);	
+			VectorCopy(leftpos, frontpos);
+			VectorCopy(rightpos, backpos);
 		}
 	}
 	else return;
 	/*{
 		VectorCopy(self->s.origin, backpos);
 		backpos[2] += self->mins[2] + 10;
-	
+
 		VectorMA(backpos, self->maxs[0] * fscale, forward, frontpos);
 		VectorMA(backpos, self->mins[0] * fscale, forward, backpos);
 
 		VectorCopy(self->s.origin, leftpos);
 		leftpos[2] += self->mins[2] + 10;
-		
+
 		VectorMA(leftpos, self->maxs[0] * rscale, right, rightpos);
 		VectorMA(leftpos, self->mins[0] * rscale, right, leftpos);
 	}*/
-	
+
 	VectorCopy(frontpos, bottom1);
 	bottom1[2] -= self->size[2] * 2;
 	gi.trace(frontpos, vec3_origin, vec3_origin, bottom1, self, MASK_SOLID,&trace);
@@ -2086,7 +2086,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 
 						self->velocity[0] = self->velocity[1] = 0;
 						self->sounds++;
-					
+
 						self->red_rain_count++;
 
 						if(self->red_rain_count >= 2)//got both pillars, now die
@@ -2110,7 +2110,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 				}
 			}
 		}
-		
+
 		if(trace->ent->touch&&trace->ent->solid!=SOLID_NOT)
 			trace->ent->touch (trace->ent, self, &trace->plane, trace->surface);
 
@@ -2160,7 +2160,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 							P_KnockDownPlayer(&trace->ent->client->playerinfo);
 					}
 					if(damage)
-						T_Damage(trace->ent, self, self, dir, trace->endpos, dir, 
+						T_Damage(trace->ent, self, self, dir, trace->endpos, dir,
 								flrand(TB_DMG_IMPACT_MIN, TB_DMG_IMPACT_MAX), TB_DMG_IMPACT_KB, 0,MOD_DIED);
 				}
 				else
@@ -2247,7 +2247,7 @@ void tbeast_check_impacts(edict_t *self)
 		VectorMA(lend, lfootoffset[2] + TB_UP_OFFSET, up, lend);
 		VectorCopy(lend, lstart);
 		lstart[2]+=63;
-		
+
 		VectorAdd(lend, fmins, lfootmins);
 		VectorCopy(lfootmins, lfootmaxs);
 		lfootmaxs[2] += 64;
@@ -2325,7 +2325,7 @@ void tbeast_fake_touch(edict_t *self)
 
 	if(leg_check_index > -1)
 	{//set up leg checks - FIXME: trace from last footpos to current one
-		
+
 		//Walking, Check melee point in front
 		VectorMA(self->s.origin, self->maxs[2]*0.5 + TB_UP_OFFSET, up, melee_point);
 		VectorMA(melee_point, 150 + TB_FWD_OFFSET, forward, melee_point);
@@ -2340,7 +2340,7 @@ void tbeast_fake_touch(edict_t *self)
 		VectorMA(lend, lfootoffset[2] + TB_UP_OFFSET, up, lend);
 		VectorCopy(lend, lstart);
 		lstart[2]+=63;
-		
+
 		VectorAdd(lend, fmins, lfootmins);
 		VectorCopy(lfootmins, lfootmaxs);
 		lfootmaxs[2] += 64;
@@ -2372,7 +2372,7 @@ void tbeast_fake_touch(edict_t *self)
 		other = touch[i];
 		if (!other->inuse)
 			continue;
-		
+
 		if(other==self)
 			continue;
 
@@ -2428,7 +2428,7 @@ void tbeast_fake_touch(edict_t *self)
 		other->clipmask = ocm;
 		VectorCopy(omins, other->mins);
 		VectorCopy(omaxs, other->maxs);
-		
+
 		if(trace.ent==other)//hit something with BODY , touch it
 			hitother = true;//hit other!
 
@@ -2499,7 +2499,7 @@ finish:
 
 void tbeast_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	tbeast_fake_touch(self);	
+	tbeast_fake_touch(self);
 }
 
 void tbeast_post_think (edict_t *self)
@@ -2531,7 +2531,7 @@ void tbeast_post_think (edict_t *self)
 	{
 		//raise him up if on flat ground, lower is on slope - to keep feet on ground!
 		//FIXME - use checkbottom plane instead?
-		
+
 		if(self->s.origin[0] != self->s.old_origin[0] || self->s.origin[1] != self->s.old_origin[1])
 		{
 			omins2 = self->mins[2];
@@ -2573,7 +2573,7 @@ void tbeast_post_think (edict_t *self)
 				go_jump = true;
 		}
 	}
-	
+
 	if(go_jump)
 	{
 //		gi.dprintf("Beast not on ground jump!\n");
@@ -2607,7 +2607,7 @@ edict_t *check_hit_beast(vec3_t start, vec3_t end)
 		//beast closer than trace endpos, let's do an incremental check
 
 		VectorCopy(start, checkpos);
-		
+
 		for(i = 16; i < diff1; i+=16)
 		{
 			VectorMA(checkpos, 16, shot_dir, checkpos);
@@ -2619,7 +2619,7 @@ edict_t *check_hit_beast(vec3_t start, vec3_t end)
 			}
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -2648,32 +2648,32 @@ void TBeastStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/beast/tris.fm");
 
-	sounds[SND_ROAR]  = gi.soundindex ("monsters/tbeast/roar.wav");	
-	sounds[SND_ROAR2]  = gi.soundindex ("monsters/tbeast/roar2.wav");	
-	sounds[SND_SNORT1]  = gi.soundindex ("monsters/tbeast/snort1.wav");	
-	sounds[SND_SNORT2]  = gi.soundindex ("monsters/tbeast/snort2.wav");	
+	sounds[SND_ROAR]  = gi.soundindex ("monsters/tbeast/roar.wav");
+	sounds[SND_ROAR2]  = gi.soundindex ("monsters/tbeast/roar2.wav");
+	sounds[SND_SNORT1]  = gi.soundindex ("monsters/tbeast/snort1.wav");
+	sounds[SND_SNORT2]  = gi.soundindex ("monsters/tbeast/snort2.wav");
 
-	sounds[SND_STEP1]  = gi.soundindex ("monsters/tbeast/step1.wav");	
-	sounds[SND_STEP2] = gi.soundindex ("monsters/tbeast/step2.wav");	
-	sounds[SND_LAND]     = gi.soundindex ("monsters/tbeast/land.wav");	
+	sounds[SND_STEP1]  = gi.soundindex ("monsters/tbeast/step1.wav");
+	sounds[SND_STEP2] = gi.soundindex ("monsters/tbeast/step2.wav");
+	sounds[SND_LAND]     = gi.soundindex ("monsters/tbeast/land.wav");
 
-	sounds[SND_GROWL1]     = gi.soundindex ("monsters/tbeast/growl1.wav");	
-	sounds[SND_GROWL2]     = gi.soundindex ("monsters/tbeast/growl2.wav");	
-	sounds[SND_GROWL3]     = gi.soundindex ("monsters/tbeast/growl3.wav");	
+	sounds[SND_GROWL1]     = gi.soundindex ("monsters/tbeast/growl1.wav");
+	sounds[SND_GROWL2]     = gi.soundindex ("monsters/tbeast/growl2.wav");
+	sounds[SND_GROWL3]     = gi.soundindex ("monsters/tbeast/growl3.wav");
 
-//	sounds[SND_SWIPE]= gi.soundindex ("monsters/tbeast/swipe.wav");	
-	sounds[SND_SLAM]= gi.soundindex ("monsters/tbeast/slam.wav");	
-	sounds[SND_SNATCH]= gi.soundindex ("monsters/tbeast/snatch.wav");	
-	sounds[SND_CHOMP]= gi.soundindex ("monsters/tbeast/chomp.wav");	
-	sounds[SND_TEAR1]= gi.soundindex ("monsters/tbeast/tear1.wav");	
-	sounds[SND_TEAR2]= gi.soundindex ("monsters/tbeast/tear2.wav");	
-	sounds[SND_THROW]= gi.soundindex ("monsters/tbeast/throw.wav");	
-	sounds[SND_CATCH]= gi.soundindex ("monsters/tbeast/catch.wav");	
+//	sounds[SND_SWIPE]= gi.soundindex ("monsters/tbeast/swipe.wav");
+	sounds[SND_SLAM]= gi.soundindex ("monsters/tbeast/slam.wav");
+	sounds[SND_SNATCH]= gi.soundindex ("monsters/tbeast/snatch.wav");
+	sounds[SND_CHOMP]= gi.soundindex ("monsters/tbeast/chomp.wav");
+	sounds[SND_TEAR1]= gi.soundindex ("monsters/tbeast/tear1.wav");
+	sounds[SND_TEAR2]= gi.soundindex ("monsters/tbeast/tear2.wav");
+	sounds[SND_THROW]= gi.soundindex ("monsters/tbeast/throw.wav");
+	sounds[SND_CATCH]= gi.soundindex ("monsters/tbeast/catch.wav");
 //	sounds[SND_SWALLOW]= gi.soundindex ("monsters/tbeast/swallow.wav");
 
-	sounds[SND_PAIN1]= gi.soundindex ("monsters/tbeast/pain1.wav");	
-	sounds[SND_PAIN2]= gi.soundindex ("monsters/tbeast/pain2.wav");	
-	sounds[SND_DIE]= gi.soundindex ("monsters/tbeast/die.wav");	
+	sounds[SND_PAIN1]= gi.soundindex ("monsters/tbeast/pain1.wav");
+	sounds[SND_PAIN2]= gi.soundindex ("monsters/tbeast/pain2.wav");
+	sounds[SND_DIE]= gi.soundindex ("monsters/tbeast/die.wav");
 
 	sounds[SND_CORVUS_SCREAM1] = gi.soundindex ("corvus/bdeath1.wav");
 	sounds[SND_CORVUS_SCREAM2] = gi.soundindex ("corvus/bdeath2.wav");
@@ -2773,7 +2773,7 @@ void SP_monster_trial_beast (edict_t *self)
 	MG_InitMoods(self);
 
 	QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
-	
+
 	self->dmg = false;
 
 	self->svflags|=(SVF_BOSS|SVF_NO_AUTOTARGET);
@@ -2795,7 +2795,7 @@ void SP_monster_trial_beast (edict_t *self)
 	self->red_rain_count = 0;//pillar init
 	self->use = tbeast_go_charge;
 	self->delay = true;
-	
+
 	self->max_health = self->health;
 	self->volume = 0;
 	self->wait = 0;

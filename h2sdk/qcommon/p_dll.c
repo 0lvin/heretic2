@@ -20,7 +20,7 @@ extern void Sys_UnloadGameDll(const char *name, HINSTANCE *hinst);
 
 player_export_t	playerExport;
 
-// Handle to player DLL. 
+// Handle to player DLL.
 
 static HINSTANCE player_library = NULL;
 
@@ -128,7 +128,7 @@ unsigned int P_Load(char *name)
 
 	if((P_Init = (void *)GetProcAddress(player_library, "P_Init")) == 0)
 		Sys_Error ("GetProcAddress failed on P_Init for library %s", name);
-	
+
 	if((P_Shutdown = (void *)GetProcAddress(player_library, "P_Shutdown")) == 0)
 		Sys_Error("GetProcAddress failed on P_Shutdown for library %s", name);
 

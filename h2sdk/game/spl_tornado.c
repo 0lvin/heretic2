@@ -17,7 +17,7 @@
 
 #define FIST_RADIUS				2.0
 #define TORN_RADIUS				10.0
-#define TORN_EFFECT_RADIUS		100.0		
+#define TORN_EFFECT_RADIUS		100.0
 #define TORN_KNOCKBACK_SCALE	200.0
 #define TORN_KNOCKBACK_BASE		250.0
 #define TORN_MASS_FACTOR		200.0
@@ -41,8 +41,8 @@ static void TornadoThink(edict_t *self)
 		if (ent->mass && ent!=self->owner)
    		{
    			VectorSubtract(ent->s.origin, self->s.origin, vel);
-   			scale = (TORN_EFFECT_RADIUS - VectorLength(vel)) 
-   						* (TORN_KNOCKBACK_SCALE/TORN_EFFECT_RADIUS) 
+   			scale = (TORN_EFFECT_RADIUS - VectorLength(vel))
+   						* (TORN_KNOCKBACK_SCALE/TORN_EFFECT_RADIUS)
    						* sqrt(TORN_MASS_FACTOR / ent->mass)
    						+ TORN_KNOCKBACK_BASE;
 			scale *= 20; // just for yucks
@@ -79,7 +79,7 @@ static void TornadoThink(edict_t *self)
 		Vec3ScaleAssign((flrand(0,110.0)), endpos);
 		endpos[2] = 100.0;
 		VectorAdd(endpos, self->s.origin, endpos);
-   		gi.CreateEffect(NULL, FX_LIGHTNING, 0, 
+   		gi.CreateEffect(NULL, FX_LIGHTNING, 0,
    			self->s.origin, "vbb", endpos, (byte)RED_RAIN_LIGHTNING_WIDTH, (byte)0);
    		gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/Lightning.wav"),1,ATTN_NORM,0);
 		self->jump_time = level.time + flrand(0.2, 1.0);
@@ -111,11 +111,11 @@ void create_tornado(edict_t *tornado)
 	tornado->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 	tornado->s.effects |= EF_SPEED_ACTIVE;
 	tornado->jump_time = level.time + flrand(0.2, 1.0);
-   
+
 	tornado->PersistantCFX = gi.CreatePersistantEffect(&tornado->s, FX_TORNADO, CEF_BROADCAST|CEF_OWNERS_ORIGIN | flags , NULL, "");
 
-}	
-		
+}
+
 // we just cast/dropped the tornado, set up a timer so it doesn't erupt immediately and hit the caster
 void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_t aimdir, float value)
 {
@@ -152,7 +152,7 @@ void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, ve
 	tornado->s.origin[2] += 1.0;
 	VectorCopy (tornado->s.origin, end);
 	end[2] -= 256;
-	
+
 	gi.linkentity (tornado);
 
 	gi.trace (tornado->s.origin, NULL, NULL, end, tornado, MASK_SOLID,&trace);
@@ -183,7 +183,7 @@ void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, ve
 	}
 
 	gi.CreateEffect(&tornado->s, FX_TORNADO_BALL, CEF_OWNERS_ORIGIN | flags , NULL, "");
-}			
+}
 
 
 // TORNADO BOLT FUNCTIONS
@@ -235,13 +235,13 @@ edict_t *tornboltReflect(edict_t *self, edict_t *other, vec3_t vel)
 	tornbolt->flags |= (self->flags & FL_NO_KNOCKBACK);
 	tornbolt->reflect_debounce_time = self->reflect_debounce_time -1; //so it doesn't infinitely reflect in one frame somehow
 	tornbolt->reflected_time=self->reflected_time;
-	G_LinkMissile(tornbolt); 
+	G_LinkMissile(tornbolt);
 
 	// create new trails for the new missile
 	gi.CreateEffect(&tornbolt->s, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
 					"t", tornbolt->velocity);
 
-	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
@@ -329,7 +329,7 @@ void SpellCasttornbolt(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 
 	Createtornbolt(tornbolt);
 	tornbolt->reflect_debounce_time = MAX_REFLECT;
-	VectorCopy(startpos, tornbolt->s.origin);	
+	VectorCopy(startpos, tornbolt->s.origin);
 
 	//Check ahead first to see if it's going to hit anything at this angle
 	AngleVectors(aimangles, forward, NULL, NULL);
@@ -348,7 +348,7 @@ void SpellCasttornbolt(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	// Remember velocity in case we have to reverse it
 	VectorNormalize2(tornbolt->velocity, tornbolt->movedir);
 
-	G_LinkMissile(tornbolt); 
+	G_LinkMissile(tornbolt);
 
 	// Make sure we don`t start in a solid
 	gi.trace(caster->s.origin, vec3_origin, vec3_origin, tornbolt->s.origin, caster, MASK_PLAYERSOLID,&trace);

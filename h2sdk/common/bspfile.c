@@ -1,3 +1,8 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 
 #include "cmdlib.h"
 #include "mathlib.h"
@@ -77,11 +82,11 @@ int CompressVis (byte *vis, byte *dest)
 	int		rep;
 	int		visrow;
 	byte	*dest_p;
-	
+
 	dest_p = dest;
 //	visrow = (r_numvisleafs + 7)>>3;
 	visrow = (dvis->numclusters + 7)>>3;
-	
+
 	for (j=0 ; j<visrow ; j++)
 	{
 		*dest_p++ = vis[j];
@@ -97,7 +102,7 @@ int CompressVis (byte *vis, byte *dest)
 		*dest_p++ = rep;
 		j--;
 	}
-	
+
 	return dest_p - dest;
 }
 
@@ -113,8 +118,8 @@ void DecompressVis (byte *in, byte *decompressed)
 	byte	*out;
 	int		row;
 
-//	row = (r_numvisleafs+7)>>3;	
-	row = (dvis->numclusters+7)>>3;	
+//	row = (r_numvisleafs+7)>>3;
+	row = (dvis->numclusters+7)>>3;
 	out = decompressed;
 
 	do
@@ -124,7 +129,7 @@ void DecompressVis (byte *in, byte *decompressed)
 			*out++ = *in++;
 			continue;
 		}
-	
+
 		c = in[1];
 		if (!c)
 			Error ("DecompressVis: 0 repeat");
@@ -151,8 +156,8 @@ void SwapBSPFile (qboolean todisk)
 	int				i, j;
 	dmodel_t		*d;
 
-	
-// models	
+
+// models
 	for (i=0 ; i<nummodels ; i++)
 	{
 		d = &dmodels[i];
@@ -160,7 +165,7 @@ void SwapBSPFile (qboolean todisk)
 		d->firstface = LittleLong (d->firstface);
 		d->numfaces = LittleLong (d->numfaces);
 		d->headnode = LittleLong (d->headnode);
-		
+
 		for (j=0 ; j<3 ; j++)
 		{
 			d->mins[j] = LittleFloat(d->mins[j]);
@@ -177,10 +182,10 @@ void SwapBSPFile (qboolean todisk)
 		for (j=0 ; j<3 ; j++)
 			dvertexes[i].point[j] = LittleFloat (dvertexes[i].point[j]);
 	}
-		
+
 //
 // planes
-//	
+//
 	for (i=0 ; i<numplanes ; i++)
 	{
 		for (j=0 ; j<3 ; j++)
@@ -188,10 +193,10 @@ void SwapBSPFile (qboolean todisk)
 		dplanes[i].dist = LittleFloat (dplanes[i].dist);
 		dplanes[i].type = LittleLong (dplanes[i].type);
 	}
-	
+
 //
 // texinfos
-//	
+//
 	for (i=0 ; i<numtexinfo ; i++)
 	{
 		for (j=0 ; j<8 ; j++)
@@ -200,7 +205,7 @@ void SwapBSPFile (qboolean todisk)
 		texinfo[i].value = LittleLong (texinfo[i].value);
 		texinfo[i].nexttexinfo = LittleLong (texinfo[i].nexttexinfo);
 	}
-	
+
 //
 // faces
 //
@@ -340,10 +345,10 @@ int CopyLump (int lump, void *dest, int size)
 
 	length = header->lumps[lump].filelen;
 	ofs = header->lumps[lump].fileofs;
-	
+
 	if (length % size)
 		Error ("LoadBSPFile: odd lump size");
-	
+
 	memcpy (dest, (byte *)header + ofs, length);
 
 	return length / size;
@@ -357,7 +362,7 @@ LoadBSPFile
 void	LoadBSPFile (char *filename)
 {
 	int			i;
-	
+
 //
 // load the file header
 //
@@ -395,10 +400,10 @@ void	LoadBSPFile (char *filename)
 	CopyLump (LUMP_POP, dpop, 1);
 
 	free (header);		// everything has been copied out
-		
+
 //
 // swap everything
-//	
+//
 	SwapBSPFile (false);
 }
 
@@ -441,7 +446,7 @@ void	LoadBSPFileTexinfo (char *filename)
 	numtexinfo = length / sizeof(texinfo_t);
 
 	free (header);		// everything has been copied out
-		
+
 	SwapBSPFile (false);
 }
 
@@ -456,7 +461,7 @@ void AddLump (int lumpnum, void *data, int len)
 	lump_t *lump;
 
 	lump = &header->lumps[lumpnum];
-	
+
 	lump->fileofs = LittleLong( ftell(wadfile) );
 	lump->filelen = LittleLong(len);
 	SafeWrite (wadfile, data, (len+3)&~3);
@@ -470,15 +475,15 @@ Swaps the bsp file in place, so it should not be referenced again
 =============
 */
 void	WriteBSPFile (char *filename)
-{		
+{
 	header = &outheader;
 	memset (header, 0, sizeof(dheader_t));
-	
+
 	SwapBSPFile (true);
 
 	header->ident = LittleLong (IDBSPHEADER);
 	header->version = LittleLong (BSPVERSION);
-	
+
 	wadfile = SafeOpenWrite (filename);
 	SafeWrite (wadfile, header, sizeof(dheader_t));	// overwritten later
 
@@ -502,10 +507,10 @@ void	WriteBSPFile (char *filename)
 	AddLump (LUMP_VISIBILITY, dvisdata, visdatasize);
 	AddLump (LUMP_ENTITIES, dentdata, entdatasize);
 	AddLump (LUMP_POP, dpop, sizeof(dpop));
-	
+
 	fseek (wadfile, 0, SEEK_SET);
 	SafeWrite (wadfile, header, sizeof(dheader_t));
-	fclose (wadfile);	
+	fclose (wadfile);
 }
 
 //============================================================================
@@ -585,7 +590,7 @@ epair_t *ParseEpair (void)
 
 	e = malloc (sizeof(epair_t));
 	memset (e, 0, sizeof(epair_t));
-	
+
 	if (strlen(token) >= MAX_KEY-1)
 		Error ("ParseEpar: token too long");
 	e->key = copystring(token);
@@ -617,7 +622,7 @@ qboolean	ParseEntity (void)
 
 	if (strcmp (token, "{") )
 		Error ("ParseEntity: { not found");
-	
+
 	if (num_entities == MAX_MAP_ENTITIES)
 		Error ("num_entities == MAX_MAP_ENTITIES");
 
@@ -634,7 +639,7 @@ qboolean	ParseEntity (void)
 		e->next = mapent->epairs;
 		mapent->epairs = e;
 	} while (1);
-	
+
 	return true;
 }
 
@@ -652,7 +657,7 @@ void ParseEntities (void)
 
 	while (ParseEntity ())
 	{
-	}	
+	}
 }
 
 
@@ -674,23 +679,23 @@ void UnparseEntities (void)
 	buf = dentdata;
 	end = buf;
 	*end = 0;
-	
+
 	for (i=0 ; i<num_entities ; i++)
 	{
 		ep = entities[i].epairs;
 		if (!ep)
 			continue;	// ent got removed
-		
+
 		strcat (end,"{\n");
 		end += 2;
-				
+
 		for (ep = entities[i].epairs ; ep ; ep=ep->next)
 		{
 			strcpy (key, ep->key);
 			StripTrailing (key);
 			strcpy (value, ep->value);
 			StripTrailing (value);
-				
+
 			sprintf (line, "\"%s\" \"%s\"\n", key, value);
 			strcat (end, line);
 			end += strlen(line);
@@ -707,7 +712,7 @@ void UnparseEntities (void)
 void PrintEntity (entity_t *ent)
 {
 	epair_t	*ep;
-	
+
 	printf ("------- entity %p -------\n", ent);
 	for (ep=ent->epairs ; ep ; ep=ep->next)
 	{
@@ -719,7 +724,7 @@ void PrintEntity (entity_t *ent)
 void 	SetKeyValue (entity_t *ent, char *key, char *value)
 {
 	epair_t	*ep;
-	
+
 	for (ep=ent->epairs ; ep ; ep=ep->next)
 		if (!strcmp (ep->key, key) )
 		{
@@ -739,7 +744,7 @@ void 	SetKeyValue (entity_t *ent, char *key, char *value)
 char 	*ValueForKey (entity_t *ent, char *key)
 {
 	epair_t	*ep;
-	
+
 	for (ep=ent->epairs ; ep ; ep=ep->next)
 		if (!strcmp (ep->key, key) )
 			return ep->value;
@@ -749,7 +754,7 @@ char 	*ValueForKey (entity_t *ent, char *key)
 vec_t	FloatForKey (entity_t *ent, char *key)
 {
 	char	*k;
-	
+
 	k = ValueForKey (ent, key);
 	return atof(k);
 }

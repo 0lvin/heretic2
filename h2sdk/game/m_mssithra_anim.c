@@ -247,7 +247,7 @@ animmove_t mssithra_move_pain1 = {5, mssithra_frames_pain1, mssithra_pain_react}
 */
 
 /*----------------------------------------------------------------------
-  mssithra shoot 
+  mssithra shoot
 -----------------------------------------------------------------------*/
 animframe_t mssithra_frames_shoota1 [] =
 {
@@ -278,7 +278,7 @@ animframe_t mssithra_frames_shoota1 [] =
 animmove_t mssithra_move_shoota1 = {23, mssithra_frames_shoota1, mssithraCheckMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
-  mssithra shoot 
+  mssithra shoot
 -----------------------------------------------------------------------*/
 animframe_t mssithra_frames_shootb1 [] =
 {

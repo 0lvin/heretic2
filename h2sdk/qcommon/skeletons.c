@@ -70,7 +70,7 @@ int skeletonENameOffsets[] =
 	1,	// PLAGUE ELF
 };
 
-int numJointsInSkeleton[] = 
+int numJointsInSkeleton[] =
 {
 	NUM_JOINTS_RAVEN,
 	NUM_JOINTS_BOX,

@@ -85,12 +85,12 @@ edict_t *findringradius (edict_t *from, vec3_t org, float rad, edict_t *ringent)
 		if (elen > max2)
 			continue;
 
-		// if we've already reflected this, don't do it again.  
+		// if we've already reflected this, don't do it again.
 		// We DO have to wait for after the radius check, however, because the shot might get closer over the next half second.
 		from->reflected_time = level.time + 0.6;
 
 		return from;
-	} 
+	}
 }
 
 
@@ -111,7 +111,7 @@ void RingThink(edict_t *self)
 	}
 	self->count--;
 
-	// Since find radius is not specific enough for our needs, here is 
+	// Since find radius is not specific enough for our needs, here is
 	while(ent = findringradius(ent, self->s.origin, RING_EFFECT_RADIUS*0.25*(RING_THINKS-self->count), self))
 	{
 		hit = false;
@@ -119,8 +119,8 @@ void RingThink(edict_t *self)
 		if (ent->mass)
 		{
 			VectorSubtract(ent->s.origin, self->s.origin, vel);
-			scale = (RING_EFFECT_RADIUS - VectorLength(vel)) 
-						* (RING_KNOCKBACK_SCALE/RING_EFFECT_RADIUS) 
+			scale = (RING_EFFECT_RADIUS - VectorLength(vel))
+						* (RING_KNOCKBACK_SCALE/RING_EFFECT_RADIUS)
 						* sqrt(RING_MASS_FACTOR / ent->mass)
 						+ RING_KNOCKBACK_BASE;
 			VectorNormalize(vel);
@@ -250,7 +250,7 @@ void RingThink(edict_t *self)
 void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value)
 {
 	edict_t		*newent;
-				  
+
 	// create the actual effect entity
 	newent = G_Spawn();
 	newent->owner = Caster;
@@ -263,7 +263,7 @@ void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_
 	newent->count = RING_THINKS;
 	newent->timestamp = level.time;
 	VectorCopy(Caster->s.origin, newent->s.origin);
-	gi.linkentity(newent); 
+	gi.linkentity(newent);
 
 	// fire off a special effect.
 	gi.CreateEffect(&Caster->s, FX_SPELL_BLUERING, CEF_OWNERS_ORIGIN, 0, "");

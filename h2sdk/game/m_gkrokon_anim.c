@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "m_gkrokon_anim.h"
@@ -51,11 +51,11 @@ animframe_t GkrokonFramesStand2[]=
 	FRAME_birth2,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth3,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth4,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
-	FRAME_birth5,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,	
+	FRAME_birth5,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth6,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth7,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth8,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
-	FRAME_birth9,	NULL, 0, 0, 0, beetle_ai_stand,	0,	beetle_idle_sound,	
+	FRAME_birth9,	NULL, 0, 0, 0, beetle_ai_stand,	0,	beetle_idle_sound,
 	FRAME_birth10,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth11,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth12,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
@@ -88,7 +88,7 @@ animmove_t GkrokonMoveStand3={8,GkrokonFramesStand3, GkrokonPause};//GkrokonOrde
 animframe_t GkrokonFramesStand4[]=
 {
 	FRAME_birth5,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
-	FRAME_birth4,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,	
+	FRAME_birth4,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth3,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
 	FRAME_birth2,	NULL, 0, 0, 0, beetle_ai_stand,	0,	beetle_idle_sound,
 	FRAME_birth1,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL,
@@ -350,7 +350,7 @@ animframe_t GkrokonFramesEat3[]=
 animmove_t GkrokonMoveEat3={4,GkrokonFramesEat3, GkrokonPause};//GkrokonOrderEat};
 
 // ****************************************************************************
-// Pain1 - 
+// Pain1 -
 // ****************************************************************************
 
 animframe_t GkrokonFramesPain1[]=
@@ -368,7 +368,7 @@ animframe_t GkrokonFramesPain1[]=
 animmove_t GkrokonMovePain1={8,GkrokonFramesPain1, GkrokonPause};//GkrokonOrderRun};
 
 // ****************************************************************************
-// Death1 - 
+// Death1 -
 // ****************************************************************************
 
 /*

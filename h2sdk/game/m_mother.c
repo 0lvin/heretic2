@@ -9,7 +9,7 @@
 //	AI :
 //
 //	STAND1		: Looking straight ahead
-//	
+//
 //
 //==============================================================================
 
@@ -58,7 +58,7 @@ void mother_pain(edict_t *self, G_Message_t *msg)
 {
 	int				temp, damage;
 	qboolean		force_pain;
-	
+
 	ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
 	if (self->pain_debounce_time < level.time)
@@ -75,8 +75,8 @@ void mother_pain(edict_t *self, G_Message_t *msg)
 /*-------------------------------------------------------------------------
 -------------------------------------------------------------------------*/
 void mother_stand(edict_t *self, G_Message_t *msg)
-{	
-	SetAnim(self, ANIM_STAND);	
+{
+	SetAnim(self, ANIM_STAND);
 
 	return;
 }
@@ -104,14 +104,14 @@ void MotherStaticsInit()
 	classStatics[CID_MOTHER].msgReceivers[MSG_PAIN] = mother_pain;
 	classStatics[CID_MOTHER].msgReceivers[MSG_DEATH] = mother_gib;
 
-	sounds[SND_GROWL1]=gi.soundindex("monsters/insect/growlf1.wav");	
-	sounds[SND_GROWL2] = gi.soundindex ("monsters/insect/growlf2.wav");	
-	sounds[SND_PAIN] = gi.soundindex("monsters/insect/painf.wav");	
+	sounds[SND_GROWL1]=gi.soundindex("monsters/insect/growlf1.wav");
+	sounds[SND_GROWL2] = gi.soundindex ("monsters/insect/growlf2.wav");
+	sounds[SND_PAIN] = gi.soundindex("monsters/insect/painf.wav");
 	sounds[SND_GIB] = gi.soundindex("monsters/insect/gib.wav");
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	resInfo.modelIndex = gi.modelindex("models/monsters/mother/tris.fm");
 
 	resInfo.numSounds = NUM_SOUNDS;
@@ -120,7 +120,7 @@ void MotherStaticsInit()
 	classStatics[CID_MOTHER].resInfo = &resInfo;
 }
 
-/*QUAKED monster_tcheckrik_mothers (1 .5 0) (-40 -40 -75) (40 40 75) 
+/*QUAKED monster_tcheckrik_mothers (1 .5 0) (-40 -40 -75) (40 40 75)
 Momma egg layer
 
 "pain_target" - monsters will fire this target the first time it gets hurt (only once)
@@ -132,7 +132,7 @@ void SP_monster_tcheckrik_mothers (edict_t *self)
 
 	if (!monster_start(self))
 		return;					// Failed initialization
-		
+
 	self->msgHandler = DefaultMsgHandler;
 	self->think = walkmonster_start_go;
 
@@ -146,13 +146,13 @@ void SP_monster_tcheckrik_mothers (edict_t *self)
 
 	self->movetype = PHYSICSTYPE_STATIC;
 	VectorClear(self->knockbackvel);
-	
+
 	self->solid=SOLID_BBOX;
 
 	VectorSet (self->mins, -40, -40, -75);
-	VectorSet (self->maxs,  40,  40,  75);	
+	VectorSet (self->maxs,  40,  40,  75);
 	self->viewheight = self->maxs[2]*0.8;
-	
+
 	self->s.modelindex = classStatics[CID_MOTHER].resInfo->modelIndex;
 
 	if (!self->s.scale)

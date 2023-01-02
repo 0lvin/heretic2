@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "m_beast_anim.h"
@@ -155,7 +155,7 @@ animmove_t tbeast_move_walk = {18, tbeast_frames_walk, tbeast_walkorder};
   TB Turning left while running
 -----------------------------------------------------------------------*/
 animframe_t tbeast_frames_walkleft [] =
-{ 
+{
 	FRAME_wlklft1 , NULL, 0, 0, 0, tbeast_run_think, 32, tbeast_footstep,
 	FRAME_wlklft2 , NULL, 0, 0, 0, tbeast_run_think, 16, NULL,
 	FRAME_wlklft3 , NULL, 0, 0, 0, tbeast_run_think, 32, NULL,
@@ -181,7 +181,7 @@ animmove_t tbeast_move_walkleft = {18, tbeast_frames_walkleft, tbeast_walkorder}
   TB Turning right while running
 -----------------------------------------------------------------------*/
 animframe_t tbeast_frames_walkrt [] =
-{ 
+{
 	FRAME_wlkrt1 , 	NULL, 0, 0, 0, tbeast_run_think, 32, tbeast_footstep,
 	FRAME_wlkrt2 , 	NULL, 0, 0, 0, tbeast_run_think, 16, NULL,
 	FRAME_wlkrt3 , 	NULL, 0, 0, 0, tbeast_run_think, 32, NULL,

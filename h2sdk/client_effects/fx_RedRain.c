@@ -27,8 +27,8 @@
 #define NUM_SPLASH_PARTS	4
 #define NUM_TAIL_PARTS		4
 #define	NUM_DROPS			2
-#define MAX_FALL_DIST		1300		
-#define RAIN_HEIGHT			32.0	
+#define MAX_FALL_DIST		1300
+#define RAIN_HEIGHT			32.0
 #define	PART_OFF			5.0
 #define NUM_TRAIL_PARTS		6
 #define	REDRAIN_EXPLODE_NUM	5
@@ -151,9 +151,9 @@ static qboolean FXRedRainThink(client_entity_t *rain, centity_t *owner)
 
 	for(j = 0; j < NUM_DROPS; j++)
 	{
-		VectorSet(origin, 
-				flrand(-radius, radius), 
-				flrand(-radius, radius), 
+		VectorSet(origin,
+				flrand(-radius, radius),
+				flrand(-radius, radius),
 				rain->SpawnData + flrand(-8.0F, 8.0F));
 		VectorAdd(rain->origin, origin, origin);
 		duration = GetFallTime(origin, RAIN_INIT_VEL, -PARTICLE_GRAVITY, DROP_RADIUS, 3.0F, &trace);
@@ -172,7 +172,7 @@ static qboolean FXRedRainThink(client_entity_t *rain, centity_t *owner)
 		drop->r.spriteType = SPRITE_LINE;
 		drop->SpawnData = origin[2]; // This allows the drop to remember its top position, so the top doesn't go higher than it.
 		drop->AddToView = FXRedRainDropUpdate;
-		AddEffect(NULL, drop); 
+		AddEffect(NULL, drop);
 
 		if((duration > 20) && (r_detail->value > DETAIL_LOW))
 		{
@@ -180,7 +180,7 @@ static qboolean FXRedRainThink(client_entity_t *rain, centity_t *owner)
 			splash = ClientEntity_new(-1, CEF_NO_DRAW | CEF_NOMOVE, origin, NULL, duration);
 			splash->Update = FXRedRainSplashThink;
 			splash->SpawnInfo = rain->SpawnInfo;
-			AddEffect(NULL, splash); 
+			AddEffect(NULL, splash);
 		}
 	}
 	return(true);
@@ -224,7 +224,7 @@ void FXRedRain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	if (powerup)
 		spawner->SpawnInfo = 1;
 
-	AddEffect(Owner, spawner); 
+	AddEffect(Owner, spawner);
 
 	// Pass the explosion point as well as the rain generation point.
 	RedRainExplosion(Origin, ceil_org, (RED_RAIN_DURATION+1.0)*1000, powerup, Owner);
@@ -274,7 +274,7 @@ static qboolean FXRedRainMissileThink(client_entity_t *missile, centity_t *owner
 	// Remember for even spread of particles
 	VectorCopy(missile->r.origin, missile->origin);
 	return(true);
-}						 
+}
 
 // From creation of the effect FX_RED_RAIN_MISSILE
 void FXRedRainMissile(centity_t *Owner, int Type, int Flags, vec3_t Origin)
@@ -349,7 +349,7 @@ static qboolean RedRainExplosionThink(client_entity_t *explosion, centity_t *own
 {	// The explosion bit should be drawn to orbit the rain generation spot.
 	vec3_t targetpos, diffpos, dir, randomvect;
 	float	radius;
-	
+
 	explosion->updateTime = 100;
 	explosion->LifeTime -= 100;
 
@@ -378,9 +378,9 @@ static qboolean RedRainExplosionThink(client_entity_t *explosion, centity_t *own
 
 	AngleVectors(explosion->r.angles, dir, NULL, NULL);
 	VectorMA(explosion->direction, radius*1.5, dir, targetpos);
-	VectorSet(randomvect, 
-				flrand(-radius, radius), 
-				flrand(-radius, radius), 
+	VectorSet(randomvect,
+				flrand(-radius, radius),
+				flrand(-radius, radius),
 				flrand(-radius, radius));
 	VectorAdd(targetpos, randomvect, targetpos);
 
@@ -408,7 +408,7 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 	dlight = ClientEntity_new(-1, CEF_NO_DRAW | CEF_NOMOVE, impactpos, NULL, 100);
 	if (powerup)
 		color.c = 0xff0080ff;	// Orange when powered up
-	else	
+	else
 		color.c = 0xff0000ff;	// Red when not.
 	dlight->dlight = CE_DLight_new(color, 150.0F, 0.0F);
 	dlight->Update = FXRedRainDLightThink;

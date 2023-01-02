@@ -93,7 +93,7 @@ void MorphFadeOut(edict_t *self)
 		newent->s.color.c = 0xffffff;
 		newent->morph_timer = MORPH_TELE_TIME;
 		newent->think = MorphFadeIn;
-		gi.CreateEffect(&newent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" ); 
+		gi.CreateEffect(&newent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
 		// do the teleport sound
 		gi.sound(newent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 
@@ -205,7 +205,7 @@ void reset_morph_to_elf(edict_t *ent)
 void MorphChickenToPlayer(edict_t *self)
 {
 	gclient_t	*playerinfo;
-	
+
 	playerinfo = self->client;
 
 	// if we are teleporting or morphing, forget it
@@ -305,7 +305,7 @@ void Perform_Morph(edict_t *self)
 		if (trace.fraction < 1 || trace.startsolid || trace.allsolid)
 			super_chicken = false;
 	}
-	
+
 	if (super_chicken)
 	{
 		// reset our motion stuff
@@ -377,7 +377,7 @@ void Perform_Morph(edict_t *self)
 void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 {
 	gclient_t	*playerinfo;
-	
+
 	playerinfo = self->client;
 
 	// if we are teleporting or morphing, forget it
@@ -439,7 +439,7 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 {
 	gclient_t	*playerinfo;
-	
+
 	playerinfo = self->client;
 
 	// if we are teleporting or morphing, forget it
@@ -509,12 +509,12 @@ edict_t *MorphReflect(edict_t *self, edict_t *other, vec3_t vel)
 	VectorCopy(vel, morph->velocity);
 	VectorNormalize2(morph->velocity, morph->movedir);
    	AnglesFromDir(morph->movedir, morph->s.angles);
-   	G_LinkMissile(morph); 
+   	G_LinkMissile(morph);
    	yaw = Q_ftol((morph->s.angles[YAW]/6.2831) * 255.0);
    	pitch = Q_ftol((morph->s.angles[PITCH]/6.2831) * 255.0);
    	gi.CreateEffect(&morph->s, FX_SPELL_MORPHMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "bb", yaw,pitch);
 
-   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
    	G_SetToFree(self);
 
    	// Do a nasty looking blast at the impact point
@@ -543,7 +543,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	}
 
 	// Turn target into a chicken if monster or player
-	if(((other->svflags & SVF_MONSTER) && !(other->svflags&SVF_BOSS) && !(other->monsterinfo.c_mode)) || 
+	if(((other->svflags & SVF_MONSTER) && !(other->svflags&SVF_BOSS) && !(other->monsterinfo.c_mode)) ||
 				((other->client)&&(deathmatch->value)))
 	{
 		//Don't turn a super chicken back to a player
@@ -569,7 +569,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 			}
 		}
 
-		if (other->svflags & SVF_MONSTER ) 
+		if (other->svflags & SVF_MONSTER )
 		{
 			// deal with the existing bad guy
 			other->think = MorphFadeOut;
@@ -578,7 +578,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 			other->morph_timer = MORPH_TELE_TIME;
 			other->enemy = self->owner;
 			VectorClear(other->velocity);
-			gi.CreateEffect(&other->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" ); 
+			gi.CreateEffect(&other->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
 		}
 		else
 			MorphPlayerToChicken(other, self->owner);
@@ -694,8 +694,8 @@ void SpellCastMorph(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t u
 	}
 
 	// create the client effect that gets seen on screen
-	gi.CreateEffect(&Caster->s, FX_SPELL_MORPHMISSILE_INITIAL, CEF_OWNERS_ORIGIN, NULL, "bssssss", 
-			yaw, 
+	gi.CreateEffect(&Caster->s, FX_SPELL_MORPHMISSILE_INITIAL, CEF_OWNERS_ORIGIN, NULL, "bssssss",
+			yaw,
 			morpharray[0],
 			morpharray[1],
 			morpharray[2],

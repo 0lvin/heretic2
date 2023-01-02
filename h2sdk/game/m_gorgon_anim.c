@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "m_gorgon_anim.h"
@@ -140,7 +140,7 @@ animmove_t gorgon_move_stand4 = {8, gorgon_frames_stand4, gorgonCheckMood};
   Gorgon Turning right while running
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_walk3 [] =
-{ 
+{
 	FRAME_wlkrt1, NULL, 0, 0, 0, ai_walk, 8,  gorgon_footstep,
 	FRAME_wlkrt2, NULL, 0, 0, 0, ai_walk, 8,  NULL,
 	FRAME_wlkrt3, NULL, 0, 0, 0, ai_walk, 8,  NULL,
@@ -162,7 +162,7 @@ animmove_t gorgon_move_walk3 = {12, gorgon_frames_walk3, gorgonCheckMood};
   Gorgon Turning left while running
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_walk2 [] =
-{ 
+{
 	FRAME_wlklft1,NULL, 0, 0, 0, ai_walk, 8,  gorgon_footstep,
 	FRAME_wlklft2,NULL, 0, 0, 0, ai_walk, 8,  NULL,
 	FRAME_wlklft3,NULL, 0, 0, 0, ai_walk, 8,  NULL,
@@ -184,7 +184,7 @@ animmove_t gorgon_move_walk2 = {12, gorgon_frames_walk2, gorgonCheckMood};
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_walk [] =
 {
-	FRAME_walk1,  NULL, 0, 0, 0, ai_walk, 7,  gorgon_footstep, 
+	FRAME_walk1,  NULL, 0, 0, 0, ai_walk, 7,  gorgon_footstep,
 	FRAME_walk2,  NULL, 0, 0, 0, ai_walk, 8,  NULL,
 	FRAME_walk3,  NULL, 0, 0, 0, ai_walk, 8,  NULL,
 	FRAME_walk4,  NULL, 0, 0, 0, ai_walk, 8,  NULL,
@@ -226,7 +226,7 @@ void gorgon_ai_charge2 (edict_t *self, float dist)
 	Forced Jump - jump from a buoy
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_fjump [] =
-{      
+{
 	FRAME_jumpb1,NULL, 0, 0, 0, NULL, 0,  NULL,
 	FRAME_jumpb2,NULL, 0, 0, 0, NULL, 0,  NULL,
 	FRAME_jumpb3,NULL, 0, 0, 0, NULL, 0,  gorgon_growl,
@@ -248,7 +248,7 @@ animmove_t gorgon_move_fjump = {14, gorgon_frames_fjump, gorgon_go_inair};
 	land 1
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_land [] =
-{      
+{
 	FRAME_jumpa15,NULL, 0, 0, 0, NULL, 0,  gorgon_land,
 	FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0,  gorgon_growl,
 	FRAME_jumpa17,NULL, 0, 0, 0, NULL, 0,  NULL
@@ -259,7 +259,7 @@ animmove_t gorgon_move_land = {3, gorgon_frames_land, gorgonCheckMood};
 	land 2
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_land2 [] =
-{      
+{
 	FRAME_jumpa15,NULL, 0, 0, 0, NULL, 0,  gorgon_land,
 	FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0,  gorgon_growl,
 	FRAME_jumpa17,NULL, 0, 0, 0, NULL, 0,  NULL
@@ -270,7 +270,7 @@ animmove_t gorgon_move_land2 = {3, gorgon_frames_land2, gorgonCheckMood};
 	in air
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_inair [] =
-{      
+{
 	FRAME_jumpa14,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed,
 };
 animmove_t gorgon_move_inair = {1, gorgon_frames_inair, NULL};
@@ -279,7 +279,7 @@ animmove_t gorgon_move_inair = {1, gorgon_frames_inair, NULL};
 	MELEE10 - jump up at player
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_melee10 [] =
-{      
+{
 	FRAME_jumpa1,NULL, 0, 0, 0, gorgon_ai_charge2, 0,  NULL,
 	FRAME_jumpa2,NULL, 0, 0, 0, gorgon_ai_charge2, 0,  NULL,
 	FRAME_jumpa3,NULL, 0, 0, 0, gorgon_ai_charge2, 0,  gorgon_growl,
@@ -375,7 +375,7 @@ animmove_t gorgon_move_melee6 = {10, gorgon_frames_melee6, gorgonCheckMood};
   Melee5 -  running attack
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_melee5 [] =
-{ 
+{
 	FRAME_runatk1,  NULL, 0, 0, 0, ai_goal_charge, 20, gorgon_melee5check,
 	FRAME_runatk2,	NULL, 0, 0, 0, ai_goal_charge, 20, NULL,
 	FRAME_runatk3,	NULL, 0, 0, 0, ai_goal_charge, 22, NULL,
@@ -449,7 +449,7 @@ animmove_t gorgon_move_melee1 = {4, gorgon_frames_melee1, gorgonCheckMood};
   RUN3 - Turning right while running
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_run3 [] =
-{ 
+{
 	FRAME_wlkrt1, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_footstep,
 	FRAME_wlkrt2, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip,
 	FRAME_wlkrt3, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip,
@@ -471,7 +471,7 @@ animmove_t gorgon_move_run3 = {12, gorgon_frames_run3, gorgonCheckMood};
   RUN2 - Turning left while running
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_run2 [] =
-{ 
+{
 	FRAME_wlklft1,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_footstep,
 	FRAME_wlklft2,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
 	FRAME_wlklft3,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
@@ -494,7 +494,7 @@ animmove_t gorgon_move_run2 = {12, gorgon_frames_run2, gorgonCheckMood};
   Gorgon Running
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_run1 [] =
-{ 
+{
 	FRAME_run1, NULL, 0, 0, 0, gorgon_ai_run, 30, gorgon_footstep,
 	FRAME_run2,	NULL, 0, 0, 0, gorgon_ai_run, 31, gorgonCheckMood,
 	FRAME_run3,	NULL, 0, 0, 0, gorgon_ai_run, 32, gorgonCheckMood,
@@ -793,7 +793,7 @@ animframe_t gorgon_frames_readycatch [] =
 animmove_t gorgon_move_readycatch = {1, gorgon_frames_readycatch, gorgon_ready_catch};
 
 /*----------------------------------------------------------------------
-  Gorgon 
+  Gorgon
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_snatchhi [] =
 {
@@ -805,7 +805,7 @@ animframe_t gorgon_frames_snatchhi [] =
 animmove_t gorgon_move_snatchhi = {4, gorgon_frames_snatchhi, gorgon_go_snatch};
 
 /*----------------------------------------------------------------------
-  Gorgon 
+  Gorgon
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_snatchlow [] =
 {

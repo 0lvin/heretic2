@@ -11,7 +11,7 @@
 
 #pragma hdrstop("g_local.pch")
 // PRECOMPILED HEADER ABOVE
-// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!  
+// WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
 #include "m_rat_anim.h"
@@ -306,7 +306,7 @@ animframe_t rat_frames_stand2 [] =
 animmove_t rat_move_stand2 = {10, rat_frames_stand2, rat_standorder};
 
 /*----------------------------------------------------------------------
-  Rat Standing - 
+  Rat Standing -
 -----------------------------------------------------------------------*/
 animframe_t rat_frames_stand1 [] =
 {

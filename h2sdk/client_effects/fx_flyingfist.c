@@ -65,7 +65,7 @@ static qboolean FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *
 	{
 		TrailEnt = ClientEntity_new(FX_WEAPON_FLYINGFIST, 0, self->r.origin, NULL, 1000);
 		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	
+
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
 
@@ -93,7 +93,7 @@ static qboolean FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *
 		TrailEnt->d_scale = flrand(-1.0, -1.25);
 		TrailEnt->updateTime = (TrailEnt->alpha * 1000.0) / -TrailEnt->d_scale;
 		TrailEnt->radius = 20.0;
-		
+
 		AddEffect(NULL,TrailEnt);
 	}
 
@@ -110,7 +110,7 @@ static qboolean FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *
 void FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			vel, dir;
-	client_entity_t	*missile;	
+	client_entity_t	*missile;
 	paletteRGBA_t	LightColor;
 	float			lightsize;
 
@@ -140,7 +140,7 @@ void FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
 		LightColor.c = 0xff2040ff;		// Orange light
 		lightsize = 120.0;
 	}
-	
+
 	VectorCopy(vel, missile->velocity);
 	VectorNormalize2(vel, dir);
 	AnglesFromDir(dir, missile->r.angles);
@@ -173,7 +173,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	float			lightrad;
 	float			blastvel;
 	float			volume=1.0;
-	
+
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_FLYINGFISTEXPLODE].formatString, dir);
 
 	if(flags & CEF_FLAG6)
@@ -264,24 +264,24 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 		SmokePuff->r.frame=0;
 
 		SmokePuff->d_alpha= -0.4;
-			
+
 		SmokePuff->radius=20.0;
 
 		if(!i)
 		{
 			if (powerup)
 			{
-				fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/FireballPowerImpact.wav"), 
+				fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/FireballPowerImpact.wav"),
 						volume, ATTN_NORM, 0);
 			}
 			else
 			{
-				fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/FlyingFistImpact.wav"), 
+				fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/FlyingFistImpact.wav"),
 						volume, ATTN_NORM, 0);
 			}
 			SmokePuff->dlight=CE_DLight_new(LightColor,lightrad, -50.0f);
 			VectorClear(SmokePuff->velocity);
-		}	
+		}
 
 		AddEffect(NULL,SmokePuff);
 	}

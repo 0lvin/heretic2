@@ -1,4 +1,10 @@
 //
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
+//
 // trilib.c: library for loading triangles from an Alias triangle file
 //
 
@@ -49,7 +55,7 @@ typedef struct {
 void ByteSwapTri (tf_triangle *tri)
 {
 	int		i;
-	
+
 	for (i=0 ; i<sizeof(tf_triangle)/4 ; i++)
 	{
 		((int *)tri)[i] = BigLong (((int *)tri)[i]);
@@ -109,7 +115,7 @@ void LoadTRI (char *filename, triangle_t **pptri, int *numtriangles, mesh_node_t
 					++i;
 					fread( &(name[i]), sizeof( char ), 1, input);
 				} while( name[i] != '\0' );
-	
+
 //				indent();
 //				fprintf(stdout,"OBJECT START: %s\n",name);
 				fread( &count, sizeof(int), 1, input);
@@ -118,17 +124,17 @@ void LoadTRI (char *filename, triangle_t **pptri, int *numtriangles, mesh_node_t
 				if (count != 0) {
 //					indent();
 //					fprintf(stdout,"NUMBER OF TRIANGLES: %d\n",count);
-	
+
 					i = -1;
 					do {
 						++i;
 						fread( &(tex[i]), sizeof( char ), 1, input);
 					} while( tex[i] != '\0' );
-	
+
 //					indent();
 //					fprintf(stdout,"  Object texture name: '%s'\n",tex);
 				}
-	
+
 				/* Else (count == 0) this is the start of a group, and */
 				/* no texture name is present. */
 			}
@@ -144,7 +150,7 @@ void LoadTRI (char *filename, triangle_t **pptri, int *numtriangles, mesh_node_t
 					++i;
 					fread( &(name[i]), sizeof( char ), 1, input);
 				} while( name[i] != '\0' );
-	
+
 //				indent();
 //				fprintf(stdout,"OBJECT END: %s\n",name);
 				continue;
@@ -153,7 +159,7 @@ void LoadTRI (char *filename, triangle_t **pptri, int *numtriangles, mesh_node_t
 
 //
 // read the triangles
-//		
+//
 		for (i = 0; i < count; ++i) {
 			int		j;
 
@@ -252,7 +258,7 @@ void HandleHRCModel(triangle_t **triList, int *triangleCount, mesh_node_t **node
 			vertIndexBase = numVerts;
 		}
 	}
-	else 
+	else
 	{
 		meshNode = NULL;
 	}
@@ -606,7 +612,7 @@ void HandleHTRModel(triangle_t **triList, int *triangleCount, mesh_node_t **node
 			vertIndexBase = numVerts;
 		}
 	}
-	else 
+	else
 	{
 		meshNode = NULL;
 	}
@@ -614,7 +620,7 @@ void HandleHTRModel(triangle_t **triList, int *triangleCount, mesh_node_t **node
 	// Get vertex count
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
 	vertexCount = tk_IntNumber;
-	
+
 	// Get triangle count
 	TK_BeyondRequire(TK_FACES, TK_INTNUMBER);
 	triCount = tk_IntNumber;
@@ -738,7 +744,7 @@ void HandleHTRModel(triangle_t **triList, int *triangleCount, mesh_node_t **node
 
 	TK_Fetch();
 
-	if (tk_Token == TK_VERTICES) 
+	if (tk_Token == TK_VERTICES)
 	{
 		HandleHTRModel(triList,triangleCount,nodesList, num_mesh_nodes, ActiveNode, Depth+1, vertexCount+vertIndexBase);
 	}
@@ -824,7 +830,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount, me
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
 	vertexCount = tk_IntNumber;
 	vList = SafeMalloc(vertexCount*sizeof vList[0], "Vertex list");
-	
+
 	// Get triangle count
 	TK_BeyondRequire(TK_FACES, TK_INTNUMBER);
 	triCount = tk_IntNumber;
@@ -983,7 +989,7 @@ void LoadTriangleList(char *fileName, triangle_t **triList, int *triangleCount, 
 		strcpy(InputFileName, fileName);
 		strcat(InputFileName, ".tri");
 		if((file1 = fopen(InputFileName, "rb")) != NULL)
-		{			
+		{
 			fclose(file1);
 			LoadTRI(InputFileName, triList, triangleCount, ppmnodes, num_mesh_nodes);
 			printf(" - assuming .TRI\n");
@@ -993,7 +999,7 @@ void LoadTriangleList(char *fileName, triangle_t **triList, int *triangleCount, 
 		strcpy(InputFileName, fileName);
 		strcat(InputFileName, ".3ds");
 		if((file1 = fopen(InputFileName, "rb")) != NULL)
-		{			
+		{
 			fclose(file1);
 			Load3DSTriangleList (InputFileName, triList, triangleCount, ppmnodes, num_mesh_nodes);
 			printf(" - assuming .3DS\n");
@@ -1003,7 +1009,7 @@ void LoadTriangleList(char *fileName, triangle_t **triList, int *triangleCount, 
 		strcpy(InputFileName, fileName);
 		strcat(InputFileName, ".htr");
 		if((file1 = fopen(InputFileName, "rb")) != NULL)
-		{			
+		{
 			fclose(file1);
 			LoadHTR (InputFileName, triList, triangleCount, ppmnodes, num_mesh_nodes);
 			printf(" - assuming .HTR\n");

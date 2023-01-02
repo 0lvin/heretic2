@@ -63,7 +63,7 @@ edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 	magicmissile->flags |= (self->flags & FL_NO_KNOCKBACK);
 	magicmissile->reflect_debounce_time = self->reflect_debounce_time -1; //so it doesn't infinitely reflect in one frame somehow
 	magicmissile->reflected_time=self->reflected_time;
-	G_LinkMissile(magicmissile); 
+	G_LinkMissile(magicmissile);
 
 	// create new trails for the new missile
 	shortyaw = (short)(magicmissile->s.angles[YAW]*(65536.0/360.0));
@@ -72,11 +72,11 @@ edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 	gi.CreateEffect(&magicmissile->s,
 				FX_WEAPON_MAGICMISSILE,
 				CEF_OWNERS_ORIGIN|CEF_FLAG6,
-				0,		
+				0,
 				"ss",
 				shortyaw, shortpitch);
 
-	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it. 
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
@@ -145,8 +145,8 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 	// They say that blast is too much.
 	if (deathmatch->value)
 	{	// Except in deathmatch the weapon is too wimpy.
-		T_DamageRadius(self, self->owner, self->owner, 
-				MAGICMISSILE_RADIUS, MAGICMISSILE_DAMAGE_RAD, MAGICMISSILE_DAMAGE_RAD*0.25, 
+		T_DamageRadius(self, self->owner, self->owner,
+				MAGICMISSILE_RADIUS, MAGICMISSILE_DAMAGE_RAD, MAGICMISSILE_DAMAGE_RAD*0.25,
 				DAMAGE_SPELL|DAMAGE_EXTRA_KNOCKBACK, MOD_MMISSILE);
 	}
 
@@ -202,7 +202,7 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 	create_magic(MagicMissile);
 	MagicMissile->owner=Caster;
 	MagicMissile->reflect_debounce_time = MAX_REFLECT;
-	G_LinkMissile(MagicMissile); 
+	G_LinkMissile(MagicMissile);
 
 	gi.trace(Caster->s.origin, MagicMissile->mins, MagicMissile->maxs, MagicMissile->s.origin, Caster, MASK_PLAYERSOLID,&trace);
 	if (trace.startsolid)
@@ -215,7 +215,7 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 	// a) Lies in a 45 degree degree horizontal, 180 degree vertical cone from my facing.
 	// b) Lies within 0 to 1000 meters of myself.
 	// c) Is visible (i.e. LOS exists from the missile to myself).
-	
+
 	if(MagicMissile->enemy=FindNearestVisibleActorInFrustum(MagicMissile,
 													AimAngles,
 													0.0,
@@ -232,7 +232,7 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 		TempVec[0]+=(MagicMissile->enemy->mins[0]+MagicMissile->enemy->maxs[0])/2.0;
 		TempVec[1]+=(MagicMissile->enemy->mins[1]+MagicMissile->enemy->maxs[1])/2.0;
 		TempVec[2]+=(MagicMissile->enemy->mins[2]+MagicMissile->enemy->maxs[2])/2.0;
-		
+
 		VectorNormalize(TempVec);
 		vectoangles(TempVec,MagicMissile->s.angles);
 		// The pitch is flipped in these?
@@ -251,7 +251,7 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 	gi.CreateEffect(&MagicMissile->s,
 				FX_WEAPON_MAGICMISSILE,
 				CEF_OWNERS_ORIGIN,
-				0,		
+				0,
 				"ss",
 				shortyaw, shortpitch);
 
@@ -275,7 +275,7 @@ static void MagicMissileThink1(edict_t *self)
 	// a) Lies in a 45 degree degree horizontal, 180 degree vertical cone from my facing.
 	// b) Lies within 0 to 1000 meters of myself.
 	// c) Is visible (i.e. LOS exists from the missile to myself).
-	
+
 	if(self->enemy=FindNearestVisibleActorInFrustum(self,
 													self->s.angles,
 													0.0,
@@ -292,7 +292,7 @@ static void MagicMissileThink1(edict_t *self)
 		TempVec[0]+=(self->enemy->mins[0]+self->enemy->maxs[0])/2.0;
 		TempVec[1]+=(self->enemy->mins[1]+self->enemy->maxs[1])/2.0;
 		TempVec[2]+=(self->enemy->mins[2]+self->enemy->maxs[2])/2.0;
-		
+
 		VectorNormalize(TempVec);
 		vectoangles(TempVec,self->s.angles);
 		VectorScale(TempVec,MAGICMISSILE_SPEED,self->velocity);
@@ -308,7 +308,7 @@ static void MagicMissileThink1(edict_t *self)
 	gi.CreateEffect(&self->s,
 				FX_WEAPON_MAGICMISSILE,
 				CEF_OWNERS_ORIGIN,
-				0,		
+				0,
 				"ss",
 				shortyaw, shortpitch);
 

@@ -1,6 +1,12 @@
 Customized Quake2 engine with Heretic2 code parts.
 
 Heretic 2 SDK code based on [Ht2Toolkit](https://www.quaddicted.com/files/idgames2/planetquake/hereticii/files/Ht2Toolkit_v1.06.exe)
+Updated code based on [Heretic 2 Reconstruction Project](https://github.com/jmarshall23/Heretic2/tree/Engine-DLL)
+
+# cleanup code
+```shell
+sed -i 's/[[:blank:]]*$//' */*.{c,h}
+```
 
 build:
 """

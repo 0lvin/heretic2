@@ -112,7 +112,7 @@ void corvus3_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -261,7 +261,7 @@ void corvus3_c_anims(edict_t *self, G_Message_t *msg)
 			self->monsterinfo.c_anim_flag |= C_ANIM_MOVE;
 			curr_anim = ANIM_C_IDLE1;
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -310,7 +310,7 @@ void Corvus3StaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	resInfo.modelIndex = gi.modelindex("models/player/highpriestess_scene/tris.fm");
 
 	classStatics[CID_CORVUS3].resInfo = &resInfo;

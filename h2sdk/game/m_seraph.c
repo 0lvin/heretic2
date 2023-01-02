@@ -309,7 +309,7 @@ void seraph_enforce(edict_t *self)
 	edict_t *ogle;
 
 	ogle = NULL;
-	
+
 	while((ogle = findradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
 	{
 		if (ogle->classID != CID_OGLE)
@@ -320,7 +320,7 @@ void seraph_enforce(edict_t *self)
 
 		if (ogle->targetEnt != self)
 			continue;
-					
+
 		//Setup within the ogle code
 		ogle->use(ogle, self, self);
 	}
@@ -353,12 +353,12 @@ qboolean seraph_checkscare(edict_t *self, edict_t *ogle)
 			self->old_yaw = self->s.angles[YAW];
 			self->ai_mood = AI_MOOD_POINT_NAVIGATE;
 			self->movetarget = self->goalentity = self->enemy = ogle;
-			
+
 			//Tells the other Seraphs not to try and get this one too
 			ogle->targeted = 1;
-			
+
 			self->ai_mood_flags |= AI_MOOD_FLAG_IGNORE;
-		
+
 			return true;
 		}
 	}
@@ -378,7 +378,7 @@ void seraph_oversee(edict_t *self)
 
 		if (ogle->classID != CID_OGLE)
 			continue;
-					
+
 		if (ogle->targeted)
 			return;
 
@@ -465,14 +465,14 @@ void seraph_strike(edict_t *self, float damage, float a, float b)
 
 	VectorSet(soff, 16, 16, 32);
 	VectorSet(eoff, 80, 16, 8);
-	
+
 	VectorSet(mins, -2, -2, -2);
 	VectorSet(maxs,  2,  2,  2);
 
 	VectorSubtract(soff, eoff, bloodDir);
 	VectorNormalize(bloodDir);
 
-	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);	
+	victim = M_CheckMeleeLineHit(self, soff, eoff, mins, maxs, &trace, direction);
 
 	if (victim)
 	{
@@ -485,7 +485,7 @@ void seraph_strike(edict_t *self, float damage, float a, float b)
 		else
 		{
 			//Hurt whatever we were whacking away at
-			T_Damage(victim, self, self, direction, trace.endpos, bloodDir, 
+			T_Damage(victim, self, self, direction, trace.endpos, bloodDir,
 					damage, damage, DAMAGE_EXTRA_BLOOD|DAMAGE_EXTRA_KNOCKBACK,MOD_DIED);
 			gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
 		}
@@ -533,9 +533,9 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 		self->health = 1;
 		self->takedamage = DAMAGE_NO;
 		self->solid = SOLID_BBOX;
-		
+
 		SetAnim(self, ANIM_DEATH1);
-		
+
 		soundID = irand(SND_DEATH1, SND_DEATH4);
 		gi.sound (self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
 
@@ -624,7 +624,7 @@ void seraph_melee(edict_t *self, G_Message_t *msg)
 		//Set this for any uses below
 		AngleVectors(self->s.angles, vf, NULL, NULL);
 
-		dist = M_DistanceToTarget(self, self->enemy);	
+		dist = M_DistanceToTarget(self, self->enemy);
 
 		if (dist < 100)
 		{
@@ -632,7 +632,7 @@ void seraph_melee(edict_t *self, G_Message_t *msg)
 			ret  = M_PredictTargetEvasion( self, self->enemy, attackVel, self->enemy->velocity, self->melee_range, 5 );
 
 			if (ret)
-				SetAnim(self, ANIM_ATTACK1_LOOP);		
+				SetAnim(self, ANIM_ATTACK1_LOOP);
 			else
 				SetAnim(self, ANIM_RUN1_WHIP);
 		}
@@ -664,7 +664,7 @@ void seraph_pain(edict_t *self, G_Message_t *msg)
 		soundID = irand(SND_PAIN1, SND_PAIN4);
 
 		gi.sound (self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
-		
+
 		SetAnim(self, ANIM_PAIN);
 	}
 
@@ -722,8 +722,8 @@ qboolean seraphAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 
 int Bit_for_MeshNode_so [NUM_MESH_NODES] =
 {
-	BIT_BASEBIN,	
-	BIT_PITHEAD,//overlord head	
+	BIT_BASEBIN,
+	BIT_PITHEAD,//overlord head
 	BIT_SHOULDPAD,
 	BIT_GUARDHEAD,//guard head
 	BIT_LHANDGRD,//left hand guard
@@ -840,7 +840,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage)
 			{
-				self->s.fmnodeinfo[MESH__FRTORSO].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__FRTORSO].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__FRTORSO].skin = self->s.skinnum+1;
 			}
 			break;
@@ -849,7 +849,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health) < damage)
 			{
-				self->s.fmnodeinfo[MESH__BKTORSO].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__BKTORSO].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BKTORSO].skin = self->s.skinnum+1;
 			}
 			break;
@@ -857,7 +857,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_ArmUpperLeft:
 			if(flrand(0,self->health)<damage)
 			{
-				self->s.fmnodeinfo[MESH__LFTUPARM].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__LFTUPARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LFTUPARM].skin = self->s.skinnum+1;
 			}
 			break;
@@ -878,14 +878,14 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__LHANDBOSS].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__LHANDBOSS].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LHANDBOSS].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperRight:
 			if(flrand(0,self->health)<damage)
 			{
-				self->s.fmnodeinfo[MESH__RTARM].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__RTARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RTARM].skin = self->s.skinnum+1;
 			}
 			break;
@@ -905,7 +905,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__RHAND].flags |= FMNI_USE_SKIN;			
+				self->s.fmnodeinfo[MESH__RHAND].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RHAND].skin = self->s.skinnum+1;
 			}
 			break;
@@ -914,14 +914,14 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_LegLowerLeft://left leg
 			if(self->s.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
 				break;
-			self->s.fmnodeinfo[MESH__LFTLEG].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__LFTLEG].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__LFTLEG].skin = self->s.skinnum+1;
 			break;
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
 			if(self->s.fmnodeinfo[MESH__RTLEG].flags & FMNI_USE_SKIN)
 				break;
-			self->s.fmnodeinfo[MESH__RTLEG].flags |= FMNI_USE_SKIN;			
+			self->s.fmnodeinfo[MESH__RTLEG].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__RTLEG].skin = self->s.skinnum+1;
 			break;
 	}
@@ -969,26 +969,26 @@ void SeraphOverlordStaticsInit()
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
-	sounds[SND_ATTACK]	=	gi.soundindex("monsters/seraph/overlord/attack.wav");	
-	
+	sounds[SND_ATTACK]	=	gi.soundindex("monsters/seraph/overlord/attack.wav");
+
 	sounds[SND_SCOLD1]	=	gi.soundindex("monsters/seraph/overlord/scold1.wav");//	Back to work
 	sounds[SND_SCOLD2]	=	gi.soundindex("monsters/seraph/overlord/scold2.wav");	// Get to work
 	sounds[SND_SCOLD3]	=	gi.soundindex("monsters/seraph/overlord/scold3.wav");	// No talking
-	
+
 	sounds[SND_SCARE]	=	gi.soundindex("monsters/seraph/overlord/scare.wav");//	Hey!
 
-	sounds[SND_STARTLE]	=	gi.soundindex("monsters/seraph/overlord/startle.wav");	
-	sounds[SND_SLAP]	=	gi.soundindex("monsters/seraph/overlord/slap.wav");	
+	sounds[SND_STARTLE]	=	gi.soundindex("monsters/seraph/overlord/startle.wav");
+	sounds[SND_SLAP]	=	gi.soundindex("monsters/seraph/overlord/slap.wav");
 
-	sounds[SND_DEATH1]	=	gi.soundindex("monsters/seraph/death1.wav");	
-	sounds[SND_DEATH2]	=	gi.soundindex("monsters/seraph/death2.wav");	
-	sounds[SND_DEATH3]	=	gi.soundindex("monsters/seraph/wimpdeath1.wav");	
-	sounds[SND_DEATH4]	=	gi.soundindex("monsters/seraph/wimpdeath2.wav");	
-	
-	sounds[SND_PAIN1]	=	gi.soundindex("monsters/seraph/pain1.wav");	
-	sounds[SND_PAIN2]	=	gi.soundindex("monsters/seraph/pain2.wav");	
-	sounds[SND_PAIN3]	=	gi.soundindex("monsters/seraph/pain3.wav");	
-	sounds[SND_PAIN4]	=	gi.soundindex("monsters/seraph/pain4.wav");	
+	sounds[SND_DEATH1]	=	gi.soundindex("monsters/seraph/death1.wav");
+	sounds[SND_DEATH2]	=	gi.soundindex("monsters/seraph/death2.wav");
+	sounds[SND_DEATH3]	=	gi.soundindex("monsters/seraph/wimpdeath1.wav");
+	sounds[SND_DEATH4]	=	gi.soundindex("monsters/seraph/wimpdeath2.wav");
+
+	sounds[SND_PAIN1]	=	gi.soundindex("monsters/seraph/pain1.wav");
+	sounds[SND_PAIN2]	=	gi.soundindex("monsters/seraph/pain2.wav");
+	sounds[SND_PAIN3]	=	gi.soundindex("monsters/seraph/pain3.wav");
+	sounds[SND_PAIN4]	=	gi.soundindex("monsters/seraph/pain4.wav");
 
 	sounds[SND_SIGHT1]	=	gi.soundindex("monsters/seraph/overlord/sight1.wav");
 	sounds[SND_SIGHT2]	=	gi.soundindex("monsters/seraph/overlord/sight2.wav");
@@ -1055,7 +1055,7 @@ void SP_monster_seraph_overlord(edict_t *self)
 
 	if (!monster_start(self))			// Failed initialization
 		return;
-	
+
 	self->msgHandler = DefaultMsgHandler;
 	self->monsterinfo.alert = seraphAlerted;
 	self->think = walkmonster_start_go;
@@ -1076,7 +1076,7 @@ void SP_monster_seraph_overlord(edict_t *self)
 	self->solid=SOLID_BBOX;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
-	VectorCopy(STDMaxsForClass[self->classID], self->maxs);	
+	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
 	self->materialtype = MAT_FLESH;
 
@@ -1085,7 +1085,7 @@ void SP_monster_seraph_overlord(edict_t *self)
 
 	self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 
-	self->monsterinfo.otherenemyname = "monster_rat";	
+	self->monsterinfo.otherenemyname = "monster_rat";
 
 	if (!self->s.scale)
 	{

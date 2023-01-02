@@ -1,4 +1,10 @@
 //
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
+//
 // trilib.h: header file for loading triangles from an Alias triangle file
 //
 
@@ -6,7 +12,7 @@
 
 #define MAXTRIANGLES	MAX_FM_TRIANGLES
 
-typedef struct 
+typedef struct
 {
 	vec3_t		verts[3];
 #ifdef _QDATA

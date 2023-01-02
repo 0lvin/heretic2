@@ -45,9 +45,9 @@ qboolean FXROTTomeAddToView(client_entity_t *tome, centity_t *owner)
 {
 	float difftime;
 
-	VectorSet(tome->r.origin, 
-				cos(fxi.cl->time*TOME_ORBIT_SCALE)*TOME_ORBIT_DIST, 
-				sin(fxi.cl->time*TOME_ORBIT_SCALE)*TOME_ORBIT_DIST, 
+	VectorSet(tome->r.origin,
+				cos(fxi.cl->time*TOME_ORBIT_SCALE)*TOME_ORBIT_DIST,
+				sin(fxi.cl->time*TOME_ORBIT_SCALE)*TOME_ORBIT_DIST,
 				(15.0 + sin(fxi.cl->time*0.0015)*12.0));
 	VectorAdd(owner->origin, tome->r.origin, tome->r.origin);
 	VectorCopy(tome->r.origin, tome->origin);
@@ -70,9 +70,9 @@ qboolean FXHomeTomeAddToView(client_entity_t *tome, centity_t *owner)
 
 	tome_orbit = tome->SpawnInfo * TOME_INCOMING_ORBIT;
 
-	VectorSet(tome->r.origin, 
-				cos(fxi.cl->time*TOME_ORBIT_SCALE)*tome_orbit, 
-				sin(fxi.cl->time*TOME_ORBIT_SCALE)*tome_orbit, 
+	VectorSet(tome->r.origin,
+				cos(fxi.cl->time*TOME_ORBIT_SCALE)*tome_orbit,
+				sin(fxi.cl->time*TOME_ORBIT_SCALE)*tome_orbit,
 				(15.0 + sin(fxi.cl->time*0.0015)*12.0)*tome->SpawnInfo/TIME_TO_FADE_TOME);
 	VectorAdd(owner->origin, tome->r.origin, tome->r.origin);
 	VectorCopy(tome->r.origin, tome->origin);
@@ -162,9 +162,9 @@ qboolean FXROTTorchAddToView(client_entity_t *tome, centity_t *owner)
 {
 	float difftime;
 
-	VectorSet(tome->r.origin, 
-				cos(fxi.cl->time*TORCH_ORBIT_SCALE)*TORCH_ORBIT_DIST, 
-				sin(fxi.cl->time*TORCH_ORBIT_SCALE)*TORCH_ORBIT_DIST, 
+	VectorSet(tome->r.origin,
+				cos(fxi.cl->time*TORCH_ORBIT_SCALE)*TORCH_ORBIT_DIST,
+				sin(fxi.cl->time*TORCH_ORBIT_SCALE)*TORCH_ORBIT_DIST,
 				(25.0 + sin(fxi.cl->time*0.0015)*16.0));
 	VectorAdd(owner->origin, tome->r.origin, tome->r.origin);
 	VectorCopy(tome->r.origin, tome->origin);
@@ -188,9 +188,9 @@ qboolean FXHomeTorchAddToView(client_entity_t *tome, centity_t *owner)
 
 	tome_orbit = tome->SpawnInfo * TORCH_INCOMING_ORBIT;
 
-	VectorSet(tome->r.origin, 
-				cos(fxi.cl->time*TORCH_ORBIT_SCALE)*tome_orbit, 
-				sin(fxi.cl->time*TORCH_ORBIT_SCALE)*tome_orbit, 
+	VectorSet(tome->r.origin,
+				cos(fxi.cl->time*TORCH_ORBIT_SCALE)*tome_orbit,
+				sin(fxi.cl->time*TORCH_ORBIT_SCALE)*tome_orbit,
 				(25.0 + sin(fxi.cl->time*0.0015)*16.0)*tome->SpawnInfo/TIME_TO_FADE_TORCH);
 	VectorAdd(owner->origin, tome->r.origin, tome->r.origin);
 	VectorCopy(tome->r.origin, tome->origin);

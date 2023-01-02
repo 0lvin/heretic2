@@ -68,7 +68,7 @@ static qboolean FXPuzzlePickupThink(struct client_entity_s *self, centity_t *own
 {
 	// Rotate and bob
 	VectorCopy(owner->current.origin, self->r.origin);
-	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT); 
+	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT);
 	self->SpawnData += BOB_SPEED;
 
 	return(true);

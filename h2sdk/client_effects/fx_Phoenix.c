@@ -82,12 +82,12 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 	VectorScale(fwd, -4.0*FIRETRAIL_SPEED, fwd);
 	VectorScale(right, FIRETRAIL_SPEED, right);
 
-	// Throw smoke to each side, alternating.  
+	// Throw smoke to each side, alternating.
 	if ((missile->LifeTime--)&0x01)
 	{	// to the right
-		VectorSet(	smokeorigin, 
-					flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS), 
-					flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS), 
+		VectorSet(	smokeorigin,
+					flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS),
+					flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS),
 					flrand(-SMOKETRAIL_RADIUS/2.0, SMOKETRAIL_RADIUS/2.0));
 		VectorAdd(	smokeorigin, missile->origin, smokeorigin);
 		smoke = ClientEntity_new(-1, CEF_DONT_LINK, smokeorigin, NULL, dur);
@@ -105,9 +105,9 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 	}
 	else
 	{	// and to the left
-		VectorSet(	smokeorigin, 
-					flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS), 
-					flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS), 
+		VectorSet(	smokeorigin,
+					flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS),
+					flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS),
 					flrand(-SMOKETRAIL_RADIUS/2.0, SMOKETRAIL_RADIUS/2.0));
 		VectorAdd(	smokeorigin, missile->origin, smokeorigin);
 		smoke = ClientEntity_new(-1, CEF_DONT_LINK, smokeorigin, NULL, dur);
@@ -129,14 +129,14 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 	for(i = 0; i < FIRETRAIL_PARTS; i++)
 	{
 		flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), LightColor, dur);
-		VectorSet(	flame->origin, 
-					flrand(-FIRETRAIL_RADIUS, FIRETRAIL_RADIUS), 
-					flrand(-FIRETRAIL_RADIUS, FIRETRAIL_RADIUS), 
+		VectorSet(	flame->origin,
+					flrand(-FIRETRAIL_RADIUS, FIRETRAIL_RADIUS),
+					flrand(-FIRETRAIL_RADIUS, FIRETRAIL_RADIUS),
 					flrand(-FIRETRAIL_RADIUS/3.0, FIRETRAIL_RADIUS/3.0));
 		VectorAdd(	missile->origin, flame->origin, flame->origin);
 		flame->scale = FIRETRAIL_SCALE;
 
-		VectorSet(flame->velocity, 
+		VectorSet(flame->velocity,
 				flrand(-FIRETRAIL_SPEED, FIRETRAIL_SPEED), flrand(-FIRETRAIL_SPEED, FIRETRAIL_SPEED), flrand(-1.0, 1.0));
 		// Make the fire shoot out the back and to the side
 		VectorAdd(flame->velocity, fwd, flame->velocity);
@@ -211,7 +211,7 @@ void FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	missile->lastThinkTime = fxi.cl->time + (50*7);	// Time to play last frame.
 	missile->NoOfAnimFrames = 7;					// End on frame number 7.
 	missile->Scale = 1;								// Positive frame count
-	missile->r.scale= .8;							
+	missile->r.scale= .8;
 	if(flags & CEF_FLAG6)
 	{
 		missile->Update = FXPhoenixMissilePowerThink;
@@ -249,7 +249,7 @@ qboolean FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_t *owne
 
 	if(explosion->dlight->intensity > 0.0F)
 		explosion->dlight->intensity -= 5.0F;
-	
+
 	return(true);
 }
 
@@ -371,7 +371,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		{
 			ballnum = i;
 			subexplosion = CreatePhoenixSmallExplosion(origin);
-			VectorSet(subexplosion->velocity, 
+			VectorSet(subexplosion->velocity,
 							flrand(-EXPLODE_BALL_SPEED, EXPLODE_BALL_SPEED) + (dir[0]*EXPLODE_BALL_SPEED),
 							flrand(-EXPLODE_BALL_SPEED, EXPLODE_BALL_SPEED) + (dir[1]*EXPLODE_BALL_SPEED),
 							flrand(-EXPLODE_BALL_SPEED, EXPLODE_BALL_SPEED) + (dir[2]*EXPLODE_BALL_SPEED));
@@ -402,15 +402,15 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	explosion->dlight = CE_DLight_new(color, 150.0F, 0.0F);
 	explosion->Update = FXPhoenixExplosionBallThink;
 	AddEffect(NULL, explosion);
-	
+
 	// Add some glowing blast particles.
 	VectorScale(dir,EXPLODE_SPEED,dir);
 	count = GetScaledCount(EXPLODE_NUM_BITS, 0.3);
 	for(i = 0; i < count; i++)
 	{
 		spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 2000);
-		VectorSet(spark->velocity,	flrand(-EXPLODE_SPEED, EXPLODE_SPEED), 
-									flrand(-EXPLODE_SPEED, EXPLODE_SPEED), 
+		VectorSet(spark->velocity,	flrand(-EXPLODE_SPEED, EXPLODE_SPEED),
+									flrand(-EXPLODE_SPEED, EXPLODE_SPEED),
 									flrand(-EXPLODE_SPEED, EXPLODE_SPEED));
 		VectorAdd(spark->velocity, dir, spark->velocity);
 		spark->acceleration[2] = EXPLODE_GRAVITY;
@@ -649,7 +649,7 @@ static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *
 		dur = 1700;
 	else
 		dur = 2000;
-	
+
 	// Here we want to shoot out flame to either side
 	VectorScale(missile->r.angles, 180.0/M_PI, angles);
 	AngleVectors(angles, fwd, right, NULL);
@@ -658,10 +658,10 @@ static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *
 
 	sideVal = (missile->LifeTime&0x1) ? -1:1;
 	missile->LifeTime--;
-	// Throw smoke to each side, alternating.  
-	VectorSet(	smokeorigin, 
-				flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS), 
-				flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS), 
+	// Throw smoke to each side, alternating.
+	VectorSet(	smokeorigin,
+				flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS),
+				flrand(-SMOKETRAIL_RADIUS, SMOKETRAIL_RADIUS),
 				flrand(-SMOKETRAIL_RADIUS/2.0, SMOKETRAIL_RADIUS/2.0));
 	VectorAdd(	smokeorigin, missile->origin, smokeorigin);
 	smoke = ClientEntity_new(-1, CEF_DONT_LINK, smokeorigin, NULL, dur);
@@ -682,14 +682,14 @@ static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *
 	for(i = 0; i < FIRETRAIL_PARTS; i++)
 	{
 		flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), LightColor, dur);
-		VectorSet(	flame->origin, 
-					flrand(-FIRETRAIL_RADIUS/3, FIRETRAIL_RADIUS/3), 
-					flrand(-FIRETRAIL_RADIUS/3, FIRETRAIL_RADIUS/3), 
+		VectorSet(	flame->origin,
+					flrand(-FIRETRAIL_RADIUS/3, FIRETRAIL_RADIUS/3),
+					flrand(-FIRETRAIL_RADIUS/3, FIRETRAIL_RADIUS/3),
 					flrand(-FIRETRAIL_RADIUS/3.0, FIRETRAIL_RADIUS/3.0));
 		VectorAdd(	missile->origin, flame->origin, flame->origin);
 		flame->scale = FIRETRAIL_SCALE;
 
-		VectorSet(flame->velocity, 
+		VectorSet(flame->velocity,
 				flrand(-FIRETRAIL_SPEED/3, FIRETRAIL_SPEED/3), flrand(-FIRETRAIL_SPEED/3, FIRETRAIL_SPEED/3), flrand(-1.0, 1.0));
 		// Make the fire shoot out the back and to the side
 		VectorAdd(flame->velocity, fwd, flame->velocity);

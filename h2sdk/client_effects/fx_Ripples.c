@@ -42,7 +42,7 @@ static qboolean FXRippleSpawner(client_entity_t *spawner, centity_t *owner)
 	ripple->alpha = alpha;
 	ripple->d_alpha = -alpha;
 
-	AddEffect(NULL, ripple); 
+	AddEffect(NULL, ripple);
 
 	if(spawner->SpawnInfo-- < 0)
 	{
@@ -67,7 +67,7 @@ void FXWaterRipples(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		spawner->Update = FXRippleSpawner;
 		spawner->flags |= CEF_NO_DRAW | CEF_NOMOVE;
 
-		AddEffect(NULL, spawner); 
+		AddEffect(NULL, spawner);
 	}
 }
 // end

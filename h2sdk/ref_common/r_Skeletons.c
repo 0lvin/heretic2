@@ -241,7 +241,7 @@ static void RotateModelSegment(M_SkeletalJoint_t *joint, vec3_t *modelVerticies,
 	}
 }
 
-void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelClusterIndex, int anglesIndex, 
+void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelClusterIndex, int anglesIndex,
 	vec3_t *modelVerticies)
 {
 	int child, child2, jointChild;
@@ -258,11 +258,11 @@ void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelCluster
 		assert(joint->children != ARRAYEDLISTNODE_NULL);
 //		assert(modelJointAngles->children != ARRAYEDLISTNODE_NULL);
 
-		// big hack here - to avoid a weird assert crash. 
-		for(child = modelCluster->children, child2 = modelJointAngles->children, 
-			jointChild = joint->children; 
+		// big hack here - to avoid a weird assert crash.
+		for(child = modelCluster->children, child2 = modelJointAngles->children,
+			jointChild = joint->children;
 
-			((child != ARRAYEDLISTNODE_NULL) && (child2 != ARRAYEDLISTNODE_NULL)); 
+			((child != ARRAYEDLISTNODE_NULL) && (child2 != ARRAYEDLISTNODE_NULL));
 
 			child = ClusterNodes[child].next, child2 = ri.jointNodes[child2].next,
 			jointChild = skel->rootNode[jointChild].next)
@@ -270,7 +270,7 @@ void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelCluster
 //			assert(child2 != ARRAYEDLISTNODE_NULL);
 			assert(jointChild != ARRAYEDLISTNODE_NULL);
 
-			RotateModelSegments(skel, skel->rootNode[jointChild].data, 
+			RotateModelSegments(skel, skel->rootNode[jointChild].data,
 				ClusterNodes[child].data, ri.jointNodes[child2].data, modelVerticies);
 		}
 	}
@@ -289,7 +289,7 @@ static void RotateDecendents(ModelSkeleton_t *skel, M_SkeletalJoint_t *joint, M_
 {
 	int jointChild;
 
-	for(jointChild = joint->children; jointChild != ARRAYEDLISTNODE_NULL; 
+	for(jointChild = joint->children; jointChild != ARRAYEDLISTNODE_NULL;
 		jointChild = skel->rootNode[jointChild].next)
 	{
 		joint = skel->rootJoint + skel->rootNode[jointChild].data;
@@ -343,16 +343,16 @@ void SetupJointRotations(ModelSkeleton_t *skel, int jointIndex, int anglesIndex)
 	{
 		assert(modelJointAngles->children != ARRAYEDLISTNODE_NULL);
 
-		for(child2 = modelJointAngles->children, jointChild = joint->children; 
+		for(child2 = modelJointAngles->children, jointChild = joint->children;
 
-			child2 != ARRAYEDLISTNODE_NULL; 
+			child2 != ARRAYEDLISTNODE_NULL;
 
 			child2 = ri.jointNodes[child2].next,
 			jointChild = skel->rootNode[jointChild].next)
 		{
 			assert(jointChild != ARRAYEDLISTNODE_NULL);
 
-			SetupJointRotations(skel, skel->rootNode[jointChild].data, 
+			SetupJointRotations(skel, skel->rootNode[jointChild].data,
 				ri.jointNodes[child2].data);
 		}
 	}
@@ -369,7 +369,7 @@ void FinishJointRotations(ModelSkeleton_t *skel, int jointIndex)
 
 	joint = skel->rootJoint + jointIndex;
 
-	for(jointChild = joint->children; jointChild != ARRAYEDLISTNODE_NULL; 
+	for(jointChild = joint->children; jointChild != ARRAYEDLISTNODE_NULL;
 		jointChild = skel->rootNode[jointChild].next)
 	{
 		FinishJointRotations(skel, skel->rootNode[jointChild].data);
@@ -416,7 +416,7 @@ void FinishJointRotations(ModelSkeleton_t *skel, int jointIndex)
 #if 0
 	if(joint->parent.direction[0] < 0)
 	{
-		Com_Printf("direction screwed %f %f %f\n", joint->parent.direction[0], 
+		Com_Printf("direction screwed %f %f %f\n", joint->parent.direction[0],
 			joint->parent.direction[1], joint->parent.direction[2]);
 	}
 #endif
@@ -474,7 +474,7 @@ void FinishJointRotations(ModelSkeleton_t *skel, int jointIndex)
 	Matrix3MultByMatrix3(partialBackToLocal, rotation2, joint->rotation);
 }
 
-void LinearllyInterpolateJoints(ModelSkeleton_t *newSkel, int newIndex, 
+void LinearllyInterpolateJoints(ModelSkeleton_t *newSkel, int newIndex,
 	ModelSkeleton_t *oldSkel, int oldIndex, ModelSkeleton_t *liSkel, int liIndex,
 	float move[3], float frontv[3], float backv[3])
 {
@@ -490,20 +490,20 @@ void LinearllyInterpolateJoints(ModelSkeleton_t *newSkel, int newIndex,
 		assert(oldJoint->children != ARRAYEDLISTNODE_NULL);
 		assert(liJoint->children != ARRAYEDLISTNODE_NULL);
 
-		for(newChild = newJoint->children, oldChild = oldJoint->children, 
-			liChild = liJoint->children; 
+		for(newChild = newJoint->children, oldChild = oldJoint->children,
+			liChild = liJoint->children;
 
-			newChild != ARRAYEDLISTNODE_NULL; 
+			newChild != ARRAYEDLISTNODE_NULL;
 
-			newChild = newSkel->rootNode[newChild].next, 
-			oldChild = oldSkel->rootNode[oldChild].next, 
+			newChild = newSkel->rootNode[newChild].next,
+			oldChild = oldSkel->rootNode[oldChild].next,
 			liChild = liSkel->rootNode[liChild].next)
 		{
 			assert(oldChild != ARRAYEDLISTNODE_NULL);
 			assert(liChild != ARRAYEDLISTNODE_NULL);
 
-			LinearllyInterpolateJoints(newSkel, newSkel->rootNode[newChild].data, 
-				oldSkel, oldSkel->rootNode[oldChild].data, liSkel, 
+			LinearllyInterpolateJoints(newSkel, newSkel->rootNode[newChild].data,
+				oldSkel, oldSkel->rootNode[oldChild].data, liSkel,
 				liSkel->rootNode[liChild].data, move, frontv, backv);
 		}
 	}
@@ -625,7 +625,7 @@ void SetupCompressedJoints(ModelSkeleton_t *liSkel, int liIndex,
 
 	if(liJoint->children != ARRAYEDLISTNODE_NULL)
 	{
-		for(liChild = liJoint->children; liChild != ARRAYEDLISTNODE_NULL; 
+		for(liChild = liJoint->children; liChild != ARRAYEDLISTNODE_NULL;
 			liChild = liSkel->rootNode[liChild].next)
 		{
 			SetupCompressedJoints(liSkel, liSkel->rootNode[liChild].data, lerp + 9);
@@ -665,7 +665,7 @@ void SetupCompressedJoints(ModelSkeleton_t *liSkel, int liIndex,
 }
 
 #if 0
-void DoJointRotations(int rootJoint, fmdl_t *pSegMod, vec3_t *lerped, vec3_t move, vec3_t frontv, 
+void DoJointRotations(int rootJoint, fmdl_t *pSegMod, vec3_t *lerped, vec3_t move, vec3_t frontv,
 	vec3_t backv)
 {
 	static M_SkeletalJoint_t temp_SkeletalJoints[MAX_JOINTS_PER_SKELETON];
@@ -675,10 +675,10 @@ void DoJointRotations(int rootJoint, fmdl_t *pSegMod, vec3_t *lerped, vec3_t mov
 	CreateSkeletonInPlace(pSegMod->skeletalType, &liRootJoint);
 
 	LinearllyInterpolateJoints(pSegMod->skeletons + currententity->frame, 0,
-		pSegMod->skeletons + currententity->oldframe, 0, &liRootJoint, 0, move, 
+		pSegMod->skeletons + currententity->oldframe, 0, &liRootJoint, 0, move,
 		frontv, backv);
 
-	RotateModelSegments(&liRootJoint, 0, pSegMod->rootCluster, 
+	RotateModelSegments(&liRootJoint, 0, pSegMod->rootCluster,
 		rootJoint, lerped);
 
 	ClearSkeleton(&liRootJoint, 0);

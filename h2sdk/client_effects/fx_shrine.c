@@ -23,7 +23,7 @@
 #define STAFF_RADIUS		20.0
 #define NUM_OF_MANA_PARTS 16
 #define NUM_OF_ARMOR_PARTS 30
-#define NUM_OF_STAFF_PARTS 6				   
+#define NUM_OF_STAFF_PARTS 6
 #define NUM_OF_LUNG_PARTS 15
 #define TOTAL_STAFF_EFFECTS 30
 #define STAFF_EFFECTS_HEIGHT 70
@@ -110,7 +110,7 @@ static qboolean shrine_player_update(struct client_entity_s *self, centity_t *ow
 	if (!(--self->SpawnInfo))
 	{
 		self->r.fmnodeinfo = NULL;
-		return(false);		
+		return(false);
 	}
 
 	return(true);
@@ -175,7 +175,7 @@ static qboolean FXShrineManaThink(struct client_entity_s *self, centity_t *owner
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	if (self->SpawnInfo >4)
@@ -221,7 +221,7 @@ void FXShrineManaEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->Update = FXShrineManaThink;
 	glow->SpawnInfo = 17;
 	glow->AddToView = LinkedEntityUpdatePlacement;
-	
+
 	AddEffect(owner, glow);
 
 }
@@ -245,7 +245,7 @@ static qboolean FXShrineArmorThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	if (self->SpawnInfo >4)
@@ -266,7 +266,7 @@ static qboolean FXShrineArmorThink(struct client_entity_s *self, centity_t *owne
 				ce = ClientParticle_new(PART_16x16_ORANGE_PUFF, color, 500);
 			else
 				ce = ClientParticle_new(PART_16x16_BLUE_PUFF, color, 500);
-			ce->acceleration[2] = 0.0; 
+			ce->acceleration[2] = 0.0;
 			VectorCopy(vel, ce->origin);
 			ce->scale = 30.0F;
 			ce->d_scale = -60.0F;
@@ -288,7 +288,7 @@ void FXShrineArmorEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->Update = FXShrineArmorThink;
 	glow->SpawnInfo = 18;
 	glow->AddToView = LinkedEntityUpdatePlacement;
-	
+
 	AddEffect(owner, glow);
 
 }
@@ -311,7 +311,7 @@ static qboolean FXShrineLungsThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	if (self->SpawnInfo >10)
@@ -342,14 +342,14 @@ static qboolean FXShrineLungsThink(struct client_entity_s *self, centity_t *owne
 void FXShrineLungsEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
-														  
+
 	glow = ClientEntity_new(type, flags | CEF_NO_DRAW , origin, 0, 50);
 
 	VectorClear(glow->origin);
 	glow->Update = FXShrineLungsThink;
 	glow->SpawnInfo = 40;
 	glow->AddToView = LinkedEntityUpdatePlacement;
-	
+
 	AddEffect(owner, glow);
 
 }
@@ -377,7 +377,7 @@ void FXShrineLightEffect(centity_t *owner, int type, int flags, vec3_t origin)
  	glow->r.scale = 0.1;
 	glow->d_alpha = -0.45;
 	glow->alpha = 1.0;
-	
+
 	AddEffect(owner, glow);
 }
 
@@ -402,7 +402,7 @@ static qboolean FXShrineStaffThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 	rad = ((TOTAL_STAFF_EFFECTS)-self->SpawnInfo) * (STAFF_RADIUS/(TOTAL_STAFF_EFFECTS-8));
 
@@ -421,7 +421,7 @@ static qboolean FXShrineStaffThink(struct client_entity_s *self, centity_t *owne
 			else
 				ce = ClientParticle_new(PART_16x16_SPARK_B, self->r.color, self->LifeTime);
 
-			ce->acceleration[2] = 0.0; 
+			ce->acceleration[2] = 0.0;
 			VectorCopy(vel, ce->origin);
 			ce->color.a = 118;
 			ce->scale = 16.0F;
@@ -438,7 +438,7 @@ static qboolean FXShrineStaffThink(struct client_entity_s *self, centity_t *owne
 				ce = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), self->r.color, self->LifeTime);
 			else
 				ce = ClientParticle_new(PART_16x16_SPARK_B, self->r.color, self->LifeTime);
-			ce->acceleration[2] = 0.0; 
+			ce->acceleration[2] = 0.0;
 			VectorCopy(vel, ce->origin);
 			ce->color.a = 118;
 			ce->scale = 16.0F;
@@ -468,7 +468,7 @@ void FXShrineStaffEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 	int					line_count, particle_life;
-						 
+
 	if(r_detail->value >= DETAIL_HIGH)
 	{
 		line_count = NUM_OF_STAFF_PARTS;
@@ -494,7 +494,7 @@ void FXShrineStaffEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->SpawnData = STAFF_EFFECTS_START_HEIGHT;
 	glow->SpawnDelay = line_count;
 	glow->LifeTime = particle_life;
-	
+
 	AddEffect(owner, glow);
 }
 
@@ -535,7 +535,7 @@ void FXLightningSplit(struct client_entity_s *self, vec3_t org, vec3_t dir, int 
 
 		// create the individual particle
 		ce = ClientParticle_new(PART_16x16_LIGHTNING, color, lightning_part_duration);
-		ce->acceleration[2] = 0.0; 
+		ce->acceleration[2] = 0.0;
 		VectorCopy(org2, ce->origin);
 
 		// figure out what our scale and alpaha should be based on whether its a small split or not
@@ -654,13 +654,13 @@ static qboolean FXShrineHealthThink(struct client_entity_s *self, centity_t *own
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	// create the lightning lines
 	FXCreateLightning(self, owner);
 
-	self->updateTime = flrand(1, (TOTAL_HEALTH_EFFECTS - self->SpawnInfo)) * 100.0; 
+	self->updateTime = flrand(1, (TOTAL_HEALTH_EFFECTS - self->SpawnInfo)) * 100.0;
 
 	return(true);
 }
@@ -702,7 +702,7 @@ static qboolean FXShrineReflectThink(struct client_entity_s *self, centity_t *ow
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	if (self->SpawnInfo >24)
@@ -720,7 +720,7 @@ static qboolean FXShrineReflectThink(struct client_entity_s *self, centity_t *ow
 			ang += offset_ang;;
 
 			ce = ClientParticle_new(PART_16x16_SPARK_B, color, 450);
-			ce->acceleration[2] = 0.0; 
+			ce->acceleration[2] = 0.0;
 			VectorSet(ce->origin, FLIGHT_RAD * cos(ang), FLIGHT_RAD * sin(ang), self->SpawnData);
 			ce->scale = 16.0F;
 			AddParticleToList(self, ce);
@@ -734,7 +734,7 @@ static qboolean FXShrineReflectThink(struct client_entity_s *self, centity_t *ow
 			ang += offset_ang;;
 
 			ce = ClientParticle_new(PART_16x16_SPARK_B, color, 450);
-			ce->acceleration[2] = 0.0; 
+			ce->acceleration[2] = 0.0;
 			VectorSet(ce->origin, FLIGHT_RAD * cos(ang), FLIGHT_RAD * sin(ang), new_y);
 			ce->scale = 16.0F;
 			AddParticleToList(self, ce);
@@ -746,7 +746,7 @@ static qboolean FXShrineReflectThink(struct client_entity_s *self, centity_t *ow
 			for (i=0; i<count; i++)
 			{
 				ce = ClientParticle_new(PART_16x16_STAR, color, 280);
-				ce->acceleration[2] = 0.0; 
+				ce->acceleration[2] = 0.0;
 				VectorSet(ce->origin, flrand(-FLIGHT_PLAY_RAD,FLIGHT_PLAY_RAD), flrand(-FLIGHT_PLAY_RAD,FLIGHT_PLAY_RAD), flrand(-30,30) );
 				ce->scale = 0.3;
 				ce->d_scale = flrand(40.0F, 60.0f);
@@ -767,7 +767,7 @@ static qboolean FXShrineReflectThink(struct client_entity_s *self, centity_t *ow
 void FXShrineReflectEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
-														  
+
 	glow = ClientEntity_new(type, flags | CEF_NO_DRAW | CEF_ADDITIVE_PARTS, origin, 0, 25);
 
 	VectorClear(glow->origin);
@@ -776,7 +776,7 @@ void FXShrineReflectEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->AddToView = LinkedEntityUpdatePlacement;
 	glow->SpawnData = FLIGHT_EFFECTS_START_HEIGHT;
 	glow->Scale = 0;
-	
+
 	AddEffect(owner, glow);
 
 }
@@ -794,7 +794,7 @@ static qboolean FXShrineGlowThink(struct client_entity_s *self, centity_t *owner
 {
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	self->d_alpha = -0.45;
@@ -811,12 +811,12 @@ static qboolean FXShrineGhostThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	for( i=0; i< irand(3,5); i++)
 	{
-		VectorSet(origin, flrand(-20, 20), flrand(-20,20), flrand(-30,40)); 
+		VectorSet(origin, flrand(-20, 20), flrand(-20,20), flrand(-30,40));
 
 		glow = ClientEntity_new(FX_SHRINE_GHOST, CEF_OWNERS_ORIGIN, origin, 0, 300);
 
@@ -829,7 +829,7 @@ static qboolean FXShrineGhostThink(struct client_entity_s *self, centity_t *owne
 		glow->d_alpha = 1.0;
 		glow->alpha = 0.1;
 		glow->Update = FXShrineGlowThink;
-		
+
 		AddEffect(owner, glow);
 	}
 	return(true);
@@ -843,7 +843,7 @@ void FXShrineGhostEffect(centity_t *owner, int type, int flags, vec3_t origin)
 
 	glow->SpawnInfo = 20;
 	glow->Update = FXShrineGhostThink;
-	
+
 	AddEffect(owner, glow);
 }
 
@@ -867,7 +867,7 @@ static qboolean FXShrineSpeedThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	color.c = 0xffffff;
@@ -880,7 +880,7 @@ static qboolean FXShrineSpeedThink(struct client_entity_s *self, centity_t *owne
 	for (i=0; i< count; i++)
 	{
 		ce = ClientParticle_new(PART_32x32_STEAM, self->r.color, 380);
-		ce->acceleration[2] = 0.0; 
+		ce->acceleration[2] = 0.0;
 		VectorSet(angles, ang, self->Scale, 0);
 		DirFromAngles(angles, ce->origin);
 		Vec3ScaleAssign(REFLECT_RAD, ce->origin);
@@ -899,7 +899,7 @@ static qboolean FXShrineSpeedThink(struct client_entity_s *self, centity_t *owne
 		for (i=0; i<count; i++)
 		{
 			ce = ClientParticle_new(PART_16x16_STAR, color, 280);
-			ce->acceleration[2] = 0.0; 
+			ce->acceleration[2] = 0.0;
 			VectorSet(ce->origin, flrand(-FLIGHT_PLAY_RAD,FLIGHT_PLAY_RAD), flrand(-FLIGHT_PLAY_RAD,FLIGHT_PLAY_RAD), flrand(-30,30) );
 			ce->scale = 0.3;
 			ce->d_scale = flrand(40.0F, 60.0f);
@@ -913,7 +913,7 @@ static qboolean FXShrineSpeedThink(struct client_entity_s *self, centity_t *owne
 void FXShrineSpeedEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
-														  
+
 	glow = ClientEntity_new(type, flags | CEF_NO_DRAW, origin, 0, 30);
 
 	VectorClear(glow->origin);
@@ -924,7 +924,7 @@ void FXShrineSpeedEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->r.color.c = 0x604040;
 	glow->r.color.a = 255;
 	glow->Scale = 0;
-	
+
 	AddEffect(owner, glow);
 }
 
@@ -948,7 +948,7 @@ static qboolean FXShrinePowerupThink(struct client_entity_s *self, centity_t *ow
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);		
+		return(false);
 	}
 
 	if (self->SpawnInfo >24)
@@ -965,7 +965,7 @@ static qboolean FXShrinePowerupThink(struct client_entity_s *self, centity_t *ow
 		for (i=0; i< count; i++)
 		{
 			ce = ClientParticle_new(PART_16x16_SPARK_G, color, 350);
-			ce->acceleration[2] = 0.0; 
+			ce->acceleration[2] = 0.0;
 			VectorSet(ce->origin, POWERUP_RAD * cos(ang), POWERUP_RAD * sin(ang), self->SpawnData);
 			ce->scale = 12.0F;
 			AddParticleToList(self, ce);
@@ -981,7 +981,7 @@ static qboolean FXShrinePowerupThink(struct client_entity_s *self, centity_t *ow
 			for (i=0; i<count; i++)
 			{
 				ce = ClientParticle_new(PART_16x16_STAR, color, 280);
-				ce->acceleration[2] = 0.0; 
+				ce->acceleration[2] = 0.0;
 				VectorSet(ce->origin, flrand(-FLIGHT_PLAY_RAD,FLIGHT_PLAY_RAD), flrand(-FLIGHT_PLAY_RAD,FLIGHT_PLAY_RAD), flrand(-30,30) );
 				ce->scale = 0.3;
 				ce->d_scale = flrand(40.0F, 60.0f);
@@ -1000,14 +1000,14 @@ static qboolean FXShrinePowerupThink(struct client_entity_s *self, centity_t *ow
 void FXShrinePowerUpEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
-														  
+
 	glow = ClientEntity_new(type, flags | CEF_NO_DRAW | CEF_ADDITIVE_PARTS, origin, 0, 75);
 
 	glow->Update = FXShrinePowerupThink;
 	glow->SpawnInfo = TOTAL_POWERUP_EFFECTS;
 	glow->AddToView = LinkedEntityUpdatePlacement;
 	glow->SpawnData = POWERUP_EFFECTS_START_HEIGHT;
-	
+
 	AddEffect(owner, glow);
 }
 
@@ -1107,7 +1107,7 @@ static qboolean FXShrineBallThink(struct client_entity_s *self, centity_t *owner
 void FXShrineBall(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
-	vec3_t				offset;	
+	vec3_t				offset;
 	byte				shrinetype;
 	// go get the normalised direction of the shrine object
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_BALL].formatString, &offset, &shrinetype);
@@ -1119,7 +1119,7 @@ void FXShrineBall(centity_t *owner, int type, int flags, vec3_t origin)
 	// move our starting point out a bit
 	Vec3ScaleAssign(25,offset);
 	offset[2] = -10;
-	Vec3AddAssign(offset, origin); 
+	Vec3AddAssign(offset, origin);
 
 	// create the dummy entity, so particles can be attached
 	// | CEF_ADDITIVE_PARTS
@@ -1144,7 +1144,7 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_particle_t	*ce;
 	client_entity_t		*burst;
-	vec3_t				offset;	
+	vec3_t				offset;
 	int					i, count;
 	paletteRGBA_t		color;
 	byte				shrinetype;
@@ -1159,7 +1159,7 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// move our starting point out a bit
 	Vec3ScaleAssign(25,offset);
 	offset[2] = -10;
-	Vec3AddAssign(offset, origin); 
+	Vec3AddAssign(offset, origin);
 
 	// create the dummy entity, so particles can be attached
 	burst = ClientEntity_new(type, (flags | CEF_NO_DRAW | CEF_CHECK_OWNER) & ~CEF_NOMOVE , origin, 0, 1200);
@@ -1168,7 +1168,7 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 	assert(shrinetype >= 0 && shrinetype <= SHRINEBALL_MAX);
 	count = GetScaledCount(BALL_EX_PART_NUM, 0.4);
-	// create a bunch of exploding particles 
+	// create a bunch of exploding particles
 	for (i=0; i< count; i++)
 	{
 		rad[PITCH] = flrand(0, 360.0);
@@ -1179,14 +1179,14 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		{
 			part = irand(PART_16x16_SPARK_B, PART_16x16_SPARK_Y);
 		}
-		else 
+		else
 			part = ShrineParticle[shrinetype][irand(0,1)];
 
 		ce = ClientParticle_new(part, color, 1150);
 
 		if(part != PART_32x32_WFALL && part != PART_16x16_WATERDROP)
 			ce->type |= PFL_ADDITIVE;
-		
+
 		AngleVectors(rad, fwd, NULL, NULL);
 		VectorScale(fwd, BALL_RAD, ce->velocity);
 		VectorScale(ce->velocity, -0.7, ce->acceleration);
