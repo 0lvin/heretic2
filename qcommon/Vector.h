@@ -14,11 +14,6 @@
 #include "Angles.h"
 #include "q_shared.h"
 
-// angle indexes
-#define	PITCH				0		// up / down
-#define	YAW					1		// left / right
-#define	ROLL				2		// fall over
-
 #define FLOAT_ZERO_EPSILON 0.0005f
 
 #ifdef __cplusplus

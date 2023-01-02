@@ -38,21 +38,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define	REF_VERSION	"GL 0.01"
 
-// up / down
-#define	PITCH	0
-
-// left / right
-#define	YAW		1
-
-// fall over
-#define	ROLL	2
-
 typedef struct CL_SkeletalJoint_s
 {
 	int children;
 	vec3_t angles;
 } CL_SkeletalJoint_t;
 
+#ifndef __VIDDEF_T
+#define __VIDDEF_T
 typedef struct
 {
 	unsigned		width, height;			// coordinates from main game
