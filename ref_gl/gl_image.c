@@ -1245,110 +1245,112 @@ image_t *GL_LoadWal (char *name)
 	return image;
 }
 
-/*
-================
-GL_ConvertM8To32Bit
-================
-*/
-
-// jmarshall
-void GL_ConvertM8To32Bit(const char *name, byte **pic, int *width, int *height)
+static image_t *
+GL_LoadM8(char *name)
 {
-	miptex_t *tex;
-	byte *source;
-	int count;
-	int		length;
-	byte	*buffer, *image_buffer;
-	int i, f, d, numPixels;
+	m8tex_t *mt;
+	int width, height, ofs, size;
+	image_t *image;
+	unsigned char *image_buffer = NULL;
 
-	*pic = NULL;
+	size = ri.FS_LoadFile(name, (void **)&mt);
 
-	//
-	// load the file
-	//
-	length = ri.FS_LoadFile((char *)name, (void **)&buffer);
-	if (!buffer)
+	if (!mt)
 	{
-		ri.Con_Printf(PRINT_DEVELOPER, "Failed to find m8 file %s\n", name);
-		return;
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s\n", __func__, name);
+		return r_notexture;
 	}
 
-	tex = (miptex_t *)buffer;
-
-	*width = tex->width[0];
-	*height = tex->height[0];
-
-	numPixels = *width * *height;
-
-	image_buffer = (byte *)malloc(numPixels * 4 * 4);
-	*pic = image_buffer;
-
-	count = tex->width[0] * tex->height[0];
-	source = (byte *)tex + tex->offsets[0];
-
-	for (i = 0, f = 0; i < count * 4; i += 4, f++)
+	if (size < sizeof(m8tex_t))
 	{
-		int source_pixel_id = f;
-		int image_buffer_id = i;
-
-		image_buffer[image_buffer_id + 0] = tex->palette[source[source_pixel_id]].r;
-		//image_buffer[image_buffer_id] <<= 8;
-		image_buffer[image_buffer_id + 1] = tex->palette[source[source_pixel_id]].g;
-		//image_buffer[image_buffer_id] <<= 8;
-		image_buffer[image_buffer_id + 2] = tex->palette[source[source_pixel_id]].b;
-
-		image_buffer[i + 3] = 255;
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return r_notexture;
 	}
+
+	if (LittleLong (mt->version) != M8_VERSION)
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
+		ri.FS_FreeFile ((void *)mt);
+		return r_notexture;
+	}
+
+	width = LittleLong(mt->width[0]);
+	height = LittleLong(mt->height[0]);
+	ofs = LittleLong(mt->offsets[0]);
+
+	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
+	    (((size - ofs) / height) < width))
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return r_notexture;
+	}
+
+	image_buffer = malloc (width * height * 4);
+	for(int i=0; i<width * height; i++)
+	{
+		unsigned char value = *((byte *)mt + ofs + i);
+		image_buffer[i * 4 + 0] = mt->palette[value].r;
+		image_buffer[i * 4 + 1] = mt->palette[value].g;
+		image_buffer[i * 4 + 2] = mt->palette[value].b;
+		image_buffer[i * 4 + 3] = value == 255 ? 0 : 255;
+	}
+
+	image = GL_LoadPic(name, image_buffer, width, height, it_wall, 32);
+	free(image_buffer);
+
+	ri.FS_FreeFile((void *)mt);
+
+	return image;
 }
-/*
-================
-GL_ConvertM32To32Bit
-================
-*/
-void GL_ConvertM32To32Bit(const char *name, byte **pic, int *width, int *height)
+
+
+static image_t *
+GL_LoadM32(char *name)
 {
-	miptex32_t *tex;
-	byte *source;
-	int count;
-	int		length;
-	byte	*buffer, *image_buffer;
-	int i, f, d, numPixels;
+	m32tex_t	*mt;
+	int		width, height, ofs, size;
+	struct image_s	*image;
 
-	*pic = NULL;
+	size = ri.FS_LoadFile(name, (void **)&mt);
 
-	//
-	// load the file
-	//
-	length = ri.FS_LoadFile((char *)name, (void **)&buffer);
-	if (!buffer)
+	if (!mt)
 	{
-		ri.Con_Printf(PRINT_DEVELOPER, "Failed to find m8 file %s\n", name);
-		return;
+		return NULL;
 	}
 
-	tex = (miptex32_t *)buffer;
-
-	*width = tex->width[0];
-	*height = tex->height[0];
-
-	numPixels = *width * *height;
-
-	image_buffer = (byte *)malloc(numPixels * 4 * 4);
-	*pic = image_buffer;
-
-	count = tex->width[0] * tex->height[0];
-	source = (byte *)tex + tex->offsets[0];
-
-	for (i = 0, f = 0; i < count * 4; i += 4, f += 3)
+	if (size < sizeof(m32tex_t))
 	{
-		for (d = 0; d < 4; d++)
-		{
-			int image_buffer_id = i + d;
-			image_buffer[image_buffer_id] = source[image_buffer_id];
-		}
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return NULL;
 	}
+
+	if (LittleLong (mt->version) != M32_VERSION)
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
+		ri.FS_FreeFile ((void *)mt);
+		return NULL;
+	}
+
+	width = LittleLong (mt->width[0]);
+	height = LittleLong (mt->height[0]);
+	ofs = LittleLong (mt->offsets[0]);
+
+	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
+	    (((size - ofs) / height) < (width * 4)))
+	{
+		ri.Con_Printf (PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
+		ri.FS_FreeFile((void *)mt);
+		return NULL;
+	}
+
+	image = GL_LoadPic(name, (byte *)mt + ofs, width, height, it_wall, 32);
+	ri.FS_FreeFile ((void *)mt);
+
+	return image;
 }
-// jmarshall end
 
 /*
 ===============
@@ -1405,17 +1407,11 @@ image_t	*GL_FindImage (char *name, imagetype_t type)
 		// heretic 2 texture support
 		if (!strcmp(name + len - 3, ".m8"))
 		{
-			GL_ConvertM8To32Bit(name, &pic, &width, &height);
-			if (!pic)
-				return NULL; // ri.Sys_Error (ERR_DROP, "GL_FindImage: can't load %s", name);
-			image = GL_LoadPic(name, pic, width, height, type, 32);
+			image = GL_LoadM8(name);
 		}
 		else if (!strcmp(name + len - 4, ".m32"))
 		{
-			GL_ConvertM32To32Bit(name, &pic, &width, &height);
-			if (!pic)
-				return NULL; // ri.Sys_Error (ERR_DROP, "GL_FindImage: can't load %s", name);
-			image = GL_LoadPic(name, pic, width, height, type, 32);
+			image = GL_LoadM32 (name);
 		}
 		else if (!strcmp(name + len - 4, ".tga"))
 		{
@@ -1428,7 +1424,6 @@ image_t	*GL_FindImage (char *name, imagetype_t type)
 			return NULL;	//	ri.Sys_Error (ERR_DROP, "GL_FindImage: bad extension on: %s", name);
 	}
 // jmarshall end
-
 
 	if (pic)
 		free(pic);

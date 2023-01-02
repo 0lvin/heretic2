@@ -638,9 +638,17 @@ void R_SetSky (char *name, float rotate, vec3_t axis)
 		if (gl_skymip->value || skyrotate)
 			gl_picmip->value++;
 
-		Com_sprintf(pathname, sizeof(pathname), "pics/skies/%s%s.m8", skyname, suf[i]);
+		if ( gl_ext_palettedtexture->value )
+			Com_sprintf (pathname, sizeof(pathname), "env/%s%s.pcx", skyname, suf[i]);
+		else
+			Com_sprintf (pathname, sizeof(pathname), "env/%s%s.tga", skyname, suf[i]);
 
 		sky_images[i] = GL_FindImage (pathname, it_sky);
+		if (!sky_images[i] || sky_images[i] == r_notexture)
+		{
+			Com_sprintf (pathname, sizeof(pathname), "pics/skies/%s%s.m8", skyname, suf[i]);
+			sky_images[i] = GL_FindImage (pathname, it_sky);
+		}
 		if (!sky_images[i])
 			sky_images[i] = r_notexture;
 
