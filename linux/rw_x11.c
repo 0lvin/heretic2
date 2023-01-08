@@ -1092,6 +1092,11 @@ void SWimp_EndFrame (void)
 	}
 #endif
 
+	if (!x_visinfo)
+	{
+		return;
+	}
+
 	if (doShm)
 	{
 		if (x_visinfo->depth == 16)

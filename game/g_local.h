@@ -742,12 +742,11 @@ typedef struct
 } acelsizes_t;
 
 // The structure for each monster class.
-
-#define	FOFS(x)		(int)&(((edict_t *)0)->x)
-#define	STOFS(x)	(int)&(((spawn_temp_t *)0)->x)
-#define	LLOFS(x)	(int)&(((level_locals_t *)0)->x)
-#define	CLOFS(x)	(int)&(((gclient_t *)0)->x)
-#define	BYOFS(x)	(int)&(((buoy_t *)0)->x)
+#define	FOFS(x)	(size_t)&(((edict_t *)NULL)->x)
+#define	STOFS(x)	(size_t)&(((spawn_temp_t *)NULL)->x)
+#define	LLOFS(x)	(size_t)&(((level_locals_t *)NULL)->x)
+#define	CLOFS(x)	(size_t)&(((gclient_t *)NULL)->x)
+#define	BYOFS(x)	(size_t)&(((buoy_t *)NULL)->x)
 
 extern	game_locals_t	game;
 #ifdef __cplusplus
