@@ -1,3 +1,9 @@
+#ifndef QCOMMON_CL_STRINGS_H
+#define QCOMMON_CL_STRINGS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Top 2 bits are used for level of message
 #define MESSAGE_MASK	0x1fff
@@ -322,8 +328,8 @@ typedef enum
 	GM_HELP2					
 } GameMsg_t;
 
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
-
-
-
-
+#endif

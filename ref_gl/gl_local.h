@@ -17,13 +17,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-// disable data conversion warnings
 
-#if 0
-#pragma warning(disable : 4244)     // MIPS
-#pragma warning(disable : 4136)     // X86
-#pragma warning(disable : 4051)     // ALPHA
-#endif
+#ifndef REF_GL_LOCAL_H
+#define REF_GL_LOCAL_H
 
 #ifdef _WIN32
 #  include <windows.h>
@@ -36,6 +32,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../qcommon/Vector.h"
 
 #include "qgl.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define	REF_VERSION	"GL 0.01"
 
@@ -234,8 +234,14 @@ extern	cvar_t	*gl_texturesolidmode;
 extern  cvar_t  *gl_saturatelighting;
 extern  cvar_t  *gl_lockpvs;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern	cvar_t	*vid_fullscreen;
 extern	cvar_t	*vid_gamma;
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 extern	cvar_t		*intensity;
 
@@ -328,7 +334,7 @@ int		Draw_GetPalette (void);
 
 void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight);
 
-struct image_s *R_RegisterSkin (char *name);
+struct image_s *R_RegisterSkin(char* name, qboolean* retval);
 
 void LoadPCX (char *filename, byte **pic, byte **palette, int *width, int *height);
 image_t *GL_LoadPic (char *name, byte *pic, int width, int height, imagetype_t type, int bits);
@@ -444,7 +450,6 @@ IMPORTED FUNCTIONS
 
 ====================================================================
 */
-
 extern	refimport_t	ri;
 
 
@@ -467,3 +472,8 @@ void		GLimp_LogNewFrame( void );
 
 extern image_t* atlas_particle;
 extern image_t* atlas_aparticle;
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

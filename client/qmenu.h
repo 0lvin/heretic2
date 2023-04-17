@@ -122,14 +122,32 @@ typedef struct
 
 qboolean Field_Key( menufield_s *field, int key );
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void	Menu_AddItem( menuframework_s *menu, void *item );
 void	Menu_AdjustCursor( menuframework_s *menu, int dir );
 void	Menu_Center( menuframework_s *menu );
 void	Menu_Draw( menuframework_s *menu );
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 void	*Menu_ItemAtCursor( menuframework_s *m );
+#ifdef __cplusplus
+extern "C" {
+#endif
 qboolean Menu_SelectItem( menuframework_s *s );
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 void	Menu_SetStatusBar( menuframework_s *s, const char *string );
+#ifdef __cplusplus
+extern "C" {
+#endif
 void	Menu_SlideItem( menuframework_s *s, int dir );
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 int		Menu_TallySlots( menuframework_s *menu );
 
 void	 Menu_DrawString( int, int, const char * );

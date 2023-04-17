@@ -1,6 +1,10 @@
 #ifndef	EFFECTFLAGS_H
 #define EFFECTFLAGS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // ************************************************************************************************
 // EF_XXX
 // ------
@@ -109,5 +113,9 @@
 //
 
 #define	EFFECT_PRED_INFO			0x4000
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif // EFFECTFLAGS_H

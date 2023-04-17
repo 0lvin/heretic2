@@ -1,3 +1,4 @@
+#include "../qcommon/qcommon.h"
 #include "g_local.h"
 
 typedef enum AnimID_e

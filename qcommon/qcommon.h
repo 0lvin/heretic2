@@ -3,8 +3,25 @@
 
 // qcommon.h -- definitions common between client and server, but not game.dll
 
-#include "../game/q_shared.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "q_shared.h"
+#include "angles.h"
+
+// unknown pragmas are SUPPOSED to be ignored, but....
+#pragma warning(disable : 4244)     // MIPS -- truncation from double to float in MSDEV
+#pragma warning(disable : 4018)     // signed/unsigned mismatch
+#pragma warning(disable : 4305)		// truncation from const double to float
+
+#include <direct.h>
+#include "vector.h"
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #define	BASEDIRNAME	"base"
 
@@ -19,7 +36,7 @@
 
 #ifdef _HERETIC2_
 #define GAME_DECLSPEC    __declspec(dllexport)
-#else 
+#else
 #define GAME_DECLSPEC    __declspec(dllimport)
 #endif
 
@@ -40,6 +57,14 @@
 
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct edict_s edict_t;
+typedef struct sfx_s sfx_t;
+typedef struct client_entity_s client_entity_t;
+
 //============================================================================
 
 typedef struct sizebuf_s
@@ -58,13 +83,13 @@ void *SZ_GetSpace (sizebuf_t *buf, int length);
 void SZ_Write (sizebuf_t *buf, void *data, int length);
 void SZ_Print (sizebuf_t *buf, char *data);	// strcats onto the sizebuf
 
+extern int	c_pointcontents;
+extern int	c_traces, c_brush_traces;
+
 //============================================================================
 
 struct usercmd_s;
 struct entity_state_s;
-
-unsigned char GetB(unsigned char * buf, int i);
-void SetB(unsigned char * buf, int i);
 
 void MSG_WriteChar (sizebuf_t *sb, int c);
 void MSG_WriteByte (sizebuf_t *sb, int c);
@@ -84,6 +109,7 @@ void MSG_WriteDir (sizebuf_t *sb, vec3_t vector);
 void MSG_WriteDirMag (sizebuf_t *sb, vec3_t dir);
 void MSG_WriteYawPitch (sizebuf_t *sb, vec3_t vector);
 void MSG_WriteShortYawPitch (sizebuf_t *sb, vec3_t vector);
+void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
 void	MSG_BeginReading (sizebuf_t *sb);
 
@@ -115,10 +141,9 @@ void	MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
 extern	qboolean		bigendien;
 extern int		sz_line;
 extern char		*sz_filename;
-#define set_sz_data	sz_filename = __FILE__; sz_line = __LINE__; 
+#define set_sz_data	sz_filename = __FILE__; sz_line = __LINE__;
 
 //============================================================================
-
 
 int	COM_Argc (void);
 char *COM_Argv (int arg);	// range and null checked
@@ -137,14 +162,10 @@ void Info_Print (char *s);
 
 
 /* crc.h */
-
 void CRC_Init(unsigned short *crcvalue);
 void CRC_ProcessByte(unsigned short *crcvalue, byte data);
 unsigned short CRC_Value(unsigned short crcvalue);
 unsigned short CRC_Block (byte *start, int count);
-
-
-
 
 /*
 ==============================================================
@@ -200,7 +221,7 @@ enum svc_ops_e
 	svc_stufftext,				// [string] stuffed into client's console buffer, should be \n terminated
 	svc_serverdata,				// [long] protocol ...
 	svc_configstring,			// [short] [string]
-	svc_spawnbaseline,		
+	svc_spawnbaseline,
 	svc_centerprint,			// [string] to put in center of the screen
 	svc_gamemsg_centerprint,  	// line number of [string] in strings.txt file
 	svc_gamemsgvar_centerprint,	// line number of [string] in strings.txt file, along with var to insert
@@ -229,7 +250,7 @@ enum svc_ops_e
 enum clc_ops_e
 {
 	clc_bad,
-	clc_nop, 		
+	clc_nop,
 	clc_move,				// [[usercmd_t]
 	clc_userinfo,			// [[userinfo string]
 	clc_stringcmd,			// [string] message
@@ -305,7 +326,7 @@ enum clc_ops_e
 #define PS_WEAPON				(1 << 51)
 #define PS_DEFENSE				(1 << 52)
 #define PS_LASTWEAPON			(1 << 53)
-#define PS_LASTDEFENSE			(1 << 54)	
+#define PS_LASTDEFENSE			(1 << 54)
 #define PS_WEAPONREADY			(1 << 55)
 
 #define PS_SWITCHTOWEAPON		(1 << 56)
@@ -520,9 +541,6 @@ char 	*Cmd_CompleteCommand (char *partial);
 // attempts to match a partial command for automatic command line completion
 // returns NULL if nothing fits
 
-char 	*Cmd_CompleteCommandNext (char *partial, char *last);
-// similar to above, but returns the next value after last
-
 QUAKE2_API  int		Cmd_Argc (void);
 QUAKE2_API  char	*Cmd_Argv (int arg);
 QUAKE2_API  char	*Cmd_Args (void);
@@ -542,104 +560,6 @@ void	Cmd_ForwardToServer (void);
 // adds the current command line as a clc_stringcmd to the client message.
 // things like godmode, noclip, etc, are commands directed to the server,
 // so when they are typed in at the console, they will need to be forwarded.
-
-
-/*
-==============================================================
-
-CVAR
-
-==============================================================
-*/
-
-/*
-
-cvar_t variables are used to hold scalar or string variables that can be changed or displayed at the console or prog code as well as accessed directly
-in C code.
-
-The user can access cvars from the console in three ways:
-r_draworder			prints the current value
-r_draworder 0		sets the current value to 0
-set r_draworder 0	as above, but creates the cvar if not present
-Cvars are restricted from having the same names as commands to keep this
-interface from being ambiguous.
-*/
-
-extern	cvar_t	*cvar_vars;
-
-float ClampCvar( float min, float max, float value );
-
-QUAKE2_API cvar_t *Cvar_Get (char *var_name, char *value, int flags);
-// creates the variable if it doesn't exist, or returns the existing one
-// if it exists, the value will not be changed, but flags will be ORed in
-// that allows variables to be unarchived without needing bitflags
-
-QUAKE2_API cvar_t 	*Cvar_Set (char *var_name, char *value);
-// will create the variable if it doesn't exist
-
-cvar_t *Cvar_ForceSet (char *var_name, char *value);
-// will set the variable even if NOSET or LATCH
-
-cvar_t 	*Cvar_FullSet (char *var_name, char *value, int flags);
-
-QUAKE2_API void	Cvar_SetValue (char *var_name, float value);
-// expands value to a string and calls Cvar_Set
-
-float	Cvar_VariableValue (char *var_name);
-// returns 0 if not defined or non numeric
-
-char	*Cvar_VariableString (char *var_name);
-// returns an empty string if not defined
-
-char 	*Cvar_CompleteVariable (char *partial);
-// attempts to match a partial variable name for command line completion
-// returns NULL if nothing fits
-
-char	*Cvar_CompleteVariableNext(char *partial, char *last);
-// similar to above, except that it goes to next match if any
-
-void	Cvar_GetLatchedVars (void);
-// any CVAR_LATCHED variables that have been set will now take effect
-
-qboolean Cvar_Command (void);
-// called by Cmd_ExecuteString when Cmd_Argv(0) doesn't match a known
-// command.  Returns true if the command was a variable reference that
-// was handled. (print or change)
-
-void 	Cvar_WriteVariables (char *path);
-// appends lines containing "set variable value" for all variables
-// with the archive flag set to true.
-
-void	Cvar_Init (void);
-
-char	*Cvar_Userinfo (void);
-// returns an info string containing all the CVAR_USERINFO cvars
-
-char	*Cvar_Serverinfo (void);
-// returns an info string containing all the CVAR_SERVERINFO cvars
-
-extern	qboolean	userinfo_modified;
-// this is set each time a CVAR_USERINFO variable is changed
-// so that the client knows to send it to the server
-
-// Screen flash set
-void Activate_Screen_Flash(int color);
-
-// Screen flash unset
-void Deactivate_Screen_Flash(void);
-
-// return screen flash value
-int Is_Screen_Flashing(void);  
-
-// set up a screen shaking
-void Activate_Screen_Shake(float intensity, float duration, float current_time, int flags);
-// reset screen shakings
-void Reset_Screen_Shake(void);
-
-qboolean Get_Crosshair(vec3_t origin, byte *type);
-
-// called by the camera code to determine our camera offset
-void Perform_Screen_Shake(vec3_t, float current_time);
 
 /*
 ==============================================================
@@ -733,7 +653,7 @@ extern	netadr_t	net_from;
 extern	sizebuf_t	net_message;
 extern	byte		net_message_buffer[MAX_MSGLEN];
 
-
+void NET_Sleep(int msec);
 void Netchan_Init (void);
 void Netchan_Setup (netsrc_t sock, netchan_t *chan, netadr_t adr, int qport);
 
@@ -742,9 +662,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data);
 void Netchan_OutOfBand (int net_socket, netadr_t adr, int length, byte *data);
 void Netchan_OutOfBandPrint (int net_socket, netadr_t adr, char *format, ...);
 qboolean Netchan_Process (netchan_t *chan, sizebuf_t *msg);
-
 qboolean Netchan_CanReliable (netchan_t *chan);
-
 
 /*
 ==============================================================
@@ -753,9 +671,6 @@ CMODEL
 
 ==============================================================
 */
-
-
-#include "../qcommon/qfiles.h"
 
 cmodel_t	*CM_LoadMap (char *name, qboolean clientload, unsigned *checksum);
 cmodel_t	*CM_InlineModel (char *name);	// *1, *2, etc
@@ -812,7 +727,7 @@ Common between server and client so prediction matches
 
 ==============================================================
 */
-				  
+
 void Pmove(pmove_t *pmove, qboolean isServer);
 
 /*
@@ -835,11 +750,13 @@ QUAKE2_API int			FS_FOpenFile (char *filename, FILE **file);
 QUAKE2_API void		FS_FCloseFile (FILE *f);
 // note: this can't be called from another DLL, due to MS libc issues
 
-int			FS_LoadFile (char *path, void **buffer);
+
+QUAKE2_API char**		FS_ListFiles(char* findname, int* numfiles, unsigned musthave, unsigned canthave);
+QUAKE2_API int			FS_LoadFile (char *path, void **buffer);
 // a null buffer will just return the file length without loading
 // a -1 length is not present
 
-void		FS_Read (void *buffer, int len, FILE *f);
+QUAKE2_API void		FS_Read (void *buffer, int len, FILE *f);
 // properly handles partial reads
 
 void		FS_FreeFile (void *buffer);
@@ -869,15 +786,12 @@ MISC
 
 void		Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush));
 void		Com_EndRedirect (void);
-QUAKE2_API void 		Com_Printf (char *fmt, ...);
 QUAKE2_API void 		Com_DPrintf (char *fmt, ...);
-QUAKE2_API void 		Com_Error (int code, char *fmt, ...);
+QUAKE2_API void		Com_Error (int code, char *fmt, ...);
 void 		Com_Quit (void);
 int			Com_ServerState (void);
 void		Com_SetServerState (int state);
-
 unsigned	Com_BlockChecksum (void *buffer, int length);
-byte		COM_BlockSequenceCheckByte (byte *base, int length, int sequence);
 
 extern	cvar_t	*developer;
 extern	cvar_t	*dedicated;
@@ -908,9 +822,12 @@ void Z_FreeTags (int tag);
 
 void Qcommon_Init (int argc, char **argv);
 void Qcommon_Frame (int msec);
+void Qcommon_Shutdown (void);
+
 
 #define NUMVERTEXNORMALS	162
 extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
+byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence);
 
 /*
 ==============================================================
@@ -929,7 +846,6 @@ void	Sys_AppActivate (void);
 char	*Sys_ConsoleInput (void);
 void	Sys_ConsoleOutput (char *string);
 void	Sys_SendKeyEvents (void);
-QUAKE2_API void	Sys_Error (char *error, ...);
 void	Sys_Quit (void);
 char	*Sys_GetClipboardData( void );
 void	Sys_CopyProtect (void);
@@ -951,6 +867,8 @@ void SCR_BeginLoadingPlaque (void);
 void SV_Init (void);
 void SV_Shutdown (char *finalmsg, qboolean reconnect);
 void SV_Frame (int msec);
-
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif // QCOMMON_H

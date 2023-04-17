@@ -1,4 +1,11 @@
+#ifndef QCOMMON_FX
+#define QCOMMON_FX
+
 #include "EffectFlags.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // ************************************************************************************************
 // FX_XXX
@@ -6,7 +13,7 @@
 // Id's for all the client-effects types.
 // ************************************************************************************************
 
-enum FX_Type_t
+typedef enum FX_Type_e
 {	// NOTE We currently have 126 client effects, we cannot exceed 32768 - ha !! Like we'll ever reach that !
 	FX_REMOVE_EFFECTS=0,			// special fx type for removing client fx
 	FX_TEST,						
@@ -158,7 +165,7 @@ enum FX_Type_t
 	// not spawnable in the Game DLL,
 
 	FX_PUFF
-};
+} FX_Type_t;
 
 // ************************************************************************************************
 // FX_ANIM_XXX
@@ -290,3 +297,14 @@ enum
 
 };
 
+typedef enum HighPriestessStaff_e
+{
+	HP_STAFF_INIT,
+	HP_STAFF_TRAIL,
+} HighPriestessStaff_t;
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

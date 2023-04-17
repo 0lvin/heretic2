@@ -1,8 +1,6 @@
 #ifndef GENERICUNIONS_H
 #define GENERICUNIONS_H
 
-#include "q_shared.h"
-
 // don't add anything to this union which is greater than 4 bytes in size
 typedef union GenericUnion4_u
 {

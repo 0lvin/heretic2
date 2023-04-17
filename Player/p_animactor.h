@@ -10,8 +10,16 @@
 
 #include "p_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern PLAYER_API void TurnOffPlayerEffects(playerinfo_t *playerinfo);
 extern PLAYER_API void AnimUpdateFrame(playerinfo_t *playerinfo);
 extern PLAYER_API void PlayerFallingDamage(playerinfo_t *playerinfo);
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif // _P_ANIMACTOR_H_

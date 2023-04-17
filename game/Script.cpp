@@ -6,7 +6,7 @@
 // Heretic II
 //
 
-#include "ICScript.h"
+#include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "SinglyLinkedList.h"
 
@@ -76,7 +76,7 @@ static qboolean ICScript_Advance(ICScript_t *_this)
 
 		parms = &newMsg->parms;
 
-		if(format[0])
+		if (format[0])
 		{
 			_this->count += SetParms(&newMsg->parms, format, _this->buf + _this->count, true);
 		}

@@ -7,13 +7,15 @@ sndGlobals_t sndGlobal;
 
 cvar_t *s_musicVolume;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*
 =================
 S_Init
 =================
 */
-
-bool S_Init(void)
+qboolean S_Init(void)
 {
 	Com_Printf("-------- S_Init -------\n");
 
@@ -51,6 +53,9 @@ bool S_Init(void)
 
 	return true;
 }
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 /*
 =================
@@ -128,10 +133,17 @@ sfx_t *S_RegisterSound(char *name)
 	return S_FindName(name, true);
 }
 
-void S_Activate(bool active)
+#ifdef __cplusplus
+extern "C" {
+#endif
+void S_Activate(qboolean active)
 {
 
 }
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
 
 void S_BeginRegistration(void)
 {
@@ -220,6 +232,10 @@ void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float f
 	alSourcePlay(voice);
 }
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 void S_StopAllSounds(void)
 {
 	// Stop all the sounds
@@ -234,6 +250,10 @@ void S_StopAllSounds(void)
 		}
 	}
 }
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
 
 void S_StopAllSounds_Sounding(void)
 {

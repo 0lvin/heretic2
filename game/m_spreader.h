@@ -1,17 +1,19 @@
 /*-------------------------------------------------------------------------
-m_spreader.h  
+m_spreader.h
 
-Copyright 1998 Raven Software 
-All rights reserved    
+Copyright 1998 Raven Software
+All rights reserved
 -------------------------------------------------------------------------*/
 
 #ifndef M_SPREADER_H
 #define M_SPREADER_H
 
+#include "../qcommon/qcommon.h"
+
 typedef enum AnimID_e
 {
 	ANIM_ATTACK1,
-	ANIM_ATTACK2, 
+	ANIM_ATTACK2,
 	ANIM_BACKUP,
 	ANIM_BACKATTACK,
 	ANIM_DEATH1_GO,
@@ -27,10 +29,10 @@ typedef enum AnimID_e
 	ANIM_PIVOT_LEFT,
 	ANIM_PIVOT_RIGHT,
 	ANIM_RUNATTACK,
-	ANIM_RUN1, 
-	ANIM_LAND, 
-	ANIM_INAIR, 
-	ANIM_FJUMP, 
+	ANIM_RUN1,
+	ANIM_LAND,
+	ANIM_INAIR,
+	ANIM_FJUMP,
 	ANIM_WALK1,
 	ANIM_WALK2,
 	ANIM_DEATH2,
@@ -47,9 +49,9 @@ typedef enum SoundID_e
 	SND_SPRAYSTART,
 	SND_SPRAYLOOP,
 	SND_PAIN,
-	SND_VOICE1, 
-	SND_VOICE2, 
-	SND_THROW, 
+	SND_VOICE1,
+	SND_VOICE2,
+	SND_THROW,
 	SND_DEATH,
 	SND_BOMB,
 	NUM_SOUNDS
@@ -72,17 +74,17 @@ typedef enum SoundID_e
 static int Bit_for_MeshNode_ps [13] =
 {
 	BIT_PARENT,
-	BIT_CHILD,	
-	BIT_BODY,		
-	BIT_BOMB,	
+	BIT_CHILD,
+	BIT_BODY,
+	BIT_BOMB,
 	BIT_RITLEG,
-	BIT_LFTARM,	
-	BIT_LFTLEG,	
-	BIT_HEAD,		
-	BIT_RITARM,	
-	BIT_TANK3,		
-	BIT_TANK2,		
-	BIT_TANK1,		
+	BIT_LFTARM,
+	BIT_LFTLEG,
+	BIT_HEAD,
+	BIT_RITARM,
+	BIT_TANK3,
+	BIT_TANK2,
+	BIT_TANK1,
 	BIT_HOSE
 };
 
@@ -93,7 +95,7 @@ extern animmove_t spreader_move_backattack1;
 extern animmove_t spreader_move_death1_go;
 extern animmove_t spreader_move_death1_loop;
 extern animmove_t spreader_move_death1_end;
-extern animmove_t spreader_move_duck1;	
+extern animmove_t spreader_move_duck1;
 extern animmove_t spreader_move_dkatck1;
 extern animmove_t spreader_move_duckdown;
 extern animmove_t spreader_move_duckstill;
@@ -103,10 +105,10 @@ extern animmove_t spreader_move_pain1;
 extern animmove_t spreader_move_pvtlt1;
 extern animmove_t spreader_move_pvtrt1;
 extern animmove_t spreader_move_rnatck1;
-extern animmove_t spreader_move_run1; 
-extern animmove_t spreader_move_land; 
-extern animmove_t spreader_move_inair; 
-extern animmove_t spreader_move_fjump; 
+extern animmove_t spreader_move_run1;
+extern animmove_t spreader_move_land;
+extern animmove_t spreader_move_inair;
+extern animmove_t spreader_move_fjump;
 extern animmove_t spreader_move_walk1;
 extern animmove_t spreader_move_walk2;
 extern animmove_t spreader_move_death2;

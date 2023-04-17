@@ -1,7 +1,12 @@
 #ifndef G_MESSAGE_H
 #define G_MESSAGE_H
 
+#include "../qcommon/qcommon.h"
 #include "SinglyLinkedList.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Be sure to update DefaultMessageReceivers after adding a new message
 typedef enum G_MsgID_e
@@ -24,7 +29,7 @@ typedef enum G_MsgID_e
 	MSG_FLYBACK,//15
 	MSG_HOVER,
 	MSG_FLEE,
-	MSG_FLYATTACK, 
+	MSG_FLYATTACK,
 	MSG_REPULSE,
 	//the following messages will probably be dumped when josh finishes his AI stuff
 	//however, for the time being I need them for spreader to work for E3 --bb
@@ -39,7 +44,7 @@ typedef enum G_MsgID_e
 	MSG_TURNLEFT,
 	MSG_TURNRIGHT,
 	MSG_BLOCKED,//30
-	//end E3 bb 
+	//end E3 bb
 
 //--------------------------------------------
 // High Level Utitlity messages
@@ -59,7 +64,7 @@ typedef enum G_MsgID_e
 		// float time ( <= 0 indicates indefinite suspend )
 	G_MSG_UNSUSPEND,
 
-	
+
 //--------------------------------------------
 // Voice messages
 //--------------------------------------------
@@ -82,25 +87,25 @@ typedef enum G_MsgID_e
 //--------------------------------------------
 
 	MSG_C_ACTION1,	// Differs between monsters
-	MSG_C_ACTION2,	// 
-	MSG_C_ACTION3,	// 
-	MSG_C_ACTION4,	// 
-	MSG_C_ACTION5,	// 
-	MSG_C_ACTION6,	// 
-	MSG_C_ACTION7,	// 
-	MSG_C_ACTION8,	// 
-	MSG_C_ACTION9,	// 
-	MSG_C_ACTION10,	// 
-	MSG_C_ACTION11,	// 
-	MSG_C_ACTION12,	// 
-	MSG_C_ACTION13,	// 
-	MSG_C_ACTION14,	// 
-	MSG_C_ACTION15,	// 
-	MSG_C_ACTION16,	// 
-	MSG_C_ACTION17,	// 
-	MSG_C_ACTION18,	// 
-	MSG_C_ACTION19,	// 
-	MSG_C_ACTION20,	// 
+	MSG_C_ACTION2,	//
+	MSG_C_ACTION3,	//
+	MSG_C_ACTION4,	//
+	MSG_C_ACTION5,	//
+	MSG_C_ACTION6,	//
+	MSG_C_ACTION7,	//
+	MSG_C_ACTION8,	//
+	MSG_C_ACTION9,	//
+	MSG_C_ACTION10,	//
+	MSG_C_ACTION11,	//
+	MSG_C_ACTION12,	//
+	MSG_C_ACTION13,	//
+	MSG_C_ACTION14,	//
+	MSG_C_ACTION15,	//
+	MSG_C_ACTION16,	//
+	MSG_C_ACTION17,	//
+	MSG_C_ACTION18,	//
+	MSG_C_ACTION19,	//
+	MSG_C_ACTION20,	//
 	MSG_C_ATTACK1,
 	MSG_C_ATTACK2,
 	MSG_C_ATTACK3,
@@ -120,15 +125,15 @@ typedef enum G_MsgID_e
 	MSG_C_PAIN1,
 	MSG_C_PAIN2,
 	MSG_C_PAIN3,
-	MSG_C_PIVOTLEFTGO,	
-	MSG_C_PIVOTLEFT,	
-	MSG_C_PIVOTLEFTSTOP,	
-	MSG_C_PIVOTRIGHTGO,	
-	MSG_C_PIVOTRIGHT,	
-	MSG_C_PIVOTRIGHTSTOP,	
+	MSG_C_PIVOTLEFTGO,
+	MSG_C_PIVOTLEFT,
+	MSG_C_PIVOTLEFTSTOP,
+	MSG_C_PIVOTRIGHTGO,
+	MSG_C_PIVOTRIGHT,
+	MSG_C_PIVOTRIGHTSTOP,
 	MSG_C_RUN1,
-	MSG_C_STEPLEFT,	
-	MSG_C_STEPRIGHT,	
+	MSG_C_STEPLEFT,
+	MSG_C_STEPRIGHT,
 	MSG_C_THINKAGAIN, // Turns off Cinematic AI and puts monster into idle state
 	MSG_C_TRANS1,
 	MSG_C_TRANS2,
@@ -154,7 +159,7 @@ typedef enum G_MsgPriority_e
 {
 	PRI_SUGGESTION,	// message from high level ai that dosn't need to be accepted unless convienent
 	PRI_ORDER,		// message from high level ai that should be accepted if possible
-	PRI_DIRECTIVE,	// message from self that must be accepted unless it conflicts with a 
+	PRI_DIRECTIVE,	// message from self that must be accepted unless it conflicts with a
 					// higher priority message
 	PRI_PHYSICS,	// message that has physical meaning such as knockback or damage
 	PRI_SYSTEM,		// message from the system that must be accepted
@@ -183,5 +188,9 @@ void PostGameMessage(struct edict_s *to, G_MsgID_t ID, G_MsgPriority_t priority,
 int G_ParseMsgParms(G_Message_t *this_ptr, char *format, ...);
 void G_ProcessMessages(struct edict_s *this_ptr);
 void G_ClearMessageQueue(struct edict_s *this_ptr);
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif

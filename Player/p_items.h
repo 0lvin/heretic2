@@ -1,6 +1,10 @@
 #ifndef P_ITEMS_H
 #define P_ITEMS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // ************************************************************************************************
 // itemhealth_t
 // ------
@@ -60,5 +64,10 @@ typedef enum
 	ITEM_AMMO_REDRAIN,
 	ITEM_AMMO_PHOENIX,
 } itemammo_t;
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
 
 #endif

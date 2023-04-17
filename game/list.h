@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_LIST_H
+#define GAME_LIST_H
 
 template <class V>
 class List 
@@ -88,3 +89,5 @@ public:
 	void PushBack(const V& X) {Insert(End(), X); }
 	void PopBack() {Erase(--End()); }
 };
+
+#endif

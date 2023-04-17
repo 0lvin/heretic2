@@ -1,3 +1,6 @@
+#ifndef CLIENT_REF_H
+#define CLIENT_REF_H
+
 #include "../qcommon/qcommon.h"
 
 // these are the maximum number that maybe rendered on any given frame
@@ -156,6 +159,9 @@ typedef struct
 
 #define	API_VERSION		3
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 //
 // these are the functions exported by the refresh module
 //
@@ -230,6 +236,9 @@ typedef struct
    void (*A3D_RenderGeometry) (void *pA3D, void *pGeom, void *pMat, void *pGeomStatus);
 #endif
 } refexport_t;
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 //
 // these are the functions imported by the refresh module
@@ -276,3 +285,5 @@ typedef struct
 	void		(*Vid_MenuInit)( void );
 	void		(*Vid_NewWindow)( int width, int height );
 } refimport_t;
+
+#endif

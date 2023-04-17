@@ -3,8 +3,7 @@
 #ifndef	G_LOCAL_H
 #define G_LOCAL_H
 
-#include "q_shared.h"
-#include "q_ClientServer.h"
+#include "../qcommon/qcommon.h"
 #include "buoy.h"
 
 #if 0
@@ -28,6 +27,11 @@
 #define	GAMEVERSION	"Heretic2Dmo"
 #else
 #define	GAMEVERSION	"Heretic2v16"
+#endif
+
+#ifdef __cplusplus
+extern "C"
+{
 #endif
 
 // Protocol bytes that can be directly added to messages.
@@ -247,7 +251,18 @@ typedef struct
 
 } game_locals_t;
 
-#include "ICScript.h"
+/* ICScript */
+typedef struct ICScript_s
+{
+	int startFrame;
+	char* buf;
+	int bufSize;
+	int count;
+} ICScript_t;
+
+void ICScript_Con(ICScript_t* this_ptr, char* name);
+void RunICScript();
+void KillICScript();
 
 // ************************************************************************************************
 // alertent_t
@@ -740,18 +755,11 @@ typedef struct
 #define	BYOFS(x)	(intptr_t)&(((buoy_t *)0)->x)
 
 extern	game_locals_t	game;
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 extern	level_locals_t	level;
 extern	edict_t			*g_edicts;
 extern	game_import_t	gi;
 extern	spawn_temp_t	st;
 extern	game_export_t	globals;
-#ifdef __cplusplus
-}
-#endif
 
 extern	int				sm_meat_index;
 extern	int				snd_fry;
@@ -766,7 +774,6 @@ extern	cvar_t			*fraglimit;
 extern	cvar_t			*timelimit;
 extern	cvar_t			*password;
 extern	cvar_t			*g_select_empty;
-extern	cvar_t			*dedicated;
 extern	cvar_t			*filterban;
 
 extern	cvar_t			*sv_gravity;
@@ -918,7 +925,6 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count);
 
 qboolean	KillBox (edict_t *ent);
 void	G_ProjectSource (vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result);
-
 edict_t *G_Find (edict_t *from, int fieldofs, char *match);
 edict_t	*G_Spawn (void);
 
@@ -1158,12 +1164,6 @@ void ED_CallSpawn (edict_t *ent);
 //============================================================================
 
 
-
-
-
-
-
-
 // ************************************************************************************************
 // TRYSTEP_
 // --------
@@ -1279,11 +1279,18 @@ typedef struct gclient_s
 	playerinfo_t		playerinfo;
 } gclient_t;
 
-#include "g_BoundingForm.h"
-#include "g_Edict.h"
-#ifdef __cplusplus	//this is for ds.cpp
-#include "Vector.h"
-#endif
+// sides for a nonrotating box
+typedef enum Box_BoundingForm_Sides_e
+{
+	BOX_BOUNDINGFORM_SIDE_WEST,
+	BOX_BOUNDINGFORM_SIDE_NORTH,
+	BOX_BOUNDINGFORM_SIDE_SOUTH,
+	BOX_BOUNDINGFORM_SIDE_EAST,
+	BOX_BOUNDINGFORM_SIDE_BOTTOM,
+	BOX_BOUNDINGFORM_SIDE_TOP,
+	NUM_BOX_BOUNDINGFORM_SIDES
+} Box_BoundingForm_Sides_t;
+
 qboolean FindTarget (edict_t *self);
 void MG_PostDeathThink (edict_t *self);
 qboolean movable (edict_t *ent);
@@ -1300,15 +1307,25 @@ void SkyFly (edict_t *self);
 #define IMPACT_DAMAGE impact_damage->value
 #define CHEATING_MONSTERS cheating_monsters->value
 
-// Scripts ds.cpp
-#ifndef __cplusplus
-	void ProcessScripts(void);
-	void ShutdownScripts(qboolean Complete);
-	void SaveScripts(FILE *FH, qboolean DoGlobals);
-	void LoadScripts(FILE *FH, qboolean DoGlobals);
-#endif
 void ProcessScripts(void);
 void ShutdownScripts(qboolean Complete);
+
+typedef struct pushed_s
+{
+	edict_t* ent;
+	vec3_t	origin;
+	vec3_t	angles;
+	float	deltayaw;
+} pushed_t;
+extern pushed_t	pushed[MAX_EDICTS], * pushed_p;
+
+extern edict_t* obstacle;
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#include "g_Edict.h"
 
 #endif // G_LOCAL_H
 

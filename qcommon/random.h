@@ -1,11 +1,14 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 // Required protos for random functions
-
-#include "H2Common.h"
-
-H2COMMON_API float flrand(float, float);
-H2COMMON_API int irand(int, int);
+QUAKE2_API float flrand(float, float);
+QUAKE2_API int irand(int, int);
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif

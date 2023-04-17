@@ -1,8 +1,7 @@
 #ifndef _M_SPREADERMIST_H_
 #define _M_SPREADERMIST_H_
 
-#include "q_typedef.h"
-#include "q_shared.h"
+#include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "g_volume_effect.h"
 

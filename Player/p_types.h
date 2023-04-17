@@ -8,9 +8,12 @@
 #ifndef _P_TYPES_H_
 #define _P_TYPES_H_
 
-#include "q_shared.h"
-#include "q_clientserver.h"
+#include "../qcommon/qcommon.h"
 #include "g_itemstats.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Forward define 'playerinfo_t' for use in 'panimframe_t' and 'panimmove_t'.
 
@@ -807,5 +810,9 @@ typedef struct playerinfo_s
 	float				grabangle;
 
 } playerinfo_t;
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif // _P_TYPES_H_

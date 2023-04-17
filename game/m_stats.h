@@ -1,5 +1,7 @@
 #ifndef	G_STATS_H
 #define G_STATS_H
+
+#include "../qcommon/qcommon.h"
 #include "g_ClassStatics.h"
 
 extern int AttackRangesForClass [NUM_ATTACKRANGES];
@@ -219,7 +221,7 @@ extern struct MonsterShadow_s G_MonsterShadow[NUM_CLASSIDS];
 //**IMP
 //**********
 
-#define IMP_HEALTH				200	
+#define IMP_HEALTH				200
 #define IMP_MASS				75
 #define IMP_DMG_MIN				10
 #define IMP_DMG_MAX				20
@@ -296,7 +298,7 @@ extern struct MonsterShadow_s G_MonsterShadow[NUM_CLASSIDS];
 #define SSITHRA_DMG_MAX				8
 #define SSITHRA_DMG_ARROW_RADIUS	50
 #define SSITHRA_JUMP_VELOCITY		300.0
-#define SSITHRA_HOP_VELOCITY		128.0 
+#define SSITHRA_HOP_VELOCITY		128.0
 #define SSITHRA_SPOO_SPEED			450
 #define SSITHRA_BIGARROW_DMG_MIN	16
 #define SSITHRA_BIGARROW_DMG_MAX	24
@@ -344,7 +346,7 @@ extern struct MonsterShadow_s G_MonsterShadow[NUM_CLASSIDS];
 #define SGUARD_HEALTH			300
 #define SGUARD_MASS				1000
 #define SGUARD_DMG_AXE			15
-#define SGUARD_DMG_AXE_SPIN		30						
+#define SGUARD_DMG_AXE_SPIN		30
 #define SGUARD_DMG_SPELL_MIN	10
 #define SGUARD_DMG_SPELL_MAX	15
 

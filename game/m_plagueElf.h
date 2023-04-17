@@ -101,7 +101,7 @@ typedef enum SoundID_e
 	VOICE_MISC_NO,
 	
 	NUM_SOUNDS
-};
+} SoundID_t;
 
 //Helper defines
 #define FIRST_SIGHT_ALONE	VOICE_FIRST_ALONE + 1

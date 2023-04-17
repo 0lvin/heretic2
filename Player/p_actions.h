@@ -11,6 +11,10 @@
 #include "p_types.h"
 #include "p_anims.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define SOUND_SWIM_FORWARD	0
 #define SOUND_SWIM_BACK		1 
 #define SOUND_SWIM_SIDE		2
@@ -160,5 +164,9 @@ void PlayerActionCheckRun( playerinfo_t *playerinfo );
 // JWEIER NEW ACTIONS END
 
 extern PLAYER_API void PlayerInterruptAction(playerinfo_t *playerinfo);
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif //_P_ACTIONS2_H_

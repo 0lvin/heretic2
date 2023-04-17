@@ -1,13 +1,16 @@
 // client.h -- primary header for client
+#ifndef CLIENT_H
+#define CLIENT_H
 
 //define	PARANOID			// speed sapping error checking
 
+#include "../qcommon/qcommon.h"
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "ref.h"
+#include "../client/ref.h"
 
 #include "vid.h"
 #include "screen.h"
@@ -15,9 +18,12 @@
 #include "keys.h"
 #include "console.h"
 #include "cdaudio.h"
-#include "q_ClientServer.h"
 #include "player.h"
 #include "LevelMaps.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // ********************************************************************************************
 // CF_XXX
@@ -55,7 +61,7 @@ typedef struct
 // ---------
 // ********************************************************************************************
 
-typedef struct
+typedef struct centity_s
 {
 	entity_state_t				baseline;		// delta from this if not from a previous frame
 	entity_state_t				current;
@@ -228,6 +234,7 @@ typedef struct
 } client_state_t;
 
 GAME_DECLSPEC extern	client_state_t	cl;
+
 
 /*
 ==================================================================
@@ -461,9 +468,7 @@ extern	cvar_t	*cl_frametime;
 
 extern	cvar_t	*cl_yawspeed;
 extern	cvar_t	*cl_pitchspeed;
-
 extern	cvar_t	*cl_run;
-
 extern	cvar_t	*cl_anglespeedkey;
 
 extern	cvar_t	*cl_shownet;
@@ -473,6 +478,7 @@ extern	cvar_t	*cl_showclamp;
 extern	cvar_t	*freelook;
 extern	cvar_t	*lookspring;
 extern	cvar_t	*lookstrafe;
+
 extern	cvar_t	*mouse_sensitivity_x;
 extern	cvar_t	*mouse_sensitivity_y;
 
@@ -492,6 +498,7 @@ extern	cvar_t	*m_side;
 extern	cvar_t	*cl_lightlevel;	// FIXME HACK
 
 GAME_DECLSPEC extern	cvar_t	*cl_paused;
+
 extern	cvar_t	*cl_freezeworld;
 extern	cvar_t	*cl_timedemo;
 
@@ -579,7 +586,6 @@ void CL_ParseLayout (void);
 //
 // cl_main
 //
-
 extern refexport_t		re;				// interface to refresh DLL.
 extern player_export_t	playerExport;	// interface to player DLL.
 
@@ -627,13 +633,12 @@ void CL_WriteToServer (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
 
 void IN_CenterView (void);
-
-float CL_KeyState (kbutton_t *key);
 char *Key_KeynumToString (int keynum);
 
 //
 // cl_demo.c
 //
+float CL_KeyState(kbutton_t* key);
 void CL_ParseDemoClientEffects (void);
 void CL_WriteDemoMessage (void);
 void CL_Stop_f (void);
@@ -692,15 +697,15 @@ void CL_ClipMoveToEntities(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,trace
 void Grab_EAX_Environment_type(void);
 
 void SNDEAX_SetEnvironment(int id);
-bool S_Init(void);
-sfx_s* S_FindName(char* name, qboolean create);
-sfx_s* S_RegisterSound(char* name);
-void S_Activate(bool active);
+qboolean S_Init(void);
+struct sfx_s* S_FindName(char* name, qboolean create);
+struct sfx_s* S_RegisterSound(char* name);
+void S_Activate(qboolean active);
 void S_BeginRegistration(void);
 void S_EndRegistration(void);
 void S_Shutdown(void);
 void S_StartLocalSound(char* sound);
-void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_s* sfx, float fvol, int attenuation, float timeofs);
+void S_StartSound(vec3_t origin, int entnum, int entchannel, struct sfx_s* sfx, float fvol, int attenuation, float timeofs);
 void S_StopAllSounds(void);
 void S_StopAllSounds_Sounding(void);
 void S_Update(vec3_t quake_origin, vec3_t forward, vec3_t right, vec3_t up);
@@ -714,3 +719,8 @@ void DrawAltString(int x, int y, char* s);
 void CL_AddEntities(void);
 
 trace_t		CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -18,12 +18,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // server.h
-
+#ifndef SERVER_SERVER_H
+#define SERVER_SERVER_H
 
 //define	PARANOID			// speed sapping error checking
 
 #include "../qcommon/qcommon.h"
 #include "../game/game.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //=============================================================================
 
@@ -160,7 +165,7 @@ typedef struct
 	qboolean	initialized;				// sv_init has completed
 	int			realtime;					// always increasing, no clamping, etc
 
-	char		mapcmd[MAX_TOKEN_CHARS];	// ie: *intro.cin+base 
+	char		mapcmd[MAX_TOKEN_CHARS];	// ie: *intro.cin+base
 
 	int			spawncount;					// incremented each server start
 											// used to check late spawns
@@ -191,7 +196,13 @@ extern	server_static_t	svs;				// persistant server info
 extern	server_t		sv;					// local server
 
 extern	cvar_t		*sv_paused;
-extern	cvar_t		*maxclients;
+#ifdef __cplusplus
+extern "C" {
+#endif
+	extern	cvar_t* maxclients;
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 extern	cvar_t		*sv_noreload;			// don't reload level state when reentering
 extern	cvar_t		*sv_airaccelerate;		// don't reload level state when reentering
 											// development tool
@@ -342,5 +353,9 @@ trace_t SV_Trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t *p
 extern byte SV_Persistant_Effects_Array[0x1B000];
 
 void SV_ClearPersistantEffects(void);
-byte	COM_BlockSequenceCRCByte(byte* base, int length, int sequence);
-void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

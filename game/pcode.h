@@ -1,3 +1,5 @@
+#include "../qcommon/qcommon.h"
+
 #define SCRIPT_VERSION 3
 
 #define NUM_PARMS 16
@@ -82,14 +84,14 @@ enum FunctionTypes
 	FUNC_GET_ACTIVATOR,
 };
 
-enum VariableT 
-{ 
-	TypeINT = 0, 
-	TypeFLOAT, 
-	TypeVECTOR, 
-	TypeENTITY, 
+enum VariableT
+{
+	TypeINT = 0,
+	TypeFLOAT,
+	TypeVECTOR,
+	TypeENTITY,
 	TypeSTRING,
-	TypeUNKNOWN, 
+	TypeUNKNOWN,
 };
 
 enum FeatureTypes

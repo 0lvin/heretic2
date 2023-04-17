@@ -1,7 +1,11 @@
 #ifndef PLACEMENT_H
 #define PLACEMENT_H
 
-typedef float vec3_t[3];
+#include "qcommon.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct Placement_s
 {
@@ -9,5 +13,8 @@ typedef struct Placement_s
 	vec3_t direction;
 	vec3_t up;
 } Placement_t;
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif

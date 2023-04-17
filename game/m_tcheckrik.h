@@ -1,13 +1,15 @@
+#include "../qcommon/qcommon.h"
+
 typedef enum AnimID_e
-{	
+{
 	ANIM_BACK,
 	ANIM_DEATHFR,
 	ANIM_IDLE,
 	ANIM_LAND,
 	ANIM_INAIR,
-	ANIM_FORCED_JUMP,	
+	ANIM_FORCED_JUMP,
 	ANIM_FINAIR,
-	ANIM_FJUMP,	
+	ANIM_FJUMP,
 	ANIM_PAINA,
 	ANIM_PAINC,
 	ANIM_RUN,
@@ -180,7 +182,7 @@ void MG_InitMoods(edict_t *self);
 #define BIT_STAFF		512
 #define BIT_GEM			1024
 #define BIT_R2NDARM		2048
-#define BIT_RWINGS		4096	
+#define BIT_RWINGS		4096
 #define BIT_LWINGS		8192
 #define BIT_RLEG		16384
 
@@ -191,7 +193,7 @@ void MG_InitMoods(edict_t *self);
 #define TC_SPL_GLOW		2
 #define TC_SPL_FIRE2	3
 
-enum 
+enum
 {
 	FX_I_SWORD,
 	FX_I_SPEAR,

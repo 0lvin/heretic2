@@ -9,7 +9,7 @@ typedef enum SpriteType_s
 	SPRITE_VARIABLE,	// sprite with n variable verts (x,y scale and s,t); texture must be square
 	SPRITE_LINE,		// Long linear semi-oriented sprite with two verts (xyz start and end) and a width
 	NUM_SPRITE_TYPES,
-};
+} SpriteType_t;
 
 
 #endif

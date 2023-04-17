@@ -3,6 +3,10 @@
 
 #include "p_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum SoundID_e
 {
 	SND_BITEHIT1,
@@ -75,5 +79,9 @@ void ChickenAssert(playerinfo_t *playerinfo);
 void PlayerChickenCluck(playerinfo_t *playerinfo, float force);
 
 void ChickenStepSound(playerinfo_t *playerinfo, float value);
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif // _P_CHICKEN_H_

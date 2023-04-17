@@ -1,8 +1,6 @@
 #ifndef Q_SURFACE_H
 #define Q_SURFACE_H
 
-#include "q_shared.h"
-
 #define MAX_POLY_VERTS 6
 
 typedef struct Poly_s

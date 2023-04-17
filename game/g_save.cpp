@@ -1,22 +1,20 @@
-
+#include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "g_Skeletons.h"
-#include "ArrayedList.h"
+#include "g_skeletons.h"
+#include "arrayed_list.h"
 #include "Message.h"
-#include "q_ClientServer.h"
-#include "q_Physics.h"
+#include "g_physics.h"
 #include "g_playstats.h"
 #include "utilities.h"
 #include "p_anims.h"
 #include "FX.h"
 
-extern void	InitPlayerinfo(edict_t *ent);
-extern void LoadPersistantEffects(FILE *f);
-extern void SavePersistantEffects(FILE *f);
-extern player_export_t	playerExport;	// interface to player DLL.
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void LoadScripts(FILE * FH, qboolean DoGlobals);
-void SaveScripts(FILE * FH, qboolean DoGlobals);
+extern void	InitPlayerinfo(edict_t* ent);
+extern player_export_t	playerExport;	// interface to player DLL.
 
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},
@@ -115,6 +113,12 @@ field_t fields[] = {
 // jmarshall
 int numItemsInFieldsArray = sizeof(fields) / sizeof(field_t);
 // jmarshall end
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+void LoadScripts(FILE* FH, qboolean DoGlobals);
+void SaveScripts(FILE* FH, qboolean DoGlobals);
 
 // -------- just for savegames ----------
 // all pointer fields should be listed here, or savegames
@@ -124,7 +128,7 @@ int numItemsInFieldsArray = sizeof(fields) / sizeof(field_t);
 // some of these, and if one were accidentally present twice
 // it would double swizzle (fuck) the pointer.
 
-field_t		savefields[] =
+static field_t		savefields[] =
 {
 	{"", FOFS(classname), F_LSTRING},
 	{"", FOFS(target), F_LSTRING},
@@ -146,9 +150,7 @@ field_t		savefields[] =
 	{"", FOFS(enemy), F_EDICT},
 	{"", FOFS(oldenemy), F_EDICT},
 	{"", FOFS(activator), F_EDICT},
-#ifdef G_TRANSITION
 	{"", FOFS(groundentity), F_EDICT},
-#endif
 	{"", FOFS(teamchain), F_EDICT},
 	{"", FOFS(teammaster), F_EDICT},
 	{"", FOFS(owner), F_EDICT},
@@ -164,7 +166,7 @@ field_t		savefields[] =
 	{NULL, 0, F_INT}
 };
 
-field_t		levelfields[] =
+static field_t		levelfields[] =
 {
 	{"", LLOFS(changemap), F_LSTRING},
 	{"", LLOFS(sight_client), F_EDICT},
@@ -172,7 +174,7 @@ field_t		levelfields[] =
 	{NULL, 0, F_INT}
 };
 
-field_t		bouyfields[] =
+static field_t		bouyfields[] =
 {
 	{"", BYOFS(pathtarget), F_LSTRING},
 	{"", BYOFS(target), F_LSTRING},
@@ -182,21 +184,27 @@ field_t		bouyfields[] =
 };
 
 
-field_t		clientfields[] =
+static field_t		clientfields[] =
 {
 	{"", CLOFS(playerinfo.pers.weapon), F_ITEM},
 	{"", CLOFS(playerinfo.pers.lastweapon), F_ITEM},
 	{"", CLOFS(playerinfo.pers.defence), F_ITEM},
 	{"", CLOFS(playerinfo.pers.lastdefence), F_ITEM},
 	{"", CLOFS(playerinfo.pers.newweapon), F_ITEM},
-						 
+
 	{NULL, 0, F_INT}
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 trig_message_t	message_text[MAX_MESSAGESTRINGS];
 unsigned		*messagebuf;
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
-int LoadTextFile(char *name, char **addr)
+static int LoadTextFile(char *name, char **addr)
 {
 	int		length;
 	char	*buffer;
@@ -215,7 +223,7 @@ int LoadTextFile(char *name, char **addr)
 	return(length + 1);
 }
 
-void Load_Strings(void)
+static void Load_Strings(void)
 {
 	char	*buffer;
 	int		i,length;
@@ -226,7 +234,7 @@ void Load_Strings(void)
 	startp = buffer;
 	p =0;
 	for (i=1; p < (buffer + length) ;++i)
-	{			
+	{
 		if (i> MAX_MESSAGESTRINGS)
 		{
 			Com_Printf ("Too many strings\n");
@@ -260,11 +268,15 @@ void Load_Strings(void)
 				*p = '\n';
 		} while(p);
 
-		return_p +=2;	// Hop over 13 10 
+		return_p +=2;	// Hop over 13 10
 		startp = return_p;	// Advance to next string
 
-	} 
+	}
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
 ============
@@ -308,7 +320,7 @@ void InitGame (void)
 	maxclients = gi.cvar ("maxclients", "4", CVAR_SERVERINFO | CVAR_LATCH);
 	deathmatch = gi.cvar ("deathmatch", "0", CVAR_LATCH);
 	coop = gi.cvar ("coop", "0", CVAR_LATCH);
-	
+
 	skill = gi.cvar ("skill", "1", CVAR_LATCH);
 	maxentities = gi.cvar ("maxentities", G_MAX_ENTITIES, CVAR_LATCH);
 
@@ -383,11 +395,11 @@ void InitGame (void)
 	// ********************************************************************************************
 	// Initialise the inventory items.
 	// ********************************************************************************************
-	
+
 	// Server side only elements.
 
 	G_InitItems();
-	
+
 	// ********************************************************************************************
 	// Initialise hep messages.
 	// ********************************************************************************************
@@ -416,10 +428,13 @@ void InitGame (void)
 
 	Load_Strings();
 }
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 //=========================================================
 
-void WriteField1 (FILE *f, field_t *field, byte *base)
+static void WriteField1 (FILE *f, field_t *field, byte *base)
 {
 	void		*p;
 	int			len;
@@ -470,7 +485,7 @@ void WriteField1 (FILE *f, field_t *field, byte *base)
 	}
 }
 
-void WriteField2 (FILE *f, field_t *field, byte *base)
+static void WriteField2 (FILE *f, field_t *field, byte *base)
 {
 	int			len;
 	void		*p;
@@ -489,7 +504,7 @@ void WriteField2 (FILE *f, field_t *field, byte *base)
 	}
 }
 
-void ReadField (FILE *f, field_t *field, byte *base)
+static void ReadField (FILE *f, field_t *field, byte *base)
 {
 	void		*p;
 	int			len;
@@ -561,11 +576,11 @@ WriteClient
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void WriteClient (FILE *f, gclient_t *client)
+static void WriteClient (FILE *f, gclient_t *client)
 {
 	field_t		*field;
 	gclient_t	temp;
-	
+
 	// all of the ints, floats, and vectors stay as they are
 	temp = *client;
 
@@ -592,7 +607,7 @@ ReadClient
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadClient (FILE *f, gclient_t *client)
+static void ReadClient (FILE *f, gclient_t *client)
 {
 	field_t		*field;
 
@@ -604,6 +619,9 @@ void ReadClient (FILE *f, gclient_t *client)
 	}
 }
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*
 ============
 WriteGame
@@ -702,6 +720,10 @@ void ReadGame (char *filename)
 
 	fclose (f);
 }
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
 
 //==========================================================
 
@@ -713,7 +735,7 @@ WriteEdict
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void WriteEdict (FILE *f, edict_t *ent)
+static void WriteEdict (FILE *f, edict_t *ent)
 {
 	field_t		*field;
 	edict_t		temp;
@@ -745,7 +767,7 @@ WriteLevelLocals
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void WriteLevelLocals (FILE *f)
+static void WriteLevelLocals (FILE *f)
 {
 	field_t		*field;
 	level_locals_t		temp;
@@ -808,7 +830,7 @@ ReadEdict
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadEdict (FILE *f, edict_t *ent)
+static void ReadEdict (FILE *f, edict_t *ent)
 {
 	field_t		*field;
 	SinglyLinkedList_t msgs;
@@ -856,7 +878,7 @@ ReadLevelLocals
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-void ReadLevelLocals (FILE *f)
+static void ReadLevelLocals (FILE *f)
 {
 	field_t		*field;
 	char		temp[20];
@@ -879,7 +901,7 @@ void ReadLevelLocals (FILE *f)
 	}
 
 
-	// set those console vars we should 
+	// set those console vars we should
 	sprintf(temp, "%f", level.far_clip_dist_f);
 	gi.cvar_set("r_farclipdist", temp);
 	sprintf(temp, "%f", level.fog);
@@ -898,7 +920,9 @@ void ReadLevelLocals (FILE *f)
 	}
 }
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*
 =================
 WriteLevel
@@ -935,7 +959,7 @@ void WriteLevel (char *filename)
 	for (i=0 ; i<globals.num_edicts ; i++)
 	{
 		ent = &g_edicts[i];
-	
+
 		// we don't want to not save player entities, even if they are not in use, since when we go from
 		// level to a level we've already been to, there maybe monsters that are targeting the player,
 		// and they have problems if they are targeted at a player that has no data in them, even if the player is
@@ -972,9 +996,8 @@ void WriteLevel (char *filename)
 		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
 			peffect->numEffects = 1;
 
-	} 
+	}
 }
-
 
 /*
 =================
@@ -1058,22 +1081,22 @@ void ReadLevel (char *filename)
 		ent->last_alert = NULL;
 		memset (&ent->area, 0, sizeof(ent->area));
 
-		// NOTE NOTE 
+		// NOTE NOTE
 		// Missiles must be linked in specially.  G_LinkMissile links as a SOLID_NOT, even though the entity is SOLID_BBOX
 		if (ent->movetype == MOVETYPE_FLYMISSILE && ent->solid == SOLID_BBOX)
-		{	
+		{
 			G_LinkMissile (ent);
 		}
 		else
 		{
 			gi.linkentity (ent);
 		}
-		
+
 		// Force the monsters just loaded to point at the right anim.
 
 		if((ent->classID > 0) && (!Cid_init[ent->classID]) && (ent->classID < NUM_CLASSIDS))	 	// Need to call once per level that item is on
 		{
-			classStaticsInits[ent->classID]();	
+			classStaticsInits[ent->classID]();
 			Cid_init[ent->classID] = -1;
 		}
 
@@ -1118,3 +1141,6 @@ void ReadLevel (char *filename)
 				ent->nextthink = level.time + ent->delay;
 	}
 }
+#ifdef __cplusplus
+} //end extern "C"
+#endif

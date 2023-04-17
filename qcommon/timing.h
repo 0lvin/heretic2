@@ -1,10 +1,7 @@
-#include "H2Common.h"
+QUAKE2_API void TIMING_ResetCount();
+QUAKE2_API int TIMING_GetAverage();
+QUAKE2_API void TIMING_Start();
+QUAKE2_API int TIMING_End();
+QUAKE2_API __int64 TIMING_GetTime();
+QUAKE2_API __int64 TIMING_ReturnTotal();
 
-H2COMMON_API void TIMING_ResetCount();
-H2COMMON_API int TIMING_GetAverage();
-H2COMMON_API void TIMING_Start();
-H2COMMON_API int TIMING_End();
-H2COMMON_API __int64 TIMING_GetTime();
-H2COMMON_API __int64 TIMING_ReturnTotal();
-
-// end

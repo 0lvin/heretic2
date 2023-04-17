@@ -10,6 +10,10 @@
 
 #include "p_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern PLAYER_API void PlayerBasicAnimReset(playerinfo_t *playerinfo);
 extern PLAYER_API void PlayerAnimReset(playerinfo_t *playerinfo);
 extern PLAYER_API void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq);
@@ -331,5 +335,9 @@ typedef struct seq_data2_s
 } seq_data2_t;
 
 extern seq_data2_t PlayerSeqData2[ASEQ_MAX];
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif // _P_ANIMS2_H_

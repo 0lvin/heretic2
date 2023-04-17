@@ -1,6 +1,9 @@
-#pragma once
+#ifndef M_SKELETALCLUSTER_H
+#define M_SKELETALCLUSTER_H
 
-typedef int qboolean;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct M_SkeletalCluster_s
 {
@@ -10,3 +13,8 @@ typedef struct M_SkeletalCluster_s
 	qboolean inUse;
 } M_SkeletalCluster_t;
 
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

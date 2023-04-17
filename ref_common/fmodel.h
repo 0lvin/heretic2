@@ -64,22 +64,6 @@ void DrawLine(int x1, int y1, int x2, int y2);
 #define FM_HEADER_NAME	"header"
 #define FM_HEADER_VER	2
 
-typedef struct
-{
-	int			skinwidth;
-	int			skinheight;
-	int			framesize;		// byte size of each frame
-
-	int			num_skins;
-	int			num_xyz;
-	int			num_st;			// greater than num_xyz for seams
-	int			num_tris;
-	int			num_glcmds;		// dwords in strip/fan command list
-	int			num_frames;
-	int			num_mesh_nodes;
-} fmheader_t;
-
-
 // Skin Header
 #define FM_SKIN_NAME	"skin"
 #define FM_SKIN_VER		1
@@ -237,8 +221,13 @@ void Mod_LoadFlexModel (struct model_s *mod, void *buffer, int length);
 void Mod_RegisterFlexModel(struct model_s *mod);
 void R_DrawFlexModel (entity_t *e);
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void GL_LerpVert(vec3_t newPoint, vec3_t oldPoint, vec3_t interpolatedPoint, float move[3], float frontv[3], float backv[3]);
-
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 // jmarshall
 enum

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QCOMMON_LEVEL_MAPS_H
+#define QCOMMON_LEVEL_MAPS_H
 
 // Level progression map only needs to work on the dmireswamp, kellcaves, canyon, oglemine1, and oglemine2.
 // The other levels should simply highlight a city on the map.
@@ -49,3 +50,4 @@ typedef struct level_map_info_s
 } level_map_info_t;
 
 // end
+#endif

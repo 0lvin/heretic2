@@ -1,7 +1,12 @@
-
+#ifndef CLIENT_CONSOLE_H
+#define CLIENT_CONSOLE_H
 //
 // console
 //
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define	NUM_CON_TIMES	8
 #define CON_TEXTSIZE	32768
@@ -41,3 +46,8 @@ void Con_Clear_f (void);
 void Con_DrawNotify (void);
 void Con_ClearNotify (void);
 void Con_ToggleConsole_f (void);
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

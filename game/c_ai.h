@@ -8,6 +8,10 @@
 #ifndef	C_AI_H
 #define C_AI_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void ai_c_cycleend (edict_t *self);
 void ai_c_gib(edict_t *self, G_Message_t *msg);
 void ai_c_move (edict_t *self,float x,float y,float z);
@@ -18,5 +22,8 @@ void ai_c_wav (edict_t *self,float wav_num);
 void c_corvus_init(edict_t *self,int classId);
 void c_character_init(edict_t *self,int classId);
 
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif

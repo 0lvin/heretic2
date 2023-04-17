@@ -15,6 +15,6 @@
 
 extern char *SurfaceMaterialNames[MAX_SURFACE_MAT_NAMES];
 
-extern H2COMMON_API char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
+extern QUAKE2_API char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
 
 #endif // _SURFACEPROPS_H_

@@ -26,6 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gl/glew.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 qboolean QGL_Init(const char* dllname);
 void GLimp_EnableLogging(qboolean enable);
 void QGL_Shutdown(void);
@@ -64,5 +68,8 @@ extern BOOL(WINAPI* qwglSwapIntervalEXT)(int interval);
 extern BOOL(WINAPI* qwglGetDeviceGammaRampEXT) (unsigned char* pRed, unsigned char* pGreen, unsigned char* pBlue);
 extern BOOL(WINAPI* qwglSetDeviceGammaRampEXT) (const unsigned char* pRed, const unsigned char* pGreen, const unsigned char* pBlue);
 
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
 #endif

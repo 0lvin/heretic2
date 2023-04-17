@@ -25,7 +25,14 @@ m*_t structures are in-memory
 
 */
 
+#ifndef REF_GL_MODEL_H
+#define REF_GL_MODEL_H
+
 #include "../ref_common/fmodel.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
 ==============================================================================
@@ -263,3 +270,8 @@ void	Hunk_Free (void *base);
 
 void	Mod_FreeAll (void);
 void	Mod_Free (model_t *mod);
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

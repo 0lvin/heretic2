@@ -1,3 +1,9 @@
+#ifndef CLIENT_KEYS_H
+#define CLIENT_KEYS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //
 // these are the key numbers that should be passed to Key_Event
@@ -129,4 +135,8 @@ void Key_SetBinding (int keynum, char *binding);
 void Key_SetDoubleBinding (int keynum, char *binding);
 void Key_ClearStates (void);
 int Key_GetKey (void);
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 
+#endif

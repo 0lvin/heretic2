@@ -1,16 +1,12 @@
-#pragma once
+#ifndef R_SKELETONS_H
+#define R_SKELETONS_H
 
-#ifndef M_SKELETON_H
-#define M_SKELETON_H
 #include "m_Skeleton.h"
-#endif
-#ifndef M_SKELETALCLUSTER_H
-#define M_SKELETALCLUSTER_H
 #include "m_SkeletalCluster.h"
-#endif
-#ifndef SKELETONS_H
-#define SKELETONS_H
 #include "../qcommon/Skeletons.h"
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 extern M_SkeletalCluster_t SkeletalClusters[MAX_ARRAYED_SKELETAL_JOINTS];
@@ -30,3 +26,9 @@ void SetupCompressedJoints(ModelSkeleton_t *liSkel, int liIndex,
 	float *lerp);
 void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelClusterIndex, int anglesIndex, 
 	vec3_t *modelVerticies);
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

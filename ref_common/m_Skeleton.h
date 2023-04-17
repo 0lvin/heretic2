@@ -1,7 +1,12 @@
-#pragma once
+#ifndef M_SKELETON_H
+#define M_SKELETON_H
 
 #include "../qcommon/Placement.h"
 #include "../qcommon/Matrix.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef int qboolean;
 
@@ -21,3 +26,8 @@ typedef struct ModelSkeleton_s
 	struct ArrayedListNode_s *rootNode;
 } ModelSkeleton_t;
 
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif
