@@ -1,72 +1,42 @@
-/*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
+#ifndef QCOMMON_H
+#define QCOMMON_H
 
 // qcommon.h -- definitions common between client and server, but not game.dll
 
-#include "../q2game/q_shared.h"
+#include "../game/q_shared.h"
 
 
-#define	VERSION		3.21
+#define	BASEDIRNAME	"base"
 
-#define	BASEDIRNAME	"baseq2"
+#define VERSION_MAJOR		"1"
+#define VERSION_MINOR		"06"
+#define VERSION_LOCAL		"01"
+#define VERSION_DATE		"0504"
+#define VERSION_ITERATION	"01"
+
+#define VERSIONDISP		(VERSION_MAJOR"."VERSION_MINOR)
+#define VERSIONFULL		(VERSION_MAJOR"."VERSION_MINOR"."VERSION_LOCAL"."VERSION_DATE"."VERSION_ITERATION)
+
+#ifdef _HERETIC2_
+#define GAME_DECLSPEC    __declspec(dllexport)
+#else 
+#define GAME_DECLSPEC    __declspec(dllimport)
+#endif
+
+#define NO_BLOOD 0
+
 
 #ifdef WIN32
 
 #ifdef NDEBUG
-#define BUILDSTRING "Win32 RELEASE"
+#define BUILDSTRING "RELEASE"
 #else
-#define BUILDSTRING "Win32 DEBUG"
+#define BUILDSTRING "DEBUG"
 #endif
 
 #ifdef _M_IX86
 #define	CPUSTRING	"x86"
-#elif defined _M_ALPHA
-#define	CPUSTRING	"AXP"
 #endif
-
-#elif defined __linux__
-
-#define BUILDSTRING "Linux"
-
-#ifdef __i386__
-#define CPUSTRING "i386"
-#elif defined __alpha__
-#define CPUSTRING "axp"
-#else
-#define CPUSTRING "Unknown"
-#endif
-
-#elif defined __sun__
-
-#define BUILDSTRING "Solaris"
-
-#ifdef __i386__
-#define CPUSTRING "i386"
-#else
-#define CPUSTRING "sparc"
-#endif
-
-#else	// !WIN32
-
-#define BUILDSTRING "NON-WIN32"
-#define	CPUSTRING	"NON-WIN32"
 
 #endif
 
@@ -93,6 +63,9 @@ void SZ_Print (sizebuf_t *buf, char *data);	// strcats onto the sizebuf
 struct usercmd_s;
 struct entity_state_s;
 
+unsigned char GetB(unsigned char * buf, int i);
+void SetB(unsigned char * buf, int i);
+
 void MSG_WriteChar (sizebuf_t *sb, int c);
 void MSG_WriteByte (sizebuf_t *sb, int c);
 void MSG_WriteShort (sizebuf_t *sb, int c);
@@ -104,9 +77,13 @@ void MSG_WritePos (sizebuf_t *sb, vec3_t pos);
 void MSG_WriteAngle (sizebuf_t *sb, float f);
 void MSG_WriteAngle16 (sizebuf_t *sb, float f);
 void MSG_WriteDeltaUsercmd (sizebuf_t *sb, struct usercmd_s *from, struct usercmd_s *cmd);
-void MSG_WriteDeltaEntity (struct entity_state_s *from, struct entity_state_s *to, sizebuf_t *msg, qboolean force, qboolean newentity);
+void ParseEffectToSizeBuf(sizebuf_t *sizebuf, char *format, va_list marker);
+void MSG_WriteEntityHeaderBits(sizebuf_t *msg, unsigned char *bf, unsigned char *bfNonZero);
+void MSG_WriteDeltaEntity(entity_state_t* from, entity_state_t* to, sizebuf_t* msg, qboolean force, qboolean newentity);
 void MSG_WriteDir (sizebuf_t *sb, vec3_t vector);
-
+void MSG_WriteDirMag (sizebuf_t *sb, vec3_t dir);
+void MSG_WriteYawPitch (sizebuf_t *sb, vec3_t vector);
+void MSG_WriteShortYawPitch (sizebuf_t *sb, vec3_t vector);
 
 void	MSG_BeginReading (sizebuf_t *sb);
 
@@ -125,19 +102,20 @@ float	MSG_ReadAngle16 (sizebuf_t *sb);
 void	MSG_ReadDeltaUsercmd (sizebuf_t *sb, struct usercmd_s *from, struct usercmd_s *cmd);
 
 void	MSG_ReadDir (sizebuf_t *sb, vec3_t vector);
+void	MSG_ReadDirMag (sizebuf_t *sb, vec3_t dir);
+void	MSG_ReadYawPitch (sizebuf_t *sb, vec3_t vector);
+void	MSG_ReadShortYawPitch (sizebuf_t *sb, vec3_t vector);
 
 void	MSG_ReadData (sizebuf_t *sb, void *buffer, int size);
+void	MSG_ReadJoints(sizebuf_t *msg_read, entity_state_t *ent);
+void	MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
 
 //============================================================================
 
 extern	qboolean		bigendien;
-
-extern	short	BigShort (short l);
-extern	short	LittleShort (short l);
-extern	int		BigLong (int l);
-extern	int		LittleLong (int l);
-extern	float	BigFloat (float l);
-extern	float	LittleFloat (float l);
+extern int		sz_line;
+extern char		*sz_filename;
+#define set_sz_data	sz_filename = __FILE__; sz_line = __LINE__; 
 
 //============================================================================
 
@@ -167,6 +145,7 @@ unsigned short CRC_Block (byte *start, int count);
 
 
 
+
 /*
 ==============================================================
 
@@ -177,20 +156,23 @@ PROTOCOL
 
 // protocol.h -- communications protocols
 
-#define	PROTOCOL_VERSION	34
+#define	PROTOCOL_VERSION	51
 
 //=========================================
 
-#define	PORT_MASTER	27900
-#define	PORT_CLIENT	27901
-#define	PORT_SERVER	27910
+#define	PORT_MASTER			28900
+#define	PORT_CLIENT			28901
+#define	PORT_SERVER			28910
+#define	PORT_GAMESPY		28911	// port that gamespy will communicate to our server on
+#define	PORT_GAMESPYMASTER	27900	// port we communicate to gamespy's master server
 
 //=========================================
 
-#define	UPDATE_BACKUP	16	// copies of entity_state_t to keep buffered
-							// must be power of two
-#define	UPDATE_MASK		(UPDATE_BACKUP-1)
+#define	UPDATE_BACKUP		16	// copies of entity_state_t to keep buffered
+								// must be power of two
+#define	UPDATE_MASK			(UPDATE_BACKUP-1)
 
+#define MAX_PACKET_ENTITIES	64
 
 
 //==================
@@ -204,12 +186,9 @@ enum svc_ops_e
 {
 	svc_bad,
 
-	// these ops are known to the game dll
-	svc_muzzleflash,
-	svc_muzzleflash2,
-	svc_temp_entity,
 	svc_layout,
 	svc_inventory,
+	svc_client_effect,
 
 	// the rest are private to the client and server
 	svc_nop,
@@ -217,16 +196,29 @@ enum svc_ops_e
 	svc_reconnect,
 	svc_sound,					// <see code>
 	svc_print,					// [byte] id [string] null terminated string
+	svc_gamemsg_print, 			// [short] id (top 3 bits flags)
 	svc_stufftext,				// [string] stuffed into client's console buffer, should be \n terminated
 	svc_serverdata,				// [long] protocol ...
 	svc_configstring,			// [short] [string]
-	svc_spawnbaseline,
+	svc_spawnbaseline,		
 	svc_centerprint,			// [string] to put in center of the screen
+	svc_gamemsg_centerprint,  	// line number of [string] in strings.txt file
+	svc_gamemsgvar_centerprint,	// line number of [string] in strings.txt file, along with var to insert
+	svc_levelmsg_centerprint, 	// line number of [string] in strings.txt file
+	svc_captionprint,			// line number of [string] in strings.txt file
+	svc_obituary,			// line number of [string] in strings.txt file
 	svc_download,				// [short] size [size bytes]
 	svc_playerinfo,				// variable
 	svc_packetentities,			// [...]
 	svc_deltapacketentities,	// [...]
-	svc_frame
+	svc_frame,
+	svc_removeentities,
+	svc_changeCDtrack,
+	svc_framenum,				//only sent on world spawn, before client effects get through, so we can ensure client time is right
+	svc_demo_client_effect,		//only used to send down persistant effects at the start of a demo
+	svc_special_client_effect,	//almost the same as svc_client_effect, except its got an extra size short at the top.
+	svc_gamemsgdual_centerprint, //send down two message numbers, to combine into one text string
+	svc_nameprint,				//allow a client to print a message across the network without adding its name, instead, just its client number
 };
 
 //==============================================
@@ -237,46 +229,137 @@ enum svc_ops_e
 enum clc_ops_e
 {
 	clc_bad,
-	clc_nop,
+	clc_nop, 		
 	clc_move,				// [[usercmd_t]
 	clc_userinfo,			// [[userinfo string]
-	clc_stringcmd			// [string] message
+	clc_stringcmd,			// [string] message
+	clc_startdemo			// start a demo - please send me all persistant effects
 };
 
 //==============================================
 
-// plyer_state_t communication
+// player_state_t communication delta flags.
 
-#define	PS_M_TYPE			(1<<0)
-#define	PS_M_ORIGIN			(1<<1)
-#define	PS_M_VELOCITY		(1<<2)
-#define	PS_M_TIME			(1<<3)
-#define	PS_M_FLAGS			(1<<4)
-#define	PS_M_GRAVITY		(1<<5)
-#define	PS_M_DELTA_ANGLES	(1<<6)
+// For every 8 bits of PLAYER_DEL_BYTES, a bit of PLAYER_DEL_NZBYTES is required.
 
-#define	PS_VIEWOFFSET		(1<<7)
-#define	PS_VIEWANGLES		(1<<8)
-#define	PS_KICKANGLES		(1<<9)
-#define	PS_BLEND			(1<<10)
-#define	PS_FOV				(1<<11)
-#define	PS_WEAPONINDEX		(1<<12)
-#define	PS_WEAPONFRAME		(1<<13)
-#define	PS_RDFLAGS			(1<<14)
+#define PLAYER_DEL_BYTES		(17)
+#define PLAYER_DELNZ_BYTES		(3)
+
+#define	PS_VIEWANGLES			(1 << 0)
+#define PS_FRAMEINFO1			(1 << 1) // (1,0)=sent one, upper=lower (1,1)=sent both, (0,0)=sent neither
+#define PS_FRAMEINFO2			(1 << 2)
+#define	PS_M_ORIGIN_XY			(1 << 3)
+#define	PS_M_ORIGIN_Z			(1 << 4)
+#define	PS_M_VELOCITY_XY		(1 << 5)
+#define	PS_M_VELOCITY_Z			(1 << 6)
+#define PS_FWDVEL				(1 << 7)
+
+#define PS_LOWERSEQ				(1 << 8)
+#define PS_LOWERMOVE_INDEX		(1 << 9)
+#define PS_AUTOTARGETENTITY		(1 << 10)
+#define PS_GROUNDPLANE_INFO1	(1 << 11) // (0,0) = zaxis, (1,0)=(0,0,0),(1,1)=all three sent
+#define PS_GROUNDPLANE_INFO2	(1 << 12)
+#define PS_IDLETIME				(1 << 13)
+#define PS_UPPERSEQ				(1 << 14)
+#define PS_UPPERMOVE_INDEX		(1 << 15)
+
+#define	PS_M_TYPE				(1 << 16)
+#define	PS_M_TIME				(1 << 17)
+#define	PS_M_FLAGS				(1 << 18)
+#define	PS_W_FLAGS				(1 << 19)
+#define	PS_M_GRAVITY			(1 << 20)
+#define	PS_M_DELTA_ANGLES		(1 << 21)
+#define	PS_REMOTE_VIEWANGLES	(1 << 22)
+#define	PS_REMOTE_VIEWORIGIN	(1 << 23)
+
+#define PS_REMOTE_ID			(1 << 24)
+#define PS_VIEWHEIGHT			(1 << 25)
+#define	PS_OFFSETANGLES			(1 << 26)
+#define	PS_FOV					(1 << 27)
+#define	PS_RDFLAGS				(1 << 28)
+#define PS_FOG_DENSITY			(1 << 29)
+#define PS_MAP_PERCENTAGE		(1 << 30)
+#define PS_MINSMAXS				(1 << 31)
+
+#define PS_MISSION2				(1 << 32)
+#define PS_MISSION1				(1 << 33)
+#define PS_INVENTORY			(1 << 34)
+#define PS_GROUNDBITS_NNGE		(1 << 35)
+#define PS_GROUNDBITS_GC		(1 << 36)
+#define PS_GROUNDBITS_SURFFLAGS (1 << 37)
+#define PS_WATERLEVEL			(1 << 38)
+#define PS_WATERTYPE			(1 << 39)
+
+#define PS_WATERHEIGHT			(1 << 40)
+#define PS_GRABLOC0				(1 << 41)
+#define PS_GRABLOC1				(1 << 42)
+#define PS_GRABLOC2				(1 << 43)
+#define PS_GRABANGLE			(1 << 44)
+#define PS_SIDEVEL				(1 << 45)
+#define PS_UPVEL				(1 << 46)
+#define PS_FLAGS				(1 << 47)
+
+#define PS_EDICTFLAGS			(1 << 48)
+#define PS_UPPERIDLE			(1 << 49)
+#define PS_LOWERIDLE			(1 << 50)
+#define PS_WEAPON				(1 << 51)
+#define PS_DEFENSE				(1 << 52)
+#define PS_LASTWEAPON			(1 << 53)
+#define PS_LASTDEFENSE			(1 << 54)	
+#define PS_WEAPONREADY			(1 << 55)
+
+#define PS_SWITCHTOWEAPON		(1 << 56)
+#define PS_NEWWEAPON			(1 << 57)
+#define PS_WEAP_AMMO_INDEX		(1 << 58)
+#define PS_DEF_AMMO_INDEX		(1 << 59)
+#define PS_ARMORTYPE			(1 << 60)
+#define PS_BOWTYPE				(1 << 61)
+#define PS_STAFFLEVEL			(1 << 62)
+#define PS_HELLTYPE				(1 << 63)
+
+#define PS_HANDFXTYPE			(1 << 64)
+#define PS_PLAGUELEVEL			(1 << 65)
+#define PS_SKINTYPE				(1 << 66)
+#define PS_ALTPARTS				(1 << 67)
+#define PS_WEAPONCHARGE			(1 << 68)
+#define PS_DEADFLAG				(1 << 69)
+#define PS_IDEAL_YAW			(1 << 70)
+#define PS_DMFLAGS				(1 << 71)
+
+#define PS_OLDVELOCITY_Z		(1 << 72)
+#define PS_STAT_BIT_0			(1 << 73)	// 1st of a contiguous block.
+#define PS_STAT_BIT_47			(1 << 74+47)	// Rest of the block.
+#define PS_CINEMATIC			(1 << 122)
+#define PS_PIV					(1 << 123)
+#define PS_METEORCOUNT			(1 << 124)
+#define	PS_M_CAMERA_DELTA_ANGLES (1 << (125)
+#define PS_POWERUP_TIMER		(1 << 126)
+#define PS_QUICKTURN_RATE		(1 << 127)
+
+#define PS_ADVANCEDSTAFF		(1 << 128)
 
 //==============================================
 
-// user_cmd_t communication
+// user_cmd_t communication delta flags.
 
-// ms and light always sent, the others are optional
-#define	CM_ANGLE1 	(1<<0)
-#define	CM_ANGLE2 	(1<<1)
-#define	CM_ANGLE3 	(1<<2)
-#define	CM_FORWARD	(1<<3)
-#define	CM_SIDE		(1<<4)
-#define	CM_UP		(1<<5)
-#define	CM_BUTTONS	(1<<6)
-#define	CM_IMPULSE	(1<<7)
+// ms and light allways sent, the others are optional
+
+#define	CM_ANGLE1 				(1<<0)
+#define	CM_ANGLE2 				(1<<1)
+#define	CM_ANGLE3 				(1<<2)
+#define	CM_AIMANGLE1 			(1<<3)
+#define	CM_AIMANGLE2 			(1<<4)
+#define	CM_AIMANGLE3 			(1<<5)
+#define	CM_CAMERAVIEWORIGIN1	(1<<6)
+#define	CM_CAMERAVIEWORIGIN2	(1<<7)
+#define	CM_CAMERAVIEWORIGIN3	(1<<8)
+#define	CM_CAMERAVIEWANGLES1	(1<<9)
+#define	CM_CAMERAVIEWANGLES2	(1<<10)
+#define	CM_CAMERAVIEWANGLES3	(1<<11)
+#define	CM_FORWARD				(1<<12)
+#define	CM_SIDE					(1<<13)
+#define	CM_UP					(1<<14)
+#define	CM_BUTTONS				(1<<15)
 
 //==============================================
 
@@ -286,49 +369,68 @@ enum clc_ops_e
 #define	SND_POS			(1<<2)		// three coordinates
 #define	SND_ENT			(1<<3)		// a short 0-2: channel, 3-12: entity
 #define	SND_OFFSET		(1<<4)		// a byte, msec offset from frame start
+#define SND_PRED_INFO	(1<<5)		// a byte and a float.
 
 #define DEFAULT_SOUND_PACKET_VOLUME	1.0
 #define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
 
 //==============================================
 
-// entity_state_t communication
+// entity_state_t communication delta flags
 
-// try to pack the common update flags into the first byte
-#define	U_ORIGIN1	(1<<0)
-#define	U_ORIGIN2	(1<<1)
-#define	U_ANGLE2	(1<<2)
-#define	U_ANGLE3	(1<<3)
-#define	U_FRAME8	(1<<4)		// frame is a byte
-#define	U_EVENT		(1<<5)
-#define	U_REMOVE	(1<<6)		// REMOVE this entity, don't add it
-#define	U_MOREBITS1	(1<<7)		// read one additional byte
+// For every 8 bits of PLAYER_DEL_BYTES, a bit of PLAYER_DEL_NZBYTES is required.
 
-// second byte
-#define	U_NUMBER16	(1<<8)		// NUMBER8 is implicit if not set
-#define	U_ORIGIN3	(1<<9)
-#define	U_ANGLE1	(1<<10)
-#define	U_MODEL		(1<<11)
-#define U_RENDERFX8	(1<<12)		// fullbright, etc
-#define	U_EFFECTS8	(1<<14)		// autorotate, trails, etc
-#define	U_MOREBITS2	(1<<15)		// read one additional byte
+#define ENT_DEL_BYTES		(5)
+#define ENT_DELNZ_BYTES		(1)
 
-// third byte
-#define	U_SKIN8		(1<<16)
-#define	U_FRAME16	(1<<17)		// frame is a short
-#define	U_RENDERFX16 (1<<18)	// 8 + 16 = 32
-#define	U_EFFECTS16	(1<<19)		// 8 + 16 = 32
-#define	U_MODEL2	(1<<20)		// weapons, flags, etc
-#define	U_MODEL3	(1<<21)
-#define	U_MODEL4	(1<<22)
-#define	U_MOREBITS3	(1<<23)		// read one additional byte
+#define	U_FRAME8			(1 << 0)
+#define	U_FRAME16			(1 << 1)
+#define	U_ORIGIN12			(1 << 2)
+#define	U_ORIGIN3			(1 << 3)
+#define	U_ANGLE1			(1 << 4)
+#define	U_ANGLE2			(1 << 5)
+#define	U_ANGLE3			(1 << 6)
+#define U_SWAPFRAME			(1 << 7)
 
-// fourth byte
-#define	U_OLDORIGIN	(1<<24)		// FIXME: get rid of this
-#define	U_SKIN16	(1<<25)
-#define	U_SOUND		(1<<26)
-#define	U_SOLID		(1<<27)
+#define	U_EFFECTS8			(1 << 8)
+#define	U_EFFECTS16			(1 << 9)
+#define U_RENDERFX8			(1 << 10)
+#define	U_RENDERFX16		(1 << 11)
+#define	U_CLIENT_EFFECTS	(1 << 12)
+#define U_FM_INFO			(1 << 13)
+#define	U_REMOVE			(1 << 14)
+#define	U_ENT_FREED			(1 << 15)
 
+#define	U_COLOR_R			(1 << 16)
+#define	U_COLOR_G			(1 << 17)
+#define	U_COLOR_B			(1 << 18)
+#define	U_COLOR_A			(1 << 19)
+#define	U_SKIN8				(1 << 20)
+#define	U_SKIN16			(1 << 21)
+#define	U_MODEL				(1 << 22)
+#define U_SCALE				(1 << 23)
+
+#define	U_SOUND				(1 << 24)
+#define	U_SOLID				(1 << 25)
+#define U_JOINTED			(1 << 26)
+#define	U_ABSLIGHT			(1 << 27)
+#define	U_OLDORIGIN			(1 << 28)
+#define U_USAGE_COUNT		(1 << 29)
+#define	U_NUMBER16			(1 << 30)
+#define	U_BMODEL			(1 << 31)
+
+#define U_CLIENTNUM			(1 << 32)
+
+#define U_FM_HIGH			(1<<7)					// Means more then the first 7 updates
+
+#define U_FM_FRAME			(1<<0)					// Individual bits for each update
+#define U_FM_FRAME16		(1<<1)
+#define U_FM_COLOR_R		(1<<2)
+#define U_FM_COLOR_G		(1<<3)
+#define U_FM_COLOR_B		(1<<4)
+#define U_FM_COLOR_A		(1<<5)
+#define U_FM_FLAGS			(1<<6)
+#define U_FM_SKIN			(1<<7)
 
 /*
 ==============================================================
@@ -418,12 +520,15 @@ char 	*Cmd_CompleteCommand (char *partial);
 // attempts to match a partial command for automatic command line completion
 // returns NULL if nothing fits
 
-int		Cmd_Argc (void);
-char	*Cmd_Argv (int arg);
-char	*Cmd_Args (void);
+char 	*Cmd_CompleteCommandNext (char *partial, char *last);
+// similar to above, but returns the next value after last
+
+QUAKE2_API  int		Cmd_Argc (void);
+QUAKE2_API  char	*Cmd_Argv (int arg);
+QUAKE2_API  char	*Cmd_Args (void);
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL
-// if arg > argc, so string operations are always safe.
+// if arg > argc, so string operations are allways safe.
 
 void	Cmd_TokenizeString (char *text, qboolean macroExpand);
 // Takes a null terminated string.  Does not need to be /n terminated.
@@ -462,12 +567,14 @@ interface from being ambiguous.
 
 extern	cvar_t	*cvar_vars;
 
-cvar_t *Cvar_Get (char *var_name, char *value, int flags);
+float ClampCvar( float min, float max, float value );
+
+QUAKE2_API cvar_t *Cvar_Get (char *var_name, char *value, int flags);
 // creates the variable if it doesn't exist, or returns the existing one
 // if it exists, the value will not be changed, but flags will be ORed in
 // that allows variables to be unarchived without needing bitflags
 
-cvar_t 	*Cvar_Set (char *var_name, char *value);
+QUAKE2_API cvar_t 	*Cvar_Set (char *var_name, char *value);
 // will create the variable if it doesn't exist
 
 cvar_t *Cvar_ForceSet (char *var_name, char *value);
@@ -475,7 +582,7 @@ cvar_t *Cvar_ForceSet (char *var_name, char *value);
 
 cvar_t 	*Cvar_FullSet (char *var_name, char *value, int flags);
 
-void	Cvar_SetValue (char *var_name, float value);
+QUAKE2_API void	Cvar_SetValue (char *var_name, float value);
 // expands value to a string and calls Cvar_Set
 
 float	Cvar_VariableValue (char *var_name);
@@ -487,6 +594,9 @@ char	*Cvar_VariableString (char *var_name);
 char 	*Cvar_CompleteVariable (char *partial);
 // attempts to match a partial variable name for command line completion
 // returns NULL if nothing fits
+
+char	*Cvar_CompleteVariableNext(char *partial, char *last);
+// similar to above, except that it goes to next match if any
 
 void	Cvar_GetLatchedVars (void);
 // any CVAR_LATCHED variables that have been set will now take effect
@@ -512,6 +622,25 @@ extern	qboolean	userinfo_modified;
 // this is set each time a CVAR_USERINFO variable is changed
 // so that the client knows to send it to the server
 
+// Screen flash set
+void Activate_Screen_Flash(int color);
+
+// Screen flash unset
+void Deactivate_Screen_Flash(void);
+
+// return screen flash value
+int Is_Screen_Flashing(void);  
+
+// set up a screen shaking
+void Activate_Screen_Shake(float intensity, float duration, float current_time, int flags);
+// reset screen shakings
+void Reset_Screen_Shake(void);
+
+qboolean Get_Crosshair(vec3_t origin, byte *type);
+
+// called by the camera code to determine our camera offset
+void Perform_Screen_Shake(vec3_t, float current_time);
+
 /*
 ==============================================================
 
@@ -524,12 +653,16 @@ NET
 
 #define	PORT_ANY	-1
 
-#define	MAX_MSGLEN		1400		// max length of a message
+// FIXME: this really shouldn't have to be changed to 2000 but some maps (SSTOWN4) were causing it to crash
+//#define	MAX_MSGLEN		1400		// max length of a message
+#define	MAX_MSGLEN		2500		// max length of a message
 #define	PACKET_HEADER	10			// two ints and a short
 
 typedef enum {NA_LOOPBACK, NA_BROADCAST, NA_IP, NA_IPX, NA_BROADCAST_IPX} netadrtype_t;
 
-typedef enum {NS_CLIENT, NS_SERVER} netsrc_t;
+typedef enum {NS_CLIENT, NS_SERVER, NS_GAMESPY} netsrc_t;
+
+extern	int		gamespy_port;
 
 typedef struct
 {
@@ -543,6 +676,7 @@ typedef struct
 
 void		NET_Init (void);
 void		NET_Shutdown (void);
+void		NET_TotalShutdown (void);
 
 void		NET_Config (qboolean multiplayer);
 
@@ -554,7 +688,6 @@ qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b);
 qboolean	NET_IsLocalAddress (netadr_t adr);
 char		*NET_AdrToString (netadr_t a);
 qboolean	NET_StringToAdr (char *s, netadr_t *a);
-void		NET_Sleep(int msec);
 
 //============================================================================
 
@@ -679,10 +812,8 @@ Common between server and client so prediction matches
 
 ==============================================================
 */
-
-extern float pm_airaccelerate;
-
-void Pmove (pmove_t *pmove);
+				  
+void Pmove(pmove_t *pmove, qboolean isServer);
 
 /*
 ==============================================================
@@ -692,27 +823,28 @@ FILESYSTEM
 ==============================================================
 */
 
-void	FS_InitFilesystem (void);
-void	FS_SetGamedir (char *dir);
-char	*FS_Gamedir (void);
-char	*FS_NextPath (char *prevpath);
-void	FS_ExecAutoexec (void);
+void		FS_InitFilesystem (void);
+char		*FS_GetPath (char *name);
+void		FS_SetGamedir (char *dir);
+char		*FS_Gamedir (void);
+char		*FS_Userdir (void);
+char		*FS_NextPath (char *prevpath);
+void		FS_ExecAutoexec (void);
 
-int		FS_FOpenFile (char *filename, FILE **file);
-void	FS_FCloseFile (FILE *f);
+QUAKE2_API int			FS_FOpenFile (char *filename, FILE **file);
+QUAKE2_API void		FS_FCloseFile (FILE *f);
 // note: this can't be called from another DLL, due to MS libc issues
 
-int		FS_LoadFile (char *path, void **buffer);
+int			FS_LoadFile (char *path, void **buffer);
 // a null buffer will just return the file length without loading
 // a -1 length is not present
 
-void	FS_Read (void *buffer, int len, FILE *f);
+void		FS_Read (void *buffer, int len, FILE *f);
 // properly handles partial reads
 
-void	FS_FreeFile (void *buffer);
+void		FS_FreeFile (void *buffer);
 
-void	FS_CreatePath (char *path);
-
+void		FS_CreatePath (char *path);
 
 /*
 ==============================================================
@@ -722,6 +854,7 @@ MISC
 ==============================================================
 */
 
+#define CFX_CULLING_DIST 1000.0f
 
 #define	ERR_FATAL	0		// exit the entire game with a popup window
 #define	ERR_DROP	1		// print to console and disconnect from game
@@ -736,32 +869,37 @@ MISC
 
 void		Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush));
 void		Com_EndRedirect (void);
-void 		Com_Printf (char *fmt, ...);
-void 		Com_DPrintf (char *fmt, ...);
-void 		Com_Error (int code, char *fmt, ...);
+QUAKE2_API void 		Com_Printf (char *fmt, ...);
+QUAKE2_API void 		Com_DPrintf (char *fmt, ...);
+QUAKE2_API void 		Com_Error (int code, char *fmt, ...);
 void 		Com_Quit (void);
-
-int			Com_ServerState (void);		// this should have just been a cvar...
+int			Com_ServerState (void);
 void		Com_SetServerState (int state);
 
 unsigned	Com_BlockChecksum (void *buffer, int length);
-byte		COM_BlockSequenceCRCByte (byte *base, int length, int sequence);
-
-float	frand(void);	// 0 ti 1
-float	crand(void);	// -1 to 1
+byte		COM_BlockSequenceCheckByte (byte *base, int length, int sequence);
 
 extern	cvar_t	*developer;
 extern	cvar_t	*dedicated;
 extern	cvar_t	*host_speeds;
 extern	cvar_t	*log_stats;
+extern	cvar_t	*player_dll;
+
+extern	cvar_t	*allow_download;
+extern	cvar_t	*allow_download_maps;
+extern	cvar_t	*allow_download_players;
+extern	cvar_t	*allow_download_models;
+extern	cvar_t	*allow_download_sounds;
 
 extern	FILE *log_stats_file;
 
 // host_speeds times
-extern	int		time_before_game;
-extern	int		time_after_game;
-extern	int		time_before_ref;
-extern	int		time_after_ref;
+#ifdef _DEVEL
+extern	__int64	time_before_game;
+extern	__int64	time_after_game;
+extern	__int64	time_before_ref;
+extern	__int64	time_after_ref;
+#endif	// _DEVEL
 
 void Z_Free (void *ptr);
 void *Z_Malloc (int size);			// returns 0 filled memory
@@ -770,14 +908,9 @@ void Z_FreeTags (int tag);
 
 void Qcommon_Init (int argc, char **argv);
 void Qcommon_Frame (int msec);
-void Qcommon_Shutdown (void);
 
 #define NUMVERTEXNORMALS	162
 extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
-
-// this is in the client code, but can be used for debugging from server
-void SCR_DebugGraph (float value, int color);
-
 
 /*
 ==============================================================
@@ -791,14 +924,12 @@ void	Sys_Init (void);
 
 void	Sys_AppActivate (void);
 
-void	Sys_UnloadGame (void);
-void	*Sys_GetGameAPI (void *parms);
 // loads the game dll and calls the api init function
 
 char	*Sys_ConsoleInput (void);
 void	Sys_ConsoleOutput (char *string);
 void	Sys_SendKeyEvents (void);
-void	Sys_Error (char *error, ...);
+QUAKE2_API void	Sys_Error (char *error, ...);
 void	Sys_Quit (void);
 char	*Sys_GetClipboardData( void );
 void	Sys_CopyProtect (void);
@@ -815,7 +946,6 @@ void CL_Init (void);
 void CL_Drop (void);
 void CL_Shutdown (void);
 void CL_Frame (int msec);
-void Con_Print (char *text);
 void SCR_BeginLoadingPlaque (void);
 
 void SV_Init (void);
@@ -823,4 +953,4 @@ void SV_Shutdown (char *finalmsg, qboolean reconnect);
 void SV_Frame (int msec);
 
 
-
+#endif // QCOMMON_H

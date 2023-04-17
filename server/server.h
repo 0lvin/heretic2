@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 
 See the GNU General Public License for more details.
 
@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //define	PARANOID			// speed sapping error checking
 
 #include "../qcommon/qcommon.h"
-#include "../q2game/game.h"
+#include "../game/game.h"
 
 //=============================================================================
 
@@ -160,7 +160,7 @@ typedef struct
 	qboolean	initialized;				// sv_init has completed
 	int			realtime;					// always increasing, no clamping, etc
 
-	char		mapcmd[MAX_TOKEN_CHARS];	// ie: *intro.cin+base
+	char		mapcmd[MAX_TOKEN_CHARS];	// ie: *intro.cin+base 
 
 	int			spawncount;					// incremented each server start
 											// used to check late spawns
@@ -339,3 +339,8 @@ trace_t SV_Trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t *p
 
 // passedict is explicitly excluded from clipping checks (normally NULL)
 
+extern byte SV_Persistant_Effects_Array[0x1B000];
+
+void SV_ClearPersistantEffects(void);
+byte	COM_BlockSequenceCRCByte(byte* base, int length, int sequence);
+void MSG_WriteData(sizebuf_t* sb, byte* data, int len);

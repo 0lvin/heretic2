@@ -1,22 +1,3 @@
-/*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 
 //
 // qfiles.h: quake file formats
@@ -46,7 +27,7 @@ typedef struct
 	int		dirlen;
 } dpackheader_t;
 
-#define	MAX_FILES_IN_PACK	4096
+#define	MAX_FILES_IN_PACK	6144
 
 
 /*
@@ -74,6 +55,23 @@ typedef struct
     unsigned char	data;			// unbounded
 } pcx_t;
 
+/*
+========================================================================
+
+.MD2 compressed triangle model file format
+
+========================================================================
+*/
+#define IDCOMPRESSEDALIASHEADER	(('2'<<24)+('C'<<16)+('D'<<8)+'I')
+
+/*
+========================================================================
+
+.MD2 compressed triangle model file format
+
+========================================================================
+*/
+#define IDJOINTEDALIASHEADER	(('2'<<24)+('J'<<16)+('D'<<8)+'I')
 
 /*
 ========================================================================
@@ -89,7 +87,7 @@ typedef struct
 #define	MAX_TRIANGLES	4096
 #define MAX_VERTS		2048
 #define MAX_FRAMES		512
-#define MAX_MD2SKINS	32
+#define MAX_MD2SKINS	64
 #define	MAX_SKINNAME	64
 
 typedef struct
@@ -98,7 +96,7 @@ typedef struct
 	short	t;
 } dstvert_t;
 
-typedef struct
+typedef struct 
 {
 	short	index_xyz[3];
 	short	index_st[3];
@@ -106,8 +104,16 @@ typedef struct
 
 typedef struct
 {
-	byte	v[3];			// scaled byte to fit in frame mins/maxs
-	byte	lightnormalindex;
+	union
+	{
+		struct
+		{
+		byte	v[3];			// scaled byte to fit in frame mins/maxs
+		byte	lightnormalindex;
+		};
+
+		int vert;
+	};
 } dtrivertx_t;
 
 #define DTRIVERTX_V0   0
@@ -154,10 +160,70 @@ typedef struct
 	int			ofs_st;			// byte offset from start for stverts
 	int			ofs_tris;		// offset for dtriangles
 	int			ofs_frames;		// offset for first frame
-	int			ofs_glcmds;
+	int			ofs_glcmds;	
 	int			ofs_end;		// end of file
 
 } dmdl_t;
+
+// compressed model
+typedef struct dcompmdl_s
+{
+	dmdl_t header;
+	short CompressedFrameSize;
+	short UniqueVerts;
+	short *remap;
+	float *translate;	// then add this
+	float *scale;	// multiply byte verts by this
+	char *mat;
+	char *frames;
+	char *base;
+	float *ctranslate;	
+	float *cscale;	
+	char data[1];
+} dcompmdl_t;
+
+typedef struct 
+{
+	dcompmdl_t compModInfo;
+	int rootCluster;
+	int skeletalType;
+	struct ModelSkeleton_s *skeletons;
+} JointedModel_t;
+
+/*
+========================================================================
+
+.BK file format
+
+========================================================================
+*/
+
+#define IDBOOKHEADER	(('K'<<24)+('O'<<16)+('O'<<8)+'B')
+#define BOOK_VERSION	2
+
+typedef struct bookframe_s
+{
+	int			x;
+	int			y;
+	int			w;
+	int			h;
+	char		name[MAX_SKINNAME];		// name of gfx file
+} bookframe_t;
+
+typedef struct bookheader_s
+{
+	unsigned int	ident;
+	unsigned int	version;
+	int				num_segments;
+	int				total_w;
+	int				total_h;
+} bookheader_t;
+
+typedef struct book_s
+{
+	bookheader_t bheader;
+	bookframe_t	bframes[MAX_MD2SKINS];
+} book_t;
 
 /*
 ========================================================================
@@ -188,24 +254,67 @@ typedef struct {
 /*
 ==============================================================================
 
-  .WAL texture file format
+  .M8 texture file format
 
 ==============================================================================
 */
 
+typedef struct palette_s
+{
+	union
+	{
+		struct
+		{
+			byte r,g,b;
+		};
+	};
+} palette_t;
 
-#define	MIPLEVELS	4
+#define MIP_VERSION		2
+#define PAL_SIZE		256
+#define	MIPLEVELS		16
+
 typedef struct miptex_s
 {
+	int			version;
 	char		name[32];
-	unsigned	width, height;
+	unsigned	width[MIPLEVELS], height[MIPLEVELS];
 	unsigned	offsets[MIPLEVELS];		// four mip maps stored
 	char		animname[32];			// next frame in animation chain
+	palette_t	palette[PAL_SIZE];
 	int			flags;
 	int			contents;
 	int			value;
 } miptex_t;
 
+
+
+#define MIP32_VERSION	4
+
+typedef struct miptex32_s
+{
+	int			version;
+	char		name[128];
+	char		altname[128];			// texture substitution
+	char		animname[128];			// next frame in animation chain
+	char		damagename[128];		// image that should be shown when damaged
+	unsigned	width[MIPLEVELS], height[MIPLEVELS];
+	unsigned	offsets[MIPLEVELS];		
+	int			flags;
+	int			contents;
+	int			value;
+	float		scale_x, scale_y;
+	int			mip_scale;
+
+	// detail texturing info
+	char		dt_name[128];		// detailed texture name
+	float		dt_scale_x, dt_scale_y;
+	float		dt_u, dt_v;
+	float		dt_alpha;
+	int			dt_src_blend_mode, dt_dst_blend_mode;
+
+	int			unused[20];				// future expansion to maintain compatibility with h2
+} miptex32_t;
 
 
 /*
@@ -226,7 +335,8 @@ typedef struct miptex_s
 // leaffaces, leafbrushes, planes, and verts are still bounded by
 // 16 bit short limits
 #define	MAX_MAP_MODELS		1024
-#define	MAX_MAP_BRUSHES		8192
+//#define	MAX_MAP_BRUSHES		8192	// Quake 2 original
+#define	MAX_MAP_BRUSHES		10240
 #define	MAX_MAP_ENTITIES	2048
 #define	MAX_MAP_ENTSTRING	0x40000
 #define	MAX_MAP_TEXINFO		8192
@@ -245,7 +355,7 @@ typedef struct miptex_s
 #define	MAX_MAP_EDGES		128000
 #define	MAX_MAP_SURFEDGES	256000
 #define	MAX_MAP_LIGHTING	0x200000
-#define	MAX_MAP_VISIBILITY	0x100000
+#define	MAX_MAP_VISIBILITY	0x180000
 
 // key / value pair sizes
 
@@ -283,7 +393,7 @@ typedef struct
 typedef struct
 {
 	int			ident;
-	int			version;
+	int			version;	
 	lump_t		lumps[HEADER_LUMPS];
 } dheader_t;
 
@@ -313,11 +423,11 @@ typedef struct
 #define	PLANE_ANYY		4
 #define	PLANE_ANYZ		5
 
-// planes (x&~1) and (x&~1)+1 are always opposites
+// planes (x&~1) and (x&~1)+1 are allways opposites
 
 typedef struct
 {
-	float	normal[3];
+ 	float	normal[3];
 	float	dist;
 	int		type;		// PLANE_X - PLANE_ANYZ ?remove? trivial to regenerate
 } dplane_t;
@@ -327,56 +437,46 @@ typedef struct
 // a given brush can contribute multiple content bits
 // multiple brushes can be in a single leaf
 
-// these definitions also need to be in q_shared.h!
+// These definitions also need to be in q_shared.h!
 
-// lower bits are stronger, and will eat weaker brushes completely
-#define	CONTENTS_SOLID			1		// an eye is never valid in a solid
-#define	CONTENTS_WINDOW			2		// translucent, but not watery
-#define	CONTENTS_AUX			4
-#define	CONTENTS_LAVA			8
-#define	CONTENTS_SLIME			16
-#define	CONTENTS_WATER			32
-#define	CONTENTS_MIST			64
-#define	LAST_VISIBLE_CONTENTS	64
+// ************************************************************************************************
+// CONTENTS_XXX
+// ------------
+// Contents flags.
+// ************************************************************************************************
 
-// remaining contents are non-visible, and don't eat brushes
+// Lower bits are stronger, and will eat weaker brushes completely.
 
-#define	CONTENTS_AREAPORTAL		0x8000
+#define	CONTENTS_SOLID			0x00000001	// An eye is never valid in a solid.
+#define	CONTENTS_WINDOW			0x00000002	// Translucent, but not watery.
+#define	CONTENTS_AUX			0x00000004
+#define	CONTENTS_LAVA			0x00000008
+#define	CONTENTS_SLIME			0x00000010
+#define	CONTENTS_WATER			0x00000020
+#define	CONTENTS_MIST			0x00000040
+#define	LAST_VISIBLE_CONTENTS	CONTENTS_MIST
 
-#define	CONTENTS_PLAYERCLIP		0x10000
-#define	CONTENTS_MONSTERCLIP	0x20000
+// Remaining contents are non-visible, and don't eat brushes.
 
-// currents can be added to any other contents, and may be mixed
-#define	CONTENTS_CURRENT_0		0x40000
-#define	CONTENTS_CURRENT_90		0x80000
-#define	CONTENTS_CURRENT_180	0x100000
-#define	CONTENTS_CURRENT_270	0x200000
-#define	CONTENTS_CURRENT_UP		0x400000
-#define	CONTENTS_CURRENT_DOWN	0x800000
+#define	CONTENTS_AREAPORTAL		0x00008000
+#define	CONTENTS_PLAYERCLIP		0x00010000
+#define	CONTENTS_MONSTERCLIP	0x00020000
 
-#define	CONTENTS_ORIGIN			0x1000000	// removed before bsping an entity
+// Currents can be added to any other contents, and may be mixed.
 
-#define	CONTENTS_MONSTER		0x2000000	// should never be on a brush, only in game
-#define	CONTENTS_DEADMONSTER	0x4000000
-#define	CONTENTS_DETAIL			0x8000000	// brushes to be added after vis leafs
-#define	CONTENTS_TRANSLUCENT	0x10000000	// auto set if any surface has trans
+#define	CONTENTS_CURRENT_0		0x00040000
+#define	CONTENTS_CURRENT_90		0x00080000
+#define	CONTENTS_CURRENT_180	0x00100000
+#define	CONTENTS_CURRENT_270	0x00200000
+#define	CONTENTS_CURRENT_UP		0x00400000
+#define	CONTENTS_CURRENT_DOWN	0x00800000
+#define	CONTENTS_ORIGIN			0x01000000	// Removed before bsping an entity.
+#define	CONTENTS_MONSTER		0x02000000	// Should never be on a brush, only in game.
+#define	CONTENTS_DEADMONSTER	0x04000000
+#define	CONTENTS_DETAIL			0x08000000	// Brushes to be added after vis leaves.
+#define	CONTENTS_TRANSLUCENT	0x10000000	// Auto set if any surface has transparency.
 #define	CONTENTS_LADDER			0x20000000
-
-
-
-#define	SURF_LIGHT		0x1		// value will hold the light strength
-
-#define	SURF_SLICK		0x2		// effects game physics
-
-#define	SURF_SKY		0x4		// don't draw, but add to skybox
-#define	SURF_WARP		0x8		// turbulent water warp
-#define	SURF_TRANS33	0x10
-#define	SURF_TRANS66	0x20
-#define	SURF_FLOWING	0x40	// scroll towards angle
-#define	SURF_NODRAW		0x80	// don't bother referencing the texture
-
-
-
+#define	CONTENTS_CAMERANOBLOCK	0x40000000	// Camera LOS ignores any brushes with this flag.
 
 typedef struct
 {
@@ -413,7 +513,7 @@ typedef struct
 	short		side;
 
 	int			firstedge;		// we must support > 64k edges
-	short		numedges;
+	short		numedges;	
 	short		texinfo;
 
 // lighting info

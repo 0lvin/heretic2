@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 
 See the GNU General Public License for more details.
 
@@ -17,24 +17,23 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
+// disable data conversion warnings
+
+#if 0
+#pragma warning(disable : 4244)     // MIPS
+#pragma warning(disable : 4136)     // X86
+#pragma warning(disable : 4051)     // ALPHA
+#endif
 
 #ifdef _WIN32
 #  include <windows.h>
 #endif
 
 #include <stdio.h>
-
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include <math.h>
 
-#ifndef __linux__
-#ifndef GL_COLOR_INDEX8_EXT
-#define GL_COLOR_INDEX8_EXT GL_COLOR_INDEX
-#endif
-#endif
-
 #include "../client/ref.h"
+#include "../qcommon/Vector.h"
 
 #include "qgl.h"
 
@@ -49,14 +48,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // fall over
 #define	ROLL	2
 
+typedef struct CL_SkeletalJoint_s
+{
+	int children;
+	vec3_t angles;
+} CL_SkeletalJoint_t;
 
-#ifndef __VIDDEF_T
-#define __VIDDEF_T
 typedef struct
 {
 	unsigned		width, height;			// coordinates from main game
 } viddef_t;
-#endif
 
 extern	viddef_t	vid;
 
@@ -74,7 +75,7 @@ extern	viddef_t	vid;
 
 */
 
-typedef enum
+typedef enum 
 {
 	it_skin,
 	it_sprite,
@@ -309,12 +310,13 @@ char	*va(char *format, ...);
 
 void COM_StripExtension (char *in, char *out);
 
+void    Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t* gl);
 void	Draw_GetPicSize (int *w, int *h, char *name);
 void	Draw_Pic (int x, int y, char *name);
-void	Draw_StretchPic (int x, int y, int w, int h, char *name);
+void	Draw_StretchPic (int x, int y, int w, int h, char *pic, float alpha, qboolean scale);
 void	Draw_Char (int x, int y, int c);
 void	Draw_TileClear (int x, int y, int w, int h, char *name);
-void	Draw_Fill (int x, int y, int w, int h, int c);
+void	Draw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
 void	Draw_FadeScreen (void);
 void	Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data);
 
@@ -333,6 +335,8 @@ image_t *GL_LoadPic (char *name, byte *pic, int width, int height, imagetype_t t
 image_t	*GL_FindImage (char *name, imagetype_t type);
 void	GL_TextureMode( char *string );
 void	GL_ImageList_f (void);
+
+void	GL_SetTexturePalette( unsigned palette[256] );
 
 void	GL_InitImages (void);
 void	GL_ShutdownImages (void);
@@ -426,6 +430,13 @@ typedef struct
 extern glconfig_t  gl_config;
 extern glstate_t   gl_state;
 
+void R_DrawBigFont(int x, int y, char *text, float alpha);
+int BF_Strlen(char *text);
+void R_BookDrawPic(int w, int h, char *name, float scale);
+void R_DrawInitCinematic(int w, int h, char *overlay, char *backdrop);
+void R_DrawCloseCinematic();
+void R_DrawCinematic(int cols, int rows, byte *data, paletteRGB_t *palette, float alpha);
+
 /*
 ====================================================================
 
@@ -454,3 +465,5 @@ void		GLimp_AppActivate( qboolean active );
 void		GLimp_EnableLogging( qboolean enable );
 void		GLimp_LogNewFrame( void );
 
+extern image_t* atlas_particle;
+extern image_t* atlas_aparticle;
