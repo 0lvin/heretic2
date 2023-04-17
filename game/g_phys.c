@@ -2,7 +2,7 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "Message.h"
+#include "../qcommon/message.h"
 
 
 #define KNOCKBACK_SCALING 0.5

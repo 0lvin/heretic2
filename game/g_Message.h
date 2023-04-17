@@ -2,7 +2,7 @@
 #define G_MESSAGE_H
 
 #include "../qcommon/qcommon.h"
-#include "SinglyLinkedList.h"
+#include "../qcommon/singlylinkedlist.h"
 
 #ifdef __cplusplus
 extern "C" {

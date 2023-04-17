@@ -8,12 +8,6 @@ Updated code based on [Heretic 2 Reconstruction Project](https://github.com/jmar
 sed -i 's/[[:blank:]]*$//' */*.{c,h}
 ```
 
-build:
-"""
-cmake -S "." -B "build"
-cmake --build "build"
-"""
-
 ======
 
 This is the complete source code for Quake 2, version 3.21, buildable with

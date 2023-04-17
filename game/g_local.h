@@ -19,7 +19,7 @@
 #define	GAME_INCLUDE
 
 #include "game.h"
-#include "player.h"
+#include "../player/player.h"
 
 // The "gameversion" client command will print this plus compile date.
 
@@ -199,7 +199,7 @@ typedef struct
 extern trig_message_t message_text[];
 
 
-extern unsigned	*messagebuf; // jmarshall: this wasn't extern in the original code, 
+extern unsigned	*messagebuf; // jmarshall: this wasn't extern in the original code,
 							 // this is now correct, wondering if this will cause knock ons?
 
 // ************************************************************************************************
@@ -225,7 +225,7 @@ typedef struct
 	// Needed for co-op respawns... can't store spawnpoint in level, because it would get
 	// overwritten by the savegame restore.
 
-	char		spawnpoint[512];	
+	char		spawnpoint[512];
 
 	// Store latched cvars that we want to get at often here.
 
@@ -336,7 +336,7 @@ typedef struct
 	int			active_buoys;				//Number of actual buoys on the level
 	int			fucked_buoys;				//Number of buoys that can't be fixed
 	int			fixed_buoys;				//Number of buoys that had to be fixed
-	
+
 	int			player_buoy[MAX_CLIENTS];				//stores current bestbuoy for a player enemy (if any)
 	int			player_last_buoy[MAX_CLIENTS];		//when player_buoy is invalid, saves it here so monsters can check it first instead of having to do a whole search
 
@@ -427,7 +427,7 @@ typedef struct
 	char	*sky;
 	float	skyrotate;
 	vec3_t	skyaxis;
-	
+
 	// Nextmap. Is this used?
 
 	char	*nextmap;
@@ -454,7 +454,7 @@ typedef struct
 	int		offensive;
 	int		defensive;
 	int		spawnflags2;
-	
+
 	// Time to wait (in seconds) for all clients to have joined a map in coop.
 
 	int		cooptimeout;
@@ -531,7 +531,7 @@ typedef struct
 #define AI_SHOVE				0x00080000	//shove others out of the way.
 #define AI_DONT_THINK			0x00100000	//animate, don't think or move
 #define AI_SWIM_OK				0x00200000	//ok to go in water
-#define AI_OVERRIDE_GUIDE		0x00400000	
+#define AI_OVERRIDE_GUIDE		0x00400000
 #define AI_NO_MELEE				0x00800000	//not allowed to melee
 #define AI_NO_MISSILE			0x01000000	//not allowed to missile
 #define AI_USING_BUOYS			0x02000000	//Using Buoyah! Navigation System(tm)
@@ -641,7 +641,7 @@ typedef struct
 // c_animflags_t
 // ----------
 // ************************************************************************************************
-typedef struct 
+typedef struct
 {
 	qboolean moving;		// Does this action support moving
 	qboolean repeat;		// Does this action support repeating
@@ -700,11 +700,11 @@ typedef struct
 	int			ogleflags;		//Ogles have special spawnflags stored in here at spawntime
 
 	int			supporters;		//Number of supporting monsters (with common type) in the area when awoken
-	
+
 	float		sound_finished;	//Amount of time until the monster will be finishing talking (used for voices)
 	float		sound_start;	//The amount of time to wait before playing the pending sound
 	int			sound_pending;	//This monster is waiting to make a sound (used for voices) (0 if false, else sound ID)
-	
+
 	// Cinematic fields
 	int			c_dist;			// Distance left to move
 	int			c_repeat;		// # of times to repeat the anim cycle
@@ -725,7 +725,7 @@ typedef struct
 // ----------
 // ************************************************************************************************
 
-typedef struct 
+typedef struct
 {
 	animmove_t	*move;
 	short		fly;
@@ -748,11 +748,11 @@ typedef struct
 
 // The structure for each monster class.
 
-#define	FOFS(x)		(intptr_t)&(((edict_t *)0)->x)
-#define	STOFS(x)	(intptr_t)&(((spawn_temp_t *)0)->x)
-#define	LLOFS(x)	(intptr_t)&(((level_locals_t *)0)->x)
-#define	CLOFS(x)	(intptr_t)&(((gclient_t *)0)->x)
-#define	BYOFS(x)	(intptr_t)&(((buoy_t *)0)->x)
+#define	FOFS(x)		(size_t)&(((edict_t *)NULL)->x)
+#define	STOFS(x)	(size_t)&(((spawn_temp_t *)NULL)->x)
+#define	LLOFS(x)	(size_t)&(((level_locals_t *)NULL)->x)
+#define	CLOFS(x)	(size_t)&(((gclient_t *)NULL)->x)
+#define	BYOFS(x)	(size_t)&(((buoy_t *)NULL)->x)
 
 extern	game_locals_t	game;
 extern	level_locals_t	level;
@@ -866,7 +866,7 @@ extern	int				self_spawn;
 // ************************************************************************************************
 
 typedef enum {
-	F_INT, 
+	F_INT,
 	F_FLOAT,
 	F_LSTRING,			// string on disk, pointer in memory, TAG_LEVEL
 	F_GSTRING,			// string on disk, pointer in memory, TAG_GAME
@@ -888,7 +888,7 @@ typedef enum {
 typedef struct
 {
 	char	*name;
-	intptr_t ofs;
+	size_t ofs;
 	fieldtype_t	type;
 	int		flags;
 } field_t;
@@ -966,11 +966,11 @@ float vectoyaw (vec3_t vec);
 qboolean OnSameTeam (edict_t *ent1, edict_t *ent2);
 qboolean CanDamage (edict_t *targ, edict_t *inflictor);
 qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin);
-void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir, vec3_t point, vec3_t normal, 
+void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir, vec3_t point, vec3_t normal,
 					int damage, int knockback, int dflags,int MeansOfDeath);
-void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius, 
+void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
 						float maxdamage, float mindamage, int dflags,int MeansOfDeath);
-void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius, 
+void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
 							float maxdamage, float mindamage, int dflags,int MeansOfDeath);
 
 // ************************************************************************************************
@@ -992,7 +992,7 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 #define DAMAGE_ATTACKER_KNOCKBACK	0x00000400  // Inflictor takes knockback only
 #define DAMAGE_REDRAIN				0x00000800	// Red rain acid damage
 #define DAMAGE_BUBBLE				0x00001000	// Drowning damage
-#define DAMAGE_FIRE					0x00002000  // Fire damage  
+#define DAMAGE_FIRE					0x00002000  // Fire damage
 #define DAMAGE_ALIVE_ONLY			0x00004000	// Only damage living things made of flesh
 #define DAMAGE_BLEEDING				0x00008000	// No protection
 #define DAMAGE_AVOID_ARMOR			0x00010000	// don't do the armor effect
@@ -1207,7 +1207,7 @@ typedef struct gclient_s
 	int					ping;
 
 	// All other fields below are private to the game.
-	
+
 	client_respawn_t	resp;
 	pmove_state_t		old_pmove;				// For detecting out-of-pmove changes.
 
@@ -1266,7 +1266,7 @@ typedef struct gclient_s
 
 	// Data for the player obituaries
 
-	MOD_t				meansofdeath;	
+	MOD_t				meansofdeath;
 
 	// Anti flooding vars
 

@@ -9,7 +9,7 @@
 #define _P_TYPES_H_
 
 #include "../qcommon/qcommon.h"
-#include "g_itemstats.h"
+#include "../game/g_itemstats.h"
 
 #ifdef __cplusplus
 extern "C" {

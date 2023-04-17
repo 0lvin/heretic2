@@ -17,7 +17,7 @@
 #include "../qcommon/qcommon.h"
 #include "items.h"
 #include "g_local.h"
-#include "g_itemstats.h"
+#include "../game/g_itemstats.h"
 #include "cl_strings.h"
 
 PLAYER_API int		p_num_items=0;

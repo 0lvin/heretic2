@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include "SinglyLinkedList.h"
+#include "singlylinkedlist.h"
 
 #ifdef __cplusplus
 extern "C" {

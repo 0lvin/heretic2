@@ -7,8 +7,8 @@
 //
 
 #include "qcommon.h"
-#include "Message.h"
-#include "SinglyLinkedList.h"
+#include "message.h"
+#include "singlylinkedlist.h"
 #include "g_local.h"
 
 void QueueMessage(MsgQueue_t *_this, void *msg)

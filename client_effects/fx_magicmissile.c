@@ -338,4 +338,3 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 		angles[YAW] += BLAST_ANGLE_INC;
 	}
 }
- 

@@ -10,7 +10,7 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "Message.h"
+#include "../qcommon/message.h"
 #include "g_ClassStatics.h"
 
 extern void M_WorldEffects (struct edict_s *ent);

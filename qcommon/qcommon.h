@@ -16,7 +16,6 @@ extern "C" {
 #pragma warning(disable : 4018)     // signed/unsigned mismatch
 #pragma warning(disable : 4305)		// truncation from const double to float
 
-#include <direct.h>
 #include "vector.h"
 
 #ifdef __cplusplus

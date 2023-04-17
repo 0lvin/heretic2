@@ -3,7 +3,7 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_Message.h"
-#include "Message.h"
+#include "../qcommon/message.h"
 #include "g_ClassStatics.h"
 
 #define MAX_BUOY_BRANCHES 3
@@ -341,9 +341,9 @@ typedef struct edict_s
 	void				(*oldtouch)(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 // jmarshall - 64bit
 	union {
-	intptr_t			shrine_type;
-	intptr_t			morph_timer;
-	intptr_t			buoy_index;
+	size_t			shrine_type;
+	size_t			morph_timer;
+	size_t			buoy_index;
 	};
 // jmarshall end
 

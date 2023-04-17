@@ -1,7 +1,7 @@
 #ifndef QCOMMON_MOTION_H
 #define QCOMMON_MOTION_H
 
-#include "../qcommon/qcommon.h"
+#include "qcommon.h"
 
 #ifdef __cplusplus
 extern "C" {

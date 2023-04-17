@@ -1,9 +1,7 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
-#include <windows.h>
 #include "ds.h"
+#include <cstdint>
 
 #define SCRIPT_SAVE_VERSION 2
 
@@ -409,7 +407,7 @@ use parm1 through parm16 to send parameters to the script
 */
 void SP_script_runner (edict_t *ent)
 {
-	char	temp[MAX_PATH];
+	char	temp[MAX_OSPATH];
 	int		i;
 
 	sprintf(temp,"ds/%s.os",st.script);
@@ -1732,7 +1730,7 @@ void Event::Write(FILE *FH, CScript *Script, int ID)
 
 bool Event::Process(CScript *Script)
 {
-	return FALSE;
+	return false;
 }
 
 //==========================================================================
@@ -1761,13 +1759,13 @@ bool MoveDoneEvent::Process(CScript *Script)
 {
 	if (level.time < Time)
 	{
-		return FALSE;
+		return false;
 	}
 
 	Script->Move_Done(Ent);
 	move_signaler(Ent);
 
-	return TRUE;
+	return true;
 }
 
 //==========================================================================
@@ -1796,13 +1794,13 @@ bool RotateDoneEvent::Process(CScript *Script)
 {
 	if (level.time < Time)
 	{
-		return FALSE;
+		return false;
 	}
 
 	Script->Rotate_Done(Ent);
 	rotate_signaler(Ent);
 
-	return TRUE;
+	return true;
 }
 
 //==========================================================================
@@ -1834,7 +1832,7 @@ bool ExecuteEvent::Process(CScript *Script)
 {
 	if (level.time < Time)
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (Script->CheckWait())
@@ -1842,7 +1840,7 @@ bool ExecuteEvent::Process(CScript *Script)
 		Script->Execute(Other,Activator);
 	}
 
-	return TRUE;
+	return true;
 }
 
 //==========================================================================
@@ -1867,7 +1865,7 @@ bool WaitEvent::Process(CScript *Script)
 {
 	if (level.time < Time)
 	{
-		return FALSE;
+		return false;
 	}
 
 	Script->ClearTimeWait();
@@ -1877,7 +1875,7 @@ bool WaitEvent::Process(CScript *Script)
 		Script->Execute(NULL,NULL);
 	}
 
-	return TRUE;
+	return true;
 }
 
 //==========================================================================
@@ -1887,7 +1885,7 @@ CScript::CScript(char *ScriptName, edict_t *new_owner)
 	Clear(true);
 
 	owner = new_owner;
-	strcpy(Name, ScriptName);
+	strcpy(this->Name, ScriptName);
 
 	LoadFile();
 }
@@ -4055,8 +4053,8 @@ void CScript::Error (char *error, ...)
 void CScript::StartDebug(void)
 {
 	DebugLine("-------------------------------\n");
-	DebugLine("Script: %s\n",Name);
-	DebugLine("   DEBUG at %d\n",Position);
+	DebugLine("Script: %s\n", this->Name);
+	DebugLine("   DEBUG at %d\n", Position);
 }
 
 void CScript::EndDebug(void)

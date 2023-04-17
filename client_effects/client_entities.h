@@ -4,7 +4,7 @@
 #include "../qcommon/qcommon.h"
 #include "../client/client.h"
 
-#include "Message.h"
+#include "../qcommon/message.h"
 #include "ce_Message.h"
 
 #ifdef __cplusplus

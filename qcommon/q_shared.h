@@ -226,8 +226,7 @@ typedef int fixed16_t;
 
 struct cplane_s;
 
-extern QUAKE2_API vec3_t vec3_origin;
-extern QUAKE2_API vec3_t vec3_up;
+extern vec3_t vec3_origin;
 
 #define nanmask (255 << 23)
 
@@ -247,6 +246,97 @@ extern QUAKE2_API vec3_t vec3_up;
 #define VectorClear(a) (a[0] = a[1] = a[2] = 0)
 #define VectorNegate(a, b) (b[0] = -a[0], b[1] = -a[1], b[2] = -a[2])
 #define VectorSet(v, x, y, z) (v[0] = (x), v[1] = (y), v[2] = (z))
+
+void VectorMA(vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
+
+/* just in case you do't want to use the macros */
+vec_t _DotProduct(vec3_t v1, vec3_t v2);
+void _VectorSubtract(vec3_t veca, vec3_t vecb, vec3_t out);
+void _VectorAdd(vec3_t veca, vec3_t vecb, vec3_t out);
+void _VectorCopy(vec3_t in, vec3_t out);
+
+void ClearBounds(vec3_t mins, vec3_t maxs);
+void AddPointToBounds(vec3_t v, vec3_t mins, vec3_t maxs);
+int VectorCompare(vec3_t v1, vec3_t v2);
+vec_t VectorLength(vec3_t v);
+void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross);
+vec_t VectorNormalize(vec3_t v); /* returns vector length */
+vec_t VectorNormalize2(vec3_t v, vec3_t out);
+void VectorInverse(vec3_t v);
+void VectorScale(vec3_t in, vec_t scale, vec3_t out);
+int Q_log2(int val);
+
+void R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3]);
+void R_ConcatTransforms(float in1[3][4], float in2[3][4], float out[3][4]);
+
+void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
+void AngleVectors2(vec3_t value1, vec3_t angles);
+int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *plane);
+float anglemod(float a);
+float LerpAngle(float a1, float a2, float frac);
+
+#define BOX_ON_PLANE_SIDE(emins, emaxs, p) \
+	(((p)->type < 3) ? \
+	 ( \
+		 ((p)->dist <= (emins)[(p)->type]) ? \
+		 1 \
+		 : \
+		 ( \
+			 ((p)->dist >= (emaxs)[(p)->type]) ? \
+			 2 \
+			 : \
+			 3 \
+		 ) \
+	 ) \
+	 : \
+	 BoxOnPlaneSide((emins), (emaxs), (p)))
+
+void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal);
+void PerpendicularVector(vec3_t dst, const vec3_t src);
+void RotatePointAroundVector(vec3_t dst,
+		const vec3_t dir,
+		const vec3_t point,
+		float degrees);
+
+/* ============================================= */
+
+char *COM_SkipPath(char *pathname);
+void COM_StripExtension(char *in, char *out);
+const char *COM_FileExtension(const char *in);
+void COM_FileBase(char *in, char *out);
+void COM_FilePath(char *in, char *out);
+void COM_DefaultExtension(char *path, char *extension);
+
+char *COM_Parse(char **data_p);
+
+/* data is an in/out parm, returns a parsed out token */
+void Com_sprintf(char *dest, int size, char *fmt, ...);
+
+void Com_PageInMemory(byte *buffer, int size);
+
+/* ============================================= */
+
+QUAKE2_API short	BigShort(short l);
+QUAKE2_API int    BigLong(int l);
+QUAKE2_API float	BigFloat(float f);
+
+#define LittleShort(x)	(x)
+#define LittleLong(x)	(x)
+#define LittleFloat(x)	(x)
+
+QUAKE2_API float Clamp(float src, float min, float max);
+QUAKE2_API int ClampI(int src, int min, int max);
+QUAKE2_API char* va(char* format, ...);
+
+extern QUAKE2_API vec3_t vec3_up;
+float anglemod_old(float a);
+
+int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
+
+//=============================================
+
+#define VectorCopy(a, b) (b[0] = a[0], b[1] = a[1], b[2] = a[2])
+QUAKE2_API qboolean Vec3IsZeroEpsilon(vec3_t in);
 
 typedef vec_t vec2_t[2];
 typedef double vec3d_t[3];
@@ -310,35 +400,6 @@ QUAKE2_API float Approach(float curr, float dest, float rate);
 
 QUAKE2_API int Q_log2(int val);
 
-QUAKE2_API void ClearBounds(vec3_t mins, vec3_t maxs);
-QUAKE2_API void AddPointToBounds(vec3_t v, vec3_t mins, vec3_t maxs);
-QUAKE2_API float anglemod(float a);
-QUAKE2_API float anglemod_old(float a);
-QUAKE2_API float LerpAngle(float a1, float a2, float frac);
-
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
-
-#define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\
-	(((p)->type < 3)?						\
-	(										\
-		((p)->dist <= (emins)[(p)->type])?	\
-			1								\
-		:									\
-		(									\
-			((p)->dist >= (emaxs)[(p)->type])?\
-				2							\
-			:								\
-				3							\
-		)									\
-	)										\
-	:										\
-		BoxOnPlaneSide( (emins), (emaxs), (p)))
-
-//=============================================
-
-#define VectorCopy(a, b) (b[0] = a[0], b[1] = a[1], b[2] = a[2])
-QUAKE2_API qboolean Vec3IsZeroEpsilon(vec3_t in);
-
 #define MAX_COLORS	33
 
 extern QUAKE2_API paletteRGBA_t TextPalette[MAX_COLORS];
@@ -384,31 +445,6 @@ typedef enum
 
 } PalIdx_t;
 
-//=============================================
-
-QUAKE2_API char* COM_SkipPath(char* pathname);
-QUAKE2_API void COM_StripExtension(char* in, char* out);
-QUAKE2_API void COM_FileBase(char* in, char* out);
-QUAKE2_API void COM_FilePath(char* in, char* out);
-QUAKE2_API void COM_DefaultExtension(char* path, char* extension);
-
-QUAKE2_API char* COM_Parse(char** data_p);
-QUAKE2_API void Com_sprintf(char* dest, int size, char* fmt, ...);
-QUAKE2_API void Com_PageInMemory(byte* buffer, int size);
-
-//=============================================
-
-QUAKE2_API short	BigShort(short l);
-QUAKE2_API int    BigLong(int l);
-QUAKE2_API float	BigFloat(float f);
-
-#define LittleShort(x)	(x)
-#define LittleLong(x)	(x)
-#define LittleFloat(x)	(x)
-
-QUAKE2_API float Clamp(float src, float min, float max);
-QUAKE2_API int ClampI(int src, int min, int max);
-QUAKE2_API char* va(char* format, ...);
 
 //=============================================
 
@@ -463,42 +499,42 @@ void	Sys_FindClose(void);
 
 
 QUAKE2_API void Sys_Error(char* error, ...);
-QUAKE2_API void Com_Printf(char* msg, ...);
+void Com_Printf(char *msg, ...);
 
 /*
-==========================================================
+ * ==========================================================
+ *
+ * CVARS (console variables)
+ *
+ * ==========================================================
+ */
 
-CVARS (console variables)
+#ifndef CVAR
+ #define CVAR
 
-==========================================================
-*/
+ #define CVAR_ARCHIVE 1     /* set to cause it to be saved to vars.rc */
+ #define CVAR_USERINFO 2    /* added to userinfo  when changed */
+ #define CVAR_SERVERINFO 4  /* added to serverinfo when changed */
+ #define CVAR_NOSET 8       /* don't allow change from console at all, */
+							/* but can be set from the command line */
+ #define CVAR_LATCH 16      /* save changes until server restart */
 
-#define	CVAR_ARCHIVE	1	// set to cause it to be saved to vars.rc
-#define	CVAR_USERINFO	2	// added to userinfo  when changed
-#define	CVAR_SERVERINFO	4	// added to serverinfo when changed
-#define	CVAR_NOSET		8	// don't allow change from console at all,
-// but can be set from the command line
-#define	CVAR_LATCH		16	// save changes until server restart
-
-// nothing outside the Cvar_*() functions should modify these fields!
+/* nothing outside the Cvar_*() functions should modify these fields! */
 typedef struct cvar_s
 {
-	char* name;
-	char* string;
-	char* latched_string;	// for CVAR_LATCH vars
-	int			flags;
-	qboolean	modified;	// set each time the cvar is changed
-	float		value;
-	struct cvar_s* next;
+	char *name;
+	char *string;
+	char *latched_string; /* for CVAR_LATCH vars */
+	int flags;
+	qboolean modified; /* set each time the cvar is changed */
+	float value;
+	struct cvar_s *next;
+
+	/* Added by YQ2. Must be at the end to preserve ABI. */
+	char *default_string;
 } cvar_t;
 
-/*
-==============================================================
-
-CVAR
-
-==============================================================
-*/
+#endif /* CVAR */
 
 /*
 
@@ -667,39 +703,35 @@ COLLISION DETECTION
 #define SURF_UNDULATE		0x00002000	// rock surface up and down...
 #define SURF_QUAKE			0x00004000	// rock surface up and down when quake value on
 
-// gi.BoxEdicts() can return a list of either solid or trigger entities
-// FIXME: eliminate AREA_ distinction?
+/* gi.BoxEdicts() can return a list of either solid or trigger entities */
+#define AREA_SOLID 1
+#define AREA_TRIGGERS 2
 
-#define	AREA_SOLID		1
-#define	AREA_TRIGGERS	2
-
-
-// plane_t structure
-// !!! if this is changed, it must be changed in asm code too !!!
+/* plane_t structure */
 typedef struct cplane_s
 {
-	vec3_t	normal;
-	float	dist;
-	byte	type;			// for fast side tests
-	byte	signbits;		// signx + (signy<<1) + (signz<<1)
-	byte	pad[2];
+	vec3_t normal;
+	float dist;
+	byte type; /* for fast side tests */
+	byte signbits; /* signx + (signy<<1) + (signz<<2) */
+	byte pad[2];
 } cplane_t;
 
-// structure offset for asm code
-#define CPLANE_NORMAL_X			0
-#define CPLANE_NORMAL_Y			4
-#define CPLANE_NORMAL_Z			8
-#define CPLANE_DIST				12
-#define CPLANE_TYPE				16
-#define CPLANE_SIGNBITS			17
-#define CPLANE_PAD0				18
-#define CPLANE_PAD1				19
+/* structure offset for asm code */
+#define CPLANE_NORMAL_X 0
+#define CPLANE_NORMAL_Y 4
+#define CPLANE_NORMAL_Z 8
+#define CPLANE_DIST 12
+#define CPLANE_TYPE 16
+#define CPLANE_SIGNBITS 17
+#define CPLANE_PAD0 18
+#define CPLANE_PAD1 19
 
 typedef struct cmodel_s
 {
-	vec3_t		mins, maxs;
-	vec3_t		origin;		// for sounds or lights
-	int			headnode;
+	vec3_t mins, maxs;
+	vec3_t origin; /* for sounds or lights */
+	int headnode;
 } cmodel_t;
 
 typedef struct csurface_s

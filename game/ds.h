@@ -397,7 +397,7 @@ public:
 class CScript
 {
 private:
-	char				Name[MAX_PATH];
+	char				Name[MAX_OSPATH];
 	unsigned char		*Data;
 	ScriptConditionT	ScriptCondition;
 	int					ConditionInfo;

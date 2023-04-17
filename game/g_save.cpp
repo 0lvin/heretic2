@@ -2,7 +2,7 @@
 #include "g_local.h"
 #include "g_skeletons.h"
 #include "arrayed_list.h"
-#include "Message.h"
+#include "../qcommon/message.h"
 #include "g_physics.h"
 #include "g_playstats.h"
 #include "utilities.h"
