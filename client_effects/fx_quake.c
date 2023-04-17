@@ -8,7 +8,7 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "FX.h"
+#include "../qcommon/fx.h"
 
 
 

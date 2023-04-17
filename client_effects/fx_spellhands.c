@@ -8,15 +8,15 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "matrix.h"
-#include "Random.h"
-#include "Utilities.h"
-#include "Reference.h"
-#include "ce_DLight.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/matrix.h"
+#include "../qcommon/random.h"
+#include "utilities.h"
+#include "../qcommon/reference.h"
+#include "ce_dlight.h"
 #include "particle.h"
-#include "g_playstats.h"
+#include "../game/g_playstats.h"
 
 // ************************************************************************************************
 // SpellHandsTrails

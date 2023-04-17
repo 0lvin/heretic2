@@ -9,14 +9,14 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "ce_DLight.h"
-#include "Angles.h"
-#include "Random.h"
-#include "Utilities.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "ce_dlight.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/random.h"
+#include "utilities.h"
 #include "q_sprite.h"
-#include "g_playstats.h"
+#include "../game/g_playstats.h"
 
 #define	NUM_HELL_MODELS	2
 static struct model_s *hell_models[NUM_HELL_MODELS];

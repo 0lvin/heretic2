@@ -7,12 +7,12 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "ce_DefaultMessageHandler.h"
+#include "ce_defaultmessagehandler.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "Random.h"
-#include "g_playstats.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "../game/g_playstats.h"
 
 #define NUM_MIST_PARTS	7
 

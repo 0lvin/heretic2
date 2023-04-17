@@ -7,14 +7,14 @@
 #include <assert.h>
 
 #include "../qcommon/qcommon.h"
-#include "Utilities.h"
-#include "Angles.h"
+#include "utilities.h"
+#include "../qcommon/angles.h"
 #include "g_local.h"
-#include "g_HitLocation.h"
+#include "g_hitlocation.h"
 #include "g_physics.h"
-#include "Random.h"
-#include "FX.H"
-#include "p_main.h"
+#include "../qcommon/random.h"
+#include "../qcommon/fx.h"
+#include "../player/p_main.h"
 
 
 //kill specific entitys at the begining of a cinematic

@@ -7,14 +7,14 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "ce_DefaultMessageHandler.h"
+#include "ce_defaultmessagehandler.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "random.h"
-#include "Utilities.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "utilities.h"
 #include "ambient_effects.h"
-#include "motion.h"
+#include "../qcommon/motion.h"
 
 #define	BUBBLE_MAX_DURATION	2.0F
 #define BUBBLE_RADIUS			2.0F

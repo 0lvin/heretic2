@@ -6,11 +6,11 @@
 //
 
 #include "../qcommon/qcommon.h"
-#include "fx.h"
-#include "effectflags.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/effectflags.h"
 #include "g_local.h"
 #include "g_misc.h"
-#include "g_DefaultMessageHandler.h"
+#include "g_defaultmessagehandler.h"
 
 #define LIGHT_STARTOFF	8
 

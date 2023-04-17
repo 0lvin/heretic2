@@ -9,18 +9,18 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "Utilities.h"
-#include "g_DefaultMessageHandler.h"
+#include "utilities.h"
+#include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "fx.h"
-#include "random.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #include "buoy.h"
 #include "g_playstats.h"
 #include "m_elflord.h"
 #include "m_elflord_anims.h"
 #include "g_monster.h"
 #include "m_stats.h"
-#include "g_HitLocation.h"
+#include "g_hitlocation.h"
 
 /*QUAKED monster_elflord (1 .5 0) (-16 -16 -0) (16 16 32)
 */

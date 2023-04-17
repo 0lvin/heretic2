@@ -1,4 +1,4 @@
-#include "../qcommon/ResourceManager.h"
+#include "../qcommon/resourcemanager.h"
 
 #include "../qcommon/surfaceprops.h"
 

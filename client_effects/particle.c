@@ -9,11 +9,11 @@
 #include "../qcommon/qcommon.h"
 #include "particle.h"
 #include "client_effects.h"
-#include "FX.h"
-#include "ResourceManager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/resourcemanager.h"
 #include "client_entities.h"
-#include "Random.h"
-#include "g_playstats.h"
+#include "../qcommon/random.h"
+#include "../game/g_playstats.h"
 
 #define	MAX_PARTS_PER_CE	2048
 

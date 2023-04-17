@@ -5,7 +5,7 @@
 #include "../client/client.h"
 
 #include "../qcommon/message.h"
-#include "ce_Message.h"
+#include "ce_message.h"
 
 #ifdef __cplusplus
 extern "C" {

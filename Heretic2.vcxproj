@@ -188,9 +188,9 @@
     <ClCompile Include="client\keys.c" />
     <ClCompile Include="client\menu.c" />
     <ClCompile Include="client\qmenu.c" />
-    <ClCompile Include="external\libsmacker\smacker.c" />
-    <ClCompile Include="external\libsmacker\smk_bitstream.c" />
-    <ClCompile Include="external\libsmacker\smk_hufftree.c" />
+    <ClCompile Include="external\smacker.c" />
+    <ClCompile Include="external\smk_bitstream.c" />
+    <ClCompile Include="external\smk_hufftree.c" />
     <ClCompile Include="game\buoy.c" />
     <ClCompile Include="game\c_ai.c" />
     <ClCompile Include="game\c_corvus1.c" />
@@ -505,10 +505,10 @@
     <ClInclude Include="client\ref.h" />
     <ClInclude Include="client\screen.h" />
     <ClInclude Include="client\vid.h" />
-    <ClInclude Include="external\libsmacker\smacker.h" />
-    <ClInclude Include="external\libsmacker\smk_bitstream.h" />
-    <ClInclude Include="external\libsmacker\smk_hufftree.h" />
-    <ClInclude Include="external\libsmacker\smk_malloc.h" />
+    <ClInclude Include="external\smacker.h" />
+    <ClInclude Include="external\smk_bitstream.h" />
+    <ClInclude Include="external\smk_hufftree.h" />
+    <ClInclude Include="external\smk_malloc.h" />
     <ClInclude Include="game\buoy.h" />
     <ClInclude Include="game\c_ai.h" />
     <ClInclude Include="game\c_corvus1.h" />
@@ -662,7 +662,7 @@
     <ClInclude Include="qcommon\qfiles.h" />
     <ClInclude Include="qcommon\q_physics.h" />
     <ClInclude Include="qcommon\q_shared.h" />
-    <ClInclude Include="qcommon\q_Sprite.h" />
+    <ClInclude Include="client_effects\q_Sprite.h" />
     <ClInclude Include="qcommon\q_Surface.h" />
     <ClInclude Include="qcommon\random.h" />
     <ClInclude Include="qcommon\reference.h" />

@@ -9,10 +9,10 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "Utilities.h"
-#include "g_playstats.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "utilities.h"
+#include "../game/g_playstats.h"
 
 #define	NUM_SCORCH_MODELS	1
 

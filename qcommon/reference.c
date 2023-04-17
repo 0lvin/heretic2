@@ -1,8 +1,8 @@
 #include <string.h>
-#include "Reference.h"
+#include "reference.h"
 #include "arrayed_list.h"
-#include "ResourceManager.h"
-#include "Skeletons.h"
+#include "resourcemanager.h"
+#include "skeletons.h"
 
 char *referenceRootNames[] =
 {

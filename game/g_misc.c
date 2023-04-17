@@ -1,14 +1,14 @@
 // g_misc.c
 
 #include "../qcommon/qcommon.h"
-#include "g_DefaultMessageHandler.h"
+#include "g_defaultmessagehandler.h"
 #include "g_misc.h"
 #include "g_local.h"
-#include "FX.h"
-#include "random.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #include "g_monster.h"
 #include "g_teleport.h"
-#include "g_HitLocation.h"
+#include "g_hitlocation.h"
 #include "m_stats.h"
 #include "g_playstats.h"
 

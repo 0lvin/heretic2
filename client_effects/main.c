@@ -8,18 +8,18 @@
 
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
-#include "FX.h"
-#include "ResourceManager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/resourcemanager.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ce_DLight.h"
+#include "ce_dlight.h"
 #include "../qcommon/singlylinkedlist.h"
-#include "ce_Message.h"
-#include "Angles.h"
-#include "Skeletons.h"
-#include "g_physics.h"
-#include "g_playstats.h"
-#include "qcommon.h"
+#include "ce_message.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/skeletons.h"
+#include "../game/g_physics.h"
+#include "../game/g_playstats.h"
+#include "../qcommon/qcommon.h"
 
 
 

@@ -7,13 +7,13 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "fx.h"
-#include "random.h"
-#include "Reference.h"
-#include "Utilities.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "../qcommon/reference.h"
+#include "utilities.h"
 #include "decals.h"
 #include "g_playstats.h"
-#include "p_main.h"	//for ITEM_WEAPON_SPHEREOFANNIHILATION
+#include "../player/p_main.h"	//for ITEM_WEAPON_SPHEREOFANNIHILATION
 #include "m_beast.h"
 
 #define SPHERE_INIT_SCALE				0.7

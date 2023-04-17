@@ -3,18 +3,18 @@
 // Copyright 1998 Raven Software
 //
 #include "../qcommon/qcommon.h"
-#include "Utilities.h"
+#include "utilities.h"
 
 #include "client_effects.h"
-#include "FX.h"
-#include "random.h"
-#include "matrix.h"
-#include "Reference.h"
-#include "motion.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "../qcommon/matrix.h"
+#include "../qcommon/reference.h"
+#include "../qcommon/motion.h"
 #include "particle.h"
-#include "ce_DLight.h"
-#include "g_playstats.h"
-#include "Skeletons.h"
+#include "ce_dlight.h"
+#include "../game/g_playstats.h"
+#include "../qcommon/skeletons.h"
 
 
 // setup for circular list

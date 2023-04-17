@@ -12,8 +12,8 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "g_misc.h"
-#include "fx.h"
-#include "g_DefaultMessageHandler.h"
+#include "../qcommon/fx.h"
+#include "g_defaultmessagehandler.h"
 
 int BREAK_KILLALL		= 1;
 int BREAK_NOLINK	    = 2;

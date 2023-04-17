@@ -1,7 +1,7 @@
 #ifndef QD_SKELETONS_H
 #define QD_SKELETONS_H
 
-#include "../qcommon/Placement.h"
+#include "../qcommon/placement.h"
 
 typedef float vec3_t[3];
 typedef double vec3d_t[3];

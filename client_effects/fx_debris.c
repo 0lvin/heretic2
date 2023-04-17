@@ -5,20 +5,20 @@
 // Copyright 1998 Raven Software
 //
 #include "../qcommon/qcommon.h"
-#include "ce_DefaultMessageHandler.h"
+#include "ce_defaultmessagehandler.h"
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "FX_DustPuff.h"
-#include "Utilities.h"
-#include "Angles.h"
-#include "random.h"
-#include "g_physics.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "fx_dustpuff.h"
+#include "utilities.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/random.h"
+#include "../game/g_physics.h"
 #include "fx_debris.h"
-#include "ce_DLight.h"
-#include "g_playstats.h"
+#include "ce_dlight.h"
+#include "../game/g_playstats.h"
 
 client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float ke,float scale, int flags, qboolean altskin);
 client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood);

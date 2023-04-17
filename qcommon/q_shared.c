@@ -486,7 +486,7 @@ QUAKE2_API void COM_StripExtension(char* in, char* out)
 COM_FileExtension
 ============
 */
-QUAKE2_API char* COM_FileExtension(char* in)
+const char* COM_FileExtension(const char* in)
 {
 	static char exten[8];
 	int		i;
@@ -666,7 +666,7 @@ QUAKE2_API void Swap_Init(void)
 {
 	byte	swaptest[2] = { 1,0 };
 
-	// set the byte swapping variables in a portable manner	
+	// set the byte swapping variables in a portable manner
 	if (*(short*)swaptest == 1)
 	{
 		bigendien = false;

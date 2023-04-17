@@ -1,8 +1,8 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "FX.h"
-#include "Random.h"
-#include "cl_strings.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "../qcommon/cl_strings.h"
 
 /*QUAK-ED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)
 Fire an origin based temp entity event to the clients.

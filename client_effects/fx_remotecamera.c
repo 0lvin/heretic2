@@ -8,13 +8,13 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "ce_DefaultMessageHandler.h"
+#include "ce_defaultmessagehandler.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "random.h"
-#include "motion.h"
-#include "Utilities.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "../qcommon/motion.h"
+#include "utilities.h"
 
 static qboolean FXRemoteCameraThink(struct client_entity_s *Self,centity_t *Owner)
 {

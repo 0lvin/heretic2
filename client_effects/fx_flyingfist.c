@@ -9,13 +9,13 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "ce_DLight.h"
-#include "random.h"
-#include "Utilities.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "ce_dlight.h"
+#include "../qcommon/random.h"
+#include "utilities.h"
 #include "fx_debris.h"
-#include "g_playstats.h"
+#include "../game/g_playstats.h"
 
 #define FIST_DELTA_FORWARD	8.0
 #define FIST_DELTA_THETA	0.12

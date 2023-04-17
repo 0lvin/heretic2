@@ -11,12 +11,12 @@
 #include "g_local.h"
 #include "m_priestess.h"
 #include "m_priestess_anim.h"
-#include "Utilities.h"
-#include "g_DefaultMessageHandler.h"
+#include "utilities.h"
+#include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "Random.h"
-#include "fx.h"
-#include "g_HitLocation.h"
+#include "../qcommon/random.h"
+#include "../qcommon/fx.h"
+#include "g_hitlocation.h"
 
 #include "m_stats.h"
 

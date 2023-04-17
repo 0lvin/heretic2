@@ -5,16 +5,16 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "fx.h"
-#include "angles.h"
-#include "matrix.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/matrix.h"
 #include "g_volume_effect.h"
-#include "Utilities.h"
-#include "g_ClassStatics.h"
+#include "utilities.h"
+#include "g_classstatics.h"
 #include "g_physics.h"
 #include "g_playstats.h"
 #include "decals.h"
-#include "random.h"
+#include "../qcommon/random.h"
 #include "m_beast.h"
 
 #define RIPPER_RADIUS				12.0

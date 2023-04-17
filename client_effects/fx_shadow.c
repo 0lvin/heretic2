@@ -9,15 +9,15 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "resourcemanager.h"
-#include "FX.h"
-#include "angles.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/angles.h"
 #include "utilities.h"
-#include "matrix.h"
-#include "reference.h"
-#include "q_Sprite.h"
+#include "../qcommon/matrix.h"
+#include "../qcommon/reference.h"
+#include "q_sprite.h"
 #include "q_Surface.h"
-#include "g_playstats.h"
+#include "../game/g_playstats.h"
 
 #include <limits.h>
 

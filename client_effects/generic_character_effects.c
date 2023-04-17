@@ -2,14 +2,14 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "Random.h"
-#include "ce_Dlight.h"
-#include "Utilities.h"
-#include "g_playstats.h"
-#include "matrix.h"
-#include "Reference.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "ce_dlight.h"
+#include "utilities.h"
+#include "../game/g_playstats.h"
+#include "../qcommon/matrix.h"
+#include "../qcommon/reference.h"
 
 extern void MakeBubble(vec3_t loc, client_entity_t *spawner);
 

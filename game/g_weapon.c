@@ -1,22 +1,22 @@
 // g_weapon.c - generic weapon handling code for all player weapons
 
 #include "../qcommon/qcommon.h"
-#include "player.h"
+#include "../player/player.h"
 #include "g_local.h"
-#include "p_weapon.h"
+#include "../player/p_weapon.h"
 #include "m_player.h"
-#include "fx.h"
-#include "matrix.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/matrix.h"
 #include "g_skeletons.h"
-#include "angles.h"
-#include "Reference.h"
-#include "Random.h"
-#include "Utilities.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/reference.h"
+#include "../qcommon/random.h"
+#include "utilities.h"
 #include "g_items.h"
 #include "g_playstats.h"
-#include "p_main.h"
+#include "../player/p_main.h"
 #include "m_beast.h"
-#include "p_anims.h"
+#include "../player/p_anims.h"
 
 extern void SpellCastFlyingFist(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value);
 extern void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir);

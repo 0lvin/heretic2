@@ -5,14 +5,14 @@
 // Created by JJS
 
 #include "../qcommon/qcommon.h"
-#include "player.h"
+#include "../player/player.h"
 #include "g_local.h"
-#include "p_weapon.h"
+#include "../player/p_weapon.h"
 #include "m_player.h"
-#include "fx.h"
-#include "matrix.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/matrix.h"
 #include "g_skeletons.h"
-#include "angles.h"
+#include "../qcommon/angles.h"
 
 void SpellCastPowerup(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);
 void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);

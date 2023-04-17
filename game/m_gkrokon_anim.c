@@ -12,7 +12,7 @@
 
 #include "m_gkrokon_anim.h"
 #include "m_gkrokon.h"
-#include "random.h"
+#include "../qcommon/random.h"
 
 // ****************************************************************************
 // Stand1 - Laid down, resting, still on the floor.

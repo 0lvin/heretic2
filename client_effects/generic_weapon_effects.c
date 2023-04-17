@@ -2,11 +2,11 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "Random.h"
-#include "Utilities.h"
-#include "q_Sprite.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "utilities.h"
+#include "q_sprite.h"
 
 #define NUM_EXPLODE_PARTS	256
 #define EXP_RANGE			16.0

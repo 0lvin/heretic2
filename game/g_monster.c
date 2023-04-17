@@ -2,17 +2,17 @@
 #include "g_monster.h"
 #include "m_stats.h"
 #include "g_local.h"
-#include "FX.h"
-#include "g_DefaultMessageHandler.h"
+#include "../qcommon/fx.h"
+#include "g_defaultmessagehandler.h"
 #include "g_playstats.h"
 
-#include "random.h"
+#include "../qcommon/random.h"
 
 //JWEIER START INCLUDES
 #include "g_misc.h"
 #include "utilities.h"
 //JWEIER END INCLUDES
-#include "g_HitLocation.h"
+#include "g_hitlocation.h"
 #include "mg_guide.h"
 
 #define FALLDAMAGE_MODIFIER	8

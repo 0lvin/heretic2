@@ -1,7 +1,7 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "g_skeletons.h"
-#include "arrayed_list.h"
+#include "../qcommon/arrayed_list.h"
 #include "g_physics.h"
 
 void ED_CallSpawn (edict_t *ent);

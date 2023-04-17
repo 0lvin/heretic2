@@ -1,9 +1,9 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "g_misc.h"
-#include "FX.h"
-#include "Random.h"
-#include "g_DefaultMessageHandler.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "g_defaultmessagehandler.h"
 #include "m_stats.h"
 #include "buoy.h"
 

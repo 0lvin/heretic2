@@ -2,14 +2,14 @@
 #include "g_local.h"
 #include "m_player.h"
 #include "g_items.h"
-#include "random.h"
+#include "../qcommon/random.h"
 #include "g_playstats.h"
-#include "p_actions.h"
-#include "p_anims.h"
-#include "p_main.h"
-#include "p_funcs.h"
+#include "../player/p_actions.h"
+#include "../player/p_anims.h"
+#include "../player/p_main.h"
+#include "../player/p_funcs.h"
 #include "g_itemstats.h"
-#include "cl_strings.h"
+#include "../qcommon/cl_strings.h"
 
 
 extern gitem_armor_t silver_armor_info;

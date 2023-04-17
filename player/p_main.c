@@ -12,9 +12,9 @@
 #include "p_main.h"
 #include "p_weapon.h"
 #include "p_types.h"
-#include "fx.h"
-#include "m_player.h"
-#include "reference.h"
+#include "../qcommon/fx.h"
+#include "../game/m_player.h"
+#include "../qcommon/reference.h"
 #include "../qcommon/qcommon.h"
 
 //FIXME:  Include header

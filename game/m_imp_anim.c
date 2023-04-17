@@ -2,7 +2,7 @@
 #include "m_imp_anim.h"
 #include "g_local.h"
 #include "m_imp.h"
-#include "random.h"
+#include "../qcommon/random.h"
 
 
 /*----------------------------------------------------

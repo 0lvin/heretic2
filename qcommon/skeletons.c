@@ -6,7 +6,7 @@
 // Heretic II
 //
 
-#include "Skeletons.h"
+#include "skeletons.h"
 #include "arrayed_list.h"
 
 char *skeletonRootNames[] =

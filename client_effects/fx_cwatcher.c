@@ -6,18 +6,18 @@
 //
 
 #include "../qcommon/qcommon.h"
-#include "ce_DefaultMessageHandler.h"
+#include "ce_defaultmessagehandler.h"
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "Random.h"
-#include "Utilities.h"
-#include "Angles.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "utilities.h"
+#include "../qcommon/angles.h"
 #include "q_sprite.h"
-#include "ce_DLight.h"
-#include "g_playstats.h"
+#include "ce_dlight.h"
+#include "../game/g_playstats.h"
 
 enum
 {

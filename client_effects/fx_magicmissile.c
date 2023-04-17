@@ -9,14 +9,14 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "ce_DLight.h"
-#include "Angles.h"
-#include "Random.h"
-#include "q_Sprite.h"
-#include "Utilities.h"
-#include "g_playstats.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "ce_dlight.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/random.h"
+#include "q_sprite.h"
+#include "utilities.h"
+#include "../game/g_playstats.h"
 
 static qboolean FXMagicMissileTrailElementThink(struct client_entity_s *Self,centity_t *Owner);
 static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self,centity_t *Owner);

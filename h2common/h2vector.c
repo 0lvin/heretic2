@@ -2,8 +2,8 @@
 //
 
 #include "../qcommon/qcommon.h"
-#include "../qcommon/Vector.h"
-#include "../qcommon/Matrix.h"
+#include "../qcommon/vector.h"
+#include "../qcommon/matrix.h"
 #include "../qcommon/random.h"
 
 QUAKE2_API vec3_t vec3_right = { 1.0f, 0.0f, 0.0f };

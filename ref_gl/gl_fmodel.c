@@ -4,7 +4,7 @@
 #include "gl_local.h"
 #include "../ref_common/fmodel.h"
 #include "../qcommon/flex.h"
-#include "../ref_common/m_skeletalCluster.h"
+#include "../ref_common/m_skeletalcluster.h"
 #include "../qcommon/skeletons.h"
 #include "../qcommon/arrayed_list.h"
 #include "../ref_common/m_skeleton.h"

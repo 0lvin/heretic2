@@ -17,9 +17,9 @@
 #include "input.h"
 #include "keys.h"
 #include "console.h"
-#include "cdaudio.h"
-#include "player.h"
-#include "LevelMaps.h"
+#include "../qcommon/cdaudio.h"
+#include "../player/player.h"
+#include "../qcommon/levelmaps.h"
 
 #ifdef __cplusplus
 extern "C" {

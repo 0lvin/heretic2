@@ -8,10 +8,10 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "fx.h"
-#include "random.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #include "decals.h"
-#include "Utilities.h"
+#include "utilities.h"
 #include "g_playstats.h"
 #include "g_physics.h"
 

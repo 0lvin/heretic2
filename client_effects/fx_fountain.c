@@ -6,15 +6,15 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "ce_DefaultMessageHandler.h"
+#include "ce_defaultmessagehandler.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "random.h"
-#include "motion.h"
-#include "Utilities.h"
-#include "matrix.h"
-#include "g_playstats.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
+#include "../qcommon/motion.h"
+#include "utilities.h"
+#include "../qcommon/matrix.h"
+#include "../game/g_playstats.h"
 
 void CreateFountainSplash(client_entity_t *owner, vec3_t origin, float xspread, float yspread, float angle)
 {

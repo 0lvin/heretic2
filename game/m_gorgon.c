@@ -45,21 +45,21 @@ GORGON
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "Utilities.h"
-#include "g_DefaultMessageHandler.h"
+#include "utilities.h"
+#include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "fx.h"
-#include "random.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #include "buoy.h"
 
 #include "g_misc.h"
 #include "m_gorgon.h"
 #include "m_gorgon_anim.h"
 #include "m_stats.h"
-#include "p_anim_branch.h"
-#include "p_anims.h"
-#include "g_HitLocation.h"
-#include "p_actions.h"
+#include "../player/p_anim_branch.h"
+#include "../player/p_anims.h"
+#include "g_hitlocation.h"
+#include "../player/p_actions.h"
 
 
 // *************************************

@@ -4,10 +4,10 @@
 #include <assert.h>
 #include "g_local.h"
 #include "g_monster.h"
-#include "Random.h"
+#include "../qcommon/random.h"
 #include "buoy.h"
 #include "m_stats.h"
-#include "p_anims.h"
+#include "../player/p_anims.h"
 
 qboolean FindTarget (edict_t *self);
 extern	cvar_t* maxclients;

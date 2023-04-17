@@ -1,7 +1,7 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "FX.h"
+#include "../qcommon/fx.h"
 
 // NB. The assassin tport go is not precached
 

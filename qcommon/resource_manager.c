@@ -6,7 +6,7 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "ResourceManager.h"
+#include "resourcemanager.h"
 #include <assert.h>
 #include "qcommon.h"
 

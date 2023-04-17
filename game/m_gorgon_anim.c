@@ -13,10 +13,10 @@
 #include "m_gorgon_anim.h"
 #include "m_gorgon.h"
 
-#include "Utilities.h"
-#include "g_DefaultMessageHandler.h"
+#include "utilities.h"
+#include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "Random.h"
+#include "../qcommon/random.h"
 #include "../qcommon/qcommon.h"
 #include "m_stats.h"
 

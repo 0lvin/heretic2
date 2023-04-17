@@ -10,11 +10,11 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "ce_DLight.h"
-#include "random.h"
-#include "q_Sprite.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "ce_dlight.h"
+#include "../qcommon/random.h"
+#include "q_sprite.h"
 
 #define	NUM_ROPE_MODELS			4
 #define ROPE_SEGMENT_LENGTH	    64

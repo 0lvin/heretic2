@@ -7,12 +7,12 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "Random.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #include "string.h"
-#include "Utilities.h"
-#include "g_playstats.h"
+#include "utilities.h"
+#include "../game/g_playstats.h"
 
 #define PLAYER_FADE_TIME  14
 #define PLAYER_FADE_AMOUNT  255/ PLAYER_FADE_TIME

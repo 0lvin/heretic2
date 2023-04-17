@@ -1,6 +1,6 @@
 //==============================================================================
 //
-// m_plagueElf_anim.c
+// m_plagueelf_anim.c
 //
 // Heretic II
 // Copyright 1998 Raven Software

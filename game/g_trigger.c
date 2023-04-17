@@ -1,9 +1,9 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "g_DefaultMessageHandler.h"
-#include "fx.h"
+#include "g_defaultmessagehandler.h"
+#include "../qcommon/fx.h"
 #include "g_playstats.h"
-#include "cl_strings.h"
+#include "../qcommon/cl_strings.h"
 
 #define TRIGGER_MONSTER		1
 #define TRIGGER_NOT_PLAYER	2

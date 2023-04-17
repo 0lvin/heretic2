@@ -7,10 +7,10 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "fx.h"
-#include "Angles.h"
-#include "Utilities.h"
-#include "random.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/angles.h"
+#include "utilities.h"
+#include "../qcommon/random.h"
 #include "g_playstats.h"
 #include "m_beast.h"
 

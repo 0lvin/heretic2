@@ -11,7 +11,7 @@
 #include "../qcommon/message.h"
 
 #include "client_entities.h"
-#include "ResourceManager.h"
+#include "../qcommon/resourcemanager.h"
 #include "../qcommon/singlylinkedlist.h"
 
 static ResourceManager_t MsgMngr; 

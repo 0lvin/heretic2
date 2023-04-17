@@ -1325,7 +1325,7 @@ extern edict_t* obstacle;
 } //end extern "C"
 #endif
 
-#include "g_Edict.h"
+#include "g_edict.h"
 
 #endif // G_LOCAL_H
 

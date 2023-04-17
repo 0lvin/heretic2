@@ -19,9 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_fx.c -- entity effects parsing and management
 
-#include <Windows.h>
+#include <windows.h>
 #include "../client/client.h"
-#include "../qcommon/ResourceManager.h"
+#include "../qcommon/resourcemanager.h"
 
 client_fx_export_t fxe;
 

@@ -1,9 +1,9 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "random.h"
+#include "../qcommon/random.h"
 #include "g_playstats.h"
 #include "g_itemstats.h"
-#include "qcommon.h"
+#include "../qcommon/qcommon.h"
 
 extern player_export_t	playerExport;	// interface to player DLL.
 

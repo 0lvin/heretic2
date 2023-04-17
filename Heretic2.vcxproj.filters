@@ -1032,14 +1032,14 @@
     <ClCompile Include="client\cl_string.c">
       <Filter>client</Filter>
     </ClCompile>
-    <ClCompile Include="external\libsmacker\smacker.c">
-      <Filter>external\libsmacker</Filter>
+    <ClCompile Include="external\smacker.c">
+      <Filter>external</Filter>
     </ClCompile>
-    <ClCompile Include="external\libsmacker\smk_bitstream.c">
-      <Filter>external\libsmacker</Filter>
+    <ClCompile Include="external\smk_bitstream.c">
+      <Filter>external</Filter>
     </ClCompile>
-    <ClCompile Include="external\libsmacker\smk_hufftree.c">
-      <Filter>external\libsmacker</Filter>
+    <ClCompile Include="external\smk_hufftree.c">
+      <Filter>external</Filter>
     </ClCompile>
     <ClCompile Include="qcommon\resource_manager.c">
       <Filter>qcommon</Filter>
@@ -1628,7 +1628,7 @@
     <ClInclude Include="qcommon\q_physics.h">
       <Filter>qcommon</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\q_Sprite.h">
+    <ClInclude Include="client_effects\q_Sprite.h">
       <Filter>qcommon</Filter>
     </ClInclude>
     <ClInclude Include="qcommon\q_Surface.h">
@@ -1673,17 +1673,17 @@
     <ClInclude Include="win32\resource.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="external\libsmacker\smacker.h">
-      <Filter>external\libsmacker</Filter>
+    <ClInclude Include="external\smacker.h">
+      <Filter>external</Filter>
     </ClInclude>
-    <ClInclude Include="external\libsmacker\smk_bitstream.h">
-      <Filter>external\libsmacker</Filter>
+    <ClInclude Include="external\smk_bitstream.h">
+      <Filter>external</Filter>
     </ClInclude>
-    <ClInclude Include="external\libsmacker\smk_hufftree.h">
-      <Filter>external\libsmacker</Filter>
+    <ClInclude Include="external\smk_hufftree.h">
+      <Filter>external</Filter>
     </ClInclude>
-    <ClInclude Include="external\libsmacker\smk_malloc.h">
-      <Filter>external\libsmacker</Filter>
+    <ClInclude Include="external\smk_malloc.h">
+      <Filter>external</Filter>
     </ClInclude>
     <ClInclude Include="qcommon\verifyA3D.h">
       <Filter>qcommon</Filter>

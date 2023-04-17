@@ -9,12 +9,12 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "g_DefaultMessageHandler.h"
-#include "fx.h"
+#include "g_defaultmessagehandler.h"
+#include "../qcommon/fx.h"
 #include "g_monster.h"
 #include "g_misc.h"
 #include "c_corvus1_anim.h"
-#include "p_main.h"
+#include "../player/p_main.h"
 
 
 

@@ -1,13 +1,13 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "g_skeletons.h"
-#include "arrayed_list.h"
+#include "../qcommon/arrayed_list.h"
 #include "../qcommon/message.h"
 #include "g_physics.h"
 #include "g_playstats.h"
 #include "utilities.h"
-#include "p_anims.h"
-#include "FX.h"
+#include "../player/p_anims.h"
+#include "../qcommon/fx.h"
 
 #ifdef __cplusplus
 extern "C" {

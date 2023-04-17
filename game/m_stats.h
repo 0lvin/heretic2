@@ -2,7 +2,7 @@
 #define G_STATS_H
 
 #include "../qcommon/qcommon.h"
-#include "g_ClassStatics.h"
+#include "g_classstatics.h"
 
 extern int AttackRangesForClass [NUM_ATTACKRANGES];
 extern byte MaxBuoysForClass [NUM_CLASSIDS];

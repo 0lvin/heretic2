@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NUMVERTEXNORMALS	162
 
 float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
-#include "anorms.h"
+#include "../qcommon/anorms.h"
 };
 
 typedef float vec4_t[4];

@@ -1,13 +1,13 @@
 #include "../qcommon/qcommon.h"
-#include "fx.h"
+#include "../qcommon/fx.h"
 #include "m_spreadermist.h"
 #include "m_spreaderbomb_anim.h"
 #include "g_local.h"
-#include "angles.h"
-#include "random.h"
-#include "matrix.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/random.h"
+#include "../qcommon/matrix.h"
 #include "g_volume_effect.h"
-#include "g_ClassStatics.h"
+#include "g_classstatics.h"
 #include "g_monster.h"
 
 #define SPREADER_GRENADE_DAMAGE	(40.0)

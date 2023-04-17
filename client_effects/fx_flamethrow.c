@@ -7,15 +7,15 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "ce_DefaultMessageHandler.h"
+#include "ce_defaultmessagehandler.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "Utilities.h"
-#include "random.h"
-#include "motion.h"
-#include "g_playstats.h"
-#include "ce_DLight.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "utilities.h"
+#include "../qcommon/random.h"
+#include "../qcommon/motion.h"
+#include "../game/g_playstats.h"
+#include "ce_dlight.h"
 
 #define FLAME_COUNT			4
 #define FIRE_SPAWN_RADIUS	8.0

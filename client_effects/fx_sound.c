@@ -9,9 +9,9 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "random.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #define TAG_LEVEL 766 // tags get cleared at each new level
 
 typedef struct soundthinkinfo_s

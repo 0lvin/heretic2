@@ -10,11 +10,11 @@ Copyright 1998 Raven Software
 -------------------------------------------------------------------*/
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "Utilities.h"
-#include "g_DefaultMessageHandler.h"
+#include "utilities.h"
+#include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "fx.h"
-#include "random.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #include "buoy.h"
 
 #include "c_corvus8.h"

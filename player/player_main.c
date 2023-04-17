@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "player.h"
 #include "p_anim_data.h"
 
 PLAYER_API void P_Init(void)

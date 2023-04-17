@@ -4,7 +4,7 @@
 //
 
 #include "../qcommon/qcommon.h"
-#include "ce_DefaultMessageHandler.h"
+#include "ce_defaultmessagehandler.h"
 #include "client_entities.h"
 
 CE_MsgReceiver_t CE_DefaultMessageReceivers[NUM_MESSAGES] =

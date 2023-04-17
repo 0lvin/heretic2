@@ -4,16 +4,16 @@
 //
 
 #include "../qcommon/qcommon.h"
-#include "FX.h"
+#include "../qcommon/fx.h"
 #include "g_local.h"
 #include "g_itemstats.h"
-#include "random.h"
-#include "p_actions.h"
-#include "p_anims.h"
-#include "p_main.h"
+#include "../qcommon/random.h"
+#include "../player/p_actions.h"
+#include "../player/p_anims.h"
+#include "../player/p_main.h"
 #include "m_player.h"
-#include "p_funcs.h"
-#include "cl_strings.h"
+#include "../player/p_funcs.h"
+#include "../qcommon/cl_strings.h"
 
 // Set up those shrines that are randomly selectable.
 

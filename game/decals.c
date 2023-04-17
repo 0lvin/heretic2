@@ -7,7 +7,7 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "fx.h"
+#include "../qcommon/fx.h"
 
 // ************************************************************************************************
 // IsDecalApplicable

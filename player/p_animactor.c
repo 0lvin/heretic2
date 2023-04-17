@@ -14,11 +14,11 @@
 #include "p_anim_branch.h"
 #include "p_ctrl.h"
 #include "p_main.h"
-#include "angles.h"
-#include "g_teleport.h"
+#include "../qcommon/angles.h"
+#include "../game/g_teleport.h"
 #include "../qcommon/qcommon.h"
 #include "utilities.h"
-#include "fx.h"
+#include "../qcommon/fx.h"
 
 #define PLAYER_SCREAM_THRESHOLD	-600
 

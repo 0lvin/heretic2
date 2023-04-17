@@ -5,9 +5,9 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "FX.h"
+#include "../qcommon/fx.h"
 #include "g_playstats.h"
-#include "g_DefaultMessageHandler.h"
+#include "g_defaultmessagehandler.h"
 
 #define FLAMETHROWER_STEAM 1
 #define FLAMETHROWER_MONSTERTOUCH 2

@@ -2,9 +2,9 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "FX.h"
+#include "../qcommon/fx.h"
 #include "g_skeletons.h"
-#include "random.h"
+#include "../qcommon/random.h"
 #include "g_physics.h"
 
 void G_ProjectSource (vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result)

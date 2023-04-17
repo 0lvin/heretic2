@@ -2,7 +2,7 @@
 #define P_ITEM 1
 
 #include "../qcommon/qcommon.h"
-#include "p_types.h"
+#include "../player/p_types.h"
 
 void Use_Defence(playerinfo_t *playerinfo, gitem_t *defence);
 void DefenceThink_Powerup(edict_t *Caster, char *Format, ...);

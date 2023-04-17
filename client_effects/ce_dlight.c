@@ -1,6 +1,6 @@
 #include "../qcommon/qcommon.h"
-#include "ce_Dlight.h"
-#include "ResourceManager.h"
+#include "ce_dlight.h"
+#include "../qcommon/resourcemanager.h"
 
 ResourceManager_t DLightMngr;
 

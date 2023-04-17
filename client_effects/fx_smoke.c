@@ -6,15 +6,15 @@
 //
 
 #include "../qcommon/qcommon.h"
-#include "Angles.h"
+#include "../qcommon/angles.h"
 #include "client_entities.h"
 #include "client_effects.h"
-#include "EffectFlags.h"
+#include "../qcommon/effectflags.h"
 #include "particle.h"
-#include "Random.h"
-#include "Motion.h"
-#include "Utilities.h"
-#include "fx.h"
+#include "../qcommon/random.h"
+#include "../qcommon/motion.h"
+#include "utilities.h"
+#include "../qcommon/fx.h"
 
 #define	NUM_SMOKE_MODELS	1
 static struct model_s *smoke_models[NUM_SMOKE_MODELS];

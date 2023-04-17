@@ -7,11 +7,11 @@
 
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
-#include "fx.h"
-#include "random.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #include "decals.h"
 #include "m_tcheckrik.h"
-#include "Utilities.h"
+#include "utilities.h"
 #include "m_stats.h"
 #include "g_playstats.h"
 

@@ -1,9 +1,9 @@
 #include "../qcommon/qcommon.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "FX.h"
+#include "../qcommon/fx.h"
 #include "particle.h"
-#include "Random.h"
+#include "../qcommon/random.h"
 
 void ItemRespawn(centity_t *owner, int type, int flags, vec3_t origin)
 {

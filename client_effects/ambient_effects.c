@@ -6,9 +6,9 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "ResourceManager.h"
-#include "FX.h"
-#include "random.h"
+#include "../qcommon/resourcemanager.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 
 void DoWaterSplash(client_entity_t *effect, paletteRGBA_t color, int count)
 {
@@ -70,7 +70,7 @@ qboolean CreateFlyParticles(client_entity_t *_this, centity_t *owner)
 	float		ltime;
 	static float avertexnormals [NUMVERTEXNORMALS][3] =
 	{
-	#include "anorms.h"
+	#include "../qcommon/anorms.h"
 	};
 	static vec3_t avelocities [NUMVERTEXNORMALS];
 

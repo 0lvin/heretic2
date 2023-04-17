@@ -15,7 +15,7 @@
 #include "p_actions.h"
 #include "p_chicken.h"
 #include "p_anim_branch.h"
-#include "m_chicken_anim.h"
+#include "../game/m_chicken_anim.h"
 
 #define PLAYER_WALK_SPEED	240
 #define PLAYER_STRAFE_SPEED 185
@@ -98,7 +98,7 @@ panimmove_t chickenp_move_stand2 = {19, chickenp_frames_stand2, PlayerAnimLowerU
 
 
 /*----------------------------------------------------------------------
-  Chicken running - 
+  Chicken running -
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_run [] =
 {
@@ -112,7 +112,7 @@ panimframe_t chickenp_frames_run [] =
 panimmove_t chickenp_move_run = {6, chickenp_frames_run, PlayerAnimLowerUpdate};
 
 /*----------------------------------------------------------------------
-  Chicken walking - 
+  Chicken walking -
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_walk [] =
 {
@@ -129,7 +129,7 @@ panimmove_t chickenp_move_walk = {8, chickenp_frames_walk, PlayerAnimLowerUpdate
 
 
 /*----------------------------------------------------------------------
-  Chicken running - 
+  Chicken running -
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_runb [] =
 {
@@ -143,7 +143,7 @@ panimframe_t chickenp_frames_runb [] =
 panimmove_t chickenp_move_runb = {6, chickenp_frames_runb, PlayerAnimLowerUpdate};
 
 /*----------------------------------------------------------------------
-  Chicken walking backwards - 
+  Chicken walking backwards -
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_back [] =
 {
@@ -160,7 +160,7 @@ panimmove_t chickenp_move_back = {8, chickenp_frames_back, PlayerAnimLowerUpdate
 
 
 /*----------------------------------------------------------------------
-  Chicken biting - 
+  Chicken biting -
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_bite [] =
 {
@@ -174,7 +174,7 @@ panimframe_t chickenp_frames_bite [] =
 panimmove_t chickenp_move_bite = {12, chickenp_frames_bite, PlayerAnimLowerUpdate};
 
 /*----------------------------------------------------------------------
-  Chicken strafing - 
+  Chicken strafing -
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_strafel [] =
 {
@@ -226,7 +226,7 @@ panimframe_t chickenp_frames_jump_loop [] =
 panimmove_t chickenp_move_jump_loop = {1, chickenp_frames_jump_loop, PlayerAnimLowerUpdate};
 
 /*----------------------------------------------------------------------
-  Chicken flap 
+  Chicken flap
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_jump_flap [] =
 {
@@ -236,7 +236,7 @@ panimframe_t chickenp_frames_jump_flap [] =
 panimmove_t chickenp_move_jump_flap = {1, chickenp_frames_jump_flap, PlayerAnimLowerUpdate};
 
 /*----------------------------------------------------------------------
-  Chicken jumping walking start- 
+  Chicken jumping walking start-
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_wjump [] =
 {
@@ -248,7 +248,7 @@ panimframe_t chickenp_frames_wjump [] =
 panimmove_t chickenp_move_wjump = {3, chickenp_frames_wjump, (void(__cdecl*)(playerinfo_t*))PlayerChickenJump};
 
 /*----------------------------------------------------------------------
-  Chicken jumping running start- 
+  Chicken jumping running start-
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_rjump [] =
 {
@@ -260,7 +260,7 @@ panimframe_t chickenp_frames_rjump [] =
 panimmove_t chickenp_move_rjump = {3, chickenp_frames_rjump, (void(__cdecl*)(playerinfo_t*))PlayerChickenJump};
 
 /*----------------------------------------------------------------------
-  Chicken jumping walk back start- 
+  Chicken jumping walk back start-
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_wjumpb [] =
 {
@@ -272,7 +272,7 @@ panimframe_t chickenp_frames_wjumpb [] =
 panimmove_t chickenp_move_wjumpb = {3, chickenp_frames_wjumpb, (void(__cdecl*)(playerinfo_t*))PlayerChickenJump};
 
 /*----------------------------------------------------------------------
-  Chicken jumping running back start- 
+  Chicken jumping running back start-
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_rjumpb [] =
 {
@@ -282,9 +282,9 @@ panimframe_t chickenp_frames_rjumpb [] =
 };
 
 panimmove_t chickenp_move_rjumpb = {3, chickenp_frames_rjumpb, (void(__cdecl*)(playerinfo_t*))PlayerChickenJump};
-																										 
+
 /*----------------------------------------------------------------------
-  Chicken attacking - 
+  Chicken attacking -
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_attack [] =
 {
@@ -299,7 +299,7 @@ panimframe_t chickenp_frames_attack [] =
 panimmove_t chickenp_move_attack = {6, chickenp_frames_attack, PlayerAnimLowerUpdate};
 
 /*----------------------------------------------------------------------
-  Chicken running attacking - 
+  Chicken running attacking -
 -----------------------------------------------------------------------*/
 panimframe_t chickenp_frames_runattack [] =
 {

@@ -15,16 +15,16 @@
 //==============================================================================
 
 #include "player.h"
-#include "g_physics.h"
-#include "g_teleport.h"
-#include "g_skeletons.h"
+#include "../game/g_physics.h"
+#include "../game/g_teleport.h"
+#include "../game/g_skeletons.h"
 #include "p_types.h"
 #include "p_anims.h"
 #include "p_chicken.h"
-#include "fx.h"
-#include "random.h"
+#include "../qcommon/fx.h"
+#include "../qcommon/random.h"
 #include "../qcommon/qcommon.h"
-#include "Utilities.h"
+#include "utilities.h"
 #include "p_main.h"
 
 #define CHICKEN_GLIDE			150

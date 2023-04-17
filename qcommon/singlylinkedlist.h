@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#include "GenericUnions.h"
+#include "genericunions.h"
 
 // jmarshall 
 typedef struct SinglyLinkedListNode_s

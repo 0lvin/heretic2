@@ -11,9 +11,9 @@
 #include "p_anims.h"
 #include "p_ctrl.h"
 #include "p_main.h"
-#include "surfaceprops.h"
-#include "random.h"
-#include "fx.h"
+#include "../qcommon/surfaceprops.h"
+#include "../qcommon/random.h"
+#include "../qcommon/fx.h"
 
 PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 {
