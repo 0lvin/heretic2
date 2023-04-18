@@ -8,7 +8,7 @@
 DistanceSquared
 =================
 */
-QUAKE2_API float DistanceSquared(vec3_t p1, vec3_t p2) {
+float DistanceSquared(vec3_t p1, vec3_t p2) {
 	vec3_t	v;
 	float a, b, c, result;
 
@@ -27,7 +27,7 @@ QUAKE2_API float DistanceSquared(vec3_t p1, vec3_t p2) {
 AnglesToAxis
 =================
 */
-QUAKE2_API void AnglesToAxis(vec3_t angles, vec3_t axis[3]) {
+void AnglesToAxis(vec3_t angles, vec3_t axis[3]) {
 	vec3_t	right;
 
 	// angle vectors returns "right" instead of "y axis"
@@ -36,7 +36,7 @@ QUAKE2_API void AnglesToAxis(vec3_t angles, vec3_t axis[3]) {
 }
 
 
-QUAKE2_API float GetTimeToReachDistance(float a1, float a2, float a3)
+float GetTimeToReachDistance(float a1, float a2, float a3)
 {
 	double v4; 
 	char v5 = 0.0f;
@@ -63,7 +63,7 @@ QUAKE2_API float GetTimeToReachDistance(float a1, float a2, float a3)
 	return result;
 }
 
-QUAKE2_API float Approach(float curr, float dest, float rate)
+float Approach(float curr, float dest, float rate)
 {
 	double result; 
 	double v4;
@@ -79,7 +79,7 @@ QUAKE2_API float Approach(float curr, float dest, float rate)
 	return result;
 }
 
-QUAKE2_API float VectorDistance(vec3_t p1, vec3_t p2)
+float VectorDistance(vec3_t p1, vec3_t p2)
 {
 	vec3_t dir;
 	VectorSubtract(p2, p1, dir);

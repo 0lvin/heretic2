@@ -38,9 +38,15 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define QUAKE2_API
-
 #ifndef __cplusplus
+#ifdef true
+ #undef true
+#endif
+
+#ifdef false
+ #undef false
+#endif
+
 typedef enum {false, true}  qboolean;
 #else
 typedef int qboolean;
@@ -304,8 +310,8 @@ char *COM_SkipPath(char *pathname);
 void COM_StripExtension(char *in, char *out);
 const char *COM_FileExtension(const char *in);
 void COM_FileBase(char *in, char *out);
-void COM_FilePath(char *in, char *out);
-void COM_DefaultExtension(char *path, char *extension);
+void COM_FilePath(const char *in, char *out);
+void COM_DefaultExtension(char *path, const char *extension);
 
 char *COM_Parse(char **data_p);
 
@@ -316,19 +322,218 @@ void Com_PageInMemory(byte *buffer, int size);
 
 /* ============================================= */
 
-QUAKE2_API short	BigShort(short l);
-QUAKE2_API int    BigLong(int l);
-QUAKE2_API float	BigFloat(float f);
+/* portable case insensitive compare */
+int Q_stricmp(const char *s1, const char *s2);
+int Q_strcasecmp(char *s1, char *s2);
+int Q_strncasecmp(char *s1, char *s2, int n);
 
-#define LittleShort(x)	(x)
-#define LittleLong(x)	(x)
-#define LittleFloat(x)	(x)
+/* portable string lowercase */
+char *Q_strlwr(char *s);
 
-QUAKE2_API float Clamp(float src, float min, float max);
-QUAKE2_API int ClampI(int src, int min, int max);
-QUAKE2_API char* va(char* format, ...);
+/* portable safe string copy/concatenate */
+int Q_strlcpy(char *dst, const char *src, int size);
+int Q_strlcat(char *dst, const char *src, int size);
 
-extern QUAKE2_API vec3_t vec3_up;
+/* ============================================= */
+
+/* Unicode wrappers that also make sure it's a regular file around fopen(). */
+FILE *Q_fopen(const char *file, const char *mode);
+
+/* Comparator function for qsort(), compares strings. */
+int Q_sort_strcomp(const void *s1, const void *s2);
+
+/* ============================================= */
+
+short BigShort(short l);
+short LittleShort(short l);
+int BigLong(int l);
+int LittleLong(int l);
+float BigFloat(float l);
+float LittleFloat(float l);
+
+void Swap_Init(void);
+char *va(const char *format, ...)  PRINTF_ATTR(1, 2);
+
+/* ============================================= */
+
+/* key / value info strings */
+#define MAX_INFO_KEY 64
+#define MAX_INFO_VALUE 64
+#define MAX_INFO_STRING 512
+
+char *Info_ValueForKey(char *s, char *key);
+void Info_RemoveKey(char *s, char *key);
+void Info_SetValueForKey(char *s, char *key, char *value);
+qboolean Info_Validate(char *s);
+
+/* ============================================= */
+
+/* Random number generator */
+int randk(void);
+float frandk(void);
+float crandk(void);
+void randk_seed(void);
+
+/*
+ * ==============================================================
+ *
+ * SYSTEM SPECIFIC
+ *
+ * ==============================================================
+ */
+
+extern int curtime; /* time returned by last Sys_Milliseconds */
+
+int Sys_Milliseconds(void);
+void Sys_Mkdir(const char *path);
+qboolean Sys_IsDir(const char *path);
+qboolean Sys_IsFile(const char *path);
+
+/* large block stack allocation routines */
+YQ2_ATTR_MALLOC void *Hunk_Begin(int maxsize);
+YQ2_ATTR_MALLOC void *Hunk_Alloc(int size);
+void Hunk_Free(void *buf);
+int Hunk_End(void);
+
+/* directory searching */
+#define SFF_ARCH 0x01
+#define SFF_HIDDEN 0x02
+#define SFF_RDONLY 0x04
+#define SFF_SUBDIR 0x08
+#define SFF_SYSTEM 0x10
+
+/* pass in an attribute mask of things you wish to REJECT */
+char *Sys_FindFirst(char *path, unsigned musthave, unsigned canthave);
+char *Sys_FindNext(unsigned musthave, unsigned canthave);
+void Sys_FindClose(void);
+
+/* this is only here so the functions in shared source files can link */
+YQ2_ATTR_NORETURN void Sys_Error(char *error, ...);
+void Com_Printf(char *msg, ...);
+
+/*
+ * ==========================================================
+ *
+ * CVARS (console variables)
+ *
+ * ==========================================================
+ */
+
+#ifndef CVAR
+ #define CVAR
+
+ #define CVAR_ARCHIVE 1     /* set to cause it to be saved to vars.rc */
+ #define CVAR_USERINFO 2    /* added to userinfo  when changed */
+ #define CVAR_SERVERINFO 4  /* added to serverinfo when changed */
+ #define CVAR_NOSET 8       /* don't allow change from console at all, */
+							/* but can be set from the command line */
+ #define CVAR_LATCH 16      /* save changes until server restart */
+
+/* nothing outside the Cvar_*() functions should modify these fields! */
+typedef struct cvar_s
+{
+	char *name;
+	char *string;
+	char *latched_string; /* for CVAR_LATCH vars */
+	int flags;
+	qboolean modified; /* set each time the cvar is changed */
+	float value;
+	struct cvar_s *next;
+
+	/* Added by YQ2. Must be at the end to preserve ABI. */
+	char *default_string;
+} cvar_t;
+
+#endif /* CVAR */
+
+/*
+ * ==============================================================
+ *
+ * COLLISION DETECTION
+ *
+ * ==============================================================
+ */
+
+#define SURF_LIGHT 0x1          /* value will hold the light strength */
+
+#define SURF_SLICK 0x2          /* effects game physics */
+
+#define SURF_SKY 0x4            /* don't draw, but add to skybox */
+#define SURF_WARP 0x8           /* turbulent water warp */
+#define SURF_TRANS33 0x10
+#define SURF_TRANS66 0x20
+#define SURF_FLOWING 0x40       /* scroll towards angle */
+#define SURF_NODRAW 0x80        /* don't bother referencing the texture */
+#define SURF_TALL_WALL		0x00000400	// Face doesn't get broken up as normal.
+#define SURF_ALPHA_TEXTURE	0x00000800	// texture has alpha in it, and should show through in bsp process
+#define SURF_ANIMSPEED		0x00001000	// value will hold the anim speed in fps
+#define SURF_UNDULATE		0x00002000	// rock surface up and down...
+#define SURF_QUAKE			0x00004000	// rock surface up and down when quake value on
+
+/* content masks */
+#define MASK_ALL			0x7fffffff
+#define MASK_SOLID (CONTENTS_SOLID | CONTENTS_WINDOW)
+#define MASK_PLAYERSOLID \
+	(CONTENTS_SOLID | CONTENTS_PLAYERCLIP |	\
+	 CONTENTS_WINDOW | CONTENTS_MONSTER)
+#define MASK_DEADSOLID (CONTENTS_SOLID | CONTENTS_PLAYERCLIP | CONTENTS_WINDOW)
+#define MASK_MONSTERSOLID \
+	(CONTENTS_SOLID | CONTENTS_MONSTERCLIP | \
+	 CONTENTS_WINDOW | CONTENTS_MONSTER)
+#define MASK_WATER (CONTENTS_WATER | CONTENTS_LAVA | CONTENTS_SLIME)
+#define MASK_OPAQUE (CONTENTS_SOLID | CONTENTS_SLIME | CONTENTS_LAVA)
+#define MASK_SHOT \
+	(CONTENTS_SOLID | CONTENTS_MONSTER | CONTENTS_WINDOW | \
+	 CONTENTS_DEADMONSTER)
+#define MASK_CURRENT \
+	(CONTENTS_CURRENT_0 | CONTENTS_CURRENT_90 |	\
+	 CONTENTS_CURRENT_180 | CONTENTS_CURRENT_270 | \
+	 CONTENTS_CURRENT_UP | \
+	 CONTENTS_CURRENT_DOWN)
+#define MASK_DRIP			(CONTENTS_SOLID|CONTENTS_WATER|CONTENTS_LAVA|CONTENTS_SLIME|CONTENTS_WINDOW)
+
+/* gi.BoxEdicts() can return a list of either solid or trigger entities */
+#define AREA_SOLID 1
+#define AREA_TRIGGERS 2
+
+/* plane_t structure */
+typedef struct cplane_s
+{
+	vec3_t normal;
+	float dist;
+	byte type; /* for fast side tests */
+	byte signbits; /* signx + (signy<<1) + (signz<<2) */
+	byte pad[2];
+} cplane_t;
+
+/* structure offset for asm code */
+#define CPLANE_NORMAL_X 0
+#define CPLANE_NORMAL_Y 4
+#define CPLANE_NORMAL_Z 8
+#define CPLANE_DIST 12
+#define CPLANE_TYPE 16
+#define CPLANE_SIGNBITS 17
+#define CPLANE_PAD0 18
+#define CPLANE_PAD1 19
+
+typedef struct cmodel_s
+{
+	vec3_t mins, maxs;
+	vec3_t origin; /* for sounds or lights */
+	int headnode;
+} cmodel_t;
+
+typedef struct csurface_s
+{
+	char name[40];
+	int flags; /* SURF_* */
+	int value; /* unused */
+} csurface_t;
+
+float Clamp(float src, float min, float max);
+int ClampI(int src, int min, int max);
+
+extern vec3_t vec3_up;
 float anglemod_old(float a);
 
 int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
@@ -336,7 +541,7 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
 //=============================================
 
 #define VectorCopy(a, b) (b[0] = a[0], b[1] = a[1], b[2] = a[2])
-QUAKE2_API qboolean Vec3IsZeroEpsilon(vec3_t in);
+qboolean Vec3IsZeroEpsilon(vec3_t in);
 
 typedef vec_t vec2_t[2];
 typedef double vec3d_t[3];
@@ -367,7 +572,7 @@ typedef struct paletteRGBA_s
 
 #define DEMO_CODE		0
 
-QUAKE2_API float Approach(float curr, float dest, float rate);
+float Approach(float curr, float dest, float rate);
 
 #define	MAX_STRING_TOKENS	80		// max tokens resulting from Cmd_TokenizeString
 
@@ -387,7 +592,7 @@ QUAKE2_API float Approach(float curr, float dest, float rate);
 
 #define	PRINT_ALL			0
 #define PRINT_DEVELOPER		1		// only print when "developer 1"
-#define PRINT_ALERT			2		
+#define PRINT_ALERT			2
 
 #ifndef M_PI
 #define M_PI				3.14159265358979323846	// matches value in gcc v2 math.h
@@ -398,11 +603,11 @@ QUAKE2_API float Approach(float curr, float dest, float rate);
 #define VectorCopy_Macro(a,b)			(b[0]=a[0],b[1]=a[1],b[2]=a[2])
 #define VectorSubtract_Macro(a,b,c)		(c[0]=a[0]-b[0],c[1]=a[1]-b[1],c[2]=a[2]-b[2])
 
-QUAKE2_API int Q_log2(int val);
+int Q_log2(int val);
 
 #define MAX_COLORS	33
 
-extern QUAKE2_API paletteRGBA_t TextPalette[MAX_COLORS];
+extern paletteRGBA_t TextPalette[MAX_COLORS];
 
 typedef enum
 {
@@ -445,97 +650,7 @@ typedef enum
 
 } PalIdx_t;
 
-
-//=============================================
-
-//
-// key / value info strings
-//
-#define	MAX_INFO_KEY		64
-#define	MAX_INFO_VALUE		64
-#define	MAX_INFO_STRING		512
-
-QUAKE2_API char* Info_ValueForKey(char* s, char* key);
-QUAKE2_API void Info_RemoveKey(char* s, char* key);
-QUAKE2_API void Info_SetValueForKey(char* s, char* key, char* value);
-QUAKE2_API qboolean Info_Validate(char* s);
-QUAKE2_API void Swap_Init(void);
-
-/*
-==============================================================
-
-SYSTEM SPECIFIC
-
-==============================================================
-*/
-
 struct cplane_s;
-
-extern	int	curtime;		// time returned by last Sys_Milliseconds
-
-int		Sys_Milliseconds(void);
-void	Sys_Mkdir(char* path);
-
-// large block stack allocation routines
-void* Hunk_Begin(int maxsize);
-void* Hunk_Alloc(int size);
-void	Hunk_Free(void* buf);
-int		Hunk_End(void);
-
-// this is only here so the functions in q_shared.c and q_shwin.c can link
-// directory searching
-#define SFF_ARCH    0x01
-#define SFF_HIDDEN  0x02
-#define SFF_RDONLY  0x04
-#define SFF_SUBDIR  0x08
-#define SFF_SYSTEM  0x10
-
-/*
-** pass in an attribute mask of things you wish to REJECT
-*/
-char* Sys_FindFirst(char* path, unsigned musthave, unsigned canthave);
-char* Sys_FindNext(unsigned musthave, unsigned canthave);
-void	Sys_FindClose(void);
-
-
-QUAKE2_API void Sys_Error(char* error, ...);
-void Com_Printf(char *msg, ...);
-
-/*
- * ==========================================================
- *
- * CVARS (console variables)
- *
- * ==========================================================
- */
-
-#ifndef CVAR
- #define CVAR
-
- #define CVAR_ARCHIVE 1     /* set to cause it to be saved to vars.rc */
- #define CVAR_USERINFO 2    /* added to userinfo  when changed */
- #define CVAR_SERVERINFO 4  /* added to serverinfo when changed */
- #define CVAR_NOSET 8       /* don't allow change from console at all, */
-							/* but can be set from the command line */
- #define CVAR_LATCH 16      /* save changes until server restart */
-
-/* nothing outside the Cvar_*() functions should modify these fields! */
-typedef struct cvar_s
-{
-	char *name;
-	char *string;
-	char *latched_string; /* for CVAR_LATCH vars */
-	int flags;
-	qboolean modified; /* set each time the cvar is changed */
-	float value;
-	struct cvar_s *next;
-
-	/* Added by YQ2. Must be at the end to preserve ABI. */
-	char *default_string;
-} cvar_t;
-
-#endif /* CVAR */
-
 /*
 
 cvar_t variables are used to hold scalar or string variables that can be changed or displayed at the console or prog code as well as accessed directly
@@ -552,12 +667,12 @@ interface from being ambiguous.
 extern	cvar_t* cvar_vars;
 
 float ClampCvar(float min, float max, float value);
-QUAKE2_API cvar_t* Cvar_Get(char* var_name, char* value, int flags);
+cvar_t* Cvar_Get(char* var_name, char* value, int flags);
 // creates the variable if it doesn't exist, or returns the existing one
 // if it exists, the value will not be changed, but flags will be ORed in
 // that allows variables to be unarchived without needing bitflags
 
-QUAKE2_API cvar_t* Cvar_Set(char* var_name, char* value);
+cvar_t* Cvar_Set(char* var_name, char* value);
 // will create the variable if it doesn't exist
 
 cvar_t* Cvar_ForceSet(char* var_name, char* value);
@@ -565,7 +680,7 @@ cvar_t* Cvar_ForceSet(char* var_name, char* value);
 
 cvar_t* Cvar_FullSet(char* var_name, char* value, int flags);
 
-QUAKE2_API void	Cvar_SetValue(char* var_name, float value);
+void	Cvar_SetValue(char* var_name, float value);
 // expands value to a string and calls Cvar_Set
 
 float	Cvar_VariableValue(char* var_name);
@@ -659,87 +774,6 @@ typedef struct
 #define FMNI_NO_LERP		(1<<3)
 #define FMNI_NO_DRAW		(1<<4)
 #define FMNI_USE_REFLECT	(1<<5)
-/*
-==============================================================
-
-COLLISION DETECTION
-
-==============================================================
-*/
-
-// ************************************************************************************************
-// MASK_XXX
-// --------
-// Contents masks.
-// ************************************************************************************************
-
-#define	MASK_ALL			0x7fffffff
-#define	MASK_SOLID			(CONTENTS_SOLID|CONTENTS_WINDOW)
-#define	MASK_PLAYERSOLID	(CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW|CONTENTS_MONSTER)
-#define	MASK_DEADSOLID		(CONTENTS_SOLID|CONTENTS_PLAYERCLIP|CONTENTS_WINDOW)
-#define	MASK_MONSTERSOLID	(CONTENTS_SOLID|CONTENTS_MONSTERCLIP|CONTENTS_WINDOW|CONTENTS_MONSTER)
-#define	MASK_WATER			(CONTENTS_WATER|CONTENTS_LAVA|CONTENTS_SLIME)
-#define	MASK_OPAQUE			(CONTENTS_SOLID|CONTENTS_SLIME|CONTENTS_LAVA)
-#define	MASK_SHOT			(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_WINDOW|CONTENTS_DEADMONSTER)
-#define MASK_CURRENT		(CONTENTS_CURRENT_0|CONTENTS_CURRENT_90|CONTENTS_CURRENT_180|CONTENTS_CURRENT_270|CONTENTS_CURRENT_UP|CONTENTS_CURRENT_DOWN)
-#define MASK_DRIP			(CONTENTS_SOLID|CONTENTS_WATER|CONTENTS_LAVA|CONTENTS_SLIME|CONTENTS_WINDOW)
-
-// ************************************************************************************************
-// SURF_XXX
-// --------
-// ************************************************************************************************
-
-#define	SURF_LIGHT			0x1			// Value will hold the light strength.
-#define	SURF_SLICK			0x2			// Affects game physics.
-#define	SURF_SKY			0x4			// Don't draw, but add to skybox.
-#define	SURF_WARP			0x8			// Turbulent water warp.
-#define	SURF_TRANS33		0x10
-#define	SURF_TRANS66		0x20
-#define	SURF_FLOWING		0x40		// Scroll towards angle.
-#define	SURF_NODRAW			0x80		// Don't bother referencing the texture.
-#define	SURF_TALL_WALL		0x00000400	// Face doesn't get broken up as normal.
-#define	SURF_ALPHA_TEXTURE	0x00000800	// texture has alpha in it, and should show through in bsp process
-#define	SURF_ANIMSPEED		0x00001000	// value will hold the anim speed in fps
-#define SURF_UNDULATE		0x00002000	// rock surface up and down...
-#define SURF_QUAKE			0x00004000	// rock surface up and down when quake value on
-
-/* gi.BoxEdicts() can return a list of either solid or trigger entities */
-#define AREA_SOLID 1
-#define AREA_TRIGGERS 2
-
-/* plane_t structure */
-typedef struct cplane_s
-{
-	vec3_t normal;
-	float dist;
-	byte type; /* for fast side tests */
-	byte signbits; /* signx + (signy<<1) + (signz<<2) */
-	byte pad[2];
-} cplane_t;
-
-/* structure offset for asm code */
-#define CPLANE_NORMAL_X 0
-#define CPLANE_NORMAL_Y 4
-#define CPLANE_NORMAL_Z 8
-#define CPLANE_DIST 12
-#define CPLANE_TYPE 16
-#define CPLANE_SIGNBITS 17
-#define CPLANE_PAD0 18
-#define CPLANE_PAD1 19
-
-typedef struct cmodel_s
-{
-	vec3_t mins, maxs;
-	vec3_t origin; /* for sounds or lights */
-	int headnode;
-} cmodel_t;
-
-typedef struct csurface_s
-{
-	char		name[40];
-	int			flags;
-	int			value;
-} csurface_t;
 
 // ************************************************************************************************
 // trace_t
@@ -766,11 +800,8 @@ typedef struct trace_s
 	vec3_t		offsets[8];	// [signbits][x] = either size[0][x] or size[1][x]
 } trace_t;
 
-// ************************************************************************************************
-// pmtype_t
-// --------
-// ************************************************************************************************
-
+/* pmove_state_t is the information necessary for client side movement */
+/* prediction */
 typedef enum
 {
 	PM_NORMAL,				// Can accelerate and turn, clips.
@@ -815,9 +846,10 @@ typedef enum
 
 typedef struct
 {
-	pmtype_t	pm_type;
-	short		origin[3];		// 12.3
-	short		velocity[3];	// 12.3
+	pmtype_t pm_type;
+
+	short origin[3];            /* 12.3 */
+	short velocity[3];          /* 12.3 */
 	byte		pm_flags;		// ducked, jump_held, etc
 	byte		w_flags;		// water state
 	byte		c_flags;		// collision
@@ -863,18 +895,11 @@ typedef struct usercmd_s
 	byte	lightlevel;	// Light level the player is standing on.
 } usercmd_t;
 
-// ************************************************************************************************
-// pmove_t
-// -------
-// ************************************************************************************************
-
-#define	MAXTOUCH	32
-
+#define MAXTOUCH 32
 typedef struct
 {
-	// State (in / out).
-
-	pmove_state_t	s;
+	/* state (in / out) */
+	pmove_state_t s;
 
 	// Command (in).
 
@@ -932,9 +957,9 @@ typedef struct
 #define RF_SCALE_XY			0x00000400
 #define RF_SCALE_Z			0x00000800
 #define RF_PRIMITIVE		0x00001000		// line, or other primitive runtime generated by the render DLL
-#define RF_FIXED			0x00002000		// the sprite has a fixed direction 
+#define RF_FIXED			0x00002000		// the sprite has a fixed direction
 											// and up vector, by default, a
-											// sprite is always oriented to the 
+											// sprite is always oriented to the
 											// view (no effect on models)
 #define RF_TRANS_ADD		0x00004000		// Additive transparency
 #define RF_TRANS_ADD_ALPHA	0x00008000		// Adds emulation of alpha for additive transparent objects using tint
@@ -986,20 +1011,20 @@ typedef struct
 #define	STAT_HEALTH				1		// Health value
 #define	STAT_AMMO_ICON			2		// Icon for ammo
 #define	STAT_AMMO				3		// Amount of ammo
-#define	STAT_WEAPON_ICON 		4		// Current offensive weapon                 
-#define	STAT_WEAPON		 		5		                                            
-#define STAT_DEFENCE_ICON	  	6		// Current defensive weapon                 
-#define STAT_DEFENCE			7		                                            
-#define STAT_OFFMANA_ICON		8		// * Icon describing offensive mana           
-#define STAT_OFFMANA_BACK		9		// Amount of offensive mana                 
-#define STAT_OFFMANA			10		// Icon describing defensive mana           
-#define STAT_DEFMANA_ICON	 	11		// * Amount of defensive mana                 
-#define STAT_DEFMANA_BACK     	12		                                            
-#define STAT_DEFMANA			13		                                            
+#define	STAT_WEAPON_ICON 		4		// Current offensive weapon
+#define	STAT_WEAPON		 		5
+#define STAT_DEFENCE_ICON	  	6		// Current defensive weapon
+#define STAT_DEFENCE			7
+#define STAT_OFFMANA_ICON		8		// * Icon describing offensive mana
+#define STAT_OFFMANA_BACK		9		// Amount of offensive mana
+#define STAT_OFFMANA			10		// Icon describing defensive mana
+#define STAT_DEFMANA_ICON	 	11		// * Amount of defensive mana
+#define STAT_DEFMANA_BACK     	12
+#define STAT_DEFMANA			13
 #define	STAT_FRAGS_ICON     	14		// cleared each frame, 1 = health, 2 = armor
-#define	STAT_FRAGS			  	15		// which status to print                    
-#define	STAT_FLASHES			16		
-#define	STAT_LAYOUTS		 	17		
+#define	STAT_FRAGS			  	15		// which status to print
+#define	STAT_FLASHES			16
+#define	STAT_LAYOUTS		 	17
 #define	STAT_PUZZLE_ITEM1	 	18
 #define	STAT_PUZZLE_ITEM2	 	19
 #define	STAT_PUZZLE_ITEM3	 	20
@@ -1126,9 +1151,7 @@ typedef struct PerEffectsBuffer_s
 
 typedef struct entity_state_s
 {
-	// Edict index.
-
-	short			number;
+	short number;           /* edict index */
 
 	// Model's current animation frame index.
 
@@ -1227,13 +1250,13 @@ typedef struct
 
 	vec3_t			viewangles;
 
-	// For remote camera views.			
+	// For remote camera views.
 
 	vec3_t			remote_vieworigin,
 		remote_viewangles;
 	int				remote_id;
 
-	// Z displacement of player's head from origin.	
+	// Z displacement of player's head from origin.
 
 	short			viewheight;
 
@@ -1324,7 +1347,7 @@ typedef struct
 
 	float			fwdvel, sidevel, upvel;
 
-	// PLAYER_FLAG_XXX.		
+	// PLAYER_FLAG_XXX.
 
 	int				flags;
 
@@ -1372,26 +1395,6 @@ typedef struct
 	int				dmflags;
 
 } player_state_t;
-
-// *************************************************************
-// Inlines
-// *************************************************************
-
-_inline int Q_stricmp(char* s1, char* s2)
-{
-	return _stricmp(s1, s2);
-}
-
-_inline int Q_strncasecmp(char* s1, char* s2, int n)
-{
-	return strnicmp(s1, s2, n);
-}
-
-_inline int Q_strcasecmp(char* s1, char* s2)
-{
-	return stricmp(s1, s2);
-}
-
 
 // For ambient sounds.
 typedef enum AmbientSoundID_e
@@ -1519,7 +1522,7 @@ enum
 // ************************************************************************************************
 // Skin defines
 // -----------
-// Indicates what skin Corvus has.  
+// Indicates what skin Corvus has.
 // When indicated on the model, each odd-numbered skin is the damaged version of the previous skin.
 // ************************************************************************************************
 
@@ -1531,9 +1534,10 @@ enum
 #define SKIN_PLAGUE1	(DAMAGE_NUM_LEVELS * 1)
 #define SKIN_PLAGUE2	(DAMAGE_NUM_LEVELS * 2)
 
-//#define SKIN_REFLECTION	(DAMAGE_NUM_LEVELS * PLAGUE_NUM_LEVELS)
 #define SKIN_REFLECTION	(DAMAGE_NUM_LEVELS)		// We don't maintain a skin for every plague level anymore.
 
 #define SKIN_MAX		(SKIN_REFLECTION + 1)
 
-#endif	// QSHARED_H
+#define FLOAT_ZERO_EPSILON 0.0005f
+
+#endif /* COMMON_SHARED_H */

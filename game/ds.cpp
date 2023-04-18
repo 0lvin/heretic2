@@ -1,7 +1,7 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "ds.h"
-#include <cstdint>
+#include <limits.h>
 
 #define SCRIPT_SAVE_VERSION 2
 
@@ -1356,11 +1356,11 @@ void animate_signaler(edict_t *which)
 
 // Fields are just yucky now - once H2 finals, I'm going to change them completely
 
-#define SPEC_X				-1
-#define SPEC_Y				-2
-#define SPEC_Z				-3
-#define SPEC_DELTA_ANGLES	-4
-#define SPEC_P_ORIGIN		-5
+#define SPEC_X				(INT_MAX - 1)
+#define SPEC_Y				(INT_MAX - 2)
+#define SPEC_Z				(INT_MAX - 3)
+#define SPEC_DELTA_ANGLES	(INT_MAX - 4)
+#define SPEC_P_ORIGIN		(INT_MAX - 5)
 
 static field_t script_fields[] =
 {

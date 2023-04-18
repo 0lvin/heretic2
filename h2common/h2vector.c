@@ -6,24 +6,24 @@
 #include "../qcommon/matrix.h"
 #include "../qcommon/random.h"
 
-QUAKE2_API vec3_t vec3_right = { 1.0f, 0.0f, 0.0f };
-QUAKE2_API vec3_t vec3_up = { 0.0f, 0.0f, 1.0f };
+vec3_t vec3_right = { 1.0f, 0.0f, 0.0f };
+vec3_t vec3_up = { 0.0f, 0.0f, 1.0f };
 
-QUAKE2_API void AnglesFromDir(vec3_t direction, vec3_t angles)
+void AnglesFromDir(vec3_t direction, vec3_t angles)
 {
 	angles[1] = atan2(direction[1], direction[0]);
 	angles[0] = asin(direction[2]);
 	angles[2] = 0;
 }
 
-QUAKE2_API void AnglesFromDirI(vec3_t direction, vec3_t angles)
+void AnglesFromDirI(vec3_t direction, vec3_t angles)
 {
 	angles[1] = atan2(direction[1], direction[0]);
 	angles[0] = asin(direction[2]);
 	angles[2] = -angles[1];
 }
 
-QUAKE2_API void Create_rand_relect_vect(vec3_t in, vec3_t out)
+void Create_rand_relect_vect(vec3_t in, vec3_t out)
 {
 	double v3;
 	float v4; 
@@ -118,12 +118,12 @@ void VectorAngles(float* forward, float* up, float* result)	//up may be NULL
 }
 // https://github.com/mdeguzis/ftequake
 
-QUAKE2_API void AnglesFromDirAndUp(vec3_t direction, vec3_t up, vec3_t angles)
+void AnglesFromDirAndUp(vec3_t direction, vec3_t up, vec3_t angles)
 {
 	VectorAngles(direction, up, angles);
 }
 
-QUAKE2_API void RealAngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
+void RealAngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 {
 	float v5; 
 	float v6; 
@@ -163,7 +163,7 @@ QUAKE2_API void RealAngleVectors(vec3_t angles, vec3_t forward, vec3_t right, ve
 	}
 }
 
-QUAKE2_API void DirAndUpFromAngles(vec3_t angles, vec3_t direction, vec3_t up)
+void DirAndUpFromAngles(vec3_t angles, vec3_t direction, vec3_t up)
 {
 	matrix3_t v4;
 
@@ -172,7 +172,7 @@ QUAKE2_API void DirAndUpFromAngles(vec3_t angles, vec3_t direction, vec3_t up)
 	Matrix3MultByVec3(v4, vec3_up, up);
 }
 
-QUAKE2_API void vectoangles(vec3_t vec, vec3_t angles) {
+void vectoangles(vec3_t vec, vec3_t angles) {
 	float *v2; 
 	vec3_t v3; 
 
@@ -192,7 +192,7 @@ QUAKE2_API void vectoangles(vec3_t vec, vec3_t angles) {
 	}
 }
 
-QUAKE2_API void DirFromAngles(vec3_t angles, vec3_t direction)
+void DirFromAngles(vec3_t angles, vec3_t direction)
 {
 	float v4;
 	float v5;
@@ -211,14 +211,14 @@ QUAKE2_API void DirFromAngles(vec3_t angles, vec3_t direction)
 	direction[2] = sin(v5);
 } 
 
-QUAKE2_API void VectorAverage(vec3_t veca, vec3_t vecb, vec3_t vecc)
+void VectorAverage(vec3_t veca, vec3_t vecb, vec3_t vecc)
 {
 	vecc[0] = (veca[0] + vecb[0]) * 0.5;
 	vecc[1] = (veca[1] + vecb[1]) * 0.5;
 	vecc[2] = (veca[2] + vecb[2]) * 0.5;
 }
 
-QUAKE2_API void VectorGetOffsetOrigin(vec3_t off, vec3_t org, vec_t degree, vec3_t out)
+void VectorGetOffsetOrigin(vec3_t off, vec3_t org, vec_t degree, vec3_t out)
 {
 	float v4; 
 	matrix3_t v7;
@@ -232,7 +232,7 @@ QUAKE2_API void VectorGetOffsetOrigin(vec3_t off, vec3_t org, vec_t degree, vec3
 	out[2] = org[2] + out[2];
 }
 
-QUAKE2_API vec_t VectorSeparation(vec3_t a1, vec3_t a2)
+vec_t VectorSeparation(vec3_t a1, vec3_t a2)
 {
 	float v2; // st7@1
 	float v3; // st6@1
@@ -244,7 +244,7 @@ QUAKE2_API vec_t VectorSeparation(vec3_t a1, vec3_t a2)
 	return sqrt(v4 * v4 + v2 * v2 + v3 * v3);
 }
 
-QUAKE2_API void VectorRandomCopy(vec3_t a1, vec3_t a2, float a3)
+void VectorRandomCopy(vec3_t a1, vec3_t a2, float a3)
 {
 	float v3; // ST28_4@1
 
@@ -254,14 +254,14 @@ QUAKE2_API void VectorRandomCopy(vec3_t a1, vec3_t a2, float a3)
 	a2[2] = flrand(v3, a3) + a1[2];
 }
 
-QUAKE2_API void VectorRandomAdd(vec3_t a1, vec3_t a2, vec3_t a3)
+void VectorRandomAdd(vec3_t a1, vec3_t a2, vec3_t a3)
 {
 	a3[0] = flrand(-a2[0], a2[0]) + a1[0];
 	a3[1] = flrand(-a2[1], a2[1]) + a1[1];
 	a3[2] = flrand(-a2[2], a2[2]) + a1[2];
 }
 
-QUAKE2_API float vhlen(vec3_t p1, vec3_t p2)
+float vhlen(vec3_t p1, vec3_t p2)
 {
 	float v2; // st7@1
 	float v3; // st6@1

@@ -1162,7 +1162,7 @@ CL_GetEntitySoundOrigin
 Called to get the sound spatialization origin
 ===============
 */
-QUAKE2_API void CL_GetEntitySoundOrigin (int ent, vec3_t org)
+void CL_GetEntitySoundOrigin (int ent, vec3_t org)
 {
 	centity_t	*old;
 

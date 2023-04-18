@@ -262,7 +262,7 @@ char *surfacePropNames[256] =
 	"wood"
 }; // weak
 
-QUAKE2_API char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo)
+char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo)
 {
 	csurface_t *groundSurface;
 	char *result = NULL; 

@@ -6,7 +6,7 @@
 
 #include <stdint.h>
 
-QUAKE2_API void BounceVelocity(vec3_t in, vec3_t normal, vec3_t out, float elasticity)
+void BounceVelocity(vec3_t in, vec3_t normal, vec3_t out, float elasticity)
 {
 	double v5;
 
@@ -16,7 +16,7 @@ QUAKE2_API void BounceVelocity(vec3_t in, vec3_t normal, vec3_t out, float elast
 	out[2] = v5 * normal[2] + in[2];
 }
 
-QUAKE2_API qboolean BoundVelocity(float *vel)
+qboolean BoundVelocity(float *vel)
 {
 	float *v1;
 	int v2;

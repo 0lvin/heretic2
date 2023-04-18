@@ -501,7 +501,7 @@ static	cmd_function_t	*cmd_functions;		// possible commands to execute
 Cmd_Argc
 ============
 */
-QUAKE2_API int		Cmd_Argc (void)
+int		Cmd_Argc (void)
 {
 	return cmd_argc;
 }
@@ -511,7 +511,7 @@ QUAKE2_API int		Cmd_Argc (void)
 Cmd_Argv
 ============
 */
-QUAKE2_API char	*Cmd_Argv (int arg)
+char	*Cmd_Argv (int arg)
 {
 	if ( (unsigned)arg >= cmd_argc )
 		return cmd_null_string;
@@ -526,7 +526,7 @@ Cmd_Args
 Returns a single string containing argv(1) to argv(argc()-1)
 ============
 */
-QUAKE2_API char		*Cmd_Args (void)
+char		*Cmd_Args (void)
 {
 	return cmd_args;
 }

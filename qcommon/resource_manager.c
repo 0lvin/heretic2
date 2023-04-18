@@ -55,7 +55,7 @@ static void ResMngr_CreateBlock(ResourceManager_t *resource)
 	*current = NULL;
 }
 
-QUAKE2_API void ResMngr_Con(ResourceManager_t *resource, size_t init_resSize, unsigned int init_resPerBlock)
+void ResMngr_Con(ResourceManager_t *resource, size_t init_resSize, unsigned int init_resPerBlock)
 {
 	resource->resSize = init_resSize;
 
@@ -68,7 +68,7 @@ QUAKE2_API void ResMngr_Con(ResourceManager_t *resource, size_t init_resSize, un
 	ResMngr_CreateBlock(resource);
 }
 
-QUAKE2_API void ResMngr_Des(ResourceManager_t *resource)
+void ResMngr_Des(ResourceManager_t *resource)
 {
 	ResMngr_Block_t *toDelete;
 
@@ -81,7 +81,7 @@ QUAKE2_API void ResMngr_Des(ResourceManager_t *resource)
 	}
 }
 
-QUAKE2_API void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t size)
+void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t size)
 {
 	char **toPop;
 
@@ -106,7 +106,7 @@ QUAKE2_API void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t si
 	return (void *)(toPop + 1);
 }
 
-QUAKE2_API void ResMngr_DeallocateResource(ResourceManager_t *resource, void *toDeallocate, size_t size)
+void ResMngr_DeallocateResource(ResourceManager_t *resource, void *toDeallocate, size_t size)
 {
 	char **toPush;
 

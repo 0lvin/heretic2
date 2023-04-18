@@ -25,23 +25,243 @@ vec3_t vec3_origin = { 0,0,0 };
 
 #define	EQUAL_EPSILON	0.001
 
-QUAKE2_API void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross);
-QUAKE2_API void PerpendicularVector(vec3_t dst, const vec3_t src);
+void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross);
+void PerpendicularVector(vec3_t dst, const vec3_t src);
 static void R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3]);
-QUAKE2_API vec_t VectorNormalize(vec3_t v);
+vec_t VectorNormalize(vec3_t v);
 int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* p);
-QUAKE2_API vec_t VectorNormalize2(vec3_t in, vec3_t out);
+vec_t VectorNormalize2(vec3_t in, vec3_t out);
+
+// *************************************************************
+// Inlines
+// *************************************************************
+
+int Q_stricmp(char* s1, char* s2)
+{
+	return _stricmp(s1, s2);
+}
+
+int Q_strncasecmp(char* s1, char* s2, int n)
+{
+	return strnicmp(s1, s2, n);
+}
+
+int Q_strcasecmp(char* s1, char* s2)
+{
+	return stricmp(s1, s2);
+}
+
+int VectorCompare (vec3_t v1, vec3_t v2)
+{
+	if ((v1[0] != v2[0]) || (v1[1] != v2[1]) || (v1[2] != v2[2]))
+			return(false);
+
+	return(true);
+}
+
+void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
+{
+	//assert(vecc != vec3_origin);
+
+	vecc[0] = veca[0] + scale*vecb[0];
+	vecc[1] = veca[1] + scale*vecb[1];
+	vecc[2] = veca[2] + scale*vecb[2];
+}
+
+vec_t VectorLength(vec3_t v)
+{
+	float	length;
+
+	length = sqrt(DotProduct(v, v));
+
+	return length;
+}
+
+vec_t VectorLengthSquared(vec3_t v)
+{
+	float	length;
+
+	length = DotProduct(v, v);
+
+	return length;
+}
+
+vec_t VectorSeparationSquared(vec3_t va, vec3_t vb)
+{
+	vec3_t		work;
+	vec_t		result;
+
+	VectorSubtract(va, vb, work);
+	result = DotProduct(work, work);
+	return(result);
+}
+
+float
+Q_fabs(float f)
+{
+	int tmp = *(int *)&f;
+
+	tmp &= 0x7FFFFFFF;
+	return *(float *)&tmp;
+}
+
+void VectorAbs(const vec3_t in, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = (float)Q_fabs(in[0]);
+	out[1] = (float)Q_fabs(in[1]);
+	out[2] = (float)Q_fabs(in[2]);
+}
+
+void VectorRound(vec3_t v)
+{
+	//assert(v != vec3_origin);
+
+	v[0] = (float)floor(v[0] + 0.5);
+	v[1] = (float)floor(v[1] + 0.5);
+	v[2] = (float)floor(v[2] + 0.5);
+}
+
+void VectorInc(vec3_t v)
+{
+	//assert(v != vec3_origin);
+
+	v[0] += 1.0;
+	v[1] += 1.0;
+	v[2] += 1.0;
+}
+
+void VectorDec(vec3_t v)
+{
+	//assert(v != vec3_origin);
+
+	v[0] -= 1.0;
+	v[1] -= 1.0;
+	v[2] -= 1.0;
+}
+
+void VectorInverse (vec3_t v)
+{
+	//assert(v != vec3_origin);
+
+	v[0] = -v[0];
+	v[1] = -v[1];
+	v[2] = -v[2];
+}
+
+void VectorScale (vec3_t in, vec_t scale, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = in[0] * scale;
+	out[1] = in[1] * scale;
+	out[2] = in[2] * scale;
+}
+
+void VectorRadiansToDegrees (vec3_t in, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = in[0] * RAD_TO_ANGLE;
+	out[1] = in[1] * RAD_TO_ANGLE;
+	out[2] = in[2] * RAD_TO_ANGLE;
+}
+
+void VectorDegreesToRadians (vec3_t in, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = in[0] * ANGLE_TO_RAD;
+	out[1] = in[1] * ANGLE_TO_RAD;
+	out[2] = in[2] * ANGLE_TO_RAD;
+}
+
+void VectorScaleByVector (vec3_t in, vec3_t scale, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = in[0] * scale[0];
+	out[1] = in[1] * scale[1];
+	out[2] = in[2] * scale[2];
+}
+
+void Vec3SubtractAssign(vec3_t value, vec3_t subFrom)
+{
+	//assert(subFrom != vec3_origin);
+
+	subFrom[0] -= value[0];
+	subFrom[1] -= value[1];
+	subFrom[2] -= value[2];
+}
+
+void Vec3AddAssign(vec3_t value, vec3_t addTo)
+{
+	//assert(addTo != vec3_origin);
+
+	addTo[0] += value[0];
+	addTo[1] += value[1];
+	addTo[2] += value[2];
+}
+
+void Vec3MultAssign(vec3_t value, vec3_t multBy)
+{
+	//assert(multBy != vec3_origin);
+
+	multBy[0] *= value[0];
+	multBy[1] *= value[1];
+	multBy[2] *= value[2];
+}
+
+void Vec3ScaleAssign(vec_t value, vec3_t scaleBy)
+{
+	//assert(scaleBy != vec3_origin);
+
+	scaleBy[0] *= value;
+	scaleBy[1] *= value;
+	scaleBy[2] *= value;
+}
+
+qboolean FloatIsZeroEpsilon(float f)
+{
+	return (Q_fabs(f) < FLOAT_ZERO_EPSILON);
+}
+
+qboolean FloatIsZero(float f, float epsilon)
+{
+	return (Q_fabs(f) < epsilon);
+}
+
+qboolean Vec3EqualsEpsilon(vec3_t v1, vec3_t v2)
+{
+	if(!FloatIsZeroEpsilon(v1[0] - v2[0]) || !FloatIsZeroEpsilon(v1[1] - v2[1]) || !FloatIsZeroEpsilon(v1[2] - v2[2]))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+qboolean Vec3IsZero(vec3_t vec)
+{
+	return !( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
+}
+
+qboolean Vec3NotZero(vec3_t vec)
+{
+	return ( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
+}
 
 //============================================================================
 
-QUAKE2_API qboolean Vec3IsZeroEpsilon(vec3_t in)
+qboolean Vec3IsZeroEpsilon(vec3_t in)
 {
 	return in[0] < 0.00050000002 && in[0] > -0.00050000002
 		&& in[1] < 0.00050000002 && in[1] > -0.00050000002
 		&& in[2] < 0.00050000002 && in[2] > 0.00050000002;
 }
 
-QUAKE2_API void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees)
+void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3_t point, float degrees)
 {
 	float	m[3][3];
 	float	im[3][3];
@@ -96,7 +316,7 @@ QUAKE2_API void RotatePointAroundVector(vec3_t dst, const vec3_t dir, const vec3
 	}
 }
 
-QUAKE2_API void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
+void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 {
 	float		angle;
 	static float		sr, sp, sy, cr, cp, cy;
@@ -133,7 +353,7 @@ QUAKE2_API void AngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t
 }
 
 
-QUAKE2_API void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
+void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t normal)
 {
 	float d;
 	vec3_t n;
@@ -155,7 +375,7 @@ QUAKE2_API void ProjectPointOnPlane(vec3_t dst, const vec3_t p, const vec3_t nor
 /*
 ** assumes "src" is normalized
 */
-QUAKE2_API void PerpendicularVector(vec3_t dst, const vec3_t src)
+void PerpendicularVector(vec3_t dst, const vec3_t src)
 {
 	int	pos;
 	int i;
@@ -224,7 +444,7 @@ LerpAngle
 
 ===============
 */
-QUAKE2_API float LerpAngle(float a2, float a1, float frac)
+float LerpAngle(float a2, float a1, float frac)
 {
 	if (a1 - a2 > 180)
 		a1 -= 360;
@@ -234,13 +454,13 @@ QUAKE2_API float LerpAngle(float a2, float a1, float frac)
 }
 
 
-QUAKE2_API float	anglemod(float a)
+float	anglemod(float a)
 {
 	a = (360.0 / 65536) * ((int)(a * (65536 / 360.0)) & 65535);
 	return a;
 }
 
-QUAKE2_API float	anglemod_old(float a1)
+float	anglemod_old(float a1)
 {
 	double v2;
 	char v3 = 0;
@@ -254,7 +474,7 @@ QUAKE2_API float	anglemod_old(float a1)
 	return result;
 }
 
-QUAKE2_API float Clamp(float src, float min, float max)
+float Clamp(float src, float min, float max)
 {
 	float result; // st7@4
 
@@ -267,7 +487,7 @@ QUAKE2_API float Clamp(float src, float min, float max)
 	return result;
 }
 
-QUAKE2_API int ClampI(int src, int min, int max)
+int ClampI(int src, int min, int max)
 {
 	int result;
 
@@ -280,7 +500,7 @@ QUAKE2_API int ClampI(int src, int min, int max)
 }
 
 // this is the slow, general version
-QUAKE2_API int BoxOnPlaneSide2(vec3_t emins, vec3_t emaxs, struct cplane_s* p)
+int BoxOnPlaneSide2(vec3_t emins, vec3_t emaxs, struct cplane_s* p)
 {
 	int		i;
 	float	dist1, dist2;
@@ -385,14 +605,14 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* p)
 	return sides;
 }
 
-QUAKE2_API void ClearBounds(vec3_t mins, vec3_t maxs)
+void ClearBounds(vec3_t mins, vec3_t maxs)
 {
 	mins[0] = mins[1] = mins[2] = 99999;
 	maxs[0] = maxs[1] = maxs[2] = -99999;
 }
 
 
-QUAKE2_API void AddPointToBounds(vec3_t v, vec3_t mins, vec3_t maxs)
+void AddPointToBounds(vec3_t v, vec3_t mins, vec3_t maxs)
 {
 	int		i;
 	vec_t	val;
@@ -408,12 +628,12 @@ QUAKE2_API void AddPointToBounds(vec3_t v, vec3_t mins, vec3_t maxs)
 }
 
 
-QUAKE2_API vec_t VectorNormalize(vec3_t v)
+vec_t VectorNormalize(vec3_t v)
 {
 	return VectorNormalize2(v, v);
 }
 
-QUAKE2_API vec_t VectorNormalize2(vec3_t in, vec3_t out)
+vec_t VectorNormalize2(vec3_t in, vec3_t out)
 {
 	vec_t	length, ilength;
 
@@ -433,14 +653,14 @@ QUAKE2_API vec_t VectorNormalize2(vec3_t in, vec3_t out)
 
 }
 
-QUAKE2_API void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross)
+void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross)
 {
 	cross[0] = v1[1] * v2[2] - v1[2] * v2[1];
 	cross[1] = v1[2] * v2[0] - v1[0] * v2[2];
 	cross[2] = v1[0] * v2[1] - v1[1] * v2[0];
 }
 
-QUAKE2_API int Q_log2(int val)
+int Q_log2(int val)
 {
 	int answer = 0;
 	while (val >>= 1)
@@ -455,7 +675,7 @@ QUAKE2_API int Q_log2(int val)
 COM_SkipPath
 ============
 */
-QUAKE2_API char* COM_SkipPath(char* pathname)
+char* COM_SkipPath(char* pathname)
 {
 	char* last;
 
@@ -474,7 +694,7 @@ QUAKE2_API char* COM_SkipPath(char* pathname)
 COM_StripExtension
 ============
 */
-QUAKE2_API void COM_StripExtension(char* in, char* out)
+void COM_StripExtension(char* in, char* out)
 {
 	while (*in && *in != '.')
 		*out++ = *in++;
@@ -507,7 +727,7 @@ const char* COM_FileExtension(const char* in)
 COM_FileBase
 ============
 */
-QUAKE2_API void COM_FileBase(char* in, char* out)
+void COM_FileBase(char* in, char* out)
 {
 	char* s, * s2;
 
@@ -536,7 +756,7 @@ COM_FilePath
 Returns the path up to, but not including the last /
 ============
 */
-QUAKE2_API void COM_FilePath(char* in, char* out)
+void COM_FilePath(char* in, char* out)
 {
 	char* s;
 
@@ -555,7 +775,7 @@ QUAKE2_API void COM_FilePath(char* in, char* out)
 COM_DefaultExtension
 ==================
 */
-QUAKE2_API void COM_DefaultExtension(char* path, char* extension)
+void COM_DefaultExtension(char* path, char* extension)
 {
 	char* src;
 	//
@@ -586,24 +806,24 @@ qboolean	bigendien;
 
 // can't just use function pointers, or dll linkage can
 // mess up when qcommon is included in multiple places
-QUAKE2_API short(*_BigShort) (short l);
-QUAKE2_API short(*_LittleShort) (short l);
-QUAKE2_API int(*_BigLong) (int l);
-QUAKE2_API int(*_LittleLong) (int l);
-QUAKE2_API float(*_BigFloat) (float l);
-QUAKE2_API float(*_LittleFloat) (float l);
+short(*_BigShort) (short l);
+short(*_LittleShort) (short l);
+int(*_BigLong) (int l);
+int(*_LittleLong) (int l);
+float(*_BigFloat) (float l);
+float(*_LittleFloat) (float l);
 
 // jmarshall - BigShort was missing a return here
-QUAKE2_API short	BigShort(short l) { if (!_BigShort) { Swap_Init(); } return _BigShort(l); }
+short	BigShort(short l) { if (!_BigShort) { Swap_Init(); } return _BigShort(l); }
 // jmarshall end
 
 //short	LittleShort(short l) { return _LittleShort(l); }
-QUAKE2_API int		BigLong(int l) { if (!_BigShort) { Swap_Init(); } return _BigLong(l); }
+int		BigLong(int l) { if (!_BigShort) { Swap_Init(); } return _BigLong(l); }
 //int		LittleLong(int l) { return _LittleLong(l); }
-QUAKE2_API float	BigFloat(float l) { if (!_BigShort) { Swap_Init(); } return _BigFloat(l); }
+float	BigFloat(float l) { if (!_BigShort) { Swap_Init(); } return _BigFloat(l); }
 //float	LittleFloat(float l) { return _LittleFloat(l); }
 
-QUAKE2_API short   ShortSwap(short l)
+short   ShortSwap(short l)
 {
 	byte    b1, b2;
 
@@ -613,12 +833,12 @@ QUAKE2_API short   ShortSwap(short l)
 	return (b1 << 8) + b2;
 }
 
-QUAKE2_API short	ShortNoSwap(short l)
+short	ShortNoSwap(short l)
 {
 	return l;
 }
 
-QUAKE2_API int    LongSwap(int l)
+int    LongSwap(int l)
 {
 	byte    b1, b2, b3, b4;
 
@@ -630,12 +850,12 @@ QUAKE2_API int    LongSwap(int l)
 	return ((int)b1 << 24) + ((int)b2 << 16) + ((int)b3 << 8) + b4;
 }
 
-QUAKE2_API int	LongNoSwap(int l)
+int	LongNoSwap(int l)
 {
 	return l;
 }
 
-QUAKE2_API float FloatSwap(float f)
+float FloatSwap(float f)
 {
 	union
 	{
@@ -652,7 +872,7 @@ QUAKE2_API float FloatSwap(float f)
 	return dat2.f;
 }
 
-QUAKE2_API float FloatNoSwap(float f)
+float FloatNoSwap(float f)
 {
 	return f;
 }
@@ -662,7 +882,7 @@ QUAKE2_API float FloatNoSwap(float f)
 Swap_Init
 ================
 */
-QUAKE2_API void Swap_Init(void)
+void Swap_Init(void)
 {
 	byte	swaptest[2] = { 1,0 };
 
@@ -699,7 +919,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-QUAKE2_API char* va(char* format, ...)
+char* va(char* format, ...)
 {
 	va_list		argptr;
 	static char		string[1024];
@@ -720,7 +940,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-QUAKE2_API char* COM_Parse(char** data_p)
+char* COM_Parse(char** data_p)
 {
 	int		c;
 	int		len;
@@ -808,7 +1028,7 @@ Com_PageInMemory
 */
 int	paged_total;
 
-QUAKE2_API void Com_PageInMemory(byte* buffer, int size)
+void Com_PageInMemory(byte* buffer, int size)
 {
 	int		i;
 
@@ -825,7 +1045,7 @@ LIBRARY REPLACEMENT FUNCTIONS
 ============================================================================
 */
 
-QUAKE2_API void Com_sprintf(char* dest, int size, char* fmt, ...)
+void Com_sprintf(char* dest, int size, char* fmt, ...)
 {
 	int		len;
 	va_list		argptr;
@@ -855,7 +1075,7 @@ Searches the string for the given
 key and returns the associated value, or an empty string.
 ===============
 */
-QUAKE2_API char* Info_ValueForKey(char* s, char* key)
+char* Info_ValueForKey(char* s, char* key)
 {
 	char	pkey[512];
 	static	char value[2][512];	// use two buffers so compares
@@ -897,7 +1117,7 @@ QUAKE2_API char* Info_ValueForKey(char* s, char* key)
 	}
 }
 
-QUAKE2_API void Info_RemoveKey(char* s, char* key)
+void Info_RemoveKey(char* s, char* key)
 {
 	char* start;
 	char	pkey[512];
@@ -955,7 +1175,7 @@ Some characters are illegal in info strings because they
 can mess up the server's parsing
 ==================
 */
-QUAKE2_API qboolean Info_Validate(char* s)
+qboolean Info_Validate(char* s)
 {
 	if (strstr(s, "\""))
 		return false;
@@ -964,7 +1184,7 @@ QUAKE2_API qboolean Info_Validate(char* s)
 	return true;
 }
 
-QUAKE2_API void Info_SetValueForKey(char* s, char* key, char* value)
+void Info_SetValueForKey(char* s, char* key, char* value)
 {
 	char	newi[MAX_INFO_STRING], * v;
 	int		c;

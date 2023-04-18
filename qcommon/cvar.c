@@ -124,7 +124,7 @@ If the variable already exists, the value will not be set
 The flags will be or'ed in if the variable exists.
 ============
 */
-QUAKE2_API cvar_t *Cvar_Get (char *var_name, char *var_value, int flags)
+cvar_t *Cvar_Get (char *var_name, char *var_value, int flags)
 {
 	cvar_t	*var;
 	
@@ -276,7 +276,7 @@ cvar_t *Cvar_ForceSet (char *var_name, char *value)
 Cvar_Set
 ============
 */
-QUAKE2_API cvar_t *Cvar_Set (char *var_name, char *value)
+cvar_t *Cvar_Set (char *var_name, char *value)
 {
 	return Cvar_Set2 (var_name, value, false);
 }
@@ -315,7 +315,7 @@ cvar_t *Cvar_FullSet (char *var_name, char *value, int flags)
 Cvar_SetValue
 ============
 */
-QUAKE2_API void Cvar_SetValue (char *var_name, float value)
+void Cvar_SetValue (char *var_name, float value)
 {
 	char	val[32];
 

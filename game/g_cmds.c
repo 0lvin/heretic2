@@ -7,7 +7,7 @@
 #include "../player/p_actions.h"
 #include "../player/p_anims.h"
 #include "../player/p_main.h"
-#include "../player/p_funcs.h"
+#include "../game/p_funcs.h"
 #include "g_itemstats.h"
 #include "../qcommon/cl_strings.h"
 

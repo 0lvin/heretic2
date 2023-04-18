@@ -24,7 +24,7 @@
 #include "../qcommon/fx.h"
 #include "../qcommon/random.h"
 #include "../qcommon/qcommon.h"
-#include "utilities.h"
+#include "../game/utilities.h"
 #include "p_main.h"
 
 #define CHICKEN_GLIDE			150

@@ -28,20 +28,20 @@ typedef struct SinglyLinkedList_s
 	struct SinglyLinkedListNode_s *current;
 } SinglyLinkedList_t;
 
-QUAKE2_API void SLList_DefaultCon(SinglyLinkedList_t *this_ptr);
-QUAKE2_API void SLList_Des(SinglyLinkedList_t *this_ptr);
-QUAKE2_API qboolean SLList_AtEnd(SinglyLinkedList_t *this_ptr);
-QUAKE2_API qboolean SLList_AtLast(SinglyLinkedList_t *this_ptr);
-QUAKE2_API qboolean SLList_IsEmpty(SinglyLinkedList_t *this_ptr);
-QUAKE2_API const GenericUnion4_t SLList_Increment(SinglyLinkedList_t *this_ptr);
-QUAKE2_API const GenericUnion4_t SLList_PostIncrement(SinglyLinkedList_t *this_ptr);
-QUAKE2_API GenericUnion4_t SLList_Front(SinglyLinkedList_t *this_ptr);
-QUAKE2_API GenericUnion4_t SLList_ReplaceCurrent(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toReplace);
-QUAKE2_API void SLList_PushEmpty(SinglyLinkedList_t *this_ptr);
-QUAKE2_API void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert);
-QUAKE2_API GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr);
-QUAKE2_API void SLList_Chop(SinglyLinkedList_t *this_ptr);
-QUAKE2_API void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert);
+void SLList_DefaultCon(SinglyLinkedList_t *this_ptr);
+void SLList_Des(SinglyLinkedList_t *this_ptr);
+qboolean SLList_AtEnd(SinglyLinkedList_t *this_ptr);
+qboolean SLList_AtLast(SinglyLinkedList_t *this_ptr);
+qboolean SLList_IsEmpty(SinglyLinkedList_t *this_ptr);
+const GenericUnion4_t SLList_Increment(SinglyLinkedList_t *this_ptr);
+const GenericUnion4_t SLList_PostIncrement(SinglyLinkedList_t *this_ptr);
+GenericUnion4_t SLList_Front(SinglyLinkedList_t *this_ptr);
+GenericUnion4_t SLList_ReplaceCurrent(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toReplace);
+void SLList_PushEmpty(SinglyLinkedList_t *this_ptr);
+void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert);
+GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr);
+void SLList_Chop(SinglyLinkedList_t *this_ptr);
+void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert);
 
 
 #ifdef __cplusplus

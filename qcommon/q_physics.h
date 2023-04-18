@@ -67,8 +67,8 @@ typedef struct FormMove_s
 #define PRF_COLLISION				0x00000001	// indicates there was a collision
 #define PRF_EXPANSION_BLOCKED		0x00000002	// indicates an expansion was blocked
 
-QUAKE2_API void BounceVelocity(vec3_t in, vec3_t normal, vec3_t out, float elasticity);
-QUAKE2_API qboolean BoundVelocity(float *vel);
+void BounceVelocity(vec3_t in, vec3_t normal, vec3_t out, float elasticity);
+qboolean BoundVelocity(float *vel);
 
 #ifdef __cplusplus
 } //end extern "C"

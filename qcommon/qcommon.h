@@ -30,8 +30,8 @@ extern "C" {
 #define VERSION_DATE		"0504"
 #define VERSION_ITERATION	"01"
 
-#define VERSIONDISP		(VERSION_MAJOR"."VERSION_MINOR)
-#define VERSIONFULL		(VERSION_MAJOR"."VERSION_MINOR"."VERSION_LOCAL"."VERSION_DATE"."VERSION_ITERATION)
+#define VERSIONDISP		(VERSION_MAJOR "." VERSION_MINOR)
+#define VERSIONFULL		(VERSION_MAJOR "." VERSION_MINOR "." VERSION_LOCAL "." VERSION_DATE "." VERSION_ITERATION)
 
 #ifdef _HERETIC2_
 #define GAME_DECLSPEC    __declspec(dllexport)
@@ -540,9 +540,9 @@ char 	*Cmd_CompleteCommand (char *partial);
 // attempts to match a partial command for automatic command line completion
 // returns NULL if nothing fits
 
-QUAKE2_API  int		Cmd_Argc (void);
-QUAKE2_API  char	*Cmd_Argv (int arg);
-QUAKE2_API  char	*Cmd_Args (void);
+ int		Cmd_Argc (void);
+ char	*Cmd_Argv (int arg);
+ char	*Cmd_Args (void);
 // The functions that execute commands get their parameters with these
 // functions. Cmd_Argv () will return an empty string, not a NULL
 // if arg > argc, so string operations are allways safe.
@@ -745,17 +745,17 @@ char		*FS_Userdir (void);
 char		*FS_NextPath (char *prevpath);
 void		FS_ExecAutoexec (void);
 
-QUAKE2_API int			FS_FOpenFile (char *filename, FILE **file);
-QUAKE2_API void		FS_FCloseFile (FILE *f);
+int			FS_FOpenFile (char *filename, FILE **file);
+void		FS_FCloseFile (FILE *f);
 // note: this can't be called from another DLL, due to MS libc issues
 
 
-QUAKE2_API char**		FS_ListFiles(char* findname, int* numfiles, unsigned musthave, unsigned canthave);
-QUAKE2_API int			FS_LoadFile (char *path, void **buffer);
+char**		FS_ListFiles(char* findname, int* numfiles, unsigned musthave, unsigned canthave);
+int			FS_LoadFile (char *path, void **buffer);
 // a null buffer will just return the file length without loading
 // a -1 length is not present
 
-QUAKE2_API void		FS_Read (void *buffer, int len, FILE *f);
+void		FS_Read (void *buffer, int len, FILE *f);
 // properly handles partial reads
 
 void		FS_FreeFile (void *buffer);
@@ -785,8 +785,8 @@ MISC
 
 void		Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush));
 void		Com_EndRedirect (void);
-QUAKE2_API void 		Com_DPrintf (char *fmt, ...);
-QUAKE2_API void		Com_Error (int code, char *fmt, ...);
+void 		Com_DPrintf (char *fmt, ...);
+void		Com_Error (int code, char *fmt, ...);
 void 		Com_Quit (void);
 int			Com_ServerState (void);
 void		Com_SetServerState (int state);

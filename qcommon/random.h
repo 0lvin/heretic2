@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 // Required protos for random functions
-QUAKE2_API float flrand(float, float);
-QUAKE2_API int irand(int, int);
+float flrand(float, float);
+int irand(int, int);
 #ifdef __cplusplus
 } //end extern "C"
 #endif

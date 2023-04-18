@@ -296,9 +296,10 @@ typedef struct
 	char	*(*FS_Userdir)  (void);
 	void	(*FS_CreatePath) (char *path);
 
-
+#ifdef _WIN32
 	void	(*Sys_LoadGameDll)(const char *name, HINSTANCE *hinst, DWORD *chkSum);
 	void	(*Sys_UnloadGameDll)(const char *name, HINSTANCE *hinst);
+#endif
 
 	// pointer to the server side persistant effects arrary
 	void	(*ClearPersistantEffects) (void);

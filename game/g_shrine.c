@@ -12,7 +12,7 @@
 #include "../player/p_anims.h"
 #include "../player/p_main.h"
 #include "m_player.h"
-#include "../player/p_funcs.h"
+#include "../game/p_funcs.h"
 #include "../qcommon/cl_strings.h"
 
 // Set up those shrines that are randomly selectable.

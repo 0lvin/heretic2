@@ -4,11 +4,11 @@
 //
 
 #include "../qcommon/qcommon.h"
-#include "../player/p_funcs.h"
+#include "../game/p_funcs.h"
 #include "../player/p_animactor.h"
 #include "../player/p_anims.h"
 #include "../player/p_ctrl.h"
-#include "../player/p_funcs.h"
+#include "../game/p_funcs.h"
 #include "../player/p_main.h"
 #include "../player/p_weapon.h"
 #include "g_local.h"

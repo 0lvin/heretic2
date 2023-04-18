@@ -9,13 +9,13 @@
 
 ResourceManager_t globalResourceManager;
 
-QUAKE2_API void SLList_DefaultCon(SinglyLinkedList_t *this_ptr)
+void SLList_DefaultCon(SinglyLinkedList_t *this_ptr)
 {
 	this_ptr->rearSentinel =  (SinglyLinkedListNode_t *)ResMngr_AllocateResource(&globalResourceManager, 0);
 	this_ptr->current = this_ptr->rearSentinel;
 	this_ptr->front = this_ptr->rearSentinel;
 }
-QUAKE2_API void SLList_Des(SinglyLinkedList_t* this_ptr)
+void SLList_Des(SinglyLinkedList_t* this_ptr)
 {
 	SinglyLinkedListNode_t* node; 
 
@@ -29,22 +29,22 @@ QUAKE2_API void SLList_Des(SinglyLinkedList_t* this_ptr)
 	ResMngr_AllocateResource(&globalResourceManager, 0); // jmarshall: why are these here? 
 }
 
-QUAKE2_API qboolean SLList_AtEnd(SinglyLinkedList_t *this_ptr)
+qboolean SLList_AtEnd(SinglyLinkedList_t *this_ptr)
 {
 	return this_ptr->current == this_ptr->rearSentinel;
 }
 
-QUAKE2_API qboolean SLList_AtLast(SinglyLinkedList_t *this_ptr)
+qboolean SLList_AtLast(SinglyLinkedList_t *this_ptr)
 {
 	return this_ptr->current->next == this_ptr->rearSentinel;
 }
 
-QUAKE2_API qboolean SLList_IsEmpty(SinglyLinkedList_t *this_ptr)
+qboolean SLList_IsEmpty(SinglyLinkedList_t *this_ptr)
 {
 	return this_ptr->front == this_ptr->rearSentinel;
 }
 
-QUAKE2_API const GenericUnion4_t SLList_Increment(SinglyLinkedList_t *this_ptr)
+const GenericUnion4_t SLList_Increment(SinglyLinkedList_t *this_ptr)
 {
 	struct SinglyLinkedListNode_s* nextNode;
 	nextNode = this_ptr->current->next;
@@ -52,7 +52,7 @@ QUAKE2_API const GenericUnion4_t SLList_Increment(SinglyLinkedList_t *this_ptr)
 	return nextNode->value;
 }
 
-QUAKE2_API const GenericUnion4_t SLList_PostIncrement(SinglyLinkedList_t *this_ptr)
+const GenericUnion4_t SLList_PostIncrement(SinglyLinkedList_t *this_ptr)
 {
 	GenericUnion4_t value; 
 	SinglyLinkedListNode_t* currentNode;
@@ -63,7 +63,7 @@ QUAKE2_API const GenericUnion4_t SLList_PostIncrement(SinglyLinkedList_t *this_p
 	return value;
 }
 
-QUAKE2_API GenericUnion4_t SLList_Front(SinglyLinkedList_t *this_ptr)
+GenericUnion4_t SLList_Front(SinglyLinkedList_t *this_ptr)
 {
 	SinglyLinkedListNode_t* frontNode; // ecx
 
@@ -72,7 +72,7 @@ QUAKE2_API GenericUnion4_t SLList_Front(SinglyLinkedList_t *this_ptr)
 	return frontNode->value;
 }
 
-QUAKE2_API GenericUnion4_t SLList_ReplaceCurrent(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toReplace)
+GenericUnion4_t SLList_ReplaceCurrent(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toReplace)
 {
 	GenericUnion4_t oldValue;
 	SinglyLinkedListNode_t* node;
@@ -83,7 +83,7 @@ QUAKE2_API GenericUnion4_t SLList_ReplaceCurrent(SinglyLinkedList_t *this_ptr, c
 	return oldValue;
 }
 
-QUAKE2_API void SLList_PushEmpty(SinglyLinkedList_t *this_ptr)
+void SLList_PushEmpty(SinglyLinkedList_t *this_ptr)
 {
 	SinglyLinkedListNode_t* emptyNode; 
 
@@ -92,7 +92,7 @@ QUAKE2_API void SLList_PushEmpty(SinglyLinkedList_t *this_ptr)
 	this_ptr->front = emptyNode;
 }
 
-QUAKE2_API void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
+void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
 {
 	SinglyLinkedListNode_t* newNode; 
 
@@ -102,7 +102,7 @@ QUAKE2_API void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t 
 	this_ptr->front = newNode;
 }
 
-QUAKE2_API GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr)
+GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr)
 {
 	GenericUnion4_t value; 
 	SinglyLinkedListNode_t* nextNode; 
@@ -120,7 +120,7 @@ QUAKE2_API GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr)
 	return value;
 }
 
-QUAKE2_API void SLList_Chop(SinglyLinkedList_t *this_ptr)
+void SLList_Chop(SinglyLinkedList_t *this_ptr)
 {
 	SinglyLinkedList_t* currentNode; 
 	SinglyLinkedList_t* nextNode;
@@ -142,7 +142,7 @@ QUAKE2_API void SLList_Chop(SinglyLinkedList_t *this_ptr)
 	}
 }
 
-QUAKE2_API void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
+void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
 {
 	SinglyLinkedListNode_t* newNode; 
 
