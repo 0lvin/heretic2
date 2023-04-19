@@ -1,7 +1,7 @@
 #ifndef REFERENCE_H
 #define REFERENCE_H
 
-#include "Placement.h"
+#include "placement.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,7 +69,7 @@ enum {
 };
 
 // Morcalavin Reference Points
-enum 
+enum
 {
 	MORK_STAFFREF,//0
 	MORK_RFOOTREF,//1

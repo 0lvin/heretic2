@@ -16,7 +16,7 @@
 #include "../qcommon/matrix.h"
 #include "../qcommon/reference.h"
 #include "q_sprite.h"
-#include "q_Surface.h"
+#include "../qcommon/q_surface.h"
 #include "../game/g_playstats.h"
 
 #include <limits.h>

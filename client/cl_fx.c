@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -52,7 +52,7 @@ struct sfx_s* S_RegisterSound(char* name);
 
 extern sizebuf_t* fxMsgBuf;
 
-int CL_GetEffect(centity_t* ent, int flags, char* format, ...) { 
+int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 	sizebuf_t* msg;
 	va_list args;
 	sizebuf_t newmsg;
@@ -90,7 +90,7 @@ int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 			*b = MSG_ReadByte(msg);
 		}
 			break;
-		case 'd':			
+		case 'd':
 			MSG_ReadDir(msg, va_arg(args, float*));
 			break;
 		case 'f':
@@ -195,8 +195,8 @@ void CL_Printf(int errLevel, char* fmt, ...) {
 
 int CL_InitClientEffects(const char* name)
 {
-	int result; 
-	DWORD chkSum; 
+	int result;
+	DWORD chkSum;
 	static client_fx_import_t cl_game_import;
 
 
@@ -354,7 +354,7 @@ void CL_RunDLights (void)
 	{
 		if (!dl->radius)
 			continue;
-		
+
 		if (dl->die < cl.time)
 		{
 			dl->radius = 0;

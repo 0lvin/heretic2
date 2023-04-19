@@ -745,9 +745,9 @@ void SP_choose_CDTrack(edict_t *self)
 	self->use = choose_CDTrack_use;
 
 	if (self->spawnflags & 1)
-		self->spawnflags = FALSE;
+		self->spawnflags = false;
 	else
-		self->spawnflags = TRUE;
+		self->spawnflags = true;
 
 	if(!self->wait)
 	{

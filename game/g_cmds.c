@@ -24,7 +24,7 @@ qboolean CheckFlood(edict_t *ent);
 void ED_CallSpawn (edict_t *ent);
 void MorphPlayerToChicken(edict_t *self, edict_t *caster);
 
-int		self_spawn = FALSE;
+int		self_spawn = false;
 
 
 char *ClientSkinTeam (edict_t *ent)
@@ -207,49 +207,49 @@ void Cmd_Give_f (edict_t *ent)
 	{
 
 		if(level.offensive_weapons&4)
-		{	
+		{
 			it=FindItem("hell");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&8)
-		{	
+		{
 			it=FindItem("array");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&16)
-		{	
+		{
 			it=FindItem("rain");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&32)
-		{	
+		{
 			it=FindItem("sphere");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&64)
-		{	
+		{
 			it=FindItem("phoen");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&128)
-		{	
+		{
 			it=FindItem("mace");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&256)
-		{	
+		{
 			it=FindItem("fwall");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.defensive_weapons&1)
-		{	
+		{
 			it=FindItem("ring");
 			AddDefenseToInventory(it,ent);
 		}
@@ -261,21 +261,21 @@ void Cmd_Give_f (edict_t *ent)
 		}
 
 		if(level.defensive_weapons&4)
-		{	
+		{
 			it=FindItem("tele");
 			AddDefenseToInventory(it,ent);
 		}
 
 		if(level.defensive_weapons&8)
-		{	
+		{
 			it=FindItem("morph");
 			AddDefenseToInventory(it,ent);
 		}
 
 		if(level.defensive_weapons&16)
-		{	
+		{
 			it=FindItem("meteor");
-			AddDefenseToInventory(it,ent);	
+			AddDefenseToInventory(it,ent);
 		}
 
 		SetupPlayerinfo_effects(ent);
@@ -295,7 +295,7 @@ void Cmd_Give_f (edict_t *ent)
 			ent->health += atoi(gi.argv(2));
 		else
 			ent->health = ent->max_health;
-		
+
 		if(give_all || ent->health == ent->max_health)
 			ResetPlayerBaseNodes (ent);//put back all your limbs!
 
@@ -341,7 +341,7 @@ void Cmd_Give_f (edict_t *ent)
 	}
 
 	if (give_all || Q_stricmp(name, "defences") == 0)
-	{														
+	{
 		for (i=0 ; i<game.num_items ; i++)
 		{
 			it = playerExport.p_itemlist + i;
@@ -418,7 +418,7 @@ void Cmd_Give_f (edict_t *ent)
 		SetupPlayerinfo_effects(ent);
 		PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
-		
+
 		return;
 	}
 
@@ -453,10 +453,10 @@ void Cmd_Give_f (edict_t *ent)
 
 		// add some time in on the timer for the reflectivity
 		ent->client->playerinfo.reflect_timer = level.time + REFLECT_DURATION_SINGLE;
-	
+
 		// turn on the relection at the client effect end through client flags that are passed down
 		ent->s.renderfx |= RF_REFLECTION;
-	
+
 		return;
 	}
 
@@ -475,7 +475,7 @@ void Cmd_Give_f (edict_t *ent)
 	if (Q_stricmp(name, "chicken") == 0)
 	{
 		MorphPlayerToChicken(ent, ent);
-	
+
 		return;
 	}
 
@@ -483,7 +483,7 @@ void Cmd_Give_f (edict_t *ent)
 	if (Q_stricmp(name, "plague") == 0)
 	{
 		char	userinfo[MAX_INFO_STRING];
-		
+
 		if (ent->client->playerinfo.plaguelevel < PLAGUE_NUM_LEVELS-1)
 			ent->client->playerinfo.plaguelevel++;
 		else
@@ -497,7 +497,7 @@ void Cmd_Give_f (edict_t *ent)
 		SetupPlayerinfo_effects(ent);
 		PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
-	
+
 		return;
 	}
 
@@ -746,13 +746,13 @@ void Cmd_Use_f (edict_t *ent, char *s)
 		return;
 	}
 
-	if (castme && (it->flags & IT_DEFENSE) && 
-			it->weaponthink && 
+	if (castme && (it->flags & IT_DEFENSE) &&
+			it->weaponthink &&
 			ent->deadflag!=DEAD_DEAD && playerinfo->deadflag!=DEAD_DYING)
 	{
 		if (playerinfo->leveltime > playerinfo->defensive_debounce)
 		{	// Do something only if the debounce is okay.
-			playerinfo->pers.lastdefence = playerinfo->pers.defence;	
+			playerinfo->pers.lastdefence = playerinfo->pers.defence;
 			playerinfo->pers.defence=it;
 
 			if (Defence_CurrentShotsLeft(playerinfo, 1) > 0)
@@ -896,7 +896,7 @@ void Cmd_DefPrev_f (edict_t *ent)
 	else
 		selected_defence = ITEM_INDEX(cl->playerinfo.pers.defence);
 	start_defence = selected_defence;
-	
+
 	// scan  for the next valid one
 	for (i=1 ; i<=MAX_ITEMS ; i++)
 	{
@@ -958,7 +958,7 @@ void Cmd_DefNext_f (edict_t *ent)
 	for (i=1 ; i<=MAX_ITEMS ; i++)
 	{
 		index = (selected_defence + i)%MAX_ITEMS;
-		
+
 		if (!cl->playerinfo.pers.inventory.Items[index])
 			continue;
 		it = &playerExport.p_itemlist[index];
@@ -1031,7 +1031,7 @@ void Cmd_Kill_f (edict_t *ent)
 		return;
 	}
 	ent->flags &= ~FL_GODMODE;
-	
+
 	if(ent->health > -1)
 	{
 		// Make sure we gib as we don't want bodies lying around everywhere.
@@ -1045,7 +1045,7 @@ void Cmd_Kill_f (edict_t *ent)
 		ent->deadflag = DEAD_DEAD;
 
 		// Put us back in the game
-		
+
 		respawn(ent);
 
 		// Set up the next valid suicide time.
@@ -1087,7 +1087,7 @@ void Cmd_Players_f (edict_t *ent)
 
 	count = 0;
 	for (i = 0 ; i < maxclients->value ; i++)
-		
+
 		if (game.clients[i].playerinfo.pers.connected)
 		{
 			index[count] = i;
@@ -1139,7 +1139,7 @@ void Cmd_SpawnEntity_f(edict_t *ent)
 		return;
 	}
 	gi.cprintf(ent, PRINT_HIGH, "Spawning : %s\n", gi.argv(1));
-	self_spawn = TRUE;
+	self_spawn = true;
 
 	newent = G_Spawn();
 	newent->classname = ED_NewString(gi.argv(1));
@@ -1148,7 +1148,7 @@ void Cmd_SpawnEntity_f(edict_t *ent)
 	VectorAdd(ent->s.origin, forward, newent->s.origin);
 	VectorCopy(ent->s.angles, newent->s.angles);
 	ED_CallSpawn(newent);
-	self_spawn = FALSE;
+	self_spawn = false;
 #endif
 }
 
@@ -1340,7 +1340,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 				continue;
 		}
 
-		gi.clprintf(other,ent, color, "%s", text);	
+		gi.clprintf(other,ent, color, "%s", text);
 	}
 }
 
@@ -1349,7 +1349,7 @@ void Cmd_ShowCoords_f (edict_t *ent)
 {
 	assert(ent->client);
 
-	Com_Printf("Player Location:  (%d, %d, %d)\n", 
+	Com_Printf("Player Location:  (%d, %d, %d)\n",
 			(int)(ent->s.origin[0]), (int)(ent->s.origin[1]), (int)(ent->s.origin[2]));
 	Com_Printf("       Angle:  Facing=%2.2f, Pitch=%2.2f\n", ent->client->aimangles[YAW], -ent->client->aimangles[PITCH]);
 }

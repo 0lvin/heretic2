@@ -33,12 +33,6 @@ extern "C" {
 #define VERSIONDISP		(VERSION_MAJOR "." VERSION_MINOR)
 #define VERSIONFULL		(VERSION_MAJOR "." VERSION_MINOR "." VERSION_LOCAL "." VERSION_DATE "." VERSION_ITERATION)
 
-#ifdef _HERETIC2_
-#define GAME_DECLSPEC    __declspec(dllexport)
-#else
-#define GAME_DECLSPEC    __declspec(dllimport)
-#endif
-
 #define NO_BLOOD 0
 
 

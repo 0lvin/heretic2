@@ -1540,4 +1540,6 @@ enum
 
 #define FLOAT_ZERO_EPSILON 0.0005f
 
+float Q_fabs(float f);
+
 #endif /* COMMON_SHARED_H */

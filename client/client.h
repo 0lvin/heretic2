@@ -233,7 +233,7 @@ typedef struct
 	predictinfo_t	predictinfo;
 } client_state_t;
 
-GAME_DECLSPEC extern	client_state_t	cl;
+Q2_DLL_EXPORTED extern	client_state_t	cl;
 
 
 /*
@@ -330,7 +330,7 @@ typedef struct
 	FILE		*demofile;
 } client_static_t;
 
-GAME_DECLSPEC extern client_static_t	cls;
+Q2_DLL_EXPORTED extern client_static_t	cls;
 
 #define	FX_API_VERSION		1
 
@@ -497,7 +497,7 @@ extern	cvar_t	*m_side;
 
 extern	cvar_t	*cl_lightlevel;	// FIXME HACK
 
-GAME_DECLSPEC extern	cvar_t	*cl_paused;
+Q2_DLL_EXPORTED extern	cvar_t	*cl_paused;
 
 extern	cvar_t	*cl_freezeworld;
 extern	cvar_t	*cl_timedemo;
@@ -545,14 +545,14 @@ typedef struct
 	float	minlight;			// don't add when contributing less
 } cdlight_t;
 
-GAME_DECLSPEC extern	centity_t	cl_entities[MAX_NETWORKABLE_EDICTS];
+Q2_DLL_EXPORTED extern	centity_t	cl_entities[MAX_NETWORKABLE_EDICTS];
 extern	cdlight_t	cl_dlights[MAX_DLIGHTS];
 
 // the cl_parse_entities must be large enough to hold UPDATE_BACKUP frames of
 // entities, so that when a delta compressed message arives from the server
 // it can be un-deltad from the original 
 #define	MAX_PARSE_ENTITIES	1024
-GAME_DECLSPEC extern	entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
+Q2_DLL_EXPORTED extern	entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
 
 //=============================================================================
 
