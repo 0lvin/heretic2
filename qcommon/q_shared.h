@@ -1077,8 +1077,6 @@ typedef struct
 #define	ANGLE2SHORT(x)	((int)((x)*65536/360) & 65535)
 #define	SHORT2ANGLE(x)	((x)*(360.0/65536))
 
-#define DEG2RAD( a ) ( a * M_PI ) / 180.0F
-
 //
 // config strings are a general means of communication from
 // the server to all connected clients.

@@ -5,7 +5,6 @@
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "../qcommon/random.h"
-#include "../qcommon/timing.h" // for time based sway
 #include "../player/p_main.h"
 #include "../player/p_anims.h"
 #include "../qcommon/fx.h"

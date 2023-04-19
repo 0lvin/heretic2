@@ -122,7 +122,7 @@ extern char		*keybindings[256];
 extern char		*keybindings_double[256];
 extern	int		key_repeats[256];
 
-extern	qboolean	anykeydown;
+extern	int	anykeydown;
 extern char chat_buffer[];
 extern	int chat_bufferlen;
 extern	qboolean	chat_team;

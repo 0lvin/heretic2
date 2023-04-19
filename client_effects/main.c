@@ -67,7 +67,14 @@ int GetLMIMax();
 void AddServerEntities(frame_t *frame);
 void ParseEffects(centity_t *cent);
 void ClientStartClientEffect(centity_t *owner,unsigned short effect,int flags,int index,vec3_t position);
-static void RemoveEffectsFromCent(centity_t *cent);
+
+static void RemoveEffectsFromCent(centity_t *cent)
+{
+	if(cent->effects)
+	{
+		RemoveOwnedEffectList(cent);
+	}
+}
 
 /*
 ==============
@@ -90,7 +97,7 @@ client_fx_export_t GetfxAPI (client_fx_import_t import)
 	_export.Clear=Clear;
 
 	_export.RegisterSounds = RegisterSounds;
-	_export.RegisterModels = (void(__cdecl*)(void))RegisterModels;
+	_export.RegisterModels = RegisterModels;
 
 	// In the client code in the executable the following functions are called first.
 	_export.AddPacketEntities = AddServerEntities;
@@ -606,14 +613,6 @@ SkipEffect:
 	}
 
 	fxMsgBuf = NULL;
-}
-
-static void RemoveEffectsFromCent(centity_t *cent)
-{
-	if(cent->effects)
-	{
-		RemoveOwnedEffectList(cent);
-	}
 }
 
 /*

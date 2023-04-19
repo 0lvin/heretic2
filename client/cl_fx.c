@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_fx.c -- entity effects parsing and management
 
-#include <windows.h>
-#include "../client/client.h"
+#include "client.h"
 #include "../qcommon/resourcemanager.h"
 
 client_fx_export_t fxe;
@@ -43,12 +42,6 @@ static vec3_t avelocities [NUMVERTEXNORMALS];
 
 extern	struct model_s	*cl_mod_smoke;
 extern	struct model_s	*cl_mod_flash;
-
-void SV_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t* passent, int contentmask, trace_t* tr);
-void Sys_LoadGameDll(const char* name, HINSTANCE* hinst, DWORD* chkSum);
-void Sys_UnloadGameDll(const char* name, HINSTANCE* hinst);
-void S_StartSound(vec3_t origin, int entnum, int entchannel, void* sfx, float fvol, int attenuation, float timeofs);
-struct sfx_s* S_RegisterSound(char* name);
 
 extern sizebuf_t* fxMsgBuf;
 
@@ -196,7 +189,6 @@ void CL_Printf(int errLevel, char* fmt, ...) {
 int CL_InitClientEffects(const char* name)
 {
 	int result;
-	DWORD chkSum;
 	static client_fx_import_t cl_game_import;
 
 
@@ -228,8 +220,8 @@ int CL_InitClientEffects(const char* name)
 	cl_game_import.Activate_Screen_Flash = Activate_Screen_Flash;
 	cl_game_import.Activate_Screen_Shake = Activate_Screen_Shake;
 	cl_game_import.Get_Crosshair = Get_Crosshair;
-	cl_game_import.S_StartSound = (void(__cdecl*)(vec_t[], int, int, struct sfx_s*, float, int, float))S_StartSound;
-	cl_game_import.S_RegisterSound = (struct sfx_s * (__cdecl*)(char*))S_RegisterSound;
+	cl_game_import.S_StartSound = S_StartSound;
+	cl_game_import.S_RegisterSound = S_RegisterSound;
 	cl_game_import.RegisterModel = re.RegisterModel;
 	cl_game_import.GetEffect = CL_GetEffect;
 	cl_game_import.TagMalloc = Z_TagMalloc;

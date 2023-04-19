@@ -7,7 +7,7 @@
 #include "../player/p_animactor.h"
 #include "../player/p_anims.h"
 #include "../player/p_ctrl.h"
-#include "../game/p_funcs.h"
+#include "p_funcs.h"
 #include "../player/p_main.h"
 #include "../player/p_weapon.h"
 #include "../qcommon/angles.h"

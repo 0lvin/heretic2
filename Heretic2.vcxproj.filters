@@ -1658,9 +1658,6 @@
     <ClInclude Include="qcommon\surfaceprops.h">
       <Filter>qcommon</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\timing.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
     <ClInclude Include="qcommon\tokens.h">
       <Filter>qcommon</Filter>
     </ClInclude>

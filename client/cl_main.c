@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cl_main.c  -- client main loop
 
-#include "../client/client.h"
+#include "client.h"
 
 extern cvar_t* cl_upspeed;
 extern cvar_t* cl_forwardspeed;

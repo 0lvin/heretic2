@@ -7,7 +7,7 @@
 #include "../player/p_main.h"
 #include "../player/p_ctrl.h"
 #include "../player/p_chicken.h"
-#include "../game/p_funcs.h"
+#include "p_funcs.h"
 #include "../qcommon/angles.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/random.h"

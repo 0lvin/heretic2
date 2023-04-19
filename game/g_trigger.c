@@ -1,3 +1,9 @@
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
+
 #include "../qcommon/qcommon.h"
 #include "g_local.h"
 #include "g_defaultmessagehandler.h"

@@ -1,11 +1,14 @@
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
+//
+// Copyright 1998 Raven Software
+//
+// Heretic II
+//
 
-#include <windows.h>
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
 
+#include "game.h"
 #include "../qcommon/qcommon.h"
 #include "utilities.h"
 #include "../qcommon/angles.h"

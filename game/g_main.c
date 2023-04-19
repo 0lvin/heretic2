@@ -4,7 +4,6 @@
 #include "../qcommon/arrayed_list.h"
 #include "g_physics.h"
 #include "g_volume_effect.h"
-#include "../qcommon/timing.h"
 #include "../qcommon/fx.h"
 #include "utilities.h"
 #include "../qcommon/random.h"
@@ -424,7 +423,7 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 		{	// Take less damage than a monster.
 			if (!(((byte)(level.time*10))&0x07))
 			{
-				T_Damage(self, damager, damager, vec3_origin, self->s.origin, vec3_origin, 
+				T_Damage(self, damager, damager, vec3_origin, self->s.origin, vec3_origin,
 							1, 0, DAMAGE_BURNING,MOD_BURNT);
 			}
 		}
@@ -432,7 +431,7 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 		{	// Only account for damage every .4 second.
 			if (!(((byte)(level.time*10))&0x03))
 			{
-				T_Damage(self, damager, damager, vec3_origin, self->s.origin, vec3_origin, 
+				T_Damage(self, damager, damager, vec3_origin, self->s.origin, vec3_origin,
 							irand(FIRE_LINGER_DMG_MIN, FIRE_LINGER_DMG_MAX), 0, DAMAGE_BURNING,MOD_BURNT);
 			}
 			//tint it darker brown as goes on?  How to get back? no, scorched art would look better
@@ -525,7 +524,7 @@ static void UpdatePlayerBuoys (void)
 	vec3_t		v;
 
 	for(i = 0; i<MAX_CLIENTS; i++)
-	{	
+	{
 		if(level.player_buoy[i] > NULL_BUOY)
 		{
 			ent = g_edicts;
@@ -637,8 +636,8 @@ void G_RunFrame (void)
 
 				for(j=0;j<maxclients->value;j++)
 				{
-					client_ent=g_edicts+1+j;	
-					
+					client_ent=g_edicts+1+j;
+
 					if(client_ent->inuse)
 					{
 //						if (!gi.inPVS(ent->s.origin, level.sight_client->s.origin))

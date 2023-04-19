@@ -6,6 +6,7 @@
 
 #include "../qcommon/message.h"
 #include "ce_message.h"
+#include "../qcommon/fx.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -156,9 +157,7 @@ fmnodeinfo_t *FMNodeInfo_new();
 void AddEffectToList(client_entity_t **root, client_entity_t *fx);
 void RemoveEffectList(client_entity_t **root);
 void RemoveOwnedEffectList(centity_t *owner);
-//void RemoveEffectTypeList(client_entity_t **root, enum FX_Type_e, centity_t *owner);
-void RemoveEffectTypeList(client_entity_t** root, enum FX_Type_t fx, centity_t* owner);
-void RemoveEffectsFromCent(centity_t *cent);
+void RemoveEffectTypeList(client_entity_t** root, FX_Type_t fx, centity_t* owner);
 void PrepAddEffectsToView();
 int AddEffectsToView(client_entity_t **root, centity_t *owner);
 void AddEffect(centity_t* owner, client_entity_t* fx);

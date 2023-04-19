@@ -12,7 +12,6 @@
 #include "ce_dlight.h"
 #include "../qcommon/random.h"
 #include "utilities.h"
-#include "../qcommon/timing.h"
 
 #define CROSSHAIR_THINKTIME	20
 

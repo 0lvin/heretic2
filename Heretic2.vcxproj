@@ -670,7 +670,6 @@
     <ClInclude Include="qcommon\SinglyLinkedList.h" />
     <ClInclude Include="qcommon\skeletons.h" />
     <ClInclude Include="qcommon\surfaceprops.h" />
-    <ClInclude Include="qcommon\timing.h" />
     <ClInclude Include="qcommon\tokens.h" />
     <ClInclude Include="qcommon\vector.h" />
     <ClInclude Include="qcommon\verifyA3D.h" />

@@ -10,7 +10,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../client/ref.h"
+#include "ref.h"
 
 #include "vid.h"
 #include "screen.h"

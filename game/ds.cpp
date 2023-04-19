@@ -3,6 +3,7 @@
 #include "ds.h"
 #include <limits.h>
 
+#define DEG2RAD( a ) ( a * M_PI ) / 180.0F
 #define SCRIPT_SAVE_VERSION 2
 
 List<Variable *>	GlobalVariables;

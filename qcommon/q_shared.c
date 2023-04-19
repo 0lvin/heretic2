@@ -478,7 +478,7 @@ VectorCompare(vec3_t v1, vec3_t v2)
 	return 1;
 }
 
-vec_t 
+vec_t
 VectorNormalize(vec3_t v)
 {
 	float length, ilength;
@@ -519,13 +519,6 @@ VectorNormalize2(vec3_t in, vec3_t out)
 }
 
 #define	EQUAL_EPSILON	0.001
-
-void CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross);
-void PerpendicularVector(vec3_t dst, const vec3_t src);
-static void R_ConcatRotations(float in1[3][3], float in2[3][3], float out[3][3]);
-vec_t VectorNormalize(vec3_t v);
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* p);
-vec_t VectorNormalize2(vec3_t in, vec3_t out);
 
 // *************************************************************
 // Inlines
