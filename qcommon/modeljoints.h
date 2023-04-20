@@ -37,7 +37,7 @@ typedef struct
 
 extern ModelCluster_t modelClusters[MAX_MODELJOINTS];
 
-extern struct ArrayedListNode_s modelJointNodes[MAX_MODELJOINTNODES];
+extern ArrayedListNode_t modelJointNodes[MAX_MODELJOINTNODES];
 
 extern void *Hunk_Alloc (int size);
 

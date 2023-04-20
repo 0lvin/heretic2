@@ -8,10 +8,6 @@
 extern "C" {
 #endif
 
-#define X 0
-#define Y 1
-#define Z 2
-
 #define LUNG_AIRTIME 12
 #define GILL_AIRTIME 18
 

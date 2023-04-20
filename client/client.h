@@ -69,7 +69,7 @@ typedef struct centity_s
 
 	entity_state_t				*s1;			// pointer to the corresponding entity_state_t in
 												// cl_parse_entities.
-	
+
 	int							serverframe;	// if not current, this ent isn't in the frame
 
 	int							flags;			// What freaking flags go in here??!?!
@@ -83,7 +83,7 @@ typedef struct centity_s
 
 	struct client_entity_s		*effects;		// client effects, only has meaning within the
 												// Client Effects DLL
-	
+
 	struct LERPedReferences_s	*referenceInfo;
 } centity_t;
 
@@ -279,7 +279,7 @@ typedef struct
 	float		m_menualpha;
 	float		m_menuscale;
 
-	byte		esc_cinematic;		// Flag to show player wants to leave cinematic 
+	byte		esc_cinematic;		// Flag to show player wants to leave cinematic
 
 // screen rendering information
 	float		disable_screen;		// showing loading plaque between levels
@@ -369,7 +369,7 @@ extern client_fx_export_t fxe;
 //
 // these are the data and functions imported by the client fx module
 //
-typedef struct 
+typedef struct
 {
 	client_state_t	*cl;
 	client_static_t *cls;
@@ -432,8 +432,6 @@ typedef struct
 
 	void	(*Trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags, trace_t *t);
 	qboolean (*InCameraPVS)(vec3_t point);
-
-	int		(*GetReferencedID) (struct model_s *model);
 
 	int		(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
 } client_fx_import_t;
@@ -550,7 +548,7 @@ extern	cdlight_t	cl_dlights[MAX_DLIGHTS];
 
 // the cl_parse_entities must be large enough to hold UPDATE_BACKUP frames of
 // entities, so that when a delta compressed message arives from the server
-// it can be un-deltad from the original 
+// it can be un-deltad from the original
 #define	MAX_PARSE_ENTITIES	1024
 Q2_DLL_EXPORTED extern	entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
 

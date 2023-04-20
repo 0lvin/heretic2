@@ -524,7 +524,7 @@ VectorNormalize2(vec3_t in, vec3_t out)
 // Inlines
 // *************************************************************
 
-int Q_stricmp(char* s1, char* s2)
+int Q_stricmp(const char* s1, const char* s2)
 {
 	return _stricmp(s1, s2);
 }
@@ -732,7 +732,9 @@ qboolean Vec3IsZeroEpsilon(vec3_t in)
 		&& in[2] < 0.00050000002 && in[2] > 0.00050000002;
 }
 
-float	anglemod_old(float a1)
+// TODO: Rewrite
+float
+anglemod_old(float a1)
 {
 	double v2;
 	char v3 = 0;
@@ -740,9 +742,9 @@ float	anglemod_old(float a1)
 
 	v2 = a1;
 	if (v3)
-		result = (double)(signed int)(360 - -360 * (unsigned __int64)(signed __int64)(v2 * -0.0027777778)) + a1;
+		result = 360 - -360 * (v2 * -0.0027777778) + a1;
 	else
-		result = a1 - (double)(signed int)(360 * (unsigned __int64)(signed __int64)(v2 * 0.0027777778));
+		result = a1 - 360 * (v2 * 0.0027777778);
 	return result;
 }
 

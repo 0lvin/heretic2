@@ -290,20 +290,20 @@ animmove_t tbeast_move_stand = {14, tbeast_frames_stand, tbeast_standorder};
 -----------------------------------------------------------------------*/
 animframe_t tbeast_frames_delay [] =
 {
-	FRAME_wait1,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait2,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait3,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait4,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait5,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait6,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait7,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
+	FRAME_wait1,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait2,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait3,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait4,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait5,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait6,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait7,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
 	FRAME_wait8,	NULL, 0, 0, 0, NULL, 0, tbeast_snort,
-	FRAME_wait9,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait10,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait11,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait12,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait13,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
-	FRAME_wait14,	NULL, 0, 0, 0, NULL, 0, (void (__cdecl *)(edict_t *))tbeastCheckMood,
+	FRAME_wait9,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait10,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait11,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait12,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait13,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
+	FRAME_wait14,	NULL, 0, 0, 0, NULL, 0, tbeastCheckMood,
 };
 animmove_t tbeast_move_delay = {14, tbeast_frames_delay, tbeast_pause};
 

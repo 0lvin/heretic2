@@ -81,7 +81,7 @@ void Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush))
 	rd_target = target;
 	rd_buffer = buffer;
 	rd_buffersize = buffersize;
-	rd_flush = (void(__cdecl*)(int, char*))flush;
+	rd_flush = flush;
 
 	*rd_buffer = 0;
 }
@@ -1566,4 +1566,28 @@ Qcommon_Shutdown
 */
 void Qcommon_Shutdown (void)
 {
+}
+
+int
+GetFreeNode(ArrayedListNode_t *nodeArray, int max)
+{
+	int i;
+
+	for(i = 0; i < max; ++i)
+	{
+		if(!nodeArray[i].inUse)
+		{
+			nodeArray[i].inUse = 1;
+			return i;
+		}
+	}
+
+	assert(0);
+	return -1;
+}
+
+void
+FreeNode(ArrayedListNode_t *nodeArray, int index)
+{
+	nodeArray[index].inUse = 0;
 }

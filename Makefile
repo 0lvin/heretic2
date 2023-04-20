@@ -454,7 +454,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/resource_manager.o \
 	$(BUILDDIR)/qcommon/skeletons.o \
 	$(BUILDDIR)/ref_common/font1.o \
-	$(BUILDDIR)/ref_common/m_reference.o \
 	$(BUILDDIR)/ref_common/r_skeletons.o \
 	$(BUILDDIR)/ref_gl/gl_book.o \
 	$(BUILDDIR)/ref_gl/gl_draw.o \

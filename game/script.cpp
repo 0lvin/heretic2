@@ -76,10 +76,12 @@ static qboolean ICScript_Advance(ICScript_t *_this)
 
 		parms = &newMsg->parms;
 
+#ifdef _WIN32
 		if (format[0])
 		{
 			_this->count += SetParms(&newMsg->parms, format, _this->buf + _this->count, true);
 		}
+#endif
 
 		// _this sucks, sticking each string field that gets searched on into a binary search
 		// tree or a hash table would probably be a good idea

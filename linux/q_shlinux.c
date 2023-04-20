@@ -149,7 +149,7 @@ int Sys_Milliseconds (void)
 	return curtime;
 }
 
-void Sys_Mkdir (char *path)
+void Sys_Mkdir (const char *path)
 {
     mkdir (path, 0777);
 }

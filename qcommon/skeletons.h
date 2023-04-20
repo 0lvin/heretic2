@@ -2,6 +2,8 @@
 #define SKELETONS_H
 
 #include <stdlib.h> // for size_t
+#include "../qcommon/arrayed_list.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -85,7 +87,7 @@ extern char *skeletonEffectorNames[];
 extern int skeletonENameOffsets[];
 extern int numNodesInSkeleton[];
 
-typedef void (*CreateSkeleton_t)(void *skeletalJoints, size_t jointSize, struct ArrayedListNode_s *jointNodes, int rootIndex);
+typedef void (*CreateSkeleton_t)(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
 
 extern CreateSkeleton_t SkeletonCreators[NUM_SKELETONS];
 

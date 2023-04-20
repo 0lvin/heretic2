@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -75,7 +75,7 @@ void PF_dprintf (char *fmt, ...)
 {
 	char		msg[1024];
 	va_list		argptr;
-	
+
 	va_start (argptr,fmt);
 	vsprintf (msg, fmt, argptr);
 	va_end (argptr);
@@ -127,7 +127,7 @@ void PF_centerprintf (edict_t *ent, char *fmt, ...)
 	char		msg[1024];
 	va_list		argptr;
 	int			n;
-	
+
 	n = NUM_FOR_EDICT(ent);
 	if (n < 1 || n > maxclients->value)
 		return;	// Com_Error (ERR_DROP, "centerprintf to a non-client");
@@ -153,7 +153,7 @@ void PF_error (char *fmt, ...)
 {
 	char		msg[1024];
 	va_list		argptr;
-	
+
 	va_start (argptr,fmt);
 	vsprintf (msg, fmt, argptr);
 	va_end (argptr);
@@ -178,7 +178,7 @@ void PF_setmodel (edict_t *ent, char *name)
 		Com_Error (ERR_DROP, "PF_setmodel: NULL");
 
 	i = SV_ModelIndex (name);
-		
+
 //	ent->model = name;
 	ent->s.modelindex = i;
 
@@ -209,7 +209,7 @@ void PF_Configstring (int index, char *val)
 
 	// change the string in sv
 	strcpy (sv.configstrings[index], val);
-	
+
 	if (sv.state != ss_loading)
 	{	// send the update to everyone
 		SZ_Clear (&sv.multicast);
@@ -385,11 +385,11 @@ void SV_ModelRemove (char* name) { };
 void SV_SoundRemove(char* name) { };
 void SV_CleanLevel(void) { };
 
-void SV_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs) { 
+void SV_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs) {
 	PF_StartSound(ent, channel, soundindex, volume, attenuation, timeofs);
 }
 
-void	SV_RemoveEffects(entity_state_t* ent, int type) { 
+void	SV_RemoveEffects(entity_state_t* ent, int type) {
 	ent->clientEffects.numEffects = 0;
 }
 
@@ -452,7 +452,7 @@ void SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, siz
 	for (int i = 0; i < MAX_PERSISTANT_EFFECTS; i++)
 	{
 		if (SV_Persistant_Effects[i].inUse && SV_Persistant_Effects[i].needsUpdate && SV_Persistant_Effects[i].entity == NULL)
-		{			
+		{
 			MSG_WriteData(msg, SV_Persistant_Effects[i].buf, SV_Persistant_Effects[i].data_size);
 			SV_Persistant_Effects[i].needsUpdate = false;
 
@@ -462,10 +462,10 @@ void SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, siz
 				SV_Persistant_Effects[i].inUse = false;
 			}
 		}
-	}	
+	}
 }
 
-int	SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...) { 
+int	SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...) {
 	int enta;
 	int effectID = -1;
 	va_list args;
@@ -484,7 +484,7 @@ int	SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t o
 	if (sv_numeffects >= 512) {
 		Com_Printf("Warning : Unable to create persistant effect\n");
 		return -1;
-	}	
+	}
 
 	for (int i = 0; i < MAX_PERSISTANT_EFFECTS; i++)
 	{
@@ -498,7 +498,7 @@ int	SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t o
 	if (effectID == -1)
 	{
 		return -1;
-	}	
+	}
 
 	if (type == FX_FIRE)
 	{
@@ -517,7 +517,7 @@ int	SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t o
 	effect->entity = ent;
 	effect->inUse = true;
 	effect->nonPersistant = false;
-	
+
 	SZ_Init(&msg, effect->buf, sizeof(effect->buf));
 	MSG_WriteShort(&msg, type);
 
@@ -568,7 +568,7 @@ int	SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t o
 }
 
 
-void	SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...) { 
+void	SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...) {
 	int enta;
 	int effectID = -1;
 	va_list args;
@@ -654,7 +654,7 @@ void	SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, ch
 
 }
 
-void SV_ClearPersistantEffects(void) { 
+void SV_ClearPersistantEffects(void) {
 	sv_numeffects = 0;
 	memset(&SV_Persistant_Effects, 0, sizeof(SV_Persistant_Effects));
 }
@@ -664,10 +664,10 @@ int		 SV_GetContentsAtPoint(vec3_t point) {
 	return SV_PointContents(point); // Not correct.
 }
 
-int		 SV_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s* list, int areatype) { 
+int		 SV_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s* list, int areatype) {
 	edict_t* idlist[1024];
 	int numEnts;
-	
+
 	numEnts = SV_AreaEdicts(mins, maxs, idlist, 1024, areatype);
 
 	for (int i = 0; i < numEnts; i++)
@@ -678,10 +678,10 @@ int		 SV_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_
 		SLList_Push(list, temp);
 	}
 
-	return numEnts; 
+	return numEnts;
 }
 
-void SV_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t* passent, int contentmask, trace_t* tr) {	
+void SV_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t* passent, int contentmask, trace_t* tr) {
 	*tr = SV_Trace(start, mins, maxs, end, passent, contentmask);
 }
 
@@ -771,7 +771,7 @@ void SV_InitGameProgs (void)
 	import.argv = Cmd_Argv;
 	import.args = Cmd_Args;
 	import.AddCommandString = Cbuf_AddText;
-	import.DebugGraph = (void(__cdecl*)(float, byte, byte, byte))SCR_DebugGraph;
+	import.DebugGraph = SCR_DebugGraph;
 	import.SetAreaPortalState = CM_SetAreaPortalState;
 	import.AreasConnected = CM_AreasConnected;
 	import.FS_LoadFile = FS_LoadFile;

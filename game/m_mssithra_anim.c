@@ -40,7 +40,7 @@ animframe_t mssithra_frames_idle1 [] =
 	FRAME_idle20, 	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 	FRAME_idle21,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 };
-animmove_t mssithra_move_idle1 = {21, mssithra_frames_idle1, (void(__cdecl*)(edict_t*))mssithraCheckMood};
+animmove_t mssithra_move_idle1 = {21, mssithra_frames_idle1, mssithraCheckMood};
 
 /*----------------------------------------------------------------------
   mssithra Walk - walking along
@@ -185,7 +185,7 @@ animframe_t mssithra_frames_claw1 [] =
 	FRAME_claw9,	NULL, 0, 0, 0,  ai_charge2, 3, NULL,
 	FRAME_claw10,	NULL, 0, 0, 0,  ai_charge2, 3, NULL,
 };
-animmove_t mssithra_move_claw1 = {7, mssithra_frames_claw1, (void(__cdecl*)(edict_t*))mssithraCheckMood};//mssithra_decide_gallop};
+animmove_t mssithra_move_claw1 = {7, mssithra_frames_claw1, mssithraCheckMood};//mssithra_decide_gallop};
 
 
 /*----------------------------------------------------------------------
@@ -208,7 +208,7 @@ animframe_t mssithra_frames_jump1 [] =
 	FRAME_jump13,	NULL, 0, 0, 0,  NULL, 0, NULL,
 	FRAME_jump14,	NULL, 0, 0, 0,  NULL, 0, NULL,
 };
-animmove_t mssithra_move_jump1 = {14, mssithra_frames_jump1, (void(__cdecl*)(edict_t*))mssithraCheckMood};//mssithra_decide_gallop};
+animmove_t mssithra_move_jump1 = {14, mssithra_frames_jump1, mssithraCheckMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra forced jump
@@ -230,7 +230,7 @@ animframe_t mssithra_frames_fjump [] =
 	FRAME_jump13,	NULL, 0, 0, 0,  NULL, 0, NULL,
 	FRAME_jump14,	NULL, 0, 0, 0,  NULL, 0, NULL,
 };
-animmove_t mssithra_move_fjump = {14, mssithra_frames_fjump, (void(__cdecl*)(edict_t*))mssithraCheckMood};//mssithra_decide_gallop};
+animmove_t mssithra_move_fjump = {14, mssithra_frames_fjump, mssithraCheckMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra pain_a - looking around and standing
@@ -276,7 +276,7 @@ animframe_t mssithra_frames_shoota1 [] =
 	FRAME_shoota22,	NULL, 0, 0, 0,  ai_charge2, 0, mmssithraRandomGrowlSound,
 	FRAME_shoota23,	NULL, 0, 0, 0,  ai_charge2, 0, NULL,
 };
-animmove_t mssithra_move_shoota1 = {23, mssithra_frames_shoota1, (void(__cdecl*)(edict_t*))mssithraCheckMood};//mssithra_decide_gallop};
+animmove_t mssithra_move_shoota1 = {23, mssithra_frames_shoota1, mssithraCheckMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra shoot
@@ -306,7 +306,7 @@ animframe_t mssithra_frames_shootb1 [] =
 	FRAME_shootb21,	NULL, 0, 0, 0,  ai_charge2, 0, NULL,
 	FRAME_shootb22,	NULL, 0, 0, 0,  ai_charge2, 0, NULL,
 };
-animmove_t mssithra_move_shootb1 = {22, mssithra_frames_shootb1, (void(__cdecl*)(edict_t*))mssithraCheckMood};//mssithra_decide_gallop};
+animmove_t mssithra_move_shootb1 = {22, mssithra_frames_shootb1, mssithraCheckMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra roar
@@ -338,7 +338,7 @@ animframe_t mssithra_frames_roar [] =
 	FRAME_roar23,	NULL, 0, 0, 0,  NULL, 0, NULL,
 	FRAME_roar24,	NULL, 0, 0, 0,  NULL, 0, NULL,
 };
-animmove_t mssithra_move_roar = {24, mssithra_frames_roar, (void(__cdecl*)(edict_t*))mssithraCheckMood};//mssithra_decide_gallop};
+animmove_t mssithra_move_roar = {24, mssithra_frames_roar, mssithraCheckMood};//mssithra_decide_gallop};
 
 
 animframe_t mssithra_frames_delay [] =
@@ -393,5 +393,5 @@ animframe_t mssithra_frames_shoot1_detrans [] =
 	FRAME_newshot2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL,
 	FRAME_newshot1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL,
 };
-animmove_t mssithra_move_shoot1_detrans = {3, mssithra_frames_shoot1_detrans, (void(__cdecl*)(edict_t*))mssithraCheckMood};
+animmove_t mssithra_move_shoot1_detrans = {3, mssithra_frames_shoot1_detrans, mssithraCheckMood};
 

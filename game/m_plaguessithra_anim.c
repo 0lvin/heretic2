@@ -81,7 +81,7 @@ animframe_t ssithra_frames_idle1 [] =
 	FRAME_idle39,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 	FRAME_idle40, 	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 };
-animmove_t ssithra_move_idle1 = {40, ssithra_frames_idle1, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_idle1 = {40, ssithra_frames_idle1, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra Walk - walking along
@@ -103,7 +103,7 @@ animframe_t ssithra_frames_walk1 [] =
 	FRAME_walk13, 	NULL, 0, 0, 0,  ai_walk, 2, NULL,
 	FRAME_walk14, 	NULL, 0, 0, 0,  ai_walk, 5, NULL,
 };
-animmove_t ssithra_move_walk1 = {14, ssithra_frames_walk1, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_walk1 = {14, ssithra_frames_walk1, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra backpedal - looking around and standing
@@ -137,7 +137,7 @@ animframe_t ssithra_frames_bound1 [] =
 	FRAME_bound15,	NULL, 0, 0, 0,  ssithra_ai_run, 16, NULL,
 	FRAME_bound16,	NULL, 0, 0, 0,  ssithra_ai_run, 12, NULL,
 };
-animmove_t ssithra_move_bound1 = {8, ssithra_frames_bound1, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_bound1 = {8, ssithra_frames_bound1, SsithraCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -366,7 +366,7 @@ animframe_t ssithra_frames_idlebasic1 [] =
 	FRAME_idlebasic39,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 	FRAME_idlebasic40, 	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 };
-animmove_t ssithra_move_idlebasic1 = {40, ssithra_frames_idlebasic1, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_idlebasic1 = {40, ssithra_frames_idlebasic1, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra idleright - looking around and standing
@@ -399,7 +399,7 @@ animframe_t ssithra_frames_idleright1 [] =
 	FRAME_idleright19,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 	FRAME_idleright20,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 };
-animmove_t ssithra_move_idleright1 = {24, ssithra_frames_idleright1, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_idleright1 = {24, ssithra_frames_idleright1, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra melee - looking around and standing
@@ -552,7 +552,7 @@ animframe_t ssithra_frames_startle1 [] =
 	FRAME_startle38,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 	FRAME_startle39,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 };
-animmove_t ssithra_move_startle1 = {38, ssithra_frames_startle1, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_startle1 = {38, ssithra_frames_startle1, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
@@ -758,7 +758,7 @@ animframe_t ssithra_frames_water_idle1 [] =
 	FRAME_water_idle19,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 	FRAME_water_idle20, NULL, 0, 0, 0,  ai_stand, 0, NULL,
 };
-animmove_t ssithra_move_water_idle1 = {20, ssithra_frames_water_idle1, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_water_idle1 = {20, ssithra_frames_water_idle1, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra water_pain_a - looking around and standing
@@ -844,7 +844,7 @@ animframe_t ssithra_frames_faceandnamor [] =
 	FRAME_water_idle19,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckFacedNamor,
 	FRAME_water_idle20, NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckFacedNamor,
 };
-animmove_t ssithra_move_faceandnamor = {20, ssithra_frames_faceandnamor, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_faceandnamor = {20, ssithra_frames_faceandnamor, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra look left
@@ -872,7 +872,7 @@ animframe_t ssithra_frames_lookleft [] =
 	FRAME_idlebasic59,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 	FRAME_idlebasic60,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 };
-animmove_t ssithra_move_lookleft = {20, ssithra_frames_lookleft, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_lookleft = {20, ssithra_frames_lookleft, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra look right
@@ -900,7 +900,7 @@ animframe_t ssithra_frames_lookright [] =
 	FRAME_idlebasic79,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 	FRAME_idlebasic80,	NULL, 0, 0, 0,  ai_stand, 0, NULL,
 };
-animmove_t ssithra_move_lookright = {20, ssithra_frames_lookright, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_lookright = {20, ssithra_frames_lookright, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra trans up
@@ -1079,46 +1079,46 @@ animmove_t ssithra_move_sliced = {36, ssithra_frames_sliced, ssithraKillSelf};
 -----------------------------------------------------------------------*/
 animframe_t ssithra_frames_delay [] =
 {
-	FRAME_startle2,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle3,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle4,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle5,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle6,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle7,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle8,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle9,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle10, 	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle11,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle12,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle13,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle14,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle15,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle16,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle17,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle18,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle19,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle20, 	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle21,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle22,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle23,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle24,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle25,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle26,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle27,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle28,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle29,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle30, 	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle31,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle32,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle33,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle34,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle35,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle36,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle37,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle38,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
-	FRAME_startle39,	NULL, 0, 0, 0,  NULL, 0, (void(__cdecl*)(edict_t*))SsithraCheckMood,
+	FRAME_startle2,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE,  NULL, 0, SsithraCheckMood,
+	FRAME_startle3,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle4,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle5,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle6,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle7,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle8,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle9,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle10, 	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle11,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle12,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle13,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle14,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle15,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle16,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle17,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle18,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle19,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle20, 	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle21,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle22,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle23,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle24,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle25,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle26,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle27,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle28,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle29,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle30, 	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle31,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle32,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle33,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle34,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle35,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle36,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle37,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle38,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
+	FRAME_startle39,	NULL, 0, 0, 0,  NULL, 0, SsithraCheckMood,
 };
-animmove_t ssithra_move_delay = {38, ssithra_frames_delay, (void(__cdecl*)(edict_t*))SsithraCheckMood};
+animmove_t ssithra_move_delay = {38, ssithra_frames_delay, SsithraCheckMood};
 
 /*----------------------------------------------------------------------
   Ssithra Idle - looking around and standing

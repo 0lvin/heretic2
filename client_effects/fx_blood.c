@@ -32,12 +32,12 @@ void PreCacheSplat()
 
 int InsectBloodParticle [NUM_INSECT_BLOOD_PARTICLES] =
 {
-	PART_4x4_GREEN,         
-	PART_4x4_YELLOW,        
-	PART_8x8_GLOBBIT1,         
-	PART_8x8_GLOBBIT2,         
-	PART_16x16_MIST,       
-	PART_16x16_GLOB,      
+	PART_4x4_GREEN,
+	PART_4x4_YELLOW,
+	PART_8x8_GLOBBIT1,
+	PART_8x8_GLOBBIT2,
+	PART_16x16_MIST,
+	PART_16x16_GLOB,
 	PART_16x16_SPARK_G,
 	PART_16x16_SPARK_Y,
 	PART_32x32_GREENBLOOD,
@@ -357,7 +357,7 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 		VectorCopy(self->startpos, p->origin);
 
 		AdvanceParticle(p, 7 * i);
-		
+
 		AddParticleToList(self, p);
 
 		if(driptime >= 17)
@@ -406,7 +406,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 		bloodmark->r.flags |= RF_FIXED | RF_ALPHA_TEXTURE;
 		bloodmark->r.frame = irand(0,4);
 
-		if(dark)		
+		if(dark)
 		{
 			brightness = irand(32, 72);
 			bloodmark->r.color.r = brightness;
@@ -422,7 +422,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 		}
 		bloodmark->r.color.a = 255;
 		bloodmark->alpha = 1.0;
-		
+
 		bloodmark->radius = 10.0;
 		bloodmark->r.scale = flrand(0.2, 0.45);
 
@@ -454,7 +454,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 		{
 			bloodmark->Update = AttemptRemoveSelf;
 		}
-		
+
 		AddEffect(NULL, bloodmark);
 		InsertInCircularList(bloodmark);
 	}
@@ -463,7 +463,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 void FXBloodTrail(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			normal;
-	
+
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_BLOOD_TRAIL].formatString, &normal);
 
 	VectorMA(origin, 0.25, normal, origin);
@@ -479,7 +479,7 @@ void FXBlood(centity_t *owner, int type, int flags, vec3_t origin)
 	qboolean			yellow_blood = false;
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_BLOOD].formatString, &velocity, &amount);
-	
+
 	if(flags&CEF_FLAG8)
 		yellow_blood = true;
 
@@ -488,12 +488,12 @@ void FXBlood(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 	// half as much
 	case DETAIL_LOW:
-		amount = ((float)amount * 0.5);	 
+		amount = ((float)amount * 0.5);
 		break;
 
 	// 3 quarters
 	case DETAIL_NORMAL:
-		amount = ((float)amount * 0.75);	 
+		amount = ((float)amount * 0.75);
 		break;
 
 	default:
@@ -566,7 +566,8 @@ static qboolean LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
 void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*spawner;
-	byte				refpointidx, life;
+	byte				refpointidx;
+	int					life;
 	int					count, i;
 	int					lifetime = 0;
 
@@ -578,7 +579,7 @@ void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
 		count = (life - 1600) / 100;
 		life = 1600;
 		if(count > 10)				// Max out saftey check
-			count = 10; 
+			count = 10;
 	}
 
 	for(i = 0; i < count; i++)

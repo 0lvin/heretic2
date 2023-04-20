@@ -64,7 +64,7 @@ float	pm_friction = 6;
 float	pm_waterfriction = 1;
 float	pm_waterspeed = 400;
 
-#define MIN_WALK_NORMAL 0.7f 
+#define MIN_WALK_NORMAL 0.7f
 
 /*
 
@@ -563,7 +563,7 @@ void PM_StepSlideMove(qboolean gravity) {
 	VectorCopy(pml.velocity, start_v);
 
 	if (PM_SlideMove(gravity) == 0) {
-		return;		// we got exactly where we wanted to go first try	
+		return;		// we got exactly where we wanted to go first try
 	}
 
 	VectorCopy(start_o, down);
@@ -725,11 +725,11 @@ void PM_CheckJump()
 
 void PM_CheckInWater()
 {
-	int contents; 
-	pmove_t* _pm; 
+	int contents;
+	pmove_t* _pm;
 	trace_t tr;
 	float origin2[3];
-	float origin[3]; 
+	float origin[3];
 
 	origin[0] = pml.origin[0];
 	origin[1] = pml.origin[1];
@@ -772,14 +772,14 @@ void PM_CheckInWater()
 	}
 }
 
-void __cdecl PM_AddCurrents(float* a1)
+void PM_AddCurrents(float* a1)
 {
 	long double v1;
-	float v2; 
-	float v3; 
-	float v4; 
-	float v5; 
-	float v6; 
+	float v2;
+	float v3;
+	float v4;
+	float v5;
+	float v6;
 
 	if ((pm->watertype & 0xFC0000) != 0)
 	{
@@ -825,11 +825,11 @@ void __cdecl PM_AddCurrents(float* a1)
 	}
 }
 
-void __cdecl PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
+void PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
 {
-	long double v4; 
-	long double v5; 
-	long double v6; 
+	long double v4;
+	long double v5;
+	long double v6;
 
 	v4 = 300.0;
 	if (high_max || runshrine)
@@ -844,7 +844,7 @@ void __cdecl PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qbool
 	}
 }
 
-int __cdecl PM_SetVelInLiquid(float a1)
+int PM_SetVelInLiquid(float a1)
 {
 	long double v2;
 	qboolean v3;
@@ -870,7 +870,7 @@ int __cdecl PM_SetVelInLiquid(float a1)
 	vel[1] = pml.forward[1] * v15 + pml.right[1] * v16;
 	vel[2] = v15 * pml.forward[2] + v16 * pml.right[2];
 	PM_AddCurrents(vel);
-	PM_BoundVelocity(vel, norm, v3, 0);	
+	PM_BoundVelocity(vel, norm, v3, 0);
 	PM_Accelerate(vel, pm_airaccelerate, 10.0);
 	if (pm->groundentity)
 	{
@@ -906,7 +906,7 @@ void PM_WaterMove()
 
 void PM_WaterSurfMove()
 {
-	unsigned __int8 v0; // dl
+	byte v0;
 
 	if (!PM_SetVelInLiquid(0.5))
 	{
@@ -918,7 +918,7 @@ void PM_WaterSurfMove()
 		else
 		{
 			pml.velocity[2] = (pm->waterheight/* - *(float*)&pml.desiredWaterHeight*/) / pml.frametime;
-			pml.velocity[2] = sin((long double)Sys_Milliseconds() * 0.006666666666666667) * 8.0 + pml.velocity[2];
+			pml.velocity[2] = sin(Sys_Milliseconds() * 0.006666666666666667) * 8.0 + pml.velocity[2];
 		}
 		PM_StepSlideMove(true);
 	}
@@ -1010,7 +1010,7 @@ void Pmove(pmove_t* pmove, qboolean isServer)
 		pm->cmd.forwardmove = 0;
 		pm->cmd.sidemove = 0;
 		pm->cmd.upmove = 0;
-	}	
+	}
 
 	PM_GroundTrace();
 
@@ -1023,7 +1023,7 @@ void Pmove(pmove_t* pmove, qboolean isServer)
 		PM_WaterSurfMove();
 	}
 	else if (pm->waterlevel == 2)
-	{		
+	{
 		if (pm->viewangles[0] > 40.0)
 		{
 			PM_WaterMove();
@@ -1055,7 +1055,7 @@ void Pmove(pmove_t* pmove, qboolean isServer)
 	pm->s.velocity[1] = pml.velocity[1] * 8.0f;
 	pm->s.velocity[2] = pml.velocity[2] * 8.0f;
 
-	// jmarshall: TODO: I believe this is used for first person view. 
+	// jmarshall: TODO: I believe this is used for first person view.
 	pm->cmd.aimangles[0] = pm->cmd.angles[0];
 	pm->cmd.aimangles[1] = pm->cmd.angles[1];
 	pm->cmd.aimangles[2] = pm->cmd.angles[2];

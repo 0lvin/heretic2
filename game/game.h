@@ -1,5 +1,8 @@
 // game.h -- game dll information visible to server.
 
+#ifndef G_GAME_H
+#define G_GAME_H
+
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
@@ -7,6 +10,14 @@
 #endif
 
 #include "../qcommon/qcommon.h"
+#include "../qcommon/singlylinkedlist.h"
+#include "../qcommon/q_physics.h"
+#include "../qcommon/arrayed_list.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #define	GAME_API_VERSION	3
 
@@ -229,9 +240,9 @@ typedef struct
 
 	// New_Physics
 
-	int		(*FindEntitiesInBounds) (vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s *list, int areatype);
-	void	(*TraceBoundingForm) (struct FormMove_s *formMove);
-	qboolean	(*ResizeBoundingForm) (edict_t *self, struct FormMove_s *formMove);
+	int		(*FindEntitiesInBounds) (vec3_t mins, vec3_t maxs, SinglyLinkedList_t *list, int areatype);
+	void	(*TraceBoundingForm) (FormMove_t *formMove);
+	qboolean	(*ResizeBoundingForm) (edict_t *self, FormMove_t *formMove);
 	int		(*GetContentsAtPoint) (vec3_t point);
 	qboolean (*CheckDistances)(vec3_t origin, float dist);
 
@@ -319,7 +330,7 @@ typedef struct
 
 	int			numSkeletalJoints;
 	struct G_SkeletalJoint_s *skeletalJoints;
-	struct ArrayedListNode_s *jointNodes;
+	ArrayedListNode_t *jointNodes;
 
 	// The init() function will only be called when a game starts, not each time a level is loaded.
 	// Persistant data for clients and the server can be allocated in init().
@@ -375,3 +386,9 @@ typedef struct
 } game_export_t;
 
 game_export_t *GetGameApi (game_import_t *import);
+
+#ifdef __cplusplus
+} //end extern "C"
+#endif
+
+#endif

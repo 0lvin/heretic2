@@ -84,7 +84,7 @@ animframe_t gorgon_frames_stand3 [] =
 	FRAME_painc4,	NULL, 0, 0, 0, ai_stand, 0, NULL,
 	FRAME_painc5,	NULL, 0, 0, 0, ai_stand, 0, NULL
 };
-animmove_t gorgon_move_stand3 = {5, gorgon_frames_stand3, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_stand3 = {5, gorgon_frames_stand3, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
 	STAND2 -   Gorgon Standing and looking left
@@ -97,7 +97,7 @@ animframe_t gorgon_frames_stand2 [] =
 	FRAME_painb4,	NULL, 0, 0, 0, ai_stand, 0, NULL,
 	FRAME_painb5,	NULL, 0, 0, 0, ai_stand, 0, NULL
 };
-animmove_t gorgon_move_stand2 = {5, gorgon_frames_stand2, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_stand2 = {5, gorgon_frames_stand2, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -114,7 +114,7 @@ animframe_t gorgon_frames_stand1 [] =
 	FRAME_wait7,	NULL, 0, 0, 0, ai_stand, 0, NULL,
 	FRAME_wait8,	NULL, 0, 0, 0, ai_stand, 0, NULL
 };
-animmove_t gorgon_move_stand1 = {8, gorgon_frames_stand1, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_stand1 = {8, gorgon_frames_stand1, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
 	STAND1 -   Gorgon Standing and wagging it's tail
@@ -130,7 +130,7 @@ animframe_t gorgon_frames_stand4 [] =
 	FRAME_wait7,	NULL, 0, 0, 0, ai_stand, 0, NULL,
 	FRAME_wait8,	NULL, 0, 0, 0, ai_stand, 0, NULL
 };
-animmove_t gorgon_move_stand4 = {8, gorgon_frames_stand4, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_stand4 = {8, gorgon_frames_stand4, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   Gorgon Turning right while running
@@ -151,7 +151,7 @@ animframe_t gorgon_frames_walk3 [] =
 	FRAME_wlkrt12, NULL, 0, 0, 0, ai_walk, 8,  NULL
 };
 
-animmove_t gorgon_move_walk3 = {12, gorgon_frames_walk3, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_walk3 = {12, gorgon_frames_walk3, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -173,7 +173,7 @@ animframe_t gorgon_frames_walk2 [] =
 	FRAME_wlklft12,NULL, 0, 0, 0, ai_walk, 8,  NULL
 };
 
-animmove_t gorgon_move_walk2 = {12, gorgon_frames_walk2, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_walk2 = {12, gorgon_frames_walk2, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   Gorgon Walking
@@ -194,7 +194,7 @@ animframe_t gorgon_frames_walk [] =
 	FRAME_walk12, NULL, 0, 0, 0, ai_walk, 6,  gorgon_growl
 };
 
-animmove_t gorgon_move_walk = {12, gorgon_frames_walk, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_walk = {12, gorgon_frames_walk, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   Gorgon  Melee while Running
@@ -249,7 +249,7 @@ animframe_t gorgon_frames_land [] =
 	FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0,  gorgon_growl,
 	FRAME_jumpa17,NULL, 0, 0, 0, NULL, 0,  NULL
 };
-animmove_t gorgon_move_land = {3, gorgon_frames_land, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_land = {3, gorgon_frames_land, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
 	land 2
@@ -260,7 +260,7 @@ animframe_t gorgon_frames_land2 [] =
 	FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0,  gorgon_growl,
 	FRAME_jumpa17,NULL, 0, 0, 0, NULL, 0,  NULL
 };
-animmove_t gorgon_move_land2 = {3, gorgon_frames_land2, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_land2 = {3, gorgon_frames_land2, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
 	in air
@@ -310,7 +310,7 @@ animframe_t gorgon_frames_melee9 [] =
 	FRAME_hop9,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL,
 	FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL
 };
-animmove_t gorgon_move_melee9 = {10, gorgon_frames_melee9, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee9 = {10, gorgon_frames_melee9, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
 	MELEE8 - hop forward
@@ -328,7 +328,7 @@ animframe_t gorgon_frames_melee8 [] =
 	FRAME_hop9,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL,
 	FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL
 };
-animmove_t gorgon_move_melee8 = {10, gorgon_frames_melee8, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee8 = {10, gorgon_frames_melee8, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   MELEE7 - hop right
@@ -346,7 +346,7 @@ animframe_t gorgon_frames_melee7 [] =
 	FRAME_hop9,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL,
 	FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL
 };
-animmove_t gorgon_move_melee7 = {10, gorgon_frames_melee7, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee7 = {10, gorgon_frames_melee7, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   MELEE6 - hop left
@@ -364,7 +364,7 @@ animframe_t gorgon_frames_melee6 [] =
 	FRAME_hop9,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL,
 	FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL
 };
-animmove_t gorgon_move_melee6 = {10, gorgon_frames_melee6, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee6 = {10, gorgon_frames_melee6, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -379,11 +379,11 @@ animframe_t gorgon_frames_melee5 [] =
 	FRAME_runatk5,	NULL, 0, 0, 0, ai_goal_charge, 20, gorgon_melee5check,
 	FRAME_runatk6,	NULL, 0, 0, 0, ai_goal_charge, 20, NULL,
 	FRAME_runatk7,	NULL, 0, 0, 0, ai_goal_charge, 22, NULL,
-	FRAME_runatk8,	NULL, 0, 0, 0, ai_goal_charge, 21, (void(__cdecl*)(edict_t*))gorgonCheckMood
+	FRAME_runatk8,	NULL, 0, 0, 0, ai_goal_charge, 21, gorgonCheckMood
 };
 
 
-animmove_t gorgon_move_melee5 = {8, gorgon_frames_melee5, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee5 = {8, gorgon_frames_melee5, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -396,7 +396,7 @@ animframe_t gorgon_frames_melee4 [] =
 	FRAME_atkc3, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL,
 	FRAME_atkc4, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL
 };
-animmove_t gorgon_move_melee4 = {4, gorgon_frames_melee4, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee4 = {4, gorgon_frames_melee4, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -410,7 +410,7 @@ animframe_t gorgon_frames_melee3 [] =
 	FRAME_atkd4, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL
 };
 
-animmove_t gorgon_move_melee3 = {4, gorgon_frames_melee3, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee3 = {4, gorgon_frames_melee3, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -424,7 +424,7 @@ animframe_t gorgon_frames_melee2 [] =
 	FRAME_atkb4,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL
 };
 
-animmove_t gorgon_move_melee2 = {4, gorgon_frames_melee2, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee2 = {4, gorgon_frames_melee2, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -438,7 +438,7 @@ animframe_t gorgon_frames_melee1 [] =
 	FRAME_atka4, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL
 };
 
-animmove_t gorgon_move_melee1 = {4, gorgon_frames_melee1, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_melee1 = {4, gorgon_frames_melee1, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -460,7 +460,7 @@ animframe_t gorgon_frames_run3 [] =
 	FRAME_wlkrt12, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_growl
 };
 
-animmove_t gorgon_move_run3 = {12, gorgon_frames_run3, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_run3 = {12, gorgon_frames_run3, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -469,20 +469,20 @@ animmove_t gorgon_move_run3 = {12, gorgon_frames_run3, (void(__cdecl*)(edict_t*)
 animframe_t gorgon_frames_run2 [] =
 {
 	FRAME_wlklft1,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_footstep,
-	FRAME_wlklft2,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wlklft3,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wlklft4,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
+	FRAME_wlklft2,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
+	FRAME_wlklft3,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
+	FRAME_wlklft4,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
 	FRAME_wlklft5,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_footstep,
-	FRAME_wlklft6,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wlklft7,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wlklft8,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wlklft9,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wlklft10,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wlklft11,NULL, 0, 0, 0, gorgon_ai_run, 16,  (void(__cdecl*)(edict_t*))gorgonCheckMood,
+	FRAME_wlklft6,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
+	FRAME_wlklft7,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
+	FRAME_wlklft8,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
+	FRAME_wlklft9,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
+	FRAME_wlklft10,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
+	FRAME_wlklft11,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckMood,
 	FRAME_wlklft12,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_growl
 };
 
-animmove_t gorgon_move_run2 = {12, gorgon_frames_run2, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_run2 = {12, gorgon_frames_run2, gorgonCheckMood};
 
 
 
@@ -492,16 +492,16 @@ animmove_t gorgon_move_run2 = {12, gorgon_frames_run2, (void(__cdecl*)(edict_t*)
 animframe_t gorgon_frames_run1 [] =
 {
 	FRAME_run1, NULL, 0, 0, 0, gorgon_ai_run, 30, gorgon_footstep,
-	FRAME_run2,	NULL, 0, 0, 0, gorgon_ai_run, 31, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_run3,	NULL, 0, 0, 0, gorgon_ai_run, 32, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_run4,	NULL, 0, 0, 0, gorgon_ai_run, 34, (void(__cdecl*)(edict_t*))gorgonCheckMood,
+	FRAME_run2,	NULL, 0, 0, 0, gorgon_ai_run, 31, gorgonCheckMood,
+	FRAME_run3,	NULL, 0, 0, 0, gorgon_ai_run, 32, gorgonCheckMood,
+	FRAME_run4,	NULL, 0, 0, 0, gorgon_ai_run, 34, gorgonCheckMood,
 	FRAME_run5,	NULL, 0, 0, 0, gorgon_ai_run, 30, gorgon_footstep,
-	FRAME_run6,	NULL, 0, 0, 0, gorgon_ai_run, 31, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_run7,	NULL, 0, 0, 0, gorgon_ai_run, 32, (void(__cdecl*)(edict_t*))gorgonCheckMood,
+	FRAME_run6,	NULL, 0, 0, 0, gorgon_ai_run, 31, gorgonCheckMood,
+	FRAME_run7,	NULL, 0, 0, 0, gorgon_ai_run, 32, gorgonCheckMood,
 	FRAME_run8,	NULL, 0, 0, 0, gorgon_ai_run, 34, gorgon_growl
 };
 
-animmove_t gorgon_move_run1 = {8, gorgon_frames_run1, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_run1 = {8, gorgon_frames_run1, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   Gorgon Pain1 - step back while bending head down
@@ -518,7 +518,7 @@ animframe_t gorgon_frames_pain1 [] =
 	FRAME_pain8, NULL, 0, 0, 0, NULL, 0,  NULL,
 	FRAME_pain9, NULL, 0, 0, 0, NULL, 0,  NULL
 };
-animmove_t gorgon_move_pain1 = {9, gorgon_frames_pain1, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_pain1 = {9, gorgon_frames_pain1, gorgonCheckMood};
 
 
 /*----------------------------------------------------------------------
@@ -532,7 +532,7 @@ animframe_t gorgon_frames_pain2 [] =
 	FRAME_painb4, NULL, 0, 0, 0, NULL, 0,  NULL,
 	FRAME_painb5, NULL, 0, 0, 0, NULL, 0,  NULL
 };
-animmove_t gorgon_move_pain2 = {5, gorgon_frames_pain2, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_pain2 = {5, gorgon_frames_pain2, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   Gorgon Pain3 - bend head to the right
@@ -545,7 +545,7 @@ animframe_t gorgon_frames_pain3 [] =
 	FRAME_painc4, NULL, 0, 0, 0, NULL, 0,  NULL,
 	FRAME_painc5, NULL, 0, 0, 0, NULL, 0,  NULL
 };
-animmove_t gorgon_move_pain3 = {5, gorgon_frames_pain3, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_pain3 = {5, gorgon_frames_pain3, gorgonCheckMood};
 
 
 
@@ -740,7 +740,7 @@ animframe_t gorgon_frames_miss [] =
 	FRAME_eatinga2, NULL, 0, 0, 0, NULL, 0,  NULL,
 	FRAME_eatinga1, NULL, 0, 0, 0, NULL, 0,  NULL,
 };
-animmove_t gorgon_move_miss = {4, gorgon_frames_miss, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_miss = {4, gorgon_frames_miss, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   Shake and toss up toy
@@ -861,7 +861,7 @@ animframe_t gorgon_frames_slip [] =
 	FRAME_eatinga2, NULL, 0, 0, 0,  NULL, 0,  NULL,
 	FRAME_eatinga1, NULL, 0, 0, 0,  gorgonSlide, 0,  NULL,
 };
-animmove_t gorgon_move_slip = {36, gorgon_frames_slip, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_slip = {36, gorgon_frames_slip, gorgonCheckMood};
 
 /*----------------
 ?
@@ -895,23 +895,23 @@ animframe_t gorgon_frames_slip_pain [] =
 	FRAME_eatinga2, NULL, 0, 0, 0,  NULL, 0,  NULL,
 	FRAME_eatinga1, NULL, 0, 0, 0,  gorgonSlide, 0,  NULL,
 };
-animmove_t gorgon_move_slip_pain = {26, gorgon_frames_slip_pain, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_slip_pain = {26, gorgon_frames_slip_pain, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
 	delay
 -----------------------------------------------------------------------*/
 animframe_t gorgon_frames_delay [] =
 {
-	FRAME_wait1,	NULL, 0, 0, 0, NULL, 0, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wait2,	NULL, 0, 0, 0, NULL, 0, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wait3,	NULL, 0, 0, 0, NULL, 0, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wait4,	NULL, 0, 0, 0, NULL, 0, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wait5,	NULL, 0, 0, 0, NULL, 0, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wait6,	NULL, 0, 0, 0, NULL, 0, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wait7,	NULL, 0, 0, 0, NULL, 0, (void(__cdecl*)(edict_t*))gorgonCheckMood,
-	FRAME_wait8,	NULL, 0, 0, 0, NULL, 0, (void(__cdecl*)(edict_t*))gorgonCheckMood,
+	FRAME_wait1,	NULL, 0, 0, 0, NULL, 0, gorgonCheckMood,
+	FRAME_wait2,	NULL, 0, 0, 0, NULL, 0, gorgonCheckMood,
+	FRAME_wait3,	NULL, 0, 0, 0, NULL, 0, gorgonCheckMood,
+	FRAME_wait4,	NULL, 0, 0, 0, NULL, 0, gorgonCheckMood,
+	FRAME_wait5,	NULL, 0, 0, 0, NULL, 0, gorgonCheckMood,
+	FRAME_wait6,	NULL, 0, 0, 0, NULL, 0, gorgonCheckMood,
+	FRAME_wait7,	NULL, 0, 0, 0, NULL, 0, gorgonCheckMood,
+	FRAME_wait8,	NULL, 0, 0, 0, NULL, 0, gorgonCheckMood,
 };
-animmove_t gorgon_move_delay = {8, gorgon_frames_delay, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_delay = {8, gorgon_frames_delay, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   Gorgon roar- make noise, alert others
@@ -938,7 +938,7 @@ animframe_t gorgon_frames_roar [] =
 	FRAME_speak18, NULL, 0, 0, 0, NULL, 0,  NULL,
 	FRAME_speak19, NULL, 0, 0, 0, NULL, 0,  NULL
 };
-animmove_t gorgon_move_roar = {19, gorgon_frames_roar, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_roar = {19, gorgon_frames_roar, gorgonCheckMood};
 
 /*----------------------------------------------------------------------
   Gorgon roar2- make noise in response to main roar
@@ -965,7 +965,7 @@ animframe_t gorgon_frames_roar2 [] =
 	FRAME_speak18, NULL, 0, 0, 0, NULL, 0,  NULL,
 	FRAME_speak19, NULL, 0, 0, 0, NULL, 0,  NULL
 };
-animmove_t gorgon_move_roar2 = {19, gorgon_frames_roar2, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_roar2 = {19, gorgon_frames_roar2, gorgonCheckMood};
 
 //=====================================================
 
@@ -1065,7 +1065,7 @@ animframe_t gorgon_frames_outwater [] =
 	FRAME_jumpb16,	NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_jumpb17,	NULL, 0, 0, 0, NULL, 0, NULL
 };
-animmove_t gorgon_move_outwater = {20, gorgon_frames_outwater, (void(__cdecl*)(edict_t*))gorgonCheckMood};
+animmove_t gorgon_move_outwater = {20, gorgon_frames_outwater, gorgonCheckMood};
 
 //=============================================================================
 

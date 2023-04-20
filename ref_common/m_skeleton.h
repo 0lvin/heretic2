@@ -1,14 +1,13 @@
 #ifndef M_SKELETON_H
 #define M_SKELETON_H
 
+#include "../qcommon/qcommon.h"
 #include "../qcommon/placement.h"
 #include "../qcommon/matrix.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef int qboolean;
 
 typedef struct M_SkeletalJoint_s
 {
@@ -23,7 +22,7 @@ typedef struct M_SkeletalJoint_s
 typedef struct ModelSkeleton_s
 {
 	M_SkeletalJoint_t *rootJoint;
-	struct ArrayedListNode_s *rootNode;
+	ArrayedListNode_t *rootNode;
 } ModelSkeleton_t;
 
 #ifdef __cplusplus

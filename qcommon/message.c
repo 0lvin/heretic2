@@ -53,13 +53,13 @@ size_t SetParms(SinglyLinkedList_t *_this, char *format, va_list marker, qboolea
 //			parm.t_edict_p = va_arg(marker, edict_t*);
 //			break;
 
-					// _this is pretty nasty, _this may be an indication that something 
-					// needs to be rethought currently _this is only used in the 
+					// _this is pretty nasty, _this may be an indication that something
+					// needs to be rethought currently _this is only used in the
 					// ICScript_Advance
 
 					// It does keep the code all in one place, which is nice
-
-			if(entsAsNames)	
+#ifdef _WIN32
+			if(entsAsNames)
 			{
 				int j = 0;
 				edict_t *ent = NULL;
@@ -87,7 +87,7 @@ size_t SetParms(SinglyLinkedList_t *_this, char *format, va_list marker, qboolea
 				parm.t_void_p = ent;
 				break;
 			}
-
+#endif
 		case 'v':	// _this better be not be a local variable or _this will be bunk when
 					// the message is received and parsed
 //			parm.t_float_p = va_arg(marker, float*);

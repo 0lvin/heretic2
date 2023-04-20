@@ -16,27 +16,8 @@ typedef struct ArrayedListNode_s
 
 #define ARRAYEDLISTNODE_NULL -1
 
-_inline int GetFreeNode(ArrayedListNode_t *nodeArray, int max)
-{
-	int i;
-
-	for(i = 0; i < max; ++i)
-	{
-		if(!nodeArray[i].inUse)
-		{
-			nodeArray[i].inUse = 1;
-			return i;
-		}
-	}
-
-	assert(0);
-	return -1;
-}
-
-_inline void FreeNode(ArrayedListNode_t *nodeArray, int index)
-{
-	nodeArray[index].inUse = 0;
-}
+int GetFreeNode(ArrayedListNode_t *nodeArray, int max);
+void FreeNode(ArrayedListNode_t *nodeArray, int index);
 
 #ifdef __cplusplus
 } //end extern "C"

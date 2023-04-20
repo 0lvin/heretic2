@@ -10,10 +10,7 @@
 #ifndef __FMODEL_HEADER
 #define __FMODEL_HEADER
 
-
-typedef unsigned char 		byte;
-typedef int	qboolean;
-typedef float vec3_t[3];
+#include "../qcommon/q_shared.h"
 
 #define	MAX_FM_TRIANGLES	2048
 #define MAX_FM_VERTS		2048
@@ -84,7 +81,7 @@ typedef struct
 #define FM_TRI_NAME		"tris"
 #define FM_TRI_VER		1
 
-typedef struct 
+typedef struct
 {
 	short	index_xyz[3];
 	short	index_st[3];
@@ -208,7 +205,6 @@ typedef struct fmdl_s
 	struct ModelSkeleton_s	*skeletons;
 
 	int						referenceType;
-	struct M_Reference_s	*refsForFrame;
 } fmdl_t;
 
 /*****************************************************

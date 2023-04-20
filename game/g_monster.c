@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "../qcommon/qcommon.h"
 #include "g_monster.h"
 #include "m_stats.h"
@@ -1443,7 +1444,7 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 
 				for(i = 0; i <= game.maxclients; i++)
 				{
-					c_dist[i] = 9999999999;
+					c_dist[i] = INT_MAX;
 
 					client = &g_edicts[i];
 					if(client->client && client->health > 0)

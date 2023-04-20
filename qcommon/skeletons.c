@@ -70,7 +70,7 @@ int skeletonENameOffsets[] =
 	1,	// PLAGUE ELF
 };
 
-int numJointsInSkeleton[] = 
+int numJointsInSkeleton[] =
 {
 	NUM_JOINTS_RAVEN,
 	NUM_JOINTS_BOX,
@@ -90,8 +90,8 @@ int numNodesInSkeleton[] =
 	2,	// CORVUS
 };
 
-void CreateRavenSkel(void *skeletalJoints, size_t jointSize, struct ArrayedListNode_s *jointNodes, int root);
-void CreateBoxSkel(void *skeletalJoints, size_t jointSize, struct ArrayedListNode_s *jointNodes, int root);
+void CreateRavenSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int root);
+void CreateBoxSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int root);
 void CreateBeetleSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
 void CreateElfLordSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
 void CreatePlagueElfSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);

@@ -1225,7 +1225,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 
 void plagueElf_pain(edict_t *self, G_Message_t *msg)
 {
-	intptr_t		temp; // jmarshall: 64bit
+	size_t			temp; // jmarshall: 64bit
 	int				damage;
 	qboolean		force_pain;
 

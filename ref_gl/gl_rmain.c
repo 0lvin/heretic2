@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -197,7 +197,7 @@ void R_RotateForEntity (entity_t *e)
 	glRotatef(e->angles[1] * 57.295776, 0, 0, 1);
 	glRotatef(e->angles[0] * -57.295776, 0, 1, 0);
 	glRotatef(e->angles[2] * -57.295776, 1, 0, 0);
-// jmarshall end 
+// jmarshall end
 }
 
 /*
@@ -242,7 +242,7 @@ void R_DrawSpriteModel (entity_t *e)
 
 	glColor4f( 1, 1, 1, alpha );
 
-    
+
 	glShadeModel(7425);
 	GL_TexEnv( GL_MODULATE );
 
@@ -464,7 +464,7 @@ void RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, flo
 	for (int i = 0; i < 6; i++)
 	{
 		glTexCoord2f(st[indexes[i]][0], st[indexes[i]][1]);
-		glVertex3fv(vertexes[indexes[i]]);		
+		glVertex3fv(vertexes[indexes[i]]);
 	}
 }
 
@@ -485,19 +485,19 @@ void R_DrawParticles(int num_particles, particle_t* particles, int type)
 
 	if (type)
 	{
-		GL_Bind(atlas_aparticle->texnum);				
-		glBlendFunc(GL_ONE, GL_ONE);		
+		GL_Bind(atlas_aparticle->texnum);
+		glBlendFunc(GL_ONE, GL_ONE);
 	}
 	else
 	{
-		GL_Bind(atlas_particle->texnum);					
+		GL_Bind(atlas_particle->texnum);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	glDepthMask(GL_FALSE);		// no z buffering
 	glEnable(GL_BLEND);
 	GL_TexEnv(GL_MODULATE);
-	glBegin(GL_TRIANGLES);	
+	glBegin(GL_TRIANGLES);
 
 	for (p = particles, i = 0; i < num_particles; i++, p++)
 	{
@@ -510,7 +510,7 @@ void R_DrawParticles(int num_particles, particle_t* particles, int type)
 		color[3] = p->color.a;
 
 		tex_coords_t* texCoord = &part_TexCoords[p->type & PFL_FLAG_MASK];
-		
+
 		RB_RenderQuad(p->origin, right, up, color, texCoord->lx, texCoord->ty, texCoord->rx, texCoord->by);
 	}
 
@@ -893,10 +893,10 @@ void R_RenderView (refdef_t *fd)
 	if (r_speeds->value)
 	{
 		ri.Con_Printf (PRINT_ALL, "%4i wpoly %4i epoly %i tex %i lmaps\n",
-			c_brush_polys, 
-			c_alias_polys, 
-			c_visible_textures, 
-			c_visible_lightmaps); 
+			c_brush_polys,
+			c_alias_polys,
+			c_visible_textures,
+			c_visible_lightmaps);
 	}
 }
 
@@ -953,7 +953,7 @@ static void GL_DrawStereoPattern( void )
 			GL_DrawColoredStereoLinePair( 1, 1, 0, 12);
 			GL_DrawColoredStereoLinePair( 0, 1, 0, 14);
 		glEnd();
-		
+
 		GLimp_EndFrame();
 	}
 }
@@ -1004,17 +1004,17 @@ R_RenderFrame
 void R_RenderFrame (refdef_t *fd)
 {
 	R_RenderView( fd );
-	R_SetLightLevel ();	
+	R_SetLightLevel ();
 	glLineWidth(10.0);
 
 	glDisable(GL_DEPTH_TEST);
 	for (int i = 0; i < numDebugLines; i++)
 	{
-		glBegin(GL_LINES);		
+		glBegin(GL_LINES);
 		glVertex3f(debug_lines[i].start[0], debug_lines[i].start[1], debug_lines[i].start[2]);
 		glVertex3f(debug_lines[i].end[0], debug_lines[i].end[1], debug_lines[i].end[2]);
 		glEnd();
-		
+
 	}
 	glEnable(GL_DEPTH_TEST);
 
@@ -1214,7 +1214,7 @@ R_Init
 ===============
 */
 int R_Init( void *hinstance, void *hWnd )
-{	
+{
 	char renderer_buffer[1000];
 	char vendor_buffer[1000];
 	int		err;
@@ -1311,7 +1311,7 @@ int R_Init( void *hinstance, void *hWnd )
 			ri.Cvar_Set( "gl_monolightmap", "A" );
 			ri.Con_Printf( PRINT_ALL, "...using gl_monolightmap 'a'\n" );
 		}
-		else if ( gl_config.renderer & GL_RENDERER_POWERVR ) 
+		else if ( gl_config.renderer & GL_RENDERER_POWERVR )
 		{
 			ri.Cvar_Set( "gl_monolightmap", "0" );
 		}
@@ -1323,7 +1323,7 @@ int R_Init( void *hinstance, void *hWnd )
 
 	// power vr can't have anything stay in the framebuffer, so
 	// the screen needs to redraw the tiled background every frame
-	if ( gl_config.renderer & GL_RENDERER_POWERVR ) 
+	if ( gl_config.renderer & GL_RENDERER_POWERVR )
 	{
 		ri.Cvar_Set( "scr_drawall", "1" );
 	}
@@ -1382,7 +1382,7 @@ R_Shutdown
 ===============
 */
 void R_Shutdown (void)
-{	
+{
 	ri.Cmd_RemoveCommand ("modellist");
 	ri.Cmd_RemoveCommand ("screenshot");
 	ri.Cmd_RemoveCommand ("imagelist");
@@ -1650,11 +1650,6 @@ void	Draw_TileClear (int x, int y, int w, int h, char *name);
 void	Draw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
 void	Draw_FadeScreen (void);
 
-int GetReferencedID(struct model_s *model)
-{
-	return 0;
-}
-
 void Draw_Name (vec3_t origin, char *Name, paletteRGBA_t color)
 {
 
@@ -1703,7 +1698,6 @@ refexport_t GetRefAPI (refimport_t rimp )
 	re.EndRegistration = R_EndRegistration;
 	re.Draw_Name = Draw_Name;
 	re.DrawLine = DrawLine;
-	re.GetReferencedID = GetReferencedID;
 	re.RenderFrame = (int(__cdecl*)(refdef_t*))R_RenderFrame;
 	re.DrawGetPicSize = Draw_GetPicSize;
 	re.DrawPic = (void(__cdecl*)(int, int, char*, float))Draw_Pic;
@@ -1718,7 +1712,7 @@ refexport_t GetRefAPI (refimport_t rimp )
 	re.DrawInitCinematic = R_DrawInitCinematic;
 	re.DrawCloseCinematic = R_DrawCloseCinematic;
 	re.DrawCinematic = R_DrawCinematic;
-	
+
 	re.BeginFrame = R_BeginFrame;
 	re.EndFrame = R_EndFrame;
 
@@ -1727,7 +1721,7 @@ refexport_t GetRefAPI (refimport_t rimp )
 	int(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
 
 
-	
+
 
 
 	Swap_Init ();

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -85,7 +85,7 @@ void M_PushMenu ( void (*draw) (void), const char *(*key) (int k) )
 {
 	int		i;
 
-	if (Cvar_VariableValue ("maxclients") == 1 
+	if (Cvar_VariableValue ("maxclients") == 1
 		&& Com_ServerState ())
 		Cvar_Set ("paused", "1");
 
@@ -246,7 +246,7 @@ const char *Default_MenuKey( menuframework_s *m, int key )
 	case K_AUX30:
 	case K_AUX31:
 	case K_AUX32:
-		
+
 	case K_KP_ENTER:
 	case K_ENTER:
 		if ( m )
@@ -374,7 +374,7 @@ void M_DrawTextBox (int x, int y, int width, int lines)
 	M_DrawCharacter (cx, cy+8, 9);
 }
 
-		
+
 /*
 =======================================================================
 
@@ -387,7 +387,7 @@ MAIN MENU
 
 void M_Main_Draw (void)
 {
-	
+
 }
 
 
@@ -565,7 +565,7 @@ char *bindnames[][2] =
 {"invprev",			"prev item"},
 {"invnext",			"next item"},
 
-{"cmd help", 		"help computer" }, 
+{"cmd help", 		"help computer" },
 { 0, 0 }
 };
 
@@ -656,7 +656,7 @@ static void DrawKeyBindingFunc( void *self )
 	menuaction_s *a = ( menuaction_s * ) self;
 
 	M_FindKeysForCommand( bindnames[a->generic.localdata[0]][0], keys);
-		
+
 	if (keys[0] == -1)
 	{
 		Menu_DrawString( a->generic.x + a->generic.parent->x + 16, a->generic.y + a->generic.parent->y, "???" );
@@ -913,7 +913,7 @@ static void Keys_MenuInit( void )
 	Menu_AddItem( &s_keys_menu, ( void * ) &s_keys_inv_next_action );
 
 	Menu_AddItem( &s_keys_menu, ( void * ) &s_keys_help_computer_action );
-	
+
 	Menu_SetStatusBar( &s_keys_menu, "enter to change, backspace to clear" );
 	Menu_Center( &s_keys_menu );
 }
@@ -929,7 +929,7 @@ static const char *Keys_MenuKey( int key )
 	menuaction_s *item = ( menuaction_s * ) Menu_ItemAtCursor( &s_keys_menu );
 
 	if ( bind_grab )
-	{	
+	{
 		if ( key != K_ESCAPE && key != '`' )
 		{
 			char cmd[1024];
@@ -937,7 +937,7 @@ static const char *Keys_MenuKey( int key )
 			Com_sprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n", Key_KeynumToString(key), bindnames[item->generic.localdata[0]][0]);
 			Cbuf_InsertText (cmd);
 		}
-		
+
 		Menu_SetStatusBar( &s_keys_menu, "enter to change, backspace to clear" );
 		bind_grab = false;
 		return menu_out_sound;
@@ -1029,7 +1029,7 @@ static void NoAltTabFunc( void *unused )
 	Cvar_SetValue( "win_noalttab", s_options_noalttab_box.curvalue );
 }
 
-static float ClampCvar( float min, float max, float value )
+float ClampCvar( float min, float max, float value )
 {
 	if ( value < min ) return min;
 	if ( value > max ) return max;
@@ -1139,7 +1139,7 @@ static void UpdateSoundQualityFunc( void *unused )
 		Cvar_SetValue( "s_khz", 11 );
 		Cvar_SetValue( "s_loadas8bit", true );
 	}
-	
+
 	Cvar_SetValue( "s_primary", s_options_compatibility_list.curvalue );
 
 	M_DrawTextBox( 8, 120 - 48, 36, 3 );
@@ -1819,14 +1819,14 @@ void M_Menu_Credits_f( void )
 	else
 	{
 		isdeveloper = Developer_searchpath (1);
-		
+
 		if (isdeveloper == 1)			// xatrix
 			credits = xatcredits;
 		else if (isdeveloper == 2)		// ROGUE
 			credits = roguecredits;
 		else
 		{
-			credits = idcredits;	
+			credits = idcredits;
 		}
 
 	}
@@ -2380,7 +2380,7 @@ void RulesChangeFunc ( void *self )
 	// ROGUE GAMES
 	else if(Developer_searchpath(2) == 2)
 	{
-		if (s_rules_box.curvalue == 2)			// tag	
+		if (s_rules_box.curvalue == 2)			// tag
 		{
 			s_maxclients_field.generic.statusbar = NULL;
 			s_startserver_dmoptions_action.generic.statusbar = NULL;
@@ -2580,7 +2580,7 @@ void StartServer_MenuInit( void )
 	s_rules_box.generic.x	= 0;
 	s_rules_box.generic.y	= 20;
 	s_rules_box.generic.name	= "rules";
-	
+
 //PGM - rogue games only available with rogue DLL.
 	if(Developer_searchpath(2) == 2)
 		s_rules_box.itemnames = dm_coop_names_rogue;
@@ -2617,7 +2617,7 @@ void StartServer_MenuInit( void )
 	/*
 	** maxclients determines the maximum number of players that can join
 	** the game.  If maxclients is only "1" then we should default the menu
-	** option to 8 players, otherwise use whatever its current value is. 
+	** option to 8 players, otherwise use whatever its current value is.
 	** Clamping will be done when the server is actually started.
 	*/
 	s_maxclients_field.generic.type = MTYPE_FIELD;
@@ -2630,7 +2630,7 @@ void StartServer_MenuInit( void )
 	s_maxclients_field.visible_length = 3;
 	if ( Cvar_VariableValue( "maxclients" ) == 1 )
 		strcpy( s_maxclients_field.buffer, "8" );
-	else 
+	else
 		strcpy( s_maxclients_field.buffer, Cvar_VariableString("maxclients") );
 
 	s_hostname_field.generic.type = MTYPE_FIELD;
@@ -2739,7 +2739,7 @@ static menulist_s	s_no_spheres_box;
 
 static void DMFlagCallback( void *self )
 {
-	
+
 }
 
 void DMOptions_MenuDraw(void)
@@ -3069,7 +3069,7 @@ static qboolean PlayerConfig_ScanDirectories( void )
 	/*
 	** get a list of directories
 	*/
-	do 
+	do
 	{
 		path = FS_NextPath( path );
 		Com_sprintf( findname, sizeof(findname), "%s/players/*.*", path );
@@ -3282,7 +3282,7 @@ qboolean PlayerConfig_MenuInit( void )
 		}
 	}
 
-	s_player_config_menu.x = viddef.width / 2 - 95; 
+	s_player_config_menu.x = viddef.width / 2 - 95;
 	s_player_config_menu.y = viddef.height / 2 - 97;
 	s_player_config_menu.nitems = 0;
 
@@ -3382,7 +3382,7 @@ qboolean PlayerConfig_MenuInit( void )
 
 void PlayerConfig_MenuDraw( void )
 {
-	
+
 }
 
 const char *PlayerConfig_MenuKey (int key)
@@ -3395,8 +3395,8 @@ const char *PlayerConfig_MenuKey (int key)
 
 		Cvar_Set( "name", s_player_name_field.buffer );
 
-		Com_sprintf( scratch, sizeof( scratch ), "%s/%s", 
-			s_pmi[s_player_model_box.curvalue].directory, 
+		Com_sprintf( scratch, sizeof( scratch ), "%s/%s",
+			s_pmi[s_player_model_box.curvalue].directory,
 			s_pmi[s_player_model_box.curvalue].skindisplaynames[s_player_skin_box.curvalue] );
 
 		Cvar_Set( "skin", scratch );

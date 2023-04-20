@@ -526,9 +526,9 @@ void fish_blocked(edict_t *self, struct trace_s *trace)
 		else
 		// did we hit the same wall as last time ? cos if we did, we already dealt with it
 // jmarshall - 64bit
-		if ((intptr_t)trace->surface != (intptr_t)self->shrine_type)
+		if ((size_t)trace->surface != self->shrine_type)
 		{
-			self->shrine_type = (intptr_t)trace->surface;
+			self->shrine_type = (size_t)trace->surface;
 			fish_bounce_direction(self);
 		}
 // jmarshall end

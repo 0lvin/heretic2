@@ -4,7 +4,6 @@
 // Copyright 1998 Raven Software
 //
 
-#include <windows.h>
 #include <stdio.h>
 #include "resourcemanager.h"
 #include <assert.h>
@@ -87,7 +86,7 @@ void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t size)
 
 	//	assert(size == resource->resSize);
 
-	assert(resource->free);	// constructor not called; possibly due to a static object 
+	assert(resource->free);	// constructor not called; possibly due to a static object
 								// containing a static ResourceManagerFastLarge member being
 								// constructed before its own static members
 

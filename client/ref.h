@@ -3,6 +3,7 @@
 
 #include "../qcommon/qcommon.h"
 #include "../qcommon/q_surface.h"
+#include "../qcommon/arrayed_list.h"
 
 // these are the maximum number that maybe rendered on any given frame
 #define	MAX_DLIGHTS		32
@@ -200,8 +201,6 @@ typedef struct
 	void	(*SetSky) (char *name, float rotate, vec3_t axis);
 	void	(*EndRegistration) (void);
 
-	int		(*GetReferencedID) (struct model_s *model);
-
 	int		(*RenderFrame) (refdef_t *fd);
 
 	void	(*DrawLine)(vec3_t start, vec3_t end);
@@ -247,7 +246,7 @@ typedef struct
 typedef struct
 {
 	struct CL_SkeletalJoint_s *skeletalJoints;
-	struct ArrayedListNode_s *jointNodes;
+	ArrayedListNode_t *jointNodes;
 
 	void	(*Sys_Error) (int err_level, char *str, ...);
 	void	(*Com_Error) (int code, char *fmt, ...);

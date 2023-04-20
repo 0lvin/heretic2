@@ -8,6 +8,7 @@
 #include "utilities.h"
 #include "../player/p_anims.h"
 #include "../qcommon/fx.h"
+#include "g_hitlocation.h"
 
 #ifdef __cplusplus
 extern "C" {
