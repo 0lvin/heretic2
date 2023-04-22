@@ -24,7 +24,6 @@ void S_Init(void)
 	sndGlobal.device = alcOpenDevice(NULL);
 	if (!sndGlobal.device) {
 		Com_Error(ERR_FATAL, "Failed to open OpenAL device...\n");
-		return false;
 	}
 
 	// Set our OpenAL device context.
@@ -287,30 +286,4 @@ void S_Update(vec3_t quake_origin, vec3_t forward, vec3_t right, vec3_t up)
 	sndGlobal.prev_origin[1] = origin[1];
 	sndGlobal.prev_origin[2] = origin[2];
 
-}
-
-void S_PlayMusic(int track, int looping)
-{
-	char filename[512];
-
-	if(track < 10)
-		sprintf(filename, "music/Track0%d.wav", track);
-	else
-		sprintf(filename, "music/Track%d.wav", track);
-
-	sfx_t *music = S_FindName(filename, true);
-	if (!music)
-	{
-		Com_Printf("Failed to load music %s\n", filename);
-		return;
-	}
-
-	alSourcei(sndGlobal.music_voice, AL_BUFFER, music->buffer);
-	alSourcei(sndGlobal.music_voice, AL_SOURCE_RELATIVE, AL_FALSE);
-	alSourcei(sndGlobal.music_voice, AL_LOOPING, AL_TRUE);
-
-	float volume = s_musicVolume->value / 100.0f;
-	alSourcef(sndGlobal.music_voice, AL_GAIN, volume);
-
-	alSourcePlay(sndGlobal.music_voice);
 }

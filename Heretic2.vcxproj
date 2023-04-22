@@ -462,7 +462,6 @@
     <ClCompile Include="server\sv_send.c" />
     <ClCompile Include="server\sv_user.c" />
     <ClCompile Include="server\sv_world.c" />
-    <ClCompile Include="win32\cd_win.c" />
     <ClCompile Include="win32\conproc.c" />
     <ClCompile Include="win32\glw_imp.c" />
     <ClCompile Include="win32\in_win.c" />
@@ -643,7 +642,6 @@
     <ClInclude Include="qcommon\angles.h" />
     <ClInclude Include="qcommon\anorms.h" />
     <ClInclude Include="qcommon\arrayed_list.h" />
-    <ClInclude Include="qcommon\cdaudio.h" />
     <ClInclude Include="qcommon\cl_strings.h" />
     <ClInclude Include="qcommon\EffectFlags.h" />
     <ClInclude Include="qcommon\fc.h" />

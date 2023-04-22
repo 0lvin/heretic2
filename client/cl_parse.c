@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -27,7 +27,7 @@ char *svc_strings[256] =
 
 	"svc_layout",
 	"svc_inventory",
-	"svc_client_effect",	
+	"svc_client_effect",
 	"svc_nop",
 	"svc_disconnect",
 	"svc_reconnect",
@@ -313,7 +313,7 @@ void CL_ParseServerData (void)
 {
 	char	*str;
 	int		i;
-	
+
 	Com_DPrintf ("Serverdata packet received.\n");
 //
 // wipe the client_state_t struct
@@ -464,13 +464,14 @@ void CL_ParseConfigString (void)
 	s = MSG_ReadString(&net_message);
 	strcpy (cl.configstrings[i], s);
 
-	// do something apropriate 
+	// do something apropriate
 
 	if (i >= CS_LIGHTS && i < CS_LIGHTS+MAX_LIGHTSTYLES)
 		CL_SetLightstyle (i - CS_LIGHTS);
 	else if (i == CS_CDTRACK)
 	{
-		S_PlayMusic(atoi(cl.configstrings[CS_CDTRACK]), true);		
+		// TODO: rewrite to play track
+		// S_PlayMusic(atoi(cl.configstrings[CS_CDTRACK]), true);
 	}
 	else if (i >= CS_MODELS && i < CS_MODELS+MAX_MODELS)
 	{
@@ -521,7 +522,7 @@ void CL_ParseStartSoundPacket(void)
     int 	channel, ent;
     int 	sound_num;
     float 	volume;
-    float 	attenuation;  
+    float 	attenuation;
 	int		flags;
 	float	ofs;
 
@@ -532,11 +533,11 @@ void CL_ParseStartSoundPacket(void)
 		volume = MSG_ReadByte (&net_message) / 255.0;
 	else
 		volume = DEFAULT_SOUND_PACKET_VOLUME;
-	
+
     if (flags & SND_ATTENUATION)
 		attenuation = MSG_ReadByte (&net_message) / 64.0;
 	else
-		attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;	
+		attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;
 
     if (flags & SND_OFFSET)
 		ofs = MSG_ReadByte (&net_message) / 1000.0;
@@ -545,7 +546,7 @@ void CL_ParseStartSoundPacket(void)
 
 	if (flags & SND_ENT)
 	{	// entity reletive
-		channel = MSG_ReadShort(&net_message); 
+		channel = MSG_ReadShort(&net_message);
 		ent = channel>>3;
 		if (ent > MAX_EDICTS)
 			Com_Error (ERR_DROP,"CL_ParseStartSoundPacket: ent = %i", ent);
@@ -561,7 +562,7 @@ void CL_ParseStartSoundPacket(void)
 	if (flags & SND_POS)
 	{	// positioned in space
 		MSG_ReadPos (&net_message, pos_v);
- 
+
 		pos = pos_v;
 	}
 	else	// use entity number
@@ -571,7 +572,7 @@ void CL_ParseStartSoundPacket(void)
 		return;
 
 	S_StartSound (pos, ent, channel, cl.sound_precache[sound_num], volume, attenuation, ofs);
-}       
+}
 
 
 void SHOWNET(char *s)
@@ -626,18 +627,18 @@ void CL_ParseServerMessage (void)
 			else
 				SHOWNET(svc_strings[cmd]);
 		}
-	
+
 	// other commands
 		switch (cmd)
 		{
 		default:
 			Com_Error (ERR_DROP,"CL_ParseServerMessage: Illegible server message\n");
 			break;
-			
+
 		case svc_nop:
 //			Com_Printf ("svc_nop\n");
 			break;
-			
+
 		case svc_disconnect:
 			Com_Error (ERR_DISCONNECT,"Server disconnected\n");
 			break;
@@ -675,26 +676,26 @@ void CL_ParseServerMessage (void)
 			SCR_CenterPrint(CL_GetLevelString(i));
 			S_StartLocalSound(CL_GetLevelWav(i));
 			break;
-			
+
 		case svc_stufftext:
 			s = MSG_ReadString (&net_message);
 			Com_DPrintf ("stufftext: %s\n", s);
 			Cbuf_AddText (s);
 			break;
-			
+
 		case svc_serverdata:
 			Cbuf_Execute ();		// make sure any stuffed commands are done
 			CL_ParseServerData ();
 			break;
-			
+
 		case svc_configstring:
 			CL_ParseConfigString ();
 			break;
-			
+
 		case svc_sound:
 			CL_ParseStartSoundPacket();
 			break;
-			
+
 		case svc_spawnbaseline:
 			CL_ParseBaseline ();
 			break;

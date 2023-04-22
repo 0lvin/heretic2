@@ -978,9 +978,6 @@
     <ClCompile Include="ref_gl\gl_warp.c">
       <Filter>ref_gl</Filter>
     </ClCompile>
-    <ClCompile Include="win32\cd_win.c">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="win32\conproc.c">
       <Filter>win32</Filter>
     </ClCompile>
@@ -1563,9 +1560,6 @@
       <Filter>qcommon</Filter>
     </ClInclude>
     <ClInclude Include="qcommon\arrayed_list.h">
-      <Filter>qcommon</Filter>
-    </ClInclude>
-    <ClInclude Include="qcommon\cdaudio.h">
       <Filter>qcommon</Filter>
     </ClInclude>
     <ClInclude Include="qcommon\cl_strings.h">

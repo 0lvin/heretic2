@@ -17,7 +17,6 @@
 #include "input.h"
 #include "keys.h"
 #include "console.h"
-#include "../qcommon/cdaudio.h"
 #include "../player/player.h"
 #include "../qcommon/levelmaps.h"
 
@@ -707,7 +706,6 @@ void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float f
 void S_StopAllSounds(void);
 void S_StopAllSounds_Sounding(void);
 void S_Update(vec3_t quake_origin, vec3_t forward, vec3_t right, vec3_t up);
-void S_PlayMusic(int track, int looping);
 
 void CL_RunDLights(void);
 void CL_RunLightStyles(void);

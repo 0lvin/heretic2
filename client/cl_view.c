@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -153,13 +153,13 @@ void CL_PrepRefresh (void)
 	mapname[strlen(mapname)-4] = 0;		// cut off ".bsp"
 
 	// register models, pics, and skins
-	Com_Printf ("Map: %s\r", mapname); 
+	Com_Printf ("Map: %s\r", mapname);
 	SCR_UpdateScreen ();
 	re.BeginRegistration (mapname);
 	Com_Printf ("                                     \r");
 
 	// precache status bar pics
-	Com_Printf ("pics\r"); 
+	Com_Printf ("pics\r");
 	SCR_UpdateScreen ();
 	SCR_TouchPics ();
 	Com_Printf ("                                     \r");
@@ -172,7 +172,7 @@ void CL_PrepRefresh (void)
 		strcpy (name, cl.configstrings[CS_MODELS+i]);
 		name[37] = 0;	// never go beyond one line
 		if (name[0] != '*')
-			Com_Printf ("%s\r", name); 
+			Com_Printf ("%s\r", name);
 		SCR_UpdateScreen ();
 		Sys_SendKeyEvents ();	// pump message loop
 		cl.model_draw[i] = re.RegisterModel(cl.configstrings[CS_MODELS + i]);
@@ -184,20 +184,20 @@ void CL_PrepRefresh (void)
 			Com_Printf ("                                     \r");
 	}
 
-	Com_Printf ("images\r", i); 
+	Com_Printf ("images\r", i);
 	SCR_UpdateScreen ();
 	for (i=1 ; i<MAX_IMAGES && cl.configstrings[CS_IMAGES+i][0] ; i++)
 	{
 		cl.image_precache[i] = re.RegisterPic (cl.configstrings[CS_IMAGES+i]);
 		Sys_SendKeyEvents ();	// pump message loop
 	}
-	
+
 	Com_Printf ("                                     \r");
 	for (i=0 ; i<MAX_CLIENTS ; i++)
 	{
 		if (!cl.configstrings[CS_PLAYERSKINS+i][0])
 			continue;
-		Com_Printf ("client %i\r", i); 
+		Com_Printf ("client %i\r", i);
 		SCR_UpdateScreen ();
 		Sys_SendKeyEvents ();	// pump message loop
 		CL_ParseClientinfo (i);
@@ -207,10 +207,10 @@ void CL_PrepRefresh (void)
 	CL_LoadClientinfo (&cl.baseclientinfo, "unnamed\\male/grunt");
 
 	// set sky textures and speed
-	Com_Printf ("sky\r", i); 
+	Com_Printf ("sky\r", i);
 	SCR_UpdateScreen ();
 	rotate = atof (cl.configstrings[CS_SKYROTATE]);
-	sscanf (cl.configstrings[CS_SKYAXIS], "%f %f %f", 
+	sscanf (cl.configstrings[CS_SKYAXIS], "%f %f %f",
 		&axis[0], &axis[1], &axis[2]);
 	re.SetSky (cl.configstrings[CS_SKY], rotate, axis);
 	Com_Printf ("                                     \r");
@@ -224,9 +224,6 @@ void CL_PrepRefresh (void)
 	SCR_UpdateScreen ();
 	cl.refresh_prepped = true;
 	cl.force_refdef = true;	// make sure we have a valid refdef
-
-	// start the cd track
-	CDAudio_Play (atoi(cl.configstrings[CS_CDTRACK]), true);
 }
 
 /*
@@ -426,7 +423,7 @@ V_Viewpos_f
 void V_Viewpos_f (void)
 {
 	Com_Printf ("(%i %i %i) : %i\n", (int)cl.refdef.vieworg[0],
-		(int)cl.refdef.vieworg[1], (int)cl.refdef.vieworg[2], 
+		(int)cl.refdef.vieworg[1], (int)cl.refdef.vieworg[2],
 		(int)cl.refdef.viewangles[YAW]);
 }
 
