@@ -13,9 +13,6 @@
     <Filter Include="ref_gl">
       <UniqueIdentifier>{85efc3da-4daf-4287-8bcd-8b8f6b0ff5c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ref_gl\GL">
-      <UniqueIdentifier>{873c876c-eb7a-4f15-a71b-75221799a67b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="server">
       <UniqueIdentifier>{c2709b4a-35f9-4ef4-a29f-7cf4adc4a83e}</UniqueIdentifier>
     </Filter>
@@ -56,9 +53,6 @@
     </ClCompile>
     <ClCompile Include="h2common\h2matrix.c">
       <Filter>h2common</Filter>
-    </ClCompile>
-    <ClCompile Include="ref_gl\glew.c">
-      <Filter>ref_gl</Filter>
     </ClCompile>
     <ClCompile Include="WinSnd\s_main.cpp">
       <Filter>WinSnd</Filter>
@@ -1531,18 +1525,6 @@
     </ClInclude>
     <ClInclude Include="ref_gl\warpsin.h">
       <Filter>ref_gl</Filter>
-    </ClInclude>
-    <ClInclude Include="ref_gl\GL\eglew.h">
-      <Filter>ref_gl\GL</Filter>
-    </ClInclude>
-    <ClInclude Include="ref_gl\GL\glew.h">
-      <Filter>ref_gl\GL</Filter>
-    </ClInclude>
-    <ClInclude Include="ref_gl\GL\glxew.h">
-      <Filter>ref_gl\GL</Filter>
-    </ClInclude>
-    <ClInclude Include="ref_gl\GL\wglew.h">
-      <Filter>ref_gl\GL</Filter>
     </ClInclude>
     <ClInclude Include="server\server.h">
       <Filter>server</Filter>

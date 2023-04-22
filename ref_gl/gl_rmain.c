@@ -1355,7 +1355,86 @@ int R_Init( void *hinstance, void *hWnd )
 	else
 		ri.Con_Printf( PRINT_ALL, "...disabling CDS\n" );
 
-	glewInit();
+	/*
+	** grab extensions
+	*/
+#ifdef WIN32
+	if (strstr(gl_config.extensions_string, "GL_EXT_compiled_vertex_array") ||
+		strstr(gl_config.extensions_string, "GL_SGI_compiled_vertex_array"))
+	{
+		ri.Con_Printf(PRINT_ALL, "...enabling GL_EXT_compiled_vertex_array\n");
+		qglLockArraysEXT = (void*)qwglGetProcAddress("glLockArraysEXT");
+		qglUnlockArraysEXT = (void*)qwglGetProcAddress("glUnlockArraysEXT");
+	}
+	else
+	{
+		ri.Con_Printf(PRINT_ALL, "...GL_EXT_compiled_vertex_array not found\n");
+	}
+
+	if (strstr(gl_config.extensions_string, "WGL_EXT_swap_control"))
+	{
+		qwglSwapIntervalEXT = (BOOL(WINAPI*)(int)) qwglGetProcAddress("wglSwapIntervalEXT");
+		ri.Con_Printf(PRINT_ALL, "...enabling WGL_EXT_swap_control\n");
+	}
+	else
+	{
+		ri.Con_Printf(PRINT_ALL, "...WGL_EXT_swap_control not found\n");
+	}
+
+	if (strstr(gl_config.extensions_string, "GL_EXT_point_parameters"))
+	{
+		if (gl_ext_pointparameters->value)
+		{
+			qglPointParameterfEXT = (void (APIENTRY*)(GLenum, GLfloat)) qwglGetProcAddress("glPointParameterfEXT");
+			qglPointParameterfvEXT = (void (APIENTRY*)(GLenum, const GLfloat*)) qwglGetProcAddress("glPointParameterfvEXT");
+			ri.Con_Printf(PRINT_ALL, "...using GL_EXT_point_parameters\n");
+		}
+		else
+		{
+			ri.Con_Printf(PRINT_ALL, "...ignoring GL_EXT_point_parameters\n");
+		}
+	}
+	else
+	{
+		ri.Con_Printf(PRINT_ALL, "...GL_EXT_point_parameters not found\n");
+	}
+
+	if (strstr(gl_config.extensions_string, "GL_EXT_paletted_texture") &&
+		strstr(gl_config.extensions_string, "GL_EXT_shared_texture_palette"))
+	{
+		if (gl_ext_palettedtexture->value)
+		{
+			ri.Con_Printf(PRINT_ALL, "...using GL_EXT_shared_texture_palette\n");
+			qglColorTableEXT = (void (APIENTRY*) (int, int, int, int, int, const void*)) qwglGetProcAddress("glColorTableEXT");
+		}
+		else
+		{
+			ri.Con_Printf(PRINT_ALL, "...ignoring GL_EXT_shared_texture_palette\n");
+		}
+	}
+	else
+	{
+		ri.Con_Printf(PRINT_ALL, "...GL_EXT_shared_texture_palette not found\n");
+	}
+
+	if (strstr(gl_config.extensions_string, "GL_SGIS_multitexture"))
+	{
+		if (gl_ext_multitexture->value)
+		{
+			ri.Con_Printf(PRINT_ALL, "...using GL_SGIS_multitexture\n");
+			qglMTexCoord2fSGIS = (void*)qwglGetProcAddress("glMTexCoord2fSGIS");
+			qglSelectTextureSGIS = (void*)qwglGetProcAddress("glSelectTextureSGIS");
+		}
+		else
+		{
+			ri.Con_Printf(PRINT_ALL, "...ignoring GL_SGIS_multitexture\n");
+		}
+	}
+	else
+	{
+		ri.Con_Printf(PRINT_ALL, "...GL_SGIS_multitexture not found\n");
+	}
+#endif
 
 	GL_SetDefaultState();
 
@@ -1698,14 +1777,14 @@ refexport_t GetRefAPI (refimport_t rimp )
 	re.EndRegistration = R_EndRegistration;
 	re.Draw_Name = Draw_Name;
 	re.DrawLine = DrawLine;
-	re.RenderFrame = (int(__cdecl*)(refdef_t*))R_RenderFrame;
+	re.RenderFrame = R_RenderFrame;
 	re.DrawGetPicSize = Draw_GetPicSize;
-	re.DrawPic = (void(__cdecl*)(int, int, char*, float))Draw_Pic;
+	re.DrawPic = Draw_Pic;
 	re.DrawStretchPic = Draw_StretchPic;
-	re.DrawChar = (void(__cdecl*)(int, int, int, paletteRGBA_t))Draw_Char;
+	re.DrawChar = Draw_Char;
 	re.DrawTileClear = Draw_TileClear;
 	re.DrawFill = Draw_Fill;
-	re.DrawFadeScreen = (void(__cdecl*)(paletteRGBA_t))Draw_FadeScreen;
+	re.DrawFadeScreen = Draw_FadeScreen;
 	re.DrawBigFont = R_DrawBigFont;
 	re.BF_Strlen = BF_Strlen;
 	re.BookDrawPic = R_BookDrawPic;

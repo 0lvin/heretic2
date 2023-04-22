@@ -597,7 +597,7 @@ float MG_ChangeWhichYaw (edict_t *self, qboolean ideal_yaw)
 	}
 
 	//normal anglemod doesn't have the precision I need to slide along walls
-	self->s.angles[YAW] = anglemod_old(current + move);
+	self->s.angles[YAW] = anglemod(current + move);
 	return move;
 }
 

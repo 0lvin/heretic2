@@ -680,7 +680,7 @@ void R_DrawFlexModel(entity_t *e)
 	GL_EnableMultitexture(false);
 	GL_SelectTexture(0);
 	GL_TexEnv(GL_MODULATE);
-	//GL_SelectTexture(GL_TEXTURE1_ARB);
+	//GL_SelectTexture(GL_TEXTURE1_SGIS);
 	//GL_TexEnv(GL_MODULATE);
 
 	vec3_t lightColor;

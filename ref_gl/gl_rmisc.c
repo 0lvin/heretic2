@@ -205,7 +205,7 @@ void GL_SetDefaultState( void )
 
 	GL_TexEnv( GL_REPLACE );
 
-	if ( glPointParameterfEXT )
+	if ( qglPointParameterfEXT )
 	{
 		float attenuations[3];
 
@@ -214,16 +214,9 @@ void GL_SetDefaultState( void )
 		attenuations[2] = gl_particle_att_c->value;
 
 		glEnable( GL_POINT_SMOOTH );
-		glPointParameterfEXT( GL_POINT_SIZE_MIN_EXT, gl_particle_min_size->value );
-		glPointParameterfEXT( GL_POINT_SIZE_MAX_EXT, gl_particle_max_size->value );
-		glPointParameterfvEXT( GL_DISTANCE_ATTENUATION_EXT, attenuations );
-	}
-
-	if ( glColorTableEXT && gl_ext_palettedtexture->value )
-	{
-		glEnable( GL_SHARED_TEXTURE_PALETTE_EXT );
-
-		GL_SetTexturePalette( d_8to24table );
+		qglPointParameterfEXT( GL_POINT_SIZE_MIN_EXT, gl_particle_min_size->value );
+		qglPointParameterfEXT( GL_POINT_SIZE_MAX_EXT, gl_particle_max_size->value );
+		qglPointParameterfvEXT( GL_DISTANCE_ATTENUATION_EXT, attenuations );
 	}
 
 	GL_UpdateSwapInterval();

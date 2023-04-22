@@ -642,7 +642,7 @@ void DrawTextureChains(void)
 
 	//	GL_TexEnv( GL_REPLACE );
 
-	if (!glSelectTextureSGIS)
+	if (!qglSelectTextureSGIS)
 	{
 		for (i = 0, image = gltextures; i < numgltextures; i++, image++)
 		{
@@ -742,7 +742,7 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 			R_BuildLightMap(surf, (byte*)temp, smax * 4);
 			R_SetCacheState(surf);
 
-			GL_MBind(GL_TEXTURE1_ARB, gl_state.lightmap_textures + surf->lightmaptexturenum);
+			GL_MBind(GL_TEXTURE1_SGIS, gl_state.lightmap_textures + surf->lightmaptexturenum);
 
 			lmtex = surf->lightmaptexturenum;
 
@@ -760,7 +760,7 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 
 			R_BuildLightMap(surf, (byte*)temp, smax * 4);
 
-			GL_MBind(GL_TEXTURE1_ARB, gl_state.lightmap_textures + 0);
+			GL_MBind(GL_TEXTURE1_SGIS, gl_state.lightmap_textures + 0);
 
 			lmtex = 0;
 
@@ -774,8 +774,8 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 
 		c_brush_polys++;
 
-		GL_MBind(GL_TEXTURE0_ARB, image->texnum);
-		GL_MBind(GL_TEXTURE1_ARB, gl_state.lightmap_textures + lmtex);
+		GL_MBind(GL_TEXTURE0_SGIS, image->texnum);
+		GL_MBind(GL_TEXTURE1_SGIS, gl_state.lightmap_textures + lmtex);
 
 		//==========
 		//PGM
@@ -793,9 +793,9 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 				glBegin(GL_POLYGON);
 				for (i = 0; i < nv; i++, v += VERTEXSIZE)
 				{
-					glMultiTexCoord2f(0, (v[3] + scroll), v[4]);
-					glMultiTexCoord2f(1, v[5], v[6]);
-					glVertex3fv(v);
+					qglMultiTexCoord2f(0, (v[3] + scroll), v[4]);
+					qglMultiTexCoord2f(1, v[5], v[6]);
+					qglVertex3fv(v);
 				}
 				glEnd();
 			}
@@ -822,8 +822,8 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 	{
 		c_brush_polys++;
 
-		GL_MBind(GL_TEXTURE0_ARB, image->texnum);
-		GL_MBind(GL_TEXTURE1_ARB, gl_state.lightmap_textures + lmtex);
+		GL_MBind(GL_TEXTURE0_SGIS, image->texnum);
+		GL_MBind(GL_TEXTURE1_SGIS, gl_state.lightmap_textures + lmtex);
 
 		//==========
 		//PGM
@@ -1014,9 +1014,9 @@ void R_DrawBrushModel(entity_t* e)
 	e->angles[2] = -e->angles[2];	// stupid quake bug
 
 	GL_EnableMultitexture(true);
-	GL_SelectTexture(GL_TEXTURE0_ARB);
+	GL_SelectTexture(GL_TEXTURE0_SGIS);
 	GL_TexEnv(GL_REPLACE);
-	GL_SelectTexture(GL_TEXTURE1_ARB);
+	GL_SelectTexture(GL_TEXTURE1_SGIS);
 	GL_TexEnv(GL_MODULATE);
 
 	R_DrawInlineBModel();
@@ -1228,9 +1228,9 @@ void R_DrawWorld(void)
 	//{
 	//	GL_EnableMultitexture(true);
 	//
-	//	GL_SelectTexture(GL_TEXTURE0_ARB);
+	//	GL_SelectTexture(GL_TEXTURE0_SGIS);
 	//	GL_TexEnv(GL_REPLACE);
-	//	GL_SelectTexture(GL_TEXTURE1_ARB);
+	//	GL_SelectTexture(GL_TEXTURE1_SGIS);
 	//
 	//	if (gl_lightmap->value)
 	//		GL_TexEnv(GL_REPLACE);
@@ -1580,7 +1580,7 @@ void GL_BeginBuildingLightmaps(model_t* m)
 	r_framecount = 1;		// no dlightcache
 
 	GL_EnableMultitexture(true);
-	GL_SelectTexture(GL_TEXTURE1_ARB);
+	GL_SelectTexture(GL_TEXTURE1_SGIS);
 
 	/*
 	** setup the base lightstyles so the lightmaps won't have to be regenerated

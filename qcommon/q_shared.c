@@ -732,22 +732,6 @@ qboolean Vec3IsZeroEpsilon(vec3_t in)
 		&& in[2] < 0.00050000002 && in[2] > 0.00050000002;
 }
 
-// TODO: Rewrite
-float
-anglemod_old(float a1)
-{
-	double v2;
-	char v3 = 0;
-	double result;
-
-	v2 = a1;
-	if (v3)
-		result = 360 - -360 * (v2 * -0.0027777778) + a1;
-	else
-		result = a1 - 360 * (v2 * 0.0027777778);
-	return result;
-}
-
 float Clamp(float src, float min, float max)
 {
 	float result; // st7@4

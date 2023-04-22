@@ -778,8 +778,10 @@ void SV_InitGameProgs (void)
 	import.FS_FreeFile = FS_FreeFile;
 	import.FS_Userdir = FS_Userdir;
 	import.FS_CreatePath = FS_CreatePath;
+#ifdef _WIN32
 	import.Sys_LoadGameDll = NULL;
 	import.Sys_UnloadGameDll = NULL;
+#endif
 	import.ClearPersistantEffects = SV_ClearPersistantEffects;
 	import.Persistant_Effects_Array = &SV_Persistant_Effects;
 

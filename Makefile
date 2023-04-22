@@ -457,7 +457,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/ref_common/r_skeletons.o \
 	$(BUILDDIR)/ref_gl/gl_book.o \
 	$(BUILDDIR)/ref_gl/gl_draw.o \
-	$(BUILDDIR)/ref_gl/glew.o \
 	$(BUILDDIR)/ref_gl/gl_fmodel.o \
 	$(BUILDDIR)/ref_gl/gl_image.o \
 	$(BUILDDIR)/ref_gl/gl_light.o \

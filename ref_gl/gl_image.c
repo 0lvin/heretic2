@@ -55,36 +55,26 @@ void GL_SetTexturePalette( unsigned palette[256] )
 		temptable[i*3+1] = ( palette[i] >> 8 ) & 0xff;
 		temptable[i*3+2] = ( palette[i] >> 16 ) & 0xff;
 	}
-
-	if ( glColorTableEXT && gl_ext_palettedtexture->value )
-	{
-		glColorTableEXT( GL_SHARED_TEXTURE_PALETTE_EXT,
-						   GL_RGB,
-						   256,
-						   GL_RGB,
-						   GL_UNSIGNED_BYTE,
-						   temptable );
-	}
 }
 
 void GL_EnableMultitexture( qboolean enable )
 {
-	if ( !glSelectTextureSGIS )
+	if ( !qglSelectTextureSGIS )
 		return;
 
 	if ( enable )
 	{
-		GL_SelectTexture( GL_TEXTURE1_ARB );
+		GL_SelectTexture( GL_TEXTURE1_SGIS );
 		glEnable( GL_TEXTURE_2D );
 		GL_TexEnv( GL_REPLACE );
 	}
 	else
 	{
-		GL_SelectTexture( GL_TEXTURE1_ARB );
+		GL_SelectTexture( GL_TEXTURE1_SGIS );
 		glDisable( GL_TEXTURE_2D );
 		GL_TexEnv( GL_REPLACE );
 	}
-	GL_SelectTexture( GL_TEXTURE0_ARB );
+	GL_SelectTexture( GL_TEXTURE0_SGIS );
 	GL_TexEnv( GL_REPLACE );
 }
 
@@ -92,10 +82,10 @@ void GL_SelectTexture( GLenum texture )
 {
 	int tmu;
 
-	if ( !glSelectTextureSGIS )
+	if ( !qglSelectTextureSGIS )
 		return;
 
-	if ( texture == GL_TEXTURE0_ARB )
+	if ( texture == GL_TEXTURE0_SGIS )
 		tmu = 0;
 	else
 		tmu = 1;
@@ -106,9 +96,9 @@ void GL_SelectTexture( GLenum texture )
 	gl_state.currenttmu = tmu;
 
 	if ( tmu == 0 )
-		glSelectTextureSGIS( GL_TEXTURE0_ARB );
+		qglSelectTextureSGIS( GL_TEXTURE0_SGIS );
 	else
-		glSelectTextureSGIS( GL_TEXTURE1_ARB );
+		qglSelectTextureSGIS( GL_TEXTURE1_SGIS );
 }
 
 void GL_TexEnv( GLenum mode )
@@ -137,7 +127,7 @@ void GL_Bind (int texnum)
 void GL_MBind( GLenum target, int texnum )
 {
 	GL_SelectTexture( target );
-	if ( target == GL_TEXTURE0_ARB )
+	if ( target == GL_TEXTURE0_SGIS )
 	{
 		if ( gl_state.currenttextures[0] == texnum )
 			return;
@@ -957,7 +947,6 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 {
 	int			samples;
 	unsigned	scaled[256*256];
-	unsigned char paletted_texture[256*256];
 	int			scaled_width, scaled_height;
 	int			i, c;
 	byte		*scan;
@@ -1039,24 +1028,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 	{
 		if (!mipmap)
 		{
-			if ( glColorTableEXT && gl_ext_palettedtexture->value && samples == gl_solid_format )
-			{
-				uploaded_paletted = true;
-				GL_BuildPalettedTexture( paletted_texture, ( unsigned char * ) data, scaled_width, scaled_height );
-				glTexImage2D( GL_TEXTURE_2D,
-							  0,
-							  GL_COLOR_INDEX8_EXT,
-							  scaled_width,
-							  scaled_height,
-							  0,
-							  GL_COLOR_INDEX,
-							  GL_UNSIGNED_BYTE,
-							  paletted_texture );
-			}
-			else
-			{
-				glTexImage2D (GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			}
+			glTexImage2D (GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
 		memcpy (scaled, data, width*height*4);
@@ -1066,24 +1038,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 
 	GL_LightScaleTexture (scaled, scaled_width, scaled_height, !mipmap );
 
-	if ( glColorTableEXT && gl_ext_palettedtexture->value && ( samples == gl_solid_format ) )
-	{
-		uploaded_paletted = true;
-		GL_BuildPalettedTexture( paletted_texture, ( unsigned char * ) scaled, scaled_width, scaled_height );
-		glTexImage2D( GL_TEXTURE_2D,
-					  0,
-					  GL_COLOR_INDEX8_EXT,
-					  scaled_width,
-					  scaled_height,
-					  0,
-					  GL_COLOR_INDEX,
-					  GL_UNSIGNED_BYTE,
-					  paletted_texture );
-	}
-	else
-	{
-		glTexImage2D( GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled );
-	}
+	glTexImage2D( GL_TEXTURE_2D, 0, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled );
 
 	if (mipmap)
 	{
@@ -1100,24 +1055,7 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-			if ( glColorTableEXT && gl_ext_palettedtexture->value && samples == gl_solid_format )
-			{
-				uploaded_paletted = true;
-				GL_BuildPalettedTexture( paletted_texture, ( unsigned char * ) scaled, scaled_width, scaled_height );
-				glTexImage2D( GL_TEXTURE_2D,
-							  miplevel,
-							  GL_COLOR_INDEX8_EXT,
-							  scaled_width,
-							  scaled_height,
-							  0,
-							  GL_COLOR_INDEX,
-							  GL_UNSIGNED_BYTE,
-							  paletted_texture );
-			}
-			else
-			{
-				glTexImage2D (GL_TEXTURE_2D, miplevel, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-			}
+			glTexImage2D (GL_TEXTURE_2D, miplevel, comp, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 		}
 	}
 done: ;
@@ -1173,25 +1111,6 @@ qboolean GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboole
 	if (s > sizeof(trans)/4)
 		ri.Sys_Error (ERR_DROP, "GL_Upload8: too large");
 
-	if ( glColorTableEXT && 
-		 gl_ext_palettedtexture->value && 
-		 is_sky )
-	{
-		glTexImage2D( GL_TEXTURE_2D,
-					  0,
-					  GL_COLOR_INDEX8_EXT,
-					  width,
-					  height,
-					  0,
-					  GL_COLOR_INDEX,
-					  GL_UNSIGNED_BYTE,
-					  data );
-
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-	}
-	else
-	{
 		for (i=0 ; i<s ; i++)
 		{
 			p = data[i];
@@ -1216,7 +1135,6 @@ qboolean GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboole
 				((byte *)&trans[i])[1] = ((byte *)&d_8to24table[p])[1];
 				((byte *)&trans[i])[2] = ((byte *)&d_8to24table[p])[2];
 			}
-		}
 
 		return GL_Upload32 (trans, width, height, mipmap);
 	}
@@ -1381,7 +1299,7 @@ void GL_ConvertM8To32Bit(const char *name, byte **pic, int *width, int *height)
 	int count;
 	int		length;
 	byte	*buffer, *image_buffer;
-	int i, f, d, numPixels;
+	int i, f, numPixels;
 
 	*pic = NULL;
 
@@ -1694,13 +1612,6 @@ void	GL_InitImages (void)
 	gl_state.inverse_intensity = 1 / intensity->value;
 
 	Draw_GetPalette ();
-
-	if ( glColorTableEXT )
-	{
-		ri.FS_LoadFile( "pics/16to8.dat", (void **)&gl_state.d_16to8table );
-		if ( !gl_state.d_16to8table )
-			ri.Sys_Error( ERR_FATAL, "Couldn't load pics/16to8.pcx");
-	}
 
 	if ( gl_config.renderer & ( GL_RENDERER_VOODOO | GL_RENDERER_VOODOO2 ) )
 	{

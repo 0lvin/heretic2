@@ -19,35 +19,6 @@
 #define	MAX_FM_SKINNAME		64
 #define MAX_FM_MESH_NODES	16		// also defined in game/qshared.h
 
-
-#define DTRIVERTX_V0   0
-#define DTRIVERTX_V1   1
-#define DTRIVERTX_V2   2
-#define DTRIVERTX_LNI  3
-#define DTRIVERTX_SIZE 4
-
-#define SKINPAGE_WIDTH 640
-#define SKINPAGE_HEIGHT 480
-
-#define ENCODED_WIDTH_X 92
-#define ENCODED_WIDTH_Y 475
-#define ENCODED_HEIGHT_X 128
-#define ENCODED_HEIGHT_Y 475
-
-#define SCALE_ADJUST_FACTOR 0.96
-
-#define INFO_HEIGHT 5
-#define INFO_Y (SKINPAGE_HEIGHT-INFO_HEIGHT)
-
-extern byte		*BasePalette;
-extern byte		*BasePixels,*TransPixels;
-extern int		BaseWidth, BaseHeight, TransWidth, TransHeight;
-extern int ScaleWidth, ScaleHeight;
-
-int ExtractNumber(byte *pic, int x, int y);
-void DrawTextChar(int x, int y, char *text);
-void DrawLine(int x1, int y1, int x2, int y2);
-
 // the glcmd format:
 // a positive integer starts a tristrip command, followed by that many
 // vertex structures.

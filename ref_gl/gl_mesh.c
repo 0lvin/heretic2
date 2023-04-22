@@ -158,8 +158,8 @@ void GL_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp)
 			}
 		}
 
-		if ( glLockArraysEXT != 0 )
-			glLockArraysEXT( 0, paliashdr->num_xyz );
+		if ( qglLockArraysEXT != 0 )
+			qglLockArraysEXT( 0, paliashdr->num_xyz );
 
 		while (1)
 		{
@@ -198,8 +198,8 @@ void GL_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp)
 			glEnd ();
 		}
 
-		if ( glUnlockArraysEXT != 0 )
-			glUnlockArraysEXT();
+		if ( qglUnlockArraysEXT != 0 )
+			qglUnlockArraysEXT();
 	}
 	else
 	{

@@ -534,7 +534,6 @@ float Clamp(float src, float min, float max);
 int ClampI(int src, int min, int max);
 
 extern vec3_t vec3_up;
-float anglemod_old(float a);
 
 int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
 
