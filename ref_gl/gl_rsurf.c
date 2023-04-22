@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <assert.h>
 
 #include "gl_local.h"
+#include <ctype.h>
 
 static vec3_t	modelorg;		// relative to viewpoint
 
@@ -754,8 +755,8 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 				glBegin(GL_POLYGON);
 				for (i = 0; i < nv; i++, v += VERTEXSIZE)
 				{
-					qglMultiTexCoord2f(0, (v[3] + scroll), v[4]);
-					qglMultiTexCoord2f(1, v[5], v[6]);
+					qglMultiTexCoord2fARB(0, (v[3] + scroll), v[4]);
+					qglMultiTexCoord2fARB(1, v[5], v[6]);
 					qglVertex3fv(v);
 				}
 				glEnd();
@@ -769,8 +770,8 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 				glBegin(GL_POLYGON);
 				for (i = 0; i < nv; i++, v += VERTEXSIZE)
 				{
-					glMultiTexCoord2f(0, v[3], v[4]);
-					glMultiTexCoord2f(1, v[5], v[6]);
+					qglMultiTexCoord2fARB(0, v[3], v[4]);
+					qglMultiTexCoord2fARB(1, v[5], v[6]);
 					glVertex3fv(v);
 				}
 				glEnd();
@@ -802,8 +803,8 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 				glBegin(GL_POLYGON);
 				for (i = 0; i < nv; i++, v += VERTEXSIZE)
 				{
-					glMultiTexCoord2f(0, (v[3] + scroll), v[4]);
-					glMultiTexCoord2f(1, v[5], v[6]);
+					qglMultiTexCoord2fARB(0, (v[3] + scroll), v[4]);
+					qglMultiTexCoord2fARB(1, v[5], v[6]);
 					glVertex3fv(v);
 				}
 				glEnd();
@@ -819,8 +820,8 @@ static void GL_RenderLightmappedPoly(msurface_t* surf)
 				glBegin(GL_POLYGON);
 				for (i = 0; i < nv; i++, v += VERTEXSIZE)
 				{
-					glMultiTexCoord2f(0, v[3], v[4]);
-					glMultiTexCoord2f(1, v[5], v[6]);
+					qglMultiTexCoord2fARB(0, v[3], v[4]);
+					qglMultiTexCoord2fARB(1, v[5], v[6]);
 					glVertex3fv(v);
 				}
 				glEnd();
@@ -893,7 +894,7 @@ void R_DrawInlineBModel(void)
 
 	if (!(currententity->flags & RF_TRANSLUCENT))
 	{
-		//if (!glMultiTexCoord2f)
+		//if (!qglMultiTexCoord2fARB)
 			R_BlendLightmaps();
 	}
 	else
@@ -1088,7 +1089,7 @@ void R_RecursiveWorldNode(mnode_t* node)
 		}
 		else
 		{
-			//if (glMultiTexCoord2f && !(surf->flags & SURF_DRAWTURB))
+			//if (qglMultiTexCoord2fARB && !(surf->flags & SURF_DRAWTURB))
 			//{
 			//	GL_RenderLightmappedPoly(surf);
 			//}
@@ -1126,7 +1127,7 @@ void R_RecursiveWorldNode(mnode_t* node)
 			}
 			else
 			{
-				if ( glMultiTexCoord2f && !( surf->flags & SURF_DRAWTURB ) )
+				if ( qglMultiTexCoord2fARB && !( surf->flags & SURF_DRAWTURB ) )
 				{
 					GL_RenderLightmappedPoly( surf );
 				}

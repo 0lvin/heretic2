@@ -70,6 +70,9 @@ enum moveplus_e
 
 typedef struct
 {
+	void (*Init)(void);
+	void (*Shutdown)(void);
+
 	paceldata_t *PlayerSeqData,*PlayerChickenData;
 	int			p_num_items;
 	gitem_t		*p_itemlist;

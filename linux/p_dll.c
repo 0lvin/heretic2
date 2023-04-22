@@ -30,6 +30,7 @@ static void *player_library;
 
 void P_Freelib()
 {
+	// TODO: Rewrite, add real library load
 	if(!player_library)
 	{
 		return;
@@ -48,6 +49,9 @@ void P_Freelib()
 
 unsigned int P_Load(char *name)
 {
+	// TODO: Rewrite, add real library load
+	return 0;
+
 	char	curpath[MAX_OSPATH];
 	char	gamepath[MAX_OSPATH];
 
