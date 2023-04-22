@@ -36,12 +36,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/mman.h>
 #include <errno.h>
 #include <mntent.h>
-
 #include <dlfcn.h>
-
 #include "../qcommon/qcommon.h"
-
 #include "../linux/rw_linux.h"
+#include "../qcommon/resourcemanager.h"
 
 cvar_t *nostdout;
 
@@ -282,6 +280,35 @@ char *Sys_GetClipboardData(void)
 	return NULL;
 }
 
+// TODO: rewrite to move to game logic
+extern ResourceManager_t globalResourceManager;
+
+/*
+===============
+InitResourceManager
+===============
+*/
+void InitResourceManager()
+{
+	// jmarshall:
+	// Based on decompiled output, Raven had globalResourceManager allocated to use 256 8 * sizeof(resourceNode) byte blocks,
+	// this seems really small, in x64 this actually causes code to run past the block size. Which seems in line,
+	// with some of the crashes people have experienced with Raven's binaries. I'm increasing this limit,
+	// because were not that worried about OOMing, and seems safer then modifying a bunch of code on the game/client side.
+	ResMngr_Con(&globalResourceManager, 1024, 256);
+}
+
+/*
+===============
+ShutdownResourceManager
+===============
+*/
+
+void ShutdownResourceManager()
+{
+	ResMngr_Des(&globalResourceManager);
+}
+
 int main (int argc, char **argv)
 {
 	int 	time, oldtime, newtime;
@@ -289,6 +316,8 @@ int main (int argc, char **argv)
 	// go back to real user for config loads
 	saved_euid = geteuid();
 	seteuid(getuid());
+
+	InitResourceManager();
 
 	Qcommon_Init(argc, argv);
 

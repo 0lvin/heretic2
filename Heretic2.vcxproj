@@ -435,7 +435,7 @@
     <ClCompile Include="qcommon\netmsg_read.c" />
     <ClCompile Include="qcommon\net_chan.c" />
     <ClCompile Include="qcommon\pmove.c" />
-    <ClCompile Include="qcommon\p_dll.c" />
+    <ClCompile Include="win32\p_dll.c" />
     <ClCompile Include="qcommon\rand.c" />
     <ClCompile Include="qcommon\reference.c" />
     <ClCompile Include="qcommon\resource_manager.c" />

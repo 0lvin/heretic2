@@ -182,6 +182,8 @@ int Defence_CurrentShotsLeft(playerinfo_t* playerinfo, int intent);
 
 typedef	player_export_t	(*GetPlayerAPI_t)(void);
 
+PLAYER_API player_export_t GetPlayerAPI(void);
+
 #ifdef __cplusplus
 } //end extern "C"
 #endif
