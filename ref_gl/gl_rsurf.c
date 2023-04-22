@@ -642,58 +642,19 @@ void DrawTextureChains(void)
 
 	//	GL_TexEnv( GL_REPLACE );
 
-	if (!qglSelectTextureSGIS)
+	for (i = 0, image = gltextures; i < numgltextures; i++, image++)
 	{
-		for (i = 0, image = gltextures; i < numgltextures; i++, image++)
-		{
-			if (!image->registration_sequence)
-				continue;
-			s = image->texturechain;
-			if (!s)
-				continue;
-			c_visible_textures++;
+		if (!image->registration_sequence)
+			continue;
+		s = image->texturechain;
+		if (!s)
+			continue;
+		c_visible_textures++;
 
-			for (; s; s = s->texturechain)
-				R_RenderBrushPoly(s);
+		for (; s; s = s->texturechain)
+			R_RenderBrushPoly(s);
 
-			image->texturechain = NULL;
-		}
-	}
-	else
-	{
-		for (i = 0, image = gltextures; i < numgltextures; i++, image++)
-		{
-			if (!image->registration_sequence)
-				continue;
-			if (!image->texturechain)
-				continue;
-			c_visible_textures++;
-
-			for (s = image->texturechain; s; s = s->texturechain)
-			{
-				if (!(s->flags & SURF_DRAWTURB))
-					R_RenderBrushPoly(s);
-			}
-		}
-
-		GL_EnableMultitexture(false);
-		for (i = 0, image = gltextures; i < numgltextures; i++, image++)
-		{
-			if (!image->registration_sequence)
-				continue;
-			s = image->texturechain;
-			if (!s)
-				continue;
-
-			for (; s; s = s->texturechain)
-			{
-				if (s->flags & SURF_DRAWTURB)
-					R_RenderBrushPoly(s);
-			}
-
-			image->texturechain = NULL;
-		}
-		//		GL_EnableMultitexture( true );
+		image->texturechain = NULL;
 	}
 
 	GL_TexEnv(GL_REPLACE);
@@ -923,15 +884,9 @@ void R_DrawInlineBModel(void)
 				psurf->texturechain = r_alpha_surfaces;
 				r_alpha_surfaces = psurf;
 			}
-			//else if (glMultiTexCoord2f && !(psurf->flags & SURF_DRAWTURB))
-			//{
-			//	GL_RenderLightmappedPoly(psurf);
-			//}
 			else
 			{
-				GL_EnableMultitexture(false);
 				R_RenderBrushPoly(psurf);
-				GL_EnableMultitexture(true);
 			}
 		}
 	}
@@ -1013,14 +968,10 @@ void R_DrawBrushModel(entity_t* e)
 	e->angles[0] = -e->angles[0];	// stupid quake bug
 	e->angles[2] = -e->angles[2];	// stupid quake bug
 
-	GL_EnableMultitexture(true);
-	GL_SelectTexture(GL_TEXTURE0_SGIS);
 	GL_TexEnv(GL_REPLACE);
-	GL_SelectTexture(GL_TEXTURE1_SGIS);
 	GL_TexEnv(GL_MODULATE);
 
 	R_DrawInlineBModel();
-	GL_EnableMultitexture(false);
 
 	glPopMatrix();
 }
@@ -1224,27 +1175,7 @@ void R_DrawWorld(void)
 	memset(gl_lms.lightmap_surfaces, 0, sizeof(gl_lms.lightmap_surfaces));
 	R_ClearSkyBox();
 
-	//if (glMultiTexCoord2f)
-	//{
-	//	GL_EnableMultitexture(true);
-	//
-	//	GL_SelectTexture(GL_TEXTURE0_SGIS);
-	//	GL_TexEnv(GL_REPLACE);
-	//	GL_SelectTexture(GL_TEXTURE1_SGIS);
-	//
-	//	if (gl_lightmap->value)
-	//		GL_TexEnv(GL_REPLACE);
-	//	else
-	//		GL_TexEnv(GL_MODULATE);
-	//
-	//	R_RecursiveWorldNode(r_worldmodel->nodes);
-	//
-	//	GL_EnableMultitexture(false);
-	//}
-	//else
-	{
-		R_RecursiveWorldNode(r_worldmodel->nodes);
-	}
+	R_RecursiveWorldNode(r_worldmodel->nodes);
 
 	/*
 	** theoretically nothing should happen in the next two functions
@@ -1579,9 +1510,6 @@ void GL_BeginBuildingLightmaps(model_t* m)
 
 	r_framecount = 1;		// no dlightcache
 
-	GL_EnableMultitexture(true);
-	GL_SelectTexture(GL_TEXTURE1_SGIS);
-
 	/*
 	** setup the base lightstyles so the lightmaps won't have to be regenerated
 	** the first time they're seen
@@ -1665,6 +1593,5 @@ GL_EndBuildingLightmaps
 void GL_EndBuildingLightmaps(void)
 {
 	LM_UploadBlock(false);
-	GL_EnableMultitexture(false);
 }
 

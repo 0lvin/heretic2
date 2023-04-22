@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -75,7 +75,7 @@ extern	viddef_t	vid;
 
 */
 
-typedef enum 
+typedef enum
 {
 	it_skin,
 	it_sprite,
@@ -260,8 +260,6 @@ void R_TranslatePlayerSkin (int playernum);
 void GL_Bind (int texnum);
 void GL_MBind( GLenum target, int texnum );
 void GL_TexEnv( GLenum value );
-void GL_EnableMultitexture( qboolean enable );
-void GL_SelectTexture( GLenum );
 
 void R_LightPoint (vec3_t p, vec3_t color);
 void R_PushDlights (void);

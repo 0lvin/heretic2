@@ -1416,24 +1416,6 @@ int R_Init( void *hinstance, void *hWnd )
 	{
 		ri.Con_Printf(PRINT_ALL, "...GL_EXT_shared_texture_palette not found\n");
 	}
-
-	if (strstr(gl_config.extensions_string, "GL_SGIS_multitexture"))
-	{
-		if (gl_ext_multitexture->value)
-		{
-			ri.Con_Printf(PRINT_ALL, "...using GL_SGIS_multitexture\n");
-			qglMTexCoord2fSGIS = (void*)qwglGetProcAddress("glMTexCoord2fSGIS");
-			qglSelectTextureSGIS = (void*)qwglGetProcAddress("glSelectTextureSGIS");
-		}
-		else
-		{
-			ri.Con_Printf(PRINT_ALL, "...ignoring GL_SGIS_multitexture\n");
-		}
-	}
-	else
-	{
-		ri.Con_Printf(PRINT_ALL, "...GL_SGIS_multitexture not found\n");
-	}
 #endif
 
 	GL_SetDefaultState();

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -29,6 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <GL/gl.h>
+
+#ifdef __linux__
+//#include <GL/fxmesa.h>
+#include <GL/glx.h>
+#endif
 
 qboolean QGL_Init( const char *dllname );
 void     QGL_Shutdown( void );
@@ -381,8 +386,10 @@ extern	void ( APIENTRY * qglColorTableEXT)( int, int, int, int, int, const void 
 extern	void ( APIENTRY * qglLockArraysEXT) (int , int);
 extern	void ( APIENTRY * qglUnlockArraysEXT) (void);
 
-extern	void ( APIENTRY * qglMTexCoord2fSGIS)( GLenum, GLfloat, GLfloat );
-extern	void ( APIENTRY * qglSelectTextureSGIS)( GLenum );
+extern	void ( APIENTRY * qglMultiTexCoord2fARB)( GLenum, GLfloat, GLfloat );
+
+extern	void ( APIENTRY * qglActiveTextureARB)( GLenum );
+extern	void ( APIENTRY * qglClientActiveTextureARB)( GLenum );
 
 #ifdef _WIN32
 
@@ -422,6 +429,21 @@ extern BOOL ( WINAPI * qwglSetDeviceGammaRampEXT ) ( const unsigned char *pRed, 
 
 #endif
 
+#ifdef __linux__
+
+// local function in dll
+extern void *qwglGetProcAddress(char *symbol);
+
+//GLX Functions
+extern XVisualInfo * (*qglXChooseVisual)( Display *dpy, int screen, int *attribList );
+extern GLXContext (*qglXCreateContext)( Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct );
+extern void (*qglXDestroyContext)( Display *dpy, GLXContext ctx );
+extern Bool (*qglXMakeCurrent)( Display *dpy, GLXDrawable drawable, GLXContext ctx);
+extern void (*qglXCopyContext)( Display *dpy, GLXContext src, GLXContext dst, GLuint mask );
+extern void (*qglXSwapBuffers)( Display *dpy, GLXDrawable drawable );
+
+#endif // linux
+
 /*
 ** extension constants
 */
@@ -438,5 +460,7 @@ extern BOOL ( WINAPI * qwglSetDeviceGammaRampEXT ) ( const unsigned char *pRed, 
 
 #define GL_TEXTURE0_SGIS					0x835E
 #define GL_TEXTURE1_SGIS					0x835F
+#define GL_TEXTURE0_ARB						0x84C0
+#define GL_TEXTURE1_ARB						0x84C1
 
 #endif
