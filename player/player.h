@@ -65,13 +65,62 @@ enum moveplus_e
 	MOVE_NOSIDE,
 };
 
-
-#define DEFAULT_PLAYER_LIB "Player"
+#define DEFAULT_PLAYER_LIB "player.so"
 
 typedef struct
 {
 	void (*Init)(void);
 	void (*Shutdown)(void);
+	gitem_t* (*GetPlayerItems)(int* num);
+
+	void (*PlayerReleaseRope)(playerinfo_t *playerinfo);
+	void (*KnockDownPlayer)(playerinfo_t *playerinfo);
+	void (*PlayFly)(playerinfo_t *playerinfo, float dist);
+	void (*PlaySlap)(playerinfo_t *playerinfo, float dist);
+	void (*PlayScratch)(playerinfo_t *playerinfo, float dist);
+	void (*PlaySigh)(playerinfo_t *playerinfo, float dist);
+	void (*SpawnDustPuff)(playerinfo_t *playerinfo, float dist);
+	void (*PlayerInterruptAction)(playerinfo_t *playerinfo);
+
+	qboolean (*BranchCheckDismemberAction)(playerinfo_t *playerinfo, int weapon);
+
+	void (*TurnOffPlayerEffects)(playerinfo_t *playerinfo);
+	void (*AnimUpdateFrame)(playerinfo_t *playerinfo);
+	void (*PlayerFallingDamage)(playerinfo_t *playerinfo);
+
+	void (*PlayerBasicAnimReset)(playerinfo_t *playerinfo);
+	void (*PlayerAnimReset)(playerinfo_t *playerinfo);
+	void (*PlayerAnimSetLowerSeq)(playerinfo_t *playerinfo, int seq);
+	void (*PlayerAnimSetUpperSeq)(playerinfo_t *playerinfo, int seq);
+	void (*PlayerAnimUpperIdle)(playerinfo_t *playerinfo);
+	void (*PlayerAnimLowerIdle)(playerinfo_t *playerinfo);
+	void (*PlayerAnimUpperUpdate)(playerinfo_t *playerinfo);
+	void (*PlayerAnimLowerUpdate)(playerinfo_t *playerinfo);
+	void (*PlayerAnimSetVault)(playerinfo_t *playerinfo, int seq);
+	void (*PlayerPlayPain)(playerinfo_t *playerinfo, int type);
+
+	void (*PlayerIntLand)(playerinfo_t *playerinfo_t, float landspeed);
+
+	void (*PlayerInit)(playerinfo_t *playerinfo, int complete_reset);
+	void (*PlayerClearEffects)(playerinfo_t *playerinfo);
+	void (*PlayerUpdate)(playerinfo_t *playerinfo);
+	void (*PlayerUpdateCmdFlags)(playerinfo_t *playerinfo);
+	void (*PlayerUpdateModelAttributes)(playerinfo_t *playerinfo);
+
+	void (*Weapon_Ready)(playerinfo_t *playerinfo,gitem_t *Weapon);
+	void (*Weapon_EquipSpell)(playerinfo_t *playerinfo,gitem_t *Weapon);
+	void (*Weapon_EquipSwordStaff)(playerinfo_t *playerinfo,gitem_t *Weapon);
+	void (*Weapon_EquipHellStaff)(playerinfo_t *playerinfo,gitem_t *Weapon);
+	void (*Weapon_EquipBow)(playerinfo_t *playerinfo,gitem_t *Weapon);
+	void (*Weapon_EquipArmor)(playerinfo_t *playerinfo, gitem_t *Weapon);
+	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
+	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
+
+	int (*GetItemIndex)(gitem_t* x);
+	gitem_t* (*GetItemByIndex)(int index);
+	gitem_t* (*FindItemByClassname)(char *classname);
+	gitem_t* (*FindItem)(char *pickupname);
+	void (*InitItems)(void);
 
 	paceldata_t *PlayerSeqData,*PlayerChickenData;
 	int			p_num_items;

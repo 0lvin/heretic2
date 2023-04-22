@@ -15,7 +15,7 @@ extern "C" {
 S_Init
 =================
 */
-qboolean S_Init(void)
+void S_Init(void)
 {
 	Com_Printf("-------- S_Init -------\n");
 
@@ -31,12 +31,10 @@ qboolean S_Init(void)
 	sndGlobal.context = alcCreateContext(sndGlobal.device, NULL);
 	if (!alcMakeContextCurrent(sndGlobal.context)) {
 		Com_Error(ERR_FATAL, "Failed to OpenAL context!");
-		return false;
 	}
 
 	if (!alcIsExtensionPresent(alcGetContextsDevice(alcGetCurrentContext()), "ALC_EXT_EFX")) {
 		Com_Error(ERR_FATAL, "EFX Extension not present\n");
-		return false;
 	}
 
 	// Create the voices.
@@ -50,8 +48,6 @@ qboolean S_Init(void)
 
 	// Load the reverb effect.
 	sndGlobal.reverb_effect = S_LoadReverbEffect();
-
-	return true;
 }
 #ifdef __cplusplus
 } //end extern "C"
@@ -109,7 +105,7 @@ sfx_t *S_FindName(char *name, qboolean create) {
 
 	// Load Wav file into memory.
 	alutLoadWAVMemory((ALbyte *)wavFileBuffer, &format, &data, &size, &freq, &loop);
-	
+
 	// Generate the buffer data.
 	alGenBuffers(1, &sfx->buffer);
 	alBufferData(sfx->buffer, format, data, size, freq);
@@ -204,7 +200,7 @@ void S_StartLocalSound(char *sound)
 	S_PlayNoPositionSound(voice, localSound);
 }
 
-void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, int attenuation, float timeofs)
+void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, float attenuation, float timeofs)
 {
 	if (sfx == nullptr)
 		return;
@@ -223,7 +219,7 @@ void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float f
 	alSourcef(voice, AL_REFERENCE_DISTANCE, SOUND_FULLVOLUME);
 	alSourcef(voice, AL_MAX_DISTANCE, 8192);
 	alSourcef(voice, AL_ROLLOFF_FACTOR, (attenuation * 0.001f) * (8192 - SOUND_FULLVOLUME) );
-	
+
 	alSourcef(voice, AL_ROLLOFF_FACTOR, 1.0);
 	alSourcei(voice, AL_SOURCE_RELATIVE, AL_TRUE);
 	alSource3i(voice, AL_AUXILIARY_SEND_FILTER, (ALint)sndGlobal.reverb_aux_slot, 0, AL_FILTER_NULL);
@@ -301,7 +297,7 @@ void S_PlayMusic(int track, int looping)
 		sprintf(filename, "music/Track0%d.wav", track);
 	else
 		sprintf(filename, "music/Track%d.wav", track);
-	
+
 	sfx_t *music = S_FindName(filename, true);
 	if (!music)
 	{

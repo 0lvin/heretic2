@@ -159,6 +159,9 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/client/cl_scrn.o \
 	$(BUILDDIR)/client/cl_string.o \
 	$(BUILDDIR)/client/cl_view.o \
+	$(BUILDDIR)/client/snd_mem.o \
+	$(BUILDDIR)/client/snd_mix.o \
+	$(BUILDDIR)/client/snd_dma.o \
 	$(BUILDDIR)/client/console.o \
 	$(BUILDDIR)/client_effects/ambient_effects.o \
 	$(BUILDDIR)/client_effects/ce_default_message_handler.o \
@@ -419,7 +422,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/linux/p_dll.o \
 	$(BUILDDIR)/linux/qgl_linux.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
-	$(BUILDDIR)/linux/rw_x11.o \
 	$(BUILDDIR)/linux/snd_linux.o \
 	$(BUILDDIR)/linux/sys_linux.o \
 	$(BUILDDIR)/linux/vid_menu.o \
@@ -446,7 +448,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/message.o \
 	$(BUILDDIR)/qcommon/net_chan.o \
 	$(BUILDDIR)/qcommon/netmsg_read.o \
-	$(BUILDDIR)/qcommon/p_dll.o \
 	$(BUILDDIR)/qcommon/pmove.o \
 	$(BUILDDIR)/qcommon/q_shared.o \
 	$(BUILDDIR)/qcommon/rand.o \
@@ -473,11 +474,13 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/server/sv_game.o \
 	$(BUILDDIR)/server/sv_init.o \
 	$(BUILDDIR)/server/sv_main.o \
-	$(BUILDDIR)/server/sv_null.o \
 	$(BUILDDIR)/server/sv_send.o \
 	$(BUILDDIR)/server/sv_user.o \
 	$(BUILDDIR)/server/sv_world.o
 
+#	$(BUILDDIR)/server/sv_null.o \
+#	$(BUILDDIR)/qcommon/p_dll.o \
+#	$(BUILDDIR)/linux/rw_x11.o \
 #	$(BUILDDIR)/ref_soft/r_aclip.o \
 #	$(BUILDDIR)/ref_soft/r_alias.o \
 #	$(BUILDDIR)/ref_soft/r_bsp.o \

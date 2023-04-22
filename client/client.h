@@ -420,7 +420,7 @@ typedef struct
 
 	qboolean	(*Get_Crosshair)(vec3_t origin, byte *type);
 
-	void	(*S_StartSound)(vec3_t origin, int entnum, int entchannel, struct sfx_s *sfx, float fvol, int attenuation, float timeofs);
+	void	(*S_StartSound)(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, float attenuation, float timeofs);
 	struct sfx_s	*(*S_RegisterSound)(char *name);
 	struct model_s *(*RegisterModel) (char *name);
 
@@ -695,7 +695,7 @@ void CL_ClipMoveToEntities(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,trace
 void Grab_EAX_Environment_type(void);
 
 void SNDEAX_SetEnvironment(int id);
-qboolean S_Init(void);
+void S_Init(void);
 struct sfx_s* S_FindName(char* name, qboolean create);
 struct sfx_s* S_RegisterSound(char* name);
 void S_Activate(qboolean active);
@@ -703,7 +703,7 @@ void S_BeginRegistration(void);
 void S_EndRegistration(void);
 void S_Shutdown(void);
 void S_StartLocalSound(char* sound);
-void S_StartSound(vec3_t origin, int entnum, int entchannel, struct sfx_s* sfx, float fvol, int attenuation, float timeofs);
+void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, float attenuation, float timeofs);
 void S_StopAllSounds(void);
 void S_StopAllSounds_Sounding(void);
 void S_Update(vec3_t quake_origin, vec3_t forward, vec3_t right, vec3_t up);

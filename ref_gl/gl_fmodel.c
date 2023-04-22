@@ -389,7 +389,7 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 
 		while (m_fmblocks[i].blocktype >= 0)
 		{
-			if (strcmpi(buffer, m_fmblocks[i].blockid) == 0)
+			if (Q_stricmp(buffer, m_fmblocks[i].blockid) == 0)
 			{
 				break;
 			}

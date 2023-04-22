@@ -526,12 +526,48 @@ VectorNormalize2(vec3_t in, vec3_t out)
 
 int Q_stricmp(const char* s1, const char* s2)
 {
-	return _stricmp(s1, s2);
+#ifdef _MSC_VER
+	return stricmp(s1, s2);
+#else
+	return strcasecmp(s1, s2);
+#endif
 }
 
 int Q_strncasecmp(char* s1, char* s2, int n)
 {
-	return strnicmp(s1, s2, n);
+	int c1, c2;
+
+	do
+	{
+		c1 = *s1++;
+		c2 = *s2++;
+
+		if (!n--)
+		{
+			return 0; /* strings are equal until end point */
+		}
+
+		if (c1 != c2)
+		{
+			if ((c1 >= 'a') && (c1 <= 'z'))
+			{
+				c1 -= ('a' - 'A');
+			}
+
+			if ((c2 >= 'a') && (c2 <= 'z'))
+			{
+				c2 -= ('a' - 'A');
+			}
+
+			if (c1 != c2)
+			{
+				return -1; /* strings not equal */
+			}
+		}
+	}
+	while (c1);
+
+	return 0; /* strings are equal */
 }
 
 int Q_strcasecmp(char* s1, char* s2)
