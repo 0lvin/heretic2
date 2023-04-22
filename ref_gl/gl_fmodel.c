@@ -93,26 +93,6 @@ void Mod_SerializeSkin(fmdl_t *fmodel, int version, int length, char *buffer)
 
 /*
 =============
-Mod_SerializeSt
-=============
-*/
-void Mod_SerializeSt(fmdl_t *fmodel, int version, int length, char *buffer)
-{
-	// ignoring data
-}
-
-/*
-=============
-Mod_SerializeTris
-=============
-*/
-void Mod_SerializeTris(fmdl_t *fmodel, int version, int length, char *buffer)
-{
-	// ignoring data
-}
-
-/*
-=============
 Mod_SerializeFrames
 =============
 */
@@ -214,16 +194,6 @@ void Mod_SerializeMeshNodes(fmdl_t *fmodel, int version, int length, char *buffe
 Mod_SerializeShortFrames
 =============
 */
-void Mod_SerializeShortFrames(fmdl_t *fmodel, int version, int length, char *buffer)
-{
-	// ignoring data
-}
-
-/*
-=============
-Mod_SerializeShortFrames
-=============
-*/
 void Mod_SerializeNormal(fmdl_t *fmodel, int version, int length, char *buffer)
 {
 	if (fmodel->lightnormalindex != NULL)
@@ -239,17 +209,6 @@ void Mod_SerializeNormal(fmdl_t *fmodel, int version, int length, char *buffer)
 	fmodel->lightnormalindex = (byte *)Hunk_Alloc(fmodel->header.num_xyz * sizeof(byte));
 	memcpy(fmodel->lightnormalindex, buffer, fmodel->header.num_xyz * sizeof(byte));
 }
-
-/*
-=============
-Mod_SerializeComp
-=============
-*/
-void Mod_SerializeComp(fmdl_t *fmodel, int version, int length, char *buffer)
-{
-	// ignoring data
-}
-
 
 /*
 =============
@@ -285,25 +244,9 @@ static void Mod_SerializeSkeleton(fmdl_t *fmodel, int version, int length, char 
 	fmodel->rootCluster = CreateSkeleton(fmodel->skeletalType);
 
 
-	//m_jointConstraintAngles = new rangeVector_t[m_numClusters];
-	////m_modelJointAngles = new D3DVECTOR[m_numClusters];
-	//m_skeletalClusters = new M_SkeletalCluster_t[m_numClusters];
-	//
 	for (i = m_numClusters - 1; i >= 0; --i)
 	{
-		//m_jointConstraintAngles[i].min.x = 0;
-		//m_jointConstraintAngles[i].min.y = 0;
-		//m_jointConstraintAngles[i].min.z = 0;
-		//m_jointConstraintAngles[i].max.x = 0;
-		//m_jointConstraintAngles[i].max.y = 0;
-		//m_jointConstraintAngles[i].max.z = 0;
-		//m_modelJointAngles[i].x = 0;
-		//m_modelJointAngles[i].y = 0;
-		//m_modelJointAngles[i].z = 0;
-
 		runningTotalVertices += *(++basei);
-		//m_skeletalClusters[i].numVerticies = runningTotalVertices;
-		//m_skeletalClusters[i].verticies = (int*)malloc(m_skeletalClusters[i].numVerticies * sizeof(int));
 	}
 
 	for (j = m_numClusters - 1; j >= 0; --j)
@@ -355,17 +298,6 @@ static void Mod_SerializeSkeleton(fmdl_t *fmodel, int version, int length, char 
 
 /*
 =============
-Mod_SerializeReferences
-=============
-*/
-void Mod_SerializeReferences(fmdl_t *fmodel, int version, int length, char *buffer)
-{
-	// should be using, not sure why yet .
-}
-
-
-/*
-=============
 Mod_LoadFlexModel
 =============
 */
@@ -411,12 +343,6 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 		case FM_BLOCK_SKIN:
 			Mod_SerializeSkin(fmodel, version, size, buffer);
 			break;
-		case FM_BLOCK_ST:
-			Mod_SerializeSt(fmodel, version, size, buffer);
-			break;
-		case FM_BLOCK_TRIS:
-			Mod_SerializeTris(fmodel, version, size, buffer);
-			break;
 		case FM_BLOCK_FRAMES:
 			Mod_SerializeFrames(fmodel, version, size, buffer);
 			break;
@@ -426,20 +352,18 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 		case FM_BLOCK_MESHNODES:
 			Mod_SerializeMeshNodes(fmodel, version, size, buffer);
 			break;
-		case FM_BLOCK_SHORTFRAMES:
-			Mod_SerializeShortFrames(fmodel, version, size, buffer);
-			break;
 		case FM_BLOCK_NORMAL:
 			Mod_SerializeNormal(fmodel, version, size, buffer);
-			break;
-		case FM_BLOCK_COMP:
-			Mod_SerializeComp(fmodel, version, size, buffer);
 			break;
 		case FM_BLOCK_SKELETON:
 			Mod_SerializeSkeleton(fmodel, version, size, buffer);
 			break;
+		case FM_BLOCK_ST:
+		case FM_BLOCK_TRIS:
+		case FM_BLOCK_SHORTFRAMES:
+		case FM_BLOCK_COMP:
 		case FM_BLOCK_REFERENCES:
-			Mod_SerializeReferences(fmodel, version, size, buffer);
+			ri.Con_Printf(PRINT_ALL, "%s is skipped\n", blockname);
 			break;
 		default:
 			ri.Com_Error(ERR_FATAL, "Unknown block %s\n", blockname);
@@ -611,12 +535,6 @@ void R_RenderFlexModel(fmdl_t *model, fmnodeinfo_t *nodeinfo, int currentFrame, 
 			old_frame_vertexes[i][2] = ov->v[2];
 		}
 	}
-
-	//if (model->skeletons != NULL)
-	//{
-	//	int rootJoint = -1;
-	//	RotateModelSegments(&model->skeletons[currentFrame], 0, model->rootCluster, rootJoint, frame_vertexes);
-	//}
 
 	for (int i = 0; i < model->header.num_mesh_nodes; i++)
 	{

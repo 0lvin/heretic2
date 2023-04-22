@@ -3,7 +3,7 @@
 #
 # Nov '97 by Zoid <zoid@idsoftware.com>
 #
-# Elf only
+# ELF only
 #
 
 # Detect the OS
@@ -79,7 +79,9 @@ DO_GL_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(GLCFLAGS) -o $@ -c $<
 #############################################################################
 
 TARGETS= \
-	$(BUILDDIR)/heretic2
+	$(BUILDDIR)/heretic2 \
+	$(BUILDDIR)/ref_glx.$(SHLIBEXT)
+#	$(BUILDDIR)/ref_softx.$(SHLIBEXT)
 
 all:
 	-mkdir -p $(BUILD_DEBUG_DIR) \
@@ -138,6 +140,8 @@ $(BUILDDIR)/ref_common/%.o :      ref_common/%.c ${HEADERS}
 $(BUILDDIR)/ref_gl/%.o :          ref_gl/%.c ${HEADERS}
 	$(DO_GL_SHLIB_CC)
 
+$(BUILDDIR)/ref_soft/%.o :          ref_soft/%.c ${HEADERS}
+	$(DO_SHLIB_CC)
 
 $(BUILDDIR)/server/%.o :          server/%.c ${HEADERS}
 	$(DO_CC)
@@ -415,11 +419,10 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/h2common/h2singlylinkedlist.o \
 	$(BUILDDIR)/h2common/h2surfaces.o \
 	$(BUILDDIR)/h2common/h2vector.o \
-	$(BUILDDIR)/linux/gl_glx.o \
+	$(BUILDDIR)/ref_gl/gl_math.o \
 	$(BUILDDIR)/linux/glob.o \
 	$(BUILDDIR)/linux/net_udp.o \
 	$(BUILDDIR)/linux/p_dll.o \
-	$(BUILDDIR)/linux/qgl_linux.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
 	$(BUILDDIR)/linux/snd_linux.o \
 	$(BUILDDIR)/linux/sys_linux.o \
@@ -453,7 +456,58 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/reference.o \
 	$(BUILDDIR)/qcommon/resource_manager.o \
 	$(BUILDDIR)/qcommon/skeletons.o \
-	$(BUILDDIR)/ref_common/r_skeletons.o \
+	$(BUILDDIR)/server/sv_ccmds.o \
+	$(BUILDDIR)/server/sv_ents.o \
+	$(BUILDDIR)/server/sv_game.o \
+	$(BUILDDIR)/server/sv_init.o \
+	$(BUILDDIR)/server/sv_main.o \
+	$(BUILDDIR)/server/sv_send.o \
+	$(BUILDDIR)/server/sv_user.o \
+	$(BUILDDIR)/server/sv_world.o
+
+
+$(BUILDDIR)/heretic2 : $(HERETIC2_OBJS) ${HEADERS}
+	$(CXX) $(CFLAGS) -o $@ $(HERETIC2_OBJS) $(LDFLAGS) $(GLXLDFLAGS)
+
+#############################################################################
+# REF_SOFT
+#############################################################################
+
+REF_SOFT_OBJS = \
+	$(BUILDDIR)/ref_soft/r_aclip.o \
+	$(BUILDDIR)/ref_soft/r_alias.o \
+	$(BUILDDIR)/ref_soft/r_bsp.o \
+	$(BUILDDIR)/ref_soft/r_draw.o \
+	$(BUILDDIR)/ref_soft/r_edge.o \
+	$(BUILDDIR)/ref_soft/r_image.o \
+	$(BUILDDIR)/ref_soft/r_light.o \
+	$(BUILDDIR)/ref_soft/r_main.o \
+	$(BUILDDIR)/ref_soft/r_misc.o \
+	$(BUILDDIR)/ref_soft/r_model.o \
+	$(BUILDDIR)/ref_soft/r_part.o \
+	$(BUILDDIR)/ref_soft/r_poly.o \
+	$(BUILDDIR)/ref_soft/r_polyse.o \
+	$(BUILDDIR)/ref_soft/r_rast.o \
+	$(BUILDDIR)/ref_soft/r_scan.o \
+	$(BUILDDIR)/ref_soft/r_sprite.o \
+	$(BUILDDIR)/ref_soft/r_surf.o \
+	\
+	$(BUILDDIR)/qcommon/q_shared.o \
+	$(BUILDDIR)/linux/q_shlinux.o \
+	$(BUILDDIR)/linux/glob.o
+
+REF_SOFT_X11_OBJS = \
+	$(BUILDDIR)/linux/rw_x11.o
+
+$(BUILDDIR)/ref_softx.$(SHLIBEXT) : $(REF_SOFT_OBJS) $(REF_SOFT_X11_OBJS) ${HEADERS}
+	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_SOFT_OBJS) \
+		$(REF_SOFT_X11_OBJS) $(XLDFLAGS)
+
+#############################################################################
+# REF_GL
+#############################################################################
+
+REF_GL_OBJS = \
 	$(BUILDDIR)/ref_gl/gl_book.o \
 	$(BUILDDIR)/ref_gl/gl_draw.o \
 	$(BUILDDIR)/ref_gl/gl_fmodel.o \
@@ -467,39 +521,19 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/ref_gl/gl_rmisc.o \
 	$(BUILDDIR)/ref_gl/gl_rsurf.o \
 	$(BUILDDIR)/ref_gl/gl_warp.o \
-	$(BUILDDIR)/server/sv_ccmds.o \
-	$(BUILDDIR)/server/sv_ents.o \
-	$(BUILDDIR)/server/sv_game.o \
-	$(BUILDDIR)/server/sv_init.o \
-	$(BUILDDIR)/server/sv_main.o \
-	$(BUILDDIR)/server/sv_send.o \
-	$(BUILDDIR)/server/sv_user.o \
-	$(BUILDDIR)/server/sv_world.o
+	$(BUILDDIR)/ref_common/r_skeletons.o \
+	$(BUILDDIR)/qcommon/skeletons.o \
+	\
+	$(BUILDDIR)/linux/qgl_linux.o \
+	$(BUILDDIR)/qcommon/q_shared.o \
+	$(BUILDDIR)/linux/q_shlinux.o \
+	$(BUILDDIR)/linux/glob.o
 
-#	$(BUILDDIR)/linux/in_linux.o \
-#	$(BUILDDIR)/server/sv_null.o \
-#	$(BUILDDIR)/qcommon/p_dll.o \
-#	$(BUILDDIR)/linux/rw_x11.o \
-#	$(BUILDDIR)/ref_soft/r_aclip.o \
-#	$(BUILDDIR)/ref_soft/r_alias.o \
-#	$(BUILDDIR)/ref_soft/r_bsp.o \
-#	$(BUILDDIR)/ref_soft/r_draw.o \
-#	$(BUILDDIR)/ref_soft/r_edge.o \
-#	$(BUILDDIR)/ref_soft/r_image.o \
-#	$(BUILDDIR)/ref_soft/r_light.o \
-#	$(BUILDDIR)/ref_soft/r_main.o \
-#	$(BUILDDIR)/ref_soft/r_misc.o \
-#	$(BUILDDIR)/ref_soft/r_model.o \
-#	$(BUILDDIR)/ref_soft/r_part.o \
-#	$(BUILDDIR)/ref_soft/r_poly.o \
-#	$(BUILDDIR)/ref_soft/r_polyse.o \
-#	$(BUILDDIR)/ref_soft/r_rast.o \
-#	$(BUILDDIR)/ref_soft/r_scan.o \
-#	$(BUILDDIR)/ref_soft/r_sprite.o \
-#	$(BUILDDIR)/ref_soft/r_surf.o \
+REF_GL_GLX_OBJS = \
+	$(BUILDDIR)/linux/gl_glx.o
 
-$(BUILDDIR)/heretic2 : $(HERETIC2_OBJS) ${HEADERS}
-	$(CXX) $(CFLAGS) -o $@ $(HERETIC2_OBJS) $(LDFLAGS) $(GLXLDFLAGS)
+$(BUILDDIR)/ref_glx.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) ${HEADERS}
+	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) $(GLXLDFLAGS)
 
 ##########################################################################
 # MISC
@@ -510,4 +544,8 @@ clean:
 
 clean2:
 	-rm -f \
-	$(HERETIC2_OBJS)
+	$(HERETIC2_OBJS) \
+	$(REF_SOFT_OBJS) \
+	$(REF_SOFT_X11_OBJS) \
+	$(REF_GL_OBJS) \
+	$(REF_GL_GLX_OBJS)
