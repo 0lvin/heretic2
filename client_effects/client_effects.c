@@ -155,7 +155,7 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ NULL,								NULL,					NULL		},	// FX_CROSSHAIR
 };
 
-CE_ClassStatics_t classStatics[NUM_CLASSIDS];
+extern CE_ClassStatics_t classStatics[NUM_CLASSIDS];
 
 void (*cg_classStaticsInits[NUM_CLASSIDS])()=
 {

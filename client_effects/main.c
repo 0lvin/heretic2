@@ -35,7 +35,6 @@ cvar_t	*r_detail;
 cvar_t	*fx_numinview;
 cvar_t	*fx_numactive;
 cvar_t	*clfx_gravity;
-cvar_t* vid_ref;
 cvar_t	*fxTest1;
 cvar_t	*fxTest2;
 cvar_t	*fxTest3;
@@ -161,7 +160,6 @@ void Init()
 	fxTest4 = Cvar_Get("fxTest4", "0", 0);
 
 	cl_lerpdist2 = Cvar_Get("cl_lerpdist2", "10000", 0);
-	vid_ref = Cvar_Get( "vid_ref", "soft", CVAR_ARCHIVE );
 	crosshair = Cvar_Get ("crosshair", "0", CVAR_ARCHIVE);
 
 	Clear();
@@ -640,9 +638,11 @@ void AddServerEntities(frame_t *frame)
 	clientinfo_t		*ci;
 	int					clientnum;
 	qboolean			isPredictedPlayer;
+	cvar_t* vid_ref;
 
+	// TODO: Rewrite
 	// Have to do _this here, since the init is loaded once, and the graphics dll might be reloaded.
-
+	vid_ref = Cvar_Get( "vid_ref", "soft", CVAR_ARCHIVE );
 	ref_soft = (strcmp("soft", vid_ref->string)) ? 0 : 1;
 
 	fxi.cl->PIV = 0;

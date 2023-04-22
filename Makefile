@@ -417,7 +417,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/h2common/h2vector.o \
 	$(BUILDDIR)/linux/gl_glx.o \
 	$(BUILDDIR)/linux/glob.o \
-	$(BUILDDIR)/linux/in_linux.o \
 	$(BUILDDIR)/linux/net_udp.o \
 	$(BUILDDIR)/linux/p_dll.o \
 	$(BUILDDIR)/linux/qgl_linux.o \
@@ -454,7 +453,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/reference.o \
 	$(BUILDDIR)/qcommon/resource_manager.o \
 	$(BUILDDIR)/qcommon/skeletons.o \
-	$(BUILDDIR)/ref_common/font1.o \
 	$(BUILDDIR)/ref_common/r_skeletons.o \
 	$(BUILDDIR)/ref_gl/gl_book.o \
 	$(BUILDDIR)/ref_gl/gl_draw.o \
@@ -478,6 +476,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/server/sv_user.o \
 	$(BUILDDIR)/server/sv_world.o
 
+#	$(BUILDDIR)/linux/in_linux.o \
 #	$(BUILDDIR)/server/sv_null.o \
 #	$(BUILDDIR)/qcommon/p_dll.o \
 #	$(BUILDDIR)/linux/rw_x11.o \
@@ -500,7 +499,7 @@ HERETIC2_OBJS = \
 #	$(BUILDDIR)/ref_soft/r_surf.o \
 
 $(BUILDDIR)/heretic2 : $(HERETIC2_OBJS) ${HEADERS}
-	$(CC) $(CFLAGS) -o $@ $(HERETIC2_OBJS) $(LDFLAGS) $(GLXLDFLAGS)
+	$(CXX) $(CFLAGS) -o $@ $(HERETIC2_OBJS) $(LDFLAGS) $(GLXLDFLAGS)
 
 ##########################################################################
 # MISC
