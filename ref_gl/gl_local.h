@@ -400,7 +400,6 @@ void GL_DrawParticles( int n, const particle_t particles[], const unsigned color
 
 typedef struct
 {
-	int         renderer;
 	const char *renderer_string;
 	const char *vendor_string;
 	const char *version_string;

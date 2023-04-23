@@ -46,8 +46,6 @@ endif
 
 NOARCH=noarch
 
-QUAKE2_DIR=/grog/Projects/Quake2Master
-
 BUILD_DEBUG_DIR=Debug
 
 CC ?= gcc
@@ -80,7 +78,7 @@ DO_GL_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(GLCFLAGS) -o $@ -c $<
 
 TARGETS= \
 	$(BUILDDIR)/heretic2 \
-	$(BUILDDIR)/ref_glx.$(SHLIBEXT)
+	$(BUILDDIR)/ref_gl.$(SHLIBEXT)
 #	$(BUILDDIR)/ref_softx.$(SHLIBEXT)
 
 all:
@@ -419,7 +417,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/h2common/h2singlylinkedlist.o \
 	$(BUILDDIR)/h2common/h2surfaces.o \
 	$(BUILDDIR)/h2common/h2vector.o \
-	$(BUILDDIR)/ref_gl/gl_math.o \
 	$(BUILDDIR)/linux/glob.o \
 	$(BUILDDIR)/linux/net_udp.o \
 	$(BUILDDIR)/linux/p_dll.o \
@@ -455,6 +452,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/rand.o \
 	$(BUILDDIR)/qcommon/reference.o \
 	$(BUILDDIR)/qcommon/resource_manager.o \
+	$(BUILDDIR)/qcommon/arrayed_list.o \
 	$(BUILDDIR)/qcommon/skeletons.o \
 	$(BUILDDIR)/server/sv_ccmds.o \
 	$(BUILDDIR)/server/sv_ents.o \
@@ -513,7 +511,6 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/ref_gl/gl_fmodel.o \
 	$(BUILDDIR)/ref_gl/gl_image.o \
 	$(BUILDDIR)/ref_gl/gl_light.o \
-	$(BUILDDIR)/ref_gl/gl_math.o \
 	$(BUILDDIR)/ref_gl/gl_mesh.o \
 	$(BUILDDIR)/ref_gl/gl_model.o \
 	$(BUILDDIR)/ref_gl/gl_movie.o \
@@ -522,8 +519,8 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/ref_gl/gl_rsurf.o \
 	$(BUILDDIR)/ref_gl/gl_warp.o \
 	$(BUILDDIR)/ref_common/r_skeletons.o \
+	$(BUILDDIR)/qcommon/arrayed_list.o \
 	$(BUILDDIR)/qcommon/skeletons.o \
-	\
 	$(BUILDDIR)/linux/qgl_linux.o \
 	$(BUILDDIR)/qcommon/q_shared.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
@@ -532,7 +529,7 @@ REF_GL_OBJS = \
 REF_GL_GLX_OBJS = \
 	$(BUILDDIR)/linux/gl_glx.o
 
-$(BUILDDIR)/ref_glx.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) ${HEADERS}
+$(BUILDDIR)/ref_gl.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) ${HEADERS}
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) $(GLXLDFLAGS)
 
 ##########################################################################

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -66,7 +66,7 @@ void Draw_Char (int x, int y, int num)
 	float			frow, fcol, size;
 
 	num &= 255;
-	
+
 	if ( (num&127) == 32 )
 		return;		// space
 
@@ -160,9 +160,6 @@ void Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t
 	if (scrap_dirty)
 		Scrap_Upload();
 
-	if (((gl_config.renderer == GL_RENDERER_MCD) || (gl_config.renderer & GL_RENDERER_RENDITION)) && !gl->has_alpha || alpha == -1.0f)
-		glDisable(GL_ALPHA_TEST);
-
 	GL_Bind(gl->texnum);
 	glBegin(GL_QUADS);
 	glTexCoord2f(gl->sl, gl->tl);
@@ -174,9 +171,6 @@ void Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t
 	glTexCoord2f(gl->sl, gl->th);
 	glVertex2f(x, y + h);
 	glEnd();
-
-	if (((gl_config.renderer == GL_RENDERER_MCD) || (gl_config.renderer & GL_RENDERER_RENDITION)) && !gl->has_alpha || alpha == -1)
-		glEnable(GL_ALPHA_TEST);
 }
 
 /*
@@ -217,9 +211,6 @@ void Draw_Pic (int x, int y, char *pic)
 	if (scrap_dirty)
 		Scrap_Upload ();
 
-	if ( ( ( gl_config.renderer == GL_RENDERER_MCD ) || ( gl_config.renderer & GL_RENDERER_RENDITION ) ) && !gl->has_alpha)
-		glDisable (GL_ALPHA_TEST);
-
 	GL_Bind (gl->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (gl->sl, gl->tl);
@@ -231,9 +222,6 @@ void Draw_Pic (int x, int y, char *pic)
 	glTexCoord2f (gl->sl, gl->th);
 	glVertex2f (x, y+gl->height);
 	glEnd ();
-
-	if ( ( ( gl_config.renderer == GL_RENDERER_MCD ) || ( gl_config.renderer & GL_RENDERER_RENDITION ) )  && !gl->has_alpha)
-		glEnable (GL_ALPHA_TEST);
 }
 
 /*
@@ -255,9 +243,6 @@ void Draw_TileClear (int x, int y, int w, int h, char *pic)
 		return;
 	}
 
-	if ( ( ( gl_config.renderer == GL_RENDERER_MCD ) || ( gl_config.renderer & GL_RENDERER_RENDITION ) )  && !image->has_alpha)
-		glDisable (GL_ALPHA_TEST);
-
 	GL_Bind (image->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (x/64.0, y/64.0);
@@ -269,9 +254,6 @@ void Draw_TileClear (int x, int y, int w, int h, char *pic)
 	glTexCoord2f ( x/64.0, (y+h)/64.0 );
 	glVertex2f (x, y+h);
 	glEnd ();
-
-	if ( ( ( gl_config.renderer == GL_RENDERER_MCD ) || ( gl_config.renderer & GL_RENDERER_RENDITION ) )  && !image->has_alpha)
-		glEnable (GL_ALPHA_TEST);
 }
 
 
@@ -389,9 +371,6 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	if ( ( gl_config.renderer == GL_RENDERER_MCD ) || ( gl_config.renderer & GL_RENDERER_RENDITION ) ) 
-		glDisable (GL_ALPHA_TEST);
-
 	glBegin (GL_QUADS);
 	glTexCoord2f (0, 0);
 	glVertex2f (x, y);
@@ -402,8 +381,5 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 	glTexCoord2f (0, t);
 	glVertex2f (x, y+h);
 	glEnd ();
-
-	if ( ( gl_config.renderer == GL_RENDERER_MCD ) || ( gl_config.renderer & GL_RENDERER_RENDITION ) ) 
-		glEnable (GL_ALPHA_TEST);
 }
 

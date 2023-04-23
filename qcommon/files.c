@@ -715,7 +715,7 @@ char **FS_ListFiles( char *findname, int *numfiles, unsigned musthave, unsigned 
 		{
 			list[nfiles] = strdup( s );
 #ifdef _WIN32
-			strlwr( list[nfiles] );
+			Q_strlwr( list[nfiles] );
 #endif
 			nfiles++;
 		}

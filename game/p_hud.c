@@ -821,6 +821,11 @@ void G_SetStats (edict_t *ent)
 	ps->stats[STAT_PUZZLE_COUNT] = 0;
 	for(i = 0; i < MAX_ITEMS; i++, item++)
 	{
+		if (i >= playerExport.p_num_items)
+		{
+			continue;
+		}
+
 		if((item->flags & IT_PUZZLE) && pers->inventory.Items[i])
 		{
 			 if(count > STAT_PUZZLE_ITEM4)

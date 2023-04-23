@@ -133,23 +133,6 @@ typedef struct
 
 #ifndef _TOOL // the following is only relevant to the game code
 
-typedef struct
-{
-	int				start_frame;
-	int				num_frames;
-	int				degrees;
-	char			*mat;
-	char			*ccomp;
-	unsigned char	*cbase;
-	float			*cscale;
-	float			*coffset;
-	float			trans[3];
-	float			scale[3];
-	float			bmin[3];
-	float			bmax[3];
-	float			*complerp;
-} fmgroup_t;
-
 #define MAX_COMP_DOF 25
 
 #define FRAME_NAME_LEN (16)
@@ -165,7 +148,6 @@ typedef struct fmdl_s
 	fmmeshnode_t			*mesh_nodes;
 	//compression stuff
 	int						ngroups;
-	fmgroup_t				*compdata;
 	int						*frame_to_group;
 	char					*framenames;
 	byte					*lightnormalindex;
@@ -185,16 +167,7 @@ typedef struct fmdl_s
 extern fmdl_t *fmodel;
 
 void Mod_LoadFlexModel (struct model_s *mod, void *buffer, int length);
-void Mod_RegisterFlexModel(struct model_s *mod);
 void R_DrawFlexModel (entity_t *e);
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-void GL_LerpVert(vec3_t newPoint, vec3_t oldPoint, vec3_t interpolatedPoint, float move[3], float frontv[3], float backv[3]);
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 // jmarshall
 enum

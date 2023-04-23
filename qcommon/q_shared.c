@@ -1227,6 +1227,20 @@ void Com_sprintf(char* dest, int size, char* fmt, ...)
 	strncpy(dest, bigbuffer, size - 1);
 }
 
+char *
+Q_strlwr ( char *s )
+{
+	char *p = s;
+
+	while ( *s )
+	{
+		*s = tolower( (unsigned char)*s );
+		s++;
+	}
+
+	return ( p );
+}
+
 /*
 =====================================================================
 

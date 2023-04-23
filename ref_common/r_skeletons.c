@@ -19,6 +19,14 @@ ArrayedListNode_t ClusterNodes[MAX_ARRAYED_JOINT_NODES];
 
 extern void *Hunk_Alloc (int size);
 
+static void
+Skeleton_LerpVert(vec3_t newPoint, vec3_t oldPoint, vec3_t interpolatedPoint, float move[3], float frontv[3], float backv[3])
+{
+	interpolatedPoint[0] = move[0] + oldPoint[0] * backv[0] + newPoint[0] * frontv[0];
+	interpolatedPoint[1] = move[1] + oldPoint[1] * backv[1] + newPoint[1] * frontv[1];
+	interpolatedPoint[2] = move[2] + oldPoint[2] * backv[2] + newPoint[2] * frontv[2];
+}
+
 void CreateSkeletonAsHunk(int structure, ModelSkeleton_t *skel)
 {
 	skel->rootJoint = (M_SkeletalJoint_t *) Hunk_Alloc(numJointsInSkeleton[structure]*sizeof(M_SkeletalJoint_t));
@@ -82,16 +90,17 @@ static int GetRootIndex(int max, int numJoints)
 	return -1;
 }
 
-//int CreateSkeleton(int structure)
-//{
-//	int index;
-//
-//	index = GetRootIndex(MAX_ARRAYED_SKELETAL_JOINTS, numJointsInSkeleton[structure]);
-//
-//	SkeletonCreators[structure](SkeletalClusters, sizeof(M_SkeletalCluster_t), ClusterNodes, index);
-//
-//	return index;
-//}
+
+int CreateSkeleton(int structure)
+{
+	int index;
+
+	index = GetRootIndex(MAX_ARRAYED_SKELETAL_JOINTS, numJointsInSkeleton[structure]);
+
+	SkeletonCreators[structure](SkeletalClusters, sizeof(M_SkeletalCluster_t), ClusterNodes, index);
+
+	return index;
+}
 
 void ClearSkeleton(ModelSkeleton_t *skel, int root)
 {
@@ -263,11 +272,11 @@ void LinearllyInterpolateJoints(ModelSkeleton_t *newSkel, int newIndex,
 		}
 	}
 
-	GL_LerpVert(newJoint->model.origin, oldJoint->model.origin, liJoint->model.origin, move, frontv, backv);
+	Skeleton_LerpVert(newJoint->model.origin, oldJoint->model.origin, liJoint->model.origin, move, frontv, backv);
 
 	// linerally interpolater direction and up vectors, which will unnormalize them relative to their local origin
-	GL_LerpVert(newJoint->model.direction, oldJoint->model.direction, liJoint->model.direction, move, frontv, backv);
-	GL_LerpVert(newJoint->model.up, oldJoint->model.up, liJoint->model.up, move, frontv, backv);
+	Skeleton_LerpVert(newJoint->model.direction, oldJoint->model.direction, liJoint->model.direction, move, frontv, backv);
+	Skeleton_LerpVert(newJoint->model.up, oldJoint->model.up, liJoint->model.up, move, frontv, backv);
 
 	Vec3SubtractAssign(liJoint->model.origin, liJoint->model.direction);
 	Vec3SubtractAssign(liJoint->model.origin, liJoint->model.up);

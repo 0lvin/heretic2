@@ -82,6 +82,7 @@ Mod_SerializeSkin
 */
 void Mod_SerializeSkin(fmdl_t *fmodel, int version, int length, char *buffer)
 {
+	int i;
 	if (version != FM_SKIN_VER)
 	{
 		ri.Com_Error(ERR_FATAL, "Invalid skin version!");
@@ -89,6 +90,14 @@ void Mod_SerializeSkin(fmdl_t *fmodel, int version, int length, char *buffer)
 	}
 
 	fmodel->skin_names = buffer;
+	// TODO: Rewrite replace hack to some slash agnostic
+	for (i=0; i < length; i++)
+	{
+		if (fmodel->skin_names[i] == '\\')
+		{
+			fmodel->skin_names[i] = '/';
+		}
+	}
 }
 
 /*
