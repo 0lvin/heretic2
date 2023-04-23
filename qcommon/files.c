@@ -452,8 +452,7 @@ pack_t *FS_LoadPackFile (char *packfile)
 	int				numpackfiles;
 	pack_t			*pack;
 	FILE			*packhandle;
-	dpackfile_t		info[MAX_FILES_IN_PACK];
-	unsigned		checksum;
+	dpackfile_t *info = NULL; /* PAK info. */
 
 	packhandle = fopen(packfile, "rb");
 	if (!packhandle)
@@ -467,28 +466,38 @@ pack_t *FS_LoadPackFile (char *packfile)
 
 	numpackfiles = header.dirlen / sizeof(dpackfile_t);
 
+	if ((header.dirlen < 0) || (header.dirofs < 0))
+	{
+		Com_Error(ERR_FATAL, "%s: '%s' is too short.",
+				__func__, packfile);
+	}
+
 	if (numpackfiles > MAX_FILES_IN_PACK)
-		Com_Error (ERR_FATAL, "%s has %i files", packfile, numpackfiles);
+	{
+		Com_Printf("%s: '%s' has %i > %i files\n",
+				__func__, packfile, numpackfiles, MAX_FILES_IN_PACK);
+	}
+
+	info = malloc(header.dirlen);
+	if (!info)
+	{
+		Com_Error(ERR_FATAL, "%s: '%s' is to big for read %d",
+				__func__, packfile, header.dirlen);
+	}
 
 	newfiles = (packfile_t *)Z_Malloc (numpackfiles * sizeof(packfile_t));
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (info, 1, header.dirlen, packhandle);
 
-// crc the directory to check for modifications
-	checksum = Com_BlockChecksum ((void *)info, header.dirlen);
-
-#ifdef NO_ADDONS
-	if (checksum != PAK0_CHECKSUM)
-		return NULL;
-#endif
-// parse the directory
+	// parse the directory
 	for (i=0 ; i<numpackfiles ; i++)
 	{
 		strcpy (newfiles[i].name, info[i].name);
 		newfiles[i].filepos = LittleLong(info[i].filepos);
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
+	free(info);
 
 	pack = (pack_t *)Z_Malloc (sizeof (pack_t));
 	strcpy (pack->filename, packfile);
