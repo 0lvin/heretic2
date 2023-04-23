@@ -823,14 +823,14 @@ void G_SetStats (edict_t *ent)
 	{
 		if (i >= playerExport.p_num_items)
 		{
-			continue;
+			break;
 		}
 
 		if((item->flags & IT_PUZZLE) && pers->inventory.Items[i])
 		{
 			 if(count > STAT_PUZZLE_ITEM4)
 			 {
-				 break;
+				break;
 			 }
 			 else
 			 {

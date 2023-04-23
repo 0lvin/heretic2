@@ -416,7 +416,7 @@ R_RenderFlexNode
 */
 void R_RenderFlexNode(int startCmd, int numCmds, fmdl_t* model, vec3_t *frame_vertexes, vec3_t *old_frame_vertexes, fmaliasframe_t* frame, fmaliasframe_t* oldframe, int currentFrame, int oldframenum, float backlerp)
 {
-	long* command = (long *)model->glcmds;
+	int* command = (int *)model->glcmds;
 	int cur_glcmnd = model->header.num_glcmds;
 
 	int cmdId = 0;
