@@ -401,13 +401,13 @@ void SV_WriteEffectToBuffer(sizebuf_t* msg, char* format, va_list args)
 		switch (format[i])
 		{
 		case 'b':
-			MSG_WriteByte(msg, va_arg(args, byte));
+			MSG_WriteByte(msg, va_arg(args, int));
 			break;
 		case 'd':
 			MSG_WriteDir(msg, va_arg(args, float *));
 			break;
 		case 'f':
-			MSG_WriteFloat(msg, va_arg(args, float));
+			MSG_WriteFloat(msg, va_arg(args, double));
 			break;
 		case 'i':
 			MSG_WriteLong(msg, va_arg(args, long));
@@ -417,7 +417,7 @@ void SV_WriteEffectToBuffer(sizebuf_t* msg, char* format, va_list args)
 			MSG_WritePos(msg, va_arg(args, float*));
 			break;
 		case 's':
-			MSG_WriteShort(msg, va_arg(args, short));
+			MSG_WriteShort(msg, va_arg(args, int));
 			break;
 		case 't':
 			MSG_WritePos(msg, va_arg(args, float*));
