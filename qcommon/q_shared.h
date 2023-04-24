@@ -569,8 +569,6 @@ typedef struct paletteRGBA_s
 
 #define PLAYER_DLL
 
-#define DEMO_CODE		0
-
 float Approach(float curr, float dest, float rate);
 
 #define	MAX_STRING_TOKENS	80		// max tokens resulting from Cmd_TokenizeString
