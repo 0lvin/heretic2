@@ -130,6 +130,19 @@ void G_ClearMessageQueues();
 
 //===================================================================
 
+float Clamp(float src, float min, float max)
+{
+	float result;
+
+	if (src > (float)max)
+		src = max;
+	if (src >= (float)min)
+		result = src;
+	else
+		result = min;
+	return result;
+}
+
 /*
 =================
 ShutdownGame

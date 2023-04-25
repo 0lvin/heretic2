@@ -226,7 +226,7 @@ void DoFireTrail (client_entity_t *spawner)
 	material = spawner->SpawnInfo & SIF_FLAG_MASK;
 	if(material == MAT_FLESH || material == MAT_INSECT || spawner->effectID == FX_BODYPART)
 		master_scale = spawner->r.scale * 3.33;
-	else	
+	else
 		master_scale = spawner->r.scale;
 
 	if (r_detail->value < DETAIL_NORMAL)
@@ -277,9 +277,9 @@ void FXBodyPart(centity_t *owner,int type, int flags, vec3_t origin)
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_BODYPART].formatString, &frame, &BodyPart, &damage, &modelindex, &OwnerEntnum);
 
 	realowner = &fxi.server_entities[OwnerEntnum];
-	
+
 	ke = damage * 10000.0f;
-	if(ke < 10000.0f)			
+	if(ke < 10000.0f)
 	{
 		ke = 10000.0f;
 	}
@@ -340,7 +340,7 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 	debris->r.frame = frame;//first frame should be parts frame of a flexmodel
 //need to copy base skin also
 	debris->r.skinnum = owner->current.skinnum;
-		
+
 	for(whichnode = 1, node_num = 0; whichnode<=16384; whichnode*=2)//bitwise
 	{
 		node_num++;
@@ -382,7 +382,7 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 	}
 
 	VectorRandomCopy(dir, debris->velocity, 0.5F);
-	
+
 	if(ke)
 	{
 		Vec3ScaleAssign(sqrt(ke/debrisChunks[index].mass), debris->velocity);
@@ -404,7 +404,7 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 
 	debris->Update = FXBodyPart_Update;
 	debris->updateTime = 50;
-	
+
 	if(r_detail->value == DETAIL_UBERHIGH)
 		debris->LifeTime = fxi.cl->time + 10000;
 	else if(!r_detail->value)
@@ -451,7 +451,7 @@ qboolean FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner
 
 	if((self->SpawnInfo&SIF_FLAG_MASK)==MAT_FLESH||(self->SpawnInfo&SIF_FLAG_MASK) == MAT_INSECT)
 		DoBloodTrail(self, -1);
-	
+
 	if(self->flags&CEF_FLAG6)//on fire- do a fire trail
 		DoFireTrail(self);
 
@@ -473,12 +473,12 @@ qboolean FXBodyPart_Update(struct client_entity_s *self, centity_t *owner)
 	self->r.angles[0] += ANGLE_360*d_time;
 	self->r.angles[1] += ANGLE_360*d_time;
 	self->r.angles[2] += ANGLE_360*d_time;
-	
+
 	self->lastThinkTime = fxi.cl->time;
 
 	if((self->SpawnInfo&SIF_FLAG_MASK)==MAT_FLESH||(self->SpawnInfo&SIF_FLAG_MASK) == MAT_INSECT)
 		DoBloodTrail(self, 6);
-	
+
 	if(self->flags&CEF_FLAG6)//on fire- do a fire trail
 		DoFireTrail(self);
 
@@ -520,7 +520,7 @@ client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float k
 
 	debris->elasticity = debrisElasticity[material];
 	debris->r.skinnum = debrisChunks[index].skinNum;
-	
+
 	if(material == MAT_FLESH||material == MAT_INSECT)	// Flesh need a different update for blood
 	{
 		debris->Update = FXFleshDebris_Update;
@@ -557,7 +557,7 @@ client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float k
 
 		debris->flags |= CEF_FLAG6;
 	}
-		
+
 	if(flags&CEF_FLAG8)//reflective
 	{
 		debris->r.flags |= RF_REFLECTION;
@@ -576,7 +576,7 @@ void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int mater
 	int					i;
 	vec3_t				holdorigin, start;
 	trace_t				trace;
-	
+
 	if(flags&CEF_FLAG6)//onfire, check for highdetail, non-ref_soft
 	{
 		//Not-very-perfect way of doing a pointcontents from the FX dll
@@ -660,6 +660,18 @@ void FXDebris_SpawnFleshChunks(int type, int flags, vec3_t origin, int num, int 
 	}
 }
 
+static int
+ClampI(int src, int min, int max)
+{
+	int result;
+
+	result = src;
+	if (src > max)
+		result = max;
+	if (result < min)
+		result = min;
+	return result;
+}
 
 // num = number of chunks to spawn (dependent on size and mass)
 // material = type of chunk to explode
@@ -766,7 +778,7 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 
 							VectorSet(dir, 0.0, 0.0, 1.0);
 							GenericSparks(NULL, FX_SPARKS, 0, self->r.origin, dir);
-						
+
 							if(!irand(0,1))
 								fxi.S_StartSound(self->r.origin, -1, CHAN_AUTO, fxi.S_RegisterSound("misc/dropmetal.wav"), 1, ATTN_NORM, 0);
 							else
@@ -778,7 +790,7 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 
 						//need more hollow sounds for big metal
 						break;
-					
+
 					case MAT_WOOD:
 						if(!irand(0,6))
 						{
@@ -806,7 +818,7 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 					case MAT_INSECT:
 						if(self->flags&CEF_FLAG6)
 							dark = true;
-						
+
 						if(material==MAT_INSECT)
 							yellow = true;
 
@@ -826,7 +838,7 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 								ThrowBlood(self->r.origin, trace->plane.normal, dark, yellow, false);
 						}
 						break;
-					
+
 					case MAT_GLASS:
 						if(!irand(0,2))
 						{
@@ -839,7 +851,7 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 						break;
 				}
 			}
-			
+
 			if (trace->plane.normal[2] > GROUND_NORMAL)
 			{
 				// don't bounce if velocity is small
@@ -848,7 +860,7 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 					// Set pitch so that chunks lie flat on ground
 					self->r.angles[PITCH] = ANGLE_90;
 
-					BecomeStatic(self);			
+					BecomeStatic(self);
 
 					self->d_alpha = flrand(-0.1, -0.25);
 					self->Update = FXDebris_Vanish;
@@ -932,7 +944,7 @@ qboolean FXDebris_Update(struct client_entity_s *self,centity_t *owner)
 
 	self->r.angles[0] += ANGLE_360*d_time;
 	self->r.angles[1] += ANGLE_360*d_time;
-	
+
 	self->lastThinkTime = fxi.cl->time;
 
 	if(self->flags&CEF_FLAG6)//on fire- do a fire trail
@@ -946,7 +958,7 @@ qboolean FXFleshDebris_Update(struct client_entity_s *self,centity_t *owner)
 	int curTime = fxi.cl->time;
 	float d_time = (curTime - self->lastThinkTime) / 1000.0f;
 
-	
+
 	if(self->flags&CEF_FLAG6)//on fire- do a fire trail
 	{
 		DoFireTrail(self);
@@ -966,7 +978,7 @@ qboolean FXFleshDebris_Update(struct client_entity_s *self,centity_t *owner)
 
 	self->r.angles[0] += ANGLE_360*d_time;
 	self->r.angles[1] += ANGLE_360*d_time;
-	
+
 	self->lastThinkTime = fxi.cl->time;
 
 	return true;

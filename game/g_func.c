@@ -1047,6 +1047,16 @@ void button_sounds(edict_t *self)
 		self->moveinfo.sound_start = gi.soundindex ("doors/steambutton.wav");
 }
 
+static void
+VectorAbs(const vec3_t in, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = (float)Q_fabs(in[0]);
+	out[1] = (float)Q_fabs(in[1]);
+	out[2] = (float)Q_fabs(in[2]);
+}
+
 /*QUAKED func_button (0 .5 .8) ? TOUCH
 When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again.
 

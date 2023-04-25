@@ -1162,13 +1162,6 @@ qboolean R_SetMode (void)
 	int err;
 	qboolean fullscreen;
 
-	if ( vid_fullscreen->modified && !gl_config.allow_cds )
-	{
-		ri.Con_Printf( PRINT_ALL, "R_SetMode() - CDS not allowed with this driver\n" );
-		ri.Cvar_SetValue( "vid_fullscreen", !vid_fullscreen->value );
-		vid_fullscreen->modified = false;
-	}
-
 	fullscreen = vid_fullscreen->value;
 
 	vid_fullscreen->modified = false;
@@ -1283,13 +1276,6 @@ int R_Init( void *hinstance, void *hWnd )
 	}
 
 	ri.Cvar_Set( "scr_drawall", "0" );
-
-	gl_config.allow_cds = true;
-
-	if ( gl_config.allow_cds )
-		ri.Con_Printf( PRINT_ALL, "...allowing CDS\n" );
-	else
-		ri.Con_Printf( PRINT_ALL, "...disabling CDS\n" );
 
 	/*
 	** grab extensions

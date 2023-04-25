@@ -843,6 +843,16 @@ void fishbite (edict_t *self)
 	}
 }
 
+static void
+VectorRadiansToDegrees (vec3_t in, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = in[0] * RAD_TO_ANGLE;
+	out[1] = in[1] * RAD_TO_ANGLE;
+	out[2] = in[2] * RAD_TO_ANGLE;
+}
+
 void fish_target(edict_t *self)
 {
 	vec3_t	dir;

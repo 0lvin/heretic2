@@ -2034,6 +2034,17 @@ otherwise riders would continue to slide.
 ============
 */
 
+#if 0
+void VectorRound(vec3_t v)
+{
+	//assert(v != vec3_origin);
+
+	v[0] = (float)floor(v[0] + 0.5);
+	v[1] = (float)floor(v[1] + 0.5);
+	v[2] = (float)floor(v[2] + 0.5);
+}
+#endif
+
 #define GIL_PUSH 1
 qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 {

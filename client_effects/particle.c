@@ -89,6 +89,17 @@ void RemoveParticleList(client_particle_t **root)
 	*root = NULL;
 }
 
+static vec_t
+VectorSeparationSquared(vec3_t va, vec3_t vb)
+{
+	vec3_t		work;
+	vec_t		result;
+
+	VectorSubtract(va, vb, work);
+	result = DotProduct(work, work);
+	return(result);
+}
+
 int AddParticlesToView(client_entity_t *ce)
 {
 	client_particle_t	*current;

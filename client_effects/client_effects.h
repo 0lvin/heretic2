@@ -263,6 +263,8 @@ void PreCacheObjects(void);
 void PreCacheCWModels(void);
 void PreCacheTorn(void);
 
+qboolean Vec3IsZeroEpsilon(vec3_t in);
+
 #ifdef __cplusplus
 } //end extern "C"
 #endif

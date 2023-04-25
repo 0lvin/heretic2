@@ -67,8 +67,7 @@ SHLIBEXT=so
 SHLIBCFLAGS=-fPIC
 SHLIBLDFLAGS=-shared
 
-DO_CC=$(CC) $(CFLAGS) -o $@ -c $<
-DO_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 DO_SHLIB_CXX=$(CXX) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 DO_GL_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(GLCFLAGS) -o $@ -c $<
 
@@ -101,48 +100,27 @@ targets: $(TARGETS)
 HEADERS = \
 	qcommon/q_shared.h
 
+# When make is invoked by "make VERBOSE=1" print
+# the compiler and linker commands.
+ifdef VERBOSE
+Q :=
+else
+Q := @
+endif
+
 #############################################################################
 # COMPILE
 #############################################################################
 
-$(BUILDDIR)/client/%.o :          client/%.c ${HEADERS}
-	$(DO_CC)
+$(BUILDDIR)/%.o :                 %.cpp ${HEADERS}
+	@echo "===> CXX $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(DO_SHLIB_CXX)
 
-$(BUILDDIR)/client_effects/%.o :  client_effects/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/external/%.o :        external/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/game/%.o :            game/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/game/%.o :            game/%.cpp ${HEADERS}
-	$(DO_SHLIB_CXX)
-
-$(BUILDDIR)/h2common/%.o :        h2common/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/linux/%.o :           linux/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/player/%.o :          player/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/qcommon/%.o :         qcommon/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/ref_common/%.o :      ref_common/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/ref_gl/%.o :          ref_gl/%.c ${HEADERS}
-	$(DO_GL_SHLIB_CC)
-
-$(BUILDDIR)/ref_soft/%.o :          ref_soft/%.c ${HEADERS}
-	$(DO_SHLIB_CC)
-
-$(BUILDDIR)/server/%.o :          server/%.c ${HEADERS}
-	$(DO_CC)
+$(BUILDDIR)/%.o :                 %.c ${HEADERS}
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(DO_CC)
 
 
 #############################################################################
@@ -409,7 +387,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/game/spl_teleport.o \
 	$(BUILDDIR)/game/spl_tornado.o \
 	$(BUILDDIR)/game/spl_wall.o \
-	$(BUILDDIR)/h2common/h2math.o \
 	$(BUILDDIR)/h2common/h2matrix.o \
 	$(BUILDDIR)/h2common/h2motion.o \
 	$(BUILDDIR)/h2common/h2palette.o \
@@ -448,8 +425,9 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/net_chan.o \
 	$(BUILDDIR)/qcommon/netmsg_read.o \
 	$(BUILDDIR)/qcommon/pmove.o \
-	$(BUILDDIR)/qcommon/q_shared.o \
 	$(BUILDDIR)/qcommon/rand.o \
+	$(BUILDDIR)/src/common/shared/rand.o \
+	$(BUILDDIR)/src/common/shared/shared.o \
 	$(BUILDDIR)/qcommon/reference.o \
 	$(BUILDDIR)/qcommon/resource_manager.o \
 	$(BUILDDIR)/qcommon/arrayed_list.o \
@@ -465,7 +443,9 @@ HERETIC2_OBJS = \
 
 
 $(BUILDDIR)/heretic2 : $(HERETIC2_OBJS) ${HEADERS}
-	$(CXX) $(CFLAGS) -o $@ $(HERETIC2_OBJS) $(LDFLAGS) $(GLXLDFLAGS)
+	@echo "===> CXX $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CXX) $(CFLAGS) -o $@ $(HERETIC2_OBJS) $(LDFLAGS) $(GLXLDFLAGS)
 
 #############################################################################
 # REF_SOFT
@@ -490,7 +470,8 @@ REF_SOFT_OBJS = \
 	$(BUILDDIR)/ref_soft/r_sprite.o \
 	$(BUILDDIR)/ref_soft/r_surf.o \
 	\
-	$(BUILDDIR)/qcommon/q_shared.o \
+	$(BUILDDIR)/src/common/shared/rand.o \
+	$(BUILDDIR)/src/common/shared/shared.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
 	$(BUILDDIR)/linux/glob.o
 
@@ -498,7 +479,9 @@ REF_SOFT_X11_OBJS = \
 	$(BUILDDIR)/linux/rw_x11.o
 
 $(BUILDDIR)/ref_softx.$(SHLIBEXT) : $(REF_SOFT_OBJS) $(REF_SOFT_X11_OBJS) ${HEADERS}
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_SOFT_OBJS) \
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_SOFT_OBJS) \
 		$(REF_SOFT_X11_OBJS) $(XLDFLAGS)
 
 #############################################################################
@@ -522,7 +505,8 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/qcommon/arrayed_list.o \
 	$(BUILDDIR)/qcommon/skeletons.o \
 	$(BUILDDIR)/linux/qgl_linux.o \
-	$(BUILDDIR)/qcommon/q_shared.o \
+	$(BUILDDIR)/src/common/shared/rand.o \
+	$(BUILDDIR)/src/common/shared/shared.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
 	$(BUILDDIR)/linux/glob.o
 
@@ -530,7 +514,9 @@ REF_GL_GLX_OBJS = \
 	$(BUILDDIR)/linux/gl_glx.o
 
 $(BUILDDIR)/ref_gl.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) ${HEADERS}
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) $(GLXLDFLAGS)
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) $(GLXLDFLAGS)
 
 ##########################################################################
 # MISC

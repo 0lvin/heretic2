@@ -26,10 +26,10 @@ void AnglesFromDirI(vec3_t direction, vec3_t angles)
 void Create_rand_relect_vect(vec3_t in, vec3_t out)
 {
 	double v3;
-	float v4; 
-	double v5; 
-	float v6; 
-	vec3_t angles; 
+	float v4;
+	double v5;
+	float v6;
+	vec3_t angles;
 
 	angles[2] = 0.0f;
 
@@ -125,15 +125,15 @@ void AnglesFromDirAndUp(vec3_t direction, vec3_t up, vec3_t angles)
 
 void RealAngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 {
-	float v5; 
-	float v6; 
-	float v7; 
-	float v8; 
-	int result; 
-	float v10; 
-	float v11; 
-	float v12; 
-	float a1a; 
+	float v5;
+	float v6;
+	float v7;
+	float v8;
+	int result;
+	float v10;
+	float v11;
+	float v12;
+	float a1a;
 
 	v5 = sin(angles[1]);
 	v6 = cos(angles[1]);
@@ -173,8 +173,8 @@ void DirAndUpFromAngles(vec3_t angles, vec3_t direction, vec3_t up)
 }
 
 void vectoangles(vec3_t vec, vec3_t angles) {
-	float *v2; 
-	vec3_t v3; 
+	float *v2;
+	vec3_t v3;
 
 	if (*vec != 0.0 || vec[1] != 0.0 || vec[2] != 0.0)
 	{
@@ -209,7 +209,7 @@ void DirFromAngles(vec3_t angles, vec3_t direction)
 	v6 = cos(v5);
 	direction[1] = v8 * v6;
 	direction[2] = sin(v5);
-} 
+}
 
 void VectorAverage(vec3_t veca, vec3_t vecb, vec3_t vecc)
 {
@@ -220,7 +220,7 @@ void VectorAverage(vec3_t veca, vec3_t vecb, vec3_t vecc)
 
 void VectorGetOffsetOrigin(vec3_t off, vec3_t org, vec_t degree, vec3_t out)
 {
-	float v4; 
+	float v4;
 	matrix3_t v7;
 
 	v4 = degree * 0.017453292;
@@ -271,3 +271,86 @@ float vhlen(vec3_t p1, vec3_t p2)
 	return sqrt(v3 * v3 + v2 * v2);
 }
 
+vec_t VectorLengthSquared(vec3_t v)
+{
+	float	length;
+
+	length = DotProduct(v, v);
+
+	return length;
+}
+
+void VectorDegreesToRadians (vec3_t in, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = in[0] * ANGLE_TO_RAD;
+	out[1] = in[1] * ANGLE_TO_RAD;
+	out[2] = in[2] * ANGLE_TO_RAD;
+}
+
+void VectorScaleByVector (vec3_t in, vec3_t scale, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = in[0] * scale[0];
+	out[1] = in[1] * scale[1];
+	out[2] = in[2] * scale[2];
+}
+
+void Vec3SubtractAssign(vec3_t value, vec3_t subFrom)
+{
+	//assert(subFrom != vec3_origin);
+
+	subFrom[0] -= value[0];
+	subFrom[1] -= value[1];
+	subFrom[2] -= value[2];
+}
+
+void Vec3AddAssign(vec3_t value, vec3_t addTo)
+{
+	//assert(addTo != vec3_origin);
+
+	addTo[0] += value[0];
+	addTo[1] += value[1];
+	addTo[2] += value[2];
+}
+
+void Vec3ScaleAssign(vec_t value, vec3_t scaleBy)
+{
+	//assert(scaleBy != vec3_origin);
+
+	scaleBy[0] *= value;
+	scaleBy[1] *= value;
+	scaleBy[2] *= value;
+}
+
+qboolean FloatIsZeroEpsilon(float f)
+{
+	return (Q_fabs(f) < FLOAT_ZERO_EPSILON);
+}
+
+qboolean FloatIsZero(float f, float epsilon)
+{
+	return (Q_fabs(f) < epsilon);
+}
+
+qboolean Vec3EqualsEpsilon(vec3_t v1, vec3_t v2)
+{
+	if(!FloatIsZeroEpsilon(v1[0] - v2[0]) || !FloatIsZeroEpsilon(v1[1] - v2[1]) || !FloatIsZeroEpsilon(v1[2] - v2[2]))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+qboolean Vec3IsZero(vec3_t vec)
+{
+	return !( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
+}
+
+qboolean Vec3NotZero(vec3_t vec)
+{
+	return ( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
+}

@@ -625,6 +625,39 @@ void InsertInCircularList(client_entity_t *self)
 		CurrentCirclePointer = 0;
 }
 
+float GetTimeToReachDistance(float a1, float a2, float a3)
+{
+	double v4;
+	char v5 = 0.0f;
+	float v6;
+	double result;
+	float v8;
+
+	v4 = a1;
+	if (v5)
+	{
+		if (v4 == 0.0)
+			result = 0.0;
+		else
+			result = a3 / a1 * 1000.0;
+	}
+	else
+	{
+		v6 = sqrt(v4 * a1 + a2 * a3 + a2 * a3);
+		v8 = (v6 - a1) * 1000.0 / a2;
+		result = (-a1 - v6) * 1000.0 / a2;
+		if (result <= v8)
+			result = v8;
+	}
+	return result;
+}
+
+qboolean Vec3IsZeroEpsilon(vec3_t in)
+{
+	return in[0] < 0.00050000002 && in[0] > -0.00050000002
+		&& in[1] < 0.00050000002 && in[1] > -0.00050000002
+		&& in[2] < 0.00050000002 && in[2] > 0.00050000002;
+}
 
 // -----------------------------------------------------------------
 // end

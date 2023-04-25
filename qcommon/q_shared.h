@@ -530,9 +530,6 @@ typedef struct csurface_s
 	int value; /* unused */
 } csurface_t;
 
-float Clamp(float src, float min, float max);
-int ClampI(int src, int min, int max);
-
 extern vec3_t vec3_up;
 
 int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
@@ -540,7 +537,6 @@ int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
 //=============================================
 
 #define VectorCopy(a, b) (b[0] = a[0], b[1] = a[1], b[2] = a[2])
-qboolean Vec3IsZeroEpsilon(vec3_t in);
 
 typedef vec_t vec2_t[2];
 typedef double vec3d_t[3];
@@ -568,8 +564,6 @@ typedef struct paletteRGBA_s
 #include "qfiles.h"
 
 #define PLAYER_DLL
-
-float Approach(float curr, float dest, float rate);
 
 #define	MAX_STRING_TOKENS	80		// max tokens resulting from Cmd_TokenizeString
 

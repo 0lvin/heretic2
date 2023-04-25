@@ -26,7 +26,7 @@
 
 #include <ctype.h>
 
-#include "qcommon.h"
+#include "../header/shared.h"
 
 #define DEG2RAD(a) (a * M_PI) / 180.0F
 
@@ -364,76 +364,97 @@ BoxOnPlaneSide2(vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 }
 
 /*
-==================
-BoxOnPlaneSide
-
-Returns 1, 2, or 1 + 2
-==================
-*/
+ * Returns 1, 2, or 1 + 2
+ */
 int
 BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 {
-	float	dist1, dist2;
-	int		sides;
+	float dist1, dist2;
+	int sides;
 
-	// fast axial cases
+	/* fast axial cases */
 	if (p->type < 3)
 	{
 		if (p->dist <= emins[p->type])
+		{
 			return 1;
+		}
+
 		if (p->dist >= emaxs[p->type])
+		{
 			return 2;
+		}
+
 		return 3;
 	}
 
-	// general case
+	/* general case */
 	switch (p->signbits)
 	{
-	case 0:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		break;
-	case 1:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		break;
-	case 2:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		break;
-	case 3:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		break;
-	case 4:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		break;
-	case 5:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emaxs[2];
-		break;
-	case 6:
-		dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		break;
-	case 7:
-		dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] + p->normal[2] * emins[2];
-		dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] + p->normal[2] * emaxs[2];
-		break;
-	default:
-		dist1 = dist2 = 0;		// shut up compiler
-		assert(0);
-		break;
+		case 0:
+			dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] +
+					p->normal[2] * emaxs[2];
+			dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] +
+					p->normal[2] * emins[2];
+			break;
+		case 1:
+			dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] +
+					p->normal[2] * emaxs[2];
+			dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] +
+					p->normal[2] * emins[2];
+			break;
+		case 2:
+			dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] +
+					p->normal[2] * emaxs[2];
+			dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] +
+					p->normal[2] * emins[2];
+			break;
+		case 3:
+			dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] +
+					p->normal[2] * emaxs[2];
+			dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] +
+					p->normal[2] * emins[2];
+			break;
+		case 4:
+			dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] +
+					p->normal[2] * emins[2];
+			dist2 = p->normal[0] * emins[0] + p->normal[1] * emins[1] +
+					p->normal[2] * emaxs[2];
+			break;
+		case 5:
+			dist1 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] +
+					p->normal[2] * emins[2];
+			dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] +
+					p->normal[2] * emaxs[2];
+			break;
+		case 6:
+			dist1 = p->normal[0] * emaxs[0] + p->normal[1] * emins[1] +
+					p->normal[2] * emins[2];
+			dist2 = p->normal[0] * emins[0] + p->normal[1] * emaxs[1] +
+					p->normal[2] * emaxs[2];
+			break;
+		case 7:
+			dist1 = p->normal[0] * emins[0] + p->normal[1] * emins[1] +
+					p->normal[2] * emins[2];
+			dist2 = p->normal[0] * emaxs[0] + p->normal[1] * emaxs[1] +
+					p->normal[2] * emaxs[2];
+			break;
+		default:
+			dist1 = dist2 = 0;
+			break;
 	}
 
 	sides = 0;
-	if (dist1 >= p->dist)
-		sides = 1;
-	if (dist2 < p->dist)
-		sides |= 2;
 
-	assert(sides != 0);
+	if (dist1 >= p->dist)
+	{
+		sides = 1;
+	}
+
+	if (dist2 < p->dist)
+	{
+		sides |= 2;
+	}
 
 	return sides;
 }
@@ -472,7 +493,7 @@ VectorCompare(vec3_t v1, vec3_t v2)
 {
 	if ((v1[0] != v2[0]) || (v1[1] != v2[1]) || (v1[2] != v2[2]))
 	{
-			return 0;
+		return 0;
 	}
 
 	return 1;
@@ -498,299 +519,60 @@ VectorNormalize(vec3_t v)
 }
 
 vec_t
-VectorNormalize2(vec3_t in, vec3_t out)
+VectorNormalize2(vec3_t v, vec3_t out)
 {
-	vec_t	length, ilength;
+	float length, ilength;
 
-	length = sqrt(in[0] * in[0] + in[1] * in[1] + in[2] * in[2]);
-	if (length == 0)
+	length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+	length = (float)sqrt(length);
+
+	if (length)
 	{
-		VectorClear(out);
-		return 0;
+		ilength = 1 / length;
+		out[0] = v[0] * ilength;
+		out[1] = v[1] * ilength;
+		out[2] = v[2] * ilength;
 	}
-
-	ilength = 1 / length;
-	out[0] = in[0] * ilength;
-	out[1] = in[1] * ilength;
-	out[2] = in[2] * ilength;
-
-	return length;
-
-}
-
-#define	EQUAL_EPSILON	0.001
-
-// *************************************************************
-// Inlines
-// *************************************************************
-
-int Q_stricmp(const char* s1, const char* s2)
-{
-#ifdef _MSC_VER
-	return stricmp(s1, s2);
-#else
-	return strcasecmp(s1, s2);
-#endif
-}
-
-int Q_strncasecmp(char* s1, char* s2, int n)
-{
-	int c1, c2;
-
-	do
-	{
-		c1 = *s1++;
-		c2 = *s2++;
-
-		if (!n--)
-		{
-			return 0; /* strings are equal until end point */
-		}
-
-		if (c1 != c2)
-		{
-			if ((c1 >= 'a') && (c1 <= 'z'))
-			{
-				c1 -= ('a' - 'A');
-			}
-
-			if ((c2 >= 'a') && (c2 <= 'z'))
-			{
-				c2 -= ('a' - 'A');
-			}
-
-			if (c1 != c2)
-			{
-				return -1; /* strings not equal */
-			}
-		}
-	}
-	while (c1);
-
-	return 0; /* strings are equal */
-}
-
-int Q_strcasecmp(char* s1, char* s2)
-{
-	return stricmp(s1, s2);
-}
-
-void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
-{
-	//assert(vecc != vec3_origin);
-
-	vecc[0] = veca[0] + scale*vecb[0];
-	vecc[1] = veca[1] + scale*vecb[1];
-	vecc[2] = veca[2] + scale*vecb[2];
-}
-
-vec_t VectorLength(vec3_t v)
-{
-	float	length;
-
-	length = sqrt(DotProduct(v, v));
 
 	return length;
 }
 
-vec_t VectorLengthSquared(vec3_t v)
+void
+VectorMA(vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
 {
-	float	length;
-
-	length = DotProduct(v, v);
-
-	return length;
+	vecc[0] = veca[0] + scale * vecb[0];
+	vecc[1] = veca[1] + scale * vecb[1];
+	vecc[2] = veca[2] + scale * vecb[2];
 }
 
-vec_t VectorSeparationSquared(vec3_t va, vec3_t vb)
+vec_t
+_DotProduct(vec3_t v1, vec3_t v2)
 {
-	vec3_t		work;
-	vec_t		result;
-
-	VectorSubtract(va, vb, work);
-	result = DotProduct(work, work);
-	return(result);
+	return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
-void VectorAbs(const vec3_t in, vec3_t out)
+void
+_VectorSubtract(vec3_t veca, vec3_t vecb, vec3_t out)
 {
-	//assert(out != vec3_origin);
-
-	out[0] = (float)Q_fabs(in[0]);
-	out[1] = (float)Q_fabs(in[1]);
-	out[2] = (float)Q_fabs(in[2]);
+	out[0] = veca[0] - vecb[0];
+	out[1] = veca[1] - vecb[1];
+	out[2] = veca[2] - vecb[2];
 }
 
-void VectorRound(vec3_t v)
+void
+_VectorAdd(vec3_t veca, vec3_t vecb, vec3_t out)
 {
-	//assert(v != vec3_origin);
-
-	v[0] = (float)floor(v[0] + 0.5);
-	v[1] = (float)floor(v[1] + 0.5);
-	v[2] = (float)floor(v[2] + 0.5);
+	out[0] = veca[0] + vecb[0];
+	out[1] = veca[1] + vecb[1];
+	out[2] = veca[2] + vecb[2];
 }
 
-void VectorInc(vec3_t v)
+void
+_VectorCopy(vec3_t in, vec3_t out)
 {
-	//assert(v != vec3_origin);
-
-	v[0] += 1.0;
-	v[1] += 1.0;
-	v[2] += 1.0;
-}
-
-void VectorDec(vec3_t v)
-{
-	//assert(v != vec3_origin);
-
-	v[0] -= 1.0;
-	v[1] -= 1.0;
-	v[2] -= 1.0;
-}
-
-void VectorInverse (vec3_t v)
-{
-	//assert(v != vec3_origin);
-
-	v[0] = -v[0];
-	v[1] = -v[1];
-	v[2] = -v[2];
-}
-
-void VectorScale (vec3_t in, vec_t scale, vec3_t out)
-{
-	//assert(out != vec3_origin);
-
-	out[0] = in[0] * scale;
-	out[1] = in[1] * scale;
-	out[2] = in[2] * scale;
-}
-
-void VectorRadiansToDegrees (vec3_t in, vec3_t out)
-{
-	//assert(out != vec3_origin);
-
-	out[0] = in[0] * RAD_TO_ANGLE;
-	out[1] = in[1] * RAD_TO_ANGLE;
-	out[2] = in[2] * RAD_TO_ANGLE;
-}
-
-void VectorDegreesToRadians (vec3_t in, vec3_t out)
-{
-	//assert(out != vec3_origin);
-
-	out[0] = in[0] * ANGLE_TO_RAD;
-	out[1] = in[1] * ANGLE_TO_RAD;
-	out[2] = in[2] * ANGLE_TO_RAD;
-}
-
-void VectorScaleByVector (vec3_t in, vec3_t scale, vec3_t out)
-{
-	//assert(out != vec3_origin);
-
-	out[0] = in[0] * scale[0];
-	out[1] = in[1] * scale[1];
-	out[2] = in[2] * scale[2];
-}
-
-void Vec3SubtractAssign(vec3_t value, vec3_t subFrom)
-{
-	//assert(subFrom != vec3_origin);
-
-	subFrom[0] -= value[0];
-	subFrom[1] -= value[1];
-	subFrom[2] -= value[2];
-}
-
-void Vec3AddAssign(vec3_t value, vec3_t addTo)
-{
-	//assert(addTo != vec3_origin);
-
-	addTo[0] += value[0];
-	addTo[1] += value[1];
-	addTo[2] += value[2];
-}
-
-void Vec3MultAssign(vec3_t value, vec3_t multBy)
-{
-	//assert(multBy != vec3_origin);
-
-	multBy[0] *= value[0];
-	multBy[1] *= value[1];
-	multBy[2] *= value[2];
-}
-
-void Vec3ScaleAssign(vec_t value, vec3_t scaleBy)
-{
-	//assert(scaleBy != vec3_origin);
-
-	scaleBy[0] *= value;
-	scaleBy[1] *= value;
-	scaleBy[2] *= value;
-}
-
-qboolean FloatIsZeroEpsilon(float f)
-{
-	return (Q_fabs(f) < FLOAT_ZERO_EPSILON);
-}
-
-qboolean FloatIsZero(float f, float epsilon)
-{
-	return (Q_fabs(f) < epsilon);
-}
-
-qboolean Vec3EqualsEpsilon(vec3_t v1, vec3_t v2)
-{
-	if(!FloatIsZeroEpsilon(v1[0] - v2[0]) || !FloatIsZeroEpsilon(v1[1] - v2[1]) || !FloatIsZeroEpsilon(v1[2] - v2[2]))
-	{
-		return false;
-	}
-
-	return true;
-}
-
-qboolean Vec3IsZero(vec3_t vec)
-{
-	return !( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
-}
-
-qboolean Vec3NotZero(vec3_t vec)
-{
-	return ( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
-}
-
-//============================================================================
-
-qboolean Vec3IsZeroEpsilon(vec3_t in)
-{
-	return in[0] < 0.00050000002 && in[0] > -0.00050000002
-		&& in[1] < 0.00050000002 && in[1] > -0.00050000002
-		&& in[2] < 0.00050000002 && in[2] > 0.00050000002;
-}
-
-float Clamp(float src, float min, float max)
-{
-	float result; // st7@4
-
-	if (src > (float)max)
-		src = max;
-	if (src >= (float)min)
-		result = src;
-	else
-		result = min;
-	return result;
-}
-
-int ClampI(int src, int min, int max)
-{
-	int result;
-
-	result = src;
-	if (src > max)
-		result = max;
-	if (result < min)
-		result = min;
-	return result;
+	out[0] = in[0];
+	out[1] = in[1];
+	out[2] = in[2];
 }
 
 void
@@ -799,6 +581,42 @@ CrossProduct(vec3_t v1, vec3_t v2, vec3_t cross)
 	cross[0] = v1[1] * v2[2] - v1[2] * v2[1];
 	cross[1] = v1[2] * v2[0] - v1[0] * v2[2];
 	cross[2] = v1[0] * v2[1] - v1[1] * v2[0];
+}
+
+double sqrt(double x);
+
+vec_t
+VectorLength(vec3_t v)
+{
+	int i;
+	float length;
+
+	length = 0;
+
+	for (i = 0; i < 3; i++)
+	{
+		length += v[i] * v[i];
+	}
+
+	length = (float)sqrt(length);
+
+	return length;
+}
+
+void
+VectorInverse(vec3_t v)
+{
+	v[0] = -v[0];
+	v[1] = -v[1];
+	v[2] = -v[2];
+}
+
+void
+VectorScale(vec3_t in, vec_t scale, vec3_t out)
+{
+	out[0] = in[0] * scale;
+	out[1] = in[1] * scale;
+	out[2] = in[2] * scale;
 }
 
 int
@@ -1206,25 +1024,81 @@ Com_PageInMemory(byte *buffer, int size)
 }
 
 /*
-============================================================================
+ * ============================================================================
+ *
+ *                  LIBRARY REPLACEMENT FUNCTIONS
+ *
+ * ============================================================================
+ */
 
-LIBRARY REPLACEMENT FUNCTIONS
-
-============================================================================
-*/
-
-void Com_sprintf(char* dest, int size, char* fmt, ...)
+int
+Q_stricmp(const char *s1, const char *s2)
 {
-	int		len;
-	va_list		argptr;
-	char	bigbuffer[0x10000];
+#ifdef _MSC_VER
+	return stricmp(s1, s2);
+#else
+	return strcasecmp(s1, s2);
+#endif
+}
+
+int
+Q_strncasecmp(char *s1, char *s2, int n)
+{
+	int c1, c2;
+
+	do
+	{
+		c1 = *s1++;
+		c2 = *s2++;
+
+		if (!n--)
+		{
+			return 0; /* strings are equal until end point */
+		}
+
+		if (c1 != c2)
+		{
+			if ((c1 >= 'a') && (c1 <= 'z'))
+			{
+				c1 -= ('a' - 'A');
+			}
+
+			if ((c2 >= 'a') && (c2 <= 'z'))
+			{
+				c2 -= ('a' - 'A');
+			}
+
+			if (c1 != c2)
+			{
+				return -1; /* strings not equal */
+			}
+		}
+	}
+	while (c1);
+
+	return 0; /* strings are equal */
+}
+
+int
+Q_strcasecmp(char *s1, char *s2)
+{
+	return Q_strncasecmp(s1, s2, 99999);
+}
+
+void
+Com_sprintf(char *dest, int size, char *fmt, ...)
+{
+	int len;
+	va_list argptr;
 
 	va_start(argptr, fmt);
-	len = vsprintf(bigbuffer, fmt, argptr);
+	len = vsnprintf(dest, size, fmt, argptr);
 	va_end(argptr);
+
 	if (len >= size)
-		Com_Printf("Com_sprintf: overflow of %i in %i\n", len, size);
-	strncpy(dest, bigbuffer, size - 1);
+	{
+		Com_Printf("Com_sprintf: overflow\n");
+	}
 }
 
 char *
@@ -1241,42 +1115,139 @@ Q_strlwr ( char *s )
 	return ( p );
 }
 
-/*
-=====================================================================
-
-INFO STRINGS
-
-=====================================================================
-*/
-
-/*
-===============
-Info_ValueForKey
-
-Searches the string for the given
-key and returns the associated value, or an empty string.
-===============
-*/
-char* Info_ValueForKey(char* s, char* key)
+int
+Q_strlcpy(char *dst, const char *src, int size)
 {
-	char	pkey[512];
-	static	char value[2][512];	// use two buffers so compares
-								// work without stomping on each other
-	static	int	valueindex;
-	char* o;
+	const char *s = src;
+
+	while (*s)
+	{
+		if (size > 1)
+		{
+			*dst++ = *s;
+			size--;
+		}
+		s++;
+	}
+	if (size > 0)
+	{
+		*dst = '\0';
+	}
+
+	return s - src;
+}
+
+int
+Q_strlcat(char *dst, const char *src, int size)
+{
+	char *d = dst;
+
+	while (size > 0 && *d)
+	{
+		size--;
+		d++;
+	}
+
+	return (d - dst) + Q_strlcpy(d, src, size);
+}
+
+/*
+ * An unicode compatible fopen() Wrapper for Windows.
+ */
+#ifdef _WIN32
+#include <windows.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
+FILE *Q_fopen(const char *file, const char *mode)
+{
+	WCHAR wfile[MAX_OSPATH];
+	WCHAR wmode[16];
+
+	int len = MultiByteToWideChar(CP_UTF8, 0, file, -1, wfile, MAX_OSPATH);
+
+	if (len > 0)
+	{
+		if (MultiByteToWideChar(CP_UTF8, 0, mode, -1, wmode, 16) > 0)
+		{
+			// make sure it's a regular file and not a directory or sth, see #394
+			struct _stat buf;
+			int statret = _wstat(wfile, &buf);
+			if((statret == 0 && (buf.st_mode & _S_IFREG) != 0) || (statret == -1 && errno == ENOENT))
+			{
+				return _wfopen(wfile, wmode);
+			}
+		}
+	}
+
+	return NULL;
+}
+#else
+#include <sys/stat.h>
+#include <errno.h>
+FILE *Q_fopen(const char *file, const char *mode)
+{
+	// make sure it's a regular file and not a directory or sth, see #394
+	struct stat statbuf;
+	int statret = stat(file, &statbuf);
+	// (it's ok if it doesn't exist though, maybe we wanna write/create)
+	if((statret == -1 && errno != ENOENT) || (statret == 0 && (statbuf.st_mode & S_IFREG) == 0))
+	{
+		return NULL;
+	}
+	return fopen(file, mode);
+}
+#endif
+
+int
+Q_sort_strcomp(const void *s1, const void *s2)
+{
+	return strcmp(*(char **)s1, *(char **)s2);
+}
+
+/*
+ * =====================================================================
+ *
+ * INFO STRINGS
+ *
+ * =====================================================================
+ */
+
+/*
+ * Searches the string for the given
+ * key and returns the associated value,
+ * or an empty string.
+ */
+char *
+Info_ValueForKey(char *s, char *key)
+{
+	char pkey[512];
+	static char value[2][512]; /* use two buffers so compares
+							     work without stomping on each other */
+	static int valueindex;
+	char *o;
 
 	valueindex ^= 1;
+
 	if (*s == '\\')
+	{
 		s++;
+	}
+
 	while (1)
 	{
 		o = pkey;
+
 		while (*s != '\\')
 		{
 			if (!*s)
+			{
 				return "";
+			}
+
 			*o++ = *s++;
 		}
+
 		*o = 0;
 		s++;
 
@@ -1284,95 +1255,117 @@ char* Info_ValueForKey(char* s, char* key)
 
 		while (*s != '\\' && *s)
 		{
-			if (!*s)
-				return "";
 			*o++ = *s++;
 		}
+
 		*o = 0;
 
 		if (!strcmp(key, pkey))
+		{
 			return value[valueindex];
+		}
 
 		if (!*s)
+		{
 			return "";
+		}
+
 		s++;
 	}
 }
 
-void Info_RemoveKey(char* s, char* key)
+void
+Info_RemoveKey(char *s, char *key)
 {
-	char* start;
-	char	pkey[512];
-	char	value[512];
-	char* o;
+	char *start;
+	char pkey[512];
+	char value[512];
+	char *o;
 
 	if (strstr(key, "\\"))
 	{
-		//		Com_Printf ("Can't use a key with a \\\n");
 		return;
 	}
 
 	while (1)
 	{
 		start = s;
+
 		if (*s == '\\')
+		{
 			s++;
+		}
+
 		o = pkey;
+
 		while (*s != '\\')
 		{
 			if (!*s)
+			{
 				return;
+			}
+
 			*o++ = *s++;
 		}
+
 		*o = 0;
 		s++;
 
 		o = value;
+
 		while (*s != '\\' && *s)
 		{
-			if (!*s)
-				return;
 			*o++ = *s++;
 		}
+
 		*o = 0;
 
 		if (!strcmp(key, pkey))
 		{
-			strcpy(start, s);	// remove this part
+			memmove(start, s, strlen(s) + 1); /* remove this part */
 			return;
 		}
 
 		if (!*s)
+		{
 			return;
+		}
 	}
-
 }
 
-
 /*
-==================
-Info_Validate
-
-Some characters are illegal in info strings because they
-can mess up the server's parsing
-==================
-*/
-qboolean Info_Validate(char* s)
+ * Some characters are illegal in info strings
+ * because they can mess up the server's parsing
+ */
+qboolean
+Info_Validate(char *s)
 {
 	if (strstr(s, "\""))
+	{
 		return false;
+	}
+
 	if (strstr(s, ";"))
+	{
 		return false;
+	}
+
 	return true;
 }
 
-void Info_SetValueForKey(char* s, char* key, char* value)
+void
+Info_SetValueForKey(char *s, char *key, char *value)
 {
-	char	newi[MAX_INFO_STRING], * v;
-	int		c;
-	int		maxsize = MAX_INFO_STRING;
+	char newi[MAX_INFO_STRING], *v;
+	int c;
+	int maxsize = MAX_INFO_STRING;
 
-	if (strstr(key, "\\") || strstr(value, "\\"))
+	if (!key)
+	{
+		return;
+	}
+
+	if (strstr(key, "\\") || (value && strstr(value, "\\")))
 	{
 		Com_Printf("Can't use keys or values with a \\\n");
 		return;
@@ -1380,42 +1373,51 @@ void Info_SetValueForKey(char* s, char* key, char* value)
 
 	if (strstr(key, ";"))
 	{
-		Com_Printf("Can't use keys or values with a semicolon\n");
+		Com_Printf("Can't use keys with a semicolon\n");
 		return;
 	}
 
-	if (strstr(key, "\"") || strstr(value, "\""))
+	if (strstr(key, "\"") || (value && strstr(value, "\"")))
 	{
 		Com_Printf("Can't use keys or values with a \"\n");
 		return;
 	}
 
-	if (strlen(key) > MAX_INFO_KEY - 1 || strlen(value) > MAX_INFO_KEY - 1)
+	if ((strlen(key) > MAX_INFO_KEY - 1) || (value && (strlen(value) > MAX_INFO_KEY - 1)))
 	{
 		Com_Printf("Keys and values must be < 64 characters.\n");
 		return;
 	}
+
 	Info_RemoveKey(s, key);
+
 	if (!value || !strlen(value))
+	{
 		return;
+	}
 
 	Com_sprintf(newi, sizeof(newi), "\\%s\\%s", key, value);
 
-	if (strlen(newi) + strlen(s) > maxsize)
+	if (strlen(newi) + strlen(s) >= maxsize)
 	{
 		Com_Printf("Info string length exceeded\n");
 		return;
 	}
 
-	// only copy ascii values
+	/* only copy ascii values */
 	s += strlen(s);
 	v = newi;
+
 	while (*v)
 	{
 		c = *v++;
-		c &= 127;		// strip high bits
-		if (c >= 32 && c < 127)
+		c &= 127; /* strip high bits */
+
+		if ((c >= 32) && (c < 127))
+		{
 			*s++ = c;
+		}
 	}
+
 	*s = 0;
 }
