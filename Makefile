@@ -398,6 +398,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/linux/net_udp.o \
 	$(BUILDDIR)/linux/p_dll.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
+	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
 	$(BUILDDIR)/linux/snd_linux.o \
 	$(BUILDDIR)/linux/sys_linux.o \
 	$(BUILDDIR)/linux/vid_menu.o \
@@ -473,6 +474,7 @@ REF_SOFT_OBJS = \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
+	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
 	$(BUILDDIR)/linux/glob.o
 
 REF_SOFT_X11_OBJS = \
@@ -508,6 +510,7 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
 	$(BUILDDIR)/linux/q_shlinux.o \
+	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
 	$(BUILDDIR)/linux/glob.o
 
 REF_GL_GLX_OBJS = \
