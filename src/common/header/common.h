@@ -814,7 +814,7 @@ MISC
 #define	PRINT_ALL		0
 #define PRINT_DEVELOPER	1	// only print when "developer 1"
 
-void		Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush));
+void		Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush)(int, char *));
 void		Com_EndRedirect (void);
 void 		Com_DPrintf (char *fmt, ...);
 void 		Com_MDPrintf (char *fmt, ...);
@@ -825,6 +825,7 @@ void		Com_SetServerState (int state);
 unsigned	Com_BlockChecksum (void *buffer, int length);
 
 extern	cvar_t	*developer;
+extern   cvar_t	*modder;
 extern	cvar_t	*dedicated;
 extern	cvar_t	*host_speeds;
 extern	cvar_t	*log_stats;

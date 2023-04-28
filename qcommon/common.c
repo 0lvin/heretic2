@@ -35,8 +35,7 @@ char	*com_argv[MAX_NUM_ARGVS+1];
 
 int		realtime;
 
-jmp_buf abortframe;		// an ERR_DROP occured, exit the entire frame
-
+extern jmp_buf abortframe;		// an ERR_DROP occured, exit the entire frame
 
 FILE	*log_stats_file;
 
@@ -46,14 +45,8 @@ cvar_t	*developer;
 cvar_t	*modder;
 cvar_t	*timescale;
 cvar_t	*fixedtime;
-cvar_t	*logfile_active;	// 1 = buffer log, 2 = flush after each print
 cvar_t	*showtrace;
 cvar_t	*dedicated;
-
-
-FILE	*logfile;
-
-int			server_state;
 
 // host_speeds times
 int		time_before_game;
@@ -63,232 +56,6 @@ int		time_after_ref;
 
 // Game given by user
 char userGivenGame[MAX_QPATH];
-
-/*
-============================================================================
-
-CLIENT / SERVER interactions
-
-============================================================================
-*/
-
-static int	rd_target;
-static char	*rd_buffer;
-static int	rd_buffersize;
-static void	(*rd_flush)(int target, char *buffer);
-
-void Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush))
-{
-	if (!target || !buffer || !buffersize || !flush)
-		return;
-	rd_target = target;
-	rd_buffer = buffer;
-	rd_buffersize = buffersize;
-	rd_flush = flush;
-
-	*rd_buffer = 0;
-}
-
-void Com_EndRedirect (void)
-{
-	rd_flush(rd_target, rd_buffer);
-
-	rd_target = 0;
-	rd_buffer = NULL;
-	rd_buffersize = 0;
-	rd_flush = NULL;
-}
-
-/*
-=============
-Com_Printf
-
-Both client and server can use this, and it will output
-to the apropriate place.
-=============
-*/
-void Com_Printf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-
-	if (rd_target)
-	{
-		if ((strlen (msg) + strlen(rd_buffer)) > (rd_buffersize - 1))
-		{
-			rd_flush(rd_target, rd_buffer);
-			*rd_buffer = 0;
-		}
-		strcat (rd_buffer, msg);
-		return;
-	}
-
-	Con_Print (msg);
-
-	// also echo to debugging console
-	Sys_ConsoleOutput (msg);
-
-	// logfile
-	if (logfile_active && logfile_active->value)
-	{
-		char	name[MAX_QPATH];
-
-		if (!logfile)
-		{
-			Com_sprintf (name, sizeof(name), "%s/qconsole.log", FS_Gamedir ());
-			logfile = fopen (name, "w");
-		}
-		if (logfile)
-			fprintf (logfile, "%s", msg);
-		if (logfile_active->value > 1)
-			fflush (logfile);		// force it to save every time
-	}
-}
-
-
-/*
-================
-Com_DPrintf
-
-A Com_Printf that only shows up if the "developer" cvar is set
-================
-*/
-void Com_DPrintf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-
-	if (!developer || !developer->value)
-		return;			// don't confuse non-developers with techie stuff...
-
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-
-	Com_Printf ("%s", msg);
-}
-
-/*
- * A Com_Printf that only shows up when either the "modder" or "developer"
- * cvars is set
- */
-void
-Com_MDPrintf(char *fmt, ...)
-{
-	va_list argptr;
-	char msg[MAXPRINTMSG];
-
-	if ((!modder || !modder->value) && (!developer || !developer->value))
-	{
-		return;
-	}
-
-	va_start(argptr, fmt);
-	vsnprintf(msg, MAXPRINTMSG, fmt, argptr);
-	va_end(argptr);
-
-	Com_Printf("%s", msg);
-}
-
-/*
-=============
-Com_Error
-
-Both client and server can use this, and it will
-do the apropriate things.
-=============
-*/
-void Com_Error (int code, char *fmt, ...)
-{
-	va_list		argptr;
-	static char		msg[MAXPRINTMSG];
-	static	qboolean	recursive;
-
-	if (recursive)
-		Sys_Error ("recursive error after: %s", msg);
-	recursive = true;
-
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-
-	if (code == ERR_DISCONNECT)
-	{
-		CL_Drop ();
-		recursive = false;
-		longjmp (abortframe, -1);
-	}
-	else if (code == ERR_DROP)
-	{
-		Com_Printf ("********************\nERROR: %s\n********************\n", msg);
-		SV_Shutdown (va("Server crashed: %s\n", msg), false);
-		CL_Drop ();
-		recursive = false;
-		longjmp (abortframe, -1);
-	}
-	else
-	{
-		SV_Shutdown (va("Server fatal crashed: %s\n", msg), false);
-		CL_Shutdown ();
-	}
-
-	if (logfile)
-	{
-		fclose (logfile);
-		logfile = NULL;
-	}
-
-	Sys_Error ("%s", msg);
-}
-
-
-/*
-=============
-Com_Quit
-
-Both client and server can use this, and it will
-do the apropriate things.
-=============
-*/
-void Com_Quit (void)
-{
-	SV_Shutdown ("Server quit\n", false);
-	CL_Shutdown ();
-
-	if (logfile)
-	{
-		fclose (logfile);
-		logfile = NULL;
-	}
-
-	Sys_Quit ();
-}
-
-
-/*
-==================
-Com_ServerState
-==================
-*/
-int Com_ServerState (void)
-{
-	return server_state;
-}
-
-
-/*
-==================
-Com_SetServerState
-==================
-*/
-void Com_SetServerState (int state)
-{
-	server_state = state;
-}
 
 /*
 ==============================================================================
@@ -1373,18 +1140,6 @@ byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence)
 	return crc;
 }
 
-//========================================================
-
-float	frand(void)
-{
-	return (rand()&32767)* (1.0/32767);
-}
-
-float	crand(void)
-{
-	return (rand()&32767)* (2.0/32767) - 1;
-}
-
 /*
 =============
 Com_Error_f
@@ -1397,6 +1152,8 @@ static void Com_Error_f (void)
 {
 	Com_Error (ERR_FATAL, "%s", Cmd_Argv(1));
 }
+
+extern cvar_t *logfile_active;
 
 /*
 =================

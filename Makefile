@@ -399,6 +399,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/linux/p_dll.o \
 	$(BUILDDIR)/src/backends/unix/system.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
+	$(BUILDDIR)/src/common/clientserver.o \
 	$(BUILDDIR)/linux/snd_linux.o \
 	$(BUILDDIR)/linux/sys_linux.o \
 	$(BUILDDIR)/linux/vid_menu.o \
@@ -473,7 +474,6 @@ REF_SOFT_OBJS = \
 	\
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
-	$(BUILDDIR)/src/backends/unix/system.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
 	$(BUILDDIR)/src/common/glob.o
 
