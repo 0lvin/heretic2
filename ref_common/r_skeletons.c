@@ -6,7 +6,8 @@
 // Heretic II
 //
 
-#include "../ref_gl/gl_local.h"
+#include "../src/common/header/shared.h"
+#include "../qcommon/vector.h"
 #include "../qcommon/skeletons.h"
 #include "m_skeletalcluster.h"
 #include "m_skeleton.h"

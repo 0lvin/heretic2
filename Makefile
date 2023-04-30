@@ -453,23 +453,23 @@ $(BUILDDIR)/heretic2 : $(HERETIC2_OBJS) ${HEADERS}
 #############################################################################
 
 REF_SOFT_OBJS = \
-	$(BUILDDIR)/ref_soft/r_aclip.o \
-	$(BUILDDIR)/ref_soft/r_alias.o \
-	$(BUILDDIR)/ref_soft/r_bsp.o \
-	$(BUILDDIR)/ref_soft/r_draw.o \
-	$(BUILDDIR)/ref_soft/r_edge.o \
-	$(BUILDDIR)/ref_soft/r_image.o \
-	$(BUILDDIR)/ref_soft/r_light.o \
-	$(BUILDDIR)/ref_soft/r_main.o \
-	$(BUILDDIR)/ref_soft/r_misc.o \
-	$(BUILDDIR)/ref_soft/r_model.o \
-	$(BUILDDIR)/ref_soft/r_part.o \
-	$(BUILDDIR)/ref_soft/r_poly.o \
-	$(BUILDDIR)/ref_soft/r_polyse.o \
-	$(BUILDDIR)/ref_soft/r_rast.o \
-	$(BUILDDIR)/ref_soft/r_scan.o \
-	$(BUILDDIR)/ref_soft/r_sprite.o \
-	$(BUILDDIR)/ref_soft/r_surf.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_aclip.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_alias.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_bsp.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_draw.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_edge.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_image.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_light.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_main.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_misc.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_model.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_part.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_poly.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_polyse.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_rast.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_scan.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_sprite.o \
+	$(BUILDDIR)/src/client/refresh/soft/r_surf.o \
 	\
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
@@ -491,18 +491,18 @@ $(BUILDDIR)/ref_softx.$(SHLIBEXT) : $(REF_SOFT_OBJS) $(REF_SOFT_X11_OBJS) ${HEAD
 #############################################################################
 
 REF_GL_OBJS = \
-	$(BUILDDIR)/ref_gl/gl_book.o \
-	$(BUILDDIR)/ref_gl/gl_draw.o \
-	$(BUILDDIR)/ref_gl/gl_fmodel.o \
-	$(BUILDDIR)/ref_gl/gl_image.o \
-	$(BUILDDIR)/ref_gl/gl_light.o \
-	$(BUILDDIR)/ref_gl/gl_mesh.o \
-	$(BUILDDIR)/ref_gl/gl_model.o \
-	$(BUILDDIR)/ref_gl/gl_movie.o \
-	$(BUILDDIR)/ref_gl/gl_rmain.o \
-	$(BUILDDIR)/ref_gl/gl_rmisc.o \
-	$(BUILDDIR)/ref_gl/gl_rsurf.o \
-	$(BUILDDIR)/ref_gl/gl_warp.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_book.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_draw.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_fmodel.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_image.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_light.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_mesh.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_model.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_movie.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_rmain.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_rmisc.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_rsurf.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl_warp.o \
 	$(BUILDDIR)/ref_common/r_skeletons.o \
 	$(BUILDDIR)/qcommon/arrayed_list.o \
 	$(BUILDDIR)/qcommon/skeletons.o \

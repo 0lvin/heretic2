@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // models.c -- model loading and caching
 
 #include "gl_local.h"
-#include "../qcommon/flex.h"
+#include "../../../../qcommon/flex.h"
 
 model_t	*loadmodel;
 int		modfilelen;
