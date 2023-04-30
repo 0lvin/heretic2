@@ -5,7 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/angles.h"

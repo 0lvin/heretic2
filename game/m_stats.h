@@ -1,7 +1,7 @@
 #ifndef	G_STATS_H
 #define G_STATS_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_classstatics.h"
 
 extern int AttackRangesForClass [NUM_ATTACKRANGES];

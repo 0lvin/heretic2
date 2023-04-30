@@ -1,7 +1,7 @@
 // screen.h
 #ifndef CLIENT_SCREEN_H
 #define CLIENT_SCREEN_H
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "vid.h"
 
 #ifdef __cplusplus

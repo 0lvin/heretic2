@@ -1,6 +1,6 @@
 // g_utils.c -- misc utility functions for game module
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 #include "../qcommon/fx.h"
 #include "g_skeletons.h"

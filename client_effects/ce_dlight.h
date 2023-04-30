@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../client/client.h"
 
 typedef struct CE_DLight_s

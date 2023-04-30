@@ -7,7 +7,7 @@
 //
 //==============================================================================
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 #include "c_corvus8_anim.h"
 #include "c_corvus8.h"

@@ -1,7 +1,7 @@
 #ifndef GAME_UTILITIES_H
 #define GAME_UTILITIES_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_typedef.h"
 
 #ifdef __cplusplus

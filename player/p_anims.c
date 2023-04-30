@@ -16,7 +16,7 @@
 #include "../qcommon/angles.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/random.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../qcommon/effectflags.h"
 
 PLAYER_API void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)

@@ -1,7 +1,7 @@
 #ifndef CE_UTILITIES_H
 #define CE_UTILITIES_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "client_entities.h"
 
 #ifdef __cplusplus

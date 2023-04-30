@@ -1,7 +1,7 @@
 #ifndef CLIENT_ENTITIES_H
 #define CLIENT_ENTITIES_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../client/client.h"
 
 #include "../qcommon/message.h"

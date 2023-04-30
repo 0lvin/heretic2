@@ -1,6 +1,6 @@
 // g_ai.c
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include <assert.h>
 #include "g_local.h"
 #include "g_monster.h"

@@ -12,7 +12,7 @@ Copyright 1998 Raven Software
 
 -------------------------------------------------------------------*/
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 #include "m_imp.h"
 #include "m_imp_anim.h"

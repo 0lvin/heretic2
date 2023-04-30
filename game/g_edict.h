@@ -1,7 +1,7 @@
 #ifndef G_EDICT_H
 #define G_EDICT_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_message.h"
 #include "../qcommon/message.h"
 #include "g_classstatics.h"

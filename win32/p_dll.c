@@ -15,7 +15,7 @@
 
 #include "../player/player.h"
 #include "../game/g_local.h"
-#include "qcommon.h"
+#include "../src/common/header/common.h"
 
 PLAYER_API player_export_t GetPlayerAPI(void);
 

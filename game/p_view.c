@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_skeletons.h"
 #include "g_teleport.h"
 #include "m_player.h"

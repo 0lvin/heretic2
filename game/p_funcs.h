@@ -8,7 +8,7 @@
 #ifndef _P_FUNCS_H_
 #define _P_FUNCS_H_
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 
 extern void G_PlayerActionShrineEffect(playerinfo_t *playerinfo);

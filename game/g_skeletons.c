@@ -6,7 +6,7 @@
 // Heretic II
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_skeletons.h"
 #include "../qcommon/arrayed_list.h"
 

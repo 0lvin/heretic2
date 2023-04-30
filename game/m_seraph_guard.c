@@ -8,7 +8,7 @@
 // jweier
 //==============================================================================
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 #include "m_seraph_guard.h"
 #include "m_seraph_guard_anim.h"

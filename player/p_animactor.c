@@ -16,7 +16,7 @@
 #include "p_main.h"
 #include "../qcommon/angles.h"
 #include "../game/g_teleport.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../game/utilities.h"
 #include "../qcommon/fx.h"
 

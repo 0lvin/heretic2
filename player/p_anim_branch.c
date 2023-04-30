@@ -14,7 +14,7 @@
 #include "p_weapon.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/random.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../game/g_physics.h"
 #include "p_anim_data.h"
 #include "../game/m_player.h"

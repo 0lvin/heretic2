@@ -1,7 +1,7 @@
 // H2Rand.c
 //
 
-#include "qcommon.h"
+#include "../src/common/header/common.h"
 
 #include <stdio.h>
 

@@ -4,7 +4,7 @@
 //
 // Created by JDW
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "client_effects.h"
 #include "client_entities.h"
 #include "ce_defaultmessagehandler.h"

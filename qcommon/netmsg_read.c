@@ -1,4 +1,6 @@
-#include "qcommon.h"
+#include "../src/common/header/common.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/vector.h"
 #include "assert.h"
 
 

@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 void G_InitMsgMngr();
 void G_ReleaseMsgMngr();
 #if	G_NEW_SYSTEM

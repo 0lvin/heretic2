@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "m_harpy_anim.h"
 #include "g_local.h"
 #include "m_harpy.h"

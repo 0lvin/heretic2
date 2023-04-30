@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //define	PARANOID			// speed sapping error checking
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../game/game.h"
 
 #ifdef __cplusplus

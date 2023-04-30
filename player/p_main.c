@@ -15,7 +15,7 @@
 #include "../qcommon/fx.h"
 #include "../game/m_player.h"
 #include "../qcommon/reference.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 //FIXME:  Include header
 

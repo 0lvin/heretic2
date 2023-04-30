@@ -1,7 +1,7 @@
 #ifndef G_CLASSSTATICS_H
 #define G_CLASSSTATICS_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_message.h"
 #include "g_local.h"
 

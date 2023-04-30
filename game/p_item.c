@@ -4,7 +4,7 @@
 //
 // Created by JJS
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../player/player.h"
 #include "g_local.h"
 #include "../player/p_weapon.h"

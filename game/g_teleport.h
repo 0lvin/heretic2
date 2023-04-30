@@ -1,7 +1,7 @@
 #ifndef _G_TELEPORT_H_
 #define _G_TELEPORT_H_
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 
 // TELEPORT defines

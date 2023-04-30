@@ -1,6 +1,6 @@
 // g_phys.c
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 #include "../qcommon/message.h"
 

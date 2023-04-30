@@ -2,6 +2,7 @@
 //
 
 #include "../qcommon/resourcemanager.h"
+#include "../qcommon/angles.h"
 #include "../qcommon/matrix.h"
 #include "../qcommon/vector.h"
 

@@ -1,7 +1,7 @@
 #ifndef __DS
 #define __DS
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "pcode.h"
 #include "list.h"
 

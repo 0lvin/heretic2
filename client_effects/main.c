@@ -6,7 +6,7 @@
 // Heretic II
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "client_effects.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/resourcemanager.h"
@@ -19,7 +19,7 @@
 #include "../qcommon/skeletons.h"
 #include "../game/g_physics.h"
 #include "../game/g_playstats.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 
 

@@ -13,7 +13,7 @@
 
 #include "../player/player.h"
 #include "../game/g_local.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 // Structure containing functions and data pointers exported from the player DLL.
 

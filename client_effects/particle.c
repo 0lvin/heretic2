@@ -6,7 +6,7 @@
 // Heretic II
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "particle.h"
 #include "client_effects.h"
 #include "../qcommon/fx.h"

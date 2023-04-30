@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_stateinfo.h"
 #include "../qcommon/resourcemanager.h"
 #include "g_local.h"

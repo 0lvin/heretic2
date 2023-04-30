@@ -1,7 +1,7 @@
 #ifndef QCOMMON_ANGLES_H
 #define QCOMMON_ANGLES_H
 
-#include "qcommon.h"
+#include "../src/common/header/common.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

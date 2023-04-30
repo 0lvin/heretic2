@@ -1,7 +1,7 @@
 #ifndef Q_PHYSICS_H
 #define Q_PHYSICS_H
 
-#include "qcommon.h"
+#include "../src/common/header/common.h"
 
 #ifdef __cplusplus
 extern "C" {

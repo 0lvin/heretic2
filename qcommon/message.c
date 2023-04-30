@@ -6,7 +6,7 @@
 // Heretic II
 //
 
-#include "qcommon.h"
+#include "../src/common/header/common.h"
 #include "message.h"
 #include "singlylinkedlist.h"
 #include "../game/g_local.h"

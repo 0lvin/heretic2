@@ -1,7 +1,9 @@
 #ifndef CLIENT_EFFECTS_H
 #define CLIENT_EFFECTS_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/vector.h"
 #include "../client/client.h"
 
 #ifdef __cplusplus

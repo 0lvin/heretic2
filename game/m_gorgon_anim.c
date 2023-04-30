@@ -7,7 +7,7 @@
 //
 //==============================================================================
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 
 #include "m_gorgon_anim.h"
@@ -17,7 +17,7 @@
 #include "g_defaultmessagehandler.h"
 #include "g_monster.h"
 #include "../qcommon/random.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "m_stats.h"
 
 

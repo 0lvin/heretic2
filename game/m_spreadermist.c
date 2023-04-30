@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../qcommon/fx.h"
 #include "m_spreadermist.h"
 #include "m_spreaderbomb_anim.h"

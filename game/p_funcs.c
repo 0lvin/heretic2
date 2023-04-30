@@ -3,7 +3,7 @@
 // Heretic II - Raven software
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "p_funcs.h"
 #include "../player/p_animactor.h"
 #include "../player/p_anims.h"

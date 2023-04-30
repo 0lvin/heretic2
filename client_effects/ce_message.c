@@ -6,7 +6,7 @@
 // Heretic II
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "ce_message.h"
 #include "../qcommon/message.h"
 

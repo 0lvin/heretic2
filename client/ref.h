@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef CLIENT_REF_H
 #define CLIENT_REF_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../qcommon/q_surface.h"
 #include "../qcommon/arrayed_list.h"
 

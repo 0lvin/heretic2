@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "ce_dlight.h"
 #include "../qcommon/resourcemanager.h"
 

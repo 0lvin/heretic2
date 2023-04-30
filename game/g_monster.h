@@ -8,7 +8,7 @@
 #ifndef G_MONSTER_H
 #define G_MONSTER_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 #include "../qcommon/message.h"
 #include "g_classstatics.h"

@@ -1,7 +1,7 @@
 // H2Motion.c
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 float GetDistanceOverTime(float a1, float a2, float a3)
 {

@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "client_effects.h"
 #include "client_entities.h"
 #include "../qcommon/fx.h"

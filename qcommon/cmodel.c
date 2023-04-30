@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // cmodel.c -- model loading
 
-#include "qcommon.h"
+#include "../src/common/header/common.h"
 
 typedef struct mapsurface_s  // used internally due to name len probs //ZOID
 {

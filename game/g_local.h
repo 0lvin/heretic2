@@ -3,7 +3,7 @@
 #ifndef	G_LOCAL_H
 #define G_LOCAL_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "buoy.h"
 
 #if 0

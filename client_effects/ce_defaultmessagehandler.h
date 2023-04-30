@@ -1,7 +1,7 @@
 #ifndef	CE_DEFAULTMESSAGEHANDLER_H
 #define	CE_DEFAULTMESSAGEHANDLER_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "ce_message.h"
 
 extern CE_MsgReceiver_t CE_DefaultMessageReceivers[NUM_MESSAGES];

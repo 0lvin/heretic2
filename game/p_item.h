@@ -1,7 +1,7 @@
 #ifndef P_ITEM
 #define P_ITEM 1
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../player/p_types.h"
 
 void Use_Defence(playerinfo_t *playerinfo, gitem_t *defence);

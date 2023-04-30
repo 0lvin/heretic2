@@ -1,7 +1,7 @@
 #ifndef	G_DEFAULTMESSAGEHANDLER_H
 #define	G_DEFAULTMESSAGEHANDLER_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_message.h"
 
 extern G_MsgReceiver_t DefaultMessageReceivers[NUM_MESSAGES];

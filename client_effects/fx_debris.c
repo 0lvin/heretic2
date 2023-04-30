@@ -4,7 +4,7 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "ce_defaultmessagehandler.h"
 #include "client_effects.h"
 #include "client_entities.h"

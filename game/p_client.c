@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 #include "g_defaultmessagehandler.h"
 #include "g_skeletons.h"
@@ -21,7 +21,7 @@
 #include "../qcommon/cl_strings.h"
 #include "../player/p_actions.h"
 #include "../player/p_anim_branch.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 // FIXME: include headers.
 extern void	InitPlayerinfo(edict_t *ent);

@@ -1,7 +1,7 @@
 #ifndef DECALS_H
 #define DECALS_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 #ifdef __cplusplus
 extern "C" {

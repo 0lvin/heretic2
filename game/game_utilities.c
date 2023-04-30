@@ -8,7 +8,7 @@
 #include <math.h>
 #include <assert.h>
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "utilities.h"
 #include "../qcommon/angles.h"
 #include "g_local.h"

@@ -9,7 +9,7 @@
 #include <windows.h>
 #endif
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../qcommon/singlylinkedlist.h"
 #include "../qcommon/q_physics.h"
 #include "../qcommon/arrayed_list.h"

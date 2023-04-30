@@ -1,7 +1,7 @@
 #ifndef CE_MESSAGE_H
 #define CE_MESSAGE_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../qcommon/singlylinkedlist.h"
 
 typedef enum CE_MsgID_e

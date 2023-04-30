@@ -7,14 +7,14 @@
 //
 //==============================================================================
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_local.h"
 
 #include "m_plaguessithra_anim.h"
 #include "m_plaguessithra.h"
 #include "g_monster.h"
 #include "c_ai.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 void old_ai_run (edict_t *self, float dist);
 void ai_run (edict_t *self, float dist);

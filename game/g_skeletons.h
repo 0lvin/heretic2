@@ -1,7 +1,7 @@
 #ifndef G_SKELETONS_H
 #define G_SKELETONS_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../qcommon/arrayed_list.h"
 #include "../qcommon/skeletons.h"
 

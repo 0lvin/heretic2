@@ -1,6 +1,6 @@
 // g_misc.c
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_defaultmessagehandler.h"
 #include "g_misc.h"
 #include "g_local.h"

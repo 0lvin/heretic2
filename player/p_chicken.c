@@ -23,7 +23,7 @@
 #include "p_chicken.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/random.h"
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../game/utilities.h"
 #include "p_main.h"
 

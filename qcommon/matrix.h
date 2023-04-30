@@ -1,7 +1,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
-#include "qcommon.h"
-#include "qcommon.h"
+#include "../src/common/header/common.h"
+#include "../src/common/header/common.h"
 
 #ifdef __cplusplus
 extern "C" {

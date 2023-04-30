@@ -4,7 +4,7 @@
 #ifndef WINSND_LOCAL_H
 #define WINSND_LOCAL_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../client/client.h"
 
 #include <vector>

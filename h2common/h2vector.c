@@ -1,7 +1,8 @@
 // H2Vector.c
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
+#include "../qcommon/angles.h"
 #include "../qcommon/vector.h"
 #include "../qcommon/matrix.h"
 #include "../qcommon/random.h"

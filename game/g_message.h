@@ -1,7 +1,7 @@
 #ifndef G_MESSAGE_H
 #define G_MESSAGE_H
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../qcommon/singlylinkedlist.h"
 
 #ifdef __cplusplus

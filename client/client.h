@@ -4,7 +4,9 @@
 
 //define	PARANOID			// speed sapping error checking
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
+#include "../qcommon/angles.h"
+#include "../qcommon/vector.h"
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>

@@ -3,7 +3,7 @@
 // 56% of total area consumed
 // 0 of textures were unable to be placed.
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 typedef struct glxy_s
 {

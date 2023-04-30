@@ -1,4 +1,4 @@
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "g_classstatics.h"
 
 G_ClassStatics_t	classStatics[NUM_CLASSIDS];

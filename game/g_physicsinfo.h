@@ -2,7 +2,7 @@
 #define G_PHYSICSINFO_H
 
 #if 0
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 
 typedef struct PhysicsInfo_s

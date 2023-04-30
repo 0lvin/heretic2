@@ -1,7 +1,7 @@
 // H2Palette.c
 //
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 
 paletteRGBA_t TextPalette[MAX_COLORS] = {
 		{ 0x0, 0x0, 0x0, 0x0},

@@ -8,7 +8,7 @@
 #ifndef _P_TYPES_H_
 #define _P_TYPES_H_
 
-#include "../qcommon/qcommon.h"
+#include "../src/common/header/common.h"
 #include "../game/g_itemstats.h"
 
 #ifdef __cplusplus
