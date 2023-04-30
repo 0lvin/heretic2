@@ -18,7 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // r_main.c
-#include "gl_local.h"
+#include <ctype.h>
+#include "header/local.h"
 #include "../../../../ref_common/part_uvs.h"
 
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags

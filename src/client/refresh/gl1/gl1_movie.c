@@ -1,7 +1,7 @@
 // gl_movie.c
 //
 
-#include "gl_local.h"
+#include "header/local.h"
 
 image_t* cinematicImage = NULL;
 

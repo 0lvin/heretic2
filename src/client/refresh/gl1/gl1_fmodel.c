@@ -1,7 +1,7 @@
 // flexmodel.c
 //
 
-#include "gl_local.h"
+#include "header/local.h"
 #include "../../../../ref_common/fmodel.h"
 #include "../../../../qcommon/flex.h"
 #include "../../../../ref_common/m_skeletalcluster.h"

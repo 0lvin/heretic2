@@ -1,7 +1,7 @@
 // gl_book.c
 //
 
-#include "gl_local.h"
+#include "header/local.h"
 
 void R_DrawBigFont (int x, int y, char *text, float alpha)
 {

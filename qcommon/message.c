@@ -34,11 +34,11 @@ size_t SetParms(SinglyLinkedList_t *_this, char *format, va_list marker, qboolea
 		switch(current)
 		{
 		case 'b':
-			parm.t_byte = va_arg(marker, byte);
+			parm.t_byte = va_arg(marker, int);
 			bytesParsed += sizeof(byte);
 			break;
 		case 's':
-			parm.t_short = va_arg(marker, short);
+			parm.t_short = va_arg(marker, int);
 			bytesParsed += sizeof(short);
 			break;
 		case 'i':

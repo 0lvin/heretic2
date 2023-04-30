@@ -17,7 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-// r_rast.c
+// sw_rast.c
 
 #include <assert.h>
 
@@ -815,7 +815,7 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 		R_ClipEdge (&r_rightexit, &r_rightenter, view_clipplanes[1].next);
 	}
 
-// if no edges made it out, return without posting the surface
+	// if no edges made it out, return without posting the surface
 	if (!r_emitted)
 		return;
 
@@ -831,9 +831,9 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 	surface_p->spans = NULL;
 
 	pplane = psurf->plane;
-// FIXME: cache this?
+	// FIXME: cache this?
 	TransformVector (pplane->normal, p_normal);
-// FIXME: cache this?
+	// FIXME: cache this?
 	distinv = 1.0 / (pplane->dist - DotProduct (modelorg, pplane->normal));
 
 	surface_p->d_zistepu = p_normal[0] * xscaleinv * distinv;
@@ -844,4 +844,3 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 
 	surface_p++;
 }
-

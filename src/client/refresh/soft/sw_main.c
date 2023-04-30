@@ -17,8 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-// r_main.c
 
+// sw_main.c
 #include "r_local.h"
 
 viddef_t	vid;
@@ -1324,9 +1324,9 @@ void Draw_GetPalette (void)
 		g = pal[i*3+1];
 		b = pal[i*3+2];
 
-        out[0] = r;
-        out[1] = g;
-        out[2] = b;
+	out[0] = r;
+	out[1] = g;
+	out[2] = b;
 	}
 
 	free (pal);
