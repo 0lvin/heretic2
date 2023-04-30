@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <math.h>
 #include <stdarg.h>
 
-#include "../ref_common/ref.h"
+#include "../ref_shared.h"
 
 #define REF_VERSION     "SOFT 0.01"
 

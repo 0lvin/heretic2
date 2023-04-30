@@ -28,7 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <math.h>
 
-#include "../../../../client/ref.h"
+#include "../../../common/header/common.h"
+#include "../ref_shared.h"
 #include "../../../../qcommon/vector.h"
 
 #include "qgl.h"
@@ -74,15 +75,6 @@ extern	viddef_t	vid;
   pic
 
 */
-
-typedef enum
-{
-	it_skin,
-	it_sprite,
-	it_wall,
-	it_pic,
-	it_sky
-} imagetype_t;
 
 typedef struct image_s
 {
