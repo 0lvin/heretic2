@@ -10,7 +10,8 @@
 #ifndef __FMODEL_HEADER
 #define __FMODEL_HEADER
 
-#include "../qcommon/q_shared.h"
+#include "../src/common/header/shared.h"
+#include "../src/common/header/files.h"
 
 #define	MAX_FM_TRIANGLES	2048
 #define MAX_FM_VERTS		2048

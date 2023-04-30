@@ -98,7 +98,7 @@ all:
 targets: $(TARGETS)
 
 HEADERS = \
-	qcommon/q_shared.h
+	src/common/header/shared.h
 
 # When make is invoked by "make VERBOSE=1" print
 # the compiler and linker commands.

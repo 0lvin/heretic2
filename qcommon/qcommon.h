@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#include "q_shared.h"
+#include "../src/common/header/shared.h"
 #include "angles.h"
 
 // unknown pragmas are SUPPOSED to be ignored, but....
@@ -664,6 +664,8 @@ CMODEL
 
 ==============================================================
 */
+
+#include "../src/common/header/files.h"
 
 cmodel_t	*CM_LoadMap (char *name, qboolean clientload, unsigned *checksum);
 cmodel_t	*CM_InlineModel (char *name);	// *1, *2, etc
