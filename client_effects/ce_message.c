@@ -8,13 +8,13 @@
 
 #include "../src/common/header/common.h"
 #include "ce_message.h"
-#include "../qcommon/message.h"
+#include "../h2common/message.h"
 
 #include "client_entities.h"
 #include "../qcommon/resourcemanager.h"
-#include "../qcommon/singlylinkedlist.h"
+#include "../h2common/singlylinkedlist.h"
 
-static ResourceManager_t MsgMngr; 
+static ResourceManager_t MsgMngr;
 
 void InitMsgMngr()
 {

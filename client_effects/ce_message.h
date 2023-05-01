@@ -2,7 +2,7 @@
 #define CE_MESSAGE_H
 
 #include "../src/common/header/common.h"
-#include "../qcommon/singlylinkedlist.h"
+#include "../h2common/singlylinkedlist.h"
 
 typedef enum CE_MsgID_e
 {

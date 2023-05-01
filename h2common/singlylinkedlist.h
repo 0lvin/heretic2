@@ -13,7 +13,7 @@ extern "C" {
 
 #include "genericunions.h"
 
-// jmarshall 
+// jmarshall
 typedef struct SinglyLinkedListNode_s
 {
 	GenericUnion4_t value;
@@ -42,6 +42,9 @@ void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert);
 GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr);
 void SLList_Chop(SinglyLinkedList_t *this_ptr);
 void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert);
+
+void InitResourceManager();
+void ShutdownResourceManager();
 
 
 #ifdef __cplusplus

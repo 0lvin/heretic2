@@ -2,7 +2,7 @@
 #include "g_local.h"
 #include "g_skeletons.h"
 #include "../qcommon/arrayed_list.h"
-#include "../qcommon/message.h"
+#include "../h2common/message.h"
 #include "g_physics.h"
 #include "g_playstats.h"
 #include "utilities.h"
@@ -14,7 +14,6 @@
 extern "C" {
 #endif
 
-extern void	InitPlayerinfo(edict_t* ent);
 extern player_export_t	playerExport;	// interface to player DLL.
 
 field_t fields[] = {
@@ -289,8 +288,6 @@ only happens when a new game is begun
 */
 void InitGame (void)
 {
-	void G_InitResourceManagers();
-
 	gi.dprintf ("==== InitGame ====\n");
 
 	G_InitResourceManagers();

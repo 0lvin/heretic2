@@ -8,11 +8,11 @@
 
 #include "../src/common/header/common.h"
 #include "g_message.h"
-#include "../qcommon/message.h"
+#include "../h2common/message.h"
 
 #include "g_local.h"
 #include "../qcommon/resourcemanager.h"
-#include "../qcommon/singlylinkedlist.h"
+#include "../h2common/singlylinkedlist.h"
 
 static ResourceManager_t MsgMngr;
 

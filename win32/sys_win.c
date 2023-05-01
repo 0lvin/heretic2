@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <io.h>
 #include <conio.h>
 #include "conproc.h"
-#include "../qcommon/resourcemanager.h"
+#include "qcommon/singlylinkedlist.h"
 
 #define MINIMUM_WIN_MEMORY	0x0a00000
 #define MAXIMUM_WIN_MEMORY	0x1000000
@@ -393,35 +393,6 @@ void ParseCommandLine (LPSTR lpCmdLine)
 	}
 
 }
-
-extern ResourceManager_t globalResourceManager;
-
-/*
-===============
-InitResourceManager
-===============
-*/
-void InitResourceManager()
-{
-	// jmarshall:
-	// Based on decompiled output, Raven had globalResourceManager allocated to use 256 8 * sizeof(resourceNode) byte blocks,
-	// this seems really small, in x64 this actually causes code to run past the block size. Which seems in line,
-	// with some of the crashes people have experienced with Raven's binaries. I'm increasing this limit,
-	// because were not that worried about OOMing, and seems safer then modifying a bunch of code on the game/client side.
-	ResMngr_Con(&globalResourceManager, 1024, 256);
-}
-
-/*
-===============
-ShutdownResourceManager
-===============
-*/
-
-void ShutdownResourceManager()
-{
-	ResMngr_Des(&globalResourceManager);
-}
-
 
 /*
 ==================

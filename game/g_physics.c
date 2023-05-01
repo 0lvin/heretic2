@@ -3,7 +3,7 @@
 #include "g_local.h"
 
 #include "../qcommon/angles.h"
-#include "../qcommon/singlylinkedlist.h"
+#include "../h2common/singlylinkedlist.h"
 #include "g_physics.h"
 #include "utilities.h"
 #include "../player/p_main.h"

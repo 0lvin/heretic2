@@ -8,7 +8,7 @@
 
 #include "../src/common/header/common.h"
 #include "g_local.h"
-#include "../qcommon/singlylinkedlist.h"
+#include "../h2common/singlylinkedlist.h"
 
 void ICScript_Con(ICScript_t *this_ptr, char *name)
 {

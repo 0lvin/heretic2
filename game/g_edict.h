@@ -3,7 +3,7 @@
 
 #include "../src/common/header/common.h"
 #include "g_message.h"
-#include "../qcommon/message.h"
+#include "../h2common/message.h"
 #include "g_classstatics.h"
 
 #define MAX_BUOY_BRANCHES 3

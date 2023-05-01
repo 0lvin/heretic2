@@ -422,7 +422,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/cvar.o \
 	$(BUILDDIR)/qcommon/files.o \
 	$(BUILDDIR)/qcommon/md4.o \
-	$(BUILDDIR)/qcommon/message.o \
+	$(BUILDDIR)/h2common/message.o \
 	$(BUILDDIR)/qcommon/net_chan.o \
 	$(BUILDDIR)/qcommon/netmsg_read.o \
 	$(BUILDDIR)/qcommon/pmove.o \

@@ -4,7 +4,7 @@
 #include "../src/common/header/common.h"
 #include "../client/client.h"
 
-#include "../qcommon/message.h"
+#include "../h2common/message.h"
 #include "ce_message.h"
 #include "../qcommon/fx.h"
 

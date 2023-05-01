@@ -13,7 +13,7 @@
 #include "client_entities.h"
 #include "particle.h"
 #include "ce_dlight.h"
-#include "../qcommon/singlylinkedlist.h"
+#include "../h2common/singlylinkedlist.h"
 #include "ce_message.h"
 #include "../qcommon/angles.h"
 #include "../qcommon/skeletons.h"

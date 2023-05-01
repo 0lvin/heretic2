@@ -1089,6 +1089,8 @@ extern void	SetupPlayerinfo(edict_t *ent);
 extern void	WritePlayerinfo(edict_t *ent);
 extern void	SetupPlayerinfo_effects(edict_t *ent);
 extern void	WritePlayerinfo_effects(edict_t *ent);
+extern void	InitPlayerinfo(edict_t *ent);
+
 
 //
 // p_hud.c
@@ -1107,6 +1109,11 @@ void DeathmatchScoreboardMessage (edict_t *client, edict_t *killer,qboolean log_
 //
 
 void PlayerNoise(edict_t *who, vec3_t where, int type);
+
+//
+// g_resourcemanagers.c
+//
+void G_InitResourceManagers();
 
 //
 // m_move.c

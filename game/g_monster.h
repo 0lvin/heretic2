@@ -10,7 +10,7 @@
 
 #include "../src/common/header/common.h"
 #include "g_local.h"
-#include "../qcommon/message.h"
+#include "../h2common/message.h"
 #include "g_classstatics.h"
 
 extern void M_WorldEffects (struct edict_s *ent);

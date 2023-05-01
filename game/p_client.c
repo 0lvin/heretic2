@@ -24,7 +24,6 @@
 #include "../src/common/header/common.h"
 
 // FIXME: include headers.
-extern void	InitPlayerinfo(edict_t *ent);
 extern void	SetupPlayerinfo(edict_t *ent);
 extern void	WritePlayerinfo(edict_t *ent);
 extern void PlayerChickenDeath(edict_t *ent);

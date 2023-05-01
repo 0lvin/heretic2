@@ -8,6 +8,8 @@ void ReleaseBoundingFormMngr();
 
 void G_InitResourceManagers()
 {
+	InitResourceManager();
+
 	G_InitMsgMngr();
 #if	G_NEW_SYSTEM
 	InitBoundingFormMngr();
@@ -20,4 +22,5 @@ void G_ReleaseResourceManagers()
 #if	G_NEW_SYSTEM
 	ReleaseBoundingFormMngr();
 #endif
+	ShutdownResourceManager();
 }
