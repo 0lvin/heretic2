@@ -78,7 +78,7 @@ static void M_Banner( char *name )
 	int w, h;
 
 	re.DrawGetPicSize (&w, &h, name );
-	re.DrawPic( viddef.width / 2 - w / 2, viddef.height / 2 - 110, name, 1.0f );
+	re.DrawPic( viddef.width / 2 - w / 2, viddef.height / 2 - 110, name);
 }
 
 void M_PushMenu ( void (*draw) (void), const char *(*key) (int k) )
@@ -271,7 +271,7 @@ higher res screens.
 */
 void M_DrawCharacter (int cx, int cy, int num)
 {
-	re.DrawChar ( cx + ((viddef.width - 320)>>1), cy + ((viddef.height - 240)>>1), num, TextPalette[P_WHITE]);
+	re.DrawChar ( cx + ((viddef.width - 320)>>1), cy + ((viddef.height - 240)>>1), num);
 }
 
 void M_Print (int cx, int cy, char *str)
@@ -296,7 +296,7 @@ void M_PrintWhite (int cx, int cy, char *str)
 
 void M_DrawPic (int x, int y, char *pic)
 {
-	re.DrawPic (x + ((viddef.width - 320)>>1), y + ((viddef.height - 240)>>1), pic, 1.0f);
+	re.DrawPic (x + ((viddef.width - 320)>>1), y + ((viddef.height - 240)>>1), pic);
 }
 
 
@@ -328,7 +328,7 @@ void M_DrawCursor( int x, int y, int f )
 	}
 
 	Com_sprintf( cursorname, sizeof(cursorname), "m_cursor%d", f );
-	re.DrawPic( x, y, cursorname, 1.0f );
+	re.DrawPic( x, y, cursorname);
 }
 
 void M_DrawTextBox (int x, int y, int width, int lines)
@@ -645,9 +645,9 @@ static void M_FindKeysForCommand (char *command, int *twokeys)
 static void KeyCursorDrawFunc( menuframework_s *menu )
 {
 	if ( bind_grab )
-		re.DrawChar( menu->x, menu->y + menu->cursor * 9, '=', TextPalette[P_WHITE]);
+		re.DrawChar( menu->x, menu->y + menu->cursor * 9, '=');
 	else
-		re.DrawChar( menu->x, menu->y + menu->cursor * 9, 12 + ( ( int ) ( Sys_Milliseconds() / 250 ) & 1 ), TextPalette[P_WHITE]);
+		re.DrawChar( menu->x, menu->y + menu->cursor * 9, 12 + ( ( int ) ( Sys_Milliseconds() / 250 ) & 1 ));
 }
 
 static void DrawKeyBindingFunc( void *self )
@@ -1753,9 +1753,9 @@ void M_Credits_MenuDraw( void )
 			x = ( viddef.width - strlen( credits[i] ) * 8 - stringoffset * 8 ) / 2 + ( j + stringoffset ) * 8;
 
 			if ( bold )
-				re.DrawChar( x, y, credits[i][j+stringoffset] + 128, TextPalette[P_WHITE]);
+				re.DrawChar( x, y, credits[i][j+stringoffset] + 128);
 			else
-				re.DrawChar( x, y, credits[i][j+stringoffset], TextPalette[P_WHITE]);
+				re.DrawChar( x, y, credits[i][j+stringoffset]);
 		}
 	}
 
@@ -3487,7 +3487,7 @@ void M_Quit_Draw (void)
 	int		w, h;
 
 	re.DrawGetPicSize (&w, &h, "quit");
-	re.DrawPic ( (viddef.width-w)/2, (viddef.height-h)/2, "quit", 1.0f);
+	re.DrawPic ( (viddef.width-w)/2, (viddef.height-h)/2, "quit");
 }
 
 
@@ -3545,7 +3545,7 @@ void M_Draw (void)
 	if (cl.cinematictime > 0)
 		re.DrawFill (0,0,viddef.width, viddef.height, 0xff, 0xff, 0xff);
 	else
-		re.DrawFadeScreen (TextPalette[P_WHITE]);
+		re.DrawFadeScreen ();
 
 	m_drawfunc ();
 

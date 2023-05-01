@@ -277,7 +277,7 @@ void SCR_DrawCenterString (void)
 		SCR_AddDirtyPoint (x, y);
 		for (j=0 ; j<l ; j++, x+=8)
 		{
-			re.DrawChar (x, y, start[j], TextPalette[P_WHITE]);
+			re.DrawChar (x, y, start[j]);
 			if (!remaining--)
 				return;
 		}
@@ -445,7 +445,7 @@ void SCR_DrawNet (void)
 		< CMD_BACKUP-1)
 		return;
 
-	re.DrawPic (scr_vrect.x+64, scr_vrect.y, "net", 1.0f);
+	re.DrawPic (scr_vrect.x+64, scr_vrect.y, "net");
 }
 
 /*
@@ -464,7 +464,7 @@ void SCR_DrawPause (void)
 		return;
 
 	re.DrawGetPicSize (&w, &h, "pause");
-	re.DrawPic ((viddef.width-w)/2, viddef.height/2 + 8, "pause", 1.0f);
+	re.DrawPic ((viddef.width-w)/2, viddef.height/2 + 8, "pause");
 }
 
 /*
@@ -481,7 +481,7 @@ void SCR_DrawLoading (void)
 
 	scr_draw_loading = false;
 	re.DrawGetPicSize (&w, &h, "loading");
-	re.DrawPic ((viddef.width-w)/2, (viddef.height-h)/2, "loading", 1.0f);
+	re.DrawPic ((viddef.width-w)/2, (viddef.height-h)/2, "loading");
 }
 
 //=============================================================================
@@ -849,7 +849,7 @@ void DrawHUDString (char *string, int x, int y, int centerwidth, int xor)
 			x = margin;
 		for (i=0 ; i<width ; i++)
 		{
-			re.DrawChar (x, y, line[i]^xor, TextPalette[P_WHITE]);
+			re.DrawChar (x, y, line[i]^xor);
 			x += 8;
 		}
 		if (*string)
@@ -897,7 +897,7 @@ void SCR_DrawField (int x, int y, int color, int width, int value)
 		else
 			frame = *ptr -'0';
 
-		re.DrawPic (x,y,sb_nums[color][frame], 1.0f);
+		re.DrawPic (x,y,sb_nums[color][frame]);
 		x += CHAR_WIDTH;
 		ptr++;
 		l--;
@@ -937,21 +937,25 @@ void SCR_DrawPic(int x, int y, char** stat, int flags)
 	const char* token;
 	int statval;
 	char* image;
-	float alpha;
 
 	token = (const char*)COM_Parse(stat);
 	statval = cl.frame.playerstate.stats[atoi(token)];
 	if (statval)
 	{
+		/*
+		TODO: rewrite, do we need alpha in DrawPic?
+		float alpha;
+
 		alpha = 1.0;
 		if (flags && (statval & 0x8000) == 0)
 			alpha = 0.5;
+		*/
 		image = cl.configstrings[(statval & 0x7FFF) + 1056];
 		if (*image)
 		{
 			SCR_AddDirtyPoint(x, y);
 			SCR_AddDirtyPoint(x + 31, y + 31);
-			re.DrawPic(x, y, image, alpha);
+			re.DrawPic(x, y, image);
 		}
 	}
 }
@@ -1023,7 +1027,7 @@ void SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
 		for (j = 0; j < len; ++j)
 		{
 			offset2 = SCR_CharTableOffset(buffer[j], lessZero);
-			re.DrawPic(xoffset, yoffset, scr_number_table[offset2], 1.0f);
+			re.DrawPic(xoffset, yoffset, scr_number_table[offset2]);
 			xoffset += 8;
 		}
 	}
@@ -1185,7 +1189,7 @@ void SCR_ExecuteLayoutString (char *s)
 			token = (char*)COM_Parse(&s);
 			SCR_AddDirtyPoint(x, y);
 			SCR_AddDirtyPoint(x + 32, y + 32);
-			re.DrawPic(x, y, token, 1.0f);
+			re.DrawPic(x, y, token);
 			continue;
 		}
 
@@ -1327,7 +1331,7 @@ void SCR_UpdateScreen (void)
 		//	re.CinematicSetPalette(NULL);
 			scr_draw_loading = false;
 			re.DrawGetPicSize (&w, &h, "loading");
-			re.DrawPic ((viddef.width-w)/2, (viddef.height-h)/2, "loading", 1.0f);
+			re.DrawPic ((viddef.width-w)/2, (viddef.height-h)/2, "loading");
 //			re.EndFrame();
 //			return;
 		}

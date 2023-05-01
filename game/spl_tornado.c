@@ -127,10 +127,11 @@ void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, ve
 	float		length;
 	vec3_t		diff;
 	int			g_type = 0;
-	char		*spawn_check[3] =
-	{{"info_player_start"},
-	 {"info_player_deathmatch"},
-	 {"info_player_coop"}};
+	char		*spawn_check[3] = {
+		"info_player_start",
+		"info_player_deathmatch",
+		"info_player_coop"
+	};
 
 	tornado = G_Spawn();
 	tornado->movetype = PHYSICSTYPE_NONE;

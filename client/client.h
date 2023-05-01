@@ -12,7 +12,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "ref.h"
+#include "../src/client/refresh/ref_shared.h"
 
 #include "vid.h"
 #include "screen.h"

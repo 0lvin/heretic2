@@ -1,37 +1,43 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ * USA.
+ *
+ * =======================================================================
+ *
+ * ABI between client and refresher
+ *
+ * =======================================================================
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+#ifndef CL_REF_H
+#define CL_REF_H
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#include "../../../common/header/common.h"
+#include "../../../../qcommon/q_surface.h"
+#include "../../../../qcommon/arrayed_list.h"
 
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-#ifndef CLIENT_REF_H
-#define CLIENT_REF_H
-
-#include "../src/common/header/common.h"
-#include "../qcommon/q_surface.h"
-#include "../qcommon/arrayed_list.h"
-
-// these are the maximum number that maybe rendered on any given frame
 #define	MAX_DLIGHTS		32
 #define	MAX_ENTITIES	128
-#define MAX_ALPHA_ENTITIES 2048
-#define	MAX_SERVER_ENTITIES	MAX_ENTITIES
 #define	MAX_PARTICLES	4096
 #define	MAX_LIGHTSTYLES	256
 
+#define MAX_ALPHA_ENTITIES 2048
+#define	MAX_SERVER_ENTITIES	MAX_ENTITIES
 #define NUM_PARTICLE_TYPES	62			// This doesn't use the macro because of referencing weirdness.
 
 typedef struct entity_s
@@ -195,7 +201,7 @@ typedef struct
 	qboolean	render;
 
 	// called when the library is loaded
-	qboolean	(*Init) ( void *hinstance, void *wndproc );
+	int	(*Init) ( void *hinstance, void *wndproc );
 
 	// called before the library is unloaded
 	void	(*Shutdown) (void);
@@ -220,17 +226,17 @@ typedef struct
 	void	(*SetSky) (char *name, float rotate, vec3_t axis);
 	void	(*EndRegistration) (void);
 
-	int		(*RenderFrame) (refdef_t *fd);
+	void	(*RenderFrame) (refdef_t *fd);
 
 	void	(*DrawLine)(vec3_t start, vec3_t end);
 
 	void	(*DrawGetPicSize) (int *w, int *h, char *name);
-	void	(*DrawPic) (int x, int y, char *name, float alpha);
+	void	(*DrawPic) (int x, int y, char *name);
 	void	(*DrawStretchPic) (int x, int y, int w, int h, char *name, float alpha, qboolean scale);
-	void	(*DrawChar) (int x, int y, int c, paletteRGBA_t color);
+	void	(*DrawChar) (int x, int y, int c);
 	void	(*DrawTileClear) (int x, int y, int w, int h, char *name);
 	void	(*DrawFill) (int x, int y, int w, int h, byte r, byte g, byte b);
-	void	(*DrawFadeScreen) (paletteRGBA_t color);
+	void	(*DrawFadeScreen) (void);
 	void	(*DrawBigFont) (int x, int y, char *text, float alpha);
 	int		(*BF_Strlen) (char *text);
 	void	(*BookDrawPic) (int w, int h, char *name, float scale);
@@ -250,10 +256,6 @@ typedef struct
 	void	(*AppActivate)( qboolean activate );
 
 	int		(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
-
-#ifdef __A3D_GEOM
-   void (*A3D_RenderGeometry) (void *pA3D, void *pGeom, void *pMat, void *pGeomStatus);
-#endif
 } refexport_t;
 #ifdef __cplusplus
 } //end extern "C"
@@ -307,5 +309,15 @@ typedef struct
 
 // this is the only function actually exported at the linker level
 typedef	refexport_t	(*GetRefAPI_t) (refimport_t);
+
+/*
+====================================================================
+
+IMPORTED FUNCTIONS
+
+====================================================================
+*/
+
+extern	refimport_t	ri;
 
 #endif

@@ -24,21 +24,38 @@
  * =======================================================================
  */
 
-#ifndef REF_COMMON_REF_H
-#define REF_COMMON_REF_H
+#ifndef SRC_CLIENT_REFRESH_REF_SHARED_H_
+#define SRC_CLIENT_REFRESH_REF_SHARED_H_
 
-#include "../../../client/ref.h"
+#include "../vid/header/ref.h"
+
+#ifdef _MSC_VER
+
+  #include <malloc.h>
+
+  #define YQ2_VLA(TYPE, VARNAME, NUMELEMS) \
+	TYPE * VARNAME = (TYPE *) _malloca(sizeof(TYPE) * NUMELEMS)
+  #define YQ2_VLAFREE(VARNAME) \
+	_freea(VARNAME); VARNAME=NULL;
+
+#else // other compilers hopefully support C99 VLAs (gcc/mingw and clang do)
+
+  #define YQ2_VLA(TYPE, VARNAME, NUMELEMS) \
+	TYPE VARNAME[NUMELEMS]
+  #define YQ2_VLAFREE(VARNAME)
+
+#endif
 
 /*
-====================================================================
-
-IMPORTED FUNCTIONS
-
-====================================================================
-*/
-
-extern	refimport_t	ri;
-
+ * skins will be outline flood filled and mip mapped
+ * pics and sprites with alpha will be outline flood filled
+ * pic won't be mip mapped
+ *
+ * model skin
+ * sprite frame
+ * wall texture
+ * pic
+ */
 typedef enum
 {
 	it_skin,
@@ -48,14 +65,15 @@ typedef enum
 	it_sky
 } imagetype_t;
 
-#define	MAX_LBM_HEIGHT		480
-
-typedef enum {
+typedef enum
+{
 	mod_bad,
 	mod_brush,
 	mod_sprite,
 	mod_alias,
 	mod_flex
 } modtype_t;
+
+#define MAX_LBM_HEIGHT 480
 
 #endif /* SRC_CLIENT_REFRESH_REF_SHARED_H_ */

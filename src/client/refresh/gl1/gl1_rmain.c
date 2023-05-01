@@ -1249,9 +1249,7 @@ int R_Init( void *hinstance, void *hWnd )
 		return -1;
 	}
 
-	// jmarshall - disabling for the time being, this always causes a crash.
-	//	ri.Vid_MenuInit();
-	// jmarshall end
+	ri.Vid_MenuInit();
 
 	/*
 	** get our various GL strings

@@ -296,7 +296,7 @@ typedef struct
 
 	// Debugging aid.
 
-	void	(*DebugGraph) (float value, byte r, byte g, byte b);
+	void	(*DebugGraph) (float value, int color);
 
 	// Files will be memory mapped read only. The returned buffer may be part of a larger '.pak'
 	// file, or a discrete file from anywhere in the quake search path. A -1 return means the file
