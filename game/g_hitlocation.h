@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef G_HITLOCATION_H
 #define	G_HITLOCATION_H
 // Enumerated hit locations

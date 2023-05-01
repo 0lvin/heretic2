@@ -86,7 +86,7 @@ static qboolean FXMorphMissileThink(client_entity_t *missile, centity_t *owner)
 	for (i=0; i<count; i++)
 	{
 		ce = ClientParticle_new(PART_16x16_SPARK_G, color, dur);
-		ce->acceleration[2] = 0.0; 
+		ce->acceleration[2] = 0.0;
 		// figure out our random velocity
 		VectorSet(ce->origin, flrand(-SMALL_RAD,SMALL_RAD), flrand(-SMALL_RAD,SMALL_RAD), flrand(-SMALL_RAD,SMALL_RAD) );
 		// scale it and make it the origin
@@ -153,8 +153,8 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 	int					i;
 
 	// get the initial Yaw
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPELL_MORPHMISSILE_INITIAL].formatString, 
-			&yaw, 
+	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPELL_MORPHMISSILE_INITIAL].formatString,
+			&yaw,
 			&morpharray[0],
 			&morpharray[1],
 			&morpharray[2],
@@ -200,7 +200,7 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
  		glow->r.scale = 0.5;
 		glow->d_alpha = -1.0;
 		glow->SpawnInfo = MORPH_GLOW_DUR;
-		
+
 		AddEffect(NULL, glow);
 	}
 }
@@ -247,7 +247,7 @@ void FXMorphExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	color.c = MORPH_COL;
 	dlight->dlight = CE_DLight_new(color, 110.0F, 100.0F);
 	AddEffect(NULL, dlight);
-	
+
 	for(i=0;i<count;i++)
 	{
 		color.g=irand(200, 255);
@@ -257,7 +257,7 @@ void FXMorphExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		ce = ClientParticle_new(PART_16x16_SPARK_G, color, dur);
 
 		VectorCopy(Dir,ce->velocity);
-		
+
 		ce->scale=flrand(3.0, max_rand);
 
 		ce->velocity[0]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
@@ -352,7 +352,7 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	if (flags & CEF_FLAG6)
 	{
 		i = irand(1,2);
-		
+
 		while (i--)
 		{
 			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN , origin, NULL, 40);
@@ -366,7 +366,7 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 			feather->SpawnInfo = 170;
 			feather->yscale = flrand(0.05,0.2);
 			feather->xscale = flrand(-0.2,0.2);
-			
+
 			feather->origin[0] += flrand(-8.0F, 8.0F);
 			feather->origin[1] += flrand(-8.0F, 8.0F);
 			feather->origin[2] += flrand(-8.0F, 8.0F);

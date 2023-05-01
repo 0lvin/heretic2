@@ -50,12 +50,12 @@ void FXDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
 	endpos[2] -= 128.0;
 
 	//Find out where the ground is
-	fxi.Trace(	origin, 
-				vec3_origin, 
-				vec3_origin, 
-				endpos, 
-				CONTENTS_SOLID, 
-				CEF_CLIP_TO_WORLD, 
+	fxi.Trace(	origin,
+				vec3_origin,
+				vec3_origin,
+				endpos,
+				CONTENTS_SOLID,
+				CEF_CLIP_TO_WORLD,
 				&trace);
 
 	if (trace.fraction == 1.0)

@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // g_ai.c
 
 #include "../src/common/header/common.h"

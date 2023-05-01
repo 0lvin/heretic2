@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "g_local.h"
 #include "../qcommon/random.h"
@@ -324,10 +328,11 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 	team_scores_t	temp_point;
 	FILE		*f = NULL;
 	cvar_t		*host_name;
-	char		*game_types[3] =
-	{{"Cooperative"},
-	{"Death Match"},
-	{"Team Play Death Match"}};
+	char		*game_types[3] = {
+		"Cooperative",
+		"Death Match",
+		"Team Play Death Match"
+	};
 
 	string[0] = 0;
 	stringlength = 0;

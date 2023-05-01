@@ -72,7 +72,7 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 	{
 		VectorCopy(direction, newEnt->direction);
 
-		if(newEnt->direction[2] == 0)  
+		if(newEnt->direction[2] == 0)
 		{	// vertical wall
 			newEnt->up[0] = 0;
 			newEnt->up[1] = 0;
@@ -139,7 +139,7 @@ void ClientEntity_delete(client_entity_t *toDelete, centity_t *owner)
 
 	if(toDelete->r.fmnodeinfo)
 	{
-		ResMngr_DeallocateResource(&FMNodeInfoMngr, toDelete->r.fmnodeinfo, sizeof(fmnodeinfo_t)*MAX_FM_MESH_NODES);	
+		ResMngr_DeallocateResource(&FMNodeInfoMngr, toDelete->r.fmnodeinfo, sizeof(fmnodeinfo_t)*MAX_FM_MESH_NODES);
 	}
 
 	if(owner && toDelete->refMask)
@@ -159,7 +159,7 @@ void ClientEntity_delete(client_entity_t *toDelete, centity_t *owner)
 
 	SLList_Des(&toDelete->msgQ.msgs);
 
-	ResMngr_DeallocateResource(&EntityMngr, toDelete, sizeof(*toDelete));	
+	ResMngr_DeallocateResource(&EntityMngr, toDelete, sizeof(*toDelete));
 }
 
 fmnodeinfo_t *FMNodeInfo_new()
@@ -234,7 +234,7 @@ void RemoveEffectTypeList(client_entity_t **root, FX_Type_t fx, centity_t *owner
 			RemoveEffectFromList(prev, owner);
 			continue;
 		}
-		prev = &(*prev)->next; 
+		prev = &(*prev)->next;
 	}
 }
 
@@ -276,7 +276,7 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 		float dist;
 
 		current->flags |= CEF_CULLED;
-		// if we have a light, particles, a model, a potential routine that will change our think function, and we aren't disappeared, 
+		// if we have a light, particles, a model, a potential routine that will change our think function, and we aren't disappeared,
 		// determing if we should be culled or not.
 		if(current->dlight || current->p_root || current->r.model
 			|| (!(current->flags & (CEF_DISAPPEARED ))) || (current->flags & CEF_VIEWSTATUSCHANGED))
@@ -498,7 +498,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 			}
 
 			current->alpha += d_time * current->d_alpha;
-			
+
 			if (current->d_alpha > 0 && current->alpha >= 1.0)
 			{
 				current->alpha = 0.99;
@@ -554,7 +554,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 						current->velocity[1] += current->acceleration[1] * d_time;
 						current->velocity[2] += current->acceleration[2] * d_time;
 					}
-					else 
+					else
 					{	// Update the startpos and endpos velocity, then worry about the entity origin.
 						vec3_t	dpos, dvel, d2vel;
 
@@ -602,7 +602,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 			}
 		}
 
-		prev = &(*prev)->next; 
+		prev = &(*prev)->next;
 	}
 
 	return numFX;
@@ -627,7 +627,7 @@ qboolean AddEntityToView(entity_t *ent)
 		}
 		else
 		{
-			return false;	
+			return false;
 		}
 	}
 	else
@@ -638,7 +638,7 @@ qboolean AddEntityToView(entity_t *ent)
 		}
 		else
 		{
-			return false;	
+			return false;
 		}
 	}
 

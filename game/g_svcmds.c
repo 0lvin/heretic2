@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "g_local.h"
 
@@ -278,4 +282,3 @@ void	ServerCommand (void)
 	else
 		gi.cprintf (NULL, PRINT_HIGH, "Unknown server command \"%s\"\n", cmd);
 }
-

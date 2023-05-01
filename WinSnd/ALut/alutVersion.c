@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "alutInternal.h"
 
 ALUT_API ALint

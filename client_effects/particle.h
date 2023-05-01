@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "../client/client.h"
 
@@ -172,4 +176,3 @@ void CreateParticles(struct client_entity_s *_this, int numParticles, int origin
 	float scale, vec3_t acceleration, float d_scale);
 void CreateGenericParticles(struct client_entity_s *_this, int numParticles, paletteRGBA_t color,
 	int type, int duration);
-

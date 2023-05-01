@@ -8,6 +8,16 @@ Updated code based on [Heretic 2 Reconstruction Project](https://github.com/jmar
 sed -i 's/[[:blank:]]*$//' */*.{c,h}
 ```
 
+Comments:
+
+It's on really initial steps, it could be complied ;-), it runs without
+crashes and can open tutorial level. That's all what is good.
+
+Drawbacks: code is not rebased over yquake2 code, no sounds, broken jumps,
+no menu or books implementations.
+Code can't open ssdocks level(first level of game).
+Not all files has correct licence header and code is little bit mess.
+
 ======
 
 This is the complete source code for Quake 2, version 3.21, buildable with

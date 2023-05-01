@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef CLIENT_CONSOLE_H
 #define CLIENT_CONSOLE_H
 //

@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef BUOY_H
 #define BUOY_H
 

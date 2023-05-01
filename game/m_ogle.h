@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "g_local.h"
 
@@ -219,4 +223,3 @@ void ogle_push (edict_t *self, float dist);
 #define BPN_L4ARM		512
 #define BPN_HAMMER		1024
 #define BPN_HANDLE		2048
-

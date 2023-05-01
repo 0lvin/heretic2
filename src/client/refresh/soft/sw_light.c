@@ -439,4 +439,3 @@ void R_BuildLightMap (void)
 		blocklights[i] = t;
 	}
 }
-

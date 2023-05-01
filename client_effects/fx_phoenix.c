@@ -711,4 +711,3 @@ static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *
 	VectorCopy(missile->r.origin, missile->origin);
 	return(true);
 }
-

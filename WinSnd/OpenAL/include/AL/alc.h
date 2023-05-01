@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef AL_ALC_H
 #define AL_ALC_H
 

@@ -386,4 +386,3 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 	glVertex2f (x, y+h);
 	glEnd ();
 }
-

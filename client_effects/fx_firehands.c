@@ -45,7 +45,7 @@ static qboolean FXFireHandsThink(struct client_entity_s *self,centity_t *owner)
 			return true;
 		}
 	}
-	else 
+	else
 	{	// If we're not on a time limit, check the EF flag
 		if (!(owner->current.effects & EF_TRAILS_ENABLED))
 		{
@@ -66,7 +66,7 @@ static qboolean FXFireHandsThink(struct client_entity_s *self,centity_t *owner)
 	// Create a rotation matrix
 	Matrix3FromAngles(owner->lerp_angles, rotation);
 	Matrix3MultByVec3(rotation, firestart, origin);
-	
+
 	if (r_detail->value < DETAIL_NORMAL)
 		hand_flame_dur = 1500;
 	else
@@ -75,12 +75,12 @@ static qboolean FXFireHandsThink(struct client_entity_s *self,centity_t *owner)
 	for(i = 0; i < HANDFIRE_NUM; i++)
 	{
 		flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), self->color, hand_flame_dur);
-		VectorSet(	flame->origin, 
-					flrand(-HANDFIRE_RADIUS, HANDFIRE_RADIUS), 
-					flrand(-HANDFIRE_RADIUS, HANDFIRE_RADIUS), 
+		VectorSet(	flame->origin,
+					flrand(-HANDFIRE_RADIUS, HANDFIRE_RADIUS),
+					flrand(-HANDFIRE_RADIUS, HANDFIRE_RADIUS),
 					flrand(-HANDFIRE_RADIUS, HANDFIRE_RADIUS));
 		VectorAdd(flame->origin, origin, flame->origin);
-	
+
 		flame->scale = HANDFIRE_SCALE;
 		VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
 		flame->acceleration[2] = HANDFIRE_ACCEL;
@@ -90,7 +90,7 @@ static qboolean FXFireHandsThink(struct client_entity_s *self,centity_t *owner)
 
 		AddParticleToList(self, flame);
 	}
-	
+
 	return(true);
 }
 
@@ -118,7 +118,7 @@ void FXFireHands(centity_t *owner,int type,int flags,vec3_t origin)
 
 	VectorClear(origin);
 
-	
+
 	if (r_detail->value > DETAIL_NORMAL)
 		flame_dur = 50;
 	else
@@ -136,7 +136,7 @@ void FXFireHands(centity_t *owner,int type,int flags,vec3_t origin)
 		trail->Update=FXFireHandsThink;
 		trail->flags|=CEF_NO_DRAW | CEF_OWNERS_ORIGIN | CEF_ADDITIVE_PARTS;
 		trail->radius = 128;
-		trail->AddToView = LinkedEntityUpdatePlacement;			
+		trail->AddToView = LinkedEntityUpdatePlacement;
 		trail->refPoint = i;
 		trail->color.c = 0xe5007fff;
 

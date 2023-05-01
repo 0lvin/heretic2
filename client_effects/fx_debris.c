@@ -983,4 +983,3 @@ qboolean FXFleshDebris_Update(struct client_entity_s *self,centity_t *owner)
 
 	return true;
 }
-

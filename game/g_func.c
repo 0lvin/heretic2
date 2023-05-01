@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "g_local.h"
 #include "g_misc.h"
@@ -3020,4 +3024,3 @@ void SP_character_sidhe_guard (edict_t *self)
 	self->style = MS_SIDHE_GUARD;
 	monsterspawner_go(self);
 }
-

@@ -50,7 +50,7 @@ void priestess2_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -96,7 +96,7 @@ void priestess2_c_anims(edict_t *self, G_Message_t *msg)
 			self->monsterinfo.c_anim_flag |= C_ANIM_MOVE;
 			curr_anim = ANIM_C_IDLE1;
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -117,7 +117,7 @@ void Priestess2CStaticsInit()
 	classStatics[CID_C_HIGHPRIESTESS2].msgReceivers[MSG_C_IDLE1] = priestess2_c_anims;
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	resInfo.modelIndex = gi.modelindex("models/monsters/highpriestess/pod_scene/tris.fm");
 
 	classStatics[CID_C_HIGHPRIESTESS2].resInfo = &resInfo;
@@ -132,7 +132,7 @@ INVISIBLE - you won't see her
 void SP_character_highpriestess2 (edict_t *self)
 {
 	VectorSet (self->mins, -16, -16, -38);
-	VectorSet (self->maxs, 16, 16, 38);	
+	VectorSet (self->maxs, 16, 16, 38);
 
 	c_character_init(self,CID_C_HIGHPRIESTESS2);
 }

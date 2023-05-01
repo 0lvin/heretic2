@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef M_SKELETON_H
 #define M_SKELETON_H
 

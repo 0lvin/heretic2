@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // client.h -- primary header for client
 #ifndef CLIENT_H
 #define CLIENT_H

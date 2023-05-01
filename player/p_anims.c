@@ -24,7 +24,7 @@ PLAYER_API void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
 	assert(playerinfo);
 
 	if (playerinfo->upperseq != seq)
-	{	
+	{
 		// We don't set all the data up right because it's up to AnimUpdateFrame to do this.
 
 		playerinfo->upperseq = seq;
@@ -33,7 +33,7 @@ PLAYER_API void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
 	}
 
 	playerinfo->uppermove = PlayerSeqData[seq].move;
-	
+
 	playerinfo->uppermove_index=seq;
 
 	assert(playerinfo->uppermove);
@@ -49,7 +49,7 @@ PLAYER_API void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 	assert(playerinfo);
 
 	if (playerinfo->lowerseq != seq)
-	{	
+	{
 		// We don't set all the data up right because it's up to AnimUpdateFrame to do this.
 
 		playerinfo->lowerseq = seq;
@@ -84,7 +84,7 @@ PLAYER_API void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 
 	if (seqdata->fly)
 		playerinfo->edictflags |= FL_FLY;
-	else 
+	else
 		playerinfo->edictflags &= ~FL_FLY;
 
 	// Set / reset flag that says I am standing still.
@@ -99,9 +99,9 @@ PLAYER_API void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 	if(!playerinfo->isclient)
 	{
 		if (seqdata->lockmove)
-			playerinfo->pm_flags |= PMF_LOCKMOVE; 
+			playerinfo->pm_flags |= PMF_LOCKMOVE;
 		else
-			playerinfo->pm_flags &= ~PMF_LOCKMOVE;		
+			playerinfo->pm_flags &= ~PMF_LOCKMOVE;
 	}
 }
 
@@ -109,10 +109,10 @@ PLAYER_API void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 {
 	PlayerAnimSetLowerSeq(playerinfo, ASEQ_STAND);
 	playerinfo->lowerframeptr = playerinfo->lowermove->frame;
-	
+
 	PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 	playerinfo->upperframeptr = playerinfo->uppermove->frame;
-		
+
 	playerinfo->effects|=EF_SWAPFRAME;
 	playerinfo->effects &= ~(EF_DISABLE_EXTRA_FX | EF_ON_FIRE | EF_TRAILS_ENABLED);
 
@@ -125,7 +125,7 @@ PLAYER_API void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 	playerinfo->pers.newweapon = NULL;
 
 	// Straighten out joints, i.e. reset torso twisting.
-	
+
 	if(!(playerinfo->edictflags&FL_CHICKEN))
 		playerinfo->ResetJointAngles(playerinfo);
 
@@ -136,7 +136,7 @@ PLAYER_API void PlayerAnimReset(playerinfo_t *playerinfo)
 {
 	PlayerAnimSetLowerSeq(playerinfo, ASEQ_STAND);
 	playerinfo->lowerframeptr = playerinfo->lowermove->frame;
-	
+
 	PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 	playerinfo->upperframeptr = playerinfo->uppermove->frame;
 
@@ -150,15 +150,15 @@ PLAYER_API void PlayerAnimReset(playerinfo_t *playerinfo)
 	playerinfo->pers.newweapon = NULL;
 	PlayerUpdateModelAttributes(playerinfo);
 	playerinfo->pers.handfxtype = HANDFX_NONE;
-	
+
 	PlayerSetHandFX(playerinfo, HANDFX_NONE, -1);
-		
+
 	playerinfo->effects|=EF_SWAPFRAME;
 	playerinfo->effects &= ~(EF_DISABLE_EXTRA_FX | EF_ON_FIRE | EF_TRAILS_ENABLED);
 
 	// Straighten out joints, i.e. no torso aiming.
 
-	if(!(playerinfo->edictflags&FL_CHICKEN))	
+	if(!(playerinfo->edictflags&FL_CHICKEN))
 		playerinfo->ResetJointAngles(playerinfo);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
@@ -171,11 +171,11 @@ int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo)
 	int newseq;
 
 	assert(playerinfo);
-	
+
 	// See if we have the arm to do that magic.
 
 	if (playerinfo->switchtoweapon != playerinfo->pers.weaponready)
-	{	
+	{
 		if (!BranchCheckDismemberAction(playerinfo, playerinfo->switchtoweapon))
 			return ASEQ_NONE;
 
@@ -246,7 +246,7 @@ PLAYER_API void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 	}
 	else
 	{
-		if (playerinfo->leveltime - playerinfo->idletime > 15.0) 
+		if (playerinfo->leveltime - playerinfo->idletime > 15.0)
 		{
 			if (playerinfo->lowerseq >= ASEQ_IDLE_READY_GO && playerinfo->lowerseq <= ASEQ_IDLE_LOOKR && playerinfo->lowerseq != ASEQ_IDLE_READY_END)
 			{
@@ -273,7 +273,7 @@ PLAYER_API void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			if (playerinfo->sv_cinematicfreeze)
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_LOOKBACK);
 			else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
-			{	
+			{
 				// Because the bow doesn't look right in some idles.
 
 				switch(playerinfo->irand(playerinfo, 0, 2))
@@ -378,7 +378,7 @@ PLAYER_API void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
 			{
 				newseq = seqctrl->continueseq;
 			}
-			else 
+			else
 			{
 				newseq = seqctrl->ceaseseq;
 			}
@@ -421,7 +421,7 @@ PLAYER_API void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 	}
 	*/
 	// Init some values.
-	
+
 	playerinfo->loweridle = false;
 
 	// Grab the sequence ctrl struct.
@@ -450,22 +450,22 @@ PLAYER_API void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 		{
 			newseq = seqctrl->branchfunc(playerinfo);
 		}
-	}  
+	}
 
 	// If even after the special-case BranchFunc didn't indicate a new sequence...
 
 	if (!newseq)
-	{	
-		// The seqctrl indicates the control flag that this sequence is dependent on.  
+	{
+		// The seqctrl indicates the control flag that this sequence is dependent on.
 		// We've defined a continue and terminate sequence depending on it.
 
 		if (seqctrl->command != ACMD_NONE)
-		{	
+		{
 			if (playerinfo->seqcmd[seqctrl->command])
 			{
 				newseq = seqctrl->continueseq;
 			}
-			else 
+			else
 			{
 				newseq = seqctrl->ceaseseq;
 			}
@@ -475,7 +475,7 @@ PLAYER_API void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 			newseq = seqctrl->ceaseseq;
 		}
 	}
-	
+
 	// Get the pointer to the correct entry in the SeqData table.
 
 	if (playerinfo->edictflags & FL_CHICKEN)
@@ -509,9 +509,9 @@ PLAYER_API void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 	playerinfo->upvel	= 0.0;
 	playerinfo->edictflags |= FL_FLY | FL_LOCKMOVE;
 	playerinfo->flags = PlayerSeqData[ASEQ_VAULT_LOW].playerflags | (playerinfo->flags & PLAYER_FLAG_PERSMASK);
-	playerinfo->pm_flags |= PMF_LOCKMOVE; 
+	playerinfo->pm_flags |= PMF_LOCKMOVE;
 	VectorClear(playerinfo->velocity);
-	
+
 	if(playerinfo->waterlevel>1)
 		playerinfo->waterlevel = 1;
 }
@@ -533,7 +533,7 @@ PLAYER_API void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 						playerinfo->CL_Sound(SND_PRED_ID40,playerinfo->origin, CHAN_VOICE, "*pain1.wav", 1.0,	ATTN_NORM, 0);
 					else
 						playerinfo->CL_Sound(SND_PRED_ID41,playerinfo->origin, CHAN_VOICE, "*pain2.wav", 1.0, ATTN_NORM, 0);
-					
+
 					break;
 
 				// Gas.
@@ -543,7 +543,7 @@ PLAYER_API void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 						playerinfo->CL_Sound(SND_PRED_ID42,playerinfo->origin, CHAN_VOICE, "*cough1.wav", 1.0,	ATTN_NORM, 0);
 					else if (chance < 66)
 						playerinfo->CL_Sound(SND_PRED_ID43,playerinfo->origin, CHAN_VOICE, "*cough2.wav", 1.0, ATTN_NORM, 0);
-					else 
+					else
 						playerinfo->CL_Sound(SND_PRED_ID44,playerinfo->origin, CHAN_VOICE, "*cough3.wav", 1.0, ATTN_NORM, 0);
 
 					break;
@@ -558,8 +558,8 @@ PLAYER_API void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 	}
 	else
 	{
-		if (!(playerinfo->edictflags & FL_CHICKEN))		
-		{	
+		if (!(playerinfo->edictflags & FL_CHICKEN))
+		{
 			// Chicken plays no pain sound.
 			switch (type)
 			{
@@ -570,7 +570,7 @@ PLAYER_API void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 						playerinfo->G_Sound(SND_PRED_ID40,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*pain1.wav"), 1.0, ATTN_NORM, 0);
 					else
 						playerinfo->G_Sound(SND_PRED_ID41,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*pain2.wav"), 1.0, ATTN_NORM, 0);
-					
+
 					break;
 
 				// Gas.
@@ -580,7 +580,7 @@ PLAYER_API void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 						playerinfo->G_Sound(SND_PRED_ID42,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*cough1.wav"), 1.0, ATTN_NORM, 0);
 					else if (chance < 66)
 						playerinfo->G_Sound(SND_PRED_ID43,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*cough2.wav"), 1.0, ATTN_NORM, 0);
-					else 
+					else
 						playerinfo->G_Sound(SND_PRED_ID44,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*cough3.wav"), 1.0, ATTN_NORM, 0);
 
 					break;

@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 /////////////////////////////////////////////////////////////////////////////
 //
 // VerifyA3D.h : header file for Aureal A3D verification handling.

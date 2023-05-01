@@ -735,5 +735,3 @@ void CL_ParseServerMessage (void)
 		CL_WriteDemoMessage ();
 
 }
-
-

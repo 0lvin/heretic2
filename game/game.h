@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // game.h -- game dll information visible to server.
 
 #ifndef G_GAME_H

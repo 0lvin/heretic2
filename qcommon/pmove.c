@@ -1062,4 +1062,3 @@ void Pmove(pmove_t* pmove, qboolean isServer)
 
 	pml.waterlevel = pm->waterlevel;
 }
-

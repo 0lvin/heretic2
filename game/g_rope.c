@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 //g_rope.c
 //
 // In game, animating rope

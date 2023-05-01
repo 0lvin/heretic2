@@ -421,4 +421,3 @@ animframe_t elflord_frames_come_to_life [] =
 	FRAME_attka15, NULL, 0, 0, 0, NULL, 0, NULL
 };
 animmove_t elflord_move_come_to_life = {35, elflord_frames_come_to_life, elfLordCheckAttack};
-

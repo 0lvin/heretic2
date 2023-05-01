@@ -1,12 +1,16 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef __PLAGUEELF__
 #define __PLAGUEELF__
 
 typedef enum AnimID_e
-{	
-	ANIM_STAND1,	
+{
+	ANIM_STAND1,
 	ANIM_WALK1,
 	ANIM_WALK2,
-	ANIM_RUN1,	
+	ANIM_RUN1,
 	ANIM_RUNATK1,
 	ANIM_FJUMP,
 	ANIM_INAIR,
@@ -18,8 +22,8 @@ typedef enum AnimID_e
 	ANIM_DIE3,
 	ANIM_DIE4,
 	ANIM_FIST1,
-	ANIM_LEAN1, 
-	ANIM_SHAKE1, 	
+	ANIM_LEAN1,
+	ANIM_SHAKE1,
 	ANIM_PAIN1,
 	ANIM_DELAY,
 	ANIM_MISSILE,
@@ -67,7 +71,7 @@ typedef enum SoundID_e
 	SND_ATTACKHIT2,
 	SND_ATTACKMISS1,
 	SND_MOAN1,
-	SND_MOAN2, 
+	SND_MOAN2,
 	SND_SHIVER,
 	SND_PANT,
 	SND_GASP,
@@ -85,10 +89,10 @@ typedef enum SoundID_e
 	VOICE_SIGHT_GET_HIM2,
 	VOICE_SIGHT_GET_HIM3,
 	VOICE_SIGHT_THERES_ONE,
-	
+
 	//Support
 	VOICE_SUPPORT_LIVER,
-	
+
 	//Valid single sight
 	VOICE_FIRST_ALONE,
 	VOICE_MISC_DIE,
@@ -99,7 +103,7 @@ typedef enum SoundID_e
 
 	VOICE_MISC_LEAVE_ME1,
 	VOICE_MISC_NO,
-	
+
 	NUM_SOUNDS
 } SoundID_t;
 
@@ -143,14 +147,14 @@ extern animmove_t plagueElf_move_walk1;
 extern animmove_t plagueElf_move_walk2;
 extern animmove_t plagueElf_move_stand1;
 extern animmove_t plagueElf_fist1;
-extern animmove_t plagueElf_lean1; 
-extern animmove_t plagueElf_shake1; 
-extern animmove_t plagueElf_delay; 
+extern animmove_t plagueElf_lean1;
+extern animmove_t plagueElf_shake1;
+extern animmove_t plagueElf_delay;
 extern animmove_t plagueElf_move_missile;
 
-extern animmove_t plagueElf_move_kdeath_go; 
-extern animmove_t plagueElf_move_kdeath_loop; 
-extern animmove_t plagueElf_move_kdeath_end; 
+extern animmove_t plagueElf_move_kdeath_go;
+extern animmove_t plagueElf_move_kdeath_loop;
+extern animmove_t plagueElf_move_kdeath_end;
 
 extern animmove_t plagueElf_crazy_A;
 extern animmove_t plagueElf_crazy_B;
@@ -159,21 +163,21 @@ extern animmove_t plagueElf_point;
 extern animmove_t plagueElf_scared;
 
 
-extern animmove_t plagueElf_move_c_idle1; 
-extern animmove_t plagueElf_move_c_idle2; 
-extern animmove_t plagueElf_move_c_idle3; 
-extern animmove_t plagueElf_move_c_walk; 
-extern animmove_t plagueElf_move_c_walk2; 
-extern animmove_t plagueElf_move_c_run; 
-extern animmove_t plagueElf_move_c_attack1; 
-extern animmove_t plagueElf_move_c_attack2; 
-extern animmove_t plagueElf_move_c_attack3; 
-extern animmove_t plagueElf_move_c_attack4; 
-extern animmove_t plagueElf_move_c_pain1; 
-extern animmove_t plagueElf_move_c_death1; 
-extern animmove_t plagueElf_move_c_death2; 
-extern animmove_t plagueElf_move_c_death3; 
-extern animmove_t plagueElf_move_c_death4; 
+extern animmove_t plagueElf_move_c_idle1;
+extern animmove_t plagueElf_move_c_idle2;
+extern animmove_t plagueElf_move_c_idle3;
+extern animmove_t plagueElf_move_c_walk;
+extern animmove_t plagueElf_move_c_walk2;
+extern animmove_t plagueElf_move_c_run;
+extern animmove_t plagueElf_move_c_attack1;
+extern animmove_t plagueElf_move_c_attack2;
+extern animmove_t plagueElf_move_c_attack3;
+extern animmove_t plagueElf_move_c_attack4;
+extern animmove_t plagueElf_move_c_pain1;
+extern animmove_t plagueElf_move_c_death1;
+extern animmove_t plagueElf_move_c_death2;
+extern animmove_t plagueElf_move_c_death3;
+extern animmove_t plagueElf_move_c_death4;
 void plagueElf_c_spell(edict_t *self);
 
 void plagueElf_blocked(edict_t *self, G_Message_t *msg);

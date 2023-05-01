@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "alutInternal.h"
 #include <ctype.h>
 
@@ -139,7 +143,7 @@ loadWavFile (InputStream *stream)
             case 6:            /* aLaw */
               bitsPerSample *= 2;
               codec = _alutCodecALaw;
-              break; 
+              break;
             case 7:            /* uLaw */
               bitsPerSample *= 2;
               codec = _alutCodecULaw;

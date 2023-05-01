@@ -180,4 +180,3 @@ int glob_match(char *pattern, char *text)
 
 	return *t == '\0';
 }
-

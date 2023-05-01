@@ -67,7 +67,7 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	VectorCopy(start, lightning->r.startpos);
 	VectorCopy(end, lightning->r.endpos);
  	lightning->r.spriteType = SPRITE_LINE;
-	AddEffect(NULL, lightning); 
+	AddEffect(NULL, lightning);
 
 	lightning = ClientEntity_new(FX_LIGHTNING, CEF_DONT_LINK, start, NULL, 400);
 	lightning->r.model = lightning_models + type;
@@ -80,7 +80,7 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	VectorCopy(start, lightning->r.startpos);
 	VectorCopy(end, lightning->r.endpos);
 	lightning->r.spriteType = SPRITE_LINE;
-	AddEffect(NULL, lightning); 
+	AddEffect(NULL, lightning);
 
 	// Add a little ball at the joint (end)
 
@@ -95,7 +95,7 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	lightning->d_scale = -2.0;
 	VectorCopy(start, lightning->r.startpos);
 	VectorCopy(end, lightning->r.endpos);
-	AddEffect(NULL, lightning); 
+	AddEffect(NULL, lightning);
 
 	return(lightning);
 }
@@ -193,7 +193,7 @@ void FXLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	vec3_t				target, diffpos;
 	byte				width, duration;
 	client_entity_t		*lightning;
-		
+
 	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_LIGHTNING].formatString, target, &width, &duration);
 
 	if (duration > 1)	// duration is in 1/10 of a second
@@ -211,15 +211,15 @@ void FXLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 			lightning->SpawnInfo = LIGHTNING_TYPE_RED;
 		else
 			lightning->SpawnInfo = LIGHTNING_TYPE_BLUE;
-		AddEffect(NULL, lightning); 
+		AddEffect(NULL, lightning);
 	}
-	
+
 	// If flagged, do red lightning.
 	if (Flags & CEF_FLAG6)
 		LightningBolt(LIGHTNING_TYPE_RED, (float)width, Origin, target);
 	else if (Flags & CEF_FLAG7)
 		LightningBolt(LIGHTNING_TYPE_GREEN, (float)width, Origin, target);	// powered up rain lightning
-	else 
+	else
 		LightningBolt(LIGHTNING_TYPE_BLUE, (float)width, Origin, target);	// Normal, blue lightning
 
 }
@@ -234,9 +234,9 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	client_particle_t	*spark;
 	int					i;
 	float				length;
-	float				curang, degreeinc;	
+	float				curang, degreeinc;
 	vec3_t				lastvel, upvel;
-		
+
 	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_POWER_LIGHTNING].formatString, target, &width);
 
 	VectorSubtract(target, Origin, diffpos);
@@ -254,7 +254,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	VectorCopy(Origin, lightning->r.startpos);
 	VectorCopy(target, lightning->r.endpos);
  	lightning->r.spriteType = SPRITE_LINE;
-	AddEffect(NULL, lightning); 
+	AddEffect(NULL, lightning);
 
 	// Halo around the lightning
 	lightning = ClientEntity_new(FX_POWER_LIGHTNING, CEF_AUTO_ORIGIN, Origin, NULL, 1000);
@@ -269,7 +269,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	VectorCopy(Origin, lightning->r.startpos);
 	VectorCopy(target, lightning->r.endpos);
 	lightning->r.spriteType = SPRITE_LINE;
-	AddEffect(NULL, lightning); 
+	AddEffect(NULL, lightning);
 
 	// Big ol' flash at source to cover up the flatness of the line's end.
 	lightning = ClientEntity_new(FX_POWER_LIGHTNING, CEF_ADDITIVE_PARTS, Origin, NULL, 750);
@@ -319,9 +319,9 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 			spark = ClientParticle_new(PART_16x16_SPARK_Y, lightning->color, 1000);
 		else
 			spark = ClientParticle_new(PART_16x16_SPARK_G, lightning->color, 1000);
-		VectorSet(spark->velocity, 
-					flrand(-LIGHTNING_RING_VEL,LIGHTNING_RING_VEL), 
-					flrand(-LIGHTNING_RING_VEL,LIGHTNING_RING_VEL), 
+		VectorSet(spark->velocity,
+					flrand(-LIGHTNING_RING_VEL,LIGHTNING_RING_VEL),
+					flrand(-LIGHTNING_RING_VEL,LIGHTNING_RING_VEL),
 					flrand(0,32));
 		VectorScale(spark->velocity, -1.0, spark->acceleration);
 		spark->scale = flrand(20.0, 32.0);
@@ -339,15 +339,15 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	{
 		curang+=degreeinc;
 
-		lightning = ClientEntity_new(FX_LIGHTNING, 
-						CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS, 
+		lightning = ClientEntity_new(FX_LIGHTNING,
+						CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS,
 						target, NULL, 750);
 		lightning->r.model = lightning_models + LIGHTNING_TYPE_GREEN;
 		lightning->r.frame = 1;		// Just use the halo
 		lightning->r.spriteType = SPRITE_LINE;
 		lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		lightning->radius = 64.0;
-		
+
 		// The startpos and startvel comes from the last velocity.
 		VectorCopy(lastvel, lightning->velocity);
 		VectorScale(lightning->velocity, -1.0, lightning->acceleration);
@@ -376,7 +376,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		// Now spawn a particle quick to save against the nasty joints (ugh).
 		// Half green, half yellow particles
 		if (i&0x01)
-		{	
+		{
 			lightning->r.tile = 0.5;		// Alternate tiles
 			lightning->r.tileoffset = 0.5;
 			spark = ClientParticle_new(PART_16x16_SPARK_Y, lightning->color, 750);

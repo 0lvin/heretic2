@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef QCOMMON_CL_STRINGS_H
 #define QCOMMON_CL_STRINGS_H
 
@@ -325,7 +329,7 @@ typedef enum
 
 	// Always keep these last to test alignment
 	GM_HELP1					= 331,
-	GM_HELP2					
+	GM_HELP2
 } GameMsg_t;
 
 #ifdef __cplusplus

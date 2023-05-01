@@ -3227,4 +3227,3 @@ void SP_obj_corpse_ssithra(edict_t *self)
 
 	ObjectInit(self,120,80,MAT_FLESH,SOLID_BBOX);
 }
-

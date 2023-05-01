@@ -1595,4 +1595,3 @@ void GL_EndBuildingLightmaps(void)
 {
 	LM_UploadBlock(false);
 }
-

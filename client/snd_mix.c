@@ -370,4 +370,3 @@ void S_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int count, int offset)
 
 	ch->pos += count;
 }
-

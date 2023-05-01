@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 /* Reverb presets for EFX */
 
 #ifndef EFX_PRESETS_H

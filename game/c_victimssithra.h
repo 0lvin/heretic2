@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 //c_victimSsithra.h
 
 
@@ -20,9 +24,9 @@ typedef enum SoundID_e
 
 #define MODEL_SCALE		1.000000
 
-extern animmove_t victimSsithra_move_c_action1; 
-extern animmove_t victimSsithra_move_c_action2; 
-extern animmove_t victimSsithra_move_c_action3; 
-extern animmove_t victimSsithra_move_c_action4; 
-extern animmove_t victimSsithra_move_c_action5; 
-extern animmove_t victimSsithra_move_c_action6; 
+extern animmove_t victimSsithra_move_c_action1;
+extern animmove_t victimSsithra_move_c_action2;
+extern animmove_t victimSsithra_move_c_action3;
+extern animmove_t victimSsithra_move_c_action4;
+extern animmove_t victimSsithra_move_c_action5;
+extern animmove_t victimSsithra_move_c_action6;

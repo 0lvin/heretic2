@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef GAME_UTILITIES_H
 #define GAME_UTILITIES_H
 

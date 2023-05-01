@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef CLIENT_EFFECTS_H
 #define CLIENT_EFFECTS_H
 

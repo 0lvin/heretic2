@@ -710,4 +710,3 @@ void R_DrawAliasModel (entity_t *e)
 	glColor4f (1,1,1,1);
 }
 
-

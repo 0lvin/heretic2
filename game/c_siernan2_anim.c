@@ -308,7 +308,3 @@ animframe_t siernan2_frames_c_idle1 [] =
 };
 
 animmove_t siernan2_move_c_idle1 = {6, siernan2_frames_c_idle1, ai_c_cycleend};
-
-
-
-

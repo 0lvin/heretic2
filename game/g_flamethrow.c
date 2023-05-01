@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // G_flamethrow.c
 // Heretic II
 //
@@ -164,4 +168,3 @@ void SP_flamethrower(edict_t *self)
 	self->touch = flamethrower_touch;
 	gi.linkentity (self);
 }
-

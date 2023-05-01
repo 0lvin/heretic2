@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #if !defined(AL_ALUT_H)
 #define AL_ALUT_H
 

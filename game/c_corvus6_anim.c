@@ -476,4 +476,3 @@ animframe_t corvus6_frames_c_idle5 [] =
 };
 
 animmove_t corvus6_move_c_idle5 = {23, corvus6_frames_c_idle5, ai_c_cycleend};
-

@@ -2067,4 +2067,3 @@ void SP_obj_morcalavin_barrier (edict_t *self)
 	//Be invisible until used
 	self->svflags |= SVF_NOCLIENT;
 }
-

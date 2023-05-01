@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "client_effects.h"
 
@@ -143,4 +147,3 @@ void CL_AddLightStyles (void)
 		V_AddLightStyle (i, ls->value[0], ls->value[1], ls->value[2]);
 	}
 }
-

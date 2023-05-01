@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef MATRIX_H
 #define MATRIX_H
 #include "../src/common/header/common.h"

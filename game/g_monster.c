@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include <limits.h>
 #include "../src/common/header/common.h"
 #include "g_monster.h"
@@ -1986,4 +1990,3 @@ void M_ShowLifeMeter( edict_t *self, int value, int max_value )
 			ps->stats[STAT_LIFEBAR_VALUE] = 0;
 	}
 }
-

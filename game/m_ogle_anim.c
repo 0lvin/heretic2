@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "m_ogle.h"
 #include "g_local.h"
@@ -1088,6 +1092,3 @@ animframe_t ogle_c_frames_walk4[] =
 	FRAME_pushc8, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t ogle_c_move_walk4 = {8,ogle_c_frames_walk4, ai_c_cycleend};
-
-
-

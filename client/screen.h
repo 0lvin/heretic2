@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // screen.h
 #ifndef CLIENT_SCREEN_H
 #define CLIENT_SCREEN_H

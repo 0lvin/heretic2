@@ -56,7 +56,7 @@ void Dranor_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -131,7 +131,7 @@ void Dranor_c_anims(edict_t *self, G_Message_t *msg)
 			break;
 		default:
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -160,13 +160,13 @@ void DranorStaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	resInfo.modelIndex = gi.modelindex("models/monsters/plaguelf/dranor/tris.fm");
 
 	classStatics[CID_SSITHRA_VICTIM].resInfo = &resInfo;
 
 	sounds[SND_PAIN1] = gi.soundindex("monsters/plagueElf/pain1.wav");
-	
+
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
@@ -180,7 +180,7 @@ The elf who talks like Sean Connery
 void SP_character_dranor (edict_t *self)
 {
 	VectorSet (self->mins, -16, -16, -32);
-	VectorSet (self->maxs, 16, 16, 32);	
+	VectorSet (self->maxs, 16, 16, 32);
 
 	c_character_init(self,CID_DRANOR);
 
@@ -189,4 +189,3 @@ void SP_character_dranor (edict_t *self)
 	self->health = 30;
 
 }
-

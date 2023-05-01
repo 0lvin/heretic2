@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 qboolean assassinCheckTeleport (edict_t *self, int type);
 

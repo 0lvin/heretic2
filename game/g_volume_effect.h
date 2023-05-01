@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef _G_VOLUME_EFFECT_H_
 #define _G_VOLUME_EFFECT_H_
 
@@ -16,19 +20,19 @@ typedef struct volume_effect_s
 	vec3_t origin; 					//center of the volume
 	vec3_t velocity;				//direction that area is moving
 	float growdelta;				//how much it grows/shrinks per think
-	float radius;					//for spherical volumes				
+	float radius;					//for spherical volumes
 	float expiration;				//time that volume ceases to effect
 	float think_increment;			//frequency of effect in seconds
 	float nextthinktime;
 
-	void (*effect)(edict_t *ent, struct volume_effect_s *vol); 	//callback func for effect 
+	void (*effect)(edict_t *ent, struct volume_effect_s *vol); 	//callback func for effect
 
 	edict_t *owner;					//the edict used as "inflictor" or "attacker"
 									//for damage effects
 
 	struct volume_effect_s *next;			// next effect in global list, don't set this
 
-} volume_effect_t; 
+} volume_effect_t;
 
 
 /*-------------------------------------------------------------------------

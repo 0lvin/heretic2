@@ -85,14 +85,14 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self,centity_t 
 		trail->d_scale = -1.0;
 		trail->d_alpha = -2.0;
 		trail->radius = 20.0;
-		
+
 		AddEffect(NULL,trail);
 	}
 
-	trail = ClientEntity_new(FX_WEAPON_MAGICMISSILE, 
+	trail = ClientEntity_new(FX_WEAPON_MAGICMISSILE,
 								CEF_AUTO_ORIGIN | CEF_USE_VELOCITY2,
-								Self->r.origin, 
-								NULL, 
+								Self->r.origin,
+								NULL,
 								500);
 
 	trail->r.model = array_models + 2;
@@ -146,7 +146,7 @@ static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self,centity_t
 void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	vec3_t			ang;
-	client_entity_t	*Missile;	
+	client_entity_t	*Missile;
 	paletteRGBA_t	LightColor={128,64,96,255};
 	vec3_t			fwd, up, right;
 	short			shortyaw, shortpitch;
@@ -161,7 +161,7 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	// Add the magic-missile model.
 	Missile=ClientEntity_new(Type, Flags | CEF_DONT_LINK, Origin, NULL, 100);
-	
+
 	Missile->r.model = array_models;
 	Missile->r.frame = 1;
 	if (Flags & CEF_FLAG6)

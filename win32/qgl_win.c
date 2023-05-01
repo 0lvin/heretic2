@@ -4124,6 +4124,3 @@ void GLimp_LogNewFrame( void )
 }
 
 #pragma warning (default : 4113 4133 4047 )
-
-
-

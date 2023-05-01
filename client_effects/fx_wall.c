@@ -786,4 +786,3 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 		AddParticleToList(wall, spark);
 	}
 }
-

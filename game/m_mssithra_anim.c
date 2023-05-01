@@ -394,4 +394,3 @@ animframe_t mssithra_frames_shoot1_detrans [] =
 	FRAME_newshot1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL,
 };
 animmove_t mssithra_move_shoot1_detrans = {3, mssithra_frames_shoot1_detrans, mssithraCheckMood};
-

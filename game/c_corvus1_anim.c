@@ -357,5 +357,3 @@ animframe_t corvus_frames_c_pivotrightstop [] =
 	FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t corvus_move_c_pivotrightstop = {1, corvus_frames_c_pivotrightstop, ai_c_cycleend};
-
-

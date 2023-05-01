@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "../qcommon/fx.h"
 #include "m_spreadermist.h"
@@ -468,4 +472,3 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	grenade->s.effects |= EF_CAMERA_NO_CLIP;
 	gi.linkentity (grenade);
 }
-

@@ -1,9 +1,13 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 typedef enum AnimID_e
 {
 	ANIM_DIE,
-	ANIM_FLY1, 
-	ANIM_FLYBACK1, 
-	ANIM_HOVER1, 
+	ANIM_FLY1,
+	ANIM_FLYBACK1,
+	ANIM_HOVER1,
 	ANIM_FIREBALL,
 	ANIM_DIVE_GO,
 	ANIM_DIVE_LOOP,
@@ -110,4 +114,3 @@ void move_imp_dive_end(edict_t *self);
 void imp_hover_anim(edict_t *self);
 void imp_fireball (edict_t *self);
 void imp_death_pain (edict_t *self, G_Message_t *msg);
-

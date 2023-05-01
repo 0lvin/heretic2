@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 /*
  * This file should be #included as the first header in all *.c files.
  */

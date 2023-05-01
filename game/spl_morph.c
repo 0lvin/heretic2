@@ -704,4 +704,3 @@ void SpellCastMorph(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t u
 }
 
 // end
-

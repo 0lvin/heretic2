@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef QCOMMON_ANGLES_H
 #define QCOMMON_ANGLES_H
 

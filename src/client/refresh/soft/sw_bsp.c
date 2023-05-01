@@ -633,5 +633,3 @@ void R_RenderWorld (void)
 
 	R_RecursiveWorldNode (currentmodel->nodes, 15);
 }
-
-

@@ -590,4 +590,3 @@ void R_ScreenShot_f (void)
 
 	ri.Con_Printf (PRINT_ALL, "Wrote %s\n", checkname);
 }
-

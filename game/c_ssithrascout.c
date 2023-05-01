@@ -54,7 +54,7 @@ void scout_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -116,7 +116,7 @@ void scout_c_anims(edict_t *self, G_Message_t *msg)
 			break;
 		default:
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -143,13 +143,13 @@ void SsithrascoutStaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	resInfo.modelIndex = gi.modelindex("models/monsters/ssithra/scout_scene/tris.fm");
 
 	classStatics[CID_SSITHRA_SCOUT].resInfo = &resInfo;
 
 	sounds[SND_PAIN1] = gi.soundindex("monsters/plagueElf/pain1.wav");
-	
+
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
@@ -163,8 +163,7 @@ The scout
 void SP_character_ssithra_scout (edict_t *self)
 {
 	VectorSet (self->mins, -26, -16, -13);
-	VectorSet (self->maxs, 26, 16, 13);	
+	VectorSet (self->maxs, 26, 16, 13);
 
 	c_character_init(self,CID_SSITHRA_SCOUT);
 }
-

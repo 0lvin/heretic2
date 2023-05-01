@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 /**
  * OpenAL cross platform audio library
  * Copyright (C) 2008 by authors.

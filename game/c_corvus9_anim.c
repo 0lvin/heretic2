@@ -526,6 +526,3 @@ animframe_t corvus9_frames_c_walk2[] =
 };
 
 animmove_t corvus9_move_c_walk2 = {16, corvus9_frames_c_walk2, ai_c_cycleend};
-
-
-

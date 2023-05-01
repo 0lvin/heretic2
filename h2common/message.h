@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef MESSAGE_H
 #define MESSAGE_H
 

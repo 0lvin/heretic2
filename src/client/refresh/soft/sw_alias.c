@@ -873,6 +873,3 @@ void R_AliasDrawModel (void)
 		aliasxscale = -aliasxscale;
 	}
 }
-
-
-

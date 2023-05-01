@@ -45,11 +45,11 @@ extern "C" {
 #define PLAYER_FLAG_NO_LARM				0x00200000	// player lost left arm
 #define PLAYER_FLAG_NO_RARM				0x00400000	// player lost right arm
 #define PLAYER_FLAG_ALTFIRE				0x00800000	// This alternates every time a weapon fires, so they don't cut out.
-#define PLAYER_FLAG_COLLISION			0x01000000	
-#define PLAYER_FLAG_DIVE				0x02000000  
-#define PLAYER_FLAG_SLIDE				0x04000000	
+#define PLAYER_FLAG_COLLISION			0x01000000
+#define PLAYER_FLAG_DIVE				0x02000000
+#define PLAYER_FLAG_SLIDE				0x04000000
 #define PLAYER_FLAG_KNOCKDOWN			0x08000000
-#define PLAYER_FLAG_RELEASEROPE			0x10000000	
+#define PLAYER_FLAG_RELEASEROPE			0x10000000
 
 extern PLAYER_API void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
 extern PLAYER_API void PlayerClearEffects(playerinfo_t *playerinfo);

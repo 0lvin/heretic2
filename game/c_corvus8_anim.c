@@ -853,4 +853,3 @@ animframe_t corvus8_frames_c_walkstop2 [] =
 	FRAME_jog6, ai_c_move, 2, 0, 0, NULL, 0, NULL,
 };
 animmove_t corvus8_move_c_walkstop2 = {2, corvus8_frames_c_walkstop2, ai_c_cycleend};
-

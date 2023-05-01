@@ -1112,4 +1112,3 @@ void S_SoundList(void)
 	}
 	Com_Printf ("Total resident: %i\n", total);
 }
-

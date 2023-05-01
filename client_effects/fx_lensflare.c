@@ -45,29 +45,29 @@ static qboolean FXFlareThink(struct client_entity_s *self,centity_t *owner)
 
 	vec3_t			from, at, center, view_dir, light_dir, light, axis, dx, dy, tmp, t_axis, pos1, pos2;
 
-	vec3_t			mins = { 0, 0, 0}, 
+	vec3_t			mins = { 0, 0, 0},
 					maxs = { 0, 0, 0};
-	
+
 	trace_t			trace;
 
 	if ( ( self->LifeTime > 0 ) && ( self->LifeTime < fxi.cl->time ) )
 		return false;
 
 	//Determine Visibility
-	fxi.Trace(	fxi.cl->refdef.vieworg, 
-				mins, 
-				maxs, 
-				self->direction, 
-				(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER), 
-				CEF_CLIP_TO_WORLD, 
+	fxi.Trace(	fxi.cl->refdef.vieworg,
+				mins,
+				maxs,
+				self->direction,
+				(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER),
+				CEF_CLIP_TO_WORLD,
 				&trace);
-	
+
 	if (trace.fraction < 1 && !(trace.surface->flags & SURF_SKY))
-	{	
+	{
 		self->flags |= CEF_NO_DRAW;
 		return true;
 	}
-	
+
 	if (self->up[1])
 	{
 		if (self->flags & CEF_NO_DRAW)
@@ -76,7 +76,7 @@ static qboolean FXFlareThink(struct client_entity_s *self,centity_t *owner)
 		AngleVectors (fxi.cl->refdef.viewangles, pos1, NULL, NULL);
 		VectorSubtract (self->direction, fxi.cl->refdef.vieworg, pos2);
 		VectorNormalize (pos2);
-		
+
 		dot = DotProduct (pos1, pos2);
 
 		if (dot < 0.75)
@@ -97,11 +97,11 @@ static qboolean FXFlareThink(struct client_entity_s *self,centity_t *owner)
 		VectorCopy(pos1, self->r.origin);
 		return true;
 	}
-	
+
 	AngleVectors (fxi.cl->refdef.viewangles, pos1, NULL, NULL);
 	VectorSubtract (self->direction, fxi.cl->refdef.vieworg, pos2);
 	VectorNormalize (pos2);
-	
+
 	dot = DotProduct (pos1, pos2);
 
 	if (dot < 0.75)
@@ -109,7 +109,7 @@ static qboolean FXFlareThink(struct client_entity_s *self,centity_t *owner)
 		self->flags |= CEF_NO_DRAW;
 		return true;
 	}
-		
+
 	if (self->flags & CEF_NO_DRAW)
 		self->flags &= ~CEF_NO_DRAW;
 
@@ -118,19 +118,19 @@ static qboolean FXFlareThink(struct client_entity_s *self,centity_t *owner)
 
 	VectorSubtract(from, at, view_dir);
 	dist = VectorNormalize(view_dir);
-	
+
 	VectorMA(at, 250, view_dir, from);
 
 	VectorSubtract(from, at, view_dir);
 	dist = VectorNormalize(view_dir);
 
 	AngleVectors(fxi.cl->refdef.viewangles, light, NULL, NULL);
-	
+
 	VectorScale(light, dist, light);
 	VectorAdd(from, light, light);
-	
+
 	near_clip = 1.01f;
-	
+
 	VectorScale(view_dir, near_clip, view_dir);
 	VectorAdd(from, view_dir, center);
 
@@ -164,9 +164,9 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self,centity_t *own
 
 	vec3_t			from, at, center, view_dir, light_dir, light, axis, dx, dy, tmp, t_axis, pos1, pos2, vec_diff;
 
-	vec3_t			mins = { 0, 0, 0}, 
+	vec3_t			mins = { 0, 0, 0},
 					maxs = { 0, 0, 0};
-	
+
 	trace_t			trace;
 	centity_t		*fake_owner = (centity_t *) self->extra;
 
@@ -194,20 +194,20 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self,centity_t *own
 	VectorMA(self->startpos2, lerp, vec_diff, self->direction);
 
 	//Determine Visibility
-	fxi.Trace(	fxi.cl->refdef.vieworg, 
-				mins, 
-				maxs, 
+	fxi.Trace(	fxi.cl->refdef.vieworg,
+				mins,
+				maxs,
 				self->direction,
-				(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER), 
-				CEF_CLIP_TO_WORLD, 
+				(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER),
+				CEF_CLIP_TO_WORLD,
 				&trace);
-	
+
 	if (trace.fraction < 1 && !(trace.surface->flags & SURF_SKY))
-	{	
+	{
 		self->flags |= CEF_NO_DRAW;
 		return true;
 	}
-	
+
  	if (self->up[1])
 	{
 		if (self->flags & CEF_NO_DRAW)
@@ -216,7 +216,7 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self,centity_t *own
 		AngleVectors (fxi.cl->refdef.viewangles, pos1, NULL, NULL);
 		VectorSubtract (self->direction, fxi.cl->refdef.vieworg, pos2);
 		VectorNormalize (pos2);
-		
+
 		dot = DotProduct (pos1, pos2);
 
 		if (dot < 0.75)
@@ -237,11 +237,11 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self,centity_t *own
 		VectorCopy(pos1, self->r.origin);
 		return true;
 	}
-	
+
 	AngleVectors (fxi.cl->refdef.viewangles, pos1, NULL, NULL);
 	VectorSubtract (self->direction, fxi.cl->refdef.vieworg, pos2);
 	VectorNormalize (pos2);
-	
+
 	dot = DotProduct (pos1, pos2);
 
 	if (dot < 0.75)
@@ -249,7 +249,7 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self,centity_t *own
 		self->flags |= CEF_NO_DRAW;
 		return true;
 	}
-		
+
 	if (self->flags & CEF_NO_DRAW)
 		self->flags &= ~CEF_NO_DRAW;
 
@@ -258,19 +258,19 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self,centity_t *own
 
 	VectorSubtract(from, at, view_dir);
 	dist = VectorNormalize(view_dir);
-	
+
 	VectorMA(at, 250, view_dir, from);
 
 	VectorSubtract(from, at, view_dir);
 	dist = VectorNormalize(view_dir);
 
 	AngleVectors(fxi.cl->refdef.viewangles, light, NULL, NULL);
-	
+
 	VectorScale(light, dist, light);
 	VectorAdd(from, light, light);
-	
+
 	near_clip = 1.01f;
-	
+
 	VectorScale(view_dir, near_clip, view_dir);
 	VectorAdd(from, view_dir, center);
 
@@ -290,7 +290,7 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self,centity_t *own
 
 	VectorScale(axis, self->up[0]*1000, t_axis);
 	VectorAdd(center, t_axis, self->r.origin);
-	
+
 	return true;
 }
 
@@ -310,9 +310,9 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	int					useOther;
 	float				alpha;
 	paletteRGBA_t		tint;
-	
+
 	Count = 7;
-	
+
 	fxi.GetEffect(owner, Flags, clientEffectSpawners[FX_LENSFLARE].formatString, &tint.r, &tint.g, &tint.b, &alpha);
 
 	// no lens flares in low detail
@@ -325,13 +325,13 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		useOther = 0;
 
 	for(I=0;I<Count;I++)
-	{	
+	{
 		Explosion=ClientEntity_new(FX_LENSFLARE,
 								   0,
 								   Origin,
 								   NULL,
 								   17);
-		
+
 		VectorSet(Explosion->up, 0.0f, 0.0f, 0.0f);
 
 	  	Explosion->r.color.r = tint.r;
@@ -384,7 +384,7 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		Explosion->NoOfAnimFrames=1;
 		Explosion->Update=FXFlareThink;
 		VectorCopy(Origin, Explosion->direction);
-		
+
 		if (Flags & CEF_FLAG7)
 		{
 			Explosion->direction[0] *= 4;
@@ -433,9 +433,9 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 	int					Count,I;
 	client_entity_t		*Explosion;
 	int					useOther;
-	
+
 	Count = 7;
-	
+
 	// no lens flares in low detail
 	if(r_detail->value <= DETAIL_NORMAL)
 		return;
@@ -446,13 +446,13 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 		useOther = 0;
 
 	for(I=0;I<Count;I++)
-	{	
+	{
 		Explosion=ClientEntity_new(FX_LENSFLARE,
 								   0,
 								   Origin,
 								   NULL,
 								   20);
-		
+
 		VectorSet(Explosion->up, 0.0f, 0.0f, 0.0f);
 
 	  	Explosion->r.color.r = tint->r;
@@ -504,7 +504,7 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 		Explosion->NoOfAnimFrames=1;
 		Explosion->Update=FXFlareThink;
 		VectorCopy(Origin, Explosion->direction);
-		
+
 		if (Flags & CEF_FLAG7)
 		{
 			Explosion->direction[0] *= 4;

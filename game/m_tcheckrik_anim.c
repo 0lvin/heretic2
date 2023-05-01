@@ -973,4 +973,3 @@ animframe_t insect_frames_c_walk [] =
 	FRAME_Walk20,	ai_c_move, 4, 0, 0, NULL, 0, NULL
 };
 animmove_t insect_move_c_walk = {20, insect_frames_c_walk, ai_c_cycleend};
-

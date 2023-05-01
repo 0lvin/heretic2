@@ -536,7 +536,3 @@ animframe_t priestess2_frames_c_idle1[] =
 	FRAME_hpod1,  ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t priestess2_move_c_idle1 = {3,priestess2_frames_c_idle1, ai_c_cycleend};
-
-
-
-

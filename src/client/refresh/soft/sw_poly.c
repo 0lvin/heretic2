@@ -1260,4 +1260,3 @@ void R_IMFlatShadedQuad( vec3_t a, vec3_t b, vec3_t c, vec3_t d, int color, floa
 
 	R_ClipAndDrawPoly( alpha, false, false );
 }
-

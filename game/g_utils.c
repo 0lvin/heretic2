@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // g_utils.c -- misc utility functions for game module
 
 #include "../src/common/header/common.h"
@@ -1084,4 +1088,3 @@ void G_LinkMissile(edict_t *self)
     gi.linkentity(self);
     self->solid= (solid_t) oldsolid;
 }
-

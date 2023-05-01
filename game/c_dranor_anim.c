@@ -1,4 +1,3 @@
-
 //==============================================================================
 //
 // m_victimSsitra_anim.c
@@ -762,4 +761,3 @@ animframe_t dranor_frames_c_death1 [] =
 	FRAME_death20, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t dranor_move_c_death1 = { 20, dranor_frames_c_death1, ai_c_cycleend};
-

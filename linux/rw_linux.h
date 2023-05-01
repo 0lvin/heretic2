@@ -32,4 +32,3 @@ typedef struct in_state {
 	vec_t *viewangles;
 	int *in_strafe_state;
 } in_state_t;
-

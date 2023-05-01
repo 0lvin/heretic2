@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef QCOMMON_ARRAYED_LIST_H
 #define QCOMMON_ARRAYED_LIST_H
 

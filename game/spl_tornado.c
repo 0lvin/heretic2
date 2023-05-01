@@ -364,4 +364,3 @@ void SpellCasttornbolt(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	gi.CreateEffect(&tornbolt->s, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
 					"t", tornbolt->velocity);
 }
-

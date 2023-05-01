@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -44,7 +44,7 @@ SCR_StopCinematic
 ==================
 */
 void SCR_StopCinematic (void)
-{	
+{
 	SCR_FinishCinematic();
 }
 
@@ -84,7 +84,7 @@ void SCR_RunCinematic (void)
 	if (cin.video == NULL)
 		return;
 
-	smk_next(cin.video);	
+	smk_next(cin.video);
 
 	palette_data = smk_get_palette(cin.video);
 	image_data = smk_get_video(cin.video);

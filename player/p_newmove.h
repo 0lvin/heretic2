@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef P_NEW_MOVE_H
 #define P_NEW_MOVE_H
 

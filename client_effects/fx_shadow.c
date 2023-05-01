@@ -217,5 +217,3 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, self);
 	FXShadowUpdate(self, owner);
 }
-
-

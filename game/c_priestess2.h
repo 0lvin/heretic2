@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 //c_priestess2.h
 
 
@@ -23,4 +27,4 @@ extern animmove_t priestess2_move_c_action4;
 extern animmove_t priestess2_move_c_action5;
 extern animmove_t priestess2_move_c_action6;
 extern animmove_t priestess2_move_c_action7;
-extern animmove_t priestess2_move_c_idle1; 
+extern animmove_t priestess2_move_c_idle1;

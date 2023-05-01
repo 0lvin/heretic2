@@ -30,7 +30,7 @@
 
 static struct model_s *defense_models[NUM_ITEMDEFENSE];
 void PreCacheItemDefense()
-{	
+{
 	defense_models[0] = fxi.RegisterModel("models/items/defense/repulsion/tris.fm");		// ITEM_DEFENSE_REPULSION
 	defense_models[1] = fxi.RegisterModel("models/items/defense/meteorbarrier/tris.fm");	// ITEM_DEFENSE_METEORBARRIER
 	defense_models[2] = fxi.RegisterModel("models/items/defense/polymorph/tris.fm");		// ITEM_DEFENSE_POLYMORPH
@@ -52,9 +52,9 @@ static qboolean FXEggSparkThink(struct client_entity_s *shield,centity_t *owner)
 	vec3_t	origin = {0,0,0};
 
 	VectorCopy(shield->origin, origin);
-	origin[2] = shield->origin[2] + (cos(shield->d_scale2) * BOB_HEIGHT); 
+	origin[2] = shield->origin[2] + (cos(shield->d_scale2) * BOB_HEIGHT);
 	shield->d_scale2 += BOB_SPEED;
-	
+
 	// Update the angle of the spark.
 	VectorMA(shield->direction, (float)(fxi.cl->time-shield->lastThinkTime)/1000.0, shield->velocity2, shield->direction);
 
@@ -74,7 +74,7 @@ static qboolean FXDefensePickupThink(struct client_entity_s *self, centity_t *ow
 	// Rotate and bob
 	self->r.angles[YAW] += ANGLE_5;
 	VectorCopy(owner->current.origin, self->r.origin);
-	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT); 
+	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT);
 	self->SpawnData += BOB_SPEED;
 
 	return(true);
@@ -134,7 +134,7 @@ void FXDefensePickup(centity_t *owner, int type, int flags, vec3_t origin)
 			}
 
 			shield->SpawnData = tag;
-			
+
 			shield->Update = FXEggSparkThink;
 			VectorCopy(shield->r.origin, shield->origin);
 

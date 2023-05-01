@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 //m_plagueSsithra.h
 
 
@@ -16,26 +20,26 @@ typedef enum AnimID_e
 	ANIM_BACKPEDAL,
 	ANIM_RUN,
 	ANIM_DELAY,
-	
+
 	ANIM_SHOOT_TRANS,
 	ANIM_SHOOT_LOOP,
 	ANIM_SHOOT_DETRANS,
-	
+
 	NUM_ANIMS
 } AnimID_t;
 
 typedef enum SoundID_e
 {
-	SND_PAIN1,	
-	SND_PAIN2,	
-	SND_DIE,	
-	SND_SWIPE,	
+	SND_PAIN1,
+	SND_PAIN2,
+	SND_DIE,
+	SND_SWIPE,
 	SND_SWIPEHIT,
-	SND_ARROW,	
+	SND_ARROW,
 	SND_AEXPLODE,
-	SND_GROWL1,	
-	SND_GROWL2,	
-	SND_GROWL3,	
+	SND_GROWL1,
+	SND_GROWL2,
+	SND_GROWL3,
 	SND_ROAR,
 	SND_INWALL,
 
@@ -71,4 +75,3 @@ void mssithra_dead(edict_t *self);
 
 void mssithraCheckShotLoop(edict_t *self);
 void mssithra_ShotLoop(edict_t *self);
-

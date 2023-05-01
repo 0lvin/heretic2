@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // Water related fx, including
 // 1. Fountain
 
@@ -393,4 +397,3 @@ void SP_env_bubbler(edict_t *self)
 }
 
 // end
-

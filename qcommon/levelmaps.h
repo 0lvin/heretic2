@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef QCOMMON_LEVEL_MAPS_H
 #define QCOMMON_LEVEL_MAPS_H
 

@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef Q_SPRITE_H
 #define Q_SPRITE_H
 

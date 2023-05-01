@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // tokens for config strings
 // sounds
 #define TOKEN_S_AMBIENT		254
@@ -13,4 +17,3 @@
 #define TOKEN_M_MODELS		254
 #define TOKEN_M_MONSTERS	253
 #define TOKEN_M_OBJECTS		252
-

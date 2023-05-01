@@ -1705,4 +1705,3 @@ animframe_t priestess_frames_c_backpedal1 [] =
 	FRAME_backup14, ai_c_move, -8, 0, 0, NULL, 0, NULL,
 };
 animmove_t priestess_move_c_backpedal1 = {12,priestess_frames_c_backpedal1, ai_c_cycleend};
-

@@ -69,7 +69,7 @@ void R_DrawSprite (void)
 	VectorCopy (vright, r_polydesc.vright);
 	VectorCopy (vpn, r_polydesc.vpn);
 
-// build the sprite poster in worldspace
+	// build the sprite poster in worldspace
 	VectorScale (r_polydesc.vright,
 		s_psprframe->width - s_psprframe->origin_x, right);
 	VectorScale (r_polydesc.vup,
@@ -120,4 +120,3 @@ void R_DrawSprite (void)
 		R_ClipAndDrawPoly ( 1.0F, false, true );
 	r_polydesc.stipple_parity = 0;
 }
-

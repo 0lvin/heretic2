@@ -1,4 +1,3 @@
-
 //==============================================================================
 //
 // m_victimSsitra_anim.c
@@ -748,6 +747,3 @@ animframe_t scout_frames_c_idle3 [] =
 	FRAME_ss_idleB25, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t scout_move_c_idle3 = { 25, scout_frames_c_idle3, ai_c_cycleend};
-
-
-

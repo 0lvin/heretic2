@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef PLACEMENT_H
 #define PLACEMENT_H
 

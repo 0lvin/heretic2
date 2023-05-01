@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef CLIENT_ENTITIES_H
 #define CLIENT_ENTITIES_H
 

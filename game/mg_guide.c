@@ -2607,5 +2607,3 @@ void MG_InitMoods(edict_t *self)
 
 	self->lastbuoy = NULL_BUOY;
 }
-
-

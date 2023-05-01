@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // H2Physics.c
 //
 
@@ -21,7 +25,7 @@ qboolean BoundVelocity(float *vel)
 	float *v1;
 	int v2;
 	signed int v3;
-	double v4; 
+	double v4;
 
 	v1 = vel;
 	v2 = 0;

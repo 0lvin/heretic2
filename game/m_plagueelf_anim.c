@@ -947,4 +947,3 @@ animframe_t plagueElf_frames_c_pain1 [] =
 	FRAME_death1,	ai_c_move, 0, 0, 0, NULL, 0, NULL
 };
 animmove_t plagueElf_move_c_pain1 = {3, plagueElf_frames_c_pain1, ai_c_cycleend};
-

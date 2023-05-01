@@ -16,7 +16,7 @@ extern "C" {
 #endif
 
 #define SOUND_SWIM_FORWARD	0
-#define SOUND_SWIM_BACK		1 
+#define SOUND_SWIM_BACK		1
 #define SOUND_SWIM_SIDE		2
 #define	SOUND_SWIM_UNDER	3
 

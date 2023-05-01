@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "alutInternal.h"
 #include <math.h>
 #include <string.h>

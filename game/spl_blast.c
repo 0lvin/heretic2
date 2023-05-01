@@ -73,7 +73,3 @@ void SpellCastBlast(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aimd
 	gi.CreateEffect(NULL, FX_WEAPON_BLAST, 0, startpos,
 					"sssssss", syaw, spitch, distance[0], distance[1], distance[2], distance[3], distance[4]);
 }
-
-
-
-

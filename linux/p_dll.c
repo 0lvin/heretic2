@@ -92,4 +92,3 @@ unsigned int P_Load(char *name)
 	Com_Printf("------------------------------------\n");
 	return(playerdll_chksum);
 }
-

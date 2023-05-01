@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "player.h"
 #include "p_anim_data.h"
 
@@ -81,4 +85,3 @@ PLAYER_API player_export_t GetPlayerAPI(void)
 
 	return playerExport;
 }
-

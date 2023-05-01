@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -40,7 +40,7 @@ void CL_CheckPredictionError (void)
 	frame = cls.netchan.incoming_acknowledged;
 	frame &= (CMD_BACKUP-1);
 
-	// compare what the server returned with what we had predicted it to be	
+	// compare what the server returned with what we had predicted it to be
 	delta[0] = cl.frame.playerstate.pmove.origin[0] - cl.predicted_origins[frame][0];
 	delta[1] = cl.frame.playerstate.pmove.origin[1] - cl.predicted_origins[frame][1];
 	delta[2] = cl.frame.playerstate.pmove.origin[2] - cl.predicted_origins[frame][2];
@@ -54,7 +54,7 @@ void CL_CheckPredictionError (void)
 	else
 	{
 		if (cl_showmiss->value && (delta[0] || delta[1] || delta[2]) )
-			Com_Printf ("prediction miss on %i: %i\n", cl.frame.serverframe, 
+			Com_Printf ("prediction miss on %i: %i\n", cl.frame.serverframe,
 			delta[0] + delta[1] + delta[2]);
 
 		//VectorCopy (cl.frame.playerstate.pmove.origin, cl.predicted_origins[frame]);
@@ -240,7 +240,7 @@ void CL_PredictMovement (void)
 	{
 		if (cl_showmiss->value)
 			Com_Printf ("exceeded CMD_BACKUP\n");
-		return;	
+		return;
 	}
 
 	// copy current state to pmove

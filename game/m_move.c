@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // m_move.c -- monster movement
 
 #include "../src/common/header/common.h"

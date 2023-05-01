@@ -54,7 +54,7 @@ void ai_c_readmessage(edict_t *self, G_Message_t *msg)
 void ai_c_cycleend (edict_t *self)
 {
 	// A movement action that still has a distance to walk
-	if ((self->monsterinfo.c_anim_flag & C_ANIM_MOVE) &&  ((self->monsterinfo.c_dist) || (self->s.angles[YAW] != self->ideal_yaw)))	 
+	if ((self->monsterinfo.c_anim_flag & C_ANIM_MOVE) &&  ((self->monsterinfo.c_dist) || (self->s.angles[YAW] != self->ideal_yaw)))
 		return;
 
 	// A repeating action that still has to repeat
@@ -81,9 +81,9 @@ void ai_c_cycleend (edict_t *self)
 		self->monsterinfo.c_callback(self);
 	else								// Well then just sit there if you aren't already
 	{
-		if (!(self->monsterinfo.c_anim_flag & C_ANIM_IDLE))	// 
+		if (!(self->monsterinfo.c_anim_flag & C_ANIM_IDLE))	//
 			G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
-	} 
+	}
 }
 
 
@@ -110,7 +110,7 @@ void ai_c_move (edict_t *self,float forward,float right,float up)
 
 
 	yaw = self->s.angles[YAW]*M_PI*2 / 360;
-	
+
 	move[0] = cos(yaw)*dist;
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
@@ -187,7 +187,7 @@ void c_corvus_init(edict_t *self,int classId)
 
 	if (!monster_start(self))		// Failed initialization
 		return;
-		
+
 	self->msgHandler = DefaultMsgHandler;
 	self->think = walkmonster_start_go;
 
@@ -199,13 +199,13 @@ void c_corvus_init(edict_t *self,int classId)
 	self->mass = 300;
 	self->yaw_speed = 20;
 	VectorClear(self->knockbackvel);
-	
+
 	VectorCopy (c_mins, self->mins);
 	VectorCopy (c_maxs, self->maxs);
 	VectorCopy (c_mins, self->intentMins);
 	VectorCopy (c_maxs, self->intentMaxs);
 	self->viewheight = self->maxs[2]*0.8;
-	
+
 
 	if (!self->monsterinfo.scale)
 	{
@@ -242,9 +242,9 @@ void c_character_init(edict_t *self,int classId)
 	self->classID = classId;
 	self->s.modelindex = classStatics[classId].resInfo->modelIndex;
 
-	if (!monster_start(self))		
+	if (!monster_start(self))
 		return;						// Failed initialization
-		
+
 	self->msgHandler = DefaultMsgHandler;
 	self->think = walkmonster_start_go;
 
@@ -259,7 +259,7 @@ void c_character_init(edict_t *self,int classId)
 	self->yaw_speed = 20;
 
 	VectorClear(self->knockbackvel);
-	
+
 	if (!self->monsterinfo.scale)
 	{
 		self->s.scale = self->monsterinfo.scale = 1;

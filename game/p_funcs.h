@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // p_funcs.h
 //
 // Heretic II - Raven software

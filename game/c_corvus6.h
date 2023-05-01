@@ -1,5 +1,9 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 typedef enum AnimID_e
-{	
+{
 	ANIM_C_ACTION1,
 	ANIM_C_ACTION2,
 	ANIM_C_ACTION3,
@@ -32,9 +36,8 @@ extern animmove_t corvus6_move_c_action8;
 extern animmove_t corvus6_move_c_action9;
 extern animmove_t corvus6_move_c_action10;
 extern animmove_t corvus6_move_c_action11;
-extern animmove_t corvus6_move_c_idle1; 
-extern animmove_t corvus6_move_c_idle2; 
-extern animmove_t corvus6_move_c_idle3; 
-extern animmove_t corvus6_move_c_idle4; 
-extern animmove_t corvus6_move_c_idle5; 
-
+extern animmove_t corvus6_move_c_idle1;
+extern animmove_t corvus6_move_c_idle2;
+extern animmove_t corvus6_move_c_idle3;
+extern animmove_t corvus6_move_c_idle4;
+extern animmove_t corvus6_move_c_idle5;

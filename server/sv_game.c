@@ -794,4 +794,3 @@ void SV_InitGameProgs (void)
 
 	ge->Init ();
 }
-

@@ -1090,4 +1090,3 @@ void D_DrawSurfaces (void)
 	VectorSubtract (r_origin, vec3_origin, modelorg);
 	R_TransformFrustum ();
 }
-

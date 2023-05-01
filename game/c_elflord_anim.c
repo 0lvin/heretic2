@@ -590,11 +590,3 @@ animframe_t Elflord_frames_c_action2 [] =
 	FRAME_Dialogueb206, ai_c_move, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t Elflord_move_c_action2 = { 206, Elflord_frames_c_action2, ai_c_cycleend};
-
-
-
-
-
-
-
-

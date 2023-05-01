@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef	EFFECTFLAGS_H
 #define EFFECTFLAGS_H
 
@@ -76,9 +80,9 @@ extern "C" {
 												// owner's movement
 												// In this case, CEF_OWNERS_ORIGIN causes the owner's origin
 												// to be used for initialization only
-#define CEF_FLAG6					0x00000020	// 
-#define CEF_FLAG7					0x00000040	// 
-#define CEF_FLAG8					0x00000080	// 
+#define CEF_FLAG6					0x00000020	//
+#define CEF_FLAG7					0x00000040	//
+#define CEF_FLAG8					0x00000080	//
 
 // Client-effect Flags relevant only in the Client Effects DLL.
 

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -198,7 +198,7 @@ qboolean Field_Key( menufield_s *f, int key )
 		 ( ( ( key == K_INS ) || ( key == K_KP_INS ) ) && keydown[K_SHIFT] ) )
 	{
 		char *cbd;
-		
+
 		if ( ( cbd = Sys_GetClipboardData() ) != 0 )
 		{
 			strtok( cbd, "\n\r\b" );
@@ -358,22 +358,22 @@ void Menu_DrawStatusBar( const char *string )
 
 void Menu_DrawString( int x, int y, const char *string )
 {
-	
+
 }
 
 void Menu_DrawStringDark( int x, int y, const char *string )
 {
-	
+
 }
 
 void Menu_DrawStringR2L( int x, int y, const char *string )
 {
-	
+
 }
 
 void Menu_DrawStringR2LDark( int x, int y, const char *string )
 {
-	
+
 }
 
 void *Menu_ItemAtCursor( menuframework_s *m )
@@ -475,7 +475,7 @@ void Menulist_DoEnter( menulist_s *l )
 
 void MenuList_Draw( menulist_s *l )
 {
-	
+
 }
 
 void Separator_Draw( menuseparator_s *s )
@@ -501,7 +501,7 @@ void Slider_DoSlide( menuslider_s *s, int dir )
 
 void Slider_Draw( menuslider_s *s )
 {
-	
+
 }
 
 void SpinControl_DoEnter( menulist_s *s )
@@ -533,8 +533,8 @@ void SpinControl_Draw( menulist_s *s )
 
 	if ( s->generic.name )
 	{
-		Menu_DrawStringR2LDark( s->generic.x + s->generic.parent->x + LCOLUMN_OFFSET, 
-							s->generic.y + s->generic.parent->y, 
+		Menu_DrawStringR2LDark( s->generic.x + s->generic.parent->x + LCOLUMN_OFFSET,
+							s->generic.y + s->generic.parent->y,
 							s->generic.name );
 	}
 	if ( !strchr( s->itemnames[s->curvalue], '\n' ) )
@@ -550,4 +550,3 @@ void SpinControl_Draw( menulist_s *s )
 		Menu_DrawString( RCOLUMN_OFFSET + s->generic.x + s->generic.parent->x, s->generic.y + s->generic.parent->y + 10, buffer );
 	}
 }
-

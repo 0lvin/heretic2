@@ -50,4 +50,3 @@ unsigned int P_Load(char *name)
 	playerExport = GetPlayerAPI();
 	return 0;
 }
-

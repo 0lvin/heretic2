@@ -2958,4 +2958,3 @@ void SP_monster_assassin (edict_t *self)
 
 	VectorCopy(self->s.origin, self->pos1);
 }
-

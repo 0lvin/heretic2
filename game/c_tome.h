@@ -1,5 +1,9 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 typedef enum AnimID_e
-{	
+{
 	ANIM_C_IDLE1,
 	ANIM_C_IDLE2,
 	NUM_ANIMS
@@ -7,5 +11,5 @@ typedef enum AnimID_e
 
 void MG_InitMoods(edict_t *self);
 
-extern animmove_t tome_move_c_idle1; 
-extern animmove_t tome_move_c_idle2; 
+extern animmove_t tome_move_c_idle1;
+extern animmove_t tome_move_c_idle2;

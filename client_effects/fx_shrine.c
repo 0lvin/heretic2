@@ -1208,5 +1208,3 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	burst->d_scale=-4.0;
 	AddEffect(NULL, burst);
 }
-
-

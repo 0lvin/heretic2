@@ -1815,4 +1815,3 @@ animframe_t ssithra_c_frames_pain3 [] =
 	FRAME_water_pain_b2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL,
 };
 animmove_t ssithra_c_move_pain3 = {2, ssithra_c_frames_pain3, ai_c_cycleend};
-

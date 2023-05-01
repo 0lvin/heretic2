@@ -38,9 +38,9 @@
 
 // Flying Fist
 #define FIREBALL_MIN_FIZZLE_DAMAGE		5		// Least amount of damage it will do after flying
-#define FIREBALL_DAMAGE_MIN				20	
+#define FIREBALL_DAMAGE_MIN				20
 #define FIREBALL_DAMAGE_MAX				25
-#define FIREBALL_DAMAGE_MIN_POWER		30	
+#define FIREBALL_DAMAGE_MIN_POWER		30
 #define FIREBALL_DAMAGE_MAX_POWER		40
 #define FIREBALL_RADIUS					64.0	// Radius of damage for the powered up version.
 #define FLYING_FIST_SPEED				1000.0
@@ -76,7 +76,7 @@
 #define RED_RAIN_DAMAGE_INTERVAL		0.25
 #define RED_RAIN_DAMAGE					10						// 10 points every .25 seconds.
 #define RED_RAIN_RADIUS					60.0F
-#define MAX_REDRAINHEIGHT				200.0F	
+#define MAX_REDRAINHEIGHT				200.0F
 #define MAX_REDRAINFALLDIST				1000.0F
 #define RED_RAIN_LIGHTNING_DURATION		(RED_RAIN_DURATION - 1.5)
 #define RED_RAIN_LIGHTNING_CHANCE		6						// 1 in 6 chance per target every .25 seconds
@@ -104,7 +104,7 @@
 #define FIREBLAST_SPEED					480.0
 #define FIREBLAST_RADIUS				48.0
 #define FIREBLAST_PROJ_RADIUS			8.0
-#define FIREBLAST_DRADIUS				(1.0)					
+#define FIREBLAST_DRADIUS				(1.0)
 #define FIREBLAST_VRADIUS				16
 #define	FIREBLAST_DAMAGE				48
 #define FIREBLAST_DAMAGE_MIN			32
@@ -177,7 +177,7 @@
 #define DEFENSE_DEBOUNCE				0.5
 
 // Blue Ring of repulsion
-#define	RING_EFFECT_RADIUS				200.0 
+#define	RING_EFFECT_RADIUS				200.0
 #define RING_MASS_FACTOR				200.0
 #define RING_KNOCKBACK_BASE				150
 #define RING_KNOCKBACK_SCALE			200

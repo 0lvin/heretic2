@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 //----------------------------------------------------
 // Movement State types
 //----------------------------------------------------
@@ -28,9 +32,9 @@ enum Step_State_e
 	STEP_STATE_STILL,			// not stepping
 	STEP_STATE_PIVOTING,		// turning left or right
 	STEP_STATE_MOVING,			// stepping in some form or another
-								// valid only if STEP_READINESS_STANDING || STEP_READINESS_CROUCHING is set 
+								// valid only if STEP_READINESS_STANDING || STEP_READINESS_CROUCHING is set
 	STEP_STATE_JUMPING,			// some kind of jump
-								// valid only if STEP_READINESS_STANDING is set 
+								// valid only if STEP_READINESS_STANDING is set
 };
 
 enum Step_Readiness_e
@@ -62,4 +66,3 @@ enum Action_Readiness_e
 	ACTION_READINESS_KNOCKBACK,
 	ACTION_READINESS_DEAD,
 };
-

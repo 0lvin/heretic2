@@ -1,4 +1,4 @@
-//														  
+//
 // Heretic II
 // Copyright 1998 Raven Software
 //
@@ -80,7 +80,7 @@ void FXWaterfallBase(centity_t *owner, int type, int flags, vec3_t origin)
 	wfb->radius = wfb->xscale + wfb->yscale;
 	wfb->Update = FXWaterfallBaseSpawner;
 
-	AddEffect(owner, wfb); 
+	AddEffect(owner, wfb);
 }
 
 // -----------------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ static qboolean FXFountainParticleSpawner(client_entity_t *spawner, centity_t *o
 		drop->d_alpha *= 0.8;
 		drop->startTime += flrand(-50.0F, 0.0F);
 
-		AddParticleToList(spawner, drop); 
+		AddParticleToList(spawner, drop);
 	}
 
 	GetPositionOverTime(spawner->r.origin, velocity, drop->acceleration, time * 0.001, origin);
@@ -162,7 +162,7 @@ void FXFountain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	fountain->Update = FXFountainParticleSpawner;
 	fountain->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_CULLED | CEF_VIEWSTATUSCHANGED;	// | CEF_ADDITIVE_PARTS;
 
-	AddEffect(Owner, fountain); 
+	AddEffect(Owner, fountain);
 }
 
 // end

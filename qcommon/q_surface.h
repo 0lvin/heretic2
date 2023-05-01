@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef Q_SURFACE_H
 #define Q_SURFACE_H
 

@@ -86,28 +86,28 @@ void elflord_mist(edict_t *self, float x, float y, float z)
 	yaw = anglemod(mist_yaw);
 
 	// Converts degrees to radians for use with trig and matrix functions
-	yaw = yaw * ANGLE_TO_RAD;	
+	yaw = yaw * ANGLE_TO_RAD;
 
 	// Sets offset presuming yaw of zero
-	VectorSet(offset, 0, 0, 0);		
+	VectorSet(offset, 0, 0, 0);
 
 	// Creates a rotation matrix to rotate the point about the z axis
-	CreateYawMatrix(mat, yaw);		
+	CreateYawMatrix(mat, yaw);
 
 	// Rotates point about local z axis
-	Matrix3MultByVec3(mat, offset, rotoffset);	
+	Matrix3MultByVec3(mat, offset, rotoffset);
 
 	// Get normalized offset
-	VectorCopy(rotoffset, normalized);	
+	VectorCopy(rotoffset, normalized);
 	normalized[2] = 0.0F;
 	VectorNormalize(normalized);
 
 	// Add offset to owners origin
-	Vec3AddAssign(self->s.origin, rotoffset);	
+	Vec3AddAssign(self->s.origin, rotoffset);
 
 	// Get direction vector scaled by speed
-	VectorSet(velocity, cos(yaw) * 200.0F, sin(yaw) * 200.0F, -100);	
-		
+	VectorSet(velocity, cos(yaw) * 200.0F, sin(yaw) * 200.0F, -100);
+
 	gi.CreateEffect(NULL, FX_PLAGUEMIST, 0, rotoffset, "vb", velocity, 2050 / 35);
 
 }
@@ -125,7 +125,7 @@ void Elflord_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -159,7 +159,7 @@ void Elflord_c_anims(edict_t *self, G_Message_t *msg)
 			break;
 		default:
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -191,11 +191,10 @@ The Celestial Watcher who whispers when he talks
 void SP_character_elflord (edict_t *self)
 {
 	VectorSet (self->mins, -24, -24, -78);
-	VectorSet (self->maxs, 24, 24, 16);	
+	VectorSet (self->maxs, 24, 24, 16);
 
 	c_character_init(self,CID_C_ELFLORD);
 
 	self->s.scale = self->monsterinfo.scale = 2.0;
 
 }
-

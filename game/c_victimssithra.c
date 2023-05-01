@@ -48,7 +48,7 @@ void victimSsithra_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -80,7 +80,7 @@ void victimSsithra_c_anims(edict_t *self, G_Message_t *msg)
 			break;
 		default:
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -101,13 +101,13 @@ void victimSsithraStaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	resInfo.modelIndex = gi.modelindex("models/monsters/Ssithra/cinematics/tris.fm");
 
 	classStatics[CID_SSITHRA_VICTIM].resInfo = &resInfo;
 
 	sounds[SND_PAIN1] = gi.soundindex("monsters/plagueElf/pain1.wav");
-	
+
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
@@ -121,9 +121,8 @@ The Ssithra Victim for use in the torture scene
 void SP_character_ssithra_victim (edict_t *self)
 {
 	VectorSet (self->mins, -40, -16, -2);
-	VectorSet (self->maxs, 40, 16, 2);	
+	VectorSet (self->maxs, 40, 16, 2);
 
 	c_character_init(self,CID_SSITHRA_VICTIM);
 
 }
-

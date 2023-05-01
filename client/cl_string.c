@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // cl_string.cpp
 //
 
@@ -89,7 +93,7 @@ void SetupStrings(char *buffer, int length, cl_message_t *message_text)
 				*p = '\n';
 		} while (p);
 
-		return_p += 2;	// Hop over 13 10 
+		return_p += 2;	// Hop over 13 10
 		startp = return_p;	// Advance to next string
 
 	}

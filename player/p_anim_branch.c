@@ -92,11 +92,11 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 
 	//Scan out and down from the player
 	VectorCopy(playerinfo->origin, startpos);
-	
+
 	//Ignore the pitch of the player, we only want the yaw
 	VectorSet(ang, 0, playerinfo->angles[YAW], 0);
 	AngleVectors(ang, vf, NULL, NULL);
-	
+
 	//Trace ahead about one step (dir is 1 for forward, -1 for back)
 	VectorMA(playerinfo->origin, dir*CREEP_STEPDIST, vf, startpos);
 
@@ -109,7 +109,7 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 		playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&checktrace);
 	else
 		playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID,&checktrace);
-	
+
 	//If it is...
 	if (checktrace.fraction == 1)
 	{
@@ -126,7 +126,7 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 		if (checktrace.fraction == 1 || (checktrace.startsolid || checktrace.allsolid))
 		{
 			//Creep would take us off a ledge
-			return false;		
+			return false;
 		}
 	}
 	else
@@ -193,7 +193,7 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 
 	if(playerinfo->isclient)
 	{
-		playerinfo->CL_Trace(rspotmax, footmins, footmaxs, rspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD, &rightfoot);		
+		playerinfo->CL_Trace(rspotmax, footmins, footmaxs, rspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD, &rightfoot);
 	}
 	else
 	{
@@ -321,16 +321,16 @@ int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 			return(ASEQ_JUMPFWD_RGO);
 		else if (playerinfo->seqcmd[ACMDL_BACK])
 			return(ASEQ_JUMPBACK_SGO);
-		else if (playerinfo->seqcmd[ACMDL_RUN_B])	
+		else if (playerinfo->seqcmd[ACMDL_RUN_B])
 			return(ASEQ_JUMPBACK_SGO);
-		else 
+		else
 			return ASEQ_JUMPUP;
 	}
 	else if (playerinfo->seqcmd[ACMDL_WALK_F])
 		return ASEQ_WALKF_GO;
 	else if (playerinfo->seqcmd[ACMDL_RUN_F])
 		return ASEQ_RUNF_GO;
-	else if (playerinfo->seqcmd[ACMDL_RUN_B])		
+	else if (playerinfo->seqcmd[ACMDL_RUN_B])
 		return ASEQ_WSTRAFE_LEFT;
 	else if (playerinfo->seqcmd[ACMDL_BACK])
 		return ASEQ_WALKB;
@@ -340,16 +340,16 @@ int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 		return ASEQ_STRAFER;
 
 	// If we've reached this point, we are still idling - so decide if which one we want to do.
-	
+
 // OK NOW?	if(!playerinfo->isclient)
 	{
 		temp = (playerinfo->irand(playerinfo,0,5));
-		
+
 		if(!temp)
 			return ASEQ_IDLE_LOOKR;
-		
+
 		temp--;
-		
+
 		if(!temp)
 			return ASEQ_IDLE_LOOKL;
 	}
@@ -400,7 +400,7 @@ int ChickenBranchidle(playerinfo_t *playerinfo)
 			return ASEQ_RUNF_GO;
 		}
 	}
-	else if (playerinfo->seqcmd[ACMDL_RUN_B])		
+	else if (playerinfo->seqcmd[ACMDL_RUN_B])
 	{
 		// We are running backward... want to jump?
 		if (playerinfo->seqcmd[ACMDL_JUMP])
@@ -469,8 +469,8 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 	assert(playerinfo);
 
 	if (playerinfo->advancedstaff &&			// Special move
-			playerinfo->seqcmd[ACMDL_ACTION] && 
-			playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF && 
+			playerinfo->seqcmd[ACMDL_ACTION] &&
+			playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF &&
 			playerinfo->seqcmd[ACMDU_ATTACK] &&
 			BranchCheckDismemberAction(playerinfo, ITEM_WEAPON_SWORDSTAFF))
 	{
@@ -523,17 +523,17 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 
 		return ASEQ_CROUCH_GO;
 	}
-	
-	//FORWARD 
+
+	//FORWARD
 
 	//Check for a walk speed start
 	if (playerinfo->seqcmd[ACMDL_WALK_F])
 		return ASEQ_WALKF_GO;
-	
+
 	//Check for a run start
 	if (playerinfo->seqcmd[ACMDL_RUN_F])
 		return ASEQ_RUNF_GO;
-	
+
 	//Check for creep start
 	if (playerinfo->seqcmd[ACMDL_CREEP_F])
 	{
@@ -543,8 +543,8 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 			return ASEQ_STAND;
 	}
 
-	
-	//BACKWARD 
+
+	//BACKWARD
 
 	//Check for a creepback
 	if (playerinfo->seqcmd[ACMDL_CREEP_B])
@@ -567,7 +567,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		else
 			return ASEQ_WALKB;
 	}
-	
+
 	//STRAFES
 
 	//Check for a strafe left
@@ -581,7 +581,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 
 		return ASEQ_STRAFEL;
 	}
-	
+
 	//Check for a strafe right
 	if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
@@ -628,7 +628,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 			return ASEQ_CLIMB_ON;
 		}
 		else if (playerinfo->upperidle && PlayerActionCheckJumpGrab(playerinfo, 0))
-		{	
+		{
 			return ASEQ_JUMPSTD_GO;
 		}
 	}
@@ -648,7 +648,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 	//Check for a quickturn
 	if (playerinfo->seqcmd[ACMDL_QUICKTURN])
 		return ASEQ_TURN180;
-	
+
 	//Check for a rotation left
 	if (playerinfo->seqcmd[ACMDL_ROTATE_L])
 	{
@@ -659,10 +659,10 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		else
 			return ASEQ_NONE;
 	}
-	
+
 	//Check for a rotation right
 	if (playerinfo->seqcmd[ACMDL_ROTATE_R])
-	{	
+	{
 		if (!(playerinfo->lowerseq >= ASEQ_PIVOTR_GO && playerinfo->lowerseq <= ASEQ_PIVOTR_END))
 		{
 			return ASEQ_PIVOTR_GO;
@@ -671,12 +671,12 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 			return ASEQ_NONE;
 	}
 
-	//Check for a sloped stand 
+	//Check for a sloped stand
 	if (playerinfo->isclient&&((playerinfo->lowerseq >= ASEQ_LSTAIR4 && playerinfo->lowerseq <= ASEQ_RSTAIR16)||playerinfo->lowerseq==ASEQ_STAND))
 		return playerinfo->lowerseq;
-	
+
 	checksloped = CheckSlopedStand(playerinfo);
-	
+
 	if(checksloped)
 		return checksloped;
 
@@ -784,7 +784,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	int	curseq = playerinfo->lowerseq;
 
 	assert(playerinfo);
-	
+
 	//Check for the player falling [LOW PROBABILITY, IMMEDIATE CONCERN]
 	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2 && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
@@ -796,7 +796,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	if ( (playerinfo->flags & PLAYER_FLAG_COLLISION) && (playerinfo->upperidle) && (playerinfo->seqcmd[ACMDL_FWD]) )
 	{
 		PlayerActionCheckVault(playerinfo, 0);
-		
+
 		if (curseq == ASEQ_VAULT_LOW)
 			return ASEQ_VAULT_LOW;
 
@@ -825,10 +825,10 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 
 				if (playerinfo->seqcmd[ACMDL_BACK])
 					return ASEQ_JUMPBACK_RGO;
-				
+
 				if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 					return ASEQ_JUMPLEFT_RGO;
-				
+
 				if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 					return ASEQ_JUMPRIGHT_RGO;
 			}
@@ -839,10 +839,10 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 
 				if (playerinfo->seqcmd[ACMDL_BACK])
 					return ASEQ_JUMPBACK_SGO;
-				
+
 				if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 					return ASEQ_JUMPLEFT_SGO;
-				
+
 				if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 					return ASEQ_JUMPRIGHT_SGO;
 			}
@@ -853,10 +853,10 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 
 				if (playerinfo->seqcmd[ACMDL_BACK])
 					return ASEQ_JUMPBACK_WGO;
-				
+
 				if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 					return ASEQ_JUMPLEFT_WGO;
-				
+
 				if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 					return ASEQ_JUMPRIGHT_WGO;
 			}
@@ -868,7 +868,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	{
 		return ASEQ_CSTRAFE_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_CREEP_F] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_CSTRAFE_RIGHT;
@@ -879,29 +879,29 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	{
 		return ASEQ_WSTRAFE_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_WALK_F] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_WSTRAFE_RIGHT;
 	}
-    
+
 	//Check for run strafing forward [HIGH PROBABILITY]
 	if ( playerinfo->seqcmd[ACMDL_RUN_F] && playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
 		return ASEQ_RSTRAFE_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_RUN_F] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_RSTRAFE_RIGHT;
 	}
-    
+
 	//Check for creep strafing backward [HIGH PROBABILITY]
 	if ( playerinfo->seqcmd[ACMDL_CREEP_B] && playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
 		return ASEQ_CSTRAFEB_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_CREEP_B] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_CSTRAFEB_RIGHT;
@@ -912,7 +912,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	{
 		return ASEQ_WSTRAFEB_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_WALK_B] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_WSTRAFEB_RIGHT;
@@ -928,10 +928,10 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 
 			if (playerinfo->seqcmd[ACMDL_BACK])
 				return ASEQ_CROUCH_WALK_B;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 				return ASEQ_CROUCH_WALK_L;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 				return ASEQ_CROUCH_WALK_R;
 
@@ -944,10 +944,10 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 
 			if (playerinfo->seqcmd[ACMDL_BACK])
 				return ASEQ_ROLL_B;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 				return ASEQ_ROLL_L;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 				return ASEQ_ROLL_R;
 
@@ -961,7 +961,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
-			
+
 			if(playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID33,playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
 			else
@@ -969,7 +969,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 
 			return ASEQ_CLIMB_ON;
 		}
-	
+
 		//Try and use a puzzle piece
 		PlayerActionUsePuzzle(playerinfo);
 
@@ -989,12 +989,12 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	{
 		return ASEQ_CREEPF;
 	}
-	
+
 	if (playerinfo->seqcmd[ACMDL_CREEP_B])
 	{
 		return ASEQ_CREEPB;
 	}
-	
+
 	if (playerinfo->seqcmd[ACMDL_RUN_F])
 	{
 		return ASEQ_RUNF;
@@ -1020,7 +1020,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 
 	return ASEQ_NONE;
 }
-	
+
 /*-----------------------------------------------
 	BranchLwrRunning
 -----------------------------------------------*/
@@ -1042,19 +1042,19 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 	if ((playerinfo->seqcmd[ACMDL_FWD]) && playerinfo->upperidle)
 	{
 		PlayerActionCheckVault(playerinfo, 0);
-	
+
 		if (playerinfo->lowerseq == ASEQ_VAULT_LOW && playerinfo->upperidle)
 			return ASEQ_VAULT_LOW;
-		
+
 		if (playerinfo->lowerseq == ASEQ_PULLUP_HALFWALL)
 			return ASEQ_PULLUP_HALFWALL;
 	}
 
 	//Check for an upper sequence interruption due to a staff attack
-	if ((	playerinfo->seqcmd[ACMDU_ATTACK] && 
-			playerinfo->seqcmd[ACMDL_RUN_F]) &&  
-			(playerinfo->weaponready == WEAPON_READY_SWORDSTAFF) && 
-			!(playerinfo->edictflags & FL_CHICKEN))	
+	if ((	playerinfo->seqcmd[ACMDU_ATTACK] &&
+			playerinfo->seqcmd[ACMDL_RUN_F]) &&
+			(playerinfo->weaponready == WEAPON_READY_SWORDSTAFF) &&
+			!(playerinfo->edictflags & FL_CHICKEN))
 	{
 		return ASEQ_WSWORD_SPIN;
 	}
@@ -1064,18 +1064,18 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 	{
 		return ASEQ_RSTRAFE_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_RUN_F] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_RSTRAFE_RIGHT;
 	}
-    
+
 	//Check for walk strafing forward [HIGH PROBABILITY]
 	if ( playerinfo->seqcmd[ACMDL_WALK_F] && playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
 		return ASEQ_WSTRAFE_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_WALK_F] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_WSTRAFE_RIGHT;
@@ -1092,13 +1092,13 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 				return ASEQ_JUMPFWD_RGO;
 		}
 	}
-	
+
 	//Check for a sudden change of speed [HIGH PROBABILITY]
 	if (playerinfo->seqcmd[ACMDL_WALK_F])
 	{
 		return ASEQ_WALKF;
 	}
-	
+
 	if (playerinfo->seqcmd[ACMDL_CREEP_F])
 	{
 		return ASEQ_CREEPF;
@@ -1118,14 +1118,14 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 
 		return ASEQ_ROLLDIVEF_R;
 	}
-  
+
 	//Look for the action key being pressed	[LOW PROBABILITY]
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
 		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
-			
+
 			if(playerinfo->isclient)
 				playerinfo->CL_Sound( playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
 			else
@@ -1187,17 +1187,17 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 
 		return ASEQ_ROLLDIVEF_R;
 	}
-	
+
 	if ( playerinfo->seqcmd[ACMDL_RUN_F] && playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
 		return ASEQ_RSTRAFE_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_RUN_F] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_RSTRAFE_RIGHT;
 	}
-    
+
 	//Check for a change in speeds
 	if (playerinfo->seqcmd[ACMDL_WALK_F])
 	{
@@ -1213,7 +1213,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		{
 			if ( playerinfo->lowerseq == ASEQ_DASH_LEFT || playerinfo->lowerseq == ASEQ_DASH_LEFT_GO )
 				return ASEQ_NONE;
-			
+
 			return ASEQ_DASH_LEFT_GO;
 		}
 		else
@@ -1231,7 +1231,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		{
 			if ( playerinfo->lowerseq == ASEQ_DASH_RIGHT || playerinfo->lowerseq == ASEQ_DASH_RIGHT_GO )
 				return ASEQ_NONE;
-			
+
 			return ASEQ_DASH_RIGHT_GO;
 		}
 		else
@@ -1242,13 +1242,13 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_QUICKTURN])
 		return ASEQ_TURN180;
-	
-	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) && !(playerinfo->seqcmd[ACMDL_FWD]) ) 
+
+	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) && !(playerinfo->seqcmd[ACMDL_FWD]) )
 	{//We've let go of the important buttons
 		return ASEQ_STAND;
 	}
-	
-	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) && (playerinfo->seqcmd[ACMDL_FWD]) ) 
+
+	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) && (playerinfo->seqcmd[ACMDL_FWD]) )
 	{//We're just trying to go forward
 		return ASEQ_RUNF_GO;
 	}
@@ -1259,7 +1259,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
-			
+
 			if(playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID34, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
 			else
@@ -1298,7 +1298,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
-			
+
 			if(playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID35,playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
 			else
@@ -1328,7 +1328,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 	else if (playerinfo->seqcmd[ACMDL_WALK_F])
 	{
 		curseq = playerinfo->lowerseq;
-		
+
 		if (curseq == ASEQ_RUNF_GO || curseq == ASEQ_RUNF)
 			return ASEQ_WALKF;
 	}
@@ -1357,16 +1357,16 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 				return ASEQ_STRAFEL;
 		}
 	}
-	
+
 	if (playerinfo->seqcmd[ACMDL_QUICKTURN])
 		return ASEQ_TURN180;
-	
-	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) && !(playerinfo->seqcmd[ACMDL_FWD]) && !(playerinfo->seqcmd[ACMDL_BACK])) 
+
+	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) && !(playerinfo->seqcmd[ACMDL_FWD]) && !(playerinfo->seqcmd[ACMDL_BACK]))
 	{//We've let go of the important buttons
 		return ASEQ_STAND;
 	}
-	
-	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) ) 
+
+	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) )
 	{//We're just trying to go forward
 
 		//FORWARD
@@ -1376,10 +1376,10 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 
 		if (playerinfo->seqcmd[ACMDL_WALK_F])
 			return ASEQ_WALKF_GO;
-		
+
 		if (playerinfo->seqcmd[ACMDL_RUN_F])
 			return ASEQ_RUNF_GO;
-		
+
 		//BACKWARD
 
 		if (playerinfo->seqcmd[ACMDL_CREEP_B])
@@ -1411,7 +1411,7 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
-			
+
 			if(playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID36, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
 			else
@@ -1430,20 +1430,20 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 		{
 			if (playerinfo->seqcmd[ACMDL_FWD])
 				return ASEQ_JUMPFWD_SGO;
-			
+
 			if (playerinfo->seqcmd[ACMDL_BACK])
 				return ASEQ_JUMPBACK_SGO;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 				return ASEQ_JUMPLEFT_SGO;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 				return ASEQ_JUMPRIGHT_SGO;
 
 			return ASEQ_JUMPSTD_GO;
 		}
 	}
-	
+
 	//Check for a crouch
 	if (playerinfo->seqcmd[ACMDL_CROUCH])
 	{
@@ -1454,10 +1454,10 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 
 			if (playerinfo->seqcmd[ACMDL_BACK])
 				return ASEQ_CROUCH_WALK_B;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 				return ASEQ_CROUCH_WALK_L;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 				return ASEQ_CROUCH_WALK_R;
 
@@ -1470,23 +1470,23 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 
 			if (playerinfo->seqcmd[ACMDL_BACK])
 				return ASEQ_ROLL_B;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 				return ASEQ_ROLL_L;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 				return ASEQ_ROLL_R;
 
 			return ASEQ_CROUCH_GO;
 		}
 	}
-	
+
 	//Check for walk strafing forward [HIGH PROBABILITY]
 	if ( playerinfo->seqcmd[ACMDL_CREEP_F] && playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
 		return ASEQ_CSTRAFE_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_CREEP_F] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_CSTRAFE_RIGHT;
@@ -1497,7 +1497,7 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 	{
 		return ASEQ_CSTRAFEB_LEFT;
 	}
-    
+
 	if ( playerinfo->seqcmd[ACMDL_CREEP_B] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		return ASEQ_CSTRAFEB_RIGHT;
@@ -1505,10 +1505,10 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_WALK_F])
 		return ASEQ_WALKF_GO;
-	
+
 	if (playerinfo->seqcmd[ACMDL_RUN_F])
 		return ASEQ_RUNF_GO;
-	
+
 	if (playerinfo->seqcmd[ACMDL_CREEP_B])
 		return ASEQ_CREEPB;
 
@@ -1578,7 +1578,7 @@ int BranchLwrJumping(playerinfo_t *playerinfo)
 			return ASEQ_CLIMB_ON;
 		}
 	}
-	
+
 	if (playerinfo->seqcmd[ACMDL_FWD])
 		return ASEQ_JUMPFWD_SGO;
 	else if (playerinfo->seqcmd[ACMDL_BACK])
@@ -1599,7 +1599,7 @@ int BranchLwrKnockDown(playerinfo_t *playerinfo)
 {
 	if (playerinfo->seqcmd[ACMDL_BACK])
 		return ASEQ_KNOCKDOWN_EVADE;
- 
+
 	return ASEQ_KNOCKDOWN_GETUP;
 }
 
@@ -1644,22 +1644,22 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 
 			if (playerinfo->seqcmd[ACMDL_FWD])
 				return ASEQ_ROLLDIVEF_W;
-			
+
 			if (playerinfo->seqcmd[ACMDL_BACK])
 				return ASEQ_ROLL_B;
-			
+
 			if (playerinfo->seqcmd[ACMDL_ROTATE_L])
 				return ASEQ_CROUCH_PIVOTL;
-			
+
 			if (playerinfo->seqcmd[ACMDL_ROTATE_R])
 				return ASEQ_CROUCH_PIVOTR;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 				return ASEQ_ROLL_R;
-			
+
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 				return ASEQ_ROLL_L;
-			
+
 			return ASEQ_CROUCH;
 		}
 
@@ -1670,7 +1670,7 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_JUMP])
 		return ASEQ_JUMPSTD_GO;
-	
+
 	if (playerinfo->buttons & BUTTON_CREEP)
 	{
 		if (playerinfo->seqcmd[ACMDL_FWD])
@@ -1691,19 +1691,19 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_BACK])
 		return ASEQ_ROLL_B;
-	
+
 	if (playerinfo->seqcmd[ACMDL_ROTATE_L])
 		return ASEQ_CROUCH_PIVOTL;
-	
+
 	if (playerinfo->seqcmd[ACMDL_ROTATE_R])
 		return ASEQ_CROUCH_PIVOTR;
-	
+
 	if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 		return ASEQ_ROLL_R;
-	
+
 	if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 		return ASEQ_ROLL_L;
-	
+
 	return ASEQ_CROUCH;
 }
 
@@ -1737,12 +1737,12 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 
 		if (playerinfo->lowerseq == ASEQ_VAULT_LOW)
 			return ASEQ_VAULT_LOW;
-		
+
 		if (playerinfo->lowerseq == ASEQ_PULLUP_HALFWALL)
 			return ASEQ_PULLUP_HALFWALL;
 	}
 	//FIXME: Make this work!
-	/*	
+	/*
 	else if (playerinfo->seqcmd[ACMDL_CROUCH])
 	{
 		PlayerAnimSetLowerSeq(playerinfo, ASEQ_DIVE);
@@ -1751,18 +1751,18 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 	else if (playerinfo->seqcmd[ACMDL_FWD])
 	{
 		PlayerActionCheckVault(playerinfo, 0);
-		
+
 		if (playerinfo->lowerseq == ASEQ_VAULT_LOW)
 			return ASEQ_VAULT_LOW;
-		
+
 		if (playerinfo->lowerseq == ASEQ_PULLUP_HALFWALL)
 			return ASEQ_PULLUP_HALFWALL;
 
 		if (playerinfo->waterlevel > 2)
-		{	
+		{
 			return ASEQ_USWIMF_GO;
 		}
-		
+
 		if (playerinfo->seqcmd[ACMDL_RUN_F])
 		{
 			if ( (playerinfo->lowerseq == ASEQ_SSWIM_FAST_GO) || (playerinfo->lowerseq == ASEQ_SSWIM_FAST) )
@@ -1771,28 +1771,28 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 				return ASEQ_SSWIM_FAST_GO;
 		}
 
-		if ((playerinfo->lowerseq == ASEQ_SSWIMF_GO) || (playerinfo->lowerseq == ASEQ_SSWIMF)) 
+		if ((playerinfo->lowerseq == ASEQ_SSWIMF_GO) || (playerinfo->lowerseq == ASEQ_SSWIMF))
 			return ASEQ_SSWIMF;
 		else
 			return ASEQ_SSWIMF_GO;
 	}
 	else if (playerinfo->seqcmd[ACMDL_BACK])
 	{
-		if ((playerinfo->lowerseq == ASEQ_SSWIMB_GO) || (playerinfo->lowerseq == ASEQ_SSWIMB)) 
+		if ((playerinfo->lowerseq == ASEQ_SSWIMB_GO) || (playerinfo->lowerseq == ASEQ_SSWIMB))
 			return ASEQ_SSWIMB;
 		else
 			return ASEQ_SSWIMB_GO;
 	}
 	else if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
-		if ((playerinfo->lowerseq == ASEQ_SSWIML_GO) || (playerinfo->lowerseq == ASEQ_SSWIML)) 
+		if ((playerinfo->lowerseq == ASEQ_SSWIML_GO) || (playerinfo->lowerseq == ASEQ_SSWIML))
 			return ASEQ_SSWIML;
 		else
 			return ASEQ_SSWIML_GO;
 	}
 	else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
-		if ((playerinfo->lowerseq == ASEQ_SSWIMR_GO) || (playerinfo->lowerseq == ASEQ_SSWIMR)) 
+		if ((playerinfo->lowerseq == ASEQ_SSWIMR_GO) || (playerinfo->lowerseq == ASEQ_SSWIMR))
 			return ASEQ_SSWIMR;
 		else
 			return ASEQ_SSWIMR_GO;
@@ -1838,32 +1838,32 @@ int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 	else if (playerinfo->seqcmd[ACMDL_FWD])
 	{
 		if (playerinfo->waterlevel <= 2)
-		{	
+		{
 			return ASEQ_SSWIM_RESURFACE;
 		}
-		
-		if ((playerinfo->lowerseq == ASEQ_USWIMF_GO) || (playerinfo->lowerseq == ASEQ_USWIMF)) 
+
+		if ((playerinfo->lowerseq == ASEQ_USWIMF_GO) || (playerinfo->lowerseq == ASEQ_USWIMF))
 			return ASEQ_USWIMF;
 		else
 			return ASEQ_USWIMF_GO;
 	}
 	else if (playerinfo->seqcmd[ACMDL_BACK])
 	{
-		if ((playerinfo->lowerseq == ASEQ_USWIMB_GO) || (playerinfo->lowerseq == ASEQ_USWIMB)) 
+		if ((playerinfo->lowerseq == ASEQ_USWIMB_GO) || (playerinfo->lowerseq == ASEQ_USWIMB))
 			return ASEQ_USWIMB;
 		else
 			return ASEQ_USWIMB_GO;
 	}
 	else if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
-		if ((playerinfo->lowerseq == ASEQ_USWIML_GO) || (playerinfo->lowerseq == ASEQ_USWIML)) 
+		if ((playerinfo->lowerseq == ASEQ_USWIML_GO) || (playerinfo->lowerseq == ASEQ_USWIML))
 			return ASEQ_USWIML;
 		else
 			return ASEQ_USWIML_GO;
 	}
 	else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
-		if ((playerinfo->lowerseq == ASEQ_USWIMR_GO) || (playerinfo->lowerseq == ASEQ_USWIMR)) 
+		if ((playerinfo->lowerseq == ASEQ_USWIMR_GO) || (playerinfo->lowerseq == ASEQ_USWIMR))
 			return ASEQ_USWIMR;
 		else
 			return ASEQ_USWIMR_GO;
@@ -1915,18 +1915,18 @@ int BranchLwrClimbing(playerinfo_t *playerinfo)
 int BranchUprReadyHands(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
-	
+
 	//See if we have the arm to do that magic
 	if (!BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
 		return ASEQ_NONE;
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK] && !(playerinfo->edictflags & FL_CHICKEN))	// Not a chicken
-	{ 
+	{
 		playerinfo->idletime=playerinfo->leveltime;
 
 		// Check Offensive mana.
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST || Weapon_CurrentShotsLeft(playerinfo))
-		{	
+		{
 			// Fireballs have free mana, but if powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
 				return playerinfo->pers.weapon->altanimseq;
@@ -1963,7 +1963,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 		if (!strcmp(playerinfo->pers.weapon->classname, "Weapon_SwordStaff"))
 		{
 			playerinfo->idletime=playerinfo->leveltime;
-			
+
 			 // Make sure we're not about to do a spinning attack.
 			if(playerinfo->seqcmd[ACMDL_RUN_F] && playerinfo->groundentity)
 			{
@@ -1984,13 +1984,13 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 			{
 				return ASEQ_WSWORD_DOWNSTAB;
 			}
-			else if(!playerinfo->irand(playerinfo,0, 4))	
+			else if(!playerinfo->irand(playerinfo,0, 4))
 			{
 				return(ASEQ_WSWORD_STEP);
 			}
 			else
 			{
-				return(ASEQ_WSWORD_STD1);	
+				return(ASEQ_WSWORD_STD1);
 			}
 		}
 	}
@@ -2017,14 +2017,14 @@ int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 	if(playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
-		
+
 		if (!strcmp(playerinfo->pers.weapon->classname, "item_weapon_hellstaff"))
 		{
 			// If powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
 				return playerinfo->pers.weapon->altanimseq;
 			else
-				return playerinfo->pers.weapon->playeranimseq;	
+				return playerinfo->pers.weapon->playeranimseq;
 		}
 	}
 	else
@@ -2084,7 +2084,7 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 	   	PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
 	   	return(ASEQ_WRRBOW_END);
 	}
-	else 
+	else
 	{
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_WPHBOW_END);
 	   	return(ASEQ_WPHBOW_END);
@@ -2120,7 +2120,7 @@ int BranchUprReady(playerinfo_t *playerinfo)
 		!(playerinfo->edictflags&FL_CHICKEN))
 	{
 		// Not a chicken, so switch weapons.
-		playerinfo->idletime=playerinfo->leveltime;	
+		playerinfo->idletime=playerinfo->leveltime;
 
 		return(PlayerAnimWeaponSwitch(playerinfo));
 	}
@@ -2167,7 +2167,7 @@ int BranchCheckMana(playerinfo_t *playerinfo)
 int BranchIdle(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
-	
+
 	if(!playerinfo->sv_cinematicfreeze)
 	{
 		//Run special cases if we're in the ready position
@@ -2193,7 +2193,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 			}
 		}
 		else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
-		{	
+		{
 			// Because the bow doesn't look right in some idles.
 			switch(playerinfo->irand(playerinfo, 0, 10))
 			{
@@ -2262,4 +2262,3 @@ int BranchIdle(playerinfo_t *playerinfo)
 
 	return ASEQ_NONE;
 }
-

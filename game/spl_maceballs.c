@@ -306,4 +306,3 @@ void SpellCastMaceball(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 
 
 // end
-

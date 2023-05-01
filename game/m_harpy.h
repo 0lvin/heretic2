@@ -1,9 +1,13 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 typedef enum AnimID_e
 {
 	ANIM_DIE,
-	ANIM_FLY1, 
-	ANIM_FLYBACK1, 
-	ANIM_HOVER1, 
+	ANIM_FLY1,
+	ANIM_FLYBACK1,
+	ANIM_HOVER1,
 	ANIM_HOVERSCREAM,
 	ANIM_DIVE_GO,
 	ANIM_DIVE_LOOP,
@@ -15,7 +19,7 @@ typedef enum AnimID_e
 	ANIM_TUMBLE,
 	ANIM_PIRCH1,
 	ANIM_PIRCH2,
-	ANIM_PIRCH3,	
+	ANIM_PIRCH3,
 	ANIM_PIRCH4,
 	ANIM_PIRCH5,
 	ANIM_PIRCH6,
@@ -158,4 +162,3 @@ void harpy_hover_anim(edict_t *self);
 #define BPN_RWING		4096
 #define BPN_LWING		8192
 #define BPN_STINGER		16384
-

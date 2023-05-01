@@ -266,4 +266,3 @@ void SpellCastRipper(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t 
 
 
 // end
-

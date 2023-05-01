@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef AL_EFX_H
 #define AL_EFX_H
 

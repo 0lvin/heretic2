@@ -24,11 +24,11 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 	// Initialise the appropriate landing sound.
 
 	material = GetClientGroundSurfaceMaterialName(playerinfo);
-	
+
 	strcpy(LandSound,"player/");
 
 	if(material)
-	{	
+	{
 		// Okay, lame, but if a material is not found, then it ignores the string being set up.
 
 		strcat(LandSound, material);
@@ -38,7 +38,7 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 	{
 		playerinfo->flags &= ~ PLAYER_FLAG_FALLING;
 	}
-	else if (playerinfo->advancedstaff && playerinfo->seqcmd[ACMDU_ATTACK] && 
+	else if (playerinfo->advancedstaff && playerinfo->seqcmd[ACMDU_ATTACK] &&
 			(playerinfo->upperseq == ASEQ_WSWORD_DOWNSTAB || playerinfo->upperseq == ASEQ_WSWORD_STABHOLD))
 	{
 		if (landspeed < 600.0)
@@ -51,8 +51,8 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 			playerinfo->velocity[1] *= 0.5;
 			strcpy(LandSound,"*offwall.wav");
 		}
-		else 
-		{	
+		else
+		{
 			// Land hard, so roll.
 			PlayerInterruptAction(playerinfo);
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_ROLLDIVEF_W);
@@ -76,7 +76,7 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 		}
 	}
 	else if(playerinfo->lowerseq == ASEQ_FORWARD_FLIP_L ||
-		playerinfo->lowerseq == ASEQ_FORWARD_FLIP_R || 
+		playerinfo->lowerseq == ASEQ_FORWARD_FLIP_R ||
 		playerinfo->upperseq == ASEQ_FORWARD_FLIP_L ||
 		playerinfo->upperseq == ASEQ_FORWARD_FLIP_R)
 	{
@@ -95,7 +95,7 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 	else if (playerinfo->seqcmd[ACMDL_WALK_F])
 	{
 		if (landspeed > 600)
-		{	
+		{
 			// Can't avoid heavy fall/rolling.
 
 			PlayerInterruptAction(playerinfo);
@@ -103,7 +103,7 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 			strcat(LandSound,"roll.wav");
 		}
 		else
-		{	
+		{
 			// Drop straight into a walk.
 
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_WALKF);
@@ -113,14 +113,14 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 	else if (playerinfo->seqcmd[ACMDL_RUN_F])
 	{
 		if (landspeed > 600)
-		{	
+		{
 			// Can't avoid heavy fall/rolling.
 			PlayerInterruptAction(playerinfo);
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_ROLLDIVEF_W);
 			strcat(LandSound,"roll.wav");
 		}
 		else
-		{	
+		{
 			// Drop straight into a run.
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_RUNF);
 			strcat(LandSound,"land1.wav");
@@ -129,18 +129,18 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 	else if (playerinfo->seqcmd[ACMDL_JUMP])
 	{
 		if (landspeed > 600)
-		{	
+		{
 			// Can't avoid heavy fall/rolling.
 			PlayerInterruptAction(playerinfo);
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_ROLLDIVEF_W);
 			strcat(LandSound,"roll.wav");
 		}
 		else
-		{	
+		{
 			// Drop straight into another jump.
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPSTD_GO);
 			strcat(LandSound,"walk");
-			
+
 			if (irand(0,1))
 				strcat(LandSound, "1.wav");
 			else
@@ -175,8 +175,8 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 			playerinfo->velocity[1] *= 0.5;
 			strcat(LandSound,"land2.wav");
 		}
-		else 
-		{	
+		else
+		{
 			// Land hard, so roll.
 
 			PlayerInterruptAction(playerinfo);
@@ -248,14 +248,14 @@ PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID15,
 									   playerinfo->G_GetEntityStatePtr(playerinfo->self),
 									   FX_DUST_PUFF,
-									   CEF_OWNERS_ORIGIN, 
+									   CEF_OWNERS_ORIGIN,
 									   playerinfo->origin,
 									   "");
 		else
 			playerinfo->CL_CreateEffect(EFFECT_PRED_ID15,
 										playerinfo->self,
 										FX_DUST_PUFF,
-										CEF_OWNERS_ORIGIN, 
+										CEF_OWNERS_ORIGIN,
 										playerinfo->origin,
 										"");
 }

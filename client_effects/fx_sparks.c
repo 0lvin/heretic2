@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "client_effects.h"
 #include "client_entities.h"
@@ -227,4 +231,3 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 	AddEffect(NULL, effect);
 }
 // end
-

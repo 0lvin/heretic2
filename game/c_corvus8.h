@@ -1,5 +1,9 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 typedef enum AnimID_e
-{	
+{
 	ANIM_C_ACTION1,
 	ANIM_C_ACTION2,
 	ANIM_C_ACTION3,
@@ -59,14 +63,14 @@ extern animmove_t corvus8_move_c_action17;
 extern animmove_t corvus8_move_c_action18;
 extern animmove_t corvus8_move_c_action19;
 extern animmove_t corvus8_move_c_action20;
-extern animmove_t corvus8_move_c_idle1; 
-extern animmove_t corvus8_move_c_idle2; 
-extern animmove_t corvus8_move_c_walkstart; 
-extern animmove_t corvus8_move_c_walk1; 
-extern animmove_t corvus8_move_c_walk2; 
-extern animmove_t corvus8_move_c_walk3; 
-extern animmove_t corvus8_move_c_walkstop1; 
-extern animmove_t corvus8_move_c_walkstop2; 
+extern animmove_t corvus8_move_c_idle1;
+extern animmove_t corvus8_move_c_idle2;
+extern animmove_t corvus8_move_c_walkstart;
+extern animmove_t corvus8_move_c_walk1;
+extern animmove_t corvus8_move_c_walk2;
+extern animmove_t corvus8_move_c_walk3;
+extern animmove_t corvus8_move_c_walkstop1;
+extern animmove_t corvus8_move_c_walkstop2;
 extern animmove_t corvus8_move_c_pivotleftgo;
 extern animmove_t corvus8_move_c_pivotleft;
 extern animmove_t corvus8_move_c_pivotleftstop;

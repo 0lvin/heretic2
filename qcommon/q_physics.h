@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef Q_PHYSICS_H
 #define Q_PHYSICS_H
 

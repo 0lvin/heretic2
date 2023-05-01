@@ -165,4 +165,3 @@ void SP_monster_tcheckrik_mothers (edict_t *self)
 	self->svflags |= SVF_WAIT_NOTSOLID;
 
 }
-

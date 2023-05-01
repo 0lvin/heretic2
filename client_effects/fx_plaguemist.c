@@ -103,4 +103,3 @@ void FXPlagueMist(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 }
 
 // end
-

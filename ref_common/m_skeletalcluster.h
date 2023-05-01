@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef M_SKELETALCLUSTER_H
 #define M_SKELETALCLUSTER_H
 

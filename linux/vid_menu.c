@@ -484,5 +484,3 @@ const char *VID_MenuKey( int key )
 
 	return sound;
 }
-
-

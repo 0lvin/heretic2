@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // g_local.h -- local definitions for game module.
 
 #ifndef	G_LOCAL_H
@@ -1331,4 +1335,3 @@ extern edict_t* obstacle;
 #include "g_edict.h"
 
 #endif // G_LOCAL_H
-

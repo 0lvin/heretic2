@@ -43,11 +43,11 @@ static qboolean FXAmmoPickupThink(struct client_entity_s *self, centity_t *owner
 
 	client_particle_t	*p;
 	paletteRGBA_t		color;
-	
+
 	// Rotate and bob
 	self->r.angles[YAW] += ANGLE_5;
 	VectorCopy(owner->current.origin, self->r.origin);
-	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT); 
+	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT);
 	self->SpawnData += BOB_SPEED;
 
 	switch(self->SpawnInfo)
@@ -119,7 +119,7 @@ void FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;
 
-	if ((tag == ITEM_AMMO_MANA_COMBO_HALF) || (tag == ITEM_AMMO_MANA_DEFENSIVE_FULL) || 
+	if ((tag == ITEM_AMMO_MANA_COMBO_HALF) || (tag == ITEM_AMMO_MANA_DEFENSIVE_FULL) ||
 		(tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
 		ce->r.scale = 1.25;
 	else

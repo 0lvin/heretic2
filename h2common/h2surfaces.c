@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../qcommon/resourcemanager.h"
 
 #include "../qcommon/surfaceprops.h"
@@ -265,7 +269,7 @@ char *surfacePropNames[256] =
 char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo)
 {
 	csurface_t *groundSurface;
-	char *result = NULL; 
+	char *result = NULL;
 
 	//result = *(char **)(a1 + 256);
 	groundSurface = playerinfo->GroundSurface; // jmarshall - check this.

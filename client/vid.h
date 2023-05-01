@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef CLIENT_VID_H
 #define CLIENT_VID_H
 // vid.h -- video driver defs
@@ -18,7 +22,7 @@ typedef struct vrect_s
 
 typedef struct
 {
-	int			 	width;		
+	int			 	width;
 	int				height;
 	byte			*pixels;
 } viddef_t;

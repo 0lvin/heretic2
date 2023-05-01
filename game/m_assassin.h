@@ -1,5 +1,9 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 typedef enum AnimID_e
-{	
+{
 	ANIM_DAGGERL,// = {14, assassin_frames_daggerl, assassin_pause},
 	ANIM_DAGGERR,//= {15, assassin_frames_daggerr, assassin_pause},
 	ANIM_DAGGERB,// = {15, assassin_frames_daggerb, assassin_pause},

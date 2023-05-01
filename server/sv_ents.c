@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -190,7 +190,7 @@ void SV_EmitPacketEntities (client_frame_t *from, client_frame_t *to, sizebuf_t 
 				bits |= U_NUMBER16;
 
 			MSG_WriteLong (msg,	bits );
-			MSG_WriteShort (msg, oldnum);			
+			MSG_WriteShort (msg, oldnum);
 
 			oldindex++;
 			continue;
@@ -354,7 +354,7 @@ void SV_WritePlayerstateToClient (client_frame_t *from, client_frame_t *to, size
 	if (pflags & PS_M_ORIGIN_XY)
 	{
 		MSG_WriteShort (msg, ps->pmove.origin[0]);
-		MSG_WriteShort (msg, ps->pmove.origin[1]);		
+		MSG_WriteShort (msg, ps->pmove.origin[1]);
 	}
 
 	if (pflags & PS_VIEWHEIGHT)
@@ -370,7 +370,7 @@ void SV_WritePlayerstateToClient (client_frame_t *from, client_frame_t *to, size
 	if (pflags & PS_M_VELOCITY_XY)
 	{
 		MSG_WriteShort (msg, ps->pmove.velocity[0]);
-		MSG_WriteShort (msg, ps->pmove.velocity[1]);		
+		MSG_WriteShort (msg, ps->pmove.velocity[1]);
 	}
 
 	if (pflags & PS_M_VELOCITY_Z)
@@ -566,7 +566,7 @@ void SV_BuildClientFrame (client_t *client)
 
 	frame->senttime = svs.realtime; // save it for ping calc later
 
-	// find the client's PVS	
+	// find the client's PVS
 	for (i = 0; i < 3; i++) {
 		if (clent->client->ps.remote_id == -1)
 		{
@@ -718,12 +718,12 @@ void SV_RecordDemoMessage (void)
 
 	e = 1;
 	ent = EDICT_NUM(e);
-	while (e < ge->num_edicts) 
+	while (e < ge->num_edicts)
 	{
 		// ignore ents without visible models unless they have an effect
 		if (ent->inuse &&
-			ent->s.number && 
-			(ent->s.modelindex || ent->s.effects || ent->s.sound) && 
+			ent->s.number &&
+			(ent->s.modelindex || ent->s.effects || ent->s.sound) &&
 			!(ent->svflags & SVF_NOCLIENT))
 			MSG_WriteDeltaEntity (&nostate, &ent->s, &buf, false, true);
 
@@ -742,4 +742,3 @@ void SV_RecordDemoMessage (void)
 	fwrite (&len, 4, 1, svs.demofile);
 	fwrite (buf.data, buf.cursize, 1, svs.demofile);
 }
-

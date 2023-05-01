@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "alutInternal.h"
 
 #if HAVE_NANOSLEEP && HAVE_TIME_H

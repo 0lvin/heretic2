@@ -62,7 +62,7 @@ void PreCacheHPMissile()
 	//Projectile head sprites
 	hpproj_models[0] = fxi.RegisterModel("sprites/fx/hpproj1_1.sp2");
 	hpproj_models[1] = fxi.RegisterModel("sprites/fx/hpproj1_2.sp2");
-	
+
 	//Trail segments
 	hpproj_models[2] = fxi.RegisterModel("sprites/fx/segment_trail.sp2");
 	hpproj_models[6] = fxi.RegisterModel("sprites/fx/segment_trail_y.sp2");
@@ -71,7 +71,7 @@ void PreCacheHPMissile()
 	//Halos
 	hpproj_models[3] = fxi.RegisterModel("sprites/fx/hp_halo.sp2");
 	hpproj_models[4] = fxi.RegisterModel("sprites/lens/halo1.sp2");
-	
+
 	//Light Bug model
 	hpproj_models[5] = fxi.RegisterModel("models/objects/lights/bug/tris.fm");
 
@@ -101,7 +101,7 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self,centity_t *Ow
 		return false;
 
 	self->r.endpos[2] += 32;
-	
+
 	if ((self->r.endpos[2] - self->r.startpos[2]) > PRIESTESS_TELEPORT_LINEHEIGHT)
 	{
 		if (self->SpawnInfo == 0.0)
@@ -142,9 +142,9 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self,centity_t *Ow
 			p->origin[0] += irand(-24,24);
 			p->origin[1] += irand(-24,24);
 			p->origin[2] -= 36;
-			
+
 			p->scale = flrand(0.25, 1.0);
-			
+
 			p->acceleration[0] = irand(-75,75);
 			p->acceleration[1] = irand(-75,75);
 			p->acceleration[2] = irand(400,500);
@@ -173,7 +173,7 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self,centity_t *Ow
 			effect->r.origin[2] -= 36;
 
 			effect->velocity[2] = 1;
-			
+
 			effect->acceleration[0] = irand(-150, 150);
 			effect->acceleration[1] = irand(-150, 150);
 			effect->acceleration[2] = irand( 300, 600 - ( self->r.scale * 100) );
@@ -230,16 +230,16 @@ static qboolean FXHPMissileSpawnerThink(struct client_entity_s *self,centity_t *
 
 	TrailEnt->d_alpha = -2.5;
 	TrailEnt->d_scale = 4.0;
-	
+
 	VectorCopy(self->origin, TrailEnt->origin);
-	
+
 	TrailEnt->velocity[0] = irand(-16, 16);
 	TrailEnt->velocity[1] = irand(-16, 16);
 	TrailEnt->velocity[2] = irand(-16, 16);
 
 	AddEffect(NULL,TrailEnt);
 
-	return true;	
+	return true;
 }
 
 /*-----------------------------------------------
@@ -274,16 +274,16 @@ static qboolean FXHPMissileSpawnerThink2(struct client_entity_s *self,centity_t 
 
 	TrailEnt->d_alpha = -2.5;
 	TrailEnt->d_scale = 2.0;
-	
+
 	VectorCopy(self->origin, TrailEnt->origin);
-	
+
 	TrailEnt->velocity[0] = irand(-16, 16);
 	TrailEnt->velocity[1] = irand(-16, 16);
 	TrailEnt->velocity[2] = irand(-16, 16);
-	
+
 	AddEffect(NULL,TrailEnt);
 
-	return true;	
+	return true;
 }
 
 /*-----------------------------------------------
@@ -313,7 +313,7 @@ static qboolean FXHPMissileSpawnerThink3(struct client_entity_s *self,centity_t 
 		self->d_alpha = -1.0;
 		return true;
 	}
-	
+
 	if (self->d_scale == 0.0)
 	{
 		self->r.scale = flrand(1.75, 2.25);
@@ -322,14 +322,14 @@ static qboolean FXHPMissileSpawnerThink3(struct client_entity_s *self,centity_t 
 
 	if (self->r.scale >= 2)
 		self->d_scale = 0.0;
-	
+
 	if (self->alpha > 0.5)
 	{
 		self->d_alpha = 0.0;
 		self->alpha = 0.5;
 	}
 
-	return true;	
+	return true;
 }
 
 /*-----------------------------------------------
@@ -342,7 +342,7 @@ static qboolean FXHPTrailThink(struct client_entity_s *self,centity_t *Owner)
 		return false;
 
 	self->r.scale -= 0.1;
-	
+
 	return true;
 }
 
@@ -421,11 +421,11 @@ static qboolean FXHPMissileTrailThink(struct client_entity_s *self,centity_t *Ow
 	TrailEnt->d_alpha = -2.5;
 	TrailEnt->d_scale = 0.0;
 	TrailEnt->Update = FXHPTrailThink;
-	
+
 	AddEffect(NULL,TrailEnt);
 
 	VectorCopy(Owner->origin, self->startpos);
-	
+
 	return true;
 }
 
@@ -464,7 +464,7 @@ static qboolean FXHPMissileTrailThink2(struct client_entity_s *self,centity_t *O
 	TrailEnt->d_alpha = -4.0;
 	TrailEnt->d_scale = 0.0;
 	TrailEnt->Update = FXHPTrailThink2;
-	
+
 	AddEffect(NULL,TrailEnt);
 
 	VectorCopy(Owner->origin, self->startpos);
@@ -505,7 +505,7 @@ static qboolean FXHPMissileTrailThink3(struct client_entity_s *self,centity_t *O
 	TrailEnt->d_alpha = -2.0;
 	TrailEnt->d_scale = 0.0;
 	TrailEnt->Update = FXHPTrailThink3;
-	
+
 	AddEffect(NULL,TrailEnt);
 
 	VectorCopy(Owner->origin, self->startpos);
@@ -524,19 +524,19 @@ void FXHPMissileExplode(struct client_entity_s *self,centity_t *Owner)
 	int				i;
 	paletteRGBA_t	LightColor={255,64,32,255};
 	byte			powerup = 0;
-	
+
 	VectorSet(dir, 1, 1, 1);
 	//Vec3ScaleAssign(32.0, dir);
 
 	i = GetScaledCount(irand(6,8), 0.8);
-	
+
 	while(i--)
 	{
 		if (!i)
 			SmokePuff=ClientEntity_new(FX_HP_MISSILE,0,Owner->origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(FX_HP_MISSILE,0,Owner->origin,NULL,1500);
-		
+
 		SmokePuff->r.model = hpproj_models + 3;
 		SmokePuff->r.scale=flrand(0.5,1.0);
 		SmokePuff->d_scale = flrand(-1.0, -1.5);
@@ -551,7 +551,7 @@ void FXHPMissileExplode(struct client_entity_s *self,centity_t *Owner)
 		SmokePuff->acceleration[2] = flrand(-100, -250);
 
 		SmokePuff->d_alpha= -0.2;
-			
+
 		SmokePuff->radius=20.0;
 
 		AddEffect(NULL,SmokePuff);
@@ -569,19 +569,19 @@ void FXHPBugExplode(struct client_entity_s *self,centity_t *Owner)
 	int				i;
 	paletteRGBA_t	LightColor={255,64,32,255};
 	byte			powerup = 0;
-	
+
 	//Vec3ScaleAssign(32.0, dir);
 	VectorSet(dir, 1, 1, 1);
 
 	i = GetScaledCount(irand(12,16), 0.8);
-	
+
 	while(i--)
 	{
 		if (!i)
 			SmokePuff=ClientEntity_new(FX_HP_MISSILE,0,Owner->origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(FX_HP_MISSILE,0,Owner->origin,NULL,1500);
-		
+
 		SmokePuff->r.model = hpproj_models;
 		SmokePuff->r.scale=flrand(0.5,1.0);
 		SmokePuff->d_scale=-2.0;
@@ -596,7 +596,7 @@ void FXHPBugExplode(struct client_entity_s *self,centity_t *Owner)
 		SmokePuff->acceleration[2] = flrand(-60, -100);
 
 		SmokePuff->d_alpha= -0.4;
-			
+
 		SmokePuff->radius=20.0;
 
 		AddEffect(NULL,SmokePuff);
@@ -647,12 +647,12 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	byte			effectType;
 	int				bends, i, bolts, j;
 
-	
+
 	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_HP_MISSILE].formatString, &vel, &effectType);
 
 	switch ( effectType )
 	{
-	
+
 	//Blue swirling, homing missiles
 	case HPMISSILE1:
 
@@ -709,16 +709,16 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail = ClientEntity_new( Type, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, Origin, NULL, 20);
 
 		Trail->Update=FXHPMissileTrailThink3;
-				
+
 		Trail->dlight=CE_DLight_new(BugColor, 50.0f, 0.0f);
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models + 5;
-		
+
 		VectorNormalize(vel);
-		
+
 		AnglesFromDir(vel, Trail->r.angles);
 		Trail->r.angles[PITCH] -= ANGLE_90;
-		
+
 		Trail->r.color.c = 0xFF999999;
 		Trail->r.scale = flrand(0.3, 0.4);
 		Trail->AddToView = LinkedEntityUpdatePlacement;
@@ -733,21 +733,21 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail = ClientEntity_new( Type, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, Origin, NULL, 20);
 
 		Trail->Update=FXHPBugThink;
-				
+
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models + 4;
-		
+
 		Trail->r.color.r = 229;
 		Trail->r.color.g = 250;
 		Trail->r.color.b = 88;
 		Trail->r.color.a = 255;
-		
+
 		Trail->alpha = 0.5;
 
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		
+
 		Trail->r.scale = flrand(0.3, 0.4);
-		
+
 		Trail->AddToView = LinkedEntityUpdatePlacement;
 
 		VectorCopy(Origin, Trail->startpos);
@@ -786,7 +786,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 			VectorCopy( Origin, Trail->r.startpos );
 			VectorCopy( Origin, Trail->r.origin );
-			
+
 			Trail->d_alpha = -2.0;
 			Trail->d_scale = 0.0;
 
@@ -795,7 +795,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		break;
 
-	//The power bolts she shoots from her staff 
+	//The power bolts she shoots from her staff
 	case HPMISSILE5:
 
 		bolts = irand(2,3);
@@ -846,9 +846,9 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 				if (i == bends)
 				{
-					VectorCopy(oldPos, Trail->r.startpos);					
+					VectorCopy(oldPos, Trail->r.startpos);
 					VectorCopy(vel, Trail->r.endpos);
-					
+
 					Trail->r.endpos[2] += irand(-4, 4);
 				}
 				else
@@ -861,9 +861,9 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 					VectorAdd(boltDir, huntdir, boltDir);
 
 					VectorNormalize(boltDir);
-								
+
 					VectorCopy(oldPos, Trail->r.startpos);
-					
+
 					Trail->r.tile = ceil(boltStep / 128);
 
 					VectorMA(Trail->r.startpos, boltStep, boltDir, Trail->r.endpos);
@@ -882,14 +882,14 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	//Normal explosions
 	case HPMISSILE1_EXPLODE:
 	case HPMISSILE2_EXPLODE:
-		Trail = ClientEntity_new( Type, CEF_NO_DRAW | CEF_DONT_LINK, Origin, NULL, 2000);	
+		Trail = ClientEntity_new( Type, CEF_NO_DRAW | CEF_DONT_LINK, Origin, NULL, 2000);
 		AddEffect(NULL, Trail);
 		FXHPMissileExplode(Trail,Owner);
 		break;
 
 	//Light bug explosion
 	case HPMISSILE3_EXPLODE:
-		Trail = ClientEntity_new( Type, CEF_NO_DRAW | CEF_DONT_LINK, Origin, NULL, 2000);	
+		Trail = ClientEntity_new( Type, CEF_NO_DRAW | CEF_DONT_LINK, Origin, NULL, 2000);
 		AddEffect(NULL, Trail);
 		FXHPBugExplode(Trail,Owner);
 		break;
@@ -920,7 +920,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		VectorCopy( Origin, Trail->origin );
 		Trail->Update=FXHPMissileSpawnerThink2;
-		
+
 		Trail->radius = 500;
 		Trail->dlight=CE_DLight_new(BugColor,10.0f,0.0f);
 		Trail->LifeTime = fxi.cl->time + 2000;
@@ -928,7 +928,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		AddEffect(NULL,Trail);
 
 		break;
-	
+
 	//Light for the massive light attack
 	case HPMISSILE4_LIGHT:
 
@@ -940,7 +940,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		VectorCopy( Origin, Trail->origin );
 
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		
+
 		Trail->r.model = hpproj_models + 4;
 		Trail->r.scale = 0.1;
 		Trail->alpha = 1.0;
@@ -958,7 +958,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		Trail->Update=FXHPMissileSpawnerThink3;
-		
+
 		Trail->r.model = hpproj_models + 4;
 		Trail->r.scale = 0.1;
 		Trail->alpha = 0.1;
@@ -990,7 +990,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		Trail->Update=FXHPTeleportLineThink;
 
-		Trail->r.model = hpproj_models + 7;			
+		Trail->r.model = hpproj_models + 7;
 		Trail->r.spriteType = SPRITE_LINE;
 		Trail->r.tile = 1.0;
 		Trail->r.scale = 2;
@@ -999,10 +999,10 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		VectorCopy( Origin, Trail->r.startpos );
 		Trail->r.startpos[2] -= 128;
-		
+
 		VectorCopy( Origin, Trail->r.endpos );
 		Trail->r.endpos[2] += 32;
-		
+
 		Trail->dlight=CE_DLight_new(BrightColor,250.0f,0.0f);
 		Trail->d_alpha = 0.0;
 		Trail->d_scale = 0.0;
@@ -1013,7 +1013,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		//Ending effect for her teleport
 		case HPTELEPORT_END:
-		
+
 		Trail = ClientEntity_new( Type, CEF_DONT_LINK, Origin, NULL, 20);
 
 		VectorCopy( Origin, Trail->origin );
@@ -1021,7 +1021,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		Trail->Update=FXHPTeleportLineThink2;
 
-		Trail->r.model = hpproj_models + 7;			
+		Trail->r.model = hpproj_models + 7;
 		Trail->r.spriteType = SPRITE_LINE;
 		Trail->r.tile = 1.0;
 		Trail->r.scale = 64;
@@ -1030,10 +1030,10 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		VectorCopy( Origin, Trail->r.startpos );
 		Trail->r.startpos[2] -= 128;
-		
+
 		VectorCopy( Origin, Trail->r.endpos );
 		Trail->r.endpos[2] += 512;
-		
+
 		Trail->dlight=CE_DLight_new(BrightColor,250.0f,0.0f);
 		Trail->d_alpha = -1.0;
 		Trail->d_scale = 0.0;
@@ -1091,14 +1091,14 @@ qboolean HPStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 	Trail = ClientEntity_new( FX_HP_STAFF, CEF_DONT_LINK, self->r.origin, NULL, 2000);
 
 	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	
+
 	Trail->r.model = hpstaff_models;
 	Trail->r.scale = 0.75;
 	Trail->alpha = 0.5;
 	Trail->d_alpha = -2.0;
 	Trail->d_scale = -2.0;
 	Trail->radius = 500;
-	
+
 	Matrix3FromAngles(((centity_t *)(self->extra))->lerp_angles,RotationMatrix);
 
 	Matrix3MultByVec3(	RotationMatrix,
@@ -1155,7 +1155,7 @@ void FXHPStaff(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	switch (type)
 	{
 	case HP_STAFF_INIT:
-		
+
 		self = ClientEntity_new(Type, Flags | CEF_NO_DRAW | CEF_ABSOLUTE_PARTS,  Origin, NULL, 17);
 
 		self->Update = NULL;
@@ -1164,7 +1164,7 @@ void FXHPStaff(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		self->extra=(void *)(&fxi.server_entities[entID]);
 
 		AddEffect(Owner, self);
-		
+
 		PriestessEffectStayAlive(self, Owner);
 		break;
 

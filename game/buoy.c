@@ -19,7 +19,7 @@
 #define SF_TURN		4
 #define SF_ONEWAY	8//don't back-link
 
-#define SF_BROKEN	64//a bad bad buoy	
+#define SF_BROKEN	64//a bad bad buoy
 #define SF_DONT_TRY	128//don't allow monster to head here
 
 #define BUOY_PRINT_INFO_DIST 64
@@ -35,7 +35,7 @@ int insert_buoy(edict_t *self)
 {
 	buoy_t	*buoy = &level.buoy_list[level.active_buoys];
 	int	i;
-	
+
 	//Init these values to -1 so we know what's filled
 	for (i=0;i<MAX_BUOY_BRANCHES;i++)
 		buoy->nextbuoy[i] = NULL_BUOY;
@@ -56,7 +56,7 @@ int insert_buoy(edict_t *self)
 		buoy->jump_fspeed = buoy->jump_yaw = buoy->jump_uspeed = 0;
 	}
 	VectorCopy(self->s.origin, buoy->origin);
-	
+
 	//Get the contents so that we know if this is a water buoy or not
 	buoy->contents = gi.pointcontents(buoy->origin);
 	//are we going to be opening anything?
@@ -69,7 +69,7 @@ int insert_buoy(edict_t *self)
 
 	buoy->wait = self->wait;
 	buoy->delay = self->delay;
-	
+
 //	Gil suggestion: unimplemented
 //	buoy->failed_depth = 999999999;
 
@@ -85,7 +85,7 @@ void assign_nextbuoy(edict_t *self, edict_t *ent)
 {
 	buoy_t	*buoy = &level.buoy_list[self->count];
 	int i;
-	
+
 	for (i = 0; i < MAX_BUOY_BRANCHES; i++)
 	{
 		if (buoy->nextbuoy[i] > NULL_BUOY)
@@ -111,7 +111,7 @@ void assign_jumpbuoy(edict_t *self, edict_t *ent)
 {//self is supposed to make monsters jump at ent
 	buoy_t	*buoy = &level.buoy_list[self->count];
 	int i;
-	
+
 	for (i = 0; i < MAX_BUOY_BRANCHES; i++)
 	{
 		if (buoy->jump_target_id > NULL_BUOY)
@@ -136,7 +136,7 @@ void info_buoy_link(edict_t *self)
 {
 	edict_t *ent = NULL;
 	int		i;
-	
+
 	if(self->spawnflags & BUOY_ACTIVATE)
 	{
 		if(!self->pathtarget)
@@ -226,7 +226,7 @@ void info_buoy_link(edict_t *self)
 			{
 				//Link this buoy to it's target
 				assign_nextbuoy(self, ent);
-				
+
 				if(BUOY_DEBUG > 1)
 				{
 					gi.CreatePersistantEffect(NULL,
@@ -547,13 +547,13 @@ void SP_info_buoy(edict_t *self)
 		self->s.angles[2] = 180;
 		self->s.modelindex = gi.modelindex("models/objects/lights/bug/tris.fm");
 	}
-	
+
 	self->think = info_buoy_link;
 	self->nextthink = level.time + FRAMETIME;
 
 	if ((self->count = insert_buoy(self)) == NULL_BUOY)
 		gi.dprintf("ERROR! SP_info_buoy : Failed to insert buoy into map list!\n");
-	
+
 	gi.linkentity(self);
 }
 
@@ -595,7 +595,7 @@ qboolean check_buoy_path(edict_t *self, int lb_id, int sb_id, int fb_id)
 	start_buoy->opflags |= SF_DONT_TRY;
 
 	buoy_depth++;//add a level to buoy search depth
-	
+
 	for (i = 0; num_branches_checked < MAX_BUOY_BRANCHES; i++)
 	{
 		do
@@ -604,7 +604,7 @@ qboolean check_buoy_path(edict_t *self, int lb_id, int sb_id, int fb_id)
 				assert(0);
 
 			branch = irand(0, MAX_BUOY_BRANCHES - 1);
-		} 
+		}
 		while(branch_checked[branch]);
 
 		branch_checked[branch] = true;
@@ -638,7 +638,7 @@ qboolean check_buoy_path(edict_t *self, int lb_id, int sb_id, int fb_id)
 #ifdef _DEVEL
 			if (BUOY_DEBUG)
 				gi.dprintf("buoy found...\n");
-#endif			
+#endif
 			start_buoy->opflags &= ~SF_DONT_TRY;
 			return true;
 		}
@@ -706,7 +706,7 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 	}
 
 //fixme: make my last_buoy also a dont_try?
-	
+
 	for (i = 0; num_branches_checked < MAX_BUOY_BRANCHES; i++)
 	{
 		do
@@ -715,7 +715,7 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 				assert(0);
 
 			branch = irand(0, MAX_BUOY_BRANCHES - 1);
-		} 
+		}
 		while(branch_checked[branch]);
 
 		branch_checked[branch] = true;
@@ -739,11 +739,11 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 #ifdef _DEVEL
 			if (BUOY_DEBUG>2)
 				gi.dprintf("Saving %s's last (previous) buoy %s for last path check\n", self->classname, level.buoy_list[self->lastbuoy].targetname);
-#endif			
+#endif
 			save_buoy = &level.buoy_list[self->lastbuoy];
 			continue;
 		}
-			
+
 		check_buoy = &level.buoy_list[start_buoy->nextbuoy[branch]];
 
 #ifdef _DEVEL
@@ -755,7 +755,7 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 #ifdef _DEVEL
 			if(BUOY_DEBUG_LITE||BUOY_DEBUG)
 				gi.dprintf("%s FOUND CONNECTION FROM %s TO %s IN 1 STEP, %d BRANCHES CHECKED\n", self->classname, start_buoy->targetname, final_buoy->targetname, branch_counter);
-#endif			
+#endif
 			start_buoy->opflags &= ~SF_DONT_TRY;
 			if(self->lastbuoy > NULL_BUOY)
 				level.buoy_list[self->lastbuoy].opflags &= ~SF_DONT_TRY;
@@ -778,7 +778,7 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 #ifdef _DEVEL
 			if(BUOY_DEBUG_LITE||BUOY_DEBUG)
 				gi.dprintf("%s FOUND CONNECTION FROM %s TO %s IN %d STEPS, %d BRANCHES CHECKED\n", self->classname, start_buoy->targetname, final_buoy->targetname, buoy_depth, branch_counter);
-#endif			
+#endif
 			start_buoy->opflags &= ~SF_DONT_TRY;
 			if(self->lastbuoy > NULL_BUOY)
 				level.buoy_list[self->lastbuoy].opflags &= ~SF_DONT_TRY;
@@ -823,7 +823,7 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 #ifdef _DEVEL
 				if(BUOY_DEBUG_LITE||BUOY_DEBUG)
 					gi.dprintf("%s FOUND CONNECTION FROM %s TO %s IN %d STEPS, %d BRANCHES CHECKED\n", self->classname, start_buoy->targetname, final_buoy->targetname, buoy_depth, branch_counter);
-#endif				
+#endif
 				start_buoy->opflags &= ~SF_DONT_TRY;
 				if(self->lastbuoy > NULL_BUOY)
 					level.buoy_list[self->lastbuoy].opflags &= ~SF_DONT_TRY;
@@ -850,7 +850,7 @@ buoy_t	*find_next_buoy(edict_t *self, int sb_id, int fb_id)
 #ifdef _DEVEL
 		if(BUOY_DEBUG_LITE||BUOY_DEBUG)
 			gi.dprintf("Can't use buoys- no mintel!...\n");
-#endif	
+#endif
 		return NULL;
 	}
 
@@ -908,7 +908,7 @@ buoy_t	*find_next_buoy(edict_t *self, int sb_id, int fb_id)
 	if(BUOY_DEBUG_LITE||BUOY_DEBUG)
 		if(check_depth == self->mintel)
 			gi.dprintf("Hit my max buoy depth (%d) & failed\n", check_depth);
-#endif	
+#endif
 #ifdef _DEVEL
 	if(BUOY_DEBUG_LITE||BUOY_DEBUG)
 		gi.dprintf("Path from buoy %s(%s) to buoy %s(%s) not possible at depth of %d!\n", start_buoy->targetname, vtos(start_buoy->origin), final_buoy->targetname, vtos(final_buoy->origin), check_depth);

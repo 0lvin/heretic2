@@ -49,7 +49,7 @@ void siernan2_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -69,7 +69,7 @@ void siernan2_c_anims(edict_t *self, G_Message_t *msg)
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
 			curr_anim = ANIM_C_IDLE1;
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -87,7 +87,7 @@ void Siernan2CinStaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	resInfo.modelIndex = gi.modelindex("models/monsters/siernan/laying/tris.fm");
 
 	classStatics[CID_C_SIERNAN2].resInfo = &resInfo;
@@ -102,7 +102,7 @@ The cinematic siernan laying down
 void SP_character_siernan2 (edict_t *self)
 {
 	VectorSet (self->mins, -17, -25, 0);
-	VectorSet (self->maxs, 22, 12, 16);	
+	VectorSet (self->maxs, 22, 12, 16);
 
 	self->s.scale = self->monsterinfo.scale = 1;
 

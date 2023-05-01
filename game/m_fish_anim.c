@@ -272,4 +272,3 @@ animframe_t fish_frames_death [] =
 	FRAME_Death33,	NULL, 0, 0, 0, NULL, 0, NULL,
 };
 animmove_t fish_move_death = {33, fish_frames_death, fish_dead};
-

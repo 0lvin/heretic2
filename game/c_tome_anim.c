@@ -74,5 +74,3 @@ animframe_t tome_frames_c_idle2 [] =
 };
 
 animmove_t tome_move_c_idle2 = {1, tome_frames_c_idle2, ai_c_cycleend};
-
-

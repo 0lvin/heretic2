@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #ifndef _G_TELEPORT_H_
 #define _G_TELEPORT_H_
 

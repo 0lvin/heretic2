@@ -56,9 +56,9 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 	spawner->alpha = 0.95;
 	spawner->d_alpha = -2.0;
 	spawner->color.c = 0xffffffff;
-	
+
 	AddEffect(NULL, spawner);
-	
+
 	count = GetScaledCount(FLARE_COUNT, 0.9);
 	for(i = 0; i < count; i++)
 	{
@@ -68,14 +68,14 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 		VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-radius, -radius));
 
 		flame->scale = FLARE_SCALE * spawner->r.scale;
-		VectorSet(flame->velocity, 
-						flrand(-FLARE_SPEED, FLARE_SPEED), 
-						flrand(-FLARE_SPEED, FLARE_SPEED), 
+		VectorSet(flame->velocity,
+						flrand(-FLARE_SPEED, FLARE_SPEED),
+						flrand(-FLARE_SPEED, FLARE_SPEED),
 						flrand(-FLARE_SPEED, FLARE_SPEED));
 		flame->acceleration[2] = FLARE_ACCEL * spawner->r.scale;
 		flame->d_scale = flrand(-20.0, -10.0);
 		flame->d_alpha = flrand(-320.0, -256.0);
-		
+
 		flame->type |= PFL_ADDITIVE;
 
 		AddParticleToList(spawner, flame);
@@ -93,14 +93,14 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 
 	count = GetScaledCount(FLAME_COUNT, 0.9);
 	if (count>FLAME_COUNT)		// Don't go over flame count
-		count=FLAME_COUNT;		
+		count=FLAME_COUNT;
 	for(i = 0; i < count; i++)
 	{
 		if (!irand(0,15) && (r_detail->value >= DETAIL_NORMAL))		// no steam in software, its around too long and doesn't do enough for us
 		{
 			white = irand(50, 100);
 
-			color.r = color.g = color.b = white; 
+			color.r = color.g = color.b = white;
 			color.a = irand(100, 150);
 
 			flame = ClientParticle_new(PART_32x32_STEAM | PFL_NEARCULL, color, 2000);
@@ -130,7 +130,7 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 			flame->d_scale = flrand(-10.0, -5.0);
 			flame->d_alpha = flrand(-200.0, -160.0);
 			flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
-			
+
 			flame->type |= PFL_ADDITIVE;
 
 			AddParticleToList(spawner, flame);
@@ -174,7 +174,7 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 	// For framerate-sensitive effect spawning
 	count = GetScaledCount(FLAME_COUNT, 0.9);
 	if (count>FLAME_COUNT)		// Don't go over flame count
-		count=FLAME_COUNT;		
+		count=FLAME_COUNT;
 	VectorCopy(owner->origin, spawner->origin);
 	VectorCopy(owner->origin, spawner->r.origin);
 
@@ -192,7 +192,7 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 			{
 				white = irand(8, 16);
 
-				color.r = color.g = color.b = white; 
+				color.r = color.g = color.b = white;
 				color.a = 168;
 
 				flame = ClientParticle_new(PART_32x32_STEAM | PFL_NEARCULL, color, 2000);
@@ -271,7 +271,7 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 	// For framerate-sensitive effect spawning
 	count = GetScaledCount(FLAME_COUNT, 0.9);
 	if (count>FLAME_COUNT)		// Don't go over flame count
-		count=FLAME_COUNT;		
+		count=FLAME_COUNT;
 	VectorCopy(owner->origin, spawner->origin);
 	VectorCopy(owner->origin, spawner->r.origin);
 	for(i = 0; i < count; i++)

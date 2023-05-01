@@ -45,7 +45,7 @@ qboolean FXBubbleThink(client_entity_t *bubble, centity_t *owner)
 	bubble->d_alpha = -8.0F;
 	bubble->velocity[2] = bubble->acceleration[2] = 0;
 	bubble->r.origin[2] += 1.0;
-	
+
 	color.c = 0xffffffff;
 	DoWaterSplash(bubble, color, BUBBLE_NUM_SPLASHES);
 
@@ -81,7 +81,7 @@ static qboolean FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *ow
 
 	bubble->Update = FXBubbleThink;
 
-	AddEffect(NULL, bubble); 
+	AddEffect(NULL, bubble);
 	return(true);
 }
 
@@ -104,7 +104,7 @@ void FXBubbler(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	dist += dust;
 
 	time = GetTimeToReachDistance(0, 100, fabs(dist));
-				
+
 	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_BUBBLER].formatString, &bubblespermin );
 
 	Flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_CULLED | CEF_VIEWSTATUSCHANGED |CEF_CHECK_OWNER;
@@ -112,11 +112,11 @@ void FXBubbler(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	self->SpawnDelay = (60 * 1000) / bubblespermin;
 	self->Update = FXBubblerParticleSpawner;
-	
+
 	self->acceleration[2] = BUBBLE_ACCELERATION;
 	self->radius = BUBBLE_RADIUS;
 	self->SpawnData = time;
-	AddEffect(Owner, self); 
+	AddEffect(Owner, self);
 }
 
 void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
@@ -145,7 +145,7 @@ void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	bubble->Update = FXBubbleThink;
 
-	AddEffect(NULL, bubble); 
+	AddEffect(NULL, bubble);
 }
 
 
@@ -192,10 +192,7 @@ void FXRandWaterBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	self->Update = Create_Bubble;
 	self->AddToView = LinkedEntityUpdatePlacement;
 	self->radius = 20;
-	AddEffect(Owner, self); 
+	AddEffect(Owner, self);
 }
 
 // end
-
-
-

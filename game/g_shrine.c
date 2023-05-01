@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // g_shrine.c
 //
 // Heretic II - Raven software
@@ -1941,4 +1945,3 @@ void shrine_random(edict_t *ent)
 	gi.setmodel(ent, ent->model);
 	gi.linkentity (ent);
 }
-

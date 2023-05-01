@@ -88,8 +88,3 @@ void SpellLightningShieldAttack(edict_t *self)
 		onefound = true;
 	}
 }
-
-
-
-
-

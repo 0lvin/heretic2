@@ -1567,4 +1567,3 @@ Qcommon_Shutdown
 void Qcommon_Shutdown (void)
 {
 }
-

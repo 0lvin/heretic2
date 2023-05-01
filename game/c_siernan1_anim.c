@@ -1057,5 +1057,3 @@ animframe_t siernan1_frames_c_walkstop1 [] =
 };
 
 animmove_t siernan1_move_c_walkstop1 = {5, siernan1_frames_c_walkstop1, ai_c_cycleend};
-
-

@@ -69,7 +69,7 @@ void FXMaceball(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->color.c = 0xff00ffff;
 	glow->dlight = CE_DLight_new(glow->color, 150.0F, 0.0F);
 	glow->Update = FXMaceballThink;
-	
+
 	AddEffect(owner, glow);
 }
 
@@ -113,14 +113,14 @@ void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		curyaw+=RIPPER_PUFF_ANGLE;
 
-		ring = ClientEntity_new(type, CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS, 
+		ring = ClientEntity_new(type, CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS,
 									origin, NULL, 500);
 		ring->r.model = mace_models + 2;
 		ring->r.frame = 1;
 		ring->r.spriteType = SPRITE_LINE;
 		ring->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		ring->radius = 64.0;
-		
+
 		// The startpos and startvel comes from the last velocity.
 		VectorCopy(lastvel, ring->velocity);
 		VectorScale(ring->velocity, -1.0, ring->acceleration);
@@ -163,7 +163,7 @@ void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 	for (i=0; i<8; i++)
 	{
 		spark = ClientParticle_new(PART_16x16_SPARK_G, color, 500);
-		VectorSet(spark->velocity, 
+		VectorSet(spark->velocity,
 					flrand(-MACEBALL_SPARK_VEL, MACEBALL_SPARK_VEL),
 					flrand(-MACEBALL_SPARK_VEL, MACEBALL_SPARK_VEL),
 					flrand(-MACEBALL_SPARK_VEL, MACEBALL_SPARK_VEL));
@@ -207,7 +207,7 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	for (i=0; i<32; i++)
 	{
 		spark = ClientParticle_new(PART_16x16_SPARK_G, explosion->color, 1000);
-		VectorSet(spark->velocity, 
+		VectorSet(spark->velocity,
 					flrand(-MACEBALL_EXP_VEL, MACEBALL_EXP_VEL),
 					flrand(-MACEBALL_EXP_VEL, MACEBALL_EXP_VEL),
 					flrand(0, MACEBALL_EXP_VEL));
@@ -217,7 +217,7 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 		spark->acceleration[2] = -2.0*MACEBALL_SPARK_VEL;
 
 		AddParticleToList(explosion, spark);
-	}		
+	}
 
 	// Spawn some chunks too
 	FXDebris_SpawnChunks(type, flags & ~(CEF_FLAG6|CEF_FLAG7|CEF_FLAG8), origin, 5, MAT_METAL, dir, 80000.0f, mins, 1.5, false);
@@ -246,7 +246,7 @@ static qboolean FXRipperExplodeLightThink(struct client_entity_s *self, centity_
 {
 	if (fxi.cl->time > self->lastThinkTime)
 		return(false);
-	
+
 	if(self->dlight->intensity > 0.0F)
 		self->dlight->intensity -= 10.0F;
 
@@ -291,7 +291,7 @@ static qboolean FXRipperExplodeBallThink(struct client_entity_s *self, centity_t
 // Create Effect FX_WEAPON_RIPPEREXPLODE
 void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
-	client_entity_t	*ripper;	
+	client_entity_t	*ripper;
 	paletteRGBA_t	color = {255, 255, 255, 255};
 	short			ballarray[8];
 	byte			byaw;
@@ -304,9 +304,9 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	client_particle_t *spark;
 
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_RIPPEREXPLODE].formatString, 
-			casterpos, 
-			&byaw, 
+	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_RIPPEREXPLODE].formatString,
+			casterpos,
+			&byaw,
 			&ballarray[0],
 			&ballarray[1],
 			&ballarray[2],
@@ -375,14 +375,14 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		curyaw+=RIPPER_PUFF_ANGLE;
 
-		ring = ClientEntity_new(type, CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS, 
+		ring = ClientEntity_new(type, CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS,
 									origin, NULL, 750);
 		ring->r.model = mace_models + 2;
 		ring->r.frame = 1;
 		ring->r.spriteType = SPRITE_LINE;
 		ring->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		ring->radius = 64.0;
-		
+
 		// The startpos and startvel comes from the last velocity.
 		VectorCopy(lastvel, ring->velocity);
 		VectorScale(ring->velocity, -1.0, ring->acceleration);
@@ -466,7 +466,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 			VectorAdd(curpos, diff, curpos);
 		}
 	}
-	
+
 }
 
 

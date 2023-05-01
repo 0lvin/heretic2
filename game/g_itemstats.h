@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 // ***************************************
 // ** SHRINE STATS
 // ***************************************
@@ -91,4 +95,3 @@
 #define MAX_RAIN_AMMO			30
 #define MAX_PHOENIX_AMMO		20
 #define MAX_HELL_AMMO			200
-

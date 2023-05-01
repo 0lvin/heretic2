@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 #include "../src/common/header/common.h"
 #include "ce_dlight.h"
 #include "../qcommon/resourcemanager.h"

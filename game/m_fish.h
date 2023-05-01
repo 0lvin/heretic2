@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 typedef enum AnimID_e
 {
 	ANIM_BITE,
@@ -66,5 +70,3 @@ void fish_chase(edict_t *self);
 void fish_target(edict_t *self);
 void fish_swim_sound (edict_t *self, float fast);
 void fish_under_water_wake (edict_t *self);
-
-

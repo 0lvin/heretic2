@@ -642,5 +642,3 @@ surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel)
 
 	return cache;
 }
-
-

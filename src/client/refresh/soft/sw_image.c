@@ -614,4 +614,3 @@ void	R_ShutdownImages (void)
 		memset (image, 0, sizeof(*image));
 	}
 }
-

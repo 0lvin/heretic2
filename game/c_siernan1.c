@@ -66,7 +66,7 @@ void siernan1_c_anims(edict_t *self, G_Message_t *msg)
 	ai_c_readmessage(self, msg);
 	int_msg = (int) msg->ID;
 
-	self->monsterinfo.c_anim_flag = 0; 
+	self->monsterinfo.c_anim_flag = 0;
 
 	switch(int_msg)
 	{
@@ -161,7 +161,7 @@ void siernan1_c_anims(edict_t *self, G_Message_t *msg)
 			self->monsterinfo.c_anim_flag |= C_ANIM_MOVE;
 			curr_anim = ANIM_C_IDLE1;
 			break;
-	} 
+	}
 
 	SetAnim(self, curr_anim);
 }
@@ -198,7 +198,7 @@ void Siernan1CinStaticsInit()
 
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
-	
+
 	//note that the name is different in the path
 	resInfo.modelIndex = gi.modelindex("models/monsters/siernan/standing/tris.fm");
 
@@ -215,7 +215,7 @@ LEANING - leaning against a wall, idling
 void SP_character_siernan1 (edict_t *self)
 {
 	VectorSet (self->mins, -10, -10, -20);
-	VectorSet (self->maxs, 10, 10, 20);	
+	VectorSet (self->maxs, 10, 10, 20);
 
 	self->s.scale = self->monsterinfo.scale = 1.2;
 
@@ -223,5 +223,3 @@ void SP_character_siernan1 (edict_t *self)
 
 
 }
-
-

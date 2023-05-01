@@ -1,3 +1,7 @@
+//
+// Heretic II
+// Copyright 1998 Raven Software
+//
 typedef enum
 {
 	ITEM_TOWNKEY,
@@ -22,4 +26,3 @@ typedef enum
 	ITEM_TAVERNKEY,
 	ITEM_TOTAL
 } Items_t;
-
