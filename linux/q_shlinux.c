@@ -39,9 +39,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Sys_Milliseconds
 ================
 */
-int curtime;
 int Sys_Milliseconds (void)
 {
+	int curtime;
 	struct timeval tp;
 	struct timezone tzp;
 	static int		secbase;

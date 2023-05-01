@@ -116,10 +116,9 @@ void Hunk_Free (void *base)
 Sys_Milliseconds
 ================
 */
-int	curtime;
-
 int Sys_Milliseconds (void)
 {
+	int	curtime;
 	static int		base;
 	static qboolean	initialized = false;
 

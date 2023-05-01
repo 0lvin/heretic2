@@ -249,7 +249,7 @@ void SVC_GetChallenge (void)
 		// overwrite the oldest
 		svs.challenges[oldest].challenge = rand() & 0x7fff;
 		svs.challenges[oldest].adr = net_from;
-		svs.challenges[oldest].time = curtime;
+		svs.challenges[oldest].time = Sys_Milliseconds();
 		i = oldest;
 	}
 
