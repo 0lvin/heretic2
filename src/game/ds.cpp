@@ -2,7 +2,13 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include "../common/header/common.h"
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 #include "g_local.h"
 #include "ds.h"
 #include <limits.h>
@@ -30,7 +36,6 @@ extern void Use_Multi(edict_t *self, edict_t *other, edict_t *activator);
 extern void c_swapplayer(edict_t *Self,edict_t *Cinematic);
 extern void remove_non_cinematic_entites(edict_t *owner);
 extern void reinstate_non_cinematic_entites(edict_t *owner);
-extern cvar_t 	*Cvar_Set (char *var_name, char *value);
 #ifdef __cplusplus
 } //end extern "C"
 #endif

@@ -67,6 +67,47 @@ SHLIBEXT=so
 SHLIBCFLAGS=-fPIC
 SHLIBLDFLAGS=-shared
 
+# Detect the OS
+ifdef SystemRoot
+YQ2_OSTYPE ?= Windows
+else
+YQ2_OSTYPE ?= $(shell uname -s)
+endif
+
+# Special case for MinGW
+ifneq (,$(findstring MINGW,$(YQ2_OSTYPE)))
+YQ2_OSTYPE := Windows
+endif
+
+# Detect the architecture
+ifeq ($(YQ2_OSTYPE), Windows)
+ifdef MINGW_CHOST
+ifeq ($(MINGW_CHOST), x86_64-w64-mingw32)
+YQ2_ARCH ?= x86_64
+else # i686-w64-mingw32
+YQ2_ARCH ?= i386
+endif
+else # windows, but MINGW_CHOST not defined
+ifdef PROCESSOR_ARCHITEW6432
+# 64 bit Windows
+YQ2_ARCH ?= $(PROCESSOR_ARCHITEW6432)
+else
+# 32 bit Windows
+YQ2_ARCH ?= $(PROCESSOR_ARCHITECTURE)
+endif
+endif # windows but MINGW_CHOST not defined
+else
+ifneq ($(YQ2_OSTYPE), Darwin)
+# Normalize some abiguous YQ2_ARCH strings
+YQ2_ARCH ?= $(shell uname -m | sed -e 's/i.86/i386/' -e 's/amd64/x86_64/' -e 's/arm64/aarch64/' -e 's/^arm.*/arm/')
+else
+YQ2_ARCH ?= $(shell uname -m)
+endif
+endif
+
+# Defines the operating system and architecture
+override CFLAGS += -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\"
+
 DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 DO_SHLIB_CXX=$(CXX) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
 DO_GL_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(GLCFLAGS) -o $@ -c $<
@@ -142,7 +183,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/snd_mem.o \
 	$(BUILDDIR)/src/client/snd_mix.o \
 	$(BUILDDIR)/src/client/snd_dma.o \
-	$(BUILDDIR)/src/client/console.o \
+	$(BUILDDIR)/src/client/cl_console.o \
 	$(BUILDDIR)/src/client_effects/ambient_effects.o \
 	$(BUILDDIR)/src/client_effects/ce_default_message_handler.o \
 	$(BUILDDIR)/src/client_effects/ce_dlight.o \
@@ -419,7 +460,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/cmd.o \
 	$(BUILDDIR)/qcommon/cmodel.o \
 	$(BUILDDIR)/qcommon/common.o \
-	$(BUILDDIR)/qcommon/crc.o \
+	$(BUILDDIR)/src/common/crc.o \
 	$(BUILDDIR)/src/common/cvar.o \
 	$(BUILDDIR)/qcommon/files.o \
 	$(BUILDDIR)/src/common/md4.o \

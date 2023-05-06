@@ -6,7 +6,13 @@
 // Heretic II
 //
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include "../common/header/common.h"
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 #include "g_local.h"
 #include "../../h2common/singlylinkedlist.h"
 

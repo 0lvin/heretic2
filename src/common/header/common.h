@@ -26,17 +26,22 @@
  * =======================================================================
  */
 
-#ifndef QCOMMON_H
-#define QCOMMON_H
-
-// qcommon.h -- definitions common between client and server, but not game.dll
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef CO_COMMON_H
+#define CO_COMMON_H
 
 #include "shared.h"
+#include "crc.h"
+
+#define YQ2VERSION "8.21pre"
+#define BASEDIRNAME "base"
+
+#ifndef YQ2OSTYPE
+#error YQ2OSTYPE should be defined by the build system
+#endif
+
+#ifndef BUILD_DATE
+#define BUILD_DATE __DATE__
+#endif
 
 #ifdef _WIN32
  #define CFGDIR "YamagiQ2"
@@ -48,121 +53,114 @@ extern "C" {
  #endif
 #endif
 
-// unknown pragmas are SUPPOSED to be ignored, but....
-#pragma warning(disable : 4244)     // MIPS -- truncation from double to float in MSDEV
-#pragma warning(disable : 4018)     // signed/unsigned mismatch
-#pragma warning(disable : 4305)		// truncation from const double to float
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
-
-#define	BASEDIRNAME	"base"
-
-#define VERSION_MAJOR		"1"
-#define VERSION_MINOR		"06"
-#define VERSION_LOCAL		"01"
-#define VERSION_DATE		"0504"
-#define VERSION_ITERATION	"01"
-
-#define VERSIONDISP		(VERSION_MAJOR "." VERSION_MINOR)
-#define VERSIONFULL		(VERSION_MAJOR "." VERSION_MINOR "." VERSION_LOCAL "." VERSION_DATE "." VERSION_ITERATION)
-
-#define NO_BLOOD 0
-
-
-#ifdef WIN32
-
-#ifdef NDEBUG
-#define BUILDSTRING "RELEASE"
-#else
-#define BUILDSTRING "DEBUG"
-#endif
-
-#ifdef _M_IX86
-#define	CPUSTRING	"x86"
-#endif
-
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef YQ2ARCH
+  #ifdef _MSC_VER
+    // Setting YQ2ARCH for VisualC++ from CMake doesn't work when using VS integrated CMake
+    // so set it in code instead
+    #ifdef YQ2ARCH
+      #undef YQ2ARCH
+    #endif
+    #ifdef _M_X64
+      // this matches AMD64 and ARM64EC (but not regular ARM64), but they're supposed to be binary-compatible somehow, so whatever
+      #define YQ2ARCH "x86_64"
+    #elif defined(_M_ARM64)
+      #define YQ2ARCH "arm64"
+    #elif defined(_M_ARM)
+      #define YQ2ARCH "arm"
+    #elif defined(_M_IX86)
+      #define YQ2ARCH "x86"
+    #else
+      // if you're not targeting one of the aforementioned architectures,
+      // check https://learn.microsoft.com/en-us/cpp/preprocessor/predefined-macros
+      // to find out how to detect yours and add it here - and please send a patch :)
+      #error "Unknown CPU architecture!"
+      // (for a quick and dirty solution, comment out the previous line, but keep in mind
+      //  that savegames may not be compatible with other builds of Yamagi Quake II)
+      #define YQ2ARCH "UNKNOWN"
+    #endif // _M_X64 etc
+  #else // other compilers than MSVC
+    #error YQ2ARCH should be defined by the build system
+  #endif // _MSC_VER
+#endif // YQ2ARCH
 
 typedef struct edict_s edict_t;
 typedef struct sfx_s sfx_t;
 typedef struct client_entity_s client_entity_t;
-
-//============================================================================
-
-typedef struct sizebuf_s
-{
-	qboolean	allowoverflow;	// if false, do a Com_Error
-	qboolean	overflowed;		// set to true if the buffer size failed
-	byte	*data;
-	int		maxsize;
-	int		cursize;
-	int		readcount;
-} sizebuf_t;
-
-void SZ_Init (sizebuf_t *buf, byte *data, int length);
-void SZ_Clear (sizebuf_t *buf);
-void *SZ_GetSpace (sizebuf_t *buf, int length);
-void SZ_Write (sizebuf_t *buf, void *data, int length);
-void SZ_Print (sizebuf_t *buf, char *data);	// strcats onto the sizebuf
-
 extern int	c_pointcontents;
 extern int	c_traces, c_brush_traces;
 
-//============================================================================
+/* ================================================================== */
+
+typedef struct sizebuf_s
+{
+	qboolean allowoverflow;     /* if false, do a Com_Error */
+	qboolean overflowed;        /* set to true if the buffer size failed */
+	byte *data;
+	int maxsize;
+	int cursize;
+	int readcount;
+} sizebuf_t;
+
+void SZ_Init(sizebuf_t *buf, byte *data, int length);
+void SZ_Clear(sizebuf_t *buf);
+void *SZ_GetSpace(sizebuf_t *buf, int length);
+void SZ_Write(sizebuf_t *buf, void *data, int length);
+void SZ_Print(sizebuf_t *buf, char *data);  /* strcats onto the sizebuf */
+
+/* ================================================================== */
 
 struct usercmd_s;
 struct entity_state_s;
 
-void MSG_WriteChar (sizebuf_t *sb, int c);
-void MSG_WriteByte (sizebuf_t *sb, int c);
-void MSG_WriteShort (sizebuf_t *sb, int c);
-void MSG_WriteLong (sizebuf_t *sb, int c);
-void MSG_WriteFloat (sizebuf_t *sb, float f);
-void MSG_WriteString (sizebuf_t *sb, char *s);
-void MSG_WriteCoord (sizebuf_t *sb, float f);
-void MSG_WritePos (sizebuf_t *sb, vec3_t pos);
-void MSG_WriteAngle (sizebuf_t *sb, float f);
-void MSG_WriteAngle16 (sizebuf_t *sb, float f);
-void MSG_WriteDeltaUsercmd (sizebuf_t *sb, struct usercmd_s *from, struct usercmd_s *cmd);
+void MSG_WriteChar(sizebuf_t *sb, int c);
+void MSG_WriteByte(sizebuf_t *sb, int c);
+void MSG_WriteShort(sizebuf_t *sb, int c);
+void MSG_WriteLong(sizebuf_t *sb, int c);
+void MSG_WriteFloat(sizebuf_t *sb, float f);
+void MSG_WriteString(sizebuf_t *sb, char *s);
+void MSG_WriteCoord(sizebuf_t *sb, float f);
+void MSG_WritePos(sizebuf_t *sb, vec3_t pos);
+void MSG_WriteAngle(sizebuf_t *sb, float f);
+void MSG_WriteAngle16(sizebuf_t *sb, float f);
+void MSG_WriteDeltaUsercmd(sizebuf_t *sb, struct usercmd_s *from,
+		struct usercmd_s *cmd);
+void MSG_WriteDeltaEntity(struct entity_state_s *from,
+		struct entity_state_s *to, sizebuf_t *msg,
+		qboolean force, qboolean newentity);
+void MSG_WriteDir(sizebuf_t *sb, vec3_t vector);
 void ParseEffectToSizeBuf(sizebuf_t *sizebuf, char *format, va_list marker);
 void MSG_WriteEntityHeaderBits(sizebuf_t *msg, unsigned char *bf, unsigned char *bfNonZero);
-void MSG_WriteDeltaEntity(entity_state_t* from, entity_state_t* to, sizebuf_t* msg, qboolean force, qboolean newentity);
-void MSG_WriteDir (sizebuf_t *sb, vec3_t vector);
 void MSG_WriteDirMag (sizebuf_t *sb, vec3_t dir);
 void MSG_WriteYawPitch (sizebuf_t *sb, vec3_t vector);
 void MSG_WriteShortYawPitch (sizebuf_t *sb, vec3_t vector);
 void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
-void	MSG_BeginReading (sizebuf_t *sb);
+void MSG_BeginReading(sizebuf_t *sb);
 
-int		MSG_ReadChar (sizebuf_t *sb);
-int		MSG_ReadByte (sizebuf_t *sb);
-int		MSG_ReadShort (sizebuf_t *sb);
-int		MSG_ReadLong (sizebuf_t *sb);
-float	MSG_ReadFloat (sizebuf_t *sb);
-char	*MSG_ReadString (sizebuf_t *sb);
-char	*MSG_ReadStringLine (sizebuf_t *sb);
+int MSG_ReadChar(sizebuf_t *sb);
+int MSG_ReadByte(sizebuf_t *sb);
+int MSG_ReadShort(sizebuf_t *sb);
+int MSG_ReadLong(sizebuf_t *sb);
+float MSG_ReadFloat(sizebuf_t *sb);
+char *MSG_ReadString(sizebuf_t *sb);
+char *MSG_ReadStringLine(sizebuf_t *sb);
 
-float	MSG_ReadCoord (sizebuf_t *sb);
-void	MSG_ReadPos (sizebuf_t *sb, vec3_t pos);
-float	MSG_ReadAngle (sizebuf_t *sb);
-float	MSG_ReadAngle16 (sizebuf_t *sb);
-void	MSG_ReadDeltaUsercmd (sizebuf_t *sb, struct usercmd_s *from, struct usercmd_s *cmd);
+float MSG_ReadCoord(sizebuf_t *sb);
+void MSG_ReadPos(sizebuf_t *sb, vec3_t pos);
+float MSG_ReadAngle(sizebuf_t *sb);
+float MSG_ReadAngle16(sizebuf_t *sb);
+void MSG_ReadDeltaUsercmd(sizebuf_t *sb,
+		struct usercmd_s *from,
+		struct usercmd_s *cmd);
 
-void	MSG_ReadDir (sizebuf_t *sb, vec3_t vector);
-void	MSG_ReadDirMag (sizebuf_t *sb, vec3_t dir);
-void	MSG_ReadYawPitch (sizebuf_t *sb, vec3_t vector);
-void	MSG_ReadShortYawPitch (sizebuf_t *sb, vec3_t vector);
+void MSG_ReadDir(sizebuf_t *sb, vec3_t vector);
 
-void	MSG_ReadData (sizebuf_t *sb, void *buffer, int size);
-void	MSG_ReadJoints(sizebuf_t *msg_read, entity_state_t *ent);
-void	MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
+void MSG_ReadData(sizebuf_t *sb, void *buffer, int size);
+void MSG_ReadJoints(sizebuf_t *msg_read, entity_state_t *ent);
+void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
+void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir);
+void MSG_ReadYawPitch(sizebuf_t *sb, vec3_t vector);
+void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t vector);
 
 //============================================================================
 
@@ -187,13 +185,6 @@ char *CopyString (char *in);
 //============================================================================
 
 void Info_Print (char *s);
-
-
-/* crc.h */
-void CRC_Init(unsigned short *crcvalue);
-void CRC_ProcessByte(unsigned short *crcvalue, byte data);
-unsigned short CRC_Value(unsigned short crcvalue);
-unsigned short CRC_Block (byte *start, int count);
 
 /*
 ==============================================================
@@ -270,19 +261,17 @@ enum svc_ops_e
 	svc_nameprint,				//allow a client to print a message across the network without adding its name, instead, just its client number
 };
 
-//==============================================
+/* ============================================== */
 
-//
-// client to server
-//
+/* client to server */
 enum clc_ops_e
 {
 	clc_bad,
 	clc_nop,
-	clc_move,				// [[usercmd_t]
-	clc_userinfo,			// [[userinfo string]
-	clc_stringcmd,			// [string] message
-	clc_startdemo			// start a demo - please send me all persistant effects
+	clc_move,               /* [[usercmd_t] */
+	clc_userinfo,           /* [[userinfo string] */
+	clc_stringcmd,          /* [string] message */
+	clc_startdemo           /* start a demo - please send me all persistant effects */
 };
 
 //==============================================
@@ -905,8 +894,5 @@ void SCR_BeginLoadingPlaque (void);
 void SV_Init (void);
 void SV_Shutdown (char *finalmsg, qboolean reconnect);
 void SV_Frame (int msec);
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
-#endif // QCOMMON_H
+#endif

@@ -2,7 +2,13 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include "../common/header/common.h"
+#ifdef __cplusplus
+} //end extern "C"
+#endif
 #include "g_local.h"
 #include "g_skeletons.h"
 #include "../../qcommon/arrayed_list.h"

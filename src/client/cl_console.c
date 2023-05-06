@@ -1,23 +1,28 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-// console.c
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ * USA.
+ *
+ * =======================================================================
+ *
+ * This file implements the console
+ *
+ * =======================================================================
+ */
 
 #include "client.h"
 
@@ -588,11 +593,7 @@ void Con_DrawConsole (float frac)
 	re.DrawStretchPic (0, -viddef.height+lines, viddef.width, viddef.height, "misc/conback.m8", 1.0f, false);
 	SCR_AddDirtyPoint (0,0);
 	SCR_AddDirtyPoint (viddef.width-1,lines-1);
-#ifdef WIN32
-	Com_sprintf(version, sizeof(version), "Heretic II v%s.%s(32 bit)", VERSION_MAJOR, VERSION_MINOR);
-#else
-	Com_sprintf (version, sizeof(version), "Heretic II v%s.%s(64 bit)", VERSION_MAJOR, VERSION_MINOR);
-#endif
+	Com_sprintf(version, sizeof(version), "Heretic II v%s", YQ2VERSION);
 
 	int len = strlen(version);
 	for (x=0 ; x<len; x++)
@@ -684,3 +685,4 @@ void Con_DrawConsole (float frac)
 // draw the input prompt, user text, and cursor if desired
 	Con_DrawInput ();
 }
+
