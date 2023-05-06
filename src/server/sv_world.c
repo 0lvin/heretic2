@@ -24,7 +24,7 @@
  * =======================================================================
  */
 
-#include "server.h"
+#include "header/server.h"
 
 #define AREA_DEPTH 4
 #define AREA_NODES 32

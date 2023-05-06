@@ -27,26 +27,22 @@
 #include "header/local.h"
 
 #define NUMVERTEXNORMALS 162
+#define SHADEDOT_QUANT 16
 
-float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
-#include "../../../../qcommon/anorms.h"
+float r_avertexnormals[NUMVERTEXNORMALS][3] = {
+#include "../constants/anorms.h"
+};
+
+/* precalculated dot products for quantized angles */
+float r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
+#include "../constants/anormtab.h"
 };
 
 typedef float vec4_t[4];
-
-static	vec4_t	s_lerped[MAX_VERTS];
-//static	vec3_t	lerped[MAX_VERTS];
-
-vec3_t	shadevector;
-float	shadelight[3];
-
-// precalculated dot products for quantized angles
-#define SHADEDOT_QUANT 16
-float	r_avertexnormal_dots[SHADEDOT_QUANT][256] =
-#include "../constants/anormtab.h"
-;
-
-float	*shadedots = r_avertexnormal_dots[0];
+static vec4_t s_lerped[MAX_VERTS];
+vec3_t shadevector;
+float shadelight[3];
+float *shadedots = r_avertexnormal_dots[0];
 
 void GL_LerpVerts( int nverts, dtrivertx_t *v, dtrivertx_t *ov, dtrivertx_t *verts, float *lerp, float move[3], float frontv[3], float backv[3] )
 {
@@ -238,8 +234,6 @@ void GL_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp)
 
 }
 
-
-#if 1
 /*
 =============
 GL_DrawAliasShadow
@@ -309,12 +303,8 @@ void GL_DrawAliasShadow (dmdl_t *paliashdr, int posenum)
 	}
 }
 
-#endif
-
-/*
-** R_CullAliasModel
-*/
-static qboolean R_CullAliasModel( vec3_t bbox[8], entity_t *e )
+static qboolean
+R_CullAliasModel(vec3_t bbox[8], entity_t *e)
 {
 	int i;
 	vec3_t		mins, maxs;
@@ -662,21 +652,6 @@ void R_DrawAliasModel (entity_t *e)
 
 	glPopMatrix ();
 
-#if 0
-	glDisable( GL_CULL_FACE );
-	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	glDisable( GL_TEXTURE_2D );
-	glBegin( GL_TRIANGLE_STRIP );
-	for ( i = 0; i < 8; i++ )
-	{
-		glVertex3fv( bbox[i] );
-	}
-	glEnd();
-	glEnable( GL_TEXTURE_2D );
-	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-	glEnable( GL_CULL_FACE );
-#endif
-
 	if ( ( currententity->flags & RF_WEAPONMODEL ) && ( r_lefthand->value == 1.0F ) )
 	{
 		glMatrixMode( GL_PROJECTION );
@@ -693,7 +668,6 @@ void R_DrawAliasModel (entity_t *e)
 	if (currententity->flags & RF_DEPTHHACK)
 		glDepthRange (gldepthmin, gldepthmax);
 
-#if 1
 	if (gl_shadows->value && !(currententity->flags & (RF_TRANSLUCENT | RF_WEAPONMODEL)))
 	{
 		glPushMatrix ();
@@ -706,7 +680,6 @@ void R_DrawAliasModel (entity_t *e)
 		glDisable (GL_BLEND);
 		glPopMatrix ();
 	}
-#endif
 	glColor4f (1,1,1,1);
 }
 

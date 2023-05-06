@@ -1,24 +1,33 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * This is the refresher dependend video menu. If you add a new
+ * refresher this menu must be altered.
+ *
+ * =======================================================================
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-#include "../src/client/client.h"
-#include "../src/client/qmenu.h"
+#include "../../client/header/client.h"
+#include "../../client/menu/header/qmenu.h"
+#include "header/qmenu.h"
 
 #define REF_SOFT	0
 #define REF_SOFTX11	1
@@ -181,54 +190,25 @@ static void ApplyChanges( void *unused )
 		break;
 	}
 
-#if 0
-	/*
-	** update appropriate stuff if we're running OpenGL and gamma
-	** has been modified
-	*/
-	if ( stricmp( vid_ref->string, "gl" ) == 0 )
-	{
-		if ( vid_gamma->modified )
-		{
-			vid_ref->modified = true;
-			if ( stricmp( gl_driver->string, "3dfxgl" ) == 0 )
-			{
-				char envbuffer[1024];
-				float g;
-
-				vid_ref->modified = true;
-
-				g = 2.00 * ( 0.8 - ( vid_gamma->value - 0.5 ) ) + 1.0F;
-				Com_sprintf( envbuffer, sizeof(envbuffer), "SST_GAMMA=%f", g );
-				putenv( envbuffer );
-
-				vid_gamma->modified = false;
-			}
-		}
-	}
-#endif
-
 	M_ForceMenuOff();
 }
 
-/*
-** VID_MenuInit
-*/
-void VID_MenuInit( void )
+void
+VID_MenuInit(void)
 {
 	static const char *resolutions[] =
 	{
-		"[320 240  ]",
-		"[400 300  ]",
-		"[512 384  ]",
-		"[640 480  ]",
-		"[800 600  ]",
-		"[960 720  ]",
-		"[1024 768 ]",
-		"[1152 864 ]",
-		"[1280 1024]",
-		"[1600 1200]",
-		"[2048 1536]",
+		"[320 240   ]",
+		"[400 300   ]",
+		"[512 384   ]",
+		"[640 480   ]",
+		"[800 600   ]",
+		"[960 720   ]",
+		"[1024 768  ]",
+		"[1152 864  ]",
+		"[1280 1024 ]",
+		"[1600 1200 ]",
+		"[2048 1536 ]",
 		0
 	};
 	static const char *refs[] =
@@ -264,7 +244,7 @@ void VID_MenuInit( void )
 		sw_stipplealpha = Cvar_Get( "sw_stipplealpha", "0", CVAR_ARCHIVE );
 
 	if ( !_windowed_mouse)
-        _windowed_mouse = Cvar_Get( "_windowed_mouse", "0", CVAR_ARCHIVE );
+	_windowed_mouse = Cvar_Get( "_windowed_mouse", "0", CVAR_ARCHIVE );
 
 	s_mode_list[SOFTWARE_MENU].curvalue = sw_mode->value;
 	s_mode_list[OPENGL_MENU].curvalue = gl_mode->value;
@@ -420,7 +400,8 @@ void VID_MenuInit( void )
 VID_MenuDraw
 ================
 */
-void VID_MenuDraw (void)
+void
+VID_MenuDraw(void)
 {
 	int w, h;
 
@@ -484,3 +465,4 @@ const char *VID_MenuKey( int key )
 
 	return sound;
 }
+

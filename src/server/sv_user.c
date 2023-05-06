@@ -24,7 +24,7 @@
  * =======================================================================
  */
 
-#include "server.h"
+#include "header/server.h"
 
 edict_t	*sv_player;
 

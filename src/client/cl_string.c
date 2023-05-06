@@ -5,7 +5,7 @@
 // cl_string.cpp
 //
 
-#include "client.h"
+#include "header/client.h"
 
 #define MAX_MESSAGESTRINGS 1000
 typedef struct

@@ -1,39 +1,45 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ * USA.
+ *
+ * =======================================================================
+ *
+ * This file implements the generic part of the menu
+ *
+ * =======================================================================
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 #include <string.h>
 #include <ctype.h>
+#include "../header/client.h"
+#include "header/qmenu.h"
 
-#include "client.h"
-#include "qmenu.h"
-
-static void	 Action_DoEnter( menuaction_s *a );
-static void	 Action_Draw( menuaction_s *a );
-static void  Menu_DrawStatusBar( const char *string );
-static void	 Menulist_DoEnter( menulist_s *l );
-static void	 MenuList_Draw( menulist_s *l );
-static void	 Separator_Draw( menuseparator_s *s );
-static void	 Slider_DoSlide( menuslider_s *s, int dir );
-static void	 Slider_Draw( menuslider_s *s );
-static void	 SpinControl_DoEnter( menulist_s *s );
-static void	 SpinControl_Draw( menulist_s *s );
-static void	 SpinControl_DoSlide( menulist_s *s, int dir );
+static void Action_DoEnter( menuaction_s *a );
+static void Action_Draw(menuaction_s *a);
+static void Menu_DrawStatusBar(const char *string);
+static void Menulist_DoEnter( menulist_s *l);
+static void MenuList_Draw(menulist_s *l);
+static void Separator_Draw(menuseparator_s *s);
+static void Slider_DoSlide(menuslider_s *s, int dir);
+static void Slider_Draw(menuslider_s *s);
+static void SpinControl_DoEnter(menulist_s *s);
+static void SpinControl_Draw(menulist_s *s);
+static void SpinControl_DoSlide(menulist_s *s, int dir);
 
 #define RCOLUMN_OFFSET  16
 #define LCOLUMN_OFFSET -16
@@ -550,3 +556,4 @@ void SpinControl_Draw( menulist_s *s )
 		Menu_DrawString( RCOLUMN_OFFSET + s->generic.x + s->generic.parent->x, s->generic.y + s->generic.parent->y + 10, buffer );
 	}
 }
+

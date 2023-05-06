@@ -50,6 +50,11 @@ void WaterSplash(centity_t *owner, int type, int flags, vec3_t origin)
 
 #define FLY_EFFECT_THINK_TIME 100 // creates new flies every 0.1 sec
 
+static float avertexnormals[NUMVERTEXNORMALS][3] =
+{
+#include "../client/refresh/constants/anorms.h"
+};
+
 // This needs work. . .
 qboolean CreateFlyParticles(client_entity_t *_this, centity_t *owner)
 {
@@ -68,10 +73,6 @@ qboolean CreateFlyParticles(client_entity_t *_this, centity_t *owner)
 	vec3_t		forward;
 	float		dist = 64;
 	float		ltime;
-	static float avertexnormals [NUMVERTEXNORMALS][3] =
-	{
-	#include "../../qcommon/anorms.h"
-	};
 	static vec3_t avelocities [NUMVERTEXNORMALS];
 
 /*	fly_stoptime = _this->startTime + _this->duration;

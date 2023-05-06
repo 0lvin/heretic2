@@ -25,7 +25,7 @@
  * =======================================================================
  */
 
-#include "../client/client.h"
+#include "../client/header/client.h"
 #include "../game/g_physics.h"
 
 #define	STEPSIZE	18

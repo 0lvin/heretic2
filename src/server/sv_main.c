@@ -24,7 +24,7 @@
  * =======================================================================
  */
 
-#include "server.h"
+#include "header/server.h"
 
 netadr_t	master_adr[MAX_MASTERS];	// address of group servers
 

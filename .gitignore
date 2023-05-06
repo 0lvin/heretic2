@@ -1,3 +1,5 @@
-.vs
-x64/Debug
-Debug
+/build/
+/release/
+*.mk
+*.user
+*.d

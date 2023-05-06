@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "../client/client.h"
+#include "../client/header/client.h"
 #include "../../qcommon/cl_strings.h"
 
 #define MAX_MAPS		26

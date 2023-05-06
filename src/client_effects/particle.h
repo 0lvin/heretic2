@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "../client/client.h"
+#include "../client/header/client.h"
 
 
 typedef enum ParticleTypes_e

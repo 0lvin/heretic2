@@ -19,10 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // common.c -- misc functions used in client and server
 #include "../src/common/header/common.h"
-#include "../src/client/screen.h"
-#include "../src/client/keys.h"
-#include "../src/client/console.h"
-#include "../src/server/server.h"
+#include "../src/client/header/screen.h"
+#include "../src/client/header/keyboard.h"
+#include "../src/client/header/console.h"
+#include "../src/server/header/server.h"
 #include <setjmp.h>
 
 #define	MAXPRINTMSG	4096
@@ -68,7 +68,7 @@ Handles byte ordering and avoids alignment errors
 
 vec3_t	bytedirs[NUMVERTEXNORMALS] =
 {
-#include "anorms.h"
+#include "../src/client/refresh/constants/anorms.h"
 };
 
 //

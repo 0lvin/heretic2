@@ -25,7 +25,7 @@
  * =======================================================================
  */
 
-#include "client.h"
+#include "header/client.h"
 
 extern cvar_t* cl_upspeed;
 extern cvar_t* cl_forwardspeed;

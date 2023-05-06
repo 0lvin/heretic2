@@ -1,30 +1,53 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
-// client.h -- primary header for client
-#ifndef CLIENT_H
-#define CLIENT_H
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ * USA.
+ *
+ * =======================================================================
+ *
+ * Main header for the client
+ *
+ * =======================================================================
+ */
 
-//define	PARANOID			// speed sapping error checking
+#ifndef CL_CLIENT_H
+#define CL_CLIENT_H
 
-#include "../common/header/common.h"
-#include "../../qcommon/angles.h"
-#include "../../qcommon/vector.h"
+
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "refresh/ref_shared.h"
+#include <ctype.h>
 
-#include "vid.h"
+#include "../../common/header/common.h"
+
+#include "../vid/header/ref.h"
+#include "../vid/header/vid.h"
+
 #include "screen.h"
-#include "input.h"
-#include "keys.h"
+#include "keyboard.h"
 #include "console.h"
-#include "../player/player.h"
-#include "../../qcommon/levelmaps.h"
+#include "../input.h"
+#include "../../../qcommon/angles.h"
+#include "../../../qcommon/vector.h"
+#include "../../player/player.h"
+#include "../../../qcommon/levelmaps.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,31 +74,23 @@ extern "C" {
 
 typedef struct
 {
-	qboolean		valid;						// cleared if delta parsing was invalid
+	qboolean		valid; /* cleared if delta parsing was invalid */
 	int				serverframe;
-	int				servertime;					// server time the message is valid for (msec)
+	int				servertime; /* server time the message is valid for (in msec) */
 	int				deltaframe;
-	byte			areabits[MAX_MAP_AREAS/8];	// portalarea visibility bits
+	byte			areabits[MAX_MAP_AREAS/8]; /* portalarea visibility bits */
 	player_state_t	playerstate;
 	int				num_entities;
-	int				parse_entities;				// non-masked index into cl_parse_entities array
+	int				parse_entities; /* non-masked index into cl_parse_entities array */
 } frame_t;
-
-// ********************************************************************************************
-// centity_t
-// ---------
-// ********************************************************************************************
 
 typedef struct centity_s
 {
-	entity_state_t				baseline;		// delta from this if not from a previous frame
-	entity_state_t				current;
-	entity_state_t				prev;			// always valid, but may just be a copy of current
+	entity_state_t	baseline; /* delta from this if not from a previous frame */
+	entity_state_t	current;
+	entity_state_t	prev; /* will always be valid, but might just be a copy of current */
 
-	entity_state_t				*s1;			// pointer to the corresponding entity_state_t in
-												// cl_parse_entities.
-
-	int							serverframe;	// if not current, this ent isn't in the frame
+	int			serverframe; /* if not current, this ent isn't in the frame */
 
 	int							flags;			// What freaking flags go in here??!?!
 
@@ -90,6 +105,9 @@ typedef struct centity_s
 												// Client Effects DLL
 
 	struct LERPedReferences_s	*referenceInfo;
+
+	entity_state_t				*s1;			// pointer to the corresponding entity_state_t in
+												// cl_parse_entities.
 } centity_t;
 
 // ********************************************************************************************
@@ -137,6 +155,8 @@ typedef struct
 // Wiped completely at every server map change.
 // ********************************************************************************************
 
+/* the client_state_t structure is wiped
+   completely at every server map change */
 typedef struct
 {
 	int			timeoutcount;
@@ -144,21 +164,21 @@ typedef struct
 	int			timedemo_frames;
 	int			timedemo_start;
 
-	qboolean	refresh_prepped;	// false if on new level or new ref dll
-	qboolean	sound_prepped;		// ambient sounds can start
-	qboolean	force_refdef;		// vid has changed, so we can't use a paused refdef
+	qboolean	refresh_prepped; /* false if on new level or new ref dll */
+	qboolean	sound_prepped; /* ambient sounds can start */
+	qboolean	force_refdef; /* vid has changed, so we can't use a paused refdef */
 
-	int			parse_entities;		// index (not anded off) into cl_parse_entities[]
+	int			parse_entities; /* index (not anded off) into cl_parse_entities[] */
 
 	usercmd_t	cmd;
-	usercmd_t	cmds[CMD_BACKUP];	// each mesage will send several old cmds
-	int			cmd_time[CMD_BACKUP];	// time sent, for calculating pings
-	short		predicted_origins[CMD_BACKUP][3];	// for debug comparing against server
+	usercmd_t	cmds[CMD_BACKUP]; /* each mesage will send several old cmds */
+	int			cmd_time[CMD_BACKUP]; /* time sent, for calculating pings */
+	short		predicted_origins[CMD_BACKUP][3]; /* for debug comparing against server */
 
-	float		predicted_step;				// for stair up smoothing
+	float		predicted_step; /* for stair up smoothing */
 	unsigned	predicted_step_time;
 
-	vec3_t		predicted_origin;	// generated by CL_PredictMovement
+	vec3_t		predicted_origin; /* generated by CL_PredictMovement */
 	vec3_t		predicted_angles;
 	vec3_t		prediction_error;
 
@@ -217,14 +237,14 @@ typedef struct
 
 	char		configstrings[MAX_CONFIGSTRINGS][MAX_QPATH];
 
-	//
-	// locally derived information from server state
-	//
+	/* locally derived information from server state */
 
 	struct model_s	*model_draw[MAX_MODELS];
+
 	struct cmodel_s	*model_clip[MAX_MODELS];
 
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
+
 	struct image_s	*image_precache[MAX_IMAGES];
 
 	clientinfo_t	clientinfo[MAX_CLIENTS];
@@ -238,33 +258,27 @@ typedef struct
 	predictinfo_t	predictinfo;
 } client_state_t;
 
-Q2_DLL_EXPORTED extern	client_state_t	cl;
+extern	client_state_t	cl;
 
-
-/*
-==================================================================
-
-the client_static_t structure is persistant through an arbitrary number
-of server connections
-
-==================================================================
-*/
-
-typedef enum {
+/* the client_static_t structure is persistant through
+   an arbitrary number of server connections */
+typedef enum
+{
 	ca_uninitialized,
-	ca_disconnected, 	// not talking to a server
-	ca_connecting,		// sending request packets to the server
-	ca_connected,		// netchan_t established, waiting for svc_serverdata
-	ca_active			// game views should be displayed
+	ca_disconnected,  /* not talking to a server */
+	ca_connecting, /* sending request packets to the server */
+	ca_connected, /* netchan_t established, waiting for svc_serverdata */
+	ca_active /* game views should be displayed */
 } connstate_t;
 
-typedef enum {
+typedef enum
+{
 	dl_none,
 	dl_model,
 	dl_sound,
 	dl_skin,
 	dl_single
-} dltype_t;		// download type
+} dltype_t;
 
 typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
 
@@ -456,55 +470,40 @@ extern	cvar_t	*cl_add_blend;
 extern	cvar_t	*cl_add_lights;
 extern	cvar_t	*cl_add_particles;
 extern	cvar_t	*cl_add_entities;
-
 extern	cvar_t	*cl_predict;
 extern	cvar_t	*cl_predict_local;
 extern	cvar_t	*cl_predict_remote;
-
 extern	cvar_t	*cl_footsteps;
-
 extern	cvar_t	*cl_noskins;
 extern	cvar_t	*cl_autoskins;
-
 extern  cvar_t	*cl_maxfps;
 extern	cvar_t	*cl_frametime;
-
 extern	cvar_t	*cl_yawspeed;
 extern	cvar_t	*cl_pitchspeed;
 extern	cvar_t	*cl_run;
 extern	cvar_t	*cl_anglespeedkey;
-
 extern	cvar_t	*cl_shownet;
 extern	cvar_t	*cl_showmiss;
 extern	cvar_t	*cl_showclamp;
-
 extern	cvar_t	*freelook;
 extern	cvar_t	*lookspring;
 extern	cvar_t	*lookstrafe;
-
 extern	cvar_t	*mouse_sensitivity_x;
 extern	cvar_t	*mouse_sensitivity_y;
-
 extern	cvar_t	*doubletap_speed;
-
 extern	cvar_t	*allow_download;
 extern	cvar_t	*allow_download_maps;
 extern	cvar_t	*allow_download_players;
 extern	cvar_t	*allow_download_models;
 extern	cvar_t	*allow_download_sounds;
-
 extern	cvar_t	*m_pitch;
 extern	cvar_t	*m_yaw;
 extern	cvar_t	*m_forward;
 extern	cvar_t	*m_side;
-
-extern	cvar_t	*cl_lightlevel;	// FIXME HACK
-
-Q2_DLL_EXPORTED extern	cvar_t	*cl_paused;
-
+extern	cvar_t	*cl_lightlevel;
+extern	cvar_t	*cl_paused;
 extern	cvar_t	*cl_freezeworld;
 extern	cvar_t	*cl_timedemo;
-
 extern cvar_t	*cl_camera_clipdamp;
 extern cvar_t	*cl_camera_combat;
 extern cvar_t	*cl_camera_dampfactor;
@@ -539,23 +538,23 @@ extern cvar_t	*cl_no_middle_text;
 
 typedef struct
 {
-	int		key;				// so entities can reuse same entry
+	int		key; /* so entities can reuse same entry */
 	vec3_t	color;
 	vec3_t	origin;
 	float	radius;
-	float	die;				// stop lighting after this time
-	float	decay;				// drop this each second
-	float	minlight;			// don't add when contributing less
+	float	die; /* stop lighting after this time */
+	float	decay; /* drop this each second */
+	float	minlight; /* don't add when contributing less */
 } cdlight_t;
 
-Q2_DLL_EXPORTED extern	centity_t	cl_entities[MAX_NETWORKABLE_EDICTS];
+extern	centity_t	cl_entities[MAX_NETWORKABLE_EDICTS];
 extern	cdlight_t	cl_dlights[MAX_DLIGHTS];
 
 // the cl_parse_entities must be large enough to hold UPDATE_BACKUP frames of
 // entities, so that when a delta compressed message arives from the server
 // it can be un-deltad from the original
 #define	MAX_PARSE_ENTITIES	1024
-Q2_DLL_EXPORTED extern	entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
+extern	entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
 
 //=============================================================================
 
@@ -567,7 +566,7 @@ extern	netadr_t	net_from;
 extern	sizebuf_t	net_message;
 
 void DrawString (int x, int y, char *s);
-qboolean CL_CheckOrDownloadFile (char *filename);
+qboolean	CL_CheckOrDownloadFile (char *filename);
 
 void CL_AddNetgraph (void);
 int CL_ParseEntityBits (unsigned int *bf);
@@ -612,9 +611,9 @@ void CL_Snd_Restart_f_nocfx (void);
 //
 typedef struct
 {
-	int			down[2];		// key nums holding it down
-	unsigned	downtime;		// msec timestamp
-	unsigned	msec;			// msec down this frame
+	int			down[2]; /* key nums holding it down */
+	unsigned	downtime; /* msec timestamp */
+	unsigned	msec; /* msec down this frame */
 	int			state;
 } kbutton_t;
 

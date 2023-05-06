@@ -46,7 +46,7 @@ endif
 
 NOARCH=noarch
 
-BUILD_DEBUG_DIR=Debug
+BUILD_DEBUG_DIR=build
 
 CC ?= gcc
 CXX ?= g++
@@ -270,9 +270,9 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client_effects/player_effects.o \
 	$(BUILDDIR)/src/client_effects/test_effect.o \
 	$(BUILDDIR)/src/client_effects/utilities.o \
-	$(BUILDDIR)/src/client/keys.o \
-	$(BUILDDIR)/src/client/menu.o \
-	$(BUILDDIR)/src/client/qmenu.o \
+	$(BUILDDIR)/src/client/cl_keyboard.o \
+	$(BUILDDIR)/src/client/menu/menu.o \
+	$(BUILDDIR)/src/client/menu/qmenu.o \
 	$(BUILDDIR)/external/smacker.o \
 	$(BUILDDIR)/external/smk_bitstream.o \
 	$(BUILDDIR)/external/smk_hufftree.o \
@@ -443,7 +443,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/common/clientserver.o \
 	$(BUILDDIR)/linux/snd_linux.o \
 	$(BUILDDIR)/linux/sys_linux.o \
-	$(BUILDDIR)/linux/vid_menu.o \
+	$(BUILDDIR)/src/client/menu/videomenu.o \
 	$(BUILDDIR)/linux/vid_so.o \
 	$(BUILDDIR)/src/player/p_actions.o \
 	$(BUILDDIR)/src/player/p_animactor.o \

@@ -25,7 +25,7 @@
  * =======================================================================
  */
 
-#include "client.h"
+#include "header/client.h"
 #include "../../external/smacker.h"
 
 struct cinematics_t

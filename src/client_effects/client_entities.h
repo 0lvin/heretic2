@@ -6,7 +6,7 @@
 #define CLIENT_ENTITIES_H
 
 #include "../common/header/common.h"
-#include "../client/client.h"
+#include "../client/header/client.h"
 
 #include "../../h2common/message.h"
 #include "ce_message.h"

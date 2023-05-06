@@ -24,7 +24,8 @@
  * =======================================================================
  */
 
-#include "server.h"
+#include "header/server.h"
+
 #include "../../qcommon/fx.h"
 
 game_export_t	*ge;

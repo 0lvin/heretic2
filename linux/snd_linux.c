@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <linux/soundcard.h>
 #include <stdio.h>
 
-#include "../src/client/client.h"
+#include "../src/client/header/client.h"
 #include "../src/client/snd_loc.h"
 
 int audio_fd;
