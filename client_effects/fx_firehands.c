@@ -16,7 +16,7 @@
 #include "utilities.h"
 #include "../qcommon/reference.h"
 #include "ce_dlight.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 
 #define HANDFIRE_NUM	1

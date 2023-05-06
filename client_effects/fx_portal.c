@@ -13,7 +13,7 @@
 #include "string.h"
 #include "utilities.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 
 #define SINESCALE (256.0 / (2 * M_PI))

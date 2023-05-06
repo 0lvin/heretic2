@@ -17,7 +17,7 @@
 #include "utilities.h"
 #include "../qcommon/reference.h"
 #include "../qcommon/matrix.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define	NUM_MISSILE_MODELS	11
 #define	NUM_STAFF_MODELS	1

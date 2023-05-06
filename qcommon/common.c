@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../client/screen.h"
 #include "../client/keys.h"
 #include "../client/console.h"
-#include "../server/server.h"
+#include "../src/server/server.h"
 #include <setjmp.h>
 
 #define	MAXPRINTMSG	4096

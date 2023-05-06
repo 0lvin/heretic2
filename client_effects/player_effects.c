@@ -11,7 +11,7 @@
 #include "../qcommon/random.h"
 #include "../qcommon/reference.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 void FXCompass(centity_t *owner, int type, int flags, vec3_t origin);
 

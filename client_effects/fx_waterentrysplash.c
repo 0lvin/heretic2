@@ -12,7 +12,7 @@
 #include "../qcommon/resourcemanager.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/random.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define	NUM_SPLASH_MODELS	2
 static struct model_s *water_models[NUM_SPLASH_MODELS];

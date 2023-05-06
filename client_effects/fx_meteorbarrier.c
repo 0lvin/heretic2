@@ -15,7 +15,7 @@
 #include "../qcommon/random.h"
 #include "fx_debris.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define	NUM_METEOR_MODELS	1
 

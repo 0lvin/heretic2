@@ -14,7 +14,7 @@
 #include "utilities.h"
 #include "../qcommon/random.h"
 #include "../qcommon/motion.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 #include "ce_dlight.h"
 
 #define FLAME_COUNT			4

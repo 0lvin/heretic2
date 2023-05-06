@@ -12,7 +12,7 @@
 #include "../qcommon/resourcemanager.h"
 #include "../qcommon/fx.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define	NUM_SCORCH_MODELS	1
 

@@ -16,7 +16,7 @@
 #include "../qcommon/random.h"
 #include "utilities.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define	NUM_HELL_MODELS	2
 static struct model_s *hell_models[NUM_HELL_MODELS];

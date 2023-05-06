@@ -17,7 +17,7 @@
 #include "ce_dlight.h"
 #include "q_sprite.h"
 #include "particle.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 enum
 {

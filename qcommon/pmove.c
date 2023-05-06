@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "../client/client.h"
-#include "../game/g_physics.h"
+#include "../src/game/g_physics.h"
 
 #define	STEPSIZE	18
 #define OVERCLIP	1.001f

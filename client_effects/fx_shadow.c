@@ -17,7 +17,7 @@
 #include "../qcommon/reference.h"
 #include "q_sprite.h"
 #include "../qcommon/q_surface.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #include <limits.h>
 

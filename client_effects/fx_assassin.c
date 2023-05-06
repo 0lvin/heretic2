@@ -13,7 +13,7 @@
 #include "../qcommon/fx.h"
 #include "../qcommon/random.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 void PreCacheTPortSmoke()
 {

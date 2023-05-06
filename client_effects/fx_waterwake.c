@@ -12,7 +12,7 @@
 #include "../qcommon/resourcemanager.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/angles.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 #include "../qcommon/random.h"
 
 #define	NUM_WAKE_MODELS	2

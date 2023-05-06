@@ -13,7 +13,7 @@
 #include "../qcommon/motion.h"
 #include "particle.h"
 #include "ce_dlight.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 #include "../qcommon/skeletons.h"
 
 

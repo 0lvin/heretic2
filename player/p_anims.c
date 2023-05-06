@@ -12,7 +12,7 @@
 #include "p_anim_data.h"
 #include "p_anims.h"
 #include "p_main.h"
-#include "../game/g_skeletons.h"
+#include "../src/game/g_skeletons.h"
 #include "../qcommon/angles.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/random.h"

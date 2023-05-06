@@ -16,7 +16,7 @@
 #include "../qcommon/motion.h"
 #include "../qcommon/reference.h"
 #include "ce_dlight.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define	SMALL_RAD	8
 #define	MORPH_GLOW_DUR	10

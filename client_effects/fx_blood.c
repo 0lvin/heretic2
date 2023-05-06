@@ -14,7 +14,7 @@
 #include "../qcommon/random.h"
 #include "../qcommon/reference.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define BLOOD_SPEED					40.0F
 #define NUM_BLOOD_SPURT_PARTS		20

@@ -15,10 +15,10 @@
 #include "utilities.h"
 #include "../qcommon/angles.h"
 #include "../qcommon/random.h"
-#include "../game/g_physics.h"
+#include "../src/game/g_physics.h"
 #include "fx_debris.h"
 #include "ce_dlight.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float ke,float scale, int flags, qboolean altskin);
 client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood);

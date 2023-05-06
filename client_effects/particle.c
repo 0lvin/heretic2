@@ -13,7 +13,7 @@
 #include "../qcommon/resourcemanager.h"
 #include "client_entities.h"
 #include "../qcommon/random.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define	MAX_PARTS_PER_CE	2048
 

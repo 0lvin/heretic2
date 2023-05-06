@@ -17,7 +17,7 @@
 #include "utilities.h"
 #include "../qcommon/reference.h"
 #include "../qcommon/matrix.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 client_entity_t *MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, int lifetime, qboolean plasma);
 

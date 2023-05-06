@@ -10,7 +10,7 @@
 #include "client_effects.h"
 #include "ce_defaultmessagehandler.h"
 #include "../qcommon/effectflags.h"
-#include "../game/g_physics.h"
+#include "../src/game/g_physics.h"
 #include "fx_debris.h"
 #include "../qcommon/random.h"
 #include "particle.h"

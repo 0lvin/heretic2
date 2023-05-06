@@ -12,7 +12,7 @@
 #include "../qcommon/random.h"
 #include "string.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define PLAYER_FADE_TIME  14
 #define PLAYER_FADE_AMOUNT  255/ PLAYER_FADE_TIME

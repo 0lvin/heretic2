@@ -14,7 +14,7 @@
 #include "../qcommon/motion.h"
 #include "utilities.h"
 #include "../qcommon/matrix.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 void CreateFountainSplash(client_entity_t *owner, vec3_t origin, float xspread, float yspread, float angle)
 {

@@ -18,7 +18,7 @@
 #include "../qcommon/reference.h"
 #include "ce_dlight.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 
 #define	NUM_WALL_MODELS	3

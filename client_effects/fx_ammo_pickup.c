@@ -15,7 +15,7 @@
 #include "../qcommon/random.h"
 #include "utilities.h"
 #include "../qcommon/angles.h"
-#include "../game/g_items.h"
+#include "../src/game/g_items.h"
 
 #define BOB_HEIGHT		6.0
 #define BOB_SPEED		ANGLE_10

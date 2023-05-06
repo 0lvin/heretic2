@@ -17,7 +17,7 @@
 #include "../qcommon/reference.h"
 #include "ce_dlight.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 #include "fx_debris.h"
 
 #define BALL_RADIUS		0.15

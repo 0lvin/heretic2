@@ -17,7 +17,7 @@
 #include "../qcommon/reference.h"
 #include "ce_dlight.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define LIGHTNING_WIDTH		6.0
 #define LIGHTNING_WIDTH_MULT	1.4

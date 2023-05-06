@@ -14,7 +14,7 @@
 #include "utilities.h"
 #include "../qcommon/reference.h"
 #include "../qcommon/matrix.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 enum {
 	MODEL_SPARKSTREAK,

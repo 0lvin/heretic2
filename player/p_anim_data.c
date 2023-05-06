@@ -14,7 +14,7 @@
 #include "p_chicken.h"
 #include "p_main.h"
 #include "p_ctrl.h"
-#include "../game/m_player.h"
+#include "../src/game/m_player.h"
 #include "../qcommon/fx.h"
 #include "../qcommon/reference.h"
 

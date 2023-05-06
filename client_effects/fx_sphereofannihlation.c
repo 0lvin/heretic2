@@ -17,7 +17,7 @@
 #include "utilities.h"
 #include "../qcommon/reference.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 
 #define	NUM_SPHERE_MODELS	8
 

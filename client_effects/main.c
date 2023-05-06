@@ -17,8 +17,8 @@
 #include "ce_message.h"
 #include "../qcommon/angles.h"
 #include "../qcommon/skeletons.h"
-#include "../game/g_physics.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_physics.h"
+#include "../src/game/g_playstats.h"
 #include "../src/common/header/common.h"
 
 

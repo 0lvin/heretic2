@@ -9,7 +9,7 @@
 #include "p_types.h"
 #include "p_main.h"
 #include "p_weapon.h"
-#include "../game/g_items.h"
+#include "../src/game/g_items.h"
 #include "../qcommon/cl_strings.h"
 
 //FIXME:  Include header

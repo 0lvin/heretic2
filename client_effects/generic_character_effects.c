@@ -11,7 +11,7 @@
 #include "../qcommon/random.h"
 #include "ce_dlight.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../src/game/g_playstats.h"
 #include "../qcommon/matrix.h"
 #include "../qcommon/reference.h"
 
