@@ -164,15 +164,17 @@ keyname_t keynames[] =
 
 void CompleteCommand (void)
 {
-	char	*cmd, *s;
+	char *cmd, *s;
 
-	s = key_lines[edit_line]+1;
-	if (*s == '\\' || *s == '/')
+	s = key_lines[edit_line] + 1;
+
+	if ((*s == '\\') || (*s == '/'))
+	{
 		s++;
+	}
 
-	cmd = Cmd_CompleteCommand (s);
-	if (!cmd)
-		cmd = Cvar_CompleteVariable (s);
+	cmd = Cmd_CompleteCommand(s);
+
 	if (cmd)
 	{
 		key_lines[edit_line][1] = '/';

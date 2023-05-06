@@ -60,6 +60,8 @@ int		time_after_game;
 int		time_before_ref;
 int		time_after_ref;
 
+// Game given by user
+char userGivenGame[MAX_QPATH];
 
 /*
 ============================================================================
@@ -1379,7 +1381,8 @@ static void Com_Error_f (void)
 Qcommon_Init
 =================
 */
-void Qcommon_Init (int argc, char **argv)
+void
+Qcommon_Init (int argc, char **argv)
 {
 	char	*s;
 
@@ -1414,6 +1417,19 @@ void Qcommon_Init (int argc, char **argv)
 
 	Cbuf_AddEarlyCommands (true);
 	Cbuf_Execute ();
+
+	// remember the initial game name that might have been set on commandline
+	{
+		cvar_t* gameCvar = Cvar_Get("game", "", CVAR_LATCH | CVAR_SERVERINFO);
+		const char* game = "";
+
+		if(gameCvar->string && gameCvar->string[0])
+		{
+			game = gameCvar->string;
+		}
+
+		Q_strlcpy(userGivenGame, game, sizeof(userGivenGame));
+	}
 
 	//
 	// init commands and vars

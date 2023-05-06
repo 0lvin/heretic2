@@ -572,7 +572,7 @@ FS_ExecAutoexec
 */
 void FS_ExecAutoexec (void)
 {
-	char *dir;
+	const char *dir;
 	char name [MAX_QPATH];
 
 	dir = Cvar_VariableString("gamedir");
@@ -879,4 +879,10 @@ void FS_InitFilesystem (void)
 	fs_gamedirvar = Cvar_Get ("game", "", CVAR_LATCH|CVAR_SERVERINFO);
 	if (fs_gamedirvar->string[0])
 		FS_SetGamedir (fs_gamedirvar->string);
+}
+
+void
+FS_BuildGameSpecificSearchPath(char *dir)
+{
+	Com_Printf("%s is unimplemented.\n", __func__);
 }

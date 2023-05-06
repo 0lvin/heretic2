@@ -825,7 +825,10 @@ extern	cvar_t	*allow_download_players;
 extern	cvar_t	*allow_download_models;
 extern	cvar_t	*allow_download_sounds;
 
-extern	FILE *log_stats_file;
+/* Hack for working 'game' cmd */
+extern char userGivenGame[MAX_QPATH];
+
+extern FILE *log_stats_file;
 
 // host_speeds times
 #ifdef _DEVEL

@@ -419,9 +419,9 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/qcommon/cmodel.o \
 	$(BUILDDIR)/qcommon/common.o \
 	$(BUILDDIR)/qcommon/crc.o \
-	$(BUILDDIR)/qcommon/cvar.o \
+	$(BUILDDIR)/src/common/cvar.o \
 	$(BUILDDIR)/qcommon/files.o \
-	$(BUILDDIR)/qcommon/md4.o \
+	$(BUILDDIR)/src/common/md4.o \
 	$(BUILDDIR)/h2common/message.o \
 	$(BUILDDIR)/qcommon/net_chan.o \
 	$(BUILDDIR)/qcommon/netmsg_read.o \

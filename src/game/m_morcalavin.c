@@ -1838,7 +1838,7 @@ int	morcalavin_resist_death (edict_t *self, edict_t *inflictor, edict_t *attacke
 	gi.sound(self, CHAN_VOICE, sounds[SND_FALL], 1, ATTN_NORM, 0);
 	SetAnim(self, ANIM_FALL);
 
-	self->s.color.a = 0xFFFFFFFF;
+	self->s.color.a = 0xFF;
 	self->pre_think = NULL;
 	self->next_pre_think = -1;
 
