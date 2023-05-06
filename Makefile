@@ -394,10 +394,10 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/h2common/h2singlylinkedlist.o \
 	$(BUILDDIR)/h2common/h2surfaces.o \
 	$(BUILDDIR)/h2common/h2vector.o \
-	$(BUILDDIR)/linux/glob.o \
+	$(BUILDDIR)/src/common/glob.o \
 	$(BUILDDIR)/linux/net_udp.o \
 	$(BUILDDIR)/linux/p_dll.o \
-	$(BUILDDIR)/linux/q_shlinux.o \
+	$(BUILDDIR)/src/backends/unix/system.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
 	$(BUILDDIR)/linux/snd_linux.o \
 	$(BUILDDIR)/linux/sys_linux.o \
@@ -473,9 +473,9 @@ REF_SOFT_OBJS = \
 	\
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
-	$(BUILDDIR)/linux/q_shlinux.o \
+	$(BUILDDIR)/src/backends/unix/system.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
-	$(BUILDDIR)/linux/glob.o
+	$(BUILDDIR)/src/common/glob.o
 
 REF_SOFT_X11_OBJS = \
 	$(BUILDDIR)/linux/rw_x11.o
@@ -509,9 +509,9 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/linux/qgl_linux.o \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
-	$(BUILDDIR)/linux/q_shlinux.o \
+	$(BUILDDIR)/src/backends/unix/system.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
-	$(BUILDDIR)/linux/glob.o
+	$(BUILDDIR)/src/common/glob.o
 
 REF_GL_GLX_OBJS = \
 	$(BUILDDIR)/linux/gl_glx.o
