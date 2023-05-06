@@ -10,7 +10,7 @@
 #include "../../qcommon/fx.h"
 #include "../../qcommon/random.h"
 #include "g_playstats.h"
-#include "../../player/p_actions.h"
+#include "../player/p_actions.h"
 
 
 #define RING_THINKS	4		// This is a .4 seconds

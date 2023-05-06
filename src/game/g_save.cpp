@@ -10,7 +10,7 @@
 #include "g_physics.h"
 #include "g_playstats.h"
 #include "utilities.h"
-#include "../../player/p_anims.h"
+#include "../player/p_anims.h"
 #include "../../qcommon/fx.h"
 #include "g_hitlocation.h"
 

@@ -41,10 +41,10 @@
 #include "g_misc.h"
 #include "../../qcommon/angles.h"
 #include "c_ai.h"
-#include "../../player/p_anim_branch.h"
-#include "../../player/p_anims.h"
+#include "../player/p_anim_branch.h"
+#include "../player/p_anims.h"
 #include "m_stats.h"
-#include "../../player/p_actions.h"
+#include "../player/p_actions.h"
 
 qboolean clear_visible (edict_t *self, edict_t *other);
 void extrapolateFiredir (edict_t *self,vec3_t p1,float pspeed,edict_t *targ,float accept,vec3_t vec2);

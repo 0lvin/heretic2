@@ -10,13 +10,13 @@
 #include "../../h2common/singlylinkedlist.h"
 #include "g_physics.h"
 #include "utilities.h"
-#include "../../player/p_main.h"
+#include "../player/p_main.h"
 #include "../../qcommon/random.h"
-#include "../../player/p_anim_branch.h"
-#include "../../player/p_anims.h"
+#include "../player/p_anim_branch.h"
+#include "../player/p_anims.h"
 #include "../../qcommon/fx.h"
 #include "g_playstats.h"
-#include "../../player/p_actions.h"
+#include "../player/p_actions.h"
 
 static void Physics_None(edict_t *self);
 static void Physics_Static(edict_t *self);

@@ -1,19 +1,38 @@
-//
-// g_items.c
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Item handling and item definitions.
+ *
+ * =======================================================================
+ */
 
 #include "../common/header/common.h"
 #include "g_local.h"
 #include "p_item.h"
 #include "g_items.h"
-#include "../../player/player.h"
-#include "../../player/p_weapon.h"
+#include "../player/player.h"
+#include "../player/p_weapon.h"
 #include "g_weapon.h"
-#include "../../player/p_anims.h"
-#include "../../player/p_anim_data.h"
+#include "../player/p_anims.h"
+#include "../player/p_anim_data.h"
 #include "../../qcommon/fx.h"
 #include "../../qcommon/random.h"
 #include "g_itemstats.h"

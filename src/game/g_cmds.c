@@ -1,16 +1,38 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Game command processing.
+ *
+ * =======================================================================
+ */
+
 #include "../common/header/common.h"
 #include "g_local.h"
 #include "m_player.h"
 #include "g_items.h"
 #include "../../qcommon/random.h"
 #include "g_playstats.h"
-#include "../../player/p_actions.h"
-#include "../../player/p_anims.h"
-#include "../../player/p_main.h"
+#include "../player/p_actions.h"
+#include "../player/p_anims.h"
+#include "../player/p_main.h"
 #include "p_funcs.h"
 #include "g_itemstats.h"
 #include "../../qcommon/cl_strings.h"
@@ -1460,22 +1482,22 @@ qboolean CheckFlood(edict_t *ent)
 
 	if (flood_msgs->value)
 	{
-        if (level.time < ent->client->flood_locktill)
+	if (level.time < ent->client->flood_locktill)
 		{
 			gi.msgvar_centerprintf(ent, GM_SHUTUP, (int)(ent->client->flood_locktill - level.time));
-            return true;
-        }
-        i = ent->client->flood_whenhead - flood_msgs->value + 1;
-        if (i < 0)
+	    return true;
+	}
+	i = ent->client->flood_whenhead - flood_msgs->value + 1;
+	if (i < 0)
 		{
-            i = (sizeof(ent->client->flood_when) / sizeof(ent->client->flood_when[0])) + i;
+	    i = (sizeof(ent->client->flood_when) / sizeof(ent->client->flood_when[0])) + i;
 		}
 		if (ent->client->flood_when[i] && (level.time - ent->client->flood_when[i] < flood_persecond->value))
 		{
 			ent->client->flood_locktill = level.time + flood_waitdelay->value;
 			gi.msgvar_centerprintf(ent, GM_SHUTUP, (int)flood_waitdelay->value);
-            return true;
-        }
+	    return true;
+	}
 		ent->client->flood_whenhead = (ent->client->flood_whenhead + 1) % (sizeof(ent->client->flood_when) / sizeof(ent->client->flood_when[0]));
 		ent->client->flood_when[ent->client->flood_whenhead] = level.time;
 	}

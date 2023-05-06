@@ -4,10 +4,10 @@
 //
 #include "../common/header/common.h"
 #include "g_local.h"
-#include "../../player/player.h"
-#include "../../player/p_actions.h"
+#include "../player/player.h"
+#include "../player/p_actions.h"
 #include "g_defaultmessagehandler.h"
-#include "../../player/p_main.h"
+#include "../player/p_main.h"
 #include "buoy.h"
 #include "m_stats.h"
 #include "g_teleport.h"

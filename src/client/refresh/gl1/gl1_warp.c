@@ -654,3 +654,4 @@ void R_SetSky (char *name, float rotate, vec3_t axis)
 		}
 	}
 }
+

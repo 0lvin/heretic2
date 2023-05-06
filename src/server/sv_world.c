@@ -717,3 +717,4 @@ SV_Trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end,
 
 	return clip.trace;
 }
+

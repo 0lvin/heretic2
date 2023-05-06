@@ -4,7 +4,7 @@
 //
 #include "../qcommon/resourcemanager.h"
 
-#include "../qcommon/surfaceprops.h"
+#include "../src/player/surfaceprops.h"
 
 char *surfacePropNames[256] =
 {

@@ -56,10 +56,10 @@ GORGON
 #include "m_gorgon.h"
 #include "m_gorgon_anim.h"
 #include "m_stats.h"
-#include "../../player/p_anim_branch.h"
-#include "../../player/p_anims.h"
+#include "../player/p_anim_branch.h"
+#include "../player/p_anims.h"
 #include "g_hitlocation.h"
-#include "../../player/p_actions.h"
+#include "../player/p_actions.h"
 
 
 // *************************************

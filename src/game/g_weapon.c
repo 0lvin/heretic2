@@ -1,13 +1,33 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
-// g_weapon.c - generic weapon handling code for all player weapons
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Weapon support functions.
+ *
+ * =======================================================================
+ */
 
 #include "../common/header/common.h"
-#include "../../player/player.h"
+#include "../player/player.h"
 #include "g_local.h"
-#include "../../player/p_weapon.h"
+#include "../player/p_weapon.h"
 #include "m_player.h"
 #include "../../qcommon/fx.h"
 #include "../../qcommon/matrix.h"
@@ -18,9 +38,9 @@
 #include "utilities.h"
 #include "g_items.h"
 #include "g_playstats.h"
-#include "../../player/p_main.h"
+#include "../player/p_main.h"
 #include "m_beast.h"
-#include "../../player/p_anims.h"
+#include "../player/p_anims.h"
 
 extern void SpellCastFlyingFist(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value);
 extern void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir);

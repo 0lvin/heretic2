@@ -12,7 +12,7 @@
 #include "utilities.h"
 #include "../../qcommon/random.h"
 #include "decals.h"
-#include "../../player/p_main.h"
+#include "../player/p_main.h"
 #include "g_playstats.h"
 #include "m_beast.h"
 

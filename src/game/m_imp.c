@@ -24,9 +24,9 @@ Copyright 1998 Raven Software
 #include "g_hitlocation.h"
 #include "g_misc.h"
 #include "m_stats.h"
-#include "../../player/p_anim_branch.h"
+#include "../player/p_anim_branch.h"
 #include "g_playstats.h"
-#include "../../player/p_actions.h"
+#include "../player/p_actions.h"
 
 #define IMP_CHECK_DIST		128
 #define	IMP_COLLISION_DIST	148

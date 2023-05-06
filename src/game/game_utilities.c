@@ -16,7 +16,7 @@
 #include "g_physics.h"
 #include "../../qcommon/random.h"
 #include "../../qcommon/fx.h"
-#include "../../player/p_main.h"
+#include "../player/p_main.h"
 
 //kill specific entitys at the begining of a cinematic
 void remove_non_cinematic_entites(edict_t *owner)

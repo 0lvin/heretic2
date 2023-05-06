@@ -1,8 +1,28 @@
-//
-// Copyright 1998 Raven Software
-//
-// Heretic II
-//
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Trigger.
+ *
+ * =======================================================================
+ */
 
 #include "../common/header/common.h"
 #include "g_local.h"
@@ -896,9 +916,9 @@ ANY - anything can activate it
 -------KEYS--------------------
 origin-- Starting point.
 target-- Ending point entity.
-         There may be more than one with a given targetname.
+	 There may be more than one with a given targetname.
 delay-- (0-25.5) Sec. duration of lightning.
-         Leave this at zero for a normal strike
+	 Leave this at zero for a normal strike
 materialtype-- 0=blue, 1=red
 style-- Width of bolt.  Red rain uses 6.
 wait - amount of time until it will become active again (default 10).

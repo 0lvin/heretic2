@@ -26,8 +26,8 @@
 #include "g_misc.h"
 #include "g_hitlocation.h"
 #include "m_stats.h"
-#include "../../player/p_anim_branch.h"
-#include "../../player/p_anims.h"
+#include "../player/p_anim_branch.h"
+#include "../player/p_anims.h"
 
 // Stats
 /*#define SPREADER_HEALTH		(200.0)

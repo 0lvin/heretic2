@@ -13,7 +13,7 @@
 #include "utilities.h"
 #include "../../qcommon/random.h"
 #include "g_teleport.h"
-#include "../../player/p_main.h"
+#include "../player/p_main.h"
 #include "g_playstats.h"
 
 extern void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles);

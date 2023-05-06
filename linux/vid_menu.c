@@ -17,8 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-#include "../client/client.h"
-#include "../client/qmenu.h"
+#include "../src/client/client.h"
+#include "../src/client/qmenu.h"
 
 #define REF_SOFT	0
 #define REF_SOFTX11	1

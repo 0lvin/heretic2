@@ -22,9 +22,9 @@ TBEAST
 #include "../../qcommon/random.h"
 #include "buoy.h"
 
-#include "../../player/p_actions.h"
-#include "../../player/p_anims.h"
-#include "../../player/p_anim_branch.h"
+#include "../player/p_actions.h"
+#include "../player/p_anims.h"
+#include "../player/p_anim_branch.h"
 #include "g_physics.h"
 #include "g_physics.h"
 #include "g_misc.h"

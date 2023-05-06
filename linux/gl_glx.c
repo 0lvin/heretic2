@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../src/client/refresh/gl1/header/local.h"
 
-#include "../client/keys.h"
+#include "../src/client/keys.h"
 
 #include "../linux/rw_linux.h"
 #include "../linux/glw_linux.h"

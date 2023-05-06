@@ -17,11 +17,11 @@
 #include "../../qcommon/random.h"
 #include "../../qcommon/fx.h"
 #include "g_hitlocation.h"
-#include "../../player/p_main.h"
+#include "../player/p_main.h"
 #include "g_misc.h"
 #include "m_stats.h"
 #include "g_playstats.h"
-#include "../../player/p_actions.h"
+#include "../player/p_actions.h"
 
 static int sounds[NUM_SOUNDS];
 static ClassResourceInfo_t resInfo;

@@ -28,8 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <linux/soundcard.h>
 #include <stdio.h>
 
-#include "../client/client.h"
-#include "../client/snd_loc.h"
+#include "../src/client/client.h"
+#include "../src/client/snd_loc.h"
 
 int audio_fd;
 int snd_inited;
@@ -54,7 +54,7 @@ qboolean SNDDMA_Init(void)
 	extern uid_t saved_euid;
 
 	if (snd_inited)
-		return;
+		return 0;
 
 	if (!snddevice) {
 		sndbits = Cvar_Get("sndbits", "16", CVAR_ARCHIVE);

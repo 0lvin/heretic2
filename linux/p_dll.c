@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "../player/player.h"
+#include "../src/player/player.h"
 #include "../src/game/g_local.h"
 #include "../src/common/header/common.h"
 

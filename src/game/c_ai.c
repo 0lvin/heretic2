@@ -14,7 +14,7 @@
 #include "g_monster.h"
 #include "g_misc.h"
 #include "c_corvus1_anim.h"
-#include "../../player/p_main.h"
+#include "../player/p_main.h"
 
 
 

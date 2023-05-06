@@ -22,8 +22,8 @@
 #include "../../qcommon/fx.h"
 #include "../../qcommon/matrix.h"
 #include "utilities.h"
-#include "../../player/p_main.h"
-#include "../../player/p_anims.h"
+#include "../player/p_main.h"
+#include "../player/p_anims.h"
 #include "../../qcommon/random.h"
 
 #define ARROW_SPEED			400.0F

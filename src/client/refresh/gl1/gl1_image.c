@@ -1622,3 +1622,4 @@ void	GL_ShutdownImages (void)
 		memset (image, 0, sizeof(*image));
 	}
 }
+

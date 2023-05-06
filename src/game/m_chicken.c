@@ -23,7 +23,7 @@
 #include "g_physics.h"
 #include "g_teleport.h"
 #include "g_skeletons.h"
-#include "../../player/p_anims.h"
+#include "../player/p_anims.h"
 
 #include "m_chicken.h"
 #include "m_chicken_anim.h"

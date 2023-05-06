@@ -5,9 +5,9 @@
 // Created by JJS
 
 #include "../common/header/common.h"
-#include "../../player/player.h"
+#include "../player/player.h"
 #include "g_local.h"
-#include "../../player/p_weapon.h"
+#include "../player/p_weapon.h"
 #include "m_player.h"
 #include "../../qcommon/fx.h"
 #include "../../qcommon/matrix.h"
