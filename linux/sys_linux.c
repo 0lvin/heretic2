@@ -45,19 +45,10 @@ cvar_t *nostdout;
 unsigned	sys_frame_time;
 
 uid_t saved_euid;
-qboolean stdin_active = true;
 
 // =======================================================================
 // General routines
 // =======================================================================
-
-void Sys_ConsoleOutput (char *string)
-{
-	if (nostdout && nostdout->value)
-		return;
-
-	fputs(string, stdout);
-}
 
 void Sys_Printf (char *fmt, ...)
 {
@@ -82,38 +73,6 @@ void Sys_Printf (char *fmt, ...)
 		else
 			putc(*p, stdout);
 	}
-}
-
-void Sys_Quit (void)
-{
-	CL_Shutdown ();
-	Qcommon_Shutdown ();
-    fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~FNDELAY);
-	_exit(0);
-}
-
-void Sys_Init(void)
-{
-}
-
-void Sys_Error (char *error, ...)
-{
-    va_list     argptr;
-    char        string[1024];
-
-// change stdin to non blocking
-    fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~FNDELAY);
-
-	CL_Shutdown ();
-	Qcommon_Shutdown ();
-
-    va_start (argptr,error);
-    vsprintf (string,error,argptr);
-    va_end (argptr);
-	fprintf(stderr, "Error: %s\n", string);
-
-	_exit (1);
-
 }
 
 void Sys_Warn (char *warning, ...)
@@ -148,111 +107,6 @@ void floating_point_exception_handler(int whatever)
 {
 //	Sys_Warn("floating point exception\n");
 	signal(SIGFPE, floating_point_exception_handler);
-}
-
-char *Sys_ConsoleInput(void)
-{
-    static char text[256];
-    int     len;
-	fd_set	fdset;
-    struct timeval timeout;
-
-	if (!dedicated || !dedicated->value)
-		return NULL;
-
-	if (!stdin_active)
-		return NULL;
-
-	FD_ZERO(&fdset);
-	FD_SET(0, &fdset); // stdin
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 0;
-	if (select (1, &fdset, NULL, NULL, &timeout) == -1 || !FD_ISSET(0, &fdset))
-		return NULL;
-
-	len = read (0, text, sizeof(text));
-	if (len == 0) { // eof!
-		stdin_active = false;
-		return NULL;
-	}
-
-	if (len < 1)
-		return NULL;
-	text[len-1] = 0;    // rip off the /n and terminate
-
-	return text;
-}
-
-/*****************************************************************************/
-
-static void *game_library;
-
-/*
-=================
-Sys_UnloadGame
-=================
-*/
-void Sys_UnloadGame (void)
-{
-	if (game_library)
-		dlclose (game_library);
-	game_library = NULL;
-}
-
-/*
-=================
-Sys_GetGameAPI
-
-Loads the game dll
-=================
-*/
-void *Sys_GetGameAPI (void *parms)
-{
-	void	*(*GetGameAPI) (void *);
-
-	char	name[MAX_OSPATH];
-	char	curpath[MAX_OSPATH];
-	char	*path;
-	const char *gamename = "game.so";
-
-	setreuid(getuid(), getuid());
-	setegid(getgid());
-
-	if (game_library)
-		Com_Error (ERR_FATAL, "Sys_GetGameAPI without Sys_UnloadingGame");
-
-	getcwd(curpath, sizeof(curpath));
-
-	Com_Printf("------- Loading %s -------\n", gamename);
-
-	// now run through the search paths
-	path = NULL;
-	while (1)
-	{
-		path = FS_NextPath (path);
-		if (!path)
-			return NULL;		// couldn't find one anywhere
-		sprintf (name, "%s/%s/%s", curpath, path, gamename);
-		game_library = dlopen (name, RTLD_LAZY );
-		if (game_library)
-		{
-			Com_Printf ("LoadLibrary (%s/%s)\n", path, gamename);
-			break;
-		}
-		else
-		{
-			Com_Printf ("Failed LoadLibrary %s: %s\n", name, dlerror());
-		}
-	}
-
-	GetGameAPI = (void *)dlsym (game_library, "GetGameAPI");
-	if (!GetGameAPI)
-	{
-		Sys_UnloadGame ();
-		return NULL;
-	}
-
-	return GetGameAPI (parms);
 }
 
 /*****************************************************************************/

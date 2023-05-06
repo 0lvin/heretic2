@@ -38,6 +38,16 @@ extern "C" {
 
 #include "shared.h"
 
+#ifdef _WIN32
+ #define CFGDIR "YamagiQ2"
+#else
+ #ifndef __HAIKU__
+   #define CFGDIR ".yq2"
+ #else
+   #define CFGDIR "yq2"
+ #endif
+#endif
+
 // unknown pragmas are SUPPOSED to be ignored, but....
 #pragma warning(disable : 4244)     // MIPS -- truncation from double to float in MSDEV
 #pragma warning(disable : 4018)     // signed/unsigned mismatch
@@ -807,6 +817,7 @@ MISC
 void		Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush));
 void		Com_EndRedirect (void);
 void 		Com_DPrintf (char *fmt, ...);
+void 		Com_MDPrintf (char *fmt, ...);
 void		Com_Error (int code, char *fmt, ...);
 void 		Com_Quit (void);
 int			Com_ServerState (void);
@@ -824,6 +835,9 @@ extern	cvar_t	*allow_download_maps;
 extern	cvar_t	*allow_download_players;
 extern	cvar_t	*allow_download_models;
 extern	cvar_t	*allow_download_sounds;
+
+/* Hack for external datadir */
+extern char cfgdir[MAX_OSPATH];
 
 /* Hack for working 'game' cmd */
 extern char userGivenGame[MAX_QPATH];

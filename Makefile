@@ -509,7 +509,6 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/linux/qgl_linux.o \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
-	$(BUILDDIR)/src/backends/unix/system.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
 	$(BUILDDIR)/src/common/glob.o
 
