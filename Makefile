@@ -444,7 +444,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/linux/snd_linux.o \
 	$(BUILDDIR)/linux/sys_linux.o \
 	$(BUILDDIR)/src/client/menu/videomenu.o \
-	$(BUILDDIR)/linux/vid_so.o \
+	$(BUILDDIR)/src/client/vid/vid.o \
 	$(BUILDDIR)/src/player/p_actions.o \
 	$(BUILDDIR)/src/player/p_animactor.o \
 	$(BUILDDIR)/src/player/p_anim_branch.o \
@@ -459,10 +459,11 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/player/p_weapon.o \
 	$(BUILDDIR)/qcommon/cmd.o \
 	$(BUILDDIR)/qcommon/cmodel.o \
-	$(BUILDDIR)/qcommon/common.o \
+	$(BUILDDIR)/src/common/frame.o \
+	$(BUILDDIR)/src/common/zone.o \
 	$(BUILDDIR)/src/common/crc.o \
 	$(BUILDDIR)/src/common/cvar.o \
-	$(BUILDDIR)/qcommon/files.o \
+	$(BUILDDIR)/src/common/filesystem.o \
 	$(BUILDDIR)/src/common/md4.o \
 	$(BUILDDIR)/h2common/message.o \
 	$(BUILDDIR)/qcommon/net_chan.o \

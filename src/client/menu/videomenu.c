@@ -122,12 +122,17 @@ static void BrightnessCallback( void *s )
 	}
 }
 
-static void ResetDefaults( void *unused )
+static void
+ResetDefaults(void *unused)
 {
 	VID_MenuInit();
 }
 
-static void ApplyChanges( void *unused )
+#define CUSTOM_MODE_NAME "[Custom    ]"
+#define AUTO_MODE_NAME   "[Auto      ]"
+
+static void
+ApplyChanges(void *unused)
 {
 	float gamma;
 
@@ -196,19 +201,43 @@ static void ApplyChanges( void *unused )
 void
 VID_MenuInit(void)
 {
+	// must be kept in sync with vid_modes[] in vid.c
 	static const char *resolutions[] =
 	{
 		"[320 240   ]",
 		"[400 300   ]",
 		"[512 384   ]",
+		"[640 400   ]",
 		"[640 480   ]",
+		"[800 500   ]",
 		"[800 600   ]",
 		"[960 720   ]",
+		"[1024 480  ]",
+		"[1024 640  ]",
 		"[1024 768  ]",
+		"[1152 768  ]",
 		"[1152 864  ]",
+		"[1280 800  ]",
+		"[1280 720  ]",
+		"[1280 960  ]",
 		"[1280 1024 ]",
+		"[1366 768  ]",
+		"[1440 900  ]",
 		"[1600 1200 ]",
+		"[1680 1050 ]",
+		"[1920 1080 ]",
+		"[1920 1200 ]",
 		"[2048 1536 ]",
+		"[2560 1080 ]",
+		"[2560 1440 ]",
+		"[2560 1600 ]",
+		"[3440 1440 ]",
+		"[3840 1600 ]",
+		"[3840 2160 ]",
+		"[4096 2160 ]",
+		"[5120 2880 ]",
+		AUTO_MODE_NAME,
+		CUSTOM_MODE_NAME,
 		0
 	};
 	static const char *refs[] =
@@ -441,26 +470,26 @@ const char *VID_MenuKey( int key )
 
 	switch ( key )
 	{
-	case K_ESCAPE:
-		M_PopMenu();
-		return NULL;
-	case K_UPARROW:
-		m->cursor--;
-		Menu_AdjustCursor( m, -1 );
-		break;
-	case K_DOWNARROW:
-		m->cursor++;
-		Menu_AdjustCursor( m, 1 );
-		break;
-	case K_LEFTARROW:
-		Menu_SlideItem( m, -1 );
-		break;
-	case K_RIGHTARROW:
-		Menu_SlideItem( m, 1 );
-		break;
-	case K_ENTER:
-		Menu_SelectItem( m );
-		break;
+		case K_ESCAPE:
+			M_PopMenu();
+			return NULL;
+		case K_UPARROW:
+			m->cursor--;
+			Menu_AdjustCursor(m, -1);
+			break;
+		case K_DOWNARROW:
+			m->cursor++;
+			Menu_AdjustCursor(m, 1);
+			break;
+		case K_LEFTARROW:
+			Menu_SlideItem(m, -1);
+			break;
+		case K_RIGHTARROW:
+			Menu_SlideItem(m, 1);
+			break;
+		case K_ENTER:
+			Menu_SelectItem(m);
+			break;
 	}
 
 	return sound;

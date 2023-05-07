@@ -1,28 +1,35 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Platform independent initialization, main loop and frame handling.
+ *
+ * =======================================================================
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-// common.c -- misc functions used in client and server
-#include "../src/common/header/common.h"
-#include "../src/client/header/screen.h"
-#include "../src/client/header/keyboard.h"
-#include "../src/client/header/console.h"
-#include "../src/server/header/server.h"
+#include "header/common.h"
+#include "../client/header/screen.h"
+#include "../client/header/keyboard.h"
+#include "../client/header/console.h"
+#include "../server/header/server.h"
+#include "header/zone.h"
 #include <setjmp.h>
 
 #define	MAXPRINTMSG	4096
@@ -36,6 +43,7 @@ char	*com_argv[MAX_NUM_ARGVS+1];
 int		realtime;
 
 extern jmp_buf abortframe;		// an ERR_DROP occured, exit the entire frame
+extern zhead_t z_chain;
 
 FILE	*log_stats_file;
 
@@ -68,7 +76,7 @@ Handles byte ordering and avoids alignment errors
 
 vec3_t	bytedirs[NUMVERTEXNORMALS] =
 {
-#include "../src/client/refresh/constants/anorms.h"
+#include "../client/refresh/constants/anorms.h"
 };
 
 //
@@ -913,120 +921,6 @@ void Info_Print (char *s)
 		Com_Printf ("%s\n", value);
 	}
 }
-
-
-/*
-==============================================================================
-
-						ZONE MEMORY ALLOCATION
-
-just cleared malloc with counters now...
-
-==============================================================================
-*/
-
-#define	Z_MAGIC		0x1d1d
-
-
-typedef struct zhead_s
-{
-	struct zhead_s	*prev, *next;
-	short	magic;
-	short	tag;			// for group free
-	int		size;
-} zhead_t;
-
-zhead_t		z_chain;
-int		z_count, z_bytes;
-
-/*
-========================
-Z_Free
-========================
-*/
-void Z_Free (void *ptr)
-{
-	zhead_t	*z;
-
-	z = ((zhead_t *)ptr) - 1;
-
-	if (z->magic != Z_MAGIC)
-		Com_Error (ERR_FATAL, "Z_Free: bad magic");
-
-	z->prev->next = z->next;
-	z->next->prev = z->prev;
-
-	z_count--;
-	z_bytes -= z->size;
-	free (z);
-}
-
-
-/*
-========================
-Z_Stats_f
-========================
-*/
-void Z_Stats_f (void)
-{
-	Com_Printf ("%i bytes in %i blocks\n", z_bytes, z_count);
-}
-
-/*
-========================
-Z_FreeTags
-========================
-*/
-void Z_FreeTags (int tag)
-{
-	zhead_t	*z, *next;
-
-	for (z=z_chain.next ; z != &z_chain ; z=next)
-	{
-		next = z->next;
-		if (z->tag == tag)
-			Z_Free ((void *)(z+1));
-	}
-}
-
-/*
-========================
-Z_TagMalloc
-========================
-*/
-void *Z_TagMalloc (int size, int tag)
-{
-	zhead_t	*z;
-
-	size = size + sizeof(zhead_t);
-	z = (zhead_t *)malloc(size);
-	if (!z)
-		Com_Error (ERR_FATAL, "Z_Malloc: failed on allocation of %i bytes",size);
-	memset (z, 0, size);
-	z_count++;
-	z_bytes += size;
-	z->magic = Z_MAGIC;
-	z->tag = tag;
-	z->size = size;
-
-	z->next = z_chain.next;
-	z->prev = &z_chain;
-	z_chain.next->prev = z;
-	z_chain.next = z;
-
-	return (void *)(z+1);
-}
-
-/*
-========================
-Z_Malloc
-========================
-*/
-void *Z_Malloc (int size)
-{
-	return Z_TagMalloc (size, 0);
-}
-
 
 //============================================================================
 
