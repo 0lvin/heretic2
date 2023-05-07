@@ -122,18 +122,6 @@ TARGETS= \
 #	$(BUILDDIR)/ref_softx.$(SHLIBEXT)
 
 all:
-	-mkdir -p $(BUILD_DEBUG_DIR) \
-		$(BUILD_DEBUG_DIR)/client \
-		$(BUILD_DEBUG_DIR)/client_effects \
-		$(BUILD_DEBUG_DIR)/external \
-		$(BUILD_DEBUG_DIR)/game \
-		$(BUILD_DEBUG_DIR)/h2common \
-		$(BUILD_DEBUG_DIR)/linux \
-		$(BUILD_DEBUG_DIR)/player \
-		$(BUILD_DEBUG_DIR)/qcommon \
-		$(BUILD_DEBUG_DIR)/ref_common \
-		$(BUILD_DEBUG_DIR)/ref_gl \
-		$(BUILD_DEBUG_DIR)/server
 	$(MAKE) targets BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
 
 targets: $(TARGETS)
@@ -457,8 +445,8 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/player/player_main.o \
 	$(BUILDDIR)/src/player/p_main.o \
 	$(BUILDDIR)/src/player/p_weapon.o \
-	$(BUILDDIR)/qcommon/cmd.o \
-	$(BUILDDIR)/qcommon/cmodel.o \
+	$(BUILDDIR)/src/common/cmdparser.o \
+	$(BUILDDIR)/src/common/collision.o \
 	$(BUILDDIR)/src/common/frame.o \
 	$(BUILDDIR)/src/common/zone.o \
 	$(BUILDDIR)/src/common/crc.o \
@@ -466,16 +454,16 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/common/filesystem.o \
 	$(BUILDDIR)/src/common/md4.o \
 	$(BUILDDIR)/h2common/message.o \
-	$(BUILDDIR)/qcommon/net_chan.o \
-	$(BUILDDIR)/qcommon/netmsg_read.o \
+	$(BUILDDIR)/src/common/netchan.o \
+	$(BUILDDIR)/h2common/netmsg_read.o \
 	$(BUILDDIR)/src/common/pmove.o \
-	$(BUILDDIR)/qcommon/rand.o \
+	$(BUILDDIR)/h2common/h2rand.o \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
-	$(BUILDDIR)/qcommon/reference.o \
-	$(BUILDDIR)/qcommon/resource_manager.o \
-	$(BUILDDIR)/qcommon/arrayed_list.o \
-	$(BUILDDIR)/qcommon/skeletons.o \
+	$(BUILDDIR)/h2common/reference.o \
+	$(BUILDDIR)/h2common/resource_manager.o \
+	$(BUILDDIR)/h2common/arrayed_list.o \
+	$(BUILDDIR)/h2common/skeletons.o \
 	$(BUILDDIR)/src/server/sv_ccmds.o \
 	$(BUILDDIR)/src/server/sv_ents.o \
 	$(BUILDDIR)/src/server/sv_game.o \
@@ -545,9 +533,9 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_rmisc.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_rsurf.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_warp.o \
-	$(BUILDDIR)/ref_common/r_skeletons.o \
-	$(BUILDDIR)/qcommon/arrayed_list.o \
-	$(BUILDDIR)/qcommon/skeletons.o \
+	$(BUILDDIR)/h2common/r_skeletons.o \
+	$(BUILDDIR)/h2common/arrayed_list.o \
+	$(BUILDDIR)/h2common/skeletons.o \
 	$(BUILDDIR)/linux/qgl_linux.o \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \

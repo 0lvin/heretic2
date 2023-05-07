@@ -2,7 +2,7 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../qcommon/resourcemanager.h"
+#include "resourcemanager.h"
 
 #include "../src/player/surfaceprops.h"
 

@@ -8,15 +8,15 @@
 
 #include "../common/header/common.h"
 #include "g_local.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 #include "../player/p_main.h"
 #include "../player/p_anims.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "../player/p_anim_branch.h"
 #include "utilities.h"
 #include "../player/p_animactor.h"
 #include "m_chicken_anim.h"
-#include "../../qcommon/cl_strings.h"
+#include "../../h2common/cl_strings.h"
 
 #define CHICKEN_KNOCKBACK	1
 

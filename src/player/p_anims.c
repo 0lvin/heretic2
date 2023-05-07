@@ -13,11 +13,11 @@
 #include "p_anims.h"
 #include "p_main.h"
 #include "../game/g_skeletons.h"
-#include "../../qcommon/angles.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/angles.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
 #include "../common/header/common.h"
-#include "../../qcommon/effectflags.h"
+#include "../../h2common/effectflags.h"
 
 PLAYER_API void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
 {

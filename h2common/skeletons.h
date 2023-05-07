@@ -6,7 +6,7 @@
 #define SKELETONS_H
 
 #include <stdlib.h> // for size_t
-#include "../qcommon/arrayed_list.h"
+#include "arrayed_list.h"
 
 
 #ifdef __cplusplus

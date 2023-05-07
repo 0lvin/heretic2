@@ -15,8 +15,8 @@
 #include "utilities.h"
 #include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "../../qcommon/random.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/h2rand.h"
+#include "../../h2common/fx.h"
 #include "g_hitlocation.h"
 #include "g_misc.h"
 

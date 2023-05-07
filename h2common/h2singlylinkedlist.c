@@ -6,8 +6,8 @@
 //
 
 #include "../src/common/header/common.h"
-#include "../h2common/singlylinkedlist.h"
-#include "../qcommon/resourcemanager.h"
+#include "singlylinkedlist.h"
+#include "resourcemanager.h"
 
 #include <stdint.h>
 

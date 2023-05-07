@@ -15,8 +15,8 @@
 
 #include "../common/header/common.h"
 #include "../../h2common/singlylinkedlist.h"
-#include "../../qcommon/q_physics.h"
-#include "../../qcommon/arrayed_list.h"
+#include "../../h2common/q_physics.h"
+#include "../../h2common/arrayed_list.h"
 
 #ifdef __cplusplus
 extern "C"

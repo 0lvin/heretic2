@@ -7,7 +7,7 @@
     <Filter Include="h2common\Math">
       <UniqueIdentifier>{ebaf0956-e5b5-4b50-b024-e4dc3dfcd203}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ref_common">
+    <Filter Include="h2common">
       <UniqueIdentifier>{aab82a6d-eb89-42e5-9381-c0023b1e0d5b}</UniqueIdentifier>
     </Filter>
     <Filter Include="ref_gl">
@@ -25,7 +25,7 @@
     <Filter Include="client">
       <UniqueIdentifier>{3c219d86-d739-4f91-80b0-754963d54d36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="qcommon">
+    <Filter Include="h2common">
       <UniqueIdentifier>{9a2feb37-ce34-41a6-993d-fd0f5e1afeb0}</UniqueIdentifier>
     </Filter>
     <Filter Include="win32">
@@ -786,13 +786,13 @@
     <ClCompile Include="game\p_view.c">
       <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\q_shared.c">
+    <ClCompile Include="h2common\q_shared.c">
       <Filter>game</Filter>
     </ClCompile>
     <ClCompile Include="game\Script.cpp">
       <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\skeletons.c">
+    <ClCompile Include="h2common\skeletons.c">
       <Filter>game</Filter>
     </ClCompile>
     <ClCompile Include="game\spl_blast.c">
@@ -903,41 +903,41 @@
     <ClCompile Include="player\player_main.c">
       <Filter>player</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cmd.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\cmd.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cmodel.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\cmodel.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\common.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\common.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\crc.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\crc.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cvar.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\cvar.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\files.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\files.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\md4.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\md4.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\net_chan.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\net_chan.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\netmsg_read.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\netmsg_read.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\pmove.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\pmove.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\reference.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\reference.c">
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="ref_common\r_Skeletons.c">
-      <Filter>ref_common</Filter>
+    <ClCompile Include="h2common\r_Skeletons.c">
+      <Filter>h2common</Filter>
     </ClCompile>
     <ClCompile Include="ref_gl\gl_book.c">
       <Filter>ref_gl</Filter>
@@ -1032,20 +1032,20 @@
     <ClCompile Include="external\smk_hufftree.c">
       <Filter>external</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\resource_manager.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\resource_manager.c">
+      <Filter>h2common</Filter>
     </ClCompile>
     <ClCompile Include="WinSnd\s_eax.cpp">
       <Filter>WinSnd</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\message.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\message.c">
+      <Filter>h2common</Filter>
     </ClCompile>
     <ClCompile Include="win32\p_dll.c">
-      <Filter>qcommon</Filter>
+      <Filter>h2common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\rand.c">
-      <Filter>qcommon</Filter>
+    <ClCompile Include="h2common\rand.c">
+      <Filter>h2common</Filter>
     </ClCompile>
     <ClCompile Include="win32\glw_imp.c">
       <Filter>win32</Filter>
@@ -1484,29 +1484,29 @@
     <ClInclude Include="client_effects\utilities.h">
       <Filter>client_effects</Filter>
     </ClInclude>
-    <ClInclude Include="ref_common\fmodel.h">
-      <Filter>ref_common</Filter>
+    <ClInclude Include="h2common\fmodel.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="ref_common\m_Reference.h">
-      <Filter>ref_common</Filter>
+    <ClInclude Include="h2common\m_Reference.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="ref_common\m_SkeletalCluster.h">
-      <Filter>ref_common</Filter>
+    <ClInclude Include="h2common\m_SkeletalCluster.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="ref_common\m_Skeleton.h">
-      <Filter>ref_common</Filter>
+    <ClInclude Include="h2common\m_Skeleton.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="ref_common\part_uvs.h">
-      <Filter>ref_common</Filter>
+    <ClInclude Include="h2common\part_uvs.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="ref_common\q_fmodel.h">
-      <Filter>ref_common</Filter>
+    <ClInclude Include="h2common\q_fmodel.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="ref_common\qd_skeletons.h">
-      <Filter>ref_common</Filter>
+    <ClInclude Include="h2common\qd_skeletons.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="ref_common\r_Skeletons.h">
-      <Filter>ref_common</Filter>
+    <ClInclude Include="h2common\r_Skeletons.h">
+      <Filter>h2common</Filter>
     </ClInclude>
     <ClInclude Include="ref_gl\anormtab.h">
       <Filter>ref_gl</Filter>
@@ -1553,92 +1553,92 @@
     <ClInclude Include="client\vid.h">
       <Filter>client</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\angles.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\angles.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\anorms.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\anorms.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\arrayed_list.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\arrayed_list.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\cl_strings.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\cl_strings.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\EffectFlags.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\EffectFlags.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\fc.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\fc.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\flex.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\flex.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\FX.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\FX.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\GenericUnions.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\GenericUnions.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\items.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\items.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\LevelMaps.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\LevelMaps.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\Matrix.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\Matrix.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\message.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\message.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\ModelJoints.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\ModelJoints.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\motion.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\motion.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\placement.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\placement.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\q_physics.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\q_physics.h">
+      <Filter>h2common</Filter>
     </ClInclude>
     <ClInclude Include="client_effects\q_Sprite.h">
-      <Filter>qcommon</Filter>
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\q_Surface.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\q_Surface.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\qcommon.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\h2common.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\qfiles.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\qfiles.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\random.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\random.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\reference.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\reference.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\ResourceManager.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\ResourceManager.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\SinglyLinkedList.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\SinglyLinkedList.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\skeletons.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\skeletons.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\surfaceprops.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\surfaceprops.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\tokens.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\tokens.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\vector.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\vector.h">
+      <Filter>h2common</Filter>
     </ClInclude>
     <ClInclude Include="win32\conproc.h">
       <Filter>win32</Filter>
@@ -1658,11 +1658,11 @@
     <ClInclude Include="external\smk_malloc.h">
       <Filter>external</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\verifyA3D.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\verifyA3D.h">
+      <Filter>h2common</Filter>
     </ClInclude>
-    <ClInclude Include="qcommon\q_shared.h">
-      <Filter>qcommon</Filter>
+    <ClInclude Include="h2common\q_shared.h">
+      <Filter>h2common</Filter>
     </ClInclude>
     <ClInclude Include="WinSnd\s_local.h">
       <Filter>WinSnd</Filter>

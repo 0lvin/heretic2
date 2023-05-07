@@ -3,8 +3,8 @@
 // Copyright 1998 Raven Software
 //
 #include "../src/common/header/common.h"
-#include "../qcommon/angles.h"
-#include "../qcommon/vector.h"
+#include "angles.h"
+#include "vector.h"
 #include "assert.h"
 
 

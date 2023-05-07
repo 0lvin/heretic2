@@ -16,9 +16,9 @@
 #include "../game/g_items.h"
 #include "surfaceprops.h"
 #include "../game/m_player.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
-#include "../../qcommon/reference.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
+#include "../../h2common/reference.h"
 #include "../game/g_playstats.h"
 #include "p_anim_data.h"
 

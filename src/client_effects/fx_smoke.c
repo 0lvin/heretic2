@@ -6,15 +6,15 @@
 //
 
 #include "../common/header/common.h"
-#include "../../qcommon/angles.h"
+#include "../../h2common/angles.h"
 #include "client_entities.h"
 #include "client_effects.h"
-#include "../../qcommon/effectflags.h"
+#include "../../h2common/effectflags.h"
 #include "particle.h"
-#include "../../qcommon/random.h"
-#include "../../qcommon/motion.h"
+#include "../../h2common/h2rand.h"
+#include "../../h2common/motion.h"
 #include "utilities.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 
 #define	NUM_SMOKE_MODELS	1
 static struct model_s *smoke_models[NUM_SMOKE_MODELS];

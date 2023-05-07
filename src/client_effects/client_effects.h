@@ -6,8 +6,8 @@
 #define CLIENT_EFFECTS_H
 
 #include "../common/header/common.h"
-#include "../../qcommon/angles.h"
-#include "../../qcommon/vector.h"
+#include "../../h2common/angles.h"
+#include "../../h2common/vector.h"
 #include "../client/header/client.h"
 
 #ifdef __cplusplus

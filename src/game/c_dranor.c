@@ -11,8 +11,8 @@
 #include "utilities.h"
 #include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
 
 #include "c_dranor_anim.h"
 #include "c_dranor.h"

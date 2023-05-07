@@ -27,7 +27,7 @@
 #ifndef REF_GL_MODEL_H
 #define REF_GL_MODEL_H
 
-#include "../../../../../ref_common/fmodel.h"
+#include "../../../../../h2common/fmodel.h"
 
 #ifdef __cplusplus
 extern "C" {

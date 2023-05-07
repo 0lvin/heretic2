@@ -16,7 +16,7 @@
 #include "utilities.h"
 #include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 #include "../common/header/common.h"
 #include "m_stats.h"
 

@@ -9,10 +9,10 @@
 #include "g_local.h"
 #include "../player/p_weapon.h"
 #include "m_player.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/matrix.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/matrix.h"
 #include "g_skeletons.h"
-#include "../../qcommon/angles.h"
+#include "../../h2common/angles.h"
 
 void SpellCastPowerup(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);
 void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);

@@ -28,8 +28,8 @@
 #define CL_REF_H
 
 #include "../../../common/header/common.h"
-#include "../../../../qcommon/q_surface.h"
-#include "../../../../qcommon/arrayed_list.h"
+#include "../../../../h2common/q_surface.h"
+#include "../../../../h2common/arrayed_list.h"
 
 #define	MAX_DLIGHTS		32
 #define	MAX_ENTITIES	128

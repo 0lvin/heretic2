@@ -10,7 +10,7 @@
 
 #include "../../h2common/message.h"
 #include "ce_message.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -18,8 +18,8 @@ TBEAST
 #include "utilities.h"
 #include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
 #include "buoy.h"
 
 #include "../player/p_actions.h"

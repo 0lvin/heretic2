@@ -11,13 +11,13 @@ extern "C" {
 #endif
 #include "g_local.h"
 #include "g_skeletons.h"
-#include "../../qcommon/arrayed_list.h"
+#include "../../h2common/arrayed_list.h"
 #include "../../h2common/message.h"
 #include "g_physics.h"
 #include "g_playstats.h"
 #include "utilities.h"
 #include "../player/p_anims.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "g_hitlocation.h"
 
 #ifdef __cplusplus

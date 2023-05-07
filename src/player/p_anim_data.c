@@ -15,8 +15,8 @@
 #include "p_main.h"
 #include "p_ctrl.h"
 #include "../game/m_player.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/reference.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/reference.h"
 
 
 //NOTENOTE: This value is applied generically to all player move functions that travel along

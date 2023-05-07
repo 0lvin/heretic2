@@ -7,9 +7,9 @@
 ==============================================================================
 */
 #include "../common/header/common.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "g_local.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 
 
 void env_dust_use(edict_t *self, edict_t *other, edict_t *activator)

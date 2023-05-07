@@ -33,8 +33,8 @@
 #include "g_weapon.h"
 #include "../player/p_anims.h"
 #include "../player/p_anim_data.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
 #include "g_itemstats.h"
 
 #define HEALTH_IGNORE_MAX	1

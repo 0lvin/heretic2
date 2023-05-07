@@ -29,11 +29,11 @@
 #include "g_monster.h"
 #include "m_stats.h"
 #include "g_local.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "g_defaultmessagehandler.h"
 #include "g_playstats.h"
 
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 
 //JWEIER START INCLUDES
 #include "g_misc.h"

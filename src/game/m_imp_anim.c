@@ -6,7 +6,7 @@
 #include "m_imp_anim.h"
 #include "g_local.h"
 #include "m_imp.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 
 
 /*----------------------------------------------------

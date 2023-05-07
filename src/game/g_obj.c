@@ -6,13 +6,13 @@
 //
 
 #include "../common/header/common.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "g_local.h"
 #include "g_misc.h"
 #include "g_defaultmessagehandler.h"
 #include "m_plagueelf_anim.h"
-#include "../../qcommon/random.h"
-#include "../../qcommon/angles.h"
+#include "../../h2common/h2rand.h"
+#include "../../h2common/angles.h"
 #include "g_playstats.h"
 #include "m_stats.h"
 

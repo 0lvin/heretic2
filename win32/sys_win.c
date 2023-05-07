@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <io.h>
 #include <conio.h>
 #include "conproc.h"
-#include "qcommon/singlylinkedlist.h"
+#include "h2common/singlylinkedlist.h"
 
 #define MINIMUM_WIN_MEMORY	0x0a00000
 #define MAXIMUM_WIN_MEMORY	0x1000000

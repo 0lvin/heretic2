@@ -6,15 +6,15 @@
 #include "g_physics.h"
 #include "g_local.h"
 
-#include "../../qcommon/angles.h"
+#include "../../h2common/angles.h"
 #include "../../h2common/singlylinkedlist.h"
 #include "g_physics.h"
 #include "utilities.h"
 #include "../player/p_main.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 #include "../player/p_anim_branch.h"
 #include "../player/p_anims.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "g_playstats.h"
 #include "../player/p_actions.h"
 

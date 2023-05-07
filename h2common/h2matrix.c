@@ -5,10 +5,10 @@
 // H2Matrix.c
 //
 
-#include "../qcommon/resourcemanager.h"
-#include "../qcommon/angles.h"
-#include "../qcommon/matrix.h"
-#include "../qcommon/vector.h"
+#include "resourcemanager.h"
+#include "angles.h"
+#include "matrix.h"
+#include "vector.h"
 
 int HACK_Pitch_Adjust = 0; // weak
 

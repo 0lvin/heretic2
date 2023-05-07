@@ -28,7 +28,7 @@
 #include <assert.h>
 #include "g_local.h"
 #include "g_monster.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 #include "buoy.h"
 #include "m_stats.h"
 #include "../player/p_anims.h"

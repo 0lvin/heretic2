@@ -58,7 +58,7 @@ static vec3_t	s_alias_forward, s_alias_right, s_alias_up;
 #define NUMVERTEXNORMALS	162
 
 float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
-#include "../qcommon/anorms.h"
+#include "../h2common/anorms.h"
 };
 
 

@@ -9,8 +9,8 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "../../qcommon/resourcemanager.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/resourcemanager.h"
+#include "../../h2common/fx.h"
 #include "utilities.h"
 #include "../game/g_playstats.h"
 

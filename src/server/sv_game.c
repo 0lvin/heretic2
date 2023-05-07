@@ -26,7 +26,7 @@
 
 #include "header/server.h"
 
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 
 game_export_t	*ge;
 

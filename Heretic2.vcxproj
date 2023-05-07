@@ -55,7 +55,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_HERETIC2_;GLEW_STATIC;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>./client/;./game/;./player/;./qcommon/;./WinSnd/OpenAL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./client/;./game/;./player/;./h2common/;./WinSnd/OpenAL/include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -74,7 +74,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_HERETIC2_;GLEW_STATIC;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>./client/;./game/;./player/;./qcommon/;./WinSnd/OpenAL/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./client/;./game/;./player/;./h2common/;./WinSnd/OpenAL/include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -385,7 +385,7 @@
     <ClCompile Include="game\p_hud.c" />
     <ClCompile Include="game\p_item.c" />
     <ClCompile Include="game\p_view.c" />
-    <ClCompile Include="qcommon\q_shared.c" />
+    <ClCompile Include="h2common\q_shared.c" />
     <ClCompile Include="game\Script.cpp" />
     <ClCompile Include="game\spl_blast.c" />
     <ClCompile Include="game\spl_BlueRing.c" />
@@ -424,23 +424,23 @@
     <ClCompile Include="player\p_items.c" />
     <ClCompile Include="player\p_main.c" />
     <ClCompile Include="player\p_weapon.c" />
-    <ClCompile Include="qcommon\cmd.c" />
-    <ClCompile Include="qcommon\cmodel.c" />
-    <ClCompile Include="qcommon\common.c" />
-    <ClCompile Include="qcommon\crc.c" />
-    <ClCompile Include="qcommon\cvar.c" />
-    <ClCompile Include="qcommon\files.c" />
-    <ClCompile Include="qcommon\md4.c" />
-    <ClCompile Include="qcommon\message.c" />
-    <ClCompile Include="qcommon\netmsg_read.c" />
-    <ClCompile Include="qcommon\net_chan.c" />
-    <ClCompile Include="qcommon\pmove.c" />
+    <ClCompile Include="h2common\cmd.c" />
+    <ClCompile Include="h2common\cmodel.c" />
+    <ClCompile Include="h2common\common.c" />
+    <ClCompile Include="h2common\crc.c" />
+    <ClCompile Include="h2common\cvar.c" />
+    <ClCompile Include="h2common\files.c" />
+    <ClCompile Include="h2common\md4.c" />
+    <ClCompile Include="h2common\message.c" />
+    <ClCompile Include="h2common\netmsg_read.c" />
+    <ClCompile Include="h2common\net_chan.c" />
+    <ClCompile Include="h2common\pmove.c" />
     <ClCompile Include="win32\p_dll.c" />
-    <ClCompile Include="qcommon\rand.c" />
-    <ClCompile Include="qcommon\reference.c" />
-    <ClCompile Include="qcommon\resource_manager.c" />
-    <ClCompile Include="qcommon\skeletons.c" />
-    <ClCompile Include="ref_common\r_Skeletons.c" />
+    <ClCompile Include="h2common\rand.c" />
+    <ClCompile Include="h2common\reference.c" />
+    <ClCompile Include="h2common\resource_manager.c" />
+    <ClCompile Include="h2common\skeletons.c" />
+    <ClCompile Include="h2common\r_Skeletons.c" />
     <ClCompile Include="ref_gl\gl_book.c" />
     <ClCompile Include="ref_gl\gl_draw.c" />
     <ClCompile Include="ref_gl\gl_fmodel.c" />
@@ -639,45 +639,45 @@
     <ClInclude Include="player\p_newmove.h" />
     <ClInclude Include="player\p_types.h" />
     <ClInclude Include="player\p_weapon.h" />
-    <ClInclude Include="qcommon\angles.h" />
-    <ClInclude Include="qcommon\anorms.h" />
-    <ClInclude Include="qcommon\arrayed_list.h" />
-    <ClInclude Include="qcommon\cl_strings.h" />
-    <ClInclude Include="qcommon\EffectFlags.h" />
-    <ClInclude Include="qcommon\fc.h" />
-    <ClInclude Include="qcommon\flex.h" />
-    <ClInclude Include="qcommon\FX.h" />
-    <ClInclude Include="qcommon\GenericUnions.h" />
-    <ClInclude Include="qcommon\items.h" />
-    <ClInclude Include="qcommon\LevelMaps.h" />
-    <ClInclude Include="qcommon\Matrix.h" />
-    <ClInclude Include="qcommon\message.h" />
-    <ClInclude Include="qcommon\ModelJoints.h" />
-    <ClInclude Include="qcommon\motion.h" />
-    <ClInclude Include="qcommon\placement.h" />
-    <ClInclude Include="qcommon\qcommon.h" />
-    <ClInclude Include="qcommon\qfiles.h" />
-    <ClInclude Include="qcommon\q_physics.h" />
-    <ClInclude Include="qcommon\q_shared.h" />
+    <ClInclude Include="h2common\angles.h" />
+    <ClInclude Include="h2common\anorms.h" />
+    <ClInclude Include="h2common\arrayed_list.h" />
+    <ClInclude Include="h2common\cl_strings.h" />
+    <ClInclude Include="h2common\EffectFlags.h" />
+    <ClInclude Include="h2common\fc.h" />
+    <ClInclude Include="h2common\flex.h" />
+    <ClInclude Include="h2common\FX.h" />
+    <ClInclude Include="h2common\GenericUnions.h" />
+    <ClInclude Include="h2common\items.h" />
+    <ClInclude Include="h2common\LevelMaps.h" />
+    <ClInclude Include="h2common\Matrix.h" />
+    <ClInclude Include="h2common\message.h" />
+    <ClInclude Include="h2common\ModelJoints.h" />
+    <ClInclude Include="h2common\motion.h" />
+    <ClInclude Include="h2common\placement.h" />
+    <ClInclude Include="h2common\h2common.h" />
+    <ClInclude Include="h2common\qfiles.h" />
+    <ClInclude Include="h2common\q_physics.h" />
+    <ClInclude Include="h2common\q_shared.h" />
     <ClInclude Include="client_effects\q_Sprite.h" />
-    <ClInclude Include="qcommon\q_Surface.h" />
-    <ClInclude Include="qcommon\random.h" />
-    <ClInclude Include="qcommon\reference.h" />
-    <ClInclude Include="qcommon\ResourceManager.h" />
-    <ClInclude Include="qcommon\SinglyLinkedList.h" />
-    <ClInclude Include="qcommon\skeletons.h" />
-    <ClInclude Include="qcommon\surfaceprops.h" />
-    <ClInclude Include="qcommon\tokens.h" />
-    <ClInclude Include="qcommon\vector.h" />
-    <ClInclude Include="qcommon\verifyA3D.h" />
-    <ClInclude Include="ref_common\fmodel.h" />
-    <ClInclude Include="ref_common\m_Reference.h" />
-    <ClInclude Include="ref_common\m_SkeletalCluster.h" />
-    <ClInclude Include="ref_common\m_Skeleton.h" />
-    <ClInclude Include="ref_common\part_uvs.h" />
-    <ClInclude Include="ref_common\qd_skeletons.h" />
-    <ClInclude Include="ref_common\q_fmodel.h" />
-    <ClInclude Include="ref_common\r_Skeletons.h" />
+    <ClInclude Include="h2common\q_Surface.h" />
+    <ClInclude Include="h2common\random.h" />
+    <ClInclude Include="h2common\reference.h" />
+    <ClInclude Include="h2common\ResourceManager.h" />
+    <ClInclude Include="h2common\SinglyLinkedList.h" />
+    <ClInclude Include="h2common\skeletons.h" />
+    <ClInclude Include="h2common\surfaceprops.h" />
+    <ClInclude Include="h2common\tokens.h" />
+    <ClInclude Include="h2common\vector.h" />
+    <ClInclude Include="h2common\verifyA3D.h" />
+    <ClInclude Include="h2common\fmodel.h" />
+    <ClInclude Include="h2common\m_Reference.h" />
+    <ClInclude Include="h2common\m_SkeletalCluster.h" />
+    <ClInclude Include="h2common\m_Skeleton.h" />
+    <ClInclude Include="h2common\part_uvs.h" />
+    <ClInclude Include="h2common\qd_skeletons.h" />
+    <ClInclude Include="h2common\q_fmodel.h" />
+    <ClInclude Include="h2common\r_Skeletons.h" />
     <ClInclude Include="ref_gl\anormtab.h" />
     <ClInclude Include="ref_gl\gl_local.h" />
     <ClInclude Include="ref_gl\gl_model.h" />

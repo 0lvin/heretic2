@@ -1353,7 +1353,7 @@ void CL_RequestNextDownload (void)
 
 	// confirm existance of textures, download any that don't exist
 	//if (precache_check == TEXTURE_CNT+1) {
-	//	// from qcommon/cmodel.c
+	//	// from h2common/cmodel.c
 	//	extern int			numtexinfo;
 	//	extern mapsurface_t	map_surfaces[];
 	//

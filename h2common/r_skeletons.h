@@ -7,7 +7,7 @@
 
 #include "m_skeleton.h"
 #include "m_skeletalcluster.h"
-#include "../qcommon/skeletons.h"
+#include "skeletons.h"
 
 #ifdef __cplusplus
 extern "C" {

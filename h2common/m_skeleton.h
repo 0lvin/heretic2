@@ -6,8 +6,8 @@
 #define M_SKELETON_H
 
 #include "../src/common/header/common.h"
-#include "../qcommon/placement.h"
-#include "../qcommon/matrix.h"
+#include "placement.h"
+#include "matrix.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -6,9 +6,9 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "../../qcommon/resourcemanager.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/resourcemanager.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
 
 void FXTestBBox(centity_t *owner, int type, int flags, vec3_t origin)
 {

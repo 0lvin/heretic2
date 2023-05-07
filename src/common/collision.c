@@ -1,25 +1,31 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * The collision model. Slaps "boxes" through the world and checks if
+ * they collide with the world model, entities or other boxes.
+ *
+ * =======================================================================
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-// cmodel.c -- model loading
-
-#include "../src/common/header/common.h"
+#include "header/common.h"
 
 typedef struct mapsurface_s  // used internally due to name len probs //ZOID
 {
@@ -1831,3 +1837,4 @@ qboolean CM_HeadnodeVisible (int nodenum, byte *visbits)
 		return true;
 	return CM_HeadnodeVisible(node->children[1], visbits);
 }
+

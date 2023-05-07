@@ -7,11 +7,11 @@
 //
 
 #include "../src/common/header/shared.h"
-#include "../qcommon/vector.h"
-#include "../qcommon/skeletons.h"
+#include "vector.h"
+#include "skeletons.h"
 #include "m_skeletalcluster.h"
 #include "m_skeleton.h"
-#include "../qcommon/arrayed_list.h"
+#include "arrayed_list.h"
 
 #include <memory.h>
 

@@ -27,15 +27,15 @@
 #include "../common/header/common.h"
 #include "g_local.h"
 #include "g_skeletons.h"
-#include "../../qcommon/arrayed_list.h"
+#include "../../h2common/arrayed_list.h"
 #include "g_physics.h"
 #include "g_volume_effect.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "utilities.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 #include "g_playstats.h"
 #include "../player/p_anims.h"
-#include "../../qcommon/cl_strings.h"
+#include "../../h2common/cl_strings.h"
 
 //Used for monster_speeds timing stuff
 #ifdef _DEVEL

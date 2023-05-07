@@ -9,10 +9,10 @@
 #include "../common/header/common.h"
 #include "particle.h"
 #include "client_effects.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/resourcemanager.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/resourcemanager.h"
 #include "client_entities.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 #include "../game/g_playstats.h"
 
 #define	MAX_PARTS_PER_CE	2048

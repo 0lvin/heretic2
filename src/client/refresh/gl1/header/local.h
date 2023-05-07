@@ -36,7 +36,7 @@
 
 #include "../../../../common/header/common.h"
 #include "../../ref_shared.h"
-#include "../../../../../qcommon/vector.h"
+#include "../../../../../h2common/vector.h"
 
 #include "qgl.h"
 

@@ -18,13 +18,13 @@
 #include "g_volume_effect.h"
 #include "m_chicken.h"
 #include "m_chicken_anim.h"
-#include "../../qcommon/angles.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/matrix.h"
+#include "../../h2common/angles.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/matrix.h"
 #include "utilities.h"
 #include "../player/p_main.h"
 #include "../player/p_anims.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 
 #define ARROW_SPEED			400.0F
 #define ARROW_RADIUS			2.0F

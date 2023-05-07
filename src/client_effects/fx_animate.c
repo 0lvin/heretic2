@@ -10,11 +10,11 @@
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"
-#include "../../qcommon/resourcemanager.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/resourcemanager.h"
+#include "../../h2common/fx.h"
 #include "utilities.h"
-#include "../../qcommon/angles.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/angles.h"
+#include "../../h2common/h2rand.h"
 
 typedef struct FXAnimModel
 {

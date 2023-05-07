@@ -6,7 +6,7 @@
 #define G_PHYSICS_H
 
 #include "../common/header/common.h"
-#include "../../qcommon/q_physics.h"
+#include "../../h2common/q_physics.h"
 
 #ifdef __cplusplus
 extern "C" {

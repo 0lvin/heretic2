@@ -31,15 +31,15 @@
 #include "utilities.h"
 #include "g_defaultmessagehandler.h"
 #include "g_monster.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
 #include "buoy.h"
 
 #include "m_plagueelf.h"
 #include "m_plagueelf_anim.h"
 #include "g_hitlocation.h"
 #include "g_misc.h"
-#include "../../qcommon/angles.h"
+#include "../../h2common/angles.h"
 #include "c_ai.h"
 #include "m_stats.h"
 

@@ -25,7 +25,7 @@
  */
 
 #include "header/local.h"
-#include "../../../../qcommon/flex.h"
+#include "../../../../h2common/flex.h"
 
 model_t	*loadmodel;
 int		modfilelen;

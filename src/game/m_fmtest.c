@@ -4,7 +4,7 @@
 //
 #include "../common/header/common.h"
 #include "g_local.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 
 void MakeSolidObject(edict_t *ent, char *Model, float MinX, float MinY, float MinZ,
 					 float MaxX, float MaxY, float MaxZ)

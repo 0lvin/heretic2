@@ -6,8 +6,8 @@
 #define G_SKELETONS_H
 
 #include "../common/header/common.h"
-#include "../../qcommon/arrayed_list.h"
-#include "../../qcommon/skeletons.h"
+#include "../../h2common/arrayed_list.h"
+#include "../../h2common/skeletons.h"
 
 #ifdef __cplusplus
 extern "C" {

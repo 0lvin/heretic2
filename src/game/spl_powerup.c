@@ -7,7 +7,7 @@
 
 #include "../common/header/common.h"
 #include "g_local.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "g_itemstats.h"
 
 

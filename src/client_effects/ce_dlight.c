@@ -4,7 +4,7 @@
 //
 #include "../common/header/common.h"
 #include "ce_dlight.h"
-#include "../../qcommon/resourcemanager.h"
+#include "../../h2common/resourcemanager.h"
 
 ResourceManager_t DLightMngr;
 

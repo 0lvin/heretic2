@@ -12,7 +12,7 @@
 #include "../common/header/common.h"
 #include "g_local.h"
 #include "g_misc.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 #include "g_defaultmessagehandler.h"
 
 int BREAK_KILLALL		= 1;

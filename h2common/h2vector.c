@@ -6,10 +6,10 @@
 //
 
 #include "../src/common/header/common.h"
-#include "../qcommon/angles.h"
-#include "../qcommon/vector.h"
-#include "../qcommon/matrix.h"
-#include "../qcommon/random.h"
+#include "angles.h"
+#include "vector.h"
+#include "matrix.h"
+#include "h2rand.h"
 
 vec3_t vec3_right = { 1.0f, 0.0f, 0.0f };
 vec3_t vec3_up = { 0.0f, 0.0f, 1.0f };

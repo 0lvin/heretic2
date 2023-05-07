@@ -6,7 +6,7 @@
 //
 
 #include "../src/common/header/common.h"
-#include "../qcommon/q_physics.h"
+#include "q_physics.h"
 
 #include <stdint.h>
 

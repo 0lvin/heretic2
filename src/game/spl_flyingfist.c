@@ -7,8 +7,8 @@
 
 #include "../common/header/common.h"
 #include "g_local.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
 #include "decals.h"
 #include "utilities.h"
 #include "g_playstats.h"

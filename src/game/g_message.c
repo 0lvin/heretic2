@@ -11,7 +11,7 @@
 #include "../../h2common/message.h"
 
 #include "g_local.h"
-#include "../../qcommon/resourcemanager.h"
+#include "../../h2common/resourcemanager.h"
 #include "../../h2common/singlylinkedlist.h"
 
 static ResourceManager_t MsgMngr;

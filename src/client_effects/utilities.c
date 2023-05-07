@@ -6,15 +6,15 @@
 #include "utilities.h"
 
 #include "client_effects.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
-#include "../../qcommon/matrix.h"
-#include "../../qcommon/reference.h"
-#include "../../qcommon/motion.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
+#include "../../h2common/matrix.h"
+#include "../../h2common/reference.h"
+#include "../../h2common/motion.h"
 #include "particle.h"
 #include "ce_dlight.h"
 #include "../game/g_playstats.h"
-#include "../../qcommon/skeletons.h"
+#include "../../h2common/skeletons.h"
 
 
 // setup for circular list

@@ -18,8 +18,8 @@
 #define PLAYER_API
 
 #include "p_types.h"
-#include "../../qcommon/angles.h"
-#include "../../qcommon/vector.h"
+#include "../../h2common/angles.h"
+#include "../../h2common/vector.h"
 
 #ifdef __cplusplus
 extern "C" {

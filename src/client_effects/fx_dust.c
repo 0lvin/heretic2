@@ -5,17 +5,17 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "../../qcommon/angles.h"
+#include "../../h2common/angles.h"
 #include "client_entities.h"
 #include "client_effects.h"
 #include "ce_defaultmessagehandler.h"
-#include "../../qcommon/effectflags.h"
+#include "../../h2common/effectflags.h"
 #include "../game/g_physics.h"
 #include "fx_debris.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/h2rand.h"
 #include "particle.h"
 #include "utilities.h"
-#include "../../qcommon/fx.h"
+#include "../../h2common/fx.h"
 
 typedef struct RockChunk
 {

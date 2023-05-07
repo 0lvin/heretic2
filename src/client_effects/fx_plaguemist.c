@@ -9,9 +9,9 @@
 #include "client_entities.h"
 #include "ce_defaultmessagehandler.h"
 #include "particle.h"
-#include "../../qcommon/resourcemanager.h"
-#include "../../qcommon/fx.h"
-#include "../../qcommon/random.h"
+#include "../../h2common/resourcemanager.h"
+#include "../../h2common/fx.h"
+#include "../../h2common/h2rand.h"
 #include "../game/g_playstats.h"
 
 #define NUM_MIST_PARTS	7

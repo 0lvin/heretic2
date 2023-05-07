@@ -44,10 +44,10 @@
 #include "keyboard.h"
 #include "console.h"
 #include "../input.h"
-#include "../../../qcommon/angles.h"
-#include "../../../qcommon/vector.h"
+#include "../../../h2common/angles.h"
+#include "../../../h2common/vector.h"
 #include "../../player/player.h"
-#include "../../../qcommon/levelmaps.h"
+#include "../../../h2common/levelmaps.h"
 
 #ifdef __cplusplus
 extern "C" {

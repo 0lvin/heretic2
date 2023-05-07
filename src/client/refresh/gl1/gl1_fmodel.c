@@ -6,13 +6,13 @@
 //
 
 #include "header/local.h"
-#include "../../../../ref_common/fmodel.h"
-#include "../../../../qcommon/flex.h"
-#include "../../../../ref_common/m_skeletalcluster.h"
-#include "../../../../qcommon/skeletons.h"
-#include "../../../../qcommon/arrayed_list.h"
-#include "../../../../ref_common/m_skeleton.h"
-#include "../../../../ref_common/r_skeletons.h"
+#include "../../../../h2common/fmodel.h"
+#include "../../../../h2common/flex.h"
+#include "../../../../h2common/m_skeletalcluster.h"
+#include "../../../../h2common/skeletons.h"
+#include "../../../../h2common/arrayed_list.h"
+#include "../../../../h2common/m_skeleton.h"
+#include "../../../../h2common/r_skeletons.h"
 
 fmblock_t m_fmblocks[] =
 {
