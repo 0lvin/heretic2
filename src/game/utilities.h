@@ -38,7 +38,6 @@ extern void SetAnim(edict_t *self, int anim);
 extern void CalculateKnockBack(vec3_t dir, float knockback, int flags, float mass, vec3_t vel);
 extern void PostKnockBack(edict_t *target, vec3_t dir, float knockback, int flags);
 
-void StartICScript(char *name);
 void GetAimVelocity(edict_t *enemy, vec3_t org, vec_t speed, vec3_t AimAngles, vec3_t out);
 void remove_non_cinematic_entites(edict_t *owner);
 

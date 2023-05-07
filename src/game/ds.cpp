@@ -6,10 +6,10 @@
 extern "C" {
 #endif
 #include "../common/header/common.h"
+#include "g_local.h"
 #ifdef __cplusplus
 } //end extern "C"
 #endif
-#include "g_local.h"
 #include "ds.h"
 #include <limits.h>
 

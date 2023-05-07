@@ -10,10 +10,6 @@
 #include "../common/header/common.h"
 #include "buoy.h"
 
-#if 0
-#define G_NOAMMO
-#endif
-
 // Defined so I can insert hooks into code without breaking anything
 #define PAGAN	0
 
@@ -28,11 +24,6 @@
 // The "gameversion" client command will print this plus compile date.
 
 #define	GAMEVERSION	"Heretic2v16"
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 // Protocol bytes that can be directly added to messages.
 
@@ -251,19 +242,6 @@ typedef struct
 
 } game_locals_t;
 
-/* ICScript */
-typedef struct ICScript_s
-{
-	int startFrame;
-	char* buf;
-	int bufSize;
-	int count;
-} ICScript_t;
-
-void ICScript_Con(ICScript_t* this_ptr, char* name);
-void RunICScript();
-void KillICScript();
-
 // ************************************************************************************************
 // alertent_t
 // ---------
@@ -329,7 +307,6 @@ typedef struct
 	edict_t		*current_entity;			// Entity running from G_RunFrame().
 	int			body_que;					// Dead bodies.
 
-	ICScript_t	inGameCin;
 	qboolean	cinActive;
 
 	buoy_t		buoy_list[MAX_MAP_BUOYS];	//Buoy information for this map
@@ -1327,10 +1304,6 @@ typedef struct pushed_s
 extern pushed_t	pushed[MAX_EDICTS], * pushed_p;
 
 extern edict_t* obstacle;
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #include "g_edict.h"
 

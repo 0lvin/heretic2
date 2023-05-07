@@ -398,7 +398,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/game/p_hud.o \
 	$(BUILDDIR)/src/game/p_item.o \
 	$(BUILDDIR)/src/game/p_view.o \
-	$(BUILDDIR)/src/game/script.o \
 	$(BUILDDIR)/src/game/spl_blast.o \
 	$(BUILDDIR)/src/game/spl_bluering.o \
 	$(BUILDDIR)/src/game/spl_flyingfist.o \

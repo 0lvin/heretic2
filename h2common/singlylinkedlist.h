@@ -7,10 +7,6 @@
 #ifndef	SINGLYLINKEDLIST_H
 #define	SINGLYLINKEDLIST_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "genericunions.h"
 
 // jmarshall
@@ -45,10 +41,5 @@ void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toIn
 
 void InitResourceManager();
 void ShutdownResourceManager();
-
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

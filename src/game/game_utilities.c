@@ -853,15 +853,6 @@ void QPlaySound(edict_t *self, int sound, int channel)
 	gi.sound (self, channel, classStatics[self->classID].resInfo->sounds[sound], 1, ATTN_NORM, 0);
 }
 
-void StartICScript(char *name)
-{
-	assert(!level.cinActive);
-
-	level.cinActive = true;
-
-	ICScript_Con(&level.inGameCin, name);
-}
-
 #define EXTRA_KNOCKBACK_PRE_MULT 2
 #define EXTRA_KNOCKBACK_POST_Z_MULT 1.25
 
