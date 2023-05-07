@@ -10,41 +10,38 @@ sed -i 's/[[:blank:]]*$//' */*.{c,h}
 
 Comments:
 
-It's on really initial steps, it could be complied ;-), it runs without
-crashes and can open tutorial level. That's all what is good.
+It's on really initial steps, it could be complied ;-), it runs mostly without
+crashes. That's all what is good.
 
 Drawbacks: code is not rebased over yquake2 code, no sounds, broken jumps,
 no menu or books implementations.
-Code can't open ssdocks level(first level of game).
 Not all files has correct licence header and code is little bit mess.
 
 ======
 
-This is the complete source code for Quake 2, version 3.21, buildable with
-visual C++ 6.0.  The linux version should be buildable, but we haven't
-tested it for the release.
+# Yamagi Quake II
 
-The code is all licensed under the terms of the GPL (gnu public license).
-You should read the entire license, but the gist of it is that you can do
-anything you want with the code, including sell your new version.  The catch
-is that if you distribute new binary versions, you are required to make the
-entire source code available for free to everyone.
+Yamagi Quake II is an enhanced client for id Software's Quake
+II with focus on offline and coop gameplay. Both the gameplay and the graphics
+are unchanged, but many bugs in the last official release were fixed and some
+nice to have features like widescreen support and a modern OpenGL 3.2 renderer
+were added. Unlike most other Quake II source ports Yamagi Quake II is fully 64-bit
+clean. It works perfectly on modern processors and operating systems. Yamagi
+Quake II runs on nearly all common platforms; including FreeBSD, Linux, NetBSD,
+OpenBSD, Windows and macOS (experimental).
 
-The primary intent of this release is for entertainment and educational
-purposes, but the GPL does allow commercial exploitation if you obey the
-full license.  If you want to do something commercial and you just can't bear
-to have your source changes released, we could still negotiate a separate
-license agreement (for $$$), but I would encourage you to just live with the
-GPL.
+This code is built upon Icculus Quake II, which itself is based on Quake II
+3.21. Yamagi Quake II is released under the terms of the GPL version 2. See the
+LICENSE file for further information.
 
-All of the Q2 data files remain copyrighted and licensed under the
-original terms, so you cannot redistribute data from the original game, but if
-you do a true total conversion, you can create a standalone game based on
-this code.
+## Documentation
 
-Thanks to Robert Duffy for doing the grunt work of building this release.
+Before asking any question, read through the documentation! The current
+version can be found here: [doc/010_index.md](doc/010_index.md)
 
-John Carmack
-Id Software
+## Releases
 
-
+The official releases (including Windows binaries) can be found at our
+homepage: https://www.yamagi.org/quake2
+**Unsupported** preview builds for Windows can be found at
+https://deponie.yamagi.org/quake2/misc/
