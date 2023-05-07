@@ -13,9 +13,19 @@ Comments:
 It's on really initial steps, it could be complied ;-), it runs mostly without
 crashes. That's all what is good.
 
-Drawbacks: code is not rebased over yquake2 code, no sounds, broken jumps,
-no menu or books implementations.
-Not all files has correct licence header and code is little bit mess.
+Drawbacks:
+* code is not rebased over yquake2 code
+* no sounds
+* broken jumps
+* broken guns select
+* no menu implementations
+* no books implementations
+* Not all files has correct licence header
+* code is little bit mess
+* game,player, client_effects hard linked
+* only gl1 render
+* lights looks as rendered withot relation to z-buffer
+* used outdated libsmacker: https://libsmacker.sourceforge.net/
 
 ======
 
