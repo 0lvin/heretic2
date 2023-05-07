@@ -23,7 +23,7 @@ qboolean PlayerFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 	// referenceInfo will be invailid.
 
 	if(owner->current.modelindex!=255)
-		return(false);
+		return false;
 
 	// Enable all Corvus' reference points.
 
@@ -48,7 +48,7 @@ qboolean PlayerFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 
 	FXCrosshair(owner, FX_CROSSHAIR, 0, owner->origin);
 
-	return(true);
+	return true;
 }
 
 void FXPlayerPersistant(centity_t *owner, int type, int flags, vec3_t origin)

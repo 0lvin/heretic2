@@ -20,7 +20,7 @@ static qboolean FXRemoteCameraThink(struct client_entity_s *Self,centity_t *Owne
 {
 
 
-	return(false);
+	return false;
 }
 
 void FXRemoteCamera(centity_t *Owner,int Type,int Flags,vec3_t Origin)

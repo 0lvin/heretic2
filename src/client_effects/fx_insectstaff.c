@@ -116,7 +116,7 @@ static qboolean FXInsectStaffTrailThink(struct client_entity_s *self,centity_t *
 		NoOfIntervals=(int)(TrailLength/DeltaTrailLength);
 
 		if(NoOfIntervals > 40)
-			return(false);
+			return false;
 
 		Theta=fxi.cl->time*FIST_DELTA_THETA;
 		DeltaTheta=(fxi.cls->frametime*FIST_DELTA_THETA)/NoOfIntervals;
@@ -243,7 +243,7 @@ static qboolean FXGlobeOfOuchinessGlobeThink(struct client_entity_s *self,centit
 {
 	self->r.scale = flrand(0.35, 0.50);
 
-	return(true);
+	return true;
 }
 
 // ****************************************************************************
@@ -314,7 +314,7 @@ static qboolean FXGlobeOfOuchinessAuraThink(struct client_entity_s *self,centity
 		VectorAdd(TrailStart,Trail,TrailStart);
 	}
 
-	return(true);
+	return true;
 }
 
 // ****************************************************************************
@@ -412,11 +412,11 @@ static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self,cen
 		self->velocity[2]+=6.0*(owner->origin[2]-self->r.origin[2]);
 		self->velocity[2]*=0.265;
 
-		return(true);
+		return true;
 	}
 	else
 	{
-		return(false);
+		return false;
 	}
 }
 
@@ -513,7 +513,7 @@ static qboolean FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *s
 		self->color.g++;
 	}
 
-	return(true);
+	return true;
 }
 
 // ****************************************************************************
@@ -801,7 +801,7 @@ static qboolean FXStaffElementThink(struct client_entity_s *self,centity_t *owne
 
 	if((FrameNo=floor(Frac))>=(self->NoOfAnimFrames-1))
 	{
-		return(false);
+		return false;
 	}
 	else
 	{
@@ -813,7 +813,7 @@ static qboolean FXStaffElementThink(struct client_entity_s *self,centity_t *owne
 
 		self->r.frame=FrameNo+1;
 
-		return(true);
+		return true;
 	}
 }
 
@@ -856,11 +856,11 @@ static qboolean FXISwordTrailThink(struct client_entity_s *self,centity_t *owner
 	VectorSubtract(	current_org, last_org, diff);
 
 	if (Q_fabs(diff[0] + diff[1] + diff[2]) < .1)
-		return(true);
+		return true;
 
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
 	if(NoOfIntervals > 40)
-		return(false);
+		return false;
 
 	incr = VectorNormalize(diff)/NoOfIntervals;
 
@@ -892,7 +892,7 @@ static qboolean FXISwordTrailThink(struct client_entity_s *self,centity_t *owner
 		NoOfIntervals--;
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************

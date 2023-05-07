@@ -77,7 +77,7 @@ static qboolean FXDefensePickupThink(struct client_entity_s *self, centity_t *ow
 	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT);
 	self->SpawnData += BOB_SPEED;
 
-	return(true);
+	return true;
 }
 
 // Create effect FX_PICKUP_DEFENSE

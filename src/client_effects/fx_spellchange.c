@@ -30,12 +30,12 @@ qboolean FXSpellChangeLightThink(struct client_entity_s *self,centity_t *owner)
 {
 	if (fxi.cl->time - self->startTime > LIGHT_LIFETIME)
 	{
-		return(false);
+		return false;
 	}
 
 	self->dlight->intensity = 200.0 * (float)(LIGHT_LIFETIME - (fxi.cl->time - self->startTime)) / (float)LIGHT_LIFETIME;
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************

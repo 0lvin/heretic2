@@ -26,7 +26,7 @@ void PreCacheScorch()
 
 static qboolean EndLessLoop(struct client_entity_s *self, centity_t *owner)
 {
-	return(true);
+	return true;
 }
 
 
@@ -55,9 +55,9 @@ static qboolean GetTruePlane(vec3_t origin, vec3_t direction)
 		VectorCopy(trace.plane.normal, direction);
 		// Raise the scorchmark slightly off the target wall
 		VectorMA(origin, 0.5, direction, origin);
-		return(true);
+		return true;
 	}
-	return(false);
+	return false;
 }
 
 void FXClientScorchmark(vec3_t origin, vec3_t dir)

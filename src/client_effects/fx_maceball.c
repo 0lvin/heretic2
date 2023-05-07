@@ -54,7 +54,7 @@ static qboolean FXMaceballThink(struct client_entity_s *self, centity_t *owner)
 	{
 		self->d_scale = 0.0;
 	}
-	return(true);
+	return true;
 }
 
 void FXMaceball(centity_t *owner, int type, int flags, vec3_t origin)
@@ -245,12 +245,12 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 static qboolean FXRipperExplodeLightThink(struct client_entity_s *self, centity_t *owner)
 {
 	if (fxi.cl->time > self->lastThinkTime)
-		return(false);
+		return false;
 
 	if(self->dlight->intensity > 0.0F)
 		self->dlight->intensity -= 10.0F;
 
-	return(true);
+	return true;
 }
 
 
@@ -284,7 +284,7 @@ static qboolean FXRipperExplodeBallThink(struct client_entity_s *self, centity_t
 		scale -= 0.12;
 	}
 
-	return(true);
+	return true;
 }
 
 

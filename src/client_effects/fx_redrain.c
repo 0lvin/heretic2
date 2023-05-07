@@ -96,7 +96,7 @@ qboolean FXRedRainSplashThink(client_entity_t *splash, centity_t *owner)
 		spark->d_scale = -24.0;
 		AddParticleToList(mist, spark);
 	}
-	return(false);
+	return false;
 }
 
 
@@ -109,7 +109,7 @@ qboolean FXRedRainDropUpdate(client_entity_t *drop, centity_t *owner)
 		drop->r.startpos[2] = drop->SpawnData;
 	drop->r.endpos[2] = drop->r.origin[2] - RAIN_HEIGHT;
 
-	return(false);
+	return false;
 }
 
 
@@ -147,7 +147,7 @@ static qboolean FXRedRainThink(client_entity_t *rain, centity_t *owner)
 	}
 
 	if(owner->current.effects&EF_DISABLE_EXTRA_FX)//rain->LifeTime < 1000)
-		return(true);
+		return true;
 
 	for(j = 0; j < NUM_DROPS; j++)
 	{
@@ -183,7 +183,7 @@ static qboolean FXRedRainThink(client_entity_t *rain, centity_t *owner)
 			AddEffect(NULL, splash);
 		}
 	}
-	return(true);
+	return true;
 }
 
 // This is from creating the effect FX_RED_RAIN.
@@ -273,7 +273,7 @@ static qboolean FXRedRainMissileThink(client_entity_t *missile, centity_t *owner
 	}
 	// Remember for even spread of particles
 	VectorCopy(missile->r.origin, missile->origin);
-	return(true);
+	return true;
 }
 
 // From creation of the effect FX_RED_RAIN_MISSILE
@@ -340,9 +340,9 @@ static qboolean FXRedRainDLightThink(client_entity_t *dlight, centity_t *owner)
 {
 	dlight->dlight->intensity -= 10.0F;
 	if(dlight->dlight->intensity < 0.0F)
-		return(false);
+		return false;
 
-	return(true);
+	return true;
 }
 
 static qboolean RedRainExplosionThink(client_entity_t *explosion, centity_t *owner)
@@ -363,7 +363,7 @@ static qboolean RedRainExplosionThink(client_entity_t *explosion, centity_t *own
 		explosion->d_scale = -2.0;
 	}
 	else if (explosion->LifeTime < 0)
-		return(false);
+		return false;
 
 	explosion->r.angles[YAW] += 20.0;
 
@@ -391,7 +391,7 @@ static qboolean RedRainExplosionThink(client_entity_t *explosion, centity_t *own
 	VectorAdd(explosion->velocity, diffpos, diffpos);
 	VectorScale(diffpos, 0.5, explosion->velocity);
 
-	return(true);
+	return true;
 }
 
 // This is similar to the FXRedRainMissileExplode, except that the explosion needs knowledge of the rainfall height.

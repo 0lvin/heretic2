@@ -60,15 +60,15 @@ FXMistThink(client_entity_t *mist, centity_t *owner)
 	if(mist->r.depth > MIST_FAR)
 	{
 		mist->alpha = mod;
-		return(true);
+		return true;
 	}
 	if(mist->r.depth > MIST_NEAR)
 	{
 		mist->alpha = mod * (mist->r.depth - MIST_NEAR) * (1.0F / (MIST_FAR - MIST_NEAR));
-		return(true);
+		return true;
 	}
 	mist->alpha = 0.0F;
-	return(true);
+	return true;
 }
 
 void FXMist(centity_t *owner, int type, int flags, vec3_t origin)

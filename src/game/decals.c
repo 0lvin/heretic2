@@ -22,49 +22,49 @@ qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurf
 
 	if(!plane)
 	{
-		return(false);
+		return false;
 	}
 	if(!surface)
 	{
-		return(false);
+		return false;
 	}
 	if(!Vec3NotZero(plane->normal))
 	{
-		return(false);
+		return false;
 	}
 	// this is a brush
 	if (target->s.number)
 	{
-		return(false);
+		return false;
 	}
 	// target is damageable
 	if(target->takedamage)
 	{
-		return(false);
+		return false;
 	}
 	if(surface->flags & SURF_SKY)
 	{
-		return(false);
+		return false;
 	}
 	if(!target)
 	{
-		return(false);
+		return false;
 	}
 	contents = gi.pointcontents(origin);
 	if(contents & MASK_WATER)
 	{
-		return(false);
+		return false;
 	}
 	if(target->solid == SOLID_BSP)
 	{
 		if(contents & CONTENTS_TRANSLUCENT)
 		{
-			return(false);
+			return false;
 		}
 	}
 	if(planeDir)
 	{
 		VectorCopy(plane->normal, planeDir);
 	}
-	return(true);
+	return true;
 }

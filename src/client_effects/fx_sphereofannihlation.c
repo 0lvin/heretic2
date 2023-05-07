@@ -70,7 +70,7 @@ static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self,c
 
 	Self->r.scale=Owner->current.scale * detail_scale;
 
-	return(true);
+	return true;
 }
 
 // ****************************************************************************
@@ -89,7 +89,7 @@ static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self,cen
 	//
 	// no aura trail on low level
 	if(r_detail->value == DETAIL_LOW)
-		return(true);
+		return true;
 
 	VectorCopy(Owner->origin,TrailStart);
 	VectorSubtract(Owner->lerp_origin,Owner->origin,Trail);
@@ -152,7 +152,7 @@ static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self,cen
 		VectorAdd(TrailStart,Trail,TrailStart);
 	}
 
-	return(true);
+	return true;
 }
 
 // ****************************************************************************
@@ -262,11 +262,11 @@ static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self
 		Self->velocity[2]+=6.0*(Owner->origin[2]-Self->r.origin[2]);
 		Self->velocity[2]*=0.265;
 
-		return(true);
+		return true;
 	}
 	else
 	{
-		return(false);
+		return false;
 	}
 }
 
@@ -393,7 +393,7 @@ static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_
 		Self->color.g++;
 	}
 
-	return(true);
+	return true;
 }
 
 // ****************************************************************************
@@ -455,7 +455,7 @@ static qboolean FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s 
 
 	if((FrameNo=floor(Frac))>=(Self->NoOfAnimFrames-1))
 	{
-		return(false);
+		return false;
 	}
 	else
 	{
@@ -477,7 +477,7 @@ static qboolean FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s 
 
 		Self->alpha=Multiplier;
 
-		return(true);
+		return true;
 	}
 }
 
@@ -687,7 +687,7 @@ static qboolean FXSpherePlayerExplodeThink(struct client_entity_s *self,centity_
 		self->dlight->intensity=(FX_SPHERE_EXPLOSION_BASE_RADIUS*self->r.scale*1.7);
 	}
 
-	return(true);
+	return true;
 }
 
 
@@ -698,7 +698,7 @@ static qboolean FXSpherePlayerExplodeAddToView(struct client_entity_s *self,cent
 
 	self->lastThinkTime = fxi.cl->time;
 
-	return(true);
+	return true;
 }
 
 

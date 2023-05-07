@@ -108,7 +108,7 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self,centity_t 
 
 	AddEffect(NULL, trail);
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
@@ -124,7 +124,7 @@ static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self,centity_t
 	Self->Update=FXMagicMissileModelThink2;
 
 	FXMagicMissileTrailThink(Self,Owner);
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
@@ -135,7 +135,7 @@ static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self,centity_t
 static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self,centity_t *Owner)
 {
 	FXMagicMissileTrailThink(Self,Owner);
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************

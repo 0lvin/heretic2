@@ -571,7 +571,7 @@ qboolean CheckTeamDamage (edict_t *targ, edict_t *attacker)
 {
 	//FIXME: Make the next line real and uncomment this block.
 	//if ((ability to damage a teammate == OFF) && (targ's team == attacker's team))
-		return(false);
+		return false;
 }
 
 qboolean flammable (edict_t *targ)

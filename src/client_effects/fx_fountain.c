@@ -61,7 +61,7 @@ static qboolean FXWaterfallBaseSpawner(client_entity_t *spawner, centity_t *owne
 	{
 		CreateFountainSplash(spawner, spawner->r.origin, spawner->xscale, spawner->yscale, spawner->yaw);
 	}
-	return(true);
+	return true;
 }
 
 void FXWaterfallBase(centity_t *owner, int type, int flags, vec3_t origin)
@@ -90,7 +90,7 @@ qboolean FXWaterDropEnd(client_entity_t *waterdrop, centity_t *owner)
 	CreateFountainSplash(waterdrop, waterdrop->r.origin, 10.0, 10.0, 0);
 	waterdrop->Update = RemoveSelfAI;
 	waterdrop->nextThinkTime = fxi.cl->time + 500;
-	return(true);
+	return true;
 }
 
 #define	FOUNTAIN_SCALE	80.0F
@@ -135,7 +135,7 @@ static qboolean FXFountainParticleSpawner(client_entity_t *spawner, centity_t *o
 	splash->flags = CEF_NOMOVE | CEF_NO_DRAW;
 	AddEffect(NULL, splash);
 
-	return(true);				// Never go away
+	return true;				// Never go away
 }
 
 // Could send the 'v' as a 'ds' but we would lose some accuracy. As it

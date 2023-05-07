@@ -57,7 +57,7 @@ void PreCacheRockchunks()
 static qboolean FXDustLandThink(client_entity_t *dust, centity_t *owner)
 {
 	FXSmoke(dust->r.origin, 1.0, 40.0);
-	return(false);
+	return false;
 }
 
 static qboolean FXDustThink(client_entity_t *dust, centity_t *owner)
@@ -70,7 +70,7 @@ static qboolean FXDustThink(client_entity_t *dust, centity_t *owner)
 	dust->LifeTime++;
 	if(dust->LifeTime > dust->SpawnDelay)
 	{
-		return(false);
+		return false;
 	}
 	dust->updateTime = irand(dust->LifeTime * 17, dust->LifeTime * 50);
 
@@ -91,7 +91,7 @@ static qboolean FXDustThink(client_entity_t *dust, centity_t *owner)
 	ce->Update = FXDustLandThink;
 	AddEffect(NULL, ce);
 
-	return(true);
+	return true;
 }
 
 void FXDust(centity_t *owner, int type, int flags, vec3_t origin)

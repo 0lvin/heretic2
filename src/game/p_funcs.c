@@ -652,17 +652,17 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 					   MASK_PLAYERSOLID,&grabtrace);
 
 	if((grabtrace.fraction==1)||(!grabtrace.ent))
-		return(false);
+		return false;
 
 	if(!grabtrace.ent->item)
-		return(false);
+		return false;
 
 	if(grabtrace.ent->item->flags!=IT_PUZZLE)
-		return(false);
+		return false;
 
 	playerinfo->targetEnt=grabtrace.ent;
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
@@ -684,14 +684,14 @@ void G_PlayerActionTakePuzzle(playerinfo_t *playerinfo)
 qboolean G_PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 {
  	if (!((edict_t *)playerinfo->self)->target_ent)
-		return(false);
+		return false;
 
  	if (strcmp(((edict_t *)playerinfo->self)->target_ent->classname,"trigger_playerusepuzzle"))
-		return(false);
+		return false;
 
 	G_UseTargets(((edict_t *)playerinfo->self)->target_ent,((edict_t *)playerinfo->self));
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
@@ -702,9 +702,9 @@ qboolean G_PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 qboolean G_PlayerActionCheckPushPull_Ent(void *ent)
 {
 	if(!(strcmp(((edict_t *)ent)->classname,"func_train")==0)||!(((edict_t *)ent)->spawnflags&32))
-		return(false);
+		return false;
 	else
-		return(true);
+		return true;
 }
 
 // ************************************************************************************************
@@ -775,7 +775,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 	t = G_Find(t,FOFS(targetname),((edict_t *)playerinfo->self)->target);
 
 	if (!t)
-		return(false);
+		return false;
 
 // 	if (!(strcmp(t->classname,"func_train")==0))
  	if (t->classID == CID_BUTTON)
@@ -787,7 +787,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 		len1 = VectorLength(v);
 	}
 	else
-		return(false);
+		return false;
 
 	if (len1 < MAX_PUSH_BUTTON_RANGE)
 	{
@@ -801,10 +801,10 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 
 		// 41 degree range either way
 		if (dot > 0.75)
-			return(true);
+			return true;
 	}
 
-	return(false);
+	return false;
 }
 
 // ************************************************************************************************
@@ -849,7 +849,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 	t = G_Find(t,FOFS(targetname),self->target);
 
 	if (!t)
-		return(false);
+		return false;
 
  	if (t->classID == CID_LEVER)
 	{
@@ -858,7 +858,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 		len1 = VectorLength(v);
 	}
 	else
-		return(false);
+		return false;
 
 	if (len1 < MAX_PUSH_LEVER_RANGE)
 	{
@@ -873,10 +873,10 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 
 		// 41 degree range either way
 		if (dot > 0.70)
-			return(true);
+			return true;
 	}
 
-	return(false);
+	return false;
 }
 
 // ************************************************************************************************
@@ -910,7 +910,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 			{
 				((edict_t *)playerinfo->self)->s.color.a -= TELE_FADE_OUT;
 
-				return(true);
+				return true;
 			}
 			else
 			{
@@ -934,7 +934,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 					}
 				}
 
-				return(true);
+				return true;
 			}
 		}
 		else
@@ -957,10 +957,10 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 		}
 
 		if(!deathmatch->value)
-		  	return(true);
+		  	return true;
 	}
 
-	return(false);
+	return false;
 }
 
 // ************************************************************************************************

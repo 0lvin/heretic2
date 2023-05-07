@@ -602,8 +602,6 @@ void G_RunFrame (void)
 	int			i;
 	edict_t		*ent;
 
-//	void (*update)(edict_t *self);				//old crap causing buoy crash
-
 	qboolean SV_RunThink(edict_t *ent);
 
 	if(deathmatch->value || coop->value)

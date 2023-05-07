@@ -104,7 +104,7 @@ static qboolean FXMorphMissileThink(client_entity_t *missile, centity_t *owner)
 	VectorCopy(missile->r.origin, missile->origin);
 	// rotate the missile
 	missile->r.angles[0] -= 0.7;
-	return(true);
+	return true;
 }
 
 #define ARROW_SPEED			400.0F
@@ -274,7 +274,7 @@ static qboolean FXFeatherThink(client_entity_t *self, centity_t *owner)
 	float scale;
 
 	if (!(--self->SpawnInfo))
-		return(false);
+		return false;
 
 	if (self->SpawnInfo < 10)
 		self->alpha -= 0.1;
@@ -325,7 +325,7 @@ static qboolean FXFeatherThink(client_entity_t *self, centity_t *owner)
 			if (self->r.angles[PITCH] > 6.28)
 				self->r.angles[PITCH] -= 6.28;
 		}
-		return(true);
+		return true;
 	}
 	else
 	{
@@ -339,7 +339,7 @@ static qboolean FXFeatherThink(client_entity_t *self, centity_t *owner)
 		if (self->r.angles[PITCH] > 6.28)
 			self->r.angles[PITCH] -= 6.28;
 	}
-	return(true);
+	return true;
 }
 
 // make the feathers zip out of the carcess and float down

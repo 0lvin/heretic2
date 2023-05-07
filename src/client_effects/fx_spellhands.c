@@ -100,7 +100,7 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self,centity_t *Owner)
 	// Allow us adequate time to set up valid 'old' data because the reference points lag behind by
 	// a frame.
 	if((Self->AnimSpeed+=1.0)<2.0)
-		return(true);
+		return true;
 
 	// Create a rotation matrix
 	Matrix3FromAngles(Owner->lerp_angles, rotation);
@@ -143,7 +143,7 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self,centity_t *Owner)
 		VectorAdd(Real_Trailstart,TrailDelta,Real_Trailstart);
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************

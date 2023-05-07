@@ -200,7 +200,7 @@ qboolean Pickup_Puzzle(edict_t *ent, edict_t *other)
 
 	if (other->flags & FL_CHICKEN)
 	{
-		return(false);
+		return false;
 	}
 
 	item = FindItemByClassname(ent->classname);
@@ -211,11 +211,11 @@ qboolean Pickup_Puzzle(edict_t *ent, edict_t *other)
 
 		gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
 
-		return(true);
+		return true;
 	}
 	else
 	{
-		return(false);
+		return false;
 	}
 }
 
@@ -275,7 +275,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 			}
 		}
 
-		return(true);
+		return true;
 	}
 	else
 	{
@@ -310,20 +310,20 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 			{
 				// Have space in our inventory, so add ammo.
 
-				return(true);
+				return true;
 			}
 			else
 			{
 				// No space in inventory to add the ammo.
 
-				return(false);
+				return false;
 			}
 		}
 		else
 		{
 			// ...but we're not able to pick it up.
 
-			return(false);
+			return false;
 		}
 	}
 }
@@ -337,20 +337,20 @@ qboolean Pickup_Weapon(edict_t *ent,edict_t *other)
 {
 	if (other->flags & FL_CHICKEN)
 	{
-		return(false);
+		return false;
 	}
 
 	if(AddWeaponToInventory(ent->item,other))
 	{
 		gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
 
-		return(true);
+		return true;
 	}
 	else
 	{
 		// We already have it.
 
-		return(false);
+		return false;
 	}
 }
 
@@ -373,13 +373,13 @@ qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
 			item->use(&player->client->playerinfo,item);
 		}
 
-		return(true);
+		return true;
 	}
 	else
 	{
 		// We already have it...
 
-		return(false);
+		return false;
 	}
 }
 
@@ -392,18 +392,18 @@ qboolean Pickup_Defense (edict_t *ent, edict_t *other)
 {
 	if (other->flags & FL_CHICKEN)
 	{
-		return(false);
+		return false;
 	}
 
 	if(AddDefenseToInventory(ent->item,other))
 	{
 		gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
 
-		return(true);
+		return true;
 	}
 	else
 	{
-		return(false);
+		return false;
 	}
 }
 
@@ -419,14 +419,14 @@ qboolean Add_AmmoToInventory (edict_t *ent, gitem_t *item, int count,int max)
 	index = ITEM_INDEX(item);
 
 	if (ent->client->playerinfo.pers.inventory.Items[index] == max)
-		return(false);
+		return false;
 
 	ent->client->playerinfo.pers.inventory.Items[index] += count;
 
 	if (ent->client->playerinfo.pers.inventory.Items[index] > max)
 		ent->client->playerinfo.pers.inventory.Items[index] = max;
 
-	return(true);
+	return true;
 }
 
 /*
@@ -441,7 +441,7 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 	int	max;
 
 	if (!ent->client)
-		return(false);
+		return false;
 
 	if ((item->tag == ITEM_AMMO_MANA_OFFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
 	{
@@ -484,7 +484,7 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 		return(Add_AmmoToInventory (ent,item,count,max));
 	}
 	else
-		return(false);
+		return false;
 }
 
 /*
@@ -499,7 +499,7 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 
 	if (other->flags & FL_CHICKEN)
 	{
-		return(false);
+		return false;
 	}
 
 	if (ent->count)
@@ -508,11 +508,11 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 		count = ent->item->quantity;
 
 	if (!Add_Ammo (other, ent->item, count))
-		return(false);
+		return false;
 
 	gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
 
-	return(true);
+	return true;
 }
 
 /*
@@ -561,14 +561,14 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 {
 	if (other->flags & FL_CHICKEN)
 	{
-		return(false);
+		return false;
 	}
 
 	if (!(ent->style & HEALTH_IGNORE_MAX))
 	{
 		if (other->health >= other->max_health)
 		{
-			return(false);
+			return false;
 		}
 	}
 
@@ -598,7 +598,7 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 
 	gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
 
-	return(true);
+	return true;
 }
 
 /*

@@ -49,7 +49,7 @@ static qboolean FXRippleSpawner(client_entity_t *spawner, centity_t *owner)
 		spawner->updateTime = 1000;
 		spawner->Update = RemoveSelfAI;
 	}
-	return(true);
+	return true;
 }
 
 void FXWaterRipples(centity_t *Owner, int Type, int Flags, vec3_t Origin)

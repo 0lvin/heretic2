@@ -35,7 +35,7 @@ static qboolean FXSsithraArrowGlowThink(struct client_entity_s *self, centity_t 
 	self->updateTime = 100;
 
 	self->dlight->intensity = 150.0 + (cos(fxi.cl->time * 0.01) * 20.0);
-	return(true);
+	return true;
 }
 
 void FXSsithraArrowGlow(centity_t *owner, int type, int flags, vec3_t origin)
@@ -88,7 +88,7 @@ static qboolean FXSsithraArrowMissileThink(client_entity_t *missile, centity_t *
 	}
 	// Remember for even spread of particles
 	VectorCopy(missile->r.origin, missile->origin);
-	return(true);
+	return true;
 }
 
 void FXSsithraArrowMissile(centity_t *owner, int type, int flags, vec3_t origin)
@@ -121,9 +121,9 @@ static qboolean FXSsithraArrowDLightThink(client_entity_t *dlight, centity_t *ow
 {
 	dlight->dlight->intensity -= 10.0F;
 	if(dlight->dlight->intensity < 0.0F)
-		return(false);
+		return false;
 
-	return(true);
+	return true;
 }
 
 void FXSsithraArrowExplode(centity_t *owner, int type, int flags, vec3_t origin)

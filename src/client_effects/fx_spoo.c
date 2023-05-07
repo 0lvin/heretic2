@@ -84,7 +84,7 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self,centity_t *owner)
 
 	VectorCopy(owner->current.origin, self->startpos);
 
-	return(true);
+	return true;
 }
 
 void FXSpoo(centity_t *owner,int type,int Flags,vec3_t origin)

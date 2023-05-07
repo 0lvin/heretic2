@@ -248,7 +248,7 @@ static qboolean FXStaffElementThink(struct client_entity_s *Self,centity_t *owne
 
 	if((FrameNo=floor(Frac))>=(Self->NoOfAnimFrames-1))
 	{
-		return(false);
+		return false;
 	}
 	else
 	{
@@ -260,7 +260,7 @@ static qboolean FXStaffElementThink(struct client_entity_s *Self,centity_t *owne
 
 		Self->r.frame=FrameNo+1;
 
-		return(true);
+		return true;
 	}
 }
 
@@ -308,11 +308,11 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self,centity_t *owner
 					diff);
 
 	if (Q_fabs(diff[0] + diff[1] + diff[2]) < .1)
-		return(true);
+		return true;
 
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
 	if(NoOfIntervals > 40)
-		return(false);
+		return false;
 	NoOfIntervals = GetScaledCount(NoOfIntervals, 1.0);
 
 	// Average out the two right hand positions to get a pivot point.
@@ -328,7 +328,7 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self,centity_t *owner
 	//FIXME: The above assumption isn't working!
 	VectorNormalize(adjnormal);
 	if(NoOfIntervals > 40)
-		return(false);
+		return false;
 
 	while (NoOfIntervals >= 0)
 	{
@@ -470,11 +470,11 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self,centity_t *owner
 					diff);
 
 	if (Q_fabs(diff[0] + diff[1] + diff[2]) < .1)
-		return(true);
+		return true;
 
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
 	if(NoOfIntervals > 40)
-		return(false);
+		return false;
 	NoOfIntervals = GetScaledCount(NoOfIntervals, 1.0);
 
 	// Take the before and after points and try to draw an arc.
@@ -492,7 +492,7 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self,centity_t *owner
 	//FIXME: The above assumption isn't working!
 	VectorNormalize(adjnormal);
 	if(NoOfIntervals > 40)
-		return(false);
+		return false;
 
 	while (NoOfIntervals >= 0)
 	{
@@ -583,11 +583,11 @@ static qboolean FXStaffThink(struct client_entity_s *Self,centity_t *owner)
 					diff);
 
 	if (Q_fabs(diff[0] + diff[1] + diff[2]) < .1)
-		return(true);
+		return true;
 
 	NoOfIntervals=(int)(VectorLength(diff)*.75);
 	if(NoOfIntervals > 40)
-		return(false);
+		return false;
 	NoOfIntervals = GetScaledCount(NoOfIntervals, 1.0);
 
 	// Take the before and after points and try to draw an arc.
@@ -760,7 +760,7 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self,centity_t *owner
 	VectorCopy(startpt, curpt);  // This rides on the assumption that the normal given is already a unit norm.
 
 	if(NoOfIntervals > 40)
-		return(false);
+		return false;
 
 	while (NoOfIntervals >= 0)
 	{
@@ -843,9 +843,9 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self,centity_t *owner
 	}
 	Self->NoOfAnimFrames-=1.0;
 	if (Self->NoOfAnimFrames <= 0.0)
-		return(false);
+		return false;
 	else
-		return(true);
+		return true;
 }
 
 // ************************************************************************************************
@@ -1005,7 +1005,7 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self,centity_t *owner
 	VectorCopy(startpt, curpt);  // This rides on the assumption that the normal given is already a unit norm.
 
 	if(NoOfIntervals > 40)
-		return(false);
+		return false;
 
 	while (NoOfIntervals >= 0)
 	{
@@ -1088,9 +1088,9 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self,centity_t *owner
 	}
 	Self->NoOfAnimFrames+=1.0;
 	if (Self->NoOfAnimFrames > 5.0)
-		return(false);
+		return false;
 	else
-		return(true);
+		return true;
 }
 
 // ************************************************************************************************

@@ -121,7 +121,7 @@ static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owne
 
 	AddParticleToList(self, spark);
 
-	return(true);
+	return true;
 }
 
 

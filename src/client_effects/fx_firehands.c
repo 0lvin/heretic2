@@ -91,7 +91,7 @@ static qboolean FXFireHandsThink(struct client_entity_s *self,centity_t *owner)
 		AddParticleToList(self, flame);
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************

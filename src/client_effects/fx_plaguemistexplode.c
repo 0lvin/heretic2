@@ -26,13 +26,13 @@ static qboolean FXPlagueMistExplodeSpawn(client_entity_t *spawner, centity_t *ow
 
 	spawner->LifeTime -= spawner->SpawnInfo;
 	if(spawner->LifeTime < 0)
-		return(false);
+		return false;
 
 	count = (spawner->LifeTime - 1600) / 200;
 	if(count > NUM_MIST_EXPLODE_PARTS)
 		count = NUM_MIST_EXPLODE_PARTS;
 	if(count < 1)
-		return(true);
+		return true;
 
 	if (r_detail->value >= DETAIL_HIGH)
 	{
@@ -72,7 +72,7 @@ static qboolean FXPlagueMistExplodeSpawn(client_entity_t *spawner, centity_t *ow
 		AddParticleToList(spawner, p);
 	}
 
-	return(true);
+	return true;
 }
 
 void FXPlagueMistExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)

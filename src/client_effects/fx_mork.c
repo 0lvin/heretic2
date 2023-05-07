@@ -473,7 +473,7 @@ static qboolean FXMPPExplosionBallThink(client_entity_t *explosion, centity_t *o
 {
 	explosion->LifeTime--;
 	if (explosion->LifeTime<=0)
-		return(false);
+		return false;
 
 	if(explosion->dlight->intensity > 0.0F)
 		explosion->dlight->intensity -= 5.0F;
@@ -485,7 +485,7 @@ static qboolean FXMPPExplosionBallThink(client_entity_t *explosion, centity_t *o
 	if((explosion->r.angles[1]+=(M_PI/64.0))>(M_PI*2.0))
 		explosion->r.angles[1]=0.0;
 
-	return(true);
+	return true;
 }
 
 static qboolean FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
@@ -495,7 +495,7 @@ static qboolean FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity
 	explosion->LifeTime--;
 	if (explosion->LifeTime>PP_EXPLODE_LIFETIME)
 	{
-		return(true);
+		return true;
 	}
 	else if (explosion->LifeTime==PP_EXPLODE_LIFETIME)
 	{	// The explosion ball becomes visible and flashes
@@ -519,7 +519,7 @@ static qboolean FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity
 	}
 	else if (explosion->LifeTime<=0)
 	{
-		return(false);
+		return false;
 	}
 
 	// Spin the ball of fire while it expands and fades.
@@ -529,13 +529,13 @@ static qboolean FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity
 	if((explosion->r.angles[1]+=(M_PI/64.0))>(M_PI*2.0))
 		explosion->r.angles[1]=0.0;
 
-	return(true);
+	return true;
 }
 
 qboolean FXMPPExplosionCoreUpdate (client_entity_t *self, centity_t *owner)
 {
 	if(self->r.color.r<=50)
-		return(false);
+		return false;
 
 	if(self->r.frame < 11)
 		self->r.frame++;
@@ -565,7 +565,7 @@ static qboolean FXMPPExplosionCoreThink(client_entity_t *core, centity_t *owner)
 	core->LifeTime--;
 	if (core->LifeTime <= 0)
 	{
-		return(false);
+		return false;
 	}
 
 	if(core->r.color.g>10)

@@ -116,7 +116,7 @@ qboolean SV_RunThink (edict_t *ent)
 
 	if(!ent->think || thinktime<=0 || thinktime>level.time+0.001)
 	{
-		return(true);
+		return true;
 	}
 
 #if 1
@@ -137,7 +137,7 @@ qboolean SV_RunThink (edict_t *ent)
 #endif
 
 	// NOTENOTE Is this what we want to return if it gets this far?
-	return(true);
+	return true;
 }
 
 /*

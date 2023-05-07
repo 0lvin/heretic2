@@ -139,7 +139,7 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 	if (spawner->dlight)
 		spawner->dlight->intensity = 150 + flrand(-8.0, 8.0);
 
-	return(true);
+	return true;
 }
 
 void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
@@ -235,17 +235,17 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 		}
 		spawner->dlight->intensity = 150 + flrand(-8.0, 8.0);
 
-		return(true);
+		return true;
 	}
 	else if (fxi.cl->time < spawner->nextEventTime)
 	{
 		spawner->dlight->intensity = (spawner->nextEventTime - fxi.cl->time)*0.3;
 
-		return(true);
+		return true;
 	}
 	else
 	{
-		return(false);
+		return false;
 	}
 }
 
@@ -297,7 +297,7 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 		AddParticleToList(spawner, flame);
 	}
 	spawner->dlight->intensity = 150 + flrand(-8.0, 8.0);
-	return(true);
+	return true;
 
 }
 

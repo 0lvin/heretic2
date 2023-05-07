@@ -110,10 +110,10 @@ static qboolean shrine_player_update(struct client_entity_s *self, centity_t *ow
 	if (!(--self->SpawnInfo))
 	{
 		self->r.fmnodeinfo = NULL;
-		return(false);
+		return false;
 	}
 
-	return(true);
+	return true;
 }
 
 // Create a model of the player, and have it expand and fade, with a tint
@@ -175,7 +175,7 @@ static qboolean FXShrineManaThink(struct client_entity_s *self, centity_t *owner
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	if (self->SpawnInfo >4)
@@ -207,7 +207,7 @@ static qboolean FXShrineManaThink(struct client_entity_s *self, centity_t *owner
 			AddParticleToList(self, ce);
 		}
 	}
-	return(true);
+	return true;
 }
 
 // make the mana effect go off
@@ -245,7 +245,7 @@ static qboolean FXShrineArmorThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	if (self->SpawnInfo >4)
@@ -275,7 +275,7 @@ static qboolean FXShrineArmorThink(struct client_entity_s *self, centity_t *owne
 			AddParticleToList(self, ce);
 		}
 	}
-	return(true);
+	return true;
 }
 
 void FXShrineArmorEffect(centity_t *owner, int type, int flags, vec3_t origin)
@@ -311,7 +311,7 @@ static qboolean FXShrineLungsThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	if (self->SpawnInfo >10)
@@ -336,7 +336,7 @@ static qboolean FXShrineLungsThink(struct client_entity_s *self, centity_t *owne
 			AddParticleToList(self, ce);
 		}
 	}
-	return(true);
+	return true;
 }
 
 void FXShrineLungsEffect(centity_t *owner, int type, int flags, vec3_t origin)
@@ -402,7 +402,7 @@ static qboolean FXShrineStaffThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 	rad = ((TOTAL_STAFF_EFFECTS)-self->SpawnInfo) * (STAFF_RADIUS/(TOTAL_STAFF_EFFECTS-8));
 
@@ -460,7 +460,7 @@ static qboolean FXShrineStaffThink(struct client_entity_s *self, centity_t *owne
 	// move the rings up/down next frame
 	self->SpawnData += STAFF_HEIGHT_ADD;
 
-	return(true);
+	return true;
 }
 
 // start up the staff power up effect
@@ -654,7 +654,7 @@ static qboolean FXShrineHealthThink(struct client_entity_s *self, centity_t *own
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	// create the lightning lines
@@ -662,7 +662,7 @@ static qboolean FXShrineHealthThink(struct client_entity_s *self, centity_t *own
 
 	self->updateTime = flrand(1, (TOTAL_HEALTH_EFFECTS - self->SpawnInfo)) * 100.0;
 
-	return(true);
+	return true;
 }
 
 // create initial lightning line
@@ -702,7 +702,7 @@ static qboolean FXShrineReflectThink(struct client_entity_s *self, centity_t *ow
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	if (self->SpawnInfo >24)
@@ -760,7 +760,7 @@ static qboolean FXShrineReflectThink(struct client_entity_s *self, centity_t *ow
 	self->SpawnData += FLIGHT_HEIGHT_ADD;
 	self->Scale += 0.15;
 
-	return(true);
+	return true;
 }
 
 // create the entity the flight loops are on
@@ -794,12 +794,12 @@ static qboolean FXShrineGlowThink(struct client_entity_s *self, centity_t *owner
 {
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	self->d_alpha = -0.45;
  	self->d_scale = -1.0;
-	return(true);
+	return true;
 }
 
 // create the little glow bits..
@@ -811,7 +811,7 @@ static qboolean FXShrineGhostThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	for( i=0; i< irand(3,5); i++)
@@ -832,7 +832,7 @@ static qboolean FXShrineGhostThink(struct client_entity_s *self, centity_t *owne
 
 		AddEffect(owner, glow);
 	}
-	return(true);
+	return true;
 }
 
 // create the inital ghost controlling entity
@@ -867,7 +867,7 @@ static qboolean FXShrineSpeedThink(struct client_entity_s *self, centity_t *owne
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	color.c = 0xffffff;
@@ -907,7 +907,7 @@ static qboolean FXShrineSpeedThink(struct client_entity_s *self, centity_t *owne
 		}
 	}
 
-	return(true);
+	return true;
 }
 
 void FXShrineSpeedEffect(centity_t *owner, int type, int flags, vec3_t origin)
@@ -948,7 +948,7 @@ static qboolean FXShrinePowerupThink(struct client_entity_s *self, centity_t *ow
 
 	if (!(--self->SpawnInfo))
 	{
-		return(false);
+		return false;
 	}
 
 	if (self->SpawnInfo >24)
@@ -994,7 +994,7 @@ static qboolean FXShrinePowerupThink(struct client_entity_s *self, centity_t *ow
 	// move the rings up/down next frame
 	self->SpawnData += POWERUP_HEIGHT_ADD;
 
-	return(true);
+	return true;
 }
 
 void FXShrinePowerUpEffect(centity_t *owner, int type, int flags, vec3_t origin)
@@ -1100,7 +1100,7 @@ static qboolean FXShrineBallThink(struct client_entity_s *self, centity_t *owner
 	}
 
 	self->updateTime = 150;
-	return(true);
+	return true;
 }
 
 // create the floating ball in the middle of the shrine

@@ -324,14 +324,14 @@ float AddNormalizedAngles(float angle1, float angle2)
 qboolean ok_to_autotarget(edict_t *shooter, edict_t *target)
 {
 	if((!target->inuse)||(target->solid==SOLID_NOT)||(target->health<=0)||(target==shooter)||(target->svflags&SVF_NO_AUTOTARGET))
-		return(false);
+		return false;
 
 	// Don't allow us to find our caster , if there is one.
 
 	if (shooter->owner)
 	{
 		if (target == shooter->owner)
-			return(false);
+			return false;
 	}
 
 	// Now test against single player / deathmatch / coop specifics.
@@ -341,25 +341,25 @@ qboolean ok_to_autotarget(edict_t *shooter, edict_t *target)
 		// Only want to find other clients in deathmatch.
 
 		if(!target->client)
-			return(false);
+			return false;
 	}
 	else
 	if (coop->value)
 	{
 		if(target->client && ((int)dmflags->value & DF_HURT_FRIENDS))
-			return(true);
+			return true;
 		else
 		if((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET)))
-			return(false);
+			return false;
 	}
 	else
 	{
 		// Find just monsters in single player / coop. - unless the hurt friends flag is set
 		if((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET)))
-			return(false);
+			return false;
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
@@ -936,24 +936,23 @@ void SetAnim(edict_t *self, int anim)
 }
 
 // Returns true if it is time to think
-
 qboolean ThinkTime(edict_t *self)
 {
 	if(!self->think)
 	{
-		return(false);
+		return false;
 	}
 	if(self->nextthink <= TIME_EPSILON)
 	{
-		return(false);
+		return false;
 	}
 	// Need an epsilon value to account for floating point error
 	// The epsilon can be large because level.time goes up in increments of 0.1
 	if((self->nextthink - level.time) > TIME_EPSILON)
 	{
-		return(false);
+		return false;
 	}
-	return(true);
+	return true;
 }
 
 // end

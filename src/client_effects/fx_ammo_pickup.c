@@ -96,7 +96,7 @@ static qboolean FXAmmoPickupThink(struct client_entity_s *self, centity_t *owner
 		p->acceleration[2] = 20.0;
 		AddParticleToList(self, p);
 	}
-	return(true);
+	return true;
 }
 
 void FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)

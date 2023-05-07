@@ -97,7 +97,7 @@ static qboolean FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *
 		AddEffect(NULL,TrailEnt);
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************

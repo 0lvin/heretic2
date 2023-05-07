@@ -100,7 +100,7 @@ static qboolean FXWeaponPickupThink(struct client_entity_s *self, centity_t *own
 	spark->scale = 6.0;
 	AddParticleToList(self, spark);
 
-	return(true);
+	return true;
 }
 
 void FXWeaponPickup(centity_t *owner, int type, int flags, vec3_t origin)

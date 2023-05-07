@@ -679,7 +679,7 @@ qboolean PossessCorrectItem(edict_t *ent, gitem_t *item)
 
 	if(!ent->target_ent)
 	{
-		return(false);
+		return false;
 	}
 	ent = ent->target_ent;
 	t = NULL;
@@ -692,10 +692,10 @@ qboolean PossessCorrectItem(edict_t *ent, gitem_t *item)
 
 		if(t->item == item)
 		{
-			return(true);
+			return true;
 		}
 	}
-	return(false);
+	return false;
 }
 
 /*

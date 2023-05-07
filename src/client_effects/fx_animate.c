@@ -67,7 +67,7 @@ static qboolean FXAnimateGo(struct client_entity_s *self, centity_t *owner)
 	{
 		self->r.frame = 0;
 	}
-	return(true);
+	return true;
 }
 
 static qboolean FXAnimateRandomGo(struct client_entity_s *self, centity_t *owner)
@@ -80,7 +80,7 @@ static qboolean FXAnimateRandomGo(struct client_entity_s *self, centity_t *owner
 		self->r.frame = 0;
 		self->updateTime = irand(500, 5000);
 	}
-	return(true);
+	return true;
 }
 
 void FXAnimate(centity_t *owner, int type, int flags, vec3_t origin)

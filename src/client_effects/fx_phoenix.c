@@ -180,7 +180,7 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 
 	// Remember for even spread of particles
 	VectorCopy(missile->r.origin, missile->origin);
-	return(true);
+	return true;
 }
 
 
@@ -237,7 +237,7 @@ qboolean FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_t *owne
 
 	if (fxi.cl->time-explosion->startTime > EXPLODE_TIME_MAX)
 	{
-		return(false);
+		return false;
 	}
 
 	velfactor = (fxi.cl->time - explosion->lastThinkTime) / 1000.0;
@@ -250,7 +250,7 @@ qboolean FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_t *owne
 	if(explosion->dlight->intensity > 0.0F)
 		explosion->dlight->intensity -= 5.0F;
 
-	return(true);
+	return true;
 }
 
 // This is also exported for use in FXBarrelExplode/
@@ -260,7 +260,7 @@ qboolean FXPhoenixExplosionSmallBallThink(client_entity_t *explosion, centity_t 
 
 	if (fxi.cl->time-explosion->startTime > EXPLODE_TIME_MAX)
 	{
-		return(false);
+		return false;
 	}
 
 	velfactor = (fxi.cl->time - explosion->lastThinkTime) / 1000.0;
@@ -270,7 +270,7 @@ qboolean FXPhoenixExplosionSmallBallThink(client_entity_t *explosion, centity_t 
 	explosion->r.angles[YAW] += explosion->velocity2[YAW] * velfactor;
 	explosion->r.angles[PITCH] += explosion->velocity2[PITCH] * velfactor;
 
-	return(true);
+	return true;
 }
 
 static qboolean FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *owner)
@@ -282,7 +282,7 @@ static qboolean FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *ow
 	bird->LifeTime--;
 	if (bird->LifeTime <= 0)
 	{
-		return(false);
+		return false;
 	}
 
 	if(r_detail->value == DETAIL_LOW)
@@ -474,7 +474,7 @@ static qboolean FXPhoenixExplosionBirdThinkPower(client_entity_t *bird, centity_
 	bird->LifeTime--;
 	if (bird->LifeTime <= 0)
 	{
-		return(false);
+		return false;
 	}
 	return (true);
 }
@@ -709,5 +709,5 @@ static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *
 
 	// Remember for even spread of particles
 	VectorCopy(missile->r.origin, missile->origin);
-	return(true);
+	return true;
 }

@@ -86,7 +86,7 @@ static qboolean FXPESpellTrailThink(struct client_entity_s *self, centity_t *own
 		AddEffect(NULL,TrailEnt);
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
@@ -239,7 +239,7 @@ static qboolean FXPESpell2TrailThink(struct client_entity_s *self, centity_t *ow
 		AddEffect(NULL,TrailEnt);
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
@@ -391,7 +391,7 @@ static qboolean FXPESpell3TrailThink(struct client_entity_s *self, centity_t *ow
 		AddEffect(NULL,TrailEnt);
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************

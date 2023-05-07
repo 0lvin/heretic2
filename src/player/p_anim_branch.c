@@ -73,12 +73,12 @@ qboolean CheckUncrouch(playerinfo_t *playerinfo)
 		playerinfo->G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, playerinfo->self, MASK_PLAYERSOLID,&trace);
 
 	if (trace.fraction < 1)
-		return(false);
+		return false;
 
 	if (trace.allsolid || trace.startsolid)
-		return(false);
+		return false;
 
-	return(true);
+	return true;
 }
 
 /*-----------------------------------------------

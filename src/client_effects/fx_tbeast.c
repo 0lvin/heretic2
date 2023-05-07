@@ -35,7 +35,7 @@ static qboolean FXTBDustPuffThink(client_entity_t *DustPuff, centity_t *owner)
 	if (DustPuff->alpha <= 0)
 		return false;
 
-	return(true);
+	return true;
 }
 
 void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)

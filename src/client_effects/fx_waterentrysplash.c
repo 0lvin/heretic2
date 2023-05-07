@@ -73,10 +73,10 @@ static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self,cent
 		AddEffect(NULL,EntryRipple);
 
 		Self->NoOfAnimFrames--;
-		return(true);
+		return true;
 	}
 	else
-		return(false);
+		return false;
 }
 
 // ************************************************************************************************

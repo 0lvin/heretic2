@@ -1869,13 +1869,13 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	{
 		// Right hand is not clear.
 
-		return(false);
+		return false;
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Right hand is not clear.
-		return(false);
+		return false;
 	}
 
 	VectorMA(playerinfo->origin, -GRAB_HAND_WIDTH, right, lefthand);
@@ -1891,12 +1891,12 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	if (grabtrace.fraction != 1.0)
 	{	// Left hand is not clear.
-		return(false);
+		return false;
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{	// Left hand is not clear.
-		return(false);
+		return false;
 	}
 	// If the clear rays from the player's hands, traced down, should hit a legal (almost level)
 	// surface within a certain distance, then a grab is possible!
@@ -1936,18 +1936,18 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	if (grabtrace.fraction == 1.0)
 	{
 		// Right hand did not connect with a flat surface.
-		return(false);
+		return false;
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Right hand did not connect with a flat surface.
-		return(false);
+		return false;
 	}
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 	VectorCopy(lefthand, endpoint);
@@ -1963,18 +1963,18 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Left hand did not connect with a flat surface.
-		return(false);
+		return false;
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Left hand did not connect with a flat surface.
-		return(false);
+		return false;
 	}
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 	// Now finally, if we try tracing the player blocking forward a tad, we should be hitting an
@@ -1994,26 +1994,26 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 		playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
 	if (grabtrace.fraction == 1)
-		return(false);
+		return false;
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
-		return(false);
+		return false;
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 	// Sloped away surfaces are not grabbable.
 
 	if (grabtrace.plane.normal[2] > 0)
-		return(false);
+		return false;
 
 	if (grabtrace.ent&&!playerinfo->isclient)
 	{
 		if(playerinfo->G_EntIsAButton(grabtrace.ent))
 		{
-			return(false);
+			return false;
 		}
 	}
 
@@ -2029,7 +2029,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	{
 		// Bad angle.  Player should bounce.
 
-		return(false);
+		return false;
 	}
 
 
@@ -2109,7 +2109,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 		return true;
 	}
 
-	return(false);
+	return false;
 }
 
 /*-----------------------------------------------
@@ -2238,7 +2238,7 @@ qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 	{
 		// Client does nothing.
 
-		return(false);
+		return false;
 	}
 }
 
@@ -2256,7 +2256,7 @@ qboolean PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 	{
 		// Client does nothing.
 
-		return(false);
+		return false;
 	}
 }
 
@@ -2291,7 +2291,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	// Skip it if we're not on the ground.
 
 	if (playerinfo->groundentity == NULL)
-		return(false);
+		return false;
 
 	// First we need to "move" the player as high as we possibly can.
 
@@ -2311,7 +2311,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{	// There's no room to jump.
-		return(false);
+		return false;
 	}
 
 	// Handheight is set to the maximum the hands can go above the current player's height.
@@ -2375,7 +2375,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 	VectorCopy(lefthand, endpoint);
@@ -2394,7 +2394,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 
@@ -2448,7 +2448,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// player stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 	// Now check the angle.  It should be pretty much opposite the player's yaw.
@@ -2468,7 +2468,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	// Now that we feel we have a viable jump, let's jump!
 
-	return(true);
+	return true;
 }
 
 /*-----------------------------------------------
@@ -2509,7 +2509,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 			return false;
 
 		if(!(playerinfo->G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
-			return(false);
+			return false;
 
 		holdent = (void *)grabtrace.ent;
 
@@ -2525,7 +2525,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 		{
 			// Left hand is not near to pushable object.
 
-			return(false);
+			return false;
 		}
 
 		// Parallel to each other?
@@ -2546,7 +2546,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 	{
 		// Client does nothing.
 
-		return(false);
+		return false;
 	}
 }
 
@@ -2600,26 +2600,26 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	if (grabtrace.fraction == 1.0)
 	{
 		// Nothing in front of us.
-		return(false);
+		return false;
 	}
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// body stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 	// Sloped surfaces are not grabbable. Question: sloped away or towards?
 
 	if (grabtrace.plane.normal[2] > .3)
 	{
-		return(false);
+		return false;
 	}
 
 	if(grabtrace.ent&&!playerinfo->isclient)
 	{
 		if(playerinfo->G_EntIsAButton(grabtrace.ent))
 		{
-			return(false);
+			return false;
 		}
 	}
 	// Now check the angle.  It should be pretty much opposite the player's yaw.
@@ -2632,7 +2632,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	if (yaw > 30.0 || yaw < -30.0)
 	{
 		// Bad angle. Player should bounce.
-		return(false);
+		return false;
 	}
 
 	VectorCopy(grabtrace.endpos, grabloc);
@@ -2654,7 +2654,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Right hand is not clear.
-		return(false);
+		return false;
 	}
 
 	VectorMA(playerinfo->origin, -VAULT_HAND_WIDTH, right, lefthand);
@@ -2670,7 +2670,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Left hand is not clear.
-		return(false);
+		return false;
 	}
 
 	// If the clear rays from the player's hands, traced down, should hit a legal (almost level)
@@ -2689,12 +2689,12 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Right hand did not connect with a flat surface.
-		return(false);
+		return false;
 	}
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 	VectorCopy(lefthand, endpoint);
@@ -2709,12 +2709,12 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Left hand did not connect with a flat surface.
-		return(false);
+		return false;
 	}
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return(false);
+		return false;
 	}
 
 	// The fit check doesn't work when you are in muck, so check if you are.
@@ -2787,7 +2787,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		PlayerAnimSetVault(playerinfo, ASEQ_PULLUP_HALFWALL);
 	}
 
-	return(true);
+	return true;
 }
 
 /*-----------------------------------------------
@@ -2867,13 +2867,13 @@ qboolean PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 	if(!playerinfo->isclient)
 	{	// Check dismemberment before game side rope check.
 		if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
-			return(false);
+			return false;
 		else
 			return(playerinfo->G_PlayerActionCheckRopeGrab(playerinfo,stomp_org));
 	}
 	else
 	{
-		return(false);
+		return false;
 	}
 }
 
@@ -3387,7 +3387,7 @@ qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 	if(!playerinfo->isclient)
 		return(playerinfo->G_PlayerActionCheckPushButton(playerinfo));
 	else
-		return(false);
+		return false;
 }
 
 /*-----------------------------------------------
@@ -3409,7 +3409,7 @@ qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 	if(!playerinfo->isclient)
 		return(playerinfo->G_PlayerActionCheckPushLever(playerinfo));
 	else
-		return(false);
+		return false;
 }
 
 /*-----------------------------------------------

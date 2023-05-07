@@ -53,7 +53,7 @@ qboolean FXBubbleThink(client_entity_t *bubble, centity_t *owner)
 
 	fxi.S_StartSound(bubble->r.origin, -1, CHAN_AUTO,
 			fxi.S_RegisterSound(va("ambient/waterdrop%c.wav", irand('1', '3'))), 1, ATTN_STATIC, 0);
-	return(true);
+	return true;
 }
 
 
@@ -82,7 +82,7 @@ static qboolean FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *ow
 	bubble->Update = FXBubbleThink;
 
 	AddEffect(NULL, bubble);
-	return(true);
+	return true;
 }
 
 void FXBubbler(centity_t *Owner, int Type, int Flags, vec3_t Origin)
@@ -180,7 +180,7 @@ qboolean Create_Bubble(client_entity_t *self, centity_t *owner)
 	// random time till next bubble
 	self->updateTime = irand(50,500);
 	// Never kill _this
-  	return(true);
+  	return true;
 }
 
 // create a constant client effect attached to something in water that releases bubbles

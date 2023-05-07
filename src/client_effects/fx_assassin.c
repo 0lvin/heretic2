@@ -93,7 +93,7 @@ static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t
 	//strcpy(string, "textures/");
  	//strcat(string, trace.surface->name);
 	//strcpy(owner->entity->skinname, string);
-	//return(true);
+	//return true;
 
 	return false;
 // jmarshall end

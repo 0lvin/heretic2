@@ -54,7 +54,7 @@ static qboolean FXDrawCrosshair(struct client_entity_s *cross_hair, centity_t *o
 
 		cross_hair->flags &= ~(CEF_CULLED | CEF_DISAPPEARED | CEF_NO_DRAW);
 	}
-	return(true);
+	return true;
 }
 
 /*

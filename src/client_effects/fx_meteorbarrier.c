@@ -44,11 +44,11 @@ static qboolean FXMeteorBarriertrailThink(struct client_entity_s *self, centity_
 
 	// we theoretically shouldn't need to do _this.. Just in case.
 	if (!(owner->flags & CF_INUSE))
-		return(false);
+		return false;
 
 	// no trails in low detail mode
 	if (r_detail->value == DETAIL_LOW)
-		return(true);
+		return true;
 
 	// Length of trail
 	VectorSubtract(self->origin, self->r.origin, delta);
@@ -83,7 +83,7 @@ static qboolean FXMeteorBarriertrailThink(struct client_entity_s *self, centity_
 		Vec3AddAssign(delta, org);
 		alpha *= 0.9;
 	}
-	return(true);
+	return true;
 
 }
 
@@ -108,7 +108,7 @@ qboolean MeteorAddToView(client_entity_t *current, centity_t *owner)
 	current->r.origin[2] = cos(Angle / (M_PI / 5)) * 10.0;
 
 	VectorAdd(owner->origin, current->r.origin, current->r.origin);
-	return(true);
+	return true;
 }
 
 void FXMeteorBarrier(centity_t *owner, int type, int flags, vec3_t origin)

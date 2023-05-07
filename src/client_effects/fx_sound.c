@@ -209,7 +209,7 @@ static qboolean FXSoundthink(struct client_entity_s *self, centity_t *owner)
 	if (self->updateTime<17)
 		self->updateTime = 17;
 
-	return(true);	// Keep everything around so we can shut them down when needed.
+	return true;	// Keep everything around so we can shut them down when needed.
 }
 
 void FXSound(centity_t *owner,int type,int flags,vec3_t origin)

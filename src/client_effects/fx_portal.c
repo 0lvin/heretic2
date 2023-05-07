@@ -63,11 +63,11 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 	{	// already disabled.
 		if (fxi.cl->time > self->lastThinkTime)
 		{	// Remove it.
-			return(false);
+			return false;
 		}
 		else
 		{
-			return(true);
+			return true;
 		}
 	}
 
@@ -76,7 +76,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		self->LifeTime = 1;
 		self->lastThinkTime = fxi.cl->time + 2000;
 
-		return(true);
+		return true;
 	}
 
 	AngleVectors(self->r.angles, NULL, right, up);
@@ -226,7 +226,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		}
 	}
 
-	return(true);
+	return true;
 }
 
 // This is the persistant effect for the teleport pad

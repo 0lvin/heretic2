@@ -30,11 +30,11 @@ extern void RemoveEffectFromList(client_entity_t **root, centity_t *owner);
 
 qboolean RemoveSelfAI(client_entity_t *_this, centity_t *owner)
 {
-	return(false);	// removed after one think (nextThinkTime is lifetime)
+	return false;	// removed after one think (nextThinkTime is lifetime)
 }
 qboolean KeepSelfAI(client_entity_t *_this, centity_t *owner)
 {
-	return(true);	// Remain alive forever
+	return true;	// Remain alive forever
 }
 
 qboolean AttemptRemoveSelf(client_entity_t *self, centity_t *owner)
@@ -195,10 +195,10 @@ int GetSolidDist(vec3_t origin, vec_t radius, float maxdist, vec_t *dist)
 	if(trace.fraction == 1.0F)
 	{
 		*dist = maxdist;
-		return(false);
+		return false;
 	}
 	*dist = trace.endpos[2] - origin[2];
-	return(true);
+	return true;
 }
 
 // Gets time for a ce to fall to the ground
@@ -235,11 +235,11 @@ int GetWaterNormal(vec3_t origin, float radius, float maxdist, vec3_t normal, ve
 
 	fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD, &trace);
 	if((trace.fraction == 1.0F) || (trace.contents & MASK_SOLID))
-		return(false);
+		return false;
 
 	VectorCopy(trace.plane.normal, normal);
 	*dist = (end[2] - origin[2]) * trace.fraction;
-	return(true);
+	return true;
 }
 
 void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byte SplashSize, vec3_t Dir);

@@ -71,7 +71,7 @@ static qboolean FXPuzzlePickupThink(struct client_entity_s *self, centity_t *own
 	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT);
 	self->SpawnData += BOB_SPEED;
 
-	return(true);
+	return true;
 }
 
 void FXPuzzlePickup(centity_t *owner, int type, int flags, vec3_t origin)

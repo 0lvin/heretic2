@@ -255,9 +255,9 @@ static qboolean GetTruePlane(vec3_t origin, vec3_t direction)
 		VectorCopy(trace.plane.normal, direction);
 
 		VectorMA(origin, 0.25, direction, origin);
-		return(true);
+		return true;
 	}
-	return(false);
+	return false;
 }
 
 qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner);
@@ -523,10 +523,10 @@ static qboolean LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
 
 	spawner->LifeTime -= 50;
 	if(spawner->LifeTime < 0)					// Effect finished
-		return(false);
+		return false;
 
 	if(spawner->LifeTime < 800)					// Effect needs to stay alive until particles die
-		return(true);
+		return true;
 
 	if(spawner->flags&CEF_FLAG8)//yellow
 		yellow_blood = true;
@@ -560,7 +560,7 @@ static qboolean LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
 
 	// Remember current origin for calc of velocity
 	VectorCopy(org, spawner->origin);
-	return(true);
+	return true;
 }
 
 void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)

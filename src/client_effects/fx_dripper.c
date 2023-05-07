@@ -58,7 +58,7 @@ qboolean FXDripThinkSolid(client_entity_t *drip, centity_t *owner)
 
 	// FIXME : Returning false here doesn`t work
 	drip->Update = RemoveSelfAI;
-	return(true);
+	return true;
 }
 
 qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
@@ -92,7 +92,7 @@ qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
 
 	// FIXME : Returning false here doesn`t work
 	drip->Update = RemoveSelfAI;
-	return(true);
+	return true;
 }
 
 qboolean FXDripThinkLava(client_entity_t *drip, centity_t *owner)
@@ -121,7 +121,7 @@ qboolean FXDripThinkLava(client_entity_t *drip, centity_t *owner)
 
 	// FIXME : Returning false here doesn`t work
 	drip->Update = RemoveSelfAI;
-	return(true);
+	return true;
 }
 
 static qboolean FXDripperParticleSpawner(client_entity_t *spawner, centity_t *owner)
@@ -157,7 +157,7 @@ static qboolean FXDripperParticleSpawner(client_entity_t *spawner, centity_t *ow
 	}
 
 	AddEffect(NULL, drip);
-	return(true);
+	return true;
 }
 
 // Spawn a water drop spawner

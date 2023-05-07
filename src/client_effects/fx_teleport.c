@@ -234,7 +234,7 @@ static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owne
 	}
 
 
-	return(true);
+	return true;
 }
 
 // This is the persistant effect for the teleport pad

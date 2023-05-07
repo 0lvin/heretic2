@@ -75,7 +75,7 @@ void FXSmoke(vec3_t origin, float scale, float range)
 static qboolean FXSmokeSpawner(struct client_entity_s *self, centity_t *owner)
 {
 	FXSmoke(self->r.origin, self->r.scale, self->Scale);
-	return(true);
+	return true;
 }
 
 static qboolean FXSmokeSpawner2(struct client_entity_s *self, centity_t *owner)
@@ -84,7 +84,7 @@ static qboolean FXSmokeSpawner2(struct client_entity_s *self, centity_t *owner)
 	{
 		FXSmoke(self->r.origin, flrand(0.5, 1.0), flrand(32, 64));
 		self->updateTime = 30;
-		return(true);
+		return true;
 	}
 	else
 		return (false);

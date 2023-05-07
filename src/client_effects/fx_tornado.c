@@ -53,9 +53,9 @@ static qboolean FXTornadoBallThink(struct client_entity_s *self, centity_t *owne
 	if ((owner->current.effects & EF_SPEED_ACTIVE))
 	{
 		if (!self->alpha)
-			return(false);
+			return false;
 		self->alpha -= 1;
-		return(true);
+		return true;
 	}
 
 	color.c = 0xffffffff;
@@ -82,7 +82,7 @@ static qboolean FXTornadoBallThink(struct client_entity_s *self, centity_t *owne
 	}
 
 	self->updateTime = 150;
-	return(true);
+	return true;
 }
 
 // create the ball that gets tossed out of Crovus when he casts the tornado spell
@@ -116,7 +116,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self,centity_t *owner)
 	if (!(owner->current.effects & EF_SPEED_ACTIVE))
 	{
 		self->alpha -= 1;
-		return(true);
+		return true;
 	}
 
 	color.c = 0xc0ffffff;
@@ -167,7 +167,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self,centity_t *owner)
 
 	FXTornadoBallThink(self, owner);
 
-	return(true);
+	return true;
 }
 
 
@@ -295,7 +295,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self,centity_t *owner)
 	if (!(owner->current.effects & EF_SPEED_ACTIVE))
 	{
 		self->alpha -= 1;
-		return(true);
+		return true;
 	}
 
 	// should we do a particle stream too ?
@@ -383,7 +383,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self,centity_t *owner)
 		AddEffect(NULL, TrailEnt);
 	}
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
@@ -455,7 +455,7 @@ static qboolean FXTornadoStart(struct client_entity_s *self,centity_t *owner)
 	self->updateTime = dur;
 	self->nextThinkTime = fxi.cl->time + dur;
 
-	return(true);
+	return true;
 }
 
 

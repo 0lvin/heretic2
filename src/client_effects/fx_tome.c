@@ -59,7 +59,7 @@ qboolean FXROTTomeAddToView(client_entity_t *tome, centity_t *owner)
 	// Rotate the book
 	tome->r.angles[YAW] += difftime*TOME_SPIN_FACTOR;
 
-	return(true);
+	return true;
 }
 
 // update the position of the Tome of power relative to its owner
@@ -84,7 +84,7 @@ qboolean FXHomeTomeAddToView(client_entity_t *tome, centity_t *owner)
 	// Rotate the book
 	tome->r.angles[YAW] += difftime*TOME_SPIN_FACTOR;
 
-	return(true);
+	return true;
 }
 
 // update that Tome of power, so that more sparkles zip out of it, and the light casts pulses
@@ -97,7 +97,7 @@ qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
 	if (tome->SpawnInfo)
 	{
 		if(!(--tome->SpawnInfo))
-			return(false);
+			return false;
 	}
 	// no, could either be no light, or light still active
 	else
@@ -112,7 +112,7 @@ qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
 	}
 
 // Brian P wanted _this removed. I thought it was cool though. Jake
-	return(true);
+	return true;
 	for(i = 0; i < 4; i++)
 	{
 		spark = ClientParticle_new(PART_16x16_STAR, tome->color, 2000);
@@ -128,7 +128,7 @@ qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
 
 		AddParticleToList(tome, spark);
 	}
-	return(true);
+	return true;
 }
 
 // original version of the tome of power. Casts a blue light etc
@@ -176,7 +176,7 @@ qboolean FXROTTorchAddToView(client_entity_t *tome, centity_t *owner)
 	// Rotate the book
 	tome->r.angles[YAW] += difftime*TOME_SPIN_FACTOR;
 
-	return(true);
+	return true;
 }
 
 
@@ -202,7 +202,7 @@ qboolean FXHomeTorchAddToView(client_entity_t *tome, centity_t *owner)
 	// Rotate the book
 	tome->r.angles[YAW] += difftime*TOME_SPIN_FACTOR;
 
-	return(true);
+	return true;
 }
 
 
@@ -211,18 +211,18 @@ static qboolean FXplayertorch_think(struct client_entity_s *self,centity_t *owne
 {
 	// kill us if we are done
 	if (owner->current.effects & EF_LIGHT_ENABLED)
-		return(true);
+		return true;
 	else
 	if (!(self->SpawnInfo))
 	{
 	 	self->AddToView = FXHomeTorchAddToView;
 		self->SpawnInfo = TIME_TO_FADE_TORCH;
 		self->d_alpha = -0.18;
-		return(true);
+		return true;
 	}
 
 	if (!(--self->SpawnInfo))
-		return(false);
+		return false;
 
 	// decrement the amount of light the torch gives out
 	if (self->SpawnInfo < TIME_TO_FADE_TORCH)

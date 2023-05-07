@@ -380,7 +380,7 @@ qboolean WaterParticleGeneratorUpdate(client_entity_t *self, centity_t *owner)
 		}
 		UpdateWaterParticles(self);
 	}
- 	return(true);
+ 	return true;
 }
 
 
@@ -455,7 +455,7 @@ qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
 	vec3_t	org;
 
 	if(!cl_camera_under_surface->value)
-		return(true);
+		return true;
 
 	// Errr... what the hell, spawn some bubbles too.
 	VectorSet(org, flrand(-20.0, 20.0), flrand(-20.0 ,20.0), flrand(-20.0 ,20.0));
@@ -476,7 +476,7 @@ qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
 
 	VectorCopy(owner->origin, self->endpos);
 
-	return(true);
+	return true;
 }
 
 
@@ -709,7 +709,7 @@ static qboolean FXLeaderThink(struct client_entity_s *self, centity_t *owner)
 
 	// if we are ghosted, don't do the effect
 	if ((owner->current.renderfx & RF_TRANS_GHOST) || (owner->current.effects & EF_CLIENT_DEAD))
-		return(true);
+		return true;
 
    	// create the ring of particles that goes up
    	color.c = 0x7fffffff;
@@ -732,7 +732,7 @@ static qboolean FXLeaderThink(struct client_entity_s *self, centity_t *owner)
 	// move the rings up/down next frame
 	self->Scale += 0.17;
 
-	return(true);
+	return true;
 }
 
 // create the entity the flight loops are on
@@ -775,7 +775,7 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self,centity_t *owner)
 
 	// if we are ghosted, don't do the effect
 	if ((owner->current.renderfx & RF_TRANS_GHOST) || (owner->current.effects & EF_CLIENT_DEAD))
-		return(true);
+		return true;
 
 	if (!(owner->current.effects & EF_SPEED_ACTIVE))
 	{
@@ -832,7 +832,7 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self,centity_t *owner)
 	VectorCopy(origin, self->origin);
 
 
-	return(true);
+	return true;
 }
 
 // ************************************************************************************************
