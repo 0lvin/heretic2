@@ -924,7 +924,13 @@ CL_OffsetThirdPersonView
 ===============
 */
 #define FOCUS_DISTANCE  512
-#define 	VectorMA2(v, s, b, o)   ((o)[0]=(v)[0]+(b)[0]*(s),(o)[1]=(v)[1]+(b)[1]*(s),(o)[2]=(v)[2]+(b)[2]*(s))
+#define VectorMA2(v, s, b, o) \
+	{	\
+		(o)[0] = (v)[0] + (b)[0] * (s);	\
+		(o)[1] = (v)[1] + (b)[1] * (s);	\
+		(o)[2] = (v)[2] + (b)[2] * (s);	\
+	}
+
 void CL_OffsetThirdPersonView(void) {
 	vec3_t forward, right, up;
 	vec3_t view;
@@ -955,14 +961,14 @@ void CL_OffsetThirdPersonView(void) {
 
 	VectorCopy(cl.refdef.vieworg, view);
 
-	view[2] += 8;
+	view[2] += 24; // TODO: view height
 
 	cl.refdef.viewangles[PITCH] *= 0.5;
 
 	AngleVectors(cl.refdef.viewangles, forward, right, up);
 
 	float cg_thirdPersonAngle = 0.0f;
-	float cg_thirdPersonRange = 128.0f;
+	float cg_thirdPersonRange = 64.0f; // TODO: view range
 
 	forwardScale = cos(cg_thirdPersonAngle / 180 * M_PI);
 	sideScale = sin(cg_thirdPersonAngle / 180 * M_PI);
