@@ -36,6 +36,7 @@ protected:
 public:
 						Variable(char *NewName = "", VariableT NewType = TypeUNKNOWN);
 						Variable(FILE *FH, CScript *Script);
+	virtual				~Variable() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	char				*GetName(void) { return Name; }
 	VariableT			GetType(void) { return Type; }
@@ -72,6 +73,7 @@ protected:
 public:
 						IntVar(char *Name = "", int InitValue = 0);
 						IntVar(FILE *FH, CScript *Script);
+	virtual				~IntVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual int			GetIntValue(void) { return Value; }
 	virtual float		GetFloatValue(void) { return (float)Value; }
@@ -104,6 +106,7 @@ protected:
 public:
 						FloatVar(char *Name = "", float InitValue = 0.0);
 						FloatVar(FILE *FH, CScript *Script);
+	virtual				~FloatVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual int			GetIntValue(void) { return (int)Value; }
 	virtual float		GetFloatValue(void) { return Value; }
@@ -135,6 +138,7 @@ public:
 						VectorVar(char *Name = "", float InitValueX = 0.0, float InitValueY = 0.0, float InitValueZ = 0.0);
 						VectorVar(vec3_t NewValue);
 						VectorVar(FILE *FH, CScript *Script);
+	virtual				~VectorVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual void		GetVectorValue(vec3_t &VecValue);
 	virtual void		ReadValue(CScript *Script);
@@ -164,6 +168,7 @@ public:
 						EntityVar(char *Name = "", int InitValue = 0);
 						EntityVar(edict_t *Which);
 						EntityVar(FILE *FH, CScript *Script);
+	virtual				~EntityVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual int			GetIntValue(void);
 	virtual edict_t		*GetEdictValue(void) { return Value; }
@@ -185,6 +190,7 @@ protected:
 public:
 						StringVar(char *Name = "", char *InitValue = "");
 						StringVar(FILE *FH, CScript *Script);
+	virtual				~StringVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual char		*GetStringValue(void) { return Value; }
 	virtual void		ReadValue(CScript *Script);
@@ -200,6 +206,7 @@ protected:
 public:
 						VariableVar(char *Name = "");
 						VariableVar(FILE *FH, CScript *Script);
+	virtual				~VariableVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual int			GetIntValue(void) { return Value->GetIntValue(); }
 	virtual float		GetFloatValue(void) { return Value->GetFloatValue(); }
@@ -238,6 +245,7 @@ protected:
 public:
 						FieldVariableVar(char *Name = "");
 						FieldVariableVar(FILE *FH, CScript *Script);
+	virtual				~FieldVariableVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual int			GetIntValue(void);
 	virtual float		GetFloatValue(void);
@@ -335,6 +343,7 @@ protected:
 public:
 						Event(float NewTime, EventT NewType);
 						Event(FILE *FH, CScript *Script);
+	virtual				~Event() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 			float		GetTime(void) { return Time; }
 			EventT		GetType(void) { return Type; }
@@ -352,6 +361,7 @@ private:
 public:
 						MoveDoneEvent(float NewTime, edict_t *NewEnt);
 						MoveDoneEvent(FILE *FH, CScript *Script);
+	virtual				~MoveDoneEvent() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual bool		Process(CScript *Script);
 };
@@ -366,6 +376,7 @@ private:
 public:
 						RotateDoneEvent(float NewTime, edict_t *NewEnt);
 						RotateDoneEvent(FILE *FH, CScript *Script);
+	virtual				~RotateDoneEvent() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual bool		Process(CScript *Script);
 };
@@ -381,6 +392,7 @@ private:
 public:
 						ExecuteEvent(float NewTime, edict_t *NewOther = NULL, edict_t *NewActivator = NULL);
 						ExecuteEvent(FILE *FH, CScript *Script);
+	virtual				~ExecuteEvent() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual bool		Process(CScript *Script);
 };
@@ -392,6 +404,7 @@ class WaitEvent : public Event
 public:
 						WaitEvent(float NewTime);
 						WaitEvent(FILE *FH, CScript *Script);
+	virtual				~WaitEvent() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual bool		Process(CScript *Script);
 };

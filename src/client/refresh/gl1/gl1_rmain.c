@@ -1224,7 +1224,7 @@ int R_Init( void *hinstance, void *hWnd )
 	R_Register();
 
 	// initialize our gl dynamic bindings
-	if ( !QGL_Init( "opengl32" ) )
+	if (!QGL_Init())
 	{
 		QGL_Shutdown();
         ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not load \"%s\"\n", "opengl32" );

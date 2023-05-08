@@ -3012,7 +3012,8 @@ void *qwglGetProcAddress(char *symbol)
 **
 */
 
-qboolean QGL_Init( const char *dllname )
+qboolean
+QGL_Init(void)
 {
 	// update 3Dfx gamma irrespective of underlying DLL
 	{
@@ -3028,19 +3029,8 @@ qboolean QGL_Init( const char *dllname )
 
 	if ( ( glw_state.OpenGLLib = dlopen( "libGL.so", RTLD_LAZY | RTLD_GLOBAL ) ) == 0 )
 	{
-		char	fn[MAX_OSPATH] = ".";
-		FILE *fp;
-
-//		ri.Con_Printf(PRINT_ALL, "QGL_Init: Can't load %s from /etc/ld.so.conf: %s\n",
-//				dllname, dlerror());
-
-		strcat(fn, "/");
-		strcat(fn, dllname);
-
-		if ( ( glw_state.OpenGLLib = dlopen( fn, RTLD_LAZY ) ) == 0 ) {
-			ri.Con_Printf( PRINT_ALL, "%s\n", dlerror() );
-			return false;
-		}
+		ri.Con_Printf( PRINT_ALL, "%s\n", dlerror() );
+		return false;
 	}
 
 	qglAccum                     = dllAccum = GPA( "glAccum" );

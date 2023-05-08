@@ -2541,7 +2541,6 @@ Variable *CScript::HandleBuiltinFunction(void)
 			Search = G_Find(NULL, FOFS(targetname), V1->GetStringValue());
 			Var = new EntityVar(Search);
 
-			// TODO: rewrite new-delete-type-mismatch
 			delete V1;
 			break;
 

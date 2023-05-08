@@ -40,8 +40,8 @@
 #include <GL/glx.h>
 #endif
 
-qboolean QGL_Init( const char *dllname );
-void     QGL_Shutdown( void );
+qboolean QGL_Init(void);
+void     QGL_Shutdown(void);
 
 #ifndef APIENTRY
 #  define APIENTRY
