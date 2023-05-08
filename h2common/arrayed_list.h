@@ -5,10 +5,6 @@
 #ifndef QCOMMON_ARRAYED_LIST_H
 #define QCOMMON_ARRAYED_LIST_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <assert.h>
 
 typedef struct ArrayedListNode_s
@@ -22,9 +18,5 @@ typedef struct ArrayedListNode_s
 
 int GetFreeNode(ArrayedListNode_t *nodeArray, int max);
 void FreeNode(ArrayedListNode_t *nodeArray, int index);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

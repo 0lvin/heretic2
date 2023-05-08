@@ -7,10 +7,6 @@
 
 #include "../src/common/header/common.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define ELASTICITY_NONE				0.0f
 #define ELASTICITY_SLIDE			1.0001f
 #define ELASTICITY_ENTITY_BOUNCE	1.1f
@@ -73,9 +69,5 @@ typedef struct FormMove_s
 
 void BounceVelocity(vec3_t in, vec3_t normal, vec3_t out, float elasticity);
 qboolean BoundVelocity(float *vel);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif // Q_PHYSICS_H

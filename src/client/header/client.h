@@ -27,7 +27,6 @@
 #ifndef CL_CLIENT_H
 #define CL_CLIENT_H
 
-
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
@@ -48,10 +47,6 @@
 #include "../../../h2common/vector.h"
 #include "../../player/player.h"
 #include "../../../h2common/levelmaps.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // ********************************************************************************************
 // CF_XXX
@@ -455,7 +450,6 @@ typedef struct
 	int		(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
 } client_fx_import_t;
 
-
 // this is the only function actually exported at the linker level
 typedef	client_fx_export_t (*GetfxAPI_t) (client_fx_import_t);
 
@@ -584,7 +578,6 @@ void IN_Accumulate (void);
 
 void CL_ParseLayout (void);
 
-
 //
 // cl_main
 //
@@ -691,7 +684,6 @@ void CL_DrawInventory (void);
 void CL_PredictMovement(void);
 void CL_ClipMoveToEntities(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,trace_t *tr);
 
-
 //
 // cl_view.c
 //
@@ -720,8 +712,5 @@ void DrawAltString(int x, int y, char* s);
 void CL_AddEntities(void);
 
 trace_t		CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

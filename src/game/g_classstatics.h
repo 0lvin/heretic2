@@ -9,10 +9,6 @@
 #include "g_message.h"
 #include "g_local.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // ************************************************************************************************
 // ClassID_t
 // ************************************************************************************************
@@ -154,9 +150,5 @@ typedef struct G_ClassStatics_s
 extern G_ClassStatics_t	classStatics[NUM_CLASSIDS];
 extern int				Cid_init[NUM_CLASSIDS];
 extern void				(*classStaticsInits[NUM_CLASSIDS])();
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

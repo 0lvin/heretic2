@@ -8,10 +8,6 @@
 #ifndef _P_ANIM_BRANCH2_H_
 #define _P_ANIM_BRANCH2_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Chicken Branch.
 
 int ChickenBranchLwrStanding(playerinfo_t *playerinfo);
@@ -47,9 +43,5 @@ int BranchCheckHellAmmo(playerinfo_t *playerinfo);
 int BranchCheckMana(playerinfo_t *playerinfo);
 
 PLAYER_API qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif // _P_ANIM_BRANCH2_H_

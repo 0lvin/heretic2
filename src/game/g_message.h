@@ -8,10 +8,6 @@
 #include "../common/header/common.h"
 #include "../../h2common/singlylinkedlist.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Be sure to update DefaultMessageReceivers after adding a new message
 typedef enum G_MsgID_e
 {
@@ -67,7 +63,6 @@ typedef enum G_MsgID_e
 	G_MSG_SUSPEND,//35
 		// float time ( <= 0 indicates indefinite suspend )
 	G_MSG_UNSUSPEND,
-
 
 //--------------------------------------------
 // Voice messages
@@ -155,7 +150,6 @@ typedef enum G_MsgID_e
 	MSG_C_ATTACK4,
 	MSG_C_ATTACK5,
 
-
 	NUM_MESSAGES
 } G_MsgID_t;
 
@@ -188,13 +182,8 @@ void G_QPostMessage(struct edict_s *to, G_MsgID_t ID, G_MsgPriority_t priority, 
 
 void PostGameMessage(struct edict_s *to, G_MsgID_t ID, G_MsgPriority_t priority, char *format, ...);
 
-
 int G_ParseMsgParms(G_Message_t *this_ptr, char *format, ...);
 void G_ProcessMessages(struct edict_s *this_ptr);
 void G_ClearMessageQueue(struct edict_s *this_ptr);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

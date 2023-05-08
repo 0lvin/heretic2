@@ -12,10 +12,6 @@
 #include "ce_message.h"
 #include "../../h2common/fx.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef enum ClassID_e
 {
 	CID_DEBRIS = 0,
@@ -172,9 +168,5 @@ void InsertInCircularList(client_entity_t *self);
 #define		MAX_ENTRIES_IN_CIRCLE_LIST 70
 extern client_entity_t *CircularList[MAX_ENTRIES_IN_CIRCLE_LIST + 1];
 extern int			total_circle_entries;
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

@@ -40,10 +40,6 @@
 
 #include "qgl.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define	REF_VERSION	"GL 0.01"
 
 // up / down
@@ -67,7 +63,6 @@ typedef struct
 } viddef_t;
 
 extern	viddef_t	vid;
-
 
 /*
 
@@ -133,17 +128,14 @@ typedef struct
 	float	r, g, b;
 } glvert_t;
 
-
 #define	MAX_LBM_HEIGHT		480
 
 #define BACKFACE_EPSILON	0.01
-
 
 //====================================================
 
 extern	image_t		gltextures[MAX_GLTEXTURES];
 extern	int			numgltextures;
-
 
 extern	image_t		*r_notexture;
 extern	image_t		*r_particletexture;
@@ -153,7 +145,6 @@ extern	int			r_visframecount;
 extern	int			r_framecount;
 extern	cplane_t	frustum[4];
 extern	int			c_brush_polys, c_alias_polys;
-
 
 extern	int			gl_filter_min, gl_filter_max;
 
@@ -232,14 +223,8 @@ extern	cvar_t	*gl_texturesolidmode;
 extern  cvar_t  *gl_saturatelighting;
 extern  cvar_t  *gl_lockpvs;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 extern	cvar_t	*vid_fullscreen;
 extern	cvar_t	*vid_gamma;
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 extern	cvar_t		*intensity;
 
@@ -269,7 +254,6 @@ extern	model_t	*r_worldmodel;
 extern	unsigned	d_8to24table[256];
 
 extern	int		registration_sequence;
-
 
 void V_AddBlend (float r, float g, float b, float a, float *v_blend);
 
@@ -445,7 +429,6 @@ IMPORTED FUNCTIONS
 */
 extern	refimport_t	ri;
 
-
 /*
 ====================================================================
 
@@ -465,8 +448,5 @@ void		GLimp_LogNewFrame( void );
 
 extern image_t* atlas_particle;
 extern image_t* atlas_aparticle;
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

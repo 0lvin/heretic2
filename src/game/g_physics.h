@@ -8,10 +8,6 @@
 #include "../common/header/common.h"
 #include "../../h2common/q_physics.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define	FRICTION_STOPSPEED			100
 #define FRICTION_SURFACE			6
 #define FRICTION_WATER				1
@@ -49,9 +45,5 @@ extern qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMo
 extern void CreateMove_Step(edict_t *self, vec3_t move, float dist);
 
 qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, float attemptDist, int recursionLevel);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

@@ -6,7 +6,6 @@ Copyright 1998 Raven Software
 
   AI:
 
-
 -------------------------------------------------------------------*/
 #include "../common/header/common.h"
 #include "g_local.h"
@@ -49,7 +48,6 @@ static animmove_t *animations[ NUM_ANIMS] =
 };
 
 static ClassResourceInfo_t resInfo;
-
 
 /*-------------------------------------------------------------------------
 	corvus_c_anims
@@ -151,7 +149,6 @@ void corvus_c_anims(edict_t *self, G_Message_t *msg)
 	SetAnim(self, curr_anim);
 }
 
-
 /*-------------------------------------------------------------------------
 	PlagueElfStaticsInit
 -------------------------------------------------------------------------*/
@@ -182,8 +179,6 @@ void CorvusStaticsInit()
 	classStatics[CID_CORVUS].resInfo = &resInfo;
 
 }
-
-
 
 /*QUAKED character_corvus1 (1 .5 0) (-17 -25 -32) (22 12 32) INVISIBLE
 The cinematic corvus for the torture victim

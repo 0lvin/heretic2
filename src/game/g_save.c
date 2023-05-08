@@ -2,14 +2,8 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#ifdef __cplusplus
-extern "C" {
-#endif
 #include "../common/header/common.h"
 #include "g_local.h"
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 #include "g_skeletons.h"
 #include "../../h2common/arrayed_list.h"
 #include "../../h2common/message.h"
@@ -19,10 +13,6 @@ extern "C" {
 #include "../player/p_anims.h"
 #include "../../h2common/fx.h"
 #include "g_hitlocation.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 extern player_export_t	playerExport;	// interface to player DLL.
 
@@ -123,9 +113,6 @@ field_t fields[] = {
 // jmarshall
 int numItemsInFieldsArray = sizeof(fields) / sizeof(field_t);
 // jmarshall end
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 void LoadScripts(FILE* FH, qboolean DoGlobals);
 void SaveScripts(FILE* FH, qboolean DoGlobals);
@@ -205,14 +192,9 @@ static field_t		clientfields[] =
 	{NULL, 0, F_INT}
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 trig_message_t	message_text[MAX_MESSAGESTRINGS];
 unsigned		*messagebuf;
-#ifdef __cplusplus
-} //end extern "C"
-#endif
+
 
 static int LoadTextFile(char *name, char **addr)
 {
@@ -284,9 +266,6 @@ static void Load_Strings(void)
 	}
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*
 ============
@@ -436,9 +415,6 @@ void InitGame (void)
 
 	Load_Strings();
 }
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 //=========================================================
 
@@ -627,9 +603,6 @@ static void ReadClient (FILE *f, gclient_t *client)
 	}
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 /*
 ============
 WriteGame
@@ -728,9 +701,6 @@ void ReadGame (char *filename)
 
 	fclose (f);
 }
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 
 //==========================================================
@@ -842,12 +812,12 @@ static void ReadEdict (FILE *f, edict_t *ent)
 {
 	field_t		*field;
 	SinglyLinkedList_t msgs;
-	char *temp;
+	byte *temp;
 	void *s;
 
 	if(ent->s.clientEffects.buf)
 	{
-		temp = (char *)ent->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
+		temp = ent->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
 	}
 	else
 	{
@@ -856,11 +826,11 @@ static void ReadEdict (FILE *f, edict_t *ent)
 
 	msgs = ent->msgQ.msgs;
 
-	s=ent->Script;
+	s = ent->script;
 	fread (ent, sizeof(*ent), 1, f);
-	ent->Script= (CScript *) s;
+	ent->script = s;
 
-	ent->s.clientEffects.buf = (byte *) temp;
+	ent->s.clientEffects.buf = temp;
 
 	ent->msgQ.msgs = msgs;
 	ent->last_alert = NULL;
@@ -928,9 +898,6 @@ static void ReadLevelLocals (FILE *f)
 	}
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 /*
 =================
 WriteLevel
@@ -1149,6 +1116,3 @@ void ReadLevel (char *filename)
 				ent->nextthink = level.time + ent->delay;
 	}
 }
-#ifdef __cplusplus
-} //end extern "C"
-#endif

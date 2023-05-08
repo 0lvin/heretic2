@@ -61,7 +61,6 @@ typedef struct entity_s
 
 	int					flags;
 
-
 	union {
 	int					rootJoint;				// rootJoint of the entities skeleton
 	int					spriteType;
@@ -124,7 +123,6 @@ typedef struct entity_s
 	int					padToUnionSize3[7];	// use this space up to add any more line sprite fields
 	};
 
-
 	};
 
 } entity_t;
@@ -186,9 +184,6 @@ typedef struct
 
 #define	API_VERSION		3
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 //
 // these are the functions exported by the refresh module
 //
@@ -257,9 +252,6 @@ typedef struct
 
 	int		(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
 } refexport_t;
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 //
 // these are the functions imported by the refresh module

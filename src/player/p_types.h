@@ -11,10 +11,6 @@
 #include "../common/header/common.h"
 #include "../game/g_itemstats.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Forward define 'playerinfo_t' for use in 'panimframe_t' and 'panimmove_t'.
 
 typedef struct playerinfo_s playerinfo_t;
@@ -184,7 +180,6 @@ typedef enum
 #define PNOISE_SELF		0
 #define PNOISE_WEAPON	1
 #define PNOISE_IMPACT	2
-
 
 // ************************************************************************************************
 // IT_XXX
@@ -716,7 +711,6 @@ typedef struct playerinfo_s
 
 	byte				plaguelevel;			// Current plague level: 0=none, 2=max.
 
-
 	// Shrine stuff. Used by the player to determine the time for the torch to be lit, reflection
 	// to work and invisibilty to work (xxx_timer).
 
@@ -810,9 +804,5 @@ typedef struct playerinfo_s
 	float				grabangle;
 
 } playerinfo_t;
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif // _P_TYPES_H_

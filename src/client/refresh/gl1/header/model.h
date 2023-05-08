@@ -29,10 +29,6 @@
 
 #include "../../../../../h2common/fmodel.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /*
 ==============================================================================
 
@@ -40,7 +36,6 @@ BRUSH MODELS
 
 ==============================================================================
 */
-
 
 //
 // in memory representation
@@ -61,11 +56,9 @@ typedef struct
 	int			firstface, numfaces;
 } mmodel_t;
 
-
 #define	SIDE_FRONT	0
 #define	SIDE_BACK	1
 #define	SIDE_ON		2
-
 
 #define	SURF_PLANEBACK		2
 #define	SURF_DRAWSKY		4
@@ -150,8 +143,6 @@ typedef struct mnode_s
 	unsigned short		numsurfaces;
 } mnode_t;
 
-
-
 typedef struct mleaf_s
 {
 // common with node
@@ -169,7 +160,6 @@ typedef struct mleaf_s
 	msurface_t	**firstmarksurface;
 	int			nummarksurfaces;
 } mleaf_t;
-
 
 //===================================================================
 
@@ -267,8 +257,5 @@ void	Hunk_Free (void *base);
 
 void	Mod_FreeAll (void);
 void	Mod_Free (model_t *mod);
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

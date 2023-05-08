@@ -30,10 +30,6 @@
 // console
 //
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define	NUM_CON_TIMES	8
 #define CON_TEXTSIZE	32768
 #define MAX_LINES		((CON_TEXTSIZE / 38) + 8)
@@ -72,8 +68,5 @@ void Con_Clear_f (void);
 void Con_DrawNotify (void);
 void Con_ClearNotify (void);
 void Con_ToggleConsole_f (void);
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

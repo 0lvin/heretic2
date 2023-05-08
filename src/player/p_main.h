@@ -10,10 +10,6 @@
 
 #include "p_types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define PLAYER_FLAG_NONE				0x00000000
 #define PLAYER_FLAG_FALLING				0x00000001
 #define PLAYER_FLAG_IDLE				0x00000002
@@ -62,9 +58,5 @@ extern void PlayerSetHandFX(playerinfo_t *playerinfo, int handfxtype, int lifeti
 
 #define CREEP_MAXFALL	18
 #define CREEP_STEPDIST	30
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif // _P_MAIN2_H_

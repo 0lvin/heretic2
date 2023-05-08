@@ -21,10 +21,6 @@
 #include "../../h2common/angles.h"
 #include "../../h2common/vector.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // **************
 // Movement rates
 // **************
@@ -182,16 +178,10 @@ void Weapon_EquipArmor(playerinfo_t* playerinfo, gitem_t* Weapon);
 int Weapon_CurrentShotsLeft(playerinfo_t* playerinfo);
 int Defence_CurrentShotsLeft(playerinfo_t* playerinfo, int intent);
 
-
-
 // This is the only function actually exported at the linker level.
 
 typedef	player_export_t	(*GetPlayerAPI_t)(void);
 
 PLAYER_API player_export_t GetPlayerAPI(void);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif	// PLAYER_H

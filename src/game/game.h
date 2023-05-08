@@ -18,11 +18,6 @@
 #include "../../h2common/q_physics.h"
 #include "../../h2common/arrayed_list.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #define	GAME_API_VERSION	3
 
 // ************************************************************************************************
@@ -53,7 +48,6 @@ extern "C"
 #define SVF_FLOAT				0x00020000	// Allows walkmonsters to walk off ledges, assumes a low gravity
 #define SVF_ALLOW_AUTO_TARGET	0x00040000	// Used to allow player to autotarget non-monsters
 #define SVF_ALERT_NO_SHADE		0x00080000	// only used by alert_entity to make monsters check the alert as a sound alert
-
 
 // ************************************************************************************************
 // 'solid_t'.
@@ -261,7 +255,7 @@ typedef struct
 	void	(*WriteShort) (int c);
 	void	(*WriteLong) (int c);
 	void	(*WriteFloat) (float f);
-		void	(*WriteString) (char *s);
+	void	(*WriteString) (char *s);
 	void	(*WritePosition) (vec3_t pos);	// Some fractional bits.
 	void	(*WriteDir) (vec3_t pos);		// Single byte encoded, very coarse.
 	void	(*WriteAngle) (float f);
@@ -273,7 +267,6 @@ typedef struct
 	qboolean (*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
 														// The effect is not removed on the client
 														// This should be done by removing the effects from the owning entity or freeing
-
 
 	// Managed memory allocation.
 
@@ -391,9 +384,5 @@ typedef struct
 
 game_export_t *GetGameApi (game_import_t *import);
 float Clamp(float src, float min, float max);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

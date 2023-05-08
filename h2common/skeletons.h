@@ -8,11 +8,6 @@
 #include <stdlib.h> // for size_t
 #include "arrayed_list.h"
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define JN_YAW_CHANGED		0x00000001
 #define JN_PITCH_CHANGED	0x00000002
 #define JN_ROLL_CHANGED		0x00000004
@@ -94,9 +89,5 @@ extern int numNodesInSkeleton[];
 typedef void (*CreateSkeleton_t)(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
 
 extern CreateSkeleton_t SkeletonCreators[NUM_SKELETONS];
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

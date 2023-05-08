@@ -5,10 +5,6 @@
 #include "../common/header/common.h"
 #include "g_local.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct sv_entity_s
 {
 	entity_state_t	s;
@@ -96,7 +92,3 @@ typedef struct GameEntity_s
 
 } GameEntity_t;
 
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif

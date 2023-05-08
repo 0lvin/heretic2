@@ -6,9 +6,6 @@
 #define QCOMMON_ANGLES_H
 
 #include "../src/common/header/common.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 // Angles in radians
 
@@ -62,10 +59,6 @@ extern "C" {
 
 #define	SHORT_TO_ANGLE	(360.0/65536)
 
-
 #pragma warning(disable : 4305)		// 'initializing' : truncation from 'const double ' to 'float '
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

@@ -27,10 +27,6 @@
 #ifndef CO_FILES_H
 #define CO_FILES_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* The .pak files are just a linear collapse of a directory tree */
 
 #define IDPAKHEADER (('K' << 24) + ('C' << 16) + ('A' << 8) + 'P')
@@ -451,7 +447,6 @@ typedef struct
 #define	CONTENTS_MIST			0x00000040
 #define	LAST_VISIBLE_CONTENTS	CONTENTS_MIST
 
-
 /* remaining contents are non-visible, and don't eat brushes */
 #define CONTENTS_AREAPORTAL 0x8000
 
@@ -596,11 +591,6 @@ typedef struct
 	int numareaportals;
 	int firstareaportal;
 } darea_t;
-
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif
 

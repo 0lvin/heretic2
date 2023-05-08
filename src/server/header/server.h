@@ -76,7 +76,6 @@ typedef struct
 #define EDICT_NUM(n) ((edict_t *)((byte *)ge->edicts + ge->edict_size*(n)))
 #define NUM_FOR_EDICT(e) ( ((byte *)(e)-(byte *)ge->edicts ) / ge->edict_size)
 
-
 typedef enum
 {
 	cs_free,		// can be reused for a new connection
@@ -161,7 +160,6 @@ typedef struct
 	int			time;
 } challenge_t;
 
-
 typedef struct
 {
 	qboolean	initialized;				// sv_init has completed
@@ -198,13 +196,7 @@ extern	server_static_t	svs;				// persistant server info
 extern	server_t		sv;					// local server
 
 extern	cvar_t		*sv_paused;
-#ifdef __cplusplus
-extern "C" {
-#endif
-	extern	cvar_t* maxclients;
-#ifdef __cplusplus
-} //end extern "C"
-#endif
+extern	cvar_t		*maxclients;
 extern	cvar_t		*sv_noreload;			// don't reload level state when reentering
 extern	cvar_t		*sv_airaccelerate;		// don't reload level state when reentering
 											// development tool
@@ -233,7 +225,6 @@ void SV_InitOperatorCommands (void);
 void SV_SendServerinfo (client_t *client);
 void SV_UserinfoChanged (client_t *cl);
 
-
 void Master_Heartbeat (void);
 void Master_Packet (void);
 
@@ -242,7 +233,6 @@ void Master_Packet (void);
 //
 void SV_InitGame (void);
 void SV_Map (qboolean attractloop, char *levelstring, qboolean loadgame);
-
 
 //
 // sv_phys.c
@@ -289,7 +279,6 @@ void SV_WriteFrameToClient (client_t *client, sizebuf_t *msg);
 void SV_RecordDemoMessage (void);
 void SV_BuildClientFrame (client_t *client);
 
-
 void SV_Error (char *error, ...);
 
 //
@@ -300,8 +289,6 @@ extern	game_export_t	*ge;
 void SV_InitGameProgs (void);
 void SV_ShutdownGameProgs (void);
 void SV_InitEdict (edict_t *e);
-
-
 
 //============================================================
 
@@ -339,7 +326,6 @@ int SV_AreaEdicts (vec3_t mins, vec3_t maxs, edict_t **list, int maxcount, int a
 int SV_PointContents (vec3_t p);
 // returns the CONTENTS_* value from the world at the given point.
 // Quake 2 extends this to also check entities, to allow moving liquids
-
 
 trace_t SV_Trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t *passedict, int contentmask);
 // mins and maxs are relative

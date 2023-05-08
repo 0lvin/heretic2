@@ -1280,6 +1280,10 @@ void MG_PostDeathThink (edict_t *self);
 qboolean movable (edict_t *ent);
 qboolean EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer);
 void SkyFly (edict_t *self);
+void Use_Multi(edict_t *self, edict_t *other, edict_t *activator);
+void c_swapplayer(edict_t *Self,edict_t *Cinematic);
+void remove_non_cinematic_entites(edict_t *owner);
+void reinstate_non_cinematic_entites(edict_t *owner);
 
 //For simplicity of use.. take it out later
 

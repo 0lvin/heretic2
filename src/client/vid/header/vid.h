@@ -28,9 +28,6 @@
 #define CLIENT_VID_H
 // vid.h -- video driver defs
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 #define	MIN_GAMMA	0.1			// These also need to be defined in gl_local.h
 #define MAX_GAMMA	4.0
 
@@ -60,9 +57,6 @@ void	VID_MenuInit( void );
 void	VID_PreMenuInit( void );
 void	 VID_MenuDraw();
 const char	* VID_MenuKey( int );
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 // end
 #endif

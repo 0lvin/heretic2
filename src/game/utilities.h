@@ -8,10 +8,6 @@
 #include "../common/header/common.h"
 #include "g_typedef.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define LUNG_AIRTIME 12
 #define GILL_AIRTIME 18
 
@@ -43,9 +39,5 @@ void remove_non_cinematic_entites(edict_t *owner);
 
 qboolean ok_to_autotarget(edict_t *shooter, edict_t *target);
 qboolean ThinkTime(edict_t *self);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

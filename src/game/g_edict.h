@@ -16,11 +16,6 @@
 // edict_s
 // -------
 // ************************************************************************************************
-#ifndef __cplusplus
-#else
-	class CScript;
-#endif
-
 typedef struct edict_s
 {
 	// This is sent to the server as part of each client frame.
@@ -433,11 +428,7 @@ typedef struct edict_s
 
 	edict_t				*fire_damage_enemy;	//who burnt you to death- for proper burning death credit
 
-#ifndef __cplusplus
-	void			*Script;
-#else
-	CScript			*Script;
-#endif
+	void			*script;
 } edict_t;
 
 #endif // G_EDICT_H

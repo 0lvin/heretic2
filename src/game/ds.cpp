@@ -6,7 +6,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../common/header/common.h"
 #include "g_local.h"
 #ifdef __cplusplus
 } //end extern "C"
@@ -18,27 +17,6 @@ extern "C" {
 
 List<Variable *>	GlobalVariables;
 List<CScript *>		Scripts;
-
-template<class T> size_t tWrite(T *ptr,FILE *FH,int n=1)
-{
-	return fwrite(ptr,n,sizeof(T),FH);
-}
-
-template<class T> size_t tRead(T *ptr,FILE *FH,int n=1)
-{
-	return fread(ptr,n,sizeof(T),FH);
-}
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-extern void Use_Multi(edict_t *self, edict_t *other, edict_t *activator);
-extern void c_swapplayer(edict_t *Self,edict_t *Cinematic);
-extern void remove_non_cinematic_entites(edict_t *owner);
-extern void reinstate_non_cinematic_entites(edict_t *owner);
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 int msg_animtype  [NUM_MESSAGES] =
 {
@@ -235,14 +213,14 @@ RestoreList_t ScriptRL[] =
 
 void *RestoreObject(FILE *FH, RestoreList_t *RestoreList, void *Data)
 {
-	int				ID;
+	int				id;
 	RestoreList_t	*pos;
 
-	fread(&ID, 1, sizeof(ID), FH);
+	fread(&id, 1, sizeof(id), FH);
 
 	for(pos = RestoreList; pos->alloc_func; pos++)
 	{
-		if (pos->ID == ID)
+		if (pos->ID == id)
 		{
 			return pos->alloc_func(FH, Data);
 		}
@@ -256,7 +234,7 @@ void *RestoreObject(FILE *FH, RestoreList_t *RestoreList, void *Data)
 void ReadEnt(edict_t **to,FILE *FH)
 {
 	int index;
-	tRead(&index,FH);
+	fread(&index, 1, sizeof(index), FH);
 	if (index<0||index>=globals.num_edicts)
 	{
 		assert(index==-1); //else invalid edict number
@@ -276,7 +254,7 @@ void WriteEnt(edict_t **to,FILE *FH)
 	}
 	else
 		index=-1;
-	tWrite(&index,FH);
+	fwrite(&index, 1, sizeof(index), FH);
 }
 
 //==========================================================================
@@ -311,7 +289,7 @@ void ShutdownScripts(qboolean Complete)
 
 	for(i = 0, ent = g_edicts; i < globals.num_edicts; i++, ent++)
 	{
-		ent->Script = NULL;
+		ent->script = NULL;
 	}
 
 	if (Complete)
@@ -326,6 +304,9 @@ void ShutdownScripts(qboolean Complete)
 	}
 }
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void SaveScripts(FILE *FH, qboolean DoGlobals)
 {
 	int						size;
@@ -385,7 +366,7 @@ void LoadScripts(FILE *FH, qboolean DoGlobals)
 
 		for(i = 0, ent = g_edicts; i < globals.num_edicts; i++, ent++)
 		{
-			ent->Script = NULL;
+			ent->script = NULL;
 		}
 
 		fread(&size, 1, sizeof(size), FH);
@@ -398,14 +379,13 @@ void LoadScripts(FILE *FH, qboolean DoGlobals)
 }
 
 
-void script_use(edict_t *ent, edict_t *other, edict_t *activator)
+static void
+script_use(edict_t *ent, edict_t *other, edict_t *activator)
 {
-	ent->Script->AddEvent(new ExecuteEvent(level.time, other, activator) );
+	CScript *s = (CScript*)ent->script;
+	s->AddEvent(new ExecuteEvent(level.time, other, activator) );
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*QUAKED script_runner (.5 .5 .5) (-8 -8 -8) (8 8 8)
 set Script to the name of the script to run when triggered
@@ -414,17 +394,19 @@ use parm1 through parm16 to send parameters to the script
 void SP_script_runner (edict_t *ent)
 {
 	char	temp[MAX_OSPATH];
+	CScript* s;
 	int		i;
 
 	sprintf(temp,"ds/%s.os",st.script);
-	ent->Script = new CScript(temp, ent);
-	Scripts.PushBack(ent->Script);
+	s = new CScript(temp, ent);
+	ent->script = s;
+	Scripts.PushBack(s);
 
 	for(i=0;i<NUM_PARMS;i++)
 	{
 		if (st.parms[i])
 		{
-			ent->Script->SetParameter(st.parms[i]);
+			s->SetParameter(st.parms[i]);
 		}
 		else
 		{
@@ -1273,7 +1255,7 @@ Signaler::Signaler(edict_t *NewEdict, Variable *NewVar, SignalT NewSignalType)
 Signaler::Signaler(FILE *FH, CScript *Script)
 {
 	ReadEnt(&Edict,FH);
-	tRead(&SignalType, FH);
+	fread(&SignalType, 1, sizeof(SignalType), FH);
 
 	Var = (Variable *)RestoreObject(FH, ScriptRL, Script);
 }
@@ -1294,7 +1276,7 @@ void Signaler::Write(FILE *FH, CScript *Script)
 	fwrite(&index, 1, sizeof(index), FH);
 
 	WriteEnt(&Edict,FH);
-	tWrite(&SignalType, FH);
+	fwrite(&SignalType, 1, sizeof(SignalType), FH);
 
 	Var->Write(FH, Script);
 }
@@ -1713,17 +1695,17 @@ Event::Event(float NewTime, EventT NewType)
 
 Event::Event(FILE *FH, CScript *Script)
 {
-	tRead(&Time,FH);
-	tRead(&Type,FH);
-	tRead(&Priority,FH);
+	fread(&Time, 1, sizeof(Time), FH);
+	fread(&Type, 1, sizeof(Type), FH);
+	fread(&Priority, 1, sizeof(Priority), FH);
 }
 
 void Event::Write(FILE *FH, CScript *Script, int ID)
 {
 	fwrite(&ID, 1, sizeof(ID), FH);
-	tWrite(&Time,FH);
-	tWrite(&Type,FH);
-	tWrite(&Priority,FH);
+	fwrite(&Time, 1, sizeof(Time), FH);
+	fwrite(&Type, 1, sizeof(Type), FH);
+	fwrite(&Priority, 1, sizeof(Priority), FH);
 }
 
 bool Event::Process(CScript *Script)
@@ -1910,7 +1892,7 @@ CScript::CScript(FILE *FH)
 	if (index != -1)
 	{
 		owner = &g_edicts[index];
-		owner->Script = this;
+		owner->script = (CScript*)this;
 	}
 
 	fread(&index, 1, sizeof(index), FH);
@@ -2559,6 +2541,7 @@ Variable *CScript::HandleBuiltinFunction(void)
 			Search = G_Find(NULL, FOFS(targetname), V1->GetStringValue());
 			Var = new EntityVar(Search);
 
+			// TODO: rewrite new-delete-type-mismatch
 			delete V1;
 			break;
 

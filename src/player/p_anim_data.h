@@ -10,10 +10,6 @@
 
 #include "p_anims.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct seqctrl_s
 {
 	int command;
@@ -371,9 +367,5 @@ extern panimmove_t
 	player_move_staffspinblockedright,
 	player_move_stafflowerdownstab,
 	player_move_stafflowerpullout;
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif // _P_ANIM_DATA2_H_

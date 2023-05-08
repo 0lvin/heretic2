@@ -5,10 +5,6 @@
 #ifndef	EFFECTFLAGS_H
 #define EFFECTFLAGS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // ************************************************************************************************
 // EF_XXX
 // ------
@@ -58,7 +54,6 @@ extern "C" {
 												// a chicken, and not corvus.
 #define EF_ANIM_ALL					0x00800000	// Automatically cycle through all frames at 2hz
 #define EF_ANIM_ALLFAST				0x01000000	// Automatically cycle through all frames at 10hz
-
 
 // ************************************************************************************************
 // CEF_XXX
@@ -117,9 +112,5 @@ extern "C" {
 //
 
 #define	EFFECT_PRED_INFO			0x4000
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif // EFFECTFLAGS_H

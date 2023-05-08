@@ -9,10 +9,6 @@
 #include "placement.h"
 #include "matrix.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct M_SkeletalJoint_s
 {
 	int children;		// must be the first field
@@ -28,9 +24,5 @@ typedef struct ModelSkeleton_s
 	M_SkeletalJoint_t *rootJoint;
 	ArrayedListNode_t *rootNode;
 } ModelSkeleton_t;
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

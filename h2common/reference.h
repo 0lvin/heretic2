@@ -7,10 +7,6 @@
 
 #include "placement.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define MAX_REFPOINTS		16
 #define REF_MINCULLTIME		1.0
 
@@ -107,9 +103,5 @@ void ReleaseReferenceMngr();
 
 LERPedReferences_t *LERPedReferences_new(int init_refType);
 void LERPedReferences_delete(LERPedReferences_t *toDelete);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

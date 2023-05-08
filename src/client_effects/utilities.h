@@ -8,10 +8,6 @@
 #include "../common/header/common.h"
 #include "client_entities.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 //------------------------------------------------------------------
 // Update funcs
 //------------------------------------------------------------------
@@ -49,9 +45,5 @@ float GetGravity();
 
 qboolean ReferencesInitialized(centity_t *owner);
 qboolean RefPointsValid(centity_t *owner);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

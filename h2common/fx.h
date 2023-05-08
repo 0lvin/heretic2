@@ -7,10 +7,6 @@
 
 #include "effectflags.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // ************************************************************************************************
 // FX_XXX
 // ------
@@ -277,7 +273,6 @@ enum
 	MF_ACTOR_MACHINEGUN_1
 };
 
-
 // persistant effect debugging
 enum
 {
@@ -306,9 +301,5 @@ typedef enum HighPriestessStaff_e
 	HP_STAFF_INIT,
 	HP_STAFF_TRAIL,
 } HighPriestessStaff_t;
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

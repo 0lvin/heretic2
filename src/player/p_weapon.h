@@ -10,10 +10,6 @@
 
 #include "p_types.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // ************************************************************************************************
 // Weapon_XXX
 // ----------
@@ -28,10 +24,5 @@ PLAYER_API void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon);
 PLAYER_API void Weapon_EquipArmor(playerinfo_t *playerinfo, gitem_t *Weapon);
 PLAYER_API int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo);
 PLAYER_API int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
-
 
 #endif // P_WEAPON_H

@@ -151,7 +151,6 @@ $(BUILDDIR)/%.o :                 %.c ${HEADERS}
 	${Q}mkdir -p $(@D)
 	${Q}$(DO_CC)
 
-
 #############################################################################
 # CLIENT/SERVER
 #############################################################################
@@ -471,7 +470,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/server/sv_send.o \
 	$(BUILDDIR)/src/server/sv_user.o \
 	$(BUILDDIR)/src/server/sv_world.o
-
 
 $(BUILDDIR)/heretic2 : $(HERETIC2_OBJS) ${HEADERS}
 	@echo "===> CXX $<"

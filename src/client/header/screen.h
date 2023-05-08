@@ -29,9 +29,6 @@
 #include "../../common/header/common.h"
 #include "../vid/header/vid.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 void	SCR_Init (void);
 void	SCR_UpdateScreen (void);
 void	SCR_CenterPrint (char *str /*, PalIdx_t colour*/);
@@ -60,10 +57,5 @@ void SCR_RunCinematic (void);
 void SCR_FinishCinematic (void);
 void SCR_StopCinematic();
 qboolean CIN_IsCinematicRunning(void);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
-
 
 #endif

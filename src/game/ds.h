@@ -511,8 +511,4 @@ public:
 	bool				NewParameter(Variable *Which);
 };
 
-//==========================================================================
-
-extern List<Variable *> GlobalVariables;
-
 #endif

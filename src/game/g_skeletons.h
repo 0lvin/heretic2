@@ -9,10 +9,6 @@
 #include "../../h2common/arrayed_list.h"
 #include "../../h2common/skeletons.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct G_SkeletalJoint_s
 {
 	int children;		// must be the first field
@@ -30,9 +26,5 @@ int CreateSkeleton(int structure);
 void FreeSkeleton(int root);
 float GetJointAngle(int jointIndex, int angleIndex);
 qboolean SetJointAngVel(int jointIndex, int angleIndex, float destAngle, float angSpeed);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

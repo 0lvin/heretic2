@@ -9,10 +9,6 @@
 #include "m_skeletalcluster.h"
 #include "skeletons.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 extern M_SkeletalCluster_t SkeletalClusters[MAX_ARRAYED_SKELETAL_JOINTS];
 extern ArrayedListNode_t ClusterNodes[MAX_ARRAYED_JOINT_NODES];
 
@@ -30,9 +26,5 @@ void SetupCompressedJoints(ModelSkeleton_t *liSkel, int liIndex,
 	float *lerp);
 void RotateModelSegments(ModelSkeleton_t *skel, int jointIndex, int modelClusterIndex, int anglesIndex,
 	vec3_t *modelVerticies);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif

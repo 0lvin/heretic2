@@ -10,10 +10,6 @@
 #include "../../h2common/vector.h"
 #include "../client/header/client.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 extern client_fx_import_t fxi;
 
 extern cvar_t	*r_farclipdist;
@@ -201,7 +197,6 @@ void FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin);
 void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin);
 void FXFeetTrail(centity_t *owner, int type, int flags, vec3_t origin);
 
-
 // client effect used by another client effect - needs its own wrapper
 void FXClientScorchmark(vec3_t origin, vec3_t dir);
 void FXCrosshair(centity_t *owner, int type, int flags, vec3_t origin);
@@ -270,10 +265,6 @@ void PreCacheCWModels(void);
 void PreCacheTorn(void);
 
 qboolean Vec3IsZeroEpsilon(vec3_t in);
-
-#ifdef __cplusplus
-} //end extern "C"
-#endif
 
 #endif
 

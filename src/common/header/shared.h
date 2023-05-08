@@ -725,7 +725,6 @@ qboolean Get_Crosshair(vec3_t origin, byte* type);
 // called by the camera code to determine our camera offset
 void Perform_Screen_Shake(vec3_t, float current_time);
 
-
 /**************************************************************
  * palette info
  **************************************************************/
@@ -979,7 +978,6 @@ typedef struct
 #define	CHAN_NO_PHS_ADD			8	// send to all clients, not just ones in PHS (ATTN 0 will also do this)
 #define	CHAN_RELIABLE			16	// send by reliable message, not datagram
 
-
 // sound attenuation values
 #define	ATTN_NONE               0	// full volume the entire level
 #define	ATTN_NORM               1
@@ -1214,7 +1212,6 @@ typedef struct entity_state_s
 
 	byte			usageCount;
 } entity_state_t;
-
 
 // ************************************************************************************************
 // player_state_t
