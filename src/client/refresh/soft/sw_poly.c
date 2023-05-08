@@ -18,61 +18,59 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 #include <assert.h>
-#include "r_local.h"
+#include <limits.h>
+#include "header/local.h"
 
 #define AFFINE_SPANLET_SIZE      16
 #define AFFINE_SPANLET_SIZE_BITS 4
 
 typedef struct
 {
-	byte     *pbase, *pdest;
-	short	 *pz;
-	fixed16_t s, t;
-	fixed16_t sstep, tstep;
-	int       izi, izistep, izistep_times_2;
-	int       spancount;
-	unsigned  u, v;
+	pixel_t		*pbase, *pdest;
+	zvalue_t	*pz;
+	int		s, t;
+	int		sstep, tstep;
+	int		izi, izistep, izistep_times_2;
+	int		spancount;
+	unsigned	u, v;
 } spanletvars_t;
 
-spanletvars_t s_spanletvars;
+static spanletvars_t	s_spanletvars;
 
-static int r_polyblendcolor;
-
-static espan_t	*s_polygon_spans;
+static int	r_polyblendcolor;
 
 polydesc_t	r_polydesc;
 
-msurface_t *r_alpha_surfaces;
+msurface_t	*r_alpha_surfaces;
 
-extern int *r_turb_turb;
+static int	clip_current;
+vec5_t		r_clip_verts[2][MAXWORKINGVERTS+2];
+static emitpoint_t	outverts[MAXWORKINGVERTS+3];
 
-static int		clip_current;
-vec5_t	r_clip_verts[2][MAXWORKINGVERTS+2];
+static int	s_minindex, s_maxindex;
 
-static int		s_minindex, s_maxindex;
-
-static void R_DrawPoly( int iswater );
+static void R_DrawPoly(int iswater, espan_t *spans);
 
 /*
 ** R_DrawSpanletOpaque
 */
-void R_DrawSpanletOpaque( void )
+static void
+R_DrawSpanletOpaque(const int *r_turb_turb)
 {
-	unsigned btemp;
-
 	do
 	{
+		unsigned btemp;
 		unsigned ts, tt;
 
-		ts = s_spanletvars.s >> 16;
-		tt = s_spanletvars.t >> 16;
+		ts = s_spanletvars.s >> SHIFT16XYZ;
+		tt = s_spanletvars.t >> SHIFT16XYZ;
 
 		btemp = *(s_spanletvars.pbase + (ts) + (tt) * cachewidth);
-		if (btemp != 255)
+		if (btemp != TRANSPARENT_COLOR)
 		{
-			if (*s_spanletvars.pz <= (s_spanletvars.izi >> 16))
+			if (*s_spanletvars.pz <= (s_spanletvars.izi >> SHIFT16XYZ))
 			{
-				*s_spanletvars.pz    = s_spanletvars.izi >> 16;
+				*s_spanletvars.pz    = s_spanletvars.izi >> SHIFT16XYZ;
 				*s_spanletvars.pdest = btemp;
 			}
 		}
@@ -88,13 +86,12 @@ void R_DrawSpanletOpaque( void )
 /*
 ** R_DrawSpanletTurbulentStipple33
 */
-void R_DrawSpanletTurbulentStipple33( void )
+static void
+R_DrawSpanletTurbulentStipple33(const int *r_turb_turb)
 {
-	unsigned btemp;
-	int	     sturb, tturb;
-	byte    *pdest = s_spanletvars.pdest;
-	short   *pz    = s_spanletvars.pz;
-	int      izi   = s_spanletvars.izi;
+	pixel_t		*pdest = s_spanletvars.pdest;
+	zvalue_t	*pz    = s_spanletvars.pz;
+	zvalue_t	izi   = s_spanletvars.izi;
 
 	if ( s_spanletvars.v & 1 )
 	{
@@ -122,12 +119,15 @@ void R_DrawSpanletTurbulentStipple33( void )
 
 		while ( s_spanletvars.spancount > 0 )
 		{
+			unsigned btemp;
+			int sturb, tturb;
+
 			sturb = ((s_spanletvars.s + r_turb_turb[(s_spanletvars.t>>16)&(CYCLE-1)])>>16)&63;
 			tturb = ((s_spanletvars.t + r_turb_turb[(s_spanletvars.s>>16)&(CYCLE-1)])>>16)&63;
 
 			btemp = *( s_spanletvars.pbase + ( sturb ) + ( tturb << 6 ) );
 
-			if ( *pz <= ( izi >> 16 ) )
+			if ( *pz <= ( izi >> SHIFT16XYZ ) )
 				*pdest = btemp;
 
 			izi               += s_spanletvars.izistep_times_2;
@@ -145,13 +145,14 @@ void R_DrawSpanletTurbulentStipple33( void )
 /*
 ** R_DrawSpanletTurbulentStipple66
 */
-void R_DrawSpanletTurbulentStipple66( void )
+static void
+R_DrawSpanletTurbulentStipple66(const int *r_turb_turb)
 {
-	unsigned btemp;
-	int	     sturb, tturb;
-	byte    *pdest = s_spanletvars.pdest;
-	short   *pz    = s_spanletvars.pz;
-	int      izi   = s_spanletvars.izi;
+	unsigned	btemp;
+	int		sturb, tturb;
+	pixel_t		*pdest = s_spanletvars.pdest;
+	zvalue_t	*pz    = s_spanletvars.pz;
+	zvalue_t	izi   = s_spanletvars.izi;
 
 	if ( !( s_spanletvars.v & 1 ) )
 	{
@@ -184,7 +185,7 @@ void R_DrawSpanletTurbulentStipple66( void )
 
 			btemp = *( s_spanletvars.pbase + ( sturb ) + ( tturb << 6 ) );
 
-			if ( *pz <= ( izi >> 16 ) )
+			if ( *pz <= ( izi >> SHIFT16XYZ ) )
 				*pdest = btemp;
 
 			izi               += s_spanletvars.izistep_times_2;
@@ -214,7 +215,7 @@ void R_DrawSpanletTurbulentStipple66( void )
 
 			btemp = *( s_spanletvars.pbase + ( sturb ) + ( tturb << 6 ) );
 
-			if ( *pz <= ( izi >> 16 ) )
+			if ( *pz <= ( izi >> SHIFT16XYZ ) )
 				*pdest = btemp;
 
 			izi               += s_spanletvars.izistep;
@@ -232,20 +233,21 @@ void R_DrawSpanletTurbulentStipple66( void )
 /*
 ** R_DrawSpanletTurbulentBlended
 */
-void R_DrawSpanletTurbulentBlended66( void )
+static void
+R_DrawSpanletTurbulentBlended66(const int *r_turb_turb)
 {
-	unsigned btemp;
-	int	     sturb, tturb;
-
 	do
 	{
+		unsigned btemp;
+		int sturb, tturb;
+
 		sturb = ((s_spanletvars.s + r_turb_turb[(s_spanletvars.t>>16)&(CYCLE-1)])>>16)&63;
 		tturb = ((s_spanletvars.t + r_turb_turb[(s_spanletvars.s>>16)&(CYCLE-1)])>>16)&63;
 
 		btemp = *( s_spanletvars.pbase + ( sturb ) + ( tturb << 6 ) );
 
-		if ( *s_spanletvars.pz <= ( s_spanletvars.izi >> 16 ) )
-			*s_spanletvars.pdest = vid.alphamap[btemp*256+*s_spanletvars.pdest];
+		if ( *s_spanletvars.pz <= ( s_spanletvars.izi >> SHIFT16XYZ ) )
+			*s_spanletvars.pdest = vid_alphamap[btemp*256+*s_spanletvars.pdest];
 
 		s_spanletvars.izi += s_spanletvars.izistep;
 		s_spanletvars.pdest++;
@@ -256,20 +258,21 @@ void R_DrawSpanletTurbulentBlended66( void )
 	} while ( --s_spanletvars.spancount > 0 );
 }
 
-void R_DrawSpanletTurbulentBlended33( void )
+static void
+R_DrawSpanletTurbulentBlended33(const int *r_turb_turb)
 {
-	unsigned btemp;
-	int	     sturb, tturb;
-
 	do
 	{
+		unsigned btemp;
+		int sturb, tturb;
+
 		sturb = ((s_spanletvars.s + r_turb_turb[(s_spanletvars.t>>16)&(CYCLE-1)])>>16)&63;
 		tturb = ((s_spanletvars.t + r_turb_turb[(s_spanletvars.s>>16)&(CYCLE-1)])>>16)&63;
 
 		btemp = *( s_spanletvars.pbase + ( sturb ) + ( tturb << 6 ) );
 
-		if ( *s_spanletvars.pz <= ( s_spanletvars.izi >> 16 ) )
-			*s_spanletvars.pdest = vid.alphamap[btemp+*s_spanletvars.pdest*256];
+		if ( *s_spanletvars.pz <= ( s_spanletvars.izi >> SHIFT16XYZ ) )
+			*s_spanletvars.pdest = vid_alphamap[btemp+*s_spanletvars.pdest*256];
 
 		s_spanletvars.izi += s_spanletvars.izistep;
 		s_spanletvars.pdest++;
@@ -283,24 +286,24 @@ void R_DrawSpanletTurbulentBlended33( void )
 /*
 ** R_DrawSpanlet33
 */
-void R_DrawSpanlet33( void )
+static void
+R_DrawSpanlet33(const int *r_turb_turb)
 {
-	unsigned btemp;
-
 	do
 	{
+		unsigned btemp;
 		unsigned ts, tt;
 
-		ts = s_spanletvars.s >> 16;
-		tt = s_spanletvars.t >> 16;
+		ts = s_spanletvars.s >> SHIFT16XYZ;
+		tt = s_spanletvars.t >> SHIFT16XYZ;
 
 		btemp = *(s_spanletvars.pbase + (ts) + (tt) * cachewidth);
 
-		if ( btemp != 255 )
+		if ( btemp != TRANSPARENT_COLOR )
 		{
-			if (*s_spanletvars.pz <= (s_spanletvars.izi >> 16))
+			if (*s_spanletvars.pz <= (s_spanletvars.izi >> SHIFT16XYZ))
 			{
-				*s_spanletvars.pdest = vid.alphamap[btemp+*s_spanletvars.pdest*256];
+				*s_spanletvars.pdest = vid_alphamap[btemp+*s_spanletvars.pdest*256];
 			}
 		}
 
@@ -312,13 +315,14 @@ void R_DrawSpanlet33( void )
 	} while (--s_spanletvars.spancount > 0);
 }
 
-void R_DrawSpanletConstant33( void )
+static void
+R_DrawSpanletConstant33(const int *r_turb_turb)
 {
 	do
 	{
-		if (*s_spanletvars.pz <= (s_spanletvars.izi >> 16))
+		if (*s_spanletvars.pz <= (s_spanletvars.izi >> SHIFT16XYZ))
 		{
-			*s_spanletvars.pdest = vid.alphamap[r_polyblendcolor+*s_spanletvars.pdest*256];
+			*s_spanletvars.pdest = vid_alphamap[r_polyblendcolor+*s_spanletvars.pdest*256];
 		}
 
 		s_spanletvars.izi += s_spanletvars.izistep;
@@ -330,24 +334,24 @@ void R_DrawSpanletConstant33( void )
 /*
 ** R_DrawSpanlet66
 */
-void R_DrawSpanlet66( void )
+static void
+R_DrawSpanlet66(const int *r_turb_turb)
 {
-	unsigned btemp;
-
 	do
 	{
+		unsigned btemp;
 		unsigned ts, tt;
 
-		ts = s_spanletvars.s >> 16;
-		tt = s_spanletvars.t >> 16;
+		ts = s_spanletvars.s >> SHIFT16XYZ;
+		tt = s_spanletvars.t >> SHIFT16XYZ;
 
 		btemp = *(s_spanletvars.pbase + (ts) + (tt) * cachewidth);
 
-		if ( btemp != 255 )
+		if ( btemp != TRANSPARENT_COLOR )
 		{
-			if (*s_spanletvars.pz <= (s_spanletvars.izi >> 16))
+			if (*s_spanletvars.pz <= (s_spanletvars.izi >> SHIFT16XYZ))
 			{
-				*s_spanletvars.pdest = vid.alphamap[btemp*256+*s_spanletvars.pdest];
+				*s_spanletvars.pdest = vid_alphamap[btemp*256+*s_spanletvars.pdest];
 			}
 		}
 
@@ -362,12 +366,12 @@ void R_DrawSpanlet66( void )
 /*
 ** R_DrawSpanlet33Stipple
 */
-void R_DrawSpanlet33Stipple( void )
+static void
+R_DrawSpanlet33Stipple(const int *r_turb_turb)
 {
-	unsigned btemp;
-	byte    *pdest = s_spanletvars.pdest;
-	short   *pz    = s_spanletvars.pz;
-	int      izi   = s_spanletvars.izi;
+	pixel_t		*pdest	= s_spanletvars.pdest;
+	zvalue_t	*pz	= s_spanletvars.pz;
+	zvalue_t	izi	= s_spanletvars.izi;
 
 	if ( r_polydesc.stipple_parity ^ ( s_spanletvars.v & 1 ) )
 	{
@@ -395,14 +399,15 @@ void R_DrawSpanlet33Stipple( void )
 
 		while ( s_spanletvars.spancount > 0 )
 		{
-			unsigned s = s_spanletvars.s >> 16;
-			unsigned t = s_spanletvars.t >> 16;
+			unsigned btemp;
+			unsigned s = s_spanletvars.s >> SHIFT16XYZ;
+			unsigned t = s_spanletvars.t >> SHIFT16XYZ;
 
 			btemp = *( s_spanletvars.pbase + ( s ) + ( t * cachewidth ) );
 
-			if ( btemp != 255 )
+			if ( btemp != TRANSPARENT_COLOR )
 			{
-				if ( *pz <= ( izi >> 16 ) )
+				if ( *pz <= ( izi >> SHIFT16XYZ ) )
 					*pdest = btemp;
 			}
 
@@ -421,12 +426,13 @@ void R_DrawSpanlet33Stipple( void )
 /*
 ** R_DrawSpanlet66Stipple
 */
-void R_DrawSpanlet66Stipple( void )
+static void
+R_DrawSpanlet66Stipple(const int *r_turb_turb)
 {
-	unsigned btemp;
-	byte    *pdest = s_spanletvars.pdest;
-	short   *pz    = s_spanletvars.pz;
-	int      izi   = s_spanletvars.izi;
+	unsigned	btemp;
+	pixel_t		*pdest = s_spanletvars.pdest;
+	zvalue_t	*pz = s_spanletvars.pz;
+	zvalue_t	izi = s_spanletvars.izi;
 
 	s_spanletvars.pdest += s_spanletvars.spancount;
 	s_spanletvars.pz    += s_spanletvars.spancount;
@@ -454,14 +460,14 @@ void R_DrawSpanlet66Stipple( void )
 
 		while ( s_spanletvars.spancount > 0 )
 		{
-			unsigned s = s_spanletvars.s >> 16;
-			unsigned t = s_spanletvars.t >> 16;
+			unsigned s = s_spanletvars.s >> SHIFT16XYZ;
+			unsigned t = s_spanletvars.t >> SHIFT16XYZ;
 
 			btemp = *( s_spanletvars.pbase + ( s ) + ( t * cachewidth ) );
 
-			if ( btemp != 255 )
+			if ( btemp != TRANSPARENT_COLOR )
 			{
-				if ( *pz <= ( izi >> 16 ) )
+				if ( *pz <= ( izi >> SHIFT16XYZ ) )
 					*pdest = btemp;
 			}
 
@@ -479,14 +485,14 @@ void R_DrawSpanlet66Stipple( void )
 	{
 		while ( s_spanletvars.spancount > 0 )
 		{
-			unsigned s = s_spanletvars.s >> 16;
-			unsigned t = s_spanletvars.t >> 16;
+			unsigned s = s_spanletvars.s >> SHIFT16XYZ;
+			unsigned t = s_spanletvars.t >> SHIFT16XYZ;
 
 			btemp = *( s_spanletvars.pbase + ( s ) + ( t * cachewidth ) );
 
-			if ( btemp != 255 )
+			if ( btemp != TRANSPARENT_COLOR )
 			{
-				if ( *pz <= ( izi >> 16 ) )
+				if ( *pz <= ( izi >> SHIFT16XYZ ) )
 					*pdest = btemp;
 			}
 
@@ -508,17 +514,18 @@ void R_DrawSpanlet66Stipple( void )
 ** Clips the winding at clip_verts[clip_current] and changes clip_current
 ** Throws out the back side
 */
-int R_ClipPolyFace (int nump, clipplane_t *pclipplane)
+static int
+R_ClipPolyFace (int nump, clipplane_t *pclipplane)
 {
 	int		i, outcount;
-	float	dists[MAXWORKINGVERTS+3];
 	float	frac, clipdist, *pclipnormal;
 	float	*in, *instep, *outstep, *vert2;
+	float	dists[MAXWORKINGVERTS+3] = {0};
 
 	clipdist = pclipplane->dist;
 	pclipnormal = pclipplane->normal;
 
-// calc dists
+	// calc dists
 	if (clip_current)
 	{
 		in = r_clip_verts[1][0];
@@ -533,26 +540,26 @@ int R_ClipPolyFace (int nump, clipplane_t *pclipplane)
 	}
 
 	instep = in;
-	for (i=0 ; i<nump ; i++, instep += sizeof (vec5_t) / sizeof (float))
+	for (i=0 ; i<nump ; i++, instep += sizeof (vec5_t) / sizeof (vec_t))
 	{
 		dists[i] = DotProduct (instep, pclipnormal) - clipdist;
 	}
 
-// handle wraparound case
+	// handle wraparound case
 	dists[nump] = dists[0];
 	memcpy (instep, in, sizeof (vec5_t));
 
 
-// clip the winding
+	// clip the winding
 	instep = in;
 	outcount = 0;
 
-	for (i=0 ; i<nump ; i++, instep += sizeof (vec5_t) / sizeof (float))
+	for (i=0 ; i<nump ; i++, instep += sizeof (vec5_t) / sizeof (vec_t))
 	{
 		if (dists[i] >= 0)
 		{
 			memcpy (outstep, instep, sizeof (vec5_t));
-			outstep += sizeof (vec5_t) / sizeof (float);
+			outstep += sizeof (vec5_t) / sizeof (vec_t);
 			outcount++;
 		}
 
@@ -562,10 +569,10 @@ int R_ClipPolyFace (int nump, clipplane_t *pclipplane)
 		if ( (dists[i] > 0) == (dists[i+1] > 0) )
 			continue;
 
-	// split it into a new vertex
+		// split it into a new vertex
 		frac = dists[i] / (dists[i] - dists[i+1]);
 
-		vert2 = instep + sizeof (vec5_t) / sizeof (float);
+		vert2 = instep + sizeof (vec5_t) / sizeof (vec_t);
 
 		outstep[0] = instep[0] + frac*(vert2[0] - instep[0]);
 		outstep[1] = instep[1] + frac*(vert2[1] - instep[1]);
@@ -573,7 +580,7 @@ int R_ClipPolyFace (int nump, clipplane_t *pclipplane)
 		outstep[3] = instep[3] + frac*(vert2[3] - instep[3]);
 		outstep[4] = instep[4] + frac*(vert2[4] - instep[4]);
 
-		outstep += sizeof (vec5_t) / sizeof (float);
+		outstep += sizeof (vec5_t) / sizeof (vec_t);
 		outcount++;
 	}
 
@@ -583,166 +590,170 @@ int R_ClipPolyFace (int nump, clipplane_t *pclipplane)
 /*
 ** R_PolygonDrawSpans
 */
-// PGM - iswater was qboolean. changed to allow passing more flags
-void R_PolygonDrawSpans(espan_t *pspan, int iswater )
+// iswater was qboolean. changed to allow passing more flags
+static void
+R_PolygonDrawSpans(espan_t *pspan, int iswater, float d_ziorigin, float d_zistepu, float d_zistepv)
 {
-	int			count;
-	fixed16_t	snext, tnext;
-	float		sdivz, tdivz, zi, z, du, dv, spancountminus1;
-	float		sdivzspanletstepu, tdivzspanletstepu, zispanletstepu;
+	int	snext, tnext;
+	float	sdivz, tdivz, zi, z, du, dv, spancountminus1;
+	float	sdivzspanletstepu, tdivzspanletstepu, zispanletstepu;
+	int	*r_turb_turb;
 
 	s_spanletvars.pbase = cacheblock;
 
-//PGM
 	if ( iswater & SURF_WARP)
 		r_turb_turb = sintable + ((int)(r_newrefdef.time*SPEED)&(CYCLE-1));
-	else if (iswater & SURF_FLOWING)
+	else
+		// iswater & SURF_FLOWING
 		r_turb_turb = blanktable;
-//PGM
 
 	sdivzspanletstepu = d_sdivzstepu * AFFINE_SPANLET_SIZE;
 	tdivzspanletstepu = d_tdivzstepu * AFFINE_SPANLET_SIZE;
 	zispanletstepu = d_zistepu * AFFINE_SPANLET_SIZE;
 
-// we count on FP exceptions being turned off to avoid range problems
-	s_spanletvars.izistep = (int)(d_zistepu * 0x8000 * 0x10000);
+	// we count on FP exceptions being turned off to avoid range problems
+	s_spanletvars.izistep = (int)(d_zistepu * 0x8000 * SHIFT16XYZ_MULT);
 	s_spanletvars.izistep_times_2 = s_spanletvars.izistep * 2;
 
 	s_spanletvars.pz = 0;
 
 	do
 	{
-		s_spanletvars.pdest   = (byte *)d_viewbuffer + ( d_scantable[pspan->v] /*r_screenwidth * pspan->v*/) + pspan->u;
-		s_spanletvars.pz      = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
+		int	count;
+
+		s_spanletvars.pdest   = d_viewbuffer + (vid_buffer_width * pspan->v) + pspan->u;
+		s_spanletvars.pz      = d_pzbuffer + (vid_buffer_width * pspan->v) + pspan->u;
 		s_spanletvars.u       = pspan->u;
 		s_spanletvars.v       = pspan->v;
-
 		count = pspan->count;
 
-		if (count <= 0)
-			goto NextSpan;
-
-	// calculate the initial s/z, t/z, 1/z, s, and t and clamp
-		du = (float)pspan->u;
-		dv = (float)pspan->v;
-
-		sdivz = d_sdivzorigin + dv*d_sdivzstepv + du*d_sdivzstepu;
-		tdivz = d_tdivzorigin + dv*d_tdivzstepv + du*d_tdivzstepu;
-
-		zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
-		z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-	// we count on FP exceptions being turned off to avoid range problems
-		s_spanletvars.izi = (int)(zi * 0x8000 * 0x10000);
-
-		s_spanletvars.s = (int)(sdivz * z) + sadjust;
-		s_spanletvars.t = (int)(tdivz * z) + tadjust;
-
-		if ( !iswater )
+		if (count > 0)
 		{
-			if (s_spanletvars.s > bbextents)
-				s_spanletvars.s = bbextents;
-			else if (s_spanletvars.s < 0)
-				s_spanletvars.s = 0;
+			// transparent spans damage z buffer
+			VID_DamageZBuffer(pspan->u, pspan->v);
+			VID_DamageZBuffer(pspan->u + count, pspan->v);
 
-			if (s_spanletvars.t > bbextentt)
-				s_spanletvars.t = bbextentt;
-			else if (s_spanletvars.t < 0)
-				s_spanletvars.t = 0;
+			// calculate the initial s/z, t/z, 1/z, s, and t and clamp
+			du = (float)pspan->u;
+			dv = (float)pspan->v;
+
+			sdivz = d_sdivzorigin + dv*d_sdivzstepv + du*d_sdivzstepu;
+			tdivz = d_tdivzorigin + dv*d_tdivzstepv + du*d_tdivzstepu;
+
+			zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
+			z = (float)SHIFT16XYZ_MULT / zi;	// prescale to 16.16 fixed-point
+			// we count on FP exceptions being turned off to avoid range problems
+			s_spanletvars.izi = (int)(zi * 0x8000 * SHIFT16XYZ_MULT);
+
+			s_spanletvars.s = (int)(sdivz * z) + sadjust;
+			s_spanletvars.t = (int)(tdivz * z) + tadjust;
+
+			if ( !iswater )
+			{
+				if (s_spanletvars.s > bbextents)
+					s_spanletvars.s = bbextents;
+				else if (s_spanletvars.s < 0)
+					s_spanletvars.s = 0;
+
+				if (s_spanletvars.t > bbextentt)
+					s_spanletvars.t = bbextentt;
+				else if (s_spanletvars.t < 0)
+					s_spanletvars.t = 0;
+			}
+
+			do
+			{
+				// calculate s and t at the far end of the span
+				if (count >= AFFINE_SPANLET_SIZE )
+					s_spanletvars.spancount = AFFINE_SPANLET_SIZE;
+				else
+					s_spanletvars.spancount = count;
+
+				count -= s_spanletvars.spancount;
+
+				if (count)
+				{
+					// calculate s/z, t/z, zi->fixed s and t at far end of span,
+					// calculate s and t steps across span by shifting
+					sdivz += sdivzspanletstepu;
+					tdivz += tdivzspanletstepu;
+					zi += zispanletstepu;
+					z = (float)SHIFT16XYZ_MULT / zi;	// prescale to 16.16 fixed-point
+
+					snext = (int)(sdivz * z) + sadjust;
+					tnext = (int)(tdivz * z) + tadjust;
+
+					if ( !iswater )
+					{
+						if (snext > bbextents)
+							snext = bbextents;
+						else if (snext < AFFINE_SPANLET_SIZE)
+							snext = AFFINE_SPANLET_SIZE;	// prevent round-off error on <0 steps from
+											//  from causing overstepping & running off the
+											//  edge of the texture
+
+						if (tnext > bbextentt)
+							tnext = bbextentt;
+						else if (tnext < AFFINE_SPANLET_SIZE)
+							tnext = AFFINE_SPANLET_SIZE;	// guard against round-off error on <0 steps
+					}
+
+					s_spanletvars.sstep = (snext - s_spanletvars.s) >> AFFINE_SPANLET_SIZE_BITS;
+					s_spanletvars.tstep = (tnext - s_spanletvars.t) >> AFFINE_SPANLET_SIZE_BITS;
+				}
+				else
+				{
+					// calculate s/z, t/z, zi->fixed s and t at last pixel in span (so
+					// can't step off polygon), clamp, calculate s and t steps across
+					// span by division, biasing steps low so we don't run off the
+					// texture
+					spancountminus1 = (float)(s_spanletvars.spancount - 1);
+					sdivz += d_sdivzstepu * spancountminus1;
+					tdivz += d_tdivzstepu * spancountminus1;
+					zi += d_zistepu * spancountminus1;
+					z = (float)SHIFT16XYZ_MULT / zi;	// prescale to 16.16 fixed-point
+					snext = (int)(sdivz * z) + sadjust;
+					tnext = (int)(tdivz * z) + tadjust;
+
+					if ( !iswater )
+					{
+						if (snext > bbextents)
+							snext = bbextents;
+						else if (snext < AFFINE_SPANLET_SIZE)
+							snext = AFFINE_SPANLET_SIZE;	// prevent round-off error on <0 steps from
+											//  from causing overstepping & running off the
+											//  edge of the texture
+
+						if (tnext > bbextentt)
+							tnext = bbextentt;
+						else if (tnext < AFFINE_SPANLET_SIZE)
+							tnext = AFFINE_SPANLET_SIZE;	// guard against round-off error on <0 steps
+					}
+
+					if (s_spanletvars.spancount > 1)
+					{
+						s_spanletvars.sstep = (snext - s_spanletvars.s) / (s_spanletvars.spancount - 1);
+						s_spanletvars.tstep = (tnext - s_spanletvars.t) / (s_spanletvars.spancount - 1);
+					}
+				}
+
+				if ( iswater )
+				{
+					s_spanletvars.s = s_spanletvars.s & ((CYCLE<<16)-1);
+					s_spanletvars.t = s_spanletvars.t & ((CYCLE<<16)-1);
+				}
+
+				r_polydesc.drawspanlet(r_turb_turb);
+
+				s_spanletvars.s = snext;
+				s_spanletvars.t = tnext;
+
+			} while (count > 0);
 		}
 
-		do
-		{
-		// calculate s and t at the far end of the span
-			if (count >= AFFINE_SPANLET_SIZE )
-				s_spanletvars.spancount = AFFINE_SPANLET_SIZE;
-			else
-				s_spanletvars.spancount = count;
-
-			count -= s_spanletvars.spancount;
-
-			if (count)
-			{
-			// calculate s/z, t/z, zi->fixed s and t at far end of span,
-			// calculate s and t steps across span by shifting
-				sdivz += sdivzspanletstepu;
-				tdivz += tdivzspanletstepu;
-				zi += zispanletstepu;
-				z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-
-				snext = (int)(sdivz * z) + sadjust;
-				tnext = (int)(tdivz * z) + tadjust;
-
-				if ( !iswater )
-				{
-					if (snext > bbextents)
-						snext = bbextents;
-					else if (snext < AFFINE_SPANLET_SIZE)
-						snext = AFFINE_SPANLET_SIZE;	// prevent round-off error on <0 steps from
-									//  from causing overstepping & running off the
-									//  edge of the texture
-
-					if (tnext > bbextentt)
-						tnext = bbextentt;
-					else if (tnext < AFFINE_SPANLET_SIZE)
-						tnext = AFFINE_SPANLET_SIZE;	// guard against round-off error on <0 steps
-				}
-
-				s_spanletvars.sstep = (snext - s_spanletvars.s) >> AFFINE_SPANLET_SIZE_BITS;
-				s_spanletvars.tstep = (tnext - s_spanletvars.t) >> AFFINE_SPANLET_SIZE_BITS;
-			}
-			else
-			{
-			// calculate s/z, t/z, zi->fixed s and t at last pixel in span (so
-			// can't step off polygon), clamp, calculate s and t steps across
-			// span by division, biasing steps low so we don't run off the
-			// texture
-				spancountminus1 = (float)(s_spanletvars.spancount - 1);
-				sdivz += d_sdivzstepu * spancountminus1;
-				tdivz += d_tdivzstepu * spancountminus1;
-				zi += d_zistepu * spancountminus1;
-				z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-				snext = (int)(sdivz * z) + sadjust;
-				tnext = (int)(tdivz * z) + tadjust;
-
-				if ( !iswater )
-				{
-					if (snext > bbextents)
-						snext = bbextents;
-					else if (snext < AFFINE_SPANLET_SIZE)
-						snext = AFFINE_SPANLET_SIZE;	// prevent round-off error on <0 steps from
-									//  from causing overstepping & running off the
-									//  edge of the texture
-
-					if (tnext > bbextentt)
-						tnext = bbextentt;
-					else if (tnext < AFFINE_SPANLET_SIZE)
-						tnext = AFFINE_SPANLET_SIZE;	// guard against round-off error on <0 steps
-				}
-
-				if (s_spanletvars.spancount > 1)
-				{
-					s_spanletvars.sstep = (snext - s_spanletvars.s) / (s_spanletvars.spancount - 1);
-					s_spanletvars.tstep = (tnext - s_spanletvars.t) / (s_spanletvars.spancount - 1);
-				}
-			}
-
-			if ( iswater )
-			{
-				s_spanletvars.s = s_spanletvars.s & ((CYCLE<<16)-1);
-				s_spanletvars.t = s_spanletvars.t & ((CYCLE<<16)-1);
-			}
-
-			r_polydesc.drawspanlet();
-
-			s_spanletvars.s = snext;
-			s_spanletvars.t = tnext;
-
-		} while (count > 0);
-
-NextSpan:
 		pspan++;
 
-	} while (pspan->count != DS_SPAN_LIST_END);
+	} while (pspan->count != INT_MIN);
 }
 
 /*
@@ -752,13 +763,13 @@ NextSpan:
 ** Goes through the polygon and scans the left edge, filling in
 ** screen coordinate data for the spans
 */
-void R_PolygonScanLeftEdge (void)
+static void
+R_PolygonScanLeftEdge (espan_t *s_polygon_spans)
 {
-	int			i, v, itop, ibottom, lmaxindex;
+	int		i, lmaxindex;
 	emitpoint_t	*pvert, *pnext;
 	espan_t		*pspan;
-	float		du, dv, vtop, vbottom, slope;
-	fixed16_t	u, u_step;
+	float		du, dv, vtop, u_step;
 
 	pspan = s_polygon_spans;
 	i = s_minindex;
@@ -773,6 +784,8 @@ void R_PolygonScanLeftEdge (void)
 
 	do
 	{
+		float vbottom;
+
 		pvert = &r_polydesc.pverts[i];
 		pnext = pvert - 1;
 
@@ -780,22 +793,24 @@ void R_PolygonScanLeftEdge (void)
 
 		if (vtop < vbottom)
 		{
+			int v, u, istep, itop, ibottom;
+
 			du = pnext->u - pvert->u;
 			dv = pnext->v - pvert->v;
 
-			slope = du / dv;
-			u_step = (int)(slope * 0x10000);
-		// adjust u to ceil the integer portion
-			u = (int)((pvert->u + (slope * (vtop - pvert->v))) * 0x10000) +
-					(0x10000 - 1);
+			u_step = (du * SHIFT16XYZ_MULT) / dv;
+			// adjust u to ceil the integer portion
+			u = (int)((pvert->u * SHIFT16XYZ_MULT) + u_step * (vtop - pvert->v)) +
+				(SHIFT16XYZ_MULT - 1);
 			itop = (int)vtop;
 			ibottom = (int)vbottom;
+			istep = (int)u_step;
 
 			for (v=itop ; v<ibottom ; v++)
 			{
-				pspan->u = u >> 16;
+				pspan->u = u >> SHIFT16XYZ;
 				pspan->v = v;
-				u += u_step;
+				u += istep;
 				pspan++;
 			}
 		}
@@ -807,6 +822,8 @@ void R_PolygonScanLeftEdge (void)
 			i = r_polydesc.nump;
 
 	} while (i != lmaxindex);
+
+	pspan->count = INT_MIN;	// mark the end of the span list
 }
 
 /*
@@ -815,13 +832,13 @@ void R_PolygonScanLeftEdge (void)
 ** Goes through the polygon and scans the right edge, filling in
 ** count values.
 */
-void R_PolygonScanRightEdge (void)
+static void
+R_PolygonScanRightEdge(espan_t *s_polygon_spans)
 {
-	int			i, v, itop, ibottom;
+	int		i;
 	emitpoint_t	*pvert, *pnext;
 	espan_t		*pspan;
-	float		du, dv, vtop, vbottom, slope, uvert, unext, vvert, vnext;
-	fixed16_t	u, u_step;
+	float		du, dv, vtop, u_step, uvert, unext, vvert;
 
 	pspan = s_polygon_spans;
 	i = s_minindex;
@@ -836,6 +853,8 @@ void R_PolygonScanRightEdge (void)
 
 	do
 	{
+		float vbottom, vnext;
+
 		pvert = &r_polydesc.pverts[i];
 		pnext = pvert + 1;
 
@@ -849,6 +868,8 @@ void R_PolygonScanRightEdge (void)
 
 		if (vtop < vbottom)
 		{
+			int v, u, istep, itop, ibottom;
+
 			uvert = pvert->u;
 			if (uvert < r_refdef.fvrectx_adj)
 				uvert = r_refdef.fvrectx_adj;
@@ -863,18 +884,18 @@ void R_PolygonScanRightEdge (void)
 
 			du = unext - uvert;
 			dv = vnext - vvert;
-			slope = du / dv;
-			u_step = (int)(slope * 0x10000);
-		// adjust u to ceil the integer portion
-			u = (int)((uvert + (slope * (vtop - vvert))) * 0x10000) +
-					(0x10000 - 1);
+			u_step = (du * SHIFT16XYZ_MULT) / dv;
+			// adjust u to ceil the integer portion
+			u = (int)((uvert * SHIFT16XYZ_MULT) + u_step * (vtop - vvert)) +
+					(SHIFT16XYZ_MULT - 1);
 			itop = (int)vtop;
 			ibottom = (int)vbottom;
+			istep = (int)u_step;
 
 			for (v=itop ; v<ibottom ; v++)
 			{
-				pspan->count = (u >> 16) - pspan->u;
-				u += u_step;
+				pspan->count = (u >> SHIFT16XYZ) - pspan->u;
+				u += istep;
 				pspan++;
 			}
 		}
@@ -888,19 +909,18 @@ void R_PolygonScanRightEdge (void)
 
 	} while (i != s_maxindex);
 
-	pspan->count = DS_SPAN_LIST_END;	// mark the end of the span list
+	pspan->count = INT_MIN;	// mark the end of the span list
 }
 
 /*
 ** R_ClipAndDrawPoly
 */
-// PGM - isturbulent was qboolean. changed to int to allow passing more flags
-void R_ClipAndDrawPoly ( float alpha, int isturbulent, qboolean textured )
+// isturbulent was qboolean. changed to int to allow passing more flags
+void
+R_ClipAndDrawPoly ( float alpha, int isturbulent, qboolean textured )
 {
-	emitpoint_t	outverts[MAXWORKINGVERTS+3], *pout;
-	float		*pv;
-	int			i, nump;
-	float		scale;
+	vec_t		*pv;
+	int		i, nump;
 	vec3_t		transformed, local;
 
 	if ( !textured )
@@ -968,14 +988,19 @@ void R_ClipAndDrawPoly ( float alpha, int isturbulent, qboolean textured )
 		if (nump < 3)
 			return;
 		if (nump > MAXWORKINGVERTS)
-			ri.Sys_Error(ERR_DROP, "R_ClipAndDrawPoly: too many points: %d", nump );
+		{
+			ri.Sys_Error(ERR_DROP, "%s: too many points: %d", __func__, nump);
+		}
 	}
 
-// transform vertices into viewspace and project
+	// transform vertices into viewspace and project
 	pv = &r_clip_verts[clip_current][0][0];
 
 	for (i=0 ; i<nump ; i++)
 	{
+		float scale;
+		emitpoint_t *pout;
+
 		VectorSubtract (pv, r_origin, local);
 		TransformVector (local, transformed);
 
@@ -994,24 +1019,24 @@ void R_ClipAndDrawPoly ( float alpha, int isturbulent, qboolean textured )
 		scale = yscale * pout->zi;
 		pout->v = (ycenter - scale * transformed[1]);
 
-		pv += sizeof (vec5_t) / sizeof (pv);
+		pv += sizeof (vec5_t) / sizeof (vec_t);
 	}
 
-// draw it
+	// draw it
 	r_polydesc.nump = nump;
 	r_polydesc.pverts = outverts;
 
-	R_DrawPoly( isturbulent );
+	R_DrawPoly(isturbulent, vid_polygon_spans);
 }
 
 /*
 ** R_BuildPolygonFromSurface
 */
-void R_BuildPolygonFromSurface(msurface_t *fa)
+static void
+R_BuildPolygonFromSurface(const entity_t *currententity, const model_t *currentmodel, msurface_t *fa)
 {
-	int			i, lindex, lnumverts;
+	int		i, lnumverts;
 	medge_t		*pedges, *r_pedge;
-	int			vertpage;
 	float		*vec;
 	vec5_t     *pverts;
 	float       tmins[2] = { 0, 0 };
@@ -1021,12 +1046,13 @@ void R_BuildPolygonFromSurface(msurface_t *fa)
 	// reconstruct the polygon
 	pedges = currentmodel->edges;
 	lnumverts = fa->numedges;
-	vertpage = 0;
 
 	pverts = r_clip_verts[0];
 
 	for (i=0 ; i<lnumverts ; i++)
 	{
+		int lindex;
+
 		lindex = currentmodel->surfedges[fa->firstedge + i];
 
 		if (lindex > 0)
@@ -1053,19 +1079,17 @@ void R_BuildPolygonFromSurface(msurface_t *fa)
 		VectorSubtract( vec3_origin, r_polydesc.vpn, r_polydesc.vpn );
 	}
 
-// PGM 09/16/98
 	if ( fa->texinfo->flags & (SURF_WARP|SURF_FLOWING) )
 	{
 		r_polydesc.pixels       = fa->texinfo->image->pixels[0];
 		r_polydesc.pixel_width  = fa->texinfo->image->width;
 		r_polydesc.pixel_height = fa->texinfo->image->height;
 	}
-// PGM 09/16/98
 	else
 	{
 		surfcache_t *scache;
 
-		scache = D_CacheSurface( fa, 0 );
+		scache = D_CacheSurface(currententity, fa, 0);
 
 		r_polydesc.pixels       = scache->data;
 		r_polydesc.pixel_width  = scache->width;
@@ -1092,10 +1116,12 @@ void R_BuildPolygonFromSurface(msurface_t *fa)
 /*
 ** R_PolygonCalculateGradients
 */
-void R_PolygonCalculateGradients (void)
+static void
+R_PolygonCalculateGradients (float *p_ziorigin, float *p_zistepu, float *p_zistepv)
 {
-	vec3_t		p_normal, p_saxis, p_taxis;
-	float		distinv;
+	vec3_t	p_normal, p_saxis, p_taxis;
+	float	distinv;
+	float	d_ziorigin, d_zistepu, d_zistepv;
 
 	TransformVector (r_polydesc.vpn, p_normal);
 	TransformVector (r_polydesc.vright, p_saxis);
@@ -1115,12 +1141,16 @@ void R_PolygonCalculateGradients (void)
 	d_zistepv =  -p_normal[1] * yscaleinv * distinv;
 	d_ziorigin =  p_normal[2] * distinv - xcenter * d_zistepu - ycenter * d_zistepv;
 
-	sadjust = (fixed16_t) ( ( DotProduct( r_polydesc.viewer_position, r_polydesc.vright) + r_polydesc.s_offset ) * 0x10000 );
-	tadjust = (fixed16_t) ( ( DotProduct( r_polydesc.viewer_position, r_polydesc.vup   ) + r_polydesc.t_offset ) * 0x10000 );
+	sadjust = (int) ( ( DotProduct( r_polydesc.viewer_position, r_polydesc.vright) + r_polydesc.s_offset ) * SHIFT16XYZ_MULT );
+	tadjust = (int) ( ( DotProduct( r_polydesc.viewer_position, r_polydesc.vup   ) + r_polydesc.t_offset ) * SHIFT16XYZ_MULT );
 
-// -1 (-epsilon) so we never wander off the edge of the texture
-	bbextents = (r_polydesc.pixel_width << 16) - 1;
-	bbextentt = (r_polydesc.pixel_height << 16) - 1;
+	// -1 (-epsilon) so we never wander off the edge of the texture
+	bbextents = (r_polydesc.pixel_width << SHIFT16XYZ) - 1;
+	bbextentt = (r_polydesc.pixel_height << SHIFT16XYZ) - 1;
+
+	*p_zistepu = d_zistepu;
+	*p_zistepv = d_zistepv;
+	*p_ziorigin = d_ziorigin;
 }
 
 /*
@@ -1131,20 +1161,19 @@ void R_PolygonCalculateGradients (void)
 **
 ** This should NOT be called externally since it doesn't do clipping!
 */
-// PGM - iswater was qboolean. changed to support passing more flags
-static void R_DrawPoly( int iswater )
+// iswater was qboolean. changed to support passing more flags
+static void
+R_DrawPoly(int iswater, espan_t *spans)
 {
-	int			i, nump;
+	int		i, nump;
 	float		ymin, ymax;
 	emitpoint_t	*pverts;
-	espan_t	spans[MAXHEIGHT+1];
+	float	d_ziorigin, d_zistepu, d_zistepv;
 
-	s_polygon_spans = spans;
-
-// find the top and bottom vertices, and make sure there's at least one scan to
-// draw
-	ymin = 999999.9;
-	ymax = -999999.9;
+	// find the top and bottom vertices, and make sure there's at least one scan to
+	// draw
+	ymin = (float)INT_MAX; // Set maximum values for world range
+	ymax = (float)INT_MIN; // Set minimal values for world range
 	pverts = r_polydesc.pverts;
 
 	for (i=0 ; i<r_polydesc.nump ; i++)
@@ -1168,32 +1197,32 @@ static void R_DrawPoly( int iswater )
 	ymax = ceil (ymax);
 
 	if (ymin >= ymax)
-		return;		// doesn't cross any scans at all
+		return; // doesn't cross any scans at all
 
 	cachewidth = r_polydesc.pixel_width;
 	cacheblock = r_polydesc.pixels;
 
-// copy the first vertex to the last vertex, so we don't have to deal with
-// wrapping
+	// copy the first vertex to the last vertex, so we don't have to deal with
+	// wrapping
 	nump = r_polydesc.nump;
 	pverts = r_polydesc.pverts;
 	pverts[nump] = pverts[0];
 
-	R_PolygonCalculateGradients ();
-	R_PolygonScanLeftEdge ();
-	R_PolygonScanRightEdge ();
+	R_PolygonCalculateGradients(&d_ziorigin, &d_zistepu, &d_zistepv);
+	R_PolygonScanLeftEdge(spans);
+	R_PolygonScanRightEdge(spans);
 
-	R_PolygonDrawSpans( s_polygon_spans, iswater );
+	R_PolygonDrawSpans(spans, iswater, d_ziorigin, d_zistepu, d_zistepv);
 }
 
 /*
 ** R_DrawAlphaSurfaces
 */
-void R_DrawAlphaSurfaces( void )
+void
+R_DrawAlphaSurfaces(const entity_t *currententity)
 {
 	msurface_t *s = r_alpha_surfaces;
-
-	currentmodel = r_worldmodel;
+	const model_t *currentmodel = r_worldmodel;
 
 	modelorg[0] = -r_origin[0];
 	modelorg[1] = -r_origin[1];
@@ -1201,22 +1230,13 @@ void R_DrawAlphaSurfaces( void )
 
 	while ( s )
 	{
-		R_BuildPolygonFromSurface( s );
+		R_BuildPolygonFromSurface(currententity, currentmodel, s);
 
-//=======
-//PGM
-//		if (s->texinfo->flags & SURF_TRANS66)
-//			R_ClipAndDrawPoly( 0.60f, ( s->texinfo->flags & SURF_WARP) != 0, true );
-//		else
-//			R_ClipAndDrawPoly( 0.30f, ( s->texinfo->flags & SURF_WARP) != 0, true );
-
-		// PGM - pass down all the texinfo flags, not just SURF_WARP.
+		// pass down all the texinfo flags, not just SURF_WARP.
 		if (s->texinfo->flags & SURF_TRANS66)
-			R_ClipAndDrawPoly( 0.60f, (s->texinfo->flags & SURF_WARP|SURF_FLOWING), true );
+			R_ClipAndDrawPoly( 0.60f, (s->texinfo->flags & (SURF_WARP|SURF_FLOWING)), true );
 		else
-			R_ClipAndDrawPoly( 0.30f, (s->texinfo->flags & SURF_WARP|SURF_FLOWING), true );
-//PGM
-//=======
+			R_ClipAndDrawPoly( 0.30f, (s->texinfo->flags & (SURF_WARP|SURF_FLOWING)), true );
 
 		s = s->nextalphasurface;
 	}
@@ -1227,7 +1247,8 @@ void R_DrawAlphaSurfaces( void )
 /*
 ** R_IMFlatShadedQuad
 */
-void R_IMFlatShadedQuad( vec3_t a, vec3_t b, vec3_t c, vec3_t d, int color, float alpha )
+void
+R_IMFlatShadedQuad( const vec3_t a, const vec3_t b, const vec3_t c, const vec3_t d, int color, float alpha )
 {
 	vec3_t s0, s1;
 

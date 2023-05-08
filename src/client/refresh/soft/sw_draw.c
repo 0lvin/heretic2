@@ -20,32 +20,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // draw.c
 
-#include "r_local.h"
+#include "header/local.h"
 
 
-image_t		*draw_chars;				// 8*8 graphic characters
+static image_t	*draw_chars;	// 8*8 graphic characters
 
 //=============================================================================
 
 /*
 ================
-Draw_FindPic
+RE_Draw_FindPic
 ================
 */
-image_t *Draw_FindPic (char *name)
+image_t *
+RE_Draw_FindPic (char *name)
 {
-	image_t	*image;
-	char	fullname[MAX_QPATH];
-
-	if (name[0] != '/' && name[0] != '\\')
-	{
-		Com_sprintf (fullname, sizeof(fullname), "pics/%s.pcx", name);
-		image = R_FindImage (fullname, it_pic);
-	}
-	else
-		image = R_FindImage (name+1, it_pic);
-
-	return image;
+	return R_FindPic(name, (findimage_t)R_FindImage);
 }
 
 
@@ -55,12 +45,15 @@ image_t *Draw_FindPic (char *name)
 Draw_InitLocal
 ===============
 */
-void Draw_InitLocal (void)
+void
+Draw_InitLocal (void)
 {
-	draw_chars = Draw_FindPic ("conchars");
+	draw_chars = R_FindPic ("conchars", (findimage_t)R_FindImage);
+	if (!draw_chars)
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.pcx", __func__);
+	}
 }
-
-
 
 /*
 ================
@@ -71,109 +64,126 @@ It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void Draw_Char (int x, int y, int num)
+void
+RE_Draw_CharScaled(int x, int y, int c, float scale)
 {
-	byte			*dest;
-	byte			*source;
-	int				drawline;
-	int				row, col;
+	pixel_t	*dest;
+	byte	*source, *pic_pixels;
+	int	drawline;
+	int	row, col, v, iscale, sscale, width, height;
 
-	num &= 255;
+	iscale = (int) scale;
 
-	if (num == 32 || num == 32+128)
+	if (iscale < 1)
+		return;
+
+	c &= 255;
+
+	if ((c&127) == 32)
 		return;
 
 	if (y <= -8)
-		return;			// totally off screen
+		return;	// totally off screen
 
-//	if ( ( y + 8 ) >= vid.height )
-	if ( ( y + 8 ) > vid.height )		// PGM - status text was missing in sw...
+	if ( ( y + 8 ) > vid_buffer_height )	// status text was missing in sw...
 		return;
 
-#ifdef PARANOID
-	if (y > vid.height - 8 || x < 0 || x > vid.width - 8)
-		ri.Sys_Error (ERR_FATAL,"Con_DrawCharacter: (%i, %i)", x, y);
-	if (num < 0 || num > 255)
-		ri.Sys_Error (ERR_FATAL,"Con_DrawCharacter: char %i", num);
-#endif
+	row = c>>4;
+	col = c&15;
 
-	row = num>>4;
-	col = num&15;
-	source = draw_chars->pixels[0] + (row<<10) + (col<<3);
+	width = draw_chars->asset_width * iscale;
+	height = draw_chars->asset_height * iscale;
+	pic_pixels = Get_BestImageSize(draw_chars, &width, &height);
+
+	sscale = width / draw_chars->asset_width;
+	pic_pixels += ((row<<10) * sscale + (col<<3)) * sscale;
 
 	if (y < 0)
 	{	// clipped
 		drawline = 8 + y;
-		source -= 128*y;
+		pic_pixels -= width * y * sscale;
 		y = 0;
 	}
 	else
 		drawline = 8;
 
+	dest = vid_buffer + y * vid_buffer_width + x;
 
-	dest = vid.buffer + y*vid.rowbytes + x;
-
-	while (drawline--)
+	// clipped last lines
+	if ((y + iscale * (drawline + 1)) > vid_buffer_height)
 	{
-		if (source[0] != TRANSPARENT_COLOR)
-			dest[0] = source[0];
-		if (source[1] != TRANSPARENT_COLOR)
-			dest[1] = source[1];
-		if (source[2] != TRANSPARENT_COLOR)
-			dest[2] = source[2];
-		if (source[3] != TRANSPARENT_COLOR)
-			dest[3] = source[3];
-		if (source[4] != TRANSPARENT_COLOR)
-			dest[4] = source[4];
-		if (source[5] != TRANSPARENT_COLOR)
-			dest[5] = source[5];
-		if (source[6] != TRANSPARENT_COLOR)
-			dest[6] = source[6];
-		if (source[7] != TRANSPARENT_COLOR)
-			dest[7] = source[7];
-		source += 128;
-		dest += vid.rowbytes;
+		drawline = (vid_buffer_height - y) / scale;
+	}
+
+	VID_DamageBuffer(x, y);
+	VID_DamageBuffer(x + (scale * 8), y + (scale * drawline));
+
+	drawline = drawline * scale;
+
+	for (v=0 ; v < drawline; v++, dest += vid_buffer_width)
+	{
+		int f, fstep, u;
+		int sv = v * height / (iscale * draw_chars->asset_height);
+		source = pic_pixels + sv * width;
+		f = 0;
+		fstep = (width << SHIFT16XYZ) / (scale * draw_chars->asset_width);
+		for (u=0 ; u < (8 * iscale) ; u++)
+		{
+			if (source[f>>16] != TRANSPARENT_COLOR)
+			{
+				dest[u] = source[f>>16];
+			}
+			f += fstep;
+		}
 	}
 }
 
 /*
 =============
-Draw_GetPicSize
+RE_Draw_GetPicSize
 =============
 */
-void Draw_GetPicSize (int *w, int *h, char *pic)
+void
+RE_Draw_GetPicSize (int *w, int *h, char *name)
 {
-	image_t *gl;
+	image_t *image;
 
-	gl = Draw_FindPic (pic);
-	if (!gl)
+	image = R_FindPic (name, (findimage_t)R_FindImage);
+	if (!image)
 	{
 		*w = *h = -1;
 		return;
 	}
-	*w = gl->width;
-	*h = gl->height;
+	*w = image->asset_width;
+	*h = image->asset_height;
 }
 
 /*
 =============
-Draw_StretchPicImplementation
+RE_Draw_StretchPicImplementation
 =============
 */
-void Draw_StretchPicImplementation (int x, int y, int w, int h, image_t	*pic)
+static void
+RE_Draw_StretchPicImplementation (int x, int y, int w, int h, const image_t *pic)
 {
-	byte			*dest, *source;
-	int				v, u, sv;
-	int				height;
-	int				f, fstep;
-	int				skip;
+	pixel_t	*dest;
+	byte	*source;
+	int		height;
+	int		skip;
+	int		pic_height, pic_width;
+	byte	*pic_pixels;
 
 	if ((x < 0) ||
-		(x + w > vid.width) ||
-		(y + h > vid.height))
+		(x + w > vid_buffer_width) ||
+		(y + h > vid_buffer_height))
 	{
-		ri.Sys_Error (ERR_FATAL,"Draw_Pic: bad coordinates");
+		R_Printf(PRINT_ALL, "%s: bad coordinates %dx%d[%dx%d]",
+			__func__, x, y, w, h);
+		return;
 	}
+
+	VID_DamageBuffer(x, y);
+	VID_DamageBuffer(x + w, y + h);
 
 	height = h;
 	if (y < 0)
@@ -185,28 +195,102 @@ void Draw_StretchPicImplementation (int x, int y, int w, int h, image_t	*pic)
 	else
 		skip = 0;
 
-	dest = vid.buffer + y * vid.rowbytes + x;
+	dest = vid_buffer + y * vid_buffer_width + x;
 
-	for (v=0 ; v<height ; v++, dest += vid.rowbytes)
+	pic_height = h;
+	pic_width = w;
+	pic_pixels = Get_BestImageSize(pic, &pic_width, &pic_height);
+
+	if (!pic->transparent)
 	{
-		sv = (skip + v)*pic->height/h;
-		source = pic->pixels[0] + sv*pic->width;
-		if (w == pic->width)
-			memcpy (dest, source, w);
+		if (w == pic_width)
+		{
+			int v;
+
+			for (v=0 ; v<height ; v++, dest += vid_buffer_width)
+			{
+				int sv = (skip + v) * pic_height / h;
+				memcpy (dest, pic_pixels + sv*pic_width, w);
+			}
+		}
 		else
 		{
-			f = 0;
-			fstep = pic->width*0x10000/w;
-			for (u=0 ; u<w ; u+=4)
+			int v;
+
+			// size of screen tile to pic pixel
+			int picupscale = h / pic_height;
+
+			for (v=0 ; v<height ; v++, dest += vid_buffer_width)
 			{
-				dest[u] = source[f>>16];
-				f += fstep;
-				dest[u+1] = source[f>>16];
-				f += fstep;
-				dest[u+2] = source[f>>16];
-				f += fstep;
-				dest[u+3] = source[f>>16];
-				f += fstep;
+				int f, fstep, u;
+				int sv = (skip + v) * pic_height/h;
+				source = pic_pixels + sv*pic_width;
+				f = 0;
+				fstep = (pic_width << SHIFT16XYZ) / w;
+				for (u=0 ; u<w ; u++)
+				{
+					dest[u] = source[f>>16];
+					f += fstep;
+				}
+				if (picupscale > 1)
+				{
+					int i;
+					int pu = min(height-v, picupscale);
+					pixel_t	*dest_orig = dest;
+
+					// copy first line to fill whole sector
+					for (i=1; i < pu; i++)
+					{
+						// go to next line
+						dest += vid_buffer_width;
+						memcpy (dest, dest_orig, w);
+					}
+					// skip updated lines
+					v += (picupscale - 1);
+				}
+			}
+		}
+	}
+	else
+	{
+		source = pic_pixels;
+
+		if (h == pic_height && w == pic_width)
+		{
+			int v;
+
+			for (v = 0; v < pic_height; v++)
+			{
+				int u;
+
+				for (u = 0; u < pic_width; u++)
+				{
+					if (source[u] != TRANSPARENT_COLOR)
+						dest[u] = source[u];
+				}
+				dest += vid_buffer_width;
+				source += pic_width;
+			}
+		}
+		else
+		{
+			int v;
+
+			for (v=0 ; v<height ; v++, dest += vid_buffer_width)
+			{
+				int f, fstep, u;
+				int sv = (skip + v) * pic_height/h;
+				source = pic_pixels + sv*pic_width;
+				f = 0;
+				fstep = (pic_width << SHIFT16XYZ) / w;
+				for (u=0 ; u<w ; u++)
+				{
+					if (source[f>>16] != TRANSPARENT_COLOR)
+					{
+						dest[u] = source[f>>16];
+					}
+					f += fstep;
+				}
 			}
 		}
 	}
@@ -214,35 +298,75 @@ void Draw_StretchPicImplementation (int x, int y, int w, int h, image_t	*pic)
 
 /*
 =============
-Draw_StretchPic
+RE_Draw_StretchPic
 =============
 */
-void Draw_StretchPic (int x, int y, int w, int h, char *name)
+void
+RE_Draw_StretchPic (int x, int y, int w, int h, char *name)
 {
 	image_t	*pic;
 
-	pic = Draw_FindPic (name);
+	pic = R_FindPic (name, (findimage_t)R_FindImage);
 	if (!pic)
 	{
-		ri.Con_Printf (PRINT_ALL, "Can't find pic: %s\n", name);
+		R_Printf(PRINT_ALL, "Can't find pic: %s\n", name);
 		return;
 	}
-	Draw_StretchPicImplementation (x, y, w, h, pic);
+	RE_Draw_StretchPicImplementation (x, y, w, h, pic);
 }
 
 /*
 =============
-Draw_StretchRaw
+RE_Draw_StretchRaw
 =============
 */
-void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data)
+void
+RE_Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data)
 {
 	image_t	pic;
+	byte	*image_scaled;
 
-	pic.pixels[0] = data;
+	// we have only one image size
+	pic.mip_levels = 1;
+
+	if (r_retexturing->value)
+	{
+		if (cols < (w / 3) || rows < (h / 3))
+		{
+			image_scaled = malloc(cols * rows * 9);
+
+			scale3x(data, image_scaled, cols, rows);
+
+			cols = cols * 3;
+			rows = rows * 3;
+		}
+		else
+		{
+			image_scaled = malloc(cols * rows * 4);
+
+			scale2x(data, image_scaled, cols, rows);
+
+			cols = cols * 2;
+			rows = rows * 2;
+		}
+	}
+	else
+	{
+		image_scaled = data;
+	}
+
+	pic.pixels[0] = image_scaled;
 	pic.width = cols;
 	pic.height = rows;
-	Draw_StretchPicImplementation (x, y, w, h, &pic);
+	pic.asset_width = cols;
+	pic.asset_height = rows;
+
+	RE_Draw_StretchPicImplementation (x, y, w, h, &pic);
+
+	if (r_retexturing->value)
+	{
+		free(image_scaled);
+	}
 }
 
 /*
@@ -250,103 +374,38 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 Draw_Pic
 =============
 */
-void Draw_Pic (int x, int y, char *name)
+void
+RE_Draw_PicScaled(int x, int y, char *name, float scale)
 {
-	image_t			*pic;
-	byte			*dest, *source;
-	int				v, u;
-	int				tbyte;
-	int				height;
+	image_t		*pic;
 
-	pic = Draw_FindPic (name);
+	pic = R_FindPic (name, (findimage_t)R_FindImage);
 	if (!pic)
 	{
-		ri.Con_Printf (PRINT_ALL, "Can't find pic: %s\n", name);
+		R_Printf(PRINT_ALL, "Can't find pic: %s\n", name);
 		return;
 	}
 
-	if ((x < 0) ||
-		(x + pic->width > vid.width) ||
-		(y + pic->height > vid.height))
-		return;	//	ri.Sys_Error (ERR_FATAL,"Draw_Pic: bad coordinates");
-
-	height = pic->height;
-	source = pic->pixels[0];
-	if (y < 0)
-	{
-		height += y;
-		source += pic->width*-y;
-		y = 0;
-	}
-
-	dest = vid.buffer + y * vid.rowbytes + x;
-
-	if (!pic->transparent)
-	{
-		for (v=0 ; v<height ; v++)
-		{
-			memcpy (dest, source, pic->width);
-			dest += vid.rowbytes;
-			source += pic->width;
-		}
-	}
-	else
-	{
-		if (pic->width & 7)
-		{	// general
-			for (v=0 ; v<height ; v++)
-			{
-				for (u=0 ; u<pic->width ; u++)
-					if ( (tbyte=source[u]) != TRANSPARENT_COLOR)
-						dest[u] = tbyte;
-
-				dest += vid.rowbytes;
-				source += pic->width;
-			}
-		}
-		else
-		{	// unwound
-			for (v=0 ; v<height ; v++)
-			{
-				for (u=0 ; u<pic->width ; u+=8)
-				{
-					if ( (tbyte=source[u]) != TRANSPARENT_COLOR)
-						dest[u] = tbyte;
-					if ( (tbyte=source[u+1]) != TRANSPARENT_COLOR)
-						dest[u+1] = tbyte;
-					if ( (tbyte=source[u+2]) != TRANSPARENT_COLOR)
-						dest[u+2] = tbyte;
-					if ( (tbyte=source[u+3]) != TRANSPARENT_COLOR)
-						dest[u+3] = tbyte;
-					if ( (tbyte=source[u+4]) != TRANSPARENT_COLOR)
-						dest[u+4] = tbyte;
-					if ( (tbyte=source[u+5]) != TRANSPARENT_COLOR)
-						dest[u+5] = tbyte;
-					if ( (tbyte=source[u+6]) != TRANSPARENT_COLOR)
-						dest[u+6] = tbyte;
-					if ( (tbyte=source[u+7]) != TRANSPARENT_COLOR)
-						dest[u+7] = tbyte;
-				}
-				dest += vid.rowbytes;
-				source += pic->width;
-			}
-		}
-	}
+	RE_Draw_StretchPicImplementation (
+		x, y,
+		scale * pic->asset_width, scale * pic->asset_height,
+		pic);
 }
 
 /*
 =============
-Draw_TileClear
+RE_Draw_TileClear
 
 This repeats a 64*64 tile graphic to fill the screen around a sized down
 refresh window.
 =============
 */
-void Draw_TileClear (int x, int y, int w, int h, char *name)
+void
+RE_Draw_TileClear (int x, int y, int w, int h, char *name)
 {
 	int			i, j;
 	byte		*psrc;
-	byte		*pdest;
+	pixel_t		*pdest;
 	image_t		*pic;
 	int			x2;
 
@@ -360,46 +419,51 @@ void Draw_TileClear (int x, int y, int w, int h, char *name)
 		h += y;
 		y = 0;
 	}
-	if (x + w > vid.width)
-		w = vid.width - x;
-	if (y + h > vid.height)
-		h = vid.height - y;
+	if (x + w > vid_buffer_width)
+		w = vid_buffer_width - x;
+	if (y + h > vid_buffer_height)
+		h = vid_buffer_height - y;
 	if (w <= 0 || h <= 0)
 		return;
 
-	pic = Draw_FindPic (name);
+	VID_DamageBuffer(x, y);
+	VID_DamageBuffer(x + w, y + h);
+
+	pic = R_FindPic (name, (findimage_t)R_FindImage);
 	if (!pic)
 	{
-		ri.Con_Printf (PRINT_ALL, "Can't find pic: %s\n", name);
+		R_Printf(PRINT_ALL, "Can't find pic: %s\n", name);
 		return;
 	}
 	x2 = x + w;
-	pdest = vid.buffer + y*vid.rowbytes;
-	for (i=0 ; i<h ; i++, pdest += vid.rowbytes)
+	pdest = vid_buffer + y * vid_buffer_width;
+	for (i=0 ; i<h ; i++, pdest += vid_buffer_width)
 	{
-		psrc = pic->pixels[0] + pic->width * ((i+y)&63);
+		psrc = pic->pixels[0] + pic->width * ((i+y) % pic->height);
 		for (j=x ; j<x2 ; j++)
-			pdest[j] = psrc[j&63];
+			pdest[j] = psrc[j % pic->width];
 	}
 }
 
 
 /*
 =============
-Draw_Fill
+RE_Draw_Fill
 
 Fills a box of pixels with a single color
 =============
 */
-void Draw_Fill (int x, int y, int w, int h, int c)
+void
+RE_Draw_Fill (int x, int y, int w, int h, int c)
 {
-	byte			*dest;
-	int				u, v;
+	pixel_t	*dest;
+	int	v;
 
-	if (x+w > vid.width)
-		w = vid.width - x;
-	if (y+h > vid.height)
-		h = vid.height - y;
+	if (x+w > vid_buffer_width)
+		w = vid_buffer_width - x;
+	if (y+h > vid_buffer_height)
+		h = vid_buffer_height - y;
+
 	if (x < 0)
 	{
 		w += x;
@@ -410,33 +474,42 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 		h += y;
 		y = 0;
 	}
+
 	if (w < 0 || h < 0)
 		return;
-	dest = vid.buffer + y*vid.rowbytes + x;
-	for (v=0 ; v<h ; v++, dest += vid.rowbytes)
-		for (u=0 ; u<w ; u++)
-			dest[u] = c;
+
+	VID_DamageBuffer(x, y);
+	VID_DamageBuffer(x + w, y + h);
+
+	dest = vid_buffer + y * vid_buffer_width + x;
+	for (v=0 ; v<h ; v++, dest += vid_buffer_width)
+		memset(dest, c, w);
 }
 //=============================================================================
 
 /*
 ================
-Draw_FadeScreen
+RE_Draw_FadeScreen
 
 ================
 */
-void Draw_FadeScreen (void)
+void
+RE_Draw_FadeScreen (void)
 {
-	int			x,y;
-	byte		*pbuf;
-	int	t;
+	int x,y;
 
-	for (y=0 ; y<vid.height ; y++)
+	VID_DamageBuffer(0, 0);
+	VID_DamageBuffer(vid_buffer_width, vid_buffer_height);
+
+	for (y=0 ; y<vid_buffer_height ; y++)
 	{
-		pbuf = (byte *)(vid.buffer + vid.rowbytes*y);
+		int t;
+		pixel_t *pbuf;
+
+		pbuf = vid_buffer + vid_buffer_width * y;
 		t = (y & 1) << 1;
 
-		for (x=0 ; x<vid.width ; x++)
+		for (x=0 ; x<vid_buffer_width ; x++)
 		{
 			if ((x & 3) != t)
 				pbuf[x] = 0;

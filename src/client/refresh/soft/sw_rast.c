@@ -19,69 +19,61 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // sw_rast.c
 
+#include <stdint.h>
 #include <assert.h>
 
-#include "r_local.h"
+#include "header/local.h"
 
-#define MAXLEFTCLIPEDGES		100
+#define MAXLEFTCLIPEDGES	100
 
-// !!! if these are changed, they must be changed in asm_draw.h too !!!
 #define FULLY_CLIPPED_CACHED	0x80000000
-#define FRAMECOUNT_MASK			0x7FFFFFFF
+#define FRAMECOUNT_MASK		0x7FFFFFFF
 
-unsigned int	cacheoffset;
+static unsigned int	cacheoffset;
 
-int			c_faceclip;					// number of faces clipped
+int	c_faceclip;	// number of faces clipped
 
-
-clipplane_t	*entity_clipplanes;
 clipplane_t	view_clipplanes[4];
-clipplane_t	world_clipplanes[16];
 
-medge_t			*r_pedge;
+edge_t	*r_edges = NULL, *edge_p = NULL, *edge_max = NULL;
+surf_t	*surfaces = NULL, *surface_p = NULL, *surf_max = NULL;
 
-qboolean		r_leftclipped, r_rightclipped;
-static qboolean	makeleftedge, makerightedge;
-qboolean		r_nearzionly;
+int		*sintable;
+int		*intsintable;
+int		*blanktable;
 
-int		sintable[1280];
-int		intsintable[1280];
-int		blanktable[1280];		// PGM
+static mvertex_t	r_leftenter, r_leftexit;
+static mvertex_t	r_rightenter, r_rightexit;
 
-mvertex_t	r_leftenter, r_leftexit;
-mvertex_t	r_rightenter, r_rightexit;
+static int	r_emitted;
+static float	r_nearzi;
+static float	r_u1, r_v1, r_lzi1;
+static int	r_ceilv1;
 
-typedef struct
-{
-	float	u,v;
-	int		ceilv;
-} evert_t;
+static qboolean		r_lastvertvalid;
+static int		r_skyframe;
 
-int				r_emitted;
-float			r_nearzi;
-float			r_u1, r_v1, r_lzi1;
-int				r_ceilv1;
-
-qboolean		r_lastvertvalid;
-int				r_skyframe;
-
-msurface_t		*r_skyfaces;
-mplane_t		r_skyplanes[6];
+static msurface_t	*r_skyfaces;
+static cplane_t		r_skyplanes[6];
 mtexinfo_t		r_skytexinfo[6];
-mvertex_t		*r_skyverts;
-medge_t			*r_skyedges;
-int				*r_skysurfedges;
+static mvertex_t	*r_skyverts;
+static medge_t		*r_skyedges;
+static int		*r_skysurfedges;
 
 // I just copied this data from a box map...
-int skybox_planes[12] = {2,-128, 0,-128, 2,128, 1,128, 0,128, 1,-128};
+static const int	skybox_planes[12] = {2,-128, 0,-128, 2,128, 1,128, 0,128, 1,-128};
 
-int box_surfedges[24] = { 1,2,3,4,  -1,5,6,7,  8,9,-6,10,  -2,-7,-9,11,
+static const int	box_surfedges[24] = { 1,2,3,4,  -1,5,6,7,  8,9,-6,10,  -2,-7,-9,11,
   12,-3,-11,-8,  -12,-10,-5,-4};
-int box_edges[24] = { 1,2, 2,3, 3,4, 4,1, 1,5, 5,6, 6,2, 7,8, 8,6, 5,7, 8,3, 7,4};
+static const int	box_edges[24] = { 1,2, 2,3, 3,4, 4,1, 1,5, 5,6, 6,2, 7,8, 8,6, 5,7, 8,3, 7,4};
 
-int	box_faces[6] = {0,0,2,2,2,0};
+static const int	box_faces[6] = {
+	0, 0,
+	SURF_PLANEBACK, SURF_PLANEBACK,
+	SURF_PLANEBACK, 0
+};
 
-vec3_t	box_vecs[6][2] = {
+static const vec3_t	box_vecs[6][2] = {
 	{	{0,-1,0}, {-1,0,0} },
 	{ {0,1,0}, {0,0,-1} },
 	{	{0,-1,0}, {1,0,0} },
@@ -90,7 +82,7 @@ vec3_t	box_vecs[6][2] = {
 	{ {-1,0,0}, {0,0,-1} }
 };
 
-float	box_verts[8][3] = {
+static const float	box_verts[8][3] = {
 	{-1,-1,-1},
 	{-1,1,-1},
 	{1,1,-1},
@@ -110,10 +102,10 @@ R_InitSkyBox
 
 ================
 */
-void R_InitSkyBox (void)
+void
+R_InitSkyBox (model_t *loadmodel)
 {
 	int		i;
-	extern model_t *loadmodel;
 
 	r_skyfaces = loadmodel->surfaces + loadmodel->numsurfaces;
 	loadmodel->numsurfaces += 6;
@@ -139,7 +131,7 @@ void R_InitSkyBox (void)
 
 		r_skyfaces[i].plane = &r_skyplanes[i];
 		r_skyfaces[i].numedges = 4;
-		r_skyfaces[i].flags = box_faces[i] | SURF_DRAWSKYBOX;
+		r_skyfaces[i].flags = box_faces[i] | SURF_DRAWSKY;
 		r_skyfaces[i].firstedge = loadmodel->numsurfedges-24+i*4;
 		r_skyfaces[i].texinfo = &r_skytexinfo[i];
 		r_skyfaces[i].texturemins[0] = -128;
@@ -167,15 +159,16 @@ void R_InitSkyBox (void)
 R_EmitSkyBox
 ================
 */
-void R_EmitSkyBox (void)
+static void
+R_EmitSkyBox(entity_t *currententity, const model_t *currentmodel, qboolean insubmodel)
 {
 	int		i, j;
 	int		oldkey;
 
 	if (insubmodel)
-		return;		// submodels should never have skies
+		return;	// submodels should never have skies
 	if (r_skyframe == r_framecount)
-		return;		// already set this frame
+		return;	// already set this frame
 
 	r_skyframe = r_framecount;
 
@@ -203,21 +196,21 @@ void R_EmitSkyBox (void)
 	r_currentkey = 0x7ffffff0;
  	for (i=0 ; i<6 ; i++)
 	{
-		R_RenderFace (r_skyfaces + i, 15);
+		R_RenderFace(currententity, currentmodel, r_skyfaces + i, ALIAS_XY_CLIP_MASK, insubmodel);
 	}
-	r_currentkey = oldkey;		// bsp sorting order
+	r_currentkey = oldkey;	// bsp sorting order
 }
-
 
 /*
 ================
 R_EmitEdge
 ================
 */
-void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
+static void
+R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1, medge_t *r_pedge, qboolean r_nearzionly)
 {
 	edge_t	*edge, *pcheck;
-	int		u_check;
+	int	u_check;
 	float	u, u_step;
 	vec3_t	local, transformed;
 	float	*world;
@@ -236,7 +229,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 	{
 		world = &pv0->position[0];
 
-	// transform and project
+		// transform and project
 		VectorSubtract (world, modelorg, local);
 		TransformVector (local, transformed);
 
@@ -245,7 +238,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 
 		lzi0 = 1.0 / transformed[2];
 
-	// FIXME: build x/yscale into transform?
+		// FIXME: build x/yscale into transform?
 		scale = xscale * lzi0;
 		u0 = (xcenter + scale*transformed[0]);
 		if (u0 < r_refdef.fvrectx_adj)
@@ -265,7 +258,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 
 	world = &pv1->position[0];
 
-// transform and project
+	// transform and project
 	VectorSubtract (world, modelorg, local);
 	TransformVector (local, transformed);
 
@@ -294,7 +287,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 	if (lzi0 > r_nearzi)	// for mipmap finding
 		r_nearzi = lzi0;
 
-// for right edges, all we want is the effect on 1/z
+	// for right edges, all we want is the effect on 1/z
 	if (r_nearzionly)
 		return;
 
@@ -303,17 +296,17 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 	r_ceilv1 = (int) ceil(r_v1);
 
 
-// create the edge
+	// create the edge
 	if (ceilv0 == r_ceilv1)
 	{
-	// we cache unclipped horizontal edges as fully clipped
+		// we cache unclipped horizontal edges as fully clipped
 		if (cacheoffset != 0x7FFFFFFF)
 		{
 			cacheoffset = FULLY_CLIPPED_CACHED |
 					(r_framecount & FRAMECOUNT_MASK);
 		}
 
-		return;		// horizontal edge
+		return;	// horizontal edge
 	}
 
 	side = ceilv0 > r_ceilv1;
@@ -326,7 +319,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 
 	if (side == 0)
 	{
-	// trailing edge (go from p1 to p2)
+		// trailing edge (go from p1 to p2)
 		v = ceilv0;
 		v2 = r_ceilv1 - 1;
 
@@ -338,7 +331,7 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 	}
 	else
 	{
-	// leading edge (go from p2 to p1)
+		// leading edge (go from p2 to p1)
 		v2 = ceilv0 - 1;
 		v = r_ceilv1;
 
@@ -349,22 +342,26 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 		u = r_u1 + ((float)v - r_v1) * u_step;
 	}
 
-	edge->u_step = u_step*0x100000;
-	edge->u = u*0x100000 + 0xFFFFF;
+	edge->u_step = u_step*(1<<shift_size);
+	edge->u = u*(1<<shift_size) + (1<<shift_size) - 1;
 
-// we need to do this to avoid stepping off the edges if a very nearly
-// horizontal edge is less than epsilon above a scan, and numeric error causes
-// it to incorrectly extend to the scan, and the extension of the line goes off
-// the edge of the screen
-// FIXME: is this actually needed?
+	// we need to do this to avoid stepping off the edges if a very nearly
+	// horizontal edge is less than epsilon above a scan, and numeric error causes
+	// it to incorrectly extend to the scan, and the extension of the line goes off
+	// the edge of the screen
+	// FIXME: is this actually needed?
 	if (edge->u < r_refdef.vrect_x_adj_shift20)
+	{
 		edge->u = r_refdef.vrect_x_adj_shift20;
-	if (edge->u > r_refdef.vrectright_adj_shift20)
+	}
+	else if (edge->u > r_refdef.vrectright_adj_shift20)
+	{
 		edge->u = r_refdef.vrectright_adj_shift20;
+	}
 
-//
-// sort the edge in normally
-//
+	//
+	// sort the edge in normally
+	//
 	u_check = edge->u;
 	if (edge->surfs[0])
 		u_check++;	// sort trailers after leaders
@@ -387,36 +384,37 @@ void R_EmitEdge (mvertex_t *pv0, mvertex_t *pv1)
 	removeedges[v2] = edge;
 }
 
-
 /*
 ================
 R_ClipEdge
 ================
 */
-void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip)
+static void
+R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip, medge_t *r_pedge,
+		qboolean *r_leftclipped, qboolean *r_rightclipped,
+		qboolean r_nearzionly)
 {
-	float		d0, d1, f;
-	mvertex_t	clipvert;
-
 	if (clip)
 	{
 		do
 		{
+			float d0, d1, f;
+			mvertex_t clipvert;
+
 			d0 = DotProduct (pv0->position, clip->normal) - clip->dist;
 			d1 = DotProduct (pv1->position, clip->normal) - clip->dist;
 
 			if (d0 >= 0)
 			{
-			// point 0 is unclipped
+				// point 0 is unclipped
 				if (d1 >= 0)
 				{
-				// both points are unclipped
+					// both points are unclipped
 					continue;
 				}
 
-			// only point 1 is clipped
-
-			// we don't cache clipped edges
+				// only point 1 is clipped
+				// we don't cache clipped edges
 				cacheoffset = 0x7FFFFFFF;
 
 				f = d0 / (d0 - d1);
@@ -429,35 +427,37 @@ void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip)
 
 				if (clip->leftedge)
 				{
-					r_leftclipped = true;
+					*r_leftclipped = true;
 					r_leftexit = clipvert;
 				}
 				else if (clip->rightedge)
 				{
-					r_rightclipped = true;
+					*r_rightclipped = true;
 					r_rightexit = clipvert;
 				}
 
-				R_ClipEdge (pv0, &clipvert, clip->next);
+				R_ClipEdge (pv0, &clipvert, clip->next, r_pedge,
+						r_leftclipped, r_rightclipped,
+						r_nearzionly);
 				return;
 			}
 			else
 			{
-			// point 0 is clipped
+				// point 0 is clipped
 				if (d1 < 0)
 				{
-				// both points are clipped
-				// we do cache fully clipped edges
+					// both points are clipped
+					// we do cache fully clipped edges
 					if (!r_leftclipped)
 						cacheoffset = FULLY_CLIPPED_CACHED |
 								(r_framecount & FRAMECOUNT_MASK);
 					return;
 				}
 
-			// only point 0 is clipped
+				// only point 0 is clipped
 				r_lastvertvalid = false;
 
-			// we don't cache partially clipped edges
+				// we don't cache partially clipped edges
 				cacheoffset = 0x7FFFFFFF;
 
 				f = d0 / (d0 - d1);
@@ -470,23 +470,25 @@ void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip)
 
 				if (clip->leftedge)
 				{
-					r_leftclipped = true;
+					*r_leftclipped = true;
 					r_leftenter = clipvert;
 				}
 				else if (clip->rightedge)
 				{
-					r_rightclipped = true;
+					*r_rightclipped = true;
 					r_rightenter = clipvert;
 				}
 
-				R_ClipEdge (&clipvert, pv1, clip->next);
+				R_ClipEdge (&clipvert, pv1, clip->next, r_pedge,
+						r_leftclipped, r_rightclipped,
+						r_nearzionly);
 				return;
 			}
 		} while ((clip = clip->next) != NULL);
 	}
 
-// add the edge
-	R_EmitEdge (pv0, pv1);
+	// add the edge
+	R_EmitEdge (pv0, pv1, r_pedge, r_nearzionly);
 }
 
 /*
@@ -494,11 +496,12 @@ void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip)
 R_EmitCachedEdge
 ================
 */
-void R_EmitCachedEdge (void)
+static void
+R_EmitCachedEdge (medge_t *r_pedge)
 {
 	edge_t		*pedge_t;
 
-	pedge_t = (edge_t *)((unsigned long)r_edges + r_pedge->cachededgeoffset);
+	pedge_t = (edge_t *)((uintptr_t)r_edges + r_pedge->cachededgeoffset);
 
 	if (!pedge_t->surfs[0])
 		pedge_t->surfs[0] = surface_p - surfaces;
@@ -517,15 +520,20 @@ void R_EmitCachedEdge (void)
 R_RenderFace
 ================
 */
-void R_RenderFace (msurface_t *fa, int clipflags)
+void
+R_RenderFace (entity_t *currententity, const model_t *currentmodel, msurface_t *fa,
+	int clipflags, qboolean insubmodel)
 {
-	int			i, lindex;
+	int		i;
 	unsigned	mask;
-	mplane_t	*pplane;
+	cplane_t	*pplane;
 	float		distinv;
 	vec3_t		p_normal;
 	medge_t		*pedges, tedge;
 	clipplane_t	*pclip;
+	qboolean	r_leftclipped, r_rightclipped;
+	qboolean	makeleftedge, makerightedge;
+	qboolean	r_nearzionly;
 
 	// translucent surfaces are not drawn by the edge renderer
 	if (fa->texinfo->flags & (SURF_TRANS33|SURF_TRANS66))
@@ -539,27 +547,27 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 	// environment box surfaces to be emited
 	if ( fa->texinfo->flags & SURF_SKY )
 	{
-		R_EmitSkyBox ();
+		R_EmitSkyBox (currententity, currentmodel, insubmodel);
 		return;
 	}
 
-// skip out if no more surfs
+	// skip out if no more surfs
 	if ((surface_p) >= surf_max)
 	{
-		r_outofsurfaces++;
+		r_outofsurfaces = true;
 		return;
 	}
 
-// ditto if not enough edges left, or switch to auxedges if possible
+	// ditto if not enough edges left
 	if ((edge_p + fa->numedges + 4) >= edge_max)
 	{
-		r_outofedges += fa->numedges;
+		r_outofedges = true;
 		return;
 	}
 
 	c_faceclip++;
 
-// set up clip planes
+	// set up clip planes
 	pclip = NULL;
 
 	for (i=3, mask = 0x08 ; i>=0 ; i--, mask >>= 1)
@@ -571,7 +579,7 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 		}
 	}
 
-// push the edges through
+	// push the edges through
 	r_emitted = 0;
 	r_nearzi = 0;
 	r_nearzionly = false;
@@ -581,13 +589,15 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 
 	for (i=0 ; i<fa->numedges ; i++)
 	{
+		int lindex;
+
 		lindex = currentmodel->surfedges[fa->firstedge + i];
 
 		if (lindex > 0)
 		{
-			r_pedge = &pedges[lindex];
+			medge_t *r_pedge = &pedges[lindex];
 
-		// if the edge is cached, we can just reuse the edge
+			// if the edge is cached, we can just reuse the edge
 			if (!insubmodel)
 			{
 				if (r_pedge->cachededgeoffset & FULLY_CLIPPED_CACHED)
@@ -601,24 +611,26 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 				}
 				else
 				{
-					if ((((unsigned long)edge_p - (unsigned long)r_edges) >
+					if ((((uintptr_t)edge_p - (uintptr_t)r_edges) >
 						 r_pedge->cachededgeoffset) &&
-						(((edge_t *)((unsigned long)r_edges +
+						(((edge_t *)((uintptr_t)r_edges +
 						 r_pedge->cachededgeoffset))->owner == r_pedge))
 					{
-						R_EmitCachedEdge ();
+						R_EmitCachedEdge (r_pedge);
 						r_lastvertvalid = false;
 						continue;
 					}
 				}
 			}
 
-		// assume it's cacheable
+			// assume it's cacheable
 			cacheoffset = (byte *)edge_p - (byte *)r_edges;
 			r_leftclipped = r_rightclipped = false;
 			R_ClipEdge (&r_pcurrentvertbase[r_pedge->v[0]],
 						&r_pcurrentvertbase[r_pedge->v[1]],
-						pclip);
+						pclip, r_pedge,
+						&r_leftclipped, &r_rightclipped,
+						r_nearzionly);
 			r_pedge->cachededgeoffset = cacheoffset;
 
 			if (r_leftclipped)
@@ -629,9 +641,11 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 		}
 		else
 		{
+			medge_t *r_pedge;
+
 			lindex = -lindex;
 			r_pedge = &pedges[lindex];
-		// if the edge is cached, we can just reuse the edge
+			// if the edge is cached, we can just reuse the edge
 			if (!insubmodel)
 			{
 				if (r_pedge->cachededgeoffset & FULLY_CLIPPED_CACHED)
@@ -645,26 +659,28 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 				}
 				else
 				{
-				// it's cached if the cached edge is valid and is owned
-				// by this medge_t
-					if ((((unsigned long)edge_p - (unsigned long)r_edges) >
+					// it's cached if the cached edge is valid and is owned
+					// by this medge_t
+					if ((((uintptr_t)edge_p - (uintptr_t)r_edges) >
 						 r_pedge->cachededgeoffset) &&
-						(((edge_t *)((unsigned long)r_edges +
+						(((edge_t *)((uintptr_t)r_edges +
 						 r_pedge->cachededgeoffset))->owner == r_pedge))
 					{
-						R_EmitCachedEdge ();
+						R_EmitCachedEdge (r_pedge);
 						r_lastvertvalid = false;
 						continue;
 					}
 				}
 			}
 
-		// assume it's cacheable
+			// assume it's cacheable
 			cacheoffset = (byte *)edge_p - (byte *)r_edges;
 			r_leftclipped = r_rightclipped = false;
 			R_ClipEdge (&r_pcurrentvertbase[r_pedge->v[1]],
 						&r_pcurrentvertbase[r_pedge->v[0]],
-						pclip);
+						pclip, r_pedge,
+						&r_leftclipped, &r_rightclipped,
+						r_nearzionly);
 			r_pedge->cachededgeoffset = cacheoffset;
 
 			if (r_leftclipped)
@@ -675,26 +691,26 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 		}
 	}
 
-// if there was a clip off the left edge, add that edge too
-// FIXME: faster to do in screen space?
-// FIXME: share clipped edges?
+	// if there was a clip off the left edge, add that edge too
+	// FIXME: faster to do in screen space?
+	// FIXME: share clipped edges?
 	if (makeleftedge)
 	{
-		r_pedge = &tedge;
 		r_lastvertvalid = false;
-		R_ClipEdge (&r_leftexit, &r_leftenter, pclip->next);
+		R_ClipEdge (&r_leftexit, &r_leftenter, pclip->next, &tedge,
+				&r_leftclipped, &r_rightclipped, r_nearzionly);
 	}
 
-// if there was a clip off the right edge, get the right r_nearzi
+	// if there was a clip off the right edge, get the right r_nearzi
 	if (makerightedge)
 	{
-		r_pedge = &tedge;
 		r_lastvertvalid = false;
 		r_nearzionly = true;
-		R_ClipEdge (&r_rightexit, &r_rightenter, view_clipplanes[1].next);
+		R_ClipEdge (&r_rightexit, &r_rightenter, view_clipplanes[1].next, &tedge,
+				&r_leftclipped, &r_rightclipped, r_nearzionly);
 	}
 
-// if no edges made it out, return without posting the surface
+	// if no edges made it out, return without posting the surface
 	if (!r_emitted)
 		return;
 
@@ -710,9 +726,9 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 	surface_p->spans = NULL;
 
 	pplane = fa->plane;
-// FIXME: cache this?
+	// FIXME: cache this?
 	TransformVector (pplane->normal, p_normal);
-// FIXME: cache this?
+	// FIXME: cache this?
 	distinv = 1.0 / (pplane->dist - DotProduct (modelorg, pplane->normal));
 
 	surface_p->d_zistepu = p_normal[0] * xscaleinv * distinv;
@@ -730,15 +746,19 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 R_RenderBmodelFace
 ================
 */
-void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
+void
+R_RenderBmodelFace(entity_t *currententity, bedge_t *pedges, msurface_t *psurf, int r_currentbkey)
 {
-	int			i;
+	int		i;
 	unsigned	mask;
-	mplane_t	*pplane;
+	cplane_t	*pplane;
 	float		distinv;
 	vec3_t		p_normal;
 	medge_t		tedge;
 	clipplane_t	*pclip;
+	qboolean	r_leftclipped, r_rightclipped;
+	qboolean	makeleftedge, makerightedge;
+	qboolean	r_nearzionly;
 
 	if (psurf->texinfo->flags & (SURF_TRANS33|SURF_TRANS66))
 	{
@@ -747,26 +767,23 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 		return;
 	}
 
-// skip out if no more surfs
+	// skip out if no more surfs
 	if (surface_p >= surf_max)
 	{
-		r_outofsurfaces++;
+		r_outofsurfaces = true;
 		return;
 	}
 
-// ditto if not enough edges left, or switch to auxedges if possible
+	// ditto if not enough edges left
 	if ((edge_p + psurf->numedges + 4) >= edge_max)
 	{
-		r_outofedges += psurf->numedges;
+		r_outofedges = true;
 		return;
 	}
 
 	c_faceclip++;
 
-// this is a dummy to give the caching mechanism someplace to write to
-	r_pedge = &tedge;
-
-// set up clip planes
+	// set up clip planes
 	pclip = NULL;
 
 	for (i=3, mask = 0x08 ; i>=0 ; i--, mask >>= 1)
@@ -778,19 +795,20 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 		}
 	}
 
-// push the edges through
+	// push the edges through
 	r_emitted = 0;
 	r_nearzi = 0;
 	r_nearzionly = false;
 	makeleftedge = makerightedge = false;
-// FIXME: keep clipped bmodel edges in clockwise order so last vertex caching
-// can be used?
+	// FIXME: keep clipped bmodel edges in clockwise order so last vertex caching
+	// can be used?
 	r_lastvertvalid = false;
 
 	for ( ; pedges ; pedges = pedges->pnext)
 	{
 		r_leftclipped = r_rightclipped = false;
-		R_ClipEdge (pedges->v[0], pedges->v[1], pclip);
+		R_ClipEdge (pedges->v[0], pedges->v[1], pclip, &tedge,
+				&r_leftclipped, &r_rightclipped, r_nearzionly);
 
 		if (r_leftclipped)
 			makeleftedge = true;
@@ -798,21 +816,21 @@ void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf)
 			makerightedge = true;
 	}
 
-// if there was a clip off the left edge, add that edge too
-// FIXME: faster to do in screen space?
-// FIXME: share clipped edges?
+	// if there was a clip off the left edge, add that edge too
+	// FIXME: faster to do in screen space?
+	// FIXME: share clipped edges?
 	if (makeleftedge)
 	{
-		r_pedge = &tedge;
-		R_ClipEdge (&r_leftexit, &r_leftenter, pclip->next);
+		R_ClipEdge (&r_leftexit, &r_leftenter, pclip->next, &tedge,
+				&r_leftclipped, &r_rightclipped, r_nearzionly);
 	}
 
-// if there was a clip off the right edge, get the right r_nearzi
+	// if there was a clip off the right edge, get the right r_nearzi
 	if (makerightedge)
 	{
-		r_pedge = &tedge;
 		r_nearzionly = true;
-		R_ClipEdge (&r_rightexit, &r_rightenter, view_clipplanes[1].next);
+		R_ClipEdge (&r_rightexit, &r_rightenter, view_clipplanes[1].next, &tedge,
+				&r_leftclipped, &r_rightclipped, r_nearzionly);
 	}
 
 	// if no edges made it out, return without posting the surface

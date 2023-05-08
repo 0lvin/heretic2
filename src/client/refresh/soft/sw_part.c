@@ -17,38 +17,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-#include "r_local.h"
+#include "header/local.h"
 
-vec3_t r_pright, r_pup, r_ppn;
+static vec3_t r_pright, r_pup, r_ppn;
+extern cvar_t	*sw_custom_particles;
 
 #define PARTICLE_33     0
 #define PARTICLE_66     1
 #define PARTICLE_OPAQUE 2
-
-typedef struct
-{
-	particle_t *particle;
-	int         level;
-	int         color;
-} partparms_t;
-
-static partparms_t partparms;
-
-static byte BlendParticle33( int pcolor, int dstcolor )
-{
-	return vid.alphamap[pcolor + dstcolor*256];
-}
-
-static byte BlendParticle66( int pcolor, int dstcolor )
-{
-	return vid.alphamap[pcolor*256+dstcolor];
-}
-
-static byte BlendParticle100( int pcolor, int dstcolor )
-{
-	dstcolor = dstcolor;
-	return pcolor;
-}
 
 /*
 ** R_DrawParticle
@@ -63,17 +39,17 @@ static byte BlendParticle100( int pcolor, int dstcolor )
 ** function pointer route.  This exacts some overhead, but
 ** it pays off in clean and easy to understand code.
 */
-void R_DrawParticle( void )
+static void
+R_DrawParticle(particle_t *pparticle, int level)
 {
-	particle_t *pparticle = partparms.particle;
-	int         level     = partparms.level;
-	vec3_t	local, transformed;
-	float	zi;
-	byte	*pdest;
-	short	*pz;
-	int      color = pparticle->color;
-	int		i, izi, pix, count, u, v;
-	byte  (*blendparticle)( int, int );
+	vec3_t		local, transformed;
+	float		zi;
+	byte		*pdest;
+	zvalue_t	*pz;
+	int		color = pparticle->color;
+	int		i, pix, count, u, v;
+	zvalue_t	izi;
+	int 		custom_particle = (int)sw_custom_particles->value;
 
 	/*
 	** transform the particle
@@ -86,16 +62,6 @@ void R_DrawParticle( void )
 
 	if (transformed[2] < PARTICLE_Z_CLIP)
 		return;
-
-	/*
-	** bind the blend function pointer to the appropriate blender
-	*/
-	if ( level == PARTICLE_33 )
-		blendparticle = BlendParticle33;
-	else if ( level == PARTICLE_66 )
-		blendparticle = BlendParticle66;
-	else
-		blendparticle = BlendParticle100;
 
 	/*
 	** project the point
@@ -117,15 +83,15 @@ void R_DrawParticle( void )
 	** compute addresses of zbuffer, framebuffer, and
 	** compute the Z-buffer reference value.
 	*/
-	pz = d_pzbuffer + (d_zwidth * v) + u;
-	pdest = d_viewbuffer + d_scantable[v] + u;
+	pz = d_pzbuffer + (vid_buffer_width * v) + u;
+	pdest = d_viewbuffer + vid_buffer_width * v + u;
 	izi = (int)(zi * 0x8000);
 
 	/*
 	** determine the screen area covered by the particle,
 	** which also means clamping to a min and max
 	*/
-	pix = izi >> d_pix_shift;
+	pix = (izi * d_pix_mul) >> 7;
 	if (pix < d_pix_min)
 		pix = d_pix_min;
 	else if (pix > d_pix_max)
@@ -135,53 +101,124 @@ void R_DrawParticle( void )
 	** render the appropriate pixels
 	*/
 	count = pix;
+	if ((pz[(vid_buffer_width * count / 2) + (count / 2)]) > izi)
+	{
+		// looks like under some object
+		return;
+	}
 
-    switch (level) {
-    case PARTICLE_33 :
-        for ( ; count ; count--, pz += d_zwidth, pdest += r_screenwidth)
-        {
-//FIXME--do it in blocks of 8?
-            for (i=0 ; i<pix ; i++)
-            {
-                if (pz[i] <= izi)
-                {
-                    pz[i]    = izi;
-                    pdest[i] = vid.alphamap[color + ((int)pdest[i]<<8)];
-                }
-            }
-        }
-        break;
+	// zbuffer particles damage
+	VID_DamageZBuffer(u, v);
+	VID_DamageZBuffer(u + count, v + count);
 
-    case PARTICLE_66 :
-        for ( ; count ; count--, pz += d_zwidth, pdest += r_screenwidth)
-        {
-            for (i=0 ; i<pix ; i++)
-            {
-                if (pz[i] <= izi)
-                {
-                    pz[i]    = izi;
-                    pdest[i] = vid.alphamap[(color<<8) + (int)pdest[i]];
-                }
-            }
-        }
-        break;
+	if (custom_particle == 0)
+	{
+		switch (level) {
+		case PARTICLE_33 :
+			for ( ; count ; count--, pz += vid_buffer_width, pdest += vid_buffer_width)
+			{
+				//FIXME--do it in blocks of 8?
+				for (i=0 ; i<pix ; i++)
+				{
+					if (pz[i] <= izi)
+					{
+						pz[i]	= izi;
+						pdest[i] = vid_alphamap[color + ((int)pdest[i]<<8)];
+					}
+				}
+			}
+			break;
 
-    default:  //100
-        for ( ; count ; count--, pz += d_zwidth, pdest += r_screenwidth)
-        {
-            for (i=0 ; i<pix ; i++)
-            {
-                if (pz[i] <= izi)
-                {
-                    pz[i]    = izi;
-                    pdest[i] = color;
-                }
-            }
-        }
-        break;
-    }
+		case PARTICLE_66 :
+		{
+			int color_part = (color<<8);
+			for ( ; count ; count--, pz += vid_buffer_width, pdest += vid_buffer_width)
+			{
+				for (i=0 ; i<pix ; i++)
+				{
+					if (pz[i] <= izi)
+					{
+						pz[i]	= izi;
+						pdest[i] = vid_alphamap[color_part + (int)pdest[i]];
+					}
+				}
+			}
+			break;
+		}
+
+		default:  //100
+			for ( ; count ; count--, pz += vid_buffer_width, pdest += vid_buffer_width)
+			{
+				for (i=0 ; i<pix ; i++)
+				{
+					if (pz[i] <= izi)
+					{
+						pz[i]	= izi;
+						pdest[i] = color;
+					}
+				}
+			}
+			break;
+		}
+	}
+	else
+	{
+		int min_int, max_int;
+		min_int = pix / 2;
+		max_int = (pix * 2) - min_int;
+
+		switch (level) {
+		case PARTICLE_33 :
+			for ( ; count ; count--, pz += vid_buffer_width, pdest += vid_buffer_width)
+			{
+				//FIXME--do it in blocks of 8?
+				for (i=0 ; i<pix ; i++)
+				{
+					int pos = i + count;
+					if (pos >= min_int && pos <= max_int && pz[i] <= izi)
+					{
+						pz[i]	= izi;
+						pdest[i] = vid_alphamap[color + ((int)pdest[i]<<8)];
+					}
+				}
+			}
+			break;
+
+		case PARTICLE_66 :
+		{
+			int color_part = (color<<8);
+			for ( ; count ; count--, pz += vid_buffer_width, pdest += vid_buffer_width)
+			{
+				for (i=0 ; i<pix ; i++)
+				{
+					int pos = i + count;
+					if (pos >= min_int && pos <= max_int && pz[i] <= izi)
+					{
+						pz[i]	= izi;
+						pdest[i] = vid_alphamap[color_part + (int)pdest[i]];
+					}
+				}
+			}
+			break;
+		}
+
+		default:  //100
+			for ( ; count ; count--, pz += vid_buffer_width, pdest += vid_buffer_width)
+			{
+				for (i=0 ; i<pix ; i++)
+				{
+					int pos = i + count;
+					if (pos >= min_int && pos <= max_int && pz[i] <= izi)
+					{
+						pz[i]	= izi;
+						pdest[i] = color;
+					}
+				}
+			}
+			break;
+		}
+	}
 }
-
 
 /*
 ** R_DrawParticles
@@ -191,11 +228,11 @@ void R_DrawParticle( void )
 ** if we're using the asm path, it simply assigns a function pointer
 ** and goes.
 */
-void R_DrawParticles (void)
+void
+R_DrawParticles (void)
 {
 	particle_t *p;
 	int         i;
-	extern unsigned long fpu_sp24_cw, fpu_chop_cw;
 
 	VectorScale( vright, xscaleshrink, r_pright );
 	VectorScale( vup, yscaleshrink, r_pup );
@@ -203,17 +240,15 @@ void R_DrawParticles (void)
 
 	for (p=r_newrefdef.particles, i=0 ; i<r_newrefdef.num_particles ; i++,p++)
 	{
+		int level;
 
 		if ( p->alpha > 0.66 )
-			partparms.level = PARTICLE_OPAQUE;
+			level = PARTICLE_OPAQUE;
 		else if ( p->alpha > 0.33 )
-			partparms.level = PARTICLE_66;
+			level = PARTICLE_66;
 		else
-			partparms.level = PARTICLE_33;
+			level = PARTICLE_33;
 
-		partparms.particle = p;
-		partparms.color    = p->color;
-
-		R_DrawParticle();
+		R_DrawParticle(p, level);
 	}
 }

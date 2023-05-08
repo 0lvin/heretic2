@@ -18,18 +18,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // sw_sprite.c
-#include "r_local.h"
+#include "header/local.h"
 
 extern polydesc_t r_polydesc;
 
-void R_BuildPolygonFromSurface(msurface_t *fa);
-void R_PolygonCalculateGradients (void);
+extern vec5_t	r_clip_verts[2][MAXWORKINGVERTS+2];
 
-extern void R_PolyChooseSpanletRoutine( float alpha, qboolean isturbulent );
-
-extern vec5_t r_clip_verts[2][MAXWORKINGVERTS+2];
-
-extern void	R_ClipAndDrawPoly( float alpha, qboolean isturbulent, qboolean textured );
+extern void R_ClipAndDrawPoly(float alpha, qboolean isturbulent, qboolean textured);
 
 /*
 ** R_DrawSprite
@@ -37,31 +32,29 @@ extern void	R_ClipAndDrawPoly( float alpha, qboolean isturbulent, qboolean textu
 ** Draw currententity / currentmodel as a single texture
 ** mapped polygon
 */
-void R_DrawSprite (void)
+void
+R_DrawSprite(entity_t *currententity, const model_t *currentmodel)
 {
 	vec5_t		*pverts;
 	vec3_t		left, up, right, down;
 	dsprite_t	*s_psprite;
 	dsprframe_t	*s_psprframe;
-
+	image_t		*skin;
 
 	s_psprite = (dsprite_t *)currentmodel->extradata;
-#if 0
-	if (currententity->frame >= s_psprite->numframes
-		|| currententity->frame < 0)
-	{
-		ri.Con_Printf (PRINT_ALL, "No such sprite frame %i\n",
-			currententity->frame);
-		currententity->frame = 0;
-	}
-#endif
 	currententity->frame %= s_psprite->numframes;
 
 	s_psprframe = &s_psprite->frames[currententity->frame];
 
-	r_polydesc.pixels       = currentmodel->skins[currententity->frame]->pixels[0];
-	r_polydesc.pixel_width  = s_psprframe->width;
-	r_polydesc.pixel_height = s_psprframe->height;
+	skin = currentmodel->skins[currententity->frame];
+	if (!skin)
+	{
+		skin = r_notexture_mip;
+	}
+
+	r_polydesc.pixels       = skin->pixels[0];
+	r_polydesc.pixel_width  = min(s_psprframe->width, skin->width);
+	r_polydesc.pixel_height = min(s_psprframe->height, skin->height);
 	r_polydesc.dist         = 0;
 
 	// generate the sprite's axes, completely parallel to the viewplane.
