@@ -154,7 +154,7 @@ struct edict_s
 	vec3_t				absmin,absmax,size;
 
 	// called when self is the collidee in a collision, resulting in the impediment or bouncing of trace->ent
-	void				(*isBlocking)(edict_t *self, struct trace_s *trace);
+	void				(*isBlocking)(edict_t *self, trace_t *trace);
 
 	// The game dll can add anything it wants after this point in the edict_t in g_Edict.h.
 

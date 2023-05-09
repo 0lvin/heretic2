@@ -44,7 +44,7 @@ Copyright 1998 Raven Software
 
 #define HARPY_PROJECTILE_RADIUS	1024
 
-void harpy_blocked (edict_t *self, struct trace_s *trace);
+void harpy_blocked (edict_t *self, trace_t *trace);
 
 /*-----------------------------------------------------------------
 	harpy base info
@@ -240,7 +240,7 @@ void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, in
 }
 
 void player_decap (edict_t *self, edict_t *other);
-void harpy_blocked (edict_t *self, struct trace_s *trace)
+void harpy_blocked (edict_t *self, trace_t *trace)
 {
 	vec3_t	vf, dir;
 	float dot;

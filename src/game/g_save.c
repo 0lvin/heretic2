@@ -309,7 +309,7 @@ void InitGame (void)
 	coop = gi.cvar ("coop", "0", CVAR_LATCH);
 
 	skill = gi.cvar ("skill", "1", CVAR_LATCH);
-	maxentities = gi.cvar ("maxentities", G_MAX_ENTITIES, CVAR_LATCH);
+	maxentities = gi.cvar ("maxentities", "1024", CVAR_LATCH);
 
 	sv_nomonsters = gi.cvar ("nomonsters", "0", CVAR_SERVERINFO|CVAR_LATCH);
 	sv_freezemonsters = gi.cvar ("freezemonsters", "0", 0);

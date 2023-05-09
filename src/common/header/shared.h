@@ -181,15 +181,14 @@ typedef unsigned char byte;
 #define MAX_IMAGES 256
 #define MAX_ITEMS 256
 #define MAX_GENERAL (MAX_CLIENTS * 2)       /* general config strings */
-#define	MAX_NETWORKABLE_EDICTS		MAX_EDICTS
-
-#define G_MAX_ENTITIES				"1024"	// string to go into a convar
 
 /* game print flags */
 #define PRINT_LOW 0                 /* pickup messages */
 #define PRINT_MEDIUM 1              /* death messages */
 #define PRINT_HIGH 2                /* critical messages */
 #define PRINT_CHAT 3                /* chat messages */
+#define	PRINT_CAPTION 4             /* captioning at bottom */
+#define	PRINT_TEAM 5                /* chat message to team members */
 
 #define ERR_FATAL 0                 /* exit the entire game with a popup window */
 #define ERR_DROP 1                  /* print to console and disconnect from game */
@@ -381,6 +380,9 @@ void randk_seed(void);
  *
  * ==============================================================
  */
+
+extern int curtime; /* time returned by last Sys_Milliseconds */
+
 int Sys_Milliseconds(void);
 void Sys_Mkdir(const char *path);
 qboolean Sys_IsDir(const char *path);
@@ -451,6 +453,39 @@ typedef struct cvar_s
  * ==============================================================
  */
 
+/* lower bits are stronger, and will eat weaker brushes completely */
+#define CONTENTS_EMPTY			0x00000000	// nothing
+#define CONTENTS_SOLID			0x00000001	// An eye is never valid in a solid.
+#define CONTENTS_WINDOW			0x00000002	// Translucent, but not watery.
+#define CONTENTS_ILLUSIONARY	0x00000004  // Was CONTENTS_AUX.
+#define CONTENTS_LAVA			0x00000008
+#define CONTENTS_SLIME			0x00000010
+#define CONTENTS_WATER			0x00000020
+#define CONTENTS_MIST			0x00000040
+#define LAST_VISIBLE_CONTENTS	CONTENTS_MIST
+
+/* remaining contents are non-visible, and don't eat brushes */
+#define CONTENTS_AREAPORTAL 0x8000
+
+#define CONTENTS_PLAYERCLIP 0x10000
+#define CONTENTS_MONSTERCLIP 0x20000
+
+/* currents can be added to any other contents, and may be mixed */
+#define CONTENTS_CURRENT_0 0x40000
+#define CONTENTS_CURRENT_90 0x80000
+#define CONTENTS_CURRENT_180 0x100000
+#define CONTENTS_CURRENT_270 0x200000
+#define CONTENTS_CURRENT_UP 0x400000
+#define CONTENTS_CURRENT_DOWN 0x800000
+
+#define CONTENTS_ORIGIN 0x1000000           /* removed before bsping an entity */
+
+#define CONTENTS_MONSTER 0x2000000          /* should never be on a brush, only in game */
+#define CONTENTS_DEADMONSTER 0x4000000
+#define CONTENTS_DETAIL 0x8000000           /* brushes to be added after vis leafs */
+#define CONTENTS_TRANSLUCENT 0x10000000     /* auto set if any surface has trans */
+#define CONTENTS_LADDER 0x20000000
+
 #define SURF_LIGHT 0x1          /* value will hold the light strength */
 
 #define SURF_SLICK 0x2          /* effects game physics */
@@ -461,14 +496,14 @@ typedef struct cvar_s
 #define SURF_TRANS66 0x20
 #define SURF_FLOWING 0x40       /* scroll towards angle */
 #define SURF_NODRAW 0x80        /* don't bother referencing the texture */
-#define SURF_TALL_WALL		0x00000400	// Face doesn't get broken up as normal.
-#define SURF_ALPHA_TEXTURE	0x00000800	// texture has alpha in it, and should show through in bsp process
-#define SURF_ANIMSPEED		0x00001000	// value will hold the anim speed in fps
-#define SURF_UNDULATE		0x00002000	// rock surface up and down...
-#define SURF_QUAKE			0x00004000	// rock surface up and down when quake value on
+#define SURF_TALL_WALL		0x00000400	/* Face doesn't get broken up as normal. */
+#define SURF_ALPHA_TEXTURE	0x00000800	/* texture has alpha in it, and should show through in bsp process */
+#define SURF_ANIMSPEED		0x00001000	/* value will hold the anim speed in fps */
+#define SURF_UNDULATE		0x00002000	/* rock surface up and down... */
+#define SURF_QUAKE		0x00004000	/* rock surface up and down when quake value on */
 
 /* content masks */
-#define MASK_ALL			0x7fffffff
+#define MASK_ALL (-1)
 #define MASK_SOLID (CONTENTS_SOLID | CONTENTS_WINDOW)
 #define MASK_PLAYERSOLID \
 	(CONTENTS_SOLID | CONTENTS_PLAYERCLIP |	\
@@ -522,362 +557,109 @@ typedef struct cmodel_s
 
 typedef struct csurface_s
 {
-	char name[40];
+	char name[16];
 	int flags; /* SURF_* */
 	int value; /* unused */
 } csurface_t;
 
-extern vec3_t vec3_up;
-
-int BoxOnPlaneSide(vec3_t emins, vec3_t emaxs, struct cplane_s* plane);
-
-//=============================================
-
-#define VectorCopy(a, b) (b[0] = a[0], b[1] = a[1], b[2] = a[2])
-
-typedef vec_t vec2_t[2];
-typedef double vec3d_t[3];
-
-typedef float matrix3_t[3][3];
-typedef float matrix3d_t[3][3];
-
-// jmarshall
-typedef float matrix4_t[4][4];
-// jmarshall end
-
-typedef struct paletteRGBA_s
+typedef struct mapsurface_s  /* used internally due to name len probs */
 {
-	union
-	{
-		struct
-		{
-			byte r, g, b, a;
-		};
-		unsigned c;
-		byte c_array[4];
-	};
-} paletteRGBA_t;
+	csurface_t c;
+	char rname[32];
+} mapsurface_t;
 
-#define PLAYER_DLL
-
-#define	MAX_STRING_TOKENS	80		// max tokens resulting from Cmd_TokenizeString
-
-#define	MAX_QPATH			64		// max length of a quake game pathname
-
-// game print flags
-#define	PRINT_LOW			0		// pickup messages
-#define	PRINT_MEDIUM		1		// death messages
-#define	PRINT_HIGH			2		// critical messages
-#define	PRINT_CHAT			3		// chat messages
-#define	PRINT_CAPTION		4		// captioning at bottom
-#define	PRINT_TEAM			5		// chat message to team members
-
-#define	ERR_FATAL			0		// exit the entire game with a popup window
-#define	ERR_DROP			1		// print to console and disconnect from game
-#define	ERR_DISCONNECT		2		// don't kill server
-
-#define	PRINT_ALL			0
-#define PRINT_DEVELOPER		1		// only print when "developer 1"
-#define PRINT_ALERT			2
-
-#ifndef M_PI
-#define M_PI				3.14159265358979323846	// matches value in gcc v2 math.h
-#endif
-#define SQRT2				1.414213562
-#define TIME_EPSILON		0.01
-
-#define VectorCopy_Macro(a,b)			(b[0]=a[0],b[1]=a[1],b[2]=a[2])
-#define VectorSubtract_Macro(a,b,c)		(c[0]=a[0]-b[0],c[1]=a[1]-b[1],c[2]=a[2]-b[2])
-
-int Q_log2(int val);
-
-#define MAX_COLORS	33
-
-extern paletteRGBA_t TextPalette[MAX_COLORS];
-
-typedef enum
-{
-	P_BLACK,
-	P_RED,
-	P_GREEN,
-	P_YELLOW,
-	P_BLUE,
-	P_PURPLE,
-	P_CYAN,
-	P_WHITE,
-
-	P_HBLACK,
-	P_HRED,
-	P_HGREEN,
-	P_HYELLOW,
-	P_HBLUE,
-	P_HPURPLE,
-	P_HCYAN,
-	P_HWHITE,
-
-	P_DESIGNER,
-	P_PROGRAMMER,
-	P_OBJ_NORMAL,
-	P_OBJ_BOLD,
-	P_OBIT,
-	P_CAPTION,
-	P_CHAT,
-	P_TEAM,
-
-	P_VERSION,
-	P_FRAGS,
-	P_ALTFRAGS,
-	P_MENUFIELD,
-	P_MSGBOX,
-	P_HEADER,
-	P_CRED_TITLE,
-	P_CRED_CONTENT,
-	P_FRAGNAME
-
-} PalIdx_t;
-
-struct cplane_s;
-/*
-
-cvar_t variables are used to hold scalar or string variables that can be changed or displayed at the console or prog code as well as accessed directly
-in C code.
-
-The user can access cvars from the console in three ways:
-r_draworder			prints the current value
-r_draworder 0		sets the current value to 0
-set r_draworder 0	as above, but creates the cvar if not present
-Cvars are restricted from having the same names as commands to keep this
-interface from being ambiguous.
-*/
-
-extern	cvar_t* cvar_vars;
-
-float ClampCvar(float min, float max, float value);
-cvar_t* Cvar_Get(char* var_name, char* value, int flags);
-// creates the variable if it doesn't exist, or returns the existing one
-// if it exists, the value will not be changed, but flags will be ORed in
-// that allows variables to be unarchived without needing bitflags
-
-cvar_t* Cvar_Set(char* var_name, char* value);
-// will create the variable if it doesn't exist
-
-cvar_t* Cvar_ForceSet(char* var_name, char* value);
-// will set the variable even if NOSET or LATCH
-
-cvar_t* Cvar_FullSet(char* var_name, char* value, int flags);
-
-void	Cvar_SetValue(char* var_name, float value);
-// expands value to a string and calls Cvar_Set
-
-float	Cvar_VariableValue(char* var_name);
-// returns 0 if not defined or non numeric
-
-const char* Cvar_VariableString(const char* var_name);
-// returns an empty string if not defined
-
-char* Cvar_CompleteVariable(char* partial);
-// attempts to match a partial variable name for command line completion
-// returns NULL if nothing fits
-
-char* Cvar_CompleteVariableNext(char* partial, char* last);
-// similar to above, except that it goes to next match if any
-
-void	Cvar_GetLatchedVars(void);
-// any CVAR_LATCHED variables that have been set will now take effect
-
-qboolean Cvar_Command(void);
-// called by Cmd_ExecuteString when Cmd_Argv(0) doesn't match a known
-// command.  Returns true if the command was a variable reference that
-// was handled. (print or change)
-
-void 	Cvar_WriteVariables(char* path);
-// appends lines containing "set variable value" for all variables
-// with the archive flag set to true.
-
-void	Cvar_Init(void);
-
-char* Cvar_Userinfo(void);
-// returns an info string containing all the CVAR_USERINFO cvars
-
-char* Cvar_Serverinfo(void);
-// returns an info string containing all the CVAR_SERVERINFO cvars
-
-extern	qboolean	userinfo_modified;
-// this is set each time a CVAR_USERINFO variable is changed
-// so that the client knows to send it to the server
-
-// Screen flash set
-void Activate_Screen_Flash(int color);
-
-// Screen flash unset
-void Deactivate_Screen_Flash(void);
-
-// return screen flash value
-int Is_Screen_Flashing(void);
-
-// set up a screen shaking
-void Activate_Screen_Shake(float intensity, float duration, float current_time, int flags);
-// reset screen shakings
-void Reset_Screen_Shake(void);
-
-qboolean Get_Crosshair(vec3_t origin, byte* type);
-
-// called by the camera code to determine our camera offset
-void Perform_Screen_Shake(vec3_t, float current_time);
-
-/**************************************************************
- * palette info
- **************************************************************/
-
-typedef struct paletteRGB_s
-{
-	struct
-	{
-		byte r, g, b;
-	};
-} paletteRGB_t;
-
-/**************************************************************
- * additional info for flex models with mesh nodes
- **************************************************************/
-
-#define MAX_FM_MESH_NODES	16		// also defined in ref_gl/fmodel.h
-
+/* a trace is returned when a box is swept through the world */
 typedef struct
 {
-	int				frame;
-	paletteRGBA_t	color;
-	byte			flags;
-	int				skin;
-} fmnodeinfo_t;
+	byte allsolid;      /* if true, plane is not valid */
+	byte startsolid;    /* if true, the initial point was in a solid area */
+	float fraction;         /* time completed, 1.0 = didn't hit anything */
+	vec3_t endpos;          /* final position */
+	cplane_t plane;         /* surface normal at impact */
+	csurface_t *surface;    /* surface hit */
+	int contents;           /* contents on other side of surface hit */
+	struct edict_s *ent;    /* not set by CM_*() functions */
 
-// flags
-
-#define FMNI_USE_FRAME		(1<<0)
-#define FMNI_USE_COLOR		(1<<1)
-#define FMNI_USE_SKIN		(1<<2)
-#define FMNI_NO_LERP		(1<<3)
-#define FMNI_NO_DRAW		(1<<4)
-#define FMNI_USE_REFLECT	(1<<5)
-
-// ************************************************************************************************
-// trace_t
-// -------
-// A trace is returned when a box is swept through the world.
-// ************************************************************************************************
-
-typedef struct trace_s
-{
-	byte		allsolid;		// if true, plane is not valid
-	byte		startsolid;		// if true, the initial point was in a solid area
-	byte		succeeded;		// not always set, just in special cases, subjective
-	byte		architecture;	// set if the moved collided with world (not entities)
-	// needed because the player move code doesn`t know anything
-	// about the location or nature of edicts
-	float		fraction;		// time completed, 1.0 = didn't hit anything
-	vec3_t		endpos;			// final position
-	cplane_t	plane;			// surface normal at impact
-	csurface_t* surface;		// surface hit
-	int			contents;		// contents on other side of surface hit
-	struct edict_s* ent;		// not set by CM_*() functions
-
+	byte succeeded;         /* not always set, just in special cases, subjective */
+	byte architecture;      /* set if the moved collided with world (not entities) */
 	// N&C: Custom added.
-	vec3_t		offsets[8];	// [signbits][x] = either size[0][x] or size[1][x]
+	vec3_t offsets[8];	/* [signbits][x] = either size[0][x] or size[1][x] */
 } trace_t;
 
 /* pmove_state_t is the information necessary for client side movement */
 /* prediction */
 typedef enum
 {
-	PM_NORMAL,				// Can accelerate and turn, clips.
-	PM_SPECTATOR,			// Can accelerate and turn, no clip.
-	PM_DEAD,				// No acceleration or turning, dead.
-	PM_GIB,					// No acceleration or turning, dead, different bounding box.
-	PM_FREEZE,				// Running a server demo.
-	PM_INTERMISSION,		// An existing remote camera view is already underway.
+	/* can accelerate and turn */
+	PM_NORMAL,
+	PM_SPECTATOR,
+	/* no acceleration or turning */
+	PM_DEAD,
+	PM_GIB, /* different bounding box */
+	PM_FREEZE, /* running a server demo */
+	PM_INTERMISSION, /* An existing remote camera view is already underway. */
 } pmtype_t;
 
-// ************************************************************************************************
-// PMF_XXX
-// -------
-// These are pmove->pm_flags.
-// ************************************************************************************************
+/* pmove->pm_flags */
+#define PMF_DUCKED 1
+#define PMF_JUMP_HELD 2
+#define PMF_STANDSTILL 1
+#define PMF_ON_GROUND 4
+#define PMF_TIME_WATERJUMP 8    /* pm_time is waterjump */
+#define PMF_TIME_LAND 8         /* pm_time is time before rejump */
+#define PMF_TIME_TELEPORT 16    /* pm_time is non-moving time */
+#define PMF_NO_PREDICTION 32    /* temporarily disables prediction (used for grappling hook) */
+#define PMF_LOCKMOVE 64
+#define PMF_LOCKTURN 128
 
-#define	PMF_STANDSTILL		0x0001
-#define	PMF_ON_GROUND		0x0004
-#define	PMF_TIME_LAND		0x0008	// pm_time is time before rejump
-#define	PMF_TIME_TELEPORT	0x0010	// pm_time is non-moving time
-#define PMF_NO_PREDICTION	0x0020	// temporarily disables prediction (used for grappling hook)
-#define PMF_LOCKMOVE		0x0040
-#define PMF_LOCKTURN		0x0080
-
-#define PC_COLLISION		0x0001	// collided on a move
-#define PC_SLIDING			0x0002	// sliding down a steep slope
-
-#define	WF_SURFACE			0x0001	// On the surface
-#define	WF_DIVE				0x0002	// Dive on next animation
-#define	WF_DIVING			0x0004	// Currently diving
-#define	WF_SWIMFREE			0x0008	// Currently swimming freely underwater
-#define	WF_SINK				0x0010	// Sink below the surface of the water
-
-// ************************************************************************************************
-// pmove_state_t
-// -------------
-// This structure contains the information necessary for client side movement prediction. It MUST
-// be communicated bit-accurate from the server to the client to guarantee that prediction stays in
-// sync., so no floats are used. If any part of the game code modifies this struct, it will result
-// in a prediction error of some degree.
-// ************************************************************************************************
-
+/* this structure needs to be communicated bit-accurate/
+ * from the server to the client to guarantee that
+ * prediction stays in sync, so no floats are used.
+ * if any part of the game code modifies this struct, it
+ * will result in a prediction error of some degree. */
 typedef struct
 {
 	pmtype_t pm_type;
 
 	short origin[3];            /* 12.3 */
 	short velocity[3];          /* 12.3 */
-	byte		pm_flags;		// ducked, jump_held, etc
-	byte		w_flags;		// water state
-	byte		c_flags;		// collision
-	byte		pm_time;		// each unit = 8 ms
-	short		gravity;
-	short		delta_angles[3];// Added to command angles to get view direction. Changed by spawns,
-	// rotating objects and teleporters.
-	short		camera_delta_angles[3];// Added to command angles to get view direction. Changed by spawns,
-	// rotating objects and teleporters.
+	byte pm_flags;              /* ducked, jump_held, etc */
+	byte pm_time;               /* each unit = 8 ms */
+	short gravity;
+	short delta_angles[3];      /* add to command angles to get view direction
+								 * changed by spawns, rotating objects, and teleporters */
+	short camera_delta_angles[3]; /* add to command angles to get view direction
+								 * changed by spawns, rotating objects, and teleporters */
+	byte w_flags;              /* water state */
+	byte c_flags;              /* collision */
 } pmove_state_t;
 
-// ************************************************************************************************
-// BUTTON_XXX
-// ----------
-// ************************************************************************************************
+/* button bits */
+#define BUTTON_ATTACK 1
+#define BUTTON_USE 2
+#define BUTTON_DEFEND 2
+#define BUTTON_ACTION 4
+#define BUTTON_CREEP 8
+#define BUTTON_RUN 16
+#define BUTTON_AUTOAIM 32
+#define BUTTON_LOOKAROUND 64
+#define BUTTON_QUICKTURN 128
+#define BUTTON_INVENTORY 256
+#define BUTTON_ANY 512 /* any key whatsoever */
 
-#define	BUTTON_ATTACK		1
-#define	BUTTON_DEFEND		2
-#define	BUTTON_ACTION		4
-#define BUTTON_CREEP		8
-#define BUTTON_RUN			16
-#define BUTTON_AUTOAIM		32
-#define BUTTON_LOOKAROUND	64
-#define BUTTON_QUICKTURN	128
-#define BUTTON_INVENTORY	256
-#define	BUTTON_ANY			512	// Any key whatsoever.
-
-// ************************************************************************************************
-// usercmd_t
-// ---------
-// Sent to the server each client frame.
-// ************************************************************************************************
-
+/* usercmd_t is sent to the server each client frame */
 typedef struct usercmd_s
 {
-	byte	msec;
-	short	buttons;
-	short	angles[3],
-		aimangles[3],
-		camera_vieworigin[3], camera_viewangles[3],
-		forwardmove, sidemove, upmove;
-	byte	prediction;
-	byte	lightlevel;	// Light level the player is standing on.
+	byte msec;
+	short buttons;
+	short angles[3];
+	short forwardmove, sidemove, upmove;
+	byte impulse;           /* remove? */
+	byte lightlevel;        /* light level the player is standing on */
+	byte prediction;
+	short aimangles[3];
+	short camera_vieworigin[3];
+	short camera_viewangles[3];
 } usercmd_t;
 
 #define MAXTOUCH 32
@@ -886,58 +668,112 @@ typedef struct
 	/* state (in / out) */
 	pmove_state_t s;
 
-	// Command (in).
+	/* command (in) */
+	usercmd_t cmd;
+	qboolean snapinitial;           /* if s has been changed outside pmove */
+	qboolean run_shrine;
+	qboolean high_max;
 
-	usercmd_t		cmd;
-	qboolean		snapinitial;		// If s has been changed outside pmove.
-	qboolean		run_shrine;
-	qboolean		high_max;
+	/* In and outn */
+	float waterheight;
+	float desiredWaterHeight;
 
-	// In and out.
+	/* results (out) */
+	int numtouch;
+	struct edict_s *touchents[MAXTOUCH];
 
-	float			waterheight;
-	float			desiredWaterHeight;
+	vec3_t viewangles;              /* clamped */
+	float viewheight;
 
-	// Results (out).
+	vec3_t mins, maxs;              /* bounding box size */
 
-	int				numtouch;
-	struct edict_s* touchents[MAXTOUCH];
+	struct edict_s *groundentity;
+	int watertype;
+	int waterlevel;
 
-	float			viewheight;
-	vec3_t			viewangles;			// Clamped.
-	vec3_t			camera_viewangles;	// Camera angles from client.
+	vec3_t	camera_viewangles;	/* camera angles from client */
+	float *origin;
+	float *velocity;
+	float *intentMins;
+	float *intentMaxs;
 
-	float* origin, * velocity;
-	vec3_t			mins, maxs;			// Bounding-box size.
-	float* intentMins, * intentMaxs;
-
-	struct edict_s* groundentity;
-	csurface_t* GroundSurface;
-	cplane_t		GroundPlane;
-	int				GroundContents;
-
-	int				watertype;
-	int				waterlevel;
-	float			knockbackfactor;
-
-	// Callbacks to test the world.
-
-	void			(*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, trace_t* trace);
-	int				(*pointcontents) (vec3_t point);
-
+	csurface_t *GroundSurface;
+	cplane_t    GroundPlane;
+	int *GroundContents;
+	float knockbackfactor;
 	struct edict_s* self;
+
+	/* callbacks to test the world */
+	void (*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, trace_t* trace);
+	int (*pointcontents)(vec3_t point);
 } pmove_t;
 
-// entity_state_t->renderfx flags
-#define	RF_MINLIGHT			0x00000001		// allways have some light (viewmodel)
-#define	RF_REFLECTION		0x00000002		// Use GL spherical mapping, if available
-#define	RF_WEAPONMODEL		0x00000004		// only draw through eyes
-#define	RF_FULLBRIGHT		0x00000008		// allways draw full intensity
-#define	RF_DEPTHHACK		0x00000010		// for view weapon Z crunching
-#define	RF_TRANSLUCENT		0x00000020
-#define	RF_FRAMELERP		0x00000040
-#define	RF_CUSTOMSKIN		0x00000080		// skin is an index in image_precache
-#define	RF_GLOW				0x00000100		// pulse lighting for bonus items
+/* entity_state_t->effects
+ * Effects are things handled on the client side (lights, particles,
+ * frame animations)  that happen constantly on the given entity.
+ * An entity that has effects will be sent to the client even if
+ * it has a zero index model. */
+#define	EF_ROTATE					0x00000001	// Rotate the entity's model (used for bonus items).
+#define EF_CL_PHYS_ALWAYS_BOUNCE	0x00000002
+#define EF_JOINTED					0x00000004
+#define EF_SWAPFRAME				0x00000008
+#define EF_DISABLE_ALL_CFX			0x00000010	// All effects linked to this entity will longer be
+												// rendered, but will continue to think.
+
+#define EF_PLAYER					0x00000020	// Safe flag, never changes.  Is a player/client.
+
+#define	EF_NODRAW_ALWAYS_SEND		0x00000040	// Prevents invisible (i.e. modelindex=0) entities
+												// from being culled by the server when it builds
+												// frames to
+												// send to the client.
+#define EF_MARCUS_FLAG1				0x00000080	// Used for toggling various client effects.
+#define EF_CAMERA_NO_CLIP			0x00000100	// Client-side camera's LOS won't clip against any
+												// entities that have this flag set.
+#define EF_CAMERA_ONLY				0x00000200	// Client-side camera LOS traces will clip against any
+												// entities that have this flag set, but other traces won't.
+#define EF_ALTCLIENTFX				0x00000400	// A message flag to send to the client effects, for
+												// user's purpose.
+#define EF_ALWAYS_ADD_EFFECTS		0x00000800	// Any effects attached to the entity will always be
+												// added to the view
+												// This overrides EF_DISABLE_*_CFX
+#define EF_ON_FIRE					0x00001000	// Tells that the entity is on fire
+#define EF_TRAILS_ENABLED			0x00002000	// The hand/staff trails enabled.  If removed, the trails remove themselves.
+#define EF_BLOOD_ENABLED			0x00004000	// Bloody trails on the weapon.
+#define EF_DISABLE_EXTRA_FX			0x00008000	// Remove effects that are not owned by an entity
+												// with this flag, but need this info. This should be
+												// set when something dies and needs the effects to
+												// reflect this.
+#define EF_MACE_ROTATE				0x00010000  // make the mace ball model rotate around its axes - save network traffic
+#define EF_CLIENT_DEAD				0x00020000  // this client on the server is dead. Easiest way to get this flag to CFX.
+#define EF_POWERUP_ENABLED			0x00040000	// Tells the client effects that corvus powerup is enabled
+#define EF_SPEED_ACTIVE				0x00080000	// Tells the client effects that corvus speedup is enabled
+#define EF_HIGH_MAX					0x00100000	// Tells the client effects that corvus speedup is enabled
+#define EF_LIGHT_ENABLED			0x00200000  // Tells the client effects that corvus' personal
+												// torch is activated.
+#define EF_CHICKEN					0x00400000	// The flag that tells the system that the player is
+												// a chicken, and not corvus.
+#define EF_ANIM_ALL					0x00800000	// Automatically cycle through all frames at 2hz
+#define EF_ANIM_ALLFAST				0x01000000	// Automatically cycle through all frames at 10hz
+
+/* entity_state_t->renderfx flags */
+#define RF_MINLIGHT			0x00000001		// allways have some light (viewmodel)
+#define RF_REFLECTION		0x00000002		// Use GL spherical mapping, if available
+#define RF_WEAPONMODEL		0x00000004		// only draw through eyes
+#define RF_FULLBRIGHT		0x00000008		// allways draw full intensity
+#define RF_DEPTHHACK		0x00000010		// for view weapon Z crunching
+#define RF_TRANSLUCENT		0x00000020
+#define RF_FRAMELERP		0x00000040
+#define RF_BEAM 128
+#define RF_CUSTOMSKIN		0x00000080		// skin is an index in image_precache
+#define RF_GLOW				0x00000100		// pulse lighting for bonus items
+#define RF_SHELL_RED 1024
+#define RF_SHELL_GREEN 2048
+#define RF_SHELL_BLUE 4096
+#define RF_NOSHADOW 8192        /* don't draw a shadow */
+#define RF_IR_VISIBLE 0x00008000            /* 32768 */
+#define RF_SHELL_DOUBLE 0x00010000          /* 65536 */
+#define RF_SHELL_HALF_DAM 0x00020000
+#define RF_USE_DISGUISE 0x00040000
 #define RF_SCALE_XYZ		0x00000200
 #define RF_SCALE_XY			0x00000400
 #define RF_SCALE_Z			0x00000800
@@ -955,60 +791,407 @@ typedef struct
 #define RF_NODRAW			0x00200000
 #define	RF_CULL_LARGE		0x00400000		// If set on a poly that is really close to the near clip plane and occupies
 											// a signifiant amount of screen real-estate, the poly will be culled. Used
-											// for particles in software.
-
+											// for particles in software
 #define RF_TRANS_ANY		(RF_TRANS_ADD | RF_TRANS_GHOST | RF_TRANSLUCENT)
 
-// player_state_t->refdef flags
-#define	RDF_UNDERWATER		0x00000001		// warp the screen as apropriate
-#define RDF_NOWORLDMODEL	0x00000002		// used for player configuration screen
+/* player_state_t->refdef flags */
+#define RDF_UNDERWATER 1            /* warp the screen as apropriate */
+#define RDF_NOWORLDMODEL 2          /* used for player configuration screen */
+#define RDF_IRGOGGLES 4
+#define RDF_UVGOGGLES 8
 
-// sound channels
-// channel 0 never willingly overrides
-// other channels (1-7) allways override a playing sound on that channel
-#define	CHAN_AUTO               0
-#define	CHAN_WEAPON             1
-#define	CHAN_VOICE              2
-#define	CHAN_ITEM               3
-#define	CHAN_BODY               4
+/* muzzle flashes / player effects */
+#define MZ_BLASTER 0
+#define MZ_MACHINEGUN 1
+#define MZ_SHOTGUN 2
+#define MZ_CHAINGUN1 3
+#define MZ_CHAINGUN2 4
+#define MZ_CHAINGUN3 5
+#define MZ_RAILGUN 6
+#define MZ_ROCKET 7
+#define MZ_GRENADE 8
+#define MZ_LOGIN 9
+#define MZ_LOGOUT 10
+#define MZ_RESPAWN 11
+#define MZ_BFG 12
+#define MZ_SSHOTGUN 13
+#define MZ_HYPERBLASTER 14
+#define MZ_ITEMRESPAWN 15
+#define MZ_IONRIPPER 16
+#define MZ_BLUEHYPERBLASTER 17
+#define MZ_PHALANX 18
+#define MZ_SILENCED 128             /* bit flag ORed with one of the above numbers */
+#define MZ_ETF_RIFLE 30
+#define MZ_UNUSED 31
+#define MZ_SHOTGUN2 32
+#define MZ_HEATBEAM 33
+#define MZ_BLASTER2 34
+#define MZ_TRACKER 35
+#define MZ_NUKE1 36
+#define MZ_NUKE2 37
+#define MZ_NUKE4 38
+#define MZ_NUKE8 39
+
+/* monster muzzle flashes */
+#define MZ2_TANK_BLASTER_1 1
+#define MZ2_TANK_BLASTER_2 2
+#define MZ2_TANK_BLASTER_3 3
+#define MZ2_TANK_MACHINEGUN_1 4
+#define MZ2_TANK_MACHINEGUN_2 5
+#define MZ2_TANK_MACHINEGUN_3 6
+#define MZ2_TANK_MACHINEGUN_4 7
+#define MZ2_TANK_MACHINEGUN_5 8
+#define MZ2_TANK_MACHINEGUN_6 9
+#define MZ2_TANK_MACHINEGUN_7 10
+#define MZ2_TANK_MACHINEGUN_8 11
+#define MZ2_TANK_MACHINEGUN_9 12
+#define MZ2_TANK_MACHINEGUN_10 13
+#define MZ2_TANK_MACHINEGUN_11 14
+#define MZ2_TANK_MACHINEGUN_12 15
+#define MZ2_TANK_MACHINEGUN_13 16
+#define MZ2_TANK_MACHINEGUN_14 17
+#define MZ2_TANK_MACHINEGUN_15 18
+#define MZ2_TANK_MACHINEGUN_16 19
+#define MZ2_TANK_MACHINEGUN_17 20
+#define MZ2_TANK_MACHINEGUN_18 21
+#define MZ2_TANK_MACHINEGUN_19 22
+#define MZ2_TANK_ROCKET_1 23
+#define MZ2_TANK_ROCKET_2 24
+#define MZ2_TANK_ROCKET_3 25
+
+#define MZ2_INFANTRY_MACHINEGUN_1 26
+#define MZ2_INFANTRY_MACHINEGUN_2 27
+#define MZ2_INFANTRY_MACHINEGUN_3 28
+#define MZ2_INFANTRY_MACHINEGUN_4 29
+#define MZ2_INFANTRY_MACHINEGUN_5 30
+#define MZ2_INFANTRY_MACHINEGUN_6 31
+#define MZ2_INFANTRY_MACHINEGUN_7 32
+#define MZ2_INFANTRY_MACHINEGUN_8 33
+#define MZ2_INFANTRY_MACHINEGUN_9 34
+#define MZ2_INFANTRY_MACHINEGUN_10 35
+#define MZ2_INFANTRY_MACHINEGUN_11 36
+#define MZ2_INFANTRY_MACHINEGUN_12 37
+#define MZ2_INFANTRY_MACHINEGUN_13 38
+
+#define MZ2_SOLDIER_BLASTER_1 39
+#define MZ2_SOLDIER_BLASTER_2 40
+#define MZ2_SOLDIER_SHOTGUN_1 41
+#define MZ2_SOLDIER_SHOTGUN_2 42
+#define MZ2_SOLDIER_MACHINEGUN_1 43
+#define MZ2_SOLDIER_MACHINEGUN_2 44
+
+#define MZ2_GUNNER_MACHINEGUN_1 45
+#define MZ2_GUNNER_MACHINEGUN_2 46
+#define MZ2_GUNNER_MACHINEGUN_3 47
+#define MZ2_GUNNER_MACHINEGUN_4 48
+#define MZ2_GUNNER_MACHINEGUN_5 49
+#define MZ2_GUNNER_MACHINEGUN_6 50
+#define MZ2_GUNNER_MACHINEGUN_7 51
+#define MZ2_GUNNER_MACHINEGUN_8 52
+#define MZ2_GUNNER_GRENADE_1 53
+#define MZ2_GUNNER_GRENADE_2 54
+#define MZ2_GUNNER_GRENADE_3 55
+#define MZ2_GUNNER_GRENADE_4 56
+
+#define MZ2_CHICK_ROCKET_1 57
+
+#define MZ2_FLYER_BLASTER_1 58
+#define MZ2_FLYER_BLASTER_2 59
+
+#define MZ2_MEDIC_BLASTER_1 60
+
+#define MZ2_GLADIATOR_RAILGUN_1 61
+
+#define MZ2_HOVER_BLASTER_1 62
+
+#define MZ2_ACTOR_MACHINEGUN_1 63
+
+#define MZ2_SUPERTANK_MACHINEGUN_1 64
+#define MZ2_SUPERTANK_MACHINEGUN_2 65
+#define MZ2_SUPERTANK_MACHINEGUN_3 66
+#define MZ2_SUPERTANK_MACHINEGUN_4 67
+#define MZ2_SUPERTANK_MACHINEGUN_5 68
+#define MZ2_SUPERTANK_MACHINEGUN_6 69
+#define MZ2_SUPERTANK_ROCKET_1 70
+#define MZ2_SUPERTANK_ROCKET_2 71
+#define MZ2_SUPERTANK_ROCKET_3 72
+
+#define MZ2_BOSS2_MACHINEGUN_L1 73
+#define MZ2_BOSS2_MACHINEGUN_L2 74
+#define MZ2_BOSS2_MACHINEGUN_L3 75
+#define MZ2_BOSS2_MACHINEGUN_L4 76
+#define MZ2_BOSS2_MACHINEGUN_L5 77
+#define MZ2_BOSS2_ROCKET_1 78
+#define MZ2_BOSS2_ROCKET_2 79
+#define MZ2_BOSS2_ROCKET_3 80
+#define MZ2_BOSS2_ROCKET_4 81
+
+#define MZ2_FLOAT_BLASTER_1 82
+
+#define MZ2_SOLDIER_BLASTER_3 83
+#define MZ2_SOLDIER_SHOTGUN_3 84
+#define MZ2_SOLDIER_MACHINEGUN_3 85
+#define MZ2_SOLDIER_BLASTER_4 86
+#define MZ2_SOLDIER_SHOTGUN_4 87
+#define MZ2_SOLDIER_MACHINEGUN_4 88
+#define MZ2_SOLDIER_BLASTER_5 89
+#define MZ2_SOLDIER_SHOTGUN_5 90
+#define MZ2_SOLDIER_MACHINEGUN_5 91
+#define MZ2_SOLDIER_BLASTER_6 92
+#define MZ2_SOLDIER_SHOTGUN_6 93
+#define MZ2_SOLDIER_MACHINEGUN_6 94
+#define MZ2_SOLDIER_BLASTER_7 95
+#define MZ2_SOLDIER_SHOTGUN_7 96
+#define MZ2_SOLDIER_MACHINEGUN_7 97
+#define MZ2_SOLDIER_BLASTER_8 98
+#define MZ2_SOLDIER_SHOTGUN_8 99
+#define MZ2_SOLDIER_MACHINEGUN_8 100
+
+#define MZ2_MAKRON_BFG 101
+#define MZ2_MAKRON_BLASTER_1 102
+#define MZ2_MAKRON_BLASTER_2 103
+#define MZ2_MAKRON_BLASTER_3 104
+#define MZ2_MAKRON_BLASTER_4 105
+#define MZ2_MAKRON_BLASTER_5 106
+#define MZ2_MAKRON_BLASTER_6 107
+#define MZ2_MAKRON_BLASTER_7 108
+#define MZ2_MAKRON_BLASTER_8 109
+#define MZ2_MAKRON_BLASTER_9 110
+#define MZ2_MAKRON_BLASTER_10 111
+#define MZ2_MAKRON_BLASTER_11 112
+#define MZ2_MAKRON_BLASTER_12 113
+#define MZ2_MAKRON_BLASTER_13 114
+#define MZ2_MAKRON_BLASTER_14 115
+#define MZ2_MAKRON_BLASTER_15 116
+#define MZ2_MAKRON_BLASTER_16 117
+#define MZ2_MAKRON_BLASTER_17 118
+#define MZ2_MAKRON_RAILGUN_1 119
+#define MZ2_JORG_MACHINEGUN_L1 120
+#define MZ2_JORG_MACHINEGUN_L2 121
+#define MZ2_JORG_MACHINEGUN_L3 122
+#define MZ2_JORG_MACHINEGUN_L4 123
+#define MZ2_JORG_MACHINEGUN_L5 124
+#define MZ2_JORG_MACHINEGUN_L6 125
+#define MZ2_JORG_MACHINEGUN_R1 126
+#define MZ2_JORG_MACHINEGUN_R2 127
+#define MZ2_JORG_MACHINEGUN_R3 128
+#define MZ2_JORG_MACHINEGUN_R4 129
+#define MZ2_JORG_MACHINEGUN_R5 130
+#define MZ2_JORG_MACHINEGUN_R6 131
+#define MZ2_JORG_BFG_1 132
+#define MZ2_BOSS2_MACHINEGUN_R1 133
+#define MZ2_BOSS2_MACHINEGUN_R2 134
+#define MZ2_BOSS2_MACHINEGUN_R3 135
+#define MZ2_BOSS2_MACHINEGUN_R4 136
+#define MZ2_BOSS2_MACHINEGUN_R5 137
+
+#define MZ2_CARRIER_MACHINEGUN_L1 138
+#define MZ2_CARRIER_MACHINEGUN_R1 139
+#define MZ2_CARRIER_GRENADE 140
+#define MZ2_TURRET_MACHINEGUN 141
+#define MZ2_TURRET_ROCKET 142
+#define MZ2_TURRET_BLASTER 143
+#define MZ2_STALKER_BLASTER 144
+#define MZ2_DAEDALUS_BLASTER 145
+#define MZ2_MEDIC_BLASTER_2 146
+#define MZ2_CARRIER_RAILGUN 147
+#define MZ2_WIDOW_DISRUPTOR 148
+#define MZ2_WIDOW_BLASTER 149
+#define MZ2_WIDOW_RAIL 150
+#define MZ2_WIDOW_PLASMABEAM 151
+#define MZ2_CARRIER_MACHINEGUN_L2 152
+#define MZ2_CARRIER_MACHINEGUN_R2 153
+#define MZ2_WIDOW_RAIL_LEFT 154
+#define MZ2_WIDOW_RAIL_RIGHT 155
+#define MZ2_WIDOW_BLASTER_SWEEP1 156
+#define MZ2_WIDOW_BLASTER_SWEEP2 157
+#define MZ2_WIDOW_BLASTER_SWEEP3 158
+#define MZ2_WIDOW_BLASTER_SWEEP4 159
+#define MZ2_WIDOW_BLASTER_SWEEP5 160
+#define MZ2_WIDOW_BLASTER_SWEEP6 161
+#define MZ2_WIDOW_BLASTER_SWEEP7 162
+#define MZ2_WIDOW_BLASTER_SWEEP8 163
+#define MZ2_WIDOW_BLASTER_SWEEP9 164
+#define MZ2_WIDOW_BLASTER_100 165
+#define MZ2_WIDOW_BLASTER_90 166
+#define MZ2_WIDOW_BLASTER_80 167
+#define MZ2_WIDOW_BLASTER_70 168
+#define MZ2_WIDOW_BLASTER_60 169
+#define MZ2_WIDOW_BLASTER_50 170
+#define MZ2_WIDOW_BLASTER_40 171
+#define MZ2_WIDOW_BLASTER_30 172
+#define MZ2_WIDOW_BLASTER_20 173
+#define MZ2_WIDOW_BLASTER_10 174
+#define MZ2_WIDOW_BLASTER_0 175
+#define MZ2_WIDOW_BLASTER_10L 176
+#define MZ2_WIDOW_BLASTER_20L 177
+#define MZ2_WIDOW_BLASTER_30L 178
+#define MZ2_WIDOW_BLASTER_40L 179
+#define MZ2_WIDOW_BLASTER_50L 180
+#define MZ2_WIDOW_BLASTER_60L 181
+#define MZ2_WIDOW_BLASTER_70L 182
+#define MZ2_WIDOW_RUN_1 183
+#define MZ2_WIDOW_RUN_2 184
+#define MZ2_WIDOW_RUN_3 185
+#define MZ2_WIDOW_RUN_4 186
+#define MZ2_WIDOW_RUN_5 187
+#define MZ2_WIDOW_RUN_6 188
+#define MZ2_WIDOW_RUN_7 189
+#define MZ2_WIDOW_RUN_8 190
+#define MZ2_CARRIER_ROCKET_1 191
+#define MZ2_CARRIER_ROCKET_2 192
+#define MZ2_CARRIER_ROCKET_3 193
+#define MZ2_CARRIER_ROCKET_4 194
+#define MZ2_WIDOW2_BEAMER_1 195
+#define MZ2_WIDOW2_BEAMER_2 196
+#define MZ2_WIDOW2_BEAMER_3 197
+#define MZ2_WIDOW2_BEAMER_4 198
+#define MZ2_WIDOW2_BEAMER_5 199
+#define MZ2_WIDOW2_BEAM_SWEEP_1 200
+#define MZ2_WIDOW2_BEAM_SWEEP_2 201
+#define MZ2_WIDOW2_BEAM_SWEEP_3 202
+#define MZ2_WIDOW2_BEAM_SWEEP_4 203
+#define MZ2_WIDOW2_BEAM_SWEEP_5 204
+#define MZ2_WIDOW2_BEAM_SWEEP_6 205
+#define MZ2_WIDOW2_BEAM_SWEEP_7 206
+#define MZ2_WIDOW2_BEAM_SWEEP_8 207
+#define MZ2_WIDOW2_BEAM_SWEEP_9 208
+#define MZ2_WIDOW2_BEAM_SWEEP_10 209
+#define MZ2_WIDOW2_BEAM_SWEEP_11 210
+
+extern vec3_t monster_flash_offset[];
+
+/* Temp entity events are for things that happen
+ * at a location seperate from any existing entity.
+ * Temporary entity messages are explicitly constructed
+ * and broadcast. */
+typedef enum
+{
+	TE_GUNSHOT,
+	TE_BLOOD,
+	TE_BLASTER,
+	TE_RAILTRAIL,
+	TE_SHOTGUN,
+	TE_EXPLOSION1,
+	TE_EXPLOSION2,
+	TE_ROCKET_EXPLOSION,
+	TE_GRENADE_EXPLOSION,
+	TE_SPARKS,
+	TE_SPLASH,
+	TE_BUBBLETRAIL,
+	TE_SCREEN_SPARKS,
+	TE_SHIELD_SPARKS,
+	TE_BULLET_SPARKS,
+	TE_LASER_SPARKS,
+	TE_PARASITE_ATTACK,
+	TE_ROCKET_EXPLOSION_WATER,
+	TE_GRENADE_EXPLOSION_WATER,
+	TE_MEDIC_CABLE_ATTACK,
+	TE_BFG_EXPLOSION,
+	TE_BFG_BIGEXPLOSION,
+	TE_BOSSTPORT,           /* used as '22' in a map, so DON'T RENUMBER!!! */
+	TE_BFG_LASER,
+	TE_GRAPPLE_CABLE,
+	TE_WELDING_SPARKS,
+	TE_GREENBLOOD,
+	TE_BLUEHYPERBLASTER,
+	TE_PLASMA_EXPLOSION,
+	TE_TUNNEL_SPARKS,
+	TE_BLASTER2,
+	TE_RAILTRAIL2,
+	TE_FLAME,
+	TE_LIGHTNING,
+	TE_DEBUGTRAIL,
+	TE_PLAIN_EXPLOSION,
+	TE_FLASHLIGHT,
+	TE_FORCEWALL,
+	TE_HEATBEAM,
+	TE_MONSTER_HEATBEAM,
+	TE_STEAM,
+	TE_BUBBLETRAIL2,
+	TE_MOREBLOOD,
+	TE_HEATBEAM_SPARKS,
+	TE_HEATBEAM_STEAM,
+	TE_CHAINFIST_SMOKE,
+	TE_ELECTRIC_SPARKS,
+	TE_TRACKER_EXPLOSION,
+	TE_TELEPORT_EFFECT,
+	TE_DBALL_GOAL,
+	TE_WIDOWBEAMOUT,
+	TE_NUKEBLAST,
+	TE_WIDOWSPLASH,
+	TE_EXPLOSION1_BIG,
+	TE_EXPLOSION1_NP,
+	TE_FLECHETTE
+} temp_event_t;
+
+enum
+{
+	SPLASH_UNKNOWN = 0,
+	SPLASH_SPARKS,
+	SPLASH_BLUE_WATER,
+	SPLASH_BROWN_WATER,
+	SPLASH_SLIME,
+	SPLASH_LAVA,
+	SPLASH_BLOOD,
+	NUM_SPLASHES
+};
+
+/* sound channels:
+ * channel 0 never willingly overrides
+ * other channels (1-7) allways override
+ * a playing sound on that channel */
+#define CHAN_AUTO 0
+#define CHAN_WEAPON 1
+#define CHAN_VOICE 2
+#define CHAN_ITEM 3
+#define CHAN_BODY 4
 #define CHAN_FOOTSTEP			5
 #define CHAN_FOOTSTEP2			6
 #define CHAN_WEAPON2			7
-// modifier flags
-#define	CHAN_NO_PHS_ADD			8	// send to all clients, not just ones in PHS (ATTN 0 will also do this)
-#define	CHAN_RELIABLE			16	// send by reliable message, not datagram
+/* modifier flags */
+#define CHAN_NO_PHS_ADD 8           /* send to all clients, not just ones in PHS (ATTN 0 will also do this) */
+#define CHAN_RELIABLE 16            /* send by reliable message, not datagram */
 
-// sound attenuation values
-#define	ATTN_NONE               0	// full volume the entire level
-#define	ATTN_NORM               1
-#define	ATTN_IDLE               2
-#define	ATTN_STATIC             3	// diminish very rapidly with distance
-#define ATTN_VERYSTATIC			4
-#define ATTN_LEFT				256
-#define ATTN_RIGHT				512
+/* sound attenuation values */
+#define ATTN_NONE 0                 /* full volume the entire level */
+#define ATTN_NORM 1
+#define ATTN_IDLE 2
+#define ATTN_STATIC 3               /* diminish very rapidly with distance */
+#define ATTN_VERYSTATIC 4
+#define ATTN_LEFT 256
+#define ATTN_RIGHT 512
 
-// player_state->stats[] indexes
-
-// * - MUST BE SEQUENTIAL !!!!!!!!
-
-#define STAT_HEALTH_ICON		0		// Icon for health
-#define	STAT_HEALTH				1		// Health value
-#define	STAT_AMMO_ICON			2		// Icon for ammo
-#define	STAT_AMMO				3		// Amount of ammo
-#define	STAT_WEAPON_ICON 		4		// Current offensive weapon
-#define	STAT_WEAPON		 		5
-#define STAT_DEFENCE_ICON	  	6		// Current defensive weapon
+/* player_state->stats[] indexes */
+#define STAT_HEALTH_ICON 0
+#define STAT_HEALTH 1
+#define STAT_AMMO_ICON 2
+#define STAT_AMMO 3
+#define STAT_ARMOR_ICON 4
+#define STAT_WEAPON_ICON 4 // Current offensive weapon
+#define STAT_ARMOR 5
+#define STAT_WEAPON 5
+#define STAT_SELECTED_ICON 6
+#define STAT_DEFENCE_ICON 6 // Current defensive weapon
+#define STAT_PICKUP_ICON 7
 #define STAT_DEFENCE			7
-#define STAT_OFFMANA_ICON		8		// * Icon describing offensive mana
-#define STAT_OFFMANA_BACK		9		// Amount of offensive mana
-#define STAT_OFFMANA			10		// Icon describing defensive mana
-#define STAT_DEFMANA_ICON	 	11		// * Amount of defensive mana
+#define STAT_PICKUP_STRING 8
+#define STAT_OFFMANA_ICON 8 // Icon describing offensive mana
+#define STAT_TIMER_ICON 9
+#define STAT_OFFMANA_BACK 9 // Amount of offensive mana
+#define STAT_TIMER 10
+#define STAT_OFFMANA 10	// Icon describing defensive mana
+#define STAT_HELPICON 11
+#define STAT_DEFMANA_ICON 11 // * Amount of defensive mana
+#define STAT_SELECTED_ITEM 12
 #define STAT_DEFMANA_BACK     	12
-#define STAT_DEFMANA			13
-#define	STAT_FRAGS_ICON     	14		// cleared each frame, 1 = health, 2 = armor
-#define	STAT_FRAGS			  	15		// which status to print
-#define	STAT_FLASHES			16
-#define	STAT_LAYOUTS		 	17
+#define STAT_DEFMANA 13
+#define STAT_FRAGS_ICON 14 // cleared each frame, 1 = health, 2 = armor
+#define	STAT_FRAGS 15 // which status to print
+#define	STAT_FLASHES 16
+#define STAT_CHASE 16
+#define STAT_SPECTATOR 17
+#define	STAT_LAYOUTS 17
 #define	STAT_PUZZLE_ITEM1	 	18
 #define	STAT_PUZZLE_ITEM2	 	19
 #define	STAT_PUZZLE_ITEM3	 	20
@@ -1028,71 +1211,134 @@ typedef struct
 #define STAT_ARMOUR_ICON		34
 #define STAT_ARMOUR				35
 
-#define	MAX_STATS				48
+#define MAX_STATS 48
 
-// dmflags->value flags
-#define	DF_WEAPONS_STAY			0x0001
-#define	DF_NO_SHRINE			0x0002
-#define DF_NONAMES				0x0004
-#define	DF_NO_HEALTH			0x0008
+/* dmflags->value flags */
+#define DF_WEAPONS_STAY			0x0001
+#define DF_NO_SHRINE			0x0002
+#define DF_NONAMES			0x0004
+#define DF_NO_HEALTH			0x0008
 #define DF_SHOW_LEADER			0x0010
-#define	DF_SHRINE_CHAOS			0x0020
-#define	DF_SAME_LEVEL			0x0040
+#define DF_SHRINE_CHAOS			0x0020
+#define DF_SAME_LEVEL			0x0040
 #define DF_FORCE_RESPAWN		0x0080
 #define DF_SKINTEAMS			0x0100
 #define DF_MODELTEAMS			0x0200
 #define DF_ALLOW_EXIT			0x0400
 #define DF_INFINITE_MANA		0x0800
 #define DF_HURT_FRIENDS			0x1000
-#define DF_NO_OFFENSIVE_SPELL	0x2000			// This means staff-only combat!!!
-#define DF_NO_DEFENSIVE_SPELL	0x4000
+#define DF_NO_OFFENSIVE_SPELL		0x2000			// This means staff-only combat!!!
+#define DF_NO_DEFENSIVE_SPELL		0x4000
 #define DF_DISMEMBER			0x8000
-
 #define DF_DEATHMATCH_SET		0x80000000		// High bit indicates deathmatch, so that it can be transmitted in playerinfo.
 
+#define ROGUE_VERSION_STRING "08/21/1998 Beta 2 for Ensemble"
+
 /*
-==========================================================
+ * ==========================================================
+ *
+ * ELEMENTS COMMUNICATED ACROSS THE NET
+ *
+ * ==========================================================
+ */
 
-  ELEMENTS COMMUNICATED ACROSS THE NET
+#define ANGLE2SHORT(x) ((int)((x) * 65536 / 360) & 65535)
+#define SHORT2ANGLE(x) ((x) * (360.0 / 65536))
 
-==========================================================
-*/
+/* config strings are a general means of communication from
+ * the server to all connected clients. Each config string
+ * can be at most MAX_QPATH characters. */
+#define CS_NAME 0
+#define CS_CDTRACK 1
+#define CS_SKY 2
+#define CS_SKYAXIS 3                /* %f %f %f format */
+#define CS_SKYROTATE 4
+#define CS_LEVEL_NUMBER	5
+#define CS_STATUSBAR 6              /* display program string */
 
-#define	ANGLE2SHORT(x)	((int)((x)*65536/360) & 65535)
-#define	SHORT2ANGLE(x)	((x)*(360.0/65536))
+#define CS_AIRACCEL 29              /* air acceleration control */
+#define CS_MAXCLIENTS 30
+#define CS_MAPCHECKSUM 31           /* for catching cheater maps */
 
-//
-// config strings are a general means of communication from
-// the server to all connected clients.
-// Each config string can be at most MAX_QPATH characters.
-//
+#define CS_MODELS 32
+#define CS_SOUNDS (CS_MODELS + MAX_MODELS)
+#define CS_IMAGES (CS_SOUNDS + MAX_SOUNDS)
+#define CS_LIGHTS (CS_IMAGES + MAX_IMAGES)
+#define CS_ITEMS (CS_LIGHTS + MAX_LIGHTSTYLES)
+#define CS_PLAYERSKINS (CS_ITEMS + MAX_ITEMS)
+#define CS_GENERAL (CS_PLAYERSKINS + MAX_CLIENTS)
+#define CS_WELCOME (CS_PLAYERSKINS + MAX_CLIENTS)  // give us 4 welcome string messages so we can have a total of 256 characters per message
+#define MAX_CONFIGSTRINGS CS_WELCOME + 4
 
-#define	CS_NAME				0
-#define	CS_CDTRACK			1
-#define	CS_SKY				2
-#define	CS_SKYAXIS			3		// %f %f %f format
-#define	CS_SKYROTATE		4
-#define CS_LEVEL_NUMBER		5
-#define	CS_STATUSBAR		6		// display program string (this seems to take up several slots - hence must be last)
-#define	CS_MAXCLIENTS		30
-#define	CS_MAPCHECKSUM		31		// for catching cheater maps
-#define	CS_MODELS			32
-#define	CS_SOUNDS			(CS_MODELS+MAX_MODELS)
-#define	CS_IMAGES			(CS_SOUNDS+MAX_SOUNDS)
-#define	CS_LIGHTS			(CS_IMAGES+MAX_IMAGES)
-#define	CS_ITEMS			(CS_LIGHTS+MAX_LIGHTSTYLES)
-#define	CS_PLAYERSKINS		(CS_ITEMS+MAX_ITEMS)
-#define CS_WELCOME			(CS_PLAYERSKINS+MAX_CLIENTS)  // give us 4 welcome string messages so we can have a total of 256 characters per message
-#define	MAX_CONFIGSTRINGS	CS_WELCOME + 4
+/* ============================================== */
 
-// ************************************************************************************************
-// EffectsBuffer_t
-// ---------------
-// ************************************************************************************************
+/* entity_state_t->event values
+ * entity events are for effects that take place reletive
+ * to an existing entities origin.  Very network efficient.
+ * All muzzle flashes really should be converted to events... */
+typedef enum
+{
+	EV_NONE,
+	EV_ITEM_RESPAWN,
+	EV_FOOTSTEP,
+	EV_FALLSHORT,
+	EV_FALL,
+	EV_FALLFAR,
+	EV_PLAYER_TELEPORT,
+	EV_OTHER_TELEPORT
+} entity_event_t;
 
-#define ENTITY_FX_BUF_SIZE			192
-#define ENTITY_FX_BUF_BLOCK_SIZE	256
-#define MAX_PERSISTANT_EFFECTS		512
+typedef struct paletteRGBA_s
+{
+	union
+	{
+		struct
+		{
+			byte r, g, b, a;
+		};
+		unsigned c;
+		byte c_array[4];
+	};
+} paletteRGBA_t;
+
+typedef struct paletteRGB_s
+{
+	struct
+	{
+		byte r, g, b;
+	};
+} paletteRGB_t;
+
+#define MAX_COLORS	33
+extern paletteRGBA_t TextPalette[MAX_COLORS];
+
+/**************************************************************
+ * additional info for flex models with mesh nodes
+ **************************************************************/
+
+#define MAX_FM_MESH_NODES	16		// also defined in ref_gl/fmodel.h
+#define PC_COLLISION		0x0001	// collided on a move
+#define PC_SLIDING			0x0002	// sliding down a steep slope
+
+#define	WF_SURFACE			0x0001	// On the surface
+#define	WF_DIVE				0x0002	// Dive on next animation
+#define	WF_DIVING			0x0004	// Currently diving
+#define	WF_SWIMFREE			0x0008	// Currently swimming freely underwater
+#define	WF_SINK				0x0010	// Sink below the surface of the water
+#define FMNI_USE_FRAME		(1<<0)
+#define FMNI_USE_COLOR		(1<<1)
+#define FMNI_USE_SKIN		(1<<2)
+#define FMNI_NO_LERP		(1<<3)
+#define FMNI_NO_DRAW		(1<<4)
+#define FMNI_USE_REFLECT	(1<<5)
+
+typedef struct
+{
+	int				frame;
+	paletteRGBA_t	color;
+	byte			flags;
+	int				skin;
+} fmnodeinfo_t;
 
 typedef struct EffectsBuffer_s
 {
@@ -1105,32 +1351,9 @@ typedef struct EffectsBuffer_s
 	// jmarshall end
 } EffectsBuffer_t;
 
-typedef struct PerEffectsBuffer_s
-{
-	byte	buf[ENTITY_FX_BUF_SIZE];
-	int		bufSize;
-	int		freeBlock;
-	int		numEffects;
-	int		send_mask;
-	int		demo_send_mask;
-	int		fx_num;
-	// jmarshall
-	qboolean inUse;
-	qboolean needsUpdate;
-	qboolean nonPersistant;
-
-	void* entity;
-	int data_size;
-	// jmarshall end
-} PerEffectsBuffer_t;
-
-// ************************************************************************************************
-// entity_state_t
-// --------------
-// This is the information conveyed from the server to clients in an update message, about entities
-// that the client will need to render.
-// ************************************************************************************************
-
+/* entity_state_t is the information conveyed from the server
+ * in an update message about entities that the client will
+ * need to render in some way */
 typedef struct entity_state_s
 {
 	short number;           /* edict index */
@@ -1194,7 +1417,6 @@ typedef struct entity_state_s
 	vec3_t			bmodel_origin;
 
 	// Header block for list of all client effects attatched to this entity.
-
 	EffectsBuffer_t clientEffects;
 
 	// Specifies which parts (nodes) of the model are on/off, node colors etc.
@@ -1213,23 +1435,17 @@ typedef struct entity_state_s
 	byte			usageCount;
 } entity_state_t;
 
-// ************************************************************************************************
-// player_state_t
-// --------------
-// This is the information needed in addition to the 'pmove_state_t' to render a view. There will
-// only be 10 'player_state_t's sent each second, but the number of pmove_state_t changes will be
-// relative to client frame rates.
-// ************************************************************************************************
+/* ============================================== */
 
+/* player_state_t is the information needed in addition to pmove_state_t
+ * to rendered a view.  There will only be 10 player_state_t sent each second,
+ * but the number of pmove_state_t changes will be reletive to client
+ * frame rates */
 typedef struct
 {
-	// For prediction (must be communicated bit precise).
+	pmove_state_t pmove;        /* for prediction */
 
-	pmove_state_t	pmove;
-
-	// For fixed views and serverdemos.
-
-	vec3_t			viewangles;
+	vec3_t viewangles;          /* for fixed views */
 
 	// For remote camera views.
 
@@ -1247,11 +1463,8 @@ typedef struct
 
 	// Horizontal field of view.
 
-	float			fov;
-
-	// Refdef flags used during rendering.
-
-	int				rdflags;
+	float fov;                  /* horizontal field of view */
+	int rdflags;                /* refdef flags */
 
 	// Index of edict currently targeted by the player's auto-targeting facility.
 
@@ -1276,9 +1489,7 @@ typedef struct
 
 	int				PIV;
 
-	// Fast status bar updates.
-
-	short			stats[MAX_STATS];
+	short stats[MAX_STATS];     /* fast status bar updates */
 
 	// These are NEVER sent accross the net, but are purely client-side repositiories needed by
 	// prediction and are filled from the player's entity_state_t.
@@ -1377,150 +1588,7 @@ typedef struct
 
 } player_state_t;
 
-// For ambient sounds.
-typedef enum AmbientSoundID_e
-{
-	AS_NOTHING = 0,
-	AS_FIRE,
-	AS_WATERLAPPING,
-	AS_SEAGULLS,
-	AS_OCEAN,
-	AS_BIRDS,
-	AS_CRICKETS,
-	AS_FROGS,
-	AS_CRYING,
-	AS_MOSQUITOES,
-	AS_BUBBLES,    // 10
-
-	AS_BELL,
-	AS_FOOTSTEPS,
-	AS_MOANS,
-	AS_SEWERDRIPS,
-	AS_WATERDRIPS,
-	AS_HEAVYDRIPS,
-	AS_SMALLFOUNTAIN,
-	AS_LARGEFOUNTAIN,
-	AS_SEWERWATER,
-	AS_OUTSIDEWATERWAY,	// 20
-
-	AS_WINDCHIME,
-	AS_BIRD1,
-	AS_BIRD2,
-	AS_CAULDRONBUBBLE,
-	AS_HUGEWATERFALL,
-	AS_GONG,
-	AS_MUDPOOL,
-	AS_ROCKS,
-	AS_WINDEERIE,
-	AS_WINDNOISY,		// 30
-
-	AS_WINDSOFTHI,
-	AS_WINDSOFTLO,
-	AS_WINDSTRONG1,
-	AS_WINDSTRONG2,
-	AS_WINDWHISTLE,
-	AS_CONVEYOR,
-	AS_BUCKETCONVEYOR,
-
-	AS_CAVECREAK,
-	AS_SPIT,		// 39
-
-	AS_MAX
-} AmbientSoundID_t;
-
-typedef enum DoorSoundID_e
-{
-	DS_NONE = 0,
-	DS_GENERIC,
-	DS_HEAVYSTONE,
-	DS_SWINGARM,
-	DS_SWINGBRIDGE,
-	DS_MEDIUMWOOD,
-	DS_HUGEWOOD,
-	DS_MEDIUMSTONE,
-	DS_LARGESTONE,
-	DS_MEDIUMMETAL,
-	DS_FASTSLIDING,
-	DS_METALSLIDING,
-	DS_HUGESTONE,
-	DS_HUGEELEVATOR,
-	DS_CRANEWAREHOUSE,
-	DS_HAMMERPUMP,
-	DS_METALTABLE,
-	DS_LABTABLE,
-	DS_PISTON,
-	DS_CLANG,
-	DS_UNDERWATER,
-	DS_BAM,
-	DS_MAX
-} DoorSoundID_t;
-
-// EAX sound presets
-enum
-{
-	EAX_ENVIRONMENT_GENERIC,                // factory default
-	EAX_ENVIRONMENT_PADDEDCELL,
-	EAX_ENVIRONMENT_ROOM,              // standard environments
-	EAX_ENVIRONMENT_BATHROOM,
-	EAX_ENVIRONMENT_LIVINGROOM,
-	EAX_ENVIRONMENT_STONEROOM,
-	EAX_ENVIRONMENT_AUDITORIUM,
-	EAX_ENVIRONMENT_CONCERTHALL,
-	EAX_ENVIRONMENT_CAVE,
-	EAX_ENVIRONMENT_ARENA,
-	EAX_ENVIRONMENT_HANGAR,
-	EAX_ENVIRONMENT_CARPETEDHALLWAY,
-	EAX_ENVIRONMENT_HALLWAY,
-	EAX_ENVIRONMENT_STONECORRIDOR,
-	EAX_ENVIRONMENT_ALLEY,
-	EAX_ENVIRONMENT_FOREST,
-	EAX_ENVIRONMENT_CITY,
-	EAX_ENVIRONMENT_MOUNTAINS,
-	EAX_ENVIRONMENT_QUARRY,
-	EAX_ENVIRONMENT_PLAIN,
-	EAX_ENVIRONMENT_PARKINGLOT,
-	EAX_ENVIRONMENT_SEWERPIPE,
-	EAX_ENVIRONMENT_UNDERWATER,
-	EAX_ENVIRONMENT_DRUGGED,
-	EAX_ENVIRONMENT_DIZZY,
-	EAX_ENVIRONMENT_PSYCHOTIC,
-
-	EAX_ENVIRONMENT_COUNT           // total number of environments
-};
-
-// EAX world preset types
-enum
-{
-	EAX_GENERIC,
-	EAX_ALL_STONE,
-	EAX_ARENA,
-	EAX_CITY_AND_SEWERS,
-	EAX_CITY_AND_ALLEYS,
-	EAX_FOREST,
-	EAX_PSYCHOTIC,
-};
-
-// ************************************************************************************************
-// Skin defines
-// -----------
-// Indicates what skin Corvus has.
-// When indicated on the model, each odd-numbered skin is the damaged version of the previous skin.
-// ************************************************************************************************
-
-// For code clarity
-#define PLAGUE_NUM_LEVELS 3
-#define DAMAGE_NUM_LEVELS 2
-
-#define SKIN_DAMAGED	1
-#define SKIN_PLAGUE1	(DAMAGE_NUM_LEVELS * 1)
-#define SKIN_PLAGUE2	(DAMAGE_NUM_LEVELS * 2)
-
-#define SKIN_REFLECTION	(DAMAGE_NUM_LEVELS)		// We don't maintain a skin for every plague level anymore.
-
-#define SKIN_MAX		(SKIN_REFLECTION + 1)
-
-#define FLOAT_ZERO_EPSILON 0.0005f
-
-float Q_fabs(float f);
+size_t verify_fread(void *, size_t, size_t, FILE *);
+size_t verify_fwrite(void *, size_t, size_t, FILE *);
 
 #endif /* COMMON_SHARED_H */

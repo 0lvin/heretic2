@@ -470,7 +470,7 @@ void fish_swim_sound (edict_t *self, float fast)
 /*-------------------------------------------------------------------------
 	The fish hit something
 -------------------------------------------------------------------------*/
-void fish_blocked(edict_t *self, struct trace_s *trace)
+void fish_blocked(edict_t *self, trace_t *trace)
 {
 	vec3_t	v;
 	float	len;

@@ -32,10 +32,10 @@ typedef struct PhysicsInfo_s
 
 
 	// called when self is the collider in a collision
-	void				(*isBlocked)(edict_t *self, struct trace_s *trace);
+	void				(*isBlocked)(edict_t *self, trace_t *trace);
 
 	// called when self is the collidee in a collision
-	void				(*isBlocking)(edict_t *self, struct trace_s *trace);
+	void				(*isBlocking)(edict_t *self, trace_t *trace);
 
 	edict_t				*groundentity;			// entity serving as ground
 	int					groundentity_linkcount;	// if self and groundentity's don't match, groundentity should be cleared

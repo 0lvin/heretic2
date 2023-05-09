@@ -27,12 +27,6 @@
 
 #include "header/common.h"
 
-typedef struct mapsurface_s  // used internally due to name len probs //ZOID
-{
-	csurface_t	c;
-	char		rname[32];
-} mapsurface_t;
-
 typedef struct
 {
 	cplane_t	*plane;

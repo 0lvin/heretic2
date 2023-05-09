@@ -176,7 +176,7 @@ void Clear()
 		RemoveEffectList(&clientEnts);
 	}
 
-	for(i = 0, owner = fxi.server_entities; i < MAX_NETWORKABLE_EDICTS; ++i, ++owner)
+	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)
 	{
 		if(owner->effects)
 		{
@@ -242,7 +242,7 @@ void AddEffects(qboolean freeze)
 
 	// Add all effects which are attatched to entities, that have no model.
 
-	for(i = 0, owner = fxi.server_entities; i < MAX_NETWORKABLE_EDICTS; ++i, ++owner)
+	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)
 	{
 		// gak, think something else need to be done... maybe a list of centities with effects.
 
@@ -284,7 +284,7 @@ void PostRenderUpdate(void)
 		num_free_active += UpdateEffects(&clientEnts, NULL);
 	}
 
-	for(i = 0, owner = fxi.server_entities; i < MAX_NETWORKABLE_EDICTS; ++i, ++owner)	// gak, think something else need to be done
+	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)	// gak, think something else need to be done
 	{											// maybe a list of centities with effects. . .
 		if(owner->effects)
 		{
@@ -525,7 +525,7 @@ void ParseEffects(centity_t *owner)
 			if(index)	// 0 should indicate the world
 			{
 				assert(index > 0);
-				assert(index < MAX_NETWORKABLE_EDICTS);
+				assert(index < MAX_EDICTS);
 
 				tempOwner = fxi.server_entities + index;
 			}

@@ -10,24 +10,6 @@
 #include "matrix.h"
 #include "vector.h"
 
-int HACK_Pitch_Adjust = 0; // weak
-
-void CreateIdentityMatrix(matrix4_t matrix)
-{
-	memset(matrix, 0, sizeof(matrix4_t));
-	matrix[0][0] = 1.0f;
-	matrix[1][1] = 1.0f;
-	matrix[2][2] = 1.0f;
-	matrix[3][3] = 1.0f;
-}
-
-void TranslateMatrix(matrix4_t matrix, vec3_t xyz)
-{
-	matrix[3][0] += xyz[0];
-	matrix[3][1] += xyz[1];
-	matrix[3][2] += xyz[2];
-}
-
 void CreatePitchMatrix(matrix3_t matrix, vec_t angles)
 {
 	memset(&matrix[0], 0, sizeof(matrix3_t));

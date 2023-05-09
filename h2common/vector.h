@@ -5,6 +5,8 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+extern vec3_t vec3_up;
+
 void RotatePointAroundVector( vec3_t dst, const vec3_t dir, const vec3_t point, float degrees );
 void ProjectPointOnPlane( vec3_t dst, const vec3_t p, const vec3_t normal );
 void PerpendicularVector( vec3_t dst, const vec3_t src );

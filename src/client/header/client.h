@@ -541,7 +541,7 @@ typedef struct
 	float	minlight; /* don't add when contributing less */
 } cdlight_t;
 
-extern	centity_t	cl_entities[MAX_NETWORKABLE_EDICTS];
+extern	centity_t	cl_entities[MAX_EDICTS];
 extern	cdlight_t	cl_dlights[MAX_DLIGHTS];
 
 // the cl_parse_entities must be large enough to hold UPDATE_BACKUP frames of

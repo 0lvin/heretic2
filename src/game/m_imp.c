@@ -44,7 +44,7 @@ Copyright 1998 Raven Software
 
 #define IMP_PROJECTILE_RADIUS	1024
 
-void imp_blocked (edict_t *self, struct trace_s *trace);
+void imp_blocked (edict_t *self, trace_t *trace);
 
 /*-----------------------------------------------------------------
 	imp base info
@@ -79,7 +79,7 @@ static ClassResourceInfo_t resInfo;
 
 ===============================================================*/
 
-void imp_blocked (edict_t *self, struct trace_s *trace)
+void imp_blocked (edict_t *self, trace_t *trace)
 {
 	vec3_t	vf;
 	int		damage;

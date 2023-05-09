@@ -203,7 +203,7 @@ static void spreader_grenade_think(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-static void spreader_grenade_bounce ( edict_t *self, struct trace_s *trace )
+static void spreader_grenade_bounce ( edict_t *self, trace_t *trace )
 {
 	vec3_t		vel;
 

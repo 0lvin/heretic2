@@ -62,7 +62,7 @@ typedef struct edict_s
 	vec3_t				absmin,absmax,size;
 
 	// called when self is the collidee in a collision, resulting in the impediment or bouncing of trace->ent
-	void				(*isBlocking)(edict_t *self, struct trace_s *trace);
+	void				(*isBlocking)(edict_t *self, trace_t *trace);
 
 	// DO NOT MODIFY ANYTHING ABOVE THIS! THE SERVER EXPECTS THE FIELDS IN THAT ORDER! All the
 	// fields below this are are used by the game only and can be re-aranged, modified etc.
@@ -92,10 +92,10 @@ typedef struct edict_s
 	vec3_t				blockingNormal;				// normal of the blocking surface
 
 	// called when self bounces off of something and continues to move unimpeded
-	void				(*bounced)(edict_t *self, struct trace_s *trace);
+	void				(*bounced)(edict_t *self, trace_t *trace);
 
 	// called when self is the collider in a collision, resulting in the impediment of self's movement
-	void				(*isBlocked)(edict_t *self, struct trace_s *trace);
+	void				(*isBlocked)(edict_t *self, trace_t *trace);
 
 	float				friction;		// friction multiplier; defaults to 1.0
 	// Used to determine whether something will stop, slide, or bounce on impact

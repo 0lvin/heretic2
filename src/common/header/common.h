@@ -895,4 +895,316 @@ void SV_Init (void);
 void SV_Shutdown (char *finalmsg, qboolean reconnect);
 void SV_Frame (int msec);
 
+typedef vec_t vec2_t[2];
+typedef double vec3d_t[3];
+
+typedef float matrix3_t[3][3];
+typedef float matrix3d_t[3][3];
+
+#define SQRT2				1.414213562
+#define TIME_EPSILON		0.01
+
+#define VectorCopy_Macro(a,b)			(b[0]=a[0],b[1]=a[1],b[2]=a[2])
+#define VectorSubtract_Macro(a,b,c)		(c[0]=a[0]-b[0],c[1]=a[1]-b[1],c[2]=a[2]-b[2])
+
+typedef enum
+{
+	P_BLACK,
+	P_RED,
+	P_GREEN,
+	P_YELLOW,
+	P_BLUE,
+	P_PURPLE,
+	P_CYAN,
+	P_WHITE,
+
+	P_HBLACK,
+	P_HRED,
+	P_HGREEN,
+	P_HYELLOW,
+	P_HBLUE,
+	P_HPURPLE,
+	P_HCYAN,
+	P_HWHITE,
+
+	P_DESIGNER,
+	P_PROGRAMMER,
+	P_OBJ_NORMAL,
+	P_OBJ_BOLD,
+	P_OBIT,
+	P_CAPTION,
+	P_CHAT,
+	P_TEAM,
+
+	P_VERSION,
+	P_FRAGS,
+	P_ALTFRAGS,
+	P_MENUFIELD,
+	P_MSGBOX,
+	P_HEADER,
+	P_CRED_TITLE,
+	P_CRED_CONTENT,
+	P_FRAGNAME
+
+} PalIdx_t;
+
+struct cplane_s;
+/*
+
+cvar_t variables are used to hold scalar or string variables that can be changed or displayed at the console or prog code as well as accessed directly
+in C code.
+
+The user can access cvars from the console in three ways:
+r_draworder			prints the current value
+r_draworder 0		sets the current value to 0
+set r_draworder 0	as above, but creates the cvar if not present
+Cvars are restricted from having the same names as commands to keep this
+interface from being ambiguous.
+*/
+
+extern	cvar_t* cvar_vars;
+
+float ClampCvar(float min, float max, float value);
+cvar_t* Cvar_Get(char* var_name, char* value, int flags);
+// creates the variable if it doesn't exist, or returns the existing one
+// if it exists, the value will not be changed, but flags will be ORed in
+// that allows variables to be unarchived without needing bitflags
+
+cvar_t* Cvar_Set(char* var_name, char* value);
+// will create the variable if it doesn't exist
+
+cvar_t* Cvar_ForceSet(char* var_name, char* value);
+// will set the variable even if NOSET or LATCH
+
+cvar_t* Cvar_FullSet(char* var_name, char* value, int flags);
+
+void	Cvar_SetValue(char* var_name, float value);
+// expands value to a string and calls Cvar_Set
+
+float	Cvar_VariableValue(char* var_name);
+// returns 0 if not defined or non numeric
+
+const char* Cvar_VariableString(const char* var_name);
+// returns an empty string if not defined
+
+char* Cvar_CompleteVariable(char* partial);
+// attempts to match a partial variable name for command line completion
+// returns NULL if nothing fits
+
+char* Cvar_CompleteVariableNext(char* partial, char* last);
+// similar to above, except that it goes to next match if any
+
+void	Cvar_GetLatchedVars(void);
+// any CVAR_LATCHED variables that have been set will now take effect
+
+qboolean Cvar_Command(void);
+// called by Cmd_ExecuteString when Cmd_Argv(0) doesn't match a known
+// command.  Returns true if the command was a variable reference that
+// was handled. (print or change)
+
+void 	Cvar_WriteVariables(char* path);
+// appends lines containing "set variable value" for all variables
+// with the archive flag set to true.
+
+void	Cvar_Init(void);
+
+char* Cvar_Userinfo(void);
+// returns an info string containing all the CVAR_USERINFO cvars
+
+char* Cvar_Serverinfo(void);
+// returns an info string containing all the CVAR_SERVERINFO cvars
+
+extern	qboolean	userinfo_modified;
+// this is set each time a CVAR_USERINFO variable is changed
+// so that the client knows to send it to the server
+
+// Screen flash set
+void Activate_Screen_Flash(int color);
+
+// Screen flash unset
+void Deactivate_Screen_Flash(void);
+
+// return screen flash value
+int Is_Screen_Flashing(void);
+
+// set up a screen shaking
+void Activate_Screen_Shake(float intensity, float duration, float current_time, int flags);
+// reset screen shakings
+void Reset_Screen_Shake(void);
+
+qboolean Get_Crosshair(vec3_t origin, byte* type);
+
+// called by the camera code to determine our camera offset
+void Perform_Screen_Shake(vec3_t, float current_time);
+
+#define ENTITY_FX_BUF_SIZE			192
+#define ENTITY_FX_BUF_BLOCK_SIZE	256
+#define MAX_PERSISTANT_EFFECTS		512
+
+typedef struct PerEffectsBuffer_s
+{
+	byte	buf[ENTITY_FX_BUF_SIZE];
+	int		bufSize;
+	int		freeBlock;
+	int		numEffects;
+	int		send_mask;
+	int		demo_send_mask;
+	int		fx_num;
+	// jmarshall
+	qboolean inUse;
+	qboolean needsUpdate;
+	qboolean nonPersistant;
+
+	void* entity;
+	int data_size;
+	// jmarshall end
+} PerEffectsBuffer_t;
+
+
+// For ambient sounds.
+typedef enum AmbientSoundID_e
+{
+	AS_NOTHING = 0,
+	AS_FIRE,
+	AS_WATERLAPPING,
+	AS_SEAGULLS,
+	AS_OCEAN,
+	AS_BIRDS,
+	AS_CRICKETS,
+	AS_FROGS,
+	AS_CRYING,
+	AS_MOSQUITOES,
+	AS_BUBBLES,    // 10
+
+	AS_BELL,
+	AS_FOOTSTEPS,
+	AS_MOANS,
+	AS_SEWERDRIPS,
+	AS_WATERDRIPS,
+	AS_HEAVYDRIPS,
+	AS_SMALLFOUNTAIN,
+	AS_LARGEFOUNTAIN,
+	AS_SEWERWATER,
+	AS_OUTSIDEWATERWAY,	// 20
+
+	AS_WINDCHIME,
+	AS_BIRD1,
+	AS_BIRD2,
+	AS_CAULDRONBUBBLE,
+	AS_HUGEWATERFALL,
+	AS_GONG,
+	AS_MUDPOOL,
+	AS_ROCKS,
+	AS_WINDEERIE,
+	AS_WINDNOISY,		// 30
+
+	AS_WINDSOFTHI,
+	AS_WINDSOFTLO,
+	AS_WINDSTRONG1,
+	AS_WINDSTRONG2,
+	AS_WINDWHISTLE,
+	AS_CONVEYOR,
+	AS_BUCKETCONVEYOR,
+
+	AS_CAVECREAK,
+	AS_SPIT,		// 39
+
+	AS_MAX
+} AmbientSoundID_t;
+
+typedef enum DoorSoundID_e
+{
+	DS_NONE = 0,
+	DS_GENERIC,
+	DS_HEAVYSTONE,
+	DS_SWINGARM,
+	DS_SWINGBRIDGE,
+	DS_MEDIUMWOOD,
+	DS_HUGEWOOD,
+	DS_MEDIUMSTONE,
+	DS_LARGESTONE,
+	DS_MEDIUMMETAL,
+	DS_FASTSLIDING,
+	DS_METALSLIDING,
+	DS_HUGESTONE,
+	DS_HUGEELEVATOR,
+	DS_CRANEWAREHOUSE,
+	DS_HAMMERPUMP,
+	DS_METALTABLE,
+	DS_LABTABLE,
+	DS_PISTON,
+	DS_CLANG,
+	DS_UNDERWATER,
+	DS_BAM,
+	DS_MAX
+} DoorSoundID_t;
+
+// EAX sound presets
+enum
+{
+	EAX_ENVIRONMENT_GENERIC,                // factory default
+	EAX_ENVIRONMENT_PADDEDCELL,
+	EAX_ENVIRONMENT_ROOM,              // standard environments
+	EAX_ENVIRONMENT_BATHROOM,
+	EAX_ENVIRONMENT_LIVINGROOM,
+	EAX_ENVIRONMENT_STONEROOM,
+	EAX_ENVIRONMENT_AUDITORIUM,
+	EAX_ENVIRONMENT_CONCERTHALL,
+	EAX_ENVIRONMENT_CAVE,
+	EAX_ENVIRONMENT_ARENA,
+	EAX_ENVIRONMENT_HANGAR,
+	EAX_ENVIRONMENT_CARPETEDHALLWAY,
+	EAX_ENVIRONMENT_HALLWAY,
+	EAX_ENVIRONMENT_STONECORRIDOR,
+	EAX_ENVIRONMENT_ALLEY,
+	EAX_ENVIRONMENT_FOREST,
+	EAX_ENVIRONMENT_CITY,
+	EAX_ENVIRONMENT_MOUNTAINS,
+	EAX_ENVIRONMENT_QUARRY,
+	EAX_ENVIRONMENT_PLAIN,
+	EAX_ENVIRONMENT_PARKINGLOT,
+	EAX_ENVIRONMENT_SEWERPIPE,
+	EAX_ENVIRONMENT_UNDERWATER,
+	EAX_ENVIRONMENT_DRUGGED,
+	EAX_ENVIRONMENT_DIZZY,
+	EAX_ENVIRONMENT_PSYCHOTIC,
+
+	EAX_ENVIRONMENT_COUNT           // total number of environments
+};
+
+// EAX world preset types
+enum
+{
+	EAX_GENERIC,
+	EAX_ALL_STONE,
+	EAX_ARENA,
+	EAX_CITY_AND_SEWERS,
+	EAX_CITY_AND_ALLEYS,
+	EAX_FOREST,
+	EAX_PSYCHOTIC,
+};
+
+// ************************************************************************************************
+// Skin defines
+// -----------
+// Indicates what skin Corvus has.
+// When indicated on the model, each odd-numbered skin is the damaged version of the previous skin.
+// ************************************************************************************************
+
+// For code clarity
+#define PLAGUE_NUM_LEVELS 3
+#define DAMAGE_NUM_LEVELS 2
+
+#define SKIN_DAMAGED	1
+#define SKIN_PLAGUE1	(DAMAGE_NUM_LEVELS * 1)
+#define SKIN_PLAGUE2	(DAMAGE_NUM_LEVELS * 2)
+
+#define SKIN_REFLECTION	(DAMAGE_NUM_LEVELS)		// We don't maintain a skin for every plague level anymore.
+
+#define SKIN_MAX		(SKIN_REFLECTION + 1)
+
+#define FLOAT_ZERO_EPSILON 0.0005f
+
+float Q_fabs(float f);
+
 #endif
