@@ -1,23 +1,29 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Refresher setup and main part of the frame generation
+ *
+ * =======================================================================
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-// r_main.c
 #include <ctype.h>
 #include "header/local.h"
 #include "../../../../h2common/part_uvs.h"
@@ -744,9 +750,6 @@ void R_SetupGL (void)
     glRotatef (-r_newrefdef.viewangles[1],  0, 0, 1);
     glTranslatef (-r_newrefdef.vieworg[0],  -r_newrefdef.vieworg[1],  -r_newrefdef.vieworg[2]);
 
-//	if ( gl_state.camera_separation != 0 && gl_state.stereo_enabled )
-//		glTranslatef ( gl_state.camera_separation, 0, 0 );
-
 	glGetFloatv (GL_MODELVIEW_MATRIX, r_world_matrix);
 
 	//
@@ -932,7 +935,7 @@ static void GL_DrawStereoPattern( void )
 {
 	int i;
 
-	if ( !gl_state.stereo_enabled )
+	if ( !gl_state.stereo_mode == STEREO_MODE_NONE )
 		return;
 
 	R_SetGL2D();
@@ -986,19 +989,17 @@ void R_SetLightLevel (void)
 	else
 	{
 		if (shadelight[1] > shadelight[2])
-			r_lightlevel->value = 150*shadelight[1];
+		{
+			r_lightlevel->value = 150 * shadelight[1];
+		}
 		else
-			r_lightlevel->value = 150*shadelight[2];
+		{
+			r_lightlevel->value = 150 * shadelight[2];
+		}
 	}
 
 }
 
-/*
-@@@@@@@@@@@@@@@@@@@@@
-R_RenderFrame
-
-@@@@@@@@@@@@@@@@@@@@@
-*/
 void R_RenderFrame (refdef_t *fd)
 {
 	R_RenderView( fd );
@@ -1196,6 +1197,7 @@ qboolean R_SetMode (void)
 			return false;
 		}
 	}
+
 	return true;
 }
 
@@ -1227,7 +1229,7 @@ int R_Init( void *hinstance, void *hWnd )
 	if (!QGL_Init())
 	{
 		QGL_Shutdown();
-        ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not load \"%s\"\n", "opengl32" );
+	ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not load \"%s\"\n", "opengl32" );
 		return -1;
 	}
 
@@ -1245,7 +1247,7 @@ int R_Init( void *hinstance, void *hWnd )
 	if ( !R_SetMode () )
 	{
 		QGL_Shutdown();
-        ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not R_SetMode()\n" );
+	ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not R_SetMode()\n" );
 		return -1;
 	}
 
@@ -1452,7 +1454,7 @@ void R_BeginFrame( float camera_separation )
 	{
 		gl_drawbuffer->modified = false;
 
-		if ( gl_state.camera_separation == 0 || !gl_state.stereo_enabled )
+		if ( gl_state.camera_separation == 0 || gl_state.stereo_mode == STEREO_MODE_NONE )
 		{
 			if ( Q_stricmp( gl_drawbuffer->string, "GL_FRONT" ) == 0 )
 				glDrawBuffer( GL_FRONT );
@@ -1707,14 +1709,15 @@ void Sys_Error (char *error, ...)
 	ri.Sys_Error (ERR_FATAL, "%s", text);
 }
 
-void Com_Printf (char *fmt, ...)
+void
+Com_Printf(char *msg, ...)
 {
 	va_list		argptr;
 	char		text[1024];
 
-	va_start (argptr, fmt);
-	vsprintf (text, fmt, argptr);
-	va_end (argptr);
+	va_start(argptr, msg);
+	vsprintf (text, msg, argptr);
+	va_end(argptr);
 
 	ri.Con_Printf (PRINT_ALL, "%s", text);
 }

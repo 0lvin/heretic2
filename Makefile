@@ -526,9 +526,9 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_mesh.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_model.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_movie.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_rmain.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_rmisc.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_rsurf.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl1_main.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl1_misc.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl1_surf.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_warp.o \
 	$(BUILDDIR)/h2common/r_skeletons.o \
 	$(BUILDDIR)/h2common/arrayed_list.o \

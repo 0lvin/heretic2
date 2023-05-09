@@ -24,82 +24,96 @@
  * =======================================================================
  */
 
-#ifndef REF_GL_LOCAL_H
-#define REF_GL_LOCAL_H
-
-#ifdef _WIN32
-#  include <windows.h>
-#endif
+#ifndef REF_LOCAL_H
+#define REF_LOCAL_H
 
 #include <stdio.h>
+#include <ctype.h>
 #include <math.h>
 
-#include "../../../../common/header/common.h"
 #include "../../ref_shared.h"
-#include "../../../../../h2common/vector.h"
-
 #include "qgl.h"
 
-#define	REF_VERSION	"GL 0.01"
 
-// up / down
-#define	PITCH	0
+#ifndef GL_COLOR_INDEX8_EXT
+ #define GL_COLOR_INDEX8_EXT GL_COLOR_INDEX
+#endif
 
-// left / right
-#define	YAW		1
+#ifndef GL_EXT_texture_filter_anisotropic
+ #define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
+ #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
+#endif
 
-// fall over
-#define	ROLL	2
+#ifndef GL_VERSION_1_3
+ #define GL_TEXTURE0 0x84C0
+ #define GL_TEXTURE1 0x84C1
+#endif
 
-typedef struct CL_SkeletalJoint_s
-{
-	int children;
-	vec3_t angles;
-} CL_SkeletalJoint_t;
+#ifndef GL_MULTISAMPLE
+#define GL_MULTISAMPLE 0x809D
+#endif
 
-typedef struct
-{
-	unsigned		width, height;			// coordinates from main game
-} viddef_t;
+#ifndef GL_MULTISAMPLE_FILTER_HINT_NV
+#define GL_MULTISAMPLE_FILTER_HINT_NV 0x8534
+#endif
 
-extern	viddef_t	vid;
+#define TEXNUM_LIGHTMAPS 1024
+#define TEXNUM_SCRAPS 1152
+#define TEXNUM_IMAGES 1153
+#define MAX_GLTEXTURES 1024
+#define MAX_SCRAPS 1
+#define BLOCK_WIDTH 128
+#define BLOCK_HEIGHT 128
+#define REF_VERSION "Yamagi Quake II OpenGL Refresher"
+#define BACKFACE_EPSILON 0.01
+#define LIGHTMAP_BYTES 4
+#define MAX_LIGHTMAPS 128
+#define GL_LIGHTMAP_FORMAT GL_RGBA
 
-/*
+/* up / down */
+#define PITCH 0
 
-  skins will be outline flood filled and mip mapped
-  pics and sprites with alpha will be outline flood filled
-  pic won't be mip mapped
+/* left / right */
+#define YAW 1
 
-  model skin
-  sprite frame
-  wall texture
-  pic
+/* fall over */
+#define ROLL 2
 
-*/
+extern viddef_t vid;
+
+
+enum stereo_modes {
+	STEREO_MODE_NONE,
+	STEREO_MODE_OPENGL,
+	STEREO_MODE_ANAGLYPH,
+	STEREO_MODE_ROW_INTERLEAVED,
+	STEREO_MODE_COLUMN_INTERLEAVED,
+	STEREO_MODE_PIXEL_INTERLEAVED,
+	STEREO_SPLIT_HORIZONTAL,
+	STEREO_SPLIT_VERTICAL,
+};
+
+enum opengl_special_buffer_modes {
+	OPENGL_SPECIAL_BUFFER_MODE_NONE,
+	OPENGL_SPECIAL_BUFFER_MODE_STEREO,
+	OPENGL_SPECIAL_BUFFER_MODE_STENCIL,
+};
 
 typedef struct image_s
 {
-	char	name[MAX_QPATH];			// game path, including extension
-	imagetype_t	type;
-	int		width, height;				// source image
-	int		upload_width, upload_height;	// after power of two and picmip
-	int		registration_sequence;		// 0 = free
-	struct msurface_s	*texturechain;	// for sort-by-texture world drawing
-	int		texnum;						// gl texture binding
-	float	sl, tl, sh, th;				// 0,0 - 1,1 unless part of the scrap
-	qboolean	scrap;
-	qboolean	has_alpha;
+	char name[MAX_QPATH];               /* game path, including extension */
+	imagetype_t type;
+	int width, height;                  /* source image */
+	int upload_width, upload_height;    /* after power of two and picmip */
+	int registration_sequence;          /* 0 = free */
+	struct msurface_s *texturechain;    /* for sort-by-texture world drawing */
+	int texnum;                         /* gl texture binding */
+	float sl, tl, sh, th;               /* 0,0 - 1,1 unless part of the scrap */
+	qboolean scrap;
+	qboolean has_alpha;
 
 	qboolean paletted;
 } image_t;
-
-#define	TEXNUM_LIGHTMAPS	1024
-#define	TEXNUM_SCRAPS		1152
-#define	TEXNUM_IMAGES		1153
-
-#define		MAX_GLTEXTURES	1024
-
-//===================================================================
 
 typedef enum
 {
@@ -113,20 +127,29 @@ typedef enum
 
 #include "model.h"
 
-void GL_BeginRendering (int *x, int *y, int *width, int *height);
-void GL_EndRendering (void);
+void GL_BeginRendering(int *x, int *y, int *width, int *height);
+void GL_EndRendering(void);
 
-void GL_SetDefaultState( void );
+void GL_SetDefaultState(void);
 void GL_UpdateSwapInterval( void );
 
-extern	float	gldepthmin, gldepthmax;
+extern float gldepthmin, gldepthmax;
 
 typedef struct
 {
-	float	x, y, z;
-	float	s, t;
-	float	r, g, b;
+	float x, y, z;
+	float s, t;
+	float r, g, b;
 } glvert_t;
+
+#include "../../../../common/header/common.h"
+#include "../../../../../h2common/vector.h"
+
+typedef struct CL_SkeletalJoint_s
+{
+	int children;
+	vec3_t angles;
+} CL_SkeletalJoint_t;
 
 #define	MAX_LBM_HEIGHT		480
 
@@ -241,7 +264,6 @@ extern	float	r_world_matrix[16];
 
 void R_TranslatePlayerSkin (int playernum);
 void GL_Bind (int texnum);
-void GL_MBind( GLenum target, int texnum );
 void GL_TexEnv( GLenum value );
 
 void R_LightPoint (vec3_t p, vec3_t color);
@@ -386,6 +408,20 @@ typedef struct
 	const char *vendor_string;
 	const char *version_string;
 	const char *extensions_string;
+
+	int major_version;
+	int minor_version;
+
+	// ----
+
+	qboolean anisotropic;
+	qboolean npottextures;
+	qboolean palettedtexture;
+	qboolean pointparameters;
+
+	// ----
+
+	float max_anisotropy;
 } glconfig_t;
 
 typedef struct
@@ -393,25 +429,38 @@ typedef struct
 	float inverse_intensity;
 	qboolean fullscreen;
 
-	int     prev_mode;
+	int prev_mode;
 
 	unsigned char *d_16to8table;
 
 	int lightmap_textures;
 
-	int	currenttextures[2];
+	int currenttextures[2];
 	int currenttmu;
+	GLenum currenttarget;
 
 	float camera_separation;
-	qboolean stereo_enabled;
+	enum stereo_modes stereo_mode;
 
-	unsigned char originalRedGammaTable[256];
-	unsigned char originalGreenGammaTable[256];
-	unsigned char originalBlueGammaTable[256];
+	qboolean stencil;
 } glstate_t;
 
-extern glconfig_t  gl_config;
-extern glstate_t   gl_state;
+typedef struct
+{
+	int internal_format;
+	int current_lightmap_texture;
+
+	msurface_t *lightmap_surfaces[MAX_LIGHTMAPS];
+
+	int allocated[BLOCK_WIDTH];
+
+	/* the lightmap texture data needs to be kept in
+	   main memory so texsubimage can update properly */
+	byte lightmap_buffer[4 * BLOCK_WIDTH * BLOCK_HEIGHT];
+} gllightmapstate_t;
+
+extern glconfig_t gl_config;
+extern glstate_t gl_state;
 
 void R_DrawBigFont(int x, int y, char *text, float alpha);
 int BF_Strlen(char *text);

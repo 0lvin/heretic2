@@ -1,23 +1,29 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Surface generation and drawing
+ *
+ * =======================================================================
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-// GL_RSURF.C: surface-related refresh code
 #include <assert.h>
 
 #include "header/local.h"
@@ -41,20 +47,6 @@ int		c_visible_lightmaps;
 int		c_visible_textures;
 
 #define GL_LIGHTMAP_FORMAT GL_RGBA
-
-typedef struct
-{
-	int internal_format;
-	int	current_lightmap_texture;
-
-	msurface_t* lightmap_surfaces[MAX_LIGHTMAPS];
-
-	int			allocated[BLOCK_WIDTH];
-
-	// the lightmap texture data needs to be kept in
-	// main memory so texsubimage can update properly
-	byte		lightmap_buffer[4 * BLOCK_WIDTH * BLOCK_HEIGHT];
-} gllightmapstate_t;
 
 static gllightmapstate_t gl_lms;
 
@@ -661,179 +653,6 @@ void DrawTextureChains(void)
 	GL_TexEnv(GL_REPLACE);
 }
 
-
-static void GL_RenderLightmappedPoly(msurface_t* surf)
-{
-	int		i, nv = surf->polys->numverts;
-	int		map;
-	float* v;
-	image_t* image = R_TextureAnimation(surf->texinfo);
-	qboolean is_dynamic = false;
-	unsigned lmtex = surf->lightmaptexturenum;
-	glpoly_t* p;
-
-	for (map = 0; map < MAXLIGHTMAPS && surf->styles[map] != 255; map++)
-	{
-		if (r_newrefdef.lightstyles[surf->styles[map]].white != surf->cached_light[map])
-			goto dynamic;
-	}
-
-	// dynamic this frame or dynamic previously
-	if ((surf->dlightframe == r_framecount))
-	{
-	dynamic:
-		if (gl_dynamic->value)
-		{
-			if (!(surf->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP)))
-			{
-				is_dynamic = true;
-			}
-		}
-	}
-
-	if (is_dynamic)
-	{
-		unsigned	temp[128 * 128];
-		int			smax, tmax;
-
-		if ((surf->styles[map] >= 32 || surf->styles[map] == 0) && (surf->dlightframe != r_framecount))
-		{
-			smax = (surf->extents[0] >> 4) + 1;
-			tmax = (surf->extents[1] >> 4) + 1;
-
-			R_BuildLightMap(surf, (byte*)temp, smax * 4);
-			R_SetCacheState(surf);
-
-			GL_MBind(GL_TEXTURE1_SGIS, gl_state.lightmap_textures + surf->lightmaptexturenum);
-
-			lmtex = surf->lightmaptexturenum;
-
-			glTexSubImage2D(GL_TEXTURE_2D, 0,
-				surf->light_s, surf->light_t,
-				smax, tmax,
-				GL_LIGHTMAP_FORMAT,
-				GL_UNSIGNED_BYTE, temp);
-
-		}
-		else
-		{
-			smax = (surf->extents[0] >> 4) + 1;
-			tmax = (surf->extents[1] >> 4) + 1;
-
-			R_BuildLightMap(surf, (byte*)temp, smax * 4);
-
-			GL_MBind(GL_TEXTURE1_SGIS, gl_state.lightmap_textures + 0);
-
-			lmtex = 0;
-
-			glTexSubImage2D(GL_TEXTURE_2D, 0,
-				surf->light_s, surf->light_t,
-				smax, tmax,
-				GL_LIGHTMAP_FORMAT,
-				GL_UNSIGNED_BYTE, temp);
-
-		}
-
-		c_brush_polys++;
-
-		GL_MBind(GL_TEXTURE0_SGIS, image->texnum);
-		GL_MBind(GL_TEXTURE1_SGIS, gl_state.lightmap_textures + lmtex);
-
-		//==========
-		//PGM
-		if (surf->texinfo->flags & SURF_FLOWING)
-		{
-			float scroll;
-
-			scroll = -64 * ((r_newrefdef.time / 40.0) - (int)(r_newrefdef.time / 40.0));
-			if (scroll == 0.0)
-				scroll = -64.0;
-
-			for (p = surf->polys; p; p = p->chain)
-			{
-				v = p->verts[0];
-				glBegin(GL_POLYGON);
-				for (i = 0; i < nv; i++, v += VERTEXSIZE)
-				{
-					qglMultiTexCoord2fARB(0, (v[3] + scroll), v[4]);
-					qglMultiTexCoord2fARB(1, v[5], v[6]);
-					qglVertex3fv(v);
-				}
-				glEnd();
-			}
-		}
-		else
-		{
-			for (p = surf->polys; p; p = p->chain)
-			{
-				v = p->verts[0];
-				glBegin(GL_POLYGON);
-				for (i = 0; i < nv; i++, v += VERTEXSIZE)
-				{
-					qglMultiTexCoord2fARB(0, v[3], v[4]);
-					qglMultiTexCoord2fARB(1, v[5], v[6]);
-					glVertex3fv(v);
-				}
-				glEnd();
-			}
-		}
-		//PGM
-		//==========
-	}
-	else
-	{
-		c_brush_polys++;
-
-		GL_MBind(GL_TEXTURE0_SGIS, image->texnum);
-		GL_MBind(GL_TEXTURE1_SGIS, gl_state.lightmap_textures + lmtex);
-
-		//==========
-		//PGM
-		if (surf->texinfo->flags & SURF_FLOWING)
-		{
-			float scroll;
-
-			scroll = -64 * ((r_newrefdef.time / 40.0) - (int)(r_newrefdef.time / 40.0));
-			if (scroll == 0.0)
-				scroll = -64.0;
-
-			for (p = surf->polys; p; p = p->chain)
-			{
-				v = p->verts[0];
-				glBegin(GL_POLYGON);
-				for (i = 0; i < nv; i++, v += VERTEXSIZE)
-				{
-					qglMultiTexCoord2fARB(0, (v[3] + scroll), v[4]);
-					qglMultiTexCoord2fARB(1, v[5], v[6]);
-					glVertex3fv(v);
-				}
-				glEnd();
-			}
-		}
-		else
-		{
-			//PGM
-			//==========
-			for (p = surf->polys; p; p = p->chain)
-			{
-				v = p->verts[0];
-				glBegin(GL_POLYGON);
-				for (i = 0; i < nv; i++, v += VERTEXSIZE)
-				{
-					qglMultiTexCoord2fARB(0, v[3], v[4]);
-					qglMultiTexCoord2fARB(1, v[5], v[6]);
-					glVertex3fv(v);
-				}
-				glEnd();
-			}
-			//==========
-			//PGM
-		}
-		//PGM
-		//==========
-	}
-}
-
 /*
 =================
 R_DrawInlineBModel
@@ -1089,60 +908,17 @@ void R_RecursiveWorldNode(mnode_t* node)
 		}
 		else
 		{
-			//if (qglMultiTexCoord2fARB && !(surf->flags & SURF_DRAWTURB))
-			//{
-			//	GL_RenderLightmappedPoly(surf);
-			//}
-			//else
-			{
-				// the polygon is visible, so add it to the texture
-				// sorted chain
-				// FIXME: this is a hack for animation
-				image = R_TextureAnimation(surf->texinfo);
-				surf->texturechain = image->texturechain;
-				image->texturechain = surf;
-			}
+			// the polygon is visible, so add it to the texture
+			// sorted chain
+			// FIXME: this is a hack for animation
+			image = R_TextureAnimation(surf->texinfo);
+			surf->texturechain = image->texturechain;
+			image->texturechain = surf;
 		}
 	}
 
-	// recurse down the back side
+	/* recurse down the back side */
 	R_RecursiveWorldNode(node->children[!side]);
-	/*
-		for ( ; c ; c--, surf++)
-		{
-			if (surf->visframe != r_framecount)
-				continue;
-
-			if ( (surf->flags & SURF_PLANEBACK) != sidebit )
-				continue;		// wrong side
-
-			if (surf->texinfo->flags & SURF_SKY)
-			{	// just adds to visible sky bounds
-				R_AddSkySurface (surf);
-			}
-			else if (surf->texinfo->flags & (SURF_TRANS33|SURF_TRANS66))
-			{	// add to the translucent chain
-	//			surf->texturechain = alpha_surfaces;
-	//			alpha_surfaces = surf;
-			}
-			else
-			{
-				if ( qglMultiTexCoord2fARB && !( surf->flags & SURF_DRAWTURB ) )
-				{
-					GL_RenderLightmappedPoly( surf );
-				}
-				else
-				{
-					// the polygon is visible, so add it to the texture
-					// sorted chain
-					// FIXME: this is a hack for animation
-					image = R_TextureAnimation (surf->texinfo);
-					surf->texturechain = image->texturechain;
-					image->texturechain = surf;
-				}
-			}
-		}
-	*/
 }
 
 
@@ -1595,3 +1371,4 @@ void GL_EndBuildingLightmaps(void)
 {
 	LM_UploadBlock(false);
 }
+

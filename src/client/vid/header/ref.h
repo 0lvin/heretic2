@@ -28,13 +28,33 @@
 #define CL_REF_H
 
 #include "../../../common/header/common.h"
-#include "../../../../h2common/q_surface.h"
-#include "../../../../h2common/arrayed_list.h"
+#include "vid.h"
 
 #define	MAX_DLIGHTS		32
 #define	MAX_ENTITIES	128
 #define	MAX_PARTICLES	4096
 #define	MAX_LIGHTSTYLES	256
+
+#define POWERSUIT_SCALE		4.0F
+
+#define SHELL_RED_COLOR		0xF2
+#define SHELL_GREEN_COLOR	0xD0
+#define SHELL_BLUE_COLOR	0xF3
+
+#define SHELL_RG_COLOR		0xDC
+#define SHELL_RB_COLOR		0x68
+#define SHELL_BG_COLOR		0x78
+
+#define SHELL_DOUBLE_COLOR		0xDF
+#define	SHELL_HALF_DAM_COLOR	0x90
+#define SHELL_CYAN_COLOR		0x72
+
+#define SHELL_WHITE_COLOR	0xD7
+
+#define ENTITY_FLAGS	68
+
+#include "../../../../h2common/q_surface.h"
+#include "../../../../h2common/arrayed_list.h"
 
 #define MAX_ALPHA_ENTITIES 2048
 #define	MAX_SERVER_ENTITIES	MAX_ENTITIES
@@ -150,20 +170,19 @@ typedef struct
 	int		type;
 } particle_t;
 
-typedef struct
-{
+typedef struct {
 	int			x, y, width, height, area;// in virtual screen coordinates
 	float		fov_x, fov_y;
 	float		vieworg[3];
 	float		clientmodelorg[3];
 	float		viewangles[3];
-	float		blend[4];			// rgba 0-1 full screen blend
-	float		time;				// time is uesed to auto animate
-	int			rdflags;			// RDF_UNDERWATER, etc
+	float		blend[4]; /* rgba 0-1 full screen blend */
+	float		time; /* time is used to auto animate */
+	int			rdflags; /* RDF_UNDERWATER, etc */
 
-	byte		*areabits;			// if not NULL, only areas with set bits will be drawn
+	byte		*areabits; /* if not NULL, only areas with set bits will be drawn */
 
-	lightstyle_t	*lightstyles;	// [MAX_LIGHTSTYLES]
+	lightstyle_t	*lightstyles; /* [MAX_LIGHTSTYLES] */
 
 	int			num_entities;
 	entity_t	**entities;

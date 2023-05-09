@@ -24,39 +24,47 @@
  * =======================================================================
  */
 
-#ifndef CLIENT_VID_H
-#define CLIENT_VID_H
-// vid.h -- video driver defs
+#ifndef CL_VID_H
+#define CL_VID_H
 
-#define	MIN_GAMMA	0.1			// These also need to be defined in gl_local.h
-#define MAX_GAMMA	4.0
+#include "../../../common/header/common.h"
 
-#define DEF_WIDTH	640
-#define DEF_HEIGHT	480
-
-typedef struct vrect_s
-{
+// FIXME: Remove it, it's unused.
+typedef struct vrect_s {
 	int				x,y,width,height;
 } vrect_t;
 
-typedef struct
-{
-	int			 	width;
-	int				height;
-	byte			*pixels;
+// Hold the video state.
+typedef struct {
+	int height;
+	int	width;
 } viddef_t;
 
-extern	viddef_t	viddef;				// global video state
+// Global video state.
+extern viddef_t viddef;
 
-// Video module initialisation etc
-void	VID_Init (void);
-void	VID_Shutdown (void);
-void	VID_CheckChanges (void);
+// Generic stuff.
+qboolean VID_HasRenderer(const char *renderer);
+void	VID_Init(void);
+void	VID_Shutdown(void);
+void	VID_CheckChanges(void);
 
-void	VID_MenuInit( void );
-void	VID_PreMenuInit( void );
-void	 VID_MenuDraw();
-const char	* VID_MenuKey( int );
+void	VID_MenuInit(void);
+void	VID_MenuDraw(void);
+const char *VID_MenuKey(int);
 
-// end
+// Stuff provided by platform backend.
+extern int glimp_refreshRate;
+
+const char **GLimp_GetDisplayIndices(void);
+int GLimp_GetWindowDisplayIndex(void);
+int GLimp_GetNumVideoDisplays(void);
+int GLimp_Init(void *hinstance, void *hWnd);
+void GLimp_Shutdown(void);
+qboolean GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight);
+void GLimp_ShutdownGraphics(void);
+void GLimp_GrabInput(qboolean grab);
+int GLimp_GetRefreshRate(void);
+qboolean GLimp_GetDesktopMode(int *pwidth, int *pheight);
+
 #endif

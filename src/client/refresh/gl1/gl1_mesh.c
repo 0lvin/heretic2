@@ -151,9 +151,6 @@ void GL_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp)
 			}
 		}
 
-		if ( qglLockArraysEXT != 0 )
-			qglLockArraysEXT( 0, paliashdr->num_xyz );
-
 		while (1)
 		{
 			// get the vertex count and primitive type
@@ -190,9 +187,6 @@ void GL_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp)
 			}
 			glEnd ();
 		}
-
-		if ( qglUnlockArraysEXT != 0 )
-			qglUnlockArraysEXT();
 	}
 	else
 	{
@@ -668,7 +662,8 @@ void R_DrawAliasModel (entity_t *e)
 	if (currententity->flags & RF_DEPTHHACK)
 		glDepthRange (gldepthmin, gldepthmax);
 
-	if (gl_shadows->value && !(currententity->flags & (RF_TRANSLUCENT | RF_WEAPONMODEL)))
+	if (gl_shadows->value &&
+		!(currententity->flags & (RF_TRANSLUCENT | RF_WEAPONMODEL)))
 	{
 		glPushMatrix ();
 		R_RotateForEntity (e);
@@ -680,6 +675,7 @@ void R_DrawAliasModel (entity_t *e)
 		glDisable (GL_BLEND);
 		glPopMatrix ();
 	}
-	glColor4f (1,1,1,1);
+
+	glColor4f(1, 1, 1, 1);
 }
 
