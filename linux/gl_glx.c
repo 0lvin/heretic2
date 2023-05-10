@@ -45,7 +45,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../src/client/header/keyboard.h"
 
 #include "../linux/rw_linux.h"
-#include "../linux/glw_linux.h"
 
 #include <GL/glx.h>
 
@@ -54,8 +53,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <X11/extensions/Xxf86dga.h>
 #include <X11/extensions/xf86vmode.h>
-
-glwstate_t glw_state;
 
 static Display *dpy = NULL;
 static int scrnum;
@@ -653,7 +650,7 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 		vidmode_ext = true;
 	}
 
-	visinfo = qglXChooseVisual(dpy, scrnum, attrib);
+	visinfo = glXChooseVisual(dpy, scrnum, attrib);
 	if (!visinfo) {
 		fprintf(stderr, "Error couldn't get an RGB, Double-buffered, Depth visual\n");
 		return rserr_invalid_mode;
@@ -728,9 +725,9 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 
 	XFlush(dpy);
 
-	ctx = qglXCreateContext(dpy, visinfo, NULL, True);
+	ctx = glXCreateContext(dpy, visinfo, NULL, True);
 
-	qglXMakeCurrent(dpy, win, ctx);
+	glXMakeCurrent(dpy, win, ctx);
 
 	*pwidth = width;
 	*pheight = height;
@@ -738,7 +735,7 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 	// let the sound and input subsystems know about the new window
 	ri.Vid_NewWindow (width, height);
 
-	qglXMakeCurrent(dpy, win, ctx);
+	glXMakeCurrent(dpy, win, ctx);
 
 	return rserr_ok;
 }
@@ -760,7 +757,7 @@ void GLimp_Shutdown( void )
 
 	if (dpy) {
 		if (ctx)
-			qglXDestroyContext(dpy, ctx);
+			glXDestroyContext(dpy, ctx);
 		if (win)
 			XDestroyWindow(dpy, win);
 		if (vidmode_active)
@@ -802,8 +799,8 @@ void GLimp_BeginFrame( float camera_seperation )
 */
 void GLimp_EndFrame (void)
 {
-	qglFlush();
-	qglXSwapBuffers(dpy, win);
+	glFlush();
+	glXSwapBuffers(dpy, win);
 }
 
 /*

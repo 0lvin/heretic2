@@ -403,8 +403,8 @@ void ( APIENTRY * qglUnlockArraysEXT) ( void );
 BOOL ( WINAPI * qwglSwapIntervalEXT)( int interval );
 BOOL ( WINAPI * qwglGetDeviceGammaRampEXT)( unsigned char *, unsigned char *, unsigned char * );
 BOOL ( WINAPI * qwglSetDeviceGammaRampEXT)( const unsigned char *, const unsigned char *, const unsigned char * );
-void ( APIENTRY * qglPointParameterfEXT)( GLenum param, GLfloat value );
-void ( APIENTRY * qglPointParameterfvEXT)( GLenum param, const GLfloat *value );
+void ( APIENTRY * qglPointParameterfARB)( GLenum param, GLfloat value );
+void ( APIENTRY * qglPointParameterfvARB)( GLenum param, const GLfloat *value );
 void ( APIENTRY * qglColorTableEXT)( int, int, int, int, int, const void * );
 void ( APIENTRY * qglMultiTexCoord2fARB)( GLenum, GLfloat, GLfloat );
 
@@ -3410,8 +3410,8 @@ qboolean QGL_Init( const char *dllname )
 	qwglSwapBuffers              = GPA( "wglSwapBuffers" );
 
 	qwglSwapIntervalEXT = 0;
-	qglPointParameterfEXT = 0;
-	qglPointParameterfvEXT = 0;
+	qglPointParameterfARB = 0;
+	qglPointParameterfvARB = 0;
 	qglColorTableEXT = 0;
 	qglMultiTexCoord2fARB = 0;
 

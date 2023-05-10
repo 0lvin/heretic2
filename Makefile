@@ -530,10 +530,10 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_misc.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_surf.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_warp.o \
+	$(BUILDDIR)/src/client/refresh/gl1/qgl.o \
 	$(BUILDDIR)/h2common/r_skeletons.o \
 	$(BUILDDIR)/h2common/arrayed_list.o \
 	$(BUILDDIR)/h2common/skeletons.o \
-	$(BUILDDIR)/linux/qgl_linux.o \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \

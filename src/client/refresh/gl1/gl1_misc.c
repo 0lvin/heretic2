@@ -210,7 +210,7 @@ void GL_SetDefaultState( void )
 
 	GL_TexEnv( GL_REPLACE );
 
-	if ( qglPointParameterfEXT )
+	if ( qglPointParameterfARB )
 	{
 		float attenuations[3];
 
@@ -219,9 +219,9 @@ void GL_SetDefaultState( void )
 		attenuations[2] = gl_particle_att_c->value;
 
 		glEnable( GL_POINT_SMOOTH );
-		qglPointParameterfEXT( GL_POINT_SIZE_MIN_EXT, gl_particle_min_size->value );
-		qglPointParameterfEXT( GL_POINT_SIZE_MAX_EXT, gl_particle_max_size->value );
-		qglPointParameterfvEXT( GL_DISTANCE_ATTENUATION_EXT, attenuations );
+		qglPointParameterfARB( GL_POINT_SIZE_MIN_EXT, gl_particle_min_size->value );
+		qglPointParameterfARB( GL_POINT_SIZE_MAX_EXT, gl_particle_max_size->value );
+		qglPointParameterfvARB( GL_DISTANCE_ATTENUATION_EXT, attenuations );
 	}
 
 	GL_UpdateSwapInterval();

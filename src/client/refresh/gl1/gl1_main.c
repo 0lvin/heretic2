@@ -24,8 +24,8 @@
  * =======================================================================
  */
 
-#include <ctype.h>
 #include "header/local.h"
+#include <ctype.h>
 #include "../../../../h2common/part_uvs.h"
 
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
@@ -48,10 +48,10 @@ model_t		*r_worldmodel;
 float		gldepthmin, gldepthmax;
 
 glconfig_t gl_config;
-glstate_t  gl_state;
+glstate_t gl_state;
 
-image_t		*r_notexture;		// use for bad textures
-image_t		*r_particletexture;	// little dot for particles
+image_t *r_notexture; /* use for bad textures */
+image_t *r_particletexture; /* little dot for particles */
 
 entity_t	*currententity;
 model_t		*currentmodel;
@@ -115,7 +115,6 @@ cvar_t	*gl_ext_multitexture;
 cvar_t	*gl_ext_pointparameters;
 cvar_t	*gl_ext_compiled_vertex_array;
 
-cvar_t	*gl_log;
 cvar_t	*gl_bitdepth;
 cvar_t	*gl_drawbuffer;
 cvar_t  *gl_driver;
@@ -230,9 +229,8 @@ void R_DrawSpriteModel (entity_t *e)
 	float		*up, *right;
 	dsprite_t		*psprite;
 
-	// don't even bother culling, because it's just a single
-	// polygon without a surface cache
-
+	/* don't even bother culling, because it's just
+	   a single polygon without a surface cache */
 	psprite = (dsprite_t *)currentmodel->extradata;
 
 	e->frame %= psprite->numframes;
@@ -247,7 +245,7 @@ void R_DrawSpriteModel (entity_t *e)
 
 
 
-	glColor4f( 1, 1, 1, alpha );
+	glColor4f(1, 1, 1, alpha);
 
 
 	glShadeModel(7425);
@@ -301,13 +299,13 @@ void R_DrawSpriteModel (entity_t *e)
 	if (currententity->flags & RF_NODEPTHTEST)
 		glEnable(GL_DEPTH_TEST);
 
-	glDisable (GL_ALPHA_TEST);
-	GL_TexEnv( GL_REPLACE );
+	glDisable(GL_ALPHA_TEST);
+	GL_TexEnv(GL_REPLACE);
 
 	glDisable(GL_BLEND);
 	glShadeModel(7424);
 
-	glColor4f( 1, 1, 1, 1 );
+	glColor4f(1, 1, 1, 1);
 }
 
 //==================================================================================
@@ -327,8 +325,8 @@ void R_DrawNullModel (void)
 	else
 		R_LightPoint (currententity->origin, shadelight);
 
-    glPushMatrix ();
-	R_RotateForEntity (currententity);
+	glPushMatrix();
+	R_RotateForEntity(currententity);
 
 	glDisable (GL_TEXTURE_2D);
 	glColor3fv (shadelight);
@@ -350,58 +348,61 @@ void R_DrawNullModel (void)
 	glEnable (GL_TEXTURE_2D);
 }
 
-/*
-=============
-R_DrawEntitiesOnList
-=============
-*/
-void R_DrawEntitiesOnList (void)
+void
+R_DrawEntitiesOnList(void)
 {
-	int		i;
+	int i;
 
 	if (!r_drawentities->value)
+	{
 		return;
+	}
 
-	// draw non-transparent first
-	for (i=0 ; i<r_newrefdef.num_entities ; i++)
+	/* draw non-transparent first */
+	for (i = 0; i < r_newrefdef.num_entities; i++)
 	{
 		currententity = r_newrefdef.entities[i];
 
 		if (currententity->flags & RF_TRANSLUCENT)
-			continue;	// solid
+		{
+			continue; /* solid */
+		}
 
 		{
 			currentmodel = currententity->model[0];
 			if (!currentmodel)
 			{
-				R_DrawNullModel ();
+				R_DrawNullModel();
 				continue;
 			}
+
 			switch (currentmodel->type)
 			{
-			case mod_flex:
-				R_DrawFlexModel(currententity);
-				break;
-			case mod_alias:
-				R_DrawAliasModel (currententity);
-				break;
-			case mod_brush:
-				R_DrawBrushModel (currententity);
-				break;
-			case mod_sprite:
-				R_DrawSpriteModel (currententity);
-				break;
-			default:
-				ri.Sys_Error (ERR_DROP, "Bad modeltype");
-				break;
+				case mod_flex:
+					R_DrawFlexModel(currententity);
+					break;
+				case mod_alias:
+					R_DrawAliasModel(currententity);
+					break;
+				case mod_brush:
+					R_DrawBrushModel(currententity);
+					break;
+				case mod_sprite:
+					R_DrawSpriteModel(currententity);
+					break;
+				default:
+					ri.Sys_Error(ERR_DROP, "Bad modeltype");
+					break;
 			}
 		}
 	}
 
-	// draw transparent entities
-	// we could sort these if it ever becomes a problem...
-	glDepthMask (0);		// no z writes
-	for (i=0 ; i<r_newrefdef.num_alpha_entities ; i++)
+	/* draw transparent entities
+	   we could sort these if it ever
+	   becomes a problem... */
+	glDepthMask(0);
+
+	for (i = 0; i < r_newrefdef.num_alpha_entities; i++)
 	{
 		currententity = r_newrefdef.alpha_entities[i];
 		if (!(currententity->flags & RF_TRANSLUCENT))
@@ -411,31 +412,32 @@ void R_DrawEntitiesOnList (void)
 
 			if (!currentmodel)
 			{
-				R_DrawNullModel ();
+				R_DrawNullModel();
 				continue;
 			}
+
 			switch (currentmodel->type)
 			{
-			case mod_flex:
-				R_DrawFlexModel(currententity);
-				break;
-			case mod_alias:
-				R_DrawAliasModel (currententity);
-				break;
-			case mod_brush:
-				R_DrawBrushModel (currententity);
-				break;
-			case mod_sprite:
-				R_DrawSpriteModel (currententity);
-				break;
-			default:
-				ri.Sys_Error (ERR_DROP, "Bad modeltype");
-				break;
+				case mod_flex:
+					R_DrawFlexModel(currententity);
+					break;
+				case mod_alias:
+					R_DrawAliasModel(currententity);
+					break;
+				case mod_brush:
+					R_DrawBrushModel(currententity);
+					break;
+				case mod_sprite:
+					R_DrawSpriteModel(currententity);
+					break;
+				default:
+					ri.Sys_Error(ERR_DROP, "Bad modeltype");
+					break;
 			}
 		}
 	}
-	glDepthMask (1);		// back to writing
 
+	glDepthMask(1); /* back to writing */
 }
 
 
@@ -1104,7 +1106,6 @@ void R_Register( void )
 	gl_particle_att_c = ri.Cvar_Get( "gl_particle_att_c", "0.01", CVAR_ARCHIVE );
 
 	gl_modulate = ri.Cvar_Get ("gl_modulate", "1", CVAR_ARCHIVE );
-	gl_log = ri.Cvar_Get( "gl_log", "0", 0 );
 	gl_bitdepth = ri.Cvar_Get( "gl_bitdepth", "0", 0 );
 	gl_mode = ri.Cvar_Get( "gl_mode", "3", CVAR_ARCHIVE );
 	gl_lightmap = ri.Cvar_Get ("gl_lightmap", "0", 0);
@@ -1278,77 +1279,7 @@ int R_Init( void *hinstance, void *hWnd )
 
 	ri.Cvar_Set( "scr_drawall", "0" );
 
-	/*
-	** grab extensions
-	*/
-#ifdef WIN32
-	if (strstr(gl_config.extensions_string, "GL_EXT_compiled_vertex_array") ||
-		strstr(gl_config.extensions_string, "GL_SGI_compiled_vertex_array"))
-	{
-		ri.Con_Printf(PRINT_ALL, "...enabling GL_EXT_compiled_vertex_array\n");
-		qglLockArraysEXT = (void*)qwglGetProcAddress("glLockArraysEXT");
-		qglUnlockArraysEXT = (void*)qwglGetProcAddress("glUnlockArraysEXT");
-	}
-	else
-	{
-		ri.Con_Printf(PRINT_ALL, "...GL_EXT_compiled_vertex_array not found\n");
-	}
-
-	if (strstr(gl_config.extensions_string, "WGL_EXT_swap_control"))
-	{
-		qwglSwapIntervalEXT = (BOOL(WINAPI*)(int)) qwglGetProcAddress("wglSwapIntervalEXT");
-		ri.Con_Printf(PRINT_ALL, "...enabling WGL_EXT_swap_control\n");
-	}
-	else
-	{
-		ri.Con_Printf(PRINT_ALL, "...WGL_EXT_swap_control not found\n");
-	}
-
-	if (strstr(gl_config.extensions_string, "GL_EXT_point_parameters"))
-	{
-		if (gl_ext_pointparameters->value)
-		{
-			qglPointParameterfEXT = (void (APIENTRY*)(GLenum, GLfloat)) qwglGetProcAddress("glPointParameterfEXT");
-			qglPointParameterfvEXT = (void (APIENTRY*)(GLenum, const GLfloat*)) qwglGetProcAddress("glPointParameterfvEXT");
-			ri.Con_Printf(PRINT_ALL, "...using GL_EXT_point_parameters\n");
-		}
-		else
-		{
-			ri.Con_Printf(PRINT_ALL, "...ignoring GL_EXT_point_parameters\n");
-		}
-	}
-	else
-	{
-		ri.Con_Printf(PRINT_ALL, "...GL_EXT_point_parameters not found\n");
-	}
-
-	if (strstr(gl_config.extensions_string, "GL_EXT_paletted_texture") &&
-		strstr(gl_config.extensions_string, "GL_EXT_shared_texture_palette"))
-	{
-		if (gl_ext_palettedtexture->value)
-		{
-			ri.Con_Printf(PRINT_ALL, "...using GL_EXT_shared_texture_palette\n");
-			qglColorTableEXT = (void (APIENTRY*) (int, int, int, int, int, const void*)) qwglGetProcAddress("glColorTableEXT");
-		}
-		else
-		{
-			ri.Con_Printf(PRINT_ALL, "...ignoring GL_EXT_shared_texture_palette\n");
-		}
-	}
-	else
-	{
-		ri.Con_Printf(PRINT_ALL, "...GL_EXT_shared_texture_palette not found\n");
-	}
-#endif
-
 	GL_SetDefaultState();
-
-	/*
-	** draw our stereo patterns
-	*/
-#if 0 // commented out until H3D pays us the money they owe us
-	GL_DrawStereoPattern();
-#endif
 
 	GL_InitImages ();
 	Mod_Init ();
@@ -1367,23 +1298,19 @@ R_Shutdown
 */
 void R_Shutdown (void)
 {
-	ri.Cmd_RemoveCommand ("modellist");
-	ri.Cmd_RemoveCommand ("screenshot");
-	ri.Cmd_RemoveCommand ("imagelist");
-	ri.Cmd_RemoveCommand ("gl_strings");
+	ri.Cmd_RemoveCommand("modellist");
+	ri.Cmd_RemoveCommand("screenshot");
+	ri.Cmd_RemoveCommand("imagelist");
+	ri.Cmd_RemoveCommand("gl_strings");
 
-	Mod_FreeAll ();
+	Mod_FreeAll();
 
-	GL_ShutdownImages ();
+	GL_ShutdownImages();
 
-	/*
-	** shut down OS specific OpenGL stuff like contexts, etc.
-	*/
+	/* shutdown OS specific OpenGL stuff like contexts, etc.  */
 	GLimp_Shutdown();
 
-	/*
-	** shutdown our gl subsystem
-	*/
+	/* shutdown our QGL subsystem */
 	QGL_Shutdown();
 }
 
@@ -1396,7 +1323,6 @@ R_BeginFrame
 */
 void R_BeginFrame( float camera_separation )
 {
-
 	gl_state.camera_separation = camera_separation;
 
 	/*
@@ -1408,17 +1334,6 @@ void R_BeginFrame( float camera_separation )
 
 		ref = ri.Cvar_Get ("vid_ref", "gl", 0);
 		ref->modified = true;
-	}
-
-	if ( gl_log->modified )
-	{
-		GLimp_EnableLogging( gl_log->value );
-		gl_log->modified = false;
-	}
-
-	if ( gl_log->value )
-	{
-		GLimp_LogNewFrame();
 	}
 
 	/*
