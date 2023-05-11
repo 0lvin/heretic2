@@ -567,27 +567,33 @@ NET
 
 // net.h -- quake's interface to the networking layer
 
-#define	PORT_ANY	-1
+/* NET */
 
-// FIXME: this really shouldn't have to be changed to 2000 but some maps (SSTOWN4) were causing it to crash
-//#define	MAX_MSGLEN		1400		// max length of a message
-#define	MAX_MSGLEN		2500		// max length of a message
-#define	PACKET_HEADER	10			// two ints and a short
+#define PORT_ANY -1
+#define MAX_MSGLEN 2500             /* max length of a message */
+#define PACKET_HEADER 10            /* two ints and a short */
 
-typedef enum {NA_LOOPBACK, NA_BROADCAST, NA_IP, NA_IPX, NA_BROADCAST_IPX} netadrtype_t;
+typedef enum
+{
+	NA_LOOPBACK,
+	NA_BROADCAST,
+	NA_IP,
+	NA_IPX,
+	NA_BROADCAST_IPX,
+	NA_IP6,
+	NA_MULTICAST6
+} netadrtype_t;
 
-typedef enum {NS_CLIENT, NS_SERVER, NS_GAMESPY} netsrc_t;
-
-extern	int		gamespy_port;
+typedef enum {NS_CLIENT, NS_SERVER} netsrc_t;
 
 typedef struct
 {
-	netadrtype_t	type;
+	netadrtype_t type;
+	byte ip[16];
+	unsigned int scope_id;
+	byte ipx[10];
 
-	byte	ip[4];
-	byte	ipx[10];
-
-	unsigned short	port;
+	unsigned short port;
 } netadr_t;
 
 void		NET_Init (void);
@@ -603,7 +609,7 @@ qboolean	NET_CompareAdr (netadr_t a, netadr_t b);
 qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b);
 qboolean	NET_IsLocalAddress (netadr_t adr);
 char		*NET_AdrToString (netadr_t a);
-qboolean	NET_StringToAdr (char *s, netadr_t *a);
+qboolean	NET_StringToAdr (const char *s, netadr_t *a);
 
 //============================================================================
 

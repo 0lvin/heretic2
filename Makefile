@@ -425,7 +425,8 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/h2common/h2surfaces.o \
 	$(BUILDDIR)/h2common/h2vector.o \
 	$(BUILDDIR)/src/common/glob.o \
-	$(BUILDDIR)/linux/net_udp.o \
+	$(BUILDDIR)/src/backends/unix/network.o \
+	$(BUILDDIR)/src/backends/unix/signalhandler.o \
 	$(BUILDDIR)/linux/p_dll.o \
 	$(BUILDDIR)/src/backends/unix/system.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \

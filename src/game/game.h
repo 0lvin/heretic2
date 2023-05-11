@@ -7,12 +7,6 @@
 #ifndef G_GAME_H
 #define G_GAME_H
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#define VC_EXTRALEAN
-#include <windows.h>
-#endif
-
 #include "../common/header/common.h"
 #include "../../h2common/singlylinkedlist.h"
 #include "../../h2common/q_physics.h"

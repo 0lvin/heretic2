@@ -70,6 +70,10 @@ qboolean is_portable;
 // Game given by user
 char userGivenGame[MAX_QPATH];
 
+// Game should quit next frame.
+// Hack for the signal handlers.
+qboolean quitnextframe;
+
 /*
 ==============================================================================
 
