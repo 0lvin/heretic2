@@ -129,136 +129,129 @@ void CL_WriteDemoMessage (void)
 	fwrite (net_message.data+8,	len, 1, cls.demofile);
 }
 
-
 /*
-====================
-CL_Stop_f
-
-stop recording a demo
-====================
-*/
-void CL_Stop_f (void)
+ * stop recording a demo
+ */
+void
+CL_Stop_f(void)
 {
-	int		len;
+	int len;
 
 	if (!cls.demorecording)
 	{
-		Com_Printf ("Not recording a demo.\n");
+		Com_Printf("Not recording a demo.\n");
 		return;
 	}
 
-// finish up
 	len = -1;
-	fwrite (&len, 4, 1, cls.demofile);
-	fclose (cls.demofile);
+
+	fwrite(&len, 4, 1, cls.demofile);
+	fclose(cls.demofile);
 	cls.demofile = NULL;
 	cls.demorecording = false;
-	Com_Printf ("Stopped demo.\n");
+	Com_Printf("Stopped demo.\n");
 }
 
 /*
-====================
-CL_Record_f
-
-record <demoname>
-
-Begins recording a demo from the current position
-====================
-*/
-void CL_Record_f (void)
+ * record <demoname>
+ * Begins recording a demo from the current position
+ */
+void
+CL_Record_f(void)
 {
-	char	name[MAX_OSPATH];
-	char	buf_data[MAX_MSGLEN];
-	sizebuf_t	buf;
-	int		i;
-	int		len;
-	entity_state_t	*ent;
-	entity_state_t	nullstate;
+	char name[MAX_OSPATH];
+	byte buf_data[MAX_MSGLEN];
+	sizebuf_t buf;
+	int i;
+	int len;
+	entity_state_t *ent;
+	entity_state_t nullstate;
 
 	if (Cmd_Argc() != 2)
 	{
-		Com_Printf ("record <demoname>\n");
+		Com_Printf("record <demoname>\n");
 		return;
 	}
 
 	if (cls.demorecording)
 	{
-		Com_Printf ("Already recording.\n");
+		Com_Printf("Already recording.\n");
 		return;
 	}
 
 	if (cls.state != ca_active)
 	{
-		Com_Printf ("You must be in a level to record.\n");
+		Com_Printf("You must be in a level to record.\n");
 		return;
 	}
 
-	//
-	// open the demo file
-	//
-	Com_sprintf (name, sizeof(name), "%s/demos/%s.dm2", FS_Gamedir(), Cmd_Argv(1));
+	Com_sprintf(name, sizeof(name), "%s/demos/%s.dm2", FS_Gamedir(), Cmd_Argv(1));
 
-	Com_Printf ("recording to %s.\n", name);
-	FS_CreatePath (name);
-	cls.demofile = fopen (name, "wb");
+	Com_Printf("recording to %s.\n", name);
+	FS_CreatePath(name);
+	cls.demofile = Q_fopen(name, "wb");
+
 	if (!cls.demofile)
 	{
-		Com_Printf ("ERROR: couldn't open.\n");
+		Com_Printf("ERROR: couldn't open.\n");
 		return;
 	}
+
 	cls.demorecording = true;
 
-	// don't start saving messages until a non-delta compressed message is received
+	/* don't start saving messages until a non-delta compressed message is received */
 	cls.demowaiting = true;
 
-	//
-	// write out messages to hold the startup information
-	//
-	SZ_Init (&buf, (byte *)&buf_data[0], sizeof(buf_data));
+	/* write out messages to hold the startup information */
+	SZ_Init(&buf, buf_data, sizeof(buf_data));
 
-	// send the serverdata
-	MSG_WriteByte (&buf, svc_serverdata);
-	MSG_WriteLong (&buf, PROTOCOL_VERSION);
-	MSG_WriteLong (&buf, 0x10000 + cl.servercount);
-	MSG_WriteByte (&buf, 1);	// demos are always attract loops
-	MSG_WriteString (&buf, cl.gamedir);
-	MSG_WriteShort (&buf, cl.playernum);
+	/* send the serverdata */
+	MSG_WriteByte(&buf, svc_serverdata);
+	MSG_WriteLong(&buf, PROTOCOL_VERSION);
+	MSG_WriteLong(&buf, 0x10000 + cl.servercount);
+	MSG_WriteByte(&buf, 1);  /* demos are always attract loops */
+	MSG_WriteString(&buf, cl.gamedir);
+	MSG_WriteShort(&buf, cl.playernum);
 
-	MSG_WriteString (&buf, cl.configstrings[CS_NAME]);
+	MSG_WriteString(&buf, cl.configstrings[CS_NAME]);
 
-	// configstrings
-	for (i=0 ; i<MAX_CONFIGSTRINGS ; i++)
+	/* configstrings */
+	for (i = 0; i < MAX_CONFIGSTRINGS; i++)
 	{
 		if (cl.configstrings[i][0])
 		{
-			if (buf.cursize + strlen (cl.configstrings[i]) + 32 > buf.maxsize)
-			{	// write it out
-				len = LittleLong (buf.cursize);
-				fwrite (&len, 4, 1, cls.demofile);
-				fwrite (buf.data, buf.cursize, 1, cls.demofile);
+			if (buf.cursize + strlen(cl.configstrings[i]) + 32 > buf.maxsize)
+			{
+				len = LittleLong(buf.cursize);
+				fwrite(&len, 4, 1, cls.demofile);
+				fwrite(buf.data, buf.cursize, 1, cls.demofile);
 				buf.cursize = 0;
 			}
 
-			MSG_WriteByte (&buf, svc_configstring);
-			MSG_WriteShort (&buf, i);
-			MSG_WriteString (&buf, cl.configstrings[i]);
-		}
+			MSG_WriteByte(&buf, svc_configstring);
 
+			MSG_WriteShort(&buf, i);
+			MSG_WriteString(&buf, cl.configstrings[i]);
+		}
 	}
 
-	// baselines
-	memset (&nullstate, 0, sizeof(nullstate));
-	for (i=0; i<MAX_EDICTS ; i++)
+	/* baselines */
+	memset(&nullstate, 0, sizeof(nullstate));
+
+	for (i = 0; i < MAX_EDICTS; i++)
 	{
 		ent = &cl_entities[i].baseline;
+
 		if (!ent->modelindex)
+		{
 			continue;
+		}
 
 		if (buf.cursize + 64 > buf.maxsize)
-		{	// write it out
-			len = LittleLong (buf.cursize);
-			fwrite (&len, 4, 1, cls.demofile);
-			fwrite (buf.data, buf.cursize, 1, cls.demofile);
+		{
+			len = LittleLong(buf.cursize);
+			fwrite(&len, 4, 1, cls.demofile);
+			fwrite(buf.data, buf.cursize, 1, cls.demofile);
 			buf.cursize = 0;
 		}
 
@@ -1526,31 +1519,34 @@ void CL_InitLocal (void)
 
 	//Cmd_AddCommand ("download", CL_Download_f);
 
-	//
-	// forward to server commands
-	//
-	// the only thing this does is allow command completion
-	// to work -- all unknown commands are automatically
-	// forwarded to the server
-	Cmd_AddCommand ("wave", NULL);
-	Cmd_AddCommand ("inven", NULL);
-	Cmd_AddCommand ("kill", NULL);
-	Cmd_AddCommand ("use", NULL);
-	Cmd_AddCommand ("drop", NULL);
-	Cmd_AddCommand ("say", NULL);
-	Cmd_AddCommand ("say_team", NULL);
-	Cmd_AddCommand ("info", NULL);
-	Cmd_AddCommand ("prog", NULL);
-	Cmd_AddCommand ("give", NULL);
-	Cmd_AddCommand ("god", NULL);
-	Cmd_AddCommand ("notarget", NULL);
-	Cmd_AddCommand ("noclip", NULL);
-	Cmd_AddCommand ("invuse", NULL);
-	Cmd_AddCommand ("invprev", NULL);
-	Cmd_AddCommand ("invnext", NULL);
-	Cmd_AddCommand ("invdrop", NULL);
-	Cmd_AddCommand ("weapnext", NULL);
-	Cmd_AddCommand ("weapprev", NULL);
+	/* forward to server commands
+	 * the only thing this does is allow command completion
+	 * to work -- all unknown commands are automatically
+	 * forwarded to the server */
+	Cmd_AddCommand("wave", NULL);
+	Cmd_AddCommand("inven", NULL);
+	Cmd_AddCommand("kill", NULL);
+	Cmd_AddCommand("use", NULL);
+	Cmd_AddCommand("drop", NULL);
+	Cmd_AddCommand("say", NULL);
+	Cmd_AddCommand("say_team", NULL);
+	Cmd_AddCommand("info", NULL);
+	Cmd_AddCommand("prog", NULL);
+	Cmd_AddCommand("give", NULL);
+	Cmd_AddCommand("god", NULL);
+	Cmd_AddCommand("notarget", NULL);
+	Cmd_AddCommand("noclip", NULL);
+	Cmd_AddCommand("invuse", NULL);
+	Cmd_AddCommand("invprev", NULL);
+	Cmd_AddCommand("invnext", NULL);
+	Cmd_AddCommand("invdrop", NULL);
+	Cmd_AddCommand("weapnext", NULL);
+	Cmd_AddCommand("weapprev", NULL);
+	Cmd_AddCommand("listentities", NULL);
+	Cmd_AddCommand("teleport", NULL);
+	Cmd_AddCommand("spawnentity", NULL);
+	Cmd_AddCommand("spawnonstart", NULL);
+	Cmd_AddCommand("cycleweap", NULL);
 }
 
 
@@ -1585,33 +1581,28 @@ void CL_WriteConfiguration (void)
 	Cvar_WriteVariables (path);
 }
 
-
-/*
-==================
-CL_FixCvarCheats
-
-==================
-*/
-
 typedef struct
 {
-	char	*name;
-	char	*value;
-	cvar_t	*var;
+	char *name;
+	char *value;
+	cvar_t *var;
 } cheatvar_t;
 
-cheatvar_t	cheatvars[] = {
+cheatvar_t cheatvars[] = {
 	{"timescale", "1"},
 	{"timedemo", "0"},
 	{"r_drawworld", "1"},
 	{"cl_testlights", "0"},
 	{"r_fullbright", "0"},
-	{"r_drawflat", "0"},
+	{"gl_drawflat", "0"},
 	{"paused", "0"},
 	{"fixedtime", "0"},
 	{"sw_draworder", "0"},
-	{"gl_lightmap", "0"},
+	{"r_lightmap", "0"},
 	{"gl_saturatelighting", "0"},
+	{"cl_kickangles", "1"},
+	{"g_footsteps", "1"},
+	{"g_machinegun_norecoil", "0"},
 	{NULL, NULL}
 };
 
@@ -1809,7 +1800,7 @@ void CL_Init (void)
 	net_message.data = net_message_buffer;
 	net_message.maxsize = sizeof(net_message_buffer);
 
-	M_Init ();
+	M_Init();
 
 	SCR_Init ();
 	cls.disable_screen = false;	// don't draw yet
@@ -1819,35 +1810,26 @@ void CL_Init (void)
 
 	CL_LoadStrings();
 
-//	Cbuf_AddText ("exec autoexec.cfg\n");
-	FS_ExecAutoexec ();
-	Cbuf_Execute ();
+	Cbuf_Execute();
 
 }
 
-
-/*
-===============
-CL_Shutdown
-
-FIXME: this is a callback from Sys_Quit and Com_Error.  It would be better
-to run quit through here before the final handoff to the sys code.
-===============
-*/
-void CL_Shutdown(void)
+void
+CL_Shutdown(void)
 {
 	static qboolean isdown = false;
 
 	if (isdown)
 	{
-		printf ("recursive shutdown\n");
+		printf("recursive shutdown\n");
 		return;
 	}
+
 	isdown = true;
 
 	CL_WriteConfiguration ();
 
 	S_Shutdown();
-	IN_Shutdown ();
+	IN_Shutdown();
 	VID_Shutdown();
 }

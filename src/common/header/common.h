@@ -83,12 +83,6 @@
   #endif // _MSC_VER
 #endif // YQ2ARCH
 
-typedef struct edict_s edict_t;
-typedef struct sfx_s sfx_t;
-typedef struct client_entity_s client_entity_t;
-extern int	c_pointcontents;
-extern int	c_traces, c_brush_traces;
-
 /* ================================================================== */
 
 typedef struct sizebuf_s
@@ -128,12 +122,6 @@ void MSG_WriteDeltaEntity(struct entity_state_s *from,
 		struct entity_state_s *to, sizebuf_t *msg,
 		qboolean force, qboolean newentity);
 void MSG_WriteDir(sizebuf_t *sb, vec3_t vector);
-void ParseEffectToSizeBuf(sizebuf_t *sizebuf, char *format, va_list marker);
-void MSG_WriteEntityHeaderBits(sizebuf_t *msg, unsigned char *bf, unsigned char *bfNonZero);
-void MSG_WriteDirMag (sizebuf_t *sb, vec3_t dir);
-void MSG_WriteYawPitch (sizebuf_t *sb, vec3_t vector);
-void MSG_WriteShortYawPitch (sizebuf_t *sb, vec3_t vector);
-void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
 void MSG_BeginReading(sizebuf_t *sb);
 
@@ -156,101 +144,81 @@ void MSG_ReadDeltaUsercmd(sizebuf_t *sb,
 void MSG_ReadDir(sizebuf_t *sb, vec3_t vector);
 
 void MSG_ReadData(sizebuf_t *sb, void *buffer, int size);
-void MSG_ReadJoints(sizebuf_t *msg_read, entity_state_t *ent);
-void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
-void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir);
-void MSG_ReadYawPitch(sizebuf_t *sb, vec3_t vector);
-void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t vector);
 
-//============================================================================
+/* ================================================================== */
 
-extern	qboolean		bigendien;
-extern int		sz_line;
-extern char		*sz_filename;
-#define set_sz_data	sz_filename = __FILE__; sz_line = __LINE__;
+extern qboolean bigendien;
 
-//============================================================================
+extern short BigShort(short l);
+extern short LittleShort(short l);
+extern int BigLong(int l);
+extern int LittleLong(int l);
+extern float BigFloat(float l);
+extern float LittleFloat(float l);
 
-int	COM_Argc (void);
-char *COM_Argv (int arg);	// range and null checked
-void COM_ClearArgv (int arg);
-int COM_CheckParm (char *parm);
-void COM_AddParm (char *parm);
+/* ================================================================== */
 
-void COM_Init (void);
-void COM_InitArgv (int argc, char **argv);
+int COM_Argc(void);
+char *COM_Argv(int arg);    /* range and null checked */
+void COM_ClearArgv(int arg);
+int COM_CheckParm(char *parm);
+void COM_AddParm(char *parm);
 
-char *CopyString (char *in);
+void COM_Init(void);
+void COM_InitArgv(int argc, char **argv);
 
-//============================================================================
+char *CopyString(char *in);
 
-void Info_Print (char *s);
+/* ================================================================== */
 
-/*
-==============================================================
+void Info_Print(char *s);
 
-PROTOCOL
+/* PROTOCOL */
 
-==============================================================
-*/
+#define PROTOCOL_VERSION 51
 
-// protocol.h -- communications protocols
+/* ========================================= */
 
-#define	PROTOCOL_VERSION	51
+#define PORT_MASTER 28900
+#define PORT_CLIENT 28901
+#define PORT_SERVER 28910
 
-//=========================================
+/* ========================================= */
 
-#define	PORT_MASTER			28900
-#define	PORT_CLIENT			28901
-#define	PORT_SERVER			28910
-#define	PORT_GAMESPY		28911	// port that gamespy will communicate to our server on
-#define	PORT_GAMESPYMASTER	27900	// port we communicate to gamespy's master server
+#define UPDATE_BACKUP 16    /* copies of entity_state_t to keep buffered */
+#define UPDATE_MASK (UPDATE_BACKUP - 1)
 
-//=========================================
-
-#define	UPDATE_BACKUP		16	// copies of entity_state_t to keep buffered
-								// must be power of two
-#define	UPDATE_MASK			(UPDATE_BACKUP-1)
-
-#define MAX_PACKET_ENTITIES	64
-
-
-//==================
-// the svc_strings[] array in cl_parse.c should mirror this
-//==================
-
-//
-// server to client
-//
+/* server to client */
 enum svc_ops_e
 {
 	svc_bad,
 
+	/* these ops are known to the game dll */
 	svc_layout,
 	svc_inventory,
 	svc_client_effect,
 
-	// the rest are private to the client and server
+	/* the rest are private to the client and server */
 	svc_nop,
 	svc_disconnect,
 	svc_reconnect,
-	svc_sound,					// <see code>
-	svc_print,					// [byte] id [string] null terminated string
-	svc_gamemsg_print, 			// [short] id (top 3 bits flags)
-	svc_stufftext,				// [string] stuffed into client's console buffer, should be \n terminated
-	svc_serverdata,				// [long] protocol ...
-	svc_configstring,			// [short] [string]
+	svc_sound,				// <see code>
+	svc_print,                  /* [byte] id [string] null terminated string */
+	svc_gamemsg_print,          /* [short] id (top 3 bits flags) */
+	svc_stufftext,              /* [string] stuffed into client's console buffer, should be \n terminated */
+	svc_serverdata,             /* [long] protocol ... */
+	svc_configstring,           /* [short] [string] */
 	svc_spawnbaseline,
-	svc_centerprint,			// [string] to put in center of the screen
-	svc_gamemsg_centerprint,  	// line number of [string] in strings.txt file
-	svc_gamemsgvar_centerprint,	// line number of [string] in strings.txt file, along with var to insert
-	svc_levelmsg_centerprint, 	// line number of [string] in strings.txt file
-	svc_captionprint,			// line number of [string] in strings.txt file
-	svc_obituary,			// line number of [string] in strings.txt file
-	svc_download,				// [short] size [size bytes]
+	svc_centerprint,            /* [string] to put in center of the screen */
+	svc_gamemsg_centerprint,    /* line number of [string] in strings.txt file */
+	svc_gamemsgvar_centerprint, /* line number of [string] in strings.txt file, along with var to insert */
+	svc_levelmsg_centerprint,   /* line number of [string] in strings.txt file */
+	svc_captionprint,           /* line number of [string] in strings.txt file */
+	svc_obituary,               /* line number of [string] in strings.txt file */
+	svc_download,               /* [short] size [size bytes] */
 	svc_playerinfo,				// variable
 	svc_packetentities,			// [...]
-	svc_deltapacketentities,	// [...]
+	svc_deltapacketentities,    /* [...] */
 	svc_frame,
 	svc_removeentities,
 	svc_changeCDtrack,
@@ -274,7 +242,18 @@ enum clc_ops_e
 	clc_startdemo           /* start a demo - please send me all persistant effects */
 };
 
-//==============================================
+/* ============================================== */
+
+#define CFX_CULLING_DIST 1000.0f
+
+extern int		sz_line;
+extern char		*sz_filename;
+#define set_sz_data	sz_filename = __FILE__; sz_line = __LINE__;
+
+void Info_Print (char *s);
+
+#define MAX_PACKET_ENTITIES	64
+/* ============================================== */
 
 // player_state_t communication delta flags.
 
@@ -749,112 +728,161 @@ Common between server and client so prediction matches
 
 void Pmove(pmove_t *pmove, qboolean isServer);
 
-/*
-==============================================================
+/* FILESYSTEM */
 
-FILESYSTEM
+#define SFF_INPACK 0x20
 
-==============================================================
-*/
+typedef int fileHandle_t;
 
-void		FS_InitFilesystem (void);
-char		*FS_GetPath (char *name);
-void		FS_SetGamedir (char *dir);
-char		*FS_Gamedir (void);
-char		*FS_Userdir (void);
-char		*FS_NextPath (char *prevpath);
-void		FS_ExecAutoexec (void);
+typedef enum
+{
+	FS_READ,
+	FS_WRITE,
+	FS_APPEND
+} fsMode_t;
 
-int			FS_FOpenFile (char *filename, FILE **file);
-void		FS_FCloseFile (FILE *f);
-// note: this can't be called from another DLL, due to MS libc issues
+typedef enum
+{
+	FS_SEEK_CUR,
+	FS_SEEK_SET,
+	FS_SEEK_END
+} fsOrigin_t;
 
+typedef enum
+{
+	FS_SEARCH_PATH_EXTENSION,
+	FS_SEARCH_BY_FILTER,
+	FS_SEARCH_FULL_PATH
+} fsSearchType_t;
 
-char**		FS_ListFiles(char* findname, int* numfiles, unsigned musthave, unsigned canthave);
-int			FS_LoadFile (char *path, void **buffer);
-// a null buffer will just return the file length without loading
-// a -1 length is not present
+void FS_DPrintf(const char *format, ...);
+int FS_FOpenFile(const char *name, fileHandle_t *f, qboolean gamedir_only);
+void FS_FCloseFile(fileHandle_t f);
+int FS_Read(void *buffer, int size, fileHandle_t f);
+int FS_FRead(void *buffer, int size, int count, fileHandle_t f);
 
-void		FS_Read (void *buffer, int len, FILE *f);
-// properly handles partial reads
+// returns the filename used to open f, but (if opened from pack) in correct case
+// returns NULL if f is no valid handle
+const char* FS_GetFilenameForHandle(fileHandle_t f);
 
-void		FS_FreeFile (void *buffer);
+char **FS_ListFiles(char *findname, int *numfiles,
+		unsigned musthave, unsigned canthave);
+char **FS_ListFiles2(char *findname, int *numfiles,
+		unsigned musthave, unsigned canthave);
+void FS_FreeList(char **list, int nfiles);
 
-void		FS_CreatePath (char *path);
+void FS_InitFilesystem(void);
+void FS_ShutdownFilesystem(void);
+void FS_BuildGameSpecificSearchPath(char *dir);
+char *FS_Gamedir(void);
+char *FS_NextPath(char *prevpath);
+int FS_LoadFile(char *path, void **buffer);
+qboolean FS_FileInGamedir(const char *file);
+qboolean FS_AddPAKFromGamedir(const char *pak);
+const char* FS_GetNextRawPath(const char* lastRawPath);
+char **FS_ListMods(int *nummods);
 
-/*
-==============================================================
+/* a null buffer will just return the file length without loading */
+/* a -1 length is not present */
 
-MISC
+/* properly handles partial reads */
 
-==============================================================
-*/
+void FS_FreeFile(void *buffer);
+void FS_CreatePath(char *path);
 
-#define CFX_CULLING_DIST 1000.0f
+/* MISC */
 
-#define	ERR_FATAL	0		// exit the entire game with a popup window
-#define	ERR_DROP	1		// print to console and disconnect from game
-#define	ERR_QUIT	2		// not an error, just a normal exit
+#define ERR_FATAL 0         /* exit the entire game with a popup window */
+#define ERR_DROP 1          /* print to console and disconnect from game */
+#define ERR_QUIT 2          /* not an error, just a normal exit */
 
-#define	EXEC_NOW	0		// don't return until completed
-#define	EXEC_INSERT	1		// insert at current position, but don't run yet
-#define	EXEC_APPEND	2		// add to end of the command buffer
+#define EXEC_NOW 0          /* don't return until completed */
+#define EXEC_INSERT 1       /* insert at current position, but don't run yet */
+#define EXEC_APPEND 2       /* add to end of the command buffer */
 
-#define	PRINT_ALL		0
-#define PRINT_DEVELOPER	1	// only print when "developer 1"
+#define PRINT_ALL 0
+#define PRINT_DEVELOPER 1   /* only print when "developer 1" */
 
-void		Com_BeginRedirect (int target, char *buffer, int buffersize, void (*flush)(int, char *));
-void		Com_EndRedirect (void);
-void 		Com_DPrintf (char *fmt, ...);
-void 		Com_MDPrintf (char *fmt, ...);
-void		Com_Error (int code, char *fmt, ...);
-void 		Com_Quit (void);
-int			Com_ServerState (void);
-void		Com_SetServerState (int state);
-unsigned	Com_BlockChecksum (void *buffer, int length);
+void Com_BeginRedirect(int target, char *buffer, int buffersize, void (*flush)(int, char *));
+void Com_EndRedirect(void);
+void Com_Printf(char *fmt, ...) PRINTF_ATTR(1, 2);
+void Com_DPrintf(char *fmt, ...) PRINTF_ATTR(1, 2);
+void Com_VPrintf(int print_level, const char *fmt, va_list argptr); /* print_level is PRINT_ALL or PRINT_DEVELOPER */
+void Com_MDPrintf(char *fmt, ...) PRINTF_ATTR(1, 2);
+YQ2_ATTR_NORETURN_FUNCPTR void Com_Error(int code, char *fmt, ...) PRINTF_ATTR(2, 3);
+YQ2_ATTR_NORETURN void Com_Quit(void);
 
-extern	cvar_t	*developer;
-extern   cvar_t	*modder;
-extern	cvar_t	*dedicated;
-extern	cvar_t	*host_speeds;
-extern	cvar_t	*log_stats;
-extern	cvar_t	*player_dll;
+/* Ugly work around for unsupported
+ * format specifiers unter mingw. */
+#ifdef WIN32
+#define YQ2_COM_PRId64 "%I64d"
+#define YQ2_COM_PRIdS "%Id"
+#else
+#define YQ2_COM_PRId64 "%ld"
+#define YQ2_COM_PRIdS "%zd"
+#endif
 
-extern	cvar_t	*allow_download;
-extern	cvar_t	*allow_download_maps;
-extern	cvar_t	*allow_download_players;
-extern	cvar_t	*allow_download_models;
-extern	cvar_t	*allow_download_sounds;
+// terminate yq2 (with Com_Error()) if VAR is NULL (after malloc() or similar)
+// and print message about it
+#define YQ2_COM_CHECK_OOM(VAR, ALLOC_FN_NAME, ALLOC_SIZE) \
+	if(VAR == NULL) { \
+		Com_Error(ERR_FATAL, "%s for " YQ2_COM_PRIdS " bytes failed in %s() (%s == NULL)! Out of Memory?!\n", \
+		                     ALLOC_FN_NAME, (size_t)ALLOC_SIZE, __func__, #VAR); }
+
+int Com_ServerState(void);              /* this should have just been a cvar... */
+void Com_SetServerState(int state);
+
+unsigned Com_BlockChecksum(void *buffer, int length);
+byte COM_BlockSequenceCRCByte(byte *base, int length, int sequence);
+
+extern cvar_t *developer;
+extern cvar_t *modder;
+extern cvar_t *dedicated;
+extern cvar_t *host_speeds;
+extern cvar_t *log_stats;
+extern cvar_t *player_dll;
+
+extern cvar_t *allow_download;
+extern cvar_t *allow_download_maps;
+extern cvar_t *allow_download_players;
+extern cvar_t *allow_download_models;
+extern cvar_t *allow_download_sounds;
+
+/* Hack for portable client */
+extern qboolean is_portable;
+
+/* Hack for external datadir */
+extern char datadir[MAX_OSPATH];
 
 /* Hack for external datadir */
 extern char cfgdir[MAX_OSPATH];
 
 /* Hack for working 'game' cmd */
 extern char userGivenGame[MAX_QPATH];
+extern char **mapnames;
+extern int nummaps;
 
 extern FILE *log_stats_file;
 
-// host_speeds times
-#ifdef _DEVEL
-extern	__int64	time_before_game;
-extern	__int64	time_after_game;
-extern	__int64	time_before_ref;
-extern	__int64	time_after_ref;
-#endif	// _DEVEL
+/* host_speeds times */
+extern int time_before_game;
+extern int time_after_game;
+extern int time_before_ref;
+extern int time_after_ref;
 
-void Z_Free (void *ptr);
-void *Z_Malloc (int size);			// returns 0 filled memory
-void *Z_TagMalloc (int size, int tag);
-void Z_FreeTags (int tag);
+void Z_Free(void *ptr);
+void *Z_Malloc(int size);           /* returns 0 filled memory */
+void *Z_TagMalloc(int size, int tag);
+void Z_FreeTags(int tag);
 
-void Qcommon_Init (int argc, char **argv);
+void Qcommon_Init(int argc, char **argv);
+void Qcommon_ExecConfigs(qboolean addEarlyCmds);
+const char* Qcommon_GetInitialGame(void);
 void Qcommon_Frame (int msec);
-void Qcommon_Shutdown (void);
+void Qcommon_Shutdown(void);
 
-
-#define NUMVERTEXNORMALS	162
-extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
-byte	COM_BlockSequenceCRCByte (byte *base, int length, int sequence);
+#define NUMVERTEXNORMALS 162
+extern vec3_t bytedirs[NUMVERTEXNORMALS];
 
 /*
 ==============================================================
@@ -864,18 +892,48 @@ NON-PORTABLE SYSTEM SERVICES
 ==============================================================
 */
 
-void	Sys_Init (void);
-
 void	Sys_AppActivate (void);
 
-// loads the game dll and calls the api init function
+/* ======================================================================= */
 
-char	*Sys_ConsoleInput (void);
-void	Sys_ConsoleOutput (char *string);
-void	Sys_SendKeyEvents (void);
-void	Sys_Quit (void);
-char	*Sys_GetClipboardData( void );
-void	Sys_CopyProtect (void);
+// Platform specific functions.
+
+// system.c
+char *Sys_ConsoleInput(void);
+void Sys_ConsoleOutput(char *string);
+void Sys_SendKeyEvents(void);
+YQ2_ATTR_NORETURN void Sys_Error(char *error, ...);
+YQ2_ATTR_NORETURN void Sys_Quit(void);
+void Sys_Init(void);
+char *Sys_GetClipboardData(void);
+void Sys_CopyProtect(void);
+char *Sys_GetHomeDir(void);
+void Sys_Remove(const char *path);
+int Sys_Rename(const char *from, const char *to);
+void Sys_RemoveDir(const char *path);
+long long Sys_Microseconds(void);
+void Sys_Nanosleep(int);
+void *Sys_GetProcAddress(void *handle, const char *sym);
+void Sys_FreeLibrary(void *handle);
+void *Sys_LoadLibrary(const char *path, const char *sym, void **handle);
+void *Sys_GetGameAPI(void *parms);
+void Sys_UnloadGame(void);
+void Sys_GetWorkDir(char *buffer, size_t len);
+qboolean Sys_SetWorkDir(char *path);
+qboolean Sys_Realpath(const char *in, char *out, size_t size);
+
+// Windows only (system.c)
+#ifdef _WIN32
+void Sys_RedirectStdout(void);
+void Sys_SetHighDPIMode(void);
+#endif
+
+// misc.c
+const char *Sys_GetBinaryDir(void);
+void Sys_SetupFPU(void);
+
+/* ======================================================================= */
+
 
 /*
 ==============================================================
@@ -1206,5 +1264,24 @@ enum
 #define FLOAT_ZERO_EPSILON 0.0005f
 
 float Q_fabs(float f);
+
+typedef struct edict_s edict_t;
+typedef struct sfx_s sfx_t;
+typedef struct client_entity_s client_entity_t;
+extern int	c_pointcontents;
+extern int	c_traces, c_brush_traces;
+
+void ParseEffectToSizeBuf(sizebuf_t *sizebuf, char *format, va_list marker);
+void MSG_WriteEntityHeaderBits(sizebuf_t *msg, unsigned char *bf, unsigned char *bfNonZero);
+void MSG_WriteDirMag (sizebuf_t *sb, vec3_t dir);
+void MSG_WriteYawPitch (sizebuf_t *sb, vec3_t vector);
+void MSG_WriteShortYawPitch (sizebuf_t *sb, vec3_t vector);
+void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
+
+void MSG_ReadJoints(sizebuf_t *msg_read, entity_state_t *ent);
+void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
+void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir);
+void MSG_ReadYawPitch(sizebuf_t *sb, vec3_t vector);
+void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t vector);
 
 #endif

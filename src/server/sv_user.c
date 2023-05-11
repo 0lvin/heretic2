@@ -26,127 +26,113 @@
 
 #include "header/server.h"
 
-edict_t	*sv_player;
+#define MAX_STRINGCMDS 8
 
-/*
-============================================================
+edict_t *sv_player;
 
-USER STRINGCMD EXECUTION
-
-sv_client and sv_player will be valid.
-============================================================
-*/
-
-/*
-==================
-SV_BeginDemoServer
-==================
-*/
-void SV_BeginDemoserver (void)
+void
+SV_BeginDemoserver(void)
 {
-	char		name[MAX_OSPATH];
+	char name[MAX_OSPATH];
 
-	Com_sprintf (name, sizeof(name), "demos/%s", sv.name);
-	FS_FOpenFile (name, &sv.demofile);
+	Com_sprintf(name, sizeof(name), "demos/%s", sv.name);
+	FS_FOpenFile(name, &sv.demofile, false);
+
 	if (!sv.demofile)
-		Com_Error (ERR_DROP, "Couldn't open %s\n", name);
+	{
+		Com_Error(ERR_DROP, "Couldn't open %s\n", name);
+	}
 }
 
 /*
-================
-SV_New_f
-
-Sends the first message from the server to a connected client.
-This will be sent on the initial connection and upon each server load.
-================
-*/
-void SV_New_f (void)
+ * Sends the first message from the server to a connected client.
+ * This will be sent on the initial connection and upon each server load.
+ */
+void
+SV_New_f(void)
 {
-	char		*gamedir;
-	int			playernum;
-	edict_t		*ent;
+	static char *gamedir;
+	int playernum;
+	edict_t *ent;
 
-	Com_DPrintf ("New() from %s\n", sv_client->name);
+	Com_DPrintf("New() from %s\n", sv_client->name);
 
 	if (sv_client->state != cs_connected)
 	{
-		Com_Printf ("New not valid -- already spawned\n");
+		Com_Printf("New not valid -- already spawned\n");
 		return;
 	}
 
-	// demo servers just dump the file message
+	/* demo servers just dump the file message */
 	if (sv.state == ss_demo)
 	{
-		SV_BeginDemoserver ();
+		SV_BeginDemoserver();
 		return;
 	}
 
-	//
-	// serverdata needs to go over for all types of servers
-	// to make sure the protocol is right, and to set the gamedir
-	//
-	gamedir = Cvar_VariableString ("gamedir");
+	/* serverdata needs to go over for all types of servers
+	   to make sure the protocol is right, and to set the gamedir */
+	gamedir = (char *)Cvar_VariableString("gamedir");
 
-	// send the serverdata
-	MSG_WriteByte (&sv_client->netchan.message, svc_serverdata);
-	MSG_WriteLong (&sv_client->netchan.message, PROTOCOL_VERSION);
-	MSG_WriteLong (&sv_client->netchan.message, svs.spawncount);
-	MSG_WriteByte (&sv_client->netchan.message, sv.attractloop);
-	MSG_WriteString (&sv_client->netchan.message, gamedir);
+	/* send the serverdata */
+	MSG_WriteByte(&sv_client->netchan.message, svc_serverdata);
+	MSG_WriteLong(&sv_client->netchan.message, PROTOCOL_VERSION);
+	MSG_WriteLong(&sv_client->netchan.message, svs.spawncount);
+	MSG_WriteByte(&sv_client->netchan.message, sv.attractloop);
+	MSG_WriteString(&sv_client->netchan.message, gamedir);
 
-	if (sv.state == ss_cinematic || sv.state == ss_pic)
-		playernum = -1;
-	else
-		playernum = sv_client - svs.clients;
-	MSG_WriteShort (&sv_client->netchan.message, playernum);
-
-	// send full levelname
-	MSG_WriteString (&sv_client->netchan.message, sv.configstrings[CS_NAME]);
-
-	//
-	// game server
-	//
-	if (sv.state == ss_game)
+	if ((sv.state == ss_cinematic) || (sv.state == ss_pic))
 	{
-		// set up the entity for the client
-		ent = EDICT_NUM(playernum+1);
-		ent->s.number = playernum+1;
-		sv_client->edict = ent;
-		memset (&sv_client->lastcmd, 0, sizeof(sv_client->lastcmd));
-
-		// begin fetching configstrings
-		MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-		MSG_WriteString (&sv_client->netchan.message, va("cmd configstrings %i 0\n",svs.spawncount) );
+		playernum = -1;
+	}
+	else
+	{
+		playernum = sv_client - svs.clients;
 	}
 
+	MSG_WriteShort(&sv_client->netchan.message, playernum);
+
+	/* send full levelname */
+	MSG_WriteString(&sv_client->netchan.message, sv.configstrings[CS_NAME]);
+
+	/* game server */
+	if (sv.state == ss_game)
+	{
+		/* set up the entity for the client */
+		ent = EDICT_NUM(playernum + 1);
+		ent->s.number = playernum + 1;
+		sv_client->edict = ent;
+		memset(&sv_client->lastcmd, 0, sizeof(sv_client->lastcmd));
+
+		/* begin fetching configstrings */
+		MSG_WriteByte(&sv_client->netchan.message, svc_stufftext);
+		MSG_WriteString(&sv_client->netchan.message,
+				va("cmd configstrings %i 0\n", svs.spawncount));
+	}
 }
 
-/*
-==================
-SV_Configstrings_f
-==================
-*/
-void SV_Configstrings_f (void)
+void
+SV_Configstrings_f(void)
 {
-	int			start;
+	int start;
 
-	Com_DPrintf ("Configstrings() from %s\n", sv_client->name);
+	Com_DPrintf("Configstrings() from %s\n", sv_client->name);
 
 	if (sv_client->state != cs_connected)
 	{
-		Com_Printf ("configstrings not valid -- already spawned\n");
+		Com_Printf("configstrings not valid -- already spawned\n");
 		return;
 	}
 
-	// handle the case of a level changing while a client was connecting
-	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
+	/* handle the case of a level changing while a client was connecting */
+	if ((int)strtol(Cmd_Argv(1), (char **)NULL, 10) != svs.spawncount)
 	{
-		Com_Printf ("SV_Configstrings_f from different level\n");
-		SV_New_f ();
+		Com_Printf("SV_Configstrings_f from different level\n");
+		SV_New_f();
 		return;
 	}
 
-	start = atoi(Cmd_Argv(2));
+	start = (int)strtol(Cmd_Argv(2), (char **)NULL, 10);
 
 	// write a packet full of data
 
@@ -155,57 +141,55 @@ void SV_Configstrings_f (void)
 	{
 		if (sv.configstrings[start][0])
 		{
-			MSG_WriteByte (&sv_client->netchan.message, svc_configstring);
-			MSG_WriteShort (&sv_client->netchan.message, start);
-			MSG_WriteString (&sv_client->netchan.message, sv.configstrings[start]);
+			MSG_WriteByte(&sv_client->netchan.message, svc_configstring);
+			MSG_WriteShort(&sv_client->netchan.message, start);
+			MSG_WriteString(&sv_client->netchan.message,
+					sv.configstrings[start]);
 		}
+
 		start++;
 	}
 
-	// send next command
-
+	/* send next command */
 	if (start == MAX_CONFIGSTRINGS)
 	{
-		MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-		MSG_WriteString (&sv_client->netchan.message, va("cmd baselines %i 0\n",svs.spawncount) );
+		MSG_WriteByte(&sv_client->netchan.message, svc_stufftext);
+		MSG_WriteString(&sv_client->netchan.message,
+				va("cmd baselines %i 0\n", svs.spawncount));
 	}
 	else
 	{
-		MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-		MSG_WriteString (&sv_client->netchan.message, va("cmd configstrings %i %i\n",svs.spawncount, start) );
+		MSG_WriteByte(&sv_client->netchan.message, svc_stufftext);
+		MSG_WriteString(&sv_client->netchan.message,
+				va("cmd configstrings %i %i\n", svs.spawncount, start));
 	}
 }
 
-/*
-==================
-SV_Baselines_f
-==================
-*/
-void SV_Baselines_f (void)
+void
+SV_Baselines_f(void)
 {
-	int		start;
-	entity_state_t	nullstate;
-	entity_state_t	*base;
+	int start;
+	entity_state_t nullstate;
+	entity_state_t *base;
 
-	Com_DPrintf ("Baselines() from %s\n", sv_client->name);
+	Com_DPrintf("Baselines() from %s\n", sv_client->name);
 
 	if (sv_client->state != cs_connected)
 	{
-		Com_Printf ("baselines not valid -- already spawned\n");
+		Com_Printf("baselines not valid -- already spawned\n");
 		return;
 	}
 
-	// handle the case of a level changing while a client was connecting
-	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
+	/* handle the case of a level changing while a client was connecting */
+	if ((int)strtol(Cmd_Argv(1), (char **)NULL, 10) != svs.spawncount)
 	{
-		Com_Printf ("SV_Baselines_f from different level\n");
-		SV_New_f ();
+		Com_Printf("SV_Baselines_f from different level\n");
+		SV_New_f();
 		return;
 	}
 
-	start = atoi(Cmd_Argv(2));
-
-	memset (&nullstate, 0, sizeof(nullstate));
+	start = (int)strtol(Cmd_Argv(2), (char **)NULL, 10);
+	memset(&nullstate, 0, sizeof(nullstate));
 
 	// write a packet full of data
 
@@ -247,7 +231,7 @@ void SV_Begin_f (void)
 	// handle the case of a level changing while a client was connecting
 	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
 	{
-		Com_Printf ("SV_Begin_f from different level\n");
+		Com_Printf("SV_Begin_f from different level\n");
 		SV_New_f ();
 		return;
 	}
@@ -306,108 +290,99 @@ SV_BeginDownload_f
 */
 void SV_BeginDownload_f(void)
 {
-	char	*name;
-	extern	cvar_t *allow_download;
-	extern	cvar_t *allow_download_players;
-	extern	cvar_t *allow_download_models;
-	extern	cvar_t *allow_download_sounds;
-	extern	cvar_t *allow_download_maps;
-	extern	int		file_from_pak; // ZOID did file come from pak?
+	char *name;
+	extern cvar_t *allow_download;
+	extern cvar_t *allow_download_players;
+	extern cvar_t *allow_download_models;
+	extern cvar_t *allow_download_sounds;
+	extern cvar_t *allow_download_maps;
+	extern qboolean file_from_protected_pak;
 	int offset = 0;
 
 	name = Cmd_Argv(1);
 
 	if (Cmd_Argc() > 2)
-		offset = atoi(Cmd_Argv(2)); // downloaded offset
+	{
+		offset = (int)strtol(Cmd_Argv(2), (char **)NULL, 10); /* downloaded offset */
+	}
 
-	// hacked by zoid to allow more conrol over download
-	// first off, no .. or global allow check
-	if (strstr (name, "..") || !allow_download->value
-		// leading dot is no good
-		|| *name == '.'
-		// leading slash bad as well, must be in subdir
-		|| *name == '/'
-		// next up, skin check
-		|| (strncmp(name, "players/", 6) == 0 && !allow_download_players->value)
-		// now models
-		|| (strncmp(name, "models/", 6) == 0 && !allow_download_models->value)
-		// now sounds
-		|| (strncmp(name, "sound/", 6) == 0 && !allow_download_sounds->value)
-		// now maps (note special case for maps, must not be in pak)
-		|| (strncmp(name, "maps/", 6) == 0 && !allow_download_maps->value)
-		// MUST be in a subdirectory
-		|| !strstr (name, "/") )
-	{	// don't allow anything with .. path
-		MSG_WriteByte (&sv_client->netchan.message, svc_download);
-		MSG_WriteShort (&sv_client->netchan.message, -1);
-		MSG_WriteByte (&sv_client->netchan.message, 0);
+	/* hacked by zoid to allow more conrol over download
+	   first off, no .. or global allow check */
+	if (strstr(name, "..") || strstr(name, "\\") || strstr(name, ":") || !allow_download->value
+		/* leading dot is no good */
+		|| (*name == '.')
+		/* leading slash bad as well, must be in subdir */
+		|| (*name == '/')
+		/* next up, skin check */
+		|| ((strncmp(name, "players/", 6) == 0) && !allow_download_players->value)
+		/* now models */
+		|| ((strncmp(name, "models/", 6) == 0) && !allow_download_models->value)
+		/* now sounds */
+		|| ((strncmp(name, "sound/", 6) == 0) && !allow_download_sounds->value)
+		/* now maps (note special case for maps, must not be in pak) */
+		|| ((strncmp(name, "maps/", 6) == 0) && !allow_download_maps->value)
+		/* MUST be in a subdirectory */
+		|| !strstr(name, "/"))
+	{
+		MSG_WriteByte(&sv_client->netchan.message, svc_download);
+		MSG_WriteShort(&sv_client->netchan.message, -1);
+		MSG_WriteByte(&sv_client->netchan.message, 0);
 		return;
 	}
 
-
 	if (sv_client->download)
-		FS_FreeFile (sv_client->download);
+	{
+		FS_FreeFile(sv_client->download);
+	}
 
-	sv_client->downloadsize = FS_LoadFile (name, (void **)&sv_client->download);
+	sv_client->downloadsize = FS_LoadFile(name, (void **)&sv_client->download);
 	sv_client->downloadcount = offset;
 
 	if (offset > sv_client->downloadsize)
-		sv_client->downloadcount = sv_client->downloadsize;
-
-	if (!sv_client->download
-		// special check for maps, if it came from a pak file, don't allow
-		// download  ZOID
-		|| (strncmp(name, "maps/", 5) == 0 && file_from_pak))
 	{
-		Com_DPrintf ("Couldn't download %s to %s\n", name, sv_client->name);
-		if (sv_client->download) {
-			FS_FreeFile (sv_client->download);
+		sv_client->downloadcount = sv_client->downloadsize;
+	}
+
+	if (!sv_client->download || ((strncmp(name, "maps/", 5) == 0) && file_from_protected_pak))
+	{
+		Com_DPrintf("Couldn't download %s to %s\n", name, sv_client->name);
+
+		if (sv_client->download)
+		{
+			FS_FreeFile(sv_client->download);
 			sv_client->download = NULL;
 		}
 
-		MSG_WriteByte (&sv_client->netchan.message, svc_download);
-		MSG_WriteShort (&sv_client->netchan.message, -1);
-		MSG_WriteByte (&sv_client->netchan.message, 0);
+		MSG_WriteByte(&sv_client->netchan.message, svc_download);
+		MSG_WriteShort(&sv_client->netchan.message, -1);
+		MSG_WriteByte(&sv_client->netchan.message, 0);
 		return;
 	}
 
-	SV_NextDownload_f ();
-	Com_DPrintf ("Downloading %s to %s\n", name, sv_client->name);
+	SV_NextDownload_f();
+	Com_DPrintf("Downloading %s to %s\n", name, sv_client->name);
 }
-
-
-
-//============================================================================
-
 
 /*
-=================
-SV_Disconnect_f
-
-The client is going to disconnect, so remove the connection immediately
-=================
-*/
-void SV_Disconnect_f (void)
+ * The client is going to disconnect, so remove the connection immediately
+ */
+void
+SV_Disconnect_f(void)
 {
-//	SV_EndRedirect ();
-	SV_DropClient (sv_client);
+	SV_DropClient(sv_client);
 }
-
 
 /*
-==================
-SV_ShowServerinfo_f
-
-Dumps the serverinfo info string
-==================
-*/
-void SV_ShowServerinfo_f (void)
+ * Dumps the serverinfo info string
+ */
+void
+SV_ShowServerinfo_f(void)
 {
-	Info_Print (Cvar_Serverinfo());
+	Info_Print(Cvar_Serverinfo());
 }
 
-
-void SV_Nextserver (void)
+void
+SV_Nextserver(void)
 {
 	char	*v;
 
@@ -560,19 +535,22 @@ void SV_ExecuteClientMessage (client_t *cl)
 	{
 		if (net_message.readcount > net_message.cursize)
 		{
-			Com_Printf ("SV_ReadClientMessage: badread\n");
-			SV_DropClient (cl);
+			Com_Printf("SV_ReadClientMessage: badread\n");
+			SV_DropClient(cl);
 			return;
 		}
 
-		c = MSG_ReadByte (&net_message);
+		c = MSG_ReadByte(&net_message);
+
 		if (c == -1)
+		{
 			break;
+		}
 
 		switch (c)
 		{
 		default:
-			Com_Printf ("SV_ReadClientMessage: unknown command char\n");
+			Com_Printf("SV_ReadClientMessage: unknown command char\n");
 		//	SV_DropClient (cl);
 			return;
 
@@ -633,7 +611,7 @@ void SV_ExecuteClientMessage (client_t *cl)
 
 //if (net_drop > 2)
 
-//	Com_Printf ("drop %i\n", net_drop);
+//	Com_Printf("drop %i\n", net_drop);
 					while (net_drop > 2)
 					{
 						SV_ClientThink (cl, &cl->lastcmd);

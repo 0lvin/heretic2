@@ -25,12 +25,17 @@
  */
 
 #include "header/common.h"
+#include "header/zone.h"
+#include <setjmp.h>
+
+cvar_t *developer;
+cvar_t *modder;
+cvar_t *timescale;
+
 #include "../client/header/screen.h"
 #include "../client/header/keyboard.h"
 #include "../client/header/console.h"
 #include "../server/header/server.h"
-#include "header/zone.h"
-#include <setjmp.h>
 
 #define	MAXPRINTMSG	4096
 
@@ -49,18 +54,18 @@ FILE	*log_stats_file;
 
 cvar_t	*host_speeds;
 cvar_t	*log_stats;
-cvar_t	*developer;
-cvar_t	*modder;
-cvar_t	*timescale;
 cvar_t	*fixedtime;
 cvar_t	*showtrace;
 cvar_t	*dedicated;
 
-// host_speeds times
-int		time_before_game;
-int		time_after_game;
-int		time_before_ref;
-int		time_after_ref;
+/* host_speeds times */
+int time_before_game;
+int time_after_game;
+int time_before_ref;
+int time_after_ref;
+
+// Is the game portable?
+qboolean is_portable;
 
 // Game given by user
 char userGivenGame[MAX_QPATH];
@@ -237,6 +242,21 @@ void MSG_WriteDeltaUsercmd (sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
 	MSG_WriteByte (buf, cmd->lightlevel);
 }
 
+void Qcommon_ExecConfigs(qboolean gameStartUp)
+{
+	Cbuf_AddText("exec default.cfg\n");
+	Cbuf_AddText("exec yq2.cfg\n");
+	Cbuf_AddText("exec config.cfg\n");
+	Cbuf_AddText("exec autoexec.cfg\n");
+
+	if (gameStartUp)
+	{
+		/* Process cmd arguments only startup. */
+		Cbuf_AddEarlyCommands(true);
+	}
+
+	Cbuf_Execute();
+}
 
 void MSG_WriteDir (sizebuf_t *sb, vec3_t dir)
 {
@@ -939,13 +959,8 @@ static void Com_Error_f (void)
 
 extern cvar_t *logfile_active;
 
-/*
-=================
-Qcommon_Init
-=================
-*/
 void
-Qcommon_Init (int argc, char **argv)
+Qcommon_Init(int argc, char **argv)
 {
 	char	*s;
 
@@ -1139,11 +1154,8 @@ void Qcommon_Frame (int msec)
 	}
 }
 
-/*
-=================
-Qcommon_Shutdown
-=================
-*/
-void Qcommon_Shutdown (void)
+void
+Qcommon_Shutdown(void)
 {
+	FS_ShutdownFilesystem();
 }

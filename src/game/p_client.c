@@ -2605,11 +2605,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			strcpy(skin, s);
 
 		sprintf(filename, "players/%s.m8", skin);
-		if (FS_FOpenFile (filename, &f) != -1)
-		{
-			FS_FCloseFile(f);		// Just checking for the existence of the file.
-		}
-		else
+		if (FS_LoadFile(filename, NULL) == -1)
 		{
 			if (strstr(s, "female/"))
 			{	// This was a female skin, fall back to Kiera.
@@ -2631,9 +2627,8 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			strcpy(skin, s);
 
 		sprintf(filename, "players/%s.m8", skin);
-		if (FS_FOpenFile (filename, &f) != -1)
+		if (FS_LoadFile(filename, NULL) != -1)
 		{
-			FS_FCloseFile(f);		// Just checking for the existence of the file.
 			if (allowillegalskins->value)
 			{
 				found=true;		// All we need is the base skin.
@@ -2641,13 +2636,11 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			else
 			{
 				sprintf(filename, "players/%sP1.m8", skin);
-				if (FS_FOpenFile (filename, &f) != -1)
+				if (FS_LoadFile(filename, NULL) != -1)
 				{
-					FS_FCloseFile(f);		// Just checking for the existence of the file.
 					sprintf(filename, "players/%sP2.m8", skin);
-					if (FS_FOpenFile (filename, &f) != -1)
+					if (FS_LoadFile(filename, NULL) != -1)
 					{
-						FS_FCloseFile(f);
 						found=true;
 					}
 				}
@@ -2673,9 +2666,8 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			if (allowillegalskins->value)
 			{	// Do the check for a valid skin in case an illegal skin has been let through.
 				sprintf(filename, "players/%sP1.m8", skin);
-				if (FS_FOpenFile (filename, &f) != -1)
+				if (FS_LoadFile(filename, NULL) != -1)
 				{	// The plague1 skin exists.
-					FS_FCloseFile(f);		// Just checking for the existence of the file.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 				}
 				else
@@ -2692,17 +2684,17 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			if (allowillegalskins->value)
 			{	// Do the check for a valid skin in case an illegal skin has been let through.
 				sprintf(filename, "players/%sP2.m8", skin);
-				if (FS_FOpenFile (filename, &f) != -1)
-				{	// The plague1 skin exists.
-					FS_FCloseFile(f);		// Just checking for the existence of the file.
+				if (FS_LoadFile(filename, NULL) != -1)
+				{
+					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%sP2", ent->client->playerinfo.pers.netname, skin) );
 				}
 				else
 				{	// No plague 2 skin, try for a plague 1 skin.
 					sprintf(filename, "players/%sP1.m8", skin);
-					if (FS_FOpenFile (filename, &f) != -1)
-					{	// The plague1 skin exists.
-						FS_FCloseFile(f);		// Just checking for the existence of the file.
+					if (FS_LoadFile(filename, NULL) != -1)
+					{
+						/* The plague1 skin exists. */
 						gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 					}
 					else
@@ -2723,18 +2715,17 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	else
 	{	// Single player.  This is CORVUS ONLY unless allowillegalskins is engaged
 		if (allowillegalskins->value)
-		{	// Allow any skin at all.
+		{
+			// Allow any skin at all.
 			if (!strchr(s, '/'))				// Backward compatibility, if not model, then assume male
 				sprintf(skin, "male/%s", s);
 			else
 				strcpy(skin, s);
 
 			sprintf(filename, "players/%s.m8", skin);
-			if (FS_FOpenFile (filename, &f) != -1)
-			{
-				FS_FCloseFile(f);		// Just checking for the existence of the file.
-			}
-			else
+
+			/* no, so see if it exists */
+			if (FS_LoadFile(filename, NULL) != -1)
 			{
 				strcpy(skin, "male/Corvus");
 			}
@@ -2744,9 +2735,11 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 			{
 			case 1:		// Plague level 1
 				sprintf(filename, "players/%sP1.m8", skin);
-				if (FS_FOpenFile (filename, &f) != -1)
-				{	// The plague1 skin exists.
-					FS_FCloseFile(f);		// Just checking for the existence of the file.
+
+				/* no, so see if it exists */
+				if (FS_LoadFile(filename, NULL) != -1)
+				{
+					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 				}
 				else
@@ -2756,17 +2749,21 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 				break;
 			case 2:		// Plague level 2
 				sprintf(filename, "players/%sP2.m8", skin);
-				if (FS_FOpenFile (filename, &f) != -1)
-				{	// The plague1 skin exists.
-					FS_FCloseFile(f);		// Just checking for the existence of the file.
+				/* no, so see if it exists */
+				if (FS_LoadFile(filename, NULL) != -1)
+				{
+					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%sP2", ent->client->playerinfo.pers.netname, skin) );
 				}
 				else
-				{	// No plague 2 skin, try for a plague 1 skin.
+				{
+					// No plague 2 skin, try for a plague 1 skin.
 					sprintf(filename, "players/%sP1.m8", skin);
-					if (FS_FOpenFile (filename, &f) != -1)
-					{	// The plague1 skin exists.
-						FS_FCloseFile(f);		// Just checking for the existence of the file.
+
+					/* no, so see if it exists */
+					if (FS_LoadFile(filename, NULL) != -1)
+					{
+						// The plague1 skin exists.
 						gi.configstring (CS_PLAYERSKINS+playernum, va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 					}
 					else

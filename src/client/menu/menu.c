@@ -30,20 +30,22 @@
  */
 
 #include <ctype.h>
-#ifdef _WIN32
-#include <io.h>
-#endif
 #include "../header/client.h"
+#include "../sound/header/local.h"
 #include "header/qmenu.h"
 
-
-static int	m_main_cursor;
-
+/* Number of the frames of the spinning quake logo */
 #define NUM_CURSOR_FRAMES 15
+static int m_cursor_width = 0;
 
-static char *menu_in_sound		= "misc/menu1.wav";
-static char *menu_move_sound	= "misc/menu2.wav";
-static char *menu_out_sound		= "misc/menu3.wav";
+/* Signals the file system to start the demo loop. */
+qboolean menu_startdemoloop;
+
+static char *menu_in_sound = "misc/menu1.wav";
+static char *menu_move_sound = "misc/menu2.wav";
+static char *menu_out_sound = "misc/menu3.wav";
+
+static int m_main_cursor;
 
 void M_Menu_Main_f (void);
 	void M_Menu_Game_f (void);
@@ -51,7 +53,6 @@ void M_Menu_Main_f (void);
 		void M_Menu_SaveGame_f (void);
 		void M_Menu_PlayerConfig_f (void);
 			void M_Menu_DownloadOptions_f (void);
-		void M_Menu_Credits_f( void );
 	void M_Menu_Multiplayer_f( void );
 		void M_Menu_JoinServer_f (void);
 			void M_Menu_AddressBook_f( void );
@@ -85,7 +86,22 @@ typedef struct
 menulayer_t	m_layers[MAX_MENU_DEPTH];
 int		m_menudepth;
 
-static void M_Banner( char *name )
+static qboolean
+M_IsGame(const char *gamename)
+{
+	cvar_t *game = Cvar_Get("game", "", CVAR_LATCH | CVAR_SERVERINFO);
+
+	if (strcmp(game->string, gamename) == 0
+		|| (strcmp(gamename, BASEDIRNAME) == 0 && strcmp(game->string, "") == 0))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+static void
+M_Banner( char *name )
 {
 	int w, h;
 
@@ -1338,18 +1354,15 @@ void M_Menu_Video_f (void)
 }
 
 /*
-=============================================================================
+ * END GAME MENU
+ */
 
-END GAME MENU
-
-=============================================================================
-*/
+#define CREDITS_SIZE 256
 static int credits_start_time;
 static const char **credits;
-static char *creditsIndex[256];
+static char *creditsIndex[CREDITS_SIZE];
 static char *creditsBuffer;
-static const char *idcredits[] =
-{
+static const char *idcredits[] = {
 	"+QUAKE II BY ID SOFTWARE",
 	"",
 	"+PROGRAMMING",
@@ -1441,257 +1454,257 @@ static const char *idcredits[] =
 
 static const char *xatcredits[] =
 {
-	"+QUAKE II MISSION PACK: THE RECKONING",
-	"+BY",
-	"+XATRIX ENTERTAINMENT, INC.",
-	"",
-	"+DESIGN AND DIRECTION",
-	"Drew Markham",
-	"",
-	"+PRODUCED BY",
-	"Greg Goodrich",
-	"",
-	"+PROGRAMMING",
-	"Rafael Paiz",
-	"",
-	"+LEVEL DESIGN / ADDITIONAL GAME DESIGN",
-	"Alex Mayberry",
-	"",
-	"+LEVEL DESIGN",
-	"Mal Blackwell",
-	"Dan Koppel",
-	"",
-	"+ART DIRECTION",
-	"Michael \"Maxx\" Kaufman",
-	"",
-	"+COMPUTER GRAPHICS SUPERVISOR AND",
-	"+CHARACTER ANIMATION DIRECTION",
-	"Barry Dempsey",
-	"",
-	"+SENIOR ANIMATOR AND MODELER",
-	"Jason Hoover",
-	"",
-	"+CHARACTER ANIMATION AND",
-	"+MOTION CAPTURE SPECIALIST",
-	"Amit Doron",
-	"",
-	"+ART",
-	"Claire Praderie-Markham",
-	"Viktor Antonov",
-	"Corky Lehmkuhl",
-	"",
-	"+INTRODUCTION ANIMATION",
-	"Dominique Drozdz",
-	"",
-	"+ADDITIONAL LEVEL DESIGN",
-	"Aaron Barber",
-	"Rhett Baldwin",
-	"",
-	"+3D CHARACTER ANIMATION TOOLS",
-	"Gerry Tyra, SA Technology",
-	"",
-	"+ADDITIONAL EDITOR TOOL PROGRAMMING",
-	"Robert Duffy",
-	"",
-	"+ADDITIONAL PROGRAMMING",
-	"Ryan Feltrin",
-	"",
-	"+PRODUCTION COORDINATOR",
-	"Victoria Sylvester",
-	"",
-	"+SOUND DESIGN",
-	"Gary Bradfield",
-	"",
-	"+MUSIC BY",
-	"Sonic Mayhem",
-	"",
-	"",
-	"",
-	"+SPECIAL THANKS",
-	"+TO",
-	"+OUR FRIENDS AT ID SOFTWARE",
-	"",
-	"John Carmack",
-	"John Cash",
-	"Brian Hook",
-	"Adrian Carmack",
-	"Kevin Cloud",
-	"Paul Steed",
-	"Tim Willits",
-	"Christian Antkow",
-	"Paul Jaquays",
-	"Brandon James",
-	"Todd Hollenshead",
-	"Barrett (Bear) Alexander",
-	"Dave \"Zoid\" Kirsch",
-	"Donna Jackson",
-	"",
-	"",
-	"",
-	"+THANKS TO ACTIVISION",
-	"+IN PARTICULAR:",
-	"",
-	"Marty Stratton",
-	"Henk \"The Original Ripper\" Hartong",
-	"Kevin Kraff",
-	"Jamey Gottlieb",
-	"Chris Hepburn",
-	"",
-	"+AND THE GAME TESTERS",
-	"",
-	"Tim Vanlaw",
-	"Doug Jacobs",
-	"Steven Rosenthal",
-	"David Baker",
-	"Chris Campbell",
-	"Aaron Casillas",
-	"Steve Elwell",
-	"Derek Johnstone",
-	"Igor Krinitskiy",
-	"Samantha Lee",
-	"Michael Spann",
-	"Chris Toft",
-	"Juan Valdes",
-	"",
-	"+THANKS TO INTERGRAPH COMPUTER SYTEMS",
-	"+IN PARTICULAR:",
-	"",
-	"Michael T. Nicolaou",
-	"",
-	"",
-	"Quake II Mission Pack: The Reckoning",
-	"(tm) (C)1998 Id Software, Inc. All",
-	"Rights Reserved. Developed by Xatrix",
-	"Entertainment, Inc. for Id Software,",
-	"Inc. Distributed by Activision Inc.",
-	"under license. Quake(R) is a",
-	"registered trademark of Id Software,",
-	"Inc. Quake II Mission Pack: The",
-	"Reckoning(tm), Quake II(tm), the Id",
-	"Software name, the \"Q II\"(tm) logo",
-	"and id(tm) logo are trademarks of Id",
-	"Software, Inc. Activision(R) is a",
-	"registered trademark of Activision,",
-	"Inc. Xatrix(R) is a registered",
-	"trademark of Xatrix Entertainment,",
-	"Inc. All other trademarks and trade",
-	"names are properties of their",
-	"respective owners.",
-	0
+    "+QUAKE II MISSION PACK: THE RECKONING",
+    "+BY",
+    "+XATRIX ENTERTAINMENT, INC.",
+    "",
+    "+DESIGN AND DIRECTION",
+    "Drew Markham",
+    "",
+    "+PRODUCED BY",
+    "Greg Goodrich",
+    "",
+    "+PROGRAMMING",
+    "Rafael Paiz",
+    "",
+    "+LEVEL DESIGN / ADDITIONAL GAME DESIGN",
+    "Alex Mayberry",
+    "",
+    "+LEVEL DESIGN",
+    "Mal Blackwell",
+    "Dan Koppel",
+    "",
+    "+ART DIRECTION",
+    "Michael \"Maxx\" Kaufman",
+    "",
+    "+COMPUTER GRAPHICS SUPERVISOR AND",
+    "+CHARACTER ANIMATION DIRECTION",
+    "Barry Dempsey",
+    "",
+    "+SENIOR ANIMATOR AND MODELER",
+    "Jason Hoover",
+    "",
+    "+CHARACTER ANIMATION AND",
+    "+MOTION CAPTURE SPECIALIST",
+    "Amit Doron",
+    "",
+    "+ART",
+    "Claire Praderie-Markham",
+    "Viktor Antonov",
+    "Corky Lehmkuhl",
+    "",
+    "+INTRODUCTION ANIMATION",
+    "Dominique Drozdz",
+    "",
+    "+ADDITIONAL LEVEL DESIGN",
+    "Aaron Barber",
+    "Rhett Baldwin",
+    "",
+    "+3D CHARACTER ANIMATION TOOLS",
+    "Gerry Tyra, SA Technology",
+    "",
+    "+ADDITIONAL EDITOR TOOL PROGRAMMING",
+    "Robert Duffy",
+    "",
+    "+ADDITIONAL PROGRAMMING",
+    "Ryan Feltrin",
+    "",
+    "+PRODUCTION COORDINATOR",
+    "Victoria Sylvester",
+    "",
+    "+SOUND DESIGN",
+    "Gary Bradfield",
+    "",
+    "+MUSIC BY",
+    "Sonic Mayhem",
+    "",
+    "",
+    "",
+    "+SPECIAL THANKS",
+    "+TO",
+    "+OUR FRIENDS AT ID SOFTWARE",
+    "",
+    "John Carmack",
+    "John Cash",
+    "Brian Hook",
+    "Adrian Carmack",
+    "Kevin Cloud",
+    "Paul Steed",
+    "Tim Willits",
+    "Christian Antkow",
+    "Jennell Jaquays",
+    "Brandon James",
+    "Todd Hollenshead",
+    "Barrett (Bear) Alexander",
+    "Dave \"Zoid\" Kirsch",
+    "Donna Jackson",
+    "",
+    "",
+    "",
+    "+THANKS TO ACTIVISION",
+    "+IN PARTICULAR:",
+    "",
+    "Marty Stratton",
+    "Henk \"The Original Ripper\" Hartong",
+    "Kevin Kraff",
+    "Jamey Gottlieb",
+    "Chris Hepburn",
+    "",
+    "+AND THE GAME TESTERS",
+    "",
+    "Tim Vanlaw",
+    "Doug Jacobs",
+    "Steven Rosenthal",
+    "David Baker",
+    "Chris Campbell",
+    "Aaron Casillas",
+    "Steve Elwell",
+    "Derek Johnstone",
+    "Igor Krinitskiy",
+    "Samantha Lee",
+    "Michael Spann",
+    "Chris Toft",
+    "Juan Valdes",
+    "",
+    "+THANKS TO INTERGRAPH COMPUTER SYSTEMS",
+    "+IN PARTICULAR:",
+    "",
+    "Michael T. Nicolaou",
+    "",
+    "",
+    "Quake II Mission Pack: The Reckoning",
+    "(tm) (C)1998 Id Software, Inc. All",
+    "Rights Reserved. Developed by Xatrix",
+    "Entertainment, Inc. for Id Software,",
+    "Inc. Distributed by Activision Inc.",
+    "under license. Quake(R) is a",
+    "registered trademark of Id Software,",
+    "Inc. Quake II Mission Pack: The",
+    "Reckoning(tm), Quake II(tm), the Id",
+    "Software name, the \"Q II\"(tm) logo",
+    "and id(tm) logo are trademarks of Id",
+    "Software, Inc. Activision(R) is a",
+    "registered trademark of Activision,",
+    "Inc. Xatrix(R) is a registered",
+    "trademark of Xatrix Entertainment,",
+    "Inc. All other trademarks and trade",
+    "names are properties of their",
+    "respective owners.",
+    0
 };
 
 static const char *roguecredits[] =
 {
-	"+QUAKE II MISSION PACK 2: GROUND ZERO",
-	"+BY",
-	"+ROGUE ENTERTAINMENT, INC.",
-	"",
-	"+PRODUCED BY",
-	"Jim Molinets",
-	"",
-	"+PROGRAMMING",
-	"Peter Mack",
-	"Patrick Magruder",
-	"",
-	"+LEVEL DESIGN",
-	"Jim Molinets",
-	"Cameron Lamprecht",
-	"Berenger Fish",
-	"Robert Selitto",
-	"Steve Tietze",
-	"Steve Thoms",
-	"",
-	"+ART DIRECTION",
-	"Rich Fleider",
-	"",
-	"+ART",
-	"Rich Fleider",
-	"Steve Maines",
-	"Won Choi",
-	"",
-	"+ANIMATION SEQUENCES",
-	"Creat Studios",
-	"Steve Maines",
-	"",
-	"+ADDITIONAL LEVEL DESIGN",
-	"Rich Fleider",
-	"Steve Maines",
-	"Peter Mack",
-	"",
-	"+SOUND",
-	"James Grunke",
-	"",
-	"+GROUND ZERO THEME",
-	"+AND",
-	"+MUSIC BY",
-	"Sonic Mayhem",
-	"",
-	"+VWEP MODELS",
-	"Brent \"Hentai\" Dill",
-	"",
-	"",
-	"",
-	"+SPECIAL THANKS",
-	"+TO",
-	"+OUR FRIENDS AT ID SOFTWARE",
-	"",
-	"John Carmack",
-	"John Cash",
-	"Brian Hook",
-	"Adrian Carmack",
-	"Kevin Cloud",
-	"Paul Steed",
-	"Tim Willits",
-	"Christian Antkow",
-	"Paul Jaquays",
-	"Brandon James",
-	"Todd Hollenshead",
-	"Barrett (Bear) Alexander",
-	"Katherine Anna Kang",
-	"Donna Jackson",
-	"Dave \"Zoid\" Kirsch",
-	"",
-	"",
-	"",
-	"+THANKS TO ACTIVISION",
-	"+IN PARTICULAR:",
-	"",
-	"Marty Stratton",
-	"Henk Hartong",
-	"Mitch Lasky",
-	"Steve Rosenthal",
-	"Steve Elwell",
-	"",
-	"+AND THE GAME TESTERS",
-	"",
-	"The Ranger Clan",
-	"Dave \"Zoid\" Kirsch",
-	"Nihilistic Software",
-	"Robert Duffy",
-	"",
-	"And Countless Others",
-	"",
-	"",
-	"",
-	"Quake II Mission Pack 2: Ground Zero",
-	"(tm) (C)1998 Id Software, Inc. All",
-	"Rights Reserved. Developed by Rogue",
-	"Entertainment, Inc. for Id Software,",
-	"Inc. Distributed by Activision Inc.",
-	"under license. Quake(R) is a",
-	"registered trademark of Id Software,",
-	"Inc. Quake II Mission Pack 2: Ground",
-	"Zero(tm), Quake II(tm), the Id",
-	"Software name, the \"Q II\"(tm) logo",
-	"and id(tm) logo are trademarks of Id",
-	"Software, Inc. Activision(R) is a",
-	"registered trademark of Activision,",
-	"Inc. Rogue(R) is a registered",
-	"trademark of Rogue Entertainment,",
-	"Inc. All other trademarks and trade",
-	"names are properties of their",
-	"respective owners.",
-	0
+    "+QUAKE II MISSION PACK 2: GROUND ZERO",
+    "+BY",
+    "+ROGUE ENTERTAINMENT, INC.",
+    "",
+    "+PRODUCED BY",
+    "Jim Molinets",
+    "",
+    "+PROGRAMMING",
+    "Peter Mack",
+    "Patrick Magruder",
+    "",
+    "+LEVEL DESIGN",
+    "Jim Molinets",
+    "Cameron Lamprecht",
+    "Berenger Fish",
+    "Robert Selitto",
+    "Steve Tietze",
+    "Steve Thoms",
+    "",
+    "+ART DIRECTION",
+    "Rich Fleider",
+    "",
+    "+ART",
+    "Rich Fleider",
+    "Steve Maines",
+    "Won Choi",
+    "",
+    "+ANIMATION SEQUENCES",
+    "Creat Studios",
+    "Steve Maines",
+    "",
+    "+ADDITIONAL LEVEL DESIGN",
+    "Rich Fleider",
+    "Steve Maines",
+    "Peter Mack",
+    "",
+    "+SOUND",
+    "James Grunke",
+    "",
+    "+GROUND ZERO THEME",
+    "+AND",
+    "+MUSIC BY",
+    "Sonic Mayhem",
+    "",
+    "+VWEP MODELS",
+    "Brent \"Hentai\" Dill",
+    "",
+    "",
+    "",
+    "+SPECIAL THANKS",
+    "+TO",
+    "+OUR FRIENDS AT ID SOFTWARE",
+    "",
+    "John Carmack",
+    "John Cash",
+    "Brian Hook",
+    "Adrian Carmack",
+    "Kevin Cloud",
+    "Paul Steed",
+    "Tim Willits",
+    "Christian Antkow",
+    "Jennell Jaquays",
+    "Brandon James",
+    "Todd Hollenshead",
+    "Barrett (Bear) Alexander",
+    "Katherine Anna Kang",
+    "Donna Jackson",
+    "Dave \"Zoid\" Kirsch",
+    "",
+    "",
+    "",
+    "+THANKS TO ACTIVISION",
+    "+IN PARTICULAR:",
+    "",
+    "Marty Stratton",
+    "Henk Hartong",
+    "Mitch Lasky",
+    "Steve Rosenthal",
+    "Steve Elwell",
+    "",
+    "+AND THE GAME TESTERS",
+    "",
+    "The Ranger Clan",
+    "Dave \"Zoid\" Kirsch",
+    "Nihilistic Software",
+    "Robert Duffy",
+    "",
+    "And Countless Others",
+    "",
+    "",
+    "",
+    "Quake II Mission Pack 2: Ground Zero",
+    "(tm) (C)1998 Id Software, Inc. All",
+    "Rights Reserved. Developed by Rogue",
+    "Entertainment, Inc. for Id Software,",
+    "Inc. Distributed by Activision Inc.",
+    "under license. Quake(R) is a",
+    "registered trademark of Id Software,",
+    "Inc. Quake II Mission Pack 2: Ground",
+    "Zero(tm), Quake II(tm), the Id",
+    "Software name, the \"Q II\"(tm) logo",
+    "and id(tm) logo are trademarks of Id",
+    "Software, Inc. Activision(R) is a",
+    "registered trademark of Activision,",
+    "Inc. Rogue(R) is a registered",
+    "trademark of Rogue Entertainment,",
+    "Inc. All other trademarks and trade",
+    "names are properties of their",
+    "respective owners.",
+    0
 };
 
 
@@ -1753,61 +1766,79 @@ const char *M_Credits_Key( int key )
 
 }
 
-
-extern int Developer_searchpath (int who);
-
-
-void M_Menu_Credits_f( void )
+static void
+M_Menu_Credits_f(void)
 {
-	int		n;
-	int		count;
-	char	*p;
-	int		isdeveloper = 0;
+    int count;
+    char *p;
 
-	creditsBuffer = NULL;
-	count = FS_LoadFile ("credits", (void **)&creditsBuffer);
-	if (count != -1)
-	{
-		p = creditsBuffer;
-		for (n = 0; n < 255; n++)
-		{
-			creditsIndex[n] = p;
-			while (*p != '\r' && *p != '\n')
-			{
-				p++;
-				if (--count == 0)
-					break;
-			}
-			if (*p == '\r')
-			{
-				*p++ = 0;
-				if (--count == 0)
-					break;
-			}
-			*p++ = 0;
-			if (--count == 0)
-				break;
-		}
-		creditsIndex[++n] = 0;
-		credits = (const char **)creditsIndex;
-	}
-	else
-	{
-		isdeveloper = Developer_searchpath (1);
+    creditsBuffer = NULL;
+    count = FS_LoadFile("credits", (void **)&creditsBuffer);
 
-		if (isdeveloper == 1)			// xatrix
-			credits = xatcredits;
-		else if (isdeveloper == 2)		// ROGUE
-			credits = roguecredits;
-		else
-		{
-			credits = idcredits;
-		}
+    if (count != -1)
+    {
+        int n;
+        p = creditsBuffer;
 
-	}
+        // CREDITS_SIZE - 1 - last pointer should be NULL
+        for (n = 0; n < CREDITS_SIZE - 1; n++)
+        {
+            creditsIndex[n] = p;
 
-	credits_start_time = cls.realtime;
-	M_PushMenu( M_Credits_MenuDraw, M_Credits_Key);
+            while (*p != '\r' && *p != '\n')
+            {
+                p++;
+
+                if (--count == 0)
+                {
+                    break;
+                }
+            }
+
+            if (*p == '\r')
+            {
+                *p++ = 0;
+
+                if (--count == 0)
+                {
+                    break;
+                }
+            }
+
+            *p++ = 0;
+
+            if (--count == 0)
+            {
+                // no credits any more
+                // move one step futher for set NULL
+                n ++;
+                break;
+            }
+        }
+
+        creditsIndex[n] = 0;
+        credits = (const char **)creditsIndex;
+    }
+    else
+    {
+        if (M_IsGame("xatrix")) /* Xatrix - The Reckoning */
+        {
+            credits = xatcredits;
+        }
+
+        else if (M_IsGame("rogue")) /* Rogue - Ground Zero */
+        {
+            credits = roguecredits;
+        }
+
+        else
+        {
+            credits = idcredits;
+        }
+    }
+
+    credits_start_time = cls.realtime;
+    M_PushMenu(M_Credits_MenuDraw, M_Credits_Key);
 }
 
 /*
@@ -1984,14 +2015,14 @@ qboolean	m_savevalid[MAX_SAVEGAMES];
 
 void Create_Savestrings (void)
 {
-	int		i;
-	FILE	*f;
-	char	name[MAX_OSPATH];
+	int i;
+	fileHandle_t f;
+	char name[MAX_OSPATH];
 
 	for (i=0 ; i<MAX_SAVEGAMES ; i++)
 	{
 		Com_sprintf (name, sizeof(name), "%s/save/save%i/server.ssv", FS_Gamedir(), i);
-		f = fopen (name, "rb");
+		FS_FOpenFile(name, &f, true);
 		if (!f)
 		{
 			strcpy (m_savestrings[i], "<EMPTY>");
@@ -2000,7 +2031,7 @@ void Create_Savestrings (void)
 		else
 		{
 			FS_Read (m_savestrings[i], sizeof(m_savestrings[i]), f);
-			fclose (f);
+			FS_FCloseFile(f);
 			m_savevalid[i] = true;
 		}
 	}
@@ -2316,8 +2347,8 @@ START SERVER MENU
 =============================================================================
 */
 static menuframework_s s_startserver_menu;
-static char **mapnames;
-static int	  nummaps;
+char **mapnames;
+int	  nummaps;
 
 static menuaction_s	s_startserver_start_action;
 static menuaction_s	s_startserver_dmoptions_action;
@@ -2335,112 +2366,121 @@ void DMOptionsFunc( void *self )
 	M_Menu_DMOptions_f();
 }
 
-void RulesChangeFunc ( void *self )
+static void
+RulesChangeFunc(void *self)
 {
-	// DM
-	if (s_rules_box.curvalue == 0)
-	{
-		s_maxclients_field.generic.statusbar = NULL;
-		s_startserver_dmoptions_action.generic.statusbar = NULL;
-	}
-	else if(s_rules_box.curvalue == 1)		// coop				// PGM
-	{
-		s_maxclients_field.generic.statusbar = "4 maximum for cooperative";
-		if (atoi(s_maxclients_field.buffer) > 4)
-			strcpy( s_maxclients_field.buffer, "4" );
-		s_startserver_dmoptions_action.generic.statusbar = "N/A for cooperative";
-	}
-//=====
-//PGM
-	// ROGUE GAMES
-	else if(Developer_searchpath(2) == 2)
-	{
-		if (s_rules_box.curvalue == 2)			// tag
-		{
-			s_maxclients_field.generic.statusbar = NULL;
-			s_startserver_dmoptions_action.generic.statusbar = NULL;
-		}
-/*
-		else if(s_rules_box.curvalue == 3)		// deathball
-		{
-			s_maxclients_field.generic.statusbar = NULL;
-			s_startserver_dmoptions_action.generic.statusbar = NULL;
-		}
-*/
-	}
-//PGM
-//=====
+    /* Deathmatch */
+    if (s_rules_box.curvalue == 0)
+    {
+        s_maxclients_field.generic.statusbar = NULL;
+        s_startserver_dmoptions_action.generic.statusbar = NULL;
+    }
+
+    /* Ground Zero game modes */
+    else if (M_IsGame("rogue"))
+    {
+        if (s_rules_box.curvalue == 2)
+        {
+            s_maxclients_field.generic.statusbar = NULL;
+            s_startserver_dmoptions_action.generic.statusbar = NULL;
+        }
+    }
 }
 
-void StartServerActionFunc( void *self )
+static void
+StartServerActionFunc(void *self)
 {
-	char	startmap[1024];
-	int		timelimit;
-	int		fraglimit;
-	int		maxclients;
-	char	*spot;
+    char startmap[1024];
+    float timelimit;
+    float fraglimit;
+    float capturelimit;
+    float maxclients;
+    char *spot;
 
-	strcpy( startmap, strchr( mapnames[s_startmap_list.curvalue], '\n' ) + 1 );
+    strcpy(startmap, strchr(mapnames[s_startmap_list.curvalue], '\n') + 1);
 
-	maxclients  = atoi( s_maxclients_field.buffer );
-	timelimit	= atoi( s_timelimit_field.buffer );
-	fraglimit	= atoi( s_fraglimit_field.buffer );
+    maxclients = (float)strtod(s_maxclients_field.buffer, (char **)NULL);
+    timelimit = (float)strtod(s_timelimit_field.buffer, (char **)NULL);
+    fraglimit = (float)strtod(s_fraglimit_field.buffer, (char **)NULL);
 
-	Cvar_SetValue( "maxclients", ClampCvar( 0, maxclients, maxclients ) );
-	Cvar_SetValue ("timelimit", ClampCvar( 0, timelimit, timelimit ) );
-	Cvar_SetValue ("fraglimit", ClampCvar( 0, fraglimit, fraglimit ) );
-	Cvar_Set("hostname", s_hostname_field.buffer );
-//	Cvar_SetValue ("deathmatch", !s_rules_box.curvalue );
-//	Cvar_SetValue ("coop", s_rules_box.curvalue );
+    Cvar_SetValue("maxclients", ClampCvar(0, maxclients, maxclients));
+    Cvar_SetValue("timelimit", ClampCvar(0, timelimit, timelimit));
+    Cvar_SetValue("fraglimit", ClampCvar(0, fraglimit, fraglimit));
+    Cvar_Set("hostname", s_hostname_field.buffer);
 
-//PGM
-	if((s_rules_box.curvalue < 2) || (Developer_searchpath(2) != 2))
-	{
-		Cvar_SetValue ("deathmatch", !s_rules_box.curvalue );
-		Cvar_SetValue ("coop", s_rules_box.curvalue );
-		Cvar_SetValue ("gamerules", 0 );
-	}
-	else
-	{
-		Cvar_SetValue ("deathmatch", 1 );	// deathmatch is always true for rogue games, right?
-		Cvar_SetValue ("coop", 0 );			// FIXME - this might need to depend on which game we're running
-		Cvar_SetValue ("gamerules", s_rules_box.curvalue );
-	}
-//PGM
+	Cvar_SetValue("singleplayer", 0);
 
-	spot = NULL;
-	if (s_rules_box.curvalue == 1)		// PGM
-	{
- 		if(Q_stricmp(startmap, "bunk1") == 0)
-  			spot = "start";
- 		else if(Q_stricmp(startmap, "mintro") == 0)
-  			spot = "start";
- 		else if(Q_stricmp(startmap, "fact1") == 0)
-  			spot = "start";
- 		else if(Q_stricmp(startmap, "power1") == 0)
-  			spot = "pstart";
- 		else if(Q_stricmp(startmap, "biggun") == 0)
-  			spot = "bstart";
- 		else if(Q_stricmp(startmap, "hangar1") == 0)
-  			spot = "unitstart";
- 		else if(Q_stricmp(startmap, "city1") == 0)
-  			spot = "unitstart";
- 		else if(Q_stricmp(startmap, "boss1") == 0)
-			spot = "bosstart";
-	}
+    if ((s_rules_box.curvalue < 2) || M_IsGame("rogue"))
+    {
+        Cvar_SetValue("deathmatch", (float)!s_rules_box.curvalue);
+        Cvar_SetValue("coop", (float)s_rules_box.curvalue);
+    }
+    else
+    {
+        Cvar_SetValue("deathmatch", 1); /* deathmatch is always true for rogue games */
+        Cvar_SetValue("coop", 0); /* This works for at least the main game and both addons */
+    }
 
-	if (spot)
-	{
-		if (Com_ServerState())
-			Cbuf_AddText ("disconnect\n");
-		Cbuf_AddText (va("gamemap \"*%s$%s\"\n", startmap, spot));
-	}
-	else
-	{
-		Cbuf_AddText (va("map %s\n", startmap));
-	}
+    spot = NULL;
 
-	M_ForceMenuOff ();
+    if (s_rules_box.curvalue == 1)
+    {
+        if (Q_stricmp(startmap, "bunk1") == 0)
+        {
+            spot = "start";
+        }
+
+        else if (Q_stricmp(startmap, "mintro") == 0)
+        {
+            spot = "start";
+        }
+
+        else if (Q_stricmp(startmap, "fact1") == 0)
+        {
+            spot = "start";
+        }
+
+        else if (Q_stricmp(startmap, "power1") == 0)
+        {
+            spot = "pstart";
+        }
+
+        else if (Q_stricmp(startmap, "biggun") == 0)
+        {
+            spot = "bstart";
+        }
+
+        else if (Q_stricmp(startmap, "hangar1") == 0)
+        {
+            spot = "unitstart";
+        }
+
+        else if (Q_stricmp(startmap, "city1") == 0)
+        {
+            spot = "unitstart";
+        }
+
+        else if (Q_stricmp(startmap, "boss1") == 0)
+        {
+            spot = "bosstart";
+        }
+    }
+
+    if (spot)
+    {
+        if (Com_ServerState())
+        {
+            Cbuf_AddText("disconnect\n");
+        }
+
+        Cbuf_AddText(va("gamemap \"*%s$%s\"\n", startmap, spot));
+    }
+    else
+    {
+        Cbuf_AddText(va("map %s\n", startmap));
+    }
+
+    M_ForceMenuOff();
 }
 
 void StartServer_MenuInit( void )
@@ -2556,12 +2596,7 @@ void StartServer_MenuInit( void )
 	s_rules_box.generic.y	= 20;
 	s_rules_box.generic.name	= "rules";
 
-//PGM - rogue games only available with rogue DLL.
-	if(Developer_searchpath(2) == 2)
-		s_rules_box.itemnames = dm_coop_names_rogue;
-	else
-		s_rules_box.itemnames = dm_coop_names;
-//PGM
+	s_rules_box.itemnames = dm_coop_names;
 
 	if (Cvar_VariableValue("coop"))
 		s_rules_box.curvalue = 1;

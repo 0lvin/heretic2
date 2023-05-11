@@ -118,7 +118,7 @@ DO_GL_SHLIB_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(GLCFLAGS) -o $@ -c $<
 
 TARGETS= \
 	$(BUILDDIR)/heretic2 \
-	$(BUILDDIR)/ref_gl.$(SHLIBEXT)
+	$(BUILDDIR)/ref_gl1.$(SHLIBEXT)
 #	$(BUILDDIR)/ref_softx.$(SHLIBEXT)
 
 all:
@@ -167,6 +167,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/cl_scrn.o \
 	$(BUILDDIR)/src/client/cl_string.o \
 	$(BUILDDIR)/src/client/cl_view.o \
+	$(BUILDDIR)/src/client/sound/ogg.o \
 	$(BUILDDIR)/src/client/sound/openal.o \
 	$(BUILDDIR)/src/client/sound/qal.o \
 	$(BUILDDIR)/src/client/sound/wave.o \
@@ -430,7 +431,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
 	$(BUILDDIR)/src/common/clientserver.o \
 	$(BUILDDIR)/linux/snd_linux.o \
-	$(BUILDDIR)/linux/sys_linux.o \
+	$(BUILDDIR)/src/backends/unix/main.o \
 	$(BUILDDIR)/src/client/menu/videomenu.o \
 	$(BUILDDIR)/src/client/vid/vid.o \
 	$(BUILDDIR)/src/player/p_actions.o \
@@ -445,12 +446,16 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/player/player_main.o \
 	$(BUILDDIR)/src/player/p_main.o \
 	$(BUILDDIR)/src/player/p_weapon.o \
+	$(BUILDDIR)/src/common/unzip/unzip.o \
+	$(BUILDDIR)/src/common/unzip/ioapi.o \
+	$(BUILDDIR)/src/common/unzip/miniz.o \
 	$(BUILDDIR)/src/common/cmdparser.o \
 	$(BUILDDIR)/src/common/collision.o \
 	$(BUILDDIR)/src/common/frame.o \
 	$(BUILDDIR)/src/common/zone.o \
 	$(BUILDDIR)/src/common/crc.o \
 	$(BUILDDIR)/src/common/cvar.o \
+	$(BUILDDIR)/src/backends/generic/misc.o \
 	$(BUILDDIR)/src/common/filesystem.o \
 	$(BUILDDIR)/src/common/md4.o \
 	$(BUILDDIR)/h2common/message.o \
@@ -544,7 +549,7 @@ REF_GL_OBJS = \
 REF_GL_GLX_OBJS = \
 	$(BUILDDIR)/linux/gl_glx.o
 
-$(BUILDDIR)/ref_gl.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) ${HEADERS}
+$(BUILDDIR)/ref_gl1.$(SHLIBEXT) : $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) ${HEADERS}
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_GL_OBJS) $(REF_GL_GLX_OBJS) $(GLXLDFLAGS)
