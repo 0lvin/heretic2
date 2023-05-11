@@ -29,31 +29,27 @@
 #include "header/local.h"
 #include <ctype.h>
 
-static vec3_t	modelorg;		// relative to viewpoint
+int c_visible_lightmaps;
+int c_visible_textures;
+static vec3_t modelorg; /* relative to viewpoint */
+msurface_t *r_alpha_surfaces;
 
-msurface_t* r_alpha_surfaces;
+gllightmapstate_t gl_lms;
+
+void LM_InitBlock(void);
+void LM_UploadBlock(qboolean dynamic);
+qboolean LM_AllocBlock(int w, int h, int *x, int *y);
 
 #define DYNAMIC_LIGHT_WIDTH  128
 #define DYNAMIC_LIGHT_HEIGHT 128
 
 #define LIGHTMAP_BYTES 4
 
-#define	BLOCK_WIDTH		128
+#define	BLOCK_WIDTH	128
 #define	BLOCK_HEIGHT	128
-
 #define	MAX_LIGHTMAPS	128
 
-int		c_visible_lightmaps;
-int		c_visible_textures;
-
 #define GL_LIGHTMAP_FORMAT GL_RGBA
-
-static gllightmapstate_t gl_lms;
-
-
-static void		LM_InitBlock(void);
-static void		LM_UploadBlock(qboolean dynamic);
-static qboolean	LM_AllocBlock(int w, int h, int* x, int* y);
 
 extern void R_SetCacheState(msurface_t* surf);
 extern void R_BuildLightMap(msurface_t* surf, byte* dest, int stride);
@@ -89,81 +85,6 @@ image_t* R_TextureAnimation(mtexinfo_t* tex)
 
 	return tex->image;
 }
-
-#if 0
-/*
-=================
-WaterWarpPolyVerts
-
-Mangles the x and y coordinates in a copy of the poly
-so that any drawing routine can be water warped
-=================
-*/
-glpoly_t* WaterWarpPolyVerts(glpoly_t* p)
-{
-	int		i;
-	float* v, * nv;
-	static byte	buffer[1024];
-	glpoly_t* out;
-
-	out = (glpoly_t*)buffer;
-
-	out->numverts = p->numverts;
-	v = p->verts[0];
-	nv = out->verts[0];
-	for (i = 0; i < p->numverts; i++, v += VERTEXSIZE, nv += VERTEXSIZE)
-	{
-		nv[0] = v[0] + 4 * sin(v[1] * 0.05 + r_newrefdef.time) * sin(v[2] * 0.05 + r_newrefdef.time);
-		nv[1] = v[1] + 4 * sin(v[0] * 0.05 + r_newrefdef.time) * sin(v[2] * 0.05 + r_newrefdef.time);
-
-		nv[2] = v[2];
-		nv[3] = v[3];
-		nv[4] = v[4];
-		nv[5] = v[5];
-		nv[6] = v[6];
-	}
-
-	return out;
-}
-
-/*
-================
-DrawGLWaterPoly
-
-Warp the vertex coordinates
-================
-*/
-void DrawGLWaterPoly(glpoly_t* p)
-{
-	int		i;
-	float* v;
-
-	p = WaterWarpPolyVerts(p);
-	glBegin(GL_TRIANGLE_FAN);
-	v = p->verts[0];
-	for (i = 0; i < p->numverts; i++, v += VERTEXSIZE)
-	{
-		glTexCoord2f(v[3], v[4]);
-		glVertex3fv(v);
-	}
-	glEnd();
-}
-void DrawGLWaterPolyLightmap(glpoly_t* p)
-{
-	int		i;
-	float* v;
-
-	p = WaterWarpPolyVerts(p);
-	glBegin(GL_TRIANGLE_FAN);
-	v = p->verts[0];
-	for (i = 0; i < p->numverts; i++, v += VERTEXSIZE)
-	{
-		glTexCoord2f(v[5], v[6]);
-		glVertex3fv(v);
-	}
-	glEnd();
-}
-#endif
 
 /*
 ================
@@ -237,12 +158,15 @@ void R_DrawTriangleOutlines(void)
 
 	for (i = 0; i < MAX_LIGHTMAPS; i++)
 	{
-		msurface_t* surf;
+		msurface_t *surf;
 
-		for (surf = gl_lms.lightmap_surfaces[i]; surf != 0; surf = surf->lightmapchain)
+		for (surf = gl_lms.lightmap_surfaces[i];
+			 surf != 0;
+			 surf = surf->lightmapchain)
 		{
 			p = surf->polys;
-			for (; p; p = p->chain)
+
+			for ( ; p; p = p->chain)
 			{
 				for (j = 2; j < p->numverts; j++)
 				{
@@ -315,11 +239,16 @@ void R_BlendLightmaps(void)
 
 	// don't bother if we're set to fullbright
 	if (r_fullbright->value)
+	{
 		return;
-	if (!r_worldmodel->lightdata)
-		return;
+	}
 
-	// don't bother writing Z
+	if (!r_worldmodel->lightdata)
+	{
+		return;
+	}
+
+	/* don't bother writing Z */
 	glDepthMask(0);
 
 	/*
@@ -360,18 +289,21 @@ void R_BlendLightmaps(void)
 	}
 
 	if (currentmodel == r_worldmodel)
+	{
 		c_visible_lightmaps = 0;
+	}
 
-	/*
-	** render static lightmaps first
-	*/
+	/* render static lightmaps first */
 	for (i = 1; i < MAX_LIGHTMAPS; i++)
 	{
 		if (gl_lms.lightmap_surfaces[i])
 		{
 			if (currentmodel == r_worldmodel)
+			{
 				c_visible_lightmaps++;
-			GL_Bind(gl_state.lightmap_textures + i);
+			}
+
+			R_Bind(gl_state.lightmap_textures + i);
 
 			for (surf = gl_lms.lightmap_surfaces[i]; surf != 0; surf = surf->lightmapchain)
 			{
@@ -381,17 +313,17 @@ void R_BlendLightmaps(void)
 		}
 	}
 
-	/*
-	** render dynamic lightmaps
-	*/
+	/* render dynamic lightmaps */
 	if (gl1_dynamic->value)
 	{
 		LM_InitBlock();
 
-		GL_Bind(gl_state.lightmap_textures + 0);
+		R_Bind(gl_state.lightmap_textures + 0);
 
 		if (currentmodel == r_worldmodel)
+		{
 			c_visible_lightmaps++;
+		}
 
 		newdrawsurf = gl_lms.lightmap_surfaces[0];
 
@@ -482,7 +414,7 @@ void R_RenderBrushPoly(msurface_t* fa)
 
 	if (fa->flags & SURF_DRAWTURB)
 	{
-		GL_Bind(image->texnum);
+		R_Bind(image->texnum);
 
 		// warp texture, no lightmaps
 		GL_TexEnv(GL_MODULATE);
@@ -497,7 +429,7 @@ void R_RenderBrushPoly(msurface_t* fa)
 	}
 	else
 	{
-		GL_Bind(image->texnum);
+		R_Bind(image->texnum);
 
 		GL_TexEnv(GL_REPLACE);
 	}
@@ -546,7 +478,7 @@ void R_RenderBrushPoly(msurface_t* fa)
 			R_BuildLightMap(fa, (byte*)temp, smax * 4);
 			R_SetCacheState(fa);
 
-			GL_Bind(gl_state.lightmap_textures + fa->lightmaptexturenum);
+			R_Bind(gl_state.lightmap_textures + fa->lightmaptexturenum);
 
 			glTexSubImage2D(GL_TEXTURE_2D, 0,
 				fa->light_s, fa->light_t,
@@ -599,7 +531,7 @@ void R_DrawAlphaSurfaces(void)
 
 	for (s = r_alpha_surfaces; s; s = s->texturechain)
 	{
-		GL_Bind(s->texinfo->image->texnum);
+		R_Bind(s->texinfo->image->texnum);
 		c_brush_polys++;
 		if (s->texinfo->flags & SURF_TRANS33)
 			glColor4f(intens, intens, intens, 0.33);
@@ -1055,320 +987,3 @@ void R_MarkLeaves(void)
 	}
 #endif
 }
-
-
-
-/*
-=============================================================================
-
-  LIGHTMAP ALLOCATION
-
-=============================================================================
-*/
-
-static void LM_InitBlock(void)
-{
-	memset(gl_lms.allocated, 0, sizeof(gl_lms.allocated));
-}
-
-static void LM_UploadBlock(qboolean dynamic)
-{
-	int texture;
-	int height = 0;
-
-	if (dynamic)
-	{
-		texture = 0;
-	}
-	else
-	{
-		texture = gl_lms.current_lightmap_texture;
-	}
-
-	GL_Bind(gl_state.lightmap_textures + texture);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	if (dynamic)
-	{
-		int i;
-
-		for (i = 0; i < BLOCK_WIDTH; i++)
-		{
-			if (gl_lms.allocated[i] > height)
-				height = gl_lms.allocated[i];
-		}
-
-		glTexSubImage2D(GL_TEXTURE_2D,
-			0,
-			0, 0,
-			BLOCK_WIDTH, height,
-			GL_LIGHTMAP_FORMAT,
-			GL_UNSIGNED_BYTE,
-			gl_lms.lightmap_buffer);
-	}
-	else
-	{
-		glTexImage2D(GL_TEXTURE_2D,
-			0,
-			gl_lms.internal_format,
-			BLOCK_WIDTH, BLOCK_HEIGHT,
-			0,
-			GL_LIGHTMAP_FORMAT,
-			GL_UNSIGNED_BYTE,
-			gl_lms.lightmap_buffer);
-		if (++gl_lms.current_lightmap_texture == MAX_LIGHTMAPS)
-			ri.Sys_Error(ERR_DROP, "LM_UploadBlock() - MAX_LIGHTMAPS exceeded\n");
-	}
-}
-
-// returns a texture number and the position inside it
-static qboolean LM_AllocBlock(int w, int h, int* x, int* y)
-{
-	int		i, j;
-	int		best, best2;
-
-	best = BLOCK_HEIGHT;
-
-	for (i = 0; i < BLOCK_WIDTH - w; i++)
-	{
-		best2 = 0;
-
-		for (j = 0; j < w; j++)
-		{
-			if (gl_lms.allocated[i + j] >= best)
-				break;
-			if (gl_lms.allocated[i + j] > best2)
-				best2 = gl_lms.allocated[i + j];
-		}
-		if (j == w)
-		{	// this is a valid spot
-			*x = i;
-			*y = best = best2;
-		}
-	}
-
-	if (best + h > BLOCK_HEIGHT)
-		return false;
-
-	for (i = 0; i < w; i++)
-		gl_lms.allocated[*x + i] = best + h;
-
-	return true;
-}
-
-/*
-================
-GL_BuildPolygonFromSurface
-================
-*/
-void GL_BuildPolygonFromSurface(msurface_t* fa)
-{
-	int			i, lindex, lnumverts;
-	medge_t* pedges, * r_pedge;
-	int			vertpage;
-	float* vec;
-	float		s, t;
-	glpoly_t* poly;
-	vec3_t		total;
-
-	// reconstruct the polygon
-	pedges = currentmodel->edges;
-	lnumverts = fa->numedges;
-	vertpage = 0;
-
-	VectorClear(total);
-	//
-	// draw texture
-	//
-	poly = (glpoly_t *)Hunk_Alloc(sizeof(glpoly_t) + (lnumverts - 4) * VERTEXSIZE * sizeof(float));
-	poly->next = fa->polys;
-	poly->flags = fa->flags;
-	fa->polys = poly;
-	poly->numverts = lnumverts;
-
-	for (i = 0; i < lnumverts; i++)
-	{
-		lindex = currentmodel->surfedges[fa->firstedge + i];
-
-		if (lindex > 0)
-		{
-			r_pedge = &pedges[lindex];
-			vec = currentmodel->vertexes[r_pedge->v[0]].position;
-		}
-		else
-		{
-			r_pedge = &pedges[-lindex];
-			vec = currentmodel->vertexes[r_pedge->v[1]].position;
-		}
-		s = DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
-		s /= fa->texinfo->image->width;
-
-		t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
-		t /= fa->texinfo->image->height;
-
-		VectorAdd(total, vec, total);
-		VectorCopy(vec, poly->verts[i]);
-		poly->verts[i][3] = s;
-		poly->verts[i][4] = t;
-
-		//
-		// lightmap texture coordinates
-		//
-		s = DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
-		s -= fa->texturemins[0];
-		s += fa->light_s * 16;
-		s += 8;
-		s /= BLOCK_WIDTH * 16; //fa->texinfo->texture->width;
-
-		t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
-		t -= fa->texturemins[1];
-		t += fa->light_t * 16;
-		t += 8;
-		t /= BLOCK_HEIGHT * 16; //fa->texinfo->texture->height;
-
-		poly->verts[i][5] = s;
-		poly->verts[i][6] = t;
-	}
-
-	poly->numverts = lnumverts;
-
-}
-
-/*
-========================
-GL_CreateSurfaceLightmap
-========================
-*/
-void GL_CreateSurfaceLightmap(msurface_t* surf)
-{
-	int		smax, tmax;
-	byte* base;
-
-	if (surf->flags & (SURF_DRAWSKY | SURF_DRAWTURB))
-		return;
-
-	smax = (surf->extents[0] >> 4) + 1;
-	tmax = (surf->extents[1] >> 4) + 1;
-
-	if (!LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
-	{
-		LM_UploadBlock(false);
-		LM_InitBlock();
-		if (!LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
-		{
-			ri.Sys_Error(ERR_FATAL, "Consecutive calls to LM_AllocBlock(%d,%d) failed\n", smax, tmax);
-		}
-	}
-
-	surf->lightmaptexturenum = gl_lms.current_lightmap_texture;
-
-	base = gl_lms.lightmap_buffer;
-	base += (surf->light_t * BLOCK_WIDTH + surf->light_s) * LIGHTMAP_BYTES;
-
-	R_SetCacheState(surf);
-	R_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES);
-}
-
-
-/*
-==================
-GL_BeginBuildingLightmaps
-
-==================
-*/
-void GL_BeginBuildingLightmaps(model_t* m)
-{
-	static lightstyle_t	lightstyles[MAX_LIGHTSTYLES];
-	int				i;
-	unsigned		dummy[128 * 128];
-
-	memset(gl_lms.allocated, 0, sizeof(gl_lms.allocated));
-
-	r_framecount = 1;		// no dlightcache
-
-	/*
-	** setup the base lightstyles so the lightmaps won't have to be regenerated
-	** the first time they're seen
-	*/
-	for (i = 0; i < MAX_LIGHTSTYLES; i++)
-	{
-		lightstyles[i].rgb[0] = 1;
-		lightstyles[i].rgb[1] = 1;
-		lightstyles[i].rgb[2] = 1;
-		lightstyles[i].white = 3;
-	}
-	r_newrefdef.lightstyles = lightstyles;
-
-	if (!gl_state.lightmap_textures)
-	{
-		gl_state.lightmap_textures = TEXNUM_LIGHTMAPS;
-		//		gl_state.lightmap_textures	= gl_state.texture_extension_number;
-		//		gl_state.texture_extension_number = gl_state.lightmap_textures + MAX_LIGHTMAPS;
-	}
-
-	gl_lms.current_lightmap_texture = 1;
-
-	/*
-	** if mono lightmaps are enabled and we want to use alpha
-	** blending (a,1-a) then we're likely running on a 3DLabs
-	** Permedia2.  In a perfect world we'd use a GL_ALPHA lightmap
-	** in order to conserve space and maximize bandwidth, however
-	** this isn't a perfect world.
-	**
-	** So we have to use alpha lightmaps, but stored in GL_RGBA format,
-	** which means we only get 1/16th the color resolution we should when
-	** using alpha lightmaps.  If we find another board that supports
-	** only alpha lightmaps but that can at least support the GL_ALPHA
-	** format then we should change this code to use real alpha maps.
-	*/
-	if (toupper(gl_monolightmap->string[0]) == 'A')
-	{
-		gl_lms.internal_format = gl_tex_alpha_format;
-	}
-	/*
-	** try to do hacked colored lighting with a blended texture
-	*/
-	else if (toupper(gl_monolightmap->string[0]) == 'C')
-	{
-		gl_lms.internal_format = gl_tex_alpha_format;
-	}
-	else if (toupper(gl_monolightmap->string[0]) == 'I')
-	{
-		gl_lms.internal_format = GL_INTENSITY8;
-	}
-	else if (toupper(gl_monolightmap->string[0]) == 'L')
-	{
-		gl_lms.internal_format = GL_LUMINANCE8;
-	}
-	else
-	{
-		gl_lms.internal_format = gl_tex_solid_format;
-	}
-
-	/*
-	** initialize the dynamic lightmap texture
-	*/
-	GL_Bind(gl_state.lightmap_textures + 0);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D,
-		0,
-		gl_lms.internal_format,
-		BLOCK_WIDTH, BLOCK_HEIGHT,
-		0,
-		GL_LIGHTMAP_FORMAT,
-		GL_UNSIGNED_BYTE,
-		dummy);
-}
-
-/*
-=======================
-GL_EndBuildingLightmaps
-=======================
-*/
-void GL_EndBuildingLightmaps(void)
-{
-	LM_UploadBlock(false);
-}
-

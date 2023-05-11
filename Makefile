@@ -452,6 +452,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/common/unzip/miniz.o \
 	$(BUILDDIR)/src/common/cmdparser.o \
 	$(BUILDDIR)/src/common/collision.o \
+	$(BUILDDIR)/src/common/szone.o \
 	$(BUILDDIR)/src/common/frame.o \
 	$(BUILDDIR)/src/common/zone.o \
 	$(BUILDDIR)/src/common/crc.o \
@@ -537,6 +538,8 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_main.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_misc.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_surf.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl1_scrap.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl1_lightmap.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_warp.o \
 	$(BUILDDIR)/src/client/refresh/gl1/qgl.o \
 	$(BUILDDIR)/h2common/r_skeletons.o \

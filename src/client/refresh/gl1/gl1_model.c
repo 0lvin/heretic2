@@ -27,23 +27,26 @@
 #include "header/local.h"
 #include "../../../../h2common/flex.h"
 
-model_t	*loadmodel;
-int		modfilelen;
+#define MAX_MOD_KNOWN 512
 
-void Mod_LoadSpriteModel (model_t *mod, void *buffer);
+int modfilelen;
+YQ2_ALIGNAS_TYPE(int) byte mod_novis[MAX_MAP_LEAFS / 8];
+static model_t mod_known[MAX_MOD_KNOWN];
+static int mod_numknown;
+static int mod_max = 0;
+int registration_sequence;
+
 void Mod_LoadBrushModel (model_t *mod, void *buffer);
-void Mod_LoadAliasModel (model_t *mod, void *buffer);
-
-byte	mod_novis[MAX_MAP_LEAFS/8];
-
-#define	MAX_MOD_KNOWN	512
-model_t	mod_known[MAX_MOD_KNOWN];
-int		mod_numknown;
-
+void LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa);
+void LM_CreateSurfaceLightmap(msurface_t *surf);
+void LM_EndBuildingLightmaps(void);
+void LM_BeginBuildingLightmaps(model_t *m);
+model_t	*loadmodel;
 // the inline * models from the current map are kept seperate
 model_t	mod_inline[MAX_MOD_KNOWN];
 
-int		registration_sequence;
+void Mod_LoadAliasModel (model_t *mod, void *buffer);
+void Mod_LoadSpriteModel (model_t *mod, void *buffer);
 
 /*
 ===============
@@ -549,12 +552,6 @@ void CalcSurfaceExtents (msurface_t *s)
 	}
 }
 
-
-void GL_BuildPolygonFromSurface(msurface_t *fa);
-void GL_CreateSurfaceLightmap (msurface_t *surf);
-void GL_EndBuildingLightmaps (void);
-void GL_BeginBuildingLightmaps (model_t *m);
-
 /*
 =================
 Mod_LoadFaces
@@ -579,7 +576,7 @@ void Mod_LoadFaces (lump_t *l)
 
 	currentmodel = loadmodel;
 
-	GL_BeginBuildingLightmaps (loadmodel);
+	LM_BeginBuildingLightmaps (loadmodel);
 
 	for ( surfnum=0 ; surfnum<count ; surfnum++, in++, out++)
 	{
@@ -627,14 +624,14 @@ void Mod_LoadFaces (lump_t *l)
 
 		// create lightmaps and polygons
 		if (!(out->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP)))
-			GL_CreateSurfaceLightmap (out);
+			LM_CreateSurfaceLightmap (out);
 
 		//if (! (out->texinfo->flags & SURF_WARP) )
-			GL_BuildPolygonFromSurface(out);
+			LM_BuildPolygonFromSurface(currentmodel, out);
 
 	}
 
-	GL_EndBuildingLightmaps ();
+	LM_EndBuildingLightmaps ();
 }
 
 

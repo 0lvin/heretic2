@@ -189,7 +189,7 @@ void GL_TexEnv( GLenum mode )
 	}
 }
 
-void GL_Bind (int texnum)
+void R_Bind (int texnum)
 {
 	extern	image_t	*draw_chars;
 
@@ -231,7 +231,7 @@ void GL_TextureMode( char *string )
 	{
 		if (glt->type != it_pic && glt->type != it_sky )
 		{
-			GL_Bind (glt->texnum);
+			R_Bind (glt->texnum);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		}
@@ -333,74 +333,6 @@ void	GL_ImageList_f (void)
 			image->upload_width, image->upload_height, palstrings[image->paletted], image->name);
 	}
 	ri.Con_Printf (PRINT_ALL, "Total texel count (not counting mipmaps): %i\n", texels);
-}
-
-
-/*
-=============================================================================
-
-  scrap allocation
-
-  Allocate all the little status bar obejcts into a single texture
-  to crutch up inefficient hardware / drivers
-
-=============================================================================
-*/
-
-int			scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
-byte		scrap_texels[MAX_SCRAPS][BLOCK_WIDTH*BLOCK_HEIGHT];
-qboolean	scrap_dirty;
-
-// returns a texture number and the position inside it
-int Scrap_AllocBlock (int w, int h, int *x, int *y)
-{
-	int		i, j;
-	int		best, best2;
-	int		texnum;
-
-	for (texnum=0 ; texnum<MAX_SCRAPS ; texnum++)
-	{
-		best = BLOCK_HEIGHT;
-
-		for (i=0 ; i<BLOCK_WIDTH-w ; i++)
-		{
-			best2 = 0;
-
-			for (j=0 ; j<w ; j++)
-			{
-				if (scrap_allocated[texnum][i+j] >= best)
-					break;
-				if (scrap_allocated[texnum][i+j] > best2)
-					best2 = scrap_allocated[texnum][i+j];
-			}
-			if (j == w)
-			{	// this is a valid spot
-				*x = i;
-				*y = best = best2;
-			}
-		}
-
-		if (best + h > BLOCK_HEIGHT)
-			continue;
-
-		for (i=0 ; i<w ; i++)
-			scrap_allocated[texnum][*x + i] = best + h;
-
-		return texnum;
-	}
-
-	return -1;
-//	Sys_Error ("Scrap_AllocBlock: full");
-}
-
-int	scrap_uploads;
-
-void Scrap_Upload (void)
-{
-	scrap_uploads++;
-	GL_Bind(TEXNUM_SCRAPS);
-	GL_Upload8 (scrap_texels[0], BLOCK_WIDTH, BLOCK_HEIGHT, false, false );
-	scrap_dirty = false;
 }
 
 /*
@@ -1136,7 +1068,7 @@ image_t *GL_LoadPic (char *name, byte *pic, int width, int height, imagetype_t t
 nonscrap:
 		image->scrap = false;
 		image->texnum = TEXNUM_IMAGES + (image - gltextures);
-		GL_Bind(image->texnum);
+		R_Bind(image->texnum);
 		if (bits == 8)
 			image->has_alpha = GL_Upload8 (pic, width, height, (image->type != it_pic && image->type != it_sky), image->type == it_sky );
 		else

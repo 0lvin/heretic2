@@ -617,7 +617,7 @@ void R_DrawFlexModel(entity_t *e)
 
 	if (e->model[0]->skins[0])
 	{
-		GL_Bind(e->model[0]->skins[0]->texnum);
+		R_Bind(e->model[0]->skins[0]->texnum);
 	}
 	R_RenderFlexModel(e->model[0]->fmodel, e->fmnodeinfo, e->frame, e->oldframe, e->oldorigin, e->origin, e->angles, e->backlerp);
 

@@ -262,7 +262,7 @@ extern	int		c_visible_textures;
 extern	float	r_world_matrix[16];
 
 void R_TranslatePlayerSkin (int playernum);
-void GL_Bind (int texnum);
+void R_Bind (int texnum);
 void GL_TexEnv( GLenum value );
 
 void R_LightPoint (vec3_t p, vec3_t color);
@@ -305,16 +305,6 @@ void R_ClearSkyBox (void);
 void R_DrawSkyBox (void);
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
 
-#if 0
-short LittleShort (short l);
-short BigShort (short l);
-int	LittleLong (int l);
-float LittleFloat (float f);
-
-char	*va(char *format, ...);
-// does a varargs printf into a temp buffer
-#endif
-
 void COM_StripExtension (char *in, char *out);
 
 void    Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t* gl);
@@ -352,11 +342,6 @@ void	GL_FreeUnusedImages (void);
 
 void GL_TextureAlphaMode( char *string );
 void GL_TextureSolidMode( char *string );
-
-/*
-** GL extension emulation functions
-*/
-void GL_DrawParticles( int n, const particle_t particles[], const unsigned colortable[768] );
 
 /*
 ** GL config stuff
@@ -400,6 +385,19 @@ void GL_DrawParticles( int n, const particle_t particles[], const unsigned color
 
 #define GL_RENDERER_MCD			0x01000000
 #define GL_RENDERER_OTHER		0x80000000
+
+void R_TextureAlphaMode(char *string);
+void R_TextureSolidMode(char *string);
+int Scrap_AllocBlock(int w, int h, int *x, int *y);
+
+/* GL extension emulation functions */
+void R_DrawParticles2(int n,
+		const particle_t particles[],
+		const unsigned *colortable);
+
+/*
+ * GL config stuff
+ */
 
 typedef struct
 {
@@ -485,13 +483,13 @@ IMPLEMENTATION SPECIFIC FUNCTIONS
 ====================================================================
 */
 
-void		GLimp_BeginFrame( float camera_separation );
-void		GLimp_EndFrame( void );
-int 		GLimp_Init( void *hinstance, void *hWnd );
-void		GLimp_Shutdown( void );
-int     	GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen );
-void		GLimp_AppActivate( qboolean active );
-void		GLimp_LogNewFrame( void );
+void GLimp_BeginFrame( float camera_separation );
+void GLimp_EndFrame( void );
+int GLimp_Init( void *hinstance, void *hWnd );
+void GLimp_Shutdown( void );
+int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen );
+void GLimp_AppActivate( qboolean active );
+void GLimp_LogNewFrame( void );
 
 extern image_t* atlas_particle;
 extern image_t* atlas_aparticle;

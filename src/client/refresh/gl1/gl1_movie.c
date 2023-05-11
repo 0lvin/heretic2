@@ -44,7 +44,7 @@ void R_DrawCinematic(int width, int height, byte *data, paletteRGB_t *palette, f
 	{
 		cinematicImage = GL_LoadPic("_cinematic", &imageScratch[0], width, height, it_pic, 32);
 	}
-	GL_Bind(cinematicImage->texnum);
+	R_Bind(cinematicImage->texnum);
 	GL_Upload32((unsigned int *)&imageScratch[0], width, height, it_pic);
 	Draw_Image(0, 0, vid.width, vid.height, -1.0f, false, cinematicImage);
 }

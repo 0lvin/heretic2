@@ -237,7 +237,7 @@ void R_DrawSpriteModel (entity_t *e)
 
 	frame = &psprite->frames[e->frame];
 
-	GL_Bind(currentmodel->skins[e->frame]->texnum);
+	R_Bind(currentmodel->skins[e->frame]->texnum);
 
 	// normal sprite
 	up = vup;
@@ -494,12 +494,12 @@ void R_DrawParticles(int num_particles, particle_t* particles, int type)
 
 	if (type)
 	{
-		GL_Bind(atlas_aparticle->texnum);
+		R_Bind(atlas_aparticle->texnum);
 		glBlendFunc(GL_ONE, GL_ONE);
 	}
 	else
 	{
-		GL_Bind(atlas_particle->texnum);
+		R_Bind(atlas_particle->texnum);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 

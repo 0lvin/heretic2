@@ -48,7 +48,7 @@ void Draw_InitLocal (void)
 	atlas_particle = GL_FindImage("pics/misc/particle.m32", it_pic);
 	atlas_aparticle = GL_FindImage("pics/misc/aparticle.m8", it_pic);
 // jmarshall end
-	GL_Bind(draw_chars->texnum);
+	R_Bind(draw_chars->texnum);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
@@ -84,7 +84,7 @@ void Draw_Char (int x, int y, int num)
 	fcol = col*0.0625;
 	size = 0.0625;
 
-	GL_Bind (draw_chars->texnum);
+	R_Bind (draw_chars->texnum);
 
 	glBegin (GL_QUADS);
 	glTexCoord2f (fcol, frow);
@@ -164,7 +164,7 @@ void Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t
 	if (scrap_dirty)
 		Scrap_Upload();
 
-	GL_Bind(gl->texnum);
+	R_Bind(gl->texnum);
 	glBegin(GL_QUADS);
 	glTexCoord2f(gl->sl, gl->tl);
 	glVertex2f(x, y);
@@ -215,7 +215,7 @@ void Draw_Pic (int x, int y, char *pic)
 	if (scrap_dirty)
 		Scrap_Upload ();
 
-	GL_Bind (gl->texnum);
+	R_Bind (gl->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (gl->sl, gl->tl);
 	glVertex2f (x, y);
@@ -247,7 +247,7 @@ void Draw_TileClear (int x, int y, int w, int h, char *pic)
 		return;
 	}
 
-	GL_Bind (image->texnum);
+	R_Bind (image->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (x/64.0, y/64.0);
 	glVertex2f (x, y);
@@ -337,7 +337,7 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 	int			row;
 	float		t;
 
-	GL_Bind (0);
+	R_Bind (0);
 
 	if (rows<=256)
 	{
