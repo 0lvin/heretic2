@@ -882,18 +882,18 @@ qboolean GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap)
 
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
 		;
-	if (gl_round_down->value && scaled_width > width && mipmap)
+	if (gl1_round_down->value && scaled_width > width && mipmap)
 		scaled_width >>= 1;
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
-	if (gl_round_down->value && scaled_height > height && mipmap)
+	if (gl1_round_down->value && scaled_height > height && mipmap)
 		scaled_height >>= 1;
 
 	// let people sample down the world textures for speed
 	if (mipmap)
 	{
-		scaled_width >>= (int)gl_picmip->value;
-		scaled_height >>= (int)gl_picmip->value;
+		scaled_width >>= (int)gl1_picmip->value;
+		scaled_height >>= (int)gl1_picmip->value;
 	}
 
 	// don't ever bother with >256 textures
@@ -1530,10 +1530,10 @@ void	GL_InitImages (void)
 	registration_sequence = 1;
 
 	// init intensity conversions
-	intensity = ri.Cvar_Get ("intensity", "2", 0);
+	intensity = ri.Cvar_Get ("gl1_intensity", "2", 0);
 
 	if ( intensity->value <= 1 )
-		ri.Cvar_Set( "intensity", "1" );
+		ri.Cvar_Set( "gl1_intensity", "1" );
 
 	gl_state.inverse_intensity = 1 / intensity->value;
 

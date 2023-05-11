@@ -102,12 +102,12 @@ cvar_t	*gl_allow_software;
 
 cvar_t	*gl_vertex_arrays;
 
-cvar_t	*gl_particle_min_size;
-cvar_t	*gl_particle_max_size;
-cvar_t	*gl_particle_size;
-cvar_t	*gl_particle_att_a;
-cvar_t	*gl_particle_att_b;
-cvar_t	*gl_particle_att_c;
+cvar_t	*gl1_particle_min_size;
+cvar_t	*gl1_particle_max_size;
+cvar_t	*gl1_particle_size;
+cvar_t	*gl1_particle_att_a;
+cvar_t	*gl1_particle_att_b;
+cvar_t	*gl1_particle_att_c;
 
 cvar_t	*gl_ext_swapinterval;
 cvar_t	*gl_ext_palettedtexture;
@@ -118,30 +118,30 @@ cvar_t	*gl_ext_compiled_vertex_array;
 cvar_t	*gl_bitdepth;
 cvar_t	*gl_drawbuffer;
 cvar_t  *gl_driver;
-cvar_t	*gl_lightmap;
-cvar_t	*gl_shadows;
-cvar_t	*gl_mode;
-cvar_t	*gl_dynamic;
+cvar_t	*r_lightmap;
+cvar_t	*r_shadows;
+cvar_t	*r_mode;
+cvar_t	*gl1_dynamic;
 cvar_t  *gl_monolightmap;
-cvar_t	*gl_modulate;
+cvar_t	*r_modulate;
 cvar_t	*gl_nobind;
-cvar_t	*gl_round_down;
-cvar_t	*gl_picmip;
+cvar_t	*gl1_round_down;
+cvar_t	*gl1_picmip;
 cvar_t	*gl_skymip;
 cvar_t	*gl_showtris;
-cvar_t	*gl_ztrick;
+cvar_t	*gl1_ztrick;
 cvar_t	*gl_finish;
-cvar_t	*gl_clear;
-cvar_t	*gl_cull;
+cvar_t	*r_clear;
+cvar_t	*r_cull;
 cvar_t	*gl_polyblend;
-cvar_t	*gl_flashblend;
+cvar_t	*gl1_flashblend;
 cvar_t	*gl_playermip;
 cvar_t  *gl_saturatelighting;
-cvar_t	*gl_swapinterval;
+cvar_t	*r_vsync;
 cvar_t	*gl_texturemode;
-cvar_t	*gl_texturealphamode;
-cvar_t	*gl_texturesolidmode;
-cvar_t	*gl_lockpvs;
+cvar_t	*gl1_texturealphamode;
+cvar_t	*gl1_texturesolidmode;
+cvar_t	*r_lockpvs;
 
 cvar_t	*gl_3dlabs_broken;
 cvar_t	*vid_fullscreen;
@@ -757,7 +757,7 @@ void R_SetupGL (void)
 	//
 	// set drawing parms
 	//
-	if (gl_cull->value)
+	if (r_cull->value)
 		glEnable(GL_CULL_FACE);
 	else
 		glDisable(GL_CULL_FACE);
@@ -806,11 +806,11 @@ void R_Clear (void)
 		glDisable(GL_FOG);
 	}
 
-	if (gl_ztrick->value)
+	if (gl1_ztrick->value)
 	{
 		static int trickframe;
 
-		if (gl_clear->value)
+		if (r_clear->value)
 			glClear (GL_COLOR_BUFFER_BIT);
 
 		trickframe++;
@@ -829,7 +829,7 @@ void R_Clear (void)
 	}
 	else
 	{
-		if (gl_clear->value)
+		if (r_clear->value)
 			glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		else
 			glClear (GL_DEPTH_BUFFER_BIT);
@@ -1098,37 +1098,37 @@ void R_Register( void )
 	gl_nosubimage = ri.Cvar_Get( "gl_nosubimage", "0", 0 );
 	gl_allow_software = ri.Cvar_Get( "gl_allow_software", "0", 0 );
 
-	gl_particle_min_size = ri.Cvar_Get( "gl_particle_min_size", "2", CVAR_ARCHIVE );
-	gl_particle_max_size = ri.Cvar_Get( "gl_particle_max_size", "40", CVAR_ARCHIVE );
-	gl_particle_size = ri.Cvar_Get( "gl_particle_size", "40", CVAR_ARCHIVE );
-	gl_particle_att_a = ri.Cvar_Get( "gl_particle_att_a", "0.01", CVAR_ARCHIVE );
-	gl_particle_att_b = ri.Cvar_Get( "gl_particle_att_b", "0.0", CVAR_ARCHIVE );
-	gl_particle_att_c = ri.Cvar_Get( "gl_particle_att_c", "0.01", CVAR_ARCHIVE );
+	gl1_particle_min_size = ri.Cvar_Get( "gl1_particle_min_size", "2", CVAR_ARCHIVE );
+	gl1_particle_max_size = ri.Cvar_Get( "gl1_particle_max_size", "40", CVAR_ARCHIVE );
+	gl1_particle_size = ri.Cvar_Get( "gl1_particle_size", "40", CVAR_ARCHIVE );
+	gl1_particle_att_a = ri.Cvar_Get( "gl1_particle_att_a", "0.01", CVAR_ARCHIVE );
+	gl1_particle_att_b = ri.Cvar_Get( "gl1_particle_att_b", "0.0", CVAR_ARCHIVE );
+	gl1_particle_att_c = ri.Cvar_Get( "gl1_particle_att_c", "0.01", CVAR_ARCHIVE );
 
-	gl_modulate = ri.Cvar_Get ("gl_modulate", "1", CVAR_ARCHIVE );
+	r_modulate = ri.Cvar_Get ("r_modulate", "1", CVAR_ARCHIVE );
 	gl_bitdepth = ri.Cvar_Get( "gl_bitdepth", "0", 0 );
-	gl_mode = ri.Cvar_Get( "gl_mode", "3", CVAR_ARCHIVE );
-	gl_lightmap = ri.Cvar_Get ("gl_lightmap", "0", 0);
-	gl_shadows = ri.Cvar_Get ("gl_shadows", "0", CVAR_ARCHIVE );
-	gl_dynamic = ri.Cvar_Get ("gl_dynamic", "0", 0);
+	r_mode = ri.Cvar_Get( "r_mode", "3", CVAR_ARCHIVE );
+	r_lightmap = ri.Cvar_Get ("r_lightmap", "0", 0);
+	r_shadows = ri.Cvar_Get ("r_shadows", "0", CVAR_ARCHIVE );
+	gl1_dynamic = ri.Cvar_Get ("gl1_dynamic", "0", 0);
 	gl_nobind = ri.Cvar_Get ("gl_nobind", "0", 0);
-	gl_round_down = ri.Cvar_Get ("gl_round_down", "1", 0);
-	gl_picmip = ri.Cvar_Get ("gl_picmip", "0", 0);
+	gl1_round_down = ri.Cvar_Get ("gl1_round_down", "1", 0);
+	gl1_picmip = ri.Cvar_Get ("gl1_picmip", "0", 0);
 	gl_skymip = ri.Cvar_Get ("gl_skymip", "0", 0);
 	gl_showtris = ri.Cvar_Get ("gl_showtris", "0", 0);
-	gl_ztrick = ri.Cvar_Get ("gl_ztrick", "0", 0);
+	gl1_ztrick = ri.Cvar_Get ("gl1_ztrick", "0", 0);
 	gl_finish = ri.Cvar_Get ("gl_finish", "0", CVAR_ARCHIVE);
-	gl_clear = ri.Cvar_Get ("gl_clear", "0", 0);
-	gl_cull = ri.Cvar_Get ("gl_cull", "1", 0);
+	r_clear = ri.Cvar_Get ("r_clear", "0", 0);
+	r_cull = ri.Cvar_Get ("r_cull", "1", 0);
 	gl_polyblend = ri.Cvar_Get ("gl_polyblend", "1", 0);
-	gl_flashblend = ri.Cvar_Get ("gl_flashblend", "0", 0);
+	gl1_flashblend = ri.Cvar_Get ("gl1_flashblend", "0", 0);
 	gl_playermip = ri.Cvar_Get ("gl_playermip", "0", 0);
 	gl_monolightmap = ri.Cvar_Get( "gl_monolightmap", "0", 0 );
 	gl_driver = ri.Cvar_Get( "gl_new_driver", "opengl32", CVAR_ARCHIVE );
 	gl_texturemode = ri.Cvar_Get( "gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE );
-	gl_texturealphamode = ri.Cvar_Get( "gl_texturealphamode", "default", CVAR_ARCHIVE );
-	gl_texturesolidmode = ri.Cvar_Get( "gl_texturesolidmode", "default", CVAR_ARCHIVE );
-	gl_lockpvs = ri.Cvar_Get( "gl_lockpvs", "0", 0 );
+	gl1_texturealphamode = ri.Cvar_Get( "gl1_texturealphamode", "default", CVAR_ARCHIVE );
+	gl1_texturesolidmode = ri.Cvar_Get( "gl1_texturesolidmode", "default", CVAR_ARCHIVE );
+	r_lockpvs = ri.Cvar_Get( "r_lockpvs", "0", 0 );
 
 	gl_vertex_arrays = ri.Cvar_Get( "gl_vertex_arrays", "0", CVAR_ARCHIVE );
 
@@ -1139,7 +1139,7 @@ void R_Register( void )
 	gl_ext_compiled_vertex_array = ri.Cvar_Get( "gl_ext_compiled_vertex_array", "1", CVAR_ARCHIVE );
 
 	gl_drawbuffer = ri.Cvar_Get( "gl_drawbuffer", "GL_BACK", 0 );
-	gl_swapinterval = ri.Cvar_Get( "gl_swapinterval", "1", CVAR_ARCHIVE );
+	r_vsync = ri.Cvar_Get( "r_vsync", "1", CVAR_ARCHIVE );
 
 	gl_saturatelighting = ri.Cvar_Get( "gl_saturatelighting", "0", 0 );
 
@@ -1168,11 +1168,11 @@ qboolean R_SetMode (void)
 	fullscreen = vid_fullscreen->value;
 
 	vid_fullscreen->modified = false;
-	gl_mode->modified = false;
+	r_mode->modified = false;
 
-	if ( ( err = GLimp_SetMode( (int *)&vid.width, (int*)&vid.height, gl_mode->value, fullscreen ) ) == rserr_ok )
+	if ( ( err = GLimp_SetMode( (int *)&vid.width, (int*)&vid.height, r_mode->value, fullscreen ) ) == rserr_ok )
 	{
-		gl_state.prev_mode = gl_mode->value;
+		gl_state.prev_mode = r_mode->value;
 	}
 	else
 	{
@@ -1181,13 +1181,13 @@ qboolean R_SetMode (void)
 			ri.Cvar_SetValue( "vid_fullscreen", 0);
 			vid_fullscreen->modified = false;
 			ri.Con_Printf( PRINT_ALL, "ref_gl::R_SetMode() - fullscreen unavailable in this mode\n" );
-			if ( ( err = GLimp_SetMode((int*)&vid.width, (int*)&vid.height, gl_mode->value, false ) ) == rserr_ok )
+			if ( ( err = GLimp_SetMode((int*)&vid.width, (int*)&vid.height, r_mode->value, false ) ) == rserr_ok )
 				return true;
 		}
 		else if ( err == rserr_invalid_mode )
 		{
-			ri.Cvar_SetValue( "gl_mode", gl_state.prev_mode );
-			gl_mode->modified = false;
+			ri.Cvar_SetValue( "r_mode", gl_state.prev_mode );
+			r_mode->modified = false;
 			ri.Con_Printf( PRINT_ALL, "ref_gl::R_SetMode() - invalid mode\n" );
 		}
 
@@ -1328,7 +1328,7 @@ void R_BeginFrame( float camera_separation )
 	/*
 	** change modes if necessary
 	*/
-	if ( gl_mode->modified || vid_fullscreen->modified )
+	if ( r_mode->modified || vid_fullscreen->modified )
 	{	// FIXME: only restart if CDS is required
 		cvar_t	*ref;
 
@@ -1387,16 +1387,16 @@ void R_BeginFrame( float camera_separation )
 		gl_texturemode->modified = false;
 	}
 
-	if ( gl_texturealphamode->modified )
+	if ( gl1_texturealphamode->modified )
 	{
-		GL_TextureAlphaMode( gl_texturealphamode->string );
-		gl_texturealphamode->modified = false;
+		GL_TextureAlphaMode( gl1_texturealphamode->string );
+		gl1_texturealphamode->modified = false;
 	}
 
-	if ( gl_texturesolidmode->modified )
+	if ( gl1_texturesolidmode->modified )
 	{
-		GL_TextureSolidMode( gl_texturesolidmode->string );
-		gl_texturesolidmode->modified = false;
+		GL_TextureSolidMode( gl1_texturesolidmode->string );
+		gl1_texturesolidmode->modified = false;
 	}
 
 	/*

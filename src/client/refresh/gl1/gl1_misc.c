@@ -197,8 +197,8 @@ void GL_SetDefaultState( void )
 	glShadeModel (GL_FLAT);
 
 	GL_TextureMode( gl_texturemode->string );
-	GL_TextureAlphaMode( gl_texturealphamode->string );
-	GL_TextureSolidMode( gl_texturesolidmode->string );
+	GL_TextureAlphaMode( gl1_texturealphamode->string );
+	GL_TextureSolidMode( gl1_texturesolidmode->string );
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
@@ -214,13 +214,13 @@ void GL_SetDefaultState( void )
 	{
 		float attenuations[3];
 
-		attenuations[0] = gl_particle_att_a->value;
-		attenuations[1] = gl_particle_att_b->value;
-		attenuations[2] = gl_particle_att_c->value;
+		attenuations[0] = gl1_particle_att_a->value;
+		attenuations[1] = gl1_particle_att_b->value;
+		attenuations[2] = gl1_particle_att_c->value;
 
 		glEnable( GL_POINT_SMOOTH );
-		qglPointParameterfARB( GL_POINT_SIZE_MIN_EXT, gl_particle_min_size->value );
-		qglPointParameterfARB( GL_POINT_SIZE_MAX_EXT, gl_particle_max_size->value );
+		qglPointParameterfARB( GL_POINT_SIZE_MIN_EXT, gl1_particle_min_size->value );
+		qglPointParameterfARB( GL_POINT_SIZE_MAX_EXT, gl1_particle_max_size->value );
 		qglPointParameterfvARB( GL_DISTANCE_ATTENUATION_EXT, attenuations );
 	}
 

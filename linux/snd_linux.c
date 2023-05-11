@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 
 #include "../src/client/header/client.h"
-#include "../src/client/snd_loc.h"
+#include "../src/client/sound/snd_loc.h"
 
 int audio_fd;
 int snd_inited;
@@ -236,7 +236,6 @@ qboolean SNDDMA_Init(void)
 
 int SNDDMA_GetDMAPos(void)
 {
-
 	struct count_info count;
 
 	if (!snd_inited) return 0;
@@ -259,13 +258,6 @@ int SNDDMA_GetDMAPos(void)
 
 void SNDDMA_Shutdown(void)
 {
-#if 0
-	if (snd_inited)
-	{
-		close(audio_fd);
-		snd_inited = 0;
-	}
-#endif
 }
 
 /*

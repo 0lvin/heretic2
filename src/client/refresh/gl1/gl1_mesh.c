@@ -662,7 +662,7 @@ void R_DrawAliasModel (entity_t *e)
 	if (currententity->flags & RF_DEPTHHACK)
 		glDepthRange (gldepthmin, gldepthmax);
 
-	if (gl_shadows->value &&
+	if (r_shadows->value &&
 		!(currententity->flags & (RF_TRANSLUCENT | RF_WEAPONMODEL)))
 	{
 		glPushMatrix ();

@@ -41,9 +41,9 @@ extern cvar_t *vid_fullscreen;
 extern cvar_t *vid_gamma;
 extern cvar_t *scr_viewsize;
 
-static cvar_t *gl_mode;
+static cvar_t *r_mode;
 static cvar_t *gl_driver;
-static cvar_t *gl_picmip;
+static cvar_t *gl1_picmip;
 static cvar_t *gl_ext_palettedtexture;
 
 static cvar_t *sw_mode;
@@ -150,11 +150,11 @@ ApplyChanges(void *unused)
 
 	Cvar_SetValue( "vid_gamma", gamma );
 	Cvar_SetValue( "sw_stipplealpha", s_stipple_box.curvalue );
-	Cvar_SetValue( "gl_picmip", 3 - s_tq_slider.curvalue );
+	Cvar_SetValue( "gl1_picmip", 3 - s_tq_slider.curvalue );
 	Cvar_SetValue( "vid_fullscreen", s_fs_box[s_current_menu_index].curvalue );
 	Cvar_SetValue( "gl_ext_palettedtexture", s_paletted_texture_box.curvalue );
 	Cvar_SetValue( "sw_mode", s_mode_list[SOFTWARE_MENU].curvalue );
-	Cvar_SetValue( "gl_mode", s_mode_list[OPENGL_MENU].curvalue );
+	Cvar_SetValue( "r_mode", s_mode_list[OPENGL_MENU].curvalue );
 	Cvar_SetValue( "_windowed_mouse", s_windowed_mouse.curvalue);
 
 	switch ( s_ref_list[s_current_menu_index].curvalue )
@@ -260,10 +260,10 @@ VID_MenuInit(void)
 
 	if ( !gl_driver )
 		gl_driver = Cvar_Get( "gl_driver", "libMesaGL.so.2", 0 );
-	if ( !gl_picmip )
-		gl_picmip = Cvar_Get( "gl_picmip", "0", 0 );
-	if ( !gl_mode )
-		gl_mode = Cvar_Get( "gl_mode", "3", 0 );
+	if ( !gl1_picmip )
+		gl1_picmip = Cvar_Get( "gl1_picmip", "0", 0 );
+	if ( !r_mode )
+		r_mode = Cvar_Get( "r_mode", "3", 0 );
 	if ( !sw_mode )
 		sw_mode = Cvar_Get( "sw_mode", "0", 0 );
 	if ( !gl_ext_palettedtexture )
@@ -276,7 +276,7 @@ VID_MenuInit(void)
 	_windowed_mouse = Cvar_Get( "_windowed_mouse", "0", CVAR_ARCHIVE );
 
 	s_mode_list[SOFTWARE_MENU].curvalue = sw_mode->value;
-	s_mode_list[OPENGL_MENU].curvalue = gl_mode->value;
+	s_mode_list[OPENGL_MENU].curvalue = r_mode->value;
 
 	if ( !scr_viewsize )
 		scr_viewsize = Cvar_Get ("viewsize", "100", CVAR_ARCHIVE);
@@ -388,7 +388,7 @@ VID_MenuInit(void)
 	s_tq_slider.generic.name	= "texture quality";
 	s_tq_slider.minvalue = 0;
 	s_tq_slider.maxvalue = 3;
-	s_tq_slider.curvalue = 3-gl_picmip->value;
+	s_tq_slider.curvalue = 3 - gl1_picmip->value;
 
 	s_paletted_texture_box.generic.type = MTYPE_SPINCONTROL;
 	s_paletted_texture_box.generic.x	= 0;

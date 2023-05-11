@@ -167,9 +167,11 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/cl_scrn.o \
 	$(BUILDDIR)/src/client/cl_string.o \
 	$(BUILDDIR)/src/client/cl_view.o \
-	$(BUILDDIR)/src/client/snd_mem.o \
-	$(BUILDDIR)/src/client/snd_mix.o \
-	$(BUILDDIR)/src/client/snd_dma.o \
+	$(BUILDDIR)/src/client/sound/openal.o \
+	$(BUILDDIR)/src/client/sound/qal.o \
+	$(BUILDDIR)/src/client/sound/wave.o \
+	$(BUILDDIR)/src/client/sound/snd_mix.o \
+	$(BUILDDIR)/src/client/sound/sound.o \
 	$(BUILDDIR)/src/client/cl_console.o \
 	$(BUILDDIR)/src/client_effects/ambient_effects.o \
 	$(BUILDDIR)/src/client_effects/ce_default_message_handler.o \

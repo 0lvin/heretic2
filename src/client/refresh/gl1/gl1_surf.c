@@ -326,7 +326,7 @@ void R_BlendLightmaps(void)
 	** set the appropriate blending mode unless we're only looking at the
 	** lightmaps.
 	*/
-	if (!gl_lightmap->value)
+	if (!r_lightmap->value)
 	{
 		glEnable(GL_BLEND);
 
@@ -384,7 +384,7 @@ void R_BlendLightmaps(void)
 	/*
 	** render dynamic lightmaps
 	*/
-	if (gl_dynamic->value)
+	if (gl1_dynamic->value)
 	{
 		LM_InitBlock();
 
@@ -524,7 +524,7 @@ void R_RenderBrushPoly(msurface_t* fa)
 	if ((fa->dlightframe == r_framecount))
 	{
 	dynamic:
-		if (gl_dynamic->value)
+		if (gl1_dynamic->value)
 		{
 			if (!(fa->texinfo->flags & (SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP)))
 			{
@@ -667,7 +667,7 @@ void R_DrawInlineBModel(void)
 	dlight_t* lt;
 
 	// calculate dynamic lighting for bmodel
-	if (!gl_flashblend->value)
+	if (!gl1_flashblend->value)
 	{
 		lt = r_newrefdef.dlights;
 		for (k = 0; k < r_newrefdef.num_dlights; k++, lt++)
@@ -991,7 +991,7 @@ void R_MarkLeaves(void)
 
 	// development aid to let you run around and see exactly where
 	// the pvs ends
-	if (gl_lockpvs->value)
+	if (r_lockpvs->value)
 		return;
 
 	r_visframecount++;

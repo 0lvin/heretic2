@@ -633,7 +633,7 @@ void R_SetSky (char *name, float rotate, vec3_t axis)
 	{
 		// chop down rotating skies for less memory
 		if (gl_skymip->value || skyrotate)
-			gl_picmip->value++;
+			gl1_picmip->value++;
 
 		Com_sprintf(pathname, sizeof(pathname), "pics/skies/%s%s.m8", skyname, suf[i]);
 
@@ -643,7 +643,7 @@ void R_SetSky (char *name, float rotate, vec3_t axis)
 
 		if (gl_skymip->value || skyrotate)
 		{	// take less memory
-			gl_picmip->value--;
+			gl1_picmip->value--;
 			sky_min = 1.0/256;
 			sky_max = 255.0/256;
 		}
