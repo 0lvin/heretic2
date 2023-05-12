@@ -5,16 +5,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-//#ifdef PLAYER_DLL
-//
-//#define PLAYER_API __declspec(dllexport)
-//
-//#else
-//
-//#define PLAYER_API __declspec(dllimport)
-//
-//#endif	// PLAYER_DLL
-
 #define PLAYER_API
 
 #include "p_types.h"
@@ -66,6 +56,21 @@ enum moveplus_e
 	MOVE_NOFWD,
 	MOVE_NOSIDE,
 };
+
+// ************************************************************************************************
+// Skin defines
+// -----------
+// Indicates what skin Corvus has.
+// When indicated on the model, each odd-numbered skin is the damaged version of the previous skin.
+// ************************************************************************************************
+
+// For code clarity
+#define PLAGUE_NUM_LEVELS 3
+#define DAMAGE_NUM_LEVELS 2
+
+#define SKIN_REFLECTION	(DAMAGE_NUM_LEVELS)		// We don't maintain a skin for every plague level anymore.
+
+#define SKIN_MAX		(SKIN_REFLECTION + 1)
 
 #define DEFAULT_PLAYER_LIB "player.so"
 

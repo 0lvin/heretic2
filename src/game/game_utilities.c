@@ -18,6 +18,8 @@
 #include "../../h2common/fx.h"
 #include "../player/p_main.h"
 
+#define TIME_EPSILON		0.01
+
 //kill specific entitys at the begining of a cinematic
 void remove_non_cinematic_entites(edict_t *owner)
 {

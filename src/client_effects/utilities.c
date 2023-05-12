@@ -18,6 +18,7 @@
 
 
 // setup for circular list
+#define CFX_CULLING_DIST 1000.0f
 client_entity_t *CircularList[MAX_ENTRIES_IN_CIRCLE_LIST + 1];
 int				CurrentCirclePointer = 0;
 int				total_circle_entries;

@@ -1004,6 +1004,9 @@ Qcommon_Init(int argc, char **argv)
 	Com_Printf ("====== Heretic II fully initialized ======\n\n");
 }
 
+extern int	c_pointcontents;
+extern int	c_traces, c_brush_traces;
+
 /*
 =================
 Qcommon_Frame

@@ -14,6 +14,8 @@
 #include "../../../../h2common/m_skeleton.h"
 #include "../../../../h2common/r_skeletons.h"
 
+typedef vec_t vec2_t[2];
+
 fmblock_t m_fmblocks[] =
 {
 	{ FM_HEADER_NAME,			FM_BLOCK_HEADER },

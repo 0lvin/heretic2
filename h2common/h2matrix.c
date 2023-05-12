@@ -273,34 +273,6 @@ float Vec3Normalize(vec3_t v1)
 	return mag;
 }
 
-double Vec3dDotProduct(vec3d_t v1, vec3d_t v2)
-{
-	return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
-}
-
-double Vec3dNormalize(vec3d_t v1)
-{
-	double mag;
-	double imag = 1;
-
-	mag = Vec3dDotProduct(v1, v1);
-
-	if (!mag)
-	{
-		return 0;
-	}
-
-	mag = (float)sqrt(mag);
-
-	imag /= mag;
-
-	v1[0] *= imag;
-	v1[1] *= imag;
-	v1[2] *= imag;
-
-	return mag;
-}
-
 double Matricies3FromDirAndUp(vec3_t direction, vec3_t up, matrix3_t toLocal, matrix3_t fromLocal)
 {
 	matrix3_t pitchYawMatrix;

@@ -379,4 +379,98 @@ typedef struct
 game_export_t *GetGameApi (game_import_t *import);
 float Clamp(float src, float min, float max);
 
+typedef enum DoorSoundID_e
+{
+	DS_NONE = 0,
+	DS_GENERIC,
+	DS_HEAVYSTONE,
+	DS_SWINGARM,
+	DS_SWINGBRIDGE,
+	DS_MEDIUMWOOD,
+	DS_HUGEWOOD,
+	DS_MEDIUMSTONE,
+	DS_LARGESTONE,
+	DS_MEDIUMMETAL,
+	DS_FASTSLIDING,
+	DS_METALSLIDING,
+	DS_HUGESTONE,
+	DS_HUGEELEVATOR,
+	DS_CRANEWAREHOUSE,
+	DS_HAMMERPUMP,
+	DS_METALTABLE,
+	DS_LABTABLE,
+	DS_PISTON,
+	DS_CLANG,
+	DS_UNDERWATER,
+	DS_BAM,
+	DS_MAX
+} DoorSoundID_t;
+
+// EAX sound presets
+enum
+{
+	EAX_ENVIRONMENT_GENERIC,                // factory default
+	EAX_ENVIRONMENT_PADDEDCELL,
+	EAX_ENVIRONMENT_ROOM,              // standard environments
+	EAX_ENVIRONMENT_BATHROOM,
+	EAX_ENVIRONMENT_LIVINGROOM,
+	EAX_ENVIRONMENT_STONEROOM,
+	EAX_ENVIRONMENT_AUDITORIUM,
+	EAX_ENVIRONMENT_CONCERTHALL,
+	EAX_ENVIRONMENT_CAVE,
+	EAX_ENVIRONMENT_ARENA,
+	EAX_ENVIRONMENT_HANGAR,
+	EAX_ENVIRONMENT_CARPETEDHALLWAY,
+	EAX_ENVIRONMENT_HALLWAY,
+	EAX_ENVIRONMENT_STONECORRIDOR,
+	EAX_ENVIRONMENT_ALLEY,
+	EAX_ENVIRONMENT_FOREST,
+	EAX_ENVIRONMENT_CITY,
+	EAX_ENVIRONMENT_MOUNTAINS,
+	EAX_ENVIRONMENT_QUARRY,
+	EAX_ENVIRONMENT_PLAIN,
+	EAX_ENVIRONMENT_PARKINGLOT,
+	EAX_ENVIRONMENT_SEWERPIPE,
+	EAX_ENVIRONMENT_UNDERWATER,
+	EAX_ENVIRONMENT_DRUGGED,
+	EAX_ENVIRONMENT_DIZZY,
+	EAX_ENVIRONMENT_PSYCHOTIC,
+
+	EAX_ENVIRONMENT_COUNT           // total number of environments
+};
+
+// EAX world preset types
+enum
+{
+	EAX_GENERIC,
+	EAX_ALL_STONE,
+	EAX_ARENA,
+	EAX_CITY_AND_SEWERS,
+	EAX_CITY_AND_ALLEYS,
+	EAX_FOREST,
+	EAX_PSYCHOTIC,
+};
+
+#define ENTITY_FX_BUF_BLOCK_SIZE	256
+#define MAX_PERSISTANT_EFFECTS		512
+
+typedef struct PerEffectsBuffer_s
+{
+	byte	buf[ENTITY_FX_BUF_SIZE];
+	int		bufSize;
+	int		freeBlock;
+	int		numEffects;
+	int		send_mask;
+	int		demo_send_mask;
+	int		fx_num;
+	// jmarshall
+	qboolean inUse;
+	qboolean needsUpdate;
+	qboolean nonPersistant;
+
+	void* entity;
+	int data_size;
+	// jmarshall end
+} PerEffectsBuffer_t;
+
 #endif

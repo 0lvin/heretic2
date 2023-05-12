@@ -7,6 +7,8 @@
 #include "../src/common/header/common.h"
 #include "../src/common/header/common.h"
 
+typedef float matrix3_t[3][3];
+
 void CreateRollMatrix(matrix3_t, vec_t);
 void CreateYawMatrix(matrix3_t, vec_t);
 void CreatePitchMatrix(matrix3_t, vec_t);
