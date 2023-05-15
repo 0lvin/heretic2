@@ -167,8 +167,6 @@ debugLine_t debug_lines[256];
 int numDebugLines = 0;
 
 void R_Clear (void);
-entity_t	*currententity;
-model_t		*currentmodel;
 
 void
 R_RotateForEntity(entity_t *e)
@@ -280,10 +278,9 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 }
 
 void
-R_DrawNullModel(void)
+R_DrawNullModel(entity_t *currententity)
 {
 	vec3_t shadelight;
-	int		i;
 
 	if (currententity->flags & RF_FULLBRIGHT)
 	{
@@ -298,19 +295,39 @@ R_DrawNullModel(void)
 	R_RotateForEntity(currententity);
 
 	glDisable(GL_TEXTURE_2D);
-	glColor3fv(shadelight);
+	glColor4f( shadelight[0], shadelight[1], shadelight[2], 1 );
 
-	glBegin (GL_TRIANGLE_FAN);
-	glVertex3f (0, 0, -16);
-	for (i=0 ; i<=4 ; i++)
-		glVertex3f (16*cos(i*M_PI/2), 16*sin(i*M_PI/2), 0);
-	glEnd ();
+    GLfloat vtxA[] = {
+        0, 0, -16,
+        16 * cos( 0 * M_PI / 2 ), 16 * sin( 0 * M_PI / 2 ), 0,
+        16 * cos( 1 * M_PI / 2 ), 16 * sin( 1 * M_PI / 2 ), 0,
+        16 * cos( 2 * M_PI / 2 ), 16 * sin( 2 * M_PI / 2 ), 0,
+        16 * cos( 3 * M_PI / 2 ), 16 * sin( 3 * M_PI / 2 ), 0,
+        16 * cos( 4 * M_PI / 2 ), 16 * sin( 4 * M_PI / 2 ), 0
+    };
 
-	glBegin (GL_TRIANGLE_FAN);
-	glVertex3f (0, 0, 16);
-	for (i=4 ; i>=0 ; i--)
-		glVertex3f (16*cos(i*M_PI/2), 16*sin(i*M_PI/2), 0);
-	glEnd ();
+    glEnableClientState( GL_VERTEX_ARRAY );
+
+    glVertexPointer( 3, GL_FLOAT, 0, vtxA );
+    glDrawArrays( GL_TRIANGLE_FAN, 0, 6 );
+
+    glDisableClientState( GL_VERTEX_ARRAY );
+
+	GLfloat vtxB[] = {
+		0, 0, 16,
+		16 * cos( 4 * M_PI / 2 ), 16 * sin( 4 * M_PI / 2 ), 0,
+		16 * cos( 3 * M_PI / 2 ), 16 * sin( 3 * M_PI / 2 ), 0,
+		16 * cos( 2 * M_PI / 2 ), 16 * sin( 2 * M_PI / 2 ), 0,
+		16 * cos( 1 * M_PI / 2 ), 16 * sin( 1 * M_PI / 2 ), 0,
+		16 * cos( 0 * M_PI / 2 ), 16 * sin( 0 * M_PI / 2 ), 0
+	};
+
+	glEnableClientState( GL_VERTEX_ARRAY );
+
+	glVertexPointer( 3, GL_FLOAT, 0, vtxB );
+	glDrawArrays( GL_TRIANGLE_FAN, 0, 6 );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
 
 	glColor4f(1, 1, 1, 1);
 	glPopMatrix();
@@ -330,18 +347,24 @@ R_DrawEntitiesOnList(void)
 	/* draw non-transparent first */
 	for (i = 0; i < r_newrefdef.num_entities; i++)
 	{
-		currententity = r_newrefdef.entities[i];
+		entity_t *currententity = r_newrefdef.entities[i];
 
 		if (currententity->flags & RF_TRANSLUCENT)
 		{
 			continue; /* solid */
 		}
 
+		if (currententity->flags & RF_BEAM)
 		{
-			currentmodel = currententity->model[0];
+			R_DrawBeam(currententity);
+		}
+		else
+		{
+			const model_t *currentmodel = currententity->model[0];
+
 			if (!currentmodel)
 			{
-				R_DrawNullModel();
+				R_DrawNullModel(currententity);
 				continue;
 			}
 
@@ -373,15 +396,23 @@ R_DrawEntitiesOnList(void)
 
 	for (i = 0; i < r_newrefdef.num_alpha_entities; i++)
 	{
-		currententity = r_newrefdef.alpha_entities[i];
+		entity_t *currententity = r_newrefdef.alpha_entities[i];
 		if (!(currententity->flags & RF_TRANSLUCENT))
-			continue;	// solid
 		{
-			currentmodel = currententity->model[0];
+			continue; /* solid */
+		}
+
+		if (currententity->flags & RF_BEAM)
+		{
+			R_DrawBeam(currententity);
+		}
+		else
+		{
+			const model_t *currentmodel = currententity->model[0];
 
 			if (!currentmodel)
 			{
-				R_DrawNullModel();
+				R_DrawNullModel(currententity);
 				continue;
 			}
 
@@ -409,12 +440,6 @@ R_DrawEntitiesOnList(void)
 	glDepthMask(1); /* back to writing */
 }
 
-
-/*
-==============
-RB_RenderQuad
-==============
-*/
 void RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1, float t1, float s2, float t2) {
 	vec3_t vertexes[4];
 	vec3_t st[4];
@@ -446,12 +471,8 @@ void RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, flo
 	}
 }
 
-/*
-===============
-R_DrawParticles
-===============
-*/
-void R_DrawParticles(int num_particles, particle_t* particles, int type)
+void
+R_DrawParticles(int num_particles, particle_t* particles, int type)
 {
 	const particle_t* p;
 	int				i;
@@ -499,61 +520,50 @@ void R_DrawParticles(int num_particles, particle_t* particles, int type)
 	R_TexEnv(GL_REPLACE);
 }
 
-/*
-============
-R_PolyBlend
-============
-*/
-void R_PolyBlend (void)
+void
+R_PolyBlend(void)
 {
 	if (!gl_polyblend->value)
-		return;
-	if (!v_blend[3])
-		return;
-
-	glDisable (GL_ALPHA_TEST);
-	glEnable (GL_BLEND);
-	glDisable (GL_DEPTH_TEST);
-	glDisable (GL_TEXTURE_2D);
-
-    glLoadIdentity ();
-
-	// FIXME: get rid of these
-    glRotatef (-90,  1, 0, 0);	    // put Z going up
-    glRotatef (90,  0, 0, 1);	    // put Z going up
-
-	glColor4fv (v_blend);
-
-	glBegin (GL_QUADS);
-
-	glVertex3f (10, 100, 100);
-	glVertex3f (10, -100, 100);
-	glVertex3f (10, -100, -100);
-	glVertex3f (10, 100, -100);
-	glEnd ();
-
-	glDisable (GL_BLEND);
-	glEnable (GL_TEXTURE_2D);
-	glEnable (GL_ALPHA_TEST);
-
-	glColor4f(1,1,1,1);
-}
-
-//=======================================================================
-
-int SignbitsForPlane (cplane_t *out)
-{
-	int	bits, j;
-
-	// for fast box on planeside test
-
-	bits = 0;
-	for (j=0 ; j<3 ; j++)
 	{
-		if (out->normal[j] < 0)
-			bits |= 1<<j;
+		return;
 	}
-	return bits;
+
+	if (!v_blend[3])
+	{
+		return;
+	}
+
+	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_TEXTURE_2D);
+
+	glLoadIdentity();
+
+	glRotatef(-90, 1, 0, 0); /* put Z going up */
+	glRotatef(90, 0, 0, 1); /* put Z going up */
+
+	glColor4f( v_blend[0], v_blend[1], v_blend[2], v_blend[3] );
+
+	GLfloat vtx[] = {
+		10, 100, 100,
+		10, -100, 100,
+		10, -100, -100,
+		10, 100, -100
+	};
+
+	glEnableClientState( GL_VERTEX_ARRAY );
+
+	glVertexPointer( 3, GL_FLOAT, 0, vtx );
+	glDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
+
+	glDisable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_ALPHA_TEST);
+
+	glColor4f(1, 1, 1, 1);
 }
 
 void
@@ -838,12 +848,158 @@ R_Flash(void)
 	R_PolyBlend();
 }
 
+void
+R_SetGL2D(void)
+{
+	int x, w, y, h;
+	/* set 2D virtual screen size */
+	qboolean drawing_left_eye = gl_state.camera_separation < 0;
+	qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
+	qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
+
+	x = 0;
+	w = vid.width;
+	y = 0;
+	h = vid.height;
+
+	if(stereo_split_lr) {
+		w =  w / 2;
+		x = drawing_left_eye ? 0 : w;
+	}
+
+	if(stereo_split_tb) {
+		h =  h / 2;
+		y = drawing_left_eye ? h : 0;
+	}
+
+	glViewport(x, y, w, h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, vid.width, vid.height, 0, -99999, 99999);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
+	glColor4f(1, 1, 1, 1);
+}
+
 /*
  * r_newrefdef must be set before the first call
  */
 static void
 R_RenderView(refdef_t *fd)
 {
+	if ((gl_state.stereo_mode != STEREO_MODE_NONE) && gl_state.camera_separation) {
+
+		qboolean drawing_left_eye = gl_state.camera_separation < 0;
+		switch (gl_state.stereo_mode) {
+			case STEREO_MODE_ANAGLYPH:
+				{
+
+					// Work out the colour for each eye.
+					int anaglyph_colours[] = { 0x4, 0x3 }; // Left = red, right = cyan.
+
+					if (strlen(gl1_stereo_anaglyph_colors->string) == 2) {
+						int eye, colour, missing_bits;
+						// Decode the colour name from its character.
+						for (eye = 0; eye < 2; ++eye) {
+							colour = 0;
+							switch (toupper((unsigned char)gl1_stereo_anaglyph_colors->string[eye])) {
+								case 'B': ++colour; // 001 Blue
+								case 'G': ++colour; // 010 Green
+								case 'C': ++colour; // 011 Cyan
+								case 'R': ++colour; // 100 Red
+								case 'M': ++colour; // 101 Magenta
+								case 'Y': ++colour; // 110 Yellow
+									anaglyph_colours[eye] = colour;
+									break;
+							}
+						}
+						// Fill in any missing bits.
+						missing_bits = ~(anaglyph_colours[0] | anaglyph_colours[1]) & 0x3;
+						for (eye = 0; eye < 2; ++eye) {
+							anaglyph_colours[eye] |= missing_bits;
+						}
+					}
+
+					// Set the current colour.
+					glColorMask(
+						!!(anaglyph_colours[drawing_left_eye] & 0x4),
+						!!(anaglyph_colours[drawing_left_eye] & 0x2),
+						!!(anaglyph_colours[drawing_left_eye] & 0x1),
+						GL_TRUE
+					);
+				}
+				break;
+			case STEREO_MODE_ROW_INTERLEAVED:
+			case STEREO_MODE_COLUMN_INTERLEAVED:
+			case STEREO_MODE_PIXEL_INTERLEAVED:
+				{
+					qboolean flip_eyes = true;
+					int client_x, client_y;
+
+					//GLimp_GetClientAreaOffset(&client_x, &client_y);
+					client_x = 0;
+					client_y = 0;
+
+					R_SetGL2D();
+
+					glEnable(GL_STENCIL_TEST);
+					glStencilMask(GL_TRUE);
+					glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+					glStencilOp(GL_REPLACE, GL_KEEP, GL_KEEP);
+					glStencilFunc(GL_NEVER, 0, 1);
+
+					glBegin(GL_QUADS);
+					{
+						glVertex2i(0, 0);
+						glVertex2i(vid.width, 0);
+						glVertex2i(vid.width, vid.height);
+						glVertex2i(0, vid.height);
+					}
+					glEnd();
+
+					glStencilOp(GL_INVERT, GL_KEEP, GL_KEEP);
+					glStencilFunc(GL_NEVER, 1, 1);
+
+					glBegin(GL_LINES);
+					{
+						if (gl_state.stereo_mode == STEREO_MODE_ROW_INTERLEAVED || gl_state.stereo_mode == STEREO_MODE_PIXEL_INTERLEAVED) {
+							int y;
+							for (y = 0; y <= vid.height; y += 2) {
+								glVertex2f(0, y - 0.5f);
+								glVertex2f(vid.width, y - 0.5f);
+							}
+							flip_eyes ^= (client_y & 1);
+						}
+
+						if (gl_state.stereo_mode == STEREO_MODE_COLUMN_INTERLEAVED || gl_state.stereo_mode == STEREO_MODE_PIXEL_INTERLEAVED) {
+							int x;
+							for (x = 0; x <= vid.width; x += 2) {
+								glVertex2f(x - 0.5f, 0);
+								glVertex2f(x - 0.5f, vid.height);
+							}
+							flip_eyes ^= (client_x & 1);
+						}
+					}
+					glEnd();
+
+					glStencilMask(GL_FALSE);
+					glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+					glStencilFunc(GL_EQUAL, drawing_left_eye ^ flip_eyes, 1);
+					glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+
 	if (r_norefresh->value)
 	{
 		return;
@@ -914,23 +1070,6 @@ R_RenderView(refdef_t *fd)
 	}
 }
 
-
-void	R_SetGL2D (void)
-{
-	// set 2D virtual screen size
-	glViewport (0,0, vid.width, vid.height);
-	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity ();
-	glOrtho  (0, vid.width, vid.height, 0, -99999, 99999);
-	glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity ();
-	glDisable (GL_DEPTH_TEST);
-	glDisable (GL_CULL_FACE);
-	glDisable (GL_BLEND);
-	glEnable (GL_ALPHA_TEST);
-	glColor4f (1,1,1,1);
-}
-
 static void GL_DrawColoredStereoLinePair( float r, float g, float b, float y )
 {
 	glColor3f( r, g, b );
@@ -969,8 +1108,26 @@ static void GL_DrawStereoPattern( void )
 	}
 }
 
+enum opengl_special_buffer_modes
+GL_GetSpecialBufferModeForStereoMode(enum stereo_modes stereo_mode) {
+	switch (stereo_mode) {
+		case STEREO_MODE_NONE:
+		case STEREO_SPLIT_HORIZONTAL:
+		case STEREO_SPLIT_VERTICAL:
+		case STEREO_MODE_ANAGLYPH:
+			return OPENGL_SPECIAL_BUFFER_MODE_NONE;
+		case STEREO_MODE_OPENGL:
+			return OPENGL_SPECIAL_BUFFER_MODE_STEREO;
+		case STEREO_MODE_ROW_INTERLEAVED:
+		case STEREO_MODE_COLUMN_INTERLEAVED:
+		case STEREO_MODE_PIXEL_INTERLEAVED:
+			return OPENGL_SPECIAL_BUFFER_MODE_STENCIL;
+	}
+	return OPENGL_SPECIAL_BUFFER_MODE_NONE;
+}
+
 static void
-R_SetLightLevel(void)
+R_SetLightLevel(entity_t *currententity)
 {
 	vec3_t shadelight;
 
@@ -979,12 +1136,11 @@ R_SetLightLevel(void)
 		return;
 	}
 
-	// save off light value for server to look at (BIG HACK!)
-
+	/* save off light value for server to look at */
 	R_LightPoint(currententity, r_newrefdef.vieworg, shadelight);
 
-	// pick the greatest component, which should be the same
-	// as the mono value returned by software
+	/* pick the greatest component, which should be the
+	 * same as the mono value returned by software */
 	if (shadelight[0] > shadelight[1])
 	{
 		if (shadelight[0] > shadelight[2])
@@ -1013,7 +1169,7 @@ static void
 RI_RenderFrame(refdef_t *fd)
 {
 	R_RenderView(fd);
-	R_SetLightLevel ();
+	R_SetLightLevel (NULL);
 	glLineWidth(10.0);
 
 	glDisable(GL_DEPTH_TEST);
@@ -1146,11 +1302,6 @@ R_Register(void)
 	ri.Cmd_AddCommand("gl_strings", R_Strings);
 }
 
-/*
-==================
-R_SetMode
-==================
-*/
 qboolean R_SetMode (void)
 {
 	int err;
@@ -1193,12 +1344,8 @@ qboolean R_SetMode (void)
 	return true;
 }
 
-/*
-===============
-R_Init
-===============
-*/
-int R_Init( void *hinstance, void *hWnd )
+int
+RI_Init(void *hinstance, void *hWnd)
 {
 	char renderer_buffer[1000];
 	char vendor_buffer[1000];
@@ -1211,7 +1358,8 @@ int R_Init( void *hinstance, void *hWnd )
 		r_turbsin[j] *= 0.5;
 	}
 
-	ri.Con_Printf (PRINT_ALL, "ref_gl version: " REF_VERSION "\n");
+	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
+	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
 
 	R_Register();
 
@@ -1275,12 +1423,8 @@ int R_Init( void *hinstance, void *hWnd )
 		ri.Con_Printf (PRINT_ALL, "glGetError() = 0x%x\n", err);
 }
 
-/*
-===============
-R_Shutdown
-===============
-*/
-void R_Shutdown (void)
+void
+RI_Shutdown(void)
 {
 	ri.Cmd_RemoveCommand("modellist");
 	ri.Cmd_RemoveCommand("screenshot");
@@ -1298,14 +1442,8 @@ void R_Shutdown (void)
 	QGL_Shutdown();
 }
 
-
-
-/*
-@@@@@@@@@@@@@@@@@@@@@
-R_BeginFrame
-@@@@@@@@@@@@@@@@@@@@@
-*/
-void R_BeginFrame( float camera_separation )
+void
+RI_BeginFrame(float camera_separation)
 {
 	gl_state.camera_separation = camera_separation;
 
@@ -1337,15 +1475,15 @@ void R_BeginFrame( float camera_separation )
 	*/
 	glViewport (0,0, vid.width, vid.height);
 	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity ();
-	glOrtho  (0, vid.width, vid.height, 0, -99999, 99999);
+	glLoadIdentity();
+	glOrtho(0, vid.width, vid.height, 0, -99999, 99999);
 	glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity ();
-	glDisable (GL_DEPTH_TEST);
-	glDisable (GL_CULL_FACE);
-	glDisable (GL_BLEND);
-	glEnable (GL_ALPHA_TEST);
-	glColor4f (1,1,1,1);
+	glLoadIdentity();
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glEnable(GL_ALPHA_TEST);
+	glColor4f(1, 1, 1, 1);
 
 	if (gl1_particle_square->modified)
 	{
@@ -1423,66 +1561,62 @@ void R_BeginFrame( float camera_separation )
 	*/
 	GL_UpdateSwapInterval();
 
-	//
-	// clear screen if desired
-	//
-	R_Clear ();
+	/* clear screen if desired */
+	R_Clear();
 }
 
-/*
-=============
-R_SetPalette
-=============
-*/
 unsigned r_rawpalette[256];
 
-void R_SetPalette ( const unsigned char *palette)
+void
+RI_SetPalette(const unsigned char *palette)
 {
-	int		i;
+	int i;
 
-	byte *rp = ( byte * ) r_rawpalette;
+	byte *rp = (byte *)r_rawpalette;
 
-	if ( palette )
+	if (palette)
 	{
-		for ( i = 0; i < 256; i++ )
+		for (i = 0; i < 256; i++)
 		{
-			rp[i*4+0] = palette[i*3+0];
-			rp[i*4+1] = palette[i*3+1];
-			rp[i*4+2] = palette[i*3+2];
-			rp[i*4+3] = 0xff;
+			rp[i * 4 + 0] = palette[i * 3 + 0];
+			rp[i * 4 + 1] = palette[i * 3 + 1];
+			rp[i * 4 + 2] = palette[i * 3 + 2];
+			rp[i * 4 + 3] = 0xff;
 		}
 	}
 	else
 	{
-		for ( i = 0; i < 256; i++ )
+		for (i = 0; i < 256; i++)
 		{
-			rp[i*4+0] = d_8to24table[i] & 0xff;
-			rp[i*4+1] = ( d_8to24table[i] >> 8 ) & 0xff;
-			rp[i*4+2] = ( d_8to24table[i] >> 16 ) & 0xff;
-			rp[i*4+3] = 0xff;
+			rp[i * 4 + 0] = LittleLong(d_8to24table[i]) & 0xff;
+			rp[i * 4 + 1] = (LittleLong(d_8to24table[i]) >> 8) & 0xff;
+			rp[i * 4 + 2] = (LittleLong(d_8to24table[i]) >> 16) & 0xff;
+			rp[i * 4 + 3] = 0xff;
 		}
 	}
-	R_SetTexturePalette( r_rawpalette );
 
-	glClearColor (0,0,0,0);
-	glClear (GL_COLOR_BUFFER_BIT);
-	glClearColor (1,0, 0.5 , 0.5);
+	R_SetTexturePalette(r_rawpalette);
+
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(1, 0, 0.5, 0.5);
 }
 
-/*
-** R_DrawBeam
-*/
-void R_DrawBeam( entity_t *e )
+/* R_DrawBeam */
+void
+R_DrawBeam(entity_t *e)
 {
-#define NUM_BEAM_SEGS 6
-
-	int	i;
+	int i;
 	float r, g, b;
 
 	vec3_t perpvec;
 	vec3_t direction, normalized_direction;
-	vec3_t	start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
+	vec3_t start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
 	vec3_t oldorigin, origin;
+
+	GLfloat vtx[3*NUM_BEAM_SEGS*4];
+	unsigned int index_vtx = 0;
+	unsigned int pointb;
 
 	oldorigin[0] = e->oldorigin[0];
 	oldorigin[1] = e->oldorigin[1];
@@ -1496,50 +1630,67 @@ void R_DrawBeam( entity_t *e )
 	normalized_direction[1] = direction[1] = oldorigin[1] - origin[1];
 	normalized_direction[2] = direction[2] = oldorigin[2] - origin[2];
 
-	if ( VectorNormalize( normalized_direction ) == 0 )
-		return;
-
-	PerpendicularVector( perpvec, normalized_direction );
-	VectorScale( perpvec, e->frame / 2, perpvec );
-
-	for ( i = 0; i < 6; i++ )
+	if (VectorNormalize(normalized_direction) == 0)
 	{
-		RotatePointAroundVector( start_points[i], normalized_direction, perpvec, (360.0/NUM_BEAM_SEGS)*i );
-		VectorAdd( start_points[i], origin, start_points[i] );
-		VectorAdd( start_points[i], direction, end_points[i] );
+		return;
 	}
 
-	glDisable( GL_TEXTURE_2D );
-	glEnable( GL_BLEND );
-	glDepthMask( GL_FALSE );
+	PerpendicularVector(perpvec, normalized_direction);
+	VectorScale(perpvec, e->frame / 2, perpvec);
 
-	r = ( d_8to24table[e->skinnum & 0xFF] ) & 0xFF;
-	g = ( d_8to24table[e->skinnum & 0xFF] >> 8 ) & 0xFF;
-	b = ( d_8to24table[e->skinnum & 0xFF] >> 16 ) & 0xFF;
+	for (i = 0; i < 6; i++)
+	{
+		RotatePointAroundVector(start_points[i], normalized_direction, perpvec,
+				(360.0 / NUM_BEAM_SEGS) * i);
+		VectorAdd(start_points[i], origin, start_points[i]);
+		VectorAdd(start_points[i], direction, end_points[i]);
+	}
 
-	r *= 1/255.0F;
-	g *= 1/255.0F;
-	b *= 1/255.0F;
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glDepthMask(GL_FALSE);
 
-	glColor4f( r, g, b, e->color.a );
+	r = (LittleLong(d_8to24table[e->skinnum & 0xFF])) & 0xFF;
+	g = (LittleLong(d_8to24table[e->skinnum & 0xFF]) >> 8) & 0xFF;
+	b = (LittleLong(d_8to24table[e->skinnum & 0xFF]) >> 16) & 0xFF;
 
-	glBegin( GL_TRIANGLE_STRIP );
+	r *= 1 / 255.0F;
+	g *= 1 / 255.0F;
+	b *= 1 / 255.0F;
+
+	glColor4f(r, g, b, e->color.a);
+
 	for ( i = 0; i < NUM_BEAM_SEGS; i++ )
 	{
-		glVertex3fv( start_points[i] );
-		glVertex3fv( end_points[i] );
-		glVertex3fv( start_points[(i+1)%NUM_BEAM_SEGS] );
-		glVertex3fv( end_points[(i+1)%NUM_BEAM_SEGS] );
+		vtx[index_vtx++] = start_points [ i ][ 0 ];
+		vtx[index_vtx++] = start_points [ i ][ 1 ];
+		vtx[index_vtx++] = start_points [ i ][ 2 ];
+
+		vtx[index_vtx++] = end_points [ i ][ 0 ];
+		vtx[index_vtx++] = end_points [ i ][ 1 ];
+		vtx[index_vtx++] = end_points [ i ][ 2 ];
+
+		pointb = ( i + 1 ) % NUM_BEAM_SEGS;
+		vtx[index_vtx++] = start_points [ pointb ][ 0 ];
+		vtx[index_vtx++] = start_points [ pointb ][ 1 ];
+		vtx[index_vtx++] = start_points [ pointb ][ 2 ];
+
+		vtx[index_vtx++] = end_points [ pointb ][ 0 ];
+		vtx[index_vtx++] = end_points [ pointb ][ 1 ];
+		vtx[index_vtx++] = end_points [ pointb ][ 2 ];
 	}
-	glEnd();
 
-	glEnable( GL_TEXTURE_2D );
-	glDisable( GL_BLEND );
-	glDepthMask( GL_TRUE );
+	glEnableClientState( GL_VERTEX_ARRAY );
+
+	glVertexPointer( 3, GL_FLOAT, 0, vtx );
+	glDrawArrays( GL_TRIANGLE_STRIP, 0, NUM_BEAM_SEGS*4 );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
+
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
 }
-
-//===================================================================
-
 
 void	RI_BeginRegistration (char *map);
 struct model_s	*RI_RegisterModel (char *name);
@@ -1580,21 +1731,27 @@ void R_EndFrame(void)
 
 
 /*
-@@@@@@@@@@@@@@@@@@@@@
-GetRefAPI
-
-@@@@@@@@@@@@@@@@@@@@@
+=====================
+RI_EndWorldRenderpass
+=====================
 */
-refexport_t GetRefAPI (refimport_t rimp )
+static qboolean
+RI_EndWorldRenderpass( void )
 {
-	refexport_t	re;
+	return true;
+}
 
-	ri = rimp;
+Q2_DLL_EXPORTED refexport_t
+GetRefAPI(refimport_t imp)
+{
+	refexport_t re = {0};
+
+	ri = imp;
 
 	re.api_version = API_VERSION;
 
-	re.Init = R_Init;
-	re.Shutdown = R_Shutdown;
+	re.Init = RI_Init;
+	re.Shutdown = RI_Shutdown;
 
 	re.BeginRegistration = RI_BeginRegistration;
 	re.RegisterModel = RI_RegisterModel;
@@ -1619,7 +1776,7 @@ refexport_t GetRefAPI (refimport_t rimp )
 	re.DrawCloseCinematic = R_DrawCloseCinematic;
 	re.DrawCinematic = R_DrawCinematic;
 
-	re.BeginFrame = R_BeginFrame;
+	re.BeginFrame = RI_BeginFrame;
 	re.EndFrame = R_EndFrame;
 
 	re.AppActivate = GLimp_AppActivate;
@@ -1637,28 +1794,28 @@ void R_Printf(int level, const char* msg, ...)
 	va_end(argptr);
 }
 
-// this is only here so the functions in q_shared.c and q_shwin.c can link
-void Sys_Error (char *error, ...)
+/*
+ * this is only here so the functions in shared source files
+ * (shared.c, rand.c, flash.c, mem.c/hunk.c) can link
+ */
+void
+Sys_Error(char *error, ...)
 {
-	va_list		argptr;
-	char		text[1024];
+	va_list argptr;
+	char text[4096]; // MAXPRINTMSG == 4096
 
-	va_start (argptr, error);
-	vsprintf (text, error, argptr);
-	va_end (argptr);
+	va_start(argptr, error);
+	vsnprintf(text, sizeof(text), error, argptr);
+	va_end(argptr);
 
-	ri.Sys_Error (ERR_FATAL, "%s", text);
+	ri.Sys_Error(ERR_FATAL, "%s", text);
 }
 
 void
 Com_Printf(char *msg, ...)
 {
-	va_list		argptr;
-	char		text[1024];
-
+	va_list argptr;
 	va_start(argptr, msg);
-	vsprintf (text, msg, argptr);
+	ri.Com_VPrintf(PRINT_ALL, msg, argptr);
 	va_end(argptr);
-
-	ri.Con_Printf (PRINT_ALL, "%s", text);
 }

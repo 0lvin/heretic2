@@ -409,8 +409,6 @@ typedef struct CL_SkeletalJoint_s
 
 //====================================================
 void GL_UpdateSwapInterval( void );
-extern entity_t	*currententity;
-extern model_t *currentmodel;
 
 /*
 ** GL config stuff
