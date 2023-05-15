@@ -565,7 +565,7 @@ void R_RenderFlexModel(fmdl_t *model, fmnodeinfo_t *nodeinfo, int currentFrame, 
 R_DrawFlexModel
 =============
 */
-void R_DrawFlexModel(entity_t *e)
+void R_DrawFlexModel(entity_t *currententity, const model_t *currentmodel)
 {
 	vec3_t		mins, maxs;
 	int			i;
@@ -573,55 +573,56 @@ void R_DrawFlexModel(entity_t *e)
 	model_t		*model;
 	vec3_t		ambientLight, directedLight;
 
-	currententity = e;
 	gl_state.currenttextures[0] = gl_state.currenttextures[1] = -1;
 
-	if (e->angles[0] || e->angles[1] || e->angles[2])
+	if (currententity->angles[0] || currententity->angles[1] || currententity->angles[2])
 	{
 		rotated = true;
 		for (i = 0; i < 3; i++)
 		{
-			mins[i] = e->origin[i] - currentmodel->radius;
-			maxs[i] = e->origin[i] + currentmodel->radius;
+			mins[i] = currententity->origin[i] - currentmodel->radius;
+			maxs[i] = currententity->origin[i] + currentmodel->radius;
 		}
 	}
 	else
 	{
 		rotated = false;
-		VectorAdd(e->origin, currentmodel->mins, mins);
-		VectorAdd(e->origin, currentmodel->maxs, maxs);
+		VectorAdd(currententity->origin, currentmodel->mins, mins);
+		VectorAdd(currententity->origin, currentmodel->maxs, maxs);
 	}
 
 	if (R_CullBox(mins, maxs, frustum))
 		return;
 
 	glPushMatrix();
-	e->angles[0] = -e->angles[0];	// stupid quake bug
-	e->angles[2] = -e->angles[2];	// stupid quake bug
-	R_RotateForEntity(e);
-	e->angles[0] = -e->angles[0];	// stupid quake bug
-	e->angles[2] = -e->angles[2];	// stupid quake bug
+	currententity->angles[0] = -currententity->angles[0];	// stupid quake bug
+	currententity->angles[2] = -currententity->angles[2];	// stupid quake bug
+	R_RotateForEntity(currententity);
+	currententity->angles[0] = -currententity->angles[0];	// stupid quake bug
+	currententity->angles[2] = -currententity->angles[2];	// stupid quake bug
 
-	maxs[0] = e->origin[0] + 10;
-	maxs[1] = e->origin[1] + 10;
-	maxs[2] = e->origin[2] + 10;
+	maxs[0] = currententity->origin[0] + 10;
+	maxs[1] = currententity->origin[1] + 10;
+	maxs[2] = currententity->origin[2] + 10;
 
-	mins[0] = e->origin[0] - 10;
-	mins[1] = e->origin[1] - 10;
-	mins[2] = e->origin[2] - 10;
+	mins[0] = currententity->origin[0] - 10;
+	mins[1] = currententity->origin[1] - 10;
+	mins[2] = currententity->origin[2] - 10;
 
 	R_TexEnv(GL_MODULATE);
 
 	vec3_t lightColor;
-	R_LightPoint(e->origin, lightColor);
+	R_LightPoint(currententity, currententity->origin, lightColor);
 	glColor3f(lightColor[0] * 3, lightColor[1] * 3, lightColor[2] * 3);
 
-
-	if (e->model[0]->skins[0])
+	if (currententity->model[0]->skins[0])
 	{
-		R_Bind(e->model[0]->skins[0]->texnum);
+		R_Bind(currententity->model[0]->skins[0]->texnum);
 	}
-	R_RenderFlexModel(e->model[0]->fmodel, e->fmnodeinfo, e->frame, e->oldframe, e->oldorigin, e->origin, e->angles, e->backlerp);
+	R_RenderFlexModel(currententity->model[0]->fmodel, currententity->fmnodeinfo,
+		currententity->frame, currententity->oldframe,
+		currententity->oldorigin, currententity->origin,
+		currententity->angles, currententity->backlerp);
 
 	glPopMatrix();
 

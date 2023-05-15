@@ -143,45 +143,15 @@ cvar_t *gl1_stereo_convergence;
 
 refimport_t ri;
 
-cvar_t *gl_3dlabs_broken;
 cvar_t *vid_ref;
-cvar_t *gl_playermip;
-cvar_t *gl_ext_swapinterval;
-cvar_t *gl_ext_palettedtexture;
-cvar_t *gl_ext_multitexture;
-cvar_t *gl_ext_pointparameters;
-cvar_t *gl_ext_compiled_vertex_array;
-cvar_t *gl_nosubimage;
-cvar_t *gl_allow_software;
-cvar_t *gl_vertex_arrays;
-cvar_t *gl_bitdepth;
 cvar_t *gl_drawbuffer;
-cvar_t *gl_driver;
 cvar_t *gl_lightmap;
 cvar_t *r_shadows;
-cvar_t *gl_monolightmap;
-cvar_t *gl_skymip;
-cvar_t *r_fog;
-cvar_t *r_fog_mode;
-cvar_t *r_fog_density;
-cvar_t *r_fog_startdist;
-cvar_t *r_fog_color_r;
-cvar_t *r_fog_color_g;
-cvar_t *r_fog_color_b;
-cvar_t *r_fog_color_a;
-cvar_t *r_fog_color_scale;
-cvar_t *r_fog_lightmap_adjust;
-cvar_t* r_fog_underwater;
-cvar_t* r_fog_underwater_mode;
 cvar_t* r_fog_underwater_density;
-cvar_t* r_fog_underwater_startdist;
 cvar_t* r_fog_underwater_color_r;
 cvar_t* r_fog_underwater_color_g;
 cvar_t* r_fog_underwater_color_b;
 cvar_t* r_fog_underwater_color_a;
-cvar_t* r_fog_underwater_color_scale;
-cvar_t* r_fog_underwater_lightmap_adjust;
-cvar_t* r_underwater_color;
 
 #include <ctype.h>
 #include "../../../../h2common/part_uvs.h"
@@ -321,7 +291,7 @@ R_DrawNullModel(void)
 	}
 	else
 	{
-		R_LightPoint(currententity->origin, shadelight);
+		R_LightPoint(currententity, currententity->origin, shadelight);
 	}
 
 	glPushMatrix();
@@ -378,13 +348,13 @@ R_DrawEntitiesOnList(void)
 			switch (currentmodel->type)
 			{
 				case mod_flex:
-					R_DrawFlexModel(currententity);
+					R_DrawFlexModel(currententity, currentmodel);
 					break;
 				case mod_alias:
-					R_DrawAliasModel(currententity);
+					R_DrawAliasModel(currententity, currentmodel);
 					break;
 				case mod_brush:
-					R_DrawBrushModel(currententity);
+					R_DrawBrushModel(currententity, currentmodel);
 					break;
 				case mod_sprite:
 					R_DrawSpriteModel(currententity, currentmodel);
@@ -418,13 +388,13 @@ R_DrawEntitiesOnList(void)
 			switch (currentmodel->type)
 			{
 				case mod_flex:
-					R_DrawFlexModel(currententity);
+					R_DrawFlexModel(currententity, currentmodel);
 					break;
 				case mod_alias:
-					R_DrawAliasModel(currententity);
+					R_DrawAliasModel(currententity, currentmodel);
 					break;
 				case mod_brush:
-					R_DrawBrushModel(currententity);
+					R_DrawBrushModel(currententity, currentmodel);
 					break;
 				case mod_sprite:
 					R_DrawSpriteModel(currententity, currentmodel);
@@ -1011,7 +981,7 @@ R_SetLightLevel(void)
 
 	// save off light value for server to look at (BIG HACK!)
 
-	R_LightPoint (r_newrefdef.vieworg, shadelight);
+	R_LightPoint(currententity, r_newrefdef.vieworg, shadelight);
 
 	// pick the greatest component, which should be the same
 	// as the mono value returned by software
@@ -1065,31 +1035,9 @@ RI_RenderFrame(refdef_t *fd)
 void
 R_Register(void)
 {
-	r_fog = ri.Cvar_Get("r_fog", "1", 0);
-	r_fog_mode = ri.Cvar_Get("r_fog_mode", "1", 0);
-	r_fog_density = ri.Cvar_Get("r_fog_density", "0.004", 0);
-	r_fog_startdist = ri.Cvar_Get("r_fog_startdist", "50.0", 0);
-	r_fog_color_r = ri.Cvar_Get("r_fog_color_r", "1.0", 0);
-	r_fog_color_g = ri.Cvar_Get("r_fog_color_g", "1.0", 0);
-	r_fog_color_b = ri.Cvar_Get("r_fog_color_b", "1.0", 0);
-	r_fog_color_a = ri.Cvar_Get("r_fog_color_a", "0.0", 0);
-	r_fog_color_scale = ri.Cvar_Get("r_fog_color_scale", "1.0", 0);
-	r_fog_lightmap_adjust = ri.Cvar_Get(
-		"r_fog_lightmap_adjust",
-		"5.0",
-		0);
-	r_fog_underwater = ri.Cvar_Get("r_fog_underwater", "1", 0);
-	r_fog_underwater_mode = ri.Cvar_Get(
-		"r_fog_underwater_mode",
-		"1",
-		0);
 	r_fog_underwater_density = ri.Cvar_Get(
 		"r_fog_underwater_density",
 		"0.0015",
-		0);
-	r_fog_underwater_startdist = ri.Cvar_Get(
-		"r_fog_underwater_startdist",
-		"100.0",
 		0);
 	r_fog_underwater_color_r = ri.Cvar_Get(
 		"r_fog_underwater_color_r",
@@ -1107,22 +1055,7 @@ R_Register(void)
 		"r_fog_underwater_color_a",
 		"0.0",
 		0);
-	r_fog_underwater_color_scale = ri.Cvar_Get(
-		"r_fog_underwater_color_scale",
-		"1.0",
-		0);
-	r_fog_underwater_lightmap_adjust = ri.Cvar_Get(
-		"r_fog_underwater_lightmap_adjust",
-		"5.0",
-		0);
-	r_underwater_color = ri.Cvar_Get(
-		"r_underwater_color",
-		"0x70c06000",
-		0);
-	gl_nosubimage = ri.Cvar_Get("gl_nosubimage", "0", 0);
-	gl_allow_software = ri.Cvar_Get("gl_allow_software", "0", 0);
-	gl_bitdepth = ri.Cvar_Get("gl_bitdepth", "0", 0);
-	gl_skymip = ri.Cvar_Get("gl_skymip", "0", 0);
+
 
 	gl_lefthand = ri.Cvar_Get("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
 	r_gunfov = ri.Cvar_Get("r_gunfov", "80", CVAR_ARCHIVE);
@@ -1180,16 +1113,6 @@ R_Register(void)
 
 	gl1_saturatelighting = ri.Cvar_Get("gl1_saturatelighting", "0", 0);
 
-	gl_playermip = ri.Cvar_Get("gl_playermip", "0", 0);
-	gl_monolightmap = ri.Cvar_Get("gl_monolightmap", "0", 0 );
-	gl_driver = ri.Cvar_Get("gl_new_driver", "opengl32", CVAR_ARCHIVE );
-	gl_vertex_arrays = ri.Cvar_Get( "gl_vertex_arrays", "0", CVAR_ARCHIVE );
-	gl_ext_swapinterval = ri.Cvar_Get( "gl_ext_swapinterval", "1", CVAR_ARCHIVE );
-	gl_ext_palettedtexture = ri.Cvar_Get( "gl_ext_palettedtexture", "1", CVAR_ARCHIVE );
-	gl_ext_multitexture = ri.Cvar_Get( "gl_ext_multitexture", "1", CVAR_ARCHIVE );
-	gl_ext_pointparameters = ri.Cvar_Get( "gl_ext_pointparameters", "1", CVAR_ARCHIVE );
-	gl_ext_compiled_vertex_array = ri.Cvar_Get( "gl_ext_compiled_vertex_array", "1", CVAR_ARCHIVE );
-	gl_3dlabs_broken = ri.Cvar_Get("gl_3dlabs_broken", "1", CVAR_ARCHIVE );
 	vid_ref = ri.Cvar_Get("vid_ref", "soft", CVAR_ARCHIVE );
 
 	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
@@ -1337,11 +1260,6 @@ int R_Init( void *hinstance, void *hWnd )
 
 	strcpy( vendor_buffer, gl_config.vendor_string );
 	Q_strlwr( vendor_buffer );
-
-	if ( toupper( gl_monolightmap->string[1] ) != 'F' )
-	{
-		ri.Cvar_Set( "gl_monolightmap", "0" );
-	}
 
 	ri.Cvar_Set( "scr_drawall", "0" );
 
@@ -1625,7 +1543,7 @@ void R_DrawBeam( entity_t *e )
 
 void	RI_BeginRegistration (char *map);
 struct model_s	*RI_RegisterModel (char *name);
-void R_SetSky (char *name, float rotate, vec3_t axis);
+void RI_SetSky (char *name, float rotate, vec3_t axis);
 void	RI_EndRegistration (void);
 
 void	RI_RenderFrame (refdef_t *fd);
@@ -1682,7 +1600,7 @@ refexport_t GetRefAPI (refimport_t rimp )
 	re.RegisterModel = RI_RegisterModel;
 	re.RegisterSkin = RI_RegisterSkin;
 	re.RegisterPic = RDraw_FindPic;
-	re.SetSky = R_SetSky;
+	re.SetSky = RI_SetSky;
 	re.EndRegistration = RI_EndRegistration;
 	re.Draw_Name = Draw_Name;
 	re.DrawLine = DrawLine;

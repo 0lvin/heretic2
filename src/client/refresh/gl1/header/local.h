@@ -250,7 +250,7 @@ void R_Bind(int texnum);
 
 void R_TexEnv(GLenum value);
 
-void R_LightPoint(vec3_t p, vec3_t color);
+void R_LightPoint(entity_t *currententity, vec3_t p, vec3_t color);
 void R_PushDlights(void);
 
 extern model_t *r_worldmodel;
@@ -260,8 +260,8 @@ extern int registration_sequence;
 void V_AddBlend(float r, float g, float b, float a, float *v_blend);
 
 void R_ScreenShot(void);
-void R_DrawAliasModel(entity_t *e);
-void R_DrawBrushModel(entity_t *e);
+void R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel);
+void R_DrawBrushModel(entity_t *currententity, const model_t *currentmodel);
 void R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel);
 void R_DrawBeam(entity_t *e);
 void R_DrawWorld(void);
@@ -375,30 +375,10 @@ extern glstate_t gl_state;
 
 int R_Init(void *hinstance, void *hWnd);
 void R_Shutdown(void);
-void R_RenderBrushPoly(msurface_t *fa);
 
 void R_SetPalette(const unsigned char *palette);
 
-void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight);
-
 struct image_s *RI_RegisterSkin(char* name);
-
-extern cvar_t *gl_monolightmap;
-extern cvar_t *gl_vertex_arrays;
-extern cvar_t *gl_ext_swapinterval;
-extern cvar_t *gl_ext_palettedtexture;
-extern cvar_t *gl_ext_multitexture;
-extern cvar_t *gl_ext_pointparameters;
-extern cvar_t *gl_ext_compiled_vertex_array;
-extern cvar_t *gl_nosubimage;
-extern cvar_t *gl_bitdepth;
-extern cvar_t *gl_skymip;
-extern cvar_t *gl_poly;
-extern cvar_t *gl_texsort;
-extern cvar_t *r_lightmaptype;
-extern cvar_t *gl_playermip;
-extern cvar_t *gl_3dlabs_broken;
-extern  cvar_t  *gl_driver;
 
 void    Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t* gl);
 void	RDraw_GetPicSize (int *w, int *h, char *name);
@@ -409,8 +389,6 @@ void	RDraw_TileClear (int x, int y, int w, int h, char *name);
 void	RDraw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
 void	RDraw_FadeScreen (void);
 void	RDraw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data);
-
-void	R_BeginFrame( float camera_separation );
 
 extern	int		r_lightmap_format;
 void R_TextureAlphaMode( char *string );
@@ -507,7 +485,6 @@ int GLimp_Init( void *hinstance, void *hWnd );
 void GLimp_Shutdown( void );
 int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen );
 void GLimp_AppActivate( qboolean active );
-void GLimp_LogNewFrame( void );
 
 extern image_t* atlas_particle;
 extern image_t* atlas_aparticle;

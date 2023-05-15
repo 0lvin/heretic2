@@ -170,8 +170,8 @@ typedef struct fmdl_s
 
 extern fmdl_t *fmodel;
 
-void Mod_LoadFlexModel (struct model_s *mod, void *buffer, int length);
-void R_DrawFlexModel (entity_t *e);
+void Mod_LoadFlexModel(struct model_s *mod, void *buffer, int length);
+void R_DrawFlexModel(entity_t *currententity, const struct model_s *currentmodel);
 
 // jmarshall
 enum
