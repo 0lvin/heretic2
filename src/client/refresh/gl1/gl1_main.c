@@ -25,6 +25,164 @@
  */
 
 #include "header/local.h"
+
+#define NUM_BEAM_SEGS 6
+
+viddef_t vid;
+model_t *r_worldmodel;
+
+float gldepthmin, gldepthmax;
+
+glconfig_t gl_config;
+glstate_t gl_state;
+
+image_t *r_notexture; /* use for bad textures */
+image_t *r_particletexture; /* little dot for particles */
+
+cplane_t frustum[4];
+
+int r_visframecount; /* bumped when going to a new PVS */
+int r_framecount; /* used for dlight push checking */
+
+int c_brush_polys, c_alias_polys;
+
+float v_blend[4]; /* final blending color */
+
+void R_Strings(void);
+
+/* view origin */
+vec3_t vup;
+vec3_t vpn;
+vec3_t vright;
+vec3_t r_origin;
+
+float r_world_matrix[16];
+float r_base_world_matrix[16];
+
+/* screen size info */
+refdef_t r_newrefdef;
+
+int r_viewcluster, r_viewcluster2, r_oldviewcluster, r_oldviewcluster2;
+unsigned r_rawpalette[256];
+
+cvar_t *r_norefresh;
+cvar_t *r_drawentities;
+cvar_t *r_drawworld;
+cvar_t *r_speeds;
+cvar_t *r_fullbright;
+cvar_t *r_novis;
+cvar_t *r_lerpmodels;
+cvar_t *gl_lefthand;
+cvar_t *r_gunfov;
+cvar_t *r_farsee;
+cvar_t *r_validation;
+
+cvar_t *r_lightlevel;
+cvar_t *gl1_overbrightbits;
+
+cvar_t *gl1_particle_min_size;
+cvar_t *gl1_particle_max_size;
+cvar_t *gl1_particle_size;
+cvar_t *gl1_particle_att_a;
+cvar_t *gl1_particle_att_b;
+cvar_t *gl1_particle_att_c;
+cvar_t *gl1_particle_square;
+
+cvar_t *gl1_palettedtexture;
+cvar_t *gl1_pointparameters;
+
+cvar_t *gl_drawbuffer;
+cvar_t *gl_lightmap;
+cvar_t *gl_shadows;
+cvar_t *gl1_stencilshadow;
+cvar_t *r_mode;
+cvar_t *r_fixsurfsky;
+
+cvar_t *r_customwidth;
+cvar_t *r_customheight;
+
+cvar_t *r_retexturing;
+cvar_t *r_scale8bittextures;
+
+cvar_t *gl_nolerp_list;
+cvar_t *r_lerp_list;
+cvar_t *r_2D_unfiltered;
+cvar_t *r_videos_unfiltered;
+
+cvar_t *gl1_dynamic;
+cvar_t *r_modulate;
+cvar_t *gl_nobind;
+cvar_t *gl1_round_down;
+cvar_t *gl1_picmip;
+cvar_t *gl_showtris;
+cvar_t *gl_showbbox;
+cvar_t *gl1_ztrick;
+cvar_t *gl_zfix;
+cvar_t *gl_finish;
+cvar_t *r_clear;
+cvar_t *r_cull;
+cvar_t *gl_polyblend;
+cvar_t *gl1_flashblend;
+cvar_t *gl1_saturatelighting;
+cvar_t *r_vsync;
+cvar_t *gl_texturemode;
+cvar_t *gl1_texturealphamode;
+cvar_t *gl1_texturesolidmode;
+cvar_t *gl_anisotropic;
+cvar_t *r_lockpvs;
+cvar_t *gl_msaa_samples;
+
+cvar_t *vid_fullscreen;
+cvar_t *vid_gamma;
+
+cvar_t *gl1_stereo;
+cvar_t *gl1_stereo_separation;
+cvar_t *gl1_stereo_anaglyph_colors;
+cvar_t *gl1_stereo_convergence;
+
+
+refimport_t ri;
+
+cvar_t *gl_3dlabs_broken;
+cvar_t *vid_ref;
+cvar_t *gl_playermip;
+cvar_t *gl_ext_swapinterval;
+cvar_t *gl_ext_palettedtexture;
+cvar_t *gl_ext_multitexture;
+cvar_t *gl_ext_pointparameters;
+cvar_t *gl_ext_compiled_vertex_array;
+cvar_t *gl_nosubimage;
+cvar_t *gl_allow_software;
+cvar_t *gl_vertex_arrays;
+cvar_t *gl_bitdepth;
+cvar_t *gl_drawbuffer;
+cvar_t *gl_driver;
+cvar_t *gl_lightmap;
+cvar_t *r_shadows;
+cvar_t *gl_monolightmap;
+cvar_t *gl_skymip;
+cvar_t *r_fog;
+cvar_t *r_fog_mode;
+cvar_t *r_fog_density;
+cvar_t *r_fog_startdist;
+cvar_t *r_fog_color_r;
+cvar_t *r_fog_color_g;
+cvar_t *r_fog_color_b;
+cvar_t *r_fog_color_a;
+cvar_t *r_fog_color_scale;
+cvar_t *r_fog_lightmap_adjust;
+cvar_t* r_fog_underwater;
+cvar_t* r_fog_underwater_mode;
+cvar_t* r_fog_underwater_density;
+cvar_t* r_fog_underwater_startdist;
+cvar_t* r_fog_underwater_color_r;
+cvar_t* r_fog_underwater_color_g;
+cvar_t* r_fog_underwater_color_b;
+cvar_t* r_fog_underwater_color_a;
+cvar_t* r_fog_underwater_color_scale;
+cvar_t* r_fog_underwater_lightmap_adjust;
+cvar_t* r_underwater_color;
+
 #include <ctype.h>
 #include "../../../../h2common/part_uvs.h"
 
@@ -39,207 +197,39 @@ debugLine_t debug_lines[256];
 int numDebugLines = 0;
 
 void R_Clear (void);
-
-viddef_t	vid;
-refimport_t	ri;
-
-model_t		*r_worldmodel;
-
-float		gldepthmin, gldepthmax;
-
-glconfig_t gl_config;
-glstate_t gl_state;
-
-image_t *r_notexture; /* use for bad textures */
-image_t *r_particletexture; /* little dot for particles */
-
 entity_t	*currententity;
 model_t		*currentmodel;
 
-cplane_t	frustum[4];
-
-int			r_visframecount;	// bumped when going to a new PVS
-int			r_framecount;		// used for dlight push checking
-
-int			c_brush_polys, c_alias_polys;
-
-float		v_blend[4];			// final blending color
-
-void GL_Strings_f( void );
-
-//
-// view origin
-//
-vec3_t	vup;
-vec3_t	vpn;
-vec3_t	vright;
-vec3_t	r_origin;
-
-float	r_world_matrix[16];
-float	r_base_world_matrix[16];
-
-//
-// screen size info
-//
-refdef_t	r_newrefdef;
-
-int		r_viewcluster, r_viewcluster2, r_oldviewcluster, r_oldviewcluster2;
-
-cvar_t	*r_norefresh;
-cvar_t	*r_drawentities;
-cvar_t	*r_drawworld;
-cvar_t	*r_speeds;
-cvar_t	*r_fullbright;
-cvar_t	*r_novis;
-cvar_t	*r_nocull;
-cvar_t	*r_lerpmodels;
-cvar_t	*r_lefthand;
-
-cvar_t	*r_lightlevel;	// FIXME: This is a HACK to get the client's light level
-
-cvar_t	*gl_nosubimage;
-cvar_t	*gl_allow_software;
-
-cvar_t	*gl_vertex_arrays;
-
-cvar_t	*gl1_particle_min_size;
-cvar_t	*gl1_particle_max_size;
-cvar_t	*gl1_particle_size;
-cvar_t	*gl1_particle_att_a;
-cvar_t	*gl1_particle_att_b;
-cvar_t	*gl1_particle_att_c;
-
-cvar_t	*gl_ext_swapinterval;
-cvar_t	*gl_ext_palettedtexture;
-cvar_t	*gl_ext_multitexture;
-cvar_t	*gl_ext_pointparameters;
-cvar_t	*gl_ext_compiled_vertex_array;
-
-cvar_t	*gl_bitdepth;
-cvar_t	*gl_drawbuffer;
-cvar_t  *gl_driver;
-cvar_t	*r_lightmap;
-cvar_t	*r_shadows;
-cvar_t	*r_mode;
-cvar_t	*gl1_dynamic;
-cvar_t  *gl_monolightmap;
-cvar_t	*r_modulate;
-cvar_t	*gl_nobind;
-cvar_t	*gl1_round_down;
-cvar_t	*gl1_picmip;
-cvar_t	*gl_skymip;
-cvar_t	*gl_showtris;
-cvar_t	*gl1_ztrick;
-cvar_t	*gl_finish;
-cvar_t	*r_clear;
-cvar_t	*r_cull;
-cvar_t	*gl_polyblend;
-cvar_t	*gl1_flashblend;
-cvar_t	*gl_playermip;
-cvar_t  *gl_saturatelighting;
-cvar_t	*r_vsync;
-cvar_t	*gl_texturemode;
-cvar_t	*gl1_texturealphamode;
-cvar_t	*gl1_texturesolidmode;
-cvar_t	*r_lockpvs;
-
-cvar_t	*gl_3dlabs_broken;
-cvar_t	*vid_fullscreen;
-cvar_t	*vid_gamma;
-cvar_t	*vid_ref;
-
-cvar_t* r_fog;
-cvar_t* r_fog_mode;
-cvar_t* r_fog_density;
-cvar_t* r_fog_startdist;
-cvar_t	*r_fog_color_r;
-cvar_t	*r_fog_color_g;
-cvar_t	*r_fog_color_b;
-cvar_t	*r_fog_color_a;
-cvar_t* r_fog_color_scale;
-cvar_t* r_fog_lightmap_adjust;
-
-cvar_t* r_fog_underwater;
-cvar_t* r_fog_underwater_mode;
-cvar_t* r_fog_underwater_density;
-cvar_t* r_fog_underwater_startdist;
-
-cvar_t* r_fog_underwater_color_r;
-cvar_t* r_fog_underwater_color_g;
-cvar_t* r_fog_underwater_color_b;
-cvar_t* r_fog_underwater_color_a;
-
-cvar_t* r_fog_underwater_color_scale;
-
-cvar_t* r_fog_underwater_lightmap_adjust;
-cvar_t* r_underwater_color;
-
-/*
-=================
-R_CullBox
-
-Returns true if the box is completely outside the frustom
-=================
-*/
-qboolean R_CullBox (vec3_t mins, vec3_t maxs)
+void
+R_RotateForEntity(entity_t *e)
 {
-	int		i;
-
-	if (r_nocull->value)
-		return false;
-
-	for (i=0 ; i<4 ; i++)
-		if ( BOX_ON_PLANE_SIDE(mins, maxs, &frustum[i]) == 2)
-			return true;
-	return false;
-}
-
-
-void R_RotateForEntity (entity_t *e)
-{
-    glTranslatef (e->origin[0],  e->origin[1],  e->origin[2]);
+	glTranslatef(e->origin[0], e->origin[1], e->origin[2]);
 
 // jmarshall - Heretic 2 rotation fix from their ref_gl.dll
 	glRotatef(e->angles[1] * 57.295776, 0, 0, 1);
-	glRotatef(e->angles[0] * -57.295776, 0, 1, 0);
-	glRotatef(e->angles[2] * -57.295776, 1, 0, 0);
+	glRotatef(-e->angles[0] * 57.295776, 0, 1, 0);
+	glRotatef(-e->angles[2] * 57.295776, 1, 0, 0);
 // jmarshall end
 }
 
-/*
-=============================================================
-
-  SPRITE MODELS
-
-=============================================================
-*/
-
-
-/*
-=================
-R_DrawSpriteModel
-
-=================
-*/
-void R_DrawSpriteModel (entity_t *e)
+void
+R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 {
 	float alpha = 1.0F;
-	vec3_t	point;
-	dsprframe_t	*frame;
-	float		*up, *right;
-	dsprite_t		*psprite;
+	vec3_t point;
+	dsprframe_t *frame;
+	float *up, *right;
+	dsprite_t *psprite;
+	image_t *skin;
 
 	/* don't even bother culling, because it's just
 	   a single polygon without a surface cache */
 	psprite = (dsprite_t *)currentmodel->extradata;
 
-	e->frame %= psprite->numframes;
+	currententity->frame %= psprite->numframes;
+	frame = &psprite->frames[currententity->frame];
 
-	frame = &psprite->frames[e->frame];
-
-	R_Bind(currentmodel->skins[e->frame]->texnum);
-
-	// normal sprite
+	/* normal sprite */
 	up = vup;
 	right = vright;
 
@@ -247,14 +237,25 @@ void R_DrawSpriteModel (entity_t *e)
 
 	glColor4f(1, 1, 1, alpha);
 
+	skin = currentmodel->skins[currententity->frame];
+	if (!skin)
+	{
+		skin = r_notexture; /* fallback... */
+	}
+
+	R_Bind(skin->texnum);
 
 	glShadeModel(7425);
-	GL_TexEnv( GL_MODULATE );
+	R_TexEnv(GL_MODULATE);
 
-	if ( alpha == 1.0 )
-		glEnable (GL_ALPHA_TEST);
+	if (alpha == 1.0)
+	{
+		glEnable(GL_ALPHA_TEST);
+	}
 	else
-		glDisable( GL_ALPHA_TEST );
+	{
+		glDisable(GL_ALPHA_TEST);
+	}
 
 	if(currententity->flags & RF_NODEPTHTEST)
 		glDisable(GL_DEPTH_TEST);
@@ -267,29 +268,29 @@ void R_DrawSpriteModel (entity_t *e)
 
 	glColor3f(currententity->color.r / 255.0f, currententity->color.g / 255.0f, currententity->color.b / 255.0f);
 
-	switch (e->spriteType)
+	switch (currententity->spriteType)
 	{
 		case 0xFFFFFFFF:
 		case 0:
 			glBegin(GL_QUADS);
 
 			glTexCoord2f(0, 1);
-			VectorMA(e->origin, -frame->origin_y, up, point);
+			VectorMA(currententity->origin, -frame->origin_y, up, point);
 			VectorMA(point, -frame->origin_x, right, point);
 			glVertex3fv(point);
 
 			glTexCoord2f(0, 0);
-			VectorMA(e->origin, frame->height - frame->origin_y, up, point);
+			VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
 			VectorMA(point, -frame->origin_x, right, point);
 			glVertex3fv(point);
 
 			glTexCoord2f(1, 0);
-			VectorMA(e->origin, frame->height - frame->origin_y, up, point);
+			VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
 			VectorMA(point, frame->width - frame->origin_x, right, point);
 			glVertex3fv(point);
 
 			glTexCoord2f(1, 1);
-			VectorMA(e->origin, -frame->origin_y, up, point);
+			VectorMA(currententity->origin, -frame->origin_y, up, point);
 			VectorMA(point, frame->width - frame->origin_x, right, point);
 			glVertex3fv(point);
 
@@ -300,7 +301,7 @@ void R_DrawSpriteModel (entity_t *e)
 		glEnable(GL_DEPTH_TEST);
 
 	glDisable(GL_ALPHA_TEST);
-	GL_TexEnv(GL_REPLACE);
+	R_TexEnv(GL_REPLACE);
 
 	glDisable(GL_BLEND);
 	glShadeModel(7424);
@@ -308,28 +309,26 @@ void R_DrawSpriteModel (entity_t *e)
 	glColor4f(1, 1, 1, 1);
 }
 
-//==================================================================================
-
-/*
-=============
-R_DrawNullModel
-=============
-*/
-void R_DrawNullModel (void)
+void
+R_DrawNullModel(void)
 {
-	vec3_t	shadelight;
+	vec3_t shadelight;
 	int		i;
 
-	if ( currententity->flags & RF_FULLBRIGHT )
+	if (currententity->flags & RF_FULLBRIGHT)
+	{
 		shadelight[0] = shadelight[1] = shadelight[2] = 1.0F;
+	}
 	else
-		R_LightPoint (currententity->origin, shadelight);
+	{
+		R_LightPoint(currententity->origin, shadelight);
+	}
 
 	glPushMatrix();
 	R_RotateForEntity(currententity);
 
-	glDisable (GL_TEXTURE_2D);
-	glColor3fv (shadelight);
+	glDisable(GL_TEXTURE_2D);
+	glColor3fv(shadelight);
 
 	glBegin (GL_TRIANGLE_FAN);
 	glVertex3f (0, 0, -16);
@@ -343,9 +342,9 @@ void R_DrawNullModel (void)
 		glVertex3f (16*cos(i*M_PI/2), 16*sin(i*M_PI/2), 0);
 	glEnd ();
 
-	glColor3f (1,1,1);
-	glPopMatrix ();
-	glEnable (GL_TEXTURE_2D);
+	glColor4f(1, 1, 1, 1);
+	glPopMatrix();
+	glEnable(GL_TEXTURE_2D);
 }
 
 void
@@ -388,7 +387,7 @@ R_DrawEntitiesOnList(void)
 					R_DrawBrushModel(currententity);
 					break;
 				case mod_sprite:
-					R_DrawSpriteModel(currententity);
+					R_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
 					ri.Sys_Error(ERR_DROP, "Bad modeltype");
@@ -428,7 +427,7 @@ R_DrawEntitiesOnList(void)
 					R_DrawBrushModel(currententity);
 					break;
 				case mod_sprite:
-					R_DrawSpriteModel(currententity);
+					R_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
 					ri.Sys_Error(ERR_DROP, "Bad modeltype");
@@ -505,7 +504,7 @@ void R_DrawParticles(int num_particles, particle_t* particles, int type)
 
 	glDepthMask(GL_FALSE);		// no z buffering
 	glEnable(GL_BLEND);
-	GL_TexEnv(GL_MODULATE);
+	R_TexEnv(GL_MODULATE);
 	glBegin(GL_TRIANGLES);
 
 	for (p = particles, i = 0; i < num_particles; i++, p++)
@@ -527,7 +526,7 @@ void R_DrawParticles(int num_particles, particle_t* particles, int type)
 	glDisable(GL_BLEND);
 	glColor4f(1, 1, 1, 1);
 	glDepthMask(1);		// back to normal Z buffering
-	GL_TexEnv(GL_REPLACE);
+	R_TexEnv(GL_REPLACE);
 }
 
 /*
@@ -587,192 +586,184 @@ int SignbitsForPlane (cplane_t *out)
 	return bits;
 }
 
-
-void R_SetFrustum (void)
-{
-	int		i;
-
-	/*
-	** this code is wrong, since it presume a 90 degree FOV both in the
-	** horizontal and vertical plane
-	*/
-	// front side is visible
-	VectorAdd (vpn, vright, frustum[0].normal);
-	VectorSubtract (vpn, vright, frustum[1].normal);
-	VectorAdd (vpn, vup, frustum[2].normal);
-	VectorSubtract (vpn, vup, frustum[3].normal);
-
-	// we theoretically don't need to normalize these vectors, but I do it
-	// anyway so that debugging is a little easier
-	VectorNormalize( frustum[0].normal );
-	VectorNormalize( frustum[1].normal );
-	VectorNormalize( frustum[2].normal );
-	VectorNormalize( frustum[3].normal );
-
-
-	for (i=0 ; i<4 ; i++)
-	{
-		frustum[i].type = PLANE_ANYZ;
-		frustum[i].dist = DotProduct (r_origin, frustum[i].normal);
-		frustum[i].signbits = SignbitsForPlane (&frustum[i]);
-	}
-}
-
-//=======================================================================
-
-/*
-===============
-R_SetupFrame
-===============
-*/
-void R_SetupFrame (void)
+void
+R_SetupFrame(void)
 {
 	int i;
-	mleaf_t	*leaf;
+	mleaf_t *leaf;
 
 	r_framecount++;
 
-// build the transformation matrix for the given view angles
-	VectorCopy (r_newrefdef.vieworg, r_origin);
+	/* build the transformation matrix for the given view angles */
+	VectorCopy(r_newrefdef.vieworg, r_origin);
 
-	AngleVectors (r_newrefdef.viewangles, vpn, vright, vup);
+	AngleVectors(r_newrefdef.viewangles, vpn, vright, vup);
 
-// current viewcluster
-	if ( !( r_newrefdef.rdflags & RDF_NOWORLDMODEL ) )
+	/* current viewcluster */
+	if (!(r_newrefdef.rdflags & RDF_NOWORLDMODEL))
 	{
+		if (!r_worldmodel)
+		{
+			ri.Sys_Error(ERR_DROP, "%s: bad world model", __func__);
+			return;
+		}
+
 		r_oldviewcluster = r_viewcluster;
 		r_oldviewcluster2 = r_viewcluster2;
-		leaf = Mod_PointInLeaf (r_origin, r_worldmodel);
+		leaf = Mod_PointInLeaf(r_origin, r_worldmodel->nodes);
 		r_viewcluster = r_viewcluster2 = leaf->cluster;
 
-		// check above and below so crossing solid water doesn't draw wrong
+		/* check above and below so crossing solid water doesn't draw wrong */
 		if (!leaf->contents)
-		{	// look down a bit
-			vec3_t	temp;
+		{
+			/* look down a bit */
+			vec3_t temp;
 
-			VectorCopy (r_origin, temp);
+			VectorCopy(r_origin, temp);
 			temp[2] -= 16;
-			leaf = Mod_PointInLeaf (temp, r_worldmodel);
-			if ( !(leaf->contents & CONTENTS_SOLID) &&
-				(leaf->cluster != r_viewcluster2) )
+			leaf = Mod_PointInLeaf(temp, r_worldmodel->nodes);
+
+			if (!(leaf->contents & CONTENTS_SOLID) &&
+				(leaf->cluster != r_viewcluster2))
+			{
 				r_viewcluster2 = leaf->cluster;
+			}
 		}
 		else
-		{	// look up a bit
-			vec3_t	temp;
+		{
+			/* look up a bit */
+			vec3_t temp;
 
-			VectorCopy (r_origin, temp);
+			VectorCopy(r_origin, temp);
 			temp[2] += 16;
-			leaf = Mod_PointInLeaf (temp, r_worldmodel);
-			if ( !(leaf->contents & CONTENTS_SOLID) &&
-				(leaf->cluster != r_viewcluster2) )
+			leaf = Mod_PointInLeaf(temp, r_worldmodel->nodes);
+
+			if (!(leaf->contents & CONTENTS_SOLID) &&
+				(leaf->cluster != r_viewcluster2))
+			{
 				r_viewcluster2 = leaf->cluster;
+			}
 		}
 	}
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
+	{
 		v_blend[i] = r_newrefdef.blend[i];
+	}
 
 	c_brush_polys = 0;
 	c_alias_polys = 0;
 
-	// clear out the portion of the screen that the NOWORLDMODEL defines
-	if ( r_newrefdef.rdflags & RDF_NOWORLDMODEL )
+	/* clear out the portion of the screen that the NOWORLDMODEL defines */
+	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
 	{
-		glEnable( GL_SCISSOR_TEST );
-		glClearColor( 0.3, 0.3, 0.3, 1 );
-		glScissor( r_newrefdef.x, vid.height - r_newrefdef.height - r_newrefdef.y, r_newrefdef.width, r_newrefdef.height );
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		glClearColor( 1, 0, 0.5, 0.5 );
-		glDisable( GL_SCISSOR_TEST );
+		glEnable(GL_SCISSOR_TEST);
+		glClearColor(0.3, 0.3, 0.3, 1);
+		glScissor(r_newrefdef.x,
+				vid.height - r_newrefdef.height - r_newrefdef.y,
+				r_newrefdef.width, r_newrefdef.height);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(1, 0, 0.5, 0.5);
+		glDisable(GL_SCISSOR_TEST);
 	}
 }
 
-
-void MYgluPerspective( GLdouble fovy, GLdouble aspect,
-		     GLdouble zNear, GLdouble zFar )
+void
+R_MYgluPerspective(GLdouble fovy, GLdouble aspect,
+		GLdouble zNear, GLdouble zFar)
 {
-   GLdouble xmin, xmax, ymin, ymax;
+	GLdouble xmin, xmax, ymin, ymax;
 
-   ymax = zNear * tan( fovy * M_PI / 360.0 );
-   ymin = -ymax;
+	ymax = zNear * tan(fovy * M_PI / 360.0);
+	ymin = -ymax;
 
-   xmin = ymin * aspect;
-   xmax = ymax * aspect;
+	xmin = ymin * aspect;
+	xmax = ymax * aspect;
 
-   xmin += -( 2 * gl_state.camera_separation ) / zNear;
-   xmax += -( 2 * gl_state.camera_separation ) / zNear;
+	xmin += - gl1_stereo_convergence->value * (2 * gl_state.camera_separation) / zNear;
+	xmax += - gl1_stereo_convergence->value * (2 * gl_state.camera_separation) / zNear;
 
-   glFrustum( xmin, xmax, ymin, ymax, zNear, zFar );
+	glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
 }
 
-
-/*
-=============
-R_SetupGL
-=============
-*/
-void R_SetupGL (void)
+void
+R_SetupGL(void)
 {
-	float	screenaspect;
-//	float	yfov;
-	int		x, x2, y2, y, w, h;
+	float screenaspect;
+	int x, x2, y2, y, w, h;
 
-	//
-	// set up viewport
-	//
+	/* set up viewport */
 	x = floor(r_newrefdef.x * vid.width / vid.width);
 	x2 = ceil((r_newrefdef.x + r_newrefdef.width) * vid.width / vid.width);
 	y = floor(vid.height - r_newrefdef.y * vid.height / vid.height);
-	y2 = ceil(vid.height - (r_newrefdef.y + r_newrefdef.height) * vid.height / vid.height);
+	y2 = ceil(vid.height -
+			  (r_newrefdef.y + r_newrefdef.height) * vid.height / vid.height);
 
 	w = x2 - x;
 	h = y - y2;
 
-	glViewport (x, y2, w, h);
+	qboolean drawing_left_eye = gl_state.camera_separation < 0;
+	qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
+	qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
 
-	//
-	// set up projection matrix
-	//
-    screenaspect = (float)r_newrefdef.width/r_newrefdef.height;
-//	yfov = 2*atan((float)r_newrefdef.height/r_newrefdef.width)*180/M_PI;
+	if(stereo_split_lr) {
+		w = w / 2;
+		x = drawing_left_eye ? (x / 2) : (x + vid.width) / 2;
+	}
+
+	if(stereo_split_tb) {
+		h = h / 2;
+		y2 = drawing_left_eye ? (y2 + vid.height) / 2 : (y2 / 2);
+	}
+
+	glViewport(x, y2, w, h);
+
+	/* set up projection matrix */
+	screenaspect = (float)r_newrefdef.width / r_newrefdef.height;
 	glMatrixMode(GL_PROJECTION);
-    glLoadIdentity ();
-    MYgluPerspective (r_newrefdef.fov_y,  screenaspect,  4,  4096);
+	glLoadIdentity();
+
+	if (r_farsee->value == 0)
+	{
+		R_MYgluPerspective(r_newrefdef.fov_y, screenaspect, 4, 4096);
+	}
+	else
+	{
+		R_MYgluPerspective(r_newrefdef.fov_y, screenaspect, 4, 8192);
+	}
 
 	glCullFace(GL_FRONT);
 
 	glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity ();
+	glLoadIdentity();
 
-    glRotatef (-90,  1, 0, 0);	    // put Z going up
-    glRotatef (90,  0, 0, 1);	    // put Z going up
-    glRotatef (-r_newrefdef.viewangles[2],  1, 0, 0);
-    glRotatef (-r_newrefdef.viewangles[0],  0, 1, 0);
-    glRotatef (-r_newrefdef.viewangles[1],  0, 0, 1);
-    glTranslatef (-r_newrefdef.vieworg[0],  -r_newrefdef.vieworg[1],  -r_newrefdef.vieworg[2]);
+	glRotatef(-90, 1, 0, 0); /* put Z going up */
+	glRotatef(90, 0, 0, 1); /* put Z going up */
+	glRotatef(-r_newrefdef.viewangles[2], 1, 0, 0);
+	glRotatef(-r_newrefdef.viewangles[0], 0, 1, 0);
+	glRotatef(-r_newrefdef.viewangles[1], 0, 0, 1);
+	glTranslatef(-r_newrefdef.vieworg[0], -r_newrefdef.vieworg[1],
+			-r_newrefdef.vieworg[2]);
 
-	glGetFloatv (GL_MODELVIEW_MATRIX, r_world_matrix);
+	glGetFloatv(GL_MODELVIEW_MATRIX, r_world_matrix);
 
-	//
-	// set drawing parms
-	//
+	/* set drawing parms */
 	if (r_cull->value)
+	{
 		glEnable(GL_CULL_FACE);
+	}
 	else
+	{
 		glDisable(GL_CULL_FACE);
+	}
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_DEPTH_TEST);
 }
 
-/*
-=============
-GL_WaterFog
-=============
-*/
-void GL_WaterFog()
+void
+GL_WaterFog()
 {
 	float color[4];
 
@@ -790,12 +781,8 @@ void GL_WaterFog()
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-/*
-=============
-R_Clear
-=============
-*/
-void R_Clear (void)
+void
+R_Clear(void)
 {
 	if (r_newrefdef.rdflags & RDF_UNDERWATER)
 	{
@@ -806,63 +793,98 @@ void R_Clear (void)
 		glDisable(GL_FOG);
 	}
 
+	// Check whether the stencil buffer needs clearing, and do so if need be.
+	GLbitfield stencilFlags = 0;
+	if (gl_state.stereo_mode >= STEREO_MODE_ROW_INTERLEAVED && gl_state.stereo_mode <= STEREO_MODE_PIXEL_INTERLEAVED) {
+		glClearStencil(0);
+		stencilFlags |= GL_STENCIL_BUFFER_BIT;
+	}
+
 	if (gl1_ztrick->value)
 	{
 		static int trickframe;
 
 		if (r_clear->value)
-			glClear (GL_COLOR_BUFFER_BIT);
+		{
+			glClear(GL_COLOR_BUFFER_BIT | stencilFlags);
+		}
 
 		trickframe++;
+
 		if (trickframe & 1)
 		{
 			gldepthmin = 0;
 			gldepthmax = 0.49999;
-			glDepthFunc (GL_LEQUAL);
+			glDepthFunc(GL_LEQUAL);
 		}
 		else
 		{
 			gldepthmin = 1;
 			gldepthmax = 0.5;
-			glDepthFunc (GL_GEQUAL);
+			glDepthFunc(GL_GEQUAL);
 		}
 	}
 	else
 	{
 		if (r_clear->value)
-			glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		{
+			glClear(GL_COLOR_BUFFER_BIT | stencilFlags | GL_DEPTH_BUFFER_BIT);
+		}
 		else
-			glClear (GL_DEPTH_BUFFER_BIT);
+		{
+			glClear(GL_DEPTH_BUFFER_BIT | stencilFlags);
+		}
+
 		gldepthmin = 0;
 		gldepthmax = 1;
-		glDepthFunc (GL_LEQUAL);
+		glDepthFunc(GL_LEQUAL);
 	}
 
-	glDepthRange (gldepthmin, gldepthmax);
+	glDepthRange(gldepthmin, gldepthmax);
 
+	if (gl_zfix->value)
+	{
+		if (gldepthmax > gldepthmin)
+		{
+			glPolygonOffset(0.05, 1);
+		}
+		else
+		{
+			glPolygonOffset(-0.05, -1);
+		}
+	}
+
+	/* stencilbuffer shadows */
+	if (gl_shadows->value && gl_state.stencil && gl1_stencilshadow->value)
+	{
+		glClearStencil(1);
+		glClear(GL_STENCIL_BUFFER_BIT);
+	}
 }
 
-void R_Flash( void )
+void
+R_Flash(void)
 {
-	R_PolyBlend ();
+	R_PolyBlend();
 }
 
 /*
-================
-R_RenderView
-
-r_newrefdef must be set before the first call
-================
-*/
-void R_RenderView (refdef_t *fd)
+ * r_newrefdef must be set before the first call
+ */
+static void
+R_RenderView(refdef_t *fd)
 {
 	if (r_norefresh->value)
+	{
 		return;
+	}
 
 	r_newrefdef = *fd;
 
-	if (!r_worldmodel && !( r_newrefdef.rdflags & RDF_NOWORLDMODEL ) )
-		ri.Sys_Error (ERR_DROP, "R_RenderView: NULL worldmodel");
+	if (!r_worldmodel && !(r_newrefdef.rdflags & RDF_NOWORLDMODEL))
+	{
+		ri.Sys_Error(ERR_DROP, "%s: NULL worldmodel", __func__);
+	}
 
 	if (r_speeds->value)
 	{
@@ -870,39 +892,55 @@ void R_RenderView (refdef_t *fd)
 		c_alias_polys = 0;
 	}
 
-	R_PushDlights ();
+	R_PushDlights();
 
 	if (gl_finish->value)
-		glFinish ();
+	{
+		glFinish();
+	}
 
-	R_SetupFrame ();
+	R_SetupFrame();
 
-	R_SetFrustum ();
+	R_SetFrustum(vup, vpn, vright, r_origin, r_newrefdef.fov_x, r_newrefdef.fov_y,
+		frustum);
 
-	R_SetupGL ();
+	R_SetupGL();
 
-	R_MarkLeaves ();	// done here so we know if we're in water
+	R_MarkLeaves(); /* done here so we know if we're in water */
 
-	R_DrawWorld ();
+	R_DrawWorld();
 
-	R_DrawEntitiesOnList ();
+	R_DrawEntitiesOnList();
 
-	R_RenderDlights ();
+	R_RenderDlights();
 
 	R_DrawParticles(r_newrefdef.num_particles, r_newrefdef.particles, 0);
 	R_DrawParticles(r_newrefdef.anum_particles, r_newrefdef.aparticles, 1);
 
-	R_DrawAlphaSurfaces ();
+	R_DrawAlphaSurfaces();
 
 	R_Flash();
 
 	if (r_speeds->value)
 	{
-		ri.Con_Printf (PRINT_ALL, "%4i wpoly %4i epoly %i tex %i lmaps\n",
-			c_brush_polys,
-			c_alias_polys,
-			c_visible_textures,
-			c_visible_lightmaps);
+		R_Printf(PRINT_ALL, "%4i wpoly %4i epoly %i tex %i lmaps\n",
+				c_brush_polys, c_alias_polys, c_visible_textures,
+				c_visible_lightmaps);
+	}
+
+	switch (gl_state.stereo_mode) {
+		case STEREO_MODE_NONE:
+			break;
+		case STEREO_MODE_ANAGLYPH:
+			glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+			break;
+		case STEREO_MODE_ROW_INTERLEAVED:
+		case STEREO_MODE_COLUMN_INTERLEAVED:
+		case STEREO_MODE_PIXEL_INTERLEAVED:
+			glDisable(GL_STENCIL_TEST);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -961,19 +999,15 @@ static void GL_DrawStereoPattern( void )
 	}
 }
 
-
-/*
-====================
-R_SetLightLevel
-
-====================
-*/
-void R_SetLightLevel (void)
+static void
+R_SetLightLevel(void)
 {
-	vec3_t		shadelight;
+	vec3_t shadelight;
 
 	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
+	{
 		return;
+	}
 
 	// save off light value for server to look at (BIG HACK!)
 
@@ -984,9 +1018,13 @@ void R_SetLightLevel (void)
 	if (shadelight[0] > shadelight[1])
 	{
 		if (shadelight[0] > shadelight[2])
-			r_lightlevel->value = 150*shadelight[0];
+		{
+			r_lightlevel->value = 150 * shadelight[0];
+		}
 		else
-			r_lightlevel->value = 150*shadelight[2];
+		{
+			r_lightlevel->value = 150 * shadelight[2];
+		}
 	}
 	else
 	{
@@ -999,12 +1037,12 @@ void R_SetLightLevel (void)
 			r_lightlevel->value = 150 * shadelight[2];
 		}
 	}
-
 }
 
-void R_RenderFrame (refdef_t *fd)
+static void
+RI_RenderFrame(refdef_t *fd)
 {
-	R_RenderView( fd );
+	R_RenderView(fd);
 	R_SetLightLevel ();
 	glLineWidth(10.0);
 
@@ -1024,8 +1062,8 @@ void R_RenderFrame (refdef_t *fd)
 	R_SetGL2D();
 }
 
-
-void R_Register( void )
+void
+R_Register(void)
 {
 	r_fog = ri.Cvar_Get("r_fog", "1", 0);
 	r_fog_mode = ri.Cvar_Get("r_fog_mode", "1", 0);
@@ -1081,78 +1119,108 @@ void R_Register( void )
 		"r_underwater_color",
 		"0x70c06000",
 		0);
+	gl_nosubimage = ri.Cvar_Get("gl_nosubimage", "0", 0);
+	gl_allow_software = ri.Cvar_Get("gl_allow_software", "0", 0);
+	gl_bitdepth = ri.Cvar_Get("gl_bitdepth", "0", 0);
+	gl_skymip = ri.Cvar_Get("gl_skymip", "0", 0);
 
+	gl_lefthand = ri.Cvar_Get("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
+	r_gunfov = ri.Cvar_Get("r_gunfov", "80", CVAR_ARCHIVE);
+	r_farsee = ri.Cvar_Get("r_farsee", "0", CVAR_LATCH | CVAR_ARCHIVE);
+	r_norefresh = ri.Cvar_Get("r_norefresh", "0", 0);
+	r_fullbright = ri.Cvar_Get("r_fullbright", "0", 0);
+	r_drawentities = ri.Cvar_Get("r_drawentities", "1", 0);
+	r_drawworld = ri.Cvar_Get("r_drawworld", "1", 0);
+	r_novis = ri.Cvar_Get("r_novis", "0", 0);
+	r_lerpmodels = ri.Cvar_Get("r_lerpmodels", "1", 0);
+	r_speeds = ri.Cvar_Get("r_speeds", "0", 0);
 
-	r_lefthand = ri.Cvar_Get( "hand", "0", CVAR_USERINFO | CVAR_ARCHIVE );
-	r_norefresh = ri.Cvar_Get ("r_norefresh", "0", 0);
-	r_fullbright = ri.Cvar_Get ("r_fullbright", "0", 0);
-	r_drawentities = ri.Cvar_Get ("r_drawentities", "1", 0);
-	r_drawworld = ri.Cvar_Get ("r_drawworld", "1", 0);
-	r_novis = ri.Cvar_Get ("r_novis", "0", 0);
-	r_nocull = ri.Cvar_Get ("r_nocull", "0", 0);
-	r_lerpmodels = ri.Cvar_Get ("r_lerpmodels", "1", 0);
-	r_speeds = ri.Cvar_Get ("r_speeds", "0", 0);
+	r_lightlevel = ri.Cvar_Get("r_lightlevel", "0", 0);
+	gl1_overbrightbits = ri.Cvar_Get("gl1_overbrightbits", "0", CVAR_ARCHIVE);
 
-	r_lightlevel = ri.Cvar_Get ("r_lightlevel", "0", 0);
+	gl1_particle_min_size = ri.Cvar_Get("gl1_particle_min_size", "2", CVAR_ARCHIVE);
+	gl1_particle_max_size = ri.Cvar_Get("gl1_particle_max_size", "40", CVAR_ARCHIVE);
+	gl1_particle_size = ri.Cvar_Get("gl1_particle_size", "40", CVAR_ARCHIVE);
+	gl1_particle_att_a = ri.Cvar_Get("gl1_particle_att_a", "0.01", CVAR_ARCHIVE);
+	gl1_particle_att_b = ri.Cvar_Get("gl1_particle_att_b", "0.0", CVAR_ARCHIVE);
+	gl1_particle_att_c = ri.Cvar_Get("gl1_particle_att_c", "0.01", CVAR_ARCHIVE);
+	gl1_particle_square = ri.Cvar_Get("gl1_particle_square", "0", CVAR_ARCHIVE);
 
-	gl_nosubimage = ri.Cvar_Get( "gl_nosubimage", "0", 0 );
-	gl_allow_software = ri.Cvar_Get( "gl_allow_software", "0", 0 );
+	r_modulate = ri.Cvar_Get("r_modulate", "1", CVAR_ARCHIVE);
+	r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
+	gl_lightmap = ri.Cvar_Get("r_lightmap", "0", 0);
+	gl_shadows = ri.Cvar_Get("r_shadows", "0", CVAR_ARCHIVE);
+	gl1_stencilshadow = ri.Cvar_Get("gl1_stencilshadow", "0", CVAR_ARCHIVE);
+	gl1_dynamic = ri.Cvar_Get("gl1_dynamic", "1", 0);
+	gl_nobind = ri.Cvar_Get("gl_nobind", "0", 0);
+	gl1_round_down = ri.Cvar_Get("gl1_round_down", "1", 0);
+	gl1_picmip = ri.Cvar_Get("gl1_picmip", "0", 0);
+	gl_showtris = ri.Cvar_Get("gl_showtris", "0", 0);
+	gl_showbbox = ri.Cvar_Get("gl_showbbox", "0", 0);
+	gl1_ztrick = ri.Cvar_Get("gl1_ztrick", "0", 0);
+	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
+	gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
+	r_clear = ri.Cvar_Get("r_clear", "0", 0);
+	r_cull = ri.Cvar_Get("r_cull", "1", 0);
+	gl_polyblend = ri.Cvar_Get("gl_polyblend", "1", 0);
+	gl1_flashblend = ri.Cvar_Get("gl1_flashblend", "0", 0);
+	r_fixsurfsky = ri.Cvar_Get("r_fixsurfsky", "0", CVAR_ARCHIVE);
 
-	gl1_particle_min_size = ri.Cvar_Get( "gl1_particle_min_size", "2", CVAR_ARCHIVE );
-	gl1_particle_max_size = ri.Cvar_Get( "gl1_particle_max_size", "40", CVAR_ARCHIVE );
-	gl1_particle_size = ri.Cvar_Get( "gl1_particle_size", "40", CVAR_ARCHIVE );
-	gl1_particle_att_a = ri.Cvar_Get( "gl1_particle_att_a", "0.01", CVAR_ARCHIVE );
-	gl1_particle_att_b = ri.Cvar_Get( "gl1_particle_att_b", "0.0", CVAR_ARCHIVE );
-	gl1_particle_att_c = ri.Cvar_Get( "gl1_particle_att_c", "0.01", CVAR_ARCHIVE );
+	gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
+	gl1_texturealphamode = ri.Cvar_Get("gl1_texturealphamode", "default", CVAR_ARCHIVE);
+	gl1_texturesolidmode = ri.Cvar_Get("gl1_texturesolidmode", "default", CVAR_ARCHIVE);
+	gl_anisotropic = ri.Cvar_Get("r_anisotropic", "0", CVAR_ARCHIVE);
+	r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 0);
 
-	r_modulate = ri.Cvar_Get ("r_modulate", "1", CVAR_ARCHIVE );
-	gl_bitdepth = ri.Cvar_Get( "gl_bitdepth", "0", 0 );
-	r_mode = ri.Cvar_Get( "r_mode", "3", CVAR_ARCHIVE );
-	r_lightmap = ri.Cvar_Get ("r_lightmap", "0", 0);
-	r_shadows = ri.Cvar_Get ("r_shadows", "0", CVAR_ARCHIVE );
-	gl1_dynamic = ri.Cvar_Get ("gl1_dynamic", "0", 0);
-	gl_nobind = ri.Cvar_Get ("gl_nobind", "0", 0);
-	gl1_round_down = ri.Cvar_Get ("gl1_round_down", "1", 0);
-	gl1_picmip = ri.Cvar_Get ("gl1_picmip", "0", 0);
-	gl_skymip = ri.Cvar_Get ("gl_skymip", "0", 0);
-	gl_showtris = ri.Cvar_Get ("gl_showtris", "0", 0);
-	gl1_ztrick = ri.Cvar_Get ("gl1_ztrick", "0", 0);
-	gl_finish = ri.Cvar_Get ("gl_finish", "0", CVAR_ARCHIVE);
-	r_clear = ri.Cvar_Get ("r_clear", "0", 0);
-	r_cull = ri.Cvar_Get ("r_cull", "1", 0);
-	gl_polyblend = ri.Cvar_Get ("gl_polyblend", "1", 0);
-	gl1_flashblend = ri.Cvar_Get ("gl1_flashblend", "0", 0);
-	gl_playermip = ri.Cvar_Get ("gl_playermip", "0", 0);
-	gl_monolightmap = ri.Cvar_Get( "gl_monolightmap", "0", 0 );
-	gl_driver = ri.Cvar_Get( "gl_new_driver", "opengl32", CVAR_ARCHIVE );
-	gl_texturemode = ri.Cvar_Get( "gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE );
-	gl1_texturealphamode = ri.Cvar_Get( "gl1_texturealphamode", "default", CVAR_ARCHIVE );
-	gl1_texturesolidmode = ri.Cvar_Get( "gl1_texturesolidmode", "default", CVAR_ARCHIVE );
-	r_lockpvs = ri.Cvar_Get( "r_lockpvs", "0", 0 );
+	gl1_palettedtexture = ri.Cvar_Get("r_palettedtextures", "0", CVAR_ARCHIVE);
+	gl1_pointparameters = ri.Cvar_Get("gl1_pointparameters", "1", CVAR_ARCHIVE);
 
+	gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
+	r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
+
+	gl1_saturatelighting = ri.Cvar_Get("gl1_saturatelighting", "0", 0);
+
+	gl_playermip = ri.Cvar_Get("gl_playermip", "0", 0);
+	gl_monolightmap = ri.Cvar_Get("gl_monolightmap", "0", 0 );
+	gl_driver = ri.Cvar_Get("gl_new_driver", "opengl32", CVAR_ARCHIVE );
 	gl_vertex_arrays = ri.Cvar_Get( "gl_vertex_arrays", "0", CVAR_ARCHIVE );
-
 	gl_ext_swapinterval = ri.Cvar_Get( "gl_ext_swapinterval", "1", CVAR_ARCHIVE );
 	gl_ext_palettedtexture = ri.Cvar_Get( "gl_ext_palettedtexture", "1", CVAR_ARCHIVE );
 	gl_ext_multitexture = ri.Cvar_Get( "gl_ext_multitexture", "1", CVAR_ARCHIVE );
 	gl_ext_pointparameters = ri.Cvar_Get( "gl_ext_pointparameters", "1", CVAR_ARCHIVE );
 	gl_ext_compiled_vertex_array = ri.Cvar_Get( "gl_ext_compiled_vertex_array", "1", CVAR_ARCHIVE );
+	gl_3dlabs_broken = ri.Cvar_Get("gl_3dlabs_broken", "1", CVAR_ARCHIVE );
+	vid_ref = ri.Cvar_Get("vid_ref", "soft", CVAR_ARCHIVE );
 
-	gl_drawbuffer = ri.Cvar_Get( "gl_drawbuffer", "GL_BACK", 0 );
-	r_vsync = ri.Cvar_Get( "r_vsync", "1", CVAR_ARCHIVE );
+	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
+	vid_gamma = ri.Cvar_Get("vid_gamma", "1.2", CVAR_ARCHIVE);
 
-	gl_saturatelighting = ri.Cvar_Get( "gl_saturatelighting", "0", 0 );
+	r_customwidth = ri.Cvar_Get("r_customwidth", "1024", CVAR_ARCHIVE);
+	r_customheight = ri.Cvar_Get("r_customheight", "768", CVAR_ARCHIVE);
+	gl_msaa_samples = ri.Cvar_Get ( "r_msaa_samples", "0", CVAR_ARCHIVE );
 
-	gl_3dlabs_broken = ri.Cvar_Get( "gl_3dlabs_broken", "1", CVAR_ARCHIVE );
+	r_retexturing = ri.Cvar_Get("r_retexturing", "1", CVAR_ARCHIVE);
+	r_validation = ri.Cvar_Get("r_validation", "0", CVAR_ARCHIVE);
+	r_scale8bittextures = ri.Cvar_Get("r_scale8bittextures", "0", CVAR_ARCHIVE);
 
-	vid_fullscreen = ri.Cvar_Get( "vid_fullscreen", "0", CVAR_ARCHIVE );
-	vid_gamma = ri.Cvar_Get( "vid_gamma", "1.0", CVAR_ARCHIVE );
-	vid_ref = ri.Cvar_Get( "vid_ref", "soft", CVAR_ARCHIVE );
+	/* don't bilerp characters and crosshairs */
+	gl_nolerp_list = ri.Cvar_Get("r_nolerp_list", "pics/conchars.pcx pics/ch1.pcx pics/ch2.pcx pics/ch3.pcx", CVAR_ARCHIVE);
+	/* textures that should always be filtered, even if r_2D_unfiltered or an unfiltered gl mode is used */
+	r_lerp_list = ri.Cvar_Get("r_lerp_list", "", CVAR_ARCHIVE);
+	/* don't bilerp any 2D elements */
+	r_2D_unfiltered = ri.Cvar_Get("r_2D_unfiltered", "0", CVAR_ARCHIVE);
+	/* don't bilerp videos */
+	r_videos_unfiltered = ri.Cvar_Get("r_videos_unfiltered", "0", CVAR_ARCHIVE);
 
-	ri.Cmd_AddCommand( "imagelist", GL_ImageList_f );
-	ri.Cmd_AddCommand( "screenshot", GL_ScreenShot_f );
-	ri.Cmd_AddCommand( "modellist", Mod_Modellist_f );
-	ri.Cmd_AddCommand( "gl_strings", GL_Strings_f );
+	gl1_stereo = ri.Cvar_Get( "gl1_stereo", "0", CVAR_ARCHIVE );
+	gl1_stereo_separation = ri.Cvar_Get( "gl1_stereo_separation", "-0.4", CVAR_ARCHIVE );
+	gl1_stereo_anaglyph_colors = ri.Cvar_Get( "gl1_stereo_anaglyph_colors", "rc", CVAR_ARCHIVE );
+	gl1_stereo_convergence = ri.Cvar_Get( "gl1_stereo_convergence", "1", CVAR_ARCHIVE );
+
+	ri.Cmd_AddCommand("imagelist", R_ImageList_f);
+	ri.Cmd_AddCommand("screenshot", R_ScreenShot);
+	ri.Cmd_AddCommand("modellist", Mod_Modellist_f);
+	ri.Cmd_AddCommand("gl_strings", R_Strings);
 }
 
 /*
@@ -1222,15 +1290,13 @@ int R_Init( void *hinstance, void *hWnd )
 
 	ri.Con_Printf (PRINT_ALL, "ref_gl version: " REF_VERSION "\n");
 
-	Draw_GetPalette ();
-
 	R_Register();
 
 	// initialize our gl dynamic bindings
 	if (!QGL_Init())
 	{
 		QGL_Shutdown();
-	ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not load \"%s\"\n", "opengl32" );
+		ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not load \"%s\"\n", "opengl32" );
 		return -1;
 	}
 
@@ -1279,9 +1345,9 @@ int R_Init( void *hinstance, void *hWnd )
 
 	ri.Cvar_Set( "scr_drawall", "0" );
 
-	GL_SetDefaultState();
+	R_SetDefaultState();
 
-	GL_InitImages ();
+	R_InitImages ();
 	Mod_Init ();
 	R_InitParticleTexture ();
 	Draw_InitLocal ();
@@ -1305,7 +1371,7 @@ void R_Shutdown (void)
 
 	Mod_FreeAll();
 
-	GL_ShutdownImages();
+	R_ShutdownImages();
 
 	/* shutdown OS specific OpenGL stuff like contexts, etc.  */
 	GLimp_Shutdown();
@@ -1329,8 +1395,9 @@ void R_BeginFrame( float camera_separation )
 	** change modes if necessary
 	*/
 	if ( r_mode->modified || vid_fullscreen->modified )
-	{	// FIXME: only restart if CDS is required
-		cvar_t	*ref;
+	{
+		// FIXME: only restart if CDS is required
+		cvar_t *ref;
 
 		ref = ri.Cvar_Get ("vid_ref", "gl", 0);
 		ref->modified = true;
@@ -1362,40 +1429,74 @@ void R_BeginFrame( float camera_separation )
 	glEnable (GL_ALPHA_TEST);
 	glColor4f (1,1,1,1);
 
-	/*
-	** draw buffer stuff
-	*/
-	if ( gl_drawbuffer->modified )
+	if (gl1_particle_square->modified)
+	{
+		if (gl_config.pointparameters)
+		{
+			/* GL_POINT_SMOOTH is not implemented by some OpenGL
+			   drivers, especially the crappy Mesa3D backends like
+			   i915.so. That the points are squares and not circles
+			   is not a problem by Quake II! */
+			if (gl1_particle_square->value)
+			{
+				glDisable(GL_POINT_SMOOTH);
+			}
+			else
+			{
+				glEnable(GL_POINT_SMOOTH);
+			}
+		}
+		else
+		{
+			// particles aren't drawn as GL_POINTS, but as textured triangles
+			// => update particle texture to look square - or circle-ish
+			R_InitParticleTexture();
+		}
+
+		gl1_particle_square->modified = false;
+	}
+
+	/* draw buffer stuff */
+	if (gl_drawbuffer->modified)
 	{
 		gl_drawbuffer->modified = false;
 
-		if ( gl_state.camera_separation == 0 || gl_state.stereo_mode == STEREO_MODE_NONE )
+		if ((gl_state.camera_separation == 0) || gl_state.stereo_mode != STEREO_MODE_OPENGL)
 		{
-			if ( Q_stricmp( gl_drawbuffer->string, "GL_FRONT" ) == 0 )
-				glDrawBuffer( GL_FRONT );
+			if (Q_stricmp(gl_drawbuffer->string, "GL_FRONT") == 0)
+			{
+				glDrawBuffer(GL_FRONT);
+			}
 			else
-				glDrawBuffer( GL_BACK );
+			{
+				glDrawBuffer(GL_BACK);
+			}
 		}
 	}
 
-	/*
-	** texturemode stuff
-	*/
-	if ( gl_texturemode->modified )
+	/* texturemode stuff */
+	if (gl_texturemode->modified || (gl_config.anisotropic && gl_anisotropic->modified)
+	    || gl_nolerp_list->modified || r_lerp_list->modified
+		|| r_2D_unfiltered->modified || r_videos_unfiltered->modified)
 	{
-		GL_TextureMode( gl_texturemode->string );
+		R_TextureMode(gl_texturemode->string);
 		gl_texturemode->modified = false;
+		gl_anisotropic->modified = false;
+		gl_nolerp_list->modified = false;
+		r_lerp_list->modified = false;
+		r_2D_unfiltered->modified = false;
+		r_videos_unfiltered->modified = false;
 	}
 
-	if ( gl1_texturealphamode->modified )
+	if (gl1_texturealphamode->modified)
 	{
-		GL_TextureAlphaMode( gl1_texturealphamode->string );
+		R_TextureAlphaMode(gl1_texturealphamode->string);
 		gl1_texturealphamode->modified = false;
 	}
 
-	if ( gl1_texturesolidmode->modified )
+	if (gl1_texturesolidmode->modified)
 	{
-		GL_TextureSolidMode( gl1_texturesolidmode->string );
+		R_TextureSolidMode(gl1_texturesolidmode->string);
 		gl1_texturesolidmode->modified = false;
 	}
 
@@ -1443,7 +1544,7 @@ void R_SetPalette ( const unsigned char *palette)
 			rp[i*4+3] = 0xff;
 		}
 	}
-	GL_SetTexturePalette( r_rawpalette );
+	R_SetTexturePalette( r_rawpalette );
 
 	glClearColor (0,0,0,0);
 	glClear (GL_COLOR_BUFFER_BIT);
@@ -1522,20 +1623,20 @@ void R_DrawBeam( entity_t *e )
 //===================================================================
 
 
-void	R_BeginRegistration (char *map);
-struct model_s	*R_RegisterModel (char *name);
+void	RI_BeginRegistration (char *map);
+struct model_s	*RI_RegisterModel (char *name);
 void R_SetSky (char *name, float rotate, vec3_t axis);
-void	R_EndRegistration (void);
+void	RI_EndRegistration (void);
 
-void	R_RenderFrame (refdef_t *fd);
+void	RI_RenderFrame (refdef_t *fd);
 
-struct image_s	*Draw_FindPic (char *name);
+struct image_s	*RDraw_FindPic (char *name);
 
 void	Draw_Pic (int x, int y, char *name);
 void	Draw_Char (int x, int y, int c);
-void	Draw_TileClear (int x, int y, int w, int h, char *name);
-void	Draw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
-void	Draw_FadeScreen (void);
+void	RDraw_TileClear (int x, int y, int w, int h, char *name);
+void	RDraw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
+void	RDraw_FadeScreen (void);
 
 void Draw_Name (vec3_t origin, char *Name, paletteRGBA_t color)
 {
@@ -1577,22 +1678,22 @@ refexport_t GetRefAPI (refimport_t rimp )
 	re.Init = R_Init;
 	re.Shutdown = R_Shutdown;
 
-	re.BeginRegistration = R_BeginRegistration;
-	re.RegisterModel = R_RegisterModel;
-	re.RegisterSkin = R_RegisterSkin;
-	re.RegisterPic = Draw_FindPic;
+	re.BeginRegistration = RI_BeginRegistration;
+	re.RegisterModel = RI_RegisterModel;
+	re.RegisterSkin = RI_RegisterSkin;
+	re.RegisterPic = RDraw_FindPic;
 	re.SetSky = R_SetSky;
-	re.EndRegistration = R_EndRegistration;
+	re.EndRegistration = RI_EndRegistration;
 	re.Draw_Name = Draw_Name;
 	re.DrawLine = DrawLine;
-	re.RenderFrame = R_RenderFrame;
-	re.DrawGetPicSize = Draw_GetPicSize;
+	re.RenderFrame = RI_RenderFrame;
+	re.DrawGetPicSize = RDraw_GetPicSize;
 	re.DrawPic = Draw_Pic;
 	re.DrawStretchPic = Draw_StretchPic;
 	re.DrawChar = Draw_Char;
-	re.DrawTileClear = Draw_TileClear;
-	re.DrawFill = Draw_Fill;
-	re.DrawFadeScreen = Draw_FadeScreen;
+	re.DrawTileClear = RDraw_TileClear;
+	re.DrawFill = RDraw_Fill;
+	re.DrawFadeScreen = RDraw_FadeScreen;
 	re.DrawBigFont = R_DrawBigFont;
 	re.BF_Strlen = BF_Strlen;
 	re.BookDrawPic = R_BookDrawPic;
@@ -1610,7 +1711,14 @@ refexport_t GetRefAPI (refimport_t rimp )
 	return re;
 }
 
-#ifndef REF_HARD_LINKED
+void R_Printf(int level, const char* msg, ...)
+{
+	va_list argptr;
+	va_start(argptr, msg);
+	ri.Com_VPrintf(level, msg, argptr);
+	va_end(argptr);
+}
+
 // this is only here so the functions in q_shared.c and q_shwin.c can link
 void Sys_Error (char *error, ...)
 {
@@ -1636,5 +1744,3 @@ Com_Printf(char *msg, ...)
 
 	ri.Con_Printf (PRINT_ALL, "%s", text);
 }
-
-#endif

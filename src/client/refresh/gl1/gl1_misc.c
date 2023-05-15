@@ -26,57 +26,95 @@
 
 #include "header/local.h"
 
-/*
-==================
-R_InitParticleTexture
-==================
-*/
-byte	dottexture[8][8] =
-{
-	{0,0,0,0,0,0,0,0},
-	{0,0,1,1,0,0,0,0},
-	{0,1,1,1,1,0,0,0},
-	{0,1,1,1,1,0,0,0},
-	{0,0,1,1,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
+static byte dottexture[16][16] = {
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 1, 2, 3, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 1, 3, 3, 3, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0},
+	{0, 2, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 2, 3, 3, 3, 3, 3, 3, 2, 0, 0, 0, 0, 0, 0, 0},
+	{0, 1, 3, 3, 3, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 1, 2, 3, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
-void R_InitParticleTexture (void)
+static byte squaretexture[16][16] = {
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+};
+
+static byte notex[4][4] = {
+	{0, 0, 0, 0},
+	{0, 0, 1, 1},
+	{0, 1, 1, 1},
+	{0, 1, 1, 1}
+};
+
+void
+R_InitParticleTexture(void)
 {
-	int		x,y;
-	byte	data[8][8][4];
+	int x, y;
+	byte partData[16][16][4];
+	byte notexData[8][8][4];
 
-	//
-	// particle texture
-	//
-	for (x=0 ; x<8 ; x++)
+	/* particle texture */
+	for (x = 0; x < 16; x++)
 	{
 		for (y=0 ; y<8 ; y++)
 		{
-			data[y][x][0] = 255;
-			data[y][x][1] = 255;
-			data[y][x][2] = 255;
-			data[y][x][3] = dottexture[x][y]*255;
-		}
-	}
-	r_particletexture = GL_LoadPic ("***particle***", (byte *)data, 8, 8, it_sprite, 32);
+			partData[y][x][0] = 255;
+			partData[y][x][1] = 255;
+			partData[y][x][2] = 255;
 
-	//
-	// also use this for bad textures, but without alpha
-	//
-	for (x=0 ; x<8 ; x++)
-	{
-		for (y=0 ; y<8 ; y++)
-		{
-			data[y][x][0] = dottexture[x&3][y&3]*255;
-			data[y][x][1] = 0; // dottexture[x&3][y&3]*255;
-			data[y][x][2] = 0; //dottexture[x&3][y&3]*255;
-			data[y][x][3] = 255;
+			if (!gl1_particle_square->value)
+			{
+				partData[y][x][3] = dottexture[x][y] * 85;
+			}
+			else
+			{
+				partData[y][x][3] = squaretexture[x][y] * 85;
+			}
 		}
 	}
-	r_notexture = GL_LoadPic ("***r_notexture***", (byte *)data, 8, 8, it_wall, 32);
+
+	r_particletexture = R_LoadPic("***particle***", (byte *)partData,
+	                              16, 0, 16, 0, 16 * 16, it_sprite, 32);
+
+	/* also use this for bad textures, but without alpha */
+	for (x = 0; x < 8; x++)
+	{
+		for (y = 0; y < 8; y++)
+		{
+			notexData[y][x][0] = notex[x & 3][y & 3] * 255;
+			notexData[y][x][1] = 0;
+			notexData[y][x][2] = 0;
+			notexData[y][x][3] = 255;
+		}
+	}
+
+	r_notexture = R_LoadPic("***r_notexture***", (byte *)notexData,
+	                        8, 0, 8, 0, 8 * 8, it_wall, 32);
 }
 
 
@@ -99,10 +137,10 @@ typedef struct _TargaHeader {
 
 /*
 ==================
-GL_ScreenShot_f
+R_ScreenShot 
 ==================
 */
-void GL_ScreenShot_f (void)
+void R_ScreenShot  (void)
 {
 	byte		*buffer;
 	char		picname[80];
@@ -131,7 +169,7 @@ void GL_ScreenShot_f (void)
 	}
 	if (i==100)
 	{
-		ri.Con_Printf (PRINT_ALL, "SCR_ScreenShot_f: Couldn't create a file\n");
+		ri.Con_Printf (PRINT_ALL, "SCR_ScreenShot: Couldn't create a file\n");
 		return;
  	}
 
@@ -165,9 +203,9 @@ void GL_ScreenShot_f (void)
 }
 
 /*
-** GL_Strings_f
+** R_Strings
 */
-void GL_Strings_f( void )
+void R_Strings( void )
 {
 	ri.Con_Printf (PRINT_ALL, "GL_VENDOR: %s\n", gl_config.vendor_string );
 	ri.Con_Printf (PRINT_ALL, "GL_RENDERER: %s\n", gl_config.renderer_string );
@@ -176,9 +214,9 @@ void GL_Strings_f( void )
 }
 
 /*
-** GL_SetDefaultState
+** R_SetDefaultState
 */
-void GL_SetDefaultState( void )
+void R_SetDefaultState( void )
 {
 	glClearColor (1,0, 0.5 , 0.5);
 	glCullFace(GL_FRONT);
@@ -196,9 +234,9 @@ void GL_SetDefaultState( void )
 	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 	glShadeModel (GL_FLAT);
 
-	GL_TextureMode( gl_texturemode->string );
-	GL_TextureAlphaMode( gl1_texturealphamode->string );
-	GL_TextureSolidMode( gl1_texturesolidmode->string );
+	R_TextureMode( gl_texturemode->string );
+	R_TextureAlphaMode( gl1_texturealphamode->string );
+	R_TextureSolidMode( gl1_texturesolidmode->string );
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
@@ -208,7 +246,7 @@ void GL_SetDefaultState( void )
 
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	GL_TexEnv( GL_REPLACE );
+	R_TexEnv( GL_REPLACE );
 
 	if ( qglPointParameterfARB )
 	{

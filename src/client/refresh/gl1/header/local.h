@@ -130,8 +130,7 @@ typedef enum
 void GL_BeginRendering(int *x, int *y, int *width, int *height);
 void GL_EndRendering(void);
 
-void GL_SetDefaultState(void);
-void GL_UpdateSwapInterval( void );
+void R_SetDefaultState(void);
 
 extern float gldepthmin, gldepthmax;
 
@@ -142,249 +141,164 @@ typedef struct
 	float r, g, b;
 } glvert_t;
 
-#include "../../../../common/header/common.h"
-#include "../../../../../h2common/vector.h"
+extern image_t gltextures[MAX_GLTEXTURES];
+extern int numgltextures;
 
-typedef struct CL_SkeletalJoint_s
-{
-	int children;
-	vec3_t angles;
-} CL_SkeletalJoint_t;
+extern image_t *r_notexture;
+extern image_t *r_particletexture;
+extern int r_visframecount;
+extern int r_framecount;
+extern cplane_t frustum[4];
+extern int c_brush_polys, c_alias_polys;
+extern int gl_filter_min, gl_filter_max;
 
-#define	MAX_LBM_HEIGHT		480
+/* view origin */
+extern vec3_t vup;
+extern vec3_t vpn;
+extern vec3_t vright;
+extern vec3_t r_origin;
 
-#define BACKFACE_EPSILON	0.01
+/* screen size info */
+extern refdef_t r_newrefdef;
+extern int r_viewcluster, r_viewcluster2, r_oldviewcluster, r_oldviewcluster2;
 
-//====================================================
+extern qboolean IsHighDPIaware;
 
-extern	image_t		gltextures[MAX_GLTEXTURES];
-extern	int			numgltextures;
+extern cvar_t *r_norefresh;
+extern cvar_t *gl_lefthand;
+extern cvar_t *r_gunfov;
+extern cvar_t *r_farsee;
+extern cvar_t *r_drawentities;
+extern cvar_t *r_drawworld;
+extern cvar_t *r_speeds;
+extern cvar_t *r_fullbright;
+extern cvar_t *r_novis;
+extern cvar_t *r_lerpmodels;
+extern cvar_t *r_fixsurfsky;
 
-extern	image_t		*r_notexture;
-extern	image_t		*r_particletexture;
-extern	entity_t	*currententity;
-extern	model_t		*currentmodel;
-extern	int			r_visframecount;
-extern	int			r_framecount;
-extern	cplane_t	frustum[4];
-extern	int			c_brush_polys, c_alias_polys;
+extern cvar_t *r_lightlevel;
+extern cvar_t *gl1_overbrightbits;
 
-extern	int			gl_filter_min, gl_filter_max;
+extern cvar_t *gl1_palettedtexture;
+extern cvar_t *gl1_pointparameters;
 
-//
-// view origin
-//
-extern	vec3_t	vup;
-extern	vec3_t	vpn;
-extern	vec3_t	vright;
-extern	vec3_t	r_origin;
+extern cvar_t *gl1_particle_min_size;
+extern cvar_t *gl1_particle_max_size;
+extern cvar_t *gl1_particle_size;
+extern cvar_t *gl1_particle_att_a;
+extern cvar_t *gl1_particle_att_b;
+extern cvar_t *gl1_particle_att_c;
+extern cvar_t *gl1_particle_square;
 
-//
-// screen size info
-//
-extern	refdef_t	r_newrefdef;
-extern	int		r_viewcluster, r_viewcluster2, r_oldviewcluster, r_oldviewcluster2;
+extern cvar_t *r_mode;
+extern cvar_t *r_customwidth;
+extern cvar_t *r_customheight;
 
-extern	cvar_t	*r_norefresh;
-extern	cvar_t	*r_lefthand;
-extern	cvar_t	*r_drawentities;
-extern	cvar_t	*r_drawworld;
-extern	cvar_t	*r_speeds;
-extern	cvar_t	*r_fullbright;
-extern	cvar_t	*r_novis;
-extern	cvar_t	*r_nocull;
-extern	cvar_t	*r_lerpmodels;
+extern cvar_t *r_retexturing;
+extern cvar_t *r_scale8bittextures;
+extern cvar_t *r_validation;
 
-extern	cvar_t	*r_lightlevel;	// FIXME: This is a HACK to get the client's light level
+extern cvar_t *gl_nolerp_list;
+extern cvar_t *r_lerp_list;
+extern cvar_t *r_2D_unfiltered;
+extern cvar_t *r_videos_unfiltered;
 
-extern cvar_t	*gl_vertex_arrays;
+extern cvar_t *gl_lightmap;
+extern cvar_t *gl_shadows;
+extern cvar_t *gl1_stencilshadow;
+extern cvar_t *gl1_dynamic;
+extern cvar_t *gl_nobind;
+extern cvar_t *gl1_round_down;
+extern cvar_t *gl1_picmip;
+extern cvar_t *gl_showtris;
+extern cvar_t *gl_showbbox;
+extern cvar_t *gl_finish;
+extern cvar_t *gl1_ztrick;
+extern cvar_t *gl_zfix;
+extern cvar_t *r_clear;
+extern cvar_t *r_cull;
+extern cvar_t *gl1_polyblend;
+extern cvar_t *gl1_flashblend;
+extern cvar_t *r_modulate;
+extern cvar_t *gl_drawbuffer;
+extern cvar_t *r_vsync;
+extern cvar_t *gl_anisotropic;
+extern cvar_t *gl_texturemode;
+extern cvar_t *gl1_texturealphamode;
+extern cvar_t *gl1_texturesolidmode;
+extern cvar_t *gl1_saturatelighting;
+extern cvar_t *r_lockpvs;
+extern cvar_t *gl_msaa_samples;
 
-extern cvar_t	*gl_ext_swapinterval;
-extern cvar_t	*gl_ext_palettedtexture;
-extern cvar_t	*gl_ext_multitexture;
-extern cvar_t	*gl_ext_pointparameters;
-extern cvar_t	*gl_ext_compiled_vertex_array;
+extern cvar_t *vid_fullscreen;
+extern cvar_t *vid_gamma;
 
-extern cvar_t	*gl1_particle_min_size;
-extern cvar_t	*gl1_particle_max_size;
-extern cvar_t	*gl1_particle_size;
-extern cvar_t	*gl1_particle_att_a;
-extern cvar_t	*gl1_particle_att_b;
-extern cvar_t	*gl1_particle_att_c;
+extern cvar_t *intensity;
 
-extern	cvar_t	*gl_nosubimage;
-extern	cvar_t	*gl_bitdepth;
-extern	cvar_t	*r_mode;
-extern	cvar_t	*r_lightmap;
-extern	cvar_t	*r_shadows;
-extern	cvar_t	*gl1_dynamic;
-extern  cvar_t  *gl_monolightmap;
-extern	cvar_t	*gl_nobind;
-extern	cvar_t	*gl1_round_down;
-extern	cvar_t	*gl1_picmip;
-extern	cvar_t	*gl_skymip;
-extern	cvar_t	*gl_showtris;
-extern	cvar_t	*gl_finish;
-extern	cvar_t	*gl1_ztrick;
-extern	cvar_t	*r_clear;
-extern	cvar_t	*r_cull;
-extern	cvar_t	*gl_poly;
-extern	cvar_t	*gl_texsort;
-extern	cvar_t	*gl_polyblend;
-extern	cvar_t	*gl1_flashblend;
-extern	cvar_t	*r_lightmaptype;
-extern	cvar_t	*r_modulate;
-extern	cvar_t	*gl_playermip;
-extern	cvar_t	*gl_drawbuffer;
-extern	cvar_t	*gl_3dlabs_broken;
-extern  cvar_t  *gl_driver;
-extern	cvar_t	*r_vsync;
-extern	cvar_t	*gl_texturemode;
-extern	cvar_t	*gl1_texturealphamode;
-extern	cvar_t	*gl1_texturesolidmode;
-extern  cvar_t  *gl_saturatelighting;
-extern  cvar_t  *r_lockpvs;
+extern int gl_solid_format;
+extern int gl_alpha_format;
+extern int gl_tex_solid_format;
+extern int gl_tex_alpha_format;
 
-extern	cvar_t	*vid_fullscreen;
-extern	cvar_t	*vid_gamma;
+extern int c_visible_lightmaps;
+extern int c_visible_textures;
 
-extern	cvar_t		*intensity;
+extern float r_world_matrix[16];
 
-extern	int		r_lightmap_format;
-extern	int		gl_solid_format;
-extern	int		gl_alpha_format;
-extern	int		gl_tex_solid_format;
-extern	int		gl_tex_alpha_format;
+void R_TranslatePlayerSkin(int playernum);
+void R_Bind(int texnum);
 
-extern	int		c_visible_lightmaps;
-extern	int		c_visible_textures;
+void R_TexEnv(GLenum value);
 
-extern	float	r_world_matrix[16];
+void R_LightPoint(vec3_t p, vec3_t color);
+void R_PushDlights(void);
 
-void R_TranslatePlayerSkin (int playernum);
-void R_Bind (int texnum);
-void GL_TexEnv( GLenum value );
+extern model_t *r_worldmodel;
+extern unsigned d_8to24table[256];
+extern int registration_sequence;
 
-void R_LightPoint (vec3_t p, vec3_t color);
-void R_PushDlights (void);
+void V_AddBlend(float r, float g, float b, float a, float *v_blend);
 
-//====================================================================
+void R_ScreenShot(void);
+void R_DrawAliasModel(entity_t *e);
+void R_DrawBrushModel(entity_t *e);
+void R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel);
+void R_DrawBeam(entity_t *e);
+void R_DrawWorld(void);
+void R_RenderDlights(void);
+void R_DrawAlphaSurfaces(void);
+void R_InitParticleTexture(void);
+void Draw_InitLocal(void);
+void R_SubdivideSurface(model_t *loadmodel, msurface_t *fa);
+void R_RotateForEntity(entity_t *e);
+void R_MarkLeaves(void);
 
-extern	model_t	*r_worldmodel;
+extern int r_dlightframecount;
+glpoly_t *WaterWarpPolyVerts(glpoly_t *p);
+void R_EmitWaterPolys(msurface_t *fa);
+void R_AddSkySurface(msurface_t *fa);
+void R_ClearSkyBox(void);
+void R_DrawSkyBox(void);
+void R_MarkSurfaceLights(dlight_t *light, int bit, mnode_t *node,
+	int r_dlightframecount);
 
-extern	unsigned	d_8to24table[256];
+void COM_StripExtension(char *in, char *out);
 
-extern	int		registration_sequence;
+void R_SwapBuffers(int);
 
-void V_AddBlend (float r, float g, float b, float a, float *v_blend);
+image_t *R_LoadPic(const char *name, byte *pic, int width, int realwidth,
+		int height, int realheight, size_t data_size, imagetype_t type, int bits);
+image_t *R_FindImage(const char *name, imagetype_t type);
+void R_TextureMode(char *string);
+void R_ImageList_f(void);
 
-int 	R_Init( void *hinstance, void *hWnd );
-void	R_Shutdown( void );
+void R_SetTexturePalette(unsigned palette[256]);
 
-void R_RenderView (refdef_t *fd);
-void GL_ScreenShot_f (void);
-void R_DrawAliasModel (entity_t *e);
-void R_DrawBrushModel (entity_t *e);
-void R_DrawSpriteModel (entity_t *e);
-void R_DrawBeam( entity_t *e );
-void R_DrawWorld (void);
-void R_RenderDlights (void);
-void R_DrawAlphaSurfaces (void);
-void R_RenderBrushPoly (msurface_t *fa);
-void R_InitParticleTexture (void);
-void Draw_InitLocal (void);
-void GL_SubdivideSurface (msurface_t *fa);
-qboolean R_CullBox (vec3_t mins, vec3_t maxs);
-void R_RotateForEntity (entity_t *e);
-void R_MarkLeaves (void);
+void R_InitImages(void);
+void R_ShutdownImages(void);
 
-glpoly_t *WaterWarpPolyVerts (glpoly_t *p);
-void EmitWaterPolys (msurface_t *fa);
-void R_AddSkySurface (msurface_t *fa);
-void R_ClearSkyBox (void);
-void R_DrawSkyBox (void);
-void R_MarkLights (dlight_t *light, int bit, mnode_t *node);
-
-void COM_StripExtension (char *in, char *out);
-
-void    Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t* gl);
-void	Draw_GetPicSize (int *w, int *h, char *name);
-void	Draw_Pic (int x, int y, char *name);
-void	Draw_StretchPic (int x, int y, int w, int h, char *pic, float alpha, qboolean scale);
-void	Draw_Char (int x, int y, int c);
-void	Draw_TileClear (int x, int y, int w, int h, char *name);
-void	Draw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
-void	Draw_FadeScreen (void);
-void	Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data);
-
-void	R_BeginFrame( float camera_separation );
-void	R_SwapBuffers( int );
-void	R_SetPalette ( const unsigned char *palette);
-
-int		Draw_GetPalette (void);
-
-void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight);
-
-struct image_s *R_RegisterSkin(char* name, qboolean* retval);
-
-void LoadPCX (char *filename, byte **pic, byte **palette, int *width, int *height);
-image_t *GL_LoadPic (char *name, byte *pic, int width, int height, imagetype_t type, int bits);
-image_t	*GL_FindImage (char *name, imagetype_t type);
-void	GL_TextureMode( char *string );
-void	GL_ImageList_f (void);
-
-void	GL_SetTexturePalette( unsigned palette[256] );
-
-void	GL_InitImages (void);
-void	GL_ShutdownImages (void);
-
-void	GL_FreeUnusedImages (void);
-
-void GL_TextureAlphaMode( char *string );
-void GL_TextureSolidMode( char *string );
-
-/*
-** GL config stuff
-*/
-#define GL_RENDERER_VOODOO		0x00000001
-#define GL_RENDERER_VOODOO2   	0x00000002
-#define GL_RENDERER_VOODOO_RUSH	0x00000004
-#define GL_RENDERER_BANSHEE		0x00000008
-#define		GL_RENDERER_3DFX		0x0000000F
-
-#define GL_RENDERER_PCX1		0x00000010
-#define GL_RENDERER_PCX2		0x00000020
-#define GL_RENDERER_PMX			0x00000040
-#define		GL_RENDERER_POWERVR		0x00000070
-
-#define GL_RENDERER_PERMEDIA2	0x00000100
-#define GL_RENDERER_GLINT_MX	0x00000200
-#define GL_RENDERER_GLINT_TX	0x00000400
-#define GL_RENDERER_3DLABS_MISC	0x00000800
-#define		GL_RENDERER_3DLABS	0x00000F00
-
-#define GL_RENDERER_REALIZM		0x00001000
-#define GL_RENDERER_REALIZM2	0x00002000
-#define		GL_RENDERER_INTERGRAPH	0x00003000
-
-#define GL_RENDERER_3DPRO		0x00004000
-#define GL_RENDERER_REAL3D		0x00008000
-#define GL_RENDERER_RIVA128		0x00010000
-#define GL_RENDERER_DYPIC		0x00020000
-
-#define GL_RENDERER_V1000		0x00040000
-#define GL_RENDERER_V2100		0x00080000
-#define GL_RENDERER_V2200		0x00100000
-#define		GL_RENDERER_RENDITION	0x001C0000
-
-#define GL_RENDERER_O2          0x00100000
-#define GL_RENDERER_IMPACT      0x00200000
-#define GL_RENDERER_RE			0x00400000
-#define GL_RENDERER_IR			0x00800000
-#define		GL_RENDERER_SGI			0x00F00000
-
-#define GL_RENDERER_MCD			0x01000000
-#define GL_RENDERER_OTHER		0x80000000
+void R_FreeUnusedImages(void);
+qboolean R_ImageHasFreeSpace(void);
 
 void R_TextureAlphaMode(char *string);
 void R_TextureSolidMode(char *string);
@@ -458,6 +372,110 @@ typedef struct
 
 extern glconfig_t gl_config;
 extern glstate_t gl_state;
+
+int R_Init(void *hinstance, void *hWnd);
+void R_Shutdown(void);
+void R_RenderBrushPoly(msurface_t *fa);
+
+void R_SetPalette(const unsigned char *palette);
+
+void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight);
+
+struct image_s *RI_RegisterSkin(char* name);
+
+extern cvar_t *gl_monolightmap;
+extern cvar_t *gl_vertex_arrays;
+extern cvar_t *gl_ext_swapinterval;
+extern cvar_t *gl_ext_palettedtexture;
+extern cvar_t *gl_ext_multitexture;
+extern cvar_t *gl_ext_pointparameters;
+extern cvar_t *gl_ext_compiled_vertex_array;
+extern cvar_t *gl_nosubimage;
+extern cvar_t *gl_bitdepth;
+extern cvar_t *gl_skymip;
+extern cvar_t *gl_poly;
+extern cvar_t *gl_texsort;
+extern cvar_t *r_lightmaptype;
+extern cvar_t *gl_playermip;
+extern cvar_t *gl_3dlabs_broken;
+extern  cvar_t  *gl_driver;
+
+void    Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t* gl);
+void	RDraw_GetPicSize (int *w, int *h, char *name);
+void	Draw_Pic (int x, int y, char *name);
+void	Draw_StretchPic (int x, int y, int w, int h, char *pic, float alpha, qboolean scale);
+void	Draw_Char (int x, int y, int c);
+void	RDraw_TileClear (int x, int y, int w, int h, char *name);
+void	RDraw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
+void	RDraw_FadeScreen (void);
+void	RDraw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data);
+
+void	R_BeginFrame( float camera_separation );
+
+extern	int		r_lightmap_format;
+void R_TextureAlphaMode( char *string );
+void R_TextureSolidMode( char *string );
+
+#include "../../../../common/header/common.h"
+#include "../../../../../h2common/vector.h"
+
+typedef struct CL_SkeletalJoint_s
+{
+	int children;
+	vec3_t angles;
+} CL_SkeletalJoint_t;
+
+#define	MAX_LBM_HEIGHT		480
+
+#define BACKFACE_EPSILON	0.01
+
+//====================================================
+void GL_UpdateSwapInterval( void );
+extern entity_t	*currententity;
+extern model_t *currentmodel;
+
+/*
+** GL config stuff
+*/
+#define GL_RENDERER_VOODOO		0x00000001
+#define GL_RENDERER_VOODOO2   	0x00000002
+#define GL_RENDERER_VOODOO_RUSH	0x00000004
+#define GL_RENDERER_BANSHEE		0x00000008
+#define		GL_RENDERER_3DFX		0x0000000F
+
+#define GL_RENDERER_PCX1		0x00000010
+#define GL_RENDERER_PCX2		0x00000020
+#define GL_RENDERER_PMX			0x00000040
+#define		GL_RENDERER_POWERVR		0x00000070
+
+#define GL_RENDERER_PERMEDIA2	0x00000100
+#define GL_RENDERER_GLINT_MX	0x00000200
+#define GL_RENDERER_GLINT_TX	0x00000400
+#define GL_RENDERER_3DLABS_MISC	0x00000800
+#define		GL_RENDERER_3DLABS	0x00000F00
+
+#define GL_RENDERER_REALIZM		0x00001000
+#define GL_RENDERER_REALIZM2	0x00002000
+#define		GL_RENDERER_INTERGRAPH	0x00003000
+
+#define GL_RENDERER_3DPRO		0x00004000
+#define GL_RENDERER_REAL3D		0x00008000
+#define GL_RENDERER_RIVA128		0x00010000
+#define GL_RENDERER_DYPIC		0x00020000
+
+#define GL_RENDERER_V1000		0x00040000
+#define GL_RENDERER_V2100		0x00080000
+#define GL_RENDERER_V2200		0x00100000
+#define		GL_RENDERER_RENDITION	0x001C0000
+
+#define GL_RENDERER_O2          0x00100000
+#define GL_RENDERER_IMPACT      0x00200000
+#define GL_RENDERER_RE			0x00400000
+#define GL_RENDERER_IR			0x00800000
+#define		GL_RENDERER_SGI			0x00F00000
+
+#define GL_RENDERER_MCD			0x01000000
+#define GL_RENDERER_OTHER		0x80000000
 
 void R_DrawBigFont(int x, int y, char *text, float alpha);
 int BF_Strlen(char *text);

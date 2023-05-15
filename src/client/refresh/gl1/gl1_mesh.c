@@ -458,9 +458,9 @@ void R_DrawAliasModel (entity_t *e)
 			return;
 	}
 
-	if ( e->flags & RF_WEAPONMODEL )
+	if (e->flags & RF_WEAPONMODEL)
 	{
-		if ( r_lefthand->value == 2 )
+		if (gl_lefthand->value == 2)
 			return;
 	}
 
@@ -571,7 +571,7 @@ void R_DrawAliasModel (entity_t *e)
 	if (currententity->flags & RF_DEPTHHACK) // hack the depth range to prevent view model from poking into walls
 		glDepthRange (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
 
-	if ( ( currententity->flags & RF_WEAPONMODEL ) && ( r_lefthand->value == 1.0F ) )
+	if ((currententity->flags & RF_WEAPONMODEL) && (gl_lefthand->value == 1.0F))
 	{
 		extern void MYgluPerspective( GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar );
 
@@ -612,7 +612,7 @@ void R_DrawAliasModel (entity_t *e)
 
 	glShadeModel (GL_SMOOTH);
 
-	GL_TexEnv( GL_MODULATE );
+	R_TexEnv( GL_MODULATE );
 	if ( currententity->flags & RF_TRANSLUCENT )
 	{
 		glEnable (GL_BLEND);
@@ -641,12 +641,12 @@ void R_DrawAliasModel (entity_t *e)
 		currententity->backlerp = 0;
 	GL_DrawAliasFrameLerp (paliashdr, currententity->backlerp);
 
-	GL_TexEnv( GL_REPLACE );
+	R_TexEnv( GL_REPLACE );
 	glShadeModel (GL_FLAT);
 
 	glPopMatrix ();
 
-	if ( ( currententity->flags & RF_WEAPONMODEL ) && ( r_lefthand->value == 1.0F ) )
+	if ((currententity->flags & RF_WEAPONMODEL) && (gl_lefthand->value == 1.0F))
 	{
 		glMatrixMode( GL_PROJECTION );
 		glPopMatrix();
@@ -662,7 +662,7 @@ void R_DrawAliasModel (entity_t *e)
 	if (currententity->flags & RF_DEPTHHACK)
 		glDepthRange (gldepthmin, gldepthmax);
 
-	if (r_shadows->value &&
+	if (gl_shadows->value &&
 		!(currententity->flags & (RF_TRANSLUCENT | RF_WEAPONMODEL)))
 	{
 		glPushMatrix ();

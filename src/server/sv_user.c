@@ -134,8 +134,7 @@ SV_Configstrings_f(void)
 
 	start = (int)strtol(Cmd_Argv(2), (char **)NULL, 10);
 
-	// write a packet full of data
-
+	/* write a packet full of data */
 	while ( sv_client->netchan.message.cursize < MAX_MSGLEN/2
 		&& start < MAX_CONFIGSTRINGS)
 	{

@@ -542,6 +542,12 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_lightmap.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_warp.o \
 	$(BUILDDIR)/src/client/refresh/gl1/qgl.o \
+	$(BUILDDIR)/src/client/refresh/files/models.o \
+	$(BUILDDIR)/src/client/refresh/files/pcx.o \
+	$(BUILDDIR)/src/client/refresh/files/pvs.o \
+	$(BUILDDIR)/src/client/refresh/files/stb.o \
+	$(BUILDDIR)/src/client/refresh/files/surf.o \
+	$(BUILDDIR)/src/client/refresh/files/wal.o \
 	$(BUILDDIR)/h2common/r_skeletons.o \
 	$(BUILDDIR)/h2common/arrayed_list.o \
 	$(BUILDDIR)/h2common/skeletons.o \

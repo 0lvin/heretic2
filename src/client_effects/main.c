@@ -193,13 +193,18 @@ void Clear()
 	CL_ClearLightStyles();
 
 	memset(&CircularList[0],0,sizeof(CircularList));
-	if (r_detail->value == DETAIL_LOW)
+	if (r_detail && r_detail->value == DETAIL_LOW)
+	{
 		total_circle_entries = 30;
-	else
-	if (r_detail->value == DETAIL_NORMAL)
+	}
+	else if (r_detail && r_detail->value == DETAIL_NORMAL)
+	{
 		total_circle_entries = 50;
+	}
 	else
+	{
 		total_circle_entries = MAX_ENTRIES_IN_CIRCLE_LIST;
+	}
 }
 
 void ShutDown()

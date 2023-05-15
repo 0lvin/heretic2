@@ -252,8 +252,9 @@ Mod_LoadSP2 (const char *mod_name, const void *buffer, int modfilelen,
 		sprout->frames[i].origin_x = LittleLong(sprin->frames[i].origin_x);
 		sprout->frames[i].origin_y = LittleLong(sprin->frames[i].origin_y);
 		memcpy(sprout->frames[i].name, sprin->frames[i].name, MAX_SKINNAME);
-
-		skins[i] = find_image((char *)sprout->frames[i].name, it_sprite);
+		char name[512];
+		sprintf(name, "sprites/%s", sprout->frames[i].name);
+		skins[i] = find_image(name, it_sprite);
 	}
 
 	*type = mod_sprite;
@@ -279,7 +280,11 @@ Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image, void *extradata,
 
 		sprout = (dsprite_t *)extradata;
 		for (i=0 ; i<sprout->numframes ; i++)
-			skins[i] = find_image (sprout->frames[i].name, it_sprite);
+		{
+			char name[512];
+			sprintf(name, "sprites/%s", sprout->frames[i].name);
+			skins[i] = find_image(name, it_sprite);
+		}
 		return sprout->numframes;
 	}
 	else if (type == mod_alias)

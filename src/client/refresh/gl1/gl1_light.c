@@ -27,23 +27,19 @@
 #include "header/local.h"
 
 int r_dlightframecount;
+vec3_t pointcolor;
+cplane_t *lightplane; /* used as shadow plane */
+vec3_t lightspot;
 
 #define	DLIGHT_CUTOFF	64
 
-/*
-=============================================================================
-
-DYNAMIC LIGHTS BLEND RENDERING
-
-=============================================================================
-*/
-
-void R_RenderDlight (dlight_t *light)
+void
+R_RenderDlight(dlight_t *light)
 {
-	int		i, j;
-	float	a;
+	int i, j;
+	float a;
 	vec3_t	v;
-	float	rad;
+	float rad;
 
 	rad = light->intensity * 0.35;
 
@@ -59,7 +55,7 @@ void R_RenderDlight (dlight_t *light)
 
 	glBegin (GL_TRIANGLE_FAN);
 	glColor3f (light->color.r*0.2, light->color.g*0.2, light->color.b*0.2);
-	for (i=0 ; i<3 ; i++)
+	for ( i = 0; i < 3; i++ )
 		v[i] = light->origin[i] - vpn[i]*rad;
 	glVertex3fv (v);
 	glColor3f (0,0,0);
@@ -71,203 +67,198 @@ void R_RenderDlight (dlight_t *light)
 				+ vup[j]*sin(a)*rad;
 		glVertex3fv (v);
 	}
-	glEnd ();
+	glEnd();
 }
 
-/*
-=============
-R_RenderDlights
-=============
-*/
-void R_RenderDlights (void)
+void
+R_RenderDlights(void)
 {
-	int		i;
-	dlight_t	*l;
+	int i;
+	dlight_t *l;
 
 	if (!gl1_flashblend->value)
+	{
 		return;
+	}
 
-	r_dlightframecount = r_framecount + 1;	// because the count hasn't
-											//  advanced yet for this frame
-	glDepthMask (0);
-	glDisable (GL_TEXTURE_2D);
-	glShadeModel (GL_SMOOTH);
-	glEnable (GL_BLEND);
-	glBlendFunc (GL_ONE, GL_ONE);
+	/* because the count hasn't advanced yet for this frame */
+	r_dlightframecount = r_framecount + 1;
+
+	glDepthMask(0);
+	glDisable(GL_TEXTURE_2D);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
 
 	l = r_newrefdef.dlights;
-	for (i=0 ; i<r_newrefdef.num_dlights ; i++, l++)
-		R_RenderDlight (l);
 
-	glColor3f (1,1,1);
-	glDisable (GL_BLEND);
-	glEnable (GL_TEXTURE_2D);
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask (1);
+	for (i = 0; i < r_newrefdef.num_dlights; i++, l++)
+	{
+		R_RenderDlight(l);
+	}
+
+	glColor4f(1, 1, 1, 1);
+	glDisable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(1);
 }
 
-
-/*
-=============================================================================
-
-DYNAMIC LIGHTS
-
-=============================================================================
-*/
-
-/*
-=============
-R_MarkLights
-=============
-*/
-void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
+void
+R_MarkSurfaceLights(dlight_t *light, int bit, mnode_t *node, int r_dlightframecount)
 {
-	cplane_t	*splitplane;
-	float		dist;
 	msurface_t	*surf;
 	int			i;
 
-	if (node->contents != -1)
-		return;
-
-	splitplane = node->plane;
-	dist = DotProduct (light->origin, splitplane->normal) - splitplane->dist;
-
-	if (dist > light->intensity-DLIGHT_CUTOFF)
-	{
-		R_MarkLights (light, bit, node->children[0]);
-		return;
-	}
-	if (dist < -light->intensity+DLIGHT_CUTOFF)
-	{
-		R_MarkLights (light, bit, node->children[1]);
-		return;
-	}
-
-// mark the polygons
+	/* mark the polygons */
 	surf = r_worldmodel->surfaces + node->firstsurface;
-	for (i=0 ; i<node->numsurfaces ; i++, surf++)
+
+	for (i = 0; i < node->numsurfaces; i++, surf++)
 	{
+		int sidebit;
+		float dist;
+
+		dist = DotProduct(light->origin, surf->plane->normal) - surf->plane->dist;
+
+		if (dist >= 0)
+		{
+			sidebit = 0;
+		}
+		else
+		{
+			sidebit = SURF_PLANEBACK;
+		}
+
+		if ((surf->flags & SURF_PLANEBACK) != sidebit)
+		{
+			continue;
+		}
+
 		if (surf->dlightframe != r_dlightframecount)
 		{
 			surf->dlightbits = 0;
 			surf->dlightframe = r_dlightframecount;
 		}
+
 		surf->dlightbits |= bit;
 	}
-
-	R_MarkLights (light, bit, node->children[0]);
-	R_MarkLights (light, bit, node->children[1]);
 }
 
-
-/*
-=============
-R_PushDlights
-=============
-*/
-void R_PushDlights (void)
+void
+R_PushDlights(void)
 {
-	int		i;
-	dlight_t	*l;
+	int i;
+	dlight_t *l;
 
 	if (gl1_flashblend->value)
+	{
 		return;
+	}
 
-	r_dlightframecount = r_framecount + 1;	// because the count hasn't
-											//  advanced yet for this frame
+	/* because the count hasn't advanced yet for this frame */
+	r_dlightframecount = r_framecount + 1;
+
 	l = r_newrefdef.dlights;
-	for (i=0 ; i<r_newrefdef.num_dlights ; i++, l++)
-		R_MarkLights ( l, 1<<i, r_worldmodel->nodes );
+
+	for (i = 0; i < r_newrefdef.num_dlights; i++, l++)
+	{
+		R_MarkLights(l, 1 << i, r_worldmodel->nodes, r_dlightframecount,
+			R_MarkSurfaceLights);
+	}
 }
 
-
-/*
-=============================================================================
-
-LIGHT SAMPLING
-
-=============================================================================
-*/
-
-vec3_t			pointcolor;
-cplane_t		*lightplane;		// used as shadow plane
-vec3_t			lightspot;
-
-int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
+int
+R_RecursiveLightPoint(mnode_t *node, vec3_t start, vec3_t end)
 {
-	float		front, back, frac;
-	int			side;
-	cplane_t	*plane;
-	vec3_t		mid;
-	msurface_t	*surf;
-	int			s, t, ds, dt;
-	int			i;
-	mtexinfo_t	*tex;
-	byte		*lightmap;
-	int			maps;
-	int			r;
+	float front, back, frac;
+	int side;
+	cplane_t *plane;
+	vec3_t mid;
+	msurface_t *surf;
+	int s, t, ds, dt;
+	int i;
+	mtexinfo_t *tex;
+	byte *lightmap;
+	int maps;
+	int r;
 
-	if (node->contents != -1)
-		return -1;		// didn't hit anything
+	if (node->contents != CONTENTS_NODE)
+	{
+		return -1;     /* didn't hit anything */
+	}
 
-// calculate mid point
-
-// FIXME: optimize for axial
+	/* calculate mid point */
 	plane = node->plane;
-	front = DotProduct (start, plane->normal) - plane->dist;
-	back = DotProduct (end, plane->normal) - plane->dist;
+	front = DotProduct(start, plane->normal) - plane->dist;
+	back = DotProduct(end, plane->normal) - plane->dist;
 	side = front < 0;
 
-	if ( (back < 0) == side)
-		return RecursiveLightPoint (node->children[side], start, end);
+	if ((back < 0) == side)
+	{
+		return R_RecursiveLightPoint(node->children[side], start, end);
+	}
 
-	frac = front / (front-back);
-	mid[0] = start[0] + (end[0] - start[0])*frac;
-	mid[1] = start[1] + (end[1] - start[1])*frac;
-	mid[2] = start[2] + (end[2] - start[2])*frac;
+	frac = front / (front - back);
+	mid[0] = start[0] + (end[0] - start[0]) * frac;
+	mid[1] = start[1] + (end[1] - start[1]) * frac;
+	mid[2] = start[2] + (end[2] - start[2]) * frac;
 
-// go down front side
-	r = RecursiveLightPoint (node->children[side], start, mid);
+	/* go down front side */
+	r = R_RecursiveLightPoint(node->children[side], start, mid);
+
 	if (r >= 0)
-		return r;		// hit something
+	{
+		return r;     /* hit something */
+	}
 
-	if ( (back < 0) == side )
-		return -1;		// didn't hit anuthing
+	if ((back < 0) == side)
+	{
+		return -1;     /* didn't hit anuthing */
+	}
 
-// check for impact on this node
-	VectorCopy (mid, lightspot);
+	/* check for impact on this node */
+	VectorCopy(mid, lightspot);
 	lightplane = plane;
 
 	surf = r_worldmodel->surfaces + node->firstsurface;
-	for (i=0 ; i<node->numsurfaces ; i++, surf++)
+
+	for (i = 0; i < node->numsurfaces; i++, surf++)
 	{
-		if (surf->flags&(SURF_DRAWTURB|SURF_DRAWSKY))
-			continue;	// no lightmaps
+		if (surf->flags & (SURF_DRAWTURB | SURF_DRAWSKY))
+		{
+			continue; /* no lightmaps */
+		}
 
 		tex = surf->texinfo;
 
-		s = DotProduct (mid, tex->vecs[0]) + tex->vecs[0][3];
-		t = DotProduct (mid, tex->vecs[1]) + tex->vecs[1][3];;
+		s = DotProduct(mid, tex->vecs[0]) + tex->vecs[0][3];
+		t = DotProduct(mid, tex->vecs[1]) + tex->vecs[1][3];
 
-		if (s < surf->texturemins[0] ||
-		t < surf->texturemins[1])
+		if ((s < surf->texturemins[0]) ||
+			(t < surf->texturemins[1]))
+		{
 			continue;
+		}
 
 		ds = s - surf->texturemins[0];
 		dt = t - surf->texturemins[1];
 
-		if ( ds > surf->extents[0] || dt > surf->extents[1] )
+		if ((ds > surf->extents[0]) || (dt > surf->extents[1]))
+		{
 			continue;
+		}
 
 		if (!surf->samples)
+		{
 			return 0;
+		}
 
 		ds >>= 4;
 		dt >>= 4;
 
 		lightmap = surf->samples;
-		VectorCopy (vec3_origin, pointcolor);
+		VectorCopy(vec3_origin, pointcolor);
+
 		if (lightmap)
 		{
 			vec3_t scale;
@@ -291,24 +282,20 @@ int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 		return 1;
 	}
 
-// go down back side
-	return RecursiveLightPoint (node->children[!side], mid, end);
+	/* go down back side */
+	return R_RecursiveLightPoint(node->children[!side], mid, end);
 }
 
-/*
-===============
-R_LightPoint
-===============
-*/
-void R_LightPoint (vec3_t p, vec3_t color)
+void
+R_LightPoint(vec3_t p, vec3_t color)
 {
-	vec3_t		end;
-	float		r;
-	int			lnum;
-	dlight_t	*dl;
-	float		light;
-	vec3_t		dist;
-	float		add;
+	vec3_t end;
+	float r;
+	int lnum;
+	dlight_t *dl;
+	float light;
+	vec3_t dist;
+	float add;
 
 	if (!r_worldmodel->lightdata)
 	{
@@ -320,15 +307,15 @@ void R_LightPoint (vec3_t p, vec3_t color)
 	end[1] = p[1];
 	end[2] = p[2] - 2048;
 
-	r = RecursiveLightPoint (r_worldmodel->nodes, p, end);
+	r = R_RecursiveLightPoint(r_worldmodel->nodes, p, end);
 
 	if (r == -1)
 	{
-		VectorCopy (vec3_origin, color);
+		VectorCopy(vec3_origin, color);
 	}
 	else
 	{
-		VectorCopy (pointcolor, color);
+		VectorCopy(pointcolor, color);
 	}
 
 	//
@@ -336,13 +323,14 @@ void R_LightPoint (vec3_t p, vec3_t color)
 	//
 	light = 0;
 	dl = r_newrefdef.dlights;
-	for (lnum=0 ; lnum<r_newrefdef.num_dlights ; lnum++, dl++)
+
+	for (lnum = 0; lnum < r_newrefdef.num_dlights; lnum++, dl++)
 	{
-		VectorSubtract (currententity->origin,
-						dl->origin,
-						dist);
+		VectorSubtract(currententity->origin,
+				dl->origin, dist);
 		add = dl->intensity - VectorLength(dist);
-		add *= (1.0/256);
+		add *= (1.0 / 256);
+
 		if (add > 0)
 		{
 			vec3_t v;
@@ -353,61 +341,63 @@ void R_LightPoint (vec3_t p, vec3_t color)
 		}
 	}
 
-	VectorScale (color, r_modulate->value, color);
+	VectorScale(color, r_modulate->value, color);
 }
 
-
-//===================================================================
-
 static float s_blocklights[512*512*3];
-/*
-===============
-R_AddDynamicLights
-===============
-*/
-void R_AddDynamicLights (msurface_t *surf)
-{
-	int			lnum;
-	int			sd, td;
-	float		fdist, frad, fminlight;
-	vec3_t		impact, local;
-	int			s, t;
-	int			i;
-	int			smax, tmax;
-	mtexinfo_t	*tex;
-	dlight_t	*dl;
-	float		*pfBL;
-	float		fsacc, ftacc;
 
-	smax = (surf->extents[0]>>4)+1;
-	tmax = (surf->extents[1]>>4)+1;
+void
+R_AddDynamicLights(msurface_t *surf)
+{
+	int lnum;
+	int sd, td;
+	float fdist, frad, fminlight;
+	vec3_t impact, local;
+	int s, t;
+	int i;
+	int smax, tmax;
+	mtexinfo_t *tex;
+	dlight_t *dl;
+	float *pfBL;
+	float fsacc, ftacc;
+
+	smax = (surf->extents[0] >> 4) + 1;
+	tmax = (surf->extents[1] >> 4) + 1;
 	tex = surf->texinfo;
 
-	for (lnum=0 ; lnum<r_newrefdef.num_dlights ; lnum++)
+	for (lnum = 0; lnum < r_newrefdef.num_dlights; lnum++)
 	{
-		if ( !(surf->dlightbits & (1<<lnum) ) )
-			continue;		// not lit by this light
+		if (!(surf->dlightbits & (1 << lnum)))
+		{
+			continue; /* not lit by this light */
+		}
 
 		dl = &r_newrefdef.dlights[lnum];
 		frad = dl->intensity;
-		fdist = DotProduct (dl->origin, surf->plane->normal) -
+		fdist = DotProduct(dl->origin, surf->plane->normal) -
 				surf->plane->dist;
 		frad -= fabs(fdist);
-		// rad is now the highest intensity on the plane
 
-		fminlight = DLIGHT_CUTOFF;	// FIXME: make configurable?
+		/* rad is now the highest intensity on the plane */
+		fminlight = DLIGHT_CUTOFF;
+
 		if (frad < fminlight)
-			continue;
-		fminlight = frad - fminlight;
-
-		for (i=0 ; i<3 ; i++)
 		{
-			impact[i] = dl->origin[i] -
-					surf->plane->normal[i]*fdist;
+			continue;
 		}
 
-		local[0] = DotProduct (impact, tex->vecs[0]) + tex->vecs[0][3] - surf->texturemins[0];
-		local[1] = DotProduct (impact, tex->vecs[1]) + tex->vecs[1][3] - surf->texturemins[1];
+		fminlight = frad - fminlight;
+
+		for (i = 0; i < 3; i++)
+		{
+			impact[i] = dl->origin[i] -
+						surf->plane->normal[i] * fdist;
+		}
+
+		local[0] = DotProduct(impact,
+				   tex->vecs[0]) + tex->vecs[0][3] - surf->texturemins[0];
+		local[1] = DotProduct(impact,
+				   tex->vecs[1]) + tex->vecs[1][3] - surf->texturemins[1];
 
 		pfBL = s_blocklights;
 		for (t = 0, ftacc = 0 ; t<tmax ; t++, ftacc += 16)

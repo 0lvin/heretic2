@@ -201,7 +201,10 @@ typedef struct {
 
 } refdef_t;
 
+// FIXME: bump API_VERSION?
 #define	API_VERSION		3
+#define EXPORT
+#define IMPORT
 
 //
 // these are the functions exported by the refresh module
@@ -209,16 +212,35 @@ typedef struct {
 typedef struct
 {
 	// if api_version is different, the dll cannot be used
-	int			api_version;
-
-	// Set this to false if you don`t want any rendering commands issued
-	qboolean	render;
+	int		api_version;
 
 	// called when the library is loaded
-	int	(*Init) ( void *hinstance, void *wndproc );
+	qboolean (EXPORT *Init) ( void *hinstance, void *wndproc );
 
 	// called before the library is unloaded
-	void	(*Shutdown) (void);
+	void	(EXPORT *Shutdown) (void);
+
+	// called by GLimp_InitGraphics() before creating window,
+	// returns flags for SDL window creation, returns -1 on error
+	int		(EXPORT *PrepareForWindow)(void);
+
+	// called by GLimp_InitGraphics() *after* creating window,
+	// passing the SDL_Window* (void* so we don't spill SDL.h here)
+	// (or SDL_Surface* for SDL1.2, another reason to use void*)
+	// returns true (1) on success
+	int		(EXPORT *InitContext)(void* sdl_window);
+
+	// called by GLimp_InitGraphics() *after* creating render
+	// context. Returns the actual drawable size in the width
+	// and height variables. This may be differend from the
+	// window size due to high dpi awareness.
+	void	(EXPORT *GetDrawableSize)(int* width, int* height);
+
+	// shuts down rendering (OpenGL) context.
+	void	(EXPORT *ShutdownContext)(void);
+
+	// returns true if vsync is active, else false
+	qboolean (EXPORT *IsVSyncActive)(void);
 
 	// All data that will be used in a level should be
 	// registered before rendering any frames to prevent disk hits,
@@ -235,7 +257,7 @@ typedef struct
 	// slash will not use the "pics/" prefix or the ".pcx" postfix)
 	void	(*BeginRegistration) (char *map);
 	struct model_s *(*RegisterModel) (char *name);
-	struct image_s *(*RegisterSkin) (char *name, qboolean *retval);
+	struct image_s *(*RegisterSkin) (char *name);
 	struct image_s *(*RegisterPic) (char *name);
 	void	(*SetSky) (char *name, float rotate, vec3_t axis);
 	void	(*EndRegistration) (void);
@@ -252,7 +274,7 @@ typedef struct
 	void	(*DrawFill) (int x, int y, int w, int h, byte r, byte g, byte b);
 	void	(*DrawFadeScreen) (void);
 	void	(*DrawBigFont) (int x, int y, char *text, float alpha);
-	int		(*BF_Strlen) (char *text);
+	int	(*BF_Strlen) (char *text);
 	void	(*BookDrawPic) (int w, int h, char *name, float scale);
 
 	// Draw images for cinematic rendering (which can have a different palette). Note that calls
@@ -267,59 +289,63 @@ typedef struct
 	void	(*BeginFrame)( float camera_separation );
 	void	(*EndFrame) (void);
 
-	void	(*AppActivate)( qboolean activate );
+	void	(*AppActivate)( qboolean activate);
 
 	int		(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
 } refexport_t;
 
-//
-// these are the functions imported by the refresh module
-//
 typedef struct
 {
 	struct CL_SkeletalJoint_s *skeletalJoints;
 	ArrayedListNode_t *jointNodes;
 
-	void	(*Sys_Error) (int err_level, char *str, ...);
-	void	(*Com_Error) (int code, char *fmt, ...);
-	void	(*Con_Printf) (int print_level, char *str, ...);
+	void	(IMPORT *Cmd_AddCommand) (char *name, void(*cmd)(void));
+	void	(IMPORT *Cmd_RemoveCommand) (char *name);
+	int		(IMPORT *Cmd_Argc) (void);
+	char	*(IMPORT *Cmd_Argv) (int i);
+	void	(IMPORT *Cmd_ExecuteText) (int exec_when, char *text);
 
-	cvar_t	*(*Cvar_Get) (char *name, char *value, int flags);
-	cvar_t	*(*Cvar_FullSet) (char *name, char *value, int flags);
-	cvar_t	*(*Cvar_Set)( char *name, char *value );
-	void	 (*Cvar_SetValue)( char *name, float value );
-
-	void	(*Cmd_AddCommand) (char *name, void(*cmd)(void));
-	void	(*Cmd_RemoveCommand) (char *name);
-	int		(*Cmd_Argc) (void);
-	char	*(*Cmd_Argv) (int i);
-	void	(*Cmd_ExecuteText) (int exec_when, char *text);
-
-	// this is used for the screen flash - there is a reason for doing this...
-	int  		(*Is_Screen_Flashing) (void);
-	void  	(*Deactivate_Screen_Flash) (void);
+	void	(IMPORT *Com_VPrintf) (int print_level, const char *fmt, va_list argptr);
 
 	// files will be memory mapped read only
 	// the returned buffer may be part of a larger pak file,
 	// or a discrete file from anywhere in the quake search path
 	// a -1 return means the file does not exist
 	// NULL can be passed for buf to just determine existance
-	int		(*FS_LoadFile) (char *name, void **buf);
-	void	(*FS_FreeFile) (void *buf);
+	int		(IMPORT *FS_LoadFile) (char *name, void **buf);
+	void	(IMPORT *FS_FreeFile) (void *buf);
 
 	// gamedir will be the current directory that generated
 	// files should be stored to, ie: "f:\quake\id1"
-	char	*(*FS_Gamedir) (void);
-	char	*(*FS_Userdir) (void);
-	void	(*FS_CreatePath) (char *path);
+	char	*(IMPORT *FS_Gamedir) (void);
 
-	qboolean	(*Vid_GetModeInfo)( int *width, int *height, int mode );
-	void		(*Vid_MenuInit)( void );
-	void		(*Vid_NewWindow)( int width, int height );
+	cvar_t	*(IMPORT *Cvar_Get) (char *name, char *value, int flags);
+	cvar_t	*(IMPORT *Cvar_Set) (char *name, char *value);
+	void	 (IMPORT *Cvar_SetValue) (char *name, float value);
+
+	qboolean	(IMPORT *Vid_GetModeInfo)(int *width, int *height, int mode);
+	void		(IMPORT *Vid_MenuInit)( void );
+	void		(IMPORT *Vid_NewWindow)( int width, int height );
+
+	char	*(IMPORT *FS_Userdir) (void);
+	void	(IMPORT *FS_CreatePath) (char *path);
+
+	void	(IMPORT *Sys_Error) (int err_level, char *str, ...);
+	void	(IMPORT *Com_Error) (int code, char *fmt, ...);
+	void	(IMPORT *Con_Printf) (int print_level, char *str, ...);
+
+	cvar_t	*(IMPORT *Cvar_FullSet) (char *name, char *value, int flags);
+	// this is used for the screen flash - there is a reason for doing this...
+	int  	(*Is_Screen_Flashing) (void);
+	void  	(*Deactivate_Screen_Flash) (void);
 } refimport_t;
 
 // this is the only function actually exported at the linker level
-typedef	refexport_t	(*GetRefAPI_t) (refimport_t);
+typedef	refexport_t	(EXPORT *GetRefAPI_t) (refimport_t);
+
+// FIXME: #ifdef client/ref around this
+extern refexport_t re;
+extern refimport_t ri;
 
 /*
 ====================================================================

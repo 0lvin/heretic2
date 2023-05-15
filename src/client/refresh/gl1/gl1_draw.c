@@ -30,58 +30,58 @@ image_t *draw_chars;
 image_t		*atlas_particle;
 image_t		*atlas_aparticle;
 
-extern	qboolean	scrap_dirty;
-void Scrap_Upload (void);
+extern qboolean scrap_dirty;
+void Scrap_Upload(void);
 
+extern unsigned r_rawpalette[256];
 
-/*
-===============
-Draw_InitLocal
-===============
-*/
-void Draw_InitLocal (void)
+void
+Draw_InitLocal(void)
 {
-	// load console characters (don't bilerp characters)
+	/* load console characters */
+	draw_chars = R_FindPic("conchars", (findimage_t)R_FindImage);
+	if (!draw_chars)
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.pcx",
+			__func__);
+	}
 // jmarshall
-//	draw_chars = GL_FindImage ("pics/conchars.pcx", it_pic);
-	draw_chars = GL_FindImage("pics/misc/conchars.m32", it_pic);
-	atlas_particle = GL_FindImage("pics/misc/particle.m32", it_pic);
-	atlas_aparticle = GL_FindImage("pics/misc/aparticle.m8", it_pic);
+	atlas_particle = R_FindImage("pics/misc/particle.m32", it_pic);
+	atlas_aparticle = R_FindImage("pics/misc/aparticle.m8", it_pic);
 // jmarshall end
 	R_Bind(draw_chars->texnum);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-
-
 /*
-================
-Draw_Char
-
-Draws one 8*8 graphics character with 0 being transparent.
-It can be clipped to the top of the screen to allow the console to be
-smoothly scrolled off.
-================
-*/
-void Draw_Char (int x, int y, int num)
+ * Draws one 8*8 graphics character with 0 being transparent.
+ * It can be clipped to the top of the screen to allow the console to be
+ * smoothly scrolled off.
+ */
+void
+Draw_Char(int x, int y, int num)
 {
-	int				row, col;
-	float			frow, fcol, size;
+	int row, col;
+	float frow, fcol, size;
 
 	num &= 255;
 
-	if ( (num&127) == 32 )
-		return;		// space
+	if ((num & 127) == 32)
+	{
+		return; /* space */
+	}
 
 	if (y <= -8)
-		return;			// totally off screen
+	{
+		return; /* totally off screen */
+	}
 
-	row = num>>4;
-	col = num&15;
+	row = num >> 4;
+	col = num & 15;
 
-	frow = row*0.0625;
-	fcol = col*0.0625;
+	frow = row * 0.0625;
+	fcol = col * 0.0625;
 	size = 0.0625;
 
 	R_Bind (draw_chars->texnum);
@@ -98,12 +98,8 @@ void Draw_Char (int x, int y, int num)
 	glEnd ();
 }
 
-/*
-=============
-Draw_FindPic
-=============
-*/
-image_t	*Draw_FindPic (char *name)
+image_t *
+RDraw_FindPic(char *name)
 {
 	image_t *gl;
 	char	fullname[MAX_QPATH];
@@ -111,39 +107,32 @@ image_t	*Draw_FindPic (char *name)
 	if (name[0] != '/' && name[0] != '\\')
 	{
 		Com_sprintf (fullname, sizeof(fullname), "pics/%s", name);
-		gl = GL_FindImage (fullname, it_pic);
+		gl = R_FindImage (fullname, it_pic);
 	}
 	else
-		gl = GL_FindImage (name+1, it_pic);
+		gl = R_FindImage (name+1, it_pic);
 
 	return gl;
 }
 
-/*
-=============
-Draw_GetPicSize
-=============
-*/
-void Draw_GetPicSize (int *w, int *h, char *pic)
+void
+RDraw_GetPicSize(int *w, int *h, char *pic)
 {
 	image_t *gl;
 
-	gl = Draw_FindPic (pic);
+	gl = RDraw_FindPic (pic);
 	if (!gl)
 	{
 		*w = *h = -1;
 		return;
 	}
+
 	*w = gl->width;
 	*h = gl->height;
 }
 
-/*
-=============
-Draw_Image
-=============
-*/
-void Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t *gl)
+void
+Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t *gl)
 {
 	if (scale)
 	{
@@ -162,7 +151,9 @@ void Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t
 	}
 
 	if (scrap_dirty)
+	{
 		Scrap_Upload();
+	}
 
 	R_Bind(gl->texnum);
 	glBegin(GL_QUADS);
@@ -177,16 +168,12 @@ void Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t
 	glEnd();
 }
 
-/*
-=============
-Draw_StretchPic
-=============
-*/
-void Draw_StretchPic (int x, int y, int w, int h, char *pic, float alpha, qboolean scale)
+void
+Draw_StretchPic(int x, int y, int w, int h, char *pic, float alpha, qboolean scale)
 {
 	image_t *gl;
 
-	gl = Draw_FindPic (pic);
+	gl = RDraw_FindPic (pic);
 	if (!gl)
 	{
 		//ri.Con_Printf (PRINT_ALL, "Can't find pic: %s\n", pic);
@@ -196,24 +183,22 @@ void Draw_StretchPic (int x, int y, int w, int h, char *pic, float alpha, qboole
 	Draw_Image(x, y, w, h, alpha, scale, gl);
 }
 
-
-/*
-=============
-Draw_Pic
-=============
-*/
-void Draw_Pic (int x, int y, char *pic)
+void
+Draw_Pic(int x, int y, char *pic)
 {
 	image_t *gl;
 
-	gl = Draw_FindPic (pic);
+	gl = RDraw_FindPic (pic);
 	if (!gl)
 	{
-		//ri.Con_Printf (PRINT_ALL, "Can't find pic: %s\n", pic);
+		R_Printf(PRINT_ALL, "Can't find pic: %s\n", pic);
 		return;
 	}
+
 	if (scrap_dirty)
-		Scrap_Upload ();
+	{
+		Scrap_Upload();
+	}
 
 	R_Bind (gl->texnum);
 	glBegin (GL_QUADS);
@@ -229,21 +214,19 @@ void Draw_Pic (int x, int y, char *pic)
 }
 
 /*
-=============
-Draw_TileClear
-
-This repeats a 64*64 tile graphic to fill the screen around a sized down
-refresh window.
-=============
-*/
-void Draw_TileClear (int x, int y, int w, int h, char *pic)
+ * This repeats a 64*64 tile graphic to fill
+ * the screen around a sized down
+ * refresh window.
+ */
+void
+RDraw_TileClear(int x, int y, int w, int h, char *pic)
 {
-	image_t	*image;
+	image_t *image;
 
-	image = Draw_FindPic (pic);
+	image = RDraw_FindPic (pic);
 	if (!image)
 	{
-		//ri.Con_Printf (PRINT_ALL, "Can't find pic: %s\n", pic);
+		R_Printf(PRINT_ALL, "Can't find pic: %s\n", pic);
 		return;
 	}
 
@@ -260,15 +243,11 @@ void Draw_TileClear (int x, int y, int w, int h, char *pic)
 	glEnd ();
 }
 
-
 /*
-=============
-Draw_Fill
-
-Fills a box of pixels with a single color
-=============
-*/
-void Draw_Fill (int x, int y, int w, int h, byte r, byte g, byte b)
+ * Fills a box of pixels with a single color
+ */
+void
+RDraw_Fill(int x, int y, int w, int h, byte r, byte g, byte b)
 {
 
 	glDisable (GL_TEXTURE_2D);
@@ -289,19 +268,12 @@ void Draw_Fill (int x, int y, int w, int h, byte r, byte g, byte b)
 	glEnable (GL_TEXTURE_2D);
 }
 
-//=============================================================================
-
-/*
-================
-Draw_FadeScreen
-
-================
-*/
-void Draw_FadeScreen (void)
+void
+RDraw_FadeScreen(void)
 {
-	glEnable (GL_BLEND);
-	glDisable (GL_TEXTURE_2D);
-	glColor4f (0, 0, 0, 0.8);
+	glEnable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+	glColor4f(0, 0, 0, 0.8);
 	glBegin (GL_QUADS);
 
 	glVertex2f (0,0);
@@ -310,23 +282,13 @@ void Draw_FadeScreen (void)
 	glVertex2f (0, vid.height);
 
 	glEnd ();
-	glColor4f (1,1,1,1);
-	glEnable (GL_TEXTURE_2D);
-	glDisable (GL_BLEND);
+	glColor4f(1, 1, 1, 1);
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
 }
 
-
-//====================================================================
-
-
-/*
-=============
-Draw_StretchRaw
-=============
-*/
-extern unsigned	r_rawpalette[256];
-
-void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data)
+void
+RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data)
 {
 	unsigned	image32[256*256];
 	unsigned char image8[256*256];
@@ -337,16 +299,16 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 	int			row;
 	float		t;
 
-	R_Bind (0);
+	R_Bind(0);
 
-	if (rows<=256)
+	if(rows <= 256)
 	{
 		hscale = 1;
 		trows = rows;
 	}
 	else
 	{
-		hscale = rows/256.0;
+		hscale = rows / 256.0;
 		trows = 256;
 	}
 	t = rows*hscale / 256;
@@ -375,14 +337,14 @@ void Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glBegin (GL_QUADS);
-	glTexCoord2f (0, 0);
-	glVertex2f (x, y);
-	glTexCoord2f (1, 0);
-	glVertex2f (x+w, y);
-	glTexCoord2f (1, t);
-	glVertex2f (x+w, y+h);
-	glTexCoord2f (0, t);
-	glVertex2f (x, y+h);
-	glEnd ();
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);
+	glVertex2f(x, y);
+	glTexCoord2f(1, 0);
+	glVertex2f(x+w, y);
+	glTexCoord2f(1, t);
+	glVertex2f(x+w, y+h);
+	glTexCoord2f(0, t);
+	glVertex2f(x, y+h);
+	glEnd();
 }

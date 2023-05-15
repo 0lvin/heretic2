@@ -63,30 +63,6 @@ extern void R_BuildLightMap(msurface_t* surf, byte* dest, int stride);
 */
 
 /*
-===============
-R_TextureAnimation
-
-Returns the proper texture for a given time and base texture
-===============
-*/
-image_t* R_TextureAnimation(mtexinfo_t* tex)
-{
-	int		c;
-
-	if (!tex->next)
-		return tex->image;
-
-	c = currententity->frame % tex->numframes;
-	while (c)
-	{
-		tex = tex->next;
-		c--;
-	}
-
-	return tex->image;
-}
-
-/*
 ================
 DrawGLPoly
 ================
@@ -188,13 +164,14 @@ void R_DrawTriangleOutlines(void)
 /*
 ** DrawGLPolyChain
 */
-void DrawGLPolyChain(glpoly_t* p, float soffset, float toffset)
+void
+DrawGLPolyChain(glpoly_t *p, float soffset, float toffset)
 {
-	if (soffset == 0 && toffset == 0)
+	if ((soffset == 0) && (toffset == 0))
 	{
-		for (; p != 0; p = p->chain)
+		for ( ; p != 0; p = p->chain)
 		{
-			float* v;
+			float *v;
 			int j;
 
 			glBegin(GL_POLYGON);
@@ -255,11 +232,11 @@ void R_BlendLightmaps(void)
 	** set the appropriate blending mode unless we're only looking at the
 	** lightmaps.
 	*/
-	if (!r_lightmap->value)
+	if (!gl_lightmap->value)
 	{
 		glEnable(GL_BLEND);
 
-		if (gl_saturatelighting->value)
+		if (gl1_saturatelighting->value)
 		{
 			glBlendFunc(GL_ONE, GL_ONE);
 		}
@@ -410,20 +387,20 @@ void R_RenderBrushPoly(msurface_t* fa)
 
 	c_brush_polys++;
 
-	image = R_TextureAnimation(fa->texinfo);
+	image = R_TextureAnimation(currententity, fa->texinfo);
 
 	if (fa->flags & SURF_DRAWTURB)
 	{
 		R_Bind(image->texnum);
 
 		// warp texture, no lightmaps
-		GL_TexEnv(GL_MODULATE);
+		R_TexEnv(GL_MODULATE);
 		glColor4f(gl_state.inverse_intensity,
 			gl_state.inverse_intensity,
 			gl_state.inverse_intensity,
 			1.0F);
-		EmitWaterPolys(fa);
-		GL_TexEnv(GL_REPLACE);
+		R_EmitWaterPolys(fa);
+		R_TexEnv(GL_REPLACE);
 
 		return;
 	}
@@ -431,7 +408,7 @@ void R_RenderBrushPoly(msurface_t* fa)
 	{
 		R_Bind(image->texnum);
 
-		GL_TexEnv(GL_REPLACE);
+		R_TexEnv(GL_REPLACE);
 	}
 
 	//======
@@ -523,7 +500,7 @@ void R_DrawAlphaSurfaces(void)
 	glLoadMatrixf(r_world_matrix);
 
 	glEnable(GL_BLEND);
-	GL_TexEnv(GL_MODULATE);
+	R_TexEnv(GL_MODULATE);
 
 	// the textures are prescaled up for a better lighting range,
 	// so scale it back down
@@ -540,12 +517,12 @@ void R_DrawAlphaSurfaces(void)
 		else
 			glColor4f(intens, intens, intens, 1);
 		if (s->flags & SURF_DRAWTURB)
-			EmitWaterPolys(s);
+			R_EmitWaterPolys(s);
 		else
 			DrawGLPoly(s->polys);
 	}
 
-	GL_TexEnv(GL_REPLACE);
+	R_TexEnv(GL_REPLACE);
 	glColor4f(1, 1, 1, 1);
 	glDisable(GL_BLEND);
 
@@ -565,7 +542,7 @@ void DrawTextureChains(void)
 
 	c_visible_textures = 0;
 
-	//	GL_TexEnv( GL_REPLACE );
+	//	R_TexEnv( GL_REPLACE );
 
 	for (i = 0, image = gltextures; i < numgltextures; i++, image++)
 	{
@@ -582,7 +559,7 @@ void DrawTextureChains(void)
 		image->texturechain = NULL;
 	}
 
-	GL_TexEnv(GL_REPLACE);
+	R_TexEnv(GL_REPLACE);
 }
 
 /*
@@ -592,19 +569,22 @@ R_DrawInlineBModel
 */
 void R_DrawInlineBModel(void)
 {
-	int			i, k;
-	cplane_t* pplane;
-	float		dot;
-	msurface_t* psurf;
-	dlight_t* lt;
+	int i, k;
+	cplane_t *pplane;
+	float dot;
+	msurface_t *psurf;
+	dlight_t *lt;
 
-	// calculate dynamic lighting for bmodel
+	/* calculate dynamic lighting for bmodel */
 	if (!gl1_flashblend->value)
 	{
 		lt = r_newrefdef.dlights;
+
 		for (k = 0; k < r_newrefdef.num_dlights; k++, lt++)
 		{
-			R_MarkLights(lt, 1 << k, currentmodel->nodes + currentmodel->firstnode);
+			R_MarkLights(lt, 1 << k,
+				currentmodel->nodes + currentmodel->firstnode,
+				r_dlightframecount, R_MarkSurfaceLights);
 		}
 	}
 
@@ -614,7 +594,7 @@ void R_DrawInlineBModel(void)
 	{
 		glEnable(GL_BLEND);
 		glColor4f(1, 1, 1, 0.25);
-		GL_TexEnv(GL_MODULATE);
+		R_TexEnv(GL_MODULATE);
 	}
 
 	//
@@ -652,7 +632,7 @@ void R_DrawInlineBModel(void)
 	{
 		glDisable(GL_BLEND);
 		glColor4f(1, 1, 1, 1);
-		GL_TexEnv(GL_REPLACE);
+		R_TexEnv(GL_REPLACE);
 	}
 }
 
@@ -689,10 +669,17 @@ void R_DrawBrushModel(entity_t* e)
 		VectorAdd(e->origin, currentmodel->maxs, maxs);
 	}
 
-	if (R_CullBox(mins, maxs))
+	if (r_cull->value && R_CullBox(mins, maxs, frustum))
+	{
 		return;
+	}
 
-	glColor3f(1, 1, 1);
+	if (gl_zfix->value)
+	{
+		glEnable(GL_POLYGON_OFFSET_FILL);
+	}
+
+	glColor4f(1, 1, 1, 1);
 	memset(gl_lms.lightmap_surfaces, 0, sizeof(gl_lms.lightmap_surfaces));
 
 	VectorSubtract(r_newrefdef.vieworg, e->origin, modelorg);
@@ -720,8 +707,8 @@ void R_DrawBrushModel(entity_t* e)
 	e->angles[0] = -e->angles[0];	// stupid quake bug
 	e->angles[2] = -e->angles[2];	// stupid quake bug
 
-	GL_TexEnv(GL_REPLACE);
-	GL_TexEnv(GL_MODULATE);
+	R_TexEnv(GL_REPLACE);
+	R_TexEnv(GL_MODULATE);
 
 	R_DrawInlineBModel();
 
@@ -743,32 +730,36 @@ R_RecursiveWorldNode
 */
 void R_RecursiveWorldNode(mnode_t* node)
 {
-	int			c, side, sidebit;
-	cplane_t* plane;
-	msurface_t* surf, ** mark;
-	mleaf_t* pleaf;
-	float		dot;
-	image_t* image;
+	int c, side, sidebit;
+	cplane_t *plane;
+	msurface_t *surf, **mark;
+	mleaf_t *pleaf;
+	float dot;
+	image_t *image;
 
 	if (node->contents == CONTENTS_SOLID)
-		return;		// solid
+	{
+		return; /* solid */
+	}
 
 	if (node->visframe != r_visframecount)
-		return;
-	if (R_CullBox(node->minmaxs, node->minmaxs + 3))
-		return;
-
-	// if a leaf node, draw stuff
-	if (node->contents != -1)
 	{
-		pleaf = (mleaf_t*)node;
+		return;
+	}
 
-		// check for door connected areas
-		if (r_newrefdef.areabits)
-		{
-			if (!(r_newrefdef.areabits[pleaf->area >> 3] & (1 << (pleaf->area & 7))))
-				return;		// not visible
-		}
+	if (r_cull->value && R_CullBox(node->minmaxs, node->minmaxs + 3, frustum))
+	{
+		return;
+	}
+
+	/* if a leaf node, draw stuff */
+	if (node->contents != CONTENTS_NODE)
+	{
+		pleaf = (mleaf_t *)node;
+
+		/* check for door connected areas */
+		if (!R_AreaVisible(r_newrefdef.areabits, pleaf))
+			return;	// not visible
 
 		mark = pleaf->firstmarksurface;
 		c = pleaf->nummarksurfaces;
@@ -779,31 +770,31 @@ void R_RecursiveWorldNode(mnode_t* node)
 			{
 				(*mark)->visframe = r_framecount;
 				mark++;
-			} while (--c);
+			}
+			while (--c);
 		}
 
 		return;
 	}
 
-	// node is just a decision point, so go down the apropriate sides
-
-	// find which side of the node we are on
+	/* node is just a decision point, so go down the apropriate
+	   sides find which side of the node we are on */
 	plane = node->plane;
 
 	switch (plane->type)
 	{
-	case PLANE_X:
-		dot = modelorg[0] - plane->dist;
-		break;
-	case PLANE_Y:
-		dot = modelorg[1] - plane->dist;
-		break;
-	case PLANE_Z:
-		dot = modelorg[2] - plane->dist;
-		break;
-	default:
-		dot = DotProduct(modelorg, plane->normal) - plane->dist;
-		break;
+		case PLANE_X:
+			dot = modelorg[0] - plane->dist;
+			break;
+		case PLANE_Y:
+			dot = modelorg[1] - plane->dist;
+			break;
+		case PLANE_Z:
+			dot = modelorg[2] - plane->dist;
+			break;
+		default:
+			dot = DotProduct(modelorg, plane->normal) - plane->dist;
+			break;
 	}
 
 	if (dot >= 0)
@@ -820,30 +811,37 @@ void R_RecursiveWorldNode(mnode_t* node)
 	// recurse down the children, front side first
 	R_RecursiveWorldNode(node->children[side]);
 
-	// draw stuff
-	for (c = node->numsurfaces, surf = r_worldmodel->surfaces + node->firstsurface; c; c--, surf++)
+	/* draw stuff */
+	for (c = node->numsurfaces,
+		 surf = r_worldmodel->surfaces + node->firstsurface;
+		 c; c--, surf++)
 	{
 		if (surf->visframe != r_framecount)
+		{
 			continue;
+		}
 
 		if ((surf->flags & SURF_PLANEBACK) != sidebit)
-			continue;		// wrong side
+		{
+			continue; /* wrong side */
+		}
 
 		if (surf->texinfo->flags & SURF_SKY)
-		{	// just adds to visible sky bounds
+		{
+			/* just adds to visible sky bounds */
 			R_AddSkySurface(surf);
 		}
 		else if (surf->texinfo->flags & (SURF_TRANS33 | SURF_TRANS66))
-		{	// add to the translucent chain
+		{
+			/* add to the translucent chain */
 			surf->texturechain = r_alpha_surfaces;
 			r_alpha_surfaces = surf;
+			r_alpha_surfaces->texinfo->image = R_TextureAnimation(currententity, surf->texinfo);
 		}
 		else
 		{
-			// the polygon is visible, so add it to the texture
-			// sorted chain
-			// FIXME: this is a hack for animation
-			image = R_TextureAnimation(surf->texinfo);
+			/* the polygon is visible, so add it to the texture sorted chain */
+			image = R_TextureAnimation(currententity, surf->texinfo);
 			surf->texturechain = image->texturechain;
 			image->texturechain = surf;
 		}
@@ -853,110 +851,120 @@ void R_RecursiveWorldNode(mnode_t* node)
 	R_RecursiveWorldNode(node->children[!side]);
 }
 
-
-/*
-=============
-R_DrawWorld
-=============
-*/
-void R_DrawWorld(void)
+void
+R_DrawWorld(void)
 {
-	entity_t	ent;
+	entity_t ent;
 
 	if (!r_drawworld->value)
+	{
 		return;
+	}
 
 	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
+	{
 		return;
+	}
 
 	currentmodel = r_worldmodel;
 
 	VectorCopy(r_newrefdef.vieworg, modelorg);
 
-	// auto cycle the world frame for texture animation
+	/* auto cycle the world frame for texture animation */
 	memset(&ent, 0, sizeof(ent));
 	ent.frame = (int)(r_newrefdef.time * 2);
 	currententity = &ent;
 
 	gl_state.currenttextures[0] = gl_state.currenttextures[1] = -1;
 
-	glColor3f(1, 1, 1);
+	glColor4f(1, 1, 1, 1);
 	memset(gl_lms.lightmap_surfaces, 0, sizeof(gl_lms.lightmap_surfaces));
+
 	R_ClearSkyBox();
-
 	R_RecursiveWorldNode(r_worldmodel->nodes);
-
-	/*
-	** theoretically nothing should happen in the next two functions
-	** if multitexture is enabled
-	*/
 	DrawTextureChains();
-
 	R_BlendLightmaps();
-
-
 	R_DrawSkyBox();
-
 	R_DrawTriangleOutlines();
 }
 
-
 /*
-===============
-R_MarkLeaves
-
-Mark the leaves and nodes that are in the PVS for the current
-cluster
-===============
-*/
-void R_MarkLeaves(void)
+ * Mark the leaves and nodes that are
+ * in the PVS for the current cluster
+ */
+void
+R_MarkLeaves(void)
 {
-	byte* vis;
-	byte	fatvis[MAX_MAP_LEAFS / 8];
-	mnode_t* node;
-	int		i, c;
-	mleaf_t* leaf;
-	int		cluster;
+	const byte *vis;
+	YQ2_ALIGNAS_TYPE(int) byte fatvis[MAX_MAP_LEAFS / 8];
+	mnode_t *node;
+	int i, c;
+	mleaf_t *leaf;
+	int cluster;
 
-	if (r_oldviewcluster == r_viewcluster && r_oldviewcluster2 == r_viewcluster2 && !r_novis->value && r_viewcluster != -1)
+	if ((r_oldviewcluster == r_viewcluster) &&
+		(r_oldviewcluster2 == r_viewcluster2) &&
+		!r_novis->value &&
+		(r_viewcluster != -1))
+	{
 		return;
+	}
 
-	// development aid to let you run around and see exactly where
-	// the pvs ends
+	/* development aid to let you run around
+	   and see exactly where the pvs ends */
 	if (r_lockpvs->value)
+	{
 		return;
+	}
 
 	r_visframecount++;
 	r_oldviewcluster = r_viewcluster;
 	r_oldviewcluster2 = r_viewcluster2;
 
-	if (r_novis->value || r_viewcluster == -1 || !r_worldmodel->vis)
+	if (r_novis->value || (r_viewcluster == -1) || !r_worldmodel->vis)
 	{
-		// mark everything
+		/* mark everything */
 		for (i = 0; i < r_worldmodel->numleafs; i++)
+		{
 			r_worldmodel->leafs[i].visframe = r_visframecount;
+		}
+
 		for (i = 0; i < r_worldmodel->numnodes; i++)
+		{
 			r_worldmodel->nodes[i].visframe = r_visframecount;
+		}
+
 		return;
 	}
 
 	vis = Mod_ClusterPVS(r_viewcluster, r_worldmodel);
-	// may have to combine two clusters because of solid water boundaries
+
+	/* may have to combine two clusters because of solid water boundaries */
 	if (r_viewcluster2 != r_viewcluster)
 	{
 		memcpy(fatvis, vis, (r_worldmodel->numleafs + 7) / 8);
 		vis = Mod_ClusterPVS(r_viewcluster2, r_worldmodel);
 		c = (r_worldmodel->numleafs + 31) / 32;
+
 		for (i = 0; i < c; i++)
-			((int*)fatvis)[i] |= ((int*)vis)[i];
+		{
+			((int *)fatvis)[i] |= ((int *)vis)[i];
+		}
+
 		vis = fatvis;
 	}
 
-	for (i = 0, leaf = r_worldmodel->leafs; i < r_worldmodel->numleafs; i++, leaf++)
+	for (i = 0, leaf = r_worldmodel->leafs;
+		 i < r_worldmodel->numleafs;
+		 i++, leaf++)
 	{
 		cluster = leaf->cluster;
+
 		if (cluster == -1)
+		{
 			continue;
+		}
+
 		if (vis[cluster >> 3] & (1 << (cluster & 7)))
 		{
 			node = (mnode_t*)leaf;
@@ -987,3 +995,4 @@ void R_MarkLeaves(void)
 	}
 #endif
 }
+

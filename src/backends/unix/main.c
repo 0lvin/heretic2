@@ -1,22 +1,30 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * This file is the starting point of the program. It does some platform
+ * specific initialization stuff and calls the common initialization code.
+ *
+ * =======================================================================
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 #include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -64,7 +72,7 @@ void Sys_Printf (char *fmt, ...)
 		Sys_Error("memory overwrite in Sys_Printf");
 
     if (nostdout && nostdout->value)
-        return;
+	return;
 
 	for (p = (unsigned char *)text; *p; p++) {
 		*p &= 0x7f;
@@ -159,7 +167,7 @@ int main (int argc, char **argv)
 			newtime = Sys_Milliseconds ();
 			time = newtime - oldtime;
 		} while (time < 1);
-        Qcommon_Frame (time);
+	Qcommon_Frame (time);
 		oldtime = newtime;
     }
 
@@ -215,3 +223,4 @@ void Sys_CopyProtect(void)
 	Com_Error (ERR_FATAL, "Unable to find a mounted iso9660 file system.\n"
 		"You must mount the Quake2 CD in a cdrom drive in order to play.");
 }
+

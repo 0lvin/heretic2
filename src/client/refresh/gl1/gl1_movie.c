@@ -9,7 +9,7 @@
 
 image_t* cinematicImage = NULL;
 
-qboolean GL_Upload32(unsigned* data, int width, int height, qboolean mipmap);
+qboolean R_Upload32(unsigned* data, int width, int height, qboolean mipmap);
 
 void R_DrawInitCinematic(int w, int h, char *overlay, char *backdrop)
 {
@@ -42,9 +42,10 @@ void R_DrawCinematic(int width, int height, byte *data, paletteRGB_t *palette, f
 
 	if (cinematicImage == NULL)
 	{
-		cinematicImage = GL_LoadPic("_cinematic", &imageScratch[0], width, height, it_pic, 32);
+		cinematicImage = R_LoadPic("_cinematic", &imageScratch[0],
+			width, width, height, height, width * height, it_pic, 32);
 	}
 	R_Bind(cinematicImage->texnum);
-	GL_Upload32((unsigned int *)&imageScratch[0], width, height, it_pic);
+	R_Upload32((unsigned int *)&imageScratch[0], width, height, it_pic);
 	Draw_Image(0, 0, vid.width, vid.height, -1.0f, false, cinematicImage);
 }

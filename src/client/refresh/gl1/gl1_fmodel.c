@@ -388,10 +388,10 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 	}
 
 	// Load in our skins.
-	mod->skins[0] = GL_FindImage(fmodel->skin_names, it_pic);
+	mod->skins[0] = R_FindImage(fmodel->skin_names, it_pic);
 	if (!mod->skins[0])
 	{
-		ri.Con_Printf(PRINT_ALL, "GL_FindImage: failed to load %s\n", fmodel->skin_names);
+		ri.Con_Printf(PRINT_ALL, "R_FindImage: failed to load %s\n", fmodel->skin_names);
 	}
 
 	mod->type = mod_flex;
@@ -592,7 +592,7 @@ void R_DrawFlexModel(entity_t *e)
 		VectorAdd(e->origin, currentmodel->maxs, maxs);
 	}
 
-	if (R_CullBox(mins, maxs))
+	if (R_CullBox(mins, maxs, frustum))
 		return;
 
 	glPushMatrix();
@@ -610,7 +610,7 @@ void R_DrawFlexModel(entity_t *e)
 	mins[1] = e->origin[1] - 10;
 	mins[2] = e->origin[2] - 10;
 
-	GL_TexEnv(GL_MODULATE);
+	R_TexEnv(GL_MODULATE);
 
 	vec3_t lightColor;
 	R_LightPoint(e->origin, lightColor);

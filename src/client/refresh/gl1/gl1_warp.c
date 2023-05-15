@@ -56,7 +56,8 @@ void BoundPoly (int numverts, float *verts, vec3_t mins, vec3_t maxs)
 		}
 }
 
-void SubdividePolygon (int numverts, float *verts)
+void
+R_SubdividePolygon(int numverts, float *verts)
 {
 	int		i, j, k;
 	vec3_t	mins, maxs;
@@ -122,8 +123,8 @@ void SubdividePolygon (int numverts, float *verts)
 			}
 		}
 
-		SubdividePolygon (f, front[0]);
-		SubdividePolygon (b, back[0]);
+		R_SubdividePolygon(f, front[0]);
+		R_SubdividePolygon(b, back[0]);
 		return;
 	}
 
@@ -158,41 +159,42 @@ void SubdividePolygon (int numverts, float *verts)
 }
 
 /*
-================
-GL_SubdivideSurface
-
-Breaks a polygon up along axial 64 unit
-boundaries so that turbulent and sky warps
-can be done reasonably.
-================
-*/
-void GL_SubdivideSurface (msurface_t *fa)
+ * Breaks a polygon up along axial 64 unit
+ * boundaries so that turbulent and sky warps
+ * can be done reasonably.
+ */
+void
+R_SubdivideSurface(model_t *loadmodel, msurface_t *fa)
 {
-	vec3_t		verts[64];
-	int			numverts;
-	int			i;
-	int			lindex;
-	float		*vec;
+	vec3_t verts[64];
+	int numverts;
+	int i;
+	int lindex;
+	float *vec;
 
 	warpface = fa;
 
-	//
-	// convert edges back to a normal polygon
-	//
+	/* convert edges back to a normal polygon */
 	numverts = 0;
-	for (i=0 ; i<fa->numedges ; i++)
+
+	for (i = 0; i < fa->numedges; i++)
 	{
 		lindex = loadmodel->surfedges[fa->firstedge + i];
 
 		if (lindex > 0)
+		{
 			vec = loadmodel->vertexes[loadmodel->edges[lindex].v[0]].position;
+		}
 		else
+		{
 			vec = loadmodel->vertexes[loadmodel->edges[-lindex].v[1]].position;
-		VectorCopy (vec, verts[numverts]);
+		}
+
+		VectorCopy(vec, verts[numverts]);
 		numverts++;
 	}
 
-	SubdividePolygon (numverts, verts[0]);
+	R_SubdividePolygon(numverts, verts[0]);
 }
 
 //=========================================================
@@ -208,12 +210,12 @@ float	r_turbsin[] =
 
 /*
 =============
-EmitWaterPolys
+R_EmitWaterPolys
 
 Does a water warp on the pre-fragmented glpoly_t chain
 =============
 */
-void EmitWaterPolys (msurface_t *fa)
+void R_EmitWaterPolys (msurface_t *fa)
 {
 	glpoly_t	*p, *bp;
 	float		*v;
@@ -562,7 +564,7 @@ void R_DrawSkyBox (void)
 
 #if 0
 glEnable (GL_BLEND);
-GL_TexEnv( GL_MODULATE );
+R_TexEnv( GL_MODULATE );
 glColor4f (1,1,1,0.5);
 glDisable (GL_DEPTH_TEST);
 #endif
@@ -637,7 +639,7 @@ void R_SetSky (char *name, float rotate, vec3_t axis)
 
 		Com_sprintf(pathname, sizeof(pathname), "pics/skies/%s%s.m8", skyname, suf[i]);
 
-		sky_images[i] = GL_FindImage (pathname, it_sky);
+		sky_images[i] = R_FindImage (pathname, it_sky);
 		if (!sky_images[i])
 			sky_images[i] = r_notexture;
 
