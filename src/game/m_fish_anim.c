@@ -7,10 +7,10 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_fish_anim.h"
-#include "m_fish.h"
+#include "header/m_fish_anim.h"
+#include "header/m_fish.h"
 
 #define FISH_WALK_SPEED 3
 #define FISH_RUN_SPEED 7

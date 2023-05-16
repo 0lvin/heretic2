@@ -48,8 +48,6 @@
 #include "../../common/header/common.h"
 #include "../../../linux/rw_linux.h"
 
-cvar_t *nostdout;
-
 unsigned	sys_frame_time;
 
 uid_t saved_euid;
@@ -70,9 +68,6 @@ void Sys_Printf (char *fmt, ...)
 
 	if (strlen(text) > sizeof(text))
 		Sys_Error("memory overwrite in Sys_Printf");
-
-    if (nostdout && nostdout->value)
-	return;
 
 	for (p = (unsigned char *)text; *p; p++) {
 		*p &= 0x7f;
@@ -119,10 +114,6 @@ void floating_point_exception_handler(int whatever)
 
 /*****************************************************************************/
 
-void Sys_AppActivate (void)
-{
-}
-
 void Sys_SendKeyEvents (void)
 {
 #ifndef DEDICATED_ONLY
@@ -143,84 +134,12 @@ char *Sys_GetClipboardData(void)
 
 int main (int argc, char **argv)
 {
-	int 	time, oldtime, newtime;
-
 	// go back to real user for config loads
 	saved_euid = geteuid();
 	seteuid(getuid());
 
 	Qcommon_Init(argc, argv);
 
-	fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | FNDELAY);
-
-	nostdout = Cvar_Get("nostdout", "0", 0);
-	if (!nostdout->value) {
-		fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | FNDELAY);
-//		printf ("Linux Quake -- Version %0.3f\n", LINUX_VERSION);
-	}
-
-    oldtime = Sys_Milliseconds ();
-    while (1)
-    {
-// find time spent rendering last frame
-		do {
-			newtime = Sys_Milliseconds ();
-			time = newtime - oldtime;
-		} while (time < 1);
-	Qcommon_Frame (time);
-		oldtime = newtime;
-    }
-
-}
-
-void Sys_CopyProtect(void)
-{
-	FILE *mnt;
-	struct mntent *ent;
-	char path[MAX_OSPATH];
-	struct stat st;
-	qboolean found_cd = false;
-
-	static qboolean checked = false;
-
-	if (checked)
-		return;
-
-	if ((mnt = setmntent("/etc/mtab", "r")) == NULL)
-		Com_Error(ERR_FATAL, "Can't read mount table to determine mounted cd location.");
-
-	while ((ent = getmntent(mnt)) != NULL) {
-		if (strcmp(ent->mnt_type, "iso9660") == 0) {
-			// found a cd file system
-			found_cd = true;
-			sprintf(path, "%s/%s", ent->mnt_dir, "install/data/quake2.exe");
-			if (stat(path, &st) == 0) {
-				// found it
-				checked = true;
-				endmntent(mnt);
-				return;
-			}
-			sprintf(path, "%s/%s", ent->mnt_dir, "Install/Data/quake2.exe");
-			if (stat(path, &st) == 0) {
-				// found it
-				checked = true;
-				endmntent(mnt);
-				return;
-			}
-			sprintf(path, "%s/%s", ent->mnt_dir, "quake2.exe");
-			if (stat(path, &st) == 0) {
-				// found it
-				checked = true;
-				endmntent(mnt);
-				return;
-			}
-		}
-	}
-	endmntent(mnt);
-
-	if (found_cd)
-		Com_Error (ERR_FATAL, "Could not find a Quake2 CD in your CD drive.");
-	Com_Error (ERR_FATAL, "Unable to find a mounted iso9660 file system.\n"
-		"You must mount the Quake2 CD in a cdrom drive in order to play.");
+	return 0;
 }
 

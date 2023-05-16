@@ -8,11 +8,11 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "c_corvus4_anim.h"
-#include "c_corvus4.h"
+#include "header/g_local.h"
+#include "header/c_corvus4_anim.h"
+#include "header/c_corvus4.h"
 
-#include "c_ai.h"
+#include "header/c_ai.h"
 
 
 /************************************************************************

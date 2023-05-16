@@ -14,7 +14,7 @@
 #include "../../h2common/h2rand.h"
 #include "../../h2common/reference.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define BLOOD_SPEED					40.0F
 #define NUM_BLOOD_SPURT_PARTS		20

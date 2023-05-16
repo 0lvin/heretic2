@@ -14,7 +14,7 @@
 #include "ce_dlight.h"
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define NUM_HALO_MODELS		3
 static struct model_s *halo_models[NUM_HALO_MODELS];

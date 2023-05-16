@@ -4,14 +4,14 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
 #include "../../h2common/matrix.h"
-#include "g_volume_effect.h"
-#include "utilities.h"
-#include "g_playstats.h"
-#include "decals.h"
+#include "header/g_volume_effect.h"
+#include "header/utilities.h"
+#include "header/g_playstats.h"
+#include "header/decals.h"
 
 #define ARROW_RADIUS			4.0F
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);

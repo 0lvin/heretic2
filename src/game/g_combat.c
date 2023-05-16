@@ -25,18 +25,18 @@
  */
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_hitlocation.h"
-#include "g_defaultmessagehandler.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_hitlocation.h"
+#include "header/g_defaultmessagehandler.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "g_misc.h"
+#include "header/g_misc.h"
 #include "../player/p_main.h"
-#include "g_playstats.h"
-#include "buoy.h"
-#include "g_itemstats.h"
-#include "m_stats.h"
+#include "header/g_playstats.h"
+#include "header/buoy.h"
+#include "header/g_itemstats.h"
+#include "header/m_stats.h"
 
 gitem_armor_t silver_armor_info	= {MAX_SILVER_ARMOR, SILVER_HIT_MULT, SILVER_SPELL_MULT};
 gitem_armor_t gold_armor_info	= {MAX_GOLD_ARMOR, GOLD_HIT_MULT, GOLD_SPELL_MULT};

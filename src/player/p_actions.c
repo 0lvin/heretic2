@@ -13,13 +13,13 @@
 #include "p_main.h"
 #include "p_weapon.h"
 #include "p_weapon.h"
-#include "../game/g_items.h"
+#include "../game/header/g_items.h"
 #include "surfaceprops.h"
-#include "../game/m_player.h"
+#include "../game/header/m_player.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/reference.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 #include "p_anim_data.h"
 
 #define AIRMOVE_AMOUNT		48

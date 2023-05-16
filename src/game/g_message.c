@@ -7,10 +7,10 @@
 //
 
 #include "../common/header/common.h"
-#include "g_message.h"
+#include "header/g_message.h"
 #include "../../h2common/message.h"
 
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/resourcemanager.h"
 #include "../../h2common/singlylinkedlist.h"
 

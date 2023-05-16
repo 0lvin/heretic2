@@ -273,23 +273,16 @@ typedef struct
 	void	(*DrawTileClear) (int x, int y, int w, int h, char *name);
 	void	(*DrawFill) (int x, int y, int w, int h, byte r, byte g, byte b);
 	void	(*DrawFadeScreen) (void);
-	void	(*DrawBigFont) (int x, int y, char *text, float alpha);
-	int	(*BF_Strlen) (char *text);
-	void	(*BookDrawPic) (int w, int h, char *name, float scale);
 
 	// Draw images for cinematic rendering (which can have a different palette). Note that calls
 	void	(*DrawInitCinematic) (int w, int h, char *overlay, char *backdrop);
-	void	(*DrawCloseCinematic) ();
 	void	(*DrawCinematic) (int cols, int rows, byte *data, paletteRGB_t *palette, float alpha);
-	void	(*Draw_Name) (vec3_t origin, char *Name, paletteRGBA_t color);
 
 	/*
 	** video mode and refresh state management entry points
 	*/
 	void	(*BeginFrame)( float camera_separation );
 	void	(*EndFrame) (void);
-
-	void	(*AppActivate)( qboolean activate);
 
 	int		(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
 } refexport_t;

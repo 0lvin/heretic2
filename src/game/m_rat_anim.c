@@ -8,12 +8,12 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_rat_anim.h"
-#include "m_rat.h"
+#include "header/m_rat_anim.h"
+#include "header/m_rat.h"
 
-#include "g_monster.h"
+#include "header/g_monster.h"
 
 void rat_ai_run (edict_t *self, float dist);
 

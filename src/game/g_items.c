@@ -25,17 +25,17 @@
  */
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "p_item.h"
-#include "g_items.h"
+#include "header/g_local.h"
+#include "header/p_item.h"
+#include "header/g_items.h"
 #include "../player/player.h"
 #include "../player/p_weapon.h"
-#include "g_weapon.h"
+#include "header/g_weapon.h"
 #include "../player/p_anims.h"
 #include "../player/p_anim_data.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "g_itemstats.h"
+#include "header/g_itemstats.h"
 
 #define HEALTH_IGNORE_MAX	1
 #define HEALTH_TIMED		2

@@ -24,22 +24,37 @@
  * =======================================================================
  */
 
-#ifndef SERVER_SERVER_H
-#define SERVER_SERVER_H
-
-//define	PARANOID			// speed sapping error checking
+#ifndef SV_SERVER_H
+#define SV_SERVER_H
 
 #include "../../common/header/common.h"
-#include "../../game/game.h"
+#include "../../game/header/game.h"
 
-//=============================================================================
+#define MAX_MASTERS 8
+#define LATENCY_COUNTS 16
+#define RATE_MESSAGES 10
 
-#define	MAX_MASTERS	8				// max recipients for heartbeat packets
+/* MAX_CHALLENGES is made large to prevent a denial
+   of service attack that could cycle all of them
+   out before legitimate users connected */
+#define MAX_CHALLENGES 1024
 
-typedef enum {
-	ss_dead,			// no map loaded
-	ss_loading,			// spawning level edicts
-	ss_game,			// actively running
+/* MAX_TOKEN_CHARS was 128. YQ2 bumped it to 1024, since we
+ * need to support some very long cvars like gl_nolerp_list.
+ * Keep structs used in savegames at 128, otherwise older
+ * savegames would be broken. */
+#define MAX_SAVE_TOKEN_CHARS 128
+
+
+#define SV_OUTPUTBUF_LENGTH (MAX_MSGLEN - 16)
+#define EDICT_NUM(n) ((edict_t *)((byte *)ge->edicts + ge->edict_size * (n)))
+#define NUM_FOR_EDICT(e) (((byte *)(e) - (byte *)ge->edicts) / ge->edict_size)
+
+typedef enum
+{
+	ss_dead,            /* no map loaded */
+	ss_loading,         /* spawning level edicts */
+	ss_game,            /* actively running */
 	ss_cinematic,
 	ss_demo,
 	ss_pic
@@ -69,12 +84,9 @@ typedef struct
 	byte		multicast_buf[MAX_MSGLEN];
 
 	// demo server information
-	FILE		*demofile;
+	fileHandle_t demofile;
 	qboolean	timedemo;		// don't time sync
 } server_t;
-
-#define EDICT_NUM(n) ((edict_t *)((byte *)ge->edicts + ge->edict_size*(n)))
-#define NUM_FOR_EDICT(e) ( ((byte *)(e)-(byte *)ge->edicts ) / ge->edict_size)
 
 typedef enum
 {
@@ -94,9 +106,6 @@ typedef struct
 	int					first_entity;		// into the circular sv_packet_entities[]
 	int					senttime;			// for ping calculations
 } client_frame_t;
-
-#define	LATENCY_COUNTS	16
-#define	RATE_MESSAGES	10
 
 typedef struct client_s
 {
@@ -139,19 +148,6 @@ typedef struct client_s
 
 	netchan_t		netchan;
 } client_t;
-
-// a client can leave the server in one of four ways:
-// dropping properly by quiting or disconnecting
-// timing out if no valid messages are received for timeout.value seconds
-// getting kicked off by the server operator
-// a program error, like an overflowed reliable buffer
-
-//=============================================================================
-
-// MAX_CHALLENGES is made large to prevent a denial
-// of service attack that could cycle all of them
-// out before legitimate users connected
-#define	MAX_CHALLENGES	1024
 
 typedef struct
 {

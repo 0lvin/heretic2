@@ -3,9 +3,9 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_stateinfo.h"
+#include "header/g_stateinfo.h"
 #include "../../h2common/resourcemanager.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
 static ResourceManager_t ActionInfoMngr;
 

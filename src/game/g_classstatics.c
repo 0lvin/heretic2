@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_classstatics.h"
+#include "header/g_classstatics.h"
 
 G_ClassStatics_t	classStatics[NUM_CLASSIDS];
 int					Cid_init[NUM_CLASSIDS];

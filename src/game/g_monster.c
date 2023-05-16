@@ -26,21 +26,21 @@
 
 #include <limits.h>
 #include "../common/header/common.h"
-#include "g_monster.h"
-#include "m_stats.h"
-#include "g_local.h"
+#include "header/g_monster.h"
+#include "header/m_stats.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
-#include "g_defaultmessagehandler.h"
-#include "g_playstats.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_playstats.h"
 
 #include "../../h2common/h2rand.h"
 
 //JWEIER START INCLUDES
-#include "g_misc.h"
-#include "utilities.h"
+#include "header/g_misc.h"
+#include "header/utilities.h"
 //JWEIER END INCLUDES
-#include "g_hitlocation.h"
-#include "mg_guide.h"
+#include "header/g_hitlocation.h"
+#include "header/mg_guide.h"
 
 #define FALLDAMAGE_MODIFIER	8
 

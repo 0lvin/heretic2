@@ -9,18 +9,18 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "m_seraph.h"
-#include "m_seraph_anim.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/m_seraph.h"
+#include "header/m_seraph_anim.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/fx.h"
-#include "g_hitlocation.h"
-#include "g_misc.h"
+#include "header/g_hitlocation.h"
+#include "header/g_misc.h"
 
-#include "m_stats.h"
+#include "header/m_stats.h"
 
 void MG_InitMoods(edict_t *self);
 //Seraphs need knowledge of the ogle's animations

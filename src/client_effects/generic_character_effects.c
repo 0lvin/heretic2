@@ -11,7 +11,7 @@
 #include "../../h2common/h2rand.h"
 #include "ce_dlight.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 #include "../../h2common/matrix.h"
 #include "../../h2common/reference.h"
 

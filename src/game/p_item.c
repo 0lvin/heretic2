@@ -6,12 +6,12 @@
 
 #include "../common/header/common.h"
 #include "../player/player.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../player/p_weapon.h"
-#include "m_player.h"
+#include "header/m_player.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/matrix.h"
-#include "g_skeletons.h"
+#include "header/g_skeletons.h"
 #include "../../h2common/angles.h"
 
 void SpellCastPowerup(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);

@@ -17,7 +17,7 @@
 #include "../../h2common/angles.h"
 #include "q_sprite.h"
 #include "ce_dlight.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 enum
 {

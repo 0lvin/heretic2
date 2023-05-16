@@ -12,7 +12,7 @@
 #include "../../h2common/resourcemanager.h"
 #include "../../h2common/fx.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define	NUM_SCORCH_MODELS	1
 

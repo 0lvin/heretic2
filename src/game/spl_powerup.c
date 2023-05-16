@@ -6,9 +6,9 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
-#include "g_itemstats.h"
+#include "header/g_itemstats.h"
 
 
 void SpellCastPowerup(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value)

@@ -3,9 +3,9 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "m_imp_anim.h"
-#include "g_local.h"
-#include "m_imp.h"
+#include "header/m_imp_anim.h"
+#include "header/g_local.h"
+#include "header/m_imp.h"
 #include "../../h2common/h2rand.h"
 
 

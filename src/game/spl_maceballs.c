@@ -4,19 +4,19 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
 #include "../../h2common/matrix.h"
-#include "g_volume_effect.h"
-#include "utilities.h"
-#include "g_classstatics.h"
-#include "g_physics.h"
-#include "g_playstats.h"
-#include "decals.h"
+#include "header/g_volume_effect.h"
+#include "header/utilities.h"
+#include "header/g_classstatics.h"
+#include "header/g_physics.h"
+#include "header/g_playstats.h"
+#include "header/decals.h"
 #include "../../h2common/h2rand.h"
-#include "p_item.h"
-#include "g_teleport.h"
+#include "header/p_item.h"
+#include "header/g_teleport.h"
 
 #define MACEBALL_UPSPEED	200.0F
 #define MACEBALL_SPEED		250.0F

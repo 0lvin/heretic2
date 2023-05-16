@@ -7,15 +7,15 @@
 //
 //==============================================================================
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 
-#include "c_victimssithra.h"
-#include "c_ai.h"
+#include "header/c_victimssithra.h"
+#include "header/c_ai.h"
 
 
 void BboxYawAndScale(edict_t *self);

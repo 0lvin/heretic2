@@ -4,18 +4,18 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
 #include "../../h2common/matrix.h"
-#include "g_volume_effect.h"
-#include "utilities.h"
-#include "g_classstatics.h"
-#include "g_physics.h"
-#include "g_playstats.h"
-#include "decals.h"
+#include "header/g_volume_effect.h"
+#include "header/utilities.h"
+#include "header/g_classstatics.h"
+#include "header/g_physics.h"
+#include "header/g_playstats.h"
+#include "header/decals.h"
 #include "../../h2common/h2rand.h"
-#include "m_beast.h"
+#include "header/m_beast.h"
 
 #define RIPPER_RADIUS				12.0
 #define RIPPER_EXPLODE_BALL_RADIUS	8.0

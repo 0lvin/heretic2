@@ -19,7 +19,7 @@
 #include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 #include "../../h2common/skeletons.h"
 
 extern int		numprocessedparticles;

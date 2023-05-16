@@ -15,7 +15,7 @@
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
 #include "fx_debris.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 #include "fx_debris.h"
 
 #define BARREL_EXPLODE_SPEED	80.0

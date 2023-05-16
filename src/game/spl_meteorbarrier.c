@@ -6,13 +6,13 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
-#include "utilities.h"
+#include "header/utilities.h"
 #include "../../h2common/h2rand.h"
-#include "decals.h"
-#include "g_playstats.h"
+#include "header/decals.h"
+#include "header/g_playstats.h"
 
 #define METEOR_BARRIER_DIE_EXPLODE			1
 #define METEOR_BARRIER_DIE_EXPLODEIMPACT	2

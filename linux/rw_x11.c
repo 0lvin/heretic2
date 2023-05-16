@@ -1223,13 +1223,6 @@ void SWimp_Shutdown( void )
 	X11_active = false;
 }
 
-/*
-** SWimp_AppActivate
-*/
-void SWimp_AppActivate( qboolean active )
-{
-}
-
 //===============================================================================
 
 /*

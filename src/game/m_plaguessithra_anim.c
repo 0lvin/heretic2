@@ -8,12 +8,12 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_plaguessithra_anim.h"
-#include "m_plaguessithra.h"
-#include "g_monster.h"
-#include "c_ai.h"
+#include "header/m_plaguessithra_anim.h"
+#include "header/m_plaguessithra.h"
+#include "header/g_monster.h"
+#include "header/c_ai.h"
 #include "../common/header/common.h"
 
 void old_ai_run (edict_t *self, float dist);

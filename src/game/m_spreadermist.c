@@ -4,15 +4,15 @@
 //
 #include "../common/header/common.h"
 #include "../../h2common/fx.h"
-#include "m_spreadermist.h"
-#include "m_spreaderbomb_anim.h"
-#include "g_local.h"
+#include "header/m_spreadermist.h"
+#include "header/m_spreaderbomb_anim.h"
+#include "header/g_local.h"
 #include "../../h2common/angles.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/matrix.h"
-#include "g_volume_effect.h"
-#include "g_classstatics.h"
-#include "g_monster.h"
+#include "header/g_volume_effect.h"
+#include "header/g_classstatics.h"
+#include "header/g_monster.h"
 
 #define SPREADER_GRENADE_DAMAGE	(40.0)
 #define SPREADER_GRENADE_RADIUS	(100.0)

@@ -917,7 +917,8 @@ S_RawSamples
 Cinematic streaming and voice over network
 ============
 */
-void S_RawSamples (int samples, int rate, int width, int channels, byte *data)
+void S_RawSamples(int samples, int rate, int width, int channels,
+		byte *data, float volume)
 {
 	int		i;
 	int		src, dst;

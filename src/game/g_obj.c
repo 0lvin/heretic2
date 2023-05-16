@@ -7,14 +7,14 @@
 
 #include "../common/header/common.h"
 #include "../../h2common/fx.h"
-#include "g_local.h"
-#include "g_misc.h"
-#include "g_defaultmessagehandler.h"
-#include "m_plagueelf_anim.h"
+#include "header/g_local.h"
+#include "header/g_misc.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/m_plagueelf_anim.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/angles.h"
-#include "g_playstats.h"
-#include "m_stats.h"
+#include "header/g_playstats.h"
+#include "header/m_stats.h"
 
 
 void SpawnFlame(edict_t *self,vec3_t origin);

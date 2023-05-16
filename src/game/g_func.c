@@ -25,13 +25,13 @@
  */
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "g_misc.h"
+#include "header/g_local.h"
+#include "header/g_misc.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "g_defaultmessagehandler.h"
-#include "m_stats.h"
-#include "buoy.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/m_stats.h"
+#include "header/buoy.h"
 
 void ED_CallSpawn (edict_t *ent);
 void TrainAngleMove_Calc (edict_t *self,edict_t *targ,vec3_t dest);

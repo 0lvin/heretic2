@@ -6,10 +6,10 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "g_playstats.h"
+#include "header/g_playstats.h"
 #include "../player/p_actions.h"
 
 

@@ -6,15 +6,15 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/reference.h"
-#include "utilities.h"
-#include "decals.h"
-#include "g_playstats.h"
+#include "header/utilities.h"
+#include "header/decals.h"
+#include "header/g_playstats.h"
 #include "../player/p_main.h"	//for ITEM_WEAPON_SPHEREOFANNIHILATION
-#include "m_beast.h"
+#include "header/m_beast.h"
 
 #define SPHERE_INIT_SCALE				0.7
 #define SPHERE_MAX_SCALE				2.0

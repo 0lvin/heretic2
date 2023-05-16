@@ -8,17 +8,17 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "m_priestess.h"
-#include "m_priestess_anim.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/m_priestess.h"
+#include "header/m_priestess_anim.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/fx.h"
-#include "g_hitlocation.h"
+#include "header/g_hitlocation.h"
 
-#include "m_stats.h"
+#include "header/m_stats.h"
 
 static int sounds[NUM_SOUNDS];
 static ClassResourceInfo_t resInfo;

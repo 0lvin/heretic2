@@ -8,13 +8,13 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_mother_anim.h"
-#include "m_mother.h"
+#include "header/m_mother_anim.h"
+#include "header/m_mother.h"
 
-#include "g_monster.h"
-#include "c_ai.h"
+#include "header/g_monster.h"
+#include "header/c_ai.h"
 
 void mother_growl(edict_t *self);
 

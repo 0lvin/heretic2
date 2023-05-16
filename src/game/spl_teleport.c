@@ -7,14 +7,14 @@
 // Written by Jake Simpson
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
-#include "utilities.h"
+#include "header/utilities.h"
 #include "../../h2common/h2rand.h"
-#include "g_teleport.h"
+#include "header/g_teleport.h"
 #include "../player/p_main.h"
-#include "g_playstats.h"
+#include "header/g_playstats.h"
 
 extern void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles);
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);

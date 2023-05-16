@@ -14,23 +14,23 @@ TBEAST
 */
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "buoy.h"
+#include "header/buoy.h"
 
 #include "../player/p_actions.h"
 #include "../player/p_anims.h"
 #include "../player/p_anim_branch.h"
-#include "g_physics.h"
-#include "g_physics.h"
-#include "g_misc.h"
-#include "m_beast.h"
-#include "m_beast_anim.h"
-#include "m_stats.h"
+#include "header/g_physics.h"
+#include "header/g_physics.h"
+#include "header/g_misc.h"
+#include "header/m_beast.h"
+#include "header/m_beast_anim.h"
+#include "header/m_stats.h"
 
 
 // *************************************

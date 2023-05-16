@@ -3,10 +3,10 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "g_skeletons.h"
+#include "header/g_local.h"
+#include "header/g_skeletons.h"
 #include "../../h2common/arrayed_list.h"
-#include "g_physics.h"
+#include "header/g_physics.h"
 
 void ED_CallSpawn (edict_t *ent);
 void Cvar_SetValue (char *var_name, float value);

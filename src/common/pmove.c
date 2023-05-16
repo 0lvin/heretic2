@@ -26,7 +26,7 @@
  */
 
 #include "../client/header/client.h"
-#include "../game/g_physics.h"
+#include "../game/header/g_physics.h"
 
 #define	STEPSIZE	18
 #define OVERCLIP	1.001f

@@ -3,16 +3,16 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "g_skeletons.h"
+#include "header/g_local.h"
+#include "header/g_skeletons.h"
 #include "../../h2common/arrayed_list.h"
 #include "../../h2common/message.h"
-#include "g_physics.h"
-#include "g_playstats.h"
-#include "utilities.h"
+#include "header/g_physics.h"
+#include "header/g_playstats.h"
+#include "header/utilities.h"
 #include "../player/p_anims.h"
 #include "../../h2common/fx.h"
-#include "g_hitlocation.h"
+#include "header/g_hitlocation.h"
 
 extern player_export_t	playerExport;	// interface to player DLL.
 

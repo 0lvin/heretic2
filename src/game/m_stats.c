@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "m_stats.h"
+#include "header/m_stats.h"
 
 /*
 int AttackRangesForClass [NUM_ATTACKRANGES] =

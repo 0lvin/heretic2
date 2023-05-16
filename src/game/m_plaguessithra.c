@@ -8,19 +8,19 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "buoy.h"
+#include "header/buoy.h"
 
-#include "m_plaguessithra.h"
-#include "m_plaguessithra_anim.h"
-#include "g_misc.h"
-#include "g_hitlocation.h"
-#include "m_stats.h"
+#include "header/m_plaguessithra.h"
+#include "header/m_plaguessithra_anim.h"
+#include "header/g_misc.h"
+#include "header/g_hitlocation.h"
+#include "header/m_stats.h"
 
 
 void extrapolateFiredir (edict_t *self,vec3_t p1,float pspeed,edict_t *targ,float accept,vec3_t vec2);

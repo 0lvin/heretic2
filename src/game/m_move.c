@@ -5,7 +5,7 @@
 // m_move.c -- monster movement
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/h2rand.h"
 
 #define	STEPSIZE	18

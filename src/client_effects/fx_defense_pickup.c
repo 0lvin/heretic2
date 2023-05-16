@@ -16,7 +16,7 @@
 #include "utilities.h"
 #include "../../h2common/angles.h"
 #include "ce_dlight.h"
-#include "../game/g_items.h"
+#include "../game/header/g_items.h"
 
 #define BOB_HEIGHT				6.0
 #define BOB_SPEED				ANGLE_10

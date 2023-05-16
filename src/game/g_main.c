@@ -25,15 +25,15 @@
  */
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "g_skeletons.h"
+#include "header/g_local.h"
+#include "header/g_skeletons.h"
 #include "../../h2common/arrayed_list.h"
-#include "g_physics.h"
-#include "g_volume_effect.h"
+#include "header/g_physics.h"
+#include "header/g_volume_effect.h"
 #include "../../h2common/fx.h"
-#include "utilities.h"
+#include "header/utilities.h"
 #include "../../h2common/h2rand.h"
-#include "g_playstats.h"
+#include "header/g_playstats.h"
 #include "../player/p_anims.h"
 #include "../../h2common/cl_strings.h"
 

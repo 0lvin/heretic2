@@ -6,12 +6,12 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
-#include "utilities.h"
+#include "header/utilities.h"
 #include "../../h2common/h2rand.h"
-#include "g_playstats.h"
+#include "header/g_playstats.h"
 
 
 void SpellCastShield(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aimdir,float Value)

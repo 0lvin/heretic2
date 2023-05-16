@@ -3,9 +3,9 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "m_priestess.h"
-#include "m_priestess_anim.h"
+#include "header/g_local.h"
+#include "header/m_priestess.h"
+#include "header/m_priestess_anim.h"
 
 animframe_t priestess_frames_stand1[] =
 {

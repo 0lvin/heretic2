@@ -13,7 +13,7 @@
 #include "../../h2common/resourcemanager.h"
 #include "client_entities.h"
 #include "../../h2common/h2rand.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define	MAX_PARTS_PER_CE	2048
 

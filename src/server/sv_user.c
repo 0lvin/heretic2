@@ -135,8 +135,8 @@ SV_Configstrings_f(void)
 	start = (int)strtol(Cmd_Argv(2), (char **)NULL, 10);
 
 	/* write a packet full of data */
-	while ( sv_client->netchan.message.cursize < MAX_MSGLEN/2
-		&& start < MAX_CONFIGSTRINGS)
+	while (sv_client->netchan.message.cursize < MAX_MSGLEN / 2 &&
+		   start < MAX_CONFIGSTRINGS)
 	{
 		if (sv.configstrings[start][0])
 		{
@@ -190,104 +190,105 @@ SV_Baselines_f(void)
 	start = (int)strtol(Cmd_Argv(2), (char **)NULL, 10);
 	memset(&nullstate, 0, sizeof(nullstate));
 
-	// write a packet full of data
-
-	while ( sv_client->netchan.message.cursize <  MAX_MSGLEN/2
-		&& start < MAX_EDICTS)
+	/* write a packet full of data */
+	while (sv_client->netchan.message.cursize < MAX_MSGLEN / 2 &&
+		   start < MAX_EDICTS)
 	{
 		base = &sv.baselines[start];
+
 		if (base->modelindex || base->sound || base->effects)
 		{
-			MSG_WriteByte (&sv_client->netchan.message, svc_spawnbaseline);
-			MSG_WriteDeltaEntity (&nullstate, base, &sv_client->netchan.message, true, true);
+			MSG_WriteByte(&sv_client->netchan.message, svc_spawnbaseline);
+			MSG_WriteDeltaEntity(&nullstate, base,
+					&sv_client->netchan.message,
+					true, true);
 		}
+
 		start++;
 	}
 
-	// send next command
-
+	/* send next command */
 	if (start == MAX_EDICTS)
 	{
-		MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-		MSG_WriteString (&sv_client->netchan.message, va("precache %i\n", svs.spawncount) );
+		MSG_WriteByte(&sv_client->netchan.message, svc_stufftext);
+		MSG_WriteString(&sv_client->netchan.message,
+				va("precache %i\n", svs.spawncount));
 	}
 	else
 	{
-		MSG_WriteByte (&sv_client->netchan.message, svc_stufftext);
-		MSG_WriteString (&sv_client->netchan.message, va("cmd baselines %i %i\n",svs.spawncount, start) );
+		MSG_WriteByte(&sv_client->netchan.message, svc_stufftext);
+		MSG_WriteString(&sv_client->netchan.message,
+				va("cmd baselines %i %i\n", svs.spawncount, start));
 	}
 }
 
-/*
-==================
-SV_Begin_f
-==================
-*/
-void SV_Begin_f (void)
+void
+SV_Begin_f(void)
 {
-	Com_DPrintf ("Begin() from %s\n", sv_client->name);
+	Com_DPrintf("Begin() from %s\n", sv_client->name);
 
-	// handle the case of a level changing while a client was connecting
-	if ( atoi(Cmd_Argv(1)) != svs.spawncount )
+	/* handle the case of a level changing while a client was connecting */
+	if ((int)strtol(Cmd_Argv(1), (char **)NULL, 10) != svs.spawncount)
 	{
 		Com_Printf("SV_Begin_f from different level\n");
-		SV_New_f ();
+		SV_New_f();
 		return;
 	}
 
 	sv_client->state = cs_spawned;
 
-	// call the game begin function
-	ge->ClientBegin (sv_player);
+	/* call the game begin function */
+	ge->ClientBegin(sv_player);
 
-	Cbuf_InsertFromDefer ();
+	Cbuf_InsertFromDefer();
 }
 
-//=============================================================================
-
-/*
-==================
-SV_NextDownload_f
-==================
-*/
-void SV_NextDownload_f (void)
+void
+SV_NextDownload_f(void)
 {
-	int		r;
-	int		percent;
-	int		size;
+	int r;
+	int percent;
+	int size;
 
 	if (!sv_client->download)
+	{
 		return;
+	}
 
 	r = sv_client->downloadsize - sv_client->downloadcount;
-	if (r > 1024)
-		r = 1024;
 
-	MSG_WriteByte (&sv_client->netchan.message, svc_download);
-	MSG_WriteShort (&sv_client->netchan.message, r);
+	if (r > 1024)
+	{
+		r = 1024;
+	}
+
+	MSG_WriteByte(&sv_client->netchan.message, svc_download);
+	MSG_WriteShort(&sv_client->netchan.message, r);
 
 	sv_client->downloadcount += r;
 	size = sv_client->downloadsize;
+
 	if (!size)
+	{
 		size = 1;
-	percent = sv_client->downloadcount*100/size;
-	MSG_WriteByte (&sv_client->netchan.message, percent);
-	SZ_Write (&sv_client->netchan.message,
-		sv_client->download + sv_client->downloadcount - r, r);
+	}
+
+	percent = sv_client->downloadcount * 100 / size;
+	MSG_WriteByte(&sv_client->netchan.message, percent);
+	SZ_Write(&sv_client->netchan.message,
+			sv_client->download + sv_client->downloadcount - r, r);
 
 	if (sv_client->downloadcount != sv_client->downloadsize)
+	{
 		return;
+	}
 
-	FS_FreeFile (sv_client->download);
+	FS_FreeFile(sv_client->download);
 	sv_client->download = NULL;
 }
 
-/*
-==================
-SV_BeginDownload_f
-==================
-*/
-void SV_BeginDownload_f(void)
+void
+SV_BeginDownload_f(void)
 {
 	char *name;
 	extern cvar_t *allow_download;
@@ -383,63 +384,65 @@ SV_ShowServerinfo_f(void)
 void
 SV_Nextserver(void)
 {
-	char	*v;
+	const char *v;
 
-	//ZOID, ss_pic can be nextserver'd in coop mode
-	if (sv.state == ss_game || (sv.state == ss_pic && !Cvar_VariableValue("coop")))
-		return;		// can't nextserver while playing a normal game
+	if ((sv.state == ss_game) ||
+		((sv.state == ss_pic) &&
+		 !Cvar_VariableValue("coop")))
+	{
+		return; /* can't nextserver while playing a normal game */
+	}
 
-	svs.spawncount++;	// make sure another doesn't sneak in
-	v = Cvar_VariableString ("nextserver");
+	svs.spawncount++; /* make sure another doesn't sneak in */
+	v = Cvar_VariableString("nextserver");
+
 	if (!v[0])
-		Cbuf_AddText ("killserver\n");
+	{
+		Cbuf_AddText("killserver\n");
+	}
 	else
 	{
-		Cbuf_AddText (v);
-		Cbuf_AddText ("\n");
+		Cbuf_AddText((char *)v);
+		Cbuf_AddText("\n");
 	}
-	Cvar_Set ("nextserver","");
+
+	Cvar_Set("nextserver", "");
 }
 
 /*
-==================
-SV_Nextserver_f
-
-A cinematic has completed or been aborted by a client, so move
-to the next server,
-==================
-*/
-void SV_Nextserver_f (void)
+ * A cinematic has completed or been aborted by a client, so move
+ * to the next server,
+ */
+void
+SV_Nextserver_f(void)
 {
-	if ( atoi(Cmd_Argv(1)) != svs.spawncount ) {
-		Com_DPrintf ("Nextserver() from wrong level, from %s\n", sv_client->name);
-		return;		// leftover from last server
+	if ((int)strtol(Cmd_Argv(1), (char **)NULL, 10) != svs.spawncount)
+	{
+		Com_DPrintf("Nextserver() from wrong level, from %s\n", sv_client->name);
+		return; /* leftover from last server */
 	}
 
-	Com_DPrintf ("Nextserver() from %s\n", sv_client->name);
+	Com_DPrintf("Nextserver() from %s\n", sv_client->name);
 
-	SV_Nextserver ();
+	SV_Nextserver();
 }
 
 typedef struct
 {
-	char	*name;
-	void	(*func) (void);
+	char *name;
+	void (*func)(void);
 } ucmd_t;
 
-ucmd_t ucmds[] =
-{
-	// auto issued
+ucmd_t ucmds[] = {
+	/* auto issued */
 	{"new", SV_New_f},
 	{"configstrings", SV_Configstrings_f},
 	{"baselines", SV_Baselines_f},
 	{"begin", SV_Begin_f},
-
 	{"nextserver", SV_Nextserver_f},
-
 	{"disconnect", SV_Disconnect_f},
 
-	// issued by hand at client consoles
+	/* issued by hand at client consoles */
 	{"info", SV_ShowServerinfo_f},
 
 	{"download", SV_BeginDownload_f},
@@ -448,85 +451,69 @@ ucmd_t ucmds[] =
 	{NULL, NULL}
 };
 
-/*
-==================
-SV_ExecuteUserCommand
-==================
-*/
-void SV_ExecuteUserCommand (char *s)
+void
+SV_ExecuteUserCommand(char *s)
 {
-	ucmd_t	*u;
+	ucmd_t *u;
 
-	Cmd_TokenizeString (s, true);
+	/* Security Fix... This is being set to false so that client's can't
+	   macro expand variables on the server.  It seems unlikely that a
+	   client ever ought to need to be able to do this... */
+	Cmd_TokenizeString(s, false);
 	sv_player = sv_client->edict;
 
-//	SV_BeginRedirect (RD_CLIENT);
-
-	for (u=ucmds ; u->name ; u++)
-		if (!strcmp (Cmd_Argv(0), u->name) )
+	for (u = ucmds; u->name; u++)
+	{
+		if (!strcmp(Cmd_Argv(0), u->name))
 		{
-			u->func ();
+			u->func();
 			break;
 		}
+	}
 
-	if (!u->name && sv.state == ss_game)
-		ge->ClientCommand (sv_player);
-
-//	SV_EndRedirect ();
+	if (!u->name && (sv.state == ss_game))
+	{
+		ge->ClientCommand(sv_player);
+	}
 }
 
-/*
-===========================================================================
-
-USER CMD EXECUTION
-
-===========================================================================
-*/
-
-
-
-void SV_ClientThink (client_t *cl, usercmd_t *cmd)
+void
+SV_ClientThink(client_t *cl, usercmd_t *cmd)
 
 {
 	cl->commandMsec -= cmd->msec;
 
-	if (cl->commandMsec < 0 && sv_enforcetime->value )
+	if ((cl->commandMsec < 0) && sv_enforcetime->value)
 	{
-		Com_DPrintf ("commandMsec underflow from %s\n", cl->name);
+		Com_DPrintf("commandMsec underflow from %s\n", cl->name);
 		return;
 	}
 
-	ge->ClientThink (cl->edict, cmd);
+	ge->ClientThink(cl->edict, cmd);
 }
 
-
-
-#define	MAX_STRINGCMDS	8
 /*
-===================
-SV_ExecuteClientMessage
-
-The current net_message is parsed for the given client
-===================
-*/
-void SV_ExecuteClientMessage (client_t *cl)
+ * The current net_message is parsed for the given client
+ */
+void
+SV_ExecuteClientMessage(client_t *cl)
 {
-	int		c;
-	char	*s;
+	int c;
+	char *s;
 
-	usercmd_t	nullcmd;
-	usercmd_t	oldest, oldcmd, newcmd;
-	int		net_drop;
-	int		stringCmdCount;
-	int		checksum, calculatedChecksum;
-	int		checksumIndex;
-	qboolean	move_issued;
-	int		lastframe;
+	usercmd_t nullcmd;
+	usercmd_t oldest, oldcmd, newcmd;
+	int net_drop;
+	int stringCmdCount;
+	int checksum, calculatedChecksum;
+	int checksumIndex;
+	qboolean move_issued;
+	int lastframe;
 
 	sv_client = cl;
 	sv_player = sv_client->edict;
 
-	// only allow one move command
+	/* only allow one move command */
 	move_issued = false;
 	stringCmdCount = 0;
 
@@ -548,98 +535,112 @@ void SV_ExecuteClientMessage (client_t *cl)
 
 		switch (c)
 		{
-		default:
-			Com_Printf("SV_ReadClientMessage: unknown command char\n");
-		//	SV_DropClient (cl);
-			return;
-
-		case clc_nop:
-			break;
-
-		case clc_userinfo:
-			strncpy (cl->userinfo, MSG_ReadString (&net_message), sizeof(cl->userinfo)-1);
-			SV_UserinfoChanged (cl);
-			break;
-
-		case clc_move:
-			if (move_issued)
-				return;		// someone is trying to cheat...
-
-			move_issued = true;
-			checksumIndex = net_message.readcount;
-			checksum = MSG_ReadByte (&net_message);
-			lastframe = MSG_ReadLong (&net_message);
-			if (lastframe != cl->lastframe) {
-				cl->lastframe = lastframe;
-				if (cl->lastframe > 0) {
-					cl->frame_latency[cl->lastframe&(LATENCY_COUNTS-1)] =
-						svs.realtime - cl->frames[cl->lastframe & UPDATE_MASK].senttime;
-				}
-			}
-
-			memset (&nullcmd, 0, sizeof(nullcmd));
-			MSG_ReadDeltaUsercmd (&net_message, &nullcmd, &oldest);
-			MSG_ReadDeltaUsercmd (&net_message, &oldest, &oldcmd);
-			MSG_ReadDeltaUsercmd (&net_message, &oldcmd, &newcmd);
-
-			if ( cl->state != cs_spawned )
-			{
-				cl->lastframe = -1;
-				break;
-			}
-
-			// if the checksum fails, ignore the rest of the packet
-			calculatedChecksum = COM_BlockSequenceCRCByte (
-				net_message.data + checksumIndex + 1,
-				net_message.readcount - checksumIndex - 1,
-				cl->netchan.incoming_sequence);
-
-			if (calculatedChecksum != checksum)
-			{
-				Com_DPrintf ("Failed command checksum for %s (%d != %d)/%d\n",
-					cl->name, calculatedChecksum, checksum,
-					cl->netchan.incoming_sequence);
+			default:
+				Com_Printf("SV_ReadClientMessage: unknown command char\n");
+				SV_DropClient(cl);
 				return;
-			}
 
-			if (!sv_paused->value)
-			{
-				net_drop = cl->netchan.dropped;
-				if (net_drop < 20)
+			case clc_nop:
+				break;
+
+			case clc_userinfo:
+				Q_strlcpy(cl->userinfo, MSG_ReadString(&net_message), sizeof(cl->userinfo));
+				SV_UserinfoChanged(cl);
+				break;
+
+			case clc_move:
+
+				if (move_issued)
 				{
-
-//if (net_drop > 2)
-
-//	Com_Printf("drop %i\n", net_drop);
-					while (net_drop > 2)
-					{
-						SV_ClientThink (cl, &cl->lastcmd);
-
-						net_drop--;
-					}
-					if (net_drop > 1)
-						SV_ClientThink (cl, &oldest);
-
-					if (net_drop > 0)
-						SV_ClientThink (cl, &oldcmd);
-
+					return; /* someone is trying to cheat... */
 				}
-				SV_ClientThink (cl, &newcmd);
-			}
 
-			cl->lastcmd = newcmd;
-			break;
+				move_issued = true;
+				checksumIndex = net_message.readcount;
+				checksum = MSG_ReadByte(&net_message);
+				lastframe = MSG_ReadLong(&net_message);
 
-		case clc_stringcmd:
-			s = MSG_ReadString (&net_message);
+				if (lastframe != cl->lastframe)
+				{
+					cl->lastframe = lastframe;
 
-			// malicious users may try using too many string commands
-			if (++stringCmdCount < MAX_STRINGCMDS)
-				SV_ExecuteUserCommand (s);
+					if (cl->lastframe > 0)
+					{
+						cl->frame_latency[cl->lastframe & (LATENCY_COUNTS - 1)] =
+							svs.realtime - cl->frames[cl->lastframe & UPDATE_MASK].senttime;
+					}
+				}
 
-			if (cl->state == cs_zombie)
-				return;	// disconnect command
-			break;
+				memset(&nullcmd, 0, sizeof(nullcmd));
+				MSG_ReadDeltaUsercmd(&net_message, &nullcmd, &oldest);
+				MSG_ReadDeltaUsercmd(&net_message, &oldest, &oldcmd);
+				MSG_ReadDeltaUsercmd(&net_message, &oldcmd, &newcmd);
+
+				if (cl->state != cs_spawned)
+				{
+					cl->lastframe = -1;
+					break;
+				}
+
+				/* if the checksum fails, ignore the rest of the packet */
+				calculatedChecksum = COM_BlockSequenceCRCByte(
+					net_message.data + checksumIndex + 1,
+					net_message.readcount - checksumIndex - 1,
+					cl->netchan.incoming_sequence);
+
+				if (calculatedChecksum != checksum)
+				{
+					Com_DPrintf("Failed command checksum for %s (%d != %d)/%d\n",
+							cl->name, calculatedChecksum, checksum,
+							cl->netchan.incoming_sequence);
+					return;
+				}
+
+				if (!sv_paused->value)
+				{
+					net_drop = cl->netchan.dropped;
+
+					if (net_drop < 20)
+					{
+						while (net_drop > 2)
+						{
+							SV_ClientThink(cl, &cl->lastcmd);
+
+							net_drop--;
+						}
+
+						if (net_drop > 1)
+						{
+							SV_ClientThink(cl, &oldest);
+						}
+
+						if (net_drop > 0)
+						{
+							SV_ClientThink(cl, &oldcmd);
+						}
+					}
+
+					SV_ClientThink(cl, &newcmd);
+				}
+
+				cl->lastcmd = newcmd;
+				break;
+
+			case clc_stringcmd:
+				s = MSG_ReadString(&net_message);
+
+				/* malicious users may try using too many string commands */
+				if (++stringCmdCount < MAX_STRINGCMDS)
+				{
+					SV_ExecuteUserCommand(s);
+				}
+
+				if (cl->state == cs_zombie)
+				{
+					return; /* disconnect command */
+				}
+
+				break;
 		}
 	}
 }

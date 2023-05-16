@@ -11,16 +11,6 @@ image_t* cinematicImage = NULL;
 
 qboolean R_Upload32(unsigned* data, int width, int height, qboolean mipmap);
 
-void R_DrawInitCinematic(int w, int h, char *overlay, char *backdrop)
-{
-
-}
-
-void R_DrawCloseCinematic()
-{
-
-}
-
 void R_DrawCinematic(int width, int height, byte *data, paletteRGB_t *palette, float alpha)
 {
 	static byte imageScratch[800 * 600 * 4];

@@ -8,11 +8,11 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "c_dranor_anim.h"
-#include "c_dranor.h"
-#include "c_ai.h"
+#include "header/c_dranor_anim.h"
+#include "header/c_dranor.h"
+#include "header/c_ai.h"
 
 
 /************************************************************************

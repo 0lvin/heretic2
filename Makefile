@@ -527,7 +527,6 @@ $(BUILDDIR)/ref_softx.$(SHLIBEXT) : $(REF_SOFT_OBJS) $(REF_SOFT_X11_OBJS) ${HEAD
 #############################################################################
 
 REF_GL_OBJS = \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_book.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_draw.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_fmodel.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_image.o \

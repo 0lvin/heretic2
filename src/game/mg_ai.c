@@ -13,14 +13,14 @@
 
 #include "../common/header/common.h"
 #include <assert.h>
-#include "g_local.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/g_monster.h"
 #include "../../h2common/h2rand.h"
-#include "buoy.h"
-#include "g_hitlocation.h"
-#include "utilities.h"
-#include "m_stats.h"
-#include "g_playstats.h"
+#include "header/buoy.h"
+#include "header/g_hitlocation.h"
+#include "header/utilities.h"
+#include "header/m_stats.h"
+#include "header/g_playstats.h"
 #include "../../h2common/fx.h"
 
 #define	STEPSIZE 18

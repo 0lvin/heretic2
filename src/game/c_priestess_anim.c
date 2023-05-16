@@ -8,11 +8,11 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "c_priestess_anim.h"
-#include "c_priestess.h"
-#include "c_ai.h"
+#include "header/c_priestess_anim.h"
+#include "header/c_priestess.h"
+#include "header/c_ai.h"
 
 
 animframe_t priestess_frames_c_action1[] =

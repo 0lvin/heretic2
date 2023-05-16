@@ -9,21 +9,21 @@ Copyright 1998 Raven Software
 
 -------------------------------------------------------------------*/
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "buoy.h"
+#include "header/buoy.h"
 
-#include "g_skeletons.h"
-#include "c_corvus2.h"
-#include "c_corvus2_anim.h"
-#include "g_hitlocation.h"
-#include "g_misc.h"
+#include "header/g_skeletons.h"
+#include "header/c_corvus2.h"
+#include "header/c_corvus2_anim.h"
+#include "header/g_hitlocation.h"
+#include "header/g_misc.h"
 #include "../../h2common/angles.h"
-#include "c_ai.h"
+#include "header/c_ai.h"
 
 /*----------------------------------------------------------------------
   plagueElf Base Info

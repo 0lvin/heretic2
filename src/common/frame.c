@@ -901,6 +901,8 @@ static void Com_Error_f (void)
 
 extern cvar_t *logfile_active;
 
+void Qcommon_Frame (int msec);
+
 void
 Qcommon_Init(int argc, char **argv)
 {
@@ -1002,6 +1004,20 @@ Qcommon_Init(int argc, char **argv)
 	}
 
 	Com_Printf ("====== Heretic II fully initialized ======\n\n");
+
+	int 	time, oldtime, newtime;
+
+	oldtime = Sys_Milliseconds ();
+	while (1)
+	{
+		// find time spent rendering last frame
+		do {
+			newtime = Sys_Milliseconds ();
+			time = newtime - oldtime;
+		} while (time < 1);
+		Qcommon_Frame (time);
+		oldtime = newtime;
+	}
 }
 
 extern int	c_pointcontents;

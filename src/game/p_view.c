@@ -3,22 +3,22 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_skeletons.h"
-#include "g_teleport.h"
-#include "m_player.h"
+#include "header/g_skeletons.h"
+#include "header/g_teleport.h"
+#include "header/m_player.h"
 //#include "../player/p_types.h"
 #include "../player/player.h"
 #include "../player/p_animactor.h"
 #include "../player/p_anims.h"
 #include "../player/p_ctrl.h"
-#include "p_funcs.h"
+#include "header/p_funcs.h"
 #include "../player/p_main.h"
 #include "../player/p_weapon.h"
 #include "../../h2common/angles.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "utilities.h"
-#include "g_playstats.h"
+#include "header/utilities.h"
+#include "header/g_playstats.h"
 
 static	edict_t		*current_player;
 static	gclient_t	*current_client;

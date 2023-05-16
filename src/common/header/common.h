@@ -1022,7 +1022,6 @@ void Z_FreeTags(int tag);
 void Qcommon_Init(int argc, char **argv);
 void Qcommon_ExecConfigs(qboolean addEarlyCmds);
 const char* Qcommon_GetInitialGame(void);
-void Qcommon_Frame (int msec);
 void Qcommon_Shutdown(void);
 
 #define NUMVERTEXNORMALS 162
@@ -1056,7 +1055,6 @@ YQ2_ATTR_NORETURN void Sys_Error(char *error, ...);
 YQ2_ATTR_NORETURN void Sys_Quit(void);
 void Sys_Init(void);
 char *Sys_GetClipboardData(void);
-void Sys_CopyProtect(void);
 char *Sys_GetHomeDir(void);
 void Sys_Remove(const char *path);
 int Sys_Rename(const char *from, const char *to);
@@ -1083,23 +1081,6 @@ const char *Sys_GetBinaryDir(void);
 void Sys_SetupFPU(void);
 
 /* ======================================================================= */
-
-extern cvar_t *player_dll;
-extern cvar_t *allow_download;
-extern cvar_t *allow_download_maps;
-extern cvar_t *allow_download_players;
-extern cvar_t *allow_download_models;
-extern cvar_t *allow_download_sounds;
-
-/*
-==============================================================
-
-NON-PORTABLE SYSTEM SERVICES
-
-==============================================================
-*/
-
-void	Sys_AppActivate (void);
 
 // For ambient sounds.
 typedef enum AmbientSoundID_e

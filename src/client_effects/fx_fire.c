@@ -15,7 +15,7 @@
 #include "../../h2common/reference.h"
 #include "utilities.h"
 #include "ce_dlight.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define FLARE_COUNT			16
 #define FLARE_SPEED			64.0

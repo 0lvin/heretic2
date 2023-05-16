@@ -8,12 +8,12 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "c_ai.h"
-#include "m_assassin_anim.h"
-#include "m_assassin.h"
-#include "g_monster.h"
+#include "header/c_ai.h"
+#include "header/m_assassin_anim.h"
+#include "header/m_assassin.h"
+#include "header/g_monster.h"
 
 //all of the anim frames that used to live in m_assassin.h
 

@@ -6,15 +6,15 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
-#include "utilities.h"
+#include "header/utilities.h"
 #include "../../h2common/h2rand.h"
-#include "decals.h"
+#include "header/decals.h"
 #include "../player/p_main.h"
-#include "g_playstats.h"
-#include "m_beast.h"
+#include "header/g_playstats.h"
+#include "header/m_beast.h"
 
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 static void HellboltThink(edict_t *Self);

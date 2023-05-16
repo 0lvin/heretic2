@@ -8,10 +8,10 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "g_monster.h"
-#include "m_elflord_anims.h"
-#include "m_elflord.h"
+#include "header/g_local.h"
+#include "header/g_monster.h"
+#include "header/m_elflord_anims.h"
+#include "header/m_elflord.h"
 
 void elflord_finish_death(edict_t *self);
 void elflord_soa_loop(edict_t *self);

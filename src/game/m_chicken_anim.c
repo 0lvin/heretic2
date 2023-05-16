@@ -8,14 +8,14 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
 // PRECOMPILED HEADER ABOVE
 // WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!
 // ADD ANY ADDITIONAL FILES BELOW
 
-#include "m_chicken_anim.h"
-#include "m_chicken.h"
+#include "header/m_chicken_anim.h"
+#include "header/m_chicken.h"
 
 #define ENEMY_WALK_SPEED  32
 #define ENEMY_RUN_SPEED   64

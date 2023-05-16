@@ -16,7 +16,7 @@
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define	NUM_HIT_MODELS	3
 static struct model_s *hit_models[NUM_HIT_MODELS];

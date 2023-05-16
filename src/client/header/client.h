@@ -27,6 +27,19 @@
 #ifndef CL_CLIENT_H
 #define CL_CLIENT_H
 
+#define MAX_CLIENTWEAPONMODELS 20
+#define	CMD_BACKUP 256 /* allow a lot of command backups for very fast systems */
+
+/* the cl_parse_entities must be large enough to hold UPDATE_BACKUP frames of
+   entities, so that when a delta compressed message arives from the server
+   it can be un-deltad from the original */
+#define	MAX_PARSE_ENTITIES	1024
+
+#define MAX_SUSTAINS		32
+#define	PARTICLE_GRAVITY 40
+#define BLASTER_PARTICLE_COLOR 0xe0
+#define INSTANT_PARTICLE -10000.0
+
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
@@ -36,6 +49,9 @@
 
 #include "../../common/header/common.h"
 
+#include "../curl/header/download.h"
+#include "../sound/header/sound.h"
+#include "../sound/header/vorbis.h"
 #include "../vid/header/ref.h"
 #include "../vid/header/vid.h"
 
@@ -57,10 +73,6 @@
 
 #define CF_INUSE			0x00000001
 #define CF_SERVER_CULLED	0x00000002
-
-// Allow a lot of command backups for very fast systems.
-
-#define	CMD_BACKUP	64
 
 // ********************************************************************************************
 // frame_t

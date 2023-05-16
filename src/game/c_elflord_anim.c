@@ -8,11 +8,11 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "c_elflord_anim.h"
-#include "c_elflord.h"
-#include "c_ai.h"
+#include "header/c_elflord_anim.h"
+#include "header/c_elflord.h"
+#include "header/c_ai.h"
 
 void Elflord_c_throwhead(edict_t *self);
 void elflord_mist(edict_t *self, float x, float y, float z);

@@ -44,21 +44,21 @@ GORGON
 */
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "buoy.h"
+#include "header/buoy.h"
 
-#include "g_misc.h"
-#include "m_gorgon.h"
-#include "m_gorgon_anim.h"
-#include "m_stats.h"
+#include "header/g_misc.h"
+#include "header/m_gorgon.h"
+#include "header/m_gorgon_anim.h"
+#include "header/m_stats.h"
 #include "../player/p_anim_branch.h"
 #include "../player/p_anims.h"
-#include "g_hitlocation.h"
+#include "header/g_hitlocation.h"
 #include "../player/p_actions.h"
 
 

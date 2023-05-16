@@ -12,7 +12,7 @@
 #include "../../h2common/resourcemanager.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define	NUM_SPLASH_MODELS	2
 static struct model_s *water_models[NUM_SPLASH_MODELS];

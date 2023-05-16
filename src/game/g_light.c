@@ -8,9 +8,9 @@
 #include "../common/header/common.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/effectflags.h"
-#include "g_local.h"
-#include "g_misc.h"
-#include "g_defaultmessagehandler.h"
+#include "header/g_local.h"
+#include "header/g_misc.h"
+#include "header/g_defaultmessagehandler.h"
 
 #define LIGHT_STARTOFF	8
 

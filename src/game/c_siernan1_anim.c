@@ -8,13 +8,13 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "c_siernan1_anim.h"
-#include "c_siernan1.h"
+#include "header/c_siernan1_anim.h"
+#include "header/c_siernan1.h"
 
-#include "g_monster.h"
-#include "c_ai.h"
+#include "header/g_monster.h"
+#include "header/c_ai.h"
 
 
 /************************************************************************

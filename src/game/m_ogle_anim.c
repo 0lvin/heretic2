@@ -3,12 +3,12 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "m_ogle.h"
-#include "g_local.h"
-#include "m_ogle_anim.h"
+#include "header/m_ogle.h"
+#include "header/g_local.h"
+#include "header/m_ogle_anim.h"
 
-#include "g_monster.h"
-#include "c_ai.h"
+#include "header/g_monster.h"
+#include "header/c_ai.h"
 
 /*----------------------------------------------------
 	ogle standing - temp

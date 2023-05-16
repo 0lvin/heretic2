@@ -8,11 +8,11 @@
 // ****************************************************************************
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "buoy.h"
+#include "header/g_local.h"
+#include "header/buoy.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/fx.h"
-#include "m_stats.h"
+#include "header/m_stats.h"
 
 #define SF_JUMP		1//make monster jump
 #define SF_ACTIVATE	2//turn something on

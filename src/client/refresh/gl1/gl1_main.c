@@ -440,7 +440,8 @@ R_DrawEntitiesOnList(void)
 	glDepthMask(1); /* back to writing */
 }
 
-void RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1, float t1, float s2, float t2) {
+static void
+RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1, float t1, float s2, float t2) {
 	vec3_t vertexes[4];
 	vec3_t st[4];
 	int indexes[6] = { 0, 1, 3, 3, 1, 2 };
@@ -470,6 +471,110 @@ void RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, flo
 		glVertex3fv(vertexes[indexes[i]]);
 	}
 }
+
+#if 0
+// TODO: rework
+void
+R_DrawParticles2(int num_particles, const particle_t particles[],
+		const unsigned *colortable)
+{
+	const particle_t *p;
+	int i;
+	vec3_t up, right;
+	float scale;
+	YQ2_ALIGNAS_TYPE(unsigned) byte color[4];
+
+	YQ2_VLA(GLfloat, vtx, 3 * num_particles * 3);
+	YQ2_VLA(GLfloat, tex, 2 * num_particles * 3);
+	YQ2_VLA(GLfloat, clr, 4 * num_particles * 3);
+
+	unsigned int index_vtx = 0;
+	unsigned int index_tex = 0;
+	unsigned int index_clr = 0;
+	unsigned int j;
+
+	R_Bind(r_particletexture->texnum);
+	glDepthMask(GL_FALSE); /* no z buffering */
+	glEnable(GL_BLEND);
+	R_TexEnv(GL_MODULATE);
+
+	VectorScale( vup, 1.5, up );
+	VectorScale( vright, 1.5, right );
+
+	for ( p = particles, i = 0; i < num_particles; i++, p++ )
+	{
+		/* hack a scale up to keep particles from disapearing */
+		scale = ( p->origin [ 0 ] - r_origin [ 0 ] ) * vpn [ 0 ] +
+			( p->origin [ 1 ] - r_origin [ 1 ] ) * vpn [ 1 ] +
+			( p->origin [ 2 ] - r_origin [ 2 ] ) * vpn [ 2 ];
+
+		if ( scale < 20 )
+		{
+			scale = 1;
+		}
+		else
+		{
+			scale = 1 + scale * 0.004;
+		}
+
+		*(unsigned *) color = colortable [ p->color ];
+
+		for (j=0; j<3; j++) // Copy the color for each point
+		{
+			clr[index_clr++] = color[0]/255.0f;
+			clr[index_clr++] = color[1]/255.0f;
+			clr[index_clr++] = color[2]/255.0f;
+			clr[index_clr++] = p->alpha;
+		}
+
+		// point 0
+		tex[index_tex++] = 0.0625f;
+		tex[index_tex++] = 0.0625f;
+
+		vtx[index_vtx++] = p->origin[0];
+		vtx[index_vtx++] = p->origin[1];
+		vtx[index_vtx++] = p->origin[2];
+
+		// point 1
+		tex[index_tex++] = 1.0625f;
+		tex[index_tex++] = 0.0625f;
+
+		vtx[index_vtx++] = p->origin [ 0 ] + up [ 0 ] * scale;
+		vtx[index_vtx++] = p->origin [ 1 ] + up [ 1 ] * scale;
+		vtx[index_vtx++] = p->origin [ 2 ] + up [ 2 ] * scale;
+
+		// point 2
+		tex[index_tex++] = 0.0625f;
+		tex[index_tex++] = 1.0625f;
+
+		vtx[index_vtx++] = p->origin [ 0 ] + right [ 0 ] * scale;
+		vtx[index_vtx++] = p->origin [ 1 ] + right [ 1 ] * scale;
+		vtx[index_vtx++] = p->origin [ 2 ] + right [ 2 ] * scale;
+	}
+
+	glEnableClientState( GL_VERTEX_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	glEnableClientState( GL_COLOR_ARRAY );
+
+	glVertexPointer( 3, GL_FLOAT, 0, vtx );
+	glTexCoordPointer( 2, GL_FLOAT, 0, tex );
+	glColorPointer( 4, GL_FLOAT, 0, clr );
+	glDrawArrays( GL_TRIANGLES, 0, num_particles*3 );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState( GL_COLOR_ARRAY );
+
+	glDisable(GL_BLEND);
+	glColor4f(1, 1, 1, 1);
+	glDepthMask(1); /* back to normal Z buffering */
+	R_TexEnv(GL_REPLACE);
+
+	YQ2_VLAFREE(vtx);
+	YQ2_VLAFREE(tex);
+	YQ2_VLAFREE(clr);
+}
+#endif
 
 void
 R_DrawParticles(int num_particles, particle_t* particles, int type)
@@ -1070,44 +1175,6 @@ R_RenderView(refdef_t *fd)
 	}
 }
 
-static void GL_DrawColoredStereoLinePair( float r, float g, float b, float y )
-{
-	glColor3f( r, g, b );
-	glVertex2f( 0, y );
-	glVertex2f( vid.width, y );
-	glColor3f( 0, 0, 0 );
-	glVertex2f( 0, y + 1 );
-	glVertex2f( vid.width, y + 1 );
-}
-
-static void GL_DrawStereoPattern( void )
-{
-	int i;
-
-	if ( !gl_state.stereo_mode == STEREO_MODE_NONE )
-		return;
-
-	R_SetGL2D();
-
-	glDrawBuffer( GL_BACK_LEFT );
-
-	for ( i = 0; i < 20; i++ )
-	{
-		glBegin( GL_LINES );
-			GL_DrawColoredStereoLinePair( 1, 0, 0, 0 );
-			GL_DrawColoredStereoLinePair( 1, 0, 0, 2 );
-			GL_DrawColoredStereoLinePair( 1, 0, 0, 4 );
-			GL_DrawColoredStereoLinePair( 1, 0, 0, 6 );
-			GL_DrawColoredStereoLinePair( 0, 1, 0, 8 );
-			GL_DrawColoredStereoLinePair( 1, 1, 0, 10);
-			GL_DrawColoredStereoLinePair( 1, 1, 0, 12);
-			GL_DrawColoredStereoLinePair( 0, 1, 0, 14);
-		glEnd();
-
-		GLimp_EndFrame();
-	}
-}
-
 enum opengl_special_buffer_modes
 GL_GetSpecialBufferModeForStereoMode(enum stereo_modes stereo_mode) {
 	switch (stereo_mode) {
@@ -1302,7 +1369,11 @@ R_Register(void)
 	ri.Cmd_AddCommand("gl_strings", R_Strings);
 }
 
-qboolean R_SetMode (void)
+/*
+ * Changes the video mode
+ */
+static qboolean
+R_SetMode(void)
 {
 	int err;
 	qboolean fullscreen;
@@ -1330,13 +1401,12 @@ qboolean R_SetMode (void)
 		{
 			ri.Cvar_SetValue( "r_mode", gl_state.prev_mode );
 			r_mode->modified = false;
-			ri.Con_Printf( PRINT_ALL, "ref_gl::R_SetMode() - invalid mode\n" );
 		}
 
 		// try setting it back to something safe
 		if ( ( err = GLimp_SetMode((int*)&vid.width, (int*)&vid.height, gl_state.prev_mode, false ) ) != rserr_ok )
 		{
-			ri.Con_Printf( PRINT_ALL, "ref_gl::R_SetMode() - could not revert to safe mode\n" );
+			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - could not revert to safe mode\n");
 			return false;
 		}
 	}
@@ -1347,13 +1417,11 @@ qboolean R_SetMode (void)
 int
 RI_Init(void *hinstance, void *hWnd)
 {
-	char renderer_buffer[1000];
-	char vendor_buffer[1000];
-	int		err;
-	int		j;
+	int err;
+	int j;
 	extern float r_turbsin[256];
 
-	for ( j = 0; j < 256; j++ )
+	for (j = 0; j < 256; j++)
 	{
 		r_turbsin[j] *= 0.5;
 	}
@@ -1361,13 +1429,23 @@ RI_Init(void *hinstance, void *hWnd)
 	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
 	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
 
+#if 0
+	// TODO Rework me
+	GetPCXPalette (&colormap, d_8to24table);
+	free(colormap);
+#endif
+
 	R_Register();
 
-	// initialize our gl dynamic bindings
+	/* set our "safe" mode */
+	gl_state.prev_mode = 4;
+	gl_state.stereo_mode = gl1_stereo->value;
+
+	/* initialize our QGL dynamic bindings */
 	if (!QGL_Init())
 	{
 		QGL_Shutdown();
-		ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not load \"%s\"\n", "opengl32" );
+		R_Printf(PRINT_ALL, "ref_gl::R_Init() - could not R_SetMode()\n");
 		return -1;
 	}
 
@@ -1378,45 +1456,159 @@ RI_Init(void *hinstance, void *hWnd)
 		return -1;
 	}
 
-	// set our "safe" modes
-	gl_state.prev_mode = 3;
-
-	// create the window and set up the context
-	if ( !R_SetMode () )
+	/* create the window and set up the context */
+	if (!R_SetMode())
 	{
 		QGL_Shutdown();
-	ri.Con_Printf (PRINT_ALL, "ref_gl::R_Init() - could not R_SetMode()\n" );
+		R_Printf(PRINT_ALL, "ref_gl::R_Init() - could not R_SetMode()\n");
 		return -1;
 	}
 
 	ri.Vid_MenuInit();
 
-	/*
-	** get our various GL strings
-	*/
-	gl_config.vendor_string = (const char *)glGetString (GL_VENDOR);
-	ri.Con_Printf (PRINT_ALL, "GL_VENDOR: %s\n", gl_config.vendor_string );
-	gl_config.renderer_string = (const char*)glGetString (GL_RENDERER);
-	ri.Con_Printf (PRINT_ALL, "GL_RENDERER: %s\n", gl_config.renderer_string );
-	gl_config.version_string = (const char*)glGetString (GL_VERSION);
-	ri.Con_Printf (PRINT_ALL, "GL_VERSION: %s\n", gl_config.version_string );
-	gl_config.extensions_string = (const char*)glGetString (GL_EXTENSIONS);
-	//ri.Con_Printf (PRINT_ALL, "GL_EXTENSIONS: %s\n", gl_config.extensions_string );
+	// --------
 
-	strcpy( renderer_buffer, gl_config.renderer_string );
-	Q_strlwr( renderer_buffer );
+	/* get our various GL strings */
+	R_Printf(PRINT_ALL, "\nOpenGL setting:\n");
 
-	strcpy( vendor_buffer, gl_config.vendor_string );
-	Q_strlwr( vendor_buffer );
+	gl_config.vendor_string = (char *)glGetString(GL_VENDOR);
+	R_Printf(PRINT_ALL, "GL_VENDOR: %s\n", gl_config.vendor_string);
+
+	gl_config.renderer_string = (char *)glGetString(GL_RENDERER);
+	R_Printf(PRINT_ALL, "GL_RENDERER: %s\n", gl_config.renderer_string);
+
+	gl_config.version_string = (char *)glGetString(GL_VERSION);
+	R_Printf(PRINT_ALL, "GL_VERSION: %s\n", gl_config.version_string);
+
+	gl_config.extensions_string = (char *)glGetString(GL_EXTENSIONS);
+	R_Printf(PRINT_ALL, "GL_EXTENSIONS: %s\n", gl_config.extensions_string);
+
+	sscanf(gl_config.version_string, "%d.%d", &gl_config.major_version, &gl_config.minor_version);
+
+	if (gl_config.major_version == 1)
+	{
+		if (gl_config.minor_version < 4)
+		{
+			QGL_Shutdown();
+			R_Printf(PRINT_ALL, "Support for OpenGL 1.4 is not available\n");
+
+			return false;
+		}
+	}
+
+	R_Printf(PRINT_ALL, "\n\nProbing for OpenGL extensions:\n");
+
+	// ----
+
+	/* Point parameters */
+	R_Printf(PRINT_ALL, " - Point parameters: ");
+
+	if (strstr(gl_config.extensions_string, "GL_ARB_point_parameters"))
+	{
+#if 0
+		// TODO: Rework
+		qglPointParameterfARB = (void (APIENTRY *)(GLenum, GLfloat))RI_GetProcAddress ( "glPointParameterfARB" );
+		qglPointParameterfvARB = (void (APIENTRY *)(GLenum, const GLfloat *))RI_GetProcAddress ( "glPointParameterfvARB" );
+#endif
+	}
+
+
+	gl_config.pointparameters = false;
+
+	if (gl1_pointparameters->value)
+	{
+		if (qglPointParameterfARB && qglPointParameterfvARB)
+		{
+			gl_config.pointparameters = true;
+			R_Printf(PRINT_ALL, "Okay\n");
+		}
+		else
+		{
+			R_Printf(PRINT_ALL, "Failed\n");
+		}
+	}
+	else
+	{
+		R_Printf(PRINT_ALL, "Disabled\n");
+	}
+
+	// ----
+
+	/* Paletted texture */
+	R_Printf(PRINT_ALL, " - Paletted texture: ");
+
+	if (strstr(gl_config.extensions_string, "GL_EXT_paletted_texture") &&
+		strstr(gl_config.extensions_string, "GL_EXT_shared_texture_palette"))
+	{
+			qglColorTableEXT = (void (APIENTRY *)(GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid * ))
+					RI_GetProcAddress ("glColorTableEXT");
+	}
+
+	gl_config.palettedtexture = false;
+
+	if (gl1_palettedtexture->value)
+	{
+		if (qglColorTableEXT)
+		{
+			gl_config.palettedtexture = true;
+			R_Printf(PRINT_ALL, "Okay\n");
+		}
+		else
+		{
+			R_Printf(PRINT_ALL, "Failed\n");
+		}
+	}
+	else
+	{
+		R_Printf(PRINT_ALL, "Disabled\n");
+	}
+
+	// --------
+
+	/* Anisotropic */
+	R_Printf(PRINT_ALL, " - Anisotropic: ");
+
+	if (strstr(gl_config.extensions_string, "GL_EXT_texture_filter_anisotropic"))
+	{
+		gl_config.anisotropic = true;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gl_config.max_anisotropy);
+
+		R_Printf(PRINT_ALL, "%ux\n", (int)gl_config.max_anisotropy);
+	}
+	else
+	{
+		gl_config.anisotropic = false;
+		gl_config.max_anisotropy = 0.0;
+
+		R_Printf(PRINT_ALL, "Failed\n");
+	}
+
+	// ----
+
+	/* Non power of two textures */
+	R_Printf(PRINT_ALL, " - Non power of two textures: ");
+
+	if (strstr(gl_config.extensions_string, "GL_ARB_texture_non_power_of_two"))
+	{
+		gl_config.npottextures = true;
+		R_Printf(PRINT_ALL, "Okay\n");
+	}
+	else
+	{
+		gl_config.npottextures = false;
+		R_Printf(PRINT_ALL, "Failed\n");
+	}
+
+	// ----
 
 	ri.Cvar_Set( "scr_drawall", "0" );
 
 	R_SetDefaultState();
 
-	R_InitImages ();
-	Mod_Init ();
-	R_InitParticleTexture ();
-	Draw_InitLocal ();
+	R_InitImages();
+	Mod_Init();
+	R_InitParticleTexture();
+	Draw_InitLocal();
 
 	err = glGetError();
 	if ( err != GL_NO_ERROR )
@@ -1459,21 +1651,53 @@ RI_BeginFrame(float camera_separation)
 		ref->modified = true;
 	}
 
-	/*
-	** update 3Dfx gamma -- it is expected that a user will do a vid_restart
-	** after tweaking this value
-	*/
-	if ( vid_gamma->modified )
+	if (vid_gamma->modified)
 	{
 		vid_gamma->modified = false;
 	}
 
 	GLimp_BeginFrame( camera_separation );
 
-	/*
-	** go into 2D mode
-	*/
-	glViewport (0,0, vid.width, vid.height);
+	// Clamp overbrightbits
+	if (gl1_overbrightbits->modified)
+	{
+		if (gl1_overbrightbits->value > 2 && gl1_overbrightbits->value < 4)
+		{
+			ri.Cvar_Set("r_overbrightbits", "2");
+		}
+		else if (gl1_overbrightbits->value > 4)
+		{
+			ri.Cvar_Set("r_overbrightbits", "4");
+		}
+
+		gl1_overbrightbits->modified = false;
+	}
+
+	/* go into 2D mode */
+
+	// FIXME: just call R_SetGL2D();
+
+	int x, w, y, h;
+	qboolean drawing_left_eye = gl_state.camera_separation < 0;
+	qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
+	qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
+
+	x = 0;
+	w = vid.width;
+	y = 0;
+	h = vid.height;
+
+	if(stereo_split_lr) {
+		w =  w / 2;
+		x = drawing_left_eye ? 0 : w;
+	}
+
+	if(stereo_split_tb) {
+		h =  h / 2;
+		y = drawing_left_eye ? h : 0;
+	}
+
+	glViewport(x, y, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, vid.width, vid.height, 0, -99999, 99999);
@@ -1564,8 +1788,6 @@ RI_BeginFrame(float camera_separation)
 	/* clear screen if desired */
 	R_Clear();
 }
-
-unsigned r_rawpalette[256];
 
 void
 RI_SetPalette(const unsigned char *palette)
@@ -1707,12 +1929,9 @@ void	RDraw_TileClear (int x, int y, int w, int h, char *name);
 void	RDraw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
 void	RDraw_FadeScreen (void);
 
-void Draw_Name (vec3_t origin, char *Name, paletteRGBA_t color)
-{
 
-}
-
-void DrawLine(vec3_t start, vec3_t end) {
+static void
+DrawLine(vec3_t start, vec3_t end) {
 	debug_lines[numDebugLines].start[0] = start[0];
 	debug_lines[numDebugLines].start[1] = start[1];
 	debug_lines[numDebugLines].start[2] = start[2];
@@ -1728,7 +1947,6 @@ void R_EndFrame(void)
 {
 	GLimp_EndFrame();
 }
-
 
 /*
 =====================
@@ -1759,7 +1977,6 @@ GetRefAPI(refimport_t imp)
 	re.RegisterPic = RDraw_FindPic;
 	re.SetSky = RI_SetSky;
 	re.EndRegistration = RI_EndRegistration;
-	re.Draw_Name = Draw_Name;
 	re.DrawLine = DrawLine;
 	re.RenderFrame = RI_RenderFrame;
 	re.DrawGetPicSize = RDraw_GetPicSize;
@@ -1769,17 +1986,10 @@ GetRefAPI(refimport_t imp)
 	re.DrawTileClear = RDraw_TileClear;
 	re.DrawFill = RDraw_Fill;
 	re.DrawFadeScreen = RDraw_FadeScreen;
-	re.DrawBigFont = R_DrawBigFont;
-	re.BF_Strlen = BF_Strlen;
-	re.BookDrawPic = R_BookDrawPic;
-	re.DrawInitCinematic = R_DrawInitCinematic;
-	re.DrawCloseCinematic = R_DrawCloseCinematic;
 	re.DrawCinematic = R_DrawCinematic;
 
 	re.BeginFrame = RI_BeginFrame;
 	re.EndFrame = R_EndFrame;
-
-	re.AppActivate = GLimp_AppActivate;
 
 	Swap_Init ();
 

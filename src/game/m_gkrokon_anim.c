@@ -8,10 +8,10 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_gkrokon_anim.h"
-#include "m_gkrokon.h"
+#include "header/m_gkrokon_anim.h"
+#include "header/m_gkrokon.h"
 #include "../../h2common/h2rand.h"
 
 // ****************************************************************************

@@ -8,22 +8,22 @@
 //
 
 #include "../common/header/common.h"
-#include "p_funcs.h"
+#include "header/p_funcs.h"
 #include "../player/p_animactor.h"
 #include "../player/p_anims.h"
 #include "../player/p_ctrl.h"
-#include "p_funcs.h"
+#include "header/p_funcs.h"
 #include "../player/p_main.h"
 #include "../player/p_weapon.h"
-#include "g_local.h"
-#include "g_skeletons.h"
-#include "g_teleport.h"
+#include "header/g_local.h"
+#include "header/g_skeletons.h"
+#include "header/g_teleport.h"
 #include "../../h2common/angles.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "utilities.h"
-#include "g_playstats.h"
-#include "g_weapon.h"
+#include "header/utilities.h"
+#include "header/g_playstats.h"
+#include "header/g_weapon.h"
 
 // ************************************************************************************************
 // G_GetEntityStatePtr

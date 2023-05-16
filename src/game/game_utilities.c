@@ -9,11 +9,11 @@
 #include <assert.h>
 
 #include "../common/header/common.h"
-#include "utilities.h"
+#include "header/utilities.h"
 #include "../../h2common/angles.h"
-#include "g_local.h"
-#include "g_hitlocation.h"
-#include "g_physics.h"
+#include "header/g_local.h"
+#include "header/g_hitlocation.h"
+#include "header/g_physics.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/fx.h"
 #include "../player/p_main.h"

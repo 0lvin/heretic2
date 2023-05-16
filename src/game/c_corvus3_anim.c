@@ -8,11 +8,11 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "c_corvus3_anim.h"
-#include "c_corvus3.h"
+#include "header/g_local.h"
+#include "header/c_corvus3_anim.h"
+#include "header/c_corvus3.h"
 
-#include "c_ai.h"
+#include "header/c_ai.h"
 
 void corvus3_teleporteffect (edict_t *self);
 void corvus3_teleportsmalleffect (edict_t *self);

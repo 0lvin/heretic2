@@ -16,7 +16,7 @@
 #include "utilities.h"
 #include "../../h2common/reference.h"
 #include "ce_dlight.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define SHIELD_TRAIL_DELAY	100
 #define SHIELD_RADIUS		32.0

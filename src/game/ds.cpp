@@ -6,11 +6,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "g_local.h"
+#include "header/g_local.h"
 #ifdef __cplusplus
 } //end extern "C"
 #endif
-#include "ds.h"
+#include "header/ds.h"
 
 #define DEG2RAD( a ) ( a * M_PI ) / 180.0F
 #define SCRIPT_SAVE_VERSION 2

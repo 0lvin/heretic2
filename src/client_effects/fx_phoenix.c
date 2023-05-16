@@ -17,7 +17,7 @@
 #include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "q_sprite.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define EXPLODE_SPEED		160.0
 #define EXPLODE_GRAVITY		(-320.0)

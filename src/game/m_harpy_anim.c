@@ -3,9 +3,9 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "m_harpy_anim.h"
-#include "g_local.h"
-#include "m_harpy.h"
+#include "header/m_harpy_anim.h"
+#include "header/g_local.h"
+#include "header/m_harpy.h"
 
 
 /*----------------------------------------------------

@@ -12,7 +12,7 @@
 #include "../../h2common/resourcemanager.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 #include "../../h2common/h2rand.h"
 
 #define	NUM_WAKE_MODELS	2

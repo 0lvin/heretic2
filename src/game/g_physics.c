@@ -3,19 +3,19 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_physics.h"
-#include "g_local.h"
+#include "header/g_physics.h"
+#include "header/g_local.h"
 
 #include "../../h2common/angles.h"
 #include "../../h2common/singlylinkedlist.h"
-#include "g_physics.h"
-#include "utilities.h"
+#include "header/g_physics.h"
+#include "header/utilities.h"
 #include "../player/p_main.h"
 #include "../../h2common/h2rand.h"
 #include "../player/p_anim_branch.h"
 #include "../player/p_anims.h"
 #include "../../h2common/fx.h"
-#include "g_playstats.h"
+#include "header/g_playstats.h"
 #include "../player/p_actions.h"
 
 static void Physics_None(edict_t *self);

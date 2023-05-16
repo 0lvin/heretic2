@@ -10,7 +10,7 @@
 #include "client_effects.h"
 #include "ce_defaultmessagehandler.h"
 #include "../../h2common/effectflags.h"
-#include "../game/g_physics.h"
+#include "../game/header/g_physics.h"
 #include "fx_debris.h"
 #include "../../h2common/h2rand.h"
 #include "particle.h"

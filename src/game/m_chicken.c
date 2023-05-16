@@ -13,21 +13,21 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "buoy.h"
-#include "g_physics.h"
-#include "g_teleport.h"
-#include "g_skeletons.h"
+#include "header/buoy.h"
+#include "header/g_physics.h"
+#include "header/g_teleport.h"
+#include "header/g_skeletons.h"
 #include "../player/p_anims.h"
 
-#include "m_chicken.h"
-#include "m_chicken_anim.h"
-#include "m_stats.h"
+#include "header/m_chicken.h"
+#include "header/m_chicken_anim.h"
+#include "header/m_stats.h"
 
 extern void BecomeDebris(edict_t *self);
 extern void ED_CallSpawn (edict_t *ent);

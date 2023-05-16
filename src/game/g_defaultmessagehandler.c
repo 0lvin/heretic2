@@ -3,11 +3,11 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_defaultmessagehandler.h"
-#include "g_physics.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_hitlocation.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_physics.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_hitlocation.h"
 
 G_MsgReceiver_t DefaultMessageReceivers[NUM_MESSAGES] =
 {

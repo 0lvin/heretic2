@@ -15,9 +15,9 @@
 #include "p_ctrl.h"
 #include "p_main.h"
 #include "../../h2common/angles.h"
-#include "../game/g_teleport.h"
+#include "../game/header/g_teleport.h"
 #include "../common/header/common.h"
-#include "../game/utilities.h"
+#include "../game/header/utilities.h"
 #include "../../h2common/fx.h"
 
 #define PLAYER_SCREAM_THRESHOLD	-600

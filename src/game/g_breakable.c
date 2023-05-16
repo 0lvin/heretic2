@@ -10,10 +10,10 @@
 ==============================================================================
 */
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "g_misc.h"
+#include "header/g_local.h"
+#include "header/g_misc.h"
 #include "../../h2common/fx.h"
-#include "g_defaultmessagehandler.h"
+#include "header/g_defaultmessagehandler.h"
 
 int BREAK_KILLALL		= 1;
 int BREAK_NOLINK	    = 2;

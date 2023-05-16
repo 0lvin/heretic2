@@ -16,7 +16,7 @@
 #include "../../h2common/motion.h"
 #include "../../h2common/reference.h"
 #include "ce_dlight.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define	SMALL_RAD	8
 #define	MORPH_GLOW_DUR	10

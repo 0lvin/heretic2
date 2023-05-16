@@ -9,14 +9,14 @@
 
 #include "../common/header/common.h"
 #include "../../h2common/fx.h"
-#include "g_local.h"
-#include "g_itemstats.h"
+#include "header/g_local.h"
+#include "header/g_itemstats.h"
 #include "../../h2common/h2rand.h"
 #include "../player/p_actions.h"
 #include "../player/p_anims.h"
 #include "../player/p_main.h"
-#include "m_player.h"
-#include "p_funcs.h"
+#include "header/m_player.h"
+#include "header/p_funcs.h"
 #include "../../h2common/cl_strings.h"
 
 // Set up those shrines that are randomly selectable.

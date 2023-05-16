@@ -8,12 +8,12 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_beast_anim.h"
-#include "m_beast.h"
+#include "header/m_beast_anim.h"
+#include "header/m_beast.h"
 
-#include "g_monster.h"
+#include "header/g_monster.h"
 
 void ai_charge2 (edict_t *self, float dist);
 

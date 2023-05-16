@@ -7,13 +7,13 @@
 // By Jake Simpson
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "decals.h"
-#include "utilities.h"
-#include "g_playstats.h"
-#include "g_physics.h"
+#include "header/decals.h"
+#include "header/utilities.h"
+#include "header/g_playstats.h"
+#include "header/g_physics.h"
 
 #define FIST_RADIUS				2.0
 #define TORN_RADIUS				10.0

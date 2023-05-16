@@ -8,10 +8,10 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_mssithra_anim.h"
-#include "m_mssithra.h"
+#include "header/m_mssithra_anim.h"
+#include "header/m_mssithra.h"
 
 /*----------------------------------------------------------------------
   mssithra Idle - looking around and standing

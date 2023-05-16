@@ -14,7 +14,7 @@
 #include "utilities.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/motion.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 #include "ce_dlight.h"
 
 #define FLAME_COUNT			4

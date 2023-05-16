@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 #include "../src/player/player.h"
-#include "../src/game/g_local.h"
+#include "../src/game/header/g_local.h"
 #include "../src/common/header/common.h"
 
 // Structure containing functions and data pointers exported from the player DLL.

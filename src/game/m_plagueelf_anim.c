@@ -8,13 +8,13 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_plagueelf_anim.h"
-#include "m_plagueelf.h"
+#include "header/m_plagueelf_anim.h"
+#include "header/m_plagueelf.h"
 
-#include "g_monster.h"
-#include "c_ai.h"
+#include "header/g_monster.h"
+#include "header/c_ai.h"
 
 //all of the anim frames that used to live in m_plagueelf.h
 

@@ -15,7 +15,7 @@
 #include "../../h2common/h2rand.h"
 #include "fx_debris.h"
 #include "utilities.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define	NUM_METEOR_MODELS	1
 

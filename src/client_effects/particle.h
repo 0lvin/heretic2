@@ -125,7 +125,6 @@ typedef struct client_particle_s
 	int		duration;	// miliseconds
 } client_particle_t;
 
-#define	PARTICLE_GRAVITY	80
 #define PARTICLE_TRAIL_THINK_TIME 100 // spawns a particle puff 10 times per sec
 
 //particle render flags, <127 is the type

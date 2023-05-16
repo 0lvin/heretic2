@@ -8,19 +8,19 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/g_local.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "buoy.h"
-#include "g_playstats.h"
-#include "m_elflord.h"
-#include "m_elflord_anims.h"
-#include "g_monster.h"
-#include "m_stats.h"
-#include "g_hitlocation.h"
+#include "header/buoy.h"
+#include "header/g_playstats.h"
+#include "header/m_elflord.h"
+#include "header/m_elflord_anims.h"
+#include "header/g_monster.h"
+#include "header/m_stats.h"
+#include "header/g_hitlocation.h"
 
 /*QUAKED monster_elflord (1 .5 0) (-16 -16 -0) (16 16 32)
 */

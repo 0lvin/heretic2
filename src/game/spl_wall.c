@@ -4,16 +4,16 @@
 //
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
 #include "../../h2common/matrix.h"
-#include "g_volume_effect.h"
-#include "utilities.h"
-#include "g_classstatics.h"
-#include "g_physics.h"
-#include "g_volume_effect.h"
-#include "g_playstats.h"
+#include "header/g_volume_effect.h"
+#include "header/utilities.h"
+#include "header/g_classstatics.h"
+#include "header/g_physics.h"
+#include "header/g_volume_effect.h"
+#include "header/g_playstats.h"
 
 
 #define FIREWALL_DOT_MIN	0.25

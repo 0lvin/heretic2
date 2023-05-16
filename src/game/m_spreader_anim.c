@@ -8,11 +8,11 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_spreader_anim.h"
-#include "m_spreadermist.h"
-#include "m_spreader.h"
+#include "header/m_spreader_anim.h"
+#include "header/m_spreadermist.h"
+#include "header/m_spreader.h"
 
 void ai_charge2 (edict_t *self, float dist);
 

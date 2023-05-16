@@ -3,10 +3,10 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/h2rand.h"
-#include "g_playstats.h"
-#include "g_itemstats.h"
+#include "header/g_playstats.h"
+#include "header/g_itemstats.h"
 #include "../common/header/common.h"
 
 extern player_export_t	playerExport;	// interface to player DLL.

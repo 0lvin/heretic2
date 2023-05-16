@@ -14,7 +14,7 @@
 #include "utilities.h"
 #include "../../h2common/reference.h"
 #include "../../h2common/matrix.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 enum {
 	MODEL_SPARKSTREAK,

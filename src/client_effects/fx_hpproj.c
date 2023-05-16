@@ -17,7 +17,7 @@
 #include "utilities.h"
 #include "../../h2common/reference.h"
 #include "../../h2common/matrix.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define	NUM_MISSILE_MODELS	11
 #define	NUM_STAFF_MODELS	1

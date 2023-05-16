@@ -15,7 +15,7 @@
 #include "utilities.h"
 #include "../../h2common/reference.h"
 #include "../../h2common/matrix.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define FIST_DELTA_FORWARD	8.0
 #define FIST_DELTA_THETA	0.12

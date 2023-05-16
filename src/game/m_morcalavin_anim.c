@@ -3,9 +3,9 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "m_morcalavin.h"
-#include "m_morcalavin_anim.h"
+#include "header/g_local.h"
+#include "header/m_morcalavin.h"
+#include "header/m_morcalavin_anim.h"
 
 animframe_t morcalavin_frames_float[] =
 {

@@ -26,7 +26,7 @@
 
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 #include "../../h2common/message.h"
 
 

@@ -803,13 +803,6 @@ void GLimp_EndFrame (void)
 	glXSwapBuffers(dpy, win);
 }
 
-/*
-** GLimp_AppActivate
-*/
-void GLimp_AppActivate( qboolean active )
-{
-}
-
 /*------------------------------------------------*/
 /* X11 Input Stuff
 /*------------------------------------------------*/

@@ -16,7 +16,7 @@
 #include "ambient_effects.h"
 #include "ce_dlight.h"
 #include "../../h2common/reference.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 #define CLOUD_GEN_RAD	30.0
 

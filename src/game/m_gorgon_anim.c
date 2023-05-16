@@ -8,17 +8,17 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "g_local.h"
+#include "header/g_local.h"
 
-#include "m_gorgon_anim.h"
-#include "m_gorgon.h"
+#include "header/m_gorgon_anim.h"
+#include "header/m_gorgon.h"
 
-#include "utilities.h"
-#include "g_defaultmessagehandler.h"
-#include "g_monster.h"
+#include "header/utilities.h"
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_monster.h"
 #include "../../h2common/h2rand.h"
 #include "../common/header/common.h"
-#include "m_stats.h"
+#include "header/m_stats.h"
 
 
 void gorgon_land(edict_t *self);

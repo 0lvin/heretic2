@@ -3,11 +3,11 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "g_local.h"
-#include "m_seraph.h"
-#include "m_seraph_anim.h"
-#include "g_monster.h"
-#include "m_stats.h"
+#include "header/g_local.h"
+#include "header/m_seraph.h"
+#include "header/m_seraph_anim.h"
+#include "header/g_monster.h"
+#include "header/m_stats.h"
 
 /*----------------------------------------------------
 	seraph idles

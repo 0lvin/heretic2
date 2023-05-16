@@ -16,7 +16,7 @@
 #include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "particle.h"
-#include "../game/g_playstats.h"
+#include "../game/header/g_playstats.h"
 
 // ************************************************************************************************
 // SpellHandsTrails
