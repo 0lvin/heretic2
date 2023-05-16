@@ -29,7 +29,7 @@
 
 cvar_t	*cl_nodelta;
 
-extern	unsigned	sys_frame_time;
+unsigned	sys_frame_time;
 unsigned	frame_msec;
 unsigned	old_sys_frame_time;
 
@@ -67,6 +67,20 @@ kbutton_t	in_strafe, in_speed, in_use, in_attack;
 kbutton_t	in_up, in_down;
 
 int			in_impulse;
+
+#include "../../linux/rw_linux.h"
+
+
+void Sys_SendKeyEvents (void)
+{
+#ifndef DEDICATED_ONLY
+	if (KBD_Update_fp)
+		KBD_Update_fp();
+#endif
+
+	// grab frame time
+	sys_frame_time = Sys_Milliseconds();
+}
 
 
 void KeyDown (kbutton_t *b)

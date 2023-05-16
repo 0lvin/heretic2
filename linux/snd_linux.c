@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int audio_fd;
 int snd_inited;
+uid_t saved_euid;
 
 cvar_t *sndbits;
 cvar_t *sndspeed;
@@ -51,7 +52,6 @@ qboolean SNDDMA_Init(void)
     char *s;
 	struct audio_buf_info info;
 	int caps;
-	extern uid_t saved_euid;
 
 	if (snd_inited)
 		return 0;

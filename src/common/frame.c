@@ -31,38 +31,46 @@
 cvar_t *developer;
 cvar_t *modder;
 cvar_t *timescale;
+cvar_t *fixedtime;
+cvar_t *cl_maxfps;
+cvar_t *dedicated;
 
-#include "../client/header/screen.h"
-#include "../client/header/keyboard.h"
-#include "../client/header/console.h"
-#include "../server/header/server.h"
-
-#define	MAXPRINTMSG	4096
-
-#define MAX_NUM_ARGVS	50
-
-
-int		com_argc;
-char	*com_argv[MAX_NUM_ARGVS+1];
-
-int		realtime;
-
-extern jmp_buf abortframe;		// an ERR_DROP occured, exit the entire frame
+extern cvar_t *color_terminal;
+extern cvar_t *logfile_active;
+extern jmp_buf abortframe; /* an ERR_DROP occured, exit the entire frame */
 extern zhead_t z_chain;
 
-FILE	*log_stats_file;
+#ifndef DEDICATED_ONLY
+FILE *log_stats_file;
+cvar_t *busywait;
+cvar_t *cl_async;
+cvar_t *cl_timedemo;
+cvar_t *vid_maxfps;
+cvar_t *host_speeds;
+cvar_t *log_stats;
+cvar_t *showtrace;
+#endif
 
-cvar_t	*host_speeds;
-cvar_t	*log_stats;
-cvar_t	*fixedtime;
-cvar_t	*showtrace;
-cvar_t	*dedicated;
+// Forward declarations
+#ifndef DEDICATED_ONLY
+int GLimp_GetRefreshRate(void);
+qboolean R_IsVSyncActive(void);
+#endif
 
 /* host_speeds times */
 int time_before_game;
 int time_after_game;
 int time_before_ref;
 int time_after_ref;
+
+// Used in the network- and input pathes.
+int curtime;
+
+#ifndef DEDICATED_ONLY
+void Key_Init(void);
+void Key_Shutdown(void);
+void SCR_EndLoadingPlaque(void);
+#endif
 
 // Is the game portable?
 qboolean is_portable;
@@ -74,6 +82,123 @@ char userGivenGame[MAX_QPATH];
 // Hack for the signal handlers.
 qboolean quitnextframe;
 
+#ifndef DEDICATED_ONLY
+#ifdef SDL_CPUPauseInstruction
+#  define Sys_CpuPause() SDL_CPUPauseInstruction()
+#else
+static YQ2_ATTR_INLINE void Sys_CpuPause(void)
+{
+#if defined(__GNUC__)
+#if (__i386 || __x86_64__)
+	asm volatile("pause");
+#elif defined(__aarch64__) || (defined(__ARM_ARCH) && __ARM_ARCH >= 7) || defined(__ARM_ARCH_6K__)
+	asm volatile("yield");
+#elif defined(__powerpc__) || defined(__powerpc64__)
+	asm volatile("or 27,27,27");
+#elif defined(__riscv) && __riscv_xlen == 64
+	asm volatile(".insn i 0x0F, 0, x0, x0, 0x010");
+#endif
+#elif defined(_MSC_VER)
+#if defined(_M_IX86) || defined(_M_X64)
+	_mm_pause();
+#elif defined(_M_ARM) || defined(_M_ARM64)
+	__yield();
+#endif
+#endif
+}
+#endif
+#endif
+
+static void Qcommon_Frame(int usec);
+
+// ----
+
+static void
+Qcommon_Buildstring(void)
+{
+	int i;
+	int verLen;
+	const char* versionString;
+
+
+	versionString = va("Yamagi Quake II v%s", YQ2VERSION);
+	verLen = strlen(versionString);
+
+	printf("\n%s\n", versionString);
+
+	for( i = 0; i < verLen; ++i)
+	{
+		printf("=");
+	}
+
+	printf("\n");
+
+
+#ifndef DEDICATED_ONLY
+	printf("Client build options:\n");
+
+#ifdef USE_CURL
+	printf(" + cURL HTTP downloads\n");
+#else
+	printf(" - cURL HTTP downloads\n");
+#endif
+
+#ifdef USE_OPENAL
+	printf(" + OpenAL audio\n");
+#else
+	printf(" - OpenAL audio\n");
+#endif
+
+#ifdef SYSTEMWIDE
+	printf(" + Systemwide installation\n");
+#else
+	printf(" - Systemwide installation\n");
+#endif
+#endif
+
+	printf("Platform: %s\n", YQ2OSTYPE);
+	printf("Architecture: %s\n", YQ2ARCH);
+}
+
+static void
+Qcommon_Mainloop(void)
+{
+	int 	time, oldtime, newtime;
+
+	oldtime = Sys_Milliseconds ();
+	while (1)
+	{
+		// find time spent rendering last frame
+		do {
+			newtime = Sys_Milliseconds ();
+			time = newtime - oldtime;
+		} while (time < 1);
+		Qcommon_Frame (time);
+		oldtime = newtime;
+		curtime = newtime;
+	}
+}
+
+#include "../client/header/screen.h"
+#include "../client/header/keyboard.h"
+#include "../client/header/console.h"
+#include "../server/header/server.h"
+
+#define	MAXPRINTMSG	4096
+
+#define MAX_NUM_ARGVS	50
+
+
+cvar_t	*host_speeds;
+cvar_t	*log_stats;
+cvar_t	*fixedtime;
+cvar_t	*showtrace;
+cvar_t	*dedicated;
+
+int		com_argc;
+char	*com_argv[MAX_NUM_ARGVS+1];
+
+int		realtime;
 /*
 ==============================================================================
 
@@ -1005,19 +1130,7 @@ Qcommon_Init(int argc, char **argv)
 
 	Com_Printf ("====== Heretic II fully initialized ======\n\n");
 
-	int 	time, oldtime, newtime;
-
-	oldtime = Sys_Milliseconds ();
-	while (1)
-	{
-		// find time spent rendering last frame
-		do {
-			newtime = Sys_Milliseconds ();
-			time = newtime - oldtime;
-		} while (time < 1);
-		Qcommon_Frame (time);
-		oldtime = newtime;
-	}
+	Qcommon_Mainloop();
 }
 
 extern int	c_pointcontents;

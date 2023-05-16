@@ -30,6 +30,11 @@
 #include "header/client.h"
 #include <ctype.h>
 
+char *Sys_GetClipboardData(void)
+{
+	return NULL;
+}
+
 /*
 
 key up events are sent even if in console mode

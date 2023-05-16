@@ -55,7 +55,7 @@ cvar_t	*cl_footsteps;
 cvar_t	*cl_timeout;
 cvar_t	*cl_predict;
 //cvar_t	*cl_minfps;
-cvar_t	*cl_maxfps;
+extern cvar_t	*cl_maxfps;
 cvar_t	*cl_gun;
 
 cvar_t	*cl_add_particles;

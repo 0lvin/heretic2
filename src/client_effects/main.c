@@ -40,7 +40,7 @@ cvar_t	*fxTest2;
 cvar_t	*fxTest3;
 cvar_t	*fxTest4;
 cvar_t  *cl_lerpdist2;
-cvar_t  *cl_timedemo;
+extern cvar_t  *cl_timedemo;
 cvar_t	*crosshair;
 cvar_t	*compass;
 
