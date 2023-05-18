@@ -918,7 +918,7 @@ void SCR_TouchPics (void)
 
 	for (i=0 ; i<2 ; i++)
 		for (j=0 ; j<11 ; j++)
-			re.RegisterPic (sb_nums[i][j]);
+			re.DrawFindPic (sb_nums[i][j]);
 
 	if (crosshair->value)
 	{
@@ -1069,28 +1069,23 @@ void SCR_RenderBar(int x, int y, int statnum, int statvalue, int statval2)
 		{
 			if (cl.configstrings[v10 + 1056][0])
 			{
-				re.DrawStretchPic(x - 3, y, v6 + 6, statvalue, cl.configstrings[v10 + 1056], 1065353216, 0);
+				re.DrawStretchPic(x - 3, y, v6 + 6, statvalue, cl.configstrings[v10 + 1056]);
 				v7 = a5;
 				v8 = a2;
 			}
-			re.DrawStretchPic(
-				x,
-				y,
-				v6 - ((double)statnum - (double)(v6 * v7) * 0.01),
+			re.DrawStretchPic(x, y, v6 - ((double)statnum - (double)(v6 * v7) * 0.01),
 				statvalue,
-				v8,
-				1065353216,
-				0);
+				v8);
 		}
 		else
 		{
 			if (cl.configstrings[v10 + 1056][0])
 			{
-				re.DrawStretchPic(x, y - 3, v6, statvalue + 6, cl.configstrings[v10 + 1056], 1065353216, 0);
+				re.DrawStretchPic(x, y - 3, v6, statvalue + 6, cl.configstrings[v10 + 1056]);
 				v7 = a5;
 			}
 			v9 = (double)statvalue - (double)(statvalue * v7) * 0.01;
-			re.DrawStretchPic(x, y + v9, v6, statvalue - v9, a2, 1065353216, 0);
+			re.DrawStretchPic(x, y + v9, v6, statvalue - v9, a2);
 		}
 	}
 }

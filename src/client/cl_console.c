@@ -589,7 +589,7 @@ void Con_DrawConsole (float frac)
 		lines = viddef.height;
 
 // draw the background
-	re.DrawStretchPic (0, -viddef.height+lines, viddef.width, viddef.height, "misc/conback.m8", 1.0f, false);
+	re.DrawStretchPic (0, -viddef.height+lines, viddef.width, viddef.height, "misc/conback.m8");
 	SCR_AddDirtyPoint (0,0);
 	SCR_AddDirtyPoint (viddef.width-1,lines-1);
 	Com_sprintf(version, sizeof(version), "Heretic II v%s", YQ2VERSION);

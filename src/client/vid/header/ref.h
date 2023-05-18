@@ -53,20 +53,27 @@
 
 #define ENTITY_FLAGS	68
 
-#include "../../../../h2common/q_surface.h"
-#include "../../../../h2common/arrayed_list.h"
-
-#define MAX_ALPHA_ENTITIES 2048
-#define	MAX_SERVER_ENTITIES	MAX_ENTITIES
-#define NUM_PARTICLE_TYPES	62			// This doesn't use the macro because of referencing weirdness.
-
-typedef struct entity_s
-{
-	struct model_s		**model;		// opaque type outside refresh
+typedef struct entity_s {
+	struct model_s		**model; /* opaque type outside refresh */
 	float				angles[3];
 
-	float				origin[3];
-	int					frame;
+	/* most recent data */
+	float				origin[3]; /* also used as RF_BEAM's "from" */
+	int					frame; /* also used as RF_BEAM's diameter */
+
+	/* previous data for lerping */
+	float				oldorigin[3]; /* also used as RF_BEAM's "to" */
+	int					oldframe;
+
+	/* misc */
+	float	backlerp; /* 0.0 = current, 1.0 = old */
+	int		skinnum; /* also used as RF_BEAM's palette index */
+
+	int		lightstyle; /* for flashing entities */
+	float	alpha; /* ignore if RF_TRANSLUCENT isn't set */
+
+	struct image_s	*skin; /* NULL for inline skin */
+	int		flags;
 
 	float				scale;					// model scale
 
@@ -79,8 +86,6 @@ typedef struct entity_s
 
 	paletteRGBA_t		color;
 
-	int					flags;
-
 	union {
 	int					rootJoint;				// rootJoint of the entities skeleton
 	int					spriteType;
@@ -91,15 +96,8 @@ typedef struct entity_s
 	// info for fmodels and bmodels
 	struct {
 
-	float				oldorigin[3];
-	int					oldframe;
-
-	float				backlerp;				// 0.0 = current, 1.0 = old
-
-	int					skinnum;
-	struct image_s		*skin;			// NULL for inline skin
 	struct image_s		**skins;		// Pointer to the list of clientinfo skins.
-	char				skinname[MAX_QPATH];		// For specific path to skin
+	char			skinname[MAX_QPATH];		// For specific path to skin
 
 	paletteRGB_t		absLight;
 	byte				padFor_3byte_absLight;
@@ -147,28 +145,32 @@ typedef struct entity_s
 
 } entity_t;
 
+#include "../../../../h2common/q_surface.h"
+#include "../../../../h2common/arrayed_list.h"
+
+#define MAX_ALPHA_ENTITIES 2048
+#define	MAX_SERVER_ENTITIES	MAX_ENTITIES
+#define NUM_PARTICLE_TYPES	62			// This doesn't use the macro because of referencing weirdness.
+
 #define ENTITY_FLAGS  68
 
-typedef struct
-{
+typedef struct {
 	vec3_t	origin;
 	paletteRGBA_t	color;
 	float	intensity;
 } dlight_t;
 
-typedef struct
-{
-	float		rgb[3];			// 0.0 - 2.0
-	float		white;			// highest of rgb
-} lightstyle_t;
-
-typedef struct
-{
+typedef struct {
 	vec3_t	origin;
 	paletteRGBA_t	color;
 	float		scale;
 	int		type;
 } particle_t;
+
+typedef struct {
+	float		rgb[3]; /* 0.0 - 2.0 */
+	float		white; /* r+g+b */
+} lightstyle_t;
 
 typedef struct {
 	int			x, y, width, height, area;// in virtual screen coordinates
@@ -201,6 +203,14 @@ typedef struct {
 
 } refdef_t;
 
+// Renderer restart type.
+typedef enum {
+	RESTART_UNDEF,
+	RESTART_NO,
+	RESTART_FULL,
+	RESTART_PARTIAL
+} ref_restart_t;
+
 // FIXME: bump API_VERSION?
 #define	API_VERSION		3
 #define EXPORT
@@ -215,7 +225,7 @@ typedef struct
 	int		api_version;
 
 	// called when the library is loaded
-	qboolean (EXPORT *Init) ( void *hinstance, void *wndproc );
+	qboolean (EXPORT *Init) (void *hinstance, void *wndproc);
 
 	// called before the library is unloaded
 	void	(EXPORT *Shutdown) (void);
@@ -255,42 +265,47 @@ typedef struct
 	// are flood filled to eliminate mip map edge errors, and pics have
 	// an implicit "pics/" prepended to the name. (a pic name that starts with a
 	// slash will not use the "pics/" prefix or the ".pcx" postfix)
-	void	(*BeginRegistration) (char *map);
-	struct model_s *(*RegisterModel) (char *name);
-	struct image_s *(*RegisterSkin) (char *name);
-	struct image_s *(*RegisterPic) (char *name);
-	void	(*SetSky) (char *name, float rotate, vec3_t axis);
-	void	(*EndRegistration) (void);
+	void	(EXPORT *BeginRegistration) (char *map);
+	struct model_s * (EXPORT *RegisterModel) (char *name);
+	struct image_s * (EXPORT *RegisterSkin) (char *name);
 
-	void	(*RenderFrame) (refdef_t *fd);
+	void	(EXPORT *SetSky) (char *name, float rotate, vec3_t axis);
+	void	(EXPORT *EndRegistration) (void);
+
+	void	(EXPORT *RenderFrame) (refdef_t *fd);
+
+	struct image_s * (EXPORT *DrawFindPic)(char *name);
+
+	void	(EXPORT *DrawGetPicSize) (int *w, int *h, char *name);
+	void	(EXPORT *DrawPic) (int x, int y, char *name);
+	void	(EXPORT *DrawStretchPic) (int x, int y, int w, int h, char *name);
+	void	(EXPORT *DrawChar) (int x, int y, int c);
+	void	(EXPORT *DrawTileClear) (int x, int y, int w, int h, char *name);
+	void	(EXPORT *DrawFill) (int x, int y, int w, int h, byte r, byte g, byte b);
+	void	(EXPORT *DrawFadeScreen) (void);
 
 	void	(*DrawLine)(vec3_t start, vec3_t end);
-
-	void	(*DrawGetPicSize) (int *w, int *h, char *name);
-	void	(*DrawPic) (int x, int y, char *name);
-	void	(*DrawStretchPic) (int x, int y, int w, int h, char *name, float alpha, qboolean scale);
-	void	(*DrawChar) (int x, int y, int c);
-	void	(*DrawTileClear) (int x, int y, int w, int h, char *name);
-	void	(*DrawFill) (int x, int y, int w, int h, byte r, byte g, byte b);
-	void	(*DrawFadeScreen) (void);
-
 	// Draw images for cinematic rendering (which can have a different palette). Note that calls
-	void	(*DrawInitCinematic) (int w, int h, char *overlay, char *backdrop);
+	void	(EXPORT *DrawStretchRaw) (int x, int y, int w, int h, int cols, int rows, byte *data);
 	void	(*DrawCinematic) (int cols, int rows, byte *data, paletteRGB_t *palette, float alpha);
 
 	/*
 	** video mode and refresh state management entry points
 	*/
-	void	(*BeginFrame)( float camera_separation );
-	void	(*EndFrame) (void);
+	void	(EXPORT *SetPalette)( const unsigned char *palette);	// NULL = game palette
+	void	(EXPORT *BeginFrame)( float camera_separation );
+	void	(EXPORT *EndFrame) (void);
+	qboolean	(EXPORT *EndWorldRenderpass) (void); // finish world rendering, apply postprocess and switch to UI render pass
 
-	int		(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
+	//void	(EXPORT *AppActivate)( qboolean activate );
 } refexport_t;
 
 typedef struct
 {
 	struct CL_SkeletalJoint_s *skeletalJoints;
 	ArrayedListNode_t *jointNodes;
+
+	YQ2_ATTR_NORETURN_FUNCPTR void	(IMPORT *Sys_Error) (int err_level, char *str, ...) PRINTF_ATTR(2, 3);
 
 	void	(IMPORT *Cmd_AddCommand) (char *name, void(*cmd)(void));
 	void	(IMPORT *Cmd_RemoveCommand) (char *name);
@@ -318,12 +333,15 @@ typedef struct
 
 	qboolean	(IMPORT *Vid_GetModeInfo)(int *width, int *height, int mode);
 	void		(IMPORT *Vid_MenuInit)( void );
+	// called with image data of width*height pixel which comp bytes per pixel (must be 3 or 4 for RGB or RGBA)
+	// expects the pixels data to be row-wise, starting at top left
+	void		(IMPORT *Vid_WriteScreenshot)( int width, int height, int comp, const void* data );
+
 	void		(IMPORT *Vid_NewWindow)( int width, int height );
 
 	char	*(IMPORT *FS_Userdir) (void);
 	void	(IMPORT *FS_CreatePath) (char *path);
 
-	void	(IMPORT *Sys_Error) (int err_level, char *str, ...);
 	void	(IMPORT *Com_Error) (int code, char *fmt, ...);
 	void	(IMPORT *Con_Printf) (int print_level, char *str, ...);
 
@@ -341,13 +359,30 @@ extern refexport_t re;
 extern refimport_t ri;
 
 /*
-====================================================================
+ * Refresh API
+ */
+void R_BeginRegistration(char *map);
+void R_Clear(void);
+struct model_s *R_RegisterModel(char *name);
+struct image_s *R_RegisterSkin(char *name);
+void R_SetSky(char *name, float rotate, vec3_t axis);
+void R_EndRegistration(void);
+struct image_s *Draw_FindPic(char *name);
+void R_RenderFrame(refdef_t *fd);
+void Draw_GetPicSize(int *w, int *h, char *name);
 
-IMPORTED FUNCTIONS
+void Draw_PicScaled(int x, int y, char *pic, float factor);
 
-====================================================================
-*/
-
-extern	refimport_t	ri;
+void Draw_CharScaled(int x, int y, int num, float scale);
+void Draw_TileClear(int x, int y, int w, int h, char *name);
+void Draw_Fill(int x, int y, int w, int h, int c);
+void Draw_FadeScreen(void);
+void Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data);
+//int R_Init(void *hinstance, void *hWnd);
+//void R_Shutdown(void);
+void R_SetPalette(const unsigned char *palette);
+void R_BeginFrame(float camera_separation);
+qboolean R_EndWorldRenderpass(void);
+void R_EndFrame(void);
 
 #endif

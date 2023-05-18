@@ -1639,21 +1639,25 @@ RI_BeginFrame(float camera_separation)
 {
 	gl_state.camera_separation = camera_separation;
 
-	/*
-	** change modes if necessary
-	*/
-	if ( r_mode->modified || vid_fullscreen->modified )
-	{
-		// FIXME: only restart if CDS is required
-		cvar_t *ref;
-
-		ref = ri.Cvar_Get ("vid_ref", "gl", 0);
-		ref->modified = true;
+	// force a vid_restart if gl1_stereo has been modified.
+	if ( gl_state.stereo_mode != gl1_stereo->value ) {
+		// If we've gone from one mode to another with the same special buffer requirements there's no need to restart.
+		if ( GL_GetSpecialBufferModeForStereoMode( gl_state.stereo_mode ) == GL_GetSpecialBufferModeForStereoMode( gl1_stereo->value )  ) {
+			gl_state.stereo_mode = gl1_stereo->value;
+		}
+		else
+		{
+			R_Printf(PRINT_ALL, "stereo supermode changed, restarting video!\n");
+			cvar_t	*ref;
+			ref = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
+			ref->modified = true;
+		}
 	}
 
 	if (vid_gamma->modified)
 	{
 		vid_gamma->modified = false;
+		RI_UpdateGamma();
 	}
 
 	GLimp_BeginFrame( camera_separation );
@@ -1943,7 +1947,12 @@ DrawLine(vec3_t start, vec3_t end) {
 	numDebugLines++;
 }
 
-void R_EndFrame(void)
+void
+RI_UpdateGamma(void)
+{
+}
+
+static void RI_EndFrame(void)
 {
 	GLimp_EndFrame();
 }
@@ -1974,22 +1983,30 @@ GetRefAPI(refimport_t imp)
 	re.BeginRegistration = RI_BeginRegistration;
 	re.RegisterModel = RI_RegisterModel;
 	re.RegisterSkin = RI_RegisterSkin;
-	re.RegisterPic = RDraw_FindPic;
+
 	re.SetSky = RI_SetSky;
 	re.EndRegistration = RI_EndRegistration;
+
 	re.DrawLine = DrawLine;
 	re.RenderFrame = RI_RenderFrame;
+
+	re.DrawFindPic = RDraw_FindPic;
+
 	re.DrawGetPicSize = RDraw_GetPicSize;
 	re.DrawPic = Draw_Pic;
-	re.DrawStretchPic = Draw_StretchPic;
+	re.DrawStretchPic = RDraw_StretchPic;
 	re.DrawChar = Draw_Char;
 	re.DrawTileClear = RDraw_TileClear;
 	re.DrawFill = RDraw_Fill;
 	re.DrawFadeScreen = RDraw_FadeScreen;
 	re.DrawCinematic = R_DrawCinematic;
 
+	re.DrawStretchRaw = RDraw_StretchRaw;
+
+	re.SetPalette = RI_SetPalette;
 	re.BeginFrame = RI_BeginFrame;
-	re.EndFrame = R_EndFrame;
+	re.EndWorldRenderpass = RI_EndWorldRenderpass;
+	re.EndFrame = RI_EndFrame;
 
 	Swap_Init ();
 

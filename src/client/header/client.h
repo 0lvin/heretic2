@@ -458,8 +458,6 @@ typedef struct
 
 	void	(*Trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags, trace_t *t);
 	qboolean (*InCameraPVS)(vec3_t point);
-
-	int		(*FindSurface)(vec3_t start, vec3_t end, struct Surface_s *surface);
 } client_fx_import_t;
 
 // this is the only function actually exported at the linker level

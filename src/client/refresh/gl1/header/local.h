@@ -373,6 +373,43 @@ typedef struct
 extern glconfig_t gl_config;
 extern glstate_t gl_state;
 
+/*
+ * Updates the gamma ramp.
+ */
+void RI_UpdateGamma(void);
+
+/*
+ * Enables or disabes the vsync.
+ */
+void RI_SetVsync(void);
+
+/*
+ * Shuts the GL context down.
+ */
+void RI_ShutdownContext(void);
+
+/*
+ * Returns the address of the GL function proc,
+ * or NULL if the function is not found.
+ */
+void *RI_GetProcAddress (const char* proc);
+
+/*
+ * Fills the actual size of the drawable into width and height.
+ */
+void RI_GetDrawableSize(int* width, int* height);
+
+/* g11_draw */
+extern image_t * RDraw_FindPic(char *name);
+extern void RDraw_GetPicSize(int *w, int *h, char *pic);
+extern void RDraw_PicScaled(int x, int y, char *pic, float factor);
+extern void RDraw_StretchPic(int x, int y, int w, int h, char *pic);
+extern void RDraw_CharScaled(int x, int y, int num, float scale);
+extern void RDraw_TileClear(int x, int y, int w, int h, char *pic);
+extern void RDraw_Fill(int x, int y, int w, int h, byte r, byte g, byte b);
+extern void RDraw_FadeScreen(void);
+extern void RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data);
+
 int R_Init(void *hinstance, void *hWnd);
 void R_Shutdown(void);
 
@@ -381,14 +418,8 @@ void R_SetPalette(const unsigned char *palette);
 struct image_s *RI_RegisterSkin(char* name);
 
 void    Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t* gl);
-void	RDraw_GetPicSize (int *w, int *h, char *name);
 void	Draw_Pic (int x, int y, char *name);
-void	Draw_StretchPic (int x, int y, int w, int h, char *pic, float alpha, qboolean scale);
 void	Draw_Char (int x, int y, int c);
-void	RDraw_TileClear (int x, int y, int w, int h, char *name);
-void	RDraw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
-void	RDraw_FadeScreen (void);
-void	RDraw_StretchRaw (int x, int y, int w, int h, int cols, int rows, byte *data);
 
 extern	int		r_lightmap_format;
 void R_TextureAlphaMode( char *string );

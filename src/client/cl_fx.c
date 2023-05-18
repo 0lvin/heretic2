@@ -229,7 +229,6 @@ int CL_InitClientEffects(const char* name)
 	cl_game_import.FreeTags = Z_FreeTags;
 	cl_game_import.Trace = CL_NewTrace;
 	cl_game_import.InCameraPVS = InCameraPVS;
-	cl_game_import.FindSurface = re.FindSurface;
 
 	fxe = GetfxAPI(cl_game_import);
 	if (fxe.api_version != 3)
