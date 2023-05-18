@@ -185,9 +185,9 @@ void vectoangles(vec3_t vec, vec3_t angles) {
 	{
 		VectorNormalize2(vec, v3);
 		AnglesFromDir(v3, angles);
-		angles[0] = angles[0] * 57.295776;
-		angles[1] = angles[1] * 57.295776;
-		angles[2] = angles[2] * 57.295776;
+		angles[0] = angles[0] / ANGLE_1;
+		angles[1] = angles[1] / ANGLE_1;
+		angles[2] = angles[2] / ANGLE_1;
 	}
 	else
 	{
@@ -228,7 +228,7 @@ void VectorGetOffsetOrigin(vec3_t off, vec3_t org, vec_t degree, vec3_t out)
 	float v4;
 	matrix3_t v7;
 
-	v4 = degree * 0.017453292;
+	v4 = degree * ANGLE_1;
 	CreateYawMatrix(v7, v4);
 
 	Matrix3MultByVec3(v7, off, out);

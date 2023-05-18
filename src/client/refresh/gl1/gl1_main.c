@@ -155,6 +155,7 @@ cvar_t* r_fog_underwater_color_a;
 
 #include <ctype.h>
 #include "../../../../h2common/part_uvs.h"
+#include "../../../../h2common/angles.h"
 
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
 
@@ -174,9 +175,9 @@ R_RotateForEntity(entity_t *e)
 	glTranslatef(e->origin[0], e->origin[1], e->origin[2]);
 
 // jmarshall - Heretic 2 rotation fix from their ref_gl.dll
-	glRotatef(e->angles[1] * 57.295776, 0, 0, 1);
-	glRotatef(-e->angles[0] * 57.295776, 0, 1, 0);
-	glRotatef(-e->angles[2] * 57.295776, 1, 0, 0);
+	glRotatef(e->angles[1] / ANGLE_1, 0, 0, 1);
+	glRotatef(-e->angles[0] / ANGLE_1, 0, 1, 0);
+	glRotatef(-e->angles[2] / ANGLE_1, 1, 0, 0);
 // jmarshall end
 }
 
