@@ -327,8 +327,27 @@ GetPCXPalette (byte **colormap, unsigned *d_8to24table)
 	LoadPCX ("pics/colormap.pcx", colormap, &pal, NULL, NULL);
 	if (!*colormap || !pal)
 	{
-		ri.Sys_Error (ERR_FATAL, "%s: Couldn't load pics/colormap.pcx",
+		R_Printf(PRINT_DEVELOPER, "%s: Couldn't load pics/colormap.pcx, use default palette\n",
 			__func__);
+
+		// fake palette
+		d_8to24table = malloc(256 * sizeof(unsigned));
+		for (i=0 ; i<256 ; i++)
+		{
+			unsigned	v;
+			v = (255U<<24) + (i<<0) + (i<<8) + (i<<16);
+			d_8to24table[i] = LittleLong(v);
+		}
+
+		d_8to24table[255] &= LittleLong(0xffffff);	// 255 is transparent
+
+		// fake lightmap
+		*colormap = malloc(256 * 320);
+		for (i=0 ; i < 256 * 320; i++)
+		{
+			(*colormap)[i] = i % 256;
+		}
+		return;
 	}
 
 	for (i=0 ; i<256 ; i++)

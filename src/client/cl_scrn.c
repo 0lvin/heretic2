@@ -277,7 +277,7 @@ void SCR_DrawCenterString (void)
 		SCR_AddDirtyPoint (x, y);
 		for (j=0 ; j<l ; j++, x+=8)
 		{
-			re.DrawChar (x, y, start[j]);
+			re.DrawCharScaled(x, y, start[j], 1.0f);
 			if (!remaining--)
 				return;
 		}
@@ -445,7 +445,7 @@ void SCR_DrawNet (void)
 		< CMD_BACKUP-1)
 		return;
 
-	re.DrawPic (scr_vrect.x+64, scr_vrect.y, "net");
+	re.DrawPicScaled(scr_vrect.x+64, scr_vrect.y, "net", 1.0f);
 }
 
 /*
@@ -464,7 +464,7 @@ void SCR_DrawPause (void)
 		return;
 
 	re.DrawGetPicSize (&w, &h, "pause");
-	re.DrawPic ((viddef.width-w)/2, viddef.height/2 + 8, "pause");
+	re.DrawPicScaled((viddef.width-w)/2, viddef.height/2 + 8, "pause", 1.0f);
 }
 
 /*
@@ -481,7 +481,7 @@ void SCR_DrawLoading (void)
 
 	scr_draw_loading = false;
 	re.DrawGetPicSize (&w, &h, "loading");
-	re.DrawPic ((viddef.width-w)/2, (viddef.height-h)/2, "loading");
+	re.DrawPicScaled((viddef.width-w)/2, (viddef.height-h)/2, "loading", 1.0f);
 }
 
 //=============================================================================
@@ -535,7 +535,7 @@ void SCR_DrawConsole (void)
 	if (cls.state != ca_active || !cl.refresh_prepped)
 	{	// connected, but can't render
 		Con_DrawConsole (0.5);
-		re.DrawFill (0, viddef.height/2, viddef.width, viddef.height/2, 0, 0, 0);
+		re.DrawFill (0, viddef.height/2, viddef.width, viddef.height/2, 0);
 		return;
 	}
 
@@ -849,7 +849,7 @@ void DrawHUDString (char *string, int x, int y, int centerwidth, int xor)
 			x = margin;
 		for (i=0 ; i<width ; i++)
 		{
-			re.DrawChar (x, y, line[i]^xor);
+			re.DrawCharScaled(x, y, line[i]^xor, 1.0f);
 			x += 8;
 		}
 		if (*string)
@@ -897,7 +897,7 @@ void SCR_DrawField (int x, int y, int color, int width, int value)
 		else
 			frame = *ptr -'0';
 
-		re.DrawPic (x,y,sb_nums[color][frame]);
+		re.DrawPicScaled(x,y,sb_nums[color][frame], 1.0f);
 		x += CHAR_WIDTH;
 		ptr++;
 		l--;
@@ -955,7 +955,7 @@ void SCR_DrawPic(int x, int y, char** stat, int flags)
 		{
 			SCR_AddDirtyPoint(x, y);
 			SCR_AddDirtyPoint(x + 31, y + 31);
-			re.DrawPic(x, y, image);
+			re.DrawPicScaled(x, y, image, 1.0f);
 		}
 	}
 }
@@ -1027,7 +1027,7 @@ void SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
 		for (j = 0; j < len; ++j)
 		{
 			offset2 = SCR_CharTableOffset(buffer[j], lessZero);
-			re.DrawPic(xoffset, yoffset, scr_number_table[offset2]);
+			re.DrawPicScaled(xoffset, yoffset, scr_number_table[offset2], 1.0f);
 			xoffset += 8;
 		}
 	}
@@ -1184,7 +1184,7 @@ void SCR_ExecuteLayoutString (char *s)
 			token = (char*)COM_Parse(&s);
 			SCR_AddDirtyPoint(x, y);
 			SCR_AddDirtyPoint(x + 32, y + 32);
-			re.DrawPic(x, y, token);
+			re.DrawPicScaled(x, y, token, 1.0f);
 			continue;
 		}
 
@@ -1326,7 +1326,7 @@ void SCR_UpdateScreen (void)
 		//	re.CinematicSetPalette(NULL);
 			scr_draw_loading = false;
 			re.DrawGetPicSize (&w, &h, "loading");
-			re.DrawPic ((viddef.width-w)/2, (viddef.height-h)/2, "loading");
+			re.DrawPicScaled((viddef.width-w)/2, (viddef.height-h)/2, "loading", 1.0f);
 //			re.EndFrame();
 //			return;
 		}

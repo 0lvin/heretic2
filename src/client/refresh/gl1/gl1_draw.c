@@ -49,9 +49,6 @@ Draw_InitLocal(void)
 	atlas_particle = R_FindImage("pics/misc/particle.m32", it_pic);
 	atlas_aparticle = R_FindImage("pics/misc/aparticle.m8", it_pic);
 // jmarshall end
-	R_Bind(draw_chars->texnum);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
 /*
@@ -60,10 +57,10 @@ Draw_InitLocal(void)
  * smoothly scrolled off.
  */
 void
-Draw_Char(int x, int y, int num)
+RDraw_CharScaled(int x, int y, int num, float scale)
 {
 	int row, col;
-	float frow, fcol, size;
+	float frow, fcol, size, scaledSize;
 
 	num &= 255;
 
@@ -84,18 +81,33 @@ Draw_Char(int x, int y, int num)
 	fcol = col * 0.0625;
 	size = 0.0625;
 
-	R_Bind (draw_chars->texnum);
+	scaledSize = 8*scale;
 
-	glBegin (GL_QUADS);
-	glTexCoord2f (fcol, frow);
-	glVertex2f (x, y);
-	glTexCoord2f (fcol + size, frow);
-	glVertex2f (x+8, y);
-	glTexCoord2f (fcol + size, frow + size);
-	glVertex2f (x+8, y+8);
-	glTexCoord2f (fcol, frow + size);
-	glVertex2f (x, y+8);
-	glEnd ();
+	R_Bind(draw_chars->texnum);
+
+	GLfloat vtx[] = {
+		x, y,
+		x + scaledSize, y,
+		x + scaledSize, y + scaledSize,
+		x, y + scaledSize
+	};
+
+	GLfloat tex[] = {
+		fcol, frow,
+		fcol + size, frow,
+		fcol + size, frow + size,
+		fcol, frow + size
+	};
+
+	glEnableClientState( GL_VERTEX_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+	glVertexPointer( 2, GL_FLOAT, 0, vtx );
+	glTexCoordPointer( 2, GL_FLOAT, 0, tex );
+	glDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 }
 
 image_t *
@@ -176,19 +188,49 @@ RDraw_StretchPic(int x, int y, int w, int h, char *pic)
 	gl = RDraw_FindPic (pic);
 	if (!gl)
 	{
-		ri.Con_Printf (PRINT_ALL, "Can't find pic: %s\n", pic);
+		R_Printf(PRINT_ALL, "Can't find pic: %s\n", pic);
 		return;
 	}
 
-	Draw_Image(x, y, w, h, 1.0f, false, gl);
+	if (scrap_dirty)
+	{
+		Scrap_Upload();
+	}
+
+	R_Bind(gl->texnum);
+
+	GLfloat vtx[] = {
+		x, y,
+		x + w, y,
+		x + w, y + h,
+		x, y + h
+	};
+
+	GLfloat tex[] = {
+		gl->sl, gl->tl,
+		gl->sh, gl->tl,
+		gl->sh, gl->th,
+		gl->sl, gl->th
+	};
+
+	glEnableClientState( GL_VERTEX_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+	glVertexPointer( 2, GL_FLOAT, 0, vtx );
+	glTexCoordPointer( 2, GL_FLOAT, 0, tex );
+	glDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 }
 
 void
-Draw_Pic(int x, int y, char *pic)
+RDraw_PicScaled(int x, int y, char *pic, float factor)
 {
 	image_t *gl;
 
 	gl = RDraw_FindPic (pic);
+
 	if (!gl)
 	{
 		R_Printf(PRINT_ALL, "Can't find pic: %s\n", pic);
@@ -200,17 +242,31 @@ Draw_Pic(int x, int y, char *pic)
 		Scrap_Upload();
 	}
 
-	R_Bind (gl->texnum);
-	glBegin (GL_QUADS);
-	glTexCoord2f (gl->sl, gl->tl);
-	glVertex2f (x, y);
-	glTexCoord2f (gl->sh, gl->tl);
-	glVertex2f (x+gl->width, y);
-	glTexCoord2f (gl->sh, gl->th);
-	glVertex2f (x+gl->width, y+gl->height);
-	glTexCoord2f (gl->sl, gl->th);
-	glVertex2f (x, y+gl->height);
-	glEnd ();
+	R_Bind(gl->texnum);
+
+	GLfloat vtx[] = {
+		x, y,
+		x + gl->width * factor, y,
+		x + gl->width * factor, y + gl->height * factor,
+		x, y + gl->height * factor
+	};
+
+	GLfloat tex[] = {
+		gl->sl, gl->tl,
+		gl->sh, gl->tl,
+		gl->sh, gl->th,
+		gl->sl, gl->th
+	};
+
+	glEnableClientState( GL_VERTEX_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+	glVertexPointer( 2, GL_FLOAT, 0, vtx );
+	glTexCoordPointer( 2, GL_FLOAT, 0, tex );
+	glDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 }
 
 /*
@@ -224,6 +280,7 @@ RDraw_TileClear(int x, int y, int w, int h, char *pic)
 	image_t *image;
 
 	image = RDraw_FindPic (pic);
+
 	if (!image)
 	{
 		R_Printf(PRINT_ALL, "Can't find pic: %s\n", pic);
@@ -261,25 +318,41 @@ RDraw_TileClear(int x, int y, int w, int h, char *pic)
  * Fills a box of pixels with a single color
  */
 void
-RDraw_Fill(int x, int y, int w, int h, byte r, byte g, byte b)
+RDraw_Fill(int x, int y, int w, int h, int c)
 {
+	union
+	{
+		unsigned c;
+		byte v[4];
+	} color;
 
-	glDisable (GL_TEXTURE_2D);
+	if ((unsigned)c > 255)
+	{
+		ri.Sys_Error(ERR_FATAL, "Draw_Fill: bad color");
+	}
 
-	glColor3f (r/255.0,
-		g/255.0,
-		b/255.0);
+	glDisable(GL_TEXTURE_2D);
 
-	glBegin (GL_QUADS);
+	color.c = d_8to24table[c];
+	glColor4f(color.v [ 0 ] / 255.0, color.v [ 1 ] / 255.0,
+			   color.v [ 2 ] / 255.0, 1);
 
-	glVertex2f (x,y);
-	glVertex2f (x+w, y);
-	glVertex2f (x+w, y+h);
-	glVertex2f (x, y+h);
+	GLfloat vtx[] = {
+		x, y,
+		x + w, y,
+		x + w, y + h,
+		x, y + h
+	};
 
-	glEnd ();
-	glColor3f (1,1,1);
-	glEnable (GL_TEXTURE_2D);
+	glEnableClientState( GL_VERTEX_ARRAY );
+
+	glVertexPointer( 2, GL_FLOAT, 0, vtx );
+	glDrawArrays( GL_TRIANGLE_FAN, 0, 4 );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
+
+	glColor4f( 1, 1, 1, 1 );
+	glEnable(GL_TEXTURE_2D);
 }
 
 void

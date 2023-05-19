@@ -40,7 +40,7 @@ void DrawString (int x, int y, char *s)
 {
 	while (*s)
 	{
-		re.DrawChar (x, y, *s);
+		re.DrawCharScaled(x, y, *s, 1.0f);
 		x+=8;
 		s++;
 	}
@@ -50,7 +50,7 @@ void DrawAltString (int x, int y, char *s)
 {
 	while (*s)
 	{
-		re.DrawChar (x, y, *s ^ 0x80);
+		re.DrawCharScaled(x, y, *s ^ 0x80, 1.0f);
 		x+=8;
 		s++;
 	}
@@ -488,7 +488,7 @@ void Con_DrawInput (void)
 	y = con.vislines-16;
 
 	for (i=0 ; i<con.linewidth ; i++)
-		re.DrawChar ( (i+1)<<3, con.vislines - 22, text[i]);
+		re.DrawCharScaled( (i+1)<<3, con.vislines - 22, text[i], 1.0f);
 
 // remove cursor
 	key_lines[edit_line][key_linepos] = 0;
@@ -525,7 +525,7 @@ void Con_DrawNotify (void)
 		text = con.text + (i % con.totallines)*con.linewidth;
 
 		for (x = 0 ; x < con.linewidth ; x++)
-			re.DrawChar ( (x+1)<<3, v, text[x]);
+			re.DrawCharScaled( (x+1)<<3, v, text[x], 1.0f);
 
 		v += 8;
 	}
@@ -550,10 +550,10 @@ void Con_DrawNotify (void)
 		x = 0;
 		while(s[x])
 		{
-			re.DrawChar ( (x+skip)<<3, v, s[x]);
+			re.DrawCharScaled( (x+skip)<<3, v, s[x], 1.0f);
 			x++;
 		}
-		re.DrawChar ( (x+skip)<<3, v, 10+((cls.realtime>>8)&1));
+		re.DrawCharScaled( (x+skip)<<3, v, 10+((cls.realtime>>8)&1), 1.0f);
 		v += 8;
 	}
 
@@ -596,7 +596,7 @@ void Con_DrawConsole (float frac)
 
 	int len = strlen(version);
 	for (x=0 ; x<len; x++)
-		re.DrawChar (viddef.width-(len * 8)+x*8, lines-12, version[x]);
+		re.DrawCharScaled(viddef.width-(len * 8)+x*8, lines-12, version[x], 1.0f);
 
 // draw the text
 	con.vislines = lines;
@@ -616,7 +616,7 @@ void Con_DrawConsole (float frac)
 	{
 	// draw arrows to show the buffer is backscrolled
 		for (x=0 ; x<con.linewidth ; x+=4)
-			re.DrawChar ( (x+1)<<3, y, '^');
+			re.DrawCharScaled( (x+1)<<3, y, '^', 1.0f);
 
 		y -= 8;
 		rows--;
@@ -633,7 +633,7 @@ void Con_DrawConsole (float frac)
 		text = con.text + (row % con.totallines)*con.linewidth;
 
 		for (x=0 ; x<con.linewidth ; x++)
-			re.DrawChar ( (x+1)<<3, y, text[x]);
+			re.DrawCharScaled( (x+1)<<3, y, text[x], 1.0);
 	}
 
 //ZOID
@@ -677,7 +677,7 @@ void Con_DrawConsole (float frac)
 		// draw it
 		y = con.vislines-12;
 		for (i = 0; i < strlen(dlbar); i++)
-			re.DrawChar ( (i+1)<<3, y, dlbar[i]);
+			re.DrawCharScaled( (i+1)<<3, y, dlbar[i], 1.0f);
 	}
 //ZOID
 

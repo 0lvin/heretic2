@@ -406,7 +406,7 @@ extern void RDraw_PicScaled(int x, int y, char *pic, float factor);
 extern void RDraw_StretchPic(int x, int y, int w, int h, char *pic);
 extern void RDraw_CharScaled(int x, int y, int num, float scale);
 extern void RDraw_TileClear(int x, int y, int w, int h, char *pic);
-extern void RDraw_Fill(int x, int y, int w, int h, byte r, byte g, byte b);
+extern void RDraw_Fill(int x, int y, int w, int h, int c);
 extern void RDraw_FadeScreen(void);
 extern void RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data);
 

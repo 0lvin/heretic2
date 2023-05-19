@@ -1182,8 +1182,6 @@ R_InitImages(void)
 
 	gl_state.inverse_intensity = 1 / intensity->value;
 
-// TODO: Rewrite
-#if 0
 	// FIXME: I think this is redundant - RI_Init() already calls that!
 	GetPCXPalette (&colormap, d_8to24table);
 	free(colormap);
@@ -1198,7 +1196,6 @@ R_InitImages(void)
 				__func__);
 		}
 	}
-#endif
 
 	for (i = 0; i < 256; i++)
 	{

@@ -1420,6 +1420,7 @@ RI_Init(void *hinstance, void *hWnd)
 {
 	int err;
 	int j;
+	byte *colormap;
 	extern float r_turbsin[256];
 
 	for (j = 0; j < 256; j++)
@@ -1430,11 +1431,8 @@ RI_Init(void *hinstance, void *hWnd)
 	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
 	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
 
-#if 0
-	// TODO Rework me
 	GetPCXPalette (&colormap, d_8to24table);
 	free(colormap);
-#endif
 
 	R_Register();
 
@@ -1601,8 +1599,6 @@ RI_Init(void *hinstance, void *hWnd)
 	}
 
 	// ----
-
-	ri.Cvar_Set( "scr_drawall", "0" );
 
 	R_SetDefaultState();
 
@@ -1924,17 +1920,6 @@ struct model_s	*RI_RegisterModel (char *name);
 void RI_SetSky (char *name, float rotate, vec3_t axis);
 void	RI_EndRegistration (void);
 
-void	RI_RenderFrame (refdef_t *fd);
-
-struct image_s	*RDraw_FindPic (char *name);
-
-void	Draw_Pic (int x, int y, char *name);
-void	Draw_Char (int x, int y, int c);
-void	RDraw_TileClear (int x, int y, int w, int h, char *name);
-void	RDraw_Fill (int x, int y, int w, int h, byte r, byte g, byte b);
-void	RDraw_FadeScreen (void);
-
-
 static void
 DrawLine(vec3_t start, vec3_t end) {
 	debug_lines[numDebugLines].start[0] = start[0];
@@ -1994,9 +1979,11 @@ GetRefAPI(refimport_t imp)
 	re.DrawFindPic = RDraw_FindPic;
 
 	re.DrawGetPicSize = RDraw_GetPicSize;
-	re.DrawPic = Draw_Pic;
+	//re.DrawPic = Draw_Pic;
+	re.DrawPicScaled = RDraw_PicScaled;
 	re.DrawStretchPic = RDraw_StretchPic;
-	re.DrawChar = Draw_Char;
+	//re.DrawChar = Draw_Char;
+	re.DrawCharScaled = RDraw_CharScaled;
 	re.DrawTileClear = RDraw_TileClear;
 	re.DrawFill = RDraw_Fill;
 	re.DrawFadeScreen = RDraw_FadeScreen;

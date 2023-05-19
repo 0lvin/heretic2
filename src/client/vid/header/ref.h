@@ -276,12 +276,12 @@ typedef struct
 
 	struct image_s * (EXPORT *DrawFindPic)(char *name);
 
-	void	(EXPORT *DrawGetPicSize) (int *w, int *h, char *name);
-	void	(EXPORT *DrawPic) (int x, int y, char *name);
+	void	(EXPORT *DrawGetPicSize) (int *w, int *h, char *name);	// will return 0 0 if not found
+	void 	(EXPORT *DrawPicScaled) (int x, int y, char *pic, float factor);
 	void	(EXPORT *DrawStretchPic) (int x, int y, int w, int h, char *name);
-	void	(EXPORT *DrawChar) (int x, int y, int c);
+	void	(EXPORT *DrawCharScaled)(int x, int y, int num, float scale);
 	void	(EXPORT *DrawTileClear) (int x, int y, int w, int h, char *name);
-	void	(EXPORT *DrawFill) (int x, int y, int w, int h, byte r, byte g, byte b);
+	void	(EXPORT *DrawFill) (int x, int y, int w, int h, int c);
 	void	(EXPORT *DrawFadeScreen) (void);
 
 	void	(*DrawLine)(vec3_t start, vec3_t end);
