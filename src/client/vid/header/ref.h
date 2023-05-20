@@ -99,9 +99,6 @@ typedef struct entity_s {
 	struct image_s		**skins;		// Pointer to the list of clientinfo skins.
 	char			skinname[MAX_QPATH];		// For specific path to skin
 
-	paletteRGB_t		absLight;
-	byte				padFor_3byte_absLight;
-
 	fmnodeinfo_t		*fmnodeinfo;	// client entities which use a flexible model will need
 										// to fill this in, and then release it when they die
 										// happily most client entities are sprites

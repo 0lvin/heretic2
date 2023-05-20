@@ -800,18 +800,20 @@ void AddServerEntities(frame_t *frame)
 
 		ent->scale = s1->scale;
 
-		if(s1->color.c)
+		if(s1->color[0] ||
+		   s1->color[1] ||
+		   s1->color[2] ||
+		   s1->color[3])
 		{
-			ent->color.c = s1->color.c;
+			ent->color.r = s1->color[0];
+			ent->color.g = s1->color[1];
+			ent->color.b = s1->color[2];
+			ent->color.a = s1->color[3];
 		}
 		else
 		{
 			ent->color.c = 0xFFFFFFFF;
 		}
-
-		ent->absLight.r = s1->absLight.r;
-		ent->absLight.g = s1->absLight.g;
-		ent->absLight.b = s1->absLight.b;
 
 		// Set render effects (fullbright, translucent, etc).
 

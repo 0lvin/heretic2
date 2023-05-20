@@ -162,7 +162,7 @@ void chicken_death(edict_t *self, G_Message_t *msg)
 // fade the original monster back in again
 void MorphOriginalIn(edict_t *self)
 {
-	self->s.color.a += MORPH_TELE_FADE;
+	self->s.color[3] += MORPH_TELE_FADE;
 	self->nextthink = level.time + FRAMETIME;
 	if (!(--self->morph_timer))
 	{
@@ -175,7 +175,7 @@ void MorphChickenOut(edict_t *self)
 {
 	edict_t	*newent;
 
-	self->s.color.a -= MORPH_TELE_FADE;
+	self->s.color[3] -= MORPH_TELE_FADE;
 	self->nextthink = level.time + FRAMETIME;
 	if (self->morph_timer < level.time)
 	{
@@ -186,7 +186,12 @@ void MorphChickenOut(edict_t *self)
 		VectorCopy(self->s.angles, newent->s.angles);
 		newent->enemy = self->enemy;
 		ED_CallSpawn(newent);
-		newent->s.color.c = 0xffffff;
+
+		self->s.color[0] = 255;
+		self->s.color[1] = 255;
+		self->s.color[2] = 255;
+		self->s.color[3] = 255;
+
 		newent->oldthink = newent->think;
 		newent->think = MorphOriginalIn;
 		newent->morph_timer = MORPH_TELE_TIME;

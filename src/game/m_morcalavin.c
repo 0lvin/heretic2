@@ -784,15 +784,15 @@ void morcalavin_phase_out (edict_t *self)
 {
 	int	interval = 40;
 
-	if(self->s.color.a > interval)
+	if(self->s.color[3] > interval)
 	{
-		self->s.color.a -= irand(interval/2, interval);
+		self->s.color[3] -= irand(interval/2, interval);
 		self->pre_think = morcalavin_phase_out;
 		self->next_pre_think = level.time + 0.05;
 	}
 	else
 	{
-		self->s.color.a = 0;
+		self->s.color[3] = 0;
 		self->pre_think = NULL;
 		self->next_pre_think = -1;
 	}
@@ -802,16 +802,20 @@ void morcalavin_phase_in (edict_t *self)
 {
 	int	interval = 12;
 
-	if(self->s.color.a < 255 - interval)
+	if(self->s.color[3] < 255 - interval)
 	{
-		self->s.color.a += irand(interval/2, interval);
+		self->s.color[3] += irand(interval/2, interval);
 		self->pre_think = morcalavin_phase_in;
 		self->next_pre_think = level.time + 0.05;
 	}
 	else
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
-		self->s.color.c = 0xffffffff;
+
+		self->s.color[0] = 255;
+		self->s.color[1] = 255;
+		self->s.color[2] = 255;
+		self->s.color[3] = 255;
 
 		if(self->health <= 0 || self->monsterinfo.lefty >= 6)
 		{
@@ -1838,7 +1842,7 @@ int	morcalavin_resist_death (edict_t *self, edict_t *inflictor, edict_t *attacke
 	gi.sound(self, CHAN_VOICE, sounds[SND_FALL], 1, ATTN_NORM, 0);
 	SetAnim(self, ANIM_FALL);
 
-	self->s.color.a = 0xFF;
+	self->s.color[3] = 0xFF;
 	self->pre_think = NULL;
 	self->next_pre_think = -1;
 
@@ -1943,7 +1947,10 @@ void SP_monster_morcalavin (edict_t *self)
 
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 
-	self->s.color.c = 0xFFFFFFFF;
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
+	self->s.color[3] = 255;
 
 	self->s.renderfx |= RF_GLOW;
 
@@ -2058,7 +2065,11 @@ void SP_obj_morcalavin_barrier (edict_t *self)
 	self->touch = morcalavin_barrier_touch;
 	self->use   = morcalavin_barrier_use;
 
-	self->s.color.c = 0xFFFFFFFF;
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
+	self->s.color[3] = 255;
+
 	self->count = 1;
 	self->health = true;
 

@@ -908,7 +908,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 
 			if (((edict_t *)playerinfo->self)->client->tele_count--)
 			{
-				((edict_t *)playerinfo->self)->s.color.a -= TELE_FADE_OUT;
+				((edict_t *)playerinfo->self)->s.color[3] -= TELE_FADE_OUT;
 
 				return true;
 			}
@@ -943,7 +943,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 
 			if (((edict_t *)playerinfo->self)->client->tele_count--)
 			{
-				((edict_t *)playerinfo->self)->s.color.a += TELE_FADE;
+				((edict_t *)playerinfo->self)->s.color[3] += TELE_FADE;
 			}
 			else
 			{

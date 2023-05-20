@@ -55,7 +55,6 @@ field_t fields[] = {
 	{"materialtype", FOFS(materialtype), F_INT},
 	{"scale", FOFS(s.scale), F_FLOAT},
 	{"color", FOFS(s.color), F_RGBA},
-	{"absLight", FOFS(s.absLight), F_RGB},
 	{"frame", FOFS(s.frame), F_INT},
 	{"mintel", FOFS(mintel), F_INT},
 	{"melee_range", FOFS(melee_range), F_FLOAT},

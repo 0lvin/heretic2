@@ -1332,7 +1332,6 @@ typedef struct paletteRGB_s
 typedef struct
 {
 	int				frame;
-	paletteRGBA_t	color;
 	byte			flags;
 	int				skin;
 } fmnodeinfo_t;
@@ -1391,11 +1390,7 @@ typedef struct entity_state_s
 
 	// What's this exactly?
 
-	paletteRGBA_t	color;
-
-	// Entire absLight gets sent if any component changes.
-
-	paletteRGB_t	absLight;
+	byte color[4];
 
 	// Client prediction: 8*(bits 0-4) is x/y radius, 8*(bits 5-9) is z min, 8*(bits 10-15) is z max.
 	// Note that gi.linkentity() sets this up.

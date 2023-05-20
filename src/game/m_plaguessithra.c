@@ -3158,21 +3158,21 @@ void SP_monster_plague_ssithra (edict_t *self)
 		}
 	}
 
-	self->s.color.a = 255;
+	self->s.color[3] = 255;
 	if(alpha)//tough guy!
 	{//TODO: other ssithras won't attack this guy and will follow him
 		self->health += 75;
 		self->s.scale = self->monsterinfo.scale = MODEL_SCALE + 0.5;
 		self->spawnflags|=MSF_SSITHRA_ALPHA;
-		self->s.color.r = 255;
-		self->s.color.g = 255;
-		self->s.color.b = 128;
+		self->s.color[0] = 255;
+		self->s.color[1] = 255;
+		self->s.color[2] = 128;
 	}
 	else
 	{
-		self->s.color.r = 200 + irand(-50, 50);
-		self->s.color.g = 200 + irand(-50, 50);
-		self->s.color.b = 200 + irand(-50, 50);
+		self->s.color[0] = 200 + irand(-50, 50);
+		self->s.color[1] = 200 + irand(-50, 50);
+		self->s.color[2] = 200 + irand(-50, 50);
 	}
 
 	self->monsterinfo.otherenemyname = "obj_barrel";

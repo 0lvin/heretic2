@@ -224,10 +224,11 @@ void priestess_teleport_move ( edict_t *self )
 void priestess_teleport_self_effects( edict_t *self )
 {
 	self->s.renderfx |= RF_ALPHA_TEXTURE;
-	self->s.color.r = 255;
-	self->s.color.g = 255;
-	self->s.color.b = 255;
-	self->s.color.a = 255;
+
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
+	self->s.color[3] = 255;
 }
 
 /*-----------------------------------------------
@@ -236,12 +237,12 @@ void priestess_teleport_self_effects( edict_t *self )
 
 void priestess_delta_alpha( edict_t *self, float amount )
 {
-	if (self->s.color.a + amount > 255)
-		self->s.color.a = 255;
-	else if (self->s.color.a + amount < 0)
-		self->s.color.a = 0;
+	if (self->s.color[3] + amount > 255)
+		self->s.color[3] = 255;
+	else if (self->s.color[3] + amount < 0)
+		self->s.color[3] = 0;
 	else
-		self->s.color.a += amount;
+		self->s.color[3] += amount;
 }
 
 /*-----------------------------------------------
@@ -253,10 +254,11 @@ void priestess_stop_alpha ( edict_t *self )
 	self->takedamage = DAMAGE_YES;
 
 	self->s.renderfx &= ~RF_ALPHA_TEXTURE;
-	self->s.color.r = 255;
-	self->s.color.g = 255;
-	self->s.color.b = 255;
-	self->s.color.a = 255;
+
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
+	self->s.color[3] = 255;
 }
 
 /*-----------------------------------------------

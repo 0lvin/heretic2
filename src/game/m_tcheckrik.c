@@ -1888,9 +1888,9 @@ void SP_monster_tcheckrik_female (edict_t *self)
 
 	if(self->spawnflags & MSF_INSECT_ALTERNATE)
 	{
-		self->s.color.a = 255;
-		self->s.color.r = 250;
-		self->s.color.g = 150;
-		self->s.color.b = 100;
+		self->s.color[3] = 255;
+		self->s.color[0] = 250;
+		self->s.color[1] = 150;
+		self->s.color[2] = 100;
 	}
 }

@@ -1704,15 +1704,15 @@ void body_phase_out (edict_t *self)
 {
 	int	interval = 30;
 
-	if(self->s.color.a > interval)
+	if(self->s.color[3] > interval)
 	{
-		self->s.color.a -= irand(interval/2, interval);
+		self->s.color[3] -= irand(interval/2, interval);
 		self->post_think = body_phase_out;
 		self->next_post_think = level.time + 0.05;
 	}
 	else
 	{
-		self->s.color.a = 0;
+		self->s.color[3] = 0;
 		self->post_think = NULL;
 		self->next_post_think = -1;
 
@@ -2023,13 +2023,13 @@ void MG_PostDeathThink (edict_t *self)
 	VectorClear(self->avelocity);
 	pitch_roll_for_slope(self, NULL);
 
-	if(!self->s.color.r)
-		self->s.color.r = 255;
-	if(!self->s.color.g)
-		self->s.color.g = 255;
-	if(!self->s.color.b)
-		self->s.color.b = 255;
-	self->s.color.a = 255;
+	if(!self->s.color[0])
+		self->s.color[0] = 255;
+	if(!self->s.color[1])
+		self->s.color[1] = 255;
+	if(!self->s.color[2])
+		self->s.color[2] = 255;
+	self->s.color[3] = 255;
 
 	self->post_think = body_phase_out;
 	if(self->classID == CID_RAT)

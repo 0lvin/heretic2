@@ -50,7 +50,7 @@ void create_morph(edict_t *morph);
 
 void MorphFadeIn(edict_t *self)
 {
-	self->s.color.a += MORPH_TELE_FADE;
+	self->s.color[3] += MORPH_TELE_FADE;
 	self->nextthink = level.time + 0.1;
 	if (!(--self->morph_timer))
 	{
@@ -68,7 +68,7 @@ void MorphFadeOut(edict_t *self)
 {
 	edict_t	*newent;
 
-	self->s.color.a -= MORPH_TELE_FADE;
+	self->s.color[3] -= MORPH_TELE_FADE;
 	self->nextthink = level.time + 0.1;
 	if (!(--self->morph_timer))
 	{
@@ -89,7 +89,10 @@ void MorphFadeOut(edict_t *self)
 		// time we stay a chicken
 		newent->time = level.time + 20;
 		ED_CallSpawn(newent);
-		newent->s.color.c = 0xffffff;
+		newent->s.color[0] = 255;
+		newent->s.color[1] = 255;
+		newent->s.color[2] = 255;
+		newent->s.color[3] = 255;
 		newent->morph_timer = MORPH_TELE_TIME;
 		newent->think = MorphFadeIn;
 		gi.CreateEffect(&newent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
@@ -114,7 +117,7 @@ void CleanUpMorph(edict_t *self)
 	self->client->playerinfo.renderfx &= ~RF_TRANSLUCENT;
 	self->client->playerinfo.flags &=~PLAYER_FLAG_MORPHING;
 	self->client->shrine_framenum = level.time - 1;;
-	self->s.color.a = 255;
+	self->s.color[3] = 255;
 }
 
 // *************************************************************************************************
@@ -229,10 +232,10 @@ void MorphChickenToPlayer(edict_t *self)
 	// make the player still
 	self->flags |= FL_LOCKMOVE;
 	// allow the player to fade out
-	self->s.color.a = 255;
-	self->s.color.r = 255;
-	self->s.color.g = 255;
-	self->s.color.b = 255;
+	self->s.color[3] = 255;
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
 	self->s.renderfx |= RF_TRANSLUCENT;
 
 	// make us not think at all
@@ -409,10 +412,10 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 	self->client->playerinfo.flags |= FL_LOCKMOVE;
 
 	// allow the player to fade out
-	self->s.color.a = 255;
-	self->s.color.r = 255;
-	self->s.color.g = 255;
-	self->s.color.b = 255;
+	self->s.color[3] = 255;
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
 	self->s.renderfx |= RF_TRANSLUCENT;
 
 	// make it so that the stuff that does the demateriasation in G_ANIM_ACTOR knows we are fading out, not in
@@ -471,10 +474,10 @@ void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 	self->client->playerinfo.flags |= FL_LOCKMOVE;
 
 	// allow the player to fade out
-	self->s.color.a = 255;
-	self->s.color.r = 255;
-	self->s.color.g = 255;
-	self->s.color.b = 255;
+	self->s.color[3] = 255;
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
 
 	self->client->playerinfo.renderfx |= RF_TRANSLUCENT;
 

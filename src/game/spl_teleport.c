@@ -76,7 +76,7 @@ void CleanUpTeleport(edict_t *self)
 	self->flags &= ~FL_LOCKMOVE;
 	self->client->playerinfo.flags &=~PLAYER_FLAG_TELEPORT;
 	self->client->ps.pmove.pm_flags &= ~PMF_LOCKMOVE;
-	self->s.color.a = 255;
+	self->s.color[3] = 255;
 	self->client->shrine_framenum = level.time - 1;;
 }
 
@@ -174,10 +174,10 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	// make the player still
 	other->flags |= FL_LOCKMOVE;
 	// allow the player to fade out
-	other->s.color.a = 255;
-	other->s.color.r = 255;
-	other->s.color.g = 255;
-	other->s.color.b = 255;
+	other->s.color[3] = 255;
+	other->s.color[0] = 255;
+	other->s.color[1] = 255;
+	other->s.color[2] = 255;
 
 	// draw the teleport splash at the teleport source
 	gi.CreateEffect(&other->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)other->client->tele_type << 5), NULL, "" );
@@ -230,10 +230,10 @@ void SpellCastTeleport(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t A
 	// make the player still
 	caster->flags |= FL_LOCKMOVE;
 	// allow the player to fade out
-	caster->s.color.a = 255;
-	caster->s.color.r = 255;
-	caster->s.color.g = 255;
-	caster->s.color.b = 255;
+	caster->s.color[0] = 255;
+	caster->s.color[1] = 255;
+	caster->s.color[2] = 255;
+	caster->s.color[3] = 255;
 
 	// draw the teleport splash at the teleport source
 	gi.CreateEffect(&caster->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)caster->client->tele_type << 5), NULL, "" );

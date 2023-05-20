@@ -1266,17 +1266,17 @@ void plagueElf_pause (edict_t *self)
 
 	if(self->ai_mood == AI_MOOD_FLEE)
 	{
-		if(self->s.color.a != 255 && self->pre_think!=pelf_phase_in)
+		if(self->s.color[3] != 255 && self->pre_think!=pelf_phase_in)
 			pelf_init_phase_in(self);
 	}
 	else
 	{
 		if(!skill->value)
 		{
-			if(self->s.color.a > 50 && self->pre_think!=pelf_phase_out)
+			if(self->s.color[3] > 50 && self->pre_think!=pelf_phase_out)
 				pelf_init_phase_out(self);
 		}
-		else if(self->s.color.a && self->pre_think!=pelf_phase_out)
+		else if(self->s.color[3] && self->pre_think!=pelf_phase_out)
 			pelf_init_phase_out(self);
 	}
 
@@ -1741,18 +1741,18 @@ void pelf_phase_out (edict_t *self)
 {
 	int	interval = 60;
 
-	if(self->s.color.a > interval)
+	if(self->s.color[3] > interval)
 	{
-		self->s.color.a -= irand(interval/2, interval);
+		self->s.color[3] -= irand(interval/2, interval);
 		self->pre_think = pelf_phase_out;
 		self->next_pre_think = level.time + 0.05;
 	}
 	else
 	{
 		if(!skill->value)
-			self->s.color.a = 50;
+			self->s.color[3] = 50;
 		else
-			self->s.color.a = 0;
+			self->s.color[3] = 0;
 		self->pre_think = NULL;
 		self->next_pre_think = -1;
 	}
@@ -1763,16 +1763,21 @@ void pelf_phase_in (edict_t *self)
 {
 	int	interval = 60;
 
-	if(self->s.color.a < 255 - interval)
+	if(self->s.color[3] < 255 - interval)
 	{
-		self->s.color.a += irand(interval/2, interval);
+		self->s.color[3] += irand(interval/2, interval);
 		self->pre_think = pelf_phase_in;
 		self->next_pre_think = level.time + 0.05;
 	}
 	else
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
-		self->s.color.c = 0xffffffff;
+
+		self->s.color[0] = 255;
+		self->s.color[1] = 255;
+		self->s.color[2] = 255;
+		self->s.color[3] = 255;
+
 		if(self->health <= 0)
 		{
 			self->pre_think = NULL;
@@ -2249,7 +2254,10 @@ void SP_monster_palace_plague_guard_invisible (edict_t *self)
 
 	self->s.skinnum = PALACE_ELF_SKIN;
 
-	self->s.color.c = 0xFFFFFFFF;
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
+	self->s.color[3] = 255;
 
 	if(!(self->spawnflags&MSF_EXTRA4))//these guys start visible
 		pelf_init_phase_out(self);

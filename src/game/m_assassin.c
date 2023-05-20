@@ -2611,20 +2611,20 @@ void assassinCloak (edict_t *self)
 {
 	int	interval = 15;
 
-	if(self->s.color.r > 50)
-		self->s.color.r += irand(-interval*3, 0);
-	if(self->s.color.g > 50)
-		self->s.color.g += irand(-interval*3, 0);
-	if(self->s.color.b > 50)
-		self->s.color.b += irand(-interval*3, 0);
+	if(self->s.color[0] > 50)
+		self->s.color[0] += irand(-interval*3, 0);
+	if(self->s.color[1] > 50)
+		self->s.color[1] += irand(-interval*3, 0);
+	if(self->s.color[2] > 50)
+		self->s.color[2] += irand(-interval*3, 0);
 
-	if(self->s.color.a > 150)
-		self->s.color.a += irand(-interval, 0);
+	if(self->s.color[3] > 150)
+		self->s.color[3] += irand(-interval, 0);
 
-	if(self->s.color.r > 50||
-		self->s.color.g > 50||
-		self->s.color.b > 50||
-		self->s.color.a > 150)
+	if(self->s.color[0] > 50||
+		self->s.color[1] > 50||
+		self->s.color[2] > 50||
+		self->s.color[3] > 150)
 	{
 		self->pre_think = assassinCloak;
 		self->next_pre_think = level.time + FRAMETIME;
@@ -2644,30 +2644,30 @@ void assassinDeCloak (edict_t *self)
 	if(!(self->s.renderfx & RF_ALPHA_TEXTURE))
 		return;
 
-	if(self->s.color.r<255 - 10)
-		self->s.color.r += 10;
+	if(self->s.color[0]<255 - 10)
+		self->s.color[0] += 10;
 	else
-		self->s.color.r = 255;
+		self->s.color[0] = 255;
 
-	if(self->s.color.g<255 - 10)
-		self->s.color.g += 10;
+	if(self->s.color[1]<255 - 10)
+		self->s.color[1] += 10;
 	else
-		self->s.color.g = 255;
+		self->s.color[1] = 255;
 
-	if(self->s.color.b<255 - 10)
-		self->s.color.b += 10;
+	if(self->s.color[2]<255 - 10)
+		self->s.color[2] += 10;
 	else
-		self->s.color.b = 255;
+		self->s.color[2] = 255;
 
-	if(self->s.color.a<255 - 5)
-		self->s.color.a += 5;
+	if(self->s.color[3]<255 - 5)
+		self->s.color[3] += 5;
 	else
-		self->s.color.a = 255;
+		self->s.color[3] = 255;
 
-	if(self->s.color.r == 255&&
-		self->s.color.g == 255&&
-		self->s.color.b == 255&&
-		self->s.color.a == 255)
+	if(self->s.color[0] == 255&&
+		self->s.color[1] == 255&&
+		self->s.color[2] == 255&&
+		self->s.color[3] == 255)
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
 		self->s.renderfx &= ~RF_ALPHA_TEXTURE;
@@ -2704,10 +2704,12 @@ void assassinInitCloak (edict_t *self)
 	self->s.renderfx |= RF_ALPHA_TEXTURE;
 	self->svflags |= SVF_NO_AUTOTARGET;
 	gi.sound(self,CHAN_AUTO,Sounds[SND_CLOAK],1,ATTN_NORM,0);
-	self->s.color.r = 255;
-	self->s.color.g = 255;
-	self->s.color.b = 255;
-	self->s.color.a = 255;
+
+	self->s.color[0] = 255;
+	self->s.color[1] = 255;
+	self->s.color[2] = 255;
+	self->s.color[3] = 255;
+
 	self->pre_think = assassinCloak;
 	self->next_pre_think = level.time + FRAMETIME;
 }

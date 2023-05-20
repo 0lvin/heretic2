@@ -2275,7 +2275,11 @@ void PutClientInServer (edict_t *ent)
 	client->playerinfo.flags &= ~PLAYER_FLAG_TELEPORT;
 	client->tele_dest[0] = client->tele_dest[1] = client->tele_dest[2] = 0;
 	client->tele_count = 0;
-	ent->s.color.c = 0x00000000;	// Restore model visibility.
+	/* Restore model visibility. */
+	ent->s.color[0] = 0;
+	ent->s.color[1] = 0;
+	ent->s.color[2] = 0;
+	ent->s.color[3] = 0;
 
 	ent->fire_damage_time = 0;
 	ent->fire_timestamp = 0;
