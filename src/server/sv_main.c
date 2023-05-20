@@ -928,14 +928,6 @@ void SV_UserinfoChanged (client_t *cl)
 	}
 	else
 		cl->rate = 5000;
-
-	// msg command
-	val = Info_ValueForKey (cl->userinfo, "msg");
-	if (strlen(val))
-	{
-		cl->messagelevel = atoi(val);
-	}
-
 }
 
 

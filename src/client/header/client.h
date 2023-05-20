@@ -58,6 +58,7 @@
 #include "screen.h"
 #include "keyboard.h"
 #include "console.h"
+
 #include "../input.h"
 #include "../../../h2common/angles.h"
 #include "../../../h2common/vector.h"
@@ -74,11 +75,6 @@
 #define CF_INUSE			0x00000001
 #define CF_SERVER_CULLED	0x00000002
 
-// ********************************************************************************************
-// frame_t
-// -------
-// ********************************************************************************************
-
 typedef struct
 {
 	qboolean		valid; /* cleared if delta parsing was invalid */
@@ -91,7 +87,7 @@ typedef struct
 	int				parse_entities; /* non-masked index into cl_parse_entities array */
 } frame_t;
 
-typedef struct centity_s
+typedef struct
 {
 	entity_state_t	baseline; /* delta from this if not from a previous frame */
 	entity_state_t	current;
@@ -138,29 +134,21 @@ typedef struct
 	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
 } predictinfo_t;
 
-// ********************************************************************************************
-// clientinfo_t
-// ------------
-// ********************************************************************************************
 // jmarshall: clean up some memory issues
 #define CL_MAXMODELS  16
 // jmarshall: clean up some memory issues
 typedef struct
 {
 	char	name[MAX_QPATH];
-	struct	image_s	*skin[SKIN_MAX];
+
+	struct image_s	*skin[SKIN_MAX];
+
 	char	iconname[MAX_QPATH];
-	struct	model_s	*model[CL_MAXMODELS]; // jmarshall: clean up some memory issues
+	struct model_s	*model[CL_MAXMODELS]; // jmarshall: clean up some memory issues
 	char	skin_name[MAX_QPATH];
 	char	model_name[MAX_QPATH];
 	vec3_t	origin;
 } clientinfo_t;
-
-// ********************************************************************************************
-// client_state_t
-// --------------
-// Wiped completely at every server map change.
-// ********************************************************************************************
 
 /* the client_state_t structure is wiped
    completely at every server map change */
@@ -189,56 +177,38 @@ typedef struct
 	vec3_t		predicted_angles;
 	vec3_t		prediction_error;
 
-	frame_t		frame;				// received from server
-#if	0
-	int			surpressCount;		// number of messages rate supressed
-#endif
+	frame_t		frame; /* received from server */
+	int			surpressCount; /* number of messages rate supressed */
 	frame_t		frames[UPDATE_BACKUP];
 
-	// The client maintains its own idea of view angles in 'viewangles', which is sent to the
-	// server each client-frame. It is cleared to 0 upon entering each level. The server sends a
-	// delta each server-frame which is added to the locally tracked view angles to account for
-	// standing on rotating objects, and teleport direction changes.
+	/* the client maintains its own idea of view angles, which are
+	   sent to the server each frame.  It is cleared to 0 upon entering each level.
+	   the server sends a delta each frame which is added to the locally
+	   tracked view angles to account for standing on rotating objects,
+	   and teleport direction changes */
+	vec3_t		viewangles;
 
-	vec3_t		inputangles,delta_inputangles,old_delta_inputangles,
-				viewangles,
-				lookangles;
-
-	// Client camera vieworigin and viewangles sent to server so it can do accurate(ish) culling.
-
-	vec3_t		camera_vieworigin,camera_viewangles;
-
-	// this is calculated on the client, as the distance between the client and the roof, and walls. - Used for EAX environment mapping.
-
-	float		wall_dist[5];
-	int			wall_check;					// used to determing which wall/ceiling we are checking on any given frame.
-
-	// The time value that the client is rendering at. This is always <= cls.realtime.
-
-	int			time;
-
-	// Between oldframe and frame.
-
-	float		lerpfrac;
+	int			time; /* this is the time value that the client is rendering at. always <= cls.realtime */
+	float		lerpfrac; /* between oldframe and frame */
 
 	refdef_t	refdef;
 
-	vec3_t		v_forward, v_right, v_up;	// set when refdef.angles is set
+	vec3_t		v_forward, v_right, v_up; /* set when refdef.angles is set */
 
-	//
-	// transient data from server
-	//
-
-	char		layout[1024];		// general 2D overlay
+	/* transient data from server */
+	char		layout[1024]; /* general 2D overlay */
 	int			inventory[MAX_ITEMS];
 
-	int			cinematictime;
-	//
-	// server state information
-	//
+	/* non-gameserver infornamtion */
+	fileHandle_t cinematic_file;
+	int			cinematictime; /* cls.realtime for first cinematic frame */
+	int			cinematicframe;
+	unsigned char	cinematicpalette[768];
+	qboolean	cinematicpalette_active;
 
-	qboolean	attractloop;		// running the attract loop, any key will menu
-	int			servercount;		// server identification for prespawns
+	/* server state information */
+	qboolean	attractloop; /* running the attract loop, any key will menu */
+	int			servercount; /* server identification for prespawns */
 	char		gamedir[MAX_QPATH];
 	int			playernum;
 
@@ -256,6 +226,20 @@ typedef struct
 
 	clientinfo_t	clientinfo[MAX_CLIENTS];
 	clientinfo_t	baseclientinfo;
+
+	vec3_t		inputangles,delta_inputangles,old_delta_inputangles,
+				lookangles;
+
+	// Client camera vieworigin and viewangles sent to server so it can do accurate(ish) culling.
+
+	vec3_t		camera_vieworigin,camera_viewangles;
+
+	// this is calculated on the client, as the distance between the client and the roof, and walls. - Used for EAX environment mapping.
+
+	float		wall_dist[5];
+	int			wall_check;					// used to determing which wall/ceiling we are checking on any given frame.
+
+	// The time value that the client is rendering at. This is always <= cls.realtime.
 
 	int				lastanimtime;
 	int				PIV;
@@ -356,7 +340,7 @@ typedef struct
 	FILE		*demofile;
 } client_static_t;
 
-Q2_DLL_EXPORTED extern client_static_t	cls;
+extern client_static_t	cls;
 
 #define	FX_API_VERSION		1
 
@@ -480,7 +464,7 @@ extern	cvar_t	*cl_predict_remote;
 extern	cvar_t	*cl_footsteps;
 extern	cvar_t	*cl_noskins;
 extern	cvar_t	*cl_autoskins;
-extern  cvar_t	*cl_maxfps;
+extern	cvar_t	*cl_maxfps;
 extern	cvar_t	*cl_frametime;
 extern	cvar_t	*cl_yawspeed;
 extern	cvar_t	*cl_pitchspeed;
@@ -609,9 +593,6 @@ void CL_PingServers_f (void);
 void CL_Snd_Restart_f (void);
 void CL_Snd_Restart_f_nocfx (void);
 
-//
-// cl_input
-//
 typedef struct
 {
 	int			down[2]; /* key nums holding it down */
@@ -626,7 +607,9 @@ extern 	kbutton_t 	in_speed;
 extern	kbutton_t	in_lookaround;
 
 void CL_InitInput (void);
+void CL_RefreshCmd(void);
 void CL_SendCmd (void);
+void CL_RefreshMove(void);
 void CL_SendMove (usercmd_t *cmd);
 
 void CL_ClearState (void);
@@ -638,27 +621,21 @@ void CL_WriteToServer (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
 
 void IN_CenterView (void);
+
+float CL_KeyState (kbutton_t *key);
 char *Key_KeynumToString (int keynum);
 
-//
-// cl_demo.c
-//
-float CL_KeyState(kbutton_t* key);
 void CL_ParseDemoClientEffects (void);
 void CL_WriteDemoMessage (void);
 void CL_Stop_f (void);
 void CL_Record_f (void);
 
-//
-// cl_parse.c
-//
 extern	char *svc_strings[256];
 
 void CL_ParseServerMessage (void);
 void CL_LoadClientinfo (clientinfo_t *ci, char *s);
 void SHOWNET(char *s);
 void CL_ParseClientinfo (int player);
-int COLOUR(cvar_t *cvar);
 
 void V_Init (void);
 void V_RenderView( float stereo_separation );

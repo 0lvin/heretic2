@@ -470,7 +470,8 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/h2common/resource_manager.o \
 	$(BUILDDIR)/h2common/arrayed_list.o \
 	$(BUILDDIR)/h2common/skeletons.o \
-	$(BUILDDIR)/src/server/sv_ccmds.o \
+	$(BUILDDIR)/src/server/sv_cmd.o \
+	$(BUILDDIR)/src/server/sv_save.o \
 	$(BUILDDIR)/src/server/sv_ents.o \
 	$(BUILDDIR)/src/server/sv_game.o \
 	$(BUILDDIR)/src/server/sv_init.o \
