@@ -1230,6 +1230,7 @@ enum
 #define DF_NO_OFFENSIVE_SPELL		0x2000			// This means staff-only combat!!!
 #define DF_NO_DEFENSIVE_SPELL		0x4000
 #define DF_DISMEMBER			0x8000
+#define DF_INSTANT_ITEMS		0x10000
 #define DF_DEATHMATCH_SET		0x80000000		// High bit indicates deathmatch, so that it can be transmitted in playerinfo.
 
 #define ROGUE_VERSION_STRING "08/21/1998 Beta 2 for Ensemble"

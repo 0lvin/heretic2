@@ -25,12 +25,14 @@
  * =======================================================================
  */
 
+#include <stdint.h>
+
 #include "header/common.h"
 
 typedef struct
 {
 	cplane_t	*plane;
-	int			children[2];		// negative numbers are leafs
+	int			children[2]; /* negative numbers are leafs */
 } cnode_t;
 
 typedef struct
@@ -53,14 +55,14 @@ typedef struct
 	int			contents;
 	int			numsides;
 	int			firstbrushside;
-	int			checkcount;		// to avoid repeated testings
+	int			checkcount;	/* to avoid repeated testings */
 } cbrush_t;
 
 typedef struct
 {
 	int		numareaportals;
 	int		firstareaportal;
-	int		floodnum;			// if two areas have equal floodnums, they are connected
+	int		floodnum; /* if two areas have equal floodnums, they are connected */
 	int		floodvalid;
 } carea_t;
 
@@ -526,7 +528,6 @@ void CMod_LoadVisibility (lump_t *l)
 	}
 }
 
-
 /*
 =================
 CMod_LoadEntityString
@@ -540,8 +541,6 @@ void CMod_LoadEntityString (lump_t *l)
 
 	memcpy (map_entitystring, cmod_base + l->fileofs, l->filelen);
 }
-
-
 
 /*
 ==================
@@ -699,29 +698,29 @@ cbrush_t	*box_brush;
 cleaf_t		*box_leaf;
 
 /*
-===================
-CM_InitBoxHull
-
-Set up the planes and nodes so that the six floats of a bounding box
-can just be stored out and get a proper clipping hull structure.
-===================
-*/
-void CM_InitBoxHull (void)
+ * Set up the planes and nodes so that the six floats of a bounding box
+ * can just be stored out and get a proper clipping hull structure.
+ */
+void
+CM_InitBoxHull(void)
 {
-	int			i;
-	int			side;
-	cnode_t		*c;
-	cplane_t	*p;
-	cbrushside_t	*s;
+	int i;
+	int side;
+	cnode_t *c;
+	cplane_t *p;
+	cbrushside_t *s;
 
 	box_headnode = numnodes;
 	box_planes = &map_planes[numplanes];
-	if (numnodes+6 > MAX_MAP_NODES
-		|| numbrushes+1 > MAX_MAP_BRUSHES
-		|| numleafbrushes+1 > MAX_MAP_LEAFBRUSHES
-		|| numbrushsides+6 > MAX_MAP_BRUSHSIDES
-		|| numplanes+12 > MAX_MAP_PLANES)
-		Com_Error (ERR_DROP, "Not enough room for box tree");
+
+	if ((numnodes + 6 > MAX_MAP_NODES) ||
+		(numbrushes + 1 > MAX_MAP_BRUSHES) ||
+		(numleafbrushes + 1 > MAX_MAP_LEAFBRUSHES) ||
+		(numbrushsides + 6 > MAX_MAP_BRUSHSIDES) ||
+		(numplanes + 12 > MAX_MAP_PLANES))
+	{
+		Com_Error(ERR_DROP, "Not enough room for box tree");
+	}
 
 	box_brush = &map_brushes[numbrushes];
 	box_brush->numsides = 6;
@@ -770,14 +769,11 @@ void CM_InitBoxHull (void)
 
 
 /*
-===================
-CM_HeadnodeForBox
-
-To keep everything totally uniform, bounding boxes are turned into small
-BSP trees instead of being compared directly.
-===================
-*/
-int	CM_HeadnodeForBox (vec3_t mins, vec3_t maxs)
+ * To keep everything totally uniform, bounding boxes are turned into
+ * small BSP trees instead of being compared directly.
+ */
+int
+CM_HeadnodeForBox(vec3_t mins, vec3_t maxs)
 {
 	box_planes[0].dist = maxs[0];
 	box_planes[1].dist = -maxs[0];
@@ -795,18 +791,12 @@ int	CM_HeadnodeForBox (vec3_t mins, vec3_t maxs)
 	return box_headnode;
 }
 
-
-/*
-==================
-CM_PointLeafnum_r
-
-==================
-*/
-int CM_PointLeafnum_r (vec3_t p, int num)
+int
+CM_PointLeafnum_r(vec3_t p, int num)
 {
-	float		d;
-	cnode_t		*node;
-	cplane_t	*plane;
+	float d;
+	cnode_t *node;
+	cplane_t *plane;
 
 	while (num >= 0)
 	{
@@ -814,7 +804,10 @@ int CM_PointLeafnum_r (vec3_t p, int num)
 		plane = node->plane;
 
 		if (plane->type < 3)
+		{
 			d = p[plane->type] - plane->dist;
+		}
+
 		else
 			d = DotProduct (plane->normal, p) - plane->dist;
 		if (d < 0)
@@ -1251,39 +1244,33 @@ void CM_TestInLeaf (int leafnum)
 
 }
 
-
-/*
-==================
-CM_RecursiveHullCheck
-
-==================
-*/
-void CM_RecursiveHullCheck (int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
+void
+CM_RecursiveHullCheck(int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
 {
-	cnode_t		*node;
-	cplane_t	*plane;
-	float		t1, t2, offset;
-	float		frac, frac2;
-	float		idist;
-	int			i;
-	vec3_t		mid;
-	int			side;
-	float		midf;
+	cnode_t *node;
+	cplane_t *plane;
+	float t1, t2, offset;
+	float frac, frac2;
+	float idist;
+	int i;
+	vec3_t mid;
+	int side;
+	float midf;
 
 	if (trace_trace.fraction <= p1f)
-		return;		// already hit something nearer
+	{
+		return; /* already hit something nearer */
+	}
 
-	// if < 0, we are in a leaf node
+	/* if < 0, we are in a leaf node */
 	if (num < 0)
 	{
-		CM_TraceToLeaf (-1-num);
+		CM_TraceToLeaf(-1 - num);
 		return;
 	}
 
-	//
-	// find the point distances to the seperating plane
-	// and the offset for the size of the box
-	//
+	/* find the point distances to the seperating plane
+	   and the offset for the size of the box */
 	node = map_nodes + num;
 	plane = node->plane;
 
@@ -1293,24 +1280,22 @@ void CM_RecursiveHullCheck (int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
 		t2 = p2[plane->type] - plane->dist;
 		offset = trace_extents[plane->type];
 	}
+
 	else
 	{
-		t1 = DotProduct (plane->normal, p1) - plane->dist;
-		t2 = DotProduct (plane->normal, p2) - plane->dist;
+		t1 = DotProduct(plane->normal, p1) - plane->dist;
+		t2 = DotProduct(plane->normal, p2) - plane->dist;
+
 		if (trace_ispoint)
+		{
 			offset = 0;
+		}
+
 		else
 			offset = fabs(trace_extents[0]*plane->normal[0]) +
 				fabs(trace_extents[1]*plane->normal[1]) +
 				fabs(trace_extents[2]*plane->normal[2]);
 	}
-
-
-#if 0
-CM_RecursiveHullCheck (node->children[0], p1f, p2f, p1, p2);
-CM_RecursiveHullCheck (node->children[1], p1f, p2f, p1, p2);
-return;
-#endif
 
 	// see which sides we need to consider
 	if (t1 >= offset && t2 >= offset)
@@ -1334,11 +1319,12 @@ return;
 	}
 	else if (t1 > t2)
 	{
-		idist = 1.0/(t1-t2);
+		idist = 1.0 / (t1 - t2);
 		side = 0;
-		frac2 = (t1 - offset - DIST_EPSILON)*idist;
-		frac = (t1 + offset + DIST_EPSILON)*idist;
+		frac2 = (t1 - offset - DIST_EPSILON) * idist;
+		frac = (t1 + offset + DIST_EPSILON) * idist;
 	}
+
 	else
 	{
 		side = 0;
@@ -1346,7 +1332,7 @@ return;
 		frac2 = 0;
 	}
 
-	// move up to the node
+	/* move up to the node */
 	if (frac < 0)
 		frac = 0;
 	if (frac > 1)
@@ -1788,17 +1774,14 @@ void	CM_WritePortalState (FILE *f)
 }
 
 /*
-===================
-CM_ReadPortalState
-
-Reads the portal state from a savegame file
-and recalculates the area connections
-===================
-*/
-void	CM_ReadPortalState (FILE *f)
+ * Reads the portal state from a savegame file
+ * and recalculates the area connections
+ */
+void
+CM_ReadPortalState(fileHandle_t f)
 {
-	FS_Read (portalopen, sizeof(portalopen), f);
-	FloodAreaConnections ();
+	FS_Read(portalopen, sizeof(portalopen), f);
+	FloodAreaConnections();
 }
 
 /*

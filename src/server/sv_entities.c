@@ -118,32 +118,18 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg)
 			bits = U_REMOVE;
 
 			if (oldnum >= 256)
-			{
-				bits |= U_NUMBER16 | U_MOREBITS1;
-			}
+				bits |= U_NUMBER16;
 
-			MSG_WriteByte(msg, bits & 255);
-
-			if (bits & 0x0000ff00)
-			{
-				MSG_WriteByte(msg, (bits >> 8) & 255);
-			}
-
-			if (bits & U_NUMBER16)
-			{
-				MSG_WriteShort(msg, oldnum);
-			}
-			else
-			{
-				MSG_WriteByte(msg, oldnum);
-			}
+			MSG_WriteLong (msg, bits);
+			MSG_WriteShort(msg, oldnum);
 
 			oldindex++;
 			continue;
 		}
 	}
 
-	MSG_WriteShort(msg, 0);
+	MSG_WriteLong(msg, 0);
+	MSG_WriteShort(msg, 0);	/* end of packetentities */
 }
 
 void
@@ -180,14 +166,16 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		(ps->pmove.origin[1] != ops->pmove.origin[1]) ||
 		(ps->pmove.origin[2] != ops->pmove.origin[2]))
 	{
-		pflags |= PS_M_ORIGIN;
+		pflags |= PS_M_ORIGIN_XY;
+		pflags |= PS_M_ORIGIN_Z;
 	}
 
 	if ((ps->pmove.velocity[0] != ops->pmove.velocity[0]) ||
 		(ps->pmove.velocity[1] != ops->pmove.velocity[1]) ||
 		(ps->pmove.velocity[2] != ops->pmove.velocity[2]))
 	{
-		pflags |= PS_M_VELOCITY;
+		pflags |= PS_M_VELOCITY_XY;
+		pflags |= PS_M_VELOCITY_Z;
 	}
 
 	if (ps->pmove.pm_time != ops->pmove.pm_time)
@@ -212,33 +200,12 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_M_DELTA_ANGLES;
 	}
 
-	if ((ps->viewoffset[0] != ops->viewoffset[0]) ||
-		(ps->viewoffset[1] != ops->viewoffset[1]) ||
-		(ps->viewoffset[2] != ops->viewoffset[2]))
-	{
-		pflags |= PS_VIEWOFFSET;
-	}
 
 	if ((ps->viewangles[0] != ops->viewangles[0]) ||
 		(ps->viewangles[1] != ops->viewangles[1]) ||
 		(ps->viewangles[2] != ops->viewangles[2]))
 	{
 		pflags |= PS_VIEWANGLES;
-	}
-
-	if ((ps->kick_angles[0] != ops->kick_angles[0]) ||
-		(ps->kick_angles[1] != ops->kick_angles[1]) ||
-		(ps->kick_angles[2] != ops->kick_angles[2]))
-	{
-		pflags |= PS_KICKANGLES;
-	}
-
-	if ((ps->blend[0] != ops->blend[0]) ||
-		(ps->blend[1] != ops->blend[1]) ||
-		(ps->blend[2] != ops->blend[2]) ||
-		(ps->blend[3] != ops->blend[3]))
-	{
-		pflags |= PS_BLEND;
 	}
 
 	if (ps->fov != ops->fov)
@@ -251,144 +218,133 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_RDFLAGS;
 	}
 
-	if ((ps->gunframe != ops->gunframe) ||
-		/* added so weapon angle/offset update during pauseframes */
-		(ps->gunoffset[0] != ops->gunoffset[0]) ||
-		(ps->gunoffset[1] != ops->gunoffset[1]) ||
-		(ps->gunoffset[2] != ops->gunoffset[2]) ||
-
-		(ps->gunangles[0] != ops->gunangles[0]) ||
-		(ps->gunangles[1] != ops->gunangles[1]) ||
-		(ps->gunangles[2] != ops->gunangles[2]))
+	if (ps->remote_vieworigin[0] != ops->remote_vieworigin[0] ||
+		ps->remote_vieworigin[1] != ops->remote_vieworigin[1] ||
+		ps->remote_vieworigin[2] != ops->remote_vieworigin[2]) 
 	{
-		pflags |= PS_WEAPONFRAME;
+
+		pflags |= PS_REMOTE_VIEWORIGIN;
 	}
 
-	pflags |= PS_WEAPONINDEX;
+	if (ps->remote_viewangles[0] != ops->remote_viewangles[0] ||
+		ps->remote_viewangles[1] != ops->remote_viewangles[1] ||
+		ps->remote_viewangles[2] != ops->remote_viewangles[2]) {
+
+		pflags |= PS_REMOTE_VIEWANGLES;
+	}
+
+	if (ps->mins[0] != ops->mins[0] || ps->mins[1] != ops->mins[1] || ps->mins[2] != ops->mins[2])
+		pflags |= PS_MINSMAXS;
+
+	if (ps->maxs[0] != ops->maxs[0] || ps->maxs[1] != ops->maxs[1] || ps->maxs[2] != ops->maxs[2])
+		pflags |= PS_MINSMAXS;
+
+	if (ps->remote_id != ops->remote_id)
+	{
+		pflags |= PS_REMOTE_ID;
+	}
 
 	/* write it */
 	MSG_WriteByte(msg, svc_playerinfo);
-	MSG_WriteShort(msg, pflags);
+	MSG_WriteLong(msg, pflags);
 
-	/* write the pmove_state_t */
-	if (pflags & PS_M_TYPE)
-	{
-		MSG_WriteByte(msg, ps->pmove.pm_type);
+	MSG_WriteData(msg, (byte *)&ps->stats[0], sizeof(ps->stats));
+
+	if (pflags & PS_MINSMAXS) {
+		MSG_WriteFloat(msg, ps->mins[0]);
+		MSG_WriteFloat(msg, ps->mins[1]);
+		MSG_WriteFloat(msg, ps->mins[2]);
+
+		MSG_WriteFloat(msg, ps->maxs[0]);
+		MSG_WriteFloat(msg, ps->maxs[1]);
+		MSG_WriteFloat(msg, ps->maxs[2]);
 	}
 
-	if (pflags & PS_M_ORIGIN)
+	//
+	// write the pmove_state_t
+	//
+	if (pflags & PS_M_TYPE)
+		MSG_WriteByte (msg, ps->pmove.pm_type);
+
+	if (pflags & PS_REMOTE_ID)
 	{
-		MSG_WriteShort(msg, ps->pmove.origin[0]);
-		MSG_WriteShort(msg, ps->pmove.origin[1]);
+		MSG_WriteShort(msg, ps->remote_id);
+	}
+
+	if (pflags & PS_REMOTE_VIEWORIGIN)
+	{
+		MSG_WriteShort(msg, ps->remote_vieworigin[0]);
+		MSG_WriteShort(msg, ps->remote_vieworigin[1]);
+		MSG_WriteShort(msg, ps->remote_vieworigin[2]);
+	}
+
+	if (pflags & PS_REMOTE_VIEWANGLES)
+	{
+		MSG_WriteShort(msg, ps->remote_viewangles[0]);
+		MSG_WriteShort(msg, ps->remote_viewangles[1]);
+		MSG_WriteShort(msg, ps->remote_viewangles[2]);
+	}
+
+	if (pflags & PS_M_ORIGIN_XY)
+	{
+		MSG_WriteShort (msg, ps->pmove.origin[0]);
+		MSG_WriteShort (msg, ps->pmove.origin[1]);
+	}
+
+	if (pflags & PS_VIEWHEIGHT)
+	{
+		MSG_WriteShort(msg, ps->viewheight);
+	}
+
+	if (pflags & PS_M_ORIGIN_Z)
+	{
 		MSG_WriteShort(msg, ps->pmove.origin[2]);
 	}
 
-	if (pflags & PS_M_VELOCITY)
+	if (pflags & PS_M_VELOCITY_XY)
 	{
-		MSG_WriteShort(msg, ps->pmove.velocity[0]);
-		MSG_WriteShort(msg, ps->pmove.velocity[1]);
+		MSG_WriteShort (msg, ps->pmove.velocity[0]);
+		MSG_WriteShort (msg, ps->pmove.velocity[1]);
+	}
+
+	if (pflags & PS_M_VELOCITY_Z)
+	{
 		MSG_WriteShort(msg, ps->pmove.velocity[2]);
 	}
 
 	if (pflags & PS_M_TIME)
-	{
-		MSG_WriteByte(msg, ps->pmove.pm_time);
-	}
+		MSG_WriteByte (msg, ps->pmove.pm_time);
 
 	if (pflags & PS_M_FLAGS)
-	{
-		MSG_WriteByte(msg, ps->pmove.pm_flags);
-	}
+		MSG_WriteByte (msg, ps->pmove.pm_flags);
 
 	if (pflags & PS_M_GRAVITY)
-	{
-		MSG_WriteShort(msg, ps->pmove.gravity);
-	}
+		MSG_WriteShort (msg, ps->pmove.gravity);
 
 	if (pflags & PS_M_DELTA_ANGLES)
 	{
-		MSG_WriteShort(msg, ps->pmove.delta_angles[0]);
-		MSG_WriteShort(msg, ps->pmove.delta_angles[1]);
-		MSG_WriteShort(msg, ps->pmove.delta_angles[2]);
+		MSG_WriteShort (msg, ps->pmove.delta_angles[0]);
+		MSG_WriteShort (msg, ps->pmove.delta_angles[1]);
+		MSG_WriteShort (msg, ps->pmove.delta_angles[2]);
 	}
 
-	/* write the rest of the player_state_t */
-	if (pflags & PS_VIEWOFFSET)
-	{
-		MSG_WriteChar(msg, ps->viewoffset[0] * 4);
-		MSG_WriteChar(msg, ps->viewoffset[1] * 4);
-		MSG_WriteChar(msg, ps->viewoffset[2] * 4);
-	}
-
+	//
+	// write the rest of the player_state_t
+	//
 	if (pflags & PS_VIEWANGLES)
 	{
-		MSG_WriteAngle16(msg, ps->viewangles[0]);
-		MSG_WriteAngle16(msg, ps->viewangles[1]);
-		MSG_WriteAngle16(msg, ps->viewangles[2]);
-	}
-
-	if (pflags & PS_KICKANGLES)
-	{
-		MSG_WriteChar(msg, ps->kick_angles[0] * 4);
-		MSG_WriteChar(msg, ps->kick_angles[1] * 4);
-		MSG_WriteChar(msg, ps->kick_angles[2] * 4);
-	}
-
-	if (pflags & PS_WEAPONINDEX)
-	{
-		MSG_WriteByte(msg, ps->gunindex);
-	}
-
-	if (pflags & PS_WEAPONFRAME)
-	{
-		MSG_WriteByte(msg, ps->gunframe);
-		MSG_WriteChar(msg, ps->gunoffset[0] * 4);
-		MSG_WriteChar(msg, ps->gunoffset[1] * 4);
-		MSG_WriteChar(msg, ps->gunoffset[2] * 4);
-		MSG_WriteChar(msg, ps->gunangles[0] * 4);
-		MSG_WriteChar(msg, ps->gunangles[1] * 4);
-		MSG_WriteChar(msg, ps->gunangles[2] * 4);
-	}
-
-	if (pflags & PS_BLEND)
-	{
-		MSG_WriteByte(msg, ps->blend[0] * 255);
-		MSG_WriteByte(msg, ps->blend[1] * 255);
-		MSG_WriteByte(msg, ps->blend[2] * 255);
-		MSG_WriteByte(msg, ps->blend[3] * 255);
+		MSG_WriteAngle16 (msg, ps->viewangles[0]);
+		MSG_WriteAngle16 (msg, ps->viewangles[1]);
+		MSG_WriteAngle16 (msg, ps->viewangles[2]);
 	}
 
 	if (pflags & PS_FOV)
-	{
-		MSG_WriteByte(msg, ps->fov);
-	}
-
+		MSG_WriteByte (msg, ps->fov);
 	if (pflags & PS_RDFLAGS)
-	{
-		MSG_WriteByte(msg, ps->rdflags);
-	}
-
-	/* send stats */
-	statbits = 0;
-
-	for (i = 0; i < MAX_STATS; i++)
-	{
-		if (ps->stats[i] != ops->stats[i])
-		{
-			statbits |= 1 << i;
-		}
-	}
-
-	MSG_WriteLong(msg, statbits);
-
-	for (i = 0; i < MAX_STATS; i++)
-	{
-		if (statbits & (1 << i))
-		{
-			MSG_WriteShort(msg, ps->stats[i]);
-		}
-	}
+		MSG_WriteByte (msg, ps->rdflags);
 }
+
+void SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, sizebuf_t* msg);
 
 void
 SV_WriteFrameToClient(client_t *client, sizebuf_t *msg)
@@ -421,7 +377,6 @@ SV_WriteFrameToClient(client_t *client, sizebuf_t *msg)
 	MSG_WriteByte(msg, svc_frame);
 	MSG_WriteLong(msg, sv.framenum);
 	MSG_WriteLong(msg, lastframe); /* what we are delta'ing from */
-	MSG_WriteByte(msg, client->surpressCount); /* rate dropped packets */
 	client->surpressCount = 0;
 
 	/* send over the areabits */
@@ -433,6 +388,9 @@ SV_WriteFrameToClient(client_t *client, sizebuf_t *msg)
 
 	/* delta encode the entities */
 	SV_EmitPacketEntities(oldframe, frame, msg);
+
+	/* Write our global effects to the client. */
+	SV_WriteClientEffectsToClient(oldframe, frame, msg);
 }
 
 /*
@@ -531,8 +489,14 @@ SV_BuildClientFrame(client_t *client)
 	/* find the client's PVS */
 	for (i = 0; i < 3; i++)
 	{
-		org[i] = clent->client->ps.pmove.origin[i] * 0.125 +
-				 clent->client->ps.viewoffset[i];
+		if (clent->client->ps.remote_id == -1)
+		{
+			org[i] = clent->client->ps.pmove.origin[i] * 0.125;
+		}
+		else
+		{
+			org[i] = clent->client->ps.remote_vieworigin[i];
+		}
 	}
 
 	leafnum = CM_PointLeafnum(org);
@@ -564,7 +528,7 @@ SV_BuildClientFrame(client_t *client)
 
 		/* ignore ents without visible models unless they have an effect */
 		if (!ent->s.modelindex && !ent->s.effects && 
-			!ent->s.sound && !ent->s.event)
+			!ent->s.sound)
 		{
 			continue;
 		}
@@ -584,17 +548,6 @@ SV_BuildClientFrame(client_t *client)
 				}
 			}
 
-			/* beams just check one point for PHS */
-			if (ent->s.renderfx & RF_BEAM)
-			{
-				l = ent->clusternums[0];
-
-				if (!(clientphs[l >> 3] & (1 << (l & 7))))
-				{
-					continue;
-				}
-			}
-			else
 			{
 				bitvector = fatpvs;
 
@@ -702,8 +655,8 @@ SV_RecordDemoMessage(void)
 	{
 		/* ignore ents without visible models unless they have an effect */
 		if (ent->inuse && ent->s.number &&
-			(ent->s.modelindex || ent->s.effects || ent->s.sound ||
-			 ent->s.event) && !(ent->svflags & SVF_NOCLIENT))
+			(ent->s.modelindex || ent->s.effects || ent->s.sound) &&
+			!(ent->svflags & SVF_NOCLIENT))
 		{
 			MSG_WriteDeltaEntity(&nostate, &ent->s, &buf, false, true);
 		}
