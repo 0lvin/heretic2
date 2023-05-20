@@ -50,9 +50,9 @@ R_RenderDlight(dlight_t *light)
 	glEnableClientState( GL_VERTEX_ARRAY );
 	glEnableClientState( GL_COLOR_ARRAY );
 
-	clr[index_clr++] = light->color.r * 0.2;
-	clr[index_clr++] = light->color.g * 0.2;
-	clr[index_clr++] = light->color.b * 0.2;
+	clr[index_clr++] = light->color [ 0 ] * 0.2;
+	clr[index_clr++] = light->color [ 1 ] * 0.2;
+	clr[index_clr++] = light->color [ 2 ] * 0.2;
 	clr[index_clr++] = 1;
 
 	for ( i = 0; i < 3; i++ )
@@ -346,11 +346,7 @@ R_LightPoint(entity_t *currententity, vec3_t p, vec3_t color)
 
 		if (add > 0)
 		{
-			vec3_t v;
-			v[0] = dl->color.c_array[0];
-			v[1] = dl->color.c_array[1];
-			v[2] = dl->color.c_array[2];
-			VectorMA(color, add, v, color);
+			VectorMA(color, add, dl->color, color);
 		}
 	}
 
@@ -441,9 +437,9 @@ R_AddDynamicLights(msurface_t *surf)
 
 				if (fdist < fminlight)
 				{
-					pfBL[0] += (frad - fdist) * dl->color.r;
-					pfBL[1] += (frad - fdist) * dl->color.g;
-					pfBL[2] += (frad - fdist) * dl->color.b;
+					pfBL[0] += (frad - fdist) * dl->color[0];
+					pfBL[1] += (frad - fdist) * dl->color[1];
+					pfBL[2] += (frad - fdist) * dl->color[2];
 				}
 			}
 		}

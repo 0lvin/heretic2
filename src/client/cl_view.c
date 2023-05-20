@@ -123,9 +123,9 @@ void V_TestLights (void)
 		for (j=0 ; j<3 ; j++)
 			dl->origin[j] = cl.refdef.vieworg[j] + cl.v_forward[j]*f +
 			cl.v_right[j]*r;
-		dl->color.r = ((i%6)+1) & 1;
-		dl->color.g = (((i%6)+1) & 2)>>1;
-		dl->color.b = (((i%6)+1) & 4)>>2;
+		dl->color[0] = ((i%6)+1) & 1;
+		dl->color[1] = (((i%6)+1) & 2)>>1;
+		dl->color[2] = (((i%6)+1) & 4)>>2;
 		dl->intensity = 200;
 	}
 }

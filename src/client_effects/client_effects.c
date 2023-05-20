@@ -159,9 +159,9 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ NULL,								NULL,					NULL		},	// FX_CROSSHAIR
 };
 
-extern CE_ClassStatics_t classStatics[NUM_CLASSIDS];
+CE_ClassStatics_t ce_classStatics[CE_NUM_CLASSIDS];
 
-void (*cg_classStaticsInits[NUM_CLASSIDS])()=
+void (*cg_classStaticsInits[CE_NUM_CLASSIDS])()=
 {
 	InitDebrisStatics
 };

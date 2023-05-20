@@ -53,7 +53,7 @@ FXMistThink(client_entity_t *mist, centity_t *owner)
 	mist->flags &= ~CEF_DISAPPEARED;
 
 	mist->Scale += flrand(-0.05, 0.05) * mist->SpawnData;
-	mist->Scale = Clamp(mist->Scale, 0.6 * mist->SpawnData, 1.4 * mist->SpawnData);
+	mist->Scale = min( max(mist->Scale, 0.6 * mist->SpawnData), 1.4 * mist->SpawnData);
 	mist->r.scale = Approach(mist->r.scale, mist->Scale, 0.003 * mist->SpawnData);
 
 	mod = (mist->r.scale / mist->SpawnData) * MIST_ALPHA;

@@ -16,7 +16,7 @@ void CE_DefaultMsgHandler(client_entity_t *self, CE_Message_t *msg)
 {
 	CE_MsgReceiver_t receiver;
 
-	receiver = classStatics[self->classID].msgReceivers[msg->ID];
+	receiver = ce_classStatics[self->classID].msgReceivers[msg->ID];
 
 	if(receiver)
 	{

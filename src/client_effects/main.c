@@ -122,13 +122,12 @@ client_fx_export_t GetfxAPI (client_fx_import_t import)
 	return _export;
 }
 
+extern void (*cg_classStaticsInits[CE_NUM_CLASSIDS])();
+void InitEntityMngr();
+void InitFMNodeInfoMngr();
 
 void Init()
 {
-	extern void (*cg_classStaticsInits[NUM_CLASSIDS])();
-	void InitEntityMngr();
-	void InitFMNodeInfoMngr();
-
 	int i;
 
 	InitParticleMngrMngr();
@@ -137,7 +136,7 @@ void Init()
 	InitMsgMngr();
 	InitDLightMngr();
 
-	for(i = 0; i < NUM_CLASSIDS; ++i)
+	for(i = 0; i < CE_NUM_CLASSIDS; ++i)
 	{
 		cg_classStaticsInits[i]();
 	}

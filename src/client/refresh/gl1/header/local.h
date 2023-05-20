@@ -434,23 +434,8 @@ typedef struct CL_SkeletalJoint_s
 	vec3_t angles;
 } CL_SkeletalJoint_t;
 
-#define	MAX_LBM_HEIGHT		480
-
-#define BACKFACE_EPSILON	0.01
-
 //====================================================
-void GL_UpdateSwapInterval( void );
-
 void R_DrawCinematic(int cols, int rows, byte *data, paletteRGB_t *palette, float alpha);
-
-/*
-====================================================================
-
-IMPORTED FUNCTIONS
-
-====================================================================
-*/
-extern	refimport_t	ri;
 
 /*
 ====================================================================

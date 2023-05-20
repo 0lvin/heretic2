@@ -156,7 +156,7 @@ typedef struct entity_s {
 
 typedef struct {
 	vec3_t	origin;
-	paletteRGBA_t	color;
+	vec3_t	color;
 	float	intensity;
 } dlight_t;
 
@@ -173,10 +173,9 @@ typedef struct {
 } lightstyle_t;
 
 typedef struct {
-	int			x, y, width, height, area;// in virtual screen coordinates
+	int			x, y, width, height; /* in virtual screen coordinates */
 	float		fov_x, fov_y;
 	float		vieworg[3];
-	float		clientmodelorg[3];
 	float		viewangles[3];
 	float		blend[4]; /* rgba 0-1 full screen blend */
 	float		time; /* time is used to auto animate */
@@ -189,14 +188,17 @@ typedef struct {
 	int			num_entities;
 	entity_t	**entities;
 
-	int			num_alpha_entities;
-	entity_t	**alpha_entities;
-
-	int			num_dlights;
+	int			num_dlights; // <= 32 (MAX_DLIGHTS)
 	dlight_t	*dlights;
 
 	int			num_particles;
 	particle_t	*particles;
+
+	int			num_alpha_entities;
+	entity_t	**alpha_entities;
+
+        int			area; /* in virtual screen coordinates */
+	float		clientmodelorg[3];
 
 	int			anum_particles;
 	particle_t	*aparticles;
@@ -338,17 +340,6 @@ typedef struct
 	void		(IMPORT *Vid_WriteScreenshot)( int width, int height, int comp, const void* data );
 
 	void		(IMPORT *Vid_NewWindow)( int width, int height );
-
-	char	*(IMPORT *FS_Userdir) (void);
-	void	(IMPORT *FS_CreatePath) (char *path);
-
-	void	(IMPORT *Com_Error) (int code, char *fmt, ...);
-	void	(IMPORT *Con_Printf) (int print_level, char *str, ...);
-
-	cvar_t	*(IMPORT *Cvar_FullSet) (char *name, char *value, int flags);
-	// this is used for the screen flash - there is a reason for doing this...
-	int  	(*Is_Screen_Flashing) (void);
-	void  	(*Deactivate_Screen_Flash) (void);
 } refimport_t;
 
 // this is the only function actually exported at the linker level

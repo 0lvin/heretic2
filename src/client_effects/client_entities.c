@@ -325,9 +325,9 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 
 						dl->intensity = ce_dlight->intensity;
 
-						dl->color.r = ce_dlight->color.r;
-						dl->color.g = ce_dlight->color.g;
-						dl->color.b = ce_dlight->color.b;
+						dl->color[0] = ce_dlight->color.r;
+						dl->color[1] = ce_dlight->color.g;
+						dl->color[2] = ce_dlight->color.b;
 					}
 				}
 			}

@@ -145,7 +145,7 @@ static void install_grabs(void)
 
 		if (!XF86DGAQueryVersion(dpy, &MajorVersion, &MinorVersion)) {
 			// unable to query, probalby not supported
-			ri.Con_Printf( PRINT_ALL, "Failed to detect XF86DGA Mouse\n" );
+			R_Printf( PRINT_ALL, "Failed to detect XF86DGA Mouse\n" );
 			ri.Cvar_Set( "in_dgamouse", "0" );
 		} else {
 			dgamouse = true;
@@ -608,20 +608,20 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 
 	r_fakeFullscreen = ri.Cvar_Get( "r_fakeFullscreen", "0", CVAR_ARCHIVE);
 
-	ri.Con_Printf( PRINT_ALL, "Initializing OpenGL display\n");
+	R_Printf( PRINT_ALL, "Initializing OpenGL display\n");
 
 	if (fullscreen)
-		ri.Con_Printf (PRINT_ALL, "...setting fullscreen mode %d:", mode );
+		R_Printf(PRINT_ALL, "...setting fullscreen mode %d:", mode );
 	else
-		ri.Con_Printf (PRINT_ALL, "...setting mode %d:", mode );
+		R_Printf(PRINT_ALL, "...setting mode %d:", mode );
 
 	if ( !ri.Vid_GetModeInfo( &width, &height, mode ) )
 	{
-		ri.Con_Printf( PRINT_ALL, " invalid mode\n" );
+		R_Printf( PRINT_ALL, " invalid mode\n" );
 		return rserr_invalid_mode;
 	}
 
-	ri.Con_Printf( PRINT_ALL, " %d %d\n", width, height );
+	R_Printf( PRINT_ALL, " %d %d\n", width, height );
 
 	// destroy the existing window
 	GLimp_Shutdown ();
@@ -645,7 +645,7 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 	if (!XF86VidModeQueryVersion(dpy, &MajorVersion, &MinorVersion)) {
 		vidmode_ext = false;
 	} else {
-		ri.Con_Printf(PRINT_ALL, "Using XFree86-VidModeExtension Version %d.%d\n",
+		R_Printf(PRINT_ALL, "Using XFree86-VidModeExtension Version %d.%d\n",
 			MajorVersion, MinorVersion);
 		vidmode_ext = true;
 	}

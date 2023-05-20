@@ -15,8 +15,8 @@
 typedef enum ClassID_e
 {
 	CID_DEBRIS = 0,
-	NUM_CLASSIDS
-} ClassID_t;
+	CE_NUM_CLASSIDS
+} CE_ClassID_t;
 
 typedef struct CE_ClassStatics_s
 {
@@ -150,7 +150,7 @@ typedef struct client_entity_s
 } client_entity_t;
 
 extern client_entity_t *clientEnts;
-extern CE_ClassStatics_t classStatics[NUM_CLASSIDS];
+extern CE_ClassStatics_t ce_classStatics[CE_NUM_CLASSIDS];
 
 client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t direction, int nextThinkTime);
 fmnodeinfo_t *FMNodeInfo_new();

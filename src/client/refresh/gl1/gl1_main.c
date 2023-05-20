@@ -1394,7 +1394,7 @@ R_SetMode(void)
 		{
 			ri.Cvar_SetValue( "vid_fullscreen", 0);
 			vid_fullscreen->modified = false;
-			ri.Con_Printf( PRINT_ALL, "ref_gl::R_SetMode() - fullscreen unavailable in this mode\n" );
+			R_Printf( PRINT_ALL, "ref_gl::R_SetMode() - fullscreen unavailable in this mode\n" );
 			if ( ( err = GLimp_SetMode((int*)&vid.width, (int*)&vid.height, r_mode->value, false ) ) == rserr_ok )
 				return true;
 		}
@@ -1609,7 +1609,7 @@ RI_Init(void *hinstance, void *hWnd)
 
 	err = glGetError();
 	if ( err != GL_NO_ERROR )
-		ri.Con_Printf (PRINT_ALL, "glGetError() = 0x%x\n", err);
+		R_Printf(PRINT_ALL, "glGetError() = 0x%x\n", err);
 }
 
 void
@@ -1780,11 +1780,6 @@ RI_BeginFrame(float camera_separation)
 		R_TextureSolidMode(gl1_texturesolidmode->string);
 		gl1_texturesolidmode->modified = false;
 	}
-
-	/*
-	** swapinterval stuff
-	*/
-	GL_UpdateSwapInterval();
 
 	/* clear screen if desired */
 	R_Clear();

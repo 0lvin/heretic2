@@ -44,7 +44,7 @@ void Mod_SerializeHeader(fmdl_t *fmodel, int version, int length, char *buffer)
 {
 	if (version != FM_HEADER_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid header version for block");
+		ri.Sys_Error(ERR_FATAL, "Invalid header version for block");
 		return;
 	}
 
@@ -52,31 +52,31 @@ void Mod_SerializeHeader(fmdl_t *fmodel, int version, int length, char *buffer)
 
 	if (fmodel->header.num_xyz <= 0)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has no verts");
+		ri.Sys_Error(ERR_FATAL, "Model has no verts");
 		return;
 	}
 
 	if (fmodel->header.num_xyz > MAX_FM_VERTS)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has too many vertices");
+		ri.Sys_Error(ERR_FATAL, "Model has too many vertices");
 		return;
 	}
 
 	if (fmodel->header.num_st <= 0)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has no st verts\n");
+		ri.Sys_Error(ERR_FATAL, "Model has no st verts\n");
 		return;
 	}
 
 	if (fmodel->header.num_tris <= 0)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has no tris\n");
+		ri.Sys_Error(ERR_FATAL, "Model has no tris\n");
 		return;
 	}
 
 	if (fmodel->header.num_frames <= 0)
 	{
-		ri.Com_Error(ERR_FATAL, "Model has no frames\n");
+		ri.Sys_Error(ERR_FATAL, "Model has no frames\n");
 		return;
 	}
 }
@@ -91,7 +91,7 @@ void Mod_SerializeSkin(fmdl_t *fmodel, int version, int length, char *buffer)
 	int i;
 	if (version != FM_SKIN_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid skin version!");
+		ri.Sys_Error(ERR_FATAL, "Invalid skin version!");
 		return;
 	}
 
@@ -118,12 +118,12 @@ void Mod_SerializeFrames(fmdl_t *fmodel, int version, int length, char *buffer)
 
 	if (fmodel->frames != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate frames block!\n");
+		ri.Sys_Error(ERR_FATAL, "Duplicate frames block!\n");
 		return;
 	}
 	if (version != FM_FRAME_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid header version for block");
+		ri.Sys_Error(ERR_FATAL, "Invalid header version for block");
 		return;
 	}
 
@@ -155,13 +155,13 @@ void Mod_SerializeGLCmds(fmdl_t *fmodel, int version, int length, char *buffer)
 {
 	if (fmodel->glcmds != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate glCmds block!\n");
+		ri.Sys_Error(ERR_FATAL, "Duplicate glCmds block!\n");
 		return;
 	}
 
 	if (version != FM_GLCMDS_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid header version for block");
+		ri.Sys_Error(ERR_FATAL, "Invalid header version for block");
 		return;
 	}
 
@@ -184,13 +184,13 @@ void Mod_SerializeMeshNodes(fmdl_t *fmodel, int version, int length, char *buffe
 
 	if (fmodel->mesh_nodes != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate mesh node block!\n");
+		ri.Sys_Error(ERR_FATAL, "Duplicate mesh node block!\n");
 		return;
 	}
 
 	if (version != FM_MESH_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid mesh version");
+		ri.Sys_Error(ERR_FATAL, "Invalid mesh version");
 		return;
 	}
 
@@ -213,12 +213,12 @@ void Mod_SerializeNormal(fmdl_t *fmodel, int version, int length, char *buffer)
 {
 	if (fmodel->lightnormalindex != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate light normal block!\n");
+		ri.Sys_Error(ERR_FATAL, "Duplicate light normal block!\n");
 		return;
 	}
 	if (version != FM_NORMAL_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid normal version\n");
+		ri.Sys_Error(ERR_FATAL, "Invalid normal version\n");
 		return;
 	}
 	fmodel->lightnormalindex = (byte *)Hunk_Alloc(fmodel->header.num_xyz * sizeof(byte));
@@ -241,12 +241,12 @@ static void Mod_SerializeSkeleton(fmdl_t *fmodel, int version, int length, char 
 
 	if (fmodel->skeletons != NULL)
 	{
-		ri.Com_Error(ERR_FATAL, "Duplicate skeleton block!\n");
+		ri.Sys_Error(ERR_FATAL, "Duplicate skeleton block!\n");
 		return;
 	}
 	if (version != FM_SKELETON_VER)
 	{
-		ri.Com_Error(ERR_FATAL, "Invalid skeleton version\n");
+		ri.Sys_Error(ERR_FATAL, "Invalid skeleton version\n");
 		return;
 	}
 
@@ -378,10 +378,10 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 		case FM_BLOCK_SHORTFRAMES:
 		case FM_BLOCK_COMP:
 		case FM_BLOCK_REFERENCES:
-			ri.Con_Printf(PRINT_ALL, "%s is skipped\n", blockname);
+			R_Printf(PRINT_ALL, "%s is skipped\n", blockname);
 			break;
 		default:
-			ri.Com_Error(ERR_FATAL, "Unknown block %s\n", blockname);
+			ri.Sys_Error(ERR_FATAL, "Unknown block %s\n", blockname);
 		}
 		filesize -= size;
 		buffer += size;
@@ -391,7 +391,7 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 	mod->skins[0] = R_FindImage(fmodel->skin_names, it_pic);
 	if (!mod->skins[0])
 	{
-		ri.Con_Printf(PRINT_ALL, "R_FindImage: failed to load %s\n", fmodel->skin_names);
+		R_Printf(PRINT_ALL, "R_FindImage: failed to load %s\n", fmodel->skin_names);
 	}
 
 	mod->type = mod_flex;

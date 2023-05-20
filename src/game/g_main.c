@@ -156,19 +156,6 @@ void G_ClearMessageQueues();
 
 //===================================================================
 
-float Clamp(float src, float min, float max)
-{
-	float result;
-
-	if (src > (float)max)
-		src = max;
-	if (src >= (float)min)
-		result = src;
-	else
-		result = min;
-	return result;
-}
-
 /*
 =================
 ShutdownGame
@@ -605,7 +592,7 @@ void G_RunFrame (void)
 	qboolean SV_RunThink(edict_t *ent);
 
 	if(deathmatch->value || coop->value)
-		Clamp(blood_level->value, VIOLENCE_NONE, VIOLENCE_NORMAL);
+		blood_level->value = Clamp(blood_level->value, VIOLENCE_NONE, VIOLENCE_NORMAL);
 
 	// Update server ticks
 	level.framenum++;

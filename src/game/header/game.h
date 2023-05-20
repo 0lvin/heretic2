@@ -377,7 +377,7 @@ typedef struct
 } game_export_t;
 
 game_export_t *GetGameApi (game_import_t *import);
-float Clamp(float src, float min, float max);
+#define Clamp(v, v_min, v_max) min(max((v), (v_min)), (v_max));
 
 typedef enum DoorSoundID_e
 {
