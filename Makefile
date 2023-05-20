@@ -419,7 +419,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/game/spl_wall.o \
 	$(BUILDDIR)/h2common/h2matrix.o \
 	$(BUILDDIR)/h2common/h2motion.o \
-	$(BUILDDIR)/h2common/h2palette.o \
 	$(BUILDDIR)/h2common/h2physics.o \
 	$(BUILDDIR)/h2common/h2singlylinkedlist.o \
 	$(BUILDDIR)/h2common/h2surfaces.o \

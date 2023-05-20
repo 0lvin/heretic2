@@ -1309,9 +1309,6 @@ typedef struct paletteRGB_s
 	};
 } paletteRGB_t;
 
-#define MAX_COLORS	33
-extern paletteRGBA_t TextPalette[MAX_COLORS];
-
 /**************************************************************
  * additional info for flex models with mesh nodes
  **************************************************************/
