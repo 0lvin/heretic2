@@ -25,11 +25,11 @@
  */
 
 #include "header/server.h"
- 
+
 #ifndef DEDICATED_ONLY
 void SCR_DebugGraph(float value, int color);
 #endif
- 
+
 #include "../../h2common/fx.h"
 int sv_numeffects = 0;
 PerEffectsBuffer_t SV_Persistant_Effects[MAX_PERSISTANT_EFFECTS];
@@ -230,37 +230,37 @@ PF_Configstring(int index, char *val)
 void
 PF_WriteChar(int c)
 {
-	MSG_WriteChar(&sv.multicast, c); 
+	MSG_WriteChar(&sv.multicast, c);
 }
 
 void
 PF_WriteByte(int c)
 {
-	MSG_WriteByte(&sv.multicast, c); 
+	MSG_WriteByte(&sv.multicast, c);
 }
 
 void
 PF_WriteShort(int c)
 {
-	MSG_WriteShort(&sv.multicast, c); 
+	MSG_WriteShort(&sv.multicast, c);
 }
 
 void
 PF_WriteLong(int c)
 {
-	MSG_WriteLong(&sv.multicast, c); 
+	MSG_WriteLong(&sv.multicast, c);
 }
 
 void
 PF_WriteFloat(float f)
 {
-	MSG_WriteFloat(&sv.multicast, f); 
+	MSG_WriteFloat(&sv.multicast, f);
 }
 
 void
 PF_WriteString(char *s)
 {
-	MSG_WriteString(&sv.multicast, s); 
+	MSG_WriteString(&sv.multicast, s);
 }
 
 void
@@ -281,101 +281,103 @@ PF_WriteAngle(float f)
 	MSG_WriteAngle(&sv.multicast, f);
 }
 
-
 /*
-=================
-PF_inPVS
-
-Also checks portalareas so that doors block sight
-=================
-*/
-qboolean 
+ * Also checks portalareas so that doors block sight
+ */
+qboolean
 PF_inPVS(vec3_t p1, vec3_t p2)
 {
-	int		leafnum;
-	int		cluster;
-	int		area1, area2;
-	byte	*mask;
+	int leafnum;
+	int cluster;
+	int area1, area2;
+	byte *mask;
 
-	leafnum = CM_PointLeafnum (p1);
-	cluster = CM_LeafCluster (leafnum);
-	area1 = CM_LeafArea (leafnum);
-	mask = CM_ClusterPVS (cluster);
+	leafnum = CM_PointLeafnum(p1);
+	cluster = CM_LeafCluster(leafnum);
+	area1 = CM_LeafArea(leafnum);
+	mask = CM_ClusterPVS(cluster);
 
-	leafnum = CM_PointLeafnum (p2);
-	cluster = CM_LeafCluster (leafnum);
-	area2 = CM_LeafArea (leafnum);
-	if ( mask && (!(mask[cluster>>3] & (1<<(cluster&7)) ) ) )
+	leafnum = CM_PointLeafnum(p2);
+	cluster = CM_LeafCluster(leafnum);
+	area2 = CM_LeafArea(leafnum);
+
+	if ( mask && (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
+	{
 		return false;
-	if (!CM_AreasConnected (area1, area2))
-		return false;		// a door blocks sight
+	}
+
+	if (!CM_AreasConnected(area1, area2))
+	{
+		return false; /* a door blocks sight */
+	}
+
 	return true;
 }
 
 /*
-=================
-PF_inPHS
-
-Also checks portalareas so that doors block sound
-=================
-*/
+ * Also checks portalareas so that doors block sound
+ */
 qboolean
 PF_inPHS(vec3_t p1, vec3_t p2)
 {
-	int		leafnum;
-	int		cluster;
-	int		area1, area2;
-	byte	*mask;
+	int leafnum;
+	int cluster;
+	int area1, area2;
+	byte *mask;
 
-	leafnum = CM_PointLeafnum (p1);
-	cluster = CM_LeafCluster (leafnum);
-	area1 = CM_LeafArea (leafnum);
-	mask = CM_ClusterPHS (cluster);
+	leafnum = CM_PointLeafnum(p1);
+	cluster = CM_LeafCluster(leafnum);
+	area1 = CM_LeafArea(leafnum);
+	mask = CM_ClusterPHS(cluster);
 
-	leafnum = CM_PointLeafnum (p2);
-	cluster = CM_LeafCluster (leafnum);
-	area2 = CM_LeafArea (leafnum);
-	if ( mask && (!(mask[cluster>>3] & (1<<(cluster&7)) ) ) )
-		return false;		// more than one bounce away
-	if (!CM_AreasConnected (area1, area2))
-		return false;		// a door blocks hearing
+	leafnum = CM_PointLeafnum(p2);
+	cluster = CM_LeafCluster(leafnum);
+	area2 = CM_LeafArea(leafnum);
+
+	if (mask && (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
+	{
+		return false; /* more than one bounce away */
+	}
+
+	if (!CM_AreasConnected(area1, area2))
+	{
+		return false; /* a door blocks hearing */
+	}
 
 	return true;
 }
 
 void
-PF_StartSound(edict_t *entity, int channel, int sound_num, float volume,
-    float attenuation, float timeofs)
+PF_StartSound(edict_t *entity, int channel, int sound_num,
+		float volume, float attenuation, float timeofs)
 {
 	if (!entity)
+	{
 		return;
-	SV_StartSound (NULL, entity, channel, sound_num, volume, attenuation, timeofs);
+	}
+
+	SV_StartSound(NULL, entity, channel, sound_num,
+			volume, attenuation, timeofs);
 }
 
 /*
-===============
-SV_ShutdownGameProgs
-
-Called when either the entire server is being killed, or
-it is changing to a different game directory.
-===============
-*/
+ * Called when either the entire server is being killed, or
+ * it is changing to a different game directory.
+ */
 void
 SV_ShutdownGameProgs(void)
 {
 	if (!ge)
+	{
 		return;
-	ge->Shutdown ();
+	}
+
+	ge->Shutdown();
 	//Sys_UnloadGameDll("game", &game_module_handle);
 	ge = NULL;
 }
 
-/*
-==============
-SV_BCaption
-==============
-*/
-void 
+void
 SV_BCaption(int printlevel, short stringid)
 {
 	client_t* cl;
@@ -390,11 +392,6 @@ SV_BCaption(int printlevel, short stringid)
 	}
 }
 
-/*
-==============
-SV_LevelMsgCenterPrintf
-==============
-*/
 void
 SV_LevelMsgCenterPrintf(edict_t* ent, short msg)
 {
@@ -413,22 +410,84 @@ SV_LevelMsgCenterPrintf(edict_t* ent, short msg)
 void
 SV_BroadcastObituary(int printlevel, short stringid, short client1, short client2)
 {
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
 }
 
-void SV_CreateEffectEvent (byte EventId, entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...) { }
-void SV_RemoveEffectsEvent(byte EventId, entity_state_t* ent, int type) { }
-void SV_GameMsgCenterPrintf(edict_t* ent, short msg) { }
-void SV_MsgVarCenterPrintf(edict_t* ent, short msg, int vari) { }
-void SV_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2) { }
-void SV_CaptionPrintf(edict_t* ent, short msg) { }
-void SV_ChangeCDTrack(edict_t* ent, int track, int loop) { }
-void SV_CLPrintf(edict_t* ent, edict_t* from, int color, char* fmt, ...) { }
-qboolean SV_ResizeBoundingForm (edict_t* self, struct FormMove_s* formMove) { return false; }
-qboolean SV_CheckDistances(vec3_t origin, float dist) { return false; }
-qboolean SV_RemovePersistantEffect(int toRemove, int call_from) { return false; }
-void SV_ModelRemove (char* name) { };
-void SV_SoundRemove(char* name) { };
-void SV_CleanLevel(void) { };
+void
+SV_CreateEffectEvent(byte EventId, entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void
+SV_RemoveEffectsEvent(byte EventId, entity_state_t* ent, int type)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void
+SV_GameMsgCenterPrintf(edict_t* ent, short msg)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void SV_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void SV_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void SV_CaptionPrintf(edict_t* ent, short msg)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void SV_ChangeCDTrack(edict_t* ent, int track, int loop)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void SV_CLPrintf(edict_t* ent, edict_t* from, int color, char* fmt, ...)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+qboolean SV_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	return false;
+}
+
+qboolean SV_CheckDistances(vec3_t origin, float dist)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	return false;
+}
+
+qboolean SV_RemovePersistantEffect(int toRemove, int call_from)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	return false;
+}
+
+void SV_ModelRemove(char* name)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void SV_SoundRemove(char* name)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void SV_CleanLevel(void)
+{
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+}
 
 void SV_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs)
 {
@@ -740,7 +799,7 @@ SV_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s* lis
 	return numEnts;
 }
 
-void 
+void
 SV_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t* passent, int contentmask, trace_t* tr)
 {
 	*tr = SV_Trace(start, mins, maxs, end, passent, contentmask);
@@ -789,6 +848,7 @@ SV_InitGameProgs(void)
 	import.msgvar_centerprintf = SV_MsgVarCenterPrintf;
 	import.msgdual_centerprintf = SV_MsgDualCenterPrintf;
 	import.error = PF_error;
+
 	import.changeCDtrack = SV_ChangeCDTrack;
 	import.linkentity = SV_LinkEdict;
 	import.unlinkentity = SV_UnlinkEdict;
@@ -799,6 +859,7 @@ SV_InitGameProgs(void)
 	import.inPVS = PF_inPVS;
 	import.inPHS = PF_inPHS;
 	import.Pmove = Pmove;
+
 	import.FindEntitiesInBounds = SV_FindEntitiesInBounds;
 	import.TraceBoundingForm = SV_TraceBoundingForm;
 	import.ResizeBoundingForm = SV_ResizeBoundingForm;
@@ -825,6 +886,7 @@ SV_InitGameProgs(void)
 	import.WritePosition = PF_WritePos;
 	import.WriteDir = PF_WriteDir;
 	import.WriteAngle = PF_WriteAngle;
+
 	import.CreateEffect = SV_CreateEffect;
 	import.RemoveEffects = SV_RemoveEffects;
 	import.CreateEffectEvent = SV_CreateEffectEvent;
@@ -838,6 +900,7 @@ SV_InitGameProgs(void)
 	import.cvar = Cvar_Get;
 	import.cvar_set = Cvar_Set;
 	import.cvar_forceset = Cvar_ForceSet;
+
 	import.cvar_variablevalue = Cvar_VariableValue;
 	import.argc = Cmd_Argc;
 	import.argv = Cmd_Argv;
