@@ -263,9 +263,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/cl_keyboard.o \
 	$(BUILDDIR)/src/client/menu/menu.o \
 	$(BUILDDIR)/src/client/menu/qmenu.o \
-	$(BUILDDIR)/external/smacker.o \
-	$(BUILDDIR)/external/smk_bitstream.o \
-	$(BUILDDIR)/external/smk_hufftree.o \
+	$(BUILDDIR)/src/common/libsmacker/smacker.o \
 	$(BUILDDIR)/src/game/buoy.o \
 	$(BUILDDIR)/src/game/c_ai.o \
 	$(BUILDDIR)/src/game/c_corvus1_anim.o \

@@ -20,12 +20,10 @@ Drawbacks:
 * broken guns select
 * no menu implementations
 * no books implementations
-* Not all files has correct licence header
 * code is little bit mess
 * game,player, client_effects hard linked
 * only gl1 render
-* lights looks as rendered withot relation to z-buffer
-* used outdated libsmacker: https://libsmacker.sourceforge.net/
+* sprites looks as rendered withot relation to z-buffer
 
 ======
 
