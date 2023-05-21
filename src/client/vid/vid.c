@@ -159,8 +159,141 @@ void VID_Restart_f (void)
 }
 
 /*
-** VID_GetModeInfo
-*/
+ * Writes a screenshot. This function is called with raw image data of
+ * width*height pixels, each pixel has comp bytes. Must be 3 or 4, for
+ * RGB or RGBA. The pixels must be given row-wise, stating at the top
+ * left.
+ */
+void VID_WriteScreenshot(int width, int height, int comp, const void* data)
+{
+	char picname[80];
+	char checkname[MAX_OSPATH];
+	int i, success = 0;
+	static const char* supportedFormats[] = { "tga", "bmp", "png", "jpg" };
+	static const int numFormats = sizeof(supportedFormats)/sizeof(supportedFormats[0]);
+	int format = 0; // 0=tga, 1=bmp, 2=png, 3=jpg
+	int quality = 85;
+	int argc = Cmd_Argc();
+	const char* gameDir = FS_Gamedir();
+
+	// FS_InitFilesystem() made sure the screenshots dir exists./
+
+	if (argc > 1)
+	{
+		const char* maybeFormat = Cmd_Argv(1);
+
+		for (i = 0; i < numFormats; ++i)
+		{
+			if (Q_stricmp(maybeFormat, supportedFormats[i]) == 0)
+			{
+				format = i;
+				break;
+			}
+		}
+
+		if (i == numFormats)
+		{
+			Com_Printf("the (optional) second argument to 'screenshot' is the format, one of \"tga\", \"bmp\", \"png\", \"jpg\"\n");
+			return;
+		}
+
+		if (argc > 2)
+		{
+			const char* q = Cmd_Argv(2);
+			int qualityStrLen = strlen(q);
+
+			for (i = 0; i < qualityStrLen; ++i)
+			{
+				if (q[i] < '0' || q[i] > '9')
+				{
+					Com_Printf("The (optional!) third argument to 'screenshot' is jpg quality, a number between 1 and 100\n");
+					Com_Printf("  or png compression level, between 0 and 9!\n");
+
+					return;
+				}
+			}
+
+			quality = atoi(q);
+
+			if (format == 2) // png
+			{
+				if (quality < 0)
+				{
+					quality = 0;
+				}
+				else if (quality > 9)
+				{
+					quality = 9;
+				}
+			}
+			else if(format == 3) // jpg
+			{
+				if (quality < 1)
+				{
+					quality = 1;
+				}
+				else if (quality > 100)
+				{
+					quality = 100;
+				}
+			}
+		}
+	}
+
+	/* find a file name to save it to */
+	for (i = 0; i <= 9999; i++)
+	{
+		FILE *f;
+		Com_sprintf(checkname, sizeof(checkname), "%s/scrnshot/q2_%04d.%s", gameDir, i, supportedFormats[format]);
+		f = Q_fopen(checkname, "rb");
+
+		if (!f)
+		{
+			Com_sprintf(picname, sizeof(picname), "q2_%04d.%s", i, supportedFormats[format]);
+			break; /* file doesn't exist */
+		}
+
+		fclose(f);
+	}
+
+	if (i == 10000)
+	{
+		Com_Printf("SCR_ScreenShot_f: Couldn't create a file\n");
+		return;
+	}
+
+	switch (format) // 0=tga, 1=bmp, 2=png, 3=jpg
+	{
+		case 0:
+			success = stbi_write_tga(checkname, width, height, comp, data);
+			break;
+		case 1:
+			success = stbi_write_bmp(checkname, width, height, comp, data);
+			break;
+		case 2:
+			stbi_write_png_compression_level = (quality < 10) ? quality : 7;
+			success = stbi_write_png(checkname, width, height, comp, data, 0);
+			break;
+		case 3:
+			success = stbi_write_jpg(checkname, width, height, comp, data, quality);
+			break;
+	}
+
+	if(success)
+	{
+		Com_Printf("Wrote %s\n", picname);
+	}
+	else
+	{
+		Com_Printf("SCR_ScreenShot_f: Couldn't write %s\n", picname);
+	}
+}
+
+// --------
+
+// Video mode array
+// ----------------
+
 typedef struct vidmode_s
 {
 	const char *description;
@@ -239,6 +372,40 @@ VID_GetModeInfo(int *width, int *height, int mode)
 
 	return true;
 }
+
+// --------
+
+// Renderer load, restart and shutdown
+// -----------------------------------
+
+// Global console variables.
+cvar_t *vid_gamma;
+cvar_t *vid_fullscreen;
+cvar_t *vid_renderer;
+
+// Global video state, used throughout the client.
+viddef_t viddef;
+
+// Struct with the pointers exported by the renderer.
+refexport_t	re;
+
+// Handle / pointer the the loaded renderer DLL.
+void *reflib_handle = NULL;
+
+// Is a renderer loaded and active?
+qboolean ref_active = false;
+
+// Renderer restart type requested.
+ref_restart_t restart_state = RESTART_UNDEF;
+
+// Renderer lib extension.
+#ifdef __APPLE__
+const char* lib_ext = "dylib";
+#elif defined(_WIN32)
+const char* lib_ext = "dll";
+#else
+const char* lib_ext = "so";
+#endif
 
 /*
 ** VID_NewWindow
@@ -395,15 +562,11 @@ qboolean VID_LoadRefresh( char *name )
 }
 
 /*
-============
-VID_CheckChanges
-
-This function gets called once just before drawing each frame, and it's sole purpose in life
-is to check to see if any of the video mode parameters have changed, and if they have to
-update the rendering DLL and/or video mode to match.
-============
-*/
-void VID_CheckChanges (void)
+ * Checks if a renderer changes was requested and executes it.
+ * Inclusive fallback through all renderers. :)
+ */
+void
+VID_CheckChanges(void)
 {
 	char name[100];
 	cvar_t *sw_mode;
@@ -456,11 +619,10 @@ void VID_CheckChanges (void)
 }
 
 /*
-============
-VID_Init
-============
-*/
-void VID_Init (void)
+ * Initializes the video stuff.
+ */
+void
+VID_Init(void)
 {
 	/* Create the video variables so we know how to start the graphics drivers */
 	// if DISPLAY is defined, try X
@@ -470,25 +632,24 @@ void VID_Init (void)
 		vid_ref = Cvar_Get ("vid_ref", "soft", CVAR_ARCHIVE);
 	vid_xpos = Cvar_Get ("vid_xpos", "3", CVAR_ARCHIVE);
 	vid_ypos = Cvar_Get ("vid_ypos", "22", CVAR_ARCHIVE);
-	vid_fullscreen = Cvar_Get ("vid_fullscreen", "0", CVAR_ARCHIVE);
-	vid_gamma = Cvar_Get( "vid_gamma", "1", CVAR_ARCHIVE );
+	vid_gamma = Cvar_Get("vid_gamma", "1.0", CVAR_ARCHIVE);
+	vid_fullscreen = Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
+	vid_renderer = Cvar_Get("vid_renderer", "gl1", CVAR_ARCHIVE);
 
-	/* Add some console commands that we want to handle */
-	Cmd_AddCommand ("vid_restart", VID_Restart_f);
+	// Commands
+	Cmd_AddCommand("vid_restart", VID_Restart_f);
+	Cmd_AddCommand("vid_listmodes", VID_ListModes_f);
+	Cmd_AddCommand("r_listmodes", VID_ListModes_f); // more consistent with r_mode
 
-	/* Disable the 3Dfx splash screen */
-	putenv("FX_GLIDE_NO_SPLASH=0");
-
-	/* Start the graphics mode and load refresh DLL */
+	// Load the renderer and get things going.
 	VID_CheckChanges();
 }
 
 /*
-============
-VID_Shutdown
-============
-*/
-void VID_Shutdown (void)
+ * Shuts the video stuff down.
+ */
+void
+VID_Shutdown(void)
 {
 	if ( reflib_active )
 	{
@@ -503,6 +664,189 @@ void VID_Shutdown (void)
 	}
 }
 
+// ----
+
+// Wrappers for the functions provided by the renderer libs.
+// =========================================================
+
+void
+R_BeginRegistration(char *map)
+{
+	if (ref_active)
+	{
+		re.BeginRegistration(map);
+	}
+}
+
+struct model_s*
+R_RegisterModel(char *name)
+{
+	if (ref_active)
+	{
+		return re.RegisterModel(name);
+	}
+
+	return NULL;
+}
+
+struct image_s*
+R_RegisterSkin(char *name)
+{
+	if (ref_active)
+	{
+		return re.RegisterSkin(name);
+	}
+
+	return NULL;
+}
+
+void
+R_SetSky(char *name, float rotate, vec3_t axis)
+{
+	if (ref_active)
+	{
+		re.SetSky(name, rotate, axis);
+	}
+}
+
+void
+R_EndRegistration(void)
+{
+	if (ref_active)
+	{
+		re.EndRegistration();
+	}
+}
+
+void
+R_RenderFrame(refdef_t *fd)
+{
+	if (ref_active)
+	{
+		re.RenderFrame(fd);
+	}
+}
+
+struct image_s*
+Draw_FindPic(char *name)
+{
+	if (ref_active)
+	{
+		return re.DrawFindPic(name);
+	}
+
+	return NULL;
+}
+
+
+void
+Draw_GetPicSize(int *w, int *h, char *name)
+{
+	if (ref_active)
+	{
+		re.DrawGetPicSize(w, h, name);
+	}
+}
+
+void
+Draw_StretchPic(int x, int y, int w, int h, char *name)
+{
+	if (ref_active)
+	{
+		re.DrawStretchPic(x, y, w, h, name);
+	}
+}
+
+void
+Draw_PicScaled(int x, int y, char *pic, float factor)
+{
+	if (ref_active)
+	{
+		re.DrawPicScaled(x, y, pic, factor);
+	}
+}
+
+void
+Draw_CharScaled(int x, int y, int num, float scale)
+{
+	if (ref_active)
+	{
+		re.DrawCharScaled(x, y, num, scale);
+	}
+}
+
+void
+Draw_TileClear(int x, int y, int w, int h, char *name)
+{
+	if (ref_active)
+	{
+		re.DrawTileClear(x, y, w, h, name);
+	}
+}
+
+void
+Draw_Fill(int x, int y, int w, int h, int c)
+{
+	if (ref_active)
+	{
+		re.DrawFill(x, y, w, h, c);
+	}
+}
+
+void
+Draw_FadeScreen(void)
+{
+	if (ref_active)
+	{
+		re.DrawFadeScreen();
+	}
+}
+
+void
+Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data)
+{
+	if (ref_active)
+	{
+		re.DrawStretchRaw(x, y, w, h, cols, rows, data);
+	}
+}
+
+void
+R_SetPalette(const unsigned char *palette)
+{
+	if (ref_active)
+	{
+		re.SetPalette(palette);
+	}
+}
+
+void
+R_BeginFrame(float camera_separation)
+{
+	if (ref_active)
+	{
+		re.BeginFrame(camera_separation);
+	}
+}
+
+qboolean
+R_EndWorldRenderpass(void)
+{
+	if(ref_active)
+	{
+		return re.EndWorldRenderpass();
+	}
+	return false;
+}
+
+void
+R_EndFrame(void)
+{
+	if(ref_active)
+	{
+		re.EndFrame();
+	}
+}
 
 /*****************************************************************************/
 /* INPUT                                                                     */
