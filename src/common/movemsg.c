@@ -329,12 +329,7 @@ MSG_WriteDeltaUsercmd(sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
 		bits |= CM_BUTTONS;
 	}
 
-	if (cmd->impulse != from->impulse)
-	{
-		bits |= CM_IMPULSE;
-	}
-
-	MSG_WriteByte(buf, bits);
+	MSG_WriteLong(buf, bits);
 
 	if (bits & CM_ANGLE1)
 	{
@@ -371,10 +366,6 @@ MSG_WriteDeltaUsercmd(sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
 		MSG_WriteByte(buf, cmd->buttons);
 	}
 
-	if (bits & CM_IMPULSE)
-	{
-		MSG_WriteByte(buf, cmd->impulse);
-	}
 
 	MSG_WriteByte(buf, cmd->msec);
 	MSG_WriteByte(buf, cmd->lightlevel);
@@ -424,6 +415,14 @@ MSG_ReadDir(sizebuf_t *sb, vec3_t dir)
 	VectorCopy(bytedirs[b], dir);
 }
 
+void
+MSG_WriteData(sizebuf_t* sb, byte* data, int len)
+{
+	byte* buf;
+	buf = (byte *)SZ_GetSpace(sb, len);
+	memcpy(buf, data, len);
+}
+
 /*
  * Writes part of a packetentities message.
  * Can delta from either a baseline or a previous packet_entity
@@ -457,12 +456,12 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 
 	if (to->origin[0] != from->origin[0])
 	{
-		bits |= U_ORIGIN1;
+		bits |= U_ORIGIN12;
 	}
 
 	if (to->origin[1] != from->origin[1])
 	{
-		bits |= U_ORIGIN2;
+		bits |= U_ORIGIN12;
 	}
 
 	if (to->origin[2] != from->origin[2])
@@ -483,6 +482,11 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 	if (to->angles[2] != from->angles[2])
 	{
 		bits |= U_ANGLE3;
+	}
+
+	if (to->clientEffects.numEffects != from->clientEffects.numEffects || to->clientEffects.isPersistant)
+	{
+		bits |= U_CLIENT_EFFECTS;
 	}
 
 	if (to->skinnum != from->skinnum)
@@ -557,30 +561,9 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		bits |= U_SOLID;
 	}
 
-	/* event is not delta compressed, just 0 compressed */
-	if (to->event)
-	{
-		bits |= U_EVENT;
-	}
-
 	if (to->modelindex != from->modelindex)
 	{
 		bits |= U_MODEL;
-	}
-
-	if (to->modelindex2 != from->modelindex2)
-	{
-		bits |= U_MODEL2;
-	}
-
-	if (to->modelindex3 != from->modelindex3)
-	{
-		bits |= U_MODEL3;
-	}
-
-	if (to->modelindex4 != from->modelindex4)
-	{
-		bits |= U_MODEL4;
 	}
 
 	if (to->sound != from->sound)
@@ -588,9 +571,13 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		bits |= U_SOUND;
 	}
 
-	if (newentity || (to->renderfx & RF_BEAM))
+	for (int i = 0; i < MAX_FM_MESH_NODES; i++)
 	{
-		bits |= U_OLDORIGIN;
+		if (to->fmnodeinfo[i].frame != from->fmnodeinfo[i].frame)
+			bits |= U_FM_FRAME;
+
+		if (to->fmnodeinfo[i].flags != from->fmnodeinfo[i].flags)
+			bits |= U_FM_FLAGS;
 	}
 
 	/* write the message */
@@ -599,69 +586,43 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		return; /* nothing to send! */
 	}
 
-	if (bits & 0xff000000)
+	MSG_WriteLong(msg, bits);
+
+	MSG_WriteShort(msg, to->number);
+
+	if (bits & U_CLIENT_EFFECTS)
 	{
-		bits |= U_MOREBITS3 | U_MOREBITS2 | U_MOREBITS1;
+		if (to->clientEffects.buf == NULL || to->clientEffects.numEffects <= 0)
+		{
+			MSG_WriteShort(msg, -1);
+		}
+		else
+		{
+			MSG_WriteShort(msg, to->clientEffects.numEffects);
+			MSG_WriteShort(msg, to->clientEffects.bufSize);
+			MSG_WriteData(msg, to->clientEffects.buf, to->clientEffects.bufSize);
+		}
 	}
 
-	else if (bits & 0x00ff0000)
+	if (bits & U_FM_FRAME)
 	{
-		bits |= U_MOREBITS2 | U_MOREBITS1;
+		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
+		{
+			MSG_WriteShort(msg, to->fmnodeinfo[i].frame);
+		}
 	}
 
-	else if (bits & 0x0000ff00)
+	if (bits & U_FM_FLAGS)
 	{
-		bits |= U_MOREBITS1;
-	}
-
-	MSG_WriteByte(msg, bits & 255);
-
-	if (bits & 0xff000000)
-	{
-		MSG_WriteByte(msg, (bits >> 8) & 255);
-		MSG_WriteByte(msg, (bits >> 16) & 255);
-		MSG_WriteByte(msg, (bits >> 24) & 255);
-	}
-
-	else if (bits & 0x00ff0000)
-	{
-		MSG_WriteByte(msg, (bits >> 8) & 255);
-		MSG_WriteByte(msg, (bits >> 16) & 255);
-	}
-
-	else if (bits & 0x0000ff00)
-	{
-		MSG_WriteByte(msg, (bits >> 8) & 255);
-	}
-
-	if (bits & U_NUMBER16)
-	{
-		MSG_WriteShort(msg, to->number);
-	}
-
-	else
-	{
-		MSG_WriteByte(msg, to->number);
+		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
+		{
+			MSG_WriteShort(msg, to->fmnodeinfo[i].flags);
+		}
 	}
 
 	if (bits & U_MODEL)
 	{
 		MSG_WriteByte(msg, to->modelindex);
-	}
-
-	if (bits & U_MODEL2)
-	{
-		MSG_WriteByte(msg, to->modelindex2);
-	}
-
-	if (bits & U_MODEL3)
-	{
-		MSG_WriteByte(msg, to->modelindex3);
-	}
-
-	if (bits & U_MODEL4)
-	{
-		MSG_WriteByte(msg, to->modelindex4);
 	}
 
 	if (bits & U_FRAME8)
@@ -719,12 +680,13 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		MSG_WriteShort(msg, to->renderfx);
 	}
 
-	if (bits & U_ORIGIN1)
+	if (bits & U_ORIGIN12)
 	{
+		MSG_WriteCoord(msg, 333.0f); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		MSG_WriteCoord(msg, to->origin[0]);
 	}
 
-	if (bits & U_ORIGIN2)
+	if (bits & U_ORIGIN12)
 	{
 		MSG_WriteCoord(msg, to->origin[1]);
 	}
@@ -736,11 +698,13 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 
 	if (bits & U_ANGLE1)
 	{
+		MSG_WriteCoord(msg, 333.0f); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		MSG_WriteAngle(msg, to->angles[0]);
 	}
 
 	if (bits & U_ANGLE2)
 	{
+		MSG_WriteCoord(msg, 333.0f); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		MSG_WriteAngle(msg, to->angles[1]);
 	}
 
@@ -759,11 +723,6 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 	if (bits & U_SOUND)
 	{
 		MSG_WriteByte(msg, to->sound);
-	}
-
-	if (bits & U_EVENT)
-	{
-		MSG_WriteByte(msg, to->event);
 	}
 
 	if (bits & U_SOLID)
@@ -979,7 +938,7 @@ MSG_ReadDeltaUsercmd(sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move)
 
 	memcpy(move, from, sizeof(*move));
 
-	bits = MSG_ReadByte(msg_read);
+	bits = MSG_ReadLong(msg_read);
 
 	/* read current angles */
 	if (bits & CM_ANGLE1)
@@ -1017,11 +976,6 @@ MSG_ReadDeltaUsercmd(sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move)
 	if (bits & CM_BUTTONS)
 	{
 		move->buttons = MSG_ReadByte(msg_read);
-	}
-
-	if (bits & CM_IMPULSE)
-	{
-		move->impulse = MSG_ReadByte(msg_read);
 	}
 
 	/* read time to run command */

@@ -374,7 +374,7 @@ SV_RunGameFrame(void)
 }
 
 void
-SV_Frame(int msec)
+SV_Frame(int usec)
 {
 #ifndef DEDICATED_ONLY
 	time_before_game = time_after_game = 0;
@@ -386,7 +386,7 @@ SV_Frame(int msec)
 		return;
 	}
 
-	svs.realtime += msec;
+	svs.realtime += usec / 1000;
 
 	/* keep the random time dependent */
 	randk();
@@ -612,7 +612,7 @@ SV_Init(void)
 
 /*
  * Used by SV_Shutdown to send a final message to all
- * connected clients before the server goes down. The
+ * connected clients before the server goes down. The 
  * messages are sent immediately, not just stuck on the
  * outgoing message list, because the server is going
  * to totally exit after returning from this function.

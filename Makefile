@@ -450,6 +450,8 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/common/unzip/ioapi.o \
 	$(BUILDDIR)/src/common/unzip/miniz.o \
 	$(BUILDDIR)/src/common/cmdparser.o \
+	$(BUILDDIR)/src/common/argproc.o \
+	$(BUILDDIR)/src/common/movemsg.o \
 	$(BUILDDIR)/src/common/collision.o \
 	$(BUILDDIR)/src/common/szone.o \
 	$(BUILDDIR)/src/common/frame.o \

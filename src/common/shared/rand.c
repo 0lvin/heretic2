@@ -1,7 +1,3 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
 /*
  * KISS PRNG (c) 2011 Shinobu
  *
@@ -98,3 +94,4 @@ randk_seed(void)
 		randk();
 	}
 }
+
