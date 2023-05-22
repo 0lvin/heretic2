@@ -415,8 +415,8 @@ typedef struct
 
 	//
 
-	cvar_t	*(*Cvar_Get) (char *name, char *value, int flags);
-	cvar_t	*(*Cvar_Set)( char *name, char *value );
+	cvar_t *(*Cvar_Get) (char *name, char *value, int flags);
+	cvar_t *(*Cvar_Set)( char *name, char *value );
 	void	(*Cvar_SetValue)( char *name, float value );
 	float	(*Cvar_VariableValue) (char *var_name);
 	char	*(*Cvar_VariableString) (char *var_name);
@@ -450,79 +450,80 @@ typedef	client_fx_export_t (*GetfxAPI_t) (client_fx_import_t);
 //
 // cvars
 //
-extern	cvar_t	*cl_stereo_separation;
-extern	cvar_t	*cl_stereo;
+extern	cvar_t *cl_stereo_separation;
+extern	cvar_t *cl_stereo;
 
-extern	cvar_t	*cl_gun;
-extern	cvar_t	*cl_add_blend;
-extern	cvar_t	*cl_add_lights;
-extern	cvar_t	*cl_add_particles;
-extern	cvar_t	*cl_add_entities;
-extern	cvar_t	*cl_predict;
-extern	cvar_t	*cl_predict_local;
-extern	cvar_t	*cl_predict_remote;
-extern	cvar_t	*cl_footsteps;
-extern	cvar_t	*cl_noskins;
-extern	cvar_t	*cl_autoskins;
-extern	cvar_t	*cl_maxfps;
-extern	cvar_t	*cl_frametime;
-extern	cvar_t	*cl_yawspeed;
-extern	cvar_t	*cl_pitchspeed;
-extern	cvar_t	*cl_run;
-extern	cvar_t	*cl_anglespeedkey;
-extern	cvar_t	*cl_shownet;
-extern	cvar_t	*cl_showmiss;
-extern	cvar_t	*cl_showclamp;
-extern	cvar_t	*freelook;
-extern	cvar_t	*lookspring;
-extern	cvar_t	*lookstrafe;
-extern	cvar_t	*mouse_sensitivity_x;
-extern	cvar_t	*mouse_sensitivity_y;
-extern	cvar_t	*doubletap_speed;
-extern	cvar_t	*allow_download;
-extern	cvar_t	*allow_download_maps;
-extern	cvar_t	*allow_download_players;
-extern	cvar_t	*allow_download_models;
-extern	cvar_t	*allow_download_sounds;
-extern	cvar_t	*m_pitch;
-extern	cvar_t	*m_yaw;
-extern	cvar_t	*m_forward;
-extern	cvar_t	*m_side;
-extern	cvar_t	*cl_lightlevel;
-extern	cvar_t	*cl_paused;
-extern	cvar_t	*cl_freezeworld;
-extern	cvar_t	*cl_timedemo;
-extern cvar_t	*cl_camera_clipdamp;
-extern cvar_t	*cl_camera_combat;
-extern cvar_t	*cl_camera_dampfactor;
-extern cvar_t	*cl_camera_fpoffs;
-extern cvar_t	*cl_camera_freeze;
-extern cvar_t	*cl_camera_under_surface;
-extern cvar_t	*cl_camera_viewdist;
-extern cvar_t	*cl_camera_viewmin;
-extern cvar_t	*cl_camera_viewmax;
+extern	cvar_t *cl_gun;
+extern	cvar_t *cl_add_blend;
+extern	cvar_t *cl_add_lights;
+extern	cvar_t *cl_add_particles;
+extern	cvar_t *cl_add_entities;
+extern	cvar_t *cl_predict;
+extern	cvar_t *cl_predict_local;
+extern	cvar_t *cl_predict_remote;
+extern	cvar_t *cl_footsteps;
+extern	cvar_t *cl_noskins;
+extern	cvar_t *cl_autoskins;
+extern	cvar_t *cl_maxfps;
+extern	cvar_t *cl_frametime;
+extern	cvar_t *cl_yawspeed;
+extern	cvar_t *cl_pitchspeed;
+extern	cvar_t *cl_run;
+extern	cvar_t *cl_anglespeedkey;
+extern	cvar_t *cl_shownet;
+extern	cvar_t *cl_showmiss;
+extern	cvar_t *cl_showclamp;
+extern	cvar_t *lookstrafe;
+extern	cvar_t *mouse_sensitivity_x;
+extern	cvar_t *mouse_sensitivity_y;
+extern	cvar_t *doubletap_speed;
+extern	cvar_t *allow_download;
+extern	cvar_t *allow_download_maps;
+extern	cvar_t *allow_download_players;
+extern	cvar_t *allow_download_models;
+extern	cvar_t *allow_download_sounds;
+extern	cvar_t *m_pitch;
+extern	cvar_t *m_yaw;
+extern	cvar_t *m_forward;
+extern	cvar_t *m_side;
+extern	cvar_t *freelook;
+extern	cvar_t *lookspring;
+extern	cvar_t *cl_lightlevel;
+extern	cvar_t *cl_paused;
+extern	cvar_t *cl_freezeworld;
+extern	cvar_t *cl_timedemo;
+extern	cvar_t *cin_force43;
+extern cvar_t *cl_camera_clipdamp;
+extern cvar_t *cl_camera_combat;
+extern cvar_t *cl_camera_dampfactor;
+extern cvar_t *cl_camera_fpoffs;
+extern cvar_t *cl_camera_freeze;
+extern cvar_t *cl_camera_under_surface;
+extern cvar_t *cl_camera_viewdist;
+extern cvar_t *cl_camera_viewmin;
+extern cvar_t *cl_camera_viewmax;
 
-extern cvar_t	*cl_camera_fpmode;		// First person mode
-extern cvar_t	*cl_camera_fptrans;
-extern cvar_t	*cl_camera_fpdist;
-extern cvar_t	*cl_camera_fpheight;
-extern cvar_t	*cl_playertrans;
+extern cvar_t *cl_camera_fpmode;		// First person mode
+extern cvar_t *cl_camera_fptrans;
+extern cvar_t *cl_camera_fpdist;
+extern cvar_t *cl_camera_fpheight;
+extern cvar_t *cl_playertrans;
 
-extern cvar_t	*EAX_preset;
-extern cvar_t	*EAX_default;
-extern cvar_t	*cl_cinematicfreeze;
-extern cvar_t	*shownames;
-extern cvar_t	*autoweapon;
-extern cvar_t	*cl_showcaptions;
+extern cvar_t *EAX_preset;
+extern cvar_t *EAX_default;
+extern cvar_t *cl_cinematicfreeze;
+extern cvar_t *shownames;
+extern cvar_t *autoweapon;
+extern cvar_t *cl_showcaptions;
 
-extern cvar_t	*colour_obituary;
-extern cvar_t	*colour_chat;
-extern cvar_t	*colour_names;
-extern cvar_t	*colour_teamchat;
-extern cvar_t	*colour_level;
-extern cvar_t	*colour_game;
-extern cvar_t	*game_downloadable_type;
-extern cvar_t	*cl_no_middle_text;
+extern cvar_t *colour_obituary;
+extern cvar_t *colour_chat;
+extern cvar_t *colour_names;
+extern cvar_t *colour_teamchat;
+extern cvar_t *colour_level;
+extern cvar_t *colour_game;
+extern cvar_t *game_downloadable_type;
+extern cvar_t *cl_no_middle_text;
 
 typedef struct
 {

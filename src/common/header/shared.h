@@ -1302,14 +1302,6 @@ typedef struct paletteRGBA_s
 	};
 } paletteRGBA_t;
 
-typedef struct paletteRGB_s
-{
-	struct
-	{
-		byte r, g, b;
-	};
-} paletteRGB_t;
-
 /**************************************************************
  * additional info for flex models with mesh nodes
  **************************************************************/

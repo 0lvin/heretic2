@@ -434,9 +434,6 @@ typedef struct CL_SkeletalJoint_s
 	vec3_t angles;
 } CL_SkeletalJoint_t;
 
-//====================================================
-void R_DrawCinematic(int cols, int rows, byte *data, paletteRGB_t *palette, float alpha);
-
 /*
 ====================================================================
 

@@ -440,6 +440,7 @@ SCR_RunCinematic(void)
 {
 	const unsigned char* palette_data;
 	const unsigned char* image_data;
+	int x,y, h, w;
 
 	if (cin.video == NULL)
 		return;
@@ -449,7 +450,28 @@ SCR_RunCinematic(void)
 	palette_data = smk_get_palette(cin.video);
 	image_data = smk_get_video(cin.video);
 
-	re.DrawCinematic(cin.width, cin.height, (unsigned char *)image_data, (paletteRGB_t*)palette_data, 1.0f);
+	if (cin_force43->value)
+	{
+		w = viddef.height * 4 / 3;
+		if (w > viddef.width)
+		{
+			w = viddef.width;
+		}
+		w &= ~3;
+		h = w * 3 / 4;
+		x = (viddef.width - w) / 2;
+		y = (viddef.height - h) / 2;
+	}
+	else
+	{
+		x = y = 0;
+		w = viddef.width;
+		h = viddef.height;
+	}
+
+	R_SetPalette(palette_data);
+
+	Draw_StretchRaw(x, y, w, h, cin.width, cin.height, image_data);
 }
 
 static int

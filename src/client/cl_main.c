@@ -31,102 +31,108 @@ extern cvar_t* cl_upspeed;
 extern cvar_t* cl_forwardspeed;
 extern cvar_t* cl_sidespeed;
 
-cvar_t	*freelook;
+cvar_t *freelook;
 
-cvar_t	*adr0;
-cvar_t	*adr1;
-cvar_t	*adr2;
-cvar_t	*adr3;
-cvar_t	*adr4;
-cvar_t	*adr5;
-cvar_t	*adr6;
-cvar_t	*adr7;
-cvar_t	*adr8;
+cvar_t *adr0;
+cvar_t *adr1;
+cvar_t *adr2;
+cvar_t *adr3;
+cvar_t *adr4;
+cvar_t *adr5;
+cvar_t *adr6;
+cvar_t *adr7;
+cvar_t *adr8;
 
-cvar_t	*cl_stereo_separation;
-cvar_t	*cl_stereo;
+cvar_t *cl_stereo_separation;
+cvar_t *cl_stereo;
 
-cvar_t	*rcon_client_password;
-cvar_t	*rcon_address;
+cvar_t *rcon_client_password;
+cvar_t *rcon_address;
 
-cvar_t	*cl_noskins;
-cvar_t	*cl_autoskins;
-cvar_t	*cl_footsteps;
-cvar_t	*cl_timeout;
-cvar_t	*cl_predict;
-//cvar_t	*cl_minfps;
-extern cvar_t	*cl_maxfps;
-cvar_t	*cl_gun;
+cvar_t *cl_noskins;
+cvar_t *cl_autoskins;
+cvar_t *cl_footsteps;
+cvar_t *cl_timeout;
+cvar_t *cl_predict;
+//cvar_t *cl_minfps;
+extern cvar_t *cl_maxfps;
+cvar_t *cl_gun;
 
-cvar_t	*cl_add_particles;
-cvar_t	*cl_add_lights;
-cvar_t	*cl_add_entities;
-cvar_t	*cl_add_blend;
+cvar_t *cl_add_particles;
+cvar_t *cl_add_lights;
+cvar_t *cl_add_entities;
+cvar_t *cl_add_blend;
 
-cvar_t	*cl_shownet;
-cvar_t	*cl_showmiss;
-cvar_t	*cl_showclamp;
+cvar_t *cl_shownet;
+cvar_t *cl_showmiss;
+cvar_t *cl_showclamp;
 
-cvar_t	*cl_paused;
-extern cvar_t	*cl_timedemo;
+cvar_t *cl_paused;
+extern cvar_t *cl_timedemo;
 
-cvar_t	*lookspring;
-cvar_t	*lookstrafe;
-cvar_t	*sensitivity;
+cvar_t *lookspring;
+cvar_t *lookstrafe;
+cvar_t *sensitivity;
 
-cvar_t	*m_pitch;
-cvar_t	*m_yaw;
-cvar_t	*m_forward;
-cvar_t	*m_side;
+cvar_t *m_pitch;
+cvar_t *m_yaw;
+cvar_t *m_forward;
+cvar_t *m_side;
 
-cvar_t	*cl_lightlevel;
+cvar_t *cl_lightlevel;
 
 //
 // userinfo
 //
-cvar_t	*info_password;
-cvar_t	*info_spectator;
-cvar_t	*name;
-cvar_t	*skin;
-cvar_t	*rate;
-cvar_t	*fov;
-cvar_t	*msg;
-cvar_t	*hand;
-cvar_t	*gender;
-cvar_t	*gender_auto;
+cvar_t *info_password;
+cvar_t *info_spectator;
+cvar_t *name;
+cvar_t *skin;
+cvar_t *rate;
+cvar_t *fov;
+cvar_t *msg;
+cvar_t *hand;
+cvar_t *gender;
+cvar_t *gender_auto;
 
-cvar_t	*cl_vwep;
+cvar_t *cl_vwep;
 
-client_static_t	cls;
-client_state_t	cl;
-centity_t		cl_entities[MAX_EDICTS];
-entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
+client_static_t cls;
+client_state_t cl;
 
-extern	cvar_t *allow_download;
-extern	cvar_t *allow_download_players;
-extern	cvar_t *allow_download_models;
-extern	cvar_t *allow_download_sounds;
-extern	cvar_t *allow_download_maps;
+centity_t cl_entities[MAX_EDICTS];
 
-//======================================================================
+entity_state_t cl_parse_entities[MAX_PARSE_ENTITIES];
 
+/*Evil hack against too many power screen and power
+  shield impact sounds. For example if the player
+  fires his shotgun onto a Brain. */
+int num_power_sounds;
+
+/* Used to communicate if we entered paused mode
+   during server connect or if we were already in
+   it. */
+qboolean paused_at_load;
+
+extern cvar_t *allow_download;
+extern cvar_t *allow_download_players;
+extern cvar_t *allow_download_models;
+extern cvar_t *allow_download_sounds;
+extern cvar_t *allow_download_maps;
 
 /*
-====================
-CL_WriteDemoMessage
-
-Dumps the current net message, prefixed by the length
-====================
-*/
-void CL_WriteDemoMessage (void)
+ * Dumps the current net message, prefixed by the length
+ */
+void
+CL_WriteDemoMessage(void)
 {
-	int		len, swlen;
+	int len, swlen;
 
-	// the first eight bytes are just packet sequencing stuff
-	len = net_message.cursize-8;
+	/* the first eight bytes are just packet sequencing stuff */
+	len = net_message.cursize - 8;
 	swlen = LittleLong(len);
-	fwrite (&swlen, 4, 1, cls.demofile);
-	fwrite (net_message.data+8,	len, 1, cls.demofile);
+	fwrite(&swlen, 4, 1, cls.demofile);
+	fwrite(net_message.data + 8, len, 1, cls.demofile);
 }
 
 /*
@@ -255,20 +261,20 @@ CL_Record_f(void)
 			buf.cursize = 0;
 		}
 
-		MSG_WriteByte (&buf, svc_spawnbaseline);
-		MSG_WriteDeltaEntity (&nullstate, &cl_entities[i].baseline, &buf, true, false);
+		MSG_WriteByte(&buf, svc_spawnbaseline);
+
+		MSG_WriteDeltaEntity(&nullstate, &cl_entities[i].baseline,
+				&buf, true, false);
 	}
 
-	MSG_WriteByte (&buf, svc_stufftext);
-	MSG_WriteString (&buf, "precache\n");
+	MSG_WriteByte(&buf, svc_stufftext);
 
-	// write it to the demo file
+	MSG_WriteString(&buf, "precache\n");
 
-	len = LittleLong (buf.cursize);
-	fwrite (&len, 4, 1, cls.demofile);
-	fwrite (buf.data, buf.cursize, 1, cls.demofile);
-
-	// the rest of the demo file will be individual frames
+	/* write it to the demo file */
+	len = LittleLong(buf.cursize);
+	fwrite(&len, 4, 1, cls.demofile);
+	fwrite(buf.data, buf.cursize, 1, cls.demofile);
 }
 
 //======================================================================
@@ -302,37 +308,40 @@ void Cmd_ForwardToServer (void)
 	}
 }
 
-void CL_Setenv_f( void )
+void
+CL_Setenv_f(void)
 {
 	int argc = Cmd_Argc();
 
-	if ( argc > 2 )
+	if (argc > 2)
 	{
 		char buffer[1000];
 		int i;
 
-		strcpy( buffer, Cmd_Argv(1) );
-		strcat( buffer, "=" );
+		strcpy(buffer, Cmd_Argv(1));
+		strcat(buffer, "=");
 
-		for ( i = 2; i < argc; i++ )
+		for (i = 2; i < argc; i++)
 		{
-			strcat( buffer, Cmd_Argv( i ) );
-			strcat( buffer, " " );
+			strcat(buffer, Cmd_Argv(i));
+			strcat(buffer, " ");
 		}
 
-		putenv( buffer );
+		putenv(buffer);
 	}
-	else if ( argc == 2 )
-	{
-		char *env = getenv( Cmd_Argv(1) );
 
-		if ( env )
+	else if (argc == 2)
+	{
+		char *env = getenv(Cmd_Argv(1));
+
+		if (env)
 		{
-			Com_Printf( "%s=%s\n", Cmd_Argv(1), env );
+			Com_Printf("%s=%s\n", Cmd_Argv(1), env);
 		}
+
 		else
 		{
-			Com_Printf( "%s undefined\n", Cmd_Argv(1), env );
+			Com_Printf("%s undefined\n", Cmd_Argv(1));
 		}
 	}
 }
@@ -343,7 +352,8 @@ void CL_Setenv_f( void )
 CL_ForwardToServer_f
 ==================
 */
-void CL_ForwardToServer_f (void)
+void
+CL_ForwardToServer_f(void)
 {
 	if (cls.state != ca_connected && cls.state != ca_active)
 	{
@@ -365,16 +375,17 @@ void CL_ForwardToServer_f (void)
 CL_Pause_f
 ==================
 */
-void CL_Pause_f (void)
+void
+CL_Pause_f(void)
 {
-	// never pause in multiplayer
-	if (Cvar_VariableValue("maxclients") > 1 || !Com_ServerState())
+	/* never pause in multiplayer */
+	if ((Cvar_VariableValue("maxclients") > 1) || !Com_ServerState())
 	{
-		Cvar_SetValue ("paused", 0);
+		Cvar_SetValue("paused", 0);
 		return;
 	}
 
-	Cvar_SetValue ("paused", !cl_paused->value);
+	Cvar_SetValue("paused", !cl_paused->value);
 }
 
 /*
@@ -382,7 +393,8 @@ void CL_Pause_f (void)
 CL_Quit_f
 ==================
 */
-void CL_Quit_f (void)
+void
+CL_Quit_f(void)
 {
 	CL_Disconnect ();
 	Com_Quit ();
@@ -395,7 +407,8 @@ CL_Drop
 Called after an ERR_DROP was thrown
 ================
 */
-void CL_Drop (void)
+void
+CL_Drop(void)
 {
 	if (cls.state == ca_uninitialized)
 		return;
@@ -418,7 +431,8 @@ We have gotten a challenge from the server, so try and
 connect.
 ======================
 */
-void CL_SendConnectPacket (void)
+void
+CL_SendConnectPacket(void)
 {
 	netadr_t	adr;
 	int		port;
@@ -485,14 +499,8 @@ void CL_CheckForResend (void)
 	Netchan_OutOfBandPrint (NS_CLIENT, adr, "getchallenge\n");
 }
 
-
-/*
-================
-CL_Connect_f
-
-================
-*/
-void CL_Connect_f (void)
+void
+CL_Connect_f(void)
 {
 	char	*server;
 
@@ -531,7 +539,8 @@ CL_Rcon_f
   an unconnected command.
 =====================
 */
-void CL_Rcon_f (void)
+void
+CL_Rcon_f(void)
 {
 	char	message[1024];
 	int		i;
@@ -590,7 +599,8 @@ CL_ClearState
 
 =====================
 */
-void CL_ClearState (void)
+void
+CL_ClearState(void)
 {
 	S_StopAllSounds ();
 	//CL_ClearEffects ();
@@ -614,7 +624,8 @@ Sends a disconnect message to the server
 This is also called on Com_Error, so it shouldn't cause any errors
 =====================
 */
-void CL_Disconnect (void)
+void
+CL_Disconnect(void)
 {
 	byte	final[32];
 
@@ -1370,46 +1381,44 @@ void CL_RequestNextDownload (void)
 }
 
 /*
-=================
-CL_Precache_f
-
-The server will send this command right
-before allowing the client into the server
-=================
-*/
-void CL_Precache_f (void)
+ * The server will send this command right
+ * before allowing the client into the server
+ */
+void
+CL_Precache_f(void)
 {
-	//Yet another hack to let old demos work
-	//the old precache sequence
-	if (Cmd_Argc() < 2) {
-		unsigned	map_checksum;		// for detecting cheater maps
+	/* Yet another hack to let old demos work */
+	if (Cmd_Argc() < 2)
+	{
+		unsigned map_checksum;    /* for detecting cheater maps */
 
-		CM_LoadMap (cl.configstrings[CS_MODELS+1], true, &map_checksum);
-		CL_RegisterSounds ();
-		CL_PrepRefresh ();
+		CM_LoadMap(cl.configstrings[CS_MODELS + 1], true, &map_checksum);
+		CL_RegisterSounds();
+		CL_PrepRefresh();
 		return;
 	}
 
 	precache_check = CS_MODELS;
-	precache_spawncount = atoi(Cmd_Argv(1));
+
+	precache_spawncount = (int)strtol(Cmd_Argv(1), (char **)NULL, 10);
 	precache_model = 0;
 	precache_model_skin = 0;
 
 	CL_RequestNextDownload();
 }
 
+void CL_CurrentMap_f(void)
+{
+	Com_Printf("%s\n", cl.configstrings[CS_MODELS + 1]);
+}
 
-/*
-=================
-CL_InitLocal
-=================
-*/
-void CL_InitLocal (void)
+void
+CL_InitLocal(void)
 {
 	cls.state = ca_disconnected;
-	cls.realtime = Sys_Milliseconds ();
+	cls.realtime = Sys_Milliseconds();
 
-	CL_InitInput ();
+	CL_InitInput();
 
 	adr0 = Cvar_Get( "adr0", "", CVAR_ARCHIVE );
 	adr1 = Cvar_Get( "adr1", "", CVAR_ARCHIVE );
@@ -1421,32 +1430,31 @@ void CL_InitLocal (void)
 	adr7 = Cvar_Get( "adr7", "", CVAR_ARCHIVE );
 	adr8 = Cvar_Get( "adr8", "", CVAR_ARCHIVE );
 
-//
-// register our variables
-//
+	/* register our variables */
+	cin_force43 = Cvar_Get("cin_force43", "1", 0);
+
 	cl_stereo_separation = Cvar_Get( "cl_stereo_separation", "0.4", CVAR_ARCHIVE );
 	cl_stereo = Cvar_Get( "cl_stereo", "0", 0 );
-
-	cl_add_blend = Cvar_Get ("cl_blend", "1", 0);
-	cl_add_lights = Cvar_Get ("cl_lights", "1", 0);
-	cl_add_particles = Cvar_Get ("cl_particles", "1", 0);
-	cl_add_entities = Cvar_Get ("cl_entities", "1", 0);
-	cl_gun = Cvar_Get ("cl_gun", "1", 0);
-	cl_footsteps = Cvar_Get ("cl_footsteps", "1", 0);
-	cl_noskins = Cvar_Get ("cl_noskins", "0", 0);
-	cl_autoskins = Cvar_Get ("cl_autoskins", "0", 0);
+	cl_add_blend = Cvar_Get("cl_blend", "1", 0);
+	cl_add_lights = Cvar_Get("cl_lights", "1", 0);
+	cl_add_particles = Cvar_Get("cl_particles", "1", 0);
+	cl_add_entities = Cvar_Get("cl_entities", "1", 0);
+	cl_gun = Cvar_Get("cl_gun", "1", 0);
+	cl_footsteps = Cvar_Get("cl_footsteps", "1", 0);
+	cl_noskins = Cvar_Get("cl_noskins", "0", 0);
+	cl_autoskins = Cvar_Get("cl_autoskins", "0", 0);
 	cl_predict = Cvar_Get ("cl_predict", "1", 0);
 //	cl_minfps = Cvar_Get ("cl_minfps", "5", 0);
 	cl_maxfps = Cvar_Get ("cl_maxfps", "90", 0);
 
-	cl_upspeed = Cvar_Get ("cl_upspeed", "200", 0);
-	cl_forwardspeed = Cvar_Get ("cl_forwardspeed", "200", 0);
-	cl_sidespeed = Cvar_Get ("cl_sidespeed", "200", 0);
-	cl_yawspeed = Cvar_Get ("cl_yawspeed", "140", 0);
-	cl_pitchspeed = Cvar_Get ("cl_pitchspeed", "150", 0);
-	cl_anglespeedkey = Cvar_Get ("cl_anglespeedkey", "1.5", 0);
+	cl_upspeed = Cvar_Get("cl_upspeed", "200", 0);
+	cl_forwardspeed = Cvar_Get("cl_forwardspeed", "200", 0);
+	cl_sidespeed = Cvar_Get("cl_sidespeed", "200", 0);
+	cl_yawspeed = Cvar_Get("cl_yawspeed", "140", 0);
+	cl_pitchspeed = Cvar_Get("cl_pitchspeed", "150", 0);
+	cl_anglespeedkey = Cvar_Get("cl_anglespeedkey", "1.5", 0);
 
-	cl_run = Cvar_Get ("cl_run", "0", CVAR_ARCHIVE);
+	cl_run = Cvar_Get("cl_run", "0", CVAR_ARCHIVE);
 	freelook = Cvar_Get( "freelook", "0", CVAR_ARCHIVE );
 	lookspring = Cvar_Get ("lookspring", "0", CVAR_ARCHIVE);
 	lookstrafe = Cvar_Get ("lookstrafe", "0", CVAR_ARCHIVE);
@@ -1464,59 +1472,65 @@ void CL_InitLocal (void)
 	cl_paused = Cvar_Get ("paused", "0", 0);
 	cl_timedemo = Cvar_Get ("timedemo", "0", 0);
 
-	rcon_client_password = Cvar_Get ("rcon_password", "", 0);
-	rcon_address = Cvar_Get ("rcon_address", "", 0);
+	rcon_client_password = Cvar_Get("rcon_password", "", 0);
+	rcon_address = Cvar_Get("rcon_address", "", 0);
 
-	cl_lightlevel = Cvar_Get ("r_lightlevel", "0", 0);
+	cl_lightlevel = Cvar_Get("r_lightlevel", "0", 0);
 
 	//
 	// userinfo
 	//
-	info_password = Cvar_Get ("password", "", CVAR_USERINFO);
-	info_spectator = Cvar_Get ("spectator", "0", CVAR_USERINFO);
-	name = Cvar_Get ("name", "unnamed", CVAR_USERINFO | CVAR_ARCHIVE);
-	skin = Cvar_Get ("skin", "male/grunt", CVAR_USERINFO | CVAR_ARCHIVE);
-	rate = Cvar_Get ("rate", "25000", CVAR_USERINFO | CVAR_ARCHIVE);	// FIXME
-	msg = Cvar_Get ("msg", "1", CVAR_USERINFO | CVAR_ARCHIVE);
-	hand = Cvar_Get ("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
-	fov = Cvar_Get ("fov", "90", CVAR_USERINFO | CVAR_ARCHIVE);
-	gender = Cvar_Get ("gender", "male", CVAR_USERINFO | CVAR_ARCHIVE);
-	gender_auto = Cvar_Get ("gender_auto", "1", CVAR_ARCHIVE);
-	gender->modified = false; // clear this so we know when user sets it manually
+	name = Cvar_Get("name", "unnamed", CVAR_USERINFO | CVAR_ARCHIVE);
+	skin = Cvar_Get("skin", "male/grunt", CVAR_USERINFO | CVAR_ARCHIVE);
+	rate = Cvar_Get("rate", "25000", CVAR_USERINFO | CVAR_ARCHIVE);	// FIXME
+	msg = Cvar_Get("msg", "1", CVAR_USERINFO | CVAR_ARCHIVE);
+	hand = Cvar_Get("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
+	fov = Cvar_Get("fov", "90", CVAR_USERINFO | CVAR_ARCHIVE);
+	gender = Cvar_Get("gender", "male", CVAR_USERINFO | CVAR_ARCHIVE);
+	gender_auto = Cvar_Get("gender_auto", "1", CVAR_ARCHIVE);
+	gender->modified = false;
 
-	cl_vwep = Cvar_Get ("cl_vwep", "1", CVAR_ARCHIVE);
+	info_password = Cvar_Get("password", "", CVAR_USERINFO);
+	info_spectator = Cvar_Get("spectator", "0", CVAR_USERINFO);
 
+	cl_vwep = Cvar_Get("cl_vwep", "1", CVAR_ARCHIVE);
 
-	//
-	// register our commands
-	//
-	Cmd_AddCommand ("cmd", CL_ForwardToServer_f);
-	Cmd_AddCommand ("pause", CL_Pause_f);
-	Cmd_AddCommand ("pingservers", CL_PingServers_f);
-	Cmd_AddCommand ("skins", CL_Skins_f);
+#ifdef USE_CURL
+	cl_http_proxy = Cvar_Get("cl_http_proxy", "", 0);
+	cl_http_filelists = Cvar_Get("cl_http_filelists", "1", 0);
+	cl_http_downloads = Cvar_Get("cl_http_downloads", "1", CVAR_ARCHIVE);
+	cl_http_max_connections = Cvar_Get("cl_http_max_connections", "4", 0);
+	cl_http_show_dw_progress = Cvar_Get("cl_http_show_dw_progress", "0", 0);
+	cl_http_bw_limit_rate = Cvar_Get("cl_http_bw_limit_rate", "0", 0);
+	cl_http_bw_limit_tmout = Cvar_Get("cl_http_bw_limit_tmout", "0", 0);
+#endif
 
-	Cmd_AddCommand ("userinfo", CL_Userinfo_f);
-	Cmd_AddCommand ("snd_restart", CL_Snd_Restart_f);
+	/* register our commands */
+	Cmd_AddCommand("cmd", CL_ForwardToServer_f);
+	Cmd_AddCommand("pause", CL_Pause_f);
+	Cmd_AddCommand("pingservers", CL_PingServers_f);
+	Cmd_AddCommand("skins", CL_Skins_f);
 
-	Cmd_AddCommand ("changing", CL_Changing_f);
-	Cmd_AddCommand ("disconnect", CL_Disconnect_f);
-	Cmd_AddCommand ("record", CL_Record_f);
-	Cmd_AddCommand ("stop", CL_Stop_f);
+	Cmd_AddCommand("userinfo", CL_Userinfo_f);
+	Cmd_AddCommand("snd_restart", CL_Snd_Restart_f);
 
-	Cmd_AddCommand ("quit", CL_Quit_f);
+	Cmd_AddCommand("changing", CL_Changing_f);
+	Cmd_AddCommand("disconnect", CL_Disconnect_f);
+	Cmd_AddCommand("record", CL_Record_f);
+	Cmd_AddCommand("stop", CL_Stop_f);
 
-	Cmd_AddCommand ("connect", CL_Connect_f);
-	Cmd_AddCommand ("reconnect", CL_Reconnect_f);
+	Cmd_AddCommand("quit", CL_Quit_f);
 
-	Cmd_AddCommand ("rcon", CL_Rcon_f);
+	Cmd_AddCommand("connect", CL_Connect_f);
+	Cmd_AddCommand("reconnect", CL_Reconnect_f);
 
-// 	Cmd_AddCommand ("packet", CL_Packet_f); // this is dangerous to leave in
+	Cmd_AddCommand("rcon", CL_Rcon_f);
 
-	Cmd_AddCommand ("setenv", CL_Setenv_f );
+	Cmd_AddCommand("setenv", CL_Setenv_f);
 
-	Cmd_AddCommand ("precache", CL_Precache_f);
+	Cmd_AddCommand("precache", CL_Precache_f);
 
-	//Cmd_AddCommand ("download", CL_Download_f);
+	Cmd_AddCommand("currentmap", CL_CurrentMap_f);
 
 	/* forward to server commands
 	 * the only thing this does is allow command completion
@@ -1548,36 +1562,38 @@ void CL_InitLocal (void)
 	Cmd_AddCommand("cycleweap", NULL);
 }
 
-
-
 /*
-===============
-CL_WriteConfiguration
-
-Writes key bindings and archived cvars to config.cfg
-===============
-*/
-void CL_WriteConfiguration (void)
+ * Writes key bindings and archived cvars to config.cfg
+ */
+void
+CL_WriteConfiguration(void)
 {
-	FILE	*f;
-	char	path[MAX_QPATH];
+	FILE *f;
+	char path[MAX_OSPATH];
 
 	if (cls.state == ca_uninitialized)
+	{
 		return;
+	}
 
-	Com_sprintf (path, sizeof(path),"%s/config.cfg",FS_Gamedir());
-	f = fopen (path, "w");
+	Com_sprintf(path, sizeof(path), "%s/config.cfg", FS_Gamedir());
+
+	f = Q_fopen(path, "w");
+
 	if (!f)
 	{
 		Com_Printf("Couldn't write config.cfg.\n");
 		return;
 	}
 
-	fprintf (f, "// generated by quake, do not modify\n");
-	Key_WriteBindings (f);
-	fclose (f);
+	fprintf(f, "// generated by quake, do not modify\n");
 
-	Cvar_WriteVariables (path);
+	Key_WriteBindings(f);
+
+	fflush(f);
+	fclose(f);
+
+	Cvar_WriteVariables(path);
 }
 
 typedef struct
@@ -1605,32 +1621,35 @@ cheatvar_t cheatvars[] = {
 	{NULL, NULL}
 };
 
-int		numcheatvars;
+int numcheatvars;
 
-void CL_FixCvarCheats (void)
+void
+CL_FixCvarCheats(void)
 {
-	int			i;
-	cheatvar_t	*var;
+	int i;
+	cheatvar_t *var;
 
-	if ( !strcmp(cl.configstrings[CS_MAXCLIENTS], "1")
-		|| !cl.configstrings[CS_MAXCLIENTS][0] )
-		return;		// single player can cheat
+	if (!strcmp(cl.configstrings[CS_MAXCLIENTS], "1") ||
+		!cl.configstrings[CS_MAXCLIENTS][0])
+	{
+		return; /* single player can cheat  */
+	}
 
-	// find all the cvars if we haven't done it yet
+	/* find all the cvars if we haven't done it yet */
 	if (!numcheatvars)
 	{
 		while (cheatvars[numcheatvars].name)
 		{
-			cheatvars[numcheatvars].var = Cvar_Get (cheatvars[numcheatvars].name,
+			cheatvars[numcheatvars].var = Cvar_Get(cheatvars[numcheatvars].name,
 					cheatvars[numcheatvars].value, 0);
 			numcheatvars++;
 		}
 	}
 
-	// make sure they are all set to the proper values
-	for (i=0, var = cheatvars ; i<numcheatvars ; i++, var++)
+	/* make sure they are all set to the proper values */
+	for (i = 0, var = cheatvars; i < numcheatvars; i++, var++)
 	{
-		if ( strcmp (var->var->string, var->value) )
+		if (strcmp(var->var->string, var->value))
 		{
 			Cvar_Set(var->name, var->value);
 		}
@@ -1645,7 +1664,8 @@ CL_SendCommand
 
 ==================
 */
-void CL_SendCommand (void)
+void
+CL_SendCommand(void)
 {
 	// get new key events
 	Sys_SendKeyEvents ();
@@ -1673,13 +1693,17 @@ CL_Frame
 
 ==================
 */
-void CL_Frame (int msec)
+void
+CL_Frame(int msec)
 {
 	static int	extratime;
-	static int  lasttimecalled;
+	static int lasttimecalled;
 
+	// Dedicated?
 	if (dedicated->value)
+	{
 		return;
+	}
 
 	extratime += msec;
 
@@ -1770,42 +1794,36 @@ void CL_Frame (int msec)
 	}
 }
 
-
-//============================================================================
-
-/*
-====================
-CL_Init
-====================
-*/
-void CL_Init (void)
+void
+CL_Init(void)
 {
 	if (dedicated->value)
-		return;		// nothing running on the client
+	{
+		return; /* nothing running on the client */
+	}
 
-	// all archived variables will now be loaded
+	/* all archived variables will now be loaded */
+	Con_Init();
 
-	Con_Init ();
-#if defined __linux__ || defined __sgi
-	S_Init ();
-	VID_Init ();
-#else
-	VID_Init ();
-	S_Init ();	// sound must be initialized after window is created
-#endif
+	S_Init();
 
-	V_Init ();
+	SCR_Init();
+
+	VID_Init();
+
+	IN_Init();
+
+	V_Init();
 
 	net_message.data = net_message_buffer;
+
 	net_message.maxsize = sizeof(net_message_buffer);
 
 	M_Init();
 
-	SCR_Init ();
 	cls.disable_screen = false;	// don't draw yet
 
-	CL_InitLocal ();
-	IN_Init ();
+	CL_InitLocal();
 
 	CL_LoadStrings();
 
@@ -1826,7 +1844,7 @@ CL_Shutdown(void)
 
 	isdown = true;
 
-	CL_WriteConfiguration ();
+	CL_WriteConfiguration();
 
 	S_Shutdown();
 	IN_Shutdown();

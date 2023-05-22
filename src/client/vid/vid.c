@@ -854,7 +854,7 @@ R_EndFrame(void)
 /* INPUT                                                                     */
 /*****************************************************************************/
 
-cvar_t	*in_joystick;
+cvar_t *in_joystick;
 
 // This is fake, it's acutally done by the Refresh load
 void IN_Init (void)

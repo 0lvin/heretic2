@@ -52,8 +52,7 @@ CC ?= gcc
 CXX ?= g++
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
-DEBUG_CFLAGS=$(BASE_CFLAGS) -g -fsanitize=address
-# -flto=auto
+DEBUG_CFLAGS=$(BASE_CFLAGS) -g -fsanitize=address -flto=auto
 LDFLAGS=-ldl -lm
 SVGALDFLAGS=-lvga -lm
 XLDFLAGS=-lX11 -lXext -lXxf86dga
@@ -535,7 +534,6 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_light.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_mesh.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_model.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_movie.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_main.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_misc.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_surf.o \

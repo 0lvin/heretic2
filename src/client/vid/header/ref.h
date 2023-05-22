@@ -286,7 +286,6 @@ typedef struct
 	void	(*DrawLine)(vec3_t start, vec3_t end);
 	// Draw images for cinematic rendering (which can have a different palette). Note that calls
 	void	(EXPORT *DrawStretchRaw) (int x, int y, int w, int h, int cols, int rows, byte *data);
-	void	(*DrawCinematic) (int cols, int rows, byte *data, paletteRGB_t *palette, float alpha);
 
 	/*
 	** video mode and refresh state management entry points

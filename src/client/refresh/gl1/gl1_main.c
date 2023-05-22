@@ -1645,7 +1645,7 @@ RI_BeginFrame(float camera_separation)
 		else
 		{
 			R_Printf(PRINT_ALL, "stereo supermode changed, restarting video!\n");
-			cvar_t	*ref;
+			cvar_t *ref;
 			ref = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 			ref->modified = true;
 		}
@@ -1982,7 +1982,6 @@ GetRefAPI(refimport_t imp)
 	re.DrawTileClear = RDraw_TileClear;
 	re.DrawFill = RDraw_Fill;
 	re.DrawFadeScreen = RDraw_FadeScreen;
-	re.DrawCinematic = R_DrawCinematic;
 
 	re.DrawStretchRaw = RDraw_StretchRaw;
 
