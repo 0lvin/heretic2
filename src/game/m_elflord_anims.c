@@ -8,7 +8,7 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/g_monster.h"
 #include "header/m_elflord_anims.h"
 #include "header/m_elflord.h"

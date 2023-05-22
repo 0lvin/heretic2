@@ -1,31 +1,54 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
-#include "../common/header/common.h"
-#include "header/g_skeletons.h"
-#include "header/g_teleport.h"
-#include "header/m_player.h"
-//#include "../player/p_types.h"
-#include "../player/player.h"
-#include "../player/p_animactor.h"
-#include "../player/p_anims.h"
-#include "../player/p_ctrl.h"
-#include "header/p_funcs.h"
-#include "../player/p_main.h"
-#include "../player/p_weapon.h"
-#include "../../h2common/angles.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
-#include "header/utilities.h"
-#include "header/g_playstats.h"
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * The "camera" through which the player looks into the game.
+ *
+ * =======================================================================
+ */
 
-static	edict_t		*current_player;
-static	gclient_t	*current_client;
-float				xyspeed;
-float				bobmove;
-int					bobcycle;		// odd cycles are right foot going forward
-float				bobfracsin;		// sin(bobfrac*M_PI)
+#include "../header/local.h"
+#include "../header/g_skeletons.h"
+#include "../header/g_teleport.h"
+#include "../header/m_player.h"
+#include "../../player/player.h"
+#include "../../player/p_animactor.h"
+#include "../../player/p_anims.h"
+#include "../../player/p_ctrl.h"
+#include "../header/p_funcs.h"
+#include "../../player/p_main.h"
+#include "../../player/p_weapon.h"
+#include "../../../h2common/angles.h"
+#include "../../../h2common/fx.h"
+#include "../../../h2common/h2rand.h"
+#include "../header/utilities.h"
+#include "../header/g_playstats.h"
+
+static edict_t *current_player;
+static gclient_t *current_client;
+
+static float				xyspeed;
+
+static float				bobmove;
+static int				bobcycle;		// odd cycles are right foot going forward
+static float				bobfracsin;		// sin(bobfrac*M_PI)
 
 extern void Cmd_WeapPrev_f (edict_t *ent);
 extern void Cmd_Use_f (edict_t *ent, char *s);
@@ -953,7 +976,7 @@ void ClientEndServerFrame (edict_t *ent)
 
 	if(ent->client->playerinfo.showscores && deathmatch->value && (!(level.framenum&31)))
 	{
-		DeathmatchScoreboardMessage(ent,ent->enemy,false);
+		DeathmatchScoreboardMessage(ent, ent->enemy);
 
 		gi.unicast(ent,false);
 	}

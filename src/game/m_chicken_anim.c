@@ -8,7 +8,7 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 
 // PRECOMPILED HEADER ABOVE
 // WARNING:  DO NOT CHANGE THE ABOVE HEADERS OR THE PRECOMPILED STUFF WILL BREAK!

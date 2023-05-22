@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "../../common/header/common.h"
-#include "g_local.h"
+#include "local.h"
 
 typedef struct sv_entity_s
 {

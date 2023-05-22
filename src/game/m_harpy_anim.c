@@ -4,7 +4,7 @@
 //
 #include "../common/header/common.h"
 #include "header/m_harpy_anim.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/m_harpy.h"
 
 

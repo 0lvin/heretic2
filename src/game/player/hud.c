@@ -1,13 +1,34 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
-#include "../common/header/common.h"
-#include "header/g_local.h"
-#include "../../h2common/h2rand.h"
-#include "header/g_playstats.h"
-#include "header/g_itemstats.h"
-#include "../common/header/common.h"
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * HUD, deathmatch scoreboard, help computer and intermission stuff.
+ *
+ * =======================================================================
+ */
+
+#include "../header/local.h"
+#include "../../../h2common/h2rand.h"
+#include "../header/g_playstats.h"
+#include "../header/g_itemstats.h"
+#include "../../common/header/common.h"
 
 extern player_export_t	playerExport;	// interface to player DLL.
 
@@ -158,24 +179,28 @@ INTERMISSION
 ======================================================================
 */
 
-void MoveClientToIntermission(edict_t *ent, qboolean log_file)
+void
+MoveClientToIntermission(edict_t *ent)
 {
+	if (!ent)
+	{
+		return;
+	}
+
 	if(deathmatch->value)
+	{
 		ent->client->playerinfo.showscores = true;
+	}
 
-	VectorCopy(level.intermission_origin,ent->s.origin);
-
-	ent->client->ps.pmove.origin[0] = level.intermission_origin[0]*8;
-	ent->client->ps.pmove.origin[1] = level.intermission_origin[1]*8;
-	ent->client->ps.pmove.origin[2] = level.intermission_origin[2]*8;
-
-	VectorCopy(level.intermission_angle,ent->client->ps.viewangles);
-
+	VectorCopy(level.intermission_origin, ent->s.origin);
+	ent->client->ps.pmove.origin[0] = level.intermission_origin[0] * 8;
+	ent->client->ps.pmove.origin[1] = level.intermission_origin[1] * 8;
+	ent->client->ps.pmove.origin[2] = level.intermission_origin[2] * 8;
+	VectorCopy(level.intermission_angle, ent->client->ps.viewangles);
 	ent->client->ps.pmove.pm_type = PM_INTERMISSION;
 	ent->client->ps.rdflags &= ~RDF_UNDERWATER;
 
-	// Clean up powerup info.
-
+	/* clean up powerup info */
 	ent->client->invincible_framenum = 0;
 
 	ent->viewheight = 0;
@@ -184,38 +209,48 @@ void MoveClientToIntermission(edict_t *ent, qboolean log_file)
 	ent->s.sound = 0;
 	ent->solid = SOLID_NOT;
 
-	// Add the layout.
-
-	if(deathmatch->value)
+	/* add the layout */
+	if (deathmatch->value)
 	{
-		DeathmatchScoreboardMessage(ent,NULL,log_file);
-
-		gi.unicast(ent,true);
+		DeathmatchScoreboardMessage(ent, NULL);
+		gi.unicast(ent, true);
 	}
 }
 
-void BeginIntermission(edict_t *targ)
+void
+BeginIntermission(edict_t *targ)
 {
-	int		i;
-	edict_t	*ent,
-			*client;
+	int i;
+	edict_t *ent;
 
-	// Already activated?
-
-	if(level.intermissiontime)
+	if (!targ)
+	{
 		return;
+	}
+
+	if (level.intermissiontime)
+	{
+		return; /* already activated */
+	}
 
 	game.autosaved = false;
 
-	// Respawn any dead clients.
-
-	for (i=0 ; i<maxclients->value ; i++)
+	/* respawn any dead clients */
+	for (i = 0; i < maxclients->value; i++)
 	{
+		edict_t *client;
+
 		client = g_edicts + 1 + i;
+
 		if (!client->inuse)
+		{
 			continue;
+		}
+
 		if (client->health <= 0)
+		{
 			respawn(client);
+		}
 	}
 
 	level.intermissiontime = level.time;
@@ -223,63 +258,67 @@ void BeginIntermission(edict_t *targ)
 
 	if (!deathmatch->value)
 	{
-		// Go immediately to the next level if not deathmatch.
-
-		level.exitintermission = 1;
-
+		level.exitintermission = 1; /* go immediately to the next level */
 		return;
 	}
 
 	level.exitintermission = 0;
 
-	// Find an intermission spot.
-
-	ent = G_Find (NULL, FOFS(classname), "info_player_intermission");
+	/* find an intermission spot */
+	ent = G_Find(NULL, FOFS(classname), "info_player_intermission");
 
 	if (!ent)
 	{
-		// The map creator forgot to put in an intermission point.
-
-		ent = G_Find (NULL, FOFS(classname), "info_player_start");
+		/* the map creator forgot to put in an intermission point... */
+		ent = G_Find(NULL, FOFS(classname), "info_player_start");
 
 		if (!ent)
-			ent = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
+		{
+			ent = G_Find(NULL, FOFS(classname), "info_player_deathmatch");
+		}
 	}
 	else
 	{
-		// Chose one of four spots.
-
-		i = irand(0, 3);
+		/* chose one of four spots */
+		i = randk() & 3;
 
 		while (i--)
 		{
-			ent = G_Find (ent, FOFS(classname), "info_player_intermission");
+			ent = G_Find(ent, FOFS(classname), "info_player_intermission");
 
-			if (!ent)
+			if (!ent) /* wrap around the list */
 			{
-				// Wrap around the list.
-
-				ent = G_Find (ent, FOFS(classname), "info_player_intermission");
+				ent = G_Find(ent, FOFS(classname), "info_player_intermission");
 			}
 		}
 	}
 
-	VectorCopy (ent->s.origin, level.intermission_origin);
-	VectorCopy (ent->s.angles, level.intermission_angle);
+	VectorCopy(ent->s.origin, level.intermission_origin);
+	VectorCopy(ent->s.angles, level.intermission_angle);
 
-	// Move all clients to the intermission point.
-
-	for(i=0;i<maxclients->value;i++)
+	/* In fact1 the intermission collides
+	   with an area portal, resulting in
+	   clutterings */
+	if (!Q_stricmp(level.mapname, "fact1"))
 	{
-		client=g_edicts+1+i;
+		level.intermission_origin[0] = 1037.0;
+		level.intermission_origin[1] = 1100.0;
+		level.intermission_origin[2] = 222.0;
+	}
 
-		if(!client->inuse)
+	/* move all clients to the intermission point */
+	for (i = 0; i < maxclients->value; i++)
+	{
+		edict_t *client;
+
+		client = g_edicts + 1 + i;
+
+		if (!client->inuse)
+		{
 			continue;
+		}
 
-		if (!i)
-			MoveClientToIntermission(client, true);
-		else
-			MoveClientToIntermission(client, false);
+		MoveClientToIntermission(client);
 	}
 }
 
@@ -306,29 +345,29 @@ typedef struct
 	team_sort_t	team_sort[MAX_CLIENTS];
 } team_scores_t;
 
-void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_file)
+void
+DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 {
-	char		entry[MAX_STRING_SIZE];
-	char		value[512];
-	int			game_type = 0;
-	char		name[MAX_QPATH];
-	char		string[MAX_STRING_SIZE];
-	int			stringlength;
-	int			i, j, k, z;
-	int			sorted[MAX_CLIENTS];
-	int			sortedscores[MAX_CLIENTS];
-	int			score, total, max_team, total_team, max_team_display, real_total;
-	int			hours, secs, mins;
-	int			x, y;
-	qboolean	bubble;
-	gclient_t	*cl;
-	edict_t		*cl_ent;
-	char		*p;
-	team_scores_t	team_scores[MAX_CLIENTS];
-	team_scores_t	temp_point;
-	FILE		*f = NULL;
-	cvar_t		*host_name;
-	char		*game_types[3] = {
+	char entry[MAX_STRING_SIZE];
+	char value[512];
+	int game_type = 0;
+	char name[MAX_QPATH];
+	char string[MAX_STRING_SIZE];
+	int stringlength;
+	int i, j, k, z;
+	int sorted[MAX_CLIENTS];
+	int sortedscores[MAX_CLIENTS];
+	int score, total, max_team, total_team, max_team_display, real_total;
+	int hours, secs, mins;
+	int x, y;
+	qboolean bubble;
+	gclient_t *cl;
+	edict_t	*cl_ent;
+	char *p;
+	team_scores_t team_scores[MAX_CLIENTS];
+	team_scores_t temp_point;
+	cvar_t *host_name;
+	char *game_types[3] = {
 		"Cooperative",
 		"Death Match",
 		"Team Play Death Match"
@@ -337,47 +376,6 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 	string[0] = 0;
 	stringlength = 0;
 	total = 0;
-
-	if (log_file && log_file_name->string[0])
-	{
-		Com_sprintf (name, sizeof(name), "%s/%s", gi.FS_Userdir(), log_file_name->string);
-
-		Com_Printf ("Dumping end game log to %s\n", name);
-		gi.FS_CreatePath (name);
-		f = fopen (name, "a");
-		if (!f)
-		{
-			Com_Printf ("ERROR: couldn't open.\n");
-			log_file = false;
-		}
-		else
-		{
-			if (coop->value)
-				game_type = 0;
-			else
-			if (deathmatch->value)
-			{
-				game_type = 1;
-				if ((int)dmflags->value & (DF_MODELTEAMS | DF_SKINTEAMS))
-					game_type = 2;
-			}
-
-			secs = level.time;
-			hours = secs / (60*60);
-			secs -= hours * (60*60);
-			mins = secs / 60;
-			secs -= mins * 60;
-			host_name = gi.cvar("hostname", "", 0);
-			fprintf (f, "%s\n", log_file_header->string);
-			fprintf (f, "%sMap Name : %s\n", log_file_line_header->string, level.mapname);
-			fprintf (f, "%sHost Name : %s\n", log_file_line_header->string, host_name->string);
-			fprintf (f, "%sGame type : %s\n", log_file_line_header->string, game_types[game_type]);
-			fprintf (f, "%sGame Duration : %02i:%02i:%02i\n%s\n", log_file_line_header->string, hours, mins, secs, log_file_line_header->string);
-		}
-	}
-	// we might have no file name, but logging is set to go
-	else
-		log_file = false;
 
 	// sort the clients by score and team if we are playing team play.
 	// then resort them by team score.
@@ -520,24 +518,6 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 			}
 			y += 8;
 		}
-		if (log_file)
-		{
-			for(i = 0, k = 0; i < real_total; i++)
-			{
-				fprintf (f, "%s%sTeam %s\n",log_file_line_header->string,log_file_line_header->string,team_scores[i].teamname);
-				fprintf (f, "%sTeam Score %i\n%s\n",log_file_line_header->string,team_scores[i].teamscore,log_file_line_header->string);
-
-				for (j = 0; j < team_scores[i].count_for_team; j++)
-				{
-					cl = &game.clients[team_scores[i].team_sort[j].sorted];
-					cl_ent = g_edicts + 1 + team_scores[i].team_sort[j].sorted;
-					fprintf (f, "%sClient %s\n", log_file_line_header->string, cl_ent->client->playerinfo.pers.netname);
-					fprintf (f, "%sScore %i\n", log_file_line_header->string, team_scores[i].team_sort[j].scores);
-					fprintf (f, "%sPing %i\n", log_file_line_header->string, cl->ping);
-					fprintf (f, "%sTime %i\n%s\n", log_file_line_header->string, (level.framenum - cl->resp.enterframe) / 600, log_file_line_header->string);
-				}
-			}
-		}
 	}
 	// Sort the clients by score - for normal deathmatch play.
 	else
@@ -591,30 +571,11 @@ void DeathmatchScoreboardMessage (edict_t *ent, edict_t *killer, qboolean log_fi
 			stringlength += j;
 			y += 32;
 		}
-		if (log_file)
-		{
-			for (i = 0; i<real_total; i++)
-			{
-				cl = &game.clients[sorted[i]];
-				cl_ent = g_edicts + 1 + sorted[i];
-				fprintf (f, "%sClient %s\n", log_file_line_header->string, cl_ent->client->playerinfo.pers.netname);
-				fprintf (f, "%sScore %i\n", log_file_line_header->string, cl->resp.score);
-				fprintf (f, "%sPing %i\n", log_file_line_header->string, cl->ping);
-				fprintf (f, "%sTime %i\n%s\n", log_file_line_header->string, (level.framenum - cl->resp.enterframe) / 600, log_file_line_header->string);
-			}
-		}
 	}
 
 	// Print level name and exit rules.
-	gi.WriteByte (svc_layout);
-	gi.WriteString (string);
-
-	// close any file that needs to be
-	if (log_file)
-	{
-		fprintf (f, "%s\n", log_file_footer->string);
-		fclose(f);
-	}
+	gi.WriteByte(svc_layout);
+	gi.WriteString(string);
 }
 
 /*
@@ -625,9 +586,10 @@ Draw instead of help message.
 Note that it isn't that hard to overflow the 1400 byte message limit!
 ==================
 */
-void DeathmatchScoreboard (edict_t *ent)
+void
+DeathmatchScoreboard(edict_t *ent)
 {
-	DeathmatchScoreboardMessage (ent, ent->enemy, false);
+	DeathmatchScoreboardMessage(ent, ent->enemy);
 	gi.unicast (ent, true);
 }
 

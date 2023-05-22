@@ -4,15 +4,14 @@
 //
 // Created by JJS
 
-#include "../common/header/common.h"
-#include "../player/player.h"
-#include "header/g_local.h"
-#include "../player/p_weapon.h"
-#include "header/m_player.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/matrix.h"
-#include "header/g_skeletons.h"
-#include "../../h2common/angles.h"
+#include "../header/local.h"
+#include "../../player/player.h"
+#include "../../player/p_weapon.h"
+#include "../header/m_player.h"
+#include "../../../h2common/fx.h"
+#include "../../../h2common/matrix.h"
+#include "../header/g_skeletons.h"
+#include "../../../h2common/angles.h"
 
 void SpellCastPowerup(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);
 void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);

@@ -6,7 +6,7 @@
 //
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"
 #include "header/utilities.h"

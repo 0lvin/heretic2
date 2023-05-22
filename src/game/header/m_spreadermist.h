@@ -6,7 +6,7 @@
 #define _M_SPREADERMIST_H_
 
 #include "../../common/header/common.h"
-#include "g_local.h"
+#include "local.h"
 #include "g_volume_effect.h"
 
 void spreader_grenade_die(edict_t *self);

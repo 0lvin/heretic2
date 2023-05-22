@@ -13,7 +13,7 @@
 #define _P_FUNCS_H_
 
 #include "../../common/header/common.h"
-#include "g_local.h"
+#include "local.h"
 
 extern void G_PlayerActionShrineEffect(playerinfo_t *playerinfo);
 extern entity_state_t *G_GetEntityStatePtr(edict_t *entity);

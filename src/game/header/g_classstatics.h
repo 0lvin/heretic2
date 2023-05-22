@@ -7,7 +7,7 @@
 
 #include "../../common/header/common.h"
 #include "g_message.h"
-#include "g_local.h"
+#include "local.h"
 
 // ************************************************************************************************
 // ClassID_t

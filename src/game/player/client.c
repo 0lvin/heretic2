@@ -1,31 +1,52 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
-#include "../common/header/common.h"
-#include "header/g_local.h"
-#include "header/g_defaultmessagehandler.h"
-#include "header/g_skeletons.h"
-#include "header/m_player.h"
-#include "../player/p_newmove.h"
-#include "../player/p_main.h"
-#include "../player/p_ctrl.h"
-#include "../player/p_chicken.h"
-#include "header/p_funcs.h"
-#include "../../h2common/angles.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
-#include "header/utilities.h"
-#include "header/g_playstats.h"
-#include "header/g_hitlocation.h"
-#include "header/g_misc.h"
-#include "header/g_physics.h"
-#include "../player/p_main.h"
-#include "header/g_itemstats.h"
-#include "../../h2common/cl_strings.h"
-#include "../player/p_actions.h"
-#include "../player/p_anim_branch.h"
-#include "../common/header/common.h"
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Interface between client <-> game and client calculations.
+ *
+ * =======================================================================
+ */
+
+#include "../header/local.h"
+#include "../header/g_defaultmessagehandler.h"
+#include "../header/g_skeletons.h"
+#include "../header/m_player.h"
+#include "../../player/p_newmove.h"
+#include "../../player/p_main.h"
+#include "../../player/p_ctrl.h"
+#include "../../player/p_chicken.h"
+#include "../header/p_funcs.h"
+#include "../../../h2common/angles.h"
+#include "../../../h2common/fx.h"
+#include "../../../h2common/h2rand.h"
+#include "../header/utilities.h"
+#include "../header/g_playstats.h"
+#include "../header/g_hitlocation.h"
+#include "../header/g_misc.h"
+#include "../header/g_physics.h"
+#include "../../player/p_main.h"
+#include "../header/g_itemstats.h"
+#include "../../../h2common/cl_strings.h"
+#include "../../player/p_actions.h"
+#include "../../player/p_anim_branch.h"
+#include "../../common/header/common.h"
 
 // FIXME: include headers.
 extern void	SetupPlayerinfo(edict_t *ent);
@@ -2542,7 +2563,7 @@ void ClientBegin (edict_t *ent)
 
 	if(level.intermissiontime)
 	{
-		MoveClientToIntermission(ent,false);
+		MoveClientToIntermission(ent);
 	}
 	else
 	{
@@ -2559,40 +2580,35 @@ void ClientBegin (edict_t *ent)
 		}
 	}
 
-	// Make sure all view stuff is valid.
-
-	ClientEndServerFrame (ent);
+	/* make sure all view stuff is valid */
+	ClientEndServerFrame(ent);
 }
 
 /*
-===========
-ClientUserInfoChanged
-
-Called whenever the player updates a userinfo variable. The game can override any of the settings
-in place (forcing skins or names, etc) before copying it off.
-============
-*/
-
-void ClientUserinfoChanged (edict_t *ent, char *userinfo)
+ * Called whenever the player updates a userinfo variable.
+ * The game can override any of the settings in place
+ * (forcing skins or names, etc) before copying it off.
+ */
+void
+ClientUserinfoChanged(edict_t *ent, char *userinfo)
 {
-	char	*s, skin[MAX_QPATH], filename[MAX_QPATH];
-	int		playernum;
+	char *s, skin[MAX_QPATH], filename[MAX_QPATH];
+	int playernum;
 	FILE	*f;
 	qboolean found=false;
 
 	assert(ent->client);
 //	assert(ent->client->playerinfo);
 
-	// check for malformed or illegal info strings
+	/* check for malformed or illegal info strings */
 	if (!Info_Validate(userinfo))
 	{
-		strcpy (userinfo, "\\name\\badinfo\\skin\\male/Corvus");
+		strcpy(userinfo, "\\name\\badinfo\\skin\\male/Corvus");
 	}
 
-	// Set name.
-
-	s = Info_ValueForKey (userinfo, "name");
-	strncpy (ent->client->playerinfo.pers.netname, s, sizeof(ent->client->playerinfo.pers.netname)-1);
+	/* set name */
+	s = Info_ValueForKey(userinfo, "name");
+	strncpy(ent->client->playerinfo.pers.netname, s, sizeof(ent->client->playerinfo.pers.netname)-1);
 
 	// Set skin.
 
@@ -2813,34 +2829,29 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	// Autoweapon changeup.
 
 	s = Info_ValueForKey (userinfo, "autoweapon");
+
 	if (strlen(s))
 	{
 		ent->client->playerinfo.pers.autoweapon = atoi(s);
 	}
 
-	// Save off the userinfo in case we want to check something later.
-
-	strncpy (ent->client->playerinfo.pers.userinfo, userinfo, sizeof(ent->client->playerinfo.pers.userinfo)-1);
+	/* save off the userinfo in case we want to check something later */
+	Q_strlcpy(ent->client->playerinfo.pers.userinfo, userinfo, sizeof(ent->client->playerinfo.pers.userinfo));
 }
 
-
 /*
-===========
-ClientConnect
-
-Called when a player begins connecting to the server.
-The game can refuse entrance to a client by returning false.
-If the client is allowed, the connection process will continue
-and eventually get to ClientBegin()
-Changing levels will NOT cause this to be called again.
-============
-*/
-qboolean ClientConnect (edict_t *ent, char *userinfo)
+ * Called when a player begins connecting to the server.
+ * The game can refuse entrance to a client by returning false.
+ * If the client is allowed, the connection process will continue
+ * and eventually get to ClientBegin(). Changing levels will NOT
+ * cause this to be called again, but loadgames will.
+ */
+qboolean
+ClientConnect(edict_t *ent, char *userinfo)
 {
-	char	*value;
+	char *value;
 
-	// Check to see if they are on the banned IP list.
-
+	/* check to see if they are on the banned IP list */
 	value = Info_ValueForKey (userinfo, "ip");
 	if (SV_FilterPacket(value))
 		return false;
@@ -2894,18 +2905,24 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 }
 
 /*
-===========
-ClientDisconnect
-
-called when a player drops from the server
-============
-*/
-void ClientDisconnect (edict_t *ent)
+ * Called when a player drops from the server.
+ * Will not be called between levels.
+ */
+void
+ClientDisconnect(edict_t *ent)
 {
-	int		playernum;
+	int playernum;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	if (!ent->client)
+	{
 		return;
+	}
+
 
 	// Inform other players that the disconnecting client has left the game.
 
@@ -2940,7 +2957,7 @@ void ClientDisconnect (edict_t *ent)
 		ent->targetEnt=NULL;
 	}
 
-	gi.unlinkentity (ent);
+	gi.unlinkentity(ent);
 	ent->s.modelindex = 0;
 	ent->solid = SOLID_NOT;
 	ent->inuse = false;
@@ -2955,13 +2972,14 @@ void ClientDisconnect (edict_t *ent)
 	player_leader_effect();
 }
 
-//==============================================================
+/* ============================================================== */
 
-edict_t	*pm_passent;
+static edict_t *pm_passent;
 
 // The pmove() routine doesn't need to know about passent and contentmask.
 
-void PM_trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end,trace_t *trace)
+void
+PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end,trace_t *trace)
 {
 	// NOTENOTE All right, pmove doesn't need to know the gory details, but I need to be able to detect a water surface, bub.
 	// Hence, if the mins and max are NULL, then wask out water (cheezy I know, but blame me) ---Pat
@@ -2980,7 +2998,8 @@ void PM_trace (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end,trace_t *trace
 	}
 }
 
-unsigned CheckBlock (void *b, int c)
+unsigned
+CheckBlock(void *b, int c)
 {
 	int	v,i;
 	v = 0;
@@ -2989,12 +3008,18 @@ unsigned CheckBlock (void *b, int c)
 	return v;
 }
 
-void PrintPmove (pmove_t *pm)
+void
+PrintPmove(pmove_t *pm)
 {
-	unsigned	c1, c2;
+	unsigned c1, c2;
 
-	c1 = CheckBlock (&pm->s, sizeof(pm->s));
-	c2 = CheckBlock (&pm->cmd, sizeof(pm->cmd));
+	if (!pm)
+	{
+		return;
+	}
+
+	c1 = CheckBlock(&pm->s, sizeof(pm->s));
+	c2 = CheckBlock(&pm->cmd, sizeof(pm->cmd));
 }
 
 /*
@@ -3007,12 +3032,13 @@ void PrintPmove (pmove_t *pm)
 */
 extern edict_t	*TestEntityPosition(edict_t *self);
 
-void ClientThink (edict_t *ent, usercmd_t *ucmd)
+void
+ClientThink(edict_t *ent, usercmd_t *ucmd)
 {
-	gclient_t	*client;
-	edict_t		*other;
-	int			i, j;
-	pmove_t		pm;
+	gclient_t *client;
+	edict_t *other;
+	int i, j;
+	pmove_t pm;
 	vec3_t		LOSOrigin,ang;
 	float		knockback;
 	edict_t		*TargetEnt;
@@ -3030,8 +3056,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	{
 		client->ps.pmove.pm_type = PM_INTERMISSION;
 
-		// Can exit intermission after five seconds
-
+		/* can exit intermission after five seconds */
 		if (level.time > level.intermissiontime + 5.0 && (ucmd->buttons & BUTTON_ANY) )
 			level.exitintermission = true;
 
@@ -3416,20 +3441,25 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 }
 
 /*
-==============
-ClientBeginServerFrame
-
-This will be called once for each server frame, before running
-any other entities in the world.
-==============
-*/
-void ClientBeginServerFrame (edict_t *ent)
+ * This will be called once for each server
+ * frame, before running any other entities
+ * in the world.
+ */
+void
+ClientBeginServerFrame(edict_t *ent)
 {
-	gclient_t	*client;
-	int			buttonMask;
+	gclient_t *client;
+	int buttonMask;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	if (level.intermissiontime)
+	{
 		return;
+	}
 
 	client = ent->client;
 

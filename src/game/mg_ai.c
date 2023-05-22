@@ -13,7 +13,7 @@
 
 #include "../common/header/common.h"
 #include <assert.h>
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/g_monster.h"
 #include "../../h2common/h2rand.h"
 #include "header/buoy.h"

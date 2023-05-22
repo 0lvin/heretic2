@@ -8,7 +8,7 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 
 #include "header/m_gkrokon_anim.h"
 #include "header/m_gkrokon.h"

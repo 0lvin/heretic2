@@ -157,14 +157,14 @@ $(BUILDDIR)/%.o :                 %.c ${HEADERS}
 
 HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/cl_cin.o \
-	$(BUILDDIR)/src/client/cl_ents.o \
+	$(BUILDDIR)/src/client/cl_entities.o \
 	$(BUILDDIR)/src/client/cl_fx.o \
 	$(BUILDDIR)/src/client/cl_input.o \
-	$(BUILDDIR)/src/client/cl_inv.o \
+	$(BUILDDIR)/src/client/cl_inventory.o \
 	$(BUILDDIR)/src/client/cl_main.o \
 	$(BUILDDIR)/src/client/cl_parse.o \
-	$(BUILDDIR)/src/client/cl_pred.o \
-	$(BUILDDIR)/src/client/cl_scrn.o \
+	$(BUILDDIR)/src/client/cl_prediction.o \
+	$(BUILDDIR)/src/client/cl_screen.o \
 	$(BUILDDIR)/src/client/cl_string.o \
 	$(BUILDDIR)/src/client/cl_view.o \
 	$(BUILDDIR)/src/client/sound/ogg.o \
@@ -393,11 +393,11 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/game/m_tcheckrik_anim.o \
 	$(BUILDDIR)/src/game/m_tcheckrik.o \
 	$(BUILDDIR)/src/game/m_tcheckrik_spells.o \
-	$(BUILDDIR)/src/game/p_client.o \
-	$(BUILDDIR)/src/game/p_funcs.o \
-	$(BUILDDIR)/src/game/p_hud.o \
-	$(BUILDDIR)/src/game/p_item.o \
-	$(BUILDDIR)/src/game/p_view.o \
+	$(BUILDDIR)/src/game/player/client.o \
+	$(BUILDDIR)/src/game/player/funcs.o \
+	$(BUILDDIR)/src/game/player/hud.o \
+	$(BUILDDIR)/src/game/player/item.o \
+	$(BUILDDIR)/src/game/player/view.o \
 	$(BUILDDIR)/src/game/spl_blast.o \
 	$(BUILDDIR)/src/game/spl_bluering.o \
 	$(BUILDDIR)/src/game/spl_flyingfist.o \

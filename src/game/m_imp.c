@@ -13,7 +13,7 @@ Copyright 1998 Raven Software
 -------------------------------------------------------------------*/
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/m_imp.h"
 #include "header/m_imp_anim.h"
 #include "header/utilities.h"

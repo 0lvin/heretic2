@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/g_skeletons.h"
 #include "../../h2common/arrayed_list.h"
 #include "../../h2common/message.h"

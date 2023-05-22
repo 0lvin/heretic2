@@ -25,11 +25,11 @@
  */
 
 #include "header/server.h"
- 
+
 #ifndef DEDICATED_ONLY
 void SCR_DebugGraph(float value, int color);
 #endif
- 
+
 game_export_t *ge;
 
 /*
@@ -222,55 +222,55 @@ PF_Configstring(int index, char *val)
 void
 PF_WriteChar(int c)
 {
-	MSG_WriteChar(&sv.multicast, c); 
+	MSG_WriteChar(&sv.multicast, c);
 }
 
 void
 PF_WriteByte(int c)
 {
-	MSG_WriteByte(&sv.multicast, c); 
+	MSG_WriteByte(&sv.multicast, c);
 }
 
 void
 PF_WriteShort(int c)
 {
-	MSG_WriteShort(&sv.multicast, c); 
+	MSG_WriteShort(&sv.multicast, c);
 }
 
 void
 PF_WriteLong(int c)
 {
-	MSG_WriteLong(&sv.multicast, c); 
+	MSG_WriteLong(&sv.multicast, c);
 }
 
 void
 PF_WriteFloat(float f)
 {
-	MSG_WriteFloat(&sv.multicast, f); 
+	MSG_WriteFloat(&sv.multicast, f);
 }
 
 void
 PF_WriteString(char *s)
 {
-	MSG_WriteString(&sv.multicast, s); 
+	MSG_WriteString(&sv.multicast, s);
 }
 
 void
 PF_WritePos(vec3_t pos)
 {
-	MSG_WritePos(&sv.multicast, pos); 
+	MSG_WritePos(&sv.multicast, pos);
 }
 
 void
 PF_WriteDir(vec3_t dir)
 {
-	MSG_WriteDir(&sv.multicast, dir); 
+	MSG_WriteDir(&sv.multicast, dir);
 }
 
 void
 PF_WriteAngle(float f)
 {
-	MSG_WriteAngle(&sv.multicast, f); 
+	MSG_WriteAngle(&sv.multicast, f);
 }
 
 /*
@@ -293,6 +293,9 @@ PF_inPVS(vec3_t p1, vec3_t p2)
 	cluster = CM_LeafCluster(leafnum);
 	area2 = CM_LeafArea(leafnum);
 
+	// cluster -1 means "not in a visible leaf" or something like that (void?)
+	// so p1 and p2 probably don't "see" each other.
+	// either way, we must avoid using a negative index into mask[]!
 	if ( mask && (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
 	{
 		return false;
@@ -326,6 +329,9 @@ PF_inPHS(vec3_t p1, vec3_t p2)
 	cluster = CM_LeafCluster(leafnum);
 	area2 = CM_LeafArea(leafnum);
 
+	// cluster -1 means "not in a visible leaf" or something like that (void?)
+	// so p1 and p2 probably don't "hear" each other.
+	// either way, we must avoid using a negative index into mask[]!
 	if (mask && (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
 	{
 		return false; /* more than one bounce away */
@@ -365,7 +371,7 @@ SV_ShutdownGameProgs(void)
 	}
 
 	ge->Shutdown();
-	//Sys_UnloadGameDll("game", &game_module_handle);
+	//Sys_UnloadGame();
 	ge = NULL;
 }
 
@@ -812,10 +818,6 @@ SV_TraceBoundingForm(FormMove_t* formMove)
 	//formMove->trace = CM_BoxTrace(formMove->start, formMove->end, formMove->mins, formMove->maxs, 0, formMove->clipMask);
 }
 
-char* FS_Userdir(void) {
-	return "";
-}
-
 /*
  * Init the game subsystem for a new map
  */
@@ -915,8 +917,6 @@ SV_InitGameProgs(void)
 	import.AreasConnected = CM_AreasConnected;
 	import.FS_LoadFile = FS_LoadFile;
 	import.FS_FreeFile = FS_FreeFile;
-	import.FS_Userdir = FS_Userdir;
-	import.FS_CreatePath = FS_CreatePath;
 #ifdef _WIN32
 	import.Sys_LoadGameDll = NULL;
 	import.Sys_UnloadGameDll = NULL;

@@ -7,7 +7,7 @@
 
 #include "../common/header/common.h"
 #include "../../h2common/fx.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/g_misc.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/m_plagueelf_anim.h"

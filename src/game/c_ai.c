@@ -8,7 +8,7 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/g_defaultmessagehandler.h"
 #include "../../h2common/fx.h"
 #include "header/g_monster.h"

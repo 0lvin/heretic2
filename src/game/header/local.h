@@ -1,24 +1,40 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
-// g_local.h -- local definitions for game module.
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Main header file for the game module.
+ *
+ * =======================================================================
+ */
 
-#ifndef	G_LOCAL_H
-#define G_LOCAL_H
+#ifndef GAME_LOCAL_H
+#define GAME_LOCAL_H
 
-#include "../../common/header/common.h"
-#include "buoy.h"
+#include "../../common/header/shared.h"
 
-// Defined so I can insert hooks into code without breaking anything
-#define PAGAN	0
-
-// Define GAME_INCLUDE so that game.h does not define the short, server-visible 'gclient_t' and
-// 'edict_t' structures because we define the game versions in this file.
-
-#define	GAME_INCLUDE
-
+/* define GAME_INCLUDE so that game.h does not define the
+   short, server-visible gclient_t and edict_t structures,
+   because we define the full size ones in this file */
+#define GAME_INCLUDE
 #include "game.h"
+#include "buoy.h"
 #include "../../player/player.h"
 
 // The "gameversion" client command will print this plus compile date.
@@ -110,9 +126,9 @@
 typedef enum
 {
 	DAMAGE_NO,
-	DAMAGE_YES,	// Will take damage if hit.
-	DAMAGE_AIM,	// Auto targeting recognizes this.
-	DAMAGE_NO_RADIUS,	// Will not take damage from radius blasts
+	DAMAGE_YES, /* will take damage if hit */
+	DAMAGE_AIM, /* auto targeting recognizes this */
+	DAMAGE_NO_RADIUS, /* Will not take damage from radius blasts */
 } damage_t;
 
 #define GIB_ORGANIC 1
@@ -124,24 +140,19 @@ typedef enum
 // ---------
 // ************************************************************************************************
 
-#define RANGE_MELEE	0
-#define RANGE_NEAR	1
-#define RANGE_MID	2
-#define RANGE_FAR	3
+#define RANGE_MELEE 0
+#define RANGE_NEAR 1
+#define RANGE_MID 2
+#define RANGE_FAR 3
 
 #define MELEE_DISTANCE	80
 
-// ************************************************************************************************
-// ARMOR_XXX
-// ----------
-// Armor types.
-// ************************************************************************************************
-
-#define ARMOR_NONE		0
-#define ARMOR_JACKET	1
-#define ARMOR_COMBAT	2
-#define ARMOR_BODY		3
-#define ARMOR_SHARD		4
+/* armor types */
+#define ARMOR_NONE 0
+#define ARMOR_JACKET 1
+#define ARMOR_COMBAT 2
+#define ARMOR_BODY 3
+#define ARMOR_SHARD 4
 
 // ************************************************************************************************
 // SHRINE_XXX
@@ -164,21 +175,16 @@ enum
 	SHRINE_RANDOM
 };
 
-// ************************************************************************************************
-// SFL_CROSS_TRIGGER_XXX
-// ---------------------
-// game.'serverflags' values.
-// ************************************************************************************************
-
-#define SFL_CROSS_TRIGGER_1		0x00000001
-#define SFL_CROSS_TRIGGER_2		0x00000002
-#define SFL_CROSS_TRIGGER_3		0x00000004
-#define SFL_CROSS_TRIGGER_4		0x00000008
-#define SFL_CROSS_TRIGGER_5		0x00000010
-#define SFL_CROSS_TRIGGER_6		0x00000020
-#define SFL_CROSS_TRIGGER_7		0x00000040
-#define SFL_CROSS_TRIGGER_8		0x00000080
-#define SFL_CROSS_TRIGGER_MASK	0x000000ff
+/* game.serverflags values */
+#define SFL_CROSS_TRIGGER_1 0x00000001
+#define SFL_CROSS_TRIGGER_2 0x00000002
+#define SFL_CROSS_TRIGGER_3 0x00000004
+#define SFL_CROSS_TRIGGER_4 0x00000008
+#define SFL_CROSS_TRIGGER_5 0x00000010
+#define SFL_CROSS_TRIGGER_6 0x00000020
+#define SFL_CROSS_TRIGGER_7 0x00000040
+#define SFL_CROSS_TRIGGER_8 0x00000080
+#define SFL_CROSS_TRIGGER_MASK 0x000000ff
 
 #define MAX_MESSAGESTRINGS 1000
 typedef struct
@@ -236,7 +242,7 @@ typedef struct
 
 	// Flag that we've autosaved.
 
-	qboolean	autosaved;
+	qboolean autosaved;
 
 	qboolean	entitiesSpawned;
 
@@ -269,43 +275,42 @@ struct alertent_s
 
 typedef struct
 {
-	int			framenum;
-	float		time;
+	int framenum;
+	float time;
 
-	char		level_name[MAX_QPATH];	// The descriptive name (e.g. 'Outer Base').
-	char		mapname[MAX_QPATH];		// The server name (e.g. 'base1').
-	char		nextmap[MAX_QPATH];		// Go here when fraglimit is hit.
+	char level_name[MAX_QPATH]; /* the descriptive name (Outer Base, etc) */
+	char mapname[MAX_QPATH]; /* the server name (base1, etc) */
+	char nextmap[MAX_QPATH]; /* go here when fraglimit is hit */
 
-	// Intermission state information.
+	/* intermission state */
+	float intermissiontime; /* time the intermission was started */
+	char *changemap;
+	int exitintermission;
+	vec3_t intermission_origin;
+	vec3_t intermission_angle;
 
-	float		intermissiontime;		// Time the intermission was started.
-	char		*changemap;
-	int			exitintermission;
-	vec3_t		intermission_origin;
-	vec3_t		intermission_angle;
+	edict_t *sight_client; /* changed once each frame for coop games */
 
-	edict_t		*sight_client;			// Changed once each frame for coop games.
+	edict_t *sight_entity;
+	int sight_entity_framenum;
 
-	edict_t		*sight_entity;
-	int			sight_entity_framenum;
+	int pic_health;
 
-	int			pic_health;
+	int total_secrets;
+	int found_secrets;
 
-	int			total_secrets;
-	int			found_secrets;
+	int total_goals;
+	int found_goals;
 
-	int			total_goals;
-	int			found_goals;
-
-	int			total_monsters;
-	int			killed_monsters;
+	int total_monsters;
+	int killed_monsters;
 
 	float		far_clip_dist_f;
 	float		fog;
 	float		fog_density;
 
-	edict_t		*current_entity;			// Entity running from G_RunFrame().
-	int			body_que;					// Dead bodies.
+	edict_t *current_entity; /* entity running from G_RunFrame */
+	int body_que; /* dead bodies */
 
 	qboolean	cinActive;
 
@@ -390,37 +395,31 @@ typedef enum
 
 #define MOD_FRIENDLY_FIRE	0x8000000
 
-// ************************************************************************************************
-// spawn_temp_t
-// ------------
-// This is used to hold entity field values that can be set from the editor, but aren't actualy
-// present in 'edict_t' during gameplay.
-// ************************************************************************************************
 
+/* spawn_temp_t is only used to hold entity field values that
+   can be set from the editor, but aren't actualy present
+   in edict_t during gameplay */
 typedef struct
 {
-	// Sky variables.
+	/* world vars */
+	char *sky;
+	float skyrotate;
+	vec3_t skyaxis;
+	char *nextmap;
 
-	char	*sky;
-	float	skyrotate;
-	vec3_t	skyaxis;
+	int lip;
+	int distance;
+	int height;
+	char *noise;
+	float pausetime;
+	char *item;
+	char *gravity;
 
-	// Nextmap. Is this used?
+	float minyaw;
+	float maxyaw;
+	float minpitch;
+	float maxpitch;
 
-	char	*nextmap;
-
-	int		lip;
-	int		distance;
-	int		height;
-	char	*noise;
-	float	pausetime;
-	char	*item;
-	char	*gravity;
-
-	float	minyaw;
-	float	maxyaw;
-	float	minpitch;
-	float	maxpitch;
 	int		rotate;
 	float	zangle;
 	char	*file;
@@ -450,34 +449,32 @@ typedef struct
 
 typedef struct
 {
-	// Fixed data.
+	/* fixed data */
+	vec3_t start_origin;
+	vec3_t start_angles;
+	vec3_t end_origin;
+	vec3_t end_angles;
 
-	vec3_t	start_origin;
-	vec3_t	start_angles;
-	vec3_t	end_origin;
-	vec3_t	end_angles;
+	int sound_start;
+	int sound_middle;
+	int sound_end;
 
-	int		sound_start;
-	int		sound_middle;
-	int		sound_end;
+	float accel;
+	float speed;
+	float decel;
+	float distance;
 
-	float	accel;
-	float	speed;
-	float	decel;
-	float	distance;
+	float wait;
 
-	float	wait;
-
-	// State data.
-
-	int		state;
-	vec3_t	dir;
-	float	current_speed;
-	float	move_speed;
-	float	next_speed;
-	float	remaining_distance;
-	float	decel_distance;
-	void	(*endfunc)(edict_t *);
+	/* state data */
+	int state;
+	vec3_t dir;
+	float current_speed;
+	float move_speed;
+	float next_speed;
+	float remaining_distance;
+	float decel_distance;
+	void (*endfunc)(edict_t *);
 } moveinfo_t;
 
 // ************************************************************************************************
@@ -566,11 +563,10 @@ typedef struct
 
 typedef struct
 {
-	int		framenum;								// Index to current animation frame.
-	void	(*aifunc)(edict_t *self, float dist);	// AI function for this animation frame.
-	float	dist;									// Distance the AI function should move the
-													// entity this frame.
-	void	(*thinkfunc)(edict_t *self);			// Think function for this frame.
+	int framenum; // Index to current animation frame.
+	void (*aifunc)(edict_t *self, float dist);
+	float dist;
+	void (*thinkfunc)(edict_t *self);
 } mframe_t;
 
 // ************************************************************************************************
@@ -580,9 +576,9 @@ typedef struct
 
 typedef struct
 {
-	int			framecount;					// Number of frames in the animation frame array.
-	mframe_t	*frame;
-	void		(*endfunc)(edict_t *self);
+	int framecount;					// Number of frames in the animation frame array.
+	mframe_t *frame;
+	void (*endfunc)(edict_t *self);
 } mmove_t;
 
 
@@ -725,15 +721,16 @@ typedef struct
 
 // The structure for each monster class.
 
-#define	FOFS(x)		(size_t)&(((edict_t *)NULL)->x)
-#define	STOFS(x)	(size_t)&(((spawn_temp_t *)NULL)->x)
-#define	LLOFS(x)	(size_t)&(((level_locals_t *)NULL)->x)
-#define	CLOFS(x)	(size_t)&(((gclient_t *)NULL)->x)
-#define	BYOFS(x)	(size_t)&(((buoy_t *)NULL)->x)
+extern edict_t *g_edicts;
+
+#define FOFS(x) (size_t)&(((edict_t *)NULL)->x)
+#define	STOFS(x) (size_t)&(((spawn_temp_t *)NULL)->x)
+#define	LLOFS(x) (size_t)&(((level_locals_t *)NULL)->x)
+#define	CLOFS(x) (size_t)&(((gclient_t *)NULL)->x)
+#define	BYOFS(x) (size_t)&(((buoy_t *)NULL)->x)
 
 extern	game_locals_t	game;
 extern	level_locals_t	level;
-extern	edict_t			*g_edicts;
 extern	game_import_t	gi;
 extern	spawn_temp_t	st;
 extern	game_export_t	globals;
@@ -1077,13 +1074,13 @@ extern void	InitPlayerinfo(edict_t *ent);
 // p_hud.c
 //
 
-void MoveClientToIntermission(edict_t *client,qboolean log_file);
-void MoveClientsToIntermission(vec3_t ViewOrigin,vec3_t ViewAngles);
-void G_SetStats (edict_t *ent);
-void ValidateSelectedItem (edict_t *ent);
-void SelectPrevItem (edict_t *ent, int itflags);
-void SelectNextItem (edict_t *ent, int itflags);
-void DeathmatchScoreboardMessage (edict_t *client, edict_t *killer,qboolean log_file);
+void MoveClientToIntermission(edict_t *client);
+void MoveClientsToIntermission(vec3_t ViewOrigin, vec3_t ViewAngles);
+void G_SetStats(edict_t *ent);
+void ValidateSelectedItem(edict_t *ent);
+void SelectPrevItem(edict_t *ent, int itflags);
+void SelectNextItem(edict_t *ent, int itflags);
+void DeathmatchScoreboardMessage(edict_t *client, edict_t *killer);
 
 //
 // g_pweapon.c
@@ -1311,4 +1308,4 @@ extern edict_t* obstacle;
 
 #include "g_edict.h"
 
-#endif // G_LOCAL_H
+#endif /* GAME_LOCAL_H */

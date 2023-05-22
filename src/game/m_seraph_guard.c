@@ -9,7 +9,7 @@
 //==============================================================================
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/m_seraph_guard.h"
 #include "header/m_seraph_guard_anim.h"
 #include "header/g_defaultmessagehandler.h"

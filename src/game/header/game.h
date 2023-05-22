@@ -295,8 +295,6 @@ typedef struct
 
 	int		(*FS_LoadFile) (char *name, void **buf);
 	void	(*FS_FreeFile) (void *buf);
-	char	*(*FS_Userdir)  (void);
-	void	(*FS_CreatePath) (char *path);
 
 #ifdef _WIN32
 	void	(*Sys_LoadGameDll)(const char *name, HINSTANCE *hinst, DWORD *chkSum);

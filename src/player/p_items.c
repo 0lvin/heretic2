@@ -16,7 +16,7 @@
 #include "../../h2common/h2rand.h"
 #include "../common/header/common.h"
 #include "p_items.h"
-#include "../game/header/g_local.h"
+#include "../game/header/local.h"
 #include "../game/header/g_itemstats.h"
 #include "../../h2common/cl_strings.h"
 

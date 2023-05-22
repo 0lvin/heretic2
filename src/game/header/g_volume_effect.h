@@ -6,7 +6,7 @@
 #define _G_VOLUME_EFFECT_H_
 
 #include "../../common/header/common.h"
-#include "g_local.h"
+#include "local.h"
 
 #define VE_FLAG1 			0x00000001	 	// place holder
 

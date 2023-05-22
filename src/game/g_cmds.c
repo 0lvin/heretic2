@@ -25,7 +25,7 @@
  */
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/m_player.h"
 #include "header/g_items.h"
 #include "../../h2common/h2rand.h"

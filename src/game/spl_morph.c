@@ -9,7 +9,7 @@
 // "Rodgered" ??? No wonder he was working late :)
 
 #include "../common/header/common.h"
-#include "header/g_local.h"
+#include "header/local.h"
 #include "header/g_monster.h"
 #include "header/g_physics.h"
 #include "header/g_playstats.h"

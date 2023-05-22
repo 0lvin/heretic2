@@ -9,7 +9,7 @@
 #include "../src/common/header/common.h"
 #include "message.h"
 #include "singlylinkedlist.h"
-#include "../src/game/header/g_local.h"
+#include "../src/game/header/local.h"
 
 void QueueMessage(MsgQueue_t *_this, void *msg)
 {
