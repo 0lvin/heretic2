@@ -88,7 +88,7 @@ qboolean	CL_CheckOrDownloadFile (char *filename)
 
 	if (strstr (filename, ".."))
 	{
-		Com_Printf ("Refusing to download a path with ..\n");
+		Com_Printf("Refusing to download a path with ..\n");
 		return true;
 	}
 
@@ -121,12 +121,12 @@ qboolean	CL_CheckOrDownloadFile (char *filename)
 		cls.download = fp;
 
 		// give the server an offset to start the download
-		Com_Printf ("Resuming %s\n", cls.downloadname);
+		Com_Printf("Resuming %s\n", cls.downloadname);
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message,
 			va("download %s %i", cls.downloadname, len));
 	} else {
-		Com_Printf ("Downloading %s\n", cls.downloadname);
+		Com_Printf("Downloading %s\n", cls.downloadname);
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message,
 			va("download %s", cls.downloadname));
@@ -157,7 +157,7 @@ void	CL_Download_f (void)
 
 	if (strstr (filename, ".."))
 	{
-		Com_Printf ("Refusing to download a path with ..\n");
+		Com_Printf("Refusing to download a path with ..\n");
 		return;
 	}
 
@@ -168,7 +168,7 @@ void	CL_Download_f (void)
 	}
 
 	strcpy (cls.downloadname, filename);
-	Com_Printf ("Downloading %s\n", cls.downloadname);
+	Com_Printf("Downloading %s\n", cls.downloadname);
 
 	// download to a temp name, and only rename
 	// to the real name when done, so if interrupted
@@ -224,7 +224,7 @@ void CL_ParseDownload (void)
 	percent = MSG_ReadByte (&net_message);
 	if (size == -1)
 	{
-		Com_Printf ("Server does not have this file.\n");
+		Com_Printf("Server does not have this file.\n");
 		if (cls.download)
 		{
 			// if here, we tried to resume a file but the server said no
@@ -246,7 +246,7 @@ void CL_ParseDownload (void)
 		if (!cls.download)
 		{
 			net_message.readcount += size;
-			Com_Printf ("Failed to open %s\n", cls.downloadtempname);
+			Com_Printf("Failed to open %s\n", cls.downloadtempname);
 			CL_RequestNextDownload ();
 			return;
 		}
@@ -260,11 +260,11 @@ void CL_ParseDownload (void)
 		// request next block
 // change display routines by zoid
 #if 0
-		Com_Printf (".");
+		Com_Printf(".");
 		if (10*(percent/10) != cls.downloadpercent)
 		{
 			cls.downloadpercent = 10*(percent/10);
-			Com_Printf ("%i%%", cls.downloadpercent);
+			Com_Printf("%i%%", cls.downloadpercent);
 		}
 #endif
 		cls.downloadpercent = percent;
@@ -277,7 +277,7 @@ void CL_ParseDownload (void)
 		char	oldn[MAX_OSPATH];
 		char	newn[MAX_OSPATH];
 
-//		Com_Printf ("100%%\n");
+//		Com_Printf("100%%\n");
 
 		fclose (cls.download);
 
@@ -286,7 +286,7 @@ void CL_ParseDownload (void)
 		CL_DownloadFileName(newn, sizeof(newn), cls.downloadname);
 		r = rename (oldn, newn);
 		if (r)
-			Com_Printf ("failed to rename.\n");
+			Com_Printf("failed to rename.\n");
 
 		cls.download = NULL;
 		cls.downloadpercent = 0;
@@ -335,7 +335,7 @@ void CL_ParseServerData (void)
 	{
 	}
 	else if (i != PROTOCOL_VERSION)
-		Com_Error (ERR_DROP,"Server returned version %i, not %i", i, PROTOCOL_VERSION);
+		Com_Error(ERR_DROP,"Server returned version %i, not %i", i, PROTOCOL_VERSION);
 
 	cl.servercount = MSG_ReadLong (&net_message);
 	cl.attractloop = MSG_ReadByte (&net_message);
@@ -362,7 +362,7 @@ void CL_ParseServerData (void)
 	{
 		// seperate the printfs so the server message can have a color
 		Com_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
-		Com_Printf ("%c%s\n", 2, str);
+		Com_Printf("%c%s\n", 2, str);
 
 		// need to prep refresh at next oportunity
 		cl.refresh_prepped = false;
@@ -464,7 +464,7 @@ void CL_ParseConfigString (void)
 
 	i = MSG_ReadShort (&net_message);
 	if (i < 0 || i >= MAX_CONFIGSTRINGS)
-		Com_Error (ERR_DROP, "configstring > MAX_CONFIGSTRINGS");
+		Com_Error(ERR_DROP, "configstring > MAX_CONFIGSTRINGS");
 	s = MSG_ReadString(&net_message);
 	strcpy (cl.configstrings[i], s);
 
@@ -496,7 +496,7 @@ void CL_ParseConfigString (void)
 	else if (i >= CS_IMAGES && i < CS_IMAGES+MAX_MODELS)
 	{
 		if (cl.refresh_prepped)
-			cl.image_precache[i-CS_IMAGES] = re.DrawFindPic (cl.configstrings[i]);
+			cl.image_precache[i-CS_IMAGES] = Draw_FindPic (cl.configstrings[i]);
 	}
 	else if (i >= CS_PLAYERSKINS && i < CS_PLAYERSKINS+MAX_CLIENTS)
 	{
@@ -553,7 +553,7 @@ void CL_ParseStartSoundPacket(void)
 		channel = MSG_ReadShort(&net_message);
 		ent = channel>>3;
 		if (ent > MAX_EDICTS)
-			Com_Error (ERR_DROP,"CL_ParseStartSoundPacket: ent = %i", ent);
+			Com_Error(ERR_DROP,"CL_ParseStartSoundPacket: ent = %i", ent);
 
 		channel &= 7;
 	}
@@ -582,7 +582,7 @@ void CL_ParseStartSoundPacket(void)
 void SHOWNET(char *s)
 {
 	if (cl_shownet->value>=2)
-		Com_Printf ("%3i:%s\n", net_message.readcount-1, s);
+		Com_Printf("%3i:%s\n", net_message.readcount-1, s);
 }
 
 /*
@@ -600,9 +600,9 @@ void CL_ParseServerMessage (void)
 // if recording demos, copy the message out
 //
 	if (cl_shownet->value == 1)
-		Com_Printf ("%i ",net_message.cursize);
+		Com_Printf("%i ",net_message.cursize);
 	else if (cl_shownet->value >= 2)
-		Com_Printf ("------------------\n");
+		Com_Printf("------------------\n");
 
 
 //
@@ -612,7 +612,7 @@ void CL_ParseServerMessage (void)
 	{
 		if (net_message.readcount > net_message.cursize)
 		{
-			Com_Error (ERR_DROP,"CL_ParseServerMessage: Bad server message");
+			Com_Error(ERR_DROP,"CL_ParseServerMessage: Bad server message");
 			break;
 		}
 
@@ -627,7 +627,7 @@ void CL_ParseServerMessage (void)
 		if (cl_shownet->value>=2)
 		{
 			if (!svc_strings[cmd])
-				Com_Printf ("%3i:BAD CMD %i\n", net_message.readcount-1,cmd);
+				Com_Printf("%3i:BAD CMD %i\n", net_message.readcount-1,cmd);
 			else
 				SHOWNET(svc_strings[cmd]);
 		}
@@ -636,19 +636,19 @@ void CL_ParseServerMessage (void)
 		switch (cmd)
 		{
 		default:
-			Com_Error (ERR_DROP,"CL_ParseServerMessage: Illegible server message\n");
+			Com_Error(ERR_DROP,"CL_ParseServerMessage: Illegible server message\n");
 			break;
 
 		case svc_nop:
-//			Com_Printf ("svc_nop\n");
+//			Com_Printf("svc_nop\n");
 			break;
 
 		case svc_disconnect:
-			Com_Error (ERR_DISCONNECT,"Server disconnected\n");
+			Com_Error(ERR_DISCONNECT,"Server disconnected\n");
 			break;
 
 		case svc_reconnect:
-			Com_Printf ("Server disconnected, reconnecting\n");
+			Com_Printf("Server disconnected, reconnecting\n");
 			if (cls.download) {
 				//ZOID, close download
 				fclose (cls.download);
@@ -665,7 +665,7 @@ void CL_ParseServerMessage (void)
 				S_StartLocalSound ("misc/talk.wav");
 				//con.ormask = 128;
 			}
-			Com_Printf ("%s", MSG_ReadString (&net_message));
+			Com_Printf("%s", MSG_ReadString (&net_message));
 			//con.ormask = 0;
 			break;
 
@@ -684,7 +684,7 @@ void CL_ParseServerMessage (void)
 		case svc_stufftext:
 			s = MSG_ReadString (&net_message);
 			Com_DPrintf ("stufftext: %s\n", s);
-			Cbuf_AddText (s);
+			Cbuf_AddText(s);
 			break;
 
 		case svc_serverdata:
@@ -724,7 +724,7 @@ void CL_ParseServerMessage (void)
 		case svc_playerinfo:
 		case svc_packetentities:
 		case svc_deltapacketentities:
-			Com_Error (ERR_DROP, "Out of place frame data");
+			Com_Error(ERR_DROP, "Out of place frame data");
 			break;
 		}
 	}

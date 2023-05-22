@@ -456,10 +456,10 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 	{
 		newnum = CL_ParseEntityBits (&bits);
 		if (newnum >= MAX_EDICTS)
-			Com_Error (ERR_DROP,"CL_ParsePacketEntities: bad number:%i", newnum);
+			Com_Error(ERR_DROP,"CL_ParsePacketEntities: bad number:%i", newnum);
 
 		if (net_message.readcount > net_message.cursize)
-			Com_Error (ERR_DROP,"CL_ParsePacketEntities: end of message");
+			Com_Error(ERR_DROP,"CL_ParsePacketEntities: end of message");
 
 		if (!newnum)
 			break;
@@ -467,7 +467,7 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 		while (oldnum < newnum)
 		{	// one or more entities from the old packet are unchanged
 			if (cl_shownet->value == 3)
-				Com_Printf ("   unchanged: %i\n", oldnum);
+				Com_Printf("   unchanged: %i\n", oldnum);
 			CL_DeltaEntity (newframe, oldnum, oldstate, 0);
 
 			oldindex++;
@@ -485,9 +485,9 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 		{
 			// the entity present in oldframe is not in the current frame
 			if (cl_shownet->value == 3)
-				Com_Printf ("   remove: %i\n", newnum);
+				Com_Printf("   remove: %i\n", newnum);
 			if (oldnum != newnum)
-				Com_Printf ("U_REMOVE: oldnum != newnum\n");
+				Com_Printf("U_REMOVE: oldnum != newnum\n");
 
 			oldindex++;
 
@@ -509,7 +509,7 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 		if (oldnum == newnum)
 		{	// delta from previous state
 			if (cl_shownet->value == 3)
-				Com_Printf ("   delta: %i\n", newnum);
+				Com_Printf("   delta: %i\n", newnum);
 			CL_DeltaEntity (newframe, newnum, oldstate, bits);
 
 			oldindex++;
@@ -527,7 +527,7 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 		if (oldnum > newnum)
 		{	// delta from baseline
 			if (cl_shownet->value == 3)
-				Com_Printf ("   baseline: %i\n", newnum);
+				Com_Printf("   baseline: %i\n", newnum);
 			CL_DeltaEntity (newframe, newnum, &cl_entities[newnum].baseline, bits);
 			continue;
 		}
@@ -538,7 +538,7 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 	while (oldnum != 99999)
 	{	// one or more entities from the old packet are unchanged
 		if (cl_shownet->value == 3)
-			Com_Printf ("   unchanged: %i\n", oldnum);
+			Com_Printf("   unchanged: %i\n", oldnum);
 		CL_DeltaEntity (newframe, oldnum, oldstate, 0);
 
 		oldindex++;
@@ -773,7 +773,7 @@ void CL_ParseFrame (void)
 	//	cl.surpressCount = MSG_ReadByte (&net_message);
 
 	if (cl_shownet->value == 3)
-		Com_Printf ("   frame:%i  delta:%i\n", cl.frame.serverframe,
+		Com_Printf("   frame:%i  delta:%i\n", cl.frame.serverframe,
 		cl.frame.deltaframe);
 
 	// If the frame is delta compressed from data that we
@@ -791,16 +791,16 @@ void CL_ParseFrame (void)
 		old = &cl.frames[cl.frame.deltaframe & UPDATE_MASK];
 		if (!old->valid)
 		{	// should never happen
-			Com_Printf ("Delta from invalid frame (not supposed to happen!).\n");
+			Com_Printf("Delta from invalid frame (not supposed to happen!).\n");
 		}
 		if (old->serverframe != cl.frame.deltaframe)
 		{	// The frame that the server did the delta from
 			// is too old, so we can't reconstruct it properly.
-			Com_Printf ("Delta frame too old.\n");
+			Com_Printf("Delta frame too old.\n");
 		}
 		else if (cl.parse_entities - old->parse_entities > MAX_PARSE_ENTITIES-128)
 		{
-			Com_Printf ("Delta parse_entities too old.\n");
+			Com_Printf("Delta parse_entities too old.\n");
 		}
 		else
 			cl.frame.valid = true;	// valid delta parse
@@ -820,14 +820,14 @@ void CL_ParseFrame (void)
 	cmd = MSG_ReadByte (&net_message);
 	SHOWNET(svc_strings[cmd]);
 	if (cmd != svc_playerinfo)
-		Com_Error (ERR_DROP, "CL_ParseFrame: not playerinfo");
+		Com_Error(ERR_DROP, "CL_ParseFrame: not playerinfo");
 	CL_ParsePlayerstate (old, &cl.frame);
 
 	// read packet entities
 	cmd = MSG_ReadByte (&net_message);
 	SHOWNET(svc_strings[cmd]);
 	if (cmd != svc_packetentities)
-		Com_Error (ERR_DROP, "CL_ParseFrame: not packetentities");
+		Com_Error(ERR_DROP, "CL_ParseFrame: not packetentities");
 	CL_ParsePacketEntities (old, &cl.frame);
 
 	cmd = MSG_ReadByte(&net_message);
@@ -856,7 +856,7 @@ void CL_ParseFrame (void)
 			VectorCopy (cl.frame.playerstate.viewangles, cl.predicted_angles);
 			if (cls.disable_servercount != cl.servercount
 				&& cl.refresh_prepped)
-				SCR_EndLoadingPlaque ();	// get rid of loading plaque
+				SCR_EndLoadingPlaque();	// get rid of loading plaque
 		}
 		cl.sound_prepped = true;	// can start mixing ambient sounds
 
@@ -1130,14 +1130,14 @@ void CL_AddEntities (void)
 	if (cl.time > cl.frame.servertime)
 	{
 		if (cl_showclamp->value)
-			Com_Printf ("high clamp %i\n", cl.time - cl.frame.servertime);
+			Com_Printf("high clamp %i\n", cl.time - cl.frame.servertime);
 		cl.time = cl.frame.servertime;
 		cl.lerpfrac = 1.0;
 	}
 	else if (cl.time < cl.frame.servertime - 100)
 	{
 		if (cl_showclamp->value)
-			Com_Printf ("low clamp %i\n", cl.frame.servertime-100 - cl.time);
+			Com_Printf("low clamp %i\n", cl.frame.servertime-100 - cl.time);
 		cl.time = cl.frame.servertime - 100;
 		cl.lerpfrac = 0;
 	}
@@ -1178,7 +1178,7 @@ void CL_GetEntitySoundOrigin (int ent, vec3_t org)
 	centity_t	*old;
 
 	if (ent < 0 || ent >= MAX_EDICTS)
-		Com_Error (ERR_DROP, "CL_GetEntitySoundOrigin: bad ent");
+		Com_Error(ERR_DROP, "CL_GetEntitySoundOrigin: bad ent");
 	old = &cl_entities[ent];
 	VectorCopy (old->lerp_origin, org);
 

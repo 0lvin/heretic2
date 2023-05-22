@@ -386,7 +386,7 @@ Key_Console (int key)
 	{
 		if ( keydown[K_CTRL] )
 		{
-			Cbuf_AddText ("clear\n");
+			Cbuf_AddText("clear\n");
 			return;
 		}
 	}
@@ -394,12 +394,12 @@ Key_Console (int key)
 	if ( key == K_ENTER || key == K_KP_ENTER )
 	{	// backslash text are commands, else chat
 		if (key_lines[edit_line][1] == '\\' || key_lines[edit_line][1] == '/')
-			Cbuf_AddText (key_lines[edit_line]+2);	// skip the >
+			Cbuf_AddText(key_lines[edit_line]+2);	// skip the >
 		else
-			Cbuf_AddText (key_lines[edit_line]+1);	// valid command
+			Cbuf_AddText(key_lines[edit_line]+1);	// valid command
 
-		Cbuf_AddText ("\n");
-		Com_Printf ("%s\n",key_lines[edit_line]);
+		Cbuf_AddText("\n");
+		Com_Printf("%s\n",key_lines[edit_line]);
 		edit_line = (edit_line + 1) & 31;
 		history_line = edit_line;
 		key_lines[edit_line][0] = ']';
@@ -512,9 +512,9 @@ Key_Message(int key)
 	if ( key == K_ENTER || key == K_KP_ENTER )
 	{
 		if (chat_team)
-			Cbuf_AddText ("say_team \"");
+			Cbuf_AddText("say_team \"");
 		else
-			Cbuf_AddText ("say \"");
+			Cbuf_AddText("say \"");
 		Cbuf_AddText(chat_buffer);
 		Cbuf_AddText("\"\n");
 
@@ -695,22 +695,22 @@ void Key_Bind_f (void)
 
 	if (c < 2)
 	{
-		Com_Printf ("bind <key> [command] : attach a command to a key\n");
+		Com_Printf("bind <key> [command] : attach a command to a key\n");
 		return;
 	}
 	b = Key_StringToKeynum (Cmd_Argv(1));
 	if (b==-1)
 	{
-		Com_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+		Com_Printf("\"%s\" isn't a valid key\n", Cmd_Argv(1));
 		return;
 	}
 
 	if (c == 2)
 	{
 		if (keybindings[b])
-			Com_Printf ("\"%s\" = \"%s\"\n", Cmd_Argv(1), keybindings[b] );
+			Com_Printf("\"%s\" = \"%s\"\n", Cmd_Argv(1), keybindings[b] );
 		else
-			Com_Printf ("\"%s\" is not bound\n", Cmd_Argv(1) );
+			Com_Printf("\"%s\" is not bound\n", Cmd_Argv(1) );
 		return;
 	}
 
@@ -755,7 +755,7 @@ void Key_Bindlist_f (void)
 
 	for (i=0 ; i<256 ; i++)
 		if (keybindings[i] && keybindings[i][0])
-			Com_Printf ("%s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+			Com_Printf("%s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
 }
 
 
@@ -898,7 +898,7 @@ void Key_Event (int key, qboolean down, unsigned time)
 			return;	// ignore most autorepeats
 
 		if (key >= 200 && !keybindings[key])
-			Com_Printf ("%s is unbound, hit F4 to set.\n", Key_KeynumToString (key) );
+			Com_Printf("%s is unbound, hit F4 to set.\n", Key_KeynumToString (key) );
 	}
 	else
 	{
@@ -929,7 +929,7 @@ void Key_Event (int key, qboolean down, unsigned time)
 
 		if (cl.frame.playerstate.stats[STAT_LAYOUTS] && cls.key_dest == key_game)
 		{	// put away help computer / inventory
-			Cbuf_AddText ("cmd putaway\n");
+			Cbuf_AddText("cmd putaway\n");
 			return;
 		}
 		switch (cls.key_dest)
@@ -945,7 +945,7 @@ void Key_Event (int key, qboolean down, unsigned time)
 			M_Menu_Main_f ();
 			break;
 		default:
-			Com_Error (ERR_FATAL, "Bad cls.key_dest");
+			Com_Error(ERR_FATAL, "Bad cls.key_dest");
 		}
 		return;
 	}
@@ -977,7 +977,7 @@ void Key_Event (int key, qboolean down, unsigned time)
 		if (kb && kb[0] == '+')
 		{
 			Com_sprintf (cmd, sizeof(cmd), "-%s %i %i\n", kb+1, key, time);
-			Cbuf_AddText (cmd);
+			Cbuf_AddText(cmd);
 		}
 		if (keyshift[key] != key)
 		{
@@ -985,7 +985,7 @@ void Key_Event (int key, qboolean down, unsigned time)
 			if (kb && kb[0] == '+')
 			{
 				Com_sprintf (cmd, sizeof(cmd), "-%s %i %i\n", kb+1, key, time);
-				Cbuf_AddText (cmd);
+				Cbuf_AddText(cmd);
 			}
 		}
 		return;
@@ -1004,12 +1004,12 @@ void Key_Event (int key, qboolean down, unsigned time)
 			if (kb[0] == '+')
 			{	// button commands add keynum and time as a parm
 				Com_sprintf (cmd, sizeof(cmd), "%s %i %i\n", kb, key, time);
-				Cbuf_AddText (cmd);
+				Cbuf_AddText(cmd);
 			}
 			else
 			{
-				Cbuf_AddText (kb);
-				Cbuf_AddText ("\n");
+				Cbuf_AddText(kb);
+				Cbuf_AddText("\n");
 			}
 		}
 		return;
@@ -1035,7 +1035,7 @@ void Key_Event (int key, qboolean down, unsigned time)
 		Key_Console (key);
 		break;
 	default:
-		Com_Error (ERR_FATAL, "Bad cls.key_dest");
+		Com_Error(ERR_FATAL, "Bad cls.key_dest");
 	}
 }
 

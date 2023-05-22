@@ -105,17 +105,17 @@ M_Banner( char *name )
 {
 	int w, h;
 
-	re.DrawGetPicSize (&w, &h, name );
-	re.DrawPicScaled( viddef.width / 2 - w / 2, viddef.height / 2 - 110, name, 1.0f);
+	Draw_GetPicSize(&w, &h, name );
+	Draw_PicScaled( viddef.width / 2 - w / 2, viddef.height / 2 - 110, name, 1.0f);
 }
 
 void M_PushMenu ( void (*draw) (void), const char *(*key) (int k) )
 {
 	int		i;
 
-	if (Cvar_VariableValue ("maxclients") == 1
-		&& Com_ServerState ())
-		Cvar_Set ("paused", "1");
+	if (Cvar_VariableValue("maxclients") == 1
+		&& Com_ServerState())
+		Cvar_Set("paused", "1");
 
 	// if this menu is already present, drop back to that level
 	// to avoid stacking menus by hotkeys
@@ -129,7 +129,7 @@ void M_PushMenu ( void (*draw) (void), const char *(*key) (int k) )
 	if (i == m_menudepth)
 	{
 		if (m_menudepth >= MAX_MENU_DEPTH)
-			Com_Error (ERR_FATAL, "M_PushMenu: MAX_MENU_DEPTH");
+			Com_Error(ERR_FATAL, "M_PushMenu: MAX_MENU_DEPTH");
 		m_layers[m_menudepth].draw = m_drawfunc;
 		m_layers[m_menudepth].key = m_keyfunc;
 		m_menudepth++;
@@ -144,14 +144,14 @@ void M_PushMenu ( void (*draw) (void), const char *(*key) (int k) )
 }
 
 
-void M_ForceMenuOff (void)
+void M_ForceMenuOff(void)
 {
 	m_drawfunc = 0;
 	m_keyfunc = 0;
 	cls.key_dest = key_game;
 	m_menudepth = 0;
 	Key_ClearStates ();
-	Cvar_Set ("paused", "0");
+	Cvar_Set("paused", "0");
 }
 
 
@@ -159,14 +159,14 @@ void M_PopMenu (void)
 {
 	S_StartLocalSound( menu_out_sound );
 	if (m_menudepth < 1)
-		Com_Error (ERR_FATAL, "M_PopMenu: depth < 1");
+		Com_Error(ERR_FATAL, "M_PopMenu: depth < 1");
 	m_menudepth--;
 
 	m_drawfunc = m_layers[m_menudepth].draw;
 	m_keyfunc = m_layers[m_menudepth].key;
 
 	if (!m_menudepth)
-		M_ForceMenuOff ();
+		M_ForceMenuOff();
 }
 
 
@@ -262,7 +262,7 @@ higher res screens.
 */
 void M_DrawCharacter (int cx, int cy, int num)
 {
-	re.DrawCharScaled( cx + ((viddef.width - 320)>>1), cy + ((viddef.height - 240)>>1), num, 1.0f);
+	Draw_CharScaled( cx + ((viddef.width - 320)>>1), cy + ((viddef.height - 240)>>1), num, 1.0f);
 }
 
 void M_Print (int cx, int cy, char *str)
@@ -287,7 +287,7 @@ void M_PrintWhite (int cx, int cy, char *str)
 
 void M_DrawPic (int x, int y, char *pic)
 {
-	re.DrawPicScaled(x + ((viddef.width - 320)>>1), y + ((viddef.height - 240)>>1), pic, 1.0f);
+	Draw_PicScaled(x + ((viddef.width - 320)>>1), y + ((viddef.height - 240)>>1), pic, 1.0f);
 }
 
 
@@ -313,13 +313,13 @@ void M_DrawCursor( int x, int y, int f )
 		{
 			Com_sprintf( cursorname, sizeof( cursorname ), "m_cursor%d", i );
 
-			re.DrawFindPic( cursorname );
+			Draw_FindPic( cursorname );
 		}
 		cached = true;
 	}
 
 	Com_sprintf( cursorname, sizeof(cursorname), "m_cursor%d", f );
-	re.DrawPicScaled( x, y, cursorname, 1.0f);
+	Draw_PicScaled( x, y, cursorname, 1.0f);
 }
 
 void M_DrawTextBox (int x, int y, int width, int lines)
@@ -636,9 +636,9 @@ static void M_FindKeysForCommand (char *command, int *twokeys)
 static void KeyCursorDrawFunc( menuframework_s *menu )
 {
 	if ( bind_grab )
-		re.DrawCharScaled( menu->x, menu->y + menu->cursor * 9, '=', 1.0f);
+		Draw_CharScaled( menu->x, menu->y + menu->cursor * 9, '=', 1.0f);
 	else
-		re.DrawCharScaled( menu->x, menu->y + menu->cursor * 9, 12 + ( ( int ) ( Sys_Milliseconds() / 250 ) & 1 ), 1.0f);
+		Draw_CharScaled( menu->x, menu->y + menu->cursor * 9, 12 + ( ( int ) ( Sys_Milliseconds() / 250 ) & 1 ), 1.0f);
 }
 
 static void DrawKeyBindingFunc( void *self )
@@ -1059,7 +1059,7 @@ static void ControlsSetMenuItemValues( void )
 
 static void ControlsResetDefaultsFunc( void *unused )
 {
-	Cbuf_AddText ("exec default.cfg\n");
+	Cbuf_AddText("exec default.cfg\n");
 	Cbuf_Execute();
 
 	ControlsSetMenuItemValues();
@@ -1107,14 +1107,14 @@ static void ConsoleFunc( void *unused )
 
 	if ( cl.attractloop )
 	{
-		Cbuf_AddText ("killserver\n");
+		Cbuf_AddText("killserver\n");
 		return;
 	}
 
 	Key_ClearTyping ();
 	Con_ClearNotify ();
 
-	M_ForceMenuOff ();
+	M_ForceMenuOff();
 	cls.key_dest = key_console;
 }
 
@@ -1139,7 +1139,7 @@ static void UpdateSoundQualityFunc( void *unused )
 	M_Print( 16 + 16, 120 - 48 + 24, "please be patient." );
 
 	// the text box won't show up unless we do a buffer swap
-	re.EndFrame();
+	R_EndFrame();
 
 	CL_Snd_Restart_f();
 }
@@ -1741,9 +1741,9 @@ void M_Credits_MenuDraw( void )
 			x = ( viddef.width - strlen( credits[i] ) * 8 - stringoffset * 8 ) / 2 + ( j + stringoffset ) * 8;
 
 			if ( bold )
-				re.DrawCharScaled( x, y, credits[i][j+stringoffset] + 128, 1.0f);
+				Draw_CharScaled( x, y, credits[i][j+stringoffset] + 128, 1.0f);
 			else
-				re.DrawCharScaled( x, y, credits[i][j+stringoffset], 1.0f);
+				Draw_CharScaled( x, y, credits[i][j+stringoffset], 1.0f);
 		}
 	}
 
@@ -1864,13 +1864,13 @@ static void StartGame( void )
 {
 	// disable updates and start the cinematic going
 	cl.servercount = -1;
-	M_ForceMenuOff ();
+	M_ForceMenuOff();
 	Cvar_SetValue( "deathmatch", 0 );
 	Cvar_SetValue( "coop", 0 );
 
 	Cvar_SetValue( "gamerules", 0 );		//PGM
 
-	Cbuf_AddText ("loading ; killserver ; wait ; newgame\n");
+	Cbuf_AddText("loading ; killserver ; wait ; newgame\n");
 	cls.key_dest = key_game;
 }
 
@@ -2042,8 +2042,8 @@ void LoadGameCallback( void *self )
 	menuaction_s *a = ( menuaction_s * ) self;
 
 	if ( m_savevalid[ a->generic.localdata[0] ] )
-		Cbuf_AddText (va("load save%i\n",  a->generic.localdata[0] ) );
-	M_ForceMenuOff ();
+		Cbuf_AddText(va("load save%i\n",  a->generic.localdata[0] ) );
+	M_ForceMenuOff();
 }
 
 void LoadGame_MenuInit( void )
@@ -2113,8 +2113,8 @@ void SaveGameCallback( void *self )
 {
 	menuaction_s *a = ( menuaction_s * ) self;
 
-	Cbuf_AddText (va("save save%i\n", a->generic.localdata[0] ));
-	M_ForceMenuOff ();
+	Cbuf_AddText(va("save save%i\n", a->generic.localdata[0] ));
+	M_ForceMenuOff();
 }
 
 void SaveGame_MenuDraw( void )
@@ -2231,8 +2231,8 @@ void JoinServerFunc( void *self )
 		return;
 
 	Com_sprintf (buffer, sizeof(buffer), "connect %s\n", NET_AdrToString (local_server_netadr[index]));
-	Cbuf_AddText (buffer);
-	M_ForceMenuOff ();
+	Cbuf_AddText(buffer);
+	M_ForceMenuOff();
 }
 
 void AddressBookFunc( void *self )
@@ -2258,7 +2258,7 @@ void SearchLocalGames( void )
 	M_Print( 16 + 16, 120 - 48 + 24, "please be patient." );
 
 	// the text box won't show up unless we do a buffer swap
-	re.EndFrame();
+	R_EndFrame();
 
 	// send out info packets
 	CL_PingServers_f();
@@ -3496,8 +3496,8 @@ void M_Quit_Draw (void)
 {
 	int		w, h;
 
-	re.DrawGetPicSize (&w, &h, "quit");
-	re.DrawPicScaled( (viddef.width-w)/2, (viddef.height-h)/2, "quit", 1.0f);
+	Draw_GetPicSize(&w, &h, "quit");
+	Draw_PicScaled( (viddef.width-w)/2, (viddef.height-h)/2, "quit", 1.0f);
 }
 
 
@@ -3553,9 +3553,9 @@ void M_Draw (void)
 
 	// dim everything behind it down
 	if (cl.cinematictime > 0)
-		re.DrawFill (0,0,viddef.width, viddef.height, 0xff);
+		Draw_Fill (0,0,viddef.width, viddef.height, 0xff);
 	else
-		re.DrawFadeScreen ();
+		Draw_FadeScreen ();
 
 	m_drawfunc ();
 

@@ -103,7 +103,7 @@ void KeyDown (kbutton_t *b)
 		b->down[1] = k;
 	else
 	{
-		Com_Printf ("Three keys down for a button!\n");
+		Com_Printf("Three keys down for a button!\n");
 		return;
 	}
 
@@ -221,7 +221,7 @@ float CL_KeyState (kbutton_t *key)
 #if 0
 	if (msec)
 	{
-		Com_Printf ("%i ", msec);
+		Com_Printf("%i ", msec);
 	}
 #endif
 

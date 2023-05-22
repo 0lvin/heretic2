@@ -52,7 +52,8 @@ CC ?= gcc
 CXX ?= g++
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
-DEBUG_CFLAGS=$(BASE_CFLAGS) -g -fsanitize=address -flto=auto
+DEBUG_CFLAGS=$(BASE_CFLAGS) -g -fsanitize=address
+# -flto=auto
 LDFLAGS=-ldl -lm
 SVGALDFLAGS=-lvga -lm
 XLDFLAGS=-lX11 -lXext -lXxf86dga

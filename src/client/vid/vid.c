@@ -512,7 +512,9 @@ qboolean VID_LoadRefresh( char *name )
 	if ( ( GetRefAPI = (void *) dlsym( reflib_library, "GetRefAPI" ) ) == 0 )
 		Com_Error( ERR_FATAL, "dlsym failed on %s", name );
 
-	re = GetRefAPI( ri );
+	re = GetRefAPI(ri);
+	// Declare the refresher as active.
+	ref_active = true;
 
 	if (re.api_version != API_VERSION)
 	{

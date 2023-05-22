@@ -40,7 +40,7 @@ void DrawString (int x, int y, char *s)
 {
 	while (*s)
 	{
-		re.DrawCharScaled(x, y, *s, 1.0f);
+		Draw_CharScaled(x, y, *s, 1.0f);
 		x+=8;
 		s++;
 	}
@@ -50,7 +50,7 @@ void DrawAltString (int x, int y, char *s)
 {
 	while (*s)
 	{
-		re.DrawCharScaled(x, y, *s ^ 0x80, 1.0f);
+		Draw_CharScaled(x, y, *s ^ 0x80, 1.0f);
 		x+=8;
 		s++;
 	}
@@ -71,17 +71,17 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f (void)
 {
-	SCR_EndLoadingPlaque ();	// get rid of loading plaque
+	SCR_EndLoadingPlaque();	// get rid of loading plaque
 
 	if (cl.attractloop)
 	{
-		Cbuf_AddText ("killserver\n");
+		Cbuf_AddText("killserver\n");
 		return;
 	}
 
 	if (cls.state == ca_disconnected)
 	{	// start the demo loop again
-		Cbuf_AddText ("d1\n");
+		Cbuf_AddText("d1\n");
 		return;
 	}
 
@@ -90,17 +90,17 @@ void Con_ToggleConsole_f (void)
 
 	if (cls.key_dest == key_console)
 	{
-		M_ForceMenuOff ();
-		Cvar_Set ("paused", "0");
+		M_ForceMenuOff();
+		Cvar_Set("paused", "0");
 	}
 	else
 	{
-		M_ForceMenuOff ();
+		M_ForceMenuOff();
 		cls.key_dest = key_console;
 
-		if (Cvar_VariableValue ("maxclients") == 1
-			&& Com_ServerState ())
-			Cvar_Set ("paused", "1");
+		if (Cvar_VariableValue("maxclients") == 1
+			&& Com_ServerState())
+			Cvar_Set("paused", "1");
 	}
 }
 
@@ -117,7 +117,7 @@ void Con_ToggleChat_f (void)
 	{
 		if (cls.state == ca_active)
 		{
-			M_ForceMenuOff ();
+			M_ForceMenuOff();
 			cls.key_dest = key_game;
 		}
 	}
@@ -155,18 +155,18 @@ void Con_Dump_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Com_Printf ("usage: condump <filename>\n");
+		Com_Printf("usage: condump <filename>\n");
 		return;
 	}
 
 	Com_sprintf (name, sizeof(name), "%s/%s.txt", FS_Gamedir(), Cmd_Argv(1));
 
-	Com_Printf ("Dumped console text to %s.\n", name);
+	Com_Printf("Dumped console text to %s.\n", name);
 	FS_CreatePath (name);
 	f = fopen (name, "w");
 	if (!f)
 	{
-		Com_Printf ("ERROR: couldn't open.\n");
+		Com_Printf("ERROR: couldn't open.\n");
 		return;
 	}
 
@@ -312,7 +312,7 @@ void Con_Init (void)
 
 	Con_CheckResize ();
 
-	Com_Printf ("Console initialized.\n");
+	Com_Printf("Console initialized.\n");
 
 //
 // register our commands
@@ -488,7 +488,7 @@ void Con_DrawInput (void)
 	y = con.vislines-16;
 
 	for (i=0 ; i<con.linewidth ; i++)
-		re.DrawCharScaled( (i+1)<<3, con.vislines - 22, text[i], 1.0f);
+		Draw_CharScaled( (i+1)<<3, con.vislines - 22, text[i], 1.0f);
 
 // remove cursor
 	key_lines[edit_line][key_linepos] = 0;
@@ -525,7 +525,7 @@ void Con_DrawNotify (void)
 		text = con.text + (i % con.totallines)*con.linewidth;
 
 		for (x = 0 ; x < con.linewidth ; x++)
-			re.DrawCharScaled( (x+1)<<3, v, text[x], 1.0f);
+			Draw_CharScaled( (x+1)<<3, v, text[x], 1.0f);
 
 		v += 8;
 	}
@@ -550,10 +550,10 @@ void Con_DrawNotify (void)
 		x = 0;
 		while(s[x])
 		{
-			re.DrawCharScaled( (x+skip)<<3, v, s[x], 1.0f);
+			Draw_CharScaled( (x+skip)<<3, v, s[x], 1.0f);
 			x++;
 		}
-		re.DrawCharScaled( (x+skip)<<3, v, 10+((cls.realtime>>8)&1), 1.0f);
+		Draw_CharScaled( (x+skip)<<3, v, 10+((cls.realtime>>8)&1), 1.0f);
 		v += 8;
 	}
 
@@ -589,14 +589,14 @@ void Con_DrawConsole (float frac)
 		lines = viddef.height;
 
 // draw the background
-	re.DrawStretchPic (0, -viddef.height+lines, viddef.width, viddef.height, "misc/conback.m8");
+	Draw_StretchPic(0, -viddef.height+lines, viddef.width, viddef.height, "misc/conback.m8");
 	SCR_AddDirtyPoint (0,0);
 	SCR_AddDirtyPoint (viddef.width-1,lines-1);
 	Com_sprintf(version, sizeof(version), "Heretic II v%s", YQ2VERSION);
 
 	int len = strlen(version);
 	for (x=0 ; x<len; x++)
-		re.DrawCharScaled(viddef.width-(len * 8)+x*8, lines-12, version[x], 1.0f);
+		Draw_CharScaled(viddef.width-(len * 8)+x*8, lines-12, version[x], 1.0f);
 
 // draw the text
 	con.vislines = lines;
@@ -616,7 +616,7 @@ void Con_DrawConsole (float frac)
 	{
 	// draw arrows to show the buffer is backscrolled
 		for (x=0 ; x<con.linewidth ; x+=4)
-			re.DrawCharScaled( (x+1)<<3, y, '^', 1.0f);
+			Draw_CharScaled( (x+1)<<3, y, '^', 1.0f);
 
 		y -= 8;
 		rows--;
@@ -633,7 +633,7 @@ void Con_DrawConsole (float frac)
 		text = con.text + (row % con.totallines)*con.linewidth;
 
 		for (x=0 ; x<con.linewidth ; x++)
-			re.DrawCharScaled( (x+1)<<3, y, text[x], 1.0);
+			Draw_CharScaled( (x+1)<<3, y, text[x], 1.0);
 	}
 
 //ZOID
@@ -677,7 +677,7 @@ void Con_DrawConsole (float frac)
 		// draw it
 		y = con.vislines-12;
 		for (i = 0; i < strlen(dlbar); i++)
-			re.DrawCharScaled( (i+1)<<3, y, dlbar[i], 1.0f);
+			Draw_CharScaled( (i+1)<<3, y, dlbar[i], 1.0f);
 	}
 //ZOID
 
