@@ -29,7 +29,7 @@ void PreCacheSpoo()
 // FXSpooTrailThink
 // ************************************************************************************************
 
-static qboolean FXSpooTrailThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	//vec3_t			org, dir;

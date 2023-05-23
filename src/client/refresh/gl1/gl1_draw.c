@@ -144,43 +144,6 @@ RDraw_GetPicSize(int *w, int *h, char *pic)
 }
 
 void
-Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t *gl)
-{
-	if (scale)
-	{
-		float scaled_width, scaled_height, scaled_x, scaled_y;
-
-		scaled_x = x * ((int)vid.width) / 640;
-		scaled_width = ((int)vid.width) * (x + w) / 640 - scaled_x;
-		scaled_y = y * ((int)vid.height) / 480;
-		scaled_height = ((int)vid.height) * (y + h) / 480 - scaled_y;
-
-		w = scaled_width;
-		h = scaled_height;
-
-		x = scaled_x;
-		y = scaled_y;
-	}
-
-	if (scrap_dirty)
-	{
-		Scrap_Upload();
-	}
-
-	R_Bind(gl->texnum);
-	glBegin(GL_QUADS);
-	glTexCoord2f(gl->sl, gl->tl);
-	glVertex2f(x, y);
-	glTexCoord2f(gl->sh, gl->tl);
-	glVertex2f(x + w, y);
-	glTexCoord2f(gl->sh, gl->th);
-	glVertex2f(x + w, y + h);
-	glTexCoord2f(gl->sl, gl->th);
-	glVertex2f(x, y + h);
-	glEnd();
-}
-
-void
 RDraw_StretchPic(int x, int y, int w, int h, char *pic)
 {
 	image_t *gl;

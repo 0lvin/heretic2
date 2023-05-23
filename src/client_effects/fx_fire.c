@@ -12,7 +12,6 @@
 #include "../../h2common/resourcemanager.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "../../h2common/reference.h"
 #include "utilities.h"
 #include "ce_dlight.h"
 #include "../game/header/g_playstats.h"

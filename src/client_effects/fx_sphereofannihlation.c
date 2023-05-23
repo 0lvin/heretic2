@@ -42,13 +42,13 @@ void PreCacheSphere()
 #define	FX_SPHERE_AURA_SCALE			1.2
 #define FX_SPHERE_EXPLOSION_BASE_RADIUS	89.0
 
-static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXSphereOfAnnihilationAuraElementThink(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXSphereOfAnnihilationGlowballSparkThink(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXSphereOfAnnihilationSmokePuffThink(struct client_entity_s *Self,centity_t *Owner);
+static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXSphereOfAnnihilationAuraElementThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXSphereOfAnnihilationGlowballSparkThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXSphereOfAnnihilationSmokePuffThink(struct client_entity_s *Self, centity_t *Owner);
 
 extern void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int lifeTime, paletteRGBA_t *tint);
 
@@ -57,7 +57,7 @@ extern void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin,
 // FXSphereOfAnnihilationSphereThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	float		detail_scale;
 	if(r_detail->value == DETAIL_LOW)
@@ -77,7 +77,7 @@ static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self,c
 // FXSphereOfAnnihilationAuraThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	vec3_t			TrailStart,Trail;
 	float			TrailLength,DeltaTrailLength;
@@ -207,7 +207,7 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 // FXSphereOfAnnihilationGlowballThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	client_entity_t	*Spark;
 	int			dur;
@@ -274,7 +274,7 @@ static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self
 // FXSphereOfAnnihilationGlowballSpawnerThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	client_entity_t	*Glowball;
 	centity_t		*controller;
@@ -441,7 +441,7 @@ void FXSphereOfAnnihilationGlowballs(centity_t *Owner,int Type,int Flags,vec3_t 
 // FXSphereOfAnnihilationSphereExplodeThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	float	Frac,
 			Multiplier;
@@ -670,7 +670,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 // FXSpherePlayerExplodeThink -
 // ****************************************************************************
 
-static qboolean FXSpherePlayerExplodeThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXSpherePlayerExplodeThink(struct client_entity_s *self, centity_t *Owner)
 {
 	if (fxi.cl->time > self->nextEventTime)
 	{
@@ -691,7 +691,7 @@ static qboolean FXSpherePlayerExplodeThink(struct client_entity_s *self,centity_
 }
 
 
-static qboolean FXSpherePlayerExplodeAddToView(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXSpherePlayerExplodeAddToView(struct client_entity_s *self, centity_t *Owner)
 {
 	self->r.angles[0]+=(M_PI/32.0)*(fxi.cl->time-self->lastThinkTime)/50.0;
 	self->r.angles[1]+=(M_PI/27.0)*(fxi.cl->time-self->lastThinkTime)/50.0;
@@ -702,7 +702,7 @@ static qboolean FXSpherePlayerExplodeAddToView(struct client_entity_s *self,cent
 }
 
 
-static qboolean FXSpherePlayerExplodeGlowballThink(client_entity_t *glowball,centity_t *owner)
+static qboolean FXSpherePlayerExplodeGlowballThink(client_entity_t *glowball, centity_t *owner)
 {
 	vec3_t angvect;
 

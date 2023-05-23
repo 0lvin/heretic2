@@ -46,7 +46,7 @@ void PreCacheItemDefense()
 }
 
 
-static qboolean FXEggSparkThink(struct client_entity_s *shield,centity_t *owner)
+static qboolean FXEggSparkThink(struct client_entity_s *shield, centity_t *owner)
 {
 	vec3_t angvect;
 	vec3_t	origin = {0,0,0};

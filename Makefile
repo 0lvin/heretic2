@@ -52,7 +52,8 @@ CC ?= gcc
 CXX ?= g++
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
-DEBUG_CFLAGS=$(BASE_CFLAGS) -g -fsanitize=address -flto=auto
+DEBUG_CFLAGS=$(BASE_CFLAGS) -g -fsanitize=address
+# -flto=auto
 LDFLAGS=-ldl -lm
 SVGALDFLAGS=-lvga -lm
 XLDFLAGS=-lX11 -lXext -lXxf86dga
@@ -547,9 +548,6 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/client/refresh/files/stb.o \
 	$(BUILDDIR)/src/client/refresh/files/surf.o \
 	$(BUILDDIR)/src/client/refresh/files/wal.o \
-	$(BUILDDIR)/h2common/r_skeletons.o \
-	$(BUILDDIR)/h2common/arrayed_list.o \
-	$(BUILDDIR)/h2common/skeletons.o \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \

@@ -39,7 +39,7 @@ void PreCacheFlare()
 // FXFlareThink
 // ************************************************************************************************
 
-static qboolean FXFlareThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXFlareThink(struct client_entity_s *self, centity_t *owner)
 {
 	float			dot, near_clip, dist;
 
@@ -157,7 +157,7 @@ static qboolean FXFlareThink(struct client_entity_s *self,centity_t *owner)
 // FXFlareThinkAttached
 // ************************************************************************************************
 
-static qboolean FXFlareThinkAttached(struct client_entity_s *self,centity_t *owner)
+static qboolean FXFlareThinkAttached(struct client_entity_s *self, centity_t *owner)
 {
 	float			dot, near_clip, dist;
 	float			lerp, oldtime, newtime;

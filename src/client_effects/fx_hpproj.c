@@ -90,7 +90,7 @@ void PreCacheHPMissile()
 
 #define PRIESTESS_TELEPORT_LINEHEIGHT 764
 
-static qboolean FXHPTeleportLineThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPTeleportLineThink(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t		*effect;
 	client_particle_t	*p;
@@ -189,7 +189,7 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self,centity_t *Ow
 	return true;
 }
 
-static qboolean FXHPTeleportLineThink2(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPTeleportLineThink2(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->alpha <= 0.0f)
 		return false;
@@ -206,7 +206,7 @@ static qboolean FXHPTeleportLineThink2(struct client_entity_s *self,centity_t *O
 	FXHPMissileSpawnerThink
 -----------------------------------------------*/
 
-static qboolean FXHPMissileSpawnerThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPMissileSpawnerThink(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -246,7 +246,7 @@ static qboolean FXHPMissileSpawnerThink(struct client_entity_s *self,centity_t *
 	FXHPMissileSpawnerThink2
 -----------------------------------------------*/
 
-static qboolean FXHPMissileSpawnerThink2(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPMissileSpawnerThink2(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -290,7 +290,7 @@ static qboolean FXHPMissileSpawnerThink2(struct client_entity_s *self,centity_t 
 	FXHPHaloDie
 -----------------------------------------------*/
 
-static qboolean FXHPHaloDie(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPHaloDie(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->r.scale <= 0.0f)
 		return false;
@@ -304,7 +304,7 @@ static qboolean FXHPHaloDie(struct client_entity_s *self,centity_t *Owner)
 	FXHPMissileSpawnerThink3
 -----------------------------------------------*/
 
-static qboolean FXHPMissileSpawnerThink3(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPMissileSpawnerThink3(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->LifeTime < fxi.cl->time)
 	{
@@ -336,7 +336,7 @@ static qboolean FXHPMissileSpawnerThink3(struct client_entity_s *self,centity_t 
 	FXHPTrailThink
 -----------------------------------------------*/
 
-static qboolean FXHPTrailThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPTrailThink(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
 		return false;
@@ -350,7 +350,7 @@ static qboolean FXHPTrailThink(struct client_entity_s *self,centity_t *Owner)
 	FXHPTrailThink2
 -----------------------------------------------*/
 
-static qboolean FXHPTrailThink2(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPTrailThink2(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
 		return false;
@@ -364,7 +364,7 @@ static qboolean FXHPTrailThink2(struct client_entity_s *self,centity_t *Owner)
 	FXHPTrailThink3
 -----------------------------------------------*/
 
-static qboolean FXHPTrailThink3(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPTrailThink3(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
 		return false;
@@ -378,7 +378,7 @@ static qboolean FXHPTrailThink3(struct client_entity_s *self,centity_t *Owner)
 	FXHPBugThink
 -----------------------------------------------*/
 
-static qboolean FXHPBugThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPBugThink(struct client_entity_s *self, centity_t *Owner)
 {
 	self->r.scale = flrand(0.2, 0.4);
 	self->alpha = flrand(0.3, 0.5);
@@ -390,7 +390,7 @@ static qboolean FXHPBugThink(struct client_entity_s *self,centity_t *Owner)
 	FXHPMissileTrailThink
 -----------------------------------------------*/
 
-static qboolean FXHPMissileTrailThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPMissileTrailThink(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -433,7 +433,7 @@ static qboolean FXHPMissileTrailThink(struct client_entity_s *self,centity_t *Ow
 	FXHPMissileTrailThink2
 -----------------------------------------------*/
 
-static qboolean FXHPMissileTrailThink2(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPMissileTrailThink2(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -476,7 +476,7 @@ static qboolean FXHPMissileTrailThink2(struct client_entity_s *self,centity_t *O
 	FXHPMissileTrailThink3
 -----------------------------------------------*/
 
-static qboolean FXHPMissileTrailThink3(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHPMissileTrailThink3(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -517,7 +517,7 @@ static qboolean FXHPMissileTrailThink3(struct client_entity_s *self,centity_t *O
 	FXHPMissileExplode
 -----------------------------------------------*/
 
-void FXHPMissileExplode(struct client_entity_s *self,centity_t *Owner)
+void FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
 {
 	vec3_t			dir;
 	client_entity_t	*SmokePuff;
@@ -562,7 +562,7 @@ void FXHPMissileExplode(struct client_entity_s *self,centity_t *Owner)
 	FXHPBugExplode
 -----------------------------------------------*/
 
-void FXHPBugExplode(struct client_entity_s *self,centity_t *Owner)
+void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 {
 	vec3_t			dir;
 	client_entity_t	*SmokePuff;

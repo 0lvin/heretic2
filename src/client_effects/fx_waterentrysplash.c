@@ -27,7 +27,7 @@ void PreCacheWaterSplash()
 #define	SCALE 0.3
 #define SPLASH_RADIUS 20
 
-static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self,centity_t *Owner);
+static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner);
 static void WaterEntryParticles(struct client_entity_s *Owner, float Radius, int NumParticles);
 
 // ************************************************************************************************
@@ -35,7 +35,7 @@ static void WaterEntryParticles(struct client_entity_s *Owner, float Radius, int
 // ------------------------------
 // ************************************************************************************************
 
-static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	client_entity_t	*EntryRipple;
 

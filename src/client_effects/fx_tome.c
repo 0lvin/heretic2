@@ -12,7 +12,6 @@
 #include "../../h2common/resourcemanager.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "../../h2common/reference.h"
 #include "utilities.h"
 #include "ce_dlight.h"
 
@@ -207,7 +206,7 @@ qboolean FXHomeTorchAddToView(client_entity_t *tome, centity_t *owner)
 
 
 // make the light follow us
-static qboolean FXplayertorch_think(struct client_entity_s *self,centity_t *owner)
+static qboolean FXplayertorch_think(struct client_entity_s *self, centity_t *owner)
 {
 	// kill us if we are done
 	if (owner->current.effects & EF_LIGHT_ENABLED)

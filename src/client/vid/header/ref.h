@@ -300,9 +300,6 @@ typedef struct
 
 typedef struct
 {
-	struct CL_SkeletalJoint_s *skeletalJoints;
-	ArrayedListNode_t *jointNodes;
-
 	YQ2_ATTR_NORETURN_FUNCPTR void	(IMPORT *Sys_Error) (int err_level, char *str, ...) PRINTF_ATTR(2, 3);
 
 	void	(IMPORT *Cmd_AddCommand) (char *name, void(*cmd)(void));

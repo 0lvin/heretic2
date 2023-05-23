@@ -52,7 +52,7 @@ void PreCacheHands()
 // --------------------------------------------------------------
 
 
-static qboolean FXSpellHandsThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	int				part_type;
 	vec3_t			Trailend,Trailstart;

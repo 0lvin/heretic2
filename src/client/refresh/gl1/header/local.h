@@ -411,28 +411,7 @@ extern void RDraw_FadeScreen(void);
 extern void RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data);
 
 int R_Init(void *hinstance, void *hWnd);
-void R_Shutdown(void);
-
-void R_SetPalette(const unsigned char *palette);
-
 struct image_s *RI_RegisterSkin(char* name);
-
-void    Draw_Image(int x, int y, int w, int h, float alpha, qboolean scale, image_t* gl);
-void	Draw_Pic (int x, int y, char *name);
-void	Draw_Char (int x, int y, int c);
-
-extern	int		r_lightmap_format;
-void R_TextureAlphaMode( char *string );
-void R_TextureSolidMode( char *string );
-
-#include "../../../../common/header/common.h"
-#include "../../../../../h2common/vector.h"
-
-typedef struct CL_SkeletalJoint_s
-{
-	int children;
-	vec3_t angles;
-} CL_SkeletalJoint_t;
 
 /*
 ====================================================================

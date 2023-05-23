@@ -30,7 +30,7 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg);
 static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, float ke, int frame, int type, byte modelindex, int flags, centity_t *harpy);
 
-qboolean FXDebris_Vanish(struct client_entity_s *self,centity_t *owner);
+qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner);
 qboolean FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner);
 
 extern int ref_soft;
@@ -885,12 +885,12 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 //------------------------------------------------------------------
 
 void FXDarkSmoke(vec3_t origin, float scale, float range);
-qboolean FXDebris_Remove(struct client_entity_s *self,centity_t *owner)
+qboolean FXDebris_Remove(struct client_entity_s *self, centity_t *owner)
 {
 	return false;
 }
 
-qboolean FXDebris_Vanish(struct client_entity_s *self,centity_t *owner)
+qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
 {
 	if(self->SpawnInfo&SIF_INLAVA)
 		FXDarkSmoke(self->r.origin, flrand(0.2, 0.5), flrand(30, 50));
@@ -930,7 +930,7 @@ qboolean FXDebris_Vanish(struct client_entity_s *self,centity_t *owner)
 	return true;
 }
 
-qboolean FXDebris_Update(struct client_entity_s *self,centity_t *owner)
+qboolean FXDebris_Update(struct client_entity_s *self, centity_t *owner)
 {
 	int curTime = fxi.cl->time;
 	float d_time = (curTime - self->lastThinkTime) / 1000.0f;
@@ -953,7 +953,7 @@ qboolean FXDebris_Update(struct client_entity_s *self,centity_t *owner)
 	return true;
 }
 
-qboolean FXFleshDebris_Update(struct client_entity_s *self,centity_t *owner)
+qboolean FXFleshDebris_Update(struct client_entity_s *self, centity_t *owner)
 {
 	int curTime = fxi.cl->time;
 	float d_time = (curTime - self->lastThinkTime) / 1000.0f;

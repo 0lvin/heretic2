@@ -18,7 +18,6 @@
 #include "../game/header/m_player.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
-#include "../../h2common/reference.h"
 #include "../game/header/g_playstats.h"
 #include "p_anim_data.h"
 

@@ -30,7 +30,7 @@ void PreCacheHalos()
 // FXHaloThink
 // ************************************************************************************************
 
-static qboolean FXHaloThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXHaloThink(struct client_entity_s *self, centity_t *Owner)
 {
 	float			dot, dist, camdist;
 

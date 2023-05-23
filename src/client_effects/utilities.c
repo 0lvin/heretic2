@@ -248,8 +248,8 @@ void FXWaterRipples(centity_t *Owner, int Type, int Flags, vec3_t Origin);
 void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin);
 void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir);
 void FXDarkSmoke(vec3_t origin, float scale, float range);
-qboolean FXDebris_Vanish(struct client_entity_s *self,centity_t *owner);
-qboolean FXDebris_Remove(struct client_entity_s *self,centity_t *owner);
+qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner);
+qboolean FXDebris_Remove(struct client_entity_s *self, centity_t *owner);
 
 void FizzleEffect (client_entity_t *self, vec3_t surface_top, vec3_t normal)
 {

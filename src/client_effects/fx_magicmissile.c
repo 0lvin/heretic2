@@ -18,11 +18,11 @@
 #include "utilities.h"
 #include "../game/header/g_playstats.h"
 
-static qboolean FXMagicMissileTrailElementThink(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self,centity_t *Owner);
-static qboolean FXMagicMissileSmokePuffThink(struct client_entity_s *Self,centity_t *Owner);
+static qboolean FXMagicMissileTrailElementThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self, centity_t *Owner);
+static qboolean FXMagicMissileSmokePuffThink(struct client_entity_s *Self, centity_t *Owner);
 
 #define	NUM_MISSILE_MODELS	3
 
@@ -47,7 +47,7 @@ void PreCacheArray()
 #define ARRAY_TRAIL_COUNT	3
 #define TRAIL_SPEED			32.0
 
-static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	int				i;
 	client_entity_t	*trail;
@@ -116,7 +116,7 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self,centity_t 
 // -------------------------
 // ************************************************************************************************
 
-static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self, centity_t *Owner)
 {
 	Self->d_scale=0.0;
 	Self->r.scale = 0.8;
@@ -132,7 +132,7 @@ static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self,centity_t
 // -------------------------
 // ************************************************************************************************
 
-static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self, centity_t *Owner)
 {
 	FXMagicMissileTrailThink(Self,Owner);
 	return true;

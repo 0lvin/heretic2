@@ -13,7 +13,6 @@
 #include "../../h2common/matrix.h"
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
-#include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "particle.h"
 
@@ -26,7 +25,7 @@
 // ----------------------------
 // ************************************************************************************************
 
-qboolean FXSpellChangeLightThink(struct client_entity_s *self,centity_t *owner)
+qboolean FXSpellChangeLightThink(struct client_entity_s *self, centity_t *owner)
 {
 	if (fxi.cl->time - self->startTime > LIGHT_LIFETIME)
 	{

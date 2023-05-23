@@ -14,7 +14,6 @@
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
 #include "../../h2common/motion.h"
-#include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "q_sprite.h"
 #include "../game/header/g_playstats.h"

@@ -72,27 +72,27 @@ enum
 	FX_I_SP_MSL_HIT2
 };
 
-static qboolean FXHellboltTrailElementThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXHellboltTrailThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXHellboltModelThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXHellboltSmokePuffThink(struct client_entity_s *self,centity_t *owner);
+static qboolean FXHellboltTrailElementThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXHellboltTrailThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXHellboltModelThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXHellboltSmokePuffThink(struct client_entity_s *self, centity_t *owner);
 
 // --------------------------------------------------------------
 
 
-static qboolean FXGlobeOfOuchinessSphereThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXGlobeOfOuchinessAuraElementThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXGlobeOfOuchinessAuraThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXGlobeOfOuchinessGlowballSparkThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self,centity_t *owner);
-static qboolean FXGlobeOfOuchinessSmokePuffThink(struct client_entity_s *self,centity_t *owner);
+static qboolean FXGlobeOfOuchinessSphereThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXGlobeOfOuchinessAuraElementThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXGlobeOfOuchinessGlowballSparkThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *owner);
+static qboolean FXGlobeOfOuchinessSmokePuffThink(struct client_entity_s *self, centity_t *owner);
 
 // ************************************************************************************************
 // FXInsectStaffTrailThink
 // ************************************************************************************************
 
-static qboolean FXInsectStaffTrailThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXInsectStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t			TrailStart,Trail;
 	float			TrailLength,DeltaTrailLength;
@@ -239,7 +239,7 @@ void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec
 // FXGlobeOfOuchinessGlobeThink -
 // ****************************************************************************
 
-static qboolean FXGlobeOfOuchinessGlobeThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXGlobeOfOuchinessGlobeThink(struct client_entity_s *self, centity_t *owner)
 {
 	self->r.scale = flrand(0.35, 0.50);
 
@@ -250,7 +250,7 @@ static qboolean FXGlobeOfOuchinessGlobeThink(struct client_entity_s *self,centit
 // FXGlobeOfOuchinessAuraThink -
 // ****************************************************************************
 
-static qboolean FXGlobeOfOuchinessAuraThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t			TrailStart,Trail;
 	float			TrailLength,DeltaTrailLength;
@@ -369,7 +369,7 @@ void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short Cast
 // FXGlobeOfOuchinessGlowballThink -
 // ****************************************************************************
 
-static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*Spark;
 
@@ -424,7 +424,7 @@ static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self,cen
 // FXGlobeOfOuchinessGlowballSpawnerThink -
 // ****************************************************************************
 
-static qboolean FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*Glowball;
 	vec3_t			Forward,Right,
@@ -786,7 +786,7 @@ void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t D
 //	INSECT_SPEAR,
 //	INSECT_RIGHTFOOT,
 //	INSECT_LEFTFOOT,
-static qboolean FXStaffElementThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXStaffElementThink(struct client_entity_s *self, centity_t *owner)
 {
 	float	Frac,
 			Multiplier;
@@ -822,7 +822,7 @@ static qboolean FXStaffElementThink(struct client_entity_s *self,centity_t *owne
 // -----------------
 // ************************************************************************************************
 
-static qboolean FXISwordTrailThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXISwordTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	int				I;
 	int				NoOfIntervals;

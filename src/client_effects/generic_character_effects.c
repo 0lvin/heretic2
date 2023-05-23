@@ -757,7 +757,7 @@ void FXLeader(centity_t *owner, int type, int flags, vec3_t origin)
 #define FOOTTRAIL_ACCEL	20.0
 
 
-static qboolean FXFeetTrailThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXFeetTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 
 	client_particle_t	*flame;

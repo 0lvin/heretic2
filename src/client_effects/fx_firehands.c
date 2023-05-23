@@ -26,7 +26,7 @@
 
 
 
-static qboolean FXFireHandsThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXFireHandsThink(struct client_entity_s *self, centity_t *owner)
 {
 
 	client_particle_t	*flame;

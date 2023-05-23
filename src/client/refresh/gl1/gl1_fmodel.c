@@ -8,11 +8,6 @@
 #include "header/local.h"
 #include "../../../../h2common/fmodel.h"
 #include "../../../../h2common/flex.h"
-#include "../../../../h2common/m_skeletalcluster.h"
-#include "../../../../h2common/skeletons.h"
-#include "../../../../h2common/arrayed_list.h"
-#include "../../../../h2common/m_skeleton.h"
-#include "../../../../h2common/r_skeletons.h"
 
 typedef vec_t vec2_t[2];
 
@@ -32,8 +27,6 @@ fmblock_t m_fmblocks[] =
 	{ FM_REFERENCES_NAME,		FM_BLOCK_REFERENCES },
 	{ "",						-1 }
 };
-
-extern M_SkeletalCluster_t SkeletalClusters[MAX_ARRAYED_SKELETAL_JOINTS];
 
 /*
 =============
@@ -227,92 +220,6 @@ void Mod_SerializeNormal(fmdl_t *fmodel, int version, int length, char *buffer)
 
 /*
 =============
-Mod_SerializeSkeleton
-=============
-*/
-static void Mod_SerializeSkeleton(fmdl_t *fmodel, int version, int length, char *buffer)
-{
-	int		i, j, k;
-	int		*basei;
-	int		runningTotalVertices = 0;
-	int		indexBase = 0;
-	int		m_numClusters = 0;
-	float	*basef;
-
-	if (fmodel->skeletons != NULL)
-	{
-		ri.Sys_Error(ERR_FATAL, "Duplicate skeleton block!\n");
-		return;
-	}
-	if (version != FM_SKELETON_VER)
-	{
-		ri.Sys_Error(ERR_FATAL, "Invalid skeleton version\n");
-		return;
-	}
-
-	basei = (int *)buffer;
-
-	fmodel->skeletalType = *basei;
-
-	m_numClusters = *(++basei);
-
-	fmodel->rootCluster = CreateSkeleton(fmodel->skeletalType);
-
-
-	for (i = m_numClusters - 1; i >= 0; --i)
-	{
-		runningTotalVertices += *(++basei);
-	}
-
-	for (j = m_numClusters - 1; j >= 0; --j)
-	{
-		for (i = indexBase; i < SkeletalClusters[fmodel->rootCluster + j].numVerticies; ++i)
-		{
-			++basei;
-
-			for (k = 0; k <= j; ++k)
-			{
-				SkeletalClusters[fmodel->rootCluster + k].verticies[i] = *basei;
-			}
-		}
-
-		indexBase = SkeletalClusters[fmodel->rootCluster + j].numVerticies;
-	}
-
-	if (*(++basei))
-	{
-		basef = (float *)++basei;
-
-		fmodel->skeletons = (ModelSkeleton_t*)Hunk_Alloc(fmodel->header.num_frames * sizeof(ModelSkeleton_t));
-
-		for (i = 0; i < fmodel->header.num_frames; ++i)
-		{
-			CreateSkeletonAsHunk(fmodel->skeletalType, &fmodel->skeletons[i]);
-			for (j = 0; j < m_numClusters; ++j)
-			{
-				fmodel->skeletons[i].rootJoint[j].model.origin[0] = *(basef++);
-				fmodel->skeletons[i].rootJoint[j].model.origin[1] = *(basef++);
-				fmodel->skeletons[i].rootJoint[j].model.origin[2] = *(basef++);
-
-				fmodel->skeletons[i].rootJoint[j].model.direction[0] = *(basef++);
-				fmodel->skeletons[i].rootJoint[j].model.direction[1] = *(basef++);
-				fmodel->skeletons[i].rootJoint[j].model.direction[2] = *(basef++);
-
-				fmodel->skeletons[i].rootJoint[j].model.up[0] = *(basef++);
-				fmodel->skeletons[i].rootJoint[j].model.up[1] = *(basef++);
-				fmodel->skeletons[i].rootJoint[j].model.up[2] = *(basef++);
-			}
-		}
-
-	}
-	else
-	{
-		fmodel->header.num_xyz -= m_numClusters * 3;
-	}
-}
-
-/*
-=============
 Mod_LoadFlexModel
 =============
 */
@@ -371,8 +278,6 @@ void Mod_LoadFlexModel(struct model_s *mod, void *model_buffer, int filesize)
 			Mod_SerializeNormal(fmodel, version, size, buffer);
 			break;
 		case FM_BLOCK_SKELETON:
-			Mod_SerializeSkeleton(fmodel, version, size, buffer);
-			break;
 		case FM_BLOCK_ST:
 		case FM_BLOCK_TRIS:
 		case FM_BLOCK_SHORTFRAMES:

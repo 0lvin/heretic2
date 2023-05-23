@@ -38,7 +38,7 @@ void PrecacheShadow()
 	shadow_models[0] = fxi.RegisterModel("models/fx/shadow/tris.fm");
 }
 
-static qboolean FXShadowUpdate(struct client_entity_s *self,centity_t *owner)
+static qboolean FXShadowUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t startpos, endpos;
 	vec3_t minmax = {0, 0, 0};
@@ -85,7 +85,7 @@ static qboolean FXShadowUpdate(struct client_entity_s *self,centity_t *owner)
 
 
 
-static qboolean FXShadowReferenceUpdate(struct client_entity_s *self,centity_t *owner)
+static qboolean FXShadowReferenceUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t startpos, endpos;
 	vec3_t minmax = {0, 0, 0};

@@ -123,7 +123,7 @@ extern int ref_soft;
 // FXMorkprojTrailElementThink
 // ************************************************************************************************
 
-static qboolean FXMorkprojTrailElementThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkprojTrailElementThink(struct client_entity_s *self, centity_t *owner)
 {
 	if ( (self->alpha <= 0) || (self->r.scale <= 0) )
 		return false;
@@ -138,7 +138,7 @@ static qboolean FXMorkprojTrailElementThink(struct client_entity_s *self,centity
 //FX_M_STRAFE
 // ************************************************************************************************
 
-static qboolean FXMorkTrailThink_old(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkTrailThink_old(struct client_entity_s *self, centity_t *owner)
 {
 	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
 		return false;
@@ -149,7 +149,7 @@ static qboolean FXMorkTrailThink_old(struct client_entity_s *self,centity_t *own
 }
 
 
-void FXMorkMissileExplode_old(struct client_entity_s *self,centity_t *owner, vec3_t dir)
+void FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -188,7 +188,7 @@ void FXMorkMissileExplode_old(struct client_entity_s *self,centity_t *owner, vec
 	}
 }
 
-static qboolean FXhpprojTrailElementThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXhpprojTrailElementThink(struct client_entity_s *self, centity_t *owner)
 {
 	if ( (self->alpha <= 0) || (self->r.scale <= 0) )
 		return false;
@@ -199,7 +199,7 @@ static qboolean FXhpprojTrailElementThink(struct client_entity_s *self,centity_t
 	return true;
 }
 
-static qboolean FXMorkMissileSpawnerThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkMissileSpawnerThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -239,7 +239,7 @@ static qboolean FXMorkMissileSpawnerThink(struct client_entity_s *self,centity_t
 // FXhpprojTrailThink
 // ************************************************************************************************
 
-static qboolean FXMorkTrailThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
 		return false;
@@ -249,7 +249,7 @@ static qboolean FXMorkTrailThink(struct client_entity_s *self,centity_t *owner)
 	return true;
 }
 
-static qboolean FXCWTrailThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXCWTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t forward;
 	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
@@ -270,7 +270,7 @@ static qboolean FXCWTrailThink(struct client_entity_s *self,centity_t *owner)
 }
 
 
-static qboolean FXMorkTrailThink2(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkTrailThink2(struct client_entity_s *self, centity_t *owner)
 {
 	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
 		return false;
@@ -280,7 +280,7 @@ static qboolean FXMorkTrailThink2(struct client_entity_s *self,centity_t *owner)
 	return true;
 }
 
-static qboolean FXMorkMissileTrailThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkMissileTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 //	client_entity_t	*TrailEnt;
 
@@ -298,7 +298,7 @@ static qboolean FXMorkMissileTrailThink(struct client_entity_s *self,centity_t *
 
   ==================*/
 
-static qboolean FXQuakeThink (struct client_entity_s *self,centity_t *owner)
+static qboolean FXQuakeThink (struct client_entity_s *self, centity_t *owner)
 {
 	if(self->LifeTime <= 0)
 		return (false);
@@ -314,7 +314,7 @@ static qboolean FXQuakeThink (struct client_entity_s *self,centity_t *owner)
 
   ==================*/
 
-static qboolean FXMorkMissileTrailThink2(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkMissileTrailThink2(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -353,7 +353,7 @@ static qboolean FXMorkMissileTrailThink2(struct client_entity_s *self,centity_t 
 	return true;
 }
 
-static qboolean FXMorkPPTrailThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkPPTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	client_particle_t	*spark;
@@ -705,7 +705,7 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 
 //==================================================
 
-void FXMorkMissileExplode(struct client_entity_s *self,centity_t *owner, vec3_t dir)
+void FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -1338,7 +1338,7 @@ VectorCopy		((centity_t *)(self->extra))->referenceInfo->references[MORK_LEYEREF
 
   ===============================*/
 
-static qboolean ShoveThink (struct client_entity_s *self,centity_t *owner)
+static qboolean ShoveThink (struct client_entity_s *self, centity_t *owner)
 {
 	int	dec_rate = 5;
 	if (self->alpha <= 0.1)// || self->r.scale > 0.0)
@@ -1361,7 +1361,7 @@ static qboolean ShoveThink (struct client_entity_s *self,centity_t *owner)
 	return (true);
 }
 
-static qboolean ShoveInnerThink (struct client_entity_s *self,centity_t *owner)
+static qboolean ShoveInnerThink (struct client_entity_s *self, centity_t *owner)
 {
 	int	dec_rate = 5;
 	if (self->alpha <= 0.1 || self->alpha > 2.0 || self->r.scale <= 0.1)
@@ -1372,7 +1372,7 @@ static qboolean ShoveInnerThink (struct client_entity_s *self,centity_t *owner)
 	return (true);
 }
 
-static qboolean ShoveOuterThink (struct client_entity_s *self,centity_t *owner)
+static qboolean ShoveOuterThink (struct client_entity_s *self, centity_t *owner)
 {
 	int	dec_rate = 0.05;
 	if (self->alpha <= 0.1 || self->alpha > 1.0)
@@ -1383,7 +1383,7 @@ static qboolean ShoveOuterThink (struct client_entity_s *self,centity_t *owner)
 	return (true);
 }
 
-static qboolean FXMorkShove(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkShove(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t	forward, right, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8, crap, angles;
@@ -1576,7 +1576,7 @@ qboolean ParticleFadeToBlue(client_particle_t *self, qboolean ignore)
 	return true;
 }
 
-static qboolean FXMorkMissileTrailThink_old(struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkMissileTrailThink_old(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -1615,7 +1615,7 @@ static qboolean FXMorkMissileTrailThink_old(struct client_entity_s *self,centity
 	return true;
 }
 
-static qboolean FXMorkBeamCircle (struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkBeamCircle (struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t	angles, up;
 
@@ -1632,7 +1632,7 @@ static qboolean FXMorkBeamCircle (struct client_entity_s *self,centity_t *owner)
 	return true;
 }
 
-static qboolean FXMorkBeam (struct client_entity_s *self,centity_t *owner)
+static qboolean FXMorkBeam (struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t		*TrailEnt;
 	int					numparts, parttype;
@@ -2063,7 +2063,7 @@ void DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad (centity_t *owner
 	AddEffect(owner, fx);
 }
 
-void ImpFireBallExplode(struct client_entity_s *self,centity_t *owner, vec3_t dir)
+void ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -2500,7 +2500,7 @@ qboolean FXPermanentUpdate (struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-qboolean FXRemoveUpdate(struct client_entity_s *self,centity_t *owner)
+qboolean FXRemoveUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	return false;
 }
@@ -3063,7 +3063,7 @@ void FXMorkMissileHit ( vec3_t origin, vec3_t dir )
 	FXMTrailThink
 -----------------------------------------------*/
 
-static qboolean FXMTrailThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXMTrailThink(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
 		return false;
@@ -3078,7 +3078,7 @@ static qboolean FXMTrailThink(struct client_entity_s *self,centity_t *Owner)
 	FXMMissileTrailThink
 -----------------------------------------------*/
 
-static qboolean FXMMissileTrailThink(struct client_entity_s *self,centity_t *Owner)
+static qboolean FXMMissileTrailThink(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 

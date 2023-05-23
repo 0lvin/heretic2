@@ -90,11 +90,11 @@ int numNodesInSkeleton[] =
 	2,	// CORVUS
 };
 
-void CreateRavenSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int root);
-void CreateBoxSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int root);
-void CreateBeetleSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
-void CreateElfLordSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
-void CreatePlagueElfSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
+static void CreateRavenSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int root);
+static void CreateBoxSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int root);
+static void CreateBeetleSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
+static void CreateElfLordSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
+static void CreatePlagueElfSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
 
 CreateSkeleton_t SkeletonCreators[NUM_SKELETONS] =
 {
@@ -106,7 +106,8 @@ CreateSkeleton_t SkeletonCreators[NUM_SKELETONS] =
 	CreatePlagueElfSkel,	// Corvus has the same structure as the Plague Elf
 };
 
-void CreateRavenSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
+static void
+CreateRavenSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
 {
 	char *root;
 	int *children;
@@ -134,7 +135,8 @@ void CreateRavenSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *
 	jointNodes[nodeIndex].next = ARRAYEDLISTNODE_NULL;
 }
 
-void CreateBoxSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
+static void
+CreateBoxSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
 {
 	char *root;
 	int *children;
@@ -145,7 +147,8 @@ void CreateBoxSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jo
 	*children = ARRAYEDLISTNODE_NULL;
 }
 
-void CreateBeetleSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
+static void
+CreateBeetleSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
 {
 	char *root;
 	int *children;
@@ -165,7 +168,8 @@ void CreateBeetleSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t 
 	jointNodes[nodeIndex].next = ARRAYEDLISTNODE_NULL;
 }
 
-void CreateElfLordSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
+static void
+CreateElfLordSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
 {
 	char *root;
 	int *children;
@@ -185,7 +189,8 @@ void CreateElfLordSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t
 	jointNodes[nodeIndex].next = ARRAYEDLISTNODE_NULL;
 }
 
-void CreatePlagueElfSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
+static void
+CreatePlagueElfSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex)
 {
 	char *root;
 	int *children;

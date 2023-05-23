@@ -14,7 +14,6 @@
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
 #include "../../h2common/motion.h"
-#include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "q_sprite.h"
 #include "../game/header/g_playstats.h"
@@ -51,7 +50,7 @@ void PreCacheRedrain()
 	rain_models[4] = fxi.RegisterModel("sprites/spells/spark_green.sp2");
 }
 
-void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup,centity_t *owner);
+void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup, centity_t *owner);
 void DoLightning(vec3_t groundpos, vec3_t airpos);
 
 
@@ -395,7 +394,7 @@ static qboolean RedRainExplosionThink(client_entity_t *explosion, centity_t *own
 }
 
 // This is similar to the FXRedRainMissileExplode, except that the explosion needs knowledge of the rainfall height.
-void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup,centity_t *owner)
+void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup, centity_t *owner)
 {
 	client_entity_t		*explo;
 	client_entity_t		*dlight;

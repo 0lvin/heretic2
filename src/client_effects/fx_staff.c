@@ -233,7 +233,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 // ------------------------
 // ************************************************************************************************
 
-static qboolean FXStaffElementThink(struct client_entity_s *Self,centity_t *owner)
+static qboolean FXStaffElementThink(struct client_entity_s *Self, centity_t *owner)
 {
 	float	Frac,
 			Multiplier;
@@ -269,12 +269,12 @@ static qboolean FXStaffElementThink(struct client_entity_s *Self,centity_t *owne
 // -----------------
 // ************************************************************************************************
 
-static qboolean FXTrailLevel2ThinkBurn(struct client_entity_s *Self,centity_t *owner)
+static qboolean FXTrailLevel2ThinkBurn(struct client_entity_s *Self, centity_t *owner)
 {
 	return true;
 }
 
-static qboolean FXStaffLevel2Think(struct client_entity_s *Self,centity_t *owner)
+static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 {
 	int				I;
 	int				NoOfIntervals, white;
@@ -441,7 +441,7 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self,centity_t *owner
 	return true;
 }
 
-static qboolean FXStaffLevel3Think(struct client_entity_s *Self,centity_t *owner)
+static qboolean FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owner)
 {
 	int				I;
 	int				NoOfIntervals, white;
@@ -552,7 +552,7 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self,centity_t *owner
 	return true;
 }
 
-static qboolean FXStaffThink(struct client_entity_s *Self,centity_t *owner)
+static qboolean FXStaffThink(struct client_entity_s *Self, centity_t *owner)
 {
 	int				I;
 	int				NoOfIntervals;
@@ -722,7 +722,7 @@ void FXStaff(centity_t *owner,int Type,int Flags,vec3_t Origin)
 // -----------------
 // ************************************************************************************************
 
-static qboolean FXStaffCreateThink(struct client_entity_s *Self,centity_t *owner)
+static qboolean FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
 {
 	int				NoOfIntervals;
 	client_entity_t	*TrailEnt;
@@ -887,7 +887,7 @@ void FXStaffCreate(centity_t *owner,int Type,int Flags,vec3_t Origin)
 }
 
 
-qboolean FXSpellChangePuffThink(struct client_entity_s *Self,centity_t *owner);
+qboolean FXSpellChangePuffThink(struct client_entity_s *Self, centity_t *owner);
 
 // ************************************************************************************************
 // FXStaffCreatePoof
@@ -967,7 +967,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 // -----------------
 // ************************************************************************************************
 
-static qboolean FXStaffRemoveThink(struct client_entity_s *Self,centity_t *owner)
+static qboolean FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
 {
 	int				NoOfIntervals;
 	client_entity_t	*TrailEnt;

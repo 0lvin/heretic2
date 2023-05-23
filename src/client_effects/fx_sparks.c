@@ -12,7 +12,6 @@
 #include "ce_dlight.h"
 #include "q_sprite.h"
 #include "utilities.h"
-#include "../../h2common/reference.h"
 #include "../../h2common/matrix.h"
 #include "../game/header/g_playstats.h"
 

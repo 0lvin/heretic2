@@ -16,7 +16,7 @@
 #include "../../h2common/motion.h"
 #include "utilities.h"
 
-static qboolean FXRemoteCameraThink(struct client_entity_s *Self,centity_t *Owner)
+static qboolean FXRemoteCameraThink(struct client_entity_s *Self, centity_t *Owner)
 {
 
 

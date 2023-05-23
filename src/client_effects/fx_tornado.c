@@ -14,7 +14,6 @@
 #include "../../h2common/matrix.h"
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
-#include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "../game/header/g_playstats.h"
 #include "q_sprite.h"
@@ -104,7 +103,7 @@ void FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin)
 }
 
 
-static qboolean FXTornadoThink(struct client_entity_s *self,centity_t *owner)
+static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
@@ -280,8 +279,8 @@ void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 /*
 
-//static qboolean Tornado_Particle_Think(struct client_entity_s *self,centity_t *owner)
-static qboolean FXTornadoThink(struct client_entity_s *self,centity_t *owner)
+//static qboolean Tornado_Particle_Think(struct client_entity_s *self, centity_t *owner)
+static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
@@ -441,7 +440,7 @@ void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 
 
 
-static qboolean FXTornadoStart(struct client_entity_s *self,centity_t *owner)
+static qboolean FXTornadoStart(struct client_entity_s *self, centity_t *owner)
 {
 	int					dur = 60;
 

@@ -16,7 +16,6 @@
 #include "../../h2common/angles.h"
 #include "ce_message.h"
 #include "utilities.h"
-#include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "q_sprite.h"
 #include "../game/header/g_playstats.h"

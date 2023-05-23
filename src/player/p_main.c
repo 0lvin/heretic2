@@ -14,7 +14,6 @@
 #include "p_types.h"
 #include "../../h2common/fx.h"
 #include "../game/header/m_player.h"
-#include "../../h2common/reference.h"
 #include "../common/header/common.h"
 
 //FIXME:  Include header

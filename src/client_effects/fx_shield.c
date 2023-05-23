@@ -14,7 +14,6 @@
 #include "../../h2common/matrix.h"
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
-#include "../../h2common/reference.h"
 #include "ce_dlight.h"
 #include "../game/header/g_playstats.h"
 
@@ -32,7 +31,7 @@ void PreCacheShield()
 	shield_models[0] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");
 }
 
-static qboolean FXShieldSparkThink(struct client_entity_s *shield,centity_t *owner)
+static qboolean FXShieldSparkThink(struct client_entity_s *shield, centity_t *owner)
 {
 	vec3_t angvect;
 	client_particle_t *spark;
