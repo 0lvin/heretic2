@@ -7,7 +7,6 @@
 //
 //==============================================================================
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/c_corvus6_anim.h"
 #include "header/c_corvus6.h"

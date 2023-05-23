@@ -7,14 +7,13 @@
 //
 //==============================================================================
 
-#include "../common/header/common.h"
 #include "header/local.h"
 
 #include "header/m_plaguessithra_anim.h"
 #include "header/m_plaguessithra.h"
 #include "header/g_monster.h"
 #include "header/c_ai.h"
-#include "../common/header/common.h"
+
 
 void old_ai_run (edict_t *self, float dist);
 void ai_run (edict_t *self, float dist);

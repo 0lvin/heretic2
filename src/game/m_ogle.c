@@ -7,7 +7,6 @@
 //
 //==============================================================================
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/m_ogle.h"
 #include "header/m_ogle_anim.h"

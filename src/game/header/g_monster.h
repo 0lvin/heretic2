@@ -8,7 +8,6 @@
 #ifndef G_MONSTER_H
 #define G_MONSTER_H
 
-#include "../../common/header/common.h"
 #include "local.h"
 #include "../../../h2common/message.h"
 #include "g_classstatics.h"

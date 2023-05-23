@@ -6,7 +6,6 @@
 //
 // In game, animating rope
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "../../h2common/h2rand.h"
 #include "../player/p_main.h"

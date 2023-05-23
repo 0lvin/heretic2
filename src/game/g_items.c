@@ -24,7 +24,6 @@
  * =======================================================================
  */
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/p_item.h"
 #include "header/g_items.h"

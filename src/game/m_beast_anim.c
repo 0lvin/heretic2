@@ -7,7 +7,6 @@
 //
 //==============================================================================
 
-#include "../common/header/common.h"
 #include "header/local.h"
 
 #include "header/m_beast_anim.h"

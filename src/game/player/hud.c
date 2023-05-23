@@ -28,7 +28,7 @@
 #include "../../../h2common/h2rand.h"
 #include "../header/g_playstats.h"
 #include "../header/g_itemstats.h"
-#include "../../common/header/common.h"
+
 
 extern player_export_t	playerExport;	// interface to player DLL.
 

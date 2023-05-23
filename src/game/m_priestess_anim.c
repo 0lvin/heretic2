@@ -2,7 +2,6 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/m_priestess.h"
 #include "header/m_priestess_anim.h"

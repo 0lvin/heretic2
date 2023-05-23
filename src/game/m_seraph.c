@@ -8,7 +8,6 @@
 // jweier
 //==============================================================================
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/m_seraph.h"
 #include "header/m_seraph_anim.h"

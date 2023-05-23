@@ -5,7 +5,7 @@
 #ifndef	G_STATS_H
 #define G_STATS_H
 
-#include "../../common/header/common.h"
+#include "local.h"
 #include "g_classstatics.h"
 
 extern int AttackRangesForClass [NUM_ATTACKRANGES];

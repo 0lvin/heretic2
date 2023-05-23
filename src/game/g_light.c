@@ -5,10 +5,9 @@
 // Copyright 1998 Raven Software
 //
 
-#include "../common/header/common.h"
+#include "header/local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/effectflags.h"
-#include "header/local.h"
 #include "header/g_misc.h"
 #include "header/g_defaultmessagehandler.h"
 

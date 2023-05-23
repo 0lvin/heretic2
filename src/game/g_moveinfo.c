@@ -2,10 +2,9 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../common/header/common.h"
+#include "header/local.h"
 #include "header/g_moveinfo.h"
 #include "../../h2common/resourcemanager.h"
-#include "header/local.h"
 
 static ResourceManager_t MoveInfoMngr;
 

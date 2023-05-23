@@ -7,7 +7,6 @@
 //
 //==============================================================================
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/g_defaultmessagehandler.h"
 #include "../../h2common/fx.h"

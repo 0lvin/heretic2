@@ -2,9 +2,8 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../common/header/common.h"
-#include "header/m_ogle.h"
 #include "header/local.h"
+#include "header/m_ogle.h"
 #include "header/m_ogle_anim.h"
 
 #include "header/g_monster.h"

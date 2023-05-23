@@ -43,7 +43,6 @@ GORGON
 ==============================================================================
 */
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/utilities.h"
 #include "header/g_defaultmessagehandler.h"

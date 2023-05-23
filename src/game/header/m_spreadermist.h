@@ -5,7 +5,6 @@
 #ifndef _M_SPREADERMIST_H_
 #define _M_SPREADERMIST_H_
 
-#include "../../common/header/common.h"
 #include "local.h"
 #include "g_volume_effect.h"
 

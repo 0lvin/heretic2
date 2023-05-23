@@ -25,10 +25,10 @@
  */
 
 #include <limits.h>
-#include "../common/header/common.h"
+
+#include "header/local.h"
 #include "header/g_monster.h"
 #include "header/m_stats.h"
-#include "header/local.h"
 #include "../../h2common/fx.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_playstats.h"

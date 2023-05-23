@@ -24,10 +24,9 @@
  * =======================================================================
  */
 
-#include "../common/header/common.h"
+#include "header/local.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_misc.h"
-#include "header/local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 #include "header/g_monster.h"

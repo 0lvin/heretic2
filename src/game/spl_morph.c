@@ -8,7 +8,6 @@
 // prediction by Marcus Whitlock.
 // "Rodgered" ??? No wonder he was working late :)
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/g_monster.h"
 #include "header/g_physics.h"

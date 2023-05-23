@@ -2,7 +2,7 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../common/header/common.h"
+#include "header/local.h"
 #include "../../h2common/singlylinkedlist.h"
 
 void G_InitMsgMngr();

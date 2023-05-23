@@ -46,7 +46,6 @@
 #include "../../../h2common/cl_strings.h"
 #include "../../player/p_actions.h"
 #include "../../player/p_anim_branch.h"
-#include "../../common/header/common.h"
 
 // FIXME: include headers.
 extern void	SetupPlayerinfo(edict_t *ent);

@@ -5,9 +5,9 @@
 #ifndef G_CLASSSTATICS_H
 #define G_CLASSSTATICS_H
 
-#include "../../common/header/common.h"
-#include "g_message.h"
 #include "local.h"
+#include "g_message.h"
+
 
 // ************************************************************************************************
 // ClassID_t

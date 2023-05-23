@@ -12,7 +12,6 @@
 #ifndef _P_FUNCS_H_
 #define _P_FUNCS_H_
 
-#include "../../common/header/common.h"
 #include "local.h"
 
 extern void G_PlayerActionShrineEffect(playerinfo_t *playerinfo);

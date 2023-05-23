@@ -8,7 +8,7 @@ All rights reserved
 #ifndef M_SPREADER_H
 #define M_SPREADER_H
 
-#include "../../common/header/common.h"
+#include "local.h"
 
 typedef enum AnimID_e
 {

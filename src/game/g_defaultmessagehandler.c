@@ -2,10 +2,9 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../common/header/common.h"
+#include "header/local.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_physics.h"
-#include "header/local.h"
 #include "header/utilities.h"
 #include "header/g_hitlocation.h"
 

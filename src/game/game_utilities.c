@@ -8,10 +8,9 @@
 #include <math.h>
 #include <assert.h>
 
-#include "../common/header/common.h"
+#include "header/local.h"
 #include "header/utilities.h"
 #include "../../h2common/angles.h"
-#include "header/local.h"
 #include "header/g_hitlocation.h"
 #include "header/g_physics.h"
 #include "../../h2common/h2rand.h"

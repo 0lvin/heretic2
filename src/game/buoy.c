@@ -7,7 +7,6 @@
 //  Mike Gummelt & Josh Weier
 // ****************************************************************************
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "header/buoy.h"
 #include "../../h2common/h2rand.h"

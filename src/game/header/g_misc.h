@@ -8,7 +8,7 @@
 #ifndef	G_MISC_H
 #define G_MISC_H
 
-#include "../../common/header/common.h"
+#include "local.h"
 
 void BecomeDebris(edict_t *Self);
 void SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage);

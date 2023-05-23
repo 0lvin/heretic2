@@ -6,7 +6,7 @@
 #define G_PHYSICSINFO_H
 
 #if 0
-#include "../../common/header/common.h"
+#include "local.h"
 
 
 typedef struct PhysicsInfo_s

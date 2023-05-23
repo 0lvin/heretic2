@@ -7,7 +7,6 @@
 //
 //==============================================================================
 
-#include "../common/header/common.h"
 #include "header/local.h"
 
 #include "header/m_gorgon_anim.h"
@@ -17,7 +16,6 @@
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_monster.h"
 #include "../../h2common/h2rand.h"
-#include "../common/header/common.h"
 #include "header/m_stats.h"
 
 

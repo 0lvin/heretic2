@@ -5,7 +5,7 @@
 #ifndef	G_DEFAULTMESSAGEHANDLER_H
 #define	G_DEFAULTMESSAGEHANDLER_H
 
-#include "../../common/header/common.h"
+#include "local.h"
 #include "g_message.h"
 
 extern G_MsgReceiver_t DefaultMessageReceivers[NUM_MESSAGES];

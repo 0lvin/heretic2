@@ -24,9 +24,8 @@
  * =======================================================================
  */
 
-#include "../common/header/common.h"
-#include "../player/player.h"
 #include "header/local.h"
+#include "../player/player.h"
 #include "../player/p_weapon.h"
 #include "header/m_player.h"
 #include "../../h2common/fx.h"

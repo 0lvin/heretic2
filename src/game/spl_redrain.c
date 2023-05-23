@@ -3,7 +3,6 @@
 // Copyright 1998 Raven Software
 //
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/angles.h"

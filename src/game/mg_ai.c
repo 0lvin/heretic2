@@ -11,7 +11,6 @@
 ==============================
 */
 
-#include "../common/header/common.h"
 #include <assert.h>
 #include "header/local.h"
 #include "header/g_monster.h"

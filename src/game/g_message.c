@@ -6,11 +6,10 @@
 // Heretic II
 //
 
-#include "../common/header/common.h"
+#include "header/local.h"
 #include "header/g_message.h"
 #include "../../h2common/message.h"
 
-#include "header/local.h"
 #include "../../h2common/resourcemanager.h"
 #include "../../h2common/singlylinkedlist.h"
 

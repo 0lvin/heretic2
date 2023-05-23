@@ -5,7 +5,6 @@
 #ifndef _G_TELEPORT_H_
 #define _G_TELEPORT_H_
 
-#include "../../common/header/common.h"
 #include "local.h"
 
 // TELEPORT defines

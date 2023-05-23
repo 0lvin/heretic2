@@ -5,7 +5,7 @@
 #ifndef G_SKELETONS_H
 #define G_SKELETONS_H
 
-#include "../../common/header/common.h"
+#include "local.h"
 #include "../../../h2common/arrayed_list.h"
 #include "../../../h2common/skeletons.h"
 

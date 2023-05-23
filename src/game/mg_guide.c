@@ -21,7 +21,6 @@
 //
 // ****************************************************************************
 
-#include "../common/header/common.h"
 #include "header/local.h"
 #include "../../h2common/angles.h"
 #include "header/utilities.h"
