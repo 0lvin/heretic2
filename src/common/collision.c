@@ -767,7 +767,6 @@ CM_InitBoxHull(void)
 	}
 }
 
-
 /*
  * To keep everything totally uniform, bounding boxes are turned into
  * small BSP trees instead of being compared directly.

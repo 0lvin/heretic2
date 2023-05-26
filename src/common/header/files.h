@@ -335,7 +335,7 @@ typedef struct m32tex_s
 #define IDBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'I') /* little-endian "IBSP" */
 #define BSPVERSION 38
 
-/* upper design bounds: leaffaces, leafbrushes, planes, and
+/* upper design bounds: leaffaces, leafbrushes, planes, and 
  * verts are still bounded by 16 bit short limits */
 #define MAX_MAP_MODELS 1024
 #define MAX_MAP_BRUSHES 8192
@@ -505,12 +505,12 @@ typedef struct texinfo_s
 {
 	float vecs[2][4]; /* [s/t][xyz offset] */
 	int flags;        /* miptex flags + overrides light emission, etc */
-	int value;
+	int value;           
 	char texture[32]; /* texture name (textures*.wal) */
 	int nexttexinfo;  /* for animations, -1 = end of chain */
 } texinfo_t;
 
-/* note that edge 0 is never used, because negative edge
+/* note that edge 0 is never used, because negative edge 
    nums are used for counterclockwise use of the edge in
    a face */
 typedef struct
@@ -566,8 +566,8 @@ typedef struct
 #define ANGLE_UP -1
 #define ANGLE_DOWN -2
 
-/* the visibility lump consists of a header with a count, then
- * byte offsets for the PVS and PHS of each cluster, then the raw
+/* the visibility lump consists of a header with a count, then 
+ * byte offsets for the PVS and PHS of each cluster, then the raw 
  * compressed bit vectors */
 #define DVIS_PVS 0
 #define DVIS_PHS 1

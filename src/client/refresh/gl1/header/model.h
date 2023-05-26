@@ -74,8 +74,6 @@ typedef struct msurface_s
 
 /* Whole model */
 
-#include "../../../../../h2common/fmodel.h"
-
 typedef struct model_s
 {
 	char name[MAX_QPATH];
@@ -142,8 +140,6 @@ typedef struct model_s
 
 	// submodules
 	vec3_t		origin;	// for sounds or lights
-
-	fmdl_t		*fmodel;
 } model_t;
 
 void Mod_Init(void);

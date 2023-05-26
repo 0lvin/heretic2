@@ -103,14 +103,19 @@ void SP_info_player_coop(edict_t *self)
 //	SP_misc_teleporter_dest (self);
 }
 
-
-/*QUAKED info_player_intermission (1 0 1) (-16 -16 -24) (16 16 32)
-The deathmatch intermission point will be at one of these
-Use 'angles' instead of 'angle', so you can set pitch or roll as well as yaw.  'pitch yaw roll'
-*/
-
-void SP_info_player_intermission(edict_t *self)
+/*
+ * QUAKED info_player_intermission (1 0 1) (-16 -16 -24) (16 16 32)
+ * The deathmatch intermission point will be at one of these
+ * Use 'angles' instead of 'angle', so you can set pitch or
+ * roll as well as yaw.  'pitch yaw roll'
+ */
+void
+SP_info_player_intermission(edict_t *self)
 {
+	/* Thus function cannot be removed
+	 * since the info_player_intermission
+	 * needs a callback function. Like
+	 * every entity. */
 }
 
 

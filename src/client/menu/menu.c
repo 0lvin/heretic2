@@ -83,8 +83,8 @@ typedef struct
 	const char *(*key) (int k);
 } menulayer_t;
 
-menulayer_t	m_layers[MAX_MENU_DEPTH];
-int		m_menudepth;
+menulayer_t m_layers[MAX_MENU_DEPTH];
+int m_menudepth;
 
 static qboolean
 M_IsGame(const char *gamename)

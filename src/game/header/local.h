@@ -441,12 +441,6 @@ typedef struct
 	char	*parms[16];
 } spawn_temp_t;
 
-// ************************************************************************************************
-// moveinfo_t
-// ----------
-// This is used to hold information pertaining to an entity's movement.
-// ************************************************************************************************
-
 typedef struct
 {
 	/* fixed data */

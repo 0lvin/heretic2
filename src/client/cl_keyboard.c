@@ -552,9 +552,6 @@ Key_Message(int key)
 	chat_buffer[chat_bufferlen] = 0;
 }
 
-//============================================================================
-
-
 /*
  * Returns a key number to be used to index
  * keybindings[] by looking at the given string.

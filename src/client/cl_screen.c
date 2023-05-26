@@ -113,11 +113,10 @@ void CL_AddNetgraph (void)
 	SCR_DebugGraph (ping, 0xd0);
 }
 
-
 typedef struct
 {
-	float	value;
-	int		color;
+	float value;
+	int color;
 } graphsamp_t;
 
 static	int			current;

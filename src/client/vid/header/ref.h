@@ -86,16 +86,10 @@ typedef struct entity_s {
 
 	paletteRGBA_t		color;
 
-	union {
 	int					rootJoint;				// rootJoint of the entities skeleton
 	int					spriteType;
-	};
-
-	union {
 
 	// info for fmodels and bmodels
-	struct {
-
 	struct image_s		**skins;		// Pointer to the list of clientinfo skins.
 	char			skinname[MAX_QPATH];		// For specific path to skin
 
@@ -113,8 +107,6 @@ typedef struct entity_s {
 
 	int					padToUnionSize[4];		// use this space up to add any more nonsprite fields that may be needed
 
-	};
-
 	// info for dynamic sprites
 	float				verts[4][4];			// verts for dynamic sprites
 												// 0 x
@@ -123,23 +115,16 @@ typedef struct entity_s {
 												// 3 t
 
 	// info for variable sprites
-	struct {
 	float				(*verts_p)[4];			// pointer to verts for variable sprites
 	int					numVerts;
 	int					padToUnionSize2[11];	// use this space up to add any more variable sprite fields
-	};
 
 	// info for line sprites
-	struct {
 	float				startpos[3];
 	float				endpos[3];
 	float				scale2;
 	float				tile, tileoffset;
 	int					padToUnionSize3[7];	// use this space up to add any more line sprite fields
-	};
-
-	};
-
 } entity_t;
 
 #include "../../../../h2common/q_surface.h"
