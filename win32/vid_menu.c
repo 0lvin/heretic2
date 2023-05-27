@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define REF_POWERVR	3
 #define REF_VERITE	4
 
-extern cvar_t* vid_ref;			// Name of Refresh DLL loaded
+extern cvar_t* vid_renderer;			// Name of Refresh DLL loaded
 extern cvar_t *vid_fullscreen;
 extern cvar_t *vid_gamma;
 
@@ -35,7 +35,7 @@ static cvar_t *gl_driver;
 static cvar_t *gl_picmip;
 static cvar_t *gl_ext_palettedtexture;
 static cvar_t *gl_finish;
-cvar_t *vid_ref;
+cvar_t *vid_renderer;
 
 static cvar_t *sw_mode;
 static cvar_t *sw_stipplealpha;
@@ -102,7 +102,7 @@ static void BrightnessCallback( void *s )
 	else
 		s_brightness_slider[0].curvalue = s_brightness_slider[1].curvalue;
 
-	if ( stricmp( vid_ref->string, "soft" ) == 0 )
+	if ( stricmp( vid_renderer->string, "soft" ) == 0 )
 	{
 		float gamma = ( 0.8 - ( slider->curvalue/10.0 - 0.5 ) ) + 0.5;
 
@@ -143,22 +143,22 @@ static void ApplyChanges( void *unused )
 	switch ( s_ref_list[s_current_menu_index].curvalue )
 	{
 	case REF_SOFT:
-		Cvar_Set( "vid_ref", "soft" );
+		Cvar_Set( "vid_renderer", "soft" );
 		break;
 	case REF_OPENGL:
-		Cvar_Set( "vid_ref", "gl" );
+		Cvar_Set( "vid_renderer", "gl" );
 		Cvar_Set( "gl_driver", "opengl32" );
 		break;
 	case REF_3DFX:
-		Cvar_Set( "vid_ref", "gl" );
+		Cvar_Set( "vid_renderer", "gl" );
 		Cvar_Set( "gl_driver", "3dfxgl" );
 		break;
 	case REF_POWERVR:
-		Cvar_Set( "vid_ref", "gl" );
+		Cvar_Set( "vid_renderer", "gl" );
 		Cvar_Set( "gl_driver", "pvrgl" );
 		break;
 	case REF_VERITE:
-		Cvar_Set( "vid_ref", "gl" );
+		Cvar_Set( "vid_renderer", "gl" );
 		Cvar_Set( "gl_driver", "veritegl" );
 		break;
 	}
@@ -167,17 +167,17 @@ static void ApplyChanges( void *unused )
 	** update appropriate stuff if we're running OpenGL and gamma
 	** has been modified
 	*/
-	if ( stricmp( vid_ref->string, "gl" ) == 0 )
+	if ( stricmp( vid_renderer->string, "gl" ) == 0 )
 	{
 		if ( vid_gamma->modified )
 		{
-			vid_ref->modified = true;
+			vid_renderer->modified = true;
 			if ( stricmp( gl_driver->string, "3dfxgl" ) == 0 )
 			{
 				char envbuffer[1024];
 				float g;
 
-				vid_ref->modified = true;
+				vid_renderer->modified = true;
 
 				g = 2.00 * ( 0.8 - ( vid_gamma->value - 0.5 ) ) + 1.0F;
 				Com_sprintf( envbuffer, sizeof(envbuffer), "SSTV2_GAMMA=%f", g );
@@ -190,7 +190,7 @@ static void ApplyChanges( void *unused )
 		}
 
 		if ( gl_driver->modified )
-			vid_ref->modified = true;
+			vid_renderer->modified = true;
 	}
 
 	M_ForceMenuOff();
@@ -265,12 +265,12 @@ void VID_MenuInit( void )
 	s_screensize_slider[SOFTWARE_MENU].curvalue = scr_viewsize->value/10;
 	s_screensize_slider[OPENGL_MENU].curvalue = scr_viewsize->value/10;
 
-	if ( strcmp( vid_ref->string, "soft" ) == 0 )
+	if ( strcmp( vid_renderer->string, "soft" ) == 0 )
 	{
 		s_current_menu_index = SOFTWARE_MENU;
 		s_ref_list[0].curvalue = s_ref_list[1].curvalue = REF_SOFT;
 	}
-	else if ( strcmp( vid_ref->string, "gl" ) == 0 )
+	else if ( strcmp( vid_renderer->string, "gl" ) == 0 )
 	{
 		s_current_menu_index = OPENGL_MENU;
 		if ( strcmp( gl_driver->string, "3dfxgl" ) == 0 )

@@ -73,7 +73,7 @@ refexport_t	re;
 
 // Console variables that we need to access from this module
 cvar_t		*vid_gamma;
-cvar_t		*vid_ref;			// Name of Refresh DLL loaded
+cvar_t		*vid_renderer;			// Name of Refresh DLL loaded
 cvar_t		*vid_xpos;			// X coordinate of window position
 cvar_t		*vid_ypos;			// Y coordinate of window position
 cvar_t		*vid_fullscreen;
@@ -149,13 +149,13 @@ void VID_Error (int err_level, char *fmt, ...)
 VID_Restart_f
 
 Console command to re-start the video mode and refresh DLL. We do this
-simply by setting the modified flag for the vid_ref variable, which will
+simply by setting the modified flag for the vid_renderer variable, which will
 cause the entire video mode and refresh DLL to be reset on the next frame.
 ============
 */
 void VID_Restart_f (void)
 {
-	vid_ref->modified = true;
+	vid_renderer->modified = true;
 }
 
 /*
@@ -573,26 +573,26 @@ VID_CheckChanges(void)
 	char name[100];
 	cvar_t *sw_mode;
 
-	if ( vid_ref->modified )
+	if ( vid_renderer->modified )
 	{
 		S_StopAllSounds();
 	}
 
-	while (vid_ref->modified)
+	while (vid_renderer->modified)
 	{
 		/*
 		** refresh has changed
 		*/
-		vid_ref->modified = false;
+		vid_renderer->modified = false;
 		vid_fullscreen->modified = true;
 		cl.refresh_prepped = false;
 		cls.disable_screen = true;
 
-		sprintf( name, "ref_%s.so", vid_ref->string );
+		sprintf( name, "ref_%s.so", vid_renderer->string );
 		if ( !VID_LoadRefresh( name ) )
 		{
-			if ( strcmp (vid_ref->string, "soft") == 0 ||
-				strcmp (vid_ref->string, "softx") == 0 ) {
+			if ( strcmp (vid_renderer->string, "soft") == 0 ||
+				strcmp (vid_renderer->string, "softx") == 0 ) {
 				Com_Printf("Refresh failed\n");
 				sw_mode = Cvar_Get( "sw_mode", "0", 0 );
 
@@ -605,7 +605,7 @@ VID_CheckChanges(void)
 					Com_Error (ERR_FATAL, "Couldn't fall back to software refresh!");
 			}
 
-			Cvar_Set( "vid_ref", "soft" );
+			Cvar_Set( "vid_renderer", "soft" );
 
 			/*
 			** drop the console if we fail to load a refresh
@@ -629,9 +629,9 @@ VID_Init(void)
 	/* Create the video variables so we know how to start the graphics drivers */
 	// if DISPLAY is defined, try X
 	if (getenv("DISPLAY"))
-		vid_ref = Cvar_Get ("vid_ref", "softx", CVAR_ARCHIVE);
+		vid_renderer = Cvar_Get ("vid_renderer", "softx", CVAR_ARCHIVE);
 	else
-		vid_ref = Cvar_Get ("vid_ref", "soft", CVAR_ARCHIVE);
+		vid_renderer = Cvar_Get ("vid_renderer", "soft", CVAR_ARCHIVE);
 	vid_xpos = Cvar_Get ("vid_xpos", "3", CVAR_ARCHIVE);
 	vid_ypos = Cvar_Get ("vid_ypos", "22", CVAR_ARCHIVE);
 	vid_gamma = Cvar_Get("vid_gamma", "1.0", CVAR_ARCHIVE);

@@ -143,7 +143,7 @@ cvar_t *gl1_stereo_convergence;
 
 refimport_t ri;
 
-cvar_t *vid_ref;
+cvar_t *vid_renderer;
 cvar_t *gl_drawbuffer;
 cvar_t *gl_lightmap;
 cvar_t *r_shadows;
@@ -1331,7 +1331,7 @@ R_Register(void)
 
 	gl1_saturatelighting = ri.Cvar_Get("gl1_saturatelighting", "0", 0);
 
-	vid_ref = ri.Cvar_Get("vid_ref", "soft", CVAR_ARCHIVE );
+	vid_renderer = ri.Cvar_Get("vid_renderer", "soft", CVAR_ARCHIVE );
 
 	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 	vid_gamma = ri.Cvar_Get("vid_gamma", "1.2", CVAR_ARCHIVE);

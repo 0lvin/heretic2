@@ -40,7 +40,7 @@ static UINT MSH_MOUSEWHEEL;
 
 // Console variables that we need to access from this module
 cvar_t		*vid_gamma;
-extern cvar_t* vid_ref;			// Name of Refresh DLL loaded
+extern cvar_t* vid_renderer;			// Name of Refresh DLL loaded
 cvar_t		*vid_xpos;			// X coordinate of window position
 cvar_t		*vid_ypos;			// Y coordinate of window position
 cvar_t		*vid_fullscreen;
@@ -448,13 +448,13 @@ LONG WINAPI MainWndProc (
 VID_Restart_f
 
 Console command to re-start the video mode and refresh DLL. We do this
-simply by setting the modified flag for the vid_ref variable, which will
+simply by setting the modified flag for the vid_renderer variable, which will
 cause the entire video mode and refresh DLL to be reset on the next frame.
 ============
 */
 void VID_Restart_f (void)
 {
-	vid_ref->modified = true;
+	vid_renderer->modified = true;
 }
 
 void VID_Front_f( void )
@@ -620,27 +620,27 @@ void VID_CheckChanges (void)
 		win_noalttab->modified = false;
 	}
 
-	if ( vid_ref->modified )
+	if ( vid_renderer->modified )
 	{
 		cl.force_refdef = true;		// can't use a paused refdef
 		S_StopAllSounds();
 	}
-	while (vid_ref->modified)
+	while (vid_renderer->modified)
 	{
 		/*
 		** refresh has changed
 		*/
-		vid_ref->modified = false;
+		vid_renderer->modified = false;
 		vid_fullscreen->modified = true;
 		cl.refresh_prepped = false;
 		cls.disable_screen = true;
 
-		Com_sprintf( name, sizeof(name), "ref_%s.dll", vid_ref->string );
+		Com_sprintf( name, sizeof(name), "ref_%s.dll", vid_renderer->string );
 		if ( !VID_LoadRefresh( name ) )
 		{
-			if ( strcmp (vid_ref->string, "soft") == 0 )
+			if ( strcmp (vid_renderer->string, "soft") == 0 )
 				Com_Error (ERR_FATAL, "Couldn't fall back to software refresh!");
-			Cvar_Set( "vid_ref", "soft" );
+			Cvar_Set( "vid_renderer", "soft" );
 
 			/*
 			** drop the console if we fail to load a refresh
@@ -674,7 +674,7 @@ VID_Init
 void VID_Init (void)
 {
 	/* Create the video variables so we know how to start the graphics drivers */
-	vid_ref = Cvar_Get ("vid_ref", "soft", CVAR_ARCHIVE);
+	vid_renderer = Cvar_Get ("vid_renderer", "soft", CVAR_ARCHIVE);
 	vid_xpos = Cvar_Get ("vid_xpos", "3", CVAR_ARCHIVE);
 	vid_ypos = Cvar_Get ("vid_ypos", "22", CVAR_ARCHIVE);
 	vid_fullscreen = Cvar_Get ("vid_fullscreen", "0", CVAR_ARCHIVE);

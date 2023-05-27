@@ -41,7 +41,7 @@ qboolean GLimp_InitGL (void);
 
 glwstate_t glw_state;
 extern cvar_t *vid_fullscreen;
-extern cvar_t* vid_ref;			// Name of Refresh DLL loaded
+extern cvar_t* vid_renderer;			// Name of Refresh DLL loaded
 
 
 static qboolean VerifyDriver( void )
