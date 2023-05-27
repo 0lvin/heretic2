@@ -30,11 +30,7 @@
 #include "header/qmenu.h"
 
 #define REF_SOFT	0
-#define REF_SOFTX11	1
-#define REF_MESA3D  2
-#define REF_3DFXGL 3
-#define REF_OPENGLX	4
-#define REF_MESA3DGLX 5
+#define REF_MESA3D	1
 
 extern cvar_t *vid_renderer;
 extern cvar_t *vid_fullscreen;
@@ -42,7 +38,6 @@ extern cvar_t *vid_gamma;
 extern cvar_t *scr_viewsize;
 
 static cvar_t *r_mode;
-static cvar_t *gl_driver;
 static cvar_t *gl1_picmip;
 static cvar_t *gl_ext_palettedtexture;
 
@@ -162,36 +157,8 @@ ApplyChanges(void *unused)
 	case REF_SOFT:
 		Cvar_Set( "vid_renderer", "soft" );
 		break;
-	case REF_SOFTX11:
-		Cvar_Set( "vid_renderer", "softx" );
-		break;
-
 	case REF_MESA3D :
-		Cvar_Set( "vid_renderer", "gl" );
-		Cvar_Set( "gl_driver", "libMesaGL.so.2" );
-		if (gl_driver->modified)
-			vid_renderer->modified = true;
-		break;
-
-	case REF_OPENGLX :
-		Cvar_Set( "vid_renderer", "glx" );
-		Cvar_Set( "gl_driver", "libGL.so" );
-		if (gl_driver->modified)
-			vid_renderer->modified = true;
-		break;
-
-	case REF_MESA3DGLX :
-		Cvar_Set( "vid_renderer", "glx" );
-		Cvar_Set( "gl_driver", "libMesaGL.so.2" );
-		if (gl_driver->modified)
-			vid_renderer->modified = true;
-		break;
-
-	case REF_3DFXGL :
-		Cvar_Set( "vid_renderer", "gl" );
-		Cvar_Set( "gl_driver", "lib3dfxgl.so" );
-		if (gl_driver->modified)
-			vid_renderer->modified = true;
+		Cvar_Set( "vid_renderer", "gl1" );
 		break;
 	}
 
@@ -257,9 +224,6 @@ VID_MenuInit(void)
 		0
 	};
 	int i;
-
-	if ( !gl_driver )
-		gl_driver = Cvar_Get( "gl_driver", "libMesaGL.so.2", 0 );
 	if ( !gl1_picmip )
 		gl1_picmip = Cvar_Get( "gl1_picmip", "0", 0 );
 	if ( !r_mode )
@@ -289,26 +253,10 @@ VID_MenuInit(void)
 		s_current_menu_index = SOFTWARE_MENU;
 		s_ref_list[0].curvalue = s_ref_list[1].curvalue = REF_SOFT;
 	}
-	else if (strcmp( vid_renderer->string, "softx" ) == 0 )
-	{
-		s_current_menu_index = SOFTWARE_MENU;
-		s_ref_list[0].curvalue = s_ref_list[1].curvalue = REF_SOFTX11;
-	}
-	else if ( strcmp( vid_renderer->string, "gl" ) == 0 )
+	else if ( strcmp( vid_renderer->string, "gl1" ) == 0 )
 	{
 		s_current_menu_index = OPENGL_MENU;
-		if ( strcmp( gl_driver->string, "lib3dfxgl.so" ) == 0 )
-			s_ref_list[s_current_menu_index].curvalue = REF_3DFXGL;
-		else
-			s_ref_list[s_current_menu_index].curvalue = REF_MESA3D;
-	}
-	else if ( strcmp( vid_renderer->string, "glx" ) == 0 )
-	{
-		s_current_menu_index = OPENGL_MENU;
-		if ( strcmp( gl_driver->string, "libMesaGL.so.2" ) == 0 )
-			s_ref_list[s_current_menu_index].curvalue = REF_MESA3DGLX;
-		else
-			s_ref_list[s_current_menu_index].curvalue = REF_OPENGLX;
+		s_ref_list[s_current_menu_index].curvalue = REF_MESA3D;
 	}
 
 	s_software_menu.x = viddef.width * 0.50;

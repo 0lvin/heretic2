@@ -300,17 +300,10 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int number, int bi
 
 	if (bits & U_MODEL)
 		to->modelindex = MSG_ReadByte (&net_message);
-	//if (bits & U_MODEL2)
-	//	to->modelindex2 = MSG_ReadByte (&net_message);
-	//if (bits & U_MODEL3)
-	//	to->modelindex3 = MSG_ReadByte (&net_message);
-	//if (bits & U_MODEL4)
-	//	to->modelindex4 = MSG_ReadByte (&net_message);
-
-
 
 	if (bits & U_FRAME8)
 		to->frame = MSG_ReadByte (&net_message);
+
 	if (bits & U_FRAME16)
 		to->frame = MSG_ReadShort (&net_message);
 

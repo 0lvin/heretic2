@@ -584,7 +584,7 @@ void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
 
 	for(i = 0; i < count; i++)
 	{
-		spawner = ClientEntity_new(type, flags, origin, NULL, Q_ftol(fxi.cls->frametime * 2000.0));
+		spawner = ClientEntity_new(type, flags, origin, NULL, Q_ftol(fxi.cls->rframetime * 2000.0));
 
 		spawner->LifeTime = life;
 		spawner->flags |= CEF_NO_DRAW;

@@ -96,19 +96,6 @@ cvar_t *m_forward;
 cvar_t *m_side;
 cvar_t *freelook;
 
-cvar_t *adr0;
-cvar_t *adr1;
-cvar_t *adr2;
-cvar_t *adr3;
-cvar_t *adr4;
-cvar_t *adr5;
-cvar_t *adr6;
-cvar_t *adr7;
-cvar_t *adr8;
-
-cvar_t *cl_stereo_separation;
-cvar_t *cl_stereo;
-
 client_static_t cls;
 client_state_t cl;
 
@@ -327,12 +314,6 @@ CL_Setenv_f(void)
 	}
 }
 
-
-/*
-==================
-CL_Pause_f
-==================
-*/
 void
 CL_Pause_f(void)
 {
@@ -353,26 +334,19 @@ CL_Quit_f(void)
 	Com_Quit();
 }
 
-/*
-=====================
-CL_ClearState
-
-=====================
-*/
 void
 CL_ClearState(void)
 {
-	S_StopAllSounds ();
-	//CL_ClearEffects ();
-	//CL_ClearTEnts ();
+	S_StopAllSounds();
+	//CL_ClearEffects();
+	//CL_ClearTEnts();
 	//fxe.Clear();
 
-// wipe the entire cl structure
-	memset (&cl, 0, sizeof(cl));
-	memset (&cl_entities, 0, sizeof(cl_entities));
+	/* wipe the entire cl structure */
+	memset(&cl, 0, sizeof(cl));
+	memset(&cl_entities, 0, sizeof(cl_entities));
 
-	SZ_Clear (&cls.netchan.message);
-
+	SZ_Clear(&cls.netchan.message);
 }
 
 /*
@@ -390,24 +364,27 @@ CL_ParseStatusMessage(void)
 }
 
 /*
-=================
-CL_Skins_f
-
-Load or download any custom player skins and models
-=================
-*/
-void CL_Skins_f (void)
+ * Load or download any custom player skins and models
+ */
+void
+CL_Skins_f(void)
 {
-	int		i;
+	int i;
 
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+	for (i = 0; i < MAX_CLIENTS; i++)
 	{
-		if (!cl.configstrings[CS_PLAYERSKINS+i][0])
+		if (!cl.configstrings[CS_PLAYERSKINS + i][0])
+		{
 			continue;
+		}
+
 		Com_Printf("client %i: %s\n", i, cl.configstrings[CS_PLAYERSKINS+i]);
-		SCR_UpdateScreen ();
-		Sys_SendKeyEvents ();	// pump message loop
-		CL_ParseClientinfo (i);
+
+		SCR_UpdateScreen();
+
+		Sys_SendKeyEvents();	// pump message loop
+
+		CL_ParseClientinfo(i);
 	}
 }
 
@@ -428,35 +405,42 @@ void CL_DumpPackets (void)
 	}
 }
 
-//=============================================================================
-
-/*
-==============
-CL_FixUpGender_f
-==============
-*/
-void CL_FixUpGender(void)
+/* This fixes some problems with wrong tagged models and skins */
+void
+CL_FixUpGender(void)
 {
 	char *p;
 	char sk[80];
 
-	if (gender_auto->value) {
-
-		if (gender->modified) {
-			// was set directly, don't override the user
+	if (gender_auto->value)
+	{
+		if (gender->modified)
+		{
+			/* was set directly, don't override the user */
 			gender->modified = false;
 			return;
 		}
 
-		strncpy(sk, skin->string, sizeof(sk) - 1);
+		Q_strlcpy(sk, skin->string, sizeof(sk));
+
 		if ((p = strchr(sk, '/')) != NULL)
+		{
 			*p = 0;
-		if (Q_stricmp(sk, "male") == 0 || Q_stricmp(sk, "cyborg") == 0)
+		}
+
+		if ((Q_stricmp(sk, "male") == 0) || (Q_stricmp(sk, "cyborg") == 0))
+		{
 			Cvar_Set("gender", "male");
-		else if (Q_stricmp(sk, "female") == 0 || Q_stricmp(sk, "crackhor") == 0)
+		}
+		else if ((Q_stricmp(sk, "female") == 0) || (Q_stricmp(sk, "crackhor") == 0))
+		{
 			Cvar_Set("gender", "female");
+		}
 		else
+		{
 			Cvar_Set("gender", "none");
+		}
+
 		gender->modified = false;
 	}
 }
@@ -469,26 +453,23 @@ CL_Userinfo_f(void)
 }
 
 /*
-=================
-CL_Snd_Restart_f
-
-Restart the sound subsystem so it can pick up
-new parameters and flush all sounds
-=================
-*/
-void CL_Snd_Restart_f (void)
+ * Restart the sound subsystem so it can pick up
+ * new parameters and flush all sounds
+ */
+void
+CL_Snd_Restart_f(void)
 {
-	S_Shutdown ();
-	S_Init ();
-	CL_RegisterSounds ();
+	S_Shutdown();
+	S_Init();
+
+	CL_RegisterSounds();
 }
 
-int precache_check; // for autodownload of precache items
+int precache_check;
 int precache_spawncount;
 int precache_tex;
 int precache_model_skin;
-
-byte *precache_model; // used for skin checking in alias models
+byte *precache_model;
 
 #define PLAYER_MULT 5
 
@@ -498,7 +479,8 @@ byte *precache_model; // used for skin checking in alias models
 
 static const char *env_suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
 
-void CL_RequestNextDownload (void)
+void
+CL_RequestNextDownload(void)
 {
 	unsigned	map_checksum;		// for detecting cheater maps
 	char fn[MAX_OSPATH];
@@ -792,31 +774,18 @@ CL_InitLocal(void)
 
 	CL_InitInput();
 
-	adr0 = Cvar_Get( "adr0", "", CVAR_ARCHIVE );
-	adr1 = Cvar_Get( "adr1", "", CVAR_ARCHIVE );
-	adr2 = Cvar_Get( "adr2", "", CVAR_ARCHIVE );
-	adr3 = Cvar_Get( "adr3", "", CVAR_ARCHIVE );
-	adr4 = Cvar_Get( "adr4", "", CVAR_ARCHIVE );
-	adr5 = Cvar_Get( "adr5", "", CVAR_ARCHIVE );
-	adr6 = Cvar_Get( "adr6", "", CVAR_ARCHIVE );
-	adr7 = Cvar_Get( "adr7", "", CVAR_ARCHIVE );
-	adr8 = Cvar_Get( "adr8", "", CVAR_ARCHIVE );
-
 	/* register our variables */
 	cin_force43 = Cvar_Get("cin_force43", "1", 0);
 
-	cl_stereo_separation = Cvar_Get( "cl_stereo_separation", "0.4", CVAR_ARCHIVE );
-	cl_stereo = Cvar_Get( "cl_stereo", "0", 0 );
 	cl_add_blend = Cvar_Get("cl_blend", "1", 0);
 	cl_add_lights = Cvar_Get("cl_lights", "1", 0);
 	cl_add_particles = Cvar_Get("cl_particles", "1", 0);
 	cl_add_entities = Cvar_Get("cl_entities", "1", 0);
-	cl_gun = Cvar_Get("cl_gun", "1", 0);
+	cl_kickangles = Cvar_Get("cl_kickangles", "1", 0);
+	cl_gun = Cvar_Get("cl_gun", "2", CVAR_ARCHIVE);
 	cl_footsteps = Cvar_Get("cl_footsteps", "1", 0);
 	cl_noskins = Cvar_Get("cl_noskins", "0", 0);
-	cl_autoskins = Cvar_Get("cl_autoskins", "0", 0);
-	cl_predict = Cvar_Get ("cl_predict", "1", 0);
-//	cl_minfps = Cvar_Get ("cl_minfps", "5", 0);
+	cl_predict = Cvar_Get("cl_predict", "1", 0);
 	cl_maxfps = Cvar_Get ("cl_maxfps", "90", 0);
 
 	cl_upspeed = Cvar_Get("cl_upspeed", "200", 0);
@@ -841,6 +810,7 @@ CL_InitLocal(void)
 	gl1_stereo_separation = Cvar_Get( "gl1_stereo_separation", "1", CVAR_ARCHIVE );
 	gl1_stereo_convergence = Cvar_Get( "gl1_stereo_convergence", "1.4", CVAR_ARCHIVE );
 
+	cl_autoskins = Cvar_Get("cl_autoskins", "0", 0);
 	cl_timedemo = Cvar_Get("timedemo", "0", 0);
 
 	freelook = Cvar_Get( "freelook", "0", CVAR_ARCHIVE );
@@ -1069,13 +1039,6 @@ CL_SendCommand(void)
 	CL_CheckForResend ();
 }
 
-
-/*
-==================
-CL_Frame
-
-==================
-*/
 void
 CL_Frame(int msec)
 {
@@ -1099,39 +1062,34 @@ CL_Frame(int msec)
 	}
 
 	// let the mouse activate or deactivate
-	IN_Frame ();
+	IN_Frame();
 
 	// decide the simulation time
-	cls.frametime = extratime/1000.0;
+	cls.rframetime = extratime/1000.0;
 	cl.time += extratime;
 	cls.realtime = Sys_Milliseconds();
 
 	extratime = 0;
-#if 0
-	if (cls.frametime > (1.0 / cl_minfps->value))
-		cls.frametime = (1.0 / cl_minfps->value);
-#else
-	if (cls.frametime > (1.0 / 5))
-		cls.frametime = (1.0 / 5);
-#endif
+	if (cls.rframetime > (1.0 / 5))
+		cls.rframetime = (1.0 / 5);
 
 	// if in the debugger last frame, don't timeout
 	if (msec > 5000)
 		cls.netchan.last_received = Sys_Milliseconds ();
 
 	// fetch results from server
-	CL_ReadPackets ();
+	CL_ReadPackets();
 
 	// send a new command message to the server
-	CL_SendCommand ();
+	CL_SendCommand();
 
 	// predict all unacknowledged movements
-	CL_PredictMovement ();
+	CL_PredictMovement();
 
 	// allow rendering DLL change
-	VID_CheckChanges ();
+	VID_CheckChanges();
 	if (!cl.refresh_prepped && cls.state == ca_active)
-		CL_PrepRefresh ();
+		CL_PrepRefresh();
 
 	if (fxe.UpdateEffects)
 	{
@@ -1139,23 +1097,19 @@ CL_Frame(int msec)
 	}
 
 	// update the screen
-	//if (host_speeds->value)
-	//	time_before_ref = Sys_Milliseconds ();
-	SCR_UpdateScreen ();
-	//if (host_speeds->value)
-	//	time_after_ref = Sys_Milliseconds ();
+	SCR_UpdateScreen();
 
 	// update audio
-	S_Update (cl.refdef.vieworg, cl.v_forward, cl.v_right, cl.v_up);
+	S_Update(cl.refdef.vieworg, cl.v_forward, cl.v_right, cl.v_up);
 
 	// advance local effects for next frame
-	CL_RunDLights ();
-	CL_RunLightStyles ();
-	SCR_RunConsole ();
+	CL_RunDLights();
+	CL_RunLightStyles();
+	SCR_RunConsole();
 
 	cls.framecount++;
 
-	if ( log_stats->value )
+	if (log_stats->value)
 	{
 		if ( cls.state == ca_active )
 		{
@@ -1169,8 +1123,10 @@ CL_Frame(int msec)
 			{
 				int now = Sys_Milliseconds();
 
-				if ( log_stats_file )
-					fprintf( log_stats_file, "%d\n", now - lasttimecalled );
+				if (log_stats_file)
+				{
+					fprintf(log_stats_file, "%d\n", now - lasttimecalled );
+				}
 				lasttimecalled = now;
 			}
 		}

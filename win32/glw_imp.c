@@ -406,7 +406,7 @@ qboolean GLimp_InitGL (void)
     int  pixelformat;
 	cvar_t *stereo;
 
-	stereo = ri.Cvar_Get( "cl_stereo", "0", 0 );
+	stereo = ri.Cvar_Get( "gl1_stereo", "0", 0 );
 
 	/*
 	** set PFD_STEREO if necessary
@@ -491,7 +491,7 @@ qboolean GLimp_InitGL (void)
 	if ( !( pfd.dwFlags & PFD_STEREO ) && ( stereo->value != 0 ) )
 	{
 		ri.Con_Printf( PRINT_ALL, "...failed to select stereo pixel format\n" );
-		ri.Cvar_SetValue( "cl_stereo", 0 );
+		ri.Cvar_SetValue( "gl1_stereo", 0 );
 		gl_state.stereo_enabled = false;
 	}
 

@@ -408,7 +408,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 	client_entity_t **prev;
 	client_entity_t *current;
 	entity_t		*r;
-	float			d_time = fxi.cls->frametime;
+	float			d_time = fxi.cls->rframetime;
 	float			d_time2 = d_time * d_time * 0.5;
 	static trace_t	traces[NUM_TRACES];
 	static trace_t	traces2[NUM_TRACES];

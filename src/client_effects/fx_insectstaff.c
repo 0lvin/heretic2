@@ -119,7 +119,7 @@ static qboolean FXInsectStaffTrailThink(struct client_entity_s *self, centity_t 
 			return false;
 
 		Theta=fxi.cl->time*FIST_DELTA_THETA;
-		DeltaTheta=(fxi.cls->frametime*FIST_DELTA_THETA)/NoOfIntervals;
+		DeltaTheta=(fxi.cls->rframetime*FIST_DELTA_THETA)/NoOfIntervals;
 
 		while(TrailLength>0.0)
 		{

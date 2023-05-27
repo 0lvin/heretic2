@@ -58,14 +58,14 @@ void ShutDown();
 void RegisterSounds();
 void RegisterModels(void); // jmarshall: function prototype misamtch
 void AddEffects(qboolean freeze);
-void PostRenderUpdate();
-void PreRenderUpdate();
+static void PostRenderUpdate();
+void CL_RunLightStyles(void);
 struct level_map_info_s *GetLMI();
 int GetLMIMax();
 
-void AddServerEntities(frame_t *frame);
-void ParseEffects(centity_t *cent);
-void ClientStartClientEffect(centity_t *owner,unsigned short effect,int flags,int index,vec3_t position);
+static void AddServerEntities(frame_t *frame);
+static void ParseEffects(centity_t *cent);
+
 
 static void RemoveEffectsFromCent(centity_t *cent)
 {
@@ -271,10 +271,9 @@ PostRenderUpdate
 
 ==============
 */
-void PostRenderUpdate(void)
+static void
+PostRenderUpdate(void)
 {
-	void CL_RunLightStyles(void);
-
 	int i;
 	centity_t *owner;
 	int	num_free_active = 0;
@@ -425,7 +424,8 @@ ParseClientEffects
 sizebuf_t* fxMsgBuf = NULL;
 
 
-void ParseEffects(centity_t *owner)
+static void
+ParseEffects(centity_t *owner)
 {
 	int				i, index;
 	int				num,flags = 0;
@@ -617,18 +617,14 @@ SkipEffect:
 	fxMsgBuf = NULL;
 }
 
-/*
-===============
-AddServerEntities
+static entity_t		sv_ents[MAX_SERVER_ENTITIES];
+static fmnodeinfo_t	sv_ents_fmnodeinfos[MAX_SERVER_ENTITIES][MAX_FM_MESH_NODES];
 
-===============
-*/
 
-void AddServerEntities(frame_t *frame)
+static void
+AddServerEntities(frame_t *frame)
 {
 	entity_t			*ent;
-	static entity_t		sv_ents[MAX_SERVER_ENTITIES];
-	static fmnodeinfo_t	sv_ents_fmnodeinfos[MAX_SERVER_ENTITIES][MAX_FM_MESH_NODES];
 	entity_state_t		*s1;
 	float				autorotate, macerotate;
 	int					i;
@@ -675,7 +671,7 @@ void AddServerEntities(frame_t *frame)
 
 	for(pnum = 0, ent = sv_ents; pnum<numEntsToAdd; ++pnum)
 	{
-		s1 = fxi.parse_entities + ((frame->parse_entities+pnum)&(MAX_PARSE_ENTITIES-1));
+		s1 = fxi.parse_entities + ((frame->parse_entities + pnum) & (MAX_PARSE_ENTITIES - 1));
 
 		cent = fxi.server_entities + s1->number;
 
@@ -711,14 +707,19 @@ void AddServerEntities(frame_t *frame)
 			clientnum = s1->clientnum;
 		}
 
-		// Set frame.
-
+		/* Set frame. */
 		if (effects & EF_ANIM_ALL)
+		{
 			ent->frame = autoanim;
+		}
 		else if (effects & EF_ANIM_ALLFAST)
+		{
 			ent->frame = fxi.cl->time / 100;
+		}
 		else
+		{
 			ent->frame = s1->frame;
+		}
 
 		// Handle flex-model nodes.
 

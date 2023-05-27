@@ -293,14 +293,17 @@ void SCR_DrawCenterString (void)
 	} while (1);
 }
 
-void SCR_CheckDrawCenterString (void)
+void
+SCR_CheckDrawCenterString(void)
 {
-	scr_centertime_off -= cls.frametime;
+	scr_centertime_off -= cls.rframetime;
 
 	if (scr_centertime_off <= 0)
+	{
 		return;
+	}
 
-	SCR_DrawCenterString ();
+	SCR_DrawCenterString();
 }
 
 //=============================================================================
@@ -502,14 +505,14 @@ void SCR_RunConsole (void)
 
 	if (scr_conlines < scr_con_current)
 	{
-		scr_con_current -= scr_conspeed->value*cls.frametime;
+		scr_con_current -= scr_conspeed->value*cls.rframetime;
 		if (scr_conlines > scr_con_current)
 			scr_con_current = scr_conlines;
 
 	}
 	else if (scr_conlines > scr_con_current)
 	{
-		scr_con_current += scr_conspeed->value*cls.frametime;
+		scr_con_current += scr_conspeed->value*cls.rframetime;
 		if (scr_conlines < scr_con_current)
 			scr_con_current = scr_conlines;
 	}
@@ -1292,16 +1295,16 @@ void SCR_UpdateScreen (void)
 	** range check cl_camera_separation so we don't inadvertently fry someone's
 	** brain
 	*/
-	if ( cl_stereo_separation->value > 1.0 )
-		Cvar_SetValue( "cl_stereo_separation", 1.0 );
-	else if ( cl_stereo_separation->value < 0 )
-		Cvar_SetValue( "cl_stereo_separation", 0.0 );
+	if ( gl1_stereo_separation->value > 1.0 )
+		Cvar_SetValue( "gl1_stereo_separation", 1.0 );
+	else if ( gl1_stereo_separation->value < 0 )
+		Cvar_SetValue( "gl1_stereo_separation", 0.0 );
 
-	if ( cl_stereo->value )
+	if ( gl1_stereo->value )
 	{
 		numframes = 2;
-		separation[0] = -cl_stereo_separation->value / 2;
-		separation[1] =  cl_stereo_separation->value / 2;
+		separation[0] = -gl1_stereo_separation->value / 2;
+		separation[1] =  gl1_stereo_separation->value / 2;
 	}
 	else
 	{
@@ -1386,7 +1389,7 @@ void SCR_UpdateScreen (void)
 			SCR_CheckDrawCenterString ();
 
 			if (scr_timegraph->value)
-				SCR_DebugGraph (cls.frametime*300, 0);
+				SCR_DebugGraph (cls.rframetime*300, 0);
 
 			if (scr_debuggraph->value || scr_timegraph->value || scr_netgraph->value)
 				SCR_DrawDebugGraph ();

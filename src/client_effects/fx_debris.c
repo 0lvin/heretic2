@@ -870,7 +870,7 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 
 			BounceVelocity(self->velocity, trace->plane.normal, self->velocity, self->elasticity);
 
-			d_time = fxi.cls->frametime * trace->fraction;
+			d_time = fxi.cls->rframetime * trace->fraction;
 			// The game might crash with a zero movement. --Pat
 			if (d_time)
 			{

@@ -44,7 +44,7 @@ void FXSsithraArrowGlow(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t				org;
 
 	VectorClear(org);
-	glow = ClientEntity_new(type, flags | CEF_NO_DRAW, org, 0, Q_ftol(fxi.cls->frametime * 2000.0));
+	glow = ClientEntity_new(type, flags | CEF_NO_DRAW, org, 0, Q_ftol(fxi.cls->rframetime * 2000.0));
 
 	glow->color.c = 0xff00ffff;
 	glow->dlight = CE_DLight_new(glow->color, 150.0F, 0.0F);

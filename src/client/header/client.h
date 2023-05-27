@@ -65,16 +65,6 @@
 #include "../../player/player.h"
 #include "../../../h2common/levelmaps.h"
 
-// ********************************************************************************************
-// CF_XXX
-// ------
-// Flags for the client side entity to know if its been deleted on the server, or is server
-// culled.
-// ********************************************************************************************
-
-#define CF_INUSE			0x00000001
-#define CF_SERVER_CULLED	0x00000002
-
 typedef struct
 {
 	qboolean		valid; /* cleared if delta parsing was invalid */
@@ -115,6 +105,16 @@ typedef struct
 
 	entity_state_t		*s1;			// pointer to the corresponding entity_state_t in												// cl_parse_entities.
 } centity_t;
+
+// ********************************************************************************************
+// CF_XXX
+// ------
+// Flags for the client side entity to know if its been deleted on the server, or is server
+// culled.
+// ********************************************************************************************
+
+#define CF_INUSE			0x00000001
+#define CF_SERVER_CULLED	0x00000002
 
 // ********************************************************************************************
 // predictinfo_t
@@ -283,7 +283,8 @@ typedef struct
 
 	int			framecount;
 	int			realtime; /* always increasing, no clamping, etc, in MS */
-	float		frametime;			// seconds since last frame
+	float		rframetime; /* seconds since last render frame */
+	float		nframetime; /* network frame time */
 	float		framemodifier;		// variable to mod cfx by
 
 	int			startmenu;			// time when the menu came up
@@ -291,8 +292,6 @@ typedef struct
 	int			m_menustate;
 	float		m_menualpha;
 	float		m_menuscale;
-
-	byte		esc_cinematic;		// Flag to show player wants to leave cinematic
 
 	/* screen rendering information */
 	float		disable_screen; /* showing loading plaque between levels */
@@ -342,7 +341,6 @@ typedef struct
 
 	/* demo recording info must be here, so it isn't cleared on level change */
 	qboolean	demorecording;
-	qboolean	demosavingok;
 	qboolean	demowaiting; /* don't record until a non-delta message is received */
 	FILE		*demofile;
 
@@ -369,9 +367,9 @@ extern int num_power_sounds;
 extern int abort_cinematic;
 
 /* cvars */
-extern	cvar_t	*cl_stereo_separation;
-extern	cvar_t	*cl_stereo;
-
+extern	cvar_t	*gl1_stereo_separation;
+extern	cvar_t	*gl1_stereo_convergence;
+extern	cvar_t	*gl1_stereo;
 extern	cvar_t	*cl_gun;
 extern	cvar_t	*cl_add_blend;
 extern	cvar_t	*cl_add_lights;
@@ -380,9 +378,9 @@ extern	cvar_t	*cl_add_entities;
 extern	cvar_t	*cl_predict;
 extern	cvar_t	*cl_footsteps;
 extern	cvar_t	*cl_noskins;
-extern	cvar_t	*cl_autoskins;
-extern	cvar_t	*cl_maxfps;
-extern	cvar_t	*cl_frametime;
+extern	cvar_t	*cl_upspeed;
+extern	cvar_t	*cl_forwardspeed;
+extern	cvar_t	*cl_sidespeed;
 extern	cvar_t	*cl_yawspeed;
 extern	cvar_t	*cl_pitchspeed;
 extern	cvar_t	*cl_run;
@@ -391,16 +389,9 @@ extern	cvar_t	*cl_shownet;
 extern	cvar_t	*cl_showmiss;
 extern	cvar_t	*cl_showclamp;
 extern	cvar_t	*lookstrafe;
-extern	cvar_t	*cl_predict_local;
-extern	cvar_t	*cl_predict_remote;
-extern	cvar_t *mouse_sensitivity_x;
-extern	cvar_t *mouse_sensitivity_y;
-extern	cvar_t *doubletap_speed;
-extern	cvar_t *allow_download;
-extern	cvar_t *allow_download_maps;
-extern	cvar_t *allow_download_players;
-extern	cvar_t *allow_download_models;
-extern	cvar_t *allow_download_sounds;
+extern	cvar_t	*joy_layout;
+extern	cvar_t	*gyro_mode;
+extern	cvar_t	*gyro_turning_axis;
 extern	cvar_t	*m_pitch;
 extern	cvar_t	*m_yaw;
 extern	cvar_t	*m_forward;
@@ -420,6 +411,19 @@ extern  cvar_t  *vid_renderer;
 extern	cvar_t	*cl_kickangles;
 extern  cvar_t  *cl_r1q2_lightstyle;
 extern  cvar_t  *cl_limitsparksounds;
+extern	cvar_t	*cl_autoskins;
+extern	cvar_t	*cl_maxfps;
+extern	cvar_t	*cl_frametime;
+extern	cvar_t	*cl_predict_local;
+extern	cvar_t	*cl_predict_remote;
+extern	cvar_t *mouse_sensitivity_x;
+extern	cvar_t *mouse_sensitivity_y;
+extern	cvar_t *doubletap_speed;
+extern	cvar_t *allow_download;
+extern	cvar_t *allow_download_maps;
+extern	cvar_t *allow_download_players;
+extern	cvar_t *allow_download_models;
+extern	cvar_t *allow_download_sounds;
 extern	cvar_t *cl_freezeworld;
 extern	cvar_t *lookspring;
 extern cvar_t *cl_camera_clipdamp;
@@ -621,6 +625,7 @@ char *CL_GetLevelWav(int i);
 void CL_LoadStrings(void);
 void CL_RequestNextDownload (void);
 
+void CL_FixUpGender(void);
 void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 void CL_GetChallengePacket (void);
