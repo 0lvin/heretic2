@@ -463,14 +463,16 @@ void VID_Front_f( void )
 	SetForegroundWindow( cl_hwnd );
 }
 
-/*
-** VID_GetModeInfo
-*/
+// --------
+
+// Video mode array
+// ----------------
+
 typedef struct vidmode_s
 {
 	const char *description;
-	int         width, height;
-	int         mode;
+	int width, height;
+	int mode;
 } vidmode_t;
 
 vidmode_t vid_modes[] =

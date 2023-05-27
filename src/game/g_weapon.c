@@ -874,5 +874,3 @@ void WeaponThink_Blast(edict_t *caster,char *Format,...)
 
 	gi.sound(caster,CHAN_WEAPON,gi.soundindex("weapons/BlastFire.wav"),1,ATTN_NORM,0);
 }
-
-// end

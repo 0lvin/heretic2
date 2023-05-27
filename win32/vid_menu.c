@@ -110,7 +110,8 @@ static void BrightnessCallback( void *s )
 	}
 }
 
-static void ResetDefaults( void *unused )
+static void
+ResetDefaults(void *unused)
 {
 	VID_MenuInit();
 }

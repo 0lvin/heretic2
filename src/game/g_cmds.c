@@ -1502,5 +1502,3 @@ qboolean CheckFlood(edict_t *ent)
 	}
 	return false;
 }
-
-// end

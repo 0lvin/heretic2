@@ -577,25 +577,17 @@ void SCR_BeginLoadingPlaque (void)
 	cls.disable_servercount = cl.servercount;
 }
 
-/*
-================
-SCR_EndLoadingPlaque
-================
-*/
-void SCR_EndLoadingPlaque(void)
+void
+SCR_EndLoadingPlaque(void)
 {
 	cls.disable_screen = 0;
-	Con_ClearNotify ();
+	Con_ClearNotify();
 }
 
-/*
-================
-SCR_Loading_f
-================
-*/
-void SCR_Loading_f (void)
+void
+SCR_Loading_f(void)
 {
-	SCR_BeginLoadingPlaque ();
+	SCR_BeginLoadingPlaque();
 }
 
 /*
@@ -656,27 +648,35 @@ void SCR_TimeRefresh_f (void)
 	Com_Printf("%f seconds (%f fps)\n", time, 128/time);
 }
 
-/*
-=================
-SCR_AddDirtyPoint
-=================
-*/
-void SCR_AddDirtyPoint (int x, int y)
+void
+SCR_AddDirtyPoint(int x, int y)
 {
 	if (x < scr_dirty.x1)
+	{
 		scr_dirty.x1 = x;
+	}
+
 	if (x > scr_dirty.x2)
+	{
 		scr_dirty.x2 = x;
+	}
+
 	if (y < scr_dirty.y1)
+	{
 		scr_dirty.y1 = y;
+	}
+
 	if (y > scr_dirty.y2)
+	{
 		scr_dirty.y2 = y;
+	}
 }
 
-void SCR_DirtyScreen (void)
+void
+SCR_DirtyScreen(void)
 {
-	SCR_AddDirtyPoint (0, 0);
-	SCR_AddDirtyPoint (viddef.width-1, viddef.height-1);
+	SCR_AddDirtyPoint(0, 0);
+	SCR_AddDirtyPoint(viddef.width - 1, viddef.height - 1);
 }
 
 
@@ -783,28 +783,24 @@ char		*sb_nums[2][11] =
 	"anum_6", "anum_7", "anum_8", "anum_9", "anum_minus"}
 };
 
-#define	ICON_WIDTH	24
-#define	ICON_HEIGHT	24
-#define	CHAR_WIDTH	16
-#define	ICON_SPACE	8
-
-
+#define ICON_WIDTH 24
+#define ICON_HEIGHT 24
+#define CHAR_WIDTH 16
+#define ICON_SPACE 8
 
 /*
-================
-SizeHUDString
-
-Allow embedded \n in the string
-================
-*/
-void SizeHUDString (char *string, int *w, int *h)
+ * Allow embedded \n in the string
+ */
+void
+SizeHUDString(char *string, int *w, int *h)
 {
-	int		lines, width, current;
+	int lines, width, current;
 
 	lines = 1;
 	width = 0;
 
 	current = 0;
+
 	while (*string)
 	{
 		if (*string == '\n')
@@ -815,9 +811,13 @@ void SizeHUDString (char *string, int *w, int *h)
 		else
 		{
 			current++;
+
 			if (current > width)
+			{
 				width = current;
+			}
 		}
+
 		string++;
 	}
 
@@ -1233,18 +1233,14 @@ void SCR_ExecuteLayoutString (char *s)
 	}
 }
 
-
 /*
-================
-SCR_DrawStats
-
-The status bar is a small layout program that
-is based on the stats array
-================
-*/
-void SCR_DrawStats (void)
+ * The status bar is a small layout program that
+ * is based on the stats array
+ */
+void
+SCR_DrawStats(void)
 {
-	SCR_ExecuteLayoutString (cl.configstrings[CS_STATUSBAR]);
+	SCR_ExecuteLayoutString(cl.configstrings[CS_STATUSBAR]);
 }
 
 

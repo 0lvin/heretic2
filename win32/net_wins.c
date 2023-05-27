@@ -33,8 +33,8 @@ typedef struct
 
 typedef struct
 {
-	loopmsg_t	msgs[MAX_LOOPBACK];
-	int			get, send;
+	loopmsg_t msgs[MAX_LOOPBACK];
+	int get, send;
 } loopback_t;
 
 
@@ -273,42 +273,40 @@ qboolean	NET_StringToAdr (char *s, netadr_t *a)
 	return true;
 }
 
-
-qboolean	NET_IsLocalAddress (netadr_t adr)
+qboolean
+NET_IsLocalAddress(netadr_t adr)
 {
 	return adr.type == NA_LOOPBACK;
 }
 
-/*
-=============================================================================
+/* ============================================================================= */
 
-LOOPBACK BUFFERS FOR LOCAL PLAYER
-
-=============================================================================
-*/
-
-qboolean	NET_GetLoopPacket (netsrc_t sock, netadr_t *net_from, sizebuf_t *net_message)
+qboolean
+NET_GetLoopPacket(netsrc_t sock, netadr_t *net_from, sizebuf_t *net_message)
 {
-	int		i;
-	loopback_t	*loop;
+	int i;
+	loopback_t *loop;
 
 	loop = &loopbacks[sock];
 
 	if (loop->send - loop->get > MAX_LOOPBACK)
+	{
 		loop->get = loop->send - MAX_LOOPBACK;
+	}
 
 	if (loop->get >= loop->send)
+	{
 		return false;
+	}
 
-	i = loop->get & (MAX_LOOPBACK-1);
+	i = loop->get & (MAX_LOOPBACK - 1);
 	loop->get++;
 
-	memcpy (net_message->data, loop->msgs[i].data, loop->msgs[i].datalen);
+	memcpy(net_message->data, loop->msgs[i].data, loop->msgs[i].datalen);
 	net_message->cursize = loop->msgs[i].datalen;
-	memset (net_from, 0, sizeof(*net_from));
+	memset(net_from, 0, sizeof(*net_from));
 	net_from->type = NA_LOOPBACK;
 	return true;
-
 }
 
 
@@ -621,49 +619,57 @@ int NET_IPXSocket (int port)
 	return newsocket;
 }
 
-
-/*
-====================
-NET_OpenIPX
-====================
-*/
-void NET_OpenIPX (void)
+void
+NET_OpenIPX(void)
 {
-	int		port;
-	int		dedicated;
+	int port;
+	int dedicated;
 
-	dedicated = Cvar_VariableValue ("dedicated");
+	dedicated = Cvar_VariableValue("dedicated");
 
 	if (!ipx_sockets[NS_SERVER])
 	{
 		port = Cvar_Get("ipx_hostport", "0", CVAR_NOSET)->value;
+
 		if (!port)
 		{
 			port = Cvar_Get("hostport", "0", CVAR_NOSET)->value;
+
 			if (!port)
 			{
 				port = Cvar_Get("port", va("%i", PORT_SERVER), CVAR_NOSET)->value;
 			}
 		}
-		ipx_sockets[NS_SERVER] = NET_IPXSocket (port);
+
+		ipx_sockets[NS_SERVER] = NET_IPXSocket(port);
 	}
 
-	// dedicated servers don't need client ports
+	/* dedicated servers don't need client ports */
 	if (dedicated)
+	{
 		return;
+	}
 
 	if (!ipx_sockets[NS_CLIENT])
 	{
 		port = Cvar_Get("ipx_clientport", "0", CVAR_NOSET)->value;
+
 		if (!port)
 		{
 			port = Cvar_Get("clientport", va("%i", PORT_CLIENT), CVAR_NOSET)->value;
+
 			if (!port)
+			{
 				port = PORT_ANY;
+			}
 		}
-		ipx_sockets[NS_CLIENT] = NET_IPXSocket (port);
+
+		ipx_sockets[NS_CLIENT] = NET_IPXSocket(port);
+
 		if (!ipx_sockets[NS_CLIENT])
-			ipx_sockets[NS_CLIENT] = NET_IPXSocket (PORT_ANY);
+		{
+			ipx_sockets[NS_CLIENT] = NET_IPXSocket(PORT_ANY);
+		}
 	}
 }
 
@@ -768,76 +774,112 @@ void NET_Init (void)
 	net_shownet = Cvar_Get ("net_shownet", "0", 0);
 }
 
-
-/*
-====================
-NET_Shutdown
-====================
-*/
-void	NET_Shutdown (void)
+void
+NET_Shutdown(void)
 {
-	NET_Config (false);	// close sockets
+	NET_Config(false); /* close sockets */
 
-	WSACleanup ();
+	WSACleanup();
 }
 
-
-/*
-====================
-NET_ErrorString
-====================
-*/
-char *NET_ErrorString (void)
+char *
+NET_ErrorString(void)
 {
-	int		code;
+	int code;
 
-	code = WSAGetLastError ();
+	code = WSAGetLastError();
+
 	switch (code)
 	{
-	case WSAEINTR: return "WSAEINTR";
-	case WSAEBADF: return "WSAEBADF";
-	case WSAEACCES: return "WSAEACCES";
-	case WSAEDISCON: return "WSAEDISCON";
-	case WSAEFAULT: return "WSAEFAULT";
-	case WSAEINVAL: return "WSAEINVAL";
-	case WSAEMFILE: return "WSAEMFILE";
-	case WSAEWOULDBLOCK: return "WSAEWOULDBLOCK";
-	case WSAEINPROGRESS: return "WSAEINPROGRESS";
-	case WSAEALREADY: return "WSAEALREADY";
-	case WSAENOTSOCK: return "WSAENOTSOCK";
-	case WSAEDESTADDRREQ: return "WSAEDESTADDRREQ";
-	case WSAEMSGSIZE: return "WSAEMSGSIZE";
-	case WSAEPROTOTYPE: return "WSAEPROTOTYPE";
-	case WSAENOPROTOOPT: return "WSAENOPROTOOPT";
-	case WSAEPROTONOSUPPORT: return "WSAEPROTONOSUPPORT";
-	case WSAESOCKTNOSUPPORT: return "WSAESOCKTNOSUPPORT";
-	case WSAEOPNOTSUPP: return "WSAEOPNOTSUPP";
-	case WSAEPFNOSUPPORT: return "WSAEPFNOSUPPORT";
-	case WSAEAFNOSUPPORT: return "WSAEAFNOSUPPORT";
-	case WSAEADDRINUSE: return "WSAEADDRINUSE";
-	case WSAEADDRNOTAVAIL: return "WSAEADDRNOTAVAIL";
-	case WSAENETDOWN: return "WSAENETDOWN";
-	case WSAENETUNREACH: return "WSAENETUNREACH";
-	case WSAENETRESET: return "WSAENETRESET";
-	case WSAECONNABORTED: return "WSWSAECONNABORTEDAEINTR";
-	case WSAECONNRESET: return "WSAECONNRESET";
-	case WSAENOBUFS: return "WSAENOBUFS";
-	case WSAEISCONN: return "WSAEISCONN";
-	case WSAENOTCONN: return "WSAENOTCONN";
-	case WSAESHUTDOWN: return "WSAESHUTDOWN";
-	case WSAETOOMANYREFS: return "WSAETOOMANYREFS";
-	case WSAETIMEDOUT: return "WSAETIMEDOUT";
-	case WSAECONNREFUSED: return "WSAECONNREFUSED";
-	case WSAELOOP: return "WSAELOOP";
-	case WSAENAMETOOLONG: return "WSAENAMETOOLONG";
-	case WSAEHOSTDOWN: return "WSAEHOSTDOWN";
-	case WSASYSNOTREADY: return "WSASYSNOTREADY";
-	case WSAVERNOTSUPPORTED: return "WSAVERNOTSUPPORTED";
-	case WSANOTINITIALISED: return "WSANOTINITIALISED";
-	case WSAHOST_NOT_FOUND: return "WSAHOST_NOT_FOUND";
-	case WSATRY_AGAIN: return "WSATRY_AGAIN";
-	case WSANO_RECOVERY: return "WSANO_RECOVERY";
-	case WSANO_DATA: return "WSANO_DATA";
-	default: return "NO ERROR";
+		case WSAEINTR:
+			return "WSAEINTR";
+		case WSAEBADF:
+			return "WSAEBADF";
+		case WSAEACCES:
+			return "WSAEACCES";
+		case WSAEDISCON:
+			return "WSAEDISCON";
+		case WSAEFAULT:
+			return "WSAEFAULT";
+		case WSAEINVAL:
+			return "WSAEINVAL";
+		case WSAEMFILE:
+			return "WSAEMFILE";
+		case WSAEWOULDBLOCK:
+			return "WSAEWOULDBLOCK";
+		case WSAEINPROGRESS:
+			return "WSAEINPROGRESS";
+		case WSAEALREADY:
+			return "WSAEALREADY";
+		case WSAENOTSOCK:
+			return "WSAENOTSOCK";
+		case WSAEDESTADDRREQ:
+			return "WSAEDESTADDRREQ";
+		case WSAEMSGSIZE:
+			return "WSAEMSGSIZE";
+		case WSAEPROTOTYPE:
+			return "WSAEPROTOTYPE";
+		case WSAENOPROTOOPT:
+			return "WSAENOPROTOOPT";
+		case WSAEPROTONOSUPPORT:
+			return "WSAEPROTONOSUPPORT";
+		case WSAESOCKTNOSUPPORT:
+			return "WSAESOCKTNOSUPPORT";
+		case WSAEOPNOTSUPP:
+			return "WSAEOPNOTSUPP";
+		case WSAEPFNOSUPPORT:
+			return "WSAEPFNOSUPPORT";
+		case WSAEAFNOSUPPORT:
+			return "WSAEAFNOSUPPORT";
+		case WSAEADDRINUSE:
+			return "WSAEADDRINUSE";
+		case WSAEADDRNOTAVAIL:
+			return "WSAEADDRNOTAVAIL";
+		case WSAENETDOWN:
+			return "WSAENETDOWN";
+		case WSAENETUNREACH:
+			return "WSAENETUNREACH";
+		case WSAENETRESET:
+			return "WSAENETRESET";
+		case WSAECONNABORTED:
+			return "WSWSAECONNABORTEDAEINTR";
+		case WSAECONNRESET:
+			return "WSAECONNRESET";
+		case WSAENOBUFS:
+			return "WSAENOBUFS";
+		case WSAEISCONN:
+			return "WSAEISCONN";
+		case WSAENOTCONN:
+			return "WSAENOTCONN";
+		case WSAESHUTDOWN:
+			return "WSAESHUTDOWN";
+		case WSAETOOMANYREFS:
+			return "WSAETOOMANYREFS";
+		case WSAETIMEDOUT:
+			return "WSAETIMEDOUT";
+		case WSAECONNREFUSED:
+			return "WSAECONNREFUSED";
+		case WSAELOOP:
+			return "WSAELOOP";
+		case WSAENAMETOOLONG:
+			return "WSAENAMETOOLONG";
+		case WSAEHOSTDOWN:
+			return "WSAEHOSTDOWN";
+		case WSASYSNOTREADY:
+			return "WSASYSNOTREADY";
+		case WSAVERNOTSUPPORTED:
+			return "WSAVERNOTSUPPORTED";
+		case WSANOTINITIALISED:
+			return "WSANOTINITIALISED";
+		case WSAHOST_NOT_FOUND:
+			return "WSAHOST_NOT_FOUND";
+		case WSATRY_AGAIN:
+			return "WSATRY_AGAIN";
+		case WSANO_RECOVERY:
+			return "WSANO_RECOVERY";
+		case WSANO_DATA:
+			return "WSANO_DATA";
+		default:
+			return "NO ERROR";
 	}
 }

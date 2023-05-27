@@ -438,4 +438,4 @@ animframe_t GkrokonFramesDelay[]=
 	FRAME_bwait13,	NULL, 0, 0, 0, NULL, 0,	GkrokonPause,
 	FRAME_bwait14,	NULL, 0, 0, 0, NULL, 0,	GkrokonPause,
 };
-animmove_t GkrokonMoveDelay={14,GkrokonFramesDelay, GkrokonPause};//GkrokonOrderStand};
+animmove_t GkrokonMoveDelay={14,GkrokonFramesDelay, GkrokonPause};

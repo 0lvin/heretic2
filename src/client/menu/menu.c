@@ -462,19 +462,22 @@ static void Multiplayer_MenuDraw (void)
 	Menu_Draw( &s_multiplayer_menu );
 }
 
-static void PlayerSetupFunc( void *unused )
+static void
+PlayerSetupFunc(void *unused)
 {
-	M_Menu_PlayerConfig_f();
+    M_Menu_PlayerConfig_f();
 }
 
-static void JoinNetworkServerFunc( void *unused )
+static void
+JoinNetworkServerFunc(void *unused)
 {
-	M_Menu_JoinServer_f();
+    M_Menu_JoinServer_f();
 }
 
-static void StartNetworkServerFunc( void *unused )
+static void
+StartNetworkServerFunc(void *unused)
 {
-	M_Menu_StartServer_f ();
+    M_Menu_StartServer_f();
 }
 
 void Multiplayer_MenuInit( void )
@@ -909,10 +912,11 @@ static void Keys_MenuInit( void )
 	Menu_Center( &s_keys_menu );
 }
 
-static void Keys_MenuDraw (void)
+static void
+Keys_MenuDraw(void)
 {
-	Menu_AdjustCursor( &s_keys_menu, 1 );
-	Menu_Draw( &s_keys_menu );
+    Menu_AdjustCursor(&s_keys_menu, 1);
+    Menu_Draw(&s_keys_menu);
 }
 
 static const char *Keys_MenuKey( int key )
@@ -995,9 +999,10 @@ static void JoystickFunc( void *unused )
 	Cvar_SetValue( "in_joystick", s_options_joystick_box.curvalue );
 }
 
-static void CustomizeControlsFunc( void *unused )
+static void
+CustomizeControlsFunc(void *unused)
 {
-	M_Menu_Keys_f();
+    M_Menu_Keys_f();
 }
 
 static void AlwaysRunFunc( void *unused )
@@ -1874,37 +1879,43 @@ static void StartGame( void )
 	cls.key_dest = key_game;
 }
 
-static void EasyGameFunc( void *data )
+static void
+EasyGameFunc(void *data)
 {
-	Cvar_ForceSet( "skill", "0" );
-	StartGame();
+    Cvar_ForceSet("skill", "0");
+    StartGame();
 }
 
-static void MediumGameFunc( void *data )
+static void
+MediumGameFunc(void *data)
 {
-	Cvar_ForceSet( "skill", "1" );
-	StartGame();
+    Cvar_ForceSet("skill", "1");
+    StartGame();
 }
 
-static void HardGameFunc( void *data )
+static void
+HardGameFunc(void *data)
 {
-	Cvar_ForceSet( "skill", "2" );
-	StartGame();
+    Cvar_ForceSet("skill", "2");
+    StartGame();
 }
 
-static void LoadGameFunc( void *unused )
+static void
+LoadGameFunc(void *unused)
 {
-	M_Menu_LoadGame_f ();
+    M_Menu_LoadGame_f();
 }
 
-static void SaveGameFunc( void *unused )
+static void
+SaveGameFunc(void *unused)
 {
-	M_Menu_SaveGame_f();
+    M_Menu_SaveGame_f();
 }
 
-static void CreditsFunc( void *unused )
+static void
+CreditsFunc(void *unused)
 {
-	M_Menu_Credits_f();
+    M_Menu_Credits_f();
 }
 
 void Game_MenuInit( void )
@@ -2757,9 +2768,10 @@ void DMOptions_MenuDraw(void)
 	Menu_Draw( &s_dmoptions_menu );
 }
 
-const char *DMOptions_MenuKey( int key )
+const char *
+DMOptions_MenuKey(int key)
 {
-	return Default_MenuKey( &s_dmoptions_menu, key );
+    return Default_MenuKey(&s_dmoptions_menu, key);
 }
 
 void M_Menu_DMOptions_f (void)
@@ -2944,20 +2956,22 @@ void AddressBook_MenuInit( void )
 	}
 }
 
-const char *AddressBook_MenuKey( int key )
+const char *
+AddressBook_MenuKey(int key)
 {
-	if ( key == K_ESCAPE )
-	{
-		int index;
-		char buffer[20];
+    if (key == K_ESCAPE)
+    {
+        int index;
+        char buffer[20];
 
-		for ( index = 0; index < NUM_ADDRESSBOOK_ENTRIES; index++ )
-		{
-			Com_sprintf( buffer, sizeof( buffer ), "adr%d", index );
-			Cvar_Set( buffer, s_addressbook_fields[index].buffer );
-		}
-	}
-	return Default_MenuKey( &s_addressbook_menu, key );
+        for (index = 0; index < NUM_ADDRESSBOOK_ENTRIES; index++)
+        {
+            Com_sprintf(buffer, sizeof(buffer), "adr%d", index);
+            Cvar_Set(buffer, s_addressbook_fields[index].buffer);
+        }
+    }
+
+    return Default_MenuKey(&s_addressbook_menu, key);
 }
 
 void AddressBook_MenuDraw(void)
@@ -3047,22 +3061,25 @@ static void FreeFileList( char **list, int n )
 	free( list );
 }
 
-static qboolean IconOfSkinExists( char *skin, char **pcxfiles, int npcxfiles )
+// returns true if icon .pcx exists for skin .pcx
+static qboolean IconOfSkinExists(char* skin, char** pcxfiles, int npcxfiles)
 {
-	int i;
-	char scratch[1024];
+    int i;
+    char scratch[1024];
 
-	strcpy( scratch, skin );
-	*strrchr( scratch, '.' ) = 0;
-	strcat( scratch, "_i.pcx" );
+    strcpy(scratch, skin);
+    *strrchr(scratch, '.') = 0;
+    strcat(scratch, "_i.pcx");
 
-	for ( i = 0; i < npcxfiles; i++ )
-	{
-		if ( strcmp( pcxfiles[i], scratch ) == 0 )
-			return true;
-	}
+    for (i = 0; i < npcxfiles; i++)
+    {
+        if (strcmp(pcxfiles[i], scratch) == 0)
+        {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 static qboolean PlayerConfig_ScanDirectories( void )

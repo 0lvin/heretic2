@@ -414,8 +414,8 @@ usercmd_t CL_CreateCmd (void)
 	return cmd;
 }
 
-
-void IN_CenterView (void)
+void
+IN_CenterView(void)
 {
 	cl.viewangles[PITCH] = -SHORT2ANGLE(cl.frame.playerstate.pmove.delta_angles[PITCH]);
 }

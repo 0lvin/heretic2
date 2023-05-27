@@ -76,13 +76,15 @@ void Action_Draw( menuaction_s *a )
 		a->generic.ownerdraw( a );
 }
 
-qboolean Field_DoEnter( menufield_s *f )
+qboolean
+Field_DoEnter(menufield_s *f)
 {
-	if ( f->generic.callback )
+	if (f->generic.callback)
 	{
-		f->generic.callback( f );
+		f->generic.callback(f);
 		return true;
 	}
+
 	return false;
 }
 
@@ -412,27 +414,27 @@ qboolean Menu_SelectItem( menuframework_s *s )
 	return false;
 }
 
-
-void Menu_SetStatusBar( menuframework_s *m, const char *string )
+void
+Menu_SetStatusBar(menuframework_s *m, const char *string)
 {
 	m->statusbar = string;
 }
 
-
-void Menu_SlideItem( menuframework_s *s, int dir )
+void
+Menu_SlideItem(menuframework_s *s, int dir)
 {
-	menucommon_s *item = ( menucommon_s * ) Menu_ItemAtCursor( s );
+	menucommon_s *item = (menucommon_s *)Menu_ItemAtCursor(s);
 
-	if ( item )
+	if (item)
 	{
-		switch ( item->type )
+		switch (item->type)
 		{
-		case MTYPE_SLIDER:
-			Slider_DoSlide( ( menuslider_s * ) item, dir );
-			break;
-		case MTYPE_SPINCONTROL:
-			SpinControl_DoSlide( ( menulist_s * ) item, dir );
-			break;
+			case MTYPE_SLIDER:
+				Slider_DoSlide((menuslider_s *)item, dir);
+				break;
+			case MTYPE_SPINCONTROL:
+				SpinControl_DoSlide((menulist_s *)item, dir);
+				break;
 		}
 	}
 }

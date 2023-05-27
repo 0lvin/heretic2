@@ -57,15 +57,12 @@ typedef enum
 	SOLID_BSP		// BSP clip, touch on edge.
 } solid_t;
 
-// ************************************************************************************************
-// 'link_t'.
-// ---------
-// Only used for entity area links.
-// ************************************************************************************************
+/* =============================================================== */
 
+/* link_t is only used for entity area links now */
 typedef struct link_s
 {
-	struct link_s	*prev,*next;
+	struct link_s *prev, *next;
 } link_t;
 
 #define	MAX_ENT_CLUSTERS	16

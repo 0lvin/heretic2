@@ -2349,5 +2349,3 @@ void SP_misc_fire_sparker (edict_t *self)
 
 	self->use = fire_spark_use;
 }
-
-// end

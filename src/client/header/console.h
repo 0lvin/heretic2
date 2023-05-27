@@ -49,10 +49,10 @@ typedef struct
 	paletteRGBA_t	current_color;
 
 	float	cursorspeed;
+
 	int		vislines;
 
-	float	times[NUM_CON_TIMES];	// cls.realtime time the line was generated
-								// for transparent notify lines
+	float	times[NUM_CON_TIMES]; /* cls.realtime time the line was generated */
 } console_t;
 
 extern	console_t	con;

@@ -655,8 +655,7 @@ SV_RecordDemoMessage(void)
 	{
 		/* ignore ents without visible models unless they have an effect */
 		if (ent->inuse && ent->s.number &&
-			(ent->s.modelindex || ent->s.effects || ent->s.sound) &&
-			!(ent->svflags & SVF_NOCLIENT))
+			(ent->s.modelindex || ent->s.effects || ent->s.sound) && !(ent->svflags & SVF_NOCLIENT))
 		{
 			MSG_WriteDeltaEntity(&nostate, &ent->s, &buf, false, true);
 		}

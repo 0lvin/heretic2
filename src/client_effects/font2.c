@@ -207,5 +207,3 @@ glxy_t *font2[96] =
 	&TILDE,
 	0,
 };
-
-// end

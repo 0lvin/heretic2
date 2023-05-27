@@ -505,11 +505,3 @@ animframe_t priestess_frames_jump_attack[] =
 	FRAME_jumpatt14, NULL, 0, 0, 0, ai_charge, 0, NULL,
 };
 animmove_t priestess_move_jump_attack = {14,priestess_frames_jump_attack, priestess_pause};
-
-/*
-animframe_t priestess_frames_[] =
-{
-	FRAME_,  NULL, 0, 0, 0, NULL, 0, NULL,
-};
-animmove_t priestess_move_ = {1,priestess_frames_, priestess_idle};
-*/

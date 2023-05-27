@@ -56,10 +56,10 @@ void DrawAltString (int x, int y, char *s)
 	}
 }
 
-
-void Key_ClearTyping (void)
+void
+Key_ClearTyping(void)
 {
-	key_lines[edit_line][1] = 0;	// clear any typing
+	key_lines[edit_line][1] = 0; /* clear any typing */
 	key_linepos = 1;
 }
 
@@ -104,14 +104,10 @@ void Con_ToggleConsole_f (void)
 	}
 }
 
-/*
-================
-Con_ToggleChat_f
-================
-*/
-void Con_ToggleChat_f (void)
+void
+Con_ToggleChat_f(void)
 {
-	Key_ClearTyping ();
+	Key_ClearTyping();
 
 	if (cls.key_dest == key_console)
 	{
@@ -122,19 +118,17 @@ void Con_ToggleChat_f (void)
 		}
 	}
 	else
+	{
 		cls.key_dest = key_console;
+	}
 
-	Con_ClearNotify ();
+	Con_ClearNotify();
 }
 
-/*
-================
-Con_Clear_f
-================
-*/
-void Con_Clear_f (void)
+void
+Con_Clear_f(void)
 {
-	memset (con.text, ' ', CON_TEXTSIZE);
+	memset(con.text, ' ', CON_TEXTSIZE);
 }
 
 
@@ -217,24 +211,15 @@ void Con_ClearNotify (void)
 		con.times[i] = 0;
 }
 
-
-/*
-================
-Con_MessageMode_f
-================
-*/
-void Con_MessageMode_f (void)
+void
+Con_MessageMode_f(void)
 {
 	chat_team = false;
 	cls.key_dest = key_message;
 }
 
-/*
-================
-Con_MessageMode2_f
-================
-*/
-void Con_MessageMode2_f (void)
+void
+Con_MessageMode2_f(void)
 {
 	chat_team = true;
 	cls.key_dest = key_message;
@@ -300,31 +285,24 @@ void Con_CheckResize (void)
 	con.display = con.current;
 }
 
-
-/*
-================
-Con_Init
-================
-*/
-void Con_Init (void)
+void
+Con_Init(void)
 {
 	con.linewidth = -1;
 
-	Con_CheckResize ();
+	Con_CheckResize();
 
 	Com_Printf("Console initialized.\n");
 
-//
-// register our commands
-//
-	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
+	/* register our commands */
+	con_notifytime = Cvar_Get("con_notifytime", "3", 0);
 
-	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
-	Cmd_AddCommand ("togglechat", Con_ToggleChat_f);
-	Cmd_AddCommand ("messagemode", Con_MessageMode_f);
-	Cmd_AddCommand ("messagemode2", Con_MessageMode2_f);
-	Cmd_AddCommand ("clear", Con_Clear_f);
-	Cmd_AddCommand ("condump", Con_Dump_f);
+	Cmd_AddCommand("toggleconsole", Con_ToggleConsole_f);
+	Cmd_AddCommand("togglechat", Con_ToggleChat_f);
+	Cmd_AddCommand("messagemode", Con_MessageMode_f);
+	Cmd_AddCommand("messagemode2", Con_MessageMode2_f);
+	Cmd_AddCommand("clear", Con_Clear_f);
+	Cmd_AddCommand("condump", Con_Dump_f);
 	con.initialized = true;
 }
 

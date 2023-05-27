@@ -75,15 +75,15 @@ typedef struct
 	int x, y;
 	menuframework_s *parent;
 	int cursor_offset;
-	int	localdata[4];
+	int localdata[4];
 	unsigned flags;
 
 	const char *statusbar;
 
-	void (*callback)( void *self );
-	void (*statusbarfunc)( void *self );
-	void (*ownerdraw)( void *self );
-	void (*cursordraw)( void *self );
+	void (*callback)(void *self);
+	void (*statusbarfunc)(void *self);
+	void (*ownerdraw)(void *self);
+	void (*cursordraw)(void *self);
 } menucommon_s;
 
 typedef struct

@@ -1434,28 +1434,21 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 	return spot;
 }
 
-/*
-================
-SelectFarthestDeathmatchSpawnPoint
-
-================
-*/
-edict_t *SelectFarthestDeathmatchSpawnPoint (void)
+edict_t *
+SelectFarthestDeathmatchSpawnPoint(void)
 {
-	edict_t	*bestspot;
-	float	bestdistance, bestplayerdistance;
-	edict_t	*spot;
-
+	edict_t *bestspot;
+	float bestdistance, bestplayerdistance;
+	edict_t *spot;
 
 	spot = NULL;
 	bestspot = NULL;
 	bestdistance = 0;
-	while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
-	{
-//		if(spot->damage_debounce_time > level.time)
-//			continue;//was just used
 
-		bestplayerdistance = PlayersRangeFromSpot (spot);
+	while ((spot = G_Find(spot, FOFS(classname),
+					"info_player_deathmatch")) != NULL)
+	{
+		bestplayerdistance = PlayersRangeFromSpot(spot);
 
 		if (bestplayerdistance > bestdistance)
 		{
@@ -1469,9 +1462,9 @@ edict_t *SelectFarthestDeathmatchSpawnPoint (void)
 		return bestspot;
 	}
 
-	// if there is a player just spawned on each and every start spot
-	// we have no choice to turn one into a telefrag meltdown
-	spot = G_Find (NULL, FOFS(classname), "info_player_deathmatch");
+	/* if there is a player just spawned on each and every start spot/
+	   we have no choice to turn one into a telefrag meltdown */
+	spot = G_Find(NULL, FOFS(classname), "info_player_deathmatch");
 
 	return spot;
 }

@@ -846,5 +846,3 @@ void G_SetStats (edict_t *ent)
 		    ps->stats[STAT_LAYOUTS] |= 1;
 	}
 }
-
-// end

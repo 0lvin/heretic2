@@ -210,5 +210,3 @@ glxy_t *font1[96] =
 	&TILDE,
 	&POUND,
 };
-
-// end

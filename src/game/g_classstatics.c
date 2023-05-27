@@ -122,5 +122,3 @@ void (*classStaticsInits[NUM_CLASSIDS])() =
 	Corvus8StaticsInit,
 	Corvus9StaticsInit,
 };
-
-// end

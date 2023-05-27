@@ -1286,7 +1286,3 @@ void SP_trigger_PlayerPushLever(edict_t *self)
 	self->TriggerActivated = trigger_playerpushlever;
 
 }
-
-//----------------------------------------------------------------------
-// Player Push Lever Trigger
-//----------------------------------------------------------------------

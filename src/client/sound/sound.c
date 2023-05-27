@@ -92,6 +92,9 @@ cvar_t		*s_primary;
 int		s_rawend;
 portable_samplepair_t	s_rawsamples[MAX_RAW_SAMPLES];
 
+qboolean snd_is_underwater;
+qboolean snd_is_underwater_enabled;
+/* ----------------------------------------------------------------- */
 
 // ====================================================================
 // User-setable variables

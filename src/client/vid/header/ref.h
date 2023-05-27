@@ -339,7 +339,6 @@ void R_EndRegistration(void);
 struct image_s *Draw_FindPic(char *name);
 void R_RenderFrame(refdef_t *fd);
 void Draw_GetPicSize(int *w, int *h, char *name);
-
 void Draw_PicScaled(int x, int y, char *pic, float factor);
 
 void Draw_CharScaled(int x, int y, int num, float scale);

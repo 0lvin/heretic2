@@ -159,10 +159,11 @@ $(BUILDDIR)/%.o :                 %.c ${HEADERS}
 HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/cl_cin.o \
 	$(BUILDDIR)/src/client/cl_entities.o \
-	$(BUILDDIR)/src/client/cl_fx.o \
+	$(BUILDDIR)/src/client/cl_lights.o \
 	$(BUILDDIR)/src/client/cl_input.o \
 	$(BUILDDIR)/src/client/cl_inventory.o \
 	$(BUILDDIR)/src/client/cl_main.o \
+	$(BUILDDIR)/src/client/cl_network.o \
 	$(BUILDDIR)/src/client/cl_parse.o \
 	$(BUILDDIR)/src/client/cl_prediction.o \
 	$(BUILDDIR)/src/client/cl_screen.o \

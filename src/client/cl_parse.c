@@ -433,22 +433,19 @@ void CL_LoadClientinfo (clientinfo_t *ci, char *s)
 }
 
 /*
-================
-CL_ParseClientinfo
-
-Load the skin, icon, and model for a client
-================
-*/
-void CL_ParseClientinfo (int player)
+ * Load the skin, icon, and model for a client
+ */
+void
+CL_ParseClientinfo(int player)
 {
-	char			*s;
-	clientinfo_t	*ci;
+	char *s;
+	clientinfo_t *ci;
 
-	s = cl.configstrings[player+CS_PLAYERSKINS];
+	s = cl.configstrings[player + CS_PLAYERSKINS];
 
 	ci = &cl.clientinfo[player];
 
-	CL_LoadClientinfo (ci, s);
+	CL_LoadClientinfo(ci, s);
 }
 
 

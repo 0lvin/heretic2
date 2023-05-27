@@ -653,17 +653,20 @@ cmodel_t	*CM_InlineModel (char *name)
 	return &map_cmodels[num];
 }
 
-int		CM_NumClusters (void)
+int
+CM_NumClusters(void)
 {
 	return numclusters;
 }
 
-int		CM_NumInlineModels (void)
+int
+CM_NumInlineModels(void)
 {
 	return numcmodels;
 }
 
-char	*CM_EntityString (void)
+char *
+CM_EntityString(void)
 {
 	return map_entitystring;
 }
@@ -820,11 +823,15 @@ CM_PointLeafnum_r(vec3_t p, int num)
 	return -1 - num;
 }
 
-int CM_PointLeafnum (vec3_t p)
+int
+CM_PointLeafnum(vec3_t p)
 {
 	if (!numplanes)
-		return 0;		// sound may call this without map loaded
-	return CM_PointLeafnum_r (p, 0);
+	{
+		return 0; /* sound may call this without map loaded */
+	}
+
+	return CM_PointLeafnum_r(p, 0);
 }
 
 
@@ -897,28 +904,24 @@ int	CM_BoxLeafnums_headnode (vec3_t mins, vec3_t maxs, int *list, int listsize, 
 	return leaf_count;
 }
 
-int	CM_BoxLeafnums (vec3_t mins, vec3_t maxs, int *list, int listsize, int *topnode)
+int
+CM_BoxLeafnums(vec3_t mins, vec3_t maxs, int *list, int listsize, int *topnode)
 {
-	return CM_BoxLeafnums_headnode (mins, maxs, list,
-		listsize, map_cmodels[0].headnode, topnode);
+	return CM_BoxLeafnums_headnode(mins, maxs, list,
+			listsize, map_cmodels[0].headnode, topnode);
 }
 
-
-
-/*
-==================
-CM_PointContents
-
-==================
-*/
-int CM_PointContents (vec3_t p, int headnode)
+int
+CM_PointContents(vec3_t p, int headnode)
 {
-	int		l;
+	int l;
 
-	if (!numnodes)	// map not loaded
+	if (!numnodes) /* map not loaded */
+	{
 		return 0;
+	}
 
-	l = CM_PointLeafnum_r (p, headnode);
+	l = CM_PointLeafnum_r(p, headnode);
 
 	return map_leafs[l].contents;
 }
@@ -1699,13 +1702,16 @@ void	FloodAreaConnections (void)
 
 }
 
-void	CM_SetAreaPortalState (int portalnum, qboolean open)
+void
+CM_SetAreaPortalState(int portalnum, qboolean open)
 {
 	if (portalnum > numareaportals)
-		Com_Error (ERR_DROP, "areaportal > numareaportals");
+	{
+		Com_Error(ERR_DROP, "areaportal > numareaportals");
+	}
 
 	portalopen[portalnum] = open;
-	FloodAreaConnections ();
+	FloodAreaConnections();
 }
 
 qboolean	CM_AreasConnected (int area1, int area2)
@@ -1759,17 +1765,13 @@ int CM_WriteAreaBits (byte *buffer, int area)
 	return bytes;
 }
 
-
 /*
-===================
-CM_WritePortalState
-
-Writes the portal state to a savegame file
-===================
-*/
-void	CM_WritePortalState (FILE *f)
+ * Writes the portal state to a savegame file
+ */
+void
+CM_WritePortalState(FILE *f)
 {
-	fwrite (portalopen, sizeof(portalopen), 1, f);
+	fwrite(portalopen, sizeof(portalopen), 1, f);
 }
 
 /*
