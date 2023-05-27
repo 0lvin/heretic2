@@ -468,6 +468,7 @@ R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e)
 	{
 		R_Printf(PRINT_DEVELOPER, "R_CullAliasModel %s: no such frame %d\n",
 				currentmodel->name, e->frame);
+		printf(">>>>>>>>>>>>>>>>>%p: %d=>%d\n", e, e->frame, e->oldframe);
 		e->frame = 0;
 	}
 

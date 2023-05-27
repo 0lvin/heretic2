@@ -1,116 +1,111 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-// cl_scrn.c -- master for refresh, status bar, console, chat, notify, etc
-
-/*
-
-  full screen console
-  put up loading plaque
-  blanked background with loading plaque
-  blanked background with menu
-  cinematics
-  full screen image for quit and victory
-
-  end of unit intermissions
-
-  */
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * This file implements the 2D stuff. For example the HUD and the
+ * networkgraph.
+ *
+ * =======================================================================
+ */
 
 #include "header/client.h"
 
-float		scr_con_current;	// aproaches scr_conlines at scr_conspeed
-float		scr_conlines;		// 0.0 to 1.0 lines of console to display
+float scr_con_current; /* aproaches scr_conlines at scr_conspeed */
+float scr_conlines; /* 0.0 to 1.0 lines of console to display */
 
-qboolean	scr_initialized;		// ready to draw
+qboolean scr_initialized; /* ready to draw */
 
-int			scr_draw_loading;
+int scr_draw_loading;
 
-vrect_t		scr_vrect;		// position of render window on screen
+vrect_t scr_vrect; /* position of render window on screen */
 
-cvar_t		*scr_viewsize;
-cvar_t		*scr_conspeed;
-cvar_t		*scr_centertime;
-cvar_t		*scr_showturtle;
-cvar_t		*scr_showpause;
-cvar_t		*scr_printspeed;
+cvar_t *scr_viewsize;
+cvar_t *scr_conspeed;
+cvar_t *scr_centertime;
+cvar_t *scr_showturtle;
+cvar_t *scr_showpause;
 
-cvar_t		*scr_netgraph;
-cvar_t		*scr_timegraph;
-cvar_t		*scr_debuggraph;
-cvar_t		*scr_graphheight;
-cvar_t		*scr_graphscale;
-cvar_t		*scr_graphshift;
-cvar_t		*scr_drawall;
+cvar_t *scr_netgraph;
+cvar_t *scr_timegraph;
+cvar_t *scr_debuggraph;
+cvar_t *scr_graphheight;
+cvar_t *scr_graphscale;
+cvar_t *scr_graphshift;
+cvar_t *scr_drawall;
+
+cvar_t *r_hudscale; /* named for consistency with R1Q2 */
+cvar_t *r_consolescale;
+cvar_t *r_menuscale;
 
 typedef struct
 {
-	int		x1, y1, x2, y2;
+	int x1, y1, x2, y2;
 } dirty_t;
 
-dirty_t		scr_dirty, scr_old_dirty[2];
+dirty_t scr_dirty, scr_old_dirty[2];
 
-char		crosshair_pic[MAX_QPATH];
-int			crosshair_width, crosshair_height;
+char crosshair_pic[MAX_QPATH];
+int crosshair_width, crosshair_height;
 
-void SCR_TimeRefresh_f (void);
-void SCR_Loading_f (void);
-void SCR_DebugGraph(float value, int color);
+extern cvar_t *cl_showfps;
+extern cvar_t *crosshair_scale;
 
-/*
-===============================================================================
-
-BAR GRAPHS
-
-===============================================================================
-*/
+void SCR_TimeRefresh_f(void);
+void SCR_Loading_f(void);
 
 /*
-==============
-CL_AddNetgraph
-
-A new packet was just parsed
-==============
-*/
-void CL_AddNetgraph (void)
+ * A new packet was just parsed
+ */
+void
+CL_AddNetgraph(void)
 {
-	int		i;
-	int		in;
-	int		ping;
+	int i;
+	int in;
+	int ping;
 
-	// if using the debuggraph for something else, don't
-	// add the net lines
+	/* if using the debuggraph for something
+	   else, don't add the net lines */
 	if (scr_debuggraph->value || scr_timegraph->value)
+	{
 		return;
+	}
 
-	for (i=0 ; i<cls.netchan.dropped ; i++)
-		SCR_DebugGraph (30, 0x40);
+	for (i = 0; i < cls.netchan.dropped; i++)
+	{
+		SCR_DebugGraph(30, 0x40);
+	}
 
 	//for (i=0 ; i<cl.surpressCount ; i++)
 	//	SCR_DebugGraph (30, 0xdf);
 
-	// see what the latency was on this packet
-	in = cls.netchan.incoming_acknowledged & (CMD_BACKUP-1);
+	/* see what the latency was on this packet */
+	in = cls.netchan.incoming_acknowledged & (CMD_BACKUP - 1);
 	ping = cls.realtime - cl.cmd_time[in];
 	ping /= 30;
+
 	if (ping > 30)
+	{
 		ping = 30;
-	SCR_DebugGraph (ping, 0xd0);
+	}
+
+	SCR_DebugGraph((float)ping, 0xd0);
 }
 
 typedef struct
@@ -119,18 +114,14 @@ typedef struct
 	int color;
 } graphsamp_t;
 
-static	int			current;
-static	graphsamp_t	values[1024];
+static int current;
+static graphsamp_t values[2024];
 
-/*
-==============
-SCR_DebugGraph
-==============
-*/
-void SCR_DebugGraph (float value, int color)
+void
+SCR_DebugGraph(float value, int color)
 {
-	values[current&1023].value = value;
-	values[current&1023].color = color;
+	values[current & 2023].value = value;
+	values[current & 2023].color = color;
 	current++;
 }
 
@@ -337,30 +328,22 @@ static void SCR_CalcVrect (void)
 	scr_vrect.y = (viddef.height - scr_vrect.height)/2;
 }
 
-
 /*
-=================
-SCR_SizeUp_f
-
-Keybinding command
-=================
-*/
-void SCR_SizeUp_f (void)
+ * Keybinding command
+ */
+void
+SCR_SizeUp_f(void)
 {
-	Cvar_SetValue ("viewsize",scr_viewsize->value+10);
+	Cvar_SetValue("viewsize", (float)scr_viewsize->value + 10);
 }
 
-
 /*
-=================
-SCR_SizeDown_f
-
-Keybinding command
-=================
-*/
-void SCR_SizeDown_f (void)
+ *Keybinding command
+ */
+void
+SCR_SizeDown_f(void)
 {
-	Cvar_SetValue ("viewsize",scr_viewsize->value-10);
+	Cvar_SetValue("viewsize", (float)scr_viewsize->value - 10);
 }
 
 /*
@@ -409,28 +392,28 @@ SCR_Init
 */
 void SCR_Init (void)
 {
-	scr_viewsize = Cvar_Get ("viewsize", "100", CVAR_ARCHIVE);
-	scr_conspeed = Cvar_Get ("scr_conspeed", "3", 0);
-	scr_showturtle = Cvar_Get ("scr_showturtle", "0", 0);
-	scr_showpause = Cvar_Get ("scr_showpause", "1", 0);
-	scr_centertime = Cvar_Get ("scr_centertime", "2.5", 0);
-	scr_printspeed = Cvar_Get ("scr_printspeed", "8", 0);
-	scr_netgraph = Cvar_Get ("netgraph", "0", 0);
-	scr_timegraph = Cvar_Get ("timegraph", "0", 0);
-	scr_debuggraph = Cvar_Get ("debuggraph", "0", 0);
-	scr_graphheight = Cvar_Get ("graphheight", "32", 0);
-	scr_graphscale = Cvar_Get ("graphscale", "1", 0);
-	scr_graphshift = Cvar_Get ("graphshift", "0", 0);
-	scr_drawall = Cvar_Get ("scr_drawall", "0", 0);
+	scr_viewsize = Cvar_Get("viewsize", "100", CVAR_ARCHIVE);
+	scr_conspeed = Cvar_Get("scr_conspeed", "3", 0);
+	scr_centertime = Cvar_Get("scr_centertime", "2.5", 0);
+	scr_showturtle = Cvar_Get("scr_showturtle", "0", 0);
+	scr_showpause = Cvar_Get("scr_showpause", "1", 0);
+	scr_netgraph = Cvar_Get("netgraph", "0", 0);
+	scr_timegraph = Cvar_Get("timegraph", "0", 0);
+	scr_debuggraph = Cvar_Get("debuggraph", "0", 0);
+	scr_graphheight = Cvar_Get("graphheight", "32", 0);
+	scr_graphscale = Cvar_Get("graphscale", "1", 0);
+	scr_graphshift = Cvar_Get("graphshift", "0", 0);
+	scr_drawall = Cvar_Get("scr_drawall", "0", 0);
+	r_hudscale = Cvar_Get("r_hudscale", "-1", CVAR_ARCHIVE);
+	r_consolescale = Cvar_Get("r_consolescale", "-1", CVAR_ARCHIVE);
+	r_menuscale = Cvar_Get("r_menuscale", "-1", CVAR_ARCHIVE);
 
-//
-// register our commands
-//
-	Cmd_AddCommand ("timerefresh",SCR_TimeRefresh_f);
-	Cmd_AddCommand ("loading",SCR_Loading_f);
-	Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
-	Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
-	Cmd_AddCommand ("sky",SCR_Sky_f);
+	/* register our commands */
+	Cmd_AddCommand("timerefresh", SCR_TimeRefresh_f);
+	Cmd_AddCommand("loading", SCR_Loading_f);
+	Cmd_AddCommand("sizeup", SCR_SizeUp_f);
+	Cmd_AddCommand("sizedown", SCR_SizeDown_f);
+	Cmd_AddCommand("sky", SCR_Sky_f);
 
 	scr_initialized = true;
 }
@@ -1406,4 +1389,149 @@ void SCR_UpdateScreen (void)
 		}
 	}
 	R_EndFrame();
+}
+
+static float
+SCR_ClampScale(float scale)
+{
+	float f;
+
+	f = viddef.width / 320.0f;
+	if (scale > f)
+	{
+		scale = f;
+	}
+
+	f = viddef.height / 240.0f;
+	if (scale > f)
+	{
+		scale = f;
+	}
+
+	if (scale < 1)
+	{
+		scale = 1;
+	}
+
+	return scale;
+}
+
+static float
+SCR_GetDefaultScale(void)
+{
+	int i = viddef.width / 640;
+	int j = viddef.height / 240;
+
+	if (i > j)
+	{
+		i = j;
+	}
+	if (i < 1)
+	{
+		i = 1;
+	}
+
+	return i;
+}
+
+void
+SCR_DrawCrosshair(void)
+{
+	float scale;
+
+	if (!crosshair->value)
+	{
+		return;
+	}
+
+	if (crosshair->modified)
+	{
+		crosshair->modified = false;
+		SCR_TouchPics();
+	}
+
+	if (!crosshair_pic[0])
+	{
+		return;
+	}
+
+	if (crosshair_scale->value < 0)
+	{
+		scale = SCR_GetDefaultScale();
+	}
+	else
+	{
+		scale = SCR_ClampScale(crosshair_scale->value);
+	}
+
+	Draw_PicScaled(scr_vrect.x + (scr_vrect.width - crosshair_width * scale) / 2,
+			scr_vrect.y + (scr_vrect.height - crosshair_height * scale) / 2,
+			crosshair_pic, scale);
+}
+
+float
+SCR_GetHUDScale(void)
+{
+	float scale;
+
+	if (!scr_initialized)
+	{
+		scale = 1;
+	}
+	else if (r_hudscale->value < 0)
+	{
+		scale = SCR_GetDefaultScale();
+	}
+	else if (r_hudscale->value == 0) /* HACK: allow scale 0 to hide the HUD */
+	{
+		scale = 0;
+	}
+	else
+	{
+		scale = SCR_ClampScale(r_hudscale->value);
+	}
+
+	return scale;
+}
+
+float
+SCR_GetConsoleScale(void)
+{
+	float scale;
+
+	if (!scr_initialized)
+	{
+		scale = 1;
+	}
+	else if (r_consolescale->value < 0)
+	{
+		scale = SCR_GetDefaultScale();
+	}
+	else
+	{
+		scale = SCR_ClampScale(r_consolescale->value);
+	}
+
+	return scale;
+}
+
+float
+SCR_GetMenuScale(void)
+{
+	float scale;
+
+	if (!scr_initialized)
+	{
+		scale = 1;
+	}
+	else if (r_menuscale->value < 0)
+	{
+		scale = SCR_GetDefaultScale();
+	}
+	else
+	{
+		scale = SCR_ClampScale(r_menuscale->value);
+	}
+
+	return scale;
 }

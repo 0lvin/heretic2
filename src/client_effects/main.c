@@ -41,7 +41,7 @@ cvar_t	*fxTest3;
 cvar_t	*fxTest4;
 cvar_t  *cl_lerpdist2;
 extern cvar_t  *cl_timedemo;
-cvar_t	*crosshair;
+extern cvar_t	*crosshair;
 cvar_t	*compass;
 
 int ref_soft;
@@ -719,6 +719,11 @@ AddServerEntities(frame_t *frame)
 		else
 		{
 			ent->frame = s1->frame;
+
+			if (ent->frame > 450)
+			{
+				printf("%p: set %d => %d\n", ent, ent->frame, ent->oldframe);
+			}
 		}
 
 		// Handle flex-model nodes.

@@ -24,29 +24,24 @@
  * =======================================================================
  */
 
-#ifndef CLIENT_CONSOLE_H
-#define CLIENT_CONSOLE_H
-//
-// console
-//
+#ifndef CL_HEADER_CONSOLE_H
+#define CL_HEADER_CONSOLE_H
 
-#define	NUM_CON_TIMES	8
-#define CON_TEXTSIZE	32768
-#define MAX_LINES		((CON_TEXTSIZE / 38) + 8)
+#define	NUM_CON_TIMES 4
+#define	CON_TEXTSIZE	32768
 
-typedef struct
-{
+typedef struct {
 	qboolean	initialized;
 
 	char	text[CON_TEXTSIZE];
-	int		current;		// line where next message will be printed
-	int		x;				// offset in current line for next print
-	int		display;		// bottom of console displays this line
+	int		current; /* line where next message will be printed */
+	int		x; /* offset in current line for next print */
+	int		display; /* bottom of console displays this line */
+
+	int		ormask; /* high bit mask for colored characters */
 
 	int 	linewidth;		// characters across screen
 	int		totallines;		// total lines in console scrollback
-	paletteRGBA_t	color[MAX_LINES];
-	paletteRGBA_t	current_color;
 
 	float	cursorspeed;
 

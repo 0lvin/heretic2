@@ -26,22 +26,24 @@
 
 #include "header/client.h"
 
-//=============
-//
-// development tools for weapons
-//
-int			gun_frame;
-struct model_s	*gun_model;
+/* development tools for weapons */
+int gun_frame;
+struct model_s *gun_model;
 
-//=============
+cvar_t *crosshair;
+cvar_t *crosshair_3d;
+cvar_t *crosshair_3d_glow;
 
-extern cvar_t		*crosshair;
-cvar_t		*cl_testparticles;
-cvar_t		*cl_testentities;
-cvar_t		*cl_testlights;
-cvar_t		*cl_testblend;
+cvar_t *crosshair_scale;
+cvar_t *cl_testparticles;
+cvar_t *cl_testentities;
+cvar_t *cl_testlights;
+cvar_t *cl_testblend;
+cvar_t *crosshair_3d_glow_r;
+cvar_t *crosshair_3d_glow_g;
+cvar_t *crosshair_3d_glow_b;
 
-cvar_t		*cl_stats;
+cvar_t *cl_stats;
 
 //char cl_weaponmodels[MAX_CLIENTWEAPONMODELS][MAX_QPATH];
 //int num_cl_weaponmodels;
@@ -278,31 +280,6 @@ void V_Gun_Model_f (void)
 
 //============================================================================
 
-
-/*
-=================
-SCR_DrawCrosshair
-=================
-*/
-void SCR_DrawCrosshair (void)
-{
-	//if (!crosshair->value)
-	//	return;
-	//
-	//if (crosshair->modified)
-	//{
-	//	crosshair->modified = false;
-	//	SCR_TouchPics ();
-	//}
-	//
-	//if (!crosshair_pic[0])
-	//	return;
-	//
-	//Draw_PicScaled(scr_vrect.x + ((scr_vrect.width - crosshair_width)>>1)
-	//, scr_vrect.y + ((scr_vrect.height - crosshair_height)>>1), crosshair_pic, 1.0f);
-}
-
-
 extern int entitycmpfnc(const entity_t*, const entity_t*);
 
 /*
@@ -425,33 +402,32 @@ void V_RenderView( float stereo_separation )
 V_Viewpos_f
 =============
 */
-void V_Viewpos_f (void)
+void
+V_Viewpos_f(void)
 {
-	Com_Printf("(%i %i %i) : %i\n", (int)cl.refdef.vieworg[0],
-		(int)cl.refdef.vieworg[1], (int)cl.refdef.vieworg[2],
-		(int)cl.refdef.viewangles[YAW]);
+	Com_Printf("position: %i %i %i, angles: %i %i %i\n",
+			(int)cl.refdef.vieworg[0], (int)cl.refdef.vieworg[1],
+			(int)cl.refdef.vieworg[2],
+			(int)cl.refdef.viewangles[PITCH], (int)cl.refdef.viewangles[YAW],
+			(int)cl.refdef.viewangles[ROLL]);
 }
 
-/*
-=============
-V_Init
-=============
-*/
-void V_Init (void)
+void
+V_Init(void)
 {
-	Cmd_AddCommand ("gun_next", V_Gun_Next_f);
-	Cmd_AddCommand ("gun_prev", V_Gun_Prev_f);
-	Cmd_AddCommand ("gun_model", V_Gun_Model_f);
+	Cmd_AddCommand("gun_next", V_Gun_Next_f);
+	Cmd_AddCommand("gun_prev", V_Gun_Prev_f);
+	Cmd_AddCommand("gun_model", V_Gun_Model_f);
 
-	Cmd_AddCommand ("viewpos", V_Viewpos_f);
+	Cmd_AddCommand("viewpos", V_Viewpos_f);
 
-	crosshair = Cvar_Get ("crosshair", "0", CVAR_ARCHIVE);
+	crosshair = Cvar_Get("crosshair", "0", CVAR_ARCHIVE);
+	crosshair_scale = Cvar_Get("crosshair_scale", "-1", CVAR_ARCHIVE);
+	cl_testblend = Cvar_Get("cl_testblend", "0", 0);
+	cl_testparticles = Cvar_Get("cl_testparticles", "0", 0);
+	cl_testentities = Cvar_Get("cl_testentities", "0", 0);
+	cl_testlights = Cvar_Get("cl_testlights", "0", 0);
 
-	cl_testblend = Cvar_Get ("cl_testblend", "0", 0);
-	cl_testparticles = Cvar_Get ("cl_testparticles", "0", 0);
-	cl_testentities = Cvar_Get ("cl_testentities", "0", 0);
-	cl_testlights = Cvar_Get ("cl_testlights", "0", 0);
-
-	cl_stats = Cvar_Get ("cl_stats", "0", 0);
+	cl_stats = Cvar_Get("cl_stats", "0", 0);
 }
 

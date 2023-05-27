@@ -25,6 +25,7 @@
  */
 
 #include "header/client.h"
+#include "sound/header/local.h"
 #include <time.h>
 
 console_t con;
@@ -34,23 +35,24 @@ extern char key_lines[NUM_KEY_LINES][MAXCMDLINE];
 extern int edit_line;
 extern int key_linepos;
 
-
-void DrawString (int x, int y, char *s)
+void
+DrawStringScaled(int x, int y, char *s, float factor)
 {
 	while (*s)
 	{
-		Draw_CharScaled(x, y, *s, 1.0f);
-		x+=8;
+		Draw_CharScaled(x, y, *s, factor);
+		x += 8*factor;
 		s++;
 	}
 }
 
-void DrawAltString (int x, int y, char *s)
+void
+DrawAltStringScaled(int x, int y, char *s, float factor)
 {
 	while (*s)
 	{
-		Draw_CharScaled(x, y, *s ^ 0x80, 1.0f);
-		x+=8;
+		Draw_CharScaled(x, y, *s ^ 0x80, factor);
+		x += 8*factor;
 		s++;
 	}
 }
@@ -94,6 +96,13 @@ Con_ToggleConsole_f(void)
 	{
 		M_ForceMenuOff();
 		Cvar_Set("paused", "0");
+
+		/* play music */
+		if (Cvar_VariableValue("ogg_pausewithgame") == 1 &&
+		    OGG_Status() == PAUSE)
+		{
+		    Cbuf_AddText("ogg toggle\n");
+		}
 	}
 	else
 	{
@@ -104,6 +113,13 @@ Con_ToggleConsole_f(void)
 			Com_ServerState())
 		{
 			Cvar_Set("paused", "1");
+
+			/* pause music */
+			if (Cvar_VariableValue("ogg_pausewithgame") == 1 &&
+			    OGG_Status() == PLAY)
+			{
+			    Cbuf_AddText("ogg toggle\n");
+			}
 		}
 	}
 }
@@ -255,8 +271,16 @@ Con_CheckResize(void)
 {
 	int i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	char tbuf[CON_TEXTSIZE];
+	float scale = SCR_GetConsoleScale();
 
-	width = (viddef.width >> 3) - 2;
+	/* We need to clamp the line width to MAXCMDLINE - 2,
+	   otherwise we may overflow the text buffer if the
+	   vertical resultion / 8 (one char == 8 pixels) is
+	   bigger then MAXCMDLINE.
+	   MAXCMDLINE - 2 because 1 for the prompt and 1 for
+	   the terminating \0. */
+	width = ((int)(viddef.width / scale) / 8) - 2;
+	width = width > MAXCMDLINE - 2 ? MAXCMDLINE - 2 : width;
 
 	if (width == con.linewidth)
 	{
@@ -424,64 +448,42 @@ Con_Print(char *txt)
 
 			default: /* display character and advance */
 				y = con.current % con.totallines;
-				con.text[y * con.linewidth + con.x] = c | mask;// | con.ormask;
+				con.text[y * con.linewidth + con.x] = c | mask | con.ormask;
 				con.x++;
 
 				if (con.x >= con.linewidth)
-				con.x = 0;
+				{
+					con.x = 0;
+				}
+
 				break;
 		}
 	}
 }
 
-
 /*
-==============
-Con_CenteredPrint
-==============
-*/
-void Con_CenteredPrint (char *text)
+ * The input line scrolls horizontally if
+ * typing goes beyond the right edge
+ */
+void
+Con_DrawInput(void)
 {
-	int		l;
-	char	buffer[1024];
-
-	l = strlen(text);
-	l = (con.linewidth-l)/2;
-	if (l < 0)
-		l = 0;
-	memset (buffer, ' ', l);
-	strcpy (buffer+l, text);
-	strcat (buffer, "\n");
-	Con_Print (buffer);
-}
-
-/*
-==============================================================================
-
-DRAWING
-
-==============================================================================
-*/
-
-
-/*
-================
-Con_DrawInput
-
-The input line scrolls horizontally if typing goes beyond the right edge
-================
-*/
-void Con_DrawInput (void)
-{
-	int		y;
-	int		i;
-	char	*text;
+	int i;
+	float scale;
+	char *text;
 
 	if (cls.key_dest == key_menu)
+	{
 		return;
-	if (cls.key_dest != key_console && cls.state == ca_active)
-		return;		// don't draw anything (always draw if not active)
+	}
 
+	/* don't draw anything (always draw if not active) */
+	if ((cls.key_dest != key_console) && (cls.state == ca_active))
+	{
+		return;
+	}
+
+	scale = SCR_GetConsoleScale();
 	text = key_lines[edit_line];
 
 	/* add the cursor frame */
@@ -499,11 +501,10 @@ void Con_DrawInput (void)
 		text += 1 + key_linepos - con.linewidth;
 	}
 
-// draw it
-	y = con.vislines-16;
-
 	for (i = 0; i < con.linewidth; i++)
-		Draw_CharScaled( (i+1)<<3, con.vislines - 22, text[i], 1.0f);
+	{
+		Draw_CharScaled(((i + 1) << 3) * scale, con.vislines - 22 * scale, text[i], scale);
+	}
 
 	/* remove cursor */
 	key_lines[edit_line][key_linepos] = 0;
@@ -515,130 +516,186 @@ void Con_DrawInput (void)
 void
 Con_DrawNotify(void)
 {
-	int		x, v;
-	char	*text;
-	int		i;
-	int		time;
-	char	*s;
-	int		skip;
+	int x, v;
+	char *text;
+	int i;
+	int time;
+	char *s;
+	int skip;
+	float scale;
 
 	v = 0;
-	for (i= con.current-NUM_CON_TIMES+1 ; i<=con.current ; i++)
+	scale = SCR_GetConsoleScale();
+
+	for (i = con.current - NUM_CON_TIMES + 1; i <= con.current; i++)
 	{
 		if (i < 0)
+		{
 			continue;
-		time = con.times[i % NUM_CON_TIMES];
-		if (time == 0)
-			continue;
-		time = cls.realtime - time;
-		if (time > con_notifytime->value*1000)
-			continue;
-		text = con.text + (i % con.totallines)*con.linewidth;
+		}
 
-		for (x = 0 ; x < con.linewidth ; x++)
-			Draw_CharScaled( (x+1)<<3, v, text[x], 1.0f);
+		time = con.times[i % NUM_CON_TIMES];
+
+		if (time == 0)
+		{
+			continue;
+		}
+
+		time = cls.realtime - time;
+
+		if (time > con_notifytime->value * 1000)
+		{
+			continue;
+		}
+
+		text = con.text + (i % con.totallines) * con.linewidth;
+
+		for (x = 0; x < con.linewidth; x++)
+		{
+			Draw_CharScaled(((x + 1) << 3) * scale, v * scale, text[x], scale);
+		}
 
 		v += 8;
 	}
-
 
 	if (cls.key_dest == key_message)
 	{
 		if (chat_team)
 		{
-			DrawString (8, v, "say_team:");
+			DrawStringScaled(8 * scale, v * scale, "say_team:", scale);
 			skip = 11;
 		}
 		else
 		{
-			DrawString (8, v, "say:");
+			DrawStringScaled(8 * scale, v * scale, "say:", scale);
 			skip = 5;
 		}
 
 		s = chat_buffer;
-		if (chat_bufferlen > (viddef.width>>3)-(skip+1))
-			s += chat_bufferlen - ((viddef.width>>3)-(skip+1));
-		x = 0;
-		while(s[x])
+
+		if (chat_bufferlen > (viddef.width >> 3) - (skip + 1))
 		{
-			Draw_CharScaled( (x+skip)<<3, v, s[x], 1.0f);
+			s += chat_bufferlen - ((viddef.width >> 3) - (skip + 1));
+		}
+
+		x = 0;
+
+		while (s[x])
+		{
+			Draw_CharScaled(((x + skip) << 3) * scale, v * scale, s[x], scale);
 			x++;
 		}
-		Draw_CharScaled( (x+skip)<<3, v, 10+((cls.realtime>>8)&1), 1.0f);
+
+		Draw_CharScaled(((x + skip) << 3) * scale, v * scale, 10 + ((cls.realtime >> 8) & 1), scale);
 		v += 8;
 	}
 
 	if (v)
 	{
-		SCR_AddDirtyPoint (0,0);
-		SCR_AddDirtyPoint (viddef.width-1, v);
+		SCR_AddDirtyPoint(0, 0);
+		SCR_AddDirtyPoint(viddef.width - 1, v);
 	}
 }
 
 /*
-================
-Con_DrawConsole
-
-Draws the console with the solid background
-================
-*/
-void Con_DrawConsole (float frac)
+ * Draws the console with the solid background
+ */
+void
+Con_DrawConsole(float frac)
 {
-	int				i, j, x, y, n;
-	int				rows;
-	char			*text;
-	int				row;
-	int				lines;
-	char			version[64];
-	char			dlbar[1024];
+	int i, j, x, y, n;
+	int rows;
+	int verLen;
+	char *text;
+	int row;
+	int lines;
+	float scale;
+	char version[48];
+	char dlbar[1024];
+	char timebuf[48];
+	char tmpbuf[48];
 
+	time_t t;
+	struct tm *today;
+
+	scale = SCR_GetConsoleScale();
 	lines = viddef.height * frac;
+
 	if (lines <= 0)
+	{
 		return;
+	}
 
 	if (lines > viddef.height)
+	{
 		lines = viddef.height;
+	}
 
-// draw the background
-	Draw_StretchPic(0, -viddef.height+lines, viddef.width, viddef.height, "misc/conback.m8");
-	SCR_AddDirtyPoint (0,0);
-	SCR_AddDirtyPoint (viddef.width-1,lines-1);
-	Com_sprintf(version, sizeof(version), "Heretic II v%s", YQ2VERSION);
+	/* draw the background */
+	Draw_StretchPic(0, -viddef.height + lines, viddef.width,
+			viddef.height, "misc/conback.m8");
+	SCR_AddDirtyPoint(0, 0);
+	SCR_AddDirtyPoint(viddef.width - 1, lines - 1);
 
-	int len = strlen(version);
-	for (x=0 ; x<len; x++)
-		Draw_CharScaled(viddef.width-(len * 8)+x*8, lines-12, version[x], 1.0f);
+	Com_sprintf(version, sizeof(version), "Yamagi Quake II v%s", YQ2VERSION);
 
-// draw the text
+	verLen = strlen(version);
+
+	for (x = 0; x < verLen; x++)
+	{
+		Draw_CharScaled(viddef.width - ((verLen*8+5) * scale) + x * 8 * scale, lines - 35 * scale, 128 + version[x], scale);
+	}
+
+	t = time(NULL);
+	today = localtime(&t);
+	strftime(timebuf, sizeof(timebuf), "%H:%M:%S - %m/%d/%Y", today);
+
+	Com_sprintf(tmpbuf, sizeof(tmpbuf), "%s", timebuf);
+
+	for (x = 0; x < 21; x++)
+	{
+		Draw_CharScaled(viddef.width - (173 * scale) + x * 8 * scale, lines - 25 * scale, 128 + tmpbuf[x], scale);
+	}
+
+	/* draw the text */
 	con.vislines = lines;
 
-	rows = (lines-22)>>3;		// rows of text to draw
+	rows = (lines - 22) >> 3; /* rows of text to draw */
+	y = (lines - 30 * scale) / scale;
 
-	y = lines - 30;
-
-// draw from the bottom up
+	/* draw from the bottom up */
 	if (con.display != con.current)
 	{
-	// draw arrows to show the buffer is backscrolled
-		for (x=0 ; x<con.linewidth ; x+=4)
-			Draw_CharScaled( (x+1)<<3, y, '^', 1.0f);
+		/* draw arrows to show the buffer is backscrolled */
+		for (x = 0; x < con.linewidth; x += 4)
+		{
+			Draw_CharScaled(((x + 1) << 3) * scale, y * scale, '^', scale);
+		}
 
 		y -= 8;
 		rows--;
 	}
 
 	row = con.display;
-	for (i=0 ; i<rows ; i++, y-=8, row--)
+
+	for (i = 0; i < rows; i++, y -= 8, row--)
 	{
 		if (row < 0)
+		{
 			break;
+		}
+
 		if (con.current - row >= con.totallines)
-			break;		// past scrollback wrap point
+		{
+			break; /* past scrollback wrap point */
+		}
 
-		text = con.text + (row % con.totallines)*con.linewidth;
+		text = con.text + (row % con.totallines) * con.linewidth;
 
-		for (x=0 ; x<con.linewidth ; x++)
-			Draw_CharScaled( (x+1)<<3, y, text[x], 1.0);
+		for (x = 0; x < con.linewidth; x++)
+		{
+			Draw_CharScaled(((x + 1) << 3) * scale, y * scale, text[x], scale);
+		}
 	}
 
 	/* draw the download bar, figure out width */
@@ -652,6 +709,7 @@ void Con_DrawConsole (float frac)
 		{
 			text++;
 		}
+
 		else
 		{
 			text = cls.downloadname;
@@ -679,15 +737,28 @@ void Con_DrawConsole (float frac)
 
 		/* where's the dot gone? */
 		if (cls.downloadpercent == 0)
+		{
 			n = 0;
+		}
+
 		else
+		{
 			n = y * cls.downloadpercent / 100;
+		}
 
 		for (j = 0; j < y; j++)
+		{
 			if (j == n)
+			{
 				dlbar[i++] = '\x83';
+			}
+
 			else
+			{
 				dlbar[i++] = '\x81';
+			}
+		}
+
 		dlbar[i++] = '\x82';
 		dlbar[i] = 0;
 
@@ -697,7 +768,9 @@ void Con_DrawConsole (float frac)
 		y = con.vislines - 12;
 
 		for (i = 0; i < strlen(dlbar); i++)
-			Draw_CharScaled( (i+1)<<3, y, dlbar[i], 1.0f);
+		{
+			Draw_CharScaled(((i + 1) << 3) * scale, y * scale, dlbar[i], scale);
+		}
 	}
 
 	/* draw the input prompt, user text, and cursor if desired */
