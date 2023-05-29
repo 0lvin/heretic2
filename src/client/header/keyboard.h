@@ -275,15 +275,23 @@ extern char		chat_buffer[];
 extern int		chat_bufferlen;
 extern int		chat_cursorpos;
 extern qboolean	chat_team;
-extern char		*keybindings_double[K_LAST];
 
+void Char_Event(int key);
 void Key_Event(int key, qboolean down, unsigned time);
 void Key_Init(void);
+void Key_Shutdown(void);
 void Key_WriteBindings(FILE *f);
-void Key_WriteBindings_Double(FILE *f);
+void Key_ReadConsoleHistory();
+void Key_WriteConsoleHistory();
 void Key_SetBinding(int keynum, char *binding);
-void Key_SetDoubleBinding(int keynum, char *binding);
+void Key_MarkAllUp(void);
+void Controller_Rumble(const char *name, vec3_t source, qboolean from_player,
+				unsigned int duration, unsigned short int volume);
+void Haptic_Feedback(const char *name, int effect_volume, int effect_duration,
+				int effect_delay, int effect_attack, int effect_fade,
+				int effect_x, int effect_y, int effect_z, float effect_distance);
+int Key_GetMenuKey(int key);
+
 void Key_ClearStates(void);
-int Key_GetKey(void);
 
 #endif

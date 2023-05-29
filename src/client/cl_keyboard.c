@@ -849,6 +849,8 @@ void Key_Init (void)
 }
 
 
+qboolean CIN_IsCinematicRunning(void);
+
 /*
 ===================
 Key_Event
@@ -1055,20 +1057,4 @@ void Key_ClearStates (void)
 		keydown[i] = 0;
 		key_repeats[i] = 0;
 	}
-}
-
-
-/*
-===================
-Key_GetKey
-===================
-*/
-int Key_GetKey (void)
-{
-	key_waiting = -1;
-
-	while (key_waiting == -1)
-		Sys_SendKeyEvents ();
-
-	return key_waiting;
 }

@@ -230,9 +230,6 @@ typedef struct
 	clientinfo_t	clientinfo[MAX_CLIENTS];
 	clientinfo_t	baseclientinfo;
 
-	vec3_t		inputangles,delta_inputangles,old_delta_inputangles,
-				lookangles;
-
 	// Client camera vieworigin and viewangles sent to server so it can do accurate(ish) culling.
 
 	vec3_t		camera_vieworigin,camera_viewangles;

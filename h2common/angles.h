@@ -56,9 +56,6 @@
 
 #define ANGLE_TO_RAD	ANGLE_1
 #define RAD_TO_ANGLE	(180.0F / ANGLE_180)
-
 #define	SHORT_TO_ANGLE	(360.0/65536)
-
-#pragma warning(disable : 4305)		// 'initializing' : truncation from 'const double ' to 'float '
 
 #endif

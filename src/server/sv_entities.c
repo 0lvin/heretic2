@@ -136,11 +136,9 @@ void
 SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		sizebuf_t *msg)
 {
-	int i;
 	int pflags;
 	player_state_t *ps, *ops;
 	player_state_t dummy;
-	int statbits;
 
 	ps = &to->ps;
 
@@ -220,7 +218,7 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 
 	if (ps->remote_vieworigin[0] != ops->remote_vieworigin[0] ||
 		ps->remote_vieworigin[1] != ops->remote_vieworigin[1] ||
-		ps->remote_vieworigin[2] != ops->remote_vieworigin[2]) 
+		ps->remote_vieworigin[2] != ops->remote_vieworigin[2])
 	{
 
 		pflags |= PS_REMOTE_VIEWORIGIN;
@@ -233,11 +231,18 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_REMOTE_VIEWANGLES;
 	}
 
+#if 0
+	// TODO: Rewrite protocol
 	if (ps->mins[0] != ops->mins[0] || ps->mins[1] != ops->mins[1] || ps->mins[2] != ops->mins[2])
+	{
 		pflags |= PS_MINSMAXS;
+	}
 
 	if (ps->maxs[0] != ops->maxs[0] || ps->maxs[1] != ops->maxs[1] || ps->maxs[2] != ops->maxs[2])
+	{
 		pflags |= PS_MINSMAXS;
+	}
+#endif
 
 	if (ps->remote_id != ops->remote_id)
 	{
@@ -250,6 +255,8 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 
 	MSG_WriteData(msg, (byte *)&ps->stats[0], sizeof(ps->stats));
 
+#if 0
+	// TODO: Rewrite protocol
 	if (pflags & PS_MINSMAXS) {
 		MSG_WriteFloat(msg, ps->mins[0]);
 		MSG_WriteFloat(msg, ps->mins[1]);
@@ -259,6 +266,7 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		MSG_WriteFloat(msg, ps->maxs[1]);
 		MSG_WriteFloat(msg, ps->maxs[2]);
 	}
+#endif
 
 	//
 	// write the pmove_state_t
@@ -527,7 +535,7 @@ SV_BuildClientFrame(client_t *client)
 		}
 
 		/* ignore ents without visible models unless they have an effect */
-		if (!ent->s.modelindex && !ent->s.effects && 
+		if (!ent->s.modelindex && !ent->s.effects &&
 			!ent->s.sound)
 		{
 			continue;
@@ -580,7 +588,7 @@ SV_BuildClientFrame(client_t *client)
 
 				if (!ent->s.modelindex)
 				{
-					/* don't send sounds if they 
+					/* don't send sounds if they
 					   will be attenuated away */
 					vec3_t delta;
 					float len;

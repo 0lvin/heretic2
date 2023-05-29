@@ -83,7 +83,6 @@ static cvar_t	*in_dgamouse;
 static cvar_t	*r_fakeFullscreen;
 
 static XF86VidModeModeInfo **vidmodes;
-static int default_dotclock_vidmode;
 static int num_vidmodes;
 static qboolean vidmode_active = false;
 
@@ -205,9 +204,6 @@ static void RW_IN_MLookUp (void)
 
 void RW_IN_Init(in_state_t *in_state_p)
 {
-	int mtype;
-	int i;
-
 	in_state = in_state_p;
 
 	// mouse variables
@@ -560,7 +556,6 @@ void KBD_Close(void)
 
 /*****************************************************************************/
 
-static qboolean GLimp_SwitchFullscreen( int width, int height );
 qboolean GLimp_InitGL (void);
 
 static void signal_handler(int sig)
@@ -603,7 +598,6 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 	XSetWindowAttributes attr;
 	unsigned long mask;
 	int MajorVersion, MinorVersion;
-	int actualWidth, actualHeight;
 	int i;
 
 	r_fakeFullscreen = ri.Cvar_Get( "r_fakeFullscreen", "0", CVAR_ARCHIVE);
@@ -681,9 +675,6 @@ int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen )
 			}
 
 			if (best_fit != -1) {
-				actualWidth = vidmodes[best_fit]->hdisplay;
-				actualHeight = vidmodes[best_fit]->vdisplay;
-
 				// change to the mode
 				XF86VidModeSwitchToMode(dpy, scrnum, vidmodes[best_fit]);
 				vidmode_active = true;
@@ -802,7 +793,3 @@ void GLimp_EndFrame (void)
 	glFlush();
 	glXSwapBuffers(dpy, win);
 }
-
-/*------------------------------------------------*/
-/* X11 Input Stuff
-/*------------------------------------------------*/

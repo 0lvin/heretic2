@@ -24,38 +24,51 @@
  * =======================================================================
  */
 
-#ifndef CLIENT_SCREEN_H
-#define CLIENT_SCREEN_H
-#include "../../common/header/common.h"
-#include "../vid/header/vid.h"
+#ifndef CL_SCREEN_H
+#define CL_SCREEN_H
 
-void	SCR_Init (void);
-void	SCR_UpdateScreen (void);
-void	SCR_CenterPrint (char *str /*, PalIdx_t colour*/);
-void	SCR_BeginLoadingPlaque (void);
-void	SCR_EndLoadingPlaque (void);
-void	SCR_TouchPics (void);
-void	SCR_RunConsole (void);
+void	SCR_Init(void);
+
+void	SCR_UpdateScreen(void);
+
+void	SCR_SizeUp(void);
+void	SCR_SizeDown(void);
+void	SCR_CenterPrint(char *str);
+void	SCR_BeginLoadingPlaque(void);
+void	SCR_EndLoadingPlaque(void);
+
+void	SCR_DebugGraph(float value, int color);
+
+void	SCR_TouchPics(void);
+
+void	SCR_RunConsole(void);
 
 extern	float		scr_con_current;
-extern	float		scr_conlines;		// lines of console to display
+extern	float		scr_conlines; /* lines of console to display */
+
 extern	int			sb_lines;
 
-extern cvar_t* scr_viewsize;
+extern	cvar_t		*scr_viewsize;
 extern	cvar_t		*crosshair;
 
-extern	vrect_t		scr_vrect;		// position of render window
+extern	vrect_t		scr_vrect; /* position of render window */
 
-void SCR_AddDirtyPoint (int x, int y);
-void SCR_DirtyScreen (void);
+extern	char		crosshair_pic[MAX_QPATH];
+extern	int			crosshair_width, crosshair_height;
 
-//
-// scr_cin.c
-//
-void SCR_PlayCinematic (char *name);
-void SCR_RunCinematic (void);
-void SCR_FinishCinematic (void);
-void SCR_StopCinematic();
-qboolean CIN_IsCinematicRunning(void);
+void SCR_AddDirtyPoint(int x, int y);
+void SCR_DirtyScreen(void);
+
+void SCR_PlayCinematic(char *name);
+qboolean SCR_DrawCinematic(void);
+void SCR_RunCinematic(void);
+void SCR_StopCinematic(void);
+void SCR_FinishCinematic(void);
+
+void SCR_DrawCrosshair(void);
+
+float SCR_GetHUDScale(void);
+float SCR_GetConsoleScale(void);
+float SCR_GetMenuScale(void);
 
 #endif

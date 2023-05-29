@@ -49,13 +49,10 @@ cvar_t *cl_stats;
 //int num_cl_weaponmodels;
 
 /*
-====================
-V_ClearScene
-
-Specifies the model that will be used as the world
-====================
-*/
-void V_ClearScene (void)
+ * Specifies the model that will be used as the world
+ */
+void
+V_ClearScene(void)
 {
 	cls.r_numdlights = 0;
 	cls.r_numentities = 0;
@@ -64,6 +61,10 @@ void V_ClearScene (void)
 	cls.r_anumparticles = 0;
 }
 
+void
+V_AddEntity(entity_t *ent)
+{
+}
 
 
 
@@ -155,20 +156,20 @@ void CL_PrepRefresh (void)
 	SCR_AddDirtyPoint (0, 0);
 	SCR_AddDirtyPoint (viddef.width-1, viddef.height-1);
 
-	// let the render dll load the map
-	strcpy (mapname, cl.configstrings[CS_MODELS+1] + 5);	// skip "maps/"
-	mapname[strlen(mapname)-4] = 0;		// cut off ".bsp"
+	/* let the refresher load the map */
+	strcpy(mapname, cl.configstrings[CS_MODELS + 1] + 5); /* skip "maps/" */
+	mapname[strlen(mapname) - 4] = 0; /* cut off ".bsp" */
 
-	// register models, pics, and skins
+	/* register models, pics, and skins */
 	Com_Printf("Map: %s\r", mapname);
-	SCR_UpdateScreen ();
-	re.BeginRegistration (mapname);
+	SCR_UpdateScreen();
+	R_BeginRegistration (mapname);
 	Com_Printf("                                     \r");
 
-	// precache status bar pics
+	/* precache status bar pics */
 	Com_Printf("pics\r");
-	SCR_UpdateScreen ();
-	SCR_TouchPics ();
+	SCR_UpdateScreen();
+	SCR_TouchPics();
 	Com_Printf("                                     \r");
 
 	//CL_RegisterTEntModels ();
@@ -191,135 +192,176 @@ void CL_PrepRefresh (void)
 			Com_Printf("                                     \r");
 	}
 
-	Com_Printf("images\r", i);
-	SCR_UpdateScreen ();
-	for (i=1 ; i<MAX_IMAGES && cl.configstrings[CS_IMAGES+i][0] ; i++)
+	Com_Printf("images\r");
+	SCR_UpdateScreen();
+
+	for (i = 1; i < MAX_IMAGES && cl.configstrings[CS_IMAGES + i][0]; i++)
 	{
-		cl.image_precache[i] = Draw_FindPic (cl.configstrings[CS_IMAGES+i]);
+		cl.image_precache[i] = Draw_FindPic(cl.configstrings[CS_IMAGES + i]);
 		Sys_SendKeyEvents ();	// pump message loop
 	}
 
 	Com_Printf("                                     \r");
-	for (i=0 ; i<MAX_CLIENTS ; i++)
+
+	for (i = 0; i < MAX_CLIENTS; i++)
 	{
-		if (!cl.configstrings[CS_PLAYERSKINS+i][0])
+		if (!cl.configstrings[CS_PLAYERSKINS + i][0])
+		{
 			continue;
+		}
+
 		Com_Printf("client %i\r", i);
-		SCR_UpdateScreen ();
+		SCR_UpdateScreen();
 		Sys_SendKeyEvents ();	// pump message loop
-		CL_ParseClientinfo (i);
+		CL_ParseClientinfo(i);
 		Com_Printf("                                     \r");
 	}
 
-	CL_LoadClientinfo (&cl.baseclientinfo, "unnamed\\male/grunt");
+	CL_LoadClientinfo(&cl.baseclientinfo, "unnamed\\male/grunt");
 
-	// set sky textures and speed
-	Com_Printf("sky\r", i);
-	SCR_UpdateScreen ();
-	rotate = atof (cl.configstrings[CS_SKYROTATE]);
-	sscanf (cl.configstrings[CS_SKYAXIS], "%f %f %f",
-		&axis[0], &axis[1], &axis[2]);
-	re.SetSky (cl.configstrings[CS_SKY], rotate, axis);
+	/* set sky textures and speed */
+	Com_Printf("sky\r");
+	SCR_UpdateScreen();
+	rotate = (float)strtod(cl.configstrings[CS_SKYROTATE], (char **)NULL);
+	sscanf(cl.configstrings[CS_SKYAXIS], "%f %f %f", &axis[0], &axis[1], &axis[2]);
+	R_SetSky(cl.configstrings[CS_SKY], rotate, axis);
 	Com_Printf("                                     \r");
 
-	// the renderer can now free unneeded stuff
-	re.EndRegistration ();
+	/* the renderer can now free unneeded stuff */
+	R_EndRegistration();
 
-	// clear any lines of console text
-	Con_ClearNotify ();
+	/* clear any lines of console text */
+	Con_ClearNotify();
 
-	SCR_UpdateScreen ();
+	SCR_UpdateScreen();
 	cl.refresh_prepped = true;
-	cl.force_refdef = true;	// make sure we have a valid refdef
+	cl.force_refdef = true; /* make sure we have a valid refdef */
+
+	/* start the cd track */
+	int track = (int)strtol(cl.configstrings[CS_CDTRACK], (char **)NULL, 10);
+
+	OGG_PlayTrack(track, true, true);
 }
 
-/*
-====================
-CalcFov
-====================
-*/
-float CalcFov (float fov_x, float width, float height)
+float
+CalcFov(float fov_x, float width, float height)
 {
+	float a;
 	float x;
 
-	height = height * (320.0f / 240.0f);
+	if ((fov_x < 1) || (fov_x > 179))
+	{
+		Com_Error(ERR_DROP, "Bad fov: %f", fov_x);
+	}
 
-	x = width / tan(fov_x / 360 * M_PI);
-	return atan(height / x) * 360 / M_PI;
+	x = width / (float)tan(fov_x / 360 * M_PI);
+
+	a = (float)atan(height / x);
+
+	a = a * 360 / M_PI;
+
+	return a;
 }
 
-//============================================================================
-
-// gun frame debugging functions
-void V_Gun_Next_f (void)
+/* gun frame debugging functions */
+void
+V_Gun_Next_f(void)
 {
 	gun_frame++;
 	Com_Printf("frame %i\n", gun_frame);
 }
 
-void V_Gun_Prev_f (void)
+void
+V_Gun_Prev_f(void)
 {
 	gun_frame--;
+
 	if (gun_frame < 0)
+	{
 		gun_frame = 0;
+	}
+
 	Com_Printf("frame %i\n", gun_frame);
 }
 
-void V_Gun_Model_f (void)
+void
+V_Gun_Model_f(void)
 {
-	char	name[MAX_QPATH];
+	char name[MAX_QPATH];
 
 	if (Cmd_Argc() != 2)
 	{
 		gun_model = NULL;
 		return;
 	}
-	Com_sprintf (name, sizeof(name), "models/%s/tris.md2", Cmd_Argv(1));
-	gun_model = re.RegisterModel (name);
+
+	Com_sprintf(name, sizeof(name), "models/%s/tris.md2", Cmd_Argv(1));
+	gun_model = R_RegisterModel(name);
 }
 
-//============================================================================
+int
+entitycmpfnc(const entity_t *a, const entity_t *b)
+{
+	/* all other models are sorted by model then skin */
+	if (a->model == b->model)
+	{
+		return (a->skin == b->skin) ? 0 :
+			(a->skin > b->skin) ? 1 : -1;
+	}
+	else
+	{
+		return (a->model > b->model) ? 1 : -1;
+	}
+}
 
-extern int entitycmpfnc(const entity_t*, const entity_t*);
-
-/*
-==================
-V_RenderView
-
-==================
-*/
-void V_RenderView( float stereo_separation )
+void
+V_RenderView(float stereo_separation)
 {
 	if (cls.state != ca_active)
+	{
+		R_EndWorldRenderpass();
 		return;
+	}
 
 	if (!cl.refresh_prepped)
+	{
+		R_EndWorldRenderpass();
 		return;			// still loading
+	}
 
 	if (cl_timedemo->value)
 	{
 		if (!cl.timedemo_start)
-			cl.timedemo_start = Sys_Milliseconds ();
+		{
+			cl.timedemo_start = Sys_Milliseconds();
+		}
+
 		cl.timedemo_frames++;
 	}
 
-	// an invalid frame will just use the exact previous refdef
-	// we can't use the old frame if the video mode has changed, though...
-	//if ( cl.frame.valid && (cl.force_refdef || !cl_paused->value) )
+	/* an invalid frame will just use the exact previous refdef
+	   we can't use the old frame if the video mode has changed, though... */
+	if (cl.frame.valid && (cl.force_refdef || !cl_paused->value))
 	{
 		cl.force_refdef = false;
 
-		V_ClearScene ();
+		V_ClearScene();
 
-		// build a refresh entity list and calc cl.sim*
-		// this also calls CL_CalcViewValues which loads
-		// v_forward, etc.
-		CL_AddEntities ();
+		/* build a refresh entity list and calc cl.sim*
+		   this also calls CL_CalcViewValues which loads
+		   v_forward, etc. */
+		CL_AddEntities();
 
 		if (cl_testentities->value)
-			V_TestEntities ();
+		{
+			V_TestEntities();
+		}
+
 		if (cl_testlights->value)
-			V_TestLights ();
+		{
+			V_TestLights();
+		}
+
 		if (cl_testblend->value)
 		{
 			cl.refdef.blend[0] = 1;
@@ -328,28 +370,30 @@ void V_RenderView( float stereo_separation )
 			cl.refdef.blend[3] = 0.5;
 		}
 
-		// offset vieworg appropriately if we're doing stereo separation
-		if ( stereo_separation != 0 )
+		/* offset vieworg appropriately if
+		   we're doing stereo separation */
+
+		if (stereo_separation != 0)
 		{
 			vec3_t tmp;
 
-			VectorScale( cl.v_right, stereo_separation, tmp );
-			VectorAdd( cl.refdef.vieworg, tmp, cl.refdef.vieworg );
+			VectorScale(cl.v_right, stereo_separation, tmp);
+			VectorAdd(cl.refdef.vieworg, tmp, cl.refdef.vieworg);
 		}
 
-		// never let it sit exactly on a node line, because a water plane can
-		// dissapear when viewed with the eye exactly on it.
-		// the server protocol only specifies to 1/8 pixel, so add 1/16 in each axis
-		cl.refdef.vieworg[0] += 1.0/16;
-		cl.refdef.vieworg[1] += 1.0/16;
-		cl.refdef.vieworg[2] += 1.0/16;
+		/* never let it sit exactly on a node line, because a water plane can
+		   dissapear when viewed with the eye exactly on it. the server protocol
+		   only specifies to 1/8 pixel, so add 1/16 in each axis */
+		cl.refdef.vieworg[0] += 1.0 / 16;
+		cl.refdef.vieworg[1] += 1.0 / 16;
+		cl.refdef.vieworg[2] += 1.0 / 16;
 
 		cl.refdef.x = scr_vrect.x;
 		cl.refdef.y = scr_vrect.y;
 		cl.refdef.width = scr_vrect.width;
 		cl.refdef.height = scr_vrect.height;
 		cl.refdef.fov_y = CalcFov (cl.refdef.fov_x, cl.refdef.width, cl.refdef.height);
-		cl.refdef.time = cl.time*0.001;
+		cl.refdef.time = cl.time * 0.001f;
 
 		cl.refdef.areabits = cl.frame.areabits;
 
@@ -378,30 +422,74 @@ void V_RenderView( float stereo_separation )
 
 		cl.refdef.rdflags = cl.frame.playerstate.rdflags;
 
-		// sort entities for better cache locality
-	qsort( cl.refdef.entities, cl.refdef.num_entities, sizeof( cl.refdef.entities[0] ), (int (*)(const void *, const void *))entitycmpfnc );
+		/* sort entities for better cache locality */
+		qsort(cl.refdef.entities, cl.refdef.num_entities,
+				sizeof(cl.refdef.entities[0]), (int (*)(const void *, const void *))
+				entitycmpfnc);
 	}
 
-	re.RenderFrame (&cl.refdef);
+	R_RenderFrame(&cl.refdef);
+
 	if (cl_stats->value)
 		Com_Printf("ent:%i  lt:%i  part:%i\n", cls.r_numentities, cls.r_numdlights, cls.r_numparticles);
 	if ( log_stats->value && ( log_stats_file != 0 ) )
 		fprintf( log_stats_file, "%i,%i,%i,",cls.r_numentities, cls.r_numdlights, cls.r_numparticles);
 
+	SCR_AddDirtyPoint(scr_vrect.x, scr_vrect.y);
+	SCR_AddDirtyPoint(scr_vrect.x + scr_vrect.width - 1,
+			scr_vrect.y + scr_vrect.height - 1);
 
-	SCR_AddDirtyPoint (scr_vrect.x, scr_vrect.y);
-	SCR_AddDirtyPoint (scr_vrect.x+scr_vrect.width-1,
-		scr_vrect.y+scr_vrect.height-1);
-
-	SCR_DrawCrosshair ();
+	SCR_DrawCrosshair();
 }
 
+void
+V_Render3dCrosshair(void)
+{
+	trace_t crosshair_trace;
+	vec3_t end;
 
-/*
-=============
-V_Viewpos_f
-=============
-*/
+	crosshair_3d = Cvar_Get("crosshair_3d", "0", CVAR_ARCHIVE);
+	crosshair_3d_glow = Cvar_Get("crosshair_3d_glow", "0", CVAR_ARCHIVE);
+
+
+	if(crosshair_3d->value || crosshair_3d_glow->value){
+		VectorMA(cl.refdef.vieworg,8192,cl.v_forward,end);
+		crosshair_trace = CL_PMTrace(cl.refdef.vieworg, vec3_origin, vec3_origin, end);
+
+		if(crosshair_3d_glow->value){
+			crosshair_3d_glow_r = Cvar_Get("crosshair_3d_glow_r", "5", CVAR_ARCHIVE);
+			crosshair_3d_glow_g = Cvar_Get("crosshair_3d_glow_g", "1", CVAR_ARCHIVE);
+			crosshair_3d_glow_b = Cvar_Get("crosshair_3d_glow_b", "4", CVAR_ARCHIVE);
+
+			/*
+			V_AddLight(
+				crosshair_trace.endpos,
+				crosshair_3d_glow->value,
+				crosshair_3d_glow_r->value,
+				crosshair_3d_glow_g->value,
+				crosshair_3d_glow_b->value
+			);
+			*/
+		}
+
+		if(crosshair_3d->value){
+			entity_t crosshair_ent = {0};
+
+			crosshair_ent.origin[0] = crosshair_trace.endpos[0];
+			crosshair_ent.origin[1] = crosshair_trace.endpos[1];
+			crosshair_ent.origin[2] = crosshair_trace.endpos[2];
+
+			crosshair_ent.model = R_RegisterModel("models/crosshair/tris.md2");
+			//crosshair_ent.skin = R_RegisterSkin("models/crosshair/skin.pcx");
+
+			AngleVectors2(crosshair_trace.plane.normal, crosshair_ent.angles);
+			crosshair_ent.flags = RF_DEPTHHACK | RF_FULLBRIGHT | RF_NOSHADOW;
+
+			V_AddEntity(&crosshair_ent);
+		}
+	}
+}
+
 void
 V_Viewpos_f(void)
 {

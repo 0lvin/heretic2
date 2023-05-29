@@ -672,25 +672,27 @@ void G_SetStats (edict_t *ent)
 	// Health.
 	// ********************************************************************************************
 
-	ps->stats[STAT_HEALTH_ICON]=gi.imageindex (healthicons[Q_ftol(level.time*2)&1]);
-	ps->stats[STAT_HEALTH]=ent->health;
+	ps->stats[STAT_HEALTH_ICON] = gi.imageindex(healthicons[Q_ftol(level.time * 2) & 1]);
+	ps->stats[STAT_HEALTH] = ent->health;
 
 	// ********************************************************************************************
 	// Weapon / defence.
 	// ********************************************************************************************
 
-	ps->stats[STAT_WEAPON_ICON]=gi.imageindex(pers->weapon->icon);
+	ps->stats[STAT_WEAPON_ICON] = gi.imageindex(pers->weapon->icon);
 	if (pers->defence)
-		ps->stats[STAT_DEFENCE_ICON]=gi.imageindex(pers->defence->icon);
+	{
+		ps->stats[STAT_DEFENCE_ICON] = gi.imageindex(pers->defence->icon);
+	}
 
 	// ********************************************************************************************
 	// Weapon ammo.
 	// ********************************************************************************************
 
-	if(pers->weapon->ammo&&pers->weapon->count_width)
+	if(pers->weapon->ammo && pers->weapon->count_width)
 	{
 		item=FindItem(pers->weapon->ammo);
-		ps->stats[STAT_AMMO_ICON]=gi.imageindex(item->icon);
+		ps->stats[STAT_AMMO_ICON] = gi.imageindex(item->icon);
 		ps->stats[STAT_AMMO] = pers->inventory.Items[ITEM_INDEX(item)];
 	}
 	else
@@ -702,37 +704,43 @@ void G_SetStats (edict_t *ent)
 	// Offensive mana.
 	// ********************************************************************************************
 
-	ps->stats[STAT_OFFMANA_ICON]=gi.imageindex("icons/green-mana.m8");
-	ps->stats[STAT_OFFMANA_BACK]=gi.imageindex("icons/green-mana2.m8");
+	ps->stats[STAT_OFFMANA_ICON] = gi.imageindex("icons/green-mana");
+	ps->stats[STAT_OFFMANA_BACK] = gi.imageindex("icons/green-mana2");
 	item = FindItem("Off-mana");
 	ps->stats[STAT_OFFMANA] = (pers->inventory.Items[ITEM_INDEX(item)] * 100) / MAX_OFF_MANA;
 	if(ps->stats[STAT_OFFMANA] < 0)
+	{
 		ps->stats[STAT_OFFMANA] = 0;
+	}
 
 	// ********************************************************************************************
 	// Defensive mana.
 	// ********************************************************************************************
 
-	ps->stats[STAT_DEFMANA_ICON]=gi.imageindex("icons/blue-mana.m8");
-	ps->stats[STAT_DEFMANA_BACK]=gi.imageindex("icons/blue-mana2.m8");
+	ps->stats[STAT_DEFMANA_ICON] = gi.imageindex("icons/blue-mana");
+	ps->stats[STAT_DEFMANA_BACK] = gi.imageindex("icons/blue-mana2");
 	item = FindItem("Def-mana");
 	ps->stats[STAT_DEFMANA] = (pers->inventory.Items[ITEM_INDEX(item)] * 100) / MAX_DEF_MANA;
 	if(ps->stats[STAT_DEFMANA] < 0)
+	{
 		ps->stats[STAT_DEFMANA] = 0;
+	}
 
 	// ********************************************************************************************
 	// Shrine timers.
 	// ********************************************************************************************
 
-	ps->stats[STAT_POWERUP_BACK] = gi.imageindex("icons/powerup2.m8");
-	ps->stats[STAT_POWERUP_ICON] = gi.imageindex("icons/powerup.m8");
+	ps->stats[STAT_POWERUP_BACK] = gi.imageindex("icons/powerup2");
+	ps->stats[STAT_POWERUP_ICON] = gi.imageindex("icons/powerup");
 	ps->stats[STAT_POWERUP_TIMER] = (GetShrineTime(pi->playerinfo.powerup_timer) * 100) / POWERUP_DURATION;
 	// Cheating sets the powerup timer to something huge, so let's avoid a crash here.
 	if (ps->stats[STAT_POWERUP_TIMER] > 100)
-		ps->stats[STAT_POWERUP_TIMER]=100;
+	{
+		ps->stats[STAT_POWERUP_TIMER] = 100;
+	}
 
-	ps->stats[STAT_LUNG_BACK] =	gi.imageindex("icons/breath2.m8");
-	ps->stats[STAT_LUNG_ICON] =	gi.imageindex("icons/breath.m8");
+	ps->stats[STAT_LUNG_BACK] =	gi.imageindex("icons/breath2");
+	ps->stats[STAT_LUNG_ICON] =	gi.imageindex("icons/breath");
 	ps->stats[STAT_LUNG_TIMER] = 0;
 	if((ent->waterlevel > 2) && !(ent->flags & FL_INLAVA))
 	{
@@ -763,12 +771,12 @@ void G_SetStats (edict_t *ent)
 	ps->stats[STAT_ARMOUR] = 0;
 	if(pers->armortype == ARMOR_TYPE_SILVER)
 	{
-		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_silver.m32");
+		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_silver");
 		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 100) / MAX_SILVER_ARMOR;
 	}
 	if(pers->armortype == ARMOR_TYPE_GOLD)
 	{
-		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_gold.m32");
+		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_gold");
 		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 250) / MAX_GOLD_ARMOR;
 	}
 
@@ -801,7 +809,7 @@ void G_SetStats (edict_t *ent)
 			 }
 			 else
 			 {
-				ps->stats[count] = gi.imageindex (item->icon);
+				ps->stats[count] = gi.imageindex(item->icon);
 				ps->stats[STAT_PUZZLE_COUNT]++;
 				if(PossessCorrectItem(ent, item))
 				{
@@ -818,8 +826,7 @@ void G_SetStats (edict_t *ent)
 
 	ent->client->ps.stats[STAT_LAYOUTS] = 0;
 
-	// Inventory gets activated when player is in a use puzzle trigger field.
-
+	/* Inventory gets activated when player is in a use puzzle trigger field. */
 	if(ent->target_ent)
 	{
 		if(!strcmp(ent->target_ent->classname, "trigger_playerusepuzzle"))
@@ -830,19 +837,22 @@ void G_SetStats (edict_t *ent)
 
 	if (ent->client->playerinfo.showpuzzleinventory)
 	{
-		// Show puzzle inventory.
-
+		/* Show puzzle inventory. */
 		ps->stats[STAT_LAYOUTS] |= 4;
 	}
 
 	if (deathmatch->value)
 	{
-		if (pers->health <= 0 || level.intermissiontime	|| ent->client->playerinfo.showscores)
+		if (pers->health <= 0 || level.intermissiontime || ent->client->playerinfo.showscores)
+		{
 			ps->stats[STAT_LAYOUTS] |= 1;
+		}
 	}
 	else
 	{
 		if (ent->client->playerinfo.showscores)
-		    ps->stats[STAT_LAYOUTS] |= 1;
+		{
+			ps->stats[STAT_LAYOUTS] |= 1;
+		}
 	}
 }

@@ -786,6 +786,7 @@ CL_InitLocal(void)
 	cl_footsteps = Cvar_Get("cl_footsteps", "1", 0);
 	cl_noskins = Cvar_Get("cl_noskins", "0", 0);
 	cl_predict = Cvar_Get("cl_predict", "1", 0);
+	cl_showfps = Cvar_Get("cl_showfps", "0", CVAR_ARCHIVE);
 	cl_maxfps = Cvar_Get ("cl_maxfps", "90", 0);
 
 	cl_upspeed = Cvar_Get("cl_upspeed", "200", 0);

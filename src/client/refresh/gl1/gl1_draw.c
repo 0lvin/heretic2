@@ -46,9 +46,18 @@ Draw_InitLocal(void)
 			__func__);
 	}
 // jmarshall
-	atlas_particle = R_FindImage("pics/misc/particle.m32", it_pic);
-	atlas_aparticle = R_FindImage("pics/misc/aparticle.m8", it_pic);
-// jmarshall end
+	atlas_particle = R_FindPic("particle", (findimage_t)R_FindImage);
+	if (!atlas_particle)
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load particle",
+			__func__);
+	}
+	atlas_aparticle = R_FindPic("aparticle", (findimage_t)R_FindImage);
+	if (!atlas_aparticle)
+	{
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load aparticle",
+			__func__);
+	}
 }
 
 /*
@@ -113,18 +122,7 @@ RDraw_CharScaled(int x, int y, int num, float scale)
 image_t *
 RDraw_FindPic(char *name)
 {
-	image_t *gl;
-	char	fullname[MAX_QPATH];
-
-	if (name[0] != '/' && name[0] != '\\')
-	{
-		Com_sprintf (fullname, sizeof(fullname), "pics/%s", name);
-		gl = R_FindImage (fullname, it_pic);
-	}
-	else
-		gl = R_FindImage (name+1, it_pic);
-
-	return gl;
+	return R_FindPic(name, (findimage_t)R_FindImage);
 }
 
 void
@@ -132,7 +130,8 @@ RDraw_GetPicSize(int *w, int *h, char *pic)
 {
 	image_t *gl;
 
-	gl = RDraw_FindPic (pic);
+	gl = R_FindPic(pic, (findimage_t)R_FindImage);
+
 	if (!gl)
 	{
 		*w = *h = -1;
@@ -148,7 +147,8 @@ RDraw_StretchPic(int x, int y, int w, int h, char *pic)
 {
 	image_t *gl;
 
-	gl = RDraw_FindPic (pic);
+	gl = R_FindPic(pic, (findimage_t)R_FindImage);
+
 	if (!gl)
 	{
 		R_Printf(PRINT_ALL, "Can't find pic: %s\n", pic);
@@ -192,7 +192,7 @@ RDraw_PicScaled(int x, int y, char *pic, float factor)
 {
 	image_t *gl;
 
-	gl = RDraw_FindPic (pic);
+	gl = R_FindPic(pic, (findimage_t)R_FindImage);
 
 	if (!gl)
 	{
@@ -242,7 +242,7 @@ RDraw_TileClear(int x, int y, int w, int h, char *pic)
 {
 	image_t *image;
 
-	image = RDraw_FindPic (pic);
+	image = R_FindPic(pic, (findimage_t)R_FindImage);
 
 	if (!image)
 	{

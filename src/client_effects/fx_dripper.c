@@ -13,7 +13,6 @@
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
-#include "ambient_effects.h"
 
 #define	DRIP_MAX_DURATION	2.0F
 #define DRIP_RADIUS			2.0F

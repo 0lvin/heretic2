@@ -84,14 +84,14 @@ void CL_ParseProjectiles (void)
 	int lastempty = -1;
 	qboolean old = false;
 
-	c = MSG_ReadByte (&net_message);
+	c = MSG_ReadByte(&net_message);
 	for (i=0 ; i<c ; i++)
 	{
-		bits[0] = MSG_ReadByte (&net_message);
-		bits[1] = MSG_ReadByte (&net_message);
-		bits[2] = MSG_ReadByte (&net_message);
-		bits[3] = MSG_ReadByte (&net_message);
-		bits[4] = MSG_ReadByte (&net_message);
+		bits[0] = MSG_ReadByte(&net_message);
+		bits[1] = MSG_ReadByte(&net_message);
+		bits[2] = MSG_ReadByte(&net_message);
+		bits[3] = MSG_ReadByte(&net_message);
+		bits[4] = MSG_ReadByte(&net_message);
 		pr.origin[0] = ( ( bits[0] + ((bits[1]&15)<<8) ) <<1) - 4096;
 		pr.origin[1] = ( ( (bits[1]>>4) + (bits[2]<<4) ) <<1) - 4096;
 		pr.origin[2] = ( ( bits[3] + ((bits[4]&15)<<8) ) <<1) - 4096;
@@ -104,28 +104,28 @@ void CL_ParseProjectiles (void)
 
 		if (bits[4] & 128) {
 			old = true;
-			bits[0] = MSG_ReadByte (&net_message);
-			bits[1] = MSG_ReadByte (&net_message);
-			bits[2] = MSG_ReadByte (&net_message);
-			bits[3] = MSG_ReadByte (&net_message);
-			bits[4] = MSG_ReadByte (&net_message);
+			bits[0] = MSG_ReadByte(&net_message);
+			bits[1] = MSG_ReadByte(&net_message);
+			bits[2] = MSG_ReadByte(&net_message);
+			bits[3] = MSG_ReadByte(&net_message);
+			bits[4] = MSG_ReadByte(&net_message);
 			pr.oldorigin[0] = ( ( bits[0] + ((bits[1]&15)<<8) ) <<1) - 4096;
 			pr.oldorigin[1] = ( ( (bits[1]>>4) + (bits[2]<<4) ) <<1) - 4096;
 			pr.oldorigin[2] = ( ( bits[3] + ((bits[4]&15)<<8) ) <<1) - 4096;
 		}
 
-		bits[0] = MSG_ReadByte (&net_message);
-		bits[1] = MSG_ReadByte (&net_message);
-		bits[2] = MSG_ReadByte (&net_message);
+		bits[0] = MSG_ReadByte(&net_message);
+		bits[1] = MSG_ReadByte(&net_message);
+		bits[2] = MSG_ReadByte(&net_message);
 
 		pr.angles[0] = 360*bits[0]/256;
 		pr.angles[1] = 360*bits[1]/256;
 		pr.modelindex = bits[2];
 
-		b = MSG_ReadByte (&net_message);
+		b = MSG_ReadByte(&net_message);
 		pr.num = (b & 0x7f);
 		if (b & 128) // extra entity number byte
-			pr.num |= (MSG_ReadByte (&net_message) << 7);
+			pr.num |= (MSG_ReadByte(&net_message) << 7);
 
 		pr.present = true;
 
@@ -206,32 +206,10 @@ Returns the entity number and the header bits
 int	bitcounts[32];	/// just for protocol profiling
 int CL_ParseEntityBits (unsigned int *bits)
 {
-	unsigned	b, total;
-	int			i;
+	unsigned	total;
 	int			number;
 
 	total = MSG_ReadLong (&net_message);
-	//if (total & U_MOREBITS1)
-	//{
-	//	b = MSG_ReadByte (&net_message);
-	//	total |= b<<8;
-	//}
-	//if (total & U_MOREBITS2)
-	//{
-	//	b = MSG_ReadByte (&net_message);
-	//	total |= b<<16;
-	//}
-	//if (total & U_MOREBITS3)
-	//{
-	//	b = MSG_ReadByte (&net_message);
-	//	total |= b<<24;
-	//}
-
-	// count the bits for net profiling
-	//for (i=0 ; i<32 ; i++)
-	//	if (total&(1<<i))
-	//		bitcounts[i]++;
-
 	number = MSG_ReadShort(&net_message);
 
 	*bits = total;
@@ -299,13 +277,13 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int number, int bi
 	}
 
 	if (bits & U_MODEL)
-		to->modelindex = MSG_ReadByte (&net_message);
+		to->modelindex = MSG_ReadByte(&net_message);
 
 	if (bits & U_FRAME8)
-		to->frame = MSG_ReadByte (&net_message);
+		to->frame = MSG_ReadByte(&net_message);
 
 	if (bits & U_FRAME16)
-		to->frame = MSG_ReadShort (&net_message);
+		to->frame = MSG_ReadShort(&net_message);
 
 	if ((bits & U_SKIN8) && (bits & U_SKIN16))		//used for laser colors
 		to->skinnum = MSG_ReadLong(&net_message);
@@ -352,15 +330,15 @@ void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int number, int bi
 		MSG_ReadPos (&net_message, to->old_origin);
 
 	if (bits & U_SOUND)
-		to->sound = MSG_ReadByte (&net_message);
+		to->sound = MSG_ReadByte(&net_message);
 
 	//if (bits & U_EVENT)
-	//	to->event = MSG_ReadByte (&net_message);
+	//	to->event = MSG_ReadByte(&net_message);
 	//else
 	//	to->event = 0;
 
 	if (bits & U_SOLID)
-		to->solid = MSG_ReadShort (&net_message);
+		to->solid = MSG_ReadShort(&net_message);
 }
 
 /*
@@ -553,23 +531,29 @@ void CL_ParsePacketEntities (frame_t *oldframe, frame_t *newframe)
 CL_ParsePlayerstate
 ===================
 */
-void CL_ParsePlayerstate (frame_t *oldframe, frame_t *newframe)
+void
+CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 {
-	int			flags;
-	player_state_t	*state;
-	int			i;
-	int			statbits;
+	// TODO: Rewrite protocol
+	int flags;
+	player_state_t *state;
 
 	state = &newframe->playerstate;
 
 	// clear to old value before delta parsing
 	if (oldframe)
+	{
 		*state = oldframe->playerstate;
+	}
 	else
+	{
 		memset (state, 0, sizeof(*state));
+	}
 
 	flags = MSG_ReadLong (&net_message);
 	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
+#if 0
+	// TODO: Rewrite protocol
 	if (flags & PS_MINSMAXS) {
 		state->mins[0] = MSG_ReadFloat(&net_message);
 		state->mins[1] = MSG_ReadFloat(&net_message);
@@ -579,12 +563,15 @@ void CL_ParsePlayerstate (frame_t *oldframe, frame_t *newframe)
 		state->maxs[1] = MSG_ReadFloat(&net_message);
 		state->maxs[2] = MSG_ReadFloat(&net_message);
 	}
+#endif
 
 	//
 	// parse the pmove_state_t
 	//
 	if (flags & PS_M_TYPE)
-		state->pmove.pm_type = (pmtype_t)MSG_ReadByte (&net_message);
+	{
+		state->pmove.pm_type = (pmtype_t)MSG_ReadByte(&net_message);
+	}
 
 	if (flags & PS_REMOTE_ID)
 	{
@@ -607,8 +594,8 @@ void CL_ParsePlayerstate (frame_t *oldframe, frame_t *newframe)
 
 	if (flags & PS_M_ORIGIN_XY)
 	{
-		state->pmove.origin[0] = MSG_ReadShort (&net_message);
-		state->pmove.origin[1] = MSG_ReadShort (&net_message);
+		state->pmove.origin[0] = MSG_ReadShort(&net_message);
+		state->pmove.origin[1] = MSG_ReadShort(&net_message);
 	}
 
 	if (flags & PS_VIEWHEIGHT)
@@ -623,8 +610,8 @@ void CL_ParsePlayerstate (frame_t *oldframe, frame_t *newframe)
 
 	if (flags & PS_M_VELOCITY_XY)
 	{
-		state->pmove.velocity[0] = MSG_ReadShort (&net_message);
-		state->pmove.velocity[1] = MSG_ReadShort (&net_message);
+		state->pmove.velocity[0] = MSG_ReadShort(&net_message);
+		state->pmove.velocity[1] = MSG_ReadShort(&net_message);
 	}
 
 	if (flags & PS_M_VELOCITY_Z)
@@ -633,77 +620,89 @@ void CL_ParsePlayerstate (frame_t *oldframe, frame_t *newframe)
 	}
 
 	if (flags & PS_M_TIME)
-		state->pmove.pm_time = MSG_ReadByte (&net_message);
+	{
+		state->pmove.pm_time = MSG_ReadByte(&net_message);
+	}
 
 	if (flags & PS_M_FLAGS)
-		state->pmove.pm_flags = MSG_ReadByte (&net_message);
+	{
+		state->pmove.pm_flags = MSG_ReadByte(&net_message);
+	}
 
 	if (flags & PS_M_GRAVITY)
-		state->pmove.gravity = MSG_ReadShort (&net_message);
+	{
+		state->pmove.gravity = MSG_ReadShort(&net_message);
+	}
 
 	if (flags & PS_M_DELTA_ANGLES)
 	{
-		state->pmove.delta_angles[0] = MSG_ReadShort (&net_message);
-		state->pmove.delta_angles[1] = MSG_ReadShort (&net_message);
-		state->pmove.delta_angles[2] = MSG_ReadShort (&net_message);
+		state->pmove.delta_angles[0] = MSG_ReadShort(&net_message);
+		state->pmove.delta_angles[1] = MSG_ReadShort(&net_message);
+		state->pmove.delta_angles[2] = MSG_ReadShort(&net_message);
 	}
 
 	if (cl.attractloop)
+	{
 		state->pmove.pm_type = PM_FREEZE;		// demo playback
+	}
 
 	//
 	// parse the rest of the player_state_t
 	//
 	//if (flags & PS_VIEWOFFSET)
 	//{
-	//	state->viewoffset[0] = MSG_ReadChar (&net_message) * 0.25;
-	//	state->viewoffset[1] = MSG_ReadChar (&net_message) * 0.25;
-	//	state->viewoffset[2] = MSG_ReadChar (&net_message) * 0.25;
+	//	state->viewoffset[0] = MSG_ReadChar(&net_message) * 0.25;
+	//	state->viewoffset[1] = MSG_ReadChar(&net_message) * 0.25;
+	//	state->viewoffset[2] = MSG_ReadChar(&net_message) * 0.25;
 	//}
 
 	if (flags & PS_VIEWANGLES)
 	{
-		state->viewangles[0] = MSG_ReadAngle16 (&net_message);
-		state->viewangles[1] = MSG_ReadAngle16 (&net_message);
-		state->viewangles[2] = MSG_ReadAngle16 (&net_message);
+		state->viewangles[0] = MSG_ReadAngle16(&net_message);
+		state->viewangles[1] = MSG_ReadAngle16(&net_message);
+		state->viewangles[2] = MSG_ReadAngle16(&net_message);
 	}
 
 	//if (flags & PS_KICKANGLES)
 	//{
-	//	state->kick_angles[0] = MSG_ReadChar (&net_message) * 0.25;
-	//	state->kick_angles[1] = MSG_ReadChar (&net_message) * 0.25;
-	//	state->kick_angles[2] = MSG_ReadChar (&net_message) * 0.25;
+	//	state->kick_angles[0] = MSG_ReadChar(&net_message) * 0.25;
+	//	state->kick_angles[1] = MSG_ReadChar(&net_message) * 0.25;
+	//	state->kick_angles[2] = MSG_ReadChar(&net_message) * 0.25;
 	//}
 	//
 	//if (flags & PS_WEAPONINDEX)
 	//{
-	//	state->gunindex = MSG_ReadByte (&net_message);
+	//	state->gunindex = MSG_ReadByte(&net_message);
 	//}
 	//
 	//if (flags & PS_WEAPONFRAME)
 	//{
-	//	state->gunframe = MSG_ReadByte (&net_message);
-	//	state->gunoffset[0] = MSG_ReadChar (&net_message)*0.25;
-	//	state->gunoffset[1] = MSG_ReadChar (&net_message)*0.25;
-	//	state->gunoffset[2] = MSG_ReadChar (&net_message)*0.25;
-	//	state->gunangles[0] = MSG_ReadChar (&net_message)*0.25;
-	//	state->gunangles[1] = MSG_ReadChar (&net_message)*0.25;
-	//	state->gunangles[2] = MSG_ReadChar (&net_message)*0.25;
+	//	state->gunframe = MSG_ReadByte(&net_message);
+	//	state->gunoffset[0] = MSG_ReadChar(&net_message)*0.25;
+	//	state->gunoffset[1] = MSG_ReadChar(&net_message)*0.25;
+	//	state->gunoffset[2] = MSG_ReadChar(&net_message)*0.25;
+	//	state->gunangles[0] = MSG_ReadChar(&net_message)*0.25;
+	//	state->gunangles[1] = MSG_ReadChar(&net_message)*0.25;
+	//	state->gunangles[2] = MSG_ReadChar(&net_message)*0.25;
 	//}
 
 	//if (flags & PS_BLEND)
 	//{
-	//	state->blend[0] = MSG_ReadByte (&net_message)/255.0;
-	//	state->blend[1] = MSG_ReadByte (&net_message)/255.0;
-	//	state->blend[2] = MSG_ReadByte (&net_message)/255.0;
-	//	state->blend[3] = MSG_ReadByte (&net_message)/255.0;
+	//	state->blend[0] = MSG_ReadByte(&net_message)/255.0;
+	//	state->blend[1] = MSG_ReadByte(&net_message)/255.0;
+	//	state->blend[2] = MSG_ReadByte(&net_message)/255.0;
+	//	state->blend[3] = MSG_ReadByte(&net_message)/255.0;
 	//}
 
 	if (flags & PS_FOV)
-		state->fov = MSG_ReadByte (&net_message);
+	{
+		state->fov = MSG_ReadByte(&net_message);
+	}
 
 	if (flags & PS_RDFLAGS)
-		state->rdflags = MSG_ReadByte (&net_message);
+	{
+		state->rdflags = MSG_ReadByte(&net_message);
+	}
 
 	// parse stats
 	//statbits = MSG_ReadLong (&net_message);
@@ -763,7 +762,7 @@ void CL_ParseFrame (void)
 
 	// BIG HACK to let old demos continue to work
 	//if (cls.serverProtocol != 26)
-	//	cl.surpressCount = MSG_ReadByte (&net_message);
+	//	cl.surpressCount = MSG_ReadByte(&net_message);
 
 	if (cl_shownet->value == 3)
 		Com_Printf("   frame:%i  delta:%i\n", cl.frame.serverframe,
@@ -801,23 +800,29 @@ void CL_ParseFrame (void)
 
 	// clamp time
 	if (cl.time > cl.frame.servertime)
+	{
 		cl.time = cl.frame.servertime;
+	}
 	else if (cl.time < cl.frame.servertime - 100)
+	{
 		cl.time = cl.frame.servertime - 100;
+	}
 
 	// read areabits
-	len = MSG_ReadByte (&net_message);
-	MSG_ReadData (&net_message, &cl.frame.areabits, len);
+	len = MSG_ReadByte(&net_message);
+	MSG_ReadData(&net_message, &cl.frame.areabits, len);
 
 	// read playerinfo
-	cmd = MSG_ReadByte (&net_message);
+	cmd = MSG_ReadByte(&net_message);
 	SHOWNET(svc_strings[cmd]);
 	if (cmd != svc_playerinfo)
+	{
 		Com_Error(ERR_DROP, "CL_ParseFrame: not playerinfo");
+	}
 	CL_ParsePlayerstate (old, &cl.frame);
 
 	// read packet entities
-	cmd = MSG_ReadByte (&net_message);
+	cmd = MSG_ReadByte(&net_message);
 	SHOWNET(svc_strings[cmd]);
 	if (cmd != svc_packetentities)
 		Com_Error(ERR_DROP, "CL_ParseFrame: not packetentities");
@@ -1013,8 +1018,7 @@ Sets cl.refdef view values
 void CL_CalcViewValues(void)
 {
 	int			i;
-	float		lerp, backlerp;
-	centity_t* ent;
+	float		lerp;
 	frame_t* oldframe;
 	player_state_t* ps, * ops;
 
@@ -1032,7 +1036,6 @@ void CL_CalcViewValues(void)
 		|| abs(ops->pmove.origin[2] - ps->pmove.origin[2]) > 256 * 8)
 		ops = ps;		// don't interpolate
 
-	ent = &cl_entities[cl.playernum + 1];
 	lerp = cl.lerpfrac;
 
 	// calculate the origin

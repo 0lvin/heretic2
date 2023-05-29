@@ -152,6 +152,7 @@ typedef struct client_entity_s
 extern client_entity_t *clientEnts;
 extern CE_ClassStatics_t ce_classStatics[CE_NUM_CLASSIDS];
 
+void DoWaterSplash(client_entity_t *effect, paletteRGBA_t color, int count);
 client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t direction, int nextThinkTime);
 fmnodeinfo_t *FMNodeInfo_new();
 void AddEffectToList(client_entity_t **root, client_entity_t *fx);

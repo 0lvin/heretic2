@@ -12,7 +12,6 @@
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
-#include "ambient_effects.h"
 
 #define	SCALE		0.01F
 #define DELTA_SCALE	1.0F

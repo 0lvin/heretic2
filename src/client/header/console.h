@@ -40,8 +40,8 @@ typedef struct {
 
 	int		ormask; /* high bit mask for colored characters */
 
-	int 	linewidth;		// characters across screen
-	int		totallines;		// total lines in console scrollback
+	int 	linewidth; /* characters across screen */
+	int		totallines; /* total lines in console scrollback */
 
 	float	cursorspeed;
 

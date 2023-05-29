@@ -633,7 +633,7 @@ Con_DrawConsole(float frac)
 
 	/* draw the background */
 	Draw_StretchPic(0, -viddef.height + lines, viddef.width,
-			viddef.height, "misc/conback.m8");
+			viddef.height, "conback");
 	SCR_AddDirtyPoint(0, 0);
 	SCR_AddDirtyPoint(viddef.width - 1, lines - 1);
 

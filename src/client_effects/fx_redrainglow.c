@@ -13,7 +13,6 @@
 #include "../../h2common/matrix.h"
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
-#include "ambient_effects.h"
 #include "ce_dlight.h"
 #include "../../h2common/reference.h"
 #include "../game/header/g_playstats.h"

@@ -634,22 +634,53 @@ R_FindPic(const char *name, findimage_t find_image)
 
 	if ((name[0] != '/') && (name[0] != '\\'))
 	{
-		char	pathname[MAX_QPATH];
+		char pathname[MAX_QPATH];
+		char namewe[MAX_QPATH];
+		const char* ext;
+
+		ext = COM_FileExtension(name);
+		if(!ext[0])
+		{
+			/* file has no extension */
+			strncpy(namewe, name, MAX_QPATH);
+		}
+		else
+		{
+			int len;
+
+			len = strlen(name);
+
+			/* Remove the extension */
+			memset(namewe, 0, MAX_QPATH);
+			memcpy(namewe, name, len - (strlen(ext) + 1));
+		}
 
 		/* Quake 2 */
-		Com_sprintf(pathname, sizeof(pathname), "pics/%s.pcx", name);
+		Com_sprintf(pathname, sizeof(pathname), "pics/%s.pcx", namewe);
 		image = find_image(pathname, it_pic);
 
 		/* Heretic 2 */
 		if (!image)
 		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m32", name);
+			Com_sprintf(pathname, sizeof(pathname), "pics/%s.m32", namewe);
 			image = find_image(pathname, it_pic);
 		}
 
 		if (!image)
 		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m8", name);
+			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m32", namewe);
+			image = find_image(pathname, it_pic);
+		}
+
+		if (!image)
+		{
+			Com_sprintf(pathname, sizeof(pathname), "pics/%s.m8", namewe);
+			image = find_image(pathname, it_pic);
+		}
+
+		if (!image)
+		{
+			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m8", namewe);
 			image = find_image(pathname, it_pic);
 		}
 	}

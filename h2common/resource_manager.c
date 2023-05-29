@@ -45,7 +45,7 @@ static void ResMngr_CreateBlock(ResourceManager_t *resource)
 	for (i = 1; i < resource->resPerBlock; ++i)
 	{
 		// set current->next to point to next node
-		*current = (char *)(current)+resource->nodeSize;
+		*current = (char *)(current) + resource->nodeSize;
 
 		// set current node to current->next
 		current = (char **)(*current);
@@ -60,7 +60,7 @@ void ResMngr_Con(ResourceManager_t *resource, size_t init_resSize, unsigned int 
 
 	resource->resPerBlock = init_resPerBlock;
 
-	resource->nodeSize = resource->resSize + sizeof(*resource->free);
+	resource->nodeSize = (resource->resSize + sizeof(*resource->free) + 31) & ~31;
 
 	resource->blockList = NULL;
 

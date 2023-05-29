@@ -52,7 +52,7 @@ CC ?= gcc
 CXX ?= g++
 BASE_CFLAGS=-Dstricmp=strcasecmp
 
-DEBUG_CFLAGS=$(BASE_CFLAGS) -g -fsanitize=address
+DEBUG_CFLAGS=$(BASE_CFLAGS) -O0 -g -Wall -pipe -fsanitize=address -fsanitize=undefined -fstack-protector-all
 # -flto=auto
 LDFLAGS=-ldl -lm
 SVGALDFLAGS=-lvga -lm
@@ -321,7 +321,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/game/g_func.o \
 	$(BUILDDIR)/src/game/g_hitlocation.o \
 	$(BUILDDIR)/src/game/g_items.o \
-	$(BUILDDIR)/src/game/g_items_pickups.o \
 	$(BUILDDIR)/src/game/g_light.o \
 	$(BUILDDIR)/src/game/g_main.o \
 	$(BUILDDIR)/src/game/g_message.o \
