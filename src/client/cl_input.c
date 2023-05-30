@@ -71,7 +71,7 @@ int			in_impulse;
 #include "../../linux/rw_linux.h"
 
 
-void Sys_SendKeyEvents (void)
+void IN_Update (void)
 {
 #ifndef DEDICATED_ONLY
 	if (KBD_Update_fp)

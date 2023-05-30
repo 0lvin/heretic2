@@ -199,7 +199,7 @@ void CL_RegisterSounds (void)
 	//	if (!cl.configstrings[CS_SOUNDS+i][0])
 	//		break;
 	//	cl.sound_precache[i] = S_RegisterSound (cl.configstrings[CS_SOUNDS+i]);
-	//	Sys_SendKeyEvents ();	// pump message loop
+	//	IN_Update ();	// pump message loop
 	//}
 	fxe.RegisterSounds();
 	S_EndRegistration ();

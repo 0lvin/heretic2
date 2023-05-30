@@ -378,11 +378,11 @@ CL_Skins_f(void)
 			continue;
 		}
 
-		Com_Printf("client %i: %s\n", i, cl.configstrings[CS_PLAYERSKINS+i]);
+		Com_Printf("client %i: %s\n", i, cl.configstrings[CS_PLAYERSKINS + i]);
 
 		SCR_UpdateScreen();
 
-		Sys_SendKeyEvents();	// pump message loop
+		IN_Update();  /* pump message loop */
 
 		CL_ParseClientinfo(i);
 	}
@@ -1022,7 +1022,7 @@ void
 CL_SendCommand(void)
 {
 	// get new key events
-	Sys_SendKeyEvents ();
+	IN_Update ();
 
 	// allow mice or other external controllers to add commands
 	IN_Commands ();

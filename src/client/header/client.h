@@ -59,7 +59,6 @@
 #include "keyboard.h"
 #include "console.h"
 
-#include "../input.h"
 #include "../../../h2common/angles.h"
 #include "../../../h2common/vector.h"
 #include "../../player/player.h"
@@ -284,12 +283,6 @@ typedef struct
 	float		nframetime; /* network frame time */
 	float		framemodifier;		// variable to mod cfx by
 
-	int			startmenu;			// time when the menu came up
-	int			startmenuzoom;		// time from menu start
-	int			m_menustate;
-	float		m_menualpha;
-	float		m_menuscale;
-
 	/* screen rendering information */
 	float		disable_screen; /* showing loading plaque between levels */
 								/* or changing rendering dlls */
@@ -297,23 +290,6 @@ typedef struct
 	/* if time gets > 30 seconds ahead, break it */
 	int			disable_servercount; /* when we receive a frame and cl.servercount */
 									 /* > cls.disable_servercount, clear disable_screen */
-
-	int			r_numentities;
-	entity_t	*r_entities[MAX_ENTITIES];
-
-	int			r_num_alpha_entities;
-	entity_t	*r_alpha_entities[MAX_ALPHA_ENTITIES];
-
-	int			r_numdlights;
-	dlight_t	r_dlights[MAX_DLIGHTS];
-
-	lightstyle_t	r_lightstyles[MAX_LIGHTSTYLES];
-
-	int			r_numparticles;
-	particle_t	r_particles[MAX_PARTICLES];
-
-	int			r_anumparticles;
-	particle_t	r_aparticles[MAX_PARTICLES];
 
 	/* connection information */
 	char		servername[256]; /* name of server from original connect */
@@ -530,6 +506,23 @@ typedef struct
 {
 	client_state_t	*cl;
 	client_static_t *cls;
+
+	int *r_numentities;
+	entity_t **r_entities;
+
+	int *r_num_alpha_entities;
+	entity_t **r_alpha_entities;
+
+	int *r_numdlights;
+	dlight_t *r_dlights;
+
+	lightstyle_t *r_lightstyles;
+
+	int *r_numparticles;
+	particle_t *r_particles;
+
+	int *r_anumparticles;
+	particle_t *r_aparticles;
 
 	// Client versions of the game entities.
 

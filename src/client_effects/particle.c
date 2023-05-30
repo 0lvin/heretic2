@@ -137,17 +137,17 @@ int AddParticlesToView(client_entity_t *ce)
 		//add to additive particle list
 		if((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE))
 		{
-			if (fxi.cls->r_anumparticles >= MAX_PARTICLES)
+			if ((*fxi.r_anumparticles) >= MAX_PARTICLES)
 				return(numparticles);
-			r = &fxi.cls->r_aparticles[fxi.cls->r_anumparticles];
+			r = &fxi.r_aparticles[*fxi.r_anumparticles];
 			part_info = 1;
 		}
 		else
 		{
-			if (fxi.cls->r_numparticles >= MAX_PARTICLES)
+			if ((*fxi.r_numparticles) >= MAX_PARTICLES)
 				return(numparticles);
 
-			r = &fxi.cls->r_particles[fxi.cls->r_numparticles];
+			r = &fxi.r_particles[*fxi.r_numparticles];
 			part_info = 2;
 		}
 
@@ -232,10 +232,10 @@ int AddParticlesToView(client_entity_t *ce)
 		case 0:
 			break;
 		case 1:
-			fxi.cls->r_anumparticles++;
+			(*fxi.r_anumparticles)++;
 			break;
 		case 2:
-			fxi.cls->r_numparticles++;
+			(*fxi.r_numparticles)++;
 			break;
 		default:
 			assert(0);

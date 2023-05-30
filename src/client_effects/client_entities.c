@@ -310,7 +310,7 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 		{
 			CE_DLight_t *ce_dlight = current->dlight;
 
-			if (fxi.cls->r_numdlights < MAX_DLIGHTS)
+			if ((*fxi.r_numdlights) < MAX_DLIGHTS)
 			{
 				if(ce_dlight->intensity > 0.0)
 				{
@@ -318,7 +318,7 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 					{
 						dlight_t *dl;
 
-						dl = &fxi.cls->r_dlights[fxi.cls->r_numdlights++];
+						dl = &fxi.r_dlights[(*fxi.r_numdlights)++];
 
 						VectorCopy (current->r.origin, dl->origin);
 
@@ -620,9 +620,9 @@ qboolean AddEntityToView(entity_t *ent)
 
 	if((ent->flags & RF_TRANS_ANY) || (ent->color.a != 255))
 	{
-		if(fxi.cls->r_num_alpha_entities < MAX_ALPHA_ENTITIES)
+		if((*fxi.r_num_alpha_entities) < MAX_ALPHA_ENTITIES)
 		{
-			fxi.cls->r_alpha_entities[fxi.cls->r_num_alpha_entities++] = ent;
+			fxi.r_alpha_entities[(*fxi.r_num_alpha_entities)++] = ent;
 		}
 		else
 		{
@@ -631,9 +631,9 @@ qboolean AddEntityToView(entity_t *ent)
 	}
 	else
 	{
-		if(fxi.cls->r_numentities < MAX_ENTITIES)
+		if((*fxi.r_numentities) < MAX_ENTITIES)
 		{
-			fxi.cls->r_entities[fxi.cls->r_numentities++] = ent;
+			fxi.r_entities[(*fxi.r_numentities)++] = ent;
 		}
 		else
 		{

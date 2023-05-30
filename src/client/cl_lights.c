@@ -190,8 +190,25 @@ void CL_Printf(int errLevel, char* fmt, ...) {
 	Com_Printf(msg);
 }
 
+extern int r_numentities;
+extern entity_t *r_entities[MAX_ENTITIES];
 
-int CL_InitClientEffects(const char* name)
+extern int r_num_alpha_entities;
+extern entity_t *r_alpha_entities[MAX_ALPHA_ENTITIES];
+
+extern int r_numdlights;
+extern dlight_t r_dlights[MAX_DLIGHTS];
+
+extern lightstyle_t r_lightstyles[MAX_LIGHTSTYLES];
+
+extern int r_numparticles;
+extern particle_t r_particles[MAX_PARTICLES];
+
+extern int r_anumparticles;
+extern particle_t r_aparticles[MAX_PARTICLES];
+
+int
+CL_InitClientEffects(const char* name)
 {
 	int result;
 	static client_fx_import_t cl_game_import;
@@ -202,6 +219,24 @@ int CL_InitClientEffects(const char* name)
 	cl_game_import.cl_predict = cl_predict;
 	cl_game_import.cl = &cl;
 	cl_game_import.cls = &cls;
+
+	cl_game_import.r_numentities = &r_numentities;
+	cl_game_import.r_entities = r_entities;
+
+	cl_game_import.r_num_alpha_entities = &r_num_alpha_entities;
+	cl_game_import.r_alpha_entities = r_alpha_entities;
+
+	cl_game_import.r_numdlights = &r_numdlights;
+	cl_game_import.r_dlights = r_dlights;
+
+	cl_game_import.r_lightstyles = r_lightstyles;
+
+	cl_game_import.r_numparticles = &r_numparticles;
+	cl_game_import.r_particles = r_particles;
+
+	cl_game_import.r_anumparticles = &r_anumparticles;
+	cl_game_import.r_aparticles = r_aparticles;
+
 	cl_game_import.server_entities = &cl_entities[0];
 	cl_game_import.parse_entities = cl_parse_entities;
 	cl_game_import.EffectEventIdTimeArray = EffectEventIdTimeArray;

@@ -609,16 +609,16 @@ char *Cmd_CompleteCommand(char *partial);
 
 char *Cmd_CompleteMapCommand(char *partial);
 
-// attempts to match a partial command for automatic command line completion
-// returns NULL if nothing fits
+/* attempts to match a partial command for automatic command line completion */
+/* returns NULL if nothing fits */
 
- int Cmd_Argc(void);
- char *Cmd_Argv(int arg);
- char *Cmd_Args(void);
+int Cmd_Argc(void);
+char *Cmd_Argv(int arg);
+char *Cmd_Args(void);
 
-// The functions that execute commands get their parameters with these
-// functions. Cmd_Argv () will return an empty string, not a NULL
-// if arg > argc, so string operations are allways safe.
+/* The functions that execute commands get their parameters with these */
+/* functions. Cmd_Argv () will return an empty string, not a NULL */
+/* if arg > argc, so string operations are always safe. */
 
 void Cmd_TokenizeString(char *text, qboolean macroExpand);
 
@@ -653,8 +653,6 @@ void Cmd_ForwardToServer(void);
 
 extern cvar_t *cvar_vars;
 
-float ClampCvar(float min, float max, float value);
-
 cvar_t *Cvar_Get(char *var_name, char *value, int flags);
 
 /* creates the variable if it doesn't exist, or returns the existing one */
@@ -687,10 +685,6 @@ char *Cvar_CompleteVariable(char *partial);
 
 /* attempts to match a partial variable name for command line completion */
 /* returns NULL if nothing fits */
-
-char *Cvar_CompleteVariableNext(char *partial, char *last);
-
-/* similar to above, except that it goes to next match if any */
 
 void Cvar_GetLatchedVars(void);
 
@@ -754,7 +748,6 @@ typedef struct
 
 void NET_Init(void);
 void NET_Shutdown(void);
-void NET_TotalShutdown(void);
 
 void NET_Config(qboolean multiplayer);
 
@@ -1050,11 +1043,9 @@ void SV_Frame(int usec);
 // system.c
 char *Sys_ConsoleInput(void);
 void Sys_ConsoleOutput(char *string);
-void Sys_SendKeyEvents(void);
 YQ2_ATTR_NORETURN void Sys_Error(char *error, ...);
 YQ2_ATTR_NORETURN void Sys_Quit(void);
 void Sys_Init(void);
-char *Sys_GetClipboardData(void);
 char *Sys_GetHomeDir(void);
 void Sys_Remove(const char *path);
 int Sys_Rename(const char *from, const char *to);
@@ -1141,5 +1132,9 @@ float Q_fabs(float f);
 typedef struct edict_s edict_t;
 typedef struct sfx_s sfx_t;
 typedef struct client_entity_s client_entity_t;
+
+float ClampCvar(float min, float max, float value);
+char *Cvar_CompleteVariableNext(char *partial, char *last);
+void NET_TotalShutdown(void);
 
 #endif

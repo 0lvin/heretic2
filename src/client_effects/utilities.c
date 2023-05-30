@@ -521,10 +521,7 @@ int GetScaledCount(int count, float refdepend)
 	float	work;
 
 	// if we are doing a time demo, we don't want scaleability
-	if (cl_timedemo->value)
-		work = count;
-	else
-		work = count * fxi.cls->framemodifier;
+	work = count;
 
 	if (r_detail->value == DETAIL_NORMAL)
 		work = work * 0.75;
@@ -536,7 +533,6 @@ int GetScaledCount(int count, float refdepend)
 	{
 		work = 1.0;
 	}
-
 
 	return(Q_ftol(work));
 }

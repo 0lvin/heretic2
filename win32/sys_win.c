@@ -267,12 +267,12 @@ void Sys_ConsoleOutput (char *string)
 
 /*
 ================
-Sys_SendKeyEvents
+IN_Update
 
 Send Key_Event calls
 ================
 */
-void Sys_SendKeyEvents (void)
+void IN_Update (void)
 {
     MSG        msg;
 

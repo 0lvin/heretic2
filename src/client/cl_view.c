@@ -45,8 +45,28 @@ cvar_t *crosshair_3d_glow_b;
 
 cvar_t *cl_stats;
 
-//char cl_weaponmodels[MAX_CLIENTWEAPONMODELS][MAX_QPATH];
-//int num_cl_weaponmodels;
+int r_numdlights;
+dlight_t r_dlights[MAX_DLIGHTS];
+
+int r_numentities;
+entity_t *r_entities[MAX_ENTITIES];
+
+int r_num_alpha_entities;
+entity_t *r_alpha_entities[MAX_ALPHA_ENTITIES];
+
+
+int r_numparticles;
+particle_t r_particles[MAX_PARTICLES];
+
+lightstyle_t r_lightstyles[MAX_LIGHTSTYLES];
+
+int r_anumparticles;
+particle_t r_aparticles[MAX_PARTICLES];
+
+char cl_weaponmodels[MAX_CLIENTWEAPONMODELS][MAX_QPATH];
+int num_cl_weaponmodels;
+
+void V_Render3dCrosshair(void);
 
 /*
  * Specifies the model that will be used as the world
@@ -54,107 +74,189 @@ cvar_t *cl_stats;
 void
 V_ClearScene(void)
 {
-	cls.r_numdlights = 0;
-	cls.r_numentities = 0;
-	cls.r_numparticles = 0;
-	cls.r_num_alpha_entities = 0;
-	cls.r_anumparticles = 0;
+	r_numdlights = 0;
+	r_numentities = 0;
+	r_numparticles = 0;
+	r_num_alpha_entities = 0;
+	r_anumparticles = 0;
 }
 
 void
 V_AddEntity(entity_t *ent)
 {
-}
-
-
-
-/*
-================
-V_TestEntities
-
-If cl_testentities is set, create 32 player models
-================
-*/
-void V_TestEntities (void)
-{
-	//int			i, j;
-	//float		f, r;
-	//entity_t	*ent;
-	//
-	//cls.r_numentities = 32;
-	//memset (cls.r_entities, 0, sizeof(cls.r_entities));
-	//
-	//for (i=0 ; i<cls.r_numentities ; i++)
-	//{
-	//	ent = &cls.r_entities[i];
-	//
-	//	r = 64 * ( (i%4) - 1.5 );
-	//	f = 64 * (i/4) + 128;
-	//
-	//	for (j=0 ; j<3 ; j++)
-	//		ent->origin[j] = cl.refdef.vieworg[j] + cl.v_forward[j]*f +
-	//		cl.v_right[j]*r;
-	//
-	//	ent->model = cl.baseclientinfo.model;
-	//	ent->skin = cl.baseclientinfo.skin;
-	//}
-}
-
-/*
-================
-V_TestLights
-
-If cl_testlights is set, create 32 lights models
-================
-*/
-void V_TestLights (void)
-{
-	int			i, j;
-	float		f, r;
-	dlight_t	*dl;
-
-	cls.r_numdlights = 32;
-	memset (cls.r_dlights, 0, sizeof(cls.r_dlights));
-
-	for (i=0 ; i< cls.r_numdlights ; i++)
+	if (r_numentities >= MAX_ENTITIES)
 	{
-		dl = &cls.r_dlights[i];
+		return;
+	}
 
-		r = 64 * ( (i%4) - 1.5 );
-		f = 64 * (i/4) + 128;
+	r_entities[r_numentities++] = ent;
+}
 
-		for (j=0 ; j<3 ; j++)
-			dl->origin[j] = cl.refdef.vieworg[j] + cl.v_forward[j]*f +
-			cl.v_right[j]*r;
-		dl->color[0] = ((i%6)+1) & 1;
-		dl->color[1] = (((i%6)+1) & 2)>>1;
-		dl->color[2] = (((i%6)+1) & 4)>>2;
+void
+V_AddParticle(vec3_t org, unsigned int color, float alpha)
+{
+	particle_t *p;
+
+	if (r_numparticles >= MAX_PARTICLES)
+	{
+		return;
+	}
+
+	p = &r_particles[r_numparticles++];
+	VectorCopy(org, p->origin);
+	// p->color = color;
+	// p->alpha = alpha;
+}
+
+void
+V_AddLight(vec3_t org, float intensity, float r, float g, float b)
+{
+	dlight_t *dl;
+
+	if (r_numdlights >= MAX_DLIGHTS)
+	{
+		return;
+	}
+
+	dl = &r_dlights[r_numdlights++];
+	VectorCopy(org, dl->origin);
+	dl->intensity = intensity;
+	dl->color[0] = r;
+	dl->color[1] = g;
+	dl->color[2] = b;
+}
+
+void
+V_AddLightStyle(int style, float r, float g, float b)
+{
+	lightstyle_t *ls;
+
+	if ((style < 0) || (style > MAX_LIGHTSTYLES))
+	{
+		Com_Error(ERR_DROP, "Bad light style %i", style);
+	}
+
+	ls = &r_lightstyles[style];
+
+	ls->white = r + g + b;
+	ls->rgb[0] = r;
+	ls->rgb[1] = g;
+	ls->rgb[2] = b;
+}
+
+/*
+ *If cl_testparticles is set, create 4096 particles in the view
+ */
+void
+V_TestParticles(void)
+{
+	particle_t *p;
+	int i, j;
+	float d, r, u;
+
+	r_numparticles = MAX_PARTICLES;
+
+	for (i = 0; i < r_numparticles; i++)
+	{
+		d = i * 0.25f;
+		r = 4 * ((i & 7) - 3.5f);
+		u = 4 * (((i >> 3) & 7) - 3.5f);
+		p = &r_particles[i];
+
+		for (j = 0; j < 3; j++)
+		{
+			p->origin[j] = cl.refdef.vieworg[j] + cl.v_forward[j] * d +
+						   cl.v_right[j] * r + cl.v_up[j] * u;
+		}
+
+		// p->color = 8;
+		// p->alpha = cl_testparticles->value;
+	}
+}
+
+/*
+ * If cl_testentities is set, create 32 player models
+ */
+void
+V_TestEntities(void)
+{
+	int i, j;
+	float f, r;
+	entity_t *ent;
+
+	r_numentities = 32;
+	memset(r_entities, 0, sizeof(r_entities));
+
+	for (i = 0; i < r_numentities; i++)
+	{
+		ent = &r_entities[i];
+
+		r = 64.0f * ((float)(i % 4) - 1.5f);
+		f = (float)(64 * (i / 4) + 128);
+
+		for (j = 0; j < 3; j++)
+		{
+			ent->origin[j] = cl.refdef.vieworg[j] + cl.v_forward[j] * f +
+							 cl.v_right[j] * r;
+		}
+
+		ent->model = cl.baseclientinfo.model;
+		ent->skin = cl.baseclientinfo.skin;
+	}
+}
+
+/*
+ * If cl_testlights is set, create 32 lights models
+ */
+void
+V_TestLights(void)
+{
+	int i, j;
+	float f, r;
+	dlight_t *dl;
+
+	r_numdlights = 32;
+	memset(r_dlights, 0, sizeof(r_dlights));
+
+	for (i = 0; i < r_numdlights; i++)
+	{
+		dl = &r_dlights[i];
+
+		r = 64 * ((i % 4) - 1.5f);
+		f = 64 * (i / 4.0f) + 128;
+
+		for (j = 0; j < 3; j++)
+		{
+			dl->origin[j] = cl.refdef.vieworg[j] + cl.v_forward[j] * f +
+							cl.v_right[j] * r;
+		}
+
+		dl->color[0] = (float)(((i % 6) + 1) & 1);
+		dl->color[1] = (float)((((i % 6) + 1) & 2) >> 1);
+		dl->color[2] = (float)((((i % 6) + 1) & 4) >> 2);
 		dl->intensity = 200;
 	}
 }
 
-//===================================================================
-
 /*
-=================
-CL_PrepRefresh
-
-Call before entering a new level, or after changing dlls
-=================
-*/
-void CL_PrepRefresh (void)
+ * Call before entering a new level, or after changing dlls
+ */
+void
+CL_PrepRefresh(void)
 {
-	char		mapname[32];
-	int			i;
-	char		name[MAX_QPATH];
-	float		rotate;
-	vec3_t		axis;
+	char mapname[MAX_QPATH];
+	int i;
+	char name[MAX_QPATH];
+	float rotate;
+	vec3_t axis;
 
-	if (!cl.configstrings[CS_MODELS+1][0])
-		return;		// no map loaded
+	if (!cl.configstrings[CS_MODELS + 1][0])
+	{
+		return;
+	}
 
-	SCR_AddDirtyPoint (0, 0);
-	SCR_AddDirtyPoint (viddef.width-1, viddef.height-1);
+	SCR_AddDirtyPoint(0, 0);
+	SCR_AddDirtyPoint(viddef.width - 1, viddef.height - 1);
 
 	/* let the refresher load the map */
 	strcpy(mapname, cl.configstrings[CS_MODELS + 1] + 5); /* skip "maps/" */
@@ -175,21 +277,33 @@ void CL_PrepRefresh (void)
 	//CL_RegisterTEntModels ();
 	fxe.RegisterModels();
 
-	for (i=1 ; i<MAX_MODELS && cl.configstrings[CS_MODELS+i][0] ; i++)
+	for (i = 1; i < MAX_MODELS && cl.configstrings[CS_MODELS + i][0]; i++)
 	{
-		strcpy (name, cl.configstrings[CS_MODELS+i]);
-		name[37] = 0;	// never go beyond one line
+		strcpy(name, cl.configstrings[CS_MODELS + i]);
+		name[37] = 0; /* never go beyond one line */
+
 		if (name[0] != '*')
+		{
 			Com_Printf("%s\r", name);
-		SCR_UpdateScreen ();
-		Sys_SendKeyEvents ();	// pump message loop
+		}
+
+		SCR_UpdateScreen();
+		IN_Update();	// pump message loop
 		cl.model_draw[i] = re.RegisterModel(cl.configstrings[CS_MODELS + i]);
+
 		if (name[0] == '*')
+		{
 			cl.model_clip[i] = CM_InlineModel(cl.configstrings[CS_MODELS + i]);
+		}
 		else
+		{
 			cl.model_clip[i] = NULL;
+		}
+
 		if (name[0] != '*')
+		{
 			Com_Printf("                                     \r");
+		}
 	}
 
 	Com_Printf("images\r");
@@ -198,7 +312,7 @@ void CL_PrepRefresh (void)
 	for (i = 1; i < MAX_IMAGES && cl.configstrings[CS_IMAGES + i][0]; i++)
 	{
 		cl.image_precache[i] = Draw_FindPic(cl.configstrings[CS_IMAGES + i]);
-		Sys_SendKeyEvents ();	// pump message loop
+		IN_Update();
 	}
 
 	Com_Printf("                                     \r");
@@ -212,7 +326,7 @@ void CL_PrepRefresh (void)
 
 		Com_Printf("client %i\r", i);
 		SCR_UpdateScreen();
-		Sys_SendKeyEvents ();	// pump message loop
+		IN_Update();
 		CL_ParseClientinfo(i);
 		Com_Printf("                                     \r");
 	}
@@ -388,37 +502,41 @@ V_RenderView(float stereo_separation)
 		cl.refdef.vieworg[1] += 1.0 / 16;
 		cl.refdef.vieworg[2] += 1.0 / 16;
 
-		cl.refdef.x = scr_vrect.x;
-		cl.refdef.y = scr_vrect.y;
-		cl.refdef.width = scr_vrect.width;
-		cl.refdef.height = scr_vrect.height;
-		cl.refdef.fov_y = CalcFov (cl.refdef.fov_x, cl.refdef.width, cl.refdef.height);
 		cl.refdef.time = cl.time * 0.001f;
 
 		cl.refdef.areabits = cl.frame.areabits;
 
 		if (!cl_add_entities->value)
-			cls.r_numentities = 0;
-		if (!cl_add_particles->value)
-			cls.r_numparticles = 0;
-		if (!cl_add_lights->value)
-			cls.r_numdlights = 0;
-		if (!cl_add_blend->value)
 		{
-			VectorClear (cl.refdef.blend);
+			r_numentities = 0;
 		}
 
-		cl.refdef.alpha_entities = cls.r_alpha_entities;
-		cl.refdef.num_entities = cls.r_numentities;
-		cl.refdef.entities = cls.r_entities;
-		cl.refdef.num_particles = cls.r_numparticles;
-		cl.refdef.num_alpha_entities = cls.r_num_alpha_entities;
-		cl.refdef.anum_particles = cls.r_anumparticles;
-		cl.refdef.aparticles = cls.r_aparticles;
-		cl.refdef.particles = cls.r_particles;
-		cl.refdef.num_dlights = cls.r_numdlights;
-		cl.refdef.dlights = cls.r_dlights;
-		cl.refdef.lightstyles = cls.r_lightstyles;
+		if (!cl_add_particles->value)
+		{
+			r_numparticles = 0;
+		}
+
+		if (!cl_add_lights->value)
+		{
+			r_numdlights = 0;
+		}
+
+		if (!cl_add_blend->value)
+		{
+			VectorClear(cl.refdef.blend);
+		}
+
+		cl.refdef.alpha_entities = r_alpha_entities;
+		cl.refdef.num_entities = r_numentities;
+		cl.refdef.entities = r_entities;
+		cl.refdef.num_particles = r_numparticles;
+		cl.refdef.num_alpha_entities = r_num_alpha_entities;
+		cl.refdef.anum_particles = r_anumparticles;
+		cl.refdef.aparticles = r_aparticles;
+		cl.refdef.particles = r_particles;
+		cl.refdef.num_dlights = r_numdlights;
+		cl.refdef.dlights = r_dlights;
+		cl.refdef.lightstyles = r_lightstyles;
 
 		cl.refdef.rdflags = cl.frame.playerstate.rdflags;
 
@@ -426,14 +544,40 @@ V_RenderView(float stereo_separation)
 		qsort(cl.refdef.entities, cl.refdef.num_entities,
 				sizeof(cl.refdef.entities[0]), (int (*)(const void *, const void *))
 				entitycmpfnc);
+	} else if (cl.frame.valid && cl_paused->value && gl1_stereo->value) {
+		// We need to adjust the refdef in stereo mode when paused.
+		vec3_t tmp;
+		CL_CalcViewValues();
+		VectorScale( cl.v_right, stereo_separation, tmp );
+		VectorAdd( cl.refdef.vieworg, tmp, cl.refdef.vieworg );
+
+		cl.refdef.vieworg[0] += 1.0/16;
+		cl.refdef.vieworg[1] += 1.0/16;
+		cl.refdef.vieworg[2] += 1.0/16;
+
+		cl.refdef.time = cl.time*0.001;
 	}
+
+	cl.refdef.x = scr_vrect.x;
+	cl.refdef.y = scr_vrect.y;
+	cl.refdef.width = scr_vrect.width;
+	cl.refdef.height = scr_vrect.height;
+	cl.refdef.fov_y = CalcFov(cl.refdef.fov_x, (float)cl.refdef.width,
+				(float)cl.refdef.height);
 
 	R_RenderFrame(&cl.refdef);
 
 	if (cl_stats->value)
-		Com_Printf("ent:%i  lt:%i  part:%i\n", cls.r_numentities, cls.r_numdlights, cls.r_numparticles);
-	if ( log_stats->value && ( log_stats_file != 0 ) )
-		fprintf( log_stats_file, "%i,%i,%i,",cls.r_numentities, cls.r_numdlights, cls.r_numparticles);
+	{
+		Com_Printf("ent:%i  lt:%i  part:%i\n", r_numentities,
+				r_numdlights, r_numparticles);
+	}
+
+	if (log_stats->value && (log_stats_file != 0))
+	{
+		fprintf(log_stats_file, "%i,%i,%i,", r_numentities,
+				r_numdlights, r_numparticles);
+	}
 
 	SCR_AddDirtyPoint(scr_vrect.x, scr_vrect.y);
 	SCR_AddDirtyPoint(scr_vrect.x + scr_vrect.width - 1,
@@ -461,7 +605,6 @@ V_Render3dCrosshair(void)
 			crosshair_3d_glow_g = Cvar_Get("crosshair_3d_glow_g", "1", CVAR_ARCHIVE);
 			crosshair_3d_glow_b = Cvar_Get("crosshair_3d_glow_b", "4", CVAR_ARCHIVE);
 
-			/*
 			V_AddLight(
 				crosshair_trace.endpos,
 				crosshair_3d_glow->value,
@@ -469,7 +612,6 @@ V_Render3dCrosshair(void)
 				crosshair_3d_glow_g->value,
 				crosshair_3d_glow_b->value
 			);
-			*/
 		}
 
 		if(crosshair_3d->value){

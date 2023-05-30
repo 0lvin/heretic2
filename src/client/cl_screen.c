@@ -1021,13 +1021,10 @@ SCR_DrawField(int x, int y, int color, int width, int value)
 }
 
 /*
-===============
-SCR_TouchPics
-
-Allows rendering code to cache all needed sbar graphics
-===============
-*/
-void SCR_TouchPics (void)
+ * Allows rendering code to cache all needed sbar graphics
+ */
+void
+SCR_TouchPics (void)
 {
 	int		i, j;
 
