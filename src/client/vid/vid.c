@@ -82,6 +82,10 @@ cvar_t		*vid_fullscreen;
 viddef_t	viddef;				// global video state; used by other modules
 void		*reflib_library;		// Handle to refresh DLL
 qboolean	reflib_active = 0;
+cvar_t *joy_layout;
+cvar_t *gyro_mode;
+cvar_t *gyro_turning_axis;       // yaw or roll
+qboolean show_gamepad = false, show_haptic = false, show_gyro = false;
 
 /** KEYBOARD **************************************************************/
 
@@ -907,4 +911,48 @@ void IN_Activate (qboolean active)
 void Do_Key_Event(int key, qboolean down)
 {
 	Key_Event(key, down, Sys_Milliseconds());
+}
+
+int
+GLimp_GetNumVideoDisplays(void)
+{
+	return 1;
+}
+
+int
+GLimp_GetWindowDisplayIndex(void)
+{
+	return 0;
+}
+
+qboolean
+VID_HasRenderer(const char *renderer)
+{
+	return !strcmp(renderer, "gl1");
+}
+
+const char **
+GLimp_GetDisplayIndices(void)
+{
+	char **displays = {
+		"default",
+		NULL
+	};
+	return displays;
+}
+
+qboolean
+IsCalibrationZero(void)
+{
+	return true;
+}
+
+void
+StartCalibration(void)
+{
+}
+
+void
+Key_MarkAllUp(void)
+{
 }

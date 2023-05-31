@@ -92,7 +92,7 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg)
 
 		if (newnum == oldnum)
 		{
-			/* delta update from old position. because the force
+			/* delta update from old position. because the force 
 			   parm is false, this will not result in any bytes
 			   being emited if the entity has not changed at all
 			   note that players are always 'newentities', this

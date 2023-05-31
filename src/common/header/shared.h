@@ -1214,24 +1214,39 @@ enum
 #define MAX_STATS 48
 
 /* dmflags->value flags */
-#define DF_WEAPONS_STAY			0x0001
-#define DF_NO_SHRINE			0x0002
-#define DF_NONAMES			0x0004
-#define DF_NO_HEALTH			0x0008
-#define DF_SHOW_LEADER			0x0010
-#define DF_SHRINE_CHAOS			0x0020
-#define DF_SAME_LEVEL			0x0040
-#define DF_FORCE_RESPAWN		0x0080
-#define DF_SKINTEAMS			0x0100
-#define DF_MODELTEAMS			0x0200
-#define DF_ALLOW_EXIT			0x0400
-#define DF_INFINITE_MANA		0x0800
-#define DF_HURT_FRIENDS			0x1000
-#define DF_NO_OFFENSIVE_SPELL		0x2000			// This means staff-only combat!!!
-#define DF_NO_DEFENSIVE_SPELL		0x4000
-#define DF_DISMEMBER			0x8000
-#define DF_INSTANT_ITEMS		0x10000
-#define DF_DEATHMATCH_SET		0x80000000		// High bit indicates deathmatch, so that it can be transmitted in playerinfo.
+#define DF_NO_HEALTH 0x00000001         /* 1 */
+#define DF_NO_ITEMS 0x00000002          /* 2 */
+#define DF_WEAPONS_STAY 0x00000004      /* 4 */
+#define DF_NO_FALLING 0x00000008        /* 8 */
+#define DF_INSTANT_ITEMS 0x00000010     /* 16 */
+#define DF_SAME_LEVEL 0x00000020        /* 32 */
+#define DF_SKINTEAMS 0x00000040         /* 64 */
+#define DF_MODELTEAMS 0x00000080        /* 128 */
+#define DF_NO_FRIENDLY_FIRE 0x00000100  /* 256 */
+#define DF_SPAWN_FARTHEST 0x00000200    /* 512 */
+#define DF_FORCE_RESPAWN 0x00000400     /* 1024 */
+#define DF_NO_ARMOR 0x00000800          /* 2048 */
+#define DF_ALLOW_EXIT 0x00001000        /* 4096 */
+#define DF_INFINITE_AMMO 0x00002000     /* 8192 */
+#define DF_QUAD_DROP 0x00004000         /* 16384 */
+#define DF_FIXED_FOV 0x00008000         /* 32768 */
+#define DF_QUADFIRE_DROP 0x00010000     /* 65536 */
+#define DF_NO_MINES 0x00020000
+#define DF_NO_STACK_DOUBLE 0x00040000
+#define DF_NO_NUKES 0x00080000
+#define DF_NO_SPHERES 0x00100000
+#define DF_NO_SHRINE 0x00200000
+#define DF_NONAMES 0x00400000
+#define DF_SHOW_LEADER 0x00800000
+#define DF_SHRINE_CHAOS 0x01000000
+#define DF_INFINITE_MANA 0x02000000
+#define DF_HURT_FRIENDS 0x04000000
+/* This means staff-only combat!!! */
+#define DF_NO_OFFENSIVE_SPELL 0x10000000
+#define DF_NO_DEFENSIVE_SPELL 0x20000000
+#define DF_DISMEMBER 0x40000000
+/* High bit indicates deathmatch, so that it can be transmitted in playerinfo. */
+#define DF_DEATHMATCH_SET 0x80000000
 
 #define ROGUE_VERSION_STRING "08/21/1998 Beta 2 for Ensemble"
 

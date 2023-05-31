@@ -979,15 +979,9 @@ CL_AddEntities(void)
 	//CL_AddLightStyles ();
 }
 
-
-
 /*
-===============
-CL_GetEntitySoundOrigin
-
-Called to get the sound spatialization origin
-===============
-*/
+ * Called to get the sound spatialization origin
+ */
 void
 CL_GetEntitySoundOrigin(int ent, vec3_t org)
 {

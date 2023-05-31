@@ -29,52 +29,104 @@
 #include "../header/client.h"
 #include "header/qmenu.h"
 
-static void Action_DoEnter( menuaction_s *a );
 static void Action_Draw(menuaction_s *a);
 static void Menu_DrawStatusBar(const char *string);
-static void Menulist_DoEnter( menulist_s *l);
 static void MenuList_Draw(menulist_s *l);
 static void Separator_Draw(menuseparator_s *s);
 static void Slider_DoSlide(menuslider_s *s, int dir);
 static void Slider_Draw(menuslider_s *s);
-static void SpinControl_DoEnter(menulist_s *s);
 static void SpinControl_Draw(menulist_s *s);
 static void SpinControl_DoSlide(menulist_s *s, int dir);
-char *Sys_GetClipboardData(void);
 
-#define RCOLUMN_OFFSET  16
-#define LCOLUMN_OFFSET -16
-
-extern refexport_t re;
 extern viddef_t viddef;
 
 #define VID_WIDTH viddef.width
 #define VID_HEIGHT viddef.height
 
-void Action_DoEnter( menuaction_s *a )
+float
+ClampCvar(float min, float max, float value)
 {
-	if ( a->generic.callback )
-		a->generic.callback( a );
+	if (value < min)
+	{
+		return min;
+	}
+
+	if (value > max)
+	{
+		return max;
+	}
+
+	return value;
 }
 
-void Action_Draw( menuaction_s *a )
+/*
+=================
+Bitmap_Draw
+=================
+*/
+void Bitmap_Draw(menubitmap_s * item)
 {
-	if ( a->generic.flags & QMF_LEFT_JUSTIFY )
+	float scale = SCR_GetMenuScale();
+	int x = 0;
+	int y = 0;
+
+	x = item->generic.x;
+	y = item->generic.y;
+
+	if (((item->generic.flags & QMF_HIGHLIGHT_IF_FOCUS) &&
+		(Menu_ItemAtCursor(item->generic.parent) == item)))
 	{
-		if ( a->generic.flags & QMF_GRAYED )
-			Menu_DrawStringDark( a->generic.x + a->generic.parent->x + LCOLUMN_OFFSET, a->generic.y + a->generic.parent->y, a->generic.name );
+		Draw_PicScaled(x * scale, y * scale, item->focuspic, scale);
+	}
+	else if (item->generic.name)
+	{
+		Draw_PicScaled(x * scale, y * scale, ( char * )item->generic.name, scale);
+	}
+}
+
+void
+Action_Draw(menuaction_s *a)
+{
+	float scale = SCR_GetMenuScale();
+	int x = 0;
+	int y = 0;
+
+	x = a->generic.parent->x + a->generic.x;
+	y = a->generic.parent->y + a->generic.y;
+
+	if (a->generic.flags & QMF_LEFT_JUSTIFY)
+	{
+		if (a->generic.flags & QMF_GRAYED)
+		{
+			Menu_DrawStringDark(x + (LCOLUMN_OFFSET * scale),
+				y, a->generic.name);
+		}
+
 		else
-			Menu_DrawString( a->generic.x + a->generic.parent->x + LCOLUMN_OFFSET, a->generic.y + a->generic.parent->y, a->generic.name );
+		{
+			Menu_DrawString(x + (LCOLUMN_OFFSET * scale),
+				y, a->generic.name);
+		}
 	}
 	else
 	{
-		if ( a->generic.flags & QMF_GRAYED )
-			Menu_DrawStringR2LDark( a->generic.x + a->generic.parent->x + LCOLUMN_OFFSET, a->generic.y + a->generic.parent->y, a->generic.name );
+		if (a->generic.flags & QMF_GRAYED)
+		{
+			Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
+				y, a->generic.name);
+		}
+
 		else
-			Menu_DrawStringR2L( a->generic.x + a->generic.parent->x + LCOLUMN_OFFSET, a->generic.y + a->generic.parent->y, a->generic.name );
+		{
+			Menu_DrawStringR2L(x + (LCOLUMN_OFFSET * scale),
+				y, a->generic.name);
+		}
 	}
-	if ( a->generic.ownerdraw )
-		a->generic.ownerdraw( a );
+
+	if (a->generic.ownerdraw)
+	{
+		a->generic.ownerdraw(a);
+	}
 }
 
 qboolean
@@ -89,329 +141,448 @@ Field_DoEnter(menufield_s *f)
 	return false;
 }
 
-void Field_Draw( menufield_s *f )
+void
+Field_Draw(menufield_s *f)
 {
-	//int i;
-	//char tempbuffer[128]="";
-	//
-	//if ( f->generic.name )
-	//	Menu_DrawStringR2LDark( f->generic.x + f->generic.parent->x + LCOLUMN_OFFSET, f->generic.y + f->generic.parent->y, f->generic.name );
-	//
-	//strncpy( tempbuffer, f->buffer + f->visible_offset, f->visible_length );
-	//
-	//Draw_Char( f->generic.x + f->generic.parent->x + 16, f->generic.y + f->generic.parent->y - 4, 18 );
-	//Draw_Char( f->generic.x + f->generic.parent->x + 16, f->generic.y + f->generic.parent->y + 4, 24 );
-	//
-	//Draw_Char( f->generic.x + f->generic.parent->x + 24 + f->visible_length * 8, f->generic.y + f->generic.parent->y - 4, 20 );
-	//Draw_Char( f->generic.x + f->generic.parent->x + 24 + f->visible_length * 8, f->generic.y + f->generic.parent->y + 4, 26 );
-	//
-	//for ( i = 0; i < f->visible_length; i++ )
-	//{
-	//	Draw_Char( f->generic.x + f->generic.parent->x + 24 + i * 8, f->generic.y + f->generic.parent->y - 4, 19 );
-	//	Draw_Char( f->generic.x + f->generic.parent->x + 24 + i * 8, f->generic.y + f->generic.parent->y + 4, 25 );
-	//}
-	//
-	//Menu_DrawString( f->generic.x + f->generic.parent->x + 24, f->generic.y + f->generic.parent->y, tempbuffer );
-	//
-	//if ( Menu_ItemAtCursor( f->generic.parent ) == f )
-	//{
-	//	int offset;
-	//
-	//	if ( f->visible_offset )
-	//		offset = f->visible_length;
-	//	else
-	//		offset = f->cursor;
-	//
-	//	if ( ( ( int ) ( Sys_Milliseconds() / 250 ) ) & 1 )
-	//	{
-	//		Draw_Char( f->generic.x + f->generic.parent->x + ( offset + 2 ) * 8 + 8,
-	//				   f->generic.y + f->generic.parent->y,
-	//				   11 );
-	//	}
-	//	else
-	//	{
-	//		Draw_Char( f->generic.x + f->generic.parent->x + ( offset + 2 ) * 8 + 8,
-	//				   f->generic.y + f->generic.parent->y,
-	//				   ' ' );
-	//	}
-	//}
+	int i, n;
+	char tempbuffer[128] = "";
+	float scale = SCR_GetMenuScale();
+	int x = 0;
+	int y = 0;
+
+	x = f->generic.parent->x + f->generic.x;
+	y = f->generic.parent->y + f->generic.y;
+
+	if (f->generic.name)
+	{
+		Menu_DrawStringR2LDark(x + LCOLUMN_OFFSET * scale,
+			y, f->generic.name);
+	}
+
+	n = f->visible_length + 1;
+
+	if (n > sizeof(tempbuffer))
+	{
+		n = sizeof(tempbuffer);
+	}
+
+	Q_strlcpy(tempbuffer, f->buffer + f->visible_offset, n);
+
+	Draw_CharScaled(x + (16 * scale),
+			(y - 4) * scale, 18, scale);
+	Draw_CharScaled(x + 16 * scale,
+			(y + 4) * scale, 24, scale);
+
+	Draw_CharScaled(x + (24 * scale) + (f->visible_length * (8 * scale)),
+			(y - 4) * scale, 20, scale);
+	Draw_CharScaled(x + (24 * scale) + (f->visible_length * (8 * scale)),
+			(y + 4) * scale, 26, scale);
+
+	for (i = 0; i < f->visible_length; i++)
+	{
+		Draw_CharScaled(x + (24 * scale) + (i * 8 * scale),
+				(y - 4) * scale, 19, scale);
+		Draw_CharScaled(x + (24 * scale) + (i * 8 * scale),
+				(y + 4) * scale, 25, scale);
+	}
+
+	Menu_DrawString(x + (24 * scale),
+		y, tempbuffer);
+
+	if (Menu_ItemAtCursor(f->generic.parent) == f)
+	{
+		int offset;
+
+		if (f->visible_offset)
+		{
+			offset = f->visible_length;
+		}
+
+		else
+		{
+			offset = f->cursor;
+		}
+
+		if (((int)(Sys_Milliseconds() / 250)) & 1)
+		{
+			Draw_CharScaled(
+				x + (24 * scale) + (offset * (8 * scale)),
+				y * scale, 11, scale);
+		}
+		else
+		{
+			Draw_CharScaled(
+				x + (24 * scale) + (offset * (8 * scale)),
+				y * scale, ' ', scale);
+		}
+	}
 }
 
 extern int keydown[];
-qboolean Field_Key( menufield_s *f, int key )
+
+qboolean
+Field_Key(menufield_s *f, int key)
 {
-
-	switch ( key )
+	switch (key)
 	{
-	case K_KP_SLASH:
-		key = '/';
-		break;
-	case K_KP_MINUS:
-		key = '-';
-		break;
-	case K_KP_PLUS:
-		key = '+';
-		break;
-	case K_KP_HOME:
-		key = '7';
-		break;
-	case K_KP_UPARROW:
-		key = '8';
-		break;
-	case K_KP_PGUP:
-		key = '9';
-		break;
-	case K_KP_LEFTARROW:
-		key = '4';
-		break;
-	case K_KP_5:
-		key = '5';
-		break;
-	case K_KP_RIGHTARROW:
-		key = '6';
-		break;
-	case K_KP_END:
-		key = '1';
-		break;
-	case K_KP_DOWNARROW:
-		key = '2';
-		break;
-	case K_KP_PGDN:
-		key = '3';
-		break;
-	case K_KP_INS:
-		key = '0';
-		break;
-	case K_KP_DEL:
-		key = '.';
-		break;
+		case K_KP_SLASH:
+			key = '/';
+			break;
+		case K_KP_MINUS:
+			key = '-';
+			break;
+		case K_KP_PLUS:
+			key = '+';
+			break;
+		case K_KP_HOME:
+			key = '7';
+			break;
+		case K_KP_UPARROW:
+			key = '8';
+			break;
+		case K_KP_PGUP:
+			key = '9';
+			break;
+		case K_KP_LEFTARROW:
+			key = '4';
+			break;
+		case K_KP_5:
+			key = '5';
+			break;
+		case K_KP_RIGHTARROW:
+			key = '6';
+			break;
+		case K_KP_END:
+			key = '1';
+			break;
+		case K_KP_DOWNARROW:
+			key = '2';
+			break;
+		case K_KP_PGDN:
+			key = '3';
+			break;
+		case K_KP_INS:
+			key = '0';
+			break;
+		case K_KP_DEL:
+			key = '.';
+			break;
 	}
 
-	if ( key > 127 )
+	if (key > 127)
 	{
-		switch ( key )
-		{
-		case K_DEL:
-		default:
-			return false;
-		}
-	}
-
-	/*
-	** support pasting from the clipboard
-	*/
-	if ( ( toupper( key ) == 'V' && keydown[K_CTRL] ) ||
-		 ( ( ( key == K_INS ) || ( key == K_KP_INS ) ) && keydown[K_SHIFT] ) )
-	{
-		char *cbd;
-
-		if ( ( cbd = Sys_GetClipboardData() ) != 0 )
-		{
-			strtok( cbd, "\n\r\b" );
-
-			strncpy( f->buffer, cbd, f->length - 1 );
-			f->cursor = strlen( f->buffer );
-			f->visible_offset = f->cursor - f->visible_length;
-			if ( f->visible_offset < 0 )
-				f->visible_offset = 0;
-
-			free( cbd );
-		}
-		return true;
-	}
-
-	switch ( key )
-	{
-	case K_KP_LEFTARROW:
-	case K_LEFTARROW:
-	case K_BACKSPACE:
-		if ( f->cursor > 0 )
-		{
-			memmove( &f->buffer[f->cursor-1], &f->buffer[f->cursor], strlen( &f->buffer[f->cursor] ) + 1 );
-			f->cursor--;
-
-			if ( f->visible_offset )
-			{
-				f->visible_offset--;
-			}
-		}
-		break;
-
-	case K_KP_DEL:
-	case K_DEL:
-		memmove( &f->buffer[f->cursor], &f->buffer[f->cursor+1], strlen( &f->buffer[f->cursor+1] ) + 1 );
-		break;
-
-	case K_KP_ENTER:
-	case K_ENTER:
-	case K_ESCAPE:
-	case K_TAB:
 		return false;
+	}
 
-	case K_SPACE:
-	default:
-		if ( !isdigit( key ) && ( f->generic.flags & QMF_NUMBERSONLY ) )
+	switch (key)
+	{
+		case K_KP_LEFTARROW:
+		case K_LEFTARROW:
+		case K_BACKSPACE:
+
+			if (f->cursor > 0)
+			{
+				memmove(&f->buffer[f->cursor - 1],
+						&f->buffer[f->cursor],
+						strlen(&f->buffer[f->cursor]) + 1);
+				f->cursor--;
+
+				if (f->visible_offset)
+				{
+					f->visible_offset--;
+				}
+			}
+
+			break;
+
+		case K_KP_DEL:
+		case K_DEL:
+			memmove(&f->buffer[f->cursor], &f->buffer[f->cursor + 1],
+				strlen(&f->buffer[f->cursor + 1]) + 1);
+			break;
+
+		case K_KP_ENTER:
+		case K_ENTER:
+		case K_ESCAPE:
+		case K_TAB:
 			return false;
 
-		if ( f->cursor < f->length )
-		{
-			f->buffer[f->cursor++] = key;
-			f->buffer[f->cursor] = 0;
+		case K_SPACE:
+		default:
 
-			if ( f->cursor > f->visible_length )
+			if (!isdigit(key) && (f->generic.flags & QMF_NUMBERSONLY))
 			{
-				f->visible_offset++;
+				return false;
 			}
-		}
+
+			if (f->cursor < f->length)
+			{
+				f->buffer[f->cursor++] = key;
+				f->buffer[f->cursor] = 0;
+
+				if (f->cursor > f->visible_length)
+				{
+					f->visible_offset++;
+				}
+			}
 	}
 
 	return true;
 }
 
-
-void Menu_AddItem( menuframework_s *menu, void *item )
+void
+Menu_AddItem(menuframework_s *menu, void *item)
 {
-	if ( menu->nitems == 0 )
-		menu->nslots = 0;
-
-	if ( menu->nitems < MAXMENUITEMS )
+	if (menu->nitems < MAXMENUITEMS)
 	{
 		menu->items[menu->nitems] = item;
-		( ( menucommon_s * ) menu->items[menu->nitems] )->parent = menu;
+		((menucommon_s *)menu->items[menu->nitems])->parent = menu;
 		menu->nitems++;
 	}
-
-	menu->nslots = Menu_TallySlots( menu );
 }
 
-
 /*
-** Menu_AdjustCursor
-**
-** This function takes the given menu, the direction, and attempts
-** to adjust the menu's cursor so that it's at the next available
-** slot.
-*/
-void Menu_AdjustCursor( menuframework_s *m, int dir )
+ * This function takes the given menu, the direction, and attempts
+ * to adjust the menu's cursor so that it's at the next available
+ * slot.
+ */
+void
+Menu_AdjustCursor(menuframework_s *m, int dir)
 {
-	menucommon_s *citem;
+	menucommon_s *citem = NULL;
 
-	/*
-	** see if it's in a valid spot
-	*/
-	if ( m->cursor >= 0 && m->cursor < m->nitems )
+	/* see if it's in a valid spot */
+	if ((m->cursor >= 0) && (m->cursor < m->nitems))
 	{
-		if ( ( citem = (menucommon_s *)Menu_ItemAtCursor( m ) ) != 0 )
+		if ((citem = Menu_ItemAtCursor(m)) != 0)
 		{
-			if ( citem->type != MTYPE_SEPARATOR )
+			if (citem->type != MTYPE_SEPARATOR &&
+				(citem->flags & QMF_INACTIVE) != QMF_INACTIVE)
+			{
 				return;
+			}
 		}
 	}
 
-	/*
-	** it's not in a valid spot, so crawl in the direction indicated until we
-	** find a valid spot
-	*/
-	if ( dir == 1 )
-	{
-		while ( 1 )
+	/* it's not in a valid spot, so crawl in the direction
+	   indicated until we find a valid spot */
+    int cursor = m->nitems;
+
+    while (cursor-- > 0)
+    {
+		citem = Menu_ItemAtCursor(m);
+
+		if (citem)
 		{
-			citem = (menucommon_s*)Menu_ItemAtCursor( m );
-			if ( citem )
-				if ( citem->type != MTYPE_SEPARATOR )
-					break;
-			m->cursor += dir;
-			if ( m->cursor >= m->nitems )
-				m->cursor = 0;
+			if (citem->type != MTYPE_SEPARATOR &&
+			(citem->flags & QMF_INACTIVE) != QMF_INACTIVE)
+			{
+				break;
+			}
+		}
+
+		m->cursor += dir;
+
+		if (m->cursor >= m->nitems)
+		{
+			m->cursor = 0;
+		}
+
+		if (m->cursor < 0)
+		{
+			m->cursor = m->nitems - 1;
+		}
+	}
+}
+
+void
+Menu_Center(menuframework_s *menu)
+{
+	int height;
+	float scale = SCR_GetMenuScale();
+
+	height = ((menucommon_s *)menu->items[menu->nitems - 1])->y;
+	height += 10;
+
+	menu->y = (VID_HEIGHT / scale - height) / 2;
+}
+
+void
+Menu_Draw(menuframework_s *menu)
+{
+	int i;
+	menucommon_s *item;
+	float scale = SCR_GetMenuScale();
+
+	/* draw contents */
+	for (i = 0; i < menu->nitems; i++)
+	{
+		switch (((menucommon_s *)menu->items[i])->type)
+		{
+			case MTYPE_FIELD:
+				Field_Draw((menufield_s *)menu->items[i]);
+				break;
+			case MTYPE_SLIDER:
+				Slider_Draw((menuslider_s *)menu->items[i]);
+				break;
+			case MTYPE_LIST:
+				MenuList_Draw((menulist_s *)menu->items[i]);
+				break;
+			case MTYPE_SPINCONTROL:
+				SpinControl_Draw((menulist_s *)menu->items[i]);
+				break;
+			case MTYPE_BITMAP:
+				Bitmap_Draw(( menubitmap_s * )menu->items[i]);
+				break;
+			case MTYPE_ACTION:
+				Action_Draw((menuaction_s *)menu->items[i]);
+				break;
+			case MTYPE_SEPARATOR:
+				Separator_Draw((menuseparator_s *)menu->items[i]);
+				break;
+		}
+	}
+
+	item = Menu_ItemAtCursor(menu);
+
+	if (item && item->cursordraw)
+	{
+		item->cursordraw(item);
+	}
+	else if (menu->cursordraw)
+	{
+		menu->cursordraw(menu);
+	}
+	else if (item && (item->type != MTYPE_FIELD) && item->type != MTYPE_BITMAP)
+	{
+		if (item->flags & QMF_LEFT_JUSTIFY)
+		{
+			Draw_CharScaled(menu->x + (item->x / scale - 24 + item->cursor_offset) * scale,
+					(menu->y + item->y) * scale,
+					12 + ((int)(Sys_Milliseconds() / 250) & 1), scale);
+		}
+		else
+		{
+			// FIXME:: menu->x + (item->x / scale + 24 + item->cursor_offset) * scale
+			Draw_CharScaled(menu->x + (item->cursor_offset) * scale,
+					(menu->y + item->y) * scale,
+					12 + ((int)(Sys_Milliseconds() / 250) & 1), scale);
+		}
+	}
+
+	if (item)
+	{
+		if (item->statusbarfunc)
+		{
+			item->statusbarfunc((void *)item);
+		}
+
+		else if (item->statusbar)
+		{
+			Menu_DrawStatusBar(item->statusbar);
+		}
+
+		else
+		{
+			Menu_DrawStatusBar(menu->statusbar);
 		}
 	}
 	else
 	{
-		while ( 1 )
-		{
-			citem = (menucommon_s*)Menu_ItemAtCursor( m );
-			if ( citem )
-				if ( citem->type != MTYPE_SEPARATOR )
-					break;
-			m->cursor += dir;
-			if ( m->cursor < 0 )
-				m->cursor = m->nitems - 1;
-		}
+		Menu_DrawStatusBar(menu->statusbar);
 	}
 }
 
-
-void Menu_Center( menuframework_s *menu )
+void
+Menu_DrawStatusBar(const char *string)
 {
-	int height;
+	float scale = SCR_GetMenuScale();
 
-	height = ( ( menucommon_s * ) menu->items[menu->nitems-1])->y;
-	height += 10;
+	if (string)
+	{
+		int l = (int)strlen(string);
+		int col = (VID_WIDTH / 2) - (l*8 / 2) * scale;
 
-	menu->y = ( VID_HEIGHT - height ) / 2;
+		Draw_Fill(0, VID_HEIGHT - 8 * scale, VID_WIDTH, 8 * scale, 4);
+		Menu_DrawString(col, VID_HEIGHT / scale - 8, string);
+	}
+	else
+	{
+		Draw_Fill(0, VID_HEIGHT - 8 * scale, VID_WIDTH, 8 * scale, 0);
+	}
 }
 
-
-void Menu_Draw( menuframework_s *menu )
+void
+Menu_DrawString(int x, int y, const char *string)
 {
+	unsigned i;
+	float scale = SCR_GetMenuScale();
+
+	for (i = 0; i < strlen(string); i++)
+	{
+		Draw_CharScaled(x + i * 8 * scale, y * scale, string[i], scale);
+	}
 }
 
-
-void Menu_DrawStatusBar( const char *string )
+void
+Menu_DrawStringDark(int x, int y, const char *string)
 {
+	unsigned i;
+	float scale = SCR_GetMenuScale();
 
+	for (i = 0; i < strlen(string); i++)
+	{
+		Draw_CharScaled(x + i * 8 * scale, y * scale, string[i] + 128, scale);
+	}
 }
 
-void Menu_DrawString( int x, int y, const char *string )
+void
+Menu_DrawStringR2L(int x, int y, const char *string)
 {
+	unsigned i;
+	float scale = SCR_GetMenuScale();
 
+	for (i = 0; i < strlen(string); i++)
+	{
+		Draw_CharScaled(x - i * 8 * scale, y * scale, string[strlen(string) - i - 1], scale);
+	}
 }
 
-void Menu_DrawStringDark( int x, int y, const char *string )
+void
+Menu_DrawStringR2LDark(int x, int y, const char *string)
 {
+	unsigned i;
+	float scale = SCR_GetMenuScale();
 
+	for (i = 0; i < strlen(string); i++)
+	{
+		Draw_CharScaled(x - i * 8 * scale, y * scale, string[strlen(string) - i - 1] + 128, scale);
+	}
 }
 
-void Menu_DrawStringR2L( int x, int y, const char *string )
+void *
+Menu_ItemAtCursor(menuframework_s *m)
 {
-
-}
-
-void Menu_DrawStringR2LDark( int x, int y, const char *string )
-{
-
-}
-
-void *Menu_ItemAtCursor( menuframework_s *m )
-{
-	if ( m->cursor < 0 || m->cursor >= m->nitems )
+	if ((m->cursor < 0) || (m->cursor >= m->nitems))
+	{
 		return 0;
+	}
 
 	return m->items[m->cursor];
 }
 
-
-qboolean Menu_SelectItem( menuframework_s *s )
+qboolean
+Menu_SelectItem(menuframework_s *s)
 {
-	menucommon_s *item = ( menucommon_s * ) Menu_ItemAtCursor( s );
+	menucommon_s * item = ( menucommon_s * )Menu_ItemAtCursor(s);
 
-	if ( item )
-	{
-		switch ( item->type )
-		{
-		case MTYPE_FIELD:
-			return Field_DoEnter( ( menufield_s * ) item ) ;
-		case MTYPE_ACTION:
-			Action_DoEnter( ( menuaction_s * ) item );
-			return true;
-		case MTYPE_LIST:
-//			Menulist_DoEnter( ( menulist_s * ) item );
-			return false;
-		case MTYPE_SPINCONTROL:
-//			SpinControl_DoEnter( ( menulist_s * ) item );
-			return false;
-		}
+	if (item->callback) {
+
+		item->callback(item);
+
+		return true;
 	}
+
 	return false;
 }
 
@@ -440,120 +611,180 @@ Menu_SlideItem(menuframework_s *s, int dir)
 	}
 }
 
-
-int Menu_TallySlots( menuframework_s *menu )
+void
+MenuList_Draw(menulist_s *l)
 {
-	int i;
-	int total = 0;
+	const char **n;
+	float scale = SCR_GetMenuScale();
+	int x = 0;
+	int y = 0;
 
-	for ( i = 0; i < menu->nitems; i++ )
+	x = l->generic.parent->x + l->generic.x;
+	y = l->generic.parent->y + l->generic.y;
+
+	Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
+		y, l->generic.name);
+
+	n = l->itemnames;
+
+	Draw_Fill(x - 112,
+		y + l->curvalue * 10 * scale + 10 * scale, 128, 10, 16);
+
+	while (*n)
 	{
-		if ( ( ( menucommon_s * ) menu->items[i] )->type == MTYPE_LIST )
-		{
-			int nitems = 0;
-			const char **n = ( ( menulist_s * ) menu->items[i] )->itemnames;
+		Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
+			y, *n);
 
-			while (*n)
-				nitems++, n++;
+		n++;
+		y += 10 * scale;
+	}
+}
 
-			total += nitems;
-		}
-		else
-		{
-			total++;
-		}
+void
+Separator_Draw(menuseparator_s *s)
+{
+	int x = 0;
+	int y = 0;
+
+	x = s->generic.parent->x + s->generic.x;
+	y = s->generic.parent->y + s->generic.y;
+
+	if (s->generic.name)
+	{
+		Menu_DrawStringR2LDark(x,
+			y, s->generic.name);
+	}
+}
+
+void
+Slider_DoSlide(menuslider_s *s, int dir)
+{
+	float value = Cvar_VariableValue(s->cvar);
+	float step = 0.1f;
+	float sign = 1.0f;
+
+	if (s->slidestep)
+	{
+		step = s->slidestep;
+	}
+	if (s->abs && value < 0)	// absolute value treatment
+	{
+		value = -value;
+		sign = -1.0f;
 	}
 
-	return total;
-}
+	value += dir * step;
+	Cvar_SetValue(s->cvar, ClampCvar(s->minvalue, s->maxvalue, value) * sign);
 
-void Menulist_DoEnter( menulist_s *l )
-{
-	int start;
-
-	start = l->generic.y / 10 + 1;
-
-	l->curvalue = l->generic.parent->cursor - start;
-
-	if ( l->generic.callback )
-		l->generic.callback( l );
-}
-
-void MenuList_Draw( menulist_s *l )
-{
-
-}
-
-void Separator_Draw( menuseparator_s *s )
-{
-	if ( s->generic.name )
-		Menu_DrawStringR2LDark( s->generic.x + s->generic.parent->x, s->generic.y + s->generic.parent->y, s->generic.name );
-}
-
-void Slider_DoSlide( menuslider_s *s, int dir )
-{
-	s->curvalue += dir;
-
-	if ( s->curvalue > s->maxvalue )
-		s->curvalue = s->maxvalue;
-	else if ( s->curvalue < s->minvalue )
-		s->curvalue = s->minvalue;
-
-	if ( s->generic.callback )
-		s->generic.callback( s );
+	if (s->generic.callback)
+	{
+		s->generic.callback(s);
+	}
 }
 
 #define SLIDER_RANGE 10
 
-void Slider_Draw( menuslider_s *s )
+void
+Slider_Draw(menuslider_s *s)
 {
+	int i;
+	char buffer[5];
+	const char * format;
+	float scale = SCR_GetMenuScale();
+	int x = s->generic.parent->x + s->generic.x;
+	int y = s->generic.parent->y + s->generic.y;
 
-}
-
-void SpinControl_DoEnter( menulist_s *s )
-{
-	s->curvalue++;
-	if ( s->itemnames[s->curvalue] == 0 )
-		s->curvalue = 0;
-
-	if ( s->generic.callback )
-		s->generic.callback( s );
-}
-
-void SpinControl_DoSlide( menulist_s *s, int dir )
-{
-	s->curvalue += dir;
-
-	if ( s->curvalue < 0 )
-		s->curvalue = 0;
-	else if ( s->itemnames[s->curvalue] == 0 )
-		s->curvalue--;
-
-	if ( s->generic.callback )
-		s->generic.callback( s );
-}
-
-void SpinControl_Draw( menulist_s *s )
-{
-	char buffer[100];
-
-	if ( s->generic.name )
+	float value = Cvar_VariableValue(s->cvar);
+	if (s->abs && value < 0)	// absolute value
 	{
-		Menu_DrawStringR2LDark( s->generic.x + s->generic.parent->x + LCOLUMN_OFFSET,
-							s->generic.y + s->generic.parent->y,
-							s->generic.name );
+		value = -value;
 	}
-	if ( !strchr( s->itemnames[s->curvalue], '\n' ) )
+	float range = (ClampCvar(s->minvalue, s->maxvalue, value) - s->minvalue) /
+			(s->maxvalue - s->minvalue);
+
+	Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
+		y, s->generic.name);
+
+	Draw_CharScaled(x + (RCOLUMN_OFFSET * scale),
+		y * scale, 128, scale);
+
+	for (i = 0; i < SLIDER_RANGE * scale; i++)
 	{
-		Menu_DrawString( RCOLUMN_OFFSET + s->generic.x + s->generic.parent->x, s->generic.y + s->generic.parent->y, s->itemnames[s->curvalue] );
+		Draw_CharScaled(x + (RCOLUMN_OFFSET * scale) + (i * 8) + 8,
+			y * scale, 129, scale);
+	}
+
+	Draw_CharScaled(x + (RCOLUMN_OFFSET * scale) + (i * 8) + 8,
+		y * scale, 130, scale);
+	Draw_CharScaled(x + ((int)((RCOLUMN_OFFSET * scale) + (SLIDER_RANGE * scale - 1) * 8 * range)) + 8,
+		y * scale, 131, scale);
+
+	if (!s->printformat)
+	{
+		format = "%.1f";
 	}
 	else
 	{
-		strcpy( buffer, s->itemnames[s->curvalue] );
-		*strchr( buffer, '\n' ) = 0;
-		Menu_DrawString( RCOLUMN_OFFSET + s->generic.x + s->generic.parent->x, s->generic.y + s->generic.parent->y, buffer );
-		strcpy( buffer, strchr( s->itemnames[s->curvalue], '\n' ) + 1 );
-		Menu_DrawString( RCOLUMN_OFFSET + s->generic.x + s->generic.parent->x, s->generic.y + s->generic.parent->y + 10, buffer );
+		format = s->printformat;
+	}
+	snprintf(buffer, 5, format, value);
+	Menu_DrawString(x + (RCOLUMN_OFFSET * scale) + ((SLIDER_RANGE + 2) * scale * 8),
+		y, buffer);
+}
+
+void
+SpinControl_DoSlide(menulist_s *s, int dir)
+{
+	s->curvalue += dir;
+
+	if (s->curvalue < 0)
+	{
+		s->curvalue = 0;
+		return;
+	}
+	else if (s->itemnames[s->curvalue] == 0)
+	{
+		s->curvalue--;
+		return;
+	}
+
+	if (s->generic.callback)
+	{
+		s->generic.callback(s);
+	}
+}
+
+void
+SpinControl_Draw(menulist_s *s)
+{
+	char buffer[100];
+	float scale = SCR_GetMenuScale();
+	int x = 0;
+	int y = 0;
+
+	x = s->generic.parent->x + s->generic.x;
+	y = s->generic.parent->y + s->generic.y;
+
+	if (s->generic.name)
+	{
+		Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
+			y, s->generic.name);
+	}
+
+	if (!strchr(s->itemnames[s->curvalue], '\n'))
+	{
+		Menu_DrawString(x + (RCOLUMN_OFFSET * scale),
+			y, s->itemnames[s->curvalue]);
+	}
+	else
+	{
+		strcpy(buffer, s->itemnames[s->curvalue]);
+		*strchr(buffer, '\n') = 0;
+		Menu_DrawString(x + (RCOLUMN_OFFSET * scale),
+			y, buffer);
+		strcpy(buffer, strchr(s->itemnames[s->curvalue], '\n') + 1);
+		Menu_DrawString(x + (RCOLUMN_OFFSET * scale),
+			y + 10, buffer);
 	}
 }
 
