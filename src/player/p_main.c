@@ -331,10 +331,15 @@ PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo)
 }
 
 // This function should be called anytime the player's skin, armor, weapon, damaged parts, etc are changed.
-PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
-{//FIXME: make sure to see if you HAVE the weapon node you turn off (dropped weapons)
-	int			i;
-	qboolean	ghost,inverttex;
+PLAYER_API void
+PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
+{
+	/*
+	 * FIXME: make sure to see if you HAVE the weapon node you turn off
+	 * (dropped weapons)
+	 */
+	int i;
+	qboolean inverttex;
 
 	assert(playerinfo);
 
@@ -376,8 +381,6 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 
 			break;
 	}
-
-
 
 	// Check staff for powerup.
 	// Until later in this function, have the staff default to on the player's belt.
@@ -442,17 +445,11 @@ PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	if (playerinfo->ghost_timer > playerinfo->leveltime)
 	{
 		// Set the ghost time.
-
 		playerinfo->renderfx |= RF_TRANS_GHOST;
-
-		ghost = true;
-
 	}
 	else
 	{
 		playerinfo->renderfx &= ~RF_TRANS_GHOST;
-
-		ghost = false;
 	}
 
 	// Check armor and level...

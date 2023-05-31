@@ -577,7 +577,6 @@ R_DrawParticles(int num_particles, particle_t* particles, int type)
 	const particle_t* p;
 	int				i;
 	vec3_t			up, right;
-	float			scale;
 	byte			color[4];
 
 	glEnable(GL_TEXTURE_2D);

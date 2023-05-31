@@ -39,7 +39,6 @@ qboolean CheckFall(playerinfo_t *playerinfo)
 {
 	trace_t checktrace;
 	vec3_t endpos;
-	int	checksloped = ASEQ_NONE;
 
 	VectorCopy(playerinfo->origin, endpos);
 	endpos[2] -= FALL_MINHEIGHT;
@@ -50,7 +49,9 @@ qboolean CheckFall(playerinfo_t *playerinfo)
 		playerinfo->G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID,&checktrace);
 
 	if (checktrace.fraction >= 1)
+	{
 		return true;
+	}
 
 	return false;
 }
@@ -287,7 +288,6 @@ PLAYER_API qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int wea
 int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 {
 	int	temp;
-	int	checksloped = ASEQ_NONE;
 
 	assert(playerinfo);
 

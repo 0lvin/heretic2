@@ -105,15 +105,7 @@ typedef struct
 	entity_state_t		*s1;			// pointer to the corresponding entity_state_t in												// cl_parse_entities.
 } centity_t;
 
-// ********************************************************************************************
-// CF_XXX
-// ------
-// Flags for the client side entity to know if its been deleted on the server, or is server
-// culled.
-// ********************************************************************************************
-
-#define CF_INUSE			0x00000001
-#define CF_SERVER_CULLED	0x00000002
+// jmarshall: clean up some memory issues
 
 // ********************************************************************************************
 // predictinfo_t
@@ -136,21 +128,26 @@ typedef struct
 	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
 } predictinfo_t;
 
-// jmarshall: clean up some memory issues
 #define CL_MAXMODELS  16
+
 // jmarshall: clean up some memory issues
 typedef struct
 {
 	char	name[MAX_QPATH];
+	char	cinfo[MAX_QPATH];
 
 	struct image_s	*skin[SKIN_MAX];
 
+	struct image_s	*icon;
 	char	iconname[MAX_QPATH];
 	struct model_s	*model[CL_MAXMODELS]; // jmarshall: clean up some memory issues
 	char	skin_name[MAX_QPATH];
 	char	model_name[MAX_QPATH];
 	vec3_t	origin;
 } clientinfo_t;
+
+extern char cl_weaponmodels[MAX_CLIENTWEAPONMODELS][MAX_QPATH];
+extern int num_cl_weaponmodels;
 
 /* the client_state_t structure is wiped
    completely at every server map change */
@@ -281,7 +278,6 @@ typedef struct
 	int			realtime; /* always increasing, no clamping, etc, in MS */
 	float		rframetime; /* seconds since last render frame */
 	float		nframetime; /* network frame time */
-	float		framemodifier;		// variable to mod cfx by
 
 	/* screen rendering information */
 	float		disable_screen; /* showing loading plaque between levels */
@@ -384,6 +380,374 @@ extern  cvar_t  *vid_renderer;
 extern	cvar_t	*cl_kickangles;
 extern  cvar_t  *cl_r1q2_lightstyle;
 extern  cvar_t  *cl_limitsparksounds;
+
+typedef struct
+{
+	int		key; /* so entities can reuse same entry */
+	vec3_t	color;
+	vec3_t	origin;
+	float	radius;
+	float	die; /* stop lighting after this time */
+	float	decay; /* drop this each second */
+	float	minlight; /* don't add when contributing less */
+} cdlight_t;
+
+extern	centity_t	cl_entities[MAX_EDICTS];
+extern	cdlight_t	cl_dlights[MAX_DLIGHTS];
+
+extern	entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
+
+extern	netadr_t	net_from;
+extern	sizebuf_t	net_message;
+
+extern qboolean paused_at_load;
+
+void DrawString (int x, int y, char *s);
+void DrawStringScaled(int x, int y, char *s, float factor);
+void DrawAltString (int x, int y, char *s);	/* toggle high bit */
+void DrawAltStringScaled(int x, int y, char *s, float factor);
+qboolean	CL_CheckOrDownloadFile (char *filename);
+
+void CL_AddNetgraph (void);
+
+typedef struct cl_sustain
+{
+	int			id;
+	int			type;
+	int			endtime;
+	int			nextthink;
+	int			thinkinterval;
+	vec3_t		org;
+	vec3_t		dir;
+	int			color;
+	int			count;
+	int			magnitude;
+	void		(*think)(struct cl_sustain *self);
+} cl_sustain_t;
+
+void CL_ParticleSteamEffect2(cl_sustain_t *self);
+
+void CL_TeleporterParticles (entity_state_t *ent);
+void CL_ParticleEffect (vec3_t org, vec3_t dir, int color, int count);
+void CL_ParticleEffect2 (vec3_t org, vec3_t dir, int color, int count);
+
+void CL_ParticleEffect3 (vec3_t org, vec3_t dir, int color, int count);
+
+
+typedef struct particle_s
+{
+
+	struct particle_s	*next;
+
+	float		time;
+
+	vec3_t		org;
+	vec3_t		vel;
+	vec3_t		accel;
+	float		color;
+	float		colorvel;
+	float		alpha;
+	float		alphavel;
+} cparticle_t;
+
+void CL_ClearEffects (void);
+void CL_ClearTEnts (void);
+void CL_BlasterTrail (vec3_t start, vec3_t end);
+void CL_QuadTrail (vec3_t start, vec3_t end);
+void CL_RailTrail (vec3_t start, vec3_t end);
+void CL_BubbleTrail (vec3_t start, vec3_t end);
+void CL_FlagTrail (vec3_t start, vec3_t end, int color);
+
+void CL_IonripperTrail (vec3_t start, vec3_t end);
+
+void CL_BlasterParticles2 (vec3_t org, vec3_t dir, unsigned int color);
+void CL_BlasterTrail2 (vec3_t start, vec3_t end);
+void CL_DebugTrail (vec3_t start, vec3_t end);
+void CL_SmokeTrail (vec3_t start, vec3_t end, int colorStart, int colorRun, int spacing);
+void CL_Flashlight (int ent, vec3_t pos);
+void CL_ForceWall (vec3_t start, vec3_t end, int color);
+void CL_FlameEffects (centity_t *ent, vec3_t origin);
+void CL_GenericParticleEffect (vec3_t org, vec3_t dir, int color, int count, int numcolors, int dirspread, float alphavel);
+void CL_BubbleTrail2 (vec3_t start, vec3_t end, int dist);
+void CL_Heatbeam (vec3_t start, vec3_t end);
+void CL_ParticleSteamEffect (vec3_t org, vec3_t dir, int color, int count, int magnitude);
+void CL_TrackerTrail (vec3_t start, vec3_t end, int particleColor);
+void CL_Tracker_Explode(vec3_t origin);
+void CL_TagTrail (vec3_t start, vec3_t end, int color);
+void CL_ColorFlash (vec3_t pos, int ent, float intensity, float r, float g, float b);
+void CL_Tracker_Shell(vec3_t origin);
+void CL_MonsterPlasma_Shell(vec3_t origin);
+void CL_ColorExplosionParticles (vec3_t org, int color, int run);
+void CL_ParticleSmokeEffect (vec3_t org, vec3_t dir, int color, int count, int magnitude);
+void CL_Widowbeamout (cl_sustain_t *self);
+void CL_Nukeblast (cl_sustain_t *self);
+void CL_WidowSplash (vec3_t org);
+
+int CL_ParseEntityBits (unsigned *bits);
+void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int number, int bits);
+void CL_ParseFrame (void);
+
+void CL_ParseTEnt (void);
+void CL_ParseConfigString (void);
+void CL_AddMuzzleFlash (void);
+void CL_AddMuzzleFlash2 (void);
+void SmokeAndFlash(vec3_t origin);
+
+void CL_SetLightstyle (int i);
+
+void CL_RunParticles (void);
+void CL_RunDLights (void);
+void CL_RunLightStyles (void);
+
+void CL_CalcViewValues(void);
+void CL_AddEntities (void);
+void CL_AddDLights (void);
+void CL_AddTEnts (void);
+void CL_AddLightStyles (void);
+
+void CL_PrepRefresh (void);
+void CL_RegisterSounds (void);
+
+void CL_Quit_f (void);
+
+void IN_Accumulate (void);
+
+void CL_ParseLayout (void);
+
+void CL_Init (void);
+
+void CL_FixUpGender(void);
+void CL_Disconnect (void);
+void CL_Disconnect_f (void);
+void CL_GetChallengePacket (void);
+void CL_PingServers_f (void);
+void CL_Snd_Restart_f (void);
+void CL_RequestNextDownload (void);
+void CL_ResetPrecacheCheck (void);
+
+typedef struct
+{
+	int			down[2]; /* key nums holding it down */
+	unsigned	downtime; /* msec timestamp */
+	unsigned	msec; /* msec down this frame */
+	int			state;
+} kbutton_t;
+
+extern	kbutton_t	in_mlook, in_klook;
+extern 	kbutton_t 	in_strafe;
+extern 	kbutton_t 	in_speed;
+
+void CL_InitInput (void);
+void CL_RefreshCmd(void);
+void CL_SendCmd (void);
+void CL_RefreshMove(void);
+void CL_SendMove (usercmd_t *cmd);
+
+void CL_ClearState (void);
+
+void CL_ReadPackets (void);
+
+int  CL_ReadFromServer (void);
+void CL_WriteToServer (usercmd_t *cmd);
+void CL_BaseMove (usercmd_t *cmd);
+
+void IN_CenterView (void);
+
+float CL_KeyState (kbutton_t *key);
+char *Key_KeynumToString (int keynum);
+
+void CL_WriteDemoMessage (void);
+void CL_Stop_f (void);
+void CL_Record_f (void);
+
+extern	char *svc_strings[256];
+
+void CL_ParseServerMessage (void);
+void CL_LoadClientinfo (clientinfo_t *ci, char *s);
+void SHOWNET(char *s);
+void CL_ParseClientinfo (int player);
+void CL_Download_f (void);
+
+extern	int			gun_frame;
+
+extern	struct model_s	*gun_model;
+
+void V_Init (void);
+void V_RenderView( float stereo_separation );
+void V_AddEntity (entity_t *ent);
+void V_AddParticle (vec3_t org, unsigned int color, float alpha);
+void V_AddLight (vec3_t org, float intensity, float r, float g, float b);
+void V_AddLightStyle (int style, float r, float g, float b);
+
+void CL_RegisterTEntSounds (void);
+void CL_RegisterTEntModels (void);
+void CL_SmokeAndFlash(vec3_t origin);
+
+
+void CL_InitPrediction (void);
+void CL_PredictMove (void);
+void CL_CheckPredictionError (void);
+
+cdlight_t *CL_AllocDlight (int key);
+void CL_BigTeleportParticles (vec3_t org);
+void CL_RocketTrail (vec3_t start, vec3_t end, centity_t *old);
+void CL_DiminishingTrail (vec3_t start, vec3_t end, centity_t *old, qboolean gib);
+void CL_FlyEffect (centity_t *ent, vec3_t origin);
+void CL_BfgParticles (entity_t *ent);
+void CL_AddParticles (void);
+void CL_EntityEvent (entity_state_t *ent);
+void CL_TrapParticles (entity_t *ent);
+
+void M_Init (void);
+void M_Keydown (int key);
+void M_Draw (void);
+void M_Menu_Main_f (void);
+void M_ForceMenuOff (void);
+void M_AddToServerList (netadr_t adr, char *info);
+
+void CL_ParseInventory (void);
+void CL_KeyInventory (int key);
+void CL_DrawInventory (void);
+
+void CL_PredictMovement (void);
+trace_t CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
+
+//=============================================================================
+#define	FX_API_VERSION		1
+
+//
+// these are the data and functions exported by the client fx module
+//
+typedef struct
+{
+	// if api_version is different, the dll cannot be used
+	int		api_version;
+
+	void (*Init)();
+	void (*ShutDown)();
+
+	void (*Clear)();
+
+	void (*RegisterSounds)();
+	void (*RegisterModels)();
+
+	void (*ParseClientEffects)(centity_t *cent);
+	void (*RemoveClientEffects)(centity_t *cent);
+
+	void (*AddPacketEntities)(frame_t *frame);
+	void (*AddEffects)(qboolean freeze);
+	void (*UpdateEffects)();
+
+	level_map_info_t *(*GetLMI)();
+	int (*GetLMIMax)();
+	char *(client_string);
+
+} client_fx_export_t;
+
+extern client_fx_export_t fxe;
+
+//
+// these are the data and functions imported by the client fx module
+//
+typedef struct
+{
+	client_state_t	*cl;
+	client_static_t *cls;
+
+	int *r_numentities;
+	entity_t **r_entities;
+
+	int *r_num_alpha_entities;
+	entity_t **r_alpha_entities;
+
+	int *r_numdlights;
+	dlight_t *r_dlights;
+
+	int *r_numparticles;
+	particle_t *r_particles;
+
+	int *r_anumparticles;
+	particle_t *r_aparticles;
+
+	// Client versions of the game entities.
+
+	centity_t		*server_entities;
+
+	// Buffer into which net stuff is parsed.
+
+	entity_state_t	*parse_entities;
+
+	sizebuf_t		*net_message;
+	float			*PlayerAlpha;
+	struct			ResourceManager_s *FXBufMngr;
+	entity_t		**PlayerEntPtr;
+
+	// Client prediction stuff.
+
+	cvar_t			*cl_predict;
+	int				*cl_effectpredict;
+	predictinfo_t	*predictinfo;
+	float			*leveltime;
+	float			*Highestleveltime;
+	float			*EffectEventIdTimeArray;
+	EffectsBuffer_t *clientPredEffects;
+
+	//
+
+	void	(*Sys_Error) (int err_level, char *str, ...);
+	void	(*Com_Error) (int code, char *fmt, ...);
+	void	(*Con_Printf) (int print_level, char *str, ...);
+
+	//
+
+	cvar_t *(*Cvar_Get) (char *name, char *value, int flags);
+	cvar_t *(*Cvar_Set)( char *name, char *value );
+	void	(*Cvar_SetValue)( char *name, float value );
+	float	(*Cvar_VariableValue) (char *var_name);
+	const char	*(*Cvar_VariableString) (const char *var_name);
+
+	// allow the screen flash to be controlled from within the client effect DLL rather than going through the server.
+	// this means we get 60 hz (hopefully) screen flashing, rather than 10 hz
+	void	(*Activate_Screen_Flash)(int color);
+
+	// allow the client to call a screen shake - done within the camera code, so we can shake the screen at 60hz
+	void 	(*Activate_Screen_Shake)(float intensity, float duration, float current_time, int flags);
+
+	qboolean	(*Get_Crosshair)(vec3_t origin, byte *type);
+
+	void	(*S_StartSound)(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, float attenuation, float timeofs);
+	struct sfx_s	*(*S_RegisterSound)(char *name);
+	struct model_s *(*RegisterModel) (char *name);
+
+	int		(*GetEffect)(centity_t *ent, int flags, char *format, ...);
+
+	void	*(*TagMalloc)(int size, int tag);
+	void	(*TagFree)(void *block);
+	void	(*FreeTags)(int tag);
+
+	void	(*Trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags, trace_t *t);
+	qboolean (*InCameraPVS)(vec3_t point);
+} client_fx_import_t;
+
+// this is the only function actually exported at the linker level
+typedef	client_fx_export_t (*GetfxAPI_t) (client_fx_import_t);
+
+#define ENTITY_FX_BUF_BLOCK_SIZE 256
+
+extern struct ResourceManager_s cl_FXBufMngr;
+
+// ********************************************************************************************
+// CF_XXX
+// ------
+// Flags for the client side entity to know if its been deleted on the server, or is server
+// culled.
+// ********************************************************************************************
+
+#define CF_INUSE			0x00000001
+#define CF_SERVER_CULLED	0x00000002
+
+//=================================================
+
 extern	cvar_t	*cl_autoskins;
 extern	cvar_t	*cl_maxfps;
 extern	cvar_t	*cl_frametime;
@@ -430,283 +794,24 @@ extern cvar_t *colour_level;
 extern cvar_t *colour_game;
 extern cvar_t *game_downloadable_type;
 extern cvar_t *cl_no_middle_text;
+int CL_ParseEntityBits(unsigned *bits);
+void CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits);
+void CL_ParseFrame(void);
 
-typedef struct
-{
-	int		key; /* so entities can reuse same entry */
-	vec3_t	color;
-	vec3_t	origin;
-	float	radius;
-	float	die; /* stop lighting after this time */
-	float	decay; /* drop this each second */
-	float	minlight; /* don't add when contributing less */
-} cdlight_t;
-
-extern	centity_t	cl_entities[MAX_EDICTS];
-extern	cdlight_t	cl_dlights[MAX_DLIGHTS];
-
-extern	entity_state_t	cl_parse_entities[MAX_PARSE_ENTITIES];
-
-extern	netadr_t	net_from;
-extern	sizebuf_t	net_message;
-
-extern qboolean paused_at_load;
-
-void DrawString (int x, int y, char *s);
-void DrawStringScaled(int x, int y, char *s, float factor);
-void DrawAltString (int x, int y, char *s);	/* toggle high bit */
-void DrawAltStringScaled(int x, int y, char *s, float factor);
-qboolean	CL_CheckOrDownloadFile (char *filename);
-
-void CL_AddNetgraph (void);
-int CL_ParseEntityBits (unsigned *bits);
-void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int number, int bits);
-void CL_ParseFrame (void);
-
-
-//=============================================================================
-#define	FX_API_VERSION		1
-
-//
-// these are the data and functions exported by the client fx module
-//
-typedef struct
-{
-	// if api_version is different, the dll cannot be used
-	int		api_version;
-
-	void (*Init)();
-	void (*ShutDown)();
-
-	void (*Clear)();
-
-	void (*RegisterSounds)();
-	void (*RegisterModels)();
-
-	void (*ParseClientEffects)(centity_t *cent);
-	void (*RemoveClientEffects)(centity_t *cent);
-
-	void (*AddPacketEntities)(frame_t *frame);
-	void (*AddEffects)(qboolean freeze);
-	void (*UpdateEffects)();
-
-	void (*SetLightstyle)(int i);
-	level_map_info_t *(*GetLMI)();
-	int (*GetLMIMax)();
-	char *(client_string);
-
-} client_fx_export_t;
-
-extern client_fx_export_t fxe;
-
-//
-// these are the data and functions imported by the client fx module
-//
-typedef struct
-{
-	client_state_t	*cl;
-	client_static_t *cls;
-
-	int *r_numentities;
-	entity_t **r_entities;
-
-	int *r_num_alpha_entities;
-	entity_t **r_alpha_entities;
-
-	int *r_numdlights;
-	dlight_t *r_dlights;
-
-	lightstyle_t *r_lightstyles;
-
-	int *r_numparticles;
-	particle_t *r_particles;
-
-	int *r_anumparticles;
-	particle_t *r_aparticles;
-
-	// Client versions of the game entities.
-
-	centity_t		*server_entities;
-
-	// Buffer into which net stuff is parsed.
-
-	entity_state_t	*parse_entities;
-
-	sizebuf_t		*net_message;
-	float			*PlayerAlpha;
-	struct			ResourceManager_s *FXBufMngr;
-	entity_t		**PlayerEntPtr;
-
-	// Client prediction stuff.
-
-	cvar_t			*cl_predict;
-	int				*cl_effectpredict;
-	predictinfo_t	*predictinfo;
-	float			*leveltime;
-	float			*Highestleveltime;
-	float			*EffectEventIdTimeArray;
-	EffectsBuffer_t *clientPredEffects;
-
-	//
-
-	void	(*Sys_Error) (int err_level, char *str, ...);
-	void	(*Com_Error) (int code, char *fmt, ...);
-	void	(*Con_Printf) (int print_level, char *str, ...);
-
-	//
-
-	cvar_t *(*Cvar_Get) (char *name, char *value, int flags);
-	cvar_t *(*Cvar_Set)( char *name, char *value );
-	void	(*Cvar_SetValue)( char *name, float value );
-	float	(*Cvar_VariableValue) (char *var_name);
-	char	*(*Cvar_VariableString) (char *var_name);
-
-	// allow the screen flash to be controlled from within the client effect DLL rather than going through the server.
-	// this means we get 60 hz (hopefully) screen flashing, rather than 10 hz
-	void	(*Activate_Screen_Flash)(int color);
-
-	// allow the client to call a screen shake - done within the camera code, so we can shake the screen at 60hz
-	void 	(*Activate_Screen_Shake)(float intensity, float duration, float current_time, int flags);
-
-	qboolean	(*Get_Crosshair)(vec3_t origin, byte *type);
-
-	void	(*S_StartSound)(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, float attenuation, float timeofs);
-	struct sfx_s	*(*S_RegisterSound)(char *name);
-	struct model_s *(*RegisterModel) (char *name);
-
-	int		(*GetEffect)(centity_t *ent, int flags, char *format, ...);
-
-	void	*(*TagMalloc)(int size, int tag);
-	void	(*TagFree)(void *block);
-	void	(*FreeTags)(int tag);
-
-	void	(*Trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags, trace_t *t);
-	qboolean (*InCameraPVS)(vec3_t point);
-} client_fx_import_t;
-
-// this is the only function actually exported at the linker level
-typedef	client_fx_export_t (*GetfxAPI_t) (client_fx_import_t);
-
-#define ENTITY_FX_BUF_BLOCK_SIZE 256
-
-extern struct ResourceManager_s cl_FXBufMngr;
-//=================================================
-
-void CL_PrepRefresh (void);
-void CL_RegisterSounds (void);
-
-void CL_Quit_f (void);
-
-void IN_Accumulate (void);
-
-void CL_ParseLayout (void);
-
-//
-// cl_main
-//
 extern refexport_t		re;				// interface to refresh DLL.
 extern player_export_t	playerExport;	// interface to player DLL.
-
-void CL_Init (void);
 char *CL_GetGameString(int i);
 char *CL_GetGameWav(int i);
 char *CL_GetLevelString(int i);
 char *CL_GetLevelWav(int i);
 void CL_LoadStrings(void);
 void CL_RequestNextDownload (void);
-
-void CL_FixUpGender(void);
-void CL_Disconnect (void);
-void CL_Disconnect_f (void);
-void CL_GetChallengePacket (void);
-void CL_PingServers_f (void);
-void CL_Snd_Restart_f (void);
 void CL_Snd_Restart_f_nocfx (void);
-
-typedef struct
-{
-	int			down[2]; /* key nums holding it down */
-	unsigned	downtime; /* msec timestamp */
-	unsigned	msec; /* msec down this frame */
-	int			state;
-} kbutton_t;
-
-extern	kbutton_t	in_mlook, in_klook;
-extern 	kbutton_t 	in_strafe;
-extern 	kbutton_t 	in_speed;
 extern	kbutton_t	in_lookaround;
-
-void CL_InitInput (void);
-void CL_RefreshCmd(void);
-void CL_SendCmd (void);
-void CL_RefreshMove(void);
-void CL_SendMove (usercmd_t *cmd);
-
-void CL_ClearState (void);
-
-void CL_ReadPackets (void);
-
-int  CL_ReadFromServer (void);
-void CL_WriteToServer (usercmd_t *cmd);
-void CL_BaseMove (usercmd_t *cmd);
-
-void IN_CenterView (void);
-
-float CL_KeyState (kbutton_t *key);
-char *Key_KeynumToString (int keynum);
-
 void CL_ParseDemoClientEffects (void);
-void CL_WriteDemoMessage (void);
-void CL_Stop_f (void);
-void CL_Record_f (void);
-
-extern	char *svc_strings[256];
-
-void CL_ParseServerMessage (void);
-void CL_LoadClientinfo (clientinfo_t *ci, char *s);
-void SHOWNET(char *s);
-void CL_ParseClientinfo (int player);
-
-void V_Init (void);
-void V_RenderView( float stereo_separation );
-
-//
-// cl_pred.c
-//
-void CL_InitPrediction (void);
-void CL_PredictMove (void);
-void CL_CheckPredictionError (void);
-
-//
-// menus
-//
-void M_Init (void);
-void M_Keydown (int key);
-void M_Draw (void);
-void M_Menu_Main_f (void);
-void M_ForceMenuOff (void);
 void MenuUnsetMode(void);
-void M_AddToServerList (netadr_t adr, char *info);
-
-//
-// cl_inv.c
-//
-void CL_ParseInventory (void);
-void CL_KeyInventory (int key);
-void CL_DrawInventory (void);
-
-//
-// cl_pred.c
-//
-void CL_PredictMovement(void);
 void CL_ClipMoveToEntities(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,trace_t *tr);
-
-//
-// cl_view.c
-//
-
 void Grab_EAX_Environment_type(void);
-
 void SNDEAX_SetEnvironment(int id);
 void S_Init(void);
 struct sfx_s* S_FindName(char* name, qboolean create);
@@ -720,14 +825,10 @@ void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float f
 void S_StopAllSounds(void);
 void S_StopAllSounds_Sounding(void);
 void S_Update(vec3_t quake_origin, vec3_t forward, vec3_t right, vec3_t up);
-
 void CL_RunDLights(void);
 void CL_RunLightStyles(void);
 void CL_SetLightstyle(int i);
-
 void DrawAltString(int x, int y, char* s);
 void CL_AddEntities(void);
-
-trace_t CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 
 #endif

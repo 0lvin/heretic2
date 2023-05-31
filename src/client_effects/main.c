@@ -48,9 +48,7 @@ int ref_soft;
 int	numprocessedparticles;
 int	numrenderedparticles;
 
-qboolean fx_FreezeWorld=false;
-
-void CL_SetLightstyle(int i);
+qboolean fx_FreezeWorld = false;
 
 void Init();
 void Clear();
@@ -109,8 +107,6 @@ client_fx_export_t GetfxAPI (client_fx_import_t import)
 
 	// Lastly.
 	_export.UpdateEffects = PostRenderUpdate;
-
-	_export.SetLightstyle = CL_SetLightstyle;
 
 	_export.GetLMI = GetLMI;
 	_export.GetLMIMax = GetLMIMax;

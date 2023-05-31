@@ -35,7 +35,7 @@ void S_Play(void);
 void S_SoundList(void);
 void S_Update_();
 void S_StopAllSounds(void);
-
+void S_InitScaletable(void);
 
 // =======================================================================
 // Internal sound data & structures

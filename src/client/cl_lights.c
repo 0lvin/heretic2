@@ -25,264 +25,87 @@
  */
 
 #include "header/client.h"
-#include "../../h2common/resourcemanager.h"
 
-client_fx_export_t fxe;
-
-float EffectEventIdTimeArray[1000];
-int cl_effectpredict[1000];
-
-predictinfo_t predictInfo;
-EffectsBuffer_t clientPredEffects;
-float PlayerAlpha = 1.0f;
-
-client_fx_export_t GetfxAPI(client_fx_import_t import);
-
-void CL_LogoutEffect (vec3_t org, int type);
-void CL_ItemRespawnParticles (vec3_t org);
-
-ResourceManager_t FXBufMgnr;
-
-static vec3_t avelocities [NUMVERTEXNORMALS];
-
-extern	struct model_s	*cl_mod_smoke;
-extern	struct model_s	*cl_mod_flash;
-
-extern sizebuf_t* fxMsgBuf;
-
-int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
-	sizebuf_t* msg;
-	va_list args;
-	sizebuf_t newmsg;
-	EffectsBuffer_t* clientEffects;
-
-	if (!ent)
-	{
-		msg = &net_message;
-	}
-	else
-	{
-		//if (cl_effectpredict)
-		//{
-		//	clientEffects = (EffectsBuffer_t*)&clientPredEffects;
-		//	clientEffects = (EffectsBuffer_t*)&clientPredEffects;
-		//}
-		//else
-		{
-			clientEffects = &ent->current.clientEffects;
-			clientEffects = &ent->current.clientEffects;
-		}
-		msg = fxMsgBuf;
-	}
-
-	va_start(args, format);
-
-	int len = strlen(format);
-	for (int i = 0; i < len; i++)
-	{
-		switch (format[i])
-		{
-		case 'b':
-		{
-			byte* b = va_arg(args, byte*);
-			*b = MSG_ReadByte(msg);
-		}
-			break;
-		case 'd':
-			MSG_ReadDir(msg, va_arg(args, float*));
-			break;
-		case 'f':
-		{
-			float* f = va_arg(args, float*);
-			*f = MSG_ReadFloat(msg);
-		}
-			break;
-		case 'i':
-		{
-			long* l = va_arg(args, long*);
-			*l = MSG_ReadLong(msg);
-		}
-			break;
-		case 'p':
-		case 'v':
-			MSG_ReadPos(msg, va_arg(args, float*));
-			break;
-		case 's':
-		{
-			short* s = va_arg(args, short*);
-			*s = MSG_ReadShort(msg);
-		}
-			break;
-		case 't':
-			MSG_ReadPos(msg, va_arg(args, float*));
-			break;
-		case 'u':
-			MSG_ReadPos(msg, va_arg(args, float*));
-			break;
-		case 'x':
-			MSG_ReadPos(msg, va_arg(args, float*));
-			break;
-		default:
-			break;
-		}
-	}
-
-	return len;
-}
-
-void CL_ShutdownClientEffects()
+typedef struct
 {
-	fxe.ShutDown();
-}
+	int length;
+	float value[3];
+	float map[MAX_QPATH];
+} clightstyle_t;
 
-qboolean InCameraPVS(vec3_t point) {
-	return true;
-}
+clightstyle_t cl_lightstyle[MAX_LIGHTSTYLES];
+int lastofs;
 
-// Screen flash set
-void Activate_Screen_Flash(int color) {
-
-}
-
-// Screen flash set
-void Activate_Screen_Shake(float intensity, float duration, float current_time, int flags) {
-
-}
-
-// Screen flash unset
-void Deactivate_Screen_Flash(void) {
-
-}
-
-void Deactivate_Screen_Shake(void) {
-
-}
-
-qboolean Get_Crosshair(vec3_t origin, byte* type) {
-	return true;
-}
-
-trace_t		CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
-void CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags, trace_t* t) {
-	*t = CL_PMTrace(start, mins, maxs, end); // jmarshall: incomplete
-}
-
-void CL_Sys_Error(int errLevel, char* fmt, ...)
+void
+CL_ClearLightStyles(void)
 {
-	va_list		argptr;
-	char		msg[4096];
-
-	va_start(argptr, fmt);
-	vsprintf(msg, fmt, argptr);
-	va_end(argptr);
-
-	Sys_Error(msg); // TODO vargs
+	memset(cl_lightstyle, 0, sizeof(cl_lightstyle));
+	lastofs = -1;
 }
 
-void CL_Printf(int errLevel, char* fmt, ...) {
-	va_list		argptr;
-	char		msg[4096];
-
-	va_start(argptr, fmt);
-	vsprintf(msg, fmt, argptr);
-	va_end(argptr);
-
-	Com_Printf(msg);
-}
-
-extern int r_numentities;
-extern entity_t *r_entities[MAX_ENTITIES];
-
-extern int r_num_alpha_entities;
-extern entity_t *r_alpha_entities[MAX_ALPHA_ENTITIES];
-
-extern int r_numdlights;
-extern dlight_t r_dlights[MAX_DLIGHTS];
-
-extern lightstyle_t r_lightstyles[MAX_LIGHTSTYLES];
-
-extern int r_numparticles;
-extern particle_t r_particles[MAX_PARTICLES];
-
-extern int r_anumparticles;
-extern particle_t r_aparticles[MAX_PARTICLES];
-
-int
-CL_InitClientEffects(const char* name)
+void
+CL_RunLightStyles(void)
 {
-	int result;
-	static client_fx_import_t cl_game_import;
+	int ofs;
+	int i;
+	clightstyle_t *ls;
 
+	ofs = cl.time / 100;
 
-	Com_Printf("------ Loading %s ------\n", name);
-
-	cl_game_import.cl_predict = cl_predict;
-	cl_game_import.cl = &cl;
-	cl_game_import.cls = &cls;
-
-	cl_game_import.r_numentities = &r_numentities;
-	cl_game_import.r_entities = r_entities;
-
-	cl_game_import.r_num_alpha_entities = &r_num_alpha_entities;
-	cl_game_import.r_alpha_entities = r_alpha_entities;
-
-	cl_game_import.r_numdlights = &r_numdlights;
-	cl_game_import.r_dlights = r_dlights;
-
-	cl_game_import.r_lightstyles = r_lightstyles;
-
-	cl_game_import.r_numparticles = &r_numparticles;
-	cl_game_import.r_particles = r_particles;
-
-	cl_game_import.r_anumparticles = &r_anumparticles;
-	cl_game_import.r_aparticles = r_aparticles;
-
-	cl_game_import.server_entities = &cl_entities[0];
-	cl_game_import.parse_entities = cl_parse_entities;
-	cl_game_import.EffectEventIdTimeArray = EffectEventIdTimeArray;
-	cl_game_import.leveltime = (float*)&cl.time;
-	cl_game_import.Highestleveltime = (float*)&cl.time;
-	cl_game_import.clientPredEffects = &clientPredEffects;
-	cl_game_import.net_message = &net_message;
-	cl_game_import.PlayerEntPtr = (entity_t**)&cl_entities[0];
-	cl_game_import.PlayerAlpha = (float*)&PlayerAlpha;
-	cl_game_import.predictinfo = &predictInfo;
-	cl_game_import.FXBufMngr = &FXBufMgnr;
-	cl_game_import.cl_effectpredict = &cl_effectpredict[0];
-	cl_game_import.Sys_Error = CL_Sys_Error;
-	cl_game_import.Com_Error = Com_Error;
-	cl_game_import.Con_Printf = CL_Printf;
-	cl_game_import.Cvar_Get = Cvar_Get;
-	cl_game_import.Cvar_Set = Cvar_Set;
-	cl_game_import.Cvar_SetValue = Cvar_SetValue;
-	cl_game_import.Cvar_VariableValue = Cvar_VariableValue;
-	cl_game_import.Cvar_VariableString = Cvar_VariableString;
-	cl_game_import.Activate_Screen_Flash = Activate_Screen_Flash;
-	cl_game_import.Activate_Screen_Shake = Activate_Screen_Shake;
-	cl_game_import.Get_Crosshair = Get_Crosshair;
-	cl_game_import.S_StartSound = S_StartSound;
-	cl_game_import.S_RegisterSound = S_RegisterSound;
-	cl_game_import.RegisterModel = re.RegisterModel;
-	cl_game_import.GetEffect = CL_GetEffect;
-	cl_game_import.TagMalloc = Z_TagMalloc;
-	cl_game_import.TagFree = Z_Free;
-	cl_game_import.FreeTags = Z_FreeTags;
-	cl_game_import.Trace = CL_NewTrace;
-	cl_game_import.InCameraPVS = InCameraPVS;
-
-	fxe = GetfxAPI(cl_game_import);
-	if (fxe.api_version != 3)
+	if (ofs == lastofs)
 	{
-		CL_ShutdownClientEffects();
-		Com_Error(0, "%s has incompatible api_version", name);
+		return;
 	}
-	ResMngr_Con(&FXBufMgnr, 192, 256);
-	Com_Printf("------------------------------------");
-	result = 1;
 
-	fxe.Init();
+	lastofs = ofs;
 
-	return result;
+	for (i = 0, ls = cl_lightstyle; i < MAX_LIGHTSTYLES; i++, ls++)
+	{
+		if (!ls->length)
+		{
+			ls->value[0] = ls->value[1] = ls->value[2] = 1.0;
+			continue;
+		}
+
+		if (ls->length == 1)
+		{
+			ls->value[0] = ls->value[1] = ls->value[2] = ls->map[0];
+		}
+
+		else
+		{
+			ls->value[0] = ls->value[1] = ls->value[2] = ls->map[ofs % ls->length];
+		}
+	}
+}
+
+void
+CL_SetLightstyle(int i)
+{
+	char *s;
+	int j, k;
+
+	s = cl.configstrings[i + CS_LIGHTS];
+
+	j = (int)strlen(s);
+	cl_lightstyle[i].length = j;
+
+	for (k = 0; k < j; k++)
+	{
+		cl_lightstyle[i].map[k] = (float)(s[k] - 'a') / (float)('m' - 'a');
+	}
+}
+
+void
+CL_AddLightStyles(void)
+{
+	int i;
+	clightstyle_t *ls;
+
+	for (i = 0, ls = cl_lightstyle; i < MAX_LIGHTSTYLES; i++, ls++)
+	{
+		V_AddLightStyle(i, ls->value[0], ls->value[1], ls->value[2]);
+	}
 }
 
 cdlight_t cl_dlights[MAX_DLIGHTS];
@@ -293,46 +116,39 @@ CL_ClearDlights(void)
 	memset(cl_dlights, 0, sizeof(cl_dlights));
 }
 
-/*
-===============
-CL_AllocDlight
-
-===============
-*/
-cdlight_t *CL_AllocDlight (int key)
+cdlight_t *
+CL_AllocDlight(int key)
 {
-	int		i;
-	cdlight_t	*dl;
+	int i;
+	cdlight_t *dl;
 
-// first look for an exact key match
+	/* first look for an exact key match */
 	if (key)
 	{
 		dl = cl_dlights;
-		for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+
+		for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 		{
 			if (dl->key == key)
 			{
-				memset (dl, 0, sizeof(*dl));
-				dl->key = key;
 				return dl;
 			}
 		}
 	}
 
-// then look for anything else
+	/* then look for anything else */
 	dl = cl_dlights;
-	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+
+	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (dl->die < cl.time)
 		{
-			memset (dl, 0, sizeof(*dl));
 			dl->key = key;
 			return dl;
 		}
 	}
 
 	dl = &cl_dlights[0];
-	memset (dl, 0, sizeof(*dl));
 	dl->key = key;
 	return dl;
 }
@@ -350,32 +166,58 @@ CL_NewDlight(int key, float x, float y, float z, float radius, float time)
 	dl->die = cl.time + time;
 }
 
-
-/*
-===============
-CL_RunDLights
-
-===============
-*/
-void CL_RunDLights (void)
+void
+CL_RunDLights(void)
 {
-	int			i;
-	cdlight_t	*dl;
+	int i;
+	cdlight_t *dl;
 
 	dl = cl_dlights;
-	for (i=0 ; i<MAX_DLIGHTS ; i++, dl++)
+
+	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
 	{
 		if (!dl->radius)
+		{
 			continue;
+		}
 
-		if (dl->die < cl.time)
+		/* Vanilla Quake II had just cl.time. This worked in 1997
+		   when computers were slow and the game reached ~30 FPS
+		   on beefy hardware. Nowadays with 1000 FPS the dlights
+		   are often rendered just a fraction of a frame. Work
+		   around that by adding 32 ms, e.g. each dlight is shown
+		   for at least 32 ms. */
+		if (dl->die < cl.time - 32)
 		{
 			dl->radius = 0;
-			return;
+			continue;
 		}
-		dl->radius -= cls.rframetime*dl->decay;
+
+		dl->radius -= cls.rframetime * dl->decay;
+
 		if (dl->radius < 0)
+		{
 			dl->radius = 0;
+		}
+	}
+}
+
+void
+CL_AddDLights(void)
+{
+	int i;
+	cdlight_t *dl;
+
+	dl = cl_dlights;
+
+	for (i = 0; i < MAX_DLIGHTS; i++, dl++)
+	{
+		if (!dl->radius)
+		{
+			continue;
+		}
+
+		V_AddLight(dl->origin, dl->radius, dl->color[0], dl->color[1], dl->color[2]);
 	}
 }
 

@@ -26,6 +26,7 @@
  */
 
 #include "header/client.h"
+#include "input/header/input.h"
 
 void CL_ForwardToServer_f(void);
 void CL_Changing_f(void);
@@ -1012,6 +1013,8 @@ CL_FixCvarCheats(void)
 
 //============================================================================
 
+void IN_Commands (void);
+
 /*
 ==================
 CL_SendCommand
@@ -1043,6 +1046,8 @@ CL_SendCommand(void)
 void
 CL_Frame(int msec)
 {
+	void IN_Frame (void);
+
 	static int	extratime;
 	static int lasttimecalled;
 
@@ -1183,6 +1188,10 @@ CL_Shutdown(void)
 	}
 
 	isdown = true;
+
+#ifdef USE_CURL
+	CL_HTTP_Cleanup(true);
+#endif
 
 	CL_WriteConfiguration();
 

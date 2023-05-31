@@ -9,6 +9,7 @@
 #include "../common/header/common.h"
 #include "client_entities.h"
 #include "client_effects.h"
+#include "../../h2common/reference.h"
 #include "../../h2common/resourcemanager.h"
 #include "particle.h"
 #include "../../h2common/fx.h"

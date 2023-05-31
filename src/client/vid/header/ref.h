@@ -127,15 +127,6 @@ typedef struct entity_s {
 	int					padToUnionSize3[7];	// use this space up to add any more line sprite fields
 } entity_t;
 
-#include "../../../../h2common/q_surface.h"
-#include "../../../../h2common/arrayed_list.h"
-
-#define MAX_ALPHA_ENTITIES 2048
-#define	MAX_SERVER_ENTITIES	MAX_ENTITIES
-#define NUM_PARTICLE_TYPES	62			// This doesn't use the macro because of referencing weirdness.
-
-#define ENTITY_FLAGS  68
-
 typedef struct {
 	vec3_t	origin;
 	vec3_t	color;
@@ -196,6 +187,12 @@ typedef enum {
 } ref_restart_t;
 
 // FIXME: bump API_VERSION?
+#include "../../../../h2common/q_surface.h"
+#include "../../../../h2common/arrayed_list.h"
+#define MAX_ALPHA_ENTITIES 2048
+#define	MAX_SERVER_ENTITIES	MAX_ENTITIES
+#define NUM_PARTICLE_TYPES	62			// This doesn't use the macro because of referencing weirdness.
+#define ENTITY_FLAGS  68
 #define	API_VERSION		3
 #define EXPORT
 #define IMPORT
@@ -268,7 +265,6 @@ typedef struct
 	void	(EXPORT *DrawFill) (int x, int y, int w, int h, int c);
 	void	(EXPORT *DrawFadeScreen) (void);
 
-	void	(*DrawLine)(vec3_t start, vec3_t end);
 	// Draw images for cinematic rendering (which can have a different palette). Note that calls
 	void	(EXPORT *DrawStretchRaw) (int x, int y, int w, int h, int cols, int rows, byte *data);
 
@@ -281,6 +277,7 @@ typedef struct
 	qboolean	(EXPORT *EndWorldRenderpass) (void); // finish world rendering, apply postprocess and switch to UI render pass
 
 	//void	(EXPORT *AppActivate)( qboolean activate );
+	void	(*DrawLine)(vec3_t start, vec3_t end);
 } refexport_t;
 
 typedef struct
@@ -317,6 +314,10 @@ typedef struct
 	// expects the pixels data to be row-wise, starting at top left
 	void		(IMPORT *Vid_WriteScreenshot)( int width, int height, int comp, const void* data );
 
+	qboolean	(IMPORT *GLimp_InitGraphics)(int fullscreen, int *pwidth, int *pheight);
+	qboolean	(IMPORT *GLimp_GetDesktopMode)(int *pwidth, int *pheight);
+
+	void		(IMPORT *Vid_RequestRestart)(ref_restart_t rs);
 	void		(IMPORT *Vid_NewWindow)( int width, int height );
 } refimport_t;
 
@@ -339,6 +340,8 @@ void R_EndRegistration(void);
 struct image_s *Draw_FindPic(char *name);
 void R_RenderFrame(refdef_t *fd);
 void Draw_GetPicSize(int *w, int *h, char *name);
+
+void Draw_StretchPic(int x, int y, int w, int h, char *name);
 void Draw_PicScaled(int x, int y, char *pic, float factor);
 
 void Draw_CharScaled(int x, int y, int num, float scale);

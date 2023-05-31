@@ -92,7 +92,7 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg)
 
 		if (newnum == oldnum)
 		{
-			/* delta update from old position. because the force 
+			/* delta update from old position. because the force
 			   parm is false, this will not result in any bytes
 			   being emited if the entity has not changed at all
 			   note that players are always 'newentities', this
@@ -479,7 +479,6 @@ SV_BuildClientFrame(client_t *client)
 	int l;
 	int clientarea, clientcluster;
 	int leafnum;
-	byte *clientphs;
 	byte *bitvector;
 
 	clent = client->edict;
@@ -518,7 +517,7 @@ SV_BuildClientFrame(client_t *client)
 	frame->ps = clent->client->ps;
 
 	SV_FatPVS(org);
-	clientphs = CM_ClusterPHS(clientcluster);
+	CM_ClusterPHS(clientcluster);
 
 	/* build up the list of visible entities */
 	frame->num_entities = 0;

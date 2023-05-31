@@ -169,6 +169,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/cl_screen.o \
 	$(BUILDDIR)/src/client/cl_string.o \
 	$(BUILDDIR)/src/client/cl_view.o \
+	$(BUILDDIR)/src/client/cl_library.o \
 	$(BUILDDIR)/src/client/sound/ogg.o \
 	$(BUILDDIR)/src/client/sound/openal.o \
 	$(BUILDDIR)/src/client/sound/qal.o \
@@ -256,7 +257,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client_effects/generic_weapon_effects.o \
 	$(BUILDDIR)/src/client_effects/item_effects.o \
 	$(BUILDDIR)/src/client_effects/level_maps.o \
-	$(BUILDDIR)/src/client_effects/light_styles.o \
 	$(BUILDDIR)/src/client_effects/main.o \
 	$(BUILDDIR)/src/client_effects/particle.o \
 	$(BUILDDIR)/src/client_effects/player_effects.o \
@@ -486,43 +486,6 @@ $(BUILDDIR)/heretic2 : $(HERETIC2_OBJS) ${HEADERS}
 	@echo "===> CXX $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CXX) $(CFLAGS) -o $@ $(HERETIC2_OBJS) $(LDFLAGS) $(GLXLDFLAGS)
-
-#############################################################################
-# REF_SOFT
-#############################################################################
-
-REF_SOFT_OBJS = \
-	$(BUILDDIR)/src/client/refresh/soft/sw_aclip.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_alias.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_bsp.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_draw.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_edge.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_image.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_light.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_main.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_misc.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_model.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_part.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_poly.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_polyse.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_rast.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_scan.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_sprite.o \
-	$(BUILDDIR)/src/client/refresh/soft/sw_surf.o \
-	\
-	$(BUILDDIR)/src/common/shared/rand.o \
-	$(BUILDDIR)/src/common/shared/shared.o \
-	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
-	$(BUILDDIR)/src/common/glob.o
-
-REF_SOFT_X11_OBJS = \
-	$(BUILDDIR)/linux/rw_x11.o
-
-$(BUILDDIR)/ref_softx.$(SHLIBEXT) : $(REF_SOFT_OBJS) $(REF_SOFT_X11_OBJS) ${HEADERS}
-	@echo "===> CC $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_SOFT_OBJS) \
-		$(REF_SOFT_X11_OBJS) $(XLDFLAGS)
 
 #############################################################################
 # REF_GL

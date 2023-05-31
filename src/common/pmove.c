@@ -375,7 +375,6 @@ qboolean	PM_SlideMove(qboolean gravity) {
 	float		d;
 	int			numplanes;
 	vec3_t		planes[MAX_CLIP_PLANES];
-	vec3_t		primal_velocity;
 	vec3_t		clipVelocity;
 	int			i, j, k;
 	trace_t	trace;
@@ -387,13 +386,10 @@ qboolean	PM_SlideMove(qboolean gravity) {
 
 	numbumps = 4;
 
-	VectorCopy(pml.velocity, primal_velocity);
-
 	if (gravity) {
 		VectorCopy(pml.velocity, endVelocity);
 		endVelocity[2] -= (GRAVITY * 50) * pml.frametime;
 		pml.velocity[2] = (pml.velocity[2] + endVelocity[2]) * 0.5;
-		primal_velocity[2] = endVelocity[2];
 		if (pml.groundPlane) {
 			// slide along the ground plane
 			PM_ClipVelocity(pml.velocity, pml.groundTrace.plane.normal,
@@ -544,11 +540,6 @@ qboolean	PM_SlideMove(qboolean gravity) {
 		VectorCopy(endVelocity, pml.velocity);
 	}
 
-	// don't change velocity if in a timer (FIXME: is this correct?)
-	//if (pm->ps->pm_time) {
-	//	VectorCopy(primal_velocity, pml.velocity);
-	//}
-
 	return (bumpcount != 0);
 }
 
@@ -559,10 +550,7 @@ PM_StepSlideMove
 */
 void PM_StepSlideMove(qboolean gravity) {
 	vec3_t		start_o, start_v;
-	vec3_t		down_o, down_v;
 	trace_t		trace;
-	//	float		down_dist, up_dist;
-	//	vec3_t		delta, delta2;
 	vec3_t		up, down;
 	float		stepSize;
 
@@ -582,9 +570,6 @@ void PM_StepSlideMove(qboolean gravity) {
 		DotProduct(trace.plane.normal, up) < 0.7)) {
 		return;
 	}
-
-	VectorCopy(pml.origin, down_o);
-	VectorCopy(pml.velocity, down_v);
 
 	VectorCopy(start_o, up);
 	up[2] += STEPSIZE;
@@ -627,11 +612,9 @@ static void PM_AirMove(float fmove, float smove) {
 	vec3_t		wishdir;
 	float		wishspeed;
 	float		scale;
-	usercmd_t	cmd;
 
 	PM_Friction();
 
-	cmd = pm->cmd;
 	scale = 1.0f;
 
 	// project moves down to flat plane
@@ -855,14 +838,11 @@ int PM_SetVelInLiquid(float a1)
 {
 	long double v2;
 	qboolean v3;
-	long double v4;
-	char v7;
 	float v15;
 	float v16;
 	vec3_t norm;
 	vec3_t vel;
 
-	//pml.Unknown = 0;
 	PM_Friction();
 	v2 = (long double)pm->cmd.forwardmove;
 	v15 = v2;
@@ -881,23 +861,6 @@ int PM_SetVelInLiquid(float a1)
 	PM_Accelerate(vel, pm_airaccelerate, 10.0);
 	if (pm->groundentity)
 	{
-		//v6 = v4 > 0.0;
-		v7 = 0;
-		//v8 = 0.0 == v4;
-		//if ((v5 & 0x44) == 0x40)
-		//{
-		//	v10 = pml.GroundPlane.normal[2] < 0.69999999;
-		//	v11 = 0;
-		//	v12 = pml.GroundPlane.normal[2] == 0.69999999;
-		//	if ((v9 & 0x45) != 1
-		//		&& *(float*)&pml.Unknown / (*(float*)&pml.speed + *(float*)&pml.Unknown) <= (long double)pml.GroundPlane.normal[2])
-		//	{
-		//		pml.velocity[0] = 0.0;
-		//		pml.velocity[1] = 0.0;
-		//		pml.velocity[2] = 0.0;
-		//		return 1;
-		//	}
-		//}
 		pml.velocity[0] = vel[0];
 		pml.velocity[1] = vel[1];
 		pml.velocity[2] = vel[2];
