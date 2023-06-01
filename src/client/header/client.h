@@ -105,8 +105,6 @@ typedef struct
 	entity_state_t		*s1;			// pointer to the corresponding entity_state_t in												// cl_parse_entities.
 } centity_t;
 
-// jmarshall: clean up some memory issues
-
 // ********************************************************************************************
 // predictinfo_t
 // -------------
@@ -130,7 +128,6 @@ typedef struct
 
 #define CL_MAXMODELS  16
 
-// jmarshall: clean up some memory issues
 typedef struct
 {
 	char	name[MAX_QPATH];
@@ -140,7 +137,7 @@ typedef struct
 
 	struct image_s	*icon;
 	char	iconname[MAX_QPATH];
-	struct model_s	*model[CL_MAXMODELS]; // jmarshall: clean up some memory issues
+	struct model_s	*model[CL_MAXMODELS];
 	char	skin_name[MAX_QPATH];
 	char	model_name[MAX_QPATH];
 	vec3_t	origin;
@@ -228,7 +225,7 @@ typedef struct
 
 	// Client camera vieworigin and viewangles sent to server so it can do accurate(ish) culling.
 
-	vec3_t		camera_vieworigin,camera_viewangles;
+	vec3_t		camera_vieworigin, camera_viewangles;
 
 	// this is calculated on the client, as the distance between the client and the roof, and walls. - Used for EAX environment mapping.
 
@@ -762,7 +759,6 @@ extern	cvar_t *allow_download_players;
 extern	cvar_t *allow_download_models;
 extern	cvar_t *allow_download_sounds;
 extern	cvar_t *cl_freezeworld;
-extern	cvar_t *lookspring;
 extern cvar_t *cl_camera_clipdamp;
 extern cvar_t *cl_camera_combat;
 extern cvar_t *cl_camera_dampfactor;

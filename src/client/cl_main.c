@@ -264,7 +264,7 @@ CL_Record_f(void)
 		MSG_WriteByte(&buf, svc_spawnbaseline);
 
 		MSG_WriteDeltaEntity(&nullstate, &cl_entities[i].baseline,
-				&buf, true, false);
+				&buf, true, true);
 	}
 
 	MSG_WriteByte(&buf, svc_stufftext);
@@ -326,6 +326,17 @@ CL_Pause_f(void)
 	}
 
 	Cvar_SetValue("paused", !cl_paused->value);
+
+	if (Cvar_VariableValue("ogg_pausewithgame") == 1 &&
+	    OGG_Status() == PAUSE && cl_paused->value == 0)			/* play music */
+	{
+	    Cbuf_AddText("ogg toggle\n");
+	}
+	else if (Cvar_VariableValue("ogg_pausewithgame") == 1 &&
+	    OGG_Status() == PLAY && cl_paused->value == 1)			/* pause music */
+	{
+	    Cbuf_AddText("ogg toggle\n");
+	}
 }
 
 void
@@ -386,23 +397,6 @@ CL_Skins_f(void)
 		IN_Update();  /* pump message loop */
 
 		CL_ParseClientinfo(i);
-	}
-}
-
-
-/*
-=================
-CL_DumpPackets
-
-A vain attempt to help bad TCP stacks that cause problems
-when they overflow
-=================
-*/
-void CL_DumpPackets (void)
-{
-	while (NET_GetPacket (NS_CLIENT, &net_from, &net_message))
-	{
-		Com_Printf("dumnping a packet\n");
 	}
 }
 
@@ -1166,7 +1160,11 @@ CL_Init(void)
 
 	M_Init();
 
-	cls.disable_screen = false;	// don't draw yet
+#ifdef USE_CURL
+	CL_InitHTTPDownloads();
+#endif
+
+	cls.disable_screen = false; /* don't draw yet */
 
 	CL_InitLocal();
 
@@ -1174,6 +1172,7 @@ CL_Init(void)
 
 	Cbuf_Execute();
 
+	Key_ReadConsoleHistory();
 }
 
 void
@@ -1194,6 +1193,10 @@ CL_Shutdown(void)
 #endif
 
 	CL_WriteConfiguration();
+
+	Key_WriteConsoleHistory();
+
+	OGG_Stop();
 
 	S_Shutdown();
 	IN_Shutdown();

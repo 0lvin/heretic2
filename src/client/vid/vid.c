@@ -81,7 +81,6 @@ cvar_t		*vid_fullscreen;
 // Global variables used internally by this module
 viddef_t	viddef;				// global video state; used by other modules
 void		*reflib_library;		// Handle to refresh DLL
-qboolean	reflib_active = 0;
 cvar_t *joy_layout;
 cvar_t *gyro_mode;
 cvar_t *gyro_turning_axis;       // yaw or roll
@@ -442,7 +441,7 @@ void VID_FreeReflib (void)
 
 	memset (&re, 0, sizeof(re));
 	reflib_library = NULL;
-	reflib_active  = false;
+	ref_active  = false;
 }
 
 /*
@@ -450,7 +449,8 @@ void VID_FreeReflib (void)
 VID_LoadRefresh
 ==============
 */
-qboolean VID_LoadRefresh( char *name )
+qboolean
+VID_LoadRefresh(char *reflib_name)
 {
 	refimport_t	ri;
 	GetRefAPI_t	GetRefAPI;
@@ -459,7 +459,7 @@ qboolean VID_LoadRefresh( char *name )
 	extern uid_t saved_euid;
 	FILE *fp;
 
-	if ( reflib_active )
+	if (ref_active)
 	{
 		if (KBD_Close_fp)
 			KBD_Close_fp();
@@ -468,62 +468,50 @@ qboolean VID_LoadRefresh( char *name )
 		KBD_Close_fp = NULL;
 		RW_IN_Shutdown_fp = NULL;
 		re.Shutdown();
-		VID_FreeReflib ();
+		VID_FreeReflib();
 	}
 
-	Com_Printf( "------- Loading %s -------\n", name );
+	Com_Printf("------- Loading %s -------\n", reflib_name);
 
-	//regain root
-	seteuid(saved_euid);
-
-	// permission checking
-	if (strstr(name, "softx") == NULL) { // softx doesn't require root
-		if (stat(name, &st) == -1) {
-			Com_Printf( "LoadLibrary(\"%s\") failed: %s\n", name, strerror(errno));
-			return false;
-		}
-	} else {
-		// softx requires we give up root now
-		setreuid(getuid(), getuid());
-		setegid(getgid());
-	}
-
-	snprintf(fn, sizeof(fn), "./%s", name);
+	snprintf(fn, sizeof(fn), "./%s", reflib_name);
 	if ( ( reflib_library = dlopen( fn, RTLD_LAZY | RTLD_GLOBAL ) ) == 0 )
 	{
-		Com_Printf( "LoadLibrary(\"%s\") failed: %s\n", name , dlerror());
+		Com_Printf("LoadLibrary(\"%s\") failed: %s\n", reflib_name, dlerror());
 		return false;
 	}
 
-	Com_Printf( "LoadLibrary(\"%s\")\n", name );
-
+	// Fill in the struct exported to the renderer.
+	// FIXME: Do we really need all these?
 	ri.Cmd_AddCommand = Cmd_AddCommand;
-	ri.Cmd_RemoveCommand = Cmd_RemoveCommand;
-	ri.Com_VPrintf = Com_VPrintf;
 	ri.Cmd_Argc = Cmd_Argc;
 	ri.Cmd_Argv = Cmd_Argv;
 	ri.Cmd_ExecuteText = Cbuf_ExecuteText;
-	ri.FS_LoadFile = FS_LoadFile;
-	ri.FS_FreeFile = FS_FreeFile;
-	ri.FS_Gamedir = FS_Gamedir;
+	ri.Cmd_RemoveCommand = Cmd_RemoveCommand;
+	ri.Com_VPrintf = Com_VPrintf;
 	ri.Cvar_Get = Cvar_Get;
 	ri.Cvar_Set = Cvar_Set;
 	ri.Cvar_SetValue = Cvar_SetValue;
+	ri.FS_FreeFile = FS_FreeFile;
+	ri.FS_Gamedir = FS_Gamedir;
+	ri.FS_LoadFile = FS_LoadFile;
+	ri.Sys_Error = Com_Error;
 	ri.Vid_GetModeInfo = VID_GetModeInfo;
 	ri.Vid_MenuInit = VID_MenuInit;
+	ri.Vid_WriteScreenshot = VID_WriteScreenshot;
 	ri.Vid_NewWindow = VID_NewWindow;
 
 	if ( ( GetRefAPI = (void *) dlsym( reflib_library, "GetRefAPI" ) ) == 0 )
-		Com_Error( ERR_FATAL, "dlsym failed on %s", name );
+		Com_Error( ERR_FATAL, "dlsym failed on %s", reflib_name );
 
 	re = GetRefAPI(ri);
+
 	// Declare the refresher as active.
 	ref_active = true;
 
 	if (re.api_version != API_VERSION)
 	{
 		VID_FreeReflib ();
-		Com_Error (ERR_FATAL, "%s has incompatible api_version", name);
+		Com_Error (ERR_FATAL, "%s has incompatible api_version", reflib_name);
 	}
 
 	/* Init IN (Mouse) */
@@ -556,14 +544,12 @@ qboolean VID_LoadRefresh( char *name )
 	{
 		Sys_Error("No KBD functions in REF.\n");
 	}
+
 	KBD_Init_fp(Do_Key_Event);
 
-	// give up root now
-	setreuid(getuid(), getuid());
-	setegid(getgid());
+	Com_Printf("Successfully loaded %s as rendering backend.\n", reflib_name);
+	Com_Printf("------------------------------------\n\n");
 
-	Com_Printf( "------------------------------------\n");
-	reflib_active = true;
 	return true;
 }
 
@@ -657,7 +643,7 @@ VID_Init(void)
 void
 VID_Shutdown(void)
 {
-	if ( reflib_active )
+	if (ref_active)
 	{
 		if (KBD_Close_fp)
 			KBD_Close_fp();

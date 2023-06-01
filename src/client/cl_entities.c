@@ -641,10 +641,6 @@ CL_ParseFrame(void)
 		Com_Error(ERR_DROP, "CL_ParseFrame: not client effects");
 	}
 	fxe.ParseClientEffects(NULL);
-#if 0
-	if (cmd == svc_packetentities2)
-		CL_ParseProjectiles();
-#endif
 
 	// save the frame off in the backup array for later delta comparisons
 	cl.frames[cl.frame.serverframe & UPDATE_MASK] = cl.frame;
