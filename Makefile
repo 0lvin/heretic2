@@ -162,6 +162,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/cl_lights.o \
 	$(BUILDDIR)/src/client/cl_input.o \
 	$(BUILDDIR)/src/client/cl_inventory.o \
+	$(BUILDDIR)/src/client/cl_download.o \
 	$(BUILDDIR)/src/client/cl_main.o \
 	$(BUILDDIR)/src/client/cl_network.o \
 	$(BUILDDIR)/src/client/cl_parse.o \

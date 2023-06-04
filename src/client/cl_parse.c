@@ -25,9 +25,14 @@
  */
 
 #include "header/client.h"
+#include "input/header/input.h"
 
-char *svc_strings[256] =
-{
+void CL_DownloadFileName(char *dest, int destlen, char *fn);
+void CL_ParseDownload(void);
+
+int bitcounts[32]; /* just for protocol profiling */
+
+char *svc_strings[256] = {
 	"svc_bad",
 
 	"svc_layout",
@@ -63,238 +68,14 @@ char *svc_strings[256] =
 	"svc_nameprint",
 };
 
-//=============================================================================
-
-void CL_DownloadFileName(char *dest, int destlen, char *fn)
+void
+CL_RegisterSounds(void)
 {
-	if (strncmp(fn, "players", 7) == 0)
-		Com_sprintf (dest, destlen, "%s/%s", BASEDIRNAME, fn);
-	else
-		Com_sprintf (dest, destlen, "%s/%s", FS_Gamedir(), fn);
-}
+	int i;
 
-/*
-===============
-CL_CheckOrDownloadFile
-
-Returns true if the file exists, otherwise it attempts
-to start a download from the server.
-===============
-*/
-qboolean	CL_CheckOrDownloadFile (char *filename)
-{
-	FILE *fp;
-	char	name[MAX_OSPATH];
-
-	if (strstr (filename, ".."))
-	{
-		Com_Printf("Refusing to download a path with ..\n");
-		return true;
-	}
-
-	if (FS_LoadFile (filename, NULL) != -1)
-	{	// it exists, no need to download
-		return true;
-	}
-
-	strcpy (cls.downloadname, filename);
-
-	// download to a temp name, and only rename
-	// to the real name when done, so if interrupted
-	// a runt file wont be left
-	COM_StripExtension (cls.downloadname, cls.downloadtempname);
-	strcat (cls.downloadtempname, ".tmp");
-
-//ZOID
-	// check to see if we already have a tmp for this file, if so, try to resume
-	// open the file if not opened yet
-	CL_DownloadFileName(name, sizeof(name), cls.downloadtempname);
-
-//	FS_CreatePath (name);
-
-	fp = fopen (name, "r+b");
-	if (fp) { // it exists
-		int len;
-		fseek(fp, 0, SEEK_END);
-		len = ftell(fp);
-
-		cls.download = fp;
-
-		// give the server an offset to start the download
-		Com_Printf("Resuming %s\n", cls.downloadname);
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message,
-			va("download %s %i", cls.downloadname, len));
-	} else {
-		Com_Printf("Downloading %s\n", cls.downloadname);
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		MSG_WriteString (&cls.netchan.message,
-			va("download %s", cls.downloadname));
-	}
-
-	cls.downloadnumber++;
-
-	return false;
-}
-
-/*
-===============
-CL_Download_f
-
-Request a download from the server
-===============
-*/
-void	CL_Download_f (void)
-{
-	char filename[MAX_OSPATH];
-
-	if (Cmd_Argc() != 2) {
-		Com_Printf("Usage: download <filename>\n");
-		return;
-	}
-
-	Com_sprintf(filename, sizeof(filename), "%s", Cmd_Argv(1));
-
-	if (strstr (filename, ".."))
-	{
-		Com_Printf("Refusing to download a path with ..\n");
-		return;
-	}
-
-	if (FS_LoadFile (filename, NULL) != -1)
-	{	// it exists, no need to download
-		Com_Printf("File already exists.\n");
-		return;
-	}
-
-	strcpy (cls.downloadname, filename);
-	Com_Printf("Downloading %s\n", cls.downloadname);
-
-	// download to a temp name, and only rename
-	// to the real name when done, so if interrupted
-	// a runt file wont be left
-	COM_StripExtension (cls.downloadname, cls.downloadtempname);
-	strcat (cls.downloadtempname, ".tmp");
-
-	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-	MSG_WriteString (&cls.netchan.message,
-		va("download %s", cls.downloadname));
-
-	cls.downloadnumber++;
-}
-
-/*
-======================
-CL_RegisterSounds
-======================
-*/
-void CL_RegisterSounds (void)
-{
-	int		i;
-
-	S_BeginRegistration ();
-	//CL_RegisterTEntSounds ();
-	//for (i=1 ; i<MAX_SOUNDS ; i++)
-	//{
-	//	if (!cl.configstrings[CS_SOUNDS+i][0])
-	//		break;
-	//	cl.sound_precache[i] = S_RegisterSound (cl.configstrings[CS_SOUNDS+i]);
-	//	IN_Update ();	// pump message loop
-	//}
+	S_BeginRegistration();
 	fxe.RegisterSounds();
-	S_EndRegistration ();
-}
-
-
-/*
-=====================
-CL_ParseDownload
-
-A download message has been received from the server
-=====================
-*/
-void CL_ParseDownload (void)
-{
-	int		size, percent;
-	char	name[MAX_OSPATH];
-	int		r;
-
-	// read the data
-	size = MSG_ReadShort (&net_message);
-	percent = MSG_ReadByte (&net_message);
-	if (size == -1)
-	{
-		Com_Printf("Server does not have this file.\n");
-		if (cls.download)
-		{
-			// if here, we tried to resume a file but the server said no
-			fclose (cls.download);
-			cls.download = NULL;
-		}
-		CL_RequestNextDownload ();
-		return;
-	}
-
-	// open the file if not opened yet
-	if (!cls.download)
-	{
-		CL_DownloadFileName(name, sizeof(name), cls.downloadtempname);
-
-		FS_CreatePath (name);
-
-		cls.download = fopen (name, "wb");
-		if (!cls.download)
-		{
-			net_message.readcount += size;
-			Com_Printf("Failed to open %s\n", cls.downloadtempname);
-			CL_RequestNextDownload ();
-			return;
-		}
-	}
-
-	fwrite (net_message.data + net_message.readcount, 1, size, cls.download);
-	net_message.readcount += size;
-
-	if (percent != 100)
-	{
-		// request next block
-// change display routines by zoid
-#if 0
-		Com_Printf(".");
-		if (10*(percent/10) != cls.downloadpercent)
-		{
-			cls.downloadpercent = 10*(percent/10);
-			Com_Printf("%i%%", cls.downloadpercent);
-		}
-#endif
-		cls.downloadpercent = percent;
-
-		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-		SZ_Print (&cls.netchan.message, "nextdl");
-	}
-	else
-	{
-		char	oldn[MAX_OSPATH];
-		char	newn[MAX_OSPATH];
-
-//		Com_Printf("100%%\n");
-
-		fclose (cls.download);
-
-		// rename the temp file to it's final name
-		CL_DownloadFileName(oldn, sizeof(oldn), cls.downloadtempname);
-		CL_DownloadFileName(newn, sizeof(newn), cls.downloadname);
-		r = rename (oldn, newn);
-		if (r)
-			Com_Printf("failed to rename.\n");
-
-		cls.download = NULL;
-		cls.downloadpercent = 0;
-
-		// get another file if needed
-
-		CL_RequestNextDownload ();
-	}
+	S_EndRegistration();
 }
 
 
@@ -314,7 +95,8 @@ extern cvar_t* fs_gamedirvar;
 CL_ParseServerData
 ==================
 */
-void CL_ParseServerData (void)
+void
+CL_ParseServerData(void)
 {
 	char	*str;
 	int		i;
@@ -338,7 +120,7 @@ void CL_ParseServerData (void)
 		Com_Error(ERR_DROP,"Server returned version %i, not %i", i, PROTOCOL_VERSION);
 
 	cl.servercount = MSG_ReadLong (&net_message);
-	cl.attractloop = MSG_ReadByte (&net_message);
+	cl.attractloop = MSG_ReadByte(&net_message);
 
 	// game directory
 	str = MSG_ReadString (&net_message);
@@ -348,11 +130,11 @@ void CL_ParseServerData (void)
 	if ((*str && (!fs_gamedirvar->string || !*fs_gamedirvar->string || strcmp(fs_gamedirvar->string, str))) || (!*str && (fs_gamedirvar->string || *fs_gamedirvar->string)))
 		Cvar_Set("game", str);
 
-	// parse player entity number
-	cl.playernum = MSG_ReadShort (&net_message);
+	/* parse player entity number */
+	cl.playernum = MSG_ReadShort(&net_message);
 
-	// get the full level name
-	str = MSG_ReadString (&net_message);
+	/* get the full level name */
+	str = MSG_ReadString(&net_message);
 
 	if (cl.playernum == -1)
 	{	// playing a cinematic or showing a pic, not a level
@@ -360,49 +142,40 @@ void CL_ParseServerData (void)
 	}
 	else
 	{
-		// seperate the printfs so the server message can have a color
+		/* seperate the printfs so the server
+		 * message can have a color */
 		Com_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n\n");
 		Com_Printf("%c%s\n", 2, str);
 
-		// need to prep refresh at next oportunity
+		/* need to prep refresh at next oportunity */
 		cl.refresh_prepped = false;
 	}
 }
 
-/*
-==================
-CL_ParseBaseline
-==================
-*/
-void CL_ParseBaseline (void)
+void
+CL_ParseBaseline(void)
 {
-	entity_state_t	*es;
-	int				bits;
-	int				newnum;
-	entity_state_t	nullstate;
+	entity_state_t *es;
+	unsigned bits;
+	int newnum;
+	entity_state_t nullstate;
 
-	memset (&nullstate, 0, sizeof(nullstate));
+	memset(&nullstate, 0, sizeof(nullstate));
 
-	newnum = CL_ParseEntityBits ((unsigned int *)&bits);
+	newnum = CL_ParseEntityBits(&bits);
 	es = &cl_entities[newnum].baseline;
-	CL_ParseDelta (&nullstate, es, newnum, bits);
+	CL_ParseDelta(&nullstate, es, newnum, bits);
 }
 
-
-/*
-================
-CL_LoadClientinfo
-
-================
-*/
-void CL_LoadClientinfo (clientinfo_t *ci, char *s)
+void
+CL_LoadClientinfo(clientinfo_t *ci, char *s)
 {
 	int i;
-	char		*t;
-	char		model_name[MAX_QPATH];
-	char		skin_name[MAX_QPATH];
-	char		model_filename[MAX_QPATH];
-	char		skin_filename[MAX_QPATH];
+	char *t;
+	char model_name[MAX_QPATH];
+	char skin_name[MAX_QPATH];
+	char model_filename[MAX_QPATH];
+	char skin_filename[MAX_QPATH];
 
 	//strncpy(ci->cinfo, s, sizeof(ci->cinfo));
 	//ci->cinfo[sizeof(ci->cinfo)-1] = 0;
@@ -448,13 +221,8 @@ CL_ParseClientinfo(int player)
 	CL_LoadClientinfo(ci, s);
 }
 
-
-/*
-================
-CL_ParseConfigString
-================
-*/
-void CL_ParseConfigString (void)
+void
+CL_ParseConfigString(void)
 {
 	int		i;
 	char	*s;
@@ -502,46 +270,38 @@ void CL_ParseConfigString (void)
 	}
 }
 
-
-/*
-=====================================================================
-
-ACTION MESSAGES
-
-=====================================================================
-*/
-
-/*
-==================
-CL_ParseStartSoundPacket
-==================
-*/
-void CL_ParseStartSoundPacket(void)
+void
+CL_ParseStartSoundPacket(void)
 {
-    vec3_t  pos_v;
-	float	*pos;
-    int 	channel, ent;
-    int 	sound_num;
-    float 	volume;
-    float 	attenuation;
-	int		flags;
-	float	ofs;
+	vec3_t pos_v;
+	float *pos;
+	int channel, ent;
+	int sound_num;
+	float volume;
+	float attenuation;
+	int flags;
+	float ofs;
 
-	flags = MSG_ReadByte (&net_message);
-	sound_num = MSG_ReadByte (&net_message);
+	flags = MSG_ReadByte(&net_message);
+	sound_num = MSG_ReadByte(&net_message);
 
-    if (flags & SND_VOLUME)
-		volume = MSG_ReadByte (&net_message) / 255.0;
+	if (flags & SND_VOLUME)
+	{
+		volume = MSG_ReadByte(&net_message) / 255.0f;
+	}
+
 	else
+	{
 		volume = DEFAULT_SOUND_PACKET_VOLUME;
+	}
 
     if (flags & SND_ATTENUATION)
-		attenuation = MSG_ReadByte (&net_message) / 64.0;
+		attenuation = MSG_ReadByte(&net_message) / 64.0;
 	else
 		attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;
 
     if (flags & SND_OFFSET)
-		ofs = MSG_ReadByte (&net_message) / 1000.0;
+		ofs = MSG_ReadByte(&net_message) / 1000.0;
 	else
 		ofs = 0;
 
@@ -613,7 +373,7 @@ void CL_ParseServerMessage (void)
 			break;
 		}
 
-		cmd = MSG_ReadByte (&net_message);
+		cmd = MSG_ReadByte(&net_message);
 
 		if (cmd == -1)
 		{
@@ -656,7 +416,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_print:
-			i = MSG_ReadByte (&net_message);
+			i = MSG_ReadByte(&net_message);
 			if (i == PRINT_CHAT)
 			{
 				S_StartLocalSound ("misc/talk.wav");

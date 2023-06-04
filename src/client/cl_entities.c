@@ -51,7 +51,6 @@ CL_ParseEntityBits
 Returns the entity number and the header bits
 =================
 */
-int	bitcounts[32];	/// just for protocol profiling
 int
 CL_ParseEntityBits(unsigned int *bits)
 {
