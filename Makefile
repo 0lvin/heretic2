@@ -158,6 +158,9 @@ $(BUILDDIR)/%.o :                 %.c ${HEADERS}
 
 HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/cl_cin.o \
+	$(BUILDDIR)/src/client/cl_effects.o \
+	$(BUILDDIR)/src/client/cl_tempentities.o \
+	$(BUILDDIR)/src/client/cl_particles.o \
 	$(BUILDDIR)/src/client/cl_entities.o \
 	$(BUILDDIR)/src/client/cl_lights.o \
 	$(BUILDDIR)/src/client/cl_input.o \
@@ -466,6 +469,7 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/h2common/netmsg_read.o \
 	$(BUILDDIR)/src/common/pmove.o \
 	$(BUILDDIR)/h2common/h2rand.o \
+	$(BUILDDIR)/src/common/shared/flash.o \
 	$(BUILDDIR)/src/common/shared/rand.o \
 	$(BUILDDIR)/src/common/shared/shared.o \
 	$(BUILDDIR)/h2common/reference.o \

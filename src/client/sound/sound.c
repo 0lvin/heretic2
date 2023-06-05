@@ -761,7 +761,7 @@ void S_StartLocalSound (char *sound)
 		Com_Printf ("S_StartLocalSound: can't cache %s\n", sound);
 		return;
 	}
-	S_StartSound (NULL, cl.playernum+1, 0, sfx, 1, 1, 0);
+	S_StartSound(NULL, cl.playernum+1, 0, sfx, 1, 1, 0);
 }
 
 

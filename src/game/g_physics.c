@@ -595,6 +595,12 @@ void MoveEntity_Bounce(edict_t *self, FormMove_t *formMove)
 	}
 }
 
+static qboolean
+FloatIsZeroEpsilon(float f)
+{
+	return (Q_fabs(f) < FLOAT_ZERO_EPSILON);
+}
+
 //---------------------------------------------------------------------------------
 //	Moves an entity sliding or bouncing of off any planes collided with
 //---------------------------------------------------------------------------------

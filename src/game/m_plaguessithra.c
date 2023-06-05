@@ -639,7 +639,7 @@ void ssithraDiveCheck (edict_t *self)
 		return;
 
 	//make sure the enemy isn't right here and accessible before diving in
-	if(vhlen(targ_org,self->s.origin)<96)//close
+	if(Vector2Length(targ_org,self->s.origin)<96)//close
 		if(Q_fabs((targ_org[2]+targ_mins[2]) - (self->s.origin[2] + self->mins[2]))<18)//relatively same stephieght
 			if(!(gi.pointcontents(targ_org)&CONTENTS_WATER))
 				if(!(self->monsterinfo.aiflags & AI_FLEE))
@@ -812,7 +812,7 @@ void ssithraCheckJump (edict_t *self)
 		if(self->monsterinfo.aiflags&AI_FLEE||self->monsterinfo.aiflags&AI_COWARD)
 			jump_fdist = 128;
 		else
-			jump_fdist = vhlen(targ_org, self->s.origin);
+			jump_fdist = Vector2Length(targ_org, self->s.origin);
 
 		if(jump_fdist > 128)
 			jump_fdist = 128;
@@ -908,7 +908,7 @@ void ssithraCheckJump (edict_t *self)
 	}
 	else
 	{
-		if(vhlen(self->s.origin, targ_org)<200)
+		if(Vector2Length(self->s.origin, targ_org)<200)
 			jump_up_check = true;
 		else
 		{
@@ -1937,7 +1937,7 @@ void ssithra_melee(edict_t *self, G_Message_t *msg)
 
 		if(!(self->monsterinfo.aiflags & AI_NO_MISSILE) && !(self->spawnflags&MSF_FIXED))
 		{
-			if(vhlen(self->enemy->s.origin, self->s.origin) - 16 < flrand(0, self->melee_range))
+			if(Vector2Length(self->enemy->s.origin, self->s.origin) - 16 < flrand(0, self->melee_range))
 			{
 				SetAnim(self, ANIM_BACKPEDAL);
 				return;
@@ -2071,7 +2071,7 @@ void make_arrow_reflect(edict_t *self, edict_t *Arrow)
 
 	Create_rand_relect_vect(self->velocity, Arrow->velocity);
 
-	vectoangles(Arrow->velocity, Arrow->s.angles);
+	VectoAngles(Arrow->velocity, Arrow->s.angles);
 	Arrow->s.angles[YAW]+=90;
 
 	Vec3ScaleAssign(SSITHRA_SPOO_SPEED/2,Arrow->velocity);
@@ -2318,7 +2318,7 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 	Arrow->s.origin[2] += 16;
 
 	VectorCopy(self->movedir,Arrow->movedir);
-	vectoangles(Forward,Arrow->s.angles);
+	VectoAngles(Forward,Arrow->s.angles);
 
 	VectorClear(check_lead);
 	if(skill->value > 1)
@@ -2347,7 +2347,7 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 
 	VectorCopy(Arrow->velocity, Arrow->movedir);
 	VectorNormalize(Arrow->movedir);
-	vectoangles(Arrow->movedir, Arrow->s.angles);
+	VectoAngles(Arrow->movedir, Arrow->s.angles);
 	Arrow->s.angles[PITCH] = anglemod(Arrow->s.angles[PITCH] * -1);
 	Arrow->s.angles[YAW] += 90;
 
@@ -2397,7 +2397,7 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 	Arrow->s.scale = 1.5;
 
 	VectorCopy(self->movedir,Arrow->movedir);
-	vectoangles(Forward,Arrow->s.angles);
+	VectoAngles(Forward,Arrow->s.angles);
 
 	VectorClear(check_lead);
 	if(skill->value > 1)
@@ -2426,7 +2426,7 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 
 	VectorCopy(Arrow->velocity, Arrow->movedir);
 	VectorNormalize(Arrow->movedir);
-	vectoangles(Arrow->movedir, Arrow->s.angles);
+	VectoAngles(Arrow->movedir, Arrow->s.angles);
 	Arrow->s.angles[PITCH] = anglemod(Arrow->s.angles[PITCH] * -1);
 	Arrow->s.angles[YAW] += 90;
 
@@ -2517,11 +2517,11 @@ void ssithraPanicArrow(edict_t *self)
 	VectorCopy(self->s.origin,Arrow->s.origin);
 	VectorMA(Arrow->s.origin,12,Forward,Arrow->s.origin);
 	VectorCopy(self->movedir,Arrow->movedir);
-	vectoangles(Forward,Arrow->s.angles);
+	VectoAngles(Forward,Arrow->s.angles);
 
 	VectorScale(Forward,SSITHRA_SPOO_SPEED,Arrow->velocity);
 
-	vectoangles(Arrow->velocity, Arrow->s.angles);
+	VectoAngles(Arrow->velocity, Arrow->s.angles);
 	Arrow->s.angles[YAW]+=90;
 //fixme: redo these- make them look like squid ink?
 	gi.CreateEffect(&Arrow->s,

@@ -1211,7 +1211,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 		if(!ahead(self, self->enemy))
 			return false;
 
-		if(vhlen(self->enemy->s.origin, self->s.origin)<200)
+		if(Vector2Length(self->enemy->s.origin, self->s.origin)<200)
 		{
 			z_diff = self->s.origin[2] + TB_HIBITE_U + TB_UP_OFFSET - self->enemy->s.origin[2];
 			if(z_diff < -128)
@@ -1411,7 +1411,7 @@ void tbeast_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 	VectorScale(blooddir, -1, enemy_face);
 	enemy_face[2]/=10;
-	vectoangles(enemy_face, self->targetEnt->s.angles);
+	VectoAngles(enemy_face, self->targetEnt->s.angles);
 
 	switch(self->targetEnt->count)
 	{
@@ -1950,7 +1950,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 			VectorCopy(trace.endpos, bottom2);
 
 			VectorSubtract(bottom1, bottom2, dir);
-			vectoangles(dir, angles);
+			VectoAngles(dir, angles);
 
 			self->s.angles[PITCH] = LerpAngleChange (self->s.angles[PITCH], angles[PITCH], 8);
 		}
@@ -1979,7 +1979,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 			VectorCopy(trace.endpos, bottom2);
 
 			VectorSubtract(bottom1, bottom2, dir);
-			vectoangles(dir, angles);
+			VectoAngles(dir, angles);
 
 			self->s.angles[ROLL] = LerpAngleChange (self->s.angles[ROLL], angles[PITCH], 8);
 		}
@@ -2385,7 +2385,7 @@ void tbeast_fake_touch(edict_t *self)
 		{
 			if(leg_check_index > -1 && other->takedamage && movable(other))
 			{//Hey!  Check and see if they're close to my mouth and chomp 'em!
-				if(vhlen (other->s.origin, melee_point) < 100)
+				if(Vector2Length (other->s.origin, melee_point) < 100)
 				{
 					self->oldenemy = self->enemy;
 					self->enemy = other;

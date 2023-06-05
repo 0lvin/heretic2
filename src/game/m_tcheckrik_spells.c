@@ -93,7 +93,7 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 		Create_rand_relect_vect(self->velocity, InsectStaff->velocity);
 		VectorCopy(InsectStaff->velocity, InsectStaff->movedir);
 		Vec3ScaleAssign(INSECT_STAFF_SPEED,InsectStaff->velocity);
-		vectoangles(InsectStaff->velocity, InsectStaff->s.angles);
+		VectoAngles(InsectStaff->velocity, InsectStaff->s.angles);
 
 		G_LinkMissile(InsectStaff);
 
@@ -316,7 +316,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 	Globe->s.origin[1]+=AimDir[1]*20.0;
 	Globe->s.origin[2]+=Caster->viewheight-5.0;
 
-	vectoangles(AimAngles,Globe->s.angles);
+	VectoAngles(AimAngles,Globe->s.angles);
 
 	Globe->avelocity[YAW]=100.0;
 	Globe->avelocity[ROLL]=100.0;

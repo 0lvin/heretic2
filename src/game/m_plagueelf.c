@@ -555,7 +555,7 @@ void make_pe_spell_reflect(edict_t *self, edict_t *spell)
 
 	Create_rand_relect_vect(self->velocity, spell->velocity);
 
-	vectoangles(spell->velocity, spell->s.angles);
+	VectoAngles(spell->velocity, spell->s.angles);
 	spell->s.angles[YAW]+=90;
 
 	Vec3ScaleAssign(500, spell->velocity);
@@ -680,7 +680,7 @@ void plagueElf_spell(edict_t *self)
 		Spell->s.origin[2] += 12;
 
 		VectorCopy(self->movedir,Spell->movedir);
-		vectoangles(Forward,Spell->s.angles);
+		VectoAngles(Forward,Spell->s.angles);
 
 		VectorSubtract(self->enemy->s.origin, Spell->s.origin, firedir);
 		VectorNormalize(firedir);
@@ -690,7 +690,7 @@ void plagueElf_spell(edict_t *self)
 
 		VectorCopy(Spell->velocity, Spell->movedir);
 		VectorNormalize(Spell->movedir);
-		vectoangles(Spell->movedir, Spell->s.angles);
+		VectoAngles(Spell->movedir, Spell->s.angles);
 		Spell->s.angles[PITCH] = anglemod(Spell->s.angles[PITCH] * -1);
 
 		if(stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
@@ -749,7 +749,7 @@ void plagueElf_c_spell(edict_t *self)
 	Spell->s.origin[2] += 12;
 
 	VectorCopy(self->movedir,Spell->movedir);
-	vectoangles(Forward,Spell->s.angles);
+	VectoAngles(Forward,Spell->s.angles);
 
 
 	VectorCopy(self->s.origin,holdpos);
@@ -763,7 +763,7 @@ void plagueElf_c_spell(edict_t *self)
 
 	VectorCopy(Spell->velocity, Spell->movedir);
 	VectorNormalize(Spell->movedir);
-	vectoangles(Spell->movedir, Spell->s.angles);
+	VectoAngles(Spell->movedir, Spell->s.angles);
 	Spell->s.angles[PITCH] = anglemod(Spell->s.angles[PITCH] * -1);
 
 	if(stricmp(self->classname, "monster_plagueElf"))//one of the special dudes

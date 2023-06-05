@@ -1039,7 +1039,7 @@ qboolean FXCWRingUpdate (struct client_entity_s *self, centity_t *owner)
 
 	VectorMA(plas_end, (float)(self->SpawnInfo)/100 * plas_length, plas_dir, self->r.origin);
 
-	vectoangles(plas_dir, self->r.angles);
+	VectoAngles(plas_dir, self->r.angles);
 
 	return (true);
 }
@@ -2630,7 +2630,7 @@ void FXAssDagger(centity_t *owner, vec3_t vel, float avel)
 
 	dagger = ClientEntity_new(FX_M_EFFECTS, CEF_DONT_LINK, owner->current.origin, NULL, 20);
 
-//	vectoangles(vel, dagger->r.angles);
+//	VectoAngles(vel, dagger->r.angles);
 //	VectorScale(dagger->r.angles, ANGLE_TO_RAD, dagger->r.angles);
 	VectorScale(owner->current.angles, ANGLE_TO_RAD, dagger->r.angles);
 	dagger->r.model = ass_dagger_model;
@@ -3625,7 +3625,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 			VectorCopy(owner->current.origin, fx->r.origin);
 			VectorCopy(owner->current.origin, fx->startpos2);
 			VectorCopy(vel, fx->velocity);
-			vectoangles(vel, fx->endpos2);
+			VectoAngles(vel, fx->endpos2);
 			Vec3ScaleAssign(ANGLE_TO_RAD, fx->endpos2);
 			fx->Update = FXMorkShove;
 			fx->LifeTime = fxi.cl->time + 420;
@@ -3719,7 +3719,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 			fx->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			fx->r.model = Imp_models + 2;
 
-			vectoangles(vel, fx->r.angles);
+			VectoAngles(vel, fx->r.angles);
 
 			fx->r.frame = 2;
 			fx->radius = 64;

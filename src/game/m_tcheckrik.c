@@ -256,7 +256,7 @@ void insectCut (edict_t *self, float attacktype)
 
 	if(trace.allsolid || trace.startsolid || !trace.ent->takedamage)
 	{//ping!
-		vectoangles(trace.plane.normal, hitangles);
+		VectoAngles(trace.plane.normal, hitangles);
 		gi.CreateEffect(NULL, FX_SPARKS, 0, trace.endpos, "d", hitangles);
 		gi.sound (self, CHAN_AUTO, Sounds[SND_SWIPEHITW], 1, ATTN_NORM, 0);
 //		gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/staffhitwall.wav"), 1, ATTN_NORM, 0);

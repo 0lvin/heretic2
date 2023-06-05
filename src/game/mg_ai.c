@@ -926,7 +926,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 		VectorCopy(self->maxs, maxs);
 		VectorCopy(self->s.origin, source);
 		AngleVectors(self->s.angles, vf, NULL, NULL);
-		jump_fdist = vhlen(targ_org, self->s.origin);
+		jump_fdist = Vector2Length(targ_org, self->s.origin);
 		if(jump_fdist > 128)
 			jump_fdist = 128;
 
@@ -1232,7 +1232,7 @@ qboolean MG_CheckJump (edict_t *self)
 	if(!(gi.pointcontents(cont_spot)&CONTENTS_SOLID))
 		ignore_height = true;
 
-	sub_len = vhlen(spot1, spot2);
+	sub_len = Vector2Length(spot1, spot2);
 //	if(self->classname!="monster_mezzoman"&&!self->spiderType&&self->model!="models/yakman.mdl")
 	if(sub_len > 256)
 		ignore_height = false;
@@ -2468,7 +2468,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			WallDot = 0;//-1 to 0
 		self->yaw_speed *= 1.25 - WallDot;//facing wall head-on = 2.25 times normal yaw speed
 
-		vectoangles(trace.plane.normal, wall_angles);
+		VectoAngles(trace.plane.normal, wall_angles);
 		AngleVectors(wall_angles, NULL, wall_right, NULL);
 
 		if(goal_vis)
@@ -2814,7 +2814,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 			WallDot = 0;//-1 to 0
 		self->yaw_speed *= 1.25 - WallDot;//facing wall head-on = 2.25 times normal yaw speed
 
-		vectoangles(trace.plane.normal, wall_angles);
+		VectoAngles(trace.plane.normal, wall_angles);
 		AngleVectors(wall_angles, NULL, wall_right, NULL);
 
 		if(goal_vis)

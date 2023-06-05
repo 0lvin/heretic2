@@ -435,7 +435,7 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	distance *= 1.25;
 
 	VectorCopy (forward, aim);
-	vectoangles (aim, dir);
+	VectoAngles (aim, dir);
 	AngleVectors (dir, forward, right, up);
 
 	VectorScale (aim, distance, grenade->velocity);

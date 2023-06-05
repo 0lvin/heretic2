@@ -1316,7 +1316,7 @@ void imp_fireball (edict_t *self)
 
 	VectorCopy(proj->velocity, proj->movedir);
 	VectorNormalize(proj->movedir);
-	vectoangles(proj->movedir, proj->s.angles);
+	VectoAngles(proj->movedir, proj->s.angles);
 
 	gi.CreateEffect(&proj->s,
 				FX_M_EFFECTS,//just so I don't have to make a new FX_ id

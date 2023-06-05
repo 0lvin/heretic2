@@ -52,7 +52,7 @@ void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt->r.model = hell_models;
 	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	hellbolt->r.frame = irand(0, 1);
-	vectoangles(vel, hellbolt->r.angles);
+	VectoAngles(vel, hellbolt->r.angles);
 	VectorCopy(vel, hellbolt->velocity);
 
 	hellbolt->r.scale = 0.5;
@@ -161,7 +161,7 @@ void FXHellstaffPowerBurn(centity_t *owner, int type, int flags, vec3_t origin)
 
 	VectorClear(angles);
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLSTAFF_POWER_BURN].formatString, &dir);
-	vectoangles(dir, angles);
+	VectoAngles(dir, angles);
 	angles[PITCH] *= -1;// something's broken with angle signs somewhere ;(
 
 	AngleVectors(angles, fwd, right, up);
@@ -185,7 +185,7 @@ void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 
 	VectorClear(angles);
 	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_HELLSTAFF_POWER].formatString, &dir, &blen);
-	vectoangles(dir, angles);
+	VectoAngles(dir, angles);
 	angles[PITCH] *= -1;// something's broken with angle signs somewhere ;(
 	len = (float)blen * 8.0;
 	AngleVectors(angles, fwd, right, up);

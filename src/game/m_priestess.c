@@ -154,12 +154,12 @@ void priestess_teleport_move ( edict_t *self )
 		if (stricmp(moveLocation->targetname, "priestess"))
 			continue;
 
-		dist = vhlen(self->enemy->s.origin, moveLocation->s.origin);
+		dist = Vector2Length(self->enemy->s.origin, moveLocation->s.origin);
 
 		if (dist < 64)
 			continue;
 
-		startDist = vhlen(self->s.origin, moveLocation->s.origin);
+		startDist = Vector2Length(self->s.origin, moveLocation->s.origin);
 
 		if (startDist < 64)
 			continue;
@@ -464,7 +464,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 
 		Create_rand_relect_vect(self->velocity, proj->velocity);
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
-		vectoangles(proj->velocity, proj->s.angles);
+		VectoAngles(proj->velocity, proj->s.angles);
 
 		switch ( self->monsterinfo.attack_state )
 		{
@@ -672,7 +672,7 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 	VectorSubtract(predPos, startOfs, vf);
 	VectorNormalize(vf);
 
-	vectoangles( vf, angles );
+	VectoAngles( vf, angles );
 
 	i = irand(2,3);
 
@@ -695,7 +695,7 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 		VectorScale(vel, irand(500,600), proj->velocity);
 
-		vectoangles(proj->velocity, proj->s.angles);
+		VectoAngles(proj->velocity, proj->s.angles);
 
 		gi.sound (self, CHAN_AUTO, sounds[SND_3BALLATK], 1, ATTN_NORM, 0);
 
@@ -744,7 +744,7 @@ void priestess_fire2( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	proj->ideal_yaw = 400;
 
-	vectoangles( vf, ang );
+	VectoAngles( vf, ang );
 
 	ang[PITCH] -= irand(   5, 75 );
 	ang[YAW]   += irand( -60, 60 );
@@ -755,7 +755,7 @@ void priestess_fire2( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	proj->monsterinfo.attack_finished= level.time + 2;
 
-	vectoangles(proj->velocity, proj->s.angles);
+	VectoAngles(proj->velocity, proj->s.angles);
 
 	if (!irand(0,15))
 		proj->think = priestess_proj1_drunken;
@@ -818,7 +818,7 @@ void priestess_fire3( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 	VectorSubtract(self->enemy->s.origin, proj->s.origin, vf);
 	VectorNormalize(vf);
 
-	vectoangles( vf, ang );
+	VectoAngles( vf, ang );
 
 	ang[PITCH] *= -1;
 
@@ -831,7 +831,7 @@ void priestess_fire3( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	proj->monsterinfo.attack_finished= level.time + 5;
 
-	vectoangles(proj->velocity, proj->s.angles);
+	VectoAngles(proj->velocity, proj->s.angles);
 
 	proj->think=priestess_proj2_think;
 

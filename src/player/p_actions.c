@@ -1868,13 +1868,13 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	{
 		// Right hand is not clear.
 
-		return false;
+		return 0;
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Right hand is not clear.
-		return false;
+		return 0;
 	}
 
 	VectorMA(playerinfo->origin, -GRAB_HAND_WIDTH, right, lefthand);
@@ -1890,12 +1890,12 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	if (grabtrace.fraction != 1.0)
 	{	// Left hand is not clear.
-		return false;
+		return 0;
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{	// Left hand is not clear.
-		return false;
+		return 0;
 	}
 	// If the clear rays from the player's hands, traced down, should hit a legal (almost level)
 	// surface within a certain distance, then a grab is possible!
@@ -1935,18 +1935,18 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	if (grabtrace.fraction == 1.0)
 	{
 		// Right hand did not connect with a flat surface.
-		return false;
+		return 0;
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Right hand did not connect with a flat surface.
-		return false;
+		return 0;
 	}
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return false;
+		return 0;
 	}
 
 	VectorCopy(lefthand, endpoint);
@@ -1962,18 +1962,18 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Left hand did not connect with a flat surface.
-		return false;
+		return 0;
 	}
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{
 		// Left hand did not connect with a flat surface.
-		return false;
+		return 0;
 	}
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return false;
+		return 0;
 	}
 
 	// Now finally, if we try tracing the player blocking forward a tad, we should be hitting an
@@ -1993,32 +1993,32 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 		playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
 
 	if (grabtrace.fraction == 1)
-		return false;
+		return 0;
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
-		return false;
+		return 0;
 
 	if (!(grabtrace.contents & MASK_SOLID))
 	{	// hand stopped, but not on a grabbable surface.
-		return false;
+		return 0;
 	}
 
 	// Sloped away surfaces are not grabbable.
 
 	if (grabtrace.plane.normal[2] > 0)
-		return false;
+		return 0;
 
 	if (grabtrace.ent&&!playerinfo->isclient)
 	{
 		if(playerinfo->G_EntIsAButton(grabtrace.ent))
 		{
-			return false;
+			return 0;
 		}
 	}
 
 	// Now check the angle.  It should be pretty much opposite the player's yaw.
 
-	vectoangles(grabtrace.plane.normal, planedir);
+	VectoAngles(grabtrace.plane.normal, planedir);
 	playerinfo->grabangle = planedir[YAW] - 180.0;
 	playerinfo->grabangle = anglemod(playerinfo->grabangle);
 	yaw = planedir[YAW] - playerinfo->angles[YAW];
@@ -2028,7 +2028,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	{
 		// Bad angle.  Player should bounce.
 
-		return false;
+		return 0;
 	}
 
 
@@ -2081,6 +2081,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	endpoint[2] = playerinfo->grabloc[2] - v_adjust;
 
 	if(playerinfo->isclient)
+	{
 		playerinfo->CL_Trace(playerinfo->origin,
 							 NULL,
 							 NULL,
@@ -2088,13 +2089,16 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 							 MASK_PLAYERSOLID,
 							 CEF_CLIP_TO_WORLD,
 							 &grabtrace);
+	}
 	else
+	{
 		playerinfo->G_Trace(playerinfo->origin,
 									  NULL,
 									  NULL,
 									  endpoint,
 									  playerinfo->self,
 									  MASK_PLAYERSOLID,&grabtrace);
+	}
 
 	if (grabtrace.fraction == 1.0)
 	{
@@ -2103,12 +2107,14 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 		playerinfo->angles[YAW] = playerinfo->grabangle;
 
 		if (swingable)
+		{
 			return 2;
+		}
 
-		return true;
+		return 1;
 	}
 
-	return false;
+	return 0;
 }
 
 /*-----------------------------------------------
@@ -2452,7 +2458,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	// Now check the angle.  It should be pretty much opposite the player's yaw.
 
-	vectoangles(grabtrace.plane.normal, planedir);
+	VectoAngles(grabtrace.plane.normal, planedir);
 
 	playerinfo->grabangle = planedir[YAW] - 180.0;
 	playerinfo->grabangle = anglemod(playerinfo->grabangle);
@@ -2529,7 +2535,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 
 		// Parallel to each other?
 
-		vectoangles(grabtrace.plane.normal, planedir);
+		VectoAngles(grabtrace.plane.normal, planedir);
 		yaw = planedir[YAW] - playerinfo->angles[YAW];
 		yaw = anglemod(yaw) - 180.0;
 		if (yaw > 30.0 || yaw < -30.0)
@@ -2561,14 +2567,13 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 
 qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 {
-	qboolean	swingable = false;
 	trace_t grabtrace;
 	trace_t lasttrace;
 	trace_t swingtrace;
 	vec3_t	mins, maxs, vf;
 	vec3_t	forward, right;
 	vec3_t	start, end;
-	vec3_t	grabloc, planedir;
+	vec3_t	planedir;
 	vec3_t	righthand, lefthand, endpoint;
 	vec3_t	player_facing;
 	vec3_t	vaultcheckmins, vaultcheckmaxs;
@@ -2623,7 +2628,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	}
 	// Now check the angle.  It should be pretty much opposite the player's yaw.
 
-	vectoangles(grabtrace.plane.normal, planedir);
+	VectoAngles(grabtrace.plane.normal, planedir);
 	playerinfo->grabangle = planedir[YAW] - 180.0;
 	playerinfo->grabangle = anglemod(playerinfo->grabangle);
 	yaw = planedir[YAW] - playerinfo->angles[YAW];
@@ -2633,8 +2638,6 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		// Bad angle. Player should bounce.
 		return false;
 	}
-
-	VectorCopy(grabtrace.endpos, grabloc);
 
 	// Now we want to cast some rays.  If the two rays moving from the player's hands at "grab"
 	// width successfully clear any surface, then at least his hands are free enough to make the
@@ -2758,10 +2761,6 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&swingtrace);
 	else
 		playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&swingtrace);
-
-	//Did we hit a wall underneath?
-	if (swingtrace.fraction == 1.0f && (!swingtrace.startsolid || !swingtrace.allsolid))
-		swingable = true;
 
 	// Save the intended grab location (the endpoint).
 	playerinfo->grabloc[0] = ((lefthand[0] + righthand[0]) / 2.0);
@@ -3259,7 +3258,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 	{
 		// End Sequence.
 
-		VectorCopy(playerinfo->grabloc,endpoint);
+		VectorCopy(playerinfo->grabloc, endpoint);
 		endpoint[2] -= playerinfo->mins[2] + 2;
 
 		if(playerinfo->isclient)

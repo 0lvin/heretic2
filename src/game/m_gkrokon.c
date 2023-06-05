@@ -218,7 +218,7 @@ void GkrokonSpoo(edict_t *self)
 	VectorMA(Spoo->s.origin,-16,Forward,Spoo->s.origin);
 	Spoo->s.origin[2]+=12.0;
 	VectorCopy(self->movedir,Spoo->movedir);
-	vectoangles(Forward,Spoo->s.angles);
+	VectoAngles(Forward,Spoo->s.angles);
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vf);
 	edist = VectorNormalize(vf);
@@ -229,7 +229,7 @@ void GkrokonSpoo(edict_t *self)
 	VectorScale(vf,GKROKON_SPOO_SPEED,Spoo->velocity);
 	Spoo->velocity[2] += GKROKON_SPOO_ARC;
 	Spoo->velocity[2] += (edist - 256);
-	vectoangles(Spoo->velocity, Spoo->s.angles);
+	VectoAngles(Spoo->velocity, Spoo->s.angles);
 
 	gi.linkentity(Spoo);
 

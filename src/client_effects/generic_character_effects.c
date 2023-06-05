@@ -70,8 +70,6 @@ qboolean ParticleTrailAI(client_entity_t *_this, centity_t *owner)
 				// FX_REMOVE_EFFECTS sent on it
 }
 
-void CL_DiminishingTrail (vec3_t start, vec3_t end, centity_t *old, qboolean gib);
-
 void GenericGibTrail(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	qboolean ParticleTrailAI(client_entity_t *_this, centity_t *owner);

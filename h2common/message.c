@@ -29,7 +29,7 @@ size_t SetParms(SinglyLinkedList_t *_this, char *format, va_list marker, qboolea
 
 	SLList_Front(_this);
 
-	while(current = format[count])
+	while((current = format[count]))
 	{
 		switch(current)
 		{
@@ -131,14 +131,12 @@ size_t SetParms(SinglyLinkedList_t *_this, char *format, va_list marker, qboolea
 
 int GetParms(SinglyLinkedList_t *_this, char *format, va_list marker)
 {
-	qboolean append = false;
 	char current;
 	int count = 0;
 	byte *b;
 	short *s;
 	int *i;
-	float *f, *v;
-//	edict_t **e;
+	float *f;
 	void **g;
 	paletteRGBA_t *c;
 
@@ -160,7 +158,7 @@ int GetParms(SinglyLinkedList_t *_this, char *format, va_list marker)
 		return 0;
 	}
 
-	while(current = format[count])
+	while((current = format[count]))
 	{
 		switch(current)
 		{
@@ -186,9 +184,10 @@ int GetParms(SinglyLinkedList_t *_this, char *format, va_list marker)
 			*f = SLList_PostIncrement(_this).t_float;
 			break;
 		case 'v':
-			v = va_arg(marker, float*);
+			/* TODO: recheck and rewrite */
+			va_arg(marker, float*);
 
-			v = SLList_PostIncrement(_this).t_float_p;
+			SLList_PostIncrement(_this).t_float_p;
 			break;
 		case 'e':	// a pointer is a pointer is a pointer
 //			e = va_arg(marker, edict_t**);

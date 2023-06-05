@@ -267,7 +267,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 				// Check angle
 				VectorSubtract(Caster->s.origin, trace.ent->s.origin, hitdir);
 				VectorNormalize(hitdir);
-				vectoangles(hitdir, hitangles);
+				VectoAngles(hitdir, hitangles);
 				diffangles[YAW] = hitangles[YAW] - trace.ent->client->aimangles[YAW];
 				if (diffangles[YAW] > 180.0)
 					diffangles[YAW] -= 360.0;
@@ -541,7 +541,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 	{	// Hit a wall or such...
 		if (Caster->client->lastentityhit == NULL && Vec3NotZero(trace.plane.normal))
 		{	// Don't do sparks if already hit something
-			vectoangles(trace.plane.normal, hitangles);
+			VectoAngles(trace.plane.normal, hitangles);
 
 			if (powerlevel >= STAFF_LEVEL_POWER2)
 			{

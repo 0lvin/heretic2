@@ -310,7 +310,7 @@ void rope_end_think2( edict_t *self )
 	//Find the vector towards the middle, and that distance (disregarding height)
 	VectorSubtract(end_rest, grab->s.origin, end_vec);
 	VectorNormalize(end_vec);
-	end_len = vhlen(end_rest, grab->s.origin);
+	end_len = Vector2Length(end_rest, grab->s.origin);
 
 	//Subtract away from the rope's velocity based on that distance
 	VectorScale(end_vec, -end_len*0.75, end_vec);
@@ -359,7 +359,7 @@ void rope_end_think( edict_t *self )
 	//Find the vector towards the middle, and that distance (disregarding height)
 	VectorSubtract(end_rest, grab->s.origin, end_vec);
 	VectorNormalize(end_vec);
-	end_len = vhlen(end_rest, grab->s.origin);
+	end_len = Vector2Length(end_rest, grab->s.origin);
 
 	//Subtract away from the rope's velocity based on that distance
 	VectorScale(end_vec, -end_len, end_vec);
@@ -443,7 +443,7 @@ void rope_sway(edict_t *self)
 	//Find the vector towards the middle, and that distance (disregarding height)
 	VectorSubtract(rope_rest, grab->s.origin, v_rope);
 	VectorNormalize(v_rope);
-	dist = vhlen(rope_rest, grab->s.origin);
+	dist = Vector2Length(rope_rest, grab->s.origin);
 
 	//NOTENOTE: There's a fine line between a real pendulum motion here that comes to rest,
 	//			and a chaotic one that builds too much and runs amuck.. so don't monkey with
@@ -649,7 +649,7 @@ void hanging_chicken_think(edict_t *self)
 	VectorCopy(self->targetEnt->s.origin, self->s.origin);
 	VectorSubtract(self->targetEnt->owner->s.origin, self->s.origin, vec);
 	VectorNormalize(vec);
-	vectoangles(vec, angles);
+	VectoAngles(vec, angles);
 
 	//interpolate the angles
 	for (i=0;i<2;i++)

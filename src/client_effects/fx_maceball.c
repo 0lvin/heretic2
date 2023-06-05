@@ -332,7 +332,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		// Set up the velocities
 		VectorSet(ripper->velocity, cos(curyaw), sin(curyaw), 0.0);
 		VectorCopy(ripper->velocity, ripper->direction);
-		vectoangles(ripper->velocity, ripper->r.angles);
+		VectoAngles(ripper->velocity, ripper->r.angles);
 		Vec3ScaleAssign(RIPPER_EXPLODE_SPEED, ripper->velocity);
 
 		// Set up the basic attributes

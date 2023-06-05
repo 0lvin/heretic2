@@ -8,12 +8,12 @@
 #include "assert.h"
 
 
-void MSG_ReadDirMag (sizebuf_t *sb, vec3_t dir)
+void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir)
 {
 	int		b;
 
 	// Read in index into vector table
-	b = MSG_ReadByte (sb);
+	b = MSG_ReadByte(sb);
 	if (b >= NUMVERTEXNORMALS)
 	{
 		assert(0);
@@ -22,7 +22,7 @@ void MSG_ReadDirMag (sizebuf_t *sb, vec3_t dir)
 	VectorCopy (bytedirs[b], dir);
 
 	// Scale by magnitude
-	b = MSG_ReadByte (sb);
+	b = MSG_ReadByte(sb);
 	Vec3ScaleAssign(10.0 * b, dir);
 }
 
@@ -65,8 +65,7 @@ void MSG_ReadYawPitch(sizebuf_t *sb, vec3_t dir)
 
 void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf)
 {
-	size_t	bufTypeSize;
-	int		len;
+	int len;
 
 	fxBuf->numEffects += MSG_ReadByte(msg_read);
 
@@ -74,7 +73,7 @@ void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf)
 
 	if(fxBuf->numEffects < 0)
 	{
-		Com_Error (ERR_DROP, "MSG_ReadEffects: number of effects < 0");
+		Com_Error(ERR_DROP, "MSG_ReadEffects: number of effects < 0");
 		return;
 	}
 
@@ -86,13 +85,11 @@ void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf)
 	if(fxBuf->numEffects & 0x80)
 	{
 		fxBuf->numEffects &= ~0x80;
-		bufTypeSize = sizeof(short);
-		len=MSG_ReadShort(msg_read);
+		len = MSG_ReadShort(msg_read);
 	}
 	else
 	{
-		bufTypeSize = sizeof(byte);
-		len=MSG_ReadByte(msg_read);
+		len = MSG_ReadByte(msg_read);
 	}
 
 	assert(len > 0);

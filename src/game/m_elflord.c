@@ -141,7 +141,7 @@ void elford_Attack( edict_t *self )
 
 		VectorSubtract(org, projectile->s.origin, aim);
 		len = VectorNormalize(aim);
-		vectoangles(aim, ang);
+		VectoAngles(aim, ang);
 		ang[YAW] += yaw_ofs;
 		ang[PITCH] *= -1;
 		yaw_ofs += 20;
@@ -473,7 +473,7 @@ void elflord_FindMoveTarget (edict_t *self)
 		if (movetarg->targetname && strcmp(movetarg->targetname, "elflord"))
 			continue;
 
-		if (vhlen(movetarg->s.origin, self->s.origin) < 64)
+		if (Vector2Length(movetarg->s.origin, self->s.origin) < 64)
 			continue;
 
 		lastvalid = movetarg;
@@ -552,7 +552,7 @@ void elflord_track(edict_t *self)
 
 	VectorCopy(trace.endpos, self->targetEnt->s.origin);
 
-	vectoangles(newdir, self->s.angles);
+	VectoAngles(newdir, self->s.angles);
 
 	ai_charge2(self, 0);
 

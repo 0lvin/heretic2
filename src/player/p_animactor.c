@@ -133,7 +133,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			VectorCopy(playerinfo->enemystate->origin,targetvector);
 			VectorSubtract(targetvector, playerinfo->origin, targetvector);
-			vectoangles(targetvector, playerinfo->targetjointangles);
+			VectoAngles(targetvector, playerinfo->targetjointangles);
 
 			// PITCH.
 

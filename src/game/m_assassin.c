@@ -266,7 +266,7 @@ void assassinDaggerBlocked (edict_t *self, trace_t *trace)
 	else//spark
 	{
 		if(Vec3NotZero(trace->plane.normal))
-			vectoangles(trace->plane.normal, hitangles);
+			VectoAngles(trace->plane.normal, hitangles);
 		else
 			VectorSet(hitangles, 0, 0, 90);
 		gi.CreateEffect(NULL, FX_SPARKS, 0, self->s.origin, "d", hitangles);
@@ -328,7 +328,7 @@ void assassinDaggerTouch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	else//spark
 	{
 		if(Vec3NotZero(normal))
-			vectoangles(normal, hitangles);
+			VectoAngles(normal, hitangles);
 		else
 			VectorSet(hitangles, 0, 0, 90);
 		gi.CreateEffect(NULL, FX_SPARKS, 0, self->s.origin, "d", hitangles);
@@ -386,7 +386,7 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 	VectorMA (Arrow->s.origin, 8, Forward, Arrow->s.origin);
 	VectorMA (Arrow->s.origin, right_ofs, right, Arrow->s.origin);
 	VectorCopy (self->movedir, Arrow->movedir);
-	vectoangles (Forward, Arrow->s.angles);
+	VectoAngles (Forward, Arrow->s.angles);
 
 	extrapolateFiredir (self, Arrow->s.origin, ASSASSIN_DAGGER_SPEED, self->enemy, 0.3, check_lead);
 
@@ -406,7 +406,7 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 
 	VectorCopy(Arrow->velocity, Arrow->movedir);
 	VectorNormalize(Arrow->movedir);
-	vectoangles(Arrow->movedir, Arrow->s.angles);
+	VectoAngles(Arrow->movedir, Arrow->s.angles);
 	Arrow->s.angles[PITCH] = -90;
 
 	eta = enemy_dist / ASSASSIN_DAGGER_SPEED;//eta
@@ -1741,7 +1741,7 @@ void assassin_ai_walk (edict_t *self, float dist)
 	{
 		if(self->enemy)
 		{
-			if(vhlen(self->s.origin, self->enemy->s.origin) < 48 && infront(self, self->enemy))
+			if(Vector2Length(self->s.origin, self->enemy->s.origin) < 48 && infront(self, self->enemy))
 			{
 				assassinNodeOn (self, MESH__LKNIFE);
 				SetAnim(self, ANIM_CROUCH_TRANS);
@@ -1750,7 +1750,7 @@ void assassin_ai_walk (edict_t *self, float dist)
 		}
 		else if(self->oldenemy)
 		{
-			if(vhlen(self->s.origin, self->oldenemy->s.origin) < 48 && infront(self, self->oldenemy))
+			if(Vector2Length(self->s.origin, self->oldenemy->s.origin) < 48 && infront(self, self->oldenemy))
 			{
 				assassinNodeOn (self, MESH__LKNIFE);
 				SetAnim(self, ANIM_CROUCH_TRANS);
@@ -2334,7 +2334,7 @@ qboolean assassinChooseTeleportDestination(edict_t *self, int type, qboolean imp
 		if(trace.allsolid || trace.startsolid)
 			continue;
 
-		if(vhlen(trace.endpos, self->enemy->s.origin)>=self->min_missile_range)
+		if(Vector2Length(trace.endpos, self->enemy->s.origin)>=self->min_missile_range)
 		{
 			VectorCopy(trace.endpos, startpos);
 			VectorCopy(trace.endpos, endpos);

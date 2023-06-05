@@ -57,7 +57,18 @@ static HlDef_t HitLocTypes[LT_MAX] =
 	{ LocationsWinged, hl_WingedPoints }
 };
 
-void GetWorkLocations(vec3_t *work, vec3_t scale, vec3_t origin, vec_t angle, int LocType)
+static void
+VectorScaleByVector (vec3_t in, vec3_t scale, vec3_t out)
+{
+	//assert(out != vec3_origin);
+
+	out[0] = in[0] * scale[0];
+	out[1] = in[1] * scale[1];
+	out[2] = in[2] * scale[2];
+}
+
+static void
+GetWorkLocations(vec3_t *work, vec3_t scale, vec3_t origin, vec_t angle, int LocType)
 {
 	int			i;
 	vec3_t		*loc;
@@ -252,7 +263,7 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 	}
 
 //put point at controlled distance from center
-	hdist = vhlen(point, tcenter);
+	hdist = Vector2Length(point, tcenter);
 
 	VectorMA(point, hdist - tradius, dir, point);
 	//now a point on the surface of a cylinder with a radius of tradius

@@ -1265,7 +1265,7 @@ qboolean gorgon_check_jump (edict_t *self)
 
 	// Calculate velocity to make monster jump to hit arc spot
 	VectorSubtract (arc_spot,self->s.origin, v);  // Face monster to arc spot
-	vectoangles(v,angles);
+	VectoAngles(v,angles);
 	self->best_move_yaw = angles[YAW];
 
 	len = VectorLength (v);
@@ -1368,7 +1368,7 @@ void gorgon_jump (edict_t *self)
 
 	// Calculate velocity to make monster jump to hit arc spot
 	VectorSubtract (arc_spot,self->s.origin, v);  // Face monster to arc spot
-	vectoangles(v,angles);
+	VectoAngles(v,angles);
 	self->best_move_yaw = angles[YAW];
 
 	len = VectorLength (v);
@@ -1622,7 +1622,7 @@ void gorgon_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 	VectorScale(blooddir, -1, enemy_face);
 	enemy_face[2]/=10;
-	vectoangles(enemy_face, self->enemy->s.angles);
+	VectoAngles(enemy_face, self->enemy->s.angles);
 
 	switch(self->enemy->count)
 	{
@@ -1951,7 +1951,7 @@ void gorgon_ai_swim (edict_t *self, float dist)
 		return;
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
-	vectoangles(vec, angles);
+	VectoAngles(vec, angles);
 	MG_ChangePitch(self, angles[PITCH], 10);
 
 	//MG_ChangePitchForZVel(self, 10, dist * 3, 60);

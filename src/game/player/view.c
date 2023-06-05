@@ -637,7 +637,7 @@ void P_WorldEffects (void)
 
 			VectorNormalize(Temp);
 
-			vectoangles(Temp,Angles);
+			VectoAngles(Temp,Angles);
 
 			VectorCopy(current_player->s.origin,Origin);
 

@@ -123,7 +123,7 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 			gi.trace(self->s.origin, self->mins, self->maxs, testpos, self, MASK_SHOT, &newtrace);
 			if (newtrace.fraction > 0.99)
 			{	// If this is successful, then we can make another fireblast moving in the new direction.
-				vectoangles(surfvect, newang);
+				VectoAngles(surfvect, newang);
 				newwall = CreateFireBlast(self->s.origin, newang, self->owner, self->health-1, level.time);
 			}
 		}
@@ -376,7 +376,7 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 			gi.trace(self->s.origin, self->mins, self->maxs, testpos, self, MASK_SOLID, &newtrace);
 			if (newtrace.fraction > 0.99)
 			{	// If this is successful, then we can make another fireblast moving in the new direction.
-				vectoangles(surfvect, newang);
+				VectoAngles(surfvect, newang);
 				newwall = CreateFireWall(self->s.origin, newang, self->owner, self->health-1, level.time, 0);
 			}
 		}

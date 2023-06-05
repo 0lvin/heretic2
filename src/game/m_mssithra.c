@@ -495,7 +495,7 @@ void mssithraArrow(edict_t *self)
 		VectorNormalize(Arrow->movedir);
 		VectorScale(Arrow->movedir,MSSITHRA_ARROW_SPEED,Arrow->velocity);
 
-		vectoangles(Arrow->velocity, Arrow->s.angles);
+		VectoAngles(Arrow->velocity, Arrow->s.angles);
 		Arrow->s.angles[YAW] += 90;
 
 		Arrow->owner=self;

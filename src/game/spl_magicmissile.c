@@ -233,7 +233,7 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 		TempVec[2]+=(MagicMissile->enemy->mins[2]+MagicMissile->enemy->maxs[2])/2.0;
 
 		VectorNormalize(TempVec);
-		vectoangles(TempVec,MagicMissile->s.angles);
+		VectoAngles(TempVec,MagicMissile->s.angles);
 		// The pitch is flipped in these?
 		MagicMissile->s.angles[PITCH] = -MagicMissile->s.angles[PITCH];
 		VectorScale(TempVec,MAGICMISSILE_SPEED,MagicMissile->velocity);
@@ -293,7 +293,7 @@ static void MagicMissileThink1(edict_t *self)
 		TempVec[2]+=(self->enemy->mins[2]+self->enemy->maxs[2])/2.0;
 
 		VectorNormalize(TempVec);
-		vectoangles(TempVec,self->s.angles);
+		VectoAngles(TempVec,self->s.angles);
 		VectorScale(TempVec,MAGICMISSILE_SPEED,self->velocity);
 	}
 	else

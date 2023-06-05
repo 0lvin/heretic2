@@ -246,9 +246,9 @@ void gib_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 	{
 //		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/fhit3.wav"), 1, ATTN_NORM, 0);
 
-		vectoangles (plane->normal, normal_angles);
+		VectoAngles (plane->normal, normal_angles);
 		AngleVectors (normal_angles, NULL, right, NULL);
-		vectoangles (right, self->s.angles);
+		VectoAngles (right, self->s.angles);
 
 		if (self->s.modelindex == sm_meat_index)
 		{
@@ -1906,7 +1906,7 @@ void misc_remote_camera_think(edict_t *Self)
 
 		VectorSubtract(Self->targetEnt->s.origin,Self->s.origin,Forward);
 		VectorNormalize(Forward);
-		vectoangles(Forward,Self->s.angles);
+		VectoAngles(Forward,Self->s.angles);
 		Self->s.angles[PITCH]=-Self->s.angles[PITCH];
 
 		// Update the angles on client(s).
@@ -2126,7 +2126,7 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 	Self->targetEnt=G_Find(NULL,FOFS(targetname),Self->target);
 	VectorSubtract(Self->targetEnt->s.origin,Self->s.origin,Forward);
 	VectorNormalize(Forward);
-	vectoangles(Forward,Self->s.angles);
+	VectoAngles(Forward,Self->s.angles);
 	Self->s.angles[PITCH]=-Self->s.angles[PITCH];
 
 	// Update the angles on client(s).

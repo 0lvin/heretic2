@@ -569,7 +569,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 
 	VectorMA(rope_top, len, vec, rope_check);
 
-	dist = vhlen(playerinfo->origin, rope_check);
+	dist = Vector2Length(playerinfo->origin, rope_check);
 
 	if (dist < check_dist)
 	{

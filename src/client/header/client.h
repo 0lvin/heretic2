@@ -137,7 +137,11 @@ typedef struct
 
 	struct image_s	*icon;
 	char	iconname[MAX_QPATH];
+
 	struct model_s	*model[CL_MAXMODELS];
+
+	struct model_s	*weaponmodel[MAX_CLIENTWEAPONMODELS];
+
 	char	skin_name[MAX_QPATH];
 	char	model_name[MAX_QPATH];
 	vec3_t	origin;
@@ -588,7 +592,7 @@ void CL_CheckPredictionError (void);
 cdlight_t *CL_AllocDlight (int key);
 void CL_BigTeleportParticles (vec3_t org);
 void CL_RocketTrail (vec3_t start, vec3_t end, centity_t *old);
-void CL_DiminishingTrail (vec3_t start, vec3_t end, centity_t *old, qboolean gib);
+void CL_DiminishingTrail (vec3_t start, vec3_t end, centity_t *old, int flags);
 void CL_FlyEffect (centity_t *ent, vec3_t origin);
 void CL_BfgParticles (entity_t *ent);
 void CL_AddParticles (void);

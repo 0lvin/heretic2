@@ -113,7 +113,7 @@ void guard_beam_blocked( edict_t *self, trace_t *trace )
 
 		Create_rand_relect_vect(self->velocity, proj->velocity);
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
-		vectoangles(proj->velocity, proj->s.angles);
+		VectoAngles(proj->velocity, proj->s.angles);
 
 		gi.CreateEffect(&proj->s,
 					FX_M_EFFECTS,
@@ -194,7 +194,7 @@ void guard_beam( edict_t *self)
 
 	VectorScale(Forward, 500, proj->velocity);
 
-	vectoangles(proj->velocity, proj->s.angles);
+	VectoAngles(proj->velocity, proj->s.angles);
 
 	proj->think = guard_beam_think;
 	proj->nextthink = level.time + 1;

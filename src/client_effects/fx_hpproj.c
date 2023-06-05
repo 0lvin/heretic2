@@ -810,7 +810,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 			boltDist = VectorNormalize(boltDir);
 
 			//Get an offset angle from the goal direction
-			vectoangles(boltDir, boltAng);
+			VectoAngles(boltDir, boltAng);
 
 			boltAng[PITCH]  += irand(-35, 35);
 			boltAng[YAW]	+= irand(-35, 35);

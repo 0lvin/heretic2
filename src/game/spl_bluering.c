@@ -237,7 +237,7 @@ void RingThink(edict_t *self)
 				if (Vec3IsZero(vel))	// Reflect needs a non-zero vel.  If zeroed, throw it straight up.
 					VectorSet(vel, 0, 0, 200.0);
 				newent = reflect(ent, self->owner, vel);
-				vectoangles(newent->velocity, newent->s.angles);
+				VectoAngles(newent->velocity, newent->s.angles);
 			}
 		}
 	}

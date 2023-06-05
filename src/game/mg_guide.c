@@ -69,7 +69,7 @@ qboolean MG_ReachedBuoy (edict_t *self, vec3_t pspot)
 	if(z_diff > self->size[2])
 		return false;
 
-	len = vhlen(spot, self->s.origin);
+	len = Vector2Length(spot, self->s.origin);
 
 	if(self->maxs[0]>16)
 		radius = 24 + self->maxs[0];

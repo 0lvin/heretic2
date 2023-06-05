@@ -1807,7 +1807,7 @@ void ai_runaway (edict_t *self, float dist)
 	//We hit something
 	if (trace.fraction < 1)
 	{
-		vectoangles(trace.plane.normal,na);
+		VectoAngles(trace.plane.normal,na);
 		AngleVectors(na,NULL,nvr,NULL);
 
 		if(DotProduct(nvr,vf)>0)
@@ -2080,7 +2080,7 @@ void old_ai_run (edict_t *self, float dist)
 			}
 		}
 
-		vectoangles(trace.plane.normal,na);
+		VectoAngles(trace.plane.normal,na);
 		AngleVectors(na,NULL,nvr,NULL);
 
 		if(DotProduct(nvr,vf)>0)
@@ -2282,7 +2282,7 @@ void extrapolateFiredir (edict_t *self,vec3_t p1,float pspeed,edict_t *targ,floa
 		return;
 	}
 
-	tdist = vhlen(targ->s.origin, self->s.origin);
+	tdist = Vector2Length(targ->s.origin, self->s.origin);
 	if(!skill->value)
 	{//poor shot, take forward and screw it up
 		AngleVectors(self->s.angles, tempv, NULL, NULL);

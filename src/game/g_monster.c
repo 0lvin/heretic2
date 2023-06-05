@@ -1132,7 +1132,7 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 
 	AngleVectors(forwhom->s.angles, ovf, ovr, NULL);
 
-	vectoangles(slope, new_angles);
+	VectoAngles(slope, new_angles);
 	pitch = new_angles[PITCH] - 90;
 	new_angles[ROLL] = new_angles[PITCH] = 0;
 

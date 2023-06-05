@@ -327,7 +327,7 @@ void morcalavin_proj2_blocked( edict_t *self, trace_t *trace )
 
 		Create_rand_relect_vect(self->velocity, proj->velocity);
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
-		vectoangles(proj->velocity, proj->s.angles);
+		VectoAngles(proj->velocity, proj->s.angles);
 
 		exp = HPMISSILE1_EXPLODE;
 
@@ -390,7 +390,7 @@ void morcalavin_proj3_blocked( edict_t *self, trace_t *trace )
 
 		Create_rand_relect_vect(self->velocity, proj->velocity);
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
-		vectoangles(proj->velocity, proj->s.angles);
+		VectoAngles(proj->velocity, proj->s.angles);
 
 		exp = HPMISSILE1_EXPLODE;
 
@@ -650,7 +650,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 
 		Create_rand_relect_vect(self->velocity, proj->velocity);
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
-		vectoangles(proj->velocity, proj->s.angles);
+		VectoAngles(proj->velocity, proj->s.angles);
 
 		exp = HPMISSILE1_EXPLODE;
 
@@ -746,7 +746,7 @@ void morcalavin_taunt_shot(edict_t *self)
 	VectorSubtract(predPos, startOfs, vf);
 	VectorNormalize(vf);
 
-	vectoangles( vf, angles );
+	VectoAngles( vf, angles );
 
 	// Spawn the projectile
 	proj = G_Spawn();
@@ -764,7 +764,7 @@ void morcalavin_taunt_shot(edict_t *self)
 
 	VectorScale(vel, irand(700,800) + (skill->value * 100), proj->velocity);
 
-	vectoangles(proj->velocity, proj->s.angles);
+	VectoAngles(proj->velocity, proj->s.angles);
 
 	gi.sound (self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
 
@@ -879,7 +879,7 @@ void projectile_veer(edict_t *self, float amount)
 	Vec3ScaleAssign(speed, self->velocity);
 
 	//check to see if this is needed
-	//	self.angles=vectoangles(self.velocity);
+	//	self.angles=VectoAngles(self.velocity);
 }
 
 void projectile_homethink (edict_t *self)
@@ -963,7 +963,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 
 		Create_rand_relect_vect(self->velocity, proj->velocity);
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
-		vectoangles(proj->velocity, proj->s.angles);
+		VectoAngles(proj->velocity, proj->s.angles);
 
 		gi.CreateEffect(&proj->s,
 					FX_M_EFFECTS,
@@ -1042,7 +1042,7 @@ void morcalavin_beam( edict_t *self)
 
 	VectorScale(Forward, 1250, proj->velocity);
 
-	vectoangles(proj->velocity, proj->s.angles);
+	VectoAngles(proj->velocity, proj->s.angles);
 
 	proj->dmg = flrand(MORK_DMG_BEAM_MIN, MORK_DMG_BEAM_MAX);
 
@@ -1093,7 +1093,7 @@ void morcalavin_beam2( edict_t *self)
 
 	VectorScale(Forward, 1250, proj->velocity);
 
-	vectoangles(proj->velocity, proj->s.angles);
+	VectoAngles(proj->velocity, proj->s.angles);
 
 	proj->dmg = flrand(MORK_DMG_BEAM_MIN, MORK_DMG_BEAM_MAX);
 
@@ -1604,7 +1604,7 @@ qboolean morcalavin_choose_teleport_destination(edict_t *self)
 		if(trace.allsolid || trace.startsolid)
 			continue;
 
-		if(vhlen(trace.endpos, self->enemy->s.origin)>=128)
+		if(Vector2Length(trace.endpos, self->enemy->s.origin)>=128)
 		{
 			VectorCopy(trace.endpos, startpos);
 			VectorCopy(trace.endpos, endpos);

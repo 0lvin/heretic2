@@ -713,7 +713,37 @@ typedef struct
  * frame animations)  that happen constantly on the given entity.
  * An entity that has effects will be sent to the client even if
  * it has a zero index model. */
-#define	EF_ROTATE					0x00000001	// Rotate the entity's model (used for bonus items).
+#define EF_ROTATE 0x00000001                /* rotate (bonus items) */
+#define EF_GIB 0x00000002                   /* leave a trail */
+#define EF_BLASTER 0x00000008               /* redlight + trail */
+#define EF_ROCKET 0x00000010                /* redlight + trail */
+#define EF_GRENADE 0x00000020
+#define EF_HYPERBLASTER 0x00000040
+#define EF_BFG 0x00000080
+#define EF_COLOR_SHELL 0x00000100
+#define EF_POWERSCREEN 0x00000200
+#define EF_ANIM01 0x00000400                /* automatically cycle between frames 0 and 1 at 2 hz */
+#define EF_ANIM23 0x00000800                /* automatically cycle between frames 2 and 3 at 2 hz */
+#define EF_ANIM_ALL 0x00001000              /* automatically cycle through all frames at 2hz */
+#define EF_ANIM_ALLFAST 0x00002000          /* automatically cycle through all frames at 10hz */
+#define EF_FLIES 0x00004000
+#define EF_QUAD 0x00008000
+#define EF_PENT 0x00010000
+#define EF_TELEPORTER 0x00020000            /* particle fountain */
+#define EF_FLAG1 0x00040000
+#define EF_FLAG2 0x00080000
+#define EF_IONRIPPER 0x00100000
+#define EF_GREENGIB 0x00200000
+#define EF_BLUEHYPERBLASTER 0x00400000
+#define EF_SPINNINGLIGHTS 0x00800000
+#define EF_PLASMA 0x01000000
+#define EF_TRAP 0x02000000
+#define EF_TRACKER 0x04000000
+#define EF_DOUBLE 0x08000000
+#define EF_SPHERETRANS 0x10000000
+#define EF_TAGTRAIL 0x20000000
+#define EF_HALF_DAMAGE 0x40000000
+#define EF_TRACKERTRAIL 0x80000000
 #define EF_CL_PHYS_ALWAYS_BOUNCE	0x00000002
 #define EF_JOINTED					0x00000004
 #define EF_SWAPFRAME				0x00000008
@@ -752,20 +782,18 @@ typedef struct
 												// torch is activated.
 #define EF_CHICKEN					0x00400000	// The flag that tells the system that the player is
 												// a chicken, and not corvus.
-#define EF_ANIM_ALL					0x00800000	// Automatically cycle through all frames at 2hz
-#define EF_ANIM_ALLFAST				0x01000000	// Automatically cycle through all frames at 10hz
 
 /* entity_state_t->renderfx flags */
-#define RF_MINLIGHT			0x00000001		// allways have some light (viewmodel)
-#define RF_REFLECTION		0x00000002		// Use GL spherical mapping, if available
-#define RF_WEAPONMODEL		0x00000004		// only draw through eyes
-#define RF_FULLBRIGHT		0x00000008		// allways draw full intensity
-#define RF_DEPTHHACK		0x00000010		// for view weapon Z crunching
-#define RF_TRANSLUCENT		0x00000020
-#define RF_FRAMELERP		0x00000040
+#define RF_MINLIGHT 1               /* allways have some light (viewmodel) */
+#define RF_VIEWERMODEL 2            /* don't draw through eyes, only mirrors */
+#define RF_WEAPONMODEL 4            /* only draw through eyes */
+#define RF_FULLBRIGHT 8             /* allways draw full intensity */
+#define RF_DEPTHHACK 16             /* for view weapon Z crunching */
+#define RF_TRANSLUCENT 32
+#define RF_FRAMELERP 64
 #define RF_BEAM 128
-#define RF_CUSTOMSKIN		0x00000080		// skin is an index in image_precache
-#define RF_GLOW				0x00000100		// pulse lighting for bonus items
+#define RF_CUSTOMSKIN 256           /* skin is an index in image_precache */
+#define RF_GLOW 512                 /* pulse lighting for bonus items */
 #define RF_SHELL_RED 1024
 #define RF_SHELL_GREEN 2048
 #define RF_SHELL_BLUE 4096
@@ -774,6 +802,7 @@ typedef struct
 #define RF_SHELL_DOUBLE 0x00010000          /* 65536 */
 #define RF_SHELL_HALF_DAM 0x00020000
 #define RF_USE_DISGUISE 0x00040000
+#define RF_REFLECTION		0x00000002		// Use GL spherical mapping, if available
 #define RF_SCALE_XYZ		0x00000200
 #define RF_SCALE_XY			0x00000400
 #define RF_SCALE_Z			0x00000800
@@ -1125,17 +1154,13 @@ typedef enum
 	TE_FLECHETTE
 } temp_event_t;
 
-enum
-{
-	SPLASH_UNKNOWN = 0,
-	SPLASH_SPARKS,
-	SPLASH_BLUE_WATER,
-	SPLASH_BROWN_WATER,
-	SPLASH_SLIME,
-	SPLASH_LAVA,
-	SPLASH_BLOOD,
-	NUM_SPLASHES
-};
+#define SPLASH_UNKNOWN 0
+#define SPLASH_SPARKS 1
+#define SPLASH_BLUE_WATER 2
+#define SPLASH_BROWN_WATER 3
+#define SPLASH_SLIME 4
+#define SPLASH_LAVA 5
+#define SPLASH_BLOOD 6
 
 /* sound channels:
  * channel 0 never willingly overrides
@@ -1360,29 +1385,29 @@ typedef struct EffectsBuffer_s
  * need to render in some way */
 typedef struct entity_state_s
 {
-	short number;           /* edict index */
+	int number;             /* edict index */
 
-	// Model's current animation frame index.
-
-	short			frame;
-
-	// Model's position and orientation  in the world.
-
-	vec3_t			origin;
-	vec3_t			angles;
-	vec3_t			old_origin;		// Used for lerping (and hijacked for other uses).
-
-	// Tells client which model do draw.
-
-	byte			modelindex;
-	// byte Padding here.
-
+	vec3_t origin;
+	vec3_t angles;
+	vec3_t old_origin;      /* for lerping */
+	int modelindex;
+	int modelindex2, modelindex3, modelindex4;      /* weapons, CTF flags, etc */
+	int frame;
+	int skinnum;
+	unsigned int effects;
+	int renderfx;
+	int solid;              /* for client side prediction, 8*(bits 0-4) is x/y radius */
+							/* 8*(bits 5-9) is z down distance, 8(bits10-15) is z up */
+							/* gi.linkentity sets this properly */
+	int sound;              /* for looping sounds, to guarantee shutoff */
+	int event;              /* impulse events -- muzzle flashes, footsteps, etc */
+							/* events only go out for a single frame, they */
+							/* are automatically cleared each frame */
 	short			clientnum;		// In Quake 2, the client num was passed in skinnum.  We need this value, however.
 
 	// For specific path to skin.
 
 	char			skinname[MAX_QPATH];
-	int				skinnum;
 
 	// Model scale.
 
@@ -1390,24 +1415,10 @@ typedef struct entity_state_s
 
 	// EF_XXX.
 
-	int				effects;
-
-	// RF_XXX.
-
-	int				renderfx;
 
 	// What's this exactly?
 
 	byte color[4];
-
-	// Client prediction: 8*(bits 0-4) is x/y radius, 8*(bits 5-9) is z min, 8*(bits 10-15) is z max.
-	// Note that gi.linkentity() sets this up.
-
-	short			solid;
-
-	// For looping sounds, to guarantee shutoff.
-
-	byte			sound;
 
 	// For looping sounds, so we can set volume and attenuation.
 
@@ -1446,8 +1457,22 @@ typedef struct
 	pmove_state_t pmove;        /* for prediction */
 
 	vec3_t viewangles;          /* for fixed views */
+	vec3_t viewoffset;          /* add to pmovestate->origin */
+	vec3_t kick_angles;         /* add to view direction to get render angles */
+								/* set by weapon kicks, pain effects, etc */
 
-	// For remote camera views.
+	vec3_t gunangles;
+	vec3_t gunoffset;
+	int gunindex;
+	int gunframe;
+
+	float blend[4];             /* rgba full screen effect */
+	float fov;                  /* horizontal field of view */
+	int rdflags;                /* refdef flags */
+
+	short stats[MAX_STATS];     /* fast status bar updates */
+
+	/* For remote camera views */
 
 	vec3_t			remote_vieworigin,
 		remote_viewangles;
@@ -1460,11 +1485,6 @@ typedef struct
 	// Deltas added to the player model's client determined angles.
 
 	vec3_t			offsetangles;
-
-	// Horizontal field of view.
-
-	float fov;                  /* horizontal field of view */
-	int rdflags;                /* refdef flags */
 
 	// Index of edict currently targeted by the player's auto-targeting facility.
 
@@ -1488,8 +1508,6 @@ typedef struct
 	// Current state of players in this clients view (one bit per player).
 
 	int				PIV;
-
-	short stats[MAX_STATS];     /* fast status bar updates */
 
 	// These are NEVER sent accross the net, but are purely client-side repositiories needed by
 	// prediction and are filled from the player's entity_state_t.

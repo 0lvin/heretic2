@@ -128,57 +128,7 @@ void AnglesFromDirAndUp(vec3_t direction, vec3_t up, vec3_t angles)
 	VectorAngles(direction, up, angles);
 }
 
-void RealAngleVectors(vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
-{
-	float v5;
-	float v6;
-	float v7;
-	float v8;
-	int result;
-	float v10;
-	float v11;
-	float v12;
-	float a1a;
-
-	v5 = sin(angles[1]);
-	v6 = cos(angles[1]);
-	v7 = sin(angles[0]);
-	v12 = cos(angles[0]);
-	a1a = sin(angles[2]);
-	v11 = cos(angles[2]);
-	if (forward)
-	{
-		forward[0] = v12 * v6;
-		forward[1] = v12 * v5;
-		forward[2] = -v7;
-	}
-	if (right)
-	{
-		v8 = a1a * v7;
-		right[0] = v11 * v5 - v8 * v6;
-		right[1] = -(v8 * v5) - v11 * v6;
-		right[2] = *(float *)&a1a * v12 * -1.0;
-	}
-	if (up)
-	{
-		v10 = v7 * v11;
-		up[0] = v10 * v6 + a1a * v5;
-		up[1] = v10 * v5 - a1a * v6;
-		up[2] = v11 * v12;
-	}
-}
-
-void DirAndUpFromAngles(vec3_t angles, vec3_t direction, vec3_t up)
-{
-	matrix3_t v4;
-
-	Matrix3FromAngles(angles, v4);
-	Matrix3MultByVec3(v4, vec3_right, direction);
-	Matrix3MultByVec3(v4, vec3_up, up);
-}
-
-void vectoangles(vec3_t vec, vec3_t angles) {
-	float *v2;
+void VectoAngles(vec3_t vec, vec3_t angles) {
 	vec3_t v3;
 
 	if (*vec != 0.0 || vec[1] != 0.0 || vec[2] != 0.0)
@@ -237,16 +187,19 @@ void VectorGetOffsetOrigin(vec3_t off, vec3_t org, vec_t degree, vec3_t out)
 	out[2] = org[2] + out[2];
 }
 
-vec_t VectorSeparation(vec3_t a1, vec3_t a2)
+vec_t VectorSeparation(vec3_t ina, vec3_t inb)
 {
-	float v2; // st7@1
-	float v3; // st6@1
-	float v4; // st5@1
+	int i;
+	double length;
 
-	v2 = *a1 - *a2;
-	v3 = a1[1] - a2[1];
-	v4 = a1[2] - a2[2];
-	return sqrt(v4 * v4 + v2 * v2 + v3 * v3);
+	length = 0;
+
+	for (i = 0; i < 3; i++)
+	{
+		length += ina[i] * inb[i];
+	}
+
+	return sqrt(length);
 }
 
 void VectorRandomCopy(vec3_t a1, vec3_t a2, float a3)
@@ -266,14 +219,13 @@ void VectorRandomAdd(vec3_t a1, vec3_t a2, vec3_t a3)
 	a3[2] = flrand(-a2[2], a2[2]) + a1[2];
 }
 
-float vhlen(vec3_t p1, vec3_t p2)
+float Vector2Length(vec3_t p1, vec3_t p2)
 {
-	float v2; // st7@1
-	float v3; // st6@1
+	float x, y;
 
-	v2 = p1[0] - p2[0];
-	v3 = p1[1] - p2[1];
-	return sqrt(v3 * v3 + v2 * v2);
+	x = p1[0] - p2[0];
+	y = p1[1] - p2[1];
+	return sqrt(x * x + y * y);
 }
 
 vec_t VectorLengthSquared(vec3_t v)
@@ -292,15 +244,6 @@ void VectorDegreesToRadians (vec3_t in, vec3_t out)
 	out[0] = in[0] * ANGLE_TO_RAD;
 	out[1] = in[1] * ANGLE_TO_RAD;
 	out[2] = in[2] * ANGLE_TO_RAD;
-}
-
-void VectorScaleByVector (vec3_t in, vec3_t scale, vec3_t out)
-{
-	//assert(out != vec3_origin);
-
-	out[0] = in[0] * scale[0];
-	out[1] = in[1] * scale[1];
-	out[2] = in[2] * scale[2];
 }
 
 void Vec3SubtractAssign(vec3_t value, vec3_t subFrom)
@@ -328,26 +271,6 @@ void Vec3ScaleAssign(vec_t value, vec3_t scaleBy)
 	scaleBy[0] *= value;
 	scaleBy[1] *= value;
 	scaleBy[2] *= value;
-}
-
-qboolean FloatIsZeroEpsilon(float f)
-{
-	return (Q_fabs(f) < FLOAT_ZERO_EPSILON);
-}
-
-qboolean FloatIsZero(float f, float epsilon)
-{
-	return (Q_fabs(f) < epsilon);
-}
-
-qboolean Vec3EqualsEpsilon(vec3_t v1, vec3_t v2)
-{
-	if(!FloatIsZeroEpsilon(v1[0] - v2[0]) || !FloatIsZeroEpsilon(v1[1] - v2[1]) || !FloatIsZeroEpsilon(v1[2] - v2[2]))
-	{
-		return false;
-	}
-
-	return true;
 }
 
 qboolean Vec3IsZero(vec3_t vec)

@@ -567,7 +567,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	len = len2*8;// shrunk down so range can be up to 2048
 
 	// if there is a cheaper way to get ACCURATE right and up, I'd be happy to see it...
-	vectoangles(dir, ang);
+	VectoAngles(dir, ang);
 	ang[PITCH] *= -1;// something's broken with angle signs somewhere ;(
 	AngleVectors(ang, fwd, right, up);
 

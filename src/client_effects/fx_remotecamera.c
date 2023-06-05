@@ -39,7 +39,7 @@ void FXRemoteCamera(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	VectorNormalize(Forward);
 
-	vectoangles(Forward,Angles);
+	VectoAngles(Forward,Angles);
 
 	RemoteCamera=ClientEntity_new(Type,Flags|CEF_NOMOVE,Origin,NULL,5000);
 
