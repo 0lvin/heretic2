@@ -434,6 +434,7 @@ set(Client-Source
 	${CLIENT_SRC_DIR}/menu/menu.c
 	${CLIENT_SRC_DIR}/menu/qmenu.c
 	${CLIENT_SRC_DIR}/menu/videomenu.c
+	${CLIENT_SRC_DIR}/smacker/smacker.c
 	${CLIENT_SRC_DIR}/sound/ogg.c
 	${CLIENT_SRC_DIR}/sound/openal.c
 	${CLIENT_SRC_DIR}/sound/qal.c

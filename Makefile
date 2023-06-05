@@ -856,6 +856,7 @@ CLIENT_OBJS_ := \
 	src/client/menu/menu.o \
 	src/client/menu/qmenu.o \
 	src/client/menu/videomenu.o \
+	src/client/smacker/smacker.o \
 	src/client/sound/sdl.o \
 	src/client/sound/ogg.o \
 	src/client/sound/openal.o \
