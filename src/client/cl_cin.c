@@ -719,6 +719,47 @@ SCR_PlayCinematic(char *arg)
 		return;
 	}
 
+	if (dot && !strcmp(dot, ".roq"))
+	{
+		short value;
+		size_t len;
+
+		Com_sprintf(name, sizeof(name), "video/%s", arg);
+
+		len = FS_LoadFile(name, &cin.smk_mem);
+
+		if (!cin.smk_mem || len <=0)
+		{
+			cl.cinematictime = 0; /* done */
+			return;
+		}
+
+		value = LittleShort(*((int *)cin.smk_mem));
+
+		if (value != 0x1084)
+		{
+			Com_Error(ERR_DROP, "Bad ident value 0x%x", value);
+		}
+
+		value = LittleShort(*((int *)((byte *)cin.smk_mem + 6)));
+		printf("Not implemeted %s, %d fps\n", name, value);
+
+		value = LittleShort(*((int *)((byte *)cin.smk_mem + 8)));
+		printf("Not implemeted %s, %x roq_id\n", name, value);
+
+		value = ((((byte *)cin.smk_mem)[10]) +
+				 (((byte *)cin.smk_mem)[11] << 8) +
+				 (((byte *)cin.smk_mem)[12] << 16));
+		printf("Not implemeted %s, %d framesize\n", name, value);
+
+		value = LittleShort(*((int *)((byte *)cin.smk_mem + 14)));
+		printf("Not implemeted %s, %x flags\n", name, value);
+
+		SCR_FinishCinematic();
+		cl.cinematictime = 0; /* done */
+		return;
+	}
+
 	if (dot && !strcmp(dot, ".smk"))
 	{
 		unsigned char trackmask, channels[7], depth[7];
