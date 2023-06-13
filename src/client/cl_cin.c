@@ -679,6 +679,16 @@ SCR_DrawCinematic(void)
 	return true;
 }
 
+#define ROQ_QUAD			0x1000
+#define ROQ_QUAD_INFO		0x1001
+#define ROQ_CODEBOOK		0x1002
+#define ROQ_QUAD_VQ			0x1011
+#define ROQ_QUAD_JPEG		0x1012
+#define ROQ_QUAD_HANG		0x1013
+#define ROQ_PACKET			0x1030
+#define ZA_SOUND_MONO		0x1020
+#define ZA_SOUND_STEREO		0x1021
+
 void
 SCR_PlayCinematic(char *arg)
 {
@@ -722,7 +732,7 @@ SCR_PlayCinematic(char *arg)
 	if (dot && !strcmp(dot, ".roq"))
 	{
 		short value;
-		size_t len;
+		size_t len, RoQPlayed;
 
 		Com_sprintf(name, sizeof(name), "video/%s", arg);
 
@@ -741,19 +751,39 @@ SCR_PlayCinematic(char *arg)
 			Com_Error(ERR_DROP, "Bad ident value 0x%x", value);
 		}
 
+		value = LittleLong(*((int *)((byte *)cin.smk_mem + 2)));
+		printf("Not implemeted %s, %d size\n", name, value);
+
 		value = LittleShort(*((int *)((byte *)cin.smk_mem + 6)));
 		printf("Not implemeted %s, %d fps\n", name, value);
 
-		value = LittleShort(*((int *)((byte *)cin.smk_mem + 8)));
-		printf("Not implemeted %s, %x roq_id\n", name, value);
+		RoQPlayed = 8;
 
-		value = ((((byte *)cin.smk_mem)[10]) +
-				 (((byte *)cin.smk_mem)[11] << 8) +
-				 (((byte *)cin.smk_mem)[12] << 16));
-		printf("Not implemeted %s, %d framesize\n", name, value);
+		while (RoQPlayed < len)
+		{
+			int roq_id, RoQFrameSize;
 
-		value = LittleShort(*((int *)((byte *)cin.smk_mem + 14)));
-		printf("Not implemeted %s, %x flags\n", name, value);
+			roq_id = LittleShort(*((int *)((byte *)cin.smk_mem +  RoQPlayed)));
+			RoQFrameSize = LittleLong(*((int *)((byte *)cin.smk_mem + RoQPlayed + 2)));
+
+			switch (roq_id) {
+				case ROQ_QUAD: printf("0x%lx ident ROQ_QUAD(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ROQ_QUAD_INFO: printf("0x%lx ident ROQ_QUAD_INFO(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ROQ_CODEBOOK: printf("0x%lx ident ROQ_CODEBOOK(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ROQ_QUAD_VQ: printf("0x%lx ident ROQ_QUAD_VQ(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ROQ_QUAD_JPEG: printf("0x%lx ident ROQ_QUAD_JPEG(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ROQ_QUAD_HANG: printf("0x%lx ident ROQ_QUAD_HANG(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ROQ_PACKET: printf("0x%lx ident ROQ_PACKET(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ZA_SOUND_MONO: printf("0x%lx ident ZA_SOUND_MONO(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ZA_SOUND_STEREO: printf("0x%lx ident ZA_SOUND_STEREO(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				default: printf("0x%lx ident value 0x%x(0x%x)\n", RoQPlayed, roq_id, RoQFrameSize); break;
+			}
+
+			RoQPlayed += (RoQFrameSize + 8);
+			// printf("%s size value 0x%x (%d) %ld -> %ld\n", name, value, value, RoQPlayed, len);
+		}
+
+		printf("\n%lx => %lx\n\n", RoQPlayed, len);
 
 		SCR_FinishCinematic();
 		cl.cinematictime = 0; /* done */
