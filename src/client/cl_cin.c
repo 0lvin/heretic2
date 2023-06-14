@@ -689,6 +689,97 @@ SCR_DrawCinematic(void)
 #define ZA_SOUND_MONO		0x1020
 #define ZA_SOUND_STEREO		0x1021
 
+//-----------------------------------------------------------------------------
+// RllSetupTable
+//
+// Allocates and initializes the square table.
+//
+// Parameters:	None
+//
+// Returns:		Nothing
+//-----------------------------------------------------------------------------
+static void RllSetupTable(short *sqrTable)
+{
+	int z;
+
+	for (z=0;z<128;z++) {
+		sqrTable[z] = (short)(z*z);
+		sqrTable[z+128] = (short)(-sqrTable[z]);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// RllDecodeMonoToStereo
+//
+// Decode mono source data into a stereo buffer. Output is 4 times the number
+// of bytes in the input.
+//
+// Parameters:	from -> buffer holding encoded data
+//				to ->	buffer to hold decoded data
+//				size =	number of bytes of input (= 1/4 # of bytes of output)
+//				signedOutput = 0 for unsigned output, non-zero for signed output
+//				flag = flags from asset header
+//
+// Returns:		Number of samples placed in output buffer
+//-----------------------------------------------------------------------------
+long RllDecodeMonoToStereo(unsigned char *from, short *to, unsigned int size,
+	char signedOutput, unsigned short flag, short *sqrTable)
+{
+	unsigned int z;
+	int prev;
+
+	if (signedOutput)
+		prev = flag - 0x8000;
+	else
+		prev = flag;
+
+	for (z = 0; z < size; z++) {
+		prev = (short)(prev + sqrTable[from[z]]);
+		to[z*2+0] = to[z*2+1] = (short)(prev);
+	}
+
+	return size;	// * 2 * sizeof(short));
+}
+
+//-----------------------------------------------------------------------------
+// RllDecodeStereoToStereo
+//
+// Decode stereo source data into a stereo buffer.
+//
+// Parameters:	from -> buffer holding encoded data
+//				to ->	buffer to hold decoded data
+//				size =	number of bytes of input (= 1/2 # of bytes of output)
+//				signedOutput = 0 for unsigned output, non-zero for signed output
+//				flag = flags from asset header
+//
+// Returns:		Number of samples placed in output buffer
+//-----------------------------------------------------------------------------
+long RllDecodeStereoToStereo(unsigned char *from, short *to, unsigned int size,
+	char signedOutput, unsigned short flag, short *sqrTable)
+{
+	unsigned int z;
+	unsigned char *zz = from;
+	int	prevL, prevR;
+
+	if (signedOutput) {
+		prevL = (flag & 0xff00) - 0x8000;
+		prevR = ((flag & 0x00ff) << 8) - 0x8000;
+	} else {
+		prevL = flag & 0xff00;
+		prevR = (flag & 0x00ff) << 8;
+	}
+
+	for (z=0;z<size;z+=2) {
+		prevL = (short)(prevL + sqrTable[*zz++]);
+		prevR = (short)(prevR + sqrTable[*zz++]);
+		to[z+0] = (short)(prevL);
+		to[z+1] = (short)(prevR);
+	}
+
+	return (size>>1);	//*sizeof(short));
+}
+
+
 void
 SCR_PlayCinematic(char *arg)
 {
@@ -733,6 +824,7 @@ SCR_PlayCinematic(char *arg)
 	{
 		short value;
 		size_t len, RoQPlayed;
+		short sqrTable[256];
 
 		Com_sprintf(name, sizeof(name), "video/%s", arg);
 
@@ -751,6 +843,8 @@ SCR_PlayCinematic(char *arg)
 			Com_Error(ERR_DROP, "Bad ident value 0x%x", value);
 		}
 
+		RllSetupTable(sqrTable);
+
 		value = LittleLong(*((int *)((byte *)cin.smk_mem + 2)));
 		printf("Not implemeted %s, %d size\n", name, value);
 
@@ -761,10 +855,11 @@ SCR_PlayCinematic(char *arg)
 
 		while (RoQPlayed < len)
 		{
-			int roq_id, RoQFrameSize;
+			int roq_id, RoQFrameSize, roq_flags;
 
 			roq_id = LittleShort(*((int *)((byte *)cin.smk_mem +  RoQPlayed)));
 			RoQFrameSize = LittleLong(*((int *)((byte *)cin.smk_mem + RoQPlayed + 2)));
+			roq_flags = LittleShort(*((int *)((byte *)cin.smk_mem +  RoQPlayed + 6)));
 
 			switch (roq_id) {
 				case ROQ_QUAD: printf("0x%lx ident ROQ_QUAD(0x%x)\n", RoQPlayed, RoQFrameSize); break;
@@ -774,8 +869,34 @@ SCR_PlayCinematic(char *arg)
 				case ROQ_QUAD_JPEG: printf("0x%lx ident ROQ_QUAD_JPEG(0x%x)\n", RoQPlayed, RoQFrameSize); break;
 				case ROQ_QUAD_HANG: printf("0x%lx ident ROQ_QUAD_HANG(0x%x)\n", RoQPlayed, RoQFrameSize); break;
 				case ROQ_PACKET: printf("0x%lx ident ROQ_PACKET(0x%x)\n", RoQPlayed, RoQFrameSize); break;
-				case ZA_SOUND_MONO: printf("0x%lx ident ZA_SOUND_MONO(0x%x)\n", RoQPlayed, RoQFrameSize); break;
-				case ZA_SOUND_STEREO: printf("0x%lx ident ZA_SOUND_STEREO(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ZA_SOUND_MONO:
+					{
+						short		sbuf[32768];
+						int ssize;
+
+						printf("0x%lx ident !ZA_SOUND_MONO(0x%x)\n", RoQPlayed, RoQFrameSize);
+						ssize = RllDecodeMonoToStereo(
+							(byte *)cin.smk_mem +  RoQPlayed + 8,
+							sbuf,
+							RoQFrameSize, 0,
+							(unsigned short)roq_flags, sqrTable);
+						S_RawSamples(ssize, 22050, 2, 1, (byte *)sbuf, Cvar_VariableValue("s_volume"));
+					}
+					break;
+				case ZA_SOUND_STEREO:
+					{
+						short		sbuf[32768];
+						int ssize;
+
+						printf("0x%lx ident !ZA_SOUND_STEREO(0x%x)\n", RoQPlayed, RoQFrameSize);
+						ssize = RllDecodeStereoToStereo(
+							(byte *)cin.smk_mem +  RoQPlayed + 8,
+							sbuf,
+							RoQFrameSize, 0,
+							(unsigned short)roq_flags, sqrTable);
+						S_RawSamples(ssize, 22050, 2, 1, (byte *)sbuf, Cvar_VariableValue("s_volume"));
+					}
+					break;
 				default: printf("0x%lx ident value 0x%x(0x%x)\n", RoQPlayed, roq_id, RoQFrameSize); break;
 			}
 
