@@ -689,6 +689,96 @@ SCR_DrawCinematic(void)
 #define ZA_SOUND_MONO		0x1020
 #define ZA_SOUND_STEREO		0x1021
 
+static	long				ROQ_YY_tab[256];
+static	long				ROQ_UB_tab[256];
+static	long				ROQ_UG_tab[256];
+static	long				ROQ_VG_tab[256];
+static	long				ROQ_VR_tab[256];
+static	unsigned short		vq2[256*16*4];
+static	unsigned short		vq4[256*64*4];
+static	unsigned short		vq8[256*256*4];
+
+static void ROQ_GenYUVTables( void )
+{
+	float t_ub,t_vr,t_ug,t_vg;
+	long i;
+
+	t_ub = (1.77200f/2.0f) * (float)(1<<6) + 0.5f;
+	t_vr = (1.40200f/2.0f) * (float)(1<<6) + 0.5f;
+	t_ug = (0.34414f/2.0f) * (float)(1<<6) + 0.5f;
+	t_vg = (0.71414f/2.0f) * (float)(1<<6) + 0.5f;
+	for(i=0;i<256;i++) {
+		float x = (float)(2 * i - 255);
+
+		ROQ_UB_tab[i] = (long)( ( t_ub * x) + (1<<5));
+		ROQ_VR_tab[i] = (long)( ( t_vr * x) + (1<<5));
+		ROQ_UG_tab[i] = (long)( (-t_ug * x));
+		ROQ_VG_tab[i] = (long)( (-t_vg * x) + (1<<5));
+		ROQ_YY_tab[i] = (long)( (i << 6) | (i >> 2) );
+	}
+}
+
+#define VQ2TO4(a,b,c,d) { \
+	*c++ = a[0];	\
+	*d++ = a[0];	\
+	*d++ = a[0];	\
+	*c++ = a[1];	\
+	*d++ = a[1];	\
+	*d++ = a[1];	\
+	*c++ = b[0];	\
+	*d++ = b[0];	\
+	*d++ = b[0];	\
+	*c++ = b[1];	\
+	*d++ = b[1];	\
+	*d++ = b[1];	\
+	*d++ = a[0];	\
+	*d++ = a[0];	\
+	*d++ = a[1];	\
+	*d++ = a[1];	\
+	*d++ = b[0];	\
+	*d++ = b[0];	\
+	*d++ = b[1];	\
+	*d++ = b[1];	\
+	a += 2; b += 2; }
+
+#define VQ2TO2(a,b,c,d) { \
+	*c++ = *a;	\
+	*d++ = *a;	\
+	*d++ = *a;	\
+	*c++ = *b;	\
+	*d++ = *b;	\
+	*d++ = *b;	\
+	*d++ = *a;	\
+	*d++ = *a;	\
+	*d++ = *b;	\
+	*d++ = *b;	\
+	a++; b++; }
+
+/******************************************************************************
+*
+* Function:
+*
+* Description:
+*
+******************************************************************************/
+static unsigned int yuv_to_rgb24( long y, long u, long v )
+{
+	long r,g,b,YY = (long)(ROQ_YY_tab[(y)]);
+
+	r = (YY + ROQ_VR_tab[v]) >> 6;
+	g = (YY + ROQ_UG_tab[u] + ROQ_VG_tab[v]) >> 6;
+	b = (YY + ROQ_UB_tab[u]) >> 6;
+
+	if (r<0) r = 0;
+	if (g<0) g = 0;
+	if (b<0) b = 0;
+	if (r > 255) r = 255;
+	if (g > 255) g = 255;
+	if (b > 255) b = 255;
+
+	return LittleLong ((unsigned long)((r)|(g<<8)|(b<<16))|(255UL<<24));
+}
+
 //-----------------------------------------------------------------------------
 // RllSetupTable
 //
@@ -729,9 +819,13 @@ long RllDecodeMonoToStereo(unsigned char *from, short *to, unsigned int size,
 	int prev;
 
 	if (signedOutput)
+	{
 		prev = flag - 0x8000;
+	}
 	else
+	{
 		prev = flag;
+	}
 
 	for (z = 0; z < size; z++) {
 		prev = (short)(prev + sqrTable[from[z]]);
@@ -824,6 +918,7 @@ SCR_PlayCinematic(char *arg)
 	{
 		short value;
 		size_t len, RoQPlayed;
+		int numQuads;
 		short sqrTable[256];
 
 		Com_sprintf(name, sizeof(name), "video/%s", arg);
@@ -843,6 +938,7 @@ SCR_PlayCinematic(char *arg)
 			Com_Error(ERR_DROP, "Bad ident value 0x%x", value);
 		}
 
+		ROQ_GenYUVTables();
 		RllSetupTable(sqrTable);
 
 		value = LittleLong(*((int *)((byte *)cin.smk_mem + 2)));
@@ -852,6 +948,7 @@ SCR_PlayCinematic(char *arg)
 		printf("Not implemeted %s, %d fps\n", name, value);
 
 		RoQPlayed = 8;
+		numQuads = -1;
 
 		while (RoQPlayed < len)
 		{
@@ -862,8 +959,27 @@ SCR_PlayCinematic(char *arg)
 			roq_flags = LittleShort(*((int *)((byte *)cin.smk_mem +  RoQPlayed + 6)));
 
 			switch (roq_id) {
-				case ROQ_QUAD: printf("0x%lx ident ROQ_QUAD(0x%x)\n", RoQPlayed, RoQFrameSize); break;
-				case ROQ_QUAD_INFO: printf("0x%lx ident ROQ_QUAD_INFO(0x%x)\n", RoQPlayed, RoQFrameSize); break;
+				case ROQ_QUAD:
+					{
+						printf("0x%lx ident ROQ_QUAD(0x%x)\n", RoQPlayed, RoQFrameSize);
+					}
+					break;
+				case ROQ_QUAD_INFO:
+					{
+						printf("0x%lx ident ROQ_QUAD_INFO(0x%x)\n", RoQPlayed, RoQFrameSize);
+
+						if (numQuads == -1)
+						{
+							readQuadInfo( (byte *)cin.smk_mem +  RoQPlayed + 8 );
+							setupQuad( 0, 0 );
+						}
+
+						if (numQuads != 1)
+						{
+							numQuads = 0;
+						}
+					}
+					break;
 				case ROQ_CODEBOOK: printf("0x%lx ident ROQ_CODEBOOK(0x%x)\n", RoQPlayed, RoQFrameSize); break;
 				case ROQ_QUAD_VQ: printf("0x%lx ident ROQ_QUAD_VQ(0x%x)\n", RoQPlayed, RoQFrameSize); break;
 				case ROQ_QUAD_JPEG: printf("0x%lx ident ROQ_QUAD_JPEG(0x%x)\n", RoQPlayed, RoQFrameSize); break;
@@ -874,7 +990,7 @@ SCR_PlayCinematic(char *arg)
 						short		sbuf[32768];
 						int ssize;
 
-						printf("0x%lx ident !ZA_SOUND_MONO(0x%x)\n", RoQPlayed, RoQFrameSize);
+						printf("0x%lx ident ZA_SOUND_MONO(0x%x)\n", RoQPlayed, RoQFrameSize);
 						ssize = RllDecodeMonoToStereo(
 							(byte *)cin.smk_mem +  RoQPlayed + 8,
 							sbuf,
@@ -888,7 +1004,7 @@ SCR_PlayCinematic(char *arg)
 						short		sbuf[32768];
 						int ssize;
 
-						printf("0x%lx ident !ZA_SOUND_STEREO(0x%x)\n", RoQPlayed, RoQFrameSize);
+						printf("0x%lx ident ZA_SOUND_STEREO(0x%x)\n", RoQPlayed, RoQFrameSize);
 						ssize = RllDecodeStereoToStereo(
 							(byte *)cin.smk_mem +  RoQPlayed + 8,
 							sbuf,
