@@ -970,8 +970,9 @@ SCR_PlayCinematic(char *arg)
 
 						if (numQuads == -1)
 						{
-							readQuadInfo( (byte *)cin.smk_mem +  RoQPlayed + 8 );
-							setupQuad( 0, 0 );
+							// Fixme
+							// readQuadInfo( (byte *)cin.smk_mem +  RoQPlayed + 8 );
+							// setupQuad( 0, 0 );
 						}
 
 						if (numQuads != 1)
