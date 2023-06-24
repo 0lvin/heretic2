@@ -50,11 +50,11 @@ BUILD_DEBUG_DIR=build
 
 CC ?= gcc
 CXX ?= g++
-BASE_CFLAGS=-Dstricmp=strcasecmp
+BASE_CFLAGS=-Dstricmp=strcasecmp $(shell sdl2-config --cflags)
 
 DEBUG_CFLAGS=$(BASE_CFLAGS) -O0 -g -Wall -pipe -fsanitize=address -fsanitize=undefined -fstack-protector-all
 # -flto=auto
-LDFLAGS=-ldl -lm
+LDFLAGS=-ldl -lm $(shell sdl2-config --libs)
 SVGALDFLAGS=-lvga -lm
 XLDFLAGS=-lX11 -lXext -lXxf86dga
 XCFLAGS=
