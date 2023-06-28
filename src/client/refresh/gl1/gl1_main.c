@@ -1903,10 +1903,17 @@ R_DrawBeam(entity_t *e)
 	glDepthMask(GL_TRUE);
 }
 
-void	RI_BeginRegistration (char *map);
-struct model_s	*RI_RegisterModel (char *name);
-void RI_SetSky (char *name, float rotate, vec3_t axis);
-void	RI_EndRegistration (void);
+extern int RI_PrepareForWindow(void);
+extern int RI_InitContext(void* win);
+
+extern void RI_BeginRegistration(char *model);
+extern struct model_s * RI_RegisterModel(char *name);
+extern struct image_s * RI_RegisterSkin(char *name);
+
+extern void RI_SetSky(char *name, float rotate, vec3_t axis);
+extern void RI_EndRegistration(void);
+
+extern qboolean RI_IsVSyncActive(void);
 
 static void
 DrawLine(vec3_t start, vec3_t end) {
@@ -1919,11 +1926,6 @@ DrawLine(vec3_t start, vec3_t end) {
 	debug_lines[numDebugLines].end[2] = end[2];
 
 	numDebugLines++;
-}
-
-void
-RI_UpdateGamma(void)
-{
 }
 
 static void RI_EndFrame(void)
@@ -1953,7 +1955,11 @@ GetRefAPI(refimport_t imp)
 
 	re.Init = RI_Init;
 	re.Shutdown = RI_Shutdown;
-
+	re.PrepareForWindow = RI_PrepareForWindow;
+	re.InitContext = RI_InitContext;
+	re.GetDrawableSize = RI_GetDrawableSize;
+	re.ShutdownContext = RI_ShutdownContext;
+	re.IsVSyncActive = RI_IsVSyncActive;
 	re.BeginRegistration = RI_BeginRegistration;
 	re.RegisterModel = RI_RegisterModel;
 	re.RegisterSkin = RI_RegisterSkin;

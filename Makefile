@@ -504,6 +504,7 @@ REF_GL_OBJS = \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_main.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_misc.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_surf.o \
+	$(BUILDDIR)/src/client/refresh/gl1/gl1_sdl.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_scrap.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_lightmap.o \
 	$(BUILDDIR)/src/client/refresh/gl1/gl1_warp.o \
