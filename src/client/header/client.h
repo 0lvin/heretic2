@@ -614,6 +614,7 @@ void CL_PredictMovement (void);
 trace_t CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 
 //=============================================================================
+#include <limits.h>
 #define	FX_API_VERSION		1
 
 //

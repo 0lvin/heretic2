@@ -31,13 +31,6 @@
 
 static cvar_t *cfg_unbindall;
 
-#include <ctype.h>
-
-char *Sys_GetClipboardData(void)
-{
-	return NULL;
-}
-
 /*
  * key up events are sent even if in console mode
  */
@@ -308,80 +301,78 @@ CompleteCommand(void)
 }
 
 void
-Key_Console(int key)
+CompleteMapNameCommand(void)
 {
+	int i;
+	char *s, *t, *cmdArg;
+	const char *mapCmdString = "map ";
 
-	switch ( key )
+	s = key_lines[edit_line] + 1;
+
+	if ((*s == '\\') || (*s == '/'))
 	{
-	case K_KP_SLASH:
-		key = '/';
-		break;
-	case K_KP_MINUS:
-		key = '-';
-		break;
-	case K_KP_PLUS:
-		key = '+';
-		break;
-	case K_KP_HOME:
-		key = '7';
-		break;
-	case K_KP_UPARROW:
-		key = '8';
-		break;
-	case K_KP_PGUP:
-		key = '9';
-		break;
-	case K_KP_LEFTARROW:
-		key = '4';
-		break;
-	case K_KP_5:
-		key = '5';
-		break;
-	case K_KP_RIGHTARROW:
-		key = '6';
-		break;
-	case K_KP_END:
-		key = '1';
-		break;
-	case K_KP_DOWNARROW:
-		key = '2';
-		break;
-	case K_KP_PGDN:
-		key = '3';
-		break;
-	case K_KP_INS:
-		key = '0';
-		break;
-	case K_KP_DEL:
-		key = '.';
-		break;
+		s++;
 	}
 
-	if ( ( toupper( key ) == 'V' && keydown[K_CTRL] ) ||
-		 ( ( ( key == K_INS ) || ( key == K_KP_INS ) ) && keydown[K_SHIFT] ) )
+	t = s;
+
+	for (i = 0; i < strlen(mapCmdString); i++)
 	{
-		char *cbd;
-
-		if ( ( cbd = Sys_GetClipboardData() ) != 0 )
+		if (t[i] == mapCmdString[i])
 		{
-			int i;
-
-			strtok( cbd, "\n\r\b" );
-
-			i = strlen( cbd );
-			if ( i + key_linepos >= MAXCMDLINE)
-				i= MAXCMDLINE - key_linepos;
-
-			if ( i > 0 )
-			{
-				cbd[i]=0;
-				strcat( key_lines[edit_line], cbd );
-				key_linepos += i;
-			}
-			free( cbd );
+			s++;
 		}
+		else
+		{
+			return;
+		}
+	}
 
-		return;
+	cmdArg = Cmd_CompleteMapCommand(s);
+
+	if (cmdArg)
+	{
+		key_lines[edit_line][1] = '/';
+		strcpy(key_lines[edit_line] + 2, mapCmdString);
+		key_linepos = strlen(key_lines[edit_line]);
+		strcpy(key_lines[edit_line] + key_linepos, cmdArg);
+		key_linepos = key_linepos + strlen(cmdArg);
+	}
+}
+
+/*
+ * Interactive line editing and console scrollback
+ */
+void
+Key_Console(int key)
+{
+	/*
+	 * Ignore keypad in console to prevent duplicate
+	 * entries through key presses processed as a
+	 * normal char event and additionally as key
+	 * event.
+	 */
+	switch (key)
+	{
+		case K_KP_SLASH:
+		case K_KP_MINUS:
+		case K_KP_PLUS:
+		case K_KP_HOME:
+		case K_KP_UPARROW:
+		case K_KP_PGUP:
+		case K_KP_LEFTARROW:
+		case K_KP_5:
+		case K_KP_RIGHTARROW:
+		case K_KP_END:
+		case K_KP_DOWNARROW:
+		case K_KP_PGDN:
+		case K_KP_INS:
+		case K_KP_DEL:
+			return;
+			break;
+
+		default:
+			break;
 	}
 
 	if (key == 'l')
@@ -427,11 +418,14 @@ Key_Console(int key)
 	{
 		/* command completion */
 		CompleteCommand();
+		CompleteMapNameCommand();
 
 		return;
 	}
 
-	if ( ( key == K_BACKSPACE ) || ( key == K_LEFTARROW ) || ( key == K_KP_LEFTARROW ) || ( ( key == 'h' ) && ( keydown[K_CTRL] ) ) )
+	if ((key == K_BACKSPACE) || (key == K_LEFTARROW) ||
+		(key == K_KP_LEFTARROW) ||
+		((key == 'h') && (keydown[K_CTRL])))
 	{
 		if (key_linepos > 1)
 		{
@@ -441,25 +435,42 @@ Key_Console(int key)
 		return;
 	}
 
-	if ( ( key == K_UPARROW ) || ( key == K_KP_UPARROW ) ||
-		 ( ( key == 'p' ) && keydown[K_CTRL] ) )
+	if (key == K_DEL)
 	{
-		do
-		{
-			history_line = (history_line - 1) & 31;
-		} while (history_line != edit_line
-				&& !key_lines[history_line][1]);
-		if (history_line == edit_line)
-			history_line = (edit_line+1)&31;
-		strcpy(key_lines[edit_line], key_lines[history_line]);
-		key_linepos = strlen(key_lines[edit_line]);
+		memmove(key_lines[edit_line] + key_linepos,
+				key_lines[edit_line] + key_linepos + 1,
+				sizeof(key_lines[edit_line]) - key_linepos - 1);
 		return;
 	}
 
-	if ( ( key == K_DOWNARROW ) || ( key == K_KP_DOWNARROW ) ||
-		 ( ( key == 'n' ) && keydown[K_CTRL] ) )
+	if ((key == K_UPARROW) || (key == K_KP_UPARROW) ||
+		((key == 'p') && keydown[K_CTRL]))
 	{
-		if (history_line == edit_line) return;
+		do
+		{
+			history_line = (history_line - 1) & (NUM_KEY_LINES-1);
+		}
+		while (history_line != edit_line &&
+			   !key_lines[history_line][1]);
+
+		if (history_line == edit_line)
+		{
+			history_line = (edit_line + 1) & (NUM_KEY_LINES-1);
+		}
+
+		memmove(key_lines[edit_line], key_lines[history_line], sizeof(key_lines[edit_line]));
+		key_linepos = (int)strlen(key_lines[edit_line]);
+		return;
+	}
+
+	if ((key == K_DOWNARROW) || (key == K_KP_DOWNARROW) ||
+		((key == 'n') && keydown[K_CTRL]))
+	{
+		if (history_line == edit_line)
+		{
+			return;
+		}
+
 		do
 		{
 			history_line = (history_line + 1) & (NUM_KEY_LINES-1);
@@ -846,6 +857,17 @@ Key_Bind_f(void)
 		return;
 	}
 
+	/* don't allow binding escape or the special console keys */
+	if(b == K_ESCAPE || b == '^' || b == '`' || b == '~' || b == K_JOY_BACK)
+	{
+		if(doneWithDefaultCfg)
+		{
+			/* don't warn about this when it's from default.cfg, we can't change that anyway */
+			Com_Printf("You can't bind the special key \"%s\"!\n", Cmd_Argv(1));
+		}
+		return;
+	}
+
 	if (c == 2)
 	{
 		if (keybindings[b])
@@ -1078,6 +1100,20 @@ Key_Init(void)
 	Cmd_AddCommand("bindlist", Key_Bindlist_f);
 }
 
+void
+Key_Shutdown(void)
+{
+	int i;
+	for (i = 0; i < K_LAST; ++i)
+	{
+		if (keybindings[i])
+		{
+			Z_Free(keybindings[i]);
+			keybindings[i] = NULL;
+		}
+	}
+}
+
 qboolean CIN_IsCinematicRunning(void);
 
 /*
@@ -1179,6 +1215,26 @@ Key_Event(int key, qboolean down, unsigned time)
 
 	// track if any key is down for BUTTON_ANY
 	keydown[key] = down;
+
+	/* This is one of the most ugly constructs I've
+	   found so far in Quake II. When the game is in
+	   the intermission, the player can press any key
+	   to end it and advance into the next level. It
+	   should be easy to figure out at server level if
+	   a button is pressed. But somehow the developers
+	   decided, that they'll need special move state
+	   BUTTON_ANY to solve this problem. So there's
+	   this global variable anykeydown. If it's not
+	   0, CL_FinishMove() encodes BUTTON_ANY into the
+	   button state. The server reads this value and
+	   sends it to gi->ClientThink() where it's used
+	   to determine if the intermission shall end.
+	   Needless to say that this is the only consumer
+	   of BUTTON_ANY.
+
+	   Since we cannot alter the network protocol nor
+	   the server <-> game API, I'll leave things alone
+	   and try to forget. */
 	if (down)
 	{
 		if (key_repeats[key] == 1)
@@ -1258,28 +1314,20 @@ Key_Event(int key, qboolean down, unsigned time)
 		case key_console:
 			Key_Console(key);
 			break;
-		default:
-			Com_Error(ERR_FATAL, "Bad cls.key_dest");
 	}
 }
 
 /*
-===================
-Key_ClearStates
-===================
-*/
+ * Marks all keys as "up"
+ */
 void
-Key_ClearStates(void)
+Key_MarkAllUp(void)
 {
-	int i;
+	int key;
 
-	anykeydown = 0;
-
-	for (i = 0; i < 256; i++)
+	for (key = 0; key < K_LAST; key++)
 	{
-		if ( keydown[i] || key_repeats[i] )
-			Key_Event( i, false, 0 );
-		keydown[i] = 0;
-		key_repeats[i] = 0;
+		key_repeats[key] = 0;
+		keydown[key] = 0;
 	}
 }

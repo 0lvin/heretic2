@@ -437,22 +437,34 @@ Qcommon_Frame(int msec)
 	int time_between = 0;
 	int time_after;
 
-	if (setjmp (abortframe) )
-		return;			// an ERR_DROP was thrown
 
-	if ( log_stats->modified )
+	/* In case of ERR_DROP we're jumping here. Don't know
+	   if that's really save but it seems to work. So leave
+	   it alone. */
+	if (setjmp(abortframe))
+	{
+		return;
+	}
+
+
+	if (log_stats->modified)
 	{
 		log_stats->modified = false;
-		if ( log_stats->value )
+
+		if (log_stats->value)
 		{
-			if ( log_stats_file )
+			if (log_stats_file)
 			{
-				fclose( log_stats_file );
+				fclose(log_stats_file);
 				log_stats_file = 0;
 			}
-			log_stats_file = fopen( "stats.log", "w" );
-			if ( log_stats_file )
-				fprintf( log_stats_file, "entities,dlights,parts,frame time\n" );
+
+			log_stats_file = Q_fopen("stats.log", "w");
+
+			if (log_stats_file)
+			{
+				fprintf(log_stats_file, "entities,dlights,parts,frame time\n");
+			}
 		}
 		else
 		{
@@ -622,6 +634,10 @@ Qcommon_Shutdown(void)
 {
 	FS_ShutdownFilesystem();
 	Cvar_Fini();
+
+#ifndef DEDICATED_ONLY
+	Key_Shutdown();
+#endif
 
 	Cmd_Shutdown();
 }

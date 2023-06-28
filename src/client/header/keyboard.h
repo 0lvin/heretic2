@@ -277,7 +277,7 @@ extern int		chat_cursorpos;
 extern qboolean	chat_team;
 
 void Char_Event(int key);
-void Key_Event(int key, qboolean down, unsigned time);
+void Key_Event(int key, qboolean down, qboolean special);
 void Key_Init(void);
 void Key_Shutdown(void);
 void Key_WriteBindings(FILE *f);
@@ -291,7 +291,5 @@ void Haptic_Feedback(const char *name, int effect_volume, int effect_duration,
 				int effect_delay, int effect_attack, int effect_fade,
 				int effect_x, int effect_y, int effect_z, float effect_distance);
 int Key_GetMenuKey(int key);
-
-void Key_ClearStates(void);
 
 #endif

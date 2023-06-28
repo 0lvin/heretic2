@@ -937,8 +937,3 @@ void
 StartCalibration(void)
 {
 }
-
-void
-Key_MarkAllUp(void)
-{
-}

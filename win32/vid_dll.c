@@ -244,7 +244,7 @@ void AppActivate(BOOL fActive, BOOL minimize)
 {
 	Minimized = minimize;
 
-	Key_ClearStates();
+	Key_MarkAllUp();
 
 	// we don't want to act like we're active if we're minimized
 	if (fActive && !Minimized)
