@@ -159,14 +159,6 @@ cvar_t* r_fog_underwater_color_a;
 
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
 
-typedef struct {
-	vec3_t start;
-	vec3_t end;
-} debugLine_t;
-
-debugLine_t debug_lines[256];
-int numDebugLines = 0;
-
 void R_Clear (void);
 
 void
@@ -1232,20 +1224,6 @@ RI_RenderFrame(refdef_t *fd)
 	R_RenderView(fd);
 	R_SetLightLevel (NULL);
 	glLineWidth(10.0);
-
-	glDisable(GL_DEPTH_TEST);
-	for (int i = 0; i < numDebugLines; i++)
-	{
-		glBegin(GL_LINES);
-		glVertex3f(debug_lines[i].start[0], debug_lines[i].start[1], debug_lines[i].start[2]);
-		glVertex3f(debug_lines[i].end[0], debug_lines[i].end[1], debug_lines[i].end[2]);
-		glEnd();
-
-	}
-	glEnable(GL_DEPTH_TEST);
-
-	numDebugLines = 0;
-
 	R_SetGL2D();
 }
 
@@ -1915,19 +1893,6 @@ extern void RI_EndRegistration(void);
 
 extern qboolean RI_IsVSyncActive(void);
 
-static void
-DrawLine(vec3_t start, vec3_t end) {
-	debug_lines[numDebugLines].start[0] = start[0];
-	debug_lines[numDebugLines].start[1] = start[1];
-	debug_lines[numDebugLines].start[2] = start[2];
-
-	debug_lines[numDebugLines].end[0] = end[0];
-	debug_lines[numDebugLines].end[1] = end[1];
-	debug_lines[numDebugLines].end[2] = end[2];
-
-	numDebugLines++;
-}
-
 static void RI_EndFrame(void)
 {
 	GLimp_EndFrame();
@@ -1967,7 +1932,6 @@ GetRefAPI(refimport_t imp)
 	re.SetSky = RI_SetSky;
 	re.EndRegistration = RI_EndRegistration;
 
-	re.DrawLine = DrawLine;
 	re.RenderFrame = RI_RenderFrame;
 
 	re.DrawFindPic = RDraw_FindPic;

@@ -239,15 +239,6 @@ static void PM_GroundTrace(void) {
 			return;
 	}
 
-	if (trace.fraction == 1.0f)
-	{
-		re.DrawLine(start, point);
-	}
-	else
-	{
-		re.DrawLine(start, trace.endpos);
-	}
-
 	pm->groundentity = trace.ent;
 	pm->GroundContents = trace.contents;
 

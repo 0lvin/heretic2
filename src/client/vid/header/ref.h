@@ -277,7 +277,6 @@ typedef struct
 	qboolean	(EXPORT *EndWorldRenderpass) (void); // finish world rendering, apply postprocess and switch to UI render pass
 
 	//void	(EXPORT *AppActivate)( qboolean activate );
-	void	(*DrawLine)(vec3_t start, vec3_t end);
 } refexport_t;
 
 typedef struct
