@@ -178,8 +178,8 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/client/sound/openal.o \
 	$(BUILDDIR)/src/client/sound/qal.o \
 	$(BUILDDIR)/src/client/sound/wave.o \
-	$(BUILDDIR)/src/client/sound/snd_mix.o \
 	$(BUILDDIR)/src/client/sound/sound.o \
+	$(BUILDDIR)/src/client/sound/sdl.o \
 	$(BUILDDIR)/src/client/cl_console.o \
 	$(BUILDDIR)/src/client_effects/ambient_effects.o \
 	$(BUILDDIR)/src/client_effects/ce_default_message_handler.o \
@@ -433,7 +433,6 @@ HERETIC2_OBJS = \
 	$(BUILDDIR)/src/backends/unix/system.o \
 	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
 	$(BUILDDIR)/src/common/clientserver.o \
-	$(BUILDDIR)/linux/snd_linux.o \
 	$(BUILDDIR)/src/backends/unix/main.o \
 	$(BUILDDIR)/src/client/menu/videomenu.o \
 	$(BUILDDIR)/src/client/vid/vid.o \

@@ -814,7 +814,6 @@ void CL_ClipMoveToEntities(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,trace
 void Grab_EAX_Environment_type(void);
 void SNDEAX_SetEnvironment(int id);
 void S_Init(void);
-struct sfx_s* S_FindName(char* name, qboolean create);
 struct sfx_s* S_RegisterSound(char* name);
 void S_Activate(qboolean active);
 void S_BeginRegistration(void);
