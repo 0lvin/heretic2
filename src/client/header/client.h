@@ -757,77 +757,21 @@ extern	cvar_t	*cl_predict_remote;
 extern	cvar_t *mouse_sensitivity_x;
 extern	cvar_t *mouse_sensitivity_y;
 extern	cvar_t *doubletap_speed;
-extern	cvar_t *allow_download;
-extern	cvar_t *allow_download_maps;
-extern	cvar_t *allow_download_players;
-extern	cvar_t *allow_download_models;
-extern	cvar_t *allow_download_sounds;
 extern	cvar_t *cl_freezeworld;
-extern cvar_t *cl_camera_clipdamp;
-extern cvar_t *cl_camera_combat;
-extern cvar_t *cl_camera_dampfactor;
-extern cvar_t *cl_camera_fpoffs;
-extern cvar_t *cl_camera_freeze;
-extern cvar_t *cl_camera_under_surface;
-extern cvar_t *cl_camera_viewdist;
-extern cvar_t *cl_camera_viewmin;
-extern cvar_t *cl_camera_viewmax;
 
-extern cvar_t *cl_camera_fpmode;		// First person mode
-extern cvar_t *cl_camera_fptrans;
-extern cvar_t *cl_camera_fpdist;
-extern cvar_t *cl_camera_fpheight;
 extern cvar_t *cl_playertrans;
 
-extern cvar_t *EAX_preset;
-extern cvar_t *EAX_default;
 extern cvar_t *cl_cinematicfreeze;
 extern cvar_t *shownames;
 extern cvar_t *autoweapon;
 extern cvar_t *cl_showcaptions;
 
-extern cvar_t *colour_obituary;
-extern cvar_t *colour_chat;
-extern cvar_t *colour_names;
-extern cvar_t *colour_teamchat;
-extern cvar_t *colour_level;
-extern cvar_t *colour_game;
 extern cvar_t *game_downloadable_type;
-extern cvar_t *cl_no_middle_text;
-int CL_ParseEntityBits(unsigned *bits);
-void CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits);
-void CL_ParseFrame(void);
 
 extern refexport_t		re;				// interface to refresh DLL.
 extern player_export_t	playerExport;	// interface to player DLL.
-char *CL_GetGameString(int i);
-char *CL_GetGameWav(int i);
 char *CL_GetLevelString(int i);
 char *CL_GetLevelWav(int i);
 void CL_LoadStrings(void);
-void CL_RequestNextDownload (void);
-void CL_Snd_Restart_f_nocfx (void);
-extern	kbutton_t	in_lookaround;
-void CL_ParseDemoClientEffects (void);
-void MenuUnsetMode(void);
-void CL_ClipMoveToEntities(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,trace_t *tr);
-void Grab_EAX_Environment_type(void);
-void SNDEAX_SetEnvironment(int id);
-void S_Init(void);
-struct sfx_s* S_RegisterSound(char* name);
-void S_Activate(qboolean active);
-void S_BeginRegistration(void);
-void S_EndRegistration(void);
-void S_Shutdown(void);
-void S_StartLocalSound(char* sound);
-void S_StartSound(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, float attenuation, float timeofs);
-void S_StopAllSounds(void);
-void S_StopAllSounds_Sounding(void);
-void S_Update(vec3_t quake_origin, vec3_t forward, vec3_t right, vec3_t up);
-void CL_RunDLights(void);
-void CL_RunLightStyles(void);
-void CL_SetLightstyle(int i);
-void DrawAltString(int x, int y, char* s);
-void CL_AddEntities(void);
 
 #endif

@@ -912,3 +912,4 @@ Haptic_Feedback(const char *name, int effect_volume, int effect_duration,
 				int effect_x, int effect_y, int effect_z, float effect_distance)
 {
 }
+
