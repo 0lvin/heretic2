@@ -5,7 +5,7 @@
 #ifndef QCOMMON_MOTION_H
 #define QCOMMON_MOTION_H
 
-#include "../src/common/header/common.h"
+#include "../common/header/common.h"
 
 float GetTimeToReachDistance(float, float, float);
 float GetDistanceOverTime(float, float, float);

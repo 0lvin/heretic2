@@ -852,6 +852,34 @@ VectorRadiansToDegrees (vec3_t in, vec3_t out)
 	out[2] = in[2] * RAD_TO_ANGLE;
 }
 
+static float Vec3DotProduct(vec3_t v1, vec3_t v2)
+{
+	return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
+}
+
+static float Vec3Normalize(vec3_t v1)
+{
+	float mag;
+	float imag = 1;
+
+	mag = Vec3DotProduct(v1, v1);
+
+	if (!mag)
+	{
+		return 0;
+	}
+
+	mag = (float)sqrt(mag);
+
+	imag /= mag;
+
+	v1[0] *= imag;
+	v1[1] *= imag;
+	v1[2] *= imag;
+
+	return mag;
+}
+
 void fish_target(edict_t *self)
 {
 	vec3_t	dir;

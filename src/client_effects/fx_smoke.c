@@ -12,7 +12,7 @@
 #include "../../h2common/effectflags.h"
 #include "particle.h"
 #include "../../h2common/h2rand.h"
-#include "../../h2common/motion.h"
+#include "motion.h"
 #include "utilities.h"
 #include "../../h2common/fx.h"
 

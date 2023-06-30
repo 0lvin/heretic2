@@ -12,7 +12,6 @@ void AnglesFromDir(vec3_t direction, vec3_t angles);
 void AnglesFromDirI(vec3_t direction, vec3_t angles);
 void VectoAngles(vec3_t in, vec3_t out);
 void AnglesFromDirAndUp(vec3_t direction, vec3_t up, vec3_t angles);
-float Vec3Normalize(vec3_t v1);
 void VectorAverage(vec3_t veca, vec3_t vecb, vec3_t vecc);
 void VectorGetOffsetOrigin(vec3_t off, vec3_t org, vec_t degree, vec3_t out);
 vec_t VectorSeparation(vec3_t ina, vec3_t inb);

@@ -68,6 +68,5 @@ typedef struct FormMove_s
 #define PRF_EXPANSION_BLOCKED		0x00000002	// indicates an expansion was blocked
 
 void BounceVelocity(vec3_t in, vec3_t normal, vec3_t out, float elasticity);
-qboolean BoundVelocity(float *vel);
 
 #endif // Q_PHYSICS_H

@@ -805,7 +805,9 @@ void PM_AddCurrents(float* a1)
 	}
 }
 
-void PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
+// TODO: Rewrite
+static void
+PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
 {
 	long double v4;
 	long double v5;

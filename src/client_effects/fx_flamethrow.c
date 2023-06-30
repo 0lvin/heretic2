@@ -13,7 +13,7 @@
 #include "../../h2common/fx.h"
 #include "utilities.h"
 #include "../../h2common/h2rand.h"
-#include "../../h2common/motion.h"
+#include "motion.h"
 #include "../game/header/g_playstats.h"
 #include "ce_dlight.h"
 

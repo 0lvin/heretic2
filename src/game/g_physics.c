@@ -17,6 +17,7 @@
 #include "../../h2common/fx.h"
 #include "header/g_playstats.h"
 #include "../player/p_actions.h"
+#include <stdint.h>
 
 static void Physics_None(edict_t *self);
 static void Physics_Static(edict_t *self);
@@ -104,6 +105,44 @@ static void Physics_NoclipMove(edict_t *self)
 	VectorMA(self->s.origin, FRAMETIME, self->velocity, self->s.origin);
 
 	gi.linkentity(self);
+}
+
+// TODO: Rewrite
+static qboolean
+BoundVelocity(float *vel)
+{
+	float *v1;
+	int v2;
+	signed int v3;
+	double v4;
+
+	v1 = vel;
+	v2 = 0;
+	v3 = 3;
+	do
+	{
+		v4 = *v1;
+		if (v4 <= -0.1 || v4 >= 0.1)
+		{
+			if (v4 <= 2000.0)
+			{
+				if (v4 < -2000.0)
+					*(uint32_t *)v1 = -990248960;
+			}
+			else
+			{
+				*(uint32_t *)v1 = 1157234688;
+			}
+		}
+		else
+		{
+			*(uint32_t *)v1 = 0;
+			++v2;
+		}
+		++v1;
+		--v3;
+	} while (v3);
+	return v2 != 3;
 }
 
 //---------------------------------------------------------------------------------

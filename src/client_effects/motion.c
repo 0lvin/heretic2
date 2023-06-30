@@ -5,7 +5,7 @@
 // H2Motion.c
 //
 
-#include "../src/common/header/common.h"
+#include "motion.h"
 
 float GetDistanceOverTime(float a1, float a2, float a3)
 {
