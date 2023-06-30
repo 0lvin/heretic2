@@ -302,7 +302,7 @@ void plagueelf_check_land ( edict_t *self )
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] -= 48;
 
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
 	if ( ( trace.fraction < 1 || trace.allsolid || trace.startsolid ) && self->curAnimID != ANIM_KDEATH_END && self->curAnimID != ANIM_KDEATH_GO)
 	{

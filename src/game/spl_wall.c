@@ -120,7 +120,7 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 		{
 			VectorMA(self->s.origin, 16.0, surfvect, testpos);				// test distance
 
-			gi.trace(self->s.origin, self->mins, self->maxs, testpos, self, MASK_SHOT, &newtrace);
+			newtrace = gi.trace(self->s.origin, self->mins, self->maxs, testpos, self, MASK_SHOT);
 			if (newtrace.fraction > 0.99)
 			{	// If this is successful, then we can make another fireblast moving in the new direction.
 				VectoAngles(surfvect, newang);
@@ -211,7 +211,7 @@ void CastFireBlast(edict_t *caster, vec3_t startpos, vec3_t aimangles)
 	wall = CreateFireBlast(newpos, aimangles, caster, 3, level.time);		// Bounce 3 times
 
 	// Check to see if this is a legit spawn.
-	gi.trace(caster->s.origin, wall->mins, wall->maxs, wall->s.origin, caster, MASK_SOLID, &trace);
+	trace = gi.trace(caster->s.origin, wall->mins, wall->maxs, wall->s.origin, caster, MASK_SOLID);
 	if (trace.startsolid || trace.fraction < .99)
 	{
 		if (trace.startsolid)
@@ -373,7 +373,7 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 		{
 			VectorMA(self->s.origin, 16.0, surfvect, testpos);				// test distance
 
-			gi.trace(self->s.origin, self->mins, self->maxs, testpos, self, MASK_SOLID, &newtrace);
+			newtrace = gi.trace(self->s.origin, self->mins, self->maxs, testpos, self, MASK_SOLID);
 			if (newtrace.fraction > 0.99)
 			{	// If this is successful, then we can make another fireblast moving in the new direction.
 				VectoAngles(surfvect, newang);
@@ -474,7 +474,7 @@ void CastFireWall(edict_t *caster, vec3_t startpos, vec3_t aimangles)
 	wall = CreateFireWall(spawnpos, aimangles, caster, 3, level.time, -FIREWAVE_DRADIUS);
 
 	// Check to see if this is a legit spawn.
-	gi.trace(caster->s.origin, wall->mins, wall->maxs, wall->s.origin, caster, MASK_SOLID, &trace);
+	trace = gi.trace(caster->s.origin, wall->mins, wall->maxs, wall->s.origin, caster, MASK_SOLID);
 	if (trace.startsolid || trace.fraction < .99)
 	{
 		if (trace.startsolid)
@@ -494,7 +494,7 @@ rightwall:
 	wall = CreateFireWall(spawnpos, aimangles, caster, 3, level.time, FIREWAVE_DRADIUS);
 
 	// Check to see if this is a legit spawn.
-	gi.trace(caster->s.origin, wall->mins, wall->maxs, wall->s.origin, caster, MASK_SOLID, &trace);
+	trace = gi.trace(caster->s.origin, wall->mins, wall->maxs, wall->s.origin, caster, MASK_SOLID);
 	if (trace.startsolid || trace.fraction < .99)
 	{
 		if (trace.startsolid)

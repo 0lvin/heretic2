@@ -178,7 +178,7 @@ void SpellCastPhoenix(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	//Check ahead first to see if it's going to hit anything at this angle
 	AngleVectors(AimAngles, forward, NULL, NULL);
 	VectorMA(StartPos, PHOENIX_ARROW_SPEED, forward, endpos);
-	gi.trace(StartPos, vec3_origin, vec3_origin, endpos, Caster, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(StartPos, vec3_origin, vec3_origin, endpos, Caster, MASK_MONSTERSOLID);
 	if(trace.ent && ok_to_autotarget(Caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, PHOENIX_ARROW_SPEED, phoenix->velocity);
@@ -215,7 +215,7 @@ void SpellCastPhoenix(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	Caster->s.sound = 0;
 
 	// Trace from the player's origin because then if we hit a wall, the effect won't be inside it...
-	gi.trace(Caster->s.origin, phoenix->mins, phoenix->maxs, phoenix->s.origin, Caster, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(Caster->s.origin, phoenix->mins, phoenix->maxs, phoenix->s.origin, Caster, MASK_PLAYERSOLID);
 	if (trace.startsolid || trace.fraction < .99)
 	{
 		if (trace.startsolid)

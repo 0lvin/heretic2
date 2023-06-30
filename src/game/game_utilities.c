@@ -469,12 +469,12 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 					{
 						if(gi.inPVS(LOSStartPos, TempVec))
 						{//cheaper than a trace
-							gi.trace(LOSStartPos,				// Start pos.
+							Trace = gi.trace(LOSStartPos,				// Start pos.
 										   _BBMin,					// Bounding box min.
 										   _BBMax,					// Bounding box max.
 										   TempVec,					// End pos.
 										   Finder,					// Ignore this edict.
-										   CONTENTS_SOLID,&Trace);	  		// Contents mask.
+										   CONTENTS_SOLID);	  		// Contents mask.
 
 							if((Trace.fraction!=1.0)||(Trace.startsolid))
 							{
@@ -619,12 +619,12 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 
 					if(LOSStartPos)
 					{
-							gi.trace(LOSStartPos,				// Start pos.
+							Trace = gi.trace(LOSStartPos,				// Start pos.
 										   _BBMin,					// Bounding box min.
 										   _BBMax,					// Bounding box max.
 										   TempVec,					// End pos.
 										   Finder,					// Ignore this edict.
-										   CONTENTS_SOLID,&Trace);	  		// Contents mask.
+										   CONTENTS_SOLID);	  		// Contents mask.
 
 							if((Trace.fraction!=1.0)||(Trace.startsolid))
 							{
@@ -712,12 +712,12 @@ edict_t *FindSpellTargetInRadius(edict_t *searchent, float radius, vec3_t search
 		{
 			if(gi.inPVS(searchpos, entpos))
 			{//cheaper than a trace
-				gi.trace(searchpos,						// Start pos.
+				Trace = gi.trace(searchpos,						// Start pos.
 							   _mins,					// Bounding box min.
 							   _maxs,					// Bounding box max.
 							   entpos,					// End pos.
 							   searchent,				// Ignore this edict.
-							   CONTENTS_SOLID, &Trace);	  		// Contents mask.
+							   CONTENTS_SOLID);	  		// Contents mask.
 
 				if((Trace.fraction!=1.0)||(Trace.startsolid))
 				{
@@ -830,7 +830,7 @@ void CalculatePIV(edict_t *player)
 		{
 			continue;
 		}
-		gi.trace(org, mins, maxs, endpos, player, MASK_PLAYERSOLID,&trace);
+		trace = gi.trace(org, mins, maxs, endpos, player, MASK_PLAYERSOLID);
 		if(trace.ent == target)
 		{
 			PIV |= 1 << i;

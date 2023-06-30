@@ -143,7 +143,7 @@ void seraph_check_land ( edict_t *self )
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] -= 48;
 
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
 	if ( (trace.fraction < 1 || trace.allsolid || trace.startsolid ) && self->curAnimID != ANIM_DEATH2_END && self->curAnimID != ANIM_DEATH2_GO)
 	{
@@ -343,7 +343,7 @@ qboolean seraph_checkscare(edict_t *self, edict_t *ogle)
 	{
 		VectorCopy(self->mins, mins);
 		mins[2] += 18;	//Account for step ability
-		gi.trace(self->s.origin, mins, self->maxs, ogle->s.origin, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(self->s.origin, mins, self->maxs, ogle->s.origin, self, MASK_MONSTERSOLID);
 
 		if (trace.ent == ogle)
 		{

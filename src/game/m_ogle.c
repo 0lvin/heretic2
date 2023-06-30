@@ -1440,7 +1440,7 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 			VectorCopy(self->mins, mins);
 			mins[2]+=self->maxs[0]/2;//because this guys's mins are 0
 
-			gi.trace(start, mins, self->maxs, end, self, MASK_MONSTERSOLID,&trace);
+			trace = gi.trace(start, mins, self->maxs, end, self, MASK_MONSTERSOLID);
 
 			if(trace.ent==self->enemy)
 			{
@@ -1528,7 +1528,7 @@ void ogle_push (edict_t *self, float dist)
 	{
 		AngleVectors(self->s.angles, forward, NULL, NULL);
 		VectorMA(self->s.origin, 64, forward, endpos);
-		gi.trace(self->s.origin, vec3_origin, vec3_origin, endpos, self, MASK_MONSTERSOLID, &trace);
+		trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, endpos, self, MASK_MONSTERSOLID);
 		if(trace.ent && trace.ent == found)
 		{
 			yaw = self->s.angles[YAW]*M_PI*2 / 360;

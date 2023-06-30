@@ -38,7 +38,7 @@ void SpellCastBlast(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aimd
 		// Single shot travelling out
 		AngleVectors(angles, fwd, NULL, NULL);
 		VectorMA(startpos, BLAST_DISTANCE, fwd, endpos);
-		gi.trace(startpos, mins, maxs, endpos, caster, MASK_SHOT,&trace);
+		trace = gi.trace(startpos, mins, maxs, endpos, caster, MASK_SHOT);
 		if(level.fighting_beast)
 		{
 			edict_t *ent;

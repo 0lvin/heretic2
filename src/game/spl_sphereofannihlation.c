@@ -105,7 +105,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 			VectorCopy(Self->owner->s.angles, angles);
 		AngleVectors(angles, Forward, NULL, NULL);
 		VectorMA(Self->s.origin, SPHERE_FLY_SPEED, Forward, endpos);
-		gi.trace(Self->s.origin, vec3_origin, vec3_origin, endpos, Self->owner, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(Self->s.origin, vec3_origin, vec3_origin, endpos, Self->owner, MASK_MONSTERSOLID);
 		if(trace.ent && ok_to_autotarget(Self->owner, trace.ent))
 		{//already going to hit a valid target at this angle- so don't autotarget
 			VectorScale(Forward, SPHERE_FLY_SPEED, Self->velocity);
@@ -130,7 +130,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 		Self->s.sound = 0;
 		gi.sound(Self,CHAN_WEAPON,gi.soundindex("weapons/SphereFire.wav"),1,ATTN_NORM,0);
 
-		gi.trace(Self->s.origin, vec3_origin, vec3_origin, Self->s.origin, Self->owner, MASK_PLAYERSOLID,&trace);
+		trace = gi.trace(Self->s.origin, vec3_origin, vec3_origin, Self->s.origin, Self->owner, MASK_PLAYERSOLID);
 		if (trace.startsolid)
 		{
 			SphereOfAnnihilationTouch(Self, trace.ent, &trace.plane, trace.surface);
@@ -169,7 +169,7 @@ static void SpherePowerLaserThink(edict_t *Self)
 
 		AngleVectors(aimangles, shootDir, NULL, NULL);
 		VectorMA(startPos, sphere_dist, shootDir, endPos);
-		gi.trace(startPos, min, max, endPos, traceBuddy, MASK_SHOT,&tr);
+		tr = gi.trace(startPos, min, max, endPos, traceBuddy, MASK_SHOT);
 		if(level.fighting_beast)
 		{
 			edict_t *ent;
@@ -657,7 +657,7 @@ static void SphereWatcherGrowThink(edict_t *Self)
 		VectorCopy(Self->owner->s.angles, angles);
 		AngleVectors(angles, Forward, NULL, NULL);
 		VectorMA(Self->s.origin, SPHERE_FLY_SPEED, Forward, endpos);
-		gi.trace(Self->s.origin, vec3_origin, vec3_origin, endpos, Self->owner, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(Self->s.origin, vec3_origin, vec3_origin, endpos, Self->owner, MASK_MONSTERSOLID);
 		if(trace.ent && ok_to_autotarget(Self->owner, trace.ent))
 		{//already going to hit a valid target at this angle- so don't autotarget
 			VectorScale(Forward, SPHERE_FLY_SPEED, Self->velocity);
@@ -688,7 +688,7 @@ static void SphereWatcherGrowThink(edict_t *Self)
 		Self->s.sound = 0;
 		gi.sound(Self,CHAN_WEAPON,gi.soundindex("weapons/SphereFire.wav"),1,ATTN_NORM,0);
 
-		gi.trace(Self->s.origin, vec3_origin, vec3_origin, Self->s.origin, Self->owner, MASK_PLAYERSOLID,&trace);
+		trace = gi.trace(Self->s.origin, vec3_origin, vec3_origin, Self->s.origin, Self->owner, MASK_PLAYERSOLID);
 		if (trace.startsolid)
 		{
 			SphereWatcherTouch(Self, trace.ent, &trace.plane, trace.surface);

@@ -126,7 +126,7 @@ edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mi
 	tracebuddy = startent;
 	while(1)
 	{
-		gi.trace(curpos, mins, maxs, endpos, tracebuddy, MASK_SHOT,&trace);
+		trace = gi.trace(curpos, mins, maxs, endpos, tracebuddy, MASK_SHOT);
 
 		// If we started inside something.
 		if (trace.startsolid || trace.allsolid)
@@ -1043,7 +1043,7 @@ qboolean ClearBBox (edict_t *self)
 	VectorSet(bottom, self->s.origin[0], self->s.origin[1], self->absmin[2]);
 	VectorSet(top, self->s.origin[0], self->s.origin[1], self->absmax[2] - 1);
 
-	gi.trace(top, mins, maxs, bottom, self, self->clipmask,&trace);
+	trace = gi.trace(top, mins, maxs, bottom, self, self->clipmask);
 	if(trace.startsolid || trace.allsolid)
 		return false;
 

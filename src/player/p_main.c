@@ -217,9 +217,9 @@ int PlayerCheckSlide(playerinfo_t *playerinfo)
 	AngleVectors(playerinfo->angles, vf, vr, vu);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(startpos,mins,maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
+		trace = playerinfo->CL_Trace(startpos,mins,maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(startpos,mins,maxs,endpos,playerinfo->self,MASK_PLAYERSOLID,&trace);
+		trace = playerinfo->G_Trace(startpos,mins,maxs,endpos,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (trace.fraction < 1)
 	{

@@ -160,7 +160,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		// We must trace from the player's centerpoint to the casting location to assure we don't hit anything.before the laser starts
 		tracebuddy = caster;
 		VectorCopy(loc, startpos);
-		gi.trace(caster->s.origin, min, max, startpos, caster, MASK_SHOT,&trace);
+		trace = gi.trace(caster->s.origin, min, max, startpos, caster, MASK_SHOT);
 		if(level.fighting_beast)
 		{
 			edict_t *ent;
@@ -205,7 +205,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 			{
 				AngleVectors(aimangles, forward, NULL, NULL);
 				VectorMA(startpos, laser_dist, forward, endpos);
-				gi.trace(startpos, min, max, endpos, tracebuddy, MASK_SHOT,&trace);
+				trace = gi.trace(startpos, min, max, endpos, tracebuddy, MASK_SHOT);
 				if(level.fighting_beast)
 				{
 					edict_t *ent;
@@ -302,7 +302,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		else
 		{
 			VectorMA(loc, HELLBOLT_SPEED, forward, endpos);
-			gi.trace(loc, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID,&trace);
+			trace = gi.trace(loc, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
 			if(trace.ent && ok_to_autotarget(caster, trace.ent))
 			{//already going to hit a valid target at this angle- so don't autotarget
 				VectorScale(forward, HELLBOLT_SPEED, hellbolt->velocity);
@@ -331,7 +331,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 			caster->client->playerinfo.flags |= PLAYER_FLAG_ALTFIRE;
 		}
 
-		gi.trace(hellbolt->s.origin, vec3_origin, vec3_origin, hellbolt->s.origin, caster, MASK_PLAYERSOLID,&trace);
+		trace = gi.trace(hellbolt->s.origin, vec3_origin, vec3_origin, hellbolt->s.origin, caster, MASK_PLAYERSOLID);
 		if (trace.startsolid)
 		{
 			HellboltTouch(hellbolt, trace.ent, &trace.plane, trace.surface);

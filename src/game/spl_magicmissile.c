@@ -203,7 +203,7 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 	MagicMissile->reflect_debounce_time = MAX_REFLECT;
 	G_LinkMissile(MagicMissile);
 
-	gi.trace(Caster->s.origin, MagicMissile->mins, MagicMissile->maxs, MagicMissile->s.origin, Caster, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(Caster->s.origin, MagicMissile->mins, MagicMissile->maxs, MagicMissile->s.origin, Caster, MASK_PLAYERSOLID);
 	if (trace.startsolid)
 	{
 		MagicMissileTouch(MagicMissile, trace.ent, &trace.plane, trace.surface);

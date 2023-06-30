@@ -249,7 +249,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 	VectorCopy(endpos, Caster->client->laststaffpos);
 	Caster->client->laststaffuse = level.time;
 
-	gi.trace(startpos, mins, maxs, endpos, Caster, MASK_PLAYERSOLID|CONTENTS_DEADMONSTER,&trace);
+	trace = gi.trace(startpos, mins, maxs, endpos, Caster, MASK_PLAYERSOLID|CONTENTS_DEADMONSTER);
 	if(level.fighting_beast)
 	{
 		edict_t *ent;
@@ -855,7 +855,7 @@ void WeaponThink_Blast(edict_t *caster,char *Format,...)
 	startpos[2] += caster->viewheight;
 
 	// Trace from the player's origin to the casting location to assure not spawning in a wall.
-	gi.trace(caster->s.origin, mins, maxs, startpos, caster, MASK_SHOT,&trace);
+	trace = gi.trace(caster->s.origin, mins, maxs, startpos, caster, MASK_SHOT);
 	if (trace.startsolid || trace.allsolid)
 	{	// No way to avoid spawning in a wall.
 		return;

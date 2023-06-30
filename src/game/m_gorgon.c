@@ -604,7 +604,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 		VectorCopy(self->s.origin, source);
 		VectorMA(source, 64 * self->s.scale, forward, source);
 
-		gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT,&trace);
+		trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT);
 
 		if (trace.ent == self->enemy || trace.fraction == 1)
 			SetAnim(self, ANIM_MELEE8);
@@ -613,7 +613,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 			VectorCopy(self->s.origin, source);
 			VectorMA(source, 32 * self->s.scale, forward, source);
 
-			gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT,&trace);
+			trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT);
 
 			if (trace.fraction == 1)
 				SetAnim(self, ANIM_MELEE7);
@@ -957,7 +957,7 @@ void gorgonbite (edict_t *self)
 	VectorMA(melee_point, melee_range, forward, bite_endpos);
 
 	//let's do this the right way
-	gi.trace(melee_point, vec3_origin, vec3_origin, bite_endpos, self, MASK_SHOT,&trace);
+	trace = gi.trace(melee_point, vec3_origin, vec3_origin, bite_endpos, self, MASK_SHOT);
 	if (trace.fraction < 1 && !trace.startsolid && !trace.allsolid && trace.ent->takedamage)// A hit
 	{
 		if (irand(0, 1))
@@ -1130,7 +1130,7 @@ void gorgonCheckInWater (edict_t *self)
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] -= 32;
 
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 	if(trace.fraction < 1.0)
 	{
 		if(trace.contents & CONTENTS_SOLID || trace.contents & CONTENTS_MONSTER)
@@ -1228,7 +1228,7 @@ qboolean gorgon_check_jump (edict_t *self)
 	VectorCopy(landing_spot, test_spot);
 	test_spot[2] -= 1024;
 
-	gi.trace(landing_spot, self->mins, self->maxs, test_spot, self, MASK_MONSTERSOLID|MASK_WATER,&trace);
+	trace = gi.trace(landing_spot, self->mins, self->maxs, test_spot, self, MASK_MONSTERSOLID|MASK_WATER);
 
 	if (trace.fraction == 1.0)
 	{
@@ -1331,7 +1331,7 @@ void gorgon_jump (edict_t *self)
 	VectorCopy(landing_spot, test_spot);
 	test_spot[2] -= 1024;
 
-	gi.trace(landing_spot, self->mins, self->maxs, test_spot, self, MASK_MONSTERSOLID|MASK_WATER,&trace);
+	trace = gi.trace(landing_spot, self->mins, self->maxs, test_spot, self, MASK_MONSTERSOLID|MASK_WATER);
 
 	if (trace.fraction == 1.0)
 	{
@@ -1673,7 +1673,7 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorMA(endpos, ofsf, forward, endpos);
 	VectorMA(endpos, ofsr, right, endpos);
 	VectorMA(endpos, ofsu, up, endpos);
-	gi.trace(startpos,vec3_origin,vec3_origin,endpos, self, MASK_SHOT,&trace);
+	trace = gi.trace(startpos,vec3_origin,vec3_origin,endpos, self, MASK_SHOT);
 	VectorCopy(trace.endpos,endpos);
 
 	VectorSubtract(self->enemy->s.origin, endpos, endpos);

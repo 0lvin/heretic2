@@ -283,7 +283,7 @@ void seraph_guard_check_land ( edict_t *self )
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] -= 48;
 
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
 	if ( (	trace.fraction < 1 || trace.startsolid || trace.allsolid) &&
 			self->curAnimID != ANIM_DEATH2_END &&

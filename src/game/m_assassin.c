@@ -2326,7 +2326,7 @@ qboolean assassinChooseTeleportDestination(edict_t *self, int type, qboolean imp
 			noblockent = self;
 		}
 
-		gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID);
 
 		if(trace.fraction*tracedist < 100)//min origin lerp dist
 			continue;
@@ -2339,7 +2339,7 @@ qboolean assassinChooseTeleportDestination(edict_t *self, int type, qboolean imp
 			VectorCopy(trace.endpos, startpos);
 			VectorCopy(trace.endpos, endpos);
 			endpos[2] -=64;
-			gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID,&trace);
+			trace = gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID);
 			if(trace.fraction<1.0 && !trace.allsolid && !trace.startsolid)//the last two should be false if trace.fraction is < 1.0 but doesn't hurt to check
 			{
 				assassinPrepareTeleportDest(self, trace.endpos, instant);
@@ -2493,13 +2493,13 @@ void assassinCloakThink (edict_t *self)
 		maxs[2] = 1;
 		startpos[2] -= self->size[2];
 
-		gi.trace(startpos, mins, maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(startpos, mins, maxs, endpos, self, MASK_MONSTERSOLID);
 		if(!trace.allsolid && !trace.startsolid)
 		{
 			VectorCopy(trace.endpos, startpos);
 			VectorCopy(trace.endpos, endpos);
 			startpos[2] +=self->size[2];
-			gi.trace(startpos, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+			trace = gi.trace(startpos, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 			if(trace.fraction == 1.0 && !trace.allsolid && !trace.startsolid)
 			{
 				assassinPrepareTeleportDest(self, trace.endpos, false);

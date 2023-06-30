@@ -374,7 +374,7 @@ void fish_think (edict_t *self)
 			top[2] += self->maxs[2] * 0.75;
 			bottom[2] += self->mins[2];
 
-			gi.trace(top, vec3_origin, vec3_origin, bottom, self, MASK_WATER,&trace);
+			trace = gi.trace(top, vec3_origin, vec3_origin, bottom, self, MASK_WATER);
 
 			if(trace.fraction <= 1.0)
 			{

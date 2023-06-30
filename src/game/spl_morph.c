@@ -301,7 +301,7 @@ void Perform_Morph(edict_t *self)
 		VectorCopy(self->s.origin, pos);
 		pos[2] += 2;
 
-		gi.trace(pos, mins, maxs, pos, self, MASK_PLAYERSOLID,&trace);
+		trace = gi.trace(pos, mins, maxs, pos, self, MASK_PLAYERSOLID);
 
 		if (trace.fraction < 1 || trace.startsolid || trace.allsolid)
 			super_chicken = false;

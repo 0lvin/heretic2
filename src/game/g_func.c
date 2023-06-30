@@ -2742,7 +2742,7 @@ void monsterspawner_go (edict_t *self)
 	VectorCopy(self->s.origin,holdorigin);
 	holdorigin[2] -= 8;
 
-	gi.trace(self->s.origin,self->mins, self->maxs, holdorigin, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin,self->mins, self->maxs, holdorigin, self, MASK_MONSTERSOLID);
 	if (trace.fraction != 1)
 		return;
 

@@ -1288,7 +1288,7 @@ void SP_misc_teleporter_dest (edict_t *ent)
 
 	VectorCopy(ent->s.origin, endpos);
 	endpos[2] -= 500;
-	gi.trace (ent->s.origin, vec3_origin, vec3_origin, endpos, NULL, CONTENTS_WORLD_ONLY|MASK_PLAYERSOLID,&tr);
+	tr = gi.trace(ent->s.origin, vec3_origin, vec3_origin, endpos, NULL, CONTENTS_WORLD_ONLY|MASK_PLAYERSOLID);
 
 	VectorCopy(tr.endpos,ent->last_org);
 	ent->last_org[2] -= mins[2];

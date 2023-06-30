@@ -155,7 +155,7 @@ void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, ve
 
 	gi.linkentity (tornado);
 
-	gi.trace (tornado->s.origin, NULL, NULL, end, tornado, MASK_SOLID,&trace);
+	trace = gi.trace(tornado->s.origin, NULL, NULL, end, tornado, MASK_SOLID);
 
 	tornado->s.origin[2] += 3.0;
 	VectorCopy(trace.endpos, tornado->s.origin);
@@ -334,7 +334,7 @@ void SpellCasttornbolt(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	//Check ahead first to see if it's going to hit anything at this angle
 	AngleVectors(aimangles, forward, NULL, NULL);
 	VectorMA(tornbolt->s.origin, FLYING_FIST_SPEED, forward, endpos);
-	gi.trace(startpos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(startpos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
 	if(trace.ent && ok_to_autotarget(caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, FLYING_FIST_SPEED, tornbolt->velocity);
@@ -351,7 +351,7 @@ void SpellCasttornbolt(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	G_LinkMissile(tornbolt);
 
 	// Make sure we don`t start in a solid
-	gi.trace(caster->s.origin, vec3_origin, vec3_origin, tornbolt->s.origin, caster, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(caster->s.origin, vec3_origin, vec3_origin, tornbolt->s.origin, caster, MASK_PLAYERSOLID);
 	if (trace.startsolid || trace.fraction < 1.0)
 	{
 		VectorCopy(trace.endpos, tornbolt->s.origin);

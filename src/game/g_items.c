@@ -751,8 +751,8 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 		AngleVectors (ent->client->v_angle, forward, right, NULL);
 		VectorSet(offset, 24, 0, -16);
 		G_ProjectSource (ent->s.origin, offset, forward, right, dropped->s.origin);
-		gi.trace (ent->s.origin, dropped->mins, dropped->maxs,
-			dropped->s.origin, ent, CONTENTS_SOLID,&trace);
+		trace = gi.trace(ent->s.origin, dropped->mins, dropped->maxs,
+			dropped->s.origin, ent, CONTENTS_SOLID);
 		VectorCopy (trace.endpos, dropped->s.origin);
 	}
 	else
@@ -917,7 +917,7 @@ void itemsdroptofloor (edict_t *ent)
 
 		gi.linkentity (ent);
 
-		gi.trace (ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID, &tr);
+		tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
 		if (tr.startsolid)
 		{
 			gi.dprintf ("droptofloor: %s startsolid at %s (inhibited)\n", ent->classname, vtos(ent->s.origin));

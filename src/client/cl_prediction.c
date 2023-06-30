@@ -197,10 +197,6 @@ int		CL_PMpointcontents (vec3_t point)
 	return contents;
 }
 
-void CL_PMTraceNew(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, trace_t* trace) {
-	*trace = CL_PMTrace(start, mins, maxs, end);
-}
-
 /*
 =================
 CL_PredictMovement
@@ -247,7 +243,7 @@ void CL_PredictMovement (void)
 
 	// copy current state to pmove
 	memset (&pm, 0, sizeof(pm));
-	pm.trace = CL_PMTraceNew;
+	pm.trace = CL_PMTrace;
 	pm.pointcontents = CL_PMpointcontents;
 
 	//pm_airaccelerate = atof(cl.configstrings[CS_AIRACCEL]);

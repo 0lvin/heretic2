@@ -114,7 +114,7 @@ void RedRainThink(edict_t *self)
 							flrand(victim->mins[2]*0.5, victim->maxs[2]*0.5));
 				VectorAdd(endpos, victim->s.origin, endpos);
 
-				gi.trace(startpos, vec3_origin, vec3_origin, endpos, self->owner, MASK_SOLID,&trace);
+				trace = gi.trace(startpos, vec3_origin, vec3_origin, endpos, self->owner, MASK_SOLID);
 				if (!trace.startsolid && trace.fraction == 1.0)
 				{	// FINALLY!  A clear lightning strike!
 					VectorSubtract(endpos, startpos, diffpos);
@@ -301,7 +301,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	VectorCopy(org, end);
 	end[2] += MAX_REDRAINHEIGHT;
 
-	gi.trace(org, damagearea->mins, damagearea->maxs, end, damagearea, MASK_SOLID,&trace);
+	trace = gi.trace(org, damagearea->mins, damagearea->maxs, end, damagearea, MASK_SOLID);
 //	if(trace.startsolid)						// Ignore startsolids.
 //		damagearea->maxs[2] = 1.0;
 //	else
@@ -313,7 +313,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	// Find the bottom of the damage area.
 	end[2] = org[2] - MAX_REDRAINFALLDIST;
 
-	gi.trace(org, damagearea->mins, damagearea->maxs, end, damagearea, MASK_SOLID,&trace);
+	trace = gi.trace(org, damagearea->mins, damagearea->maxs, end, damagearea, MASK_SOLID);
 //	if(trace.startsolid)						// Startsolids mean that the area is too close to a wall
 //		damagearea->mins[2] = -1.0;
 //	else
@@ -410,7 +410,7 @@ void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	//Check ahead first to see if it's going to hit anything at this angle
 	AngleVectors(AimAngles, forward, NULL, NULL);
 	VectorMA(StartPos, RED_ARROW_SPEED, forward, endpos);
-	gi.trace(StartPos, vec3_origin, vec3_origin, endpos, Caster, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(StartPos, vec3_origin, vec3_origin, endpos, Caster, MASK_MONSTERSOLID);
 	if(trace.ent && ok_to_autotarget(Caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, RED_ARROW_SPEED, redarrow->velocity);
@@ -444,7 +444,7 @@ void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	Caster->s.sound = 0;
 
 	// Trace from the player's origin because then if we hit a wall, the effect won't be inside it...
-	gi.trace(Caster->s.origin, redarrow->mins, redarrow->maxs, redarrow->s.origin, Caster, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(Caster->s.origin, redarrow->mins, redarrow->maxs, redarrow->s.origin, Caster, MASK_PLAYERSOLID);
 	if (trace.startsolid || trace.fraction < .99)
 	{
 		if (trace.startsolid)

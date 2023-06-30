@@ -4037,7 +4037,7 @@ void ironmaiden_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 	VectorMA(source, 44, vf, source);
 
-	gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_PLAYERSOLID);
 	if (trace.ent == other)
 		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, 5, 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
 

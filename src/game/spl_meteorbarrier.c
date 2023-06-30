@@ -112,7 +112,7 @@ static void MeteorBarrierHuntThink(edict_t *self)
 			// are we now in the center of something ?
 			if (dist < 5)
 			{
-				gi.trace(self->s.origin, self->mins, self->maxs, self->s.origin, self, MASK_MONSTERSOLID, &tr);
+				tr = gi.trace(self->s.origin, self->mins, self->maxs, self->s.origin, self, MASK_MONSTERSOLID);
 				MeteorBarrierTouch(self,&tr);
 				return;
 			}
@@ -304,7 +304,7 @@ static void MeteorBarrierSearchThink(edict_t *self)
 			self->alert_time = 0;
 
 			// did we start up inside someone ? - check and see
-			gi.trace(self->s.origin, self->mins, self->maxs, self->s.origin, self, MASK_MONSTERSOLID, &tr);
+			tr = gi.trace(self->s.origin, self->mins, self->maxs, self->s.origin, self, MASK_MONSTERSOLID);
 			if(tr.startsolid)
 			{
 				MeteorBarrierTouch(self,&tr);

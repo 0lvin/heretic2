@@ -1576,7 +1576,7 @@ void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles)
 
 	VectorCopy(spot->s.origin, endpos);
 	endpos[2] -= 1000;
-	gi.trace (spot->s.origin, vec3_origin, vec3_origin, endpos, NULL, CONTENTS_WORLD_ONLY|MASK_PLAYERSOLID,&tr);
+	tr = gi.trace (spot->s.origin, vec3_origin, vec3_origin, endpos, NULL, CONTENTS_WORLD_ONLY|MASK_PLAYERSOLID);
 
 	VectorCopy(tr.endpos,origin);
 	origin[2] -= mins[2];
@@ -2974,23 +2974,23 @@ static edict_t *pm_passent;
 
 // The pmove() routine doesn't need to know about passent and contentmask.
 
-void
-PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end,trace_t *trace)
+static trace_t
+PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 {
 	// NOTENOTE All right, pmove doesn't need to know the gory details, but I need to be able to detect a water surface, bub.
 	// Hence, if the mins and max are NULL, then wask out water (cheezy I know, but blame me) ---Pat
 
 	if (mins == NULL && maxs == NULL)
 	{
-		gi.trace (start, vec3_origin, vec3_origin, end, pm_passent, MASK_PLAYERSOLID | MASK_WATER,trace);
+		return gi.trace (start, vec3_origin, vec3_origin, end, pm_passent, MASK_PLAYERSOLID | MASK_WATER);
 	}
 	else if (pm_passent->health > 0)
 	{
-		gi.trace (start, mins, maxs, end, pm_passent, MASK_PLAYERSOLID,trace);
+		return gi.trace (start, mins, maxs, end, pm_passent, MASK_PLAYERSOLID);
 	}
 	else
 	{
-		gi.trace (start, mins, maxs, end, pm_passent, MASK_DEADSOLID,trace);
+		return gi.trace (start, mins, maxs, end, pm_passent, MASK_DEADSOLID);
 	}
 }
 

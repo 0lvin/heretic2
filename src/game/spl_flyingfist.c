@@ -272,7 +272,7 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 	//Check ahead first to see if it's going to hit anything at this angle
 	AngleVectors(aimangles, forward, NULL, NULL);
 	VectorMA(flyingfist->s.origin, FLYING_FIST_SPEED, forward, endpos);
-	gi.trace(startpos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(startpos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
 	if(trace.ent && ok_to_autotarget(caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, FLYING_FIST_SPEED, flyingfist->velocity);
@@ -289,7 +289,7 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 	G_LinkMissile(flyingfist);
 
 	// Make sure we don`t start in a solid
-	gi.trace(caster->s.origin, vec3_origin, vec3_origin, flyingfist->s.origin, caster, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(caster->s.origin, vec3_origin, vec3_origin, flyingfist->s.origin, caster, MASK_PLAYERSOLID);
 	if (trace.startsolid || trace.fraction < 1.0)
 	{
 		VectorCopy(trace.endpos, flyingfist->s.origin);

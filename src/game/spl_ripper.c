@@ -53,7 +53,7 @@ static void RipperExplodeBallThink(edict_t *self)
    	tracebuddy = self;
    	do
    	{
-   		gi.trace(startpos, self->mins, self->maxs, endpos, tracebuddy, MASK_SHOT,&trace);
+   		trace = gi.trace(startpos, self->mins, self->maxs, endpos, tracebuddy, MASK_SHOT);
    		// if we hit anything that won't take damage, kill the beam
    		if (!trace.ent->takedamage)
    			break;
@@ -239,7 +239,7 @@ void SpellCastRipper(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t 
 	gi.sound(caster, CHAN_WEAPON, gi.soundindex("weapons/RipperFire.wav"), 1, ATTN_NORM, 0);
 
 	// Make sure we don't spawn in a wall.
-	gi.trace(caster->s.origin, mins, maxs, StartPos, caster, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(caster->s.origin, mins, maxs, StartPos, caster, MASK_PLAYERSOLID);
 	if (trace.startsolid || trace.fraction<.99)
 	{
 		RipperImpact(caster, trace.ent, caster->s.origin, trace.endpos, AimAngles);
@@ -251,7 +251,7 @@ void SpellCastRipper(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t 
 
 	// Now trace from the starting point to the final destination.
 	VectorMA(StartPos, RIPPER_MAX_DISTANCE, forward, endpos);
-	gi.trace(StartPos, mins, maxs, endpos, caster, MASK_SHOT,&trace);
+	trace = gi.trace(StartPos, mins, maxs, endpos, caster, MASK_SHOT);
 	if(level.fighting_beast)
 	{
 		edict_t *ent;

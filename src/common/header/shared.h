@@ -704,7 +704,7 @@ typedef struct
 	struct edict_s* self;
 
 	/* callbacks to test the world */
-	void (*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, trace_t* trace);
+	trace_t (*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 	int (*pointcontents)(vec3_t point);
 } pmove_t;
 

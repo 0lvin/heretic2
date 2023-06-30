@@ -56,11 +56,11 @@ void PhysicsCheckWaterTransition(edict_t *self)
 
 	if (!wasinwater && isinwater)
 	{
-		gi.trace(self->s.old_origin, vec3_origin, vec3_origin, self->s.origin, self, MASK_WATER,&trace);
+		trace = gi.trace(self->s.old_origin, vec3_origin, vec3_origin, self->s.origin, self, MASK_WATER);
 	}
 	else if (wasinwater && !isinwater)
 	{
-		gi.trace(self->s.origin, vec3_origin, vec3_origin, self->s.old_origin, self, MASK_WATER,&trace);
+		trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, self->s.old_origin, self, MASK_WATER);
 	}
 	else
 		return;

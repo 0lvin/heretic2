@@ -280,7 +280,7 @@ void SpellCastMaceball(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 
 	gi.linkentity(ball);
 
-	gi.trace(caster->s.origin, ball->mins, ball->maxs, startpos, caster, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(caster->s.origin, ball->mins, ball->maxs, startpos, caster, MASK_PLAYERSOLID);
 	if (trace.startsolid)
 	{	// Spawning in something, give up now, and kill the thang.
 		VectorClear(ball->velocity);

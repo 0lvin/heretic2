@@ -170,7 +170,7 @@ void spreader_flyback_move(edict_t *self)
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] -= 48;
 
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
 	if(trace.fraction < 1 || trace.startsolid || trace.allsolid)
 	{
@@ -263,7 +263,7 @@ qboolean spreader_check_uncrouch(edict_t *self)
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] += desired_height;
 
-	gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_MONSTERSOLID);
 	if(trace.fraction < 1.0)
 		return false;
 /*

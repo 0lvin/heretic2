@@ -233,10 +233,10 @@ void rope_think(edict_t *self)
 								self->rope_end->s.origin);	//End's current origin	(???)
 			}
 
-			gi.trace(self->rope_grab->s.origin, vec3_origin, vec3_origin, self->s.origin, self->enemy, MASK_SOLID,&trace);
+			trace = gi.trace(self->rope_grab->s.origin, vec3_origin, vec3_origin, self->s.origin, self->enemy, MASK_SOLID);
 
 			if ( (trace.fraction == 1) && (!trace.startsolid && !trace.allsolid) )
-				gi.trace(self->enemy->s.origin, self->enemy->mins, self->enemy->maxs, self->rope_grab->s.origin, self->enemy, MASK_PLAYERSOLID,&trace);
+				trace = gi.trace(self->enemy->s.origin, self->enemy->mins, self->enemy->maxs, self->rope_grab->s.origin, self->enemy, MASK_PLAYERSOLID);
 
 			//If the rope's movement is clear, move the player and the rope
 			if ( (trace.fraction == 1) && (!trace.startsolid && !trace.allsolid) )
@@ -282,7 +282,7 @@ void rope_end_think2( edict_t *self )
 
 	if(!CHICKEN_KNOCKBACK)
 	{//otherwise, done in hanging_chicken_think
-		gi.trace(grab->s.origin, self->targetEnt->mins, self->targetEnt->maxs, end_pos, self->targetEnt, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(grab->s.origin, self->targetEnt->mins, self->targetEnt->maxs, end_pos, self->targetEnt, MASK_MONSTERSOLID);
 
 		if ((trace.fraction < 1 || trace.startsolid || trace.allsolid) && trace.ent != self)
 		{
@@ -570,7 +570,7 @@ void hanging_chicken_think(edict_t *self)
 	//knockback
 	if(CHICKEN_KNOCKBACK)
 	{
-		gi.trace(self->s.origin, self->mins, self->maxs, self->targetEnt->s.origin, self, self->clipmask,&trace);
+		trace = gi.trace(self->s.origin, self->mins, self->maxs, self->targetEnt->s.origin, self, self->clipmask);
 		if(trace.ent)
 		{
 			if(movable(trace.ent))

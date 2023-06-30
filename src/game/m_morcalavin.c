@@ -1337,7 +1337,7 @@ void mork_ai_hover (edict_t *self, float dist)
 	{
 		VectorCopy(self->s.origin, bottom);
 		bottom[2] -= dist;
-		gi.trace(self->s.origin, self->mins, self->maxs, bottom, self, MASK_SOLID, &trace);
+		trace = gi.trace(self->s.origin, self->mins, self->maxs, bottom, self, MASK_SOLID);
 
 		if(trace.fraction<1.0)
 		{
@@ -1596,7 +1596,7 @@ qboolean morcalavin_choose_teleport_destination(edict_t *self)
 		VectorMA(startpos, -tracedist, forward, endpos);
 		noblockent = self->enemy;
 
-		gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID, &trace);
+		trace = gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID);
 
 		if(trace.fraction*tracedist < 100)//min origin lerp dist
 			continue;
@@ -1609,7 +1609,7 @@ qboolean morcalavin_choose_teleport_destination(edict_t *self)
 			VectorCopy(trace.endpos, startpos);
 			VectorCopy(trace.endpos, endpos);
 			endpos[2] -=64;
-			gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID,&trace);
+			trace = gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID);
 			if(trace.fraction<1.0 && !trace.allsolid && !trace.startsolid)//the last two should be false if trace.fraction is < 1.0 but doesn't hurt to check
 			{
 				VectorCopy(trace.endpos, self->s.origin);

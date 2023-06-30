@@ -198,7 +198,7 @@ void elflord_StartBeam(edict_t *self)
 	beam->svflags |= SVF_ALWAYS_SEND;
 
 	VectorMA(self->s.origin, 640, self->pos1, endpos);
-	gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SHOT, &trace);
+	trace = gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SHOT);
 
 	VectorCopy(trace.endpos, beam->s.origin);
 
@@ -543,7 +543,7 @@ void elflord_track(edict_t *self)
 
 	VectorMA(self->s.origin, 640, newdir, endpos);
 
-	gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SHOT, &trace);
+	trace = gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SHOT);
 
 	if (trace.ent && trace.ent->takedamage)
 	{

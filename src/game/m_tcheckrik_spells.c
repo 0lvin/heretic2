@@ -629,7 +629,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 		//Check ahead first to see if it's going to hit anything at this angle
 		AngleVectors(AimAngles, forward, NULL, NULL);
 		VectorMA(StartPos, SPEARPROJ_SPEED, forward, endpos);
-		gi.trace(StartPos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(StartPos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
 		if(trace.ent && ok_to_autotarget(caster, trace.ent))
 		{//already going to hit a valid target at this angle- so don't autotarget
 			VectorScale(forward, SPEARPROJ_SPEED, spearproj->velocity);
@@ -647,7 +647,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 
 	G_LinkMissile(spearproj);
 
-	gi.trace(spearproj->s.origin, vec3_origin, vec3_origin, spearproj->s.origin, caster, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(spearproj->s.origin, vec3_origin, vec3_origin, spearproj->s.origin, caster, MASK_PLAYERSOLID);
 	if (trace.startsolid)
 	{
 		SpearProjTouch(spearproj, trace.ent, &trace.plane, trace.surface);

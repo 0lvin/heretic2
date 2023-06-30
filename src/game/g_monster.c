@@ -161,7 +161,7 @@ void M_CheckGround (edict_t *ent)
 	point[1] = ent->s.origin[1];
 	point[2] = ent->s.origin[2] - 0.25;
 
-	gi.trace (ent->s.origin, ent->mins, ent->maxs, point, ent, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(ent->s.origin, ent->mins, ent->maxs, point, ent, MASK_MONSTERSOLID);
 
 	// check steepness
 	if ( trace.plane.normal[2] < 0.7 && !trace.startsolid)
@@ -398,7 +398,7 @@ void M_droptofloor (edict_t *ent)
 	VectorCopy (ent->s.origin, end);
 	end[2] -= 256;
 
-	gi.trace (ent->s.origin, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(ent->s.origin, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);
 
 	if(trace.allsolid||trace.startsolid)
 	{
@@ -700,7 +700,7 @@ void MG_CheckInGround (edict_t *self)
 		VectorSet(mins, self->mins[0], self->mins[1], 0);
 		VectorSet(maxs, self->maxs[0], self->maxs[1], 1);
 
-		gi.trace(top, mins, maxs, bottom, self, MASK_SOLID,&trace);
+		trace = gi.trace(top, mins, maxs, bottom, self, MASK_SOLID);
 		if(trace.allsolid || trace.startsolid)//monster in solid, can't be fixed
 		{
 			gi.dprintf("top of %s at %s in solid architecture(%s)!!!\n", self->classname, vtos(self->s.origin), trace.ent->classname);
@@ -1108,7 +1108,7 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 		startspot[2] += forwhom->mins[2];
 		VectorCopy(startspot, endspot);
 		endspot[2] -= 300;
-		gi.trace(forwhom->s.origin, vec3_origin, vec3_origin, endspot, forwhom, MASK_SOLID,&trace);
+		trace = gi.trace(forwhom->s.origin, vec3_origin, vec3_origin, endspot, forwhom, MASK_SOLID);
 //		if(trace_fraction>0.05&&forwhom.movetype==MOVETYPE_STEP)
 //			forwhom.flags(-)FL_ONGROUND;
 
@@ -1245,7 +1245,7 @@ edict_t	*M_CheckMeleeHit( edict_t *attacker, float max_dist, trace_t *trace )
 	AngleVectors(attacker->s.angles, vf, NULL, NULL);
 	VectorMA(attacker->s.origin, max_dist, vf, targPos);
 
-	gi.trace(attacker->s.origin, attacker->mins, attacker->maxs, targPos, attacker, MASK_MONSTERSOLID,trace);
+	*trace = gi.trace(attacker->s.origin, attacker->mins, attacker->maxs, targPos, attacker, MASK_MONSTERSOLID);
 
 	//Check to see if the trace was successful (miss)
 	if (trace->fraction < 1)
@@ -1305,20 +1305,22 @@ edict_t	*M_CheckMeleeLineHit( edict_t *attacker, vec3_t start, vec3_t end, vec3_
 
 	VectorSubtract(endv, startv, swipedir);
 	//make sure line to start of swipe is clear
-	gi.trace(attacker->s.origin, mins, maxs, startv, attacker, MASK_SHOT,trace);
+	*trace = gi.trace(attacker->s.origin, mins, maxs, startv, attacker, MASK_SHOT);
 
 	if(trace->fraction == 1.0)//line to start of trace not blocked
-		gi.trace(startv, mins, maxs, endv, attacker, MASK_SHOT,trace);//MASK_MONSTERSOLID);
+	{
+		*trace = gi.trace(startv, mins, maxs, endv, attacker, MASK_SHOT);//MASK_MONSTERSOLID);
+	}
 
 	if(trace->fraction == 1.0)
 	{//hit nothing, trace to middle of line from origin to see if reached too far
 		VectorMA(startv, 0.5, swipedir, midv);
-		gi.trace(attacker->s.origin, mins, maxs, midv, attacker, MASK_SHOT,trace);
+		*trace = gi.trace(attacker->s.origin, mins, maxs, midv, attacker, MASK_SHOT);
 	}
 
 	if(trace->fraction == 1.0)
 	{//Last Chance: trace to end of swipe from origin to see if reached too far
-		gi.trace(attacker->s.origin, mins, maxs, endv, attacker, MASK_SHOT,trace);
+		*trace = gi.trace(attacker->s.origin, mins, maxs, endv, attacker, MASK_SHOT);
 	}
 
 	VectorNormalize(swipedir);

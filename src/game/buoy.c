@@ -516,7 +516,7 @@ void SP_info_buoy(edict_t *self)
 		VectorSet(mins, -24, -24, 0);
 		VectorSet(maxs, 24, 24, 1);
 
-		gi.trace(top, mins, maxs, bottom, self, MASK_SOLID,&trace);
+		trace = gi.trace(top, mins, maxs, bottom, self, MASK_SOLID);
 		if(trace.allsolid || trace.startsolid)//bouy in solid, can't be fixed
 		{
 			gi.dprintf("Buoy %s(%s) in solid(%s)!!!\n", self->targetname, vtos(self->s.origin), trace.ent->classname);

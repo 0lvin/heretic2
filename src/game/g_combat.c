@@ -63,7 +63,7 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 	{
 		VectorAdd (targ->absmin, targ->absmax, dest);
 		VectorScale (dest, 0.5, dest);
-		gi.trace (inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 
 		if (trace.fraction == 1.0)
 			return true;
@@ -75,7 +75,7 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 	}
 
 	// Try a basic trace straight to the origin.  This takes care of 99% of the tests.
-	gi.trace (inflictor->s.origin, vec3_origin, vec3_origin, targ->s.origin, inflictor, MASK_SOLID,&trace);
+	trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, targ->s.origin, inflictor, MASK_SOLID);
 	if (trace.fraction == 1.0)
 		return true;
 
@@ -94,14 +94,14 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 		// South edge
 		VectorCopy(targ->s.origin, dest);
 		dest[1] += targ->mins[1];
-		gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 		if (trace.fraction > .99)
 			return true;
 
 		// North edge
 		VectorCopy(targ->s.origin, dest);
 		dest[1] += targ->maxs[1];
-		gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 		if (trace.fraction > .99)
 			return true;
 	}
@@ -110,14 +110,14 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 		// West edge
 		VectorCopy(targ->s.origin, dest);
 		dest[0] += targ->mins[0];
-		gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 		if (trace.fraction > .99)
 			return true;
 
 		// East edge
 		VectorCopy(targ->s.origin, dest);
 		dest[0] += targ->maxs[0];
-		gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 		if (trace.fraction > .99)
 			return true;
 	}
@@ -126,14 +126,14 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 	// bottom edge
 	VectorCopy(targ->s.origin, dest);
 	dest[2] += targ->mins[2];
-	gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+	trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 	if (trace.fraction > .99)
 		return true;
 
 	// top edge
 	VectorCopy(targ->s.origin, dest);
 	dest[2] += targ->maxs[2];
-	gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+	trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 	if (trace.fraction > .99)
 		return true;
 
@@ -153,7 +153,7 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 	{
 		VectorAdd (targ->absmin, targ->absmax, dest);
 		VectorScale (dest, 0.5, dest);
-		gi.trace (origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+			trace = gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 
 		if (trace.fraction == 1.0)
 			return true;
@@ -165,7 +165,7 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 	}
 
 	// Try a basic trace straight to the origin.  This takes care of 99% of the tests.
-	gi.trace (origin, vec3_origin, vec3_origin, targ->s.origin, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(origin, vec3_origin, vec3_origin, targ->s.origin, inflictor, MASK_SOLID);
 	if (trace.fraction == 1.0)
 		return true;
 
@@ -184,14 +184,14 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 		// South edge
 		VectorCopy(targ->s.origin, dest);
 		dest[1] += targ->mins[1];
-		gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 		if (trace.fraction > .99)
 			return true;
 
 		// North edge
 		VectorCopy(targ->s.origin, dest);
 		dest[1] += targ->maxs[1];
-		gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 		if (trace.fraction > .99)
 			return true;
 	}
@@ -200,14 +200,14 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 		// West edge
 		VectorCopy(targ->s.origin, dest);
 		dest[0] += targ->mins[0];
-		gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 		if (trace.fraction > .99)
 			return true;
 
 		// East edge
 		VectorCopy(targ->s.origin, dest);
 		dest[0] += targ->maxs[0];
-		gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+		trace = gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 		if (trace.fraction > .99)
 			return true;
 	}
@@ -216,14 +216,14 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 	// bottom edge
 	VectorCopy(targ->s.origin, dest);
 	dest[2] += targ->mins[2];
-	gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+	trace = gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 	if (trace.fraction > .99)
 		return true;
 
 	// top edge
 	VectorCopy(targ->s.origin, dest);
 	dest[2] += targ->maxs[2];
-	gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID,&trace);
+	trace = gi.trace(origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 	if (trace.fraction > .99)
 		return true;
 

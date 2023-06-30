@@ -421,7 +421,7 @@ void ratbite (edict_t *self)
 
 	if (len < (self->maxs[0] + self->enemy->maxs[0] + 45))	// A hit
 	{
-		gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_MONSTERSOLID);
 
 		if (trace.ent->takedamage)	// A hit
 		{

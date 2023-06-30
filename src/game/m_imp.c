@@ -130,7 +130,7 @@ int imp_check_move(edict_t *self, float dist)
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 	VectorMA(vec, dist, vf, vec);
 
-	gi.trace(self->s.origin, self->mins, self->maxs, vec, self, MASK_SHOT|MASK_WATER,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, vec, self, MASK_SHOT|MASK_WATER);
 
 	if (trace.fraction < 1)
 	{
@@ -551,7 +551,7 @@ qboolean imp_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr, 
 
 	VectorMA(goalpos, checkdist, vr, goalpos);
 
-	gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER,&trace);
+	trace = gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER);
 
 	//We've found somewhere to go
 	if (trace.ent == self->enemy)
@@ -564,7 +564,7 @@ qboolean imp_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr, 
 		VectorScale(vr, -1, vr);
 		VectorMA(goalpos, checkdist, vr, goalpos);
 
-		gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER,&trace);
+		trace = gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER);
 
 		if (trace.ent == self->enemy)
 		{
@@ -582,7 +582,7 @@ qboolean imp_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr, 
 
 	VectorMA(goalpos, checkdist, vu, goalpos);
 
-	gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER,&trace);
+	trace = gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER);
 
 	//We've found somewhere to go
 	if (trace.ent == self->enemy)
@@ -595,7 +595,7 @@ qboolean imp_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr, 
 		VectorScale(vu, -1, vu);
 		VectorMA(goalpos, checkdist, vu, goalpos);
 
-		gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER,&trace);
+		trace = gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER);
 
 		if (trace.ent == self->enemy)
 		{
@@ -613,7 +613,7 @@ qboolean imp_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr, 
 
 	VectorMA(goalpos, checkdist, vf, goalpos);
 
-	gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER,&trace);
+	trace = gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER);
 
 	//We've found somewhere to go
 	if (trace.ent == self->enemy)
@@ -626,7 +626,7 @@ qboolean imp_check_directions(edict_t *self, vec3_t goal, vec3_t vf, vec3_t vr, 
 		VectorScale(vf, -1, vf);
 		VectorMA(goalpos, checkdist, vf, goalpos);
 
-		gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER,&trace);
+		trace = gi.trace(goalpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER);
 
 		if (trace.ent == self->enemy)
 		{
@@ -656,7 +656,7 @@ qboolean imp_check_swoop(edict_t *self, vec3_t goal)
 	checkpos[2] -= zd;
 
 	//Trace down about that far and about one forth the distance to the target
-	gi.trace(self->s.origin, self->mins, self->maxs, checkpos, self, MASK_SHOT|MASK_WATER,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, checkpos, self, MASK_SHOT|MASK_WATER);
 
 	if (trace.fraction < 1)
 	{
@@ -666,7 +666,7 @@ qboolean imp_check_swoop(edict_t *self, vec3_t goal)
 
 	//Trace straight to the target
 
-	gi.trace(checkpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER,&trace);
+	trace = gi.trace(checkpos, self->mins, self->maxs, goal, self, MASK_SHOT|MASK_WATER);
 
 	if (trace.ent != self->enemy)
 	{
@@ -852,14 +852,14 @@ void imp_check_dodge(edict_t *self)
 
 			VectorMA(goalpos, 100, ddir, goalpos);
 
-			gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER,&trace);
+			trace = gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER);
 
 			if (trace.fraction < 1)//bad dir, try other
 				VectorScale(ddir, -1, ddir);
 
 			if(vert)
 			{//ok, better check this new opposite dir
-				gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER,&trace);
+				trace = gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER);
 
 				if (trace.fraction < 1)
 				{//uh-oh, let's go for a side dir
@@ -869,7 +869,7 @@ void imp_check_dodge(edict_t *self)
 						VectorScale(vr, -1, ddir);
 				}
 
-				gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER,&trace);
+				trace = gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER);
 
 				if (trace.fraction < 1)//what the hell, just go the other way
 					VectorScale(ddir, -1, ddir);
@@ -934,7 +934,7 @@ void move_imp_hover(edict_t *self)
 		VectorSet(mins, -1, -1, -1);
 		VectorSet(maxs, 1, 1, 1);
 
-		gi.trace(self->s.origin, mins, maxs, self->enemy->s.origin, self, MASK_SHOT|MASK_WATER,&trace);
+		trace = gi.trace(self->s.origin, mins, maxs, self->enemy->s.origin, self, MASK_SHOT|MASK_WATER);
 
 		//If not, try looking from a bit to the side in all six directions
 		if (trace.ent != self->enemy)
@@ -993,7 +993,7 @@ void move_imp_hover(edict_t *self)
 
 					VectorMA(self->s.origin, 100, vr, goalpos);
 
-					gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER,&trace);
+					trace = gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER);
 
 					if (trace.fraction < 1)
 						VectorScale(vr, -1, vr);

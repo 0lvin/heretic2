@@ -169,7 +169,7 @@ void priestess_teleport_move ( edict_t *self )
 			VectorCopy(moveLocation->s.origin, testPos);
 			testPos[2] += 36;
 
-			gi.trace(testPos, mins, maxs, testPos, self, MASK_MONSTERSOLID,&trace);
+			trace = gi.trace(testPos, mins, maxs, testPos, self, MASK_MONSTERSOLID);
 
 			if (trace.startsolid || trace.allsolid)
 				continue;
@@ -277,7 +277,7 @@ void priestess_teleport_return ( edict_t *self )
 	start[2] += 36;
 	end[2] -= 128;
 
-	gi.trace(start, self->mins, self->maxs, end, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(start, self->mins, self->maxs, end, self, MASK_MONSTERSOLID);
 
 	if (trace.allsolid || trace.startsolid)
 	{
@@ -899,7 +899,7 @@ void priestess_fire4( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 		VectorMA( startPos, len, vf, endPos );
 
-		gi.trace( startPos, mins, maxs, endPos, self, MASK_SHOT ,&trace);
+		trace = gi.trace( startPos, mins, maxs, endPos, self, MASK_SHOT );
 
 		if (trace.ent == self->enemy)
 		{

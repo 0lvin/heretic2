@@ -380,7 +380,7 @@ void ssithraCheckRipple (edict_t *self)
 	top[2] += self->maxs[2] * 0.75;
 	bottom[2] += self->mins[2];
 
-	gi.trace(top, vec3_origin, vec3_origin, bottom, self, MASK_WATER,&trace);
+	trace = gi.trace(top, vec3_origin, vec3_origin, bottom, self, MASK_WATER);
 
 	if(trace.fraction >= 1.0)
 		return;
@@ -462,7 +462,7 @@ qboolean ssithraWaterLedgeNearEnemy (edict_t *self)
 
 	VectorNormalize(enemy_dir);
 	VectorMA(self->s.origin,128,enemy_dir,endpos);
-	gi.trace(self->s.origin,self->mins,self->maxs,endpos,self,MASK_SOLID,&trace);
+	trace = gi.trace(self->s.origin,self->mins,self->maxs,endpos,self,MASK_SOLID);
 	if(trace.fraction<1.0)
 		return true;
 	//no ledge to jump up on
@@ -566,11 +566,11 @@ void ssithraBoundCheck (edict_t *self)
 	VectorCopy(self->s.origin,startpos);
 
 	VectorMA(startpos,48,forward,endpos);//forward
-	gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID,&trace);
+	trace = gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID);
 
 	VectorCopy(trace.endpos,startpos);
 	VectorMA(startpos,-128,up,endpos);//down
-	gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID|MASK_WATER,&trace);
+	trace = gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID|MASK_WATER);
 
 	//If it's a step down or less, no jumpie
 	if(Q_fabs(trace.endpos[2] - self->s.origin[2]) <= 18)
@@ -588,7 +588,7 @@ void ssithraBoundCheck (edict_t *self)
 		mins[2] = 0;
 		maxs[2] = 1;
 
-		gi.trace(startpos, mins, maxs, endpos, self, MASK_SOLID,&trace);
+		trace = gi.trace(startpos, mins, maxs, endpos, self, MASK_SOLID);
 		if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 			ssithraWhichJump(self);
 		else
@@ -649,11 +649,11 @@ void ssithraDiveCheck (edict_t *self)
 	VectorCopy(self->s.origin,startpos);
 
 	VectorMA(startpos,48,forward,endpos);//forward
-	gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID,&trace);
+	trace = gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID);
 
 	VectorCopy(trace.endpos,startpos);
 	VectorMA(startpos,-128,up,endpos);//down
-	gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID|MASK_WATER,&trace);
+	trace = gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID|MASK_WATER);
 
 	if(trace.fraction == 1||trace.allsolid||trace.startsolid)
 		return;//too far to jump down, or in solid
@@ -667,7 +667,7 @@ void ssithraDiveCheck (edict_t *self)
 		mins[2] = 0;
 		maxs[2] = 1;
 
-		gi.trace(startpos, mins, maxs, endpos, self, MASK_SOLID,&trace);
+		trace = gi.trace(startpos, mins, maxs, endpos, self, MASK_SOLID);
 
 		if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 			ssithraWhichJump(self);
@@ -726,9 +726,9 @@ void ssithraNamorJump (edict_t *self)
 	self->count = false;
 	VectorCopy(self->s.origin,top);
 	top[2]+=512;
-	gi.trace(self->s.origin, vec3_origin, vec3_origin, top, self, MASK_SOLID, &trace);
+	trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, top, self, MASK_SOLID);
 	VectorCopy(trace.endpos,top);
-	gi.trace(top, vec3_origin, vec3_origin, self->s.origin, self, MASK_SOLID|MASK_WATER, &trace);
+	trace = gi.trace(top, vec3_origin, vec3_origin, self->s.origin, self, MASK_SOLID|MASK_WATER);
 
 	//How far above my feet is waterlevel?
 	VectorSubtract(trace.endpos, self->s.origin, top);
@@ -820,7 +820,7 @@ void ssithraCheckJump (edict_t *self)
 		VectorMA(source, 128, vf, source);
 
 		maxs[2] += 32;
-		gi.trace (self->s.origin, self->mins, maxs, source, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(self->s.origin, self->mins, maxs, source, self, MASK_MONSTERSOLID);
 
 		if (trace.fraction == 1)
 		{//clear ahead and above
@@ -828,7 +828,7 @@ void ssithraCheckJump (edict_t *self)
 
 			source2[2] -= 1024;
 			//trace down
-			gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
+			trace = gi.trace(source, self->mins, self->maxs, source2, self, MASK_ALL);
 
 			if (trace.allsolid || trace.startsolid)
 			{
@@ -874,7 +874,7 @@ void ssithraCheckJump (edict_t *self)
 							mins[2] = 0;
 							maxs[2] = 1;
 
-							gi.trace (source, mins, maxs, source2, self, MASK_SOLID,&trace);
+							trace = gi.trace(source, mins, maxs, source2, self, MASK_SOLID);
 							if(trace.fraction < 1.0 || trace.startsolid || trace.allsolid)
 								ssithraWhichJump(self);
 							else
@@ -918,7 +918,7 @@ void ssithraCheckJump (edict_t *self)
 			{//FIXME: swimming can bring origin out of water!  in water
 				AngleVectors(self->s.angles, vf, NULL, NULL);
 				VectorMA(self->s.origin, 72, vf, source);
-				gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_SOLID,&trace);
+				trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SOLID);
 				if(trace.fraction<1.0)
 					jump_up_check = true;
 				//shore is within 72 units of me
@@ -927,10 +927,10 @@ void ssithraCheckJump (edict_t *self)
 			{//check if water in front
 				AngleVectors(self->s.angles, vf, NULL, NULL);
 				VectorMA(self->s.origin, 48, vf, source);
-				gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_SOLID,&trace);
+				trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SOLID);
 				VectorCopy(trace.endpos,source);
 				source[2]-=128;
-				gi.trace (trace.endpos, self->mins, self->maxs, source, self, MASK_SOLID|MASK_WATER,&trace);
+				trace = gi.trace(trace.endpos, self->mins, self->maxs, source, self, MASK_SOLID|MASK_WATER);
 				if(trace.fraction<1.0&&trace.contents&CONTENTS_WATER)
 				{
 					VectorCopy(trace.endpos, source);
@@ -941,7 +941,7 @@ void ssithraCheckJump (edict_t *self)
 					mins[2] = 0;
 					maxs[2] = 1;
 
-					gi.trace(source, mins, maxs, source2, self, MASK_SOLID,&trace);
+					trace = gi.trace(source, mins, maxs, source2, self, MASK_SOLID);
 					if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 						ssithraWhichJump(self);
 					else
@@ -965,7 +965,7 @@ void ssithraCheckJump (edict_t *self)
 				//um,. what about if runing away?
 				hgt_diff = (targ_org[2] + targ_mins[2]) - (self->s.origin[2] + self->mins[2]) + 32;
 				source[2] += hgt_diff;
-				gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_ALL,&trace);
+				trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_ALL);
 
 				if (trace.fraction == 1)
 				{//clear above
@@ -975,7 +975,7 @@ void ssithraCheckJump (edict_t *self)
 					VectorMA(source, 64, vf, source2);
 					source2[2] -= 24;
 					//trace forward and down a little
-					gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
+					trace = gi.trace(source, self->mins, self->maxs, source2, self, MASK_ALL);
 
 					if (trace.allsolid || trace.startsolid)
 						return;
@@ -1026,7 +1026,7 @@ void ssithraCheckJump (edict_t *self)
 				VectorMA(source, 128, vf, source2);
 				VectorCopy(self->mins, mins);
 				mins[2]+=24;//can clear it
-				gi.trace(source, mins, self->maxs, source2, self, MASK_SOLID,&trace);
+				trace = gi.trace(source, mins, self->maxs, source2, self, MASK_SOLID);
 
 				if(trace.allsolid||trace.startsolid)
 					return;
@@ -1076,7 +1076,7 @@ void ssithraCheckLeaveWaterSplash (edict_t *self)
 		VectorCopy(self->velocity,dir);
 		VectorNormalize(dir);
 		VectorMA(self->s.origin,-256,dir,endpos);
-		gi.trace(self->s.origin,vec3_origin,vec3_origin,endpos,self,MASK_WATER,&trace);
+		trace = gi.trace(self->s.origin,vec3_origin,vec3_origin,endpos,self,MASK_WATER);
 		if(trace.fraction>=1.0)
 			return;//?!
 //		gi.dprintf("Out water splash\n");
@@ -1102,7 +1102,7 @@ void ssithraCheckHitWaterSplash (edict_t *self)
 	{
 		VectorCopy(self->s.origin, endpos);
 		endpos[2] -= 128;
-		gi.trace(self->s.origin,self->mins,self->maxs,endpos,self,MASK_ALL,&trace);
+		trace = gi.trace(self->s.origin,self->mins,self->maxs,endpos,self,MASK_ALL);
 		if(trace.fraction<1&&
 			!trace.allsolid&&
 			!trace.startsolid&&
@@ -1120,8 +1120,8 @@ void ssithraCheckHitWaterSplash (edict_t *self)
 		VectorCopy(self->velocity,dir);
 		VectorNormalize(dir);
 		VectorMA(self->s.origin,-256,dir,endpos);
-		gi.trace(self->s.origin,vec3_origin,vec3_origin,endpos,self,MASK_WATER,&trace);
-		gi.trace(trace.endpos,vec3_origin,vec3_origin,self->s.origin,self,MASK_WATER,&trace);
+		trace = gi.trace(self->s.origin,vec3_origin,vec3_origin,endpos,self,MASK_WATER);
+		trace = gi.trace(trace.endpos,vec3_origin,vec3_origin,self->s.origin,self,MASK_WATER);
 		if(trace.fraction>=1.0)
 			return;//?!
 //		gi.dprintf("In water splash\n");

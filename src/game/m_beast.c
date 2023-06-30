@@ -177,7 +177,7 @@ qboolean shoulder_room_ahead (edict_t *self)
 	mins[2] = 0;
 	maxs[2] = 1;
 
-	gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SOLID, &trace);
+	trace = gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SOLID);
 
 	if(trace.allsolid || trace.startsolid || trace.fraction < 1.0)
 	{
@@ -235,7 +235,7 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 
 			VectorSet(mins, -24, -24, -1);
 			VectorSet(maxs, 24, 24, 1);
-			gi.trace(start, mins, maxs, end, self, MASK_SOLID,&tr);
+			tr = gi.trace(start, mins, maxs, end, self, MASK_SOLID);
 			if(tr.fraction<1.0 && tr.ent && tr.ent->targetname)
 			{
 				if(!stricmp(tr.ent->targetname, "pillar"))
@@ -767,7 +767,7 @@ void tbeast_footstep (edict_t *self)
 
 	VectorCopy(pos, bottom);
 	bottom[2]-=128;
-	gi.trace(pos, vec3_origin, vec3_origin, bottom, self, MASK_SOLID, &trace);
+	trace = gi.trace(pos, vec3_origin, vec3_origin, bottom, self, MASK_SOLID);
 	if(trace.fraction < 1.0)
 		VectorCopy(trace.endpos, pos);
 
@@ -971,7 +971,7 @@ void tbeastbite (edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorMA(melee_point, melee_range, forward, bite_endpos);
 
 	//let's do this the right way
-	gi.trace(melee_point, vec3_origin, vec3_origin, bite_endpos, self, MASK_SHOT,&trace);
+	trace = gi.trace(melee_point, vec3_origin, vec3_origin, bite_endpos, self, MASK_SHOT);
 	if (trace.fraction < 1 && !trace.startsolid && !trace.allsolid && trace.ent->takedamage)// A hit
 	{
 		gi.sound(self, CHAN_WEAPON, sounds[SND_CHOMP], 1, ATTN_NORM, 0);
@@ -1129,7 +1129,7 @@ qboolean CheckMoveFoot (edict_t *self, edict_t *foot, vec3_t dest)
 	VectorSubtract(dest, foot->s.origin, dir);
 	VectorNormalize(dir);
 
-	gi.trace(foot->s.origin, foot->mins, foot->maxs, dest, foot, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(foot->s.origin, foot->mins, foot->maxs, dest, foot, MASK_MONSTERSOLID);
 
 	if(trace.ent)
 	{
@@ -1166,7 +1166,7 @@ qboolean TB_CheckBottom (edict_t *self)
 
 	VectorCopy(self->s.origin, end);
 	end[2] -= 1;
-	gi.trace(self->s.origin, self->mins, self->maxs, end, self, MASK_ALL,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, end, self, MASK_ALL);
 
 	if(trace.ent && stricmp(trace.ent->classname, "worldspawn"))
 	{
@@ -1248,7 +1248,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 
 	if(!skiplow)
 	{
-		gi.trace(start, self->mins, self->maxs, end, self, MASK_SOLID,&trace);
+		trace = gi.trace(start, self->mins, self->maxs, end, self, MASK_SOLID);
 
 		if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 		{
@@ -1260,7 +1260,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 			VectorCopy(self->mins, mins);
 			mins[0]*=0.5;
 			mins[1]*=0.5;
-			gi.trace(start2, self->mins, self->maxs, end2, self, MASK_SOLID,&trace);
+			trace = gi.trace(start2, self->mins, self->maxs, end2, self, MASK_SOLID);
 			if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 			{
 //				gi.dprintf("Beast blocked low jump!\n");
@@ -1276,7 +1276,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 //try a jump of 372
 	end[2] += self->size[2];
 
-	gi.trace(start, self->mins, self->maxs, end, self, MASK_SOLID,&trace);
+	trace = gi.trace(start, self->mins, self->maxs, end, self, MASK_SOLID);
 
 	if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 	{
@@ -1288,7 +1288,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 		VectorCopy(self->mins, mins);
 		mins[0]*=0.5;
 		mins[1]*=0.5;
-		gi.trace(start2, self->mins, self->maxs, end2, self, MASK_SOLID,&trace);
+		trace = gi.trace(start2, self->mins, self->maxs, end2, self, MASK_SOLID);
 		if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 		{
 //			gi.dprintf("Beast blocked high jump!\n");
@@ -1334,7 +1334,7 @@ void tbeast_run_think (edict_t *self, float dist)
 		VectorMA(start, 128, forward, end);
 		VectorCopy(self->mins, mins);
 		mins[2]+=54;//his step height
-		gi.trace(start, mins, self->maxs, end, self, MASK_SOLID,&trace);
+		trace = gi.trace(start, mins, self->maxs, end, self, MASK_SOLID);
 		if(trace.ent)
 		{
 			if(movable(trace.ent) || trace.ent->solid!=SOLID_BSP)
@@ -1929,7 +1929,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 
 	VectorCopy(frontpos, bottom1);
 	bottom1[2] -= self->size[2] * 2;
-	gi.trace(frontpos, vec3_origin, vec3_origin, bottom1, self, MASK_SOLID,&trace);
+	trace = gi.trace(frontpos, vec3_origin, vec3_origin, bottom1, self, MASK_SOLID);
 	if(trace.fraction == 1.0)
 	{
 		self->s.angles[PITCH] = LerpAngleChange (self->s.angles[PITCH], 0, 8);
@@ -1940,7 +1940,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 
 		VectorCopy(backpos, bottom2);
 		bottom2[2] -= self->size[2] * 2;
-		gi.trace(backpos, vec3_origin, vec3_origin, bottom2, self, MASK_SOLID,&trace);
+		trace = gi.trace(backpos, vec3_origin, vec3_origin, bottom2, self, MASK_SOLID);
 		if(trace.fraction == 1.0)
 		{
 			self->s.angles[PITCH] = LerpAngleChange (self->s.angles[PITCH], 0, 8);
@@ -1958,7 +1958,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 
 	VectorCopy(rightpos, bottom1);
 	bottom1[2] -= self->size[2] * 2;
-	gi.trace(rightpos, vec3_origin, vec3_origin, bottom1, self, MASK_SOLID,&trace);
+	trace = gi.trace(rightpos, vec3_origin, vec3_origin, bottom1, self, MASK_SOLID);
 	if(trace.fraction == 1.0)
 	{
 		self->s.angles[ROLL] = LerpAngleChange (self->s.angles[ROLL], 0, 8);
@@ -1969,7 +1969,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 
 		VectorCopy(leftpos, bottom2);
 		bottom2[2] -= self->size[2] * 2;
-		gi.trace(leftpos, vec3_origin, vec3_origin, bottom2, self, MASK_SOLID,&trace);
+		trace = gi.trace(leftpos, vec3_origin, vec3_origin, bottom2, self, MASK_SOLID);
 		if(trace.fraction == 1.0)
 		{
 			self->s.angles[ROLL] = LerpAngleChange (self->s.angles[ROLL], 0, 8);
@@ -2266,7 +2266,7 @@ void tbeast_check_impacts(edict_t *self)
 
 //BODY
 	//Fix me: continue the trace if less than 1.0 or save for next touch?
-	gi.trace(start, mins, maxs, end, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(start, mins, maxs, end, self, MASK_MONSTERSOLID);
 	//Hey!  Check and see if they're close to my mouth and chomp 'em!
 	tbeast_fake_impact(self, &trace, false);
 
@@ -2279,7 +2279,7 @@ void tbeast_check_impacts(edict_t *self)
 		VectorSet(mins, -32, -32, 0);
 		VectorSet(maxs, 32, 32, 1);
 
-		gi.trace(start, mins, maxs, end, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(start, mins, maxs, end, self, MASK_MONSTERSOLID);
 		tbeast_fake_impact(self, &trace, false);
 		return;
 	}
@@ -2287,12 +2287,12 @@ void tbeast_check_impacts(edict_t *self)
 //Do leg checks
 //left leg
 	//Fix me: continue the trace if less than 1.0 or save for next touch?
-	gi.trace(lstart, fmins, fmaxs, lend, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(lstart, fmins, fmaxs, lend, self, MASK_MONSTERSOLID);
 	tbeast_fake_impact(self, &trace, true);
 
 //right leg
 	//Fix me: continue the trace if less than 1.0 or save for next touch?
-	gi.trace(rstart, fmins, fmaxs, rend, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(rstart, fmins, fmaxs, rend, self, MASK_MONSTERSOLID);
 	tbeast_fake_impact(self, &trace, true);
 }
 
@@ -2421,7 +2421,7 @@ void tbeast_fake_touch(edict_t *self)
 		other->clipmask = MASK_ALL;
 //BODY
 		//Fix me: continue the trace if less than 1.0 or save for next touch?
-		gi.trace(start, mins, maxs, end, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(start, mins, maxs, end, self, MASK_MONSTERSOLID);
 		//put other back to normal
 		other->solid = (solid_t) osolid;
 		other->clipmask = ocm;
@@ -2465,14 +2465,14 @@ void tbeast_fake_touch(edict_t *self)
 			{
 				if(other->isBlocked&&other->solid!=SOLID_NOT)
 				{
-					gi.trace(other->s.origin, vec3_origin, vec3_origin, self->s.origin, other, MASK_ALL,&trace);
+					trace = gi.trace(other->s.origin, vec3_origin, vec3_origin, self->s.origin, other, MASK_ALL);
 					trace.ent = self;
 					VectorCopy(other->s.origin, trace.endpos);
 					other->isBlocked(other, &trace);
 				}
 				if(other->touch&&other->solid!=SOLID_NOT)
 				{
-					gi.trace(other->s.origin, vec3_origin, vec3_origin, self->s.origin, other, MASK_ALL,&trace);
+					trace = gi.trace(other->s.origin, vec3_origin, vec3_origin, self->s.origin, other, MASK_ALL);
 					trace.ent = self;
 					VectorCopy(other->s.origin, trace.endpos);
 					other->touch (other, self, &trace.plane, trace.surface);
@@ -2540,7 +2540,7 @@ void tbeast_post_think (edict_t *self)
 			{
 				VectorCopy(self->s.origin, end);
 				end[2] += omins2;
-				gi.trace(self->s.origin, self->mins, self->maxs, end, self, MASK_SOLID,&trace);
+				trace = gi.trace(self->s.origin, self->mins, self->maxs, end, self, MASK_SOLID);
 				VectorCopy(trace.endpos, self->s.origin);
 			}
 			gi.linkentity(self);
@@ -2567,7 +2567,7 @@ void tbeast_post_think (edict_t *self)
 			VectorSet(mins, -8, -8, 0);
 			VectorSet(maxs, 8, 8, 2);
 
-			gi.trace(self->s.origin, mins, maxs, end, self, MASK_SOLID,&trace);
+			trace = gi.trace(self->s.origin, mins, maxs, end, self, MASK_SOLID);
 			if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 				go_jump = true;
 		}

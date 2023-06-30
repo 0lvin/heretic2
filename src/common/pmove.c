@@ -96,13 +96,13 @@ static int PM_CorrectAllSolid(trace_t* trace) {
 				point[0] += (float)i;
 				point[1] += (float)j;
 				point[2] += (float)k;
-				pm->trace(point, pm->mins, pm->maxs, point, trace);
+				*trace = pm->trace(point, pm->mins, pm->maxs, point);
 				if (!trace->allsolid) {
 					point[0] = pml.origin[0];
 					point[1] = pml.origin[1];
 					point[2] = pml.origin[2] - 0.25;
 
-					pm->trace(pml.origin, pm->mins, pm->maxs, point, trace);
+					*trace = pm->trace(pml.origin, pm->mins, pm->maxs, point);
 					pml.groundTrace = *trace;
 					return true;
 				}
@@ -230,7 +230,7 @@ static void PM_GroundTrace(void) {
 	point[1] = pml.origin[1];
 	point[2] = pml.origin[2] - 0.5f;
 
-	pm->trace(start, pm->mins, pm->maxs, point, &trace);
+	trace = pm->trace(start, pm->mins, pm->maxs, point);
 	pml.groundTrace = trace;
 
 	// do something corrective if the trace starts in a solid...
@@ -409,7 +409,7 @@ qboolean	PM_SlideMove(qboolean gravity) {
 		VectorMA(pml.origin, time_left, pml.velocity, end);
 
 		// see if we can make it there
-		pm->trace(pml.origin, pm->mins, pm->maxs, end, &trace);
+		trace = pm->trace(pml.origin, pm->mins, pm->maxs, end);
 
 		if (trace.allsolid) {
 			// entity is completely trapped in another solid
@@ -554,7 +554,7 @@ void PM_StepSlideMove(qboolean gravity) {
 
 	VectorCopy(start_o, down);
 	down[2] -= STEPSIZE;
-	pm->trace(start_o, pm->mins, pm->maxs, down, &trace);
+	trace = pm->trace(start_o, pm->mins, pm->maxs, down);
 	VectorSet(up, 0, 0, 1);
 	// never step up when you still have up velocity
 	if (pml.velocity[2] > 0 && (trace.fraction == 1.0 ||
@@ -566,7 +566,7 @@ void PM_StepSlideMove(qboolean gravity) {
 	up[2] += STEPSIZE;
 
 	// test the player position if they were a stepheight higher
-	pm->trace(start_o, pm->mins, pm->maxs, up, &trace);
+	trace = pm->trace(start_o, pm->mins, pm->maxs, up);
 	if (trace.allsolid) {
 		//if (pm->debugLevel) {
 		//	Com_Printf("%i:bend can't step\n", c_pmove);
@@ -584,7 +584,7 @@ void PM_StepSlideMove(qboolean gravity) {
 	// push down the final amount
 	VectorCopy(pml.origin, down);
 	down[2] -= stepSize;
-	pm->trace(pml.origin, pm->mins, pm->maxs, down, &trace);
+	trace = pm->trace(pml.origin, pm->mins, pm->maxs, down);
 	if (!trace.allsolid) {
 		VectorCopy(trace.endpos, pml.origin);
 	}
@@ -732,12 +732,11 @@ void PM_CheckInWater()
 		}
 		else
 		{
-			pm->trace(
+			tr = pm->trace(
 				origin2,
 				0,
 				0,
-				origin,
-				&tr);
+				origin);
 			_pm = pm;
 			pm->waterheight = tr.endpos[2] - pml.origin[2];
 			if (tr.fraction < 1.0 /*&& *(float*)&pml.desiredWaterHeight < (long double)_pm->waterheight*/)

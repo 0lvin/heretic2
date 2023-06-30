@@ -113,7 +113,7 @@ qboolean LOS (edict_t *self, vec3_t point1, vec3_t point2)
 {
 	trace_t	trace;
 
-	gi.trace (point1, vec3_origin, vec3_origin, point2, self, MASK_SOLID,&trace);
+	trace = gi.trace(point1, vec3_origin, vec3_origin, point2, self, MASK_SOLID);
 
 	if (trace.fraction == 1.0)
 		return true;
@@ -134,7 +134,7 @@ qboolean visible_pos (edict_t *self, vec3_t spot2)
 
 	VectorCopy (self->s.origin, spot1);
 	spot1[2] += self->viewheight;
-	gi.trace (spot1, vec3_origin, vec3_origin, spot2, self, MASK_OPAQUE,&trace);
+	trace = gi.trace(spot1, vec3_origin, vec3_origin, spot2, self, MASK_OPAQUE);
 
 	if (trace.fraction == 1.0)
 		return true;
@@ -261,7 +261,7 @@ qboolean MG_CheckBottom (edict_t *ent)
 				start[0] = stop[0] = x ? maxs[0] : mins[0];
 				start[1] = stop[1] = y ? maxs[1] : mins[1];
 
-				gi.trace (start, vec3_origin, vec3_origin, stop, ent, MASK_MONSTERSOLID,&trace);
+				trace = gi.trace(start, vec3_origin, vec3_origin, stop, ent, MASK_MONSTERSOLID);
 
 				if (trace.fraction >= 1.0)// || start[2] - trace.endpos[2] > STEPSIZE)
 				{//this point is off too high of a step
@@ -369,7 +369,8 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 						test_org[2] += dz;
 				}
 			}
-			gi.trace (self->s.origin, self->mins, self->maxs, test_org, self, MASK_MONSTERSOLID,&trace);
+
+			trace = gi.trace(self->s.origin, self->mins, self->maxs, test_org, self, MASK_MONSTERSOLID);
 
 			// fly monsters don't enter water voluntarily
 			if (self->flags & FL_FLY)
@@ -442,7 +443,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 	VectorCopy (test_org, end);
 	end[2] -= stepsize*2;
 
-	gi.trace (test_org, self->mins, self->maxs, end, self, clipmask,&trace);
+	trace = gi.trace(test_org, self->mins, self->maxs, end, self, clipmask);
 
 	if (trace.allsolid)
 	{//the step up/down is all solid in front
@@ -454,7 +455,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 	if (trace.startsolid)
 	{//can't step up, try down
 		test_org[2] -= stepsize;
-		gi.trace (test_org, self->mins, self->maxs, end, self, clipmask,&trace);
+		trace = gi.trace(test_org, self->mins, self->maxs, end, self, clipmask);
 		if (trace.allsolid || trace.startsolid)
 		{
 			if(trace.ent)
@@ -933,7 +934,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 		VectorMA(source, 128, vf, source);
 
 		maxs[2] += 16;
-		gi.trace (self->s.origin, self->mins, maxs, source, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(self->s.origin, self->mins, maxs, source, self, MASK_MONSTERSOLID);
 
 		if (trace.fraction == 1)
 		{//clear ahead and above
@@ -941,7 +942,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 
 			source2[2] -= 1024;
 			//trace down
-			gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
+			trace = gi.trace(source, self->mins, self->maxs, source2, self, MASK_ALL);
 
 			if (trace.allsolid || trace.startsolid)
 			{
@@ -1025,7 +1026,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 			VectorMA(source, 128, vf, source2);
 			VectorCopy(self->mins, mins);
 			mins[2]+=24;//can clear it
-			gi.trace(source, mins, self->maxs, source2, self, MASK_SOLID,&trace);
+			trace = gi.trace(source, mins, self->maxs, source2, self, MASK_SOLID);
 
 			if((!trace.allsolid&&!trace.startsolid&&trace.fraction==1.0) || trace.ent == self->enemy)
 			{//Go for it!
@@ -1061,7 +1062,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 
 				hgt_diff = (targ_org[2] + targ_mins[2]) - (self->s.origin[2] + self->mins[2]) + 32;
 				source[2] += hgt_diff;
-				gi.trace (self->s.origin, self->mins, self->maxs, source, self, MASK_MONSTERSOLID,&trace);
+				trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_MONSTERSOLID);
 
 				if (trace.fraction == 1)
 				{//clear above
@@ -1071,7 +1072,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 					VectorMA(source, 64, vf, source2);
 					source2[2] -= 24;
 					//trace forward and down a little
-					gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
+					trace = gi.trace(source, self->mins, self->maxs, source2, self, MASK_ALL);
 
 					if (trace.allsolid || trace.startsolid)
 						return false;
@@ -1096,7 +1097,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 						self->ideal_yaw = vectoyaw(source2);
 
 						VectorMA(self->s.origin, 64, source2, source);
-						gi.trace(self->s.origin, vec3_origin, vec3_origin, source, self, MASK_SOLID,&trace);
+						trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, source, self, MASK_SOLID);
 
 						VectorScale(source2, 480*trace.fraction, self->velocity);
 						self->velocity[2] = hgt_diff*3 + 200;
@@ -1320,9 +1321,9 @@ qboolean MG_CheckJump (edict_t *self)
 	spot2[2] += 36;
 	//spot2_z+=36;
 
-    gi.trace(spot1, self->mins, self->maxs, spot2, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(spot1, self->mins, self->maxs, spot2, self, MASK_MONSTERSOLID);
 
-    if(trace.fraction<1.0||trace.allsolid||trace.startsolid)
+	if(trace.fraction<1.0||trace.allsolid||trace.startsolid)
 	{
 #ifdef _DEVEL
 		if(MGAI_DEBUG)
@@ -1339,7 +1340,7 @@ qboolean MG_CheckJump (edict_t *self)
 		VectorCopy(spot1, end_spot);
 		end_spot[2] += 36;
 
-		gi.trace(self->s.origin, self->mins, self->maxs, end_spot, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(self->s.origin, self->mins, self->maxs, end_spot, self, MASK_MONSTERSOLID);
 
 	    if(trace.fraction<1.0||trace.allsolid||trace.startsolid)
 		{
@@ -1351,7 +1352,7 @@ qboolean MG_CheckJump (edict_t *self)
 		}
 		VectorMA(spot1, 64, jumpdir, end_spot);
 		end_spot[2] -= 500;
-		gi.trace(spot1, JUMP_MINS, JUMP_MAXS, end_spot, self, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(spot1, JUMP_MINS, JUMP_MAXS, end_spot, self, MASK_MONSTERSOLID);
 //	        traceline(spot1,spot1+jumpdir*64 - '0 0 500',false,self);
 
 		contents = gi.pointcontents(trace.endpos);
@@ -1429,7 +1430,7 @@ trace_t MG_WalkMove (edict_t *self, float yaw, float dist)
 //FaileD? ok, so what's in front of us
 	VectorAdd(self->s.origin, move, endpos);
 	//up mins for stairs?
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 	trace.succeeded = false;
 	return trace;
 }
@@ -1522,7 +1523,7 @@ void MG_CheckEvade (edict_t *self)
 				VectorNormalize(proj_dir);
 				VectorMA(ent->s.origin, 600, proj_dir, endpos);
 
-				gi.trace(ent->s.origin, ent->mins, ent->maxs, endpos, ent, MASK_MONSTERSOLID,&trace);
+				trace = gi.trace(ent->s.origin, ent->mins, ent->maxs, endpos, ent, MASK_MONSTERSOLID);
 				if(trace.ent == self)
 				{//going to get hit!
 #ifdef _DEVEL
@@ -1546,7 +1547,7 @@ void MG_CheckEvade (edict_t *self)
 					if(proj_offset > ent_dist/600)//farther it is, smaller angle deviation allowed for evasion
 					{//coming pretty close
 						VectorMA(ent->s.origin, ent_dist, proj_dir, endpos);//extrapolate to close to me
-						gi.trace(endpos, ent->mins, ent->maxs, self->s.origin, ent, MASK_MONSTERSOLID,&trace);
+						trace = gi.trace(endpos, ent->mins, ent->maxs, self->s.origin, ent, MASK_MONSTERSOLID);
 						if(trace.ent == self)
 						{
 #ifdef _DEVEL
@@ -1729,7 +1730,7 @@ trace_t MG_AirMove(edict_t *self, vec3_t goalpos, float dist)
 
 	VectorMA(self->s.origin, dist, movedir, endpos);
 
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID, &trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
 	if(trace.allsolid || trace.startsolid || trace.fraction <= 0.01)
 	{
@@ -1789,7 +1790,7 @@ void MG_PostDeathThink (edict_t *self)
 	VectorMA(org, self->dead_size, forward, startpos);
 	VectorCopy(startpos, endpos);
 	endpos[2]-=128;
-	gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_SOLID,&trace1);
+	trace1 = gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_SOLID);
 	if(!trace1.allsolid&&!trace1.startsolid)
 	{
 		cornerdist[FRONT] = trace1.fraction;
@@ -1803,7 +1804,7 @@ void MG_PostDeathThink (edict_t *self)
 	VectorMA(org, -self->dead_size, forward, startpos);
 	VectorCopy(startpos, endpos);
 	endpos[2]-=128;
-	gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_SOLID,&trace2);
+	trace2 = gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_SOLID);
 	if(!trace2.allsolid&&!trace2.startsolid)
 	{
 		cornerdist[BACK] = trace2.fraction;
@@ -1817,7 +1818,7 @@ void MG_PostDeathThink (edict_t *self)
 	VectorMA(org, self->dead_size/2, right, startpos);
 	VectorCopy(startpos, endpos);
 	endpos[2]-=128;
-	gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_SOLID,&trace3);
+	trace3 = gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_SOLID);
 	if(!trace3.allsolid&&!trace3.startsolid)
 	{
 		cornerdist[RIGHT] = trace3.fraction;
@@ -1831,7 +1832,7 @@ void MG_PostDeathThink (edict_t *self)
 	VectorMA(org, -self->dead_size/2, right, startpos);
 	VectorCopy(startpos, endpos);
 	endpos[2]-=128;
-	gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_SOLID,&trace4);
+	trace4 = gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_SOLID);
 	if(!trace4.allsolid&&!trace4.startsolid)
 	{
 		cornerdist[LEFT] = trace4.fraction;
@@ -1876,7 +1877,7 @@ void MG_PostDeathThink (edict_t *self)
 	{//check for stuck
 	case 1:
 		VectorMA(self->s.origin, self->maxs[0], forward, endpos);
-		gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&movetrace);
+		movetrace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 		if(movetrace.allsolid||movetrace.startsolid||movetrace.fraction<1.0)
 			if(canmove(movetrace.ent))
 				whichtrace = -1;
@@ -1885,7 +1886,7 @@ void MG_PostDeathThink (edict_t *self)
 		break;
 	case 2:
 		VectorMA(self->s.origin, -self->maxs[0], forward, endpos);
-		gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&movetrace);
+		movetrace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 		if(movetrace.allsolid||movetrace.startsolid||movetrace.fraction<1.0)
 			if(canmove(movetrace.ent))
 				whichtrace = -1;
@@ -1894,7 +1895,7 @@ void MG_PostDeathThink (edict_t *self)
 		break;
 	case 3:
 		VectorMA(self->s.origin, self->maxs[0], right, endpos);
-		gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&movetrace);
+		movetrace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 		if(movetrace.allsolid||movetrace.startsolid||movetrace.fraction<1.0)
 			if(canmove(movetrace.ent))
 				whichtrace = -1;
@@ -1903,7 +1904,7 @@ void MG_PostDeathThink (edict_t *self)
 		break;
 	case 4:
 		VectorMA(self->s.origin, -self->maxs[0], right, endpos);
-		gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&movetrace);
+		movetrace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 		if(movetrace.allsolid||movetrace.startsolid||movetrace.fraction<1.0)
 			if(canmove(movetrace.ent))
 				whichtrace = -1;
@@ -2529,7 +2530,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 		VectorCopy(self->s.origin, source);
 		VectorMA(source, adj_dist, vf, source);
 
-		gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
+		trace = gi.trace(self->s.origin, mins, self->maxs, source, self, MASK_SOLID);//was MASK_SHOT
 
 		if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 		{//Uh oh, try other way
@@ -2556,7 +2557,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			if(mins[2] >= self->maxs[2])
 				mins[2] = self->maxs[2] - 1;
 
-			gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
+			trace = gi.trace(self->s.origin, mins, self->maxs, source, self, MASK_SOLID);//was MASK_SHOT
 			if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 			{//Uh oh!  Go straight away from wall
 #ifdef _DEVEL
@@ -2872,7 +2873,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 		VectorCopy(self->s.origin, source);
 		VectorMA(source, adj_dist, vf, source);
 
-		gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
+		trace = gi.trace(self->s.origin, mins, self->maxs, source, self, MASK_SOLID);//was MASK_SHOT
 
 		if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 		{//Uh oh, try other way
@@ -2894,7 +2895,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 
 			VectorMA(source, adj_dist, vf, source);
 
-			gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
+			trace = gi.trace(self->s.origin, mins, self->maxs, source, self, MASK_SOLID);//was MASK_SHOT
 			if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 			{//Uh oh!  Go straight away from wall
 #ifdef _DEVEL

@@ -51,10 +51,10 @@
 
 typedef enum
 {
-	SOLID_NOT,		// No interaction with other objects.
-	SOLID_TRIGGER,	// Only touch when inside, after moving.
-	SOLID_BBOX,		// Touch on edge.
-	SOLID_BSP		// BSP clip, touch on edge.
+	SOLID_NOT, /* no interaction with other objects */
+	SOLID_TRIGGER, /* only touch when inside, after moving */
+	SOLID_BBOX, /* touch on edge */
+	SOLID_BSP /* bsp clip, touch on edge */
 } solid_t;
 
 /* =============================================================== */
@@ -67,12 +67,8 @@ typedef struct link_s
 
 #define	MAX_ENT_CLUSTERS	16
 
-// Forward define these two as they are needed below.
-
+typedef struct edict_s edict_t;
 typedef struct gclient_s gclient_t;
-
-// Do not define the following short, server-visible 'gclient_t' and 'edict_t' structures because
-// when we are being #inclued in g_local.h.
 
 #ifndef GAME_INCLUDE
 
@@ -152,46 +148,66 @@ struct edict_s
 	//=============================================================================================
 };
 
-#endif // GAME_INCLUDE
+#endif /* GAME_INCLUDE */
 
-// ************************************************************************************************
-// 'game_import_t'.
-// ----------------
-// The game dll imports these functions which are provided by the main engine code.
-// ************************************************************************************************
+/* =============================================================== */
 
+/* functions provided by the main engine */
 typedef struct
 {
-	// Special message printing routines.
+	/* special messages */
+	void (*bprintf)(int printlevel, char *fmt, ...);
+	void (*dprintf)(char *fmt, ...);
+	void (*cprintf)(edict_t *ent, int printlevel, char *fmt, ...);
+	void (*centerprintf)(edict_t *ent, char *fmt, ...);
+	void (*sound)(edict_t *ent, int channel, int soundindex, float volume,
+			float attenuation, float timeofs);
+	void (*positioned_sound)(vec3_t origin, edict_t *ent, int channel,
+			int soundinedex, float volume, float attenuation, float timeofs);
 
-	void	(*bprintf) (int printlevel, char *fmt, ...);
-	void	(*bcaption) (int printlevel, short stringid);
-	void	(*Obituary) (int printlevel, short stringid, short client1, short client2);
-	void	(*dprintf) (char *fmt, ...);
-	void	(*cprintf) (edict_t *ent, int printlevel, char *fmt, ...);
-	void	(*clprintf) (edict_t *ent, edict_t *from, int color, char *fmt, ...);
-	void	(*centerprintf) (edict_t *ent, char *fmt, ...);
-	void	(*gamemsg_centerprintf) (edict_t *ent, short msg);
-	void	(*levelmsg_centerprintf) (edict_t *ent, short msg);
-	void	(*msgvar_centerprintf) (edict_t *ent, short msg, int vari);
-	void	(*msgdual_centerprintf) (edict_t *ent, short msg1, short msg2);
-	void	(*captionprintf) (edict_t *ent, short msg);
+	/* config strings hold all the index strings, the lightstyles,
+	   and misc data like the sky definition and cdtrack.
+	   All of the current configstrings are sent to clients when
+	   they connect, and changes are sent to all connected clients. */
+	void (*configstring)(int num, char *string);
 
-	// Sound playing routines.
+	YQ2_ATTR_NORETURN_FUNCPTR void (*error)(char *fmt, ...);
 
-	void	(*sound) (edict_t *ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
-	void	(*soundevent) (byte EventId,float leveltime,edict_t *ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
-	void	(*positioned_sound) (vec3_t origin, edict_t *ent, int channel, int soundinedex, float volume, float attenuation, float timeofs);
+	/* the *index functions create configstrings
+	   and some internal server state */
+	int (*modelindex)(char *name);
+	int (*soundindex)(char *name);
+	int (*imageindex)(char *name);
 
-	// Config strings hold all the index strings, the lightstyles and misc data, like the sky
-	// definition and cdtrack. All of the current configstrings are sent to clients when they
-	// connect and changes are sent to all connected clients.
+	void (*setmodel)(edict_t *ent, char *name);
 
-	void	(*configstring) (int num, char *string);
+	/* collision detection */
+	trace_t (*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end,
+			edict_t *passent, int contentmask);
+	int (*pointcontents)(vec3_t point);
+	qboolean (*inPVS)(vec3_t p1, vec3_t p2);
+	qboolean (*inPHS)(vec3_t p1, vec3_t p2);
+	void (*SetAreaPortalState)(int portalnum, qboolean open);
+	qboolean (*AreasConnected)(int area1, int area2);
 
-	//	Error, bailout routine.
+	/* an entity will never be sent to a client or used for collision
+	   if it is not passed to linkentity. If the size, position, or
+	   solidity changes, it must be relinked. */
+	void (*linkentity)(edict_t *ent);
+	void (*unlinkentity)(edict_t *ent); /* call before removing an interactive edict */
+	int (*BoxEdicts)(vec3_t mins, vec3_t maxs, edict_t **list, int maxcount,
+			int areatype);
+	void (*Pmove)(pmove_t *pmove, qboolean server);		// Player movement code, common with client prediction.
 
-	void	(*error) (char *fmt, ...);
+	void (*clprintf)(edict_t *ent, edict_t *from, int color, char *fmt, ...);
+	void (*bcaption)(int printlevel, short stringid);
+	void (*Obituary)(int printlevel, short stringid, short client1, short client2);
+	void (*gamemsg_centerprintf)(edict_t *ent, short msg);
+	void (*levelmsg_centerprintf)(edict_t *ent, short msg);
+	void (*msgvar_centerprintf)(edict_t *ent, short msg, int vari);
+	void (*msgdual_centerprintf)(edict_t *ent, short msg1, short msg2);
+	void (*captionprintf)(edict_t *ent, short msg);
+	void (*soundevent)(byte EventId,float leveltime,edict_t *ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
 
 	// routine that sends over new CD track
 	void	(*changeCDtrack) (edict_t *ent, int track, int loop );
@@ -199,36 +215,10 @@ typedef struct
 	// New names can only be added during spawning but existing names can be looked up at any time.
 
 	void	(*cleanlevel) (void);
-	int		(*modelindex) (char *name);
 	void	(*modelremove) (char *name);
-	int		(*soundindex) (char *name);
 	void	(*soundremove) (char *name);
-	int		(*imageindex) (char *name);
-
-	void	(*setmodel) (edict_t *ent, char *name);
-
-	// Collision detection.
-
-	void (*trace) (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t *passent, int contentmask,trace_t *tr);
-	int		(*pointcontents) (vec3_t point);
-
-	// Potentially visible / invisible set routines.
-
-	qboolean	(*inPVS) (vec3_t p1, vec3_t p2);
-	qboolean	(*inPHS) (vec3_t p1, vec3_t p2);
-	void		(*SetAreaPortalState) (int portalnum, qboolean open);
-	qboolean	(*AreasConnected) (int area1, int area2);
-
-	// An entity will never be sent to a client or used for collision if it is not passed to
-	// linkentity.  If the size, position, or solidity changes, it must be relinked.
-
-	void	(*linkentity) (edict_t *ent);
-	void	(*unlinkentity) (edict_t *ent);	// Call before removing an interactive edict.
-	int		(*BoxEdicts) (vec3_t mins, vec3_t maxs, edict_t **list,	int maxcount, int areatype);
-	void	(*Pmove) (pmove_t *pmove, qboolean server);		// Player movement code, common with client prediction.
 
 	// New_Physics
-
 	int		(*FindEntitiesInBounds) (vec3_t mins, vec3_t maxs, SinglyLinkedList_t *list, int areatype);
 	void	(*TraceBoundingForm) (FormMove_t *formMove);
 	qboolean	(*ResizeBoundingForm) (edict_t *self, FormMove_t *formMove);

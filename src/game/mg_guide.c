@@ -115,7 +115,7 @@ qboolean Clear_Path(edict_t *self, vec3_t end)
 	if (!gi.inPVS(self->s.origin, end))
 		return false;
 
-	gi.trace(self->s.origin, mins, maxs, end, self, MASK_SOLID,&trace);
+	trace = gi.trace(self->s.origin, mins, maxs, end, self, MASK_SOLID);
 
 	if ((trace.fraction < 1) && (trace.ent != self->enemy))
 		return false;
@@ -152,7 +152,7 @@ qboolean clear_visible_pos (edict_t *self, vec3_t spot2)
 	if (!gi.inPVS(self->s.origin, spot2))
 		return false;
 
-	gi.trace (spot1, vec3_origin, vec3_origin, spot2, self, MASK_SOLID,&trace);
+	trace = gi.trace(spot1, vec3_origin, vec3_origin, spot2, self, MASK_SOLID);
 
 	if (trace.fraction == 1.0)
 		return true;
@@ -1362,7 +1362,7 @@ qboolean MG_CheckClearPathToEnemy(edict_t *self)
 
 	VectorCopy(self->mins, mins);
 	mins[2] += 18;
-	gi.trace(self->s.origin, mins, self->maxs, self->enemy->s.origin, self, MASK_SOLID,&trace);
+	trace = gi.trace(self->s.origin, mins, self->maxs, self->enemy->s.origin, self, MASK_SOLID);
 
 	if(trace.ent)
 	{
@@ -1428,7 +1428,7 @@ qboolean MG_CheckClearPathToSpot(edict_t *self, vec3_t spot)
 
 	VectorCopy(self->mins, mins);
 	mins[2] += 18;
-	gi.trace(self->s.origin, mins, self->maxs, spot, self, MASK_SOLID,&trace);
+	trace = gi.trace(self->s.origin, mins, self->maxs, spot, self, MASK_SOLID);
 
 	if(trace.ent)
 	{
@@ -1501,7 +1501,7 @@ qboolean MG_CheckClearShotToEnemy(edict_t *self)
 
 	VectorCopy(self->enemy->s.origin, endpos);
 
-	gi.trace(startpos, zerovec, zerovec, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(startpos, zerovec, zerovec, endpos, self, MASK_MONSTERSOLID);
 //	trace = gi.trace(startpos, vec3_origin, vec3_origin, endpos, self, MASK_MONSTERSOLID);
 
 	if(MG_OK_ToShoot(self, trace.ent))
@@ -1589,14 +1589,14 @@ qboolean MG_MonsterAttemptTeleport(edict_t *self, vec3_t destination, qboolean i
 		mins[2] = 0;
 		maxs[2] = 1;
 
-		gi.trace(destination, mins, maxs, bottom, self, MASK_MONSTERSOLID, &trace);//self->clipmask
+		trace = gi.trace(destination, mins, maxs, bottom, self, MASK_MONSTERSOLID);//self->clipmask
 
 		if(trace.fraction<1.0)
 		{
 			VectorCopy(trace.endpos, bottom);
 			VectorCopy(bottom, top);
 			top[2] += self->size[2] - 1;
-			gi.trace(bottom, mins, maxs, top, self, MASK_MONSTERSOLID, &trace);
+			trace = gi.trace(bottom, mins, maxs, top, self, MASK_MONSTERSOLID);
 
 			if(trace.allsolid || trace.startsolid)
 				return false;

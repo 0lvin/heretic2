@@ -246,7 +246,7 @@ void insectCut (edict_t *self, float attacktype)
 		break;
 	}
 
-	gi.trace(pos1, TC_WPN_MINS, TC_WPN_MAXS, pos2, self, MASK_MONSTERSOLID|MASK_SHOT,&trace);
+	trace = gi.trace(pos1, TC_WPN_MINS, TC_WPN_MAXS, pos2, self, MASK_MONSTERSOLID|MASK_SHOT);
 
 	//sfs--do this check before the allsolid check, because trace is screwy--fraction should be valid in all cases, so shouldn't be a problem
 	if(trace.fraction == 1.0)
@@ -376,7 +376,7 @@ void insect_flyback_move(edict_t *self)
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] -= 48;
 
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
 	if ( (	trace.fraction < 1 || trace.startsolid || trace.allsolid ) &&
 			self->curAnimID != ANIM_KNOCK1_END &&

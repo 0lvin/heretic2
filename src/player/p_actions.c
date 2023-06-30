@@ -250,9 +250,9 @@ qboolean PlayerActionCheckCreepMoveForward( playerinfo_t *playerinfo )
 
 	//Trace forward to see if the path is clear
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
+		trace = playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID,&trace);
+		trace = playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
@@ -263,9 +263,9 @@ qboolean PlayerActionCheckCreepMoveForward( playerinfo_t *playerinfo )
 
 		//Trace down
 		if(playerinfo->isclient)
-			playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
+			trace = playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
-			playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID,&trace);
+			trace = playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -305,9 +305,9 @@ qboolean PlayerActionCheckCreepMoveBack( playerinfo_t *playerinfo )
 
 	//Trace forward to see if the path is clear
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
+		trace = playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID,&trace);
+		trace = playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
@@ -318,9 +318,9 @@ qboolean PlayerActionCheckCreepMoveBack( playerinfo_t *playerinfo )
 
 		//Trace down
 		if(playerinfo->isclient)
-			playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
+			trace = playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
-			playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID,&trace);
+			trace = playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -1858,9 +1858,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(righthand, GRAB_HAND_HORZONE, forward, endpoint);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 
@@ -1882,9 +1882,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(lefthand, GRAB_HAND_HORZONE, forward, endpoint);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -1926,9 +1926,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	endpoint[2] -= vertlength;
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 
@@ -1953,9 +1953,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	endpoint[2] -= vertlength;
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -1988,9 +1988,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(playerinfo->origin, GRAB_HAND_HORZONE, forward, endpoint);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1)
 		return 0;
@@ -2045,9 +2045,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD, &lasttrace);
+		lasttrace = playerinfo->CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID,&lasttrace);
+		lasttrace = playerinfo->G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 	if(lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		return (false);
@@ -2062,9 +2062,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(playerinfo->origin, 32, forward, endpoint);
 
 	if (playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&swingtrace);
+		swingtrace = playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&swingtrace);
+		swingtrace = playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	//Did we hit a wall underneath?
 	if (swingtrace.fraction == 1.0f && (!swingtrace.startsolid || !swingtrace.allsolid))
@@ -2082,22 +2082,21 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	if(playerinfo->isclient)
 	{
-		playerinfo->CL_Trace(playerinfo->origin,
+		grabtrace = playerinfo->CL_Trace(playerinfo->origin,
 							 NULL,
 							 NULL,
 							 endpoint,
 							 MASK_PLAYERSOLID,
-							 CEF_CLIP_TO_WORLD,
-							 &grabtrace);
+							 CEF_CLIP_TO_WORLD);
 	}
 	else
 	{
-		playerinfo->G_Trace(playerinfo->origin,
+		grabtrace = playerinfo->G_Trace(playerinfo->origin,
 									  NULL,
 									  NULL,
 									  endpoint,
 									  playerinfo->self,
-									  MASK_PLAYERSOLID,&grabtrace);
+									  MASK_PLAYERSOLID);
 	}
 
 	if (grabtrace.fraction == 1.0)
@@ -2310,9 +2309,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	playermax[2] = GRAB_HAND_HEIGHT;
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{	// There's no room to jump.
@@ -2335,9 +2334,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorMA(righthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0)
@@ -2350,9 +2349,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorMA(lefthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0)
@@ -2368,9 +2367,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .5)
@@ -2387,9 +2386,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .5)
@@ -2415,9 +2414,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorMA(playerinfo->origin, GRAB_JUMP_HORZONE, forward, endpoint);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,NULL,NULL,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(playerinfo->origin,NULL,NULL,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(playerinfo->origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	// Now, if the player is grabbing an overhang, this will not hit anything.
 
@@ -2434,9 +2433,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 		playermax[2] = (lefthand[2]+righthand[2])*0.5 - playerinfo->origin[2];
 
 		if(playerinfo->isclient)
-			playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+			grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
-			playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+			grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 		if (grabtrace.fraction >= 1.0)
 		{
@@ -2508,7 +2507,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 		righthand[2] += PUSH_HAND_HEIGHT;
 		VectorMA(righthand, PUSH_HAND_HORZONE, forward, endpoint);
 
-		playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 		if ((grabtrace.fraction == 1) || (!grabtrace.ent))
 			return false;
@@ -2522,7 +2521,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 		lefthand[2] += PUSH_HAND_HEIGHT;
 		VectorMA(lefthand, PUSH_HAND_HORZONE, forward, endpoint);
 
-		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 		VectorCopy(grabtrace.endpos, lefthand);
 
@@ -2597,9 +2596,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorMA(start, VAULT_HAND_HORZONE, forward, end);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(start,vaultcheckmins,vaultcheckmaxs,end,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(start,vaultcheckmins,vaultcheckmaxs,end,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1.0)
 	{
@@ -2648,9 +2647,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorMA(righthand, VAULT_HAND_HORZONE, forward, endpoint);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2664,9 +2663,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorMA(lefthand, VAULT_HAND_HORZONE, forward, endpoint);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2683,9 +2682,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2703,9 +2702,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&grabtrace);
+		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&grabtrace);
+		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2735,9 +2734,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 		//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
 		if(playerinfo->isclient)
-			playerinfo->CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD, &lasttrace);
+			lasttrace = playerinfo->CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 		else
-			playerinfo->G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID,&lasttrace);
+			lasttrace = playerinfo->G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 		if(lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		{
@@ -2758,9 +2757,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorMA(playerinfo->origin, 32, vf, endpoint);
 
 	if (playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&swingtrace);
+		swingtrace = playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID,&swingtrace);
+		swingtrace = playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	// Save the intended grab location (the endpoint).
 	playerinfo->grabloc[0] = ((lefthand[0] + righthand[0]) / 2.0);
@@ -2810,20 +2809,19 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 	VectorMA(playerinfo->origin, PLAYER_BLOCKING_DIST, pushdir, endpos);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,
+		trace = playerinfo->CL_Trace(playerinfo->origin,
 							 NULL,
 							 NULL,
 							 endpos,
 							 CEF_CLIP_TO_WORLD,
-							 MASK_PLAYERSOLID,
-							 &trace);
+							 MASK_PLAYERSOLID);
 	else
-		playerinfo->G_Trace(playerinfo->origin,
+		trace = playerinfo->G_Trace(playerinfo->origin,
 								  NULL,
 								  NULL,
 								  endpos,
 								  playerinfo->self,
-								  MASK_PLAYERSOLID,&trace);
+								  MASK_PLAYERSOLID);
 
 	// Now push in the opposite direction for a new location.
 
@@ -2832,20 +2830,19 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 	// Try placing the entity in the new location.
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(endpos,
+		trace = playerinfo->CL_Trace(endpos,
 							 playerinfo->mins,
 							 playerinfo->maxs,
 							 endpos,
 							 MASK_PLAYERSOLID,
-							 CEF_CLIP_TO_WORLD,
-							 &trace);
+							 CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(endpos,
+		trace = playerinfo->G_Trace(endpos,
 								  playerinfo->mins,
 								  playerinfo->maxs,
 								  endpos,
 								  playerinfo->self,
-								  MASK_PLAYERSOLID,&trace);
+								  MASK_PLAYERSOLID);
 
 	// If it didn't work, panic!
 //		if (trace.startsolid || trace.allsolid)
@@ -2953,20 +2950,19 @@ void PlayerActionJump(playerinfo_t *playerinfo, float value)
 	endpos[2] += (playerinfo->mins[2] - 2);
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,
+		trace = playerinfo->CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
 							 playerinfo->maxs,
 							 endpos,
 							 CEF_CLIP_TO_WORLD,
-							 MASK_PLAYERSOLID,
-							 &trace);
+							 MASK_PLAYERSOLID);
 	else
-		playerinfo->G_Trace(playerinfo->origin,
+		trace = playerinfo->G_Trace(playerinfo->origin,
 								  playerinfo->mins,
 								  playerinfo->maxs,
 								  endpos,
 								  playerinfo->self,
-								  MASK_PLAYERSOLID,&trace);
+								  MASK_PLAYERSOLID);
 
 	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < 2)
 	{
@@ -2988,22 +2984,21 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 
 	if(playerinfo->isclient)
 	{
-		playerinfo->CL_Trace(playerinfo->origin,
+		trace = playerinfo->CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
 							 playerinfo->maxs,
 							 endpos,
 							 CEF_CLIP_TO_WORLD,
-							 MASK_PLAYERSOLID,
-							 &trace);
+							 MASK_PLAYERSOLID);
 	}
 	else
 	{
-		playerinfo->G_Trace(playerinfo->origin,
+		trace = playerinfo->G_Trace(playerinfo->origin,
 								  playerinfo->mins,
 								  playerinfo->maxs,
 								  endpos,
 								  playerinfo->self,
-								  MASK_PLAYERSOLID,&trace);
+								  MASK_PLAYERSOLID);
 	}
 
 	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < 2)
@@ -3262,20 +3257,19 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 		endpoint[2] -= playerinfo->mins[2] + 2;
 
 		if(playerinfo->isclient)
-			playerinfo->CL_Trace(playerinfo->origin,
+			trace = playerinfo->CL_Trace(playerinfo->origin,
 								 playerinfo->mins,
 								 playerinfo->maxs,
 								 endpoint,
 								 MASK_PLAYERSOLID,
-								 CEF_CLIP_TO_WORLD,
-								 &trace);
+								 CEF_CLIP_TO_WORLD);
 		else
-			playerinfo->G_Trace(playerinfo->origin,
+			trace = playerinfo->G_Trace(playerinfo->origin,
 									  playerinfo->mins,
 									  playerinfo->maxs,
 									  endpoint,
 									  playerinfo->self,
-									  MASK_PLAYERSOLID,&trace);
+									  MASK_PLAYERSOLID);
 
 		VectorCopy(trace.endpos, playerinfo->origin);
 
@@ -3311,20 +3305,19 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 			VectorCopy(playerinfo->maxs, playermax);
 
 			if(playerinfo->isclient)
-				playerinfo->CL_Trace(playerinfo->origin,
+				trace = playerinfo->CL_Trace(playerinfo->origin,
 									 playermin,
 									 playermax,
 									 endpoint,
 									 MASK_PLAYERSOLID,
-									 CEF_CLIP_TO_WORLD,
-									 &trace);
+									 CEF_CLIP_TO_WORLD);
 			else
-				playerinfo->G_Trace(playerinfo->origin,
+				trace = playerinfo->G_Trace(playerinfo->origin,
 										  playermin,
 										  playermax,
 										  endpoint,
 										  playerinfo->self,
-										  MASK_PLAYERSOLID,&trace);
+										  MASK_PLAYERSOLID);
 
 			if (trace.fraction < 1.0)
 			{
@@ -3340,20 +3333,19 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 
 				//Move to the correct distance away from the wall
 				if(playerinfo->isclient)
-					playerinfo->CL_Trace(trace.endpos,
+					trace = playerinfo->CL_Trace(trace.endpos,
 										 playermin,
 										 playermax,
 										 endpoint,
 										 MASK_PLAYERSOLID,
-										 CEF_CLIP_TO_WORLD,
-										 &trace);
+										 CEF_CLIP_TO_WORLD);
 				else
-					playerinfo->G_Trace(trace.endpos,
+					trace = playerinfo->G_Trace(trace.endpos,
 											  playermin,
 											  playermax,
 											  endpoint,
 											  playerinfo->self,
-											  MASK_PLAYERSOLID,&trace);
+											  MASK_PLAYERSOLID);
 
 				if (trace.fraction < 1)
 				{

@@ -154,22 +154,21 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 
 	if(playerinfo->isclient)
 	{
-		playerinfo->CL_Trace(playerinfo->origin,
+		trace = playerinfo->CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
 							 playerinfo->maxs,
 							 endpos,
 							 MASK_PLAYERSOLID,
-							 CEF_CLIP_TO_WORLD,
-							 &trace);
+							 CEF_CLIP_TO_WORLD);
 	}
 	else
 	{
-		playerinfo->G_Trace(playerinfo->origin,
+		trace = playerinfo->G_Trace(playerinfo->origin,
 								  playerinfo->mins,
 								  playerinfo->maxs,
 								  endpos,
 								  playerinfo->self,
-								  MASK_PLAYERSOLID,&trace);
+								  MASK_PLAYERSOLID);
 	}
 
 	if((playerinfo->groundentity||trace.fraction<0.2)&&playerinfo->waterlevel<2)

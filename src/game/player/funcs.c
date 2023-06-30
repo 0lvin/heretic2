@@ -259,7 +259,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		VectorCopy(playerinfo->mins, playermin);
 		VectorCopy(playerinfo->maxs, playermax);
 
-		playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID,&trace);
+		trace = playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction < 1.0)
 		{
@@ -362,7 +362,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		VectorCopy(playerinfo->mins, playermin);
 		VectorCopy(playerinfo->maxs, playermax);
 
-		playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID,&trace);
+		trace = playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction < 1.0 || trace.endpos[2] < ((edict_t *)playerinfo->self)->targetEnt->rope_end->s.origin[2])
 		{
@@ -586,12 +586,12 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 		}
 		else
 		{
-			playerinfo->G_Trace(playerinfo->origin,
+			trace = playerinfo->G_Trace(playerinfo->origin,
 									  playerinfo->mins,
 									  playerinfo->maxs,
 									  ((edict_t *)playerinfo->targetEnt)->rope_grab->s.origin,
 										(edict_t*)playerinfo->self,
-									  MASK_PLAYERSOLID,&trace);
+									  MASK_PLAYERSOLID);
 
 			if (trace.fraction < 1.0f || trace.startsolid || trace.allsolid)
 				return false;
@@ -644,12 +644,12 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 	AngleVectors(player_facing,forward,NULL,NULL);
 	VectorMA(playerinfo->origin,32,forward,endpoint);
 
-	gi.trace(playerinfo->origin,
+	grabtrace = gi.trace(playerinfo->origin,
 					   playerinfo->mins,
 					   playerinfo->maxs,
 					   endpoint,
 					   (edict_t *)playerinfo->self,
-					   MASK_PLAYERSOLID,&grabtrace);
+					   MASK_PLAYERSOLID);
 
 	if((grabtrace.fraction==1)||(!grabtrace.ent))
 		return false;
@@ -1084,7 +1084,7 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 	//Account for step height
 	VectorSet(mins, playerinfo->mins[0], playerinfo->mins[1], playerinfo->mins[2] + 18);
 
-	gi.trace(playerinfo->origin, mins, playerinfo->maxs, endpos, ((edict_t *)playerinfo->self), MASK_SHOT,&trace);
+	trace = gi.trace(playerinfo->origin, mins, playerinfo->maxs, endpos, ((edict_t *)playerinfo->self), MASK_SHOT);
 
 	if (trace.ent && trace.ent->takedamage)
 	{
@@ -1214,7 +1214,7 @@ void G_PlayerVaultKick(playerinfo_t *playerinfo)
 	VectorMA(self->s.origin, VAULTKICK_DIST, vf, endpos);
 
 	//Trace out to see if we've hit anything
-	gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_PLAYERSOLID,&trace);
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_PLAYERSOLID);
 
 	//If we have...
 	if (trace.fraction < 1 && (!(trace.startsolid || trace.allsolid)) )

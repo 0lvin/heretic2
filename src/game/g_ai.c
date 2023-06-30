@@ -95,7 +95,7 @@ int ai_trystep(edict_t *ent, vec3_t move)
 	VectorCopy (neworg, end);
 	end[2] -= stepsize*2;
 
-	gi.trace (neworg, inf_mins, inf_maxs, end, ent, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(neworg, inf_mins, inf_maxs, end, ent, MASK_MONSTERSOLID);
 
 	if (trace.allsolid)
 		return TRYSTEP_ALLSOLID;
@@ -103,7 +103,7 @@ int ai_trystep(edict_t *ent, vec3_t move)
 	if (trace.startsolid)
 	{
 		neworg[2] -= stepsize;
-		gi.trace (neworg, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(neworg, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);
 		if (trace.allsolid || trace.startsolid)
 			return TRYSTEP_STARTSOLID;
 	}
@@ -285,7 +285,7 @@ int ai_hopdown(edict_t *self, vec3_t goalpos, float height_max)
 	VectorMA(source, 128, vf, source);
 
 	maxs[2] += 128;
-	gi.trace (self->s.origin, self->mins, maxs, source, self, MASK_ALL,&trace);
+	trace = gi.trace(self->s.origin, self->mins, maxs, source, self, MASK_ALL);
 
 	if (trace.fraction == 1)
 	{
@@ -293,7 +293,7 @@ int ai_hopdown(edict_t *self, vec3_t goalpos, float height_max)
 
 		source2[2] -= height_max;
 
-		gi.trace (source, self->mins, self->maxs, source2, self, MASK_ALL,&trace);
+		trace = gi.trace(source, self->mins, self->maxs, source2, self, MASK_ALL);
 
 		if (trace.allsolid || trace.startsolid)
 			return false;
@@ -717,7 +717,7 @@ qboolean visible (edict_t *self, edict_t *other)
 	}
 	VectorCopy (other->s.origin, spot2);
 	spot2[2] += other->viewheight;
-	gi.trace (spot1, vec3_origin, vec3_origin, spot2, self, MASK_OPAQUE,&trace);
+	trace = gi.trace(spot1, vec3_origin, vec3_origin, spot2, self, MASK_OPAQUE);
 
 	if (trace.fraction == 1.0)
 		return true;
@@ -747,7 +747,7 @@ qboolean clear_visible (edict_t *self, edict_t *other)
 	spot1[2] += self->viewheight;
 	VectorCopy (other->s.origin, spot2);
 	spot2[2] += other->viewheight;
-	gi.trace (spot1, vec3_origin, vec3_origin, spot2, self, MASK_SOLID,&trace);
+	trace = gi.trace(spot1, vec3_origin, vec3_origin, spot2, self, MASK_SOLID);
 
 	if (trace.fraction == 1.0)
 		return true;
@@ -1488,7 +1488,7 @@ qboolean M_CheckAttack (edict_t *self)
 		VectorCopy (self->enemy->s.origin, spot2);
 		spot2[2] += self->enemy->viewheight;
 
-		gi.trace (spot1, vec3_origin, vec3_origin, spot2, self, CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_SLIME|CONTENTS_LAVA,&tr);
+		tr = gi.trace(spot1, vec3_origin, vec3_origin, spot2, self, CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_SLIME|CONTENTS_LAVA);
 
 		// do we have a clear shot?
 		if (tr.ent != self->enemy)
@@ -1802,7 +1802,7 @@ void ai_runaway (edict_t *self, float dist)
 	//Account for STEPSIZE
 	mins[2] += 18;
 
-	gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SHOT,&trace);
+	trace = gi.trace(self->s.origin, mins, self->maxs, source, self, MASK_SHOT);
 
 	//We hit something
 	if (trace.fraction < 1)
@@ -1827,7 +1827,7 @@ void ai_runaway (edict_t *self, float dist)
 		//Account for STEPSIZE
 		mins[2] += 18;
 
-		gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SHOT,&trace);
+		trace = gi.trace(self->s.origin, mins, self->maxs, source, self, MASK_SHOT);
 
 		if (trace.fraction < 1)
 		{
@@ -2037,7 +2037,7 @@ void old_ai_run (edict_t *self, float dist)
 	//Account for STEPSIZE
 	mins[2] += 18;
 
-	gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SHOT,&trace);
+	trace = gi.trace(self->s.origin, mins, self->maxs, source, self, MASK_SHOT);
 
 	//We hit something
 	if (trace.fraction < 1)
@@ -2102,7 +2102,7 @@ void old_ai_run (edict_t *self, float dist)
 		//Account for STEPSIZE
 		mins[2] += 18;
 
-		gi.trace (self->s.origin, mins, self->maxs, source, self, MASK_SOLID,&trace);//was MASK_SHOT
+		trace = gi.trace(self->s.origin, mins, self->maxs, source, self, MASK_SOLID);//was MASK_SHOT
 
 		if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 		{
@@ -2344,7 +2344,7 @@ void extrapolateFiredir (edict_t *self,vec3_t p1,float pspeed,edict_t *targ,floa
 	VectorMA(p3, tspeed*eta_delta*flrand(0, 1), targ_dir, p3);
 //careful,  above version does not modify targ_dir
 
-	gi.trace(p1, vec3_origin, vec3_origin, p3, self, MASK_SOLID,&trace);
+	trace = gi.trace(p1, vec3_origin, vec3_origin, p3, self, MASK_SOLID);
 	if(trace.fraction<1.0)
 		failed = true;
 

@@ -44,9 +44,9 @@ qboolean CheckFall(playerinfo_t *playerinfo)
 	endpos[2] -= FALL_MINHEIGHT;
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,playerinfo->mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&checktrace);
+		checktrace = playerinfo->CL_Trace(playerinfo->origin,playerinfo->mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID,&checktrace);
+		checktrace = playerinfo->G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (checktrace.fraction >= 1)
 	{
@@ -69,9 +69,9 @@ qboolean CheckUncrouch(playerinfo_t *playerinfo)
 	v[2]+=25.0 - playerinfo->maxs[2];//was 25
 
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&trace);
+		trace = playerinfo->CL_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, playerinfo->self, MASK_PLAYERSOLID,&trace);
+		trace = playerinfo->G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (trace.fraction < 1)
 		return false;
@@ -107,9 +107,9 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 
 	//Trace forward to see if the path is clear
 	if(playerinfo->isclient)
-		playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&checktrace);
+		checktrace = playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID,&checktrace);
+		checktrace = playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (checktrace.fraction == 1)
@@ -120,9 +120,9 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 
 		//Trace down
 		if(playerinfo->isclient)
-			playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD,&checktrace);
+			checktrace = playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
-			playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID,&checktrace);
+			checktrace = playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (checktrace.fraction == 1 || (checktrace.startsolid || checktrace.allsolid))
 		{
@@ -185,20 +185,20 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 
 	if(playerinfo->isclient)
 	{
-		playerinfo->CL_Trace(lspotmax, footmins, footmaxs, lspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD, &leftfoot);
+		leftfoot = playerinfo->CL_Trace(lspotmax, footmins, footmaxs, lspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 	}
 	else
 	{
-		 playerinfo->G_Trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID,&leftfoot);
+		leftfoot = playerinfo->G_Trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID);
 	}
 
 	if(playerinfo->isclient)
 	{
-		playerinfo->CL_Trace(rspotmax, footmins, footmaxs, rspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD, &rightfoot);
+		rightfoot = playerinfo->CL_Trace(rspotmax, footmins, footmaxs, rspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 	}
 	else
 	{
-		playerinfo->G_Trace(rspotmax, footmins, footmaxs, rspotmin, playerinfo->self, MASK_PLAYERSOLID,&rightfoot);
+		rightfoot = playerinfo->G_Trace(rspotmax, footmins, footmaxs, rspotmin, playerinfo->self, MASK_PLAYERSOLID);
 	}
 
 	if((rightfoot.fraction == 1.0) && !rightfoot.startsolid && !rightfoot.allsolid)

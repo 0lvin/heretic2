@@ -57,7 +57,7 @@ realcheck:
 	start[0] = stop[0] = (mins[0] + maxs[0])*0.5;
 	start[1] = stop[1] = (mins[1] + maxs[1])*0.5;
 	stop[2] = start[2] - 2*STEPSIZE;
-	gi.trace (start, vec3_origin, vec3_origin, stop, ent, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(start, vec3_origin, vec3_origin, stop, ent, MASK_MONSTERSOLID);
 
 	if (trace.fraction == 1.0)
 		return false;
@@ -70,7 +70,7 @@ realcheck:
 			start[0] = stop[0] = x ? maxs[0] : mins[0];
 			start[1] = stop[1] = y ? maxs[1] : mins[1];
 
-			gi.trace (start, vec3_origin, vec3_origin, stop, ent, MASK_MONSTERSOLID,&trace);
+			trace = gi.trace(start, vec3_origin, vec3_origin, stop, ent, MASK_MONSTERSOLID);
 
 			if (trace.fraction != 1.0 && trace.endpos[2] > bottom)
 				bottom = trace.endpos[2];
@@ -177,7 +177,8 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 						neworg[2] += dz;
 				}
 			}
-			gi.trace (ent->s.origin, ent->mins, ent->maxs, neworg, ent, MASK_MONSTERSOLID,&trace);
+
+			trace = gi.trace(ent->s.origin, ent->mins, ent->maxs, neworg, ent, MASK_MONSTERSOLID);
 
 			// fly monsters don't enter water voluntarily
 			if (ent->flags & FL_FLY)
@@ -241,7 +242,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 	VectorCopy (neworg, end);
 	end[2] -= stepsize*2;
 
-	gi.trace (neworg, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID,&trace);
+	trace = gi.trace(neworg, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);
 
 	if (trace.allsolid)
 	{
@@ -252,7 +253,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink)
 	if (trace.startsolid)
 	{
 		neworg[2] -= stepsize;
-		gi.trace (neworg, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID,&trace);
+		trace = gi.trace(neworg, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);
 		if (trace.allsolid || trace.startsolid)
 		{
 			G_QPostMessage(ent, MSG_BLOCKED, PRI_DIRECTIVE, NULL);

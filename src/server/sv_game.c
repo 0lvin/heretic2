@@ -806,15 +806,9 @@ SV_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s* lis
 }
 
 void
-SV_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, edict_t* passent, int contentmask, trace_t* tr)
-{
-	*tr = SV_Trace(start, mins, maxs, end, passent, contentmask);
-}
-
-void
 SV_TraceBoundingForm(FormMove_t* formMove)
 {
-	SV_NewTrace(formMove->start, formMove->mins, formMove->maxs, formMove->end, (edict_t *)formMove->passEntity, formMove->clipMask, &formMove->trace);
+	formMove->trace = SV_Trace(formMove->start, formMove->mins, formMove->maxs, formMove->end, (edict_t *)formMove->passEntity, formMove->clipMask);
 	//formMove->trace = CM_BoxTrace(formMove->start, formMove->end, formMove->mins, formMove->maxs, 0, formMove->clipMask);
 }
 
@@ -855,7 +849,7 @@ SV_InitGameProgs(void)
 	import.linkentity = SV_LinkEdict;
 	import.unlinkentity = SV_UnlinkEdict;
 	import.BoxEdicts = SV_AreaEdicts;
-	import.trace = SV_NewTrace;
+	import.trace = SV_Trace;
 	import.pointcontents = SV_PointContents;
 	import.setmodel = PF_setmodel;
 	import.inPVS = PF_inPVS;
