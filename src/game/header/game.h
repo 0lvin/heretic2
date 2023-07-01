@@ -1,53 +1,51 @@
-//
-// Heretic II
-// Copyright 1998 Raven Software
-//
-// game.h -- game dll information visible to server.
+/*
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Here are the client, server and game are tied together.
+ *
+ * =======================================================================
+ */
 
-#ifndef G_GAME_H
-#define G_GAME_H
+/*
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *
+ * THIS FILE IS _VERY_ FRAGILE AND THERE'S NOTHING IN IT THAT CAN OR
+ * MUST BE CHANGED. IT'S MOST LIKELY A VERY GOOD IDEA TO CLOSE THE
+ * EDITOR NOW AND NEVER LOOK BACK. OTHERWISE YOU MAY SCREW UP EVERYTHING!
+ *
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
 
 #include "../../common/header/common.h"
 #include "../../../h2common/singlylinkedlist.h"
 #include "../../../h2common/q_physics.h"
 #include "../../../h2common/arrayed_list.h"
 
-#define	GAME_API_VERSION	3
+#define GAME_API_VERSION 3
 
-// ************************************************************************************************
-// 'SVF_XXX'.
-// ----------
-// Held in 'edict_t'->svflags.
-// ************************************************************************************************
+#define SVF_NOCLIENT 0x00000001 /* don't send entity to clients, even if it has effects */
+#define SVF_DEADMONSTER 0x00000002 /* treat as CONTENTS_DEADMONSTER for collision */
+#define SVF_MONSTER 0x00000004 /* treat as CONTENTS_MONSTER for collision */
 
-#define	SVF_NOCLIENT			0x00000001	// Don't send entity to clients, even if it has effects.
-											// This overides SVF_ALWAYS_SEND
-#define	SVF_DEADMONSTER			0x00000002	// Treat as CONTENTS_DEADMONSTER for collision.
-#define	SVF_MONSTER				0x00000004	// Treat as CONTENTS_MONSTER for collision.
-#define	SVF_INUSE				0x00000008	// Used to replace the inuse field.
-#define SVF_ALWAYS_SEND			0x00000010	// Always send the ent to all the clients, regardless of
-											// of PVS or view culling
-#define SVF_NO_AUTOTARGET		0x00000020	// This entity will not be chosen by FindNearestVisibleActorInFrustum
-#define SVF_REFLECT				0x00000040	// Reflect shots
-#define SVF_TAKE_NO_IMPACT_DMG	0x00000080	// Don't apply impact damage to this entity
-#define SVF_BOSS				0x00000100	// Immunity to a number of things
-#define SVF_TOUCHED_BEAST		0x00000200	// Used for beast faked physics hack
-#define SVF_DO_NO_IMPACT_DMG	0x00000400	// This entity Doesn't do impact damage to others
-#define SVF_NO_PLAYER_DAMAGE	0x00000800	// This entity Doesn't take damage from players
-#define SVF_PARTS_GIBBED		0x00001000	// Used to delay gibbing so monsters can throw body parts
-#define SVF_WAIT_NOTSOLID		0x00002000	// Hacky flag to postpone dead monsters from turning notsolid
-#define SVF_ONFIRE				0x00004000	// He likes it Hot! Hot! Hot!
-#define SVF_SHOW_START_BUOY		0x00008000	// just puts an effect on a buoy for showbuoy debug mode
-#define SVF_SHOW_END_BUOY		0x00010000	// just puts an effect on a buoy for showbuoy debug mode
-#define SVF_FLOAT				0x00020000	// Allows walkmonsters to walk off ledges, assumes a low gravity
-#define SVF_ALLOW_AUTO_TARGET	0x00040000	// Used to allow player to autotarget non-monsters
-#define SVF_ALERT_NO_SHADE		0x00080000	// only used by alert_entity to make monsters check the alert as a sound alert
-
-// ************************************************************************************************
-// 'solid_t'.
-// ----------
-// edict->solid values
-// ************************************************************************************************
+#define MAX_ENT_CLUSTERS 16
 
 typedef enum
 {
@@ -65,36 +63,19 @@ typedef struct link_s
 	struct link_s *prev, *next;
 } link_t;
 
-#define	MAX_ENT_CLUSTERS	16
 
 typedef struct edict_s edict_t;
 typedef struct gclient_s gclient_t;
 
 #ifndef GAME_INCLUDE
 
-// ************************************************************************************************
-// 'gclient_t'.
-// ------------
-// This structure is cleared on each PutClientInServer().
-// ************************************************************************************************
-
-typedef struct gclient_s
+struct gclient_s
 {
-	// Following two fields are known to the server.
-
-	player_state_t		ps;		// Communicated by server to clients.
-	int					ping;
-
-	// DO NOT MODIFY ANYTHING ABOVE THIS! THE SERVER EXPECTS THE FIELDS IN THAT ORDER! The game dll
-	// can add anything it wants after this point.
-
-	//=============================================================================================
-} gclient_t;
-
-// ************************************************************************************************
-// 'edict_s'.
-// ------------
-// ************************************************************************************************
+	player_state_t ps;      /* communicated by server to clients */
+	int ping;
+	/* the game dll can add anything it wants
+	   after  this point in the structure */
+};
 
 struct edict_s
 {
@@ -247,8 +228,7 @@ typedef struct
 	int		(*CreatePersistantEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 	qboolean (*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
 														// The effect is not removed on the client
-														// This should be done by removing the effects from the owning entity or freeing
-
+														// This should be done by removing the effects from the owning entity or freein
 	// Managed memory allocation.
 
 	void	*(*TagMalloc) (int size, int tag);
@@ -294,17 +274,12 @@ typedef struct
 
 } game_import_t;
 
-// ************************************************************************************************
-// 'game_export_t'.
-// ----------------
-// The game dll exports these functions.
-// ************************************************************************************************
-
+/* functions exported by the game subsystem */
 typedef struct
 {
-	int			apiversion;
+	int apiversion;
 
-	int			numSkeletalJoints;
+	int numSkeletalJoints;
 	struct G_SkeletalJoint_s *skeletalJoints;
 	ArrayedListNode_t *jointNodes;
 
@@ -340,26 +315,46 @@ typedef struct
 	void		(*ClientUserinfoChanged) (edict_t *ent, char *userinfo);
 	void		(*ClientDisconnect) (edict_t *ent);
 	void		(*ClientCommand) (edict_t *ent);
-	void		(*ClientThink) (edict_t *ent, usercmd_t *cmd);
+	void (*ClientThink) (edict_t *ent, usercmd_t *cmd);
 
 	//
 
-	void		(*RunFrame) (void);
+	void (*RunFrame)(void);
 
 	// ServerCommand will be called when an "sv <command>" command is issued on the server console.
 	// The game can issue gi.argc() / gi.argv() commands to get the rest of the parameters.
 
-	void		(*ServerCommand) (void);
+	void (*ServerCommand)(void);
 
-	// Global variables shared between game and server. The edict array is allocated in the game dll
-	// so it can vary in size from one game to another. The size will be fixed when ge->Init() is
-	// called.
+	/* global variables shared between game and server */
 
-	struct edict_s	*edicts;
-	int			edict_size;
-	int			num_edicts;	// Current number of edicts. Always <= max_edicts.
-	int			max_edicts;
+	/* The edict array is allocated in the game dll so it
+	   can vary in size from one game to another.
+	   The size will be fixed when ge->Init() is called */
+	struct edict_s *edicts;
+	int edict_size;
+	int num_edicts;             /* current number, <= max_edicts */
+	int max_edicts;
 } game_export_t;
+
+#define	SVF_INUSE				0x00000008	// Used to replace the inuse field.
+#define SVF_ALWAYS_SEND			0x00000010	// Always send the ent to all the clients, regardless of
+											// of PVS or view culling
+#define SVF_NO_AUTOTARGET		0x00000020	// This entity will not be chosen by FindNearestVisibleActorInFrustum
+#define SVF_REFLECT				0x00000040	// Reflect shots
+#define SVF_TAKE_NO_IMPACT_DMG	0x00000080	// Don't apply impact damage to this entity
+#define SVF_BOSS				0x00000100	// Immunity to a number of things
+#define SVF_TOUCHED_BEAST		0x00000200	// Used for beast faked physics hack
+#define SVF_DO_NO_IMPACT_DMG	0x00000400	// This entity Doesn't do impact damage to others
+#define SVF_NO_PLAYER_DAMAGE	0x00000800	// This entity Doesn't take damage from players
+#define SVF_PARTS_GIBBED		0x00001000	// Used to delay gibbing so monsters can throw body parts
+#define SVF_WAIT_NOTSOLID		0x00002000	// Hacky flag to postpone dead monsters from turning notsolid
+#define SVF_ONFIRE				0x00004000	// He likes it Hot! Hot! Hot!
+#define SVF_SHOW_START_BUOY		0x00008000	// just puts an effect on a buoy for showbuoy debug mode
+#define SVF_SHOW_END_BUOY		0x00010000	// just puts an effect on a buoy for showbuoy debug mode
+#define SVF_FLOAT				0x00020000	// Allows walkmonsters to walk off ledges, assumes a low gravity
+#define SVF_ALLOW_AUTO_TARGET	0x00040000	// Used to allow player to autotarget non-monsters
+#define SVF_ALERT_NO_SHADE		0x00080000	// only used by alert_entity to make monsters check the alert as a sound alert
 
 game_export_t *GetGameApi (game_import_t *import);
 #define Clamp(v, v_min, v_max) min(max((v), (v_min)), (v_max));
@@ -457,5 +452,3 @@ typedef struct PerEffectsBuffer_s
 	int data_size;
 	// jmarshall end
 } PerEffectsBuffer_t;
-
-#endif
