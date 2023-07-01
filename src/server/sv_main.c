@@ -327,7 +327,7 @@ SV_PrepWorldFrame(void)
 		ent = EDICT_NUM(i);
 
 		/* events only last for a single message */
-		//ent->s.event = 0;
+		ent->s.event = 0;
 	}
 }
 
@@ -646,7 +646,8 @@ SV_FinalMessage(char *message, qboolean reconnect)
 	 *     with the maxclients value from when the current server was started (see SV_InitGame())
 	 *     so we can just calculate the right number of clients from that
 	 */
-	for (i = 0, cl = svs.clients; i < maxclients->value; i++, cl++)
+	int numClients = svs.num_client_entities / ( UPDATE_BACKUP * 64 );
+	for (i = 0, cl = svs.clients; i < numClients; i++, cl++)
 	{
 		if (cl->state >= cs_connected)
 		{
@@ -655,7 +656,7 @@ SV_FinalMessage(char *message, qboolean reconnect)
 		}
 	}
 
-	for (i = 0, cl = svs.clients; i < maxclients->value; i++, cl++)
+	for (i = 0, cl = svs.clients; i < numClients; i++, cl++)
 	{
 		if (cl->state >= cs_connected)
 		{

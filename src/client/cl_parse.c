@@ -85,7 +85,8 @@ CL_RegisterSounds(void)
 int
 CL_ParseEntityBits(unsigned *bits)
 {
-	unsigned total;
+	unsigned b, total;
+	int i;
 	int number;
 
 	total = MSG_ReadLong(&net_message);
@@ -495,6 +496,8 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 {
 	int flags;
 	player_state_t *state;
+	int i;
+	int statbits;
 
 	state = &newframe->playerstate;
 
@@ -745,12 +748,29 @@ CL_ParseFrame(void)
 			{
 				SCR_EndLoadingPlaque();  /* get rid of loading plaque */
 			}
+
+			cl.sound_prepped = true;
+
+			if (paused_at_load)
+			{
+				if (cl_loadpaused->value == 1)
+				{
+					Cvar_Set("paused", "0");
+				}
+
+				paused_at_load = false;
+			}
 		}
-		cl.sound_prepped = true;	// can start mixing ambient sounds
 
 		/* fire entity events */
 		CL_FireEntityEvents(&cl.frame);
-		CL_CheckPredictionError();
+
+		if (!(!cl_predict->value ||
+			  (cl.frame.playerstate.pmove.pm_flags &
+			   PMF_NO_PREDICTION)))
+		{
+			CL_CheckPredictionError();
+		}
 	}
 }
 
@@ -843,6 +863,7 @@ CL_LoadClientinfo(clientinfo_t *ci, char *s)
 	char skin_name[MAX_QPATH];
 	char model_filename[MAX_QPATH];
 	char skin_filename[MAX_QPATH];
+	char weapon_filename[MAX_QPATH];
 
 	//strncpy(ci->cinfo, s, sizeof(ci->cinfo));
 	//ci->cinfo[sizeof(ci->cinfo)-1] = 0;
