@@ -1024,27 +1024,38 @@ SCR_DrawField(int x, int y, int color, int width, int value)
  * Allows rendering code to cache all needed sbar graphics
  */
 void
-SCR_TouchPics (void)
+SCR_TouchPics(void)
 {
-	int		i, j;
+	int i, j;
 
-	for (i=0 ; i<2 ; i++)
-		for (j=0 ; j<11 ; j++)
-			Draw_FindPic (sb_nums[i][j]);
+	for (i = 0; i < 2; i++)
+	{
+		for (j = 0; j < 11; j++)
+		{
+			Draw_FindPic(sb_nums[i][j]);
+		}
+	}
 
 	if (crosshair->value)
 	{
-		if (crosshair->value > 3 || crosshair->value < 0)
+		if ((crosshair->value > 3) || (crosshair->value < 0))
+		{
 			crosshair->value = 3;
+		}
 
-		Com_sprintf (crosshair_pic, sizeof(crosshair_pic), "ch%i", (int)(crosshair->value));
+		Com_sprintf(crosshair_pic, sizeof(crosshair_pic), "ch%i",
+				(int)(crosshair->value));
 		Draw_GetPicSize(&crosshair_width, &crosshair_height, crosshair_pic);
+
 		if (!crosshair_width)
+		{
 			crosshair_pic[0] = 0;
+		}
 	}
 }
 
-void SCR_DrawPic(int x, int y, char** stat, int flags)
+void
+SCR_DrawPic(int x, int y, char** stat, int flags)
 {
 	const char* token;
 	int statval;
@@ -1098,18 +1109,25 @@ char* scr_number_table[] = {
 	"menu/num_neg.m32",
 };
 
-byte SCR_CharTableOffset(char c, qboolean lessZero)
+byte
+SCR_CharTableOffset(char c, qboolean lessZero)
 {
 	byte result; // al
 
 	if (c == 45)
+	{
 		result = 20;
+	}
 	else
+	{
 		result = c + 10 * lessZero - 48;
+	}
+
 	return result;
 }
 
-void SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
+void
+SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
 {
 	signed int len;
 	signed int i;
@@ -1148,7 +1166,8 @@ void SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
 /*
  * TODO: Rewrite
  */
-void SCR_RenderBar(int x, int y, int statnum, int statvalue, int statval2)
+void 
+SCR_RenderBar(int x, int y, int statnum, int statvalue, int statval2)
 {
 	int v6;
 	int v7;
@@ -1202,26 +1221,27 @@ void SCR_RenderBar(int x, int y, int statnum, int statvalue, int statval2)
 	}
 }
 
-/*
-================
-SCR_ExecuteLayoutString
-
-================
-*/
-void SCR_ExecuteLayoutString (char *s)
+void 
+SCR_ExecuteLayoutString(char *s)
 {
-	int		x, y;
-	int		value;
-	char	*token;
-	int		width;
-	int		index;
-	clientinfo_t	*ci;
+	int x, y;
+	int value;
+	char *token;
+	int width;
+	int index;
+	clientinfo_t *ci;
 
-	if (cls.state != ca_active || !cl.refresh_prepped)
+	float scale = SCR_GetHUDScale();
+
+	if ((cls.state != ca_active) || !cl.refresh_prepped)
+	{
 		return;
+	}
 
 	if (!s[0])
+	{
 		return;
+	}
 
 	x = 0;
 	y = 0;
@@ -1229,25 +1249,29 @@ void SCR_ExecuteLayoutString (char *s)
 
 	while (s)
 	{
-		token = COM_Parse (&s);
+		token = COM_Parse(&s);
+
 		if (!strcmp(token, "xl"))
 		{
-			token = COM_Parse (&s);
+			token = COM_Parse(&s);
 			x = atoi(token);
 			continue;
 		}
+
 		if (!strcmp(token, "xr"))
 		{
-			token = COM_Parse (&s);
+			token = COM_Parse(&s);
 			x = viddef.width + atoi(token);
 			continue;
 		}
+
 		if (!strcmp(token, "xv"))
 		{
-			token = COM_Parse (&s);
+			token = COM_Parse(&s);
 			x = viddef.width/2 - 160 + atoi(token);
 			continue;
 		}
+
 		if (!strcmp(token, "xc"))
 		{
 			token = COM_Parse(&s);
@@ -1258,42 +1282,144 @@ void SCR_ExecuteLayoutString (char *s)
 
 		if (!strcmp(token, "yt"))
 		{
-			token = COM_Parse (&s);
+			token = COM_Parse(&s);
 			y = atoi(token);
 			continue;
 		}
+
 		if (!strcmp(token, "yb"))
 		{
-			token = COM_Parse (&s);
+			token = COM_Parse(&s);
 			y = viddef.height + atoi(token);
 			continue;
 		}
+
 		if (!strcmp(token, "yv"))
 		{
-			token = COM_Parse (&s);
-			y = viddef.height/2 - 120 + atoi(token);
+			token = COM_Parse(&s);
+			y = viddef.height / 2 - 120 + atoi(token);
 			continue;
 		}
+
 		if (!strcmp(token, "yp"))
 		{
 			token = COM_Parse(&s);
 			y += atoi(token);
 			continue;
 		}
+
 		if (!strcmp(token, "pic"))
 		{
 			SCR_DrawPic(x, y, &s, 0);
 			continue;
 		}
+
 		if (!strcmp(token, "pici"))
 		{
 			if ((cl.frame.playerstate.stats[STAT_LAYOUTS] & 4) != 0)
 				SCR_DrawPic(x, y, &s, 1);
 			continue;
 		}
+
+		if (!strcmp(token, "client"))
+		{
+			/* draw a deathmatch client block */
+			int score, ping, time;
+
+			token = COM_Parse(&s);
+			x = viddef.width / 2 - scale*160 + scale*(int)strtol(token, (char **)NULL, 10);
+			token = COM_Parse(&s);
+			y = viddef.height / 2 - scale*120 + scale*(int)strtol(token, (char **)NULL, 10);
+			SCR_AddDirtyPoint(x, y);
+			SCR_AddDirtyPoint(x + scale*159, y + scale*31);
+
+			token = COM_Parse(&s);
+			value = (int)strtol(token, (char **)NULL, 10);
+
+			if ((value >= MAX_CLIENTS) || (value < 0))
+			{
+				Com_Error(ERR_DROP, "client >= MAX_CLIENTS");
+			}
+
+			ci = &cl.clientinfo[value];
+
+			token = COM_Parse(&s);
+			score = (int)strtol(token, (char **)NULL, 10);
+
+			token = COM_Parse(&s);
+			ping = (int)strtol(token, (char **)NULL, 10);
+
+			token = COM_Parse(&s);
+			time = (int)strtol(token, (char **)NULL, 10);
+
+			DrawAltStringScaled(x + scale*32, y, ci->name, scale);
+			DrawAltStringScaled(x + scale*32, y + scale*8, "Score: ", scale);
+			DrawAltStringScaled(x + scale*(32 + 7 * 8), y + scale*8, va("%i", score), scale);
+			DrawStringScaled(x + scale*32, y + scale*16, va("Ping:  %i", ping), scale);
+			DrawStringScaled(x + scale*32, y + scale*24, va("Time:  %i", time), scale);
+
+			if (!ci->icon)
+			{
+				ci = &cl.baseclientinfo;
+			}
+
+			Draw_PicScaled(x, y, ci->iconname, scale);
+			continue;
+		}
+
+		if (!strcmp(token, "ctf"))
+		{
+			/* draw a ctf client block */
+			int score, ping;
+			char block[80];
+
+			token = COM_Parse(&s);
+			x = viddef.width / 2 - scale*160 + scale*(int)strtol(token, (char **)NULL, 10);
+			token = COM_Parse(&s);
+			y = viddef.height / 2 - scale*120 + scale*(int)strtol(token, (char **)NULL, 10);
+			SCR_AddDirtyPoint(x, y);
+			SCR_AddDirtyPoint(x + scale*159, y + scale*31);
+
+			token = COM_Parse(&s);
+			value = (int)strtol(token, (char **)NULL, 10);
+
+			if ((value >= MAX_CLIENTS) || (value < 0))
+			{
+				Com_Error(ERR_DROP, "client >= MAX_CLIENTS");
+			}
+
+			ci = &cl.clientinfo[value];
+
+			token = COM_Parse(&s);
+			score = (int)strtol(token, (char **)NULL, 10);
+
+			token = COM_Parse(&s);
+			ping = (int)strtol(token, (char **)NULL, 10);
+
+			if (ping > 999)
+			{
+				ping = 999;
+			}
+
+			sprintf(block, "%3d %3d %-12.12s", score, ping, ci->name);
+
+			if (value == cl.playernum)
+			{
+				DrawAltStringScaled(x, y, block, scale);
+			}
+
+			else
+			{
+				DrawStringScaled(x, y, block, scale);
+			}
+
+			continue;
+		}
+
 		if (!strcmp(token, "picn"))
 		{
-			token = (char*)COM_Parse(&s);
+			/* draw a pic from a name */
+			token = COM_Parse(&s);
 			SCR_AddDirtyPoint(x, y);
 			SCR_AddDirtyPoint(x + 32, y + 32);
 			Draw_PicScaled(x, y, token, 1.0f);
@@ -1302,6 +1428,7 @@ void SCR_ExecuteLayoutString (char *s)
 
 		if (!strcmp(token, "num"))
 		{
+			/* draw a number */
 			token = COM_Parse(&s);
 			int num = atoi(token);
 			token = COM_Parse(&s);
@@ -1324,6 +1451,127 @@ void SCR_ExecuteLayoutString (char *s)
 			continue;
 		}
 
+		if (!strcmp(token, "anum"))
+		{
+			/* ammo number */
+			int color;
+
+			width = 3;
+			value = cl.frame.playerstate.stats[STAT_AMMO];
+
+			if (value > 5)
+			{
+				color = 0; /* green */
+			}
+			else if (value >= 0)
+			{
+				color = (cl.frame.serverframe >> 2) & 1; /* flash */
+			}
+			else
+			{
+				continue; /* negative number = don't show */
+			}
+
+			if (cl.frame.playerstate.stats[STAT_FLASHES] & 4)
+			{
+				Draw_PicScaled(x, y, "field_3", scale);
+			}
+
+			SCR_DrawFieldScaled(x, y, color, width, value, scale);
+			continue;
+		}
+
+		if (!strcmp(token, "rnum"))
+		{
+			/* armor number */
+			int color;
+
+			width = 3;
+			value = cl.frame.playerstate.stats[STAT_ARMOR];
+
+			if (value < 1)
+			{
+				continue;
+			}
+
+			color = 0; /* green */
+
+			if (cl.frame.playerstate.stats[STAT_FLASHES] & 2)
+			{
+				Draw_PicScaled(x, y, "field_3", scale);
+			}
+
+			SCR_DrawFieldScaled(x, y, color, width, value, scale);
+			continue;
+		}
+
+		if (!strcmp(token, "stat_string"))
+		{
+			token = COM_Parse(&s);
+			index = (int)strtol(token, (char **)NULL, 10);
+
+			if ((index < 0) || (index >= MAX_CONFIGSTRINGS))
+			{
+				Com_Error(ERR_DROP, "Bad stat_string index");
+			}
+
+			index = cl.frame.playerstate.stats[index];
+
+			if ((index < 0) || (index >= MAX_CONFIGSTRINGS))
+			{
+				Com_Error(ERR_DROP, "Bad stat_string index");
+			}
+
+			DrawStringScaled(x, y, cl.configstrings[index], scale);
+			continue;
+		}
+
+		if (!strcmp(token, "cstring"))
+		{
+			token = COM_Parse(&s);
+			DrawHUDStringScaled(token, x, y, 320, 0, scale); // FIXME: or scale 320 here?
+			continue;
+		}
+
+		if (!strcmp(token, "string"))
+		{
+			token = COM_Parse(&s);
+			DrawStringScaled(x, y, token, scale);
+			continue;
+		}
+
+		if (!strcmp(token, "cstring2"))
+		{
+			token = COM_Parse(&s);
+			DrawHUDStringScaled(token, x, y, 320, 0x80, scale); // FIXME: or scale 320 here?
+			continue;
+		}
+
+		if (!strcmp(token, "string2"))
+		{
+			token = COM_Parse(&s);
+			DrawAltStringScaled(x, y, token, scale);
+			continue;
+		}
+
+		if (!strcmp(token, "if"))
+		{
+			/* draw a number */
+			token = COM_Parse(&s);
+			value = cl.frame.playerstate.stats[(int)strtol(token, (char **)NULL, 10)];
+
+			if (!value)
+			{
+				/* skip to endif */
+				while (s && strcmp(token, "endif"))
+				{
+					token = COM_Parse(&s);
+				}
+			}
+
+			continue;
+		}
+
 		if (!strcmp(token, "bar"))
 		{
 			token = COM_Parse(&s);
@@ -1335,6 +1583,7 @@ void SCR_ExecuteLayoutString (char *s)
 			SCR_RenderBar(x, y, statnum, statvalue, statvalue2);
 			continue;
 		}
+
 		if (!strcmp(token, "gbar"))
 		{
 			token = COM_Parse(&s);
