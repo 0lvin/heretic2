@@ -206,7 +206,6 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 
 	R_Bind(skin->texnum);
 
-	glShadeModel(7425);
 	R_TexEnv(GL_MODULATE);
 
 	if (alpha == 1.0)
@@ -265,7 +264,6 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	R_TexEnv(GL_REPLACE);
 
 	glDisable(GL_BLEND);
-	glShadeModel(7424);
 
 	glColor4f(1, 1, 1, 1);
 }
@@ -459,8 +457,6 @@ RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1
 	}
 }
 
-#if 0
-// TODO: rework
 void
 R_DrawParticles2(int num_particles, const particle_t particles[],
 		const unsigned *colortable)
@@ -504,14 +500,19 @@ R_DrawParticles2(int num_particles, const particle_t particles[],
 			scale = 1 + scale * 0.004;
 		}
 
+#if 0
+		// TODO: Rework
 		*(unsigned *) color = colortable [ p->color ];
-
+#endif
 		for (j=0; j<3; j++) // Copy the color for each point
 		{
 			clr[index_clr++] = color[0]/255.0f;
 			clr[index_clr++] = color[1]/255.0f;
 			clr[index_clr++] = color[2]/255.0f;
+#if 0
+			// TODO: Rework
 			clr[index_clr++] = p->alpha;
+#endif
 		}
 
 		// point 0
@@ -561,7 +562,6 @@ R_DrawParticles2(int num_particles, const particle_t particles[],
 	YQ2_VLAFREE(tex);
 	YQ2_VLAFREE(clr);
 }
-#endif
 
 void
 R_DrawParticles(int num_particles, particle_t* particles, int type)
@@ -1223,7 +1223,6 @@ RI_RenderFrame(refdef_t *fd)
 {
 	R_RenderView(fd);
 	R_SetLightLevel (NULL);
-	glLineWidth(10.0);
 	R_SetGL2D();
 }
 
@@ -1344,7 +1343,82 @@ R_Register(void)
 /*
  * Changes the video mode
  */
-static qboolean
+static int
+SetMode_impl(int *pwidth, int *pheight, int mode, int fullscreen)
+{
+	R_Printf(PRINT_ALL, "Setting mode %d:", mode);
+
+	/* mode -1 is not in the vid mode table - so we keep the values in pwidth
+	   and pheight and don't even try to look up the mode info */
+	if ((mode >= 0) && !ri.Vid_GetModeInfo(pwidth, pheight, mode))
+	{
+		R_Printf(PRINT_ALL, " invalid mode\n");
+		return rserr_invalid_mode;
+	}
+
+	/* We trying to get resolution from desktop */
+	if (mode == -2)
+	{
+		if(!ri.GLimp_GetDesktopMode(pwidth, pheight))
+		{
+			R_Printf( PRINT_ALL, " can't detect mode\n" );
+			return rserr_invalid_mode;
+		}
+	}
+
+	R_Printf(PRINT_ALL, " %dx%d (vid_fullscreen %i)\n", *pwidth, *pheight, fullscreen);
+
+	if (!ri.GLimp_InitGraphics(fullscreen, pwidth, pheight))
+	{
+		return rserr_invalid_mode;
+	}
+
+	/* This is totaly obscure: For some strange reasons the renderer
+	   maintains two(!) repesentations of the resolution. One comes
+	   from the client and is saved in r_newrefdef. The other one
+	   is determined here and saved in vid. Several calculations take
+	   both representations into account.
+
+	   The values will always be the same. The GLimp_InitGraphics()
+	   call above communicates the requested resolution to the client
+	   where it ends up in the vid subsystem and the vid system writes
+	   it into r_newrefdef.
+
+	   We can't avoid the client roundtrip, because we can get the
+	   real size of the drawable (which can differ from the resolution
+	   due to high dpi awareness) only after the render context was
+	   created by GLimp_InitGraphics() and need to communicate it
+	   somehow to the client. So we just overwrite the values saved
+	   in vid with a call to RI_GetDrawableSize(), just like the
+	   client does. This makes sure that both values are the same
+	   and everything is okay.
+
+	   We also need to take the special case fullscreen window into
+	   account. With the fullscreen windows we cannot use the
+	   drawable size, it would scale all cases to the size of the
+	   window. Instead use the drawable size when the user wants
+	   native resolution (the fullscreen window fills the screen)
+	   and use the requested resolution in all other cases. */
+	if (IsHighDPIaware)
+	{
+		if (vid_fullscreen->value != 2)
+		{
+			RI_GetDrawableSize(pwidth, pheight);
+		}
+		else
+		{
+			if (r_mode->value == -2)
+			{
+				/* User requested native resolution. */
+				RI_GetDrawableSize(pwidth, pheight);
+			}
+		}
+	}
+
+	return rserr_ok;
+}
+
+qboolean
 R_SetMode(void)
 {
 	int err;
@@ -1355,13 +1429,20 @@ R_SetMode(void)
 	vid_fullscreen->modified = false;
 	r_mode->modified = false;
 
-	if ( ( err = GLimp_SetMode( (int *)&vid.width, (int*)&vid.height, r_mode->value, fullscreen ) ) == rserr_ok )
+	if ((err = GLimp_SetMode( (int *)&vid.width, (int*)&vid.height, r_mode->value, fullscreen ) ) == rserr_ok )
 	{
-		gl_state.prev_mode = r_mode->value;
+		if (r_mode->value == -1)
+		{
+			gl_state.prev_mode = 4; /* safe default for custom mode */
+		}
+		else
+		{
+			gl_state.prev_mode = r_mode->value;
+		}
 	}
 	else
 	{
-		if ( err == rserr_invalid_fullscreen )
+		if (err == rserr_invalid_fullscreen)
 		{
 			ri.Cvar_SetValue( "vid_fullscreen", 0);
 			vid_fullscreen->modified = false;
@@ -1375,8 +1456,8 @@ R_SetMode(void)
 			r_mode->modified = false;
 		}
 
-		// try setting it back to something safe
-		if ( ( err = GLimp_SetMode((int*)&vid.width, (int*)&vid.height, gl_state.prev_mode, false ) ) != rserr_ok )
+		/* try setting it back to something safe */
+		if ((err = GLimp_SetMode((int*)&vid.width, (int*)&vid.height, gl_state.prev_mode, false)) != rserr_ok)
 		{
 			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - could not revert to safe mode\n");
 			return false;
@@ -1475,13 +1556,9 @@ RI_Init(void *hinstance, void *hWnd)
 
 	if (strstr(gl_config.extensions_string, "GL_ARB_point_parameters"))
 	{
-#if 0
-		// TODO: Rework
-		qglPointParameterfARB = (void (APIENTRY *)(GLenum, GLfloat))RI_GetProcAddress ( "glPointParameterfARB" );
-		qglPointParameterfvARB = (void (APIENTRY *)(GLenum, const GLfloat *))RI_GetProcAddress ( "glPointParameterfvARB" );
-#endif
+			qglPointParameterfARB = (void (APIENTRY *)(GLenum, GLfloat))RI_GetProcAddress ( "glPointParameterfARB" );
+			qglPointParameterfvARB = (void (APIENTRY *)(GLenum, const GLfloat *))RI_GetProcAddress ( "glPointParameterfvARB" );
 	}
-
 
 	gl_config.pointparameters = false;
 
@@ -1616,7 +1693,7 @@ RI_BeginFrame(float camera_separation)
 		else
 		{
 			R_Printf(PRINT_ALL, "stereo supermode changed, restarting video!\n");
-			cvar_t *ref;
+			cvar_t	*ref;
 			ref = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 			ref->modified = true;
 		}
@@ -1750,6 +1827,12 @@ RI_BeginFrame(float camera_separation)
 	{
 		R_TextureSolidMode(gl1_texturesolidmode->string);
 		gl1_texturesolidmode->modified = false;
+	}
+
+	if (r_vsync->modified)
+	{
+		r_vsync->modified = false;
+		RI_SetVsync();
 	}
 
 	/* clear screen if desired */
