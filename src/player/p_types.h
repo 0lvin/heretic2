@@ -636,8 +636,6 @@ typedef struct playerinfo_s
 
 	// This is client only and records the highest level time the anim has run... we use this to
 	// prevent multiple sounds etc. Logic is basically if(!ishistory) playsound...
-
-	float				Highestleveltime;
 	qboolean			ishistory;
 
 	// Pointer to the associated player's edict_t.

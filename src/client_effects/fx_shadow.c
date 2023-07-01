@@ -53,13 +53,12 @@ static qboolean FXShadowUpdate(struct client_entity_s *self, centity_t *owner)
 	endpos[2] -= SHADOW_CHECK_DIST;
 
 	//Determine Visibility
-	fxi.Trace(	startpos,
+	trace = fxi.Trace(startpos,
 				minmax,
 				minmax,
 				endpos,
 				CONTENTS_SOLID,
-				CEF_CLIP_TO_WORLD,
-				&trace);
+				CEF_CLIP_TO_WORLD);
 
 	if (trace.startsolid || trace.fraction >= 1.0)
 	{	// no shadow, in something.
@@ -119,13 +118,12 @@ static qboolean FXShadowReferenceUpdate(struct client_entity_s *self, centity_t 
 	endpos[2] -= SHADOW_REF_CHECK_DIST;
 
 	//Determine Visibility
-	fxi.Trace(	startpos,
+	trace = fxi.Trace(startpos,
 				minmax,
 				minmax,
 				endpos,
 				CONTENTS_SOLID,
-				CEF_CLIP_TO_WORLD,
-				&trace);
+				CEF_CLIP_TO_WORLD);
 
 	if (trace.startsolid || trace.fraction >= 1.0)
 	{	// no shadow, in something.

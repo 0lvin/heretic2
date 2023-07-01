@@ -529,7 +529,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 		VectorCopy(phOrg, endPos);
 		endPos[2] -= 64;
 
-		fxi.Trace(	phOrg, minmax, minmax, endPos, CONTENTS_SOLID, CEF_CLIP_TO_WORLD, &trace);
+		trace = fxi.Trace(phOrg, minmax, minmax, endPos, CONTENTS_SOLID, CEF_CLIP_TO_WORLD);
 
 		if(trace.fraction > .99)
 		{	// Burst in the air, no ground found.

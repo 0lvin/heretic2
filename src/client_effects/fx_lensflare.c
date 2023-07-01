@@ -54,13 +54,12 @@ static qboolean FXFlareThink(struct client_entity_s *self, centity_t *owner)
 		return false;
 
 	//Determine Visibility
-	fxi.Trace(	fxi.cl->refdef.vieworg,
+	trace = fxi.Trace(fxi.cl->refdef.vieworg,
 				mins,
 				maxs,
 				self->direction,
 				(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER),
-				CEF_CLIP_TO_WORLD,
-				&trace);
+				CEF_CLIP_TO_WORLD);
 
 	if (trace.fraction < 1 && !(trace.surface->flags & SURF_SKY))
 	{
@@ -194,13 +193,12 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self, centity_t *ow
 	VectorMA(self->startpos2, lerp, vec_diff, self->direction);
 
 	//Determine Visibility
-	fxi.Trace(	fxi.cl->refdef.vieworg,
+	trace = fxi.Trace(fxi.cl->refdef.vieworg,
 				mins,
 				maxs,
 				self->direction,
 				(CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER),
-				CEF_CLIP_TO_WORLD,
-				&trace);
+				CEF_CLIP_TO_WORLD);
 
 	if (trace.fraction < 1 && !(trace.surface->flags & SURF_SKY))
 	{

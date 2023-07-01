@@ -417,7 +417,7 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 		// Not-very-perfect way of doing a pointcontents from the FX dll
 		VectorCopy(origin, start);
 		start[2] += 1;
-		fxi.Trace(start, vec3_origin, vec3_origin, origin, 0, 0, &trace);
+		trace = fxi.Trace(start, vec3_origin, vec3_origin, origin, 0, 0);
 		if(trace.contents&MASK_WATER)
 		{//in water- no flames, pal!
 			flags &= ~CEF_FLAG6;
@@ -582,7 +582,7 @@ void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int mater
 		//Not-very-perfect way of doing a pointcontents from the FX dll
 		VectorCopy(origin, start);
 		start[2] += 1;
-		fxi.Trace(start, vec3_origin, vec3_origin, origin, 0, 0, &trace);
+		trace = fxi.Trace(start, vec3_origin, vec3_origin, origin, 0, 0);
 		if(trace.contents&MASK_WATER)
 		{//in water- no flames, pal!
 			flags &= ~CEF_FLAG6;
@@ -637,7 +637,7 @@ void FXDebris_SpawnFleshChunks(int type, int flags, vec3_t origin, int num, int 
 		//Not-very-perfect way of doing a pointcontents from the FX dll
 		VectorCopy(origin, start);
 		start[2] += 1;
-		fxi.Trace(start, vec3_origin, vec3_origin, origin, 0, 0, &trace);
+		trace = fxi.Trace(start, vec3_origin, vec3_origin, origin, 0, 0);
 		if(trace.contents&MASK_WATER)
 		{//in water- no flames, pal!
 			flags &= ~CEF_FLAG6;

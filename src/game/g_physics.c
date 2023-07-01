@@ -111,38 +111,36 @@ static void Physics_NoclipMove(edict_t *self)
 static qboolean
 BoundVelocity(float *vel)
 {
-	float *v1;
-	int v2;
-	signed int v3;
-	double v4;
+	int count, i;
 
-	v1 = vel;
-	v2 = 0;
-	v3 = 3;
+	count = 0;
+	i = 3;
 	do
 	{
-		v4 = *v1;
-		if (v4 <= -0.1 || v4 >= 0.1)
+		double tmp;
+
+		tmp = *vel;
+		if (tmp <= -0.1 || tmp >= 0.1)
 		{
-			if (v4 <= 2000.0)
+			if (tmp <= 2000.0)
 			{
-				if (v4 < -2000.0)
-					*(uint32_t *)v1 = -990248960;
+				if (tmp < -2000.0)
+					*vel = 0;
 			}
 			else
 			{
-				*(uint32_t *)v1 = 1157234688;
+				*vel = 2000.0;
 			}
 		}
 		else
 		{
-			*(uint32_t *)v1 = 0;
-			++v2;
+			*vel = 0;
+			++count;
 		}
-		++v1;
-		--v3;
-	} while (v3);
-	return v2 != 3;
+		++vel;
+		--i;
+	} while (i);
+	return count != 3;
 }
 
 //---------------------------------------------------------------------------------

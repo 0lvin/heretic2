@@ -690,7 +690,6 @@ typedef struct
 	int				*cl_effectpredict;
 	predictinfo_t	*predictinfo;
 	float			*leveltime;
-	float			*Highestleveltime;
 	float			*EffectEventIdTimeArray;
 	EffectsBuffer_t *clientPredEffects;
 
@@ -727,7 +726,7 @@ typedef struct
 	void	(*TagFree)(void *block);
 	void	(*FreeTags)(int tag);
 
-	void	(*Trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags, trace_t *t);
+	trace_t	(*Trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags);
 	qboolean (*InCameraPVS)(vec3_t point);
 } client_fx_import_t;
 

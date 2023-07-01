@@ -395,7 +395,7 @@ static qboolean FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		// Trace down a bit to look for a nice place to spawn stuff.
 		VectorCopy(destpt, bottom);
 		bottom[2] -= FIREWAVE_TRACEDOWN;
-		fxi.Trace(destpt, minmax, minmax, bottom, CONTENTS_SOLID, CEF_CLIP_TO_WORLD, &trace);
+		trace = fxi.Trace(destpt, minmax, minmax, bottom, CONTENTS_SOLID, CEF_CLIP_TO_WORLD);
 
 		if(trace.fraction < .99)
 		{	// Hit the ground, smack it!!!
@@ -512,7 +512,7 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 	// Trace down a bit to look for a nice place to spawn stuff.
 	VectorCopy(spawnpt, bottom);
 	bottom[2] -= FIREWAVE_TRACEDOWN;
-	fxi.Trace(spawnpt, minmax, minmax, bottom, CONTENTS_SOLID, CEF_CLIP_TO_WORLD, &trace);
+	trace = fxi.Trace(spawnpt, minmax, minmax, bottom, CONTENTS_SOLID, CEF_CLIP_TO_WORLD);
 
 	if(trace.fraction < .99)
 	{	// Hit the ground, smack it!!!

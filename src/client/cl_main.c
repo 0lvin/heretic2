@@ -287,13 +287,13 @@ CL_Setenv_f(void)
 		char buffer[1000];
 		int i;
 
-		strcpy(buffer, Cmd_Argv(1));
-		strcat(buffer, "=");
+		Q_strlcpy(buffer, Cmd_Argv(1), sizeof(buffer));
+		Q_strlcat(buffer, "=", sizeof(buffer));
 
 		for (i = 2; i < argc; i++)
 		{
-			strcat(buffer, Cmd_Argv(i));
-			strcat(buffer, " ");
+			Q_strlcat(buffer, Cmd_Argv(i), sizeof(buffer));
+			Q_strlcat(buffer, " ", sizeof(buffer));
 		}
 
 		putenv(buffer);
@@ -352,7 +352,6 @@ CL_ClearState(void)
 	S_StopAllSounds();
 	//CL_ClearEffects();
 	//CL_ClearTEnts();
-	//fxe.Clear();
 
 	/* wipe the entire cl structure */
 	memset(&cl, 0, sizeof(cl));
@@ -627,6 +626,8 @@ CL_InitLocal(void)
 	Cmd_AddCommand("setenv", CL_Setenv_f);
 
 	Cmd_AddCommand("precache", CL_Precache_f);
+
+	Cmd_AddCommand("download", CL_Download_f);
 
 	Cmd_AddCommand("currentmap", CL_CurrentMap_f);
 

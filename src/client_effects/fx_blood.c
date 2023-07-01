@@ -247,7 +247,7 @@ static qboolean GetTruePlane(vec3_t origin, vec3_t direction)
 
 	VectorMA(origin, 16.0, direction, end);
 
-	fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD, &trace);
+	trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
 	if(trace.fraction != 1.0)
 	{
 		// Set the new endpos and plane (should be exact)
@@ -432,7 +432,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 			vec3_t		endpos;
 
 			VectorMA(origin, 256, tnormal, endpos);
-			fxi.Trace(origin, vec3_origin, vec3_origin, endpos, MASK_DRIP, CEF_CLIP_TO_WORLD, &extratrace);
+			extratrace = fxi.Trace(origin, vec3_origin, vec3_origin, endpos, MASK_DRIP, CEF_CLIP_TO_WORLD);
 			if(extratrace.fraction<1.0 && extratrace.fraction > 0.0625)//bewteen 16 and 256
 			{
 				if(extratrace.plane.normal[2] >= 0.7)

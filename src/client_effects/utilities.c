@@ -191,7 +191,7 @@ int GetSolidDist(vec3_t origin, vec_t radius, float maxdist, vec_t *dist)
 	VectorSet(maxs, radius, radius, 1.0F);
 	VectorCopy(origin, end);
 	end[2] += maxdist;
-	fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD, &trace);
+	trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
 
 	if(trace.fraction == 1.0F)
 	{
@@ -214,7 +214,7 @@ int GetFallTime(vec3_t origin, vec_t veloc, vec_t accel, vec_t radius, float max
 	VectorCopy(origin, end);
 	end[2] += (veloc * maxtime) + accel * (maxtime * maxtime) * 0.5;		// from s = ut + 0.5at^2
 
-	fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD, trace);
+	*trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
 	time = GetTimeToReachDistance(veloc, accel, trace->endpos[2] - origin[2]);
 	return(time);													// in ms
 }
@@ -234,7 +234,7 @@ int GetWaterNormal(vec3_t origin, float radius, float maxdist, vec3_t normal, ve
 	start[2] += maxdist;
 	end[2] -= maxdist;
 
-	fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD, &trace);
+	trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
 	if((trace.fraction == 1.0F) || (trace.contents & MASK_SOLID))
 		return false;
 
@@ -327,7 +327,7 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 
 	VectorAdd(r->origin, attempt, end);
 
-	fxi.Trace(r->origin, mins, maxs, end, MASK_SHOT|MASK_WATER, self->flags, trace);
+	*trace = fxi.Trace(r->origin, mins, maxs, end, MASK_SHOT|MASK_WATER, self->flags);
 
 	if((trace->fraction < 1.0) && !trace->allsolid && !trace->startsolid && !Vec3IsZeroEpsilon(trace->plane.normal))
 	{
@@ -394,7 +394,7 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 					fxi.S_StartSound(r->origin, -1, CHAN_AUTO,
 							fxi.S_RegisterSound("misc/splish1.wav"), 1, ATTN_STATIC, 0);
 				}
-				fxi.Trace(trace->endpos, mins, maxs, end, MASK_SHOT, self->flags, trace);
+				*trace = fxi.Trace(trace->endpos, mins, maxs, end, MASK_SHOT, self->flags);
 				if(trace->fraction < 1.0)
 				{
 					d_time *= trace->fraction;

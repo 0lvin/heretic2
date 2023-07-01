@@ -105,35 +105,40 @@ void CL_ShutdownClientEffects()
 }
 
 qboolean InCameraPVS(vec3_t point) {
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
 	return true;
 }
 
 // Screen flash set
 void Activate_Screen_Flash(int color) {
-
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
 }
 
 // Screen flash set
 void Activate_Screen_Shake(float intensity, float duration, float current_time, int flags) {
-
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
 }
 
 // Screen flash unset
 void Deactivate_Screen_Flash(void) {
-
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
 }
 
 void Deactivate_Screen_Shake(void) {
-
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
 }
 
 qboolean Get_Crosshair(vec3_t origin, byte* type) {
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
 	return true;
 }
 
 trace_t		CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
-void CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags, trace_t* t) {
-	*t = CL_PMTrace(start, mins, maxs, end); // jmarshall: incomplete
+
+trace_t
+CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags) {
+	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	return CL_PMTrace(start, mins, maxs, end); // jmarshall: incomplete
 }
 
 void CL_Sys_Error(int errLevel, char* fmt, ...)
@@ -176,12 +181,12 @@ extern particle_t r_particles[MAX_PARTICLES];
 extern int r_anumparticles;
 extern particle_t r_aparticles[MAX_PARTICLES];
 
+static client_fx_import_t cl_game_import;
+
 int
 CL_InitClientEffects(const char* name)
 {
 	int result;
-	static client_fx_import_t cl_game_import;
-
 
 	Com_Printf("------ Loading %s ------\n", name);
 
@@ -208,7 +213,6 @@ CL_InitClientEffects(const char* name)
 	cl_game_import.parse_entities = cl_parse_entities;
 	cl_game_import.EffectEventIdTimeArray = EffectEventIdTimeArray;
 	cl_game_import.leveltime = (float*)&cl.time;
-	cl_game_import.Highestleveltime = (float*)&cl.time;
 	cl_game_import.clientPredEffects = &clientPredEffects;
 	cl_game_import.net_message = &net_message;
 	cl_game_import.PlayerEntPtr = (entity_t**)&cl_entities[0];

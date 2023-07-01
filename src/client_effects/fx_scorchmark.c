@@ -47,7 +47,7 @@ static qboolean GetTruePlane(vec3_t origin, vec3_t direction)
 	// Quite a long trace - but its only done once per scorchmark ever
 	VectorMA(origin, 64.0, direction, end);
 
-	fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD, &trace);
+	trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
 	if(trace.fraction != 1.0)
 	{
 		// Set the new endpos and plane (should be exact)
