@@ -51,6 +51,7 @@ typedef struct
 
 	int width;
 	int height;
+	float fps;
 	byte *pic;
 	byte *pic_pending;
 
@@ -522,11 +523,12 @@ SCR_RunCinematic(void)
 	if (cls.key_dest != key_game)
 	{
 		/* pause if menu or console is up */
-		cl.cinematictime = cls.realtime - cl.cinematicframe * 1000 / 14;
+		cl.cinematictime = cls.realtime - cl.cinematicframe * 1000 / cin.fps;
 		return;
 	}
 
-	frame = (cls.realtime - cl.cinematictime) * 14.0 / 1000;
+	frame = (cls.realtime - cl.cinematictime) * cin.fps / 1000;
+	printf("\n%s:%d\n", __func__, frame);
 
 	if (frame <= cl.cinematicframe)
 	{
@@ -536,7 +538,7 @@ SCR_RunCinematic(void)
 	if (frame > cl.cinematicframe + 1)
 	{
 		Com_Printf("Dropped frame: %i > %i\n", frame, cl.cinematicframe + 1);
-		cl.cinematictime = cls.realtime - cl.cinematicframe * 1000 / 14;
+		cl.cinematictime = cls.realtime - cl.cinematicframe * 1000 / cin.fps;
 	}
 
 	if (cin.pic)
@@ -724,6 +726,7 @@ SCR_PlayCinematic(char *arg)
 		unsigned char trackmask, channels[7], depth[7];
 		unsigned long width, height;
 		unsigned long rate[7];
+		double usf; /* microseconds per frame */
 		size_t len;
 
 		Com_sprintf(name, sizeof(name), "video/%s", arg);
@@ -759,10 +762,12 @@ SCR_PlayCinematic(char *arg)
 			smk_enable_audio(cin.video, 0, true);
 		}
 
+		smk_info_all(cin.video, NULL, NULL, &usf);
 		smk_info_video(cin.video, &width, &height, NULL);
 		smk_enable_video(cin.video, true);
 		cin.width = width;
 		cin.height = height;
+		cin.fps = 1000000.0f / usf;
 
 		/* process first frame */
 		smk_first(cin.video);
@@ -792,6 +797,7 @@ SCR_PlayCinematic(char *arg)
 	FS_Read(&height, 4, cl.cinematic_file);
 	cin.width = LittleLong(width);
 	cin.height = LittleLong(height);
+	cin.fps = 14.0f;
 
 	FS_Read(&cin.s_rate, 4, cl.cinematic_file);
 	cin.s_rate = LittleLong(cin.s_rate);

@@ -834,11 +834,13 @@ CL_Frame(int msec)
 	// update audio
 	S_Update(cl.refdef.vieworg, cl.v_forward, cl.v_right, cl.v_up);
 
-	// advance local effects for next frame
+	/* advance local effects for next frame */
 	CL_RunDLights();
 	CL_RunLightStyles();
+	SCR_RunCinematic();
 	SCR_RunConsole();
 
+	/* Update framecounter */
 	cls.framecount++;
 
 	if (log_stats->value)

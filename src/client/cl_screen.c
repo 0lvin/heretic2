@@ -1166,7 +1166,7 @@ SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
 /*
  * TODO: Rewrite
  */
-void 
+void
 SCR_RenderBar(int x, int y, int statnum, int statvalue, int statval2)
 {
 	int v6;
@@ -1221,7 +1221,7 @@ SCR_RenderBar(int x, int y, int statnum, int statvalue, int statval2)
 	}
 }
 
-void 
+void
 SCR_ExecuteLayoutString(char *s)
 {
 	int x, y;
@@ -1853,8 +1853,6 @@ SCR_UpdateScreen(void)
 			M_Draw();
 
 			SCR_DrawLoading();
-
-			SCR_RunCinematic();
 		}
 	}
 
