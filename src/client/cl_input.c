@@ -453,21 +453,6 @@ CL_AdjustAngles(void)
 	cl.viewangles[PITCH] += speed * cl_pitchspeed->value * down;
 }
 
-int sys_frame_time;
-#include "../../linux/rw_linux.h"
-
-void
-IN_Update(void)
-{
-#ifndef DEDICATED_ONLY
-	if (KBD_Update_fp)
-		KBD_Update_fp();
-#endif
-
-	// grab frame time
-	sys_frame_time = Sys_Milliseconds();
-}
-
 /*
  * Send the intended movement message to the server
  */
@@ -899,17 +884,3 @@ CL_SendCmd(void)
 	cmd = &cl.cmds[cls.netchan.outgoing_sequence & (CMD_BACKUP - 1)];
 	memset(cmd, 0, sizeof(*cmd));
 }
-
-void
-Controller_Rumble(const char *name, vec3_t source, qboolean from_player,
-		unsigned int duration, unsigned short int volume)
-{
-}
-
-void
-Haptic_Feedback(const char *name, int effect_volume, int effect_duration,
-				int effect_delay, int effect_attack, int effect_fade,
-				int effect_x, int effect_y, int effect_z, float effect_distance)
-{
-}
-

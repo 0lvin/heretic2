@@ -769,7 +769,7 @@ void
 CL_CalcViewValues(void)
 {
 	int i;
-	float lerp, ifov;
+	float lerp, backlerp, ifov;
 	frame_t *oldframe;
 	player_state_t *ps, *ops;
 

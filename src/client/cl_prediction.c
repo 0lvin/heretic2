@@ -46,9 +46,8 @@ CL_CheckPredictionError(void)
 	frame &= (CMD_BACKUP - 1);
 
 	/* compare what the server returned with what we had predicted it to be */
-	delta[0] = cl.frame.playerstate.pmove.origin[0] - cl.predicted_origins[frame][0];
-	delta[1] = cl.frame.playerstate.pmove.origin[1] - cl.predicted_origins[frame][1];
-	delta[2] = cl.frame.playerstate.pmove.origin[2] - cl.predicted_origins[frame][2];
+	VectorSubtract(cl.frame.playerstate.pmove.origin,
+			cl.predicted_origins[frame], delta);
 
 	/* save the prediction error for interpolation */
 	len = abs(delta[0]) + abs(delta[1]) + abs(delta[2]);
@@ -67,10 +66,8 @@ CL_CheckPredictionError(void)
 					delta[0] + delta[1] + delta[2]);
 		}
 
-		//VectorCopy (cl.frame.playerstate.pmove.origin, cl.predicted_origins[frame]);
-		cl.predicted_origins[frame][0] = cl.frame.playerstate.pmove.origin[0];
-		cl.predicted_origins[frame][1] = cl.frame.playerstate.pmove.origin[1];
-		cl.predicted_origins[frame][2] = cl.frame.playerstate.pmove.origin[2];
+		VectorCopy(cl.frame.playerstate.pmove.origin,
+				cl.predicted_origins[frame]);
 
 		/* save for error itnerpolation */
 		for (i = 0; i < 3; i++)
@@ -252,8 +249,8 @@ CL_PredictMovement(void)
 	if (!cl_predict->value ||
 		(cl.frame.playerstate.pmove.pm_flags & PMF_NO_PREDICTION))
 	{
-		// just set angles
-		for (i=0 ; i<3 ; i++)
+		/* just set angles */
+		for (i = 0; i < 3; i++)
 		{
 			cl.predicted_angles[i] = cl.viewangles[i] + SHORT2ANGLE(
 					cl.frame.playerstate.pmove.delta_angles[i]);

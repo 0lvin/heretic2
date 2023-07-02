@@ -206,7 +206,7 @@ typedef struct
 	int		api_version;
 
 	// called when the library is loaded
-	qboolean (EXPORT *Init) (void *hinstance, void *wndproc);
+	qboolean (EXPORT *Init) (void);
 
 	// called before the library is unloaded
 	void	(EXPORT *Shutdown) (void);

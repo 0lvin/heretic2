@@ -1114,64 +1114,121 @@ Key_Shutdown(void)
 	}
 }
 
-qboolean CIN_IsCinematicRunning(void);
+/*
+ * Called every frame for every detected keypress.
+ * ASCII input for the console, the menu and the
+ * chat window are handled by this function.
+ * Anything else is handled by Key_Event().
+ */
+void
+Char_Event(int key)
+{
+	switch (cls.key_dest)
+	{
+		/* Chat */
+		case key_message:
+			Key_Message(key);
+			break;
+
+		/* Menu */
+		case key_menu:
+			M_Keydown(key);
+			break;
+
+		/* Console */
+		case key_console:
+			Key_Console(key);
+			break;
+
+		/* Console is really open but key_dest is game anyway (not connected) */
+		case key_game:
+			if(cls.state == ca_disconnected || cls.state == ca_connecting)
+				Key_Console(key);
+
+			break;
+
+		default:
+			break;
+	}
+}
 
 /*
-===================
-Key_Event
-
-Called by the system between frames for both key up and key down events
-Should NOT be called during an interrupt!
-===================
-*/
+ * Called every frame for every detected keypress.
+ * This is only for movement and special characters,
+ * anything else is handled by Char_Event().
+ */
 void
-Key_Event(int key, qboolean down, unsigned time)
+Key_Event(int key, qboolean down, qboolean special)
 {
-	char	*kb;
-	char	cmd[1024];
+	char cmd[1024];
+	char *kb;
+	cvar_t *fullscreen;
+	unsigned int time = Sys_Milliseconds();
 
-	// hack for modal presses
-	if (key_waiting == -1)
+	// evil hack for the joystick key altselector, which turns K_BTN_x into K_BTN_x_ALT
+	if(joy_altselector_pressed && key >= K_JOY_FIRST_REGULAR && key <= K_JOY_LAST_REGULAR)
 	{
-		if (down)
-			key_waiting = key;
-		return;
-	}
-
-	if (CIN_IsCinematicRunning())
-	{
-		// skip the rest of the cinematic
-		if (key == K_ESCAPE || key == '`' || key == '~')
+		// make sure key is not the altselector itself (which we won't turn into *_ALT)
+		if(keybindings[key] == NULL || strcmp(keybindings[key], "+joyaltselector") != 0)
 		{
-			SCR_FinishCinematic();
+			int altkey = key + (K_JOY_FIRST_REGULAR_ALT - K_JOY_FIRST_REGULAR);
+			// allow fallback to binding with non-alt key
+			if(keybindings[altkey] != NULL || keybindings[key] == NULL)
+				key = altkey;
 		}
-
-		return;
 	}
 
-	// update auto-repeat status
+	/* Track if key is down */
+	keydown[key] = down;
+
+	/* Evil hack against spurious cinematic aborts. */
+	if (down && (key != K_ESCAPE) && !keydown[K_SHIFT])
+	{
+		abort_cinematic = cls.realtime;
+	}
+
+	/* Ignore most autorepeats */
 	if (down)
 	{
 		key_repeats[key]++;
-		if (key != K_BACKSPACE
-			&& key != K_PAUSE
-			&& key != K_PGUP
-			&& key != K_KP_PGUP
-			&& key != K_PGDN
-			&& key != K_KP_PGDN
-			&& key_repeats[key] > 1)
-			return;	// ignore most autorepeats
 
-		if (key >= 200 && !keybindings[key])
-			Com_Printf("%s is unbound, hit F4 to set.\n", Key_KeynumToString (key) );
+		if ((key != K_BACKSPACE) &&
+			(key != K_PAUSE) &&
+			(key != K_PGUP) &&
+			(key != K_KP_PGUP) &&
+			(key != K_PGDN) &&
+			(key != K_KP_PGDN) &&
+			(key_repeats[key] > 1))
+		{
+			return;
+		}
 	}
 	else
 	{
 		key_repeats[key] = 0;
 	}
 
-	// console key is hardcoded, so the user can never unbind it
-	if (key == '`' || key == '~')
+	/* Fullscreen switch through Alt + Return */
+	if (down && keydown[K_ALT] && key == K_ENTER)
+	{
+		fullscreen = Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
+
+		if (!fullscreen->value)
+		{
+			Cvar_Set("vid_fullscreen", "1");
+			Cbuf_AddText("vid_restart\n");
+		}
+		else
+		{
+			Cvar_Set("vid_fullscreen", "0");
+			Cbuf_AddText("vid_restart\n");
+		}
+
+		return;
+	}
+
+	/* Toogle console through Shift + Escape or special K_CONSOLE key */
+	if (key == K_CONSOLE || (keydown[K_SHIFT] && key == K_ESCAPE))
 	{
 		if (down)
 		{
@@ -1180,41 +1237,70 @@ Key_Event(int key, qboolean down, unsigned time)
 		return;
 	}
 
-	// any key during the attract mode will bring up the menu
-	if (cl.attractloop && cls.key_dest != key_menu)
-		key = K_ESCAPE;
-
-	// menu key is hardcoded, so the user can never unbind it
-	if (key == K_ESCAPE)
+	/* Key is unbound */
+	if ((key >= K_MOUSE1 && key != K_JOY_BACK) && !keybindings[key] && (cls.key_dest != key_console) &&
+		(cls.state == ca_active))
 	{
-		if (!down)
-			return;
-
-		if (cl.frame.playerstate.stats[STAT_LAYOUTS] && cls.key_dest == key_game)
-		{	// put away help computer / inventory
-			Cbuf_AddText("cmd putaway\n");
-			return;
-		}
-		switch (cls.key_dest)
-		{
-		case key_message:
-			Key_Message (key);
-			break;
-		case key_menu:
-			M_Keydown (key);
-			break;
-		case key_game:
-		case key_console:
-			M_Menu_Main_f ();
-			break;
-		default:
-			Com_Error(ERR_FATAL, "Bad cls.key_dest");
-		}
-		return;
+		Com_Printf("%s (%d) is unbound, hit F4 to set.\n", Key_KeynumToString(key), key);
 	}
 
-	// track if any key is down for BUTTON_ANY
-	keydown[key] = down;
+	/* While in attract loop all keys besides F1 to F12 (to
+	   allow quick load and the like) are treated like escape. */
+	if (cl.attractloop && (cls.key_dest != key_menu) &&
+		!((key >= K_F1) && (key <= K_F12)))
+	{
+		key = K_ESCAPE;
+	}
+
+	/* Escape has a special meaning. Depending on the situation it
+	   - pauses the game and breaks into the menu
+	   - stops the attract loop and breaks into the menu
+	   - closes the console and breaks into the menu
+	   - moves one menu level up
+	   - closes the menu
+	   - closes the help computer
+	   - closes the chat window
+	   Fully same logic for K_JOY_BACK */
+	if (!cls.disable_screen)
+	{
+		if (key == K_ESCAPE || key == K_JOY_BACK)
+		{
+			if (!down)
+			{
+				return;
+			}
+
+			/* Close the help computer */
+			if (cl.frame.playerstate.stats[STAT_LAYOUTS] &&
+				(cls.key_dest == key_game))
+			{
+				Cbuf_AddText("cmd putaway\n");
+				return;
+			}
+
+			switch (cls.key_dest)
+			{
+				/* Close chat window */
+				case key_message:
+					Key_Message(key);
+					break;
+
+				/* Close menu or one layer up */
+				case key_menu:
+					M_Keydown(key);
+					break;
+
+				/* Pause game and / or leave console,
+				   break into the menu. */
+				case key_game:
+				case key_console:
+					M_Menu_Main_f();
+					break;
+			}
+
+			return;
+		}
+	}
 
 	/* This is one of the most ugly constructs I've
 	   found so far in Quake II. When the game is in
@@ -1294,9 +1380,17 @@ Key_Event(int key, qboolean down, unsigned time)
 		return;
 	}
 
-	if (!down)
-		return;		// other systems only care about key down events
+	/* All input subsystems handled after this point only
+	   care for key down events (=> if(!down) returns above). */
 
+	/* Everything that's not a special char
+	   is processed by Char_Event(). */
+	if (!special)
+	{
+		return;
+	}
+
+	/* Send key to the active input subsystem */
 	switch (cls.key_dest)
 	{
 		/* Chat */

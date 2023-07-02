@@ -749,7 +749,6 @@ extern struct ResourceManager_s cl_FXBufMngr;
 
 //=================================================
 
-extern	cvar_t	*cl_autoskins;
 extern	cvar_t	*cl_maxfps;
 extern	cvar_t	*cl_frametime;
 extern	cvar_t	*cl_predict_local;

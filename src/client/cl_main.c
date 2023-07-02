@@ -83,19 +83,8 @@ cvar_t *cl_vwep;
 extern cvar_t* cl_upspeed;
 extern cvar_t* cl_forwardspeed;
 extern cvar_t* cl_sidespeed;
-extern cvar_t *cl_maxfps;
-cvar_t *cl_autoskins;
-extern cvar_t *cl_timedemo;
 
-cvar_t *lookspring;
-cvar_t *lookstrafe;
 cvar_t *sensitivity;
-
-cvar_t *m_pitch;
-cvar_t *m_yaw;
-cvar_t *m_forward;
-cvar_t *m_side;
-cvar_t *freelook;
 
 client_static_t cls;
 client_state_t cl;
@@ -553,20 +542,6 @@ CL_InitLocal(void)
 	gl1_stereo_separation = Cvar_Get( "gl1_stereo_separation", "1", CVAR_ARCHIVE );
 	gl1_stereo_convergence = Cvar_Get( "gl1_stereo_convergence", "1.4", CVAR_ARCHIVE );
 
-	cl_maxfps = Cvar_Get ("cl_maxfps", "90", 0);
-	cl_autoskins = Cvar_Get("cl_autoskins", "0", 0);
-	cl_timedemo = Cvar_Get("timedemo", "0", 0);
-
-	freelook = Cvar_Get( "freelook", "0", CVAR_ARCHIVE );
-	lookspring = Cvar_Get ("lookspring", "0", CVAR_ARCHIVE);
-	lookstrafe = Cvar_Get ("lookstrafe", "0", CVAR_ARCHIVE);
-	sensitivity = Cvar_Get ("sensitivity", "3", CVAR_ARCHIVE);
-
-	m_pitch = Cvar_Get ("m_pitch", "0.022", CVAR_ARCHIVE);
-	m_yaw = Cvar_Get ("m_yaw", "0.022", 0);
-	m_forward = Cvar_Get ("m_forward", "1", 0);
-	m_side = Cvar_Get ("m_side", "1", 0);
-
 	rcon_client_password = Cvar_Get("rcon_password", "", 0);
 	rcon_address = Cvar_Get("rcon_address", "", 0);
 
@@ -780,18 +755,11 @@ CL_UpdateWindowedMouse(void)
 	}
 }
 
-//============================================================================
-
-void IN_Commands (void);
-
 void
 CL_SendCommand(void)
 {
 	// get new key events
 	IN_Update ();
-
-	// allow mice or other external controllers to add commands
-	IN_Commands ();
 
 	// process console commands
 	Cbuf_Execute ();
@@ -809,8 +777,6 @@ CL_SendCommand(void)
 void
 CL_Frame(int msec)
 {
-	void IN_Frame (void);
-
 	static int	extratime;
 	static int lasttimecalled;
 
@@ -829,9 +795,6 @@ CL_Frame(int msec)
 		if (extratime < 1000/cl_maxfps->value)
 			return;			// framerate is too high
 	}
-
-	// let the mouse activate or deactivate
-	IN_Frame();
 
 	// decide the simulation time
 	cls.rframetime = extratime/1000.0;
@@ -933,7 +896,7 @@ CL_Init(void)
 	CL_InitHTTPDownloads();
 #endif
 
-	cls.disable_screen = false; /* don't draw yet */
+	cls.disable_screen = true; /* don't draw yet */
 
 	CL_InitLocal();
 

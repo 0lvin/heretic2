@@ -15,7 +15,9 @@ crashes. That's all what is good.
 
 Drawbacks:
 * code is not rebased over yquake2 code
-* no sounds
+* code use diffent angles values to quake2
+* huge amount of possibly dead code
+* move is slugish
 * broken jumps
 * broken guns select
 * no menu implementations

@@ -28,8 +28,8 @@
 #include <limits.h>
 
 #include "header/client.h"
-#include "../common/libsmacker/smacker.h"
 #include "input/header/input.h"
+#include "libsmacker/smacker.h"
 
 extern cvar_t *vid_renderer;
 
@@ -63,13 +63,9 @@ typedef struct
 	int h_used[512];
 	int h_count[512];
 
+	/* smacker video */
 	smk video;
-	unsigned long frameCount;
-
-	/* microseconds per frame */
-	double usf;
-	unsigned char	a_t, a_c[7], a_d[7];
-	unsigned long	a_r[7];
+	void *raw_video;
 } cinematics_t;
 
 cinematics_t cin;
@@ -176,21 +172,60 @@ SCR_LoadPCX(char *filename, byte **pic, byte **palette, int *width, int *height)
 void
 SCR_StopCinematic(void)
 {
-	SCR_FinishCinematic();
+	cl.cinematictime = 0; /* done */
+
+	if (cin.video)
+	{
+		smk_close(cin.video);
+		cin.video = NULL;
+		FS_FreeFile(cin.raw_video);
+		cin.raw_video = NULL;
+	}
+
+	if (cin.pic)
+	{
+		Z_Free(cin.pic);
+		cin.pic = NULL;
+	}
+
+	if (cin.pic_pending)
+	{
+		Z_Free(cin.pic_pending);
+		cin.pic_pending = NULL;
+	}
+
+	if (cl.cinematicpalette_active)
+	{
+		R_SetPalette(NULL);
+		cl.cinematicpalette_active = false;
+	}
+
+	if (cl.cinematic_file)
+	{
+		FS_FCloseFile(cl.cinematic_file);
+		cl.cinematic_file = 0;
+	}
+
+	if (cin.hnodes1)
+	{
+		Z_Free(cin.hnodes1);
+		cin.hnodes1 = NULL;
+	}
+
+	/* switch back down to 11 khz sound if necessary */
+	if (cin.restart_sound)
+	{
+		cin.restart_sound = false;
+		CL_Snd_Restart_f();
+	}
 }
 
 void
 SCR_FinishCinematic(void)
 {
-	if (cin.video == NULL)
-		return;
-
 	/* tell the server to advance to the next map / cinematic */
 	MSG_WriteByte(&cls.netchan.message, clc_stringcmd);
 	SZ_Print(&cls.netchan.message, va("nextserver %i\n", cl.servercount));
-
-	smk_close(cin.video);
-	cin.video = NULL;
 }
 
 int
@@ -349,6 +384,39 @@ Huff1Decompress(cblock_t in)
 }
 
 byte *
+SCR_ReadNextSMKFrame(void)
+{
+	size_t count;
+
+	byte *buffer = Z_Malloc(cin.height * cin.width);
+
+	/* audio */
+	count = smk_get_audio_size(cin.video, 0);
+	if (count && cin.s_channels)
+	{
+		count /= (cin.s_width * cin.s_channels);
+		S_RawSamples(count, cin.s_rate, cin.s_width, cin.s_channels,
+			smk_get_audio(cin.video, 0), Cvar_VariableValue("s_volume"));
+	}
+
+	/* update palette */
+	memcpy(cl.cinematicpalette, smk_get_palette(cin.video), sizeof(cl.cinematicpalette));
+	cl.cinematicpalette_active = 0;
+
+	/* get pic */
+	memcpy(buffer, smk_get_video(cin.video), cin.height * cin.width);
+	cl.cinematicframe++;
+
+	if (smk_next(cin.video) != SMK_MORE)
+	{
+		Z_Free(buffer);
+		return NULL;
+	}
+
+	return buffer;
+}
+
+byte *
 SCR_ReadNextFrame(void)
 {
 	int r;
@@ -438,40 +506,64 @@ SCR_ReadNextFrame(void)
 void
 SCR_RunCinematic(void)
 {
-	const unsigned char* palette_data;
-	const unsigned char* image_data;
-	int x,y, h, w;
+	int frame;
 
-	if (cin.video == NULL)
-		return;
-
-	smk_next(cin.video);
-
-	palette_data = smk_get_palette(cin.video);
-	image_data = smk_get_video(cin.video);
-
-	if (cin_force43->value)
+	if (cl.cinematictime <= 0)
 	{
-		w = viddef.height * 4 / 3;
-		if (w > viddef.width)
-		{
-			w = viddef.width;
-		}
-		w &= ~3;
-		h = w * 3 / 4;
-		x = (viddef.width - w) / 2;
-		y = (viddef.height - h) / 2;
+		SCR_StopCinematic();
+		return;
+	}
+
+	if (cl.cinematicframe == -1)
+	{
+		return; /* static image */
+	}
+
+	if (cls.key_dest != key_game)
+	{
+		/* pause if menu or console is up */
+		cl.cinematictime = cls.realtime - cl.cinematicframe * 1000 / 14;
+		return;
+	}
+
+	frame = (cls.realtime - cl.cinematictime) * 14.0 / 1000;
+
+	if (frame <= cl.cinematicframe)
+	{
+		return;
+	}
+
+	if (frame > cl.cinematicframe + 1)
+	{
+		Com_Printf("Dropped frame: %i > %i\n", frame, cl.cinematicframe + 1);
+		cl.cinematictime = cls.realtime - cl.cinematicframe * 1000 / 14;
+	}
+
+	if (cin.pic)
+	{
+		Z_Free(cin.pic);
+	}
+
+	cin.pic = cin.pic_pending;
+	cin.pic_pending = NULL;
+	if (!cin.video)
+	{
+		cin.pic_pending = SCR_ReadNextFrame();
 	}
 	else
 	{
-		x = y = 0;
-		w = viddef.width;
-		h = viddef.height;
+		cin.pic_pending = SCR_ReadNextSMKFrame();
 	}
 
-	R_SetPalette(palette_data);
-
-	Draw_StretchRaw(x, y, w, h, cin.width, cin.height, image_data);
+	if (!cin.pic_pending)
+	{
+		SCR_StopCinematic();
+		SCR_FinishCinematic();
+		cl.cinematictime = 1; /* the black screen behind loading */
+		SCR_BeginLoadingPlaque();
+		cl.cinematictime = 0;
+		return;
+	}
 }
 
 static int
@@ -590,40 +682,128 @@ SCR_DrawCinematic(void)
 void
 SCR_PlayCinematic(char *arg)
 {
+	int width, height;
+	byte *palette;
 	char name[MAX_OSPATH], *dot;
 
+	In_FlushQueue();
+	abort_cinematic = INT_MAX;
+
+	/* make sure background music is not playing */
+	OGG_Stop();
+
+	cl.cinematicframe = 0;
 	dot = strstr(arg, ".");
 
-	Com_sprintf(name, sizeof(name), "base/video/%s", arg);
-	// TODO: Use smk smk_open_memory(buffer, size);
-	cin.video = smk_open_file(name, SMK_MODE_DISK);
-
-	if (cin.video == NULL)
+	/* static pcx image */
+	if (dot && !strcmp(dot, ".pcx"))
 	{
-		Com_Printf("Failed to open SMK %s\n", name);
+		Com_sprintf(name, sizeof(name), "pics/%s", arg);
+		SCR_LoadPCX(name, &cin.pic, &palette, &cin.width, &cin.height);
+		cl.cinematicframe = -1;
+		cl.cinematictime = 1;
+		SCR_EndLoadingPlaque();
+		cls.state = ca_active;
+
+		if (!cin.pic)
+		{
+			Com_Printf("%s not found.\n", name);
+			cl.cinematictime = 0;
+		}
+		else
+		{
+			memcpy(cl.cinematicpalette, palette, sizeof(cl.cinematicpalette));
+			Z_Free(palette);
+		}
+
 		return;
 	}
 
+	if (dot && !strcmp(dot, ".smk"))
 	{
+		unsigned char trackmask, channels[7], depth[7];
 		unsigned long width, height;
+		unsigned long rate[7];
+		size_t len;
 
-		smk_info_all(cin.video, NULL, &cin.frameCount, &cin.usf);
+		Com_sprintf(name, sizeof(name), "video/%s", arg);
+
+		len = FS_LoadFile(name, &cin.raw_video);
+
+		if (!cin.raw_video || len <=0)
+		{
+			cl.cinematictime = 0; /* done */
+			return;
+		}
+
+		cin.video = smk_open_memory(cin.raw_video, len);
+		if (!cin.video)
+		{
+			FS_FreeFile(cin.raw_video);
+			cin.raw_video = NULL;
+			cl.cinematictime = 0; /* done */
+			return;
+		}
+
+		smk_info_audio(cin.video, &trackmask, channels, depth, rate);
+		if (trackmask != SMK_AUDIO_TRACK_0)
+		{
+			Com_Printf("%s has different track mask %d.\n", name, trackmask);
+			cin.s_channels = 0;
+		}
+		else
+		{
+			cin.s_rate = rate[0];
+			cin.s_width = depth[0] / 8;
+			cin.s_channels = channels[0];
+			smk_enable_audio(cin.video, 0, true);
+		}
+
 		smk_info_video(cin.video, &width, &height, NULL);
-		smk_info_audio(cin.video, &cin.a_t, cin.a_c, cin.a_d, cin.a_r);
-
-		smk_enable_all(cin.video, cin.a_t);
 		smk_enable_video(cin.video, true);
+		cin.width = width;
+		cin.height = height;
 
 		/* process first frame */
 		smk_first(cin.video);
 
-		cin.width = width;
-		cin.height = height;
-	}
-}
+		cl.cinematicframe = 0;
+		cin.pic = SCR_ReadNextSMKFrame();
+		cl.cinematictime = Sys_Milliseconds();
 
-qboolean
-CIN_IsCinematicRunning(void) {
-	return cin.video != NULL;
+		return;
+	}
+
+	Com_sprintf(name, sizeof(name), "video/%s", arg);
+	FS_FOpenFile(name, &cl.cinematic_file, false);
+
+	if (!cl.cinematic_file)
+	{
+		SCR_FinishCinematic();
+		cl.cinematictime = 0; /* done */
+		return;
+	}
+
+	SCR_EndLoadingPlaque();
+
+	cls.state = ca_active;
+
+	FS_Read(&width, 4, cl.cinematic_file);
+	FS_Read(&height, 4, cl.cinematic_file);
+	cin.width = LittleLong(width);
+	cin.height = LittleLong(height);
+
+	FS_Read(&cin.s_rate, 4, cl.cinematic_file);
+	cin.s_rate = LittleLong(cin.s_rate);
+	FS_Read(&cin.s_width, 4, cl.cinematic_file);
+	cin.s_width = LittleLong(cin.s_width);
+	FS_Read(&cin.s_channels, 4, cl.cinematic_file);
+	cin.s_channels = LittleLong(cin.s_channels);
+
+	Huff1TableInit();
+
+	cl.cinematicframe = 0;
+	cin.pic = SCR_ReadNextFrame();
+	cl.cinematictime = Sys_Milliseconds();
 }
 

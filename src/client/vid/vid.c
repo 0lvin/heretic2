@@ -63,104 +63,6 @@ compress_for_stbiw(unsigned char *data, int data_len, int *out_len, int quality)
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "header/stb_image_write.h"
 
-#include <dlfcn.h> // ELF dl loader
-#include <sys/stat.h>
-#include <unistd.h>
-#include "../../../linux/rw_linux.h"
-
-// Structure containing functions exported from refresh DLL
-refexport_t	re;
-
-// Console variables that we need to access from this module
-cvar_t		*vid_gamma;
-cvar_t		*vid_renderer;			// Name of Refresh DLL loaded
-cvar_t		*vid_xpos;			// X coordinate of window position
-cvar_t		*vid_ypos;			// Y coordinate of window position
-cvar_t		*vid_fullscreen;
-
-// Global variables used internally by this module
-viddef_t	viddef;				// global video state; used by other modules
-void		*reflib_library;		// Handle to refresh DLL
-cvar_t *joy_layout;
-cvar_t *gyro_mode;
-cvar_t *gyro_turning_axis;       // yaw or roll
-qboolean show_gamepad = false, show_haptic = false, show_gyro = false;
-
-/** KEYBOARD **************************************************************/
-
-void Do_Key_Event(int key, qboolean down);
-
-void (*KBD_Update_fp)(void);
-void (*KBD_Init_fp)(Key_Event_fp_t fp);
-void (*KBD_Close_fp)(void);
-
-/** MOUSE *****************************************************************/
-
-in_state_t in_state;
-
-void (*RW_IN_Init_fp)(in_state_t *in_state_p);
-void (*RW_IN_Shutdown_fp)(void);
-void (*RW_IN_Activate_fp)(qboolean active);
-void (*RW_IN_Commands_fp)(void);
-void (*RW_IN_Move_fp)(usercmd_t *cmd);
-void (*RW_IN_Frame_fp)(void);
-
-void Real_IN_Init (void);
-
-/*
-==========================================================================
-
-DLL GLUE
-
-==========================================================================
-*/
-
-#define	MAXPRINTMSG	4096
-void VID_Printf (int print_level, char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-	static qboolean	inupdate;
-
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-
-	if (print_level == PRINT_ALL)
-		Com_Printf ("%s", msg);
-	else
-		Com_DPrintf ("%s", msg);
-}
-
-void VID_Error (int err_level, char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-	static qboolean	inupdate;
-
-	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
-	va_end (argptr);
-
-	Com_Error (err_level,"%s", msg);
-}
-
-//==========================================================================
-
-/*
-============
-VID_Restart_f
-
-Console command to re-start the video mode and refresh DLL. We do this
-simply by setting the modified flag for the vid_renderer variable, which will
-cause the entire video mode and refresh DLL to be reset on the next frame.
-============
-*/
-void VID_Restart_f (void)
-{
-	vid_renderer->modified = true;
-}
-
 /*
  * Writes a screenshot. This function is called with raw image data of
  * width*height pixels, each pixel has comp bytes. Must be 3 or 4, for
@@ -411,72 +313,114 @@ const char* lib_ext = "so";
 #endif
 
 /*
-** VID_NewWindow
-*/
-void VID_NewWindow ( int width, int height)
+ * Returns platform specific path to a renderer lib.
+ */
+static void
+VID_GetRendererLibPath(const char *renderer, char *path, size_t len)
 {
-	viddef.width  = width;
-	viddef.height = height;
-}
-
-void VID_FreeReflib (void)
-{
-	if (reflib_library) {
-		if (KBD_Close_fp)
-			KBD_Close_fp();
-		if (RW_IN_Shutdown_fp)
-			RW_IN_Shutdown_fp();
-		dlclose(reflib_library);
-	}
-
-	KBD_Init_fp = NULL;
-	KBD_Update_fp = NULL;
-	KBD_Close_fp = NULL;
-	RW_IN_Init_fp = NULL;
-	RW_IN_Shutdown_fp = NULL;
-	RW_IN_Activate_fp = NULL;
-	RW_IN_Commands_fp = NULL;
-	RW_IN_Move_fp = NULL;
-	RW_IN_Frame_fp = NULL;
-
-	memset (&re, 0, sizeof(re));
-	reflib_library = NULL;
-	ref_active  = false;
+	snprintf(path, len, "%sref_%s.%s", Sys_GetBinaryDir(), renderer, lib_ext);
 }
 
 /*
-==============
-VID_LoadRefresh
-==============
-*/
+ * Checks if a renderer DLL is available.
+ */
 qboolean
-VID_LoadRefresh(char *reflib_name)
+VID_HasRenderer(const char *renderer)
+{
+	char reflib_path[MAX_OSPATH] = {0};
+	VID_GetRendererLibPath(renderer, reflib_path, sizeof(reflib_path));
+
+	if (Sys_IsFile(reflib_path))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/*
+ * Called by the renderer to request a restart.
+ */
+void
+VID_RequestRestart(ref_restart_t rs)
+{
+	restart_state = rs;
+}
+
+/*
+ * Restarts the renderer.
+ */
+void
+VID_Restart_f(void)
+{
+	if (restart_state == RESTART_UNDEF)
+	{
+		vid_fullscreen->modified = true;
+	} else {
+		restart_state = RESTART_FULL;
+	}
+}
+
+/*
+ * Shuts the renderer down and unloads it.
+ */
+void
+VID_ShutdownRenderer(void)
+{
+	if (ref_active)
+	{
+		/* Shut down the renderer */
+		re.Shutdown();
+		GLimp_ShutdownGraphics();
+		Sys_FreeLibrary(reflib_handle);
+		reflib_handle = NULL;
+		memset(&re, 0, sizeof(re));
+	}
+
+	// Declare the refresher as inactive
+	ref_active = false;
+}
+
+/*
+ * Loads and initializes a renderer.
+ */
+qboolean
+VID_LoadRenderer(void)
 {
 	refimport_t	ri;
 	GetRefAPI_t	GetRefAPI;
-	char	fn[MAX_OSPATH];
-	struct stat st;
-	extern uid_t saved_euid;
-	FILE *fp;
 
-	if (ref_active)
+	char reflib_name[64] = {0};
+	char reflib_path[MAX_OSPATH] = {0};
+
+	// If the refresher is already active we need
+	// to shut it down before loading a new one
+	VID_ShutdownRenderer();
+
+	// Log what we're doing.
+	Com_Printf("----- refresher initialization -----\n");
+
+	snprintf(reflib_name, sizeof(reflib_name), "ref_%s.%s", vid_renderer->string, lib_ext);
+	VID_GetRendererLibPath(vid_renderer->string, reflib_path, sizeof(reflib_path));
+	Com_Printf("Loading library: %s\n", reflib_name);
+
+	// Check if the renderer libs exists.
+	if (!VID_HasRenderer(vid_renderer->string))
 	{
-		if (KBD_Close_fp)
-			KBD_Close_fp();
-		if (RW_IN_Shutdown_fp)
-			RW_IN_Shutdown_fp();
-		KBD_Close_fp = NULL;
-		RW_IN_Shutdown_fp = NULL;
-		re.Shutdown();
-		VID_FreeReflib();
+        Com_Printf("Library %s cannot be found!\n", reflib_name);
+
+		return false;
 	}
 
-	Com_Printf("------- Loading %s -------\n", reflib_name);
+	// Mkay, let's load the requested renderer.
+	GetRefAPI = Sys_LoadLibrary(reflib_path, "GetRefAPI", &reflib_handle);
 
-	snprintf(fn, sizeof(fn), "./%s", reflib_name);
-	if ( ( reflib_library = dlopen( fn, RTLD_LAZY | RTLD_GLOBAL ) ) == 0 )
+	// Okay, we couldn't load it. It's up to the
+	// caller to recover from this.
+	if (GetRefAPI == NULL)
 	{
-		Com_Printf("LoadLibrary(\"%s\") failed: %s\n", reflib_name, dlerror());
+		Com_Printf("Loading %s as renderer lib failed!\n", reflib_name);
+
 		return false;
 	}
 
@@ -494,58 +438,43 @@ VID_LoadRefresh(char *reflib_name)
 	ri.FS_FreeFile = FS_FreeFile;
 	ri.FS_Gamedir = FS_Gamedir;
 	ri.FS_LoadFile = FS_LoadFile;
+	ri.GLimp_InitGraphics = GLimp_InitGraphics;
+	ri.GLimp_GetDesktopMode = GLimp_GetDesktopMode;
 	ri.Sys_Error = Com_Error;
 	ri.Vid_GetModeInfo = VID_GetModeInfo;
 	ri.Vid_MenuInit = VID_MenuInit;
 	ri.Vid_WriteScreenshot = VID_WriteScreenshot;
-	ri.Vid_NewWindow = VID_NewWindow;
+	ri.Vid_RequestRestart = VID_RequestRestart;
 
-	if ( ( GetRefAPI = (void *) dlsym( reflib_library, "GetRefAPI" ) ) == 0 )
-		Com_Error( ERR_FATAL, "dlsym failed on %s", reflib_name );
-
+	// Exchange our export struct with the renderers import struct.
 	re = GetRefAPI(ri);
 
 	// Declare the refresher as active.
 	ref_active = true;
 
+	// Let's check if we've got a compatible renderer.
 	if (re.api_version != API_VERSION)
 	{
-		VID_FreeReflib ();
-		Com_Error (ERR_FATAL, "%s has incompatible api_version", reflib_name);
-	}
+		VID_ShutdownRenderer();
 
-	/* Init IN (Mouse) */
-	in_state.IN_CenterView_fp = IN_CenterView;
-	in_state.Key_Event_fp = Do_Key_Event;
-	in_state.viewangles = cl.viewangles;
-	in_state.in_strafe_state = &in_strafe.state;
+		Com_Printf("%s has incompatible api_version %d!\n", reflib_name, re.api_version);
 
-	if ((RW_IN_Init_fp = dlsym(reflib_library, "RW_IN_Init")) == NULL ||
-		(RW_IN_Shutdown_fp = dlsym(reflib_library, "RW_IN_Shutdown")) == NULL ||
-		(RW_IN_Activate_fp = dlsym(reflib_library, "RW_IN_Activate")) == NULL ||
-		(RW_IN_Commands_fp = dlsym(reflib_library, "RW_IN_Commands")) == NULL ||
-		(RW_IN_Move_fp = dlsym(reflib_library, "RW_IN_Move")) == NULL ||
-		(RW_IN_Frame_fp = dlsym(reflib_library, "RW_IN_Frame")) == NULL)
-		Sys_Error("No RW_IN functions in REF.\n");
-
-	Real_IN_Init();
-
-	if ( re.Init( 0, 0 ) == -1 )
-	{
-		re.Shutdown();
-		VID_FreeReflib ();
 		return false;
 	}
 
-	/* Init KBD */
-	if ((KBD_Init_fp = dlsym(reflib_library, "KBD_Init")) == NULL ||
-		(KBD_Update_fp = dlsym(reflib_library, "KBD_Update")) == NULL ||
-		(KBD_Close_fp = dlsym(reflib_library, "KBD_Close")) == NULL)
+	// Everything seems okay, initialize it.
+	if (!re.Init())
 	{
-		Sys_Error("No KBD functions in REF.\n");
+		VID_ShutdownRenderer();
+
+		Com_Printf("ERROR: Loading %s as rendering backend failed.\n", reflib_name);
+		Com_Printf("------------------------------------\n\n");
+
+		return false;
 	}
 
-	KBD_Init_fp(Do_Key_Event);
+	/* Ensure that all key states are cleared */
+	Key_MarkAllUp();
 
 	Com_Printf("Successfully loaded %s as rendering backend.\n", reflib_name);
 	Com_Printf("------------------------------------\n\n");
@@ -560,54 +489,74 @@ VID_LoadRefresh(char *reflib_name)
 void
 VID_CheckChanges(void)
 {
-	char name[100];
-	cvar_t *sw_mode;
+	// Hack around renderers that still abuse vid_fullscreen
+	// to communicate restart requests to the client.
+	ref_restart_t rs;
 
-	if ( vid_renderer->modified )
+	if (restart_state == RESTART_UNDEF)
 	{
-		S_StopAllSounds();
+		if (vid_fullscreen->modified)
+		{
+			rs = RESTART_FULL;
+			vid_fullscreen->modified = false;
+		} else {
+			rs = RESTART_NO;
+		}
+	} else {
+		rs = restart_state;
+		restart_state = RESTART_NO;
 	}
 
-	while (vid_renderer->modified)
+	if (rs == RESTART_FULL)
 	{
-		/*
-		** refresh has changed
-		*/
-		vid_renderer->modified = false;
-		vid_fullscreen->modified = true;
+		// Stop sound, because the clients blocks while
+		// we're reloading the renderer. The sound system
+		// would screw up it's internal timings.
+		S_StopAllSounds();
+
+		// Reset the client side of the renderer state.
 		cl.refresh_prepped = false;
+		cl.cinematicpalette_active = false;
+
+		// More or less blocks the client.
 		cls.disable_screen = true;
 
-		sprintf( name, "ref_%s.so", vid_renderer->string );
-		if ( !VID_LoadRefresh( name ) )
+		// Mkay, let's try our luck.
+		while (!VID_LoadRenderer())
 		{
-			if ( strcmp (vid_renderer->string, "soft") == 0 ||
-				strcmp (vid_renderer->string, "softx") == 0 ) {
-				Com_Printf("Refresh failed\n");
-				sw_mode = Cvar_Get( "sw_mode", "0", 0 );
-
-				if (sw_mode->value != 0) {
-					Com_Printf("Trying mode 0\n");
-					Cvar_SetValue("sw_mode", 0);
-					if ( !VID_LoadRefresh( name ) )
-						Com_Error (ERR_FATAL, "Couldn't fall back to software refresh!");
-				} else
-					Com_Error (ERR_FATAL, "Couldn't fall back to software refresh!");
-			}
-
-			Cvar_Set( "vid_renderer", "soft" );
-
-			/*
-			** drop the console if we fail to load a refresh
-			*/
-			if ( cls.key_dest != key_console )
+			// We try: custom -> gl3 -> gl1 -> soft.
+			if ((strcmp(vid_renderer->string, "gl3") != 0) &&
+				(strcmp(vid_renderer->string, "gl1") != 0) &&
+				(strcmp(vid_renderer->string, "soft") != 0))
 			{
-				Con_ToggleConsole_f();
+				Com_Printf("Retrying with gl3...\n");
+				Cvar_Set("vid_renderer", "gl3");
+			}
+			else if (strcmp(vid_renderer->string, "gl3") == 0)
+			{
+				Com_Printf("Retrying with gl1...\n");
+				Cvar_Set("vid_renderer", "gl1");
+			}
+			else if (strcmp(vid_renderer->string, "gl1") == 0)
+			{
+				Com_Printf("Retrying with soft...\n");
+				Cvar_Set("vid_renderer", "soft");
+			}
+			else if (strcmp(vid_renderer->string, "soft") == 0)
+			{
+				// Sorry, no usable renderer found.
+				Com_Error(ERR_FATAL, "No usable renderer found!\n");
 			}
 		}
+
+		// Unblock the client.
 		cls.disable_screen = false;
 	}
 
+	if (rs == RESTART_PARTIAL)
+	{
+		cl.refresh_prepped = false;
+	}
 }
 
 /*
@@ -616,14 +565,7 @@ VID_CheckChanges(void)
 void
 VID_Init(void)
 {
-	/* Create the video variables so we know how to start the graphics drivers */
-	// if DISPLAY is defined, try X
-	if (getenv("DISPLAY"))
-		vid_renderer = Cvar_Get ("vid_renderer", "softx", CVAR_ARCHIVE);
-	else
-		vid_renderer = Cvar_Get ("vid_renderer", "soft", CVAR_ARCHIVE);
-	vid_xpos = Cvar_Get ("vid_xpos", "3", CVAR_ARCHIVE);
-	vid_ypos = Cvar_Get ("vid_ypos", "22", CVAR_ARCHIVE);
+	// Console variables
 	vid_gamma = Cvar_Get("vid_gamma", "1.0", CVAR_ARCHIVE);
 	vid_fullscreen = Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 	vid_renderer = Cvar_Get("vid_renderer", "gl1", CVAR_ARCHIVE);
@@ -632,6 +574,13 @@ VID_Init(void)
 	Cmd_AddCommand("vid_restart", VID_Restart_f);
 	Cmd_AddCommand("vid_listmodes", VID_ListModes_f);
 	Cmd_AddCommand("r_listmodes", VID_ListModes_f); // more consistent with r_mode
+
+	// Initializes the video backend. This is NOT the renderer
+	// itself, just the client side support stuff!
+	if (!GLimp_Init())
+	{
+		Com_Error(ERR_FATAL, "Couldn't initialize the graphics subsystem!\n");
+	}
 
 	// Load the renderer and get things going.
 	VID_CheckChanges();
@@ -643,17 +592,8 @@ VID_Init(void)
 void
 VID_Shutdown(void)
 {
-	if (ref_active)
-	{
-		if (KBD_Close_fp)
-			KBD_Close_fp();
-		if (RW_IN_Shutdown_fp)
-			RW_IN_Shutdown_fp();
-		KBD_Close_fp = NULL;
-		RW_IN_Shutdown_fp = NULL;
-		re.Shutdown ();
-		VID_FreeReflib ();
-	}
+	VID_ShutdownRenderer();
+	GLimp_Shutdown();
 }
 
 // ----
@@ -840,100 +780,13 @@ R_EndFrame(void)
 	}
 }
 
-/*****************************************************************************/
-/* INPUT                                                                     */
-/*****************************************************************************/
-
-cvar_t *in_joystick;
-
-// This is fake, it's acutally done by the Refresh load
-void IN_Init (void)
+qboolean
+R_IsVSyncActive(void)
 {
-	in_joystick	= Cvar_Get ("in_joystick", "0", CVAR_ARCHIVE);
-}
-
-void Real_IN_Init (void)
-{
-	if (RW_IN_Init_fp)
-		RW_IN_Init_fp(&in_state);
-}
-
-void IN_Shutdown (void)
-{
-	if (RW_IN_Shutdown_fp)
-		RW_IN_Shutdown_fp();
-}
-
-void IN_Commands (void)
-{
-	if (RW_IN_Commands_fp)
-		RW_IN_Commands_fp();
-}
-
-void IN_Move (usercmd_t *cmd)
-{
-	if (RW_IN_Move_fp)
-		RW_IN_Move_fp(cmd);
-}
-
-void IN_Frame (void)
-{
-	if (RW_IN_Activate_fp)
+	if (ref_active)
 	{
-		if ( !cl.refresh_prepped || cls.key_dest == key_console || cls.key_dest == key_menu)
-			RW_IN_Activate_fp(false);
-		else
-			RW_IN_Activate_fp(true);
+		return re.IsVSyncActive();
 	}
 
-	if (RW_IN_Frame_fp)
-		RW_IN_Frame_fp();
-}
-
-void IN_Activate (qboolean active)
-{
-}
-
-void Do_Key_Event(int key, qboolean down)
-{
-	Key_Event(key, down, Sys_Milliseconds());
-}
-
-int
-GLimp_GetNumVideoDisplays(void)
-{
-	return 1;
-}
-
-int
-GLimp_GetWindowDisplayIndex(void)
-{
-	return 0;
-}
-
-qboolean
-VID_HasRenderer(const char *renderer)
-{
-	return !strcmp(renderer, "gl1");
-}
-
-const char **
-GLimp_GetDisplayIndices(void)
-{
-	char **displays = {
-		"default",
-		NULL
-	};
-	return displays;
-}
-
-qboolean
-IsCalibrationZero(void)
-{
-	return true;
-}
-
-void
-StartCalibration(void)
-{
+	return false;
 }

@@ -1421,15 +1421,18 @@ SetMode_impl(int *pwidth, int *pheight, int mode, int fullscreen)
 qboolean
 R_SetMode(void)
 {
-	int err;
-	qboolean fullscreen;
+	rserr_t err;
+	int fullscreen;
 
-	fullscreen = vid_fullscreen->value;
+	fullscreen = (int)vid_fullscreen->value;
 
-	vid_fullscreen->modified = false;
-	r_mode->modified = false;
+	/* a bit hackish approach to enable custom resolutions:
+	   Glimp_SetMode needs these values set for mode -1 */
+	vid.width = r_customwidth->value;
+	vid.height = r_customheight->value;
 
-	if ((err = GLimp_SetMode( (int *)&vid.width, (int*)&vid.height, r_mode->value, fullscreen ) ) == rserr_ok )
+	if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value,
+					 fullscreen)) == rserr_ok)
 	{
 		if (r_mode->value == -1)
 		{
@@ -1442,22 +1445,32 @@ R_SetMode(void)
 	}
 	else
 	{
-		if (err == rserr_invalid_fullscreen)
+		if (err == rserr_invalid_mode)
 		{
-			ri.Cvar_SetValue( "vid_fullscreen", 0);
-			vid_fullscreen->modified = false;
-			R_Printf( PRINT_ALL, "ref_gl::R_SetMode() - fullscreen unavailable in this mode\n" );
-			if ( ( err = GLimp_SetMode((int*)&vid.width, (int*)&vid.height, r_mode->value, false ) ) == rserr_ok )
-				return true;
-		}
-		else if ( err == rserr_invalid_mode )
-		{
-			ri.Cvar_SetValue( "r_mode", gl_state.prev_mode );
+			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - invalid mode\n");
+			if (gl_msaa_samples->value != 0.0f)
+			{
+				R_Printf(PRINT_ALL, "gl_msaa_samples was %d - will try again with gl_msaa_samples = 0\n", (int)gl_msaa_samples->value);
+				ri.Cvar_SetValue("r_msaa_samples", 0.0f);
+				gl_msaa_samples->modified = false;
+
+				if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
+				{
+					return true;
+				}
+			}
+			if(r_mode->value == gl_state.prev_mode)
+			{
+				// trying again would result in a crash anyway, give up already
+				// (this would happen if your initing fails at all and your resolution already was 640x480)
+				return false;
+			}
+			ri.Cvar_SetValue("r_mode", gl_state.prev_mode);
 			r_mode->modified = false;
 		}
 
 		/* try setting it back to something safe */
-		if ((err = GLimp_SetMode((int*)&vid.width, (int*)&vid.height, gl_state.prev_mode, false)) != rserr_ok)
+		if ((err = SetMode_impl(&vid.width, &vid.height, gl_state.prev_mode, 0)) != rserr_ok)
 		{
 			R_Printf(PRINT_ALL, "ref_gl::R_SetMode() - could not revert to safe mode\n");
 			return false;
@@ -1467,13 +1480,14 @@ R_SetMode(void)
 	return true;
 }
 
-int
-RI_Init(void *hinstance, void *hWnd)
+qboolean
+RI_Init(void)
 {
-	int err;
 	int j;
 	byte *colormap;
 	extern float r_turbsin[256];
+
+	Swap_Init();
 
 	for (j = 0; j < 256; j++)
 	{
@@ -1488,31 +1502,19 @@ RI_Init(void *hinstance, void *hWnd)
 
 	R_Register();
 
+	/* initialize our QGL dynamic bindings */
+	QGL_Init();
+
 	/* set our "safe" mode */
 	gl_state.prev_mode = 4;
 	gl_state.stereo_mode = gl1_stereo->value;
-
-	/* initialize our QGL dynamic bindings */
-	if (!QGL_Init())
-	{
-		QGL_Shutdown();
-		R_Printf(PRINT_ALL, "ref_gl::R_Init() - could not R_SetMode()\n");
-		return -1;
-	}
-
-	// initialize OS-specific parts of OpenGL
-	if ( !GLimp_Init( hinstance, hWnd ) )
-	{
-		QGL_Shutdown();
-		return -1;
-	}
 
 	/* create the window and set up the context */
 	if (!R_SetMode())
 	{
 		QGL_Shutdown();
 		R_Printf(PRINT_ALL, "ref_gl::R_Init() - could not R_SetMode()\n");
-		return -1;
+		return false;
 	}
 
 	ri.Vid_MenuInit();
@@ -1655,9 +1657,7 @@ RI_Init(void *hinstance, void *hWnd)
 	R_InitParticleTexture();
 	Draw_InitLocal();
 
-	err = glGetError();
-	if ( err != GL_NO_ERROR )
-		R_Printf(PRINT_ALL, "glGetError() = 0x%x\n", err);
+	return true;
 }
 
 void
@@ -1673,7 +1673,7 @@ RI_Shutdown(void)
 	R_ShutdownImages();
 
 	/* shutdown OS specific OpenGL stuff like contexts, etc.  */
-	GLimp_Shutdown();
+	RI_ShutdownContext();
 
 	/* shutdown our QGL subsystem */
 	QGL_Shutdown();
@@ -1704,8 +1704,6 @@ RI_BeginFrame(float camera_separation)
 		vid_gamma->modified = false;
 		RI_UpdateGamma();
 	}
-
-	GLimp_BeginFrame( camera_separation );
 
 	// Clamp overbrightbits
 	if (gl1_overbrightbits->modified)
@@ -1974,12 +1972,11 @@ extern struct image_s * RI_RegisterSkin(char *name);
 extern void RI_SetSky(char *name, float rotate, vec3_t axis);
 extern void RI_EndRegistration(void);
 
-extern qboolean RI_IsVSyncActive(void);
+extern void RI_RenderFrame(refdef_t *fd);
 
-static void RI_EndFrame(void)
-{
-	GLimp_EndFrame();
-}
+extern void RI_SetPalette(const unsigned char *palette);
+extern qboolean RI_IsVSyncActive(void);
+extern void RI_EndFrame(void);
 
 /*
 =====================
@@ -2036,7 +2033,9 @@ GetRefAPI(refimport_t imp)
 	re.EndWorldRenderpass = RI_EndWorldRenderpass;
 	re.EndFrame = RI_EndFrame;
 
-	Swap_Init ();
+    // Tell the client that we're unsing the
+	// new renderer restart API.
+    ri.Vid_RequestRestart(RESTART_NO);
 
 	return re;
 }
