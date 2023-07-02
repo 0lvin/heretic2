@@ -693,9 +693,9 @@ void plagueElf_spell(edict_t *self)
 		VectoAngles(Spell->movedir, Spell->s.angles);
 		Spell->s.angles[PITCH] = anglemod(Spell->s.angles[PITCH] * -1);
 
-		if(stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
+		if(Q_stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
 		{
-			if(irand(0, 3) || skill->value < 2 || !stricmp(self->classname, "monster_palace_plague_guard_invisible"))
+			if(irand(0, 3) || skill->value < 2 || !Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
 				Spell->red_rain_count = FX_PE_MAKE_SPELL2;
 			else
 				Spell->red_rain_count = FX_PE_MAKE_SPELL3;
@@ -766,7 +766,7 @@ void plagueElf_c_spell(edict_t *self)
 	VectoAngles(Spell->movedir, Spell->s.angles);
 	Spell->s.angles[PITCH] = anglemod(Spell->s.angles[PITCH] * -1);
 
-	if(stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
+	if(Q_stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
 	{
 		if(irand(0, 3))
 			Spell->red_rain_count = FX_PE_MAKE_SPELL2;
@@ -1789,7 +1789,7 @@ void pelf_phase_in (edict_t *self)
 
 void pelf_init_phase_out (edict_t *self)
 {
-	if(stricmp(self->classname, "monster_palace_plague_guard_invisible"))
+	if(Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
 		return;
 
 //	gi.dprintf("Elf phasing out\n");
@@ -1800,7 +1800,7 @@ void pelf_init_phase_out (edict_t *self)
 
 void pelf_init_phase_in (edict_t *self)
 {
-	if(stricmp(self->classname, "monster_palace_plague_guard_invisible"))
+	if(Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
 		return;
 
 //	gi.dprintf("Elf phasing in\n");
@@ -2099,7 +2099,7 @@ void SP_monster_plagueElf (edict_t *self)
 	MG_InitMoods(self);
 	self->svflags |= SVF_WAIT_NOTSOLID;
 
-	if(!stricmp(self->classname, "monster_palace_plague_guard_invisible"))
+	if(!Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
 	{
 		self->melee_range = -64;
 		self->min_missile_range = 30;

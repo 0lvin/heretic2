@@ -151,7 +151,7 @@ void priestess_teleport_move ( edict_t *self )
 
 	while ( (moveLocation = G_Find( moveLocation, FOFS( classname ), "path_corner")) != NULL)
 	{
-		if (stricmp(moveLocation->targetname, "priestess"))
+		if (Q_stricmp(moveLocation->targetname, "priestess"))
 			continue;
 
 		dist = Vector2Length(self->enemy->s.origin, moveLocation->s.origin);
@@ -174,7 +174,7 @@ void priestess_teleport_move ( edict_t *self )
 			if (trace.startsolid || trace.allsolid)
 				continue;
 
-			if (trace.ent && !stricmp(trace.ent->classname, "player"))
+			if (trace.ent && !Q_stricmp(trace.ent->classname, "player"))
 				continue;
 
 			bestDist = dist;
@@ -450,7 +450,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 	if (trace->ent == self->owner)
 		return;
 
-	if (!stricmp(trace->ent->classname, "HPriestess_Missile"))
+	if (!Q_stricmp(trace->ent->classname, "HPriestess_Missile"))
 		return;
 
 	//Reflection stuff
@@ -562,7 +562,7 @@ void priestess_proj1_touch( edict_t *self, edict_t *other, cplane_t *plane, csur
 	if (other == self->owner)
 		return;
 
-	if (!stricmp(other->classname, "HPriestess_Missile"))
+	if (!Q_stricmp(other->classname, "HPriestess_Missile"))
 		return;
 
 	//Do the rest of the stuff
@@ -608,7 +608,7 @@ void priestess_proj1_touch( edict_t *self, edict_t *other, cplane_t *plane, csur
 	if (other == self->owner)
 		return;
 
-	if (!stricmp(other->classname, "HPriestess_Missile"))
+	if (!Q_stricmp(other->classname, "HPriestess_Missile"))
 		return;
 
 	self->think = G_FreeEdict;

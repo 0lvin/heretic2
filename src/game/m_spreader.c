@@ -1106,7 +1106,7 @@ void spreaderSplat (edict_t *self, trace_t *trace)//, edict_s *other, cplane_s *
 			T_Damage(trace->ent, self, self, dir, trace->endpos, dir, speed, 0, 0,MOD_DIED);
 
 			if(trace->ent->health>0)//else don't gib?
-				if(!stricmp(trace->ent->classname, "player"))
+				if(!Q_stricmp(trace->ent->classname, "player"))
 					KnockDownPlayer(&trace->ent->client->playerinfo);
 		}
 	}

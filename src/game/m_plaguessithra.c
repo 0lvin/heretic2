@@ -135,7 +135,7 @@ void ssithra_blocked (edict_t *self, trace_t *trace)
 //	gi.dprintf("ssithra shove!\n");
 	VectorCopy(self->velocity, hitdir);
 
-//	if(!stricmp(trace->ent->classname, "player"))
+//	if(!Q_stricmp(trace->ent->classname, "player"))
 //		KnockDownPlayer(&trace->ent->client->playerinfo);
 	if(hitdir[2] < 0)
 		hitdir[2] = 0;
@@ -986,7 +986,7 @@ void ssithraCheckJump (edict_t *self)
 						return;
 					}
 		//			{
-		//				if (stricmp(trace.ent->classname, "worldspawn"))
+		//				if (Q_stricmp(trace.ent->classname, "worldspawn"))
 		//					return;
 		//			}
 					else

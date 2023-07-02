@@ -519,7 +519,7 @@ void M_ReactToDamage (edict_t *targ, edict_t *attacker)
 			{//attacker was shooting at me(targ) and is my class, but I'm not agressive so I didn't hit him first
 				if(irand(0,10)<7)
 				{//run away!
-					if(targ->enemy==attacker&&irand(0,10)<3&&stricmp(attacker->classname, "player"))
+					if(targ->enemy==attacker&&irand(0,10)<3 && Q_stricmp(attacker->classname, "player"))
 					{
 						targ->monsterinfo.flee_finished = 0;
 					}
@@ -1211,7 +1211,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		{
 			if(!targ->classID || !classStatics[targ->classID].msgReceivers[MSG_PAIN])
 			{
-				if(!stricmp(targ->classname, "NATE"))
+				if(!Q_stricmp(targ->classname, "NATE"))
 					targ->activator = inflictor;
 				targ->pain(targ, attacker, knockback, take);//pass spot too
 			}
@@ -1225,7 +1225,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 	if(client)
 	{
-		client->damage_gas = (!stricmp(inflictor->classname, "plague_mist") || !stricmp(inflictor->classname, "spreader_grenade")) ? true : false;
+		client->damage_gas = (!Q_stricmp(inflictor->classname, "plague_mist") || !Q_stricmp(inflictor->classname, "spreader_grenade")) ? true : false;
 
 		client->damage_blood += take;
 		client->damage_knockback += knockback;

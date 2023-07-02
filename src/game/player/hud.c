@@ -417,7 +417,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 			for(j = 0; j<total_team;j++)
 			{
 				// is it the same as our current one ?
-   				if(!stricmp(team_scores[j].teamname, p))
+   				if(!Q_stricmp(team_scores[j].teamname, p))
    				{
 					break;
    				}

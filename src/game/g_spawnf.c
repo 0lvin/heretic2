@@ -534,7 +534,7 @@ void SP_worldspawn (edict_t *ent)
 	{
 		// search through all the currently defined world maps, looking for names, so we can set
 		// the EAX default sound type for this level.
-		if (!stricmp(eax_level_info[i].level_name,  level.mapname))
+		if (!Q_stricmp(eax_level_info[i].level_name,  level.mapname))
 		{
 			Cvar_SetValue("EAX_default", (float)eax_level_info[i].default_preset);
 			break;

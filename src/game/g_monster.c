@@ -1176,7 +1176,7 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 	vec3_t	pos1, pos2, dir;
 	float	zdiff, dropmag;
 
-	if ((other->svflags & SVF_MONSTER) || (!stricmp(other->classname, "player")))
+	if ((other->svflags & SVF_MONSTER) || (!Q_stricmp(other->classname, "player")))
 	{
 		VectorCopy(other->s.origin, pos1);
 		pos1[2] += other->mins[2];

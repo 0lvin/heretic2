@@ -91,7 +91,7 @@ void imp_blocked (edict_t *self, trace_t *trace)
 
 	if(self->curAnimID == ANIM_DIVE_GO || self->curAnimID == ANIM_DIVE_LOOP || self->curAnimID == ANIM_DIVE_END)
 	{
-		if(!stricmp(trace->ent->classname, "player"))
+		if(!Q_stricmp(trace->ent->classname, "player"))
 		{
 			if(!irand(0,4))
 				KnockDownPlayer(&trace->ent->client->playerinfo);

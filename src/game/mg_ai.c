@@ -1086,7 +1086,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 						return false;
 					}
 		//			{
-		//				if (stricmp(trace.ent->classname, "worldspawn"))
+		//				if (Q_stricmp(trace.ent->classname, "worldspawn"))
 		//					return;
 		//			}
 					else
@@ -2290,7 +2290,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 //bumped into something
 	if(trace.ent)
 	{
-		if(!stricmp(trace.ent->classname, "worldspawn"))
+		if(!Q_stricmp(trace.ent->classname, "worldspawn"))
 			hitworld = true;
 		else
 			hitworld = false;
@@ -2688,7 +2688,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 //bumped into something
 	if(trace.ent)
 	{
-		if(!stricmp(trace.ent->classname, "worldspawn"))
+		if(!Q_stricmp(trace.ent->classname, "worldspawn"))
 			hitworld = true;
 		else
 			hitworld = false;

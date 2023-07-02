@@ -1413,7 +1413,7 @@ void insect_walk(edict_t *self, G_Message_t *msg)
 	vec3_t	pos1, pos2;
 	float	zdiff;
 
-	if ((other->svflags & SVF_MONSTER) || (!stricmp(other->classname, "player")))
+	if ((other->svflags & SVF_MONSTER) || (!Q_stricmp(other->classname, "player")))
 	{
 		VectorCopy(other->s.origin, pos1);
 		pos1[2] += other->mins[2];

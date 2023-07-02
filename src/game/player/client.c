@@ -1252,7 +1252,7 @@ int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,v
    				PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DROWN);
    				gi.sound(self,CHAN_BODY,gi.soundindex("*drowndeath.wav"),1,ATTN_NORM,0);
    			}
-			else if ( !stricmp(inflictor->classname, "plague_mist"))
+			else if ( !Q_stricmp(inflictor->classname, "plague_mist"))
 			{
    				PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_CHOKE);
 				gi.sound(self,CHAN_BODY,gi.soundindex("*chokedeath.wav"),1,ATTN_NORM,0);

@@ -527,7 +527,7 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 
 	M_StartDeath(self, ANIM_DEATH1);
 
-	if (!stricmp(attacker->classname, "monster_ogle"))
+	if (!Q_stricmp(attacker->classname, "monster_ogle"))
 	{
 		self->health = 1;
 		self->takedamage = DAMAGE_NO;
@@ -610,7 +610,7 @@ void seraph_melee(edict_t *self, G_Message_t *msg)
 		return;
 
 	if(self->enemy)
-		if ( (self->ai_mood_flags & AI_MOOD_FLAG_IGNORE) && (!stricmp(self->enemy->classname, "monster_ogle")) )
+		if ( (self->ai_mood_flags & AI_MOOD_FLAG_IGNORE) && (!Q_stricmp(self->enemy->classname, "monster_ogle")) )
 			return;
 
 	if (M_ValidTarget(self, self->enemy))

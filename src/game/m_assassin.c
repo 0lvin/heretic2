@@ -1357,7 +1357,7 @@ void assassin_pain(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeiii", &inflictor, &attacker, &force_pain, &damage, &temp);
 
-	if(inflictor == attacker || !stricmp(inflictor->classname, "Spell_RedRain")||!stricmp(inflictor->classname, "Spell_Hellbolt"))
+	if(inflictor == attacker || !Q_stricmp(inflictor->classname, "Spell_RedRain")||!Q_stricmp(inflictor->classname, "Spell_Hellbolt"))
 	{//melee hit or contant effect, don't stick around!
 		if(!(self->spawnflags&MSF_ASS_NOTELEPORT)&&
 			!(self->spawnflags&MSF_FIXED)&&
@@ -1845,10 +1845,10 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 
 	if(skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
 	{//Pussies were complaining about assassins teleporting away from certain death, so don't do that unless in hard
-		if(!stricmp(projectile->classname, "Spell_PhoenixArrow") ||
-			!stricmp(projectile->classname, "Spell_FireWall") ||
-			!stricmp(projectile->classname, "Spell_SphereOfAnnihilation") ||
-			!stricmp(projectile->classname, "Spell_Maceball"))
+		if(!Q_stricmp(projectile->classname, "Spell_PhoenixArrow") ||
+			!Q_stricmp(projectile->classname, "Spell_FireWall") ||
+			!Q_stricmp(projectile->classname, "Spell_SphereOfAnnihilation") ||
+			!Q_stricmp(projectile->classname, "Spell_Maceball"))
 		{
 			if(assassinChooseTeleportDestination(self, ASS_TP_OFF, true, true))
 				return;
@@ -2516,7 +2516,7 @@ void assassinCloakThink (edict_t *self)
 			{//easy is 40% chance per second, hard is 60% chance to check per second
 				while(found = findradius(found, self->s.origin, 200 + skill->value * 50))
 				{
-					if(!stricmp(found->classname, "Spell_Maceball"))
+					if(!Q_stricmp(found->classname, "Spell_Maceball"))
 					{
 						if(!self->enemy)
 						{
@@ -2530,10 +2530,10 @@ void assassinCloakThink (edict_t *self)
 							return;
 					}
 
-					if(!stricmp(found->classname, "Spell_RedRain") ||
-						!stricmp(found->classname, "Spell_PhoenixArrow") ||
-						!stricmp(found->classname, "Spell_FireWall") ||
-						!stricmp(found->classname, "Spell_SphereOfAnnihilation"))
+					if(!Q_stricmp(found->classname, "Spell_RedRain") ||
+						!Q_stricmp(found->classname, "Spell_PhoenixArrow") ||
+						!Q_stricmp(found->classname, "Spell_FireWall") ||
+						!Q_stricmp(found->classname, "Spell_SphereOfAnnihilation"))
 					{
 						if(!self->enemy)
 						{

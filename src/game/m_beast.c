@@ -223,7 +223,7 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 			}
 		}
 
-		if(trace->ent && trace->ent->targetname && !stricmp(trace->ent->targetname, "pillar"))
+		if(trace->ent && trace->ent->targetname && !Q_stricmp(trace->ent->targetname, "pillar"))
 			pillar = trace->ent;
 		else
 		{
@@ -238,7 +238,7 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 			tr = gi.trace(start, mins, maxs, end, self, MASK_SOLID);
 			if(tr.fraction<1.0 && tr.ent && tr.ent->targetname)
 			{
-				if(!stricmp(tr.ent->targetname, "pillar"))
+				if(!Q_stricmp(tr.ent->targetname, "pillar"))
 					pillar = tr.ent;
 			}
 		}
@@ -1168,7 +1168,7 @@ qboolean TB_CheckBottom (edict_t *self)
 	end[2] -= 1;
 	trace = gi.trace(self->s.origin, self->mins, self->maxs, end, self, MASK_ALL);
 
-	if(trace.ent && stricmp(trace.ent->classname, "worldspawn"))
+	if(trace.ent && Q_stricmp(trace.ent->classname, "worldspawn"))
 	{
 		if(trace.ent->takedamage)
 		{
@@ -1389,7 +1389,7 @@ void tbeast_throw_toy(edict_t *self)
 		self->targetEnt->movetype = PHYSICSTYPE_STEP;
 	VectorRandomCopy(vec3_origin,self->targetEnt->avelocity,300);
 
-	if(stricmp(self->targetEnt->classname,"player"))
+	if(Q_stricmp(self->targetEnt->classname,"player"))
 		G_QPostMessage(self->targetEnt, MSG_DEATH, PRI_DIRECTIVE, NULL);
 
 	if(self->targetEnt->client)
@@ -1482,7 +1482,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 //			gi.dprintf("Snatch missed by %4.2f!\n", enemy_dist - ok_dist);
 			self->msgHandler = DefaultMsgHandler;
 			/*
-			if(!stricmp(self->enemy->classname,"player"))
+			if(!Q_stricmp(self->enemy->classname,"player"))
 			{
 				if(self->oldenemy)
 				{
@@ -1582,7 +1582,7 @@ void tbeast_gore_toy(edict_t *self, float jumpht)
 			num_chunks = 15;
 		SprayDebris(self->targetEnt, self->targetEnt->s.origin, num_chunks, self->targetEnt->health*4);//self->enemy is thingtype wood?!
 
-		if(stricmp(self->targetEnt->classname,"player"))
+		if(Q_stricmp(self->targetEnt->classname,"player"))
 		{
 			gi.sound(self->targetEnt, CHAN_WEAPON, sounds[SND_CATCH], 1, ATTN_NORM, 0);
 			BecomeDebris(self->targetEnt);
@@ -2043,7 +2043,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 	if(trace->ent->classID == CID_TCHECKRIK)
 		return;//we want to pick up and eat insects
 
-	if(trace->ent  && trace->ent->movetype && trace->ent !=world && stricmp(trace->ent->classname, "worldspawn"))
+	if(trace->ent  && trace->ent->movetype && trace->ent !=world && Q_stricmp(trace->ent->classname, "worldspawn"))
 	{
 		if(trace->ent->client||trace->ent->svflags&SVF_MONSTER)
 		{
@@ -2072,7 +2072,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 		{
 			if(infront(self, trace->ent))
 			{
-				if(trace->ent->targetname && !stricmp(trace->ent->targetname, "pillar"))
+				if(trace->ent->targetname && !Q_stricmp(trace->ent->targetname, "pillar"))
 				{//FIXME: In higher skills, less chance of breaking it?  Or debounce time?
 
 					if(visible_to_client(self))
@@ -2375,7 +2375,7 @@ void tbeast_fake_touch(edict_t *self)
 		if(other==self)
 			continue;
 
-		if(!stricmp(other->classname, "worldspawn"))
+		if(!Q_stricmp(other->classname, "worldspawn"))
 			continue;
 
 		if(other == self->targetEnt)

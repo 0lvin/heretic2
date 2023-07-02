@@ -563,7 +563,7 @@ void trigger_goto_buoy_find_target(edict_t *self)
 
 	for(i = 0; i < level.active_buoys; i++)
 	{
-		if(!stricmp(level.buoy_list[i].targetname, self->pathtarget))
+		if(!Q_stricmp(level.buoy_list[i].targetname, self->pathtarget))
 		{
 			found = true;
 			break;

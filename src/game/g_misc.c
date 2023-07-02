@@ -374,7 +374,7 @@ void SpawnDebris(edict_t *self, float size, vec3_t origin)
 			if(self->materialtype == MAT_INSECT)
 				flags |= CEF_FLAG8;
 
-			if(!stricmp(self->classname, "monster_tcheckrik_male"))
+			if(!Q_stricmp(self->classname, "monster_tcheckrik_male"))
 				flags |= CEF_FLAG7;//use male insect skin on chunks
 
 			gi.CreateEffect(NULL,
@@ -546,7 +546,7 @@ void SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 		if(self->materialtype == MAT_INSECT)
 		{
 			flags |= CEF_FLAG8;
-			if(!stricmp(self->classname, "monster_tcheckrik_male"))
+			if(!Q_stricmp(self->classname, "monster_tcheckrik_male"))
 				flags |= CEF_FLAG7;//use male insect skin on chunks
 		}
 

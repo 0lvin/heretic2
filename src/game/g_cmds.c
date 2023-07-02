@@ -112,7 +112,7 @@ qboolean OnSameTeam (edict_t *ent1, edict_t *ent2)
 		strcpy (ent1Team, ClientSkinTeam (ent1));
 		strcpy (ent2Team, ClientSkinTeam (ent2));
 
-		if (stricmp(ent1Team, ent2Team) == 0)
+		if (Q_stricmp(ent1Team, ent2Team) == 0)
 			return true;
 	}
 	else
@@ -120,7 +120,7 @@ qboolean OnSameTeam (edict_t *ent1, edict_t *ent2)
 		strcpy (ent1Team, ClientModelTeam (ent1));
 		strcpy (ent2Team, ClientModelTeam (ent2));
 
-		if (stricmp(ent1Team, ent2Team) == 0)
+		if (Q_stricmp(ent1Team, ent2Team) == 0)
 			return true;
 	}
 

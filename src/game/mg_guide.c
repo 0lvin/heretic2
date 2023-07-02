@@ -2117,7 +2117,7 @@ void MG_BuoyNavigate(edict_t *self)
 			for(i = 0; i <= level.active_buoys; i++)
 			{
 				found_buoy = &level.buoy_list[i];
-				if(found_buoy->targetname && !stricmp(found_buoy->targetname, self->homebuoy))
+				if(found_buoy->targetname && !Q_stricmp(found_buoy->targetname, self->homebuoy))
 				{
 					found = true;
 					break;
@@ -2315,7 +2315,7 @@ void MG_GenericMoodSet(edict_t *self)
 				for(i = 0; i <= level.active_buoys; i++)
 				{
 					found_buoy = &level.buoy_list[i];
-					if(found_buoy->targetname && !stricmp(found_buoy->targetname, self->homebuoy))
+					if(found_buoy->targetname && !Q_stricmp(found_buoy->targetname, self->homebuoy))
 					{
 						found = true;
 						break;

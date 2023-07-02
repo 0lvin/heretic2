@@ -551,7 +551,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 //		gi.dprintf("Biting: ");
 		chance = flrand(0, 1);
 
-		if(!stricmp(self->enemy->classname,"monster_rat"))
+		if(!Q_stricmp(self->enemy->classname,"monster_rat"))
 		{
 			if(self->enemy->s.origin[2] > self->s.origin[2])
 			{
@@ -1589,12 +1589,12 @@ void gorgon_throw_toy(edict_t *self)
 		self->enemy->movetype = PHYSICSTYPE_STEP;
 	VectorRandomCopy(vec3_origin,self->enemy->avelocity,300);
 
-	if(stricmp(self->enemy->classname,"player"))
+	if(Q_stricmp(self->enemy->classname,"player"))
 		G_QPostMessage(self->enemy, MSG_DEATH, PRI_DIRECTIVE, NULL);
 
 	//FIXME: What if I miss?  Set the monster's touch to
 	//	something that restores it's angles and normal thinking (AI_FLEE)
-/*	if(!stricmp(self->enemy->classname,"player"))
+/*	if(!Q_stricmp(self->enemy->classname,"player"))
 	{
 		PlayerAnimSetUpperSeq(self->enemy, 92);
 		PlayerAnimSetLowerSeq(&self->enemy->client->playerinfo, 92);
@@ -1682,7 +1682,7 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	{
 //		gi.dprintf("Snatch missed (%4.2f)\n", enemy_dist);
 		self->msgHandler = DefaultMsgHandler;
-		if(!stricmp(self->enemy->classname,"player"))
+		if(!Q_stricmp(self->enemy->classname,"player"))
 			if(self->oldenemy)
 				if(self->oldenemy->health>0)
 				{
@@ -1702,7 +1702,7 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	if(self->enemy->movetype>NUM_PHYSICSTYPES)
 		self->enemy->movetype = PHYSICSTYPE_FLY;
 
-	if(stricmp(self->enemy->classname,"player"))
+	if(Q_stricmp(self->enemy->classname,"player"))
 	{
 		self->enemy->monsterinfo.aiflags |= AI_DONT_THINK;
 		self->enemy->count = irand(1,5);
@@ -1759,7 +1759,7 @@ void gorgon_gore_toy(edict_t *self, float jumpht)
 			num_chunks = 15;
 		SprayDebris(self->enemy, self->enemy->s.origin, num_chunks, self->enemy->health*4);//self->enemy is thingtype wood?!
 
-		if(stricmp(self->enemy->classname,"player"))
+		if(Q_stricmp(self->enemy->classname,"player"))
 		{
 			gi.sound(self->enemy, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 			BecomeDebris(self->enemy);

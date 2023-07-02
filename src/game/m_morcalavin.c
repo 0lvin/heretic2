@@ -636,7 +636,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 	if (trace->ent == self->owner)
 		return;
 
-	if (!stricmp(trace->ent->classname, "Morcalavin_Missile"))
+	if (!Q_stricmp(trace->ent->classname, "Morcalavin_Missile"))
 		return;
 
 	//Reflection stuff

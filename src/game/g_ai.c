@@ -300,7 +300,7 @@ int ai_hopdown(edict_t *self, vec3_t goalpos, float height_max)
 
 		if (trace.fraction == 1)
 		{
-			if (stricmp(trace.ent->classname, "worldspawn"))
+			if (Q_stricmp(trace.ent->classname, "worldspawn"))
 				return false;
 		}
 		else
@@ -1761,7 +1761,7 @@ qboolean ai_inpack(edict_t *self)
 		if (ent == self)
 			continue;
 
-		if (stricmp(ent->classname, self->classname))
+		if (Q_stricmp(ent->classname, self->classname))
 			continue;
 
 		return true;
@@ -2049,7 +2049,7 @@ void old_ai_run (edict_t *self, float dist)
 		}
 		else if(self->monsterinfo.otherenemyname)
 		{
-			if(!stricmp(trace.ent->classname, self->monsterinfo.otherenemyname))//&&irand(0,10)<3)
+			if(!Q_stricmp(trace.ent->classname, self->monsterinfo.otherenemyname))//&&irand(0,10)<3)
 			{
 				G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 				return;

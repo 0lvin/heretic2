@@ -75,7 +75,7 @@ void elflord_projectile_blocked( edict_t *self, trace_t *trace )
 {
 	vec3_t vel;
 
-	if ( (!stricmp(trace->ent->classname, "elflord_projectile")) || (trace->ent == self->owner) )
+	if ( (!Q_stricmp(trace->ent->classname, "elflord_projectile")) || (trace->ent == self->owner) )
 		return;
 
 	VectorNormalize2(self->velocity, vel);

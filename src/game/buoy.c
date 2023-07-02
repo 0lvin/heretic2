@@ -195,7 +195,7 @@ void info_buoy_link(edict_t *self)
 	//Also check for a secondary target
 	if (self->target2)
 	{
-		if ( (self->target) && (!stricmp(self->target2, self->target)) )
+		if ( (self->target) && (!Q_stricmp(self->target2, self->target)) )
 		{
 			if (BUOY_DEBUG)
 			{

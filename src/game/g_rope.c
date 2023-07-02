@@ -124,7 +124,7 @@ qboolean UsedRightAttack(int instruction, edict_t *attacker, edict_t *projectile
 			break;
 
 		case NATE_INSTRUCTION_FIREBALL:
-			if(!stricmp(projectile->classname, "Spell_FlyingFist"))
+			if(!Q_stricmp(projectile->classname, "Spell_FlyingFist"))
 				return (true);
 			break;
 	}
@@ -286,7 +286,7 @@ void rope_end_think2( edict_t *self )
 
 		if ((trace.fraction < 1 || trace.startsolid || trace.allsolid) && trace.ent != self)
 		{
-			if ( (trace.ent) && (stricmp(trace.ent->classname, "worldspawn")) )
+			if ( (trace.ent) && (Q_stricmp(trace.ent->classname, "worldspawn")) )
 			{
 				VectorScale(grab->velocity, -0.5, grab->velocity);
 			}
@@ -488,7 +488,7 @@ void rope_sway(edict_t *self)
 
 void rope_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	if ( !stricmp(other->classname, "player") )
+	if ( !Q_stricmp(other->classname, "player") )
 	{
 		//If the player is already on a rope, forget him as a valid grabber
 		if ( (other->targetEnt) && (other->client->playerinfo.flags & PLAYER_FLAG_ONROPE) )
