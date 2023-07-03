@@ -277,9 +277,7 @@ CL_PredictMovement(void)
 	memset (&pm, 0, sizeof(pm));
 	pm.trace = CL_PMTrace;
 	pm.pointcontents = CL_PMpointcontents;
-
 	//pm_airaccelerate = atof(cl.configstrings[CS_AIRACCEL]);
-
 	pm.s = cl.frame.playerstate.pmove;
 	pm.viewheight = cl.frame.playerstate.viewheight;
 	VectorCopy(cl.frame.playerstate.mins, pm.mins);
@@ -288,13 +286,19 @@ CL_PredictMovement(void)
 	frame = 0;
 
 	/* run frames */
-	while (++ack < current)
+	while (++ack <= current)
 	{
 		frame = ack & (CMD_BACKUP - 1);
 		cmd = &cl.cmds[frame];
 
+		// Ignore null entries
+		if (!cmd->msec)
+		{
+			continue;
+		}
+
 		pm.cmd = *cmd;
-		Pmove (&pm, false);
+		Pmove(&pm, false);
 
 		if (pm.waterlevel > 2)
 		{
@@ -305,11 +309,8 @@ CL_PredictMovement(void)
 			cl.frame.playerstate.rdflags &= RDF_UNDERWATER;
 		}
 
-		// save for debug checking
-		//VectorCopy (pm.s.origin, cl.predicted_origins[frame]);
-		cl.predicted_origins[frame][0] = pm.s.origin[0];
-		cl.predicted_origins[frame][1] = pm.s.origin[1];
-		cl.predicted_origins[frame][2] = pm.s.origin[2];
+		/* save for debug checking */
+		VectorCopy(pm.s.origin, cl.predicted_origins[frame]);
 	}
 
 	oldframe = (ack-2) & (CMD_BACKUP-1);
@@ -318,7 +319,7 @@ CL_PredictMovement(void)
 	if (step > 63 && step < 160 && (pm.s.pm_flags & PMF_ON_GROUND) )
 	{
 		cl.predicted_step = step * 0.125f;
-		cl.predicted_step_time = cls.realtime - cls.rframetime * 500;
+		cl.predicted_step_time = cls.realtime - (int)(cls.nframetime * 500);
 	}
 
 	/* copy results out for rendering */

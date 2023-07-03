@@ -426,12 +426,12 @@ CL_AdjustAngles(void)
 
 	if (in_speed.state & 1)
 	{
-		speed = cls.rframetime * cl_anglespeedkey->value;
+		speed = cls.nframetime * cl_anglespeedkey->value;
 	}
 
 	else
 	{
-		speed = cls.rframetime;
+		speed = cls.nframetime;
 	}
 
 	if (!(in_strafe.state & 1))
@@ -552,7 +552,8 @@ CL_FinishMove(usercmd_t *cmd)
 	}
 
 	/* send milliseconds of time to apply the move */
-	ms = cls.rframetime * 1000;
+	ms = cls.nframetime * 1000;
+
 	if (ms > 250)
 	{
 		ms = 100; /* time was unreasonable */
@@ -884,3 +885,4 @@ CL_SendCmd(void)
 	cmd = &cl.cmds[cls.netchan.outgoing_sequence & (CMD_BACKUP - 1)];
 	memset(cmd, 0, sizeof(*cmd));
 }
+
