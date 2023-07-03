@@ -374,436 +374,1109 @@ else
 Q := @
 endif
 
-BUILD_DEBUG_DIR=build
+# ----------
 
-DEBUG_CFLAGS= -O0 -g -Wall -pipe -fsanitize=address -fsanitize=undefined -fstack-protector-all
-# -flto=auto
-LDFLAGS=-ldl -lm
+# Phony targets
+.PHONY : all client icon ref_gl1
 
-SHLIBEXT=so
+# ----------
 
-SHLIBCFLAGS=-fPIC
-SHLIBLDFLAGS=-shared
+# Builds everything
+all: config client ref_gl1
 
-DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
-DO_SHLIB_CXX=$(CXX) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
-DO_GL_SHLIB_CC=$(CC) $(CFLAGS) $(GLCFLAGS) -o $@ -c $<
+# ----------
 
-#############################################################################
-# SETUP AND BUILD
-#############################################################################
+# Print config values
+config:
+	@echo "Build configuration"
+	@echo "============================"
+	@echo "YQ2_ARCH = $(YQ2_ARCH) COMPILER = $(COMPILER)"
+	@echo "WITH_CURL = $(WITH_CURL)"
+	@echo "WITH_OPENAL = $(WITH_OPENAL)"
+	@echo "WITH_RPATH = $(WITH_RPATH)"
+	@echo "WITH_SYSTEMWIDE = $(WITH_SYSTEMWIDE)"
+	@echo "WITH_SYSTEMDIR = $(WITH_SYSTEMDIR)"
+	@echo "============================"
+	@echo ""
 
-TARGETS= \
-	$(BUILDDIR)/heretic2 \
-	$(BUILDDIR)/ref_gl1.$(SHLIBEXT)
+# ----------
 
-all:
-	$(MAKE) targets BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
+# Special target to compile the icon on Windows
+ifeq ($(YQ2_OSTYPE), Windows)
+icon:
+	@echo "===> WR build/icon/icon.res"
+	${Q}mkdir -p build/icon
+	${Q}windres src/backends/windows/icon.rc -O COFF -o build/icon/icon.res
+endif
 
-targets: $(TARGETS)
+# ----------
 
-HEADERS = \
-	src/common/header/shared.h
-
-#############################################################################
-# COMPILE
-#############################################################################
-
-$(BUILDDIR)/%.o :                 %.cpp ${HEADERS}
-	@echo "===> CXX $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(DO_SHLIB_CXX)
-
-$(BUILDDIR)/%.o :                 %.c ${HEADERS}
-	@echo "===> CC $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(DO_CC)
-
-#############################################################################
-# CLIENT/SERVER
-#############################################################################
-
-HERETIC2_OBJS = \
-	$(BUILDDIR)/h2common/arrayed_list.o \
-	$(BUILDDIR)/h2common/h2matrix.o \
-	$(BUILDDIR)/h2common/h2physics.o \
-	$(BUILDDIR)/h2common/h2rand.o \
-	$(BUILDDIR)/h2common/h2singlylinkedlist.o \
-	$(BUILDDIR)/h2common/h2surfaces.o \
-	$(BUILDDIR)/h2common/h2vector.o \
-	$(BUILDDIR)/h2common/message.o \
-	$(BUILDDIR)/h2common/netmsg_read.o \
-	$(BUILDDIR)/h2common/reference.o \
-	$(BUILDDIR)/h2common/resource_manager.o \
-	$(BUILDDIR)/h2common/skeletons.o \
-	$(BUILDDIR)/src/backends/generic/misc.o \
-	$(BUILDDIR)/src/backends/unix/main.o \
-	$(BUILDDIR)/src/backends/unix/network.o \
-	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
-	$(BUILDDIR)/src/backends/unix/signalhandler.o \
-	$(BUILDDIR)/src/backends/unix/system.o \
-	$(BUILDDIR)/src/client/cl_cin.o \
-	$(BUILDDIR)/src/client/cl_console.o \
-	$(BUILDDIR)/src/client/cl_download.o \
-	$(BUILDDIR)/src/client/cl_effects.o \
-	$(BUILDDIR)/src/client/cl_entities.o \
-	$(BUILDDIR)/src/client/cl_input.o \
-	$(BUILDDIR)/src/client/cl_inventory.o \
-	$(BUILDDIR)/src/client/cl_keyboard.o \
-	$(BUILDDIR)/src/client/cl_library.o \
-	$(BUILDDIR)/src/client/cl_lights.o \
-	$(BUILDDIR)/src/client/cl_main.o \
-	$(BUILDDIR)/src/client/cl_network.o \
-	$(BUILDDIR)/src/client/cl_parse.o \
-	$(BUILDDIR)/src/client/cl_particles.o \
-	$(BUILDDIR)/src/client/cl_prediction.o \
-	$(BUILDDIR)/src/client/cl_screen.o \
-	$(BUILDDIR)/src/client/cl_string.o \
-	$(BUILDDIR)/src/client/cl_tempentities.o \
-	$(BUILDDIR)/src/client/cl_view.o \
-	$(BUILDDIR)/src/client_effects/ambient_effects.o \
-	$(BUILDDIR)/src/client_effects/ce_default_message_handler.o \
-	$(BUILDDIR)/src/client_effects/ce_dlight.o \
-	$(BUILDDIR)/src/client_effects/ce_message.o \
-	$(BUILDDIR)/src/client_effects/client_effects.o \
-	$(BUILDDIR)/src/client_effects/client_entities.o \
-	$(BUILDDIR)/src/client_effects/font1.o \
-	$(BUILDDIR)/src/client_effects/font2.o \
-	$(BUILDDIR)/src/client_effects/fx_ammo_pickup.o \
-	$(BUILDDIR)/src/client_effects/fx_animate.o \
-	$(BUILDDIR)/src/client_effects/fx_assassin.o \
-	$(BUILDDIR)/src/client_effects/fx_blood.o \
-	$(BUILDDIR)/src/client_effects/fx_blue_ring.o \
-	$(BUILDDIR)/src/client_effects/fx_bubbler.o \
-	$(BUILDDIR)/src/client_effects/fx_crosshair.o \
-	$(BUILDDIR)/src/client_effects/fx_cwatcher.o \
-	$(BUILDDIR)/src/client_effects/fx_debris.o \
-	$(BUILDDIR)/src/client_effects/fx_defense_pickup.o \
-	$(BUILDDIR)/src/client_effects/fx_dripper.o \
-	$(BUILDDIR)/src/client_effects/fx_dust.o \
-	$(BUILDDIR)/src/client_effects/fx_dustpuff.o \
-	$(BUILDDIR)/src/client_effects/fx_firehands.o \
-	$(BUILDDIR)/src/client_effects/fx_fire.o \
-	$(BUILDDIR)/src/client_effects/fx_flamethrow.o \
-	$(BUILDDIR)/src/client_effects/fx_flyingfist.o \
-	$(BUILDDIR)/src/client_effects/fx_fountain.o \
-	$(BUILDDIR)/src/client_effects/fx_halo.o \
-	$(BUILDDIR)/src/client_effects/fx_health_pickup.o \
-	$(BUILDDIR)/src/client_effects/fx_hell_staff.o \
-	$(BUILDDIR)/src/client_effects/fx_hitpuff.o \
-	$(BUILDDIR)/src/client_effects/fx_hpproj.o \
-	$(BUILDDIR)/src/client_effects/fx_insectstaff.o \
-	$(BUILDDIR)/src/client_effects/fx_lensflare.o \
-	$(BUILDDIR)/src/client_effects/fx_lightning.o \
-	$(BUILDDIR)/src/client_effects/fx_maceball.o \
-	$(BUILDDIR)/src/client_effects/fx_magicmissile.o \
-	$(BUILDDIR)/src/client_effects/fx_meteorbarrier.o \
-	$(BUILDDIR)/src/client_effects/fx_mist.o \
-	$(BUILDDIR)/src/client_effects/fx_mork.o \
-	$(BUILDDIR)/src/client_effects/fx_morph.o \
-	$(BUILDDIR)/src/client_effects/fx_objects.o \
-	$(BUILDDIR)/src/client_effects/fx_pespell.o \
-	$(BUILDDIR)/src/client_effects/fx_phoenix.o \
-	$(BUILDDIR)/src/client_effects/fx_pickup.o \
-	$(BUILDDIR)/src/client_effects/fx_pickuppuzzle.o \
-	$(BUILDDIR)/src/client_effects/fx_plaguemistexplode.o \
-	$(BUILDDIR)/src/client_effects/fx_plaguemist.o \
-	$(BUILDDIR)/src/client_effects/fx_portal.o \
-	$(BUILDDIR)/src/client_effects/fx_quake.o \
-	$(BUILDDIR)/src/client_effects/fx_redrainglow.o \
-	$(BUILDDIR)/src/client_effects/fx_redrain.o \
-	$(BUILDDIR)/src/client_effects/fx_remotecamera.o \
-	$(BUILDDIR)/src/client_effects/fx_ripples.o \
-	$(BUILDDIR)/src/client_effects/fx_rope.o \
-	$(BUILDDIR)/src/client_effects/fx_scorchmark.o \
-	$(BUILDDIR)/src/client_effects/fx_shadow.o \
-	$(BUILDDIR)/src/client_effects/fx_shield.o \
-	$(BUILDDIR)/src/client_effects/fx_shrine.o \
-	$(BUILDDIR)/src/client_effects/fx_smoke.o \
-	$(BUILDDIR)/src/client_effects/fx_sound.o \
-	$(BUILDDIR)/src/client_effects/fx_sparks.o \
-	$(BUILDDIR)/src/client_effects/fx_spellchange.o \
-	$(BUILDDIR)/src/client_effects/fx_spellhands.o \
-	$(BUILDDIR)/src/client_effects/fx_sphereofannihlation.o \
-	$(BUILDDIR)/src/client_effects/fx_spoo.o \
-	$(BUILDDIR)/src/client_effects/fx_ssarrow.o \
-	$(BUILDDIR)/src/client_effects/fx_ssithra.o \
-	$(BUILDDIR)/src/client_effects/fx_staff.o \
-	$(BUILDDIR)/src/client_effects/fx_tbeast.o \
-	$(BUILDDIR)/src/client_effects/fx_teleport.o \
-	$(BUILDDIR)/src/client_effects/fx_tome.o \
-	$(BUILDDIR)/src/client_effects/fx_tornado.o \
-	$(BUILDDIR)/src/client_effects/fx_wall.o \
-	$(BUILDDIR)/src/client_effects/fx_waterentrysplash.o \
-	$(BUILDDIR)/src/client_effects/fx_waterwake.o \
-	$(BUILDDIR)/src/client_effects/fx_weaponpickup.o \
-	$(BUILDDIR)/src/client_effects/generic_character_effects.o \
-	$(BUILDDIR)/src/client_effects/generic_weapon_effects.o \
-	$(BUILDDIR)/src/client_effects/item_effects.o \
-	$(BUILDDIR)/src/client_effects/level_maps.o \
-	$(BUILDDIR)/src/client_effects/main.o \
-	$(BUILDDIR)/src/client_effects/motion.o \
-	$(BUILDDIR)/src/client_effects/particle.o \
-	$(BUILDDIR)/src/client_effects/player_effects.o \
-	$(BUILDDIR)/src/client_effects/test_effect.o \
-	$(BUILDDIR)/src/client_effects/utilities.o \
-	$(BUILDDIR)/src/client/input/sdl.o \
-	$(BUILDDIR)/src/client/libsmacker/smacker.o \
-	$(BUILDDIR)/src/client/menu/menu.o \
-	$(BUILDDIR)/src/client/menu/qmenu.o \
-	$(BUILDDIR)/src/client/menu/videomenu.o \
-	$(BUILDDIR)/src/client/sound/ogg.o \
-	$(BUILDDIR)/src/client/sound/openal.o \
-	$(BUILDDIR)/src/client/sound/qal.o \
-	$(BUILDDIR)/src/client/sound/sdl.o \
-	$(BUILDDIR)/src/client/sound/sound.o \
-	$(BUILDDIR)/src/client/sound/wave.o \
-	$(BUILDDIR)/src/client/vid/glimp_sdl.o \
-	$(BUILDDIR)/src/client/vid/vid.o \
-	$(BUILDDIR)/src/common/argproc.o \
-	$(BUILDDIR)/src/common/clientserver.o \
-	$(BUILDDIR)/src/common/cmdparser.o \
-	$(BUILDDIR)/src/common/collision.o \
-	$(BUILDDIR)/src/common/crc.o \
-	$(BUILDDIR)/src/common/cvar.o \
-	$(BUILDDIR)/src/common/filesystem.o \
-	$(BUILDDIR)/src/common/frame.o \
-	$(BUILDDIR)/src/common/glob.o \
-	$(BUILDDIR)/src/common/md4.o \
-	$(BUILDDIR)/src/common/movemsg.o \
-	$(BUILDDIR)/src/common/netchan.o \
-	$(BUILDDIR)/src/common/pmove.o \
-	$(BUILDDIR)/src/common/shared/flash.o \
-	$(BUILDDIR)/src/common/shared/rand.o \
-	$(BUILDDIR)/src/common/shared/shared.o \
-	$(BUILDDIR)/src/common/szone.o \
-	$(BUILDDIR)/src/common/unzip/ioapi.o \
-	$(BUILDDIR)/src/common/unzip/miniz.o \
-	$(BUILDDIR)/src/common/unzip/unzip.o \
-	$(BUILDDIR)/src/common/zone.o \
-	$(BUILDDIR)/src/game/buoy.o \
-	$(BUILDDIR)/src/game/c_ai.o \
-	$(BUILDDIR)/src/game/c_corvus1_anim.o \
-	$(BUILDDIR)/src/game/c_corvus1.o \
-	$(BUILDDIR)/src/game/c_corvus2_anim.o \
-	$(BUILDDIR)/src/game/c_corvus2.o \
-	$(BUILDDIR)/src/game/c_corvus3_anim.o \
-	$(BUILDDIR)/src/game/c_corvus3.o \
-	$(BUILDDIR)/src/game/c_corvus4_anim.o \
-	$(BUILDDIR)/src/game/c_corvus4.o \
-	$(BUILDDIR)/src/game/c_corvus5_anim.o \
-	$(BUILDDIR)/src/game/c_corvus5.o \
-	$(BUILDDIR)/src/game/c_corvus6_anim.o \
-	$(BUILDDIR)/src/game/c_corvus6.o \
-	$(BUILDDIR)/src/game/c_corvus7_anim.o \
-	$(BUILDDIR)/src/game/c_corvus7.o \
-	$(BUILDDIR)/src/game/c_corvus8_anim.o \
-	$(BUILDDIR)/src/game/c_corvus8.o \
-	$(BUILDDIR)/src/game/c_corvus9_anim.o \
-	$(BUILDDIR)/src/game/c_corvus9.o \
-	$(BUILDDIR)/src/game/c_dranor_anim.o \
-	$(BUILDDIR)/src/game/c_dranor.o \
-	$(BUILDDIR)/src/game/c_elflord_anim.o \
-	$(BUILDDIR)/src/game/c_elflord.o \
-	$(BUILDDIR)/src/game/c_morcalavin_anim.o \
-	$(BUILDDIR)/src/game/c_morcalavin.o \
-	$(BUILDDIR)/src/game/c_priestess2_anim.o \
-	$(BUILDDIR)/src/game/c_priestess2.o \
-	$(BUILDDIR)/src/game/c_priestess_anim.o \
-	$(BUILDDIR)/src/game/c_priestess.o \
-	$(BUILDDIR)/src/game/c_siernan1_anim.o \
-	$(BUILDDIR)/src/game/c_siernan1.o \
-	$(BUILDDIR)/src/game/c_siernan2_anim.o \
-	$(BUILDDIR)/src/game/c_siernan2.o \
-	$(BUILDDIR)/src/game/c_ssithrascout_anim.o \
-	$(BUILDDIR)/src/game/c_ssithrascout.o \
-	$(BUILDDIR)/src/game/c_tome_anim.o \
-	$(BUILDDIR)/src/game/c_tome.o \
-	$(BUILDDIR)/src/game/c_victimssithra_anim.o \
-	$(BUILDDIR)/src/game/c_victimssithra.o \
-	$(BUILDDIR)/src/game/decals.o \
-	$(BUILDDIR)/src/game/ds.o \
-	$(BUILDDIR)/src/game/g_ai.o \
-	$(BUILDDIR)/src/game/game_utilities.o \
-	$(BUILDDIR)/src/game/g_breakable.o \
-	$(BUILDDIR)/src/game/g_classstatics.o \
-	$(BUILDDIR)/src/game/g_cmds.o \
-	$(BUILDDIR)/src/game/g_combat.o \
-	$(BUILDDIR)/src/game/g_defaultmessagehandler.o \
-	$(BUILDDIR)/src/game/g_env.o \
-	$(BUILDDIR)/src/game/g_field.o \
-	$(BUILDDIR)/src/game/g_flamethrow.o \
-	$(BUILDDIR)/src/game/g_func.o \
-	$(BUILDDIR)/src/game/g_hitlocation.o \
-	$(BUILDDIR)/src/game/g_items.o \
-	$(BUILDDIR)/src/game/g_light.o \
-	$(BUILDDIR)/src/game/g_main.o \
-	$(BUILDDIR)/src/game/g_message.o \
-	$(BUILDDIR)/src/game/g_misc.o \
-	$(BUILDDIR)/src/game/g_monster.o \
-	$(BUILDDIR)/src/game/g_moveinfo.o \
-	$(BUILDDIR)/src/game/g_obj.o \
-	$(BUILDDIR)/src/game/g_physics.o \
-	$(BUILDDIR)/src/game/g_phys.o \
-	$(BUILDDIR)/src/game/g_resourcemanagers.o \
-	$(BUILDDIR)/src/game/g_rope.o \
-	$(BUILDDIR)/src/game/g_save.o \
-	$(BUILDDIR)/src/game/g_shrine.o \
-	$(BUILDDIR)/src/game/g_skeletons.o \
-	$(BUILDDIR)/src/game/g_spawnf.o \
-	$(BUILDDIR)/src/game/g_spawn.o \
-	$(BUILDDIR)/src/game/g_stateinfo.o \
-	$(BUILDDIR)/src/game/g_svcmds.o \
-	$(BUILDDIR)/src/game/g_target.o \
-	$(BUILDDIR)/src/game/g_trigger.o \
-	$(BUILDDIR)/src/game/g_utils.o \
-	$(BUILDDIR)/src/game/g_waterfx.o \
-	$(BUILDDIR)/src/game/g_weapon.o \
-	$(BUILDDIR)/src/game/m_assassin_anim.o \
-	$(BUILDDIR)/src/game/m_assassin.o \
-	$(BUILDDIR)/src/game/m_beast_anim.o \
-	$(BUILDDIR)/src/game/m_beast.o \
-	$(BUILDDIR)/src/game/m_bee.o \
-	$(BUILDDIR)/src/game/m_chicken_anim.o \
-	$(BUILDDIR)/src/game/m_chicken.o \
-	$(BUILDDIR)/src/game/m_elflord_anims.o \
-	$(BUILDDIR)/src/game/m_elflord.o \
-	$(BUILDDIR)/src/game/m_fish_anim.o \
-	$(BUILDDIR)/src/game/m_fish.o \
-	$(BUILDDIR)/src/game/m_fmtest.o \
-	$(BUILDDIR)/src/game/mg_ai.o \
-	$(BUILDDIR)/src/game/mg_guide.o \
-	$(BUILDDIR)/src/game/m_gkrokon_anim.o \
-	$(BUILDDIR)/src/game/m_gkrokon.o \
-	$(BUILDDIR)/src/game/m_gorgon_anim.o \
-	$(BUILDDIR)/src/game/m_gorgon.o \
-	$(BUILDDIR)/src/game/m_harpy_anim.o \
-	$(BUILDDIR)/src/game/m_harpy.o \
-	$(BUILDDIR)/src/game/m_imp_anim.o \
-	$(BUILDDIR)/src/game/m_imp.o \
-	$(BUILDDIR)/src/game/m_morcalavin_anim.o \
-	$(BUILDDIR)/src/game/m_morcalavin.o \
-	$(BUILDDIR)/src/game/m_mother_anim.o \
-	$(BUILDDIR)/src/game/m_mother.o \
-	$(BUILDDIR)/src/game/m_move.o \
-	$(BUILDDIR)/src/game/m_mssithra_anim.o \
-	$(BUILDDIR)/src/game/m_mssithra.o \
-	$(BUILDDIR)/src/game/m_ogle_anim.o \
-	$(BUILDDIR)/src/game/m_ogle.o \
-	$(BUILDDIR)/src/game/m_plagueelf_anim.o \
-	$(BUILDDIR)/src/game/m_plagueelf.o \
-	$(BUILDDIR)/src/game/m_plaguessithra_anim.o \
-	$(BUILDDIR)/src/game/m_plaguessithra.o \
-	$(BUILDDIR)/src/game/m_priestess_anim.o \
-	$(BUILDDIR)/src/game/m_priestess.o \
-	$(BUILDDIR)/src/game/m_rat_anim.o \
-	$(BUILDDIR)/src/game/m_rat.o \
-	$(BUILDDIR)/src/game/m_seraph_anim.o \
-	$(BUILDDIR)/src/game/m_seraph_guard_anim.o \
-	$(BUILDDIR)/src/game/m_seraph_guard.o \
-	$(BUILDDIR)/src/game/m_seraph.o \
-	$(BUILDDIR)/src/game/m_spreader_anim.o \
-	$(BUILDDIR)/src/game/m_spreadermist.o \
-	$(BUILDDIR)/src/game/m_spreader.o \
-	$(BUILDDIR)/src/game/m_stats.o \
-	$(BUILDDIR)/src/game/m_tcheckrik_anim.o \
-	$(BUILDDIR)/src/game/m_tcheckrik.o \
-	$(BUILDDIR)/src/game/m_tcheckrik_spells.o \
-	$(BUILDDIR)/src/game/player/client.o \
-	$(BUILDDIR)/src/game/player/funcs.o \
-	$(BUILDDIR)/src/game/player/hud.o \
-	$(BUILDDIR)/src/game/player/item.o \
-	$(BUILDDIR)/src/game/player/view.o \
-	$(BUILDDIR)/src/game/spl_blast.o \
-	$(BUILDDIR)/src/game/spl_bluering.o \
-	$(BUILDDIR)/src/game/spl_flyingfist.o \
-	$(BUILDDIR)/src/game/spl_hellstaff.o \
-	$(BUILDDIR)/src/game/spl_maceballs.o \
-	$(BUILDDIR)/src/game/spl_magicmissile.o \
-	$(BUILDDIR)/src/game/spl_meteorbarrier.o \
-	$(BUILDDIR)/src/game/spl_morph.o \
-	$(BUILDDIR)/src/game/spl_phoenix.o \
-	$(BUILDDIR)/src/game/spl_powerup.o \
-	$(BUILDDIR)/src/game/spl_redrain.o \
-	$(BUILDDIR)/src/game/spl_ripper.o \
-	$(BUILDDIR)/src/game/spl_shield.o \
-	$(BUILDDIR)/src/game/spl_sphereofannihlation.o \
-	$(BUILDDIR)/src/game/spl_teleport.o \
-	$(BUILDDIR)/src/game/spl_tornado.o \
-	$(BUILDDIR)/src/game/spl_wall.o \
-	$(BUILDDIR)/src/player/p_actions.o \
-	$(BUILDDIR)/src/player/p_animactor.o \
-	$(BUILDDIR)/src/player/p_anim_branch.o \
-	$(BUILDDIR)/src/player/p_anim_data.o \
-	$(BUILDDIR)/src/player/p_anims.o \
-	$(BUILDDIR)/src/player/p_chicken_anim.o \
-	$(BUILDDIR)/src/player/p_chicken.o \
-	$(BUILDDIR)/src/player/p_ctrl.o \
-	$(BUILDDIR)/src/player/p_items.o \
-	$(BUILDDIR)/src/player/player_main.o \
-	$(BUILDDIR)/src/player/p_library.o \
-	$(BUILDDIR)/src/player/p_main.o \
-	$(BUILDDIR)/src/player/p_weapon.o \
-	$(BUILDDIR)/src/server/sv_cmd.o \
-	$(BUILDDIR)/src/server/sv_conless.o \
-	$(BUILDDIR)/src/server/sv_entities.o \
-	$(BUILDDIR)/src/server/sv_game.o \
-	$(BUILDDIR)/src/server/sv_init.o \
-	$(BUILDDIR)/src/server/sv_main.o \
-	$(BUILDDIR)/src/server/sv_save.o \
-	$(BUILDDIR)/src/server/sv_send.o \
-	$(BUILDDIR)/src/server/sv_user.o \
-	$(BUILDDIR)/src/server/sv_world.o
-
-$(BUILDDIR)/heretic2 : $(HERETIC2_OBJS) ${HEADERS}
-	@echo "===> CXX $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CXX) $(CFLAGS) -o $@ $(HERETIC2_OBJS) $(LDFLAGS) $(SDLCFLAGS) $(SDLLDFLAGS)
-
-#############################################################################
-# REF_GL
-#############################################################################
-
-REF_GL_OBJS = \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_draw.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_image.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_light.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_mesh.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_model.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_main.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_misc.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_surf.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_sdl.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_scrap.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_lightmap.o \
-	$(BUILDDIR)/src/client/refresh/gl1/gl1_warp.o \
-	$(BUILDDIR)/src/client/refresh/gl1/qgl.o \
-	$(BUILDDIR)/src/client/refresh/files/models.o \
-	$(BUILDDIR)/src/client/refresh/files/pcx.o \
-	$(BUILDDIR)/src/client/refresh/files/pvs.o \
-	$(BUILDDIR)/src/client/refresh/files/stb.o \
-	$(BUILDDIR)/src/client/refresh/files/surf.o \
-	$(BUILDDIR)/src/client/refresh/files/wal.o \
-	$(BUILDDIR)/src/common/shared/rand.o \
-	$(BUILDDIR)/src/common/shared/shared.o \
-	$(BUILDDIR)/src/backends/unix/shared/hunk.o \
-	$(BUILDDIR)/src/common/glob.o
-
-$(BUILDDIR)/ref_gl1.$(SHLIBEXT) : $(REF_GL_OBJS) ${HEADERS}
-	@echo "===> CC $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(REF_GL_OBJS) $(SDLCFLAGS)
-
-##########################################################################
-# MISC
-#############################################################################
-
+# Cleanup
 clean:
-	$(MAKE) clean2 BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
+	@echo "===> CLEAN"
+	${Q}rm -Rf build release/*
 
-clean2:
-	-rm -f \
-	$(HERETIC2_OBJS) \
-	$(REF_SOFT_OBJS) \
-	$(REF_SOFT_X11_OBJS) \
-	$(REF_GL_OBJS)
+cleanall:
+	@echo "===> CLEAN"
+	${Q}rm -Rf build release
+
+# ----------
+
+# The client
+ifeq ($(YQ2_OSTYPE), Windows)
+client:
+	@echo "===> Building yquake2.exe"
+	${Q}mkdir -p release
+	$(MAKE) release/yquake2.exe
+	@echo "===> Building quake2.exe Wrapper"
+	$(MAKE) release/quake2.exe
+
+build/client/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
+
+release/yquake2.exe : LDFLAGS += -mwindows
+
+ifeq ($(WITH_CURL),yes)
+release/yquake2.exe : CFLAGS += -DUSE_CURL
+endif
+
+ifeq ($(WITH_OPENAL),yes)
+release/yquake2.exe : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"openal32.dll"'
+endif
+
+else # not Windows
+
+client:
+	@echo "===> Building quake2"
+	${Q}mkdir -p release
+	$(MAKE) release/quake2
+
+ifeq ($(YQ2_OSTYPE), Darwin)
+build/client/%.o : %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -arch $(YQ2_ARCH) -x objective-c -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE)  $< -o $@
+else
+build/client/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
+build/client/%.o: %.cpp
+	@echo "===> CXX $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
+endif
+
+release/quake2 : CFLAGS += -Wno-unused-result
+
+ifeq ($(WITH_CURL),yes)
+release/quake2 : CFLAGS += -DUSE_CURL
+endif
+
+ifeq ($(WITH_OPENAL),yes)
+ifeq ($(YQ2_OSTYPE), OpenBSD)
+release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so"'
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.dylib"' -I/usr/local/opt/openal-soft/include
+release/quake2 : LDFLAGS += -L/usr/local/opt/openal-soft/lib -rpath /usr/local/opt/openal-soft/lib
+else
+release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so.1"'
+endif
+endif
+
+ifeq ($(YQ2_OSTYPE), Linux)
+release/quake2 : CFLAGS += -DHAVE_EXECINFO
+endif
+
+ifeq ($(YQ2_OSTYPE), Darwin)
+release/quake2 : CFLAGS += -DHAVE_EXECINFO
+endif
+
+ifeq ($(YQ2_OSTYPE), SunOS)
+release/quake2 : CFLAGS += -DHAVE_EXECINFO
+endif
+
+ifeq ($(YQ2_OSTYPE), FreeBSD)
+release/quake2 : CFLAGS += -DHAVE_EXECINFO
+release/quake2 : LDLIBS += -lexecinfo
+endif
+
+ifeq ($(YQ2_OSTYPE), NetBSD)
+release/quake2 : CFLAGS += -DHAVE_EXECINFO
+release/quake2 : LDLIBS += -lexecinfo
+endif
+
+ifeq ($(YQ2_OSTYPE), OpenBSD)
+release/quake2 : CFLAGS += -DHAVE_EXECINFO
+release/quake2 : LDLIBS += -lexecinfo
+endif
+
+ifeq ($(YQ2_OSTYPE), Haiku)
+release/quake2 : CFLAGS += -DHAVE_EXECINFO
+release/quake2 : LDLIBS += -lexecinfo
+endif
+
+ifeq ($(WITH_RPATH),yes)
+ifeq ($(YQ2_OSTYPE), Darwin)
+release/quake2 : LDFLAGS += -Wl,-rpath,'@executable_path/lib'
+else
+release/quake2 : LDFLAGS += -Wl,-z,origin,-rpath='$$ORIGIN/lib'
+endif
+endif
+endif
+
+# ----------
+
+# The server
+ifeq ($(YQ2_OSTYPE), Windows)
+server:
+	@echo "===> Building q2ded"
+	${Q}mkdir -p release
+	$(MAKE) release/q2ded.exe
+
+build/server/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
+
+release/q2ded.exe : CFLAGS += -DDEDICATED_ONLY
+
+else # not Windows
+
+server:
+	@echo "===> Building q2ded"
+	${Q}mkdir -p release
+	$(MAKE) release/q2ded
+
+build/server/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
+
+release/q2ded : CFLAGS += -DDEDICATED_ONLY -Wno-unused-result
+
+ifeq ($(YQ2_OSTYPE), FreeBSD)
+release/q2ded : LDLIBS += -lexecinfo
+endif
+endif
+
+# ----------
+
+# The OpenGL 1.x renderer lib
+
+ifeq ($(YQ2_OSTYPE), Windows)
+
+ref_gl1:
+	@echo "===> Building ref_gl1.dll"
+	$(MAKE) release/ref_gl1.dll
+
+release/ref_gl1.dll : LDFLAGS += -shared
+release/ref_gl1.dll : LDLIBS += -lopengl32
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+ref_gl1:
+	@echo "===> Building ref_gl1.dylib"
+	$(MAKE) release/ref_gl1.dylib
+
+
+release/ref_gl1.dylib : LDFLAGS += -shared -framework OpenGL
+
+else # not Windows or Darwin
+
+ref_gl1:
+	@echo "===> Building ref_gl1.so"
+	$(MAKE) release/ref_gl1.so
+
+
+release/ref_gl1.so : CFLAGS += -fPIC
+release/ref_gl1.so : LDFLAGS += -shared
+release/ref_gl1.so : LDLIBS += -lGL
+
+endif # OS specific ref_gl1 stuff
+
+build/ref_gl1/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
+
+# ----------
+
+# The OpenGL 3.x renderer lib
+
+ifeq ($(YQ2_OSTYPE), Windows)
+
+ref_gl3:
+	@echo "===> Building ref_gl3.dll"
+	$(MAKE) release/ref_gl3.dll
+
+release/ref_gl3.dll : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad/include
+release/ref_gl3.dll : LDFLAGS += -shared
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+ref_gl3:
+	@echo "===> Building ref_gl3.dylib"
+	$(MAKE) release/ref_gl3.dylib
+
+release/ref_gl3.dylib : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad/include
+release/ref_gl3.dylib : LDFLAGS += -shared
+
+else # not Windows or Darwin
+
+ref_gl3:
+	@echo "===> Building ref_gl3.so"
+	$(MAKE) release/ref_gl3.so
+
+release/ref_gl3.so : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad/include
+release/ref_gl3.so : CFLAGS += -fPIC
+release/ref_gl3.so : LDFLAGS += -shared
+
+endif # OS specific ref_gl3 stuff
+
+build/ref_gl3/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) $(GLAD_INCLUDE) -o $@ $<
+
+# ----------
+
+# The OpenGL ES 3.0 renderer lib
+
+ifeq ($(YQ2_OSTYPE), Windows)
+
+ref_gles3:
+	@echo "===> Building ref_gles3.dll"
+	$(MAKE) release/ref_gles3.dll
+
+release/ref_gles3.dll : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad-gles3/include
+
+# YQ2_GL3_GLES3 is for GLES3, DYQ2_GL3_GLES is for things that are identical
+# in both GLES3 and GLES2 (in case we ever support that)
+release/ref_gles3.dll : CFLAGS += -DYQ2_GL3_GLES3 -DYQ2_GL3_GLES
+
+release/ref_gles3.dll : LDFLAGS += -shared
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+ref_gles3:
+	@echo "===> Building ref_gles3.dylib"
+	$(MAKE) release/ref_gles3.dylib
+
+release/ref_gles3.dylib : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad-gles3/include
+
+# YQ2_GL3_GLES3 is for GLES3, DYQ2_GL3_GLES is for things that are identical
+# in both GLES3 and GLES2 (in case we ever support that)
+release/ref_gles3.dylib : CFLAGS += -DYQ2_GL3_GLES3 -DYQ2_GL3_GLES
+
+release/ref_gles3.dylib : LDFLAGS += -shared
+
+else # not Windows or Darwin
+
+ref_gles3:
+	@echo "===> Building ref_gles3.so"
+	$(MAKE) release/ref_gles3.so
+
+release/ref_gles3.so : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad-gles3/include
+
+# YQ2_GL3_GLES3 is for GLES3, DYQ2_GL3_GLES is for things that are identical
+# in both GLES3 and GLES2 (in case we ever support that)
+release/ref_gles3.so : CFLAGS += -DYQ2_GL3_GLES3 -DYQ2_GL3_GLES -fPIC
+
+release/ref_gles3.so : LDFLAGS += -shared
+
+GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad-gles3/include
+
+endif # OS specific ref_gl3 stuff
+
+build/ref_gles3/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) $(GLAD_INCLUDE) -o $@ $<
+
+# ----------
+
+# The soft renderer lib
+
+ifeq ($(YQ2_OSTYPE), Windows)
+
+ref_soft:
+	@echo "===> Building ref_soft.dll"
+	$(MAKE) release/ref_soft.dll
+
+release/ref_soft.dll : LDFLAGS += -shared
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+ref_soft:
+	@echo "===> Building ref_soft.dylib"
+	$(MAKE) release/ref_soft.dylib
+
+release/ref_soft.dylib : LDFLAGS += -shared
+
+else # not Windows or Darwin
+
+ref_soft:
+	@echo "===> Building ref_soft.so"
+	$(MAKE) release/ref_soft.so
+
+release/ref_soft.so : CFLAGS += -fPIC
+release/ref_soft.so : LDFLAGS += -shared
+
+endif # OS specific ref_soft stuff
+
+build/ref_soft/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
+
+# ----------
+
+# The baseq2 game
+ifeq ($(YQ2_OSTYPE), Windows)
+game:
+	@echo "===> Building baseq2/game.dll"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/game.dll
+
+build/baseq2/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+release/baseq2/game.dll : LDFLAGS += -shared
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+game:
+	@echo "===> Building baseq2/game.dylib"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/game.dylib
+
+build/baseq2/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+release/baseq2/game.dylib : CFLAGS += -fPIC
+release/baseq2/game.dylib : LDFLAGS += -shared
+
+else # not Windows or Darwin
+
+game:
+	@echo "===> Building baseq2/game.so"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/game.so
+
+build/baseq2/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+release/baseq2/game.so : CFLAGS += -fPIC -Wno-unused-result
+release/baseq2/game.so : LDFLAGS += -shared
+endif
+
+# ----------
+
+# Used by the game
+GAME_OBJS_ = \
+	src/common/shared/flash.o \
+	src/common/shared/rand.o \
+	src/common/shared/shared.o \
+	src/game/g_ai.o \
+	src/game/g_chase.o \
+	src/game/g_cmds.o \
+	src/game/g_combat.o \
+	src/game/g_func.o \
+	src/game/g_items.o \
+	src/game/g_main.o \
+	src/game/g_misc.o \
+	src/game/g_monster.o \
+	src/game/g_phys.o \
+	src/game/g_spawn.o \
+	src/game/g_svcmds.o \
+	src/game/g_target.o \
+	src/game/g_trigger.o \
+	src/game/g_turret.o \
+	src/game/g_utils.o \
+	src/game/g_weapon.o \
+	src/game/monster/berserker/berserker.o \
+	src/game/monster/boss2/boss2.o \
+	src/game/monster/boss3/boss3.o \
+	src/game/monster/boss3/boss31.o \
+	src/game/monster/boss3/boss32.o \
+	src/game/monster/brain/brain.o \
+	src/game/monster/chick/chick.o \
+	src/game/monster/flipper/flipper.o \
+	src/game/monster/float/float.o \
+	src/game/monster/flyer/flyer.o \
+	src/game/monster/gladiator/gladiator.o \
+	src/game/monster/gunner/gunner.o \
+	src/game/monster/hover/hover.o \
+	src/game/monster/infantry/infantry.o \
+	src/game/monster/insane/insane.o \
+	src/game/monster/medic/medic.o \
+	src/game/monster/misc/move.o \
+	src/game/monster/mutant/mutant.o \
+	src/game/monster/parasite/parasite.o \
+	src/game/monster/soldier/soldier.o \
+	src/game/monster/supertank/supertank.o \
+	src/game/monster/tank/tank.o \
+	src/game/player/client.o \
+	src/game/player/hud.o \
+	src/game/player/trail.o \
+	src/game/player/view.o \
+	src/game/player/weapon.o \
+	src/game/savegame/savegame.o
+
+# ----------
+
+# Used by the client
+CLIENT_OBJS_ := \
+	h2common/arrayed_list.o \
+	h2common/h2matrix.o \
+	h2common/h2physics.o \
+	h2common/h2rand.o \
+	h2common/h2singlylinkedlist.o \
+	h2common/h2surfaces.o \
+	h2common/h2vector.o \
+	h2common/message.o \
+	h2common/netmsg_read.o \
+	h2common/reference.o \
+	h2common/resource_manager.o \
+	h2common/skeletons.o \
+	src/backends/generic/misc.o \
+	src/client/cl_cin.o \
+	src/client/cl_console.o \
+	src/client/cl_download.o \
+	src/client/cl_effects.o \
+	src/client/cl_entities.o \
+	src/client/cl_input.o \
+	src/client/cl_inventory.o \
+	src/client/cl_keyboard.o \
+	src/client/cl_library.o \
+	src/client/cl_lights.o \
+	src/client/cl_main.o \
+	src/client/cl_network.o \
+	src/client/cl_parse.o \
+	src/client/cl_particles.o \
+	src/client/cl_prediction.o \
+	src/client/cl_screen.o \
+	src/client/cl_string.o \
+	src/client/cl_tempentities.o \
+	src/client/cl_view.o \
+	src/client/curl/download.o \
+	src/client/curl/qcurl.o \
+	src/client_effects/ambient_effects.o \
+	src/client_effects/ce_default_message_handler.o \
+	src/client_effects/ce_dlight.o \
+	src/client_effects/ce_message.o \
+	src/client_effects/client_effects.o \
+	src/client_effects/client_entities.o \
+	src/client_effects/font1.o \
+	src/client_effects/font2.o \
+	src/client_effects/fx_ammo_pickup.o \
+	src/client_effects/fx_animate.o \
+	src/client_effects/fx_assassin.o \
+	src/client_effects/fx_blood.o \
+	src/client_effects/fx_blue_ring.o \
+	src/client_effects/fx_bubbler.o \
+	src/client_effects/fx_crosshair.o \
+	src/client_effects/fx_cwatcher.o \
+	src/client_effects/fx_debris.o \
+	src/client_effects/fx_defense_pickup.o \
+	src/client_effects/fx_dripper.o \
+	src/client_effects/fx_dust.o \
+	src/client_effects/fx_dustpuff.o \
+	src/client_effects/fx_firehands.o \
+	src/client_effects/fx_fire.o \
+	src/client_effects/fx_flamethrow.o \
+	src/client_effects/fx_flyingfist.o \
+	src/client_effects/fx_fountain.o \
+	src/client_effects/fx_halo.o \
+	src/client_effects/fx_health_pickup.o \
+	src/client_effects/fx_hell_staff.o \
+	src/client_effects/fx_hitpuff.o \
+	src/client_effects/fx_hpproj.o \
+	src/client_effects/fx_insectstaff.o \
+	src/client_effects/fx_lensflare.o \
+	src/client_effects/fx_lightning.o \
+	src/client_effects/fx_maceball.o \
+	src/client_effects/fx_magicmissile.o \
+	src/client_effects/fx_meteorbarrier.o \
+	src/client_effects/fx_mist.o \
+	src/client_effects/fx_mork.o \
+	src/client_effects/fx_morph.o \
+	src/client_effects/fx_objects.o \
+	src/client_effects/fx_pespell.o \
+	src/client_effects/fx_phoenix.o \
+	src/client_effects/fx_pickup.o \
+	src/client_effects/fx_pickuppuzzle.o \
+	src/client_effects/fx_plaguemistexplode.o \
+	src/client_effects/fx_plaguemist.o \
+	src/client_effects/fx_portal.o \
+	src/client_effects/fx_quake.o \
+	src/client_effects/fx_redrainglow.o \
+	src/client_effects/fx_redrain.o \
+	src/client_effects/fx_remotecamera.o \
+	src/client_effects/fx_ripples.o \
+	src/client_effects/fx_rope.o \
+	src/client_effects/fx_scorchmark.o \
+	src/client_effects/fx_shadow.o \
+	src/client_effects/fx_shield.o \
+	src/client_effects/fx_shrine.o \
+	src/client_effects/fx_smoke.o \
+	src/client_effects/fx_sound.o \
+	src/client_effects/fx_sparks.o \
+	src/client_effects/fx_spellchange.o \
+	src/client_effects/fx_spellhands.o \
+	src/client_effects/fx_sphereofannihlation.o \
+	src/client_effects/fx_spoo.o \
+	src/client_effects/fx_ssarrow.o \
+	src/client_effects/fx_ssithra.o \
+	src/client_effects/fx_staff.o \
+	src/client_effects/fx_tbeast.o \
+	src/client_effects/fx_teleport.o \
+	src/client_effects/fx_tome.o \
+	src/client_effects/fx_tornado.o \
+	src/client_effects/fx_wall.o \
+	src/client_effects/fx_waterentrysplash.o \
+	src/client_effects/fx_waterwake.o \
+	src/client_effects/fx_weaponpickup.o \
+	src/client_effects/generic_character_effects.o \
+	src/client_effects/generic_weapon_effects.o \
+	src/client_effects/item_effects.o \
+	src/client_effects/level_maps.o \
+	src/client_effects/main.o \
+	src/client_effects/motion.o \
+	src/client_effects/particle.o \
+	src/client_effects/player_effects.o \
+	src/client_effects/test_effect.o \
+	src/client_effects/utilities.o \
+	src/client/input/sdl.o \
+	src/client/libsmacker/smacker.o \
+	src/client/menu/menu.o \
+	src/client/menu/qmenu.o \
+	src/client/menu/videomenu.o \
+	src/client/sound/sdl.o \
+	src/client/sound/ogg.o \
+	src/client/sound/openal.o \
+	src/client/sound/qal.o \
+	src/client/sound/sound.o \
+	src/client/sound/wave.o \
+	src/client/vid/glimp_sdl.o \
+	src/client/vid/vid.o \
+	src/common/argproc.o \
+	src/common/clientserver.o \
+	src/common/collision.o \
+	src/common/crc.o \
+	src/common/cmdparser.o \
+	src/common/cvar.o \
+	src/common/filesystem.o \
+	src/common/glob.o \
+	src/common/md4.o \
+	src/common/movemsg.o \
+	src/common/frame.o \
+	src/common/netchan.o \
+	src/common/pmove.o \
+	src/common/szone.o \
+	src/common/zone.o \
+	src/common/shared/flash.o \
+	src/common/shared/rand.o \
+	src/common/shared/shared.o \
+	src/common/unzip/ioapi.o \
+	src/common/unzip/miniz.o \
+	src/common/unzip/unzip.o \
+	src/game/buoy.o \
+	src/game/c_ai.o \
+	src/game/c_corvus1_anim.o \
+	src/game/c_corvus1.o \
+	src/game/c_corvus2_anim.o \
+	src/game/c_corvus2.o \
+	src/game/c_corvus3_anim.o \
+	src/game/c_corvus3.o \
+	src/game/c_corvus4_anim.o \
+	src/game/c_corvus4.o \
+	src/game/c_corvus5_anim.o \
+	src/game/c_corvus5.o \
+	src/game/c_corvus6_anim.o \
+	src/game/c_corvus6.o \
+	src/game/c_corvus7_anim.o \
+	src/game/c_corvus7.o \
+	src/game/c_corvus8_anim.o \
+	src/game/c_corvus8.o \
+	src/game/c_corvus9_anim.o \
+	src/game/c_corvus9.o \
+	src/game/c_dranor_anim.o \
+	src/game/c_dranor.o \
+	src/game/c_elflord_anim.o \
+	src/game/c_elflord.o \
+	src/game/c_morcalavin_anim.o \
+	src/game/c_morcalavin.o \
+	src/game/c_priestess2_anim.o \
+	src/game/c_priestess2.o \
+	src/game/c_priestess_anim.o \
+	src/game/c_priestess.o \
+	src/game/c_siernan1_anim.o \
+	src/game/c_siernan1.o \
+	src/game/c_siernan2_anim.o \
+	src/game/c_siernan2.o \
+	src/game/c_ssithrascout_anim.o \
+	src/game/c_ssithrascout.o \
+	src/game/c_tome_anim.o \
+	src/game/c_tome.o \
+	src/game/c_victimssithra_anim.o \
+	src/game/c_victimssithra.o \
+	src/game/decals.o \
+	src/game/ds.o \
+	src/game/g_ai.o \
+	src/game/game_utilities.o \
+	src/game/g_breakable.o \
+	src/game/g_classstatics.o \
+	src/game/g_cmds.o \
+	src/game/g_combat.o \
+	src/game/g_defaultmessagehandler.o \
+	src/game/g_env.o \
+	src/game/g_field.o \
+	src/game/g_flamethrow.o \
+	src/game/g_func.o \
+	src/game/g_hitlocation.o \
+	src/game/g_items.o \
+	src/game/g_light.o \
+	src/game/g_main.o \
+	src/game/g_message.o \
+	src/game/g_misc.o \
+	src/game/g_monster.o \
+	src/game/g_moveinfo.o \
+	src/game/g_obj.o \
+	src/game/g_physics.o \
+	src/game/g_phys.o \
+	src/game/g_resourcemanagers.o \
+	src/game/g_rope.o \
+	src/game/g_save.o \
+	src/game/g_shrine.o \
+	src/game/g_skeletons.o \
+	src/game/g_spawnf.o \
+	src/game/g_spawn.o \
+	src/game/g_stateinfo.o \
+	src/game/g_svcmds.o \
+	src/game/g_target.o \
+	src/game/g_trigger.o \
+	src/game/g_utils.o \
+	src/game/g_waterfx.o \
+	src/game/g_weapon.o \
+	src/game/m_assassin_anim.o \
+	src/game/m_assassin.o \
+	src/game/m_beast_anim.o \
+	src/game/m_beast.o \
+	src/game/m_bee.o \
+	src/game/m_chicken_anim.o \
+	src/game/m_chicken.o \
+	src/game/m_elflord_anims.o \
+	src/game/m_elflord.o \
+	src/game/m_fish_anim.o \
+	src/game/m_fish.o \
+	src/game/m_fmtest.o \
+	src/game/mg_ai.o \
+	src/game/mg_guide.o \
+	src/game/m_gkrokon_anim.o \
+	src/game/m_gkrokon.o \
+	src/game/m_gorgon_anim.o \
+	src/game/m_gorgon.o \
+	src/game/m_harpy_anim.o \
+	src/game/m_harpy.o \
+	src/game/m_imp_anim.o \
+	src/game/m_imp.o \
+	src/game/m_morcalavin_anim.o \
+	src/game/m_morcalavin.o \
+	src/game/m_mother_anim.o \
+	src/game/m_mother.o \
+	src/game/m_move.o \
+	src/game/m_mssithra_anim.o \
+	src/game/m_mssithra.o \
+	src/game/m_ogle_anim.o \
+	src/game/m_ogle.o \
+	src/game/m_plagueelf_anim.o \
+	src/game/m_plagueelf.o \
+	src/game/m_plaguessithra_anim.o \
+	src/game/m_plaguessithra.o \
+	src/game/m_priestess_anim.o \
+	src/game/m_priestess.o \
+	src/game/m_rat_anim.o \
+	src/game/m_rat.o \
+	src/game/m_seraph_anim.o \
+	src/game/m_seraph_guard_anim.o \
+	src/game/m_seraph_guard.o \
+	src/game/m_seraph.o \
+	src/game/m_spreader_anim.o \
+	src/game/m_spreadermist.o \
+	src/game/m_spreader.o \
+	src/game/m_stats.o \
+	src/game/m_tcheckrik_anim.o \
+	src/game/m_tcheckrik.o \
+	src/game/m_tcheckrik_spells.o \
+	src/game/player/client.o \
+	src/game/player/funcs.o \
+	src/game/player/hud.o \
+	src/game/player/item.o \
+	src/game/player/view.o \
+	src/game/spl_blast.o \
+	src/game/spl_bluering.o \
+	src/game/spl_flyingfist.o \
+	src/game/spl_hellstaff.o \
+	src/game/spl_maceballs.o \
+	src/game/spl_magicmissile.o \
+	src/game/spl_meteorbarrier.o \
+	src/game/spl_morph.o \
+	src/game/spl_phoenix.o \
+	src/game/spl_powerup.o \
+	src/game/spl_redrain.o \
+	src/game/spl_ripper.o \
+	src/game/spl_shield.o \
+	src/game/spl_sphereofannihlation.o \
+	src/game/spl_teleport.o \
+	src/game/spl_tornado.o \
+	src/game/spl_wall.o \
+	src/player/p_actions.o \
+	src/player/p_animactor.o \
+	src/player/p_anim_branch.o \
+	src/player/p_anim_data.o \
+	src/player/p_anims.o \
+	src/player/p_chicken_anim.o \
+	src/player/p_chicken.o \
+	src/player/p_ctrl.o \
+	src/player/p_items.o \
+	src/player/player_main.o \
+	src/player/p_library.o \
+	src/player/p_main.o \
+	src/player/p_weapon.o \
+	src/server/sv_cmd.o \
+	src/server/sv_conless.o \
+	src/server/sv_entities.o \
+	src/server/sv_game.o \
+	src/server/sv_init.o \
+	src/server/sv_main.o \
+	src/server/sv_save.o \
+	src/server/sv_send.o \
+	src/server/sv_user.o \
+	src/server/sv_world.o
+
+ifeq ($(YQ2_OSTYPE), Windows)
+CLIENT_OBJS_ += \
+	src/backends/windows/main.o \
+	src/backends/windows/network.o \
+	src/backends/windows/system.o \
+	src/backends/windows/shared/hunk.o
+else
+CLIENT_OBJS_ += \
+	src/backends/unix/main.o \
+	src/backends/unix/network.o \
+	src/backends/unix/signalhandler.o \
+	src/backends/unix/system.o \
+	src/backends/unix/shared/hunk.o
+endif
+
+# ----------
+
+REFGL1_OBJS_ := \
+	src/client/refresh/gl1/qgl.o \
+	src/client/refresh/gl1/gl1_draw.o \
+	src/client/refresh/gl1/gl1_image.o \
+	src/client/refresh/gl1/gl1_light.o \
+	src/client/refresh/gl1/gl1_lightmap.o \
+	src/client/refresh/gl1/gl1_main.o \
+	src/client/refresh/gl1/gl1_mesh.o \
+	src/client/refresh/gl1/gl1_misc.o \
+	src/client/refresh/gl1/gl1_model.o \
+	src/client/refresh/gl1/gl1_scrap.o \
+	src/client/refresh/gl1/gl1_surf.o \
+	src/client/refresh/gl1/gl1_warp.o \
+	src/client/refresh/gl1/gl1_sdl.o \
+	src/client/refresh/files/surf.o \
+	src/client/refresh/files/models.o \
+	src/client/refresh/files/pcx.o \
+	src/client/refresh/files/stb.o \
+	src/client/refresh/files/wal.o \
+	src/client/refresh/files/pvs.o \
+	src/common/shared/shared.o \
+	src/common/md4.o
+
+ifeq ($(YQ2_OSTYPE), Windows)
+REFGL1_OBJS_ += \
+	src/backends/windows/shared/hunk.o
+else # not Windows
+REFGL1_OBJS_ += \
+	src/backends/unix/shared/hunk.o
+endif
+
+# ----------
+
+REFGL3_OBJS_ := \
+	src/client/refresh/gl3/gl3_draw.o \
+	src/client/refresh/gl3/gl3_image.o \
+	src/client/refresh/gl3/gl3_light.o \
+	src/client/refresh/gl3/gl3_lightmap.o \
+	src/client/refresh/gl3/gl3_main.o \
+	src/client/refresh/gl3/gl3_mesh.o \
+	src/client/refresh/gl3/gl3_misc.o \
+	src/client/refresh/gl3/gl3_model.o \
+	src/client/refresh/gl3/gl3_sdl.o \
+	src/client/refresh/gl3/gl3_surf.o \
+	src/client/refresh/gl3/gl3_warp.o \
+	src/client/refresh/gl3/gl3_shaders.o \
+	src/client/refresh/files/surf.o \
+	src/client/refresh/files/models.o \
+	src/client/refresh/files/pcx.o \
+	src/client/refresh/files/stb.o \
+	src/client/refresh/files/wal.o \
+	src/client/refresh/files/pvs.o \
+	src/common/shared/shared.o \
+	src/common/md4.o
+
+REFGL3_OBJS_GLADE_ := \
+	src/client/refresh/gl3/glad/src/glad.o
+
+REFGL3_OBJS_GLADEES_ := \
+	src/client/refresh/gl3/glad-gles3/src/glad.o
+
+ifeq ($(YQ2_OSTYPE), Windows)
+REFGL3_OBJS_ += \
+	src/backends/windows/shared/hunk.o
+else # not Windows
+REFGL3_OBJS_ += \
+	src/backends/unix/shared/hunk.o
+endif
+
+# ----------
+
+REFSOFT_OBJS_ := \
+	src/client/refresh/soft/sw_aclip.o \
+	src/client/refresh/soft/sw_alias.o \
+	src/client/refresh/soft/sw_bsp.o \
+	src/client/refresh/soft/sw_draw.o \
+	src/client/refresh/soft/sw_edge.o \
+	src/client/refresh/soft/sw_image.o \
+	src/client/refresh/soft/sw_light.o \
+	src/client/refresh/soft/sw_main.o \
+	src/client/refresh/soft/sw_misc.o \
+	src/client/refresh/soft/sw_model.o \
+	src/client/refresh/soft/sw_part.o \
+	src/client/refresh/soft/sw_poly.o \
+	src/client/refresh/soft/sw_polyset.o \
+	src/client/refresh/soft/sw_rast.o \
+	src/client/refresh/soft/sw_scan.o \
+	src/client/refresh/soft/sw_sprite.o \
+	src/client/refresh/soft/sw_surf.o \
+	src/client/refresh/files/surf.o \
+	src/client/refresh/files/models.o \
+	src/client/refresh/files/pcx.o \
+	src/client/refresh/files/stb.o \
+	src/client/refresh/files/wal.o \
+	src/client/refresh/files/pvs.o \
+	src/common/shared/shared.o \
+	src/common/md4.o
+
+ifeq ($(YQ2_OSTYPE), Windows)
+REFSOFT_OBJS_ += \
+	src/backends/windows/shared/hunk.o
+else # not Windows
+REFSOFT_OBJS_ += \
+	src/backends/unix/shared/hunk.o
+endif
+
+# ----------
+
+# Used by the server
+SERVER_OBJS_ := \
+	src/backends/generic/misc.o \
+	src/common/argproc.o \
+	src/common/clientserver.o \
+	src/common/collision.o \
+	src/common/crc.o \
+	src/common/cmdparser.o \
+	src/common/cvar.o \
+	src/common/filesystem.o \
+	src/common/glob.o \
+	src/common/md4.o \
+	src/common/frame.o \
+	src/common/movemsg.o \
+	src/common/netchan.o \
+	src/common/pmove.o \
+	src/common/szone.o \
+	src/common/zone.o \
+	src/common/shared/rand.o \
+	src/common/shared/shared.o \
+	src/common/unzip/ioapi.o \
+	src/common/unzip/miniz.o \
+	src/common/unzip/unzip.o \
+	src/server/sv_cmd.o \
+	src/server/sv_conless.o \
+	src/server/sv_entities.o \
+	src/server/sv_game.o \
+	src/server/sv_init.o \
+	src/server/sv_main.o \
+	src/server/sv_save.o \
+	src/server/sv_send.o \
+	src/server/sv_user.o \
+	src/server/sv_world.o
+
+ifeq ($(YQ2_OSTYPE), Windows)
+SERVER_OBJS_ += \
+	src/backends/windows/main.o \
+	src/backends/windows/network.o \
+	src/backends/windows/system.o \
+	src/backends/windows/shared/hunk.o
+else # not Windows
+SERVER_OBJS_ += \
+	src/backends/unix/main.o \
+	src/backends/unix/network.o \
+	src/backends/unix/signalhandler.o \
+	src/backends/unix/system.o \
+	src/backends/unix/shared/hunk.o
+endif
+
+# ----------
+
+# Rewrite pathes to our object directory.
+CLIENT_OBJS = $(patsubst %,build/client/%,$(CLIENT_OBJS_))
+REFGL1_OBJS = $(patsubst %,build/ref_gl1/%,$(REFGL1_OBJS_))
+REFGL3_OBJS = $(patsubst %,build/ref_gl3/%,$(REFGL3_OBJS_))
+REFGL3_OBJS += $(patsubst %,build/ref_gl3/%,$(REFGL3_OBJS_GLADE_))
+REFGLES3_OBJS = $(patsubst %,build/ref_gles3/%,$(REFGL3_OBJS_))
+REFGLES3_OBJS += $(patsubst %,build/ref_gles3/%,$(REFGL3_OBJS_GLADEES_))
+REFSOFT_OBJS = $(patsubst %,build/ref_soft/%,$(REFSOFT_OBJS_))
+SERVER_OBJS = $(patsubst %,build/server/%,$(SERVER_OBJS_))
+GAME_OBJS = $(patsubst %,build/baseq2/%,$(GAME_OBJS_))
+
+# ----------
+
+# Generate header dependencies.
+CLIENT_DEPS= $(CLIENT_OBJS:.o=.d)
+GAME_DEPS= $(GAME_OBJS:.o=.d)
+REFGL1_DEPS= $(REFGL1_OBJS:.o=.d)
+REFGL3_DEPS= $(REFGL3_OBJS:.o=.d)
+REFGLES3_DEPS= $(REFGLES3_OBJS:.o=.d)
+REFSOFT_DEPS= $(REFSOFT_OBJS:.o=.d)
+SERVER_DEPS= $(SERVER_OBJS:.o=.d)
+
+# Suck header dependencies in.
+-include $(CLIENT_DEPS)
+-include $(GAME_DEPS)
+-include $(REFGL1_DEPS)
+-include $(REFGL3_DEPS)
+-include $(REFGLES3_DEPS)
+-include $(SERVER_DEPS)
+
+# ----------
+
+# release/quake2
+ifeq ($(YQ2_OSTYPE), Windows)
+release/yquake2.exe : $(CLIENT_OBJS) icon
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) build/icon/icon.res $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+	$(Q)strip $@
+release/quake2.exe : src/win-wrapper/wrapper.c icon
+	$(Q)$(CC) -Wall -mwindows build/icon/icon.res src/win-wrapper/wrapper.c -o $@
+	$(Q)strip $@
+else
+release/quake2 : $(CLIENT_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CXX) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+endif
+
+# release/q2ded
+ifeq ($(YQ2_OSTYPE), Windows)
+release/q2ded.exe : $(SERVER_OBJS) icon
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) build/icon/icon.res $(SERVER_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+	$(Q)strip $@
+else
+release/q2ded : $(SERVER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(SERVER_OBJS) $(LDLIBS) -o $@
+endif
+
+# release/ref_gl1.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/ref_gl1.dll : $(REFGL1_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGL1_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/ref_gl1.dylib : $(REFGL1_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGL1_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+else
+release/ref_gl1.so : $(REFGL1_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGL1_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+endif
+
+# release/ref_gl3.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/ref_gl3.dll : $(REFGL3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGL3_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/ref_gl3.dylib : $(REFGL3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGL3_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+else
+release/ref_gl3.so : $(REFGL3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGL3_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+endif
+
+# release/ref_gles3.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/ref_gles3.dll : $(REFGLES3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGLES3_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/ref_gles3.dylib : $(REFGLES3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGLES3_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+else
+release/ref_gles3.so : $(REFGLES3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGLES3_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+endif
+
+# release/ref_soft.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/ref_soft.dll : $(REFSOFT_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFSOFT_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/ref_soft.dylib : $(REFSOFT_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFSOFT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+else
+release/ref_soft.so : $(REFSOFT_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFSOFT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+endif
+
+# release/baseq2/game.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/baseq2/game.dll : $(GAME_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/baseq2/game.dylib : $(GAME_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
+else
+release/baseq2/game.so : $(GAME_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
+endif
+
+# ----------
