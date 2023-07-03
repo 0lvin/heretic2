@@ -1028,7 +1028,7 @@ void SCR_DebugGraph(float value, int color);
 void CL_Init(void);
 void CL_Drop(void);
 void CL_Shutdown(void);
-void CL_Frame(int msec);
+void CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, qboolean renderframe);
 void Con_Print(char *text);
 void SCR_BeginLoadingPlaque(void);
 

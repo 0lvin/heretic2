@@ -858,6 +858,12 @@ CL_CalcViewValues(void)
 	{
 		cl.refdef.fov_x = ifov;
 	}
+
+	/* don't interpolate blend color */
+	for (i = 0; i < 4; i++)
+	{
+		cl.refdef.blend[i] = ps->blend[i];
+	}
 }
 
 /*
@@ -901,11 +907,12 @@ CL_AddEntities(void)
 		cl.lerpfrac = 1.0;
 	}
 
+	CL_CalcViewValues();
+
 	// jmarshall - this is in client effects.dll
 	fxe.AddPacketEntities(&cl.frame); // CL_AddPacketEntities (&cl.frame);
 	fxe.AddEffects(false);
 
-	CL_CalcViewValues();
 	// jmarshall end
 	// CL_AddParticles();
 	// CL_AddDLights();

@@ -80,12 +80,6 @@ cvar_t	*gl1_stereo_convergence;
 
 cvar_t *cl_vwep;
 
-extern cvar_t* cl_upspeed;
-extern cvar_t* cl_forwardspeed;
-extern cvar_t* cl_sidespeed;
-
-cvar_t *sensitivity;
-
 client_static_t cls;
 client_state_t cl;
 
@@ -759,25 +753,23 @@ void
 CL_SendCommand(void)
 {
 	// get new key events
-	IN_Update ();
+	IN_Update();
 
 	// process console commands
-	Cbuf_Execute ();
+	Cbuf_Execute();
 
 	// fix any cheating cvars
-	CL_FixCvarCheats ();
+	CL_FixCvarCheats();
 
 	// send intentions now
-	CL_SendCmd ();
+	CL_SendCmd();
 
 	// resend a connection request if necessary
-	CL_CheckForResend ();
+	CL_CheckForResend();
 }
-
 void
-CL_Frame(int msec)
+CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, qboolean renderframe)
 {
-	static int	extratime;
 	static int lasttimecalled;
 
 	// Dedicated?
@@ -786,82 +778,153 @@ CL_Frame(int msec)
 		return;
 	}
 
-	extratime += msec;
+	// Calculate simulation time.
+	cls.nframetime = packetdelta / 1000000.0f;
+	cls.rframetime = renderdelta / 1000000.0f;
+	cls.realtime = curtime;
+	cl.time += timedelta / 1000;
+
+	// Don't extrapolate too far ahead.
+	if (cls.nframetime > 0.5f)
+	{
+		cls.nframetime = 0.5f;
+	}
+
+	if (cls.rframetime > 0.5f)
+	{
+		cls.rframetime = 0.5f;
+	}
+
+	// if in the debugger last frame, don't timeout.
+	if (timedelta > 5000000)
+	{
+		cls.netchan.last_received = Sys_Milliseconds();
+	}
+
+	// Reset power shield / power screen sound counter.
+	num_power_sounds = 0;
 
 	if (!cl_timedemo->value)
 	{
-		if (cls.state == ca_connected && extratime < 100)
-			return;			// don't flood packets out while connecting
-		if (extratime < 1000/cl_maxfps->value)
-			return;			// framerate is too high
-	}
-
-	// decide the simulation time
-	cls.rframetime = extratime/1000.0;
-	cl.time += extratime;
-	cls.realtime = Sys_Milliseconds();
-
-	extratime = 0;
-	if (cls.rframetime > (1.0 / 5))
-		cls.rframetime = (1.0 / 5);
-
-	// if in the debugger last frame, don't timeout
-	if (msec > 5000)
-		cls.netchan.last_received = Sys_Milliseconds ();
-
-	// fetch results from server
-	CL_ReadPackets();
-
-	// send a new command message to the server
-	CL_SendCommand();
-
-	// predict all unacknowledged movements
-	CL_PredictMovement();
-
-	// allow rendering DLL change
-	VID_CheckChanges();
-	if (!cl.refresh_prepped && cls.state == ca_active)
-		CL_PrepRefresh();
-
-	if (fxe.UpdateEffects)
-	{
-		fxe.UpdateEffects();
-	}
-
-	// update the screen
-	SCR_UpdateScreen();
-
-	// update audio
-	S_Update(cl.refdef.vieworg, cl.v_forward, cl.v_right, cl.v_up);
-
-	/* advance local effects for next frame */
-	CL_RunDLights();
-	CL_RunLightStyles();
-	SCR_RunCinematic();
-	SCR_RunConsole();
-
-	/* Update framecounter */
-	cls.framecount++;
-
-	if (log_stats->value)
-	{
-		if ( cls.state == ca_active )
+		// Don't throttle too much when connecting / loading.
+		if ((cls.state == ca_connected) && (packetdelta > 100000))
 		{
-			if ( !lasttimecalled )
-			{
-				lasttimecalled = Sys_Milliseconds();
-				if ( log_stats_file )
-					fprintf( log_stats_file, "0\n" );
-			}
-			else
-			{
-				int now = Sys_Milliseconds();
+			packetframe = true;
+		}
+	}
 
-				if (log_stats_file)
+	// Run HTTP downloads more often while connecting.
+#ifdef USE_CURL
+	if (cls.state == ca_connected)
+	{
+		CL_RunHTTPDownloads();
+	}
+#endif
+
+	// Update input stuff.
+	if (packetframe || renderframe)
+	{
+		CL_ReadPackets();
+		CL_UpdateWindowedMouse();
+		IN_Update();
+		Cbuf_Execute();
+		CL_FixCvarCheats();
+
+		if (cls.state > ca_connecting)
+		{
+			CL_RefreshCmd();
+		}
+		else
+		{
+			CL_RefreshMove();
+		}
+	}
+
+	if (cls.forcePacket || userinfo_modified)
+	{
+		packetframe = true;
+		cls.forcePacket = false;
+	}
+
+	if (packetframe)
+	{
+		CL_SendCmd();
+		CL_CheckForResend();
+
+		// Run HTTP downloads during game.
+#ifdef USE_CURL
+		CL_RunHTTPDownloads();
+#endif
+	}
+
+	if (renderframe)
+	{
+		/* send a new command message to the server */
+		CL_SendCommand();
+
+		VID_CheckChanges();
+		CL_PredictMovement();
+
+		if (!cl.refresh_prepped && (cls.state == ca_active))
+		{
+			CL_PrepRefresh();
+		}
+
+		/* update the screen */
+		if (host_speeds->value)
+		{
+			time_before_ref = Sys_Milliseconds();
+		}
+
+		if (fxe.UpdateEffects)
+		{
+			fxe.UpdateEffects();
+		}
+
+		SCR_UpdateScreen();
+
+		if (host_speeds->value)
+		{
+			time_after_ref = Sys_Milliseconds();
+		}
+
+		/* update audio */
+		S_Update(cl.refdef.vieworg, cl.v_forward, cl.v_right, cl.v_up);
+
+		/* advance local effects for next frame */
+		CL_RunDLights();
+		CL_RunLightStyles();
+		SCR_RunCinematic();
+		SCR_RunConsole();
+
+		/* Update framecounter */
+		cls.framecount++;
+
+		if (log_stats->value)
+		{
+			if (cls.state == ca_active)
+			{
+				if (!lasttimecalled)
 				{
-					fprintf(log_stats_file, "%d\n", now - lasttimecalled );
+					lasttimecalled = Sys_Milliseconds();
+
+					if (log_stats_file)
+					{
+						fprintf(log_stats_file, "0\n");
+					}
 				}
-				lasttimecalled = now;
+
+				else
+				{
+					int now = Sys_Milliseconds();
+
+					if (log_stats_file)
+					{
+						fprintf(log_stats_file, "%d\n", now - lasttimecalled);
+					}
+
+					lasttimecalled = now;
+				}
 			}
 		}
 	}
