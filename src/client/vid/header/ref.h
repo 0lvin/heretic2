@@ -317,7 +317,6 @@ typedef struct
 	qboolean	(IMPORT *GLimp_GetDesktopMode)(int *pwidth, int *pheight);
 
 	void		(IMPORT *Vid_RequestRestart)(ref_restart_t rs);
-	void		(IMPORT *Vid_NewWindow)( int width, int height );
 } refimport_t;
 
 // this is the only function actually exported at the linker level

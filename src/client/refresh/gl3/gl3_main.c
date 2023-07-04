@@ -992,6 +992,7 @@ GL3_DrawNullModel(entity_t *currententity)
 static void
 GL3_DrawParticles(void)
 {
+#if 0
 	// TODO: stereo
 	//qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
 	//qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
@@ -1072,6 +1073,7 @@ GL3_DrawParticles(void)
 
 		YQ2_VLAFREE(buf);
 	}
+#endif
 }
 
 static void
@@ -1089,7 +1091,7 @@ GL3_DrawEntitiesOnList(void)
 	/* draw non-transparent first */
 	for (i = 0; i < gl3_newrefdef.num_entities; i++)
 	{
-		entity_t *currententity = &gl3_newrefdef.entities[i];
+		entity_t *currententity = gl3_newrefdef.entities[i];
 
 		if (currententity->flags & RF_TRANSLUCENT)
 		{
@@ -1102,7 +1104,7 @@ GL3_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			gl3model_t *currentmodel = currententity->model;
+			gl3model_t *currentmodel = currententity->model[0];
 
 			if (!currentmodel)
 			{
@@ -1135,7 +1137,7 @@ GL3_DrawEntitiesOnList(void)
 
 	for (i = 0; i < gl3_newrefdef.num_entities; i++)
 	{
-		entity_t *currententity = &gl3_newrefdef.entities[i];
+		entity_t *currententity = gl3_newrefdef.entities[i];
 
 		if (!(currententity->flags & RF_TRANSLUCENT))
 		{
@@ -1148,7 +1150,7 @@ GL3_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			gl3model_t *currentmodel = currententity->model;
+			gl3model_t *currentmodel = currententity->model[0];
 
 			if (!currentmodel)
 			{

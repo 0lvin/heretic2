@@ -377,12 +377,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client icon ref_gl1
+.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft
 
 # ----------
 
 # Builds everything
-all: config client ref_gl1
+all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft
 
 # ----------
 

@@ -42,6 +42,7 @@ extern cvar_t	*sw_custom_particles;
 static void
 R_DrawParticle(particle_t *pparticle, int level)
 {
+#if 0
 	vec3_t		local, transformed;
 	float		zi;
 	byte		*pdest;
@@ -218,6 +219,7 @@ R_DrawParticle(particle_t *pparticle, int level)
 			break;
 		}
 	}
+#endif
 }
 
 /*
@@ -231,6 +233,7 @@ R_DrawParticle(particle_t *pparticle, int level)
 void
 R_DrawParticles (void)
 {
+#if 0
 	particle_t *p;
 	int         i;
 
@@ -251,4 +254,5 @@ R_DrawParticles (void)
 
 		R_DrawParticle(p, level);
 	}
+#endif
 }
