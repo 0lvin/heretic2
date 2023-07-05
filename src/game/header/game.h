@@ -431,7 +431,6 @@ enum
 	EAX_PSYCHOTIC,
 };
 
-#define ENTITY_FX_BUF_BLOCK_SIZE	256
 #define MAX_PERSISTANT_EFFECTS		512
 
 typedef struct PerEffectsBuffer_s

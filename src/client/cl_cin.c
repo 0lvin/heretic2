@@ -528,7 +528,6 @@ SCR_RunCinematic(void)
 	}
 
 	frame = (cls.realtime - cl.cinematictime) * cin.fps / 1000;
-	printf("\n%s:%d\n", __func__, frame);
 
 	if (frame <= cl.cinematicframe)
 	{
@@ -747,6 +746,8 @@ SCR_PlayCinematic(char *arg)
 			cl.cinematictime = 0; /* done */
 			return;
 		}
+
+		SCR_EndLoadingPlaque();
 
 		smk_info_audio(cin.video, &trackmask, channels, depth, rate);
 		if (trackmask != SMK_AUDIO_TRACK_0)

@@ -143,10 +143,6 @@ cvar_t *gl1_stereo_convergence;
 
 refimport_t ri;
 
-cvar_t *vid_renderer;
-cvar_t *gl_drawbuffer;
-cvar_t *gl_lightmap;
-cvar_t *r_shadows;
 cvar_t* r_fog_underwater_density;
 cvar_t* r_fog_underwater_color_r;
 cvar_t* r_fog_underwater_color_g;
@@ -158,8 +154,6 @@ cvar_t* r_fog_underwater_color_a;
 #include "../../../../h2common/angles.h"
 
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
-
-void R_Clear (void);
 
 void
 R_RotateForEntity(entity_t *e)
@@ -1306,8 +1300,6 @@ R_Register(void)
 	r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
 
 	gl1_saturatelighting = ri.Cvar_Get("gl1_saturatelighting", "0", 0);
-
-	vid_renderer = ri.Cvar_Get("vid_renderer", "soft", CVAR_ARCHIVE );
 
 	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
 	vid_gamma = ri.Cvar_Get("vid_gamma", "1.2", CVAR_ARCHIVE);

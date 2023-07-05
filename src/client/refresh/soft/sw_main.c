@@ -2486,7 +2486,7 @@ Sys_Error (char *error, ...)
 void
 Com_Printf(char *msg, ...)
 {
-	va_list	argptr;
+	va_list argptr;
 	va_start(argptr, msg);
 	ri.Com_VPrintf(PRINT_ALL, msg, argptr);
 	va_end(argptr);

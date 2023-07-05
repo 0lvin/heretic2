@@ -730,13 +730,6 @@ typedef struct
 	qboolean (*InCameraPVS)(vec3_t point);
 } client_fx_import_t;
 
-// this is the only function actually exported at the linker level
-typedef	client_fx_export_t (*GetfxAPI_t) (client_fx_import_t);
-
-#define ENTITY_FX_BUF_BLOCK_SIZE 256
-
-extern struct ResourceManager_s cl_FXBufMngr;
-
 // ********************************************************************************************
 // CF_XXX
 // ------
@@ -749,26 +742,6 @@ extern struct ResourceManager_s cl_FXBufMngr;
 
 //=================================================
 
-extern	cvar_t	*cl_maxfps;
-extern	cvar_t	*cl_frametime;
-extern	cvar_t	*cl_predict_local;
-extern	cvar_t	*cl_predict_remote;
-extern	cvar_t *mouse_sensitivity_x;
-extern	cvar_t *mouse_sensitivity_y;
-extern	cvar_t *doubletap_speed;
-extern	cvar_t *cl_freezeworld;
-
-extern cvar_t *cl_playertrans;
-
-extern cvar_t *cl_cinematicfreeze;
-extern cvar_t *shownames;
-extern cvar_t *autoweapon;
-extern cvar_t *cl_showcaptions;
-
-extern cvar_t *game_downloadable_type;
-
-extern refexport_t		re;				// interface to refresh DLL.
-extern player_export_t	playerExport;	// interface to player DLL.
 char *CL_GetLevelString(int i);
 char *CL_GetLevelWav(int i);
 void CL_LoadStrings(void);
