@@ -27,8 +27,6 @@
 #define MAX_SHADOW_DIST 128
 #define SHADOW_HEIGHT 0.5
 
-extern int	ref_soft;
-
 #define	NUM_SHADOW_MODELS	1
 
 static struct model_s *shadow_models[NUM_SHADOW_MODELS];
@@ -70,7 +68,7 @@ static qboolean FXShadowUpdate(struct client_entity_s *self, centity_t *owner)
 	// Did hit the ground
 	self->alpha = (1.0 - trace.fraction) * 0.5 + 0.01;
 	// if we are in ref soft, bring us out a touch, since we are having z buffer problems
-	if (ref_soft)
+	if (r_detail->value != DETAIL_HIGH)
 	{
 		// Raise the shadow slightly off the target wall
 		VectorMA(trace.endpos, 0.9, trace.plane.normal, self->r.origin);
@@ -135,7 +133,7 @@ static qboolean FXShadowReferenceUpdate(struct client_entity_s *self, centity_t 
 	// Did hit the ground
 	self->alpha = (1.0 - trace.fraction) * 0.8 + 0.01;
 	self->r.scale = (1.0 - trace.fraction) * 0.8;
-	if (ref_soft)
+	if (r_detail->value != DETAIL_HIGH)
 	{
 		// Raise the shadow slightly off the target wall
 		VectorMA(trace.endpos, 0.9, trace.plane.normal, self->r.origin);

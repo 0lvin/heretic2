@@ -44,7 +44,6 @@ extern cvar_t  *cl_timedemo;
 extern cvar_t	*crosshair;
 cvar_t	*compass;
 
-int ref_soft;
 int	numprocessedparticles;
 int	numrenderedparticles;
 
@@ -634,12 +633,6 @@ AddServerEntities(frame_t *frame)
 	clientinfo_t		*ci;
 	int					clientnum;
 	qboolean			isPredictedPlayer;
-	cvar_t* vid_renderer;
-
-	// TODO: Rewrite
-	// Have to do _this here, since the init is loaded once, and the graphics dll might be reloaded.
-	vid_renderer = Cvar_Get( "vid_renderer", "soft", CVAR_ARCHIVE );
-	ref_soft = (strcmp("soft", vid_renderer->string)) ? 0 : 1;
 
 	fxi.cl->PIV = 0;
 

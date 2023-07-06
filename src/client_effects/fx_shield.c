@@ -22,8 +22,6 @@
 #define NUM_SHIELD_SPARKS	16
 #define SHIELD_TRAIL_SPEED	32.0
 
-extern int	ref_soft;
-
 #define	NUM_SHIELD_MODELS	1
 static struct model_s *shield_models[NUM_SHIELD_MODELS];
 void PreCacheShield()
@@ -53,7 +51,7 @@ static qboolean FXShieldSparkThink(struct client_entity_s *shield, centity_t *ow
 		part = PART_16x16_SPARK_B;
 		color.c = 0xffffffff;
 		// if we are in software, make the blue bits single point particles half the time
-		if (ref_soft)
+		if (r_detail->value != DETAIL_HIGH)
 		{
 			shield->SpawnInfo++;
 			if (shield->SpawnInfo & 1)

@@ -118,7 +118,6 @@ enum {
 	FX_MSSITHRA_ARROW_CHARGE,
 };
 
-extern int ref_soft;
 // ************************************************************************************************
 // FXMorkprojTrailElementThink
 // ************************************************************************************************
@@ -2261,7 +2260,7 @@ int FXCWUpdate (struct client_entity_s *self, centity_t *owner)
 
 	TrailEnt->radius = 2000;
 
-	if(ref_soft)
+	if (r_detail->value != DETAIL_HIGH)
 	{
 		TrailEnt->r.model = CW_models;
 		TrailEnt->r.scale = flrand(1.0, 2.5);

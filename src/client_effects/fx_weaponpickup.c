@@ -23,8 +23,6 @@
 
 #define	NUM_ITEMWEAPONS	7
 
-extern int ref_soft;
-
 static struct model_s *weapon_models[NUM_ITEMWEAPONS];
 
 void PreCacheItemWeapons()
@@ -87,7 +85,7 @@ static qboolean FXWeaponPickupThink(struct client_entity_s *self, centity_t *own
 		break;
 	}
 
-	if (ref_soft)
+	if (r_detail->value != DETAIL_HIGH)
 		part |= PFL_SOFT_MASK;
 	else
 		color.c = 0xffffffff;

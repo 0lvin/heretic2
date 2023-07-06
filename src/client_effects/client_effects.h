@@ -10,6 +10,12 @@
 #include "../../h2common/vector.h"
 #include "../client/header/client.h"
 
+#define DETAIL_LOW		0
+#define DETAIL_NORMAL	1
+#define DETAIL_HIGH		2
+#define DETAIL_UBERHIGH	3
+#define DETAIL_DEFAULT	"2.0"
+
 extern client_fx_import_t fxi;
 
 extern cvar_t	*r_farclipdist;

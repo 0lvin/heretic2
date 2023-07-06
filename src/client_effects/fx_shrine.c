@@ -612,10 +612,9 @@ void FXCreateLightning(struct client_entity_s *self, centity_t *owner)
 	vec3_t					dir;
 	int						lightning_count;
 	float						curAng;
-	extern int				ref_soft;
 
 	// create the lightning lines
-	if (ref_soft)
+	if (r_detail->value != DETAIL_HIGH)
 		lightning_count = 1;
 	else
 		lightning_count = irand(2,3);

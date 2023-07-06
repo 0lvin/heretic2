@@ -274,13 +274,6 @@
 #define NEAR_CLIP_DIST "64.0"
 #define NEAR_CLIP_DIST_VAL 64.0
 
-#define DETAIL_LOW		0
-#define DETAIL_NORMAL	1
-#define DETAIL_HIGH		2
-#define DETAIL_UBERHIGH	3
-
-#define DETAIL_DEFAULT	"2.0"
-
 #define VIOLENCE_NONE	0
 #define VIOLENCE_BLOOD	1
 #define VIOLENCE_NORMAL	2

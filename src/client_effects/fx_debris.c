@@ -33,7 +33,6 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner);
 qboolean FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner);
 
-extern int ref_soft;
 //------------------------------------------------------------------
 //	FX Debris base info
 //------------------------------------------------------------------
@@ -424,7 +423,7 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 		}
 		else
 		{
-			if(!ref_soft && r_detail->value == DETAIL_HIGH)
+			if (r_detail->value == DETAIL_HIGH)
 			{//uberhigh?
 				paletteRGBA_t	color;
 
@@ -546,7 +545,7 @@ client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float k
 
 	if(flags&CEF_FLAG6)//on fire- dynamic light
 	{
-		if(flags&CEF_FLAG7)//high detail, non-ref_soft?
+		if(flags&CEF_FLAG7)//high detail
 		{//uberhigh?
 			paletteRGBA_t	color;
 
@@ -577,7 +576,7 @@ void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int mater
 	vec3_t				holdorigin, start;
 	trace_t				trace;
 
-	if(flags&CEF_FLAG6)//onfire, check for highdetail, non-ref_soft
+	if(flags&CEF_FLAG6)//onfire, check for highdetail
 	{
 		//Not-very-perfect way of doing a pointcontents from the FX dll
 		VectorCopy(origin, start);
@@ -589,7 +588,7 @@ void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int mater
 		}
 		else
 		{
-			if(!ref_soft && r_detail->value == DETAIL_HIGH)
+			if (r_detail->value == DETAIL_HIGH)
 				flags|=CEF_FLAG7;//do dynamic light and blood trail
 		}
 	}
@@ -632,7 +631,7 @@ void FXDebris_SpawnFleshChunks(int type, int flags, vec3_t origin, int num, int 
 	vec3_t				holdorigin, start;
 	trace_t				trace;
 
-	if(flags&CEF_FLAG6)//onfire, check for highdetail, non-ref_soft
+	if(flags&CEF_FLAG6)//onfire, check for highdetail
 	{
 		//Not-very-perfect way of doing a pointcontents from the FX dll
 		VectorCopy(origin, start);
@@ -644,7 +643,7 @@ void FXDebris_SpawnFleshChunks(int type, int flags, vec3_t origin, int num, int 
 		}
 		else
 		{
-			if(!ref_soft && r_detail->value == DETAIL_HIGH)
+			if (r_detail->value == DETAIL_HIGH)
 				flags|=CEF_FLAG7;//do dynamic light and blood trail
 		}
 	}
@@ -695,7 +694,7 @@ void FXDebris(centity_t *owner, int type, int flags, vec3_t origin)
 		num = ClampI(size, 1, 5);
 	else if(r_detail->value == DETAIL_NORMAL)
 		num = ClampI(size, 1, 12);
-	else if(r_detail->value == DETAIL_HIGH)
+	else if (r_detail->value == DETAIL_HIGH)
 		num = ClampI(size, 1, 16);
 	else
 		num = ClampI(size, 1, 24);
@@ -735,7 +734,7 @@ void FXFleshDebris(centity_t *owner, int type, int flags, vec3_t origin)
 		num = ClampI(size, 1, 5);
 	else if(r_detail->value == DETAIL_NORMAL)
 		num = ClampI(size, 1, 12);
-	else if(r_detail->value == DETAIL_HIGH)
+	else if (r_detail->value == DETAIL_HIGH)
 		num = ClampI(size, 1, 16);
 	else
 		num = ClampI(size, 1, 24);

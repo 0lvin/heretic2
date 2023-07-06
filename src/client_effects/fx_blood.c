@@ -20,8 +20,6 @@
 #define NUM_BLOOD_SPURT_PARTS		20
 #define NUM_INSECT_BLOOD_PARTICLES	12
 
-extern int ref_soft;
-
 #define	NUM_BLOOD_MODELS	2
 static struct model_s *splat_models[NUM_BLOOD_MODELS];
 void PreCacheSplat()
@@ -74,7 +72,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 		case 0:	// Tiny particles.
 			for (j=0; j<6; j++)
 			{
-				if (ref_soft)
+				if (r_detail->value != DETAIL_HIGH)
 				{
 					if(yellow_blood)
 						bpart = PART_4x4_GREENBLOOD1;
@@ -100,7 +98,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 		case 1:	// Some larger globs
 			for (j=0; j<3; j++)
 			{
-				if (ref_soft)
+				if (r_detail->value != DETAIL_HIGH)
 				{
 					if(yellow_blood)
 						bpart = PART_8x8_GLOBBIT1;
@@ -190,7 +188,7 @@ void DoBloodTrail(client_entity_t *spawner, int amount)
 		case 0:	// Tiny particles.
 			for (j=0; j<3; j++)
 			{
-				if (ref_soft)
+				if (r_detail->value != DETAIL_HIGH)
 				{
 					if(yellow_blood)
 						drop = ClientParticle_new(InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)] | PFL_SOFT_MASK, pal2, 800);
@@ -276,7 +274,7 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 		return true;
 	while(self->SpawnInfo>0)
 	{
-		if (ref_soft)
+		if (r_detail->value != DETAIL_HIGH)
 		{
 			if(yellow_blood)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
@@ -334,7 +332,7 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 	num_drips = irand(7, 15);
 	for(i = 0; i < num_drips; i++)
 	{
-		if (ref_soft)
+		if (r_detail->value != DETAIL_HIGH)
 		{
 			if(yellow_blood)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
