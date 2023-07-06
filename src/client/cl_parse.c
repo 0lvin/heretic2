@@ -75,6 +75,18 @@ CL_RegisterSounds(void)
 	int i;
 
 	S_BeginRegistration();
+
+	for (i = 1; i < MAX_SOUNDS; i++)
+	{
+		if (!cl.configstrings[CS_SOUNDS + i][0])
+		{
+			break;
+		}
+
+		cl.sound_precache[i] = S_RegisterSound(cl.configstrings[CS_SOUNDS + i]);
+		IN_Update();
+	}
+
 	fxe.RegisterSounds();
 	S_EndRegistration();
 }
@@ -405,18 +417,16 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 
 			fxe.RemoveClientEffects(&cl_entities[newnum]);
 
-			if (oldframe)
+			if (oldindex >= oldframe->num_entities)
 			{
-				if (oldindex >= oldframe->num_entities)
-				{
-					oldnum = 99999;
-				}
-				else
-				{
-					oldstate = &cl_parse_entities[(oldframe->parse_entities +
+				oldnum = 99999;
+			}
+
+			else
+			{
+				oldstate = &cl_parse_entities[(oldframe->parse_entities +
 										oldindex) & (MAX_PARSE_ENTITIES - 1)];
-					oldnum = oldstate->number;
-				}
+				oldnum = oldstate->number;
 			}
 
 			continue;
@@ -780,6 +790,9 @@ CL_ParseServerData(void)
 	extern cvar_t *fs_gamedirvar;
 	char *str;
 	int i;
+
+	/* Clear all key states */
+	In_FlushQueue();
 
 	Com_DPrintf("Serverdata packet received.\n");
 

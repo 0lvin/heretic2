@@ -25,11 +25,11 @@
  */
 
 #include "header/server.h"
- 
+
 #ifndef DEDICATED_ONLY
 void SCR_DebugGraph(float value, int color);
 #endif
- 
+
 game_export_t *ge;
 
 /*
@@ -222,55 +222,55 @@ PF_Configstring(int index, char *val)
 void
 PF_WriteChar(int c)
 {
-	MSG_WriteChar(&sv.multicast, c); 
+	MSG_WriteChar(&sv.multicast, c);
 }
 
 void
 PF_WriteByte(int c)
 {
-	MSG_WriteByte(&sv.multicast, c); 
+	MSG_WriteByte(&sv.multicast, c);
 }
 
 void
 PF_WriteShort(int c)
 {
-	MSG_WriteShort(&sv.multicast, c); 
+	MSG_WriteShort(&sv.multicast, c);
 }
 
 void
 PF_WriteLong(int c)
 {
-	MSG_WriteLong(&sv.multicast, c); 
+	MSG_WriteLong(&sv.multicast, c);
 }
 
 void
 PF_WriteFloat(float f)
 {
-	MSG_WriteFloat(&sv.multicast, f); 
+	MSG_WriteFloat(&sv.multicast, f);
 }
 
 void
 PF_WriteString(char *s)
 {
-	MSG_WriteString(&sv.multicast, s); 
+	MSG_WriteString(&sv.multicast, s);
 }
 
 void
 PF_WritePos(vec3_t pos)
 {
-	MSG_WritePos(&sv.multicast, pos); 
+	MSG_WritePos(&sv.multicast, pos);
 }
 
 void
 PF_WriteDir(vec3_t dir)
 {
-	MSG_WriteDir(&sv.multicast, dir); 
+	MSG_WriteDir(&sv.multicast, dir);
 }
 
 void
 PF_WriteAngle(float f)
 {
-	MSG_WriteAngle(&sv.multicast, f); 
+	MSG_WriteAngle(&sv.multicast, f);
 }
 
 /*
@@ -416,83 +416,128 @@ SV_LevelMsgCenterPrintf(edict_t* ent, short msg)
 void
 SV_BroadcastObituary(int printlevel, short stringid, short client1, short client2)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void
 SV_CreateEffectEvent(byte EventId, entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void
 SV_RemoveEffectsEvent(byte EventId, entity_state_t* ent, int type)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void
 SV_GameMsgCenterPrintf(edict_t* ent, short msg)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void SV_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void SV_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void SV_CaptionPrintf(edict_t* ent, short msg)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void SV_ChangeCDTrack(edict_t* ent, int track, int loop)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void SV_CLPrintf(edict_t* ent, edict_t* from, int color, char* fmt, ...)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 qboolean SV_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 	return false;
 }
 
 qboolean SV_CheckDistances(vec3_t origin, float dist)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 	return false;
 }
 
 qboolean SV_RemovePersistantEffect(int toRemove, int call_from)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 	return false;
 }
 
 void SV_ModelRemove(char* name)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void SV_SoundRemove(char* name)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void SV_CleanLevel(void)
 {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void SV_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs)

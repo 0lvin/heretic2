@@ -669,6 +669,11 @@ AddServerEntities(frame_t *frame)
 	{
 		s1 = fxi.parse_entities + ((frame->parse_entities + pnum) & (MAX_PARSE_ENTITIES - 1));
 
+		if (s1->frame > 1024 && pnum == 0)
+		{
+			printf("%s, %p: set %d\n", __func__, ent, s1->frame);
+		}
+
 		cent = fxi.server_entities + s1->number;
 
 		cent->s1=s1;
@@ -715,11 +720,6 @@ AddServerEntities(frame_t *frame)
 		else
 		{
 			ent->frame = s1->frame;
-
-			if (ent->frame > 450)
-			{
-				printf("%p: set %d => %d\n", ent, ent->frame, ent->oldframe);
-			}
 		}
 
 		// Handle flex-model nodes.

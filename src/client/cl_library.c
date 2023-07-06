@@ -104,40 +104,75 @@ void CL_ShutdownClientEffects()
 	fxe.ShutDown();
 }
 
-qboolean InCameraPVS(vec3_t point) {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+qboolean
+InCameraPVS(vec3_t point)
+{
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 	return true;
 }
 
 // Screen flash set
-void Activate_Screen_Flash(int color) {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+void
+Activate_Screen_Flash(int color)
+{
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 // Screen flash set
-void Activate_Screen_Shake(float intensity, float duration, float current_time, int flags) {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+void
+Activate_Screen_Shake(float intensity, float duration, float current_time, int flags)
+{
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 // Screen flash unset
-void Deactivate_Screen_Flash(void) {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+void
+Deactivate_Screen_Flash(void)
+{
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
-void Deactivate_Screen_Shake(void) {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+void
+Deactivate_Screen_Shake(void)
+{
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
-qboolean Get_Crosshair(vec3_t origin, byte* type) {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+qboolean
+Get_Crosshair(vec3_t origin, byte* type)
+{
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 	return true;
 }
 
-trace_t		CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
+trace_t CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 
 trace_t
-CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags) {
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
+CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags)
+{
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
+
 	return CL_PMTrace(start, mins, maxs, end); // jmarshall: incomplete
 }
 

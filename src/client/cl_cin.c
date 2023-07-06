@@ -748,6 +748,7 @@ SCR_PlayCinematic(char *arg)
 		}
 
 		SCR_EndLoadingPlaque();
+		cls.state = ca_active;
 
 		smk_info_audio(cin.video, &trackmask, channels, depth, rate);
 		if (trackmask != SMK_AUDIO_TRACK_0)
