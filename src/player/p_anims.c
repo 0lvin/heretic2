@@ -19,7 +19,7 @@
 #include "../common/header/common.h"
 #include "../../h2common/effectflags.h"
 
-PLAYER_API void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
+void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
 {
 	assert(playerinfo);
 
@@ -42,7 +42,7 @@ PLAYER_API void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
 		playerinfo->upperidle = true;
 }
 
-PLAYER_API void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
+void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 {
 	paceldata_t *seqdata;
 
@@ -105,7 +105,7 @@ PLAYER_API void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 	}
 }
 
-PLAYER_API void PlayerBasicAnimReset(playerinfo_t *playerinfo)
+void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 {
 	PlayerAnimSetLowerSeq(playerinfo, ASEQ_STAND);
 	playerinfo->lowerframeptr = playerinfo->lowermove->frame;
@@ -132,7 +132,7 @@ PLAYER_API void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
 }
 
-PLAYER_API void PlayerAnimReset(playerinfo_t *playerinfo)
+void PlayerAnimReset(playerinfo_t *playerinfo)
 {
 	PlayerAnimSetLowerSeq(playerinfo, ASEQ_STAND);
 	playerinfo->lowerframeptr = playerinfo->lowermove->frame;
@@ -201,7 +201,7 @@ int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo)
 	return ASEQ_NONE;
 }
 
-PLAYER_API void PlayerAnimUpperIdle(playerinfo_t *playerinfo)
+void PlayerAnimUpperIdle(playerinfo_t *playerinfo)
 {
 	int ret;
 
@@ -215,7 +215,7 @@ PLAYER_API void PlayerAnimUpperIdle(playerinfo_t *playerinfo)
 	assert(playerinfo->uppermove);
 }
 
-PLAYER_API void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
+void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 {
 	int ret;
 
@@ -337,7 +337,7 @@ PLAYER_API void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 	}
 }
 
-PLAYER_API void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
+void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
 {
 	seqctrl_t *seqctrl;
 
@@ -404,7 +404,7 @@ PLAYER_API void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
 	PlayerAnimSetUpperSeq(playerinfo, newseq);
 }
 
-PLAYER_API void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
+void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 {
 	seqctrl_t	*seqctrl;
 	paceldata_t *seqdata;
@@ -499,7 +499,7 @@ PLAYER_API void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 	PlayerAnimSetLowerSeq(playerinfo, newseq);
 }
 
-PLAYER_API void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
+void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 {
 	assert(playerinfo);
 
@@ -516,7 +516,7 @@ PLAYER_API void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 		playerinfo->waterlevel = 1;
 }
 
-PLAYER_API void PlayerPlayPain(playerinfo_t *playerinfo, int type)
+void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 {
 	int chance = irand(0,100);
 

@@ -802,7 +802,7 @@ GAME_OBJS_ = \
 	src/game/g_trigger.o \
 	src/game/g_turret.o \
 	src/game/g_utils.o \
-	src/game/g_weapon.o \
+	src/game/player/weapon.o \
 	src/game/monster/berserker/berserker.o \
 	src/game/monster/boss2/boss2.o \
 	src/game/monster/boss3/boss3.o \
@@ -1056,7 +1056,7 @@ CLIENT_OBJS_ := \
 	src/game/g_phys.o \
 	src/game/g_resourcemanagers.o \
 	src/game/g_rope.o \
-	src/game/g_save.o \
+	src/game/savegame/savegame.o \
 	src/game/g_shrine.o \
 	src/game/g_skeletons.o \
 	src/game/g_spawnf.o \
@@ -1067,79 +1067,79 @@ CLIENT_OBJS_ := \
 	src/game/g_trigger.o \
 	src/game/g_utils.o \
 	src/game/g_waterfx.o \
-	src/game/g_weapon.o \
-	src/game/m_assassin_anim.o \
-	src/game/m_assassin.o \
-	src/game/m_beast_anim.o \
-	src/game/m_beast.o \
-	src/game/m_bee.o \
-	src/game/m_chicken_anim.o \
-	src/game/m_chicken.o \
-	src/game/m_elflord_anims.o \
-	src/game/m_elflord.o \
-	src/game/m_fish_anim.o \
-	src/game/m_fish.o \
-	src/game/m_fmtest.o \
+	src/game/player/weapon.o \
+	src/game/monster/assassin/assassin_anim.o \
+	src/game/monster/assassin/assassin.o \
+	src/game/monster/beast/beast_anim.o \
+	src/game/monster/beast/beast.o \
+	src/game/monster/bee/bee.o \
+	src/game/monster/chicken/chicken_anim.o \
+	src/game/monster/chicken/chicken.o \
+	src/game/monster/elflord/elflord_anims.o \
+	src/game/monster/elflord/elflord.o \
+	src/game/monster/fish/fish_anim.o \
+	src/game/monster/fish/fish.o \
+	src/game/monster/misc/fmtest.o \
 	src/game/mg_ai.o \
 	src/game/mg_guide.o \
-	src/game/m_gkrokon_anim.o \
-	src/game/m_gkrokon.o \
-	src/game/m_gorgon_anim.o \
-	src/game/m_gorgon.o \
-	src/game/m_harpy_anim.o \
-	src/game/m_harpy.o \
-	src/game/m_imp_anim.o \
-	src/game/m_imp.o \
-	src/game/m_morcalavin_anim.o \
-	src/game/m_morcalavin.o \
-	src/game/m_mother_anim.o \
-	src/game/m_mother.o \
-	src/game/m_move.o \
-	src/game/m_mssithra_anim.o \
-	src/game/m_mssithra.o \
-	src/game/m_ogle_anim.o \
-	src/game/m_ogle.o \
-	src/game/m_plagueelf_anim.o \
-	src/game/m_plagueelf.o \
-	src/game/m_plaguessithra_anim.o \
-	src/game/m_plaguessithra.o \
-	src/game/m_priestess_anim.o \
-	src/game/m_priestess.o \
-	src/game/m_rat_anim.o \
-	src/game/m_rat.o \
-	src/game/m_seraph_anim.o \
-	src/game/m_seraph_guard_anim.o \
-	src/game/m_seraph_guard.o \
-	src/game/m_seraph.o \
-	src/game/m_spreader_anim.o \
-	src/game/m_spreadermist.o \
-	src/game/m_spreader.o \
-	src/game/m_stats.o \
-	src/game/m_tcheckrik_anim.o \
-	src/game/m_tcheckrik.o \
-	src/game/m_tcheckrik_spells.o \
+	src/game/monster/gkrokon/gkrokon_anim.o \
+	src/game/monster/gkrokon/gkrokon.o \
+	src/game/monster/gorgon/gorgon_anim.o \
+	src/game/monster/gorgon/gorgon.o \
+	src/game/monster/harpy/harpy_anim.o \
+	src/game/monster/harpy/harpy.o \
+	src/game/monster/imp/imp_anim.o \
+	src/game/monster/imp/imp.o \
+	src/game/monster/morcalavin/morcalavin_anim.o \
+	src/game/monster/morcalavin/morcalavin.o \
+	src/game/monster/mother/mother_anim.o \
+	src/game/monster/mother/mother.o \
+	src/game/monster/misc/move.o \
+	src/game/monster/mssithra/mssithra_anim.o \
+	src/game/monster/mssithra/mssithra.o \
+	src/game/monster/ogle/ogle_anim.o \
+	src/game/monster/ogle/ogle.o \
+	src/game/monster/plagueelf/plagueelf_anim.o \
+	src/game/monster/plagueelf/plagueelf.o \
+	src/game/monster/plaguessithra/plaguessithra_anim.o \
+	src/game/monster/plaguessithra/plaguessithra.o \
+	src/game/monster/priestess/priestess_anim.o \
+	src/game/monster/priestess/priestess.o \
+	src/game/monster/rat/rat_anim.o \
+	src/game/monster/rat/rat.o \
+	src/game/monster/seraph/seraph_anim.o \
+	src/game/monster/seraph/seraph_guard_anim.o \
+	src/game/monster/seraph/seraph_guard.o \
+	src/game/monster/seraph/seraph.o \
+	src/game/monster/spreader/spreader_anim.o \
+	src/game/monster/spreader/spreadermist.o \
+	src/game/monster/spreader/spreader.o \
+	src/game/monster/stats/stats.o \
+	src/game/monster/tcheckrik/tcheckrik_anim.o \
+	src/game/monster/tcheckrik/tcheckrik.o \
+	src/game/monster/tcheckrik/tcheckrik_spells.o \
 	src/game/player/client.o \
 	src/game/player/funcs.o \
 	src/game/player/hud.o \
 	src/game/player/item.o \
 	src/game/player/view.o \
-	src/game/spl_blast.o \
-	src/game/spl_bluering.o \
-	src/game/spl_flyingfist.o \
-	src/game/spl_hellstaff.o \
-	src/game/spl_maceballs.o \
-	src/game/spl_magicmissile.o \
-	src/game/spl_meteorbarrier.o \
-	src/game/spl_morph.o \
-	src/game/spl_phoenix.o \
-	src/game/spl_powerup.o \
-	src/game/spl_redrain.o \
-	src/game/spl_ripper.o \
-	src/game/spl_shield.o \
-	src/game/spl_sphereofannihlation.o \
-	src/game/spl_teleport.o \
-	src/game/spl_tornado.o \
-	src/game/spl_wall.o \
+	src/game/spell/blast.o \
+	src/game/spell/bluering.o \
+	src/game/spell/flyingfist.o \
+	src/game/spell/hellstaff.o \
+	src/game/spell/maceballs.o \
+	src/game/spell/magicmissile.o \
+	src/game/spell/meteorbarrier.o \
+	src/game/spell/morph.o \
+	src/game/spell/phoenix.o \
+	src/game/spell/powerup.o \
+	src/game/spell/redrain.o \
+	src/game/spell/ripper.o \
+	src/game/spell/shield.o \
+	src/game/spell/sphereofannihlation.o \
+	src/game/spell/teleport.o \
+	src/game/spell/tornado.o \
+	src/game/spell/wall.o \
 	src/player/p_actions.o \
 	src/player/p_animactor.o \
 	src/player/p_anim_branch.o \

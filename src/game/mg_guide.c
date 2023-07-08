@@ -27,7 +27,7 @@
 #include "../../h2common/h2rand.h"
 #include "header/buoy.h"
 #include "header/g_monster.h"
-#include "header/m_stats.h"
+#include "monster/stats/stats.h"
 #include "../../h2common/fx.h"
 #include "header/mg_guide.h"
 

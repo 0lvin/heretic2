@@ -20,8 +20,8 @@
 #include "../game/header/g_itemstats.h"
 #include "../../h2common/cl_strings.h"
 
-PLAYER_API int		p_num_items=0;
-PLAYER_API gitem_t	*p_itemlist=NULL;
+int		p_num_items=0;
+gitem_t	*p_itemlist=NULL;
 
 // ************************************************************************************************
 // itemlist
@@ -1290,14 +1290,15 @@ static gitem_t itemlist[]=
 // ---------
 // ************************************************************************************************
 
-PLAYER_API void InitItems(void)
+void InitItems(void)
 {
 	p_itemlist=itemlist;
 	p_num_items=(sizeof(itemlist)/sizeof(itemlist[0]))-1;
 }
 
 
-PLAYER_API	int GetItemIndex(gitem_t* x)
+int
+GetItemIndex(gitem_t* x)
 {
 	if(!x) return(0);
 
@@ -1311,7 +1312,8 @@ PLAYER_API	int GetItemIndex(gitem_t* x)
 // --------------
 // ************************************************************************************************
 
-PLAYER_API gitem_t *GetItemByIndex(int Index)
+gitem_t *
+GetItemByIndex(int Index)
 {
 	if((Index==0)||(Index>=p_num_items))
 		return(NULL);
@@ -1324,7 +1326,7 @@ PLAYER_API gitem_t *GetItemByIndex(int Index)
 // -------------------
 // ************************************************************************************************
 
-PLAYER_API gitem_t *FindItemByClassname(char *Classname)
+gitem_t *FindItemByClassname(char *Classname)
 {
 	int		I;
 	gitem_t	*Item;
@@ -1348,7 +1350,7 @@ PLAYER_API gitem_t *FindItemByClassname(char *Classname)
 // --------
 // ************************************************************************************************
 
-PLAYER_API gitem_t *FindItem(char *PickupName)
+gitem_t *FindItem(char *PickupName)
 {
 	int		I;
 	gitem_t	*Item;

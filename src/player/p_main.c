@@ -13,7 +13,7 @@
 #include "p_weapon.h"
 #include "p_types.h"
 #include "../../h2common/fx.h"
-#include "../game/header/m_player.h"
+#include "../game/monster/misc/player.h"
 #include "../common/header/common.h"
 
 //FIXME:  Include header
@@ -22,7 +22,7 @@ qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);
 
 void FMNodeUpdate(playerinfo_t *playerinfo,int weapon,int armor);
 
-PLAYER_API void PlayerInit(playerinfo_t *playerinfo, int complete_reset)
+void PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 {
 	if(!complete_reset)
 		PlayerBasicAnimReset(playerinfo);
@@ -32,7 +32,7 @@ PLAYER_API void PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 	playerinfo->flags=PLAYER_FLAG_NONE;
 }
 
-PLAYER_API void PlayerClearEffects(playerinfo_t *playerinfo)
+void PlayerClearEffects(playerinfo_t *playerinfo)
 {
 	// Remove all special effects from the player.
 
@@ -46,7 +46,7 @@ PLAYER_API void PlayerClearEffects(playerinfo_t *playerinfo)
 									 FX_REMOVE_EFFECTS);
 }
 
-PLAYER_API void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
+void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 {
 	usercmd_t *pcmd;
 
@@ -229,7 +229,7 @@ int PlayerCheckSlide(playerinfo_t *playerinfo)
 	return false;
 }
 
-PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo)
+void PlayerUpdate(playerinfo_t *playerinfo)
 {
 	int		slideseq;
 	vec3_t	endpos;
@@ -331,7 +331,7 @@ PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo)
 }
 
 // This function should be called anytime the player's skin, armor, weapon, damaged parts, etc are changed.
-PLAYER_API void
+void
 PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 {
 	/*

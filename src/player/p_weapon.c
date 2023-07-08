@@ -23,7 +23,7 @@ qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);
 // availability first anyhow.
 // ************************************************************************************************
 
-PLAYER_API void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
+void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 {
 
 //	gi.dprintf("Weapon=%s\n",Weapon->pickup_name);
@@ -53,7 +53,7 @@ PLAYER_API void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 // ----------------------
 // ************************************************************************************************
 
-PLAYER_API void Weapon_EquipSwordStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
+void Weapon_EquipSwordStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 {
 	assert(playerinfo);
 
@@ -81,7 +81,7 @@ PLAYER_API void Weapon_EquipSwordStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 // -----------------
 // ************************************************************************************************
 
-PLAYER_API void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon)
+void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon)
 {
 	assert(playerinfo);
 
@@ -126,7 +126,7 @@ PLAYER_API void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon)
 // ---------------------
 // ************************************************************************************************
 
-PLAYER_API void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
+void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 {
 	gitem_t	*AmmoItem;
 	int		AmmoIndex;
@@ -167,7 +167,7 @@ PLAYER_API void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 // ---------------
 // ************************************************************************************************
 
-PLAYER_API void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon)
+void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon)
 {
 
 	gitem_t	*AmmoItem;
@@ -213,7 +213,7 @@ PLAYER_API void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon)
 // ---------------
 // ************************************************************************************************
 
-PLAYER_API void Weapon_EquipArmor(playerinfo_t *playerinfo,gitem_t *Weapon)
+void Weapon_EquipArmor(playerinfo_t *playerinfo,gitem_t *Weapon)
 {
 	assert(playerinfo);
 
@@ -238,7 +238,7 @@ PLAYER_API void Weapon_EquipArmor(playerinfo_t *playerinfo,gitem_t *Weapon)
 // in respect to the amount of ammo for that weapon that the player has in their inventory.
 // ************************************************************************************************
 
-PLAYER_API int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
+int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 {
 	gitem_t	*Weapon,
 			*AmmoItem;
@@ -269,7 +269,7 @@ PLAYER_API int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 // in respect to the amount of ammo for that weapon that the player has in their inventory.
 // ************************************************************************************************
 
-PLAYER_API int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent)
+int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent)
 {
 	gitem_t	*Defence,
 			*ManaItem;

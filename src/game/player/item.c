@@ -7,7 +7,7 @@
 #include "../header/local.h"
 #include "../../player/player.h"
 #include "../../player/p_weapon.h"
-#include "../header/m_player.h"
+#include "../monster/misc/player.h"
 #include "../../../h2common/fx.h"
 #include "../../../h2common/matrix.h"
 #include "../header/g_skeletons.h"

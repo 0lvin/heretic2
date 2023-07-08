@@ -17,7 +17,7 @@
 #include "../common/header/common.h"
 #include "../game/header/g_physics.h"
 #include "p_anim_data.h"
-#include "../game/header/m_player.h"
+#include "../game/monster/misc/player.h"
 #include "../game/header/g_playstats.h"
 
 #define FALL_MINHEIGHT	34
@@ -239,7 +239,7 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 	BranchCheckDismemberAction
 -----------------------------------------------*/
 
-PLAYER_API qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon)
+qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon)
 {
 	//If these nodes are on, then any weapon selection is a valid one
 	if ( (!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) && (!(playerinfo->flags & PLAYER_FLAG_NO_LARM)) )

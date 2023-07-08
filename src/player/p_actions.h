@@ -127,13 +127,13 @@ void PlayerJumpNudge(playerinfo_t *playerinfo, float fwd, float right, float up)
 void PlayerActionCheckBranchWalking ( playerinfo_t *playerinfo );
 void PlayerActionCheckBranchRunningStrafe ( playerinfo_t *playerinfo );
 
-PLAYER_API void PlayerReleaseRope(playerinfo_t *playerinfo);
-PLAYER_API void KnockDownPlayer(playerinfo_t *playerinfo);
-PLAYER_API void PlayFly(playerinfo_t *playerinfo, float dist);
-PLAYER_API void PlaySlap(playerinfo_t *playerinfo, float dist);
-PLAYER_API void PlayScratch(playerinfo_t *playerinfo, float dist);
-PLAYER_API void PlaySigh(playerinfo_t *playerinfo, float dist);
-PLAYER_API void SpawnDustPuff(playerinfo_t *playerinfo, float dist);
+void PlayerReleaseRope(playerinfo_t *playerinfo);
+void KnockDownPlayer(playerinfo_t *playerinfo);
+void PlayFly(playerinfo_t *playerinfo, float dist);
+void PlaySlap(playerinfo_t *playerinfo, float dist);
+void PlayScratch(playerinfo_t *playerinfo, float dist);
+void PlaySigh(playerinfo_t *playerinfo, float dist);
+void SpawnDustPuff(playerinfo_t *playerinfo, float dist);
 
 qboolean PlayerActionCheckCreepMoveBack( playerinfo_t *playerinfo );
 qboolean PlayerActionCheckCreepMoveForward( playerinfo_t *playerinfo );
@@ -159,6 +159,6 @@ void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo);
 void PlayerActionCheckRun( playerinfo_t *playerinfo );
 // JWEIER NEW ACTIONS END
 
-extern PLAYER_API void PlayerInterruptAction(playerinfo_t *playerinfo);
+extern void PlayerInterruptAction(playerinfo_t *playerinfo);
 
 #endif //_P_ACTIONS2_H_

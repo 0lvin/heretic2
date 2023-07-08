@@ -47,11 +47,11 @@
 #define PLAYER_FLAG_KNOCKDOWN			0x08000000
 #define PLAYER_FLAG_RELEASEROPE			0x10000000
 
-extern PLAYER_API void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
-extern PLAYER_API void PlayerClearEffects(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerUpdate(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerUpdateCmdFlags(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerUpdateModelAttributes(playerinfo_t *playerinfo);
+extern void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
+extern void PlayerClearEffects(playerinfo_t *playerinfo);
+extern void PlayerUpdate(playerinfo_t *playerinfo);
+extern void PlayerUpdateCmdFlags(playerinfo_t *playerinfo);
+extern void PlayerUpdateModelAttributes(playerinfo_t *playerinfo);
 extern void PlayerSetHandFX(playerinfo_t *playerinfo, int handfxtype, int lifetime);
 
 // Information for creep fall checking.

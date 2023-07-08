@@ -25,11 +25,11 @@
  */
 
 #include "header/server.h"
-
+ 
 #ifndef DEDICATED_ONLY
 void SCR_DebugGraph(float value, int color);
 #endif
-
+ 
 game_export_t *ge;
 
 /*
@@ -222,55 +222,55 @@ PF_Configstring(int index, char *val)
 void
 PF_WriteChar(int c)
 {
-	MSG_WriteChar(&sv.multicast, c);
+	MSG_WriteChar(&sv.multicast, c); 
 }
 
 void
 PF_WriteByte(int c)
 {
-	MSG_WriteByte(&sv.multicast, c);
+	MSG_WriteByte(&sv.multicast, c); 
 }
 
 void
 PF_WriteShort(int c)
 {
-	MSG_WriteShort(&sv.multicast, c);
+	MSG_WriteShort(&sv.multicast, c); 
 }
 
 void
 PF_WriteLong(int c)
 {
-	MSG_WriteLong(&sv.multicast, c);
+	MSG_WriteLong(&sv.multicast, c); 
 }
 
 void
 PF_WriteFloat(float f)
 {
-	MSG_WriteFloat(&sv.multicast, f);
+	MSG_WriteFloat(&sv.multicast, f); 
 }
 
 void
 PF_WriteString(char *s)
 {
-	MSG_WriteString(&sv.multicast, s);
+	MSG_WriteString(&sv.multicast, s); 
 }
 
 void
 PF_WritePos(vec3_t pos)
 {
-	MSG_WritePos(&sv.multicast, pos);
+	MSG_WritePos(&sv.multicast, pos); 
 }
 
 void
 PF_WriteDir(vec3_t dir)
 {
-	MSG_WriteDir(&sv.multicast, dir);
+	MSG_WriteDir(&sv.multicast, dir); 
 }
 
 void
 PF_WriteAngle(float f)
 {
-	MSG_WriteAngle(&sv.multicast, f);
+	MSG_WriteAngle(&sv.multicast, f); 
 }
 
 /*

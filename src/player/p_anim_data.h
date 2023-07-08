@@ -59,9 +59,9 @@ enum trailtype_e
 extern char *SeqName[ASEQ_MAX];
 extern int PlayerAnimWeaponSwitchSeq[WEAPON_READY_MAX][WEAPON_READY_MAX];
 extern seqctrl_t SeqCtrl[ASEQ_MAX];
-extern PLAYER_API paceldata_t PlayerSeqData[ASEQ_MAX];
+extern paceldata_t PlayerSeqData[ASEQ_MAX];
 extern seqctrl_t ChickenCtrl[ASEQ_MAX];
-extern PLAYER_API paceldata_t PlayerChickenData[ASEQ_MAX];
+extern paceldata_t PlayerChickenData[ASEQ_MAX];
 
 extern panimmove_t
 	player_move_nothing,

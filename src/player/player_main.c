@@ -5,21 +5,21 @@
 #include "player.h"
 #include "p_anim_data.h"
 
-PLAYER_API void P_Init(void)
+void P_Init(void)
 {
 	InitItems();
 }
 
-PLAYER_API void P_Shutdown(void)
+void P_Shutdown(void)
 {
 }
 
-PLAYER_API gitem_t* GetPlayerItems(int* num)
+gitem_t* GetPlayerItems(int* num)
 {
 	return p_itemlist;
 }
 
-PLAYER_API player_export_t GetPlayerAPI(void)
+player_export_t GetPlayerAPI(void)
 {
 	player_export_t playerExport;
 

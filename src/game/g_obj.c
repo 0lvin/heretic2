@@ -9,11 +9,11 @@
 #include "../../h2common/fx.h"
 #include "header/g_misc.h"
 #include "header/g_defaultmessagehandler.h"
-#include "header/m_plagueelf_anim.h"
+#include "monster/plagueelf/plagueelf_anim.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/angles.h"
 #include "header/g_playstats.h"
-#include "header/m_stats.h"
+#include "monster/stats/stats.h"
 
 
 void SpawnFlame(edict_t *self,vec3_t origin);

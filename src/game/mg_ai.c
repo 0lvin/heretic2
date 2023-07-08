@@ -18,7 +18,7 @@
 #include "header/buoy.h"
 #include "header/g_hitlocation.h"
 #include "header/utilities.h"
-#include "header/m_stats.h"
+#include "monster/stats/stats.h"
 #include "header/g_playstats.h"
 #include "../../h2common/fx.h"
 

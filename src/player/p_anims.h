@@ -10,16 +10,16 @@
 
 #include "p_types.h"
 
-extern PLAYER_API void PlayerBasicAnimReset(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerAnimReset(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq);
-extern PLAYER_API void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq);
-extern PLAYER_API void PlayerAnimUpperIdle(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerAnimLowerIdle(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerAnimUpperUpdate(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerAnimLowerUpdate(playerinfo_t *playerinfo);
-extern PLAYER_API void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq);
-extern PLAYER_API void PlayerPlayPain(playerinfo_t *playerinfo, int type);
+extern void PlayerBasicAnimReset(playerinfo_t *playerinfo);
+extern void PlayerAnimReset(playerinfo_t *playerinfo);
+extern void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq);
+extern void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq);
+extern void PlayerAnimUpperIdle(playerinfo_t *playerinfo);
+extern void PlayerAnimLowerIdle(playerinfo_t *playerinfo);
+extern void PlayerAnimUpperUpdate(playerinfo_t *playerinfo);
+extern void PlayerAnimLowerUpdate(playerinfo_t *playerinfo);
+extern void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq);
+extern void PlayerPlayPain(playerinfo_t *playerinfo, int type);
 
 extern int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo);
 

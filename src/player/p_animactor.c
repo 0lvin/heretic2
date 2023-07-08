@@ -164,7 +164,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 	}
 }
 
-PLAYER_API void TurnOffPlayerEffects(playerinfo_t *playerinfo)
+void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 {
 	// Make sure all effects are removed.
 
@@ -250,7 +250,7 @@ PLAYER_API void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 	playerinfo->pers.handfxtype=HANDFX_NONE;
 }
 
-PLAYER_API void AnimUpdateFrame(playerinfo_t *playerinfo)
+void AnimUpdateFrame(playerinfo_t *playerinfo)
 {
 	panimmove_t	*move;
 	float		yaw_delta;
@@ -740,7 +740,7 @@ PLAYER_API void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 }
 
-PLAYER_API void PlayerFallingDamage(playerinfo_t *playerinfo)
+void PlayerFallingDamage(playerinfo_t *playerinfo)
 {
 	float		delta;
 	vec3_t		endpos;

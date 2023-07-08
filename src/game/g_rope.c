@@ -14,7 +14,7 @@
 #include "../player/p_anim_branch.h"
 #include "header/utilities.h"
 #include "../player/p_animactor.h"
-#include "header/m_chicken_anim.h"
+#include "monster/chicken/chicken_anim.h"
 #include "../../h2common/cl_strings.h"
 
 #define CHICKEN_KNOCKBACK	1

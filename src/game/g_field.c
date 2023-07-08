@@ -8,7 +8,7 @@
 #include "header/g_defaultmessagehandler.h"
 #include "../player/p_main.h"
 #include "header/buoy.h"
-#include "header/m_stats.h"
+#include "monster/stats/stats.h"
 #include "header/g_teleport.h"
 
 extern void SP_misc_teleporter (edict_t *self);

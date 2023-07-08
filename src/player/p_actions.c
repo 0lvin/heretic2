@@ -15,7 +15,7 @@
 #include "p_weapon.h"
 #include "../game/header/g_items.h"
 #include "surfaceprops.h"
-#include "../game/header/m_player.h"
+#include "../game/monster/misc/player.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 #include "../game/header/g_playstats.h"
@@ -3535,7 +3535,7 @@ void PlayerActionCheckRopeMove( playerinfo_t *playerinfo, float foo )
 	PlayerReleaseRope
 -----------------------------------------------*/
 
-PLAYER_API void PlayerReleaseRope(playerinfo_t *playerinfo)
+void PlayerReleaseRope(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 	playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
@@ -3545,7 +3545,7 @@ PLAYER_API void PlayerReleaseRope(playerinfo_t *playerinfo)
 	PlayerReleaseRope
 -----------------------------------------------*/
 
-PLAYER_API void KnockDownPlayer(playerinfo_t *playerinfo)
+void KnockDownPlayer(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
@@ -3561,7 +3561,7 @@ PLAYER_API void KnockDownPlayer(playerinfo_t *playerinfo)
 	PlayFly
 -----------------------------------------------*/
 
-PLAYER_API void PlayFly(playerinfo_t *playerinfo, float dist)
+void PlayFly(playerinfo_t *playerinfo, float dist)
 {
 	if(playerinfo->isclient)
 	{
@@ -3590,7 +3590,7 @@ PLAYER_API void PlayFly(playerinfo_t *playerinfo, float dist)
 	PlaySlap
 -----------------------------------------------*/
 
-PLAYER_API void PlaySlap(playerinfo_t *playerinfo, float dist)
+void PlaySlap(playerinfo_t *playerinfo, float dist)
 {
 	if(playerinfo->isclient)
 	{
@@ -3619,7 +3619,7 @@ PLAYER_API void PlaySlap(playerinfo_t *playerinfo, float dist)
 	PlaySigh
 -----------------------------------------------*/
 
-PLAYER_API void PlaySigh(playerinfo_t *playerinfo, float dist)
+void PlaySigh(playerinfo_t *playerinfo, float dist)
 {
 	if(playerinfo->isclient)
 	{
@@ -3647,7 +3647,7 @@ PLAYER_API void PlaySigh(playerinfo_t *playerinfo, float dist)
 	PlayScratch
 -----------------------------------------------*/
 
-PLAYER_API void PlayScratch(playerinfo_t *playerinfo, float dist)
+void PlayScratch(playerinfo_t *playerinfo, float dist)
 {
 	if(playerinfo->isclient)
 	{
@@ -3676,7 +3676,7 @@ PLAYER_API void PlayScratch(playerinfo_t *playerinfo, float dist)
 	SpawnDustPuff
 -----------------------------------------------*/
 
-PLAYER_API void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
+void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 {
 	if(playerinfo->waterlevel==0)
 	{
@@ -5034,9 +5034,9 @@ void PlayerPlaySlide(playerinfo_t *playerinfo)
 }
 
 
-PLAYER_API void PlayerInterruptAction(playerinfo_t *playerinfo)
+void PlayerInterruptAction(playerinfo_t *playerinfo)
 {
-	PLAYER_API void TurnOffPlayerEffects(playerinfo_t *playerinfo);
+	void TurnOffPlayerEffects(playerinfo_t *playerinfo);
 
 	//Shut off player effects from weapons or the like
 	TurnOffPlayerEffects(playerinfo);

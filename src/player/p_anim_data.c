@@ -14,7 +14,7 @@
 #include "p_chicken.h"
 #include "p_main.h"
 #include "p_ctrl.h"
-#include "../game/header/m_player.h"
+#include "../game/monster/misc/player.h"
 #include "../../h2common/fx.h"
 #include "../../h2common/reference.h"
 
@@ -613,7 +613,7 @@ seqctrl_t SeqCtrl[ASEQ_MAX] =
 	// OK as of 10/15 -- jweier
 };
 
-PLAYER_API paceldata_t PlayerSeqData[ASEQ_MAX] =
+paceldata_t PlayerSeqData[ASEQ_MAX] =
 {//		move								fly	lck	playerflags,
 
 	{	&player_move_nothing,				0,	0,	PLAYER_FLAG_IDLE|PLAYER_FLAG_FALLBREAK	},	// ASEQ_NONE
@@ -1407,7 +1407,7 @@ seqctrl_t ChickenCtrl[ASEQ_MAX] =
 };
 
 
-PLAYER_API paceldata_t PlayerChickenData[ASEQ_MAX] =
+paceldata_t PlayerChickenData[ASEQ_MAX] =
 {//		move						fly lck	playerflags,
 	{	&chickenp_move_stand, 		0,	0,	PLAYER_FLAG_IDLE|PLAYER_FLAG_FALLBREAK	},	// ASEQ_NONE
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_NONE						},	// ASEQ_WSWORD_STD1,

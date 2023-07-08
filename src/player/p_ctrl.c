@@ -15,7 +15,7 @@
 #include "../../h2common/h2rand.h"
 #include "../../h2common/fx.h"
 
-PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
+void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 {
 	char	LandSound[64];
 	char	*material=NULL;

@@ -29,7 +29,7 @@
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 #include "header/g_defaultmessagehandler.h"
-#include "header/m_stats.h"
+#include "monster/stats/stats.h"
 #include "header/buoy.h"
 
 void ED_CallSpawn (edict_t *ent);

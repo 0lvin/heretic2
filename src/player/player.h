@@ -5,8 +5,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#define PLAYER_API
-
 #include "p_types.h"
 #include "../../h2common/angles.h"
 #include "../../h2common/vector.h"
@@ -137,8 +135,8 @@ typedef struct
 void P_Freelib(void);
 unsigned int P_Load(char *name);
 
-PLAYER_API void P_Init(void);
-PLAYER_API void P_Shutdown(void);
+void P_Init(void);
+void P_Shutdown(void);
 
 void PlayerReleaseRope(playerinfo_t* playerinfo);
 void KnockDownPlayer(playerinfo_t* playerinfo);
@@ -187,6 +185,6 @@ int Defence_CurrentShotsLeft(playerinfo_t* playerinfo, int intent);
 
 typedef	player_export_t	(*GetPlayerAPI_t)(void);
 
-PLAYER_API player_export_t GetPlayerAPI(void);
+player_export_t GetPlayerAPI(void);
 
 #endif	// PLAYER_H

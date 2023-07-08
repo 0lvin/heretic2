@@ -14,7 +14,7 @@
 #include "../player/p_actions.h"
 #include "../player/p_anims.h"
 #include "../player/p_main.h"
-#include "header/m_player.h"
+#include "monster/misc/player.h"
 #include "header/p_funcs.h"
 #include "../../h2common/cl_strings.h"
 

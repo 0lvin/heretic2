@@ -10,6 +10,6 @@
 
 #include "p_actions.h"
 
-extern PLAYER_API void PlayerIntLand(playerinfo_t *playerinfo_t, float landspeed);
+extern void PlayerIntLand(playerinfo_t *playerinfo_t, float landspeed);
 
 #endif //_P_CTRL2_H_

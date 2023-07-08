@@ -28,7 +28,7 @@
 
 #include "header/local.h"
 #include "header/g_monster.h"
-#include "header/m_stats.h"
+#include "monster/stats/stats.h"
 #include "../../h2common/fx.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_playstats.h"

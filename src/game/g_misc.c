@@ -32,7 +32,7 @@
 #include "header/g_monster.h"
 #include "header/g_teleport.h"
 #include "header/g_hitlocation.h"
-#include "header/m_stats.h"
+#include "monster/stats/stats.h"
 #include "header/g_playstats.h"
 
 void ED_CallSpawn (edict_t *ent);

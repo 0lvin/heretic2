@@ -27,7 +27,7 @@
 #include "../header/local.h"
 #include "../header/g_defaultmessagehandler.h"
 #include "../header/g_skeletons.h"
-#include "../header/m_player.h"
+#include "../monster/misc/player.h"
 #include "../../player/p_newmove.h"
 #include "../../player/p_main.h"
 #include "../../player/p_ctrl.h"

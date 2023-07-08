@@ -245,14 +245,14 @@ typedef struct gitem_s
 	char		*icon;
 } gitem_t;
 
-extern PLAYER_API gitem_t *p_itemlist;
-extern PLAYER_API int p_num_items;
+extern gitem_t *p_itemlist;
+extern int p_num_items;
 
-extern PLAYER_API int GetItemIndex(gitem_t* x);
-extern PLAYER_API gitem_t *GetItemByIndex(int index);
-extern PLAYER_API gitem_t *FindItemByClassname(char *classname);
-extern PLAYER_API gitem_t *FindItem(char *pickupname);
-extern PLAYER_API void InitItems(void);
+extern int GetItemIndex(gitem_t* x);
+extern gitem_t *GetItemByIndex(int index);
+extern gitem_t *FindItemByClassname(char *classname);
+extern gitem_t *FindItem(char *pickupname);
+extern void InitItems(void);
 
 #define	ITEM_INDEX(x) GetItemIndex(x)
 

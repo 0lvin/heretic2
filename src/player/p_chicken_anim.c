@@ -15,7 +15,7 @@
 #include "p_actions.h"
 #include "p_chicken.h"
 #include "p_anim_branch.h"
-#include "../game/header/m_chicken_anim.h"
+#include "../game/monster/chicken/chicken_anim.h"
 
 #define PLAYER_WALK_SPEED	240
 #define PLAYER_STRAFE_SPEED 185

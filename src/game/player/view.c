@@ -27,7 +27,7 @@
 #include "../header/local.h"
 #include "../header/g_skeletons.h"
 #include "../header/g_teleport.h"
-#include "../header/m_player.h"
+#include "../monster/misc/player.h"
 #include "../../player/player.h"
 #include "../../player/p_animactor.h"
 #include "../../player/p_anims.h"

@@ -35,7 +35,7 @@
 #include "header/g_playstats.h"
 #include "header/buoy.h"
 #include "header/g_itemstats.h"
-#include "header/m_stats.h"
+#include "monster/stats/stats.h"
 
 gitem_armor_t silver_armor_info	= {MAX_SILVER_ARMOR, SILVER_HIT_MULT, SILVER_SPELL_MULT};
 gitem_armor_t gold_armor_info	= {MAX_GOLD_ARMOR, GOLD_HIT_MULT, GOLD_SPELL_MULT};
