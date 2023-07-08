@@ -279,10 +279,6 @@ typedef struct
 {
 	int apiversion;
 
-	int numSkeletalJoints;
-	struct G_SkeletalJoint_s *skeletalJoints;
-	ArrayedListNode_t *jointNodes;
-
 	// The init() function will only be called when a game starts, not each time a level is loaded.
 	// Persistant data for clients and the server can be allocated in init().
 

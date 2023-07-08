@@ -200,10 +200,6 @@ game_export_t *GetGameAPI (game_import_t *import)
 
 	globals.apiversion = GAME_API_VERSION;
 
-	globals.numSkeletalJoints = MAX_ARRAYED_SKELETAL_JOINTS;
-	globals.skeletalJoints = skeletalJoints;
-	globals.jointNodes = jointNodes;
-
 	globals.Init = InitGame;
 	globals.Shutdown = ShutdownGame;
 	globals.SpawnEntities = SpawnEntities;

@@ -9,67 +9,6 @@
 #include "skeletons.h"
 #include "arrayed_list.h"
 
-char *skeletonRootNames[] =
-{
-	"RAVEN_ROOT",
-	"BOX_ROOT",
-	"BEETLE_ROOT",
-	"ELFLORD_ROOT",
-	"PLAGUELF_ROOT",
-	"ELF_BACKROOT",
-};
-
-int skeletonRNameOffsets[] =
-{
-	0,	// RAVEN
-	1,	// BOX
-	2,	// BEETLE
-	3,	// ELFLORD
-	4,	// PLAGUE ELF
-	5,	// CORVUS
-};
-
-char *skeletonJointNames[] =
-{
-	"RAVEN_LOWERBACK",	// 0
-	"RAVEN_UPPERBACK",
-	"RAVEN_NECK",
-	"BOX_CENTER",		// 3
-	"BEETLE_NECK",		// 4
-	"BEETLE_HEAD",
-	"PLAGUELF_BACKB",	// 6
-	"PLAGUELF_BACKC",
-	"PLAGUELF_NECK",
-	"ELF_BACKB",		// 9
-	"ELF_BACKC",
-	"ELF_NECKB",
-};
-
-int skeletonNameOffsets[] =
-{
-	0,	// RAVEN
-	3,	// BOX
-	4,	// BEETLE
-	-1,	// ELFLORD
-	6,	// PLAGUE ELF
-	9,	// CORVUS
-};
-
-char *skeletonEffectorNames[] =
-{
-	"BEETLE_EYES",		// 0
-	"CORVUS_EYES",		// 1
-};
-
-int skeletonENameOffsets[] =
-{
-	-1,	// RAVEN
-	-1,	// BOX
-	0,	// BEETLE
-	-1,	// ELFLORD
-	1,	// PLAGUE ELF
-};
-
 int numJointsInSkeleton[] =
 {
 	NUM_JOINTS_RAVEN,
@@ -78,16 +17,6 @@ int numJointsInSkeleton[] =
 	NUM_JOINTS_ELFLORD,
 	NUM_JOINTS_PLAGUE_ELF,
 	NUM_JOINTS_CORVUS,
-};
-
-int numNodesInSkeleton[] =
-{
-	2,	// RAVEN
-	0,	// BOX
-	1,	// BEETLE
-	-1,	// ELFLORD
-	2,	// PLAGUE ELF
-	2,	// CORVUS
 };
 
 static void CreateRavenSkel(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int root);

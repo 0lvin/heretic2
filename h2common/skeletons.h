@@ -8,10 +8,6 @@
 #include <stdlib.h> // for size_t
 #include "arrayed_list.h"
 
-#define JN_YAW_CHANGED		0x00000001
-#define JN_PITCH_CHANGED	0x00000002
-#define JN_ROLL_CHANGED		0x00000004
-
 // Skeleton types
 enum {
 	SKEL_NULL = -1,
@@ -74,17 +70,7 @@ enum {
 #define MAX_ARRAYED_SKELETAL_JOINTS 255	// has max of 65,535 (if this remains at 255, net code can be changed to reflect)
 #define MAX_ARRAYED_JOINT_NODES	(MAX_ARRAYED_SKELETAL_JOINTS - 1)
 
-#define MAX_JOINTS_PER_SKELETON	8	// arbitrary small number
-#define MAX_JOINT_NODES_PER_SKELETON (MAX_JOINTS_PER_SKELETON - 1)
-
-extern char *skeletonRootNames[];
-extern int skeletonRNameOffsets[];
-extern char *skeletonJointNames[];
-extern int skeletonNameOffsets[];
 extern int numJointsInSkeleton[];
-extern char *skeletonEffectorNames[];
-extern int skeletonENameOffsets[];
-extern int numNodesInSkeleton[];
 
 typedef void (*CreateSkeleton_t)(void *skeletalJoints, size_t jointSize, ArrayedListNode_t *jointNodes, int rootIndex);
 
