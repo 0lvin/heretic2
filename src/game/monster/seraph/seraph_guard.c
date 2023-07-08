@@ -405,7 +405,7 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 					{
 						if(victim->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN && infront(self, victim))
 						{
-							KnockDownPlayer(&victim->client->playerinfo);
+							playerExport.KnockDownPlayer(&victim->client->playerinfo);
 						}
 					}
 				}
@@ -637,7 +637,7 @@ void seraph_guard_fire (edict_t *self)
 					{
 						if(victim->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN && infront(self, victim))
 						{
-							KnockDownPlayer(&victim->client->playerinfo);
+							playerExport.KnockDownPlayer(&victim->client->playerinfo);
 						}
 					}
 				}

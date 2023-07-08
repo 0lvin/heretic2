@@ -94,7 +94,7 @@ void imp_blocked (edict_t *self, trace_t *trace)
 		if(!Q_stricmp(trace->ent->classname, "player"))
 		{
 			if(!irand(0,4))
-				KnockDownPlayer(&trace->ent->client->playerinfo);
+				playerExport.KnockDownPlayer(&trace->ent->client->playerinfo);
 		}
 		damage = irand(IMP_DMG_MIN, IMP_DMG_MAX);
 		T_Damage (trace->ent, self, self, vf, trace->ent->s.origin, trace->plane.normal, damage, damage*2, 0,MOD_DIED);

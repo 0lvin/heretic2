@@ -96,8 +96,8 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 		((edict_t *)playerinfo->self)->targetEnt->enemy = NULL;
 		((edict_t *)playerinfo->self)->targetEnt = NULL;
 
-		PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
-		PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFWD);
+		playerExport.PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
+		playerExport.PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFWD);
 
 		return;
 	}
@@ -473,7 +473,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		((edict_t *)playerinfo->self)->targetEnt->enemy = NULL;
 		((edict_t *)playerinfo->self)->targetEnt = NULL;
 
-		PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
+		playerExport.PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 
 		return ASEQ_JUMPFWD;
 	}
@@ -1012,7 +1012,7 @@ void PlayerChickenDeath(edict_t *self)
 
 	// Reset our animations.
 
-	PlayerAnimReset(&self->client->playerinfo);
+	playerExport.PlayerAnimReset(&self->client->playerinfo);
 }
 
 // ************************************************************************************************
@@ -1182,7 +1182,7 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 				{
 					if(!irand(0, 1))
 					{
-						KnockDownPlayer(&ent->groundentity->client->playerinfo);
+						playerExport.KnockDownPlayer(&ent->groundentity->client->playerinfo);
 					}
 				}
 			}
@@ -1236,7 +1236,7 @@ void G_PlayerVaultKick(playerinfo_t *playerinfo)
 				{
 					if(infront(trace.ent, self) && !irand(0, 2))
 					{
-						KnockDownPlayer(&trace.ent->client->playerinfo);
+						playerExport.KnockDownPlayer(&trace.ent->client->playerinfo);
 					}
 				}
 			}

@@ -1107,7 +1107,7 @@ void G_InitItems(void)
 	// This can't be placed in the editor
 
 	playerExport.p_itemlist[2].pickup=Pickup_Weapon;
-	playerExport.p_itemlist[2].use=Weapon_EquipSpell;
+	playerExport.p_itemlist[2].use=playerExport.Weapon_EquipSpell;
 	playerExport.p_itemlist[2].weaponthink=WeaponThink_FlyingFist;
 
 	// item_weapon_hellstaff
@@ -1125,7 +1125,7 @@ Pickup for the Magic Missile weapon.
 */
 
 	playerExport.p_itemlist[4].pickup=Pickup_Weapon;
-	playerExport.p_itemlist[4].use=Weapon_EquipSpell;
+	playerExport.p_itemlist[4].use=playerExport.Weapon_EquipSpell;
 	playerExport.p_itemlist[4].weaponthink=WeaponThink_MagicMissileSpread;
 
 	// item_weapon_redrain_bow
@@ -1143,7 +1143,7 @@ Pickup for the Fire Wall weapon.
 */
 
 	playerExport.p_itemlist[6].pickup=Pickup_Weapon;
-	playerExport.p_itemlist[6].use=Weapon_EquipSpell;
+	playerExport.p_itemlist[6].use=playerExport.Weapon_EquipSpell;
 	playerExport.p_itemlist[6].weaponthink=WeaponThink_Firewall;
 
 	// item_weapon_phoenixbow
@@ -1161,7 +1161,7 @@ Pickup for the Sphere Annihilation weapon.
 */
 
 	playerExport.p_itemlist[8].pickup=Pickup_Weapon;
-	playerExport.p_itemlist[8].use=Weapon_EquipSpell;
+	playerExport.p_itemlist[8].use=playerExport.Weapon_EquipSpell;
 	playerExport.p_itemlist[8].weaponthink=WeaponThink_SphereOfAnnihilation;
 
 	// item_weapon_maceballs
@@ -1170,7 +1170,7 @@ Pickup for the Mace Balls weapon.
 */
 
 	playerExport.p_itemlist[9].pickup=Pickup_Weapon;
-	playerExport.p_itemlist[9].use=Weapon_EquipSpell;
+	playerExport.p_itemlist[9].use=playerExport.Weapon_EquipSpell;
 	playerExport.p_itemlist[9].weaponthink=WeaponThink_Maceballs;
 
 	// item_defense_powerup

@@ -229,7 +229,7 @@ void reinstate_non_cinematic_entites(edict_t *owner)
 
 			// since we messed around with model stuff, like armor nodes and the like, lets update the model.
 			SetupPlayerinfo_effects(ent);
-			PlayerUpdateModelAttributes(&ent->client->playerinfo);
+			playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
 			WritePlayerinfo_effects(ent);
 
 		}

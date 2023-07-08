@@ -463,7 +463,7 @@ void spreader_melee(edict_t *self, G_Message_t *msg)
 							{
 								if(infront(self->enemy, self))
 								{
-									KnockDownPlayer(&self->enemy->client->playerinfo);
+									playerExport.KnockDownPlayer(&self->enemy->client->playerinfo);
 								}
 							}
 						}
@@ -1107,7 +1107,7 @@ void spreaderSplat (edict_t *self, trace_t *trace)//, edict_s *other, cplane_s *
 
 			if(trace->ent->health>0)//else don't gib?
 				if(!Q_stricmp(trace->ent->classname, "player"))
-					KnockDownPlayer(&trace->ent->client->playerinfo);
+					playerExport.KnockDownPlayer(&trace->ent->client->playerinfo);
 		}
 	}
 

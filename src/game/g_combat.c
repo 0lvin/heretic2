@@ -830,7 +830,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				targ->client->playerinfo.pers.armor_count = 0;
 
 				SetupPlayerinfo_effects(targ);
-				PlayerUpdateModelAttributes(&targ->client->playerinfo);
+				playerExport.PlayerUpdateModelAttributes(&targ->client->playerinfo);
 				WritePlayerinfo_effects(targ);
 
 				// Play the out-of-armor sound.

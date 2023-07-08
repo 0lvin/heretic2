@@ -42,7 +42,6 @@ extern gitem_armor_t gold_armor_info;
 extern void MorphPlayerToChicken(edict_t *self, edict_t *caster);
 extern qboolean AddWeaponToInventory(gitem_t *it,edict_t *player);
 extern qboolean AddDefenseToInventory(gitem_t *it,edict_t *player);
-extern player_export_t	playerExport;	// interface to player DLL.
 extern void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 qboolean CheckFlood(edict_t *ent);
@@ -304,7 +303,7 @@ void Cmd_Give_f (edict_t *ent)
 		}
 
 		SetupPlayerinfo_effects(ent);
-		PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
 		return;
 	}
@@ -350,7 +349,7 @@ void Cmd_Give_f (edict_t *ent)
 					ent->client->playerinfo.pers.bowtype = BOW_TYPE_REDRAIN;
 
 				SetupPlayerinfo_effects(ent);
-				PlayerUpdateModelAttributes(&ent->client->playerinfo);
+				playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
 				WritePlayerinfo_effects(ent);
 			}
 		}
@@ -409,7 +408,7 @@ void Cmd_Give_f (edict_t *ent)
 		}
 
 		SetupPlayerinfo_effects(ent);
-		PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
 
 		if (!give_all)
@@ -427,7 +426,7 @@ void Cmd_Give_f (edict_t *ent)
 		gi.dprintf("Setting staff level to %d\n", ent->client->playerinfo.pers.stafflevel);
 
 		SetupPlayerinfo_effects(ent);
-		PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
 
 		return;
@@ -506,7 +505,7 @@ void Cmd_Give_f (edict_t *ent)
 		ClientUserinfoChanged (ent, userinfo);
 
 		SetupPlayerinfo_effects(ent);
-		PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
 
 		return;
@@ -1365,7 +1364,7 @@ void Cmd_TestFX_f (edict_t *ent)
 	ent->client->playerinfo.pers.altparts |= 1<<i;
 
 	SetupPlayerinfo_effects(ent);
-	PlayerUpdateModelAttributes(&ent->client->playerinfo);
+	playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
 	WritePlayerinfo_effects(ent);
 }
 

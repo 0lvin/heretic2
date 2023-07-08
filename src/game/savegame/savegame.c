@@ -1157,7 +1157,7 @@ void ReadLevel (char *filename)
 		ent->client->playerinfo.pers.connected = false;
 		InitPlayerinfo(ent);
 		SetupPlayerinfo(ent);
-		PlayerBasicAnimReset(&ent->client->playerinfo);
+		playerExport.PlayerBasicAnimReset(&ent->client->playerinfo);
 	}
 
 	// Do any load time things at this point.
