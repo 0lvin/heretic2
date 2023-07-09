@@ -1390,9 +1390,9 @@ void G_PlayerActionSpellDefensive(playerinfo_t *playerinfo)
 		playerinfo->defensive_debounce = playerinfo->leveltime + DEFENSE_DEBOUNCE;
 
 		// if we've run out of defence shots, and we have the ring of repulsion - switch to that.
-		it = FindItem ("ring");
-		index = ITEM_INDEX(it);
-		if ((Defence_CurrentShotsLeft(playerinfo, 1) <=0) && playerinfo->pers.inventory.Items[index])
+		it = playerExport.FindItem ("ring");
+		index = playerExport.GetItemIndex(it);
+		if ((playerExport.Defence_CurrentShotsLeft(playerinfo, 1) <=0) && playerinfo->pers.inventory.Items[index])
 		{
 			playerinfo->G_UseItem((edict_t*)playerinfo->self,"ring");
 		}

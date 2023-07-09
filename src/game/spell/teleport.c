@@ -147,7 +147,7 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 
 
 	// setup other teleporter information that the character will require
-	// when the teleport is actually performed in AnimUpdateFrame
+	// when the teleport is actually performed in playerExport.AnimUpdateFrame
 
 	// set the player as teleporting
 
@@ -197,7 +197,7 @@ void SpellCastTeleport(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t A
 		return;
 
 	// setup other teleporter information that the character will require
-	// when the teleport is actually performed in AnimUpdateFrame
+	// when the teleport is actually performed in playerExport.AnimUpdateFrame
 
 	// set the player as teleporting
 	caster->client->playerinfo.flags |= PLAYER_FLAG_TELEPORT;

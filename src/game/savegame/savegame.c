@@ -423,7 +423,7 @@ void InitGame (void)
 	flood_killdelay = gi.cvar ("flood_killdelay", "10", 0);
 	sv_maplist = gi.cvar ("sv_maplist", "", 0);
 
-	player_dll = Cvar_Get("player_dll", DEFAULT_PLAYER_LIB, 0);
+	player_dll = gi.cvar("player_dll", DEFAULT_PLAYER_LIB, 0);
 
 	sv_cinematicfreeze = gi.cvar("sv_cinematicfreeze", "0", 0);
 	sv_jumpcinematic = gi.cvar("sv_jumpcinematic", "0", 0);
@@ -520,7 +520,7 @@ static void WriteField1 (FILE *f, field_t *field, byte *base)
 		if ( *(edict_t **)p == NULL)
 			index = -1;
 		else
-			index = *(gitem_t **)p - playerExport.p_itemlist;
+			index = *(gitem_t **)p - playerExport.GetPlayerItems();
 		*(int *)p = index;
 		break;
 
@@ -603,7 +603,7 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 		if ( index == -1 )
 			*(gitem_t **)p = NULL;
 		else
-			*(gitem_t **)p = &playerExport.p_itemlist[index];
+			*(gitem_t **)p = playerExport.GetPlayerItems() + index;
 		break;
 
 	default:
@@ -817,9 +817,9 @@ static void WriteLevelLocals (FILE *f)
 	// set up some console vars as level save variables
 	r_farclipdist = gi.cvar("r_farclipdist", FAR_CLIP_DIST, 0);
 	level.far_clip_dist_f = r_farclipdist->value;
-	r_fog = Cvar_Get ("r_fog", "0", 0);
+	r_fog = gi.cvar ("r_fog", "0", 0);
 	level.fog = r_fog->value;
-	r_fog_density = Cvar_Get ("r_fog_density", "0", 0);
+	r_fog_density = gi.cvar ("r_fog_density", "0", 0);
 	level.fog_density = r_fog_density->value;
 
 	// all of the ints, floats, and vectors stay as they are

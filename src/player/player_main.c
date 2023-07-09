@@ -14,9 +14,16 @@ void P_Shutdown(void)
 {
 }
 
-gitem_t* GetPlayerItems(int* num)
+gitem_t*
+GetPlayerItems(void)
 {
 	return p_itemlist;
+}
+
+int
+GetPlayerItemsCount(void)
+{
+	return p_num_items;
 }
 
 player_export_t GetPlayerAPI(void)
@@ -75,13 +82,7 @@ player_export_t GetPlayerAPI(void)
 	playerExport.FindItem = FindItem;
 	playerExport.InitItems = InitItems;
 	playerExport.GetPlayerItems = GetPlayerItems;
-
-// jmarshall
-	playerExport.PlayerSeqData = PlayerSeqData;
-	playerExport.PlayerChickenData = PlayerChickenData;
-	playerExport.p_num_items = p_num_items;
-	playerExport.p_itemlist = p_itemlist;
-// jmarshall end
+	playerExport.GetPlayerItemsCount = GetPlayerItemsCount;
 
 	return playerExport;
 }

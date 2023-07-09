@@ -274,16 +274,16 @@ void SpawnReward(edict_t *self, edict_t *attacker)
 	health_chance = (attacker->health < attacker->max_health) ? ( (float) attacker->health / (float) attacker->max_health) : 9999;
 
 	//Check the offensive mana amount on the attacker
-	lookup = FindItemByClassname("item_mana_offensive_half");
-	index = ITEM_INDEX(lookup);
+	lookup = playerExport.FindItemByClassname("item_mana_offensive_half");
+	index = playerExport.GetItemIndex(lookup);
 	off_max = attacker->client->playerinfo.pers.max_offmana;
 	off_amount = attacker->client->playerinfo.pers.inventory.Items[index];
 
 	off_chance = (off_amount < off_max) ? ( (float) off_amount / (float) off_max ) : 9999;
 
 	//Check the offensive mana amount on the attacker
-	lookup = FindItemByClassname("item_mana_defensive_half");
-	index = ITEM_INDEX(lookup);
+	lookup = playerExport.FindItemByClassname("item_mana_defensive_half");
+	index = playerExport.GetItemIndex(lookup);
 	def_max = attacker->client->playerinfo.pers.max_defmana;
 	def_amount = attacker->client->playerinfo.pers.inventory.Items[index];
 
@@ -319,7 +319,7 @@ void SpawnReward(edict_t *self, edict_t *attacker)
 	}
 
 	//We know what we want to give them, so create it!
-	item = FindItemByClassname(item_name);
+	item = playerExport.FindItemByClassname(item_name);
 
 	newitem = G_Spawn();
 

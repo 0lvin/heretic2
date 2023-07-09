@@ -791,7 +791,7 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 	if(throw_nodes)
 	{
 		self->pain_debounce_time = 0;
-		if(!BranchCheckDismemberAction(&self->client->playerinfo, self->client->playerinfo.pers.weapon->tag))
+		if(!playerExport.BranchCheckDismemberAction(&self->client->playerinfo, self->client->playerinfo.pers.weapon->tag))
 		{
 			playerExport.PlayerInterruptAction(&self->client->playerinfo);
 			playerExport.PlayerAnimSetUpperSeq(&self->client->playerinfo, ASEQ_NONE);
@@ -1878,10 +1878,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&1)
 	{
-		item=FindItem("staff");
+		item=playerExport.FindItem("staff");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -1892,10 +1892,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&2)
 	{
-		item=FindItem("fball");
+		item=playerExport.FindItem("fball");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -1906,10 +1906,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&4)
 	{
-		item=FindItem("hell");
+		item=playerExport.FindItem("hell");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -1920,10 +1920,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&8)
 	{
-		item=FindItem("array");
+		item=playerExport.FindItem("array");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -1934,10 +1934,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&16)
 	{
-		item=FindItem("rain");
+		item=playerExport.FindItem("rain");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -1948,10 +1948,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&32)
 	{
-		item=FindItem("sphere");
+		item=playerExport.FindItem("sphere");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -1962,10 +1962,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&64)
 	{
-		item=FindItem("phoen");
+		item=playerExport.FindItem("phoen");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -1976,10 +1976,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&128)
 	{
-		item=FindItem("mace");
+		item=playerExport.FindItem("mace");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -1990,10 +1990,10 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&256)
 	{
-		item=FindItem("fwall");
+		item=playerExport.FindItem("fwall");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((playerExport.GetItemIndex(item) > playerExport.GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2004,31 +2004,31 @@ void GiveLevelItems(edict_t *player)
 
 	if(level.defensive_weapons&1)
 	{
-		item=FindItem("ring");
+		item=playerExport.FindItem("ring");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&2)
 	{
-		item=FindItem("lshield");
+		item=playerExport.FindItem("lshield");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&4)
 	{
-		item=FindItem("tele");
+		item=playerExport.FindItem("tele");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&8)
 	{
-		item=FindItem("morph");
+		item=playerExport.FindItem("morph");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&16)
 	{
-		item=FindItem("meteor");
+		item=playerExport.FindItem("meteor");
 		AddDefenseToInventory(item,player);
 	}
 
@@ -2077,24 +2077,24 @@ void InitClientPersistant(edict_t *player)
 
 	// Give just the sword-staff and flying-fist to the player as starting weapons.
 
-	item = FindItem("staff");
+	item = playerExport.FindItem("staff");
 	AddWeaponToInventory(item,player);
-	client->playerinfo.pers.selected_item = ITEM_INDEX(item);
+	client->playerinfo.pers.selected_item = playerExport.GetItemIndex(item);
 	client->playerinfo.pers.weapon = item;
 	client->playerinfo.pers.lastweapon = item;
 	client->playerinfo.weap_ammo_index = 0;
 
 	if(!(((int)dmflags->value)&DF_NO_OFFENSIVE_SPELL))
 	{
-		item=FindItem("fball");
+		item=playerExport.FindItem("fball");
 		AddWeaponToInventory(item,player);
-		client->playerinfo.pers.selected_item = ITEM_INDEX(item);
+		client->playerinfo.pers.selected_item = playerExport.GetItemIndex(item);
 		client->playerinfo.pers.weapon = item;
 		client->playerinfo.pers.lastweapon = item;
-		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(item->ammo));
+		client->playerinfo.weap_ammo_index = playerExport.GetItemIndex(playerExport.FindItem(item->ammo));
 	}
 
-	item=FindItem("powerup");
+	item=playerExport.FindItem("powerup");
 	AddDefenseToInventory(item,player);
 	client->playerinfo.pers.defence = item;
 
@@ -2102,11 +2102,11 @@ void InitClientPersistant(edict_t *player)
 	// Start player with half offensive and defensive mana - as instructed by Brian P.
 	// ********************************************************************************************
 
-	item = FindItem("Off-mana");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = client->playerinfo.pers.max_offmana / 2;
+	item = playerExport.FindItem("Off-mana");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = client->playerinfo.pers.max_offmana / 2;
 
-	item = FindItem("Def-mana");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = client->playerinfo.pers.max_defmana / 2;
+	item = playerExport.FindItem("Def-mana");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = client->playerinfo.pers.max_defmana / 2;
 
 #ifdef G_NOAMMO
 
@@ -2114,32 +2114,32 @@ void InitClientPersistant(edict_t *player)
 
 	gi.dprintf("Starting with unlimited ammo.\n");
 
-	item = FindItem("hell");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("hell");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
-	item = FindItem("array");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("array");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
-	item = FindItem("rain");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("rain");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
-	item = FindItem("sphere");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("sphere");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
-	item = FindItem("phoen");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("phoen");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
-	item = FindItem("mace");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("mace");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
-	item = FindItem("fwall");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("fwall");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
-	item = FindItem("meteor");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("meteor");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
-	item = FindItem("morph");
-	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+	item = playerExport.FindItem("morph");
+	client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
 
 	client->bowtype = BOW_TYPE_REDRAIN;
 	client->armortype = ARMOR_TYPE_SILVER;
@@ -2394,10 +2394,10 @@ void PutClientInServer (edict_t *ent)
 	// Set the player's current offensive and defensive ammo indexes.
 
 	if (client->playerinfo.pers.weapon->ammo)
-		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.weapon->ammo));
+		client->playerinfo.weap_ammo_index = playerExport.GetItemIndex(playerExport.FindItem(client->playerinfo.pers.weapon->ammo));
 
 	if (client->playerinfo.pers.defence)
-		client->playerinfo.def_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.defence->ammo));
+		client->playerinfo.def_ammo_index = playerExport.GetItemIndex(playerExport.FindItem(client->playerinfo.pers.defence->ammo));
 
 	VectorCopy(spawn_origin,client->playerinfo.origin);
 	VectorClear(client->playerinfo.velocity);
@@ -2446,7 +2446,7 @@ void PutClientInServer (edict_t *ent)
 
 		gitem_t *item;
 
-		item=FindItem("staff");
+		item=playerExport.FindItem("staff");
 		client->playerinfo.pers.newweapon=item;
 		client->playerinfo.switchtoweapon=WEAPON_READY_SWORDSTAFF;
 	}
@@ -2621,7 +2621,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			strcpy(skin, s);
 
 		sprintf(filename, "players/%s.m8", skin);
-		if (FS_LoadFile(filename, NULL) == -1)
+		if (gi.FS_LoadFile(filename, NULL) == -1)
 		{
 			if (strstr(s, "female/"))
 			{	// This was a female skin, fall back to Kiera.
@@ -2643,7 +2643,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			strcpy(skin, s);
 
 		sprintf(filename, "players/%s.m8", skin);
-		if (FS_LoadFile(filename, NULL) != -1)
+		if (gi.FS_LoadFile(filename, NULL) != -1)
 		{
 			if (allowillegalskins->value)
 			{
@@ -2652,10 +2652,10 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			else
 			{
 				sprintf(filename, "players/%sP1.m8", skin);
-				if (FS_LoadFile(filename, NULL) != -1)
+				if (gi.FS_LoadFile(filename, NULL) != -1)
 				{
 					sprintf(filename, "players/%sP2.m8", skin);
-					if (FS_LoadFile(filename, NULL) != -1)
+					if (gi.FS_LoadFile(filename, NULL) != -1)
 					{
 						found=true;
 					}
@@ -2682,7 +2682,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			if (allowillegalskins->value)
 			{	// Do the check for a valid skin in case an illegal skin has been let through.
 				sprintf(filename, "players/%sP1.m8", skin);
-				if (FS_LoadFile(filename, NULL) != -1)
+				if (gi.FS_LoadFile(filename, NULL) != -1)
 				{	// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
 				}
@@ -2700,7 +2700,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			if (allowillegalskins->value)
 			{	// Do the check for a valid skin in case an illegal skin has been let through.
 				sprintf(filename, "players/%sP2.m8", skin);
-				if (FS_LoadFile(filename, NULL) != -1)
+				if (gi.FS_LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
@@ -2708,7 +2708,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				else
 				{	// No plague 2 skin, try for a plague 1 skin.
 					sprintf(filename, "players/%sP1.m8", skin);
-					if (FS_LoadFile(filename, NULL) != -1)
+					if (gi.FS_LoadFile(filename, NULL) != -1)
 					{
 						/* The plague1 skin exists. */
 						gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
@@ -2741,7 +2741,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			sprintf(filename, "players/%s.m8", skin);
 
 			/* no, so see if it exists */
-			if (FS_LoadFile(filename, NULL) != -1)
+			if (gi.FS_LoadFile(filename, NULL) != -1)
 			{
 				strcpy(skin, "male/Corvus");
 			}
@@ -2753,7 +2753,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				sprintf(filename, "players/%sP1.m8", skin);
 
 				/* no, so see if it exists */
-				if (FS_LoadFile(filename, NULL) != -1)
+				if (gi.FS_LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
@@ -2766,7 +2766,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			case 2:		// Plague level 2
 				sprintf(filename, "players/%sP2.m8", skin);
 				/* no, so see if it exists */
-				if (FS_LoadFile(filename, NULL) != -1)
+				if (gi.FS_LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
@@ -2777,7 +2777,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 					sprintf(filename, "players/%sP1.m8", skin);
 
 					/* no, so see if it exists */
-					if (FS_LoadFile(filename, NULL) != -1)
+					if (gi.FS_LoadFile(filename, NULL) != -1)
 					{
 						// The plague1 skin exists.
 						gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );

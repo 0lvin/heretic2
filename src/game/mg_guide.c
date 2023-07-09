@@ -2194,7 +2194,6 @@ void MG_BuoyNavigate(edict_t *self)
 		self->goalentity = self->enemy;
 }
 
-void Cvar_SetValue (char *var_name, float value);
 void MG_GenericMoodSet(edict_t *self)
 {
 	vec3_t		v, forward, pursue_vel;
@@ -2224,7 +2223,7 @@ void MG_GenericMoodSet(edict_t *self)
 					level.player_last_buoy[i] = NULL_BUOY;		//when player_buoy is invalid, saves it here so monsters can check it first instead of having to do a whole search
 				}
 			}
-			Cvar_SetValue("deactivate_buoys", 1);
+			gi.cvar_set("deactivate_buoys", "1");
 			DEACTIVATE_BUOYS = true;
 		}
 	}

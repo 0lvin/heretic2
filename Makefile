@@ -796,6 +796,11 @@ GAME_OBJS_ = \
 	h2common/h2rand.o \
 	h2common/h2singlylinkedlist.o \
 	h2common/resource_manager.o \
+	h2common/h2matrix.o \
+	h2common/arrayed_list.o \
+	h2common/skeletons.o \
+	h2common/h2physics.o \
+	h2common/message.o \
 	src/player/p_library.o \
 	src/game/buoy.o \
 	src/game/c_ai.o \

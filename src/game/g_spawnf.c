@@ -8,7 +8,6 @@
 #include "header/g_physics.h"
 
 void ED_CallSpawn (edict_t *ent);
-void Cvar_SetValue (char *var_name, float value);
 
 extern char *dm_statusbar;
 extern char *single_statusbar;
@@ -311,7 +310,9 @@ void CheckCoopTimeout(qboolean BeenHereBefore)
 	// Reset to zero cooptimeout if we've already been to the current level (no cinematic to see).
 
 	if(BeenHereBefore)
-		Cvar_SetValue("sv_cooptimeout",0);
+	{
+		gi.cvar_set("sv_cooptimeout", "0");
+	}
 }
 
 /*
@@ -536,14 +537,20 @@ void SP_worldspawn (edict_t *ent)
 		// the EAX default sound type for this level.
 		if (!Q_stricmp(eax_level_info[i].level_name,  level.mapname))
 		{
-			Cvar_SetValue("EAX_default", (float)eax_level_info[i].default_preset);
+			char tmp[4];
+			Com_sprintf (tmp, sizeof(tmp), "%d", eax_level_info[i].default_preset);
+			gi.cvar_set("EAX_default", tmp);
 			break;
 		}
 	}
 
 	// if we didn't find it in the current level list, lets just set it to generic
 	if (i == MAX_CURRENT_LEVELS)
-		Cvar_SetValue("EAX_default", ent->s.scale);
+	{
+		char tmp[4];
+		Com_sprintf (tmp, sizeof(tmp), "%d", ent->s.scale);
+		gi.cvar_set("EAX_default", tmp);
+	}
 	// just in case
 	ent->s.scale = 0;
 
@@ -574,8 +581,11 @@ void SP_worldspawn (edict_t *ent)
 	level.defensive_weapons=(!st.defensive)?0:st.defensive;
 
 	// Save away cooptimeout so it is accessible to the server (SV_) functions.
-
-	Cvar_SetValue("sv_cooptimeout",(!st.cooptimeout)?0:st.cooptimeout);
+	{
+		char tmp[10];
+		Com_sprintf (tmp, sizeof(tmp), "%d", (!st.cooptimeout)?0:st.cooptimeout);
+		gi.cvar_set("sv_cooptimeout", tmp);
+	}
 
 	//---------------
 

@@ -3216,14 +3216,14 @@ void CScript::HandleFeature(bool Enable)
 				if (Enable)
 				{
 					CinematicSound_cnt = 0;
-					Cvar_Set("sv_cinematicfreeze","1");
+					gi.cvar_set("sv_cinematicfreeze","1");
 					remove_non_cinematic_entites(NULL);
 				}
 				else
 				{
 					if (sv_jumpcinematic->value == 2)	// Jump sent from client
 					{
-						Cvar_Set("sv_jumpcinematic","0");
+						gi.cvar_set("sv_jumpcinematic","0");
 						null_snd = gi.soundindex("misc/null.wav");
 						gi.bcaption(PRINT_HIGH, 270);		// Send the ID for the text to all players
 						for (i=0;i<CinematicSound_cnt;++i)
@@ -3238,7 +3238,7 @@ void CScript::HandleFeature(bool Enable)
 					}
 
 
-					Cvar_Set("sv_cinematicfreeze","0");
+					gi.cvar_set("sv_cinematicfreeze","0");
 					reinstate_non_cinematic_entites(NULL);
 				}
 			break;

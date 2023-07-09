@@ -50,9 +50,8 @@ void P_Freelib()
 unsigned int P_Load(char *name)
 {
 	// TODO: Rewrite, add real library load
-	P_Init();
-
 	playerExport = GetPlayerAPI();
+	playerExport.Init();
 	return 0;
 
 	char	curpath[MAX_OSPATH];

@@ -145,46 +145,46 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 		}
 		else
 		{
-   			int no_teleport = 1;
-   			gitem_t	*Defence,
-   						*ManaItem;
-   			int		ManaIndex;
-   			int		Quantity;
+			int no_teleport = 1;
+			gitem_t	*Defence,
+						*ManaItem;
+			int		ManaIndex;
+			int		Quantity;
 
-   			// can we teleport the player out of danger ?
-   			// firstly, are we a player ?
-   			if (trace->ent->client)
-   			{
-   				Defence = trace->ent->client->playerinfo.pers.defence;
-   				Quantity = playerExport.p_itemlist[12].quantity;
-   				if(Defence->ammo && Quantity)
-   				{
-   					// do we have enough mana to teleport ?
-   					ManaItem = FindItem(Defence->ammo);
-   					ManaIndex = ITEM_INDEX(ManaItem);
-   					if (trace->ent->client->playerinfo.pers.inventory.Items[ManaIndex]/Quantity > 0)
-   					{
-   						// yes, do we actually have a teleport ?
+			// can we teleport the player out of danger ?
+			// firstly, are we a player ?
+			if (trace->ent->client)
+			{
+				Defence = trace->ent->client->playerinfo.pers.defence;
+				Quantity = playerExport.GetPlayerItems()[12].quantity;
+				if(Defence->ammo && Quantity)
+				{
+					// do we have enough mana to teleport ?
+					ManaItem = playerExport.FindItem(Defence->ammo);
+					ManaIndex = playerExport.GetItemIndex(ManaItem);
+					if (trace->ent->client->playerinfo.pers.inventory.Items[ManaIndex]/Quantity > 0)
+					{
+						// yes, do we actually have a teleport ?
 						if (trace->ent->client->playerinfo.pers.inventory.Items[13])
 						{
-   							SpellCastTeleport(trace->ent, trace->ent->s.origin, NULL, NULL, 0.0F);
-   							if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-   								trace->ent->client->playerinfo.pers.inventory.Items[ManaIndex] -= Quantity;
-   							no_teleport = 0;
+							SpellCastTeleport(trace->ent, trace->ent->s.origin, NULL, NULL, 0.0F);
+							if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
+								trace->ent->client->playerinfo.pers.inventory.Items[ManaIndex] -= Quantity;
+							no_teleport = 0;
 						}
-   					}
-   				}
+					}
+				}
 
-   			}
-   			if (no_teleport)
-   			{
-   				T_Damage(trace->ent, self, self->owner, movevect, trace->endpos, movevect,
-   	 				self->dmg, self->dmg, 0,MOD_P_IRONDOOM);
+			}
+			if (no_teleport)
+			{
+				T_Damage(trace->ent, self, self->owner, movevect, trace->endpos, movevect,
+					self->dmg, self->dmg, 0,MOD_P_IRONDOOM);
 				// if we hit a player or a monster, kill this maceball
 				if (trace->ent->client || (trace->ent->svflags & SVF_MONSTER))
 					self->deadflag = DEAD_DYING;
-   			}
-   		}
+			}
+		}
 	}
 
 	// If it's time is up, then kill it.

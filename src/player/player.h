@@ -76,7 +76,8 @@ typedef struct
 {
 	void (*Init)(void);
 	void (*Shutdown)(void);
-	gitem_t* (*GetPlayerItems)(int* num);
+	gitem_t* (*GetPlayerItems)(void);
+	int (*GetPlayerItemsCount)(void);
 
 	void (*PlayerReleaseRope)(playerinfo_t *playerinfo);
 	void (*KnockDownPlayer)(playerinfo_t *playerinfo);
@@ -126,10 +127,6 @@ typedef struct
 	gitem_t* (*FindItemByClassname)(char *classname);
 	gitem_t* (*FindItem)(char *pickupname);
 	void (*InitItems)(void);
-
-	paceldata_t *PlayerSeqData,*PlayerChickenData;
-	int			p_num_items;
-	gitem_t		*p_itemlist;
 } player_export_t;
 
 void P_Freelib(void);
