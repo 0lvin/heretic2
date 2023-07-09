@@ -2,11 +2,9 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "resourcemanager.h"
+#include "surfaceprops.h"
 
-#include "../src/player/surfaceprops.h"
-
-char *surfacePropNames[256] =
+static char *surfacePropNames[256] =
 {
 	"gravel",
 	"metal",

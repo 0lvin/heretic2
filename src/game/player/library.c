@@ -11,9 +11,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "player.h"
-#include "../game/header/local.h"
-#include "../common/header/common.h"
+#include "../../player/player.h"
+#include "../header/local.h"
+#include "../../common/header/common.h"
 
 // Structure containing functions and data pointers exported from the player DLL.
 

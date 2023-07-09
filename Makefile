@@ -801,7 +801,7 @@ GAME_OBJS_ = \
 	h2common/skeletons.o \
 	h2common/h2physics.o \
 	h2common/message.o \
-	src/player/p_library.o \
+	src/game/player/library.o \
 	src/game/buoy.o \
 	src/game/c_ai.o \
 	src/game/c_corvus1_anim.o \
@@ -955,6 +955,80 @@ GAME_OBJS_ = \
 
 # ----------
 
+# The base player
+ifeq ($(YQ2_OSTYPE), Windows)
+player:
+	@echo "===> Building base/player.dll"
+	${Q}mkdir -p release/base
+	$(MAKE) release/base/player.dll
+
+build/player/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+release/base/player.dll : LDFLAGS += -shared
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+player:
+	@echo "===> Building base/player.dylib"
+	${Q}mkdir -p release/base
+	$(MAKE) release/base/player.dylib
+
+build/player/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+release/base/player.dylib : CFLAGS += -fPIC
+release/base/player.dylib : LDFLAGS += -shared
+
+else # not Windows or Darwin
+
+player:
+	@echo "===> Building base/player.so"
+	${Q}mkdir -p release/base
+	$(MAKE) release/base/player.so
+
+build/player/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+build/player/%.o: %.cpp
+	@echo "===> CXX $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
+
+release/base/player.so : CFLAGS += -fPIC -Wno-unused-result
+release/base/player.so : LDFLAGS += -shared
+endif
+
+# ----------
+
+# Used by the player
+PLAYER_OBJS_ = \
+	h2common/h2matrix.o \
+	h2common/h2vector.o \
+	h2common/h2rand.o \
+	src/common/shared/shared.o \
+	src/player/surfaceprops.o \
+	src/player/p_actions.o \
+	src/player/p_animactor.o \
+	src/player/p_anim_branch.o \
+	src/player/p_anim_data.o \
+	src/player/p_anims.o \
+	src/player/p_chicken_anim.o \
+	src/player/p_chicken.o \
+	src/player/p_ctrl.o \
+	src/player/p_items.o \
+	src/player/player_main.o \
+	src/player/p_main.o \
+	src/player/p_weapon.o
+
+# ----------
+
 # Used by the client
 CLIENT_OBJS_ := \
 	h2common/arrayed_list.o \
@@ -962,7 +1036,7 @@ CLIENT_OBJS_ := \
 	h2common/h2physics.o \
 	h2common/h2rand.o \
 	h2common/h2singlylinkedlist.o \
-	h2common/h2surfaces.o \
+	src/player/surfaceprops.o \
 	h2common/h2vector.o \
 	h2common/message.o \
 	h2common/netmsg_read.o \
@@ -1240,6 +1314,7 @@ CLIENT_OBJS_ := \
 	src/game/player/client.o \
 	src/game/player/funcs.o \
 	src/game/player/hud.o \
+	src/game/player/library.o \
 	src/game/player/item.o \
 	src/game/player/view.o \
 	src/game/player/weapon.o \
@@ -1271,7 +1346,6 @@ CLIENT_OBJS_ := \
 	src/player/p_ctrl.o \
 	src/player/p_items.o \
 	src/player/player_main.o \
-	src/player/p_library.o \
 	src/player/p_main.o \
 	src/player/p_weapon.o \
 	src/server/sv_cmd.o \
@@ -1471,12 +1545,14 @@ REFGLES3_OBJS += $(patsubst %,build/ref_gles3/%,$(REFGL3_OBJS_GLADEES_))
 REFSOFT_OBJS = $(patsubst %,build/ref_soft/%,$(REFSOFT_OBJS_))
 SERVER_OBJS = $(patsubst %,build/server/%,$(SERVER_OBJS_))
 GAME_OBJS = $(patsubst %,build/baseq2/%,$(GAME_OBJS_))
+PLAYER_OBJS = $(patsubst %,build/player/%,$(PLAYER_OBJS_))
 
 # ----------
 
 # Generate header dependencies.
 CLIENT_DEPS= $(CLIENT_OBJS:.o=.d)
 GAME_DEPS= $(GAME_OBJS:.o=.d)
+PLAYER_DEPS= $(PLAYER_OBJS:.o=.d)
 REFGL1_DEPS= $(REFGL1_OBJS:.o=.d)
 REFGL3_DEPS= $(REFGL3_OBJS:.o=.d)
 REFGLES3_DEPS= $(REFGLES3_OBJS:.o=.d)
@@ -1598,6 +1674,22 @@ else
 release/baseq2/game.so : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
+endif
+
+# release/base/player.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/base/player.dll : $(PLAYER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/base/player.dylib : $(PLAYER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
+else
+release/base/player.so : $(PLAYER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
 endif
 
 # ----------

@@ -282,3 +282,38 @@ qboolean Vec3NotZero(vec3_t vec)
 {
 	return ( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
 }
+
+float NormalizeAngle(float angle)
+{
+#if	1
+	// Returns the remainder
+	angle = fmod(angle, ANGLE_360);
+	// Makes the angle signed
+	if(angle >= ANGLE_180)
+	{
+		angle -= ANGLE_360;
+	}
+	if(angle <= -ANGLE_180)
+	{
+		angle += ANGLE_360;
+	}
+#else
+	if (Q_fabs(angle) > 15 * ANGLE_360)
+	{
+		angle = (float)atan2(sin(angle), cos(angle));
+
+		return angle;
+	}
+
+	while (angle < -ANGLE_180)
+	{
+		angle += ANGLE_360;
+	}
+
+	while (angle >= ANGLE_180)
+	{
+		angle -= ANGLE_360;
+	}
+#endif
+	return angle;
+}

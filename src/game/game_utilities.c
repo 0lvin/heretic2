@@ -247,41 +247,6 @@ void GetEdictCenter(edict_t *self, vec3_t out)
 	Vec3AddAssign(self->s.origin, out);
 }
 
-float NormalizeAngle(float angle)
-{
-#if	1
-	// Returns the remainder
-	angle = fmod(angle, ANGLE_360);
-	// Makes the angle signed
-	if(angle >= ANGLE_180)
-	{
-		angle -= ANGLE_360;
-	}
-	if(angle <= -ANGLE_180)
-	{
-		angle += ANGLE_360;
-	}
-#else
-	if (Q_fabs(angle) > 15 * ANGLE_360)
-	{
-		angle = (float)atan2(sin(angle), cos(angle));
-
-		return angle;
-	}
-
-	while (angle < -ANGLE_180)
-	{
-		angle += ANGLE_360;
-	}
-
-	while (angle >= ANGLE_180)
-	{
-		angle -= ANGLE_360;
-	}
-#endif
-	return angle;
-}
-
 float AddNormalizedAngles(float angle1, float angle2)
 {
 	float sum;
