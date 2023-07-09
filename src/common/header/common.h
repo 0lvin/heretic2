@@ -274,12 +274,11 @@ enum clc_ops_e
 #define PS_WEAPONFRAME (1 << 13)
 #define PS_RDFLAGS (1 << 14)
 
-#define PS_FWDVEL (1 << 15)
-#define PS_REMOTE_VIEWANGLES (1 << 16)
-#define PS_REMOTE_VIEWORIGIN (1 << 17)
-#define PS_VIEWHEIGHT (1 << 18)
-#define PS_MINSMAXS (1 << 19)
-#define PS_REMOTE_ID (1 << 20)
+#define PS_REMOTE_VIEWANGLES (1 << 15)
+#define PS_REMOTE_VIEWORIGIN (1 << 16)
+#define PS_VIEWHEIGHT (1 << 17)
+#define PS_MINSMAXS (1 << 18)
+#define PS_REMOTE_ID (1 << 19)
 
 /*============================================== */
 
@@ -287,8 +286,6 @@ enum clc_ops_e
 
 /* ms and light always sent, the others are optional */
 
-/* Quake 2 */
-#if 0
 #define CM_ANGLE1 (1 << 0)
 #define CM_ANGLE2 (1 << 1)
 #define CM_ANGLE3 (1 << 2)
@@ -297,25 +294,6 @@ enum clc_ops_e
 #define CM_UP (1 << 5)
 #define CM_BUTTONS (1 << 6)
 #define CM_IMPULSE (1 << 7)
-#endif
-
-/* Heretic 2 */
-#define	CM_ANGLE1 				(1<<0)
-#define	CM_ANGLE2 				(1<<1)
-#define	CM_ANGLE3 				(1<<2)
-#define	CM_AIMANGLE1 			(1<<3)
-#define	CM_AIMANGLE2 			(1<<4)
-#define	CM_AIMANGLE3 			(1<<5)
-#define	CM_CAMERAVIEWORIGIN1	(1<<6)
-#define	CM_CAMERAVIEWORIGIN2	(1<<7)
-#define	CM_CAMERAVIEWORIGIN3	(1<<8)
-#define	CM_CAMERAVIEWANGLES1	(1<<9)
-#define	CM_CAMERAVIEWANGLES2	(1<<10)
-#define	CM_CAMERAVIEWANGLES3	(1<<11)
-#define	CM_FORWARD				(1<<12)
-#define	CM_SIDE					(1<<13)
-#define	CM_UP					(1<<14)
-#define	CM_BUTTONS				(1<<15)
 
 /*============================================== */
 
@@ -325,7 +303,7 @@ enum clc_ops_e
 #define SND_POS (1 << 2)            /* three coordinates */
 #define SND_ENT (1 << 3)            /* a short 0-2: channel, 3-12: entity */
 #define SND_OFFSET (1 << 4)         /* a byte, msec offset from frame start */
-#define SND_PRED_INFO	(1<<5)		// a byte and a float.
+#define SND_PRED_INFO (1<<5)        /* a byte and a float */
 
 #define DEFAULT_SOUND_PACKET_VOLUME 1.0
 #define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
@@ -373,62 +351,38 @@ enum clc_ops_e
 #endif
 
 /* Heretic 2 */
-/* For every 8 bits of PLAYER_DEL_BYTES, a bit of PLAYER_DEL_NZBYTES is required. */
-
-#define PLAYER_DEL_BYTES		(17)
-#define PLAYER_DELNZ_BYTES		(3)
-
-#define ENT_DEL_BYTES		(5)
-#define ENT_DELNZ_BYTES		(1)
 
 #define	U_FRAME8			(1 << 0)
 #define	U_FRAME16			(1 << 1)
-#define	U_ORIGIN12			(1 << 2)
-#define	U_ORIGIN3			(1 << 3)
-#define	U_ANGLE1			(1 << 4)
-#define	U_ANGLE2			(1 << 5)
-#define	U_ANGLE3			(1 << 6)
-#define U_SWAPFRAME			(1 << 7)
+#define	U_ORIGIN1			(1 << 2)
+#define	U_ORIGIN12			(1 << 3)
+#define	U_ORIGIN3			(1 << 4)
+#define	U_ANGLE1			(1 << 5)
+#define	U_ANGLE2			(1 << 6)
+#define	U_ANGLE3			(1 << 7)
 
 #define	U_EFFECTS8			(1 << 8)
 #define	U_EFFECTS16			(1 << 9)
 #define U_RENDERFX8			(1 << 10)
 #define	U_RENDERFX16		(1 << 11)
 #define	U_CLIENT_EFFECTS	(1 << 12)
-#define U_FM_INFO			(1 << 13)
-#define	U_REMOVE			(1 << 14)
-#define	U_ENT_FREED			(1 << 15)
+#define	U_REMOVE			(1 << 13)
+#define	U_ENT_FREED			(1 << 14)
+#define	U_SKIN8				(1 << 15)
 
-#define	U_COLOR_R			(1 << 16)
-#define	U_COLOR_G			(1 << 17)
-#define	U_COLOR_B			(1 << 18)
-#define	U_COLOR_A			(1 << 19)
-#define	U_SKIN8				(1 << 20)
-#define	U_SKIN16			(1 << 21)
-#define	U_MODEL				(1 << 22)
-#define U_SCALE				(1 << 23)
+#define	U_SKIN16			(1 << 16)
+#define	U_MODEL				(1 << 17)
+#define U_SCALE				(1 << 18)
 
-#define	U_SOUND				(1 << 24)
-#define	U_SOLID				(1 << 25)
-#define U_JOINTED			(1 << 26)
-#define	U_ABSLIGHT			(1 << 27)
-#define	U_OLDORIGIN			(1 << 28)
-#define U_USAGE_COUNT		(1 << 29)
-#define	U_NUMBER16			(1 << 30)
-#define	U_BMODEL			(1 << 31)
-
-#define U_CLIENTNUM			(1 << 32)
-
-#define U_FM_HIGH			(1<<7)					// Means more then the first 7 updates
-
-#define U_FM_FRAME			(1<<0)					// Individual bits for each update
-#define U_FM_FRAME16		(1<<1)
-#define U_FM_COLOR_R		(1<<2)
-#define U_FM_COLOR_G		(1<<3)
-#define U_FM_COLOR_B		(1<<4)
-#define U_FM_COLOR_A		(1<<5)
-#define U_FM_FLAGS			(1<<6)
-#define U_FM_SKIN			(1<<7)
+#define	U_SOUND				(1 << 19)
+#define	U_SOLID				(1 << 20)
+#define U_JOINTED			(1 << 21)
+#define	U_ABSLIGHT			(1 << 22)
+#define	U_OLDORIGIN			(1 << 23)
+#define U_USAGE_COUNT		(1 << 24)
+#define	U_NUMBER16			(1 << 25)
+#define U_FM_FLAGS			(1 << 26)
+#define U_FM_SKIN			(1 << 27)
 
 /* CMD - Command text buffering and command execution */
 

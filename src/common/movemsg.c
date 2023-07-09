@@ -573,9 +573,6 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 
 	for (int i = 0; i < MAX_FM_MESH_NODES; i++)
 	{
-		if (to->fmnodeinfo[i].frame != from->fmnodeinfo[i].frame)
-			bits |= U_FM_FRAME;
-
 		if (to->fmnodeinfo[i].flags != from->fmnodeinfo[i].flags)
 			bits |= U_FM_FLAGS;
 	}
@@ -601,14 +598,6 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 			MSG_WriteShort(msg, to->clientEffects.numEffects);
 			MSG_WriteShort(msg, to->clientEffects.bufSize);
 			MSG_WriteData(msg, to->clientEffects.buf, to->clientEffects.bufSize);
-		}
-	}
-
-	if (bits & U_FM_FRAME)
-	{
-		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
-		{
-			MSG_WriteShort(msg, to->fmnodeinfo[i].frame);
 		}
 	}
 
@@ -682,7 +671,6 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 
 	if (bits & U_ORIGIN12)
 	{
-		MSG_WriteCoord(msg, 333.0f); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		MSG_WriteCoord(msg, to->origin[0]);
 	}
 
@@ -698,13 +686,11 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 
 	if (bits & U_ANGLE1)
 	{
-		MSG_WriteCoord(msg, 333.0f); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		MSG_WriteAngle(msg, to->angles[0]);
 	}
 
 	if (bits & U_ANGLE2)
 	{
-		MSG_WriteCoord(msg, 333.0f); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		MSG_WriteAngle(msg, to->angles[1]);
 	}
 

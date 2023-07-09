@@ -149,14 +149,6 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 		to->clientEffects.numEffects = 0;
 	}
 
-	if (bits & U_FM_FRAME)
-	{
-		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
-		{
-			to->fmnodeinfo[i].frame = MSG_ReadShort(&net_message);
-		}
-	}
-
 	if (bits & U_FM_FLAGS)
 	{
 		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
@@ -220,7 +212,6 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 
 	if (bits & U_ORIGIN12)
 	{
-		MSG_ReadCoord(&net_message); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		to->origin[0] = MSG_ReadCoord(&net_message);
 	}
 
@@ -236,13 +227,11 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 
 	if (bits & U_ANGLE1)
 	{
-		MSG_ReadCoord(&net_message); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		to->angles[0] = MSG_ReadAngle(&net_message);
 	}
 
 	if (bits & U_ANGLE2)
 	{
-		MSG_ReadCoord(&net_message); // jmarshall: hack! padding, for some reason without this origin[0] can be nan
 		to->angles[1] = MSG_ReadAngle(&net_message);
 	}
 

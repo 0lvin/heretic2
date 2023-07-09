@@ -1369,7 +1369,6 @@ typedef struct paletteRGBA_s
 
 typedef struct
 {
-	int				frame;
 	byte			flags;
 	int				skin;
 } fmnodeinfo_t;
