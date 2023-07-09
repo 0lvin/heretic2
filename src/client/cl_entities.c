@@ -27,8 +27,7 @@
 #include <math.h>
 #include "header/client.h"
 
-#include "../client_effects/client_effects.h"
-
+extern client_fx_import_t fxi;
 extern struct model_s *cl_mod_powerscreen;
 
 void
@@ -46,6 +45,12 @@ CL_AddPacketEntities(frame_t *frame)
 
 	/* To distinguish baseq2, xatrix and rogue. */
 	cvar_t *game = Cvar_Get("game",  "", CVAR_LATCH | CVAR_SERVERINFO);
+	if (strcmp(game->string, "") == 0)
+	{
+		// TODO: Rewrite game type
+		fxe.AddPacketEntities(frame);
+		return;
+	}
 
 	/* bonus items rotate at a fixed rate */
 	autorotate = anglemod(cl.time * 0.1f);
@@ -908,15 +913,13 @@ CL_AddEntities(void)
 	}
 
 	CL_CalcViewValues();
-
+	CL_AddPacketEntities(&cl.frame);
+	CL_AddParticles();
+	CL_AddDLights();
 	// jmarshall - this is in client effects.dll
-	fxe.AddPacketEntities(&cl.frame); // CL_AddPacketEntities (&cl.frame);
 	fxe.AddEffects(false);
-
 	// jmarshall end
-	// CL_AddParticles();
-	// CL_AddDLights();
-	// CL_AddLightStyles();
+	CL_AddLightStyles();
 }
 
 /*

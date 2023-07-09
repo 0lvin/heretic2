@@ -499,6 +499,14 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 			oldnum = oldstate->number;
 		}
 	}
+
+	int num = newframe->parse_entities & (MAX_PARSE_ENTITIES - 1);
+
+	// TODO: Rewrite game type
+	if (newframe->num_entities > 0 && cl_parse_entities[num].frame > 1024)
+	{
+		printf("%s: set %d\n", __func__, cl_parse_entities[num].frame);
+	}
 }
 
 void
@@ -523,19 +531,6 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 	}
 
 	flags = MSG_ReadLong(&net_message);
-	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
-#if 0
-	// TODO: Rewrite protocol
-	if (flags & PS_MINSMAXS) {
-		state->mins[0] = MSG_ReadFloat(&net_message);
-		state->mins[1] = MSG_ReadFloat(&net_message);
-		state->mins[2] = MSG_ReadFloat(&net_message);
-
-		state->maxs[0] = MSG_ReadFloat(&net_message);
-		state->maxs[1] = MSG_ReadFloat(&net_message);
-		state->maxs[2] = MSG_ReadFloat(&net_message);
-	}
-#endif
 
 	/* parse the pmove_state_t */
 	if (flags & PS_M_TYPE)
@@ -543,49 +538,17 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 		state->pmove.pm_type = MSG_ReadByte(&net_message);
 	}
 
-	if (flags & PS_REMOTE_ID)
-	{
-		state->remote_id = MSG_ReadShort(&net_message);
-	}
-
-	if (flags & PS_REMOTE_VIEWORIGIN)
-	{
-		state->remote_vieworigin[0] = MSG_ReadShort(&net_message);
-		state->remote_vieworigin[1] = MSG_ReadShort(&net_message);
-		state->remote_vieworigin[2] = MSG_ReadShort(&net_message);
-	}
-
-	if (flags & PS_REMOTE_VIEWANGLES)
-	{
-		state->remote_viewangles[0] = MSG_ReadShort(&net_message);
-		state->remote_viewangles[1] = MSG_ReadShort(&net_message);
-		state->remote_viewangles[2] = MSG_ReadShort(&net_message);
-	}
-
-	if (flags & PS_M_ORIGIN_XY)
+	if (flags & PS_M_ORIGIN)
 	{
 		state->pmove.origin[0] = MSG_ReadShort(&net_message);
 		state->pmove.origin[1] = MSG_ReadShort(&net_message);
-	}
-
-	if (flags & PS_VIEWHEIGHT)
-	{
-		state->viewheight = MSG_ReadShort(&net_message);
-	}
-
-	if (flags & PS_M_ORIGIN_Z)
-	{
 		state->pmove.origin[2] = MSG_ReadShort(&net_message);
 	}
 
-	if (flags & PS_M_VELOCITY_XY)
+	if (flags & PS_M_VELOCITY)
 	{
 		state->pmove.velocity[0] = MSG_ReadShort(&net_message);
 		state->pmove.velocity[1] = MSG_ReadShort(&net_message);
-	}
-
-	if (flags & PS_M_VELOCITY_Z)
-	{
 		state->pmove.velocity[2] = MSG_ReadShort(&net_message);
 	}
 
@@ -616,11 +579,50 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 		state->pmove.pm_type = PM_FREEZE; /* demo playback */
 	}
 
+	/* parse the rest of the player_state_t */
+	if (flags & PS_VIEWOFFSET)
+	{
+		state->viewoffset[0] = MSG_ReadChar(&net_message) * 0.25f;
+		state->viewoffset[1] = MSG_ReadChar(&net_message) * 0.25f;
+		state->viewoffset[2] = MSG_ReadChar(&net_message) * 0.25f;
+	}
+
 	if (flags & PS_VIEWANGLES)
 	{
 		state->viewangles[0] = MSG_ReadAngle16(&net_message);
 		state->viewangles[1] = MSG_ReadAngle16(&net_message);
 		state->viewangles[2] = MSG_ReadAngle16(&net_message);
+	}
+
+	if (flags & PS_KICKANGLES)
+	{
+		state->kick_angles[0] = MSG_ReadChar(&net_message) * 0.25f;
+		state->kick_angles[1] = MSG_ReadChar(&net_message) * 0.25f;
+		state->kick_angles[2] = MSG_ReadChar(&net_message) * 0.25f;
+	}
+
+	if (flags & PS_WEAPONINDEX)
+	{
+		state->gunindex = MSG_ReadByte(&net_message);
+	}
+
+	if (flags & PS_WEAPONFRAME)
+	{
+		state->gunframe = MSG_ReadByte(&net_message);
+		state->gunoffset[0] = MSG_ReadChar(&net_message) * 0.25f;
+		state->gunoffset[1] = MSG_ReadChar(&net_message) * 0.25f;
+		state->gunoffset[2] = MSG_ReadChar(&net_message) * 0.25f;
+		state->gunangles[0] = MSG_ReadChar(&net_message) * 0.25f;
+		state->gunangles[1] = MSG_ReadChar(&net_message) * 0.25f;
+		state->gunangles[2] = MSG_ReadChar(&net_message) * 0.25f;
+	}
+
+	if (flags & PS_BLEND)
+	{
+		state->blend[0] = MSG_ReadByte(&net_message) / 255.0f;
+		state->blend[1] = MSG_ReadByte(&net_message) / 255.0f;
+		state->blend[2] = MSG_ReadByte(&net_message) / 255.0f;
+		state->blend[3] = MSG_ReadByte(&net_message) / 255.0f;
 	}
 
 	if (flags & PS_FOV)
@@ -632,6 +634,43 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 	{
 		state->rdflags = MSG_ReadByte(&net_message);
 	}
+
+	if (flags & PS_MINSMAXS)
+	{
+		state->mins[0] = MSG_ReadFloat(&net_message);
+		state->mins[1] = MSG_ReadFloat(&net_message);
+		state->mins[2] = MSG_ReadFloat(&net_message);
+
+		state->maxs[0] = MSG_ReadFloat(&net_message);
+		state->maxs[1] = MSG_ReadFloat(&net_message);
+		state->maxs[2] = MSG_ReadFloat(&net_message);
+	}
+
+	if (flags & PS_REMOTE_ID)
+	{
+		state->remote_id = MSG_ReadShort(&net_message);
+	}
+
+	if (flags & PS_REMOTE_VIEWORIGIN)
+	{
+		state->remote_vieworigin[0] = MSG_ReadShort(&net_message);
+		state->remote_vieworigin[1] = MSG_ReadShort(&net_message);
+		state->remote_vieworigin[2] = MSG_ReadShort(&net_message);
+	}
+
+	if (flags & PS_REMOTE_VIEWANGLES)
+	{
+		state->remote_viewangles[0] = MSG_ReadShort(&net_message);
+		state->remote_viewangles[1] = MSG_ReadShort(&net_message);
+		state->remote_viewangles[2] = MSG_ReadShort(&net_message);
+	}
+
+	if (flags & PS_VIEWHEIGHT)
+	{
+		state->viewheight = MSG_ReadShort(&net_message);
+	}
+
+	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
 }
 
 void

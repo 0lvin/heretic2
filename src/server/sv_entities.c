@@ -92,7 +92,7 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg)
 
 		if (newnum == oldnum)
 		{
-			/* delta update from old position. because the force 
+			/* delta update from old position. because the force
 			   parm is false, this will not result in any bytes
 			   being emited if the entity has not changed at all
 			   note that players are always 'newentities', this
@@ -164,16 +164,14 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		(ps->pmove.origin[1] != ops->pmove.origin[1]) ||
 		(ps->pmove.origin[2] != ops->pmove.origin[2]))
 	{
-		pflags |= PS_M_ORIGIN_XY;
-		pflags |= PS_M_ORIGIN_Z;
+		pflags |= PS_M_ORIGIN;
 	}
 
 	if ((ps->pmove.velocity[0] != ops->pmove.velocity[0]) ||
 		(ps->pmove.velocity[1] != ops->pmove.velocity[1]) ||
 		(ps->pmove.velocity[2] != ops->pmove.velocity[2]))
 	{
-		pflags |= PS_M_VELOCITY_XY;
-		pflags |= PS_M_VELOCITY_Z;
+		pflags |= PS_M_VELOCITY;
 	}
 
 	if (ps->pmove.pm_time != ops->pmove.pm_time)
@@ -198,12 +196,33 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_M_DELTA_ANGLES;
 	}
 
+	if ((ps->viewoffset[0] != ops->viewoffset[0]) ||
+		(ps->viewoffset[1] != ops->viewoffset[1]) ||
+		(ps->viewoffset[2] != ops->viewoffset[2]))
+	{
+		pflags |= PS_VIEWOFFSET;
+	}
 
 	if ((ps->viewangles[0] != ops->viewangles[0]) ||
 		(ps->viewangles[1] != ops->viewangles[1]) ||
 		(ps->viewangles[2] != ops->viewangles[2]))
 	{
 		pflags |= PS_VIEWANGLES;
+	}
+
+	if ((ps->kick_angles[0] != ops->kick_angles[0]) ||
+		(ps->kick_angles[1] != ops->kick_angles[1]) ||
+		(ps->kick_angles[2] != ops->kick_angles[2]))
+	{
+		pflags |= PS_KICKANGLES;
+	}
+
+	if ((ps->blend[0] != ops->blend[0]) ||
+		(ps->blend[1] != ops->blend[1]) ||
+		(ps->blend[2] != ops->blend[2]) ||
+		(ps->blend[3] != ops->blend[3]))
+	{
+		pflags |= PS_BLEND;
 	}
 
 	if (ps->fov != ops->fov)
@@ -214,6 +233,19 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 	if (ps->rdflags != ops->rdflags)
 	{
 		pflags |= PS_RDFLAGS;
+	}
+
+	if ((ps->gunframe != ops->gunframe) ||
+		/* added so weapon angle/offset update during pauseframes */
+		(ps->gunoffset[0] != ops->gunoffset[0]) ||
+		(ps->gunoffset[1] != ops->gunoffset[1]) ||
+		(ps->gunoffset[2] != ops->gunoffset[2]) ||
+
+		(ps->gunangles[0] != ops->gunangles[0]) ||
+		(ps->gunangles[1] != ops->gunangles[1]) ||
+		(ps->gunangles[2] != ops->gunangles[2]))
+	{
+		pflags |= PS_WEAPONFRAME;
 	}
 
 	if (ps->remote_vieworigin[0] != ops->remote_vieworigin[0] ||
@@ -231,33 +263,128 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_REMOTE_VIEWANGLES;
 	}
 
-#if 0
-	// TODO: Rewrite protocol
-	if (ps->mins[0] != ops->mins[0] || ps->mins[1] != ops->mins[1] || ps->mins[2] != ops->mins[2])
+	if (ps->mins[0] != ops->mins[0] || ps->mins[1] != ops->mins[1] || ps->mins[2] != ops->mins[2] ||
+		ps->maxs[0] != ops->maxs[0] || ps->maxs[1] != ops->maxs[1] || ps->maxs[2] != ops->maxs[2])
 	{
 		pflags |= PS_MINSMAXS;
 	}
-
-	if (ps->maxs[0] != ops->maxs[0] || ps->maxs[1] != ops->maxs[1] || ps->maxs[2] != ops->maxs[2])
-	{
-		pflags |= PS_MINSMAXS;
-	}
-#endif
 
 	if (ps->remote_id != ops->remote_id)
 	{
 		pflags |= PS_REMOTE_ID;
 	}
 
+	if (ps->viewheight != ops->viewheight)
+	{
+		pflags |= PS_VIEWHEIGHT;
+	}
+
 	/* write it */
 	MSG_WriteByte(msg, svc_playerinfo);
 	MSG_WriteLong(msg, pflags);
 
-	MSG_WriteData(msg, (byte *)&ps->stats[0], sizeof(ps->stats));
+	//
+	// write the pmove_state_t
+	//
+	if (pflags & PS_M_TYPE)
+	{
+		MSG_WriteByte (msg, ps->pmove.pm_type);
+	}
 
-#if 0
-	// TODO: Rewrite protocol
-	if (pflags & PS_MINSMAXS) {
+	if (pflags & PS_M_ORIGIN)
+	{
+		MSG_WriteShort(msg, ps->pmove.origin[0]);
+		MSG_WriteShort(msg, ps->pmove.origin[1]);
+		MSG_WriteShort(msg, ps->pmove.origin[2]);
+	}
+
+	if (pflags & PS_M_VELOCITY)
+	{
+		MSG_WriteShort(msg, ps->pmove.velocity[0]);
+		MSG_WriteShort(msg, ps->pmove.velocity[1]);
+		MSG_WriteShort(msg, ps->pmove.velocity[2]);
+	}
+
+	if (pflags & PS_M_TIME)
+	{
+		MSG_WriteByte(msg, ps->pmove.pm_time);
+	}
+
+	if (pflags & PS_M_FLAGS)
+	{
+		MSG_WriteByte(msg, ps->pmove.pm_flags);
+	}
+
+	if (pflags & PS_M_GRAVITY)
+	{
+		MSG_WriteShort(msg, ps->pmove.gravity);
+	}
+
+	if (pflags & PS_M_DELTA_ANGLES)
+	{
+		MSG_WriteShort(msg, ps->pmove.delta_angles[0]);
+		MSG_WriteShort(msg, ps->pmove.delta_angles[1]);
+		MSG_WriteShort(msg, ps->pmove.delta_angles[2]);
+	}
+
+	/* write the rest of the player_state_t */
+	if (pflags & PS_VIEWOFFSET)
+	{
+		MSG_WriteChar(msg, ps->viewoffset[0] * 4);
+		MSG_WriteChar(msg, ps->viewoffset[1] * 4);
+		MSG_WriteChar(msg, ps->viewoffset[2] * 4);
+	}
+
+	if (pflags & PS_VIEWANGLES)
+	{
+		MSG_WriteAngle16(msg, ps->viewangles[0]);
+		MSG_WriteAngle16(msg, ps->viewangles[1]);
+		MSG_WriteAngle16(msg, ps->viewangles[2]);
+	}
+
+	if (pflags & PS_KICKANGLES)
+	{
+		MSG_WriteChar(msg, ps->kick_angles[0] * 4);
+		MSG_WriteChar(msg, ps->kick_angles[1] * 4);
+		MSG_WriteChar(msg, ps->kick_angles[2] * 4);
+	}
+
+	if (pflags & PS_WEAPONINDEX)
+	{
+		MSG_WriteByte(msg, ps->gunindex);
+	}
+
+	if (pflags & PS_WEAPONFRAME)
+	{
+		MSG_WriteByte(msg, ps->gunframe);
+		MSG_WriteChar(msg, ps->gunoffset[0] * 4);
+		MSG_WriteChar(msg, ps->gunoffset[1] * 4);
+		MSG_WriteChar(msg, ps->gunoffset[2] * 4);
+		MSG_WriteChar(msg, ps->gunangles[0] * 4);
+		MSG_WriteChar(msg, ps->gunangles[1] * 4);
+		MSG_WriteChar(msg, ps->gunangles[2] * 4);
+	}
+
+	if (pflags & PS_BLEND)
+	{
+		MSG_WriteByte(msg, ps->blend[0] * 255);
+		MSG_WriteByte(msg, ps->blend[1] * 255);
+		MSG_WriteByte(msg, ps->blend[2] * 255);
+		MSG_WriteByte(msg, ps->blend[3] * 255);
+	}
+
+	if (pflags & PS_FOV)
+	{
+		MSG_WriteByte(msg, ps->fov);
+	}
+
+	if (pflags & PS_RDFLAGS)
+	{
+		MSG_WriteByte(msg, ps->rdflags);
+	}
+
+	if (pflags & PS_MINSMAXS)
+	{
 		MSG_WriteFloat(msg, ps->mins[0]);
 		MSG_WriteFloat(msg, ps->mins[1]);
 		MSG_WriteFloat(msg, ps->mins[2]);
@@ -266,13 +393,6 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		MSG_WriteFloat(msg, ps->maxs[1]);
 		MSG_WriteFloat(msg, ps->maxs[2]);
 	}
-#endif
-
-	//
-	// write the pmove_state_t
-	//
-	if (pflags & PS_M_TYPE)
-		MSG_WriteByte (msg, ps->pmove.pm_type);
 
 	if (pflags & PS_REMOTE_ID)
 	{
@@ -293,63 +413,12 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		MSG_WriteShort(msg, ps->remote_viewangles[2]);
 	}
 
-	if (pflags & PS_M_ORIGIN_XY)
-	{
-		MSG_WriteShort (msg, ps->pmove.origin[0]);
-		MSG_WriteShort (msg, ps->pmove.origin[1]);
-	}
-
 	if (pflags & PS_VIEWHEIGHT)
 	{
 		MSG_WriteShort(msg, ps->viewheight);
 	}
 
-	if (pflags & PS_M_ORIGIN_Z)
-	{
-		MSG_WriteShort(msg, ps->pmove.origin[2]);
-	}
-
-	if (pflags & PS_M_VELOCITY_XY)
-	{
-		MSG_WriteShort (msg, ps->pmove.velocity[0]);
-		MSG_WriteShort (msg, ps->pmove.velocity[1]);
-	}
-
-	if (pflags & PS_M_VELOCITY_Z)
-	{
-		MSG_WriteShort(msg, ps->pmove.velocity[2]);
-	}
-
-	if (pflags & PS_M_TIME)
-		MSG_WriteByte (msg, ps->pmove.pm_time);
-
-	if (pflags & PS_M_FLAGS)
-		MSG_WriteByte (msg, ps->pmove.pm_flags);
-
-	if (pflags & PS_M_GRAVITY)
-		MSG_WriteShort (msg, ps->pmove.gravity);
-
-	if (pflags & PS_M_DELTA_ANGLES)
-	{
-		MSG_WriteShort (msg, ps->pmove.delta_angles[0]);
-		MSG_WriteShort (msg, ps->pmove.delta_angles[1]);
-		MSG_WriteShort (msg, ps->pmove.delta_angles[2]);
-	}
-
-	//
-	// write the rest of the player_state_t
-	//
-	if (pflags & PS_VIEWANGLES)
-	{
-		MSG_WriteAngle16 (msg, ps->viewangles[0]);
-		MSG_WriteAngle16 (msg, ps->viewangles[1]);
-		MSG_WriteAngle16 (msg, ps->viewangles[2]);
-	}
-
-	if (pflags & PS_FOV)
-		MSG_WriteByte (msg, ps->fov);
-	if (pflags & PS_RDFLAGS)
-		MSG_WriteByte (msg, ps->rdflags);
+	MSG_WriteData(msg, (byte *)&ps->stats[0], sizeof(ps->stats));
 }
 
 void SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, sizebuf_t* msg);

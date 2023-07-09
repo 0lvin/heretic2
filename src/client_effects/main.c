@@ -60,61 +60,12 @@ void CL_RunLightStyles(void);
 struct level_map_info_s *GetLMI();
 int GetLMIMax();
 
-static void AddServerEntities(frame_t *frame);
-static void ParseEffects(centity_t *cent);
-
-
 static void RemoveEffectsFromCent(centity_t *cent)
 {
 	if(cent->effects)
 	{
 		RemoveOwnedEffectList(cent);
 	}
-}
-
-/*
-==============
-GetRefAPI
-
-==============
-*/
-client_fx_export_t GetfxAPI (client_fx_import_t import)
-{
-	client_fx_export_t _export;
-
-	fxi = import;
-
-	_export.api_version = API_VERSION;
-
-	_export.Init = Init;
-
-	_export.ShutDown = ShutDown;
-
-	_export.Clear=Clear;
-
-	_export.RegisterSounds = RegisterSounds;
-	_export.RegisterModels = RegisterModels;
-
-	// In the client code in the executable the following functions are called first.
-	_export.AddPacketEntities = AddServerEntities;
-
-	// Secondly....
-	_export.AddEffects = AddEffects;
-
-	// Thirdly (if any independent effects exist).
-	_export.ParseClientEffects = ParseEffects;
-
-	// Lastly.
-	_export.UpdateEffects = PostRenderUpdate;
-
-	_export.GetLMI = GetLMI;
-	_export.GetLMIMax = GetLMIMax;
-
-	_export.RemoveClientEffects = RemoveEffectsFromCent;
-
-	_export.client_string = client_string;
-
-	return _export;
 }
 
 extern void (*cg_classStaticsInits[CE_NUM_CLASSIDS])();
@@ -225,8 +176,6 @@ static int	num_owned_inview;
 
 void AddEffects(qboolean freeze)
 {
-	void CL_AddLightStyles(void);
-
 	int i;
 	centity_t *owner;
 	int	num_free_inview = 0;
@@ -250,8 +199,6 @@ void AddEffects(qboolean freeze)
 			num_owned_inview += AddEffectsToView(&owner->effects, owner);
 		}
 	}
-
-	CL_AddLightStyles();
 
 	if(fx_numinview->value)
 	{
@@ -660,12 +607,8 @@ AddServerEntities(frame_t *frame)
 
 	for(pnum = 0, ent = sv_ents; pnum<numEntsToAdd; ++pnum)
 	{
-		s1 = fxi.parse_entities + ((frame->parse_entities + pnum) & (MAX_PARSE_ENTITIES - 1));
-
-		if (s1->frame > 1024 && pnum == 0)
-		{
-			printf("%s, %p: set %d\n", __func__, ent, s1->frame);
-		}
+		s1 = &fxi.parse_entities[(frame->parse_entities +
+				pnum) & (MAX_PARSE_ENTITIES - 1)];
 
 		cent = fxi.server_entities + s1->number;
 
@@ -1018,3 +961,48 @@ AddServerEntities(frame_t *frame)
 }
 
 // end
+
+/*
+==============
+GetRefAPI
+
+==============
+*/
+client_fx_export_t GetfxAPI (client_fx_import_t import)
+{
+	client_fx_export_t _export;
+
+	fxi = import;
+
+	_export.api_version = API_VERSION;
+
+	_export.Init = Init;
+
+	_export.ShutDown = ShutDown;
+
+	_export.Clear=Clear;
+
+	_export.RegisterSounds = RegisterSounds;
+	_export.RegisterModels = RegisterModels;
+
+	// In the client code in the executable the following functions are called first.
+	_export.AddPacketEntities = AddServerEntities;
+
+	// Secondly....
+	_export.AddEffects = AddEffects;
+
+	// Thirdly (if any independent effects exist).
+	_export.ParseClientEffects = ParseEffects;
+
+	// Lastly.
+	_export.UpdateEffects = PostRenderUpdate;
+
+	_export.GetLMI = GetLMI;
+	_export.GetLMIMax = GetLMIMax;
+
+	_export.RemoveClientEffects = RemoveEffectsFromCent;
+
+	_export.client_string = client_string;
+
+	return _export;
+}
