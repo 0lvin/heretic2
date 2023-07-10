@@ -102,7 +102,21 @@ CL_ParseEntityBits(unsigned *bits)
 	int number;
 
 	total = MSG_ReadLong(&net_message);
-	number = MSG_ReadShort(&net_message);
+
+	if (!(total & U_NUMBER16))
+	{
+		printf("Expected %d\n", total & U_NUMBER16);
+	}
+
+	if (total & U_NUMBER16 || 1)
+	{
+		number = MSG_ReadShort(&net_message);
+	}
+
+	else
+	{
+		number = MSG_ReadByte(&net_message);
+	}
 
 	*bits = total;
 
@@ -158,7 +172,9 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 	}
 
 	if (bits & U_MODEL)
+	{
 		to->modelindex = MSG_ReadByte(&net_message);
+	}
 
 	if (bits & U_FRAME8)
 	{
@@ -210,12 +226,12 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 		to->renderfx = MSG_ReadShort(&net_message);
 	}
 
-	if (bits & U_ORIGIN12)
+	if (bits & U_ORIGIN1)
 	{
 		to->origin[0] = MSG_ReadCoord(&net_message);
 	}
 
-	if (bits & U_ORIGIN12)
+	if (bits & U_ORIGIN2)
 	{
 		to->origin[1] = MSG_ReadCoord(&net_message);
 	}
@@ -248,6 +264,15 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 	if (bits & U_SOUND)
 	{
 		to->sound = MSG_ReadByte(&net_message);
+	}
+
+	if (bits & U_EVENT)
+	{
+		to->event = MSG_ReadByte(&net_message);
+	}
+	else
+	{
+		to->event = 0;
 	}
 
 	if (bits & U_SOLID)

@@ -329,6 +329,11 @@ MSG_WriteDeltaUsercmd(sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
 		bits |= CM_BUTTONS;
 	}
 
+	if (cmd->impulse != from->impulse)
+	{
+		bits |= CM_IMPULSE;
+	}
+
 	MSG_WriteLong(buf, bits);
 
 	if (bits & CM_ANGLE1)
@@ -366,6 +371,10 @@ MSG_WriteDeltaUsercmd(sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
 		MSG_WriteByte(buf, cmd->buttons);
 	}
 
+	if (bits & CM_IMPULSE)
+	{
+		MSG_WriteByte(buf, cmd->impulse);
+	}
 
 	MSG_WriteByte(buf, cmd->msec);
 	MSG_WriteByte(buf, cmd->lightlevel);
@@ -447,7 +456,7 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 	}
 
 	/* send an update */
-	bits = 0;
+	bits = U_NUMBER16;
 
 	if (to->number >= 256)
 	{
@@ -456,12 +465,12 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 
 	if (to->origin[0] != from->origin[0])
 	{
-		bits |= U_ORIGIN12;
+		bits |= U_ORIGIN1;
 	}
 
 	if (to->origin[1] != from->origin[1])
 	{
-		bits |= U_ORIGIN12;
+		bits |= U_ORIGIN2;
 	}
 
 	if (to->origin[2] != from->origin[2])
@@ -561,9 +570,30 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		bits |= U_SOLID;
 	}
 
+	/* event is not delta compressed, just 0 compressed */
+	if (to->event)
+	{
+		bits |= U_EVENT;
+	}
+
 	if (to->modelindex != from->modelindex)
 	{
 		bits |= U_MODEL;
+	}
+
+	if (to->modelindex2 != from->modelindex2)
+	{
+		bits |= U_MODEL2;
+	}
+
+	if (to->modelindex3 != from->modelindex3)
+	{
+		bits |= U_MODEL3;
+	}
+
+	if (to->modelindex4 != from->modelindex4)
+	{
+		bits |= U_MODEL4;
 	}
 
 	if (to->sound != from->sound)
@@ -585,7 +615,15 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 
 	MSG_WriteLong(msg, bits);
 
-	MSG_WriteShort(msg, to->number);
+	if (bits & U_NUMBER16)
+	{
+		MSG_WriteShort(msg, to->number);
+	}
+
+	else
+	{
+		MSG_WriteByte(msg, to->number);
+	}
 
 	if (bits & U_CLIENT_EFFECTS)
 	{
@@ -612,6 +650,21 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 	if (bits & U_MODEL)
 	{
 		MSG_WriteByte(msg, to->modelindex);
+	}
+
+	if (bits & U_MODEL2)
+	{
+		MSG_WriteByte(msg, to->modelindex2);
+	}
+
+	if (bits & U_MODEL3)
+	{
+		MSG_WriteByte(msg, to->modelindex3);
+	}
+
+	if (bits & U_MODEL4)
+	{
+		MSG_WriteByte(msg, to->modelindex4);
 	}
 
 	if (bits & U_FRAME8)
@@ -669,12 +722,12 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		MSG_WriteShort(msg, to->renderfx);
 	}
 
-	if (bits & U_ORIGIN12)
+	if (bits & U_ORIGIN1)
 	{
 		MSG_WriteCoord(msg, to->origin[0]);
 	}
 
-	if (bits & U_ORIGIN12)
+	if (bits & U_ORIGIN2)
 	{
 		MSG_WriteCoord(msg, to->origin[1]);
 	}
@@ -709,6 +762,11 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 	if (bits & U_SOUND)
 	{
 		MSG_WriteByte(msg, to->sound);
+	}
+
+	if (bits & U_EVENT)
+	{
+		MSG_WriteByte(msg, to->event);
 	}
 
 	if (bits & U_SOLID)
@@ -962,6 +1020,11 @@ MSG_ReadDeltaUsercmd(sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move)
 	if (bits & CM_BUTTONS)
 	{
 		move->buttons = MSG_ReadByte(msg_read);
+	}
+
+	if (bits & CM_IMPULSE)
+	{
+		move->impulse = MSG_ReadByte(msg_read);
 	}
 
 	/* read time to run command */
