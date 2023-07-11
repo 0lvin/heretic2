@@ -105,7 +105,7 @@ CL_ParseEntityBits(unsigned *bits)
 
 	if (!(total & U_NUMBER16))
 	{
-		printf("Expected %d\n", total & U_NUMBER16);
+		printf("%s: Expected %d\n", __func__, total & U_NUMBER16);
 	}
 
 	if (total & U_NUMBER16 || 1)

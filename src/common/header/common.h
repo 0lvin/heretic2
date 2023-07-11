@@ -312,8 +312,6 @@ enum clc_ops_e
 
 /* entity_state_t communication */
 
-/* Quake 2 */
-#if 0
 /* try to pack the common update flags into the first byte */
 #define U_ORIGIN1 (1 << 0)
 #define U_ORIGIN2 (1 << 1)
@@ -323,6 +321,7 @@ enum clc_ops_e
 #define U_EVENT (1 << 5)
 #define U_REMOVE (1 << 6)       /* REMOVE this entity, don't add it */
 #define U_MOREBITS1 (1 << 7)      /* read one additional byte */
+#define U_CLIENT_EFFECTS (1 << 7)
 
 /* second byte */
 #define U_NUMBER16 (1 << 8)      /* NUMBER8 is implicit if not set */
@@ -332,6 +331,7 @@ enum clc_ops_e
 #define U_RENDERFX8 (1 << 12)     /* fullbright, etc */
 #define U_EFFECTS8 (1 << 14)     /* autorotate, trails, etc */
 #define U_MOREBITS2 (1 << 15)     /* read one additional byte */
+#define U_SCALE (1 << 15)
 
 /* third byte */
 #define U_SKIN8 (1 << 16)
@@ -342,51 +342,17 @@ enum clc_ops_e
 #define U_MODEL3 (1 << 21)
 #define U_MODEL4 (1 << 22)
 #define U_MOREBITS3 (1 << 23)     /* read one additional byte */
+#define U_JOINTED (1 << 23)
 
 /* fourth byte */
 #define U_OLDORIGIN (1 << 24)
 #define U_SKIN16 (1 << 25)
 #define U_SOUND (1 << 26)
 #define U_SOLID (1 << 27)
-#endif
-
-/* Heretic 2 */
-
-#define	U_FRAME8			(1 << 0)
-#define	U_FRAME16			(1 << 1)
-#define	U_ORIGIN1			(1 << 2)
-#define	U_ORIGIN2			(1 << 3)
-#define	U_ORIGIN3			(1 << 4)
-#define	U_ANGLE1			(1 << 5)
-#define	U_ANGLE2			(1 << 6)
-#define	U_ANGLE3			(1 << 7)
-
-#define	U_EFFECTS8			(1 << 8)
-#define	U_EFFECTS16			(1 << 9)
-#define U_RENDERFX8			(1 << 10)
-#define	U_RENDERFX16		(1 << 11)
-#define	U_CLIENT_EFFECTS	(1 << 12)
-#define	U_REMOVE			(1 << 13)
-#define	U_SKIN8				(1 << 14)
-#define	U_SKIN16			(1 << 15)
-
-#define	U_MODEL				(1 << 16)
-#define	U_MODEL1			(1 << 17)
-#define	U_MODEL2			(1 << 18)
-#define	U_MODEL3			(1 << 19)
-#define	U_MODEL4			(1 << 20)
-#define U_SCALE				(1 << 21)
-#define	U_SOUND				(1 << 22)
-#define	U_SOLID				(1 << 23)
-
-#define U_JOINTED			(1 << 24)
-#define	U_ABSLIGHT			(1 << 25)
-#define	U_OLDORIGIN			(1 << 26)
-#define U_USAGE_COUNT		(1 << 27)
-#define	U_NUMBER16			(1 << 28)
-#define U_FM_FLAGS			(1 << 29)
-#define U_FM_SKIN			(1 << 30)
-#define U_EVENT				(1 << 31)
+#define U_ABSLIGHT (1 << 28)
+#define U_USAGE_COUNT (1 << 29)
+#define U_FM_FLAGS (1 << 30)
+#define U_FM_SKIN (1 << 31)
 
 /* CMD - Command text buffering and command execution */
 
