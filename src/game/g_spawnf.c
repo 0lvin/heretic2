@@ -19,10 +19,7 @@ typedef struct
 	int		default_preset;
 } eax_level_info_t;
 
-#define MAX_CURRENT_LEVELS	29
-
-eax_level_info_t	eax_level_info[MAX_CURRENT_LEVELS] =
-{
+static eax_level_info_t eax_level_info[] = {
 	{"ssdocks",			EAX_CITY_AND_SEWERS},
 	{"sswarehouse",		EAX_CITY_AND_SEWERS},
 	{"sstown",			EAX_CITY_AND_ALLEYS},
@@ -54,6 +51,7 @@ eax_level_info_t	eax_level_info[MAX_CURRENT_LEVELS] =
 	{"dmcloud",			EAX_CITY_AND_ALLEYS},
 };
 
+#define MAX_CURRENT_LEVELS (sizeof(eax_level_info) / sizeof(*eax_level_info))
 
 /*
 =============
@@ -535,11 +533,24 @@ void SP_worldspawn (edict_t *ent)
 	{
 		// search through all the currently defined world maps, looking for names, so we can set
 		// the EAX default sound type for this level.
-		if (!Q_stricmp(eax_level_info[i].level_name,  level.mapname))
+		if (!Q_stricmp(eax_level_info[i].level_name, level.mapname))
 		{
-			char tmp[4];
-			Com_sprintf (tmp, sizeof(tmp), "%d", eax_level_info[i].default_preset);
-			gi.cvar_set("EAX_default", tmp);
+			int eax_preset = -1;
+
+			// keep in sync with openal
+			switch (eax_level_info[i].default_preset)
+			{
+				case EAX_GENERIC: eax_preset = 0; break;
+				case EAX_ALL_STONE: eax_preset = 13; break;
+				case EAX_ARENA: eax_preset = 9; break;
+				case EAX_CITY_AND_SEWERS: eax_preset = 16; break;
+				case EAX_CITY_AND_ALLEYS: eax_preset = 14; break;
+				case EAX_FOREST: eax_preset = 15; break;
+				case EAX_PSYCHOTIC: eax_preset = 25; break;
+			}
+
+			gi.cvar_set("s_reverb_preset", va("%i", eax_preset));
+
 			break;
 		}
 	}
@@ -547,10 +558,9 @@ void SP_worldspawn (edict_t *ent)
 	// if we didn't find it in the current level list, lets just set it to generic
 	if (i == MAX_CURRENT_LEVELS)
 	{
-		char tmp[4];
-		Com_sprintf (tmp, sizeof(tmp), "%d", ent->s.scale);
-		gi.cvar_set("EAX_default", tmp);
+		gi.cvar_set("s_reverb_preset", "0");
 	}
+
 	// just in case
 	ent->s.scale = 0;
 
