@@ -242,9 +242,6 @@ enum
 // All this crap below is to be pulled out at some point REAL soon.
 // ************************************************************************************************
 
-#define SERVER_SENT 1
-#define SERVER_DELETED 2
-
 // Player Muzzle Flashes
 enum
 {

@@ -79,54 +79,27 @@ struct gclient_s
 
 struct edict_s
 {
-	// This is sent to the server as part of each client frame.
+	entity_state_t s;
+	struct gclient_s *client;
+	qboolean inuse;
+	int linkcount;
 
-	entity_state_t		s;
+	link_t area;                    /* linked to a division node or leaf */
 
-	// NULL if not a player. The server expects the first part of a 'gclient_s' to be a
-	// 'player_state_t' but the rest of it is opaque.
+	int num_clusters;               /* if -1, use headnode instead */
+	int clusternums[MAX_ENT_CLUSTERS];
+	int headnode;                   /* unused if num_clusters != -1 */
+	int areanum, areanum2;
 
-	struct gclient_s	*client;
+	int svflags;                    /* SVF_NOCLIENT, SVF_DEADMONSTER, SVF_MONSTER, etc */
+	vec3_t mins, maxs;
+	vec3_t absmin, absmax, size;
+	solid_t solid;
+	int clipmask;
+	edict_t *owner;
 
-	// House keeping information not used by the game logic.
-
-	qboolean			inuse;
-	int					just_deleted;			// used to delete stuff entities properly on the client
-	int					client_sent;			// used to delete stuff entities properly on the client
-	int					linkcount;
-
-	// FIXME: move these fields to a server private sv_entity_t
-
-	link_t				area;				// Linked to a division node or leaf.
-	int					num_clusters;		// If -1, use headnode instead.
-	int					clusternums[MAX_ENT_CLUSTERS];
-	int					headnode;			// Unused if num_clusters is -1.
-	int					areanum,areanum2;
-
-	int					svflags;
-
-	edict_t				*groundentity;			// entity serving as ground
-	int					groundentity_linkcount;	// if self and groundentity's don't match, groundentity should be cleared
-	vec3_t				groundNormal;			// normal of the ground
-
-	vec3_t				intentMins, intentMaxs;	// if PF_RESIZE is set, then physics will attempt to change
-												// the ents bounding form to the new one indicated
-												// If it was succesfully resized, the PF_RESIZE is turned off
-												// otherwise it will remain on.
-
-	solid_t				solid;
-	int					clipmask;
-	edict_t				*owner;
-
-	vec3_t				mins,maxs;
-	vec3_t				absmin,absmax,size;
-
-	// called when self is the collidee in a collision, resulting in the impediment or bouncing of trace->ent
-	void				(*isBlocking)(edict_t *self, trace_t *trace);
-
-	// The game dll can add anything it wants after this point in the edict_t in g_Edict.h.
-
-	//=============================================================================================
+	/* the game dll can add anything it wants
+	   after this point in the structure */
 };
 
 #endif /* GAME_INCLUDE */
@@ -180,6 +153,49 @@ typedef struct
 			int areatype);
 	void (*Pmove)(pmove_t *pmove, qboolean server);		// Player movement code, common with client prediction.
 
+	/* network messaging */
+	void (*multicast)(vec3_t origin, multicast_t to);
+	void (*unicast)(edict_t *ent, qboolean reliable);
+	void (*WriteChar)(int c);
+	void (*WriteByte)(int c);
+	void (*WriteShort)(int c);
+	void (*WriteLong)(int c);
+	void (*WriteFloat)(float f);
+	void (*WriteString)(char *s);
+	void (*WritePosition)(vec3_t pos); /* some fractional bits */
+	void (*WriteDir)(vec3_t pos); /* single byte encoded, very coarse */
+	void (*WriteAngle)(float f);
+
+	/* managed memory allocation */
+	void *(*TagMalloc)(int size, int tag);
+	void (*TagFree)(void *block);
+	void (*FreeTags)(int tag);
+
+	/* console variable interaction */
+	cvar_t *(*cvar)(char *var_name, char *value, int flags);
+	cvar_t *(*cvar_set)(char *var_name, char *value);
+	cvar_t *(*cvar_forceset)(char *var_name, char *value);
+
+	/* ClientCommand and ServerCommand parameter access */
+	int (*argc)(void);
+	char *(*argv)(int n);
+	char *(*args)(void); /* concatenation of all argv >= 1 */
+
+	/* add commands to the server console as if
+	   they were typed in for map changing, etc */
+	void (*AddCommandString)(char *text);
+
+	void (*DebugGraph)(float value, int color);
+
+	void	(*CreateEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
+	void	(*RemoveEffects)(entity_state_t *ent, int type);
+	void	(*CreateEffectEvent) (byte EventId,entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
+	void	(*RemoveEffectsEvent)(byte EventId,entity_state_t *ent, int type);
+	int		(*CreatePersistantEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
+	qboolean (*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
+					// The effect is not removed on the client									// This should be done by removing the effects from the owning entity or freein
+
+	float	(*cvar_variablevalue) (char *var_name);
 	void (*clprintf)(edict_t *ent, edict_t *from, int color, char *fmt, ...);
 	void (*bcaption)(int printlevel, short stringid);
 	void (*Obituary)(int printlevel, short stringid, short client1, short client2);
@@ -208,54 +224,6 @@ typedef struct
 
 	// End New_Physics
 
-	// Network messaging services.
-
-	void	(*multicast) (vec3_t origin, multicast_t to);
-	void	(*unicast) (edict_t *ent, qboolean reliable);
-	void	(*WriteChar) (int c);
-	void	(*WriteByte) (int c);
-	void	(*WriteShort) (int c);
-	void	(*WriteLong) (int c);
-	void	(*WriteFloat) (float f);
-	void	(*WriteString) (char *s);
-	void	(*WritePosition) (vec3_t pos);	// Some fractional bits.
-	void	(*WriteDir) (vec3_t pos);		// Single byte encoded, very coarse.
-	void	(*WriteAngle) (float f);
-	void	(*CreateEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	void	(*RemoveEffects)(entity_state_t *ent, int type);
-	void	(*CreateEffectEvent) (byte EventId,entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	void	(*RemoveEffectsEvent)(byte EventId,entity_state_t *ent, int type);
-	int		(*CreatePersistantEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	qboolean (*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
-														// The effect is not removed on the client
-														// This should be done by removing the effects from the owning entity or freein
-	// Managed memory allocation.
-
-	void	*(*TagMalloc) (int size, int tag);
-	void	(*TagFree) (void *block);
-	void	(*FreeTags) (int tag);
-
-	// Console variable interaction.
-
-	cvar_t	*(*cvar) (char *var_name, char *value, int flags);
-	cvar_t	*(*cvar_set) (char *var_name, char *value);
-	cvar_t	*(*cvar_forceset) (char *var_name, char *value);
-	float	(*cvar_variablevalue) (char *var_name);
-
-	// ClientCommand and console command parameter checking.
-
-	int		(*argc) (void);
-	char	*(*argv) (int n);
-	char	*(*args) (void);
-
-	// Add commands to the server console as if they were typed in for map changing, etc.
-
-	void	(*AddCommandString) (char *text);
-
-	// Debugging aid.
-
-	void	(*DebugGraph) (float value, int color);
-
 	// Files will be memory mapped read only. The returned buffer may be part of a larger '.pak'
 	// file, or a discrete file from anywhere in the quake search path. A -1 return means the file
 	// does not exist. NULL can be passed for buf to just determine existance.
@@ -279,47 +247,41 @@ typedef struct
 {
 	int apiversion;
 
-	// The init() function will only be called when a game starts, not each time a level is loaded.
-	// Persistant data for clients and the server can be allocated in init().
+	/* the init function will only be called when a game starts,
+	   not each time a level is loaded.  Persistant data for clients
+	   and the server can be allocated in init */
+	void (*Init)(void);
+	void (*Shutdown)(void);
 
-	void		(*Init) (void);
-	void		(*Shutdown) (void);
+	/* each new level entered will cause a call to SpawnEntities */
+	void (*SpawnEntities)(char *mapname, char *entstring, char *spawnpoint, qboolean loadgame);
 
-	// Each new level entered will cause a call to SpawnEntities().
+	/* Read/Write Game is for storing persistant cross level information
+	   about the world state and the clients.
+	   WriteGame is called every time a level is exited.
+	   ReadGame is called on a loadgame. */
+	void (*WriteGame)(char *filename, qboolean autosave);
+	void (*ReadGame)(char *filename);
 
-	void		(*SpawnEntities) (char *mapname, char *entstring, char *spawnpoint, qboolean loadgame);
-	void		(*ConstructEntities)(void);
-	void		(*CheckCoopTimeout)(qboolean BeenHereBefore);
+	/* ReadLevel is called after the default
+	   map information has been loaded with
+	   SpawnEntities */
+	void (*WriteLevel)(char *filename);
+	void (*ReadLevel)(char *filename);
 
-	// Read/Write Game is for storing persistant cross level information about the world state and
-	// the clients. WriteGame is called every time a level is exited. ReadGame is called on a
-	// loadgame.
-
-	void		(*WriteGame) (char *filename, qboolean autosave);
-	void		(*ReadGame) (char *filename);
-
-	// ReadLevel is called after the default map information has been loaded with SpawnEntities, so
-	// any stored client spawn spots will be used when the clients reconnect.
-
-	void		(*WriteLevel) (char *filename);
-	void		(*ReadLevel) (char *filename);
-
-	//
-
-	qboolean	(*ClientConnect) (edict_t *ent, char *userinfo);
-	void		(*ClientBegin) (edict_t *ent);
-	void		(*ClientUserinfoChanged) (edict_t *ent, char *userinfo);
-	void		(*ClientDisconnect) (edict_t *ent);
-	void		(*ClientCommand) (edict_t *ent);
-	void (*ClientThink) (edict_t *ent, usercmd_t *cmd);
-
-	//
+	qboolean (*ClientConnect)(edict_t *ent, char *userinfo);
+	void (*ClientBegin)(edict_t *ent);
+	void (*ClientUserinfoChanged)(edict_t *ent, char *userinfo);
+	void (*ClientDisconnect)(edict_t *ent);
+	void (*ClientCommand)(edict_t *ent);
+	void (*ClientThink)(edict_t *ent, usercmd_t *cmd);
 
 	void (*RunFrame)(void);
 
-	// ServerCommand will be called when an "sv <command>" command is issued on the server console.
-	// The game can issue gi.argc() / gi.argv() commands to get the rest of the parameters.
-
+	/* ServerCommand will be called when an "sv <command>"
+	   command is issued on the  server console. The game can
+	   issue gi.argc() / gi.argv() commands to get the rest
+	   of the parameters */
 	void (*ServerCommand)(void);
 
 	/* global variables shared between game and server */
@@ -331,6 +293,9 @@ typedef struct
 	int edict_size;
 	int num_edicts;             /* current number, <= max_edicts */
 	int max_edicts;
+
+	void (*ConstructEntities)(void);
+	void (*CheckCoopTimeout)(qboolean BeenHereBefore);
 } game_export_t;
 
 #define	SVF_INUSE				0x00000008	// Used to replace the inuse field.

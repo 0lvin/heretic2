@@ -2273,7 +2273,6 @@ void PutClientInServer (edict_t *ent)
 	ent->materialtype = MAT_FLESH;
 	ent->movetype = PHYSICSTYPE_STEP;
 	ent->viewheight = 0;
-	ent->just_deleted = ent->client_sent = 0;
 	ent->inuse = true;
 	ent->s.scale = 1.0f;
 	ent->classname = "player";
@@ -2957,7 +2956,6 @@ ClientDisconnect(edict_t *ent)
 	ent->s.modelindex = 0;
 	ent->solid = SOLID_NOT;
 	ent->inuse = false;
-	ent->just_deleted = SERVER_DELETED;
 	ent->classname = "disconnected";
 	ent->client->playerinfo.pers.connected = false;
 	playernum = ent-g_edicts-1;

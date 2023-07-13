@@ -789,8 +789,6 @@ void G_InitEdict (edict_t *self)
 	self->s.scale = 1.0F;
 	self->msgHandler = NULL;
 	self->svflags = 0;
-	self->client_sent = 0;
-	self->just_deleted = 0;
 	self->reflected_time = level.time;
 
 }
@@ -849,7 +847,6 @@ void G_FreeEdict(edict_t *self)
 	SinglyLinkedList_t msgs;
 	char *temp;
 	unsigned int	usageCount;
-	int		server_seen;
 	int		entnum;
 
 	gi.unlinkentity (self);		// unlink from world
@@ -889,7 +886,6 @@ void G_FreeEdict(edict_t *self)
 
 	msgs = self->msgQ.msgs;
 	usageCount = self->s.usageCount;
-	server_seen = self->client_sent;
 	entnum = self->s.number;
 
 	// End non-quake2.
@@ -901,8 +897,6 @@ void G_FreeEdict(edict_t *self)
 	self->s.usageCount = usageCount;
 	self->msgQ.msgs = msgs;
 	self->s.clientEffects.buf = (byte *)temp;
-	self->just_deleted = SERVER_DELETED;
-	self->client_sent = server_seen;
 	self->s.number = entnum;
 
 	// End non-quake2.

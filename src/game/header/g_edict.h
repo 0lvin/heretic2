@@ -18,56 +18,41 @@
 // ************************************************************************************************
 typedef struct edict_s
 {
-	// This is sent to the server as part of each client frame.
+	entity_state_t s;
+	struct gclient_s *client;
+	qboolean inuse;
+	int linkcount;
 
-	entity_state_t		s;
+	link_t area;                    /* linked to a division node or leaf */
 
-	// NULL if not a player. The server expects the first part of a 'gclient_s' to be a
-	// 'player_state_t' but the rest of it is opaque.
+	int num_clusters;               /* if -1, use headnode instead */
+	int clusternums[MAX_ENT_CLUSTERS];
+	int headnode;                   /* unused if num_clusters != -1 */
+	int areanum, areanum2;
 
-	struct gclient_s	*client;
-
-	// House keeping information not used by the game logic.
-
-	qboolean			inuse;
-	int					just_deleted;			// used to delete stuff entities properly on the client
-	int					client_sent;			// used to delete stuff entities properly on the client
-	int					linkcount;
-
-	// FIXME: move these fields to a server private sv_entity_t
-
-	link_t				area;				// Linked to a division node or leaf.
-	int					num_clusters;		// If -1, use headnode instead.
-	int					clusternums[MAX_ENT_CLUSTERS];
-	int					headnode;			// Unused if num_clusters is -1.
-	int					areanum,areanum2;
-
-	int					svflags;
-
-	edict_t				*groundentity;			// entity serving as ground
-	int					groundentity_linkcount;	// if self and groundentity's don't match, groundentity should be cleared
-	vec3_t				groundNormal;			// normal of the ground
-
-	vec3_t				intentMins, intentMaxs;	// if PF_RESIZE is set, then physics will attempt to change
-												// the ents bounding form to the new one indicated
-												// If it was succesfully resized, the PF_RESIZE is turned off
-												// otherwise it will remain on.
-
-	solid_t				solid;
-	int					clipmask;
-
-	edict_t				*owner;
-
-	vec3_t				mins, maxs;
-	vec3_t				absmin,absmax,size;
-
-	// called when self is the collidee in a collision, resulting in the impediment or bouncing of trace->ent
-	void				(*isBlocking)(edict_t *self, trace_t *trace);
+	int svflags;                    /* SVF_NOCLIENT, SVF_DEADMONSTER, SVF_MONSTER, etc */
+	vec3_t mins, maxs;
+	vec3_t absmin, absmax, size;
+	solid_t solid;
+	int clipmask;
+	edict_t *owner;
 
 	// DO NOT MODIFY ANYTHING ABOVE THIS! THE SERVER EXPECTS THE FIELDS IN THAT ORDER! All the
 	// fields below this are are used by the game only and can be re-aranged, modified etc.
 
 	// ============================================================================================
+
+	edict_t *groundentity;		// entity serving as ground
+	int groundentity_linkcount;	// if self and groundentity's don't match, groundentity should be cleared
+	vec3_t groundNormal;		// normal of the ground
+
+	vec3_t intentMins, intentMaxs;	// if PF_RESIZE is set, then physics will attempt to change
+					// the ents bounding form to the new one indicated
+					// If it was succesfully resized, the PF_RESIZE is turned off
+					// otherwise it will remain on.
+
+	// called when self is the collidee in a collision, resulting in the impediment or bouncing of trace->ent
+	void				(*isBlocking)(edict_t *self, trace_t *trace);
 
 	MsgQueue_t			msgQ;
 	G_MessageHandler_t	msgHandler;

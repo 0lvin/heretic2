@@ -513,14 +513,6 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 			oldnum = oldstate->number;
 		}
 	}
-
-	int num = newframe->parse_entities & (MAX_PARSE_ENTITIES - 1);
-
-	// TODO: Rewrite game type
-	if (newframe->num_entities > 0 && cl_parse_entities[num].frame > 1024)
-	{
-		printf("%s: set %d\n", __func__, cl_parse_entities[num].frame);
-	}
 }
 
 void

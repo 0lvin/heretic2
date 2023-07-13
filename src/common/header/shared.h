@@ -1419,7 +1419,6 @@ typedef struct entity_state_s
 
 	// EF_XXX.
 
-
 	// What's this exactly?
 
 	byte color[4];
