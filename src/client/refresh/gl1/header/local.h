@@ -408,7 +408,7 @@ extern void RDraw_CharScaled(int x, int y, int num, float scale);
 extern void RDraw_TileClear(int x, int y, int w, int h, char *pic);
 extern void RDraw_Fill(int x, int y, int w, int h, int c);
 extern void RDraw_FadeScreen(void);
-extern void RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, byte *data);
+extern void RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits);
 
 int R_Init(void *hinstance, void *hWnd);
 struct image_s *RI_RegisterSkin(char* name);
