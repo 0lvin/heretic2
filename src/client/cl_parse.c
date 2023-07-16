@@ -103,7 +103,7 @@ CL_ParseEntityBits(unsigned *bits)
 
 	total = MSG_ReadLong(&net_message);
 
-	if (!(total & U_NUMBER16))
+	if (!(total & U_NUMBER16) && developer && developer->value)
 	{
 		printf("%s: Expected %d\n", __func__, total & U_NUMBER16);
 	}

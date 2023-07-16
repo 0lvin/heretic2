@@ -329,7 +329,7 @@ R_DrawAliasShadowCommand(entity_t *currententity, int *order, int *order_end,
 	GLenum type;
 	int count;
 
-	#ifdef _MSC_VER // workaround for lack of VLAs (=> our workaround uses alloca() which is bad in loops)
+#ifdef _MSC_VER // workaround for lack of VLAs (=> our workaround uses alloca() which is bad in loops)
 	int maxCount = 0;
 	const int* tmpOrder = order;
 	while (1)

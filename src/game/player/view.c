@@ -255,7 +255,6 @@ void SetupPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.edictflags=ent->flags;
 
 	// From entity_state_t.
-
 	ent->client->playerinfo.frame=ent->s.frame,
 	ent->client->playerinfo.swapFrame=ent->s.swapFrame;
 	ent->client->playerinfo.effects=ent->s.effects;
@@ -286,11 +285,9 @@ void WritePlayerinfo(edict_t *ent)
 	// ********************************************************************************************
 	// Inputs & outputs.
 	// ********************************************************************************************
-
-	memcpy(&ent->client->pcmd,&ent->client->playerinfo.pcmd,sizeof(usercmd_t));
+	memcpy(&ent->client->pcmd, &ent->client->playerinfo.pcmd, sizeof(usercmd_t));
 
 	// From edict_t.
-
 	VectorCopy(ent->client->playerinfo.origin,ent->s.origin);
 	VectorCopy(ent->client->playerinfo.angles,ent->s.angles);
 	VectorCopy(ent->client->playerinfo.velocity,ent->velocity);
@@ -309,7 +306,6 @@ void WritePlayerinfo(edict_t *ent)
 	ent->flags=ent->client->playerinfo.edictflags;
 
 	// From entity_state_t.
-
 	ent->s.frame=ent->client->playerinfo.frame,
 	ent->s.swapFrame=ent->client->playerinfo.swapFrame;
 	ent->s.effects=ent->client->playerinfo.effects;
@@ -323,7 +319,6 @@ void WritePlayerinfo(edict_t *ent)
 	}
 
 	// From pmove_state_t.
-
 	ent->client->ps.pmove.pm_flags=ent->client->playerinfo.pm_flags;
 	ent->client->ps.pmove.w_flags=ent->client->playerinfo.pm_w_flags;
 
@@ -332,7 +327,6 @@ void WritePlayerinfo(edict_t *ent)
 	// ********************************************************************************************
 
 	// From playerstate_t.
-
 	VectorCopy(ent->client->playerinfo.offsetangles,ent->client->ps.offsetangles);
 }
 
@@ -958,7 +952,10 @@ void ClientEndServerFrame (edict_t *ent)
 	}
 
 	playerExport.PlayerUpdate(&ent->client->playerinfo);
+
+	// Validate
 	playerExport.AnimUpdateFrame(&ent->client->playerinfo);
+
 	PlayerTimerUpdate(ent);
 
 	WritePlayerinfo(ent);

@@ -6,7 +6,6 @@
 #define GAME_UTILITIES_H
 
 #include "local.h"
-#include "g_edict.h"
 
 #define LUNG_AIRTIME 12
 #define GILL_AIRTIME 18

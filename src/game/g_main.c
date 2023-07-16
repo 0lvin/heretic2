@@ -238,7 +238,8 @@ game_export_t *GetGameAPI (game_import_t *import)
 ClientEndServerFrames
 =================
 */
-void ClientEndServerFrames (void)
+void
+ClientEndServerFrames(void)
 {
 	int		i;
 	edict_t	*ent;
@@ -252,7 +253,6 @@ void ClientEndServerFrames (void)
 			continue;
 		ClientEndServerFrame (ent);
 	}
-
 }
 
 /*
@@ -595,8 +595,6 @@ void G_RunFrame (void)
 	int			i;
 	edict_t		*ent;
 
-	qboolean SV_RunThink(edict_t *ent);
-
 	if(deathmatch->value || coop->value)
 		blood_level->value = Clamp(blood_level->value, VIOLENCE_NONE, VIOLENCE_NORMAL);
 
@@ -652,7 +650,6 @@ void G_RunFrame (void)
 		//
 
 		// If the ent is a monster (but not a  cinematic monster) and the culling is active...
-
 		if ((ent->svflags & SVF_MONSTER) && (!ent->monsterinfo.c_mode) && pvs_cull->value)
 		{
 			// Ent cannot be hunting an enemy or moving to a goalentity.

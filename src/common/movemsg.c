@@ -675,10 +675,6 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 	if (bits & U_FRAME16)
 	{
 		MSG_WriteShort(msg, to->frame);
-		if (to->frame > 1024)
-		{
-			printf("%s: set %d\n", __func__, to->frame);
-		}
 	}
 
 	if ((bits & U_SKIN8) && (bits & U_SKIN16)) /*used for laser colors */

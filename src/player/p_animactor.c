@@ -357,7 +357,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Think rate handled different on client.
-
 	if(!playerinfo->isclient)
 		playerinfo->nextthink=playerinfo->leveltime+0.1;//FRAMETIME;
 
@@ -519,40 +518,25 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// If we are a chicken, don't do this.
-
 	if (playerinfo->seqcmd[ACMDL_JUMP] && !(playerinfo->edictflags & FL_CHICKEN))
 	{
 		if (!(playerinfo->watertype & CONTENTS_SLIME))
 		{
 			switch( playerinfo->lowerseq )
-   			{
-				//
-
-   				case ASEQ_RUNF_GO:
-   				case ASEQ_RUNF:
-   				case ASEQ_RUNF_END:
-
-   				PlayerAnimSetLowerSeq(playerinfo, BranchLwrRunning(playerinfo));
-
-				break;
-
-				//
-
-   				case ASEQ_WALKF_GO:
-   				case ASEQ_WALKF:
-   				case ASEQ_WALKF_END:
-
-				PlayerAnimSetLowerSeq(playerinfo, BranchLwrWalking(playerinfo));
-
-				break;
-
-				//
-
-   				case ASEQ_STAND:
-
-				PlayerAnimSetLowerSeq(playerinfo, BranchLwrStanding(playerinfo));
-
-				break;
+			{
+				case ASEQ_RUNF_GO:
+				case ASEQ_RUNF:
+				case ASEQ_RUNF_END:
+					PlayerAnimSetLowerSeq(playerinfo, BranchLwrRunning(playerinfo));
+					break;
+				case ASEQ_WALKF_GO:
+				case ASEQ_WALKF:
+				case ASEQ_WALKF_END:
+					PlayerAnimSetLowerSeq(playerinfo, BranchLwrWalking(playerinfo));
+					break;
+				case ASEQ_STAND:
+					PlayerAnimSetLowerSeq(playerinfo, BranchLwrStanding(playerinfo));
+					break;
    			}
 		}
 	}
@@ -571,18 +555,17 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			move->endfunc (playerinfo);
 
 			// Regrab move, endfunc is very likely to change it.
-
 			move = playerinfo->lowermove;
 			assert(move);
 
 			// Check for death.
-
-			if(playerinfo->deadflag==DEAD_DEAD)
+			if(playerinfo->deadflag == DEAD_DEAD)
 				return;
 		}
 	}
 
-	if (playerinfo->lowerframeptr < move->frame || playerinfo->lowerframeptr >= move->frame + move->numframes)
+	if (playerinfo->lowerframeptr < move->frame ||
+		playerinfo->lowerframeptr >= move->frame + move->numframes)
 	{
 		playerinfo->lowerframeptr = move->frame;
 		playerinfo->lowerframe = 0;
@@ -607,6 +590,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		playerinfo->lowerframeptr->movefunc(playerinfo,
 				playerinfo->lowerframeptr->var1, playerinfo->lowerframeptr->var2, playerinfo->lowerframeptr->var3);
 	}
+
 	if (playerinfo->lowerframeptr->actionfunc)
 	{
 		playerinfo->lowerframeptr->actionfunc(playerinfo, playerinfo->lowerframeptr->var4);
@@ -629,7 +613,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	// *************************
 	// ** Upper frame handler **
 	// *************************
-
 	if (playerinfo->upperidle)
 	{
 		PlayerAnimUpperIdle(playerinfo);
@@ -727,7 +710,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Handle torso twisting (but only when we are in Elven form).
-
 	if(!(playerinfo->edictflags&FL_CHICKEN))
 	{
 		// Calculate joint angle values.
