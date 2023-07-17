@@ -808,7 +808,9 @@ SCR_PlayCinematic(char *arg)
 		return;
 	}
 
-	if (dot && !strcmp(dot, ".smk"))
+	/* ugly hack for support loki mpg to windows smk rename*/
+	if (dot && (!strcmp(dot, ".smk") ||
+				!strcmp(dot, ".mpg")))
 	{
 		unsigned char trackmask, channels[7], depth[7];
 		unsigned long width, height;
@@ -817,6 +819,8 @@ SCR_PlayCinematic(char *arg)
 		size_t len;
 
 		Com_sprintf(name, sizeof(name), "video/%s", arg);
+		memcpy(name + strlen(name) - 4, ".smk", 5);
+		printf("cinematic: %s\n", name);
 
 		len = FS_LoadFile(name, &cin.raw_video);
 

@@ -504,10 +504,17 @@ SV_Map(qboolean attractloop, char *levelstring, qboolean loadgame, qboolean isau
 
 	/* if there is a + in the map, set nextserver to the remainder */
 	ch = strstr(level, "+");
+	printf("level: %s\n", level);
+	/* Heretic 2 hack */
+	if (!ch && strstr(level, "@"))
+	{
+		ch = strstr(level, "@");
+	}
 
 	if (ch)
 	{
 		*ch = 0;
+		printf("%s -> %s\n", level, ch + 1);
 		Cvar_Set("nextserver", va("gamemap \"%s\"", ch + 1));
 	}
 	else
@@ -546,7 +553,9 @@ SV_Map(qboolean attractloop, char *levelstring, qboolean loadgame, qboolean isau
 		--l;
 	}
 
-	if ((l > 4) && !strcmp(level + l - 4, ".smk"))
+	if ((l > 4) && (!strcmp(level + l - 4, ".smk") ||
+					!strcmp(level + l - 4, ".cin") ||
+					!strcmp(level + l - 4, ".mpg")))
 	{
 #ifndef DEDICATED_ONLY
 		SCR_BeginLoadingPlaque(); /* for local system */
