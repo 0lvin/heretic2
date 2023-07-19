@@ -29,7 +29,7 @@
 
 #include "header/client.h"
 #include "input/header/input.h"
-#include "libsmacker/smacker.h"
+#include "cinema/smacker.h"
 
 // don't need HDR stuff
 #define STBI_NO_LINEAR

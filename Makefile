@@ -1152,7 +1152,7 @@ CLIENT_OBJS_ := \
 	src/client_effects/test_effect.o \
 	src/client_effects/utilities.o \
 	src/client/input/sdl.o \
-	src/client/libsmacker/smacker.o \
+	src/client/cinema/smacker.o \
 	src/client/menu/menu.o \
 	src/client/menu/qmenu.o \
 	src/client/menu/videomenu.o \
