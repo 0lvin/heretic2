@@ -732,7 +732,6 @@ CL_OffsetThirdPersonView(void)
 		VectorCopy(trace.endpos, view);
 	}
 
-
 	VectorCopy(view, cl.refdef.vieworg);
 
 	// select pitch to look at focus point from vieword
@@ -806,50 +805,70 @@ CL_CalcViewValues(void)
 		lerp = cl.lerpfrac;
 	}
 
-	if (ps->remote_id != -1)
+	/* calculate the origin */
+	if ((cl_predict->value) && !(cl.frame.playerstate.pmove.pm_flags & PMF_NO_PREDICTION))
+	{
+		/* use predicted values */
+		unsigned delta;
+
+		backlerp = 1.0f - lerp;
+
+		for (i = 0; i < 3; i++)
+		{
+			cl.refdef.vieworg[i] = cl.predicted_origin[i] + ops->viewoffset[i]
+				+ cl.lerpfrac * (ps->viewoffset[i] - ops->viewoffset[i])
+				- backlerp * cl.prediction_error[i];
+		}
+
+		/* smooth out stair climbing */
+		delta = cls.realtime - cl.predicted_step_time;
+
+		if (delta < 100)
+		{
+			cl.refdef.vieworg[2] -= cl.predicted_step * (100 - delta) * 0.01;
+		}
+	}
+	else
 	{
 		/* just use interpolated values */
 		for (i = 0; i < 3; i++)
 		{
-			cl.refdef.vieworg[i] = ops->remote_vieworigin[i];
-		}
-
-		/* just use interpolated values */
-		for (i = 0; i < 3; i++)
-		{
-			cl.refdef.viewangles[i] = LerpAngle(ops->remote_viewangles[i], ps->remote_viewangles[i], lerp);
+			cl.refdef.vieworg[i] = ops->pmove.origin[i] * 0.125 +
+				ops->viewoffset[i] + lerp * (ps->pmove.origin[i] * 0.125 +
+						ps->viewoffset[i] - (ops->pmove.origin[i] * 0.125 +
+							ops->viewoffset[i]));
 		}
 	}
-	else if(cl.refdef.entities)
+
+	/* if not running a demo or on a locked frame, add the local angle movement */
+	if (cl.frame.playerstate.pmove.pm_type < PM_DEAD)
+	{
+		/* use predicted values */
+		for (i = 0; i < 3; i++)
+		{
+			cl.refdef.viewangles[i] = cl.predicted_angles[i];
+		}
+	}
+	else
 	{
 		/* just use interpolated values */
 		for (i = 0; i < 3; i++)
 		{
-			cl.refdef.entities[0]->origin[i] = cl.refdef.vieworg[i] = ops->pmove.origin[i] * 0.125
-			+ lerp * (ps->pmove.origin[i] * 0.125
-				- (ops->pmove.origin[i] * 0.125));
+			cl.refdef.viewangles[i] = LerpAngle(ops->viewangles[i],
+					ps->viewangles[i], lerp);
 		}
-
-		/* if not running a demo or on a locked frame, add the local angle movement */
-		if (cl.frame.playerstate.pmove.pm_type < PM_DEAD)
-		{
-			/* use predicted values */
-			for (i = 0; i < 3; i++)
-			{
-				cl.refdef.viewangles[i] = cl.predicted_angles[i];
-			}
-		}
-		else
-		{
-			/* just use interpolated values */
-			for (i = 0; i < 3; i++)
-			{
-				cl.refdef.entities[0]->angles[i] = cl.refdef.viewangles[i] = LerpAngle(ops->viewangles[i], ps->viewangles[i], lerp);
-			}
-		}
-
-		CL_OffsetThirdPersonView();
 	}
+
+	if (cl_kickangles->value)
+	{
+		for (i = 0; i < 3; i++)
+		{
+			cl.refdef.viewangles[i] += LerpAngle(ops->kick_angles[i],
+					ps->kick_angles[i], lerp);
+		}
+	}
+
+	CL_OffsetThirdPersonView();
 
 	AngleVectors(cl.refdef.viewangles, cl.v_forward, cl.v_right, cl.v_up);
 
