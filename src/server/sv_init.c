@@ -504,7 +504,6 @@ SV_Map(qboolean attractloop, char *levelstring, qboolean loadgame, qboolean isau
 
 	/* if there is a + in the map, set nextserver to the remainder */
 	ch = strstr(level, "+");
-	printf("level: %s\n", level);
 	/* Heretic 2 hack */
 	if (!ch && strstr(level, "@"))
 	{
