@@ -37,18 +37,17 @@
 
 typedef struct
 {
-	vec3_t		origin;			// full float precision
-	vec3_t		velocity;		// full float precision
+	vec3_t origin; /* full float precision */
+	vec3_t velocity; /* full float precision */
 
-	vec3_t		forward, right, up;
-	float		frametime;
+	vec3_t forward, right, up;
+	float frametime;
 
+	trace_t groundTrace;
+	vec3_t previous_origin;
 
-	trace_t		groundTrace;
-	vec3_t		previous_origin;
-
-	qboolean	walking;
-	qboolean	groundPlane;
+	qboolean walking;
+	qboolean groundPlane;
 
 	float impactSpeed;
 	float knockbackfactor;
@@ -119,16 +118,15 @@ static int PM_CorrectAllSolid(trace_t* trace) {
 
 
 /*
-==================
-PM_Friction
-Handles both ground friction and water friction
-==================
-*/
-static void PM_Friction(void) {
-	vec3_t	vec;
-	float* vel;
-	float	speed, newspeed, control;
-	float	drop;
+ * Handles both ground friction and water friction
+ */
+void
+PM_Friction(void)
+{
+	float *vel;
+	float speed, newspeed, control;
+	float drop;
+	vec3_t vec;
 
 	vel = pml.velocity;
 
@@ -172,19 +170,20 @@ static void PM_Friction(void) {
 	//	drop += speed * pm_spectatorfriction * pml.frametime;
 	//}
 
-	// scale the velocity
+	/* scale the velocity */
 	newspeed = speed - drop;
-	if (newspeed < 0) {
+
+	if (newspeed < 0)
+	{
 		newspeed = 0;
 	}
+
 	newspeed /= speed;
 
 	vel[0] = vel[0] * newspeed;
 	vel[1] = vel[1] * newspeed;
 	vel[2] = vel[2] * newspeed;
 }
-
-
 
 /*
 ==================
@@ -217,7 +216,9 @@ void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce) {
 PM_GroundTrace
 =============
 */
-static void PM_GroundTrace(void) {
+static void
+PM_GroundTrace(void)
+{
 	vec3_t		point;
 	vec3_t		start;
 	trace_t		trace;
@@ -311,7 +312,8 @@ PM_Accelerate
 Handles user intended acceleration
 ==============
 */
-static void PM_Accelerate(vec3_t wishdir, float wishspeed, float accel) {
+static void
+PM_Accelerate(vec3_t wishdir, float wishspeed, float accel) {
 #if 1
 	// q2 style
 	int			i;
@@ -360,7 +362,9 @@ Returns qtrue if the velocity was clipped in some way
 ==================
 */
 #define	MAX_CLIP_PLANES	5
-qboolean	PM_SlideMove(qboolean gravity) {
+qboolean
+PM_SlideMove(qboolean gravity)
+{
 	int			bumpcount, numbumps;
 	vec3_t		dir;
 	float		d;
@@ -539,7 +543,8 @@ qboolean	PM_SlideMove(qboolean gravity) {
 PM_StepSlideMove
 ==================
 */
-void PM_StepSlideMove(qboolean gravity) {
+void
+PM_StepSlideMove(qboolean gravity) {
 	vec3_t		start_o, start_v;
 	trace_t		trace;
 	vec3_t		up, down;
@@ -597,7 +602,8 @@ void PM_StepSlideMove(qboolean gravity) {
 PM_AirMove
 ===================
 */
-static void PM_AirMove(float fmove, float smove) {
+static void
+PM_AirMove(float fmove, float smove) {
 	int			i;
 	vec3_t		wishvel;
 	vec3_t		wishdir;
@@ -652,7 +658,8 @@ static void PM_AirMove(float fmove, float smove) {
 PM_WalkMove
 ===================
 */
-static void PM_WalkMove(float fmove, float smove) {
+static void
+PM_WalkMove(float fmove, float smove) {
 	vec3_t wishvel;
 	vec3_t wishdir;
 	float wishspeed;
@@ -694,7 +701,8 @@ static void PM_WalkMove(float fmove, float smove) {
 	PM_StepSlideMove(false);
 }
 
-void PM_CheckJump()
+void
+PM_CheckJump()
 {
 	if ((pm->s.pm_flags & 8) == 0 && pm->cmd.upmove > 9)
 	{
@@ -704,7 +712,8 @@ void PM_CheckJump()
 	}
 }
 
-void PM_CheckInWater()
+void
+PM_CheckInWater()
 {
 	int contents;
 	pmove_t* _pm;
@@ -732,11 +741,7 @@ void PM_CheckInWater()
 		}
 		else
 		{
-			tr = pm->trace(
-				origin2,
-				0,
-				0,
-				origin);
+			tr = pm->trace(origin2, NULL, NULL, origin);
 			_pm = pm;
 			pm->waterheight = tr.endpos[2] - pml.origin[2];
 			if (tr.fraction < 1.0 /*&& *(float*)&pml.desiredWaterHeight < (long double)_pm->waterheight*/)
@@ -752,7 +757,8 @@ void PM_CheckInWater()
 	}
 }
 
-void PM_AddCurrents(float* a1)
+void
+PM_AddCurrents(float* a1)
 {
 	long double v1;
 	float v2;
@@ -826,7 +832,8 @@ PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
 	}
 }
 
-int PM_SetVelInLiquid(float a1)
+int
+PM_SetVelInLiquid(float a1)
 {
 	long double v2;
 	qboolean v3;
@@ -860,13 +867,15 @@ int PM_SetVelInLiquid(float a1)
 	return 0;
 }
 
-void PM_WaterMove()
+void
+PM_WaterMove()
 {
 	if (!PM_SetVelInLiquid(0.5))
 		PM_StepSlideMove(false);
 }
 
-void PM_WaterSurfMove()
+void
+PM_WaterSurfMove()
 {
 	byte v0;
 
@@ -894,57 +903,36 @@ Pmove
 Can be called by either the server or the client
 ================
 */
-void Pmove(pmove_t* pmove, qboolean isServer)
+void
+Pmove(pmove_t* pmove)
 {
 	pm = pmove;
 
-	// jmarshall: TODO: Client Prediction
-	if (!isServer)
-	{
-		// Convert it back into nonsense Quake 2 compression.
-		pm->s.origin[0] = pml.origin[0] * 8.0f;
-		pm->s.origin[1] = pml.origin[1] * 8.0f;
-		pm->s.origin[2] = pml.origin[2] * 8.0f;
-
-		pm->s.velocity[0] = pml.velocity[0] * 8.0f;
-		pm->s.velocity[1] = pml.velocity[1] * 8.0f;
-		pm->s.velocity[2] = pml.velocity[2] * 8.0f;
-
-		pm->waterlevel = pml.waterlevel;
-
-		PM_ClampAngles();
-
-		return;
-	}
-
-	// clear results
+	/* clear results */
 	pm->numtouch = 0;
 	VectorClear(pm->viewangles);
 	pm->groundentity = 0;
 	pm->watertype = 0;
 	pm->waterlevel = 0;
 
-	// clear all pmove local vars
+	/* clear all pmove local vars */
 	memset(&pml, 0, sizeof(pml));
 
-	// convert origin and velocity to float values
-	pml.origin[0] = pm->s.origin[0] * 0.125;
-	pml.origin[1] = pm->s.origin[1] * 0.125;
-	pml.origin[2] = (pm->s.origin[2] * 0.125);
+	/* convert origin and velocity to float values */
+	pml.origin[0] = pm->s.origin[0] * 0.125f;
+	pml.origin[1] = pm->s.origin[1] * 0.125f;
+	pml.origin[2] = pm->s.origin[2] * 0.125f;
 
-	pml.velocity[0] = pm->s.velocity[0] * 0.125;
-	pml.velocity[1] = pm->s.velocity[1] * 0.125;
-	pml.velocity[2] = pm->s.velocity[2] * 0.125;
+	pml.velocity[0] = pm->s.velocity[0] * 0.125f;
+	pml.velocity[1] = pm->s.velocity[1] * 0.125f;
+	pml.velocity[2] = pm->s.velocity[2] * 0.125f;
 
-	pml.frametime = pm->cmd.msec * 0.001;
+	/* save old org in case we get stuck */
+	VectorCopy(pm->s.origin, pml.previous_origin);
+
+	pml.frametime = pm->cmd.msec * 0.001f;
 
 	pml.knockbackfactor = pm->knockbackfactor;
-
-	// save old org in case we get stuck
-	//VectorCopy(pm->s.origin, pml.previous_origin);
-	pml.previous_origin[0] = pm->s.origin[0];
-	pml.previous_origin[1] = pm->s.origin[1];
-	pml.previous_origin[2] = pm->s.origin[2];
 
 	PM_ClampAngles();
 
@@ -968,15 +956,14 @@ void Pmove(pmove_t* pmove, qboolean isServer)
 
 	AngleVectors(pm->viewangles, pml.forward, pml.right, pml.up);
 
-	if (pm->s.pm_type >= PM_DEAD) {
+	if (pm->s.pm_type >= PM_DEAD)
+	{
 		pm->cmd.forwardmove = 0;
 		pm->cmd.sidemove = 0;
 		pm->cmd.upmove = 0;
 	}
 
 	PM_GroundTrace();
-
-//	PM_CheckJump();
 
 	PM_CheckInWater();
 

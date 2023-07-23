@@ -459,7 +459,7 @@ CL_AdjustAngles(void)
 void
 CL_BaseMove(usercmd_t *cmd)
 {
-	//CL_AdjustAngles();
+	CL_AdjustAngles();
 
 	memset(cmd, 0, sizeof(*cmd));
 
@@ -733,8 +733,6 @@ usercmd_t CL_CreateCmd(void)
 
 	old_sys_frame_time = sys_frame_time;
 
-	//cmd.impulse = cls.framecount;
-
 	return cmd;
 }
 
@@ -793,14 +791,6 @@ CL_SendCmd(void)
 
 	*cmd = CL_CreateCmd();
 
-	cmd->camera_viewangles[0] = ANGLE2SHORT(cl.refdef.viewangles[0]);
-	cmd->camera_viewangles[1] = ANGLE2SHORT(cl.refdef.viewangles[1]);
-	cmd->camera_viewangles[2] = ANGLE2SHORT(cl.refdef.viewangles[2]);
-
-	cmd->camera_vieworigin[0] = cl.refdef.vieworg[0] * 8.0f;
-	cmd->camera_vieworigin[1] = cl.refdef.vieworg[1] * 8.0f;
-	cmd->camera_vieworigin[2] = cl.refdef.vieworg[2] * 8.0f;
-
 	cl.cmd = *cmd;
 
 	if ((cls.state == ca_disconnected) || (cls.state == ca_connecting))
@@ -821,7 +811,7 @@ CL_SendCmd(void)
 	/* send a userinfo update if needed */
 	if (userinfo_modified)
 	{
-		//CL_FixUpGender();
+		CL_FixUpGender();
 		userinfo_modified = false;
 		MSG_WriteByte(&cls.netchan.message, clc_userinfo);
 		MSG_WriteString(&cls.netchan.message, Cvar_Userinfo());

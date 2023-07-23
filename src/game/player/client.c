@@ -3250,8 +3250,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		pm.high_max = false;
 
 	// Perform a Pmove().
-
-	gi.Pmove(&pm, true);
+	gi.Pmove(&pm);
 
 	if(ent->waterlevel)
 		client->playerinfo.flags |= FL_INWATER;

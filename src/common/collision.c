@@ -1390,8 +1390,22 @@ trace_t		CM_BoxTrace (vec3_t start, vec3_t end,
 	trace_contents = brushmask;
 	VectorCopy (start, trace_start);
 	VectorCopy (end, trace_end);
-	VectorCopy (mins, trace_mins);
-	VectorCopy (maxs, trace_maxs);
+	if (mins)
+	{
+		VectorCopy (mins, trace_mins);
+	}
+	else
+	{
+		memset(trace_mins, 0, sizeof(trace_mins));
+	}
+	if (maxs)
+	{
+		VectorCopy (maxs, trace_maxs);
+	}
+	else
+	{
+		memset(trace_maxs, 0, sizeof(trace_maxs));
+	}
 
 	//
 	// check for position test special case
@@ -1425,8 +1439,9 @@ trace_t		CM_BoxTrace (vec3_t start, vec3_t end,
 	//
 	// check for point special case
 	//
-	if (mins[0] == 0 && mins[1] == 0 && mins[2] == 0
-		&& maxs[0] == 0 && maxs[1] == 0 && maxs[2] == 0)
+	if (!mins || !maxs || (
+		mins[0] == 0 && mins[1] == 0 && mins[2] == 0
+		&& maxs[0] == 0 && maxs[1] == 0 && maxs[2] == 0))
 	{
 		trace_ispoint = true;
 		VectorClear (trace_extents);

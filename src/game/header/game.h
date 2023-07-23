@@ -151,7 +151,7 @@ typedef struct
 	void (*unlinkentity)(edict_t *ent); /* call before removing an interactive edict */
 	int (*BoxEdicts)(vec3_t mins, vec3_t maxs, edict_t **list, int maxcount,
 			int areatype);
-	void (*Pmove)(pmove_t *pmove, qboolean server);		// Player movement code, common with client prediction.
+	void (*Pmove)(pmove_t *pmove); /* player movement code common with client prediction */
 
 	/* network messaging */
 	void (*multicast)(vec3_t origin, multicast_t to);

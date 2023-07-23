@@ -298,7 +298,7 @@ CL_PredictMovement(void)
 		}
 
 		pm.cmd = *cmd;
-		Pmove(&pm, false);
+		Pmove(&pm);
 
 		if (pm.waterlevel > 2)
 		{

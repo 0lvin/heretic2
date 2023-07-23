@@ -701,7 +701,7 @@ void CM_WritePortalState(FILE *f);
 
 extern float pm_airaccelerate;
 
-void Pmove(pmove_t *pmove, qboolean isServer);
+void Pmove(pmove_t *pmove);
 
 /* FILESYSTEM */
 
