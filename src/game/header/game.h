@@ -199,7 +199,6 @@ typedef struct
 	void (*clprintf)(edict_t *ent, edict_t *from, int color, char *fmt, ...);
 	void (*bcaption)(int printlevel, short stringid);
 	void (*Obituary)(int printlevel, short stringid, short client1, short client2);
-	void (*gamemsg_centerprintf)(edict_t *ent, short msg);
 	void (*levelmsg_centerprintf)(edict_t *ent, short msg);
 	void (*msgvar_centerprintf)(edict_t *ent, short msg, int vari);
 	void (*msgdual_centerprintf)(edict_t *ent, short msg1, short msg2);

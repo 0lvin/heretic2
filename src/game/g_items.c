@@ -208,7 +208,7 @@ qboolean Pickup_Puzzle(edict_t *ent, edict_t *other)
 	{
 		other->client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(ent->item)] = 1;
 
-		gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
+		gi.cprintf(other, PRINT_HIGH, va("%i", ent->item->msg_pickup));
 
 		return true;
 	}
@@ -341,7 +341,7 @@ qboolean Pickup_Weapon(edict_t *ent,edict_t *other)
 
 	if(AddWeaponToInventory(ent->item,other))
 	{
-		gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
+		gi.cprintf(other, PRINT_HIGH, va("%i", ent->item->msg_pickup));
 
 		return true;
 	}
@@ -396,7 +396,7 @@ qboolean Pickup_Defense (edict_t *ent, edict_t *other)
 
 	if(AddDefenseToInventory(ent->item,other))
 	{
-		gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
+		gi.cprintf(other, PRINT_HIGH, va("%i", ent->item->msg_pickup));
 
 		return true;
 	}
@@ -509,7 +509,7 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 	if (!Add_Ammo (other, ent->item, count))
 		return false;
 
-	gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
+	gi.cprintf(other, PRINT_HIGH, va("%i", ent->item->msg_pickup));
 
 	return true;
 }
@@ -595,7 +595,7 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 	if(other->client)
 		player_repair_skin(other);
 
-	gi.gamemsg_centerprintf(other, ent->item->msg_pickup);
+	gi.cprintf(other, PRINT_HIGH, va("%i", ent->item->msg_pickup));
 
 	return true;
 }

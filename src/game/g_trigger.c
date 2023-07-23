@@ -342,7 +342,7 @@ void trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 			return;
 		self->touch_debounce_time = level.time + 5.0;
 		if (!(self->spawnflags & 1))
-			gi.gamemsg_centerprintf (activator, self->item->msg_nouse);
+			gi.cprintf (activator, PRINT_HIGH, va("%i", self->item->msg_nouse));
 
 		return;
 	}
@@ -447,7 +447,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 	{
 		if (! (self->spawnflags & TRIGGER_COUNTER_NOMESSAGE))
 		{
-			gi.gamemsg_centerprintf(activator, (short)(self->count + GM_SEQCOMPLETE));
+			gi.cprintf(activator, PRINT_HIGH, va("%i", (short)(self->count + GM_SEQCOMPLETE)));
 //			gi.sound (activator, CHAN_AUTO, gi.soundindex ("misc/talk1.wav"), 1, ATTN_NORM, 0);
 		}
 		return;
@@ -455,7 +455,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 
 	if (! (self->spawnflags & TRIGGER_COUNTER_NOMESSAGE))
 	{
-		gi.gamemsg_centerprintf(activator, GM_SEQCOMPLETE);
+		gi.cprintf(activator, PRINT_HIGH, va("%i", GM_SEQCOMPLETE));
 //		gi.sound (activator, CHAN_AUTO, gi.soundindex ("misc/talk1.wav"), 1, ATTN_NORM, 0);
 	}
 
@@ -1044,7 +1044,7 @@ void mission_give_use (edict_t *self, edict_t *other)
 			{
 				ps->mission_num2 = num;
 			}
-			gi.gamemsg_centerprintf(other, GM_NEWOBJ);
+			gi.cprintf(other, PRINT_HIGH, va("%i", GM_NEWOBJ));
 		}
 	}
 	G_UseTargets(self, self);
@@ -1199,7 +1199,7 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 		for(i=0;i<maxclients->value;i++)
 		{
 			if((ent=(&g_edicts[i+1]))->inuse)
-				gi.gamemsg_centerprintf(ent,GM_COOP_RESTARTING);
+				gi.cprintf(ent, PRINT_HIGH, va("%i", GM_COOP_RESTARTING));
 		}
 
 		self->think=trigger_endgame_think;
@@ -1235,7 +1235,7 @@ void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
 		for(i=0;i<maxclients->value;i++)
 		{
 			if((ent=(&g_edicts[i+1]))->inuse)
-				gi.gamemsg_centerprintf(ent,GM_COOP_RESTARTING);
+				gi.cprintf(ent, PRINT_HIGH, va("%i", GM_COOP_RESTARTING));
 		}
 
 		self->think=trigger_endgame_think;
