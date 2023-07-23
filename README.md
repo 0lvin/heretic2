@@ -14,18 +14,17 @@ It's on really initial steps, it could be complied ;-), it runs mostly without
 crashes. That's all what is good.
 
 Drawbacks:
-* code is not rebased over yquake2 code
 * code use diffent angles values to quake2
 * huge amount of possibly dead code
 * move is slugish
 * broken jumps
+* message id to text procesed in client instead game code itself
 * broken guns select
 * no menu implementations
 * no books implementations
 * code is little bit mess
-* game,player, client_effects hard linked
+* game, player, client_effects hard linked
 * only gl1 render
-* sprites looks as rendered withot relation to z-buffer
 
 ======
 
