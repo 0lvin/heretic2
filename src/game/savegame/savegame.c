@@ -75,8 +75,6 @@
 #include "../../../h2common/message.h"
 #include "../../../h2common/fx.h"
 
-extern player_export_t	playerExport;	// interface to player DLL.
-
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
@@ -423,8 +421,6 @@ void InitGame (void)
 	flood_killdelay = gi.cvar ("flood_killdelay", "10", 0);
 	sv_maplist = gi.cvar ("sv_maplist", "", 0);
 
-	player_dll = gi.cvar("player_dll", DEFAULT_PLAYER_LIB, 0);
-
 	sv_cinematicfreeze = gi.cvar("sv_cinematicfreeze", "0", 0);
 	sv_jumpcinematic = gi.cvar("sv_jumpcinematic", "0", 0);
 	log_file_name = gi.cvar("log_file_name", "", CVAR_ARCHIVE);
@@ -437,7 +433,10 @@ void InitGame (void)
 
 	gi.cvar("flash_screen", "1", 0);
 
-	P_Load(player_dll->string);
+	if (!P_Load())
+	{
+		Sys_Error("Unable to player library");
+	}
 
 	// ********************************************************************************************
 	// Initialise the inventory items.
@@ -520,7 +519,7 @@ static void WriteField1 (FILE *f, field_t *field, byte *base)
 		if ( *(edict_t **)p == NULL)
 			index = -1;
 		else
-			index = *(gitem_t **)p - playerExport.GetPlayerItems();
+			index = *(gitem_t **)p - playerExport->GetPlayerItems();
 		*(int *)p = index;
 		break;
 
@@ -603,7 +602,7 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 		if ( index == -1 )
 			*(gitem_t **)p = NULL;
 		else
-			*(gitem_t **)p = playerExport.GetPlayerItems() + index;
+			*(gitem_t **)p = playerExport->GetPlayerItems() + index;
 		break;
 
 	default:
@@ -1157,7 +1156,7 @@ void ReadLevel (char *filename)
 		ent->client->playerinfo.pers.connected = false;
 		InitPlayerinfo(ent);
 		SetupPlayerinfo(ent);
-		playerExport.PlayerBasicAnimReset(&ent->client->playerinfo);
+		playerExport->PlayerBasicAnimReset(&ent->client->playerinfo);
 	}
 
 	// Do any load time things at this point.

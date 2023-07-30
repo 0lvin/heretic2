@@ -176,13 +176,13 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->nextthink = level.time + 0.1;
 
 	// reset our animations
-	playerExport.PlayerBasicAnimReset(&ent->client->playerinfo);
+	playerExport->PlayerBasicAnimReset(&ent->client->playerinfo);
 	ent->client->playerinfo.upperframe = 43;
 	ent->client->playerinfo.lowerframe = 43;
 
-	playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
-	playerExport.PlayerAnimSetLowerSeq(&ent->client->playerinfo, ASEQ_NONE);
-	playerExport.PlayerAnimSetLowerSeq(&ent->client->playerinfo, ASEQ_IDLE_WIPE_BROW);
+	playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+	playerExport->PlayerAnimSetLowerSeq(&ent->client->playerinfo, ASEQ_NONE);
+	playerExport->PlayerAnimSetLowerSeq(&ent->client->playerinfo, ASEQ_IDLE_WIPE_BROW);
 
 	// re-spawn anything that should be - shrine effects and the like
 //	SpawnInitialPlayerEffects(ent);
@@ -358,7 +358,7 @@ void Perform_Morph(edict_t *self)
 		self->client->playerinfo.fmnodeinfo[i].flags &= ~FMNI_NO_DRAW;
 
 	// reset our animation
-	playerExport.PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_STAND);
+	playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_STAND);
 
 	// draw the teleport splash at the destination
 	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN|CEF_FLAG6, self->s.origin, "");
@@ -386,7 +386,7 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 		return;
 
 	// remove any hand or weapon effects
-	playerExport.TurnOffPlayerEffects(&self->client->playerinfo);
+	playerExport->TurnOffPlayerEffects(&self->client->playerinfo);
 
 	// remove any shrine effects he has
 	PlayerKillShrineFX(self);
@@ -448,7 +448,7 @@ void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 		return;
 
 	// remove any hand or weapon effects
-	playerExport.TurnOffPlayerEffects(&self->client->playerinfo);
+	playerExport->TurnOffPlayerEffects(&self->client->playerinfo);
 
 	// remove any shrine effects he has
 	PlayerKillShrineFX(self);

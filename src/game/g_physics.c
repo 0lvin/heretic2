@@ -477,7 +477,7 @@ void DoImpactDamage(edict_t *self, trace_t *trace)
 							if(tr_dmg > irand(25, 40) - (5 * (skill->value)))
 							{
 								if(trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
-									playerExport.KnockDownPlayer(&trace->ent->client->playerinfo);
+									playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 							}
 						}
 					}

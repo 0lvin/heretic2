@@ -513,7 +513,6 @@ SV_Map(qboolean attractloop, char *levelstring, qboolean loadgame, qboolean isau
 	if (ch)
 	{
 		*ch = 0;
-		printf("%s -> %s\n", level, ch + 1);
 		Cvar_Set("nextserver", va("gamemap \"%s\"", ch + 1));
 	}
 	else

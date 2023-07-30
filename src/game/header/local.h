@@ -1215,8 +1215,8 @@ typedef struct pushed_s
 } pushed_t;
 extern pushed_t	pushed[MAX_EDICTS], * pushed_p;
 
-extern edict_t* obstacle;
-extern player_export_t playerExport;	// interface to player library.
+extern edict_t *obstacle;
+extern player_export_t *playerExport;	// interface to player library.
 
 #include "../../common/header/common.h"
 #include "g_message.h"

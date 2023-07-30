@@ -130,7 +130,7 @@ typedef struct
 } player_export_t;
 
 void P_Freelib(void);
-unsigned int P_Load(char *name);
+void* P_Load(void);
 
 void P_Init(void);
 void P_Shutdown(void);
@@ -177,11 +177,5 @@ void Weapon_EquipBow(playerinfo_t* playerinfo, gitem_t* Weapon);
 void Weapon_EquipArmor(playerinfo_t* playerinfo, gitem_t* Weapon);
 int Weapon_CurrentShotsLeft(playerinfo_t* playerinfo);
 int Defence_CurrentShotsLeft(playerinfo_t* playerinfo, int intent);
-
-// This is the only function actually exported at the linker level.
-
-typedef	player_export_t	(*GetPlayerAPI_t)(void);
-
-player_export_t GetPlayerAPI(void);
 
 #endif	// PLAYER_H

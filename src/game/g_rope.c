@@ -621,9 +621,9 @@ void hanging_chicken_think(edict_t *self)
 							gi.sound(self, CHAN_BODY, gi.soundindex("monsters/pssithra/land.wav") ,1, ATTN_NORM , 0);
 							self->evade_debounce_time = level.time + 3.0;
 						}
-						playerExport.PlayerAnimSetLowerSeq(&trace.ent->client->playerinfo,ASEQ_KNOCKDOWN);
-						playerExport.PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo,ASEQ_NONE);
-						playerExport.TurnOffPlayerEffects(&trace.ent->client->playerinfo);
+						playerExport->PlayerAnimSetLowerSeq(&trace.ent->client->playerinfo,ASEQ_KNOCKDOWN);
+						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo,ASEQ_NONE);
+						playerExport->TurnOffPlayerEffects(&trace.ent->client->playerinfo);
 						VectorMA (trace.ent->velocity, 3, kvel, trace.ent->velocity);
 						knockbacktime = level.time + 3.0;
 					}

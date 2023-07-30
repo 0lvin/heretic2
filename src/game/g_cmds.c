@@ -139,7 +139,7 @@ SelectNextItem(edict_t *ent, int itflags)
 			continue;
 		}
 
-		it = playerExport.GetPlayerItems() + index;
+		it = playerExport->GetPlayerItems() + index;
 
 		if (!it->use)
 		{
@@ -187,7 +187,7 @@ SelectPrevItem(edict_t *ent, int itflags)
 			continue;
 		}
 
-		it = playerExport.GetPlayerItems() + index;
+		it = playerExport->GetPlayerItems() + index;
 
 		if (!it->use)
 		{
@@ -260,78 +260,78 @@ Cmd_Give_f(edict_t *ent)
 
 		if(level.offensive_weapons&4)
 		{
-			it=playerExport.FindItem("hell");
+			it=playerExport->FindItem("hell");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&8)
 		{
-			it=playerExport.FindItem("array");
+			it=playerExport->FindItem("array");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&16)
 		{
-			it=playerExport.FindItem("rain");
+			it=playerExport->FindItem("rain");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&32)
 		{
-			it=playerExport.FindItem("sphere");
+			it=playerExport->FindItem("sphere");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&64)
 		{
-			it=playerExport.FindItem("phoen");
+			it=playerExport->FindItem("phoen");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&128)
 		{
-			it=playerExport.FindItem("mace");
+			it=playerExport->FindItem("mace");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.offensive_weapons&256)
 		{
-			it=playerExport.FindItem("fwall");
+			it=playerExport->FindItem("fwall");
 			AddWeaponToInventory(it,ent);
 		}
 
 		if(level.defensive_weapons&1)
 		{
-			it=playerExport.FindItem("ring");
+			it=playerExport->FindItem("ring");
 			AddDefenseToInventory(it,ent);
 		}
 
 		if(level.defensive_weapons&2)
 		{
-			it=playerExport.FindItem("lshield");
+			it=playerExport->FindItem("lshield");
 			AddDefenseToInventory(it,ent);
 		}
 
 		if(level.defensive_weapons&4)
 		{
-			it=playerExport.FindItem("tele");
+			it=playerExport->FindItem("tele");
 			AddDefenseToInventory(it,ent);
 		}
 
 		if(level.defensive_weapons&8)
 		{
-			it=playerExport.FindItem("morph");
+			it=playerExport->FindItem("morph");
 			AddDefenseToInventory(it,ent);
 		}
 
 		if(level.defensive_weapons&16)
 		{
-			it=playerExport.FindItem("meteor");
+			it=playerExport->FindItem("meteor");
 			AddDefenseToInventory(it,ent);
 		}
 
 		SetupPlayerinfo_effects(ent);
-		playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
 		return;
 	}
@@ -370,7 +370,7 @@ Cmd_Give_f(edict_t *ent)
 	{
 		for (i = 0; i < game.num_items; i++)
 		{
-			it = playerExport.GetPlayerItems() + i;
+			it = playerExport->GetPlayerItems() + i;
 
 			if (!it->pickup)
 			{
@@ -394,7 +394,7 @@ Cmd_Give_f(edict_t *ent)
 					ent->client->playerinfo.pers.bowtype = BOW_TYPE_REDRAIN;
 
 				SetupPlayerinfo_effects(ent);
-				playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
+				playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 				WritePlayerinfo_effects(ent);
 			}
 		}
@@ -408,7 +408,7 @@ Cmd_Give_f(edict_t *ent)
 	{
 		for (i=0 ; i<game.num_items ; i++)
 		{
-			it = playerExport.GetPlayerItems() + i;
+			it = playerExport->GetPlayerItems() + i;
 			if (!it->pickup)
 				continue;
 			if (!(it->flags & IT_DEFENSE))
@@ -419,7 +419,7 @@ Cmd_Give_f(edict_t *ent)
 
 		// if we don't already have a defence item, make the ring default
 		if (ent->client->playerinfo.pers.defence == NULL)
-			ent->client->playerinfo.pers.defence=playerExport.FindItem("ring");
+			ent->client->playerinfo.pers.defence=playerExport->FindItem("ring");
 
 		if (!give_all)
 		{
@@ -431,7 +431,7 @@ Cmd_Give_f(edict_t *ent)
 	{
 		for (i=0 ; i<game.num_items ; i++)
 		{
-			it = playerExport.GetPlayerItems() + i;
+			it = playerExport->GetPlayerItems() + i;
 			if (!it->pickup)
 				continue;
 			if (!(it->flags & IT_AMMO))
@@ -459,7 +459,7 @@ Cmd_Give_f(edict_t *ent)
 		}
 
 		SetupPlayerinfo_effects(ent);
-		playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
 
 		if (!give_all)
@@ -479,7 +479,7 @@ Cmd_Give_f(edict_t *ent)
 		gi.dprintf("Setting staff level to %d\n", ent->client->playerinfo.pers.stafflevel);
 
 		SetupPlayerinfo_effects(ent);
-		playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
 
 		return;
@@ -558,7 +558,7 @@ Cmd_Give_f(edict_t *ent)
 		ClientUserinfoChanged (ent, userinfo);
 
 		SetupPlayerinfo_effects(ent);
-		playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
 
 		return;
@@ -568,7 +568,7 @@ Cmd_Give_f(edict_t *ent)
 	{
 		for (i = 0; i < game.num_items; i++)
 		{
-			it = playerExport.GetPlayerItems() + i;
+			it = playerExport->GetPlayerItems() + i;
 			if ((!it->pickup) && !(it->flags & IT_PUZZLE))
 			{
 				continue;
@@ -585,12 +585,12 @@ Cmd_Give_f(edict_t *ent)
 		return;
 	}
 
-	it = playerExport.FindItem(name);
+	it = playerExport->FindItem(name);
 
 	if (!it)
 	{
 		name = gi.argv(1);
-		it = playerExport.FindItem (name);
+		it = playerExport->FindItem (name);
 
 		if (!it)
 		{
@@ -605,7 +605,7 @@ Cmd_Give_f(edict_t *ent)
 		return;
 	}
 
-	index = playerExport.GetItemIndex(it);
+	index = playerExport->GetItemIndex(it);
 
 	if (it->flags & IT_WEAPON)
 	{
@@ -800,7 +800,7 @@ Cmd_Use_f(edict_t *ent)
 		castme=false;
 	}
 
-	it = playerExport.FindItem (s);
+	it = playerExport->FindItem (s);
 
 	if(sv_cinematicfreeze->value)
 		return;
@@ -815,7 +815,7 @@ Cmd_Use_f(edict_t *ent)
 		gi.cprintf(ent, PRINT_HIGH, va("%i", GM_NOTUSABLE));
 		return;
 	}
-	index = playerExport.GetItemIndex(it);
+	index = playerExport->GetItemIndex(it);
 
 	if (!playerinfo->pers.inventory.Items[index])
 	{
@@ -836,12 +836,12 @@ Cmd_Use_f(edict_t *ent)
 			playerinfo->pers.lastdefence = playerinfo->pers.defence;
 			playerinfo->pers.defence=it;
 
-			if (playerExport.Defence_CurrentShotsLeft(playerinfo, 1) > 0)
+			if (playerExport->Defence_CurrentShotsLeft(playerinfo, 1) > 0)
 			{	// Only if there is ammo
 				it->weaponthink(ent,"");
 
 				if(playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
-					playerinfo->def_ammo_index=playerExport.GetItemIndex(playerExport.FindItem(playerinfo->pers.defence->ammo));
+					playerinfo->def_ammo_index=playerExport->GetItemIndex(playerExport->FindItem(playerinfo->pers.defence->ammo));
 				else
 					playerinfo->def_ammo_index=0;
 
@@ -881,7 +881,7 @@ Cmd_WeapPrev_f(edict_t *ent)
 	if (!cl->playerinfo.pers.weapon || sv_cinematicfreeze->value)
 		return;
 
-	selected_weapon = playerExport.GetItemIndex(cl->playerinfo.pers.weapon);
+	selected_weapon = playerExport->GetItemIndex(cl->playerinfo.pers.weapon);
 
 	// scan  for the next valid one
 	for (i=1 ; i<=MAX_ITEMS ; i++)
@@ -891,7 +891,7 @@ Cmd_WeapPrev_f(edict_t *ent)
 		if (!cl->playerinfo.pers.inventory.Items[index])
 			continue;
 
-		it = playerExport.GetPlayerItems() + index;
+		it = playerExport->GetPlayerItems() + index;
 		if (!it->use)
 			continue;
 		if (! (it->flags & IT_WEAPON) )
@@ -928,7 +928,7 @@ Cmd_WeapNext_f(edict_t *ent)
 	if (!cl->playerinfo.pers.weapon || sv_cinematicfreeze->value)
 		return;
 
-	selected_weapon = playerExport.GetItemIndex(cl->playerinfo.pers.weapon);
+	selected_weapon = playerExport->GetItemIndex(cl->playerinfo.pers.weapon);
 
 	// scan  for the next valid one
 	for (i=1 ; i<=MAX_ITEMS ; i++)
@@ -938,7 +938,7 @@ Cmd_WeapNext_f(edict_t *ent)
 		if (!cl->playerinfo.pers.inventory.Items[index])
 			continue;
 
-		it = playerExport.GetPlayerItems() + index;
+		it = playerExport->GetPlayerItems() + index;
 		if (!it->use)
 			continue;
 		if (! (it->flags & IT_WEAPON) )
@@ -978,7 +978,7 @@ Cmd_DefPrev_f(edict_t *ent)
 	if (!cl->playerinfo.pers.defence)
 		selected_defence = 1;
 	else
-		selected_defence = playerExport.GetItemIndex(cl->playerinfo.pers.defence);
+		selected_defence = playerExport->GetItemIndex(cl->playerinfo.pers.defence);
 	start_defence = selected_defence;
 
 	// scan  for the next valid one
@@ -989,7 +989,7 @@ Cmd_DefPrev_f(edict_t *ent)
 		if (!cl->playerinfo.pers.inventory.Items[index])
 			continue;
 
-		it = playerExport.GetPlayerItems() + index;
+		it = playerExport->GetPlayerItems() + index;
 		if (!it->use)
 			continue;
 		if (! (it->flags & IT_DEFENSE) )
@@ -1036,7 +1036,7 @@ Cmd_DefNext_f(edict_t *ent)
 	if (!cl->playerinfo.pers.defence)
 		selected_defence = 1;
 	else
-		selected_defence = playerExport.GetItemIndex(cl->playerinfo.pers.defence);
+		selected_defence = playerExport->GetItemIndex(cl->playerinfo.pers.defence);
 	start_defence = selected_defence;
 
 	// scan  for the next valid one
@@ -1046,7 +1046,7 @@ Cmd_DefNext_f(edict_t *ent)
 
 		if (!cl->playerinfo.pers.inventory.Items[index])
 			continue;
-		it = playerExport.GetPlayerItems() + index;
+		it = playerExport->GetPlayerItems() + index;
 		if (!it->use)
 			continue;
 		if (! (it->flags & IT_DEFENSE) )
@@ -1086,11 +1086,11 @@ Cmd_WeapLast_f(edict_t *ent)
 	if (!cl->playerinfo.pers.weapon || !cl->playerinfo.pers.lastweapon)
 		return;
 
-	index = playerExport.GetItemIndex(cl->playerinfo.pers.lastweapon);
+	index = playerExport->GetItemIndex(cl->playerinfo.pers.lastweapon);
 	if (!cl->playerinfo.pers.inventory.Items[index])
 		return;
 
-	it = playerExport.GetPlayerItems() + index;
+	it = playerExport->GetPlayerItems() + index;
 	if (!it->use)
 		return;
 	if (! (it->flags & IT_WEAPON) )
@@ -1446,7 +1446,7 @@ Cmd_TestFX_f(edict_t *ent)
 	ent->client->playerinfo.pers.altparts |= 1<<i;
 
 	SetupPlayerinfo_effects(ent);
-	playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 	WritePlayerinfo_effects(ent);
 }
 

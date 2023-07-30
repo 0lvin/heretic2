@@ -414,7 +414,7 @@ void PlayerTimerUpdate(edict_t *ent)
 
 			// Unset the skin.
 
-			playerExport.PlayerUpdateModelAttributes(&ent->client->playerinfo);
+			playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		}
 	}
 
@@ -458,19 +458,19 @@ void P_DamageFeedback (edict_t *player)
 	if (player->pain_debounce_time < level.time && client->damage_gas)
 	{
 		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
-			playerExport.PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
+			playerExport->PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
 
-		playerExport.PlayerPlayPain(&client->playerinfo, 1);
+		playerExport->PlayerPlayPain(&client->playerinfo, 1);
 	}
 	else if (((!irand(0, 4)) || count > 8) && (player->pain_debounce_time < level.time)) // Play pain animation.
 	{
 		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
-			playerExport.PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
+			playerExport->PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
 
 		if (count <= 4)
-			playerExport.PlayerPlayPain(&client->playerinfo, 2);
+			playerExport->PlayerPlayPain(&client->playerinfo, 2);
 		else
-			playerExport.PlayerPlayPain(&client->playerinfo, 0);
+			playerExport->PlayerPlayPain(&client->playerinfo, 0);
 
 		player->pain_debounce_time = level.time + 0.5;
 	}
@@ -923,7 +923,7 @@ void ClientEndServerFrame (edict_t *ent)
 
 	SetupPlayerinfo(ent);
 
-	playerExport.PlayerFallingDamage(&ent->client->playerinfo);
+	playerExport->PlayerFallingDamage(&ent->client->playerinfo);
 	P_DamageFeedback(ent);
 
 	WritePlayerinfo(ent);
@@ -941,7 +941,7 @@ void ClientEndServerFrame (edict_t *ent)
 
 	SetupPlayerinfo(ent);
 
-	playerExport.PlayerUpdateCmdFlags(&ent->client->playerinfo);
+	playerExport->PlayerUpdateCmdFlags(&ent->client->playerinfo);
 
 	if(BUOY_DEBUG) // Note this is a bit of a hack
 	{
@@ -951,10 +951,10 @@ void ClientEndServerFrame (edict_t *ent)
 		}
 	}
 
-	playerExport.PlayerUpdate(&ent->client->playerinfo);
+	playerExport->PlayerUpdate(&ent->client->playerinfo);
 
 	// Validate
-	playerExport.AnimUpdateFrame(&ent->client->playerinfo);
+	playerExport->AnimUpdateFrame(&ent->client->playerinfo);
 
 	PlayerTimerUpdate(ent);
 
@@ -1075,13 +1075,13 @@ void ClientEndServerFrame (edict_t *ent)
 	current_client->ps.uppermove_index=current_client->playerinfo.uppermove_index;
 	current_client->ps.lowermove_index=current_client->playerinfo.lowermove_index;
 
-	current_client->ps.weapon=(byte)playerExport.GetItemIndex(current_client->playerinfo.pers.weapon);
-	current_client->ps.defense=(byte)playerExport.GetItemIndex(current_client->playerinfo.pers.defence);
-	current_client->ps.lastweapon=(byte)playerExport.GetItemIndex(current_client->playerinfo.pers.lastweapon);
-	current_client->ps.lastdefense=(byte)playerExport.GetItemIndex(current_client->playerinfo.pers.lastdefence);
+	current_client->ps.weapon=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.weapon);
+	current_client->ps.defense=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.defence);
+	current_client->ps.lastweapon=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.lastweapon);
+	current_client->ps.lastdefense=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.lastdefence);
 	current_client->ps.weaponready=(byte)current_client->playerinfo.pers.weaponready;
 	current_client->ps.switchtoweapon=(byte)current_client->playerinfo.switchtoweapon;
-	current_client->ps.newweapon=(byte)playerExport.GetItemIndex(current_client->playerinfo.pers.newweapon);
+	current_client->ps.newweapon=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.newweapon);
 	current_client->ps.weap_ammo_index=(byte)current_client->playerinfo.weap_ammo_index;
 	current_client->ps.def_ammo_index=(byte)current_client->playerinfo.def_ammo_index;
 	current_client->ps.weaponcharge=(byte)current_client->playerinfo.weaponcharge;

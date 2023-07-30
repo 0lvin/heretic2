@@ -42,9 +42,6 @@
 #define ITEM_COOP_ONLY		1
 #define ITEM_NO_DROP		2
 
-extern player_export_t	playerExport;	// interface to player DLL.
-
-
 // ************************************************************************************************
 // RespawnedThink
 // --------------
@@ -202,11 +199,11 @@ qboolean Pickup_Puzzle(edict_t *ent, edict_t *other)
 		return false;
 	}
 
-	item = playerExport.FindItemByClassname(ent->classname);
+	item = playerExport->FindItemByClassname(ent->classname);
 
-	if (!other->client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(ent->item)])
+	if (!other->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(ent->item)])
 	{
-		other->client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(ent->item)] = 1;
+		other->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(ent->item)] = 1;
 
 		gi.cprintf(other, PRINT_HIGH, va("%i", ent->item->msg_pickup));
 
@@ -230,7 +227,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 
 	// Do we already have this weapon?
 
-	if(!player->client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)])
+	if(!player->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)])
 	{
 		// We don't already have it, so get the weapon and some ammo.
 
@@ -253,11 +250,11 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 		else
 			count = AMMO_COUNT_MOST;
 
-		player->client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)] = 1;
+		player->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
 
 		if(count)
 		{
-			newitem = playerExport.FindItem(item->ammo);
+			newitem = playerExport->FindItem(item->ammo);
 			Add_Ammo(player, newitem,count);
 		}
 
@@ -268,7 +265,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 			// If this new weapon is a higher value than the one we currently have, swap the current
 			// weapon for the new one.
 
-			if (playerExport.GetItemIndex(item) > playerExport.GetItemIndex(player->client->playerinfo.pers.weapon))
+			if (playerExport->GetItemIndex(item) > playerExport->GetItemIndex(player->client->playerinfo.pers.weapon))
 			{
 				item->use(&player->client->playerinfo,item);
 			}
@@ -286,22 +283,22 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 
 			if (item->tag == ITEM_WEAPON_HELLSTAFF)
 			{
-				newitem = playerExport.FindItemByClassname("item_ammo_hellstaff");
+				newitem = playerExport->FindItemByClassname("item_ammo_hellstaff");
 				count = AMMO_COUNT_HELLSTAFF;
 			}
 			else if (item->tag == ITEM_WEAPON_REDRAINBOW)
 			{
-				newitem = playerExport.FindItemByClassname("item_ammo_redrain");
+				newitem = playerExport->FindItemByClassname("item_ammo_redrain");
 				count = AMMO_COUNT_REDRAINBOW;
 			}
 			else if (item->tag == ITEM_WEAPON_PHOENIXBOW)
 			{
-				newitem = playerExport.FindItemByClassname("item_ammo_phoenix");
+				newitem = playerExport->FindItemByClassname("item_ammo_phoenix");
 				count = AMMO_COUNT_PHOENIXBOW;
 			}
 			else
 			{
-				newitem = playerExport.FindItemByClassname("item_mana_offensive_half");
+				newitem = playerExport->FindItemByClassname("item_mana_offensive_half");
 				count = AMMO_COUNT_MOST;
 			}
 
@@ -360,9 +357,9 @@ qboolean Pickup_Weapon(edict_t *ent,edict_t *other)
 
 qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
 {
-	if(!player->client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)])
+	if(!player->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)])
 	{
-		player->client->playerinfo.pers.inventory.Items[playerExport.GetItemIndex(item)]=1;
+		player->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)]=1;
 
 		// Now decide if we want to swap defenses or not.
 
@@ -415,7 +412,7 @@ qboolean Add_AmmoToInventory (edict_t *ent, gitem_t *item, int count,int max)
 {
 	int			index;
 
-	index = playerExport.GetItemIndex(item);
+	index = playerExport->GetItemIndex(item);
 
 	if (ent->client->playerinfo.pers.inventory.Items[index] == max)
 		return false;
@@ -444,24 +441,24 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 
 	if ((item->tag == ITEM_AMMO_MANA_OFFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
 	{
-		item = playerExport.FindItemByClassname("item_mana_offensive_half");
+		item = playerExport->FindItemByClassname("item_mana_offensive_half");
 		max = ent->client->playerinfo.pers.max_offmana;
 		return(Add_AmmoToInventory (ent,item,count,max));
 	}
 	else if ((item->tag == ITEM_AMMO_MANA_DEFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_DEFENSIVE_FULL))
 	{
-		item = playerExport.FindItemByClassname("item_mana_defensive_half");
+		item = playerExport->FindItemByClassname("item_mana_defensive_half");
 		max = ent->client->playerinfo.pers.max_defmana;
 		return(Add_AmmoToInventory (ent,item,count,max));
 	}
 	else if ((item->tag == ITEM_AMMO_MANA_COMBO_QUARTER) || (item->tag == ITEM_AMMO_MANA_COMBO_HALF))
 	{
-		item = playerExport.FindItemByClassname("item_mana_offensive_half");
+		item = playerExport->FindItemByClassname("item_mana_offensive_half");
 		max = ent->client->playerinfo.pers.max_offmana;
 
 		bo = Add_AmmoToInventory (ent,item,count,max);
 
-		item = playerExport.FindItemByClassname("item_mana_defensive_half");
+		item = playerExport->FindItemByClassname("item_mana_defensive_half");
 		max = ent->client->playerinfo.pers.max_defmana;
 		bo |= Add_AmmoToInventory (ent,item,count,max);
 
@@ -538,7 +535,7 @@ void Drop_Ammo (edict_t *ent, gitem_t *item)
 	edict_t	*dropped;
 	int		index;
 
-	index = playerExport.GetItemIndex(item);
+	index = playerExport->GetItemIndex(item);
 	dropped = Drop_Item (ent, item);
 
 	if (ent->client->playerinfo.pers.inventory.Items[index] >= item->quantity)
@@ -964,7 +961,7 @@ void PrecacheItem (gitem_t *it)
 	// parse everything for its ammo
 	if (it->ammo && it->ammo[0])
 	{
-		ammo = playerExport.FindItem (it->ammo);
+		ammo = playerExport->FindItem (it->ammo);
 		if (ammo != it)
 			PrecacheItem (ammo);
 	}
@@ -1065,7 +1062,7 @@ gitem_t	*IsItem(edict_t *ent)
 		return NULL;
 	}
 
-	for(i = 0, item = playerExport.GetPlayerItems(); i < game.num_items; ++i, ++item)
+	for(i = 0, item = playerExport->GetPlayerItems(); i < game.num_items; ++i, ++item)
 	{
 		if(!item->classname)
 		{
@@ -1090,7 +1087,7 @@ gitem_t	*IsItem(edict_t *ent)
 
 void G_InitItems(void)
 {
-	gitem_t* p_itemlist = playerExport.GetPlayerItems();
+	gitem_t* p_itemlist = playerExport->GetPlayerItems();
 
 	// ********************************************************************************************
 	// Setup item function pointers which yield pick-up, use, drop and weaponthink functionality.
@@ -1102,14 +1099,14 @@ void G_InitItems(void)
 	// This can't be placed in the editor
 
 	p_itemlist[1].pickup=Pickup_Weapon;
-	p_itemlist[1].use=playerExport.Weapon_EquipSwordStaff;
+	p_itemlist[1].use=playerExport->Weapon_EquipSwordStaff;
 	p_itemlist[1].weaponthink=WeaponThink_SwordStaff;
 
 	// weapon_flyingfist
 	// This can't be placed in the editor
 
 	p_itemlist[2].pickup=Pickup_Weapon;
-	p_itemlist[2].use=playerExport.Weapon_EquipSpell;
+	p_itemlist[2].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[2].weaponthink=WeaponThink_FlyingFist;
 
 	// item_weapon_hellstaff
@@ -1118,7 +1115,7 @@ Pickup for the hellstaff weapon.
 */
 
 	p_itemlist[3].pickup=Pickup_Weapon;
-	p_itemlist[3].use=playerExport.Weapon_EquipHellStaff;
+	p_itemlist[3].use=playerExport->Weapon_EquipHellStaff;
 	p_itemlist[3].weaponthink=WeaponThink_HellStaff;
 
 	// item_weapon_magicmissile
@@ -1127,7 +1124,7 @@ Pickup for the Magic Missile weapon.
 */
 
 	p_itemlist[4].pickup=Pickup_Weapon;
-	p_itemlist[4].use=playerExport.Weapon_EquipSpell;
+	p_itemlist[4].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[4].weaponthink=WeaponThink_MagicMissileSpread;
 
 	// item_weapon_redrain_bow
@@ -1136,7 +1133,7 @@ Pickup for the Red Rain Bow weapon.
 */
 
 	p_itemlist[5].pickup=Pickup_Weapon;
-	p_itemlist[5].use=playerExport.Weapon_EquipBow;
+	p_itemlist[5].use=playerExport->Weapon_EquipBow;
 	p_itemlist[5].weaponthink=WeaponThink_RedRainBow;
 
 	// item_weapon_firewall
@@ -1145,7 +1142,7 @@ Pickup for the Fire Wall weapon.
 */
 
 	p_itemlist[6].pickup=Pickup_Weapon;
-	p_itemlist[6].use=playerExport.Weapon_EquipSpell;
+	p_itemlist[6].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[6].weaponthink=WeaponThink_Firewall;
 
 	// item_weapon_phoenixbow
@@ -1154,7 +1151,7 @@ Pickup for the Phoenix Bow weapon.
 */
 
 	p_itemlist[7].pickup=Pickup_Weapon;
-	p_itemlist[7].use=playerExport.Weapon_EquipBow;
+	p_itemlist[7].use=playerExport->Weapon_EquipBow;
 	p_itemlist[7].weaponthink=WeaponThink_PhoenixBow;
 
 	// item_weapon_sphereofannihilation
@@ -1163,7 +1160,7 @@ Pickup for the Sphere Annihilation weapon.
 */
 
 	p_itemlist[8].pickup=Pickup_Weapon;
-	p_itemlist[8].use=playerExport.Weapon_EquipSpell;
+	p_itemlist[8].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[8].weaponthink=WeaponThink_SphereOfAnnihilation;
 
 	// item_weapon_maceballs
@@ -1172,7 +1169,7 @@ Pickup for the Mace Balls weapon.
 */
 
 	p_itemlist[9].pickup=Pickup_Weapon;
-	p_itemlist[9].use=playerExport.Weapon_EquipSpell;
+	p_itemlist[9].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[9].weaponthink=WeaponThink_Maceballs;
 
 	// item_defense_powerup
@@ -1456,7 +1453,7 @@ Pickup for the Tornado defensive spell.
 	// Initialise game variables.
 	// ********************************************************************************************
 
-	game.num_items=playerExport.GetPlayerItemsCount();
+	game.num_items=playerExport->GetPlayerItemsCount();
 }
 
 /*
@@ -1472,7 +1469,7 @@ void SetItemNames(void)
 
 	for (i=0 ; i<game.num_items ; i++)
 	{
-		it = playerExport.GetPlayerItems() + i;
+		it = playerExport->GetPlayerItems() + i;
 		gi.configstring (CS_ITEMS+i, it->pickup_name);
 	}
 }

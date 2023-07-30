@@ -1025,7 +1025,7 @@ void ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
 
 	for (i1 = 0;i1 < self->count;++i1)
 	{
-		item = playerExport.FindItemByClassname(self->target);
+		item = playerExport->FindItemByClassname(self->target);
 
 		if (!item)	// Must be an object not an item
 		{

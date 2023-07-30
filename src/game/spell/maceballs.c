@@ -27,8 +27,6 @@
 
 #define MACEBALL_SEARCHRAD	500.0
 
-extern player_export_t	playerExport;	// interface to player DLL.
-
 // ****************************************************************************
 // Maceball think
 // ****************************************************************************
@@ -156,12 +154,12 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 			if (trace->ent->client)
 			{
 				Defence = trace->ent->client->playerinfo.pers.defence;
-				Quantity = playerExport.GetPlayerItems()[12].quantity;
+				Quantity = playerExport->GetPlayerItems()[12].quantity;
 				if(Defence->ammo && Quantity)
 				{
 					// do we have enough mana to teleport ?
-					ManaItem = playerExport.FindItem(Defence->ammo);
-					ManaIndex = playerExport.GetItemIndex(ManaItem);
+					ManaItem = playerExport->FindItem(Defence->ammo);
+					ManaIndex = playerExport->GetItemIndex(ManaItem);
 					if (trace->ent->client->playerinfo.pers.inventory.Items[ManaIndex]/Quantity > 0)
 					{
 						// yes, do we actually have a teleport ?

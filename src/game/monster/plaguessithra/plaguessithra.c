@@ -136,7 +136,7 @@ void ssithra_blocked (edict_t *self, trace_t *trace)
 	VectorCopy(self->velocity, hitdir);
 
 //	if(!Q_stricmp(trace->ent->classname, "player"))
-//		playerExport.KnockDownPlayer(&trace->ent->client->playerinfo);
+//		playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 	if(hitdir[2] < 0)
 		hitdir[2] = 0;
 	VectorNormalize(hitdir);

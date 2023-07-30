@@ -2,8 +2,10 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
+#include "../game/header/game.h"
 #include "player.h"
 #include "p_anim_data.h"
+static game_import_t gi;
 
 void P_Init(void)
 {
@@ -26,9 +28,12 @@ GetPlayerItemsCount(void)
 	return p_num_items;
 }
 
-player_export_t GetPlayerAPI(void)
+player_export_t playerExport;
+
+Q2_DLL_EXPORTED player_export_t *
+GetPlayerAPI(game_import_t *import)
 {
-	player_export_t playerExport;
+	gi = *import;
 
 	playerExport.Init = P_Init;
 	playerExport.Shutdown = P_Shutdown;
@@ -84,5 +89,35 @@ player_export_t GetPlayerAPI(void)
 	playerExport.GetPlayerItems = GetPlayerItems;
 	playerExport.GetPlayerItemsCount = GetPlayerItemsCount;
 
-	return playerExport;
+	return &playerExport;
+}
+
+/*
+ * this is only here so the functions
+ * in shared source files can link
+ */
+void
+Sys_Error(char *error, ...)
+{
+	va_list argptr;
+	char text[1024];
+
+	va_start(argptr, error);
+	vsnprintf(text, sizeof(text), error, argptr);
+	va_end(argptr);
+
+	gi.error("%s", text);
+}
+
+void
+Com_Printf(char *msg, ...)
+{
+	va_list argptr;
+	char text[1024];
+
+	va_start(argptr, msg);
+	vsnprintf(text, sizeof(text), msg, argptr);
+	va_end(argptr);
+
+	gi.dprintf("%s", text);
 }

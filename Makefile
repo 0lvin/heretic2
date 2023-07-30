@@ -377,12 +377,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft
+.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft player
 
 # ----------
 
 # Builds everything
-all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft
+all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft player
 
 # ----------
 
@@ -1336,18 +1336,6 @@ CLIENT_OBJS_ := \
 	src/game/spell/teleport.o \
 	src/game/spell/tornado.o \
 	src/game/spell/wall.o \
-	src/player/p_actions.o \
-	src/player/p_animactor.o \
-	src/player/p_anim_branch.o \
-	src/player/p_anim_data.o \
-	src/player/p_anims.o \
-	src/player/p_chicken_anim.o \
-	src/player/p_chicken.o \
-	src/player/p_ctrl.o \
-	src/player/p_items.o \
-	src/player/player_main.o \
-	src/player/p_main.o \
-	src/player/p_weapon.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
 	src/server/sv_entities.o \

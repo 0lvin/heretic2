@@ -96,8 +96,8 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 		((edict_t *)playerinfo->self)->targetEnt->enemy = NULL;
 		((edict_t *)playerinfo->self)->targetEnt = NULL;
 
-		playerExport.PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
-		playerExport.PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFWD);
+		playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
+		playerExport->PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFWD);
 
 		return;
 	}
@@ -473,7 +473,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		((edict_t *)playerinfo->self)->targetEnt->enemy = NULL;
 		((edict_t *)playerinfo->self)->targetEnt = NULL;
 
-		playerExport.PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
+		playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 
 		return ASEQ_JUMPFWD;
 	}
@@ -1012,7 +1012,7 @@ void PlayerChickenDeath(edict_t *self)
 
 	// Reset our animations.
 
-	playerExport.PlayerAnimReset(&self->client->playerinfo);
+	playerExport->PlayerAnimReset(&self->client->playerinfo);
 }
 
 // ************************************************************************************************
@@ -1182,7 +1182,7 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 				{
 					if(!irand(0, 1))
 					{
-						playerExport.KnockDownPlayer(&ent->groundentity->client->playerinfo);
+						playerExport->KnockDownPlayer(&ent->groundentity->client->playerinfo);
 					}
 				}
 			}
@@ -1236,7 +1236,7 @@ void G_PlayerVaultKick(playerinfo_t *playerinfo)
 				{
 					if(infront(trace.ent, self) && !irand(0, 2))
 					{
-						playerExport.KnockDownPlayer(&trace.ent->client->playerinfo);
+						playerExport->KnockDownPlayer(&trace.ent->client->playerinfo);
 					}
 				}
 			}
@@ -1390,9 +1390,9 @@ void G_PlayerActionSpellDefensive(playerinfo_t *playerinfo)
 		playerinfo->defensive_debounce = playerinfo->leveltime + DEFENSE_DEBOUNCE;
 
 		// if we've run out of defence shots, and we have the ring of repulsion - switch to that.
-		it = playerExport.FindItem ("ring");
-		index = playerExport.GetItemIndex(it);
-		if ((playerExport.Defence_CurrentShotsLeft(playerinfo, 1) <=0) && playerinfo->pers.inventory.Items[index])
+		it = playerExport->FindItem ("ring");
+		index = playerExport->GetItemIndex(it);
+		if ((playerExport->Defence_CurrentShotsLeft(playerinfo, 1) <=0) && playerinfo->pers.inventory.Items[index])
 		{
 			playerinfo->G_UseItem((edict_t*)playerinfo->self,"ring");
 		}

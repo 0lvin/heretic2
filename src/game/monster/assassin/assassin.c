@@ -564,7 +564,7 @@ void assassin_Touch(edict_t *self, trace_t *trace)
 				if(self->s.origin[2]+self->mins[2] > other->s.origin[2] + other->maxs[2] * 0.8)
 				{
 					if(other->client)
-						playerExport.KnockDownPlayer(&other->client->playerinfo);
+						playerExport->KnockDownPlayer(&other->client->playerinfo);
 
 					gi.sound(self, CHAN_BODY, Sounds[SND_LANDF], 1, ATTN_NORM, 0);
 	/*
