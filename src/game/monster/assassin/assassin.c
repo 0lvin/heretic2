@@ -38,12 +38,12 @@
 #include "assassin_anim.h"
 #include "../../header/g_hitlocation.h"
 #include "../../header/g_misc.h"
-#include "../../../../h2common/angles.h"
 #include "../../header/c_ai.h"
-#include "../../../player/p_anim_branch.h"
-#include "../../../player/p_anims.h"
+#include "../../../../h2common/angles.h"
+#include "../../player/library/p_anim_branch.h"
+#include "../../player/library/p_anims.h"
 #include "../stats/stats.h"
-#include "../../../player/p_actions.h"
+#include "../../player/library/p_actions.h"
 
 qboolean clear_visible (edict_t *self, edict_t *other);
 void extrapolateFiredir (edict_t *self,vec3_t p1,float pspeed,edict_t *targ,float accept,vec3_t vec2);

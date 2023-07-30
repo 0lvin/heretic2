@@ -12,9 +12,9 @@
 #include "p_main.h"
 #include "p_weapon.h"
 #include "p_types.h"
-#include "../../h2common/fx.h"
-#include "../game/monster/misc/player.h"
-#include "../common/header/common.h"
+#include "../../../../h2common/fx.h"
+#include "../../monster/misc/player.h"
+#include "../../../common/header/common.h"
 
 //FIXME:  Include header
 

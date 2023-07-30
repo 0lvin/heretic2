@@ -23,9 +23,9 @@ Copyright 1998 Raven Software
 #include "../../header/g_hitlocation.h"
 #include "../../header/g_misc.h"
 #include "../stats/stats.h"
-#include "../../../player/p_anim_branch.h"
-#include "../../../player/p_anims.h"
-#include "../../../player/p_actions.h"
+#include "../../player/library/p_anim_branch.h"
+#include "../../player/library/p_anims.h"
+#include "../../player/library/p_actions.h"
 
 #define HARPY_CHECK_DIST		128
 #define	HARPY_COLLISION_DIST	148

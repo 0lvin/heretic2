@@ -8,12 +8,12 @@
 
 #include "header/local.h"
 #include "../../h2common/h2rand.h"
-#include "../player/p_main.h"
-#include "../player/p_anims.h"
+#include "player/library/p_main.h"
+#include "player/library/p_anims.h"
 #include "../../h2common/fx.h"
-#include "../player/p_anim_branch.h"
+#include "player/library/p_anim_branch.h"
 #include "header/utilities.h"
-#include "../player/p_animactor.h"
+#include "player/library/p_animactor.h"
 #include "monster/chicken/chicken_anim.h"
 #include "../../h2common/cl_strings.h"
 

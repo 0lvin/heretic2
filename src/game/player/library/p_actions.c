@@ -5,7 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "../common/header/common.h"
+#include "../../../common/header/common.h"
 
 #include "player.h"
 #include "p_types.h"
@@ -13,12 +13,12 @@
 #include "p_main.h"
 #include "p_weapon.h"
 #include "p_weapon.h"
-#include "../game/header/g_items.h"
+#include "../../header/g_items.h"
 #include "surfaceprops.h"
-#include "../game/monster/misc/player.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
-#include "../game/header/g_playstats.h"
+#include "../../monster/misc/player.h"
+#include "../../../../h2common/fx.h"
+#include "../../../../h2common/h2rand.h"
+#include "../../header/g_playstats.h"
 #include "p_anim_data.h"
 
 #define AIRMOVE_AMOUNT		48

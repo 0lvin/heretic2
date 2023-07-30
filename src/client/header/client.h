@@ -61,7 +61,7 @@
 
 #include "../../../h2common/angles.h"
 #include "../../../h2common/vector.h"
-#include "../../player/player.h"
+#include "../../game/player/library/player.h"
 #include "../../../h2common/levelmaps.h"
 
 typedef struct

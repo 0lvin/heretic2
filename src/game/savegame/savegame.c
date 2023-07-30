@@ -70,7 +70,7 @@
 #include "../header/g_playstats.h"
 #include "../header/utilities.h"
 #include "../header/g_hitlocation.h"
-#include "../../player/p_anims.h"
+#include "../player/library/p_anims.h"
 #include "../../../h2common/arrayed_list.h"
 #include "../../../h2common/message.h"
 #include "../../../h2common/fx.h"

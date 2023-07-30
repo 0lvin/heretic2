@@ -12,7 +12,7 @@
 #include "../header/utilities.h"
 #include "../../../h2common/h2rand.h"
 #include "../header/g_teleport.h"
-#include "../../player/p_main.h"
+#include "../player/library/p_main.h"
 #include "../header/g_playstats.h"
 
 extern void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles);

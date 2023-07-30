@@ -3,10 +3,10 @@
 // Copyright 1998 Raven Software
 //
 #include "header/local.h"
-#include "../player/player.h"
-#include "../player/p_actions.h"
+#include "player/library/player.h"
+#include "player/library/p_actions.h"
 #include "header/g_defaultmessagehandler.h"
-#include "../player/p_main.h"
+#include "player/library/p_main.h"
 #include "header/buoy.h"
 #include "monster/stats/stats.h"
 #include "header/g_teleport.h"

@@ -31,7 +31,7 @@
 #include "../../h2common/fx.h"
 #include "../../h2common/h2rand.h"
 #include "header/g_misc.h"
-#include "../player/p_main.h"
+#include "player/library/p_main.h"
 #include "header/g_playstats.h"
 #include "header/buoy.h"
 #include "header/g_itemstats.h"

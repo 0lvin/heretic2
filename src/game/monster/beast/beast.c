@@ -21,9 +21,9 @@ TBEAST
 #include "../../../../h2common/h2rand.h"
 #include "../../header/buoy.h"
 
-#include "../../../player/p_actions.h"
-#include "../../../player/p_anims.h"
-#include "../../../player/p_anim_branch.h"
+#include "../../player/library/p_actions.h"
+#include "../../player/library/p_anims.h"
+#include "../../player/library/p_anim_branch.h"
 #include "../../header/g_physics.h"
 #include "../../header/g_physics.h"
 #include "../../header/g_misc.h"

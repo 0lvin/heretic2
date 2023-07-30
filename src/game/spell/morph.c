@@ -21,8 +21,8 @@
 #include "../../../h2common/fx.h"
 #include "../../../h2common/matrix.h"
 #include "../header/utilities.h"
-#include "../../player/p_main.h"
-#include "../../player/p_anims.h"
+#include "../player/library/p_main.h"
+#include "../player/library/p_anims.h"
 #include "../../../h2common/h2rand.h"
 
 #define ARROW_SPEED			400.0F

@@ -33,7 +33,7 @@
 #include "header/utilities.h"
 #include "../../h2common/h2rand.h"
 #include "header/g_playstats.h"
-#include "../player/p_anims.h"
+#include "player/library/p_anims.h"
 #include "../../h2common/cl_strings.h"
 
 //Used for monster_speeds timing stuff

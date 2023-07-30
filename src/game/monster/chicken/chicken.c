@@ -22,7 +22,7 @@
 #include "../../header/g_physics.h"
 #include "../../header/g_teleport.h"
 #include "../../header/g_skeletons.h"
-#include "../../../player/p_anims.h"
+#include "../../player/library/p_anims.h"
 
 #include "chicken.h"
 #include "chicken_anim.h"

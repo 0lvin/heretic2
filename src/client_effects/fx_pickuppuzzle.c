@@ -15,7 +15,7 @@
 #include "../../h2common/h2rand.h"
 #include "utilities.h"
 #include "../../h2common/angles.h"
-#include "../player/p_items.h"
+#include "../game/player/library/p_items.h"
 
 #define BOB_HEIGHT			6.0
 #define BOB_SPEED			ANGLE_10

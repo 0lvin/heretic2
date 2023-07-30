@@ -6,8 +6,8 @@
 #define PLAYER_H
 
 #include "p_types.h"
-#include "../../h2common/angles.h"
-#include "../../h2common/vector.h"
+#include "../../../../h2common/angles.h"
+#include "../../../../h2common/vector.h"
 
 // **************
 // Movement rates

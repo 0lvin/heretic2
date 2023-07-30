@@ -15,7 +15,7 @@
 #include "header/g_physics.h"
 #include "../../h2common/h2rand.h"
 #include "../../h2common/fx.h"
-#include "../player/p_main.h"
+#include "player/library/p_main.h"
 
 #define TIME_EPSILON		0.01
 

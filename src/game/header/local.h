@@ -35,7 +35,7 @@
 #define GAME_INCLUDE
 #include "game.h"
 #include "buoy.h"
-#include "../../player/player.h"
+#include "../player/library/player.h"
 
 // The "gameversion" client command will print this plus compile date.
 

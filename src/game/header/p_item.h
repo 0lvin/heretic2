@@ -6,7 +6,7 @@
 #define P_ITEM 1
 
 #include "local.h"
-#include "../../player/p_types.h"
+#include "../player/library/p_types.h"
 
 void Use_Defence(playerinfo_t *playerinfo, gitem_t *defence);
 void DefenceThink_Powerup(edict_t *Caster, char *Format, ...);

@@ -55,10 +55,10 @@ GORGON
 #include "gorgon.h"
 #include "gorgon_anim.h"
 #include "../stats/stats.h"
-#include "../../../player/p_anim_branch.h"
-#include "../../../player/p_anims.h"
+#include "../../player/library/p_anim_branch.h"
+#include "../../player/library/p_anims.h"
 #include "../../header/g_hitlocation.h"
-#include "../../../player/p_actions.h"
+#include "../../player/library/p_actions.h"
 
 
 // *************************************

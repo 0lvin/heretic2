@@ -13,7 +13,7 @@
 #include "header/g_monster.h"
 #include "header/g_misc.h"
 #include "header/c_corvus1_anim.h"
-#include "../player/p_main.h"
+#include "player/library/p_main.h"
 
 
 

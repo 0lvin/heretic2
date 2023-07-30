@@ -14,9 +14,9 @@
 #include "p_chicken.h"
 #include "p_main.h"
 #include "p_ctrl.h"
-#include "../game/monster/misc/player.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/reference.h"
+#include "../../monster/misc/player.h"
+#include "../../../../h2common/fx.h"
+#include "../../../../h2common/reference.h"
 
 
 //NOTENOTE: This value is applied generically to all player move functions that travel along

@@ -8,8 +8,8 @@
 #ifndef _P_TYPES_H_
 #define _P_TYPES_H_
 
-#include "../common/header/common.h"
-#include "../game/header/g_itemstats.h"
+#include "../../../common/header/common.h"
+#include "../../header/g_itemstats.h"
 
 // Forward define 'playerinfo_t' for use in 'panimframe_t' and 'panimmove_t'.
 

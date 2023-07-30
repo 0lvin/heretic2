@@ -11,7 +11,7 @@
 #include "../header/utilities.h"
 #include "../../../h2common/h2rand.h"
 #include "../header/decals.h"
-#include "../../player/p_main.h"
+#include "../player/library/p_main.h"
 #include "../header/g_playstats.h"
 #include "../monster/beast/beast.h"
 

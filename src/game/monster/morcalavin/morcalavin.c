@@ -16,11 +16,11 @@
 #include "../../../../h2common/h2rand.h"
 #include "../../../../h2common/fx.h"
 #include "../../header/g_hitlocation.h"
-#include "../../../player/p_main.h"
+#include "../../player/library/p_main.h"
 #include "../../header/g_misc.h"
 #include "../stats/stats.h"
 #include "../../header/g_playstats.h"
-#include "../../../player/p_actions.h"
+#include "../../player/library/p_actions.h"
 
 static int sounds[NUM_SOUNDS];
 static ClassResourceInfo_t resInfo;

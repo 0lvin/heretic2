@@ -9,16 +9,16 @@
 #include "p_types.h"
 #include "p_actions.h"
 #include "p_anims.h"
-#include "../game/header/g_items.h"
+#include "../../header/g_items.h"
 #include "p_main.h"
 #include "p_weapon.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
-#include "../common/header/common.h"
-#include "../game/header/g_physics.h"
+#include "../../../../h2common/fx.h"
+#include "../../../../h2common/h2rand.h"
+#include "../../../common/header/common.h"
+#include "../../header/g_physics.h"
 #include "p_anim_data.h"
-#include "../game/monster/misc/player.h"
-#include "../game/header/g_playstats.h"
+#include "../../monster/misc/player.h"
+#include "../../header/g_playstats.h"
 
 #define FALL_MINHEIGHT	34
 

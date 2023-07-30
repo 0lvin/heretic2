@@ -2,7 +2,7 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../game/header/game.h"
+#include "../../header/game.h"
 #include "player.h"
 #include "p_anim_data.h"
 static game_import_t gi;

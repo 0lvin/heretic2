@@ -5,8 +5,8 @@
 // Created by JJS
 
 #include "../header/local.h"
-#include "../../player/player.h"
-#include "../../player/p_weapon.h"
+#include "../player/library/player.h"
+#include "../player/library/p_weapon.h"
 #include "../monster/misc/player.h"
 #include "../../../h2common/fx.h"
 #include "../../../h2common/matrix.h"

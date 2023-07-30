@@ -9,8 +9,8 @@
 #include "p_types.h"
 #include "p_main.h"
 #include "p_weapon.h"
-#include "../game/header/g_items.h"
-#include "../../h2common/cl_strings.h"
+#include "../../header/g_items.h"
+#include "../../../../h2common/cl_strings.h"
 
 //FIXME:  Include header
 qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);

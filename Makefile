@@ -1013,19 +1013,19 @@ PLAYER_OBJS_ = \
 	h2common/h2vector.o \
 	h2common/h2rand.o \
 	src/common/shared/shared.o \
-	src/player/surfaceprops.o \
-	src/player/p_actions.o \
-	src/player/p_animactor.o \
-	src/player/p_anim_branch.o \
-	src/player/p_anim_data.o \
-	src/player/p_anims.o \
-	src/player/p_chicken_anim.o \
-	src/player/p_chicken.o \
-	src/player/p_ctrl.o \
-	src/player/p_items.o \
-	src/player/player_main.o \
-	src/player/p_main.o \
-	src/player/p_weapon.o
+	src/game/player/library/surfaceprops.o \
+	src/game/player/library/p_actions.o \
+	src/game/player/library/p_animactor.o \
+	src/game/player/library/p_anim_branch.o \
+	src/game/player/library/p_anim_data.o \
+	src/game/player/library/p_anims.o \
+	src/game/player/library/p_chicken_anim.o \
+	src/game/player/library/p_chicken.o \
+	src/game/player/library/p_ctrl.o \
+	src/game/player/library/p_items.o \
+	src/game/player/library/player_main.o \
+	src/game/player/library/p_main.o \
+	src/game/player/library/p_weapon.o
 
 # ----------
 
@@ -1036,7 +1036,6 @@ CLIENT_OBJS_ := \
 	h2common/h2physics.o \
 	h2common/h2rand.o \
 	h2common/h2singlylinkedlist.o \
-	src/player/surfaceprops.o \
 	h2common/h2vector.o \
 	h2common/message.o \
 	h2common/netmsg_read.o \

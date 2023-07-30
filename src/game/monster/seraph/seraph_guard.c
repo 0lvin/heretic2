@@ -21,9 +21,9 @@
 #include "../../header/g_hitlocation.h"
 #include "../stats/stats.h"
 #include "../../header/g_playstats.h"
-#include "../../../player/p_anim_branch.h"
-#include "../../../player/p_anims.h"
-#include "../../../player/p_actions.h"
+#include "../../player/library/p_anim_branch.h"
+#include "../../player/library/p_anims.h"
+#include "../../player/library/p_actions.h"
 
 void MG_InitMoods(edict_t *self);
 

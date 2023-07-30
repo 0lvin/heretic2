@@ -19,10 +19,10 @@
 #include "mssithra_anim.h"
 #include "../../header/g_misc.h"
 #include "../../header/g_hitlocation.h"
-#include "../../../player/p_anim_branch.h"
+#include "../../player/library/p_anim_branch.h"
 #include "../stats/stats.h"
 #include "../../header/g_playstats.h"
-#include "../../../player/p_actions.h"
+#include "../../player/library/p_actions.h"
 
 void extrapolateFiredir (edict_t *self,vec3_t p1,float pspeed,edict_t *targ,float accept,vec3_t vec2);
 void create_ssithra_arrow(edict_t *Arrow);

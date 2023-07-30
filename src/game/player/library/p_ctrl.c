@@ -12,8 +12,8 @@
 #include "p_ctrl.h"
 #include "p_main.h"
 #include "surfaceprops.h"
-#include "../../h2common/h2rand.h"
-#include "../../h2common/fx.h"
+#include "../../../../h2common/h2rand.h"
+#include "../../../../h2common/fx.h"
 
 void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 {

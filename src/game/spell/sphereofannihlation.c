@@ -11,7 +11,7 @@
 #include "../header/utilities.h"
 #include "../header/decals.h"
 #include "../header/g_playstats.h"
-#include "../../player/p_main.h"	//for ITEM_WEAPON_SPHEREOFANNIHILATION
+#include "../player/library/p_main.h"	//for ITEM_WEAPON_SPHEREOFANNIHILATION
 #include "../monster/beast/beast.h"
 
 #define SPHERE_INIT_SCALE				0.7

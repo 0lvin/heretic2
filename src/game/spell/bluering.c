@@ -9,7 +9,7 @@
 #include "../../../h2common/fx.h"
 #include "../../../h2common/h2rand.h"
 #include "../header/g_playstats.h"
-#include "../../player/p_actions.h"
+#include "../player/library/p_actions.h"
 
 
 #define RING_THINKS	4		// This is a .4 seconds

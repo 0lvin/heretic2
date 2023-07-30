@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "../../player/player.h"
+#include "../player/library/player.h"
 #include "../header/local.h"
 #include "../../common/header/common.h"
 

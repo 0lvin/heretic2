@@ -30,7 +30,7 @@
 #include "../../h2common/h2rand.h"
 #include "header/buoy.h"
 #include "monster/stats/stats.h"
-#include "../player/p_anims.h"
+#include "player/library/p_anims.h"
 
 qboolean FindTarget (edict_t *self);
 extern	cvar_t* maxclients;

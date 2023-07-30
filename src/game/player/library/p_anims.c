@@ -12,12 +12,12 @@
 #include "p_anim_data.h"
 #include "p_anims.h"
 #include "p_main.h"
-#include "../game/header/g_skeletons.h"
-#include "../../h2common/angles.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
-#include "../common/header/common.h"
-#include "../../h2common/effectflags.h"
+#include "../../header/g_skeletons.h"
+#include "../../../../h2common/angles.h"
+#include "../../../../h2common/fx.h"
+#include "../../../../h2common/h2rand.h"
+#include "../../../common/header/common.h"
+#include "../../../../h2common/effectflags.h"
 
 void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
 {
