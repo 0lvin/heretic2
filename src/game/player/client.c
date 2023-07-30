@@ -3107,16 +3107,18 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	pm.cmd = *ucmd;
 	client->pcmd = *ucmd;
 
+/* TODO: Move error
 	if (ent->movetype != PHYSICSTYPE_NOCLIP)
 	{
 		pm.cmd.forwardmove = client->playerinfo.fwdvel;
 		pm.cmd.sidemove = client->playerinfo.sidevel;
 		pm.cmd.upmove = client->playerinfo.upvel;
 	}
+*/
 
-	if(client->RemoteCameraLockCount>0)
+	if(client->RemoteCameraLockCount > 0)
 	{
-		pm.cmd.forwardmove =0;
+		pm.cmd.forwardmove = 0;
 		pm.cmd.sidemove = 0;
 		pm.cmd.upmove = 0;
 	}
@@ -3135,14 +3137,19 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	knockback = client->playerinfo.knockbacktime - level.time;
 	if (knockback > 1.0)
+	{
 		knockback = 1.0;
+	}
 	else if (knockback < 0.0)
+	{
 		knockback = 0.0;
+	}
 	pm.knockbackfactor = knockback;
 
 	// Handle lockmove cases.
 
-	if((client->playerinfo.flags&(PLAYER_FLAG_LOCKMOVE_WAS_SET|PLAYER_FLAG_USE_ENT_POS))&&!(client->ps.pmove.pm_flags&PMF_LOCKMOVE))
+	if((client->playerinfo.flags & (PLAYER_FLAG_LOCKMOVE_WAS_SET|PLAYER_FLAG_USE_ENT_POS)) &&
+	   !(client->ps.pmove.pm_flags&PMF_LOCKMOVE))
 	{
 		// Lockmove was set last frame, but isn't now, so we copy the player edict's origin and
 		// velocity values to the client for use in Pmove(). NOTE: Pmove() on the SERVER needs
@@ -3156,7 +3163,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	}
 
 	// Check to add into movement velocity through crouch and duck if underwater.
-
 	if (!ent->deadflag && ent->waterlevel > 2)
 	{
 		// NOTENOTE: If they're pressing both, nullify it.
@@ -3239,15 +3245,23 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	// set up speed up if we have hit the run shrine recently
 	if (client->playerinfo.speed_timer > level.time)
+	{
 		pm.run_shrine = true;
+	}
 	else
+	{
 		pm.run_shrine = false;
+	}
 
 	// set up speed up if we have been hit recently
 	if (client->playerinfo.effects & EF_HIGH_MAX)
+	{
 		pm.high_max = true;
+	}
 	else
+	{
 		pm.high_max = false;
+	}
 
 	// Perform a Pmove().
 	gi.Pmove(&pm);

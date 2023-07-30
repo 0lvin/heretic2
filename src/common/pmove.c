@@ -25,15 +25,22 @@
  * =======================================================================
  */
 
+#include "header/common.h"
+#include "../client/sound/header/local.h"
 #include "../client/header/client.h"
 #include "../game/header/g_physics.h"
 
-#define	STEPSIZE	18
-#define OVERCLIP	1.001f
+#if !defined(DEDICATED_ONLY) && defined(USE_OPENAL)
+void AL_Underwater();
+void AL_Overwater();
+#endif
 
-// all of the locals will be zeroed before each
-// pmove, just to make damn sure we don't have
-// any differences when running on client or server
+#define STEPSIZE 18
+#define OVERCLIP 1.001f
+
+/* all of the locals will be zeroed before each
+ * pmove, just to make damn sure we don't have
+ * any differences when running on client or server */
 
 typedef struct
 {
@@ -55,20 +62,19 @@ typedef struct
 	int waterlevel;
 } pml_t;
 
-pmove_t* pm;
-pml_t		pml;
+pmove_t *pm;
+pml_t pml;
 
-
-// movement parameters
-float	pm_stopspeed = 100;
-float	pm_maxspeed = 300;
-float	pm_duckspeed = 100;
-float	pm_accelerate = 10;
-float	pm_airaccelerate = 1;
-float	pm_wateraccelerate = 10;
-float	pm_friction = 6;
-float	pm_waterfriction = 1;
-float	pm_waterspeed = 400;
+/* movement parameters */
+float pm_stopspeed = 100;
+float pm_maxspeed = 300;
+float pm_duckspeed = 100;
+float pm_accelerate = 10;
+float pm_airaccelerate = 1;
+float pm_wateraccelerate = 10;
+float pm_friction = 6;
+float pm_waterfriction = 1;
+float pm_waterspeed = 400;
 
 #define MIN_WALK_NORMAL 0.7f
 
@@ -116,7 +122,6 @@ static int PM_CorrectAllSolid(trace_t* trace) {
 	return false;
 }
 
-
 /*
  * Handles both ground friction and water friction
  */
@@ -156,19 +161,11 @@ PM_Friction(void)
 		}
 	}
 
-	// apply water friction even if just wading
-	if (pm->waterlevel) {
+	/* apply water friction even if just wading */
+	if (pm->waterlevel)
+	{
 		drop += speed * pm_waterfriction * pm->waterlevel * pml.frametime;
 	}
-
-	// apply flying friction
-	//if (pm->ps->powerups[PW_FLIGHT]) {
-	//	drop += speed * pm_flightfriction * pml.frametime;
-	//}
-	//
-	//if (pm->ps->pm_type == PM_SPECTATOR) {
-	//	drop += speed * pm_spectatorfriction * pml.frametime;
-	//}
 
 	/* scale the velocity */
 	newspeed = speed - drop;
@@ -191,7 +188,8 @@ PM_ClipVelocity
 Slide off of the impacting surface
 ==================
 */
-void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce) {
+void
+PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce) {
 	float	backoff;
 	float	change;
 	int		i;
@@ -277,7 +275,8 @@ PM_ClampAngles
 
 ================
 */
-void PM_ClampAngles(void)
+void
+PM_ClampAngles(void)
 {
 	short	temp;
 	int		i;
@@ -757,6 +756,7 @@ PM_CheckInWater()
 	}
 }
 
+// TODO: Rewrite
 void
 PM_AddCurrents(float* a1)
 {
@@ -832,6 +832,7 @@ PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
 	}
 }
 
+// TODO: Rewrite
 int
 PM_SetVelInLiquid(float a1)
 {
@@ -897,20 +898,17 @@ PM_WaterSurfMove()
 
 
 /*
-================
-Pmove
-
-Can be called by either the server or the client
-================
-*/
+ * Can be called by either the server or the client
+ */
 void
-Pmove(pmove_t* pmove)
+Pmove(pmove_t *pmove)
 {
 	pm = pmove;
 
 	/* clear results */
 	pm->numtouch = 0;
 	VectorClear(pm->viewangles);
+	pm->viewheight = 0;
 	pm->groundentity = 0;
 	pm->watertype = 0;
 	pm->waterlevel = 0;

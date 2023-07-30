@@ -293,12 +293,10 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 	MSG_WriteByte(msg, svc_playerinfo);
 	MSG_WriteLong(msg, pflags);
 
-	//
-	// write the pmove_state_t
-	//
+	/* write the pmove_state_t */
 	if (pflags & PS_M_TYPE)
 	{
-		MSG_WriteByte (msg, ps->pmove.pm_type);
+		MSG_WriteByte(msg, ps->pmove.pm_type);
 	}
 
 	if (pflags & PS_M_ORIGIN)
@@ -428,6 +426,7 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		MSG_WriteShort(msg, ps->viewheight);
 	}
 
+	/* send stats */
 	MSG_WriteData(msg, (byte *)&ps->stats[0], sizeof(ps->stats));
 }
 
@@ -464,6 +463,7 @@ SV_WriteFrameToClient(client_t *client, sizebuf_t *msg)
 	MSG_WriteByte(msg, svc_frame);
 	MSG_WriteLong(msg, sv.framenum);
 	MSG_WriteLong(msg, lastframe); /* what we are delta'ing from */
+	MSG_WriteByte(msg, client->surpressCount); /* rate dropped packets */
 	client->surpressCount = 0;
 
 	/* send over the areabits */

@@ -38,6 +38,7 @@ char *svc_strings[256] = {
 
 	"svc_layout",
 	"svc_inventory",
+
 	"svc_client_effect",
 	"svc_nop",
 	"svc_disconnect",
@@ -75,6 +76,7 @@ CL_RegisterSounds(void)
 	int i;
 
 	S_BeginRegistration();
+	fxe.RegisterSounds();
 
 	for (i = 1; i < MAX_SOUNDS; i++)
 	{
@@ -87,7 +89,6 @@ CL_RegisterSounds(void)
 		IN_Update();
 	}
 
-	fxe.RegisterSounds();
 	S_EndRegistration();
 }
 
@@ -174,6 +175,21 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 	if (bits & U_MODEL)
 	{
 		to->modelindex = MSG_ReadByte(&net_message);
+	}
+
+	if (bits & U_MODEL2)
+	{
+		to->modelindex2 = MSG_ReadByte(&net_message);
+	}
+
+	if (bits & U_MODEL3)
+	{
+		to->modelindex3 = MSG_ReadByte(&net_message);
+	}
+
+	if (bits & U_MODEL4)
+	{
+		to->modelindex4 = MSG_ReadByte(&net_message);
 	}
 
 	if (bits & U_FRAME8)
@@ -676,12 +692,14 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 		state->viewheight = MSG_ReadShort(&net_message);
 	}
 
+	/* parse stats */
 	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
 }
 
 void
 CL_FireEntityEvents(frame_t *frame)
 {
+	// TODO: Rewrite?
 }
 
 void
@@ -696,6 +714,12 @@ CL_ParseFrame(void)
 	cl.frame.serverframe = MSG_ReadLong(&net_message);
 	cl.frame.deltaframe = MSG_ReadLong(&net_message);
 	cl.frame.servertime = cl.frame.serverframe * 100;
+
+	/* BIG HACK to let old demos continue to work */
+	if (cls.serverProtocol != 26)
+	{
+		cl.surpressCount = MSG_ReadByte(&net_message);
+	}
 
 	if (cl_shownet->value == 3)
 	{

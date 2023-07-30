@@ -712,30 +712,6 @@ CL_RefreshMove(void)
 	old_sys_frame_time = sys_frame_time;
 }
 
-usercmd_t CL_CreateCmd(void)
-{
-	usercmd_t cmd;
-
-	frame_msec = sys_frame_time - old_sys_frame_time;
-
-	if (frame_msec < 1)
-		frame_msec = 1;
-	if (frame_msec > 200)
-		frame_msec = 200;
-
-	// get basic movement from keyboard
-	CL_BaseMove(&cmd);
-
-	// allow mice or other external controllers to add to the move
-	IN_Move(&cmd);
-
-	CL_FinishMove(&cmd);
-
-	old_sys_frame_time = sys_frame_time;
-
-	return cmd;
-}
-
 void
 CL_FinalizeCmd(void)
 {
@@ -789,7 +765,7 @@ CL_SendCmd(void)
 	cmd = &cl.cmds[i];
 	cl.cmd_time[i] = cls.realtime; /* for netgraph ping calculation */
 
-	*cmd = CL_CreateCmd();
+	CL_FinalizeCmd();
 
 	cl.cmd = *cmd;
 
