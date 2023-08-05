@@ -449,7 +449,7 @@ void chickensqueal (edict_t *self)
 		gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 }
 
-void ChickenGlide ( playerinfo_t *playerinfo )
+void ChickenGlide (playerinfo_t *playerinfo)
 {
 }
 

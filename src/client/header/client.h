@@ -101,30 +101,7 @@ typedef struct
 												// Client Effects DLL
 
 	struct LERPedReferences_s	*referenceInfo;
-
-	entity_state_t		*s1;			// pointer to the corresponding entity_state_t in												// cl_parse_entities.
 } centity_t;
-
-// ********************************************************************************************
-// predictinfo_t
-// -------------
-// Repositiory for all elements of player rendering that need to be predicted. When prediction
-// is active, the values below are written by CL_DoPrediction() and read by AddServerEntities()
-// instead of using values derived from server sent data.
-// ********************************************************************************************
-
-typedef struct
-{
-	int				prevFrame,currFrame,
-					prevSwapFrame,currSwapFrame;
-	vec3_t			prevAngles,currAngles;
-	float			playerLerp;
-	int				effects,
-					renderfx,
-					skinnum,
-					clientnum;
-	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
-} predictinfo_t;
 
 #define CL_MAXMODELS  16
 
@@ -141,10 +118,6 @@ typedef struct
 	struct model_s	*model[CL_MAXMODELS];
 
 	struct model_s	*weaponmodel[MAX_CLIENTWEAPONMODELS];
-
-	char	skin_name[MAX_QPATH];
-	char	model_name[MAX_QPATH];
-	vec3_t	origin;
 } clientinfo_t;
 
 extern char cl_weaponmodels[MAX_CLIENTWEAPONMODELS][MAX_QPATH];
@@ -226,24 +199,6 @@ typedef struct
 
 	clientinfo_t	clientinfo[MAX_CLIENTS];
 	clientinfo_t	baseclientinfo;
-
-	// Client camera vieworigin and viewangles sent to server so it can do accurate(ish) culling.
-
-	vec3_t		camera_vieworigin, camera_viewangles;
-
-	// this is calculated on the client, as the distance between the client and the roof, and walls. - Used for EAX environment mapping.
-
-	float		wall_dist[5];
-	int			wall_check;					// used to determing which wall/ceiling we are checking on any given frame.
-
-	// The time value that the client is rendering at. This is always <= cls.realtime.
-
-	int				lastanimtime;
-	int				PIV;
-
-	playerinfo_t	playerinfo;
-
-	predictinfo_t	predictinfo;
 } client_state_t;
 
 extern	client_state_t	cl;
@@ -616,6 +571,27 @@ trace_t CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 //=============================================================================
 #include <limits.h>
 #define	FX_API_VERSION		1
+
+// ********************************************************************************************
+// predictinfo_t
+// -------------
+// Repositiory for all elements of player rendering that need to be predicted. When prediction
+// is active, the values below are written by CL_DoPrediction() and read by AddServerEntities()
+// instead of using values derived from server sent data.
+// ********************************************************************************************
+
+typedef struct
+{
+	int				prevFrame,currFrame,
+					prevSwapFrame,currSwapFrame;
+	vec3_t			prevAngles,currAngles;
+	float			playerLerp;
+	int				effects,
+					renderfx,
+					skinnum,
+					clientnum;
+	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
+} predictinfo_t;
 
 //
 // these are the data and functions exported by the client fx module

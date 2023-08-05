@@ -581,8 +581,6 @@ AddServerEntities(frame_t *frame)
 	int					clientnum;
 	qboolean			isPredictedPlayer;
 
-	fxi.cl->PIV = 0;
-
 	PrepAddEffectsToView();
 	num_owned_inview = 0;
 
@@ -611,8 +609,6 @@ AddServerEntities(frame_t *frame)
 				pnum) & (MAX_PARSE_ENTITIES - 1)];
 
 		cent = fxi.server_entities + s1->number;
-
-		cent->s1=s1;
 
 		if((fxi.cl_predict->value)&&(s1->number==fxi.cl->playernum+1))
 		{
@@ -882,12 +878,6 @@ AddServerEntities(frame_t *frame)
 		{
 			*(fxi.cl_effectpredict)=0;
 			ParseEffects(cent);
-		}
-
-		if((s1->number > 0) && (s1->number <= maxclients))
-		{
-			fxi.cl->PIV |= 1 << (s1->number - 1);
-			VectorCopy(ent->origin, fxi.cl->clientinfo[s1->number - 1].origin);
 		}
 
 		// Add player's packet_entity_t to refresh list of entity_t's and save the entity_t pointer

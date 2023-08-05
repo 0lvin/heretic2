@@ -229,7 +229,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 	return ASEQ_FALL;
 }
 
-void PlayerChickenCheckFlap ( playerinfo_t *playerinfo )
+void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 {
 	vec3_t	vf;
 
@@ -263,7 +263,7 @@ void PlayerChickenCheckFlap ( playerinfo_t *playerinfo )
 	}
 }
 
-void PlayerChickenFlap ( playerinfo_t *playerinfo )
+void PlayerChickenFlap (playerinfo_t *playerinfo)
 {
 	vec3_t	vf;
 

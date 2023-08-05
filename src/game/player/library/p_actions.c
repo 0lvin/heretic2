@@ -72,7 +72,7 @@ float CL_NormaliseAngle(float Angle)
 	PlayerActionCheckBranchRunning
 -----------------------------------------------*/
 
-void PlayerActionCheckBranchRunningStrafe ( playerinfo_t *playerinfo )
+void PlayerActionCheckBranchRunningStrafe (playerinfo_t *playerinfo)
 {
 	int BranchLwrRunningStrafe(playerinfo_t *playerinfo);
 
@@ -88,7 +88,7 @@ void PlayerActionCheckBranchRunningStrafe ( playerinfo_t *playerinfo )
 	PlayerActionCheckStrafe
 -----------------------------------------------*/
 
-void PlayerActionCheckStrafe ( playerinfo_t *playerinfo )
+void PlayerActionCheckStrafe (playerinfo_t *playerinfo)
 {
 	//Check forward advancement
 	if (playerinfo->seqcmd[ACMDL_FWD])
@@ -219,7 +219,7 @@ void PlayerActionCheckStrafe ( playerinfo_t *playerinfo )
 	PlayerActionCheckVaultKick
 -----------------------------------------------*/
 
-void PlayerActionCheckVaultKick ( playerinfo_t *playerinfo )
+void PlayerActionCheckVaultKick (playerinfo_t *playerinfo)
 {
 	if(!playerinfo->isclient)
 		playerinfo->G_PlayerVaultKick(playerinfo);
@@ -229,7 +229,7 @@ void PlayerActionCheckVaultKick ( playerinfo_t *playerinfo )
 	PlayerActionCheckCreepMoveForward
 -----------------------------------------------*/
 
-qboolean PlayerActionCheckCreepMoveForward( playerinfo_t *playerinfo )
+qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 {
 	vec3_t		startpos, endpos, vf, ang, mins;
 	trace_t		trace;
@@ -284,7 +284,7 @@ qboolean PlayerActionCheckCreepMoveForward( playerinfo_t *playerinfo )
 	PlayerActionCheckCreepMoveBack
 -----------------------------------------------*/
 
-qboolean PlayerActionCheckCreepMoveBack( playerinfo_t *playerinfo )
+qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 {
 	vec3_t		startpos, endpos, vf, ang, mins;
 	trace_t		trace;
@@ -339,7 +339,7 @@ qboolean PlayerActionCheckCreepMoveBack( playerinfo_t *playerinfo )
 	PlayerActionSetCrouchHeight
 -----------------------------------------------*/
 
-void PlayerActionSetCrouchHeight( playerinfo_t *playerinfo )
+void PlayerActionSetCrouchHeight(playerinfo_t *playerinfo)
 {
 	playerinfo->maxs[2] = 4;
 }
@@ -383,7 +383,7 @@ void PlayerActionCheckUncrouchToFinishSeq(playerinfo_t *playerinfo)
 	PlayerActionTurn180
 -----------------------------------------------*/
 
-void PlayerActionTurn180( playerinfo_t *playerinfo )
+void PlayerActionTurn180(playerinfo_t *playerinfo)
 {
 }
 
@@ -401,7 +401,7 @@ void PlayerActionSetQTEndTime(playerinfo_t *playerinfo,float QTEndTime)
 	PlayerActionCheckDoubleJump
 -----------------------------------------------*/
 
-void PlayerActionCheckDoubleJump( playerinfo_t *playerinfo )
+void PlayerActionCheckDoubleJump(playerinfo_t *playerinfo)
 {
 	//FIXME: Debounce!!!
 	//Check to see if the player is still pressing jump, and is not trying to fire or grab a ledge (action)
@@ -432,7 +432,7 @@ void PlayerActionCheckDoubleJump( playerinfo_t *playerinfo )
 	PlayerActionCheckBowRefire
 -----------------------------------------------*/
 // This is called during the hold ready bow sequence, so that we may interrupt it if necessary.
-void PlayerActionCheckBowRefire( playerinfo_t *playerinfo )
+void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 {
 	if(playerinfo->switchtoweapon!=playerinfo->pers.weaponready||playerinfo->pers.newweapon)
 	{	// Switching weapons is one reason to end the bow refire waiting.
@@ -3499,7 +3499,7 @@ void PlayerMoveAdd(playerinfo_t *playerinfo)
 
 #define ANGLE_RECOVER_AMOUNT	2	//Degrees per tenth of a second
 
-void PlayerActionDrownFloatUp( playerinfo_t *playerinfo )
+void PlayerActionDrownFloatUp(playerinfo_t *playerinfo)
 {
 }
 
@@ -3507,7 +3507,7 @@ void PlayerActionDrownFloatUp( playerinfo_t *playerinfo )
 	PlayerActionCheckDive
 -----------------------------------------------*/
 
-void PlayerActionCheckDive( playerinfo_t *playerinfo )
+void PlayerActionCheckDive(playerinfo_t *playerinfo)
 {
 	if (playerinfo->pm_w_flags & WF_DIVE)
 	{
@@ -3523,7 +3523,7 @@ void PlayerActionCheckDive( playerinfo_t *playerinfo )
 	PlayerActionCheckRopeMove
 -----------------------------------------------*/
 
-void PlayerActionCheckRopeMove( playerinfo_t *playerinfo, float foo )
+void PlayerActionCheckRopeMove(playerinfo_t *playerinfo, float foo )
 {
 	if (!playerinfo->isclient)
 		playerinfo->G_PlayerActionCheckRopeMove(playerinfo);
@@ -3701,7 +3701,7 @@ void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 	PlayerActionCheckCreep
 -----------------------------------------------*/
 
-void PlayerActionCheckCreep( playerinfo_t *playerinfo )
+void PlayerActionCheckCreep(playerinfo_t *playerinfo)
 {
 	int	curseq = playerinfo->lowerseq;
 
@@ -3910,7 +3910,7 @@ void PlayerActionCheckCreep( playerinfo_t *playerinfo )
 	PlayerActionCheckCreepUnStrafe
 -----------------------------------------------*/
 
-void PlayerActionCheckCreepUnStrafe( playerinfo_t *playerinfo )
+void PlayerActionCheckCreepUnStrafe(playerinfo_t *playerinfo)
 {
 	//Player has started running
 	if (playerinfo->buttons & BUTTON_RUN)
@@ -4014,7 +4014,7 @@ void PlayerActionCheckCreepUnStrafe( playerinfo_t *playerinfo )
 	PlayerActionCheckCreepBack
 -----------------------------------------------*/
 
-void PlayerActionCheckCreepBack( playerinfo_t *playerinfo )
+void PlayerActionCheckCreepBack(playerinfo_t *playerinfo)
 {
 	//We're doing something else, so run a normal function to determine it
 	PlayerActionCheckCreep(playerinfo);
@@ -4024,7 +4024,7 @@ void PlayerActionCheckCreepBack( playerinfo_t *playerinfo )
 	PlayerActionCheckCreepBackUnStrafe
 -----------------------------------------------*/
 
-void PlayerActionCheckCreepBackUnStrafe( playerinfo_t *playerinfo )
+void PlayerActionCheckCreepBackUnStrafe(playerinfo_t *playerinfo)
 {
 	//Still pressing the same way and still strafing
 	if (playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_L] && playerinfo->lowerseq == ASEQ_CSTRAFEB_LEFT)
@@ -4118,7 +4118,7 @@ void PlayerActionCheckCreepBackUnStrafe( playerinfo_t *playerinfo )
 
 extern qboolean CheckFall(playerinfo_t *playerinfo);
 
-void PlayerActionCheckWalk( playerinfo_t *playerinfo )
+void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 {
 	int	curseq = playerinfo->lowerseq;
 
@@ -4561,7 +4561,7 @@ void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo)
 	PlayerActionCheckWalkBack
 -----------------------------------------------*/
 
-void PlayerActionCheckWalkBack( playerinfo_t *playerinfo )
+void PlayerActionCheckWalkBack(playerinfo_t *playerinfo)
 {
 	//Check for a transition to a walking or running strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_L] && playerinfo->lowerseq != ASEQ_WSTRAFEB_LEFT)

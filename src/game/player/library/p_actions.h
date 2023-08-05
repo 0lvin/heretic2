@@ -101,31 +101,31 @@ void PlayerActionCheckWalkBUnStrafe(playerinfo_t *playerinfo);
 void PlayerActionCheckRunStrafe(playerinfo_t *playerinfo);
 void PlayerActionCheckRunUnStrafe(playerinfo_t *playerinfo);
 
-void PlayerActionCheckDoubleJump( playerinfo_t *playerinfo );
+void PlayerActionCheckDoubleJump(playerinfo_t *playerinfo);
 void PlayerMoveAdd(playerinfo_t *playerinfo);
 void PlayerActionFlip(playerinfo_t *playerinfo, float value);
 void PlayerActionTurn180(playerinfo_t *playerinfo);
 void PlayerActionSetQTEndTime(playerinfo_t *playerinfo,float QTEndTime);
-void PlayerActionCheckCreepForward( playerinfo_t *playerinfo );
-void PlayerActionCheckCreepBack( playerinfo_t *playerinfo );
-void PlayerActionCheckVaultKick ( playerinfo_t *playerinfo );
+void PlayerActionCheckCreepForward(playerinfo_t *playerinfo);
+void PlayerActionCheckCreepBack(playerinfo_t *playerinfo);
+void PlayerActionCheckVaultKick (playerinfo_t *playerinfo);
 
-void PlayerActionDrownFloatUp( playerinfo_t *playerinfo );
+void PlayerActionDrownFloatUp(playerinfo_t *playerinfo);
 
 void PlayerJumpMoveForce(playerinfo_t *playerinfo, float fwd, float right, float up);
-void PlayerActionCheckDive( playerinfo_t *playerinfo );
+void PlayerActionCheckDive(playerinfo_t *playerinfo);
 
-void PlayerActionCheckBowRefire( playerinfo_t *playerinfo );
-void PlayerActionCheckRopeMove( playerinfo_t *playerinfo, float foo );
+void PlayerActionCheckBowRefire(playerinfo_t *playerinfo);
+void PlayerActionCheckRopeMove(playerinfo_t *playerinfo, float foo );
 
-void PlayerActionSetCrouchHeight( playerinfo_t *playerinfo );
+void PlayerActionSetCrouchHeight(playerinfo_t *playerinfo);
 void PlayerActionCheckUncrouchToFinishSeq(playerinfo_t *playerinfo);
-void PlayerActionCheckStrafe ( playerinfo_t *playerinfo );
+void PlayerActionCheckStrafe (playerinfo_t *playerinfo);
 
 void PlayerJumpNudge(playerinfo_t *playerinfo, float fwd, float right, float up);
 
-void PlayerActionCheckBranchWalking ( playerinfo_t *playerinfo );
-void PlayerActionCheckBranchRunningStrafe ( playerinfo_t *playerinfo );
+void PlayerActionCheckBranchWalking (playerinfo_t *playerinfo);
+void PlayerActionCheckBranchRunningStrafe (playerinfo_t *playerinfo);
 
 void PlayerReleaseRope(playerinfo_t *playerinfo);
 void KnockDownPlayer(playerinfo_t *playerinfo);
@@ -135,8 +135,8 @@ void PlayScratch(playerinfo_t *playerinfo, float dist);
 void PlaySigh(playerinfo_t *playerinfo, float dist);
 void SpawnDustPuff(playerinfo_t *playerinfo, float dist);
 
-qboolean PlayerActionCheckCreepMoveBack( playerinfo_t *playerinfo );
-qboolean PlayerActionCheckCreepMoveForward( playerinfo_t *playerinfo );
+qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo);
+qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo);
 
 void PlayerSwimMoveFunc(playerinfo_t *playerinfo, float fwd, float right, float up);
 
@@ -144,19 +144,19 @@ void PlayerActionClimbStartSound(playerinfo_t *playerinfo, float value);
 void PlayerPlaySlide(playerinfo_t *playerinfo);
 
 // JWEIER NEW ACTIONS
-void PlayerActionCheckCreep( playerinfo_t *playerinfo );
-void PlayerActionCheckCreepUnStrafe( playerinfo_t *playerinfo );
+void PlayerActionCheckCreep(playerinfo_t *playerinfo);
+void PlayerActionCheckCreepUnStrafe(playerinfo_t *playerinfo);
 
-void PlayerActionCheckCreepBack( playerinfo_t *playerinfo );
-void PlayerActionCheckCreepBackUnStrafe( playerinfo_t *playerinfo );
+void PlayerActionCheckCreepBack(playerinfo_t *playerinfo);
+void PlayerActionCheckCreepBackUnStrafe(playerinfo_t *playerinfo);
 
-void PlayerActionCheckWalk( playerinfo_t *playerinfo );
-void PlayerActionCheckWalkUnStrafe( playerinfo_t *playerinfo );
+void PlayerActionCheckWalk(playerinfo_t *playerinfo);
+void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo);
 
-void PlayerActionCheckWalkBack( playerinfo_t *playerinfo );
+void PlayerActionCheckWalkBack(playerinfo_t *playerinfo);
 void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo);
 
-void PlayerActionCheckRun( playerinfo_t *playerinfo );
+void PlayerActionCheckRun(playerinfo_t *playerinfo);
 // JWEIER NEW ACTIONS END
 
 extern void PlayerInterruptAction(playerinfo_t *playerinfo);

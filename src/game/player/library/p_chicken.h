@@ -72,8 +72,8 @@ void PlayerChickenBite(playerinfo_t *playerinfo);
 void PlayerChickenSqueal(playerinfo_t *playerinfo);
 int PlayerChickenJump(playerinfo_t *playerinfo);
 
-void PlayerChickenFlap ( playerinfo_t *playerinfo );
-void PlayerChickenCheckFlap ( playerinfo_t *playerinfo );
+void PlayerChickenFlap (playerinfo_t *playerinfo);
+void PlayerChickenCheckFlap (playerinfo_t *playerinfo);
 
 void ChickenAssert(playerinfo_t *playerinfo);
 void PlayerChickenCluck(playerinfo_t *playerinfo, float force);

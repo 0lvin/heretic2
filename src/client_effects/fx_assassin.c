@@ -87,7 +87,7 @@ static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t
 		return false;
 	}
 
-	VectorSubtract(owner->origin, cl.camera_vieworigin, sight_vec);
+	VectorCopy(owner->origin, sight_vec);
 	VectorNormalize(sight_vec);
 	VectorMA(owner->origin, 1024, sight_vec, endpos);
 	//now look along that vector for first surface and take that texture
