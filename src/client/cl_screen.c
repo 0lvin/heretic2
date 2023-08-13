@@ -1510,7 +1510,7 @@ SCR_ExecuteLayoutString(char *s)
 			token = COM_Parse(&s);
 			index = (int)strtol(token, (char **)NULL, 10);
 
-			if ((index < 0) || (index >= MAX_CONFIGSTRINGS))
+			if ((index < 0) || (index >= MAX_STATS))
 			{
 				Com_Error(ERR_DROP, "Bad stat_string index");
 			}
