@@ -1181,6 +1181,7 @@ CLIENT_OBJS_ := \
 	src/common/shared/flash.o \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
+	src/common/shared/utils.o \
 	src/common/unzip/ioapi.o \
 	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
@@ -1384,6 +1385,7 @@ REFGL1_OBJS_ := \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/pvs.o \
 	src/common/shared/shared.o \
+	src/common/shared/utils.o \
 	src/common/md4.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -1416,6 +1418,7 @@ REFGL3_OBJS_ := \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/pvs.o \
 	src/common/shared/shared.o \
+	src/common/shared/utils.o \
 	src/common/md4.o
 
 REFGL3_OBJS_GLADE_ := \
@@ -1459,6 +1462,7 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/pvs.o \
 	src/common/shared/shared.o \
+	src/common/shared/utils.o \
 	src/common/md4.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -1491,6 +1495,7 @@ SERVER_OBJS_ := \
 	src/common/zone.o \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
+	src/common/shared/utils.o \
 	src/common/unzip/ioapi.o \
 	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \

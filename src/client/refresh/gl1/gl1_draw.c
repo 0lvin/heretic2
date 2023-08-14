@@ -42,7 +42,7 @@ Draw_InitLocal(void)
 	draw_chars = R_FindPic("conchars", (findimage_t)R_FindImage);
 	if (!draw_chars)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars.pcx",
+		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars",
 			__func__);
 	}
 // jmarshall
