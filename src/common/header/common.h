@@ -29,9 +29,10 @@
 #ifndef CO_COMMON_H
 #define CO_COMMON_H
 
-#include "shared.h"
+#include "shared_safe.h"
 #include "crc.h"
 
+#define VKVERSION "1.0.5"
 #define YQ2VERSION "8.21pre"
 #define BASEDIRNAME "base"
 
@@ -789,6 +790,8 @@ YQ2_ATTR_NORETURN void Com_Quit(void);
 
 /* Ugly work around for unsupported
  * format specifiers unter mingw. */
+#define YQ2_COM_PRIu64 PRIu64
+
 #ifdef WIN32
 #define YQ2_COM_PRId64 "%I64d"
 #define YQ2_COM_PRIdS "%Id"
