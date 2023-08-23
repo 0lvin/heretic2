@@ -65,6 +65,50 @@ typedef struct
 	unsigned char data;   /* unbounded */
 } pcx_t;
 
+/* .MDL triangle model file format */
+
+#define IDMDLHEADER (('O' << 24) + ('P' << 16) + ('D' << 8) + 'I')
+#define MDL_VERSION 6
+
+/* Texture coords */
+typedef struct mdl_texcoord_s
+{
+	int onseam;
+	int s;
+	int t;
+} mdl_texcoord_t;
+
+/* Triangle info */
+typedef struct mdl_triangle_s
+{
+	int facesfront;  /* 0 = backface, 1 = frontface */
+	int vertex[3];   /* vertex indices */
+} mdl_triangle_t;
+
+/* MDL header */
+typedef struct mdl_header_s
+{
+	int ident;            /* magic number: "IDPO" */
+	int version;          /* version: 6 */
+
+	vec3_t scale;         /* scale factor */
+	vec3_t translate;     /* translation vector */
+	float boundingradius;
+	vec3_t eyeposition;   /* eyes' position */
+
+	int num_skins;        /* number of textures */
+	int skinwidth;        /* texture width */
+	int skinheight;       /* texture height */
+
+	int num_xyz;          /* number of vertices */
+	int num_tris;         /* number of triangles */
+	int num_frames;       /* number of frames */
+
+	int synctype;         /* 0 = synchron, 1 = random */
+	int flags;            /* state flag */
+	float size;           /* average size of triangles */
+} mdl_header_t;
+
 /* .MD2 triangle model file format */
 
 #define IDALIASHEADER (('2' << 24) + ('P' << 16) + ('D' << 8) + 'I')
@@ -139,6 +183,63 @@ typedef struct
 	int ofs_glcmds;
 	int ofs_end;    /* end of file */
 } dmdl_t;
+
+/* .FM triangle model file format */
+
+#define RAVENFMHEADER		(('d' << 24) + ('a' << 16) + ('e' << 8) + 'h')
+
+typedef struct fmheader_s
+{
+	int			skinwidth;
+	int			skinheight;
+	int			framesize;		// byte size of each frame
+
+	int			num_skins;
+	int			num_xyz;
+	int			num_st;			// greater than num_xyz for seams
+	int			num_tris;
+	int			num_glcmds;		// dwords in strip/fan command list
+	int			num_frames;
+	int			num_mesh_nodes;
+} fmheader_t;
+
+/* Daikatana dkm format */
+#define DKMHEADER			(('D' << 24) + ('M' << 16) + ('K' << 8) + 'D')
+
+#define DKM1_VERSION		1
+#define DKM2_VERSION		2
+
+typedef struct dkmtriangle_s
+{
+	short extra;         /* no idea */
+	short num_uvframes;  /* no idea */
+	short index_xyz[3];
+	short index_st[3];
+} dkmtriangle_t;
+
+typedef struct dkm_header_s
+{
+	int ident;            /* magic number: "DKMD" */
+	int version;          /* version: 1 or 2 */
+	vec3_t translate;     /* translation vector */
+	int framesize;        /* byte size of each frame */
+
+	int num_skins;
+	int num_xyz;
+	int num_st;           /* greater than num_xyz for seams */
+	int num_tris;
+	int num_glcmds;        /* dwords in strip/fan command list */
+	int num_frames;
+	int num_surf;          /* no idea */
+
+	int ofs_skins;         /* each skin is a MAX_SKINNAME string */
+	int ofs_st;            /* byte offset from start for stverts */
+	int ofs_tris;          /* offset for dtriangles */
+	int ofs_frames;        /* offset for first frame */
+	int ofs_glcmds;
+	int ofs_surf;          /* no idea */
+	int ofs_end;           /* end of file */
+} dkm_header_t;
 
 /* .SP2 sprite file format */
 
@@ -232,9 +333,10 @@ typedef struct m32tex_s
 /* .BSP file format */
 
 #define IDBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'I') /* little-endian "IBSP" */
+#define BSPXHEADER  (('X' << 24) + ('P' << 16) + ('S' << 8) + 'B') /* little-endian "BSPX" */
 #define BSPVERSION 38
 
-/* upper design bounds: leaffaces, leafbrushes, planes, and 
+/* upper design bounds: leaffaces, leafbrushes, planes, and
  * verts are still bounded by 16 bit short limits */
 #define MAX_MAP_MODELS 1024
 #define MAX_MAP_BRUSHES 8192
@@ -297,6 +399,17 @@ typedef struct
 	int version;
 	lump_t lumps[HEADER_LUMPS];
 } dheader_t;
+
+typedef struct bspx_header_s {
+	int ident;  // 'BSPX'
+	int numlumps;
+} bspx_header_t;
+
+typedef struct {
+	char lumpname[24];
+	int fileofs;
+	int filelen;
+} bspx_lump_t;
 
 typedef struct
 {
@@ -392,12 +505,12 @@ typedef struct texinfo_s
 {
 	float vecs[2][4]; /* [s/t][xyz offset] */
 	int flags;        /* miptex flags + overrides light emission, etc */
-	int value;           
+	int value;
 	char texture[32]; /* texture name (textures*.wal) */
 	int nexttexinfo;  /* for animations, -1 = end of chain */
 } texinfo_t;
 
-/* note that edge 0 is never used, because negative edge 
+/* note that edge 0 is never used, because negative edge
    nums are used for counterclockwise use of the edge in
    a face */
 typedef struct
@@ -419,6 +532,13 @@ typedef struct
 	byte styles[MAXLIGHTMAPS];
 	int lightofs; /* start of [numstyles*surfsize] samples */
 } dface_t;
+
+typedef struct {
+	unsigned short	lmwidth;
+	unsigned short	lmheight;
+	int	lightofs;
+	float	vecs[2][4];
+} dlminfo_t;
 
 typedef struct
 {
@@ -453,8 +573,8 @@ typedef struct
 #define ANGLE_UP -1
 #define ANGLE_DOWN -2
 
-/* the visibility lump consists of a header with a count, then 
- * byte offsets for the PVS and PHS of each cluster, then the raw 
+/* the visibility lump consists of a header with a count, then
+ * byte offsets for the PVS and PHS of each cluster, then the raw
  * compressed bit vectors */
 #define DVIS_PVS 0
 #define DVIS_PHS 1
