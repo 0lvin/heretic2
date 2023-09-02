@@ -3088,9 +3088,10 @@ void PlayerMoveUpperFunc(playerinfo_t *playerinfo, float fwd, float right, float
 {
 	// Feeds velocity into the character as a thrust value, like player control (not effect if in
 	// the air).
-
 	if (playerinfo->loweridle == false)
+	{
 		return;
+	}
 
 	playerinfo->fwdvel = fwd;
 	playerinfo->sidevel = right;

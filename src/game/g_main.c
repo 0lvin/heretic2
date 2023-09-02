@@ -244,12 +244,15 @@ ClientEndServerFrames(void)
 
 	// calc the player views now that all pushing
 	// and damage has been added
-	for (i=0 ; i<maxclients->value ; i++)
+	for (i = 0; i < maxclients->value; i++)
 	{
 		ent = g_edicts + 1 + i;
 		if (!ent->inuse || !ent->client)
+		{
 			continue;
-		ClientEndServerFrame (ent);
+		}
+
+		ClientEndServerFrame(ent);
 	}
 }
 
@@ -412,7 +415,7 @@ void ExitLevel (void)
 	level.exitintermission = 0;
 	level.intermissiontime = 0;
 
-	ClientEndServerFrames ();
+	ClientEndServerFrames();
 
 	G_ClearMessageQueues();
 }
@@ -587,7 +590,8 @@ G_RunFrame
 Advances the world by 0.1 seconds
 ================
 */
-void G_RunFrame (void)
+void
+G_RunFrame(void)
 {
 	void		UpdateSkeletons();
 	int			i;
@@ -760,7 +764,7 @@ void G_RunFrame (void)
 	CheckDMRules ();
 
 	// build the playerstate_t structures for all players
-	ClientEndServerFrames ();
+	ClientEndServerFrames();
 
 	assert(Vec3IsZero(vec3_origin));
 }

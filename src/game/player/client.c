@@ -2173,7 +2173,7 @@ void PutClientInServer (edict_t *ent)
 	// this client.
 	// ********************************************************************************************
 
-	SelectSpawnPoint (ent,spawn_origin, spawn_angles);
+	SelectSpawnPoint (ent, spawn_origin, spawn_angles);
 
 	index = ent-g_edicts-1;
 	client = ent->client;
@@ -2490,7 +2490,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 
 	// Make sure all view stuff is valid.
 
-	ClientEndServerFrame (ent);
+	ClientEndServerFrame(ent);
 }
 
 /*
@@ -2501,7 +2501,8 @@ Called when a client has finished connecting, and is ready to be placed into the
 happen every level load.
 ============
 */
-void ClientBegin (edict_t *ent)
+void
+ClientBegin(edict_t *ent)
 {
 	int	i;
 
@@ -3019,7 +3020,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	edict_t *other;
 	int i, j;
 	pmove_t pm;
-	vec3_t		LOSOrigin,ang;
+	vec3_t		LOSOrigin, ang;
 	float		knockback;
 	edict_t		*TargetEnt;
 
@@ -3046,7 +3047,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	// ********************************************************************************************
 	// Movement stuff.
 	// ********************************************************************************************
-
 	if (ent->movetype == PHYSICSTYPE_NOCLIP)
 		client->ps.pmove.pm_type = PM_SPECTATOR;
 	else if ((ent->s.modelindex != 255) && !(ent->flags & FL_CHICKEN))	// We're not set as a chicken
@@ -3059,7 +3059,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	client->ps.pmove.gravity = sv_gravity->value;
 
 	// If we are not currently on a rope, then clear out any ropes as valid for a check.
-
 	if (!(client->playerinfo.flags & PLAYER_FLAG_ONROPE))
 	{
 		ent->targetEnt = NULL;
@@ -3067,36 +3066,33 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	// If we are turn-locked, then set the PMF_LOCKTURN flag that informs the client of this (the
 	// client-side camera needs to know).
-
 	if ((client->playerinfo.flags & PLAYER_FLAG_TURNLOCK) && (client->ps.pmove.pm_type == PM_NORMAL))
 	{
-		client->ps.pmove.pm_flags|=PMF_LOCKTURN;
+		client->ps.pmove.pm_flags |= PMF_LOCKTURN;
 	}
 	else
 	{
-		client->playerinfo.turncmd+=SHORT2ANGLE(ucmd->angles[YAW]-client->oldcmdangles[YAW]);
-		client->ps.pmove.pm_flags&=~PMF_LOCKTURN;
+		client->playerinfo.turncmd += SHORT2ANGLE(ucmd->angles[YAW]-client->oldcmdangles[YAW]);
+		client->ps.pmove.pm_flags &= ~PMF_LOCKTURN;
 	}
 
 	// Save the cmd->angles away so we may calculate the delta (on client->turncmd above) in the
 	// next frame.
-
-	client->oldcmdangles[0]=ucmd->angles[0];
-	client->oldcmdangles[1]=ucmd->angles[1];
-	client->oldcmdangles[2]=ucmd->angles[2];
+	client->oldcmdangles[0] = ucmd->angles[0];
+	client->oldcmdangles[1] = ucmd->angles[1];
+	client->oldcmdangles[2] = ucmd->angles[2];
 
 	pm_passent = ent;
 
 	// Set up inputs for a Pmove().
-
 	memset (&pm, 0, sizeof(pm));
 
 	pm.s = client->ps.pmove;
 
 	for (i=0 ; i<3 ; i++)
 	{
-		pm.s.origin[i] = ent->s.origin[i]*8;
-		pm.s.velocity[i] = ent->velocity[i]*8;
+		pm.s.origin[i] = ent->s.origin[i] * 8;
+		pm.s.velocity[i] = ent->velocity[i] * 8;
 	}
 
 	if (memcmp(&client->old_pmove, &pm.s, sizeof(pm.s)))
@@ -3107,14 +3103,23 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	pm.cmd = *ucmd;
 	client->pcmd = *ucmd;
 
-/* TODO: Move error
+///* TODO: Move error
+	if (ucmd->forwardmove || ucmd->sidemove || ucmd->upmove)
+	{
+		client->playerinfo.pcmd = *ucmd;
+		playerExport->PlayerUpdateCmdFlags(&client->playerinfo);
+		playerExport->PlayerUpdate(&ent->client->playerinfo);
+		// Validate
+		playerExport->AnimUpdateFrame(&ent->client->playerinfo);
+	}
+///*/
+
 	if (ent->movetype != PHYSICSTYPE_NOCLIP)
 	{
 		pm.cmd.forwardmove = client->playerinfo.fwdvel;
 		pm.cmd.sidemove = client->playerinfo.sidevel;
 		pm.cmd.upmove = client->playerinfo.upvel;
 	}
-*/
 
 	if(client->RemoteCameraLockCount > 0)
 	{

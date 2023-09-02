@@ -1265,7 +1265,10 @@ CL_ParseServerMessage(void)
 			case svc_centerprint:
 				i = MSG_ReadShort(&net_message);
 				SCR_CenterPrint(CL_GetLevelString(i));
-				S_StartLocalSound(CL_GetLevelWav(i));
+				if (CL_GetLevelWav(i))
+				{
+					S_StartLocalSound(CL_GetLevelWav(i));
+				}
 				break;
 
 			case svc_stufftext:

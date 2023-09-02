@@ -706,12 +706,10 @@ typedef struct playerinfo_s
 	byte				meteor_count;
 
 	// Visible model attributes.
-
 	byte				plaguelevel;			// Current plague level: 0=none, 2=max.
 
 	// Shrine stuff. Used by the player to determine the time for the torch to be lit, reflection
 	// to work and invisibilty to work (xxx_timer).
-
 	float				light_timer;			// Not used on client.
 	float				reflect_timer;			// FIXME not transmitted yet.
 	float				ghost_timer;			// FIXME not transmitted yet.
@@ -726,9 +724,8 @@ typedef struct playerinfo_s
 	int					c_mode;					// Show cinematics is on
 
 	// Movement & animation.
-
 	int					flags;
-	float				fwdvel,sidevel,upvel;
+	float				fwdvel, sidevel, upvel;
 	float				turncmd;
 	float				waterheight;
 	vec3_t				LastWatersplashPos;		// Not used on client.
@@ -737,7 +734,6 @@ typedef struct playerinfo_s
 	float				quickturn_rate;
 
 	// From edict_t.
-
 	vec3_t				origin;
 	vec3_t				angles;
 	vec3_t				velocity;
@@ -756,7 +752,6 @@ typedef struct playerinfo_s
 	int					edictflags;
 
 	// From entity_state_t.
-
 	int					frame,swapFrame;
 	int					effects;
 	int					renderfx;

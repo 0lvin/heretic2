@@ -22,6 +22,8 @@
 //spreader.h changes
 #define SND_BOMB 7
 
+static void spreader_grenade_think(edict_t *self);
+
 /*-------------------------------------------------------------------------
 	VolumeEffectThink
 -------------------------------------------------------------------------*/
@@ -53,14 +55,14 @@ void GenericRadiusDamageEntThink(edict_t *self)
 	T_DamageRadius(self, self->owner, self->owner, self->dmg_radius, self->dmg, 1, self->bloodType,MOD_DIED);
 
 	self->dmg_radius -= self->speed;
-	if(self->dmg_radius<=0)
+	if(self->dmg_radius <= 0)
 	{
 		G_SetToFree(self);
 		return;
 	}
 
 	self->dmg -= self->damage_debounce_time;
-	if(self->dmg<=0)
+	if(self->dmg <= 0)
 	{
 		G_SetToFree(self);
 		return;
@@ -98,7 +100,7 @@ edict_t *RadiusDamageEnt(	edict_t *posowner,//for position
 
 	self->air_finished = level.time + lifetime;//when to die out
 
-	if(thinkIncrement<=0)
+	if(thinkIncrement <= 0)
 		self->wait = 0.1;//default to 10 fps
 	else
 		self->wait = thinkIncrement;//how oftern to think
@@ -232,7 +234,7 @@ static void spreader_grenade_bounce ( edict_t *self, trace_t *trace )
 						false);//attach to owner until gone
 
 		gas->svflags |= SVF_ALWAYS_SEND;
-		gas->s.effects=EF_MARCUS_FLAG1;
+		gas->s.effects = EF_MARCUS_FLAG1;
 */
 		gi.CreateEffect(&self->s, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, self->s.origin, "vb", vel, 50);
 
@@ -280,7 +282,7 @@ static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *pla
 					false);//attach to owner until gone
 
 	gas->svflags |= SVF_ALWAYS_SEND;
-	gas->s.effects=EF_MARCUS_FLAG1;
+	gas->s.effects = EF_MARCUS_FLAG1;
 */
 	gi.CreateEffect(&self->s, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, self->s.origin, "vb", vel, 50);
 

@@ -72,12 +72,12 @@ static int ClientServerRand(playerinfo_t *playerinfo,int mn,int mx)
 {
 	int t;
 
-	if (mn>=mx)
+	if (mn >= mx)
 		return(mn);
 
-	t=(int)(playerinfo->leveltime*10.0f);
-	t=(t>>7)^(t>>10)^(t>>5);
-	t%=(1+mx-mn);
+	t = (int)(playerinfo->leveltime*10.0f);
+	t = (t>>7)^(t>>10)^(t>>5);
+	t %= (1+mx-mn);
 
 	return(t+mn);
 }
@@ -91,72 +91,72 @@ void InitPlayerinfo(edict_t *ent)
 {
 	// Client side function callbacks (approximating functionality of server function callbacks).
 
-	ent->client->playerinfo.CL_Sound=NULL;
-	ent->client->playerinfo.CL_Trace=NULL;
-	ent->client->playerinfo.CL_CreateEffect=NULL;
+	ent->client->playerinfo.CL_Sound = NULL;
+	ent->client->playerinfo.CL_Trace = NULL;
+	ent->client->playerinfo.CL_CreateEffect = NULL;
 
 	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
 
-	ent->client->playerinfo.G_L_Sound=G_set_looping_sound;
-	ent->client->playerinfo.G_Sound=gi.soundevent;
-	ent->client->playerinfo.G_Trace=gi.trace;
-	ent->client->playerinfo.G_CreateEffect=gi.CreateEffectEvent;
-	ent->client->playerinfo.G_RemoveEffects=gi.RemoveEffectsEvent;
+	ent->client->playerinfo.G_L_Sound = G_set_looping_sound;
+	ent->client->playerinfo.G_Sound = gi.soundevent;
+	ent->client->playerinfo.G_Trace = gi.trace;
+	ent->client->playerinfo.G_CreateEffect = gi.CreateEffectEvent;
+	ent->client->playerinfo.G_RemoveEffects = gi.RemoveEffectsEvent;
 
 	// Server (game) function callbacks that have no client side equivalent.
 
-	ent->client->playerinfo.G_SoundIndex=gi.soundindex;
-	ent->client->playerinfo.G_SoundRemove=gi.soundremove;
-	ent->client->playerinfo.G_UseTargets=G_UseTargets;
-	ent->client->playerinfo.G_GetEntityStatePtr=G_GetEntityStatePtr;
-	ent->client->playerinfo.G_BranchLwrClimbing=G_BranchLwrClimbing;
-	ent->client->playerinfo.G_PlayerActionCheckRopeGrab=G_PlayerActionCheckRopeGrab;
-	ent->client->playerinfo.G_PlayerClimbingMoveFunc=G_PlayerClimbingMoveFunc;
-	ent->client->playerinfo.G_PlayerActionUsePuzzle=G_PlayerActionUsePuzzle;
-	ent->client->playerinfo.G_PlayerActionCheckPuzzleGrab=G_PlayerActionCheckPuzzleGrab;
-	ent->client->playerinfo.G_PlayerActionTakePuzzle=G_PlayerActionTakePuzzle;
-	ent->client->playerinfo.G_PlayerActionCheckPushPull_Ent=G_PlayerActionCheckPushPull_Ent;
-	ent->client->playerinfo.G_PlayerActionMoveItem=G_PlayerActionMoveItem;
-	ent->client->playerinfo.G_PlayerActionCheckPushButton=G_PlayerActionCheckPushButton;
-	ent->client->playerinfo.G_PlayerActionPushButton=G_PlayerActionPushButton;
-	ent->client->playerinfo.G_PlayerActionCheckPushLever=G_PlayerActionCheckPushLever;
-	ent->client->playerinfo.G_PlayerActionPushLever=G_PlayerActionPushLever;
-	ent->client->playerinfo.G_HandleTeleport=G_HandleTeleport;
-	ent->client->playerinfo.G_PlayerActionShrineEffect=G_PlayerActionShrineEffect;
-	ent->client->playerinfo.G_PlayerActionChickenBite=G_PlayerActionChickenBite;
-	ent->client->playerinfo.G_PlayerFallingDamage=G_PlayerFallingDamage;
-	ent->client->playerinfo.G_PlayerSpellShieldAttack=G_PlayerSpellShieldAttack;
-	ent->client->playerinfo.G_PlayerSpellStopShieldAttack=G_PlayerSpellStopShieldAttack;
+	ent->client->playerinfo.G_SoundIndex = gi.soundindex;
+	ent->client->playerinfo.G_SoundRemove = gi.soundremove;
+	ent->client->playerinfo.G_UseTargets = G_UseTargets;
+	ent->client->playerinfo.G_GetEntityStatePtr = G_GetEntityStatePtr;
+	ent->client->playerinfo.G_BranchLwrClimbing = G_BranchLwrClimbing;
+	ent->client->playerinfo.G_PlayerActionCheckRopeGrab = G_PlayerActionCheckRopeGrab;
+	ent->client->playerinfo.G_PlayerClimbingMoveFunc = G_PlayerClimbingMoveFunc;
+	ent->client->playerinfo.G_PlayerActionUsePuzzle = G_PlayerActionUsePuzzle;
+	ent->client->playerinfo.G_PlayerActionCheckPuzzleGrab = G_PlayerActionCheckPuzzleGrab;
+	ent->client->playerinfo.G_PlayerActionTakePuzzle = G_PlayerActionTakePuzzle;
+	ent->client->playerinfo.G_PlayerActionCheckPushPull_Ent = G_PlayerActionCheckPushPull_Ent;
+	ent->client->playerinfo.G_PlayerActionMoveItem = G_PlayerActionMoveItem;
+	ent->client->playerinfo.G_PlayerActionCheckPushButton = G_PlayerActionCheckPushButton;
+	ent->client->playerinfo.G_PlayerActionPushButton = G_PlayerActionPushButton;
+	ent->client->playerinfo.G_PlayerActionCheckPushLever = G_PlayerActionCheckPushLever;
+	ent->client->playerinfo.G_PlayerActionPushLever = G_PlayerActionPushLever;
+	ent->client->playerinfo.G_HandleTeleport = G_HandleTeleport;
+	ent->client->playerinfo.G_PlayerActionShrineEffect = G_PlayerActionShrineEffect;
+	ent->client->playerinfo.G_PlayerActionChickenBite = G_PlayerActionChickenBite;
+	ent->client->playerinfo.G_PlayerFallingDamage = G_PlayerFallingDamage;
+	ent->client->playerinfo.G_PlayerSpellShieldAttack = G_PlayerSpellShieldAttack;
+	ent->client->playerinfo.G_PlayerSpellStopShieldAttack = G_PlayerSpellStopShieldAttack;
 	ent->client->playerinfo.G_PlayerVaultKick = G_PlayerVaultKick;
-	ent->client->playerinfo.G_PlayerActionCheckRopeMove=G_PlayerActionCheckRopeMove;
-	ent->client->playerinfo.G_cprintf=gi.cprintf;
-	ent->client->playerinfo.G_levelmsg_centerprintf=gi.levelmsg_centerprintf;
-	ent->client->playerinfo.G_WeapNext=Cmd_WeapPrev_f;
-	ent->client->playerinfo.G_UseItem=Cmd_Use_f;
+	ent->client->playerinfo.G_PlayerActionCheckRopeMove = G_PlayerActionCheckRopeMove;
+	ent->client->playerinfo.G_cprintf = gi.cprintf;
+	ent->client->playerinfo.G_levelmsg_centerprintf = gi.levelmsg_centerprintf;
+	ent->client->playerinfo.G_WeapNext = Cmd_WeapPrev_f;
+	ent->client->playerinfo.G_UseItem = Cmd_Use_f;
 
 	// Common client & server (game) function callbacks.
 
-	ent->client->playerinfo.PointContents=gi.pointcontents;
-	ent->client->playerinfo.SetJointAngles=G_SetJointAngles;
-	ent->client->playerinfo.ResetJointAngles=G_ResetJointAngles;
-	ent->client->playerinfo.PlayerActionSwordAttack=G_PlayerActionSwordAttack;
-	ent->client->playerinfo.PlayerActionSpellFireball=G_PlayerActionSpellFireball;
-	ent->client->playerinfo.PlayerActionSpellBlast=G_PlayerActionSpellBlast;
-	ent->client->playerinfo.PlayerActionSpellArray=G_PlayerActionSpellArray;
-	ent->client->playerinfo.PlayerActionSpellSphereCreate=G_PlayerActionSpellSphereCreate;
-	ent->client->playerinfo.PlayerActionSpellBigBall=G_PlayerActionSpellBigBall;
-	ent->client->playerinfo.PlayerActionSpellFirewall=G_PlayerActionSpellFirewall;
-	ent->client->playerinfo.PlayerActionRedRainBowAttack=G_PlayerActionRedRainBowAttack;
-	ent->client->playerinfo.PlayerActionPhoenixBowAttack=G_PlayerActionPhoenixBowAttack;
-	ent->client->playerinfo.PlayerActionHellstaffAttack=G_PlayerActionHellstaffAttack;
-	ent->client->playerinfo.PlayerActionSpellDefensive=G_PlayerActionSpellDefensive;
-	ent->client->playerinfo.G_EntIsAButton=G_EntIsAButton;
-	ent->client->playerinfo.irand=ClientServerRand;
+	ent->client->playerinfo.PointContents = gi.pointcontents;
+	ent->client->playerinfo.SetJointAngles = G_SetJointAngles;
+	ent->client->playerinfo.ResetJointAngles = G_ResetJointAngles;
+	ent->client->playerinfo.PlayerActionSwordAttack = G_PlayerActionSwordAttack;
+	ent->client->playerinfo.PlayerActionSpellFireball = G_PlayerActionSpellFireball;
+	ent->client->playerinfo.PlayerActionSpellBlast = G_PlayerActionSpellBlast;
+	ent->client->playerinfo.PlayerActionSpellArray = G_PlayerActionSpellArray;
+	ent->client->playerinfo.PlayerActionSpellSphereCreate = G_PlayerActionSpellSphereCreate;
+	ent->client->playerinfo.PlayerActionSpellBigBall = G_PlayerActionSpellBigBall;
+	ent->client->playerinfo.PlayerActionSpellFirewall = G_PlayerActionSpellFirewall;
+	ent->client->playerinfo.PlayerActionRedRainBowAttack = G_PlayerActionRedRainBowAttack;
+	ent->client->playerinfo.PlayerActionPhoenixBowAttack = G_PlayerActionPhoenixBowAttack;
+	ent->client->playerinfo.PlayerActionHellstaffAttack = G_PlayerActionHellstaffAttack;
+	ent->client->playerinfo.PlayerActionSpellDefensive = G_PlayerActionSpellDefensive;
+	ent->client->playerinfo.G_EntIsAButton = G_EntIsAButton;
+	ent->client->playerinfo.irand = ClientServerRand;
 
 	// So we know we are server (game) side.
 
-	ent->client->playerinfo.isclient=false;
-	ent->client->playerinfo.ishistory=false;
+	ent->client->playerinfo.isclient = false;
+	ent->client->playerinfo.ishistory = false;
 }
 
 // ************************************************************************************************
@@ -174,40 +174,44 @@ void SetupPlayerinfo(edict_t *ent)
 
 	// Pointer to the associated player's edict_t.
 
-	ent->client->playerinfo.self=ent;
+	ent->client->playerinfo.self = ent;
 
 	// Game .dll variables.
-
-	ent->client->playerinfo.leveltime=level.time;
+	ent->client->playerinfo.leveltime = level.time;
 
 	// Server variables.
 
-	ent->client->playerinfo.sv_gravity=sv_gravity->value;
-	ent->client->playerinfo.sv_cinematicfreeze=sv_cinematicfreeze->value;
-	ent->client->playerinfo.sv_jumpcinematic=sv_jumpcinematic->value;
+	ent->client->playerinfo.sv_gravity = sv_gravity->value;
+	ent->client->playerinfo.sv_cinematicfreeze = sv_cinematicfreeze->value;
+	ent->client->playerinfo.sv_jumpcinematic = sv_jumpcinematic->value;
 
 	// From edict_t.
-
-	ent->client->playerinfo.ideal_yaw=ent->ideal_yaw;
-	ent->client->playerinfo.groundentity=ent->groundentity;
+	ent->client->playerinfo.ideal_yaw = ent->ideal_yaw;
+	ent->client->playerinfo.groundentity = ent->groundentity;
 
 	// Pointer to entity_state_t of player's enemy edict.
-
 	if(ent->enemy)
-		ent->client->playerinfo.enemystate=&ent->enemy->s;
+	{
+		ent->client->playerinfo.enemystate = &ent->enemy->s;
+	}
 	else
-		ent->client->playerinfo.enemystate=NULL;
+	{
+		ent->client->playerinfo.enemystate = NULL;
+	}
 
 	// Spell / weapon aiming direction.
-
-	VectorCopy(ent->client->aimangles,ent->client->playerinfo.aimangles);
+	VectorCopy(ent->client->aimangles, ent->client->playerinfo.aimangles);
 
 	// Deathmatch flags - only set this if we are in death match.
-
 	if (deathmatch->value)
-		ent->client->playerinfo.dmflags = DF_DEATHMATCH_SET | (int)dmflags->value;		// Send the high bit if deathmatch.
+	{
+		// Send the high bit if deathmatch.
+		ent->client->playerinfo.dmflags = DF_DEATHMATCH_SET | (int)dmflags->value;
+	}
 	else
-		ent->client->playerinfo.dmflags=0;
+	{
+		ent->client->playerinfo.dmflags = 0;
+	}
 
 	ent->client->playerinfo.advancedstaff = (int)(advancedstaff->value);
 
@@ -220,8 +224,7 @@ void SetupPlayerinfo(edict_t *ent)
 	// Basically, just killing all buttons pressed while a cinematic is running - Probably not the best way to do this
 	// Jake 9/28/98
 	// need to reget this constantly, since it changes on the fly.
-
-	memcpy(&ent->client->playerinfo.pcmd,&ent->client->pcmd,sizeof(usercmd_t));
+	memcpy(&ent->client->playerinfo.pcmd, &ent->client->pcmd, sizeof(usercmd_t));
 
 	if (sv_cinematicfreeze->value)
 	{
@@ -236,41 +239,39 @@ void SetupPlayerinfo(edict_t *ent)
 	}
 
 	// From edict_t.
-
-	VectorCopy(ent->s.origin,ent->client->playerinfo.origin);
-	VectorCopy(ent->s.angles,ent->client->playerinfo.angles);
-	VectorCopy(ent->velocity,ent->client->playerinfo.velocity);
-	VectorCopy(ent->mins,ent->client->playerinfo.mins);
-	VectorCopy(ent->maxs,ent->client->playerinfo.maxs);
-	ent->client->playerinfo.enemy=ent->enemy;
-	ent->client->playerinfo.target=ent->target;
-	ent->client->playerinfo.targetEnt=ent->targetEnt;
-	ent->client->playerinfo.target_ent=ent->target_ent;
-	ent->client->playerinfo.nextthink=ent->nextthink;
-	ent->client->playerinfo.viewheight=ent->viewheight;
-	ent->client->playerinfo.watertype=ent->watertype;
-	ent->client->playerinfo.waterlevel=ent->waterlevel;
-	ent->client->playerinfo.deadflag=ent->deadflag;
-	ent->client->playerinfo.movetype=ent->movetype;
-	ent->client->playerinfo.edictflags=ent->flags;
+	VectorCopy(ent->s.origin, ent->client->playerinfo.origin);
+	VectorCopy(ent->s.angles, ent->client->playerinfo.angles);
+	VectorCopy(ent->velocity, ent->client->playerinfo.velocity);
+	VectorCopy(ent->mins, ent->client->playerinfo.mins);
+	VectorCopy(ent->maxs, ent->client->playerinfo.maxs);
+	ent->client->playerinfo.enemy = ent->enemy;
+	ent->client->playerinfo.target = ent->target;
+	ent->client->playerinfo.targetEnt = ent->targetEnt;
+	ent->client->playerinfo.target_ent = ent->target_ent;
+	ent->client->playerinfo.nextthink = ent->nextthink;
+	ent->client->playerinfo.viewheight = ent->viewheight;
+	ent->client->playerinfo.watertype = ent->watertype;
+	ent->client->playerinfo.waterlevel = ent->waterlevel;
+	ent->client->playerinfo.deadflag = ent->deadflag;
+	ent->client->playerinfo.movetype = ent->movetype;
+	ent->client->playerinfo.edictflags = ent->flags;
 
 	// From entity_state_t.
-	ent->client->playerinfo.frame=ent->s.frame,
-	ent->client->playerinfo.swapFrame=ent->s.swapFrame;
-	ent->client->playerinfo.effects=ent->s.effects;
-	ent->client->playerinfo.renderfx=ent->s.renderfx;
-	ent->client->playerinfo.skinnum=ent->s.skinnum;
-	ent->client->playerinfo.clientnum=ent->s.clientnum;
+	ent->client->playerinfo.frame = ent->s.frame,
+	ent->client->playerinfo.swapFrame = ent->s.swapFrame;
+	ent->client->playerinfo.effects = ent->s.effects;
+	ent->client->playerinfo.renderfx = ent->s.renderfx;
+	ent->client->playerinfo.skinnum = ent->s.skinnum;
+	ent->client->playerinfo.clientnum = ent->s.clientnum;
 
-	for(i=0;i<MAX_FM_MESH_NODES;i++)
+	for(i = 0; i < MAX_FM_MESH_NODES; i++)
 	{
-		ent->client->playerinfo.fmnodeinfo[i]=ent->s.fmnodeinfo[i];
+		ent->client->playerinfo.fmnodeinfo[i] = ent->s.fmnodeinfo[i];
 	}
 
 	// From pmove_state_t.
-
-	ent->client->playerinfo.pm_flags=ent->client->ps.pmove.pm_flags;
-	ent->client->playerinfo.pm_w_flags=ent->client->ps.pmove.w_flags;
+	ent->client->playerinfo.pm_flags = ent->client->ps.pmove.pm_flags;
+	ent->client->playerinfo.pm_w_flags = ent->client->ps.pmove.w_flags;
 }
 
 // ************************************************************************************************
@@ -288,39 +289,39 @@ void WritePlayerinfo(edict_t *ent)
 	memcpy(&ent->client->pcmd, &ent->client->playerinfo.pcmd, sizeof(usercmd_t));
 
 	// From edict_t.
-	VectorCopy(ent->client->playerinfo.origin,ent->s.origin);
-	VectorCopy(ent->client->playerinfo.angles,ent->s.angles);
-	VectorCopy(ent->client->playerinfo.velocity,ent->velocity);
-	VectorCopy(ent->client->playerinfo.mins,ent->mins);
-	VectorCopy(ent->client->playerinfo.maxs,ent->maxs);
-	ent->enemy=(edict_t *)ent->client->playerinfo.enemy;
-	ent->targetEnt= (edict_t*)ent->client->playerinfo.targetEnt;
-	ent->target_ent= (edict_t*)ent->client->playerinfo.target_ent;
-	ent->target= (char*)ent->client->playerinfo.target;
-	ent->nextthink=ent->client->playerinfo.nextthink;
-	ent->viewheight=ent->client->playerinfo.viewheight;
-	ent->watertype=ent->client->playerinfo.watertype;
-	ent->waterlevel=ent->client->playerinfo.waterlevel;
-	ent->deadflag=ent->client->playerinfo.deadflag;
-	ent->movetype=ent->client->playerinfo.movetype;
-	ent->flags=ent->client->playerinfo.edictflags;
+	VectorCopy(ent->client->playerinfo.origin, ent->s.origin);
+	VectorCopy(ent->client->playerinfo.angles, ent->s.angles);
+	VectorCopy(ent->client->playerinfo.velocity, ent->velocity);
+	VectorCopy(ent->client->playerinfo.mins, ent->mins);
+	VectorCopy(ent->client->playerinfo.maxs, ent->maxs);
+	ent->enemy = (edict_t *)ent->client->playerinfo.enemy;
+	ent->targetEnt = (edict_t*)ent->client->playerinfo.targetEnt;
+	ent->target_ent = (edict_t*)ent->client->playerinfo.target_ent;
+	ent->target =  (char*)ent->client->playerinfo.target;
+	ent->nextthink = ent->client->playerinfo.nextthink;
+	ent->viewheight = ent->client->playerinfo.viewheight;
+	ent->watertype = ent->client->playerinfo.watertype;
+	ent->waterlevel = ent->client->playerinfo.waterlevel;
+	ent->deadflag = ent->client->playerinfo.deadflag;
+	ent->movetype = ent->client->playerinfo.movetype;
+	ent->flags = ent->client->playerinfo.edictflags;
 
 	// From entity_state_t.
-	ent->s.frame=ent->client->playerinfo.frame,
-	ent->s.swapFrame=ent->client->playerinfo.swapFrame;
-	ent->s.effects=ent->client->playerinfo.effects;
-	ent->s.renderfx=ent->client->playerinfo.renderfx;
-	ent->s.skinnum=ent->client->playerinfo.skinnum;
-	ent->s.clientnum=ent->client->playerinfo.clientnum;
+	ent->s.frame = ent->client->playerinfo.frame,
+	ent->s.swapFrame = ent->client->playerinfo.swapFrame;
+	ent->s.effects = ent->client->playerinfo.effects;
+	ent->s.renderfx = ent->client->playerinfo.renderfx;
+	ent->s.skinnum = ent->client->playerinfo.skinnum;
+	ent->s.clientnum = ent->client->playerinfo.clientnum;
 
-	for(i=0;i<MAX_FM_MESH_NODES;i++)
+	for(i = 0; i < MAX_FM_MESH_NODES;i++)
 	{
-		ent->s.fmnodeinfo[i]=ent->client->playerinfo.fmnodeinfo[i];
+		ent->s.fmnodeinfo[i] = ent->client->playerinfo.fmnodeinfo[i];
 	}
 
 	// From pmove_state_t.
-	ent->client->ps.pmove.pm_flags=ent->client->playerinfo.pm_flags;
-	ent->client->ps.pmove.w_flags=ent->client->playerinfo.pm_w_flags;
+	ent->client->ps.pmove.pm_flags = ent->client->playerinfo.pm_flags;
+	ent->client->ps.pmove.w_flags = ent->client->playerinfo.pm_w_flags;
 
 	// ********************************************************************************************
 	// Outputs only.
@@ -380,7 +381,7 @@ void PlayerTimerUpdate(edict_t *ent)
 {
 	playerinfo_t *playerinfo;
 
-	playerinfo=&ent->client->playerinfo;
+	playerinfo = &ent->client->playerinfo;
 
 	// Disable light when we should.
 
@@ -437,18 +438,18 @@ void P_DamageFeedback (edict_t *player)
 	gclient_t	*client;
 	int			count;
 
-	client=player->client;
+	client = player->client;
 
 	// Flash the backgrounds behind the status numbers.
 
-	client->ps.stats[STAT_FLASHES]=0;
+	client->ps.stats[STAT_FLASHES] = 0;
 
 	if (client->damage_blood)
-		client->ps.stats[STAT_FLASHES]|=1;
+		client->ps.stats[STAT_FLASHES] |= 1;
 
 	// Total up the points of damage shot at the player this frame.
 
-	if((count=client->damage_blood)==0)
+	if((count = client->damage_blood) == 0)
 	{
 		// Didn't take any damage.
 		return;
@@ -503,17 +504,17 @@ void P_WorldEffects (void)
 
 	// If we are in no clip, or we have special lungs, we don't need air.
 
-	if(current_player->movetype==PHYSICSTYPE_NOCLIP)
+	if(current_player->movetype == PHYSICSTYPE_NOCLIP)
 	{
-		current_player->air_finished=level.time+HOLD_BREATH_TIME;
+		current_player->air_finished = level.time+HOLD_BREATH_TIME;
 
-		if(current_player->movetype==PHYSICSTYPE_NOCLIP)
+		if(current_player->movetype == PHYSICSTYPE_NOCLIP)
 			return;
 	}
 
-	waterlevel=current_player->waterlevel;
-	old_waterlevel=current_client->old_waterlevel;
-	current_client->old_waterlevel=waterlevel;
+	waterlevel = current_player->waterlevel;
+	old_waterlevel = current_client->old_waterlevel;
+	current_client->old_waterlevel = waterlevel;
 
 	//
 	// If the current player just entered a water volume, play a sound and start a water-ripple
@@ -524,7 +525,7 @@ void P_WorldEffects (void)
 	{
 		// Clear damage_debounce, so the pain sound will play immediately.
 
-		current_player->damage_debounce_time=level.time-1;
+		current_player->damage_debounce_time = level.time-1;
 
 		if (current_player->watertype & CONTENTS_LAVA)
 		{
@@ -534,23 +535,23 @@ void P_WorldEffects (void)
 		else if (current_player->watertype & CONTENTS_SLIME)
 		{
 			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/muckin.wav"), 1, ATTN_NORM, 0);
-			current_player->flags |= FL_INSLIME;
+			current_player->flags |=  FL_INSLIME;
 		}
 		else
 		{
 			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/Water Enter.wav"),1,ATTN_NORM,0);
 		}
-		current_player->flags|=FL_INWATER;
+		current_player->flags |= FL_INWATER;
 
 		VectorCopy(current_player->s.origin,Origin);
 
-		Origin[2]+=current_player->client->playerinfo.waterheight;
+		Origin[2] += current_player->client->playerinfo.waterheight;
 
 		// Fixme: Need to determine the actual water surface normal - if we have any sloping water??
 
-		Dir[0]=0.0;
-		Dir[1]=0.0;
-		Dir[2]=1.0;
+		Dir[0] = 0.0;
+		Dir[1] = 0.0;
+		Dir[2] = 1.0;
 
 		VectorCopy(Origin,current_player->client->playerinfo.LastWatersplashPos);
 
@@ -584,17 +585,17 @@ void P_WorldEffects (void)
 		{
 			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/Water Exit.wav"), 1, ATTN_NORM, 0);
 		}
-		current_player->flags&=~FL_INWATER;
+		current_player->flags &= ~FL_INWATER;
 
 		VectorCopy(current_player->s.origin,Origin);
 
-		Origin[2]=current_player->client->playerinfo.LastWatersplashPos[2];
+		Origin[2] = current_player->client->playerinfo.LastWatersplashPos[2];
 
 		// Fixme: Need to determine the actual water surface normal - if we have any sloping water??
 
-		Dir[0]=0.0;
-		Dir[1]=0.0;
-		Dir[2]=1.0;
+		Dir[0] = 0.0;
+		Dir[1] = 0.0;
+		Dir[2] = 1.0;
 
 		VectorCopy(Origin,current_player->client->playerinfo.LastWatersplashPos);
 
@@ -611,20 +612,20 @@ void P_WorldEffects (void)
 	// Start a waterwake effect if the current player has been in water and still is in water.
 	//
 
-	if(waterlevel && (old_waterlevel&&waterlevel<3) && (VectorLength(current_player->velocity)!=0.0))
+	if(waterlevel && (old_waterlevel&&waterlevel < 3) && (VectorLength(current_player->velocity) != 0.0))
 	{
-	// no ripples while in cinematics
-	if (sv_cinematicfreeze->value)
-		return;
+		// no ripples while in cinematics
+		if (sv_cinematicfreeze->value)
+		{
+			return;
+		}
 
-		if((((int)(current_client->bobtime+bobmove))!=bobcycle) && (!sv_cinematicfreeze->value))
+		if((((int)(current_client->bobtime+bobmove)) != bobcycle) && (!sv_cinematicfreeze->value))
 		{
 			// FIXME: Doing more work then we need to here???? How about re-writing this so that it
 			// is always active on the client and does water tests itself? We'll see - currently not
 			// enough info. is available on the client to try this.
-
-			vec3_t	Angles,
-					Temp;
+			vec3_t	Angles, Temp;
 			byte	angle_byte;
 
 			VectorCopy(current_player->velocity,Temp);
@@ -635,7 +636,7 @@ void P_WorldEffects (void)
 
 			VectorCopy(current_player->s.origin,Origin);
 
-			Origin[2]+=current_player->client->playerinfo.waterheight;
+			Origin[2] += current_player->client->playerinfo.waterheight;
 
 			angle_byte = Q_ftol(((Angles[YAW] + DEGREE_180)/360.0) * 255.0);
 
@@ -682,7 +683,7 @@ void P_WorldEffects (void)
 		{
 			// Slime should kill really quick.
 
-			current_player->dmg=25;
+			current_player->dmg = 25;
 
 			// Play a gurp sound instead of a normal pain sound.
 
@@ -756,7 +757,7 @@ void P_WorldEffects (void)
 			}
 		}
 
-		if (old_waterlevel != 3)
+		if (old_waterlevel !=  3)
 		{	// We weren't underwater before this, so play a submerged sound
 			gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/underwater.wav"), 1, ATTN_IDLE, 0);
 		}
@@ -824,7 +825,8 @@ void G_SetClientSound (edict_t *ent)
 // Called for each player at the end of the server frame and right after spawning.
 // ************************************************************************************************
 
-void ClientEndServerFrame (edict_t *ent)
+void
+ClientEndServerFrame(edict_t *ent)
 {
 	float	bobtime;
 	int		i,index;
@@ -838,7 +840,7 @@ void ClientEndServerFrame (edict_t *ent)
 
 	if (level.intermissiontime)
 	{
-		current_client->ps.fov=75;
+		current_client->ps.fov = 75;
 		G_SetStats(ent);
 
 		return;
@@ -854,7 +856,7 @@ void ClientEndServerFrame (edict_t *ent)
 	// Set the player entity's model angles.
 	// ********************************************************************************************
 
-	if(ent->deadflag==DEAD_NO)
+	if(ent->deadflag == DEAD_NO)
 	{
 		// PITCH.
 
@@ -885,14 +887,12 @@ void ClientEndServerFrame (edict_t *ent)
 	if (xyspeed < 5)
 	{
 		// Start at beginning of cycle again.
-
 		bobmove = 0;
 		current_client->bobtime = 0;
 	}
 	else if(ent->groundentity && !current_player->waterlevel)
 	{
 		// So bobbing only cycles when on ground.
-
 		if(xyspeed > 210)
 			bobmove = 0.25;
 		else if(xyspeed > 100)
@@ -931,15 +931,13 @@ void ClientEndServerFrame (edict_t *ent)
 	// ********************************************************************************************
 	// Generate client-side status display data
 	// ********************************************************************************************
-
 	G_SetStats(ent);
 	G_SetClientSound(ent);
 
 	// ********************************************************************************************
 	// Handle player animation.
 	// ********************************************************************************************
-
-	SetupPlayerinfo(ent);
+	SetupPlayerinfo(ent); /* Animation check */
 
 	playerExport->PlayerUpdateCmdFlags(&ent->client->playerinfo);
 
@@ -983,127 +981,125 @@ void ClientEndServerFrame (edict_t *ent)
 	// ********************************************************************************************
 
 	if(current_client->RemoteCameraLockCount>0)
-		current_client->ps.remote_id=current_client->RemoteCameraNumber;
+		current_client->ps.remote_id = current_client->RemoteCameraNumber;
 	else
-		current_client->ps.remote_id=-1;
+		current_client->ps.remote_id = -1;
 
 	// ********************************************************************************************
 	// Reflect inventory changes in the client's playetstate.
 	// ********************************************************************************************
 
-	current_client->ps.NoOfItems=i=0;
+	current_client->ps.NoOfItems = i = 0;
 
-	for(index=0;index<MAX_ITEMS;index++)
+	for(index = 0;index < MAX_ITEMS;index++)
 	{
-		if(current_client->playerinfo.pers.inventory.Items[index]!=current_client->playerinfo.pers.old_inventory.Items[index])
+		if(current_client->playerinfo.pers.inventory.Items[index] != current_client->playerinfo.pers.old_inventory.Items[index])
 		{
-			current_client->ps.inventory_changes[i]=index;
+			current_client->ps.inventory_changes[i] = index;
 
-			current_client->ps.inventory_remaining[i]=current_client->playerinfo.pers.inventory.Items[index];
+			current_client->ps.inventory_remaining[i] = current_client->playerinfo.pers.inventory.Items[index];
 
-			current_client->playerinfo.pers.old_inventory.Items[index]=current_client->playerinfo.pers.inventory.Items[index];
+			current_client->playerinfo.pers.old_inventory.Items[index] = current_client->playerinfo.pers.inventory.Items[index];
 
 			i++;
 		}
 	}
 
-	current_client->ps.NoOfItems=i;
+	current_client->ps.NoOfItems = i;
 
 	// ********************************************************************************************
 	// Reflect changes to the client's origin and velocity due to the current player animation, in
 	// the client's playerstate.
 	// ********************************************************************************************
 
-	current_client->ps.pmove.origin[0]=ent->s.origin[0]*8.0;
-	current_client->ps.pmove.origin[1]=ent->s.origin[1]*8.0;
-	current_client->ps.pmove.origin[2]=ent->s.origin[2]*8.0;
+	current_client->ps.pmove.origin[0] = ent->s.origin[0] * 8.0;
+	current_client->ps.pmove.origin[1] = ent->s.origin[1] * 8.0;
+	current_client->ps.pmove.origin[2] = ent->s.origin[2] * 8.0;
 
-	current_client->ps.pmove.velocity[0]=ent->velocity[0]*8.0;
-	current_client->ps.pmove.velocity[1]=ent->velocity[1]*8.0;
-	current_client->ps.pmove.velocity[2]=ent->velocity[2]*8.0;
+	current_client->ps.pmove.velocity[0] = ent->velocity[0] * 8.0;
+	current_client->ps.pmove.velocity[1] = ent->velocity[1] * 8.0;
+	current_client->ps.pmove.velocity[2] = ent->velocity[2] * 8.0;
 
 	// ********************************************************************************************
 	//  Reflect viewheight changes in client's playerstate.
 	// ********************************************************************************************
-
-	current_client->ps.viewheight=ent->viewheight;
+	current_client->ps.viewheight = ent->viewheight;
 
 	// ********************************************************************************************
 	// Write all the shit that animation system modifies out to the playerstate (for prediction).
 	// ********************************************************************************************
+	current_client->ps.maxs[0] = current_client->playerinfo.maxs[0];
+	current_client->ps.maxs[1] = current_client->playerinfo.maxs[1];
+	current_client->ps.maxs[2] = current_client->playerinfo.maxs[2];
 
-	current_client->ps.maxs[0]=current_client->playerinfo.maxs[0];
-	current_client->ps.maxs[1]=current_client->playerinfo.maxs[1];
-	current_client->ps.maxs[2]=current_client->playerinfo.maxs[2];
+	current_client->ps.mins[0] = current_client->playerinfo.mins[0];
+	current_client->ps.mins[1] = current_client->playerinfo.mins[1];
+	current_client->ps.mins[2] = current_client->playerinfo.mins[2];
 
-	current_client->ps.mins[0]=current_client->playerinfo.mins[0];
-	current_client->ps.mins[1]=current_client->playerinfo.mins[1];
-	current_client->ps.mins[2]=current_client->playerinfo.mins[2];
+	current_client->ps.NonNullgroundentity = (byte)(current_client->playerinfo.groundentity ? 1 : 0);
+	current_client->ps.GroundPlane = current_client->playerinfo.GroundPlane;
+	current_client->ps.GroundContents = current_client->playerinfo.GroundContents;
+	current_client->ps.GroundSurface.flags =
+		(current_client->playerinfo.GroundSurface!= NULL) ? current_client->playerinfo.GroundSurface->flags : 0;
 
-	current_client->ps.NonNullgroundentity=(byte)(current_client->playerinfo.groundentity?1:0);
-	current_client->ps.GroundPlane=current_client->playerinfo.GroundPlane;
-	current_client->ps.GroundContents=current_client->playerinfo.GroundContents;
-	current_client->ps.GroundSurface.flags=
-		(current_client->playerinfo.GroundSurface!=NULL)?current_client->playerinfo.GroundSurface->flags:0;
-
-	current_client->ps.watertype=current_client->playerinfo.watertype;
-	current_client->ps.waterlevel=current_client->playerinfo.waterlevel;
-	current_client->ps.waterheight=current_client->playerinfo.waterheight;
+	current_client->ps.watertype = current_client->playerinfo.watertype;
+	current_client->ps.waterlevel = current_client->playerinfo.waterlevel;
+	current_client->ps.waterheight = current_client->playerinfo.waterheight;
 
 	VectorCopy(current_client->playerinfo.grabloc,current_client->ps.grabloc);
-	current_client->ps.grabangle=current_client->playerinfo.grabangle;
+	current_client->ps.grabangle = current_client->playerinfo.grabangle;
 
-	current_client->ps.fwdvel=current_client->playerinfo.fwdvel;
-	current_client->ps.sidevel=current_client->playerinfo.sidevel;
-	current_client->ps.upvel=current_client->playerinfo.upvel;
+	current_client->ps.fwdvel = current_client->playerinfo.fwdvel;
+	current_client->ps.sidevel = current_client->playerinfo.sidevel;
+	current_client->ps.upvel = current_client->playerinfo.upvel;
 
-	current_client->ps.flags=current_client->playerinfo.flags;
+	current_client->ps.flags = current_client->playerinfo.flags;
 
-	current_client->ps.edictflags=current_client->playerinfo.edictflags;
+	current_client->ps.edictflags = current_client->playerinfo.edictflags;
 
-	current_client->ps.oldvelocity_z=current_client->playerinfo.oldvelocity[2];
+	current_client->ps.oldvelocity_z = current_client->playerinfo.oldvelocity[2];
 
-	current_client->ps.upperseq=current_client->playerinfo.upperseq;
-	current_client->ps.lowerseq=current_client->playerinfo.lowerseq;
+	current_client->ps.upperseq = current_client->playerinfo.upperseq;
+	current_client->ps.lowerseq = current_client->playerinfo.lowerseq;
 
-	current_client->ps.upperframe=current_client->playerinfo.upperframe;
-	current_client->ps.lowerframe=current_client->playerinfo.lowerframe;
+	current_client->ps.upperframe = current_client->playerinfo.upperframe;
+	current_client->ps.lowerframe = current_client->playerinfo.lowerframe;
 
-	current_client->ps.upperidle=(byte)((current_client->playerinfo.upperidle)?1:0);
-	current_client->ps.loweridle=(byte)((current_client->playerinfo.loweridle)?1:0);
+	current_client->ps.upperidle = (byte)((current_client->playerinfo.upperidle)?1:0);
+	current_client->ps.loweridle = (byte)((current_client->playerinfo.loweridle)?1:0);
 
-	current_client->ps.uppermove_index=current_client->playerinfo.uppermove_index;
-	current_client->ps.lowermove_index=current_client->playerinfo.lowermove_index;
+	current_client->ps.uppermove_index = current_client->playerinfo.uppermove_index;
+	current_client->ps.lowermove_index = current_client->playerinfo.lowermove_index;
 
-	current_client->ps.weapon=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.weapon);
-	current_client->ps.defense=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.defence);
-	current_client->ps.lastweapon=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.lastweapon);
-	current_client->ps.lastdefense=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.lastdefence);
-	current_client->ps.weaponready=(byte)current_client->playerinfo.pers.weaponready;
-	current_client->ps.switchtoweapon=(byte)current_client->playerinfo.switchtoweapon;
-	current_client->ps.newweapon=(byte)playerExport->GetItemIndex(current_client->playerinfo.pers.newweapon);
-	current_client->ps.weap_ammo_index=(byte)current_client->playerinfo.weap_ammo_index;
-	current_client->ps.def_ammo_index=(byte)current_client->playerinfo.def_ammo_index;
-	current_client->ps.weaponcharge=(byte)current_client->playerinfo.weaponcharge;
-	current_client->ps.armortype=(byte)current_client->playerinfo.pers.armortype;
-	current_client->ps.bowtype=(byte)current_client->playerinfo.pers.bowtype;
-	current_client->ps.stafflevel=(byte)current_client->playerinfo.pers.stafflevel;
-	current_client->ps.helltype=(byte)current_client->playerinfo.pers.helltype;
-	current_client->ps.meteor_count=(byte)current_client->playerinfo.meteor_count;
-	current_client->ps.handfxtype=(byte)current_client->playerinfo.pers.handfxtype;
-	current_client->ps.plaguelevel=(byte)current_client->playerinfo.plaguelevel;
-	current_client->ps.skintype=(byte)current_client->playerinfo.pers.skintype;
-	current_client->ps.altparts=(byte)current_client->playerinfo.pers.altparts;
-	current_client->ps.deadflag=current_client->playerinfo.deadflag;
-	current_client->ps.ideal_yaw=ent->ideal_yaw;
-	current_client->ps.leveltime=level.time;
-	current_client->ps.idletime=current_client->playerinfo.idletime;
-	current_client->ps.quickturnEndTime=current_client->playerinfo.quickturnEndTime;
-	current_client->ps.powerup_timer=current_client->playerinfo.powerup_timer;
-	current_client->ps.quickturn_rate=current_client->playerinfo.quickturn_rate;
+	current_client->ps.weapon = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.weapon);
+	current_client->ps.defense = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.defence);
+	current_client->ps.lastweapon = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.lastweapon);
+	current_client->ps.lastdefense = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.lastdefence);
+	current_client->ps.weaponready = (byte)current_client->playerinfo.pers.weaponready;
+	current_client->ps.switchtoweapon = (byte)current_client->playerinfo.switchtoweapon;
+	current_client->ps.newweapon = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.newweapon);
+	current_client->ps.weap_ammo_index = (byte)current_client->playerinfo.weap_ammo_index;
+	current_client->ps.def_ammo_index = (byte)current_client->playerinfo.def_ammo_index;
+	current_client->ps.weaponcharge = (byte)current_client->playerinfo.weaponcharge;
+	current_client->ps.armortype = (byte)current_client->playerinfo.pers.armortype;
+	current_client->ps.bowtype = (byte)current_client->playerinfo.pers.bowtype;
+	current_client->ps.stafflevel = (byte)current_client->playerinfo.pers.stafflevel;
+	current_client->ps.helltype = (byte)current_client->playerinfo.pers.helltype;
+	current_client->ps.meteor_count = (byte)current_client->playerinfo.meteor_count;
+	current_client->ps.handfxtype = (byte)current_client->playerinfo.pers.handfxtype;
+	current_client->ps.plaguelevel = (byte)current_client->playerinfo.plaguelevel;
+	current_client->ps.skintype = (byte)current_client->playerinfo.pers.skintype;
+	current_client->ps.altparts = (byte)current_client->playerinfo.pers.altparts;
+	current_client->ps.deadflag = current_client->playerinfo.deadflag;
+	current_client->ps.ideal_yaw = ent->ideal_yaw;
+	current_client->ps.leveltime = level.time;
+	current_client->ps.idletime = current_client->playerinfo.idletime;
+	current_client->ps.quickturnEndTime = current_client->playerinfo.quickturnEndTime;
+	current_client->ps.powerup_timer = current_client->playerinfo.powerup_timer;
+	current_client->ps.quickturn_rate = current_client->playerinfo.quickturn_rate;
 
-	current_client->ps.dmflags=current_client->playerinfo.dmflags;
-	current_client->ps.advancedstaff=current_client->playerinfo.advancedstaff;
+	current_client->ps.dmflags = current_client->playerinfo.dmflags;
+	current_client->ps.advancedstaff = current_client->playerinfo.advancedstaff;
 
-	current_client->ps.cinematicfreeze=current_client->playerinfo.sv_cinematicfreeze;
+	current_client->ps.cinematicfreeze = current_client->playerinfo.sv_cinematicfreeze;
 }

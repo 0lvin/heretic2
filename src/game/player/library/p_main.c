@@ -17,12 +17,12 @@
 #include "../../../common/header/common.h"
 
 //FIXME:  Include header
-
 qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);
 
 void FMNodeUpdate(playerinfo_t *playerinfo,int weapon,int armor);
 
-void PlayerInit(playerinfo_t *playerinfo, int complete_reset)
+void
+PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 {
 	if(!complete_reset)
 		PlayerBasicAnimReset(playerinfo);
@@ -32,10 +32,10 @@ void PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 	playerinfo->flags=PLAYER_FLAG_NONE;
 }
 
-void PlayerClearEffects(playerinfo_t *playerinfo)
+void
+PlayerClearEffects(playerinfo_t *playerinfo)
 {
 	// Remove all special effects from the player.
-
 	if(!playerinfo->isclient)
 		playerinfo->G_RemoveEffects(EFFECT_PRED_ID30,
 									playerinfo->G_GetEntityStatePtr(playerinfo->self),
@@ -46,14 +46,14 @@ void PlayerClearEffects(playerinfo_t *playerinfo)
 									 FX_REMOVE_EFFECTS);
 }
 
-void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
+void
+PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 {
 	usercmd_t *pcmd;
 
-	pcmd=&(playerinfo->pcmd);
+	pcmd = &(playerinfo->pcmd);
 
 	// Look for the attack button being pressed.
-
 	if (pcmd->buttons & BUTTON_ATTACK)
 	{
 		playerinfo->seqcmd[ACMDU_ATTACK] = true;
@@ -64,7 +64,6 @@ void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 	}
 
 	// Look for the action button being pressed.
-
 	if (pcmd->buttons & BUTTON_ACTION)
 	{
 		playerinfo->seqcmd[ACMDL_ACTION] = true;
@@ -75,7 +74,6 @@ void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 	}
 
 	// Look for the quickturn button being pressed.
-
 	if (pcmd->buttons & BUTTON_QUICKTURN)
 	{
 		playerinfo->seqcmd[ACMDL_QUICKTURN] = true;
@@ -86,7 +84,6 @@ void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 	}
 
 	// Look for the jump / crouch buttons being pressed.
-
 	if (pcmd->upmove > 0)
 	{
 		playerinfo->seqcmd[ACMDL_JUMP] = true;
@@ -104,7 +101,6 @@ void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 	}
 
 	// Look for the turn left / turn right buttons being pressed.
-
 	if(Q_fabs(playerinfo->turncmd) > 2)
 	{
 		if (playerinfo->turncmd < -2)
@@ -133,7 +129,6 @@ void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 	playerinfo->turncmd = 0;
 
 	// Look for the autoaim button being pressed.
-
 	if (pcmd->buttons & BUTTON_AUTOAIM)
 	{
 		playerinfo->autoaim = true;
@@ -144,30 +139,40 @@ void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 	}
 
 	// Clear out ALL forward/backward movement flags.
-
 	memset(&(playerinfo->seqcmd[ACMDL_CREEP_F]), 0, (ACMDL_BACK-ACMDL_CREEP_F+1)*sizeof(int));
 
 	// Look for forward/backpeddle buttons being pressed.
-
 	if (pcmd->forwardmove > 10)
 	{
 		playerinfo->seqcmd[ACMDL_FWD] = true;
 		if (pcmd->buttons & BUTTON_CREEP)
+		{
 			playerinfo->seqcmd[ACMDL_CREEP_F] = true;
+		}
 		else if (pcmd->buttons & BUTTON_RUN)
+		{
 			playerinfo->seqcmd[ACMDL_RUN_F] = true;
+		}
 		else
+		{
 			playerinfo->seqcmd[ACMDL_WALK_F] = true;
+		}
 	}
 	else if (pcmd->forwardmove < -10)
 	{
 		playerinfo->seqcmd[ACMDL_BACK] = true;
 		if (pcmd->buttons & BUTTON_CREEP)
+		{
 			playerinfo->seqcmd[ACMDL_CREEP_B] = true;
+		}
 		else if (pcmd->buttons & BUTTON_RUN)
+		{
 			playerinfo->seqcmd[ACMDL_RUN_B] = true;
+		}
 		else
+		{
 			playerinfo->seqcmd[ACMDL_WALK_B] = true;
+		}
 	}
 	else
 	{
@@ -195,12 +200,14 @@ void PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 	{
 		playerinfo->showpuzzleinventory = true;
 	}
-	playerinfo->fwdvel=0;
-	playerinfo->sidevel=0;
-	playerinfo->upvel=0;
+
+	playerinfo->fwdvel = 0;
+	playerinfo->sidevel = 0;
+	playerinfo->upvel = 0;
 }
 
-int PlayerCheckSlide(playerinfo_t *playerinfo)
+int
+PlayerCheckSlide(playerinfo_t *playerinfo)
 {
 	trace_t	trace;
 	vec3_t	vf, vr, vu;
@@ -229,7 +236,8 @@ int PlayerCheckSlide(playerinfo_t *playerinfo)
 	return false;
 }
 
-void PlayerUpdate(playerinfo_t *playerinfo)
+void
+PlayerUpdate(playerinfo_t *playerinfo)
 {
 	int		slideseq;
 	vec3_t	endpos;
@@ -681,7 +689,8 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	}
 }
 
-void PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
+void
+PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 {
 	int powerlevel;
 /*
