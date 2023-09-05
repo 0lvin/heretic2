@@ -461,8 +461,6 @@ SV_InitGame(void)
 	/* init game */
 	SV_InitGameProgs();
 
-	CL_InitClientEffects("client effects.dll");
-
 	for (i = 0; i < maxclients->value; i++)
 	{
 		ent = EDICT_NUM(i + 1);

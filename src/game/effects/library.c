@@ -2,8 +2,10 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "header/client.h"
-#include "../game/common/resourcemanager.h"
+#include "../../client/header/client.h"
+#include "../header/game.h"
+#include "../effects/client_effects.h"
+#include "../common/resourcemanager.h"
 
 client_fx_export_t fxe;
 
@@ -218,7 +220,7 @@ extern particle_t r_aparticles[MAX_PARTICLES];
 
 static client_fx_import_t cl_game_import;
 
-int
+static int
 CL_InitClientEffects(const char* name)
 {
 	int result;
@@ -277,7 +279,7 @@ CL_InitClientEffects(const char* name)
 	cl_game_import.InCameraPVS = InCameraPVS;
 
 	fxe = GetfxAPI(cl_game_import);
-	if (fxe.api_version != 3)
+	if (fxe.api_version != GAME_API_VERSION)
 	{
 		CL_ShutdownClientEffects();
 		Com_Error(0, "%s has incompatible api_version", name);
@@ -289,4 +291,11 @@ CL_InitClientEffects(const char* name)
 	fxe.Init();
 
 	return result;
+}
+
+void *
+E_Load(void)
+{
+	CL_InitClientEffects("client_effects.dll");
+	return &fxe;
 }

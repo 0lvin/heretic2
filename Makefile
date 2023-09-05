@@ -377,12 +377,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft player
+.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft player effects
 
 # ----------
 
 # Builds everything
-all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft player
+all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft player effects
 
 # ----------
 
@@ -1065,6 +1065,147 @@ PLAYER_OBJS_ = \
 
 # ----------
 
+# The base effects
+ifeq ($(YQ2_OSTYPE), Windows)
+effects:
+	@echo "===> Building base/effects.dll"
+	${Q}mkdir -p release/base
+	$(MAKE) release/base/effects.dll
+
+build/effects/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+release/base/effects.dll : LDFLAGS += -shared
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+effects:
+	@echo "===> Building base/effects.dylib"
+	${Q}mkdir -p release/base
+	$(MAKE) release/base/effects.dylib
+
+build/effects/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+release/base/effects.dylib : CFLAGS += -fPIC
+release/base/effects.dylib : LDFLAGS += -shared
+
+else # not Windows or Darwin
+
+effects:
+	@echo "===> Building base/effects.so"
+	${Q}mkdir -p release/base
+	$(MAKE) release/base/effects.so
+
+build/effects/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+build/effects/%.o: %.cpp
+	@echo "===> CXX $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
+
+release/base/effects.so : CFLAGS += -fPIC -Wno-unused-result
+release/base/effects.so : LDFLAGS += -shared
+endif
+
+# Used by the effects
+EFFECTS_OBJS_ = \
+	src/game/effects/ambient_effects.o \
+	src/game/effects/ce_default_message_handler.o \
+	src/game/effects/ce_dlight.o \
+	src/game/effects/ce_message.o \
+	src/game/effects/client_effects.o \
+	src/game/effects/client_entities.o \
+	src/game/effects/font1.o \
+	src/game/effects/font2.o \
+	src/game/effects/fx_ammo_pickup.o \
+	src/game/effects/fx_animate.o \
+	src/game/effects/fx_assassin.o \
+	src/game/effects/fx_blood.o \
+	src/game/effects/fx_blue_ring.o \
+	src/game/effects/fx_bubbler.o \
+	src/game/effects/fx_crosshair.o \
+	src/game/effects/fx_cwatcher.o \
+	src/game/effects/fx_debris.o \
+	src/game/effects/fx_defense_pickup.o \
+	src/game/effects/fx_dripper.o \
+	src/game/effects/fx_dust.o \
+	src/game/effects/fx_dustpuff.o \
+	src/game/effects/fx_firehands.o \
+	src/game/effects/fx_fire.o \
+	src/game/effects/fx_flamethrow.o \
+	src/game/effects/fx_flyingfist.o \
+	src/game/effects/fx_fountain.o \
+	src/game/effects/fx_halo.o \
+	src/game/effects/fx_health_pickup.o \
+	src/game/effects/fx_hell_staff.o \
+	src/game/effects/fx_hitpuff.o \
+	src/game/effects/fx_hpproj.o \
+	src/game/effects/fx_insectstaff.o \
+	src/game/effects/fx_lensflare.o \
+	src/game/effects/fx_lightning.o \
+	src/game/effects/fx_maceball.o \
+	src/game/effects/fx_magicmissile.o \
+	src/game/effects/fx_meteorbarrier.o \
+	src/game/effects/fx_mist.o \
+	src/game/effects/fx_mork.o \
+	src/game/effects/fx_morph.o \
+	src/game/effects/fx_objects.o \
+	src/game/effects/fx_pespell.o \
+	src/game/effects/fx_phoenix.o \
+	src/game/effects/fx_pickup.o \
+	src/game/effects/fx_pickuppuzzle.o \
+	src/game/effects/fx_plaguemistexplode.o \
+	src/game/effects/fx_plaguemist.o \
+	src/game/effects/fx_portal.o \
+	src/game/effects/fx_quake.o \
+	src/game/effects/fx_redrainglow.o \
+	src/game/effects/fx_redrain.o \
+	src/game/effects/fx_remotecamera.o \
+	src/game/effects/fx_ripples.o \
+	src/game/effects/fx_rope.o \
+	src/game/effects/fx_scorchmark.o \
+	src/game/effects/fx_shadow.o \
+	src/game/effects/fx_shield.o \
+	src/game/effects/fx_shrine.o \
+	src/game/effects/fx_smoke.o \
+	src/game/effects/fx_sound.o \
+	src/game/effects/fx_sparks.o \
+	src/game/effects/fx_spellchange.o \
+	src/game/effects/fx_spellhands.o \
+	src/game/effects/fx_sphereofannihlation.o \
+	src/game/effects/fx_spoo.o \
+	src/game/effects/fx_ssarrow.o \
+	src/game/effects/fx_ssithra.o \
+	src/game/effects/fx_staff.o \
+	src/game/effects/fx_tbeast.o \
+	src/game/effects/fx_teleport.o \
+	src/game/effects/fx_tome.o \
+	src/game/effects/fx_tornado.o \
+	src/game/effects/fx_wall.o \
+	src/game/effects/fx_waterentrysplash.o \
+	src/game/effects/fx_waterwake.o \
+	src/game/effects/fx_weaponpickup.o \
+	src/game/effects/generic_character_effects.o \
+	src/game/effects/generic_weapon_effects.o \
+	src/game/effects/item_effects.o \
+	src/game/effects/level_maps.o \
+	src/game/effects/main.o \
+	src/game/effects/motion.o \
+	src/game/effects/particle.o \
+	src/game/effects/player_effects.o \
+	src/game/effects/test_effect.o \
+	src/game/effects/utilities.o
+
+# ----------
+
 # Used by the client
 CLIENT_OBJS_ := \
 	src/game/common/arrayed_list.o \
@@ -1087,7 +1228,7 @@ CLIENT_OBJS_ := \
 	src/client/cl_input.o \
 	src/client/cl_inventory.o \
 	src/client/cl_keyboard.o \
-	src/client/cl_library.o \
+	src/game/effects/library.o \
 	src/client/cl_lights.o \
 	src/client/cl_main.o \
 	src/client/cl_network.o \
@@ -1614,6 +1755,7 @@ REFVK_OBJS = $(patsubst %,build/ref_vk/%,$(REFVK_OBJS_))
 SERVER_OBJS = $(patsubst %,build/server/%,$(SERVER_OBJS_))
 GAME_OBJS = $(patsubst %,build/baseq2/%,$(GAME_OBJS_))
 PLAYER_OBJS = $(patsubst %,build/player/%,$(PLAYER_OBJS_))
+EFFECTS_OBJS = $(patsubst %,build/effects/%,$(EFFECTS_OBJS_))
 
 # ----------
 
@@ -1621,6 +1763,7 @@ PLAYER_OBJS = $(patsubst %,build/player/%,$(PLAYER_OBJS_))
 CLIENT_DEPS= $(CLIENT_OBJS:.o=.d)
 GAME_DEPS= $(GAME_OBJS:.o=.d)
 PLAYER_DEPS= $(PLAYER_OBJS:.o=.d)
+EFFECTS_DEPS= $(EFFECTS_OBJS:.o=.d)
 REFGL1_DEPS= $(REFGL1_OBJS:.o=.d)
 REFGL3_DEPS= $(REFGL3_OBJS:.o=.d)
 REFGLES3_DEPS= $(REFGLES3_OBJS:.o=.d)
@@ -1773,6 +1916,22 @@ release/base/player.dylib : $(PLAYER_OBJS)
 	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
 else
 release/base/player.so : $(PLAYER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
+endif
+
+# release/base/effects.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/base/effects.dll : $(PLAYER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/base/effects.dylib : $(PLAYER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
+else
+release/base/effects.so : $(PLAYER_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
 endif

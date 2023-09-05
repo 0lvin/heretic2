@@ -273,6 +273,8 @@ void PreCacheTorn(void);
 
 qboolean Vec3IsZeroEpsilon(vec3_t in);
 
+void *E_Load(void);
+
 #endif
 
 // end
