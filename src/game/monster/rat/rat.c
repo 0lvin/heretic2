@@ -45,8 +45,8 @@
 #include "../../header/utilities.h"
 #include "../../header/g_defaultmessagehandler.h"
 #include "../../header/g_monster.h"
-#include "../../../../h2common/fx.h"
-#include "../../../../h2common/h2rand.h"
+#include "../../common/fx.h"
+#include "../../common/h2rand.h"
 
 #include "rat.h"
 #include "rat_anim.h"

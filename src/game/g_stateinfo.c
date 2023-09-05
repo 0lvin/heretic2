@@ -5,7 +5,7 @@
 
 #include "header/local.h"
 #include "header/g_stateinfo.h"
-#include "../../h2common/resourcemanager.h"
+#include "common/resourcemanager.h"
 
 static ResourceManager_t ActionInfoMngr;
 

@@ -29,11 +29,11 @@
 #include "header/local.h"
 #include "header/g_monster.h"
 #include "monster/stats/stats.h"
-#include "../../h2common/fx.h"
+#include "common/fx.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_playstats.h"
 
-#include "../../h2common/h2rand.h"
+#include "common/h2rand.h"
 
 //JWEIER START INCLUDES
 #include "header/g_misc.h"

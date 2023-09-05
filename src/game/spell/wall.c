@@ -4,9 +4,9 @@
 //
 
 #include "../header/local.h"
-#include "../../../h2common/fx.h"
-#include "../../../h2common/angles.h"
-#include "../../../h2common/matrix.h"
+#include "../common/fx.h"
+#include "../common/angles.h"
+#include "../common/matrix.h"
 #include "../header/g_volume_effect.h"
 #include "../header/utilities.h"
 #include "../header/g_classstatics.h"

@@ -14,13 +14,13 @@
 #include <assert.h>
 #include "header/local.h"
 #include "header/g_monster.h"
-#include "../../h2common/h2rand.h"
+#include "common/h2rand.h"
 #include "header/buoy.h"
 #include "header/g_hitlocation.h"
 #include "header/utilities.h"
 #include "monster/stats/stats.h"
 #include "header/g_playstats.h"
-#include "../../h2common/fx.h"
+#include "common/fx.h"
 
 #define	STEPSIZE 18
 #define YAW_IDEAL		1

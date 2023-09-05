@@ -17,14 +17,14 @@
 #include "../../header/utilities.h"
 #include "../../header/g_defaultmessagehandler.h"
 #include "../../header/g_monster.h"
-#include "../../../../h2common/fx.h"
-#include "../../../../h2common/h2rand.h"
+#include "../../common/fx.h"
+#include "../../common/h2rand.h"
 #include "../../header/buoy.h"
 
 #include "mother.h"
 #include "mother_anim.h"
 #include "../../header/g_misc.h"
-#include "../../../../h2common/angles.h"
+#include "../../common/angles.h"
 #include "../../header/c_ai.h"
 #include "../stats/stats.h"
 

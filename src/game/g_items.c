@@ -32,8 +32,8 @@
 #include "header/g_weapon.h"
 #include "player/library/p_anims.h"
 #include "player/library/p_anim_data.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
+#include "common/fx.h"
+#include "common/h2rand.h"
 #include "header/g_itemstats.h"
 
 #define HEALTH_IGNORE_MAX	1

@@ -9,7 +9,7 @@
 
 #include "header/local.h"
 #include "header/g_defaultmessagehandler.h"
-#include "../../h2common/fx.h"
+#include "common/fx.h"
 #include "header/g_monster.h"
 #include "header/g_misc.h"
 #include "header/c_corvus1_anim.h"

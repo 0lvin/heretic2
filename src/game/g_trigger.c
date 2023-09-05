@@ -26,9 +26,9 @@
 
 #include "header/local.h"
 #include "header/g_defaultmessagehandler.h"
-#include "../../h2common/fx.h"
+#include "common/fx.h"
 #include "header/g_playstats.h"
-#include "../../h2common/cl_strings.h"
+#include "common/cl_strings.h"
 
 #define TRIGGER_MONSTER		1
 #define TRIGGER_NOT_PLAYER	2

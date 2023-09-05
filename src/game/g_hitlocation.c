@@ -3,9 +3,9 @@
 // Copyright 1998 Raven Software
 //
 #include "header/local.h"
-#include "../../h2common/matrix.h"
+#include "common/matrix.h"
 #include "header/g_hitlocation.h"
-#include "../../h2common/h2rand.h"
+#include "common/h2rand.h"
 
 // Returns hit location (as defined in h file) assuming upright bipedal humanoid creature.
 // This will return incorrect results if called on a non humanoid (eg beetle) or a non

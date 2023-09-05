@@ -8,8 +8,8 @@
 */
 
 #include "header/local.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
+#include "common/fx.h"
+#include "common/h2rand.h"
 
 
 void env_dust_use(edict_t *self, edict_t *other, edict_t *activator)

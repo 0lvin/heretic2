@@ -59,10 +59,10 @@
 #include "keyboard.h"
 #include "console.h"
 
-#include "../../../h2common/angles.h"
-#include "../../../h2common/vector.h"
+#include "../../game/common/angles.h"
+#include "../../game/common/vector.h"
 #include "../../game/player/library/player.h"
-#include "../../../h2common/levelmaps.h"
+#include "../../game/common/levelmaps.h"
 
 typedef struct
 {

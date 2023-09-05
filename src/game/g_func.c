@@ -26,8 +26,8 @@
 
 #include "header/local.h"
 #include "header/g_misc.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
+#include "common/fx.h"
+#include "common/h2rand.h"
 #include "header/g_defaultmessagehandler.h"
 #include "monster/stats/stats.h"
 #include "header/buoy.h"

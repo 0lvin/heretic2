@@ -35,9 +35,9 @@
  */
 
 #include "../../common/header/common.h"
-#include "../../../h2common/singlylinkedlist.h"
-#include "../../../h2common/q_physics.h"
-#include "../../../h2common/arrayed_list.h"
+#include "../common/singlylinkedlist.h"
+#include "../common/q_physics.h"
+#include "../common/arrayed_list.h"
 
 #define GAME_API_VERSION 3
 

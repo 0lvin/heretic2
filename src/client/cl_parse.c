@@ -26,7 +26,7 @@
 
 #include "header/client.h"
 #include "input/header/input.h"
-#include "../../h2common/resourcemanager.h"
+#include "../game/common/resourcemanager.h"
 
 void CL_DownloadFileName(char *dest, int destlen, char *fn);
 void CL_ParseDownload(void);

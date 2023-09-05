@@ -27,14 +27,14 @@
 #include "header/local.h"
 #include "monster/misc/player.h"
 #include "header/g_items.h"
-#include "../../h2common/h2rand.h"
+#include "common/h2rand.h"
 #include "header/g_playstats.h"
 #include "player/library/p_actions.h"
 #include "player/library/p_anims.h"
 #include "player/library/p_main.h"
 #include "header/p_funcs.h"
 #include "header/g_itemstats.h"
-#include "../../h2common/cl_strings.h"
+#include "common/cl_strings.h"
 
 
 extern gitem_armor_t silver_armor_info;

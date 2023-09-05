@@ -35,11 +35,11 @@
 #include "../player/library/p_weapon.h"
 #include "../player/library/p_main.h"
 #include "../player/library/p_anims.h"
-#include "../../../h2common/fx.h"
-#include "../../../h2common/matrix.h"
-#include "../../../h2common/angles.h"
-#include "../../../h2common/reference.h"
-#include "../../../h2common/h2rand.h"
+#include "../common/fx.h"
+#include "../common/matrix.h"
+#include "../common/angles.h"
+#include "../common/reference.h"
+#include "../common/h2rand.h"
 
 extern void SpellCastFlyingFist(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value);
 extern void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir);

@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "header/client.h"
-#include "../../h2common/resourcemanager.h"
+#include "../game/common/resourcemanager.h"
 
 client_fx_export_t fxe;
 

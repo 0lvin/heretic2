@@ -150,8 +150,8 @@ cvar_t* r_fog_underwater_color_b;
 cvar_t* r_fog_underwater_color_a;
 
 #include <ctype.h>
-#include "../../../../h2common/part_uvs.h"
-#include "../../../../h2common/angles.h"
+#include "../../../game/common/part_uvs.h"
+#include "../../../game/common/angles.h"
 
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
 

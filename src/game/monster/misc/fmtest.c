@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "../../header/local.h"
-#include "../../../../h2common/h2rand.h"
+#include "../../common/h2rand.h"
 
 static void
 MakeSolidObject(edict_t *ent, char *Model, float MinX, float MinY, float MinZ,

@@ -828,15 +828,15 @@ GAME_OBJS_ = \
 	src/common/shared/flash.o \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
-	h2common/h2vector.o \
-	h2common/h2rand.o \
-	h2common/h2singlylinkedlist.o \
-	h2common/resource_manager.o \
-	h2common/h2matrix.o \
-	h2common/arrayed_list.o \
-	h2common/skeletons.o \
-	h2common/h2physics.o \
-	h2common/message.o \
+	src/game/common/h2vector.o \
+	src/game/common/h2rand.o \
+	src/game/common/h2singlylinkedlist.o \
+	src/game/common/resource_manager.o \
+	src/game/common/h2matrix.o \
+	src/game/common/arrayed_list.o \
+	src/game/common/skeletons.o \
+	src/game/common/h2physics.o \
+	src/game/common/message.o \
 	src/game/player/library.o \
 	src/game/buoy.o \
 	src/game/c_ai.o \
@@ -1045,9 +1045,9 @@ endif
 
 # Used by the player
 PLAYER_OBJS_ = \
-	h2common/h2matrix.o \
-	h2common/h2vector.o \
-	h2common/h2rand.o \
+	src/game/common/h2matrix.o \
+	src/game/common/h2vector.o \
+	src/game/common/h2rand.o \
 	src/common/shared/shared.o \
 	src/game/player/library/surfaceprops.o \
 	src/game/player/library/p_actions.o \
@@ -1067,17 +1067,17 @@ PLAYER_OBJS_ = \
 
 # Used by the client
 CLIENT_OBJS_ := \
-	h2common/arrayed_list.o \
-	h2common/h2matrix.o \
-	h2common/h2physics.o \
-	h2common/h2rand.o \
-	h2common/h2singlylinkedlist.o \
-	h2common/h2vector.o \
-	h2common/message.o \
-	h2common/netmsg_read.o \
-	h2common/reference.o \
-	h2common/resource_manager.o \
-	h2common/skeletons.o \
+	src/game/common/arrayed_list.o \
+	src/game/common/h2matrix.o \
+	src/game/common/h2physics.o \
+	src/game/common/h2rand.o \
+	src/game/common/h2singlylinkedlist.o \
+	src/game/common/h2vector.o \
+	src/game/common/message.o \
+	src/game/common/netmsg_read.o \
+	src/game/common/reference.o \
+	src/game/common/resource_manager.o \
+	src/game/common/skeletons.o \
 	src/backends/generic/misc.o \
 	src/client/cl_cin.o \
 	src/client/cl_console.o \
@@ -1100,92 +1100,92 @@ CLIENT_OBJS_ := \
 	src/client/cl_view.o \
 	src/client/curl/download.o \
 	src/client/curl/qcurl.o \
-	src/client_effects/ambient_effects.o \
-	src/client_effects/ce_default_message_handler.o \
-	src/client_effects/ce_dlight.o \
-	src/client_effects/ce_message.o \
-	src/client_effects/client_effects.o \
-	src/client_effects/client_entities.o \
-	src/client_effects/font1.o \
-	src/client_effects/font2.o \
-	src/client_effects/fx_ammo_pickup.o \
-	src/client_effects/fx_animate.o \
-	src/client_effects/fx_assassin.o \
-	src/client_effects/fx_blood.o \
-	src/client_effects/fx_blue_ring.o \
-	src/client_effects/fx_bubbler.o \
-	src/client_effects/fx_crosshair.o \
-	src/client_effects/fx_cwatcher.o \
-	src/client_effects/fx_debris.o \
-	src/client_effects/fx_defense_pickup.o \
-	src/client_effects/fx_dripper.o \
-	src/client_effects/fx_dust.o \
-	src/client_effects/fx_dustpuff.o \
-	src/client_effects/fx_firehands.o \
-	src/client_effects/fx_fire.o \
-	src/client_effects/fx_flamethrow.o \
-	src/client_effects/fx_flyingfist.o \
-	src/client_effects/fx_fountain.o \
-	src/client_effects/fx_halo.o \
-	src/client_effects/fx_health_pickup.o \
-	src/client_effects/fx_hell_staff.o \
-	src/client_effects/fx_hitpuff.o \
-	src/client_effects/fx_hpproj.o \
-	src/client_effects/fx_insectstaff.o \
-	src/client_effects/fx_lensflare.o \
-	src/client_effects/fx_lightning.o \
-	src/client_effects/fx_maceball.o \
-	src/client_effects/fx_magicmissile.o \
-	src/client_effects/fx_meteorbarrier.o \
-	src/client_effects/fx_mist.o \
-	src/client_effects/fx_mork.o \
-	src/client_effects/fx_morph.o \
-	src/client_effects/fx_objects.o \
-	src/client_effects/fx_pespell.o \
-	src/client_effects/fx_phoenix.o \
-	src/client_effects/fx_pickup.o \
-	src/client_effects/fx_pickuppuzzle.o \
-	src/client_effects/fx_plaguemistexplode.o \
-	src/client_effects/fx_plaguemist.o \
-	src/client_effects/fx_portal.o \
-	src/client_effects/fx_quake.o \
-	src/client_effects/fx_redrainglow.o \
-	src/client_effects/fx_redrain.o \
-	src/client_effects/fx_remotecamera.o \
-	src/client_effects/fx_ripples.o \
-	src/client_effects/fx_rope.o \
-	src/client_effects/fx_scorchmark.o \
-	src/client_effects/fx_shadow.o \
-	src/client_effects/fx_shield.o \
-	src/client_effects/fx_shrine.o \
-	src/client_effects/fx_smoke.o \
-	src/client_effects/fx_sound.o \
-	src/client_effects/fx_sparks.o \
-	src/client_effects/fx_spellchange.o \
-	src/client_effects/fx_spellhands.o \
-	src/client_effects/fx_sphereofannihlation.o \
-	src/client_effects/fx_spoo.o \
-	src/client_effects/fx_ssarrow.o \
-	src/client_effects/fx_ssithra.o \
-	src/client_effects/fx_staff.o \
-	src/client_effects/fx_tbeast.o \
-	src/client_effects/fx_teleport.o \
-	src/client_effects/fx_tome.o \
-	src/client_effects/fx_tornado.o \
-	src/client_effects/fx_wall.o \
-	src/client_effects/fx_waterentrysplash.o \
-	src/client_effects/fx_waterwake.o \
-	src/client_effects/fx_weaponpickup.o \
-	src/client_effects/generic_character_effects.o \
-	src/client_effects/generic_weapon_effects.o \
-	src/client_effects/item_effects.o \
-	src/client_effects/level_maps.o \
-	src/client_effects/main.o \
-	src/client_effects/motion.o \
-	src/client_effects/particle.o \
-	src/client_effects/player_effects.o \
-	src/client_effects/test_effect.o \
-	src/client_effects/utilities.o \
+	src/game/effects/ambient_effects.o \
+	src/game/effects/ce_default_message_handler.o \
+	src/game/effects/ce_dlight.o \
+	src/game/effects/ce_message.o \
+	src/game/effects/client_effects.o \
+	src/game/effects/client_entities.o \
+	src/game/effects/font1.o \
+	src/game/effects/font2.o \
+	src/game/effects/fx_ammo_pickup.o \
+	src/game/effects/fx_animate.o \
+	src/game/effects/fx_assassin.o \
+	src/game/effects/fx_blood.o \
+	src/game/effects/fx_blue_ring.o \
+	src/game/effects/fx_bubbler.o \
+	src/game/effects/fx_crosshair.o \
+	src/game/effects/fx_cwatcher.o \
+	src/game/effects/fx_debris.o \
+	src/game/effects/fx_defense_pickup.o \
+	src/game/effects/fx_dripper.o \
+	src/game/effects/fx_dust.o \
+	src/game/effects/fx_dustpuff.o \
+	src/game/effects/fx_firehands.o \
+	src/game/effects/fx_fire.o \
+	src/game/effects/fx_flamethrow.o \
+	src/game/effects/fx_flyingfist.o \
+	src/game/effects/fx_fountain.o \
+	src/game/effects/fx_halo.o \
+	src/game/effects/fx_health_pickup.o \
+	src/game/effects/fx_hell_staff.o \
+	src/game/effects/fx_hitpuff.o \
+	src/game/effects/fx_hpproj.o \
+	src/game/effects/fx_insectstaff.o \
+	src/game/effects/fx_lensflare.o \
+	src/game/effects/fx_lightning.o \
+	src/game/effects/fx_maceball.o \
+	src/game/effects/fx_magicmissile.o \
+	src/game/effects/fx_meteorbarrier.o \
+	src/game/effects/fx_mist.o \
+	src/game/effects/fx_mork.o \
+	src/game/effects/fx_morph.o \
+	src/game/effects/fx_objects.o \
+	src/game/effects/fx_pespell.o \
+	src/game/effects/fx_phoenix.o \
+	src/game/effects/fx_pickup.o \
+	src/game/effects/fx_pickuppuzzle.o \
+	src/game/effects/fx_plaguemistexplode.o \
+	src/game/effects/fx_plaguemist.o \
+	src/game/effects/fx_portal.o \
+	src/game/effects/fx_quake.o \
+	src/game/effects/fx_redrainglow.o \
+	src/game/effects/fx_redrain.o \
+	src/game/effects/fx_remotecamera.o \
+	src/game/effects/fx_ripples.o \
+	src/game/effects/fx_rope.o \
+	src/game/effects/fx_scorchmark.o \
+	src/game/effects/fx_shadow.o \
+	src/game/effects/fx_shield.o \
+	src/game/effects/fx_shrine.o \
+	src/game/effects/fx_smoke.o \
+	src/game/effects/fx_sound.o \
+	src/game/effects/fx_sparks.o \
+	src/game/effects/fx_spellchange.o \
+	src/game/effects/fx_spellhands.o \
+	src/game/effects/fx_sphereofannihlation.o \
+	src/game/effects/fx_spoo.o \
+	src/game/effects/fx_ssarrow.o \
+	src/game/effects/fx_ssithra.o \
+	src/game/effects/fx_staff.o \
+	src/game/effects/fx_tbeast.o \
+	src/game/effects/fx_teleport.o \
+	src/game/effects/fx_tome.o \
+	src/game/effects/fx_tornado.o \
+	src/game/effects/fx_wall.o \
+	src/game/effects/fx_waterentrysplash.o \
+	src/game/effects/fx_waterwake.o \
+	src/game/effects/fx_weaponpickup.o \
+	src/game/effects/generic_character_effects.o \
+	src/game/effects/generic_weapon_effects.o \
+	src/game/effects/item_effects.o \
+	src/game/effects/level_maps.o \
+	src/game/effects/main.o \
+	src/game/effects/motion.o \
+	src/game/effects/particle.o \
+	src/game/effects/player_effects.o \
+	src/game/effects/test_effect.o \
+	src/game/effects/utilities.o \
 	src/client/input/sdl.o \
 	src/client/cinema/smacker.o \
 	src/client/menu/menu.o \

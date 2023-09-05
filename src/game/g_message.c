@@ -8,10 +8,10 @@
 
 #include "header/local.h"
 #include "header/g_message.h"
-#include "../../h2common/message.h"
+#include "common/message.h"
 
-#include "../../h2common/resourcemanager.h"
-#include "../../h2common/singlylinkedlist.h"
+#include "common/resourcemanager.h"
+#include "common/singlylinkedlist.h"
 
 static ResourceManager_t MsgMngr;
 

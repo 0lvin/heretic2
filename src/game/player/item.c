@@ -8,10 +8,10 @@
 #include "../player/library/player.h"
 #include "../player/library/p_weapon.h"
 #include "../monster/misc/player.h"
-#include "../../../h2common/fx.h"
-#include "../../../h2common/matrix.h"
+#include "../common/fx.h"
+#include "../common/matrix.h"
 #include "../header/g_skeletons.h"
-#include "../../../h2common/angles.h"
+#include "../common/angles.h"
 
 void SpellCastPowerup(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);
 void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);

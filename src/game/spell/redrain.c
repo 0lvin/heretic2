@@ -4,13 +4,13 @@
 //
 
 #include "../header/local.h"
-#include "../../../h2common/fx.h"
-#include "../../../h2common/angles.h"
-#include "../../../h2common/matrix.h"
+#include "../common/fx.h"
+#include "../common/angles.h"
+#include "../common/matrix.h"
 #include "../header/g_volume_effect.h"
 #include "../header/utilities.h"
 #include "../header/g_playstats.h"
-#include "../../../h2common/h2rand.h"
+#include "../common/h2rand.h"
 
 #define ARROW_RADIUS			2.0F
 #define ARROW_BACKUP			(45.0F - ARROW_RADIUS)

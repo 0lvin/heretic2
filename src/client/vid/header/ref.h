@@ -187,8 +187,8 @@ typedef enum {
 } ref_restart_t;
 
 // FIXME: bump API_VERSION?
-#include "../../../../h2common/q_surface.h"
-#include "../../../../h2common/arrayed_list.h"
+#include "../../../game/common/q_surface.h"
+#include "../../../game/common/arrayed_list.h"
 #define MAX_ALPHA_ENTITIES 2048
 #define	MAX_SERVER_ENTITIES	MAX_ENTITIES
 #define NUM_PARTICLE_TYPES	62			// This doesn't use the macro because of referencing weirdness.

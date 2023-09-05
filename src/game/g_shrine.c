@@ -8,15 +8,15 @@
 //
 
 #include "header/local.h"
-#include "../../h2common/fx.h"
+#include "common/fx.h"
 #include "header/g_itemstats.h"
-#include "../../h2common/h2rand.h"
+#include "common/h2rand.h"
 #include "player/library/p_actions.h"
 #include "player/library/p_anims.h"
 #include "player/library/p_main.h"
 #include "monster/misc/player.h"
 #include "header/p_funcs.h"
-#include "../../h2common/cl_strings.h"
+#include "common/cl_strings.h"
 
 // Set up those shrines that are randomly selectable.
 

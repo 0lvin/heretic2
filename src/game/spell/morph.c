@@ -17,13 +17,13 @@
 #include "../header/g_volume_effect.h"
 #include "../monster/chicken/chicken.h"
 #include "../monster/chicken/chicken_anim.h"
-#include "../../../h2common/angles.h"
-#include "../../../h2common/fx.h"
-#include "../../../h2common/matrix.h"
+#include "../common/angles.h"
+#include "../common/fx.h"
+#include "../common/matrix.h"
 #include "../header/utilities.h"
 #include "../player/library/p_main.h"
 #include "../player/library/p_anims.h"
-#include "../../../h2common/h2rand.h"
+#include "../common/h2rand.h"
 
 #define ARROW_SPEED			400.0F
 #define ARROW_RADIUS			2.0F

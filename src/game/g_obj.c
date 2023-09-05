@@ -6,12 +6,12 @@
 //
 
 #include "header/local.h"
-#include "../../h2common/fx.h"
+#include "common/fx.h"
 #include "header/g_misc.h"
 #include "header/g_defaultmessagehandler.h"
 #include "monster/plagueelf/plagueelf_anim.h"
-#include "../../h2common/h2rand.h"
-#include "../../h2common/angles.h"
+#include "common/h2rand.h"
+#include "common/angles.h"
 #include "header/g_playstats.h"
 #include "monster/stats/stats.h"
 

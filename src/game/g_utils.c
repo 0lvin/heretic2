@@ -25,9 +25,9 @@
  */
 
 #include "header/local.h"
-#include "../../h2common/fx.h"
+#include "common/fx.h"
 #include "header/g_skeletons.h"
-#include "../../h2common/h2rand.h"
+#include "common/h2rand.h"
 #include "header/g_physics.h"
 
 void G_ProjectSource (vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result)

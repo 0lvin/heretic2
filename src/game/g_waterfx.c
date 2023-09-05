@@ -6,8 +6,8 @@
 // 1. Fountain
 
 #include "header/local.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
+#include "common/fx.h"
+#include "common/h2rand.h"
 
 #define OBJ_INVULNERABLE	1
 #define OBJ_ANIMATE			2

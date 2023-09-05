@@ -3,12 +3,12 @@
 // Copyright 1998 Raven Software
 //
 #include "../../header/local.h"
-#include "../../../../h2common/fx.h"
+#include "../../common/fx.h"
 #include "spreadermist.h"
 #include "spreaderbomb_anim.h"
-#include "../../../../h2common/angles.h"
-#include "../../../../h2common/h2rand.h"
-#include "../../../../h2common/matrix.h"
+#include "../../common/angles.h"
+#include "../../common/h2rand.h"
+#include "../../common/matrix.h"
 #include "../../header/g_volume_effect.h"
 #include "../../header/g_classstatics.h"
 #include "../../header/g_monster.h"

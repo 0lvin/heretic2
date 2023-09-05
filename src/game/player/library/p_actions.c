@@ -16,8 +16,8 @@
 #include "../../header/g_items.h"
 #include "surfaceprops.h"
 #include "../../monster/misc/player.h"
-#include "../../../../h2common/fx.h"
-#include "../../../../h2common/h2rand.h"
+#include "../../common/fx.h"
+#include "../../common/h2rand.h"
 #include "../../header/g_playstats.h"
 #include "p_anim_data.h"
 

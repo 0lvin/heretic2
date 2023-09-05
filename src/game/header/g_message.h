@@ -6,7 +6,7 @@
 #define G_MESSAGE_H
 
 #include "../../common/header/common.h"
-#include "../../../h2common/singlylinkedlist.h"
+#include "../common/singlylinkedlist.h"
 
 // Be sure to update DefaultMessageReceivers after adding a new message
 typedef enum G_MsgID_e

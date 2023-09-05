@@ -11,7 +11,7 @@
 
 #include "gkrokon_anim.h"
 #include "gkrokon.h"
-#include "../../../../h2common/h2rand.h"
+#include "../../common/h2rand.h"
 
 // ****************************************************************************
 // Stand1 - Laid down, resting, still on the floor.

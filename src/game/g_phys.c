@@ -26,7 +26,7 @@
 
 
 #include "header/local.h"
-#include "../../h2common/message.h"
+#include "common/message.h"
 
 
 #define KNOCKBACK_SCALING 0.5

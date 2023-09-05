@@ -9,7 +9,7 @@
 #define G_MONSTER_H
 
 #include "local.h"
-#include "../../../h2common/message.h"
+#include "../common/message.h"
 #include "g_classstatics.h"
 
 extern void M_WorldEffects (struct edict_s *ent);

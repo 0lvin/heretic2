@@ -6,8 +6,8 @@
 //
 
 #include "../../header/local.h"
-#include "../../../../h2common/fx.h"
-#include "../../../../h2common/h2rand.h"
+#include "../../common/fx.h"
+#include "../../common/h2rand.h"
 #include "../../header/decals.h"
 #include "tcheckrik.h"
 #include "../../header/utilities.h"

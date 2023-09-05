@@ -25,9 +25,9 @@
  */
 
 #include "header/local.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
-#include "../../h2common/cl_strings.h"
+#include "common/fx.h"
+#include "common/h2rand.h"
+#include "common/cl_strings.h"
 
 /*QUAK-ED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)
 Fire an origin based temp entity event to the clients.

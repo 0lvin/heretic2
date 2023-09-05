@@ -375,7 +375,7 @@ SV_ShutdownGameProgs(void)
 	ge = NULL;
 }
 
-#include "../../h2common/fx.h"
+#include "../game/common/fx.h"
 int sv_numeffects = 0;
 PerEffectsBuffer_t SV_Persistant_Effects[MAX_PERSISTANT_EFFECTS];
 

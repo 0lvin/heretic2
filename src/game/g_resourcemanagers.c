@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #include "header/local.h"
-#include "../../h2common/singlylinkedlist.h"
+#include "common/singlylinkedlist.h"
 
 void G_InitMsgMngr();
 void G_ReleaseMsgMngr();

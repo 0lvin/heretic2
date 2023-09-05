@@ -71,9 +71,9 @@
 #include "../header/utilities.h"
 #include "../header/g_hitlocation.h"
 #include "../player/library/p_anims.h"
-#include "../../../h2common/arrayed_list.h"
-#include "../../../h2common/message.h"
-#include "../../../h2common/fx.h"
+#include "../common/arrayed_list.h"
+#include "../common/message.h"
+#include "../common/fx.h"
 
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},

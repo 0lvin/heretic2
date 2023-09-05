@@ -6,10 +6,10 @@
 //
 
 #include "../header/local.h"
-#include "../../../h2common/fx.h"
-#include "../../../h2common/angles.h"
+#include "../common/fx.h"
+#include "../common/angles.h"
 #include "../header/utilities.h"
-#include "../../../h2common/h2rand.h"
+#include "../common/h2rand.h"
 #include "../header/decals.h"
 #include "../header/g_playstats.h"
 

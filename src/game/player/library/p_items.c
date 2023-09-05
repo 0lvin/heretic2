@@ -12,13 +12,13 @@
 #include "../../header/g_items.h"
 #include "p_anims.h"
 #include "p_anim_data.h"
-#include "../../../../h2common/fx.h"
-#include "../../../../h2common/h2rand.h"
+#include "../../common/fx.h"
+#include "../../common/h2rand.h"
 #include "../../../common/header/common.h"
 #include "p_items.h"
 #include "../../header/local.h"
 #include "../../header/g_itemstats.h"
-#include "../../../../h2common/cl_strings.h"
+#include "../../common/cl_strings.h"
 
 int		p_num_items=0;
 gitem_t	*p_itemlist=NULL;

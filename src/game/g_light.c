@@ -6,8 +6,8 @@
 //
 
 #include "header/local.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/effectflags.h"
+#include "common/fx.h"
+#include "common/effectflags.h"
 #include "header/g_misc.h"
 #include "header/g_defaultmessagehandler.h"
 

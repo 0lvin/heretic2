@@ -6,7 +6,7 @@
 #define G_PHYSICS_H
 
 #include "../../common/header/common.h"
-#include "../../../h2common/q_physics.h"
+#include "../common/q_physics.h"
 
 #define	FRICTION_STOPSPEED			100
 #define FRICTION_SURFACE			6

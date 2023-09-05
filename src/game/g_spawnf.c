@@ -4,7 +4,7 @@
 //
 #include "header/local.h"
 #include "header/g_skeletons.h"
-#include "../../h2common/arrayed_list.h"
+#include "common/arrayed_list.h"
 #include "header/g_physics.h"
 
 void ED_CallSpawn (edict_t *ent);

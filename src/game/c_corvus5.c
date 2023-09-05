@@ -12,8 +12,8 @@ Copyright 1998 Raven Software
 #include "header/utilities.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_monster.h"
-#include "../../h2common/fx.h"
-#include "../../h2common/h2rand.h"
+#include "common/fx.h"
+#include "common/h2rand.h"
 #include "header/buoy.h"
 
 #include "header/c_corvus5.h"

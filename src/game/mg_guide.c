@@ -22,13 +22,13 @@
 // ****************************************************************************
 
 #include "header/local.h"
-#include "../../h2common/angles.h"
+#include "common/angles.h"
 #include "header/utilities.h"
-#include "../../h2common/h2rand.h"
+#include "common/h2rand.h"
 #include "header/buoy.h"
 #include "header/g_monster.h"
 #include "monster/stats/stats.h"
-#include "../../h2common/fx.h"
+#include "common/fx.h"
 #include "header/mg_guide.h"
 
 #define	BUOY_SEARCH_TIME		10//10 seconds between choosing a buoy and getting there

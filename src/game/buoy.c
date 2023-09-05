@@ -9,8 +9,8 @@
 
 #include "header/local.h"
 #include "header/buoy.h"
-#include "../../h2common/h2rand.h"
-#include "../../h2common/fx.h"
+#include "common/h2rand.h"
+#include "common/fx.h"
 #include "monster/stats/stats.h"
 
 #define SF_JUMP		1//make monster jump

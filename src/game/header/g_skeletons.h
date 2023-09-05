@@ -6,8 +6,8 @@
 #define G_SKELETONS_H
 
 #include "local.h"
-#include "../../../h2common/arrayed_list.h"
-#include "../../../h2common/skeletons.h"
+#include "../common/arrayed_list.h"
+#include "../common/skeletons.h"
 
 typedef struct G_SkeletalJoint_s
 {
