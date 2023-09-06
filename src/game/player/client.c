@@ -3103,17 +3103,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	pm.cmd = *ucmd;
 	client->pcmd = *ucmd;
 
-///* TODO: Move error
-	if (ucmd->forwardmove || ucmd->sidemove || ucmd->upmove)
-	{
-		client->playerinfo.pcmd = *ucmd;
-		playerExport->PlayerUpdateCmdFlags(&client->playerinfo);
-		playerExport->PlayerUpdate(&ent->client->playerinfo);
-		// Validate
-		playerExport->AnimUpdateFrame(&ent->client->playerinfo);
-	}
-///*/
-
 	if (ent->movetype != PHYSICSTYPE_NOCLIP)
 	{
 		pm.cmd.forwardmove = client->playerinfo.fwdvel;

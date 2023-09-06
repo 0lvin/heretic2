@@ -751,24 +751,6 @@ CL_UpdateWindowedMouse(void)
 }
 
 void
-CL_SendCommand(void)
-{
-	// get new key events
-	IN_Update();
-
-	// process console commands
-	Cbuf_Execute();
-
-	// fix any cheating cvars
-	CL_FixCvarCheats();
-
-	// send intentions now
-	CL_SendCmd();
-
-	// resend a connection request if necessary
-	CL_CheckForResend();
-}
-void
 CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, qboolean renderframe)
 {
 	static int lasttimecalled;
@@ -860,9 +842,6 @@ CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, 
 
 	if (renderframe)
 	{
-		/* send a new command message to the server */
-		CL_SendCommand();
-
 		VID_CheckChanges();
 		CL_PredictMovement();
 

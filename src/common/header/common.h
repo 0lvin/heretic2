@@ -143,13 +143,7 @@ void MSG_ReadDeltaUsercmd(sizebuf_t *sb,
 		struct usercmd_s *cmd);
 
 void MSG_ReadDir(sizebuf_t *sb, vec3_t vector);
-
 void MSG_ReadData(sizebuf_t *sb, void *buffer, int size);
-
-void MSG_WriteEntityHeaderBits(sizebuf_t *msg, unsigned char *bf, unsigned char *bfNonZero);
-void MSG_WriteDirMag (sizebuf_t *sb, vec3_t dir);
-void MSG_WriteYawPitch (sizebuf_t *sb, vec3_t vector);
-void MSG_WriteShortYawPitch (sizebuf_t *sb, vec3_t vector);
 void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
 /* ================================================================== */
