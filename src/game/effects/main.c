@@ -89,23 +89,23 @@ void Init()
 
 	clientEnts = NULL;
 
-	cl_camera_under_surface = Cvar_Get( "cl_camera_under_surface", "0", 0 );
-	r_farclipdist = Cvar_Get("r_farclipdist", FAR_CLIP_DIST, 0);
-	r_nearclipdist = Cvar_Get("r_nearclipdist", NEAR_CLIP_DIST, 0);
-	r_detail = Cvar_Get("r_detail", DETAIL_DEFAULT, CVAR_ARCHIVE);
-	fx_numinview = Cvar_Get("fx_numinview", "0", 0);
-	fx_numactive = Cvar_Get("fx_numactive", "0", 0);
-	clfx_gravity = Cvar_Get("clfx_gravity", GRAVITY_STRING, 0);
-	cl_timedemo = Cvar_Get("timedemo","0",0);
-	compass = Cvar_Get("compass", "0", CVAR_ARCHIVE);
+	cl_camera_under_surface = fxi.Cvar_Get( "cl_camera_under_surface", "0", 0 );
+	r_farclipdist = fxi.Cvar_Get("r_farclipdist", FAR_CLIP_DIST, 0);
+	r_nearclipdist = fxi.Cvar_Get("r_nearclipdist", NEAR_CLIP_DIST, 0);
+	r_detail = fxi.Cvar_Get("r_detail", DETAIL_DEFAULT, CVAR_ARCHIVE);
+	fx_numinview = fxi.Cvar_Get("fx_numinview", "0", 0);
+	fx_numactive = fxi.Cvar_Get("fx_numactive", "0", 0);
+	clfx_gravity = fxi.Cvar_Get("clfx_gravity", GRAVITY_STRING, 0);
+	cl_timedemo = fxi.Cvar_Get("timedemo","0",0);
+	compass = fxi.Cvar_Get("compass", "0", CVAR_ARCHIVE);
 
-	fxTest1 = Cvar_Get("fxTest1", "0", 0);
-	fxTest2 = Cvar_Get("fxTest2", "0", 0);
-	fxTest3 = Cvar_Get("fxTest3", "0", 0);
-	fxTest4 = Cvar_Get("fxTest4", "0", 0);
+	fxTest1 = fxi.Cvar_Get("fxTest1", "0", 0);
+	fxTest2 = fxi.Cvar_Get("fxTest2", "0", 0);
+	fxTest3 = fxi.Cvar_Get("fxTest3", "0", 0);
+	fxTest4 = fxi.Cvar_Get("fxTest4", "0", 0);
 
-	cl_lerpdist2 = Cvar_Get("cl_lerpdist2", "10000", 0);
-	crosshair = Cvar_Get ("crosshair", "0", CVAR_ARCHIVE);
+	cl_lerpdist2 = fxi.Cvar_Get("cl_lerpdist2", "10000", 0);
+	crosshair = fxi.Cvar_Get("crosshair", "0", CVAR_ARCHIVE);
 
 	Clear();
 }
@@ -952,47 +952,41 @@ AddServerEntities(frame_t *frame)
 
 // end
 
+static client_fx_export_t effectsExport;
+
 /*
 ==============
 GetRefAPI
 
 ==============
 */
-client_fx_export_t GetfxAPI (client_fx_import_t import)
+Q2_DLL_EXPORTED client_fx_export_t *
+GetfxAPI(client_fx_import_t import)
 {
-	client_fx_export_t _export;
-
 	fxi = import;
-
-	_export.api_version = API_VERSION;
-
-	_export.Init = Init;
-
-	_export.ShutDown = ShutDown;
-
-	_export.Clear=Clear;
-
-	_export.RegisterSounds = RegisterSounds;
-	_export.RegisterModels = RegisterModels;
+	effectsExport.api_version = API_VERSION;
+	effectsExport.Init = Init;
+	effectsExport.ShutDown = ShutDown;
+	effectsExport.Clear=Clear;
+	effectsExport.RegisterSounds = RegisterSounds;
+	effectsExport.RegisterModels = RegisterModels;
 
 	// In the client code in the executable the following functions are called first.
-	_export.AddPacketEntities = AddServerEntities;
+	effectsExport.AddPacketEntities = AddServerEntities;
 
 	// Secondly....
-	_export.AddEffects = AddEffects;
+	effectsExport.AddEffects = AddEffects;
 
 	// Thirdly (if any independent effects exist).
-	_export.ParseClientEffects = ParseEffects;
+	effectsExport.ParseClientEffects = ParseEffects;
 
 	// Lastly.
-	_export.UpdateEffects = PostRenderUpdate;
+	effectsExport.UpdateEffects = PostRenderUpdate;
 
-	_export.GetLMI = GetLMI;
-	_export.GetLMIMax = GetLMIMax;
+	effectsExport.GetLMI = GetLMI;
+	effectsExport.GetLMIMax = GetLMIMax;
+	effectsExport.RemoveClientEffects = RemoveEffectsFromCent;
+	effectsExport.client_string = client_string;
 
-	_export.RemoveClientEffects = RemoveEffectsFromCent;
-
-	_export.client_string = client_string;
-
-	return _export;
+	return &effectsExport;
 }

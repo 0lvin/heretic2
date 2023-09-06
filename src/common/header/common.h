@@ -152,12 +152,6 @@ void MSG_WriteYawPitch (sizebuf_t *sb, vec3_t vector);
 void MSG_WriteShortYawPitch (sizebuf_t *sb, vec3_t vector);
 void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
-void MSG_ReadJoints(sizebuf_t *msg_read, entity_state_t *ent);
-void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
-void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir);
-void MSG_ReadYawPitch(sizebuf_t *sb, vec3_t vector);
-void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t vector);
-
 /* ================================================================== */
 
 extern qboolean bigendien;

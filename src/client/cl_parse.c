@@ -76,7 +76,7 @@ CL_RegisterSounds(void)
 	int i;
 
 	S_BeginRegistration();
-	fxe.RegisterSounds();
+	fxe->RegisterSounds();
 
 	for (i = 1; i < MAX_SOUNDS; i++)
 	{
@@ -445,7 +445,7 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 
 			oldindex++;
 
-			fxe.RemoveClientEffects(&cl_entities[newnum]);
+			fxe->RemoveClientEffects(&cl_entities[newnum]);
 
 			if (oldindex >= oldframe->num_entities)
 			{
@@ -806,7 +806,7 @@ CL_ParseFrame(void)
 		Com_Error(ERR_DROP, "CL_ParseFrame: not client effects");
 	}
 
-	fxe.ParseClientEffects(NULL);
+	fxe->ParseClientEffects(NULL);
 
 	/* save the frame off in the backup array for later delta comparisons */
 	cl.frames[cl.frame.serverframe & UPDATE_MASK] = cl.frame;

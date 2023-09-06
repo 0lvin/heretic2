@@ -7,7 +7,7 @@
 #include "../effects/client_effects.h"
 #include "../common/resourcemanager.h"
 
-client_fx_export_t fxe;
+client_fx_export_t *fxe;
 
 float EffectEventIdTimeArray[1000];
 int cl_effectpredict[1000];
@@ -16,7 +16,7 @@ predictinfo_t predictInfo;
 EffectsBuffer_t clientPredEffects;
 float PlayerAlpha = 1.0f;
 
-client_fx_export_t GetfxAPI(client_fx_import_t import);
+client_fx_export_t *GetfxAPI(client_fx_import_t import);
 
 ResourceManager_t FXBufMgnr;
 
@@ -103,7 +103,7 @@ int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 
 void CL_ShutdownClientEffects()
 {
-	fxe.ShutDown();
+	fxe->ShutDown();
 }
 
 qboolean
@@ -279,7 +279,7 @@ CL_InitClientEffects(const char* name)
 	cl_game_import.InCameraPVS = InCameraPVS;
 
 	fxe = GetfxAPI(cl_game_import);
-	if (fxe.api_version != GAME_API_VERSION)
+	if (fxe->api_version != GAME_API_VERSION)
 	{
 		CL_ShutdownClientEffects();
 		Com_Error(0, "%s has incompatible api_version", name);
@@ -288,7 +288,7 @@ CL_InitClientEffects(const char* name)
 	Com_Printf("------------------------------------");
 	result = 1;
 
-	fxe.Init();
+	fxe->Init();
 
 	return result;
 }

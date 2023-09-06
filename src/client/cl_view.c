@@ -276,7 +276,7 @@ CL_PrepRefresh(void)
 	Com_Printf("                                     \r");
 
 	//CL_RegisterTEntModels ();
-	fxe.RegisterModels();
+	fxe->RegisterModels();
 
 	for (i = 1; i < MAX_MODELS && cl.configstrings[CS_MODELS + i][0]; i++)
 	{

@@ -34,7 +34,7 @@ static qboolean FXSoundthink(struct client_entity_s *self, centity_t *owner)
 
 	// if we are in a cinematic, stop us making noises
 	// these are peripheral ambient noises
-   	if(!(Cvar_Get("cl_cinematicfreeze","0",0)->value))
+   	if(!(fxi.Cvar_Get("cl_cinematicfreeze","0",0)->value))
    	{
 		switch((int)(soundinfo->style))
 		{

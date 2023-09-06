@@ -877,9 +877,9 @@ CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, 
 			time_before_ref = Sys_Milliseconds();
 		}
 
-		if (fxe.UpdateEffects)
+		if (fxe->UpdateEffects)
 		{
-			fxe.UpdateEffects();
+			fxe->UpdateEffects();
 		}
 
 		SCR_UpdateScreen();

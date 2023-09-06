@@ -570,7 +570,6 @@ trace_t CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 
 //=============================================================================
 #include <limits.h>
-#define	FX_API_VERSION		1
 
 // ********************************************************************************************
 // predictinfo_t
@@ -622,7 +621,7 @@ typedef struct
 
 } client_fx_export_t;
 
-extern client_fx_export_t fxe;
+extern client_fx_export_t *fxe;
 
 //
 // these are the data and functions imported by the client fx module

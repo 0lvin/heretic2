@@ -378,3 +378,8 @@ typedef struct PerEffectsBuffer_s
 	int data_size;
 	// jmarshall end
 } PerEffectsBuffer_t;
+
+void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf);
+void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir);
+void MSG_ReadYawPitch(sizebuf_t *sb, vec3_t vector);
+void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t vector);

@@ -303,7 +303,7 @@ static qboolean FXQuakeThink (struct client_entity_s *self, centity_t *owner)
 		return (false);
 
 	self->LifeTime -= 5;
-	Cvar_SetValue("quake_amount", self->LifeTime);
+	fxi.Cvar_SetValue("quake_amount", self->LifeTime);
 	return (true);
 }
 

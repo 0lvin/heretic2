@@ -382,7 +382,7 @@ endif
 # ----------
 
 # Builds everything
-all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft player effects
+all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft player
 
 # ----------
 
@@ -1117,6 +1117,18 @@ endif
 
 # Used by the effects
 EFFECTS_OBJS_ = \
+	src/game/common/resource_manager.o \
+	src/game/common/message.o \
+	src/game/common/h2singlylinkedlist.o \
+	src/game/effects/netmsg_read.o \
+	src/common/movemsg.o \
+	src/common/szone.o \
+	src/common/shared/rand.o \
+	src/common/shared/shared.o \
+	src/game/common/h2vector.o \
+	src/game/common/h2rand.o \
+	src/game/common/h2matrix.o \
+	src/game/common/h2physics.o \
 	src/game/effects/ambient_effects.o \
 	src/game/effects/ce_default_message_handler.o \
 	src/game/effects/ce_dlight.o \
@@ -1215,7 +1227,7 @@ CLIENT_OBJS_ := \
 	src/game/common/h2singlylinkedlist.o \
 	src/game/common/h2vector.o \
 	src/game/common/message.o \
-	src/game/common/netmsg_read.o \
+	src/game/effects/netmsg_read.o \
 	src/game/common/reference.o \
 	src/game/common/resource_manager.o \
 	src/game/common/skeletons.o \
@@ -1922,18 +1934,18 @@ endif
 
 # release/base/effects.so
 ifeq ($(YQ2_OSTYPE), Windows)
-release/base/effects.dll : $(PLAYER_OBJS)
+release/base/effects.dll : $(EFFECTS_OBJS)
 	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
+	${Q}$(CC) $(LDFLAGS) $(EFFECTS_OBJS) $(LDLIBS) -o $@
 	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
-release/base/effects.dylib : $(PLAYER_OBJS)
+release/base/effects.dylib : $(EFFECTS_OBJS)
 	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
+	${Q}$(CC) $(LDFLAGS) $(EFFECTS_OBJS) $(LDLIBS) -o $@
 else
-release/base/effects.so : $(PLAYER_OBJS)
+release/base/effects.so : $(EFFECTS_OBJS)
 	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
+	${Q}$(CC) $(LDFLAGS) $(EFFECTS_OBJS) $(LDLIBS) -o $@
 endif
 
 # ----------

@@ -48,7 +48,7 @@ CL_AddPacketEntities(frame_t *frame)
 	if (strcmp(game->string, "") == 0)
 	{
 		// TODO: Rewrite game type
-		fxe.AddPacketEntities(frame);
+		fxe->AddPacketEntities(frame);
 		return;
 	}
 
@@ -936,7 +936,7 @@ CL_AddEntities(void)
 	CL_AddParticles();
 	CL_AddDLights();
 	// jmarshall - this is in client effects.dll
-	fxe.AddEffects(false);
+	fxe->AddEffects(false);
 	// jmarshall end
 	CL_AddLightStyles();
 }
