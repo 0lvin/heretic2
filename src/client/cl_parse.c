@@ -36,6 +36,9 @@ int bitcounts[32]; /* just for protocol profiling */
 char *svc_strings[256] = {
 	"svc_bad",
 
+	"svc_muzzleflash",
+	"svc_muzzlflash2",
+	"svc_temp_entity",
 	"svc_layout",
 	"svc_inventory",
 
@@ -1292,6 +1295,18 @@ CL_ParseServerMessage(void)
 
 			case svc_spawnbaseline:
 				CL_ParseBaseline();
+				break;
+
+			case svc_temp_entity:
+				CL_ParseTEnt();
+				break;
+
+			case svc_muzzleflash:
+				CL_AddMuzzleFlash();
+				break;
+
+			case svc_muzzleflash2:
+				CL_AddMuzzleFlash2();
 				break;
 
 			case svc_download:

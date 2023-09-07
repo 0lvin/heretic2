@@ -195,6 +195,9 @@ enum svc_ops_e
 	svc_bad,
 
 	/* these ops are known to the game dll */
+	svc_muzzleflash,
+	svc_muzzleflash2,
+	svc_temp_entity,
 	svc_layout,
 	svc_inventory,
 	svc_client_effect,
@@ -274,7 +277,6 @@ enum clc_ops_e
 /* user_cmd_t communication */
 
 /* ms and light always sent, the others are optional */
-
 #define CM_ANGLE1 (1 << 0)
 #define CM_ANGLE2 (1 << 1)
 #define CM_ANGLE3 (1 << 2)

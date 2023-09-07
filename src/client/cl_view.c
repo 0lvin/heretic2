@@ -467,6 +467,11 @@ V_RenderView(float stereo_separation)
 		   v_forward, etc. */
 		CL_AddEntities();
 
+		if (cl_testparticles->value)
+		{
+			V_TestParticles();
+		}
+
 		if (cl_testentities->value)
 		{
 			V_TestEntities();
