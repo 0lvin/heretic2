@@ -1284,7 +1284,7 @@ VectorCopy		((centity_t *)(self->extra))->referenceInfo->references[MORK_LEYEREF
 
 	VectorMA(pos, 8, forward, pos);
 
-//	Com_Printf("%4.2f z diff\n", pos[2]);
+//	fxi.Com_Printf("%4.2f z diff\n", pos[2]);
 
 	VectorAdd(((centity_t *)(self->extra))->current.origin, pos, pos);
 

@@ -673,6 +673,7 @@ typedef struct
 	void	(*Sys_Error) (int err_level, char *str, ...);
 	void	(*Com_Error) (int code, char *fmt, ...);
 	void	(*Con_Printf) (int print_level, char *str, ...);
+	void	(*Com_Printf) (char *msg, ...);
 
 	//
 
@@ -700,6 +701,16 @@ typedef struct
 	void	*(*TagMalloc)(int size, int tag);
 	void	(*TagFree)(void *block);
 	void	(*FreeTags)(int tag);
+
+	int	(*MSG_ReadByte)(sizebuf_t *sb);
+	int	(*MSG_ReadShort)(sizebuf_t *sb);
+	int	(*MSG_ReadLong)(sizebuf_t *sb);
+	float	(*MSG_ReadFloat)(sizebuf_t *sb);
+	void	(*MSG_ReadPos)(sizebuf_t *sb, vec3_t pos);
+	void	(*MSG_ReadDir)(sizebuf_t *sb, vec3_t vector);
+	void	(*MSG_ReadData)(sizebuf_t *sb, void *buffer, int size);
+	void	(*CL_RunLightStyles)(void);
+	void	(*CL_ClearLightStyles)(void);
 
 	trace_t	(*Trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags);
 	qboolean (*InCameraPVS)(vec3_t point);

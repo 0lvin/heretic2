@@ -1044,7 +1044,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	default:
 
-		Com_DPrintf("ERROR FXHPMissile: No available effect processor! (EFFECT ID %d)\n", effectType);
+		fxi.Com_Printf("ERROR FXHPMissile: No available effect processor! (EFFECT ID %d)\n", effectType);
 		break;
 	}
 }

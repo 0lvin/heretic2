@@ -27,7 +27,6 @@
 #include <math.h>
 #include "header/client.h"
 
-extern client_fx_import_t fxi;
 extern struct model_s *cl_mod_powerscreen;
 
 void

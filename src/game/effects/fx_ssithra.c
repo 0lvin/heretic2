@@ -304,7 +304,7 @@ void FXSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin)
 			break;
 
 		default:
-			Com_Printf("Unknown effect type (%d) for FXSsithraArrow\n", whicheffect);
+			fxi.Com_Printf("Unknown effect type (%d) for FXSsithraArrow\n", whicheffect);
 			break;
 	}
 }

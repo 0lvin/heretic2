@@ -538,7 +538,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 					}
 					else
 					{
-						Com_DPrintf("Max Client Collisions exceeded by %d\n", curTrace - (NUM_TRACES - 1));
+						fxi.Com_Printf("Max Client Collisions exceeded by %d\n", curTrace - (NUM_TRACES - 1));
 						++curTrace;
 					}
 				}
@@ -612,11 +612,11 @@ qboolean AddEntityToView(entity_t *ent)
 {
 	if (!ent->model || !*ent->model)
 	{
-		Com_DPrintf ("AddEntityToView: NULL Model\n");
+		fxi.Com_Printf("AddEntityToView: NULL Model\n");
 	}
 	if((ent->flags & RF_TRANS_ADD) && (ent->flags & RF_ALPHA_TEXTURE))
 	{
-		Com_DPrintf ("AddEntityToView: Cannot have additive alpha mapped image. UNSUPPORTED !!\n");
+		fxi.Com_Printf("AddEntityToView: Cannot have additive alpha mapped image. UNSUPPORTED !!\n");
 	}
 
 	if((ent->flags & RF_TRANS_ANY) || (ent->color.a != 255))

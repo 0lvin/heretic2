@@ -1121,8 +1121,6 @@ EFFECTS_OBJS_ = \
 	src/game/common/message.o \
 	src/game/common/h2singlylinkedlist.o \
 	src/game/effects/netmsg_read.o \
-	src/common/movemsg.o \
-	src/common/szone.o \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
 	src/game/common/h2vector.o \

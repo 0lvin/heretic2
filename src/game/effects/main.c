@@ -20,7 +20,7 @@
 #include "../header/g_physics.h"
 #include "../header/g_playstats.h"
 #include "../../common/header/common.h"
-
+#include "../header/game.h"
 
 
 ///// IMPORTANT !!! THIS IS THE STRING THAT DETERMINES IF YOU CAN JOIN A SERVER	- IE YOU HAVE THE RIGHT CLIENT EFFECTS DLL
@@ -56,7 +56,6 @@ void RegisterSounds();
 void RegisterModels(void); // jmarshall: function prototype misamtch
 void AddEffects(qboolean freeze);
 static void PostRenderUpdate();
-void CL_RunLightStyles(void);
 struct level_map_info_s *GetLMI();
 int GetLMIMax();
 
@@ -112,7 +111,6 @@ void Init()
 
 void Clear()
 {
-	void CL_ClearLightStyles();
 	int i;
 	centity_t *owner;
 
@@ -135,7 +133,7 @@ void Clear()
 		}
 	}
 
-	CL_ClearLightStyles();
+	fxi.CL_ClearLightStyles();
 
 	memset(&CircularList[0],0,sizeof(CircularList));
 	if (r_detail && r_detail->value == DETAIL_LOW)
@@ -202,7 +200,7 @@ void AddEffects(qboolean freeze)
 
 	if(fx_numinview->value)
 	{
-		Com_DPrintf("Active CE : free %d, owned %d. Particles : processed %d, rendered %d\n",
+		fxi.Com_Printf("Active CE : free %d, owned %d. Particles : processed %d, rendered %d\n",
 					num_free_inview, num_owned_inview, numprocessedparticles, numrenderedparticles);
 	}
 }
@@ -237,11 +235,11 @@ PostRenderUpdate(void)
 		}
 	}
 
-	CL_RunLightStyles();
+	fxi.CL_RunLightStyles();
 
 	if(fx_numactive->value)
 	{
-		Com_DPrintf("Active CE : free %d, owned %d\n", num_free_active, num_owned_active);
+		fxi.Com_Printf("Active CE : free %d, owned %d\n", num_free_active, num_owned_active);
 	}
 }
 
@@ -264,7 +262,7 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 #if 0
 	if(strcmp(format, fxi.Cvar_VariableString("cfxpl")))
 	{
-		Com_DPrintf("Parameter mismatch !!!!!!!!!\n");
+		fxi.Com_Printf("Parameter mismatch !!!!!!!!!\n");
 		assert(0);
 	}
 #endif
@@ -294,7 +292,7 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 
 	if(!format)
 	{
-		Com_Error(ERR_DROP, "CL_ReadEffect: null format string");
+		fxi.Com_Error(ERR_DROP, "CL_ReadEffect: null format string");
 		return 0;
 	}
 
@@ -303,24 +301,24 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 		switch(current)
 		{
 		case 'b':
-			MSG_ReadByte(msg_read);
+			fxi.MSG_ReadByte(msg_read);
 			break;
 
 		case 's':
-			MSG_ReadShort(msg_read);
+			fxi.MSG_ReadShort(msg_read);
 			break;
 
 		case 'i':
-			MSG_ReadLong(msg_read);
+			fxi.MSG_ReadLong(msg_read);
 			break;
 
 		case 'f':
-			MSG_ReadFloat(msg_read);
+			fxi.MSG_ReadFloat(msg_read);
 			break;
 
 		case 'p':
 		case 'v':
-			MSG_ReadPos(msg_read, v);
+			fxi.MSG_ReadPos(msg_read, v);
 			break;
 
 		case 'u':
@@ -328,7 +326,7 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 			break;
 
 		case 'd':
-			MSG_ReadDir(msg_read, v);
+			fxi.MSG_ReadDir(msg_read, v);
 			break;
 
 		case 'x':
@@ -416,7 +414,7 @@ ParseEffects(centity_t *owner)
 	{
 		msg_read = fxi.net_message;
 
-		num = MSG_ReadByte(msg_read);
+		num = fxi.MSG_ReadByte(msg_read);
 	}
 
 	assert(num >= 0);
@@ -436,7 +434,7 @@ ParseEffects(centity_t *owner)
 			msg_read->readcount = fxBuf->freeBlock;
 		}
 
-		effect = MSG_ReadShort(msg_read);
+		effect = fxi.MSG_ReadShort(msg_read);
 // jmarshall
 		//if(effect&EFFECT_PRED_INFO)
 		//{
@@ -454,19 +452,19 @@ ParseEffects(centity_t *owner)
 #if 0
 		Cvar_Set("cfxpl", MSG_ReadString(msg_read));
 #endif
-		flags = MSG_ReadShort(msg_read);
+		flags = fxi.MSG_ReadShort(msg_read);
 
 		if(flags & (CEF_BROADCAST|CEF_MULTICAST))
 		{
 			//if(flags & CEF_ENTNUM16)
 			//{
-			//	index = MSG_ReadShort(msg_read);
+			//	index = fxi.MSG_ReadShort(msg_read);
 			//}
 			//else
 			//{
-			//	index = MSG_ReadByte(msg_read);
+			//	index = fxi.MSG_ReadByte(msg_read);
 			//}
-			index = MSG_ReadShort(msg_read);
+			index = fxi.MSG_ReadShort(msg_read);
 
 			if(index)	// 0 should indicate the world
 			{
@@ -490,7 +488,7 @@ ParseEffects(centity_t *owner)
 		}
 		else
 		{
-			MSG_ReadPos(msg_read, position);
+			fxi.MSG_ReadPos(msg_read, position);
 
 			if(tempOwner && !(flags & CEF_BROADCAST))
 			{
@@ -500,7 +498,7 @@ ParseEffects(centity_t *owner)
 			}
 		}
 
-		if (MSG_ReadByte(msg_read) != 0x3a)
+		if (fxi.MSG_ReadByte(msg_read) != 0x3a)
 		{
 			fxi.Com_Error(ERR_DROP, "Invalid effect header\n");
 			return;
@@ -599,7 +597,7 @@ AddServerEntities(frame_t *frame)
 
 	if(numEntsToAdd > MAX_SERVER_ENTITIES)
 	{
-		Com_Printf("Overflow:  Too many (%d : %d) server entities to add to view\n", numEntsToAdd, MAX_SERVER_ENTITIES);
+		fxi.Com_Printf("Overflow:  Too many (%d : %d) server entities to add to view\n", numEntsToAdd, MAX_SERVER_ENTITIES);
 		numEntsToAdd = MAX_SERVER_ENTITIES;
 	}
 

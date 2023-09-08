@@ -15,7 +15,7 @@ int cl_effectpredict[1000];
 predictinfo_t predictInfo;
 EffectsBuffer_t clientPredEffects;
 float PlayerAlpha = 1.0f;
-
+void CL_ClearLightStyles(void);
 client_fx_export_t *GetfxAPI(client_fx_import_t import);
 
 ResourceManager_t FXBufMgnr;
@@ -260,6 +260,7 @@ CL_InitClientEffects(const char* name)
 	cl_game_import.Sys_Error = CL_Sys_Error;
 	cl_game_import.Com_Error = Com_Error;
 	cl_game_import.Con_Printf = CL_Printf;
+	cl_game_import.Com_Printf = Com_Printf;
 	cl_game_import.Cvar_Get = Cvar_Get;
 	cl_game_import.Cvar_Set = Cvar_Set;
 	cl_game_import.Cvar_SetValue = Cvar_SetValue;
@@ -277,6 +278,15 @@ CL_InitClientEffects(const char* name)
 	cl_game_import.FreeTags = Z_FreeTags;
 	cl_game_import.Trace = CL_NewTrace;
 	cl_game_import.InCameraPVS = InCameraPVS;
+	cl_game_import.MSG_ReadByte = MSG_ReadByte;
+	cl_game_import.MSG_ReadShort = MSG_ReadShort;
+	cl_game_import.MSG_ReadLong = MSG_ReadLong;
+	cl_game_import.MSG_ReadFloat = MSG_ReadFloat;
+	cl_game_import.MSG_ReadPos = MSG_ReadPos;
+	cl_game_import.MSG_ReadDir = MSG_ReadDir;
+	cl_game_import.MSG_ReadData = MSG_ReadData;
+	cl_game_import.CL_RunLightStyles = CL_RunLightStyles;
+	cl_game_import.CL_ClearLightStyles = CL_ClearLightStyles;
 
 	fxe = GetfxAPI(cl_game_import);
 	if (fxe->api_version != GAME_API_VERSION)

@@ -190,7 +190,7 @@ static qboolean FXSoundthink(struct client_entity_s *self, centity_t *owner)
    				soundname = "ambient/cavecreak1.wav";
 			break;
 		default:
-   			Com_DPrintf("ERROR:  invalid ambient sound type :%d at x:%f  y:%f  z:%f\n",soundinfo->style,
+   			fxi.Com_Printf("ERROR:  invalid ambient sound type :%d at x:%f  y:%f  z:%f\n",soundinfo->style,
    				self->origin[0],self->origin[1],self->origin[2]);
 			break;
 		}
