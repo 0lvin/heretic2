@@ -7,6 +7,7 @@
 #include "../effects/client_effects.h"
 #include "../common/resourcemanager.h"
 
+// Structure containing functions and data pointers exported from the effects DLL.
 client_fx_export_t *fxe;
 
 float EffectEventIdTimeArray[1000];
@@ -19,8 +20,6 @@ void CL_ClearLightStyles(void);
 client_fx_export_t *GetfxAPI(client_fx_import_t import);
 
 ResourceManager_t FXBufMgnr;
-
-extern sizebuf_t* fxMsgBuf;
 
 int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 	sizebuf_t* msg;
@@ -43,7 +42,7 @@ int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 			clientEffects = &ent->current.clientEffects;
 			clientEffects = &ent->current.clientEffects;
 		}
-		msg = fxMsgBuf;
+		msg = fxe->fxMsgBuf;
 	}
 
 	va_start(args, format);

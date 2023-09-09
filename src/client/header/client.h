@@ -619,6 +619,7 @@ typedef struct
 	int (*GetLMIMax)();
 	char *(client_string);
 
+	sizebuf_t	*fxMsgBuf;
 } client_fx_export_t;
 
 extern client_fx_export_t *fxe;
@@ -667,7 +668,6 @@ typedef struct
 	float			*leveltime;
 	float			*EffectEventIdTimeArray;
 	EffectsBuffer_t *clientPredEffects;
-
 	//
 
 	void	(*Sys_Error) (int err_level, char *str, ...);

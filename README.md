@@ -1,7 +1,9 @@
 Customized Quake2 engine with Heretic2 code parts.
 
 Heretic 2 SDK code based on [Ht2Toolkit](https://www.quaddicted.com/files/idgames2/planetquake/hereticii/files/Ht2Toolkit_v1.06.exe)
+
 Updated code based on [Heretic 2 Reconstruction Project](https://github.com/jmarshall23/Heretic2/tree/Engine-DLL)
+
 Tested with [Heretic 2 Loki](https://archive.org/details/heretic-2-linux) release.
 
 # cleanup code
@@ -45,10 +47,10 @@ map ssdocks
 
 Goals:
 * Implement minimal set required for single player,
-* Multiplayer game or same protocol is not in priority
-* Raven code should be placed only in src/game or separate repository
-* All other code should be GPL or public domain.
-* Minimal set of hacks over quake 2 engine
+* Multiplayer game or same protocol is not in priority,
+* Raven code should be placed only in src/game or separate repository,
+* All other code should be GPL or public domain,
+* Minimal set of hacks over quake 2 engine.
 
 ======
 

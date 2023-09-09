@@ -27,6 +27,7 @@
 char	*client_string = {"Heretic II v1.06"};
 
 client_fx_import_t fxi;
+static client_fx_export_t effectsExport;
 
 cvar_t	*cl_camera_under_surface;
 cvar_t	*r_farclipdist;
@@ -360,10 +361,6 @@ ParseClientEffects
 ==============
 */
 
-// Insert the logic in _this could use a good cleaning. . .
-sizebuf_t* fxMsgBuf = NULL;
-
-
 static void
 ParseEffects(centity_t *owner)
 {
@@ -405,7 +402,7 @@ ParseEffects(centity_t *owner)
 
 		num = fxBuf->numEffects;
 
-		fxMsgBuf = msg_read = &tempBuf;
+		effectsExport.fxMsgBuf = msg_read = &tempBuf;
 		memset (msg_read, 0, sizeof(*msg_read));
 		msg_read->data = fxBuf->buf;
 		msg_read->cursize = msg_read->maxsize = fxBuf->bufSize;
@@ -554,7 +551,7 @@ SkipEffect:
 		fxBuf->bufSize = 0;
 	}
 
-	fxMsgBuf = NULL;
+	effectsExport.fxMsgBuf = NULL;
 }
 
 static entity_t		sv_ents[MAX_SERVER_ENTITIES];
@@ -950,8 +947,6 @@ AddServerEntities(frame_t *frame)
 
 // end
 
-static client_fx_export_t effectsExport;
-
 /*
 ==============
 GetRefAPI
@@ -985,6 +980,7 @@ GetfxAPI(client_fx_import_t import)
 	effectsExport.GetLMIMax = GetLMIMax;
 	effectsExport.RemoveClientEffects = RemoveEffectsFromCent;
 	effectsExport.client_string = client_string;
+	effectsExport.fxMsgBuf = NULL;
 
 	return &effectsExport;
 }

@@ -92,23 +92,6 @@ GetPlayerAPI(game_import_t *import)
 	return &playerExport;
 }
 
-/*
- * this is only here so the functions
- * in shared source files can link
- */
-void
-Sys_Error(char *error, ...)
-{
-	va_list argptr;
-	char text[1024];
-
-	va_start(argptr, error);
-	vsnprintf(text, sizeof(text), error, argptr);
-	va_end(argptr);
-
-	gi.error("%s", text);
-}
-
 void
 Com_Printf(char *msg, ...)
 {

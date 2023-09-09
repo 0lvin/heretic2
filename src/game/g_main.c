@@ -35,6 +35,7 @@
 #include "header/g_playstats.h"
 #include "player/library/p_anims.h"
 #include "common/cl_strings.h"
+#include "effects/client_effects.h"
 
 //Used for monster_speeds timing stuff
 #ifdef _DEVEL
