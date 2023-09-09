@@ -9,6 +9,7 @@
 #include "../common/angles.h"
 #include "../common/vector.h"
 #include "../../client/header/client.h"
+#include "../header/client_effects.h"
 
 #define DETAIL_LOW		0
 #define DETAIL_NORMAL	1

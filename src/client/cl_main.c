@@ -27,6 +27,7 @@
 
 #include "header/client.h"
 #include "input/header/input.h"
+#include "../game/header/client_effects.h"
 
 void CL_ForwardToServer_f(void);
 void CL_Changing_f(void);
@@ -856,7 +857,7 @@ CL_Frame(int packetdelta, int renderdelta, int timedelta, qboolean packetframe, 
 			time_before_ref = Sys_Milliseconds();
 		}
 
-		if (fxe->UpdateEffects)
+		if (fxe && fxe->UpdateEffects)
 		{
 			fxe->UpdateEffects();
 		}

@@ -26,6 +26,7 @@
 
 #include "header/client.h"
 #include "input/header/input.h"
+#include "../game/header/client_effects.h"
 
 /* development tools for weapons */
 int gun_frame;
@@ -276,7 +277,10 @@ CL_PrepRefresh(void)
 	Com_Printf("                                     \r");
 
 	//CL_RegisterTEntModels ();
-	fxe->RegisterModels();
+	if (fxe && fxe->RegisterModels)
+	{
+		fxe->RegisterModels();
+	}
 
 	for (i = 1; i < MAX_MODELS && cl.configstrings[CS_MODELS + i][0]; i++)
 	{

@@ -27,6 +27,7 @@
 #include "header/client.h"
 #include "input/header/input.h"
 #include "../game/common/resourcemanager.h"
+#include "../game/header/client_effects.h"
 
 void CL_DownloadFileName(char *dest, int destlen, char *fn);
 void CL_ParseDownload(void);
@@ -79,7 +80,10 @@ CL_RegisterSounds(void)
 	int i;
 
 	S_BeginRegistration();
-	fxe->RegisterSounds();
+	if (fxe && fxe->RegisterSounds)
+	{
+		fxe->RegisterSounds();
+	}
 
 	for (i = 1; i < MAX_SOUNDS; i++)
 	{
@@ -448,7 +452,10 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 
 			oldindex++;
 
-			fxe->RemoveClientEffects(&cl_entities[newnum]);
+			if (fxe && fxe->RemoveClientEffects)
+			{
+				fxe->RemoveClientEffects(&cl_entities[newnum]);
+			}
 
 			if (oldindex >= oldframe->num_entities)
 			{
@@ -809,7 +816,10 @@ CL_ParseFrame(void)
 		Com_Error(ERR_DROP, "CL_ParseFrame: not client effects");
 	}
 
-	fxe->ParseClientEffects(NULL);
+	if (fxe && fxe->ParseClientEffects)
+	{
+		fxe->ParseClientEffects(NULL);
+	}
 
 	/* save the frame off in the backup array for later delta comparisons */
 	cl.frames[cl.frame.serverframe & UPDATE_MASK] = cl.frame;

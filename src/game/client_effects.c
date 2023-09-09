@@ -2,13 +2,23 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../../client/header/client.h"
-#include "../header/game.h"
-#include "../effects/client_effects.h"
-#include "../common/resourcemanager.h"
+#include <dlfcn.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include "../client/header/client.h"
+#include "header/game.h"
+#include "header/client_effects.h"
+#include "effects/client_effects.h"
+#include "common/resourcemanager.h"
 
 // Structure containing functions and data pointers exported from the effects DLL.
 client_fx_export_t *fxe;
+
+// Handle to player DLL.
+
+static void *effects_library = NULL;
 
 float EffectEventIdTimeArray[1000];
 int cl_effectpredict[1000];
@@ -17,9 +27,8 @@ predictinfo_t predictInfo;
 EffectsBuffer_t clientPredEffects;
 float PlayerAlpha = 1.0f;
 void CL_ClearLightStyles(void);
-client_fx_export_t *GetfxAPI(client_fx_import_t import);
 
-ResourceManager_t FXBufMgnr;
+ResourceManager_t FXBufMgnr = {0};
 
 int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 	sizebuf_t* msg;
@@ -219,12 +228,120 @@ extern particle_t r_aparticles[MAX_PARTICLES];
 
 static client_fx_import_t cl_game_import;
 
-static int
-CL_InitClientEffects(const char* name)
-{
-	int result;
+// ************************************************************************************************
+// E_Freelib
+// ---------
+// ************************************************************************************************
 
-	Com_Printf("------ Loading %s ------\n", name);
+void E_Freelib()
+{
+	if(!effects_library)
+	{
+		return;
+	}
+
+	if (fxe)
+	{
+		fxe->ShutDown();
+	}
+	fxe = NULL;
+
+	dlclose (effects_library);
+	effects_library = NULL;
+}
+
+// ************************************************************************************************
+// E_Load
+// ------
+// ************************************************************************************************
+
+void *
+E_Load(void)
+{
+	client_fx_export_t *(*P_GetFXAPI)(client_fx_import_t import);
+
+	char name[MAX_OSPATH];
+	char *path;
+	char *str_p;
+#ifdef __APPLE__
+	const char *effectsname = "effects.dylib";
+#else
+	const char *effectsname = "effects.so";
+#endif
+
+	if (effects_library)
+	{
+		Com_Error(ERR_FATAL, "%s without E_Freelib", __func__);
+	}
+
+	Com_Printf("Loading library: %s\n", effectsname);
+
+	/* now run through the search paths */
+	path = NULL;
+
+	while (1)
+	{
+		FILE *fp;
+
+		path = FS_NextPath(path);
+
+		if (!path)
+		{
+			return NULL;     /* couldn't find one anywhere */
+		}
+
+		snprintf(name, MAX_OSPATH, "%s/%s", path, effectsname);
+
+		/* skip it if it just doesn't exist */
+		fp = fopen(name, "rb");
+
+		if (fp == NULL)
+		{
+			continue;
+		}
+
+		fclose(fp);
+
+#ifdef USE_SANITIZER
+		effects_library = dlopen(name, RTLD_NOW | RTLD_NODELETE);
+#else
+		effects_library = dlopen(name, RTLD_NOW);
+#endif
+
+		if (effects_library)
+		{
+			Com_MDPrintf("Loading library: %s\n", name);
+			break;
+		}
+		else
+		{
+			Com_Printf("Loading library: %s\n: ", name);
+
+			path = (char *)dlerror();
+			str_p = strchr(path, ':');   /* skip the path (already shown) */
+
+			if (str_p == NULL)
+			{
+				str_p = path;
+			}
+			else
+			{
+				str_p++;
+			}
+
+			Com_Printf("%s\n", str_p);
+
+			return NULL;
+		}
+	}
+
+	P_GetFXAPI = (void *)dlsym(effects_library, "GetFXAPI");
+
+	if (!P_GetFXAPI)
+	{
+		E_Freelib();
+		return NULL;
+	}
 
 	cl_game_import.cl_predict = cl_predict;
 	cl_game_import.cl = &cl;
@@ -287,24 +404,17 @@ CL_InitClientEffects(const char* name)
 	cl_game_import.CL_RunLightStyles = CL_RunLightStyles;
 	cl_game_import.CL_ClearLightStyles = CL_ClearLightStyles;
 
-	fxe = GetfxAPI(cl_game_import);
+	fxe = P_GetFXAPI(cl_game_import);
 	if (fxe->api_version != GAME_API_VERSION)
 	{
-		CL_ShutdownClientEffects();
 		Com_Error(0, "%s has incompatible api_version", name);
+		E_Freelib();
+		return NULL;
 	}
-	ResMngr_Con(&FXBufMgnr, 192, 256);
-	Com_Printf("------------------------------------");
-	result = 1;
 
 	fxe->Init();
 
-	return result;
-}
+	Com_Printf("------------------------------------\n");
 
-void *
-E_Load(void)
-{
-	CL_InitClientEffects("client_effects.dll");
-	return &fxe;
+	return fxe;
 }

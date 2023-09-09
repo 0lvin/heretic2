@@ -78,6 +78,7 @@ void ResMngr_Des(ResourceManager_t *resource)
 		free(toDelete->start);
 		free(toDelete);
 	}
+	memset(resource, 0, sizeof(ResourceManager_t));
 }
 
 void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t size)

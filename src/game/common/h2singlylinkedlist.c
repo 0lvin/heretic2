@@ -15,7 +15,7 @@ static ResourceManager_t globalResourceManager;
 
 void SLList_DefaultCon(SinglyLinkedList_t *this_ptr)
 {
-	this_ptr->rearSentinel =  (SinglyLinkedListNode_t *)ResMngr_AllocateResource(&globalResourceManager, 0);
+	this_ptr->rearSentinel = (SinglyLinkedListNode_t *)ResMngr_AllocateResource(&globalResourceManager, 0);
 	this_ptr->current = this_ptr->rearSentinel;
 	this_ptr->front = this_ptr->rearSentinel;
 }

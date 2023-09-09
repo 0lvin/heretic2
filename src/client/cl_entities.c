@@ -26,6 +26,7 @@
 
 #include <math.h>
 #include "header/client.h"
+#include "../game/header/client_effects.h"
 
 extern struct model_s *cl_mod_powerscreen;
 
@@ -44,7 +45,7 @@ CL_AddPacketEntities(frame_t *frame)
 
 	/* To distinguish baseq2, xatrix and rogue. */
 	cvar_t *game = Cvar_Get("game",  "", CVAR_LATCH | CVAR_SERVERINFO);
-	if (strcmp(game->string, "") == 0)
+	if (strcmp(game->string, "") == 0 && fxe && fxe->AddPacketEntities)
 	{
 		// TODO: Rewrite game type
 		fxe->AddPacketEntities(frame);
@@ -935,7 +936,10 @@ CL_AddEntities(void)
 	CL_AddParticles();
 	CL_AddDLights();
 	// jmarshall - this is in client effects.dll
-	fxe->AddEffects(false);
+	if (fxe && fxe->AddEffects)
+	{
+		fxe->AddEffects(false);
+	}
 	// jmarshall end
 	CL_AddLightStyles();
 }

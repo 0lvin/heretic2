@@ -40,9 +40,9 @@ cvar_t	*fxTest1;
 cvar_t	*fxTest2;
 cvar_t	*fxTest3;
 cvar_t	*fxTest4;
-cvar_t  *cl_lerpdist2;
-extern cvar_t  *cl_timedemo;
-extern cvar_t	*crosshair;
+cvar_t	*cl_lerpdist2;
+cvar_t	*cl_timedemo;
+cvar_t	*crosshair;
 cvar_t	*compass;
 
 int	numprocessedparticles;
@@ -76,6 +76,8 @@ void Init()
 {
 	int i;
 
+	InitResourceManager();
+	ResMngr_Con(fxi.FXBufMngr, 192, 256);
 	InitParticleMngrMngr();
 	InitFMNodeInfoMngr();
 	InitEntityMngr();
@@ -163,6 +165,8 @@ void ShutDown()
 	ReleaseFMNodeInfoMngr();
 	ReleaseDLightMngr();
 	ReleaseMsgMngr();
+	ResMngr_Des(fxi.FXBufMngr);
+	ShutdownResourceManager();
 }
 
 /*
@@ -954,7 +958,7 @@ GetRefAPI
 ==============
 */
 Q2_DLL_EXPORTED client_fx_export_t *
-GetfxAPI(client_fx_import_t import)
+GetFXAPI(client_fx_import_t import)
 {
 	fxi = import;
 	effectsExport.api_version = API_VERSION;
@@ -983,4 +987,34 @@ GetfxAPI(client_fx_import_t import)
 	effectsExport.fxMsgBuf = NULL;
 
 	return &effectsExport;
+}
+
+/*
+ * this is only here so the functions
+ * in shared source files can link
+ */
+void
+Sys_Error(char *error, ...)
+{
+	va_list argptr;
+	char text[1024];
+
+	va_start(argptr, error);
+	vsnprintf(text, sizeof(text), error, argptr);
+	va_end(argptr);
+
+	fxi.Com_Error(ERR_DROP, "Game Error: %s", text);
+}
+
+void
+Com_Printf(char *msg, ...)
+{
+	va_list argptr;
+	char text[1024];
+
+	va_start(argptr, msg);
+	vsnprintf(text, sizeof(text), msg, argptr);
+	va_end(argptr);
+
+	fxi.Com_Printf("%s", text);
 }
