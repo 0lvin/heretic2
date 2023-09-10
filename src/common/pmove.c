@@ -239,7 +239,7 @@ PM_GroundTrace(void)
 	}
 
 	pm->groundentity = trace.ent;
-	pm->GroundContents = trace.contents;
+	pm->GroundContents = &trace.contents;
 
 	if (trace.allsolid) {
 		pml.groundPlane = false;

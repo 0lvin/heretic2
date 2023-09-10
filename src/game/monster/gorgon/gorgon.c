@@ -228,7 +228,7 @@ void gorgonRoar (edict_t *self)
 	if(!self->enemy)
 		return;
 
-	while(found = findradius(found, self->s.origin, GORGON_ALERT_DIST))
+	while((found = findradius(found, self->s.origin, GORGON_ALERT_DIST)))
 	{
 		if(found->health>0)
 		{
@@ -264,7 +264,7 @@ qboolean gorgonFindAsleepGorgons (edict_t *self)
 {//sees if there are any gorgons in range that aren't awake
 	edict_t *found = NULL;
 
-	while(found = findradius(found, self->s.origin, GORGON_ALERT_DIST))
+	while((found = findradius(found, self->s.origin, GORGON_ALERT_DIST)))
 	{
 		if(found!=self)
 		{
@@ -855,13 +855,17 @@ void gorgon_growl (edict_t *self)
 void gorgon_prethink (edict_t *self);
 qboolean gorgonCheckMood(edict_t *self)
 {
+	gorgon_mood(self);
+
+	return (self->ai_mood != AI_MOOD_NORMAL);
+}
+
+void gorgon_mood(edict_t *self)
+{
 	self->pre_think = gorgon_prethink;
 	self->next_pre_think = level.time + 0.1;
 
 	self->mood_think(self);
-
-	if(self->ai_mood == AI_MOOD_NORMAL)
-		return false;
 
 	switch (self->ai_mood)
 	{
@@ -878,12 +882,11 @@ qboolean gorgonCheckMood(edict_t *self)
 			if(self->flags & FL_INWATER)
 			{
 				gorgonGoSwim(self);
-				return true;
 			}
 			if(self->curAnimID == ANIM_RUN1 ||
 				self->curAnimID == ANIM_RUN2||
 				self->curAnimID == ANIM_RUN3)
-				return true;
+				return;
 			else
 				SetAnim(self, ANIM_RUN1);
 			break;
@@ -898,12 +901,11 @@ qboolean gorgonCheckMood(edict_t *self)
 			if(self->flags & FL_INWATER)
 			{
 				gorgonGoSwim(self);
-				return true;
 			}
 			if(self->curAnimID == ANIM_RUN1 ||
 				self->curAnimID == ANIM_RUN2||
 				self->curAnimID == ANIM_RUN3)
-				return true;
+				return;
 			else
 				SetAnim(self, ANIM_RUN1);
 			break;
@@ -917,14 +919,14 @@ qboolean gorgonCheckMood(edict_t *self)
 			gorgon_ai_eat(self, 0);
 			//G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
 			break;
+		case AI_MOOD_NORMAL:
+			break;
 		default :
 #ifdef _DEVEL
 			gi.dprintf("gorgon: Unusable mood %d!\n", self->ai_mood);
 #endif
 			break;
 	}
-
-	return true;
 }
 
 void gorgon_check_mood (edict_t *self, G_Message_t *msg)

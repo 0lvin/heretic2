@@ -184,6 +184,7 @@ void ssithraCollapse(edict_t *self);
 void ssithraKillSelf (edict_t *self);
 void ssithraSound(edict_t *self, float soundnum, float channel, float attenuation);
 qboolean SsithraCheckMood (edict_t *self);
+void SsithraMood(edict_t *self);
 void ssithraMsgJump(edict_t *self, G_Message_t *msg);
 void MG_InitMoods(edict_t *self);
 void ssithraApplyJump (edict_t *self);

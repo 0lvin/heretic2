@@ -71,6 +71,7 @@
 #include "../header/utilities.h"
 #include "../header/g_hitlocation.h"
 #include "../player/library/p_anims.h"
+#include "../effects/client_effects.h"
 #include "../common/arrayed_list.h"
 #include "../common/message.h"
 #include "../common/fx.h"

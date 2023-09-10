@@ -850,12 +850,9 @@ void tbeast_snort (edict_t *self)
 	}
 }
 
-qboolean tbeastCheckMood(edict_t *self)
+void tbeast_mood(edict_t *self)
 {
 	self->mood_think(self);
-
-	if(self->ai_mood == AI_MOOD_NORMAL)
-		return false;
 
 	switch (self->ai_mood)
 	{
@@ -890,14 +887,21 @@ qboolean tbeastCheckMood(edict_t *self)
 			G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
 			break;
 
+		case AI_MOOD_NORMAL:
+			break;
 		default :
 #ifdef _DEVEL
 			gi.dprintf("beast: Unusable mood %d!\n", self->ai_mood);
 #endif
 			break;
 	}
+}
 
-	return true;
+qboolean tbeastCheckMood(edict_t *self)
+{
+	tbeast_mood(self);
+
+	return (self->ai_mood != AI_MOOD_NORMAL);
 }
 
 /*----------------------------------------------------------------------

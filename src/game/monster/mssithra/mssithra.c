@@ -559,7 +559,7 @@ void mssithraCheckLoop (edict_t *self, float frame)
 -------------------------------------------------------------------------*/
 qboolean mssithraCheckMood (edict_t *self)
 {
-	if(self->monsterinfo.aiflags&AI_OVERRIDE_GUIDE)
+	if(self->monsterinfo.aiflags & AI_OVERRIDE_GUIDE)
 		return false;
 
 	self->mood_think(self);
@@ -593,6 +593,11 @@ qboolean mssithraCheckMood (edict_t *self)
 	}
 
 	return false;
+}
+
+void mssithraMood(edict_t *self)
+{
+	(void)mssithraCheckMood(self);
 }
 
 void mssithra_postthink(edict_t *self)

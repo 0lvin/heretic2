@@ -3,13 +3,9 @@
 // Copyright 1998 Raven Software
 //
 #include <limits.h>
-#ifdef __cplusplus
 extern "C" {
-#endif
 #include "header/local.h"
-#ifdef __cplusplus
-} //end extern "C"
-#endif
+}
 #include "header/ds.h"
 
 #define DEG2RAD( a ) ( a * M_PI ) / 180.0F
