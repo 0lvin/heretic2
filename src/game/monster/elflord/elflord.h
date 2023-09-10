@@ -66,6 +66,7 @@ extern animmove_t elflord_move_wait;
 extern animmove_t elflord_move_come_to_life;
 
 qboolean elfLordCheckAttack (edict_t *self);
+void elflord_Attack(edict_t *self);
 
 void elflord_decell(edict_t *self, float value);
 void elflord_decide_movement (edict_t *self);

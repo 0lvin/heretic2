@@ -68,6 +68,7 @@ void mssithraSwipe(edict_t *self);
 void mssithraArrow(edict_t *self);
 void ai_charge2 (edict_t *self, float dist);
 qboolean mssithraCheckMood (edict_t *self);
+void mssithraMood(edict_t *self);
 void mssithraArrow(edict_t *self);
 void mssithraSwipe(edict_t *self);
 void mmssithraRandomGrowlSound (edict_t *self);

@@ -693,13 +693,18 @@ qboolean elfLordCheckAttack (edict_t *self)
 	return false;
 }
 
+void elflord_Attack(edict_t *self)
+{
+	(void)elfLordCheckAttack(self);
+}
+
 /*-----------------------------------------------
 	elfLordPause
 -----------------------------------------------*/
 
 void elfLordPause(edict_t *self)
 {
-	elfLordCheckAttack(self);
+	(void)elfLordCheckAttack(self);
 }
 
 /*-----------------------------------------------

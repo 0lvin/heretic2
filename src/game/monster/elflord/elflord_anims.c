@@ -355,28 +355,28 @@ animframe_t elflord_frames_wait [] =
 	FRAME_idle2,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle3,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle4,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
-	FRAME_idle5,	NULL, 0, 0, 0, ai_charge2, 0, elfLordCheckAttack,
+	FRAME_idle5,	NULL, 0, 0, 0, ai_charge2, 0, elflord_Attack,
 	FRAME_idle6,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle7,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle8,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle9,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
-	FRAME_idle10,	NULL, 0, 0, 0, ai_charge2, 0, elfLordCheckAttack,
+	FRAME_idle10,	NULL, 0, 0, 0, ai_charge2, 0, elflord_Attack,
 	FRAME_idle11,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle12,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle13,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle14,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
-	FRAME_idle15,	NULL, 0, 0, 0, ai_charge2, 0, elfLordCheckAttack,
+	FRAME_idle15,	NULL, 0, 0, 0, ai_charge2, 0, elflord_Attack,
 	FRAME_idle16,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle17,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle18,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle19,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
-	FRAME_idle20,	NULL, 0, 0, 0, ai_charge2, 0, elfLordCheckAttack,
+	FRAME_idle20,	NULL, 0, 0, 0, ai_charge2, 0, elflord_Attack,
 	FRAME_idle21,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle22,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle23,	NULL, 0, 0, 0, ai_charge2, 0, NULL,
 	FRAME_idle24,	NULL, 0, 0, 0, ai_charge2, 0, NULL
 };
-animmove_t elflord_move_wait = {24, elflord_frames_wait, elfLordCheckAttack};
+animmove_t elflord_move_wait = {24, elflord_frames_wait, elflord_Attack};
 
 animframe_t elflord_frames_come_to_life [] =
 {
@@ -419,4 +419,4 @@ animframe_t elflord_frames_come_to_life [] =
 	FRAME_attka14, NULL, 0, 0, 0, NULL, 0, NULL,
 	FRAME_attka15, NULL, 0, 0, 0, NULL, 0, NULL
 };
-animmove_t elflord_move_come_to_life = {35, elflord_frames_come_to_life, elfLordCheckAttack};
+animmove_t elflord_move_come_to_life = {35, elflord_frames_come_to_life, elflord_Attack};

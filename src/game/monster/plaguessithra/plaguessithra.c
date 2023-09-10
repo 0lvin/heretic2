@@ -2800,6 +2800,11 @@ qboolean SsithraCheckMood (edict_t *self)
 	return false;
 }
 
+void SsithraMood (edict_t *self)
+{
+	(void)SsithraCheckMood(self);
+}
+
 void ssithra_check_mood (edict_t *self, G_Message_t *msg)
 {
 	G_ParseMsgParms(msg, "i", &self->ai_mood);

@@ -606,7 +606,7 @@ typedef struct playerinfo_s
 	void (*G_PlayerSpellStopShieldAttack)(playerinfo_t *playerinfo);
 	void (*G_PlayerVaultKick)(playerinfo_t *playerinfo);
 	void (*G_PlayerActionCheckRopeMove)(playerinfo_t *playerinfo);
-	void (*G_cprintf)(edict_t *ent, short msg);
+	void (*G_cprintf)(edict_t *ent, int printlevel, char *fmt, ...);
 	void (*G_levelmsg_centerprintf)(edict_t *ent, short msg);
 	void (*G_WeapNext)(edict_t *ent);
 	void (*G_UseItem)(edict_t *ent, char *s);
