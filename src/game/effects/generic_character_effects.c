@@ -128,7 +128,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 	{//puff!
 		effect = ClientEntity_new(type, flags, origin, NULL, 500);
 
-		effect->r.model = genfx_models;
+		effect->r.model = genfx_models[0];
 		effect->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 		if(speed>1.0f)
@@ -174,16 +174,16 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 		switch(chance)
 		{
 		case 0:
-			effect->r.model = genfx_models + 1;
+			effect->r.model = genfx_models[1];
 			break;
 		case 1:
-			effect->r.model = genfx_models + 2;
+			effect->r.model = genfx_models[2];
 			break;
 		case 2:
-			effect->r.model = genfx_models + 3;
+			effect->r.model = genfx_models[3];
 			break;
 		case 3:
-			effect->r.model = genfx_models + 4;
+			effect->r.model = genfx_models[4];
 			break;
 		}
 
@@ -238,7 +238,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		effect = ClientEntity_new(type, flags, origin, NULL, 500);
 
-		effect->r.model = genfx_models;
+		effect->r.model = genfx_models[0];
 
 		effect->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
@@ -258,7 +258,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 	{	// High-intensity impact point.
 		effect = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 250);
 
-		effect->r.model = genfx_models + 5;
+		effect->r.model = genfx_models[5];
 		effect->r.frame = 0;
 		effect->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		effect->r.scale = 0.4;
@@ -559,7 +559,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 	//NORTH
 	effect = ClientEntity_new(type, flags, origin, NULL, 25);
 
-	effect->r.model = compass_models;
+	effect->r.model = *compass_models;
 	effect->r.frame = 0;
 	effect->classID = PART_16x16_SPARK_C;
 	effect->r.flags = rflags;
@@ -572,7 +572,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 	//EAST
 	effect = ClientEntity_new(type, flags, origin, NULL, 50);
 
-	effect->r.model = compass_models;
+	effect->r.model = *compass_models;
 	effect->r.frame = 1;
 	effect->classID = PART_16x16_SPARK_Y;
 	effect->r.flags = rflags;
@@ -585,7 +585,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 	//SOUTH
 	effect = ClientEntity_new(type, flags, origin, NULL, 75);
 
-	effect->r.model = compass_models;
+	effect->r.model = *compass_models;
 	effect->r.frame = 2;
 	effect->classID = PART_16x16_SPARK_G;
 	effect->r.flags = rflags;
@@ -598,7 +598,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 	//WEST
 	effect = ClientEntity_new(type, flags, origin, NULL, 100);
 
-	effect->r.model = compass_models;
+	effect->r.model = *compass_models;
 	effect->r.frame = 3;
 	effect->classID = PART_16x16_SPARK_R;
 	effect->r.flags = rflags;

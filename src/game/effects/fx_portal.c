@@ -125,7 +125,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 									 self->direction,
 									 4000);
 
-		ripple->r.model = portal_models;
+		ripple->r.model = portal_models[0];
 		//ripple->r.flags |= RF_TRANS_ADD_ALPHA | RF_TRANS_ADD | RF_TRANSLUCENT | RF_FIXED | RF_TRANS_GHOST;
 		ripple->r.flags |= RF_TRANS_ADD_ALPHA | RF_TRANS_ADD | RF_FIXED | RF_TRANS_GHOST;
 		ripple->r.scale = 0.1f;
@@ -198,7 +198,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		{
 			line=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, 0, owner->current.origin, 0, 600);
 
-			line->r.model = portal_models + 2;
+			line->r.model = portal_models[2];
 
 			line->r.spriteType = SPRITE_LINE;
 
@@ -283,7 +283,7 @@ void FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
 			portal->r.verts[3][3] = 0;//-PORTALPIC_SIZE;// + flrand(-2, 2);//v
 		}
 
-		portal->r.model = portal_models + 1;
+		portal->r.model = portal_models[1];
 	}
 	else
 		portal->flags |= CEF_NO_DRAW;

@@ -87,7 +87,7 @@ void FXPuzzlePickup(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorDegreesToRadians(angles, ce->r.angles);
 
 	VectorCopy(ce->r.origin, ce->origin);
-	ce->r.model = &PuzzleModels[tag].model;
+	ce->r.model = PuzzleModels[tag].model;
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;
 	ce->r.scale = PuzzleModels[tag].scale;
 

@@ -110,11 +110,11 @@ void FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)
 	ce = ClientEntity_new(type, flags | CEF_DONT_LINK | CEF_CHECK_OWNER | CEF_VIEWSTATUSCHANGED, origin, NULL, 50);
 
 	VectorCopy(ce->r.origin, ce->origin);
-	ce->r.model = ammomodels + tag;
+	ce->r.model = ammomodels[tag];
 
-	if (tag==0)		// Blue stuff
+	if (tag == 0)		// Blue stuff
 		ce->r.skinnum = 1;
-	if (tag==1)		// Blue stuff
+	if (tag == 1)		// Blue stuff
 		ce->r.skinnum = 1;
 
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;

@@ -93,7 +93,7 @@ void FXDefensePickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	VectorCopy(ce->r.origin, ce->origin);
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;
-	ce->r.model = defense_models + tag;
+	ce->r.model = defense_models[tag];
 	ce->r.scale = 1.0;
 
 	if (tag == ITEM_DEFENSE_TELEPORT)
@@ -119,7 +119,7 @@ void FXDefensePickup(centity_t *owner, int type, int flags, vec3_t origin)
 			shield=ClientEntity_new(type, flags, origin, 0, 50);
 			shield->flags |= CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS | CEF_VIEWSTATUSCHANGED;
 			shield->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-			shield->r.model = defense_models + SPARK_OFFSET + tag;
+			shield->r.model = defense_models[SPARK_OFFSET + tag];
 			shield->radius = EGG_RADIUS;
 			shield->color.c = 0xffffffff;
 			shield->alpha = 0.1;

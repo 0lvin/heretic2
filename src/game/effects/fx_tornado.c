@@ -96,7 +96,7 @@ void FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->radius = 50;
 	glow->LifeTime = fxi.cl->time + (TORN_DUR * 1000) + 200;
 
-	glow->r.model = torn_models;
+	glow->r.model = torn_models[0];
 	glow->r.scale = 0.4;
 
 	AddEffect(owner, glow);
@@ -263,7 +263,7 @@ void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// Add an additional flash as well.
 	// ...and a big-ass flash
 	burst = ClientEntity_new(-1, flags, origin, NULL, 250);
-	burst->r.model = torn_models + 3;
+	burst->r.model = torn_models[3];
 	burst->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	burst->r.frame = 1;
 	burst->radius=64;
@@ -341,7 +341,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
   		//Spawn a hit explosion of lines
 		TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, self->flags & ~CEF_NO_DRAW, self->origin, 0, 1000);
 
-		TrailEnt->r.model = torn_models + 2;
+		TrailEnt->r.model = torn_models[2];
 
 		TrailEnt->r.spriteType = SPRITE_LINE;
 
@@ -426,12 +426,12 @@ void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 
 	if (flags & CEF_FLAG7)
 	{
-		glow->r.model = torn_models + 1;
+		glow->r.model = torn_models[1];
 		glow->r.scale = 1;
 	}
 	else
 	{
-		glow->r.model = torn_models;
+		glow->r.model = torn_models[0];
 		glow->r.scale = 1;
 	}
 
@@ -485,7 +485,7 @@ void FXTornado(centity_t *owner,int type,int flags, vec3_t origin)
 
 //	torn->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 
-//	torn->r.model = torn_models;
+//	torn->r.model = torn_models[0];
 //	torn->r.scale = 1;
 
 	AddEffect(owner, torn);

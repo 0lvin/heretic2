@@ -120,7 +120,7 @@ void FXMeteorBarrier(centity_t *owner, int type, int flags, vec3_t origin)
 	trail = ClientEntity_new(type, flags|CEF_ABSOLUTE_PARTS|CEF_ADDITIVE_PARTS|CEF_VIEWSTATUSCHANGED, origin, 0, 50);
 
 	trail->Update = FXMeteorBarriertrailThink;
-	trail->r.model = meteor_models;
+	trail->r.model = meteor_models[0];
 	trail->AddToView = MeteorAddToView;
 	trail->SpawnData = (flags & (CEF_FLAG6|CEF_FLAG7)) >> 5;
 	trail->radius = 10.0;
@@ -140,7 +140,7 @@ void FXMeteorBarrierTravel(centity_t *owner, int type, int flags, vec3_t origin)
 	trail = ClientEntity_new(type, flags|CEF_ABSOLUTE_PARTS|CEF_ADDITIVE_PARTS|CEF_VIEWSTATUSCHANGED, origin, 0, 50);
 
 	trail->Update = FXMeteorBarriertrailThink;
-	trail->r.model = meteor_models;
+	trail->r.model = meteor_models[0];
 	trail->AddToView = LinkedEntityUpdatePlacement;
 	trail->radius = 10.0;
 	trail->r.color.c = -1;

@@ -63,7 +63,7 @@ void FXLightningHit(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 
 	blast = ClientEntity_new(-1, CEF_ADDITIVE_PARTS, origin, NULL, 500);
-	blast->r.model = hit_models;
+	blast->r.model = hit_models[0];
 	blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT; // |
 	blast->r.frame = 1;
 	blast->radius = 64.0;

@@ -62,7 +62,7 @@ void FXMaceball(centity_t *owner, int type, int flags, vec3_t origin)
 
 	glow = ClientEntity_new(type, flags, origin, 0, 100);
 
-	glow->r.model = mace_models;
+	glow->r.model = mace_models[0];
 	glow->r.scale = BALL_RADIUS;
 	glow->d_scale = BALL_GROWTH;
 	glow->color.c = 0xff00ffff;
@@ -114,7 +114,7 @@ void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 
 		ring = ClientEntity_new(type, CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS,
 									origin, NULL, 500);
-		ring->r.model = mace_models + 2;
+		ring->r.model = mace_models[2];
 		ring->r.frame = 1;
 		ring->r.spriteType = SPRITE_LINE;
 		ring->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -193,7 +193,7 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	// Create an expanding ball of gre.
 
 	explosion=ClientEntity_new(type,CEF_DONT_LINK|CEF_ADDITIVE_PARTS,origin,dir,750);
-	explosion->r.model = mace_models+3;
+	explosion->r.model = mace_models[3];
 	explosion->r.flags |= RF_TRANSLUCENT;
 	explosion->r.scale = 0.17;
 	explosion->d_scale = -0.17;
@@ -267,7 +267,7 @@ static qboolean FXRipperExplodeBallThink(struct client_entity_s *self, centity_t
 	for (i=0; i<4; i++)
 	{
 		trail = ClientEntity_new(FX_WEAPON_RIPPEREXPLODE, 0, curpos, NULL, 500);
-		trail->r.model = mace_models + 6;
+		trail->r.model = mace_models[6];
 		trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		VectorCopy(self->velocity, trail->velocity);
 		VectorScale(trail->velocity, -1.0, trail->acceleration);
@@ -326,7 +326,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		// Create the ball
 		ripper = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 100);
 
-		ripper->r.model = mace_models;
+		ripper->r.model = mace_models[0];
 		ripper->r.flags = RF_TRANSLUCENT;		// Use the alpha channel
 
 		// Set up the velocities
@@ -352,7 +352,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// Draw the impact graphic
 	//
 	flash = ClientEntity_new(type, 0, origin, NULL, 50);
-	flash->r.model = mace_models + 1;
+	flash->r.model = mace_models[1];
 	flash->r.frame = 1;
 	flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	flash->radius = 20.0;
@@ -376,7 +376,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 		ring = ClientEntity_new(type, CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS,
 									origin, NULL, 750);
-		ring->r.model = mace_models + 2;
+		ring->r.model = mace_models[2];
 		ring->r.frame = 1;
 		ring->r.spriteType = SPRITE_LINE;
 		ring->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -427,7 +427,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		// Draw the streak from the caster to the impact point.
 		flash = ClientEntity_new(FX_WEAPON_RIPPEREXPLODE, CEF_AUTO_ORIGIN, casterpos, NULL, 500);
-		flash->r.model = mace_models + 4;
+		flash->r.model = mace_models[4];
 		flash->r.spriteType = SPRITE_LINE;
 		flash->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
@@ -451,7 +451,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		for (i=0; i<num; i++)
 		{
 			flash = ClientEntity_new(FX_WEAPON_RIPPEREXPLODE, 0, curpos, NULL, 500);
-			flash->r.model = mace_models + 5;
+			flash->r.model = mace_models[5];
 			flash->r.frame = 1;
 			flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 

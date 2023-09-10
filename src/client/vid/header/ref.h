@@ -54,7 +54,7 @@
 #define ENTITY_FLAGS	68
 
 typedef struct entity_s {
-	struct model_s		**model; /* opaque type outside refresh */
+	struct model_s		*model; /* opaque type outside refresh */
 	float				angles[3];
 
 	/* most recent data */
@@ -187,12 +187,6 @@ typedef enum {
 } ref_restart_t;
 
 // FIXME: bump API_VERSION?
-#include "../../../game/common/q_surface.h"
-#include "../../../game/common/arrayed_list.h"
-#define MAX_ALPHA_ENTITIES 2048
-#define	MAX_SERVER_ENTITIES	MAX_ENTITIES
-#define NUM_PARTICLE_TYPES	62			// This doesn't use the macro because of referencing weirdness.
-#define ENTITY_FLAGS  68
 #define	API_VERSION		3
 #define EXPORT
 #define IMPORT

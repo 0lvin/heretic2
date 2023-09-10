@@ -68,7 +68,7 @@ static qboolean FXPESpellTrailThink(struct client_entity_s *self, centity_t *own
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
 
-		TrailEnt->r.model = spell_models;
+		TrailEnt->r.model = spell_models[0];
 		TrailEnt->r.scale = SPELL_SCALE + flrand(0.0, 0.05);
 
 		TrailEnt->r.color.r = irand(40, 60);
@@ -161,7 +161,7 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
-		SmokePuff->r.model = spell_models + 1;
+		SmokePuff->r.model = spell_models[1];
 		SmokePuff->r.scale=flrand(0.8,1.6);
 		SmokePuff->d_scale=-2.0;
 
@@ -219,7 +219,7 @@ static qboolean FXPESpell2TrailThink(struct client_entity_s *self, centity_t *ow
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
 
-		TrailEnt->r.model = spell_models + 2;
+		TrailEnt->r.model = spell_models[2];
 		TrailEnt->r.frame = irand(0,1);
 
 		TrailEnt->r.scale = SPELL_SCALE + flrand(0.0, 0.05);
@@ -314,7 +314,7 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
-		SmokePuff->r.model = spell_models + 3;
+		SmokePuff->r.model = spell_models[3];
 		SmokePuff->r.scale=flrand(0.8,1.6);
 		SmokePuff->d_scale=-2.0;
 
@@ -373,7 +373,7 @@ static qboolean FXPESpell3TrailThink(struct client_entity_s *self, centity_t *ow
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
 
-		TrailEnt->r.model = spell_models;
+		TrailEnt->r.model = spell_models[0];
 		TrailEnt->r.scale = SPELL_SCALE + flrand(0.0, 0.05);
 
 		/*TrailEnt->r.color.g = irand(40, 60);
@@ -466,7 +466,7 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
-		SmokePuff->r.model = spell_models + 4;
+		SmokePuff->r.model = spell_models[4];
 		SmokePuff->r.scale=flrand(1.0, 1.8);
 		SmokePuff->d_scale=-2.0;
 

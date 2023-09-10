@@ -76,7 +76,7 @@ static qboolean FXFireWormThink(client_entity_t *worm, centity_t *owner)
 		else
 		{
 			blast = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_ADDITIVE_PARTS, worm->endpos, NULL, 500);
-			blast->r.model = wall_models + 2;
+			blast->r.model = wall_models[2];
 			blast->r.frame = 2;		// Circular halo for blast.
 			blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			blast->alpha = 0.95;
@@ -218,7 +218,7 @@ static void FXFireWaveImpact(client_entity_t *wall)
 		}
 
 		blast = ClientEntity_new(FX_WEAPON_FIREWAVE, 0, blastpt, NULL, 500);
-		blast->r.model = wall_models+2;
+		blast->r.model = wall_models[2];
 		blast->r.frame = 2;
 		blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		blast->radius = 64.0;
@@ -323,7 +323,7 @@ static qboolean FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		spawnpt[2] += FIREWAVE_UP;
 
 		blast = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_PULSE_ALPHA, spawnpt, NULL, 500);
-		blast->r.model = wall_models;
+		blast->r.model = wall_models[0];
 		blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		blast->radius = 64.0;
 
@@ -369,7 +369,7 @@ static qboolean FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		spawnpt[2] -= FIREWAVE_DOWN;
 
 		blast = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_PULSE_ALPHA, spawnpt, NULL, 500);
-		blast->r.model = wall_models;
+		blast->r.model = wall_models[0];
 		blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		blast->radius = 64.0;
 
@@ -404,7 +404,7 @@ static qboolean FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		}
 
 		worm = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_ADDITIVE_PARTS, spawnpt, NULL, 75);
-		worm->r.model = wall_models+2;
+		worm->r.model = wall_models[2];
 		worm->r.frame = 2;
 		worm->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		worm->radius = 64.0;
@@ -520,7 +520,7 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 
 	worm = ClientEntity_new(FX_WEAPON_FIREWAVE, flags | CEF_ADDITIVE_PARTS, spawnpt, NULL, 75);
-	worm->r.model = wall_models+2;
+	worm->r.model = wall_models[2];
 	worm->r.frame = 2;
 	worm->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	worm->radius = 64.0;
@@ -575,7 +575,7 @@ static void FXFireBurstImpact(client_entity_t *wall)
 		}
 
 		blast = ClientEntity_new(FX_WEAPON_FIREBURST, 0, blastpt, NULL, 500);
-		blast->r.model = wall_models+2;
+		blast->r.model = wall_models[2];
 		blast->r.frame = 2;
 		blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		blast->radius = 64.0;
@@ -676,7 +676,7 @@ static qboolean FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 		{
 			burst = ClientEntity_new(FX_WEAPON_FIREBURST, 0, org, NULL, 1000);
 
-			burst->r.model = wall_models + 1;
+			burst->r.model = wall_models[1];
 
 			burst->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			burst->r.frame = 0;
@@ -739,7 +739,7 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 	wall->direction[2] = 0.0;
 	wall->right[2] = 0.0;
 
-//	wall->r.model = wall_models + 1;
+//	wall->r.model = wall_models[1];
 //	wall->alpha = 0.01;
 
 	wall->Update = FXFireBurstThink;
@@ -756,7 +756,7 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// Add a big ol' flash.
 	wall = ClientEntity_new(type, flags | CEF_ADDITIVE_PARTS, origin, NULL, 1000);
-	wall->r.model = wall_models + 2;		// The starry halo.
+	wall->r.model = wall_models[2];		// The starry halo.
 	wall->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	wall->radius = 64.0;
 

@@ -1104,7 +1104,7 @@ GL3_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			gl3model_t *currentmodel = currententity->model[0];
+			gl3model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{
@@ -1150,7 +1150,7 @@ GL3_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			gl3model_t *currentmodel = currententity->model[0];
+			gl3model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{

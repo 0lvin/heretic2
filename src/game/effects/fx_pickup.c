@@ -32,7 +32,7 @@ void FXPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	ce = ClientEntity_new(type, flags | CEF_DONT_LINK | CEF_PULSE_ALPHA, origin, NULL, 500);
 
-	ce->r.model = pickup_models;
+	ce->r.model = pickup_models[0];
 	ce->r.frame = 1;
 	ce->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	ce->r.scale = 0.4;

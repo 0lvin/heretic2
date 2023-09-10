@@ -338,7 +338,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 								NULL,
 								17);
 
-		rope->r.model = rope_models + model_type;
+		rope->r.model = rope_models[model_type];
 
 		rope->r.scale = 3;
 		rope->radius = radius;
@@ -375,7 +375,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 								NULL,
 								1000);
 
-		rope->r.model = rope_models + model_type;
+		rope->r.model = rope_models[model_type];
 
 		VectorCopy(top, rope->direction);
 
@@ -408,7 +408,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 								NULL,
 								1000);
 
-		ropem->r.model = rope_models + model_type;
+		ropem->r.model = rope_models[model_type];
 
 		ropem->r.scale = 3;
 		ropem->radius = radius;
@@ -437,7 +437,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 									NULL,
 									1000);
 
-			ropeb->r.model = rope_models + model_type;
+			ropeb->r.model = rope_models[model_type];
 
 			ropeb->r.scale = 3;
 			ropeb->radius = radius;

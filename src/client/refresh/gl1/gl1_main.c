@@ -345,7 +345,7 @@ R_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			const model_t *currentmodel = currententity->model[0];
+			const model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{
@@ -390,7 +390,7 @@ R_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			const model_t *currentmodel = currententity->model[0];
+			const model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{

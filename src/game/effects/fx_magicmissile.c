@@ -79,7 +79,7 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t
 			break;
 		}
 
-		trail->r.model = array_models;
+		trail->r.model = array_models[0];
 		trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		trail->r.scale = flrand(ARRAY_TRAIL_SCALE, ARRAY_TRAIL_SCALE + 0.1);
 		trail->d_scale = -1.0;
@@ -95,7 +95,7 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t
 								NULL,
 								500);
 
-	trail->r.model = array_models + 2;
+	trail->r.model = array_models[2];
 	trail->r.spriteType = SPRITE_LINE;
 	trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	VectorCopy(trail->r.origin, trail->r.startpos);
@@ -162,7 +162,7 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	// Add the magic-missile model.
 	Missile=ClientEntity_new(Type, Flags | CEF_DONT_LINK, Origin, NULL, 100);
 
-	Missile->r.model = array_models;
+	Missile->r.model = array_models[0];
 	Missile->r.frame = 1;
 	if (Flags & CEF_FLAG6)
 		VectorScale(fwd, MAGICMISSILE_SPEED/2, Missile->velocity);
@@ -212,7 +212,7 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		smokepuff = ClientEntity_new(type, flags, origin, 0, 500);
 
-		smokepuff->r.model = array_models + 1;
+		smokepuff->r.model = array_models[1];
 		smokepuff->r.scale = flrand(ARRAY_SCALE * 0.75, ARRAY_SCALE * 1.5);
 		smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
@@ -229,7 +229,7 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// Big flash
 	smokepuff = ClientEntity_new(type, flags, origin, 0, 500);
 
-	smokepuff->r.model = array_models;
+	smokepuff->r.model = array_models[0];
 	smokepuff->r.frame = 0;
 
 	smokepuff->r.scale = 2.0;
@@ -294,7 +294,7 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 		for(i=0; i<=numpuffs; i++)
 		{
 			puff = ClientEntity_new(type, flags | CEF_ADDITIVE_PARTS, curpos, NULL, 750);
-			puff->r.model = array_models + 1;
+			puff->r.model = array_models[1];
 			puff->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			puff->r.scale = scale;
 			puff->radius = 14.0;
@@ -312,7 +312,7 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 		// We added the line, now throw out the impact
 		// Big flash first...
 		puff = ClientEntity_new(type, CEF_ADDITIVE_PARTS, endpos, NULL, 1000);
-		puff->r.model = array_models;
+		puff->r.model = array_models[0];
 		puff->r.frame = 0;
 		puff->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		puff->r.scale = 1.0 + length * 0.001;		// Bigger when further out.

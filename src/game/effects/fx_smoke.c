@@ -33,7 +33,7 @@ void FXDarkSmoke(vec3_t origin, float scale, float range)
 
 	effect = ClientEntity_new(-1, RF_TRANSLUCENT, origin, NULL, 500);
 
-	effect->r.model = smoke_models;
+	effect->r.model = smoke_models[0];
 	effect->r.scale = scale;
 	effect->r.color.c = 0xaa777777;
 
@@ -56,7 +56,7 @@ void FXSmoke(vec3_t origin, float scale, float range)
 
 	effect = ClientEntity_new(-1, RF_TRANSLUCENT, origin, NULL, 500);
 
-	effect->r.model = smoke_models;
+	effect->r.model = smoke_models[0];
 	effect->r.scale = scale;
 	effect->r.color.c = 0xffffffff;
 

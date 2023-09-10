@@ -94,7 +94,7 @@ void FXAnimate(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorDegreesToRadians(self->r.angles, self->r.angles);
 	atype = anim & 0x7f;
 
-	self->r.model = &FXAnimModel[atype].model;
+	self->r.model = FXAnimModel[atype].model;
 	self->r.scale = scale * 0.02;
 	self->r.skinnum = skinnum;
 

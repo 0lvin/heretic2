@@ -78,7 +78,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		//Spawn a bright flash at the core of the explosion
 		TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 1000);
 
-		TrailEnt->r.model = staffhit_models + 1;
+		TrailEnt->r.model = staffhit_models[1];
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		TrailEnt->r.scale = flrand(0.75, 1.0);
@@ -105,7 +105,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		{
 			TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 500);
 
-			TrailEnt->r.model = staffhit_models + 2;
+			TrailEnt->r.model = staffhit_models[2];
 
 			TrailEnt->r.spriteType = SPRITE_LINE;
 
@@ -140,7 +140,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		{
 			TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 1000);
 
-			TrailEnt->r.model = staffhit_models + 3;
+			TrailEnt->r.model = staffhit_models[3];
 
 			TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			TrailEnt->r.scale = flrand(0.25, 0.5);
@@ -173,7 +173,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		//Spawn a bright flash at the core of the explosion
 		TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 1000);
 
-		TrailEnt->r.model = staffhit_models + 1;
+		TrailEnt->r.model = staffhit_models[1];
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		TrailEnt->r.scale = flrand(0.75, 1.0);
@@ -194,7 +194,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		{
 			TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 500);
 
-			TrailEnt->r.model = staffhit_models;
+			TrailEnt->r.model = staffhit_models[0];
 
 			TrailEnt->r.spriteType = SPRITE_LINE;
 
@@ -340,7 +340,7 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owne
 
 		model = irand(0,100);
 
-		TrailEnt->r.model = staff_models + STAFF_TRAIL2;
+		TrailEnt->r.model = staff_models[STAFF_TRAIL2];
 
 		TrailEnt->r.frame = 0;
 
@@ -387,7 +387,7 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owne
 		{
 			TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 5000);
 
-			TrailEnt->r.model = staff_models + STAFF_TRAIL_SMOKE;
+			TrailEnt->r.model = staff_models[STAFF_TRAIL_SMOKE];
 
 			TrailEnt->r.frame = 0;
 
@@ -502,7 +502,7 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owne
 
 		VectorCopy(newpoint, TrailEnt->origin);
 
-		TrailEnt->r.model = staff_models + STAFF_TRAIL3;
+		TrailEnt->r.model = staff_models[STAFF_TRAIL3];
 
 		TrailEnt->r.frame = 0;
 
@@ -613,7 +613,7 @@ static qboolean FXStaffThink(struct client_entity_s *Self, centity_t *owner)
 
 		VectorCopy(newpoint, TrailEnt->origin);
 
-		TrailEnt->r.model = staff_models;
+		TrailEnt->r.model = staff_models[0];
 		TrailEnt->r.frame = 1;
 
 		TrailEnt->r.flags = RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
@@ -766,7 +766,7 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self, centity_t *owne
 	{
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, curpt, 0, 100);
 		VectorCopy(curpt, TrailEnt->origin);
-		TrailEnt->r.model = staff_models + Self->classID;
+		TrailEnt->r.model = staff_models[Self->classID];
 		TrailEnt->alpha=0.8 - (Self->NoOfAnimFrames*0.1);
 		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
@@ -917,7 +917,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	stafffx=ClientEntity_new(FX_SPELLHANDS, Flags & ~CEF_NO_DRAW, spawnpt, 0, 100);
 	VectorCopy(spawnpt, stafffx->origin);
-	stafffx->r.model = staff_models + STAFF_HALO;
+	stafffx->r.model = staff_models[STAFF_HALO];
 	stafffx->alpha=.75;
 	stafffx->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 	stafffx->r.frame=1;
@@ -941,7 +941,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		stafffx=ClientEntity_new(FX_SPELLHANDS, Flags & ~CEF_NO_DRAW, spawnpt, 0, 100);
 		VectorCopy(spawnpt, stafffx->origin);
-		stafffx->r.model = staff_models + STAFF_HALO;
+		stafffx->r.model = staff_models[STAFF_HALO];
 		stafffx->alpha=.75;
 		stafffx->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 		stafffx->r.frame=1;
@@ -1011,7 +1011,7 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owne
 	{
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, curpt, 0, 100);
 		VectorCopy(curpt, TrailEnt->origin);
-		TrailEnt->r.model = staff_models + Self->classID;
+		TrailEnt->r.model = staff_models[Self->classID];
 		TrailEnt->alpha=0.6 - (Self->NoOfAnimFrames*0.1);
 		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;

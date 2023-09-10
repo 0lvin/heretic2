@@ -46,7 +46,7 @@ void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 	VectorSet(angles, 0, inangle, 0);
 	DustPuff = ClientEntity_new(type, flags, origin, NULL, 100);
 
-	DustPuff->r.model = tb_dustpuff_models;
+	DustPuff->r.model = tb_dustpuff_models[0];
 	DustPuff->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	DustPuff->Update = FXTBDustPuffThink;
 	DustPuff->radius = 1.0F;

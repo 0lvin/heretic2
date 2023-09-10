@@ -42,7 +42,7 @@ void FXBlueRing(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	{
 		flameitem = ClientEntity_new(Type, Flags & ~CEF_OWNERS_ORIGIN, Origin, NULL, FLAME_DURATION);
 
-		flameitem->r.model = blue_models;
+		flameitem->r.model = blue_models[0];
 		flameitem->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		flameitem->r.frame = 0;
 		flameitem->r.scale = FLAME_INIT_SCALE;

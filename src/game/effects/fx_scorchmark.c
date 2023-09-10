@@ -72,7 +72,7 @@ void FXClientScorchmark(vec3_t origin, vec3_t dir)
 	{
 		scorchmark = ClientEntity_new(FX_SCORCHMARK, CEF_NOMOVE, origin, dir, 1000);
 
-		scorchmark->r.model = scorch_models;
+		scorchmark->r.model = scorch_models[0];
 		scorchmark->r.flags |= RF_FIXED | RF_TRANSLUCENT;
 
 		scorchmark->radius = 10.0;
@@ -100,7 +100,7 @@ void FXScorchmark(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		scorchmark = ClientEntity_new(type, flags | CEF_NOMOVE, origin, dir, 1000);
 
-		scorchmark->r.model = scorch_models;
+		scorchmark->r.model = scorch_models[0];
 		scorchmark->r.flags |= RF_FIXED | RF_TRANSLUCENT;
 
 		scorchmark->radius = 10.0;

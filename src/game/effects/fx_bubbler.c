@@ -71,7 +71,7 @@ static qboolean FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *ow
 
 	bubble = ClientEntity_new(-1, 0, origin, NULL, spawner->SpawnData);
 
-	bubble->r.model = bubbler_models;
+	bubble->r.model = bubbler_models[0];
 	bubble->r.scale = flrand(0.10, 0.20);
 	bubble->r.flags = RF_TRANSLUCENT;
 
@@ -136,7 +136,7 @@ void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	time = GetTimeToReachDistance(0, BUBBLE_ACCELERATION, fabs(up));
 	bubble = ClientEntity_new(FX_BUBBLE, Flags, Origin, NULL, time);
 
-	bubble->r.model = bubbler_models;
+	bubble->r.model = bubbler_models[0];
 	bubble->r.scale = flrand(0.025, 0.10);
 	bubble->r.flags = RF_TRANSLUCENT;
 	bubble->radius = BUBBLE_RADIUS*2;

@@ -340,25 +340,25 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		switch (I)
 		{
 			case 0:
-				Explosion->r.model = flare_models + 1;
+				Explosion->r.model = flare_models[1];
 			break;
 			case 1:
-				Explosion->r.model = flare_models + 2;
+				Explosion->r.model = flare_models[2];
 			break;
 			case 2:
-				Explosion->r.model = flare_models + 4;
+				Explosion->r.model = flare_models[4];
 			break;
 			case 3:
-				Explosion->r.model = flare_models + 3;
+				Explosion->r.model = flare_models[3];
 			break;
 			case 4:
-				Explosion->r.model = flare_models + 6;
+				Explosion->r.model = flare_models[6];
 			break;
 			case 5:
-				Explosion->r.model = flare_models + 3;
+				Explosion->r.model = flare_models[3];
 			break;
 			case 6:
-				Explosion->r.model = flare_models;
+				Explosion->r.model = flare_models[0];
 				Explosion->up[1] = 1;
 				Explosion->up[2] = alpha;
 				if (Flags & CEF_FLAG8)
@@ -461,25 +461,25 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 		switch (I)
 		{
 			case 0:
-				Explosion->r.model = flare_models + 1;
+				Explosion->r.model = flare_models[1];
 			break;
 			case 1:
-				Explosion->r.model = flare_models + 2;
+				Explosion->r.model = flare_models[2];
 			break;
 			case 2:
-				Explosion->r.model = flare_models + 4;
+				Explosion->r.model = flare_models[4];
 			break;
 			case 3:
-				Explosion->r.model = flare_models + 3;
+				Explosion->r.model = flare_models[3];
 			break;
 			case 4:
-				Explosion->r.model = flare_models + 6;
+				Explosion->r.model = flare_models[6];
 			break;
 			case 5:
-				Explosion->r.model = flare_models + 3;
+				Explosion->r.model = flare_models[3];
 			break;
 			case 6:
-				Explosion->r.model = flare_models;
+				Explosion->r.model = flare_models[0];
 				Explosion->up[1] = 1;
 				Explosion->up[2] = Explosion->alpha;
 				if (Flags & CEF_FLAG8)

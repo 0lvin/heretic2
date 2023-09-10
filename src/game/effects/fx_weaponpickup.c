@@ -116,7 +116,7 @@ void FXWeaponPickup(centity_t *owner, int type, int flags, vec3_t origin)
 	if(!tag)//sorry bob, just temporary...
 		ce->flags|=CEF_NO_DRAW;
 	else
-		ce->r.model = weapon_models + (tag -2);
+		ce->r.model = weapon_models[tag - 2];
 	ce->r.scale = 0.5;
 	ce->radius = 10.0;
 	ce->alpha = 0.8;

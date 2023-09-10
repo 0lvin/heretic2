@@ -160,12 +160,12 @@ CL_AddPacketEntities(frame_t *frame)
 				ent.skinnum = 0;
 				ci = &cl.clientinfo[s1->skinnum & 0xff];
 				ent.skin = ci->skin;
-				ent.model = ci->model;
+				ent.model = ci->model[0];
 
 				if (!ent.skin || !ent.model)
 				{
 					ent.skin = cl.baseclientinfo.skin;
-					ent.model = cl.baseclientinfo.model;
+					ent.model = cl.baseclientinfo.model[0];
 				}
 
 				if (renderfx & RF_USE_DISGUISE)
@@ -191,7 +191,7 @@ CL_AddPacketEntities(frame_t *frame)
 
 						if (model)
 						{
-							ent.model = &model;
+							ent.model = model;
 						}
 					}
 				}
@@ -200,7 +200,7 @@ CL_AddPacketEntities(frame_t *frame)
 			{
 				ent.skinnum = s1->skinnum;
 				ent.skin = NULL;
-				ent.model = &cl.model_draw[s1->modelindex];
+				ent.model = cl.model_draw[s1->modelindex];
 			}
 		}
 
@@ -396,24 +396,24 @@ CL_AddPacketEntities(frame_t *frame)
 					i = 0;
 				}
 
-				ent.model = &ci->weaponmodel[i];
+				ent.model = ci->weaponmodel[i];
 
 				if (!ent.model)
 				{
 					if (i != 0)
 					{
-						ent.model = &ci->weaponmodel[0];
+						ent.model = ci->weaponmodel[0];
 					}
 
 					if (!ent.model)
 					{
-						ent.model = &cl.baseclientinfo.weaponmodel[0];
+						ent.model = cl.baseclientinfo.weaponmodel[0];
 					}
 				}
 			}
 			else
 			{
-				ent.model = &cl.model_draw[s1->modelindex2];
+				ent.model = cl.model_draw[s1->modelindex2];
 			}
 
 			/* check for the defender sphere shell and make it translucent */
@@ -432,19 +432,19 @@ CL_AddPacketEntities(frame_t *frame)
 
 		if (s1->modelindex3)
 		{
-			ent.model = &cl.model_draw[s1->modelindex3];
+			ent.model = cl.model_draw[s1->modelindex3];
 			V_AddEntity(&ent);
 		}
 
 		if (s1->modelindex4)
 		{
-			ent.model = &cl.model_draw[s1->modelindex4];
+			ent.model = cl.model_draw[s1->modelindex4];
 			V_AddEntity(&ent);
 		}
 
 		if (effects & EF_POWERSCREEN)
 		{
-			ent.model = &cl_mod_powerscreen;
+			ent.model = cl_mod_powerscreen;
 			ent.oldframe = 0;
 			ent.frame = 0;
 			ent.flags |= (RF_TRANSLUCENT | RF_SHELL_GREEN);
@@ -615,12 +615,12 @@ CL_AddViewWeapon(player_state_t *ps, player_state_t *ops)
 
 	if (gun_model)
 	{
-		gun.model = &gun_model;
+		gun.model = gun_model;
 	}
 
 	else
 	{
-		gun.model = &cl.model_draw[ps->gunindex];
+		gun.model = cl.model_draw[ps->gunindex];
 	}
 
 	if (!gun.model)

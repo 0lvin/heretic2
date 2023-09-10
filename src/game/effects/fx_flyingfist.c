@@ -71,14 +71,14 @@ static qboolean FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *
 
 		if (self->flags & CEF_FLAG7)
 		{
-			TrailEnt->r.model = fist_models + 1;
+			TrailEnt->r.model = fist_models[1];
 			TrailEnt->r.scale = 3.0 * (trailscale + flrand(0.0, 0.05));
 			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-8.0, 8.0));
 			VectorScale(accel_dir, flrand(-100.0, -400.0), TrailEnt->velocity);
 		}
 		else
 		{
-			TrailEnt->r.model = fist_models;
+			TrailEnt->r.model = fist_models[0];
 			TrailEnt->r.scale = trailscale + flrand(0.0, 0.05);
 			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
 			VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
@@ -124,7 +124,7 @@ void FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
 
 	if (flags & CEF_FLAG7)
 	{	// Powered up fireball.  Use a meteor model.
-		missile->r.model = fist_models + 2;
+		missile->r.model = fist_models[2];
 		missile->r.skinnum = 1;
 		if (flags & CEF_FLAG8)		// Wimpy shot, because didn't have mana.
 			missile->r.scale = 1.0;
@@ -221,7 +221,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
-		SmokePuff->r.model = fist_models + 1;
+		SmokePuff->r.model = fist_models[1];
 		if (powerup)
 		{	// Meteor impact!
 			SmokePuff->d_scale=-2.0;

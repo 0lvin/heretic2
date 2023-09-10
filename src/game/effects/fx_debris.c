@@ -327,13 +327,13 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 	debris->msgHandler = CE_DefaultMsgHandler;
 	if(modelindex == 255)//FIXME: these will tilt up and down with the player's torso!!!
 	{	// Player special model.
-		debris->r.model = fxi.cl->clientinfo[owner->baseline.number-1].model;
+		debris->r.model = fxi.cl->clientinfo[owner->baseline.number - 1].model[0];
 		if (!debris->r.model)
-			debris->r.model = fxi.cl->baseclientinfo.model;
+			debris->r.model = fxi.cl->baseclientinfo.model[0];
 	}
 	else
 	{
-		debris->r.model = &fxi.cl->model_draw[modelindex];
+		debris->r.model = fxi.cl->model_draw[modelindex];
 	}
 	debris->r.fmnodeinfo = FMNodeInfo_new();
 	debris->r.frame = frame;//first frame should be parts frame of a flexmodel
@@ -503,7 +503,7 @@ client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float k
 	debris->classID = CID_DEBRIS;
 	debris->msgHandler = CE_DefaultMsgHandler;
 
-	debris->r.model = &debrisChunks[index].model;
+	debris->r.model = debrisChunks[index].model;
 
 	debris->r.scale = scale;
 	debris->r.angles[0] = flrand(-ANGLE_180, ANGLE_180);

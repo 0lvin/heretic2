@@ -50,7 +50,7 @@ void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 
 	self=ClientEntity_new(FX_WATER_WAKE,flags,origin,dir,5000);
 
-	self->r.model = wake_models;
+	self->r.model = wake_models[0];
 	self->r.origin[1]=CreatorClientEntity->origin[1];
 	self->r.origin[0]=CreatorClientEntity->origin[0];
 	self->alpha=0.7;

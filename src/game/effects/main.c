@@ -558,8 +558,8 @@ SkipEffect:
 	effectsExport.fxMsgBuf = NULL;
 }
 
-static entity_t		sv_ents[MAX_SERVER_ENTITIES];
-static fmnodeinfo_t	sv_ents_fmnodeinfos[MAX_SERVER_ENTITIES][MAX_FM_MESH_NODES];
+static entity_t		sv_ents[MAX_ENTITIES];
+static fmnodeinfo_t	sv_ents_fmnodeinfos[MAX_ENTITIES][MAX_FM_MESH_NODES];
 
 
 static void
@@ -596,10 +596,10 @@ AddServerEntities(frame_t *frame)
 
 	numEntsToAdd = frame->num_entities;
 
-	if(numEntsToAdd > MAX_SERVER_ENTITIES)
+	if(numEntsToAdd > MAX_ENTITIES)
 	{
-		fxi.Com_Printf("Overflow:  Too many (%d : %d) server entities to add to view\n", numEntsToAdd, MAX_SERVER_ENTITIES);
-		numEntsToAdd = MAX_SERVER_ENTITIES;
+		fxi.Com_Printf("Overflow:  Too many (%d : %d) server entities to add to view\n", numEntsToAdd, MAX_ENTITIES);
+		numEntsToAdd = MAX_ENTITIES;
 	}
 
 	for(pnum = 0, ent = sv_ents; pnum<numEntsToAdd; ++pnum)
@@ -706,7 +706,7 @@ AddServerEntities(frame_t *frame)
 
 			ci = &fxi.cl->clientinfo[clientnum];
 
-			ent->model = ci->model;
+			ent->model = *ci->model;
 			if (ent->skinnum < SKIN_MAX)
 				ent->skin = ci->skin[ent->skinnum];
 			else
@@ -718,7 +718,7 @@ AddServerEntities(frame_t *frame)
 
 			if (!ent->skin || !ent->model)
 			{
-				ent->model = fxi.cl->baseclientinfo.model;
+				ent->model = *fxi.cl->baseclientinfo.model;
 				if (ent->skinnum < SKIN_MAX)
 					ent->skin = fxi.cl->baseclientinfo.skin[ent->skinnum];
 				else
@@ -727,7 +727,7 @@ AddServerEntities(frame_t *frame)
 		}
 		else
 		{
-			ent->model = &fxi.cl->model_draw[s1->modelindex];
+			ent->model = fxi.cl->model_draw[s1->modelindex];
 			ent->skin = NULL;			// No custom skin.
 		}
 

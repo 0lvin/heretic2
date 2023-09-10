@@ -40,7 +40,7 @@ qboolean FXDripThinkSolid(client_entity_t *drip, centity_t *owner)
 
 	mist = ClientEntity_new(-1, 0, origin, NULL, 500);
 
-	mist->r.model = drip_models;
+	mist->r.model = drip_models[0];
 	mist->r.scale = 0.5F;
 	mist->r.flags = RF_TRANSLUCENT;
 
@@ -71,7 +71,7 @@ qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
 
 	mist = ClientEntity_new(-1, 0, origin, NULL, 500);
 
-	mist->r.model = drip_models;
+	mist->r.model = drip_models[0];
 	mist->r.scale = 0.5F;
 	mist->r.flags = RF_TRANSLUCENT;
 
@@ -104,7 +104,7 @@ qboolean FXDripThinkLava(client_entity_t *drip, centity_t *owner)
 
 	mist = ClientEntity_new(-1, 0, origin, NULL, 500);
 
-	mist->r.model = drip_models + 1;
+	mist->r.model = drip_models[1];
 	mist->r.scale = 0.5F;
 	mist->r.flags = RF_TRANSLUCENT;
 
@@ -133,7 +133,7 @@ static qboolean FXDripperParticleSpawner(client_entity_t *spawner, centity_t *ow
 	// Spawn a drip to fall
 	drip = ClientEntity_new(-1, 0, spawner->r.origin, NULL, spawner->SpawnDelay);
 
-	drip->r.model = drip_models + 2;
+	drip->r.model = drip_models[2];
 	drip->r.scale = 0.1F;
 	drip->r.flags = RF_TRANSLUCENT | RF_ALPHA_TEXTURE;
 	drip->r.frame = spawner->r.frame;

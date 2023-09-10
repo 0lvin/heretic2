@@ -81,7 +81,7 @@ void FXMist(centity_t *owner, int type, int flags, vec3_t origin)
 
 	mist->SpawnData = scale * 0.1;
 
-	mist->r.model = mist_models;
+	mist->r.model = mist_models[0];
 	mist->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	mist->r.scale = mist->SpawnData;
 

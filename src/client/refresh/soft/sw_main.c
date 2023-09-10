@@ -848,7 +848,7 @@ R_DrawEntitiesOnList (void)
 		}
 		else
 		{
-			const model_t *currentmodel = currententity->model[0];
+			const model_t *currentmodel = currententity->model;
 			if (!currentmodel)
 			{
 				R_DrawNullModel();
@@ -898,7 +898,7 @@ R_DrawEntitiesOnList (void)
 		}
 		else
 		{
-			const model_t *currentmodel = currententity->model[0];
+			const model_t *currentmodel = currententity->model;
 			if (!currentmodel)
 			{
 				R_DrawNullModel();
@@ -1106,7 +1106,7 @@ R_DrawBEntitiesOnList (void)
 	for (i=0 ; i<r_newrefdef.num_entities ; i++)
 	{
 		entity_t *currententity = r_newrefdef.entities[i];
-		const model_t *currentmodel = currententity->model[0];
+		const model_t *currentmodel = currententity->model;
 		if ( currententity->flags & RF_BEAM )
 			continue;
 		if (!currentmodel)

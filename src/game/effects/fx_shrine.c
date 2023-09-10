@@ -133,9 +133,9 @@ void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
  	shrine_fx = ClientEntity_new(type, flags, origin, NULL, 100);
 	shrine_fx->radius = 20.0F;
 	if (owner->current.effects & EF_CHICKEN)
-		shrine_fx->r.model = shrine_models + 1;
+		shrine_fx->r.model = shrine_models[1];
 	else
-		shrine_fx->r.model = shrine_models;
+		shrine_fx->r.model = shrine_models[0];
 	shrine_fx->d_scale = -1.2;
 	shrine_fx->r.scale = 3.0;
 	shrine_fx->velocity[2] = -35.5;
@@ -370,7 +370,7 @@ void FXShrineLightEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow = ClientEntity_new(type, flags, origin, 0, 2000);
 
 	VectorClear(glow->origin);
-	glow->r.model = shrine_models;
+	glow->r.model = shrine_models[0];
 	glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	glow->AddToView = LinkedEntityUpdatePlacement;
  	glow->d_scale = 5.0;
@@ -819,7 +819,7 @@ static qboolean FXShrineGhostThink(struct client_entity_s *self, centity_t *owne
 
 		glow = ClientEntity_new(FX_SHRINE_GHOST, CEF_OWNERS_ORIGIN, origin, 0, 300);
 
-		glow->r.model = shrine_models;
+		glow->r.model = shrine_models[0];
 		glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		glow->SpawnInfo = 2;
 		glow->AddToView = OffsetLinkedEntityUpdatePlacement;
@@ -1198,7 +1198,7 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// Add an additional flash as well.
 	// ...and a big-ass flash
 	burst = ClientEntity_new(-1, flags, origin, NULL, 250);
-	burst->r.model = shrine_models + 1;
+	burst->r.model = shrine_models[1];
 	burst->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	burst->r.frame = 1;
 	burst->radius=64;

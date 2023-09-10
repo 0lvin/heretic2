@@ -75,7 +75,7 @@ static qboolean FXSsithraArrowMissileThink(client_entity_t *missile, centity_t *
 		VectorRandomCopy(missile->origin, org, PART_OFF);
 		Vec3AddAssign(curpos, org);
 		ce = ClientEntity_new(-1, 0, org, NULL, 500);
-		ce->r.model = ssarrow_models;		// Can be a particle now
+		ce->r.model = ssarrow_models[0];		// Can be a particle now
 		ce->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		ce->r.color = missile->color;
 		ce->radius = 16.0F;
@@ -105,7 +105,7 @@ void FXSsithraArrowMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	missile->r.angles[PITCH] -= ANGLE_90;
 	missile->r.angles[YAW] += ANGLE_90;
 
-	missile->r.model = ssarrow_models + 1;
+	missile->r.model = ssarrow_models[1];
 	missile->Update = FXSsithraArrowMissileThink;
 	missile->radius = 32.0F;
 	missile->color.c = 0xff00ffff;

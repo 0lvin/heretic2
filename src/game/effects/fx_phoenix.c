@@ -90,7 +90,7 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 					flrand(-SMOKETRAIL_RADIUS/2.0, SMOKETRAIL_RADIUS/2.0));
 		VectorAdd(	smokeorigin, missile->origin, smokeorigin);
 		smoke = ClientEntity_new(-1, CEF_DONT_LINK, smokeorigin, NULL, dur);
-		smoke->r.model = phoen_models;
+		smoke->r.model = phoen_models[0];
 		smoke->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		smoke->radius = 64.0F;
 		smoke->alpha = SMOKETRAIL_ALPHA;
@@ -110,7 +110,7 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 					flrand(-SMOKETRAIL_RADIUS/2.0, SMOKETRAIL_RADIUS/2.0));
 		VectorAdd(	smokeorigin, missile->origin, smokeorigin);
 		smoke = ClientEntity_new(-1, CEF_DONT_LINK, smokeorigin, NULL, dur);
-		smoke->r.model = phoen_models;
+		smoke->r.model = phoen_models[0];
 		smoke->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		smoke->radius = 128.0F;
 		smoke->alpha = SMOKETRAIL_ALPHA;
@@ -204,7 +204,7 @@ void FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorNormalize(temp);
 	AnglesFromDir(temp, missile->r.angles);
 
-	missile->r.model = phoen_models + 1;
+	missile->r.model = phoen_models[1];
 	missile->flags |= CEF_ADDITIVE_PARTS;
 	missile->r.frame = 0;
 	missile->lastThinkTime = fxi.cl->time + (50*7);	// Time to play last frame.
@@ -296,7 +296,7 @@ static qboolean FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *ow
 	VectorSet(pos, flrand(-8, 8), flrand(-8, 8), flrand(-8, 8));
 	VectorAdd(pos, bird->r.origin, pos);
 	newbird = ClientEntity_new(-1, bird->r.flags, pos, NULL, dur);
-	newbird->r.model = phoen_models + 3;
+	newbird->r.model = phoen_models[3];
 	newbird->r.frame = 1;
 	newbird->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	newbird->radius	= 128;
@@ -316,7 +316,7 @@ client_entity_t *CreatePhoenixSmallExplosion(vec3_t ballorigin)
 	client_entity_t *subexplosion;
 
 	subexplosion = ClientEntity_new(FX_WEAPON_PHOENIXEXPLODE, CEF_BROADCAST, ballorigin, NULL, 17);
-	subexplosion->r.model = phoen_models + 4;
+	subexplosion->r.model = phoen_models[4];
 	subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	subexplosion->alpha = 1.0;
 	subexplosion->r.scale = 1.0;
@@ -384,7 +384,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// Create the main big explosion sphere.
 	explosion = ClientEntity_new(type, flags, origin, NULL, 17);
-	explosion->r.model = phoen_models + 5;
+	explosion->r.model = phoen_models[5];
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->flags |= CEF_ADDITIVE_PARTS | CEF_PULSE_ALPHA;
 	explosion->alpha = 0.1;
@@ -423,7 +423,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// ...and a big-ass flash
 	explosion = ClientEntity_new(-1, flags, origin, NULL, 250);
-	explosion->r.model = phoen_models + 2;
+	explosion->r.model = phoen_models[2];
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 1;
 	explosion->radius=128;
@@ -442,7 +442,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// ...and draw the phoenix rising from the explosion
 	explosion = ClientEntity_new(type, flags, origin, NULL, dur);
-	explosion->r.model = phoen_models + 3;
+	explosion->r.model = phoen_models[3];
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 0;
 	explosion->radius=128;
@@ -499,7 +499,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 	// This isn't actually used but we need something to anchor the particles to
 	// Create the main big explosion sphere.
 	explosion = ClientEntity_new(type, flags, origin, NULL, 17);
-	explosion->r.model = phoen_models + 5;
+	explosion->r.model = phoen_models[5];
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->flags |= CEF_ADDITIVE_PARTS;
 	explosion->alpha = 1.0;
@@ -534,7 +534,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 		if(trace.fraction > .99)
 		{	// Burst in the air, no ground found.
 			subexplosion = ClientEntity_new(-1, flags, phOrg, NULL, 1000);
-			subexplosion->r.model = phoen_models + 2;
+			subexplosion->r.model = phoen_models[2];
 			subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 			subexplosion->r.frame = 1;
 			subexplosion->radius=128;
@@ -565,7 +565,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 		else
 		{
 			subexplosion = ClientEntity_new(-1, flags, trace.endpos, NULL, 1000);
-			subexplosion->r.model = phoen_models + 2;
+			subexplosion->r.model = phoen_models[2];
 			subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 			subexplosion->r.frame = 1;
 			subexplosion->radius=128;
@@ -599,7 +599,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 
 	// ...and draw the phoenix rising from the explosion
 	explosion = ClientEntity_new(type, flags, origin, NULL, 100);
-	explosion->r.model = phoen_models + 3;
+	explosion->r.model = phoen_models[3];
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 0;
 	explosion->radius=128;
@@ -615,7 +615,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 
 	// inner phoenix
 	explosion = ClientEntity_new(type, flags, origin, NULL, 100);
-	explosion->r.model = phoen_models + 3;
+	explosion->r.model = phoen_models[3];
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 0;
 	explosion->radius=128;
@@ -664,7 +664,7 @@ static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *
 				flrand(-SMOKETRAIL_RADIUS/2.0, SMOKETRAIL_RADIUS/2.0));
 	VectorAdd(	smokeorigin, missile->origin, smokeorigin);
 	smoke = ClientEntity_new(-1, CEF_DONT_LINK, smokeorigin, NULL, dur);
-	smoke->r.model = phoen_models;
+	smoke->r.model = phoen_models[0];
 	smoke->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	smoke->radius = 64.0F;
 	smoke->alpha = SMOKETRAIL_ALPHA;

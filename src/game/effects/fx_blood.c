@@ -397,9 +397,9 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 		bloodmark->r.angles[ROLL] = flrand(0, ANGLE_360);
 
 		if(yellow)
-			bloodmark->r.model = splat_models + 1;
+			bloodmark->r.model = splat_models[1];
 		else
-			bloodmark->r.model = splat_models;
+			bloodmark->r.model = splat_models[0];
 		bloodmark->r.flags = 0;
 		bloodmark->r.flags |= RF_FIXED | RF_ALPHA_TEXTURE;
 		bloodmark->r.frame = irand(0,4);

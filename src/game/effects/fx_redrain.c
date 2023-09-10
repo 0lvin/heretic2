@@ -157,7 +157,7 @@ static qboolean FXRedRainThink(client_entity_t *rain, centity_t *owner)
 		VectorAdd(rain->origin, origin, origin);
 		duration = GetFallTime(origin, RAIN_INIT_VEL, -PARTICLE_GRAVITY, DROP_RADIUS, 3.0F, &trace);
 		drop = ClientEntity_new(-1, CEF_DONT_LINK, origin, NULL, duration);
-		drop->r.model = rain_models + 3;
+		drop->r.model = rain_models[3];
 		drop->r.frame = rain->SpawnInfo;
 		drop->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		drop->alpha = 0.75;
@@ -254,11 +254,11 @@ static qboolean FXRedRainMissileThink(client_entity_t *missile, centity_t *owner
 		ce = ClientEntity_new(-1, 0, org, NULL, 500);
 		if (missile->SpawnInfo)	// Powered up
 		{
-			ce->r.model = rain_models+4;
+			ce->r.model = rain_models[4];
 		}
 		else
 		{
-			ce->r.model = rain_models;
+			ce->r.model = rain_models[0];
 		}
 		ce->r.scale = 1.0F;
 		ce->d_scale = 2.0F;
@@ -313,7 +313,7 @@ void FXRedRainMissile(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	VectorNormalize(temp);
 	AnglesFromDir(temp, missile->r.angles);
 
-	missile->r.model = rain_models + 1;
+	missile->r.model = rain_models[1];
 	missile->Update = FXRedRainMissileThink;
 	missile->radius = 32.0F;
 	if (Flags & CEF_FLAG6)
@@ -424,7 +424,7 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 		VectorRandomCopy(impactpos, org, RED_RAIN_RADIUS/3.0);
 		explo = ClientEntity_new(FX_WEAPON_REDRAIN, CEF_DONT_LINK, org, NULL, 100);
 
-		explo->r.model = rain_models + 2;
+		explo->r.model = rain_models[2];
 		explo->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		explo->radius = 16.0F;
 		VectorSet(explo->velocity, flrand(-128.0, 128.0), flrand(-128.0, 128.0), flrand(-128.0, 0.0));
@@ -453,11 +453,11 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 	explo = ClientEntity_new(-1, 0, impactpos, NULL, 500);
 	if (powerup)
 	{	// Green flash
-		explo->r.model = rain_models+4;
+		explo->r.model = rain_models[4];
 	}
 	else
 	{	// Red flash
-		explo->r.model = rain_models;
+		explo->r.model = rain_models[0];
 	}
 	explo->r.frame = 0;
 	explo->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;

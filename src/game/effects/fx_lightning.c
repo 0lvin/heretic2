@@ -57,7 +57,7 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	client_entity_t *lightning;
 
 	lightning = ClientEntity_new(FX_LIGHTNING, CEF_DONT_LINK, start, NULL, 250);
-	lightning->r.model = lightning_models + type;
+	lightning->r.model = lightning_models[type];
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	lightning->r.scale = width;
 	lightning->radius = radius;
@@ -69,7 +69,7 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	AddEffect(NULL, lightning);
 
 	lightning = ClientEntity_new(FX_LIGHTNING, CEF_DONT_LINK, start, NULL, 400);
-	lightning->r.model = lightning_models + type;
+	lightning->r.model = lightning_models[type];
 	lightning->r.frame = 1;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	lightning->r.scale = width * LIGHTNING_WIDTH_MULT;
@@ -84,7 +84,7 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	// Add a little ball at the joint (end)
 
 	lightning = ClientEntity_new(FX_LIGHTNING, CEF_DONT_LINK, start, NULL, 250);
-	lightning->r.model = lightning_models + type + LIGHTNING_JOINT_OFFSET;
+	lightning->r.model = lightning_models[type + LIGHTNING_JOINT_OFFSET];
 	lightning->r.frame = 0;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	lightning->r.scale = width * LIGHTNING_JOINT_SCALE;
@@ -243,7 +243,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	// Big ol' monster zapper
 	lightning = ClientEntity_new(FX_POWER_LIGHTNING, CEF_AUTO_ORIGIN, Origin, NULL, 750);
-	lightning->r.model = lightning_models + LIGHTNING_TYPE_GREEN;
+	lightning->r.model = lightning_models[LIGHTNING_TYPE_GREEN];
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	lightning->r.scale = width;
 	lightning->d_scale = -0.5*width;
@@ -257,7 +257,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	// Halo around the lightning
 	lightning = ClientEntity_new(FX_POWER_LIGHTNING, CEF_AUTO_ORIGIN, Origin, NULL, 1000);
-	lightning->r.model = lightning_models + LIGHTNING_TYPE_GREEN;
+	lightning->r.model = lightning_models[LIGHTNING_TYPE_GREEN];
 	lightning->r.frame = 1;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	lightning->r.scale = width * LIGHTNING_POWER_WIDTH_MULT;
@@ -272,7 +272,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	// Big ol' flash at source to cover up the flatness of the line's end.
 	lightning = ClientEntity_new(FX_POWER_LIGHTNING, CEF_ADDITIVE_PARTS, Origin, NULL, 750);
-	lightning->r.model = lightning_models + 6;		// The bright halo model
+	lightning->r.model = lightning_models[6];		// The bright halo model
 	lightning->r.frame = 1;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	lightning->r.scale = 0.75;
@@ -299,7 +299,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	}
 
 	lightning = ClientEntity_new(FX_POWER_LIGHTNING, CEF_ADDITIVE_PARTS, target, NULL, 1000);
-	lightning->r.model = lightning_models + 6;		// The bright halo model
+	lightning->r.model = lightning_models[6];		// The bright halo model
 	lightning->r.origin[2] += 8.0;
 	lightning->r.frame = 1;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -341,7 +341,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		lightning = ClientEntity_new(FX_LIGHTNING,
 						CEF_PULSE_ALPHA | CEF_USE_VELOCITY2 | CEF_AUTO_ORIGIN | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS,
 						target, NULL, 750);
-		lightning->r.model = lightning_models + LIGHTNING_TYPE_GREEN;
+		lightning->r.model = lightning_models[LIGHTNING_TYPE_GREEN];
 		lightning->r.frame = 1;		// Just use the halo
 		lightning->r.spriteType = SPRITE_LINE;
 		lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;

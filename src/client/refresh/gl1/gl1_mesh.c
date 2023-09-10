@@ -821,9 +821,9 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	R_RotateForEntity(currententity);
 	currententity->angles[PITCH] = -currententity->angles[PITCH];
 
-	if (currententity->model[0]->skins[0])
+	if (currententity->model->skins[0])
 	{
-		skin = currententity->model[0]->skins[0];
+		skin = currententity->model->skins[0];
 	}
 	else
 	/* select skin */

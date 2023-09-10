@@ -46,7 +46,7 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// Add a big ol' flash.
 	spawner = ClientEntity_new(type, flags | CEF_ADDITIVE_PARTS, origin, NULL, 500);
-	spawner->r.model = flareup_models ;		// The starry halo.
+	spawner->r.model = flareup_models[0];		// The starry halo.
 	spawner->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	spawner->radius = 128.0;
 

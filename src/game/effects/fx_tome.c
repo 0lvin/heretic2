@@ -138,7 +138,7 @@ void FXTomeOfPower(centity_t *owner, int type, int flags, vec3_t origin)
 	tome = ClientEntity_new(type, flags, origin, NULL, 100);
 
 	// Test model
- 	tome->r.model = torch_models + 1;
+ 	tome->r.model = torch_models[1];
 	tome->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 	tome->flags |= CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS;
 	tome->r.scale = 0.55;
@@ -236,7 +236,7 @@ void FXplayertorch(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*effect;
 
 	effect = ClientEntity_new(type, flags, origin, NULL, 100);
- 	effect->r.model = torch_models;
+ 	effect->r.model = torch_models[0];
 	effect->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	effect->r.scale = .35;
 	effect->color.c = 0xffffff;

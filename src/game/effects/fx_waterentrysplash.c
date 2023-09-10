@@ -51,7 +51,7 @@ static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, cen
 									 Self->direction,
 									 1200);
 
-		EntryRipple->r.model = water_models;
+		EntryRipple->r.model = water_models[0];
 		EntryRipple->r.frame=0;
 		EntryRipple->r.flags=RF_FIXED | RF_TRANSLUCENT | RF_ALPHA_TEXTURE;
 		EntryRipple->alpha=0.6;
@@ -170,7 +170,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		for(Theta=0.0;Theta<(2*M_PI);Theta+=DeltaTheta)
 		{
 			splash = ClientEntity_new(Type,Flags,Origin,Dir,500);
-			splash->r.model = water_models + 1;
+			splash->r.model = water_models[1];
 			splash->r.scale = flrand(0.15, 0.25);
 			splash->r.flags = RF_TRANSLUCENT;
 			splash->r.frame = 1;
@@ -197,7 +197,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		for(Theta=0.0;Theta<(2*M_PI);Theta+=DeltaTheta)
 		{
 			splash = ClientEntity_new(Type,Flags,Origin,Dir,800);
-			splash->r.model = water_models + 1;
+			splash->r.model = water_models[1];
 			splash->r.scale = flrand(0.1, 0.2);
 			splash->r.flags = RF_TRANSLUCENT;
 			splash->r.frame = 1;
@@ -224,7 +224,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 
 		splash=ClientEntity_new(FX_WATER_ENTRYSPLASH, Flags&(~CEF_OWNERS_ORIGIN), Origin, Dir, 1200);
 
-		splash->r.model = water_models;
+		splash->r.model = water_models[0];
 		splash->r.scale=SCALE*2.0;
 		splash->r.frame=0;
 		splash->r.flags |= RF_FIXED|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
@@ -243,7 +243,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		// Create an extra, centered water entry ripple.
 		splash=ClientEntity_new(FX_WATER_ENTRYSPLASH, Flags&(~CEF_OWNERS_ORIGIN), Origin, Dir, 1200);
 
-		splash->r.model = water_models;
+		splash->r.model = water_models[0];
 		splash->r.scale=SCALE;
 		splash->r.frame=0;
 		splash->r.flags |= RF_FIXED|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;

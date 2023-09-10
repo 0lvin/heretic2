@@ -162,7 +162,7 @@ void FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	// Create shadow under the player
   	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
 	self->nextThinkTime = INT_MAX;
-	self->r.model = shadow_models;
+	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 	self->radius = SHADOW_CHECK_DIST;
 	self->r.scale = scale;
@@ -181,7 +181,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	// Create shadow under the player
   	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
 	self->nextThinkTime = INT_MAX;
-	self->r.model = shadow_models;
+	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 	self->radius = SHADOW_CHECK_DIST;
 	self->r.scale = 1.0;
@@ -192,7 +192,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	// Create shadow under the left foot
   	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
 	self->nextThinkTime = INT_MAX;
-	self->r.model = shadow_models;
+	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 	self->radius = SHADOW_CHECK_DIST;
 	self->refPoint = CORVUS_LEFTFOOT;
@@ -204,7 +204,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	// Create shadow under the right foot
   	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
 	self->nextThinkTime = INT_MAX;
-	self->r.model = shadow_models;
+	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 	self->radius = SHADOW_CHECK_DIST;
 	self->refPoint = CORVUS_RIGHTFOOT;

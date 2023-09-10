@@ -61,7 +61,7 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 	{
 		effect = ClientEntity_new(type, flags, origin, NULL, 1000);
 
-		effect->r.model = spark_models + MODEL_SPARK;
+		effect->r.model = spark_models[MODEL_SPARK];
 		effect->r.flags |= RF_TRANS_ADD | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
 
 		VectorRandomCopy(dir, work, 0.5);
@@ -86,7 +86,7 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 
 		effect->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-		effect->r.model = spark_models + MODEL_SPARKSTREAK;
+		effect->r.model = spark_models[MODEL_SPARKSTREAK];
 		effect->r.spriteType = SPRITE_LINE;
 		effect->r.tile = 1.0;
 		effect->r.scale = 2;

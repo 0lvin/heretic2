@@ -8,6 +8,8 @@
 //=============================================================================
 #include <limits.h>
 
+#define MAX_ALPHA_ENTITIES 2048
+
 // ********************************************************************************************
 // predictinfo_t
 // -------------
@@ -162,6 +164,9 @@ typedef struct
 
 #define CF_INUSE			0x00000001
 #define CF_SERVER_CULLED	0x00000002
+
+/* This doesn't use the macro because of referencing weirdness. */
+#define NUM_PARTICLE_TYPES	62
 
 #endif
 

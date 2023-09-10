@@ -129,7 +129,7 @@ void FXMorphMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	else
 		Vec3ScaleAssign(ARROW_SPEED, missile->velocity);
 
-	missile->r.model = morph_models + 1;
+	missile->r.model = morph_models[1];
 	missile->r.scale = 3.0;
 	missile->r.angles[0] = -1.57;
 	missile->Update = FXMorphMissileThink;
@@ -172,7 +172,7 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 		DirFromAngles(missile->r.angles, missile->velocity);
 		Vec3ScaleAssign(ARROW_SPEED, missile->velocity);
 
-		missile->r.model = morph_models + 1;
+		missile->r.model = morph_models[1];
 		missile->r.scale = 3.0;
 		missile->r.angles[0] = -1.57;
 		missile->Update = FXMorphMissileThink;
@@ -188,7 +188,7 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 	if (r_detail->value >= DETAIL_HIGH)
 	{
 		glow = ClientEntity_new(type, flags, origin, 0, 800);
-		glow->r.model = morph_models;
+		glow->r.model = morph_models[0];
 
 		glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
@@ -356,7 +356,7 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		{
 			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN , origin, NULL, 40);
 			feather->radius = 5.0F;
-			feather->r.model = morph_models + irand(2,3);
+			feather->r.model = morph_models[irand(2, 3)];
 			feather->r.flags= RF_TRANSLUCENT;
 			feather->Update = FXFeatherThink;
 			feather->acceleration[2] = irand(-85, -120);
@@ -379,7 +379,7 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		{
 			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN , origin, NULL, 40);
 			feather->radius = 5.0F;
-			feather->r.model = morph_models + irand(2,3);
+			feather->r.model = morph_models[irand(2, 3)];
 			feather->r.flags= RF_TRANSLUCENT;
 			feather->Update = FXFeatherThink;
 			feather->acceleration[2] = -85;

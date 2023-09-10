@@ -4,6 +4,9 @@
 //
 // Need to shunt all particle textures in 0.5 of a pixel to avoid texture bleed
 
+/* This doesn't use the macro because of referencing weirdness. */
+#define NUM_PARTICLE_TYPES	62
+
 #define FRAC		(1.0F / 256.0F)
 #define	UNIT		(1.0F / 128.0F)
 

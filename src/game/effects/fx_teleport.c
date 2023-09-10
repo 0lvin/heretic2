@@ -60,14 +60,14 @@ void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 		col1 = &color.b;
 		col2 = &color.g;
 		col3 = &color.r;
-		teleport_fx->r.model = tele_models;
+		teleport_fx->r.model = tele_models[0];
 	}
 	else
 	{
 		col1 = &color.b;
 		col2 = &color.r;
 		col3 = &color.g;
-		teleport_fx->r.model = tele_models + 1;
+		teleport_fx->r.model = tele_models[1];
 	}
 
 	teleport_fx->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -125,14 +125,14 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 		col1 = &color.b;
 		col2 = &color.g;
 		col3 = &color.r;
-		teleport_fx->r.model = tele_models;
+		teleport_fx->r.model = tele_models[0];
 	}
 	else
 	{
 		col1 = &color.b;
 		col2 = &color.r;
 		col3 = &color.g;
-		teleport_fx->r.model = tele_models + 1;
+		teleport_fx->r.model = tele_models[1];
 	}
 
 	teleport_fx->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;

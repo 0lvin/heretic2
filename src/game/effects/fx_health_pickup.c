@@ -78,7 +78,7 @@ void FXHealthPickup(centity_t *owner, int type, int flags, vec3_t origin)
 	ce = ClientEntity_new(type, flags | CEF_DONT_LINK | CEF_CHECK_OWNER | CEF_VIEWSTATUSCHANGED, origin, NULL, 50);
 
 	VectorCopy(ce->r.origin, ce->origin);
-	ce->r.model = health_models + ((flags & CEF_FLAG6) >> 5);
+	ce->r.model = health_models[(flags & CEF_FLAG6) >> 5];
 	ce->r.flags = RF_GLOW | RF_TRANSLUCENT | RF_TRANS_ADD;
 
 	if ((flags & CEF_FLAG6) >> 5)	// Full health

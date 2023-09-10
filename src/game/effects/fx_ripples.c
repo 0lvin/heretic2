@@ -34,7 +34,7 @@ static qboolean FXRippleSpawner(client_entity_t *spawner, centity_t *owner)
 
 	ripple = ClientEntity_new(-1, 0, spawner->origin, spawner->direction, 1000);
 
- 	ripple->r.model = ripple_models;
+ 	ripple->r.model = ripple_models[0];
 	ripple->r.flags |= RF_FIXED | RF_TRANSLUCENT | RF_ALPHA_TEXTURE;
 	ripple->r.scale = SCALE;
 	ripple->d_scale = DELTA_SCALE;

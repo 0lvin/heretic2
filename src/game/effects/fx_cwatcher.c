@@ -68,7 +68,7 @@ static qboolean FXCWBeamUpdate(struct client_entity_s *self, centity_t *owner)
 	while (i--)
 	{
 		spawner = ClientEntity_new(FX_CWATCHER, CEF_DONT_LINK, self->r.origin, NULL, 1000);
-		spawner->r.model = cwmodels + CWM_BEAM_LINE;
+		spawner->r.model = cwmodels[CWM_BEAM_LINE];
 		spawner->radius = 400;
 
 		spawner->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -148,7 +148,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 		//Halo around the spark
 		spawner = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 17);
-		spawner->r.model = cwmodels + CWM_STAR_HALO;
+		spawner->r.model = cwmodels[CWM_STAR_HALO];
 		spawner->radius = 400;
 
 		spawner->r.frame = 0;
@@ -164,7 +164,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 		//A bright star halo
 		spawner = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 17);
-		spawner->r.model = cwmodels + CWM_STAR_HALO;
+		spawner->r.model = cwmodels[CWM_STAR_HALO];
 		spawner->radius = 400;
 
 		spawner->r.frame = 1;
@@ -193,7 +193,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		while (i--)
 		{
 			spawner = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 500);
-			spawner->r.model = cwmodels + CWM_STAR_HALO;
+			spawner->r.model = cwmodels[CWM_STAR_HALO];
 			spawner->radius = 400;
 
 			spawner->r.frame = 1;
@@ -215,7 +215,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		while (i--)
 		{
 			spawner = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 1000);
-			spawner->r.model = cwmodels + CWM_STAR_TRAIL;
+			spawner->r.model = cwmodels[CWM_STAR_TRAIL];
 			spawner->radius = 400;
 
 			spawner->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -245,7 +245,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 	case CW_BEAM:
 		spawner = ClientEntity_new(type, flags, origin, NULL, 17);
-		spawner->r.model = cwmodels + CWM_BEAM;
+		spawner->r.model = cwmodels[CWM_BEAM];
 		spawner->radius = 400;
 
 		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
@@ -264,7 +264,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 		//Spawn a halo to cover the flat end
 		spawner = ClientEntity_new(type, flags, origin, NULL, 17);
-		spawner->r.model = cwmodels + CWM_BEAM_HALO;
+		spawner->r.model = cwmodels[CWM_BEAM_HALO];
 		spawner->radius = 400;
 
 		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
@@ -288,7 +288,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 		//Spawn a halo to cover the flat end
 		spawner = ClientEntity_new(type, flags, origin, NULL, 4000);
-		spawner->r.model = cwmodels + CWM_BEAM_HALO;
+		spawner->r.model = cwmodels[CWM_BEAM_HALO];
 		spawner->radius = 400;
 
 		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;

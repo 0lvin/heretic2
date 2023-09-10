@@ -63,7 +63,7 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
 								  NULL,
 								  1000);
 
-		TrailEnt->r.model = spoo_models + irand(0,1);
+		TrailEnt->r.model = spoo_models[irand(0, 1)];
 
 		TrailEnt->r.origin[0] += flrand(-3.0F, 3.0F);
 		TrailEnt->r.origin[1] += flrand(-3.0F, 3.0F);
@@ -121,7 +121,7 @@ void FXSpooSplat(centity_t *owner,int type,int Flags,vec3_t origin)
 								  NULL,
 								  1000);
 
-		TrailEnt->r.model = spoo_models + irand(0,1);
+		TrailEnt->r.model = spoo_models[irand(0, 1)];
 
 		VectorRandomCopy(dir, TrailEnt->velocity, 16.0f);
 		VectorNormalize(TrailEnt->velocity);

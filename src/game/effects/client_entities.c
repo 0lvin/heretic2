@@ -610,7 +610,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 
 qboolean AddEntityToView(entity_t *ent)
 {
-	if (!ent->model || !*ent->model)
+	if (!ent->model)
 	{
 		fxi.Com_Printf("AddEntityToView: NULL Model\n");
 	}

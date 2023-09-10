@@ -156,9 +156,9 @@ void FXHalo(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	// decide which halo image to use
 	if (Flags & CEF_FLAG6)
-		halo->r.model = halo_models + 1;
+		halo->r.model = halo_models[1];
 	else
-		halo->r.model = halo_models;
+		halo->r.model = halo_models[0];
 
 	halo->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
 

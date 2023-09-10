@@ -67,7 +67,7 @@ static qboolean FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t
 		if (self->flags & CEF_FLAG7)
 		{//powered
 			TrailEnt->r.flags |= (RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA);
-			TrailEnt->r.model = arrow_models + 1;
+			TrailEnt->r.model = arrow_models[1];
 			TrailEnt->r.scale = (ARROW_SCALE + flrand(0.0, 0.05));
 			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-8.0, 8.0));
 			VectorScale(accel_dir, flrand(-100.0, -400.0), TrailEnt->velocity);
@@ -80,7 +80,7 @@ static qboolean FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t
 			TrailEnt->r.color.g = 50;
 			TrailEnt->r.color.b = 100;
 			TrailEnt->r.color.a = 100;
-			TrailEnt->r.model = arrow_models;
+			TrailEnt->r.model = arrow_models[0];
 			TrailEnt->r.scale = ARROW_SCALE + flrand(-0.2, 0.2);
 			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
 			VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
@@ -113,7 +113,7 @@ void FXDoSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin, vec3
 	missile = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 100);
 
 	missile->r.flags |= RF_GLOW;
-	missile->r.model = arrow_models + 2;
+	missile->r.model = arrow_models[2];
 	missile->r.skinnum = 0;
 	missile->r.scale = 1.0;
 	LightColor.c = 0xff2040ff;		// Orange light
@@ -143,7 +143,7 @@ void FXDoSsithraArrow2(centity_t *owner, int type, int flags, vec3_t origin, vec
 
 	missile->r.flags |= RF_GLOW;
 	missile->flags |= CEF_FLAG7;
-	missile->r.model = arrow_models + 2;
+	missile->r.model = arrow_models[2];
 	missile->r.skinnum = 0;
 	missile->r.scale = 1.5;
 	LightColor.c = 0xff0000ff;		// Red light
@@ -191,7 +191,7 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
-		SmokePuff->r.model = arrow_models;
+		SmokePuff->r.model = arrow_models[0];
 		SmokePuff->r.scale=flrand(0.8,1.6);
 		SmokePuff->d_scale=-2.0;
 
@@ -246,7 +246,7 @@ void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
-		SmokePuff->r.model = arrow_models + 1;
+		SmokePuff->r.model = arrow_models[1];
 		SmokePuff->r.scale=flrand(1.2,2.0);
 		SmokePuff->d_scale=-2.0;
 

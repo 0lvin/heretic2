@@ -69,7 +69,7 @@ void FXCrosshair(centity_t *owner, int type, int flags, vec3_t origin)
 
 	xh = ClientEntity_new(type, flags | CEF_NO_DRAW, origin, NULL, CROSSHAIR_THINKTIME);
 
-	xh->r.model = crosshair_models;
+	xh->r.model = crosshair_models[0];
 	xh->Update = FXDrawCrosshair;
 
 	AddEffect(owner, xh);
