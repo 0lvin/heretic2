@@ -290,7 +290,7 @@ private:
 public:
 								Signaler(edict_t *NewEdict, Variable *NewVar, SignalT NewSignalType);
 								Signaler(FILE *FH, CScript *Script);
-								~Signaler(void);
+								virtual ~Signaler(void);
 	virtual void				Write(FILE *FH, CScript *Script);
 			bool				Test(edict_t *Which, SignalT WhichType);
 			edict_t				*GetEdict(void) { return Edict; }

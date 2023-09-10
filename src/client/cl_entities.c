@@ -172,20 +172,26 @@ CL_AddPacketEntities(frame_t *frame)
 				{
 					if (ent.skin != NULL)
 					{
+						struct model_s *model = NULL;
 						if (!strncmp((char *)ent.skin, "players/male", 12))
 						{
 							ent.skin = R_RegisterSkin("players/male/disguise.pcx");
-							ent.model = R_RegisterModel("players/male/tris.md2");
+							model = R_RegisterModel("players/male/tris.md2");
 						}
 						else if (!strncmp((char *)ent.skin, "players/female", 14))
 						{
 							ent.skin = R_RegisterSkin("players/female/disguise.pcx");
-							ent.model = R_RegisterModel("players/female/tris.md2");
+							model = R_RegisterModel("players/female/tris.md2");
 						}
 						else if (!strncmp((char *)ent.skin, "players/cyborg", 14))
 						{
 							ent.skin = R_RegisterSkin("players/cyborg/disguise.pcx");
-							ent.model = R_RegisterModel("players/cyborg/tris.md2");
+							model = R_RegisterModel("players/cyborg/tris.md2");
+						}
+
+						if (model)
+						{
+							ent.model = &model;
 						}
 					}
 				}
@@ -194,7 +200,7 @@ CL_AddPacketEntities(frame_t *frame)
 			{
 				ent.skinnum = s1->skinnum;
 				ent.skin = NULL;
-				ent.model = cl.model_draw[s1->modelindex];
+				ent.model = &cl.model_draw[s1->modelindex];
 			}
 		}
 
@@ -390,24 +396,24 @@ CL_AddPacketEntities(frame_t *frame)
 					i = 0;
 				}
 
-				ent.model = ci->weaponmodel[i];
+				ent.model = &ci->weaponmodel[i];
 
 				if (!ent.model)
 				{
 					if (i != 0)
 					{
-						ent.model = ci->weaponmodel[0];
+						ent.model = &ci->weaponmodel[0];
 					}
 
 					if (!ent.model)
 					{
-						ent.model = cl.baseclientinfo.weaponmodel[0];
+						ent.model = &cl.baseclientinfo.weaponmodel[0];
 					}
 				}
 			}
 			else
 			{
-				ent.model = cl.model_draw[s1->modelindex2];
+				ent.model = &cl.model_draw[s1->modelindex2];
 			}
 
 			/* check for the defender sphere shell and make it translucent */
@@ -426,19 +432,19 @@ CL_AddPacketEntities(frame_t *frame)
 
 		if (s1->modelindex3)
 		{
-			ent.model = cl.model_draw[s1->modelindex3];
+			ent.model = &cl.model_draw[s1->modelindex3];
 			V_AddEntity(&ent);
 		}
 
 		if (s1->modelindex4)
 		{
-			ent.model = cl.model_draw[s1->modelindex4];
+			ent.model = &cl.model_draw[s1->modelindex4];
 			V_AddEntity(&ent);
 		}
 
 		if (effects & EF_POWERSCREEN)
 		{
-			ent.model = cl_mod_powerscreen;
+			ent.model = &cl_mod_powerscreen;
 			ent.oldframe = 0;
 			ent.frame = 0;
 			ent.flags |= (RF_TRANSLUCENT | RF_SHELL_GREEN);
@@ -614,7 +620,7 @@ CL_AddViewWeapon(player_state_t *ps, player_state_t *ops)
 
 	else
 	{
-		gun.model = cl.model_draw[ps->gunindex];
+		gun.model = &cl.model_draw[ps->gunindex];
 	}
 
 	if (!gun.model)
