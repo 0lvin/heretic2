@@ -2434,7 +2434,7 @@ checkattacks:
 			can_attack_close = true;
 	}
 
-	if(enemyvis = visible(self, self->enemy))
+	if((enemyvis = visible(self, self->enemy)))
 	{
 		self->ai_mood_flags &= ~AIMF_CANT_FIND_ENEMY;
 		self->ai_mood_flags &= ~AIMF_SEARCHING;

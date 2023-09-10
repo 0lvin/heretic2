@@ -1254,7 +1254,7 @@ qboolean ogle_findtarget (edict_t *self)
 	edict_t		*found = NULL;
 
 	//take down weak overlords
-	while(found = findradius(found, self->s.origin, 1024))
+	while((found = findradius(found, self->s.origin, 1024)))
 	{
 		if(found->classID == CID_SERAPH_OVERLORD && found->health > 0 && (found->health<SERAPH_HEALTH/2 || found->ai_mood == AI_MOOD_FLEE))
 		{
@@ -1305,7 +1305,7 @@ qboolean ogle_findtarget (edict_t *self)
 
 	found = NULL;
 	//help out other ogles
-	while(found = findradius(found, self->s.origin, 1024))
+	while((found = findradius(found, self->s.origin, 1024)))
 	{
 		if(found->classID == CID_OGLE && found->health > 0 && found != self)
 		{
@@ -1524,7 +1524,7 @@ void ogle_push (edict_t *self, float dist)
 	trace_t	trace;
 	qboolean	done = false;
 
-	if(found = G_Find(found, FOFS(targetname), self->target))
+	if((found = G_Find(found, FOFS(targetname), self->target)))
 	{
 		AngleVectors(self->s.angles, forward, NULL, NULL);
 		VectorMA(self->s.origin, 64, forward, endpos);
@@ -1774,7 +1774,7 @@ void SP_monster_ogle(edict_t *self)
 		//if (self->monsterinfo.ogleflags & OF_CINEMATIC)
 		if(self->targetname && self->target)
 		{
-			if(found = G_Find(NULL, FOFS(targetname), self->target))
+			if((found = G_Find(NULL, FOFS(targetname), self->target)))
 				pitch_roll_for_slope(found, NULL);
 
 			skip_inits = true;

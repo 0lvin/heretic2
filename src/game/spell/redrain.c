@@ -40,7 +40,7 @@ void RedRainThink(edict_t *self)
 		rad_dmg = self->dmg;
 
 	// find all the entities in the volume
-	while(victim = findinblocking(victim, self))
+	while((victim = findinblocking(victim, self)))
 	{
 		if(victim != self->owner && victim->takedamage &&
 				(victim->client || victim->svflags & SVF_MONSTER) && !(victim->svflags & SVF_DEADMONSTER))
@@ -95,7 +95,7 @@ void RedRainThink(edict_t *self)
 			VectorAdd(self->s.origin, min, min);
 			VectorAdd(self->s.origin, max, max);
 			victim=NULL;
-			while (victim = findinbounds(victim, min, max))
+			while ((victim = findinbounds(victim, min, max)))
 			{
 				if (victim != self->owner && victim->takedamage &&
 						(victim->client || victim->svflags & SVF_MONSTER) && !(victim->svflags & SVF_DEADMONSTER))

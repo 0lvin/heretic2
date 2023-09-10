@@ -203,7 +203,7 @@ V_TestEntities(void)
 		}
 
 		ent->model = cl.baseclientinfo.model;
-		ent->skin = cl.baseclientinfo.skin;
+		ent->skin = cl.baseclientinfo.skin[ent->skinnum];
 	}
 }
 
@@ -625,13 +625,16 @@ V_Render3dCrosshair(void)
 		}
 
 		if(crosshair_3d->value){
+			struct model_s *model;
 			entity_t crosshair_ent = {0};
 
 			crosshair_ent.origin[0] = crosshair_trace.endpos[0];
 			crosshair_ent.origin[1] = crosshair_trace.endpos[1];
 			crosshair_ent.origin[2] = crosshair_trace.endpos[2];
 
-			crosshair_ent.model = R_RegisterModel("models/crosshair/tris.md2");
+			model = R_RegisterModel("models/crosshair/tris.md2");
+
+			crosshair_ent.model = model ? &model : NULL;
 			//crosshair_ent.skin = R_RegisterSkin("models/crosshair/skin.pcx");
 
 			AngleVectors2(crosshair_trace.plane.normal, crosshair_ent.angles);

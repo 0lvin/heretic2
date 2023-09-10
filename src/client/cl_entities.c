@@ -159,12 +159,12 @@ CL_AddPacketEntities(frame_t *frame)
 				/* use custom player skin */
 				ent.skinnum = 0;
 				ci = &cl.clientinfo[s1->skinnum & 0xff];
-				ent.skin = ci->skin;
+				ent.skin = ci->skin[ent.skinnum];
 				ent.model = ci->model;
 
 				if (!ent.skin || !ent.model)
 				{
-					ent.skin = cl.baseclientinfo.skin;
+					ent.skin = cl.baseclientinfo.skin[ent.skinnum];
 					ent.model = cl.baseclientinfo.model;
 				}
 
