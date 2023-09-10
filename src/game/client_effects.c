@@ -206,7 +206,7 @@ void CL_Printf(int errLevel, char* fmt, ...) {
 	vsprintf(msg, fmt, argptr);
 	va_end(argptr);
 
-	Com_Printf(msg);
+	Com_Printf("%s", msg);
 }
 
 extern int r_numentities;
