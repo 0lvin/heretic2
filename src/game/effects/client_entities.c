@@ -623,7 +623,7 @@ qboolean AddEntityToView(entity_t *ent)
 	{
 		if((*fxi.r_num_alpha_entities) < MAX_ALPHA_ENTITIES)
 		{
-			fxi.r_alpha_entities[(*fxi.r_num_alpha_entities)++] = ent;
+			fxi.r_alpha_entities[(*fxi.r_num_alpha_entities)++] = *ent;
 		}
 		else
 		{
@@ -634,7 +634,7 @@ qboolean AddEntityToView(entity_t *ent)
 	{
 		if((*fxi.r_numentities) < MAX_ENTITIES)
 		{
-			fxi.r_entities[(*fxi.r_numentities)++] = ent;
+			fxi.r_entities[(*fxi.r_numentities)++] = *ent;
 		}
 		else
 		{

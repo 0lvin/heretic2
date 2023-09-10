@@ -105,8 +105,6 @@ typedef struct entity_s {
 	struct LERPedReferences_s	*referenceInfo;
 	struct LERPedReferences_s	*oldReferenceInfo;
 
-	int					padToUnionSize[4];		// use this space up to add any more nonsprite fields that may be needed
-
 	// info for dynamic sprites
 	float				verts[4][4];			// verts for dynamic sprites
 												// 0 x
@@ -117,14 +115,12 @@ typedef struct entity_s {
 	// info for variable sprites
 	float				(*verts_p)[4];			// pointer to verts for variable sprites
 	int					numVerts;
-	int					padToUnionSize2[11];	// use this space up to add any more variable sprite fields
 
 	// info for line sprites
 	float				startpos[3];
 	float				endpos[3];
 	float				scale2;
 	float				tile, tileoffset;
-	int					padToUnionSize3[7];	// use this space up to add any more line sprite fields
 } entity_t;
 
 typedef struct {
@@ -159,7 +155,7 @@ typedef struct {
 	lightstyle_t	*lightstyles; /* [MAX_LIGHTSTYLES] */
 
 	int			num_entities;
-	entity_t	**entities;
+	entity_t	*entities;
 
 	int			num_dlights; // <= 32 (MAX_DLIGHTS)
 	dlight_t	*dlights;
@@ -168,10 +164,7 @@ typedef struct {
 	particle_t	*particles;
 
 	int			num_alpha_entities;
-	entity_t	**alpha_entities;
-
-        int			area; /* in virtual screen coordinates */
-	float		clientmodelorg[3];
+	entity_t	*alpha_entities;
 
 	int			anum_particles;
 	particle_t	*aparticles;

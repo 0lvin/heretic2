@@ -210,10 +210,10 @@ void CL_Printf(int errLevel, char* fmt, ...) {
 }
 
 extern int r_numentities;
-extern entity_t *r_entities[MAX_ENTITIES];
+extern entity_t r_entities[MAX_ENTITIES];
 
 extern int r_num_alpha_entities;
-extern entity_t *r_alpha_entities[MAX_ALPHA_ENTITIES];
+extern entity_t r_alpha_entities[MAX_ALPHA_ENTITIES];
 
 extern int r_numdlights;
 extern dlight_t r_dlights[MAX_DLIGHTS];

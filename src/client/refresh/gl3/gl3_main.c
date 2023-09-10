@@ -1091,7 +1091,7 @@ GL3_DrawEntitiesOnList(void)
 	/* draw non-transparent first */
 	for (i = 0; i < gl3_newrefdef.num_entities; i++)
 	{
-		entity_t *currententity = gl3_newrefdef.entities[i];
+		entity_t *currententity = &gl3_newrefdef.entities[i];
 
 		if (currententity->flags & RF_TRANSLUCENT)
 		{
@@ -1137,7 +1137,7 @@ GL3_DrawEntitiesOnList(void)
 
 	for (i = 0; i < gl3_newrefdef.num_entities; i++)
 	{
-		entity_t *currententity = gl3_newrefdef.entities[i];
+		entity_t *currententity = &gl3_newrefdef.entities[i];
 
 		if (!(currententity->flags & RF_TRANSLUCENT))
 		{

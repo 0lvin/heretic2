@@ -72,10 +72,10 @@ typedef struct
 	client_static_t *cls;
 
 	int *r_numentities;
-	entity_t **r_entities;
+	entity_t *r_entities;
 
 	int *r_num_alpha_entities;
-	entity_t **r_alpha_entities;
+	entity_t *r_alpha_entities;
 
 	int *r_numdlights;
 	dlight_t *r_dlights;

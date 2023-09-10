@@ -51,10 +51,10 @@ int r_numdlights;
 dlight_t r_dlights[MAX_DLIGHTS];
 
 int r_numentities;
-entity_t *r_entities[MAX_ENTITIES];
+entity_t r_entities[MAX_ENTITIES];
 
 int r_num_alpha_entities;
-entity_t *r_alpha_entities[MAX_ALPHA_ENTITIES];
+entity_t r_alpha_entities[MAX_ALPHA_ENTITIES];
 
 
 int r_numparticles;
@@ -91,7 +91,7 @@ V_AddEntity(entity_t *ent)
 		return;
 	}
 
-	r_entities[r_numentities++] = ent;
+	r_entities[r_numentities++] = *ent;
 }
 
 void

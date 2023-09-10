@@ -830,7 +830,7 @@ R_DrawEntitiesOnList (void)
 	// all bmodels have already been drawn by the edge list
 	for (i=0 ; i<r_newrefdef.num_entities ; i++)
 	{
-		entity_t *currententity = r_newrefdef.entities[i];
+		entity_t *currententity = &r_newrefdef.entities[i];
 
 		if ( currententity->flags & RF_TRANSLUCENT )
 		{
@@ -883,7 +883,7 @@ R_DrawEntitiesOnList (void)
 
 	for (i=0 ; i<r_newrefdef.num_entities ; i++)
 	{
-		entity_t *currententity = r_newrefdef.entities[i];
+		entity_t *currententity = &r_newrefdef.entities[i];
 
 		if ( !( currententity->flags & RF_TRANSLUCENT ) )
 			continue;
@@ -1105,7 +1105,7 @@ R_DrawBEntitiesOnList (void)
 
 	for (i=0 ; i<r_newrefdef.num_entities ; i++)
 	{
-		entity_t *currententity = r_newrefdef.entities[i];
+		entity_t *currententity = &r_newrefdef.entities[i];
 		const model_t *currentmodel = currententity->model;
 		if ( currententity->flags & RF_BEAM )
 			continue;

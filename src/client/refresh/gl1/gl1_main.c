@@ -332,7 +332,7 @@ R_DrawEntitiesOnList(void)
 	/* draw non-transparent first */
 	for (i = 0; i < r_newrefdef.num_entities; i++)
 	{
-		entity_t *currententity = r_newrefdef.entities[i];
+		entity_t *currententity = &r_newrefdef.entities[i];
 
 		if (currententity->flags & RF_TRANSLUCENT)
 		{
@@ -378,7 +378,7 @@ R_DrawEntitiesOnList(void)
 
 	for (i = 0; i < r_newrefdef.num_alpha_entities; i++)
 	{
-		entity_t *currententity = r_newrefdef.alpha_entities[i];
+		entity_t *currententity = &r_newrefdef.alpha_entities[i];
 		if (!(currententity->flags & RF_TRANSLUCENT))
 		{
 			continue; /* solid */
