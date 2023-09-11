@@ -203,7 +203,7 @@ V_TestEntities(void)
 		}
 
 		ent->model = cl.baseclientinfo.model;
-		ent->skin = cl.baseclientinfo.skin[ent->skinnum];
+		ent->skin = cl.baseclientinfo.skin;
 	}
 }
 
@@ -634,7 +634,7 @@ V_Render3dCrosshair(void)
 
 			model = R_RegisterModel("models/crosshair/tris.md2");
 
-			crosshair_ent.model = model ? &model : NULL;
+			crosshair_ent.model = model ? model : NULL;
 			//crosshair_ent.skin = R_RegisterSkin("models/crosshair/skin.pcx");
 
 			AngleVectors2(crosshair_trace.plane.normal, crosshair_ent.angles);
