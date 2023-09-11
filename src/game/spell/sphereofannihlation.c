@@ -174,7 +174,7 @@ static void SpherePowerLaserThink(edict_t *Self)
 		{
 			edict_t *ent;
 
-			if(ent = check_hit_beast(startPos, tr.endpos))
+			if((ent = check_hit_beast(startPos, tr.endpos)))
 				tr.ent = ent;
 		}
 
@@ -392,7 +392,7 @@ void SphereExplodeThink(edict_t *self)
 {
 	edict_t *ent=NULL;
 
-	while(ent=findradius(ent, self->s.origin, self->dmg_radius))
+	while((ent=findradius(ent, self->s.origin, self->dmg_radius)))
 	{
 		if (ent->takedamage && ent != self->owner && ent->fire_timestamp < self->fire_timestamp)
 		{

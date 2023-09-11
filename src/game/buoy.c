@@ -257,7 +257,7 @@ void info_buoy_link(edict_t *self)
 		else
 		{
 			ent = NULL;
-			if(ent = G_Find(ent, FOFS(targetname), self->jumptarget))
+			if((ent = G_Find(ent, FOFS(targetname), self->jumptarget)))
 			{
 				assign_jumpbuoy(self, ent);
 				if(BUOY_DEBUG>1)
@@ -358,7 +358,7 @@ void PrintLocalBuoyInfo(vec3_t org)
 
 					gi.dprintf("\nACTIVATE\n");
 					gi.dprintf("pathtarget: %s\n", level.buoy_list[i].pathtarget);
-					if(found = G_Find(NULL, FOFS(pathtargetname), level.buoy_list[i].pathtarget))
+					if((found = G_Find(NULL, FOFS(pathtargetname), level.buoy_list[i].pathtarget)))
 						gi.dprintf("entity to activate: %s\n", found->classname);
 					else
 						gi.dprintf("ERROR: no entity found to activate!!!\n");

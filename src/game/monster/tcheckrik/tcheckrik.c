@@ -1183,7 +1183,7 @@ void insect_pause (edict_t *self)
 	{
 		edict_t	*found = NULL;
 
-		if(found = G_Find(found, FOFS(classname), "monster_trial_beast"))
+		if((found = G_Find(found, FOFS(classname), "monster_trial_beast")))
 		{
 			if(found->health > 0)
 			{
