@@ -50,8 +50,8 @@ static float				bobmove;
 static int				bobcycle;		// odd cycles are right foot going forward
 static float				bobfracsin;		// sin(bobfrac*M_PI)
 
-extern void Cmd_WeapPrev_f (edict_t *ent);
-extern void Cmd_Use_f (edict_t *ent, char *s);
+extern void Cmd_WeapPrev_f(edict_t *ent);
+extern void Cmd_Use_f(edict_t *ent);
 extern void PrintLocalBuoyInfo(vec3_t org);
 
 

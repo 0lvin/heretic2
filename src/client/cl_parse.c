@@ -981,10 +981,8 @@ CL_LoadClientinfo(clientinfo_t *ci, char *s)
 	Com_sprintf(model_filename, sizeof(model_filename), "players/male/tris.fm");
 	Com_sprintf(skin_filename, sizeof(skin_filename), "players/male/Corvus.m8");
 #endif
-	ci->model[0] = re.RegisterModel(model_filename);
-	ci->skin[0] = re.RegisterSkin(skin_filename);
-	ci->skin[1] = re.RegisterSkin(skin_filename);
-	ci->skin[2] = re.RegisterSkin(skin_filename);
+	ci->model = re.RegisterModel(model_filename);
+	ci->skin = re.RegisterSkin(skin_filename);
 // jmarshall end
 }
 

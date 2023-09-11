@@ -327,9 +327,9 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 	debris->msgHandler = CE_DefaultMsgHandler;
 	if(modelindex == 255)//FIXME: these will tilt up and down with the player's torso!!!
 	{	// Player special model.
-		debris->r.model = fxi.cl->clientinfo[owner->baseline.number - 1].model[0];
+		debris->r.model = fxi.cl->clientinfo[owner->baseline.number - 1].model;
 		if (!debris->r.model)
-			debris->r.model = fxi.cl->baseclientinfo.model[0];
+			debris->r.model = fxi.cl->baseclientinfo.model;
 	}
 	else
 	{

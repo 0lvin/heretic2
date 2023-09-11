@@ -202,7 +202,7 @@ V_TestEntities(void)
 							 cl.v_right[j] * r;
 		}
 
-		ent->model = cl.baseclientinfo.model[0];
+		ent->model = cl.baseclientinfo.model;
 		ent->skin = cl.baseclientinfo.skin;
 	}
 }

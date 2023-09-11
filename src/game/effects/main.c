@@ -575,7 +575,6 @@ AddServerEntities(frame_t *frame)
 	int					effects, renderfx;
 	int					numEntsToAdd;
 	vec3_t				dist;
-	int					maxclients = atoi(fxi.cl->configstrings[CS_MAXCLIENTS]);
 	clientinfo_t		*ci;
 	int					clientnum;
 	qboolean			isPredictedPlayer;
@@ -706,23 +705,19 @@ AddServerEntities(frame_t *frame)
 
 			ci = &fxi.cl->clientinfo[clientnum];
 
-			ent->model = *ci->model;
-			if (ent->skinnum < SKIN_MAX)
-				ent->skin = ci->skin[ent->skinnum];
-			else
-				ent->skin = ci->skin[0];
-
+			ent->model = ci->model;
+			/*
+			 * TODO: Rewrite implementation skin change on damage: ent->skinnum
+			 * and separate skins for different body parts
+			 */
 			// To allow for mutliple skins on various parts, I'm going to send across a pointer to the whole skin array.
-
-			ent->skins = &ci->skin[0];
+			ent->skin = ci->skin;
 
 			if (!ent->skin || !ent->model)
 			{
-				ent->model = *fxi.cl->baseclientinfo.model;
-				if (ent->skinnum < SKIN_MAX)
-					ent->skin = fxi.cl->baseclientinfo.skin[ent->skinnum];
-				else
-					ent->skin = fxi.cl->baseclientinfo.skin[0];
+				ent->model = fxi.cl->baseclientinfo.model;
+				/* TODO: Rewrite implement skin change on damage: ent->skinnum */
+				ent->skin = fxi.cl->baseclientinfo.skin;
 			}
 		}
 		else

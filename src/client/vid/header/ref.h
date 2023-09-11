@@ -90,7 +90,6 @@ typedef struct entity_s {
 	int					spriteType;
 
 	// info for fmodels and bmodels
-	struct image_s		**skins;		// Pointer to the list of clientinfo skins.
 	char			skinname[MAX_QPATH];		// For specific path to skin
 
 	fmnodeinfo_t		*fmnodeinfo;	// client entities which use a flexible model will need

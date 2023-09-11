@@ -160,12 +160,12 @@ CL_AddPacketEntities(frame_t *frame)
 				ent.skinnum = 0;
 				ci = &cl.clientinfo[s1->skinnum & 0xff];
 				ent.skin = ci->skin;
-				ent.model = ci->model[0];
+				ent.model = ci->model;
 
 				if (!ent.skin || !ent.model)
 				{
 					ent.skin = cl.baseclientinfo.skin;
-					ent.model = cl.baseclientinfo.model[0];
+					ent.model = cl.baseclientinfo.model;
 				}
 
 				if (renderfx & RF_USE_DISGUISE)

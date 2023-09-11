@@ -103,19 +103,17 @@ typedef struct
 	struct LERPedReferences_s	*referenceInfo;
 } centity_t;
 
-#define CL_MAXMODELS  16
-
 typedef struct
 {
 	char	name[MAX_QPATH];
 	char	cinfo[MAX_QPATH];
 
-	struct image_s	*skin[SKIN_MAX];
+	struct image_s	*skin;
 
 	struct image_s	*icon;
 	char	iconname[MAX_QPATH];
 
-	struct model_s	*model[CL_MAXMODELS];
+	struct model_s	*model;
 
 	struct model_s	*weaponmodel[MAX_CLIENTWEAPONMODELS];
 } clientinfo_t;
