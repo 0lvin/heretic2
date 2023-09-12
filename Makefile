@@ -377,12 +377,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft player effects
+.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects
 
 # ----------
 
 # Builds everything
-all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft player effects
+all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects
 
 # ----------
 

@@ -27,7 +27,7 @@ Drawbacks:
 * code is little bit mess
 * game, client_effects hard linked
 * only gl1 has full support render
-* soft render has incorrect angle
+* soft,gl3,vk render has incorrect angles and no particles
 
 Minimal file set from Loki release:
 ```

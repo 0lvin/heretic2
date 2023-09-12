@@ -669,8 +669,8 @@ R_FindPic(const char *name, findimage_t find_image)
 
 	if ((name[0] != '/') && (name[0] != '\\'))
 	{
-		char pathname[MAX_QPATH];
-		char namewe[MAX_QPATH];
+		char	pathname[MAX_QPATH];
+		char	namewe[MAX_QPATH];
 		const char* ext;
 
 		ext = COM_FileExtension(name);

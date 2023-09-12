@@ -329,7 +329,7 @@ R_DrawAliasShadowCommand(entity_t *currententity, int *order, int *order_end,
 	GLenum type;
 	int count;
 
-#ifdef _MSC_VER // workaround for lack of VLAs (=> our workaround uses alloca() which is bad in loops)
+	#ifdef _MSC_VER // workaround for lack of VLAs (=> our workaround uses alloca() which is bad in loops)
 	int maxCount = 0;
 	const int* tmpOrder = order;
 	while (1)
@@ -463,18 +463,24 @@ R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e)
 	vec3_t angles;
 
 	paliashdr = (dmdl_t *)currentmodel->extradata;
+	if (!paliashdr)
+	{
+		R_Printf(PRINT_ALL, "%s %s: Model is not fully loaded\n",
+				__func__, currentmodel->name);
+		return true;
+	}
 
 	if ((e->frame >= paliashdr->num_frames) || (e->frame < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "R_CullAliasModel %s: no such frame %d\n",
-				currentmodel->name, e->frame);
+		R_Printf(PRINT_DEVELOPER, "%s %s: no such frame %d\n",
+				__func__, currentmodel->name, e->frame);
 		e->frame = 0;
 	}
 
 	if ((e->oldframe >= paliashdr->num_frames) || (e->oldframe < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "R_CullAliasModel %s: no such oldframe %d\n",
-				currentmodel->name, e->oldframe);
+		R_Printf(PRINT_DEVELOPER, "%s %s: no such oldframe %d\n",
+				__func__, currentmodel->name, e->oldframe);
 		e->oldframe = 0;
 	}
 
