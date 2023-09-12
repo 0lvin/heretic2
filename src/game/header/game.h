@@ -110,10 +110,10 @@ struct edict_s
 typedef struct
 {
 	/* special messages */
-	void (*bprintf)(int printlevel, char *fmt, ...);
-	void (*dprintf)(char *fmt, ...);
-	void (*cprintf)(edict_t *ent, int printlevel, char *fmt, ...);
-	void (*centerprintf)(edict_t *ent, char *fmt, ...);
+	void (*bprintf)(int printlevel, const char *fmt, ...);
+	void (*dprintf)(const char *fmt, ...);
+	void (*cprintf)(edict_t *ent, int printlevel, const char *fmt, ...);
+	void (*centerprintf)(edict_t *ent, const char *fmt, ...);
 	void (*sound)(edict_t *ent, int channel, int soundindex, float volume,
 			float attenuation, float timeofs);
 	void (*positioned_sound)(vec3_t origin, edict_t *ent, int channel,
@@ -125,7 +125,7 @@ typedef struct
 	   they connect, and changes are sent to all connected clients. */
 	void (*configstring)(int num, char *string);
 
-	YQ2_ATTR_NORETURN_FUNCPTR void (*error)(char *fmt, ...);
+	YQ2_ATTR_NORETURN_FUNCPTR void (*error)(const char *fmt, ...);
 
 	/* the *index functions create configstrings
 	   and some internal server state */

@@ -3992,7 +3992,7 @@ void CScript::EndDebug(void)
 	DebugLine("-------------------------------\n");
 }
 
-void CScript::DebugLine (char *debugtext, ...)
+void CScript::DebugLine (const char *debugtext, ...)
 {
 	va_list argptr;
 	char	text[1024];
