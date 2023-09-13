@@ -30,7 +30,7 @@ int r_dlightframecount;
 vec3_t pointcolor;
 cplane_t *lightplane; /* used as shadow plane */
 vec3_t lightspot;
-static float s_blocklights[34 * 34 * 3];
+static float s_blocklights[256 * 256 * 3];
 
 void
 R_RenderDlight(dlight_t *light)
@@ -267,16 +267,15 @@ R_RecursiveLightPoint(mnode_t *node, vec3_t start, vec3_t end)
 			return 0;
 		}
 
-		ds >>= 4;
-		dt >>= 4;
+		ds >>= surf->lmshift;
+		dt >>= surf->lmshift;
 
 		lightmap = surf->samples;
 		VectorCopy(vec3_origin, pointcolor);
 
-		lightmap += 3 * (dt * ((surf->extents[0] >> 4) + 1) + ds);
+		lightmap += 3 * (dt * ((surf->extents[0] >> surf->lmshift) + 1) + ds);
 
-		for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255;
-			 maps++)
+		for (maps = 0; maps < MAXLIGHTMAPS && surf->styles[maps] != 255; maps++)
 		{
 			const float *rgb;
 			int j;
@@ -292,8 +291,8 @@ R_RecursiveLightPoint(mnode_t *node, vec3_t start, vec3_t end)
 				pointcolor[j] += lightmap[j] * scale * (1.0 / 255);
 			}
 
-			lightmap += 3 * ((surf->extents[0] >> 4) + 1) *
-						((surf->extents[1] >> 4) + 1);
+			lightmap += 3 * ((surf->extents[0] >> surf->lmshift) + 1) *
+						((surf->extents[1] >> surf->lmshift) + 1);
 		}
 
 		return 1;
@@ -311,7 +310,6 @@ R_LightPoint(entity_t *currententity, vec3_t p, vec3_t color)
 	int lnum;
 	dlight_t *dl;
 	vec3_t dist;
-	float add;
 
 	if (!r_worldmodel || !r_worldmodel->lightdata || !currententity)
 	{
@@ -339,6 +337,8 @@ R_LightPoint(entity_t *currententity, vec3_t p, vec3_t color)
 
 	for (lnum = 0; lnum < r_newrefdef.num_dlights; lnum++, dl++)
 	{
+		float	add;
+
 		VectorSubtract(currententity->origin,
 				dl->origin, dist);
 		add = dl->intensity - VectorLength(dist);
@@ -363,14 +363,12 @@ R_AddDynamicLights(msurface_t *surf)
 	int s, t;
 	int i;
 	int smax, tmax;
-	mtexinfo_t *tex;
 	dlight_t *dl;
 	float *pfBL;
 	float fsacc, ftacc;
 
-	smax = (surf->extents[0] >> 4) + 1;
-	tmax = (surf->extents[1] >> 4) + 1;
-	tex = surf->texinfo;
+	smax = (surf->extents[0] >> surf->lmshift) + 1;
+	tmax = (surf->extents[1] >> surf->lmshift) + 1;
 
 	for (lnum = 0; lnum < r_newrefdef.num_dlights; lnum++)
 	{
@@ -401,14 +399,14 @@ R_AddDynamicLights(msurface_t *surf)
 						surf->plane->normal[i] * fdist;
 		}
 
-		local[0] = DotProduct(impact,
-				   tex->vecs[0]) + tex->vecs[0][3] - surf->texturemins[0];
-		local[1] = DotProduct(impact,
-				   tex->vecs[1]) + tex->vecs[1][3] - surf->texturemins[1];
+		local[0] = DotProduct(impact, surf->lmvecs[0]) +
+			surf->lmvecs[0][3] - surf->texturemins[0];
+		local[1] = DotProduct(impact, surf->lmvecs[1]) +
+			surf->lmvecs[1][3] - surf->texturemins[1];
 
 		pfBL = s_blocklights;
 
-		for (t = 0, ftacc = 0; t < tmax; t++, ftacc += 16)
+		for (t = 0, ftacc = 0; t < tmax; t++, ftacc += (1 << surf->lmshift))
 		{
 			td = local[1] - ftacc;
 
@@ -417,7 +415,9 @@ R_AddDynamicLights(msurface_t *surf)
 				td = -td;
 			}
 
-			for (s = 0, fsacc = 0; s < smax; s++, fsacc += 16, pfBL += 3)
+			td *= surf->lmvlen[1];
+
+			for (s = 0, fsacc = 0; s < smax; s++, fsacc += (1 << surf->lmshift), pfBL += 3)
 			{
 				sd = Q_ftol(local[0] - fsacc);
 
@@ -425,6 +425,8 @@ R_AddDynamicLights(msurface_t *surf)
 				{
 					sd = -sd;
 				}
+
+				sd *= surf->lmvlen[0];
 
 				if (sd > td)
 				{
@@ -437,9 +439,11 @@ R_AddDynamicLights(msurface_t *surf)
 
 				if (fdist < fminlight)
 				{
-					pfBL[0] += (frad - fdist) * dl->color[0];
-					pfBL[1] += (frad - fdist) * dl->color[1];
-					pfBL[2] += (frad - fdist) * dl->color[2];
+					float diff = frad - fdist;
+
+					pfBL[0] += diff * dl->color[0];
+					pfBL[1] += diff * dl->color[1];
+					pfBL[2] += diff * dl->color[2];
 				}
 			}
 		}
@@ -479,8 +483,8 @@ R_BuildLightMap(msurface_t *surf, byte *dest, int stride)
 		ri.Sys_Error(ERR_DROP, "R_BuildLightMap called for non-lit surface");
 	}
 
-	smax = (surf->extents[0] >> 4) + 1;
-	tmax = (surf->extents[1] >> 4) + 1;
+	smax = (surf->extents[0] >> surf->lmshift) + 1;
+	tmax = (surf->extents[1] >> surf->lmshift) + 1;
 	size = smax * tmax;
 
 	if (size > (sizeof(s_blocklights) >> 4))
@@ -665,4 +669,3 @@ store:
 		}
 	}
 }
-

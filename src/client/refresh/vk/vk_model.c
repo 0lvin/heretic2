@@ -439,55 +439,6 @@ Mod_BSPX_FindLump(bspx_header_t* bspx_header, char* lumpname, int* plumpsize, co
 	return NULL;
 }
 
-bspx_header_t *
-Mod_LoadBSPX(int filesize, byte* mod_base)
-{
-	dheader_t* header;
-	bspx_header_t* xheader;
-	bspx_lump_t* lump;
-	int i;
-	int xofs;
-
-	// find end of last lump
-	header = (dheader_t*)mod_base;
-	xofs = 0;
-	for (i = 0; i < HEADER_LUMPS; i++) {
-		xofs = max(xofs,
-			ROUNDUP(header->lumps[i].fileofs + header->lumps[i].filelen, sizeof(int)));
-	}
-
-	if (xofs + sizeof(bspx_header_t) > filesize) {
-		return NULL;
-	}
-
-	xheader = (bspx_header_t*)(mod_base + xofs);
-	if (LittleLong(xheader->ident) != BSPXHEADER)
-	{
-		R_Printf(PRINT_ALL, "%s: Incorrect header ident.\n", __func__);
-		return NULL;
-	}
-
-	xheader->numlumps = LittleLong(xheader->numlumps);
-
-	if (xheader->numlumps < 0 || xofs + sizeof(bspx_header_t) + xheader->numlumps * sizeof(bspx_lump_t) > filesize) {
-		return NULL;
-	}
-
-	// byte-swap and check sanity
-	lump = (bspx_lump_t*)(xheader + 1); // lumps immediately follow the header
-	for (i = 0; i < xheader->numlumps; i++, lump++) {
-		lump->lumpname[sizeof(lump->lumpname) - 1] = '\0'; // make sure it ends with zero
-		lump->fileofs = LittleLong(lump->fileofs);
-		lump->filelen = LittleLong(lump->filelen);
-		if (lump->fileofs < 0 || lump->filelen < 0 || (unsigned)(lump->fileofs + lump->filelen) >(unsigned)filesize) {
-			return NULL;
-		}
-	}
-
-	// success
-	return xheader;
-}
-
 static void
 SetSurfaceLighting(model_t* loadmodel, msurface_t* out, byte* styles, int lightofs)
 {
