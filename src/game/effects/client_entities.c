@@ -147,14 +147,6 @@ void ClientEntity_delete(client_entity_t *toDelete, centity_t *owner)
 		DisableRefPoints(owner->referenceInfo, toDelete->refMask);
 	}
 
-	if(toDelete->r.spriteType == SPRITE_VARIABLE)
-	{
-		if(toDelete->r.verts_p)
-		{
-			free(toDelete->r.verts_p);
-		}
-	}
-
 	ClearMessageQueue(toDelete);
 
 	SLList_Des(&toDelete->msgQ.msgs);

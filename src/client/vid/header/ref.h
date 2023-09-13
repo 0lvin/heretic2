@@ -100,7 +100,6 @@ typedef struct entity_s {
 	int					oldSwapFrame;			// previous frame to swap clustered verts in for
 
 	struct LERPedReferences_s	*referenceInfo;
-	struct LERPedReferences_s	*oldReferenceInfo;
 
 	// info for dynamic sprites
 	float				verts[4][4];			// verts for dynamic sprites
@@ -108,11 +107,6 @@ typedef struct entity_s {
 												// 1 y
 												// 2 s
 												// 3 t
-
-	// info for variable sprites
-	float				(*verts_p)[4];			// pointer to verts for variable sprites
-	int					numVerts;
-
 	// info for line sprites
 	float				startpos[3];
 	float				endpos[3];
