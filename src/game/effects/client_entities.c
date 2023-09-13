@@ -619,27 +619,18 @@ qboolean AddEntityToView(entity_t *ent)
 		fxi.Com_Printf("AddEntityToView: Cannot have additive alpha mapped image. UNSUPPORTED !!\n");
 	}
 
-	if((ent->flags & RF_TRANS_ANY) || (ent->color.a != 255))
+	if(ent->color.a != 255)
 	{
-		if((*fxi.r_num_alpha_entities) < MAX_ALPHA_ENTITIES)
-		{
-			fxi.r_alpha_entities[(*fxi.r_num_alpha_entities)++] = *ent;
-		}
-		else
-		{
-			return false;
-		}
+		ent->flags |= RF_TRANSLUCENT;
+	}
+
+	if((*fxi.r_numentities) < MAX_ENTITIES)
+	{
+		fxi.r_entities[(*fxi.r_numentities)++] = *ent;
 	}
 	else
 	{
-		if((*fxi.r_numentities) < MAX_ENTITIES)
-		{
-			fxi.r_entities[(*fxi.r_numentities)++] = *ent;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	return true;

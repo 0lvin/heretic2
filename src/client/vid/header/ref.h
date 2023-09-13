@@ -75,6 +75,8 @@ typedef struct entity_s {
 	struct image_s	*skin; /* NULL for inline skin */
 	int		flags;
 
+	/* Heretic 2 */
+
 	float				scale;					// model scale
 
 	float				cl_scale;				// scale of model - but only for client entity models - not server side models
@@ -90,15 +92,11 @@ typedef struct entity_s {
 	int					spriteType;
 
 	// info for fmodels and bmodels
-	char			skinname[MAX_QPATH];		// For specific path to skin
-
 	fmnodeinfo_t		*fmnodeinfo;	// client entities which use a flexible model will need
 										// to fill this in, and then release it when they die
 										// happily most client entities are sprites
 
-	int					swapCluster;			// cluster to swap on
-
-	int					swapFrame;				// frame to swap clustered verts in for
+	int					swapFrame;			// frame to swap clustered verts in for
 	int					oldSwapFrame;			// previous frame to swap clustered verts in for
 
 	struct LERPedReferences_s	*referenceInfo;
@@ -161,9 +159,6 @@ typedef struct {
 
 	int			num_particles;
 	particle_t	*particles;
-
-	int			num_alpha_entities;
-	entity_t	*alpha_entities;
 
 	int			anum_particles;
 	particle_t	*aparticles;

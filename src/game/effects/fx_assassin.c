@@ -92,9 +92,14 @@ static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t
 	VectorMA(owner->origin, 1024, sight_vec, endpos);
 	//now look along that vector for first surface and take that texture
 	trace = fxi.Trace(owner->origin, vec3_origin, vec3_origin, endpos, MASK_SHOT, CEF_CLIP_TO_WORLD);
+	/*
+	 * TODO: rewrite, use skinname from surface? Unused in render
+	 */
+#if 0
 	strcpy(string, "textures/");
 	strcat(string, trace.surface->name);
 	strcpy(owner->entity->skinname, string);
+#endif
 	return true;
 }
 

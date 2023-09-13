@@ -376,9 +376,10 @@ R_DrawEntitiesOnList(void)
 	   becomes a problem... */
 	glDepthMask(0);
 
-	for (i = 0; i < r_newrefdef.num_alpha_entities; i++)
+	for (i = 0; i < r_newrefdef.num_entities; i++)
 	{
-		entity_t *currententity = &r_newrefdef.alpha_entities[i];
+		entity_t *currententity = &r_newrefdef.entities[i];
+
 		if (!(currententity->flags & RF_TRANSLUCENT))
 		{
 			continue; /* solid */

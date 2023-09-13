@@ -212,9 +212,6 @@ void CL_Printf(int errLevel, char* fmt, ...) {
 extern int r_numentities;
 extern entity_t r_entities[MAX_ENTITIES];
 
-extern int r_num_alpha_entities;
-extern entity_t r_alpha_entities[MAX_ALPHA_ENTITIES];
-
 extern int r_numdlights;
 extern dlight_t r_dlights[MAX_DLIGHTS];
 
@@ -349,9 +346,6 @@ E_Load(void)
 
 	cl_game_import.r_numentities = &r_numentities;
 	cl_game_import.r_entities = r_entities;
-
-	cl_game_import.r_num_alpha_entities = &r_num_alpha_entities;
-	cl_game_import.r_alpha_entities = r_alpha_entities;
 
 	cl_game_import.r_numdlights = &r_numdlights;
 	cl_game_import.r_dlights = r_dlights;

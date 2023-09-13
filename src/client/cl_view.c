@@ -53,10 +53,6 @@ dlight_t r_dlights[MAX_DLIGHTS];
 int r_numentities;
 entity_t r_entities[MAX_ENTITIES];
 
-int r_num_alpha_entities;
-entity_t r_alpha_entities[MAX_ALPHA_ENTITIES];
-
-
 int r_numparticles;
 particle_t r_particles[MAX_PARTICLES];
 
@@ -79,7 +75,6 @@ V_ClearScene(void)
 	r_numdlights = 0;
 	r_numentities = 0;
 	r_numparticles = 0;
-	r_num_alpha_entities = 0;
 	r_anumparticles = 0;
 }
 
@@ -536,11 +531,9 @@ V_RenderView(float stereo_separation)
 			VectorClear(cl.refdef.blend);
 		}
 
-		cl.refdef.alpha_entities = r_alpha_entities;
 		cl.refdef.num_entities = r_numentities;
 		cl.refdef.entities = r_entities;
 		cl.refdef.num_particles = r_numparticles;
-		cl.refdef.num_alpha_entities = r_num_alpha_entities;
 		cl.refdef.anum_particles = r_anumparticles;
 		cl.refdef.aparticles = r_aparticles;
 		cl.refdef.particles = r_particles;

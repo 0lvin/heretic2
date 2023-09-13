@@ -409,22 +409,6 @@ extern void RDraw_Fill(int x, int y, int w, int h, int c);
 extern void RDraw_FadeScreen(void);
 extern void RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits);
 
-int R_Init(void *hinstance, void *hWnd);
-struct image_s *RI_RegisterSkin(char* name);
-
-/*
-====================================================================
-
-IMPLEMENTATION SPECIFIC FUNCTIONS
-
-====================================================================
-*/
-
-void GLimp_BeginFrame( float camera_separation );
-void GLimp_EndFrame( void );
-void GLimp_Shutdown( void );
-int GLimp_SetMode( int *pwidth, int *pheight, int mode, qboolean fullscreen );
-
 extern image_t* atlas_particle;
 extern image_t* atlas_aparticle;
 
