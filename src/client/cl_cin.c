@@ -446,7 +446,8 @@ SCR_ReadNextMPGFrame(void)
 		return NULL;
 	}
 
-	buffer = Z_Malloc(cin.height * cin.width * cin.color_bits / 8);
+	count = cin.height * cin.width * cin.color_bits / 8;
+	buffer = Z_Malloc(count);
 	frame = plm_decode_video(cin.plm_video);
 	if (!frame)
 	{
@@ -454,6 +455,12 @@ SCR_ReadNextMPGFrame(void)
 		return NULL;
 	}
 	plm_frame_to_rgba(frame, buffer, frame->width * 4);
+
+	/* force untransparent image show */
+	for (i=0; i < count; i += 4)
+	{
+		buffer[i + 3] = 255;
+	}
 
 	if (cin.s_channels > 0)
 	{
