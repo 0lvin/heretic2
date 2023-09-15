@@ -1585,9 +1585,9 @@ REFVK_OBJS_ := \
 	src/client/refresh/vk/vk_mesh.o \
 	src/client/refresh/vk/vk_model.o \
 	src/client/refresh/vk/vk_pipeline.o \
-	src/client/refresh/vk/vk_rmain.o \
-	src/client/refresh/vk/vk_rmisc.o \
-	src/client/refresh/vk/vk_rsurf.o \
+	src/client/refresh/vk/vk_main.o \
+	src/client/refresh/vk/vk_misc.o \
+	src/client/refresh/vk/vk_surf.o \
 	src/client/refresh/vk/vk_shaders.o \
 	src/client/refresh/vk/vk_swapchain.o \
 	src/client/refresh/vk/vk_validation.o \
