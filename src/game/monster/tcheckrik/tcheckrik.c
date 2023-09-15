@@ -175,8 +175,7 @@ void insect_c_anims(edict_t *self, G_Message_t *msg)
 			curr_anim = ANIM_C_WALK1;
 			break;
 		default:
-			self = self;
-			break;
+			return;
 	}
 
 	SetAnim(self, curr_anim);

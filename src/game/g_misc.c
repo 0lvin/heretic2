@@ -1898,7 +1898,7 @@ void misc_remote_camera_think(edict_t *Self)
 	// Find my target entity and then orientate myself to look at it.
 	// ********************************************************************************************
 
-	if(Self->targetEnt=G_Find(NULL,FOFS(targetname),Self->target))
+	if((Self->targetEnt=G_Find(NULL,FOFS(targetname),Self->target)))
 	{
 		// Calculate the angles from myself to my target.
 

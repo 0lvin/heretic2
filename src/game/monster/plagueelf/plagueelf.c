@@ -267,7 +267,7 @@ void plagueElf_c_anims(edict_t *self, G_Message_t *msg)
 			curr_anim = ANIM_C_WALK2;
 			break;
 		default:
-			break;
+			return;
 	}
 
 	SetAnim(self, curr_anim);

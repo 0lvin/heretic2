@@ -155,8 +155,9 @@ void ED_ParseField (char *key, char *value, edict_t *ent)
 				((byte *)(b+f->ofs))[1] = color[1];
 				((byte *)(b+f->ofs))[2] = color[2];
 				break;
+			default:
+				return;
 			}
-			return;
 		}
 	}
 #ifdef _DEVEL

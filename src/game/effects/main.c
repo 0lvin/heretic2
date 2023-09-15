@@ -301,7 +301,7 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 		return 0;
 	}
 
-	while(current = format[count])
+	while((current = format[count]))
 	{
 		switch(current)
 		{
