@@ -25,10 +25,11 @@
  */
 
 #include "../header/local.h"
+#include "../monster/misc/player.h"
+#include <limits.h>
 #include "../header/utilities.h"
 #include "../header/g_items.h"
 #include "../header/g_playstats.h"
-#include "../monster/misc/player.h"
 #include "../header/g_skeletons.h"
 #include "../monster/beast/beast.h"
 #include "../player/library/player.h"
