@@ -510,7 +510,7 @@ public:
 	void				CheckSignalers(edict_t *Which, SignalT SignalType);
 	bool				CheckWait(void);
 	void				FinishWait(edict_t *Which, bool NoExecute);
-	void				Error (char *error, ...);
+	void				Error (const char *error, ...);
 	void				StartDebug(void);
 	void				EndDebug(void);
 	void				DebugLine (const char *debugtext, ...);

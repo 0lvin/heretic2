@@ -104,17 +104,17 @@ typedef struct
 	EffectsBuffer_t *clientPredEffects;
 	//
 
-	void	(*Sys_Error) (int err_level, char *str, ...);
-	void	(*Com_Error) (int code, char *fmt, ...);
-	void	(*Con_Printf) (int print_level, char *str, ...);
-	void	(*Com_Printf) (char *msg, ...);
+	void	(*Sys_Error) (int err_level, const char *str, ...);
+	void	(*Com_Error) (int code, const char *fmt, ...);
+	void	(*Con_Printf) (int print_level, const char *str, ...);
+	void	(*Com_Printf) (const char *msg, ...);
 
 	//
 
-	cvar_t *(*Cvar_Get) (char *name, char *value, int flags);
-	cvar_t *(*Cvar_Set)( char *name, char *value );
-	void	(*Cvar_SetValue)( char *name, float value );
-	float	(*Cvar_VariableValue) (char *var_name);
+	cvar_t *(*Cvar_Get) (const char *name, char *value, int flags);
+	cvar_t *(*Cvar_Set)( const char *name, char *value );
+	void	(*Cvar_SetValue)( const char *name, float value );
+	float	(*Cvar_VariableValue) (const char *var_name);
 	const char	*(*Cvar_VariableString) (const char *var_name);
 
 	// allow the screen flash to be controlled from within the client effect DLL rather than going through the server.

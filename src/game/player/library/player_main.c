@@ -93,7 +93,7 @@ GetPlayerAPI(game_import_t *import)
 }
 
 void
-Com_Printf(char *msg, ...)
+Com_Printf(const char *msg, ...)
 {
 	va_list argptr;
 	char text[1024];

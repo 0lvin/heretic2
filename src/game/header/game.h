@@ -172,9 +172,9 @@ typedef struct
 	void (*FreeTags)(int tag);
 
 	/* console variable interaction */
-	cvar_t *(*cvar)(char *var_name, char *value, int flags);
-	cvar_t *(*cvar_set)(char *var_name, char *value);
-	cvar_t *(*cvar_forceset)(char *var_name, char *value);
+	cvar_t *(*cvar)(const char *var_name, char *value, int flags);
+	cvar_t *(*cvar_set)(const char *var_name, char *value);
+	cvar_t *(*cvar_forceset)(const char *var_name, char *value);
 
 	/* ClientCommand and ServerCommand parameter access */
 	int (*argc)(void);
