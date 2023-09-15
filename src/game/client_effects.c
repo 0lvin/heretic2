@@ -186,7 +186,7 @@ CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, i
 	return CL_PMTrace(start, mins, maxs, end); // jmarshall: incomplete
 }
 
-void CL_Sys_Error(int errLevel, char* fmt, ...)
+void CL_Sys_Error(int errLevel, const char* fmt, ...)
 {
 	va_list		argptr;
 	char		msg[4096];
@@ -198,7 +198,7 @@ void CL_Sys_Error(int errLevel, char* fmt, ...)
 	Sys_Error(msg); // TODO vargs
 }
 
-void CL_Printf(int errLevel, char* fmt, ...) {
+void CL_Printf(int errLevel, const char* fmt, ...) {
 	va_list		argptr;
 	char		msg[4096];
 

@@ -1526,9 +1526,9 @@ Variable *FieldDef::GetValue(Variable *Var)
 			GetVectorValue(Var, vec);
 			return new VectorVar(vec);
 			break;
+        default:
+            return NULL;
 	}
-
-	return NULL;
 }
 
 int FieldDef::GetIntValue(Variable *Var)
@@ -1678,6 +1678,8 @@ void FieldDef::SetValue(Variable *Var, Variable *Value)
 		case F_VECTOR:
 			Value->GetVectorValue(*(vec3_t *)(Dest));
 			break;
+        default:
+            break;
 	}
 }
 
@@ -3968,7 +3970,7 @@ void CScript::FinishWait(edict_t *Which, bool NoExecute)
 	}
 }
 
-void CScript::Error (char *error, ...)
+void CScript::Error (const char *error, ...)
 {
 	va_list argptr;
 	char	text[1024];
