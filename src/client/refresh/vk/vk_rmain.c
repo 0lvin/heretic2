@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // vk_rmain.c
 
 #include "header/local.h"
+#include "../../../game/common/angles.h"
 
 #define	REF_VERSION	"Yamagi Quake II Vulkan Refresher " VKVERSION " (based on vkQuake2 v1.4.3)"
 
@@ -148,9 +149,11 @@ PFN_vkSetMoltenVKConfigurationMVK qvkSetMoltenVKConfigurationMVK;
 
 void R_RotateForEntity (entity_t *e, float *mvMatrix)
 {
-	Mat_Rotate(mvMatrix, -e->angles[2], 1.f, 0.f, 0.f);
-	Mat_Rotate(mvMatrix, -e->angles[0], 0.f, 1.f, 0.f);
-	Mat_Rotate(mvMatrix,  e->angles[1], 0.f, 0.f, 1.f);
+	// jmarshall - Heretic 2 rotation fix from their ref_gl.dll
+	Mat_Rotate(mvMatrix, -e->angles[2] / ANGLE_1, 1.f, 0.f, 0.f);
+	Mat_Rotate(mvMatrix, -e->angles[0] / ANGLE_1, 0.f, 1.f, 0.f);
+	Mat_Rotate(mvMatrix,  e->angles[1] / ANGLE_1, 0.f, 0.f, 1.f);
+	// jmarshall end
 	Mat_Translate(mvMatrix, e->origin[0], e->origin[1], e->origin[2]);
 }
 

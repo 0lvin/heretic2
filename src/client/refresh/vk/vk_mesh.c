@@ -477,7 +477,9 @@ Vk_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp, image_t *skin,
 	float	*lerp;
 	int num_mesh_nodes;
 	short *mesh_nodes;
+	fmnodeinfo_t *nodeinfo;
 
+	nodeinfo = currententity->fmnodeinfo;
 	frame = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 		+ currententity->frame * paliashdr->framesize);
 	verts = v = frame->verts;
@@ -533,6 +535,11 @@ Vk_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp, image_t *skin,
 		int i;
 		for (i = 0; i < num_mesh_nodes; i++)
 		{
+			if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)
+			{
+				continue;
+			}
+
 			Vk_DrawAliasFrameLerpCommands(currententity,
 				order + mesh_nodes[i * 2],
 				order + min(paliashdr->num_glcmds, mesh_nodes[i * 2] + mesh_nodes[i * 2 + 1]),
