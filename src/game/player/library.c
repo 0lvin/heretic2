@@ -78,7 +78,7 @@ P_Load(void)
 	{
 		FILE *fp;
 
-		path = FS_NextPath(path);
+		path = gi.FS_NextPath(path);
 
 		if (!path)
 		{
@@ -105,7 +105,7 @@ P_Load(void)
 
 		if (player_library)
 		{
-			Com_MDPrintf("Loading library: %s\n", name);
+			Com_Printf("Loading library: %s\n", name);
 			break;
 		}
 		else

@@ -673,6 +673,8 @@ SV_FinalMessage(char *message, qboolean reconnect)
 void
 SV_Shutdown(char *finalmsg, qboolean reconnect)
 {
+	void E_Freelib();
+
 	if (svs.clients)
 	{
 		SV_FinalMessage(finalmsg, reconnect);

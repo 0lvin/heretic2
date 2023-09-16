@@ -880,6 +880,7 @@ SV_InitGameProgs(void)
 	import.msgdual_centerprintf = SV_MsgDualCenterPrintf;
 	import.error = PF_error;
 
+	import.FS_NextPath = FS_NextPath;
 	import.changeCDtrack = SV_ChangeCDTrack;
 	import.linkentity = SV_LinkEdict;
 	import.unlinkentity = SV_UnlinkEdict;

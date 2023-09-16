@@ -185,6 +185,7 @@ typedef struct
 	   they were typed in for map changing, etc */
 	void (*AddCommandString)(char *text);
 
+	char *(*FS_NextPath)(char *prevpath);
 	void (*DebugGraph)(float value, int color);
 
 	void	(*CreateEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);

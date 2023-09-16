@@ -308,7 +308,7 @@ E_Load(void)
 
 		if (effects_library)
 		{
-			Com_MDPrintf("Loading library: %s\n", name);
+			Com_Printf("Loading library: %s\n", name);
 			break;
 		}
 		else
