@@ -2507,14 +2507,9 @@ Variable *CScript::HandleSpawn(void)
 						((float *)(b+f->ofs))[1] = Value->GetFloatValue();
 						((float *)(b+f->ofs))[2] = 0;
 						break;
-					case F_IGNORE:
-						break;
-					case F_RGBA:
-						break;
-					case F_RGB:
+					default:
 						break;
 				}
-				break;
 			}
 		}
 	}

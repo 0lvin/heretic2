@@ -2033,7 +2033,7 @@ void MG_BuoyNavigate(edict_t *self)
 	qboolean	valid_enemy = false;
 	int			i;
 	buoy_t		*found_buoy = NULL;
-	qboolean	found;
+	qboolean	found = false;
 
 	//See if my enemy is still valid
 	valid_enemy = M_ValidTarget(self, self->enemy);

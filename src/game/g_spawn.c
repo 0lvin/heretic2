@@ -761,7 +761,7 @@ void ED_CallSpawn (edict_t *ent)
 		return;
 	}
 
-	if(item = IsItem(ent))
+	if((item = IsItem(ent)))
 	{
 		SpawnItem(ent, item);
 

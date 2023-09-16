@@ -205,7 +205,7 @@ void PlayerAnimUpperIdle(playerinfo_t *playerinfo)
 {
 	int ret;
 
-	if (ret = BranchUprReady(playerinfo))
+	if ((ret = BranchUprReady(playerinfo)))
 	{
 		PlayerAnimSetUpperSeq(playerinfo, ret);
 
@@ -221,26 +221,26 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 
 	if (playerinfo->flags & PLAYER_FLAG_SURFSWIM)
 	{
-		if (ret = BranchLwrSurfaceSwim(playerinfo))
+		if ((ret = BranchLwrSurfaceSwim(playerinfo)))
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ret);
 		}
 	}
 	else if (playerinfo->flags & PLAYER_FLAG_UNDERWATER)
 	{
-		if (ret = BranchLwrUnderwaterSwim(playerinfo))
+		if ((ret = BranchLwrUnderwaterSwim(playerinfo)))
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ret);
 		}
 	}
 	else if (playerinfo->flags & PLAYER_FLAG_ONROPE)
 	{
-		if (ret = BranchLwrClimbing(playerinfo))
+		if ((ret = BranchLwrClimbing(playerinfo)))
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ret);
 		}
 	}
-	else if (ret = BranchLwrStanding(playerinfo))
+	else if ((ret = BranchLwrStanding(playerinfo)))
 	{
 		PlayerAnimSetLowerSeq(playerinfo, ret);
 	}

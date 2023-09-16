@@ -176,6 +176,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 		case HANDFX_MACEBALL:
 
 			if(playerinfo->effects)
+			{
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID26,
 												playerinfo->G_GetEntityStatePtr(playerinfo->self),
@@ -184,13 +185,14 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID26,
 												 playerinfo->self,
 												 FX_SPELLHANDS);
-
+			}
 			break;
 
 		case HANDFX_REDRAIN:
 		case HANDFX_POWERREDRAIN:
 
 			if(playerinfo->effects)
+			{
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID27,
 												playerinfo->G_GetEntityStatePtr(playerinfo->self),
@@ -199,7 +201,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID27,
 												playerinfo->self,
 												FX_WEAPON_REDRAINGLOW);
-
+			}
 			break;
 
 		case HANDFX_PHOENIX:
@@ -207,6 +209,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 		case HANDFX_FIREWALL:
 
 			if(playerinfo->effects)
+			{
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID28,
 												playerinfo->G_GetEntityStatePtr(playerinfo->self),
@@ -215,7 +218,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID28,
 												 playerinfo->self,
 												 FX_FIREHANDS);
-
+			}
 			break;
 
 		case HANDFX_STAFF1:

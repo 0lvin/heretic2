@@ -88,6 +88,7 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 	trace_t	newtrace;
 
 	assert(trace);
+	dot = 0.0;
 
 	// If we haven't damaged what we are hitting yet, damage it now.  Mainly for the Trial Beast.
 	if (trace->ent && trace->ent->takedamage && self->fire_timestamp > trace->ent->fire_timestamp)
@@ -330,6 +331,7 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 	edict_t *worm;
 
 	assert(trace);
+	dot = 0.0;
 
 	// If we haven't damaged what we are hitting yet, damage it now.  Mainly for the Trial Beast.
 	if (trace->ent && trace->ent->takedamage && self->fire_timestamp > trace->ent->fire_timestamp)

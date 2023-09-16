@@ -195,8 +195,8 @@ typedef struct
 	qboolean (*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
 					// The effect is not removed on the client									// This should be done by removing the effects from the owning entity or freein
 
-	float	(*cvar_variablevalue) (char *var_name);
-	void (*clprintf)(edict_t *ent, edict_t *from, int color, char *fmt, ...);
+	float	(*cvar_variablevalue) (const char *var_name);
+	void (*clprintf)(edict_t *ent, edict_t *from, int color, const char *fmt, ...);
 	void (*bcaption)(int printlevel, short stringid);
 	void (*Obituary)(int printlevel, short stringid, short client1, short client2);
 	void (*levelmsg_centerprintf)(edict_t *ent, short msg);

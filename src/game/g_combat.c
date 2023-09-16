@@ -721,7 +721,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	else
 		VectorSet(dir, 0, 0, -1);
 
-	if(pnormal && Vec3NotZero(pnormal))
+	if(Vec3NotZero(pnormal))
 		VectorCopy(pnormal, normal);
 	else
 		VectorSet(normal, 0, 0, 1);
@@ -1035,7 +1035,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 					bloodamt = take/4;
 
 				// Normal will be NULL from time to time.  FIXME:  Hellbolts will damage with a plane.normal that is null.
-				if (normal==NULL || Vec3IsZero(normal))
+				if (Vec3IsZero(normal))
 				{
 					VectorClear(vel);
 					VectorCopy(point, loc);

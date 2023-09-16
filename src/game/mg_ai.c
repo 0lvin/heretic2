@@ -1502,7 +1502,7 @@ void MG_CheckEvade (edict_t *self)
 	//else if(flrand(0, 3) > skill->value)
 	//	return;
 
-	while(ent = findradius(ent, self->s.origin, 500))
+	while((ent = findradius(ent, self->s.origin, 500)))
 	{
 		if(ent->movetype == MOVETYPE_FLYMISSILE && ent->solid && ent->owner!=self)
 		{
@@ -1642,7 +1642,9 @@ void ai_run (edict_t *self, float dist)
 				ssithraCheckJump(self);
 		}
 		else
+		{
 			i = 0;
+		}
 
 	if(self->classID!=CID_ASSASSIN)//does his own checks
 		if(classStatics[self->classID].msgReceivers[MSG_EVADE])
@@ -1879,37 +1881,45 @@ void MG_PostDeathThink (edict_t *self)
 		VectorMA(self->s.origin, self->maxs[0], forward, endpos);
 		movetrace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 		if(movetrace.allsolid||movetrace.startsolid||movetrace.fraction<1.0)
+		{
 			if(canmove(movetrace.ent))
 				whichtrace = -1;
 			else
 				whichtrace = 0;
+		}
 		break;
 	case 2:
 		VectorMA(self->s.origin, -self->maxs[0], forward, endpos);
 		movetrace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 		if(movetrace.allsolid||movetrace.startsolid||movetrace.fraction<1.0)
+		{
 			if(canmove(movetrace.ent))
 				whichtrace = -1;
 			else
 				whichtrace = 0;
+		}
 		break;
 	case 3:
 		VectorMA(self->s.origin, self->maxs[0], right, endpos);
 		movetrace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 		if(movetrace.allsolid||movetrace.startsolid||movetrace.fraction<1.0)
+		{
 			if(canmove(movetrace.ent))
 				whichtrace = -1;
 			else
 				whichtrace = 0;
+		}
 		break;
 	case 4:
 		VectorMA(self->s.origin, -self->maxs[0], right, endpos);
 		movetrace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 		if(movetrace.allsolid||movetrace.startsolid||movetrace.fraction<1.0)
+		{
 			if(canmove(movetrace.ent))
 				whichtrace = -1;
 			else
 				whichtrace = 0;
+		}
 		break;
 	}
 

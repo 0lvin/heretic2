@@ -1086,7 +1086,7 @@ void spreaderTakeOff (edict_t *self)
 void spreaderSplat (edict_t *self, trace_t *trace)//, edict_s *other, cplane_s *plane, csurface_s *surf)/*(edict_t *self, trace_t *trace)*/
 {
 	vec3_t dir;
-	float speed;
+	float speed = 0;
 
 	if(trace->ent)
 	{
