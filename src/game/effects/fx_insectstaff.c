@@ -155,9 +155,9 @@ static qboolean FXInsectStaffTrailThink(struct client_entity_s *self, centity_t 
 void FXInsectStaff(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	client_entity_t	*Trail;
-	paletteRGBA_t	LightColor={255,64,32,255};
+	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
 
-	Trail=ClientEntity_new(type,flags,origin,NULL,17);
+	Trail=ClientEntity_new(type, flags, origin, NULL, 17);
 
 	Trail->r.model = ins_models[0];
 	Trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD;
@@ -183,7 +183,7 @@ void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec
 {
 	client_entity_t	*SmokePuff;
 	int				I;
-	paletteRGBA_t	LightColor={255,64,32,255};
+	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
 
 	if(flags & CEF_FLAG6)
 		FXClientScorchmark(origin, Dir);
@@ -315,7 +315,7 @@ void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short Cast
 {
 	client_entity_t	*GlobeThinker,
 					*AuraThinker;
-	paletteRGBA_t	LightColor={0,0,255,255};
+	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	int				caster_update;
 
 	// Create a fiery blue aura around the globe.
@@ -578,7 +578,7 @@ static qboolean FXISpMslThink (struct client_entity_s *self, centity_t *owner)
 void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	client_entity_t	*hellbolt;
-	paletteRGBA_t	LightColor = {255, 128, 64, 255};
+	paletteRGBA_t	LightColor = {{{255, 128, 64, 255}}};
 
 	hellbolt = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 10000);
 
@@ -600,7 +600,7 @@ void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 
 qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 {
-	paletteRGBA_t		LightColor = {255, 128, 255, 255};
+	paletteRGBA_t		LightColor = {{{255, 128, 255, 255}}};
 	client_particle_t	*spark;
 	int					i;
 	float				dist;
@@ -647,7 +647,7 @@ qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*hellbolt;
-	paletteRGBA_t	LightColor = {255, 128, 255, 255};
+	paletteRGBA_t	LightColor = {{{255, 128, 255, 255}}};
 
 	hellbolt = ClientEntity_new(type, CEF_OWNERS_ORIGIN | CEF_ABSOLUTE_PARTS, origin, NULL, 20);
 
@@ -692,7 +692,7 @@ void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Di
 {
 	client_entity_t	*smokepuff;
 	int				i;
-	paletteRGBA_t	lightcolor = {255, 96, 48, 255};
+	paletteRGBA_t	lightcolor = {{{255, 96, 48, 255}}};
 
 	if(flags & CEF_FLAG6)
 	{
@@ -936,7 +936,7 @@ void FXISwordTrail(centity_t *owner,int type,int flags,vec3_t origin)
 
 void FXIEffects(centity_t *owner,int type,int flags, vec3_t origin)
 {
-	paletteRGBA_t	LightColor={0,0,255,255};
+	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	vec3_t			vel;
 	byte			fx_index;
 

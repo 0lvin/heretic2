@@ -399,7 +399,7 @@ void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 	client_particle_t	*p;
 	matrix3_t			rotation;
 	int					num_parts, i;
-	paletteRGBA_t		LightColor={200, 255, 255, 140};//RGBA
+	paletteRGBA_t		LightColor = {{{200, 255, 255, 140}}};//RGBA
 
 	VectorSubtract(owner->referenceInfo->references[refpt].placement.origin,
 			owner->referenceInfo->oldReferences[refpt].placement.origin,
@@ -507,7 +507,7 @@ void FXWaterParticles(centity_t *owner, int type, int flags, vec3_t origin)
 int DirectionalUpdate (client_entity_t *self, centity_t *owner)
 {
 	float				addVal;
-	paletteRGBA_t		color = {255, 128, 128, 128};
+	paletteRGBA_t		color = {{{255, 128, 128, 128}}};
 	client_particle_t	*part;
 
 	if(!compass->value)

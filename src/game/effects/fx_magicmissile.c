@@ -145,7 +145,7 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	vec3_t			ang;
 	client_entity_t	*Missile;
-	paletteRGBA_t	LightColor={128,64,96,255};
+	paletteRGBA_t	LightColor = {{{128, 64, 96, 255}}};
 	vec3_t			fwd, up, right;
 	short			shortyaw, shortpitch;
 
@@ -197,7 +197,7 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t			dir;
 	client_entity_t	*smokepuff;
 	int				i;
-	paletteRGBA_t	lightcolor = {0, 128, 128, 255};
+	paletteRGBA_t	lightcolor = {{{0, 128, 128, 255}}};
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_MAGICMISSILEEXPLODE].formatString, dir);
 	if(flags & CEF_FLAG6)

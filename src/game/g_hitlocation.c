@@ -18,35 +18,35 @@
 
 static vec3_t LocationsBiped[hl_BipedPoints] =
 {
-	 0.00F,  0.00F,  0.24F,		// head
-	 0.16F,  0.00F,  0.10F,		// hl_TorsoFront
-	-0.16F,	 0.00F,  0.10F,		// hl_TorsoBack
-	 0.00F,	 0.35F,	 0.08F,		// hl_ArmUpperLeft
-	 0.00F,	 0.35F,	-0.04F,		// hl_ArmLowerLeft
-	 0.00F,	-0.35F,	 0.08F,		// hl_ArmUpperRight
-	 0.00F,	-0.35F,	-0.04F,		// hl_ArmLowerRight
-	 0.00F,	 0.20F,	-0.10F,		// hl_LegUpperLeft
-  	 0.00F,	 0.20F,	-0.20F,		// hl_LegLowerLeft
-	 0.00F,	-0.20F,	-0.10F,		// hl_LegUpperRight
-	 0.00F,	-0.20F,	-0.20F,		// hl_LegLowerRight
+	{ 0.00F,	0.00F,	 0.24F},	// head
+	{ 0.16F,	0.00F,	 0.10F},	// hl_TorsoFront
+	{-0.16F,	 0.00F,	 0.10F},	// hl_TorsoBack
+	{ 0.00F,	 0.35F,	 0.08F},	// hl_ArmUpperLeft
+	{ 0.00F,	 0.35F,	-0.04F},	// hl_ArmLowerLeft
+	{ 0.00F,	-0.35F,	 0.08F},	// hl_ArmUpperRight
+	{ 0.00F,	-0.35F,	-0.04F},	// hl_ArmLowerRight
+	{ 0.00F,	 0.20F,	-0.10F},	// hl_LegUpperLeft
+	{ 0.00F,	 0.20F,	-0.20F},	// hl_LegLowerLeft
+	{ 0.00F,	-0.20F,	-0.10F},	// hl_LegUpperRight
+	{ 0.00F,	-0.20F,	-0.20F},	// hl_LegLowerRight
 };
 
 // Percentage offsets for a winged creature
 
 static vec3_t LocationsWinged[hl_WingedPoints] =
 {//	for+	left+	up+
-	 0.60F,  0.00F,  0.10F,		// head (horns and neckspikes)
-	 0.00F,	 0.00F,	 0.20F,		// hl_backspikes
-	 0.00F,	 0.20F,	-0.20F,		// hl_leftupperleg
-	 0.00F,	 0.20F,	-0.40F,		// hl_leftlowerleg
-	 0.10F,	 0.20F,	-0.60F,		// hl_lefthand
-  	 0.00F,	-0.20F,	-0.20F,		// hl_rightupperleg
-	 0.00F,	-0.20F,	-0.40F,		// hl_rightlowerleg
-	 0.10F,	-0.20F,	-0.60F,		// hl_righthand
-	-0.30F,	 0.00F,	 0.00F,		// hl_tailspikes
-  	 0.25F,	-1.00F,	 0.00F,		// hl_rwing
-	 0.25F,	 1.00F,	 0.00F,		// hl_lwing
-	-0.50F,	 0.00F,	-0.60F,		// hl_stinger
+	{ 0.60F,	 0.00F,	 0.10F},	// head (horns and neckspikes)
+	{ 0.00F,	 0.00F,	 0.20F},	// hl_backspikes
+	{ 0.00F,	 0.20F,	-0.20F},	// hl_leftupperleg
+	{ 0.00F,	 0.20F,	-0.40F},	// hl_leftlowerleg
+	{ 0.10F,	 0.20F,	-0.60F},	// hl_lefthand
+	{ 0.00F,	-0.20F,	-0.20F},	// hl_rightupperleg
+	{ 0.00F,	-0.20F,	-0.40F},	// hl_rightlowerleg
+	{ 0.10F,	-0.20F,	-0.60F},	// hl_righthand
+	{-0.30F,	 0.00F,	 0.00F},	// hl_tailspikes
+	{ 0.25F,	-1.00F,	 0.00F},	// hl_rwing
+	{ 0.25F,	 1.00F,	 0.00F},	// hl_lwing
+	{-0.50F,	 0.00F,	-0.60F},	// hl_stinger
 };
 
 // Basic hit location types

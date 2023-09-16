@@ -460,10 +460,12 @@ SV_InitGame(void)
 	Com_sprintf(idmaster, sizeof(idmaster), "192.246.40.37:%i", PORT_MASTER);
 	NET_StringToAdr(idmaster, &master_adr[0]);
 
+#ifndef DEDICATED_ONLY
 	if (!E_Load())
 	{
 		Sys_Error("Unable to effects library");
 	}
+#endif
 
 	/* init game */
 	SV_InitGameProgs();

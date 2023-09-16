@@ -238,7 +238,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 	{	// Add little splooshies
 		int parts, i;
 		client_particle_t *part;
-		paletteRGBA_t color={0xff,0xff,0xff,0xff};
+		paletteRGBA_t color = {{{0xff, 0xff, 0xff, 0xff}}};
 
 		// Create an extra, centered water entry ripple.
 		splash=ClientEntity_new(FX_WATER_ENTRYSPLASH, Flags&(~CEF_OWNERS_ORIGIN), Origin, Dir, 1200);

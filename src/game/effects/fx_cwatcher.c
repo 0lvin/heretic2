@@ -133,8 +133,8 @@ static qboolean FXCWStarThink(struct client_entity_s *self, centity_t *owner)
 void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*spawner;
-	paletteRGBA_t		light = { 160, 70, 240, 255 },
-						white_light = { 255, 255, 255, 255 };
+	paletteRGBA_t		light = {{{ 160, 70, 240, 255 }}},
+						white_light = {{{ 255, 255, 255, 255 }}};
 
 	vec3_t				vel;
 	byte				fxID;

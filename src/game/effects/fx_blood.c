@@ -262,7 +262,7 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner);
 qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 {
 	client_particle_t	*p = NULL;
-	paletteRGBA_t		color = {180, 140, 110, 160};
+	paletteRGBA_t		color = {{{180, 140, 110, 160}}};
 	vec3_t				vel;
 	qboolean			yellow_blood = false;
 	int					bpart;
@@ -314,7 +314,7 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 {
 	client_particle_t	*p;
-	paletteRGBA_t		color = {150, 140, 110, 160};
+	paletteRGBA_t		color = {{{150, 140, 110, 160}}};
 	int					num_drips, i;
 	float				scale, grav_mod, driptime;
 	qboolean			yellow_blood = false;

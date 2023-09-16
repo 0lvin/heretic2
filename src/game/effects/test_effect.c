@@ -15,7 +15,7 @@ void FXTestBBox(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t *cent;
 	client_particle_t *part;
 	float	radius, bottom, top;
-	paletteRGBA_t color={255, 255, 255, 255};
+	paletteRGBA_t color = {{{255, 255, 255, 255}}};
 	vec3_t	loc[8];
 	int	i, partid, max;
 

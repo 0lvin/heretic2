@@ -80,35 +80,35 @@ struct
 	char	*name;
 } MonsterSpawnerClassname [] =
 {
-	"monster_nothing",
-	"monster_rat",				// MS_RAT
-	"monster_plagueElf",		// MS_PLAGUEELF
-	"monster_spreader",			// MS_SPREADER
-	"monster_gorgon",			// MS_GORGON
-	"monster_rat",				// MS_CHKROKTK
-	"monster_tcheckrik_male",	// TCHEKRIK_MALE
-	"monster_tcheckrik_female",	// TCHEKRIK_FEMALE
-	"monster_plagueElf",		// TCHEKRIK_MOTHERS
-	"monster_highPriestess",	// HIGH_PRIESTESS
-	"monster_ogle",				// MS_OGLE
-	"monster_seraph_overlord",	// MS_SERAPH_OVERLORD
-	"monster_seraph_guard",		// MS_SERAPH_GUARD
-	"monster_assassin",			// MS_ASSASSIN
-	"monster_morcalavin",		// MS_MORCALAVIN
-	"character_dranor",			// MS_DRANOR
-	"monster_plagueElf",		// MS_SIDHE_GUARD
-	"character_siernan1",		// MS_SIERNAN
-	"character_ssithra_scout",	// MS_SSITHRA_SCOUT
-	"character_ssithra_victim", // MS_SSITHRA_VICTIM
-	"monster_mssithra",			// MS_MSSITHRA
-	"monster_harpy",			// MS_HARPY
-	"monster_fish",				// MS_FISH
-	"monster_chicken",			// MS_CHICKEN
-	"monster_ssithra",			// MS_SSITHRA
-	"monster_gkrokon",			// MS_GKROKON
-	"monster_rat_giant",		// MS_RAT_GIANT
-	"monster_palace_plague_guard", //MS_PALACE_PLAGUE_GUARD,
-	"monster_palace_plague_guard_invisible", //MS_INVISIBLE_PALACE_PLAGUE_GUARD,
+	{"monster_nothing"},
+	{"monster_rat"},	// MS_RAT
+	{"monster_plagueElf"},	// MS_PLAGUEELF
+	{"monster_spreader"},	// MS_SPREADER
+	{"monster_gorgon"},	// MS_GORGON
+	{"monster_rat"},	// MS_CHKROKTK
+	{"monster_tcheckrik_male"},	// TCHEKRIK_MALE
+	{"monster_tcheckrik_female"},	// TCHEKRIK_FEMALE
+	{"monster_plagueElf"},	// TCHEKRIK_MOTHERS
+	{"monster_highPriestess"},	// HIGH_PRIESTESS
+	{"monster_ogle"},	// MS_OGLE
+	{"monster_seraph_overlord"},	// MS_SERAPH_OVERLORD
+	{"monster_seraph_guard"},	// MS_SERAPH_GUARD
+	{"monster_assassin"},	// MS_ASSASSIN
+	{"monster_morcalavin"},	// MS_MORCALAVIN
+	{"character_dranor"},	// MS_DRANOR
+	{"monster_plagueElf"},	// MS_SIDHE_GUARD
+	{"character_siernan1"},	// MS_SIERNAN
+	{"character_ssithra_scout"},	// MS_SSITHRA_SCOUT
+	{"character_ssithra_victim"},	// MS_SSITHRA_VICTIM
+	{"monster_mssithra"},	// MS_MSSITHRA
+	{"monster_harpy"},	// MS_HARPY
+	{"monster_fish"},	// MS_FISH
+	{"monster_chicken"},	// MS_CHICKEN
+	{"monster_ssithra"},	// MS_SSITHRA
+	{"monster_gkrokon"},	// MS_GKROKON
+	{"monster_rat_giant"},	// MS_RAT_GIANT
+	{"monster_palace_plague_guard"},	//MS_PALACE_PLAGUE_GUARD,
+	{"monster_palace_plague_guard_invisible"},	//MS_INVISIBLE_PALACE_PLAGUE_GUARD,
 };
 
 int CIDForSpawnerStyle[MS_MAX] =

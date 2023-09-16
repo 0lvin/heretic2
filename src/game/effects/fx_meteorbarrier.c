@@ -114,7 +114,7 @@ qboolean MeteorAddToView(client_entity_t *current, centity_t *owner)
 void FXMeteorBarrier(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*trail;
-	paletteRGBA_t	lightcolor = {63, 255, 77, 255};
+	paletteRGBA_t	lightcolor = {{{63, 255, 77, 255}}};
 
 	// Add a fiery trail effect.
 	trail = ClientEntity_new(type, flags|CEF_ABSOLUTE_PARTS|CEF_ADDITIVE_PARTS|CEF_VIEWSTATUSCHANGED, origin, 0, 50);
@@ -134,7 +134,7 @@ void FXMeteorBarrier(centity_t *owner, int type, int flags, vec3_t origin)
 void FXMeteorBarrierTravel(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*trail;
-	paletteRGBA_t	lightcolor = {63, 255, 77, 255};
+	paletteRGBA_t	lightcolor = {{{63, 255, 77, 255}}};
 
 	// Add a fiery trail effect.
 	trail = ClientEntity_new(type, flags|CEF_ABSOLUTE_PARTS|CEF_ADDITIVE_PARTS|CEF_VIEWSTATUSCHANGED, origin, 0, 50);
@@ -159,7 +159,7 @@ void FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin
 	vec3_t			dir, mins;
 	int				i;
 	client_entity_t	*smokepuff;
-	paletteRGBA_t	LightColor = {64, 255, 76, 255};
+	paletteRGBA_t	LightColor = {{{64, 255, 76, 255}}};
 	int				count;
 	client_particle_t	*ce;
 

@@ -65,7 +65,7 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 	client_particle_t	*flame;
 	client_entity_t		*smoke;
 	vec3_t				angles, fwd, right, smokeorigin;
-	paletteRGBA_t		LightColor={0xff, 0x7f, 0x00, 0xe5};
+	paletteRGBA_t		LightColor = {{{0xff, 0x7f, 0x00, 0xe5}}};
 
 	if (r_detail->value == DETAIL_LOW)
 		dur = 1400;
@@ -638,7 +638,7 @@ static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *
 	client_particle_t	*flame;
 	client_entity_t		*smoke;
 	vec3_t				angles, fwd, right, smokeorigin;
-	paletteRGBA_t		LightColor={0xff, 0x7f, 0x00, 0xe5};
+	paletteRGBA_t		LightColor = {{{0xff, 0x7f, 0x00, 0xe5}}};
 	int					sideVal;
 
 	if (r_detail->value == DETAIL_LOW)

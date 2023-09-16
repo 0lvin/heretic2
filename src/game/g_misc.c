@@ -138,18 +138,18 @@ typedef struct DebrisSound
 
 DebrisSound_t DebrisSound [NUM_MAT]=
 {
-	"misc/breakstone.wav",	// MAT_STONE
-	"misc/breakstone.wav",	// MAT_GREYSTONE
-	"misc/tearcloth.wav",	// MAT_CLOTH
-	"misc/metalbreak.wav",	// MAT_METAL
-	"misc/fleshbreak.wav",	// MAT_FLESH
-	"misc/potbreak.wav",	// MAT_POTTERY
-	"misc/glassbreak2.wav",	// MAT_GLASS
-	"misc/breakstone.wav",	// MAT_LEAF	FIXME
-	"misc/breakwood.wav",	// MAT_WOOD
-	"misc/breakstone.wav",	// MAT_BROWNSTONE
-	"misc/bushbreak.wav",	// MAT_NONE
-	NULL,					// MAT_INSECT
+	{"misc/breakstone.wav"},	// MAT_STONE
+	{"misc/breakstone.wav"},	// MAT_GREYSTONE
+	{"misc/tearcloth.wav"},	// MAT_CLOTH
+	{"misc/metalbreak.wav"},	// MAT_METAL
+	{"misc/fleshbreak.wav"},	// MAT_FLESH
+	{"misc/potbreak.wav"},	// MAT_POTTERY
+	{"misc/glassbreak2.wav"},	// MAT_GLASS
+	{"misc/breakstone.wav"},	// MAT_LEAF	FIXME
+	{"misc/breakwood.wav"},	// MAT_WOOD
+	{"misc/breakstone.wav"},	// MAT_BROWNSTONE
+	{"misc/bushbreak.wav"},	// MAT_NONE
+	{NULL},					// MAT_INSECT
 };
 
 

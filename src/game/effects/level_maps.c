@@ -68,40 +68,40 @@ int coords_mine2[] =
 
 level_map_info_t LevelMaps[MAX_MAPS] =
 {
-	0, 0,			NULL, NULL, 0, 0, 0, 0, 0, 0,												// level 0 - undefined
-	0, 0,			NULL, NULL, 0, 0, 0, 0, 0, 0,												// level 0 - undefined
+	{0, 0,			NULL, NULL, 0, 0, 0, 0, 0, 0},	// level 0 - undefined
+	{0, 0,			NULL, NULL, 0, 0, 0, 0, 0, 0},	// level 0 - undefined
 
-	1, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,187, 191, 0, NULL,		// SSDocks
-	1, 0,			"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,0, 0, 0, NULL,			// SSWarehouse
-	1, 0,			"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,0, 0, 0, NULL,			// SSTown
-	1, 0,			"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,0, 0, 0, NULL,			// SSPalace
+	{1, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,187, 191, 0, NULL},	// SSDocks
+	{1, 0,			"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,0, 0, 0, NULL},	// SSWarehouse
+	{1, 0,			"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,0, 0, 0, NULL},	// SSTown
+	{1, 0,			"book/back/b_worldmap.bk", "book/back/b_ssmap.bk",	0, 0,0, 0, 0, NULL},	// SSPalace
 
-	2, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL,	GM_M_DARKMIRE, 0,0, 0, 6, coords_swamp,	// Dmireswamp
+	{2, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL,	GM_M_DARKMIRE, 0,0, 0, 6, coords_swamp},	// Dmireswamp
 
-	3, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,232, 218, 0, NULL,		// Andhealer
-	3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL,			// AndSlums
-	3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL,			// Andplaza
-	3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL,			// AndAcademic
+	{3, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,232, 218, 0, NULL},	// Andhealer
+	{3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL},	// AndSlums
+	{3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL},	// Andplaza
+	{3, 0,			"book/back/b_worldmap.bk", "book/back/b_andmap.bk",	0, 0,0, 0, 0, NULL},	// AndAcademic
 
-	4, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL,	GM_M_KELLCAVES, 0, 0, 0, 9, coords_caves,	// Kellcaves
-	4, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL,	GM_M_KATLITK, 0, 0, 0, 11, coords_canyon,	// Canyon
+	{4, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL,	GM_M_KELLCAVES, 0, 0, 0, 9, coords_caves},	// Kellcaves
+	{4, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL,	GM_M_KATLITK, 0, 0, 0, 11, coords_canyon},	// Canyon
 
-	5, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 332, 307, 0, NULL,			// Hive1
-	5, 0,			"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 0, 0, 0, NULL,				// Hive2
-	5, 0,			"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 0, 0, 0, NULL,				// Gauntlet
-	5, 0,			"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 0, 0, 0, NULL,				// Trialpit
-	5, 0,			"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 0, 0, 0, NULL,				// Hivepriestess
+	{5, LMI_DRAW,	"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 332, 307, 0, NULL},	// Hive1
+	{5, 0,			"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 0, 0, 0, NULL},	// Hive2
+	{5, 0,			"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 0, 0, 0, NULL},	// Gauntlet
+	{5, 0,			"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 0, 0, 0, NULL},	// Trialpit
+	{5, 0,			"book/back/b_worldmap.bk", "book/back/b_hivemap.bk",	0, 0, 0, 0, 0, NULL},	// Hivepriestess
 
-	6, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL, GM_M_MINES, 0,0, 0, 6, coords_mine1,	// OgleMine1
-	6, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL, GM_M_MINES, 0,	0, 0, 6, coords_mine2,			// OgleMine2
-	6, 0,			"book/back/b_worldmap.bk", NULL,  GM_M_DUNGEON, 0,	0, 0, 0, NULL,					// Dungeon
+	{6, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL, GM_M_MINES, 0,0, 0, 6, coords_mine1},	// OgleMine1
+	{6, LMI_PROGRESS, "book/back/b_worldmap.bk", NULL, GM_M_MINES, 0,	0, 0, 6, coords_mine2},	// OgleMine2
+	{6, 0,			"book/back/b_worldmap.bk", NULL,  GM_M_DUNGEON, 0,	0, 0, 0, NULL},	// Dungeon
 
-	7, LMI_DRAW,	"book/back/b_worldmap.bk", NULL,  GM_M_CLOUD, 0,	405, 268, 0, NULL,		// Cloudhub
-	7, 0,			"book/back/b_worldmap.bk", NULL,  GM_M_CLOUD, 0,	0, 0, 0, NULL,		// Cloudlabs
-	7, 0,			"book/back/b_worldmap.bk", NULL,  GM_M_CLOUD, 0,	0, 0, 0, NULL,		// Cloudquarters
-	7, 0,			"book/back/b_worldmap.bk", NULL,  GM_M_CLOUD, 0,	0, 0, 0, NULL,		// Cloudsanctum
+	{7, LMI_DRAW,	"book/back/b_worldmap.bk", NULL,  GM_M_CLOUD, 0,	405, 268, 0, NULL},	// Cloudhub
+	{7, 0,			"book/back/b_worldmap.bk", NULL,  GM_M_CLOUD, 0,	0, 0, 0, NULL},	// Cloudlabs
+	{7, 0,			"book/back/b_worldmap.bk", NULL,  GM_M_CLOUD, 0,	0, 0, 0, NULL},	// Cloudquarters
+	{7, 0,			"book/back/b_worldmap.bk", NULL,  GM_M_CLOUD, 0,	0, 0, 0, NULL},	// Cloudsanctum
 
-	0, LMI_NODRAW,	"book/back/b_worldmap.bk", NULL, 0, 0,0, 0, 0, 0,												// Tutorial level
+	{0, LMI_NODRAW,	"book/back/b_worldmap.bk", NULL, 0, 0,0, 0, 0, 0},	// Tutorial level
 };
 
 level_map_info_t *GetLMI()

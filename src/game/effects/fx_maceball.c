@@ -291,7 +291,7 @@ static qboolean FXRipperExplodeBallThink(struct client_entity_s *self, centity_t
 void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*ripper;
-	paletteRGBA_t	color = {255, 255, 255, 255};
+	paletteRGBA_t	color = {{{255, 255, 255, 255}}};
 	short			ballarray[8];
 	byte			byaw;
 	float			curyaw;

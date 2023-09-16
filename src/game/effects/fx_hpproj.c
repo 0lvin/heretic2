@@ -95,7 +95,7 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self, centity_t *O
 	client_entity_t		*effect;
 	client_particle_t	*p;
 	int					i, color_ofs;
-	paletteRGBA_t		color = {255,255,255,255};
+	paletteRGBA_t		color = {{{255, 255, 255, 255}}};
 
 	if (self->alpha <= 0.0)
 		return false;
@@ -522,7 +522,7 @@ void FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
 	vec3_t			dir;
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor={255,64,32,255};
+	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
 	byte			powerup = 0;
 
 	VectorSet(dir, 1, 1, 1);
@@ -567,7 +567,7 @@ void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 	vec3_t			dir;
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor={255,64,32,255};
+	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
 	byte			powerup = 0;
 
 	//Vec3ScaleAssign(32.0, dir);
@@ -639,9 +639,9 @@ static qboolean PriestessLinkedEntityUpdatePlacement(struct client_entity_s *sel
 void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*Trail;
-	paletteRGBA_t	LightColor={0,0,255,255};
-	paletteRGBA_t	BugColor={229,250,88,255};
-	paletteRGBA_t	BrightColor={255,255,255,255};
+	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
+	paletteRGBA_t	BugColor = {{{229, 250, 88, 255}}};
+	paletteRGBA_t	BrightColor = {{{255, 255, 255, 255}}};
 	vec3_t			vel, boltDir, boltAng, boltDest, oldPos, ang, huntdir;
 	float			boltDist, boltStep, width, alpha;
 	byte			effectType;

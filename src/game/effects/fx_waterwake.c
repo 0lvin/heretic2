@@ -38,7 +38,7 @@ void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 	byte			blah;
 	int				i, parts;
 	client_particle_t *part;
-	paletteRGBA_t	color={0xff, 0xff, 0xff, 0xff};
+	paletteRGBA_t	color = {{{0xff, 0xff, 0xff, 0xff}}};
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WATER_WAKE].formatString, &CreatorEntNum, &blah, Velocity);
 

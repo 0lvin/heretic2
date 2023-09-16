@@ -341,7 +341,6 @@ E_Load(void)
 		return NULL;
 	}
 
-	cl_game_import.cl_predict = cl_predict;
 	cl_game_import.cl = &cl;
 	cl_game_import.cls = &cls;
 
@@ -387,6 +386,7 @@ E_Load(void)
 	cl_game_import.TagMalloc = Z_TagMalloc;
 	cl_game_import.TagFree = Z_Free;
 	cl_game_import.FreeTags = Z_FreeTags;
+	cl_game_import.cl_predict = cl_predict;
 	cl_game_import.Trace = CL_NewTrace;
 	cl_game_import.InCameraPVS = InCameraPVS;
 	cl_game_import.MSG_ReadByte = MSG_ReadByte;

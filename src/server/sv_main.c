@@ -682,7 +682,9 @@ SV_Shutdown(char *finalmsg, qboolean reconnect)
 
 	Master_Shutdown();
 	SV_ShutdownGameProgs();
+#ifndef DEDICATED_ONLY
 	E_Freelib();	// free the effects lib
+#endif
 
 	/* free current level */
 	if (sv.demofile)

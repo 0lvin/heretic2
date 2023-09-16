@@ -38,7 +38,7 @@ void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			vel;
 	client_entity_t	*hellbolt;
-	paletteRGBA_t	lightcolor = {255, 128, 64, 255};
+	paletteRGBA_t	lightcolor = {{{255, 128, 64, 255}}};
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLBOLT].formatString, vel);
 
@@ -75,7 +75,7 @@ void HellboltExplode(vec3_t loc, vec3_t vel)
 	client_entity_t		*blast;
 	client_particle_t	*spark;
 	int				i;
-	paletteRGBA_t	lightcolor = {255, 96, 48, 255};
+	paletteRGBA_t	lightcolor = {{{255, 96, 48, 255}}};
 
 	blast = ClientEntity_new(-1, CEF_NO_DRAW | CEF_ADDITIVE_PARTS, loc, NULL, 500);
 	blast->radius = 32.0;
@@ -122,7 +122,7 @@ void HellLaserBurn(vec3_t loc, vec3_t fwd, vec3_t right, vec3_t up)
 	client_particle_t	*spark;
 	float				curangle, dangle;
 	int					i;
-	paletteRGBA_t		lightcolor = {255, 96, 48, 255}, color = {255, 255, 255, 255};
+	paletteRGBA_t		lightcolor = {{{255, 96, 48, 255}}}, color = {{{255, 255, 255, 255}}};
 
 	blast = ClientEntity_new(-1, CEF_NO_DRAW | CEF_ADDITIVE_PARTS, loc, NULL, 1000);
 	blast->radius = 32.0;
@@ -176,7 +176,7 @@ void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	vec3_t				endpos, curpos, dpos, angles;
 	vec3_t				fwd, right, up, dir;
 	client_entity_t		*beam, *beam2;
-	paletteRGBA_t		lightcolor={255,255,255,255};
+	paletteRGBA_t		lightcolor = {{{255, 255, 255, 255}}};
 	int					i;
 	client_particle_t	*spark;
 	float				len;

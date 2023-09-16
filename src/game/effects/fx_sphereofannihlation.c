@@ -160,7 +160,7 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	client_entity_t	*SphereThinker,
 					*AuraThinker;
 	short			CasterEntnum;
-	paletteRGBA_t	LightColor={0,0,255,255};
+	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	int				caster_update;
 
 	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHERE].formatString,&CasterEntnum);
@@ -487,7 +487,7 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 	vec3_t				Dir;
 	byte				Size;
 	client_entity_t		*Explosion;
-	paletteRGBA_t		LightColor={255,255,255,255};
+	paletteRGBA_t		LightColor = {{{255, 255, 255, 255}}};
 	int					I, count;
 	client_particle_t	*ce;
 
@@ -547,7 +547,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	vec3_t				dir;
 	byte					size;
 	client_entity_t		*exp1, *beam;
-	paletteRGBA_t		LightColor={255,255,255,255};
+	paletteRGBA_t		LightColor = {{{255, 255, 255, 255}}};
 	int					i;
 	client_particle_t	*ce;
 	vec3_t				spot1;
@@ -739,7 +739,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	vec3_t				Dir;
 	byte				Size;
 	client_entity_t		*explosion, *glowball;
-	paletteRGBA_t		LightColor={255,255,255,255}, haloColor={100,100,255,64};
+	paletteRGBA_t		LightColor = {{{255, 255, 255, 255}}}, haloColor = {{{100, 100, 255, 64}}};
 	int					I, count;
 	vec3_t				angvect;
 

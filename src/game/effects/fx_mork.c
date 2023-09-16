@@ -152,7 +152,7 @@ void FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, ve
 {
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor={255,64,32,255};
+	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
 	byte			powerup = 0;
 
 	Vec3ScaleAssign(32.0, dir);
@@ -708,7 +708,7 @@ void FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t
 {
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor={255,64,32,255};
+	paletteRGBA_t	LightColor = {{{255,64,32,255}}};
 	byte			powerup = 0;
 
 	Vec3ScaleAssign(32.0, dir);
@@ -755,7 +755,7 @@ static qboolean FXMorkPPReadyThink(struct client_entity_s *self, centity_t *owne
 	int		i, numparts;
 	vec3_t	offset;
 	int		parttype;
-	paletteRGBA_t	color={255,255,255,255};
+	paletteRGBA_t	color = {{{255, 255, 255, 255}}};
 
 	if(self->LifeTime<fxi.cl->time)
 		return (false);
@@ -2066,7 +2066,7 @@ void ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t d
 {
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor={255,64,32,255};
+	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
 	byte			powerup = 0;
 
 	Vec3ScaleAssign(32.0, dir);
@@ -2191,7 +2191,7 @@ int FXCWUpdate (struct client_entity_s *self, centity_t *owner)
 	client_entity_t	*TrailEnt;
 	vec3_t				angles, fwd, right, vec;
 	int					num_parts, i;
-	paletteRGBA_t	LightColor={255,255,255,255};
+	paletteRGBA_t	LightColor = {{{255, 255, 255, 255}}};
 
 	client_entity_t	*placeholder;
 	placeholder = ClientEntity_new(FX_M_EFFECTS, CEF_NO_DRAW|CEF_ABSOLUTE_PARTS, self->r.origin, NULL, 500);
@@ -2344,7 +2344,7 @@ int FXBuoyUpdate (struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	int					num_parts, i;
-	paletteRGBA_t		LightColor={255,255,255,255};
+	paletteRGBA_t		LightColor = {{{255, 255, 255, 255}}};
 	vec3_t				offset, forward, angles;
 	int					type = (int)(self->acceleration2[2]);
 
@@ -2657,7 +2657,7 @@ qboolean FXUnderWaterWakeUpdate (struct client_entity_s *self, centity_t *owner)
 	client_particle_t	*p;
 	vec3_t				right;
 	int					num_parts, i;
-	paletteRGBA_t		LightColor={200, 255, 255, 140};//RGBA
+	paletteRGBA_t		LightColor = {{{200, 255, 255, 140}}};//RGBA
 
 	VectorCopy(owner->lerp_origin, self->r.origin);
 	AngleVectors(owner->lerp_angles, NULL, right, NULL);
@@ -2854,7 +2854,7 @@ static qboolean beam_add_to_view(struct client_entity_s *self, centity_t *owner)
 void FXMorkBeam2 ( centity_t *owner, vec3_t	startpos )
 {
 	client_entity_t	*fx;
-	paletteRGBA_t	LightColor={128,128,255,255};
+	paletteRGBA_t	LightColor = {{{128,128,255,255}}};
 	//vec3_t			vel;
 
 	fx = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, owner->origin, NULL, 17);
@@ -2948,7 +2948,7 @@ static qboolean MorkMissileThink3(struct client_entity_s *self, centity_t *owner
 void FXMorkMissile ( centity_t *owner, vec3_t startpos )
 {
 	client_entity_t	*fx;
-	paletteRGBA_t	LightColor={128,128,255,255};
+	paletteRGBA_t	LightColor = {{{128, 128, 255, 255}}};
 	int				i;
 
 	i = GetScaledCount(8, 0.85);
@@ -3042,7 +3042,7 @@ void MorkLightning(vec3_t groundpos, vec3_t airpos)
 void FXMorkMissileHit ( vec3_t origin, vec3_t dir )
 {
 	client_entity_t	*fx;
-	paletteRGBA_t	LightColor={128,128,255,255};
+	paletteRGBA_t	LightColor = {{{128, 128, 255, 255}}};
 
 	//The white core
 	fx = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, origin, NULL, 2000);
@@ -3121,7 +3121,7 @@ extern void FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Ori
 void FXMorkTrackingMissile ( centity_t *owner, vec3_t origin, vec3_t velocity )
 {
 	client_entity_t	*Trail;
-	paletteRGBA_t	LightColor={0,0,255,255};
+	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 
 	FXHPMissileCreateWarp(owner, FX_M_EFFECTS, 0, origin);
 
@@ -3146,7 +3146,7 @@ void FXMorkTrackingMissile ( centity_t *owner, vec3_t origin, vec3_t velocity )
 void FXMorkRecharge( centity_t *owner, vec3_t velocity )
 {
 	client_entity_t	*Trail;
-	paletteRGBA_t	LightColor={0,0,255,255};
+	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	float	duration = velocity[0];
 	int		i;
 
@@ -3188,7 +3188,7 @@ qboolean rubble_spin (client_entity_t *self, centity_t *owner)
 qboolean mssithra_explosion_think (client_entity_t *self, centity_t *owner)
 {
 	client_entity_t	*explosion, *TrailEnt;
-	paletteRGBA_t	color = {255,255,255,255};
+	paletteRGBA_t	color = {{{255,255,255,255}}};
 	vec3_t			dir;
 	int				i;
 	int				white;
@@ -3427,7 +3427,7 @@ void FXMSsithraArrow( centity_t *owner, vec3_t velocity, qboolean super )
 void FXMSsithraArrowCharge( vec3_t startpos )
 {
 	client_entity_t	*TrailEnt;
-	paletteRGBA_t	color = {255,128,255,255};
+	paletteRGBA_t	color = {{{255, 128, 255, 255}}};
 	vec3_t			dir;
 	int				length;
 	int				i;
@@ -3495,7 +3495,7 @@ void FXMSsithraArrowCharge( vec3_t startpos )
 void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 {
 	client_entity_t	*fx;
-	paletteRGBA_t	LightColor={0,0,255,255};
+	paletteRGBA_t	LightColor = {{{0,0,255,255}}};
 	vec3_t			vel;
 	byte			fx_index;
 	int				i;

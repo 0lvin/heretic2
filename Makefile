@@ -377,12 +377,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects game
+.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects
 
 # ----------
 
 # Builds everything
-all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects game
+all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects
 
 # ----------
 
@@ -1218,16 +1218,6 @@ EFFECTS_OBJS_ = \
 
 # Used by the client
 CLIENT_OBJS_ := \
-	src/game/common/arrayed_list.o \
-	src/game/common/h2matrix.o \
-	src/game/common/h2physics.o \
-	src/game/common/h2rand.o \
-	src/game/common/h2singlylinkedlist.o \
-	src/game/common/h2vector.o \
-	src/game/common/message.o \
-	src/game/common/reference.o \
-	src/game/common/resource_manager.o \
-	src/game/common/skeletons.o \
 	src/backends/generic/misc.o \
 	src/client/cl_cin.o \
 	src/client/cl_console.o \
@@ -1237,6 +1227,8 @@ CLIENT_OBJS_ := \
 	src/client/cl_input.o \
 	src/client/cl_inventory.o \
 	src/client/cl_keyboard.o \
+	src/game/common/h2singlylinkedlist.o \
+	src/game/common/resource_manager.o \
 	src/game/client_effects.o \
 	src/client/cl_lights.o \
 	src/client/cl_main.o \
@@ -1487,6 +1479,8 @@ SERVER_OBJS_ := \
 	src/common/unzip/ioapi.o \
 	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
+	src/game/common/h2singlylinkedlist.o \
+	src/game/common/resource_manager.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
 	src/server/sv_entities.o \
@@ -1558,15 +1552,15 @@ SERVER_DEPS= $(SERVER_OBJS:.o=.d)
 ifeq ($(YQ2_OSTYPE), Windows)
 release/yquake2.exe : $(CLIENT_OBJS) icon
 	@echo "===> LD $@"
-	${Q}$(CXX) $(LDFLAGS) build/icon/icon.res $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+	${Q}$(CC) $(LDFLAGS) build/icon/icon.res $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
 	$(Q)strip $@
 release/quake2.exe : src/win-wrapper/wrapper.c icon
-	$(Q)$(CXX) -Wall -mwindows build/icon/icon.res src/win-wrapper/wrapper.c -o $@
+	$(Q)$(CC) -Wall -mwindows build/icon/icon.res src/win-wrapper/wrapper.c -o $@
 	$(Q)strip $@
 else
 release/quake2 : $(CLIENT_OBJS)
 	@echo "===> LD $@"
-	${Q}$(CXX) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+	${Q}$(CC) $(LDFLAGS) $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
 endif
 
 # release/q2ded
