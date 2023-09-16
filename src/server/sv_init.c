@@ -384,6 +384,8 @@ SV_InitGame(void)
 	int i, gamemode;
 	edict_t *ent;
 	char idmaster[32];
+	/* TODO: Move effects load to game code */
+	void *E_Load(void);
 
 	if (svs.initialized)
 	{
@@ -457,6 +459,11 @@ SV_InitGame(void)
 	svs.last_heartbeat = -99999; /* send immediately */
 	Com_sprintf(idmaster, sizeof(idmaster), "192.246.40.37:%i", PORT_MASTER);
 	NET_StringToAdr(idmaster, &master_adr[0]);
+
+	if (!E_Load())
+	{
+		Sys_Error("Unable to effects library");
+	}
 
 	/* init game */
 	SV_InitGameProgs();

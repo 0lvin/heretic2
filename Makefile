@@ -837,7 +837,6 @@ GAME_OBJS_ = \
 	src/game/common/skeletons.o \
 	src/game/common/h2physics.o \
 	src/game/common/message.o \
-	src/game/player/library.o \
 	src/game/buoy.o \
 	src/game/c_ai.o \
 	src/game/c_corvus1_anim.o \
@@ -967,6 +966,7 @@ GAME_OBJS_ = \
 	src/game/player/client.o \
 	src/game/player/funcs.o \
 	src/game/player/hud.o \
+	src/game/player/library.o \
 	src/game/player/item.o \
 	src/game/player/view.o \
 	src/game/player/weapon.o \
@@ -1709,10 +1709,10 @@ SERVER_DEPS= $(SERVER_OBJS:.o=.d)
 ifeq ($(YQ2_OSTYPE), Windows)
 release/yquake2.exe : $(CLIENT_OBJS) icon
 	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) build/icon/icon.res $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+	${Q}$(CXX) $(LDFLAGS) build/icon/icon.res $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
 	$(Q)strip $@
 release/quake2.exe : src/win-wrapper/wrapper.c icon
-	$(Q)$(CC) -Wall -mwindows build/icon/icon.res src/win-wrapper/wrapper.c -o $@
+	$(Q)$(CXX) -Wall -mwindows build/icon/icon.res src/win-wrapper/wrapper.c -o $@
 	$(Q)strip $@
 else
 release/quake2 : $(CLIENT_OBJS)
@@ -1815,16 +1815,16 @@ endif
 ifeq ($(YQ2_OSTYPE), Windows)
 release/baseq2/game.dll : $(GAME_OBJS)
 	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
+	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
 release/baseq2/game.dylib : $(GAME_OBJS)
 	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
+	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 else
 release/baseq2/game.so : $(GAME_OBJS)
 	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
+	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 endif
 
 # release/base/player.so

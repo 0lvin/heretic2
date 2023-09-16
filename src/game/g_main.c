@@ -190,8 +190,6 @@ void ShutdownGame (void)
 	gi.FreeTags(TAG_GAME);
 
 	P_Freelib();	// free the player lib
-
-	E_Freelib();	// free the effects lib
 }
 
 

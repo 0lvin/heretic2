@@ -245,6 +245,7 @@ void E_Freelib()
 
 	dlclose (effects_library);
 	effects_library = NULL;
+	Com_Printf("Shutting down Effect library.\n");
 }
 
 // ************************************************************************************************
