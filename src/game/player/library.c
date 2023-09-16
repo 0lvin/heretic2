@@ -66,7 +66,8 @@ P_Load(void)
 
 	if (player_library)
 	{
-		Com_Error(ERR_FATAL, "%s without P_Freelib", __func__);
+		Com_Printf("%s without P_Freelib", __func__);
+		return NULL;
 	}
 
 	Com_Printf("Loading library: %s\n", playername);

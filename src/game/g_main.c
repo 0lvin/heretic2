@@ -45,121 +45,125 @@ __int64	next_update, all, mt, cur_all, cur_mt;
 int		num_monsters, num_ents;
 #endif //_DEVEL
 
-game_locals_t	game;
-level_locals_t	level;
-game_import_t	gi;
-game_export_t	globals;
-spawn_temp_t	st;
+game_locals_t game;
+level_locals_t level;
+game_import_t gi;
+game_export_t globals;
+spawn_temp_t st;
 
-int	sm_meat_index;
-qboolean MonsterAdvanceFrame=false;
+int sm_meat_index;
+qboolean MonsterAdvanceFrame = false;
 
-//int	snd_fry;
+edict_t *g_edicts;
 
-edict_t	*g_edicts;
+cvar_t *deathmatch;
+cvar_t *coop;
+cvar_t *coop_pickup_weapons;
+cvar_t *coop_elevator_delay;
+cvar_t *dmflags;
+cvar_t *skill;
+cvar_t *fraglimit;
+cvar_t *timelimit;
+cvar_t *password;
+cvar_t *spectator_password;
+cvar_t *needpass;
+cvar_t *maxclients;
+cvar_t *maxspectators;
+cvar_t *maxentities;
+cvar_t *g_select_empty;
+cvar_t *dedicated;
+cvar_t *g_footsteps;
+cvar_t *g_monsterfootsteps;
+cvar_t *g_fix_triggered;
+cvar_t *g_commanderbody_nogod;
 
-cvar_t	*deathmatch;
-cvar_t	*coop;
-cvar_t	*dmflags;
-cvar_t	*advancedstaff;
-cvar_t	*skill;
-cvar_t	*fraglimit;
-cvar_t	*timelimit;
-cvar_t	*password;
-extern	cvar_t* maxclients;
-cvar_t	*maxentities;
-cvar_t	*sv_maplist;
-cvar_t	*g_select_empty;
+cvar_t *filterban;
 
-extern cvar_t	*dedicated;
-cvar_t	*filterban;
+cvar_t *sv_maxvelocity;
+cvar_t *sv_gravity;
 
-cvar_t	*sv_maxvelocity;
-cvar_t	*sv_gravity;
-cvar_t	*sv_friction;
+cvar_t *sv_rollspeed;
+cvar_t *sv_rollangle;
+cvar_t *gun_x;
+cvar_t *gun_y;
+cvar_t *gun_z;
 
-cvar_t	*sv_rollspeed;
-cvar_t	*sv_rollangle;
-cvar_t	*gun_x;
-cvar_t	*gun_y;
-cvar_t	*gun_z;
+cvar_t *run_pitch;
+cvar_t *run_roll;
+cvar_t *bob_up;
+cvar_t *bob_pitch;
+cvar_t *bob_roll;
 
-cvar_t	*run_pitch;
-cvar_t	*run_roll;
-cvar_t	*bob_up;
-cvar_t	*bob_pitch;
-cvar_t	*bob_roll;
+cvar_t *sv_cheats;
 
-cvar_t	*sv_cheats;
-cvar_t	*sv_nomonsters=NULL;
-cvar_t	*sv_freezemonsters;
+cvar_t *flood_msgs;
+cvar_t *flood_persecond;
+cvar_t *flood_waitdelay;
 
-cvar_t	*autorotate;
-cvar_t	*blood;
+cvar_t *sv_maplist;
 
-cvar_t	*checkanim;
-cvar_t	*allowillegalskins;
+cvar_t *advancedstaff;
+cvar_t *sv_friction;
+cvar_t *flood_killdelay;
+cvar_t *no_runshrine;
+cvar_t *no_tornado;
+cvar_t *no_irondoom;
+cvar_t *no_phoenix;
+cvar_t *no_morph;
+cvar_t *no_shield;
+cvar_t *no_teleport;
+cvar_t *game_test;
+cvar_t *dm_no_bodies;
 
-cvar_t	*pvs_cull;
+cvar_t *sv_nomonsters = NULL;
+cvar_t *sv_freezemonsters;
 
-cvar_t	*showbuoys;
-cvar_t	*showlitebuoys;
-cvar_t	*mgai_debug;
-cvar_t	*deactivate_buoys;
-cvar_t	*anarchy;
-cvar_t	*impact_damage;
-cvar_t	*cheating_monsters;
-cvar_t	*singing_ogles;
+cvar_t *autorotate;
+cvar_t *blood;
 
-cvar_t	*flood_msgs;
-cvar_t	*flood_persecond;
-cvar_t	*flood_waitdelay;
-cvar_t	*flood_killdelay;
-cvar_t	*no_runshrine;
-cvar_t	*no_tornado;
-cvar_t	*no_irondoom;
-cvar_t	*no_phoenix;
-cvar_t	*no_morph;
-cvar_t	*no_shield;
-cvar_t	*no_teleport;
+cvar_t *checkanim;
+cvar_t *allowillegalskins;
 
-cvar_t	*game_test;
-cvar_t	*dm_no_bodies;
+cvar_t *pvs_cull;
 
-cvar_t	*sv_cinematicfreeze;
-cvar_t	*sv_jumpcinematic;
-cvar_t	*blood_level;
-cvar_t	*log_file_name;
-cvar_t	*log_file_header;
-cvar_t	*log_file_footer;
-cvar_t	*log_file_line_header;
+cvar_t *showbuoys;
+cvar_t *showlitebuoys;
+cvar_t *mgai_debug;
+cvar_t *deactivate_buoys;
+cvar_t *anarchy;
+cvar_t *impact_damage;
+cvar_t *cheating_monsters;
+cvar_t *singing_ogles;
+cvar_t *sv_cinematicfreeze;
+cvar_t *sv_jumpcinematic;
+cvar_t *blood_level;
+cvar_t *log_file_name;
+cvar_t *log_file_header;
+cvar_t *log_file_footer;
+cvar_t *log_file_line_header;
 
-void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean loadgame);
-void ClientThink (edict_t *ent, usercmd_t *cmd);
-qboolean ClientConnect (edict_t *ent, char *userinfo);
-void ClientUserinfoChanged (edict_t *ent, char *userinfo);
-void ClientDisconnect (edict_t *ent);
-void ClientBegin (edict_t *ent);
-void ClientCommand (edict_t *ent);
-void RunEntity (edict_t *ent);
-void WriteGame (char *filename, qboolean autosave);
-void ReadGame (char *filename);
-void WriteLevel (char *filename);
-void ReadLevel (char *filename);
-void InitGame (void);
-void G_RunFrame (void);
+void SpawnEntities(char *mapname, char *entities, char *spawnpoint, qboolean loadgame);
+void ClientThink(edict_t *ent, usercmd_t *cmd);
+qboolean ClientConnect(edict_t *ent, char *userinfo);
+void ClientUserinfoChanged(edict_t *ent, char *userinfo);
+void ClientDisconnect(edict_t *ent);
+void ClientBegin(edict_t *ent);
+void ClientCommand(edict_t *ent);
+void RunEntity(edict_t *ent);
+void WriteGame(char *filename, qboolean autosave);
+void ReadGame(char *filename);
+void WriteLevel(char *filename);
+void ReadLevel(char *filename);
+void InitGame(void);
+void G_RunFrame(void);
 void ConstructEntities(void);
 void CheckCoopTimeout(qboolean BeenHereBefore);
 void G_ClearMessageQueues();
 
-//===================================================================
+/* =================================================================== */
 
-/*
-=================
-ShutdownGame
-=================
-*/
-void ShutdownGame (void)
+void
+ShutdownGame(void)
 {
 	void G_ReleaseResourceManagers();
 
@@ -192,23 +196,63 @@ void ShutdownGame (void)
 	P_Freelib();	// free the player lib
 }
 
+/*
+ * convert function declarations to correct one
+ * (warning like from incompatible pointer type)
+ * little bit better than cast function before set
+ */
+static void
+ReadLevel_f(char *filename)
+{
+	ReadLevel(filename);
+}
 
-game_export_t *GetGameAPI (game_import_t *import)
+static void
+WriteLevel_f(char *filename)
+{
+	WriteLevel(filename);
+}
+
+static void
+ReadGame_f(char *filename)
+{
+	ReadGame(filename);
+}
+
+static void
+WriteGame_f(char *filename, qboolean autosave)
+{
+	WriteGame(filename, autosave);
+}
+
+static void
+SpawnEntities_f(char *mapname, char *entities, char *spawnpoint, qboolean loadgame)
+{
+	SpawnEntities(mapname, entities, spawnpoint, loadgame);
+}
+
+/*
+ * Returns a pointer to the structure
+ * with all entry points and global
+ * variables
+ */
+Q2_DLL_EXPORTED game_export_t *
+GetGameAPI(game_import_t *import)
 {
 	gi = *import;
 
 	globals.apiversion = GAME_API_VERSION;
-
 	globals.Init = InitGame;
 	globals.Shutdown = ShutdownGame;
-	globals.SpawnEntities = SpawnEntities;
-	globals.ConstructEntities = ConstructEntities;
-	globals.CheckCoopTimeout= CheckCoopTimeout;
+	globals.SpawnEntities = SpawnEntities_f;
 
-	globals.WriteGame = WriteGame;
-	globals.ReadGame = ReadGame;
-	globals.WriteLevel = WriteLevel;
-	globals.ReadLevel = ReadLevel;
+	globals.ConstructEntities = ConstructEntities;
+	globals.CheckCoopTimeout = CheckCoopTimeout;
+
+	globals.WriteGame = WriteGame_f;
+	globals.ReadGame = ReadGame_f;
+	globals.WriteLevel = WriteLevel_f;
+	globals.ReadLevel = ReadLevel_f;
 
 	globals.ClientThink = ClientThink;
 	globals.ClientConnect = ClientConnect;
@@ -225,29 +269,56 @@ game_export_t *GetGameAPI (game_import_t *import)
 
 	memset(&game, 0, sizeof(game));
 
+	/* Initalize the PRNG */
+	randk_seed();
+
 	return &globals;
 }
 
-
-//======================================================================
-
-
 /*
-=================
-ClientEndServerFrames
-=================
-*/
+ * this is only here so the functions
+ * in shared source files can link
+ */
+void
+Sys_Error(const char *error, ...)
+{
+	va_list argptr;
+	char text[1024];
+
+	va_start(argptr, error);
+	vsnprintf(text, sizeof(text), error, argptr);
+	va_end(argptr);
+
+	gi.error("%s", text);
+}
+
+void
+Com_Printf(const char *msg, ...)
+{
+	va_list argptr;
+	char text[1024];
+
+	va_start(argptr, msg);
+	vsnprintf(text, sizeof(text), msg, argptr);
+	va_end(argptr);
+
+	gi.dprintf("%s", text);
+}
+
+/* ====================================================================== */
+
 void
 ClientEndServerFrames(void)
 {
-	int		i;
-	edict_t	*ent;
+	int i;
+	edict_t *ent;
 
-	// calc the player views now that all pushing
-	// and damage has been added
+	/* calc the player views now that all
+	   pushing  and damage has been added */
 	for (i = 0; i < maxclients->value; i++)
 	{
 		ent = g_edicts + 1 + i;
+
 		if (!ent->inuse || !ent->client)
 		{
 			continue;
@@ -258,17 +329,19 @@ ClientEndServerFrames(void)
 }
 
 /*
-=================
-CreateTargetChangeLevel
-
-Returns the created target changelevel
-=================
-*/
-edict_t *CreateTargetChangeLevel(char *map)
+ * Returns the created target changelevel
+ */
+edict_t *
+CreateTargetChangeLevel(char *map)
 {
 	edict_t *ent;
 
-	ent = G_Spawn ();
+	if (!map)
+	{
+		return NULL;
+	}
+
+	ent = G_Spawn();
 	ent->classname = "target_changelevel";
 	Com_sprintf(level.nextmap, sizeof(level.nextmap), "%s", map);
 	ent->map = level.nextmap;
@@ -356,73 +429,99 @@ EndDMLevel(void)
 	}
 }
 
-/*
-=================
-CheckDMRules
-=================
-*/
-void CheckDMRules (void)
+void
+CheckNeedPass(void)
 {
-	int			i;
-	gclient_t	*cl;
+	int need;
+
+	/* if password or spectator_password has
+	   changed, update needpass as needed */
+	if (password->modified || spectator_password->modified)
+	{
+		password->modified = spectator_password->modified = false;
+
+		need = 0;
+
+		if (*password->string && Q_stricmp(password->string, "none"))
+		{
+			need |= 1;
+		}
+
+		if (*spectator_password->string &&
+			Q_stricmp(spectator_password->string, "none"))
+		{
+			need |= 2;
+		}
+
+		gi.cvar_set("needpass", va("%d", need));
+	}
+}
+
+void
+CheckDMRules(void)
+{
+	int i;
+	gclient_t *cl;
 
 	if (level.intermissiontime)
+	{
 		return;
+	}
 
 	if (!deathmatch->value)
+	{
 		return;
+	}
 
 	if (timelimit->value)
 	{
-		if (level.time >= timelimit->value*60)
+		if (level.time >= timelimit->value * 60)
 		{
-			gi.Obituary (PRINT_HIGH, GM_TIMELIMIT, 0, 0);
-			EndDMLevel ();
+			gi.Obituary(PRINT_HIGH, GM_TIMELIMIT, 0, 0);
+			EndDMLevel();
 			return;
 		}
 	}
 
 	if (fraglimit->value)
 	{
-		for (i=0 ; i<maxclients->value ; i++)
+		for (i = 0; i < maxclients->value; i++)
 		{
 			cl = game.clients + i;
-			if (!g_edicts[i+1].inuse)
+
+			if (!g_edicts[i + 1].inuse)
+			{
 				continue;
+			}
 
 			if (cl->resp.score >= fraglimit->value)
 			{
 				gi.Obituary (PRINT_HIGH, GM_FRAGLIMIT, 0, 0);
-				EndDMLevel ();
+				EndDMLevel();
 				return;
 			}
 		}
 	}
 }
 
-
-/*
-=============
-ExitLevel
-=============
-*/
-void ExitLevel (void)
+void
+ExitLevel(void)
 {
-	char	command [256];
+	char command[256];
 
-	Com_sprintf (command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
-	gi.AddCommandString (command);
+	Com_sprintf(command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
+	gi.AddCommandString(command);
 	level.changemap = NULL;
 	level.exitintermission = 0;
 	level.intermissiontime = 0;
-
 	ClientEndServerFrames();
 
 	G_ClearMessageQueues();
 }
 
 void CheckContinuousAutomaticEffects(edict_t *self)
-{//only used for fire damage for now
+{
+	//only used for fire damage for now
 	edict_t *damager;
 	vec3_t	checkpoint;
 
@@ -550,7 +649,8 @@ static void SetNumPlayers (void)
 	}
 }
 
-static void UpdatePlayerBuoys (void)
+static void
+UpdatePlayerBuoys(void)
 {
 	qboolean	dont_null = true; // jmarshall: set this default, hope this is right
 	int			i, j;
@@ -585,21 +685,19 @@ static void UpdatePlayerBuoys (void)
 }
 
 /*
-================
-G_RunFrame
-
-Advances the world by 0.1 seconds
-================
-*/
+ * Advances the world by 0.1 seconds
+ */
 void
 G_RunFrame(void)
 {
 	void		UpdateSkeletons();
-	int			i;
-	edict_t		*ent;
+	int i;
+	edict_t *ent;
 
 	if(deathmatch->value || coop->value)
+	{
 		blood_level->value = Clamp(blood_level->value, VIOLENCE_NONE, VIOLENCE_NORMAL);
+	}
 
 	// Update server ticks
 	level.framenum++;
@@ -612,7 +710,7 @@ G_RunFrame(void)
 	// exit intermissions
 	if (level.exitintermission)
 	{
-		ExitLevel ();
+		ExitLevel();
 		return;
 	}
 
@@ -759,12 +857,15 @@ G_RunFrame(void)
 		MonsterAdvanceFrame = false;
 	}
 
-	ProcessScripts ();
+	ProcessScripts();
 
-	// see if it is time to end a deathmatch
-	CheckDMRules ();
+	/* see if it is time to end a deathmatch */
+	CheckDMRules();
 
-	// build the playerstate_t structures for all players
+	/* see if needpass needs updated */
+	CheckNeedPass();
+
+	/* build the playerstate_t structures for all players */
 	ClientEndServerFrames();
 
 	assert(Vec3IsZero(vec3_origin));

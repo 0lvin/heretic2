@@ -716,83 +716,85 @@ extern	game_export_t	globals;
 extern	int				sm_meat_index;
 extern	int				snd_fry;
 
-extern	cvar_t			*maxentities;
-extern	cvar_t			*deathmatch;
-extern	cvar_t			*coop;
-extern	cvar_t			*dmflags;
-extern	cvar_t			*advancedstaff;
-extern	cvar_t			*skill;
-extern	cvar_t			*fraglimit;
-extern	cvar_t			*timelimit;
-extern	cvar_t			*password;
-extern	cvar_t			*g_select_empty;
-extern	cvar_t			*filterban;
+extern cvar_t *maxentities;
+extern cvar_t *deathmatch;
+extern cvar_t *coop;
+extern cvar_t *dmflags;
+extern cvar_t *advancedstaff;
+extern cvar_t *skill;
+extern cvar_t *fraglimit;
+extern cvar_t *timelimit;
+extern cvar_t *password;
+extern cvar_t *spectator_password;
+extern cvar_t *needpass;
+extern cvar_t *g_select_empty;
+extern cvar_t *filterban;
 
-extern	cvar_t			*sv_gravity;
-extern	cvar_t			*sv_friction;
-extern	cvar_t			*sv_maxvelocity;
+extern cvar_t *sv_gravity;
+extern cvar_t *sv_friction;
+extern cvar_t *sv_maxvelocity;
 
-extern	cvar_t			*gun_x,*gun_y,*gun_z;
-extern	cvar_t			*sv_rollspeed;
-extern	cvar_t			*sv_rollangle;
+extern cvar_t *gun_x, *gun_y, *gun_z;
+extern cvar_t *sv_rollspeed;
+extern cvar_t *sv_rollangle;
 
-extern	cvar_t			*run_pitch;
-extern	cvar_t			*run_roll;
-extern	cvar_t			*bob_up;
-extern	cvar_t			*bob_pitch;
-extern	cvar_t			*bob_roll;
+extern cvar_t *run_pitch;
+extern cvar_t *run_roll;
+extern cvar_t *bob_up;
+extern cvar_t *bob_pitch;
+extern cvar_t *bob_roll;
 
-extern	cvar_t			*sv_cheats;
-extern	cvar_t			*sv_nomonsters;
-extern  cvar_t			*blood_level;
-extern	cvar_t			*showbuoys;
-extern	cvar_t			*showlitebuoys;
-extern	cvar_t			*mgai_debug;
-extern	cvar_t			*deactivate_buoys;
-extern	cvar_t			*anarchy;
-extern	cvar_t			*impact_damage;
-extern	cvar_t			*cheating_monsters;
-extern	cvar_t			*singing_ogles;
-extern	cvar_t			*no_runshrine;
-extern	cvar_t			*no_tornado;
-extern	cvar_t			*no_irondoom;
-extern	cvar_t			*no_phoenix;
-extern	cvar_t			*no_morph;
-extern	cvar_t			*no_shield;
-extern	cvar_t			*no_teleport;
-extern	cvar_t			*log_file_name;
-extern	cvar_t			*log_file_header;
-extern	cvar_t			*log_file_footer;
-extern	cvar_t			*log_file_line_header;
+extern cvar_t *sv_cheats;
+extern cvar_t *sv_nomonsters;
+extern cvar_t *blood_level;
+extern cvar_t *showbuoys;
+extern cvar_t *showlitebuoys;
+extern cvar_t *mgai_debug;
+extern cvar_t *deactivate_buoys;
+extern cvar_t *anarchy;
+extern cvar_t *impact_damage;
+extern cvar_t *cheating_monsters;
+extern cvar_t *singing_ogles;
+extern cvar_t *no_runshrine;
+extern cvar_t *no_tornado;
+extern cvar_t *no_irondoom;
+extern cvar_t *no_phoenix;
+extern cvar_t *no_morph;
+extern cvar_t *no_shield;
+extern cvar_t *no_teleport;
+extern cvar_t *log_file_name;
+extern cvar_t *log_file_header;
+extern cvar_t *log_file_footer;
+extern cvar_t *log_file_line_header;
 
-extern	cvar_t			*sv_cinematicfreeze;
-extern	cvar_t			*sv_jumpcinematic;
+extern cvar_t *sv_cinematicfreeze;
+extern cvar_t *sv_jumpcinematic;
 
 
-extern	cvar_t			*sv_freezemonsters;
+extern cvar_t *sv_freezemonsters;
 
-extern	cvar_t			*maxclients;
-extern	cvar_t			*sv_maplist;
+extern cvar_t *maxclients;
+extern cvar_t *sv_maplist;
 
-extern	cvar_t			*autorotate;
-extern	cvar_t			*blood;
+extern cvar_t *autorotate;
+extern cvar_t *blood;
 
-extern	cvar_t			*checkanim;		// specifies whether monsters should check to see if most of the
+extern cvar_t *checkanim;		// specifies whether monsters should check to see if most of the
 										// distance of a move animation is unobstructed before setting it
-extern	cvar_t			*allowillegalskins;
+extern cvar_t *allowillegalskins;
 
-extern	cvar_t			*monster_speeds;
-extern	cvar_t			*pvs_cull;
+extern cvar_t *monster_speeds;
+extern cvar_t *pvs_cull;
 
-extern	cvar_t			*game_test; // sfs--for testing the speed impact of code changes
-extern	cvar_t			*dm_no_bodies;
+extern cvar_t *game_test; // sfs--for testing the speed impact of code changes
+extern cvar_t *dm_no_bodies;
 
-extern	cvar_t			*player_dll;
+extern cvar_t *player_dll;
 
-extern	cvar_t			*flood_msgs;
-extern	cvar_t			*flood_persecond;
-extern	cvar_t			*flood_waitdelay;
-extern	cvar_t			*flood_killdelay;
+extern cvar_t *flood_msgs;
+extern cvar_t *flood_persecond;
+extern cvar_t *flood_waitdelay;
+extern cvar_t *flood_killdelay;
 
 extern	edict_t			*g_edicts;
 

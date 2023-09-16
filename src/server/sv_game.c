@@ -371,7 +371,7 @@ SV_ShutdownGameProgs(void)
 	}
 
 	ge->Shutdown();
-	//Sys_UnloadGame();
+	Sys_UnloadGame();
 	ge = NULL;
 }
 
@@ -954,7 +954,7 @@ SV_InitGameProgs(void)
 	import.ClearPersistantEffects = SV_ClearPersistantEffects;
 	import.Persistant_Effects_Array = &SV_Persistant_Effects;
 
-	ge = (game_export_t *)GetGameAPI(&import);
+	ge = (game_export_t *)Sys_GetGameAPI(&import);
 
 	SV_ClearPersistantEffects();
 

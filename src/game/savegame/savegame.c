@@ -334,7 +334,8 @@ This will be called when the dll is first loaded, which
 only happens when a new game is begun
 ============
 */
-void InitGame (void)
+void
+InitGame(void)
 {
 	gi.dprintf ("==== InitGame ====\n");
 
@@ -381,6 +382,7 @@ void InitGame (void)
 	fraglimit = gi.cvar ("fraglimit", "0", CVAR_SERVERINFO);
 	timelimit = gi.cvar ("timelimit", "0", CVAR_SERVERINFO);
 	password = gi.cvar ("password", "", CVAR_USERINFO);
+	spectator_password = gi.cvar("spectator_password", "", CVAR_USERINFO);
 	filterban = gi.cvar ("filterban", "1", 0);
 
 	g_select_empty = gi.cvar ("g_select_empty", "0", CVAR_ARCHIVE);
@@ -485,6 +487,7 @@ static void WriteField1 (FILE *f, field_t *field, byte *base)
 	int			index;
 
 	p = (void *)(base + field->ofs);
+
 	switch (field->type)
 	{
 	case F_INT:

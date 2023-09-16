@@ -377,12 +377,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects
+.PHONY : all client icon ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects game
 
 # ----------
 
 # Builds everything
-all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects
+all: config client ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk player effects game
 
 # ----------
 
@@ -776,36 +776,36 @@ ifeq ($(YQ2_OSTYPE), Windows)
 game:
 	@echo "===> Building baseq2/game.dll"
 	${Q}mkdir -p release/baseq2
-	$(MAKE) release/baseq2/game.dll
+	$(MAKE) release/base/game.dll
 
 build/baseq2/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-release/baseq2/game.dll : LDFLAGS += -shared
+release/base/game.dll : LDFLAGS += -shared
 
 else ifeq ($(YQ2_OSTYPE), Darwin)
 
 game:
 	@echo "===> Building baseq2/game.dylib"
 	${Q}mkdir -p release/baseq2
-	$(MAKE) release/baseq2/game.dylib
+	$(MAKE) release/base/game.dylib
 
 build/baseq2/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-release/baseq2/game.dylib : CFLAGS += -fPIC
-release/baseq2/game.dylib : LDFLAGS += -shared
+release/base/game.dylib : CFLAGS += -fPIC
+release/base/game.dylib : LDFLAGS += -shared
 
 else # not Windows or Darwin
 
 game:
 	@echo "===> Building baseq2/game.so"
 	${Q}mkdir -p release/baseq2
-	$(MAKE) release/baseq2/game.so
+	$(MAKE) release/base/game.so
 
 build/baseq2/%.o: %.c
 	@echo "===> CC $<"
@@ -817,8 +817,8 @@ build/baseq2/%.o: %.cpp
 	${Q}mkdir -p $(@D)
 	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
-release/baseq2/game.so : CFLAGS += -fPIC -Wno-unused-result
-release/baseq2/game.so : LDFLAGS += -shared
+release/base/game.so : CFLAGS += -fPIC -Wno-unused-result
+release/base/game.so : LDFLAGS += -shared
 endif
 
 # ----------
@@ -1285,157 +1285,6 @@ CLIENT_OBJS_ := \
 	src/common/unzip/ioapi.o \
 	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
-	src/game/buoy.o \
-	src/game/c_ai.o \
-	src/game/c_corvus1_anim.o \
-	src/game/c_corvus1.o \
-	src/game/c_corvus2_anim.o \
-	src/game/c_corvus2.o \
-	src/game/c_corvus3_anim.o \
-	src/game/c_corvus3.o \
-	src/game/c_corvus4_anim.o \
-	src/game/c_corvus4.o \
-	src/game/c_corvus5_anim.o \
-	src/game/c_corvus5.o \
-	src/game/c_corvus6_anim.o \
-	src/game/c_corvus6.o \
-	src/game/c_corvus7_anim.o \
-	src/game/c_corvus7.o \
-	src/game/c_corvus8_anim.o \
-	src/game/c_corvus8.o \
-	src/game/c_corvus9_anim.o \
-	src/game/c_corvus9.o \
-	src/game/c_dranor_anim.o \
-	src/game/c_dranor.o \
-	src/game/c_elflord_anim.o \
-	src/game/c_elflord.o \
-	src/game/c_morcalavin_anim.o \
-	src/game/c_morcalavin.o \
-	src/game/c_priestess2_anim.o \
-	src/game/c_priestess2.o \
-	src/game/c_priestess_anim.o \
-	src/game/c_priestess.o \
-	src/game/c_siernan1_anim.o \
-	src/game/c_siernan1.o \
-	src/game/c_siernan2_anim.o \
-	src/game/c_siernan2.o \
-	src/game/c_ssithrascout_anim.o \
-	src/game/c_ssithrascout.o \
-	src/game/c_tome_anim.o \
-	src/game/c_tome.o \
-	src/game/c_victimssithra_anim.o \
-	src/game/c_victimssithra.o \
-	src/game/decals.o \
-	src/game/ds.o \
-	src/game/g_ai.o \
-	src/game/game_utilities.o \
-	src/game/g_breakable.o \
-	src/game/g_classstatics.o \
-	src/game/g_cmds.o \
-	src/game/g_combat.o \
-	src/game/g_defaultmessagehandler.o \
-	src/game/g_env.o \
-	src/game/g_field.o \
-	src/game/g_flamethrow.o \
-	src/game/g_func.o \
-	src/game/g_hitlocation.o \
-	src/game/g_items.o \
-	src/game/g_light.o \
-	src/game/g_main.o \
-	src/game/g_message.o \
-	src/game/g_misc.o \
-	src/game/g_monster.o \
-	src/game/g_moveinfo.o \
-	src/game/g_obj.o \
-	src/game/g_physics.o \
-	src/game/g_phys.o \
-	src/game/g_resourcemanagers.o \
-	src/game/g_rope.o \
-	src/game/g_shrine.o \
-	src/game/g_skeletons.o \
-	src/game/g_spawnf.o \
-	src/game/g_spawn.o \
-	src/game/g_stateinfo.o \
-	src/game/g_svcmds.o \
-	src/game/g_target.o \
-	src/game/g_trigger.o \
-	src/game/g_utils.o \
-	src/game/g_waterfx.o \
-	src/game/mg_ai.o \
-	src/game/mg_guide.o \
-	src/game/monster/assassin/assassin_anim.o \
-	src/game/monster/assassin/assassin.o \
-	src/game/monster/beast/beast_anim.o \
-	src/game/monster/beast/beast.o \
-	src/game/monster/bee/bee.o \
-	src/game/monster/chicken/chicken_anim.o \
-	src/game/monster/chicken/chicken.o \
-	src/game/monster/elflord/elflord_anims.o \
-	src/game/monster/elflord/elflord.o \
-	src/game/monster/fish/fish_anim.o \
-	src/game/monster/fish/fish.o \
-	src/game/monster/gkrokon/gkrokon_anim.o \
-	src/game/monster/gkrokon/gkrokon.o \
-	src/game/monster/gorgon/gorgon_anim.o \
-	src/game/monster/gorgon/gorgon.o \
-	src/game/monster/harpy/harpy_anim.o \
-	src/game/monster/harpy/harpy.o \
-	src/game/monster/imp/imp_anim.o \
-	src/game/monster/imp/imp.o \
-	src/game/monster/misc/fmtest.o \
-	src/game/monster/misc/move.o \
-	src/game/monster/morcalavin/morcalavin_anim.o \
-	src/game/monster/morcalavin/morcalavin.o \
-	src/game/monster/mother/mother_anim.o \
-	src/game/monster/mother/mother.o \
-	src/game/monster/mssithra/mssithra_anim.o \
-	src/game/monster/mssithra/mssithra.o \
-	src/game/monster/ogle/ogle_anim.o \
-	src/game/monster/ogle/ogle.o \
-	src/game/monster/plagueelf/plagueelf_anim.o \
-	src/game/monster/plagueelf/plagueelf.o \
-	src/game/monster/plaguessithra/plaguessithra_anim.o \
-	src/game/monster/plaguessithra/plaguessithra.o \
-	src/game/monster/priestess/priestess_anim.o \
-	src/game/monster/priestess/priestess.o \
-	src/game/monster/rat/rat_anim.o \
-	src/game/monster/rat/rat.o \
-	src/game/monster/seraph/seraph_anim.o \
-	src/game/monster/seraph/seraph_guard_anim.o \
-	src/game/monster/seraph/seraph_guard.o \
-	src/game/monster/seraph/seraph.o \
-	src/game/monster/spreader/spreader_anim.o \
-	src/game/monster/spreader/spreadermist.o \
-	src/game/monster/spreader/spreader.o \
-	src/game/monster/stats/stats.o \
-	src/game/monster/tcheckrik/tcheckrik_anim.o \
-	src/game/monster/tcheckrik/tcheckrik.o \
-	src/game/monster/tcheckrik/tcheckrik_spells.o \
-	src/game/player/client.o \
-	src/game/player/funcs.o \
-	src/game/player/hud.o \
-	src/game/player/library.o \
-	src/game/player/item.o \
-	src/game/player/view.o \
-	src/game/player/weapon.o \
-	src/game/savegame/savegame.o \
-	src/game/spell/blast.o \
-	src/game/spell/bluering.o \
-	src/game/spell/flyingfist.o \
-	src/game/spell/hellstaff.o \
-	src/game/spell/maceballs.o \
-	src/game/spell/magicmissile.o \
-	src/game/spell/meteorbarrier.o \
-	src/game/spell/morph.o \
-	src/game/spell/phoenix.o \
-	src/game/spell/powerup.o \
-	src/game/spell/redrain.o \
-	src/game/spell/ripper.o \
-	src/game/spell/shield.o \
-	src/game/spell/sphereofannihlation.o \
-	src/game/spell/teleport.o \
-	src/game/spell/tornado.o \
-	src/game/spell/wall.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
 	src/server/sv_entities.o \
@@ -1811,18 +1660,18 @@ release/ref_vk.so : $(REFVK_OBJS)
 	${Q}$(CC) $(LDFLAGS) $(REFVK_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
 endif
 
-# release/baseq2/game.so
+# release/base/game.so
 ifeq ($(YQ2_OSTYPE), Windows)
-release/baseq2/game.dll : $(GAME_OBJS)
+release/base/game.dll : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
-release/baseq2/game.dylib : $(GAME_OBJS)
+release/base/game.dylib : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 else
-release/baseq2/game.so : $(GAME_OBJS)
+release/base/game.so : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 endif
