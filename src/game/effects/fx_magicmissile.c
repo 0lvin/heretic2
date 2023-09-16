@@ -18,11 +18,9 @@
 #include "utilities.h"
 #include "../header/g_playstats.h"
 
-static qboolean FXMagicMissileTrailElementThink(struct client_entity_s *Self, centity_t *Owner);
 static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner);
 static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self, centity_t *Owner);
 static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXMagicMissileSmokePuffThink(struct client_entity_s *Self, centity_t *Owner);
 
 #define	NUM_MISSILE_MODELS	3
 

@@ -31,7 +31,6 @@
 
 #define SPHERE_RADIUS					2.0
 
-static void SphereOfAnnihilationFlyFinnishedThink(edict_t *Self);
 static void SphereOfAnnihilationGrowThink(edict_t *Self);
 static void SphereOfAnnihilationTouch(edict_t *Self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
 static void SphereWatcherGrowThink(edict_t *Self);

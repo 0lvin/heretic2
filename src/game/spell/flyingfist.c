@@ -15,12 +15,11 @@
 #define FIST_RADIUS				2.0
 
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
-static void FlyingFistThink(edict_t *self);
 static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface);
 
 
 // ************************************************************************************************
-// FlyingFistThink
+// FlyingFistFizzleThink
 // ************************************************************************************************
 
 static void FlyingFistFizzleThink(edict_t *self)

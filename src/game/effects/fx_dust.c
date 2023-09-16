@@ -24,10 +24,7 @@ typedef struct RockChunk
 	float	mass;
 } RockChunk_t;
 
-static void FXDust_RockThrow(int type, int flags, vec3_t origin);
-static void FXDust_DustThrow(int type, int flags, vec3_t origin);
 void FXSmoke(vec3_t origin, float scale, float range);
-//client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float ke,float scale, int flags);
 client_entity_t* FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float ke, float scale, int flags, qboolean altskin);
 
 #define	NUM_ROCK_MODELS	4

@@ -1203,7 +1203,7 @@ void spreader_go_inair (edict_t *self)
 /*------------------------------------------------------------------------
 	startup stuff -- initialization for the spreader class and individual
 	spreaders
-/*-------------------------------------------------------------------------
+
 	SpreaderStaticsInit
 -------------------------------------------------------------------------*/
 void SpreaderStaticsInit()

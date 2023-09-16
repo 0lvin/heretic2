@@ -72,21 +72,11 @@ enum
 	FX_I_SP_MSL_HIT2
 };
 
-static qboolean FXHellboltTrailElementThink(struct client_entity_s *self, centity_t *owner);
-static qboolean FXHellboltTrailThink(struct client_entity_s *self, centity_t *owner);
-static qboolean FXHellboltModelThink(struct client_entity_s *self, centity_t *owner);
-static qboolean FXHellboltSmokePuffThink(struct client_entity_s *self, centity_t *owner);
-
 // --------------------------------------------------------------
 
-
-static qboolean FXGlobeOfOuchinessSphereThink(struct client_entity_s *self, centity_t *owner);
-static qboolean FXGlobeOfOuchinessAuraElementThink(struct client_entity_s *self, centity_t *owner);
 static qboolean FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner);
-static qboolean FXGlobeOfOuchinessGlowballSparkThink(struct client_entity_s *self, centity_t *owner);
 static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, centity_t *owner);
 static qboolean FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *owner);
-static qboolean FXGlobeOfOuchinessSmokePuffThink(struct client_entity_s *self, centity_t *owner);
 
 // ************************************************************************************************
 // FXInsectStaffTrailThink

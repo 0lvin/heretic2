@@ -43,13 +43,9 @@ void PreCacheSphere()
 #define FX_SPHERE_EXPLOSION_BASE_RADIUS	89.0
 
 static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXSphereOfAnnihilationAuraElementThink(struct client_entity_s *Self, centity_t *Owner);
 static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXSphereOfAnnihilationGlowballSparkThink(struct client_entity_s *Self, centity_t *Owner);
 static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Owner);
 static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXSphereOfAnnihilationSmokePuffThink(struct client_entity_s *Self, centity_t *Owner);
-
 extern void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int lifeTime, paletteRGBA_t *tint);
 
 
