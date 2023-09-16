@@ -682,71 +682,28 @@ void spreader_death(edict_t *self, G_Message_t *msg)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*---------------------------------------------------------------
 
 	MG STUFF
 
 ---------------------------------------------------------------*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+static int Bit_for_MeshNode_ps [13] =
+{
+	BIT_PARENT,
+	BIT_CHILD,
+	BIT_BODY,
+	BIT_BOMB,
+	BIT_RITLEG,
+	BIT_LFTARM,
+	BIT_LFTLEG,
+	BIT_HEAD,
+	BIT_RITARM,
+	BIT_TANK3,
+	BIT_TANK2,
+	BIT_TANK1,
+	BIT_HOSE
+};
 
 qboolean canthrownode_ps (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes

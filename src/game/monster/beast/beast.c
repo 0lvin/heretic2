@@ -201,14 +201,11 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 	{
 		if(trace->ent == world)
 		{
-			if(&trace->plane)
+			if(!Vec3IsZero(trace->plane.normal))
 			{
-				if(!Vec3IsZero(trace->plane.normal))
-				{
-					if(trace->plane.normal[2]>0.7)
-					{//it's just a slope
-						playsound = false;
-					}
+				if(trace->plane.normal[2]>0.7)
+				{//it's just a slope
+					playsound = false;
 				}
 			}
 		}
@@ -1347,7 +1344,7 @@ void tbeast_run_think (edict_t *self, float dist)
 			}
 		}
 		if(trace.fraction == 1.0 || //nothing there - ledge
-			(&trace.plane && !Vec3IsZero(trace.plane.normal) && trace.plane.normal[2]<0.7))//not a slope can go up
+			(!Vec3IsZero(trace.plane.normal) && trace.plane.normal[2]<0.7))//not a slope can go up
 		{
 #ifdef _DEVEL
 			if(TB_CheckJump(self))

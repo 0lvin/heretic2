@@ -945,19 +945,16 @@ void SV_Physics_Step (edict_t *ent)
 
 		for (i=0; i<3; i++)
 		{
-			if (ent->knockbackvel != 0)
+			if (ent->velocity[i] != origvel[i])
 			{
-				if (ent->velocity[i] != origvel[i])
-				{
-					ent->knockbackvel[i] = 0;
-				}
-				else
-				{
-					ent->velocity[i] -= ent->knockbackvel[i];
-					ent->knockbackvel[i] *= KNOCKBACK_SCALING;
-					if (Q_fabs(ent->knockbackvel[i]) < KNOCKBACK_THRESH)
-						threshhit++;
-				}
+				ent->knockbackvel[i] = 0;
+			}
+			else
+			{
+				ent->velocity[i] -= ent->knockbackvel[i];
+				ent->knockbackvel[i] *= KNOCKBACK_SCALING;
+				if (Q_fabs(ent->knockbackvel[i]) < KNOCKBACK_THRESH)
+					threshhit++;
 			}
 		}
 		if (threshhit >= 3)

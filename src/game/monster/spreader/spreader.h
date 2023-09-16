@@ -69,23 +69,6 @@ typedef enum SoundID_e
 #define BIT_TANK1		1024
 #define BIT_HOSE		2048
 
-static int Bit_for_MeshNode_ps [13] =
-{
-	BIT_PARENT,
-	BIT_CHILD,
-	BIT_BODY,
-	BIT_BOMB,
-	BIT_RITLEG,
-	BIT_LFTARM,
-	BIT_LFTLEG,
-	BIT_HEAD,
-	BIT_RITARM,
-	BIT_TANK3,
-	BIT_TANK2,
-	BIT_TANK1,
-	BIT_HOSE
-};
-
 extern animmove_t spreader_move_attack1;
 extern animmove_t spreader_move_attack2;
 extern animmove_t spreader_move_backup1;

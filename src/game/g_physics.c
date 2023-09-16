@@ -416,14 +416,7 @@ void DoImpactDamage(edict_t *self, trace_t *trace)
 
 		if(impact_dmg>0)
 		{
-			VectorSet(normal, 0, 0, 1);
-			if(&trace->plane)
-			{
-				if(trace->plane.normal)
-				{
-					VectorCopy(trace->plane.normal, normal);
-				}
-			}
+			VectorCopy(trace->plane.normal, normal);
 
 			VectorSet(movedir, 0, 0, 1);
 			if(!Vec3IsZero(self->velocity))

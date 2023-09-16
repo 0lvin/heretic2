@@ -1115,9 +1115,6 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 		if(trace.fraction==1.0)
 			return;
 
-		if(!(&trace.plane))
-			return;
-
 		if(Vec3IsZero(trace.plane.normal))
 			return;
 

@@ -1678,31 +1678,31 @@ paceldata_t PlayerChickenData[ASEQ_MAX] =
 //    stand - standing and breathing
 //    breath1 -
 //----------------------------------------------------------------------------
-panimframe_t player_frames_stand [] =
+static panimframe_t player_frames_stand [] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath23, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath23, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_stand = {23, player_frames_stand, PlayerAnimLowerUpdate};
 
@@ -1712,15 +1712,15 @@ panimmove_t player_move_stand = {23, player_frames_stand, PlayerAnimLowerUpdate}
 //  PLAYER FIREBALL SPELL ANIMATIONS
 //    spellfireball - throwing a fireball
 //----------------------------------------------------------------------------
-panimframe_t player_frames_spellfireball []	=
+static panimframe_t player_frames_spellfireball []	=
 {	// Throw firebolt
-	FRAME_throw2, NULL, 0, 0, 0, PlayerActionHandFXStart,	HANDFX_FIREBALL,		NULL,
-	FRAME_throw4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_throw5, NULL, 0, 0, 0, PlayerActionSpellFireball, 0, NULL,
-	FRAME_throw6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_throw7, NULL, 0, 0, 0, NULL, 0, NULL,				// Trail end
-	FRAME_throw8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_throw10, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_throw2, NULL, 0, 0, 0, PlayerActionHandFXStart,	HANDFX_FIREBALL,		NULL},
+	{FRAME_throw4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_throw5, NULL, 0, 0, 0, PlayerActionSpellFireball, 0, NULL},
+	{FRAME_throw6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_throw7, NULL, 0, 0, 0, NULL, 0, NULL},				// Trail end
+	{FRAME_throw8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_throw10, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_spellfireball = {7, player_frames_spellfireball, PlayerAnimUpperUpdate};
 
@@ -1728,15 +1728,15 @@ panimmove_t player_move_spellfireball = {7, player_frames_spellfireball, PlayerA
 //  PLAYER SPELL OF BLAST ANIMATIONS
 //    spellblast - casting the blast
 //----------------------------------------------------------------------------
-panimframe_t player_frames_spellblast []	=
+static panimframe_t player_frames_spellblast []	=
 {	// Throw big blast
-	FRAME_phbuton1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton5, NULL, 0, 0, 0, PlayerActionSpellBlast, 0, NULL,
-	FRAME_phbuton6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_phbuton1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton5, NULL, 0, 0, 0, PlayerActionSpellBlast, 0, NULL},
+	{FRAME_phbuton6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_spellblast = {7, player_frames_spellblast, PlayerAnimUpperUpdate};
 
@@ -1744,18 +1744,18 @@ panimmove_t player_move_spellblast = {7, player_frames_spellblast, PlayerAnimUpp
 //  PLAYER MISSILE SPELL ANIMATIONS
 //    spellarray - throwing a group of missiles
 //----------------------------------------------------------------------------
-panimframe_t player_frames_spellarray []	=
+static panimframe_t player_frames_spellarray []	=
 {	// Throw magic missile array
-	FRAME_throw2, NULL, 0, 0, 0, PlayerActionHandFXStart, HANDFX_MISSILE, NULL,
-	FRAME_throw3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_throw4, NULL, 0, 0, 0, PlayerActionSpellArray, -1, NULL,
-	FRAME_throw5, NULL, 0, 0, 0, PlayerActionSpellArray, 0, NULL,
-	FRAME_throw6, NULL, 0, 0, 0, PlayerActionSpellArray, 1, NULL,
-	FRAME_throw7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_throw8, NULL, 0, 0, 0, NULL, 0, NULL,			// Trail end
-	FRAME_throw9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_throw10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_throw11, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_throw2, NULL, 0, 0, 0, PlayerActionHandFXStart, HANDFX_MISSILE, NULL},
+	{FRAME_throw3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_throw4, NULL, 0, 0, 0, PlayerActionSpellArray, -1, NULL},
+	{FRAME_throw5, NULL, 0, 0, 0, PlayerActionSpellArray, 0, NULL},
+	{FRAME_throw6, NULL, 0, 0, 0, PlayerActionSpellArray, 1, NULL},
+	{FRAME_throw7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_throw8, NULL, 0, 0, 0, NULL, 0, NULL},			// Trail end
+	{FRAME_throw9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_throw10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_throw11, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_spellarray = {10, player_frames_spellarray, PlayerAnimUpperUpdate};
 
@@ -1769,59 +1769,59 @@ panimmove_t player_move_spellarray = {10, player_frames_spellarray, PlayerAnimUp
 // Start casting sphere-of-annihilation (part1).
 #define SPELLHANDS_SPHERE (((SPELLHANDS_BLUE<<SPELLHANDS_SHIFT)|(1<<CORVUS_LEFTHAND)|(1<<CORVUS_RIGHTHAND)))
 
-panimframe_t player_frames_spellspherestart[]=
+static panimframe_t player_frames_spellspherestart[]=
 {
-	FRAME_conjure1, NULL, 0, 0, 0, PlayerActionSpellSphereCreate,	0,					NULL,
-	FRAME_conjure3, NULL, 0, 0, 0, PlayerActionSpellSphereCharge,	1,					NULL,
-	FRAME_conjure5, NULL, 0, 0, 0, NULL,							0,					NULL,
-	FRAME_conjure7, NULL, 0, 0, 0, PlayerActionSpellSphereCharge,	2,					NULL,
-	FRAME_conjure8, NULL, 0, 0, 0, NULL,							0,					NULL,
-	FRAME_conjure9, NULL, 0, 0, 0, PlayerActionSpellSphereCharge,	3,					NULL,
-	FRAME_conjure10,NULL, 0, 0, 0, NULL,							0,					NULL,
+	{FRAME_conjure1, NULL, 0, 0, 0, PlayerActionSpellSphereCreate,	0,					NULL},
+	{FRAME_conjure3, NULL, 0, 0, 0, PlayerActionSpellSphereCharge,	1,					NULL},
+	{FRAME_conjure5, NULL, 0, 0, 0, NULL,							0,					NULL},
+	{FRAME_conjure7, NULL, 0, 0, 0, PlayerActionSpellSphereCharge,	2,					NULL},
+	{FRAME_conjure8, NULL, 0, 0, 0, NULL,							0,					NULL},
+	{FRAME_conjure9, NULL, 0, 0, 0, PlayerActionSpellSphereCharge,	3,					NULL},
+	{FRAME_conjure10,NULL, 0, 0, 0, NULL,							0,					NULL},
 };
 panimmove_t player_move_spellspherestart={7, player_frames_spellspherestart, PlayerAnimUpperUpdate};
 
 // Build up power in sphere-of-annihilation.
-panimframe_t player_frames_spellspherecharge [] =
+static panimframe_t player_frames_spellspherecharge [] =
 {
-	FRAME_conjure11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure11, NULL, 0, 0, 0, PlayerActionSpellSphereCharge, 4, NULL,
+	{FRAME_conjure11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure11, NULL, 0, 0, 0, PlayerActionSpellSphereCharge, 4, NULL},
 };
 panimmove_t player_move_spellspherecharge = {2, player_frames_spellspherecharge, PlayerAnimUpperUpdate};
 
 // Release sphere-of-annihilation.
-panimframe_t player_frames_spellspherefire1 [] =
+static panimframe_t player_frames_spellspherefire1 [] =
 {
-	FRAME_conjure7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure13, NULL, 0, 0, 0, PlayerActionSpellSphereRelease, 0, NULL,
-	FRAME_conjure14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure15, NULL, 0, 0, 0, PlayerActionSphereTrailEnd, 0, NULL,
+	{FRAME_conjure7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure13, NULL, 0, 0, 0, PlayerActionSpellSphereRelease, 0, NULL},
+	{FRAME_conjure14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure15, NULL, 0, 0, 0, PlayerActionSphereTrailEnd, 0, NULL},
 };
 panimmove_t player_move_spellspherefire1 = {4, player_frames_spellspherefire1, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_spellspherefire2 [] =
+static panimframe_t player_frames_spellspherefire2 [] =
 {
-	FRAME_conjure8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure13, NULL, 0, 0, 0, PlayerActionSpellSphereRelease, 0, NULL,
-	FRAME_conjure14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure15, NULL, 0, 0, 0, PlayerActionSphereTrailEnd, 0, NULL,
+	{FRAME_conjure8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure13, NULL, 0, 0, 0, PlayerActionSpellSphereRelease, 0, NULL},
+	{FRAME_conjure14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure15, NULL, 0, 0, 0, PlayerActionSphereTrailEnd, 0, NULL},
 };
 panimmove_t player_move_spellspherefire2 = {4, player_frames_spellspherefire2, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_spellspherefire3 [] =
+static panimframe_t player_frames_spellspherefire3 [] =
 {
-	FRAME_conjure11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure13, NULL, 0, 0, 0, PlayerActionSpellSphereRelease, 0, NULL,
-	FRAME_conjure14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure15, NULL, 0, 0, 0, PlayerActionSphereTrailEnd, 0, NULL,
+	{FRAME_conjure11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure13, NULL, 0, 0, 0, PlayerActionSpellSphereRelease, 0, NULL},
+	{FRAME_conjure14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure15, NULL, 0, 0, 0, PlayerActionSphereTrailEnd, 0, NULL},
 };
 panimmove_t player_move_spellspherefire3 = {4, player_frames_spellspherefire3, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_spellspherefire4 [] =
+static panimframe_t player_frames_spellspherefire4 [] =
 {
-	FRAME_conjure13, NULL, 0, 0, 0, PlayerActionSpellSphereRelease, 0, NULL,
-	FRAME_conjure14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure15, NULL, 0, 0, 0, PlayerActionSphereTrailEnd, 0, NULL,
+	{FRAME_conjure13, NULL, 0, 0, 0, PlayerActionSpellSphereRelease, 0, NULL},
+	{FRAME_conjure14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure15, NULL, 0, 0, 0, PlayerActionSphereTrailEnd, 0, NULL},
 };
 panimmove_t player_move_spellspherefire4 = {3, player_frames_spellspherefire4, PlayerAnimUpperUpdate};
 
@@ -1830,30 +1830,30 @@ panimmove_t player_move_spellspherefire4 = {3, player_frames_spellspherefire4, P
 //		spellripper - casting of the ripping unpowered spiked ball
 //    spellbigball - casting the lobby ball
 //----------------------------------------------------------------------------
-panimframe_t player_frames_spellripper []	=
+static panimframe_t player_frames_spellripper []	=
 {	// Throw Ripper, the unpowered Iron Doom
-	FRAME_phbuton1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton5, NULL, 0, 0, 0, PlayerActionSpellBigBall, 0, NULL,
-	FRAME_phbuton6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_phbuton1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton5, NULL, 0, 0, 0, PlayerActionSpellBigBall, 0, NULL},
+	{FRAME_phbuton6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_spellripper = {7, player_frames_spellripper, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_spellbigball []	=
+static panimframe_t player_frames_spellbigball []	=
 {	// Throw Big lobby ball
-	FRAME_ballspell1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_ballspell2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_ballspell3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_ballspell4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_ballspell5, NULL, 0, 0, 0, PlayerActionSpellBigBall, 0, NULL,
-	FRAME_ballspell6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_ballspell7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_ballspell8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_breath14, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_ballspell1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_ballspell2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_ballspell3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_ballspell4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_ballspell5, NULL, 0, 0, 0, PlayerActionSpellBigBall, 0, NULL},
+	{FRAME_ballspell6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_ballspell7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_ballspell8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_breath14, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_spellbigball = {10, player_frames_spellbigball, PlayerAnimUpperUpdate};
 
@@ -1861,20 +1861,20 @@ panimmove_t player_move_spellbigball = {10, player_frames_spellbigball, PlayerAn
 //  PLAYER SPELL OF FIREWALL ANIMATIONS
 //    spellfirewall - casting the wall of fire spell
 //----------------------------------------------------------------------------
-panimframe_t player_frames_spellfirewall []	=
+static panimframe_t player_frames_spellfirewall []	=
 {	// Cast firewall
-	FRAME_conjure15, NULL, 0, 0, 0, PlayerActionHandFXStart,	HANDFX_FIREWALL, NULL,
-	FRAME_conjure13, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure11, NULL, 0, 0, 0, PlayerActionSpellFirewall, 0, NULL,
-	FRAME_conjure9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure2, NULL, 0, 0, 0, NULL, 0, NULL,				// Trail end
-	FRAME_conjure1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_conjure15, NULL, 0, 0, 0, PlayerActionHandFXStart,	HANDFX_FIREWALL, NULL},
+	{FRAME_conjure13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure11, NULL, 0, 0, 0, PlayerActionSpellFirewall, 0, NULL},
+	{FRAME_conjure9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure2, NULL, 0, 0, 0, NULL, 0, NULL},				// Trail end
+	{FRAME_conjure1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_spellfirewall = {12, player_frames_spellfirewall, PlayerAnimUpperUpdate};
 
@@ -1888,80 +1888,80 @@ panimmove_t player_move_spellfirewall = {12, player_frames_spellfirewall, Player
 //    bowunready - taking bow from ready position, back down to hip
 //----------------------------------------------------------------------------
 
-panimframe_t player_frames_bowready [] =
+static panimframe_t player_frames_bowready [] =
 {
-	FRAME_redybow3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_redybow3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_bowready = {2, player_frames_bowready, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_rrbowdrawarrow [] =
+static panimframe_t player_frames_rrbowdrawarrow [] =
 {
-	FRAME_draw1, NULL, 0, 0, 0, PlayerActionBowReadySound, 0, NULL,
-	FRAME_draw3, NULL, 0, 0, 0, PlayerActionRedRainBowTrailStart, 0, NULL,
-	FRAME_draw5, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_draw1, NULL, 0, 0, 0, PlayerActionBowReadySound, 0, NULL},
+	{FRAME_draw3, NULL, 0, 0, 0, PlayerActionRedRainBowTrailStart, 0, NULL},
+	{FRAME_draw5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_rrbowdrawarrow = {3, player_frames_rrbowdrawarrow, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_phbowdrawarrow [] =
+static panimframe_t player_frames_phbowdrawarrow [] =
 {
-	FRAME_draw1, NULL, 0, 0, 0, PlayerActionBowReadySound, 0, NULL,
-	FRAME_draw3, NULL, 0, 0, 0, PlayerActionPhoenixBowTrailStart, 0, NULL,
-	FRAME_draw5, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_draw1, NULL, 0, 0, 0, PlayerActionBowReadySound, 0, NULL},
+	{FRAME_draw3, NULL, 0, 0, 0, PlayerActionPhoenixBowTrailStart, 0, NULL},
+	{FRAME_draw5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_phbowdrawarrow = {3, player_frames_phbowdrawarrow, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_bowholdarrow [] =
+static panimframe_t player_frames_bowholdarrow [] =
 {
-	FRAME_draw5, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_draw5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_bowholdarrow = {1, player_frames_bowholdarrow, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_rrbowfire [] =
+static panimframe_t player_frames_rrbowfire [] =
 {
-	FRAME_shoot1, NULL, 0, 0, 0, PlayerActionRedRainBowAttack, 0, NULL,
-	FRAME_shoot2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shoot3, NULL, 0, 0, 0, PlayerActionBowTrailEnd, 0, NULL,
-	FRAME_shoot4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shoot5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_shoot1, NULL, 0, 0, 0, PlayerActionRedRainBowAttack, 0, NULL},
+	{FRAME_shoot2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shoot3, NULL, 0, 0, 0, PlayerActionBowTrailEnd, 0, NULL},
+	{FRAME_shoot4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shoot5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_rrbowfire = {8, player_frames_rrbowfire, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_phbowfire [] =
+static panimframe_t player_frames_phbowfire [] =
 {
-	FRAME_shoot1, NULL, 0, 0, 0, PlayerActionPhoenixBowAttack, 0, NULL,
-	FRAME_shoot2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shoot3, NULL, 0, 0, 0, PlayerActionBowTrailEnd, 0, NULL,
-	FRAME_shoot4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shoot5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_shoot1, NULL, 0, 0, 0, PlayerActionPhoenixBowAttack, 0, NULL},
+	{FRAME_shoot2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shoot3, NULL, 0, 0, 0, PlayerActionBowTrailEnd, 0, NULL},
+	{FRAME_shoot4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shoot5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_phbowfire = {8, player_frames_phbowfire, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_bowholdready [] =
+static panimframe_t player_frames_bowholdready [] =
 {
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
-	FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire,
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
+	{FRAME_redybow5, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckBowRefire},
 };
 panimmove_t player_move_bowholdready = {10, player_frames_bowholdready, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_bowunready [] =
+static panimframe_t player_frames_bowunready [] =
 {
-	FRAME_redybow4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_redybow2, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_redybow4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_redybow2, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_bowunready = {2, player_frames_bowunready, PlayerAnimUpperUpdate};
 
@@ -1973,32 +1973,32 @@ panimmove_t player_move_bowunready = {2, player_frames_bowunready, PlayerAnimUpp
 //    hellfire - cuttin' loose
 //    hellunready - letting the staff down
 //----------------------------------------------------------------------------
-panimframe_t player_frames_hellready [] =
+static panimframe_t player_frames_hellready [] =
 {
-	FRAME_helstf1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_helstf2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_helstf3, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL,
+	{FRAME_helstf1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_helstf2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_helstf3, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL},
 };
 panimmove_t player_move_hellready = {3, player_frames_hellready, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_hellfire1 [] =
+static panimframe_t player_frames_hellfire1 [] =
 {
-	FRAME_helstf4, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL,
-	FRAME_helstf5, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL,
+	{FRAME_helstf4, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL},
+	{FRAME_helstf5, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL},
 };
 panimmove_t player_move_hellfire1 = {2, player_frames_hellfire1, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_hellfire2 [] =
+static panimframe_t player_frames_hellfire2 [] =
 {
-	FRAME_helstf6, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL,
-	FRAME_helstf7, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL,
+	{FRAME_helstf6, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL},
+	{FRAME_helstf7, NULL, 0, 0, 0, PlayerActionHellstaffAttack, 0, NULL},
 };
 panimmove_t player_move_hellfire2 = {2, player_frames_hellfire2, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_hellunready [] =
+static panimframe_t player_frames_hellunready [] =
 {
-	FRAME_helstf2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_helstf1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_helstf2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_helstf1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_hellunready = {2, player_frames_hellunready, PlayerAnimUpperUpdate};
 
@@ -2008,15 +2008,15 @@ panimmove_t player_move_hellunready = {2, player_frames_hellunready, PlayerAnimU
 //  PLAYER DEFENSIVE SPELL ANIMATIONS
 //    spelldefensive - casting the current defensive spell
 //----------------------------------------------------------------------------
-panimframe_t player_frames_spelldefensive []	=
+static panimframe_t player_frames_spelldefensive []	=
 {	// Go to next spell
-	FRAME_conjure1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure4, NULL, 0, 0, 0, PlayerActionSpellDefensive, 0, NULL,
-	FRAME_conjure3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_conjure1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_conjure1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure4, NULL, 0, 0, 0, PlayerActionSpellDefensive, 0, NULL},
+	{FRAME_conjure3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_conjure1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_spelldefensive = {7, player_frames_spelldefensive, PlayerAnimUpperUpdate};
 
@@ -2026,17 +2026,17 @@ panimmove_t player_move_spelldefensive = {7, player_frames_spelldefensive, Playe
 //  PLAYER SPELL CHANGE ANIMATIONS
 //    spellchange - reaching into his pouch and grabbing a new spell
 //----------------------------------------------------------------------------
-panimframe_t player_frames_spellchange []	=
+static panimframe_t player_frames_spellchange []	=
 {	// Go to next spell
-	FRAME_chngsplA1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_chngsplA2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_chngsplA3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_chngsplA4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_chngsplA5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_chngsplA6, NULL, 0, 0, 0, PlayerActionSpellChange, 0, NULL,
-	FRAME_chngsplA7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_chngsplA8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_chngsplA9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_chngsplA1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_chngsplA2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_chngsplA3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_chngsplA4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_chngsplA5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_chngsplA6, NULL, 0, 0, 0, PlayerActionSpellChange, 0, NULL},
+	{FRAME_chngsplA7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_chngsplA8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_chngsplA9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_spellchange = {9, player_frames_spellchange, PlayerAnimUpperUpdate};
 
@@ -2045,16 +2045,16 @@ panimmove_t player_move_spellchange = {9, player_frames_spellchange, PlayerAnimU
 //  PLAYER DRAW STAFF ANIMATIONS
 //    drawsword - making the sword staff appear
 //----------------------------------------------------------------------------
-panimframe_t player_frames_drawsword [] =
+static panimframe_t player_frames_drawsword [] =
 {
-	FRAME_getstaff1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff4, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_SWORDSTAFF, NULL,
-	FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getstaff7, NULL, 0, 0, 0,	NULL, 0, NULL,
-	FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_getstaff1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff4, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_SWORDSTAFF, NULL},
+	{FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getstaff7, NULL, 0, 0, 0,	NULL, 0, NULL},
+	{FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_drawsword = {8, player_frames_drawsword, PlayerAnimUpperUpdate};
 
@@ -2064,16 +2064,16 @@ panimmove_t player_move_drawsword = {8, player_frames_drawsword, PlayerAnimUpper
 //  PLAYER DRAW HELL STAFF ANIMATIONS
 //    drawhell - making the hellstaff appear
 //----------------------------------------------------------------------------
-panimframe_t player_frames_drawhell [] =
+static panimframe_t player_frames_drawhell [] =
 {
-	FRAME_getstaff1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff4, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_HELLSTAFF, NULL,
-	FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getstaff7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_getstaff1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff4, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_HELLSTAFF, NULL},
+	{FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getstaff7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_drawhell = {8, player_frames_drawhell, PlayerAnimUpperUpdate};
 
@@ -2083,17 +2083,17 @@ panimmove_t player_move_drawhell = {8, player_frames_drawhell, PlayerAnimUpperUp
 //  PLAYER DRAW BOW ANIMATIONS
 //    drawbow - taking the bow off his back and bringing it to his hip
 //----------------------------------------------------------------------------
-panimframe_t player_frames_drawbow [] =
+static panimframe_t player_frames_drawbow [] =
 {
-	FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_drawbow = {9, player_frames_drawbow, PlayerAnimUpperUpdate};
 
@@ -2103,14 +2103,14 @@ panimmove_t player_move_drawbow = {9, player_frames_drawbow, PlayerAnimUpperUpda
 //  PLAYER PUT AWAY STAFF ANIMATIONS
 //    stowsword - making staff disappear
 //----------------------------------------------------------------------------
-panimframe_t player_frames_stowsword [] =
+static panimframe_t player_frames_stowsword [] =
 {
-	FRAME_unstff1, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_SWORDSTAFF, NULL,
-	FRAME_unstff2, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_unstff3, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_unstff4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_unstff5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_unstff6, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_unstff1, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_SWORDSTAFF, NULL},
+	{FRAME_unstff2, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_unstff3, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_unstff4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_unstff5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_unstff6, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_stowsword = {6, player_frames_stowsword, PlayerAnimUpperUpdate};
 
@@ -2128,152 +2128,152 @@ panimmove_t player_move_stowsword = {6, player_frames_stowsword, PlayerAnimUpper
 //    bow2hell - change from bow to hell staff
 //    bow2bow - change arrows on the bow
 //----------------------------------------------------------------------------
-panimframe_t player_frames_sword2hell [] =
+static panimframe_t player_frames_sword2hell [] =
 {
-	FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff7, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_SWORDSTAFF, NULL,
-	FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_getstaff5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_HELLSTAFF, NULL,
-	FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getstaff7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff7, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_SWORDSTAFF, NULL},
+	{FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_getstaff5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_HELLSTAFF, NULL},
+	{FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getstaff7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_sword2hell = {8, player_frames_sword2hell, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_sword2bow [] =
+static panimframe_t player_frames_sword2bow [] =
 {
-	FRAME_unstff1, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_SWORDSTAFF, NULL,
-	FRAME_unstff2, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_unstff3, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_HANDS, NULL,
-	FRAME_unstff4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_unstff5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_unstff6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_unstff1, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_SWORDSTAFF, NULL},
+	{FRAME_unstff2, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_unstff3, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_HANDS, NULL},
+	{FRAME_unstff4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_unstff5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_unstff6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_sword2bow = {15, player_frames_sword2bow, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_stowhell [] =
+static panimframe_t player_frames_stowhell [] =
 {
-	FRAME_unstff1, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_HELLSTAFF, NULL,
-	FRAME_unstff2, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_unstff3, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_unstff4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_unstff5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_unstff6, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_unstff1, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_HELLSTAFF, NULL},
+	{FRAME_unstff2, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_unstff3, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_unstff4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_unstff5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_unstff6, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_stowhell = {6, player_frames_stowhell, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_hell2sword [] =
+static panimframe_t player_frames_hell2sword [] =
 {
-	FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff7, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_HELLSTAFF, NULL,
-	FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_getstaff5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_SWORDSTAFF, NULL,
-	FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getstaff7, NULL, 0, 0, 0,	NULL, 0, NULL,
-	FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff7, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_HELLSTAFF, NULL},
+	{FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_getstaff5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_SWORDSTAFF, NULL},
+	{FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getstaff7, NULL, 0, 0, 0,	NULL, 0, NULL},
+	{FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_hell2sword = {9, player_frames_hell2sword, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_hell2bow [] =
+static panimframe_t player_frames_hell2bow [] =
 {
-	FRAME_unstff1, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_HELLSTAFF, NULL,
-	FRAME_unstff2, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_unstff3, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_HANDS, NULL,
-	FRAME_unstff4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_unstff5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_unstff6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_unstff1, NULL, 0, 0, 0, PlayerActionEndStaffGlow, WEAPON_READY_HELLSTAFF, NULL},
+	{FRAME_unstff2, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_unstff3, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_HANDS, NULL},
+	{FRAME_unstff4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_unstff5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_unstff6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_hell2bow = {15, player_frames_hell2bow, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_stowbow [] =
+static panimframe_t player_frames_stowbow [] =
 {
-	FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_stowbow = {9, player_frames_stowbow, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_bow2sword [] =
+static panimframe_t player_frames_bow2sword [] =
 {
-	FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_HANDS, NULL,
-	FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff4, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_SWORDSTAFF, NULL,
-	FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getstaff7, NULL, 0, 0, 0,	NULL, 0, NULL,
-	FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_HANDS, NULL},
+	{FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff4, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_SWORDSTAFF, NULL},
+	{FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getstaff7, NULL, 0, 0, 0,	NULL, 0, NULL},
+	{FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_bow2sword = {17, player_frames_bow2sword, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_bow2hell [] =
+static panimframe_t player_frames_bow2hell [] =
 {
-	FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_HANDS, NULL,
-	FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff4, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL,
-	FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_HELLSTAFF, NULL,
-	FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL,
-	FRAME_getstaff7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_getbow9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow5, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_HANDS, NULL},
+	{FRAME_getbow4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getbow1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff4, NULL, 0, 0, 0, PlayerActionWeaponChange, WEAPON_READY_STAFFSTUB, NULL},
+	{FRAME_getstaff5, NULL, 0, 0, 0, PlayerActionStartStaffGlow, WEAPON_READY_HELLSTAFF, NULL},
+	{FRAME_getstaff6, NULL, 0, 0, 0, PlayerActionWeaponChange, 0, NULL},
+	{FRAME_getstaff7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_getstaff8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_bow2hell = {17, player_frames_bow2hell, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_bow2bow []	=
+static panimframe_t player_frames_bow2bow []	=
 {	// Go to next spell
-	FRAME_swcharo1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swcharo2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swcharo3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swcharo4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swcharo5, NULL, 0, 0, 0, PlayerActionArrowChange, 0, NULL,
-	FRAME_swcharo6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swcharo7, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swcharo1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swcharo2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swcharo3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swcharo4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swcharo5, NULL, 0, 0, 0, PlayerActionArrowChange, 0, NULL},
+	{FRAME_swcharo6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swcharo7, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_bow2bow = {7, player_frames_bow2bow, PlayerAnimUpperUpdate};
 
@@ -2287,52 +2287,52 @@ panimmove_t player_move_bow2bow = {7, player_frames_bow2bow, PlayerAnimUpperUpda
 //    staffatkstep2 - standing attack with one swipe from left to right
 //    staffatkstep - standing attack with one swipe from left to right
 //----------------------------------------------------------------------------
-panimframe_t player_frames_staffatkspin [] =
+static panimframe_t player_frames_staffatkspin [] =
 {
-	FRAME_newspin1, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_SPIN1, NULL,
-	FRAME_newspin2, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_newspin3, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_newspin4, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_newspin5, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 9, NULL,
-	FRAME_newspin6, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 10, NULL,
-	FRAME_newspin7, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 11, NULL,
-	FRAME_newspin8, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, NULL, 0, NULL,		// End trail here
+	{FRAME_newspin1, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_SPIN1, NULL},
+	{FRAME_newspin2, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_newspin3, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_newspin4, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_newspin5, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 9, NULL},
+	{FRAME_newspin6, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 10, NULL},
+	{FRAME_newspin7, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 11, NULL},
+	{FRAME_newspin8, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, NULL, 0, NULL},		// End trail here
 };
 panimmove_t player_move_staffatkspin = {8, player_frames_staffatkspin, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_staffatkspin2 [] =
+static panimframe_t player_frames_staffatkspin2 [] =
 {
-	FRAME_spining1, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_SPIN2, NULL,
-	FRAME_spining2, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_spining3, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_spining4, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 13, NULL,
-	FRAME_spining5, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 14, NULL,
-	FRAME_spining6, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 15, NULL,
-	FRAME_spining7, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, NULL, 0, NULL,		// End trail here
+	{FRAME_spining1, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_SPIN2, NULL},
+	{FRAME_spining2, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_spining3, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_spining4, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 13, NULL},
+	{FRAME_spining5, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 14, NULL},
+	{FRAME_spining6, PlayerMoveFunc, 175*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 15, NULL},
+	{FRAME_spining7, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, NULL, 0, NULL},		// End trail here
 };
 panimmove_t player_move_staffatkspin2 = {7, player_frames_staffatkspin2, PlayerAnimLowerUpdate};
 
 // Blocked spin left
-panimframe_t player_frames_staffspinblockedright [] =
+static panimframe_t player_frames_staffspinblockedright [] =
 {
-	FRAME_swipeA4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeA4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffspinblockedright = {6, player_frames_staffspinblockedright, PlayerAnimLowerUpdate};
 
 // Blocked swipe right
-panimframe_t player_frames_staffspinblockedleft [] =
+static panimframe_t player_frames_staffspinblockedleft [] =
 {
-	FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffspinblockedleft = {6, player_frames_staffspinblockedleft, PlayerAnimLowerUpdate};
 
@@ -2340,212 +2340,212 @@ panimmove_t player_move_staffspinblockedleft = {6, player_frames_staffspinblocke
 // Upper frame sword moves, these can be split.
 //
 
-panimframe_t player_frames_staffatkstand1 [] =
+static panimframe_t player_frames_staffatkstand1 [] =
 {
-	FRAME_swipeA1, NULL, 0, 0, 0, PlayerActionSwordTrailStart, TRAIL_STAND, NULL,
-	FRAME_swipeA3, NULL, 0, 0, 0, PlayerActionSwordAttack, 1, NULL,
-	FRAME_swipeA5, NULL, 0, 0, 0, PlayerActionSwordAttack, 2, NULL,
-	FRAME_swipeA6, NULL, 0, 0, 0, PlayerActionSwordAttack, 3, NULL,
-	FRAME_swipeA7, NULL, 0, 0, 0, PlayerActionSwordAttack, 4, NULL,
-	FRAME_swipeA8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeA1, NULL, 0, 0, 0, PlayerActionSwordTrailStart, TRAIL_STAND, NULL},
+	{FRAME_swipeA3, NULL, 0, 0, 0, PlayerActionSwordAttack, 1, NULL},
+	{FRAME_swipeA5, NULL, 0, 0, 0, PlayerActionSwordAttack, 2, NULL},
+	{FRAME_swipeA6, NULL, 0, 0, 0, PlayerActionSwordAttack, 3, NULL},
+	{FRAME_swipeA7, NULL, 0, 0, 0, PlayerActionSwordAttack, 4, NULL},
+	{FRAME_swipeA8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffatkstand1 = {7, player_frames_staffatkstand1, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_staffatkstand2 [] =
+static panimframe_t player_frames_staffatkstand2 [] =
 {
-	FRAME_swipeA10, NULL, 0, 0, 0, NULL, 0, NULL,		// End trail
-	FRAME_swipeA11, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeA10, NULL, 0, 0, 0, NULL, 0, NULL},		// End trail
+	{FRAME_swipeA11, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffatkstand2 = {2, player_frames_staffatkstand2, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_staffatkstep2 [] =
+static panimframe_t player_frames_staffatkstep2 [] =
 {
-	FRAME_swipeB2, PlayerMoveUpperFunc, 30*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_STEP, NULL,
-	FRAME_swipeB4, PlayerMoveUpperFunc, 91*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 5, NULL,
-	FRAME_swipeB5, PlayerMoveUpperFunc, 37*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 6, NULL,
-	FRAME_swipeB6, PlayerMoveUpperFunc, 27*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 7, NULL,
-	FRAME_swipeB7, PlayerMoveUpperFunc, 13*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 8, NULL,
-	FRAME_swipeB9, PlayerMoveUpperFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB10, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL,		// End trail
-	FRAME_swipeB11, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB12, PlayerMoveUpperFunc, -38*UNJH_VALUE, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeB2, PlayerMoveUpperFunc, 30*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_STEP, NULL},
+	{FRAME_swipeB4, PlayerMoveUpperFunc, 91*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 5, NULL},
+	{FRAME_swipeB5, PlayerMoveUpperFunc, 37*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 6, NULL},
+	{FRAME_swipeB6, PlayerMoveUpperFunc, 27*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 7, NULL},
+	{FRAME_swipeB7, PlayerMoveUpperFunc, 13*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 8, NULL},
+	{FRAME_swipeB9, PlayerMoveUpperFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB10, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL},		// End trail
+	{FRAME_swipeB11, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB12, PlayerMoveUpperFunc, -38*UNJH_VALUE, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffatkstep2 = {9, player_frames_staffatkstep2, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_staffatkstep [] =
+static panimframe_t player_frames_staffatkstep [] =
 {
-	FRAME_swipeB1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB2, PlayerMoveUpperFunc, 30*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_STEP, NULL,
-	FRAME_swipeB4, PlayerMoveUpperFunc, 91*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 5, NULL,
-	FRAME_swipeB5, PlayerMoveUpperFunc, 37*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 6, NULL,
-	FRAME_swipeB6, PlayerMoveUpperFunc, 27*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 7, NULL,
-	FRAME_swipeB7, PlayerMoveUpperFunc, 13*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 8, NULL,
-	FRAME_swipeB9, PlayerMoveUpperFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB10, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL,		// End trail
-	FRAME_swipeB11, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB12, PlayerMoveUpperFunc, -38*UNJH_VALUE, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeB1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB2, PlayerMoveUpperFunc, 30*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_STEP, NULL},
+	{FRAME_swipeB4, PlayerMoveUpperFunc, 91*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 5, NULL},
+	{FRAME_swipeB5, PlayerMoveUpperFunc, 37*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 6, NULL},
+	{FRAME_swipeB6, PlayerMoveUpperFunc, 27*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 7, NULL},
+	{FRAME_swipeB7, PlayerMoveUpperFunc, 13*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 8, NULL},
+	{FRAME_swipeB9, PlayerMoveUpperFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB10, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL},		// End trail
+	{FRAME_swipeB11, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB12, PlayerMoveUpperFunc, -38*UNJH_VALUE, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffatkstep = {10, player_frames_staffatkstep, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_staffatkback [] =
+static panimframe_t player_frames_staffatkback [] =
 {
-	FRAME_roundbck1, NULL, 0, 0, 0, PlayerActionSwordTrailStart, TRAIL_BACK, NULL,
-	FRAME_roundbck2, NULL, 0, 0, 0, PlayerActionSwordAttack, 17, NULL,
-	FRAME_roundbck3, NULL, 0, 0, 0, PlayerActionSwordAttack, 18, NULL,
-	FRAME_roundbck4, NULL, 0, 0, 0, PlayerActionSwordAttack, 19, NULL,
-	FRAME_roundbck5, NULL, 0, 0, 0, NULL, 0, NULL,				// End trail
-	FRAME_roundbck6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_roundbck7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_roundbck8, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_roundbck1, NULL, 0, 0, 0, PlayerActionSwordTrailStart, TRAIL_BACK, NULL},
+	{FRAME_roundbck2, NULL, 0, 0, 0, PlayerActionSwordAttack, 17, NULL},
+	{FRAME_roundbck3, NULL, 0, 0, 0, PlayerActionSwordAttack, 18, NULL},
+	{FRAME_roundbck4, NULL, 0, 0, 0, PlayerActionSwordAttack, 19, NULL},
+	{FRAME_roundbck5, NULL, 0, 0, 0, NULL, 0, NULL},				// End trail
+	{FRAME_roundbck6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roundbck7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roundbck8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffatkback = {8, player_frames_staffatkback, PlayerAnimUpperUpdate};
 
 // Stab downward
-panimframe_t player_frames_staffdownstab [] =
+static panimframe_t player_frames_staffdownstab [] =
 {
-	FRAME_spikedwn1, NULL, 0, 0, 0, PlayerActionSwordTrailStart, TRAIL_STAB, NULL,
-	FRAME_spikedwn2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn7, NULL, 0, 0, 0, PlayerActionSwordAttack, 21, NULL,
-	FRAME_spikedwn8, NULL, 0, 0, 0, PlayerActionSwordAttack, 22, NULL,
+	{FRAME_spikedwn1, NULL, 0, 0, 0, PlayerActionSwordTrailStart, TRAIL_STAB, NULL},
+	{FRAME_spikedwn2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn7, NULL, 0, 0, 0, PlayerActionSwordAttack, 21, NULL},
+	{FRAME_spikedwn8, NULL, 0, 0, 0, PlayerActionSwordAttack, 22, NULL},
 };
 panimmove_t player_move_staffdownstab = {8, player_frames_staffdownstab, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_staffstabhold [] =
+static panimframe_t player_frames_staffstabhold [] =
 {
-	FRAME_spikedwn8, NULL, 0, 0, 0, PlayerActionSwordAttack, 22, NULL,
+	{FRAME_spikedwn8, NULL, 0, 0, 0, PlayerActionSwordAttack, 22, NULL},
 };
 panimmove_t player_move_staffstabhold = {1, player_frames_staffstabhold, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_staffpullout [] =
+static panimframe_t player_frames_staffpullout [] =
 {
-	FRAME_pullout1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout11, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_pullout1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout11, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffpullout = {11, player_frames_staffpullout, PlayerAnimUpperUpdate};
 
 // Stab downward
-panimframe_t player_frames_stafflowerdownstab [] =
+static panimframe_t player_frames_stafflowerdownstab [] =
 {
-	FRAME_spikedwn1, NULL, 0, 0, 0, PlayerActionSwordTrailStart, TRAIL_STAB, NULL,
-	FRAME_spikedwn2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn5, PlayerMoveFunc, 25*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_spikedwn7, NULL, 0, 0, 0, PlayerActionSwordAttack, 21, NULL,
-	FRAME_spikedwn8, NULL, 0, 0, 0, PlayerActionSwordAttack, 22, NULL,
+	{FRAME_spikedwn1, NULL, 0, 0, 0, PlayerActionSwordTrailStart, TRAIL_STAB, NULL},
+	{FRAME_spikedwn2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn5, PlayerMoveFunc, 25*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_spikedwn7, NULL, 0, 0, 0, PlayerActionSwordAttack, 21, NULL},
+	{FRAME_spikedwn8, NULL, 0, 0, 0, PlayerActionSwordAttack, 22, NULL},
 };
 panimmove_t player_move_stafflowerdownstab = {8, player_frames_stafflowerdownstab, PlayerAnimLowerUpdate};
 
 // Pull staff out after stab
-panimframe_t player_frames_stafflowerpullout [] =
+static panimframe_t player_frames_stafflowerpullout [] =
 {
-	FRAME_pullout1, NULL, 0, 0, 0, PlayerActionSwordAttack, 22, NULL,
-	FRAME_pullout2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pullout11, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_pullout1, NULL, 0, 0, 0, PlayerActionSwordAttack, 22, NULL},
+	{FRAME_pullout2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullout11, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_stafflowerpullout = {11, player_frames_stafflowerpullout, PlayerAnimLowerUpdate};
 
 
 // Do block to player's left
-panimframe_t player_frames_staffblockleft [] =
+static panimframe_t player_frames_staffblockleft [] =
 {
-	FRAME_swipeA4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA2, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeA4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA2, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffblockleft = {2, player_frames_staffblockleft, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_staffblockleft2 [] =
+static panimframe_t player_frames_staffblockleft2 [] =
 {
-	FRAME_swipeA1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeA1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffblockleft2 = {1, player_frames_staffblockleft2, PlayerAnimUpperUpdate};
 
 // Block on left and attack
-panimframe_t player_frames_staffblockleftatk [] =
+static panimframe_t player_frames_staffblockleftatk [] =
 {
-	FRAME_swipeB2, PlayerMoveUpperFunc, 30*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_COUNTERLEFT, NULL,
-	FRAME_swipeB4, PlayerMoveUpperFunc, 91*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 5, NULL,
-	FRAME_swipeB5, PlayerMoveUpperFunc, 37*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 6, NULL,
-	FRAME_swipeB6, PlayerMoveUpperFunc, 27*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 7, NULL,
-	FRAME_swipeB7, PlayerMoveUpperFunc, 13*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 8, NULL,
-	FRAME_swipeB9, PlayerMoveUpperFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB10, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL,			// End trail
-	FRAME_swipeB11, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB12, PlayerMoveUpperFunc, -38*UNJH_VALUE, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeB2, PlayerMoveUpperFunc, 30*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_COUNTERLEFT, NULL},
+	{FRAME_swipeB4, PlayerMoveUpperFunc, 91*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 5, NULL},
+	{FRAME_swipeB5, PlayerMoveUpperFunc, 37*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 6, NULL},
+	{FRAME_swipeB6, PlayerMoveUpperFunc, 27*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 7, NULL},
+	{FRAME_swipeB7, PlayerMoveUpperFunc, 13*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 8, NULL},
+	{FRAME_swipeB9, PlayerMoveUpperFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB10, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL},			// End trail
+	{FRAME_swipeB11, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB12, PlayerMoveUpperFunc, -38*UNJH_VALUE, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffblockleftatk = {9, player_frames_staffblockleftatk, PlayerAnimUpperUpdate};
 
 // Do block to player's right
-panimframe_t player_frames_staffblockright [] =
+static panimframe_t player_frames_staffblockright [] =
 {
-	FRAME_swipeB5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeB5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffblockright = {2, player_frames_staffblockright, PlayerAnimUpperUpdate};
 
-panimframe_t player_frames_staffblockright2 [] =
+static panimframe_t player_frames_staffblockright2 [] =
 {
-	FRAME_swipeB1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeB1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffblockright2 = {1, player_frames_staffblockright2, PlayerAnimUpperUpdate};
 
 // Block on right and attack
-panimframe_t player_frames_staffblockrightatk [] =
+static panimframe_t player_frames_staffblockrightatk [] =
 {
-	FRAME_swipeA2, PlayerMoveUpperFunc, 30*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_COUNTERRIGHT, NULL,
-	FRAME_swipeA3, PlayerMoveUpperFunc, 91*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 1, NULL,
-	FRAME_swipeA5, PlayerMoveUpperFunc, 37*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 2, NULL,
-	FRAME_swipeA6, PlayerMoveUpperFunc, 27*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 3, NULL,
-	FRAME_swipeA7, PlayerMoveUpperFunc, 13*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 4, NULL,
-	FRAME_swipeA8, PlayerMoveUpperFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA9, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL,			// End trail
+	{FRAME_swipeA2, PlayerMoveUpperFunc, 30*UNJH_VALUE, 0, 0, PlayerActionSwordTrailStart, TRAIL_COUNTERRIGHT, NULL},
+	{FRAME_swipeA3, PlayerMoveUpperFunc, 91*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 1, NULL},
+	{FRAME_swipeA5, PlayerMoveUpperFunc, 37*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 2, NULL},
+	{FRAME_swipeA6, PlayerMoveUpperFunc, 27*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 3, NULL},
+	{FRAME_swipeA7, PlayerMoveUpperFunc, 13*UNJH_VALUE, 0, 0, PlayerActionSwordAttack, 4, NULL},
+	{FRAME_swipeA8, PlayerMoveUpperFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA9, PlayerMoveUpperFunc, -51*UNJH_VALUE, 0, 0, NULL, 0, NULL},			// End trail
 };
 panimmove_t player_move_staffblockrightatk = {7, player_frames_staffblockrightatk, PlayerAnimUpperUpdate};
 
 // Blocked swipe left
-panimframe_t player_frames_staffblockedleft [] =
+static panimframe_t player_frames_staffblockedleft [] =
 {
-	FRAME_swipeA4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeA1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeA4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeA1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffblockedleft = {6, player_frames_staffblockedleft, PlayerAnimUpperUpdate};
 
 // Blocked swipe right
-panimframe_t player_frames_staffblockedright [] =
+static panimframe_t player_frames_staffblockedright [] =
 {
-	FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swipeB1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swipeB1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_staffblockedright = {6, player_frames_staffblockedright, PlayerAnimUpperUpdate};
 
@@ -2562,27 +2562,27 @@ panimmove_t player_move_staffblockedright = {6, player_frames_staffblockedright,
 //    creepright3 - sixth of creep cycle
 //    creeprightstop - end of right creep cyle
 //----------------------------------------------------------------------------
-panimframe_t player_frames_creepforward [] =
+static panimframe_t player_frames_creepforward [] =
 {
-	FRAME_creep1,  PlayerMoveFunc, 89*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep2,  PlayerMoveFunc, 58*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep3,  PlayerMoveFunc, 63*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep4,  PlayerMoveFunc, 66*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep5,  PlayerMoveFunc, 69*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep6,  PlayerMoveFunc, 75*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep7,  PlayerMoveFunc, 90*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep8,  PlayerMoveFunc, 67*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep9,  PlayerMoveFunc, 60*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep10, PlayerMoveFunc, 62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep11, PlayerMoveFunc, 70*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
-	FRAME_creep12, PlayerMoveFunc, 66*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
+	{FRAME_creep1,  PlayerMoveFunc, 89*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep2,  PlayerMoveFunc, 58*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep3,  PlayerMoveFunc, 63*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep4,  PlayerMoveFunc, 66*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep5,  PlayerMoveFunc, 69*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep6,  PlayerMoveFunc, 75*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep7,  PlayerMoveFunc, 90*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep8,  PlayerMoveFunc, 67*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep9,  PlayerMoveFunc, 60*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep10, PlayerMoveFunc, 62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep11, PlayerMoveFunc, 70*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
+	{FRAME_creep12, PlayerMoveFunc, 66*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
 };
 panimmove_t player_move_creepforward = {12, player_frames_creepforward, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_creepforward_end [] =
+static panimframe_t player_frames_creepforward_end [] =
 {
-//	FRAME_creep8, PlayerMoveFunc, 40*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_creep9, PlayerMoveFunc, 20*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep,
+//	FRAME_creep8, PlayerMoveFunc, 40*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_creep9, PlayerMoveFunc, 20*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreep},
 };
 panimmove_t player_move_creepforward_end = {1, player_frames_creepforward_end, PlayerAnimLowerUpdate};
 
@@ -2592,30 +2592,30 @@ panimmove_t player_move_creepforward_end = {1, player_frames_creepforward_end, P
 //    walk - first half of jog cycle
 //    walkstop - used if stopping at first half of jog cycle
 //----------------------------------------------------------------------------
-panimframe_t player_frames_walkstart [] =
+static panimframe_t player_frames_walkstart [] =
 {
-	FRAME_gorun2, PlayerMoveFunc, 80*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk,
+	{FRAME_gorun2, PlayerMoveFunc, 80*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk},
 };
 panimmove_t player_move_walkstart = {1, player_frames_walkstart, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_walk [] =
+static panimframe_t player_frames_walk [] =
 {
-	FRAME_jog1, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalk,
-	FRAME_jog2, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk,
-	FRAME_jog3, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk,
-	FRAME_jog4, PlayerMoveFunc, 155*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk,
-	FRAME_jog5, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalk,
-	FRAME_jog6, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk,
-	FRAME_jog7, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk,
-	FRAME_jog8, PlayerMoveFunc, 155*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk,
+	{FRAME_jog1, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalk},
+	{FRAME_jog2, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk},
+	{FRAME_jog3, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk},
+	{FRAME_jog4, PlayerMoveFunc, 155*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk},
+	{FRAME_jog5, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalk},
+	{FRAME_jog6, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk},
+	{FRAME_jog7, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk},
+	{FRAME_jog8, PlayerMoveFunc, 155*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckWalk},
 };
 panimmove_t player_move_walk = {8, player_frames_walk, PlayerAnimLowerUpdate};
 
 //END
 
-panimframe_t player_frames_walkstop [] =
+static panimframe_t player_frames_walkstop [] =
 {
-	FRAME_jog1, PlayerMoveFunc, 80*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalk,
+	{FRAME_jog1, PlayerMoveFunc, 80*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalk},
 };
 panimmove_t player_move_walkstop = {1, player_frames_walkstop, PlayerAnimLowerUpdate};
 
@@ -2627,27 +2627,27 @@ panimmove_t player_move_walkstop = {1, player_frames_walkstop, PlayerAnimLowerUp
 //    run2 - second half of run cycle
 //    runstop2 - used if stopping at second half of run cycle
 //----------------------------------------------------------------------------
-panimframe_t player_frames_runstart [] =
+static panimframe_t player_frames_runstart [] =
 {
-	FRAME_gorun1, PlayerMoveFunc, 60*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun,
-	FRAME_gorun2, PlayerMoveFunc, 120*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun,
+	{FRAME_gorun1, PlayerMoveFunc, 60*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun},
+	{FRAME_gorun2, PlayerMoveFunc, 120*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun},
 };
 panimmove_t player_move_runstart = {2, player_frames_runstart, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_run [] =
+static panimframe_t player_frames_run [] =
 {
-	FRAME_run1, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckRun,
-	FRAME_run2, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun,
-	FRAME_run3, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun,
-	FRAME_run4, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_RUN2, PlayerActionCheckRun,
-	FRAME_run5, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun,
-	FRAME_run6, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun,
+	{FRAME_run1, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckRun},
+	{FRAME_run2, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun},
+	{FRAME_run3, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun},
+	{FRAME_run4, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_RUN2, PlayerActionCheckRun},
+	{FRAME_run5, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun},
+	{FRAME_run6, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckRun},
 };
 panimmove_t player_move_run = {6, player_frames_run, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_runstop [] =
+static panimframe_t player_frames_runstop [] =
 {
-	FRAME_jog1, PlayerMoveFunc, 120*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckRun,
+	{FRAME_jog1, PlayerMoveFunc, 120*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckRun},
 };
 panimmove_t player_move_runstop = {1, player_frames_runstop, PlayerAnimLowerUpdate};
 
@@ -2658,37 +2658,37 @@ panimmove_t player_move_runstop = {1, player_frames_runstop, PlayerAnimLowerUpda
 //    walkback1 - first half of cycle for jogging backwards
 //    walkback2 - second half of cycle for jogging backwards
 //----------------------------------------------------------------------------
-panimframe_t player_frames_creepback [] =
+static panimframe_t player_frames_creepback [] =
 {
-	FRAME_crepbak1,  PlayerMoveFunc, -63*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak2,  PlayerMoveFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak3,  PlayerMoveFunc, -89*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak4,  PlayerMoveFunc, -66*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak5,  PlayerMoveFunc, -70*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak6,  PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak7,  PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak8,  PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak9,  PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak10, PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak11, PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
-	FRAME_crepbak12, PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
+	{FRAME_crepbak1,  PlayerMoveFunc, -63*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak2,  PlayerMoveFunc, -58*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak3,  PlayerMoveFunc, -89*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak4,  PlayerMoveFunc, -66*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak5,  PlayerMoveFunc, -70*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak6,  PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak7,  PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak8,  PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak9,  PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak10, PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak11, PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
+	{FRAME_crepbak12, PlayerMoveFunc, -62*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
 };
 panimmove_t player_move_creepback = {12, player_frames_creepback, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_creepback_end [] =
+static panimframe_t player_frames_creepback_end [] =
 {
-	FRAME_crepbak12, PlayerMoveFunc, -30*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack,
+	{FRAME_crepbak12, PlayerMoveFunc, -30*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionCheckCreepBack},
 };
 panimmove_t player_move_creepback_end = {1, player_frames_creepback_end, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_walkback [] =
+static panimframe_t player_frames_walkback [] =
 {
-	FRAME_jogback1,	PlayerMoveFunc,	-150*UNJH_VALUE, 0, 0,	PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkBack,
-	FRAME_jogback2, PlayerMoveFunc, -175*UNJH_VALUE, 0, 0,  NULL, 0, PlayerActionCheckWalkBack,
-	FRAME_jogback3, PlayerMoveFunc, -150*UNJH_VALUE, 0, 0,  NULL, 2, PlayerActionCheckWalkBack,
-	FRAME_jogback4,	PlayerMoveFunc,	-150*UNJH_VALUE, 0, 0,	PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkBack,
-	FRAME_jogback5, PlayerMoveFunc, -175*UNJH_VALUE, 0, 0,  NULL,  0, PlayerActionCheckWalkBack,
-	FRAME_jogback6,	PlayerMoveFunc,	-150*UNJH_VALUE, 0, 0,	NULL, 2, PlayerActionCheckWalkBack,
+	{FRAME_jogback1,	PlayerMoveFunc,	-150*UNJH_VALUE, 0, 0,	PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkBack},
+	{FRAME_jogback2, PlayerMoveFunc, -175*UNJH_VALUE, 0, 0,  NULL, 0, PlayerActionCheckWalkBack},
+	{FRAME_jogback3, PlayerMoveFunc, -150*UNJH_VALUE, 0, 0,  NULL, 2, PlayerActionCheckWalkBack},
+	{FRAME_jogback4,	PlayerMoveFunc,	-150*UNJH_VALUE, 0, 0,	PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkBack},
+	{FRAME_jogback5, PlayerMoveFunc, -175*UNJH_VALUE, 0, 0,  NULL,  0, PlayerActionCheckWalkBack},
+	{FRAME_jogback6,	PlayerMoveFunc,	-150*UNJH_VALUE, 0, 0,	NULL, 2, PlayerActionCheckWalkBack},
 };
 panimmove_t player_move_walkback = {6, player_frames_walkback, PlayerAnimLowerUpdate};
 
@@ -2697,38 +2697,38 @@ panimmove_t player_move_walkback = {6, player_frames_walkback, PlayerAnimLowerUp
 //    strafeleft - move sideways left
 //    straferight - move sideways right
 //----------------------------------------------------------------------------
-panimframe_t player_frames_strafeleft [] =
+static panimframe_t player_frames_strafeleft [] =
 {
-	FRAME_Lstep1, PlayerMoveFunc, 0, -125*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe,
-	FRAME_Lstep2, PlayerMoveFunc, 0, -150*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe,
-	FRAME_Lstep3, PlayerMoveFunc, 0, -175*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe,
-	FRAME_Lstep4, PlayerMoveFunc, 0, -150*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckStrafe,
-	FRAME_Lstep5, PlayerMoveFunc, 0, -125*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckStrafe,
+	{FRAME_Lstep1, PlayerMoveFunc, 0, -125*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe},
+	{FRAME_Lstep2, PlayerMoveFunc, 0, -150*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe},
+	{FRAME_Lstep3, PlayerMoveFunc, 0, -175*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe},
+	{FRAME_Lstep4, PlayerMoveFunc, 0, -150*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckStrafe},
+	{FRAME_Lstep5, PlayerMoveFunc, 0, -125*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckStrafe},
 };
 panimmove_t player_move_strafeleft = {5, player_frames_strafeleft, PlayerAnimLowerUpdate};
 
 //END
-panimframe_t player_frames_strafeleft_end [] =
+static panimframe_t player_frames_strafeleft_end [] =
 {
-	FRAME_Lstep5, PlayerMoveFunc, 0, -100*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK2, NULL,
+	{FRAME_Lstep5, PlayerMoveFunc, 0, -100*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK2, NULL},
 };
 panimmove_t player_move_strafeleft_end = {1, player_frames_strafeleft_end, PlayerAnimLowerUpdate};
 
 //right
-panimframe_t player_frames_straferight [] =
+static panimframe_t player_frames_straferight [] =
 {
-	FRAME_Rstep1, PlayerMoveFunc, 0, 125*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe,
-	FRAME_Rstep2, PlayerMoveFunc, 0, 150*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe,
-	FRAME_Rstep3, PlayerMoveFunc, 0, 175*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe,
-	FRAME_Rstep4, PlayerMoveFunc, 0, 150*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckStrafe,
-	FRAME_Rstep5, PlayerMoveFunc, 0, 125*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckStrafe,
+	{FRAME_Rstep1, PlayerMoveFunc, 0, 125*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe},
+	{FRAME_Rstep2, PlayerMoveFunc, 0, 150*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe},
+	{FRAME_Rstep3, PlayerMoveFunc, 0, 175*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckStrafe},
+	{FRAME_Rstep4, PlayerMoveFunc, 0, 150*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckStrafe},
+	{FRAME_Rstep5, PlayerMoveFunc, 0, 125*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckStrafe},
 };
 panimmove_t player_move_straferight = {5, player_frames_straferight, PlayerAnimLowerUpdate};
 
 //END
-panimframe_t player_frames_straferight_end [] =
+static panimframe_t player_frames_straferight_end [] =
 {
-	FRAME_Rstep5, PlayerMoveFunc, 0, 100*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK2, NULL,
+	{FRAME_Rstep5, PlayerMoveFunc, 0, 100*UNJH_VALUE, 0, PlayerActionFootstep, STEP_WALK2, NULL},
 };
 panimmove_t player_move_straferight_end = {1, player_frames_straferight_end, PlayerAnimLowerUpdate};
 
@@ -2743,237 +2743,237 @@ panimmove_t player_move_straferight_end = {1, player_frames_straferight_end, Pla
 //    jumpup - jumping straight up
 //    jumpuploop - moves player forward a little and starts forward jumap again
 //----------------------------------------------------------------------------
-panimframe_t player_frames_standjumpstart [] =
+static panimframe_t player_frames_standjumpstart [] =
 {
-	FRAME_jump1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_jump3, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_jump1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump3, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_standjumpstart = {2, player_frames_standjumpstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_standjumpfwdstart[] =
+static panimframe_t player_frames_standjumpfwdstart[] =
 {
-	FRAME_jump5, PlayerJumpMoveForce, 120*UNJH_VALUE, 0, 0, PlayerActionJump, 120, NULL,
+	{FRAME_jump5, PlayerJumpMoveForce, 120*UNJH_VALUE, 0, 0, PlayerActionJump, 120, NULL},
 };
 panimmove_t player_move_standjumpfwdstart = {1, player_frames_standjumpfwdstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_walkjumpfwdstart[] =
+static panimframe_t player_frames_walkjumpfwdstart[] =
 {
-	FRAME_jump5, PlayerJumpMoveForce, 200, 0, 0, PlayerActionJump, 250, NULL,
+	{FRAME_jump5, PlayerJumpMoveForce, 200, 0, 0, PlayerActionJump, 250, NULL},
 };
 panimmove_t player_move_walkjumpfwdstart = {1, player_frames_walkjumpfwdstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_runjumpfwdstart[] =
+static panimframe_t player_frames_runjumpfwdstart[] =
 {
-	FRAME_jump5, PlayerJumpMoveForce, 250, 0, 0, PlayerActionJump, 300, NULL,
+	{FRAME_jump5, PlayerJumpMoveForce, 250, 0, 0, PlayerActionJump, 300, NULL},
 };
 panimmove_t player_move_runjumpfwdstart = {1, player_frames_runjumpfwdstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_jumpfwd[] =
+static panimframe_t player_frames_jumpfwd[] =
 {
-	FRAME_jump6,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_jump7,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_jump8,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerActionCheckDoubleJump,
-	FRAME_jump9,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump10, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump11, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump12, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump13, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump14, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump15, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump16, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump17, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump18, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jump19, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
+	{FRAME_jump6,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_jump7,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_jump8,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerActionCheckDoubleJump},
+	{FRAME_jump9,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump10, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump11, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump12, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump13, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump14, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump15, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump16, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump17, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump18, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jump19, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
 };
 panimmove_t player_move_jumpfwd = {14, player_frames_jumpfwd, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_jumpup [] =
+static panimframe_t player_frames_jumpup [] =
 {
-	FRAME_grab5, NULL, 0, 0, 0, PlayerActionJump, 350, PlayerMoveAdd,
+	{FRAME_grab5, NULL, 0, 0, 0, PlayerActionJump, 350, PlayerMoveAdd},
 };
 panimmove_t player_move_jumpup = {1, player_frames_jumpup, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_jumpuploop [] =
+static panimframe_t player_frames_jumpuploop [] =
 {
-	FRAME_grab5, PlayerMoveALittle, 10, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
+	{FRAME_grab5, PlayerMoveALittle, 10, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
 };
 panimmove_t player_move_jumpuploop = {1, player_frames_jumpuploop, NULL};
 
 //Jumping backwards
-panimframe_t player_frames_standjumpbackstart[] =
+static panimframe_t player_frames_standjumpbackstart[] =
 {
-	FRAME_jumpback2, PlayerJumpMoveForce, -150, 0, 0, PlayerActionJump, 250, NULL,
+	{FRAME_jumpback2, PlayerJumpMoveForce, -150, 0, 0, PlayerActionJump, 250, NULL},
 };
 panimmove_t player_move_standjumpbackstart = {1, player_frames_standjumpbackstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_walkjumpbackstart[] =
+static panimframe_t player_frames_walkjumpbackstart[] =
 {
-	FRAME_jumpback2, PlayerJumpMoveForce, -200, 0, 0, PlayerActionJump, 300, NULL,
+	{FRAME_jumpback2, PlayerJumpMoveForce, -200, 0, 0, PlayerActionJump, 300, NULL},
 };
 panimmove_t player_move_walkjumpbackstart = {1, player_frames_walkjumpbackstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_runjumpbackstart[] =
+static panimframe_t player_frames_runjumpbackstart[] =
 {
-	FRAME_jumpback2, PlayerJumpMoveForce, -300, 0, 0, PlayerActionJumpBack, 350, NULL,
+	{FRAME_jumpback2, PlayerJumpMoveForce, -300, 0, 0, PlayerActionJumpBack, 350, NULL},
 };
 panimmove_t player_move_runjumpbackstart = {1, player_frames_runjumpbackstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_jumpback[] =
+static panimframe_t player_frames_jumpback[] =
 {
-	FRAME_jumpback3,  PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL,
-	FRAME_jumpback4,  PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL,
-	FRAME_jumpback5,  PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerActionCheckDoubleJump,
-	FRAME_jumpback6,  PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpback8,  PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpback10, PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpback12, PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpback13, PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpback14, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpback16, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpback18, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpback20, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpback22, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpback24, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
+	{FRAME_jumpback3,  PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpback4,  PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpback5,  PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerActionCheckDoubleJump},
+	{FRAME_jumpback6,  PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpback8,  PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpback10, PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpback12, PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpback13, PlayerJumpNudge, -64, 0, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpback14, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpback16, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpback18, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpback20, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpback22, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpback24, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
 };
 panimmove_t player_move_jumpback = {14, player_frames_jumpback, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_jumpflipback [] =
+static panimframe_t player_frames_jumpflipback [] =
 {
-	FRAME_bkflip17, PlayerJumpNudge, -64, 0, 0, PlayerActionFlip, 100, NULL,
-	FRAME_bkflip18, PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip19, PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip20, PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip21, PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip22, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_bkflip23, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_bkflip24, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_bkflip25, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, NULL,
+	{FRAME_bkflip17, PlayerJumpNudge, -64, 0, 0, PlayerActionFlip, 100, NULL},
+	{FRAME_bkflip18, PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip19, PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip20, PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip21, PlayerJumpNudge, -64, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip22, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_bkflip23, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_bkflip24, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_bkflip25, PlayerJumpNudge, -64, 0, 0, PlayerActionCheckGrab, 0, NULL},
 };
 panimmove_t player_move_jumpbackflip = {9, player_frames_jumpflipback, PlayerAnimLowerUpdate};
 
 //Jumping left
-panimframe_t player_frames_standjumpleftstart[] =
+static panimframe_t player_frames_standjumpleftstart[] =
 {
-	FRAME_jumpleft5, PlayerJumpMoveForce, 0, -150, 0, PlayerActionJump, 100, NULL,
+	{FRAME_jumpleft5, PlayerJumpMoveForce, 0, -150, 0, PlayerActionJump, 100, NULL},
 };
 panimmove_t player_move_standjumpleftstart = {1, player_frames_standjumpleftstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_walkjumpleftstart[] =
+static panimframe_t player_frames_walkjumpleftstart[] =
 {
-	FRAME_jumpleft5, PlayerJumpMoveForce, 0, -250, 0, PlayerActionJump, 100, NULL,
+	{FRAME_jumpleft5, PlayerJumpMoveForce, 0, -250, 0, PlayerActionJump, 100, NULL},
 };
 panimmove_t player_move_walkjumpleftstart = {1, player_frames_walkjumpleftstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_runjumpleftstart[] =
+static panimframe_t player_frames_runjumpleftstart[] =
 {
-	FRAME_jumpleft5, PlayerJumpMoveForce, 0,-300, 0, PlayerActionJump, 100, NULL,
+	{FRAME_jumpleft5, PlayerJumpMoveForce, 0,-300, 0, PlayerActionJump, 100, NULL},
 };
 panimmove_t player_move_runjumpleftstart = {1, player_frames_runjumpleftstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_jumpleft[] =
+static panimframe_t player_frames_jumpleft[] =
 {
-	FRAME_jumpleft6,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL,
-	FRAME_jumpleft7,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL,
-	FRAME_jumpleft8,  PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerActionCheckDoubleJump,
-	FRAME_jumpleft9,  PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpleft10, PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpleft11, PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpleft12, PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpleft13, PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumpleft14, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpleft16, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpleft18, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpleft20, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpleft22, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumpleft24, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
+	{FRAME_jumpleft6,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL},
+	{FRAME_jumpleft7,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL},
+	{FRAME_jumpleft8,  PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerActionCheckDoubleJump},
+	{FRAME_jumpleft9,  PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpleft10, PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpleft11, PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpleft12, PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpleft13, PlayerJumpNudge, 0, -64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumpleft14, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpleft16, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpleft18, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpleft20, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpleft22, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumpleft24, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
 };
 panimmove_t player_move_jumpleft = {14, player_frames_jumpleft, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_jumpleftflip [] =
+static panimframe_t player_frames_jumpleftflip [] =
 {
-	FRAME_Lflip2,  PlayerJumpNudge, 0, -64, 0, PlayerActionFlip, 100, NULL,
-	FRAME_Lflip3,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL,
-	FRAME_Lflip4,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL,
-	FRAME_Lflip5,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL,
-	FRAME_Lflip6,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL,
-	FRAME_Lflip7,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL,
-	FRAME_Lflip8,  PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip9,  PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip10, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip11, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip12, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip13, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip14, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL,
+	{FRAME_Lflip2,  PlayerJumpNudge, 0, -64, 0, PlayerActionFlip, 100, NULL},
+	{FRAME_Lflip3,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL},
+	{FRAME_Lflip4,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL},
+	{FRAME_Lflip5,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL},
+	{FRAME_Lflip6,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL},
+	{FRAME_Lflip7,  PlayerJumpNudge, 0, -64, 0, NULL, 0, NULL},
+	{FRAME_Lflip8,  PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip9,  PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip10, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip11, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip12, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip13, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip14, PlayerJumpNudge, 0, -64, 0, PlayerActionCheckGrab, 0, NULL},
 };
 panimmove_t player_move_jumpleftflip = {13, player_frames_jumpleftflip, PlayerAnimLowerUpdate};
 
 //Jumping right
-panimframe_t player_frames_standjumprightstart[] =
+static panimframe_t player_frames_standjumprightstart[] =
 {
-	FRAME_jumprite5, PlayerJumpMoveForce, 0, 150, 0, PlayerActionJump, 200, NULL,
+	{FRAME_jumprite5, PlayerJumpMoveForce, 0, 150, 0, PlayerActionJump, 200, NULL},
 };
 panimmove_t player_move_standjumprightstart = {1, player_frames_standjumprightstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_walkjumprightstart[] =
+static panimframe_t player_frames_walkjumprightstart[] =
 {
-	FRAME_jumprite5, PlayerJumpMoveForce, 0, 250, 0, PlayerActionJump, 250, NULL,
+	{FRAME_jumprite5, PlayerJumpMoveForce, 0, 250, 0, PlayerActionJump, 250, NULL},
 };
 panimmove_t player_move_walkjumprightstart = {1, player_frames_walkjumprightstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_runjumprightstart[] =
+static panimframe_t player_frames_runjumprightstart[] =
 {
-	FRAME_jumprite5, PlayerJumpMoveForce, 0, 300, 0, PlayerActionJump, 300, NULL,
+	{FRAME_jumprite5, PlayerJumpMoveForce, 0, 300, 0, PlayerActionJump, 300, NULL},
 };
 panimmove_t player_move_runjumprightstart = {1, player_frames_runjumprightstart, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_jumpright[] =
+static panimframe_t player_frames_jumpright[] =
 {
-	FRAME_jumprite6,  PlayerJumpNudge,  0, 64, 0, NULL, 0, NULL,
-	FRAME_jumprite7,  PlayerJumpNudge,  0, 64, 0, NULL, 0, NULL,
-	FRAME_jumprite8,  PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerActionCheckDoubleJump,
-	FRAME_jumprite9,  PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumprite10, PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumprite11, PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumprite12, PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumprite13, PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd,
-	FRAME_jumprite14, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumprite16, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumprite18, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumprite20, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumprite22, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
-	FRAME_jumprite24, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd,
+	{FRAME_jumprite6,  PlayerJumpNudge,  0, 64, 0, NULL, 0, NULL},
+	{FRAME_jumprite7,  PlayerJumpNudge,  0, 64, 0, NULL, 0, NULL},
+	{FRAME_jumprite8,  PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerActionCheckDoubleJump},
+	{FRAME_jumprite9,  PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumprite10, PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumprite11, PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumprite12, PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumprite13, PlayerJumpNudge,  0, 64, 0, NULL, 0, PlayerMoveAdd},
+	{FRAME_jumprite14, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumprite16, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumprite18, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumprite20, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumprite22, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
+	{FRAME_jumprite24, PlayerJumpNudge,  0, 64, 0, PlayerActionCheckGrab, 0, PlayerMoveAdd},
 };
 panimmove_t player_move_jumpright = {14, player_frames_jumpright, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_jumprightflip [] =
+static panimframe_t player_frames_jumprightflip [] =
 {
-//	FRAME_Lflip1, PlayerMoveForce, 0, -250, 0, PlayerActionJump, 0, NULL,
-	FRAME_Rflip2,  PlayerJumpNudge, 0, 64, 0, PlayerActionFlip, 100, NULL,
-	FRAME_Rflip3,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL,
-	FRAME_Rflip4,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL,
-	FRAME_Rflip5,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL,
-	FRAME_Rflip6,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL,
-	FRAME_Rflip7,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL,
-	FRAME_Rflip8,  PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip9,  PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip10, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip11, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip12, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip13, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip14, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL,
+//	FRAME_Lflip1, PlayerMoveForce, 0, -250, 0, PlayerActionJump, 0, NULL},
+	{FRAME_Rflip2,  PlayerJumpNudge, 0, 64, 0, PlayerActionFlip, 100, NULL},
+	{FRAME_Rflip3,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL},
+	{FRAME_Rflip4,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL},
+	{FRAME_Rflip5,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL},
+	{FRAME_Rflip6,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL},
+	{FRAME_Rflip7,  PlayerJumpNudge, 0, 64, 0, NULL, 0, NULL},
+	{FRAME_Rflip8,  PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip9,  PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip10, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip11, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip12, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip13, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip14, PlayerJumpNudge, 0, 64, 0, PlayerActionCheckGrab, 0, NULL},
 };
 panimmove_t player_move_jumprightflip = {13, player_frames_jumprightflip, PlayerAnimLowerUpdate};
 
@@ -2984,46 +2984,46 @@ panimmove_t player_move_jumprightflip = {13, player_frames_jumprightflip, Player
 //    fallwalkstart - transition from walking to falling
 //    fallwalkloop - one frame used while falling with arms down
 //----------------------------------------------------------------------------
-panimframe_t player_frames_fall[] =
+static panimframe_t player_frames_fall[] =
 {
-	FRAME_falling1, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling2, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling3, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling4, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling5, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling6, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling7, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling8, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling9, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling10, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling11, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling12, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling13, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling14, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_falling15, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
+	{FRAME_falling1, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling2, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling3, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling4, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling5, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling6, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling7, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling8, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling9, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling10, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling11, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling12, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling13, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling14, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_falling15, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
 };
 panimmove_t player_move_fall = {15, player_frames_fall, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_fallarmsup[] =
+static panimframe_t player_frames_fallarmsup[] =
 {
-	FRAME_grab5, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
+	{FRAME_grab5, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
 };
 panimmove_t player_move_fallarmsup = {1, player_frames_fallarmsup, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_fallwalkstart[] =
+static panimframe_t player_frames_fallwalkstart[] =
 {
-	FRAME_drop1, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_drop2, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_drop3, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
-	FRAME_drop4, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
+	{FRAME_drop1, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_drop2, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_drop3, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
+	{FRAME_drop4, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
 };
 panimmove_t player_move_fallwalkstart = {4, player_frames_fallwalkstart, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_fallwalkloop[] =
+static panimframe_t player_frames_fallwalkloop[] =
 {
-	FRAME_drop4, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL,
+	{FRAME_drop4, NULL, 0, 0, 0, PlayerActionCheckFallingGrab, 0, NULL},
 };
 panimmove_t player_move_fallwalkloop = {1, player_frames_fallwalkloop, NULL};
 
@@ -3034,24 +3034,24 @@ panimmove_t player_move_fallwalkloop = {1, player_frames_fallwalkloop, NULL};
 //    land1 - transition from standing with legs together to idle stance
 //    land3 - recovering from a fall to going into idle stance
 //----------------------------------------------------------------------------
-panimframe_t player_frames_land1[] =
+static panimframe_t player_frames_land1[] =
 {
-	FRAME_recover4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover7, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_recover4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover7, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_land1 = {4, player_frames_land1, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_land3[] =
+static panimframe_t player_frames_land3[] =
 {
-	FRAME_recover1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_recover7, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_recover1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_recover7, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_land3 = {7, player_frames_land3, PlayerAnimLowerUpdate};
 
@@ -3063,21 +3063,21 @@ panimmove_t player_move_land3 = {7, player_frames_land3, PlayerAnimLowerUpdate};
 //    crouch - one frame, in a kneeling position
 //    crouchup - one frame, coming up out of crouch
 //----------------------------------------------------------------------------
-panimframe_t player_frames_crouchdown[] =
+static panimframe_t player_frames_crouchdown[] =
 {
-	FRAME_rollA1, NULL, 0, 0, 0, NULL, 0, PlayerActionSetCrouchHeight,
+	{FRAME_rollA1, NULL, 0, 0, 0, NULL, 0, PlayerActionSetCrouchHeight},
 };
 panimmove_t player_move_crouchdown = {1, player_frames_crouchdown, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_crouch[] =
+static panimframe_t player_frames_crouch[] =
 {
-	FRAME_rollA15, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_rollA15, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_crouch = {1, player_frames_crouch, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_crouchup[] =
+static panimframe_t player_frames_crouchup[] =
 {
-	FRAME_rollA1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_rollA1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_crouchup = {1, player_frames_crouchup, PlayerAnimLowerUpdate};
 
@@ -3088,33 +3088,33 @@ panimmove_t player_move_crouchup = {1, player_frames_crouchup, PlayerAnimLowerUp
 //    rolldivefwdwalk - from jog, dive forward into a roll
 //    rolldivefwdrun - from run, dive forward into a roll
 //----------------------------------------------------------------------------
-panimframe_t player_frames_rolldivefwdwalk[] =
+static panimframe_t player_frames_rolldivefwdwalk[] =
 {
-	FRAME_rollA1, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_rollA3, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA5, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_ROLL, NULL,
-	FRAME_rollA7, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA8, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_rollA10, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA11, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA13, PlayerMoveFunc, 150*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA14, PlayerMoveFunc, 115*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA15, PlayerMoveFunc, 50*UNJH_VALUE, 0, 0, NULL, 0, NULL,
+	{FRAME_rollA1, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_rollA3, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA5, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_ROLL, NULL},
+	{FRAME_rollA7, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA8, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_rollA10, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA11, PlayerMoveFunc, 170*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA13, PlayerMoveFunc, 150*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA14, PlayerMoveFunc, 115*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA15, PlayerMoveFunc, 50*UNJH_VALUE, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_rolldivefwdwalk = {10, player_frames_rolldivefwdwalk, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_rolldivefwdrun[] =
+static panimframe_t player_frames_rolldivefwdrun[] =
 {
-	FRAME_rollA1, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_rollA3, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA5, PlayerMoveFunc, 320*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_ROLL, NULL,
-	FRAME_rollA7, PlayerMoveFunc, 280*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA8, PlayerMoveFunc, 260*UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_rollA10, PlayerMoveFunc, 220*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA11, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA13, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA14, PlayerMoveFunc, 120*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA15, PlayerMoveFunc, 60*UNJH_VALUE, 0, 0, NULL, 0, NULL,
+	{FRAME_rollA1, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_rollA3, PlayerMoveFunc, 340*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA5, PlayerMoveFunc, 320*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_ROLL, NULL},
+	{FRAME_rollA7, PlayerMoveFunc, 280*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA8, PlayerMoveFunc, 260*UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_rollA10, PlayerMoveFunc, 220*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA11, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA13, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA14, PlayerMoveFunc, 120*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA15, PlayerMoveFunc, 60*UNJH_VALUE, 0, 0, NULL, 0, NULL},
 
 };
 panimmove_t player_move_rolldivefwdrun = {10, player_frames_rolldivefwdrun, PlayerAnimLowerUpdate};
@@ -3127,37 +3127,37 @@ panimmove_t player_move_rolldivefwdrun = {10, player_frames_rolldivefwdrun, Play
 //    polevault1run - transition from run to pole vault
 //    polevault2 - pole vault animation
 //----------------------------------------------------------------------------
-panimframe_t player_frames_polevault1walk[] =
+static panimframe_t player_frames_polevault1walk[] =
 {
-	FRAME_vault1, PlayerMoveFunc, 180, 0, 0, NULL, 0, NULL,
-	FRAME_vault2, PlayerMoveFunc, 200, 0, 0, PlayerActionVaultSound, 0, NULL,
+	{FRAME_vault1, PlayerMoveFunc, 180, 0, 0, NULL, 0, NULL},
+	{FRAME_vault2, PlayerMoveFunc, 200, 0, 0, PlayerActionVaultSound, 0, NULL},
 };
 panimmove_t player_move_polevault1walk = {2, player_frames_polevault1walk, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_polevault1run[] =
+static panimframe_t player_frames_polevault1run[] =
 {
-	FRAME_vault1, PlayerMoveFunc, 300, 0, 0, NULL, 0, NULL,
-	FRAME_vault2, PlayerMoveFunc, 300, 0, 0, PlayerActionVaultSound, 0, NULL,
+	{FRAME_vault1, PlayerMoveFunc, 300, 0, 0, NULL, 0, NULL},
+	{FRAME_vault2, PlayerMoveFunc, 300, 0, 0, PlayerActionVaultSound, 0, NULL},
 };
 panimmove_t player_move_polevault1run = {2, player_frames_polevault1run, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_polevault2[] =
+static panimframe_t player_frames_polevault2[] =
 {
-	FRAME_vault3,  PlayerMoveForce, 300, 0, 0, PlayerActionJump, 250, NULL,
-	FRAME_vault4,  PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL,
-	FRAME_vault5,  PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckVaultKick,
-	FRAME_vault6,  PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckVaultKick,
-	FRAME_vault7,  PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckVaultKick,
-	FRAME_vault8,  PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckVaultKick,
-	FRAME_vault9,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_vault10, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_vault11, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_vault12, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_vault13, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_vault14, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_vault15, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_vault16, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_vault17, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
+	{FRAME_vault3,  PlayerMoveForce, 300, 0, 0, PlayerActionJump, 250, NULL},
+	{FRAME_vault4,  PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL},
+	{FRAME_vault5,  PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckVaultKick},
+	{FRAME_vault6,  PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckVaultKick},
+	{FRAME_vault7,  PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckVaultKick},
+	{FRAME_vault8,  PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckVaultKick},
+	{FRAME_vault9,  PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_vault10, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_vault11, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_vault12, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_vault13, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_vault14, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_vault15, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_vault16, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_vault17, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
 };
 panimmove_t player_move_polevault2 = {15, player_frames_polevault2, PlayerAnimLowerUpdate};
 
@@ -3178,141 +3178,141 @@ panimmove_t player_move_polevault2 = {15, player_frames_polevault2, PlayerAnimLo
 //****************************************************************
 
 
-panimframe_t player_frames_sswimidle [] =
+static panimframe_t player_frames_sswimidle [] =
 {
-	FRAME_idlswm1, PlayerMoveFunc, 0, 0, 0, PlayerActionSwimIdleSound, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm8, NULL, 0, 0, 0, PlayerActionSwim, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlswm15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_idlswm1, PlayerMoveFunc, 0, 0, 0, PlayerActionSwimIdleSound, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm8, NULL, 0, 0, 0, PlayerActionSwim, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlswm15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_sswimidle = {15, player_frames_sswimidle, NULL};
 
 
-panimframe_t player_frames_sswimfwdgo [] =
+static panimframe_t player_frames_sswimfwdgo [] =
 {
-	FRAME_t4swim1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_t4swim2, PlayerSwimMoveFunc, 90, 0, 0, NULL, 0, NULL,
+	{FRAME_t4swim1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_t4swim2, PlayerSwimMoveFunc, 90, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_sswimfwdgo = {2, player_frames_sswimfwdgo, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_sswimfwd [] =
+static panimframe_t player_frames_sswimfwd [] =
 {
-	FRAME_4swim1, PlayerSwimMoveFunc, 120, 0, 0, PlayerActionSwimSound, SOUND_SWIM_FORWARD, NULL,
-	FRAME_4swim2, PlayerSwimMoveFunc, 150, 0, 0, NULL, 0, NULL,
-	FRAME_4swim3, PlayerSwimMoveFunc, 160, 0, 0, NULL, 0, NULL,
-	FRAME_4swim4, PlayerSwimMoveFunc, 180, 0, 0, NULL, 0, NULL,
-	FRAME_4swim5, PlayerSwimMoveFunc, 190, 0, 0, PlayerActionSwim, 0, NULL,
-	FRAME_4swim6, PlayerSwimMoveFunc, 200, 0, 0, NULL, 0, NULL,
-	FRAME_4swim7, PlayerSwimMoveFunc, 190, 0, 0, NULL, 0, NULL,
-	FRAME_4swim8, PlayerSwimMoveFunc, 180, 0, 0, NULL, 0, NULL,
-	FRAME_4swim9, PlayerSwimMoveFunc, 160, 0, 0, NULL, 0, NULL,
-	FRAME_4swim10,PlayerSwimMoveFunc, 140, 0, 0, NULL, 0, NULL,
+	{FRAME_4swim1, PlayerSwimMoveFunc, 120, 0, 0, PlayerActionSwimSound, SOUND_SWIM_FORWARD, NULL},
+	{FRAME_4swim2, PlayerSwimMoveFunc, 150, 0, 0, NULL, 0, NULL},
+	{FRAME_4swim3, PlayerSwimMoveFunc, 160, 0, 0, NULL, 0, NULL},
+	{FRAME_4swim4, PlayerSwimMoveFunc, 180, 0, 0, NULL, 0, NULL},
+	{FRAME_4swim5, PlayerSwimMoveFunc, 190, 0, 0, PlayerActionSwim, 0, NULL},
+	{FRAME_4swim6, PlayerSwimMoveFunc, 200, 0, 0, NULL, 0, NULL},
+	{FRAME_4swim7, PlayerSwimMoveFunc, 190, 0, 0, NULL, 0, NULL},
+	{FRAME_4swim8, PlayerSwimMoveFunc, 180, 0, 0, NULL, 0, NULL},
+	{FRAME_4swim9, PlayerSwimMoveFunc, 160, 0, 0, NULL, 0, NULL},
+	{FRAME_4swim10,PlayerSwimMoveFunc, 140, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_sswimfwd = {10, player_frames_sswimfwd, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_sswimfwdstop [] =
+static panimframe_t player_frames_sswimfwdstop [] =
 {
-	FRAME_t4swim2, PlayerSwimMoveFunc, 40, 0, 0, NULL, 0, NULL,
-	FRAME_t4swim1, PlayerSwimMoveFunc, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_t4swim2, PlayerSwimMoveFunc, 40, 0, 0, NULL, 0, NULL},
+	{FRAME_t4swim1, PlayerSwimMoveFunc, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_sswimfwdstop = {2, player_frames_sswimfwdstop, PlayerAnimLowerUpdate};
 
 
 
-panimframe_t player_frames_sswimbackgo [] =
+static panimframe_t player_frames_sswimbackgo [] =
 {
-	FRAME_tbswim1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_tbswim2, PlayerSwimMoveFunc, -25, 0, 0, NULL, 0, NULL,
+	{FRAME_tbswim1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_tbswim2, PlayerSwimMoveFunc, -25, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_sswimbackgo = {2, player_frames_sswimbackgo, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_sswimback [] =
+static panimframe_t player_frames_sswimback [] =
 {
-	FRAME_bkswim1, PlayerSwimMoveFunc, -70, 0, 0, PlayerActionSwimSound, SOUND_SWIM_BACK, NULL,
-	FRAME_bkswim2, PlayerSwimMoveFunc, -100, 0, 0, NULL, 0, NULL,
-	FRAME_bkswim3, PlayerSwimMoveFunc, -130, 0, 0, NULL, 0, NULL,
-	FRAME_bkswim4, PlayerSwimMoveFunc, -150, 0, 0, PlayerActionSwim, 0, NULL,
-	FRAME_bkswim5, PlayerSwimMoveFunc, -130, 0, 0, NULL, 0, NULL,
-	FRAME_bkswim6, PlayerSwimMoveFunc, -100, 0, 0, NULL, 0, NULL,
-	FRAME_bkswim7, PlayerSwimMoveFunc, -70, 0, 0, NULL, 0, NULL,
+	{FRAME_bkswim1, PlayerSwimMoveFunc, -70, 0, 0, PlayerActionSwimSound, SOUND_SWIM_BACK, NULL},
+	{FRAME_bkswim2, PlayerSwimMoveFunc, -100, 0, 0, NULL, 0, NULL},
+	{FRAME_bkswim3, PlayerSwimMoveFunc, -130, 0, 0, NULL, 0, NULL},
+	{FRAME_bkswim4, PlayerSwimMoveFunc, -150, 0, 0, PlayerActionSwim, 0, NULL},
+	{FRAME_bkswim5, PlayerSwimMoveFunc, -130, 0, 0, NULL, 0, NULL},
+	{FRAME_bkswim6, PlayerSwimMoveFunc, -100, 0, 0, NULL, 0, NULL},
+	{FRAME_bkswim7, PlayerSwimMoveFunc, -70, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_sswimback = {7, player_frames_sswimback, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_sswimbackstop [] =
+static panimframe_t player_frames_sswimbackstop [] =
 {
-	FRAME_tbswim2, PlayerSwimMoveFunc, -30, 0, 0, NULL, 0, NULL,
-	FRAME_tbswim1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_tbswim2, PlayerSwimMoveFunc, -30, 0, 0, NULL, 0, NULL},
+	{FRAME_tbswim1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_sswimbackstop = {2, player_frames_sswimbackstop, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_sswim_left_go[] =
+static panimframe_t player_frames_sswim_left_go[] =
 {
-	FRAME_tswimL1, PlayerMoveFunc, 0, -25, 0, NULL, 0, NULL,
-	FRAME_tswimL2, PlayerMoveFunc, 0, -50, 0, NULL, 0, NULL,
-	FRAME_tswimL3, PlayerMoveFunc, 0, -75, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL,
-	FRAME_tswimL4, PlayerMoveFunc, 0, -100,0, NULL, 0, NULL,
+	{FRAME_tswimL1, PlayerMoveFunc, 0, -25, 0, NULL, 0, NULL},
+	{FRAME_tswimL2, PlayerMoveFunc, 0, -50, 0, NULL, 0, NULL},
+	{FRAME_tswimL3, PlayerMoveFunc, 0, -75, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL},
+	{FRAME_tswimL4, PlayerMoveFunc, 0, -100,0, NULL, 0, NULL},
 };
 panimmove_t	player_move_sswim_left_go = {4, player_frames_sswim_left_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_sswim_right_go[] =
+static panimframe_t player_frames_sswim_right_go[] =
 {
-	FRAME_tswimR1, PlayerMoveFunc, 0, 25,  0, NULL, 0, NULL,
-	FRAME_tswimR2, PlayerMoveFunc, 0, 50,  0, NULL, 0, NULL,
-	FRAME_tswimR3, PlayerMoveFunc, 0, 75,  0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL,
-	FRAME_tswimR4, PlayerMoveFunc, 0, 100, 0, NULL, 0, NULL,
+	{FRAME_tswimR1, PlayerMoveFunc, 0, 25,  0, NULL, 0, NULL},
+	{FRAME_tswimR2, PlayerMoveFunc, 0, 50,  0, NULL, 0, NULL},
+	{FRAME_tswimR3, PlayerMoveFunc, 0, 75,  0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL},
+	{FRAME_tswimR4, PlayerMoveFunc, 0, 100, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_sswim_right_go = {4, player_frames_sswim_right_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_sswim_left[] =
+static panimframe_t player_frames_sswim_left[] =
 {
-	FRAME_swimL1, PlayerMoveFunc, 0, -250, 0, NULL, 0, NULL,
-	FRAME_swimL2, PlayerMoveFunc, 0, -225, 0, NULL, 0, NULL,
-	FRAME_swimL3, PlayerMoveFunc, 0, -200, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL,
-	FRAME_swimL4, PlayerMoveFunc, 0, -150, 0, NULL, 0, NULL,
-	FRAME_swimL5, PlayerMoveFunc, 0, -100, 0, NULL, 0, NULL,
+	{FRAME_swimL1, PlayerMoveFunc, 0, -250, 0, NULL, 0, NULL},
+	{FRAME_swimL2, PlayerMoveFunc, 0, -225, 0, NULL, 0, NULL},
+	{FRAME_swimL3, PlayerMoveFunc, 0, -200, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL},
+	{FRAME_swimL4, PlayerMoveFunc, 0, -150, 0, NULL, 0, NULL},
+	{FRAME_swimL5, PlayerMoveFunc, 0, -100, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_sswim_left = {5, player_frames_sswim_left, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_sswim_right[] =
+static panimframe_t player_frames_sswim_right[] =
 {
-	FRAME_swimR1, PlayerMoveFunc, 0, 250, 0, NULL, 0, NULL,
-	FRAME_swimR2, PlayerMoveFunc, 0, 225, 0, NULL, 0, NULL,
-	FRAME_swimR3, PlayerMoveFunc, 0, 200, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL,
-	FRAME_swimR4, PlayerMoveFunc, 0, 150, 0, NULL, 0, NULL,
-	FRAME_swimR5, PlayerMoveFunc, 0, 100, 0, NULL, 0, NULL,
+	{FRAME_swimR1, PlayerMoveFunc, 0, 250, 0, NULL, 0, NULL},
+	{FRAME_swimR2, PlayerMoveFunc, 0, 225, 0, NULL, 0, NULL},
+	{FRAME_swimR3, PlayerMoveFunc, 0, 200, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL},
+	{FRAME_swimR4, PlayerMoveFunc, 0, 150, 0, NULL, 0, NULL},
+	{FRAME_swimR5, PlayerMoveFunc, 0, 100, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_sswim_right = {5, player_frames_sswim_right, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_sswim_left_stop[] =
+static panimframe_t player_frames_sswim_left_stop[] =
 {
-	FRAME_tswimL4, PlayerMoveFunc, 0, -100, 0, NULL, 0, NULL,
-	FRAME_tswimL3, PlayerMoveFunc, 0, -75, 0,  NULL, 0, NULL,
-	FRAME_tswimL2, PlayerMoveFunc, 0, -50, 0,  NULL, 0, NULL,
-	FRAME_tswimL1, PlayerMoveFunc, 0, -25, 0,  NULL, 0, NULL,
+	{FRAME_tswimL4, PlayerMoveFunc, 0, -100, 0, NULL, 0, NULL},
+	{FRAME_tswimL3, PlayerMoveFunc, 0, -75, 0,  NULL, 0, NULL},
+	{FRAME_tswimL2, PlayerMoveFunc, 0, -50, 0,  NULL, 0, NULL},
+	{FRAME_tswimL1, PlayerMoveFunc, 0, -25, 0,  NULL, 0, NULL},
 };
 panimmove_t	player_move_sswim_left_stop = {4, player_frames_sswim_left_stop, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_sswim_right_stop[] =
+static panimframe_t player_frames_sswim_right_stop[] =
 {
-	FRAME_tswimR4, PlayerMoveFunc, 0, 100, 0, NULL, 0, NULL,
-	FRAME_tswimR3, PlayerMoveFunc, 0, 75,  0, NULL, 0, NULL,
-	FRAME_tswimR2, PlayerMoveFunc, 0, 50,  0, NULL, 0, NULL,
-	FRAME_tswimR1, PlayerMoveFunc, 0, 25,  0, NULL, 0, NULL,
+	{FRAME_tswimR4, PlayerMoveFunc, 0, 100, 0, NULL, 0, NULL},
+	{FRAME_tswimR3, PlayerMoveFunc, 0, 75,  0, NULL, 0, NULL},
+	{FRAME_tswimR2, PlayerMoveFunc, 0, 50,  0, NULL, 0, NULL},
+	{FRAME_tswimR1, PlayerMoveFunc, 0, 25,  0, NULL, 0, NULL},
 };
 panimmove_t	player_move_sswim_right_stop = {4, player_frames_sswim_right_stop, PlayerAnimLowerUpdate};
 
@@ -3322,164 +3322,164 @@ panimmove_t	player_move_sswim_right_stop = {4, player_frames_sswim_right_stop, P
 //****************************************************************
 
 
-panimframe_t player_frames_uswimfwd_go[] =
+static panimframe_t player_frames_uswimfwd_go[] =
 {
-	FRAME_resurf1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_resurf1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_uswimfwd_go = {1, player_frames_uswimfwd_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_uswimfwd[] =
+static panimframe_t player_frames_uswimfwd[] =
 {
-	FRAME_undrswmA1, PlayerSwimMoveFunc, 400, 0, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL,
-	FRAME_undrswmA2, PlayerSwimMoveFunc, 350, 0, 0, NULL, 0, NULL,
-	FRAME_undrswmA3, PlayerSwimMoveFunc, 300, 0, 0, NULL, 0, NULL,
-	FRAME_undrswmA4, PlayerSwimMoveFunc, 250, 0, 0, NULL, 0, NULL,
-	FRAME_undrswmA5, PlayerSwimMoveFunc, 650, 0, 0, NULL, 0, NULL, //stroke!
-	FRAME_undrswmA6, PlayerSwimMoveFunc, 600, 0, 0, NULL, 0, NULL,
-	FRAME_undrswmA7, PlayerSwimMoveFunc, 550, 0, 0, NULL, 0, NULL,
-	FRAME_undrswmA8, PlayerSwimMoveFunc, 500, 0, 0, NULL, 0, NULL,
-	FRAME_undrswmA9, PlayerSwimMoveFunc, 450, 0, 0, NULL, 0, NULL,
+	{FRAME_undrswmA1, PlayerSwimMoveFunc, 400, 0, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL},
+	{FRAME_undrswmA2, PlayerSwimMoveFunc, 350, 0, 0, NULL, 0, NULL},
+	{FRAME_undrswmA3, PlayerSwimMoveFunc, 300, 0, 0, NULL, 0, NULL},
+	{FRAME_undrswmA4, PlayerSwimMoveFunc, 250, 0, 0, NULL, 0, NULL},
+	{FRAME_undrswmA5, PlayerSwimMoveFunc, 650, 0, 0, NULL, 0, NULL}, //stroke!
+	{FRAME_undrswmA6, PlayerSwimMoveFunc, 600, 0, 0, NULL, 0, NULL},
+	{FRAME_undrswmA7, PlayerSwimMoveFunc, 550, 0, 0, NULL, 0, NULL},
+	{FRAME_undrswmA8, PlayerSwimMoveFunc, 500, 0, 0, NULL, 0, NULL},
+	{FRAME_undrswmA9, PlayerSwimMoveFunc, 450, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_uswimfwd = {9, player_frames_uswimfwd, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_uswimfwd_end[] =
+static panimframe_t player_frames_uswimfwd_end[] =
 {
-	FRAME_resurf1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_resurf1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_uswimfwd_end = {1, player_frames_uswimfwd_end, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_uswimbackgo [] =
+static panimframe_t player_frames_uswimbackgo [] =
 {
-	FRAME_tnsubckswm1, PlayerSwimMoveFunc, -75, 0, 0, NULL, 0, NULL,
-	FRAME_tnsubckswm2, PlayerSwimMoveFunc, -125, 0, 0, NULL, 0, NULL,
+	{FRAME_tnsubckswm1, PlayerSwimMoveFunc, -75, 0, 0, NULL, 0, NULL},
+	{FRAME_tnsubckswm2, PlayerSwimMoveFunc, -125, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_uswimbackgo = {2, player_frames_uswimbackgo, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_uswimback [] =
+static panimframe_t player_frames_uswimback [] =
 {
-	FRAME_subckswm1, PlayerSwimMoveFunc, -170, 0, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL,
-	FRAME_subckswm2, PlayerSwimMoveFunc, -200, 0, 0, NULL, 0, NULL,
-	FRAME_subckswm3, PlayerSwimMoveFunc, -230, 0, 0, NULL, 0, NULL,
-	FRAME_subckswm4, PlayerSwimMoveFunc, -250, 0, 0, PlayerActionSwim, 0, NULL,
-	FRAME_subckswm5, PlayerSwimMoveFunc, -230, 0, 0, NULL, 0, NULL,
-	FRAME_subckswm6, PlayerSwimMoveFunc, -200, 0, 0, NULL, 0, NULL,
-	FRAME_subckswm7, PlayerSwimMoveFunc, -170, 0, 0, NULL, 0, NULL,
+	{FRAME_subckswm1, PlayerSwimMoveFunc, -170, 0, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL},
+	{FRAME_subckswm2, PlayerSwimMoveFunc, -200, 0, 0, NULL, 0, NULL},
+	{FRAME_subckswm3, PlayerSwimMoveFunc, -230, 0, 0, NULL, 0, NULL},
+	{FRAME_subckswm4, PlayerSwimMoveFunc, -250, 0, 0, PlayerActionSwim, 0, NULL},
+	{FRAME_subckswm5, PlayerSwimMoveFunc, -230, 0, 0, NULL, 0, NULL},
+	{FRAME_subckswm6, PlayerSwimMoveFunc, -200, 0, 0, NULL, 0, NULL},
+	{FRAME_subckswm7, PlayerSwimMoveFunc, -170, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_uswimback = {7, player_frames_uswimback, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_uswimbackstop [] =
+static panimframe_t player_frames_uswimbackstop [] =
 {
-	FRAME_tnsubckswm1, PlayerSwimMoveFunc, -15, 0, 0, NULL, 0, NULL,
-	FRAME_tnsubckswm1, PlayerSwimMoveFunc, -30, 0, 0, NULL, 0, NULL,
+	{FRAME_tnsubckswm1, PlayerSwimMoveFunc, -15, 0, 0, NULL, 0, NULL},
+	{FRAME_tnsubckswm1, PlayerSwimMoveFunc, -30, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_uswimbackstop = {1, player_frames_uswimbackstop, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_uswim_left_go[] =
+static panimframe_t player_frames_uswim_left_go[] =
 {
-	FRAME_trnswmL1, PlayerMoveFunc, 0, -50, 0, NULL, 0, NULL,
-	FRAME_trnswmL2, PlayerMoveFunc, 0, -100, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL,
+	{FRAME_trnswmL1, PlayerMoveFunc, 0, -50, 0, NULL, 0, NULL},
+	{FRAME_trnswmL2, PlayerMoveFunc, 0, -100, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL},
 };
 panimmove_t	player_move_uswim_left_go = {2, player_frames_uswim_left_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_uswim_right_go[] =
+static panimframe_t player_frames_uswim_right_go[] =
 {
-	FRAME_trnswmR1, PlayerMoveFunc, 0, 50, 0, NULL, 0, NULL,
-	FRAME_trnswmR2, PlayerMoveFunc, 0, 100, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL,
+	{FRAME_trnswmR1, PlayerMoveFunc, 0, 50, 0, NULL, 0, NULL},
+	{FRAME_trnswmR2, PlayerMoveFunc, 0, 100, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL},
 };
 panimmove_t	player_move_uswim_right_go = {2, player_frames_uswim_right_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_uswim_left[] =
+static panimframe_t player_frames_uswim_left[] =
 {
-	FRAME_swmL1, PlayerMoveFunc, 0, -200, 0, NULL, 0, NULL,
-	FRAME_swmL2, PlayerMoveFunc, 0, -220, 0, NULL, 0, NULL,
-	FRAME_swmL3, PlayerMoveFunc, 0, -240, 0, NULL, 0, NULL,
-	FRAME_swmL4, PlayerMoveFunc, 0, -250, 0, NULL, 0, NULL,
-	FRAME_swmL5, PlayerMoveFunc, 0, -240, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL,
-	FRAME_swmL6, PlayerMoveFunc, 0, -220, 0, NULL, 0, NULL,
-	FRAME_swmL7, PlayerMoveFunc, 0, -200, 0, NULL, 0, NULL,
-	FRAME_swmL8, PlayerMoveFunc, 0, -150, 0, NULL, 0, NULL,
-	FRAME_swmL9, PlayerMoveFunc, 0, -100, 0, NULL, 0, NULL,
+	{FRAME_swmL1, PlayerMoveFunc, 0, -200, 0, NULL, 0, NULL},
+	{FRAME_swmL2, PlayerMoveFunc, 0, -220, 0, NULL, 0, NULL},
+	{FRAME_swmL3, PlayerMoveFunc, 0, -240, 0, NULL, 0, NULL},
+	{FRAME_swmL4, PlayerMoveFunc, 0, -250, 0, NULL, 0, NULL},
+	{FRAME_swmL5, PlayerMoveFunc, 0, -240, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL},
+	{FRAME_swmL6, PlayerMoveFunc, 0, -220, 0, NULL, 0, NULL},
+	{FRAME_swmL7, PlayerMoveFunc, 0, -200, 0, NULL, 0, NULL},
+	{FRAME_swmL8, PlayerMoveFunc, 0, -150, 0, NULL, 0, NULL},
+	{FRAME_swmL9, PlayerMoveFunc, 0, -100, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_uswim_left = {9, player_frames_uswim_left, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_uswim_right[] =
+static panimframe_t player_frames_uswim_right[] =
 {
-	FRAME_swmR1, PlayerMoveFunc, 0, 200, 0, NULL, 0, NULL,
-	FRAME_swmR2, PlayerMoveFunc, 0, 220, 0, NULL, 0, NULL,
-	FRAME_swmR3, PlayerMoveFunc, 0, 240, 0, NULL, 0, NULL,
-	FRAME_swmR4, PlayerMoveFunc, 0, 250, 0, NULL, 0, NULL,
-	FRAME_swmR5, PlayerMoveFunc, 0, 240, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL,
-	FRAME_swmR6, PlayerMoveFunc, 0, 220, 0, NULL, 0, NULL,
-	FRAME_swmR7, PlayerMoveFunc, 0, 200, 0, NULL, 0, NULL,
-	FRAME_swmR8, PlayerMoveFunc, 0, 150, 0, NULL, 0, NULL,
-	FRAME_swmR9, PlayerMoveFunc, 0, 100, 0, NULL, 0, NULL,
+	{FRAME_swmR1, PlayerMoveFunc, 0, 200, 0, NULL, 0, NULL},
+	{FRAME_swmR2, PlayerMoveFunc, 0, 220, 0, NULL, 0, NULL},
+	{FRAME_swmR3, PlayerMoveFunc, 0, 240, 0, NULL, 0, NULL},
+	{FRAME_swmR4, PlayerMoveFunc, 0, 250, 0, NULL, 0, NULL},
+	{FRAME_swmR5, PlayerMoveFunc, 0, 240, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL},
+	{FRAME_swmR6, PlayerMoveFunc, 0, 220, 0, NULL, 0, NULL},
+	{FRAME_swmR7, PlayerMoveFunc, 0, 200, 0, NULL, 0, NULL},
+	{FRAME_swmR8, PlayerMoveFunc, 0, 150, 0, NULL, 0, NULL},
+	{FRAME_swmR9, PlayerMoveFunc, 0, 100, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_uswim_right = {9, player_frames_uswim_right, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_uswim_left_stop[] =
+static panimframe_t player_frames_uswim_left_stop[] =
 {
-	FRAME_trnswmL2, PlayerMoveFunc, 0, -100, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL,
-	FRAME_trnswmL1, PlayerMoveFunc, 0, -50, 0, NULL, 0, NULL,
+	{FRAME_trnswmL2, PlayerMoveFunc, 0, -100, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL},
+	{FRAME_trnswmL1, PlayerMoveFunc, 0, -50, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_uswim_left_stop = {2, player_frames_uswim_left_stop, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_uswim_right_stop[] =
+static panimframe_t player_frames_uswim_right_stop[] =
 {
-	FRAME_trnswmR2, PlayerMoveFunc, 0, 100, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL,
-	FRAME_trnswmR1, PlayerMoveFunc, 0, 50, 0, NULL, 0, NULL,
+	{FRAME_trnswmR2, PlayerMoveFunc, 0, 100, 0, PlayerActionSwimSound, SOUND_SWIM_UNDER, NULL},
+	{FRAME_trnswmR1, PlayerMoveFunc, 0, 50, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_uswim_right_stop = {2, player_frames_uswim_right_stop, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_idle_under[] =
+static panimframe_t player_frames_idle_under[] =
 {
-	FRAME_idlundr1, PlayerMoveFunc, 0, 0, 0, PlayerActionSwimIdleSound, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_idlundr20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_idlundr1, PlayerMoveFunc, 0, 0, 0, PlayerActionSwimIdleSound, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_idlundr20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t	player_move_idle_under = {20, player_frames_idle_under, NULL};
 
-panimframe_t player_frames_dive1[] =
+static panimframe_t player_frames_dive1[] =
 {
-	FRAME_subdive1, PlayerMoveFunc, 400, 0, -100, NULL, 0, NULL,
-	FRAME_subdive2, PlayerMoveFunc, 350, 0, -50,  NULL, 0, NULL,
-	FRAME_subdive3, PlayerMoveFunc, 300, 0, -50,  NULL, 0, NULL,
-	FRAME_subdive4, PlayerMoveFunc, 250, 0, -25,  NULL, 0, NULL,
-	FRAME_subdive5, PlayerMoveFunc, 200, 0, -5,   NULL, 0, NULL,
-	FRAME_subdive6, PlayerMoveFunc, 150, 0, 0, NULL, 0, NULL,
-	FRAME_subdive7, PlayerMoveFunc, 125, 0, 0, NULL, 0, NULL,
-	FRAME_subdive8, PlayerMoveFunc, 100, 0, 0, NULL, 0, NULL,
-	FRAME_subdive9, PlayerMoveFunc, 80,  0, 0, NULL, 0, NULL,
+	{FRAME_subdive1, PlayerMoveFunc, 400, 0, -100, NULL, 0, NULL},
+	{FRAME_subdive2, PlayerMoveFunc, 350, 0, -50,  NULL, 0, NULL},
+	{FRAME_subdive3, PlayerMoveFunc, 300, 0, -50,  NULL, 0, NULL},
+	{FRAME_subdive4, PlayerMoveFunc, 250, 0, -25,  NULL, 0, NULL},
+	{FRAME_subdive5, PlayerMoveFunc, 200, 0, -5,   NULL, 0, NULL},
+	{FRAME_subdive6, PlayerMoveFunc, 150, 0, 0, NULL, 0, NULL},
+	{FRAME_subdive7, PlayerMoveFunc, 125, 0, 0, NULL, 0, NULL},
+	{FRAME_subdive8, PlayerMoveFunc, 100, 0, 0, NULL, 0, NULL},
+	{FRAME_subdive9, PlayerMoveFunc, 80,  0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_dive1 = {9, player_frames_dive1, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_resurface[] =
+static panimframe_t player_frames_resurface[] =
 {
-	FRAME_resurf1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_resurf2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_resurf3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_resurf4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_resurf5, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_resurf1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_resurf2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_resurf3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_resurf4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_resurf5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_resurface = {5, player_frames_resurface, PlayerAnimLowerUpdate};
 
@@ -3492,35 +3492,35 @@ panimmove_t	player_move_resurface = {5, player_frames_resurface, PlayerAnimLower
 //    pullupwall - transition, pulling himself up wall to standing
 //----------------------------------------------------------------------------
 #if 0
-panimframe_t player_frames_grabstartwall [] =
+static panimframe_t player_frames_grabstartwall [] =
 {
-	FRAME_grab6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_grab7, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_grab6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_grab7, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_grabstartwall = {2, player_frames_grabstartwall, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_grabhold [] =
+static panimframe_t player_frames_grabhold [] =
 {
-	FRAME_grab8, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_grab8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_grabhold = {1, player_frames_grabhold, PlayerAnimLowerUpdate};
 #endif
 
-panimframe_t player_frames_pullupwall [] =
+static panimframe_t player_frames_pullupwall [] =
 {
-	FRAME_pullup1, PlayerPullupHeight, 40, 0, 0, PlayerActionClimbStartSound, 0, NULL,
-	FRAME_pullup2, PlayerPullupHeight, 40, 0, 0, NULL, 0, NULL,
-	FRAME_pullup3, PlayerPullupHeight, 38, 0, 0, PlayerActionClimbWallSound, 0, NULL,
-	FRAME_pullup4, PlayerPullupHeight, 32, 0, 0, NULL, 0, NULL,
-	FRAME_pullup5, PlayerPullupHeight, 24, 0, 0, NULL, 0, NULL,
-	FRAME_pullup6, PlayerPullupHeight, 13, 0, 0, NULL, 0, NULL,
-	FRAME_pullup7, PlayerPullupHeight,  0, 0, 0, NULL, 0, NULL,
-	FRAME_pullup8, PlayerPullupHeight,-10, 0, 0, NULL, 0, NULL,
-	FRAME_pullup9, PlayerPullupHeight,-20, 0, 0, NULL, 0, NULL,
-	FRAME_pullup10,PlayerPullupHeight,-38, 0, 0, NULL, 0, NULL,
-	FRAME_pullup11,PlayerPullupHeight,-42, 1, 0, NULL, 0, NULL,
-	FRAME_pullup12,PlayerPullupHeight,-44, 2, 0, PlayerActionClimbFinishSound, 0, NULL,
+	{FRAME_pullup1, PlayerPullupHeight, 40, 0, 0, PlayerActionClimbStartSound, 0, NULL},
+	{FRAME_pullup2, PlayerPullupHeight, 40, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup3, PlayerPullupHeight, 38, 0, 0, PlayerActionClimbWallSound, 0, NULL},
+	{FRAME_pullup4, PlayerPullupHeight, 32, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup5, PlayerPullupHeight, 24, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup6, PlayerPullupHeight, 13, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup7, PlayerPullupHeight,  0, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup8, PlayerPullupHeight,-10, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup9, PlayerPullupHeight,-20, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup10,PlayerPullupHeight,-38, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup11,PlayerPullupHeight,-42, 1, 0, NULL, 0, NULL},
+	{FRAME_pullup12,PlayerPullupHeight,-44, 2, 0, PlayerActionClimbFinishSound, 0, NULL},
 };
 panimmove_t player_move_pullupwall = {12, player_frames_pullupwall, PlayerAnimLowerUpdate};
 
@@ -3529,29 +3529,29 @@ panimmove_t player_move_pullupwall = {12, player_frames_pullupwall, PlayerAnimLo
 //    vaultwall - pulling himself up a wall
 //    vaulthigh - pulling himself up a wall
 //----------------------------------------------------------------------------
-panimframe_t player_frames_vaultwall [] =
+static panimframe_t player_frames_vaultwall [] =
 {
-	FRAME_pullup5, PlayerPullupHeight,   24, 0, 0, PlayerActionClimbStartSound, 0, NULL,
-	FRAME_pullup6, PlayerPullupHeight,   13, 0, 0, NULL, 0, NULL,
-	FRAME_pullup7, PlayerPullupHeight,   8,  0, 0, NULL, 0, NULL,
-	FRAME_pullup8, PlayerPullupHeight,  -8,  0, 0, NULL, 0, NULL,
-	FRAME_pullup9, PlayerPullupHeight,  -32, 0, 0, NULL, 0, NULL,
-	FRAME_pullup10, PlayerPullupHeight, -32, 0, 0, NULL, 0, NULL,
-	FRAME_pullup11, PlayerPullupHeight, -36, 0, 0, NULL, 0, NULL,
-	FRAME_pullup12, PlayerPullupHeight, -42, 2, 0, PlayerActionClimbFinishSound, 0, NULL,
+	{FRAME_pullup5, PlayerPullupHeight,   24, 0, 0, PlayerActionClimbStartSound, 0, NULL},
+	{FRAME_pullup6, PlayerPullupHeight,   13, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup7, PlayerPullupHeight,   8,  0, 0, NULL, 0, NULL},
+	{FRAME_pullup8, PlayerPullupHeight,  -8,  0, 0, NULL, 0, NULL},
+	{FRAME_pullup9, PlayerPullupHeight,  -32, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup10, PlayerPullupHeight, -32, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup11, PlayerPullupHeight, -36, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup12, PlayerPullupHeight, -42, 2, 0, PlayerActionClimbFinishSound, 0, NULL},
 };
 panimmove_t player_move_vaultwall = {10, player_frames_vaultwall, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_vaulthigh [] =
+static panimframe_t player_frames_vaulthigh [] =
 {
-	FRAME_pullup5, PlayerPullupHeight,   24, 0, 0, PlayerActionClimbStartSound, 0, NULL,
-	FRAME_pullup6, PlayerPullupHeight,   13, 0, 0, NULL, 0, NULL,
-	FRAME_pullup7, PlayerPullupHeight,   8,  0, 0, NULL, 0, NULL,
-	FRAME_pullup8, PlayerPullupHeight,  -8,  0, 0, NULL, 0, NULL,
-	FRAME_pullup9, PlayerPullupHeight,  -32, 0, 0, NULL, 0, NULL,
-	FRAME_pullup10, PlayerPullupHeight, -32, 0, 0, NULL, 0, NULL,
-	FRAME_pullup11, PlayerPullupHeight, -36, 0, 0, NULL, 0, NULL,
-	FRAME_pullup12, PlayerPullupHeight, -42, 2, 0, PlayerActionClimbFinishSound, 0, NULL,
+	{FRAME_pullup5, PlayerPullupHeight,   24, 0, 0, PlayerActionClimbStartSound, 0, NULL},
+	{FRAME_pullup6, PlayerPullupHeight,   13, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup7, PlayerPullupHeight,   8,  0, 0, NULL, 0, NULL},
+	{FRAME_pullup8, PlayerPullupHeight,  -8,  0, 0, NULL, 0, NULL},
+	{FRAME_pullup9, PlayerPullupHeight,  -32, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup10, PlayerPullupHeight, -32, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup11, PlayerPullupHeight, -36, 0, 0, NULL, 0, NULL},
+	{FRAME_pullup12, PlayerPullupHeight, -42, 2, 0, PlayerActionClimbFinishSound, 0, NULL},
 };
 panimmove_t player_move_vaulthigh = {10, player_frames_vaulthigh, PlayerAnimLowerUpdate};
 
@@ -3560,23 +3560,23 @@ panimmove_t player_move_vaulthigh = {10, player_frames_vaulthigh, PlayerAnimLowe
 //    jumpfliphandspringgo - start of backwards handspring
 //    jumpfliphandspring - cycle of handspring which can be run over and over
 //----------------------------------------------------------------------------
-panimframe_t player_frames_jumpfliphandspringgo [] =
+static panimframe_t player_frames_jumpfliphandspringgo [] =
 {
-	FRAME_bkflip4, PlayerMoveFunc, -60*UNJH_VALUE, 0, 0, NULL, 0, NULL,
+	{FRAME_bkflip4, PlayerMoveFunc, -60*UNJH_VALUE, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_jumpfliphandspringgo = {1, player_frames_jumpfliphandspringgo, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_jumpfliphandspring [] =
+static panimframe_t player_frames_jumpfliphandspring [] =
 {
-	FRAME_bkflip6, PlayerMoveFunc, -380*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip7, PlayerMoveFunc, -340*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip8, PlayerMoveFunc, -300*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip9, PlayerMoveFunc, -220*UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_bkflip10, PlayerMoveFunc, -220*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip11, PlayerMoveFunc, -380*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip12, PlayerMoveFunc, -300*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip13, PlayerMoveFunc, -280*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip14, PlayerMoveFunc, -160*UNJH_VALUE, 0, 0,  SpawnDustPuff, 0, NULL,
+	{FRAME_bkflip6, PlayerMoveFunc, -380*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip7, PlayerMoveFunc, -340*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip8, PlayerMoveFunc, -300*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip9, PlayerMoveFunc, -220*UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_bkflip10, PlayerMoveFunc, -220*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip11, PlayerMoveFunc, -380*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip12, PlayerMoveFunc, -300*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip13, PlayerMoveFunc, -280*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip14, PlayerMoveFunc, -160*UNJH_VALUE, 0, 0,  SpawnDustPuff, 0, NULL},
 };
 panimmove_t player_move_jumpfliphandspring = {9, player_frames_jumpfliphandspring, PlayerAnimLowerUpdate};
 
@@ -3584,19 +3584,19 @@ panimmove_t player_move_jumpfliphandspring = {9, player_frames_jumpfliphandsprin
 //  PLAYER BACKFLIP ANIMATIONS
 //    flipback - backwards flip
 //----------------------------------------------------------------------------
-panimframe_t player_frames_flipback [] =
+static panimframe_t player_frames_flipback [] =
 {
-	FRAME_bkflip15, PlayerMoveForce, -125*UNJH_VALUE, 0, 0, PlayerActionJumpBack, 250, NULL,
-	FRAME_bkflip16, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip17, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip18, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip19, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip20, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip21, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_bkflip22, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_bkflip23, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_bkflip24, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_bkflip25, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL,
+	{FRAME_bkflip15, PlayerMoveForce, -125*UNJH_VALUE, 0, 0, PlayerActionJumpBack, 250, NULL},
+	{FRAME_bkflip16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip19, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip20, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_bkflip22, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_bkflip23, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_bkflip24, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_bkflip25, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL},
 };
 panimmove_t player_move_jumpflipback = {11, player_frames_flipback, PlayerAnimLowerUpdate};
 
@@ -3609,46 +3609,46 @@ panimmove_t player_move_jumpflipback = {11, player_frames_flipback, PlayerAnimLo
 //    pivotright - cycle of pivot right
 //    pivotrightend - transition from pivot to standing
 //----------------------------------------------------------------------------
-panimframe_t player_frames_pivotleftgo [] =
+static panimframe_t player_frames_pivotleftgo [] =
 {
-	FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Lpivot2, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP, NULL,
+	{FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Lpivot2, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP, NULL},
 };
 panimmove_t player_move_pivotleftgo = {2, player_frames_pivotleftgo, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_pivotleft [] =
+static panimframe_t player_frames_pivotleft [] =
 {
-	FRAME_Lpivot3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Lpivot4, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP2, NULL,
+	{FRAME_Lpivot3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Lpivot4, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP2, NULL},
 };
 panimmove_t player_move_pivotleft = {2, player_frames_pivotleft, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_pivotleftend [] =
+static panimframe_t player_frames_pivotleftend [] =
 {
-	FRAME_Lpivot4, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP, NULL,
+	{FRAME_Lpivot4, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP, NULL},
 };
 panimmove_t player_move_pivotleftend = {1, player_frames_pivotleftend, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_pivotrightgo [] =
+static panimframe_t player_frames_pivotrightgo [] =
 {
-	FRAME_Lpivot4, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP, NULL,
-	FRAME_Lpivot3, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Lpivot4, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP, NULL},
+	{FRAME_Lpivot3, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_pivotrightgo = {2, player_frames_pivotrightgo, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_pivotright [] =
+static panimframe_t player_frames_pivotright [] =
 {
-	FRAME_Lpivot2, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP2, NULL,
-	FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Lpivot2, NULL, 0, 0, 0, PlayerActionFootstep, STEP_CREEP2, NULL},
+	{FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_pivotright = {2, player_frames_pivotright, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_pivotrightend [] =
+static panimframe_t player_frames_pivotrightend [] =
 {
-	FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_pivotrightend = {1, player_frames_pivotrightend, PlayerAnimLowerUpdate};
 
@@ -3656,9 +3656,9 @@ panimmove_t player_move_pivotrightend = {1, player_frames_pivotrightend, PlayerA
 //  PLAYER NOTHING ANIMATIONS
 //    nothing -
 //----------------------------------------------------------------------------
-panimframe_t player_frames_nothing [] =
+static panimframe_t player_frames_nothing [] =
 {
-	FRAME_jog5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_jog5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_nothing = {1, player_frames_nothing, PlayerAnimLowerUpdate};
 
@@ -3666,17 +3666,17 @@ panimmove_t player_move_nothing = {1, player_frames_nothing, PlayerAnimLowerUpda
 //  PLAYER TAKE PUZZLE PIECE ANIMATIONS
 //    takepuzzlepiece - taking a puzzle piece
 //----------------------------------------------------------------------------
-panimframe_t player_frames_takepuzzlepiece [] =
+static panimframe_t player_frames_takepuzzlepiece [] =
 {
-	FRAME_phbuton1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton7, NULL, 0, 0, 0, PlayerActionTakePuzzle, 0, NULL,
-	FRAME_phbuton8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_phbuton1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton7, NULL, 0, 0, 0, PlayerActionTakePuzzle, 0, NULL},
+	{FRAME_phbuton8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_takepuzzlepiece = {9, player_frames_takepuzzlepiece, PlayerAnimLowerUpdate};
 
@@ -3684,17 +3684,17 @@ panimmove_t player_move_takepuzzlepiece = {9, player_frames_takepuzzlepiece, Pla
 //  PLAYER PUSH BUTTON ANIMATIONS
 //    pushbuttongo - the push button animations
 //----------------------------------------------------------------------------
-panimframe_t player_frames_pushbuttongo [] =
+static panimframe_t player_frames_pushbuttongo [] =
 {
-	FRAME_phbuton1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton7, NULL, 0, 0, 0, PlayerActionPushButton, 0, NULL,
-	FRAME_phbuton8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_phbuton9, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_phbuton1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton7, NULL, 0, 0, 0, PlayerActionPushButton, 0, NULL},
+	{FRAME_phbuton8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_phbuton9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_pushbuttongo = {9, player_frames_pushbuttongo, PlayerAnimLowerUpdate};
 
@@ -3702,15 +3702,15 @@ panimmove_t player_move_pushbuttongo = {9, player_frames_pushbuttongo, PlayerAni
 //  PLAYER PUSH LEVER ANIMATIONS
 //    pushlevergo - the push lever animations
 //----------------------------------------------------------------------------
-panimframe_t player_frames_pushleverleft [] =
+static panimframe_t player_frames_pushleverleft [] =
 {
-	FRAME_LswichL2R1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_LswichL2R2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_LswichL2R3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_LswichL2R4, NULL, 0, 0, 0, PlayerActionPushLever, 0, NULL,
-	FRAME_LswichL2R5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_LswichL2R6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_LswichL2R7, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_LswichL2R1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_LswichL2R2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_LswichL2R3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_LswichL2R4, NULL, 0, 0, 0, PlayerActionPushLever, 0, NULL},
+	{FRAME_LswichL2R5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_LswichL2R6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_LswichL2R7, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_pushleverleft = {7, player_frames_pushleverleft, PlayerAnimLowerUpdate};
 
@@ -3718,15 +3718,15 @@ panimmove_t player_move_pushleverleft = {7, player_frames_pushleverleft, PlayerA
 //  PLAYER PUSH LEVER ANIMATIONS
 //    pushlevergo - the push lever animations
 //----------------------------------------------------------------------------
-panimframe_t player_frames_pushleverright [] =
+static panimframe_t player_frames_pushleverright [] =
 {
-	FRAME_RswichR2L1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_RswichR2L2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_RswichR2L3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_RswichR2L4, NULL, 0, 0, 0, PlayerActionPushLever, 0, NULL,
-	FRAME_RswichR2L5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_RswichR2L6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_RswichR2L7, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_RswichR2L1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_RswichR2L2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_RswichR2L3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_RswichR2L4, NULL, 0, 0, 0, PlayerActionPushLever, 0, NULL},
+	{FRAME_RswichR2L5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_RswichR2L6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_RswichR2L7, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_pushleverright = {7, player_frames_pushleverright, PlayerAnimLowerUpdate};
 
@@ -3734,11 +3734,11 @@ panimmove_t player_move_pushleverright = {7, player_frames_pushleverright, Playe
 //  PLAYER PULL UP HALF WALL ANIMATIONS
 //    pulluphalfwall - pulling himself up a short wall
 //----------------------------------------------------------------------------
-panimframe_t player_frames_pulluphalfwall [] =
+static panimframe_t player_frames_pulluphalfwall [] =
 {
-	FRAME_Lhop1, PlayerPullupHeight, -32, 0, 1, NULL, 0, NULL,
-	FRAME_Lhop2, PlayerPullupHeight, -40, 0, 1, NULL, 0, NULL,
-	FRAME_Lhop3, PlayerPullupHeight, -44, 4, 1, PlayerActionClimbFinishSound, 0, NULL,
+	{FRAME_Lhop1, PlayerPullupHeight, -32, 0, 1, NULL, 0, NULL},
+	{FRAME_Lhop2, PlayerPullupHeight, -40, 0, 1, NULL, 0, NULL},
+	{FRAME_Lhop3, PlayerPullupHeight, -44, 4, 1, PlayerActionClimbFinishSound, 0, NULL},
 };
 panimmove_t player_move_pulluphalfwall = {3, player_frames_pulluphalfwall, PlayerAnimLowerUpdate};
 
@@ -3749,28 +3749,28 @@ panimmove_t player_move_pulluphalfwall = {3, player_frames_pulluphalfwall, Playe
 //    tumbleon2 -
 //----------------------------------------------------------------------------
 //MG
-panimframe_t player_frames_tumbleon1[] =
+static panimframe_t player_frames_tumbleon1[] =
 {
-	FRAME_rollA1, PlayerPullupHeight, -17, 0, 0, NULL, 0, NULL,
-	FRAME_rollA2, PlayerPullupHeight, -27, 0, 0, NULL, 0, NULL,
-	FRAME_rollA3, PlayerPullupHeight, -37, -1, 0, NULL, 0, NULL,
+	{FRAME_rollA1, PlayerPullupHeight, -17, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA2, PlayerPullupHeight, -27, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA3, PlayerPullupHeight, -37, -1, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_tumbleon1 = {3, player_frames_tumbleon1, PlayerAnimLowerUpdate};
 
 //MG
-panimframe_t player_frames_tumbleon2[] =
+static panimframe_t player_frames_tumbleon2[] =
 {
-	FRAME_rollA1, PlayerPullupHeight, -10, 0, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_rollA2, PlayerPullupHeight, -20, 0, 0, NULL, 0, NULL,
-	FRAME_rollA3, PlayerPullupHeight, -44, 4, 0, NULL, 0, NULL,
-	FRAME_rollA5, PlayerMoveALittle, 25, 0, 25, NULL, 0, NULL,
-	FRAME_rollA7, PlayerMoveALittle, 10, 0, 0, NULL, 0, NULL,
-	FRAME_rollA8, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL,
-	FRAME_rollA10, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL,
-	FRAME_rollA11, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL,
-	FRAME_rollA13, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL,
-	FRAME_rollA14, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL,
-	FRAME_rollA15, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_rollA1, PlayerPullupHeight, -10, 0, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_rollA2, PlayerPullupHeight, -20, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA3, PlayerPullupHeight, -44, 4, 0, NULL, 0, NULL},
+	{FRAME_rollA5, PlayerMoveALittle, 25, 0, 25, NULL, 0, NULL},
+	{FRAME_rollA7, PlayerMoveALittle, 10, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA8, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA10, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA11, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA13, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA14, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA15, PlayerMoveALittle, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_tumbleon2= {11, player_frames_tumbleon2, PlayerAnimLowerUpdate};
 
@@ -3780,21 +3780,21 @@ panimmove_t player_move_tumbleon2= {11, player_frames_tumbleon2, PlayerAnimLower
 //    crouchpivotleft - pivot to left while crouched
 //    crouchpivotright - pivot to right while crouched
 //----------------------------------------------------------------------------
-panimframe_t player_frames_crouchpivotleft [] =
+static panimframe_t player_frames_crouchpivotleft [] =
 {
-	FRAME_crhpvt1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt4, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_crhpvt1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_crouchpivotleft = {4, player_frames_crouchpivotleft, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_crouchpivotright [] =
+static panimframe_t player_frames_crouchpivotright [] =
 {
-	FRAME_crhpvt4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_crhpvt4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_crouchpivotright = {4, player_frames_crouchpivotright, PlayerAnimLowerUpdate};
 
@@ -3804,41 +3804,41 @@ panimmove_t player_move_crouchpivotright = {4, player_frames_crouchpivotright, P
 //    jumpflipleft - Flip to left side
 //    jumpflipright - Flip to right side
 //----------------------------------------------------------------------------
-panimframe_t player_frames_jumpflipleft [] =
+static panimframe_t player_frames_jumpflipleft [] =
 {
-	FRAME_Lflip1, PlayerMoveForce, 0, -250, 0, PlayerActionJump, 300, NULL,
-	FRAME_Lflip2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Lflip3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Lflip4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Lflip5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Lflip6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Lflip7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Lflip8, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip9, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip10, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip11, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip12, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip13, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Lflip14, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
+	{FRAME_Lflip1, PlayerMoveForce, 0, -250, 0, PlayerActionJump, 300, NULL},
+	{FRAME_Lflip2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Lflip3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Lflip4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Lflip5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Lflip6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Lflip7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Lflip8, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip9, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip10, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip11, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip12, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip13, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Lflip14, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
 };
 panimmove_t player_move_jumpflipleft = {14, player_frames_jumpflipleft, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_jumpflipright [] =
+static panimframe_t player_frames_jumpflipright [] =
 {
-	FRAME_Rflip1, PlayerMoveForce, 0, 250, 0, PlayerActionJump, 300, NULL,
-	FRAME_Rflip2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Rflip3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Rflip4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Rflip5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Rflip6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Rflip7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_Rflip8, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip9, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip10, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip11, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip12, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip13, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_Rflip14, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL,
+	{FRAME_Rflip1, PlayerMoveForce, 0, 250, 0, PlayerActionJump, 300, NULL},
+	{FRAME_Rflip2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Rflip3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Rflip4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Rflip5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Rflip6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Rflip7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_Rflip8, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip9, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip10, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip11, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip12, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip13, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_Rflip14, NULL, 0, 0, 0, PlayerActionCheckGrab, 0, NULL},
 };
 panimmove_t player_move_jumpflipright = {14, player_frames_jumpflipright, PlayerAnimLowerUpdate};
 
@@ -3854,152 +3854,152 @@ panimmove_t player_move_jumpflipright = {14, player_frames_jumpflipright, Player
 //    rstair16 -
 //----------------------------------------------------------------------------
 //left
-panimframe_t player_frames_lstair4 [] =
+static panimframe_t player_frames_lstair4 [] =
 {
-	FRAME_Lstair1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Lstair1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_lstair4 = {1, player_frames_lstair4, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_lstair8 [] =
+static panimframe_t player_frames_lstair8 [] =
 {
-	FRAME_Lstair2, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Lstair2, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_lstair8 = {1, player_frames_lstair8, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_lstair12 [] =
+static panimframe_t player_frames_lstair12 [] =
 {
-	FRAME_Lstair3, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Lstair3, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_lstair12 = {1, player_frames_lstair12, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_lstair16 [] =
+static panimframe_t player_frames_lstair16 [] =
 {
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_lstair16 = {1, player_frames_lstair16, PlayerAnimLowerUpdate};
 //right
-panimframe_t player_frames_rstair4 [] =
+static panimframe_t player_frames_rstair4 [] =
 {
-	FRAME_Rstair1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Rstair1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_rstair4 = {1, player_frames_rstair4, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_rstair8 [] =
+static panimframe_t player_frames_rstair8 [] =
 {
-	FRAME_Rstair2, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Rstair2, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_rstair8 = {1, player_frames_rstair8, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_rstair12 [] =
+static panimframe_t player_frames_rstair12 [] =
 {
-	FRAME_Rstair3, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Rstair3, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_rstair12 = {1, player_frames_rstair12, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_rstair16 [] =
+static panimframe_t player_frames_rstair16 [] =
 {
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_rstair16 = {1, player_frames_rstair16, PlayerAnimLowerUpdate};
 
 
 // Idle animations
 
-panimframe_t player_frames_standreadystart [] =
+static panimframe_t player_frames_standreadystart [] =
 {
-	FRAME_ready1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_ready1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_standreadystart = {3, player_frames_standreadystart, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_standready [] =
+static panimframe_t player_frames_standready [] =
 {
-	FRAME_ready4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready23, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready24, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready25, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready26, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_ready4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready23, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready24, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready25, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready26, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_standready = {23, player_frames_standready, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_standreadyend [] =
+static panimframe_t player_frames_standreadyend [] =
 {
-	FRAME_ready3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_ready1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_ready3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_ready1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_standreadyend = {3, player_frames_standreadyend, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_standlookleft [] =
+static panimframe_t player_frames_standlookleft [] =
 {
-	FRAME_lklft1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lklft22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_lklft1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lklft22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_standlookleft = {22, player_frames_standlookleft, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_standlookright [] =
+static panimframe_t player_frames_standlookright [] =
 {
-	FRAME_lkrt1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lkrt22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_lkrt1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lkrt22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_standlookright = {22, player_frames_standlookright, PlayerAnimLowerUpdate};
 
@@ -4011,97 +4011,97 @@ panimmove_t player_move_standlookright = {22, player_frames_standlookright, Play
 //----------------------------------------------------------------------------
 
 // ** DEFENSIVE SPELL ANIM UNUSED
-panimframe_t player_frames_defensivespell [] =
+static panimframe_t player_frames_defensivespell [] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,		// UNUSED
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},		// UNUSED
 };
 panimmove_t player_move_defensivespell = {1, player_frames_defensivespell, PlayerAnimLowerUpdate};
 
 /*
-panimframe_t player_frames_defensivespell [] =
+static panimframe_t player_frames_defensivespell [] =
 {
-	FRAME_dspell1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_dspell2, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_dspell1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_dspell2, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_defensivespell = {2, player_frames_defensivespell, PlayerAnimLowerUpdate};
 */
 
-panimframe_t player_frames_paina [] =
+static panimframe_t player_frames_paina [] =
 {
-	FRAME_smlpna1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_smlpna2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_smlpna3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_smlpna4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_smlpna1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_smlpna2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_smlpna3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_smlpna4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_paina = {4, player_frames_paina, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_painb [] =
+static panimframe_t player_frames_painb [] =
 {
-	FRAME_smlpnb2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_smlpnb4, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_smlpnb2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_smlpnb4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_painb = {2, player_frames_painb, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_pest1 [] =
+static panimframe_t player_frames_pest1 [] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, PlayFly, 0, PlayerAnimLowerIdle,
-	FRAME_breath2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestA14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle
+	{FRAME_breath1, NULL, 0, 0, 0, PlayFly, 0, PlayerAnimLowerIdle},
+	{FRAME_breath2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestA14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle}
 };
 panimmove_t player_move_pest1 = {22, player_frames_pest1, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_pest2 [] =
+static panimframe_t player_frames_pest2 [] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, PlayFly, 0, PlayerAnimLowerIdle,
-	FRAME_breath2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_breath8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB3, NULL, 0, 0, 0, PlaySlap, 0, PlayerAnimLowerIdle,
-	FRAME_pestB4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_pestB22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle
+	{FRAME_breath1, NULL, 0, 0, 0, PlayFly, 0, PlayerAnimLowerIdle},
+	{FRAME_breath2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath3, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_breath8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB1, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB2, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB3, NULL, 0, 0, 0, PlaySlap, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB4, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB5, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB6, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB7, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB8, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB9, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_pestB22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle}
 };
 panimmove_t player_move_pest2 = {30, player_frames_pest2, PlayerAnimLowerUpdate};
 
@@ -4111,51 +4111,51 @@ panimmove_t player_move_pest2 = {30, player_frames_pest2, PlayerAnimLowerUpdate}
 
 ==============*/
 
-panimframe_t player_frames_fallleft[] =
+static panimframe_t player_frames_fallleft[] =
 {
-	FRAME_Rstair1, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding,
-	FRAME_Rstair2, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding,
-	FRAME_Rstair3, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding,
+	{FRAME_Rstair1, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
+	{FRAME_Rstair2, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
+	{FRAME_Rstair3, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
 };
 panimmove_t player_move_fallleft = {4, player_frames_fallleft, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_fallright[] =
+static panimframe_t player_frames_fallright[] =
 {
-	FRAME_Lstair1, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding,
-	FRAME_Lstair2, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding,
-	FRAME_Lstair3, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding,
+	{FRAME_Lstair1, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
+	{FRAME_Lstair2, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
+	{FRAME_Lstair3, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
 };
 panimmove_t player_move_fallright = {4, player_frames_fallright, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_fallleftend[] =
+static panimframe_t player_frames_fallleftend[] =
 {
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
 };
 panimmove_t player_move_fallleftend = {10, player_frames_fallleftend, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_fallrightend[] =
+static panimframe_t player_frames_fallrightend[] =
 {
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
-	FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL,//BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, NULL}, // BranchLwrStanding,
 };
 panimmove_t player_move_fallrightend = {10, player_frames_fallrightend, PlayerAnimLowerUpdate};
 
@@ -4164,98 +4164,98 @@ void PlayerSetDead(playerinfo_t *playerinfo)
 	playerinfo->deadflag = DEAD_DEAD;
 }
 
-panimframe_t player_frames_death1[] =
+static panimframe_t player_frames_death1[] =
 {
-	FRAME_deathA1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA12, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA13, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_deathA14, NULL, 0, 0, 0, NULL, 0, PlayerSetDead,
+	{FRAME_deathA1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deathA14, NULL, 0, 0, 0, NULL, 0, PlayerSetDead},
 };
 panimmove_t player_move_death1 = {14, player_frames_death1, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_slide_forward[] =
+static panimframe_t player_frames_slide_forward[] =
 {
-	FRAME_slid4d1, NULL, 0, 0, 0, SpawnDustPuff, 0, PlayerPlaySlide,
-	FRAME_slid4d2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slid4d3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slid4d4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slid4d5, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_slid4d6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slid4d7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slid4d8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slid4d9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slid4d10, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_slid4d11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slid4d12, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_slid4d1, NULL, 0, 0, 0, SpawnDustPuff, 0, PlayerPlaySlide},
+	{FRAME_slid4d2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slid4d3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slid4d4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slid4d5, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_slid4d6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slid4d7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slid4d8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slid4d9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slid4d10, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_slid4d11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slid4d12, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_slide_forward = {12, player_frames_slide_forward, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_slide_backward[] =
+static panimframe_t player_frames_slide_backward[] =
 {
-	FRAME_slidbak1, NULL, 0, 0, 0, SpawnDustPuff, 0, PlayerPlaySlide,
-	FRAME_slidbak2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slidbak3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slidbak4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slidbak5, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_slidbak6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slidbak7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slidbak8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slidbak9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slidbak10, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_slidbak11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_slidbak12, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_slidbak1, NULL, 0, 0, 0, SpawnDustPuff, 0, PlayerPlaySlide},
+	{FRAME_slidbak2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slidbak3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slidbak4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slidbak5, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_slidbak6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slidbak7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slidbak8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slidbak9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slidbak10, NULL, 0, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_slidbak11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slidbak12, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_slide_backward = {12, player_frames_slide_backward, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_roll_l[] =
+static panimframe_t player_frames_roll_l[] =
 {
-	FRAME_roll1, PlayerMoveFunc, 0, -300*UNJH_VALUE, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_roll2, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_ROLL, NULL,
-	FRAME_roll3, PlayerMoveFunc, 0, -150*UNJH_VALUE, 0, NULL, 0, NULL,
-	FRAME_roll4, PlayerMoveFunc, 0, -150*UNJH_VALUE, 0, SpawnDustPuff, 0, NULL,
-	FRAME_roll5, PlayerMoveFunc, 0, -100*UNJH_VALUE, 0, NULL, 0, NULL,
-	FRAME_roll6, PlayerMoveFunc, 0, -100*UNJH_VALUE, 0, NULL, 0, NULL,
-	FRAME_roll7, PlayerMoveFunc, 0, -100*UNJH_VALUE,  0, NULL, 0, NULL,
-	FRAME_roll8, PlayerMoveFunc, 0, -50*UNJH_VALUE,  0, NULL, 0, NULL,
-	FRAME_roll9, PlayerMoveFunc, 0, -25*UNJH_VALUE,  0, NULL, 0, NULL,
+	{FRAME_roll1, PlayerMoveFunc, 0, -300*UNJH_VALUE, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_roll2, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_ROLL, NULL},
+	{FRAME_roll3, PlayerMoveFunc, 0, -150*UNJH_VALUE, 0, NULL, 0, NULL},
+	{FRAME_roll4, PlayerMoveFunc, 0, -150*UNJH_VALUE, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_roll5, PlayerMoveFunc, 0, -100*UNJH_VALUE, 0, NULL, 0, NULL},
+	{FRAME_roll6, PlayerMoveFunc, 0, -100*UNJH_VALUE, 0, NULL, 0, NULL},
+	{FRAME_roll7, PlayerMoveFunc, 0, -100*UNJH_VALUE,  0, NULL, 0, NULL},
+	{FRAME_roll8, PlayerMoveFunc, 0, -50*UNJH_VALUE,  0, NULL, 0, NULL},
+	{FRAME_roll9, PlayerMoveFunc, 0, -25*UNJH_VALUE,  0, NULL, 0, NULL},
 };
 panimmove_t	player_move_roll_l = {9, player_frames_roll_l, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_roll_r[] =
+static panimframe_t player_frames_roll_r[] =
 {
-	FRAME_roll9, PlayerMoveFunc, 0, 300*UNJH_VALUE, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_roll8, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_ROLL, NULL,
-	FRAME_roll7, PlayerMoveFunc, 0, 150*UNJH_VALUE, 0, NULL, 0, NULL,
-	FRAME_roll6, PlayerMoveFunc, 0, 150*UNJH_VALUE, 0, SpawnDustPuff, 0, NULL,
-	FRAME_roll5, PlayerMoveFunc, 0, 100*UNJH_VALUE, 0, NULL, 0, NULL,
-	FRAME_roll4, PlayerMoveFunc, 0, 100*UNJH_VALUE, 0, NULL, 0, NULL,
-	FRAME_roll3, PlayerMoveFunc, 0, 100*UNJH_VALUE,  0,NULL, 0, NULL,
-	FRAME_roll2, PlayerMoveFunc, 0, 50*UNJH_VALUE,  0, NULL, 0, NULL,
-	FRAME_roll1, PlayerMoveFunc, 0, 25*UNJH_VALUE,  0, NULL, 0, NULL,
+	{FRAME_roll9, PlayerMoveFunc, 0, 300*UNJH_VALUE, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_roll8, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_ROLL, NULL},
+	{FRAME_roll7, PlayerMoveFunc, 0, 150*UNJH_VALUE, 0, NULL, 0, NULL},
+	{FRAME_roll6, PlayerMoveFunc, 0, 150*UNJH_VALUE, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_roll5, PlayerMoveFunc, 0, 100*UNJH_VALUE, 0, NULL, 0, NULL},
+	{FRAME_roll4, PlayerMoveFunc, 0, 100*UNJH_VALUE, 0, NULL, 0, NULL},
+	{FRAME_roll3, PlayerMoveFunc, 0, 100*UNJH_VALUE,  0,NULL, 0, NULL},
+	{FRAME_roll2, PlayerMoveFunc, 0, 50*UNJH_VALUE,  0, NULL, 0, NULL},
+	{FRAME_roll1, PlayerMoveFunc, 0, 25*UNJH_VALUE,  0, NULL, 0, NULL},
 };
 panimmove_t	player_move_roll_r = {9, player_frames_roll_r, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_roll_b[] =
+static panimframe_t player_frames_roll_b[] =
 {
-	FRAME_backroll1, PlayerMoveFunc, -300*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_backroll2, PlayerMoveFunc, -200*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_ROLL, NULL,
-	FRAME_backroll3, PlayerMoveFunc, -150*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_backroll4, PlayerMoveFunc, -150*UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_backroll5, PlayerMoveFunc, -100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_backroll6, PlayerMoveFunc, -100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_backroll7, PlayerMoveFunc, -100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_backroll8, PlayerMoveFunc, -50*UNJH_VALUE,  0, 0, NULL, 0, NULL,
-	FRAME_backroll9, PlayerMoveFunc, -25*UNJH_VALUE,  0, 0, NULL, 0, NULL,
+	{FRAME_backroll1, PlayerMoveFunc, -300*UNJH_VALUE, 0, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_backroll2, PlayerMoveFunc, -200*UNJH_VALUE, 0, 0, PlayerActionFootstep, STEP_ROLL, NULL},
+	{FRAME_backroll3, PlayerMoveFunc, -150*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_backroll4, PlayerMoveFunc, -150*UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_backroll5, PlayerMoveFunc, -100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_backroll6, PlayerMoveFunc, -100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_backroll7, PlayerMoveFunc, -100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_backroll8, PlayerMoveFunc, -50*UNJH_VALUE,  0, 0, NULL, 0, NULL},
+	{FRAME_backroll9, PlayerMoveFunc, -25*UNJH_VALUE,  0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_roll_b = {9, player_frames_roll_b, PlayerAnimLowerUpdate};
 
@@ -4269,430 +4269,430 @@ panimmove_t	player_move_roll_b = {9, player_frames_roll_b, PlayerAnimLowerUpdate
 //	climb_start = staring out from the idle position into a pull (right / left)
 //	climb_off	= transfer off the rope
 //----------------------------------------------------------------------------
-panimframe_t player_frames_climb_on[] =
+static panimframe_t player_frames_climb_on[] =
 {
-	FRAME_grabrope1, PlayerClimbingMoveFunc, 0, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope2, PlayerClimbingMoveFunc, 2, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope3, PlayerClimbingMoveFunc, 8, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope4, PlayerClimbingMoveFunc, 16, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope5, PlayerClimbingMoveFunc, 8, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope6, PlayerClimbingMoveFunc, 4, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope7, PlayerClimbingMoveFunc, 2, 0, 0, NULL, 0, NULL,
+	{FRAME_grabrope1, PlayerClimbingMoveFunc, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope2, PlayerClimbingMoveFunc, 2, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope3, PlayerClimbingMoveFunc, 8, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope4, PlayerClimbingMoveFunc, 16, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope5, PlayerClimbingMoveFunc, 8, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope6, PlayerClimbingMoveFunc, 4, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope7, PlayerClimbingMoveFunc, 2, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_climb_on = {7, player_frames_climb_on, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_hold_r[] =
+static panimframe_t player_frames_climb_hold_r[] =
 {
-	FRAME_Ridle1,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle2,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle3,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle4,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle5,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle6,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle7,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle8,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle9,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle10, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle11, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle12, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle13, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle14, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle15, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle16, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle17, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle18, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle19, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle20, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Ridle21, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
+	{FRAME_Ridle1,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle2,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle3,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle4,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle5,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle6,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle7,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle8,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle9,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle10, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle11, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle12, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle13, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle14, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle15, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle16, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle17, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle18, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle19, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle20, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Ridle21, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
 };
 panimmove_t	player_move_climb_hold_r = {21, player_frames_climb_hold_r, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_hold_l[] =
+static panimframe_t player_frames_climb_hold_l[] =
 {
-	FRAME_Lidle1,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle2,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle3,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle4,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle5,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle6,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle7,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle8,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle9,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle10, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle11, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle12, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle13, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle14, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle15, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle16, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle17, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle18, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle19, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle20, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
-	FRAME_Lidle21, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle,
+	{FRAME_Lidle1,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle2,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle3,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle4,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle5,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle6,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle7,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle8,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle9,  PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle10, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle11, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle12, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle13, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle14, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle15, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle16, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle17, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle18, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle19, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle20, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
+	{FRAME_Lidle21, PlayerClimbingMoveFunc, 0, 0, 0, PlayerActionCheckRopeMove, 0, PlayerAnimLowerIdle},
 };
 panimmove_t	player_move_climb_hold_l = {21, player_frames_climb_hold_l, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_up_start_r[] =
+static panimframe_t player_frames_climb_up_start_r[] =
 {
-	FRAME_Rclmbstrt1, PlayerClimbingMoveFunc, 2, 0, 0, PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclmbstrt2, PlayerClimbingMoveFunc, 4, 0, 0, PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclmbstrt3, PlayerClimbingMoveFunc, 8, 0, 0, PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Rclmbstrt1, PlayerClimbingMoveFunc, 2, 0, 0, PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclmbstrt2, PlayerClimbingMoveFunc, 4, 0, 0, PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclmbstrt3, PlayerClimbingMoveFunc, 8, 0, 0, PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_up_start_r = {3, player_frames_climb_up_start_r, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_up_start_l[] =
+static panimframe_t player_frames_climb_up_start_l[] =
 {
-	FRAME_Lclmbstrt1, PlayerClimbingMoveFunc, 2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclmbstrt2, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclmbstrt3, PlayerClimbingMoveFunc, 8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Lclmbstrt1, PlayerClimbingMoveFunc, 2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclmbstrt2, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclmbstrt3, PlayerClimbingMoveFunc, 8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_up_start_l = {3, player_frames_climb_up_start_l, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_down_start_r[] =
+static panimframe_t player_frames_climb_down_start_r[] =
 {
-	FRAME_Rclmbstrt3, PlayerClimbingMoveFunc, -2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclmbstrt2, PlayerClimbingMoveFunc, -4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclmbstrt1, PlayerClimbingMoveFunc, -8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Rclmbstrt3, PlayerClimbingMoveFunc, -2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclmbstrt2, PlayerClimbingMoveFunc, -4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclmbstrt1, PlayerClimbingMoveFunc, -8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_down_start_r = {3, player_frames_climb_down_start_r, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_down_start_l[] =
+static panimframe_t player_frames_climb_down_start_l[] =
 {
-	FRAME_Lclmbstrt3, PlayerClimbingMoveFunc, -2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclmbstrt2, PlayerClimbingMoveFunc, -4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclmbstrt1, PlayerClimbingMoveFunc, -8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Lclmbstrt3, PlayerClimbingMoveFunc, -2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclmbstrt2, PlayerClimbingMoveFunc, -4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclmbstrt1, PlayerClimbingMoveFunc, -8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_down_start_l = {3, player_frames_climb_down_start_l, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_up_r[] =
+static panimframe_t player_frames_climb_up_r[] =
 {
-	FRAME_Rclimb1, PlayerClimbingMoveFunc, 2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclimb2, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclimb3, PlayerClimbingMoveFunc, 8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclimb4, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Rclimb1, PlayerClimbingMoveFunc, 2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclimb2, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclimb3, PlayerClimbingMoveFunc, 8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclimb4, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_up_r = {4, player_frames_climb_up_r, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_up_l[] =
+static panimframe_t player_frames_climb_up_l[] =
 {
-	FRAME_Lclimb1, PlayerClimbingMoveFunc, 2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclimb2, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclimb3, PlayerClimbingMoveFunc, 8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclimb4, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Lclimb1, PlayerClimbingMoveFunc, 2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclimb2, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclimb3, PlayerClimbingMoveFunc, 8, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclimb4, PlayerClimbingMoveFunc, 4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_up_l = {4, player_frames_climb_up_l, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_down_r[] =
+static panimframe_t player_frames_climb_down_r[] =
 {
-	FRAME_Rclimb4, PlayerClimbingMoveFunc, -6, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclimb3, PlayerClimbingMoveFunc, -12, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclimb2, PlayerClimbingMoveFunc, -4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rclimb1, PlayerClimbingMoveFunc, -2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Rclimb4, PlayerClimbingMoveFunc, -6, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclimb3, PlayerClimbingMoveFunc, -12, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclimb2, PlayerClimbingMoveFunc, -4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rclimb1, PlayerClimbingMoveFunc, -2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_down_r = {4, player_frames_climb_down_r, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_down_l[] =
+static panimframe_t player_frames_climb_down_l[] =
 {
-	FRAME_Lclimb4, PlayerClimbingMoveFunc, -6, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclimb3, PlayerClimbingMoveFunc, -12,0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclimb2, PlayerClimbingMoveFunc, -4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lclimb1, PlayerClimbingMoveFunc, -2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Lclimb4, PlayerClimbingMoveFunc, -6, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclimb3, PlayerClimbingMoveFunc, -12,0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclimb2, PlayerClimbingMoveFunc, -4, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lclimb1, PlayerClimbingMoveFunc, -2, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_down_l = {4, player_frames_climb_down_l, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_settle_r[] =
+static panimframe_t player_frames_climb_settle_r[] =
 {
-	FRAME_Rhndset1, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rhndset2, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Rhndset3, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Rhndset1, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rhndset2, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Rhndset3, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_settle_r = {3, player_frames_climb_settle_r, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_settle_l[] =
+static panimframe_t player_frames_climb_settle_l[] =
 {
-	FRAME_Lhndset1, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lhndset2, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lhndset3, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lhndset4, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
-	FRAME_Lhndset5, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL,
+	{FRAME_Lhndset1, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lhndset2, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lhndset3, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lhndset4, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
+	{FRAME_Lhndset5, PlayerClimbingMoveFunc, 0, 0, 0,  PlayerActionCheckRopeMove, 0, NULL},
 };
 panimmove_t	player_move_climb_settle_l = {5, player_frames_climb_settle_l, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_climb_off[] =
+static panimframe_t player_frames_climb_off[] =
 {
-	FRAME_grabrope7, NULL,  0, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope5,  NULL,  0, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope3,  NULL,  0, 0, 0, NULL, 0, NULL,
-	FRAME_grabrope1,  NULL,  0, 0, 0, NULL, 0, NULL,
+	{FRAME_grabrope7, NULL,  0, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope5,  NULL,  0, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope3,  NULL,  0, 0, 0, NULL, 0, NULL},
+	{FRAME_grabrope1,  NULL,  0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_climb_off = {4, player_frames_climb_off, PlayerAnimLowerUpdate};
 
 //
 
-panimframe_t player_frames_knockdown[] =
+static panimframe_t player_frames_knockdown[] =
 {
-	FRAME_kodown1,  NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown2,  NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown3,  NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown4,  NULL, 0, 0, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_kodown5,  NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown6,  NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown7,  NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown8,  NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown9,  NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown12, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown13, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown15, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown16, NULL, 0, 0, 0, NULL, 0, NULL
+	{FRAME_kodown1,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown2,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown3,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown4,  NULL, 0, 0, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_kodown5,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown6,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown7,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown8,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown9,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown16, NULL, 0, 0, 0, NULL, 0, NULL}
 };
 panimmove_t	player_move_knockdown = {16, player_frames_knockdown, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_knockdown_getup[] =
+static panimframe_t player_frames_knockdown_getup[] =
 {
-	FRAME_kodown17, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown18, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown19, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown20, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckUncrouchToFinishSeq,
-	FRAME_kodown21, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_kodown22, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_kodown17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown19, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown20, NULL, 0, 0, 0, NULL, 0, PlayerActionCheckUncrouchToFinishSeq},
+	{FRAME_kodown21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_kodown22, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_knockdown_getup = {6, player_frames_knockdown_getup, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_knockdown_evade[] =
+static panimframe_t player_frames_knockdown_evade[] =
 {
-	FRAME_backroll5, PlayerMoveFunc, -100*UNJH_VALUE, 0, 0, PlayerActionFootstep, 0, PlayerActionSetCrouchHeight,
-	FRAME_backroll6, PlayerMoveFunc, -90 *UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL,
-	FRAME_backroll7, PlayerMoveFunc, -75 *UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_backroll8, PlayerMoveFunc, -50 *UNJH_VALUE,  0, 0, NULL, 0, NULL,
-	FRAME_backroll9, PlayerMoveFunc, -25 *UNJH_VALUE,  0, 0, NULL, 0, NULL,
+	{FRAME_backroll5, PlayerMoveFunc, -100*UNJH_VALUE, 0, 0, PlayerActionFootstep, 0, PlayerActionSetCrouchHeight},
+	{FRAME_backroll6, PlayerMoveFunc, -90 *UNJH_VALUE, 0, 0, SpawnDustPuff, 0, NULL},
+	{FRAME_backroll7, PlayerMoveFunc, -75 *UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_backroll8, PlayerMoveFunc, -50 *UNJH_VALUE,  0, 0, NULL, 0, NULL},
+	{FRAME_backroll9, PlayerMoveFunc, -25 *UNJH_VALUE,  0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_knockdown_evade = {5, player_frames_knockdown_evade, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_shrine[] =
+static panimframe_t player_frames_shrine[] =
 {
-	FRAME_shrine1, NULL, 0, 0, 0, PlayerActionShrineEffect, 0, NULL,
-	FRAME_shrine2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_trnshrine1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_trnshrine2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_trnshrine3, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_shrine1, NULL, 0, 0, 0, PlayerActionShrineEffect, 0, NULL},
+	{FRAME_shrine2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_shrine10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_trnshrine1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_trnshrine2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_trnshrine3, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_shrine = {20, player_frames_shrine, PlayerAnimLowerUpdate};
 
 
 // *************** PUSH AND PULL ARE NO LONGER USED
 
-panimframe_t player_frames_pushpull_ready[] =
+static panimframe_t player_frames_pushpull_ready[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_pushpull_ready = {1, player_frames_pushpull_ready, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_pushpull_stand[] =
+static panimframe_t player_frames_pushpull_stand[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_pushpull_stand = {1, player_frames_pushpull_stand, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_push_go[] =
+static panimframe_t player_frames_push_go[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_push_go = {1, player_frames_push_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_push[] =
+static panimframe_t player_frames_push[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_push = {1, player_frames_push, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_push_end_l[] =
+static panimframe_t player_frames_push_end_l[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_push_end_l = {1, player_frames_push_end_l, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_push_end_r[] =
+static panimframe_t player_frames_push_end_r[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_push_end_r = {1, player_frames_push_end_r, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_pull_go[] =
+static panimframe_t player_frames_pull_go[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_pull_go = {1, player_frames_pull_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_pull[] =
+static panimframe_t player_frames_pull[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_pull = {1, player_frames_pull, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_pull_end[] =
+static panimframe_t player_frames_pull_end[] =
 {
-	FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_breath1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_pull_end = {1, player_frames_pull_end, PlayerAnimLowerUpdate};
 
 
 /*
-panimframe_t player_frames_pushpull_ready[] =
+static panimframe_t player_frames_pushpull_ready[] =
 {
-	FRAME_pushredy1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pushredy2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_pushredy3, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_pushredy1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pushredy2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pushredy3, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_pushpull_ready = {3, player_frames_pushpull_ready, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_pushpull_stand[] =
+static panimframe_t player_frames_pushpull_stand[] =
 {
-	FRAME_pushredy3, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_pushredy3, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_pushpull_stand = {1, player_frames_pushpull_stand, PlayerAnimLowerUpdate};
 
 
 
-panimframe_t player_frames_push_go[] =
+static panimframe_t player_frames_push_go[] =
 {
-	FRAME_pushgo1, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_pushgo2, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_pushgo3, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_pushgo4, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_pushgo5, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushgo6, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushgo7, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushgo8, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushgo9, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushgo10, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushgo11, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushgo12, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushgo13, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
+	{FRAME_pushgo1, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_pushgo2, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_pushgo3, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_pushgo4, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_pushgo5, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushgo6, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushgo7, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushgo8, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushgo9, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushgo10, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushgo11, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushgo12, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushgo13, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
 };
 panimmove_t	player_move_push_go = {13, player_frames_push_go, PlayerAnimLowerUpdate};
 
 
 
-panimframe_t player_frames_push[] =
+static panimframe_t player_frames_push[] =
 {
-	FRAME_pushing1, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushing2, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushing3, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushing4, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushing5, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushing6, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushing7, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
-	FRAME_pushing8, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL,
+	{FRAME_pushing1, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushing2, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushing3, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushing4, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushing5, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushing6, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushing7, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
+	{FRAME_pushing8, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, 100, NULL},
 };
 panimmove_t	player_move_push = {8, player_frames_push, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_push_end_l[] =
+static panimframe_t player_frames_push_end_l[] =
 {
-	FRAME_lpushend1, NULL, 0, 0, 0, PlayerActionMoveItem, 0, NULL,
-	FRAME_lpushend2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_lpushend3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_lpushend4, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_lpushend1, NULL, 0, 0, 0, PlayerActionMoveItem, 0, NULL},
+	{FRAME_lpushend2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_lpushend3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_lpushend4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_push_end_l = {4, player_frames_push_end_l, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_push_end_r[] =
+static panimframe_t player_frames_push_end_r[] =
 {
-	FRAME_rpushend1, NULL, 0, 0, 0, PlayerActionMoveItem, 0, NULL,
-	FRAME_rpushend2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_rpushend3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_rpushend4, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_rpushend1, NULL, 0, 0, 0, PlayerActionMoveItem, 0, NULL},
+	{FRAME_rpushend2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rpushend3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rpushend4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t	player_move_push_end_r = {4, player_frames_push_end_r, PlayerAnimLowerUpdate};
 
 
 
-panimframe_t player_frames_pull_go[] =
+static panimframe_t player_frames_pull_go[] =
 {
-	FRAME_startpull1, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_startpull2, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_startpull3, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_startpull4, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_startpull5, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_startpull6, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_startpull7, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_startpull8, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_startpull9, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_startpull10, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_startpull11, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_startpull12, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
+	{FRAME_startpull1, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_startpull2, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_startpull3, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_startpull4, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_startpull5, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_startpull6, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_startpull7, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_startpull8, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_startpull9, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_startpull10, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_startpull11, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_startpull12, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
 };
 panimmove_t	player_move_pull_go = {12, player_frames_pull_go, PlayerAnimLowerUpdate};
 
 
 
-panimframe_t player_frames_pull[] =
+static panimframe_t player_frames_pull[] =
 {
-	FRAME_pull1, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_pull2, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_pull3, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_pull4, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_pull5, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_pull6, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_pull7, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
-	FRAME_pull8, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL,
+	{FRAME_pull1, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_pull2, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_pull3, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_pull4, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_pull5, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_pull6, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_pull7, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
+	{FRAME_pull8, PlayerMoveFunc, 100*UNJH_VALUE, 0, 0, PlayerActionMoveItem, -100, NULL},
 };
 panimmove_t	player_move_pull = {8, player_frames_pull, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_pull_end[] =
+static panimframe_t player_frames_pull_end[] =
 {
-	FRAME_endpull1, NULL, 0, 0, 0, PlayerActionMoveItem, 0, NULL,
-	FRAME_endpull2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_endpull3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_endpull4, NULL, 0, 0, 0, NULL, 0, NULL
+	{FRAME_endpull1, NULL, 0, 0, 0, PlayerActionMoveItem, 0, NULL},
+	{FRAME_endpull2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_endpull3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_endpull4, NULL, 0, 0, 0, NULL, 0, NULL
 };
 panimmove_t	player_move_pull_end = {4, player_frames_pull_end, PlayerAnimLowerUpdate};
 */
@@ -4701,110 +4701,110 @@ panimmove_t	player_move_pull_end = {4, player_frames_pull_end, PlayerAnimLowerUp
 //  PLAYER TAKE PUZZLE PIECE ANIMATIONS
 //    takepuzzlepiece - taking a puzzle piece
 //----------------------------------------------------------------------------
-panimframe_t player_frames_takepuzzleunderwater [] =
+static panimframe_t player_frames_takepuzzleunderwater [] =
 {
-	FRAME_swmgrab1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab7, NULL, 0, 0, 0, PlayerActionTakePuzzle, 0, NULL,
-	FRAME_swmgrab8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_swmgrab11, NULL, 0, 0, 0, NULL, 0, NULL,
+	{FRAME_swmgrab1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab7, NULL, 0, 0, 0, PlayerActionTakePuzzle, 0, NULL},
+	{FRAME_swmgrab8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swmgrab11, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_takepuzzleunderwater = {11, player_frames_takepuzzleunderwater, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_drown[] =
+static panimframe_t player_frames_drown[] =
 {
-	FRAME_drown1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown12, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown13, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown15, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown16, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown17, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown18, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown19, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown20, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown21, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown22, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown23, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown24, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown25, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown26, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown27, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown28, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown29, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown30, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown31, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown32, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown33, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown34, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown35, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown36, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown37, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown38, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown39, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_drown40, NULL, 0, 0, 0, NULL, 0, PlayerSetDead,
+	{FRAME_drown1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown19, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown20, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown22, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown23, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown24, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown25, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown26, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown27, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown28, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown29, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown30, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown31, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown32, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown33, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown34, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown35, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown36, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown37, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown38, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown39, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_drown40, NULL, 0, 0, 0, NULL, 0, PlayerSetDead},
 };
 panimmove_t	player_move_drown = {40, player_frames_drown, PlayerAnimLowerUpdate};
 
 
-panimframe_t player_frames_rollfromfflip[] =
+static panimframe_t player_frames_rollfromfflip[] =
 {
-	FRAME_rollA11, PlayerMoveFunc, 240*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA12, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA13, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA14, PlayerMoveFunc, 120*UNJH_VALUE, 0, 0, NULL, 0, NULL,
-	FRAME_rollA15, PlayerMoveFunc, 60*UNJH_VALUE, 0, 0, NULL, 0, NULL,
+	{FRAME_rollA11, PlayerMoveFunc, 240*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA12, PlayerMoveFunc, 200*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA13, PlayerMoveFunc, 160*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA14, PlayerMoveFunc, 120*UNJH_VALUE, 0, 0, NULL, 0, NULL},
+	{FRAME_rollA15, PlayerMoveFunc, 60*UNJH_VALUE, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_rollfromfflip = {5, player_frames_rollfromfflip, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_forward_flip_l_go[] =
+static panimframe_t player_frames_forward_flip_l_go[] =
 {
-	FRAME_ritflip2, NULL, 0, 0, 0, PlayerActionFlip, 100, NULL,
+	{FRAME_ritflip2, NULL, 0, 0, 0, PlayerActionFlip, 100, NULL},
 };
 panimmove_t	player_move_forward_flip_l_go= {1, player_frames_forward_flip_l_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_forward_flip_r_go[] =
+static panimframe_t player_frames_forward_flip_r_go[] =
 {
-	FRAME_ritflip2, NULL, 0, 0, 0, PlayerActionFlip, 100, NULL,
+	{FRAME_ritflip2, NULL, 0, 0, 0, PlayerActionFlip, 100, NULL},
 };
 panimmove_t	player_move_forward_flip_r_go = {1, player_frames_forward_flip_r_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_forward_flip_l[] =
+static panimframe_t player_frames_forward_flip_l[] =
 {
-	FRAME_lftflip4, PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_lftflip5, PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL,
-	FRAME_lftflip6, PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL,
-	FRAME_lftflip7, PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckUncrouchToFinishSeq,
-	FRAME_lftflip8, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_lftflip9, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
+	{FRAME_lftflip4, PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_lftflip5, PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL},
+	{FRAME_lftflip6, PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL},
+	{FRAME_lftflip7, PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckUncrouchToFinishSeq},
+	{FRAME_lftflip8, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_lftflip9, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
 };
 panimmove_t	player_move_forward_flip_l = {6, player_frames_forward_flip_l, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_forward_flip_r[] =
+static panimframe_t player_frames_forward_flip_r[] =
 {
-	FRAME_ritflip4, PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionSetCrouchHeight,
-	FRAME_ritflip5, PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL,
-	FRAME_ritflip6, PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL,
-	FRAME_ritflip7, PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckUncrouchToFinishSeq,
-	FRAME_ritflip8, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
-	FRAME_ritflip9, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL,
+	{FRAME_ritflip4, PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionSetCrouchHeight},
+	{FRAME_ritflip5, PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL},
+	{FRAME_ritflip6, PlayerJumpNudge, 64, 0, 0, NULL, 0, NULL},
+	{FRAME_ritflip7, PlayerJumpNudge, 64, 0, 0, NULL, 0, PlayerActionCheckUncrouchToFinishSeq},
+	{FRAME_ritflip8, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
+	{FRAME_ritflip9, PlayerJumpNudge, 64, 0, 0, PlayerActionCheckGrab, 0, NULL},
 };
 panimmove_t	player_move_forward_flip_r = {6, player_frames_forward_flip_r, PlayerAnimLowerUpdate};
 
@@ -4814,548 +4814,548 @@ panimmove_t	player_move_forward_flip_r = {6, player_frames_forward_flip_r, Playe
 //			these structures!
 
 //Left
-panimframe_t player_frames_walk_strafe_left [] =
+static panimframe_t player_frames_walk_strafe_left [] =
 {
-	FRAME_Lstrafe1, PlayerMoveFunc, 160*UNJH_VALUE, -150, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkUnStrafe,
-	FRAME_Lstrafe2, PlayerMoveFunc, 170*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Lstrafe3, PlayerMoveFunc, 160*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Lstrafe4, PlayerMoveFunc, 155*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Lstrafe5, PlayerMoveFunc, 160*UNJH_VALUE, -150, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkUnStrafe,
-	FRAME_Lstrafe6, PlayerMoveFunc, 170*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Lstrafe7, PlayerMoveFunc, 160*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Lstrafe8, PlayerMoveFunc, 155*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
+	{FRAME_Lstrafe1, PlayerMoveFunc, 160*UNJH_VALUE, -150, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Lstrafe2, PlayerMoveFunc, 170*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Lstrafe3, PlayerMoveFunc, 160*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Lstrafe4, PlayerMoveFunc, 155*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Lstrafe5, PlayerMoveFunc, 160*UNJH_VALUE, -150, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Lstrafe6, PlayerMoveFunc, 170*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Lstrafe7, PlayerMoveFunc, 160*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Lstrafe8, PlayerMoveFunc, 155*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
 };
 panimmove_t player_move_walk_strafe_left = {8, player_frames_walk_strafe_left, PlayerAnimLowerUpdate};
 
 //	Right
-panimframe_t player_frames_walk_strafe_right [] =
+static panimframe_t player_frames_walk_strafe_right [] =
 {
-	FRAME_Rstrafe1, PlayerMoveFunc, 160*UNJH_VALUE, 150, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkUnStrafe,
-	FRAME_Rstrafe2, PlayerMoveFunc, 170*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Rstrafe3, PlayerMoveFunc, 160*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Rstrafe4, PlayerMoveFunc, 155*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Rstrafe5, PlayerMoveFunc, 160*UNJH_VALUE, 150, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkUnStrafe,
-	FRAME_Rstrafe6, PlayerMoveFunc, 170*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Rstrafe7, PlayerMoveFunc, 160*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
-	FRAME_Rstrafe8, PlayerMoveFunc, 155*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe,
+	{FRAME_Rstrafe1, PlayerMoveFunc, 160*UNJH_VALUE, 150, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Rstrafe2, PlayerMoveFunc, 170*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Rstrafe3, PlayerMoveFunc, 160*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Rstrafe4, PlayerMoveFunc, 155*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Rstrafe5, PlayerMoveFunc, 160*UNJH_VALUE, 150, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Rstrafe6, PlayerMoveFunc, 170*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Rstrafe7, PlayerMoveFunc, 160*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
+	{FRAME_Rstrafe8, PlayerMoveFunc, 155*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkUnStrafe},
 };
 panimmove_t player_move_walk_strafe_right = {8, player_frames_walk_strafe_right, PlayerAnimLowerUpdate};
 
 //Running
 //Left
-panimframe_t player_frames_run_strafe_left [] =
+static panimframe_t player_frames_run_strafe_left [] =
 {
-	FRAME_Lsprint1, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckRunUnStrafe,
-	FRAME_Lsprint2, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe,
-	FRAME_Lsprint3, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe,
-	FRAME_Lsprint4, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN2, PlayerActionCheckRunUnStrafe,
-	FRAME_Lsprint5, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe,
-	FRAME_Lsprint6, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe,
+	{FRAME_Lsprint1, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckRunUnStrafe},
+	{FRAME_Lsprint2, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe},
+	{FRAME_Lsprint3, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe},
+	{FRAME_Lsprint4, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN2, PlayerActionCheckRunUnStrafe},
+	{FRAME_Lsprint5, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe},
+	{FRAME_Lsprint6, PlayerMoveFunc, 340*UNJH_VALUE, -340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe},
 };
 panimmove_t player_move_run_strafe_left = {6, player_frames_run_strafe_left, PlayerAnimLowerUpdate};
 
 /*
-panimframe_t player_frames_run_strafe_left2 [] =
+static panimframe_t player_frames_run_strafe_left2 [] =
 {
 };
 panimmove_t player_move_run_strafe_left2 = {3, player_frames_run_strafe_left2, PlayerAnimLowerUpdate};
 */
 
 //	Right
-panimframe_t player_frames_run_strafe_right [] =
+static panimframe_t player_frames_run_strafe_right [] =
 {
-	FRAME_Rsprint1, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckRunUnStrafe,
-	FRAME_Rsprint2, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe,
-	FRAME_Rsprint3, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe,
-	FRAME_Rsprint4, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN2, PlayerActionCheckRunUnStrafe,
-	FRAME_Rsprint5, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe,
-	FRAME_Rsprint6, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe,
+	{FRAME_Rsprint1, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckRunUnStrafe},
+	{FRAME_Rsprint2, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe},
+	{FRAME_Rsprint3, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe},
+	{FRAME_Rsprint4, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN2, PlayerActionCheckRunUnStrafe},
+	{FRAME_Rsprint5, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe},
+	{FRAME_Rsprint6, PlayerMoveFunc, 340*UNJH_VALUE, 340*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckRunUnStrafe},
 };
 panimmove_t player_move_run_strafe_right = {6, player_frames_run_strafe_right, PlayerAnimLowerUpdate};
 
 //Turn 180
-panimframe_t player_frames_turn180 [] =
+static panimframe_t player_frames_turn180 [] =
 {
-	FRAME_180turn2, NULL, 0, 0, 0, PlayerActionSetQTEndTime, 0, PlayerActionTurn180,
-	FRAME_180turn3, NULL, 0, 0, 0, NULL, 0, PlayerActionTurn180,
-	FRAME_180turn5, NULL, 0, 0, 0, NULL, 0, PlayerActionTurn180,
-	FRAME_180turn7, NULL, 0, 0, 0, NULL, 0, PlayerActionTurn180,
-	FRAME_180turn9, NULL, 0, 0, 0, NULL, 0, PlayerActionTurn180,
+	{FRAME_180turn2, NULL, 0, 0, 0, PlayerActionSetQTEndTime, 0, PlayerActionTurn180},
+	{FRAME_180turn3, NULL, 0, 0, 0, NULL, 0, PlayerActionTurn180},
+	{FRAME_180turn5, NULL, 0, 0, 0, NULL, 0, PlayerActionTurn180},
+	{FRAME_180turn7, NULL, 0, 0, 0, NULL, 0, PlayerActionTurn180},
+	{FRAME_180turn9, NULL, 0, 0, 0, NULL, 0, PlayerActionTurn180},
 };
 panimmove_t player_move_turn180 = {5, player_frames_turn180, PlayerAnimLowerUpdate};
 
 //Drowning idle
-panimframe_t player_frames_drown_idle []=
+static panimframe_t player_frames_drown_idle []=
 {
-	FRAME_drownidle1, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle2, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle3, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle4, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle5, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle6, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle7, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle8, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle9, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle10, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle11, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle12, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle13, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle14, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle15, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle16, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle17, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle18, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle19, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle20, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle21, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle22, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle23, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle24, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle25, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle26, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle27, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle28, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle29, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle30, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle31, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
-	FRAME_drownidle32, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp,
+	{FRAME_drownidle1, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle2, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle3, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle4, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle5, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle6, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle7, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle8, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle9, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle10, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle11, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle12, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle13, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle14, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle15, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle16, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle17, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle18, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle19, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle20, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle21, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle22, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle23, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle24, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle25, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle26, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle27, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle28, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle29, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle30, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle31, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
+	{FRAME_drownidle32, NULL, 0, 0, 0, NULL, 0, PlayerActionDrownFloatUp},
 };
 panimmove_t player_move_drown_idle = {32, player_frames_drown_idle, PlayerAnimUpperUpdate};
 
 //Dashing left
-panimframe_t player_frames_dash_left_go []=
+static panimframe_t player_frames_dash_left_go []=
 {
-	FRAME_fastleft1, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckBranchRunningStrafe,
+	{FRAME_fastleft1, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckBranchRunningStrafe},
 };
 panimmove_t player_move_dash_left_go = {1, player_frames_dash_left_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_dash_left []=
+static panimframe_t player_frames_dash_left []=
 {
-	FRAME_fastleft2, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastleft3, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastleft4, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastleft5, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastleft6, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastleft7, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastleft8, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
+	{FRAME_fastleft2, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastleft3, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastleft4, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastleft5, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastleft6, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastleft7, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastleft8, PlayerMoveFunc, 0, -200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
 };
 panimmove_t player_move_dash_left = {7, player_frames_dash_left, PlayerAnimLowerUpdate};
 
 //Dashing right
-panimframe_t player_frames_dash_right_go []=
+static panimframe_t player_frames_dash_right_go []=
 {
-	FRAME_fastrite1, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckBranchRunningStrafe,
+	{FRAME_fastrite1, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckBranchRunningStrafe},
 };
 panimmove_t player_move_dash_right_go = {1, player_frames_dash_right_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_dash_right []=
+static panimframe_t player_frames_dash_right []=
 {
-	FRAME_fastrite2, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastrite3, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastrite4, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastrite5, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastrite6, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastrite7, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
-	FRAME_fastrite8, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe,
+	{FRAME_fastrite2, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastrite3, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastrite4, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastrite5, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, PlayerActionFootstep, STEP_RUN, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastrite6, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastrite7, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
+	{FRAME_fastrite8, PlayerMoveFunc, 0, 200*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckBranchRunningStrafe},
 };
 panimmove_t player_move_dash_right = {7, player_frames_dash_right, PlayerAnimLowerUpdate};
 
 //Walk backward strafes
 
 //Left
-panimframe_t player_frames_walkb_strafe_left [] =
+static panimframe_t player_frames_walkb_strafe_left [] =
 {
-	FRAME_Ljogback1, PlayerMoveFunc, -160*UNJH_VALUE, -150, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Ljogback2, PlayerMoveFunc, -170*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Ljogback3, PlayerMoveFunc, -160*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Ljogback4, PlayerMoveFunc, -155*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Ljogback5, PlayerMoveFunc, -160*UNJH_VALUE, -150, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Ljogback6, PlayerMoveFunc, -170*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe,
+	{FRAME_Ljogback1, PlayerMoveFunc, -160*UNJH_VALUE, -150, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Ljogback2, PlayerMoveFunc, -170*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Ljogback3, PlayerMoveFunc, -160*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Ljogback4, PlayerMoveFunc, -155*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Ljogback5, PlayerMoveFunc, -160*UNJH_VALUE, -150, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Ljogback6, PlayerMoveFunc, -170*UNJH_VALUE, -150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe},
 };
 panimmove_t player_move_walkb_strafe_left = {6, player_frames_walkb_strafe_left, PlayerAnimLowerUpdate};
 
 //Right
-panimframe_t player_frames_walkb_strafe_right [] =
+static panimframe_t player_frames_walkb_strafe_right [] =
 {
-	FRAME_Rjogback1, PlayerMoveFunc, -160*UNJH_VALUE, 150, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Rjogback2, PlayerMoveFunc, -170*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Rjogback3, PlayerMoveFunc, -160*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Rjogback4, PlayerMoveFunc, -155*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Rjogback5, PlayerMoveFunc, -160*UNJH_VALUE, 150, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkBackUnStrafe,
-	FRAME_Rjogback6, PlayerMoveFunc, -170*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe,
+	{FRAME_Rjogback1, PlayerMoveFunc, -160*UNJH_VALUE, 150, 0, PlayerActionFootstep, STEP_WALK, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Rjogback2, PlayerMoveFunc, -170*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Rjogback3, PlayerMoveFunc, -160*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Rjogback4, PlayerMoveFunc, -155*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Rjogback5, PlayerMoveFunc, -160*UNJH_VALUE, 150, 0, PlayerActionFootstep, STEP_WALK2, PlayerActionCheckWalkBackUnStrafe},
+	{FRAME_Rjogback6, PlayerMoveFunc, -170*UNJH_VALUE, 150, 0, NULL, 0, PlayerActionCheckWalkBackUnStrafe},
 };
 panimmove_t player_move_walkb_strafe_right = {6, player_frames_walkb_strafe_right, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_overhang [] =
+static panimframe_t player_frames_overhang [] =
 {
-	FRAME_ovrhang3,  PlayerPullupHeight, 46,  0, 0, PlayerActionClimbStartSound, 0, NULL,
-	FRAME_ovrhang4,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang5,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang6,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang7,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang8,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang9,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang10, PlayerPullupHeight, 32,  0, 0, NULL, 0, NULL, //Pullup begins
-	FRAME_ovrhang11, PlayerPullupHeight, 16,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang12, PlayerPullupHeight,  8,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang13, PlayerPullupHeight,  0,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang14, PlayerPullupHeight,-16,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang15, PlayerPullupHeight,-32,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang16, PlayerPullupHeight,-40,  0, 0, NULL, 0, NULL,
-	FRAME_ovrhang17, PlayerPullupHeight,-48,  2, 0, PlayerActionClimbFinishSound, 0, NULL,
+	{FRAME_ovrhang3,  PlayerPullupHeight, 46,  0, 0, PlayerActionClimbStartSound, 0, NULL},
+	{FRAME_ovrhang4,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang5,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang6,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang7,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang8,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang9,  PlayerPullupHeight, 46,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang10, PlayerPullupHeight, 32,  0, 0, NULL, 0, NULL}, //Pullup begins
+	{FRAME_ovrhang11, PlayerPullupHeight, 16,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang12, PlayerPullupHeight,  8,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang13, PlayerPullupHeight,  0,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang14, PlayerPullupHeight,-16,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang15, PlayerPullupHeight,-32,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang16, PlayerPullupHeight,-40,  0, 0, NULL, 0, NULL},
+	{FRAME_ovrhang17, PlayerPullupHeight,-48,  2, 0, PlayerActionClimbFinishSound, 0, NULL},
 };
 panimmove_t player_move_overhang = {15, player_frames_overhang, PlayerAnimLowerUpdate};
 
 //Burning death
-panimframe_t player_frames_death_b [] =
+static panimframe_t player_frames_death_b [] =
 {
-	FRAME_burning1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning12, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning13, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning15, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning16, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning17, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning18, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning19, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning20, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning21, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning22, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning23, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning24, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning25, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning26, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning27, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning28, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning29, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning30, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning31, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning32, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning33, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning34, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_burning35, NULL, 0, 0, 0, NULL, 0, PlayerSetDead,
+	{FRAME_burning1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning19, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning20, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning22, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning23, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning24, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning25, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning26, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning27, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning28, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning29, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning30, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning31, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning32, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning33, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning34, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_burning35, NULL, 0, 0, 0, NULL, 0, PlayerSetDead},
 };
 panimmove_t player_move_death_b = {35, player_frames_death_b, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_death_fly_forward [] =
+static panimframe_t player_frames_death_fly_forward [] =
 {
-	FRAME_faceplant1, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant3, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant5, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant7, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant9, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant11, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant12, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant13, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant15, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant16, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant17, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant18, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant19, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant20, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant21, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_faceplant22, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant23, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_faceplant24, NULL, 0, 0, 0, NULL, 0, PlayerSetDead,
+	{FRAME_faceplant1, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant3, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant5, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant7, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant9, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant11, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant13, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant15, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant17, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant19, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant20, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant21, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_faceplant22, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant23, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_faceplant24, NULL, 0, 0, 0, NULL, 0, PlayerSetDead},
 };
 panimmove_t player_move_death_fly_forward  = {13, player_frames_death_fly_forward, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_death_fly_back [] =
+static panimframe_t player_frames_death_fly_back [] =
 {
-	FRAME_blowback1, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback3, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback5, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback7, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback9, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback11, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback12, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback13, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback15, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback16, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback17, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback18, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback19, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback20, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback21, NULL, 0, 0, 0, NULL, 0, NULL,
-//	FRAME_blowback22, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback23, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_blowback24, NULL, 0, 0, 0, NULL, 0, PlayerSetDead,
+	{FRAME_blowback1, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback3, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback5, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback7, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback9, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback11, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback13, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback15, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback17, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback19, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback20, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback21, NULL, 0, 0, 0, NULL, 0, NULL},
+//	{FRAME_blowback22, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback23, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_blowback24, NULL, 0, 0, 0, NULL, 0, PlayerSetDead},
 };
 panimmove_t player_move_death_fly_back  = {13, player_frames_death_fly_back, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_death_choke [] =
+static panimframe_t player_frames_death_choke [] =
 {
-	FRAME_choking1, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking2, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking3, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking4, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking5, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking6, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking7, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking8, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking9, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking10, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking11, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking12, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking13, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking14, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking15, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking16, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking17, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking18, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking19, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking20, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking21, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking22, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking23, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking24, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking25, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking26, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking27, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking28, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking29, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking30, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking31, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking32, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking33, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking34, NULL, 0, 0, 0, NULL, 0, NULL,
-	FRAME_choking35, NULL, 0, 0, 0, NULL, 0, PlayerSetDead,
+	{FRAME_choking1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking19, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking20, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking22, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking23, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking24, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking25, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking26, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking27, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking28, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking29, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking30, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking31, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking32, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking33, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking34, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_choking35, NULL, 0, 0, 0, NULL, 0, PlayerSetDead},
 };
 panimmove_t player_move_death_choke = {35, player_frames_death_choke, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_idle_lookback [] =
+static panimframe_t player_frames_idle_lookback [] =
 {
-	FRAME_lookbck1,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck2,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck3,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck4,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck5,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck6,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck7,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck8,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck9,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck23, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck24, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck25, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck26, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck27, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck28, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_lookbck29, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_lookbck1,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck2,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck3,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck4,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck5,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck6,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck7,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck8,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck9,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck23, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck24, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck25, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck26, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck27, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck28, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_lookbck29, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_idle_lookback = {29, player_frames_idle_lookback, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_idle_scratch_ass [] =
+static panimframe_t player_frames_idle_scratch_ass [] =
 {
-	FRAME_asscrtch1,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch2,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch3,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch4,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch5,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch6,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch7,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch8,  NULL, 0, 0, 0, PlayScratch, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch9,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch23, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch24, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_asscrtch25, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_asscrtch1,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch2,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch3,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch4,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch5,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch6,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch7,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch8,  NULL, 0, 0, 0, PlayScratch, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch9,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch20, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch21, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch22, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch23, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch24, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_asscrtch25, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_idle_scratch_ass = {25, player_frames_idle_scratch_ass, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_idle_wipe_brow [] =
+static panimframe_t player_frames_idle_wipe_brow [] =
 {
-	FRAME_wipebrow1,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow2,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow3,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow4,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow5,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow6,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow7,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow8,  NULL, 0, 0, 0, PlaySigh, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow9,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
-	FRAME_wipebrow19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle,
+	{FRAME_wipebrow1,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow2,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow3,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow4,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow5,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow6,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow7,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow8,  NULL, 0, 0, 0, PlaySigh, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow9,  NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow10, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow11, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow12, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow13, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow14, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow15, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow16, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow17, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow18, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
+	{FRAME_wipebrow19, NULL, 0, 0, 0, NULL, 0, PlayerAnimLowerIdle},
 };
 panimmove_t player_move_idle_wipe_brow = {19, player_frames_idle_wipe_brow, PlayerAnimLowerUpdate};
 
 //Back
-panimframe_t player_frames_creepb_strafe_left [] =
+static panimframe_t player_frames_creepb_strafe_left [] =
 {
-	FRAME_Lcrepbck1,  PlayerMoveFunc, -63*UNJH_VALUE, -63*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck2,  PlayerMoveFunc, -58*UNJH_VALUE, -58*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck3,  PlayerMoveFunc, -89*UNJH_VALUE, -89*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck4,  PlayerMoveFunc, -66*UNJH_VALUE, -66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck5,  PlayerMoveFunc, -70*UNJH_VALUE, -70*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck6,  PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck7,  PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck8,  PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck9,  PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck10, PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck11, PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Lcrepbck12, PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
+	{FRAME_Lcrepbck1,  PlayerMoveFunc, -63*UNJH_VALUE, -63*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck2,  PlayerMoveFunc, -58*UNJH_VALUE, -58*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck3,  PlayerMoveFunc, -89*UNJH_VALUE, -89*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck4,  PlayerMoveFunc, -66*UNJH_VALUE, -66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck5,  PlayerMoveFunc, -70*UNJH_VALUE, -70*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck6,  PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck7,  PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck8,  PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck9,  PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck10, PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck11, PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Lcrepbck12, PlayerMoveFunc, -62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
 };
 panimmove_t player_move_creepb_strafe_left = {12, player_frames_creepb_strafe_left, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_creepb_strafe_right [] =
+static panimframe_t player_frames_creepb_strafe_right [] =
 {
-	FRAME_Rcrepbck1,  PlayerMoveFunc, -63*UNJH_VALUE, 63*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck2,  PlayerMoveFunc, -58*UNJH_VALUE, 58*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck3,  PlayerMoveFunc, -89*UNJH_VALUE, 89*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck4,  PlayerMoveFunc, -66*UNJH_VALUE, 66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck5,  PlayerMoveFunc, -70*UNJH_VALUE, 70*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck6,  PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck7,  PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck8,  PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck9,  PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck10, PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck11, PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
-	FRAME_Rcrepbck12, PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe,
+	{FRAME_Rcrepbck1,  PlayerMoveFunc, -63*UNJH_VALUE, 63*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck2,  PlayerMoveFunc, -58*UNJH_VALUE, 58*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck3,  PlayerMoveFunc, -89*UNJH_VALUE, 89*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck4,  PlayerMoveFunc, -66*UNJH_VALUE, 66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck5,  PlayerMoveFunc, -70*UNJH_VALUE, 70*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck6,  PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck7,  PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck8,  PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck9,  PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck10, PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck11, PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
+	{FRAME_Rcrepbck12, PlayerMoveFunc, -62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepBackUnStrafe},
 };
 panimmove_t player_move_creepb_strafe_right = {12, player_frames_creepb_strafe_right, PlayerAnimLowerUpdate};
 
 //Forward
-panimframe_t player_frames_creep_strafe_left [] =
+static panimframe_t player_frames_creep_strafe_left [] =
 {
-	FRAME_creepL1,  PlayerMoveFunc, 89*UNJH_VALUE, -89*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL2,  PlayerMoveFunc, 58*UNJH_VALUE, -58*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL3,  PlayerMoveFunc, 63*UNJH_VALUE, -63*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL4,  PlayerMoveFunc, 66*UNJH_VALUE, -66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL5,  PlayerMoveFunc, 69*UNJH_VALUE, -69*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL6,  PlayerMoveFunc, 75*UNJH_VALUE, -75*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL7,  PlayerMoveFunc, 90*UNJH_VALUE, -90*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL8,  PlayerMoveFunc, 67*UNJH_VALUE, -67*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL9,  PlayerMoveFunc, 60*UNJH_VALUE, -60*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL10, PlayerMoveFunc, 62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL11, PlayerMoveFunc, 70*UNJH_VALUE, -70*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepL12, PlayerMoveFunc, 66*UNJH_VALUE, -66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
+	{FRAME_creepL1,  PlayerMoveFunc, 89*UNJH_VALUE, -89*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL2,  PlayerMoveFunc, 58*UNJH_VALUE, -58*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL3,  PlayerMoveFunc, 63*UNJH_VALUE, -63*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL4,  PlayerMoveFunc, 66*UNJH_VALUE, -66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL5,  PlayerMoveFunc, 69*UNJH_VALUE, -69*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL6,  PlayerMoveFunc, 75*UNJH_VALUE, -75*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL7,  PlayerMoveFunc, 90*UNJH_VALUE, -90*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL8,  PlayerMoveFunc, 67*UNJH_VALUE, -67*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL9,  PlayerMoveFunc, 60*UNJH_VALUE, -60*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL10, PlayerMoveFunc, 62*UNJH_VALUE, -62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL11, PlayerMoveFunc, 70*UNJH_VALUE, -70*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepL12, PlayerMoveFunc, 66*UNJH_VALUE, -66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
 };
 panimmove_t player_move_creep_strafe_left = {12, player_frames_creep_strafe_left, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_creep_strafe_right [] =
+static panimframe_t player_frames_creep_strafe_right [] =
 {
-	FRAME_creepR1,  PlayerMoveFunc, 89*UNJH_VALUE, 89*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR2,  PlayerMoveFunc, 58*UNJH_VALUE, 58*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR3,  PlayerMoveFunc, 63*UNJH_VALUE, 63*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR4,  PlayerMoveFunc, 66*UNJH_VALUE, 66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR5,  PlayerMoveFunc, 69*UNJH_VALUE, 69*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR6,  PlayerMoveFunc, 75*UNJH_VALUE, 75*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR7,  PlayerMoveFunc, 90*UNJH_VALUE, 90*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR8,  PlayerMoveFunc, 67*UNJH_VALUE, 67*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR9,  PlayerMoveFunc, 60*UNJH_VALUE, 60*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR10, PlayerMoveFunc, 62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR11, PlayerMoveFunc, 70*UNJH_VALUE, 70*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
-	FRAME_creepR12, PlayerMoveFunc, 66*UNJH_VALUE, 66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe,
+	{FRAME_creepR1,  PlayerMoveFunc, 89*UNJH_VALUE, 89*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR2,  PlayerMoveFunc, 58*UNJH_VALUE, 58*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR3,  PlayerMoveFunc, 63*UNJH_VALUE, 63*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR4,  PlayerMoveFunc, 66*UNJH_VALUE, 66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR5,  PlayerMoveFunc, 69*UNJH_VALUE, 69*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR6,  PlayerMoveFunc, 75*UNJH_VALUE, 75*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR7,  PlayerMoveFunc, 90*UNJH_VALUE, 90*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR8,  PlayerMoveFunc, 67*UNJH_VALUE, 67*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR9,  PlayerMoveFunc, 60*UNJH_VALUE, 60*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR10, PlayerMoveFunc, 62*UNJH_VALUE, 62*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR11, PlayerMoveFunc, 70*UNJH_VALUE, 70*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
+	{FRAME_creepR12, PlayerMoveFunc, 66*UNJH_VALUE, 66*UNJH_VALUE, 0, NULL, 0, PlayerActionCheckCreepUnStrafe},
 };
 panimmove_t player_move_creep_strafe_right = {12, player_frames_creep_strafe_right, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_crouch_creep_forward [] =
+static panimframe_t player_frames_crouch_creep_forward [] =
 {
-	FRAME_crhpvt1, PlayerMoveFunc, 70, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt2, PlayerMoveFunc, 90, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt3, PlayerMoveFunc, 90, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt4, PlayerMoveFunc, 70, 0, 0, NULL, 0, NULL,
+	{FRAME_crhpvt1, PlayerMoveFunc, 70, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt2, PlayerMoveFunc, 90, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt3, PlayerMoveFunc, 90, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt4, PlayerMoveFunc, 70, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_crouch_creep_forward = {4, player_frames_crouch_creep_forward, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_crouch_creep_back [] =
+static panimframe_t player_frames_crouch_creep_back [] =
 {
-	FRAME_crhpvt4, PlayerMoveFunc, -70, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt3, PlayerMoveFunc, -90, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt2, PlayerMoveFunc, -90, 0, 0, NULL, 0, NULL,
-	FRAME_crhpvt1, PlayerMoveFunc, -70, 0, 0, NULL, 0, NULL,
+	{FRAME_crhpvt4, PlayerMoveFunc, -70, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt3, PlayerMoveFunc, -90, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt2, PlayerMoveFunc, -90, 0, 0, NULL, 0, NULL},
+	{FRAME_crhpvt1, PlayerMoveFunc, -70, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_crouch_creep_back = {4, player_frames_crouch_creep_back, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_crouch_creep_left [] =
+static panimframe_t player_frames_crouch_creep_left [] =
 {
-	FRAME_crhpvt1, PlayerMoveFunc, 0, -70, 0, NULL, 0, NULL,
-	FRAME_crhpvt2, PlayerMoveFunc, 0, -90, 0, NULL, 0, NULL,
-	FRAME_crhpvt3, PlayerMoveFunc, 0, -90, 0, NULL, 0, NULL,
-	FRAME_crhpvt4, PlayerMoveFunc, 0, -70, 0, NULL, 0, NULL,
+	{FRAME_crhpvt1, PlayerMoveFunc, 0, -70, 0, NULL, 0, NULL},
+	{FRAME_crhpvt2, PlayerMoveFunc, 0, -90, 0, NULL, 0, NULL},
+	{FRAME_crhpvt3, PlayerMoveFunc, 0, -90, 0, NULL, 0, NULL},
+	{FRAME_crhpvt4, PlayerMoveFunc, 0, -70, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_crouch_creep_left = {4, player_frames_crouch_creep_left, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_crouch_creep_right [] =
+static panimframe_t player_frames_crouch_creep_right [] =
 {
-	FRAME_crhpvt4, PlayerMoveFunc, 0, 70, 0, NULL, 0, NULL,
-	FRAME_crhpvt3, PlayerMoveFunc, 0, 90, 0, NULL, 0, NULL,
-	FRAME_crhpvt2, PlayerMoveFunc, 0, 90, 0, NULL, 0, NULL,
-	FRAME_crhpvt1, PlayerMoveFunc, 0, 70, 0, NULL, 0, NULL,
+	{FRAME_crhpvt4, PlayerMoveFunc, 0, 70, 0, NULL, 0, NULL},
+	{FRAME_crhpvt3, PlayerMoveFunc, 0, 90, 0, NULL, 0, NULL},
+	{FRAME_crhpvt2, PlayerMoveFunc, 0, 90, 0, NULL, 0, NULL},
+	{FRAME_crhpvt1, PlayerMoveFunc, 0, 70, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_crouch_creep_right = {4, player_frames_crouch_creep_right, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_swim_fast_go [] =
+static panimframe_t player_frames_swim_fast_go [] =
 {
-	FRAME_gofast1, PlayerSwimMoveFunc, 64, 0, 0, NULL, 0, NULL,
-	FRAME_gofast2, PlayerSwimMoveFunc, 120, 0, 0, NULL, 0, NULL,
-	FRAME_gofast3, PlayerSwimMoveFunc, 180, 0, 0, NULL, 0, NULL,
-	FRAME_gofast4, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL,
+	{FRAME_gofast1, PlayerSwimMoveFunc, 64, 0, 0, NULL, 0, NULL},
+	{FRAME_gofast2, PlayerSwimMoveFunc, 120, 0, 0, NULL, 0, NULL},
+	{FRAME_gofast3, PlayerSwimMoveFunc, 180, 0, 0, NULL, 0, NULL},
+	{FRAME_gofast4, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_swim_fast_go = {4, player_frames_swim_fast_go, PlayerAnimLowerUpdate};
 
-panimframe_t player_frames_swim_fast [] =
+static panimframe_t player_frames_swim_fast [] =
 {
-	FRAME_swmfast1, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL,
-	FRAME_swmfast2, PlayerSwimMoveFunc, 240, 0, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL,
-	FRAME_swmfast3, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL,
-	FRAME_swmfast4, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL,
-	FRAME_swmfast5, PlayerSwimMoveFunc, 240, 0, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL,
-	FRAME_swmfast6, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL,
-	FRAME_swmfast7, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL,
+	{FRAME_swmfast1, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL},
+	{FRAME_swmfast2, PlayerSwimMoveFunc, 240, 0, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL},
+	{FRAME_swmfast3, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL},
+	{FRAME_swmfast4, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL},
+	{FRAME_swmfast5, PlayerSwimMoveFunc, 240, 0, 0, PlayerActionSwimSound, SOUND_SWIM_SIDE, NULL},
+	{FRAME_swmfast6, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL},
+	{FRAME_swmfast7, PlayerSwimMoveFunc, 240, 0, 0, NULL, 0, NULL},
 };
 panimmove_t player_move_swim_fast = {7, player_frames_swim_fast, PlayerAnimLowerUpdate};

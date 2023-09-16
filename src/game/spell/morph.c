@@ -605,7 +605,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	// else we hit a wall / object
 	else
 	{
-		if(plane && (plane->normal))
+		if(plane->normal)
 			// Start the explosion
 			gi.CreateEffect(NULL, FX_SPELL_MORPHEXPLODE, 0, self->s.origin, "d", plane->normal);
 		else
