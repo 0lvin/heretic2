@@ -1,3 +1,5 @@
+# Heretic2 rebased over Yamagi Quake II Remaster
+
 Customized Quake2 engine with Heretic2 code parts.
 
 Heretic 2 SDK code based on [Ht2Toolkit](https://www.quaddicted.com/files/idgames2/planetquake/hereticii/files/Ht2Toolkit_v1.06.exe)
@@ -6,7 +8,7 @@ Updated code based on [Heretic 2 Reconstruction Project](https://github.com/jmar
 
 Tested with [Heretic 2 Loki](https://archive.org/details/heretic-2-linux) release.
 
-# cleanup code
+### cleanup code
 ```shell
 sed -i 's/[[:blank:]]*$//' */*.{c,h}
 ```
@@ -52,9 +54,19 @@ Goals:
 * All other code should be GPL or public domain,
 * Minimal set of hacks over quake 2 engine.
 
-======
+# Yamagi Quake II Remaster
+
+This is an experimental fork of Yamagi Quake II with ongoing work to add
+support for Quake II Enhanced aka Q2 Remaster(ed). This enhanced version
+has a lot non trivial changes, adding support isn't easy and takes time.
+Feel free to try this code but you mileage may vary.
+
+Have a look at the yquake2 repository for the "normal" Yamagi Quake II:
+https://github.com/yquake2/yquake2
+
 
 # Yamagi Quake II
+
 
 Yamagi Quake II is an enhanced client for id Software's Quake
 II with focus on offline and coop gameplay. Both the gameplay and the graphics

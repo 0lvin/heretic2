@@ -64,6 +64,7 @@
  * system and architecture are in the hands of the user.
  */
 
+#include "../../common/header/common.h" // YQ2ARCH
 #include "../header/local.h"
 #include "../header/g_skeletons.h"
 #include "../header/g_physics.h"
@@ -76,6 +77,59 @@
 #include "../common/message.h"
 #include "../common/fx.h"
 
+/*
+ * When ever the savegame version is changed, q2 will refuse to
+ * load older savegames. This should be bumped if the files
+ * in tables/ are changed, otherwise strange things may happen.
+ */
+#define SAVEGAMEVER "YQ2-6"
+
+#ifndef BUILD_DATE
+#define BUILD_DATE __DATE__
+#endif
+
+/*
+ * This macros are used to prohibit loading of savegames
+ * created on other systems or architectures. This will
+ * crash q2 in spectacular ways
+ */
+#ifndef YQ2OSTYPE
+#error YQ2OSTYPE should be defined by the build system
+#endif
+
+#ifndef YQ2ARCH
+#error YQ2ARCH should be defined by the build system
+#endif
+
+/*
+ * Older operating systen and architecture detection
+ * macros, implemented by savegame version YQ2-1.
+ */
+#if defined(__APPLE__)
+#define OSTYPE_1 "MacOS X"
+#elif defined(__FreeBSD__)
+#define OSTYPE_1 "FreeBSD"
+#elif defined(__OpenBSD__)
+#define OSTYPE_1 "OpenBSD"
+#elif defined(__linux__)
+ #define OSTYPE_1 "Linux"
+#elif defined(_WIN32)
+ #define OSTYPE_1 "Windows"
+#else
+ #define OSTYPE_1 "Unknown"
+#endif
+
+#if defined(__i386__)
+#define ARCH_1 "i386"
+#elif defined(__x86_64__)
+#define ARCH_1 "amd64"
+#elif defined(__sparc__)
+#define ARCH_1 "sparc64"
+#elif defined(__ia64__)
+ #define ARCH_1 "ia64"
+#else
+ #define ARCH_1 "unknown"
+#endif
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
@@ -490,45 +544,45 @@ static void WriteField1 (FILE *f, field_t *field, byte *base)
 
 	switch (field->type)
 	{
-	case F_INT:
-	case F_FLOAT:
-	case F_ANGLEHACK:
-	case F_VECTOR:
-	case F_IGNORE:
-		break;
+		case F_INT:
+		case F_FLOAT:
+		case F_ANGLEHACK:
+		case F_VECTOR:
+		case F_IGNORE:
+			break;
 
-	case F_LSTRING:
-	case F_GSTRING:
-		if ( *(char **)p )
-			len = strlen(*(char **)p) + 1;
-		else
-			len = 0;
-		*(int *)p = len;
-		break;
-	case F_EDICT:
-		if ( *(edict_t **)p == NULL)
-			index = -1;
-		else
-			index = *(edict_t **)p - g_edicts;
-		*(int *)p = index;
-		break;
-	case F_CLIENT:
-		if ( *(gclient_t **)p == NULL)
-			index = -1;
-		else
-			index = *(gclient_t **)p - game.clients;
-		*(int *)p = index;
-		break;
-	case F_ITEM:
-		if ( *(edict_t **)p == NULL)
-			index = -1;
-		else
-			index = *(gitem_t **)p - playerExport->GetPlayerItems();
-		*(int *)p = index;
-		break;
+		case F_LSTRING:
+		case F_GSTRING:
+			if ( *(char **)p )
+				len = strlen(*(char **)p) + 1;
+			else
+				len = 0;
+			*(int *)p = len;
+			break;
+		case F_EDICT:
+			if ( *(edict_t **)p == NULL)
+				index = -1;
+			else
+				index = *(edict_t **)p - g_edicts;
+			*(int *)p = index;
+			break;
+		case F_CLIENT:
+			if ( *(gclient_t **)p == NULL)
+				index = -1;
+			else
+				index = *(gclient_t **)p - game.clients;
+			*(int *)p = index;
+			break;
+		case F_ITEM:
+			if ( *(edict_t **)p == NULL)
+				index = -1;
+			else
+				index = *(gitem_t **)p - playerExport->GetPlayerItems();
+			*(int *)p = index;
+			break;
 
-	default:
-		gi.error ("WriteEdict: unknown field type");
+		default:
+			gi.error ("WriteEdict: unknown field type");
 	}
 }
 
@@ -560,57 +614,61 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 	p = (void *)(base + field->ofs);
 	switch (field->type)
 	{
-	case F_INT:
-	case F_FLOAT:
-	case F_ANGLEHACK:
-	case F_VECTOR:
-	case F_IGNORE:
-		break;
+		case F_INT:
+		case F_FLOAT:
+		case F_ANGLEHACK:
+		case F_VECTOR:
+		case F_IGNORE:
+			break;
 
-	case F_LSTRING:
-		len = *(int *)p;
-		if (!len)
-			*(char **)p = NULL;
-		else
-		{
-			*(char **)p = (char *)gi.TagMalloc (len, TAG_LEVEL);
-			fread (*(char **)p, len, 1, f);
-		}
-		break;
-	case F_GSTRING:
-		len = *(int *)p;
-		if (!len)
-			*(char **)p = NULL;
-		else
-		{
-			*(char **)p = (char *)gi.TagMalloc (len, TAG_GAME);
-			fread (*(char **)p, len, 1, f);
-		}
-		break;
-	case F_EDICT:
-		index = *(int *)p;
-		if ( index == -1 )
-			*(edict_t **)p = NULL;
-		else
-			*(edict_t **)p = &g_edicts[index];
-		break;
-	case F_CLIENT:
-		index = *(int *)p;
-		if ( index == -1 )
-			*(gclient_t **)p = NULL;
-		else
-			*(gclient_t **)p = &game.clients[index];
-		break;
-	case F_ITEM:
-		index = *(int *)p;
-		if ( index == -1 )
-			*(gitem_t **)p = NULL;
-		else
-			*(gitem_t **)p = playerExport->GetPlayerItems() + index;
-		break;
+		case F_LSTRING:
+			len = *(int *)p;
 
-	default:
-		gi.error ("ReadEdict: unknown field type");
+			if (!len)
+			{
+				*(char **)p = NULL;
+			}
+			else
+			{
+				*(char **)p = (char *)gi.TagMalloc (len, TAG_LEVEL);
+				fread(*(char **)p, len, 1, f);
+			}
+
+			break;
+		case F_GSTRING:
+			len = *(int *)p;
+			if (!len)
+				*(char **)p = NULL;
+			else
+			{
+				*(char **)p = (char *)gi.TagMalloc (len, TAG_GAME);
+				fread (*(char **)p, len, 1, f);
+			}
+			break;
+		case F_EDICT:
+			index = *(int *)p;
+			if ( index == -1 )
+				*(edict_t **)p = NULL;
+			else
+				*(edict_t **)p = &g_edicts[index];
+			break;
+		case F_CLIENT:
+			index = *(int *)p;
+			if ( index == -1 )
+				*(gclient_t **)p = NULL;
+			else
+				*(gclient_t **)p = &game.clients[index];
+			break;
+		case F_ITEM:
+			index = *(int *)p;
+			if ( index == -1 )
+				*(gitem_t **)p = NULL;
+			else
+				*(gitem_t **)p = playerExport->GetPlayerItems() + index;
+			break;
+
+		default:
+			gi.error ("ReadEdict: unknown field type");
 	}
 }
 
@@ -623,7 +681,8 @@ WriteClient
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-static void WriteClient (FILE *f, gclient_t *client)
+static void
+WriteClient(FILE *f, gclient_t *client)
 {
 	field_t		*field;
 	gclient_t	temp;
@@ -654,7 +713,8 @@ ReadClient
 All pointer variables (except function pointers) must be handled specially.
 ==============
 */
-static void ReadClient (FILE *f, gclient_t *client)
+static void
+ReadClient(FILE *f, gclient_t *client)
 {
 	field_t		*field;
 
@@ -962,12 +1022,11 @@ static void ReadLevelLocals (FILE *f)
 }
 
 /*
-=================
-WriteLevel
-
-=================
-*/
-void WriteLevel (char *filename)
+ * Writes the current level
+ * into a file.
+ */
+void
+WriteLevel(const char *filename)
 {
 	int		i;
 	edict_t	*ent;
@@ -1038,20 +1097,16 @@ void WriteLevel (char *filename)
 }
 
 /*
-=================
-ReadLevel
-
-SpawnEntities will allready have been called on the
-level the same way it was when the level was saved.
-
-That is necessary to get the baselines
-set up identically.
-
-The server will have cleared all of the world links before
-calling ReadLevel.
-=================
-*/
-void ReadLevel (char *filename)
+ * Reads a level back into the memory.
+ * SpawnEntities were already called
+ * in the same way when the level was
+ * saved. All world links were cleared
+ * before this function was called. When
+ * this function is called, no clients
+ * are connected to the server.
+ */
+void
+ReadLevel(const char *filename)
 {
 	void G_ClearMessageQueues();
 
@@ -1149,13 +1204,12 @@ void ReadLevel (char *filename)
 	fread (gi.Persistant_Effects_Array, (sizeof(PerEffectsBuffer_t) * MAX_PERSISTANT_EFFECTS), 1, f);
 	gi.ClearPersistantEffects();
 
-	fclose (f);
+	fclose(f);
 
-	// Mark all clients as unconnected.
-
-	for (i=0 ; i<maxclients->value ; i++)
+	/* mark all clients as unconnected */
+	for (i = 0; i < maxclients->value; i++)
 	{
-		ent = &g_edicts[i+1];
+		ent = &g_edicts[i + 1];
 		ent->client = game.clients + i;
 		ent->client->playerinfo.pers.connected = false;
 		InitPlayerinfo(ent);
@@ -1163,19 +1217,23 @@ void ReadLevel (char *filename)
 		playerExport->PlayerBasicAnimReset(&ent->client->playerinfo);
 	}
 
-	// Do any load time things at this point.
-
-	for (i=0 ; i<globals.num_edicts ; i++)
+	/* do any load time things at this point */
+	for (i = 0; i < globals.num_edicts; i++)
 	{
 		ent = &g_edicts[i];
 
 		if (!ent->inuse)
+		{
 			continue;
+		}
 
-		// Fire any cross-level triggers.
-
+		/* fire any cross-level triggers */
 		if (ent->classname)
+		{
 			if (strcmp(ent->classname, "target_crosslevel_target") == 0)
+			{
 				ent->nextthink = level.time + ent->delay;
+			}
+		}
 	}
 }
