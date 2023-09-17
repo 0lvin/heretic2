@@ -75,6 +75,8 @@ typedef enum
 
 #define MAX_LBM_HEIGHT 480
 #define DEFAULT_NOLERP_LIST "pics/conchars.* pics/ch1.* pics/ch2. pics/ch3.*"
+#define DEFAULT_LMSHIFT 4
+
 extern void R_Printf(int level, const char* msg, ...) PRINTF_ATTR(2, 3);
 
 /* Shared images load */
@@ -92,6 +94,7 @@ extern void GetWalInfo(const char *name, int *width, int *height);
 extern void GetM8Info(const char *name, int *width, int *height);
 extern void GetM32Info(const char *name, int *width, int *height);
 
+extern qboolean LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *height);
 extern qboolean ResizeSTB(const byte *input_pixels, int input_width, int input_height,
 			  byte *output_pixels, int output_width, int output_height);
 extern void SmoothColorImage(unsigned *dst, size_t size, size_t rstep);

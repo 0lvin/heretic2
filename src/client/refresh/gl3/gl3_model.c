@@ -373,6 +373,7 @@ Mod_LoadFaces(gl3model_t *loadmodel, byte *mod_base, lump_t *l)
 		}
 
 		out->texinfo = loadmodel->texinfo + ti;
+		out->lmshift = DEFAULT_LMSHIFT;
 
 		Mod_CalcSurfaceExtents(loadmodel, out);
 
@@ -530,7 +531,7 @@ Mod_LoadBrushModel(gl3model_t *mod, void *buffer, int modfilelen)
 
 	i = LittleLong(header->version);
 
-	if (i != BSPVERSION)
+	if (i != BSPVERSION && i != BSPDKMVERSION)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
 				__func__, mod->name, i, BSPVERSION);

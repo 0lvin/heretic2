@@ -259,7 +259,7 @@ qboolean Vk_ImageHasFreeSpace(void);
 void	RE_BeginRegistration (char *model);
 struct model_s	*RE_RegisterModel (char *name);
 struct image_s	*RE_RegisterSkin (char *name);
-void	RE_SetSky_s (const char *name, float rotate, const vec3_t axis);
+void	RE_SetSky (const char *name, float rotate, int autorotate, const vec3_t axis);
 void	RE_EndRegistration (void);
 
 void Mat_Identity(float *matrix);

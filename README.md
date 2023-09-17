@@ -64,6 +64,46 @@ Feel free to try this code but you mileage may vary.
 Have a look at the yquake2 repository for the "normal" Yamagi Quake II:
 https://github.com/yquake2/yquake2
 
+State:
+ * GL1:
+   * base1: correct wall light, broken model light
+   * base2: correct wall light, broken model light, broken lift
+   * q64/outpost: no known issies
+   * mguhub: loaded, transparent walls and broken logic for surface fall in next maps
+ * GL3/GLES3:
+   * base1: broken wall light, broken model light
+   * base2: broken wall light, broken model light, broken lift
+   * q64/outpost: no known issies
+   * mguhub: can't be loaded
+ * SOFT:
+   * base1: broken wall light, broken model light
+   * base2: broken wall light, broken model light, broken lift
+   * q64/outpost: no known issies
+   * mguhub: can't be loaded
+ * VK:
+   * base1: correct wall light, broken model light
+   * base2: correct wall light, broken model light, broken lift
+   * q64/outpost: no known issies
+   * mguhub: loaded, transparent walls and broken logic for surface fall in next maps
+
+Goals (none of it finished):
+  * Single player support
+  * BSPX DECOUPLEDLM light map support (base1)
+  * IBSQ map format support (mguhub)
+  * MD5 model support
+  * modified ReRelease game code support with removed KEX only related code
+  * RoQ and Theora cinematic videos support.
+
+Bonus goals:
+  * MDL/Quake1 model format support
+  * FM/Heretic 2 model format support
+  * Daikatana model/wal/map format support
+  * Cinematic videos support in smk, mpeg format.
+
+Not a goal:
+  * multiplayer protocol support with KEX engine
+  * support KEX engine features (inventary, compass and so on)
+  * KEX game library support
 
 # Yamagi Quake II
 

@@ -453,6 +453,7 @@ Mod_LoadFaces (model_t *loadmodel, byte *mod_base, lump_t *l)
 			ri.Sys_Error(ERR_DROP, "%s: bad texinfo number", __func__);
 		}
 		out->texinfo = loadmodel->texinfo + ti;
+		out->lmshift = DEFAULT_LMSHIFT;
 
 		CalcSurfaceExtents (loadmodel, out);
 
@@ -623,8 +624,8 @@ Mod_LoadBrushModel(model_t *mod, void *buffer, int modfilelen)
 
 	header = (dheader_t *)buffer;
 
-	i = LittleLong (header->version);
-	if (i != BSPVERSION)
+	i = LittleLong(header->version);
+	if (i != BSPVERSION && i != BSPDKMVERSION)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
 				__func__, mod->name, i, BSPVERSION);

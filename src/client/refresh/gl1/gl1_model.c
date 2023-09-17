@@ -327,8 +327,7 @@ static void
 Mod_CalcSurfaceExtents(model_t *loadmodel, msurface_t *s)
 {
 	float mins[2], maxs[2], val;
-	int i, j, e;
-	mvertex_t *v;
+	int i;
 	mtexinfo_t *tex;
 	int bmins[2], bmaxs[2];
 
@@ -339,6 +338,9 @@ Mod_CalcSurfaceExtents(model_t *loadmodel, msurface_t *s)
 
 	for (i = 0; i < s->numedges; i++)
 	{
+		int e, j;
+		mvertex_t *v;
+
 		e = loadmodel->surfedges[s->firstedge + i];
 
 		if (e >= 0)
@@ -1032,7 +1034,7 @@ Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 
 	i = LittleLong(header->version);
 
-	if (i != BSPVERSION)
+	if (i != BSPVERSION && i != BSPDKMVERSION)
 	{
 		ri.Sys_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
 				__func__, mod->name, i, BSPVERSION);

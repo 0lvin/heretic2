@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "header/local.h"
 
 static float	skyrotate;
+static int	skyautorotate;
 static vec3_t	skyaxis;
 static image_t	*sky_images[6];
 
@@ -622,7 +623,8 @@ void R_DrawSkyBox (void)
 
 	float model[16];
 	Mat_Identity(model);
-	Mat_Rotate(model, r_newrefdef.time * skyrotate, skyaxis[0], skyaxis[1], skyaxis[2]);
+	Mat_Rotate(model, (skyautorotate ? r_newrefdef.time : 1.f) * skyrotate,
+		skyaxis[0], skyaxis[1], skyaxis[2]);
 	Mat_Translate(model, r_origin[0], r_origin[1], r_origin[2]);
 
 	struct {
@@ -684,18 +686,19 @@ void R_DrawSkyBox (void)
 
 /*
 ============
-RE_SetSky_s
+RE_SetSky
 ============
 */
 // 3dstudio environment map names
 static char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
-void RE_SetSky_s (const char *name, float rotate, const vec3_t axis)
+void RE_SetSky(const char *name, float rotate, int autorotate, const vec3_t axis)
 {
 	char	skyname[MAX_QPATH];
 	int		i;
 
 	strncpy(skyname, name, sizeof(skyname) - 1);
 	skyrotate = rotate;
+	skyautorotate = autorotate;
 	VectorCopy(axis, skyaxis);
 
 	for (i = 0; i<6; i++)

@@ -480,6 +480,7 @@ Vk_DrawAliasFrameLerp (dmdl_t *paliashdr, float backlerp, image_t *skin,
 	fmnodeinfo_t *nodeinfo;
 
 	nodeinfo = currententity->fmnodeinfo;
+
 	frame = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 		+ currententity->frame * paliashdr->framesize);
 	verts = v = frame->verts;
