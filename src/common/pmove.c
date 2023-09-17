@@ -28,6 +28,7 @@
 #include "header/common.h"
 #include "../client/sound/header/local.h"
 #include "../client/header/client.h"
+
 #include "../game/header/g_physics.h"
 
 #if !defined(DEDICATED_ONLY) && defined(USE_OPENAL)
