@@ -391,61 +391,54 @@ only happens when a new game is begun
 void
 InitGame(void)
 {
-	gi.dprintf ("==== InitGame ====\n");
+	gi.dprintf("Game is starting up.\n");
+	gi.dprintf("Game is %s built on %s.\n", GAMEVERSION, BUILD_DATE);
 
 	G_InitResourceManagers();
+	InitMessages();
 
-	gun_x = gi.cvar ("gun_x", "0", 0);
-	gun_y = gi.cvar ("gun_y", "0", 0);
-	gun_z = gi.cvar ("gun_z", "0", 0);
+	gun_x = gi.cvar("gun_x", "0", 0);
+	gun_y = gi.cvar("gun_y", "0", 0);
+	gun_z = gi.cvar("gun_z", "0", 0);
+	sv_rollspeed = gi.cvar("sv_rollspeed", "200", 0);
+	sv_rollangle = gi.cvar("sv_rollangle", "2", 0);
+	sv_maxvelocity = gi.cvar("sv_maxvelocity", MAX_VELOCITY_STRING, 0);
+	sv_gravity = gi.cvar("sv_gravity", GRAVITY_STRING, 0);		// GRAVITY FOR ALL GAMES
+	sv_friction = gi.cvar("sv_friction", FRICTION_STRING, 0);		// FRICTION FOR ALL GAMES
 
-	//FIXME: sv_ prefix is wrong for these.
+	/* noset vars */
+	dedicated = gi.cvar("dedicated", "0", CVAR_NOSET);
 
-	sv_rollspeed = gi.cvar ("sv_rollspeed", "200", 0);
-	sv_rollangle = gi.cvar ("sv_rollangle", "2", 0);
-	sv_maxvelocity = gi.cvar ("sv_maxvelocity", MAX_VELOCITY_STRING, 0);
+	/* latched vars */
+	sv_cheats = gi.cvar("cheats", "0", CVAR_SERVERINFO | CVAR_LATCH);
+	gi.cvar("gamename", GAMEVERSION, CVAR_SERVERINFO | CVAR_LATCH);
+	gi.cvar("gamedate", BUILD_DATE, CVAR_SERVERINFO | CVAR_LATCH);
+	maxclients = gi.cvar("maxclients", "4", CVAR_SERVERINFO | CVAR_LATCH);
+	maxspectators = gi.cvar("maxspectators", "4", CVAR_SERVERINFO);
+	deathmatch = gi.cvar("deathmatch", "0", CVAR_LATCH);
+	coop = gi.cvar("coop", "0", CVAR_LATCH);
 
-	sv_gravity = gi.cvar ("sv_gravity", GRAVITY_STRING, 0);		// GRAVITY FOR ALL GAMES
-	sv_friction = gi.cvar ("sv_friction", FRICTION_STRING, 0);		// FRICTION FOR ALL GAMES
+	skill = gi.cvar("skill", "1", CVAR_LATCH);
+	maxentities = gi.cvar("maxentities", "1024", CVAR_LATCH);
 
-	// Noset vars.
+	sv_nomonsters = gi.cvar("nomonsters", "0", CVAR_SERVERINFO|CVAR_LATCH);
+	sv_freezemonsters = gi.cvar("freezemonsters", "0", 0);
 
-	dedicated = gi.cvar ("dedicated", "0", CVAR_NOSET);
+	/* change anytime vars */
+	dmflags = gi.cvar("dmflags", "0", CVAR_SERVERINFO);
+	advancedstaff = gi.cvar("advancedstaff", "1", CVAR_SERVERINFO);
 
-	// Latched vars.
-
-	sv_cheats = gi.cvar ("cheats", "0", CVAR_SERVERINFO|CVAR_LATCH);
-	gi.cvar ("gamename", GAMEVERSION , CVAR_SERVERINFO | CVAR_LATCH);
-	gi.cvar ("gamedate", __DATE__ , CVAR_SERVERINFO | CVAR_LATCH);
-
-	maxclients = gi.cvar ("maxclients", "4", CVAR_SERVERINFO | CVAR_LATCH);
-	deathmatch = gi.cvar ("deathmatch", "0", CVAR_LATCH);
-	coop = gi.cvar ("coop", "0", CVAR_LATCH);
-
-	skill = gi.cvar ("skill", "1", CVAR_LATCH);
-	maxentities = gi.cvar ("maxentities", "1024", CVAR_LATCH);
-
-	sv_nomonsters = gi.cvar ("nomonsters", "0", CVAR_SERVERINFO|CVAR_LATCH);
-	sv_freezemonsters = gi.cvar ("freezemonsters", "0", 0);
-
-	// Change anytime vars.
-
-	dmflags = gi.cvar ("dmflags", "0", CVAR_SERVERINFO);
-	advancedstaff = gi.cvar ("advancedstaff", "1", CVAR_SERVERINFO);
-
-	fraglimit = gi.cvar ("fraglimit", "0", CVAR_SERVERINFO);
-	timelimit = gi.cvar ("timelimit", "0", CVAR_SERVERINFO);
-	password = gi.cvar ("password", "", CVAR_USERINFO);
+	fraglimit = gi.cvar("fraglimit", "0", CVAR_SERVERINFO);
+	timelimit = gi.cvar("timelimit", "0", CVAR_SERVERINFO);
+	password = gi.cvar("password", "", CVAR_USERINFO);
 	spectator_password = gi.cvar("spectator_password", "", CVAR_USERINFO);
-	filterban = gi.cvar ("filterban", "1", 0);
-
-	g_select_empty = gi.cvar ("g_select_empty", "0", CVAR_ARCHIVE);
-
-	run_pitch = gi.cvar ("run_pitch", "0.002", 0);
-	run_roll = gi.cvar ("run_roll", "0.005", 0);
-	bob_up  = gi.cvar ("bob_up", "0.005", 0);
-	bob_pitch = gi.cvar ("bob_pitch", "0.002", 0);
-	bob_roll = gi.cvar ("bob_roll", "0.002", 0);
+	filterban = gi.cvar("filterban", "1", 0);
+	g_select_empty = gi.cvar("g_select_empty", "0", CVAR_ARCHIVE);
+	run_pitch = gi.cvar("run_pitch", "0.002", 0);
+	run_roll = gi.cvar("run_roll", "0.005", 0);
+	bob_up = gi.cvar("bob_up", "0.005", 0);
+	bob_pitch = gi.cvar("bob_pitch", "0.002", 0);
+	bob_roll = gi.cvar("bob_roll", "0.002", 0);
 
 	autorotate = gi.cvar("autorotate", "0", 0);
 	blood = gi.cvar("blood", "1", 0);
@@ -472,11 +465,11 @@ InitGame(void)
 	no_shield = gi.cvar("no_shield","0",0);
 
 	game_test = gi.cvar("game_test", "0", 0);
-	flood_msgs = gi.cvar ("flood_msgs", "4", 0);
-	flood_persecond = gi.cvar ("flood_persecond", "4", 0);
-	flood_waitdelay = gi.cvar ("flood_waitdelay", "10", 0);
-	flood_killdelay = gi.cvar ("flood_killdelay", "10", 0);
-	sv_maplist = gi.cvar ("sv_maplist", "", 0);
+	flood_msgs = gi.cvar("flood_msgs", "4", 0);
+	flood_persecond = gi.cvar("flood_persecond", "4", 0);
+	flood_waitdelay = gi.cvar("flood_waitdelay", "10", 0);
+	flood_killdelay = gi.cvar("flood_killdelay", "10", 0);
+	sv_maplist = gi.cvar("sv_maplist", "", 0);
 
 	sv_cinematicfreeze = gi.cvar("sv_cinematicfreeze", "0", 0);
 	sv_jumpcinematic = gi.cvar("sv_jumpcinematic", "0", 0);
@@ -485,8 +478,8 @@ InitGame(void)
 	log_file_header = gi.cvar("log_file_header", "", CVAR_ARCHIVE);
 	log_file_line_header = gi.cvar("log_file_line_header", "", CVAR_ARCHIVE);
 
-	blood_level = gi.cvar ("blood_level", VIOLENCE_DEFAULT_STR, CVAR_ARCHIVE);
-	dm_no_bodies = gi.cvar ("dm_no_bodies", "0", CVAR_ARCHIVE);
+	blood_level = gi.cvar("blood_level", VIOLENCE_DEFAULT_STR, CVAR_ARCHIVE);
+	dm_no_bodies = gi.cvar("dm_no_bodies", "0", CVAR_ARCHIVE);
 
 	gi.cvar("flash_screen", "1", 0);
 
@@ -534,11 +527,17 @@ InitGame(void)
 
 //=========================================================
 
-static void WriteField1 (FILE *f, field_t *field, byte *base)
+static void
+WriteField1(FILE *f, field_t *field, byte *base)
 {
-	void		*p;
-	int			len;
-	int			index;
+	void *p;
+	int len;
+	int index;
+
+	if (field->flags & FFL_SPAWNTEMP)
+	{
+		return;
+	}
 
 	p = (void *)(base + field->ofs);
 
@@ -553,63 +552,94 @@ static void WriteField1 (FILE *f, field_t *field, byte *base)
 
 		case F_LSTRING:
 		case F_GSTRING:
-			if ( *(char **)p )
+
+			if (*(char **)p)
+			{
 				len = strlen(*(char **)p) + 1;
+			}
 			else
+			{
 				len = 0;
+			}
+
 			*(int *)p = len;
 			break;
 		case F_EDICT:
-			if ( *(edict_t **)p == NULL)
+
+			if (*(edict_t **)p == NULL)
+			{
 				index = -1;
+			}
 			else
+			{
 				index = *(edict_t **)p - g_edicts;
+			}
+
 			*(int *)p = index;
 			break;
 		case F_CLIENT:
-			if ( *(gclient_t **)p == NULL)
+
+			if (*(gclient_t **)p == NULL)
+			{
 				index = -1;
+			}
 			else
+			{
 				index = *(gclient_t **)p - game.clients;
+			}
+
 			*(int *)p = index;
 			break;
 		case F_ITEM:
-			if ( *(edict_t **)p == NULL)
+
+			if (*(edict_t **)p == NULL)
+			{
 				index = -1;
+			}
 			else
 				index = *(gitem_t **)p - playerExport->GetPlayerItems();
 			*(int *)p = index;
 			break;
 
 		default:
-			gi.error ("WriteEdict: unknown field type");
+			gi.error("WriteEdict: unknown field type");
 	}
 }
 
-static void WriteField2 (FILE *f, field_t *field, byte *base)
+static void
+WriteField2(FILE *f, field_t *field, byte *base)
 {
-	int			len;
-	void		*p;
+	int len;
+	void *p;
+
+	if (field->flags & FFL_SPAWNTEMP)
+	{
+		return;
+	}
 
 	p = (void *)(base + field->ofs);
+
 	switch (field->type)
 	{
-	case F_LSTRING:
-	case F_GSTRING:
-		if ( *(char **)p )
-		{
-			len = strlen(*(char **)p) + 1;
-			fwrite (*(char **)p, len, 1, f);
-		}
-		break;
+		case F_GSTRING:
+		case F_LSTRING:
+
+			if (*(char **)p)
+			{
+				len = strlen(*(char **)p) + 1;
+				fwrite(*(char **)p, len, 1, f);
+			}
+
+			break;
 	}
 }
 
-static void ReadField (FILE *f, field_t *field, byte *base)
+static void
+ReadField(FILE *f, field_t *field, byte *base)
 {
-	void		*p;
-	int			len;
-	int			index;
+	void *p;
+	int len;
+	int index;
 
 	p = (void *)(base + field->ofs);
 	switch (field->type)
@@ -647,40 +677,53 @@ static void ReadField (FILE *f, field_t *field, byte *base)
 			break;
 		case F_EDICT:
 			index = *(int *)p;
-			if ( index == -1 )
+
+			if (index == -1)
+			{
 				*(edict_t **)p = NULL;
+			}
 			else
+			{
 				*(edict_t **)p = &g_edicts[index];
+			}
+
 			break;
 		case F_CLIENT:
 			index = *(int *)p;
-			if ( index == -1 )
+
+			if (index == -1)
+			{
 				*(gclient_t **)p = NULL;
+			}
 			else
+			{
 				*(gclient_t **)p = &game.clients[index];
+			}
+
 			break;
 		case F_ITEM:
 			index = *(int *)p;
-			if ( index == -1 )
+
+			if (index == -1)
+			{
 				*(gitem_t **)p = NULL;
+			}
 			else
 				*(gitem_t **)p = playerExport->GetPlayerItems() + index;
 			break;
 
 		default:
-			gi.error ("ReadEdict: unknown field type");
+			gi.error("ReadEdict: unknown field type");
 	}
 }
 
 //=========================================================
 
-/*
-==============
-WriteClient
+/* ========================================================= */
 
-All pointer variables (except function pointers) must be handled specially.
-==============
-*/
+/*
+ * Write the client struct into a file.
+ */
 static void
 WriteClient(FILE *f, gclient_t *client)
 {
@@ -880,9 +923,9 @@ static void WriteLevelLocals (FILE *f)
 	// set up some console vars as level save variables
 	r_farclipdist = gi.cvar("r_farclipdist", FAR_CLIP_DIST, 0);
 	level.far_clip_dist_f = r_farclipdist->value;
-	r_fog = gi.cvar ("r_fog", "0", 0);
+	r_fog = gi.cvar("r_fog", "0", 0);
 	level.fog = r_fog->value;
-	r_fog_density = gi.cvar ("r_fog_density", "0", 0);
+	r_fog_density = gi.cvar("r_fog_density", "0", 0);
 	level.fog_density = r_fog_density->value;
 
 	// all of the ints, floats, and vectors stay as they are

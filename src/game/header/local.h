@@ -775,6 +775,7 @@ extern cvar_t *sv_jumpcinematic;
 extern cvar_t *sv_freezemonsters;
 
 extern cvar_t *maxclients;
+extern cvar_t *maxspectators;
 extern cvar_t *sv_maplist;
 
 extern cvar_t *autorotate;
@@ -969,6 +970,7 @@ void BecomeExplosion1(edict_t *self);
 
 /* g_ai.c */
 void AI_SetSightClient(void);
+
 void ai_stand(edict_t *self, float dist);
 void ai_move(edict_t *self, float dist);
 void ai_walk(edict_t *self, float dist);
@@ -979,6 +981,7 @@ void ai_eat(edict_t *self, float dist);
 void ai_generic(edict_t *self);
 void ai_flee(edict_t *self, float dist);
 int range(edict_t *self, edict_t *other);
+
 void FoundTarget(edict_t *self, qboolean setsightent);
 qboolean infront(edict_t *self, edict_t *other);
 qboolean visible(edict_t *self, edict_t *other);
@@ -1642,5 +1645,9 @@ struct edict_s
 #include "../savegame/savegame.h"
 #include "../savegame/tables/gamefunc_decs.h"
 #endif
+
+/* Heretic 2 */
+void InitMessages(void);
+void translate_text(char *msg, int *sound_index);
 
 #endif /* GAME_LOCAL_H */
