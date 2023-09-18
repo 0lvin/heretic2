@@ -80,9 +80,6 @@ R_LerpVerts(entity_t *currententity, int nverts, dtrivertx_t *v, dtrivertx_t *ov
 	}
 }
 
-/*
- * Interpolates between two frames and origins
- */
 static void
 R_DrawAliasDrawCommands(entity_t *currententity, int *order, int *order_end,
 	float alpha, dtrivertx_t *verts)
@@ -366,7 +363,7 @@ R_DrawAliasShadowCommand(entity_t *currententity, int *order, int *order_end,
 		}
 		else
 		{
-            type = GL_TRIANGLE_STRIP;
+			type = GL_TRIANGLE_STRIP;
 		}
 
 		total = count;
