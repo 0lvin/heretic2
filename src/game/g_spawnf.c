@@ -609,7 +609,7 @@ void SP_worldspawn (edict_t *ent)
 
 	// FRICTION for all games.
 
-	sv_friction = gi.cvar ("sv_friction", FRICTION_STRING, 0);
+	sv_friction = gi.cvar ("sv_friction", "1600.0", 0);
 
 	//
 	// Setup light animation tables. 'a' is total darkness, 'z' is doublebright.

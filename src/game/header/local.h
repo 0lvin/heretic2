@@ -1649,5 +1649,6 @@ struct edict_s
 /* Heretic 2 */
 void InitMessages(void);
 void translate_text(char *msg, int *sound_index);
+void get_translated_text(int message_id, char *msg, int *sound_index);
 
 #endif /* GAME_LOCAL_H */

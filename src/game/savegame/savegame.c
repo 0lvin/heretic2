@@ -330,11 +330,13 @@ static int LoadTextFile(char *name, char **addr)
 
 static void Load_Strings(void)
 {
+	char	*p, *startp,*return_p;
+	cvar_t *levelmsg_name;
 	char	*buffer;
 	int		i,length;
-	char *p,*startp,*return_p;
 
-	length = LoadTextFile ("levelmsg.txt", &buffer);
+	levelmsg_name = gi.cvar("file_levelmsg", "levelmsg.txt", 0);
+	length = LoadTextFile (levelmsg_name->string, &buffer);
 	messagebuf = (unsigned *) buffer;
 	startp = buffer;
 	p =0;
@@ -381,13 +383,10 @@ static void Load_Strings(void)
 
 
 /*
-============
-InitGame
-
-This will be called when the dll is first loaded, which
-only happens when a new game is begun
-============
-*/
+ * This will be called when the dll is first loaded,
+ * which only happens when a new game is started or
+ * a save game is loaded.
+ */
 void
 InitGame(void)
 {
@@ -402,9 +401,9 @@ InitGame(void)
 	gun_z = gi.cvar("gun_z", "0", 0);
 	sv_rollspeed = gi.cvar("sv_rollspeed", "200", 0);
 	sv_rollangle = gi.cvar("sv_rollangle", "2", 0);
-	sv_maxvelocity = gi.cvar("sv_maxvelocity", MAX_VELOCITY_STRING, 0);
-	sv_gravity = gi.cvar("sv_gravity", GRAVITY_STRING, 0);		// GRAVITY FOR ALL GAMES
-	sv_friction = gi.cvar("sv_friction", FRICTION_STRING, 0);		// FRICTION FOR ALL GAMES
+	sv_maxvelocity = gi.cvar("sv_maxvelocity", "2000", 0);
+	sv_gravity = gi.cvar("sv_gravity", "675.0", 0);
+	sv_friction = gi.cvar("sv_friction", "1600.0", 0);
 
 	/* noset vars */
 	dedicated = gi.cvar("dedicated", "0", CVAR_NOSET);

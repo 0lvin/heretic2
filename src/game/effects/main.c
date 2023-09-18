@@ -97,7 +97,7 @@ void Init()
 	r_detail = fxi.Cvar_Get("r_detail", DETAIL_DEFAULT, CVAR_ARCHIVE);
 	fx_numinview = fxi.Cvar_Get("fx_numinview", "0", 0);
 	fx_numactive = fxi.Cvar_Get("fx_numactive", "0", 0);
-	clfx_gravity = fxi.Cvar_Get("clfx_gravity", GRAVITY_STRING, 0);
+	clfx_gravity = fxi.Cvar_Get("clfx_gravity", "675.0", 0);
 	cl_timedemo = fxi.Cvar_Get("timedemo","0",0);
 	compass = fxi.Cvar_Get("compass", "0", CVAR_ARCHIVE);
 

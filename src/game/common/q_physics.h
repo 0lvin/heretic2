@@ -16,16 +16,7 @@
 
 #define GROUND_NORMAL				0.7f
 
-#define GRAVITY						675.0f
-#define GRAVITY_STRING				"675.0"		// to set cvars with
-
-#define	FRICTION					1600.0f
-#define FRICTION_STRING				"1600.0"		// to set cvars with
-
 #define	STOP_EPSILON				0.1
-
-#define MAX_VELOCITY				2000
-#define MAX_VELOCITY_STRING			"2000"
 
 #define	PHYSICS_Z_FUDGE				0.5
 #define	CHECK_BELOW_DIST			0.5

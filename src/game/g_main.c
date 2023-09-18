@@ -167,6 +167,50 @@ void G_ClearMessageQueues();
 static char *messagesIndex[MESSAGES_SIZE];
 static char *messagesBuffer;
 
+void
+get_translated_text(int message_id, char *msg, int *sound_index)
+{
+	/* Messages started from 1 */
+	message_id--;
+	if (message_id >= 0 && message_id < MESSAGES_SIZE && messagesIndex[message_id])
+	{
+		char *curr;
+		int sharp_pos = strcspn(messagesIndex[message_id], "#");
+		// copy text  message to output buffer
+		memcpy(msg, messagesIndex[message_id], sharp_pos);
+		msg[sharp_pos] = 0;
+		curr = msg;
+		while (*curr)
+		{
+			if (*curr == '@')
+				*curr = '\n';
+			curr ++;
+		}
+		// check that we have some sound
+		if (sharp_pos < strlen(messagesIndex[message_id]))
+		{
+			char sound[256];
+			char* fix;
+
+			strcpy(sound, messagesIndex[message_id] + sharp_pos + 1);
+			fix = sound;
+			while (*fix)
+			{
+				if (*fix == '\\')
+				{
+					*fix = '/';
+				}
+				fix++;
+			}
+
+			if (sound_index)
+			{
+				*sound_index = gi.soundindex(sound);
+			}
+		}
+	}
+}
+
 /* Translate messages */
 void
 translate_text(char *msg, int *sound_index)
@@ -179,60 +223,26 @@ translate_text(char *msg, int *sound_index)
 
 	if (strspn(msg, "1234567890") == strlen(msg))
 	{
-		int message_id = atoi(msg) - 1;
-		if (message_id >= 0 && message_id < MESSAGES_SIZE && messagesIndex[message_id])
-		{
-			char *curr;
-			int sharp_pos = strcspn(messagesIndex[message_id], "#");
-			// copy text  message to output buffer
-			memcpy(msg, messagesIndex[message_id], sharp_pos);
-			msg[sharp_pos] = 0;
-			curr = msg;
-			while (*curr)
-			{
-				if (*curr == '@')
-					*curr = '\n';
-				curr ++;
-			}
-			// check that we have some sound
-			if (sharp_pos < strlen(messagesIndex[message_id]))
-			{
-				char sound[256];
-				char* fix;
-
-				strcpy(sound, messagesIndex[message_id] + sharp_pos + 1);
-				fix = sound;
-				while (*fix)
-				{
-					if (*fix == '\\')
-					{
-						*fix = '/';
-					}
-					fix++;
-				}
-
-				if (sound_index)
-				{
-					*sound_index = gi.soundindex(sound);
-				}
-			}
-		}
+		get_translated_text(atoi(msg), msg, sound_index);
 	}
 }
 
 void
 InitMessages(void)
 {
+	cvar_t *levelmsg_name;
 	int size = -1, n;
 	char *p;
 
 	messagesBuffer = NULL;
 	memset(messagesIndex, 0, sizeof(messagesIndex));
 
-	size = gi.FS_LoadFile("levelmsg.txt", (void **)&p);
+	levelmsg_name = gi.cvar("file_levelmsg", "levelmsg.txt", 0);
+
+	size = gi.FS_LoadFile(levelmsg_name->string, (void **)&p);
 	if (size < 1)
 	{
-		gi.dprintf("Couldn't open levelmsg.txt\n");
+		gi.dprintf("Couldn't open %s\n", levelmsg_name->string);
 		return;
 	}
 

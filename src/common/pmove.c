@@ -38,6 +38,8 @@ void AL_Overwater();
 
 #define STEPSIZE 18
 #define OVERCLIP 1.001f
+/* TODO: Rewrite: Gravity is hardcoded? */
+#define GRAVITY 675.0f
 
 /* all of the locals will be zeroed before each
  * pmove, just to make damn sure we don't have
