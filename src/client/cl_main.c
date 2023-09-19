@@ -946,8 +946,6 @@ CL_Init(void)
 
 	CL_InitLocal();
 
-	CL_LoadStrings();
-
 	Cbuf_Execute();
 
 	Key_ReadConsoleHistory();

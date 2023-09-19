@@ -600,12 +600,12 @@ void G_UseTargets (edict_t *ent, edict_t *activator)
 	}
 
 
-//
-// print the message
-//
+	//
+	// print the message
+	//
 	if ((ent->message) && !(activator->svflags & SVF_MONSTER))
 	{
-		gi.levelmsg_centerprintf (activator, (short)atoi(ent->message));
+		G_LevelMsgCenterPrintf(activator, (short)atoi(ent->message));
 		if (ent->noise_index)
 		{
 			gi.sound (activator, CHAN_AUTO, ent->noise_index, 1, ATTN_NORM, 0);
@@ -617,9 +617,9 @@ void G_UseTargets (edict_t *ent, edict_t *activator)
 		gi.centerprintf (activator, "%s", ent->text_msg);
 	}
 
-//
-// kill killtargets
-//
+	//
+	// kill killtargets
+	//
 	if (ent->killtarget)
 	{
 		t = NULL;

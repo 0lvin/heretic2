@@ -568,8 +568,4 @@ trace_t CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 
 //=================================================
 
-char *CL_GetLevelString(int i);
-char *CL_GetLevelWav(int i);
-void CL_LoadStrings(void);
-
 #endif

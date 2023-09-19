@@ -3034,11 +3034,11 @@ void CScript::HandlePrint(void)
 		{
 			if (ent)
 			{
-				gi.captionprintf(ent, TextIndex);		// Send the ID for the text to the single player
+				G_CaptionPrintf(ent, TextIndex);		// Send the ID for the text to the single player
 			}
 			else
 			{
-				gi.bcaption(PRINT_HIGH, TextIndex);		// Send the ID for the text to all players
+				G_BCaption(PRINT_HIGH, TextIndex);		// Send the ID for the text to all players
 			}
 		}
 		else if (Flags & PRINT_CENTERED)
@@ -3046,7 +3046,7 @@ void CScript::HandlePrint(void)
 			if (ent)
 			{
 				// Send the ID over the net rather than the string itself...
-				gi.levelmsg_centerprintf(ent, TextIndex);
+				G_LevelMsgCenterPrintf(ent, TextIndex);
 			}
 		}
 		else
@@ -3218,7 +3218,7 @@ void CScript::HandleFeature(bool Enable)
 					{
 						gi.cvar_set("sv_jumpcinematic","0");
 						null_snd = gi.soundindex("misc/null.wav");
-						gi.bcaption(PRINT_HIGH, 270);		// Send the ID for the text to all players
+						G_BCaption(PRINT_HIGH, 270);		// Send the ID for the text to all players
 						for (i=0;i<CinematicSound_cnt;++i)
 						{
 							if (CinematicSound[i].ent)	// Does the entity still exist

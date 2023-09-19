@@ -383,35 +383,6 @@ game_export_t* GetGameAPI(game_import_t* import);
 
 void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
-void
-SV_BCaption(int printlevel, short stringid)
-{
-	client_t* cl;
-	int			i;
-
-	for (i = 0, cl = svs.clients; i < maxclients->value; i++, cl++)
-	{
-		if (cl->state != cs_spawned)
-			continue;
-		MSG_WriteByte(&cl->netchan.message, svc_captionprint);
-		MSG_WriteShort(&cl->netchan.message, stringid);
-	}
-}
-
-void
-SV_LevelMsgCenterPrintf(edict_t* ent, short msg)
-{
-	client_t* cl;
-	int			i;
-
-	for (i = 0, cl = svs.clients; i < maxclients->value; i++, cl++)
-	{
-		if (cl->state != cs_spawned)
-			continue;
-		MSG_WriteByte(&cl->netchan.message, svc_centerprint);
-		MSG_WriteShort(&cl->netchan.message, msg);
-	}
-}
 
 void
 SV_BroadcastObituary(int printlevel, short stringid, short client1, short client2)
@@ -449,14 +420,6 @@ void SV_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
 }
 
 void SV_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void SV_CaptionPrintf(edict_t* ent, short msg)
 {
 	if (developer && developer->value)
 	{
@@ -868,14 +831,11 @@ SV_InitGameProgs(void)
 	import.multicast = SV_Multicast;
 	import.unicast = PF_Unicast;
 	import.bprintf = SV_BroadcastPrintf;
-	import.bcaption = SV_BCaption;
 	import.Obituary = SV_BroadcastObituary;
 	import.dprintf = PF_dprintf;
 	import.cprintf = PF_cprintf;
 	import.clprintf = SV_CLPrintf;
 	import.centerprintf = PF_centerprintf;
-	import.levelmsg_centerprintf = SV_LevelMsgCenterPrintf;
-	import.captionprintf = SV_CaptionPrintf;
 	import.msgvar_centerprintf = SV_MsgVarCenterPrintf;
 	import.msgdual_centerprintf = SV_MsgDualCenterPrintf;
 	import.error = PF_error;

@@ -198,12 +198,9 @@ typedef struct
 
 	float	(*cvar_variablevalue) (const char *var_name);
 	void (*clprintf)(edict_t *ent, edict_t *from, int color, const char *fmt, ...);
-	void (*bcaption)(int printlevel, short stringid);
 	void (*Obituary)(int printlevel, short stringid, short client1, short client2);
-	void (*levelmsg_centerprintf)(edict_t *ent, short msg);
 	void (*msgvar_centerprintf)(edict_t *ent, short msg, int vari);
 	void (*msgdual_centerprintf)(edict_t *ent, short msg1, short msg2);
-	void (*captionprintf)(edict_t *ent, short msg);
 	void (*soundevent)(byte EventId,float leveltime,edict_t *ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
 
 	// routine that sends over new CD track

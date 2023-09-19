@@ -162,134 +162,29 @@ void G_ClearMessageQueues();
 
 /* ========================================================= */
 
-/* Heretic 2 support codes */
-#define MESSAGES_SIZE 256
-static char *messagesIndex[MESSAGES_SIZE];
-static char *messagesBuffer;
-
 void
-get_translated_text(int message_id, char *msg, int *sound_index)
+G_BCaption(int printlevel, short stringid)
 {
-	/* Messages started from 1 */
-	message_id--;
-	if (message_id >= 0 && message_id < MESSAGES_SIZE && messagesIndex[message_id])
-	{
-		char *curr;
-		int sharp_pos = strcspn(messagesIndex[message_id], "#");
-		// copy text  message to output buffer
-		memcpy(msg, messagesIndex[message_id], sharp_pos);
-		msg[sharp_pos] = 0;
-		curr = msg;
-		while (*curr)
-		{
-			if (*curr == '@')
-				*curr = '\n';
-			curr ++;
-		}
-		// check that we have some sound
-		if (sharp_pos < strlen(messagesIndex[message_id]))
-		{
-			char sound[256];
-			char* fix;
-
-			strcpy(sound, messagesIndex[message_id] + sharp_pos + 1);
-			fix = sound;
-			while (*fix)
-			{
-				if (*fix == '\\')
-				{
-					*fix = '/';
-				}
-				fix++;
-			}
-
-			if (sound_index)
-			{
-				*sound_index = gi.soundindex(sound);
-			}
-		}
-	}
-}
-
-/* Translate messages */
-void
-translate_text(char *msg, int *sound_index)
-{
-	if (msg[0] == ';')
-	{
-		// commendted line
-		return;
-	}
-
-	if (strspn(msg, "1234567890") == strlen(msg))
-	{
-		get_translated_text(atoi(msg), msg, sound_index);
-	}
+	// S_StartLocalSound????
+	printf("%s -> %d: message: '%s', sound: '%s'\n",
+		__func__, stringid, message_text[stringid].string, message_text[stringid].wav);
+	gi.bprintf(printlevel, message_text[stringid].string);
 }
 
 void
-InitMessages(void)
+G_LevelMsgCenterPrintf(edict_t* ent, short stringid)
 {
-	cvar_t *levelmsg_name;
-	int size = -1, n;
-	char *p;
+	printf("%s -> %d: message: '%s', sound: '%s'\n",
+		__func__, stringid, message_text[stringid].string, message_text[stringid].wav);
+	gi.centerprintf(ent, message_text[stringid].string);
+}
 
-	messagesBuffer = NULL;
-	memset(messagesIndex, 0, sizeof(messagesIndex));
-
-	levelmsg_name = gi.cvar("file_levelmsg", "levelmsg.txt", 0);
-
-	size = gi.FS_LoadFile(levelmsg_name->string, (void **)&p);
-	if (size < 1)
-	{
-		gi.dprintf("Couldn't open %s\n", levelmsg_name->string);
-		return;
-	}
-
-	messagesBuffer = gi.TagMalloc(size, TAG_GAME);
-	memcpy(messagesBuffer, p, size);
-	gi.FS_FreeFile ((void *)p);
-
-	p = messagesBuffer;
-
-	// MESSAGES_SIZE - 1 - last pointer should be NULL
-	for (n = 0; n < MESSAGES_SIZE - 1; n++)
-	{
-		messagesIndex[n] = p;
-
-		while (*p != '\r' && *p != '\n')
-		{
-			p++;
-
-			if (--size == 0)
-			{
-				break;
-			}
-		}
-
-		if (*p == '\r')
-		{
-			*p++ = 0;
-
-			if (--size == 0)
-			{
-				break;
-			}
-		}
-
-		*p++ = 0;
-
-		if (--size == 0)
-		{
-			// no messages any more
-			// move one step futher for set NULL
-			n ++;
-			break;
-		}
-	}
-	messagesIndex[n] = 0;
-
-	gi.dprintf("Heretic2 %d messages loaded.\n", n);
+void
+G_CaptionPrintf(edict_t* ent, short stringid)
+{
+	printf("%s -> %d: message: '%s', sound: '%s'\n",
+		__func__, stringid, message_text[stringid].string, message_text[stringid].wav);
+	gi.centerprintf(ent, message_text[stringid].string);
 }
 
 /* =================================================================== */
@@ -303,8 +198,6 @@ ShutdownGame(void)
 	int i;
 
 	gi.dprintf("==== ShutdownGame ====\n");
-
-	memset(messagesIndex, 0, sizeof(messagesIndex));
 
 	ShutdownScripts(true);
 

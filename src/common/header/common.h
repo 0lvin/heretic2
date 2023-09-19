@@ -29,10 +29,9 @@
 #ifndef CO_COMMON_H
 #define CO_COMMON_H
 
-#include "shared_safe.h"
+#include "shared.h"
 #include "crc.h"
 
-#define VKVERSION "1.0.5"
 #define YQ2VERSION "8.21pre"
 #define BASEDIRNAME "base"
 
@@ -143,6 +142,7 @@ void MSG_ReadDeltaUsercmd(sizebuf_t *sb,
 		struct usercmd_s *cmd);
 
 void MSG_ReadDir(sizebuf_t *sb, vec3_t vector);
+
 void MSG_ReadData(sizebuf_t *sb, void *buffer, int size);
 void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
@@ -176,13 +176,13 @@ void Info_Print(char *s);
 
 /* PROTOCOL */
 
-#define PROTOCOL_VERSION 51
+#define PROTOCOL_VERSION 34
 
 /* ========================================= */
 
-#define PORT_MASTER 28900
-#define PORT_CLIENT 28901
-#define PORT_SERVER 28910
+#define PORT_MASTER 27900
+#define PORT_CLIENT 27901
+#define PORT_SERVER 27910
 
 /* ========================================= */
 
@@ -208,29 +208,16 @@ enum svc_ops_e
 	svc_reconnect,
 	svc_sound,                  /* <see code> */
 	svc_print,                  /* [byte] id [string] null terminated string */
-	svc_gamemsg_print,          /* [short] id (top 3 bits flags) */
 	svc_stufftext,              /* [string] stuffed into client's console buffer, should be \n terminated */
 	svc_serverdata,             /* [long] protocol ... */
 	svc_configstring,           /* [short] [string] */
 	svc_spawnbaseline,
 	svc_centerprint,            /* [string] to put in center of the screen */
-	svc_gamemsg_centerprint,    /* line number of [string] in strings.txt file */
-	svc_gamemsgvar_centerprint, /* line number of [string] in strings.txt file, along with var to insert */
-	svc_levelmsg_centerprint,   /* line number of [string] in strings.txt file */
-	svc_captionprint,           /* line number of [string] in strings.txt file */
-	svc_obituary,               /* line number of [string] in strings.txt file */
 	svc_download,               /* [short] size [size bytes] */
 	svc_playerinfo,             /* variable */
 	svc_packetentities,         /* [...] */
 	svc_deltapacketentities,    /* [...] */
-	svc_frame,
-	svc_removeentities,
-	svc_changeCDtrack,
-	svc_framenum,				//only sent on world spawn, before client effects get through, so we can ensure client time is right
-	svc_demo_client_effect,		//only used to send down persistant effects at the start of a demo
-	svc_special_client_effect,	//almost the same as svc_client_effect, except its got an extra size short at the top.
-	svc_gamemsgdual_centerprint, //send down two message numbers, to combine into one text string
-	svc_nameprint,				//allow a client to print a message across the network without adding its name, instead, just its client number
+	svc_frame
 };
 
 /* ============================================== */
@@ -242,8 +229,7 @@ enum clc_ops_e
 	clc_nop,
 	clc_move,               /* [[usercmd_t] */
 	clc_userinfo,           /* [[userinfo string] */
-	clc_stringcmd,          /* [string] message */
-	clc_startdemo           /* start a demo - please send me all persistant effects */
+	clc_stringcmd           /* [string] message */
 };
 
 /* ============================================== */

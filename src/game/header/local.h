@@ -1647,8 +1647,9 @@ struct edict_s
 #endif
 
 /* Heretic 2 */
-void InitMessages(void);
-void translate_text(char *msg, int *sound_index);
 void get_translated_text(int message_id, char *msg, int *sound_index);
+void G_BCaption(int printlevel, short stringid);
+void G_LevelMsgCenterPrintf(edict_t* ent, short msg);
+void G_CaptionPrintf(edict_t* ent, short msg);
 
 #endif /* GAME_LOCAL_H */

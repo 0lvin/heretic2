@@ -1541,7 +1541,7 @@ void door_touch (edict_t *self, trace_t *trace)
 		return;
 
 	self->touch_debounce_time = level.time + 5.0;
-	gi.levelmsg_centerprintf (other, (short)atoi(self->message));
+	G_LevelMsgCenterPrintf(other, (short)atoi(self->message));
 }
 
 void door_sounds (edict_t *ent)
