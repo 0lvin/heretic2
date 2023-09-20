@@ -90,7 +90,6 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
 void FXSpoo(centity_t *owner,int type,int Flags,vec3_t origin)
 {
 	client_entity_t	*Trail;
-	paletteRGBA_t	LightColor = {{{255, 153, 77, 255}}};
 
 	Trail=ClientEntity_new(type,Flags,origin,NULL,20);
 

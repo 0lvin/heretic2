@@ -1597,7 +1597,6 @@ void pelf_SightSound ( edict_t *self, G_Message_t *msg )
 void pelf_PollResponse ( edict_t *self, int sound_event, int sound_id, float time )
 {
 	edict_t *ent = NULL, *last_valid = NULL;
-	int		numSupport = 0;
 
 	while((ent = findradius(ent, self->s.origin, PLAGUEELF_SUPPORT_RADIUS)) != NULL)
 	{

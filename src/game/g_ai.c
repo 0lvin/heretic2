@@ -72,7 +72,7 @@ float		enemy_yaw;		// ideal yaw to face enemy
 // ****************************************************************************
 int ai_trystep(edict_t *ent, vec3_t move)
 {
-	vec3_t		oldorg, neworg, copyorg, end, inf_mins, inf_maxs;
+	vec3_t		oldorg, neworg, end, inf_mins, inf_maxs;
 	trace_t		trace;
 	float		stepsize = 18;
 	vec3_t		test;
@@ -80,7 +80,6 @@ int ai_trystep(edict_t *ent, vec3_t move)
 
 	// try the move
 	VectorCopy (ent->s.origin, oldorg);
-	VectorCopy (ent->s.origin, copyorg);
 
 	VectorCopy (ent->mins, inf_mins);
 	VectorCopy (ent->maxs, inf_maxs);
@@ -1781,8 +1780,7 @@ void ai_runaway (edict_t *self, float dist)
 {
 	vec3_t		move;
 	vec3_t		vec, source, vf;
-	qboolean	goleft = false;
-	vec3_t		mins, maxs;
+	vec3_t		mins;
 	trace_t		trace;
 	vec3_t		na, nvr;
 	float		yaw;
@@ -1794,7 +1792,6 @@ void ai_runaway (edict_t *self, float dist)
 //	gi.dprintf("%s running away from %s!\n", self->classname, self->enemy->classname);
 	//Setup the trace
 	VectorCopy(self->mins, mins);
-	VectorCopy(self->maxs, maxs);
 	VectorCopy(self->s.origin, source);
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 	VectorMA(source, dist*2, vf, source);
@@ -1819,7 +1816,6 @@ void ai_runaway (edict_t *self, float dist)
 		}
 
 		VectorCopy(self->mins, mins);
-		VectorCopy(self->maxs, maxs);
 		VectorCopy(self->s.origin, source);
 		AngleVectors(self->s.angles, vf, NULL, NULL);
 		VectorMA(source, dist*4, nvr, source);
@@ -1944,12 +1940,11 @@ void old_ai_run (edict_t *self, float dist)
 {//FIXME: only ssithra in water use this, let;s junk it!
 	vec3_t		move;
 	vec3_t		vec, source, vf;
-	qboolean	goleft = false;
-	vec3_t		mins, maxs;
+	vec3_t		mins;
 	trace_t		trace;
-	vec3_t		na, nvr;//, v;
+	vec3_t		na, nvr;
 	float		yaw, turnamt, distloss;//,bbox
-	int			ret, oldyaw;
+	int			ret;
 
 	if (!self->enemy)
 		return;
@@ -2023,7 +2018,6 @@ void old_ai_run (edict_t *self, float dist)
 
 	//Setup the trace
 	VectorCopy(self->mins, mins);
-	VectorCopy(self->maxs, maxs);
 	VectorCopy(self->s.origin, source);
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 
@@ -2094,7 +2088,6 @@ void old_ai_run (edict_t *self, float dist)
 		}
 
 		VectorCopy(self->mins, mins);
-		VectorCopy(self->maxs, maxs);
 		VectorCopy(self->s.origin, source);
 		AngleVectors(self->s.angles, vf, NULL, NULL);
 		VectorMA(source, dist, nvr, source);//was 4?
@@ -2110,7 +2103,6 @@ void old_ai_run (edict_t *self, float dist)
 			self->ideal_yaw=vectoyaw(nvr);
 		}
 
-		oldyaw = self->s.angles[YAW];
 		turnamt = Q_fabs(M_ChangeYaw(self));
 
 		if (fabs(anglemod(self->s.angles[YAW] - self->ideal_yaw)) < self->yaw_speed)

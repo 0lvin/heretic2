@@ -157,7 +157,6 @@ void ReadLevel(char *filename);
 void InitGame(void);
 void G_RunFrame(void);
 void ConstructEntities(void);
-void CheckCoopTimeout(qboolean BeenHereBefore);
 void G_ClearMessageQueues();
 
 /* ========================================================= */
@@ -165,26 +164,33 @@ void G_ClearMessageQueues();
 void
 G_BCaption(int printlevel, short stringid)
 {
-	// S_StartLocalSound????
-	printf("%s -> %d: message: '%s', sound: '%s'\n",
-		__func__, stringid, message_text[stringid].string, message_text[stringid].wav);
 	gi.bprintf(printlevel, message_text[stringid].string);
+	if (message_text[stringid].wav && message_text[stringid].wav[0])
+	{
+		gi.sound(NULL, CHAN_AUTO, gi.soundindex(message_text[stringid].wav), 1, ATTN_NORM, 0);
+	}
 }
 
 void
 G_LevelMsgCenterPrintf(edict_t* ent, short stringid)
 {
-	printf("%s -> %d: message: '%s', sound: '%s'\n",
-		__func__, stringid, message_text[stringid].string, message_text[stringid].wav);
 	gi.centerprintf(ent, message_text[stringid].string);
+
+	if (message_text[stringid].wav && message_text[stringid].wav[0])
+	{
+		gi.sound(ent, CHAN_AUTO, gi.soundindex(message_text[stringid].wav), 1, ATTN_NORM, 0);
+	}
 }
 
 void
 G_CaptionPrintf(edict_t* ent, short stringid)
 {
-	printf("%s -> %d: message: '%s', sound: '%s'\n",
-		__func__, stringid, message_text[stringid].string, message_text[stringid].wav);
 	gi.centerprintf(ent, message_text[stringid].string);
+
+	if (message_text[stringid].wav && message_text[stringid].wav[0])
+	{
+		gi.sound(ent, CHAN_AUTO, gi.soundindex(message_text[stringid].wav), 1, ATTN_NORM, 0);
+	}
 }
 
 /* =================================================================== */
@@ -274,7 +280,6 @@ GetGameAPI(game_import_t *import)
 	globals.SpawnEntities = SpawnEntities_f;
 
 	globals.ConstructEntities = ConstructEntities;
-	globals.CheckCoopTimeout = CheckCoopTimeout;
 
 	globals.WriteGame = WriteGame_f;
 	globals.ReadGame = ReadGame_f;

@@ -346,15 +346,12 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 {
 	char entry[MAX_STRING_SIZE];
 	char value[512];
-	int game_type = 0;
-	char name[MAX_QPATH];
 	char string[MAX_STRING_SIZE];
 	int stringlength;
 	int i, j, k, z;
 	int sorted[MAX_CLIENTS];
 	int sortedscores[MAX_CLIENTS];
-	int score, total, max_team, total_team, max_team_display, real_total;
-	int hours, secs, mins;
+	int score, total, total_team, max_team_display;
 	int x, y;
 	qboolean bubble;
 	gclient_t *cl;
@@ -362,12 +359,6 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 	char *p;
 	team_scores_t team_scores[MAX_CLIENTS];
 	team_scores_t temp_point;
-	cvar_t *host_name;
-	char *game_types[3] = {
-		"Cooperative",
-		"Death Match",
-		"Team Play Death Match"
-	};
 
 	string[0] = 0;
 	stringlength = 0;
@@ -379,7 +370,6 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 	{
 		// ensure we have an empty table
 		memset(team_scores,0,sizeof(team_scores));
-		max_team = 0;
 		total_team = 0;
 
 		for(i = 0; i < game.maxclients; i++)
@@ -469,7 +459,6 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 		} while (bubble);
 
 		// now display the data
-		real_total = total_team;
 		if (total_team > 10)
 			total_team = 10;
 
@@ -539,7 +528,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 			sortedscores[j] = score;
 			total++;
 		}
-		real_total = total;
+
 		if(total > 12)
 		{
 			total = 12;

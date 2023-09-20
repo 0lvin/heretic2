@@ -54,7 +54,6 @@ void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	client_particle_t	*spark;
 	int					i;
 	float				ballnum;
-	vec3_t				mins={BARREL_RADIUS, BARREL_RADIUS, BARREL_RADIUS};
 
 	// Create three smaller explosion spheres.
 	for (i=0; i < BARREL_EXPLODE_BALLS; i++)

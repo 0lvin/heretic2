@@ -385,7 +385,6 @@ void ogle_c_anims(edict_t *self, G_Message_t *msg)
 
 void ogle_mood_think ( edict_t *self )
 {
-	qboolean	coward = self->monsterinfo.aiflags & AI_COWARD;
 	vec3_t		v;
 	float		len;
 	qboolean	path = false;
@@ -613,7 +612,6 @@ void ogle_sing (edict_t *self)
 //High level AI interface
 void ogle_pause(edict_t *self)
 {
-	edict_t	*ogle = NULL;
 	int chance = irand(0,100);
 
 	if ( (self->monsterinfo.ogleflags & OF_SONG_LEADER) && (self->monsterinfo.jump_time < level.time) && (!self->enemy) )

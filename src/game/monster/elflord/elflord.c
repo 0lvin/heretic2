@@ -611,8 +611,7 @@ qboolean elfLordCheckAttack (edict_t *self)
 	int		chance,
 			p_chance = 0,
 			soa_chance = 0,
-			beam_chance = 0,
-			move_chance = 0;
+			beam_chance = 0;
 
 	if (!M_ValidTarget(self, self->enemy))
 	{

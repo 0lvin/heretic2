@@ -112,7 +112,6 @@ static void RipperExplodeBallTouch(edict_t *self, edict_t *other, cplane_t *plan
 static void RipperImpact(edict_t *caster, edict_t *other, vec3_t startpos, vec3_t endpos, vec3_t angles)
 {
 	edict_t	*ripper;
-	byte	makeScorch = 0;
 	int		i;
 	int		dmg;
 	vec3_t	hitpos, fwd;

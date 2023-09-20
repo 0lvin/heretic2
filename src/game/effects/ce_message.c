@@ -31,7 +31,6 @@ void ReleaseMsgMngr()
 void QPostMessage(client_entity_t *to, CE_MsgID_t ID, char *format, ...)
 {
 	CE_Message_t *newMsg;
-	qboolean append = false;
 	SinglyLinkedList_t *parms;
 	va_list marker;
 

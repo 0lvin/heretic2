@@ -192,8 +192,7 @@ qboolean shoulder_room_ahead (edict_t *self)
 
 void tbeast_blocked (edict_t *self, trace_t *trace)
 {//fake_touch does all the actual damage, this is just a check for the charge stuff
-	vec3_t		dir, start, forward, end, mins, maxs;
-	float		speed;
+	vec3_t		start, forward, end, mins, maxs;
 	trace_t		tr;
 	qboolean	playsound = true;
 	qboolean	stop = false;
@@ -276,9 +275,6 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 							3,
 							7);
 
-			VectorCopy(self->velocity, dir);
-			speed = VectorNormalize(dir);
-
 			self->velocity[0] = self->velocity[1] = 0;
 			self->sounds++;
 			if(self->sounds!=2 && irand(0, 1))
@@ -291,7 +287,6 @@ void tbeast_charge (edict_t *self, float force)
 {
 	vec3_t	forward, enemy_dir;
 	float	save_v2;
-	qboolean	succeeded = false;
 
 	if(!M_ValidTarget(self, self->enemy))
 	{
@@ -459,7 +454,6 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 {
 	vec3_t	v, melee_point, forward, up;
 	float	len, seperation;
-	float	chance;
 
 	if(!M_ValidTarget(self, self->enemy))
 	{
@@ -490,7 +484,6 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 	if(len - seperation < 100)
 	{//melee
 //		gi.dprintf("Biting: ");
-		chance = flrand(0, 1);
 
 		if(self->enemy->absmin[2] > melee_point[2] + 128)
 		{
@@ -543,8 +536,6 @@ void tbeast_start_charge(edict_t *self, G_Message_t *msg)
 -----------------------------------------------------------------------*/
 void tbeast_run(edict_t *self, G_Message_t *msg)
 {
-	vec3_t	v;
-	float	len;
 	float	delta;
 	qboolean enemy_vis;
 	vec3_t targ_org;
@@ -561,9 +552,6 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 		SetAnim(self, ANIM_CHARGE);
 		return;
 	}
-
-	VectorSubtract (self->s.origin, targ_org, v);
-	len = VectorLength (v);
 
 	enemy_vis = clear_visible(self, self->enemy);
 /*	if(enemy_vis && ahead(self, self->enemy))
@@ -1639,7 +1627,7 @@ void tbeast_anger_sound (edict_t *self)
 
 void tbeast_gibs(edict_t *self)
 {//FIXME: keep making gubs
-	vec3_t		spot, mins, forward;
+	vec3_t		spot, forward;
 	byte		numchunks;
 	int			flags = 0;
 
@@ -1657,7 +1645,6 @@ void tbeast_gibs(edict_t *self)
 	}
 
 	numchunks = (byte)(irand(3, 7));
-	VectorSet(mins, -1, -1, -1);
 	gi.CreateEffect(NULL,
 					FX_FLESH_DEBRIS,
    					flags,
@@ -1879,7 +1866,6 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 	trace_t		trace;
 	qboolean	right_front;
 	int			leg_check_index;
-	int			count = 0;
 
 	AngleVectors(self->s.angles, forward, right, up);
 
@@ -2220,8 +2206,6 @@ void tbeast_check_impacts(edict_t *self)
 	vec3_t		forward, right, up, start, end, mins, maxs, lfootoffset, rfootoffset;
 	vec3_t		lstart, lend, rstart, rend, lfootmins, lfootmaxs, rfootmins, rfootmaxs, fmins, fmaxs;
 	int			leg_check_index;
-	qboolean	hitme = true;
-	qboolean	hitother = false;
 	trace_t		trace;
 
 	AngleVectors(self->s.angles, forward, right, up);
@@ -2304,7 +2288,7 @@ void tbeast_fake_touch(edict_t *self)
 
 	vec3_t		forward, right, up, start, end, dir, mins, maxs;
 	vec3_t		lfootoffset, rfootoffset, omins, omaxs;
-	vec3_t		lstart, lend, rstart, rend, lfootmins, lfootmaxs, rfootmins, rfootmaxs, fmins, fmaxs;
+	vec3_t		lstart, lend, rstart, rend, lfootmins, lfootmaxs, rfootmins, rfootmaxs, fmins;
 	vec3_t		melee_point;
 	int			leg_check_index;
 	qboolean	hitme = true;
@@ -2333,7 +2317,6 @@ void tbeast_fake_touch(edict_t *self)
 		VectorMA(melee_point, 150 + TB_FWD_OFFSET, forward, melee_point);
 
 		VectorSet(fmins, -8, -8, 0);
-		VectorSet(fmaxs, 8, 8, 1);
 
 	//left leg
 		VectorCopy(GetLeftFootOffsetForFrameIndex[leg_check_index], lfootoffset);

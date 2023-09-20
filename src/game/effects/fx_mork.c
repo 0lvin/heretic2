@@ -152,8 +152,6 @@ void FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, ve
 {
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
-	byte			powerup = 0;
 
 	Vec3ScaleAssign(32.0, dir);
 
@@ -708,8 +706,6 @@ void FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t
 {
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor = {{{255,64,32,255}}};
-	byte			powerup = 0;
 
 	Vec3ScaleAssign(32.0, dir);
 
@@ -1362,7 +1358,6 @@ static qboolean ShoveThink (struct client_entity_s *self, centity_t *owner)
 
 static qboolean ShoveInnerThink (struct client_entity_s *self, centity_t *owner)
 {
-	int	dec_rate = 5;
 	if (self->alpha <= 0.1 || self->alpha > 2.0 || self->r.scale <= 0.1)
 		return false;
 
@@ -1373,7 +1368,6 @@ static qboolean ShoveInnerThink (struct client_entity_s *self, centity_t *owner)
 
 static qboolean ShoveOuterThink (struct client_entity_s *self, centity_t *owner)
 {
-	int	dec_rate = 0.05;
 	if (self->alpha <= 0.1 || self->alpha > 1.0)
 		return false;
 
@@ -1809,7 +1803,6 @@ void FXMorkReadyRefs (centity_t *owner,int type,int flags,vec3_t origin)
 
 static qboolean DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_ParticleUpdate_opt (struct client_particle_s *self, int crap)
 {
-	float	add_rate = 5;
 	float	d_time, d_time2;
 	int		d_msec, yaw;
 	vec3_t	dir, angles, right;//, center_dist, part_dist;
@@ -2066,8 +2059,6 @@ void ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t d
 {
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
-	byte			powerup = 0;
 
 	Vec3ScaleAssign(32.0, dir);
 
@@ -2854,8 +2845,6 @@ static qboolean beam_add_to_view(struct client_entity_s *self, centity_t *owner)
 void FXMorkBeam2 ( centity_t *owner, vec3_t	startpos )
 {
 	client_entity_t	*fx;
-	paletteRGBA_t	LightColor = {{{128,128,255,255}}};
-	//vec3_t			vel;
 
 	fx = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, owner->origin, NULL, 17);
 
@@ -3042,7 +3031,6 @@ void MorkLightning(vec3_t groundpos, vec3_t airpos)
 void FXMorkMissileHit ( vec3_t origin, vec3_t dir )
 {
 	client_entity_t	*fx;
-	paletteRGBA_t	LightColor = {{{128, 128, 255, 255}}};
 
 	//The white core
 	fx = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, origin, NULL, 2000);
@@ -3146,8 +3134,6 @@ void FXMorkTrackingMissile ( centity_t *owner, vec3_t origin, vec3_t velocity )
 void FXMorkRecharge( centity_t *owner, vec3_t velocity )
 {
 	client_entity_t	*Trail;
-	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
-	float	duration = velocity[0];
 	int		i;
 
 	i = GetScaledCount(8, 0.85);
@@ -3188,7 +3174,6 @@ qboolean rubble_spin (client_entity_t *self, centity_t *owner)
 qboolean mssithra_explosion_think (client_entity_t *self, centity_t *owner)
 {
 	client_entity_t	*explosion, *TrailEnt;
-	paletteRGBA_t	color = {{{255,255,255,255}}};
 	vec3_t			dir;
 	int				i;
 	int				white;
@@ -3427,7 +3412,6 @@ void FXMSsithraArrow( centity_t *owner, vec3_t velocity, qboolean super )
 void FXMSsithraArrowCharge( vec3_t startpos )
 {
 	client_entity_t	*TrailEnt;
-	paletteRGBA_t	color = {{{255, 128, 255, 255}}};
 	vec3_t			dir;
 	int				length;
 	int				i;

@@ -592,7 +592,6 @@ void DefaultObjectDieHandler(edict_t *self, G_Message_t *msg)
 void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, int flags);
 void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int frame)
 {//add blood spew to sever loc and blood trail on flying part
-	float ke = 0;
 	vec3_t	spot2;
 	int	flags;
 

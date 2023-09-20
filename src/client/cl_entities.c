@@ -172,26 +172,20 @@ CL_AddPacketEntities(frame_t *frame)
 				{
 					if (ent.skin != NULL)
 					{
-						struct model_s *model = NULL;
 						if (!strncmp((char *)ent.skin, "players/male", 12))
 						{
 							ent.skin = R_RegisterSkin("players/male/disguise.pcx");
-							model = R_RegisterModel("players/male/tris.md2");
+							ent.model = R_RegisterModel("players/male/tris.md2");
 						}
 						else if (!strncmp((char *)ent.skin, "players/female", 14))
 						{
 							ent.skin = R_RegisterSkin("players/female/disguise.pcx");
-							model = R_RegisterModel("players/female/tris.md2");
+							ent.model = R_RegisterModel("players/female/tris.md2");
 						}
 						else if (!strncmp((char *)ent.skin, "players/cyborg", 14))
 						{
 							ent.skin = R_RegisterSkin("players/cyborg/disguise.pcx");
-							model = R_RegisterModel("players/cyborg/tris.md2");
-						}
-
-						if (model)
-						{
-							ent.model = model;
+							ent.model = R_RegisterModel("players/cyborg/tris.md2");
 						}
 					}
 				}

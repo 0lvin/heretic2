@@ -70,7 +70,6 @@ void flamethrower_trigger( edict_t *self )
 void flamethrower_use( edict_t *self, edict_t *other, edict_t *activator )
 {
 	vec3_t	dir;
-	int		flags = 0;
 
 	AngleVectors(self->s.angles, dir, NULL, NULL);
 

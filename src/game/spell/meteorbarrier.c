@@ -276,7 +276,6 @@ static void MeteorBarrierTouch(edict_t *self, trace_t *trace)
 static void MeteorBarrierSearchThink(edict_t *self)
 {
 	edict_t *NewTarg = NULL;
-	int		DoneSearching = 0;
 	trace_t	tr;
 
 	// Only check for a target every so often as this reduces CPU requirements AND it looks much

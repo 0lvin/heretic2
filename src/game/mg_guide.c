@@ -377,11 +377,7 @@ MG_ResolveBuoyConnection
 */
 qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bestbuoy, vec3_t goalpos, qboolean dont_use_last, qboolean skipjump)
 {//When called directly, this does not and should not set player_buoy
-	buoy_t		*found_buoy = NULL;
 	buoy_t		*dest = NULL;
-	vec3_t		vec;
-	float		len, e_len;
-	edict_t		*showme = NULL;
 
 	//FIXME:  Allow assassins to take any buoy even if can;t make a connection, since they can teleport
 	//- Basically, pick the player's buoy and randomly pick one off of it or even that one...?
@@ -453,12 +449,6 @@ qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bes
 
 	if (bestbuoy && e_bestbuoy)
 	{
-		VectorSubtract(goalpos, self->s.origin, vec);
-		e_len = VectorLength(vec);
-
-		VectorSubtract(e_bestbuoy->origin, goalpos, vec);
-		len = VectorLength(vec);
-
 		dest = find_next_buoy(self, bestbuoy->id, e_bestbuoy->id);
 
 		if (dest != NULL)
@@ -530,7 +520,6 @@ qboolean MG_MakeStartForcedConnection(edict_t *self, int sforced_buoy, qboolean 
 	buoy_t		*found_buoy = NULL;
 	buoy_t		*e_bestbuoy = NULL;
 	buoy_t		*bestbuoy = NULL;
-	buoy_t		*dest = NULL;
 	qboolean	e_vis;
 	vec3_t		vec, goalpos, e_buoyvec;
 	float		bestdist, e_bestdist, e_len, e_buoydist;
@@ -699,7 +688,6 @@ qboolean MG_MakeForcedConnection(edict_t *self, int forced_buoy, qboolean dont_u
 	buoy_t		*found_buoy = NULL;
 	buoy_t		*e_bestbuoy = NULL;
 	buoy_t		*bestbuoy = NULL;
-	buoy_t		*dest = NULL;
 	qboolean	vis;
 	vec3_t		vec, goalpos, e_buoyvec;
 	float		bestdist, e_bestdist, len, e_buoydist;
@@ -823,7 +811,6 @@ qboolean MG_MakeNormalConnection(edict_t *self, qboolean dont_use_last, qboolean
 	buoy_t		*found_buoy = NULL;
 	buoy_t		*e_bestbuoy = NULL;
 	buoy_t		*bestbuoy = NULL;
-	buoy_t		*dest = NULL;
 	qboolean	e_vis, vis;
 	vec3_t		vec, goalpos, e_buoyvec;
 	float		bestdist, e_bestdist, len, e_len, e_buoydist;
@@ -1355,7 +1342,6 @@ qboolean MG_CheckClearPathToEnemy(edict_t *self)
 	trace_t	trace;
 	vec3_t	mins, checkspot, enemy_dir, center;
 	float	dist, i;
-	qboolean	close_ok = false;
 
 	if(!self->enemy)
 		return false;
@@ -1424,7 +1410,6 @@ qboolean MG_CheckClearPathToSpot(edict_t *self, vec3_t spot)
 	trace_t	trace;
 	vec3_t	mins, checkspot, enemy_dir;
 	float	dist, i;
-	qboolean	close_ok = false;
 
 	VectorCopy(self->mins, mins);
 	mins[2] += 18;
@@ -1716,7 +1701,6 @@ void MG_RemoveBuoyEffects(edict_t *self)
 void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 {
 	buoy_t		*current_buoy = NULL;
-	buoy_t		*last_buoy = NULL;
 	buoy_t		*jump_buoy = NULL;
 	qboolean	clear_path = false;
 
@@ -1756,7 +1740,6 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 	else if (self->monsterinfo.searchType == SEARCH_BUOY)
 	{
 		current_buoy = &level.buoy_list[self->buoy_index];
-		last_buoy = &level.buoy_list[self->lastbuoy];
 
 		if(self->ai_mood != AI_MOOD_FLEE && self->ai_mood != AI_MOOD_WANDER)
 			self->ai_mood = AI_MOOD_NAVIGATE;
@@ -2198,7 +2181,6 @@ void MG_GenericMoodSet(edict_t *self)
 {
 	vec3_t		v, forward, pursue_vel;
 	float		enemydist;
-	qboolean	coward = false;
 	qboolean	can_attack_ranged = false;
 	qboolean	can_attack_close = false;
 	qboolean	clear_shot = false;

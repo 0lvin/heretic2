@@ -851,7 +851,6 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 	vec3_t		maxs, mins, save_org;
 	trace_t		trace;
 	float		hgt_diff, jump_fdist;
-	qboolean	jump_up_check = false;
 	qboolean	check_down = false;
 	qboolean	can_move = false;
 

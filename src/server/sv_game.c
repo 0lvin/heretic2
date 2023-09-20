@@ -296,7 +296,7 @@ PF_inPVS(vec3_t p1, vec3_t p2)
 	// cluster -1 means "not in a visible leaf" or something like that (void?)
 	// so p1 and p2 probably don't "see" each other.
 	// either way, we must avoid using a negative index into mask[]!
-	if ( mask && (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
+	if (cluster < 0 || (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
 	{
 		return false;
 	}
@@ -332,7 +332,7 @@ PF_inPHS(vec3_t p1, vec3_t p2)
 	// cluster -1 means "not in a visible leaf" or something like that (void?)
 	// so p1 and p2 probably don't "hear" each other.
 	// either way, we must avoid using a negative index into mask[]!
-	if (mask && (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
+	if (cluster < 0 || (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
 	{
 		return false; /* more than one bounce away */
 	}
@@ -442,6 +442,7 @@ void SV_CLPrintf(edict_t* ent, edict_t* from, int color, const char* fmt, ...)
 		Com_Printf("%s: TODO: Unimplemented\n", __func__);
 	}
 }
+
 
 qboolean SV_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
 {
@@ -831,17 +832,11 @@ SV_InitGameProgs(void)
 	import.multicast = SV_Multicast;
 	import.unicast = PF_Unicast;
 	import.bprintf = SV_BroadcastPrintf;
-	import.Obituary = SV_BroadcastObituary;
 	import.dprintf = PF_dprintf;
 	import.cprintf = PF_cprintf;
-	import.clprintf = SV_CLPrintf;
 	import.centerprintf = PF_centerprintf;
-	import.msgvar_centerprintf = SV_MsgVarCenterPrintf;
-	import.msgdual_centerprintf = SV_MsgDualCenterPrintf;
 	import.error = PF_error;
 
-	import.FS_NextPath = FS_NextPath;
-	import.changeCDtrack = SV_ChangeCDTrack;
 	import.linkentity = SV_LinkEdict;
 	import.unlinkentity = SV_UnlinkEdict;
 	import.BoxEdicts = SV_AreaEdicts;
@@ -852,25 +847,16 @@ SV_InitGameProgs(void)
 	import.inPHS = PF_inPHS;
 	import.Pmove = Pmove;
 
-	import.FindEntitiesInBounds = SV_FindEntitiesInBounds;
-	import.TraceBoundingForm = SV_TraceBoundingForm;
-	import.ResizeBoundingForm = SV_ResizeBoundingForm;
-	import.GetContentsAtPoint = SV_GetContentsAtPoint;
-	import.CheckDistances = SV_CheckDistances;
-	import.cleanlevel = SV_CleanLevel;
 	import.modelindex = SV_ModelIndex;
-	import.modelremove = SV_ModelRemove;
 	import.soundindex = SV_SoundIndex;
-	import.soundremove = SV_SoundRemove;
 	import.imageindex = SV_ImageIndex;
 
 	import.configstring = PF_Configstring;
 	import.sound = PF_StartSound;
-	import.soundevent = SV_SoundEvent;
 	import.positioned_sound = SV_StartSound;
 
 	import.WriteChar = PF_WriteChar;
-	import.WriteByte = PF_WriteChar;
+	import.WriteByte = PF_WriteByte;
 	import.WriteShort = PF_WriteShort;
 	import.WriteLong = PF_WriteLong;
 	import.WriteFloat = PF_WriteFloat;
@@ -879,12 +865,6 @@ SV_InitGameProgs(void)
 	import.WriteDir = PF_WriteDir;
 	import.WriteAngle = PF_WriteAngle;
 
-	import.CreateEffect = SV_CreateEffect;
-	import.RemoveEffects = SV_RemoveEffects;
-	import.CreateEffectEvent = SV_CreateEffectEvent;
-	import.RemoveEffectsEvent = SV_RemoveEffectsEvent;
-	import.CreatePersistantEffect = SV_CreatePersistantEffect;
-	import.RemovePersistantEffect = SV_RemovePersistantEffect;
 	import.TagMalloc = Z_TagMalloc;
 	import.TagFree = Z_Free;
 	import.FreeTags = Z_FreeTags;
@@ -893,7 +873,6 @@ SV_InitGameProgs(void)
 	import.cvar_set = Cvar_Set;
 	import.cvar_forceset = Cvar_ForceSet;
 
-	import.cvar_variablevalue = Cvar_VariableValue;
 	import.argc = Cmd_Argc;
 	import.argv = Cmd_Argv;
 	import.args = Cmd_Args;
@@ -905,12 +884,36 @@ SV_InitGameProgs(void)
 
 	import.SetAreaPortalState = CM_SetAreaPortalState;
 	import.AreasConnected = CM_AreasConnected;
+
+	/* Heretic 2 specific */
+	import.Obituary = SV_BroadcastObituary;
+	import.clprintf = SV_CLPrintf;
+	import.msgvar_centerprintf = SV_MsgVarCenterPrintf;
+	import.msgdual_centerprintf = SV_MsgDualCenterPrintf;
+	import.FS_NextPath = FS_NextPath;
+	import.changeCDtrack = SV_ChangeCDTrack;
+
+	import.FindEntitiesInBounds = SV_FindEntitiesInBounds;
+	import.TraceBoundingForm = SV_TraceBoundingForm;
+	import.ResizeBoundingForm = SV_ResizeBoundingForm;
+	import.GetContentsAtPoint = SV_GetContentsAtPoint;
+	import.CheckDistances = SV_CheckDistances;
+	import.cleanlevel = SV_CleanLevel;
+	import.modelremove = SV_ModelRemove;
+	import.soundremove = SV_SoundRemove;
+	import.soundevent = SV_SoundEvent;
+
+	import.CreateEffect = SV_CreateEffect;
+	import.RemoveEffects = SV_RemoveEffects;
+	import.CreateEffectEvent = SV_CreateEffectEvent;
+	import.RemoveEffectsEvent = SV_RemoveEffectsEvent;
+	import.CreatePersistantEffect = SV_CreatePersistantEffect;
+	import.RemovePersistantEffect = SV_RemovePersistantEffect;
+	import.cvar_variablevalue = Cvar_VariableValue;
+
 	import.FS_LoadFile = FS_LoadFile;
 	import.FS_FreeFile = FS_FreeFile;
-#ifdef _WIN32
-	import.Sys_LoadGameDll = NULL;
-	import.Sys_UnloadGameDll = NULL;
-#endif
+
 	import.ClearPersistantEffects = SV_ClearPersistantEffects;
 	import.Persistant_Effects_Array = &SV_Persistant_Effects;
 

@@ -1038,24 +1038,8 @@ CM_BoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
 	trace_contents = brushmask;
 	VectorCopy(start, trace_start);
 	VectorCopy(end, trace_end);
-
-	if (mins)
-	{
-		VectorCopy(mins, trace_mins);
-	}
-	else
-	{
-		memset(trace_mins, 0, sizeof(trace_mins));
-	}
-
-	if (maxs)
-	{
-		VectorCopy(maxs, trace_maxs);
-	}
-	else
-	{
-		memset(trace_maxs, 0, sizeof(trace_maxs));
-	}
+	VectorCopy(mins, trace_mins);
+	VectorCopy(maxs, trace_maxs);
 
 	/* check for position test special case */
 	if ((start[0] == end[0]) && (start[1] == end[1]) && (start[2] == end[2]))
@@ -1105,36 +1089,6 @@ CM_BoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
 		trace_extents[0] = -mins[0] > maxs[0] ? -mins[0] : maxs[0];
 		trace_extents[1] = -mins[1] > maxs[1] ? -mins[1] : maxs[1];
 		trace_extents[2] = -mins[2] > maxs[2] ? -mins[2] : maxs[2];
-
-		// N&C: Q3 - FF Precision. Hopefully...
-		VectorCopy(maxs, trace_trace.offsets[0]);
-
-		trace_trace.offsets[1][0] = maxs[0];
-		trace_trace.offsets[1][1] = mins[1];
-		trace_trace.offsets[1][2] = mins[2];
-
-		trace_trace.offsets[2][0] = mins[0];
-		trace_trace.offsets[2][1] = maxs[1];
-		trace_trace.offsets[2][2] = mins[2];
-
-		trace_trace.offsets[3][0] = maxs[0];
-		trace_trace.offsets[3][1] = maxs[1];
-		trace_trace.offsets[3][2] = mins[2];
-
-		trace_trace.offsets[4][0] = mins[0];
-		trace_trace.offsets[4][1] = mins[1];
-		trace_trace.offsets[4][2] = maxs[2];
-
-		trace_trace.offsets[5][0] = maxs[0];
-		trace_trace.offsets[5][1] = mins[1];
-		trace_trace.offsets[5][2] = maxs[2];
-
-		trace_trace.offsets[6][0] = mins[0];
-		trace_trace.offsets[6][1] = maxs[1];
-		trace_trace.offsets[6][2] = maxs[2];
-
-		VectorCopy(maxs, trace_trace.offsets[7]);
-		//        trace_trace->offsets[7] = maxs0;
 	}
 
 	/* general sweeping through world */
@@ -1811,7 +1765,7 @@ CMod_LoadAreaPortals(lump_t *l)
 {
 	dareaportal_t *out;
 	dareaportal_t *in;
-	int count, i;
+	int count;
 
 	in = (void *)(cmod_base + l->fileofs);
 
@@ -1830,18 +1784,12 @@ CMod_LoadAreaPortals(lump_t *l)
 	out = map_areaportals;
 	numareaportals = count;
 
-	for ( i=0 ; i<count ; i++, in++, out++)
-	{
-		out->portalnum = LittleLong(in->portalnum);
-		out->otherarea = LittleLong(in->otherarea);
-	}
+	memcpy(out, in, sizeof(dareaportal_t) * count);
 }
 
 static void
 CMod_LoadVisibility(lump_t *l)
 {
-	int i;
-
 	numvisibility = l->filelen;
 
 	if (l->filelen > MAX_MAP_VISIBILITY)
@@ -1852,12 +1800,6 @@ CMod_LoadVisibility(lump_t *l)
 	memcpy(map_visibility, cmod_base + l->fileofs, l->filelen);
 
 	map_vis->numclusters = LittleLong(map_vis->numclusters);
-
-	for (i=0 ; i<map_vis->numclusters ; i++)
-	{
-		map_vis->bitofs[i][0] = LittleLong (map_vis->bitofs[i][0]);
-		map_vis->bitofs[i][1] = LittleLong (map_vis->bitofs[i][1]);
-	}
 }
 
 static void

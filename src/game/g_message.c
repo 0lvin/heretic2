@@ -67,7 +67,6 @@ void G_Message_delete(G_Message_t *_this)
 void G_QPostMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, char *format, ...)
 {
 	G_Message_t *newMsg;
-	qboolean append = false;
 	SinglyLinkedList_t *parms;
 	va_list marker;
 
@@ -103,7 +102,6 @@ void G_QPostMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, char *f
 void PostGameMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, char *format, ...)
 {
 	G_Message_t *newMsg;
-	qboolean append = false;
 	SinglyLinkedList_t *parms;
 
 	if(!to->msgHandler)	// everything should really have one, but at _this point everything

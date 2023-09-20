@@ -68,7 +68,6 @@ void PlayerClimbSound(playerinfo_t *playerinfo, char *name)
 void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 {
 	vec3_t		vr,vf;
-	int			chance = irand(0,3);
 	float		threshold;
 
 	if ( (playerinfo->seqcmd[ACMDL_JUMP]) )
@@ -1157,18 +1156,15 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 	{
 		if(ent->groundentity && ent->groundentity->takedamage)
 		{
-			int		mod;
 			vec3_t	victim_dir, impact_spot;
 
 			if (playerinfo->edictflags & FL_SUPER_CHICKEN)
 			{
 				damage = 500;
-				mod = MOD_CHICKEN;
 			}
 			else
 			{
 				damage *= 2;
-				mod = 0;
 			}
 
 			VectorSubtract(ent->groundentity->s.origin, ent->s.origin, victim_dir);

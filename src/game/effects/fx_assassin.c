@@ -79,7 +79,6 @@ void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t *owner)
 {
 	vec3_t sight_vec, endpos;
-	char string[MAX_QPATH];
 	trace_t trace;
 
 	if(owner->entity->skinnum != 100)

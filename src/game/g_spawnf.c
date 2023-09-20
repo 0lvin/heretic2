@@ -304,16 +304,6 @@ void ConstructEntities(void)
 	game.entitiesSpawned = true;
 }
 
-void CheckCoopTimeout(qboolean BeenHereBefore)
-{
-	// Reset to zero cooptimeout if we've already been to the current level (no cinematic to see).
-
-	if(BeenHereBefore)
-	{
-		gi.cvar_set("sv_cooptimeout", "0");
-	}
-}
-
 /*
 ==============
 SpawnEntities

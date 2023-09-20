@@ -118,8 +118,6 @@ void GetCollisionPoint(vec3_t velocity, vec3_t origin, vec_t size, vec3_t point)
 void MaceballBounce(edict_t *self, trace_t *trace)
 {
 	vec3_t		point;
-	qboolean	done = false;
-	qboolean	targetowner = false;
 
 	vec3_t movevect;
 
@@ -191,9 +189,6 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 		self->deadflag = DEAD_DYING;
 		return;
 	}
-
-	if (self->health == 1)
-		targetowner = true;
 
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/MaceBallBounce.wav"), 1, ATTN_NORM, 0);
 

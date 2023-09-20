@@ -126,7 +126,7 @@ SV_CreateBaseline(void)
 	}
 }
 
-void
+static void
 SV_CheckForSavegame(qboolean isautosave)
 {
 	char name[MAX_OSPATH];

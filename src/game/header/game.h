@@ -185,9 +185,10 @@ typedef struct
 	   they were typed in for map changing, etc */
 	void (*AddCommandString)(char *text);
 
-	char *(*FS_NextPath)(char *prevpath);
 	void (*DebugGraph)(float value, int color);
 
+	/* Heretic 2 specific */
+	char *(*FS_NextPath)(char *prevpath);
 	void	(*CreateEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 	void	(*RemoveEffects)(entity_state_t *ent, int type);
 	void	(*CreateEffectEvent) (byte EventId,entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
@@ -227,11 +228,6 @@ typedef struct
 
 	int		(*FS_LoadFile) (char *name, void **buf);
 	void	(*FS_FreeFile) (void *buf);
-
-#ifdef _WIN32
-	void	(*Sys_LoadGameDll)(const char *name, HINSTANCE *hinst, DWORD *chkSum);
-	void	(*Sys_UnloadGameDll)(const char *name, HINSTANCE *hinst);
-#endif
 
 	// pointer to the server side persistant effects arrary
 	void	(*ClearPersistantEffects) (void);
@@ -292,7 +288,6 @@ typedef struct
 	int max_edicts;
 
 	void (*ConstructEntities)(void);
-	void (*CheckCoopTimeout)(qboolean BeenHereBefore);
 } game_export_t;
 
 #define	SVF_INUSE				0x00000008	// Used to replace the inuse field.

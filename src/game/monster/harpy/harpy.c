@@ -397,7 +397,7 @@ void harpy_ai_circle (edict_t *self, float fd, float rd, float ud)
 void harpy_ai_glide (edict_t *self, float fd, float rd, float ud)
 {
 	vec3_t	vec, vf, vr, nvec;
-	float	yaw_delta, roll, dot, rdot;
+	float	yaw_delta, roll, dot;
 
 	if (!self->enemy)
 		return;
@@ -410,7 +410,6 @@ void harpy_ai_glide (edict_t *self, float fd, float rd, float ud)
 	AngleVectors(self->s.angles, vf, vr, NULL);
 
 	dot  = DotProduct(vf, nvec);
-	rdot = DotProduct(vr, nvec);
 
 	self->ideal_yaw = vectoyaw(vec);
 
@@ -523,7 +522,6 @@ void harpy_flyback(edict_t *self)
 
 void harpy_ai_pirch(edict_t *self)
 {
-	monsterinfo_t *monsterinfo = &self->monsterinfo;
 	vec3_t	vec, vf, vr;
 	float	dot, rdot, len;
 
@@ -1177,11 +1175,9 @@ qboolean harpy_check_swoop(edict_t *self, vec3_t goal)
 void move_harpy_dive(edict_t *self)
 {
 	vec3_t	vec, vf, enemy_pos;
-	float	dist, zd, hd, forward;
+	float	dist, forward;
 
 	VectorSet(enemy_pos, self->enemy->s.origin[0], self->enemy->s.origin[1], self->enemy->s.origin[2] + flrand(self->maxs[2], self->enemy->maxs[2]));
-	//Find out the Z and Horizontal deltas to target
-	zd = Q_fabs(self->s.origin[2] - enemy_pos[2]);
 
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 
@@ -1189,7 +1185,6 @@ void move_harpy_dive(edict_t *self)
 	vec[2] = enemy_pos[2];
 
 	VectorSubtract(enemy_pos, vec, vec);
-	hd = VectorLength(vec);
 
 	if ((self->groundentity != NULL) || (!harpy_check_move(self, 64)))
 	{
@@ -1228,7 +1223,7 @@ void move_harpy_dive(edict_t *self)
 void move_harpy_dive_end(edict_t *self)
 {
 	vec3_t	vec, vf, vr, vu, nvec, enemy_pos;
-	float	dist, hd, fd, dot;
+	float	dist, fd, dot;
 
 	VectorSet(enemy_pos, self->enemy->s.origin[0], self->enemy->s.origin[1], self->enemy->s.origin[2] + flrand(self->maxs[2], self->enemy->maxs[2]));
 
@@ -1236,7 +1231,6 @@ void move_harpy_dive_end(edict_t *self)
 	vec[2] = enemy_pos[2];
 
 	VectorSubtract(enemy_pos, vec, vec);
-	hd = VectorLength(vec);
 	self->ideal_yaw = vectoyaw(vec);
 
 	M_ChangeYaw(self);
@@ -1571,16 +1565,11 @@ void harpy_flight_model(edict_t *self)
 
 void move_harpy_fly(edict_t *self)
 {
-	edict_t *dummy;
-	dummy = self;
-
-	return;
 }
 
 void move_harpy_die(edict_t *self)
 {
 	//fall to the floor
-	return;
 }
 
 void harpy_hover_anim(edict_t *self)

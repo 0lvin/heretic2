@@ -739,7 +739,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	vec3_t				Dir;
 	byte				Size;
 	client_entity_t		*explosion, *glowball;
-	paletteRGBA_t		LightColor = {{{255, 255, 255, 255}}}, haloColor = {{{100, 100, 255, 64}}};
+	paletteRGBA_t		LightColor = {{{255, 255, 255, 255}}};
 	int					I, count;
 	vec3_t				angvect;
 

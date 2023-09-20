@@ -554,7 +554,6 @@ void trigger_goto_buoy_use (edict_t *self, edict_t *other, edict_t *activator)
 void trigger_goto_buoy_find_target(edict_t *self)
 {
 	qboolean	found = false;
-	buoy_t		*found_buoy = NULL;
 	int			i;
 
 	self->think = NULL;

@@ -140,7 +140,6 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 	client_entity_t	*SmokePuff;
 	int				i;
 	paletteRGBA_t	LightColor;
-	byte			powerup = 0;
 	float			lightrad;
 
 	if(flags & CEF_FLAG6)
@@ -293,7 +292,6 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 	client_entity_t	*SmokePuff;
 	int				i;
 	paletteRGBA_t	LightColor;
-	byte			powerup = 0;
 	float			lightrad;
 
 	if(flags & CEF_FLAG6)
@@ -445,7 +443,6 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 	client_entity_t	*SmokePuff;
 	int				i;
 	paletteRGBA_t	LightColor;
-	byte			powerup = 0;
 	float			lightrad;
 
 	if(flags & CEF_FLAG6)

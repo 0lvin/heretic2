@@ -252,17 +252,13 @@ int UpdateParticles(client_entity_t *ce)
 	client_particle_t	*current;
 	client_particle_t	**prev;
 	float				d_time;
-	int					d_msec;
-	int					alpha, ptype;
-	int					numparticles;
+	int					d_msec, alpha, numparticles;
 
 	assert(ce->p_root);
 	numparticles = 0;
 
 	for(prev = &ce->p_root, current = ce->p_root; current; current = current->next)
 	{
-		ptype = current->type & PFL_FLAG_MASK;
-
 		d_msec = ParticleUpdateTime - current->startTime;
 
 		if(d_msec > current->duration)

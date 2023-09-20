@@ -1171,7 +1171,7 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	vec3_t	pos1, pos2, dir;
-	float	zdiff, dropmag;
+	float	zdiff;
 
 	if ((other->svflags & SVF_MONSTER) || (!Q_stricmp(other->classname, "player")))
 	{
@@ -1188,7 +1188,6 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 		{
 			//We want the full magnitude of the vector, not just drop magnitude
 			VectorCopy(other->velocity, dir);
-			dropmag = VectorNormalize(dir);
 
 			//Do damage to the thing getting hit based on how hard the collision was
 //			T_Damage (self, other, other, dir, pos2, vec3_origin, 1 + (dropmag/FALLDAMAGE_MODIFIER), 0, DAMAGE_NO_BLOOD | DAMAGE_NO_KNOCKBACK);
@@ -1722,7 +1721,6 @@ int M_FindSupport( edict_t *self, int range )
 qboolean M_CheckAlert( edict_t *self, int range )
 {
 	edict_t *ent = NULL;
-	int		numSupport = 0;
 
 	while((ent = findradius(ent, self->s.origin, range)) != NULL)
 	{

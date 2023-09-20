@@ -57,7 +57,6 @@ void Elflord_c_boom(edict_t *self)
 void Elflord_c_throwhead(edict_t *self)
 {
 	vec3_t		gore_spot;
-	int			throw_nodes = 0;
 
 	mist_yaw = 0;
 

@@ -750,8 +750,6 @@ Finds the spawn function for the entity and calls it
 */
 void ED_CallSpawn (edict_t *ent)
 {
-	extern qboolean loadingBaseEnts;
-
 	spawn_t	*s;
 	gitem_t	*item;
 

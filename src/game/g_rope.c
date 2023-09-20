@@ -546,7 +546,6 @@ void hanging_chicken_think(edict_t *self)
 	vec3_t		vec, angles;
 	float		d_ang, knockbacktime;
 	int			i, mag;
-	qboolean	knockback = true;
 	trace_t		trace;
 
 	VectorCopy(self->targetEnt->velocity, vec);

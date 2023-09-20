@@ -276,7 +276,6 @@ void imp_flyback(edict_t *self)
 
 void imp_ai_pirch(edict_t *self)
 {
-	monsterinfo_t *monsterinfo = &self->monsterinfo;
 	vec3_t	vec, vf, vr;
 	float	dot, len;
 

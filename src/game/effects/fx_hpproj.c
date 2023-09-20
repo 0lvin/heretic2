@@ -522,11 +522,8 @@ void FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
 	vec3_t			dir;
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
-	byte			powerup = 0;
 
 	VectorSet(dir, 1, 1, 1);
-	//Vec3ScaleAssign(32.0, dir);
 
 	i = GetScaledCount(irand(6,8), 0.8);
 
@@ -567,10 +564,7 @@ void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 	vec3_t			dir;
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
-	byte			powerup = 0;
 
-	//Vec3ScaleAssign(32.0, dir);
 	VectorSet(dir, 1, 1, 1);
 
 	i = GetScaledCount(irand(12,16), 0.8);
@@ -642,8 +636,8 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	paletteRGBA_t	BugColor = {{{229, 250, 88, 255}}};
 	paletteRGBA_t	BrightColor = {{{255, 255, 255, 255}}};
-	vec3_t			vel, boltDir, boltAng, boltDest, oldPos, ang, huntdir;
-	float			boltDist, boltStep, width, alpha;
+	vec3_t			vel, boltDir, boltAng, oldPos, ang, huntdir;
+	float			boltStep, width, alpha;
 	byte			effectType;
 	int				bends, i, bolts, j;
 
@@ -807,7 +801,6 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 			//Find the distance for each segment (totalDist/bends)
 			VectorSubtract(vel, Origin, boltDir);
-			boltDist = VectorNormalize(boltDir);
 
 			//Get an offset angle from the goal direction
 			VectoAngles(boltDir, boltAng);
@@ -815,7 +808,6 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 			boltAng[PITCH]  += irand(-35, 35);
 			boltAng[YAW]	+= irand(-35, 35);
 
-			VectorCopy(boltDir, boltDest);
 			AngleVectors(boltAng, boltDir, NULL, NULL);
 
 			VectorCopy(Origin, oldPos);

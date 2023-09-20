@@ -600,7 +600,6 @@ void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 
 qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 {
-	paletteRGBA_t		LightColor = {{{255, 128, 255, 255}}};
 	client_particle_t	*spark;
 	int					i;
 	float				dist;
@@ -936,7 +935,6 @@ void FXISwordTrail(centity_t *owner,int type,int flags,vec3_t origin)
 
 void FXIEffects(centity_t *owner,int type,int flags, vec3_t origin)
 {
-	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	vec3_t			vel;
 	byte			fx_index;
 

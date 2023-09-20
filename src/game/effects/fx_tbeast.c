@@ -86,7 +86,6 @@ void FXTBSnort(centity_t *owner, int type, int flags, vec3_t origin)
 
 void FXTBEffects(centity_t *owner,int type,int flags, vec3_t org)
 {
-	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	vec3_t			vel;
 	byte			fx_index;
 
