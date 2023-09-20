@@ -151,7 +151,7 @@ static void Physics_FlyMove(edict_t *self)
 
 	if(self->physicsFlags & PF_RESIZE)
 	{
-		if(gi.ResizeBoundingForm(self, &formMove))
+		if(G_ResizeBoundingForm(self, &formMove))
 		{
 			self->physicsFlags &= ~PF_RESIZE;
 		}
@@ -234,7 +234,7 @@ static void Physics_StepMove(edict_t *self)
 
 	if(self->physicsFlags & PF_RESIZE)
 	{
-		if(gi.ResizeBoundingForm(self, &formMove))
+		if(G_ResizeBoundingForm(self, &formMove))
 		{
 			self->physicsFlags &= ~PF_RESIZE;
 		}
@@ -343,7 +343,7 @@ void CheckEntityOn(edict_t *self)
 	formMove.passEntity = self;
 	formMove.clipMask = MASK_MONSTERSOLID;
 
-	gi.TraceBoundingForm(&formMove);
+	G_TraceBoundingForm(&formMove);
 
 	// check steepness
 	if(!formMove.trace.ent || (formMove.trace.plane.normal[2] < GROUND_NORMAL && !formMove.trace.startsolid))
@@ -601,7 +601,7 @@ void MoveEntity_Bounce(edict_t *self, FormMove_t *formMove)
 	formMove->start = self->s.origin;
 	formMove->end = end;
 
-	gi.TraceBoundingForm(formMove);
+	G_TraceBoundingForm(formMove);
 
 	VectorCopy(formMove->trace.endpos, self->s.origin);
 
@@ -857,7 +857,7 @@ void MoveEntity_Slide(edict_t *self)
 
 		formMove.end = end;
 
-		gi.TraceBoundingForm(&formMove);
+		G_TraceBoundingForm(&formMove);
 
 		if(formMove.trace.startsolid)
 		{
@@ -1218,7 +1218,7 @@ void ActivateTriggers(edict_t *self)
 
 	SLList_DefaultCon(&list);	// this should be global, initialized at startup
 
-	num = gi.FindEntitiesInBounds(self->mins, self->maxs, &list, AREA_TRIGGERS);
+	num = G_FindEntitiesInBounds(self->mins, self->maxs, &list, AREA_TRIGGERS);
 
 	while(!SLList_IsEmpty(&list))
 	{
@@ -1311,7 +1311,7 @@ void CheckInWater(FormMove_t *formMove)
 
 	assert(formMove);
 
-	contents = gi.GetContentsAtPoint(formMove->start);
+	contents = G_GetContentsAtPoint(formMove->start);
 
 	if(!(contents & MASK_WATER))
 	{
@@ -1327,7 +1327,7 @@ void CheckInWater(FormMove_t *formMove)
 
 	formMove->start[2] += halfHeight;
 
-	contents = gi.GetContentsAtPoint(formMove->start);
+	contents = G_GetContentsAtPoint(formMove->start);
 
 	if(!(contents & MASK_WATER))
 	{
@@ -1338,7 +1338,7 @@ void CheckInWater(FormMove_t *formMove)
 
 	formMove->start[2] += halfHeight;
 
-	contents = gi.GetContentsAtPoint(formMove->start);
+	contents = G_GetContentsAtPoint(formMove->start);
 
 	if(contents & MASK_WATER)
 	{
@@ -1373,7 +1373,7 @@ qboolean CheckFooting(edict_t *self, vec3_t origin)
 			start[0] = x ? maxs[0] : mins[0];
 			start[1] = y ? maxs[1] : mins[1];
 
-			if(gi.GetContentsAtPoint(start) != CONTENTS_SOLID)
+			if(G_GetContentsAtPoint(start) != CONTENTS_SOLID)
 			{
 				solid = false;
 			}
@@ -1399,7 +1399,7 @@ qboolean CheckFooting(edict_t *self, vec3_t origin)
 	formMove.passEntity = self;
 	formMove.clipMask = MASK_MONSTERSOLID;
 
-	gi.TraceBoundingForm(&formMove);
+	G_TraceBoundingForm(&formMove);
 
 	if(formMove.trace.fraction == 1.0)
 	{
@@ -1418,7 +1418,7 @@ qboolean CheckFooting(edict_t *self, vec3_t origin)
 			formMove.start = start;
 			formMove.end = stop;
 
-			gi.TraceBoundingForm(&formMove);
+			G_TraceBoundingForm(&formMove);
 
 			if(formMove.trace.fraction != 1.0 && formMove.trace.endpos[2] > bottom)
 			{
@@ -1464,7 +1464,7 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 
 	if(self->physicsFlags & PF_RESIZE)
 	{
-		if(gi.ResizeBoundingForm(self, formMove))
+		if(G_ResizeBoundingForm(self, formMove))
 		{
 			self->physicsFlags &= ~PF_RESIZE;
 		}
@@ -1520,7 +1520,7 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 	formMove->passEntity = self;
 	formMove->clipMask = self->clipmask;
 
-	gi.TraceBoundingForm(formMove);
+	G_TraceBoundingForm(formMove);
 
 	if(formMove->trace.allsolid)
 	{
@@ -1529,7 +1529,7 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 		// find out what's blocking it
 		formMove->start = self->s.origin;
 
-		gi.TraceBoundingForm(formMove);
+		G_TraceBoundingForm(formMove);
 
 		DiscreteMove_Step_FailedDueToCollision(self, move, formMove, true);
 		return false;
@@ -1543,7 +1543,7 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 
 		formMove->start = start;
 
-		gi.TraceBoundingForm(formMove);
+		G_TraceBoundingForm(formMove);
 
 		if(formMove->trace.allsolid)
 		{
@@ -1551,7 +1551,7 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 			formMove->start = self->s.origin;
 			formMove->end = neworg;
 
-			gi.TraceBoundingForm(formMove);
+			G_TraceBoundingForm(formMove);
 
 			DiscreteMove_Step_FailedDueToCollision(self, move, formMove, true);
 			return false;
@@ -1563,7 +1563,7 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 			formMove->start = self->s.origin;
 			formMove->end = neworg;
 
-			gi.TraceBoundingForm(formMove);
+			G_TraceBoundingForm(formMove);
 
 			DiscreteMove_Step_FailedDueToCollision(self, move, formMove, true);
 			return false;
@@ -1700,7 +1700,7 @@ void AttemptAdjustOriginToValidPosition(vec3_t adjustFrom, edict_t *self, vec3_t
 	formMove.passEntity = self;
 	formMove.clipMask = self->clipmask;
 
-	gi.TraceBoundingForm(&formMove);
+	G_TraceBoundingForm(&formMove);
 
 	if(!(formMove.trace.allsolid || formMove.trace.startsolid))
 	{
@@ -1749,7 +1749,7 @@ qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, f
 	formMove.passEntity = self;
 	formMove.clipMask = self->clipmask;
 
-	gi.TraceBoundingForm(&formMove);
+	G_TraceBoundingForm(&formMove);
 
 	if(formMove.trace.startsolid)
 	{
@@ -1852,7 +1852,7 @@ qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, f
 	stepFormMove.passEntity = self;
 	stepFormMove.clipMask = self->clipmask;
 
-	gi.TraceBoundingForm(&stepFormMove);
+	G_TraceBoundingForm(&stepFormMove);
 
 	if(stepFormMove.trace.startsolid)
 	{
@@ -1878,7 +1878,7 @@ qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, f
 		stepFormMove.start = stepFormMove.trace.endpos;
 		stepFormMove.end = adjustFrom;
 
-		gi.TraceBoundingForm(&stepFormMove);
+		G_TraceBoundingForm(&stepFormMove);
 
 		VectorCopy(temp, move);
 
@@ -1955,7 +1955,7 @@ edict_t	*TestEntityPosition(edict_t *self)
 	formMove.passEntity = self;
 	formMove.clipMask = self->clipmask;
 
-	gi.TraceBoundingForm(&formMove);
+	G_TraceBoundingForm(&formMove);
 
 	if(formMove.trace.startsolid)
 	{

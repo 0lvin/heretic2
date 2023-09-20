@@ -1651,5 +1651,16 @@ void get_translated_text(int message_id, char *msg, int *sound_index);
 void G_BCaption(int printlevel, short stringid);
 void G_LevelMsgCenterPrintf(edict_t* ent, short msg);
 void G_CaptionPrintf(edict_t* ent, short msg);
+void G_BroadcastObituary(int printlevel, short stringid, short client1, short client2);
+int G_GetContentsAtPoint(vec3_t point);
+int G_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s* list, int areatype);
+void G_TraceBoundingForm(FormMove_t* formMove);
+void G_MsgVarCenterPrintf(edict_t* ent, short msg, int vari);
+void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2);
+qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove);
+qboolean G_CheckDistances(vec3_t origin, float dist);
+void G_SoundRemove(char* name);
+void G_CleanLevel(void);
+void G_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
 
 #endif /* GAME_LOCAL_H */

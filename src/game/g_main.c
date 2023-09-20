@@ -164,7 +164,7 @@ void G_ClearMessageQueues();
 void
 G_BCaption(int printlevel, short stringid)
 {
-	gi.bprintf(printlevel, message_text[stringid].string);
+	gi.bprintf(printlevel, "%s", message_text[stringid].string);
 	if (message_text[stringid].wav && message_text[stringid].wav[0])
 	{
 		gi.sound(NULL, CHAN_AUTO, gi.soundindex(message_text[stringid].wav), 1, ATTN_NORM, 0);
@@ -174,7 +174,7 @@ G_BCaption(int printlevel, short stringid)
 void
 G_LevelMsgCenterPrintf(edict_t* ent, short stringid)
 {
-	gi.centerprintf(ent, message_text[stringid].string);
+	gi.centerprintf(ent, "%s", message_text[stringid].string);
 
 	if (message_text[stringid].wav && message_text[stringid].wav[0])
 	{
@@ -185,13 +185,90 @@ G_LevelMsgCenterPrintf(edict_t* ent, short stringid)
 void
 G_CaptionPrintf(edict_t* ent, short stringid)
 {
-	gi.centerprintf(ent, message_text[stringid].string);
+	gi.centerprintf(ent, "%s", message_text[stringid].string);
 
 	if (message_text[stringid].wav && message_text[stringid].wav[0])
 	{
 		gi.sound(ent, CHAN_AUTO, gi.soundindex(message_text[stringid].wav), 1, ATTN_NORM, 0);
 	}
 }
+
+void
+G_BroadcastObituary(int printlevel, short stringid, short client1, short client2)
+{
+	gi.bprintf(printlevel, "%s", message_text[stringid].string);
+}
+
+int
+G_GetContentsAtPoint(vec3_t point)
+{
+	return gi.pointcontents(point); // Not correct.
+}
+
+int
+G_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s* list, int areatype)
+{
+	edict_t* idlist[1024];
+	int numEnts;
+
+	numEnts = gi.BoxEdicts(mins, maxs, idlist, 1024, areatype);
+
+	for (int i = 0; i < numEnts; i++)
+	{
+		GenericUnion4_t temp;
+
+		temp.t_void_p = idlist[i];
+		SLList_Push(list, temp);
+	}
+
+	return numEnts;
+}
+
+void
+G_TraceBoundingForm(FormMove_t* formMove)
+{
+	formMove->trace = gi.trace(formMove->start, formMove->mins, formMove->maxs, formMove->end, (edict_t *)formMove->passEntity, formMove->clipMask);
+	//formMove->trace = CM_BoxTrace(formMove->start, formMove->end, formMove->mins, formMove->maxs, 0, formMove->clipMask);
+}
+
+void G_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
+{
+	gi.centerprintf(ent, "%s", message_text[msg].string);
+}
+
+void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
+{
+	gi.centerprintf(ent, "%s", message_text[msg1].string);
+	gi.centerprintf(ent, "%s", message_text[msg2].string);
+}
+
+qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
+{
+	gi.dprintf("%s: TODO: Unimplemented\n", __func__);
+	return false;
+}
+
+qboolean G_CheckDistances(vec3_t origin, float dist)
+{
+	gi.dprintf("%s: TODO: Unimplemented\n", __func__);
+	return false;
+}
+
+void G_SoundRemove(char* name)
+{
+	gi.dprintf("%s: TODO: Unimplemented (%s)\n", __func__, name);
+}
+
+void G_CleanLevel(void)
+{
+	gi.dprintf("%s: TODO: Unimplemented\n", __func__);
+}
+
+void G_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs)
+{
+	gi.sound(ent, channel, soundindex, volume, attenuation, timeofs);
+}
+
 
 /* =================================================================== */
 
@@ -509,7 +586,7 @@ CheckDMRules(void)
 	{
 		if (level.time >= timelimit->value * 60)
 		{
-			gi.Obituary(PRINT_HIGH, GM_TIMELIMIT, 0, 0);
+			G_BroadcastObituary(PRINT_HIGH, GM_TIMELIMIT, 0, 0);
 			EndDMLevel();
 			return;
 		}
@@ -528,7 +605,7 @@ CheckDMRules(void)
 
 			if (cl->resp.score >= fraglimit->value)
 			{
-				gi.Obituary (PRINT_HIGH, GM_FRAGLIMIT, 0, 0);
+				G_BroadcastObituary (PRINT_HIGH, GM_FRAGLIMIT, 0, 0);
 				EndDMLevel();
 				return;
 			}

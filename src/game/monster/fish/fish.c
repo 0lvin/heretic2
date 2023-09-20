@@ -305,7 +305,7 @@ void fish_check_distance(edict_t *self)
 	self->nextthink = level.time + 2.0;
 
 	// determine if we are too far from the camera to warrant animating or ai
-	if (gi.CheckDistances(self->s.origin, FISH_ACTIVATE_DIST))
+	if (G_CheckDistances(self->s.origin, FISH_ACTIVATE_DIST))
 	{
 	 	self->nextthink = level.time + FRAMETIME;
 	 	self->think = fish_think;
@@ -336,7 +336,7 @@ void fish_think (edict_t *self)
 			self->enemy = NULL;
 	}
 	// determine if we are too far from the camera to warrant animating or ai
-	if (!gi.CheckDistances(self->s.origin, FISH_ACTIVATE_DIST))
+	if (!G_CheckDistances(self->s.origin, FISH_ACTIVATE_DIST))
 	{
 	 	self->think = fish_check_distance;
 		VectorClear(self->velocity);

@@ -1047,7 +1047,7 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 			if(message)
 			{
-				gi.Obituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, attacker->s.number);
+				G_BroadcastObituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, attacker->s.number);
 
 				if(deathmatch->value)
 				{
@@ -1067,7 +1067,7 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 		if(message)
 		{
-			gi.Obituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, 0);
+			G_BroadcastObituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, 0);
 
 			if(deathmatch->value)
 			{
@@ -1080,7 +1080,7 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 		}
 	}
 
-	gi.Obituary(PRINT_MEDIUM, (short)(GM_OBIT_DIED + irand(0, 2)), self->s.number, 0);
+	G_BroadcastObituary(PRINT_MEDIUM, (short)(GM_OBIT_DIED + irand(0, 2)), self->s.number, 0);
 
 	if (deathmatch->value)
 	{
@@ -2486,7 +2486,7 @@ void ClientBeginDeathmatch (edict_t *ent)
 
 	gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 	gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
-	gi.Obituary(PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
+	G_BroadcastObituary(PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 
 	// Make sure all view stuff is valid.
 
@@ -2573,7 +2573,7 @@ ClientBegin(edict_t *ent)
 
 			gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 			gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
-			gi.Obituary (PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
+			G_BroadcastObituary (PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 		}
 	}
 
@@ -2922,7 +2922,7 @@ ClientDisconnect(edict_t *ent)
 
 	// Inform other players that the disconnecting client has left the game.
 
-	gi.Obituary (PRINT_HIGH, GM_DISCON, ent->s.number, 0);
+	G_BroadcastObituary (PRINT_HIGH, GM_DISCON, ent->s.number, 0);
 
 	// Do the teleport sound.
 

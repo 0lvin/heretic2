@@ -385,15 +385,6 @@ void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
 
 void
-SV_BroadcastObituary(int printlevel, short stringid, short client1, short client2)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void
 SV_CreateEffectEvent(byte EventId, entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...)
 {
 	if (developer && developer->value)
@@ -411,57 +402,6 @@ SV_RemoveEffectsEvent(byte EventId, entity_state_t* ent, int type)
 	}
 }
 
-void SV_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void SV_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void SV_ChangeCDTrack(edict_t* ent, int track, int loop)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void SV_CLPrintf(edict_t* ent, edict_t* from, int color, const char* fmt, ...)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-
-qboolean SV_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-	return false;
-}
-
-qboolean SV_CheckDistances(vec3_t origin, float dist)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-	return false;
-}
-
 qboolean SV_RemovePersistantEffect(int toRemove, int call_from)
 {
 	if (developer && developer->value)
@@ -469,35 +409,6 @@ qboolean SV_RemovePersistantEffect(int toRemove, int call_from)
 		Com_Printf("%s: TODO: Unimplemented\n", __func__);
 	}
 	return false;
-}
-
-void SV_ModelRemove(char* name)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void SV_SoundRemove(char* name)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void SV_CleanLevel(void)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void SV_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs)
-{
-	PF_StartSound(ent, channel, soundindex, volume, attenuation, timeofs);
 }
 
 void
@@ -780,38 +691,6 @@ SV_ClearPersistantEffects(void)
 }
 
 
-int
-SV_GetContentsAtPoint(vec3_t point)
-{
-	return SV_PointContents(point); // Not correct.
-}
-
-int
-SV_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s* list, int areatype)
-{
-	edict_t* idlist[1024];
-	int numEnts;
-
-	numEnts = SV_AreaEdicts(mins, maxs, idlist, 1024, areatype);
-
-	for (int i = 0; i < numEnts; i++)
-	{
-		GenericUnion4_t temp;
-
-		temp.t_void_p = idlist[i];
-		SLList_Push(list, temp);
-	}
-
-	return numEnts;
-}
-
-void
-SV_TraceBoundingForm(FormMove_t* formMove)
-{
-	formMove->trace = SV_Trace(formMove->start, formMove->mins, formMove->maxs, formMove->end, (edict_t *)formMove->passEntity, formMove->clipMask);
-	//formMove->trace = CM_BoxTrace(formMove->start, formMove->end, formMove->mins, formMove->maxs, 0, formMove->clipMask);
-}
-
 /*
  * Init the game subsystem for a new map
  */
@@ -886,22 +765,7 @@ SV_InitGameProgs(void)
 	import.AreasConnected = CM_AreasConnected;
 
 	/* Heretic 2 specific */
-	import.Obituary = SV_BroadcastObituary;
-	import.clprintf = SV_CLPrintf;
-	import.msgvar_centerprintf = SV_MsgVarCenterPrintf;
-	import.msgdual_centerprintf = SV_MsgDualCenterPrintf;
 	import.FS_NextPath = FS_NextPath;
-	import.changeCDtrack = SV_ChangeCDTrack;
-
-	import.FindEntitiesInBounds = SV_FindEntitiesInBounds;
-	import.TraceBoundingForm = SV_TraceBoundingForm;
-	import.ResizeBoundingForm = SV_ResizeBoundingForm;
-	import.GetContentsAtPoint = SV_GetContentsAtPoint;
-	import.CheckDistances = SV_CheckDistances;
-	import.cleanlevel = SV_CleanLevel;
-	import.modelremove = SV_ModelRemove;
-	import.soundremove = SV_SoundRemove;
-	import.soundevent = SV_SoundEvent;
 
 	import.CreateEffect = SV_CreateEffect;
 	import.RemoveEffects = SV_RemoveEffects;
@@ -909,12 +773,11 @@ SV_InitGameProgs(void)
 	import.RemoveEffectsEvent = SV_RemoveEffectsEvent;
 	import.CreatePersistantEffect = SV_CreatePersistantEffect;
 	import.RemovePersistantEffect = SV_RemovePersistantEffect;
-	import.cvar_variablevalue = Cvar_VariableValue;
+	import.ClearPersistantEffects = SV_ClearPersistantEffects;
 
 	import.FS_LoadFile = FS_LoadFile;
 	import.FS_FreeFile = FS_FreeFile;
 
-	import.ClearPersistantEffects = SV_ClearPersistantEffects;
 	import.Persistant_Effects_Array = &SV_Persistant_Effects;
 
 	ge = (game_export_t *)Sys_GetGameAPI(&import);

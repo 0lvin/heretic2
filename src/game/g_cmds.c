@@ -1104,7 +1104,7 @@ Cmd_Kill_f(edict_t *ent)
 {
 	if(ent->client->flood_nextkill > level.time)
 	{
-		gi.msgvar_centerprintf(ent, GM_NOKILL, (int)(ent->client->flood_nextkill - level.time) + 1);
+		G_MsgVarCenterPrintf(ent, GM_NOKILL, (int)(ent->client->flood_nextkill - level.time) + 1);
 		return;
 	}
 	ent->flags &= ~FL_GODMODE;
@@ -1333,35 +1333,116 @@ Cmd_NextMonsterFrame_f(edict_t *ent)
 	MonsterAdvanceFrame = true;
 }
 
+static qboolean
+flooded(edict_t *ent)
+{
+	gclient_t *cl;
+	int i;
+	int num_msgs;
+	int mx;
+
+	if (!ent)
+	{
+		return false;
+	}
+
+	if (!deathmatch->value && !coop->value)
+	{
+		return false;
+	}
+
+	num_msgs = flood_msgs->value;
+	if (num_msgs <= 0)
+	{
+		return false;
+	}
+
+	cl = ent->client;
+	mx = sizeof(cl->flood_when) / sizeof(cl->flood_when[0]);
+
+	if (num_msgs > mx)
+	{
+		gi.dprintf("flood_msgs lowered to max: 10\n");
+
+		num_msgs = mx;
+		gi.cvar_forceset("flood_msgs", "10");
+	}
+
+	if (level.time < cl->flood_locktill)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "You can't talk for %d more seconds\n",
+			(int)(cl->flood_locktill - level.time));
+
+		return true;
+	}
+
+	i = (cl->flood_whenhead - num_msgs) + 1;
+
+	if (i < 0)
+	{
+		i += mx;
+	}
+
+	if (cl->flood_when[i] &&
+		(level.time - cl->flood_when[i]) < flood_persecond->value)
+	{
+		cl->flood_locktill = level.time + flood_waitdelay->value;
+
+		gi.cprintf(ent, PRINT_CHAT,
+			"Flood protection: You can't talk for %d seconds.\n",
+			(int)flood_waitdelay->value);
+
+		return true;
+	}
+
+	cl->flood_whenhead = (cl->flood_whenhead + 1) % mx;
+	cl->flood_when[cl->flood_whenhead] = level.time;
+
+	return false;
+}
+
 void
 Cmd_Say_f(edict_t *ent, qboolean team, qboolean arg0)
 {
-	int		j;
-	edict_t	*other;
-	char	*p;
-	char	text[2048];
-	char	text2[2048];
-	int		color;
+	int j;
+	edict_t *other;
+	char *p;
+	char text[2048];
 
-	if (gi.argc () < 2 && !arg0)
+	if (!ent)
+	{
 		return;
+	}
+
+	if ((gi.argc() < 2) && !arg0)
+	{
+		return;
+	}
+
+	if (flooded(ent))
+	{
+		return;
+	}
 
 	if (!((int)(dmflags->value) & (DF_MODELTEAMS | DF_SKINTEAMS)))
+	{
 		team = false;
+	}
 
-	// delimit the string if we are normal play talking, so we don't send the name with it
-	Com_sprintf (text2, sizeof(text), "%s: ", ent->client->playerinfo.pers.netname);
-	text[0] = 0;
+	if (team)
+	{
+		Com_sprintf(text, sizeof(text), "(%s): ", ent->client->playerinfo.pers.netname);
+	}
+	else
+	{
+		Com_sprintf(text, sizeof(text), "%s: ", ent->client->playerinfo.pers.netname);
+	}
 
 	if (arg0)
 	{
-		strcat (text, gi.argv(0));
-		strcat (text, " ");
-		strcat (text, gi.args());
-
-		strcat (text2, gi.argv(0));
-		strcat (text2, " ");
-		strcat (text2, gi.args());
+		strcat(text, gi.argv(0));
+		strcat(text, " ");
+		strcat(text, gi.args());
 	}
 	else
 	{
@@ -1370,54 +1451,48 @@ Cmd_Say_f(edict_t *ent, qboolean team, qboolean arg0)
 		if (*p == '"')
 		{
 			p++;
-			p[strlen(p)-1] = 0;
+			p[strlen(p) - 1] = 0;
 		}
+
 		strcat(text, p);
-
-		p = gi.args();
-
-		if (*p == '"')
-		{
-			p++;
-			p[strlen(p)-1] = 0;
-		}
-		strcat(text2, p);
-
 	}
 
-	// don't let text be too long for malicious reasons
+	/* don't let text be too long for malicious reasons */
 	if (strlen(text) > 150)
+	{
 		text[150] = 0;
-
-	if (strlen(text2) > 150)
-		text2[150] = 0;
-
+	}
 
 	strcat(text, "\n");
-	strcat(text2, "\n");
-
-	if (CheckFlood(ent))
-		return;
 
 	if (dedicated->value)
-		gi.cprintf(NULL, PRINT_CHAT, "%s", text2);
+	{
+		gi.cprintf(NULL, PRINT_CHAT, "%s", text);
+	}
 
 	for (j = 1; j <= game.maxclients; j++)
 	{
-		color = 0;
 		other = &g_edicts[j];
+
 		if (!other->inuse)
-			continue;
-		if (!other->client)
-			continue;
-		if (team)
 		{
-			color = 1;
-			if (!OnSameTeam(ent, other))
-				continue;
+			continue;
 		}
 
-		gi.clprintf(other,ent, color, "%s", text);
+		if (!other->client)
+		{
+			continue;
+		}
+
+		if (team)
+		{
+			if (!OnSameTeam(ent, other))
+			{
+				continue;
+			}
+		}
+
+		gi.cprintf(other, PRINT_CHAT, "%s", text);
 	}
 }
 
@@ -1620,7 +1695,7 @@ CheckFlood(edict_t *ent)
 	{
 		if (level.time < ent->client->flood_locktill)
 		{
-			gi.msgvar_centerprintf(ent, GM_SHUTUP, (int)(ent->client->flood_locktill - level.time));
+			G_MsgVarCenterPrintf(ent, GM_SHUTUP, (int)(ent->client->flood_locktill - level.time));
 			 return true;
 		}
 
@@ -1633,7 +1708,7 @@ CheckFlood(edict_t *ent)
 		if (ent->client->flood_when[i] && (level.time - ent->client->flood_when[i] < flood_persecond->value))
 		{
 			ent->client->flood_locktill = level.time + flood_waitdelay->value;
-			gi.msgvar_centerprintf(ent, GM_SHUTUP, (int)flood_waitdelay->value);
+			G_MsgVarCenterPrintf(ent, GM_SHUTUP, (int)flood_waitdelay->value);
 			return true;
 		}
 

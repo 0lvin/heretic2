@@ -721,19 +721,8 @@ void ActivateTrigger_Activated(edict_t *self, edict_t *activator)
 // make every active client out there change CD track.
 void everyone_play_track(int track, int loop)
 {
-	int j;
-	edict_t	*other;
-
-	// play the track  - make sure everyone gets sent this over the next in the client messages
-	for (j = 1; j <= game.maxclients; j++)
-	{
-		other = &g_edicts[j];
-		if (!other->inuse)
-			continue;
-		if (!other->client)
-			continue;
-		gi.changeCDtrack(other, track, loop);
-	}
+	printf("Play CD track %d -> %d\n", track, loop);
+	gi.configstring(CS_CDTRACK, va("%i", track));
 }
 
 void choose_CDTrack_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
@@ -1174,6 +1163,10 @@ void trigger_endgame_think(edict_t *self)
 
 void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
+	cvar_t *sv_loopcoop;
+
+	sv_loopcoop = gi.cvar("sv_loopcoop", "0", 0);
+
 	if(self->count)
 		return;
 
@@ -1191,7 +1184,7 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 	// Single player - just end, coop - restart if sv_loopcoop is set.
 
-	if(gi.cvar_variablevalue("sv_loopcoop") && coop->value )
+	if(sv_loopcoop->value && coop->value )
 	{
 		int		i;
 		edict_t	*ent;
@@ -1215,6 +1208,10 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
 {
+	cvar_t *sv_loopcoop;
+
+	sv_loopcoop = gi.cvar("sv_loopcoop", "0", 0);
+
 	if(self->count)
 		return;
 
@@ -1227,7 +1224,7 @@ void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
 
 	// Single player - just end, coop - restart if sv_loopcoop is set.
 
-	if(gi.cvar_variablevalue("sv_loopcoop") && coop->value)
+	if(sv_loopcoop->value && coop->value)
 	{
 		int		i;
 		edict_t *ent;

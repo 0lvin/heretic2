@@ -188,49 +188,23 @@ typedef struct
 	void (*DebugGraph)(float value, int color);
 
 	/* Heretic 2 specific */
-	char *(*FS_NextPath)(char *prevpath);
 	void	(*CreateEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 	void	(*RemoveEffects)(entity_state_t *ent, int type);
 	void	(*CreateEffectEvent) (byte EventId,entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 	void	(*RemoveEffectsEvent)(byte EventId,entity_state_t *ent, int type);
 	int		(*CreatePersistantEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	qboolean (*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
+	qboolean	(*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
 					// The effect is not removed on the client									// This should be done by removing the effects from the owning entity or freein
-
-	float	(*cvar_variablevalue) (const char *var_name);
-	void (*clprintf)(edict_t *ent, edict_t *from, int color, const char *fmt, ...);
-	void (*Obituary)(int printlevel, short stringid, short client1, short client2);
-	void (*msgvar_centerprintf)(edict_t *ent, short msg, int vari);
-	void (*msgdual_centerprintf)(edict_t *ent, short msg1, short msg2);
-	void (*soundevent)(byte EventId,float leveltime,edict_t *ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
-
-	// routine that sends over new CD track
-	void	(*changeCDtrack) (edict_t *ent, int track, int loop );
-
-	// New names can only be added during spawning but existing names can be looked up at any time.
-
-	void	(*cleanlevel) (void);
-	void	(*modelremove) (char *name);
-	void	(*soundremove) (char *name);
-
-	// New_Physics
-	int		(*FindEntitiesInBounds) (vec3_t mins, vec3_t maxs, SinglyLinkedList_t *list, int areatype);
-	void	(*TraceBoundingForm) (FormMove_t *formMove);
-	qboolean	(*ResizeBoundingForm) (edict_t *self, FormMove_t *formMove);
-	int		(*GetContentsAtPoint) (vec3_t point);
-	qboolean (*CheckDistances)(vec3_t origin, float dist);
-
-	// End New_Physics
+	void	(*ClearPersistantEffects) (void);
 
 	// Files will be memory mapped read only. The returned buffer may be part of a larger '.pak'
 	// file, or a discrete file from anywhere in the quake search path. A -1 return means the file
 	// does not exist. NULL can be passed for buf to just determine existance.
-
+	char	*(*FS_NextPath)(char *prevpath);
 	int		(*FS_LoadFile) (char *name, void **buf);
 	void	(*FS_FreeFile) (void *buf);
 
 	// pointer to the server side persistant effects arrary
-	void	(*ClearPersistantEffects) (void);
 	void	*Persistant_Effects_Array;
 
 } game_import_t;

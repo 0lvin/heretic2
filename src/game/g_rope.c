@@ -153,7 +153,7 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 	else if(self->count > NUM_INSTRUCTIONS)
 	{
 		msg = (short)(irand(NATE_SAYING_HITME_AGAIN1, NATE_SAYING_HITME_AGAIN10)  - 5 + GM_SIR_NATE_HIT_AGAIN0);
-		gi.msgvar_centerprintf(attacker, msg, damage);
+		G_MsgVarCenterPrintf(attacker, msg, damage);
 	}
 	else if(UsedRightAttack(self->count, attacker, self->activator))
 	{
@@ -167,13 +167,13 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 		}
 		else
 		{
-			gi.msgdual_centerprintf(attacker, GM_SIR_NATE_SUCCESS, (short)(self->count + GM_SIR_NATE_INSTRUCTIONS0));
+			G_MsgDualCenterPrintf(attacker, GM_SIR_NATE_SUCCESS, (short)(self->count + GM_SIR_NATE_INSTRUCTIONS0));
 			self->damage_debounce_time = level.time + 1.0;
 		}
 	}
 	else
 	{
-  		gi.msgdual_centerprintf(attacker, GM_SIR_NATE_FAILURE, (short)(self->count + GM_SIR_NATE_INSTRUCTIONS0));
+  		G_MsgDualCenterPrintf(attacker, GM_SIR_NATE_FAILURE, (short)(self->count + GM_SIR_NATE_INSTRUCTIONS0));
 	}
 	return false;
 }

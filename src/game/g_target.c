@@ -118,7 +118,7 @@ void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
 	if (deathmatch->value)
 	{
 		if (activator && activator->client)
-			gi.Obituary (PRINT_HIGH, GM_EXIT, activator->s.number, 0);
+			G_BroadcastObituary (PRINT_HIGH, GM_EXIT, activator->s.number, 0);
 	}
 
 	// if going to a new unit, clear cross triggers

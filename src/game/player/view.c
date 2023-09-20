@@ -98,7 +98,7 @@ void InitPlayerinfo(edict_t *ent)
 	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
 
 	ent->client->playerinfo.G_L_Sound = G_set_looping_sound;
-	ent->client->playerinfo.G_Sound = gi.soundevent;
+	ent->client->playerinfo.G_Sound = G_SoundEvent;
 	ent->client->playerinfo.G_Trace = gi.trace;
 	ent->client->playerinfo.G_CreateEffect = gi.CreateEffectEvent;
 	ent->client->playerinfo.G_RemoveEffects = gi.RemoveEffectsEvent;
@@ -106,7 +106,7 @@ void InitPlayerinfo(edict_t *ent)
 	// Server (game) function callbacks that have no client side equivalent.
 
 	ent->client->playerinfo.G_SoundIndex = gi.soundindex;
-	ent->client->playerinfo.G_SoundRemove = gi.soundremove;
+	ent->client->playerinfo.G_SoundRemove = G_SoundRemove;
 	ent->client->playerinfo.G_UseTargets = G_UseTargets;
 	ent->client->playerinfo.G_GetEntityStatePtr = G_GetEntityStatePtr;
 	ent->client->playerinfo.G_BranchLwrClimbing = G_BranchLwrClimbing;
