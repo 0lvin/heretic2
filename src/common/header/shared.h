@@ -317,7 +317,7 @@ void COM_FileBase(char *in, char *out);
 void COM_FilePath(const char *in, char *out);
 void COM_DefaultExtension(char *path, const char *extension);
 
-char *COM_Parse(char **data_p);
+const char *COM_Parse(char **data_p);
 
 /* data is an in/out parm, returns a parsed out token */
 void Com_sprintf(char *dest, int size, char *fmt, ...);
@@ -328,8 +328,8 @@ void Com_PageInMemory(byte *buffer, int size);
 
 /* portable case insensitive compare */
 int Q_stricmp(const char *s1, const char *s2);
-int Q_strcasecmp(char *s1, char *s2);
-int Q_strncasecmp(char *s1, char *s2, int n);
+int Q_strcasecmp(const char *s1, const char *s2);
+int Q_strncasecmp(const char *s1, const char *s2, int n);
 
 /* portable string lowercase */
 char *Q_strlwr(char *s);
@@ -366,9 +366,9 @@ char *va(const char *format, ...)  PRINTF_ATTR(1, 2);
 #define MAX_INFO_STRING 512
 
 char *Info_ValueForKey(char *s, char *key);
-void Info_RemoveKey(char *s, char *key);
-void Info_SetValueForKey(char *s, char *key, char *value);
-qboolean Info_Validate(char *s);
+void Info_RemoveKey(char *s, const char *key);
+void Info_SetValueForKey(char *s, const char *key, const char *value);
+qboolean Info_Validate(const char *s);
 
 /* ============================================= */
 
@@ -410,7 +410,7 @@ int Hunk_End(void);
 #define SFF_SYSTEM 0x10
 
 /* pass in an attribute mask of things you wish to REJECT */
-char *Sys_FindFirst(char *path, unsigned musthave, unsigned canthave);
+char *Sys_FindFirst(const char *path, unsigned musthave, unsigned canthave);
 char *Sys_FindNext(unsigned musthave, unsigned canthave);
 void Sys_FindClose(void);
 

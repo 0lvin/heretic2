@@ -582,7 +582,7 @@ typedef struct playerinfo_s
 
 	// Server (game) function callbacks that have no client side equivalent.
 
-	int (*G_SoundIndex)(char *name);
+	int (*G_SoundIndex)(const char *name);
 	void (*G_SoundRemove)(char *name);
 	void (*G_UseTargets)(edict_t *ent,edict_t *activator);
 	entity_state_t *(*G_GetEntityStatePtr)(edict_t *entity);
@@ -606,9 +606,9 @@ typedef struct playerinfo_s
 	void (*G_PlayerSpellStopShieldAttack)(playerinfo_t *playerinfo);
 	void (*G_PlayerVaultKick)(playerinfo_t *playerinfo);
 	void (*G_PlayerActionCheckRopeMove)(playerinfo_t *playerinfo);
-	void (*G_cprintf)(edict_t *ent, int printlevel, char *fmt, ...);
+	void (*G_cprintf)(edict_t *ent, int printlevel, const char *fmt, ...);
 	void (*G_WeapNext)(edict_t *ent);
-	void (*G_UseItem)(edict_t *ent, char *s);
+	void (*G_UseItem)(edict_t *ent);
 
 	// Common client & server (game) function callbacks.
 

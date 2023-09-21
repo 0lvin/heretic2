@@ -142,7 +142,7 @@ cvar_t *log_file_header;
 cvar_t *log_file_footer;
 cvar_t *log_file_line_header;
 
-void SpawnEntities(char *mapname, char *entities, char *spawnpoint, qboolean loadgame);
+void SpawnEntities(const char *mapname, char *entities, const char *spawnpoint, qboolean loadgame);
 void ClientThink(edict_t *ent, usercmd_t *cmd);
 qboolean ClientConnect(edict_t *ent, char *userinfo);
 void ClientUserinfoChanged(edict_t *ent, char *userinfo);
@@ -150,10 +150,10 @@ void ClientDisconnect(edict_t *ent);
 void ClientBegin(edict_t *ent);
 void ClientCommand(edict_t *ent);
 void RunEntity(edict_t *ent);
-void WriteGame(char *filename, qboolean autosave);
-void ReadGame(char *filename);
-void WriteLevel(char *filename);
-void ReadLevel(char *filename);
+void WriteGame(const char *filename, qboolean autosave);
+void ReadGame(const char *filename);
+void WriteLevel(const char *filename);
+void ReadLevel(const char *filename);
 void InitGame(void);
 void G_RunFrame(void);
 void ConstructEntities(void);
@@ -307,41 +307,6 @@ ShutdownGame(void)
 }
 
 /*
- * convert function declarations to correct one
- * (warning like from incompatible pointer type)
- * little bit better than cast function before set
- */
-static void
-ReadLevel_f(char *filename)
-{
-	ReadLevel(filename);
-}
-
-static void
-WriteLevel_f(char *filename)
-{
-	WriteLevel(filename);
-}
-
-static void
-ReadGame_f(char *filename)
-{
-	ReadGame(filename);
-}
-
-static void
-WriteGame_f(char *filename, qboolean autosave)
-{
-	WriteGame(filename, autosave);
-}
-
-static void
-SpawnEntities_f(char *mapname, char *entities, char *spawnpoint, qboolean loadgame)
-{
-	SpawnEntities(mapname, entities, spawnpoint, loadgame);
-}
-
-/*
  * Returns a pointer to the structure
  * with all entry points and global
  * variables
@@ -354,14 +319,14 @@ GetGameAPI(game_import_t *import)
 	globals.apiversion = GAME_API_VERSION;
 	globals.Init = InitGame;
 	globals.Shutdown = ShutdownGame;
-	globals.SpawnEntities = SpawnEntities_f;
+	globals.SpawnEntities = SpawnEntities;
 
 	globals.ConstructEntities = ConstructEntities;
 
-	globals.WriteGame = WriteGame_f;
-	globals.ReadGame = ReadGame_f;
-	globals.WriteLevel = WriteLevel_f;
-	globals.ReadLevel = ReadLevel_f;
+	globals.WriteGame = WriteGame;
+	globals.ReadGame = ReadGame;
+	globals.WriteLevel = WriteLevel;
+	globals.ReadLevel = ReadLevel;
 
 	globals.ClientThink = ClientThink;
 	globals.ClientConnect = ClientConnect;

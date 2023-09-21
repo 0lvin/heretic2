@@ -111,8 +111,8 @@ typedef struct
 
 	//
 
-	cvar_t *(*Cvar_Get) (const char *name, char *value, int flags);
-	cvar_t *(*Cvar_Set)( const char *name, char *value );
+	cvar_t *(*Cvar_Get) (const char *name, const char *value, int flags);
+	cvar_t *(*Cvar_Set)( const char *name, const char *value );
 	void	(*Cvar_SetValue)( const char *name, float value );
 	float	(*Cvar_VariableValue) (const char *var_name);
 	const char	*(*Cvar_VariableString) (const char *var_name);
@@ -128,7 +128,7 @@ typedef struct
 
 	void	(*S_StartSound)(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, float attenuation, float timeofs);
 	struct sfx_s	*(*S_RegisterSound)(char *name);
-	struct model_s *(*RegisterModel) (char *name);
+	struct model_s *(*RegisterModel) (const char *name);
 
 	int		(*GetEffect)(centity_t *ent, int flags, char *format, ...);
 

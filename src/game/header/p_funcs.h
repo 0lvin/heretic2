@@ -22,7 +22,7 @@ extern void G_PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, flo
 extern qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo);
 extern void G_PlayerActionTakePuzzle(playerinfo_t *playerinfo);
 extern qboolean G_PlayerActionUsePuzzle(playerinfo_t *playerinfo);
-extern qboolean G_PlayerActionCheckPushPull_Ent(void *ent);
+extern qboolean G_PlayerActionCheckPushPull_Ent(edict_t *ent);
 extern void PushPull_stop(edict_t *self);
 extern void G_PlayerActionMoveItem(playerinfo_t *playerinfo,float distance);
 extern qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo);
