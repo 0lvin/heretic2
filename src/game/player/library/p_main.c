@@ -209,30 +209,6 @@ PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 int
 PlayerCheckSlide(playerinfo_t *playerinfo)
 {
-	trace_t	trace;
-	vec3_t	vf, vr, vu;
-	vec3_t	startpos, endpos, mins, maxs;
-	float	dot;
-
-	VectorCopy(playerinfo->origin, startpos);
-	VectorCopy(playerinfo->origin, endpos);
-	endpos[2] -= 32;
-
-	VectorSet(mins, -4, -4, -4);
-	VectorSet(maxs,  4,  4,  4);
-
-	AngleVectors(playerinfo->angles, vf, vr, vu);
-
-	if(playerinfo->isclient)
-		trace = playerinfo->CL_Trace(startpos,mins,maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		trace = playerinfo->G_Trace(startpos,mins,maxs,endpos,playerinfo->self,MASK_PLAYERSOLID);
-
-	if (trace.fraction < 1)
-	{
-		dot = DotProduct(vf, trace.plane.normal);
-	}
-
 	return false;
 }
 

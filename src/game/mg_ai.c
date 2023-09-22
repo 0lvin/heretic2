@@ -1575,8 +1575,6 @@ The monster has an enemy it is trying to kill or the monster is fleeing
 void old_ai_run (edict_t *self, float dist);
 void ai_run (edict_t *self, float dist)
 {
-	float	turnamt, i;
-
 	//if dumb fleeing or fleeing and can't use buoys...
 	if((DEACTIVATE_BUOYS||!(self->monsterinfo.aiflags & AI_USING_BUOYS))
 				&&
@@ -1619,7 +1617,6 @@ void ai_run (edict_t *self, float dist)
 
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 	{//just face enemy
-		turnamt = Q_fabs(ai_face_goal(self));
 		return;
 	}
 
@@ -1639,10 +1636,6 @@ void ai_run (edict_t *self, float dist)
 		{
 			if(self->classID == CID_SSITHRA)
 				ssithraCheckJump(self);
-		}
-		else
-		{
-			i = 0;
 		}
 
 	if(self->classID!=CID_ASSASSIN)//does his own checks
@@ -2191,7 +2184,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 {
 	trace_t trace;
 	float turnamt, distloss, adj_dist, save_yaw, save_yaw_speed, WallDot;//, save_ideal_yaw;
-	vec3_t	mins, maxs, source, goal_dir;//, vec, save_org;
+	vec3_t	mins, source, goal_dir;
 	qboolean	goal_vis=false, hitworld = false, new_best_yaw = false;
 	float		stepsize, goal_dist, oby;
 
@@ -2520,7 +2513,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 		//make sure we can move in chosen dir
 		//set up mins and maxes for these moves
 		VectorCopy(self->mins, mins);
-		VectorCopy(self->maxs, maxs);
+
 		//Account for STEPSIZE
 		mins[2] += stepsize;
 		if(mins[2] >= self->maxs[2])
@@ -2600,7 +2593,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 {
 	trace_t		trace;
 	float		turnamt, distloss, adj_dist, save_yaw, save_yaw_speed, WallDot;//, save_ideal_yaw;
-	vec3_t		mins, maxs, source, goal_dir, goalpos;//, vec, save_org;
+	vec3_t		mins, source, goal_dir, goalpos;
 	qboolean	goal_vis=false, hitworld = false, new_best_yaw = false;
 	float		goal_dist, oby;
 
@@ -2866,7 +2859,6 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 		//make sure we can move in chosen dir
 		//set up mins and maxes for these moves
 		VectorCopy(self->mins, mins);
-		VectorCopy(self->maxs, maxs);
 
 		//remember yaw in case all these fail!
 		save_yaw = self->s.angles[YAW];

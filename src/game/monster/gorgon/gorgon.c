@@ -1785,7 +1785,6 @@ void gorgon_miss_sound (edict_t *self)
 void gorgon_anger_sound (edict_t *self)
 {
 	byte chance;
-	vec3_t spot;
 
 	chance = irand(0,100);
 	if (chance < 10)
@@ -1804,7 +1803,6 @@ void gorgon_anger_sound (edict_t *self)
 	if(self->enemy)
 	{
 		chance = (byte)irand(1,3);
-		VectorCopy(self->enemy->s.origin, spot);
 
 		G_QPostMessage(self->enemy,MSG_DISMEMBER,PRI_DIRECTIVE,"ii", self->enemy->health*0.5, irand(1,13));//do I need last three if not sending them?
 		G_QPostMessage(self->enemy,MSG_PAIN,PRI_DIRECTIVE,"ii", self->enemy, self);//do I need last three if not sending them?

@@ -77,7 +77,7 @@ static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJo
 {
 	matrix3_t	LowerRotationMatrix,UpperRotationMatrix;
 	vec3_t		LowerbackJointAngles,UpperbackJointAngles,
-				LowerJoint,UpperJoint,LowerJointToUpperJoint,
+				UpperJoint,LowerJointToUpperJoint,
 				Forward,Right,Up,
 				StartPos;
 
@@ -92,10 +92,6 @@ static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJo
 	UpperbackJointAngles[YAW]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,YAW);
 	UpperbackJointAngles[ROLL]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,ROLL);
 	Matrix3FromAngles(UpperbackJointAngles,UpperRotationMatrix);
-
-	// Get vector from player model's origin to lower joint.
-
-	VectorAdd(Caster->s.origin,OriginToLowerJoint,LowerJoint);
 
 	// Get vector from player model's origin to upper joint.
 
@@ -660,8 +656,7 @@ void WeaponThink_Maceballs(edict_t *caster, char *format,...)
 void WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
 {
 	va_list marker;
-	int		missilepos,
-			count;
+	int		missilepos;
 	char	curchar;
 	vec3_t	OriginToLowerJoint={0.945585,2.26076,0.571354},
 			OriginToUpperJoint={1.80845,2.98912,3.27800},
@@ -674,8 +669,6 @@ void WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
 	assert(strlen(format));
 
 	missilepos=1;
-
-	count=0;
 
 	va_start(marker,format);
 	curchar=format[0];

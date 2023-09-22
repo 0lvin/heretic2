@@ -222,7 +222,7 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 	edict_t		*flyingfist;
 	trace_t		trace;
 	int			flags;
-	qboolean	powerup, wimpy;
+	qboolean	wimpy;
 	vec3_t		forward, endpos;
 	playerinfo_t	*playerinfo;
 
@@ -233,18 +233,17 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 
 	if (playerinfo->pers.inventory.Items[playerinfo->weap_ammo_index] < playerinfo->pers.weapon->quantity)
 	{
-		wimpy=true;
+		wimpy = true;
 		flags = CEF_FLAG8;
 	}
 	else
 	{
-		wimpy=false;
+		wimpy = false;
 		flags = 0;
 	}
 
 	if (playerinfo->powerup_timer > level.time)
 	{	// Powered up flying fist.  Make it a meteor!
-		powerup = true;
 		flags |= CEF_FLAG7;
 		flyingfist->health = 1;
 		if (wimpy)	// Play it quiet
@@ -254,7 +253,6 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 	}
 	else
 	{	// Not powered up
-		powerup = false;
 		if (wimpy)	// Play special wimpy sound
 			gi.sound(caster, CHAN_WEAPON, gi.soundindex("weapons/FireballNoMana.wav"), 1.0, ATTN_NORM, 0);
 		else		// Normal fireball sound

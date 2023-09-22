@@ -657,7 +657,6 @@ void seraph_guard_missile(edict_t *self, G_Message_t *msg)
 {
 	vec3_t	attackVel, vf;
 	float	dist;
-	int		ret;
 
 	if (M_ValidTarget(self, self->enemy))
 	{
@@ -674,7 +673,7 @@ void seraph_guard_missile(edict_t *self, G_Message_t *msg)
 		if (dist < self->min_missile_range)
 		{
 			VectorMA(vf, 0, vf, attackVel);
-			ret  = M_PredictTargetEvasion( self, self->enemy, attackVel, self->enemy->velocity, self->melee_range, NUM_PREDFRAMES );
+			M_PredictTargetEvasion( self, self->enemy, attackVel, self->enemy->velocity, self->melee_range, NUM_PREDFRAMES );
 
 			if(irand(0, 4))
 			{

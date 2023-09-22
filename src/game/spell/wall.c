@@ -82,8 +82,7 @@ edict_t *CreateFireBlast(vec3_t startpos, vec3_t angles, edict_t *owner, int hea
 // This called when missile touches anything (world or edict)
 void FireBlastBlocked(edict_t *self, trace_t *trace)
 {
-	edict_t *newwall;
-	float	dot, speed, factor;
+	float	dot, factor;
 	vec3_t	surfvect, surfvel, testpos, newang;
 	trace_t	newtrace;
 
@@ -112,7 +111,6 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 	if (self->health > 0 && !(trace->contents & CONTENTS_WATER) &&
 			(trace->plane.normal[2] > FIREWALL_DOT_MIN || trace->plane.normal[2] < -FIREWALL_DOT_MIN))
 	dot = DotProduct(self->movedir, trace->plane.normal);
-	speed = VectorLength(self->velocity);
 	if (dot < 0 && dot > -0.67)	// slide on all but the most extreme angles.
 	{
 		VectorMA(self->movedir, -dot, trace->plane.normal, surfvel);	// Vel then holds the velocity negated by the impact.
@@ -125,7 +123,7 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 			if (newtrace.fraction > 0.99)
 			{	// If this is successful, then we can make another fireblast moving in the new direction.
 				VectoAngles(surfvect, newang);
-				newwall = CreateFireBlast(self->s.origin, newang, self->owner, self->health-1, level.time);
+				CreateFireBlast(self->s.origin, newang, self->owner, self->health-1, level.time);
 			}
 		}
 	}
@@ -249,8 +247,8 @@ edict_t *CreateFireWall(vec3_t startpos, vec3_t angles, edict_t *owner, int heal
 
 	wall = G_Spawn();
 
-   	VectorSet(wall->mins, -FIREWAVE_PROJ_RADIUS, -FIREWAVE_PROJ_RADIUS, -FIREWAVE_PROJ_RADIUS);
-   	VectorSet(wall->maxs, FIREWAVE_PROJ_RADIUS, FIREWAVE_PROJ_RADIUS, FIREWAVE_PROJ_RADIUS);
+	VectorSet(wall->mins, -FIREWAVE_PROJ_RADIUS, -FIREWAVE_PROJ_RADIUS, -FIREWAVE_PROJ_RADIUS);
+	VectorSet(wall->maxs, FIREWAVE_PROJ_RADIUS, FIREWAVE_PROJ_RADIUS, FIREWAVE_PROJ_RADIUS);
 
 	VectorCopy(startpos, wall->s.origin);
 	VectorCopy(angles, wall->s.angles);
@@ -324,8 +322,7 @@ void WallMissileWormThink(edict_t *self)
 // This called when missile touches anything (world or edict)
 void WallMissileBlocked(edict_t *self, trace_t *trace)
 {
-	edict_t *newwall;
-	float	dot, speed, factor;
+	float	dot, factor;
 	vec3_t	surfvect, surfvel, testpos, newang;
 	trace_t	newtrace;
 	edict_t *worm;
@@ -366,7 +363,6 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 	if (self->health > 0 && !(trace->contents & CONTENTS_WATER) &&
 			(trace->plane.normal[2] > FIREWALL_DOT_MIN || trace->plane.normal[2] < -FIREWALL_DOT_MIN))
 	dot = DotProduct(self->movedir, trace->plane.normal);
-	speed = VectorLength(self->velocity);
 	if (dot < 0 && dot > -0.67)	// slide on all but the most extreme angles.
 	{
 		VectorMA(self->movedir, -dot, trace->plane.normal, surfvel);	// Vel then holds the velocity negated by the impact.
@@ -379,7 +375,7 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 			if (newtrace.fraction > 0.99)
 			{	// If this is successful, then we can make another fireblast moving in the new direction.
 				VectoAngles(surfvect, newang);
-				newwall = CreateFireWall(self->s.origin, newang, self->owner, self->health-1, level.time, 0);
+				CreateFireWall(self->s.origin, newang, self->owner, self->health-1, level.time, 0);
 			}
 		}
 	}

@@ -2041,13 +2041,11 @@ int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 
 int BranchUprReadyBow(playerinfo_t *playerinfo)
 {
-	int blah;
-
 	//No arm, no shot
 	if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
 
-	blah = Weapon_CurrentShotsLeft(playerinfo);
+	Weapon_CurrentShotsLeft(playerinfo);
 
 	if(playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{

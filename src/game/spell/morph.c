@@ -205,10 +205,6 @@ void reset_morph_to_elf(edict_t *ent)
 
 void MorphChickenToPlayer(edict_t *self)
 {
-	gclient_t	*playerinfo;
-
-	playerinfo = self->client;
-
 	// if we are teleporting or morphing, forget it
 	if (self->client->playerinfo.flags & (PLAYER_FLAG_TELEPORT | PLAYER_FLAG_MORPHING))
 		return;
@@ -377,10 +373,6 @@ void Perform_Morph(edict_t *self)
 
 void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 {
-	gclient_t	*playerinfo;
-
-	playerinfo = self->client;
-
 	// if we are teleporting or morphing, forget it
 	if (self->client->playerinfo.flags & (PLAYER_FLAG_TELEPORT | PLAYER_FLAG_MORPHING))
 		return;
@@ -439,10 +431,6 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 
 void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 {
-	gclient_t	*playerinfo;
-
-	playerinfo = self->client;
-
 	// if we are teleporting or morphing, forget it
 	if (self->client->playerinfo.flags & (PLAYER_FLAG_TELEPORT | PLAYER_FLAG_MORPHING))
 		return;

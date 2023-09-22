@@ -147,7 +147,7 @@ int imp_check_move(edict_t *self, float dist)
 void imp_ai_glide (edict_t *self, float fd, float rd, float ud)
 {
 	vec3_t	vec, vf, vr, nvec;
-	float	yaw_delta, roll, dot, rdot;
+	float	yaw_delta, roll, dot;
 
 	if (!self->enemy)
 		return;
@@ -160,7 +160,6 @@ void imp_ai_glide (edict_t *self, float fd, float rd, float ud)
 	AngleVectors(self->s.angles, vf, vr, NULL);
 
 	dot  = DotProduct(vf, nvec);
-	rdot = DotProduct(vr, nvec);
 
 	self->ideal_yaw = vectoyaw(vec);
 
@@ -680,18 +679,15 @@ qboolean imp_check_swoop(edict_t *self, vec3_t goal)
 void move_imp_dive(edict_t *self)
 {
 	vec3_t	vec, vf;
-	float	dist, zd, hd, forward;
+	float	dist, forward;
 
 	//Find out the Z and Horizontal deltas to target
-	zd = Q_fabs(self->s.origin[2] - self->enemy->s.origin[2]);
-
 	AngleVectors(self->s.angles, vf, NULL, NULL);
 
 	VectorCopy(self->s.origin, vec);
 	vec[2] = self->enemy->s.origin[2];
 
 	VectorSubtract(self->enemy->s.origin, vec, vec);
-	hd = VectorLength(vec);
 
 	if ((self->groundentity != NULL) || (!imp_check_move(self, 64)))
 	{
@@ -728,13 +724,12 @@ void move_imp_dive(edict_t *self)
 void move_imp_dive_end(edict_t *self)
 {
 	vec3_t	vec, vf, vr, vu, nvec;
-	float	hd, fd, dot;
+	float	fd, dot;
 
 	VectorCopy(self->s.origin, vec);
 	vec[2] = self->enemy->s.origin[2];
 
 	VectorSubtract(self->enemy->s.origin, vec, vec);
-	hd = VectorLength(vec);
 	self->ideal_yaw = vectoyaw(vec);
 
 	M_ChangeYaw(self);
@@ -1111,9 +1106,6 @@ void imp_flight_model(edict_t *self)
 
 void move_imp_fly(edict_t *self)
 {
-	edict_t *dummy;
-	dummy = self;
-
 	if(!irand(0,3))
 		imp_check_dodge(self);
 

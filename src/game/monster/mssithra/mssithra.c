@@ -212,14 +212,13 @@ void mssithraSound(edict_t *self, float soundnum, float channel, float attenuati
 void mssithra_melee(edict_t *self, G_Message_t *msg)
 {
 	vec3_t	v;
-	float	len, melee_range, min_seperation, jump_range;
+	float	len, melee_range, min_seperation;
 
 	if(M_ValidTarget(self, self->enemy))
 	{
 		VectorSubtract (self->s.origin, self->enemy->s.origin, v);
 		len = VectorLength (v);
 		melee_range = 64;
-		jump_range = 128;
 		min_seperation = self->maxs[0] + self->enemy->maxs[0];
 
 		if (len < min_seperation + melee_range)	// A hit
@@ -233,16 +232,8 @@ void mssithra_melee(edict_t *self, G_Message_t *msg)
 
 void mssithra_missile(edict_t *self, G_Message_t *msg)
 {//NEWSTUFF: jump closer to claw, loop shooting anims
-	vec3_t	v;
-	float	len, min_seperation, jump_range;
-
 	if(M_ValidTarget(self, self->enemy))
 	{
-		VectorSubtract (self->s.origin, self->enemy->s.origin, v);
-		len = VectorLength (v);
-		jump_range = 128;
-		min_seperation = self->maxs[0] + self->enemy->maxs[0];
-
 		if (irand(0,(skill->value+1)*2))
 		{
 			SetAnim(self, ANIM_SHOOT_TRANS);

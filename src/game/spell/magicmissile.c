@@ -94,7 +94,7 @@ edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface)
 {
-	vec3_t		Origin,	ScorchOrigin;
+	vec3_t		Origin;
 	int			makeScorch;
 
 	if(Surface&&(Surface->flags&SURF_SKY))
@@ -121,8 +121,6 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 	{
 		return;
 	}
-
-	VectorCopy(self->s.origin,ScorchOrigin);
 
 	// Calculate the position for the explosion entity.
 
@@ -214,8 +212,7 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 	// a) Lies in a 45 degree degree horizontal, 180 degree vertical cone from my facing.
 	// b) Lies within 0 to 1000 meters of myself.
 	// c) Is visible (i.e. LOS exists from the missile to myself).
-
-	if(MagicMissile->enemy=FindNearestVisibleActorInFrustum(MagicMissile,
+	MagicMissile->enemy = FindNearestVisibleActorInFrustum(MagicMissile,
 													AimAngles,
 													0.0,
 													1000.0,
@@ -223,7 +220,9 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 													ANGLE_180,
 													SVF_MONSTER,
 													MagicMissile->s.origin,
-													NULL,NULL))
+													NULL, NULL);
+
+	if(MagicMissile->enemy)
 	{
 		VectorCopy(MagicMissile->s.origin,TempVec);
 		VectorSubtract(MagicMissile->enemy->s.origin,TempVec,TempVec);

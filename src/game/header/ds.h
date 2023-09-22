@@ -34,7 +34,7 @@ protected:
 	VariableT	Type;
 
 public:
-						Variable(char *NewName = "", VariableT NewType = TypeUNKNOWN);
+						Variable(const char *NewName = "", VariableT NewType = TypeUNKNOWN);
 						Variable(FILE *FH, CScript *Script);
 	virtual				~Variable() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
@@ -44,7 +44,7 @@ public:
 	virtual float		GetFloatValue(void) { return 0.0; }
 	virtual void		GetVectorValue(vec3_t &VecValue) { VecValue[0] = VecValue[1] = VecValue[2] = 0.0; }
 	virtual edict_t		*GetEdictValue(void) { return NULL; }
-	virtual char		*GetStringValue(void) { return ""; }
+	virtual const char		*GetStringValue(void) { return ""; }
 	virtual void		ReadValue(CScript *Script) {}
 	virtual void		Debug(CScript *Script);
 	virtual void		Signal(edict_t *Which) { }
@@ -71,7 +71,7 @@ protected:
 	int	Value;
 
 public:
-						IntVar(char *Name = "", int InitValue = 0);
+						IntVar(const char *Name = "", int InitValue = 0);
 						IntVar(FILE *FH, CScript *Script);
 	virtual				~IntVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
@@ -104,7 +104,7 @@ protected:
 	float	Value;
 
 public:
-						FloatVar(char *Name = "", float InitValue = 0.0);
+						FloatVar(const char *Name = "", float InitValue = 0.0);
 						FloatVar(FILE *FH, CScript *Script);
 	virtual				~FloatVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
@@ -135,7 +135,7 @@ protected:
 	vec3_t	Value;
 
 public:
-						VectorVar(char *Name = "", float InitValueX = 0.0, float InitValueY = 0.0, float InitValueZ = 0.0);
+						VectorVar(const char *Name = "", float InitValueX = 0.0, float InitValueY = 0.0, float InitValueZ = 0.0);
 						VectorVar(vec3_t NewValue);
 						VectorVar(FILE *FH, CScript *Script);
 	virtual				~VectorVar() {};
@@ -165,7 +165,7 @@ protected:
 	edict_t *Value;
 
 public:
-						EntityVar(char *Name = "", int InitValue = 0);
+						EntityVar(const char *Name = "", int InitValue = 0);
 						EntityVar(edict_t *Which);
 						EntityVar(FILE *FH, CScript *Script);
 	virtual				~EntityVar() {};
@@ -188,11 +188,11 @@ protected:
 	char Value[VAR_LENGTH];
 
 public:
-						StringVar(char *Name = "", char *InitValue = "");
+						StringVar(const char *Name = "", const char *InitValue = "");
 						StringVar(FILE *FH, CScript *Script);
 	virtual				~StringVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
-	virtual char		*GetStringValue(void) { return Value; }
+	virtual const char		*GetStringValue(void) { return Value; }
 	virtual void		ReadValue(CScript *Script);
 };
 
@@ -204,7 +204,7 @@ protected:
 	Variable		*Value;
 
 public:
-						VariableVar(char *Name = "");
+						VariableVar(const char *Name = "");
 						VariableVar(FILE *FH, CScript *Script);
 	virtual				~VariableVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
@@ -212,7 +212,7 @@ public:
 	virtual float		GetFloatValue(void) { return Value->GetFloatValue(); }
 	virtual void		GetVectorValue(vec3_t &VecValue) { Value->GetVectorValue(VecValue); }
 	virtual edict_t		*GetEdictValue(void) { return Value->GetEdictValue(); }
-	virtual char		*GetStringValue(void) { return Value->GetStringValue(); }
+	virtual const char		*GetStringValue(void) { return Value->GetStringValue(); }
 	virtual void		ReadValue(CScript *Script);
 	virtual void		Debug(CScript *Script);
 	virtual void		Signal(edict_t *Which) { Value->Signal(Which); }
@@ -243,7 +243,7 @@ protected:
 	FieldDef		*Field;
 
 public:
-						FieldVariableVar(char *Name = "");
+						FieldVariableVar(const char *Name = "");
 						FieldVariableVar(FILE *FH, CScript *Script);
 	virtual				~FieldVariableVar() {};
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
@@ -251,7 +251,7 @@ public:
 	virtual float		GetFloatValue(void);
 	virtual void		GetVectorValue(vec3_t &VecValue);
 	virtual edict_t		*GetEdictValue(void);
-	virtual char		*GetStringValue(void);
+	virtual const char		*GetStringValue(void);
 	virtual void		ReadValue(CScript *Script);
 	virtual void		Debug(CScript *Script);
 	virtual void		Signal(edict_t *Which) { Value->Signal(Which); }
@@ -319,7 +319,7 @@ public:
 			float		GetFloatValue(Variable *Var);
 			void		GetVectorValue(Variable *Var, vec3_t &VecValue);
 			edict_t		*GetEdictValue(Variable *Var);
-			char		*GetStringValue(Variable *Var);
+			const char		*GetStringValue(Variable *Var);
 			void		SetValue(Variable *Var, Variable *Value);
 };
 
@@ -518,9 +518,9 @@ public:
 	void				Think(void);
 	ScriptConditionT	Execute(edict_t *new_other, edict_t *new_activator);
 
-	Variable			*FindLocal(char *Name);
+	Variable			*FindLocal(const char *Name);
 	bool				NewLocal(Variable *Which);
-	Variable			*FindParameter(char *Name);
+	Variable			*FindParameter(const char *Name);
 	bool				NewParameter(Variable *Which);
 };
 

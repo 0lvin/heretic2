@@ -482,7 +482,7 @@ void DoImpactDamage(edict_t *self, trace_t *trace)
 				if(skill->value && self->client && trace->ent->solid == SOLID_BSP)
 					self_dmg = floor(self->dmg * 1.5);//more damage to player from falls
 
-				if(self_dmg >= 3 && (self->classID != CID_ASSASSIN && self->classID != CID_SSITHRA) || self->health<=0)//but what about ring of repulsion?
+				if(self_dmg >= 3 && ((self->classID != CID_ASSASSIN && self->classID != CID_SSITHRA) || self->health<=0))//but what about ring of repulsion?
 				{
 					if(self_dmg < 5)
 						T_Damage(self, self, self, movedir, trace->endpos, normal, self_dmg, 0, DAMAGE_NO_BLOOD|DAMAGE_AVOID_ARMOR,MOD_FALLING);
@@ -644,7 +644,7 @@ void MoveEntity_Slide(edict_t *self)
 	int			bumpcount;
 	vec3_t		dir, gdir;
 	int			numplanes = 0;
-	vec3_t		primal_velocity, original_velocity, new_velocity;
+	vec3_t		original_velocity, new_velocity;
 	int			i, j;
 	vec3_t		end, delta;
 	float		timeRemaining = FRAMETIME, timeRemaining2, timeMoved;
@@ -661,15 +661,8 @@ void MoveEntity_Slide(edict_t *self)
 
 	gravity = self->gravity * sv_gravity->value;
 	base_friction = self->friction * sv_friction->value;
-//	gi.dprintf("Gravity %f, Friction %f, to be applied\n", gravity, friction);
-
-//	gi.dprintf("Velocity %f, %f, %f\n", self->velocity[0], self->velocity[1], self->velocity[2]);
-//	gi.dprintf("speed in %f\n", VectorLength(self->velocity));
 
 	VectorCopy(self->velocity, original_velocity);
-	VectorCopy(self->velocity, primal_velocity);
-
-//	self->groundentity = NULL;
 
 	groundNormal = self->groundNormal;
 
@@ -701,7 +694,6 @@ void MoveEntity_Slide(edict_t *self)
 
 			if(Vec3IsZero(self->velocity))
 			{	// no velocity
-//				gi.dprintf("no vel on slope\n");
 
 				if(groundNormal[2] >= GROUND_NORMAL)
 				{
@@ -709,13 +701,7 @@ void MoveEntity_Slide(edict_t *self)
 					{	// can't slide
 						if(bumpcount)
 						{	// not going anywhere
-	//						gi.dprintf("no vel on no slide slope\n");
-#if 0
-							formMove.trace.fraction = 0.0;
-							break;
-#else
 							return;
-#endif
 						}
 						else
 						{	// check in calling func
@@ -736,12 +722,9 @@ void MoveEntity_Slide(edict_t *self)
 
 				if(dot < -FLOAT_ZERO_EPSILON)
 				{	// floating point error, shit, fudge it away from the plane a bit
-//					gi.dprintf("Dot %f, Fudge for bump %i and plane %i\n", dot, bumpcount, i);
 					fudgeIndex = i;
 					VectorMA(self->s.origin, PHYSICS_Z_FUDGE, planes[i], self->s.origin);
 				}
-
-//				dir[2] += 0.0001;	// fudge it away from the slope just a little
 
 				dist = 0;
 
@@ -784,20 +767,12 @@ void MoveEntity_Slide(edict_t *self)
 			if(groundNormal[2] < GROUND_NORMAL)
 			{	// turn down friction on a steep slope, the theory being that something wouldn't be able to maintain
 				// good surface contact on such a slope
-//				friction *= STEEP_SLOPE_FRICTION_MODIFIER;
 				faccel = -friction * groundNormal[2] * STEEP_SLOPE_FRICTION_MODIFIER;
 			}
 			else
 			{
 				faccel = -friction * groundNormal[2];
 			}
-
-#if 0
-			if(accel < 0)
-			{
-				gi.dprintf("Accel less than zero\n");
-			}
-#endif
 
 			dist += 0.5 * faccel * timeRemaining2;
 
@@ -808,12 +783,10 @@ void MoveEntity_Slide(edict_t *self)
 			}
 
 			VectorScale(dir, dist, delta);
-//			gi.dprintf("Move slid, accel %f\n", faccel);
 			dot = DotProduct(gdir, groundNormal);
 
 			if(dot < -FLOAT_ZERO_EPSILON)
 			{	// floating point error, shit, fudge it away from the plane a bit
-//				gi.dprintf("Dot %f, Fudge for bump %i and plane %i\n", dot, bumpcount, i);
 				fudgeIndex = i;
 				VectorMA(self->s.origin, PHYSICS_Z_FUDGE, planes[i], self->s.origin);
 			}
@@ -821,7 +794,6 @@ void MoveEntity_Slide(edict_t *self)
 			if(groundNormal[2] < GROUND_NORMAL)
 			{	// turn down friction on a steep slope, the theory being that something wouldn't be able to maintain
 				// good surface contact on such a slope
-//				friction *= STEEP_SLOPE_FRICTION_MODIFIER;
 				gaccel = gravity * (1 - groundNormal[2]) - friction * groundNormal[2] * STEEP_SLOPE_FRICTION_MODIFIER;
 			}
 			else
@@ -839,17 +811,12 @@ void MoveEntity_Slide(edict_t *self)
 			if(dist + faccel + gaccel == 0.0)
 			{
 				VectorClear(self->velocity);
-#if 0
-				break;
-#else
 				return;
-#endif
 			}
 		}
 		else
 		{	// else apply gravity straight down, no friction
 			delta[2] -= 0.5 * gravity * timeRemaining2;
-//			gi.dprintf("Move dropped, accel\n");
 		}
 
 		VectorCopy(self->s.origin, end);
@@ -863,7 +830,6 @@ void MoveEntity_Slide(edict_t *self)
 		{
 			if(fudgeIndex != -1)
 			{	// undo fudge and let it try that again
-//				gi.dprintf("Fudge undone\n");
 				VectorMA(self->s.origin, -PHYSICS_Z_FUDGE, planes[fudgeIndex], self->s.origin);
 				continue;
 			}
@@ -871,7 +837,6 @@ void MoveEntity_Slide(edict_t *self)
 			{
 				VectorClear(self->velocity);
 
-//				gi.dprintf("self %i, trace startsolid on bump %i\n", self->s.number, bumpcount);
 				return;
 			}
 		}
@@ -882,7 +847,6 @@ void MoveEntity_Slide(edict_t *self)
 
 			self->s.origin[2] += 20;
 
-//			gi.dprintf("self %d, trace allsolid\n", self->s.number);
 			return;
 		}
 
@@ -898,25 +862,14 @@ void MoveEntity_Slide(edict_t *self)
 
 				dot = DotProduct(dir, groundNormal);
 
-//				assert(Q_fabs(dot) <= 0.05);
-
 				speed += faccel * timeMoved;
 
-#if 0
-				if(Q_fabs(speed) < friction * 0.05)
-				{
-					speed = 0;
-				}
-#endif
-
 				VectorScale(dir, speed, self->velocity);
-//					gi.dprintf("Full move, slid, speed %f\n", speed);
 
 				VectorMA(self->velocity, gaccel * timeMoved, gdir, self->velocity);
 			}
 			else
 			{
-//					gi.dprintf("Full move, dropped\n");
 				self->velocity[2] -= gravity * timeMoved;
 			}
 
@@ -932,19 +885,10 @@ void MoveEntity_Slide(edict_t *self)
 		}
 		else
 		{
-#if 0
-			dist = VectorNormalize2(delta, dir);
-
-			if(Q_fabs(DotProduct(dir, formMove.trace.plane.normal)) < 0.01)
-			{
-
-			}
-#endif
 			if(Vec3IsZero(self->velocity) && self->groundNormal[2] >= (gravity / (friction + gravity)))
 			{	// no velocity, and the trace failed, not going anywhere on ground the ent can't slide on
 				break;
 			}
-//			gi.dprintf("0 trace with %i bumps and %i planes\n", bumpcount, numplanes);
 		}
 
 		hit = formMove.trace.ent;
@@ -986,8 +930,6 @@ void MoveEntity_Slide(edict_t *self)
 		}
 		else
 		{
-//			gi.dprintf("Attemping to add identical plane for bump %i\n", bumpcount);
-//			gi.dprintf("Identical Plane Fudge for bump %i and plane %i\n", bumpcount, numplanes);
 			fudgeIndex = numplanes-1;
 			VectorMA(self->s.origin, PHYSICS_Z_FUDGE, planes[fudgeIndex], self->s.origin);
 		}
@@ -1205,7 +1147,6 @@ void MoveEntity_Slide(edict_t *self)
 //---------------------------------------------------------------------------------
 void ActivateTriggers(edict_t *self)
 {
-	int num;
 	edict_t *hit;
 	GenericUnion4_t found;
 	SinglyLinkedList_t list;
@@ -1218,7 +1159,7 @@ void ActivateTriggers(edict_t *self)
 
 	SLList_DefaultCon(&list);	// this should be global, initialized at startup
 
-	num = G_FindEntitiesInBounds(self->mins, self->maxs, &list, AREA_TRIGGERS);
+	G_FindEntitiesInBounds(self->mins, self->maxs, &list, AREA_TRIGGERS);
 
 	while(!SLList_IsEmpty(&list))
 	{
@@ -1455,7 +1396,6 @@ static void DiscreteMove_Step_FailedDueToCollision(edict_t *self, vec3_t move, F
 qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 {
 	vec3_t		neworg, start, end;
-	float		traceLength;
 	vec3_t		test;
 	qboolean	stepUp = false, setGroundEnt = false;
 
@@ -1510,8 +1450,6 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 		end[2] = neworg[2] - formMove->dropHeight;
 	}
 
-	traceLength = start[2] - end[2];
-
 	VectorCopy(self->mins, formMove->mins);
 	VectorCopy(self->maxs, formMove->maxs);
 
@@ -1538,8 +1476,6 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 	if(formMove->trace.startsolid)
 	{
 		start[2] = neworg[2] + 0.25f;
-
-		traceLength = start[2] - end[2];
 
 		formMove->start = start;
 

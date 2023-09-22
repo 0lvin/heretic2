@@ -1132,7 +1132,6 @@ SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
 {
 	signed int len;
 	signed int i;
-	char offset;
 	int xoffset;
 	signed int j;
 	int offset2;
@@ -1150,8 +1149,7 @@ SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
 		len = strlen(buffer);
 		if (len > num)
 			len = num;
-		for (i = 0; i < len; stride += 8)
-			offset = SCR_CharTableOffset(buffer[i++], lessZero);
+		stride += (8 * len);
 		xoffset = 19 * num - stride + x - 30;
 		SCR_AddDirtyPoint(xoffset, yoffset);
 		SCR_AddDirtyPoint(19 * num + x - 30, yoffset + 8);

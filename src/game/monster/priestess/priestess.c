@@ -556,7 +556,6 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 void priestess_proj1_touch( edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface )
 {
 	vec3_t	hitDir;
-	byte	exp;
 	int		damage;
 
 	if (other == self->owner)
@@ -569,25 +568,21 @@ void priestess_proj1_touch( edict_t *self, edict_t *other, cplane_t *plane, csur
 	switch ( self->monsterinfo.attack_state )
 	{
 	case AS_QUEENS_FURY:
-		exp = HPMISSILE1_EXPLODE;
 		damage = irand(HP_DMG_FURY_MIN, HP_DMG_FURY_MAX);
 		gi.sound (self, CHAN_AUTO, sounds[SND_HOMINGHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_BROODS_SACRIFICE:
-		exp = HPMISSILE3_EXPLODE;
 		damage = irand(HP_DMG_BROOD_MIN, HP_DMG_BROOD_MAX);
 		gi.sound (self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_HEAVENS_RAIN:
-		exp = HPMISSILE2_EXPLODE;
 		damage = HP_DMG_RAIN;
 		gi.sound (self, CHAN_AUTO, sounds[SND_ZAPHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_LIGHT_MISSILE:
-		exp = HPMISSILE1_EXPLODE;
 		damage = irand(HP_DMG_MISSILE_MIN, HP_DMG_MISSILE_MAX);
 		gi.sound (self, CHAN_AUTO, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
 		break;

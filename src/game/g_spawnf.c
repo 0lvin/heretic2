@@ -58,7 +58,7 @@ static eax_level_info_t eax_level_info[] = {
 ED_NewString
 =============
 */
-char *ED_NewString (char *string)
+char *ED_NewString (const char *string)
 {
 	char	*newb, *new_p;
 	int		i,l;

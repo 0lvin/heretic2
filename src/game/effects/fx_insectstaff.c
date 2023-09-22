@@ -813,7 +813,6 @@ static qboolean FXStaffElementThink(struct client_entity_s *self, centity_t *own
 
 static qboolean FXISwordTrailThink(struct client_entity_s *self, centity_t *owner)
 {
-	int				I;
 	int				NoOfIntervals;
 	client_entity_t	*TrailEnt;
 	vec3_t			diff, newpoint, last_org, current_org;
@@ -828,8 +827,6 @@ static qboolean FXISwordTrailThink(struct client_entity_s *self, centity_t *owne
 		return false;		// Remove the effect in _this case.
 
 	self->updateTime = 17;		// FIXME : With a next think time _this effect does not look right
-
-	I=self->NoOfAnimFrames;
 
 	//extrapolate down length of sword from hand!
 

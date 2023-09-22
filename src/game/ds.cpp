@@ -432,7 +432,7 @@ void SP_parms (edict_t *ent)
 
 //==========================================================================
 
-Variable *FindGlobal(char *Name)
+Variable *FindGlobal(const char *Name)
 {
 	List<Variable *>::Iter	iv;
 
@@ -467,7 +467,7 @@ bool NewGlobal(Variable *Which)
 
 //==========================================================================
 
-Variable::Variable(char *NewName, VariableT NewType)
+Variable::Variable(const char *NewName, VariableT NewType)
 {
 	strcpy(Name,NewName);
 	Type = NewType;
@@ -509,7 +509,7 @@ void Variable::Debug(CScript *Script)
 
 //==========================================================================
 
-IntVar::IntVar(char *Name, int InitValue)
+IntVar::IntVar(const char *Name, int InitValue)
 :Variable(Name, TypeINT)
 {
 	Value = InitValue;
@@ -577,7 +577,7 @@ void IntVar::operator =(Variable *VI)
 
 //==========================================================================
 
-FloatVar::FloatVar(char *Name, float InitValue)
+FloatVar::FloatVar(const char *Name, float InitValue)
 :Variable(Name, TypeFLOAT)
 {
 	Value = InitValue;
@@ -635,7 +635,7 @@ void FloatVar::operator =(Variable *VI)
 
 //==========================================================================
 
-VectorVar::VectorVar(char *Name, float InitValueX, float InitValueY, float InitValueZ)
+VectorVar::VectorVar(const char *Name, float InitValueX, float InitValueY, float InitValueZ)
 :Variable(Name, TypeVECTOR)
 {
 	Value[0] = InitValueX;
@@ -894,7 +894,7 @@ bool VectorVar::operator >=(Variable *VI)
 
 //==========================================================================
 
-EntityVar::EntityVar(char *Name, int InitValue)
+EntityVar::EntityVar(const char *Name, int InitValue)
 :Variable(Name, TypeENTITY)
 {
 	if (InitValue == -1)
@@ -1007,7 +1007,7 @@ bool EntityVar::operator !=(Variable *VI)
 
 //==========================================================================
 
-StringVar::StringVar(char *Name, char *InitValue)
+StringVar::StringVar(const char *Name, const char *InitValue)
 :Variable(Name, TypeSTRING)
 {
 	strcpy(Value, InitValue);
@@ -1033,7 +1033,7 @@ void StringVar::ReadValue(CScript *Script)
 
 //==========================================================================
 
-VariableVar::VariableVar(char *Name)
+VariableVar::VariableVar(const char *Name)
 :Variable(Name, TypeUNKNOWN)
 {
 	Value = NULL;
@@ -1079,7 +1079,7 @@ void VariableVar::Debug(CScript *Script)
 
 //==========================================================================
 
-FieldVariableVar::FieldVariableVar(char *Name)
+FieldVariableVar::FieldVariableVar(const char *Name)
 :Variable(Name, TypeUNKNOWN)
 {
 	Value = NULL;
@@ -1147,7 +1147,7 @@ edict_t *FieldVariableVar::GetEdictValue(void)
 	return Field->GetEdictValue(Value);
 }
 
-char *FieldVariableVar::GetStringValue(void)
+const char *FieldVariableVar::GetStringValue(void)
 {
 	return Field->GetStringValue(Value);
 }
@@ -1622,7 +1622,7 @@ edict_t *FieldDef::GetEdictValue(Variable *Var)
 	return *(edict_t **)(Dest);
 }
 
-char *FieldDef::GetStringValue(Variable *Var)
+const char *FieldDef::GetStringValue(Variable *Var)
 {
 	return "";
 }
@@ -2982,7 +2982,7 @@ void CScript::HandlePrint(void)
 {
 	int			Flags;
 	Variable	*Text, *Entity, *Level;
-	char		*TextValue;
+	const char		*TextValue;
 	int			LevelValue;
 	edict_t		*ent;
 	int			TextIndex;
@@ -3077,7 +3077,7 @@ void CScript::HandlePlaySound(void)
 {
 	int			Flags;
 	Variable	*SoundName, *Entity, *Volume, *Attenuation, *Channel, *TimeDelay;
-	char		*SoundValue;
+	const char		*SoundValue;
 	float		VolumeValue, AttenuationValue, TimeDelayValue;
 	int			ChannelValue;
 	edict_t		*ent;
@@ -3244,7 +3244,7 @@ void CScript::HandleFeature(bool Enable)
 void CScript::HandleCacheSound(void)
 {
 	Variable	*SoundName;
-	char		*SoundValue;
+	const char		*SoundValue;
 
 	// jscott - sound is being cached here, update status bar
 
@@ -3525,7 +3525,7 @@ void CScript::HandleAnimate(void)
 {
 	int			Flags;
 	Variable	*Signaler, *Moving, *Turning, *Repeat, *Action, *Entity, *Source;
-	edict_t		*ent, *SourceEnt;
+	edict_t		*ent;
 	vec3_t		MovingVal;
 	vec3_t		TurningVal;
 	int			RepeatVal, ActionVal;
@@ -3534,7 +3534,6 @@ void CScript::HandleAnimate(void)
 
 	SignalerRoutine = NULL;
 	Signaler = Moving = Turning = Repeat = Action = Entity = Source = NULL;
-	SourceEnt = NULL;
 	VectorCopy(vec3_origin, MovingVal);
 	VectorCopy(vec3_origin, TurningVal);
 	RepeatVal = 0;
@@ -3544,7 +3543,6 @@ void CScript::HandleAnimate(void)
 	if (Flags & ANIMATE_SOURCE)
 	{
 		Source = PopStack();
-		SourceEnt = Source->GetEdictValue();
 	}
 
 	if (Flags & ANIMATE_SIGNALER)
@@ -3584,43 +3582,6 @@ void CScript::HandleAnimate(void)
 			AddSignaler(ent, Signaler, SIGNAL_ANIMATE);
 			SignalerRoutine = animate_signaler;
 		}
-
-		/*
-		switch(Action->GetIntValue())
-		{	// Hardcoded yuckiness
-			case 0:
-				PostGameMessage(ent, MSG_C_WALK, PRI_DIRECTIVE, "iig",(int)MovingVal[0],(int)TurningVal[0],SignalerRoutine);
-				break;
-			case 1:
-				PostGameMessage(ent, MSG_C_RUN, PRI_DIRECTIVE, "iig",(int)MovingVal[0],(int)TurningVal[0],SignalerRoutine);
-				break;
-			case 2:
-				PostGameMessage(ent, MSG_C_IDLE, PRI_DIRECTIVE, "ig",(int)TurningVal[0],SignalerRoutine);
-				break;
-			case 3:
-				PostGameMessage(ent, MSG_C_ATTACK1, PRI_DIRECTIVE, "g",SignalerRoutine);
-				break;
-			case 4:
-				PostGameMessage(ent, MSG_C_ATTACK2, PRI_DIRECTIVE, "g",SignalerRoutine);
-				break;
-			case 5:
-				PostGameMessage(ent, MSG_C_ATTACK3, PRI_DIRECTIVE, "g",SignalerRoutine);
-				break;
-			case 6:
-				PostGameMessage(ent, MSG_C_BACKPEDAL, PRI_DIRECTIVE, "iig",(int)MovingVal[0],(int)TurningVal[0],SignalerRoutine);
-				break;
-			case 7:
-				PostGameMessage(ent, MSG_C_DEATH1, PRI_DIRECTIVE,"ig",(int)TurningVal[0],SignalerRoutine);
-				break;
-			case 8:
-				PostGameMessage(ent, MSG_C_PAIN1, PRI_DIRECTIVE,"ig",RepeatVal,SignalerRoutine);
-				break;
-			case 9:
-				PostGameMessage(ent, MSG_C_PAIN2, PRI_DIRECTIVE,"g",SignalerRoutine);
-				break;
-			default:
-				break;
-		} */
 
 		PostGameMessage(ent,(enum G_MsgID_e) msg_animtype[ActionVal], PRI_DIRECTIVE, "iiige",(int)MovingVal[0],(int)TurningVal[0],(int)RepeatVal,SignalerRoutine,activator);
 	}
@@ -4182,7 +4143,7 @@ ScriptConditionT CScript::Execute(edict_t *new_other, edict_t *new_activator)
 	return ScriptCondition;
 }
 
-Variable *CScript::FindLocal(char *Name)
+Variable *CScript::FindLocal(const char *Name)
 {
 	List<Variable *>::Iter	iv;
 
@@ -4215,7 +4176,7 @@ bool CScript::NewLocal(Variable *Which)
 	return true;
 }
 
-Variable *CScript::FindParameter(char *Name)
+Variable *CScript::FindParameter(const char *Name)
 {
 	List<Variable *>::Iter	iv;
 

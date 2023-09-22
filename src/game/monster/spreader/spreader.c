@@ -203,7 +203,7 @@ void spreader_flyback_move(edict_t *self)
 
 void spreader_dead(edict_t *self)
 {
-	vec3_t	spraydir, sprayorg, offset;
+	vec3_t	spraydir, offset;
 
 	if (irand(0,1) && self->curAnimID == ANIM_DEATH1_END)
 	{
@@ -214,7 +214,6 @@ void spreader_dead(edict_t *self)
 		spraydir[2] = flrand( 10, 100);
 
 		VectorSet(offset, 0, 0, -24);
-		VectorAdd(self->s.origin, offset, sprayorg);
 
 		// create the volume effect for the damage
 		gas = RadiusDamageEnt(self,//owner

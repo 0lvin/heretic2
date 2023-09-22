@@ -407,32 +407,18 @@ void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
 void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 {
 	seqctrl_t	*seqctrl;
-	paceldata_t *seqdata;
-	int newseq=ASEQ_NONE;
+	int newseq = ASEQ_NONE;
 
-	/*
-	// First check if the lower anim is locked by the upper anim.
-	if (PlayerSeqData2[playerinfo->upperseq].nosplit)
-	{
-		// A NONE sequence indicates that the sequence should just mimic the companion half's anim.
-		playerinfo->lowerseq = ASEQ_NONE;
-		playerinfo->loweridle = true;
-		return;
-	}
-	*/
 	// Init some values.
-
 	playerinfo->loweridle = false;
 
 	// Grab the sequence ctrl struct.
-
 	if (playerinfo->edictflags & FL_CHICKEN)
 		seqctrl = &ChickenCtrl[playerinfo->lowerseq];
 	else
 		seqctrl = &SeqCtrl[playerinfo->lowerseq];
 
 	// Check for noclip, just to make things more robust.
-
 	if (playerinfo->movetype == PHYSICSTYPE_NOCLIP)
 	{
 		if (playerinfo->lowerseq != ASEQ_STAND)
@@ -476,26 +462,7 @@ void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 		}
 	}
 
-	// Get the pointer to the correct entry in the SeqData table.
-
-	if (playerinfo->edictflags & FL_CHICKEN)
-		seqdata = &PlayerChickenData[newseq];
-	else
-		seqdata = &PlayerSeqData[newseq];
-
 	// Now check for idles.  If the lower half has an idle, then the upper half is copied.
-/*	if (playerinfo->lowerseq == ASEQ_NONE)
-	{
-		if (playerinfo->upperseq == ASEQ_NONE)
-		{
-			playerinfo->upperseq = BranchIdle(self);
-			playerinfo->upperidle = true;
-		}
-		playerinfo->loweridle = true;
-		playerinfo->flags  = seqdata->playerflags | (playerinfo->flags & PLAYER_FLAG_PERSMASK);
-	}
-	*/
-
 	PlayerAnimSetLowerSeq(playerinfo, newseq);
 }
 

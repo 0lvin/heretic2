@@ -106,7 +106,7 @@ void elford_Attack( edict_t *self )
 {
 	edict_t *projectile;
 	vec3_t	aim, vf, vr, ang, org;
-	float	len, yaw_ofs = -20;
+	float	yaw_ofs = -20;
 	int		i;
 
 	if (!M_ValidTarget(self, self->enemy))
@@ -140,7 +140,6 @@ void elford_Attack( edict_t *self )
 		org[2] += self->enemy->viewheight;
 
 		VectorSubtract(org, projectile->s.origin, aim);
-		len = VectorNormalize(aim);
 		VectoAngles(aim, ang);
 		ang[YAW] += yaw_ofs;
 		ang[PITCH] *= -1;
@@ -608,8 +607,7 @@ void elflord_MoveToFinalPosition( edict_t *self )
 
 qboolean elfLordCheckAttack (edict_t *self)
 {
-	int		chance,
-			p_chance = 0,
+	int		p_chance = 0,
 			soa_chance = 0,
 			beam_chance = 0;
 
@@ -663,8 +661,6 @@ qboolean elfLordCheckAttack (edict_t *self)
 		soa_chance	= 0;
 		beam_chance = 0;
 	}
-
-	chance = irand(0,100);
 
 	if(irand(0,100) < p_chance)
 	{

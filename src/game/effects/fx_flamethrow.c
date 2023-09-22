@@ -27,7 +27,6 @@ qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner)
 	client_particle_t	*flame;
 	client_entity_t		*light;
 	paletteRGBA_t		color;
-	float				radius;
 	int					count, white;
 
 	if (self->LifeTime < fxi.cl->time)
@@ -49,7 +48,6 @@ qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner)
 		flame->d_alpha = flrand(-600.0, -560.0);
 		flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
 
-		radius = self->r.scale * FIRE_SPAWN_RADIUS;
 		VectorCopy(self->direction, flame->velocity);
 		VectorSet(flame->origin, irand(-2,2), irand(-2,2), irand(-2,2));
 		VectorScale(flame->velocity, flrand(0.75, 1), flame->velocity);
@@ -88,7 +86,6 @@ static qboolean FXFlamethrower_steam_trail(client_entity_t *self, centity_t *own
 {
 	client_particle_t	*flame;
 	paletteRGBA_t		color;
-	float				radius;
 	int					count;
 
 	if (self->LifeTime < fxi.cl->time)
@@ -113,7 +110,6 @@ static qboolean FXFlamethrower_steam_trail(client_entity_t *self, centity_t *own
 		flame->d_alpha = flrand(-200.0, -150.0);
 		flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
 
-		radius = self->r.scale * FIRE_SPAWN_RADIUS;
 		VectorCopy(self->direction, flame->velocity);
 		VectorSet(flame->origin, irand(-2,2), irand(-2,2), irand(-2,2));
 		VectorScale(flame->velocity, flrand(0.75, 1), flame->velocity);

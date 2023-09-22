@@ -2568,8 +2568,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 {
 	trace_t grabtrace;
 	trace_t lasttrace;
-	trace_t swingtrace;
-	vec3_t	mins, maxs, vf;
+	vec3_t	maxs, vf;
 	vec3_t	forward, right;
 	vec3_t	start, end;
 	vec3_t	planedir;
@@ -2749,17 +2748,11 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	//Now see if the surface is eligible for a overhanging swing vault
 	//Trace from about the player's waist to his feet to determine this
-	VectorCopy(playerinfo->mins, mins);
 	VectorCopy(playerinfo->maxs, maxs);
 	maxs[2] -= 48;
 
 	AngleVectors(playerinfo->angles, vf, NULL, NULL);
 	VectorMA(playerinfo->origin, 32, vf, endpoint);
-
-	if (playerinfo->isclient)
-		swingtrace = playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		swingtrace = playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	// Save the intended grab location (the endpoint).
 	playerinfo->grabloc[0] = ((lefthand[0] + righthand[0]) / 2.0);

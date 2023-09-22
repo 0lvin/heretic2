@@ -69,40 +69,13 @@ qboolean CreateFlyParticles(client_entity_t *_this, centity_t *owner)
 	int			i;
 	client_particle_t *p;
 	float		angle;
-	float		sr, sp, sy, cr, cp, cy;
+	float		sp, sy, cp, cy;
 	vec3_t		forward;
 	float		dist = 64;
 	float		ltime;
 	static vec3_t avelocities [NUMVERTEXNORMALS];
 
-/*	fly_stoptime = _this->startTime + _this->duration;
-
-	if (fly_stoptime < fxi.cl->time)
-	{
-		starttime = fxi.cl->time;
-		fly_stoptime = fxi.cl->time + 60000;
-	}
-	else
-	{
-		starttime = fly_stoptime - 60000;
-	}
-
-	n = fxi.cl->time - starttime;
-	if (n < 20000)
-		count = n * 162 / 20000.0;
-	else
-	{
-		n = fly_stoptime - fxi.cl->time;
-		if (n < 20000)
-			count = n * 162 / 20000.0;
-		else
-			count = 162;
-	}*/
-
-	//
-
-//	if (count > NUMVERTEXNORMALS)
-		count = NUMVERTEXNORMALS;
+	count = NUMVERTEXNORMALS;
 
 	if (!avelocities[0][0])
 	{
@@ -124,8 +97,6 @@ qboolean CreateFlyParticles(client_entity_t *_this, centity_t *owner)
 		sp = sin(angle);
 		cp = cos(angle);
 		angle = ltime * avelocities[i][2];
-		sr = sin(angle);
-		cr = cos(angle);
 
 		forward[0] = cp*cy;
 		forward[1] = cp*sy;

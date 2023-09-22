@@ -33,7 +33,6 @@ ResourceManager_t FXBufMgnr = {0};
 int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 	sizebuf_t* msg;
 	va_list args;
-	EffectsBuffer_t* clientEffects;
 
 	if (!ent)
 	{
@@ -41,16 +40,6 @@ int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 	}
 	else
 	{
-		//if (cl_effectpredict)
-		//{
-		//	clientEffects = (EffectsBuffer_t*)&clientPredEffects;
-		//	clientEffects = (EffectsBuffer_t*)&clientPredEffects;
-		//}
-		//else
-		{
-			clientEffects = &ent->current.clientEffects;
-			clientEffects = &ent->current.clientEffects;
-		}
 		msg = fxe->fxMsgBuf;
 	}
 

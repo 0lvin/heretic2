@@ -31,18 +31,15 @@ void PreCacheMist()
 static float
 Approach(float curr, float dest, float rate)
 {
-	double result;
-	double v4;
-	float v5;
+	double diff;
 
-	result = curr;
-	v4 = dest - curr;
-	v5 = v4;
-	if (v4 < 0.0)
-		result = result - rate;
-	if (v4 > 0.0)
-		result = result + rate;
-	return result;
+	diff = dest - curr;
+	if (diff < 0.0)
+		return curr - rate;
+	else if (diff > 0.0)
+		return curr + rate;
+	else
+		return curr;
 }
 
 static qboolean

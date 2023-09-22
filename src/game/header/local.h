@@ -871,7 +871,7 @@ qboolean Add_Ammo(edict_t *ent, gitem_t *item, int count);
 qboolean KillBox(edict_t *ent);
 void G_ProjectSource(vec3_t point, vec3_t distance, vec3_t forward,
 		vec3_t right, vec3_t result);
-edict_t *G_Find(edict_t *from, int fieldofs, char *match);
+edict_t *G_Find(edict_t *from, int fieldofs, const char *match);
 edict_t *G_Spawn(void);
 
 
@@ -1059,7 +1059,7 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
 
 /* g_spawnf.c */
 //sfs--this is used to get a classname for guys spawned while game is running
-char *ED_NewString(char *string);
+char *ED_NewString(const char *string);
 void ED_CallSpawn(edict_t *ent);
 
 
