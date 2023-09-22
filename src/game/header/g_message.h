@@ -178,9 +178,9 @@ void G_Message_DefaultCon(G_Message_t *this_ptr);
 G_Message_t *G_Message_new(G_MsgID_t ID, G_MsgPriority_t priority);
 void G_Message_delete(G_Message_t *this_ptr);
 
-void G_QPostMessage(struct edict_s *to, G_MsgID_t ID, G_MsgPriority_t priority, char *format, ...);
+void G_QPostMessage(struct edict_s *to, G_MsgID_t ID, G_MsgPriority_t priority, const char *format, ...);
 
-void PostGameMessage(struct edict_s *to, G_MsgID_t ID, G_MsgPriority_t priority, char *format, ...);
+void PostGameMessage(struct edict_s *to, G_MsgID_t ID, G_MsgPriority_t priority, const char *format, ...);
 
 int G_ParseMsgParms(G_Message_t *this_ptr, char *format, ...);
 void G_ProcessMessages(struct edict_s *this_ptr);

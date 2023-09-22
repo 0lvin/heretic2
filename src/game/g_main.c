@@ -162,41 +162,81 @@ void G_ClearMessageQueues();
 /* ========================================================= */
 
 void
+G_CPrintf(edict_t* ent, int printlevel, short stringid)
+{
+	if (stringid > MAX_MESSAGESTRINGS || !game_msgtxt[stringid].string[0])
+	{
+		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
+		return;
+	}
+
+	gi.cprintf(ent, printlevel, "%s\n", game_msgtxt[stringid].string);
+	if (game_msgtxt[stringid].wav && game_msgtxt[stringid].wav[0])
+	{
+		gi.sound(NULL, CHAN_AUTO, gi.soundindex(game_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
+	}
+}
+
+void
 G_BCaption(int printlevel, short stringid)
 {
-	gi.bprintf(printlevel, "%s", message_text[stringid].string);
-	if (message_text[stringid].wav && message_text[stringid].wav[0])
+	if (stringid > MAX_MESSAGESTRINGS || !level_msgtxt[stringid].string[0])
 	{
-		gi.sound(NULL, CHAN_AUTO, gi.soundindex(message_text[stringid].wav), 1, ATTN_NORM, 0);
+		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
+		return;
+	}
+
+	gi.bprintf(printlevel, "%s", level_msgtxt[stringid].string);
+	if (level_msgtxt[stringid].wav && level_msgtxt[stringid].wav[0])
+	{
+		gi.sound(NULL, CHAN_AUTO, gi.soundindex(level_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
 	}
 }
 
 void
 G_LevelMsgCenterPrintf(edict_t* ent, short stringid)
 {
-	gi.centerprintf(ent, "%s", message_text[stringid].string);
-
-	if (message_text[stringid].wav && message_text[stringid].wav[0])
+	if (stringid > MAX_MESSAGESTRINGS || !level_msgtxt[stringid].string[0])
 	{
-		gi.sound(ent, CHAN_AUTO, gi.soundindex(message_text[stringid].wav), 1, ATTN_NORM, 0);
+		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
+		return;
+	}
+
+	gi.centerprintf(ent, "%s", level_msgtxt[stringid].string);
+
+	if (level_msgtxt[stringid].wav && level_msgtxt[stringid].wav[0])
+	{
+		gi.sound(ent, CHAN_AUTO, gi.soundindex(level_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
 	}
 }
 
 void
 G_CaptionPrintf(edict_t* ent, short stringid)
 {
-	gi.centerprintf(ent, "%s", message_text[stringid].string);
-
-	if (message_text[stringid].wav && message_text[stringid].wav[0])
+	if (stringid > MAX_MESSAGESTRINGS || !level_msgtxt[stringid].string[0])
 	{
-		gi.sound(ent, CHAN_AUTO, gi.soundindex(message_text[stringid].wav), 1, ATTN_NORM, 0);
+		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
+		return;
+	}
+
+	gi.centerprintf(ent, "%s", level_msgtxt[stringid].string);
+
+	if (level_msgtxt[stringid].wav && level_msgtxt[stringid].wav[0])
+	{
+		gi.sound(ent, CHAN_AUTO, gi.soundindex(level_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
 	}
 }
 
 void
 G_BroadcastObituary(int printlevel, short stringid, short client1, short client2)
 {
-	gi.bprintf(printlevel, "%s", message_text[stringid].string);
+	if (stringid > MAX_MESSAGESTRINGS || !level_msgtxt[stringid].string[0])
+	{
+		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
+		return;
+	}
+
+	gi.bprintf(printlevel, "%s", level_msgtxt[stringid].string);
 }
 
 int
@@ -233,13 +273,27 @@ G_TraceBoundingForm(FormMove_t* formMove)
 
 void G_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
 {
-	gi.centerprintf(ent, "%s", message_text[msg].string);
+	if (msg > MAX_MESSAGESTRINGS || !level_msgtxt[msg].string[0])
+	{
+		gi.dprintf("%s: Unknow message %d\n", __func__, msg);
+		return;
+	}
+
+	gi.centerprintf(ent, "%s", level_msgtxt[msg].string);
 }
 
 void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
 {
-	gi.centerprintf(ent, "%s", message_text[msg1].string);
-	gi.centerprintf(ent, "%s", message_text[msg2].string);
+	if (msg1 > MAX_MESSAGESTRINGS || msg2 > MAX_MESSAGESTRINGS ||
+		!level_msgtxt[msg1].string[0] ||
+		!level_msgtxt[msg2].string[0])
+	{
+		gi.dprintf("%s: Unknow message %d -> %d\n", __func__, msg1, msg2);
+		return;
+	}
+
+	gi.centerprintf(ent, "%s", level_msgtxt[msg1].string);
+	gi.centerprintf(ent, "%s", level_msgtxt[msg2].string);
 }
 
 qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
@@ -298,7 +352,8 @@ ShutdownGame(void)
 	}
 	game.entitiesSpawned = false;
 
-	gi.FS_FreeFile(messagebuf);
+	gi.FS_FreeFile(game_msgbuf);
+	gi.FS_FreeFile(level_msgbuf);
 
 	gi.FreeTags(TAG_LEVEL);
 	gi.FreeTags(TAG_GAME);

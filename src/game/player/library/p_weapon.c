@@ -112,7 +112,7 @@ void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon)
 	{
 		if (playerinfo->pers.inventory.Items[ITEM_INDEX(FindItem(Weapon->ammo))] < Weapon->quantity)
 		{
-			playerinfo->G_cprintf (playerinfo->self, PRINT_HIGH, va("%i", GM_NOMANA));
+			playerinfo->G_cprintf(playerinfo->self, PRINT_HIGH, GM_NOMANA);
 			return;
 		}
 	}
@@ -154,7 +154,7 @@ void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 
     if(!playerinfo->pers.inventory.Items[AmmoIndex])
 	{
-		playerinfo->G_cprintf (playerinfo->self, PRINT_HIGH, va("%i", GM_NOAMMO));
+		playerinfo->G_cprintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
 		return;
 	}
 
@@ -199,7 +199,7 @@ void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon)
 
     if(!playerinfo->pers.inventory.Items[AmmoIndex])
 	{
-		playerinfo->G_cprintf (playerinfo->self, PRINT_HIGH, va("%i", GM_NOAMMO));
+		playerinfo->G_cprintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
 		return;
 	}
 

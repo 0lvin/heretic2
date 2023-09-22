@@ -3005,7 +3005,7 @@ void CScript::HandlePrint(void)
 	else
 	{
 		TextIndex = Text->GetIntValue();
-		TextValue = message_text[TextIndex].string;
+		TextValue = level_msgtxt[TextIndex].string;
 	}
 
 	if (Flags & PRINT_LEVEL)

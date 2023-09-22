@@ -94,7 +94,7 @@ Takes a key/value pair and sets the binary values
 in an edict
 ===============
 */
-void ED_ParseField (char *key, char *value, edict_t *ent)
+void ED_ParseField (char *key, const char *value, edict_t *ent)
 {
 	field_t	*f;
 	byte	*b;
@@ -177,7 +177,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 {
 	qboolean	init;
 	char		keyname[256];
-	char		*com_token;
+	const char		*com_token;
 
 	init = false;
 	memset (&st, 0, sizeof(st));
@@ -318,7 +318,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean lo
 {
 	edict_t		*ent;
 	int			inhibit;
-	char		*com_token;
+	const char		*com_token;
 	int			i;
 	float		skill_level;
 
@@ -507,7 +507,7 @@ void SP_worldspawn (edict_t *ent)
 	if (ent->message && ent->message[0])
 	{
 		gi.configstring (CS_LEVEL_NUMBER, ent->message );
-		gi.configstring (CS_NAME, message_text[atoi(ent->message)].string);
+		gi.configstring (CS_NAME, level_msgtxt[atoi(ent->message)].string);
 		strncpy (level.level_name, ent->message, sizeof(level.level_name));
 		gi.dprintf("Unique Level Index : %d\n", atoi(ent->message));
 	}

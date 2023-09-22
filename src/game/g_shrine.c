@@ -552,7 +552,7 @@ void shrine_heal_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface
 
 	shrine_heal_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_HEALTH));
+	G_CPrintf(other, PRINT_HIGH, GM_S_HEALTH);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -664,7 +664,7 @@ void shrine_armor_silver_touch	(edict_t *self, edict_t *other, cplane_t *plane, 
 
 	shrine_armor_silver_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_SILVER));
+	G_CPrintf(other, PRINT_HIGH, GM_S_SILVER);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -774,7 +774,7 @@ void shrine_armor_gold_touch (edict_t *self, edict_t *other, cplane_t *plane, cs
 
 	shrine_armor_gold_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_GOLD));
+	G_CPrintf(other, PRINT_HIGH, GM_S_GOLD);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -892,7 +892,7 @@ void shrine_staff_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 	shrine_staff_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_BLADE));
+	G_CPrintf(other, PRINT_HIGH, GM_S_BLADE);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -994,7 +994,7 @@ void shrine_lung_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface
 
 	shrine_lung_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_LUNGS));
+	G_CPrintf(other, PRINT_HIGH, GM_S_LUNGS);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -1110,7 +1110,7 @@ void shrine_light_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 	shrine_light_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_LIGHT));
+	G_CPrintf(other, PRINT_HIGH, GM_S_LIGHT);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -1213,7 +1213,7 @@ void shrine_mana_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface
 
 	shrine_mana_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_MANA));
+	G_CPrintf(other, PRINT_HIGH, GM_S_MANA);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -1323,7 +1323,7 @@ void shrine_ghost_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 	shrine_ghost_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_GHOST));
+	G_CPrintf(other, PRINT_HIGH, GM_S_GHOST);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -1436,7 +1436,7 @@ void shrine_reflect_touch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 	shrine_reflect_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_REFLECT));
+	G_CPrintf(other, PRINT_HIGH, GM_S_REFLECT);
 
 	// If we are in death match, don't make us go through the shrine anim, just start the effect,
 	// give us whatever, and leave it at that.
@@ -1552,7 +1552,7 @@ void shrine_powerup_touch (edict_t *self, edict_t *other, cplane_t *plane, csurf
 
 	shrine_powerup_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_POWERUP));
+	G_CPrintf(other, PRINT_HIGH, GM_S_POWERUP);
 
 	// If we are in death match, don't make us go through the shrine anim, just/ start the effect,
 	// give us whatever, and leave it at that.
@@ -1667,7 +1667,7 @@ void shrine_speed_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 	shrine_speed_core(self,other);
 
-	gi.cprintf(other, PRINT_HIGH, va("%i", GM_S_SPEED));
+	G_CPrintf(other, PRINT_HIGH, GM_S_SPEED);
 
 	// If we are in death match, don't make us go through the shrine anim, just/ start the effect,
 	// give us whatever, and leave it at that.
@@ -1833,69 +1833,69 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 		case SHRINE_HEAL:
 
 			shrine_heal_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_HEALTH));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_HEALTH);
 
 			break;
 
 		case SHRINE_ARMOR_SILVER:
 
 			shrine_armor_silver_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_SILVER));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_SILVER);
 
 			break;
 
 		case SHRINE_ARMOR_GOLD:
 
 			shrine_armor_gold_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_GOLD));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_GOLD);
 
 			break;
 
 		case SHRINE_MANA:
 
 			shrine_mana_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_MANA));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_MANA);
 
 			break;
 
 		case SHRINE_STAFF:
 
 			shrine_staff_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_BLADE));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_BLADE);
 
 			break;
 
 		case SHRINE_GHOST:
 
 			shrine_ghost_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_GHOST));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_GHOST);
 
 			break;
 
 		case SHRINE_REFLECT:
 
 			shrine_reflect_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_REFLECT));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_REFLECT);
 
 			break;
 
 		case SHRINE_POWERUP:
 
 			shrine_powerup_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_POWERUP));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_POWERUP);
 
 			break;
 
 		case SHRINE_SPEED:
 			shrine_speed_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_SPEED));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_SPEED);
 
 			break;
 
 		default:
 
 			shrine_powerup_core(self,other);
-			gi.cprintf(other, PRINT_HIGH, va("%i", GM_CS_POWERUP));
+			G_CPrintf(other, PRINT_HIGH, GM_CS_POWERUP);
 
 			break;
 	}

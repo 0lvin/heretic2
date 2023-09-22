@@ -305,8 +305,10 @@ static field_t		clientfields[] =
 	{NULL, 0, F_INT}
 };
 
-trig_message_t	message_text[MAX_MESSAGESTRINGS];
-unsigned		*messagebuf;
+trig_message_t	level_msgtxt[MAX_MESSAGESTRINGS];
+trig_message_t	game_msgtxt[MAX_MESSAGESTRINGS];
+unsigned		*level_msgbuf;
+unsigned		*game_msgbuf;
 
 
 static int LoadTextFile(char *name, char **addr)
@@ -328,21 +330,16 @@ static int LoadTextFile(char *name, char **addr)
 	return(length + 1);
 }
 
-static void Load_Strings(void)
+static void Load_FileStrings(char *buffer, trig_message_t *msgtxt, int length)
 {
 	char	*p, *startp,*return_p;
-	cvar_t *levelmsg_name;
-	char	*buffer;
-	int		i,length;
+	int		i;
 
-	levelmsg_name = gi.cvar("file_levelmsg", "levelmsg.txt", 0);
-	length = LoadTextFile (levelmsg_name->string, &buffer);
-	messagebuf = (unsigned *) buffer;
 	startp = buffer;
-	p =0;
-	for (i=1; p < (buffer + length) ;++i)
+	p = 0;
+	for (i = 1; p < (buffer + length); ++i)
 	{
-		if (i> MAX_MESSAGESTRINGS)
+		if (i > MAX_MESSAGESTRINGS)
 		{
 			Com_Printf ("Too many strings\n");
 			return;
@@ -362,11 +359,11 @@ static void Load_Strings(void)
 		if ((p) && (p < return_p))
 		{
 			*p = 0;
-			message_text[i].wav = ++p;	// Save stuff after #
+			msgtxt[i].wav = ++p;	// Save stuff after #
 		}
 
 		// Save stuff before #
-		message_text[i].string = startp;
+		msgtxt[i].string = startp;
 
 		do
 		{
@@ -375,10 +372,26 @@ static void Load_Strings(void)
 				*p = '\n';
 		} while(p);
 
-		return_p +=2;	// Hop over 13 10
+		return_p += 2;	// Hop over 13 10
 		startp = return_p;	// Advance to next string
-
 	}
+}
+
+static void Load_Strings(void)
+{
+	cvar_t	*levelmsg_name, *gamemsg_name;
+	char	*buffer;
+	int		length;
+
+	levelmsg_name = gi.cvar("file_levelmsg", "levelmsg.txt", 0);
+	length = LoadTextFile (levelmsg_name->string, &buffer);
+	level_msgbuf = (unsigned *) buffer;
+	Load_FileStrings(buffer, level_msgtxt, length);
+
+	gamemsg_name = gi.cvar("file_gamemsg", "gamemsg.txt", 1);
+	length = LoadTextFile (gamemsg_name->string, &buffer);
+	game_msgbuf = (unsigned *) buffer;
+	Load_FileStrings(buffer, game_msgtxt, length);
 }
 
 

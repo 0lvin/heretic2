@@ -19,7 +19,7 @@ void QueueMessage(MsgQueue_t *_this, void *msg)
 	SLList_Push(&_this->msgs, temp);
 }
 
-size_t SetParms(SinglyLinkedList_t *_this, char *format, va_list marker, qboolean entsAsNames)
+size_t SetParms(SinglyLinkedList_t *_this, const char *format, va_list marker, qboolean entsAsNames)
 {
 	qboolean append = false;
 	GenericUnion4_t parm;

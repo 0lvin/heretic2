@@ -748,7 +748,7 @@ Cmd_Powerup_f(edict_t *ent)
 
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		gi.cprintf(ent, PRINT_HIGH, va("%i", GM_NOCHEATS));
+		G_CPrintf(ent, PRINT_HIGH, GM_NOCHEATS);
 		return;
 	}
 
@@ -812,7 +812,7 @@ Cmd_Use_f(edict_t *ent)
 	}
 	if (!it->use)
 	{
-		gi.cprintf(ent, PRINT_HIGH, va("%i", GM_NOTUSABLE));
+		G_CPrintf(ent, PRINT_HIGH, GM_NOTUSABLE);
 		return;
 	}
 	index = playerExport->GetItemIndex(it);
@@ -821,9 +821,9 @@ Cmd_Use_f(edict_t *ent)
 	{
 		if (it->flags & (IT_WEAPON|IT_DEFENSE))
 			// index is two off, since we can never run out of the staff or the flying fist
-			gi.cprintf(ent, PRINT_HIGH, va("%i", it->msg_nouse));
+			G_CPrintf(ent, PRINT_HIGH, it->msg_nouse);
 		else
-			gi.cprintf(ent, PRINT_HIGH, va("%i", GM_NOITEM));
+			G_CPrintf(ent, PRINT_HIGH, GM_NOITEM);
 		return;
 	}
 
@@ -1218,7 +1218,7 @@ Cmd_SpawnEntity_f(edict_t *ent)
 
 	if (deathmatch->value && !sv_cheats->value)
 	{
-		gi.cprintf(ent, PRINT_HIGH, va("%i", GM_NOCHEATS));
+		G_CPrintf(ent, PRINT_HIGH,  GM_NOCHEATS);
 		return;
 	}
 	gi.cprintf(ent, PRINT_HIGH, "Spawning : %s\n", gi.argv(1));

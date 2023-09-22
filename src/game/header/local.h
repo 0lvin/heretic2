@@ -193,11 +193,13 @@ typedef struct
 	char *wav;
 } trig_message_t;
 
-extern trig_message_t message_text[];
+// jmarshall: this wasn't extern in the original code,
+// this is now correct, wondering if this will cause knock ons?
+extern unsigned	*level_msgbuf;
+extern unsigned	*game_msgbuf;
+extern trig_message_t level_msgtxt[];
+extern trig_message_t game_msgtxt[];
 
-
-extern unsigned	*messagebuf; // jmarshall: this wasn't extern in the original code,
-							 // this is now correct, wondering if this will cause knock ons?
 
 /* this structure is left intact through an entire game
    it should be initialized at dll load time, and read/written to
@@ -1647,7 +1649,7 @@ struct edict_s
 #endif
 
 /* Heretic 2 */
-void get_translated_text(int message_id, char *msg, int *sound_index);
+void G_CPrintf(edict_t* ent, int printlevel, short stringid);
 void G_BCaption(int printlevel, short stringid);
 void G_LevelMsgCenterPrintf(edict_t* ent, short msg);
 void G_CaptionPrintf(edict_t* ent, short msg);

@@ -147,7 +147,7 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 
 	if(self->count == NUM_INSTRUCTIONS)
 	{
-		gi.cprintf(attacker, PRINT_HIGH, va("%i", GM_SIR_NATE_END));
+		G_CPrintf(attacker, PRINT_HIGH, GM_SIR_NATE_END);
 		self->count++;
 	}
 	else if(self->count > NUM_INSTRUCTIONS)
@@ -163,7 +163,7 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 		self->count++;
 		if(self->count == NUM_INSTRUCTIONS)
 		{
-			gi.cprintf(attacker, PRINT_HIGH, va("%i", GM_SIR_NATE_FINISH));
+			G_CPrintf(attacker, PRINT_HIGH, GM_SIR_NATE_FINISH);
 		}
 		else
 		{
@@ -184,7 +184,7 @@ void sir_nate_of_the_embarassingly_shortshanks_use(edict_t *self, edict_t *other
 	if(!activator->client)
 		return;
 
-	gi.cprintf(activator, PRINT_HIGH, va("%i", (short)(self->dmg_radius+GM_SIR_NATE_GREETING)));
+	G_CPrintf(activator, PRINT_HIGH, (short)(self->dmg_radius+GM_SIR_NATE_GREETING));
 
 	self->dmg_radius++;
 

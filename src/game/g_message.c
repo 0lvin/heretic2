@@ -64,7 +64,7 @@ void G_Message_delete(G_Message_t *_this)
 	ResMngr_DeallocateResource(&MsgMngr, _this, sizeof(G_Message_t));
 }
 
-void G_QPostMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, char *format, ...)
+void G_QPostMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, const char *format, ...)
 {
 	G_Message_t *newMsg;
 	SinglyLinkedList_t *parms;
@@ -99,7 +99,7 @@ void G_QPostMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, char *f
 	QueueMessage(&to->msgQ, newMsg);
 }
 
-void PostGameMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, char *format, ...)
+void PostGameMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, const char *format, ...)
 {
 	G_Message_t *newMsg;
 	SinglyLinkedList_t *parms;

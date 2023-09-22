@@ -129,7 +129,7 @@ void InitPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.G_PlayerSpellStopShieldAttack = G_PlayerSpellStopShieldAttack;
 	ent->client->playerinfo.G_PlayerVaultKick = G_PlayerVaultKick;
 	ent->client->playerinfo.G_PlayerActionCheckRopeMove = G_PlayerActionCheckRopeMove;
-	ent->client->playerinfo.G_cprintf = gi.cprintf;
+	ent->client->playerinfo.G_cprintf = G_CPrintf;
 	ent->client->playerinfo.G_WeapNext = Cmd_WeapPrev_f;
 	ent->client->playerinfo.G_UseItem = Cmd_Use_f;
 
