@@ -743,7 +743,8 @@ PM_CheckInWater()
 		}
 		else
 		{
-			tr = pm->trace(origin2, NULL, NULL, origin);
+			vec3_t tminmax = {0, 0, 0};
+			tr = pm->trace(origin2, tminmax, tminmax, origin);
 			_pm = pm;
 			pm->waterheight = tr.endpos[2] - pml.origin[2];
 			if (tr.fraction < 1.0 /*&& *(float*)&pml.desiredWaterHeight < (long double)_pm->waterheight*/)
