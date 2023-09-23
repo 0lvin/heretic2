@@ -33,13 +33,13 @@ Drawbacks:
 
 Minimal file set from Loki release:
 ```
-7f705e54da770186abd84f1a904faa28 base/default.cfg
-75cd6a0e878f24bb934e640b4d4dd18c base/htic2-0.pak
-d771f54be69f8fb9054c5a84a2b61dff base/players/male/Corvus.m8
-4633cc6801f36898f0d74ab136ce013e base/players/male/tris.fm
-b90b7cc08ec002297a320e06bae6a5eb base/video/bumper.mpg
-b92d295e769b2c5a94ee2dbf1bbe12e4 base/video/intro.mpg
-9c201601fdd82754068d02a5474a4e60 base/video/outro.mpg
+7f705e54da770186abd84f1a904faa28 baseq2/default.cfg
+75cd6a0e878f24bb934e640b4d4dd18c baseq2/htic2-0.pak
+d771f54be69f8fb9054c5a84a2b61dff baseq2/players/male/Corvus.m8
+4633cc6801f36898f0d74ab136ce013e baseq2/players/male/tris.fm
+b90b7cc08ec002297a320e06bae6a5eb baseq2/video/bumper.mpg
+b92d295e769b2c5a94ee2dbf1bbe12e4 baseq2/video/intro.mpg
+9c201601fdd82754068d02a5474a4e60 baseq2/video/outro.mpg
 ```
 
 Code checked with:

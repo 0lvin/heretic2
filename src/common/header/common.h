@@ -33,7 +33,7 @@
 #include "crc.h"
 
 #define YQ2VERSION "8.21pre"
-#define BASEDIRNAME "base"
+#define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
 #error YQ2OSTYPE should be defined by the build system
@@ -47,9 +47,9 @@
  #define CFGDIR "YamagiQ2"
 #else
  #ifndef __HAIKU__
-   #define CFGDIR ".yq2"
+   #define CFGDIR ".yqh2"
  #else
-   #define CFGDIR "yq2"
+   #define CFGDIR "yqh2"
  #endif
 #endif
 
@@ -531,7 +531,7 @@ extern qboolean userinfo_modified;
 /* NET */
 
 #define PORT_ANY -1
-#define MAX_MSGLEN 2500             /* max length of a message */
+#define MAX_MSGLEN 1400             /* max length of a message */
 #define PACKET_HEADER 10            /* two ints and a short */
 
 typedef enum

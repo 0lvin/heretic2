@@ -39,7 +39,7 @@
 
 // The "gameversion" client command will print this plus compile date.
 
-#define	GAMEVERSION	"Heretic2v16"
+#define	GAMEVERSION	"yQRHeretic2"
 
 // Protocol bytes that can be directly added to messages.
 

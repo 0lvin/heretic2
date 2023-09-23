@@ -815,7 +815,7 @@ build/baseq2/%.o: %.c
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/game.dll : LDFLAGS += -shared
+release/baseq2/game.dll : LDFLAGS += -shared
 
 else ifeq ($(YQ2_OSTYPE), Darwin)
 
@@ -829,8 +829,8 @@ build/baseq2/%.o: %.c
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/game.dylib : CFLAGS += -fPIC
-release/base/game.dylib : LDFLAGS += -shared
+release/baseq2/game.dylib : CFLAGS += -fPIC
+release/baseq2/game.dylib : LDFLAGS += -shared
 
 else # not Windows or Darwin
 
@@ -1026,38 +1026,38 @@ GAME_OBJS_ = \
 # The base player
 ifeq ($(YQ2_OSTYPE), Windows)
 player:
-	@echo "===> Building base/player.dll"
-	${Q}mkdir -p release/base
-	$(MAKE) release/base/player.dll
+	@echo "===> Building baseq2/player.dll"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/player.dll
 
 build/player/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/player.dll : LDFLAGS += -shared
+release/baseq2/player.dll : LDFLAGS += -shared
 
 else ifeq ($(YQ2_OSTYPE), Darwin)
 
 player:
-	@echo "===> Building base/player.dylib"
-	${Q}mkdir -p release/base
-	$(MAKE) release/base/player.dylib
+	@echo "===> Building baseq2/player.dylib"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/player.dylib
 
 build/player/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/player.dylib : CFLAGS += -fPIC
-release/base/player.dylib : LDFLAGS += -shared
+release/baseq2/player.dylib : CFLAGS += -fPIC
+release/baseq2/player.dylib : LDFLAGS += -shared
 
 else # not Windows or Darwin
 
 player:
-	@echo "===> Building base/player.so"
-	${Q}mkdir -p release/base
-	$(MAKE) release/base/player.so
+	@echo "===> Building baseq2/player.so"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/player.so
 
 build/player/%.o: %.c
 	@echo "===> CC $<"
@@ -1069,8 +1069,8 @@ build/player/%.o: %.cpp
 	${Q}mkdir -p $(@D)
 	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/player.so : CFLAGS += -fPIC -Wno-unused-result
-release/base/player.so : LDFLAGS += -shared
+release/baseq2/player.so : CFLAGS += -fPIC -Wno-unused-result
+release/baseq2/player.so : LDFLAGS += -shared
 endif
 
 # ----------
@@ -1100,38 +1100,38 @@ PLAYER_OBJS_ = \
 # The base effects
 ifeq ($(YQ2_OSTYPE), Windows)
 effects:
-	@echo "===> Building base/effects.dll"
-	${Q}mkdir -p release/base
-	$(MAKE) release/base/effects.dll
+	@echo "===> Building baseq2/effects.dll"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/effects.dll
 
 build/effects/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/effects.dll : LDFLAGS += -shared
+release/baseq2/effects.dll : LDFLAGS += -shared
 
 else ifeq ($(YQ2_OSTYPE), Darwin)
 
 effects:
-	@echo "===> Building base/effects.dylib"
-	${Q}mkdir -p release/base
-	$(MAKE) release/base/effects.dylib
+	@echo "===> Building baseq2/effects.dylib"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/effects.dylib
 
 build/effects/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/effects.dylib : CFLAGS += -fPIC
-release/base/effects.dylib : LDFLAGS += -shared
+release/baseq2/effects.dylib : CFLAGS += -fPIC
+release/baseq2/effects.dylib : LDFLAGS += -shared
 
 else # not Windows or Darwin
 
 effects:
-	@echo "===> Building base/effects.so"
-	${Q}mkdir -p release/base
-	$(MAKE) release/base/effects.so
+	@echo "===> Building baseq2/effects.so"
+	${Q}mkdir -p release/baseq2
+	$(MAKE) release/baseq2/effects.so
 
 build/effects/%.o: %.c
 	@echo "===> CC $<"
@@ -1143,8 +1143,8 @@ build/effects/%.o: %.cpp
 	${Q}mkdir -p $(@D)
 	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/effects.so : CFLAGS += -fPIC -Wno-unused-result
-release/base/effects.so : LDFLAGS += -shared
+release/baseq2/effects.so : CFLAGS += -fPIC -Wno-unused-result
+release/baseq2/effects.so : LDFLAGS += -shared
 endif
 
 # Used by the effects
@@ -1738,7 +1738,7 @@ release/ref_vk.so : $(REFVK_OBJS)
 	${Q}$(CC) $(LDFLAGS) $(REFVK_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
 endif
 
-# release/base/game.so
+# release/baseq2/game.so
 ifeq ($(YQ2_OSTYPE), Windows)
 release/baseq2/game.dll : $(GAME_OBJS)
 	@echo "===> LD $@"
@@ -1754,34 +1754,34 @@ release/baseq2/game.so : $(GAME_OBJS)
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 endif
 
-# release/base/player.so
+# release/baseq2/player.so
 ifeq ($(YQ2_OSTYPE), Windows)
-release/base/player.dll : $(PLAYER_OBJS)
+release/baseq2/player.dll : $(PLAYER_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
 	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
-release/base/player.dylib : $(PLAYER_OBJS)
+release/baseq2/player.dylib : $(PLAYER_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
 else
-release/base/player.so : $(PLAYER_OBJS)
+release/baseq2/player.so : $(PLAYER_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
 endif
 
-# release/base/effects.so
+# release/baseq2/effects.so
 ifeq ($(YQ2_OSTYPE), Windows)
-release/base/effects.dll : $(EFFECTS_OBJS)
+release/baseq2/effects.dll : $(EFFECTS_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(EFFECTS_OBJS) $(LDLIBS) -o $@
 	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
-release/base/effects.dylib : $(EFFECTS_OBJS)
+release/baseq2/effects.dylib : $(EFFECTS_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(EFFECTS_OBJS) $(LDLIBS) -o $@
 else
-release/base/effects.so : $(EFFECTS_OBJS)
+release/baseq2/effects.so : $(EFFECTS_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(EFFECTS_OBJS) $(LDLIBS) -o $@
 endif
