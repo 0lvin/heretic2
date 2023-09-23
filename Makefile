@@ -808,7 +808,7 @@ ifeq ($(YQ2_OSTYPE), Windows)
 game:
 	@echo "===> Building baseq2/game.dll"
 	${Q}mkdir -p release/baseq2
-	$(MAKE) release/base/game.dll
+	$(MAKE) release/baseq2/game.dll
 
 build/baseq2/%.o: %.c
 	@echo "===> CC $<"
@@ -822,7 +822,7 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 game:
 	@echo "===> Building baseq2/game.dylib"
 	${Q}mkdir -p release/baseq2
-	$(MAKE) release/base/game.dylib
+	$(MAKE) release/baseq2/game.dylib
 
 build/baseq2/%.o: %.c
 	@echo "===> CC $<"
@@ -837,7 +837,7 @@ else # not Windows or Darwin
 game:
 	@echo "===> Building baseq2/game.so"
 	${Q}mkdir -p release/baseq2
-	$(MAKE) release/base/game.so
+	$(MAKE) release/baseq2/game.so
 
 build/baseq2/%.o: %.c
 	@echo "===> CC $<"
@@ -849,8 +849,8 @@ build/baseq2/%.o: %.cpp
 	${Q}mkdir -p $(@D)
 	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
-release/base/game.so : CFLAGS += -fPIC -Wno-unused-result
-release/base/game.so : LDFLAGS += -shared
+release/baseq2/game.so : CFLAGS += -fPIC -Wno-unused-result
+release/baseq2/game.so : LDFLAGS += -shared
 endif
 
 # ----------
@@ -1740,16 +1740,16 @@ endif
 
 # release/base/game.so
 ifeq ($(YQ2_OSTYPE), Windows)
-release/base/game.dll : $(GAME_OBJS)
+release/baseq2/game.dll : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
-release/base/game.dylib : $(GAME_OBJS)
+release/baseq2/game.dylib : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 else
-release/base/game.so : $(GAME_OBJS)
+release/baseq2/game.so : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
 endif
