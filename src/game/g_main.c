@@ -237,6 +237,11 @@ G_BroadcastObituary(int printlevel, short stringid, short client1, short client2
 	}
 
 	gi.bprintf(printlevel, "%s", level_msgtxt[stringid].string);
+
+	if (level_msgtxt[stringid].wav && level_msgtxt[stringid].wav[0])
+	{
+		gi.sound(NULL, CHAN_AUTO, gi.soundindex(level_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
+	}
 }
 
 int
@@ -280,6 +285,11 @@ void G_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
 	}
 
 	gi.centerprintf(ent, "%s", level_msgtxt[msg].string);
+
+	if (level_msgtxt[msg].wav && level_msgtxt[msg].wav[0])
+	{
+		gi.sound(ent, CHAN_AUTO, gi.soundindex(level_msgtxt[msg].wav), 1, ATTN_NORM, 0);
+	}
 }
 
 void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)

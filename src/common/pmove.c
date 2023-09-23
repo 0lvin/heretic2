@@ -128,7 +128,7 @@ static int PM_CorrectAllSolid(trace_t* trace) {
 /*
  * Handles both ground friction and water friction
  */
-void
+static void
 PM_Friction(void)
 {
 	float *vel;
@@ -191,7 +191,7 @@ PM_ClipVelocity
 Slide off of the impacting surface
 ==================
 */
-void
+static void
 PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce) {
 	float	backoff;
 	float	change;
@@ -278,7 +278,7 @@ PM_ClampAngles
 
 ================
 */
-void
+static void
 PM_ClampAngles(void)
 {
 	short	temp;
@@ -364,7 +364,7 @@ Returns qtrue if the velocity was clipped in some way
 ==================
 */
 #define	MAX_CLIP_PLANES	5
-qboolean
+static qboolean
 PM_SlideMove(qboolean gravity)
 {
 	int			bumpcount, numbumps;
@@ -545,7 +545,7 @@ PM_SlideMove(qboolean gravity)
 PM_StepSlideMove
 ==================
 */
-void
+static void
 PM_StepSlideMove(qboolean gravity) {
 	vec3_t		start_o, start_v;
 	trace_t		trace;
@@ -703,7 +703,7 @@ PM_WalkMove(float fmove, float smove) {
 	PM_StepSlideMove(false);
 }
 
-void
+static void
 PM_CheckJump()
 {
 	if ((pm->s.pm_flags & 8) == 0 && pm->cmd.upmove > 9)
@@ -714,7 +714,7 @@ PM_CheckJump()
 	}
 }
 
-void
+static void
 PM_CheckInWater()
 {
 	int contents;
@@ -761,7 +761,7 @@ PM_CheckInWater()
 }
 
 // TODO: Rewrite
-void
+static void
 PM_AddCurrents(float* a1)
 {
 	long double v1;
@@ -837,7 +837,7 @@ PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
 }
 
 // TODO: Rewrite
-int
+static int
 PM_SetVelInLiquid(float a1)
 {
 	long double v2;
@@ -872,14 +872,14 @@ PM_SetVelInLiquid(float a1)
 	return 0;
 }
 
-void
+static void
 PM_WaterMove()
 {
 	if (!PM_SetVelInLiquid(0.5))
 		PM_StepSlideMove(false);
 }
 
-void
+static void
 PM_WaterSurfMove()
 {
 	byte v0;
@@ -966,6 +966,8 @@ Pmove(pmove_t *pmove)
 	}
 
 	PM_GroundTrace();
+
+	PM_CheckJump();
 
 	PM_CheckInWater();
 
