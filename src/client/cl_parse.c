@@ -47,17 +47,17 @@ char *svc_strings[256] = {
 	"svc_nop",
 	"svc_disconnect",
 	"svc_reconnect",
-	"svc_sound",					// <see code>
-	"svc_print",					// [byte] id [string] null terminated string
-	"svc_stufftext",				// [string] stuffed into client's console buffer, should be \n terminated
-	"svc_serverdata",				// [long] protocol ...
-	"svc_configstring",			// [short] [string]
+	"svc_sound",
+	"svc_print",
+	"svc_stufftext",
+	"svc_serverdata",
+	"svc_configstring",
 	"svc_spawnbaseline",
-	"svc_centerprint",			// [string] to put in center of the screen
-	"svc_download",				// [short] size [size bytes]
-	"svc_playerinfo",				// variable
-	"svc_packetentities",			// [...]
-	"svc_deltapacketentities",	// [...]
+	"svc_centerprint",
+	"svc_download",
+	"svc_playerinfo",
+	"svc_packetentities",
+	"svc_deltapacketentities",
 	"svc_frame"
 };
 
@@ -310,6 +310,11 @@ CL_DeltaEntity(frame_t *frame, int newnum, entity_state_t *old, int bits)
 
 	/* some data changes will force no lerping */
 	if ((state->modelindex != ent->current.modelindex) ||
+		(state->modelindex2 != ent->current.modelindex2) ||
+		(state->modelindex3 != ent->current.modelindex3) ||
+		(state->modelindex4 != ent->current.modelindex4) ||
+		(state->event == EV_PLAYER_TELEPORT) ||
+		(state->event == EV_OTHER_TELEPORT) ||
 		(abs((int)(state->origin[0] - ent->current.origin[0])) > 512) ||
 		(abs((int)(state->origin[1] - ent->current.origin[1])) > 512) ||
 		(abs((int)(state->origin[2] - ent->current.origin[2])) > 512)
@@ -326,8 +331,17 @@ CL_DeltaEntity(frame_t *frame, int newnum, entity_state_t *old, int bits)
 		/* duplicate the current state so
 		   lerping doesn't hurt anything */
 		ent->prev = *state;
-		VectorCopy(state->old_origin, ent->prev.origin);
-		VectorCopy(state->old_origin, ent->lerp_origin);
+
+		if (state->event == EV_OTHER_TELEPORT)
+		{
+			VectorCopy(state->origin, ent->prev.origin);
+			VectorCopy(state->origin, ent->lerp_origin);
+		}
+		else
+		{
+			VectorCopy(state->old_origin, ent->prev.origin);
+			VectorCopy(state->old_origin, ent->lerp_origin);
+		}
 	}
 	else
 	{
@@ -936,12 +950,16 @@ CL_ParseBaseline(void)
 void
 CL_LoadClientinfo(clientinfo_t *ci, char *s)
 {
+	int i;
 	char *t;
+	char model_name[MAX_QPATH];
+	char skin_name[MAX_QPATH];
 	char model_filename[MAX_QPATH];
 	char skin_filename[MAX_QPATH];
+	char weapon_filename[MAX_QPATH];
 
-	//strncpy(ci->cinfo, s, sizeof(ci->cinfo));
-	//ci->cinfo[sizeof(ci->cinfo)-1] = 0;
+	Q_strlcpy(ci->cinfo, s, sizeof(ci->cinfo));
+	s = ci->cinfo;
 
 	/* isolate the player's name */
 	Q_strlcpy(ci->name, s, sizeof(ci->name));
@@ -952,18 +970,122 @@ CL_LoadClientinfo(clientinfo_t *ci, char *s)
 		ci->name[t - s] = 0;
 		s = t + 1;
 	}
-// jmarshall
-//#define RAVEN_DEMO
-#ifdef RAVEN_DEMO
-	Com_sprintf(model_filename, sizeof(model_filename), "models/player/elf/tris.fm");
-	Com_sprintf(skin_filename, sizeof(skin_filename), "models/player/elf/!skin.m8");
-#else
-	Com_sprintf(model_filename, sizeof(model_filename), "players/male/tris.fm");
-	Com_sprintf(skin_filename, sizeof(skin_filename), "players/male/Corvus.m8");
-#endif
-	ci->model = re.RegisterModel(model_filename);
-	ci->skin = re.RegisterSkin(skin_filename);
-// jmarshall end
+
+	if (cl_noskins->value || (*s == 0))
+	{
+		strcpy(model_filename, "players/male/tris.md2");
+		strcpy(weapon_filename, "players/male/weapon.md2");
+		strcpy(skin_filename, "players/male/grunt.pcx");
+		strcpy(ci->iconname, "/players/male/grunt_i.pcx");
+		ci->model = R_RegisterModel(model_filename);
+		memset(ci->weaponmodel, 0, sizeof(ci->weaponmodel));
+		ci->weaponmodel[0] = R_RegisterModel(weapon_filename);
+		ci->skin = R_RegisterSkin(skin_filename);
+		ci->icon = Draw_FindPic(ci->iconname);
+	}
+	else
+	{
+		/* isolate the model name */
+		strcpy(model_name, s);
+		t = strstr(model_name, "/");
+
+		if (!t)
+		{
+			t = strstr(model_name, "\\");
+		}
+
+		if (!t)
+		{
+			t = model_name;
+		}
+
+		*t = 0;
+
+		/* isolate the skin name */
+		strcpy(skin_name, s + strlen(model_name) + 1);
+
+		/* model file */
+		Com_sprintf(model_filename, sizeof(model_filename),
+				"players/%s/tris.md2", model_name);
+		ci->model = R_RegisterModel(model_filename);
+
+		if (!ci->model)
+		{
+			strcpy(model_name, "male");
+			Com_sprintf(model_filename, sizeof(model_filename),
+					"players/male/tris.md2");
+			ci->model = R_RegisterModel(model_filename);
+		}
+
+		/* skin file */
+		Com_sprintf(skin_filename, sizeof(skin_filename),
+				"players/%s/%s.pcx", model_name, skin_name);
+		ci->skin = R_RegisterSkin(skin_filename);
+
+		/* if we don't have the skin and the model wasn't male,
+		 * see if the male has it (this is for CTF's skins) */
+		if (!ci->skin && Q_stricmp(model_name, "male"))
+		{
+			/* change model to male */
+			strcpy(model_name, "male");
+			Com_sprintf(model_filename, sizeof(model_filename),
+					"players/male/tris.md2");
+			ci->model = R_RegisterModel(model_filename);
+
+			/* see if the skin exists for the male model */
+			Com_sprintf(skin_filename, sizeof(skin_filename),
+					"players/%s/%s.pcx", model_name, skin_name);
+			ci->skin = R_RegisterSkin(skin_filename);
+		}
+
+		/* if we still don't have a skin, it means that the male model didn't have
+		 * it, so default to grunt */
+		if (!ci->skin)
+		{
+			/* see if the skin exists for the male model */
+			Com_sprintf(skin_filename, sizeof(skin_filename),
+					"players/%s/grunt.pcx", model_name);
+			ci->skin = R_RegisterSkin(skin_filename);
+		}
+
+		/* weapon file */
+		for (i = 0; i < num_cl_weaponmodels; i++)
+		{
+			Com_sprintf(weapon_filename, sizeof(weapon_filename),
+					"players/%s/%s", model_name, cl_weaponmodels[i]);
+			ci->weaponmodel[i] = R_RegisterModel(weapon_filename);
+
+			if (!ci->weaponmodel[i] && (strcmp(model_name, "cyborg") == 0))
+			{
+				/* try male */
+				Com_sprintf(weapon_filename, sizeof(weapon_filename),
+						"players/male/%s", cl_weaponmodels[i]);
+				ci->weaponmodel[i] = R_RegisterModel(weapon_filename);
+			}
+
+			if (!cl_vwep->value)
+			{
+				break; /* only one when vwep is off */
+			}
+		}
+
+		/* icon file */
+		Com_sprintf(ci->iconname, sizeof(ci->iconname),
+				"/players/%s/%s_i.pcx", model_name, skin_name);
+		ci->icon = Draw_FindPic(ci->iconname);
+	}
+
+	/* must have loaded all data types to be valid */
+	/*
+	if (!ci->skin || !ci->icon || !ci->model || !ci->weaponmodel[0])
+	{
+		ci->skin = NULL;
+		ci->icon = NULL;
+		ci->model = NULL;
+		ci->weaponmodel[0] = NULL;
+		return;
+	}
+	*/
 }
 
 /*
