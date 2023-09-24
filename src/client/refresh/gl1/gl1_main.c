@@ -157,7 +157,7 @@ void Scrap_Init(void);
 void
 R_RotateForEntity(entity_t *e)
 {
-	glTranslatef(e->origin[0], e->origin[1], e->origin[2]);
+	glTranslatef(e->origin[0], e->origin[1], e->origin[2] + 9);
 
 	glRotatef(e->angles[1], 0, 0, 1);
 	glRotatef(-e->angles[0], 0, 1, 0);
