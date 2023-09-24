@@ -154,7 +154,7 @@ int		c_traces, c_brush_traces;
 
 /* 1/32 epsilon to keep floating point happy */
 /* TODO: Heretic 2 stuck in walls if change */
-#define DIST_EPSILON (0.125f)
+#define DIST_EPSILON (0.03125f)
 
 static void
 FloodArea_r(carea_t *area, int floodnum)
