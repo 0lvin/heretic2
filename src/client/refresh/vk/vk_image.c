@@ -1,22 +1,24 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
-Copyright (C) 2018-2019 Krzysztof Kondrak
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 2018-2019 Krzysztof Kondrak
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ */
 
 #include "header/local.h"
 
@@ -909,7 +911,7 @@ static uint32_t Vk_Upload32Native (byte *data, int width, int height, imagetype_
 	{
 		*texBuffer = malloc(scaled_width * scaled_height * 4);
 		if (!*texBuffer)
-			ri.Sys_Error(ERR_DROP, "%s: too big", __func__);
+			Com_Error(ERR_DROP, "%s: too big", __func__);
 
 		ResizeSTB(data, width, height,
 				  *texBuffer, scaled_width, scaled_height);
@@ -972,7 +974,7 @@ static uint32_t Vk_Upload32 (byte *data, int width, int height, imagetype_t type
 
 	*texBuffer = malloc(scaled_width * scaled_height * 4);
 	if (!*texBuffer)
-		ri.Sys_Error(ERR_DROP, "%s: too big", __func__);
+		Com_Error(ERR_DROP, "%s: too big", __func__);
 
 	*upload_width = scaled_width;
 	*upload_height = scaled_height;
@@ -1027,7 +1029,7 @@ static uint32_t Vk_Upload8 (const byte *data, int width, int height, imagetype_t
 
 	trans = malloc(s * sizeof(*trans));
 	if (!trans)
-		ri.Sys_Error(ERR_DROP, "%s: too large", __func__);
+		Com_Error(ERR_DROP, "%s: too large", __func__);
 
 	for (i = 0; i < s; i++)
 	{
@@ -1124,14 +1126,14 @@ Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		if (i == numvktextures)
 		{
 			if (numvktextures == MAX_VKTEXTURES)
-				ri.Sys_Error(ERR_DROP, "%s: MAX_VKTEXTURES", __func__);
+				Com_Error(ERR_DROP, "%s: MAX_VKTEXTURES", __func__);
 			numvktextures++;
 		}
 		image = &vktextures[i];
 	}
 
 	if (strlen(name) >= sizeof(image->name))
-		ri.Sys_Error(ERR_DROP, "%s: \"%s\" is too long", __func__, name);
+		Com_Error(ERR_DROP, "%s: \"%s\" is too long", __func__, name);
 	strcpy(image->name, name);
 	image->registration_sequence = registration_sequence;
 	// zero-clear Vulkan texture handle

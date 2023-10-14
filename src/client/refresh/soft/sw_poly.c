@@ -1,22 +1,24 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 #include <assert.h>
 #include <limits.h>
 #include "header/local.h"
@@ -515,7 +517,7 @@ R_DrawSpanlet66Stipple(const int *r_turb_turb)
 ** Throws out the back side
 */
 static int
-R_ClipPolyFace (int nump, clipplane_t *pclipplane)
+R_ClipPolyFace(int nump, clipplane_t *pclipplane)
 {
 	int		i, outcount;
 	float	frac, clipdist, *pclipnormal;
@@ -989,7 +991,7 @@ R_ClipAndDrawPoly ( float alpha, int isturbulent, qboolean textured )
 			return;
 		if (nump > MAXWORKINGVERTS)
 		{
-			ri.Sys_Error(ERR_DROP, "%s: too many points: %d", __func__, nump);
+			Com_Error(ERR_DROP, "%s: too many points: %d", __func__, nump);
 		}
 	}
 
@@ -1043,7 +1045,7 @@ R_BuildPolygonFromSurface(const entity_t *currententity, const model_t *currentm
 
 	r_polydesc.nump = 0;
 
-	// reconstruct the polygon
+	/* reconstruct the polygon */
 	pedges = currentmodel->edges;
 	lnumverts = fa->numedges;
 

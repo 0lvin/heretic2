@@ -104,17 +104,17 @@ cvar_t *r_customheight;
 cvar_t *r_retexturing;
 cvar_t *r_scale8bittextures;
 
-cvar_t *gl_nolerp_list;
+cvar_t *r_nolerp_list;
 cvar_t *r_lerp_list;
 cvar_t *r_2D_unfiltered;
 cvar_t *r_videos_unfiltered;
 
-cvar_t *gl1_dynamic;
+cvar_t *r_dynamic;
 cvar_t *r_modulate;
 cvar_t *gl_nobind;
 cvar_t *gl1_round_down;
 cvar_t *gl1_picmip;
-cvar_t *gl_showtris;
+cvar_t *r_showtris;
 cvar_t *gl_showbbox;
 cvar_t *gl1_ztrick;
 cvar_t *gl_zfix;
@@ -122,7 +122,7 @@ cvar_t *gl_finish;
 cvar_t *r_clear;
 cvar_t *r_cull;
 cvar_t *gl_polyblend;
-cvar_t *gl1_flashblend;
+cvar_t *r_flashblend;
 cvar_t *gl1_saturatelighting;
 cvar_t *r_vsync;
 cvar_t *gl_texturemode;
@@ -167,7 +167,7 @@ R_RotateForEntity(entity_t *e)
 // jmarshall end
 }
 
-void
+static void
 R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 {
 	float alpha = 1.0F;
@@ -262,18 +262,20 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	glColor4f(1, 1, 1, 1);
 }
 
-void
+static void
 R_DrawNullModel(entity_t *currententity)
 {
 	vec3_t shadelight;
 
-	if (currententity->flags & RF_FULLBRIGHT)
+	if (currententity->flags & RF_FULLBRIGHT || !r_worldmodel || !r_worldmodel->lightdata)
 	{
 		shadelight[0] = shadelight[1] = shadelight[2] = 1.0F;
 	}
 	else
 	{
-		R_LightPoint(currententity, currententity->origin, shadelight);
+		R_LightPoint(r_worldmodel->grid, currententity, &r_newrefdef,
+			r_worldmodel->surfaces, r_worldmodel->nodes, currententity->origin,
+			shadelight, r_modulate->value, lightspot);
 	}
 
 	glPushMatrix();
@@ -319,7 +321,7 @@ R_DrawNullModel(entity_t *currententity)
 	glEnable(GL_TEXTURE_2D);
 }
 
-void
+static void
 R_DrawEntitiesOnList(void)
 {
 	int i;
@@ -365,7 +367,7 @@ R_DrawEntitiesOnList(void)
 					R_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					ri.Sys_Error(ERR_DROP, "Bad modeltype");
+					Com_Error(ERR_DROP, "Bad modeltype");
 					break;
 			}
 		}
@@ -411,8 +413,9 @@ R_DrawEntitiesOnList(void)
 					R_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					ri.Sys_Error(ERR_DROP, "Bad modeltype");
-					break;
+					R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
+					return;
 			}
 		}
 	}
@@ -486,7 +489,7 @@ R_DrawParticles2(int num_particles, const particle_t particles[],
 			( p->origin [ 1 ] - r_origin [ 1 ] ) * vpn [ 1 ] +
 			( p->origin [ 2 ] - r_origin [ 2 ] ) * vpn [ 2 ];
 
-		if ( scale < 20 )
+		if (scale < 20)
 		{
 			scale = 1;
 		}
@@ -606,7 +609,7 @@ R_DrawParticles(int num_particles, particle_t* particles, int type)
 	R_TexEnv(GL_REPLACE);
 }
 
-void
+static void
 R_PolyBlend(void)
 {
 	if (!gl_polyblend->value)
@@ -652,7 +655,7 @@ R_PolyBlend(void)
 	glColor4f(1, 1, 1, 1);
 }
 
-void
+static void
 R_SetupFrame(void)
 {
 	int i;
@@ -670,7 +673,7 @@ R_SetupFrame(void)
 	{
 		if (!r_worldmodel)
 		{
-			ri.Sys_Error(ERR_DROP, "%s: bad world model", __func__);
+			Com_Error(ERR_DROP, "%s: bad world model", __func__);
 			return;
 		}
 
@@ -1095,7 +1098,7 @@ R_RenderView(refdef_t *fd)
 
 	if (!r_worldmodel && !(r_newrefdef.rdflags & RDF_NOWORLDMODEL))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: NULL worldmodel", __func__);
+		Com_Error(ERR_DROP, "%s: NULL worldmodel", __func__);
 	}
 
 	if (r_speeds->value)
@@ -1104,7 +1107,7 @@ R_RenderView(refdef_t *fd)
 		c_alias_polys = 0;
 	}
 
-	R_PushDlights();
+	RI_PushDlights();
 
 	if (gl_finish->value)
 	{
@@ -1136,8 +1139,10 @@ R_RenderView(refdef_t *fd)
 	if (r_speeds->value)
 	{
 		R_Printf(PRINT_ALL, "%4i wpoly %4i epoly %i tex %i lmaps\n",
-				c_brush_polys, c_alias_polys, c_visible_textures,
-				c_visible_lightmaps);
+			c_brush_polys,
+			c_alias_polys,
+			c_visible_textures,
+			c_visible_lightmaps);
 	}
 
 	switch (gl_state.stereo_mode) {
@@ -1177,7 +1182,7 @@ GL_GetSpecialBufferModeForStereoMode(enum stereo_modes stereo_mode) {
 static void
 R_SetLightLevel(entity_t *currententity)
 {
-	vec3_t shadelight;
+	vec3_t shadelight = {0};
 
 	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
 	{
@@ -1185,7 +1190,9 @@ R_SetLightLevel(entity_t *currententity)
 	}
 
 	/* save off light value for server to look at */
-	R_LightPoint(currententity, r_newrefdef.vieworg, shadelight);
+	R_LightPoint(r_worldmodel->grid, currententity, &r_newrefdef,
+		r_worldmodel->surfaces, r_worldmodel->nodes, r_newrefdef.vieworg,
+		shadelight, r_modulate->value, lightspot);
 
 	/* pick the greatest component, which should be the
 	 * same as the mono value returned by software */
@@ -1245,6 +1252,9 @@ R_Register(void)
 		"0.0",
 		0);
 
+	/* Init default value */
+	s_blocklights = NULL;
+	s_blocklights_max = NULL;
 
 	gl_lefthand = ri.Cvar_Get("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
 	r_gunfov = ri.Cvar_Get("r_gunfov", "80", CVAR_ARCHIVE);
@@ -1273,11 +1283,11 @@ R_Register(void)
 	gl_lightmap = ri.Cvar_Get("r_lightmap", "0", 0);
 	gl_shadows = ri.Cvar_Get("r_shadows", "0", CVAR_ARCHIVE);
 	gl1_stencilshadow = ri.Cvar_Get("gl1_stencilshadow", "0", CVAR_ARCHIVE);
-	gl1_dynamic = ri.Cvar_Get("gl1_dynamic", "1", 0);
+	r_dynamic = ri.Cvar_Get("r_dynamic", "1", 0);
 	gl_nobind = ri.Cvar_Get("gl_nobind", "0", 0);
 	gl1_round_down = ri.Cvar_Get("gl1_round_down", "1", 0);
 	gl1_picmip = ri.Cvar_Get("gl1_picmip", "0", 0);
-	gl_showtris = ri.Cvar_Get("gl_showtris", "0", 0);
+	r_showtris = ri.Cvar_Get("r_showtris", "0", 0);
 	gl_showbbox = ri.Cvar_Get("gl_showbbox", "0", 0);
 	gl1_ztrick = ri.Cvar_Get("gl1_ztrick", "0", 0);
 	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
@@ -1285,7 +1295,7 @@ R_Register(void)
 	r_clear = ri.Cvar_Get("r_clear", "0", 0);
 	r_cull = ri.Cvar_Get("r_cull", "1", 0);
 	gl_polyblend = ri.Cvar_Get("gl_polyblend", "1", 0);
-	gl1_flashblend = ri.Cvar_Get("gl1_flashblend", "0", 0);
+	r_flashblend = ri.Cvar_Get("r_flashblend", "0", 0);
 	r_fixsurfsky = ri.Cvar_Get("r_fixsurfsky", "0", CVAR_ARCHIVE);
 
 	gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
@@ -1314,7 +1324,7 @@ R_Register(void)
 	r_scale8bittextures = ri.Cvar_Get("r_scale8bittextures", "0", CVAR_ARCHIVE);
 
 	/* don't bilerp characters and crosshairs */
-	gl_nolerp_list = ri.Cvar_Get("r_nolerp_list", DEFAULT_NOLERP_LIST, CVAR_ARCHIVE);
+	r_nolerp_list = ri.Cvar_Get("r_nolerp_list", DEFAULT_NOLERP_LIST, CVAR_ARCHIVE);
 	/* textures that should always be filtered, even if r_2D_unfiltered or an unfiltered gl mode is used */
 	r_lerp_list = ri.Cvar_Get("r_lerp_list", "", CVAR_ARCHIVE);
 	/* don't bilerp any 2D elements */
@@ -1411,7 +1421,7 @@ SetMode_impl(int *pwidth, int *pheight, int mode, int fullscreen)
 	return rserr_ok;
 }
 
-qboolean
+static qboolean
 R_SetMode(void)
 {
 	rserr_t err;
@@ -1507,7 +1517,7 @@ RI_Init(void)
 	if (!R_SetMode())
 	{
 		QGL_Shutdown();
-		R_Printf(PRINT_ALL, "ref_gl::R_Init() - could not R_SetMode()\n");
+		R_Printf(PRINT_ALL, "%s() - could not R_SetMode()\n", __func__);
 		return false;
 	}
 
@@ -1671,9 +1681,18 @@ RI_Shutdown(void)
 
 	/* shutdown our QGL subsystem */
 	QGL_Shutdown();
+
+	/* Cleanup buffers */
+	if (s_blocklights)
+	{
+		free(s_blocklights);
+	}
+
+	s_blocklights = NULL;
+	s_blocklights_max = NULL;
 }
 
-void
+static void
 RI_BeginFrame(float camera_separation)
 {
 	gl_state.camera_separation = camera_separation;
@@ -1797,13 +1816,13 @@ RI_BeginFrame(float camera_separation)
 
 	/* texturemode stuff */
 	if (gl_texturemode->modified || (gl_config.anisotropic && gl_anisotropic->modified)
-	    || gl_nolerp_list->modified || r_lerp_list->modified
+	    || r_nolerp_list->modified || r_lerp_list->modified
 		|| r_2D_unfiltered->modified || r_videos_unfiltered->modified)
 	{
 		R_TextureMode(gl_texturemode->string);
 		gl_texturemode->modified = false;
 		gl_anisotropic->modified = false;
-		gl_nolerp_list->modified = false;
+		r_nolerp_list->modified = false;
 		r_lerp_list->modified = false;
 		r_2D_unfiltered->modified = false;
 		r_videos_unfiltered->modified = false;
@@ -1831,7 +1850,7 @@ RI_BeginFrame(float camera_separation)
 	R_Clear();
 }
 
-void
+static void
 RI_SetPalette(const unsigned char *palette)
 {
 	int i;
@@ -1866,7 +1885,6 @@ RI_SetPalette(const unsigned char *palette)
 	glClearColor(1, 0, 0.5, 0.5);
 }
 
-/* R_DrawBeam */
 void
 R_DrawBeam(entity_t *e)
 {
@@ -2027,9 +2045,9 @@ GetRefAPI(refimport_t imp)
 	re.EndWorldRenderpass = RI_EndWorldRenderpass;
 	re.EndFrame = RI_EndFrame;
 
-    // Tell the client that we're unsing the
+	// Tell the client that we're unsing the
 	// new renderer restart API.
-    ri.Vid_RequestRestart(RESTART_NO);
+	ri.Vid_RequestRestart(RESTART_NO);
 
 	return re;
 }
@@ -2066,4 +2084,17 @@ Com_Printf(const char *msg, ...)
 	va_start(argptr, msg);
 	ri.Com_VPrintf(PRINT_ALL, msg, argptr);
 	va_end(argptr);
+}
+
+void
+Com_Error(int code, const char *fmt, ...)
+{
+	va_list argptr;
+	char text[4096]; // MAXPRINTMSG == 4096
+
+	va_start(argptr, fmt);
+	vsnprintf(text, sizeof(text), fmt, argptr);
+	va_end(argptr);
+
+	ri.Sys_Error(code, "%s", text);
 }

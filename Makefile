@@ -1289,6 +1289,7 @@ CLIENT_OBJS_ := \
 	src/common/argproc.o \
 	src/common/clientserver.o \
 	src/common/collision.o \
+	src/common/cmodels.o \
 	src/common/crc.o \
 	src/common/cmdparser.o \
 	src/common/cvar.o \
@@ -1350,14 +1351,17 @@ REFGL1_OBJS_ := \
 	src/client/refresh/gl1/gl1_surf.o \
 	src/client/refresh/gl1/gl1_warp.o \
 	src/client/refresh/gl1/gl1_sdl.o \
+	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
+	src/client/refresh/files/warp.o \
 	src/client/refresh/files/pvs.o \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
+	src/common/cmodels.o \
 	src/common/md4.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -1383,14 +1387,17 @@ REFGL3_OBJS_ := \
 	src/client/refresh/gl3/gl3_surf.o \
 	src/client/refresh/gl3/gl3_warp.o \
 	src/client/refresh/gl3/gl3_shaders.o \
+	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
+	src/client/refresh/files/warp.o \
 	src/client/refresh/files/pvs.o \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
+	src/common/cmodels.o \
 	src/common/md4.o
 
 REFGL3_OBJS_GLADE_ := \
@@ -1422,13 +1429,16 @@ REFGL4_OBJS_ := \
 	src/client/refresh/gl4/gl4_surf.o \
 	src/client/refresh/gl4/gl4_warp.o \
 	src/client/refresh/gl4/gl4_shaders.o \
+	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
+	src/client/refresh/files/warp.o \
 	src/client/refresh/files/pvs.o \
 	src/common/shared/shared.o \
+	src/common/cmodels.o \
 	src/common/md4.o
 
 REFGL4_OBJS_GLADE_ := \
@@ -1462,6 +1472,7 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/soft/sw_scan.o \
 	src/client/refresh/soft/sw_sprite.o \
 	src/client/refresh/soft/sw_surf.o \
+	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/pcx.o \
@@ -1470,6 +1481,7 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/files/pvs.o \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
+	src/common/cmodels.o \
 	src/common/md4.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -1490,6 +1502,7 @@ REFVK_OBJS_ := \
 	src/client/refresh/vk/vk_draw.o \
 	src/client/refresh/vk/vk_image.o \
 	src/client/refresh/vk/vk_light.o \
+	src/client/refresh/vk/vk_lightmap.o \
 	src/client/refresh/vk/vk_mesh.o \
 	src/client/refresh/vk/vk_model.o \
 	src/client/refresh/vk/vk_pipeline.o \
@@ -1502,14 +1515,17 @@ REFVK_OBJS_ := \
 	src/client/refresh/vk/vk_warp.o \
 	src/client/refresh/vk/vk_util.o \
 	src/client/refresh/vk/volk/volk.o \
+	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
+	src/client/refresh/files/warp.o \
 	src/client/refresh/files/pvs.o \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
+	src/common/cmodels.o \
 	src/common/md4.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -1528,6 +1544,7 @@ SERVER_OBJS_ := \
 	src/common/argproc.o \
 	src/common/clientserver.o \
 	src/common/collision.o \
+	src/common/cmodels.o \
 	src/common/crc.o \
 	src/common/cmdparser.o \
 	src/common/cvar.o \

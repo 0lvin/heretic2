@@ -64,7 +64,7 @@ Mod_LoadCmdList (const char *mod_name, dmdl_t *pheader, int *pincmd)
 	poutcmd = (int *)((char*)pheader + pheader->ofs_glcmds);
 	for (i = 0; i < pheader->num_glcmds; i++)
 	{
-		poutcmd[i] = LittleLong (pincmd[i]);
+		poutcmd[i] = LittleLong(pincmd[i]);
 	}
 
 	if (poutcmd[pheader->num_glcmds-1] != 0)
@@ -193,9 +193,9 @@ Mod_LoadDKMCmdList (const char *mod_name, dmdl_t *pheader, int *pincmd)
 
 		while (i)
 		{
-			poutcmd[0] = LittleLong (pincmd[1]);
-			poutcmd[1] = LittleLong (pincmd[2]);
-			poutcmd[2] = LittleLong (pincmd[0]);
+			poutcmd[0] = LittleLong(pincmd[1]);
+			poutcmd[1] = LittleLong(pincmd[2]);
+			poutcmd[2] = LittleLong(pincmd[0]);
 			poutcmd += 3;
 			pincmd += 3;
 			i --;
@@ -257,7 +257,7 @@ Mod_LoadDkmFrames (dmdl_t *pheader, const byte *src, size_t infamesize, vec3_t t
 		{
 			int xyz;
 
-			xyz = LittleLong (*((int *)inverts));
+			xyz = LittleLong(*((int *)inverts));
 			outverts[j].v[0] = ((xyz & 0xFFE00000) >> (21 + 3)) & 0xFF;
 			outverts[j].v[1] = ((xyz & 0x1FF800) >> (11 + 2)) & 0xFF;
 			outverts[j].v[2] = ((xyz & 0x7FF) >> 3) & 0xFF;
@@ -290,7 +290,7 @@ Mod_LoadMDL (const char *mod_name, const void *buffer, int modfilelen,
 
 	pinmodel = (mdl_header_t *)buffer;
 
-	version = LittleLong (pinmodel->version);
+	version = LittleLong(pinmodel->version);
 	if (version != MDL_VERSION)
 	{
 		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)",
@@ -299,17 +299,17 @@ Mod_LoadMDL (const char *mod_name, const void *buffer, int modfilelen,
 	}
 
 	/* generate all offsets and sizes */
-	num_skins = LittleLong (pinmodel->num_skins);
-	skinwidth = LittleLong (pinmodel->skinwidth);
-	skinheight = LittleLong (pinmodel->skinheight);
-	num_xyz = LittleLong (pinmodel->num_xyz);
+	num_skins = LittleLong(pinmodel->num_skins);
+	skinwidth = LittleLong(pinmodel->skinwidth);
+	skinheight = LittleLong(pinmodel->skinheight);
+	num_xyz = LittleLong(pinmodel->num_xyz);
 	num_st = num_xyz;
-	num_tris = LittleLong (pinmodel->num_tris);
+	num_tris = LittleLong(pinmodel->num_tris);
 	num_glcmds = (
 		(3 * num_tris) * sizeof(int) * 3 + /* 3 vert */
 		(num_tris * sizeof(int)) + /* triangles count */
 		sizeof(int) /* final zero */) / sizeof(int);
-	num_frames = LittleLong (pinmodel->num_frames);
+	num_frames = LittleLong(pinmodel->num_frames);
 	framesize = sizeof(daliasframe_t) + sizeof (dtrivertx_t) * (num_xyz - 1);
 
 	ofs_skins = sizeof(dmdl_t); // just skip header and go
@@ -415,7 +415,7 @@ Mod_LoadMDL (const char *mod_name, const void *buffer, int modfilelen,
 			/* skip type / int */
 			/* 0 = simple, !0 = group */
 			/* this program can't read models composed of group frames! */
-			skin_type = LittleLong (((int *)curr_pos)[0]);
+			skin_type = LittleLong(((int *)curr_pos)[0]);
 			curr_pos += sizeof(int);
 			if (skin_type)
 			{
@@ -438,8 +438,8 @@ Mod_LoadMDL (const char *mod_name, const void *buffer, int modfilelen,
 			for(i = 0; i < num_st; i++)
 			{
 				/* Compute texture coordinates */
-				poutst[i].s = LittleLong (texcoords[i].s);
-				poutst[i].t = LittleLong (texcoords[i].t);
+				poutst[i].s = LittleLong(texcoords[i].s);
+				poutst[i].t = LittleLong(texcoords[i].t);
 
 				if (texcoords[i].onseam)
 				{
@@ -465,7 +465,7 @@ Mod_LoadMDL (const char *mod_name, const void *buffer, int modfilelen,
 
 				for (j=0 ; j<3 ; j++)
 				{
-					pouttri[i].index_xyz[j] = LittleLong (triangles[i].vertex[j]);
+					pouttri[i].index_xyz[j] = LittleLong(triangles[i].vertex[j]);
 					pouttri[i].index_st[j] = pouttri[i].index_xyz[j];
 				}
 			}
@@ -492,8 +492,8 @@ Mod_LoadMDL (const char *mod_name, const void *buffer, int modfilelen,
 					index = triangles[i].vertex[j];
 
 					/* Compute texture coordinates */
-					s = LittleLong (texcoords[index].s);
-					t = LittleLong (texcoords[index].t);
+					s = LittleLong(texcoords[index].s);
+					t = LittleLong(texcoords[index].t);
 
 					if (!triangles[i].facesfront &&
 						texcoords[index].onseam)
@@ -537,7 +537,7 @@ Mod_LoadMDL (const char *mod_name, const void *buffer, int modfilelen,
 			/* skip type / int */
 			/* 0 = simple, !0 = group */
 			/* this program can't read models composed of group frames! */
-			frame_type = LittleLong (((int *)curr_pos)[0]);
+			frame_type = LittleLong(((int *)curr_pos)[0]);
 			curr_pos += sizeof (frame_type);
 
 			if (frame_type)
@@ -594,7 +594,7 @@ Mod_LoadMD2 (const char *mod_name, const void *buffer, int modfilelen,
 
 	pinmodel = (dmdl_t *)buffer;
 
-	version = LittleLong (pinmodel->version);
+	version = LittleLong(pinmodel->version);
 	if (version != ALIAS_VERSION)
 	{
 		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)",
@@ -615,7 +615,7 @@ Mod_LoadMD2 (const char *mod_name, const void *buffer, int modfilelen,
 
 	// byte swap the header fields and sanity check
 	for (i=0 ; i<sizeof(dmdl_t)/sizeof(int) ; i++)
-		((int *)pheader)[i] = LittleLong (((int *)buffer)[i]);
+		((int *)pheader)[i] = LittleLong(((int *)buffer)[i]);
 
 	if (pheader->skinheight > MAX_LBM_HEIGHT)
 	{
@@ -763,19 +763,19 @@ Mod_LoadFlexModel(const char *mod_name, const void *buffer, int modfilelen,
 			/* copy back all values */
 			dmdlheader.ident = IDALIASHEADER;
 			dmdlheader.version = ALIAS_VERSION;
-			dmdlheader.skinwidth = LittleLong (header->skinwidth);
-			dmdlheader.skinheight = LittleLong (header->skinheight);
-			dmdlheader.framesize = LittleLong (header->framesize);
+			dmdlheader.skinwidth = LittleLong(header->skinwidth);
+			dmdlheader.skinheight = LittleLong(header->skinheight);
+			dmdlheader.framesize = LittleLong(header->framesize);
 
-			dmdlheader.num_skins = LittleLong (header->num_skins);
-			dmdlheader.num_xyz = LittleLong (header->num_xyz);
-			dmdlheader.num_st = LittleLong (header->num_st);
-			dmdlheader.num_tris = LittleLong (header->num_tris);
-			dmdlheader.num_glcmds = LittleLong (header->num_glcmds);
-			dmdlheader.num_frames = LittleLong (header->num_frames);
+			dmdlheader.num_skins = LittleLong(header->num_skins);
+			dmdlheader.num_xyz = LittleLong(header->num_xyz);
+			dmdlheader.num_st = LittleLong(header->num_st);
+			dmdlheader.num_tris = LittleLong(header->num_tris);
+			dmdlheader.num_glcmds = LittleLong(header->num_glcmds);
+			dmdlheader.num_frames = LittleLong(header->num_frames);
 
 			// just skip header and meshes
-			dmdlheader.ofs_skins = sizeof(dmdl_t) + sizeof(short) * 2 * LittleLong (header->num_mesh_nodes);
+			dmdlheader.ofs_skins = sizeof(dmdl_t) + sizeof(short) * 2 * LittleLong(header->num_mesh_nodes);
 			dmdlheader.ofs_st = dmdlheader.ofs_skins + dmdlheader.num_skins * MAX_SKINNAME;
 			dmdlheader.ofs_tris = dmdlheader.ofs_st + dmdlheader.num_st * sizeof(dstvert_t);
 			dmdlheader.ofs_frames = dmdlheader.ofs_tris + dmdlheader.num_tris * sizeof(dtriangle_t);
@@ -1027,7 +1027,7 @@ Mod_LoadDKMModel(const char *mod_name, const void *buffer, int modfilelen,
 
 	// byte swap the header fields and sanity check
 	for (i=0 ; i<sizeof(dkm_header_t)/sizeof(int) ; i++)
-		((int *)&header)[i] = LittleLong (((int *)buffer)[i]);
+		((int *)&header)[i] = LittleLong(((int *)buffer)[i]);
 
 	if (header.ident != DKMHEADER)
 	{
@@ -1367,8 +1367,8 @@ Mod_SetParent(mnode_t *node, mnode_t *parent)
 		return;
 	}
 
-	Mod_SetParent (node->children[0], node);
-	Mod_SetParent (node->children[1], node);
+	Mod_SetParent(node->children[0], node);
+	Mod_SetParent(node->children[1], node);
 }
 
 /*
@@ -1404,12 +1404,7 @@ Mod_NumberLeafs(mleaf_t *leafs, mnode_t *node, int *r_leaftovis, int *r_vistolea
 		numvisleafs);
 }
 
-/*
-=================
-Mod_LoadNodes
-=================
-*/
-void
+static void
 Mod_LoadNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
 	int numleafs, mnode_t **nodes, int *numnodes, const byte *mod_base,
 	const lump_t *l)
@@ -1423,12 +1418,12 @@ Mod_LoadNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
 	}
 
 	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc(count * sizeof(*out));
+	out = Hunk_Alloc((count + EXTRA_LUMP_NODES) * sizeof(*out));
 
 	*nodes = out;
 	*numnodes = count;
@@ -1446,7 +1441,7 @@ Mod_LoadNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
 		planenum = LittleLong(in->planenum);
 		if (planenum  < 0 || planenum >= numplanes)
 		{
-			ri.Sys_Error(ERR_DROP, "%s: Incorrect %d < %d planenum.",
+			Com_Error(ERR_DROP, "%s: Incorrect %d < %d planenum.",
 					__func__, planenum, numplanes);
 		}
 		out->plane = planes + planenum;
@@ -1465,7 +1460,7 @@ Mod_LoadNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
 			{
 				if (leafnum  < 0 || leafnum >= *numnodes)
 				{
-					ri.Sys_Error(ERR_DROP, "%s: Incorrect %d nodenum as leaf.",
+					Com_Error(ERR_DROP, "%s: Incorrect %d nodenum as leaf.",
 							__func__, leafnum);
 				}
 
@@ -1476,7 +1471,7 @@ Mod_LoadNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
 				leafnum = -1 - leafnum;
 				if (leafnum  < 0 || leafnum >= numleafs)
 				{
-					ri.Sys_Error(ERR_DROP, "%s: Incorrect %d leafnum.",
+					Com_Error(ERR_DROP, "%s: Incorrect %d leafnum.",
 							__func__, leafnum);
 				}
 
@@ -1488,15 +1483,10 @@ Mod_LoadNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
 	Mod_SetParent(*nodes, NULL); /* sets nodes and leafs */
 
 	numvisleafs = 0;
-	Mod_NumberLeafs (leafs, *nodes, r_leaftovis, r_vistoleaf, &numvisleafs);
+	Mod_NumberLeafs(leafs, *nodes, r_leaftovis, r_vistoleaf, &numvisleafs);
 }
 
-/*
-=================
-Mod_LoadQNodes
-=================
-*/
-void
+static void
 Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
 	int numleafs, mnode_t **nodes, int *numnodes, const byte *mod_base,
 	const lump_t *l)
@@ -1510,12 +1500,12 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
 	}
 
 	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc(count * sizeof(*out));
+	out = Hunk_Alloc((count + EXTRA_LUMP_NODES) * sizeof(*out));
 
 	*nodes = out;
 	*numnodes = count;
@@ -1533,7 +1523,7 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 		planenum = LittleLong(in->planenum);
 		if (planenum  < 0 || planenum >= numplanes)
 		{
-			ri.Sys_Error(ERR_DROP, "%s: Incorrect %d < %d planenum.",
+			Com_Error(ERR_DROP, "%s: Incorrect %d < %d planenum.",
 					__func__, planenum, numplanes);
 		}
 		out->plane = planes + planenum;
@@ -1552,7 +1542,7 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 			{
 				if (leafnum  < 0 || leafnum >= *numnodes)
 				{
-					ri.Sys_Error(ERR_DROP, "%s: Incorrect %d nodenum as leaf.",
+					Com_Error(ERR_DROP, "%s: Incorrect %d nodenum as leaf.",
 							__func__, leafnum);
 				}
 
@@ -1563,7 +1553,7 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 				leafnum = -1 - leafnum;
 				if (leafnum  < 0 || leafnum >= numleafs)
 				{
-					ri.Sys_Error(ERR_DROP, "%s: Incorrect %d leafnum.",
+					Com_Error(ERR_DROP, "%s: Incorrect %d leafnum.",
 							__func__, leafnum);
 				}
 
@@ -1575,36 +1565,23 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 	Mod_SetParent(*nodes, NULL); /* sets nodes and leafs */
 
 	numvisleafs = 0;
-	Mod_NumberLeafs (leafs, *nodes, r_leaftovis, r_vistoleaf, &numvisleafs);
+	Mod_NumberLeafs(leafs, *nodes, r_leaftovis, r_vistoleaf, &numvisleafs);
 }
 
-/*
-=================
-Mod_LoadVisibility
-=================
-*/
 void
-Mod_LoadVisibility (dvis_t **vis, const byte *mod_base, const lump_t *l)
+Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
+	int numleafs, mnode_t **nodes, int *numnodes, const byte *mod_base,
+	const lump_t *l, int ident)
 {
-	dvis_t	*out;
-	int	i;
-
-	if (!l->filelen)
+	if (ident == IDBSPHEADER)
 	{
-		*vis = NULL;
-		return;
+		Mod_LoadNodes(name, planes, numplanes, leafs, numleafs, nodes, numnodes,
+			mod_base, l);
 	}
-
-	out = Hunk_Alloc(l->filelen);
-	*vis = out;
-	memcpy(out, mod_base + l->fileofs, l->filelen);
-
-	out->numclusters = LittleLong(out->numclusters);
-
-	for (i = 0; i < out->numclusters; i++)
+	else
 	{
-		out->bitofs[i][0] = LittleLong(out->bitofs[i][0]);
-		out->bitofs[i][1] = LittleLong(out->bitofs[i][1]);
+		Mod_LoadQNodes(name, planes, numplanes, leafs, numleafs, nodes, numnodes,
+			mod_base, l);
 	}
 }
 
@@ -1617,7 +1594,7 @@ extra for skybox
 */
 void
 Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,
-	const byte *mod_base, const lump_t *l, int extra)
+	const byte *mod_base, const lump_t *l)
 {
 	dvertex_t	*in;
 	mvertex_t	*out;
@@ -1627,19 +1604,19 @@ Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
 	}
 
 	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc((count + extra)*sizeof(*out));
+	out = Hunk_Alloc((count + EXTRA_LUMP_VERTEXES) * sizeof(*out));
 
 	/*
 	 * FIXME: Recheck with soft render
 	 * Fix for the problem where the games dumped core
 	 * when changing levels.
 	 */
-	memset(out, 0, (count + extra) * sizeof(*out));
+	memset(out, 0, (count + EXTRA_LUMP_VERTEXES) * sizeof(*out));
 
 	*vertexes = out;
 	*numvertexes = count;
@@ -1658,19 +1635,107 @@ Mod_LoadLighting
 =================
 */
 void
-Mod_LoadLighting(byte **lightdata, const byte *mod_base, const lump_t *l)
+Mod_LoadLighting(byte **lightdata, int *size, const byte *mod_base, const lump_t *l)
 {
-	int	size;
-
 	if (!l->filelen)
 	{
 		*lightdata = NULL;
+		*size = 0;
 		return;
 	}
 
-	size = l->filelen;
-	*lightdata = Hunk_Alloc(size);
-	memcpy(*lightdata, mod_base + l->fileofs, size);
+	*size = l->filelen;
+	*lightdata = Hunk_Alloc(*size);
+	memcpy(*lightdata, mod_base + l->fileofs, *size);
+}
+
+void
+Mod_LoadSetSurfaceLighting(byte *lightdata, int size, msurface_t *out, byte *styles, int lightofs)
+{
+	int i;
+
+	/* lighting info */
+	for (i = 0; i < MAXLIGHTMAPS; i++)
+	{
+		out->styles[i] = styles[i];
+	}
+
+	i = LittleLong(lightofs);
+	if (i == -1 || lightdata == NULL || i >= size)
+	{
+		out->samples = NULL;
+	}
+	else
+	{
+		out->samples = lightdata + i;
+	}
+}
+
+/*
+ * Fills in s->texturemins[] and s->extents[]
+ */
+void
+Mod_CalcSurfaceExtents(int *surfedges, mvertex_t *vertexes, medge_t *edges,
+	msurface_t *s)
+{
+	float mins[2], maxs[2], val;
+	int i;
+	mtexinfo_t *tex;
+	int bmins[2], bmaxs[2];
+
+	mins[0] = mins[1] = 999999;
+	maxs[0] = maxs[1] = -99999;
+
+	tex = s->texinfo;
+
+	for (i = 0; i < s->numedges; i++)
+	{
+		int e, j;
+		mvertex_t *v;
+
+		e = surfedges[s->firstedge + i];
+
+		if (e >= 0)
+		{
+			v = &vertexes[edges[e].v[0]];
+		}
+		else
+		{
+			v = &vertexes[edges[-e].v[1]];
+		}
+
+		for (j = 0; j < 2; j++)
+		{
+			val = v->position[0] * tex->vecs[j][0] +
+				  v->position[1] * tex->vecs[j][1] +
+				  v->position[2] * tex->vecs[j][2] +
+				  tex->vecs[j][3];
+
+			if (val < mins[j])
+			{
+				mins[j] = val;
+			}
+
+			if (val > maxs[j])
+			{
+				maxs[j] = val;
+			}
+		}
+	}
+
+	for (i = 0; i < 2; i++)
+	{
+		bmins[i] = floor(mins[i] / 16);
+		bmaxs[i] = ceil(maxs[i] / 16);
+
+		s->texturemins[i] = bmins[i] * 16;
+		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
+		if (s->extents[i] < 16)
+		{
+			/* take at least one cache block */
+			s->extents[i] = 16;
+		}
+	}
 }
 
 /*
@@ -1683,7 +1748,7 @@ extra for skybox in soft render
 void
 Mod_LoadTexinfo(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
 	const byte *mod_base, const lump_t *l, findimage_t find_image,
-	struct image_s *notexture, int extra)
+	struct image_s *notexture)
 {
 	texinfo_t *in;
 	mtexinfo_t *out, *step;
@@ -1693,12 +1758,12 @@ Mod_LoadTexinfo(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
 	}
 
 	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc((count + extra)*sizeof(*out));
+	out = Hunk_Alloc((count + EXTRA_LUMP_TEXINFO) * sizeof(*out));
 
 	*texinfo = out;
 	*numtexinfo = count;
@@ -1714,9 +1779,9 @@ Mod_LoadTexinfo(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
 			out->vecs[1][j] = LittleFloat(in->vecs[1][j]);
 		}
 
-		out->flags = LittleLong (in->flags);
+		out->flags = LittleLong(in->flags);
 
-		next = LittleLong (in->nexttexinfo);
+		next = LittleLong(in->nexttexinfo);
 		if (next > 0)
 		{
 			out->next = *texinfo + next;
@@ -1760,9 +1825,9 @@ Mod_LoadEdges
 extra is used for skybox, which adds 6 surfaces
 =================
 */
-void
+static void
 Mod_LoadEdges(const char *name, medge_t **edges, int *numedges,
-	const byte *mod_base, const lump_t *l, int extra)
+	const byte *mod_base, const lump_t *l)
 {
 	dedge_t *in;
 	medge_t *out;
@@ -1771,12 +1836,12 @@ Mod_LoadEdges(const char *name, medge_t **edges, int *numedges,
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
 	}
 
 	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc((count + extra) * sizeof(*out));
+	out = Hunk_Alloc((count + EXTRA_LUMP_EDGES) * sizeof(*out));
 
 	*edges = out;
 	*numedges = count;
@@ -1795,9 +1860,9 @@ Mod_LoadQEdges
 extra is used for skybox, which adds 6 surfaces
 =================
 */
-void
+static void
 Mod_LoadQEdges(const char *name, medge_t **edges, int *numedges,
-	const byte *mod_base, const lump_t *l, int extra)
+	const byte *mod_base, const lump_t *l)
 {
 	dqedge_t *in;
 	medge_t *out;
@@ -1806,12 +1871,12 @@ Mod_LoadQEdges(const char *name, medge_t **edges, int *numedges,
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
 	}
 
 	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc((count + extra) * sizeof(*out));
+	out = Hunk_Alloc((count + EXTRA_LUMP_EDGES) * sizeof(*out));
 
 	*edges = out;
 	*numedges = count;
@@ -1823,52 +1888,17 @@ Mod_LoadQEdges(const char *name, medge_t **edges, int *numedges,
 	}
 }
 
-/*
-=================
-Mod_LoadPlanes
-
-extra is used for skybox, which adds 6 surfaces
-=================
-*/
 void
-Mod_LoadPlanes(const char *name, cplane_t **planes, int *numplanes,
-	const byte *mod_base, const lump_t *l, int extra)
+Mod_LoadQBSPEdges(const char *name, medge_t **edges, int *numedges,
+	const byte *mod_base, const lump_t *l, int ident)
 {
-	int i;
-	cplane_t	*out;
-	dplane_t 	*in;
-	int			count;
-
-	in = (void *)(mod_base + l->fileofs);
-
-	if (l->filelen % sizeof(*in))
+	if (ident == IDBSPHEADER)
 	{
-		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, name);
+		Mod_LoadEdges(name, edges, numedges, mod_base, l);
 	}
-
-	count = l->filelen / sizeof(*in);
-	// FIXME: why double of count
-	out = Hunk_Alloc((count * 2 + extra) * sizeof(*out));
-
-	*planes = out;
-	*numplanes = count;
-
-	for ( i=0 ; i<count ; i++, in++, out++)
+	else
 	{
-		int bits, j;
-
-		bits = 0;
-		for (j=0 ; j<3 ; j++)
-		{
-			out->normal[j] = LittleFloat (in->normal[j]);
-			if (out->normal[j] < 0)
-				bits |= 1<<j;
-		}
-
-		out->dist = LittleFloat (in->dist);
-		out->type = LittleLong (in->type);
-		out->signbits = bits;
+		Mod_LoadQEdges(name, edges, numedges, mod_base, l);
 	}
 }
 
@@ -1879,7 +1909,7 @@ Mod_LoadSurfedges
 */
 void
 Mod_LoadSurfedges(const char *name, int **surfedges, int *numsurfedges,
-	const byte *mod_base, const lump_t *l, int extra)
+	const byte *mod_base, const lump_t *l)
 {
 	int		i, count;
 	int		*in, *out;
@@ -1888,46 +1918,20 @@ Mod_LoadSurfedges(const char *name, int **surfedges, int *numsurfedges,
 
 	if (l->filelen % sizeof(*in))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: funny lump size in %s",
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
 	}
 
 	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc((count + extra)*sizeof(*out));	// extra for skybox
+	out = Hunk_Alloc((count + EXTRA_LUMP_SURFEDGES) * sizeof(*out));	// extra for skybox
 
 	*surfedges = out;
 	*numsurfedges = count;
 
 	for ( i=0 ; i<count ; i++)
-		out[i] = LittleLong (in[i]);
-}
-
-/*
-=================
-Mod_LoadSurfedges
-
-calculate the size that Hunk_Alloc(), called by Mod_Load*() from Mod_LoadBrushModel(),
-will use (=> includes its padding), so we'll know how big the hunk needs to be
-extra is used for skybox, which adds 6 surfaces
-=================
-*/
-int
-Mod_CalcLumpHunkSize(const lump_t *l, int inSize, int outSize, int extra)
-{
-	if (l->filelen % inSize)
 	{
-		// Mod_Load*() will error out on this because of "funny size"
-		// don't error out here because in Mod_Load*() it can print the functionname
-		// (=> tells us what kind of lump) before shutting down the game
-		return 0;
+		out[i] = LittleLong(in[i]);
 	}
-
-	int count = l->filelen / inSize + extra;
-	int size = count * outSize;
-
-	// round to cacheline, like Hunk_Alloc() does
-	size = (size + 31) & ~31;
-	return size;
 }
 
 /*
@@ -1940,7 +1944,7 @@ Mod_PointInLeaf(const vec3_t p, mnode_t *node)
 {
 	if (!node)
 	{
-		ri.Sys_Error(ERR_DROP, "%s: bad node.", __func__);
+		Com_Error(ERR_DROP, "%s: bad node.", __func__);
 		return NULL;
 	}
 
@@ -2053,4 +2057,404 @@ Mod_LoadBSPX(int filesize, const byte *mod_base)
 
 	// success
 	return xheader;
+}
+
+/* Extension to support lightmaps that aren't tied to texture scale. */
+int
+Mod_LoadBSPXDecoupledLM(const dlminfo_t* lminfos, int surfnum, msurface_t *out)
+{
+	const dlminfo_t *lminfo;
+	unsigned short lmwidth, lmheight;
+
+	if (lminfos == NULL) {
+		return -1;
+	}
+
+	lminfo = lminfos + surfnum;
+
+	lmwidth = LittleShort(lminfo->lmwidth);
+	lmheight = LittleShort(lminfo->lmheight);
+
+	if (lmwidth <= 0 || lmheight <= 0) {
+		return -1;
+	}
+
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			out->lmvecs[i][j] = LittleFloat(lminfo->vecs[i][j]);
+		}
+	}
+
+	out->extents[0] = (short)(lmwidth - 1);
+	out->extents[1] = (short)(lmheight - 1);
+	out->lmshift = 0;
+	out->texturemins[0] = 0;
+	out->texturemins[1] = 0;
+
+	float v0 = VectorLength(out->lmvecs[0]);
+	out->lmvlen[0] = v0 > 0.0f ? 1.0f / v0 : 0.0f;
+
+	float v1 = VectorLength(out->lmvecs[1]);
+	out->lmvlen[1] = v1 > 0.0f ? 1.0f / v1 : 0.0f;
+
+	return LittleLong(lminfo->lightofs);
+}
+
+static void
+Mod_LoadMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned int *nummarksurfaces,
+	msurface_t *surfaces, int numsurfaces, const byte *mod_base, const lump_t *l)
+{
+	int i, count;
+	short *in;
+	msurface_t **out;
+
+	in = (void *)(mod_base + l->fileofs);
+
+	if (l->filelen % sizeof(*in))
+	{
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, name);
+	}
+
+	count = l->filelen / sizeof(*in);
+	out = Hunk_Alloc(count * sizeof(*out));
+
+	*marksurfaces = out;
+	*nummarksurfaces = count;
+
+	for (i = 0; i < count; i++)
+	{
+		int j;
+
+		j = LittleShort(in[i]) & 0xFFFF;
+
+		if ((j < 0) || (j >= numsurfaces))
+		{
+			Com_Error(ERR_DROP, "%s: bad surface number",
+					__func__);
+		}
+
+		out[i] = surfaces + j;
+	}
+}
+
+static void
+Mod_LoadQMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned int *nummarksurfaces,
+	msurface_t *surfaces, int numsurfaces, const byte *mod_base, const lump_t *l)
+{
+	int i, count;
+	int *in;
+	msurface_t **out;
+
+	in = (void *)(mod_base + l->fileofs);
+
+	if (l->filelen % sizeof(*in))
+	{
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, name);
+	}
+
+	count = l->filelen / sizeof(*in);
+	out = Hunk_Alloc(count * sizeof(*out));
+
+	*marksurfaces = out;
+	*nummarksurfaces = count;
+
+	for (i = 0; i < count; i++)
+	{
+		int j;
+		j = LittleLong(in[i]) & 0xFFFFFFFF;
+
+		if ((j < 0) || (j >= numsurfaces))
+		{
+			Com_Error(ERR_DROP, "%s: bad surface number",
+					__func__);
+		}
+
+		out[i] = surfaces + j;
+	}
+}
+
+void
+Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned int *nummarksurfaces,
+	msurface_t *surfaces, int numsurfaces, const byte *mod_base, const lump_t *l, int ident)
+{
+	if (ident == IDBSPHEADER)
+	{
+		Mod_LoadMarksurfaces(name, marksurfaces, nummarksurfaces,
+			surfaces, numsurfaces, mod_base, l);
+	}
+	else
+	{
+		Mod_LoadQMarksurfaces(name, marksurfaces, nummarksurfaces,
+			surfaces, numsurfaces, mod_base, l);
+	}
+}
+
+static void
+Mod_LoadLeafs(const char *name, mleaf_t **leafs, int *numleafs,
+	msurface_t **marksurfaces, unsigned int nummarksurfaces,
+	const byte *mod_base, const lump_t *l)
+{
+	dleaf_t *in;
+	mleaf_t *out;
+	int i, j, count;
+
+	in = (void *)(mod_base + l->fileofs);
+
+	if (l->filelen % sizeof(*in))
+	{
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, name);
+	}
+
+	count = l->filelen / sizeof(*in);
+	out = Hunk_Alloc((count + EXTRA_LUMP_LEAFS) * sizeof(*out));
+
+	*leafs = out;
+	*numleafs = count;
+
+	for (i = 0; i < count; i++, in++, out++)
+	{
+		unsigned int firstleafface;
+
+		for (j = 0; j < 3; j++)
+		{
+			out->minmaxs[j] = LittleShort(in->mins[j]);
+			out->minmaxs[3 + j] = LittleShort(in->maxs[j]);
+		}
+
+		out->contents = LittleLong(in->contents);
+		out->cluster = LittleShort(in->cluster);
+		out->area = LittleShort(in->area);
+
+		// make unsigned long from signed short
+		firstleafface = LittleShort(in->firstleafface) & 0xFFFF;
+		out->nummarksurfaces = LittleShort(in->numleaffaces) & 0xFFFF;
+
+		out->firstmarksurface = marksurfaces + firstleafface;
+		if ((firstleafface + out->nummarksurfaces) > nummarksurfaces)
+		{
+			Com_Error(ERR_DROP, "%s: wrong marksurfaces position in %s",
+				__func__, name);
+		}
+	}
+}
+
+static void
+Mod_LoadQLeafs(const char *name, mleaf_t **leafs, int *numleafs,
+	msurface_t **marksurfaces, unsigned int nummarksurfaces,
+	const byte *mod_base, const lump_t *l)
+{
+	dqleaf_t *in;
+	mleaf_t *out;
+	int i, j, count;
+
+	in = (void *)(mod_base + l->fileofs);
+
+	if (l->filelen % sizeof(*in))
+	{
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, name);
+	}
+
+	count = l->filelen / sizeof(*in);
+	out = Hunk_Alloc((count + EXTRA_LUMP_LEAFS) * sizeof(*out));
+
+	*leafs = out;
+	*numleafs = count;
+
+	for (i = 0; i < count; i++, in++, out++)
+	{
+		unsigned int firstleafface;
+
+		for (j = 0; j < 3; j++)
+		{
+			out->minmaxs[j] = LittleFloat(in->mins[j]);
+			out->minmaxs[3 + j] = LittleFloat(in->maxs[j]);
+		}
+
+		out->contents = LittleLong(in->contents);
+		out->cluster = LittleLong(in->cluster);
+		out->area = LittleLong(in->area);
+
+		// make unsigned long from signed short
+		firstleafface = LittleLong(in->firstleafface) & 0xFFFFFFFF;
+		out->nummarksurfaces = LittleLong(in->numleaffaces) & 0xFFFFFFFF;
+
+		out->firstmarksurface = marksurfaces + firstleafface;
+		if ((firstleafface + out->nummarksurfaces) > nummarksurfaces)
+		{
+			Com_Error(ERR_DROP, "%s: wrong marksurfaces position in %s",
+				__func__, name);
+		}
+	}
+}
+
+void
+Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
+	msurface_t **marksurfaces, unsigned int nummarksurfaces,
+	const byte *mod_base, const lump_t *l, int ident)
+{
+	if (ident == IDBSPHEADER)
+	{
+		Mod_LoadLeafs(name, leafs, numleafs, marksurfaces, nummarksurfaces,
+			mod_base, l);
+	}
+	else
+	{
+		Mod_LoadQLeafs(name, leafs, numleafs, marksurfaces, nummarksurfaces,
+			mod_base, l);
+	}
+}
+
+/* Need to clean */
+struct rctx_s {
+	const byte *data;
+	int ofs, size;
+};
+
+static byte ReadByte(struct rctx_s *ctx)
+{
+	if (ctx->ofs >= ctx->size)
+	{
+		ctx->ofs++;
+		return 0;
+	}
+	return ctx->data[ctx->ofs++];
+}
+
+static int ReadInt(struct rctx_s *ctx)
+{
+	int r = (int)ReadByte(ctx)<<0;
+		r|= (int)ReadByte(ctx)<<8;
+		r|= (int)ReadByte(ctx)<<16;
+		r|= (int)ReadByte(ctx)<<24;
+	return r;
+}
+
+static float ReadFloat(struct rctx_s *ctx)
+{
+	union {float f; int i;} u;
+	u.i = ReadInt(ctx);
+	return u.f;
+}
+
+bspxlightgrid_t*
+Mod_LoadBSPXLightGrid(const bspx_header_t *bspx_header, const byte *mod_base)
+{
+	vec3_t step, mins;
+	int size[3];
+	bspxlightgrid_t *grid;
+	unsigned int numstyles, numnodes, numleafs, rootnode;
+	unsigned int nodestart, leafsamps = 0, i, j, k, s;
+	struct bspxlgsamp_s *samp;
+	struct rctx_s ctx = {0};
+
+	ctx.data = Mod_LoadBSPXFindLump(bspx_header, "LIGHTGRID_OCTREE", &ctx.size, mod_base);
+	if (!ctx.data)
+	{
+		return NULL;
+	}
+
+	for (j = 0; j < 3; j++)
+		step[j] = ReadFloat(&ctx);
+	for (j = 0; j < 3; j++)
+		size[j] = ReadInt(&ctx);
+	for (j = 0; j < 3; j++)
+		mins[j] = ReadFloat(&ctx);
+
+	numstyles = ReadByte(&ctx);	//urgh, misaligned the entire thing
+	rootnode = ReadInt(&ctx);
+	numnodes = ReadInt(&ctx);
+	nodestart = ctx.ofs;
+	ctx.ofs += (3+8)*4*numnodes;
+	numleafs = ReadInt(&ctx);
+	for (i = 0; i < numleafs; i++)
+	{
+		unsigned int lsz[3];
+		ctx.ofs += 3*4;
+		for (j = 0; j < 3; j++)
+			lsz[j] = ReadInt(&ctx);
+		j = lsz[0]*lsz[1]*lsz[2];
+		leafsamps += j;
+		while (j --> 0)
+		{	//this loop is annonying, memcpy dreams...
+			s = ReadByte(&ctx);
+			if (s == 255)
+				continue;
+			ctx.ofs += s*4;
+		}
+	}
+
+	grid = Hunk_Alloc(sizeof(*grid) + sizeof(*grid->leafs)*numleafs + sizeof(*grid->nodes)*numnodes + sizeof(struct bspxlgsamp_s)*leafsamps);
+	memset(grid, 0xcc, sizeof(*grid) + sizeof(*grid->leafs)*numleafs + sizeof(*grid->nodes)*numnodes + sizeof(struct bspxlgsamp_s)*leafsamps);
+	grid->leafs = (void*)(grid+1);
+	grid->nodes = (void*)(grid->leafs + numleafs);
+	samp = (void*)(grid->nodes+numnodes);
+
+	for (j = 0; j < 3; j++)
+		grid->gridscale[j] = 1/step[j];	//prefer it as a multiply
+	VectorCopy(mins, grid->mins);
+	VectorCopy(size, grid->count);
+	grid->numnodes = numnodes;
+	grid->numleafs = numleafs;
+	grid->rootnode = rootnode;
+	(void)numstyles;
+
+	//rewind to the nodes. *sigh*
+	ctx.ofs = nodestart;
+	for (i = 0; i < numnodes; i++)
+	{
+		for (j = 0; j < 3; j++)
+			grid->nodes[i].mid[j] = ReadInt(&ctx);
+		for (j = 0; j < 8; j++)
+			grid->nodes[i].child[j] = ReadInt(&ctx);
+	}
+	ctx.ofs += 4;
+	for (i = 0; i < numleafs; i++)
+	{
+		for (j = 0; j < 3; j++)
+			grid->leafs[i].mins[j] = ReadInt(&ctx);
+		for (j = 0; j < 3; j++)
+			grid->leafs[i].size[j] = ReadInt(&ctx);
+
+		grid->leafs[i].rgbvalues = samp;
+
+		j = grid->leafs[i].size[0]*grid->leafs[i].size[1]*grid->leafs[i].size[2];
+		while (j --> 0)
+		{
+			s = ReadByte(&ctx);
+			if (s == 0xff)
+				memset(samp, 0xff, sizeof(*samp));
+			else
+			{
+				for (k = 0; k < s; k++)
+				{
+					if (k >= 4)
+						ReadInt(&ctx);
+					else
+					{
+						samp->map[k].style = ReadByte(&ctx);
+						samp->map[k].rgb[0] = ReadByte(&ctx);
+						samp->map[k].rgb[1] = ReadByte(&ctx);
+						samp->map[k].rgb[2] = ReadByte(&ctx);
+					}
+				}
+				for (; k < 4; k++)
+				{
+					samp->map[k].style = (byte)~0u;
+					samp->map[k].rgb[0] =
+					samp->map[k].rgb[1] =
+					samp->map[k].rgb[2] = 0;
+				}
+			}
+			samp++;
+		}
+	}
+
+	if (ctx.ofs != ctx.size)
+		grid = NULL;
+
+	return grid;
 }

@@ -14,20 +14,35 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- * 02111-1307, USA.
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+ * USA.
  *
  * =======================================================================
  *
- * Corresponding header for crc.c
+ * Shared model load code
  *
  * =======================================================================
  */
 
-#ifndef CO_CRC_H
-#define CO_CRC_H
+#ifndef COMMON_CMODEL_H
+#define COMMON_CMODEL_H
 
-void CRC_Init(unsigned short *crcvalue);
-unsigned short CRC_Block(const byte *start, int count);
+#define EXTRA_LUMP_VERTEXES 8
+#define EXTRA_LUMP_TEXINFO 6
+#define EXTRA_LUMP_SURFEDGES 24
+#define EXTRA_LUMP_EDGES 13
+#define EXTRA_LUMP_FACES 6
+#define EXTRA_LUMP_PLANES 12
+#define EXTRA_LUMP_LEAFBRUSHES 2
+#define EXTRA_LUMP_BRUSHES 1
+#define EXTRA_LUMP_NODES 6
+#define EXTRA_LUMP_BRUSHSIDES 6
+#define EXTRA_LUMP_LEAFS 1
+
+extern int Mod_CalcLumpHunkSize(const lump_t *l, int inSize, int outSize, int extra);
+extern void Mod_LoadVisibility(const char *name, dvis_t **vis, int *numvisibility,
+	const byte *mod_base, const lump_t *l);
+extern void Mod_LoadPlanes(const char *name, cplane_t **planes, int *numplanes,
+	const byte *mod_base, const lump_t *l);
 
 #endif

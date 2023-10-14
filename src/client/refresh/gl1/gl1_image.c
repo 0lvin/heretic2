@@ -211,7 +211,7 @@ R_TextureMode(char *string)
 		ri.Cvar_SetValue("r_anisotropic", 0.0);
 	}
 
-	const char* nolerplist = gl_nolerp_list->string;
+	const char* nolerplist = r_nolerp_list->string;
 	const char* lerplist = r_lerp_list->string;
 	qboolean unfiltered2D = r_2D_unfiltered->value != 0;
 
@@ -247,7 +247,7 @@ R_TextureMode(char *string)
 		{
 			if (nolerp)
 			{
-				// this texture shouldn't be filtered at all (no gl_nolerp_list or r_2D_unfiltered case)
+				// this texture shouldn't be filtered at all (no r_nolerp_list or r_2D_unfiltered case)
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			}
@@ -633,7 +633,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 	if (scaled_width * scaled_height > sizeof(scaled) / 4)
 	{
 		// this can't really happen (because they're clamped to 256 above), but whatever
-		ri.Sys_Error(ERR_DROP, "R_Upload32: too big");
+		Com_Error(ERR_DROP, "R_Upload32: too big");
 	}
 
 	/* scan the texture for any non-255 alpha */
@@ -867,9 +867,9 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		// *unless* the texture is on the r_lerp_list
 		nolerp = (r_lerp_list->string == NULL) || (strstr(r_lerp_list->string, name) == NULL);
 	}
-	else if (gl_nolerp_list != NULL && gl_nolerp_list->string != NULL)
+	else if (r_nolerp_list != NULL && r_nolerp_list->string != NULL)
 	{
-		nolerp = strstr(gl_nolerp_list->string, name) != NULL;
+		nolerp = strstr(r_nolerp_list->string, name) != NULL;
 	}
 
 	/* find a free image_t */
@@ -885,7 +885,7 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	{
 		if (numgltextures == MAX_GLTEXTURES)
 		{
-			ri.Sys_Error(ERR_DROP, "MAX_GLTEXTURES");
+			Com_Error(ERR_DROP, "MAX_GLTEXTURES");
 		}
 
 		numgltextures++;
@@ -895,7 +895,7 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 
 	if (strlen(name) >= sizeof(image->name))
 	{
-		ri.Sys_Error(ERR_DROP, "%s: \"%s\" is too long", __func__, name);
+		Com_Error(ERR_DROP, "%s: \"%s\" is too long", __func__, name);
 	}
 
 	strcpy(image->name, name);

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 2018-2019 Krzysztof Kondrak
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,14 +27,12 @@
 
 #include "header/local.h"
 
-extern gllightmapstate_t gl_lms;
-
-void RI_BuildLightMap(msurface_t *surf, byte *dest, int stride);
+#define LIGHTMAP_BYTES 4
 
 void
 LM_InitBlock(void)
 {
-	memset(gl_lms.allocated, 0, sizeof(gl_lms.allocated));
+	memset(vk_lms.allocated, 0, sizeof(vk_lms.allocated));
 }
 
 void
@@ -47,12 +46,8 @@ LM_UploadBlock(qboolean dynamic)
 	}
 	else
 	{
-		texture = gl_lms.current_lightmap_texture;
+		texture = vk_lms.current_lightmap_texture;
 	}
-
-	R_Bind(gl_state.lightmap_textures + texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	if (dynamic)
 	{
@@ -61,24 +56,37 @@ LM_UploadBlock(qboolean dynamic)
 
 		for (i = 0; i < BLOCK_WIDTH; i++)
 		{
-			if (gl_lms.allocated[i] > height)
+			if (vk_lms.allocated[i] > height)
 			{
-				height = gl_lms.allocated[i];
+				height = vk_lms.allocated[i];
 			}
 		}
 
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, BLOCK_WIDTH,
-				height, GL_LIGHTMAP_FORMAT, GL_UNSIGNED_BYTE,
-				gl_lms.lightmap_buffer);
+		QVk_UpdateTextureData(&vk_state.lightmap_textures[texture], vk_lms.lightmap_buffer, 0, 0, BLOCK_WIDTH, height);
 	}
 	else
 	{
-		gl_lms.internal_format = GL_LIGHTMAP_FORMAT;
-		glTexImage2D(GL_TEXTURE_2D, 0, gl_lms.internal_format,
-				BLOCK_WIDTH, BLOCK_HEIGHT, 0, GL_LIGHTMAP_FORMAT,
-				GL_UNSIGNED_BYTE, gl_lms.lightmap_buffer);
+		if (vk_state.lightmap_textures[texture].resource.image != VK_NULL_HANDLE)
+		{
+			/* FIXME: Incorrect lightmap load: mgu3m2 */
+			QVk_UpdateTextureData(&vk_state.lightmap_textures[texture], vk_lms.lightmap_buffer, 0, 0, BLOCK_WIDTH, BLOCK_HEIGHT);
+		}
+		else
+		{
+			QVVKTEXTURE_CLEAR(vk_state.lightmap_textures[texture]);
+			QVk_CreateTexture(&vk_state.lightmap_textures[texture], vk_lms.lightmap_buffer,
+				BLOCK_WIDTH, BLOCK_HEIGHT, vk_current_lmap_sampler, false);
+			QVk_DebugSetObjectName((uint64_t)vk_state.lightmap_textures[texture].resource.image,
+				VK_OBJECT_TYPE_IMAGE, va("Image: dynamic lightmap #%d", texture));
+			QVk_DebugSetObjectName((uint64_t)vk_state.lightmap_textures[texture].imageView,
+				VK_OBJECT_TYPE_IMAGE_VIEW, va("Image View: dynamic lightmap #%d", texture));
+			QVk_DebugSetObjectName((uint64_t)vk_state.lightmap_textures[texture].descriptorSet,
+				VK_OBJECT_TYPE_DESCRIPTOR_SET, va("Descriptor Set: dynamic lightmap #%d", texture));
+			QVk_DebugSetObjectName((uint64_t)vk_state.lightmap_textures[texture].resource.memory,
+				VK_OBJECT_TYPE_DEVICE_MEMORY, va("Memory: dynamic lightmap #%d", texture));
+		}
 
-		if (++gl_lms.current_lightmap_texture == MAX_LIGHTMAPS)
+		if (++vk_lms.current_lightmap_texture == MAX_LIGHTMAPS)
 		{
 			Com_Error(ERR_DROP,
 					"%s() - MAX_LIGHTMAPS exceeded\n", __func__);
@@ -104,14 +112,14 @@ LM_AllocBlock(int w, int h, int *x, int *y)
 
 		for (j = 0; j < w; j++)
 		{
-			if (gl_lms.allocated[i + j] >= best)
+			if (vk_lms.allocated[i + j] >= best)
 			{
 				break;
 			}
 
-			if (gl_lms.allocated[i + j] > best2)
+			if (vk_lms.allocated[i + j] > best2)
 			{
-				best2 = gl_lms.allocated[i + j];
+				best2 = vk_lms.allocated[i + j];
 			}
 		}
 
@@ -130,14 +138,14 @@ LM_AllocBlock(int w, int h, int *x, int *y)
 
 	for (i = 0; i < w; i++)
 	{
-		gl_lms.allocated[*x + i] = best + h;
+		vk_lms.allocated[*x + i] = best + h;
 	}
 
 	return true;
 }
 
 void
-LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa)
+Vk_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa)
 {
 	int i, lnumverts;
 	medge_t *pedges, *r_pedge;
@@ -223,7 +231,7 @@ LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa)
 }
 
 void
-LM_CreateSurfaceLightmap(msurface_t *surf)
+Vk_CreateSurfaceLightmap(msurface_t *surf)
 {
 	int smax, tmax;
 	byte *base;
@@ -249,9 +257,9 @@ LM_CreateSurfaceLightmap(msurface_t *surf)
 		}
 	}
 
-	surf->lightmaptexturenum = gl_lms.current_lightmap_texture;
+	surf->lightmaptexturenum = vk_lms.current_lightmap_texture;
 
-	base = gl_lms.lightmap_buffer;
+	base = vk_lms.lightmap_buffer;
 	base += (surf->light_t * BLOCK_WIDTH + surf->light_s) * LIGHTMAP_BYTES;
 
 	R_SetCacheState(surf, &r_newrefdef);
@@ -259,13 +267,12 @@ LM_CreateSurfaceLightmap(msurface_t *surf)
 }
 
 void
-LM_BeginBuildingLightmaps(model_t *m)
+Vk_BeginBuildingLightmaps(model_t *m)
 {
 	static lightstyle_t lightstyles[MAX_LIGHTSTYLES];
 	int i;
-	unsigned dummy[128 * 128] = {0};
 
-	memset(gl_lms.allocated, 0, sizeof(gl_lms.allocated));
+	memset(vk_lms.allocated, 0, sizeof(vk_lms.allocated));
 
 	r_framecount = 1; /* no dlightcache */
 
@@ -282,25 +289,34 @@ LM_BeginBuildingLightmaps(model_t *m)
 
 	r_newrefdef.lightstyles = lightstyles;
 
-	if (!gl_state.lightmap_textures)
+	vk_lms.current_lightmap_texture = 0;
+
+	/*
+	** initialize the dynamic lightmap textures
+	*/
+	if (vk_state.lightmap_textures[DYNLIGHTMAP_OFFSET].resource.image == VK_NULL_HANDLE)
 	{
-		gl_state.lightmap_textures = TEXNUM_LIGHTMAPS;
+		for (i = DYNLIGHTMAP_OFFSET; i < MAX_LIGHTMAPS*2; i++)
+		{
+			unsigned	dummy[BLOCK_WIDTH * BLOCK_HEIGHT];
+
+			QVVKTEXTURE_CLEAR(vk_state.lightmap_textures[i]);
+			QVk_CreateTexture(&vk_state.lightmap_textures[i], (unsigned char*)dummy,
+				BLOCK_WIDTH, BLOCK_HEIGHT, vk_current_lmap_sampler, false);
+			QVk_DebugSetObjectName((uint64_t)vk_state.lightmap_textures[i].resource.image,
+				VK_OBJECT_TYPE_IMAGE, va("Image: dynamic lightmap #%d", i));
+			QVk_DebugSetObjectName((uint64_t)vk_state.lightmap_textures[i].imageView,
+				VK_OBJECT_TYPE_IMAGE_VIEW, va("Image View: dynamic lightmap #%d", i));
+			QVk_DebugSetObjectName((uint64_t)vk_state.lightmap_textures[i].descriptorSet,
+				VK_OBJECT_TYPE_DESCRIPTOR_SET, va("Descriptor Set: dynamic lightmap #%d", i));
+			QVk_DebugSetObjectName((uint64_t)vk_state.lightmap_textures[i].resource.memory,
+				VK_OBJECT_TYPE_DEVICE_MEMORY, va("Memory: dynamic lightmap #%d", i));
+		}
 	}
-
-	gl_lms.current_lightmap_texture = 1;
-	gl_lms.internal_format = GL_LIGHTMAP_FORMAT;
-
-	/* initialize the dynamic lightmap texture */
-	R_Bind(gl_state.lightmap_textures + 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, gl_lms.internal_format,
-			BLOCK_WIDTH, BLOCK_HEIGHT, 0, GL_LIGHTMAP_FORMAT,
-			GL_UNSIGNED_BYTE, dummy);
 }
 
 void
-LM_EndBuildingLightmaps(void)
+Vk_EndBuildingLightmaps(void)
 {
 	LM_UploadBlock(false);
 }

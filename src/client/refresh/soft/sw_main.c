@@ -1,24 +1,24 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-
-// sw_main.c
 #include <stdint.h>
 #include <limits.h>
 
@@ -523,17 +523,6 @@ RE_Shutdown (void)
 	R_ShutdownImages ();
 
 	RE_ShutdownContext();
-}
-
-/*
-===============
-R_NewMap
-===============
-*/
-void
-R_NewMap (void)
-{
-	r_viewcluster = -1;
 }
 
 static surf_t	*lsurfs;
@@ -1139,7 +1128,7 @@ R_DrawBEntitiesOnList (void)
 		R_RotateBmodel(currententity);
 
 		// calculate dynamic lighting for bmodel
-		R_PushDlights (currentmodel);
+		RI_PushDlights (currentmodel);
 
 		if (topnode->contents == CONTENTS_NODE)
 		{
@@ -1274,19 +1263,44 @@ R_CalcPalette (void)
 //=======================================================================
 
 static void
-R_SetLightLevel (const entity_t *currententity)
+R_SetLightLevel(const entity_t *currententity)
 {
-	vec3_t		light;
+	vec3_t shadelight = {0};
 
-	if ((r_newrefdef.rdflags & RDF_NOWORLDMODEL) || (!r_drawentities->value) || (!currententity))
+	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
 	{
-		r_lightlevel->value = 150.0;
 		return;
 	}
 
-	// save off light value for server to look at (BIG HACK!)
-	R_LightPoint (currententity, r_newrefdef.vieworg, light);
-	r_lightlevel->value = 150.0 * light[0];
+	/* save off light value for server to look at */
+	R_LightPoint(r_worldmodel->grid, currententity, &r_newrefdef,
+		r_worldmodel->surfaces, r_worldmodel->nodes, r_newrefdef.vieworg,
+		shadelight, r_modulate->value, lightspot);
+
+	/* pick the greatest component, which should be the
+	 * same as the mono value returned by software */
+	if (shadelight[0] > shadelight[1])
+	{
+		if (shadelight[0] > shadelight[2])
+		{
+			r_lightlevel->value = 150 * shadelight[0];
+		}
+		else
+		{
+			r_lightlevel->value = 150 * shadelight[2];
+		}
+	}
+	else
+	{
+		if (shadelight[1] > shadelight[2])
+		{
+			r_lightlevel->value = 150 * shadelight[1];
+		}
+		else
+		{
+			r_lightlevel->value = 150 * shadelight[2];
+		}
+	}
 }
 
 static int
@@ -1317,7 +1331,7 @@ RE_RenderFrame (refdef_t *fd)
 
 	if (!r_worldmodel && !( r_newrefdef.rdflags & RDF_NOWORLDMODEL ) )
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: NULL worldmodel", __func__);
+		Com_Error(ERR_FATAL, "%s: NULL worldmodel", __func__);
 	}
 
 	// Need to rerender whole frame
@@ -1355,7 +1369,7 @@ RE_RenderFrame (refdef_t *fd)
 	R_MarkLeaves ();	// done here so we know if we're in water
 
 	// For each dlight_t* passed via r_newrefdef.dlights, mark polygons affected by a light.
-	R_PushDlights (r_worldmodel);
+	RI_PushDlights (r_worldmodel);
 
 	// TODO: rearrange code same as in GL*_DrawWorld?
 	/* auto cycle the world frame for texture animation */
@@ -1402,10 +1416,12 @@ RE_RenderFrame (refdef_t *fd)
 	R_DrawAlphaSurfaces(&ent);
 
 	// Save off light value for server to look at (BIG HACK!)
-	R_SetLightLevel (&ent);
+	R_SetLightLevel(&ent);
 
 	if (r_dowarp)
+	{
 		D_WarpScreen ();
+	}
 
 	if (r_dspeeds->value)
 	{
@@ -1887,7 +1903,7 @@ RE_InitContext(void *win)
 
 	if(win == NULL)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s() must not be called with NULL argument!", __func__);
+		Com_Error(ERR_FATAL, "%s() must not be called with NULL argument!", __func__);
 		return false;
 	}
 
@@ -2390,7 +2406,7 @@ SWimp_CreateRender(int width, int height)
 	swap_buffers = malloc(height * width * sizeof(pixel_t) * 2);
 	if (!swap_buffers)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: Can't allocate swapbuffer.", __func__);
+		Com_Error(ERR_FATAL, "%s: Can't allocate swapbuffer.", __func__);
 		// code never returns after ERR_FATAL
 		return;
 	}
@@ -2466,7 +2482,7 @@ Sys_Error (const char *error, ...)
 	vsnprintf(text, sizeof(text), error, argptr);
 	va_end(argptr);
 
-	ri.Sys_Error (ERR_FATAL, "%s", text);
+	Com_Error(ERR_FATAL, "%s", text);
 }
 
 void
@@ -2476,6 +2492,19 @@ Com_Printf(const char *msg, ...)
 	va_start(argptr, msg);
 	ri.Com_VPrintf(PRINT_ALL, msg, argptr);
 	va_end(argptr);
+}
+
+void
+Com_Error(int code, const char *fmt, ...)
+{
+	va_list argptr;
+	char text[4096]; // MAXPRINTMSG == 4096
+
+	va_start(argptr, fmt);
+	vsnprintf(text, sizeof(text), fmt, argptr);
+	va_end(argptr);
+
+	ri.Sys_Error(code, "%s", text);
 }
 
 /*
@@ -2500,7 +2529,8 @@ R_ScreenShot_f(void)
 
 	if (!buffer)
 	{
-		R_Printf(PRINT_ALL, "R_ScreenShot: Couldn't malloc %d bytes\n", vid_buffer_width * vid_buffer_height * 3);
+		R_Printf(PRINT_ALL, "%s: Couldn't malloc %d bytes\n",
+			__func__, vid_buffer_width * vid_buffer_height * 3);
 		return;
 	}
 

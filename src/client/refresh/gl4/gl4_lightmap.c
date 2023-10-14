@@ -64,7 +64,7 @@ GL4_LM_UploadBlock(void)
 
 	if (++gl4_lms.current_lightmap_texture == MAX_LIGHTMAPS)
 	{
-		ri.Sys_Error(ERR_DROP, "LM_UploadBlock() - MAX_LIGHTMAPS exceeded\n");
+		Com_Error(ERR_DROP, "LM_UploadBlock() - MAX_LIGHTMAPS exceeded\n");
 	}
 }
 
@@ -124,7 +124,7 @@ GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
 	medge_t *pedges, *r_pedge;
 	float *vec;
 	float s, t;
-	glpoly_t *poly;
+	mpoly_t *poly;
 	vec3_t total;
 	vec3_t normal;
 
@@ -135,8 +135,8 @@ GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
 	VectorClear(total);
 
 	/* draw texture */
-	poly = Hunk_Alloc(sizeof(glpoly_t) +
-		   (lnumverts - 4) * sizeof(gl4_3D_vtx_t));
+	poly = Hunk_Alloc(sizeof(mpoly_t) +
+		   (lnumverts - 4) * sizeof(mvtx_t));
 	poly->next = fa->polys;
 	poly->flags = fa->flags;
 	fa->polys = poly;
@@ -153,7 +153,7 @@ GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
 
 	for (i = 0; i < lnumverts; i++)
 	{
-		gl4_3D_vtx_t* vert = &poly->vertices[i];
+		mvtx_t* vert = &poly->verts[i];
 
 		lindex = currentmodel->surfedges[fa->firstedge + i];
 
@@ -182,15 +182,15 @@ GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
 		/* lightmap texture coordinates */
 		s = DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
 		s -= fa->texturemins[0];
-		s += fa->light_s * 16;
-		s += 8;
-		s /= BLOCK_WIDTH * 16; /* fa->texinfo->texture->width; */
+		s += fa->light_s * (1 << fa->lmshift);
+		s += (1 << fa->lmshift) * 0.5;
+		s /= BLOCK_WIDTH * (1 << fa->lmshift);
 
 		t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
 		t -= fa->texturemins[1];
-		t += fa->light_t * 16;
-		t += 8;
-		t /= BLOCK_HEIGHT * 16; /* fa->texinfo->texture->height; */
+		t += fa->light_t * (1 << fa->lmshift);
+		t += (1 << fa->lmshift) * 0.5;
+		t /= BLOCK_HEIGHT * (1 << fa->lmshift);
 
 		vert->lmTexCoord[0] = s;
 		vert->lmTexCoord[1] = t;
@@ -210,8 +210,8 @@ GL4_LM_CreateSurfaceLightmap(msurface_t *surf)
 		return;
 	}
 
-	smax = (surf->extents[0] >> 4) + 1;
-	tmax = (surf->extents[1] >> 4) + 1;
+	smax = (surf->extents[0] >> surf->lmshift) + 1;
+	tmax = (surf->extents[1] >> surf->lmshift) + 1;
 
 	if (!GL4_LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
 	{
@@ -220,8 +220,9 @@ GL4_LM_CreateSurfaceLightmap(msurface_t *surf)
 
 		if (!GL4_LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
 		{
-			ri.Sys_Error(ERR_FATAL, "Consecutive calls to LM_AllocBlock(%d,%d) failed\n",
-					smax, tmax);
+			Com_Error(ERR_FATAL,
+				"%s: Consecutive calls to LM_AllocBlock(%d,%d) failed\n",
+					__func__, smax, tmax);
 		}
 	}
 

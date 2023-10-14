@@ -64,7 +64,7 @@ GL3_LM_UploadBlock(void)
 
 	if (++gl3_lms.current_lightmap_texture == MAX_LIGHTMAPS)
 	{
-		ri.Sys_Error(ERR_DROP, "LM_UploadBlock() - MAX_LIGHTMAPS exceeded\n");
+		Com_Error(ERR_DROP, "LM_UploadBlock() - MAX_LIGHTMAPS exceeded\n");
 	}
 }
 
@@ -124,7 +124,7 @@ GL3_LM_BuildPolygonFromSurface(gl3model_t *currentmodel, msurface_t *fa)
 	medge_t *pedges, *r_pedge;
 	float *vec;
 	float s, t;
-	glpoly_t *poly;
+	mpoly_t *poly;
 	vec3_t total;
 	vec3_t normal;
 
@@ -135,8 +135,8 @@ GL3_LM_BuildPolygonFromSurface(gl3model_t *currentmodel, msurface_t *fa)
 	VectorClear(total);
 
 	/* draw texture */
-	poly = Hunk_Alloc(sizeof(glpoly_t) +
-		   (lnumverts - 4) * sizeof(gl3_3D_vtx_t));
+	poly = Hunk_Alloc(sizeof(mpoly_t) +
+		   (lnumverts - 4) * sizeof(mvtx_t));
 	poly->next = fa->polys;
 	poly->flags = fa->flags;
 	fa->polys = poly;
@@ -153,7 +153,7 @@ GL3_LM_BuildPolygonFromSurface(gl3model_t *currentmodel, msurface_t *fa)
 
 	for (i = 0; i < lnumverts; i++)
 	{
-		gl3_3D_vtx_t* vert = &poly->vertices[i];
+		mvtx_t* vert = &poly->verts[i];
 
 		lindex = currentmodel->surfedges[fa->firstedge + i];
 
@@ -220,8 +220,9 @@ GL3_LM_CreateSurfaceLightmap(msurface_t *surf)
 
 		if (!GL3_LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
 		{
-			ri.Sys_Error(ERR_FATAL, "Consecutive calls to LM_AllocBlock(%d,%d) failed\n",
-					smax, tmax);
+			Com_Error(ERR_FATAL,
+				"%s: Consecutive calls to LM_AllocBlock(%d,%d) failed\n",
+					__func__, smax, tmax);
 		}
 	}
 

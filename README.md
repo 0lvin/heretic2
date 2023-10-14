@@ -74,12 +74,12 @@ State:
    * base1: broken wall light, broken model light
    * base2: broken wall light, broken model light, broken lift
    * q64/outpost: no known issies
-   * mguhub: can't be loaded
+   * mguhub: loaded, transparent walls and broken logic for surface fall in next maps
  * SOFT:
    * base1: broken wall light, broken model light
    * base2: broken wall light, broken model light, broken lift
    * q64/outpost: no known issies
-   * mguhub: can't be loaded
+   * mguhub: loaded, transparent walls and sky and broken logic for surface fall in next maps
  * VK:
    * base1: correct wall light, broken model light
    * base2: correct wall light, broken model light, broken lift
@@ -87,23 +87,29 @@ State:
    * mguhub: loaded, transparent walls and broken logic for surface fall in next maps
 
 Goals (none of it finished):
-  * Single player support
-  * BSPX DECOUPLEDLM light map support (base1)
-  * IBSQ map format support (mguhub)
-  * MD5 model support
-  * modified ReRelease game code support with removed KEX only related code
+  * Single player support,
+  * BSPX DECOUPLEDLM light map support (base1),
+  * QBSP map format support (mguhub),
+  * MD5 model support,
+  * modified ReRelease game code support with removed KEX only related code,
   * RoQ and Theora cinematic videos support.
 
 Bonus goals:
-  * MDL/Quake1 model format support
-  * FM/Heretic 2 model format support
-  * Daikatana model/wal/map format support
-  * Cinematic videos support in smk, mpeg format.
+  * MDL/Quake1 model format support,
+  * FM/Heretic 2 model format support,
+  * Daikatana model/wal/map format support,
+  * Cinematic videos support in smk, mpeg format,
+  * Use ffmpeg for load any video,
+  * Load colormap as 24bit color,
+  * Use shared model chache in client code insted reimplemnet in each render,
+  * Add debug progress loading code.
 
 Not a goal:
-  * multiplayer protocol support with KEX engine
-  * support KEX engine features (inventary, compass and so on)
-  * KEX game library support
+  * multiplayer protocol support with KEX engine,
+  * support KEX engine features (inventary, compass and so on),
+  * [KEX game library support](https://github.com/id-Software/quake2-rerelease-dll).
+
+Code tested with such [maps](doc/100_tested_maps.md).
 
 # Yamagi Quake II
 

@@ -67,17 +67,8 @@
 #define REF_VERSION "Yamagi Quake II OpenGL Refresher"
 #define BACKFACE_EPSILON 0.01
 #define LIGHTMAP_BYTES 4
-#define MAX_LIGHTMAPS 128
+#define MAX_LIGHTMAPS 256
 #define GL_LIGHTMAP_FORMAT GL_RGBA
-
-/* up / down */
-#define PITCH 0
-
-/* left / right */
-#define YAW 1
-
-/* fall over */
-#define ROLL 2
 
 extern viddef_t vid;
 
@@ -114,15 +105,6 @@ typedef struct image_s
 
 	qboolean paletted;
 } image_t;
-
-typedef enum
-{
-	rserr_ok,
-
-	rserr_invalid_mode,
-
-	rserr_unknown
-} rserr_t;
 
 #include "model.h"
 
@@ -163,6 +145,8 @@ extern int r_viewcluster, r_viewcluster2, r_oldviewcluster, r_oldviewcluster2;
 
 extern qboolean IsHighDPIaware;
 
+extern vec3_t lightspot;
+
 extern cvar_t *r_norefresh;
 extern cvar_t *gl_lefthand;
 extern cvar_t *r_gunfov;
@@ -197,7 +181,7 @@ extern cvar_t *r_retexturing;
 extern cvar_t *r_scale8bittextures;
 extern cvar_t *r_validation;
 
-extern cvar_t *gl_nolerp_list;
+extern cvar_t *r_nolerp_list;
 extern cvar_t *r_lerp_list;
 extern cvar_t *r_2D_unfiltered;
 extern cvar_t *r_videos_unfiltered;
@@ -205,11 +189,11 @@ extern cvar_t *r_videos_unfiltered;
 extern cvar_t *gl_lightmap;
 extern cvar_t *gl_shadows;
 extern cvar_t *gl1_stencilshadow;
-extern cvar_t *gl1_dynamic;
+extern cvar_t *r_dynamic;
 extern cvar_t *gl_nobind;
 extern cvar_t *gl1_round_down;
 extern cvar_t *gl1_picmip;
-extern cvar_t *gl_showtris;
+extern cvar_t *r_showtris;
 extern cvar_t *gl_showbbox;
 extern cvar_t *gl_finish;
 extern cvar_t *gl1_ztrick;
@@ -217,7 +201,7 @@ extern cvar_t *gl_zfix;
 extern cvar_t *r_clear;
 extern cvar_t *r_cull;
 extern cvar_t *gl1_polyblend;
-extern cvar_t *gl1_flashblend;
+extern cvar_t *r_flashblend;
 extern cvar_t *r_modulate;
 extern cvar_t *gl_drawbuffer;
 extern cvar_t *r_vsync;
@@ -249,9 +233,9 @@ void R_Bind(int texnum);
 
 void R_TexEnv(GLenum value);
 
-void R_LightPoint(entity_t *currententity, vec3_t p, vec3_t color);
-void R_PushDlights(void);
+void RI_PushDlights(void);
 
+extern float *s_blocklights, *s_blocklights_max;
 extern model_t *r_worldmodel;
 extern unsigned d_8to24table[256];
 extern int registration_sequence;
@@ -261,25 +245,21 @@ void V_AddBlend(float r, float g, float b, float a, float *v_blend);
 void R_ScreenShot(void);
 void R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel);
 void R_DrawBrushModel(entity_t *currententity, const model_t *currentmodel);
-void R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel);
 void R_DrawBeam(entity_t *e);
 void R_DrawWorld(void);
 void R_RenderDlights(void);
 void R_DrawAlphaSurfaces(void);
 void R_InitParticleTexture(void);
 void Draw_InitLocal(void);
-void R_SubdivideSurface(model_t *loadmodel, msurface_t *fa);
 void R_RotateForEntity(entity_t *e);
 void R_MarkLeaves(void);
 
 extern int r_dlightframecount;
-glpoly_t *WaterWarpPolyVerts(glpoly_t *p);
+mpoly_t *WaterWarpPolyVerts(mpoly_t *p);
 void R_EmitWaterPolys(msurface_t *fa);
-void R_AddSkySurface(msurface_t *fa);
-void R_ClearSkyBox(void);
+void RE_AddSkySurface(msurface_t *fa);
+void RE_ClearSkyBox(void);
 void R_DrawSkyBox(void);
-void R_MarkSurfaceLights(dlight_t *light, int bit, mnode_t *node,
-	int r_dlightframecount);
 
 void R_SwapBuffers(int);
 

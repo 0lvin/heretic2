@@ -1,33 +1,36 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
-Copyright (C) 2018-2019 Krzysztof Kondrak
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 2018-2019 Krzysztof Kondrak
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * This file implements the operating system binding of Vk to QVk function
+ * pointers.  When doing a port of Quake2 you must implement the following
+ * two functions:
+ *
+ * QVk_Init() - loads libraries, assigns function pointers, etc.
+ * QVk_Shutdown() - unloads libraries, NULLs function pointers
+ *
+ * =======================================================================
+ *
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
-
-/*
-** VK_COMMON.C
-**
-** This file implements the operating system binding of Vk to QVk function
-** pointers.  When doing a port of Quake2 you must implement the following
-** two functions:
-**
-** QVk_Init() - loads libraries, assigns function pointers, etc.
-** QVk_Shutdown() - unloads libraries, NULLs function pointers
-*/
 #include <float.h>
 #include "header/local.h"
 
@@ -1293,19 +1296,30 @@ static void CreatePipelines()
 	VK_VERTINFO(RGB_RGBA,  sizeof(float) * 7,	VK_INPUTATTR_DESC(0, VK_FORMAT_R32G32B32_SFLOAT, 0),
 												VK_INPUTATTR_DESC(1, VK_FORMAT_R32G32B32A32_SFLOAT, sizeof(float) * 3));
 
-	VK_VERTINFO(RGB_RG_RG, sizeof(float) * 7,	VK_INPUTATTR_DESC(0, VK_FORMAT_R32G32B32_SFLOAT, 0),
-												VK_INPUTATTR_DESC(1, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 3),
-												VK_INPUTATTR_DESC(2, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 5));
-
 	VK_VERTINFO(RGB_RGBA_RG, sizeof(float) * 9,	VK_INPUTATTR_DESC(0, VK_FORMAT_R32G32B32_SFLOAT, 0),
 												VK_INPUTATTR_DESC(1, VK_FORMAT_R32G32B32A32_SFLOAT, sizeof(float) * 3),
 												VK_INPUTATTR_DESC(2, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 7));
-	// no vertices passed to the pipeline (postprocessing)
+
+	/* Lightmap shaders input */
+	VK_VERTINFO(MEM_VERTEX_T, sizeof(mvtx_t),	VK_INPUTATTR_DESC(0, VK_FORMAT_R32G32B32_SFLOAT, 0),
+												VK_INPUTATTR_DESC(1, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 3),
+												VK_INPUTATTR_DESC(2, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 5),
+												VK_INPUTATTR_DESC(3, VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 8),
+												VK_INPUTATTR_DESC(4, VK_FORMAT_R8G8B8A8_SINT, sizeof(float) * 11));
+
+	/* no vertices passed to the pipeline (postprocessing) */
 	VkPipelineVertexInputStateCreateInfo vertInfoNull = VK_NULL_VERTEXINPUT_CINF;
 
 	// shared descriptor set layouts
-	VkDescriptorSetLayout samplerUboDsLayouts[] = { vk_samplerDescSetLayout, vk_uboDescSetLayout };
-	VkDescriptorSetLayout samplerUboLmapDsLayouts[] = { vk_samplerDescSetLayout, vk_uboDescSetLayout, vk_samplerLightmapDescSetLayout };
+	VkDescriptorSetLayout samplerUboDsLayouts[] = {
+		vk_samplerDescSetLayout,
+		vk_uboDescSetLayout
+	};
+	VkDescriptorSetLayout samplerUboLmapDsLayouts[] = {
+		vk_samplerDescSetLayout,
+		vk_uboDescSetLayout,
+		vk_samplerLightmapDescSetLayout
+	};
 
 	// shader array (vertex and fragment, no compute... yet)
 	qvkshader_t shaders[SHADER_INDEX_SIZE] = {0};
@@ -1398,14 +1412,15 @@ static void CreatePipelines()
 	VK_LOAD_VERTFRAG_SHADERS(shaders, polygon, basic);
 	vk_drawPolyPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	vk_drawPolyPipeline.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RG, &vk_drawPolyPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoMEM_VERTEX_T, &vk_drawPolyPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: polygon");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: polygon");
 
 	// draw lightmapped polygon
 	VK_LOAD_VERTFRAG_SHADERS(shaders, polygon_lmap, polygon_lmap);
 	vk_drawPolyLmapPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	QVk_CreatePipeline(samplerUboLmapDsLayouts, 3, &vertInfoRGB_RG_RG, &vk_drawPolyLmapPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboLmapDsLayouts, 3, &vertInfoMEM_VERTEX_T,
+		&vk_drawPolyLmapPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyLmapPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: lightmapped polygon");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyLmapPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: lightmapped polygon");
 
@@ -1413,14 +1428,15 @@ static void CreatePipelines()
 	VK_LOAD_VERTFRAG_SHADERS(shaders, polygon_warp, basic);
 	vk_drawPolyWarpPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	vk_drawPolyWarpPipeline.blendOpts.blendEnable = VK_TRUE;
-	QVk_CreatePipeline(samplerUboLmapDsLayouts, 2, &vertInfoRGB_RG, &vk_drawPolyWarpPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboLmapDsLayouts, 2, &vertInfoMEM_VERTEX_T,
+		&vk_drawPolyWarpPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyWarpPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: warped polygon (liquids)");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyWarpPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: warped polygon (liquids)");
 
 	// draw solid polygon with warp effect (liquid) pipeline
 	VK_LOAD_VERTFRAG_SHADERS(shaders, polygon_warp, basic);
 	vk_drawPolySolidWarpPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-	QVk_CreatePipeline(samplerUboLmapDsLayouts, 2, &vertInfoRGB_RG,
+	QVk_CreatePipeline(samplerUboLmapDsLayouts, 2, &vertInfoMEM_VERTEX_T,
 		&vk_drawPolySolidWarpPipeline, &vk_renderpasses[RP_WORLD],
 		shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolySolidWarpPipeline.layout,
@@ -1439,7 +1455,7 @@ static void CreatePipelines()
 
 	// draw skybox pipeline
 	VK_LOAD_VERTFRAG_SHADERS(shaders, skybox, basic);
-	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRGB_RG, &vk_drawSkyboxPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
+	QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoMEM_VERTEX_T, &vk_drawSkyboxPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawSkyboxPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: skybox");
 	QVk_DebugSetObjectName((uint64_t)vk_drawSkyboxPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: skybox");
 
@@ -1457,7 +1473,7 @@ static void CreatePipelines()
 	QVk_DebugSetObjectName((uint64_t)vk_drawDLightPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: dynamic light");
 	QVk_DebugSetObjectName((uint64_t)vk_drawDLightPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: dynamic light");
 
-	// vk_showtris render pipeline
+	/* r_showtris render pipeline */
 	VK_LOAD_VERTFRAG_SHADERS(shaders, d_light, basic_color_quad);
 	vk_showTrisPipeline.cullMode = VK_CULL_MODE_NONE;
 	vk_showTrisPipeline.depthTestEnable = VK_FALSE;
@@ -1467,7 +1483,7 @@ static void CreatePipelines()
 	QVk_DebugSetObjectName((uint64_t)vk_showTrisPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: show triangles");
 	QVk_DebugSetObjectName((uint64_t)vk_showTrisPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: show triangles");
 
-	//vk_shadows render pipeline
+	/* vk_shadows render pipeline */
 	VK_LOAD_VERTFRAG_SHADERS(shaders, shadows, basic_color_quad);
 	vk_shadowsPipelineFan.blendOpts.blendEnable = VK_TRUE;
 	vk_shadowsPipelineFan.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -1475,7 +1491,7 @@ static void CreatePipelines()
 	QVk_DebugSetObjectName((uint64_t)vk_shadowsPipelineFan.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: draw shadows: fan");
 	QVk_DebugSetObjectName((uint64_t)vk_shadowsPipelineFan.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: draw shadows: fan");
 
-	// underwater world warp pipeline (postprocess)
+	/* underwater world warp pipeline (postprocess) */
 	VK_LOAD_VERTFRAG_SHADERS(shaders, world_warp, world_warp);
 	vk_worldWarpPipeline.depthTestEnable = VK_FALSE;
 	vk_worldWarpPipeline.depthWriteEnable = VK_FALSE;
@@ -1484,7 +1500,7 @@ static void CreatePipelines()
 	QVk_DebugSetObjectName((uint64_t)vk_worldWarpPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: underwater view warp");
 	QVk_DebugSetObjectName((uint64_t)vk_worldWarpPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: underwater view warp");
 
-	// postprocessing pipeline
+	/* postprocessing pipeline */
 	VK_LOAD_VERTFRAG_SHADERS(shaders, postprocess, postprocess);
 	vk_postprocessPipeline.depthTestEnable = VK_FALSE;
 	vk_postprocessPipeline.depthWriteEnable = VK_FALSE;
@@ -1692,7 +1708,7 @@ void QVk_Restart(void)
 {
 	QVk_WaitAndShutdownAll();
 	if (!QVk_Init())
-		ri.Sys_Error(ERR_FATAL, "Unable to restart Vulkan renderer");
+		Com_Error(ERR_FATAL, "Unable to restart Vulkan renderer");
 	QVk_PostInit();
 	ri.Vid_RequestRestart(RESTART_PARTIAL);
 }
@@ -2668,7 +2684,10 @@ void QVk_DrawTexRect(const float *ubo, VkDeviceSize uboSize, qvktexture_t *textu
 
 	QVk_BindPipeline(&vk_drawTexQuadPipeline[vk_state.current_renderpass]);
 	VkDeviceSize offsets = 0;
-	VkDescriptorSet descriptorSets[] = { texture->descriptorSet, uboDescriptorSet };
+	VkDescriptorSet descriptorSets[] = {
+		texture->descriptorSet,
+		uboDescriptorSet
+	};
 
 	float gamma = 2.1F - vid_gamma->value;
 

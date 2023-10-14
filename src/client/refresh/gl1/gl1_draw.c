@@ -48,7 +48,7 @@ Draw_InitLocal(void)
 
 	if (!draw_chars)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load pics/conchars",
+		Com_Error(ERR_FATAL, "%s: Couldn't load pics/conchars",
 			__func__);
 	}
 // jmarshall
@@ -297,7 +297,7 @@ RDraw_Fill(int x, int y, int w, int h, int c)
 
 	if ((unsigned)c > 255)
 	{
-		ri.Sys_Error(ERR_FATAL, "Draw_Fill: bad color");
+		Com_Error(ERR_FATAL, "Draw_Fill: bad color");
 	}
 
 	glDisable(GL_TEXTURE_2D);

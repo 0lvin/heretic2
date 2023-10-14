@@ -111,7 +111,7 @@ cvar_t *gl3_overbrightbits;
 cvar_t *r_norefresh;
 cvar_t *r_drawentities;
 cvar_t *r_drawworld;
-cvar_t *gl_nolerp_list;
+cvar_t *r_nolerp_list;
 cvar_t *r_lerp_list;
 cvar_t *r_2D_unfiltered;
 cvar_t *r_videos_unfiltered;
@@ -236,7 +236,7 @@ GL3_Register(void)
 	r_validation = ri.Cvar_Get("r_validation", "0", CVAR_ARCHIVE);
 
 	/* don't bilerp characters and crosshairs */
-	gl_nolerp_list = ri.Cvar_Get("r_nolerp_list", DEFAULT_NOLERP_LIST, CVAR_ARCHIVE);
+	r_nolerp_list = ri.Cvar_Get("r_nolerp_list", DEFAULT_NOLERP_LIST, CVAR_ARCHIVE);
 	/* textures that should always be filtered, even if r_2D_unfiltered or an unfiltered gl mode is used */
 	r_lerp_list = ri.Cvar_Get("r_lerp_list", "", CVAR_ARCHIVE);
 	/* don't bilerp any 2D elements */
@@ -296,13 +296,13 @@ GL3_Register(void)
 	//gl_lightmap = ri.Cvar_Get("r_lightmap", "0", 0);
 	//gl_shadows = ri.Cvar_Get("r_shadows", "0", CVAR_ARCHIVE);
 	//gl_nobind = ri.Cvar_Get("gl_nobind", "0", 0);
-	gl_showtris = ri.Cvar_Get("gl_showtris", "0", 0);
+	r_showtris = ri.Cvar_Get("r_showtris", "0", 0);
 	gl_showbbox = Cvar_Get("gl_showbbox", "0", 0);
 	//gl1_ztrick = ri.Cvar_Get("gl1_ztrick", "0", 0); NOTE: dump this.
 	//gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	//gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
 	r_clear = ri.Cvar_Get("r_clear", "0", 0);
-	//gl1_flashblend = ri.Cvar_Get("gl1_flashblend", "0", 0);
+	//r_flashblend = ri.Cvar_Get("r_flashblend", "0", 0);
 
 	//gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
 	gl1_texturealphamode = ri.Cvar_Get("gl1_texturealphamode", "default", CVAR_ARCHIVE);
@@ -342,17 +342,6 @@ GL3_Register(void)
 /*
  * Changes the video mode
  */
-
-// the following is only used in the next to functions,
-// no need to put it in a header
-enum
-{
-	rserr_ok,
-
-	rserr_invalid_mode,
-
-	rserr_unknown
-};
 
 static int
 SetMode_impl(int *pwidth, int *pheight, int mode, int fullscreen)
@@ -702,14 +691,14 @@ GL3_Shutdown(void)
 }
 
 // assumes gl3state.v[ab]o3D are bound
-// buffers and draws gl3_3D_vtx_t vertices
+// buffers and draws mvtx_t vertices
 // drawMode is something like GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN or whatever
 void
-GL3_BufferAndDraw3D(const gl3_3D_vtx_t* verts, int numVerts, GLenum drawMode)
+GL3_BufferAndDraw3D(const mvtx_t* verts, int numVerts, GLenum drawMode)
 {
 	if(!gl3config.useBigVBO)
 	{
-		glBufferData( GL_ARRAY_BUFFER, sizeof(gl3_3D_vtx_t)*numVerts, verts, GL_STREAM_DRAW );
+		glBufferData( GL_ARRAY_BUFFER, sizeof(mvtx_t)*numVerts, verts, GL_STREAM_DRAW );
 		glDrawArrays( drawMode, 0, numVerts );
 	}
 	else // gl3config.useBigVBO == true
@@ -739,11 +728,11 @@ GL3_BufferAndDraw3D(const gl3_3D_vtx_t* verts, int numVerts, GLenum drawMode)
 #if 0
 		// I /think/ doing it with glBufferSubData() didn't really help
 		const int bufSize = gl3state.vbo3Dsize;
-		int neededSize = numVerts*sizeof(gl3_3D_vtx_t);
+		int neededSize = numVerts*sizeof(mvtx_t);
 		int curOffset = gl3state.vbo3DcurOffset;
 		if(curOffset + neededSize > gl3state.vbo3Dsize)
 			curOffset = 0;
-		int curIdx = curOffset / sizeof(gl3_3D_vtx_t);
+		int curIdx = curOffset / sizeof(mvtx_t);
 
 		gl3state.vbo3DcurOffset = curOffset + neededSize;
 
@@ -751,7 +740,7 @@ GL3_BufferAndDraw3D(const gl3_3D_vtx_t* verts, int numVerts, GLenum drawMode)
 		glDrawArrays( drawMode, curIdx, numVerts );
 #else
 		int curOffset = gl3state.vbo3DcurOffset;
-		int neededSize = numVerts*sizeof(gl3_3D_vtx_t);
+		int neededSize = numVerts*sizeof(mvtx_t);
 		if(curOffset+neededSize > gl3state.vbo3Dsize)
 		{
 			// buffer is full, need to start again from the beginning
@@ -768,7 +757,7 @@ GL3_BufferAndDraw3D(const gl3_3D_vtx_t* verts, int numVerts, GLenum drawMode)
 		memcpy(data, verts, neededSize);
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 
-		glDrawArrays(drawMode, curOffset/sizeof(gl3_3D_vtx_t), numVerts);
+		glDrawArrays(drawMode, curOffset/sizeof(mvtx_t), numVerts);
 
 		gl3state.vbo3DcurOffset = curOffset + neededSize; // TODO: padding or sth needed?
 #endif
@@ -788,7 +777,7 @@ GL3_DrawBeam(entity_t *e)
 	vec3_t start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
 	vec3_t oldorigin, origin;
 
-	gl3_3D_vtx_t verts[NUM_BEAM_SEGS*4];
+	mvtx_t verts[NUM_BEAM_SEGS*4];
 	unsigned int pointb;
 
 	oldorigin[0] = e->oldorigin[0];
@@ -860,7 +849,7 @@ static void
 GL3_DrawSpriteModel(entity_t *e, gl3model_t *currentmodel)
 {
 	float alpha = 1.0F;
-	gl3_3D_vtx_t verts[4];
+	mvtx_t verts[4];
 	dsprframe_t *frame;
 	float *up, *right;
 	dsprite_t *psprite;
@@ -947,13 +936,15 @@ GL3_DrawNullModel(entity_t *currententity)
 {
 	vec3_t shadelight;
 
-	if (currententity->flags & RF_FULLBRIGHT)
+	if (currententity->flags & RF_FULLBRIGHT || !gl3_worldmodel || !gl3_worldmodel->lightdata)
 	{
 		shadelight[0] = shadelight[1] = shadelight[2] = 1.0F;
 	}
 	else
 	{
-		GL3_LightPoint(currententity, currententity->origin, shadelight);
+		R_LightPoint(gl3_worldmodel->grid, currententity, &gl3_newrefdef,
+			gl3_worldmodel->surfaces, gl3_worldmodel->nodes, currententity->origin,
+			shadelight, r_modulate->value, lightspot);
 	}
 
 	hmm_mat4 origModelMat = gl3state.uni3DData.transModelMat4;
@@ -967,7 +958,7 @@ GL3_DrawNullModel(entity_t *currententity)
 	GL3_BindVAO(gl3state.vao3D);
 	GL3_BindVBO(gl3state.vbo3D);
 
-	gl3_3D_vtx_t vtxA[6] = {
+	mvtx_t vtxA[6] = {
 		{{0, 0, -16}, {0,0}, {0,0}},
 		{{16 * cos( 0 * M_PI / 2 ), 16 * sin( 0 * M_PI / 2 ), 0}, {0,0}, {0,0}},
 		{{16 * cos( 1 * M_PI / 2 ), 16 * sin( 1 * M_PI / 2 ), 0}, {0,0}, {0,0}},
@@ -978,7 +969,7 @@ GL3_DrawNullModel(entity_t *currententity)
 
 	GL3_BufferAndDraw3D(vtxA, 6, GL_TRIANGLE_FAN);
 
-	gl3_3D_vtx_t vtxB[6] = {
+	mvtx_t vtxB[6] = {
 		{{0, 0, 16}, {0,0}, {0,0}},
 		vtxA[5], vtxA[4], vtxA[3], vtxA[2], vtxA[1]
 	};
@@ -1124,7 +1115,7 @@ GL3_DrawEntitiesOnList(void)
 					GL3_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					ri.Sys_Error(ERR_DROP, "Bad modeltype");
+					Com_Error(ERR_DROP, "Bad modeltype");
 					break;
 			}
 		}
@@ -1170,7 +1161,7 @@ GL3_DrawEntitiesOnList(void)
 					GL3_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					ri.Sys_Error(ERR_DROP, "Bad modeltype");
+					Com_Error(ERR_DROP, "Bad modeltype");
 					break;
 			}
 		}
@@ -1200,7 +1191,7 @@ SetupFrame(void)
 	{
 		if (!gl3_worldmodel)
 		{
-			ri.Sys_Error(ERR_DROP, "%s: bad world model", __func__);
+			Com_Error(ERR_DROP, "%s: bad world model", __func__);
 			return;
 		}
 
@@ -1639,7 +1630,7 @@ GL3_RenderView(refdef_t *fd)
 
 	if (!gl3_worldmodel && !(gl3_newrefdef.rdflags & RDF_NOWORLDMODEL))
 	{
-		ri.Sys_Error(ERR_DROP, "R_RenderView: NULL worldmodel");
+		Com_Error(ERR_DROP, "R_RenderView: NULL worldmodel");
 	}
 
 	if (r_speeds->value)
@@ -1668,7 +1659,7 @@ GL3_RenderView(refdef_t *fd)
 
 	GL3_DrawEntitiesOnList();
 
-	// kick the silly gl1_flashblend poly lights
+	// kick the silly r_flashblend poly lights
 	// GL3_RenderDlights();
 
 	GL3_DrawParticles();
@@ -1733,7 +1724,9 @@ GL3_SetLightLevel(entity_t *currententity)
 	}
 
 	/* save off light value for server to look at */
-	GL3_LightPoint(currententity, gl3_newrefdef.vieworg, shadelight);
+	R_LightPoint(gl3_worldmodel->grid, currententity, &gl3_newrefdef,
+		gl3_worldmodel->surfaces, gl3_worldmodel->nodes, gl3_newrefdef.vieworg,
+		shadelight, r_modulate->value, lightspot);
 
 	/* pick the greatest component, which should be the
 	 * same as the mono value returned by software */
@@ -1926,13 +1919,13 @@ GL3_BeginFrame(float camera_separation)
 
 	/* texturemode stuff */
 	if (gl_texturemode->modified || (gl3config.anisotropic && gl_anisotropic->modified)
-	    || gl_nolerp_list->modified || r_lerp_list->modified
+	    || r_nolerp_list->modified || r_lerp_list->modified
 		|| r_2D_unfiltered->modified || r_videos_unfiltered->modified)
 	{
 		GL3_TextureMode(gl_texturemode->string);
 		gl_texturemode->modified = false;
 		gl_anisotropic->modified = false;
-		gl_nolerp_list->modified = false;
+		r_nolerp_list->modified = false;
 		r_lerp_list->modified = false;
 		r_2D_unfiltered->modified = false;
 		r_videos_unfiltered->modified = false;
@@ -2074,4 +2067,17 @@ Com_Printf(const char *msg, ...)
 	va_start(argptr, msg);
 	ri.Com_VPrintf(PRINT_ALL, msg, argptr);
 	va_end(argptr);
+}
+
+void
+Com_Error(int code, const char *fmt, ...)
+{
+	va_list argptr;
+	char text[4096]; // MAXPRINTMSG == 4096
+
+	va_start(argptr, fmt);
+	vsnprintf(text, sizeof(text), fmt, argptr);
+	va_end(argptr);
+
+	ri.Sys_Error(code, "%s", text);
 }

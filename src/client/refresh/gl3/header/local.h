@@ -337,6 +337,8 @@ extern cplane_t frustum[4];
 
 extern vec3_t gl3_origin;
 
+extern vec3_t lightspot;
+
 extern gl3image_t *gl3_notexture; /* use for bad textures */
 extern gl3image_t *gl3_particletexture; /* little dot for particles */
 
@@ -383,7 +385,7 @@ GL3_BindEBO(GLuint ebo)
 	}
 }
 
-extern void GL3_BufferAndDraw3D(const gl3_3D_vtx_t* verts, int numVerts, GLenum drawMode);
+extern void GL3_BufferAndDraw3D(const mvtx_t* verts, int numVerts, GLenum drawMode);
 
 extern void GL3_RotateForEntity(entity_t *e);
 
@@ -454,10 +456,7 @@ extern void GL3_ImageList_f(void);
 
 // gl3_light.c
 extern int r_dlightframecount;
-extern void GL3_MarkSurfaceLights(dlight_t *light, int bit, mnode_t *node,
-	int r_dlightframecount);
 extern void GL3_PushDlights(void);
-extern void GL3_LightPoint(entity_t *currententity, vec3_t p, vec3_t color);
 extern void GL3_BuildLightMap(msurface_t *surf, int offsetInLMbuf, int stride);
 
 // gl3_lightmap.c
@@ -473,12 +472,11 @@ extern void GL3_LM_EndBuildingLightmaps(void);
 
 // gl3_warp.c
 extern void GL3_EmitWaterPolys(msurface_t *fa);
-extern void GL3_SubdivideSurface(msurface_t *fa, gl3model_t* loadmodel);
 
 extern void GL3_SetSky(const char *name, float rotate, int autorotate, const vec3_t axis);
 extern void GL3_DrawSkyBox(void);
-extern void GL3_ClearSkyBox(void);
-extern void GL3_AddSkySurface(msurface_t *fa);
+extern void RE_ClearSkyBox(void);
+extern void RE_AddSkySurface(msurface_t *fa);
 
 
 // gl3_surf.c
@@ -521,7 +519,7 @@ extern cvar_t *r_customheight;
 
 extern cvar_t *r_2D_unfiltered;
 extern cvar_t *r_videos_unfiltered;
-extern cvar_t *gl_nolerp_list;
+extern cvar_t *r_nolerp_list;
 extern cvar_t *r_lerp_list;
 extern cvar_t *gl_nobind;
 extern cvar_t *r_lockpvs;

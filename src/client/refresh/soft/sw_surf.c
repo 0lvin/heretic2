@@ -1,22 +1,24 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 // sw_surf.c: surface-related refresh code
 
 #include "header/local.h"
@@ -30,7 +32,7 @@ static int		r_numvblocks;
 static unsigned char	*r_source, *r_sourcemax;
 static unsigned		*r_lightptr;
 
-void R_BuildLightMap (drawsurf_t *drawsurf);
+void RI_BuildLightMap (drawsurf_t *drawsurf);
 
 static int	sc_size;
 static surfcache_t	*sc_rover;
@@ -286,7 +288,7 @@ R_InitCaches (void)
 	sc_base = (surfcache_t *)malloc(size);
 	if (!sc_base)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: Can't allocate cache.", __func__);
+		Com_Error(ERR_FATAL, "%s: Can't allocate cache.", __func__);
 		// code never returns after ERR_FATAL
 		return;
 	}
@@ -335,12 +337,12 @@ D_SCAlloc (int width, int size)
 
 	if ((width < 0) || (width > 256))
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: bad cache width %d\n", __func__, width);
+		Com_Error(ERR_FATAL, "%s: bad cache width %d\n", __func__, width);
 	}
 
 	if ((size <= 0) || (size > 0x10000))
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: bad cache size %d\n", __func__, size);
+		Com_Error(ERR_FATAL, "%s: bad cache size %d\n", __func__, size);
 	}
 
 	// Add header size
@@ -348,7 +350,7 @@ D_SCAlloc (int width, int size)
 	size = (size + 3) & ~3;
 	if (size > sc_size)
 	{
-		ri.Sys_Error(ERR_FATAL, "%s: %i > cache size of %i", __func__, size, sc_size);
+		Com_Error(ERR_FATAL, "%s: %i > cache size of %i", __func__, size, sc_size);
 	}
 
 	// if there is not size bytes after the rover, reset to the start
@@ -368,7 +370,7 @@ D_SCAlloc (int width, int size)
 		sc_rover = sc_rover->next;
 		if (!sc_rover)
 		{
-			ri.Sys_Error(ERR_FATAL, "%s: hit the end of memory", __func__);
+			Com_Error(ERR_FATAL, "%s: hit the end of memory", __func__);
 		}
 		if (sc_rover->owner)
 			*sc_rover->owner = NULL;
@@ -480,7 +482,7 @@ D_CacheSurface (const entity_t *currententity, msurface_t *surface, int miplevel
 	c_surf++;
 
 	// calculate the lightings
-	R_BuildLightMap (&r_drawsurf);
+	RI_BuildLightMap (&r_drawsurf);
 
 	// rasterize the surface into the cache
 	R_DrawSurface (&r_drawsurf);

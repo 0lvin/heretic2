@@ -371,6 +371,8 @@ Set `0` by default.
 * **r_shadows**: Enables rendering of shadows. Quake IIs shadows are
   very simple and are prone to render errors.
 
+* **r_showtris**: Show rendered triangles boarders.
+
 * **vid_displayrefreshrate**: Sets the displays refresh rate. The
   default `-1` let the game determine the refresh rate automatically.
   Often the default setting is okay, but some graphics drivers report
@@ -418,6 +420,9 @@ Set `0` by default.
   OpenGL 3.2 renderer, `gles3` for the OpenGL ES3 renderer
   and `soft` for the software renderer.
 
+* **r_dynamic**: Enamble dynamic light in gl1 and vk renders.
+
+* **r_flashblend**: Flash blend enable in  gl1, gl3 and vulkan.
 
 ## Graphics (GL renderers only)
 

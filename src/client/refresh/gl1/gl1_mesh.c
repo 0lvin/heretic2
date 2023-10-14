@@ -29,12 +29,12 @@
 #define NUMVERTEXNORMALS 162
 #define SHADEDOT_QUANT 16
 
-float r_avertexnormals[NUMVERTEXNORMALS][3] = {
+static float r_avertexnormals[NUMVERTEXNORMALS][3] = {
 #include "../constants/anorms.h"
 };
 
 /* precalculated dot products for quantized angles */
-float r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
+static float r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "../constants/anormtab.h"
 };
 
@@ -43,12 +43,11 @@ static vec4_t s_lerped[MAX_VERTS];
 vec3_t shadevector;
 float shadelight[3];
 float *shadedots = r_avertexnormal_dots[0];
-extern vec3_t lightspot;
 
 static void
 R_LerpVerts(entity_t *currententity, int nverts, dtrivertx_t *v, dtrivertx_t *ov,
-		dtrivertx_t *verts, float *lerp, float move[3],
-		float frontv[3], float backv[3])
+		dtrivertx_t *verts, float *lerp, const float move[3],
+		const float frontv[3], const float backv[3])
 {
 	int i;
 
@@ -382,9 +381,9 @@ R_DrawAliasShadowCommand(entity_t *currententity, int *order, int *order_end,
 			point[1] -= shadevector[1] * (point[2] + lheight);
 			point[2] = height;
 
-			vtx[index_vtx++] = point [ 0 ];
-			vtx[index_vtx++] = point [ 1 ];
-			vtx[index_vtx++] = point [ 2 ];
+			vtx[index_vtx++] = point[0];
+			vtx[index_vtx++] = point[1];
+			vtx[index_vtx++] = point[2];
 
 			order += 3;
 		}
@@ -677,7 +676,16 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	}
 	else
 	{
-		R_LightPoint(currententity, currententity->origin, shadelight);
+		if (!r_worldmodel || !r_worldmodel->lightdata)
+		{
+			shadelight[0] = shadelight[1] = shadelight[2] = 1.0F;
+		}
+		else
+		{
+			R_LightPoint(r_worldmodel->grid, currententity, &r_newrefdef, r_worldmodel->surfaces,
+				r_worldmodel->nodes, currententity->origin, shadelight,
+				r_modulate->value, lightspot);
+		}
 
 		/* player lighting hack for communication back to server */
 		if (currententity->flags & RF_WEAPONMODEL)
@@ -731,12 +739,13 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	{
 		/* bonus items will pulse with time */
 		float scale;
-		float min;
 
 		scale = 0.1 * sin(r_newrefdef.time * 7);
 
 		for (i = 0; i < 3; i++)
 		{
+			float	min;
+
 			min = shadelight[i] * 0.8;
 			shadelight[i] += scale;
 
@@ -747,17 +756,14 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 		}
 	}
 
-
-    // Apply gl1_overbrightbits to the mesh. If we don't do this they will appear slightly dimmer relative to walls.
-    if (gl1_overbrightbits->value)
-    {
-        for (i = 0; i < 3; ++i)
-        {
-            shadelight[i] *= gl1_overbrightbits->value;
-        }
-    }
-
-
+	// Apply gl1_overbrightbits to the mesh. If we don't do this they will appear slightly dimmer relative to walls.
+	if (gl1_overbrightbits->value)
+	{
+		for (i = 0; i < 3; ++i)
+		{
+			shadelight[i] *= gl1_overbrightbits->value;
+		}
+	}
 
 	/* ir goggles color override */
 	if (r_newrefdef.rdflags & RDF_IRGOGGLES && currententity->flags &
@@ -956,4 +962,3 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 	glColor4f(1, 1, 1, 1);
 }
-

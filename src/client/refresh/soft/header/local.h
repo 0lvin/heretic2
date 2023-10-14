@@ -1,22 +1,23 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ */
 
 #ifndef __R_LOCAL__
 #define __R_LOCAL__
@@ -32,16 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdarg.h>
 
 #define REF_VERSION	"SOFT 0.01"
-
-// up / down
-#define PITCH	0
-
-// left / right
-#define YAW	1
-
-// fall over
-#define ROLL	2
-
 
 /*
 
@@ -82,15 +73,6 @@ typedef int	light3_t[3];
 // xyz-prescale to 16.16 fixed-point
 #define SHIFT16XYZ 16
 #define SHIFT16XYZ_MULT (1 << SHIFT16XYZ)
-
-typedef enum
-{
-	rserr_ok,
-
-	rserr_invalid_mode,
-
-	rserr_unknown
-} rserr_t;
 
 /* 64 light grades available */
 #define LIGHTMASK		0xFF00
@@ -249,22 +231,7 @@ typedef struct clipplane_s
 	struct clipplane_s *next;
 	byte	leftedge;
 	byte	rightedge;
-	byte	reserved[2];
 } clipplane_t;
-
-typedef struct surfcache_s
-{
-	struct surfcache_s	*next;
-	struct surfcache_s	**owner; // NULL is an empty chunk of memory
-	int			lightadj[MAXLIGHTMAPS]; // checked for strobe flush
-	int			dlight;
-	int			size; // including header
-	unsigned		width;
-	unsigned		height; // DEBUG only needed for debug
-	float			mipscale;
-	image_t			*image;
-	byte			data[4]; // width*height elements
-} surfcache_t;
 
 typedef struct espan_s
 {
@@ -484,7 +451,7 @@ void R_DrawSolidClippedSubmodelPolygons(entity_t *currententity, const model_t *
 void R_AliasDrawModel(entity_t *currententity, const model_t *currentmodel);
 void R_BeginEdgeFrame(void);
 void R_ScanEdges(entity_t *currententity, surf_t *surface);
-void R_PushDlights(const model_t *model);
+void RI_PushDlights(const model_t *model);
 void R_RotateBmodel(const entity_t *currententity);
 
 extern int	c_faceclip;
@@ -550,13 +517,13 @@ extern int r_viewcluster, r_oldviewcluster;
 
 extern int r_clipflags;
 
-extern image_t		 *r_notexture_mip;
-extern model_t		 *r_worldmodel;
+extern image_t		*r_notexture_mip;
+extern model_t		*r_worldmodel;
+extern vec3_t		lightspot;
 
 void R_PrintAliasStats (void);
 void R_PrintTimes (void);
 void R_PrintDSpeeds (void);
-void R_LightPoint (const entity_t *currententity, vec3_t p, vec3_t color);
 void R_SetupFrame (void);
 
 extern  refdef_t		r_newrefdef;
@@ -567,7 +534,6 @@ extern  void			*colormap;
 
 //====================================================================
 
-void R_NewMap (void);
 void Draw_InitLocal(void);
 void R_InitCaches(void);
 void D_FlushCaches(void);

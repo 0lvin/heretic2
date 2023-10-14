@@ -1,22 +1,24 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 // sw_alias.c: routines for setting up to draw alias models
 
 /*
@@ -550,20 +552,25 @@ R_AliasSetupLighting(entity_t *currententity)
 	int i;
 
 	// all components of light should be identical in software
-	if ( currententity->flags & RF_FULLBRIGHT )
+	if (currententity->flags & RF_FULLBRIGHT || !r_worldmodel || !r_worldmodel->lightdata)
 	{
 		for (i=0 ; i<3 ; i++)
+		{
 			light[i] = 1.0;
+		}
 	}
 	else
 	{
-		R_LightPoint (currententity, currententity->origin, light);
+		R_LightPoint(r_worldmodel->grid, currententity, &r_newrefdef, r_worldmodel->surfaces,
+			r_worldmodel->nodes, currententity->origin, light,
+			r_modulate->value, lightspot);
 	}
 
 	// save off light value for server to look at (BIG HACK!)
-	if ( currententity->flags & RF_WEAPONMODEL )
+	if (currententity->flags & RF_WEAPONMODEL)
+	{
 		r_lightlevel->value = 150.0 * light[0];
-
+	}
 
 	if ( currententity->flags & RF_MINLIGHT )
 	{

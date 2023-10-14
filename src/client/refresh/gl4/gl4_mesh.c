@@ -43,7 +43,6 @@ static float r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 
 typedef float vec4_t[4];
 static vec4_t s_lerped[MAX_VERTS];
-extern vec3_t lightspot;
 
 typedef struct gl4_shadowinfo_s {
 	vec3_t    lightspot;
@@ -717,7 +716,16 @@ GL4_DrawAliasModel(entity_t *entity)
 	}
 	else
 	{
-		GL4_LightPoint(entity, entity->origin, shadelight);
+		if (!gl4_worldmodel || !gl4_worldmodel->lightdata)
+		{
+			shadelight[0] = shadelight[1] = shadelight[2] = 1.0F;
+		}
+		else
+		{
+			R_LightPoint(gl4_worldmodel->grid, entity, &gl4_newrefdef,
+				gl4_worldmodel->surfaces, gl4_worldmodel->nodes,
+				entity->origin, shadelight, r_modulate->value, lightspot);
+		}
 
 		/* player lighting hack for communication back to server */
 		if (entity->flags & RF_WEAPONMODEL)

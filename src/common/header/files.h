@@ -350,24 +350,26 @@ typedef struct {
 /* .BSP file format */
 
 #define IDBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'I') /* little-endian "IBSP" */
-#define QDBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'Q') /* little-endian "IBSQ" */
-#define BSPXHEADER  (('X' << 24) + ('P' << 16) + ('S' << 8) + 'B') /* little-endian "BSPX" */
+#define QBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'Q') /* little-endian "QBSP" */
+#define BSPXHEADER (('X' << 24) + ('P' << 16) + ('S' << 8) + 'B') /* little-endian "BSPX" */
 #define BSPVERSION 38
 #define BSPDKMVERSION 41
 
 /* upper design bounds: leaffaces, leafbrushes, planes, and
- * verts are still bounded by 16 bit short limits */
+ * verts are still bounded by 16 bit short limits,
+ * mostly unused for now with use Hunk_Alloc,
+ * except MAX_MAP_AREAS */
 #define MAX_MAP_MODELS 1024
-#define MAX_MAP_BRUSHES 16384
+#define MAX_MAP_BRUSHES 8192
 #define MAX_MAP_ENTITIES 2048
 #define MAX_MAP_ENTSTRING 0x40000
-#define MAX_MAP_TEXINFO 32768
+#define MAX_MAP_TEXINFO 8192
 
 #define MAX_MAP_AREAS 256
 #define MAX_MAP_AREAPORTALS 1024
-#define MAX_MAP_PLANES 131072
+#define MAX_MAP_PLANES 65536
 #define MAX_MAP_NODES 65536
-#define MAX_MAP_BRUSHSIDES 131072
+#define MAX_MAP_BRUSHSIDES 65536
 #define MAX_MAP_LEAFS 65536
 #define MAX_MAP_VERTS 65536
 #define MAX_MAP_FACES 65536
@@ -377,7 +379,7 @@ typedef struct {
 #define MAX_MAP_EDGES 128000
 #define MAX_MAP_SURFEDGES 256000
 #define MAX_MAP_LIGHTING 0x200000
-#define MAX_MAP_VISIBILITY 0x200000
+#define MAX_MAP_VISIBILITY 0x100000
 
 /* key / value pair sizes */
 

@@ -1,24 +1,29 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
-Copyright (C) 2018-2019 Krzysztof Kondrak
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-// vk_rmain.c
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 2018-2019 Krzysztof Kondrak
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * =======================================================================
+ *
+ * Refresher setup and main part of the frame generation
+ *
+ * =======================================================================
+ */
 
 #include "header/local.h"
 #include "../../../game/common/angles.h"
@@ -97,7 +102,7 @@ cvar_t	*vk_overbrightbits;
 cvar_t	*r_validation;
 cvar_t	*vk_picmip;
 cvar_t	*r_palettedtexture;
-cvar_t	*vk_flashblend;
+cvar_t	*r_flashblend;
 cvar_t	*vk_finish;
 #if defined(__APPLE__)
 cvar_t  *vk_molten_fastmath;
@@ -117,9 +122,9 @@ static cvar_t	*vk_particle_min_size;
 static cvar_t	*vk_particle_max_size;
 static cvar_t	*vk_custom_particles;
 cvar_t	*vk_postprocess;
-cvar_t	*vk_dynamic;
+cvar_t	*r_dynamic;
 cvar_t	*vk_msaa;
-cvar_t	*vk_showtris;
+cvar_t	*r_showtris;
 cvar_t	*r_lightmap;
 cvar_t	*vk_texturemode;
 cvar_t	*vk_lmaptexturemode;
@@ -156,45 +161,31 @@ void R_RotateForEntity (entity_t *e, float *mvMatrix)
 	Mat_Translate(mvMatrix, e->origin[0], e->origin[1], e->origin[2]);
 }
 
-/*
-=============================================================
-
-  SPRITE MODELS
-
-=============================================================
-*/
-
-
-/*
-=================
-R_DrawSpriteModel
-
-=================
-*/
-void R_DrawSpriteModel (entity_t *currententity, model_t *currentmodel)
+static void
+R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 {
 	float alpha = 1.0F;
-	vec3_t	point;
-	dsprframe_t	*frame;
-	float		*up, *right;
-	dsprite_t		*psprite;
-	image_t		*skin;
+	vec3_t point;
+	dsprframe_t *frame;
+	float *up, *right;
+	dsprite_t *psprite;
+	image_t *skin;
 
-	// don't even bother culling, because it's just a single
-	// polygon without a surface cache
-
+	/* don't even bother culling, because it's just
+	   a single polygon without a surface cache */
 	psprite = (dsprite_t *)currentmodel->extradata;
 
 	currententity->frame %= psprite->numframes;
-
 	frame = &psprite->frames[currententity->frame];
 
-	// normal sprite
+	/* normal sprite */
 	up = vup;
 	right = vright;
 
 	if (currententity->flags & RF_TRANSLUCENT)
+	{
 		alpha = currententity->alpha;
+	}
 
 	vec3_t spriteQuad[4];
 
@@ -242,23 +233,22 @@ void R_DrawSpriteModel (entity_t *currententity, model_t *currentmodel)
 	vkCmdDraw(vk_activeCmdbuffer, 6, 1, 0, 0);
 }
 
-//==================================================================================
-
-/*
-=============
-R_DrawNullModel
-=============
-*/
 static void
-R_DrawNullModel (entity_t *currententity)
+R_DrawNullModel(entity_t *currententity)
 {
-	vec3_t	shadelight;
-	int		i,j;
+	vec3_t shadelight;
+	int i, j;
 
-	if (currententity->flags & RF_FULLBRIGHT)
+	if (currententity->flags & RF_FULLBRIGHT || !r_worldmodel || !r_worldmodel->lightdata)
+	{
 		shadelight[0] = shadelight[1] = shadelight[2] = 1.0F;
+	}
 	else
-		R_LightPoint(currententity->origin, shadelight, currententity);
+	{
+		R_LightPoint(r_worldmodel->grid, currententity, &r_newrefdef,
+			r_worldmodel->surfaces, r_worldmodel->nodes, currententity->origin,
+			shadelight, r_modulate->value, lightspot);
+	}
 
 	float model[16];
 	Mat_Identity(model);
@@ -316,25 +306,25 @@ R_DrawNullModel (entity_t *currententity)
 	vkCmdDrawIndexed(vk_activeCmdbuffer, 12, 1, 0, 6, 0);
 }
 
-/*
-=============
-R_DrawEntitiesOnList
-=============
-*/
 static void
-R_DrawEntitiesOnList (void)
+R_DrawEntitiesOnList(void)
 {
-	int		i;
+	int i;
 
 	if (!r_drawentities->value)
-		return;
-
-	// draw non-transparent first
-	for (i = 0; i<r_newrefdef.num_entities; i++)
 	{
-		entity_t	*currententity = &r_newrefdef.entities[i];
+		return;
+	}
+
+	/* draw non-transparent first */
+	for (i = 0; i < r_newrefdef.num_entities; i++)
+	{
+		entity_t *currententity = &r_newrefdef.entities[i];
+
 		if (currententity->flags & RF_TRANSLUCENT)
-			continue;	// solid
+		{
+			continue; /* solid */
+		}
 
 		if (currententity->flags & RF_BEAM)
 		{
@@ -342,38 +332,45 @@ R_DrawEntitiesOnList (void)
 		}
 		else
 		{
-			model_t *currentmodel = currententity->model;
+			const model_t *currentmodel = currententity->model;
+
 			if (!currentmodel)
 			{
 				R_DrawNullModel(currententity);
 				continue;
 			}
+
 			switch (currentmodel->type)
 			{
-			case mod_alias:
-				R_DrawAliasModel(currententity, currentmodel);
-				break;
-			case mod_brush:
-				R_DrawBrushModel(currententity, currentmodel);
-				break;
-			case mod_sprite:
-				R_DrawSpriteModel(currententity, currentmodel);
-				break;
-			default:
-				R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
-					__func__, currentmodel->type);
-				return;
+				case mod_alias:
+					R_DrawAliasModel(currententity, currentmodel);
+					break;
+				case mod_brush:
+					R_DrawBrushModel(currententity, currentmodel);
+					break;
+				case mod_sprite:
+					R_DrawSpriteModel(currententity, currentmodel);
+					break;
+				default:
+					R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
+					return;
 			}
 		}
 	}
 
-	// draw transparent entities
-	// we could sort these if it ever becomes a problem...
-	for (i = 0; i<r_newrefdef.num_entities; i++)
+	/* draw transparent entities
+	   we could sort these if it ever
+	   becomes a problem... */
+
+	for (i = 0; i < r_newrefdef.num_entities; i++)
 	{
-		entity_t	*currententity = &r_newrefdef.entities[i];
+		entity_t *currententity = &r_newrefdef.entities[i];
+
 		if (!(currententity->flags & RF_TRANSLUCENT))
-			continue;	// solid
+		{
+			continue; /* solid */
+		}
 
 		if (currententity->flags & RF_BEAM)
 		{
@@ -381,37 +378,34 @@ R_DrawEntitiesOnList (void)
 		}
 		else
 		{
-			model_t *currentmodel = currententity->model;
+			const model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{
 				R_DrawNullModel(currententity);
 				continue;
 			}
+
 			switch (currentmodel->type)
 			{
-			case mod_alias:
-				R_DrawAliasModel(currententity, currentmodel);
-				break;
-			case mod_brush:
-				R_DrawBrushModel(currententity, currentmodel);
-				break;
-			case mod_sprite:
-				R_DrawSpriteModel(currententity, currentmodel);
-				break;
-			default:
-				R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
-					__func__, currentmodel->type);
-				return;
+				case mod_alias:
+					R_DrawAliasModel(currententity, currentmodel);
+					break;
+				case mod_brush:
+					R_DrawBrushModel(currententity, currentmodel);
+					break;
+				case mod_sprite:
+					R_DrawSpriteModel(currententity, currentmodel);
+					break;
+				default:
+					R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
+					return;
 			}
 		}
 	}
 }
 
-/*
-** Vk_DrawParticles
-**
-*/
 static void
 Vk_DrawParticles(int num_particles, const particle_t particles[], const unsigned *colortable)
 {
@@ -450,9 +444,13 @@ Vk_DrawParticles(int num_particles, const particle_t particles[], const unsigned
 				(p->origin[2] - r_origin[2]) * vpn[2];
 
 		if (scale < 20)
+		{
 			scale = 1;
+		}
 		else
+		{
 			scale = 1 + scale * 0.004;
+		}
 
 		*(int *)color = colortable[p->color];
 
@@ -524,13 +522,8 @@ Vk_DrawParticles(int num_particles, const particle_t particles[], const unsigned
 #endif
 }
 
-/*
-===============
-R_DrawParticles
-===============
-*/
 static void
-R_DrawParticles (void)
+R_DrawParticles(void)
 {
 #if 0
 	if (vk_custom_particles->value == 1)
@@ -606,49 +599,42 @@ R_DrawParticles (void)
 #endif
 }
 
-/*
-============
-R_PolyBlend
-============
-*/
 static void
-R_PolyBlend (void)
+R_PolyBlend(void)
 {
 	if (!r_polyblend->value)
+	{
 		return;
+	}
+
 	if (!v_blend[3])
+	{
 		return;
+	}
 
 	float polyTransform[] = { 0.f, 0.f, vid.width, vid.height, v_blend[0], v_blend[1], v_blend[2], v_blend[3] };
 	QVk_DrawColorRect(polyTransform, sizeof(polyTransform), RP_WORLD);
 }
 
-//=======================================================================
-
-/*
-===============
-R_SetupFrame
-===============
-*/
 static void
-R_SetupFrame (void)
+R_SetupFrame(void)
 {
 	int i;
-	mleaf_t	*leaf;
+	mleaf_t *leaf;
 
 	r_framecount++;
 
-	// build the transformation matrix for the given view angles
+	/* build the transformation matrix for the given view angles */
 	VectorCopy(r_newrefdef.vieworg, r_origin);
 
 	AngleVectors(r_newrefdef.viewangles, vpn, vright, vup);
 
-	// current viewcluster
+	/* current viewcluster */
 	if (!(r_newrefdef.rdflags & RDF_NOWORLDMODEL))
 	{
 		if (!r_worldmodel)
 		{
-			ri.Sys_Error(ERR_DROP, "%s: bad world model", __func__);
+			Com_Error(ERR_DROP, "%s: bad world model", __func__);
 			return;
 		}
 
@@ -657,39 +643,49 @@ R_SetupFrame (void)
 		leaf = Mod_PointInLeaf(r_origin, r_worldmodel->nodes);
 		r_viewcluster = r_viewcluster2 = leaf->cluster;
 
-		// check above and below so crossing solid water doesn't draw wrong
+		/* check above and below so crossing solid water doesn't draw wrong */
 		if (!leaf->contents)
-		{	// look down a bit
-			vec3_t	temp;
+		{
+			/* look down a bit */
+			vec3_t temp;
 
 			VectorCopy(r_origin, temp);
 			temp[2] -= 16;
 			leaf = Mod_PointInLeaf(temp, r_worldmodel->nodes);
+
 			if (!(leaf->contents & CONTENTS_SOLID) &&
 				(leaf->cluster != r_viewcluster2))
+			{
 				r_viewcluster2 = leaf->cluster;
+			}
 		}
 		else
-		{	// look up a bit
-			vec3_t	temp;
+		{
+			/* look up a bit */
+			vec3_t temp;
 
 			VectorCopy(r_origin, temp);
 			temp[2] += 16;
 			leaf = Mod_PointInLeaf(temp, r_worldmodel->nodes);
+
 			if (!(leaf->contents & CONTENTS_SOLID) &&
 				(leaf->cluster != r_viewcluster2))
+			{
 				r_viewcluster2 = leaf->cluster;
+			}
 		}
 	}
 
 	for (i = 0; i < 4; i++)
+	{
 		v_blend[i] = r_newrefdef.blend[i];
+	}
 
 	c_brush_polys = 0;
 	c_alias_polys = 0;
 
-	// clear out the portion of the screen that the NOWORLDMODEL defines
-	// unlike OpenGL, draw a rectangle in proper location - it's easier to do in Vulkan
+	/* clear out the portion of the screen that the NOWORLDMODEL defines
+	   unlike OpenGL, draw a rectangle in proper location - it's easier to do in Vulkan */
 	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
 	{
 		float clearArea[] = { (float)r_newrefdef.x / vid.width, (float)r_newrefdef.y / vid.height,
@@ -908,15 +904,20 @@ RE_RenderView
 r_newrefdef must be set before the first call
 ================
 */
-static void RE_RenderView (refdef_t *fd)
+static void
+RE_RenderView(refdef_t *fd)
 {
 	if (r_norefresh->value)
+	{
 		return;
+	}
 
 	r_newrefdef = *fd;
 
 	if (!r_worldmodel && !(r_newrefdef.rdflags & RDF_NOWORLDMODEL))
-		ri.Sys_Error(ERR_DROP, "%s: NULL worldmodel", __func__);
+	{
+		Com_Error(ERR_DROP, "%s: NULL worldmodel", __func__);
+	}
 
 	if (r_speeds->value)
 	{
@@ -941,17 +942,19 @@ static void RE_RenderView (refdef_t *fd)
 
 	vkCmdSetScissor(vk_activeCmdbuffer, 0, 1, &scissor);
 
-	R_PushDlights();
+	RI_PushDlights();
 
 	// added for compatibility sake with OpenGL implementation - don't use it!
 	if (vk_finish->value)
+	{
 		vkDeviceWaitIdle(vk_device.logical);
+	}
 
 	R_SetupFrame();
 
 	R_SetupVulkan();
 
-	R_MarkLeaves();	// done here so we know if we're in water
+	R_MarkLeaves(); /* done here so we know if we're in water */
 
 	R_DrawWorld();
 
@@ -1038,7 +1041,8 @@ qboolean RE_EndWorldRenderpass(void)
 	return true;
 }
 
-static void R_SetVulkan2D (const VkViewport* viewport, const VkRect2D* scissor)
+static void
+R_SetVulkan2D(const VkViewport* viewport, const VkRect2D* scissor)
 {
 	// player configuration screen renders a model using the UI renderpass, so skip finishing RP_WORLD twice
 	if (!(r_newrefdef.rdflags & RDF_NOWORLDMODEL))
@@ -1062,63 +1066,63 @@ static void R_SetVulkan2D (const VkViewport* viewport, const VkRect2D* scissor)
 	}
 }
 
-
-/*
-====================
-R_SetLightLevel
-
-====================
-*/
 static void
-R_SetLightLevel (void)
+R_SetLightLevel(entity_t *currententity)
 {
-	vec3_t		shadelight;
+	vec3_t shadelight = {0};
 
 	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
+	{
 		return;
+	}
 
-	// save off light value for server to look at (BIG HACK!)
+	/* save off light value for server to look at */
+	R_LightPoint(r_worldmodel->grid, currententity, &r_newrefdef,
+		r_worldmodel->surfaces, r_worldmodel->nodes, r_newrefdef.vieworg,
+		shadelight, r_modulate->value, lightspot);
 
-	R_LightPoint(r_newrefdef.vieworg, shadelight, NULL);
-
-	// pick the greatest component, which should be the same
-	// as the mono value returned by software
+	/* pick the greatest component, which should be the
+	 * same as the mono value returned by software */
 	if (shadelight[0] > shadelight[1])
 	{
 		if (shadelight[0] > shadelight[2])
+		{
 			r_lightlevel->value = 150 * shadelight[0];
+		}
 		else
+		{
 			r_lightlevel->value = 150 * shadelight[2];
+		}
 	}
 	else
 	{
 		if (shadelight[1] > shadelight[2])
+		{
 			r_lightlevel->value = 150 * shadelight[1];
+		}
 		else
+		{
 			r_lightlevel->value = 150 * shadelight[2];
+		}
 	}
 }
 
-/*
-=====================
-RE_RenderFrame
-
-=====================
-*/
 static void
-RE_RenderFrame (refdef_t *fd)
+RE_RenderFrame(refdef_t *fd)
 {
 	if (!vk_frameStarted)
+	{
 		return;
+	}
 
-	RE_RenderView( fd );
-	R_SetLightLevel ();
+	RE_RenderView(fd);
+	R_SetLightLevel(NULL);
 	R_SetVulkan2D (&vk_viewport, &vk_scissor);
 }
 
 
 static void
-R_Register( void )
+R_Register(void)
 {
 	/* Init default value */
 	s_blocklights = NULL;
@@ -1145,7 +1149,7 @@ R_Register( void )
 	r_validation = ri.Cvar_Get("r_validation", "0", CVAR_ARCHIVE);
 	vk_picmip = ri.Cvar_Get("vk_picmip", "0", 0);
 	r_palettedtexture = ri.Cvar_Get("r_palettedtexture", "0", 0);
-	vk_flashblend = ri.Cvar_Get("vk_flashblend", "0", 0);
+	r_flashblend = ri.Cvar_Get("r_flashblend", "0", 0);
 	vk_finish = ri.Cvar_Get("vk_finish", "0", CVAR_ARCHIVE);
 	r_clear = ri.Cvar_Get("r_clear", "0", CVAR_ARCHIVE);
 	r_lockpvs = ri.Cvar_Get("r_lockpvs", "0", 0);
@@ -1161,9 +1165,9 @@ R_Register( void )
 	vk_particle_max_size = ri.Cvar_Get("vk_particle_max_size", "40", CVAR_ARCHIVE);
 	vk_custom_particles = ri.Cvar_Get("vk_custom_particles", "1", CVAR_ARCHIVE);
 	vk_postprocess = ri.Cvar_Get("vk_postprocess", "1", CVAR_ARCHIVE);
-	vk_dynamic = ri.Cvar_Get("vk_dynamic", "1", 0);
+	r_dynamic = ri.Cvar_Get("r_dynamic", "1", 0);
 	vk_msaa = ri.Cvar_Get("r_msaa_samples", "0", CVAR_ARCHIVE);
-	vk_showtris = ri.Cvar_Get("vk_showtris", "0", 0);
+	r_showtris = ri.Cvar_Get("r_showtris", "0", 0);
 	r_lightmap = ri.Cvar_Get("r_lightmap", "0", 0);
 	vk_texturemode = ri.Cvar_Get("vk_texturemode", "VK_MIPMAP_LINEAR", CVAR_ARCHIVE);
 	vk_lmaptexturemode = ri.Cvar_Get("vk_lmaptexturemode", "VK_MIPMAP_LINEAR", CVAR_ARCHIVE);
@@ -1205,7 +1209,9 @@ R_Register( void )
 	ri.Cmd_AddCommand("modellist", Mod_Modellist_f);
 }
 
-
+/*
+ * Changes the video mode
+ */
 static int
 Vkimp_SetMode(int *pwidth, int *pheight, int mode, int fullscreen)
 {
@@ -1239,13 +1245,8 @@ Vkimp_SetMode(int *pwidth, int *pheight, int mode, int fullscreen)
 	return rserr_ok;
 }
 
-/*
-==================
-R_SetMode
-==================
-*/
 static qboolean
-R_SetMode (void)
+R_SetMode(void)
 {
 	rserr_t err;
 	int fullscreen;
@@ -1318,6 +1319,7 @@ static qboolean RE_Init( void )
 		R_Printf(PRINT_ALL, "%s() - could not R_SetMode()\n", __func__);
 		return false;
 	}
+
 	ri.Vid_MenuInit();
 
 	// print device information during startup
@@ -1335,24 +1337,21 @@ static qboolean RE_Init( void )
 ** subsystem.
 **
 */
-static void RE_ShutdownContext( void )
+static void
+RE_ShutdownContext(void)
 {
 	// Shutdown Vulkan subsystem
 	QVk_WaitAndShutdownAll();
 }
 
-/*
-===============
-RE_Shutdown
-===============
-*/
-void RE_Shutdown (void)
+void
+RE_Shutdown(void)
 {
+	ri.Cmd_RemoveCommand("modellist");
+	ri.Cmd_RemoveCommand("screenshot");
+	ri.Cmd_RemoveCommand("imagelist");
 	ri.Cmd_RemoveCommand("vk_strings");
 	ri.Cmd_RemoveCommand("vk_mem");
-	ri.Cmd_RemoveCommand("imagelist");
-	ri.Cmd_RemoveCommand("screenshot");
-	ri.Cmd_RemoveCommand("modellist");
 
 	QVk_WaitAndShutdownAll();
 
@@ -1366,13 +1365,8 @@ void RE_Shutdown (void)
 	s_blocklights_max = NULL;
 }
 
-/*
-=====================
-RE_BeginFrame
-=====================
-*/
 static void
-RE_BeginFrame( float camera_separation )
+RE_BeginFrame(float camera_separation)
 {
 	// world has not rendered yet
 	world_rendered = false;
@@ -1436,7 +1430,7 @@ RE_EndFrame
 =====================
 */
 static void
-RE_EndFrame( void )
+RE_EndFrame(void)
 {
 	QVk_EndFrame(false);
 
@@ -1444,17 +1438,12 @@ RE_EndFrame( void )
 	world_rendered = false;
 }
 
-/*
-=============
-RE_SetPalette
-=============
-*/
 unsigned r_rawpalette[256];
 
 static void
-RE_SetPalette (const unsigned char *palette)
+RE_SetPalette(const unsigned char *palette)
 {
-	int		i;
+	int i;
 
 	byte *rp = (byte *)r_rawpalette;
 
@@ -1480,19 +1469,17 @@ RE_SetPalette (const unsigned char *palette)
 	}
 }
 
-/*
-** R_DrawBeam
-*/
-void R_DrawBeam( entity_t *currententity )
+void
+R_DrawBeam(entity_t *currententity )
 {
 #define NUM_BEAM_SEGS 6
 
-	int	i;
+	int i;
 	float r, g, b;
 
 	vec3_t perpvec;
 	vec3_t direction, normalized_direction;
-	vec3_t	start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
+	vec3_t start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
 	vec3_t oldorigin, origin;
 
 	oldorigin[0] = currententity->oldorigin[0];
@@ -1508,7 +1495,9 @@ void R_DrawBeam( entity_t *currententity )
 	normalized_direction[2] = direction[2] = oldorigin[2] - origin[2];
 
 	if (VectorNormalize(normalized_direction) == 0)
+	{
 		return;
+	}
 
 	PerpendicularVector(perpvec, normalized_direction);
 	VectorScale(perpvec, currententity->frame / 2, perpvec);
@@ -1751,16 +1740,15 @@ GetRefAPI(refimport_t imp)
 	refexport.EndWorldRenderpass = RE_EndWorldRenderpass;
 	refexport.EndFrame = RE_EndFrame;
 
-    // Tell the client that we're unsing the
+	// Tell the client that we're unsing the
 	// new renderer restart API.
-    ri.Vid_RequestRestart(RESTART_NO);
+	ri.Vid_RequestRestart(RESTART_NO);
 
 	Swap_Init ();
 
 	return refexport;
 }
 
-// this is only here so the functions in q_shared.c and q_shwin.c can link
 void R_Printf(int level, const char* msg, ...)
 {
 	va_list argptr;
@@ -1769,24 +1757,41 @@ void R_Printf(int level, const char* msg, ...)
 	va_end(argptr);
 }
 
+/*
+ * this is only here so the functions in shared source files
+ * (shared.c, rand.c, flash.c, mem.c/hunk.c) can link
+ */
 void
-Sys_Error (const char *error, ...)
+Sys_Error(const char *error, ...)
 {
-	va_list		argptr;
-	char		text[4096]; // MAXPRINTMSG == 4096
+	va_list argptr;
+	char text[4096]; // MAXPRINTMSG == 4096
 
 	va_start(argptr, error);
 	vsnprintf(text, sizeof(text), error, argptr);
 	va_end(argptr);
 
-	ri.Sys_Error (ERR_FATAL, "%s", text);
+	ri.Sys_Error(ERR_FATAL, "%s", text);
 }
 
 void
-Com_Printf (const char *msg, ...)
+Com_Printf(const char *msg, ...)
 {
 	va_list argptr;
 	va_start(argptr, msg);
 	ri.Com_VPrintf(PRINT_ALL, msg, argptr);
 	va_end(argptr);
+}
+
+void
+Com_Error(int code, const char *fmt, ...)
+{
+	va_list argptr;
+	char text[4096]; // MAXPRINTMSG == 4096
+
+	va_start(argptr, fmt);
+	vsnprintf(text, sizeof(text), fmt, argptr);
+	va_end(argptr);
+
+	ri.Sys_Error(code, "%s", text);
 }

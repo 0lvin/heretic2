@@ -289,6 +289,8 @@ extern int c_brush_polys, c_alias_polys;
 
 extern qboolean IsHighDPIaware;
 
+extern vec3_t lightspot;
+
 /* NOTE: struct image_s* is what re.RegisterSkin() etc return so no gl4image_s!
  *       (I think the client only passes the pointer around and doesn't know the
  *        definition of this struct, so this being different from struct image_s
@@ -383,7 +385,7 @@ GL4_BindEBO(GLuint ebo)
 	}
 }
 
-extern void GL4_BufferAndDraw3D(const gl4_3D_vtx_t* verts, int numVerts, GLenum drawMode);
+extern void GL4_BufferAndDraw3D(const mvtx_t* verts, int numVerts, GLenum drawMode);
 
 extern void GL4_RotateForEntity(entity_t *e);
 
@@ -454,10 +456,7 @@ extern void GL4_ImageList_f(void);
 
 // gl4_light.c
 extern int r_dlightframecount;
-extern void GL4_MarkSurfaceLights(dlight_t *light, int bit, mnode_t *node,
-	int r_dlightframecount);
 extern void GL4_PushDlights(void);
-extern void GL4_LightPoint(entity_t *currententity, vec3_t p, vec3_t color);
 extern void GL4_BuildLightMap(msurface_t *surf, int offsetInLMbuf, int stride);
 
 // gl4_lightmap.c
@@ -473,11 +472,10 @@ extern void GL4_LM_EndBuildingLightmaps(void);
 
 // gl4_warp.c
 extern void GL4_EmitWaterPolys(msurface_t *fa);
-extern void GL4_SubdivideSurface(msurface_t *fa, gl4model_t* loadmodel);
 
 extern void GL4_SetSky(const char *name, float rotate, int autorotate, const vec3_t axis);
 extern void GL4_DrawSkyBox(void);
-extern void GL4_ClearSkyBox(void);
+extern void RE_ClearSkyBox(void);
 extern void GL4_AddSkySurface(msurface_t *fa);
 
 
@@ -521,7 +519,7 @@ extern cvar_t *r_customheight;
 
 extern cvar_t *r_2D_unfiltered;
 extern cvar_t *r_videos_unfiltered;
-extern cvar_t *gl_nolerp_list;
+extern cvar_t *r_nolerp_list;
 extern cvar_t *r_lerp_list;
 extern cvar_t *gl_nobind;
 extern cvar_t *r_lockpvs;
