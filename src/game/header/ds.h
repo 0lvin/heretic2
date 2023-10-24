@@ -194,6 +194,9 @@ public:
 	virtual void		Write(FILE *FH, CScript *Script, int ID = -1);
 	virtual const char		*GetStringValue(void) { return Value; }
 	virtual void		ReadValue(CScript *Script);
+	virtual void    operator	=(Variable *VI);
+	virtual bool	operator	==(Variable *VI);
+	virtual bool	operator	!=(Variable *VI);
 };
 
 //==========================================================================
