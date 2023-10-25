@@ -509,6 +509,9 @@ typedef struct cvar_s
 #define SURF_ANIMSPEED		0x00001000	/* value will hold the anim speed in fps */
 #define SURF_UNDULATE		0x00002000	/* rock surface up and down... */
 #define SURF_QUAKE		0x00004000	/* rock surface up and down when quake value on */
+#define SURF_ALPHATEST 0x02000000 /* KMQUAKE2 Alpha test flag */
+/* Transparnet but not explicitly warp */
+#define SURF_TRANSPARENT (SURF_TRANS33 | SURF_TRANS66)
 
 /* content masks */
 #define MASK_ALL (-1)

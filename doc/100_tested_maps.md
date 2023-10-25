@@ -10,13 +10,12 @@
 ## Quake2 ReRelease
 
 Notes:
- * mgu5m1: gl1,vk: non transparent flowers
  * mgu5m2: server code: Too many models 256 (226 inline models)
 
  | map                            | gl1.4  | gl3/gles3 | gl4.6  | vk     | soft        |
  | ------------------------------ | ------ | --------- | ------ | ------ | ----------- |
- | badlands.bsp                   | N/A    | N/A       | N/A    | N/A    | N/A         |
- | base1.bsp                      | ML/MD5 | WL/ML/MD5 | N/A    | MD5    | WL/ML/MD5/G |
+ | badlands.bsp                   | MD5    | N/A       | N/A    | MD5    | N/A         |
+ | base1.bsp                      | MD5    | WL/ML/MD5 | N/A    | MD5    | WL/ML/MD5/G |
  | base2.bsp                      | N/A    | N/A       | N/A    | N/A    | N/A         |
  | base3.bsp                      | N/A    | N/A       | N/A    | N/A    | N/A         |
  | base64.bsp                     | N/A    | N/A       | N/A    | N/A    | N/A         |
