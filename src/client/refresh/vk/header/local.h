@@ -158,8 +158,6 @@ extern	int		c_visible_textures;
 
 extern	float	r_viewproj_matrix[16];
 
-extern	float *s_blocklights, *s_blocklights_max;
-
 //====================================================================
 
 extern	model_t	*r_worldmodel;
@@ -192,7 +190,6 @@ void R_DrawBrushModel(entity_t *currententity, const model_t *currentmodel);
 void R_DrawBeam(entity_t *currententity);
 void R_DrawWorld(void);
 void R_RenderDlights(void);
-void RI_BuildLightMap(msurface_t *surf, byte *dest, int stride);
 void R_DrawAlphaSurfaces(void);
 void RE_InitParticleTexture(void);
 void Draw_InitLocal(void);
@@ -240,7 +237,6 @@ void	Vk_FreeUnusedImages (void);
 qboolean Vk_ImageHasFreeSpace(void);
 
 void LM_InitBlock(void);
-void LM_UploadBlock(qboolean dynamic);
 qboolean LM_AllocBlock(int w, int h, int *x, int *y);
 
 void	RE_BeginRegistration (const char *model);
@@ -283,8 +279,8 @@ typedef struct
 #define MAX_LIGHTMAPS 256
 #define DYNLIGHTMAP_OFFSET MAX_LIGHTMAPS
 
-#define	BLOCK_WIDTH		128
-#define	BLOCK_HEIGHT	128
+#define BLOCK_WIDTH 256
+#define BLOCK_HEIGHT 256
 
 typedef struct
 {

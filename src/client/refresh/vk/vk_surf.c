@@ -241,16 +241,22 @@ R_RenderBrushPoly(msurface_t *fa, float *modelMatrix, float alpha, entity_t *cur
 	{
 		if ((fa->styles[maps] >= 32 || fa->styles[maps] == 0) && (fa->dlightframe != r_framecount))
 		{
-			unsigned	temp[34 * 34];
-			int			smax, tmax;
+			int smax, tmax, size;
+			byte *temp;
 
 			smax = (fa->extents[0] >> fa->lmshift) + 1;
 			tmax = (fa->extents[1] >> fa->lmshift) + 1;
 
-			RI_BuildLightMap(fa, (void *)temp, smax * 4);
+			size = smax * tmax * LIGHTMAP_BYTES;
+			temp = R_GetTemporaryLMBuffer(size);
+
+			R_BuildLightMap(fa, temp, smax * 4,
+				temp + size,
+				&r_newrefdef, r_modulate->value, r_framecount);
 			R_SetCacheState(fa, &r_newrefdef);
 
-			QVk_UpdateTextureData(&vk_state.lightmap_textures[fa->lightmaptexturenum], (unsigned char*)temp, fa->light_s, fa->light_t, smax, tmax);
+			QVk_UpdateTextureData(&vk_state.lightmap_textures[fa->lightmaptexturenum],
+				(byte*)temp, fa->light_s, fa->light_t, smax, tmax);
 
 			fa->lightmapchain = vk_lms.lightmap_surfaces[fa->lightmaptexturenum];
 			vk_lms.lightmap_surfaces[fa->lightmaptexturenum] = fa;
@@ -442,25 +448,32 @@ Vk_RenderLightmappedPoly(msurface_t *surf, float *modelMatrix, float alpha, enti
 
 	if (is_dynamic)
 	{
-		unsigned	temp[128 * 128];
-		int			smax, tmax;
+		int smax, tmax, size;
+		byte *temp;
 
 		smax = (surf->extents[0] >> surf->lmshift) + 1;
 		tmax = (surf->extents[1] >> surf->lmshift) + 1;
 
-		RI_BuildLightMap(surf, (void *)temp, smax * 4);
+		size = smax * tmax * LIGHTMAP_BYTES;
+		temp = R_GetTemporaryLMBuffer(size);
+
+		R_BuildLightMap(surf, temp, smax * 4,
+			temp + size,
+			&r_newrefdef, r_modulate->value, r_framecount);
 
 		if ((surf->styles[map] >= 32 || surf->styles[map] == 0) && (surf->dlightframe != r_framecount))
 		{
 			R_SetCacheState(surf, &r_newrefdef);
 
 			lmtex = surf->lightmaptexturenum;
-			QVk_UpdateTextureData(&vk_state.lightmap_textures[surf->lightmaptexturenum], (unsigned char *)temp, surf->light_s, surf->light_t, smax, tmax);
+			QVk_UpdateTextureData(&vk_state.lightmap_textures[surf->lightmaptexturenum],
+				(byte*)temp, surf->light_s, surf->light_t, smax, tmax);
 		}
 		else
 		{
 			lmtex = surf->lightmaptexturenum + DYNLIGHTMAP_OFFSET;
-			QVk_UpdateTextureData(&vk_state.lightmap_textures[lmtex], (unsigned char *)temp, surf->light_s, surf->light_t, smax, tmax);
+			QVk_UpdateTextureData(&vk_state.lightmap_textures[lmtex],
+				(byte*)temp, surf->light_s, surf->light_t, smax, tmax);
 		}
 
 		c_brush_polys++;
@@ -795,6 +808,12 @@ R_RecursiveWorldNode(entity_t *currententity, mnode_t *node)
 
 	/* recurse down the children, front side first */
 	R_RecursiveWorldNode(currententity, node->children[side]);
+
+	if ((node->numsurfaces + node->firstsurface) > r_worldmodel->numsurfaces)
+	{
+		R_Printf(PRINT_ALL, "Broken node firstsurface\n");
+		return;
+	}
 
 	/* draw stuff */
 	for (c = node->numsurfaces,

@@ -28,8 +28,6 @@
 
 extern gllightmapstate_t gl_lms;
 
-void RI_BuildLightMap(msurface_t *surf, byte *dest, int stride);
-
 void
 LM_InitBlock(void)
 {
@@ -73,8 +71,7 @@ LM_UploadBlock(qboolean dynamic)
 	}
 	else
 	{
-		gl_lms.internal_format = GL_LIGHTMAP_FORMAT;
-		glTexImage2D(GL_TEXTURE_2D, 0, gl_lms.internal_format,
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_LIGHTMAP_FORMAT,
 				BLOCK_WIDTH, BLOCK_HEIGHT, 0, GL_LIGHTMAP_FORMAT,
 				GL_UNSIGNED_BYTE, gl_lms.lightmap_buffer);
 
@@ -255,15 +252,20 @@ LM_CreateSurfaceLightmap(msurface_t *surf)
 	base += (surf->light_t * BLOCK_WIDTH + surf->light_s) * LIGHTMAP_BYTES;
 
 	R_SetCacheState(surf, &r_newrefdef);
-	RI_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES);
+	R_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES,
+		gl_lms.lightmap_buffer + sizeof(gl_lms.lightmap_buffer),
+		&r_newrefdef, r_modulate->value, r_framecount);
 }
 
 void
 LM_BeginBuildingLightmaps(model_t *m)
 {
 	static lightstyle_t lightstyles[MAX_LIGHTSTYLES];
-	int i;
-	unsigned dummy[128 * 128] = {0};
+	int i, size;
+	byte *dummy;
+
+	size = BLOCK_WIDTH * BLOCK_HEIGHT * LIGHTMAP_BYTES;
+	dummy = R_GetTemporaryLMBuffer(size);
 
 	memset(gl_lms.allocated, 0, sizeof(gl_lms.allocated));
 
@@ -288,13 +290,12 @@ LM_BeginBuildingLightmaps(model_t *m)
 	}
 
 	gl_lms.current_lightmap_texture = 1;
-	gl_lms.internal_format = GL_LIGHTMAP_FORMAT;
 
 	/* initialize the dynamic lightmap texture */
 	R_Bind(gl_state.lightmap_textures + 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, gl_lms.internal_format,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_LIGHTMAP_FORMAT,
 			BLOCK_WIDTH, BLOCK_HEIGHT, 0, GL_LIGHTMAP_FORMAT,
 			GL_UNSIGNED_BYTE, dummy);
 }

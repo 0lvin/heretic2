@@ -62,11 +62,10 @@
 #define TEXNUM_IMAGES 1153
 #define MAX_GLTEXTURES 1024
 #define MAX_SCRAPS 1
-#define BLOCK_WIDTH 128
-#define BLOCK_HEIGHT 128
+#define BLOCK_WIDTH 256
+#define BLOCK_HEIGHT 256
 #define REF_VERSION "Yamagi Quake II OpenGL Refresher"
 #define BACKFACE_EPSILON 0.01
-#define LIGHTMAP_BYTES 4
 #define MAX_LIGHTMAPS 256
 #define GL_LIGHTMAP_FORMAT GL_RGBA
 
@@ -235,7 +234,6 @@ void R_TexEnv(GLenum value);
 
 void RI_PushDlights(void);
 
-extern float *s_blocklights, *s_blocklights_max;
 extern model_t *r_worldmodel;
 extern unsigned d_8to24table[256];
 extern int registration_sequence;
@@ -335,7 +333,6 @@ typedef struct
 
 typedef struct
 {
-	int internal_format;
 	int current_lightmap_texture;
 
 	msurface_t *lightmap_surfaces[MAX_LIGHTMAPS];
@@ -344,7 +341,7 @@ typedef struct
 
 	/* the lightmap texture data needs to be kept in
 	   main memory so texsubimage can update properly */
-	byte lightmap_buffer[4 * BLOCK_WIDTH * BLOCK_HEIGHT];
+	byte lightmap_buffer[LIGHTMAP_BYTES * BLOCK_WIDTH * BLOCK_HEIGHT];
 } gllightmapstate_t;
 
 extern glconfig_t gl_config;

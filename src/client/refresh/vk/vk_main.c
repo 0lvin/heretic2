@@ -1125,8 +1125,7 @@ static void
 R_Register(void)
 {
 	/* Init default value */
-	s_blocklights = NULL;
-	s_blocklights_max = NULL;
+	R_InitTemporaryLMBuffer();
 
 	r_lefthand = ri.Cvar_Get("hand", "0", CVAR_USERINFO | CVAR_ARCHIVE);
 	r_norefresh = ri.Cvar_Get("r_norefresh", "0", 0);
@@ -1355,14 +1354,7 @@ RE_Shutdown(void)
 
 	QVk_WaitAndShutdownAll();
 
-	/* Cleanup buffers */
-	if (s_blocklights)
-	{
-		free(s_blocklights);
-	}
-
-	s_blocklights = NULL;
-	s_blocklights_max = NULL;
+	R_FreeTemporaryLMBuffer();
 }
 
 static void

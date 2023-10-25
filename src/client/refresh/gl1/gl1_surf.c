@@ -39,8 +39,6 @@ void LM_InitBlock(void);
 void LM_UploadBlock(qboolean dynamic);
 qboolean LM_AllocBlock(int w, int h, int *x, int *y);
 
-void RI_BuildLightMap(msurface_t *surf, byte *dest, int stride);
-
 static void
 R_DrawGLPoly(mpoly_t *p)
 {
@@ -328,7 +326,9 @@ R_BlendLightmaps(const model_t *currentmodel)
 				base += (surf->dlight_t * BLOCK_WIDTH +
 						surf->dlight_s) * LIGHTMAP_BYTES;
 
-				RI_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES);
+				R_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES,
+					gl_lms.lightmap_buffer + sizeof(gl_lms.lightmap_buffer),
+					&r_newrefdef, r_modulate->value, r_framecount);
 			}
 			else
 			{
@@ -352,8 +352,8 @@ R_BlendLightmaps(const model_t *currentmodel)
 						}
 
 						R_DrawGLPolyChain(drawsurf->polys,
-								(drawsurf->light_s - drawsurf->dlight_s) * (1.0 / 128.0),
-								(drawsurf->light_t - drawsurf->dlight_t) * (1.0 / 128.0));
+								(drawsurf->light_s - drawsurf->dlight_s) * (1.0 / BLOCK_WIDTH),
+								(drawsurf->light_t - drawsurf->dlight_t) * (1.0 / BLOCK_WIDTH));
 					}
 				}
 
@@ -374,7 +374,9 @@ R_BlendLightmaps(const model_t *currentmodel)
 				base += (surf->dlight_t * BLOCK_WIDTH +
 						surf->dlight_s) * LIGHTMAP_BYTES;
 
-				RI_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES);
+				R_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES,
+					gl_lms.lightmap_buffer + sizeof(gl_lms.lightmap_buffer),
+					&r_newrefdef, r_modulate->value, r_framecount);
 			}
 		}
 
@@ -396,8 +398,8 @@ R_BlendLightmaps(const model_t *currentmodel)
 				}
 
 				R_DrawGLPolyChain(surf->polys,
-						(surf->light_s - surf->dlight_s) * (1.0 / 128.0),
-						(surf->light_t - surf->dlight_t) * (1.0 / 128.0));
+						(surf->light_s - surf->dlight_s) * (1.0 / BLOCK_WIDTH),
+						(surf->light_t - surf->dlight_t) * (1.0 / BLOCK_WIDTH));
 			}
 		}
 	}
@@ -502,13 +504,18 @@ R_RenderBrushPoly(entity_t *currententity, msurface_t *fa)
 			 (fa->styles[maps] == 0)) &&
 			  (fa->dlightframe != r_framecount))
 		{
-			unsigned temp[34 * 34];
-			int smax, tmax;
+			int smax, tmax, size;
+			byte *temp;
 
 			smax = (fa->extents[0] >> fa->lmshift) + 1;
 			tmax = (fa->extents[1] >> fa->lmshift) + 1;
 
-			RI_BuildLightMap(fa, (void *)temp, smax * 4);
+			size = smax * tmax * LIGHTMAP_BYTES;
+			temp = R_GetTemporaryLMBuffer(size);
+
+			R_BuildLightMap(fa, temp, smax * 4,
+				temp + size,
+				&r_newrefdef, r_modulate->value, r_framecount);
 			R_SetCacheState(fa, &r_newrefdef);
 
 			R_Bind(gl_state.lightmap_textures + fa->lightmaptexturenum);
@@ -863,6 +870,12 @@ R_RecursiveWorldNode(entity_t *currententity, mnode_t *node)
 
 	/* recurse down the children, front side first */
 	R_RecursiveWorldNode(currententity, node->children[side]);
+
+	if ((node->numsurfaces + node->firstsurface) > r_worldmodel->numsurfaces)
+	{
+		R_Printf(PRINT_ALL, "Broken node firstsurface\n");
+		return;
+	}
 
 	/* draw stuff */
 	for (c = node->numsurfaces,

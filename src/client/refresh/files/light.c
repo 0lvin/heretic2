@@ -26,6 +26,10 @@
 
 #include "../ref_shared.h"
 
+static float *s_blocklights = NULL, *s_blocklights_max = NULL;
+static byte *s_bufferlights = NULL, *s_bufferlights_max = NULL;
+
+
 static int
 BSPX_LightGridSingleValue(const bspxlightgrid_t *grid, const lightstyle_t *lightstyles, int x, int y, int z, vec3_t res_diffuse)
 {
@@ -278,7 +282,7 @@ R_LightPoint(const bspxlightgrid_t *grid, const entity_t *currententity,
 }
 
 void
-R_SetCacheState(msurface_t *surf, refdef_t *refdef)
+R_SetCacheState(msurface_t *surf, const refdef_t *refdef)
 {
 	int maps;
 
@@ -291,7 +295,7 @@ R_SetCacheState(msurface_t *surf, refdef_t *refdef)
 }
 
 static void
-R_AddDynamicLights(msurface_t *surf, refdef_t *r_newrefdef,
+R_AddDynamicLights(const msurface_t *surf, const refdef_t *r_newrefdef,
 	float *s_blocklights, const float *s_blocklights_max)
 {
 	int lnum;
@@ -391,12 +395,103 @@ R_AddDynamicLights(msurface_t *surf, refdef_t *r_newrefdef,
 	}
 }
 
+void
+R_InitTemporaryLMBuffer(void)
+{
+	/* buffer for generate light maps */
+	s_blocklights = NULL;
+	s_blocklights_max = NULL;
+	/* buffer for temporary copy light maps */
+	s_bufferlights = NULL;
+	s_bufferlights_max = NULL;
+}
+
+void
+R_FreeTemporaryLMBuffer(void)
+{
+	/* Cleanup buffers */
+	if (s_blocklights)
+	{
+		free(s_blocklights);
+	}
+
+	s_blocklights = NULL;
+	s_blocklights_max = NULL;
+
+	/* Cleanup temp buffers */
+	if (s_bufferlights)
+	{
+		free(s_bufferlights);
+	}
+
+	s_bufferlights = NULL;
+	s_bufferlights_max = NULL;
+}
+
+static void
+R_ResizeTemporaryLMBuffer(size_t size)
+{
+	if (!s_blocklights || ((s_blocklights + size) >= s_blocklights_max))
+	{
+		int new_size = ROUNDUP(size, 1024);
+
+		if (new_size < 4096)
+		{
+			new_size = 4096;
+		}
+
+		if (s_blocklights)
+		{
+			free(s_blocklights);
+		}
+
+		s_blocklights = malloc(new_size * sizeof(float));
+		s_blocklights_max = s_blocklights + new_size;
+
+		if (!s_blocklights)
+		{
+			Com_Error(ERR_DROP, "Can't alloc s_blocklights");
+		}
+	}
+}
+
+/* Use this one instead allocate in stack */
+byte*
+R_GetTemporaryLMBuffer(size_t size)
+{
+	if (!s_bufferlights || ((s_bufferlights + size) >= s_bufferlights_max))
+	{
+		int new_size = ROUNDUP(size, 1024);
+
+		if (new_size < 4096)
+		{
+			new_size = 4096;
+		}
+
+		if (s_bufferlights)
+		{
+			free(s_bufferlights);
+		}
+
+		s_bufferlights = malloc(new_size);
+		s_bufferlights_max = s_bufferlights + new_size;
+
+		if (!s_bufferlights)
+		{
+			Com_Error(ERR_DROP, "Can't alloc s_bufferlights");
+		}
+	}
+
+	memset(s_bufferlights, 0, size);
+	return s_bufferlights;
+}
+
 /*
  * Combine and scale multiple lightmaps into the floating format in blocklights
  */
 void
-R_BuildLightMap(msurface_t *surf, byte *dest, int stride, refdef_t *r_newrefdef,
-	float *s_blocklights, const float *s_blocklights_max, float modulate, int r_framecount)
+R_BuildLightMap(const msurface_t *surf, byte *dest, int stride, const byte *destmax,
+	const refdef_t *r_newrefdef, float modulate, int r_framecount)
 {
 	int smax, tmax;
 	int r, g, b, a, max;
@@ -409,12 +504,19 @@ R_BuildLightMap(msurface_t *surf, byte *dest, int stride, refdef_t *r_newrefdef,
 	if (surf->texinfo->flags &
 		(SURF_SKY | SURF_TRANS33 | SURF_TRANS66 | SURF_WARP))
 	{
-		Com_Error(ERR_DROP, "RI_BuildLightMap called for non-lit surface");
+		Com_Error(ERR_DROP, "%s called for non-lit surface", __func__);
 	}
 
 	smax = (surf->extents[0] >> surf->lmshift) + 1;
 	tmax = (surf->extents[1] >> surf->lmshift) + 1;
 	size = smax * tmax;
+
+	R_ResizeTemporaryLMBuffer(size * 3);
+
+	if ((s_blocklights + size * 3) >= s_blocklights_max)
+	{
+		Com_Error(ERR_DROP, "%s temporary blocklights too small for lightmap", __func__);
+	}
 
 	/* set to full bright if no light data */
 	if (!surf->samples)
@@ -526,6 +628,12 @@ store:
 	stride -= (smax << 2);
 	bl = s_blocklights;
 
+	if ((dest + (stride * (tmax - 1)) + smax * LIGHTMAP_BYTES) > destmax)
+	{
+		Com_Error(ERR_DROP, "%s destination too small for lightmap %d > %ld",
+			__func__, (stride * (tmax - 1)) + smax * LIGHTMAP_BYTES, destmax - dest);
+	}
+
 	for (i = 0; i < tmax; i++, dest += stride)
 	{
 		for (j = 0; j < smax; j++)
@@ -589,7 +697,7 @@ store:
 			dest[3] = a;
 
 			bl += 3;
-			dest += 4;
+			dest += LIGHTMAP_BYTES;
 		}
 	}
 }
@@ -695,5 +803,4 @@ void R_PushDlights(refdef_t *r_newrefdef, mnode_t *nodes, int r_dlightframecount
 	{
 		R_MarkLights(l, 1 << i, nodes, r_dlightframecount, surfaces);
 	}
-
 }
