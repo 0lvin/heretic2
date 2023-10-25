@@ -1434,8 +1434,8 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 		if((HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW) ||
 			(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW)||
 			((HitLocation == hl_TorsoFront|| HitLocation == hl_TorsoBack) &&
-			self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW &&
-			self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW)&&
+			(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW) &&
+			(self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW))&&
 			irand(0,10)<4)
 			HitLocation = hl_Head;//Decap
 	}

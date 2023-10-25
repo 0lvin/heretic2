@@ -637,6 +637,8 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	int				armorabsorb, orig_dmg;
 	int				violence=VIOLENCE_DEFAULT;
 
+	hl = hl_NoneSpecific;
+
 	// Friendly-fire avoidance. If enabled, you can't hurt teammates (but you can hurt yourself).
 	// Knockback still occurs though.
 	if (targ->client && attacker->client && targ != attacker)
