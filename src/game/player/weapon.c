@@ -251,7 +251,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 	{
 		edict_t *ent;
 
-		if(ent = check_hit_beast(startpos, trace.endpos))
+		if((ent = check_hit_beast(startpos, trace.endpos)))
 			trace.ent = ent;
 	}
 

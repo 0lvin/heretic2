@@ -642,6 +642,8 @@ WriteField2(FILE *f, field_t *field, byte *base)
 			}
 
 			break;
+		default:
+			break;
 	}
 }
 
