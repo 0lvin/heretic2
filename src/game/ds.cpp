@@ -993,16 +993,7 @@ bool EntityVar::operator ==(Variable *VI)
 
 bool EntityVar::operator !=(Variable *VI)
 {
-	if (VI->GetType() == TypeINT)
-	{
-		return GetIntValue() != VI->GetIntValue();
-	}
-	else if (VI->GetType() == TypeENTITY)
-	{
-		return GetEdictValue() != VI->GetEdictValue();
-	}
-
-	return false;
+	return !(*this == VI);
 }
 
 //==========================================================================
@@ -1029,6 +1020,26 @@ void StringVar::Write(FILE *FH, CScript *Script, int ID)
 void StringVar::ReadValue(CScript *Script)
 {
 	strcpy(Value, Script->ReadString());
+}
+
+void StringVar::operator =(Variable *VI)
+{
+    strcpy(Value, VI->GetStringValue());
+}
+
+bool StringVar::operator ==(Variable *VI)
+{
+	if (VI->GetType() == TypeSTRING)
+	{
+        return strcmp(Value, VI->GetStringValue()) == 0;
+	}
+
+	return false;
+}
+
+bool StringVar::operator !=(Variable *VI)
+{
+    return !(*this  == VI);
 }
 
 //==========================================================================
@@ -2994,6 +3005,7 @@ void CScript::HandlePrint(void)
 	Flags = ReadByte();
 
 	Text = PopStack();
+	TextIndex = 0;
 	if (!Text)
 	{
 		Error("Invalid stack for Print");
