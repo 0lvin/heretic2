@@ -7,12 +7,15 @@ extern "C" {
 #include "header/local.h"
 }
 #include "header/ds.h"
+// TODO see if we can get rid of the custom buggy List type
+// Starting small to check the water for now
+#include <list>
 
 #define DEG2RAD( a ) ( a * M_PI ) / 180.0F
 #define SCRIPT_SAVE_VERSION 2
 
-List<Variable *>	GlobalVariables;
-List<CScript *>		Scripts;
+std::list<Variable *>	GlobalVariables;
+std::list<CScript *>		Scripts;
 
 int msg_animtype  [NUM_MESSAGES] =
 {
@@ -257,11 +260,9 @@ void WriteEnt(edict_t **to,FILE *FH)
 
 void ProcessScripts(void)
 {
-	List<CScript *>::Iter	is;
-
-	if (Scripts.Size())
+	if (!Scripts.empty())
 	{
-		for (is=Scripts.Begin();is != Scripts.End();is++)
+		for (std::list<CScript *>::iterator is=Scripts.begin();is != Scripts.end();is++)
 		{
 			(*is)->Think();
 		}
@@ -270,17 +271,13 @@ void ProcessScripts(void)
 
 void ShutdownScripts(qboolean Complete)
 {
-	List<CScript *>::Iter	is;
-	List<Variable *>::Iter	iv;
 	int						i;
 	edict_t					*ent;
 
-	while(Scripts.Size())
+	for (std::list<CScript *>::iterator is = Scripts.begin(); is != Scripts.end();)
 	{
-		is=Scripts.Begin();
-		delete (*is);
-
-		Scripts.Erase(is);
+		delete *is;
+		is = Scripts.erase(is);
 	}
 
 	for(i = 0, ent = g_edicts; i < globals.num_edicts; i++, ent++)
@@ -290,12 +287,10 @@ void ShutdownScripts(qboolean Complete)
 
 	if (Complete)
 	{
-		while(GlobalVariables.Size())
+		for (std::list<Variable *>::iterator iv = GlobalVariables.begin(); iv != GlobalVariables.end();)
 		{
-			iv=GlobalVariables.Begin();
-			delete (*iv);
-
-			GlobalVariables.Erase(iv);
+			delete *iv;
+			iv = GlobalVariables.erase(iv);
 		}
 	}
 }
@@ -306,28 +301,26 @@ extern "C" {
 void SaveScripts(FILE *FH, qboolean DoGlobals)
 {
 	int						size;
-	List<CScript *>::Iter	is;
-	List<Variable *>::Iter	iv;
 
 	size = SCRIPT_SAVE_VERSION;
 	fwrite(&size, 1, sizeof(size), FH);
 
 	if (DoGlobals)
 	{
-		size = GlobalVariables.Size();
+		size = GlobalVariables.size();
 		fwrite(&size, 1, sizeof(size), FH);
 
-		for (iv=GlobalVariables.Begin();iv != GlobalVariables.End();iv++)
+		for (std::list<Variable *>::iterator iv = GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 		{
 			(*iv)->Write(FH, NULL);
 		}
 	}
 	else
 	{
-		size = Scripts.Size();
+		size = Scripts.size();
 		fwrite(&size, 1, sizeof(size), FH);
 
-		for (is=Scripts.Begin();is != Scripts.End();is++)
+		for (std::list<CScript *>::iterator is=Scripts.begin();is != Scripts.end();is++)
 		{
 			(*is)->Write(FH);
 		}
@@ -353,7 +346,7 @@ void LoadScripts(FILE *FH, qboolean DoGlobals)
 
 		for(i=0;i<size;i++)
 		{
-			GlobalVariables.PushBack((Variable *)RestoreObject(FH, ScriptRL, NULL));
+			GlobalVariables.push_back((Variable *)RestoreObject(FH, ScriptRL, NULL));
 		}
 	}
 	else
@@ -369,7 +362,7 @@ void LoadScripts(FILE *FH, qboolean DoGlobals)
 
 		for(i=0;i<size;i++)
 		{
-			Scripts.PushBack((CScript *)RestoreObject(FH, ScriptRL, NULL));
+			Scripts.push_back((CScript *)RestoreObject(FH, ScriptRL, NULL));
 		}
 	}
 }
@@ -396,7 +389,7 @@ void SP_script_runner (edict_t *ent)
 	sprintf(temp,"ds/%s.os",st.script);
 	s = new CScript(temp, ent);
 	ent->script = s;
-	Scripts.PushBack(s);
+	Scripts.push_back(s);
 
 	for(i=0;i<NUM_PARMS;i++)
 	{
@@ -434,11 +427,9 @@ void SP_parms (edict_t *ent)
 
 Variable *FindGlobal(const char *Name)
 {
-	List<Variable *>::Iter	iv;
-
-	if (GlobalVariables.Size())
+	if (!GlobalVariables.empty())
 	{
-		for (iv=GlobalVariables.Begin();iv != GlobalVariables.End();iv++)
+		for (std::list<Variable *>::iterator iv=GlobalVariables.begin();iv != GlobalVariables.end();++iv)
 		{
 			if (strcmp(Name, (*iv)->GetName()) == 0)
 			{
@@ -460,7 +451,7 @@ bool NewGlobal(Variable *Which)
 		return false;
 	}
 
-	GlobalVariables.PushBack(Which);
+	GlobalVariables.push_back(Which);
 
 	return true;
 }
@@ -1317,11 +1308,9 @@ bool Signaler::operator ==(Signaler *SI)
 
 void script_signaler(edict_t *which, SignalT SignalType)
 {
-	List<CScript *>::Iter	is;
-
-	if (Scripts.Size())
+	if (!Scripts.empty())
 	{
-		for (is=Scripts.Begin();is != Scripts.End();is++)
+		for (std::list<CScript *>::iterator is=Scripts.begin();is != Scripts.end();is++)
 		{
 			(*is)->CheckSignalers(which, SignalType);
 		}
@@ -2169,7 +2158,7 @@ void CScript::Write(FILE *FH)
 	}
 
 	size = 0;
-	for (iv=GlobalVariables.Begin();iv != GlobalVariables.End();iv++)
+	for (std::list<Variable *>::iterator iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 	{
 		if (LookupVarIndex(*iv) != -1)
 		{
@@ -2177,7 +2166,7 @@ void CScript::Write(FILE *FH)
 		}
 	}
 	fwrite(&size, 1, sizeof(size), FH);
-	for (iv=GlobalVariables.Begin();iv != GlobalVariables.End();iv++)
+	for (std::list<Variable *>::iterator iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 	{
 		index = LookupVarIndex(*iv);
 		if (index != -1)
@@ -2758,10 +2747,10 @@ void CScript::HandleDebug(void)
 			}
 		}
 
-		if (GlobalVariables.Size())
+		if (!GlobalVariables.empty())
 		{
 			DebugLine("   Global Variables:\n");
-			for (iv=GlobalVariables.Begin();iv != GlobalVariables.End();iv++)
+			for (std::list<Variable *>::iterator iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 			{
 				(*iv)->Debug(this);
 			}
