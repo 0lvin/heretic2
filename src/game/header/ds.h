@@ -7,7 +7,7 @@
 
 #include "../../common/header/common.h"
 #include "pcode.h"
-#include "list.h"
+#include <list>
 
 class CScript;
 
@@ -423,13 +423,13 @@ private:
 	int					ConditionInfo;
 	int					Length;
 	int					Position;
-	List<Variable *>	LocalVariables;
-	List<Variable *>	ParameterVariables;
-	List<Variable *>	Stack;
-	List<Signaler *>	Signalers;
-	List<Variable *>	Waiting;
-	List<StringVar *>   ParameterValues;
-	List<Event *>		Events;
+	std::list<Variable *>	LocalVariables;
+	std::list<Variable *>	ParameterVariables;
+	std::list<Variable *>	Stack;
+	std::list<Signaler *>	Signalers;
+	std::list<Variable *>	Waiting;
+	std::list<StringVar *>   ParameterValues;
+	std::list<Event *>		Events;
 	Variable			*VarIndex[MAX_INDEX];
 	FieldDef			*Fields[MAX_INDEX];
 	edict_t				*owner, *other, *activator;
