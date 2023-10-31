@@ -7,12 +7,17 @@ extern "C" {
 #include "header/local.h"
 }
 #include "header/ds.h"
-// TODO see if we can get rid of the custom buggy List type
-// Starting small to check the water for now
-#include <list>
 
 #define DEG2RAD( a ) ( a * M_PI ) / 180.0F
 #define SCRIPT_SAVE_VERSION 2
+
+// NOTE: Avoids tempting `using std` namespace, so we do not conflict with the engine's byte type.
+
+typedef std::list<Variable *>::iterator vit;
+typedef std::list<CScript *>::iterator vic;
+typedef std::list<Event *>::iterator vie;
+typedef std::list<Signaler *>::iterator vis;
+typedef std::list<StringVar *>::iterator viv;
 
 std::list<Variable *>	GlobalVariables;
 std::list<CScript *>		Scripts;
@@ -262,7 +267,7 @@ void ProcessScripts(void)
 {
 	if (!Scripts.empty())
 	{
-		for (std::list<CScript *>::iterator is=Scripts.begin();is != Scripts.end();is++)
+		for (vic is=Scripts.begin();is != Scripts.end();is++)
 		{
 			(*is)->Think();
 		}
@@ -274,7 +279,7 @@ void ShutdownScripts(qboolean Complete)
 	int						i;
 	edict_t					*ent;
 
-	for (std::list<CScript *>::iterator is = Scripts.begin(); is != Scripts.end();)
+	for (vic is = Scripts.begin(); is != Scripts.end();)
 	{
 		delete *is;
 		is = Scripts.erase(is);
@@ -287,7 +292,7 @@ void ShutdownScripts(qboolean Complete)
 
 	if (Complete)
 	{
-		for (std::list<Variable *>::iterator iv = GlobalVariables.begin(); iv != GlobalVariables.end();)
+		for (vit iv = GlobalVariables.begin(); iv != GlobalVariables.end();)
 		{
 			delete *iv;
 			iv = GlobalVariables.erase(iv);
@@ -310,7 +315,7 @@ void SaveScripts(FILE *FH, qboolean DoGlobals)
 		size = GlobalVariables.size();
 		fwrite(&size, 1, sizeof(size), FH);
 
-		for (std::list<Variable *>::iterator iv = GlobalVariables.begin();iv != GlobalVariables.end();iv++)
+		for (vit iv = GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 		{
 			(*iv)->Write(FH, NULL);
 		}
@@ -320,7 +325,7 @@ void SaveScripts(FILE *FH, qboolean DoGlobals)
 		size = Scripts.size();
 		fwrite(&size, 1, sizeof(size), FH);
 
-		for (std::list<CScript *>::iterator is=Scripts.begin();is != Scripts.end();is++)
+		for (vic is=Scripts.begin();is != Scripts.end();is++)
 		{
 			(*is)->Write(FH);
 		}
@@ -429,7 +434,7 @@ Variable *FindGlobal(const char *Name)
 {
 	if (!GlobalVariables.empty())
 	{
-		for (std::list<Variable *>::iterator iv=GlobalVariables.begin();iv != GlobalVariables.end();++iv)
+		for (vit iv=GlobalVariables.begin();iv != GlobalVariables.end();++iv)
 		{
 			if (strcmp(Name, (*iv)->GetName()) == 0)
 			{
@@ -1310,7 +1315,7 @@ void script_signaler(edict_t *which, SignalT SignalType)
 {
 	if (!Scripts.empty())
 	{
-		for (std::list<CScript *>::iterator is=Scripts.begin();is != Scripts.end();is++)
+		for (vic is=Scripts.begin();is != Scripts.end();is++)
 		{
 			(*is)->CheckSignalers(which, SignalType);
 		}
@@ -1923,43 +1928,43 @@ CScript::CScript(FILE *FH)
 	fread(&size, 1, sizeof(size), FH);
 	for(i=0;i<size;i++)
 	{
-		LocalVariables.PushBack((Variable *)RestoreObject(FH, ScriptRL, this));
+		LocalVariables.push_back((Variable *)RestoreObject(FH, ScriptRL, this));
 	}
 
 	fread(&size, 1, sizeof(size), FH);
 	for(i=0;i<size;i++)
 	{
-		ParameterVariables.PushBack((Variable *)RestoreObject(FH, ScriptRL, this));
+		ParameterVariables.push_back((Variable *)RestoreObject(FH, ScriptRL, this));
 	}
 
 	fread(&size, 1, sizeof(size), FH);
 	for(i=0;i<size;i++)
 	{
-		Stack.PushBack((Variable *)RestoreObject(FH, ScriptRL, this));
+		Stack.push_back((Variable *)RestoreObject(FH, ScriptRL, this));
 	}
 
 	fread(&size, 1, sizeof(size), FH);
 	for(i=0;i<size;i++)
 	{
-		Waiting.PushBack((Variable *)RestoreObject(FH, ScriptRL, this));
+		Waiting.push_back((Variable *)RestoreObject(FH, ScriptRL, this));
 	}
 
 	fread(&size, 1, sizeof(size), FH);
 	for(i=0;i<size;i++)
 	{
-		Signalers.PushBack((Signaler *)RestoreObject(FH, ScriptRL, this));
+		Signalers.push_back((Signaler *)RestoreObject(FH, ScriptRL, this));
 	}
 
 	fread(&size, 1, sizeof(size), FH);
 	for(i=0;i<size;i++)
 	{
-		ParameterValues.PushBack((StringVar *)RestoreObject(FH, ScriptRL, this));
+		ParameterValues.push_back((StringVar *)RestoreObject(FH, ScriptRL, this));
 	}
 
 	fread(&size, 1, sizeof(size), FH);
 	for(i=0;i<size;i++)
 	{
-		Events.PushBack((Event *)RestoreObject(FH, ScriptRL, this));
+		Events.push_back((Event *)RestoreObject(FH, ScriptRL, this));
 	}
 }
 
@@ -1999,10 +2004,6 @@ void CScript::LoadFile(void)
 void CScript::Free(bool DoData)
 {
 	int						i;
-	List<Variable *>::Iter	iv;
-	List<Signaler *>::Iter	is;
-	List<StringVar *>::Iter	isv;
-	List<Event *>::Iter		iev;
 
 	if (Data && DoData)
 	{
@@ -2010,60 +2011,53 @@ void CScript::Free(bool DoData)
 		Data = NULL;
 	}
 
-	while(LocalVariables.Size())
+	for (vit iv = LocalVariables.begin(); iv != LocalVariables.end(); ++iv)
 	{
-		iv=LocalVariables.Begin();
 		delete (*iv);
 
-		LocalVariables.Erase(iv);
+		iv = LocalVariables.erase(iv);
 	}
 
-	while(ParameterVariables.Size())
+	for (vit iv = ParameterVariables.begin(); iv != ParameterVariables.end(); ++iv)
 	{
-		iv=ParameterVariables.Begin();
 		delete (*iv);
 
-		ParameterVariables.Erase(iv);
+		iv = ParameterVariables.erase(iv);
 	}
 
-	while(Stack.Size())
+	for (vit iv = Stack.begin(); iv != Stack.end(); ++iv)
 	{
-		iv=Stack.Begin();
 		delete (*iv);
 
-		Stack.Erase(iv);
+		iv = Stack.erase(iv);
 	}
 
-	while(Waiting.Size())
+	for (vit iv = Waiting.begin(); iv != Waiting.end(); ++iv)
 	{
-		iv=Waiting.Begin();
 		delete (*iv);
 
-		Waiting.Erase(iv);
+		iv = Waiting.erase(iv);
 	}
 
-	while(Signalers.Size())
+	for (vis is = Signalers.begin(); is != Signalers.end(); ++is)
 	{
-		is=Signalers.Begin();
 		delete (*is);
 
-		Signalers.Erase(is);
+		is = Signalers.erase(is);
 	}
 
-	while(ParameterValues.Size())
+	for (viv isv = ParameterValues.begin(); isv != ParameterValues.end(); ++isv)
 	{
-		isv=ParameterValues.Begin();
 		delete (*isv);
 
-		ParameterValues.Erase(isv);
+		isv = ParameterValues.erase(isv);
 	}
 
-	while(Events.Size())
+	for (vie iev = Events.begin(); iev != Events.end(); ++iev)
 	{
-		iev=Events.Begin();
 		delete (*iev);
 
-		Events.Erase(iev);
+		Events.erase(iev);
 	}
 
 	for(i=0;i<MAX_INDEX;i++)
@@ -2103,10 +2097,6 @@ void CScript::Write(FILE *FH)
 {
 	int						index;
 	int						size;
-	List<Variable *>::Iter	iv;
-	List<Signaler *>::Iter	is;
-	List<StringVar *>::Iter	isv;
-	List<Event *>::Iter		iev;
 	int						i;
 
 	index = RLID_SCRIPT;
@@ -2158,7 +2148,7 @@ void CScript::Write(FILE *FH)
 	}
 
 	size = 0;
-	for (std::list<Variable *>::iterator iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
+	for (vit iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 	{
 		if (LookupVarIndex(*iv) != -1)
 		{
@@ -2166,7 +2156,7 @@ void CScript::Write(FILE *FH)
 		}
 	}
 	fwrite(&size, 1, sizeof(size), FH);
-	for (std::list<Variable *>::iterator iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
+	for (vit iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 	{
 		index = LookupVarIndex(*iv);
 		if (index != -1)
@@ -2176,52 +2166,52 @@ void CScript::Write(FILE *FH)
 		}
 	}
 
-	size = LocalVariables.Size();
+	size = LocalVariables.size();
 	fwrite(&size, 1, sizeof(size), FH);
-	for (iv=LocalVariables.Begin();iv != LocalVariables.End();iv++)
+	for (vit iv=LocalVariables.begin();iv != LocalVariables.end();iv++)
 	{
 		(*iv)->Write(FH, this);
 	}
 
-	size = ParameterVariables.Size();
+	size = ParameterVariables.size();
 	fwrite(&size, 1, sizeof(size), FH);
-	for (iv=ParameterVariables.Begin();iv != ParameterVariables.End();iv++)
+	for (vit iv=ParameterVariables.begin();iv != ParameterVariables.end();iv++)
 	{
 		(*iv)->Write(FH, this);
 	}
 
-	size = Stack.Size();
+	size = Stack.size();
 	fwrite(&size, 1, sizeof(size), FH);
-	for (iv=Stack.Begin();iv != Stack.End();iv++)
+	for (vit iv=Stack.begin();iv != Stack.end();iv++)
 	{
 		(*iv)->Write(FH, this);
 	}
 
-	size = Waiting.Size();
+	size = Waiting.size();
 	fwrite(&size, 1, sizeof(size), FH);
-	for (iv=Waiting.Begin();iv != Waiting.End();iv++)
+	for (vit iv=Waiting.begin();iv != Waiting.end();iv++)
 	{
 		(*iv)->Write(FH, this);
 	}
 
-	size = Signalers.Size();
+	size = Signalers.size();
 	fwrite(&size, 1, sizeof(size), FH);
-	for (is=Signalers.Begin();is != Signalers.End();is++)
+	for (vis is=Signalers.begin();is != Signalers.end();is++)
 	{
 		(*is)->Write(FH, this);
 	}
 
 
-	size = ParameterValues.Size();
+	size = ParameterValues.size();
 	fwrite(&size, 1, sizeof(size), FH);
-	for (isv=ParameterValues.Begin();isv != ParameterValues.End();isv++)
+	for (viv isv=ParameterValues.begin();isv != ParameterValues.end();isv++)
 	{
 		(*isv)->Write(FH, this);
 	}
 
-	size = Events.Size();
+	size = Events.size();
 	fwrite(&size, 1, sizeof(size), FH);
-	for (iev=Events.Begin();iev != Events.End();iev++)
+	for (vie iev=Events.begin();iev != Events.end();iev++)
 	{
 		(*iev)->Write(FH, this);
 	}
@@ -2259,7 +2249,7 @@ int	CScript::LookupFieldIndex(FieldDef *Field)
 
 void CScript::SetParameter(char *Value)
 {
-	ParameterValues.PushBack(new StringVar("parm",Value));
+	ParameterValues.push_back(new StringVar("parm",Value));
 }
 
 unsigned char CScript::ReadByte(void)
@@ -2361,19 +2351,18 @@ void CScript::PushStack(Variable *VI)
 		Error("Illegal push");
 	}
 
-	Stack.PushBack(VI);
+	Stack.push_back(VI);
 }
 
 Variable *CScript::PopStack(void)
 {
 	Variable *Value;
-	List<Variable *>::Iter	iv;
 
-	if (Stack.Size())
+	if (!Stack.empty())
 	{
-		iv = --Stack.End();
+		vit iv = --Stack.end();
 		Value = *iv;
-		Stack.PopBack();
+		Stack.pop_back();
 
 		return Value;
 	}
@@ -2717,7 +2706,6 @@ void CScript::HandleDivide(void)
 
 void CScript::HandleDebug(void)
 {
-	List<Variable *>::Iter	iv;
 	int						Flags;
 
 	Flags = ReadByte();
@@ -2738,10 +2726,10 @@ void CScript::HandleDebug(void)
 	{
 		StartDebug();
 
-		if (ParameterVariables.Size())
+		if (!ParameterVariables.empty())
 		{
 			DebugLine("   Parameters:\n");
-			for (iv=ParameterVariables.Begin();iv != ParameterVariables.End();iv++)
+			for (vit iv=ParameterVariables.begin();iv != ParameterVariables.end();iv++)
 			{
 				(*iv)->Debug(this);
 			}
@@ -2750,16 +2738,16 @@ void CScript::HandleDebug(void)
 		if (!GlobalVariables.empty())
 		{
 			DebugLine("   Global Variables:\n");
-			for (std::list<Variable *>::iterator iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
+			for (vit iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 			{
 				(*iv)->Debug(this);
 			}
 		}
 
-		if (LocalVariables.Size())
+		if (!LocalVariables.empty())
 		{
 			DebugLine("   Local Variables:\n");
-			for (iv=LocalVariables.Begin();iv != LocalVariables.End();iv++)
+			for (vit iv=LocalVariables.begin();iv != LocalVariables.end();iv++)
 			{
 				(*iv)->Debug(this);
 			}
@@ -2866,7 +2854,7 @@ bool CScript::HandleWait(bool ForAll)
 			Error("Invalid stack for HandleWait");
 		}
 
-		Waiting.PushBack(VI);
+		Waiting.push_back(VI);
 	}
 
 	if (ForAll)
@@ -3741,31 +3729,31 @@ void CScript::Rotate(edict_t *ent)
 
 void CScript::AddEvent(Event *Which)
 {
-	List<Event *>::Iter	ie;
 	float				time;
 
-	if (Events.Size())
+	if (!Events.empty())
 	{
 		time = Which->GetTime();
-		for (ie=Events.Begin();ie != Events.End();ie++)
+		vie ie;
+		for (ie=Events.begin();ie != Events.end();ie++)
 		{
 			if ( (*ie)->GetTime() > time)
 			{
 				break;
 			}
 		}
-		Events.Insert(ie, Which);
+		Events.insert(ie, Which);
 	}
 	else
 	{
-		Events.PushBack(Which);
+		Events.push_back(Which);
 	}
 
 #ifdef _DEBUG
 	float				testtime;
 
 	time = 0;
-	for (ie=Events.Begin();ie != Events.End();ie++)
+	for (ie=Events.begin();ie != Events.end();ie++)
 	{
 		testtime = (*ie)->GetTime();
 		if (testtime < time)
@@ -3778,16 +3766,12 @@ void CScript::AddEvent(Event *Which)
 
 void CScript::ProcessEvents(void)
 {
-	List<Event *>::Iter	ie, next;
-
-	while(Events.Size())
+	for (vie ie = Events.begin(); ie != Events.end(); ++ie)
 	{
-		ie = Events.Begin();
-
 		if ((*ie)->Process(this))
 		{
 			delete (*ie);
-			Events.Erase(ie);
+			ie = Events.erase(ie);
 		}
 		else
 		{
@@ -3806,7 +3790,6 @@ void CScript::ClearTimeWait(void)
 
 void CScript::AddSignaler(edict_t *Edict, Variable *Var, SignalT SignalType)
 {
-	List<Signaler *>::Iter	is;
 	Signaler *NewSig;
 
 	NewSig = new Signaler(Edict, Var, SignalType);
@@ -3814,7 +3797,7 @@ void CScript::AddSignaler(edict_t *Edict, Variable *Var, SignalT SignalType)
 	// Note that this check does not need to be in there - signalers are very flexible, but if used
 	// incorrectly, they can result in weird behavior - this check prevents more than one command using
 	// the same signal varaible prior to a wait command
-	for (is=Signalers.Begin();is != Signalers.End();is++)
+	for (vis is=Signalers.begin();is != Signalers.end();is++)
 	{
 		if (*(*is) == NewSig)
 		{
@@ -3822,24 +3805,24 @@ void CScript::AddSignaler(edict_t *Edict, Variable *Var, SignalT SignalType)
 		}
 	}
 
-	Signalers.PushBack(NewSig);
+	Signalers.push_back(NewSig);
 }
 
 void CScript::CheckSignalers(edict_t *Which, SignalT SignalType)
 {
-	List<Signaler *>::Iter	is, next;
 	bool					DoCheckWait = false;
 
-	if (Signalers.Size())
+	if (!Signalers.empty())
 	{
-		for (is=Signalers.Begin();is != Signalers.End();is = next)
+		vis next;
+		for (vis is=Signalers.begin();is != Signalers.end();is = next)
 		{
 			next = is;
 			next++;
 			if ((*is)->Test(Which, SignalType))
 			{
 				delete (*is);
-				Signalers.Erase(is);
+				is = Signalers.erase(is);
 
 				DoCheckWait = true;
 			}
@@ -3857,12 +3840,11 @@ void CScript::CheckSignalers(edict_t *Which, SignalT SignalType)
 
 bool CScript::CheckWait(void)
 {
-	List<Variable *>::Iter	iv;
 	int						count, needed;
 
 	if (ScriptCondition == COND_WAIT_ALL)
 	{
-		needed = Waiting.Size();
+		needed = Waiting.size();
 	}
 	else if (ScriptCondition == COND_WAIT_ANY)
 	{
@@ -3882,9 +3864,9 @@ bool CScript::CheckWait(void)
 	}
 
 	count = 0;
-	if (Waiting.Size())
+	if (!Waiting.empty())
 	{
-		for (iv=Waiting.Begin();iv != Waiting.End();iv++)
+		for (vit iv=Waiting.begin();iv != Waiting.end();iv++)
 		{
 			if ( (*iv)->GetIntValue())
 			{
@@ -3905,11 +3887,9 @@ bool CScript::CheckWait(void)
 
 void CScript::FinishWait(edict_t *Which, bool NoExecute)
 {
-	List<Variable *>::Iter	iv;
-
-	if (Waiting.Size())
+	if (!Waiting.empty())
 	{
-		for (iv=Waiting.Begin();iv != Waiting.End();iv++)
+		for (vit iv=Waiting.begin();iv != Waiting.end();iv++)
 		{
 			if (ConditionInfo == WAIT_CLEAR)
 			{
@@ -3919,7 +3899,7 @@ void CScript::FinishWait(edict_t *Which, bool NoExecute)
 			delete *iv;
 		}
 	}
-	Waiting.Erase(Waiting.Begin(), Waiting.End() );
+	Waiting.erase(Waiting.begin(), Waiting.end() );
 
 	if (NoExecute)
 	{
@@ -4146,11 +4126,9 @@ ScriptConditionT CScript::Execute(edict_t *new_other, edict_t *new_activator)
 
 Variable *CScript::FindLocal(const char *Name)
 {
-	List<Variable *>::Iter	iv;
-
-	if (LocalVariables.Size())
+	if (!LocalVariables.empty())
 	{
-		for (iv=LocalVariables.Begin();iv != LocalVariables.End();iv++)
+		for (vit iv=LocalVariables.begin();iv != LocalVariables.end();iv++)
 		{
 			if (strcmp(Name, (*iv)->GetName()) == 0)
 			{
@@ -4172,18 +4150,16 @@ bool CScript::NewLocal(Variable *Which)
 		return false;
 	}
 
-	LocalVariables.PushBack(Which);
+	LocalVariables.push_back(Which);
 
 	return true;
 }
 
 Variable *CScript::FindParameter(const char *Name)
 {
-	List<Variable *>::Iter	iv;
-
-	if (ParameterVariables.Size())
+	if (!ParameterVariables.empty())
 	{
-		for (iv=ParameterVariables.Begin();iv != ParameterVariables.End();iv++)
+		for (vit iv=ParameterVariables.begin();iv != ParameterVariables.end();iv++)
 		{
 			if (strcmp(Name, (*iv)->GetName()) == 0)
 			{
@@ -4209,15 +4185,15 @@ bool CScript::NewParameter(Variable *Which)
 		return false;
 	}
 
-	ParameterVariables.PushBack(Which);
+	ParameterVariables.push_back(Which);
 
-	if (!ParameterValues.Size())
+	if (ParameterValues.empty())
 	{
 		Error("Missing Parameter");
 	}
 
-	ParmValue = *ParameterValues.Begin();
-	ParameterValues.Erase(ParameterValues.Begin());
+	ParmValue = *ParameterValues.begin();
+	ParameterValues.erase(ParameterValues.begin());
 
 	switch(Which->GetType())
 	{
