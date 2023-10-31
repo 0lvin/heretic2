@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (c) ZeniMax Media Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +34,20 @@
 Fire an origin based temp entity event to the clients.
 "style"		type byte
 */
-void Use_Target_Tent (edict_t *ent, edict_t *other, edict_t *activator)
+void
+Use_Target_Tent(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	gi.CreateEffect(NULL, ent->style, 0, ent->s.origin, NULL);
 }
 
-void SP_target_temp_entity (edict_t *ent)
+void
+SP_target_temp_entity(edict_t *ent)
 {
+	if (!ent)
+	{
+		return;
+	}
+
 	ent->use = Use_Target_Tent;
 }
 
@@ -73,8 +81,14 @@ void use_target_explosion (edict_t *self, edict_t *other, edict_t *activator)
 	self->nextthink = level.time + self->delay;
 }
 
-void SP_target_explosion (edict_t *ent)
+void
+SP_target_explosion(edict_t *ent)
 {
+	if (!ent)
+	{
+		return;
+	}
+
 	ent->use = use_target_explosion;
 	ent->svflags = SVF_NOCLIENT;
 }
@@ -104,7 +118,9 @@ void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
 	if (!deathmatch->value && !coop->value)
 	{
 		if (g_edicts[1].health <= 0)
+		{
 			return;
+		}
 	}
 
 	// if noexit, do a ton of damage to other
@@ -618,7 +634,8 @@ void target_earthquake_think (edict_t *self)
 		self->nextthink = level.time + FRAMETIME;
 }
 
-void target_earthquake_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+target_earthquake_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 
 	if (sv_jumpcinematic->value)	// Don't do this if jumping a cinematic
@@ -645,5 +662,72 @@ void SP_target_earthquake (edict_t *self)
 	self->think = target_earthquake_think;
 	self->use = target_earthquake_use;
 
-	self->noise_index = gi.soundindex ("world/quake.wav");
+	self->noise_index = gi.soundindex("world/quake.wav");
+}
+
+void
+target_music_use(edict_t *self, edict_t *other, edict_t *activator)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	gi.configstring(CS_CDTRACK, va("%i", self->sounds));
+}
+
+void
+SP_target_music(edict_t* self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->use = target_music_use;
+}
+
+void
+target_sky_use(edict_t *self, edict_t *other, edict_t *activator)
+{
+	float rotate;
+	int autorotate;
+
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->map && self->map[0])
+	{
+		gi.configstring(CS_SKY, self->map);
+	}
+
+	rotate = self->accel;
+	autorotate = self->style;
+	gi.configstring(CS_SKYROTATE, va("%f %d", rotate, autorotate));
+
+	gi.configstring(CS_SKYAXIS, va("%f %f %f",
+		self->movedir[0], self->movedir[1], self->movedir[2]));
+}
+
+void
+SP_target_sky(edict_t* self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->use = target_sky_use;
+
+	if (st.sky && st.sky[0])
+	{
+		self->map = st.sky;
+	}
+
+	VectorCopy(st.skyaxis, self->movedir);
+	self->accel = st.skyrotate;
+	self->style = st.skyautorotate;
 }

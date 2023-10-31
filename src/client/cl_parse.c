@@ -885,8 +885,35 @@ CL_ParseServerData(void)
 	cls.serverProtocol = i;
 
 	/* another demo hack */
-	if (Com_ServerState() && (PROTOCOL_VERSION == 34))
+	if (Com_ServerState() && (
+		(i == PROTOCOL_RELEASE_VERSION) ||
+		(i == PROTOCOL_DEMO_VERSION) ||
+		(i == PROTOCOL_VERSION) ||
+		(i == PROTOCOL_RR22_VERSION) ||
+		(i == PROTOCOL_RR23_VERSION)))
 	{
+		Com_Printf("Network protocol: ");
+		switch (i)
+		{
+			case PROTOCOL_RELEASE_VERSION:
+				Com_Printf("Quake 2 Demo\n");
+				break;
+			case PROTOCOL_DEMO_VERSION:
+				Com_Printf("Quake 2 Release Demo\n");
+				break;
+			case PROTOCOL_VERSION:
+				Com_Printf("Quake 2\n");
+				break;
+			case PROTOCOL_RR22_VERSION:
+				Com_Printf("ReRelease Quake 2 Demo\n");
+				break;
+			case PROTOCOL_RR23_VERSION:
+				Com_Printf("ReRelease Quake 2\n");
+				break;
+			default:
+				Com_Printf("Unknown protocol version\n");
+				break;
+		};
 	}
 	else if (i != PROTOCOL_VERSION)
 	{
@@ -1115,7 +1142,7 @@ CL_ParseConfigString(void)
 
 	if ((i < 0) || (i >= MAX_CONFIGSTRINGS))
 	{
-		Com_Error(ERR_DROP, "configstring > MAX_CONFIGSTRINGS");
+		Com_Error(ERR_DROP, "%s: configstring > MAX_CONFIGSTRINGS", __func__);
 	}
 
 	s = MSG_ReadString(&net_message);
@@ -1125,7 +1152,7 @@ CL_ParseConfigString(void)
 	length = strlen(s);
 	if (length > sizeof(cl.configstrings) - sizeof(cl.configstrings[0])*i - 1)
 	{
-		Com_Error(ERR_DROP, "CL_ParseConfigString: oversize configstring");
+		Com_Error(ERR_DROP, "%s: oversize configstring", __func__);
 	}
 
 	strcpy(cl.configstrings[i], s);
