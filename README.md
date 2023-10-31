@@ -22,12 +22,9 @@ Drawbacks:
 * code use diffent angles values to quake2
 * huge amount of possibly dead code
 * broken jumps
-* message id to text procesed in client instead game code itself
-* broken guns select
 * no menu implementations
 * no books implementations
 * code is little bit mess
-* game, client_effects hard linked
 * only gl1 has full support render
 * soft,gl3,vk render has incorrect angles and no particles
 
