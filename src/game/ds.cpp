@@ -2057,7 +2057,7 @@ void CScript::Free(bool DoData)
 	{
 		delete (*iev);
 
-		Events.erase(iev);
+		iev = Events.erase(iev);
 	}
 
 	for(i=0;i<MAX_INDEX;i++)
