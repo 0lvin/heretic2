@@ -563,7 +563,7 @@ Variable *IntVar::operator *(Variable *VI)
 
 Variable *IntVar::operator /(Variable *VI)
 {
-	return new IntVar("",Value / VI->GetIntValue());
+	return new IntVar("",Value / (VI->GetIntValue() > 0 ? VI->GetIntValue() : 1));
 }
 
 void IntVar::operator =(Variable *VI)
