@@ -126,12 +126,9 @@ static cvar_t *map_noareas;
 static int box_headnode;
 static int checkcount;
 static int floodvalid;
-static float *leaf_mins, *leaf_maxs;
 static int leaf_count, leaf_maxcount;
-static int *leaf_list;
 static int leaf_topnode;
 static int trace_contents;
-static int leafs[1024];
 static mapsurface_t nullsurface;
 static qboolean portalopen[MAX_MAP_AREAPORTALS];
 static qboolean trace_ispoint; /* optimized case */
@@ -139,7 +136,6 @@ static trace_t trace_trace;
 static vec3_t trace_start, trace_end;
 static vec3_t trace_mins, trace_maxs;
 static vec3_t trace_extents;
-static vec3_t c1, c2;
 
 #ifndef DEDICATED_ONLY
 int		c_pointcontents;
@@ -495,7 +491,7 @@ CM_PointLeafnum(vec3_t p)
  * Fills in a list of all the leafs touched
  */
 static void
-CM_BoxLeafnums_r(int nodenum)
+CM_BoxLeafnums_r(int nodenum, vec3_t leaf_mins, vec3_t leaf_maxs, int *leaf_list)
 {
 	cplane_t *plane;
 	cnode_t *node;
@@ -536,7 +532,7 @@ CM_BoxLeafnums_r(int nodenum)
 				leaf_topnode = nodenum;
 			}
 
-			CM_BoxLeafnums_r(node->children[0]);
+			CM_BoxLeafnums_r(node->children[0], leaf_mins, leaf_maxs, leaf_list);
 			nodenum = node->children[1];
 		}
 	}
@@ -546,15 +542,12 @@ static int
 CM_BoxLeafnums_headnode(vec3_t mins, vec3_t maxs, int *list,
 		int listsize, int headnode, int *topnode)
 {
-	leaf_list = list;
 	leaf_count = 0;
 	leaf_maxcount = listsize;
-	leaf_mins = mins;
-	leaf_maxs = maxs;
 
 	leaf_topnode = -1;
 
-	CM_BoxLeafnums_r(headnode);
+	CM_BoxLeafnums_r(headnode, mins, maxs, list);
 
 	if (topnode)
 	{
@@ -1133,7 +1126,9 @@ CM_BoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
 	if ((start[0] == end[0]) && (start[1] == end[1]) && (start[2] == end[2]))
 	{
 		int i, numleafs;
+		vec3_t c1, c2;
 		int topnode;
+		int leafs[1024] = {0};
 
 		VectorAdd(start, mins, c1);
 		VectorAdd(start, maxs, c2);
