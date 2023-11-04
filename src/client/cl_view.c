@@ -369,16 +369,35 @@ CL_PrepRefresh(void)
 		}
 
 		SCR_UpdateScreen();
-		IN_Update();	// pump message loop
+		IN_Update();
+
+		// pump message loop
 		cl.model_draw[i] = re.RegisterModel(cl.configstrings[CS_MODELS + i]);
 
-		if (name[0] == '*')
+		if (name[0] == '#')
 		{
-			cl.model_clip[i] = CM_InlineModel(cl.configstrings[CS_MODELS + i]);
+			/* special player weapon model */
+			if (num_cl_weaponmodels < MAX_CLIENTWEAPONMODELS)
+			{
+				Q_strlcpy(cl_weaponmodels[num_cl_weaponmodels],
+						cl.configstrings[CS_MODELS + i] + 1,
+						sizeof(cl_weaponmodels[num_cl_weaponmodels]));
+				num_cl_weaponmodels++;
+			}
 		}
 		else
 		{
-			cl.model_clip[i] = NULL;
+			cl.model_draw[i] = R_RegisterModel(cl.configstrings[CS_MODELS + i]);
+
+			if (name[0] == '*')
+			{
+				cl.model_clip[i] = CM_InlineModel(cl.configstrings[CS_MODELS + i]);
+			}
+
+			else
+			{
+				cl.model_clip[i] = NULL;
+			}
 		}
 	}
 

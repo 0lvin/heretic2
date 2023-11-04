@@ -158,10 +158,6 @@ CL_ClipMoveToEntities(vec3_t start, vec3_t mins, vec3_t maxs,
 				*tr = trace;
 			}
 		}
-		else if (trace.startsolid)
-		{
-			tr->startsolid = true;
-		}
 	}
 }
 
@@ -233,8 +229,7 @@ CL_PredictMovement(void)
 	pmove_t pm;
 	int i;
 	int step;
-	int oldframe;
-	int oldz;
+	vec3_t tmp;
 
 	if (cls.state != ca_active)
 	{
@@ -300,23 +295,18 @@ CL_PredictMovement(void)
 		pm.cmd = *cmd;
 		Pmove(&pm);
 
-		if (pm.waterlevel > 2)
-		{
-			cl.frame.playerstate.rdflags |= RDF_UNDERWATER;
-		}
-		else
-		{
-			cl.frame.playerstate.rdflags &= RDF_UNDERWATER;
-		}
-
 		/* save for debug checking */
 		VectorCopy(pm.s.origin, cl.predicted_origins[frame]);
 	}
 
-	oldframe = (ack-2) & (CMD_BACKUP-1);
-	oldz = cl.predicted_origins[oldframe][2];
-	step = pm.s.origin[2] - oldz;
-	if (step > 63 && step < 160 && (pm.s.pm_flags & PMF_ON_GROUND) )
+	// step is used for movement prediction on stairs
+	// (so moving up/down stairs is smooth)
+	step = pm.s.origin[2] - (int)(cl.predicted_origin[2] * 8);
+	VectorCopy(pm.s.velocity, tmp);
+
+	if (((step > 62 && step < 66) || (step > 94 && step < 98) || (step > 126 && step < 130))
+		&& !VectorCompare(tmp, vec3_origin)
+		&& (pm.s.pm_flags & PMF_ON_GROUND))
 	{
 		cl.predicted_step = step * 0.125f;
 		cl.predicted_step_time = cls.realtime - (int)(cls.nframetime * 500);

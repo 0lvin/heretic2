@@ -558,6 +558,7 @@ SV_BuildClientFrame(client_t *client)
 	int l;
 	int clientarea, clientcluster;
 	int leafnum;
+	byte *clientphs;
 	byte *bitvector;
 
 	clent = client->edict;
@@ -575,14 +576,8 @@ SV_BuildClientFrame(client_t *client)
 	/* find the client's PVS */
 	for (i = 0; i < 3; i++)
 	{
-		if (clent->client->ps.remote_id == -1)
-		{
-			org[i] = clent->client->ps.pmove.origin[i] * 0.125;
-		}
-		else
-		{
-			org[i] = clent->client->ps.remote_vieworigin[i];
-		}
+		org[i] = clent->client->ps.pmove.origin[i] * 0.125 +
+				 clent->client->ps.viewoffset[i];
 	}
 
 	leafnum = CM_PointLeafnum(org);
@@ -596,7 +591,7 @@ SV_BuildClientFrame(client_t *client)
 	frame->ps = clent->client->ps;
 
 	SV_FatPVS(org);
-	CM_ClusterPHS(clientcluster);
+	clientphs = CM_ClusterPHS(clientcluster);
 
 	/* build up the list of visible entities */
 	frame->num_entities = 0;
@@ -614,7 +609,7 @@ SV_BuildClientFrame(client_t *client)
 
 		/* ignore ents without visible models unless they have an effect */
 		if (!ent->s.modelindex && !ent->s.effects &&
-			!ent->s.sound)
+			!ent->s.sound && !ent->s.event)
 		{
 			continue;
 		}
@@ -634,6 +629,17 @@ SV_BuildClientFrame(client_t *client)
 				}
 			}
 
+			/* beams just check one point for PHS */
+			if (ent->s.renderfx & RF_BEAM)
+			{
+				l = ent->clusternums[0];
+
+				if (!(clientphs[l >> 3] & (1 << (l & 7))))
+				{
+					continue;
+				}
+			}
+			else
 			{
 				bitvector = fatpvs;
 
@@ -741,7 +747,8 @@ SV_RecordDemoMessage(void)
 	{
 		/* ignore ents without visible models unless they have an effect */
 		if (ent->inuse && ent->s.number &&
-			(ent->s.modelindex || ent->s.effects || ent->s.sound) && !(ent->svflags & SVF_NOCLIENT))
+			(ent->s.modelindex || ent->s.effects || ent->s.sound ||
+			 ent->s.event) && !(ent->svflags & SVF_NOCLIENT))
 		{
 			MSG_WriteDeltaEntity(&nostate, &ent->s, &buf, false, true);
 		}
