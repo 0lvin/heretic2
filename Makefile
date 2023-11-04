@@ -471,11 +471,6 @@ build/client/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
-
-build/client/%.o: %.cpp
-	@echo "===> CXX $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 endif
 
 release/quake2 : CFLAGS += -Wno-unused-result
@@ -1077,11 +1072,6 @@ build/player/%.o: %.c
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-build/player/%.o: %.cpp
-	@echo "===> CXX $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
-
 release/baseq2/player.so : CFLAGS += -fPIC -Wno-unused-result
 release/baseq2/player.so : LDFLAGS += -shared
 endif
@@ -1150,11 +1140,6 @@ build/effects/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
-
-build/effects/%.o: %.cpp
-	@echo "===> CXX $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
 release/baseq2/effects.so : CFLAGS += -fPIC -Wno-unused-result
 release/baseq2/effects.so : LDFLAGS += -shared
