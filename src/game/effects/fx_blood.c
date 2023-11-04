@@ -515,7 +515,7 @@ static qboolean LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
 	vec3_t				org, vel;
 	int					i;
 	int					bpart;
-	qboolean			yellow_blood;
+	qboolean			yellow_blood = false;
 
 	spawner->updateTime = irand(40, 60);
 
@@ -567,10 +567,8 @@ void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
 	byte				refpointidx;
 	int					life;
 	int					count, i;
-	int					lifetime = 0;
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_LINKEDBLOOD].formatString, &life, &refpointidx);
-	lifetime = life * 50;
 	count = 1;
 	if(life > 1600)
 	{
