@@ -131,6 +131,7 @@ static int leaf_count, leaf_maxcount;
 static int *leaf_list;
 static int leaf_topnode;
 static int trace_contents;
+static int leafs[1024];
 static mapsurface_t nullsurface;
 static qboolean portalopen[MAX_MAP_AREAPORTALS];
 static qboolean trace_ispoint; /* optimized case */
@@ -138,6 +139,7 @@ static trace_t trace_trace;
 static vec3_t trace_start, trace_end;
 static vec3_t trace_mins, trace_maxs;
 static vec3_t trace_extents;
+static vec3_t c1, c2;
 
 #ifndef DEDICATED_ONLY
 int		c_pointcontents;
@@ -1130,9 +1132,7 @@ CM_BoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
 	/* check for position test special case */
 	if ((start[0] == end[0]) && (start[1] == end[1]) && (start[2] == end[2]))
 	{
-		int leafs[1024];
 		int i, numleafs;
-		vec3_t c1, c2;
 		int topnode;
 
 		VectorAdd(start, mins, c1);
