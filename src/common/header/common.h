@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.21RR2"
+#define YQ2VERSION "8.31RR2"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -640,7 +640,7 @@ qboolean Netchan_CanReliable(netchan_t *chan);
 
 #include "files.h"
 
-cmodel_t *CM_LoadMap(char *name, qboolean clientload, unsigned *checksum);
+cmodel_t *CM_LoadMap(const char *name, qboolean clientload, unsigned *checksum);
 cmodel_t *CM_InlineModel(const char *name);       /* *1, *2, etc */
 void CM_ModFreeAll(void);
 
