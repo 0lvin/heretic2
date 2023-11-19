@@ -83,6 +83,11 @@ State:
    * q64/outpost: no known issies
    * mguhub: loaded, transparent walls and broken logic for surface fall in next maps
 
+Monsters:
+  * incorrect weapon effect for Shambler
+  * incorrect dead animation for Arachnoid
+  * broken fire effect for Guardian
+
 Goals (none of it finished):
   * Single player support,
   * BSPX DECOUPLEDLM light map support (base1),

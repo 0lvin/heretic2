@@ -1470,6 +1470,7 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/soft/sw_scan.o \
 	src/client/refresh/soft/sw_sprite.o \
 	src/client/refresh/soft/sw_surf.o \
+	src/client/refresh/soft/sw_warp.o \
 	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/models.o \
