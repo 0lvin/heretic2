@@ -650,6 +650,279 @@ CL_AddViewWeapon(player_state_t *ps, player_state_t *ops)
 }
 
 /*
+===============
+IsRunningDemo
+Returns true if a demo is currently running.
+===============
+*/
+qboolean
+IsRunningDemo(void)
+{
+	if (cl.attractloop && !(cl.cinematictime > 0 && cls.realtime - cl.cinematictime > 1000))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/*
+===============
+IsThirdPerson
+Returns true if the thirdperson
+cvar is set and other conditons are met.
+===============
+*/
+qboolean
+IsThirdPerson(void)
+{
+	if (cg_thirdperson->value && (!IsRunningDemo() || cg_thirdperson_indemo->value))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/*
+===============
+SetUpCamera
+
+===============
+*/
+// Knightmare- backup of client angles
+vec3_t old_viewangles;
+
+static void
+vectoangles2(vec3_t value1, vec3_t angles)
+{
+	float forward;
+	float yaw, pitch;
+
+	if ((value1[1] == 0) && (value1[0] == 0))
+	{
+		yaw = 0;
+
+		if (value1[2] > 0)
+		{
+			pitch = 90;
+		}
+		else
+		{
+			pitch = 270;
+		}
+	}
+	else
+	{
+		if (value1[0])
+		{
+			yaw = (atan2(value1[1], value1[0]) * 180 / M_PI);
+		}
+		else if (value1[1] > 0)
+		{
+			yaw = 90;
+		}
+		else
+		{
+			yaw = 270;
+		}
+
+		if (yaw < 0)
+		{
+			yaw += 360;
+		}
+
+		forward = sqrt(value1[0] * value1[0] + value1[1] * value1[1]);
+		pitch = (atan2(value1[2], forward) * 180 / M_PI);
+
+		if (pitch < 0)
+		{
+			pitch += 360;
+		}
+	}
+
+	angles[PITCH] = -pitch;
+	angles[YAW] = yaw;
+	angles[ROLL] = 0;
+}
+
+trace_t
+CL_Trace(vec3_t start, vec3_t end, float size,  int contentmask)
+{
+	vec3_t maxs, mins;
+
+	VectorSet(maxs, size, size, size);
+	VectorSet(mins, -size, -size, -size);
+
+	return CM_BoxTrace(start, end, mins, maxs, 0, contentmask);
+}
+
+float viewermodelalpha;
+
+void V_AddViewerEntAlpha(entity_t *ent)
+{
+	if (viewermodelalpha == 1 || !cg_thirdperson_alpha->value)
+	{
+		return;
+	}
+
+	ent->alpha *= viewermodelalpha;
+	if (ent->alpha < 1.0F)
+	{
+		ent->flags |= RF_TRANSLUCENT;
+	}
+}
+
+void
+V_CalcViewerCamTrans(float distance)
+{
+	float alphacalc = cg_thirdperson_dist->value;
+
+	// no div by 0
+	if (alphacalc < 1)
+	{
+		alphacalc = 1;
+	}
+
+	viewermodelalpha = distance / alphacalc;
+
+	if (viewermodelalpha > 1)
+	{
+		viewermodelalpha = 1;
+	}
+}
+
+void
+V_ClipCam(vec3_t start, vec3_t end, vec3_t newpos)
+{
+	int i;
+
+	trace_t tr = CL_Trace(start, end, 5, MASK_SOLID);
+	for (i = 0; i < 3; i++)
+	{
+		newpos[i] = tr.endpos[i];
+	}
+}
+
+void
+SetUpCamera(void)
+{
+	vec3_t end, oldorg, camPosition, camForward;
+	float dist_up, dist_back, dist_offset, angle;
+
+	if (!IsThirdPerson())
+	{
+		return;
+	}
+
+	if (cg_thirdperson_dist->value < 0)
+	{
+		Cvar_SetValue("cg_thirdperson_dist", 0);
+	}
+
+	/* Knightmare - backup old viewangles */
+	VectorCopy(cl.refdef.viewangles, old_viewangles);
+
+	/* and who said trig was pointless? */
+	angle = M_PI * cg_thirdperson_angle->value / 180.0f;
+	dist_up = cg_thirdperson_dist->value * sin(angle );
+	dist_back =  cg_thirdperson_dist->value * cos(angle);
+	dist_offset = cg_thirdperson_offset->value * ((hand->value == 1) ? -1.0f : 1.0f);
+	/* finish polar vector */
+
+	VectorCopy(cl.refdef.vieworg, oldorg);
+	if (cg_thirdperson_overhead->value)
+	{
+		VectorCopy(cl.refdef.vieworg, end);
+		end[2] += cg_thirdperson_overhead_dist->value;
+
+		V_ClipCam(cl.refdef.vieworg, end, camPosition);
+	}
+	else if (cg_thirdperson_chase->value)
+	{
+		vec3_t temp, temp2;
+
+		VectorMA(cl.refdef.vieworg, -dist_back, cl.v_forward, end);
+		VectorMA(end, dist_up, cl.v_up, end);
+		VectorMA(end, dist_offset, cl.v_right, end);
+
+		/* move back so looking straight down want make us look towards ourself */
+		vectoangles2 (cl.v_forward, temp);
+		temp[PITCH] = 0;
+		temp[ROLL] = 0;
+		AngleVectors (temp, temp2, NULL, NULL);
+		VectorMA(end, -(dist_back/1.8f), temp2, end);
+
+		V_ClipCam(cl.refdef.vieworg, end, camPosition);
+	}
+	else
+	{
+		vec3_t temp, viewForward, viewUp;
+
+		vectoangles2(cl.v_forward, temp);
+		temp[PITCH] = 0;
+		temp[ROLL] = 0;
+		AngleVectors(temp, viewForward, NULL, viewUp);
+
+		VectorScale(viewForward, dist_up*0.5f, camForward);
+
+		VectorMA(cl.refdef.vieworg, -dist_back, viewForward, end);
+		VectorMA(end, dist_up, viewUp, end);
+
+		V_ClipCam(cl.refdef.vieworg, end, camPosition);
+	}
+
+	VectorSubtract(camPosition, oldorg, end);
+	V_CalcViewerCamTrans(VectorLength(end));
+
+	if (cg_thirdperson_overhead->value)
+	{
+		vec3_t newDir;
+
+		newDir[PITCH] = 90;
+		newDir[ROLL] = 0;
+		if (cg_thirdperson_adjust->value)
+		{
+			newDir[YAW] = cl.refdef.viewangles[YAW];
+		}
+		VectorCopy(newDir, cl.refdef.viewangles);
+		VectorCopy(camPosition, cl.refdef.vieworg);
+	}
+	else if (cg_thirdperson_chase->value)
+	{
+		/* now aim at where ever client is...*/
+		vec3_t newDir, dir;
+
+		if (cg_thirdperson_adjust->value)
+		{
+			VectorMA(cl.refdef.vieworg, 8000, cl.v_forward, dir);
+			V_ClipCam(cl.refdef.vieworg, dir, newDir);
+
+			VectorSubtract(newDir, camPosition, dir);
+			VectorNormalize(dir);
+			vectoangles2(dir, newDir);
+
+			AngleVectors(newDir, cl.v_forward, cl.v_right, cl.v_up);
+			VectorCopy(newDir, cl.refdef.viewangles);
+		}
+
+		VectorCopy(camPosition, cl.refdef.vieworg);
+	}
+	else
+	{
+		vec3_t newDir[2], newPos;
+
+		VectorSubtract(cl.predicted_origin, camPosition, newDir[0]);
+		VectorNormalize(newDir[0]);
+		vectoangles2(newDir[0],newDir[1]);
+		VectorCopy(newDir[1], cl.refdef.viewangles);
+
+		VectorAdd(camForward, cl.refdef.vieworg, newPos);
+		V_ClipCam(cl.refdef.vieworg, newPos, cl.refdef.vieworg);
+	}
+}
+
+/*
  * Adapts a 4:3 aspect FOV to the current aspect (Hor+)
  */
 static inline float
@@ -794,6 +1067,9 @@ CL_CalcViewValues(void)
 
 	/* add the weapon */
 	CL_AddViewWeapon(ps, ops);
+
+	/* set up chase cam */
+	SetUpCamera();
 }
 
 /*

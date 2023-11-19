@@ -69,10 +69,22 @@ cvar_t *skin;
 cvar_t *rate;
 cvar_t *fov;
 cvar_t *horplus;
-cvar_t *windowed_mouse;
+static cvar_t *windowed_mouse;
 cvar_t *hand;
-cvar_t *gender;
-cvar_t *gender_auto;
+static cvar_t *gender;
+static cvar_t *gender_auto;
+
+/* Psychospaz's chasecam */
+cvar_t *cg_thirdperson;
+cvar_t *cg_thirdperson_angle;
+cvar_t *cg_thirdperson_chase;
+cvar_t *cg_thirdperson_dist;
+cvar_t *cg_thirdperson_offset;
+cvar_t *cg_thirdperson_alpha;
+cvar_t *cg_thirdperson_adjust;
+cvar_t *cg_thirdperson_indemo;
+cvar_t *cg_thirdperson_overhead;
+cvar_t *cg_thirdperson_overhead_dist;
 
 cvar_t	*gl1_stereo;
 cvar_t	*gl1_stereo_separation;
@@ -554,6 +566,18 @@ CL_InitLocal(void)
 	gender = Cvar_Get("gender", "male", CVAR_USERINFO | CVAR_ARCHIVE);
 	gender_auto = Cvar_Get("gender_auto", "1", CVAR_ARCHIVE);
 	gender->modified = false;
+
+	/* Psychospaz's chasecam */
+	cg_thirdperson = Cvar_Get("cg_thirdperson", "0", CVAR_ARCHIVE);
+	cg_thirdperson_angle = Cvar_Get("cg_thirdperson_angle", "10", CVAR_ARCHIVE);
+	cg_thirdperson_dist = Cvar_Get("cg_thirdperson_dist", "50", CVAR_ARCHIVE);
+	cg_thirdperson_offset = Cvar_Get("cg_thirdperson_offset", "16", CVAR_ARCHIVE);
+	cg_thirdperson_alpha = Cvar_Get("cg_thirdperson_alpha", "0", CVAR_ARCHIVE);
+	cg_thirdperson_chase = Cvar_Get("cg_thirdperson_chase", "1", CVAR_ARCHIVE);
+	cg_thirdperson_adjust = Cvar_Get("cg_thirdperson_adjust", "1", CVAR_ARCHIVE);
+	cg_thirdperson_indemo = Cvar_Get("cg_thirdperson_indemo", "0", CVAR_ARCHIVE);
+	cg_thirdperson_overhead = Cvar_Get("cg_thirdperson_overhead", "0", CVAR_ARCHIVE);
+	cg_thirdperson_overhead_dist = Cvar_Get("cg_thirdperson_overhead_dist", "192", CVAR_ARCHIVE);
 
 	// USERINFO cvars are special, they just need to be registered
 	Cvar_Get("password", "", CVAR_USERINFO);

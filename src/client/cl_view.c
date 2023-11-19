@@ -71,9 +71,36 @@ V_ClearScene(void)
 	r_numparticles = 0;
 }
 
+qboolean IsThirdPerson (void);
+void V_AddViewerEntAlpha(entity_t *ent);
+
 void
 V_AddEntity(entity_t *ent)
 {
+	// Knightmare- added Psychospaz's chasecam
+	if (ent->flags & RF_VIEWERMODEL) //here is our client
+	{
+		int i;
+
+		// what was i thinking before!?
+	//	for (i=0; i<3; i++)
+	//		clientOrg[i] = ent->oldorigin[i] = ent->origin[i] = cl.predicted_origin[i];
+
+	//	if (hand->value == 1) // lefthanded
+		//if (hand->value == 1) // lefthanded
+		//	ent->flags |= RF_MIRRORMODEL;
+
+	//	if (cg_thirdperson->integer
+	//		&& !(cl.attractloop && !(cl.cinematictime > 0 && cls.realtime - cl.cinematictime > 1000)))
+		if ( IsThirdPerson() )
+		{
+			V_AddViewerEntAlpha(ent);
+			ent->flags &= ~RF_VIEWERMODEL;
+			ent->flags |= RF_WEAPONMODEL;
+		}
+		printf("viewer mode;\n");
+	}
+
 	if (r_numentities >= MAX_ENTITIES)
 	{
 		return;

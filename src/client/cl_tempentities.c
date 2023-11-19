@@ -1391,8 +1391,6 @@ CL_AddBeams(void)
 	}
 }
 
-extern cvar_t *hand;
-
 void
 CL_AddPlayerBeams(void)
 {
