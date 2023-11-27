@@ -18,6 +18,8 @@
 #include "../../common/fx.h"
 #include "../../common/reference.h"
 
+typedef void (*playerinfo_cb)(playerinfo_t *);
+
 
 //NOTENOTE: This value is applied generically to all player move functions that travel along
 //			the ground to defeat the friction addition in the new system
@@ -4113,19 +4115,19 @@ panimmove_t player_move_pest2 = {30, player_frames_pest2, PlayerAnimLowerUpdate}
 
 static panimframe_t player_frames_fallleft[] =
 {
-	{FRAME_Rstair1, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
-	{FRAME_Rstair2, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
-	{FRAME_Rstair3, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
-	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
+	{FRAME_Rstair1, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)BranchLwrStanding},
+	{FRAME_Rstair2, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)BranchLwrStanding},
+	{FRAME_Rstair3, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)BranchLwrStanding},
+	{FRAME_Rstair4, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)BranchLwrStanding},
 };
 panimmove_t player_move_fallleft = {4, player_frames_fallleft, PlayerAnimLowerUpdate};
 
 static panimframe_t player_frames_fallright[] =
 {
-	{FRAME_Lstair1, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
-	{FRAME_Lstair2, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
-	{FRAME_Lstair3, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
-	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, BranchLwrStanding},
+	{FRAME_Lstair1, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)BranchLwrStanding},
+	{FRAME_Lstair2, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)BranchLwrStanding},
+	{FRAME_Lstair3, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)BranchLwrStanding},
+	{FRAME_Lstair4, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)BranchLwrStanding},
 };
 panimmove_t player_move_fallright = {4, player_frames_fallright, PlayerAnimLowerUpdate};
 
