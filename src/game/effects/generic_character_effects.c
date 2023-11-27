@@ -504,7 +504,7 @@ void FXWaterParticles(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, effect);
 }
 
-int DirectionalUpdate (client_entity_t *self, centity_t *owner)
+qboolean DirectionalUpdate (client_entity_t *self, centity_t *owner)
 {
 	float				addVal;
 	paletteRGBA_t		color = {{{255, 128, 128, 128}}};
