@@ -597,25 +597,41 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 
 	/* original name */
 	image = LoadImage_Ext(name, namewe, ext, type, r_retexturing, load_image);
+
 	/* pcx check */
 	if (!image)
 	{
 		image = LoadImage_Ext(name, namewe, "pcx", type, r_retexturing, load_image);
 	}
-	/* png check */
+
+	/* wal check */
 	if (!image)
 	{
-		image = LoadImage_Ext(name, namewe, "png", type, r_retexturing, load_image);
+		image = LoadImage_Ext(name, namewe, "wal", type, r_retexturing, load_image);
 	}
+
+	/* tga check */
+	if (!image)
+	{
+		image = LoadImage_Ext(name, namewe, "tga", type, r_retexturing, load_image);
+	}
+
 	/* m32 check */
 	if (!image)
 	{
 		image = LoadImage_Ext(name, namewe, "m32", type, r_retexturing, load_image);
 	}
+
 	/* m8 check */
 	if (!image)
 	{
 		image = LoadImage_Ext(name, namewe, "m8", type, r_retexturing, load_image);
+	}
+
+	/* png check */
+	if (!image)
+	{
+		image = LoadImage_Ext(name, namewe, "png", type, r_retexturing, load_image);
 	}
 
 	return image;
@@ -643,25 +659,10 @@ GetSkyImage(const char *skyname, const char* surfname, qboolean palettedtexture,
 		image = find_image(pathname, it_sky);
 	}
 
-	/* Daikatana */
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "env/%s%s.pcx",
-				skyname, surfname);
-		image = find_image(pathname, it_sky);
-	}
-
 	/* Heretic 2 */
 	if (!image)
 	{
 		Com_sprintf(pathname, sizeof(pathname), "pics/Skies/%s%s.m32",
-			skyname, surfname);
-		image = find_image(pathname, it_sky);
-	}
-
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "pics/Skies/%s%s.m8",
 			skyname, surfname);
 		image = find_image(pathname, it_sky);
 	}
@@ -672,34 +673,11 @@ GetSkyImage(const char *skyname, const char* surfname, qboolean palettedtexture,
 struct image_s *
 GetTexImage(const char *name, findimage_t find_image)
 {
-	struct image_s	*image = NULL;
 	char	pathname[MAX_QPATH];
 
 	/* Quake 2 */
 	Com_sprintf(pathname, sizeof(pathname), "textures/%s.wal", name);
-	image = find_image(pathname, it_wall);
-
-	/* Quake2 Re-Release Nintendo 64 */
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "textures/%s.tga", name);
-		image = find_image(pathname, it_wall);
-	}
-
-	/* Heretic 2 */
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "textures/%s.m32", name);
-		image = find_image(pathname, it_wall);
-	}
-
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "textures/%s.m8", name);
-		image = find_image(pathname, it_wall);
-	}
-
-	return image;
+	return find_image(pathname, it_wall);
 }
 
 struct image_s *
@@ -734,35 +712,10 @@ R_FindPic(const char *name, findimage_t find_image)
 		Com_sprintf(pathname, sizeof(pathname), "pics/%s.pcx", namewe);
 		image = find_image(pathname, it_pic);
 
-		/* Quake 2 Re-Release */
-		if (!image)
-		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/%s.png", name);
-			image = find_image(pathname, it_pic);
-		}
-
 		/* Heretic 2 */
 		if (!image)
 		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/%s.m32", namewe);
-			image = find_image(pathname, it_pic);
-		}
-
-		if (!image)
-		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m32", namewe);
-			image = find_image(pathname, it_pic);
-		}
-
-		if (!image)
-		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/%s.m8", namewe);
-			image = find_image(pathname, it_pic);
-		}
-
-		if (!image)
-		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m8", namewe);
+			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m32", name);
 			image = find_image(pathname, it_pic);
 		}
 	}
