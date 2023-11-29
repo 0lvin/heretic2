@@ -2092,7 +2092,7 @@ void ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t d
 	}
 }
 
-int ImpFireBallUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean ImpFireBallUpdate (struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	client_entity_t	*TrailEnt;
@@ -2176,7 +2176,7 @@ int star_particle [3] =
 	PART_16x16_SPARK_B,
 };
 
-int FXCWUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean FXCWUpdate (struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	client_entity_t	*TrailEnt;
@@ -2331,7 +2331,7 @@ void FXCWStars (centity_t *owner,int type,int flags, vec3_t vel)
 #define BUOY_FX_ACTIVATE	PART_4x4_MAGENTA
 #define BUOY_FX_ONEWAY		PART_4x4_WHITE
 
-int FXBuoyUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean FXBuoyUpdate (struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	int					num_parts, i;

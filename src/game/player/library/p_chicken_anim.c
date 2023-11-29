@@ -29,71 +29,71 @@ panimmove_t chickenp_move_dummy = {1, chickenp_frames_dummy, PlayerAnimLowerUpda
 
 static panimframe_t chickenp_frames_stand [] =
 {
-	{FRAME_wait1, NULL, 0, 0, 0, PlayerChickenCluck, 0, ChickenBranchidle},
-	{FRAME_wait2, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_wait3, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_wait4, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_wait5, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_wait6, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
+	{FRAME_wait1, NULL, 0, 0, 0, PlayerChickenCluck, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_wait2, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_wait3, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_wait4, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_wait5, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_wait6, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
 };
 panimmove_t chickenp_move_stand = {6, chickenp_frames_stand, PlayerAnimLowerUpdate};
 
 static panimframe_t chickenp_frames_stand1 [] =
 {
 
-	{FRAME_peck1, NULL, 0, 0, 0, PlayerChickenCluck, 0, ChickenBranchidle},
-	{FRAME_peck2, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck3, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck4, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck5, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck6, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck7, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck8, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck9, NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck10,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck11,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck12,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck13,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck14,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck15,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck16,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck17,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck18,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck19,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck20,NULL, 0, 0, 0, PlayerChickenCluck, 0, ChickenBranchidle},
-	{FRAME_peck21,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck22,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck23,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck24,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck25,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck26,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck27,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck28,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_peck29,NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
+	{FRAME_peck1, NULL, 0, 0, 0, PlayerChickenCluck, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck2, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck3, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck4, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck5, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck6, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck7, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck8, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck9, NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck10,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck11,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck12,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck13,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck14,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck15,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck16,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck17,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck18,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck19,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck20,NULL, 0, 0, 0, PlayerChickenCluck, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck21,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck22,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck23,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck24,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck25,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck26,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck27,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck28,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_peck29,NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
 };
 panimmove_t chickenp_move_stand1 = {29, chickenp_frames_stand1, PlayerAnimLowerUpdate};
 
 static panimframe_t chickenp_frames_stand2 [] =
 {
-	{FRAME_cluck1,	NULL, 0, 0, 0, PlayerChickenCluck, 0, ChickenBranchidle},
-	{FRAME_cluck2,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck3,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck4,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck5,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck6,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck7,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck8,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck9,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck10,	NULL, 0, 0, 0, PlayerChickenCluck, 1, ChickenBranchidle},
-	{FRAME_cluck11,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck12,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck13,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck14,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck15,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck16,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck17,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck18,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
-	{FRAME_cluck19,	NULL, 0, 0, 0, NULL, 0, ChickenBranchidle},
+	{FRAME_cluck1,	NULL, 0, 0, 0, PlayerChickenCluck, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck2,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck3,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck4,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck5,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck6,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck7,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck8,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck9,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck10,	NULL, 0, 0, 0, PlayerChickenCluck, 1, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck11,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck12,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck13,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck14,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck15,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck16,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck17,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck18,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
+	{FRAME_cluck19,	NULL, 0, 0, 0, NULL, 0, (playerinfo_cb)ChickenBranchidle},
 };
 panimmove_t chickenp_move_stand2 = {19, chickenp_frames_stand2, PlayerAnimLowerUpdate};
 
@@ -214,7 +214,7 @@ static panimframe_t chickenp_frames_jump [] =
 //	{FRAME_jump6,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
 
-panimmove_t chickenp_move_jump = {3, chickenp_frames_jump, PlayerChickenJump};
+panimmove_t chickenp_move_jump = {3, chickenp_frames_jump, (playerinfo_cb)PlayerChickenJump};
 
 /*----------------------------------------------------------------------
   Chicken jumping loop - used for falling too
@@ -246,7 +246,7 @@ static panimframe_t chickenp_frames_wjump [] =
 	{FRAME_jump5,	PlayerMoveFunc, PLAYER_WALK_SPEED * 2,	0, 0,  NULL, 0, NULL},
 };
 
-panimmove_t chickenp_move_wjump = {3, chickenp_frames_wjump, PlayerChickenJump};
+panimmove_t chickenp_move_wjump = {3, chickenp_frames_wjump, (playerinfo_cb)PlayerChickenJump};
 
 /*----------------------------------------------------------------------
   Chicken jumping running start-
@@ -258,7 +258,7 @@ static panimframe_t chickenp_frames_rjump [] =
 	{FRAME_jump5,	PlayerMoveFunc, PLAYER_RUN_SPEED * 2,	0, 0,  NULL, 0, NULL},
 };
 
-panimmove_t chickenp_move_rjump = {3, chickenp_frames_rjump, PlayerChickenJump};
+panimmove_t chickenp_move_rjump = {3, chickenp_frames_rjump, (playerinfo_cb)PlayerChickenJump};
 
 /*----------------------------------------------------------------------
   Chicken jumping walk back start-
@@ -270,7 +270,7 @@ static panimframe_t chickenp_frames_wjumpb [] =
 	{FRAME_jump5,	PlayerMoveFunc, -PLAYER_WALK_SPEED * 2, 0, 0,  NULL, 0, NULL},
 };
 
-panimmove_t chickenp_move_wjumpb = {3, chickenp_frames_wjumpb, PlayerChickenJump};
+panimmove_t chickenp_move_wjumpb = {3, chickenp_frames_wjumpb, (playerinfo_cb)PlayerChickenJump};
 
 /*----------------------------------------------------------------------
   Chicken jumping running back start-
@@ -282,7 +282,7 @@ static panimframe_t chickenp_frames_rjumpb [] =
 	{FRAME_jump5,	PlayerMoveFunc, -PLAYER_RUN_SPEED * 2,	0, 0,  NULL, 0, NULL},
 };
 
-panimmove_t chickenp_move_rjumpb = {3, chickenp_frames_rjumpb, PlayerChickenJump};
+panimmove_t chickenp_move_rjumpb = {3, chickenp_frames_rjumpb, (playerinfo_cb)PlayerChickenJump};
 
 /*----------------------------------------------------------------------
   Chicken attacking -
