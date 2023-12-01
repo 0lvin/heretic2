@@ -1003,11 +1003,6 @@ void SP_trigger_quake (edict_t *self)
 	self->TriggerActivated = quake_use;
 }
 
-void trig_done(edict_t *self)
-{
-	self = self;
-}
-
 void mission_give_use (edict_t *self, edict_t *other)
 {
 	int				num, i;
