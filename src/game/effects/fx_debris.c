@@ -910,13 +910,13 @@ qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
 
 	if(self->flags&CEF_FLAG6 && !irand(0, 2))//on fire- do a fire trail
 	{
-		if(irand(0, 0.3)>self->alpha)
+		if(flrand(0.0, 0.3)>self->alpha)
 		{
 			self->dlight = NULL;
 			self->flags &= ~CEF_FLAG6;
 			self->d_alpha = -0.01;
 		}
-		else if(irand(0, 0.3)>self->r.scale)
+		else if(flrand(0.0, 0.3)>self->r.scale)
 		{
 			self->dlight = NULL;
  			self->flags &= ~CEF_FLAG6;

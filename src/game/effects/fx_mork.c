@@ -2951,7 +2951,7 @@ void FXMorkMissile ( centity_t *owner, vec3_t startpos )
 
 		fx->radius = 1024;
 		fx->r.model = morc_models[1];
-		fx->r.scale = irand(0.1, 1);
+		fx->r.scale = flrand(0.1, 1.0);
 		fx->r.scale2 = 0.1;
 		fx->alpha = 1.0;
 		fx->r.color.c = 0xFFFFFFFF;

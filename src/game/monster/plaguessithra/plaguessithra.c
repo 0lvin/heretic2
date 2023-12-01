@@ -1279,7 +1279,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	self->s.fmnodeinfo[MESH__CAPLOWERTORSO].flags &= ~FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_NO_DRAW;
 
-	self->nextthink = 9999999999999999;
+	self->nextthink = 9999999999999999.0f;
 }
 
 /*
