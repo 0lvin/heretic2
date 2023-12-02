@@ -371,9 +371,6 @@ CL_PrepRefresh(void)
 		SCR_UpdateScreen();
 		IN_Update();
 
-		// pump message loop
-		cl.model_draw[i] = re.RegisterModel(cl.configstrings[CS_MODELS + i]);
-
 		if (name[0] == '#')
 		{
 			/* special player weapon model */
