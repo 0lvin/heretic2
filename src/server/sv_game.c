@@ -513,6 +513,7 @@ SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origi
 
 	if (sv_numeffects >= 512) {
 		Com_Printf("Warning : Unable to create persistant effect\n");
+		va_end(args);
 		return -1;
 	}
 
@@ -527,6 +528,7 @@ SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origi
 
 	if (effectID == -1)
 	{
+		va_end(args);
 		return -1;
 	}
 
@@ -593,6 +595,7 @@ SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origi
 	}
 
 	effect->data_size = msg.cursize;
+	va_end(args);
 
 	return effectID;
 }
@@ -617,6 +620,7 @@ SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* f
 
 	if (sv_numeffects >= 512) {
 		Com_Printf("Warning : Unable to create persistant effect\n");
+		va_end(args);
 		return;
 	}
 
@@ -631,6 +635,7 @@ SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* f
 
 	if (effectID == -1)
 	{
+		va_end(args);
 		return;
 	}
 
@@ -682,6 +687,7 @@ SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* f
 	}
 
 	effect->data_size = msg.cursize;
+	va_end(args);
 }
 
 void
