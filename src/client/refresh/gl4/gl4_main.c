@@ -35,11 +35,7 @@
 #define DG_DYNARR_IMPLEMENTATION
 #include "../files/DG_dynarr.h"
 
-#ifdef YQ2_GL3_GLES3
-  #define REF_VERSION "Yamagi Quake II OpenGL ES3 Refresher"
-#else
-  #define REF_VERSION "Yamagi Quake II OpenGL4 Refresher"
-#endif
+#define REF_VERSION "Yamagi Quake II OpenGL4 Refresher"
 
 refimport_t ri;
 
@@ -1007,15 +1003,7 @@ GL4_DrawParticles(void)
 		glDepthMask(GL_FALSE);
 		glEnable(GL_BLEND);
 
-#ifdef YQ2_GL3_GLES
-		// the RPi4 GLES3 implementation doesn't draw particles if culling is
-		// enabled (at least with GL_FRONT which seems to be default in q2?)
-		glDisable(GL_CULL_FACE);
-#else
-		// GLES doesn't have this, maybe it's always enabled? (https://gamedev.stackexchange.com/a/15528 says it works)
-		// luckily we don't use glPointSize() but set gl_PointSize in shader anyway
 		glEnable(GL_PROGRAM_POINT_SIZE);
-#endif
 
 		GL4_UseProgram(gl4state.siParticle.shaderProgram);
 
@@ -1042,12 +1030,8 @@ GL4_DrawParticles(void)
 
 		glDisable(GL_BLEND);
 		glDepthMask(GL_TRUE);
-#ifdef YQ2_GL3_GLES
-		if(r_cull->value != 0.0f)
-			glEnable(GL_CULL_FACE);
-#else
+
 		glDisable(GL_PROGRAM_POINT_SIZE);
-#endif
 
 		YQ2_VLAFREE(buf);
 	}
@@ -1882,12 +1866,6 @@ GL4_BeginFrame(float camera_separation)
 	{
 		gl_drawbuffer->modified = false;
 
-
-#ifdef YQ2_GL3_GLES
-		// OpenGL ES3 only supports GL_NONE, GL_BACK and GL_COLOR_ATTACHMENT*
-		// so this doesn't make sense here, see https://docs.gl/es3/glDrawBuffers
-		R_Printf(PRINT_ALL, "NOTE: gl_drawbuffer not supported by OpenGL ES!\n");
-#else // Desktop GL
 		// TODO: stereo stuff
 		//if ((gl4state.camera_separation == 0) || gl4state.stereo_mode != STEREO_MODE_OPENGL)
 		{
@@ -1898,7 +1876,6 @@ GL4_BeginFrame(float camera_separation)
 			}
 			glDrawBuffer(drawBuffer);
 		}
-#endif
 	}
 
 	/* texturemode stuff */

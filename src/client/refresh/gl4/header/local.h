@@ -34,23 +34,13 @@
   // using system headers for their parsers/indexers but glad for real build
   // (in glad glFoo is just a #define to glad_glFoo or sth, which screws up autocompletion)
   // (you may have to configure your IDE to #define IN_IDE_PARSER, but not for building!)
-#ifdef YQ2_GL3_GLES3
-  #include <GLES3/gl32.h>
-#else // desktop GL4
   #define GL_GLEXT_PROTOTYPES 1
   #include <GL/gl.h>
   #include <GL/glext.h>
-#endif
 
 #else
 
-#ifdef YQ2_GL3_GLES3
-  #include "../glad-gles3/include/glad/glad.h"
-  // yes, this is a bit hacky, but it works :-P
-  #define glDepthRange glDepthRangef
-#else // desktop GL4
-  #include "../glad/include/glad/glad.h"
-#endif
+#include "../glad/include/glad/glad.h"
 
 #endif
 
@@ -460,13 +450,13 @@ extern void GL4_BuildLightMap(msurface_t *surf, int offsetInLMbuf, int stride);
 // gl4_lightmap.c
 #define GL_LIGHTMAP_FORMAT GL_RGBA
 
-extern void GL4_LM_InitBlock(void);
-extern void GL4_LM_UploadBlock(void);
-extern qboolean GL4_LM_AllocBlock(int w, int h, int *x, int *y);
-extern void GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa);
-extern void GL4_LM_CreateSurfaceLightmap(msurface_t *surf);
-extern void GL4_LM_BeginBuildingLightmaps(gl4model_t *m);
-extern void GL4_LM_EndBuildingLightmaps(void);
+extern void LM_InitBlock(void);
+extern void LM_UploadBlock(void);
+extern qboolean LM_AllocBlock(int w, int h, int *x, int *y);
+extern void LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa);
+extern void LM_CreateSurfaceLightmap(msurface_t *surf);
+extern void LM_BeginBuildingLightmaps(gl4model_t *m);
+extern void LM_EndBuildingLightmaps(void);
 
 // gl4_warp.c
 extern void GL4_EmitWaterPolys(msurface_t *fa);

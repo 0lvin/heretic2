@@ -34,11 +34,6 @@ static int	mod_max = 0;
 
 int	registration_sequence;
 
-void LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa);
-void LM_CreateSurfaceLightmap(msurface_t *surf);
-void LM_EndBuildingLightmaps(void);
-void LM_BeginBuildingLightmaps(model_t *m);
-
 //===============================================================================
 
 static qboolean
@@ -108,7 +103,7 @@ Mod_Modellist_f(void)
 			continue;
 		}
 
-		R_Printf(PRINT_ALL, "%8i : %s %s r: %f #%d\n",
+		R_Printf(PRINT_ALL, "%8i : %s %s r: %.2f #%d\n",
 			 mod->extradatasize, mod->name, in_use, mod->radius, mod->numsubmodels);
 		total += mod->extradatasize;
 	}
@@ -130,7 +125,7 @@ static void
 Mod_LoadSubmodels(model_t *loadmodel, const byte *mod_base, const lump_t *l)
 {
 	dmodel_t *in;
-	model_t	*out;
+	model_t *out;
 	int i, j, count;
 
 	in = (void *)(mod_base + l->fileofs);
@@ -233,7 +228,7 @@ calcTexinfoAndFacesSize(const byte *mod_base, const lump_t *fl, const lump_t *tl
 
 			// R_SubdivideSurface(out, loadmodel); /* cut up polygon for warps */
 			// for each (pot. recursive) call to R_SubdividePolygon():
-			//   sizeof(mpoly_t) + ((numverts - 4) + 2) * sizeof(gl3_3D_vtx_t)
+			//   sizeof(mpoly_t) + ((numverts - 4) + 2) * sizeof(mvtx_t)
 
 			// this is tricky, how much is allocated depends on the size of the surface
 			// which we don't know (we'd need the vertices etc to know, but we can't load
@@ -309,7 +304,7 @@ calcTexinfoAndQFacesSize(const byte *mod_base, const lump_t *fl, const lump_t *t
 
 			// R_SubdivideSurface(out, loadmodel); /* cut up polygon for warps */
 			// for each (pot. recursive) call to R_SubdividePolygon():
-			//   sizeof(mpoly_t) + ((numverts - 4) + 2) * sizeof(gl3_3D_vtx_t)
+			//   sizeof(mpoly_t) + ((numverts - 4) + 2) * sizeof(mvtx_t)
 
 			// this is tricky, how much is allocated depends on the size of the surface
 			// which we don't know (we'd need the vertices etc to know, but we can't load
@@ -804,7 +799,7 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 	strcpy(mod->name, name);
 
 	/* load the file */
-	modfilelen = Mod_LoadFile (mod->name, &buf);
+	modfilelen = Mod_LoadFile(mod->name, &buf);
 
 	if (!buf)
 	{

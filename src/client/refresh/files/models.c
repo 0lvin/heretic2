@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (c) 2005-2015 David HENRY
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1771,11 +1772,11 @@ Mod_CalcSurfaceExtents(int *surfedges, mvertex_t *vertexes, medge_t *edges,
 
 	for (i = 0; i < 2; i++)
 	{
-		bmins[i] = floor(mins[i] / 16);
-		bmaxs[i] = ceil(maxs[i] / 16);
+		bmins[i] = floor(mins[i] / (1 << s->lmshift));
+		bmaxs[i] = ceil(maxs[i] / (1 << s->lmshift));
 
-		s->texturemins[i] = bmins[i] * 16;
-		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
+		s->texturemins[i] = bmins[i] * (1 << s->lmshift);
+		s->extents[i] = (bmaxs[i] - bmins[i]) * (1 << s->lmshift);
 		if (s->extents[i] < 16)
 		{
 			/* take at least one cache block */

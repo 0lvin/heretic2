@@ -102,8 +102,8 @@ GL4_Mod_Modellist_f(void)
 			continue;
 		}
 
-		R_Printf(PRINT_ALL, "%8i : %s %s\n",
-			mod->extradatasize, mod->name, in_use);
+		R_Printf(PRINT_ALL, "%8i : %s %s r: %.2f #%d\n",
+			 mod->extradatasize, mod->name, in_use, mod->radius, mod->numsubmodels);
 		total += mod->extradatasize;
 	}
 
@@ -238,7 +238,7 @@ calcTexinfoAndFacesSize(const byte *mod_base, const lump_t *fl, const lump_t *tl
 		}
 		else
 		{
-			// GL4_LM_BuildPolygonFromSurface(out);
+			// LM_BuildPolygonFromSurface(out);
 			// => poly = Hunk_Alloc(sizeof(mpoly_t) + (numverts - 4) * sizeof(mvtx_t));
 			int polySize = sizeof(mpoly_t) + (numverts - 4) * sizeof(mvtx_t);
 			polySize = (polySize + 31) & ~31;
@@ -314,7 +314,7 @@ calcTexinfoAndQFacesSize(const byte *mod_base, const lump_t *fl, const lump_t *t
 		}
 		else
 		{
-			// GL3_LM_BuildPolygonFromSurface(out);
+			// LM_BuildPolygonFromSurface(out);
 			// => poly = Hunk_Alloc(sizeof(mpoly_t) + (numverts - 4) * sizeof(mvtx_t));
 			int polySize = sizeof(mpoly_t) + (numverts - 4) * sizeof(mvtx_t);
 			polySize = (polySize + 31) & ~31;
@@ -335,7 +335,8 @@ static void
 Mod_LoadFaces(gl4model_t *loadmodel, const byte *mod_base, const lump_t *l,
 	const bspx_header_t *bspx_header)
 {
-	int i, count, surfnum;
+	int i, count, surfnum, lminfosize, lightofs;
+	const dlminfo_t *lminfos;
 	msurface_t *out;
 	dface_t *in;
 
@@ -353,7 +354,14 @@ Mod_LoadFaces(gl4model_t *loadmodel, const byte *mod_base, const lump_t *l,
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
 
-	GL4_LM_BeginBuildingLightmaps(loadmodel);
+	lminfos = Mod_LoadBSPXFindLump(bspx_header, "DECOUPLED_LM", &lminfosize, mod_base);
+	if (lminfos != NULL && lminfosize / sizeof(dlminfo_t) != loadmodel->numsurfaces) {
+		R_Printf(PRINT_ALL, "%s: [%s] decoupled_lm size %ld does not match surface count %d\n",
+			__func__, loadmodel->name, lminfosize / sizeof(dlminfo_t), loadmodel->numsurfaces);
+		lminfos = NULL;
+	}
+
+	LM_BeginBuildingLightmaps(loadmodel);
 
 	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
@@ -394,13 +402,22 @@ Mod_LoadFaces(gl4model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		}
 
 		out->texinfo = loadmodel->texinfo + ti;
-		out->lmshift = DEFAULT_LMSHIFT;
 
-		Mod_CalcSurfaceExtents(loadmodel->surfedges, loadmodel->vertexes,
-			loadmodel->edges, out);
+		lightofs = Mod_LoadBSPXDecoupledLM(lminfos, surfnum, out);
+		if (lightofs < 0) {
+			memcpy(out->lmvecs, out->texinfo->vecs, sizeof(out->lmvecs));
+			out->lmshift = DEFAULT_LMSHIFT;
+			out->lmvlen[0] = 1.0f;
+			out->lmvlen[1] = 1.0f;
+
+			Mod_CalcSurfaceExtents(loadmodel->surfedges, loadmodel->vertexes,
+				loadmodel->edges, out);
+
+			lightofs = in->lightofs;
+		}
 
 		Mod_LoadSetSurfaceLighting(loadmodel->lightdata, loadmodel->numlightdata,
-			out, in->styles, in->lightofs);
+			out, in->styles, lightofs);
 
 		/* set the drawing flags */
 		if (out->texinfo->flags & SURF_WARP)
@@ -428,23 +445,24 @@ Mod_LoadFaces(gl4model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		/* create lightmaps and polygons */
 		if (!(out->texinfo->flags & (SURF_SKY | SURF_TRANSPARENT | SURF_WARP)))
 		{
-			GL4_LM_CreateSurfaceLightmap(out);
+			LM_CreateSurfaceLightmap(out);
 		}
 
 		if (!(out->texinfo->flags & SURF_WARP))
 		{
-			GL4_LM_BuildPolygonFromSurface(loadmodel, out);
+			LM_BuildPolygonFromSurface(loadmodel, out);
 		}
 	}
 
-	GL4_LM_EndBuildingLightmaps();
+	LM_EndBuildingLightmaps();
 }
 
 static void
 Mod_LoadQFaces(gl4model_t *loadmodel, const byte *mod_base, const lump_t *l,
 	const bspx_header_t *bspx_header)
 {
-	int i, count, surfnum;
+	int i, count, surfnum, lminfosize, lightofs;
+	const dlminfo_t *lminfos;
 	msurface_t *out;
 	dqface_t *in;
 
@@ -462,7 +480,14 @@ Mod_LoadQFaces(gl4model_t *loadmodel, const byte *mod_base, const lump_t *l,
 	loadmodel->surfaces = out;
 	loadmodel->numsurfaces = count;
 
-	GL4_LM_BeginBuildingLightmaps(loadmodel);
+	lminfos = Mod_LoadBSPXFindLump(bspx_header, "DECOUPLED_LM", &lminfosize, mod_base);
+	if (lminfos != NULL && lminfosize / sizeof(dlminfo_t) != loadmodel->numsurfaces) {
+		R_Printf(PRINT_ALL, "%s: [%s] decoupled_lm size %ld does not match surface count %d\n",
+			__func__, loadmodel->name, lminfosize / sizeof(dlminfo_t), loadmodel->numsurfaces);
+		lminfos = NULL;
+	}
+
+	LM_BeginBuildingLightmaps(loadmodel);
 
 	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
@@ -503,13 +528,22 @@ Mod_LoadQFaces(gl4model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		}
 
 		out->texinfo = loadmodel->texinfo + ti;
-		out->lmshift = DEFAULT_LMSHIFT;
 
-		Mod_CalcSurfaceExtents(loadmodel->surfedges, loadmodel->vertexes,
-			loadmodel->edges, out);
+		lightofs = Mod_LoadBSPXDecoupledLM(lminfos, surfnum, out);
+		if (lightofs < 0) {
+			memcpy(out->lmvecs, out->texinfo->vecs, sizeof(out->lmvecs));
+			out->lmshift = DEFAULT_LMSHIFT;
+			out->lmvlen[0] = 1.0f;
+			out->lmvlen[1] = 1.0f;
+
+			Mod_CalcSurfaceExtents(loadmodel->surfedges, loadmodel->vertexes,
+				loadmodel->edges, out);
+
+			lightofs = in->lightofs;
+		}
 
 		Mod_LoadSetSurfaceLighting(loadmodel->lightdata, loadmodel->numlightdata,
-			out, in->styles, in->lightofs);
+			out, in->styles, lightofs);
 
 		/* set the drawing flags */
 		if (out->texinfo->flags & SURF_WARP)
@@ -537,16 +571,16 @@ Mod_LoadQFaces(gl4model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		/* create lightmaps and polygons */
 		if (!(out->texinfo->flags & (SURF_SKY | SURF_TRANSPARENT | SURF_WARP)))
 		{
-			GL4_LM_CreateSurfaceLightmap(out);
+			LM_CreateSurfaceLightmap(out);
 		}
 
 		if (!(out->texinfo->flags & SURF_WARP))
 		{
-			GL4_LM_BuildPolygonFromSurface(loadmodel, out);
+			LM_BuildPolygonFromSurface(loadmodel, out);
 		}
 	}
 
-	GL4_LM_EndBuildingLightmaps();
+	LM_EndBuildingLightmaps();
 }
 
 static void
@@ -703,7 +737,7 @@ Mod_LoadBrushModel(gl4model_t *mod, const void *buffer, int modfilelen)
  * Loads in a model for the given name
  */
 static gl4model_t *
-Mod_ForName (const char *name, gl4model_t *parent_model, qboolean crash)
+Mod_ForName(const char *name, gl4model_t *parent_model, qboolean crash)
 {
 	gl4model_t *mod;
 	void *buf;
@@ -904,7 +938,8 @@ GL4_RegisterModel(const char *name)
 
 			for (i = 0; i < mod->numtexinfo; i++)
 			{
-				mod->texinfo[i].image->registration_sequence = registration_sequence;
+				mod->texinfo[i].image->registration_sequence =
+					registration_sequence;
 			}
 		}
 		else
