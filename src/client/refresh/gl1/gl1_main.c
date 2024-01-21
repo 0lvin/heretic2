@@ -367,7 +367,8 @@ R_DrawEntitiesOnList(void)
 					R_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					Com_Error(ERR_DROP, "Bad modeltype");
+					R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
 					break;
 			}
 		}
@@ -1499,6 +1500,10 @@ RI_Init(void)
 	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
 	R_Printf(PRINT_ALL, "Client: " YQ2VERSION "\n\n");
 
+#ifdef DEBUG
+	R_Printf(PRINT_ALL, "ref_gl1::R_Init() - DEBUG mode enabled\n");
+#endif
+
 	GetPCXPalette(&colormap, d_8to24table);
 	GetPCXPalette24to8((byte *)d_8to24table, &gl_state.d_16to8table);
 	free(colormap);
@@ -1713,15 +1718,22 @@ RI_BeginFrame(float camera_separation)
 	// Clamp overbrightbits
 	if (gl1_overbrightbits->modified)
 	{
-		if (gl1_overbrightbits->value < 0)
+		int obb_val = (int)gl1_overbrightbits->value;
+
+		if (obb_val < 0)
 		{
-			ri.Cvar_Set("gl1_overbrightbits", "0");
+			obb_val = 0;
 		}
-		else if (gl1_overbrightbits->value > 4)
+		else if (obb_val == 3)
 		{
-			ri.Cvar_Set("gl1_overbrightbits", "4");
+			obb_val = 2;
+		}
+		else if (obb_val > 4)
+		{
+			obb_val = 4;
 		}
 
+		ri.Cvar_SetValue("gl1_overbrightbits", obb_val);
 		gl1_overbrightbits->modified = false;
 	}
 
@@ -2090,3 +2102,32 @@ Com_Error(int code, const char *fmt, ...)
 
 	ri.Sys_Error(code, "%s", text);
 }
+
+#ifdef DEBUG
+void
+glCheckError_(const char *file, const char *function, int line)
+{
+	GLenum errorCode;
+	const char * msg;
+
+#define MY_ERROR_CASE(X) case X : msg = #X; break;
+
+	while ((errorCode = glGetError()) != GL_NO_ERROR)
+	{
+		switch(errorCode)
+		{
+			MY_ERROR_CASE(GL_INVALID_ENUM);
+			MY_ERROR_CASE(GL_INVALID_VALUE);
+			MY_ERROR_CASE(GL_INVALID_OPERATION);
+			MY_ERROR_CASE(GL_STACK_OVERFLOW);
+			MY_ERROR_CASE(GL_STACK_UNDERFLOW);
+			MY_ERROR_CASE(GL_OUT_OF_MEMORY);
+			default: msg = "UNKNOWN";
+		}
+		R_Printf(PRINT_ALL, "glError: %s in %s (%s, %d)\n", msg, function, file, line);
+	}
+
+#undef MY_ERROR_CASE
+
+}
+#endif

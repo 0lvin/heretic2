@@ -2232,6 +2232,11 @@ CM_LeafContents(int leafnum)
 int
 CM_LeafCluster(int leafnum)
 {
+	if (!cmod->map_leafs)
+	{
+		return 0;
+	}
+
 	if ((leafnum < 0) || (leafnum >= (cmod->numleafs + EXTRA_LUMP_LEAFS)))
 	{
 		Com_Error(ERR_DROP, "%s: bad number", __func__);
@@ -2243,6 +2248,11 @@ CM_LeafCluster(int leafnum)
 int
 CM_LeafArea(int leafnum)
 {
+	if (!cmod->map_leafs)
+	{
+		return 0;
+	}
+
 	if ((leafnum < 0) || (leafnum >= (cmod->numleafs + EXTRA_LUMP_LEAFS)))
 	{
 		Com_Error(ERR_DROP, "%s: bad number", __func__);
@@ -2334,7 +2344,7 @@ CM_ClusterPVS(int cluster)
 byte *
 CM_ClusterPHS(int cluster)
 {
-	if (cluster == -1)
+	if (cluster == -1 || !cmod->map_vis)
 	{
 		memset(phsrow, 0, (cmod->numclusters + 7) >> 3);
 	}

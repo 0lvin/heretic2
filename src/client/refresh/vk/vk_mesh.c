@@ -30,12 +30,6 @@
 #define NUMVERTEXNORMALS 162
 #define SHADEDOT_QUANT 16
 
-static float r_avertexnormals[NUMVERTEXNORMALS][3] = {
-#include "../constants/anorms.h"
-};
-
-typedef float vec4_t[4];
-
 enum {
 	TRIANGLE_STRIP = 0,
 	TRIANGLE_FAN = 1
@@ -218,46 +212,10 @@ void Mesh_Free (void)
 	drawInfo[1] = NULL;
 }
 
-
-static void
-R_LerpVerts(entity_t *currententity, int nverts, dtrivertx_t *v, dtrivertx_t *ov,
-		dtrivertx_t *verts, float *lerp, const float move[3],
-		const float frontv[3], const float backv[3])
-{
-	int i;
-
-	if (currententity->flags &
-		(RF_SHELL_RED | RF_SHELL_GREEN |
-		 RF_SHELL_BLUE | RF_SHELL_DOUBLE |
-		 RF_SHELL_HALF_DAM))
-	{
-		for (i = 0; i < nverts; i++, v++, ov++, lerp += 4)
-		{
-			float *normal = r_avertexnormals[verts[i].lightnormalindex];
-
-			lerp[0] = move[0] + ov->v[0] * backv[0] + v->v[0] * frontv[0] +
-					  normal[0] * POWERSUIT_SCALE;
-			lerp[1] = move[1] + ov->v[1] * backv[1] + v->v[1] * frontv[1] +
-					  normal[1] * POWERSUIT_SCALE;
-			lerp[2] = move[2] + ov->v[2] * backv[2] + v->v[2] * frontv[2] +
-					  normal[2] * POWERSUIT_SCALE;
-		}
-	}
-	else
-	{
-		for (i = 0; i < nverts; i++, v++, ov++, lerp += 4)
-		{
-			lerp[0] = move[0] + ov->v[0] * backv[0] + v->v[0] * frontv[0];
-			lerp[1] = move[1] + ov->v[1] * backv[1] + v->v[1] * frontv[1];
-			lerp[2] = move[2] + ov->v[2] * backv[2] + v->v[2] * frontv[2];
-		}
-	}
-}
-
 static void
 Vk_DrawAliasFrameLerpCommands (entity_t *currententity, int *order, int *order_end,
 	float alpha, image_t *skin, float *modelMatrix, int leftHandOffset, int translucentIdx,
-	dtrivertx_t *verts)
+	dxtrivertx_t *verts)
 {
 	int vertCounts[2] = { 0, 0 };
 	int pipeCounters[2] = { 0, 0 };
@@ -454,11 +412,11 @@ FIXME: batch lerp all vertexes
 =============
 */
 static void
-Vk_DrawAliasFrameLerp(entity_t *currententity, dmdl_t *paliashdr, float backlerp, image_t *skin,
+Vk_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp, image_t *skin,
 	float *modelMatrix, int leftHandOffset, int translucentIdx)
 {
-	daliasframe_t *frame, *oldframe;
-	dtrivertx_t *v, *ov, *verts;
+	daliasxframe_t *frame, *oldframe;
+	dxtrivertx_t *v, *ov, *verts;
 	int *order;
 	float frontlerp;
 	float alpha;
@@ -467,16 +425,20 @@ Vk_DrawAliasFrameLerp(entity_t *currententity, dmdl_t *paliashdr, float backlerp
 	int i;
 	float *lerp;
 	int num_mesh_nodes;
-	short *mesh_nodes;
+	dmdxmesh_t *mesh_nodes;
 	fmnodeinfo_t *nodeinfo;
+
+	qboolean colorOnly = 0 != (currententity->flags &
+			(RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE |
+			 RF_SHELL_HALF_DAM));
 
 	nodeinfo = currententity->fmnodeinfo;
 
-	frame = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
+	frame = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 							  + currententity->frame * paliashdr->framesize);
 	verts = v = frame->verts;
 
-	oldframe = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
+	oldframe = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 				+ currententity->oldframe * paliashdr->framesize);
 	ov = oldframe->verts;
 
@@ -506,10 +468,7 @@ Vk_DrawAliasFrameLerp(entity_t *currententity, dmdl_t *paliashdr, float backlerp
 	for (i = 0; i < 3; i++)
 	{
 		move[i] = backlerp * move[i] + frontlerp * frame->translate[i];
-	}
 
-	for (i = 0; i < 3; i++)
-	{
 		frontv[i] = frontlerp * frame->scale[i];
 		backv[i] = backlerp * oldframe->scale[i];
 	}
@@ -521,33 +480,23 @@ Vk_DrawAliasFrameLerp(entity_t *currententity, dmdl_t *paliashdr, float backlerp
 
 	lerp = s_lerped[0];
 
-	R_LerpVerts(currententity, paliashdr->num_xyz, v, ov, verts, lerp, move, frontv, backv);
+	R_LerpVerts(colorOnly, paliashdr->num_xyz, v, ov, verts, lerp, move, frontv, backv);
 
-	num_mesh_nodes = (paliashdr->ofs_skins - sizeof(dmdl_t)) / sizeof(short) / 2;
-	mesh_nodes = (short *)((char*)paliashdr + sizeof(dmdl_t));
+	num_mesh_nodes = paliashdr->num_meshes;
+	mesh_nodes = (dmdxmesh_t *)((char*)paliashdr + paliashdr->ofs_meshes);
 
-	if (num_mesh_nodes > 0)
+	for (i = 0; i < num_mesh_nodes; i++)
 	{
-		int i;
-		for (i = 0; i < num_mesh_nodes; i++)
+		if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)
 		{
-			if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)
-			{
-				continue;
-			}
-
-			Vk_DrawAliasFrameLerpCommands(currententity,
-				order + mesh_nodes[i * 2],
-				order + Q_min(paliashdr->num_glcmds,
-					mesh_nodes[i * 2] + mesh_nodes[i * 2 + 1]),
-				alpha, skin,
-				modelMatrix, leftHandOffset, translucentIdx, verts);
+			continue;
 		}
-	}
-	else
-	{
+
 		Vk_DrawAliasFrameLerpCommands(currententity,
-			order, order + paliashdr->num_glcmds, alpha, skin,
+			order + mesh_nodes[i].start,
+			order + Q_min(paliashdr->num_glcmds,
+				mesh_nodes[i].start + mesh_nodes[i].num),
+			alpha, skin,
 			modelMatrix, leftHandOffset, translucentIdx, verts);
 	}
 }
@@ -649,15 +598,9 @@ Vk_DrawAliasShadow(int *order, int *order_end, int posenum,
 static qboolean
 R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e)
 {
-	int i;
-	vec3_t mins, maxs;
-	dmdl_t *paliashdr;
-	vec3_t vectors[3];
-	vec3_t thismins, oldmins, thismaxs, oldmaxs;
-	daliasframe_t *pframe, *poldframe;
-	vec3_t angles;
+	dmdx_t *paliashdr;
 
-	paliashdr = (dmdl_t *)currentmodel->extradata;
+	paliashdr = (dmdx_t *)currentmodel->extradata;
 	if (!paliashdr)
 	{
 		R_Printf(PRINT_ALL, "%s %s: Model is not fully loaded\n",
@@ -679,131 +622,8 @@ R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e)
 		e->oldframe = 0;
 	}
 
-	pframe = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames +
-			e->frame * paliashdr->framesize);
-
-	poldframe = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames +
-			e->oldframe * paliashdr->framesize);
-
-	/* compute axially aligned mins and maxs */
-	if (pframe == poldframe)
-	{
-		for (i = 0; i < 3; i++)
-		{
-			mins[i] = pframe->translate[i];
-			maxs[i] = mins[i] + pframe->scale[i] * 255;
-		}
-	}
-	else
-	{
-		for (i = 0; i < 3; i++)
-		{
-			thismins[i] = pframe->translate[i];
-			thismaxs[i] = thismins[i] + pframe->scale[i] * 255;
-
-			oldmins[i] = poldframe->translate[i];
-			oldmaxs[i] = oldmins[i] + poldframe->scale[i] * 255;
-
-			if (thismins[i] < oldmins[i])
-			{
-				mins[i] = thismins[i];
-			}
-			else
-			{
-				mins[i] = oldmins[i];
-			}
-
-			if (thismaxs[i] > oldmaxs[i])
-			{
-				maxs[i] = thismaxs[i];
-			}
-			else
-			{
-				maxs[i] = oldmaxs[i];
-			}
-		}
-	}
-
-	/* compute a full bounding box */
-	for (i = 0; i < 8; i++)
-	{
-		vec3_t tmp;
-
-		if (i & 1)
-		{
-			tmp[0] = mins[0];
-		}
-		else
-		{
-			tmp[0] = maxs[0];
-		}
-
-		if (i & 2)
-		{
-			tmp[1] = mins[1];
-		}
-		else
-		{
-			tmp[1] = maxs[1];
-		}
-
-		if (i & 4)
-		{
-			tmp[2] = mins[2];
-		}
-		else
-		{
-			tmp[2] = maxs[2];
-		}
-
-		VectorCopy(tmp, bbox[i]);
-	}
-
-	/* rotate the bounding box */
-	VectorCopy(e->angles, angles);
-	angles[YAW] = -angles[YAW];
-	AngleVectors(angles, vectors[0], vectors[1], vectors[2]);
-
-	for (i = 0; i < 8; i++)
-	{
-		vec3_t tmp;
-
-		VectorCopy(bbox[i], tmp);
-
-		bbox[i][0] = DotProduct(vectors[0], tmp);
-		bbox[i][1] = -DotProduct(vectors[1], tmp);
-		bbox[i][2] = DotProduct(vectors[2], tmp);
-
-		VectorAdd(e->origin, bbox[i], bbox[i]);
-	}
-
-	{
-		int p, f, aggregatemask = ~0;
-
-		for (p = 0; p < 8; p++)
-		{
-			int mask = 0;
-
-			for (f = 0; f < 4; f++)
-			{
-				float dp = DotProduct( frustum[f].normal, bbox[p] );
-
-				if ((dp - frustum[f].dist ) < 0)
-				{
-					mask |= (1 << f);
-				}
-			}
-
-			aggregatemask &= mask;
-		}
-
-		if (aggregatemask)
-		{
-			return true;
-		}
-
-		return false;
-	}
+	return R_CullAliasMeshModel(paliashdr, frustum, e->frame, e->oldframe,
+		e->angles, e->origin, bbox);
 }
 
 void
@@ -811,7 +631,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 {
 	int i;
 	int leftHandOffset = 0;
-	dmdl_t *paliashdr;
+	dmdx_t *paliashdr;
 	float an;
 	float prev_viewproj[16];
 
@@ -833,7 +653,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 		}
 	}
 
-	paliashdr = (dmdl_t *)currentmodel->extradata;
+	paliashdr = (dmdx_t *)currentmodel->extradata;
 
 	/* get lighting information */
 	if (currententity->flags &
@@ -1012,7 +832,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	currententity->angles[PITCH] = -currententity->angles[PITCH];	// sigh.
 	{
 		float model[16];
-		image_t	*skin;
+		image_t *skin = NULL;
 		Mat_Identity(model);
 		R_RotateForEntity (currententity, model);
 
@@ -1020,16 +840,19 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 		// select skin
 		if (currententity->skin)
+		{
 			skin = currententity->skin;	// custom player skin
+		}
 		else
 		{
-			if (currententity->skinnum >= MAX_MD2SKINS)
-				skin = currentmodel->skins[0];
-			else
+			if (currententity->skinnum < currentmodel->numskins)
 			{
 				skin = currentmodel->skins[currententity->skinnum];
-				if (!skin)
-					skin = currentmodel->skins[0];
+			}
+
+			if (!skin)
+			{
+				skin = currentmodel->skins[0];
 			}
 		}
 		if (!skin)
@@ -1073,8 +896,8 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 	if (vk_shadows->value && !(currententity->flags & (RF_TRANSLUCENT | RF_WEAPONMODEL)))
 	{
-		int num_mesh_nodes;
-		short *mesh_nodes;
+		int num_mesh_nodes, i;
+		dmdxmesh_t *mesh_nodes;
 		float model[16];
 		int *order;
 
@@ -1083,24 +906,15 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 		order = (int *)((byte *)paliashdr + paliashdr->ofs_glcmds);
 
-		num_mesh_nodes = (paliashdr->ofs_skins - sizeof(dmdl_t)) / sizeof(short) / 2;
-		mesh_nodes = (short *)((char*)paliashdr + sizeof(dmdl_t));
+		num_mesh_nodes = paliashdr->num_meshes;
+		mesh_nodes = (dmdxmesh_t *)((char*)paliashdr + paliashdr->ofs_meshes);
 
-		if (num_mesh_nodes > 0)
+		for (i = 0; i < num_mesh_nodes; i++)
 		{
-			int i;
-			for (i = 0; i < num_mesh_nodes; i++)
-			{
-				Vk_DrawAliasShadow (
-					order + mesh_nodes[i * 2],
-					order + Q_min(paliashdr->num_glcmds,
-						mesh_nodes[i * 2] + mesh_nodes[i * 2 + 1]),
-					currententity->frame, model, currententity);
-			}
-		}
-		else
-		{
-			Vk_DrawAliasShadow (order, order + paliashdr->num_glcmds,
+			Vk_DrawAliasShadow (
+				order + mesh_nodes[i].start,
+				order + Q_min(paliashdr->num_glcmds,
+					mesh_nodes[i].start + mesh_nodes[i].num),
 				currententity->frame, model, currententity);
 		}
 	}

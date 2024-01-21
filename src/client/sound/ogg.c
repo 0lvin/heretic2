@@ -654,7 +654,7 @@ OGG_TogglePlayback(void)
 /*
  * Prints a help message for the 'ogg' cmd.
  */
-void
+static void
 OGG_HelpMsg(void)
 {
 	Com_Printf("Unknown sub command %s\n\n", Cmd_Argv(1));
@@ -669,7 +669,7 @@ OGG_HelpMsg(void)
 /*
  * The 'ogg' cmd. Gives some control and information about the playback state.
  */
-void
+static void
 OGG_Cmd(void)
 {
 	if (Cmd_Argc() < 2)

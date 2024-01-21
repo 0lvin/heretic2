@@ -836,7 +836,7 @@ GL4_DrawSpriteModel(entity_t *e, gl4model_t *currentmodel)
 	dsprframe_t *frame;
 	float *up, *right;
 	dsprite_t *psprite;
-	gl4image_t *skin;
+	gl4image_t *skin = NULL;
 
 	/* don't even bother culling, because it's just
 	   a single polygon without a surface cache */
@@ -1086,7 +1086,8 @@ GL4_DrawEntitiesOnList(void)
 					GL4_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					Com_Error(ERR_DROP, "Bad modeltype");
+					R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
 					break;
 			}
 		}
@@ -1132,7 +1133,8 @@ GL4_DrawEntitiesOnList(void)
 					GL4_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					Com_Error(ERR_DROP, "Bad modeltype");
+					R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
 					break;
 			}
 		}

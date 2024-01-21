@@ -45,7 +45,7 @@
 
 // include resize implementation
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "stb_image_resize2.h"
+#include "stb_image_resize.h"
 
 /*
  * Add extension to file name
@@ -108,8 +108,8 @@ qboolean
 ResizeSTB(const byte *input_pixels, int input_width, int input_height,
 			  byte *output_pixels, int output_width, int output_height)
 {
-	if (stbir_resize_uint8_linear(input_pixels, input_width, input_height, 0,
-			       output_pixels, output_width, output_height, 0, STBIR_RGBA))
+	if (stbir_resize_uint8(input_pixels, input_width, input_height, 0,
+			       output_pixels, output_width, output_height, 0, 4))
 	{
 		return true;
 	}
@@ -698,7 +698,8 @@ R_FindPic(const char *name, findimage_t find_image)
 		if(!ext[0])
 		{
 			/* file has no extension */
-			strncpy(namewe, name, MAX_QPATH);
+			strncpy(namewe, name, sizeof(namewe) - 1);
+			namewe[sizeof(namewe) - 1] = 0;
 		}
 		else
 		{
@@ -709,6 +710,7 @@ R_FindPic(const char *name, findimage_t find_image)
 			/* Remove the extension */
 			memset(namewe, 0, MAX_QPATH);
 			memcpy(namewe, name, len - (strlen(ext) + 1));
+			namewe[len - (strlen(ext))] = 0;
 		}
 
 		/* Quake 2 */

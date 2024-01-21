@@ -559,11 +559,11 @@ R_Upload32Native(unsigned *data, int width, int height, qboolean mipmap)
 			break;
 		}
 	}
-    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, mipmap);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, mipmap);
 	glTexImage2D(GL_TEXTURE_2D, 0, comp, width,
 			height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
 			data);
-    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, false);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, false);
 	return samples == gl_alpha_format;
 }
 
@@ -880,6 +880,13 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		if (!image->texnum)
 		{
 			break;
+		}
+
+		if (!strcmp(image->name, name))
+		{
+			/* we already have such image */
+			image->registration_sequence = registration_sequence;
+			return image;
 		}
 	}
 

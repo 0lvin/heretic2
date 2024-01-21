@@ -241,6 +241,55 @@ typedef struct dkm_header_s
 	int ofs_end;           /* end of file */
 } dkm_header_t;
 
+/* .MD5 model file format */
+#define IDMD5HEADER (('V' << 24) + ('5' << 16) + ('D' << 8) + 'M')
+
+/* Internal model render format */
+typedef struct
+{
+	unsigned short v[3]; /* scaled short to fit in frame mins/maxs */
+	byte lightnormalindex;
+} dxtrivertx_t;
+
+typedef struct
+{
+	vec3_t scale;       /* multiply short verts by this */
+	vec3_t translate;   /* then add this */
+	char name[16];        /* frame name from grabbing */
+	dxtrivertx_t verts[1]; /* variable sized */
+} daliasxframe_t;
+
+typedef struct
+{
+	unsigned int start;
+	unsigned int num;
+} dmdxmesh_t;
+
+typedef struct
+{
+	int skinwidth;
+	int skinheight;
+	int framesize;  /* byte size of each frame */
+
+	int num_skins;
+	int num_xyz;
+	int num_st;     /* greater than num_xyz for seams */
+	int num_tris;
+	int num_glcmds; /* dwords in strip/fan command list */
+	int num_frames;
+	int num_meshes;
+	int num_imgbit; /* image format of embeded images */
+
+	int ofs_skins;  /* each skin is a MAX_SKINNAME string */
+	int ofs_st;     /* byte offset from start for stverts */
+	int ofs_tris;   /* offset for dtriangles */
+	int ofs_frames; /* offset for first frame */
+	int ofs_glcmds;
+	int ofs_meshes;
+	int ofs_imgbit; /* offest of embeded image */
+	int ofs_end;    /* end of file */
+} dmdx_t;
+
 /* .SP2 sprite file format */
 
 #define IDSPRITEHEADER (('2' << 24) + ('S' << 16) + ('D' << 8) + 'I') /* little-endian "IDS2" */

@@ -322,18 +322,16 @@ typedef struct
 
 /* Shared models func */
 typedef struct image_s* (*findimage_t)(const char *name, imagetype_t type);
-extern void *Mod_LoadAliasModel (const char *mod_name, const void *buffer, int modfilelen,
-	vec3_t mins, vec3_t maxs, struct image_s **skins,
-	findimage_t find_image, modtype_t *type);
-extern void *Mod_LoadSP2 (const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s **skins, findimage_t find_image, modtype_t *type);
+extern void *Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
+	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,
+	findimage_t find_image, loadimage_t load_image, modtype_t *type);
 extern int Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image,
-	void *extradata, modtype_t type);
+	loadimage_t load_image, void *extradata, modtype_t type);
 extern struct image_s *GetSkyImage(const char *skyname, const char* surfname,
 	qboolean palettedtexture, findimage_t find_image);
 extern struct image_s *GetTexImage(const char *name, findimage_t find_image);
 extern struct image_s *R_FindPic(const char *name, findimage_t find_image);
-extern struct image_s* R_LoadImage(const char *name, const char* namewe, const char *ext,
+extern struct image_s *R_LoadImage(const char *name, const char* namewe, const char *ext,
 	imagetype_t type, qboolean r_retexturing, loadimage_t load_image);
 extern void Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces,
 	unsigned int *nummarksurfaces, msurface_t *surfaces, int numsurfaces,
@@ -377,6 +375,14 @@ extern void R_SetFrustum(vec3_t vup, vec3_t vpn, vec3_t vright, vec3_t r_origin,
 	float fov_x, float fov_y, cplane_t *frustum);
 extern void R_SubdivideSurface(int *surfedges, mvertex_t *vertexes, medge_t *edges,
 	msurface_t *fa);
+
+/* Mesh logic */
+extern qboolean R_CullAliasMeshModel(dmdx_t *paliashdr, cplane_t *frustum,
+	int frame, int oldframe, vec3_t e_angles, vec3_t e_origin, vec3_t bbox[8]);
+extern void R_LerpVerts(qboolean powerUpEffect, int nverts, dxtrivertx_t *v, dxtrivertx_t *ov,
+		dxtrivertx_t *verts, float *lerp, const float move[3],
+		const float frontv[3], const float backv[3]);
+extern byte R_CompressNormalMDL(const float *normal);
 
 /* Lights logic */
 extern bspxlightgrid_t *Mod_LoadBSPXLightGrid(const bspx_header_t *bspx_header, const byte *mod_base);

@@ -32,22 +32,17 @@
 #define NUMVERTEXNORMALS 162
 #define SHADEDOT_QUANT 16
 
-static float r_avertexnormals[NUMVERTEXNORMALS][3] = {
-#include "../constants/anorms.h"
-};
-
 /* precalculated dot products for quantized angles */
 static float r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "../constants/anormtab.h"
 };
 
-typedef float vec4_t[4];
 static vec4_t s_lerped[MAX_VERTS];
 
 typedef struct gl4_shadowinfo_s {
 	vec3_t    lightspot;
 	vec3_t    shadevector;
-	dmdl_t*   paliashdr;
+	dmdx_t*   paliashdr;
 	entity_t* entity;
 } gl4_shadowinfo_t;
 
@@ -71,50 +66,15 @@ GL4_ShutdownMeshes(void)
 	da_free(shadowModels);
 }
 
-static void
-LerpVerts(qboolean powerUpEffect, int nverts, dtrivertx_t *v, dtrivertx_t *ov,
-		dtrivertx_t *verts, float *lerp, float move[3],
-		float frontv[3], float backv[3])
-{
-	int i;
-
-	if (powerUpEffect)
-	{
-		for (i = 0; i < nverts; i++, v++, ov++, lerp += 4)
-		{
-			float *normal = r_avertexnormals[verts[i].lightnormalindex];
-
-			lerp[0] = move[0] + ov->v[0] * backv[0] + v->v[0] * frontv[0] +
-					  normal[0] * POWERSUIT_SCALE;
-			lerp[1] = move[1] + ov->v[1] * backv[1] + v->v[1] * frontv[1] +
-					  normal[1] * POWERSUIT_SCALE;
-			lerp[2] = move[2] + ov->v[2] * backv[2] + v->v[2] * frontv[2] +
-					  normal[2] * POWERSUIT_SCALE;
-		}
-	}
-	else
-	{
-		for (i = 0; i < nverts; i++, v++, ov++, lerp += 4)
-		{
-			lerp[0] = move[0] + ov->v[0] * backv[0] + v->v[0] * frontv[0];
-			lerp[1] = move[1] + ov->v[1] * backv[1] + v->v[1] * frontv[1];
-			lerp[2] = move[2] + ov->v[2] * backv[2] + v->v[2] * frontv[2];
-		}
-	}
-}
-
 /*
  * Interpolates between two frames and origins
  */
 static void
-DrawAliasFrameLerp(dmdl_t *paliashdr, entity_t* entity, vec3_t shadelight)
+DrawAliasFrameLerp(dmdx_t *paliashdr, entity_t* entity, vec3_t shadelight)
 {
-	GLenum type;
-	float l;
-	daliasframe_t *frame, *oldframe;
-	dtrivertx_t *v, *ov, *verts;
+	daliasxframe_t *frame, *oldframe;
+	dxtrivertx_t *v, *ov, *verts;
 	int *order;
-	int count;
 	float alpha;
 	vec3_t move, delta, vectors[3];
 	vec3_t frontv, backv;
@@ -132,11 +92,11 @@ DrawAliasFrameLerp(dmdl_t *paliashdr, entity_t* entity, vec3_t shadelight)
 	float* shadedots = r_avertexnormal_dots[((int)(entity->angles[1] *
 				(SHADEDOT_QUANT / 360.0))) & (SHADEDOT_QUANT - 1)];
 
-	frame = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
+	frame = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 							  + entity->frame * paliashdr->framesize);
 	verts = v = frame->verts;
 
-	oldframe = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
+	oldframe = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 				+ entity->oldframe * paliashdr->framesize);
 	ov = oldframe->verts;
 
@@ -186,7 +146,7 @@ DrawAliasFrameLerp(dmdl_t *paliashdr, entity_t* entity, vec3_t shadelight)
 
 	lerp = s_lerped[0];
 
-	LerpVerts(colorOnly, paliashdr->num_xyz, v, ov, verts, lerp, move, frontv, backv);
+	R_LerpVerts(colorOnly, paliashdr->num_xyz, v, ov, verts, lerp, move, frontv, backv);
 
 	YQ2_STATIC_ASSERT(sizeof(gl4_alias_vtx_t) == 9*sizeof(GLfloat), "invalid gl4_alias_vtx_t size");
 
@@ -204,6 +164,8 @@ DrawAliasFrameLerp(dmdl_t *paliashdr, entity_t* entity, vec3_t shadelight)
 	while (1)
 	{
 		GLushort nextVtxIdx = da_count(vtxBuf);
+		GLenum type;
+		int count;
 
 		/* get the vertex count and primitive type */
 		count = *order++;
@@ -249,8 +211,11 @@ DrawAliasFrameLerp(dmdl_t *paliashdr, entity_t* entity, vec3_t shadelight)
 			int i;
 			for(i=0; i<count; ++i)
 			{
-				int j=0;
 				gl4_alias_vtx_t* cur = &buf[i];
+				int index_xyz;
+				int j = 0;
+				float l;
+
 				/* texture coordinates come from the draw list */
 				cur->texCoord[0] = ((float *) order)[0];
 				cur->texCoord[1] = ((float *) order)[1];
@@ -329,11 +294,10 @@ DrawAliasShadow(gl4_shadowinfo_t* shadowInfo)
 {
 	GLenum type;
 	int *order;
-	vec3_t point;
 	float height = 0, lheight;
 	int count;
 
-	dmdl_t* paliashdr = shadowInfo->paliashdr;
+	dmdx_t* paliashdr = shadowInfo->paliashdr;
 	entity_t* entity = shadowInfo->entity;
 
 	vec3_t shadevector;
@@ -341,19 +305,19 @@ DrawAliasShadow(gl4_shadowinfo_t* shadowInfo)
 
 	// all in this scope is to set s_lerped
 	{
-		daliasframe_t *frame, *oldframe;
-		dtrivertx_t *v, *ov, *verts;
+		daliasxframe_t *frame, *oldframe;
+		dxtrivertx_t *v, *ov, *verts;
 		float backlerp = entity->backlerp;
 		float frontlerp = 1.0f - backlerp;
 		vec3_t move, delta, vectors[3];
 		vec3_t frontv, backv;
 		int i;
 
-		frame = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
+		frame = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 								  + entity->frame * paliashdr->framesize);
 		verts = v = frame->verts;
 
-		oldframe = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
+		oldframe = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 					+ entity->oldframe * paliashdr->framesize);
 		ov = oldframe->verts;
 
@@ -377,7 +341,7 @@ DrawAliasShadow(gl4_shadowinfo_t* shadowInfo)
 
 		// false: don't extrude vertices for powerup - this means the powerup shell
 		//  is not seen in the shadow, only the underlying model..
-		LerpVerts(false, paliashdr->num_xyz, v, ov, verts, s_lerped[0], move, frontv, backv);
+		R_LerpVerts(false, paliashdr->num_xyz, v, ov, verts, s_lerped[0], move, frontv, backv);
 	}
 
 	lheight = entity->origin[2] - shadowInfo->lightspot[2];
@@ -420,6 +384,8 @@ DrawAliasShadow(gl4_shadowinfo_t* shadowInfo)
 
 		for(i=0; i<count; ++i)
 		{
+			vec3_t point;
+
 			/* normals and vertexes come from the frame list */
 			VectorCopy(s_lerped[order[2]], point);
 
@@ -488,167 +454,40 @@ DrawAliasShadow(gl4_shadowinfo_t* shadowInfo)
 static qboolean
 CullAliasModel(vec3_t bbox[8], entity_t *e)
 {
-	int i;
-	vec3_t mins, maxs;
-	dmdl_t *paliashdr;
-	vec3_t vectors[3];
-	vec3_t thismins, oldmins, thismaxs, oldmaxs;
-	daliasframe_t *pframe, *poldframe;
-	vec3_t angles;
+	dmdx_t *paliashdr;
 
 	gl4model_t* model = e->model;
 
-	paliashdr = (dmdl_t *)model->extradata;
+	paliashdr = (dmdx_t *)model->extradata;
 
 	if ((e->frame >= paliashdr->num_frames) || (e->frame < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "R_CullAliasModel %s: no such frame %d\n",
-				model->name, e->frame);
+		R_Printf(PRINT_DEVELOPER, "%s %s: no such frame %d\n",
+				__func__, model->name, e->frame);
 		e->frame = 0;
 	}
 
 	if ((e->oldframe >= paliashdr->num_frames) || (e->oldframe < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "R_CullAliasModel %s: no such oldframe %d\n",
-				model->name, e->oldframe);
+		R_Printf(PRINT_DEVELOPER, "%s %s: no such oldframe %d\n",
+				__func__, model->name, e->oldframe);
 		e->oldframe = 0;
 	}
 
-	pframe = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames +
-			e->frame * paliashdr->framesize);
-
-	poldframe = (daliasframe_t *)((byte *)paliashdr + paliashdr->ofs_frames +
-			e->oldframe * paliashdr->framesize);
-
-	/* compute axially aligned mins and maxs */
-	if (pframe == poldframe)
-	{
-		for (i = 0; i < 3; i++)
-		{
-			mins[i] = pframe->translate[i];
-			maxs[i] = mins[i] + pframe->scale[i] * 255;
-		}
-	}
-	else
-	{
-		for (i = 0; i < 3; i++)
-		{
-			thismins[i] = pframe->translate[i];
-			thismaxs[i] = thismins[i] + pframe->scale[i] * 255;
-
-			oldmins[i] = poldframe->translate[i];
-			oldmaxs[i] = oldmins[i] + poldframe->scale[i] * 255;
-
-			if (thismins[i] < oldmins[i])
-			{
-				mins[i] = thismins[i];
-			}
-			else
-			{
-				mins[i] = oldmins[i];
-			}
-
-			if (thismaxs[i] > oldmaxs[i])
-			{
-				maxs[i] = thismaxs[i];
-			}
-			else
-			{
-				maxs[i] = oldmaxs[i];
-			}
-		}
-	}
-
-	/* compute a full bounding box */
-	for (i = 0; i < 8; i++)
-	{
-		vec3_t tmp;
-
-		if (i & 1)
-		{
-			tmp[0] = mins[0];
-		}
-		else
-		{
-			tmp[0] = maxs[0];
-		}
-
-		if (i & 2)
-		{
-			tmp[1] = mins[1];
-		}
-		else
-		{
-			tmp[1] = maxs[1];
-		}
-
-		if (i & 4)
-		{
-			tmp[2] = mins[2];
-		}
-		else
-		{
-			tmp[2] = maxs[2];
-		}
-
-		VectorCopy(tmp, bbox[i]);
-	}
-
-	/* rotate the bounding box */
-	VectorCopy(e->angles, angles);
-	angles[YAW] = -angles[YAW];
-	AngleVectors(angles, vectors[0], vectors[1], vectors[2]);
-
-	for (i = 0; i < 8; i++)
-	{
-		vec3_t tmp;
-
-		VectorCopy(bbox[i], tmp);
-
-		bbox[i][0] = DotProduct(vectors[0], tmp);
-		bbox[i][1] = -DotProduct(vectors[1], tmp);
-		bbox[i][2] = DotProduct(vectors[2], tmp);
-
-		VectorAdd(e->origin, bbox[i], bbox[i]);
-	}
-
-	int p, f, aggregatemask = ~0;
-
-	for (p = 0; p < 8; p++)
-	{
-		int mask = 0;
-
-		for (f = 0; f < 4; f++)
-		{
-			float dp = DotProduct(frustum[f].normal, bbox[p]);
-
-			if ((dp - frustum[f].dist) < 0)
-			{
-				mask |= (1 << f);
-			}
-		}
-
-		aggregatemask &= mask;
-	}
-
-	if (aggregatemask)
-	{
-		return true;
-	}
-
-	return false;
+	return R_CullAliasMeshModel(paliashdr, frustum, e->frame, e->oldframe,
+		e->angles, e->origin, bbox);
 }
 
 void
 GL4_DrawAliasModel(entity_t *entity)
 {
 	int i;
-	dmdl_t *paliashdr;
+	dmdx_t *paliashdr;
 	float an;
 	vec3_t bbox[8];
 	vec3_t shadelight;
 	vec3_t shadevector;
-	gl4image_t *skin;
+	gl4image_t *skin = NULL;
 	hmm_mat4 origProjViewMat = {0}; // use for left-handed rendering
 	// used to restore ModelView matrix after changing it for this entities position/rotation
 	hmm_mat4 origModelMat = {0};
@@ -670,7 +509,7 @@ GL4_DrawAliasModel(entity_t *entity)
 	}
 
 	gl4model_t* model = entity->model;
-	paliashdr = (dmdl_t *)model->extradata;
+	paliashdr = (dmdx_t *)model->extradata;
 
 	/* get lighting information */
 	if (entity->flags &
@@ -779,12 +618,13 @@ GL4_DrawAliasModel(entity_t *entity)
 	{
 		/* bonus items will pulse with time */
 		float scale;
-		float min;
 
 		scale = 0.1 * sin(gl4_newrefdef.time * 7);
 
 		for (i = 0; i < 3; i++)
 		{
+			float	min;
+
 			min = shadelight[i] * 0.8;
 			shadelight[i] += scale;
 
@@ -872,18 +712,14 @@ GL4_DrawAliasModel(entity_t *entity)
 	}
 	else
 	{
-		if (entity->skinnum >= MAX_MD2SKINS)
-		{
-			skin = model->skins[0];
-		}
-		else
+		if (entity->skinnum < model->numskins)
 		{
 			skin = model->skins[entity->skinnum];
+		}
 
-			if (!skin)
-			{
-				skin = model->skins[0];
-			}
+		if (!skin)
+		{
+			skin = model->skins[0];
 		}
 	}
 
@@ -1007,4 +843,3 @@ void GL4_DrawAliasShadows(void)
 	gl4state.uni3DData.transModelMat4 = oldMat;
 	GL4_UpdateUBO3D();
 }
-
