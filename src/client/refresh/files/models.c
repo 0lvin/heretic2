@@ -40,12 +40,12 @@ Mod_LoadSTvertList(dmdx_t *pheader, dstvert_t *pinst)
 	dstvert_t *poutst;
 	int i;
 
-	poutst = (dstvert_t *) ((byte *)pheader + pheader->ofs_st);
+	poutst = (dstvert_t *)((byte *)pheader + pheader->ofs_st);
 
-	for (i=0 ; i<pheader->num_st ; i++)
+	for (i = 0; i < pheader->num_st; i++)
 	{
-		poutst[i].s = LittleShort (pinst[i].s);
-		poutst[i].t = LittleShort (pinst[i].t);
+		poutst[i].s = LittleShort(pinst[i].s);
+		poutst[i].t = LittleShort(pinst[i].t);
 	}
 }
 
@@ -97,11 +97,11 @@ Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t transl
 		poutframe = (daliasxframe_t *) ((byte *)pheader
 			+ pheader->ofs_frames + i * pheader->framesize);
 
-		memcpy (poutframe->name, pinframe->name, sizeof(poutframe->name));
+		memcpy(poutframe->name, pinframe->name, sizeof(poutframe->name));
 		for (j=0 ; j<3 ; j++)
 		{
-			poutframe->scale[j] = LittleFloat (pinframe->scale[j]) / 0xFF;
-			poutframe->translate[j] = LittleFloat (pinframe->translate[j]);
+			poutframe->scale[j] = LittleFloat(pinframe->scale[j]) / 0xFF;
+			poutframe->translate[j] = LittleFloat(pinframe->translate[j]);
 			poutframe->translate[j] += translate[j];
 		}
 		// verts are all 8 bit, so no swapping needed
@@ -140,8 +140,8 @@ Mod_LoadDTriangleList(dmdx_t *pheader, dtriangle_t *pintri)
 
 		for (j=0 ; j<3 ; j++)
 		{
-			pouttri[i].index_xyz[j] = LittleShort (pintri[i].index_xyz[j]);
-			pouttri[i].index_st[j] = LittleShort (pintri[i].index_st[j]);
+			pouttri[i].index_xyz[j] = LittleShort(pintri[i].index_xyz[j]);
+			pouttri[i].index_st[j] = LittleShort(pintri[i].index_st[j]);
 		}
 	}
 }
@@ -161,14 +161,14 @@ Mod_LoadDkmTriangleList(dmdx_t *pheader, dkmtriangle_t *pintri)
 
 	pouttri = (dtriangle_t *) ((char *)pheader + pheader->ofs_tris);
 
-	for (i=0 ; i<pheader->num_tris ; i++)
+	for (i = 0; i < pheader->num_tris; i++)
 	{
 		int j;
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
-			pouttri[i].index_xyz[j] = LittleShort (pintri[i].index_xyz[j]);
-			pouttri[i].index_st[j] = LittleShort (pintri[i].index_st[j]);
+			pouttri[i].index_xyz[j] = LittleShort(pintri[i].index_xyz[j]);
+			pouttri[i].index_st[j] = LittleShort(pintri[i].index_st[j]);
 		}
 	}
 }
@@ -223,6 +223,7 @@ Mod_LoadDKMCmdList(const char *mod_name, dmdx_t *pheader, int *pincmd)
 			break;
 		}
 	}
+
 	memset (poutcmd, 0, (pendcmd - poutcmd) * sizeof(int));
 }
 
@@ -248,15 +249,15 @@ Mod_LoadFrames_DKM2(dmdx_t *pheader, const byte *src, size_t inframesize, vec3_t
 		dxtrivertx_t	*outverts;
 		byte	*inverts;
 
-		pinframe = (daliasframe_t *) (src + i * inframesize);
-		poutframe = (daliasxframe_t *) ((byte *)pheader
+		pinframe = (daliasframe_t *)(src + i * inframesize);
+		poutframe = (daliasxframe_t *)((byte *)pheader
 			+ pheader->ofs_frames + i * outframesize);
 
-		memcpy (poutframe->name, pinframe->name, sizeof(poutframe->name));
-		for (j=0 ; j<3 ; j++)
+		memcpy(poutframe->name, pinframe->name, sizeof(poutframe->name));
+		for (j = 0; j < 3; j++)
 		{
-			poutframe->scale[j] = LittleFloat (pinframe->scale[j]);
-			poutframe->translate[j] = LittleFloat (pinframe->translate[j]);
+			poutframe->scale[j] = LittleFloat(pinframe->scale[j]);
+			poutframe->translate[j] = LittleFloat(pinframe->translate[j]);
 			poutframe->translate[j] += translate[j];
 		}
 
@@ -266,6 +267,7 @@ Mod_LoadFrames_DKM2(dmdx_t *pheader, const byte *src, size_t inframesize, vec3_t
 
 		inverts = (byte *)&pinframe->verts;
 		outverts = poutframe->verts;
+
 		/* dkm vert version 2 has unalligned by int size struct */
 		for(j=0; j < pheader->num_xyz; j++)
 		{
@@ -540,13 +542,13 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 
 
 			frame = (daliasframe_t *) ((byte *)pheader + ofs_frames + i * framesize);
-			frame->scale[0] = LittleFloat (pinmodel->scale[0]) / 0xFF;
-			frame->scale[1] = LittleFloat (pinmodel->scale[1]) / 0xFF;
-			frame->scale[2] = LittleFloat (pinmodel->scale[2]) / 0xFF;
+			frame->scale[0] = LittleFloat(pinmodel->scale[0]) / 0xFF;
+			frame->scale[1] = LittleFloat(pinmodel->scale[1]) / 0xFF;
+			frame->scale[2] = LittleFloat(pinmodel->scale[2]) / 0xFF;
 
-			frame->translate[0] = LittleFloat (pinmodel->translate[0]);
-			frame->translate[1] = LittleFloat (pinmodel->translate[1]);
-			frame->translate[2] = LittleFloat (pinmodel->translate[2]);
+			frame->translate[0] = LittleFloat(pinmodel->translate[0]);
+			frame->translate[1] = LittleFloat(pinmodel->translate[1]);
+			frame->translate[2] = LittleFloat(pinmodel->translate[2]);
 
 			/* Read frame data */
 			/* skip type / int */
@@ -772,9 +774,13 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 
 	for (i = 0; i < pheader->num_skins; i++)
 	{
+		char *skin;
+
+		skin = (char *)pheader + pheader->ofs_skins + i * MAX_SKINNAME;
+		skin[MAX_SKINNAME - 1] = 0;
+
 		R_Printf(PRINT_DEVELOPER, "%s: %s #%d: Should load external '%s'\n",
-			__func__, mod_name, i,
-			(char *)pheader + pheader->ofs_skins + i*MAX_SKINNAME);
+			__func__, mod_name, i, skin);
 	}
 
 	*type = mod_alias;
@@ -782,6 +788,48 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 	return extradata;
 }
 
+static void
+Mod_LoadSkinList_MD2(const char *mod_name, const void *buffer, int modfilelen,
+	char **skins, int *numskins)
+{
+	dmdl_t pinmodel;
+	int i;
+
+	if (modfilelen < sizeof(pinmodel))
+	{
+		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be %ld)",
+				__func__, mod_name, modfilelen, sizeof(pinmodel));
+	}
+
+	for (i=0 ; i<sizeof(dmdl_t)/sizeof(int) ; i++)
+	{
+		((int *)&pinmodel)[i] = LittleLong(((int *)buffer)[i]);
+	}
+
+	if (pinmodel.version != ALIAS_VERSION)
+	{
+		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)",
+				__func__, mod_name, pinmodel.version, ALIAS_VERSION);
+	}
+
+	if (pinmodel.ofs_end < 0 || pinmodel.ofs_end > modfilelen)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s file size(%d) too small, should be %d",
+				__func__, mod_name, modfilelen, pinmodel.ofs_end);
+	}
+
+	if (pinmodel.num_skins < 0)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s file has incorrect skins count %d",
+				__func__, mod_name, pinmodel.num_skins);
+	}
+
+	*numskins = pinmodel.num_skins;
+	*skins = malloc(pinmodel.num_skins * MAX_SKINNAME);
+
+	memcpy(*skins, (char *)buffer + pinmodel.ofs_skins,
+		pinmodel.num_skins * MAX_SKINNAME);
+}
 
 /*
 =============
@@ -946,7 +994,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 					return NULL;
 				}
 
-				Mod_LoadSTvertList (pheader, (dstvert_t *)src);
+				Mod_LoadSTvertList(pheader, (dstvert_t *)src);
 			}
 			else if (Q_strncasecmp(blockname, "tris", sizeof(blockname)) == 0)
 			{
@@ -1178,11 +1226,11 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 	mesh_nodes[0].start = 0;
 	mesh_nodes[0].num = pheader->num_glcmds;
 
-	memcpy ((byte*)pheader + pheader->ofs_skins, (byte *)buffer + header.ofs_skins,
+	memcpy((byte*)pheader + pheader->ofs_skins, (byte *)buffer + header.ofs_skins,
 		pheader->num_skins * MAX_SKINNAME);
-	Mod_LoadSTvertList (pheader,
+	Mod_LoadSTvertList(pheader,
 		(dstvert_t *)((byte *)buffer + header.ofs_st));
-	Mod_LoadDKMCmdList (mod_name, pheader,
+	Mod_LoadDKMCmdList(mod_name, pheader,
 		(int *)((byte *)buffer + header.ofs_glcmds));
 	if (header.version == DKM1_VERSION)
 	{
@@ -1195,7 +1243,7 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 			header.framesize, header.translate);
 	}
 
-	Mod_LoadDkmTriangleList (pheader,
+	Mod_LoadDkmTriangleList(pheader,
 		(dkmtriangle_t *)((byte *)buffer + header.ofs_tris));
 
 	for (i = 0; i < pheader->num_skins; i++)
@@ -1358,6 +1406,19 @@ Mod_LoadMinMaxUpdate(const char *mod_name, vec3_t mins, vec3_t maxs, void *extra
 	}
 }
 
+static void
+Mod_LoadSkinList(const char *mod_name, const void *buffer, int modfilelen,
+	char **skins, int *numskins)
+{
+	switch (LittleLong(*(unsigned *)buffer))
+	{
+		case IDALIASHEADER:
+			Mod_LoadSkinList_MD2(mod_name, buffer, modfilelen,
+				skins, numskins);
+			break;
+	}
+}
+
 /*
 =================
 Mod_LoadModel
@@ -1392,6 +1453,11 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 				skins, numskins, type);
 			break;
 
+		case IDMD5HEADER:
+			extradata = Mod_LoadModel_MD5(mod_name, buffer, modfilelen,
+				skins, numskins, type);
+			break;
+
 		case IDSPRITEHEADER:
 			extradata = Mod_LoadSprite_SP2(mod_name, buffer, modfilelen,
 				skins, numskins, type);
@@ -1406,6 +1472,128 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 	}
 
 	return extradata;
+}
+
+/* Add md5 to full file name */
+static void
+Mod_LoadFileInsertMD5(char *newname, const char *oldname, int size)
+{
+	const char *filename;
+
+	filename = COM_SkipPath(oldname);
+	memset(newname, 0, size);
+	memcpy(newname, oldname, strlen(oldname) - strlen(filename));
+	Q_strlcat(newname, "md5/", size);
+	Q_strlcat(newname, filename, size);
+}
+
+static int
+Mod_LoadFileMD5Merge(const char *namewe, void **buffer)
+{
+	int fullsize, filesize_anim, filesize, filesize_skins;
+	char *final_buffer = NULL, *skins_list = NULL;
+	void *anim_buffer = NULL, *skins_buffer = NULL;
+	qboolean md5path = false;
+	char newname[256];
+
+	/* search mesh file */
+	Q_strlcpy(newname, namewe, sizeof(newname));
+	Q_strlcat(newname, ".md5mesh", sizeof(newname));
+	filesize = ri.FS_LoadFile(newname, buffer);
+
+	/* check overwrite file */
+	if (filesize <= 0)
+	{
+		char md5modelname[256];
+
+		Mod_LoadFileInsertMD5(md5modelname, newname, sizeof(md5modelname));
+
+		filesize = ri.FS_LoadFile(md5modelname, buffer);
+		/* no replace file */
+		if (filesize <= 0)
+		{
+			return filesize;
+		}
+
+		md5path = true;
+		strcpy(newname, md5modelname);
+	}
+
+	/* search animation file */
+	memcpy(newname + strlen(newname) - strlen("mesh"), "anim", strlen("anim"));
+	filesize_anim = ri.FS_LoadFile(newname, &anim_buffer);
+	if (filesize_anim <= 0)
+	{
+		ri.FS_FreeFile(*buffer);
+		return filesize;
+	}
+
+	/* search skins list */
+	Q_strlcpy(newname, namewe, sizeof(newname));
+	Q_strlcat(newname, ".md2", sizeof(newname));
+	filesize_skins = ri.FS_LoadFile(newname, &skins_buffer);
+	if (filesize_skins > 0)
+	{
+		char *skins = NULL;
+		int numskins = 0, i;
+
+		Mod_LoadSkinList(newname, skins_buffer, filesize_skins,
+			&skins, &numskins);
+		ri.FS_FreeFile(skins_buffer);
+
+		/*
+		 * 20 -> numskins <num> | skin <num> "MAX_SKINNAME" + md5
+		 */
+		skins_list = malloc((numskins + 1) * (MAX_SKINNAME + 20));
+		sprintf(skins_list, "\nnumskins %d\n", numskins);
+		for(i = 0; i < numskins; i++)
+		{
+			char *skinname = skins + MAX_SKINNAME * i;
+
+			if (!md5path)
+			{
+				sprintf(skins_list + strlen(skins_list), "skin %d \"%s\"\n",
+					i, skinname);
+			}
+			else
+			{
+				char md5skinname[256];
+
+				Mod_LoadFileInsertMD5(md5skinname, skinname, sizeof(md5skinname));
+
+				sprintf(skins_list + strlen(skins_list), "skin %d \"%s\"\n",
+					i, md5skinname);
+			}
+		}
+	}
+
+	/* prepare final file */
+	fullsize = filesize + filesize_anim + 1;
+	if (skins_list)
+	{
+		fullsize += strlen(skins_list);
+	}
+
+	/* allocate new buffer, ERR_FATAL on alloc fail */
+	final_buffer = ri.FS_AllocFile(fullsize);
+
+	/* copy combined information */
+	memcpy(final_buffer, *buffer, filesize);
+	if (skins_list)
+	{
+		memcpy(final_buffer + filesize, skins_list, strlen(skins_list));
+		filesize += strlen(skins_list);
+		free(skins_list);
+	}
+	final_buffer[filesize] = 0;
+	memcpy(final_buffer + filesize + 1, anim_buffer, filesize_anim);
+
+	/* Remove old buffers */
+	ri.FS_FreeFile(anim_buffer);
+	ri.FS_FreeFile(*buffer);
+
+	*buffer = final_buffer;
+	return fullsize;
 }
 
 static int
@@ -1427,9 +1615,7 @@ Mod_LoadFileWithoutExt(const char *namewe, void **buffer, const char* ext)
 		int filesize;
 
 		/* Check ReRelease / Doom 3 / Quake 4 model */
-		Q_strlcpy(newname, namewe, sizeof(newname));
-		Q_strlcat(newname, ".md5mesh", sizeof(newname));
-		filesize = ri.FS_LoadFile(newname, buffer);
+		filesize = Mod_LoadFileMD5Merge(namewe, buffer);
 		if (filesize > 0)
 		{
 			return filesize;
