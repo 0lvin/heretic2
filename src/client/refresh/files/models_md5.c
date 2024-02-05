@@ -25,7 +25,7 @@
  * =======================================================================
  */
 
-#include "../ref_shared.h"
+#include "models.h"
 
 /* Joint */
 typedef struct md5_joint_s
@@ -82,17 +82,11 @@ typedef struct md5_mesh_s
 	char shader[256];
 } md5_mesh_t;
 
-typedef struct md5_fvert_s
-{
-	vec3_t xyz;
-	vec3_t norm;
-} md5_fvert_t;
-
 typedef struct md5_frame_s
 {
 	md5_bbox_t bbox;
 	md5_joint_t *skelJoints;
-	md5_fvert_t *vertexArray;
+	dmdx_vert_t *vertexArray;
 } md5_frame_t;
 
 /* MD5 model structure */
@@ -229,37 +223,37 @@ BuildFrameSkeleton(const md5_joint_info_t *jointInfos,
 		if (jointInfos[i].flags & 1) /* Tx */
 		{
 			animatedPos[0] = animFrameData[jointInfos[i].startIndex + j];
-			++j;
+			j++;
 		}
 
 		if (jointInfos[i].flags & 2) /* Ty */
 		{
 			animatedPos[1] = animFrameData[jointInfos[i].startIndex + j];
-			++j;
+			j++;
 		}
 
 		if (jointInfos[i].flags & 4) /* Tz */
 		{
 			animatedPos[2] = animFrameData[jointInfos[i].startIndex + j];
-			++j;
+			j++;
 		}
 
 		if (jointInfos[i].flags & 8) /* Qx */
 		{
 			animatedOrient[0] = animFrameData[jointInfos[i].startIndex + j];
-			++j;
+			j++;
 		}
 
 		if (jointInfos[i].flags & 16) /* Qy */
 		{
 			animatedOrient[1] = animFrameData[jointInfos[i].startIndex + j];
-			++j;
+			j++;
 		}
 
 		if (jointInfos[i].flags & 32) /* Qz */
 		{
 			animatedOrient[2] = animFrameData[jointInfos[i].startIndex + j];
-			++j;
+			j++;
 		}
 
 		/* Compute orient quaternion's w value */
@@ -327,8 +321,8 @@ AllocateFrames(md5_model_t *anim)
 		/* Allocate memory for joints of each frame */
 		anim->skelFrames[i].skelJoints = (md5_joint_t *)
 			malloc(sizeof(md5_joint_t) * anim->num_joints);
-		anim->skelFrames[i].vertexArray = (md5_fvert_t *)
-			malloc(sizeof(md5_fvert_t) * anim->num_verts);
+		anim->skelFrames[i].vertexArray = (dmdx_vert_t *)
+			malloc(sizeof(dmdx_vert_t) * anim->num_verts);
 		memcpy(anim->skelFrames[i].skelJoints, anim->baseSkel,
 			sizeof(md5_joint_t) * anim->num_joints);
 	}
@@ -901,8 +895,8 @@ PrepareMeshVertex(const md5_mesh_t *mesh, const md5_joint_t *skeleton,
 	}
 }
 
-static void
-PrepareFrameVertex(md5_frame_t *frame_in, int num_verts, daliasxframe_t *frame_out)
+void
+PrepareFrameVertex(dmdx_vert_t *vertexArray, int num_verts, daliasxframe_t *frame_out)
 {
 	int i;
 	vec3_t mins, maxs;
@@ -921,14 +915,14 @@ PrepareFrameVertex(md5_frame_t *frame_in, int num_verts, daliasxframe_t *frame_o
 
 		for (j = 0; j < 3; j++)
 		{
-			if (mins[j] > frame_in->vertexArray[i].xyz[j])
+			if (mins[j] > vertexArray[i].xyz[j])
 			{
-				mins[j] = frame_in->vertexArray[i].xyz[j];
+				mins[j] = vertexArray[i].xyz[j];
 			}
 
-			if (maxs[j] < frame_in->vertexArray[i].xyz[j])
+			if (maxs[j] < vertexArray[i].xyz[j])
 			{
-				maxs[j] = frame_in->vertexArray[i].xyz[j];
+				maxs[j] = vertexArray[i].xyz[j];
 			}
 		}
 	}
@@ -946,11 +940,11 @@ PrepareFrameVertex(md5_frame_t *frame_in, int num_verts, daliasxframe_t *frame_o
 		for (j = 0; j < 3; j++)
 		{
 			frame_out->verts[i].v[j] = (
-				frame_in->vertexArray[i].xyz[j] - frame_out->translate[j]
+				vertexArray[i].xyz[j] - frame_out->translate[j]
 			) / frame_out->scale[j];
 
 			frame_out->verts[i].lightnormalindex =
-				R_CompressNormalMDL(frame_in->vertexArray[i].norm);
+				R_CompressNormalMDL(vertexArray[i].norm);
 		}
 	}
 }
@@ -982,7 +976,7 @@ MD5_ComputeNormals(md5_model_t *md5file)
 
 	for(i = 0; i < md5file->num_frames; ++i)
 	{
-		md5_frame_t *frame_in;
+		const md5_frame_t *frame_in;
 		int k, vert_step = 0;
 
 		frame_in = md5file->skelFrames + i;
@@ -993,7 +987,7 @@ MD5_ComputeNormals(md5_model_t *md5file)
 
 			for (j = 0; j < md5file->meshes[k].num_tris; ++j)
 			{
-				md5_fvert_t *v0, *v1, *v2;
+				dmdx_vert_t *v0, *v1, *v2;
 				vec3_t d1, d2, norm;
 
 				v0 = frame_in->vertexArray + md5file->meshes[k].triangles[j].index[0] + vert_step;
@@ -1039,7 +1033,16 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
 	int mesh_size, anim_size;
 	md5_model_t *md5file;
 	void *extradata = NULL;
-	byte *startbuffer, *endbuffer;
+	const byte *endbuffer;
+	byte *startbuffer;
+	int i, num_verts = 0, num_tris = 0, num_glcmds = 0;
+	int framesize, ofs_skins, ofs_frames, ofs_glcmds, ofs_meshes, ofs_tris, ofs_st, ofs_end;
+	dmdx_t *pheader = NULL;
+	const int *baseglcmds;
+	int *pglcmds;
+	dmdxmesh_t *mesh_nodes;
+	dtriangle_t *tris;
+	dstvert_t *st;
 
 	startbuffer = (byte*) buffer;
 	endbuffer = startbuffer + modfilelen;
@@ -1063,9 +1066,9 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
 		return NULL;
 	}
 
-	if (md5file && anim_size > 0)
+	if (anim_size > 0)
 	{
-		ReadMD5Anim(md5file, buffer + mesh_size + 1, anim_size);
+		ReadMD5Anim(md5file, (char*)buffer + mesh_size + 1, anim_size);
 	}
 
 	if (!md5file->num_frames)
@@ -1081,8 +1084,6 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
 		memcpy(md5file->skelFrames[0].skelJoints, md5file->baseSkel,
 			sizeof(md5_joint_t) * md5file->num_joints);
 	}
-
-	int i, num_verts = 0, num_tris = 0, num_glcmds = 0;
 
 	for (i = 0; i < md5file->num_meshes; ++i)
 	{
@@ -1108,16 +1109,14 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
 
 	MD5_ComputeNormals(md5file);
 
-	int framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_verts;
-	int ofs_skins = sizeof(dmdx_t);
-	int ofs_frames = ofs_skins + md5file->num_skins * MAX_SKINNAME;
-	int ofs_glcmds = ofs_frames + framesize * md5file->num_frames;
-	int ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
-	int ofs_tris = ofs_meshes + md5file->num_tris * sizeof(dtriangle_t);
-	int ofs_st = ofs_tris + md5file->num_tris * 3 * sizeof(dmdxmesh_t);
-	int ofs_end = ofs_st + md5file->num_tris * 3 * sizeof(dstvert_t);
-
-	dmdx_t *pheader = NULL;
+	framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_verts;
+	ofs_skins = sizeof(dmdx_t);
+	ofs_frames = ofs_skins + md5file->num_skins * MAX_SKINNAME;
+	ofs_glcmds = ofs_frames + framesize * md5file->num_frames;
+	ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
+	ofs_tris = ofs_meshes + md5file->num_meshes * sizeof(dmdxmesh_t);
+	ofs_st = ofs_tris + md5file->num_tris * 3 * sizeof(dtriangle_t);
+	ofs_end = ofs_st + md5file->num_tris * 3 * sizeof(dstvert_t);
 
 	*numskins = md5file->num_skins;
 	extradata = Hunk_Begin(ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
@@ -1147,16 +1146,16 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
 		daliasxframe_t *frame = (daliasxframe_t *)(
 			(byte *)pheader + pheader->ofs_frames + i * pheader->framesize);
 		snprintf(frame->name, 15, "%d", i);
-		PrepareFrameVertex(md5file->skelFrames + i, num_verts, frame);
+		PrepareFrameVertex((md5file->skelFrames + i)->vertexArray,
+			num_verts, frame);
 	}
 
 	num_tris = 0;
-	int *pglcmds, *baseglcmds;
 
-	pglcmds = baseglcmds = (int *)((byte *)pheader + pheader->ofs_glcmds);
-	dmdxmesh_t *mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
-	dtriangle_t *tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
-	dstvert_t *st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
+	baseglcmds = pglcmds = (int *)((byte *)pheader + pheader->ofs_glcmds);
+	mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
+	tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
+	st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
 
 	for(i = 0; i < pheader->num_st; i ++)
 	{
@@ -1214,11 +1213,9 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
 			__func__, mod_name, i, skin);
 	}
 
-	if (md5file)
-	{
-		FreeModelMd5(md5file);
-		free(md5file);
-	}
+
+	FreeModelMd5(md5file);
+	free(md5file);
 
 	*type = mod_alias;
 

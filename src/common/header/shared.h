@@ -283,7 +283,7 @@ void AngleVectors2(const vec3_t value1, vec3_t angles);
 int BoxOnPlaneSide(const vec3_t emins, const vec3_t emaxs, const struct cplane_s *plane);
 float anglemod(float a);
 float Q_fabs(float f);
-float LerpAngle(float a1, float a2, float frac);
+float LerpAngle(float a2, float a1, float frac);
 int BoxOnPlaneSide2(const vec3_t emins, const vec3_t emaxs, const struct cplane_s *p);
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p) \
@@ -343,6 +343,9 @@ int Q_strlcat(char *dst, const char *src, int size);
 
 /* Unicode wrappers that also make sure it's a regular file around fopen(). */
 FILE *Q_fopen(const char *file, const char *mode);
+
+/* Comparator function for qsort(), compares case-insensitive strings. */
+int Q_sort_stricmp(const void *s1, const void *s2);
 
 /* Comparator function for qsort(), compares strings. */
 int Q_sort_strcomp(const void *s1, const void *s2);

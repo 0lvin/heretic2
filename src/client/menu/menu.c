@@ -5587,9 +5587,11 @@ HasSkinsInDir(const char *dirname, int *num)
 {
 	char **list_png, **list_pcx, **list_m8;
 	char **curr = NULL, **list = NULL;
-	int num_png, num_pcx, num_m8;
+	int num_png, num_pcx, num_m8, dirname_size;
 
 	*num = 0;
+	/* dir name size plus one for skip slash */
+	dirname_size = strlen(dirname) + 1;
 
 	list_png = HasSkinInDir(dirname, "png", &num_png);
 	if (list_png)
@@ -5620,7 +5622,7 @@ HasSkinsInDir(const char *dirname, int *num)
 
 			for (j = 0; j < num_png; j ++)
 			{
-				if (list_png[j])
+				if (list_png[j] && !strchr(list_png[j] + dirname_size, '/'))
 				{
 					*curr = list_png[j];
 					curr++;
@@ -5636,7 +5638,7 @@ HasSkinsInDir(const char *dirname, int *num)
 
 			for (j = 0; j < num_pcx; j ++)
 			{
-				if (list_pcx[j])
+				if (list_pcx[j] && !strchr(list_pcx[j] + dirname_size, '/'))
 				{
 					*curr = list_pcx[j];
 					curr++;
@@ -5652,7 +5654,7 @@ HasSkinsInDir(const char *dirname, int *num)
 
 			for (j = 0; j < num_m8; j ++)
 			{
-				if (list_m8[j])
+				if (list_m8[j] && !strchr(list_m8[j] + dirname_size, '/'))
 				{
 					*curr = list_m8[j];
 					curr++;
@@ -5708,6 +5710,7 @@ PlayerModelList(void)
 		if (ContainsFile(s, "tris.fm") == false &&
 			ContainsFile(s, "tris.dkm") == false &&
 			ContainsFile(s, "tris.md2") == false &&
+			ContainsFile(s, "tris.md3") == false &&
 			ContainsFile(s, "tris.md5mesh") == false &&
 			ContainsFile(s, "tris.mdl") == false)
 		{
@@ -5794,7 +5797,7 @@ PlayerModelList(void)
 		}
 
 		/* sort skin names alphabetically */
-		qsort(s_skinnames[mdl].data, s_skinnames[mdl].num, sizeof(char**), Q_sort_strcomp);
+		qsort(s_skinnames[mdl].data, s_skinnames[mdl].num, sizeof(char**), Q_sort_stricmp);
 
 		/* at this point we have a valid player model */
 		s = (char*)malloc(MAX_DISPLAYNAME);

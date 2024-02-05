@@ -56,7 +56,7 @@ Mod_NumberLeafs(mleaf_t *leafs, mnode_t *node, int *r_leaftovis, int *r_vistolea
 {
 	if (node->contents != CONTENTS_NODE)
 	{
-		mleaf_t *leaf;
+		const mleaf_t *leaf;
 		int leafnum;
 
 		leaf = (mleaf_t *)node;
@@ -324,7 +324,8 @@ Mod_LoadLighting(byte **lightdata, int *size, const byte *mod_base, const lump_t
 }
 
 void
-Mod_LoadSetSurfaceLighting(byte *lightdata, int size, msurface_t *out, byte *styles, int lightofs)
+Mod_LoadSetSurfaceLighting(byte *lightdata, int size, msurface_t *out,
+	const byte *styles, int lightofs)
 {
 	int i;
 
@@ -349,13 +350,12 @@ Mod_LoadSetSurfaceLighting(byte *lightdata, int size, msurface_t *out, byte *sty
  * Fills in s->texturemins[] and s->extents[]
  */
 void
-Mod_CalcSurfaceExtents(int *surfedges, mvertex_t *vertexes, medge_t *edges,
+Mod_CalcSurfaceExtents(const int *surfedges, mvertex_t *vertexes, medge_t *edges,
 	msurface_t *s)
 {
-	float mins[2], maxs[2], val;
-	int i;
+	double mins[2], maxs[2];
 	mtexinfo_t *tex;
-	int bmins[2], bmaxs[2];
+	int i;
 
 	mins[0] = mins[1] = 999999;
 	maxs[0] = maxs[1] = -99999;
@@ -380,10 +380,12 @@ Mod_CalcSurfaceExtents(int *surfedges, mvertex_t *vertexes, medge_t *edges,
 
 		for (j = 0; j < 2; j++)
 		{
-			val = v->position[0] * tex->vecs[j][0] +
-				  v->position[1] * tex->vecs[j][1] +
-				  v->position[2] * tex->vecs[j][2] +
-				  tex->vecs[j][3];
+			float val;
+
+			val = (double)v->position[0] * tex->vecs[j][0] +
+				  (double)v->position[1] * tex->vecs[j][1] +
+				  (double)v->position[2] * tex->vecs[j][2] +
+				  (double)tex->vecs[j][3];
 
 			if (val < mins[j])
 			{
@@ -399,6 +401,8 @@ Mod_CalcSurfaceExtents(int *surfedges, mvertex_t *vertexes, medge_t *edges,
 
 	for (i = 0; i < 2; i++)
 	{
+		int bmins[2], bmaxs[2];
+
 		bmins[i] = floor(mins[i] / (1 << s->lmshift));
 		bmaxs[i] = ceil(maxs[i] / (1 << s->lmshift));
 
@@ -585,8 +589,9 @@ void
 Mod_LoadSurfedges(const char *name, int **surfedges, int *numsurfedges,
 	const byte *mod_base, const lump_t *l)
 {
-	int		i, count;
-	int		*in, *out;
+	const int *in;
+	int i, count;
+	int *out;
 
 	in = (void *)(mod_base + l->fileofs);
 
@@ -737,10 +742,12 @@ Mod_LoadBSPX(int filesize, const byte *mod_base)
 int
 Mod_LoadBSPXDecoupledLM(const dlminfo_t* lminfos, int surfnum, msurface_t *out)
 {
+	int lmwidth, lmheight, i;
 	const dlminfo_t *lminfo;
-	unsigned short lmwidth, lmheight;
+	float v0, v1;
 
-	if (lminfos == NULL) {
+	if (lminfos == NULL)
+	{
 		return -1;
 	}
 
@@ -753,8 +760,12 @@ Mod_LoadBSPXDecoupledLM(const dlminfo_t* lminfos, int surfnum, msurface_t *out)
 		return -1;
 	}
 
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 4; j++) {
+	for (i = 0; i < 2; i++)
+	{
+		int j;
+
+		for (j = 0; j < 4; j++)
+		{
 			out->lmvecs[i][j] = LittleFloat(lminfo->vecs[i][j]);
 		}
 	}
@@ -765,10 +776,10 @@ Mod_LoadBSPXDecoupledLM(const dlminfo_t* lminfos, int surfnum, msurface_t *out)
 	out->texturemins[0] = 0;
 	out->texturemins[1] = 0;
 
-	float v0 = VectorLength(out->lmvecs[0]);
+	v0 = VectorLength(out->lmvecs[0]);
 	out->lmvlen[0] = v0 > 0.0f ? 1.0f / v0 : 0.0f;
 
-	float v1 = VectorLength(out->lmvecs[1]);
+	v1 = VectorLength(out->lmvecs[1]);
 	out->lmvlen[1] = v1 > 0.0f ? 1.0f / v1 : 0.0f;
 
 	return LittleLong(lminfo->lightofs);
@@ -779,7 +790,7 @@ Mod_LoadMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned int 
 	msurface_t *surfaces, int numsurfaces, const byte *mod_base, const lump_t *l)
 {
 	int i, count;
-	short *in;
+	const short *in;
 	msurface_t **out;
 
 	in = (void *)(mod_base + l->fileofs);
@@ -817,7 +828,7 @@ Mod_LoadQMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned int
 	msurface_t *surfaces, int numsurfaces, const byte *mod_base, const lump_t *l)
 {
 	int i, count;
-	int *in;
+	const int *in;
 	msurface_t **out;
 
 	in = (void *)(mod_base + l->fileofs);
