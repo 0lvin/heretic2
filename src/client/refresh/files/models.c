@@ -76,6 +76,51 @@ Mod_LoadCmdList(const char *mod_name, dmdx_t *pheader, const int *pincmd)
 }
 
 /*
+ * verts as bytes
+ */
+static void
+Mod_LoadFrames_VertMD2(dxtrivertx_t *vert, const byte *in)
+{
+	int k;
+
+	for (k=0; k < 3; k++)
+	{
+		vert->v[k] = in[k] * 0xFF;
+	}
+}
+
+/*
+ * verts as compressed int
+ */
+static void
+Mod_LoadFrames_VertDKM2(dxtrivertx_t *vert, int in)
+{
+	unsigned xyz;
+
+	xyz = LittleLong(in) & 0xFFFFFFFF;
+	vert->v[0] = ((xyz & 0xFFE00000) >> 21) & 0x7FF;
+	vert->v[0] *= ((float)0xFFFF / 0x7FF);
+	vert->v[1] = ((xyz & 0x1FF800) >> 11) & 0x3FF;
+	vert->v[1] *= ((float)0xFFFF / 0x3FF);
+	vert->v[2] = xyz & 0x7FF;
+	vert->v[2] *= ((float)0xFFFF / 0x7FF);
+}
+
+/*
+ * verts as short
+ */
+static void
+Mod_LoadFrames_VertAnox(dxtrivertx_t *vert, const short *in)
+{
+	int k;
+
+	for (k=0; k < 3; k++)
+	{
+		vert->v[k] = LittleShort(in[k]);
+	}
+}
+
+/*
 =================
 Mod_LoadFrames
 
@@ -98,7 +143,7 @@ Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t transl
 			+ pheader->ofs_frames + i * pheader->framesize);
 
 		memcpy(poutframe->name, pinframe->name, sizeof(poutframe->name));
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			poutframe->scale[j] = LittleFloat(pinframe->scale[j]) / 0xFF;
 			poutframe->translate[j] = LittleFloat(pinframe->translate[j]);
@@ -107,14 +152,106 @@ Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t transl
 		// verts are all 8 bit, so no swapping needed
 		for (j=0; j < pheader->num_xyz; j ++)
 		{
-			int k;
-
-			for (k=0; k < 3; k++)
-			{
-				poutframe->verts[j].v[k] = pinframe->verts[j].v[k] * 0xFF;
-			}
-
+			Mod_LoadFrames_VertMD2(poutframe->verts + j, pinframe->verts[j].v);
 			poutframe->verts[j].lightnormalindex = pinframe->verts[j].lightnormalindex;
+		}
+	}
+}
+
+/*
+=================
+Mod_LoadFrames_MD2Anox
+
+Load the Anachronox md2 format frame
+=================
+*/
+static void
+Mod_LoadFrames_MD2Anox(dmdx_t *pheader, byte *src, size_t inframesize,
+	vec3_t translate, int resolution)
+{
+	int i;
+
+	for (i = 0; i < pheader->num_frames; i++)
+	{
+		daliasframe_t *pinframe;
+		daliasxframe_t *poutframe;
+		byte *inverts;
+		int j;
+
+		pinframe = (daliasframe_t *) (src + i * inframesize);
+		poutframe = (daliasxframe_t *) ((byte *)pheader
+			+ pheader->ofs_frames + i * pheader->framesize);
+
+		memcpy(poutframe->name, pinframe->name, sizeof(poutframe->name));
+		for (j = 0; j < 3; j++)
+		{
+			poutframe->scale[j] = LittleFloat(pinframe->scale[j]);
+			poutframe->translate[j] = LittleFloat(pinframe->translate[j]);
+			poutframe->translate[j] += translate[j];
+		}
+
+		inverts = (byte*)pinframe->verts;
+		switch(resolution)
+		{
+			case 0:
+				/* Code will multiply vertex values by 255 */
+				for (j = 0; j < 3; j++)
+				{
+					poutframe->scale[j] /= 0xFF;
+				}
+
+				/* verts are all 8 bit, so no swapping needed */
+				for (j=0; j < pheader->num_xyz; j ++)
+				{
+					Mod_LoadFrames_VertMD2(poutframe->verts + j, inverts);
+					/* 3 bytes vert + 2 bytes */
+					inverts += 5;
+					/* norm convert logic is unknown */
+					poutframe->verts[j].lightnormalindex = 0;
+				}
+				break;
+
+			case 1:
+				/* Code will multiply vertex for normilize */
+				poutframe->scale[0] *= (0x7FF / (float)0xFFFF);
+				poutframe->scale[1] *= (0x3FF / (float)0xFFFF);
+				poutframe->scale[2] *= (0x7FF / (float)0xFFFF);
+
+				/* verts are 32 bit and swap are inside vonvert code*/
+				for (j=0; j < pheader->num_xyz; j ++)
+				{
+					short tmp;
+
+					Mod_LoadFrames_VertDKM2(poutframe->verts + j, *((int *)inverts));
+
+					/* int vert + 2 bytes */
+					inverts += 6;
+
+					/* DKM2 has opposite vert list in packed format */
+					tmp = poutframe->verts[j].v[0];
+					poutframe->verts[j].v[0] = poutframe->verts[j].v[2];
+					poutframe->verts[j].v[2] = tmp;
+
+					/* norm convert logic is unknown */
+					poutframe->verts[j].lightnormalindex = 0;
+				}
+				break;
+
+			case 2:
+				/* verts are all short, swapped inside func */
+				for (j=0; j < pheader->num_xyz; j ++)
+				{
+					Mod_LoadFrames_VertAnox(poutframe->verts + j, (short*)inverts);
+					/* 6 bytes vert + 2 bytes */
+					inverts += 8;
+					/* norm convert logic is unknown */
+					poutframe->verts[j].lightnormalindex = 0;
+				}
+				break;
+
+			default:
+				/* should never happen */
+				break;
 		}
 	}
 }
@@ -134,11 +271,11 @@ Mod_LoadDTriangleList(dmdx_t *pheader, const dtriangle_t *pintri)
 
 	pouttri = (dtriangle_t *) ((byte *)pheader + pheader->ofs_tris);
 
-	for (i=0 ; i<pheader->num_tris ; i++)
+	for (i = 0; i < pheader->num_tris; i++)
 	{
 		int j;
 
-		for (j=0 ; j<3 ; j++)
+		for (j = 0; j < 3; j++)
 		{
 			pouttri[i].index_xyz[j] = LittleShort(pintri[i].index_xyz[j]);
 			pouttri[i].index_st[j] = LittleShort(pintri[i].index_st[j]);
@@ -272,15 +409,7 @@ Mod_LoadFrames_DKM2(dmdx_t *pheader, const byte *src, size_t inframesize, vec3_t
 		/* dkm vert version 2 has unalligned by int size struct */
 		for(j=0; j < pheader->num_xyz; j++)
 		{
-			int xyz;
-
-			xyz = LittleLong(*((int *)inverts));
-			outverts[j].v[0] = ((xyz & 0xFFE00000) >> 21) & 0x7FF;
-			outverts[j].v[0] *= ((float)0xFFFF / 0x7FF);
-			outverts[j].v[1] = ((xyz & 0x1FF800) >> 11) & 0x3FF;
-			outverts[j].v[1] *= ((float)0xFFFF / 0x3FF);
-			outverts[j].v[2] = xyz & 0x7FF;
-			outverts[j].v[2] *= ((float)0xFFFF / 0x7FF);
+			Mod_LoadFrames_VertDKM2(outverts + j, *((int *)inverts));
 			inverts += sizeof(int);
 			outverts[j].lightnormalindex = *inverts;
 			inverts ++;
@@ -376,7 +505,6 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 	{
 		R_Printf(PRINT_ALL, "%s: model %s has too many vertices",
 				__func__, mod_name);
-		return NULL;
 	}
 
 	if (num_tris <= 0)
@@ -496,7 +624,7 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 			{
 				int j;
 
-				for (j=0 ; j<3 ; j++)
+				for (j = 0; j < 3; j++)
 				{
 					pouttri[i].index_xyz[j] = LittleLong(triangles[i].vertex[j]);
 					pouttri[i].index_st[j] = pouttri[i].index_xyz[j];
@@ -554,11 +682,10 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 		/* register all frames */
 		for (i = 0; i < num_frames; ++i)
 		{
+			int frame_type, j, frames_skip;
 			daliasframe_t *frame;
-			int frame_type, j;
 			dxtrivertx_t* poutvertx;
 			dtrivertx_t *pinvertx;
-
 
 			frame = (daliasframe_t *) ((byte *)pheader + ofs_frames + i * framesize);
 			frame->scale[0] = LittleFloat(pinmodel->scale[0]) / 0xFF;
@@ -574,14 +701,28 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 			/* 0 = simple, !0 = group */
 			/* this program can't read models composed of group frames! */
 			frame_type = LittleLong(((int *)curr_pos)[0]);
-			curr_pos += sizeof(frame_type);
+			curr_pos += sizeof(int);
+
+			frames_skip = 1;
 
 			if (frame_type)
 			{
-				R_Printf(PRINT_ALL, "%s: model %s has unsupported frame type %d",
-						__func__, mod_name, frame_type);
-				return NULL;
+				frames_skip = LittleLong(((int *)curr_pos)[0]);
+				/* skip count of frames */
+				curr_pos += sizeof(int);
+				/* skip bboxmin, bouding box min */
+				curr_pos += sizeof(dtrivertx_t);
+				/* skip bboxmax, bouding box max */
+				curr_pos += sizeof(dtrivertx_t);
+
+				/* skip intervals */
+				curr_pos += frames_skip * sizeof(float);
+
+				R_Printf(PRINT_DEVELOPER,
+					"%s: model %s have used first one of %d subframes\n",
+					__func__, mod_name, frames_skip);
 			}
+
 			/* skip bboxmin, bouding box min */
 			curr_pos += sizeof(dtrivertx_t);
 			/* skip bboxmax, bouding box max */
@@ -595,16 +736,20 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 			// verts are all 8 bit, so no swapping needed
 			for (j=0; j < num_xyz; j ++)
 			{
-				int k;
-
-				for (k=0; k < 3; k++)
-				{
-					poutvertx[j].v[k] = pinvertx[j].v[k] * 0xFF;
-				}
-
+				Mod_LoadFrames_VertMD2(poutvertx + j, pinvertx[j].v);
 				poutvertx[j].lightnormalindex = pinvertx[j].lightnormalindex;
 			}
 			curr_pos += sizeof(dtrivertx_t) * num_xyz;
+
+			/* next frames in frame group is unsupported */
+			curr_pos += (frames_skip - 1) * (
+				/* bouding box */
+				sizeof(dtrivertx_t) * 2 +
+				/* name */
+				16 +
+				/* verts */
+				sizeof(dtrivertx_t) * num_xyz
+			);
 		}
 	}
 
@@ -672,11 +817,11 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	}
 
 	int num_xyz = 0, num_tris = 0, num_glcmds = 0, num_skins = 0;
+	int meshofs = pinmodel.ofs_meshes;
 
-	byte * meshofs = (byte*)buffer + pinmodel.ofs_meshes;
 	for (i = 0; i < pinmodel.num_meshes; i++)
 	{
-		const md3_mesh_t *md3_mesh = (md3_mesh_t*)meshofs;
+		const md3_mesh_t *md3_mesh = (md3_mesh_t*)((byte*)buffer + meshofs);
 
 		num_xyz += LittleLong(md3_mesh->num_xyz);
 		num_tris += LittleLong(md3_mesh->num_tris);
@@ -737,17 +882,17 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	dmdx_vert_t * vertx = malloc(pinmodel.num_frames * pheader->num_xyz * sizeof(dmdx_vert_t));
 	char *skin = (char *)pheader + pheader->ofs_skins;
 
-	meshofs = (byte*)buffer + pinmodel.ofs_meshes;
+	meshofs = pinmodel.ofs_meshes;
 	for (i = 0; i < pinmodel.num_meshes; i++)
 	{
-		const md3_mesh_t *md3_mesh = (md3_mesh_t*)meshofs;
-		const float *fst = (const float*)(meshofs + md3_mesh->ofs_st);
+		const md3_mesh_t *md3_mesh = (md3_mesh_t*)((byte*)buffer + meshofs);
+		const float *fst = (const float*)((byte*)buffer + meshofs + md3_mesh->ofs_st);
 		int j;
 
 		/* load shaders */
 		for (j = 0; j < md3_mesh->num_shaders; j++)
 		{
-			const md3_shader_t *md3_shader = (md3_shader_t*)(meshofs + md3_mesh->ofs_shaders) + j;
+			const md3_shader_t *md3_shader = (md3_shader_t*)((byte*)buffer + meshofs + md3_mesh->ofs_shaders) + j;
 
 			strncpy(skin, md3_shader->name, MAX_SKINNAME - 1);
 			skin += MAX_SKINNAME;
@@ -760,7 +905,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		}
 
 		/* load triangles */
-		const int *p = (const int*)(meshofs + md3_mesh->ofs_tris);
+		const int *p = (const int*)((byte*)buffer + meshofs + md3_mesh->ofs_tris);
 
 		mesh_nodes[i].start = pglcmds - baseglcmds;
 
@@ -796,7 +941,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 
 		mesh_nodes[i].num = pglcmds - baseglcmds - mesh_nodes[i].start;
 
-		md3_vertex_t *md3_vertex = (md3_vertex_t*)(meshofs + md3_mesh->ofs_verts);
+		md3_vertex_t *md3_vertex = (md3_vertex_t*)((byte*)buffer + meshofs + md3_mesh->ofs_verts);
 		int k;
 
 		for (k = 0; k < pinmodel.num_frames; k ++)
@@ -843,6 +988,179 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	free(vertx);
 
 	Mod_LoadFixImages(mod_name, pheader, false);
+
+	*type = mod_alias;
+
+	return extradata;
+}
+
+/*
+=================
+Mod_LoadModel_MD2Anox
+
+ANACHRONOX Model
+=================
+*/
+static void *
+Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
+	struct image_s ***skins, int *numskins, modtype_t *type)
+{
+	vec3_t		translate = {0, 0, 0};
+	dmdla_t		pinmodel;
+	dmdx_t		*pheader;
+	dtriangle_t	*pintri;
+	dstvert_t	*pinst;
+	dmdxmesh_t *mesh_nodes;
+	int		*pincmd;
+	void	*extradata;
+	int		i;
+	int framesize, ofs_meshes, ofs_skins, ofs_st, ofs_tris, ofs_glcmds,
+		ofs_frames, ofs_end;
+
+	if (modfilelen < sizeof(pinmodel))
+	{
+		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be %ld)",
+				__func__, mod_name, modfilelen, sizeof(pinmodel));
+		return NULL;
+	}
+
+	for (i = 0; i < sizeof(pinmodel) / sizeof(int); i++)
+	{
+		((int *)&pinmodel)[i] = LittleLong(((int *)buffer)[i]);
+	}
+
+	if (pinmodel.version != ALIAS_ANACHRONOX_VERSION)
+	{
+		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)",
+				__func__, mod_name, pinmodel.version, ALIAS_ANACHRONOX_VERSION);
+		return NULL;
+	}
+
+	if (pinmodel.ofs_end < 0 || pinmodel.ofs_end > modfilelen)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s file size(%d) too small, should be %d",
+				__func__, mod_name, modfilelen, pinmodel.ofs_end);
+		return NULL;
+	}
+
+	if (pinmodel.num_skins < 0)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s file has incorrect skins count %d",
+				__func__, mod_name, pinmodel.num_skins);
+		return NULL;
+	}
+
+	if (pinmodel.resolution < 0 || pinmodel.resolution > 2)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s file has incorrect vert type %d",
+				__func__, mod_name, pinmodel.resolution);
+		return NULL;
+	}
+
+	if (pinmodel.num_xyz <= 0)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s has no vertices",
+				__func__, mod_name);
+		return NULL;
+	}
+
+	if (pinmodel.num_xyz > MAX_VERTS)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s has too many vertices",
+				__func__, mod_name);
+	}
+
+	if (pinmodel.num_st <= 0)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s has no st vertices",
+				__func__, mod_name);
+		return NULL;
+	}
+
+	if (pinmodel.num_tris <= 0)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s has no triangles",
+				__func__, mod_name);
+		return NULL;
+	}
+
+	if (pinmodel.num_frames <= 0)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s has no frames",
+				__func__, mod_name);
+		return NULL;
+	}
+
+	framesize = sizeof(daliasxframe_t) +
+		(pinmodel.num_xyz - 1) * sizeof(dxtrivertx_t);
+	ofs_meshes = sizeof(*pheader); // just skip header and go
+	ofs_skins = ofs_meshes + 1 * sizeof(dmdxmesh_t);
+	ofs_st = ofs_skins + pinmodel.num_skins * MAX_SKINNAME;
+	ofs_tris = ofs_st + pinmodel.num_st * sizeof(dstvert_t);
+	ofs_glcmds = ofs_tris + pinmodel.num_tris * sizeof(dtriangle_t);
+	ofs_frames = ofs_glcmds + pinmodel.num_glcmds * sizeof(int);
+	ofs_end = ofs_frames + framesize * pinmodel.num_frames;
+
+	*numskins = pinmodel.num_skins;
+	extradata = Hunk_Begin(ofs_end +
+		Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
+	pheader = Hunk_Alloc(ofs_end);
+	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
+
+	/* Copy values as we have mostly same data format */
+	memset(pheader, 0, sizeof(*pheader));
+	pheader->skinwidth = pinmodel.skinwidth;
+	pheader->skinheight = pinmodel.skinheight;
+	pheader->framesize = framesize;
+
+	pheader->num_meshes = 1;
+	pheader->num_skins = pinmodel.num_skins;
+	pheader->num_xyz = pinmodel.num_xyz;
+	pheader->num_st = pinmodel.num_st;
+	pheader->num_tris = pinmodel.num_tris;
+	pheader->num_glcmds = pinmodel.num_glcmds;
+	pheader->num_frames = pinmodel.num_frames;
+
+	pheader->ofs_meshes = ofs_meshes;
+	pheader->ofs_skins = ofs_skins;
+	pheader->ofs_st = ofs_st;
+	pheader->ofs_tris = ofs_tris;
+	pheader->ofs_glcmds = ofs_glcmds;
+	pheader->ofs_frames = ofs_frames;
+	pheader->ofs_end = ofs_end;
+
+	/* create single mesh */
+	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
+	mesh_nodes[0].start = 0;
+	mesh_nodes[0].num = pheader->num_glcmds;
+
+	//
+	// load base s and t vertices (not used in gl version)
+	//
+	pinst = (dstvert_t *)((byte *)buffer + pinmodel.ofs_st);
+	Mod_LoadSTvertList(pheader, pinst);
+
+	//
+	// load triangle lists
+	//
+	pintri = (dtriangle_t *)((byte *)buffer + pinmodel.ofs_tris);
+	Mod_LoadDTriangleList(pheader, pintri);
+
+	//
+	// load the frames
+	//
+	Mod_LoadFrames_MD2Anox(pheader, (byte *)buffer + pinmodel.ofs_frames,
+		pinmodel.framesize, translate, pinmodel.resolution);
+
+	//
+	// load the glcmds
+	//
+	pincmd = (int *)((byte *)buffer + pinmodel.ofs_glcmds);
+	Mod_LoadCmdList(mod_name, pheader, pincmd);
+
+	// register all skins
+	memcpy((char *)pheader + pheader->ofs_skins, (char *)buffer + pinmodel.ofs_skins,
+		pheader->num_skins*MAX_SKINNAME);
 
 	*type = mod_alias;
 
@@ -964,7 +1282,6 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 	{
 		R_Printf(PRINT_ALL, "%s: model %s has too many vertices",
 				__func__, mod_name);
-		return NULL;
 	}
 
 	if (pheader->num_st <= 0)
@@ -1161,7 +1478,6 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 			{
 				R_Printf(PRINT_ALL, "%s: model %s has too many vertices",
 						__func__, mod_name);
-				return NULL;
 			}
 
 			if (dmdxheader.num_st <= 0)
@@ -1549,13 +1865,13 @@ Mod_LoadLimits(const char *mod_name, void *extradata, modtype_t type)
 
 		if (pheader->skinheight > MAX_LBM_HEIGHT)
 		{
-			R_Printf(PRINT_ALL, "%s: model %s has a skin taller %d than %d",
+			R_Printf(PRINT_ALL, "%s: model %s has a skin taller %d than %d\n",
 					__func__, mod_name, pheader->skinheight, MAX_LBM_HEIGHT);
 		}
 
 		if (pheader->skinwidth > MAX_LBM_HEIGHT)
 		{
-			R_Printf(PRINT_ALL, "%s: model %s has a skin wider %d than %d",
+			R_Printf(PRINT_ALL, "%s: model %s has a skin wider %d than %d\n",
 					__func__, mod_name, pheader->skinwidth, MAX_LBM_HEIGHT);
 		}
 
@@ -1652,7 +1968,8 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 {
 	void *extradata = NULL;
 
-	if (!buffer || modfilelen < sizeof(unsigned))
+	/* code needs at least 2 ints for detect file type */
+	if (!buffer || modfilelen < (sizeof(unsigned) * 2))
 	{
 		return NULL;
 	}
@@ -1670,8 +1987,22 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 			break;
 
 		case IDALIASHEADER:
-			extradata = Mod_LoadModel_MD2(mod_name, buffer, modfilelen,
-				skins, numskins, type);
+			{
+				/* next short after file type */
+				short version;
+
+				version = LittleShort(((short*)buffer)[2]);
+				if (version == ALIAS_ANACHRONOX_VERSION)
+				{
+					extradata = Mod_LoadModel_MD2Anox(mod_name, buffer, modfilelen,
+						skins, numskins, type);
+				}
+				else
+				{
+					extradata = Mod_LoadModel_MD2(mod_name, buffer, modfilelen,
+						skins, numskins, type);
+				}
+			}
 			break;
 
 		case IDMDLHEADER:
@@ -2015,12 +2346,12 @@ Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image, loadimage_t load
 			for (i = 0; i < pheader->num_skins; i++)
 			{
 				skins[i] = load_image(
-					(char *)pheader + pheader->ofs_skins + i*MAX_SKINNAME,
+					(char *)pheader + pheader->ofs_skins + i * MAX_SKINNAME,
 					images, pheader->skinwidth, pheader->skinwidth,
 					pheader->skinheight, pheader->skinheight,
 					pheader->skinheight * pheader->skinwidth,
 					it_skin, pheader->num_imgbit);
-				images += (pheader->skinheight * pheader->skinwidth * pheader->ofs_imgbit / 8);
+				images += (pheader->skinheight * pheader->skinwidth * pheader->num_imgbit / 8);
 			}
 		}
 		else

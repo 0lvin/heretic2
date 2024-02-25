@@ -34,14 +34,13 @@ static float r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
 #include "../constants/anormtab.h"
 };
 
-static vec4_t s_lerped[MAX_VERTS];
 vec3_t shadevector;
 float shadelight[3];
 float *shadedots = r_avertexnormal_dots[0];
 
 static void
 R_DrawAliasDrawCommands(entity_t *currententity, int *order, int *order_end,
-	float alpha, dxtrivertx_t *verts)
+	float alpha, dxtrivertx_t *verts, vec4_t *s_lerped)
 {
 #ifdef _MSC_VER // workaround for lack of VLAs (=> our workaround uses alloca() which is bad in loops)
 	int maxCount = 0;
@@ -175,7 +174,7 @@ R_DrawAliasDrawCommands(entity_t *currententity, int *order, int *order_end,
  */
 static void
 R_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp,
-	fmnodeinfo_t *nodeinfo)
+	vec4_t *s_lerped, fmnodeinfo_t *nodeinfo)
 {
 	daliasxframe_t *frame, *oldframe;
 	dxtrivertx_t *v, *ov, *verts;
@@ -254,7 +253,7 @@ R_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp,
 			order + mesh_nodes[i].start,
 			order + Q_min(paliashdr->num_glcmds,
 				mesh_nodes[i].start + mesh_nodes[i].num),
-			alpha, verts);
+			alpha, verts, s_lerped);
 	}
 
 	if (colorOnly)
@@ -265,7 +264,7 @@ R_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp,
 
 static void
 R_DrawAliasShadowCommand(entity_t *currententity, int *order, int *order_end,
-	float height, float lheight)
+	float height, float lheight, vec4_t *s_lerped)
 {
 	unsigned short total;
 	vec3_t point;
@@ -347,7 +346,8 @@ R_DrawAliasShadowCommand(entity_t *currententity, int *order, int *order_end,
 }
 
 static void
-R_DrawAliasShadow(entity_t *currententity, dmdx_t *paliashdr, int posenum)
+R_DrawAliasShadow(entity_t *currententity, dmdx_t *paliashdr, int posenum,
+	vec4_t *s_lerped)
 {
 	int *order, i, num_mesh_nodes;
 	float height = 0, lheight;
@@ -374,7 +374,7 @@ R_DrawAliasShadow(entity_t *currententity, dmdx_t *paliashdr, int posenum)
 			order + mesh_nodes[i].start,
 			order + Q_min(paliashdr->num_glcmds,
 				mesh_nodes[i].start + mesh_nodes[i].num),
-			height, lheight);
+			height, lheight, s_lerped);
 	}
 
 	/* stencilbuffer shadows */
@@ -423,6 +423,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	float an;
 	vec3_t bbox[8];
 	image_t *skin = NULL;
+	vec4_t *s_lerped;
 
 	if (!(currententity->flags & RF_WEAPONMODEL))
 	{
@@ -703,8 +704,11 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 		currententity->backlerp = 0;
 	}
 
+	/* buffer for scalled vert from frame */
+	s_lerped = R_VertBufferRealloc(paliashdr->num_xyz);
+
 	R_DrawAliasFrameLerp(currententity, paliashdr, currententity->backlerp,
-		currententity->fmnodeinfo);
+		s_lerped, currententity->fmnodeinfo);
 
 	R_TexEnv(GL_REPLACE);
 	glShadeModel(GL_FLAT);
@@ -760,7 +764,8 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 		glDisable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		glColor4f(0, 0, 0, 0.5f);
-		R_DrawAliasShadow(currententity, paliashdr, currententity->frame);
+		R_DrawAliasShadow(currententity, paliashdr, currententity->frame,
+			s_lerped);
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
 		glPopMatrix();

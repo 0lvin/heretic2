@@ -190,7 +190,7 @@ SV_Multicast(vec3_t origin, multicast_t to)
 
 		default:
 			mask = NULL;
-			Com_Error(ERR_FATAL, "SV_Multicast: bad to:%i", to);
+			Com_Error(ERR_FATAL, "%s: bad to:%i", __func__, to);
 	}
 
 	/* send the data to all relevent clients */
@@ -292,17 +292,17 @@ SV_StartSound(vec3_t origin, edict_t *entity, int channel, int soundindex,
 
 	if ((volume < 0) || (volume > 1.0))
 	{
-		Com_Error(ERR_FATAL, "SV_StartSound: volume = %f", volume);
+		Com_Error(ERR_FATAL, "%s: volume = %f", __func__, volume);
 	}
 
 	if ((attenuation < 0) || (attenuation > 4))
 	{
-		Com_Error(ERR_FATAL, "SV_StartSound: attenuation = %f", attenuation);
+		Com_Error(ERR_FATAL, "%s: attenuation = %f", __func__, attenuation);
 	}
 
 	if ((timeofs < 0) || (timeofs > 0.255))
 	{
-		Com_Error(ERR_FATAL, "SV_StartSound: timeofs = %f", timeofs);
+		Com_Error(ERR_FATAL, "%s: timeofs = %f", __func__, timeofs);
 	}
 
 	ent = NUM_FOR_EDICT(entity);
@@ -428,15 +428,72 @@ SV_StartSound(vec3_t origin, edict_t *entity, int channel, int soundindex,
 	}
 }
 
+static int msgbuff_size = 0;
+static byte *msgbuff_cache = NULL;
+
+static byte *
+SV_SendReallocBuffers(int *num)
+{
+	void *ptr;
+
+	if (*num < msgbuff_size)
+	{
+		*num = msgbuff_size;
+		return msgbuff_cache;
+	}
+
+	msgbuff_size = *num * 2;
+	ptr = realloc(msgbuff_cache, msgbuff_size);
+	if (!ptr)
+	{
+		Com_Error(ERR_FATAL, "%s: can't allocate memory", __func__);
+		return NULL;
+	}
+
+	msgbuff_cache = ptr;
+
+	Com_DPrintf("%s: Realloc send buffer: %d\n", __func__, msgbuff_size);
+
+	*num = msgbuff_size;
+	return msgbuff_cache;
+}
+
+void
+SV_SendInitBuffers(void)
+{
+	int size;
+
+	msgbuff_size = 0;
+	msgbuff_cache = NULL;
+	size = MAX_MSGLEN;
+
+	SV_SendReallocBuffers(&size);
+}
+
+void
+SV_SendFreeBuffers(void)
+{
+	if (msgbuff_cache)
+	{
+		free(msgbuff_cache);
+		msgbuff_cache = NULL;
+	}
+	msgbuff_size = 0;
+}
+
 static qboolean
 SV_SendClientDatagram(client_t *client)
 {
-	byte msg_buf[MAX_MSGLEN];
+	int msg_buf_size;
+	byte *msg_buf;
 	sizebuf_t msg;
+
+	msg_buf_size = MAX_MSGLEN;
+	msg_buf = SV_SendReallocBuffers(&msg_buf_size);
 
 	SV_BuildClientFrame(client);
 
-	SZ_Init(&msg, msg_buf, sizeof(msg_buf));
+	SZ_Init(&msg, msg_buf, msg_buf_size);
 	msg.allowoverflow = true;
 
 	/* send over all the relevant entity_state_t
@@ -474,7 +531,7 @@ SV_SendClientDatagram(client_t *client)
 	return true;
 }
 
-void
+static void
 SV_DemoCompleted(void)
 {
 	if (sv.demofile)
@@ -525,7 +582,7 @@ SV_SendClientMessages(void)
 	int i;
 	client_t *c;
 	int msglen;
-	byte msgbuf[MAX_MSGLEN];
+	byte *msgbuf = NULL;
 	size_t r;
 
 	msglen = 0;
@@ -539,6 +596,8 @@ SV_SendClientMessages(void)
 		}
 		else
 		{
+			int msg_buf_size;
+
 			/* get the next message */
 			r = FS_FRead(&msglen, 4, 1, sv.demofile);
 
@@ -550,16 +609,18 @@ SV_SendClientMessages(void)
 
 			msglen = LittleLong(msglen);
 
-			if (msglen == -1)
+			if (msglen < 0)
 			{
 				SV_DemoCompleted();
 				return;
 			}
 
+			msg_buf_size = Q_max(msglen, MAX_MSGLEN);
+			msgbuf = SV_SendReallocBuffers(&msg_buf_size);
+
 			if (msglen > MAX_MSGLEN)
 			{
-				Com_Error(ERR_DROP,
-						"%s: msglen > MAX_MSGLEN", __func__);
+				Com_Printf("%s: msglen %d > MAX_MSGLEN\n", __func__, msglen);
 			}
 
 			r = FS_FRead(msgbuf, msglen, 1, sv.demofile);

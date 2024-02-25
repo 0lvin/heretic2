@@ -61,6 +61,8 @@ Feel free to try this code but you mileage may vary.
 Have a look at the yquake2 repository for the "normal" Yamagi Quake II:
 https://github.com/yquake2/yquake2
 
+Alpha windows 64 bit [binaries](https://github.com/yquake2/yquake2remaster/releases).
+
 State:
  * GL1/GL3/GLES3/VK:
    * base1: no known issies
@@ -79,26 +81,52 @@ State:
    * mguhub: broken wall light, sometimes broken logic for surface fall in next maps
 
 Monsters:
-  * incorrect weapon effect for Shambler
-  * incorrect dead animation for Arachnoid
+  * incorrect dead animation for Arachnid
   * broken fire effect for Guardian
+
+Models support:
+
+| Format | Original Game   | Frame vertex | Comments                                          |
+| ------ | --------------- | ------------ | ------------------------------------------------- |
+| mdl    | Quake 1         | 8 bit        | could be issues with textures                     |
+| md2    | Quake 2         | 8 bit        | full support                                      |
+| md2    | Anachronox      | 8/10/16 bit  | incorrect normals, does no suport tagged surfaces |
+| fm     | Heretic 2       | 8 bit        | show all meshes,                                  |
+| dkm    | Daikatana DKM1  | 8 bit        | unchecked with game                               |
+| dkm    | Daikatana DKM2  | 10 bit       | unchecked with game, incorrect normals            |
+| md3    | Quake 3         | 16 bit       | show all meshes, no tags support, unchecked, slow |
+| md5    | Doom 3/Quake 4  | float        | requires md2 for skins, show all meshes, slow     |
+
+All models support only single texture for all meshes and only up to 255 frames.
+
+Texture supported
+
+| Format | Original Game  | Comments |
+| ------ | -------------- | -------- |
+| wal    | Quake 2        | 8 bit    |
+| wal    | Daikatana      | 8 bit    |
+| m8     | Heretic 2      | 8 bit    |
+| m32    | Heretic 2      | 24 bit   |
+| pcx    | Quake2         | 24 bit   |
+| tga    | Quake2         | 24 bit   |
+| png    | retexturing    | 24 bit   |
+| jpg    | retexturing    | 24 bit   |
+| bmp    | Daikatana      | 24 bit   |
 
 Goals (finished):
   * BSPX DECOUPLEDLM light map support (base1),
   * QBSP map format support (mguhub),
-  * RoQ and Theora cinematic videos support.
-  * FM/Heretic 2 model format support,
-  * Cinematic videos support in smk, mpeg, ogv format,
   * Use ffmpeg for load any video,
-  * MDL/Quake1 model format support,
-  * Daikatana model/wal/map format support,
-  * MD5 model support,
+  * RoQ and Theora cinematic videos support.
+  * Cinematic videos support in smk, mpeg, ogv format,
+  * Daikatana/Heretic map partial format support,
   * Add debug progress loading code for maps.
+
 
 Goals (none of it finished):
   * md5 improve load speed,
-  * md3 fix possible memory coruption,
   * Single player support,
+  * support surface flags for Daikatana, Heretic 2, Anachronox,
   * modified ReRelease game code support with removed KEX only related code.
 
 Bonus goals:
@@ -107,8 +135,8 @@ Bonus goals:
   * Use separete texture hi-color buffer for ui in soft render,
   * Convert map surface flag by game type,
   * Cleanup function declarations in game save code,
+  * Use 3 bytes vertex normal,
   * Support scalled textures for models and walls in soft render and fix
-
     lighting with remastered maps.
 
 Not a goal:

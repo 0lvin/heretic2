@@ -1660,6 +1660,7 @@ RI_Init(void)
 
 	R_SetDefaultState();
 
+	R_VertBufferInit();
 	R_InitImages();
 	Mod_Init();
 	R_InitParticleTexture();
@@ -1679,6 +1680,8 @@ RI_Shutdown(void)
 	Mod_FreeAll();
 
 	R_ShutdownImages();
+
+	R_VertBufferFree();
 
 	/* shutdown OS specific OpenGL stuff like contexts, etc.  */
 	RI_ShutdownContext();
