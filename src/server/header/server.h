@@ -144,6 +144,7 @@ typedef struct client_s
 	int challenge;                      /* challenge of this user, randomly generated */
 
 	netchan_t netchan;
+	int protocol;
 } client_t;
 
 typedef struct
@@ -217,6 +218,8 @@ void Master_Packet(void);
 
 void SV_InitGame(void);
 void SV_Map(qboolean attractloop, char *levelstring, qboolean loadgame, qboolean isautosave);
+void SV_SendInitBuffers(void);
+void SV_SendFreeBuffers(void);
 
 void SV_PrepWorldFrame(void);
 
@@ -226,7 +229,6 @@ extern char sv_outputbuf[SV_OUTPUTBUF_LENGTH];
 
 void SV_FlushRedirect(int sv_redirected, char *outputbuf);
 
-void SV_DemoCompleted(void);
 void SV_SendClientMessages(void);
 
 void SV_Multicast(vec3_t origin, multicast_t to);
@@ -241,7 +243,8 @@ void SV_Nextserver(void);
 void SV_ExecuteClientMessage(client_t *cl);
 
 void SV_ReadLevelFile(void);
-void SV_Status_f(void);
+char *SV_StatusString(void);
+void SV_ConnectionlessPacket(void);
 
 void SV_WriteFrameToClient(client_t *client, sizebuf_t *msg);
 void SV_RecordDemoMessage(void);

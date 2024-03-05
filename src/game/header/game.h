@@ -284,7 +284,7 @@ typedef struct
 #define SVF_ALERT_NO_SHADE		0x00080000	// only used by alert_entity to make monsters check the alert as a sound alert
 
 game_export_t *GetGameApi (game_import_t *import);
-#define Clamp(v, v_min, v_max) min(max((v), (v_min)), (v_max));
+#define Clamp(v, v_min, v_max) Q_min(Q_max((v), (v_min)), (v_max));
 
 typedef enum DoorSoundID_e
 {

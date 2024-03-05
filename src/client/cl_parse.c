@@ -29,12 +29,9 @@
 #include "../game/common/resourcemanager.h"
 #include "../game/header/client_effects.h"
 
-void CL_DownloadFileName(char *dest, int destlen, char *fn);
-void CL_ParseDownload(void);
+static int bitcounts[32]; /* just for protocol profiling */
 
-int bitcounts[32]; /* just for protocol profiling */
-
-char *svc_strings[256] = {
+static char *svc_strings[256] = {
 	"svc_bad",
 
 	"svc_muzzleflash",
@@ -165,24 +162,51 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 		}
 	}
 
-	if (bits & U_MODEL)
+	if ((cls.serverProtocol == PROTOCOL_RELEASE_VERSION) ||
+		(cls.serverProtocol == PROTOCOL_DEMO_VERSION) ||
+		(cls.serverProtocol == PROTOCOL_RR97_VERSION))
 	{
-		to->modelindex = MSG_ReadByte(&net_message);
-	}
+		if (bits & U_MODEL)
+		{
+			to->modelindex = MSG_ReadByte(&net_message);
+		}
 
-	if (bits & U_MODEL2)
-	{
-		to->modelindex2 = MSG_ReadByte(&net_message);
-	}
+		if (bits & U_MODEL2)
+		{
+			to->modelindex2 = MSG_ReadByte(&net_message);
+		}
 
-	if (bits & U_MODEL3)
-	{
-		to->modelindex3 = MSG_ReadByte(&net_message);
-	}
+		if (bits & U_MODEL3)
+		{
+			to->modelindex3 = MSG_ReadByte(&net_message);
+		}
 
-	if (bits & U_MODEL4)
+		if (bits & U_MODEL4)
+		{
+			to->modelindex4 = MSG_ReadByte(&net_message);
+		}
+	}
+	else
 	{
-		to->modelindex4 = MSG_ReadByte(&net_message);
+		if (bits & U_MODEL)
+		{
+			to->modelindex = MSG_ReadShort(&net_message);
+		}
+
+		if (bits & U_MODEL2)
+		{
+			to->modelindex2 = MSG_ReadShort(&net_message);
+		}
+
+		if (bits & U_MODEL3)
+		{
+			to->modelindex3 = MSG_ReadShort(&net_message);
+		}
+
+		if (bits & U_MODEL4)
+		{
+			to->modelindex4 = MSG_ReadShort(&net_message);
+		}
 	}
 
 	if (bits & U_FRAME8)
@@ -724,7 +748,7 @@ CL_ParseFrame(void)
 	cl.frame.servertime = cl.frame.serverframe * 100;
 
 	/* BIG HACK to let old demos continue to work */
-	if (cls.serverProtocol != 26)
+	if (cls.serverProtocol != PROTOCOL_RELEASE_VERSION)
 	{
 		cl.surpressCount = MSG_ReadByte(&net_message);
 	}
@@ -885,8 +909,39 @@ CL_ParseServerData(void)
 	cls.serverProtocol = i;
 
 	/* another demo hack */
-	if (Com_ServerState() && (PROTOCOL_VERSION == 34))
+	if (Com_ServerState() && (
+		(i == PROTOCOL_RELEASE_VERSION) ||
+		(i == PROTOCOL_DEMO_VERSION) ||
+		(i == PROTOCOL_RR97_VERSION) ||
+		(i == PROTOCOL_RR22_VERSION) ||
+		(i == PROTOCOL_RR23_VERSION) ||
+		(i == PROTOCOL_VERSION)))
 	{
+		Com_Printf("Network protocol: ");
+		switch (i)
+		{
+			case PROTOCOL_RELEASE_VERSION:
+				Com_Printf("Quake 2 Demo\n");
+				break;
+			case PROTOCOL_DEMO_VERSION:
+				Com_Printf("Quake 2 Release Demo\n");
+				break;
+			case PROTOCOL_RR97_VERSION:
+				Com_Printf("Quake 2\n");
+				break;
+			case PROTOCOL_RR22_VERSION:
+				Com_Printf("ReRelease Quake 2 Demo\n");
+				break;
+			case PROTOCOL_RR23_VERSION:
+				Com_Printf("ReRelease Quake 2\n");
+				break;
+			case PROTOCOL_VERSION:
+				Com_Printf("ReRelease Quake 2 Custom version\n");
+				break;
+			default:
+				Com_Printf("Unknown protocol version\n");
+				break;
+		};
 	}
 	else if (i != PROTOCOL_VERSION)
 	{
@@ -907,6 +962,7 @@ CL_ParseServerData(void)
 		(!*str && (fs_gamedirvar->string && !*fs_gamedirvar->string)))
 	{
 		Cvar_Set("game", str);
+		Cvar_Set("gametype", str);
 	}
 
 	/* parse player entity number */
@@ -1113,9 +1169,43 @@ CL_ParseConfigString(void)
 
 	i = MSG_ReadShort(&net_message);
 
+	if (cls.serverProtocol == PROTOCOL_RELEASE_VERSION ||
+		cls.serverProtocol == PROTOCOL_DEMO_VERSION ||
+		cls.serverProtocol == PROTOCOL_RR97_VERSION)
+	{
+		if (i >= CS_MODELS_Q2DEMO && i < CS_SOUNDS_Q2DEMO)
+		{
+			i += CS_MODELS - CS_MODELS_Q2DEMO;
+		}
+		else if (i >= CS_SOUNDS_Q2DEMO && i < CS_IMAGES_Q2DEMO)
+		{
+			i += CS_SOUNDS - CS_SOUNDS_Q2DEMO;
+		}
+		else if (i >= CS_IMAGES_Q2DEMO && i < CS_LIGHTS_Q2DEMO)
+		{
+			i += CS_IMAGES - CS_IMAGES_Q2DEMO;
+		}
+		else if (i >= CS_LIGHTS_Q2DEMO && i < CS_ITEMS_Q2DEMO)
+		{
+			i += CS_LIGHTS - CS_LIGHTS_Q2DEMO;
+		}
+		else if (i >= CS_ITEMS_Q2DEMO && i < CS_PLAYERSKINS_Q2DEMO)
+		{
+			i += CS_ITEMS - CS_ITEMS_Q2DEMO;
+		}
+		else if (i >= CS_PLAYERSKINS_Q2DEMO && i < CS_GENERAL_Q2DEMO)
+		{
+			i += CS_PLAYERSKINS - CS_PLAYERSKINS_Q2DEMO;
+		}
+		else if (i >= CS_GENERAL_Q2DEMO && i < MAX_CONFIGSTRINGS_Q2DEMO)
+		{
+			i += CS_GENERAL - CS_GENERAL_Q2DEMO;
+		}
+	}
+
 	if ((i < 0) || (i >= MAX_CONFIGSTRINGS))
 	{
-		Com_Error(ERR_DROP, "configstring > MAX_CONFIGSTRINGS");
+		Com_Error(ERR_DROP, "%s: configstring > MAX_CONFIGSTRINGS", __func__);
 	}
 
 	s = MSG_ReadString(&net_message);
@@ -1125,7 +1215,7 @@ CL_ParseConfigString(void)
 	length = strlen(s);
 	if (length > sizeof(cl.configstrings) - sizeof(cl.configstrings[0])*i - 1)
 	{
-		Com_Error(ERR_DROP, "CL_ParseConfigString: oversize configstring");
+		Com_Error(ERR_DROP, "%s: oversize configstring", __func__);
 	}
 
 	strcpy(cl.configstrings[i], s);
@@ -1161,7 +1251,7 @@ CL_ParseConfigString(void)
 			}
 		}
 	}
-	else if ((i >= CS_SOUNDS) && (i < CS_SOUNDS + MAX_MODELS))
+	else if ((i >= CS_SOUNDS) && (i < CS_SOUNDS + MAX_SOUNDS))
 	{
 		if (cl.refresh_prepped)
 		{
@@ -1169,7 +1259,7 @@ CL_ParseConfigString(void)
 				S_RegisterSound(cl.configstrings[i]);
 		}
 	}
-	else if ((i >= CS_IMAGES) && (i < CS_IMAGES + MAX_MODELS))
+	else if ((i >= CS_IMAGES) && (i < CS_IMAGES + MAX_IMAGES))
 	{
 		if (cl.refresh_prepped)
 		{

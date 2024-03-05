@@ -17,10 +17,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  * 02111-1307, USA.
  *
+ * =======================================================================
+ *
+ * Local header for the refresher.
+ *
+ * =======================================================================
  */
 
-#ifndef __R_LOCAL__
-#define __R_LOCAL__
+#ifndef REF_LOCAL_H
+#define REF_LOCAL_H
 
 #include <stdio.h>
 #include <ctype.h>
@@ -154,8 +159,6 @@ extern oldrefdef_t	r_refdef;
 
 #define XCENTERING	(1.0 / 2.0)
 #define YCENTERING	(1.0 / 2.0)
-
-#define BACKFACE_EPSILON	0.01
 
 #define NEAR_CLIP	0.01
 
@@ -311,6 +314,7 @@ extern affinetridesc_t	r_affinetridesc;
 
 void D_WarpScreen(void);
 void R_PolysetUpdateTables(void);
+void RE_SetSky(const char *name, float rotate, int autorotate, const vec3_t axis);
 
 //=======================================================================//
 
@@ -395,6 +399,7 @@ extern cvar_t	*sw_gunzposition;
 extern cvar_t	*r_validation;
 extern cvar_t	*r_retexturing;
 extern cvar_t	*r_scale8bittextures;
+extern cvar_t	*r_palettedtexture;
 
 extern cvar_t	*r_fullbright;
 extern cvar_t	*r_lefthand;
@@ -557,6 +562,8 @@ extern byte d_8to24table[256 * 4];
 void	R_InitImages(void);
 void	R_ShutdownImages(void);
 image_t	*R_FindImage(const char *name, imagetype_t type);
+image_t	*R_LoadPic(char *name, byte *pic, int width, int realwidth, int height, int realheight,
+	size_t data_size, imagetype_t type, int bits);
 byte	*Get_BestImageSize(const image_t *image, int *req_width, int *req_height);
 void	R_FreeUnusedImages(void);
 qboolean R_ImageHasFreeSpace(void);

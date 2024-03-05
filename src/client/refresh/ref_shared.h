@@ -86,18 +86,25 @@ typedef enum
 #define MAX_LBM_HEIGHT 480
 #define DEFAULT_NOLERP_LIST "pics/conchars.* pics/ch1.* pics/ch2. pics/ch3.*"
 #define DEFAULT_LMSHIFT 4
+#define BACKFACE_EPSILON	0.01
+
+#define MAX_MOD_KNOWN (MAX_MODELS * 2)
+#define MAX_TEXTURES (MAX_IMAGES * 4)
 
 extern void R_Printf(int level, const char* msg, ...) PRINTF_ATTR(2, 3);
 
 /* Shared images load */
 typedef struct image_s* (*loadimage_t)(const char *name, byte *pic, int width, int realwidth,
 	int height, int realheight, size_t data_size, imagetype_t type, int bits);
-extern struct image_s* LoadWal(const char *origname, imagetype_t type, loadimage_t load_image);
-extern struct image_s* LoadM8(const char *origname, imagetype_t type, loadimage_t load_image);
-extern struct image_s* LoadM32(const char *origname, imagetype_t type, loadimage_t load_image);
+extern struct image_s* LoadWal(const char *origname, const char *namewe, imagetype_t type,
+	loadimage_t load_image);
+extern struct image_s* LoadM8(const char *origname, const char *namewe, imagetype_t type,
+	loadimage_t load_image);
+extern struct image_s* LoadM32(const char *origname, const char *namewe, imagetype_t type,
+	loadimage_t load_image);
 extern void FixFileExt(const char *origname, const char *ext, char *filename, size_t size);
 extern void GetPCXPalette(byte **colormap, unsigned *d_8to24table);
-extern void GetPCXPalette24to8(byte *d_8to24table, byte** d_16to8table);
+extern void GetPCXPalette24to8(const byte *d_8to24table, byte** d_16to8table);
 extern void LoadPCX(const char *origname, byte **pic, byte **palette, int *width, int *height);
 extern void GetPCXInfo(const char *origname, int *width, int *height);
 extern void GetWalInfo(const char *name, int *width, int *height);
@@ -296,9 +303,9 @@ typedef struct bspxlgsamp_s
 
 typedef struct bspxlgleaf_s
 {
-		int mins[3];
-		int size[3];
-		bspxlgsamp_t *rgbvalues;
+	int mins[3];
+	int size[3];
+	bspxlgsamp_t *rgbvalues;
 } bspxlgleaf_t;
 
 typedef struct
@@ -318,18 +325,16 @@ typedef struct
 
 /* Shared models func */
 typedef struct image_s* (*findimage_t)(const char *name, imagetype_t type);
-extern void *Mod_LoadAliasModel (const char *mod_name, const void *buffer, int modfilelen,
-	vec3_t mins, vec3_t maxs, struct image_s **skins,
-	findimage_t find_image, modtype_t *type);
-extern void *Mod_LoadSP2 (const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s **skins, findimage_t find_image, modtype_t *type);
+extern void *Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
+	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,
+	findimage_t find_image, loadimage_t load_image, modtype_t *type);
 extern int Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image,
-	void *extradata, modtype_t type);
+	loadimage_t load_image, void *extradata, modtype_t type);
 extern struct image_s *GetSkyImage(const char *skyname, const char* surfname,
 	qboolean palettedtexture, findimage_t find_image);
 extern struct image_s *GetTexImage(const char *name, findimage_t find_image);
 extern struct image_s *R_FindPic(const char *name, findimage_t find_image);
-extern struct image_s* R_LoadImage(const char *name, const char* namewe, const char *ext,
+extern struct image_s *R_LoadImage(const char *name, const char* namewe, const char *ext,
 	imagetype_t type, qboolean r_retexturing, loadimage_t load_image);
 extern void Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces,
 	unsigned int *nummarksurfaces, msurface_t *surfaces, int numsurfaces,
@@ -345,9 +350,10 @@ extern void Mod_LoadQBSPEdges(const char *name, medge_t **edges, int *numedges,
 extern void Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,
 	const byte *mod_base, const lump_t *l);
 extern void Mod_LoadLighting(byte **lightdata, int *size, const byte *mod_base, const lump_t *l);
-extern void Mod_LoadSetSurfaceLighting(byte *lightdata, int size, msurface_t *out, byte *styles, int lightofs);
-extern void Mod_CalcSurfaceExtents(int *surfedges, mvertex_t *vertexes, medge_t *edges,
-	msurface_t *s);
+extern void Mod_LoadSetSurfaceLighting(byte *lightdata, int size, msurface_t *out,
+	const byte *styles, int lightofs);
+extern void Mod_CalcSurfaceExtents(const int *surfedges, mvertex_t *vertexes,
+	medge_t *edges, msurface_t *s);
 extern void Mod_LoadTexinfo(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
 	const byte *mod_base, const lump_t *l, findimage_t find_image,
 	struct image_s *notexture);
@@ -367,12 +373,24 @@ extern void R_PushDlights(refdef_t *r_newrefdef, mnode_t *nodes, int r_dlightfra
 	msurface_t *surfaces);
 extern struct image_s *R_TextureAnimation(const entity_t *currententity,
 	const mtexinfo_t *tex);
-extern qboolean R_AreaVisible(const byte *areabits, mleaf_t *pleaf);
-extern qboolean R_CullBox(vec3_t mins, vec3_t maxs, cplane_t *frustum);
+extern qboolean R_AreaVisible(const byte *areabits, const mleaf_t *pleaf);
+extern qboolean R_CullBox(vec3_t mins, vec3_t maxs, const cplane_t *frustum);
 extern void R_SetFrustum(vec3_t vup, vec3_t vpn, vec3_t vright, vec3_t r_origin,
 	float fov_x, float fov_y, cplane_t *frustum);
-extern void R_SubdivideSurface(int *surfedges, mvertex_t *vertexes, medge_t *edges,
+extern void R_SubdivideSurface(const int *surfedges, mvertex_t *vertexes, medge_t *edges,
 	msurface_t *fa);
+
+/* Mesh logic */
+extern qboolean R_CullAliasMeshModel(dmdx_t *paliashdr, cplane_t *frustum,
+	int frame, int oldframe, vec3_t e_angles, vec3_t e_origin, vec3_t bbox[8]);
+extern void R_LerpVerts(qboolean powerUpEffect, int nverts,
+		const dxtrivertx_t *v, const dxtrivertx_t *ov,
+		const dxtrivertx_t *verts, float *lerp, const float move[3],
+		const float frontv[3], const float backv[3]);
+extern byte R_CompressNormalMDL(const float *normal);
+extern vec4_t *R_VertBufferRealloc(int num);
+extern void R_VertBufferInit(void);
+extern void R_VertBufferFree(void);
 
 /* Lights logic */
 extern bspxlightgrid_t *Mod_LoadBSPXLightGrid(const bspx_header_t *bspx_header, const byte *mod_base);

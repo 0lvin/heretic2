@@ -1,3 +1,37 @@
+Quake 2 8.31RR5:
+- md3 models support,
+- initial md2 Anachronox models support,
+- add quake 1 monsters support: army, demon, dog, enforcer, fish, hknight,
+  knight, ogre, shalrath, tarbaby, wizard, zombie,
+- fix for Shambler weapon,
+- mdl model load fix for grouped frames,
+- fix optional embeded mpeg decoder,
+- initial cleanup game functions export list.
+
+Quake 2 8.31RR4:
+- remove modle skin count limit,
+- use short instead byte in frame verts
+- mdl improve support of embeded texture,
+- support more then 16k gl commends in models,
+- support md5 models,
+- fix player models select if players are packed to pak file.
+
+Quake 2 8.31RR3:
+- third person support,
+- update remasterd maps support in gl3/gl4 based renders,
+- uopdate cinama render code for soft render,
+- autobuild windows binaries on tag creation.
+
+Quake 2 8.31RR2:
+- Merge hud/players code with ctf code,
+- Support Shambler, Guardian monsters.
+
+Quake 2 8.21RR1:
+- Suport mdl/fm/dkm models,
+- Support ogv video by ffmpeg,
+- Start merge ctf, xatrix, rogue to baseq2 code
+- Support remastered maps in gl1/vk
+
 Quake II 8.20 to 8.30:
 - Use the same image loading code in all renderers. (by 0lvin)
 - Use the same model loading code in all renderers. (by 0lvin)
@@ -75,12 +109,11 @@ Quake II 8.01 to 8.10:
 - Greatly improved support for joysticks and controllers. Devices can
   now be hotplugged at runtime, binding should be portable between
   different controllers and there's a new menu for controller bindings.
-  (by Jaime Moreira)
+  (by protocultor)
 - Add the `r_2D_unfiltered` and `r_videos_unfiltered` cvars. When
   enabled 2D elements like the HUD and videos are not filtered, they
   appear pixeled.
-- Add 'prefweap' command to select weapon by priority. (by Jaime
-  Moreira)
+- Add 'prefweap' command to select weapon by priority. (by protocultor)
 - Support building with Microsoft Visual Studio 2015 and newer.
 - Several game code fixes, mostly for stuck mechanics in fact2. (by
   BjossiAlfreds and maraakate)
@@ -274,7 +307,7 @@ Quake II 7.10 to 7.20:
 - Rename several cvars to be consistent across different renderers.
   The configuration file will be converted at the first start, when an
   old cvar name is used a message is printed.
-- Make the client unicode compatible. Yamagi Quake II can now be 
+- Make the client unicode compatible. Yamagi Quake II can now be
   installed into paths with unicode characters in it. On Windows the
   user name of the current account may contain unicode characters.
   As a side effect the game can run on ReFS volumes. While '+set

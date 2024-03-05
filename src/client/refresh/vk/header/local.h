@@ -71,18 +71,13 @@ typedef struct image_s
 	qvktexture_t vk_texture;            /* Vulkan texture handle */
 } image_t;
 
-#define		MAX_VKTEXTURES	1024
-
 //===================================================================
 
 #include "model.h"
 
-#define BACKFACE_EPSILON	0.01
-
-
 //====================================================
 
-extern	image_t		vktextures[MAX_VKTEXTURES];
+extern	image_t		vktextures[MAX_TEXTURES];
 extern	int			numvktextures;
 
 extern	image_t		*r_notexture;
@@ -226,10 +221,10 @@ void	Vk_TextureMode( char *string );
 void	Vk_LmapTextureMode( char *string );
 void	Vk_ImageList_f (void);
 
-void Vk_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa);
-void Vk_CreateSurfaceLightmap (msurface_t *surf);
-void Vk_EndBuildingLightmaps (void);
-void Vk_BeginBuildingLightmaps (model_t *m);
+void LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa);
+void LM_CreateSurfaceLightmap (msurface_t *surf);
+void LM_EndBuildingLightmaps (void);
+void LM_BeginBuildingLightmaps (model_t *m);
 
 void	Vk_InitImages (void);
 void	Vk_ShutdownImages (void);

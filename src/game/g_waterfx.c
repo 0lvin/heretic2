@@ -44,7 +44,8 @@ void waterdrip_use (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-/*QUAKED env_water_drip (1 .5 0) (-4 -4 0) (4 4 4) YELLOW
+/*
+ * QUAKED env_water_drip (1 .5 0) (-4 -4 0) (4 4 4) YELLOW
 Spawns a drip of water which falls straight down
 ---- SPAWN FLAGS ------
 if YELLOW set.. uses a yellow drip
@@ -102,7 +103,8 @@ void fountain_use (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-/*QUAKED env_water_fountain (1 .5 0) (-4 -4 0) (4 4 4) RED GREEN BLUE DARK DARKER START_OFF
+/*
+ * QUAKED env_water_fountain (1 .5 0) (-4 -4 0) (4 4 4) RED GREEN BLUE DARK DARKER START_OFF
 -------SPAWN FLAGS--------
 START_OFF - fountain will be off until triggered
 
@@ -151,7 +153,8 @@ void SpawnDripper(edict_t *self, vec3_t offset)
 	gi.CreatePersistantEffect(NULL, FX_DRIPPER, 0, origin, "bb", self->count, 2);
 }
 
-/*QUAKED env_waterfall_base (1 1 0) (-8 -8 -8) (8 8 8)
+/*
+ * QUAKED env_waterfall_base (1 1 0) (-8 -8 -8) (8 8 8)
 angles - this first field is the x radius
          second is the yaw
 		 third is the y radius
@@ -175,7 +178,8 @@ void SP_env_waterfall_base(edict_t *self)
 
 }
 
-/*QUAKED obj_fishhead1 (1 .5 0) (0 -76 -86) (136 76 86)  NODRIP
+/*
+ * QUAKED obj_fishhead1 (1 .5 0) (0 -76 -86) (136 76 86)  NODRIP
  Large fish head fountain. No teeth in mouth and the fins on top are connected. Also spawns 4 drips frame 0
 -------  FIELDS  ------------------
 NODRIP - won't drip
@@ -210,7 +214,8 @@ void SP_obj_fishhead1 (edict_t *self)
 	ObjectInit(self,100,500,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_fishhead2 (1 .5 0) (0 -110 -118) (136 110 118) NODRIP
+/*
+ * QUAKED obj_fishhead2 (1 .5 0) (0 -110 -118) (136 110 118) NODRIP
 Large fish head fountain. The mouth has teeth. The fins on top are not conntected. Also spawns 4 drips frame 0
 -------  FIELDS  ------------------
 NODRIP - won't drip
@@ -256,7 +261,8 @@ void SP_obj_fishhead2 (edict_t *self)
 //	ObjectInit(self,100,500,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAK-ED obj_stalactite1 (1 .5 0) (-24 -24 -99) (24 24 99) DRIP  DARKSKIN
+/*
+ * QUAKED obj_stalactite1 (1 .5 0) (-24 -24 -99) (24 24 99) DRIP  DARKSKIN
 
 	A big long thick stalactite. These point down.
 
@@ -292,7 +298,8 @@ void SP_obj_stalactite1(edict_t *self)
 }
 
 
-/*QUAK-ED obj_stalactite2 (1 .5 0) (-60 -60 -64) (60 60 64)  DRIP  DARKSKIN
+/*
+ * QUAKED obj_stalactite2 (1 .5 0) (-60 -60 -64) (60 60 64)  DRIP  DARKSKIN
 
 	A big short stalactite. These point down.
 
@@ -327,7 +334,8 @@ void SP_obj_stalactite2(edict_t *self)
 	gi.linkentity(self);
 }
 
-/*QUAK-ED obj_stalactite3 (1 .5 0) (-23 -23 -98) (23 23 98)  DRIP  DARKSKIN
+/*
+ * QUAKED obj_stalactite3 (1 .5 0) (-23 -23 -98) (23 23 98)  DRIP  DARKSKIN
 
 	A long pointy stalactite. These point down.
 
@@ -362,7 +370,8 @@ void SP_obj_stalactite3(edict_t *self)
 	gi.linkentity(self);
 }
 
-/*QUAKED env_mist (1 .5 0) (-64 -1 -32) (64 1 32)
+/*
+ * QUAKED env_mist (1 .5 0) (-64 -1 -32) (64 1 32)
 scale sets the scale
 */
 void SP_env_mist(edict_t *self)
@@ -378,7 +387,8 @@ void SP_env_mist(edict_t *self)
 	gi.linkentity(self);
 }
 
-/*QUAKED env_bubbler (1 .5 0) (-4 -4 0) (4 4 4)
+/*
+ * QUAKED env_bubbler (1 .5 0) (-4 -4 0) (4 4 4)
 Makes bubbles
 ---------KEYS--------
 count - bubbles spawned per minute

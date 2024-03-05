@@ -244,7 +244,7 @@ void gib_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 
 	if (plane)
 	{
-//		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/fhit3.wav"), 1, ATTN_NORM, 0);
+//		gi.sound (self, CHAN_VOICE, gi.soundindex("misc/fhit3.wav"), 1, ATTN_NORM, 0);
 
 		VectoAngles (plane->normal, normal_angles);
 		AngleVectors (normal_angles, NULL, right, NULL);
@@ -743,7 +743,7 @@ void SP_path_corner (edict_t *self)
 	}
 
 	if (st.noise)
-		self->moveinfo.sound_middle = gi.soundindex  (st.noise);
+		self->moveinfo.sound_middle = gi.soundindex(st.noise);
 
 	self->solid = SOLID_TRIGGER;
 	self->movetype = PHYSICSTYPE_NONE;

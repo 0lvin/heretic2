@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.21RR1"
+#define YQ2VERSION "8.31RR5"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -120,7 +120,7 @@ void MSG_WriteDeltaUsercmd(sizebuf_t *sb, struct usercmd_s *from,
 		struct usercmd_s *cmd);
 void MSG_WriteDeltaEntity(struct entity_state_s *from,
 		struct entity_state_s *to, sizebuf_t *msg,
-		qboolean force, qboolean newentity);
+		qboolean force, qboolean newentity, int protocol);
 void MSG_WriteDir(sizebuf_t *sb, vec3_t vector);
 
 void MSG_BeginReading(sizebuf_t *sb);
@@ -176,7 +176,18 @@ void Info_Print(char *s);
 
 /* PROTOCOL */
 
-#define PROTOCOL_VERSION 34
+/* Quake 2 Release Demos */
+#define PROTOCOL_RELEASE_VERSION 26
+/* Quake 2 Demo */
+#define PROTOCOL_DEMO_VERSION 31
+/* Quake 2 Network Release */
+#define PROTOCOL_RR97_VERSION 34
+/* ReRelease demo files */
+#define PROTOCOL_RR22_VERSION 2022
+/* ReRelease network protocol */
+#define PROTOCOL_RR23_VERSION 2023
+/* Quake 2 Customized Network Release */
+#define PROTOCOL_VERSION 2024
 
 /* ========================================= */
 
@@ -412,7 +423,7 @@ void Cmd_AddCommand(const char *cmd_name, xcommand_t function);
 /* as a clc_stringcmd instead of executed locally */
 void Cmd_RemoveCommand(const char *cmd_name);
 
-qboolean Cmd_Exists(char *cmd_name);
+qboolean Cmd_Exists(const char *cmd_name);
 
 /* used by the cvar code to check for cvar / command name overlap */
 
@@ -631,8 +642,11 @@ qboolean Netchan_CanReliable(netchan_t *chan);
 
 #include "files.h"
 
-cmodel_t *CM_LoadMap(char *name, qboolean clientload, unsigned *checksum);
+cmodel_t *CM_LoadMap(const char *name, qboolean clientload, unsigned *checksum);
 cmodel_t *CM_InlineModel(const char *name);       /* *1, *2, etc */
+int CM_MapSurfacesNum(void);
+mapsurface_t* CM_MapSurfaces(int surfnum);
+
 void CM_ModFreeAll(void);
 
 int CM_NumClusters(void);
@@ -713,6 +727,8 @@ int FS_FOpenFile(const char *name, fileHandle_t *f, qboolean gamedir_only);
 void FS_FCloseFile(fileHandle_t f);
 int FS_Read(void *buffer, int size, fileHandle_t f);
 int FS_FRead(void *buffer, int size, int count, fileHandle_t f);
+void CM_ReadPortalState(fileHandle_t f);
+void CL_WriteConfiguration(void);
 
 // returns the filename used to open f, but (if opened from pack) in correct case
 // returns NULL if f is no valid handle

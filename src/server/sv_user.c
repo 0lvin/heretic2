@@ -30,7 +30,7 @@
 
 edict_t *sv_player;
 
-void
+static void
 SV_BeginDemoserver(void)
 {
 	char name[MAX_OSPATH];
@@ -48,7 +48,7 @@ SV_BeginDemoserver(void)
  * Sends the first message from the server to a connected client.
  * This will be sent on the initial connection and upon each server load.
  */
-void
+static void
 SV_New_f(void)
 {
 	static char *gamedir;
@@ -75,6 +75,7 @@ SV_New_f(void)
 	gamedir = (char *)Cvar_VariableString("gamedir");
 
 	/* send the serverdata */
+	sv_client->protocol = PROTOCOL_VERSION;
 	MSG_WriteByte(&sv_client->netchan.message, svc_serverdata);
 	MSG_WriteLong(&sv_client->netchan.message, PROTOCOL_VERSION);
 	MSG_WriteLong(&sv_client->netchan.message, svs.spawncount);
@@ -111,7 +112,7 @@ SV_New_f(void)
 	}
 }
 
-void
+static void
 SV_Configstrings_f(void)
 {
 	int start;
@@ -164,7 +165,7 @@ SV_Configstrings_f(void)
 	}
 }
 
-void
+static void
 SV_Baselines_f(void)
 {
 	int start;
@@ -201,7 +202,7 @@ SV_Baselines_f(void)
 			MSG_WriteByte(&sv_client->netchan.message, svc_spawnbaseline);
 			MSG_WriteDeltaEntity(&nullstate, base,
 					&sv_client->netchan.message,
-					true, true);
+					true, true, sv_client->protocol);
 		}
 
 		start++;
@@ -222,7 +223,7 @@ SV_Baselines_f(void)
 	}
 }
 
-void
+static void
 SV_Begin_f(void)
 {
 	Com_DPrintf("Begin() from %s\n", sv_client->name);
@@ -243,7 +244,7 @@ SV_Begin_f(void)
 	Cbuf_InsertFromDefer();
 }
 
-void
+static void
 SV_NextDownload_f(void)
 {
 	int r;
@@ -287,7 +288,7 @@ SV_NextDownload_f(void)
 	sv_client->download = NULL;
 }
 
-void
+static void
 SV_BeginDownload_f(void)
 {
 	char *name;
@@ -366,7 +367,7 @@ SV_BeginDownload_f(void)
 /*
  * The client is going to disconnect, so remove the connection immediately
  */
-void
+static void
 SV_Disconnect_f(void)
 {
 	SV_DropClient(sv_client);
@@ -375,7 +376,7 @@ SV_Disconnect_f(void)
 /*
  * Dumps the serverinfo info string
  */
-void
+static void
 SV_ShowServerinfo_f(void)
 {
 	Info_Print(Cvar_Serverinfo());
@@ -413,7 +414,7 @@ SV_Nextserver(void)
  * A cinematic has completed or been aborted by a client, so move
  * to the next server,
  */
-void
+static void
 SV_Nextserver_f(void)
 {
 	if ((int)strtol(Cmd_Argv(1), (char **)NULL, 10) != svs.spawncount)
@@ -477,9 +478,8 @@ SV_ExecuteUserCommand(char *s)
 	}
 }
 
-void
+static void
 SV_ClientThink(client_t *cl, usercmd_t *cmd)
-
 {
 	cl->commandMsec -= cmd->msec;
 

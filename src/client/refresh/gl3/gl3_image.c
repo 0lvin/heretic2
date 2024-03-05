@@ -45,7 +45,7 @@ glmode_t modes[] = {
 int gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
 int gl_filter_max = GL_LINEAR;
 
-gl3image_t gl3textures[MAX_GL3TEXTURES];
+gl3image_t gl3textures[MAX_TEXTURES];
 int numgl3textures = 0;
 static int image_max = 0;
 
@@ -116,7 +116,7 @@ GL3_TextureMode(char *string)
 			/* Set anisotropic filter if supported and enabled */
 			if (gl3config.anisotropic && gl_anisotropic->value)
 			{
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max(gl_anisotropic->value, 1.f));
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Q_max(gl_anisotropic->value, 1.f));
 			}
 		}
 		else /* texture has no mipmaps */
@@ -227,7 +227,7 @@ GL3_Upload32(unsigned *data, int width, int height, qboolean mipmap)
 
 	if (mipmap && gl3config.anisotropic && gl_anisotropic->value)
 	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max(gl_anisotropic->value, 1.f));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Q_max(gl_anisotropic->value, 1.f));
 	}
 
 	return res;
@@ -401,13 +401,20 @@ GL3_LoadPic(char *name, byte *pic, int width, int realwidth,
 		{
 			break;
 		}
+
+		if (!strcmp(image->name, name))
+		{
+			/* we already have such image */
+			image->registration_sequence = registration_sequence;
+			return image;
+		}
 	}
 
 	if (i == numgl3textures)
 	{
-		if (numgl3textures == MAX_GL3TEXTURES)
+		if (numgl3textures == MAX_TEXTURES)
 		{
-			Com_Error(ERR_DROP, "MAX_GLTEXTURES");
+			Com_Error(ERR_DROP, "MAX_TEXTURES");
 		}
 
 		numgl3textures++;
@@ -731,7 +738,7 @@ GL3_ImageHasFreeSpace(void)
 	}
 
 	// should same size of free slots as currently used
-	return (numgl3textures + used) < MAX_GL3TEXTURES;
+	return (numgl3textures + used) < MAX_TEXTURES;
 }
 
 void
@@ -841,5 +848,6 @@ GL3_ImageList_f(void)
 
 	R_Printf(PRINT_ALL, "Total texel count (not counting mipmaps): %i\n", texels);
 	freeup = GL3_ImageHasFreeSpace();
-	R_Printf(PRINT_ALL, "Used %d of %d images%s.\n", used, image_max, freeup ? ", has free space" : "");
+	R_Printf(PRINT_ALL, "Used %d of %d / %d images%s.\n",
+		used, image_max, MAX_TEXTURES, freeup ? ", has free space" : "");
 }

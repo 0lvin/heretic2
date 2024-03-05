@@ -44,4 +44,5 @@ int BranchCheckMana(playerinfo_t *playerinfo);
 
 qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);
 
+typedef void (*playerinfo_cb)(playerinfo_t *);
 #endif // _P_ANIM_BRANCH2_H_

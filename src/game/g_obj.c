@@ -234,7 +234,8 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid)
 //============================================================================
 
 
-/*QUAKED obj_banner (1 .5 0) (-8 -44 -296) (8 44 0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_banner (1 .5 0) (-8 -44 -296) (8 44 0) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A really big banner.
 -------  FIELDS  ------------------
 INVULNERABLE - N/A (it can't ever be hurt)
@@ -262,7 +263,8 @@ void SP_obj_banner (edict_t *self)
 	ObjectInit(self,40,200,MAT_CLOTH,SOLID_BBOX);
 }
 
-/*QUAKED obj_banneronpole (1 .5 0) (-8 -28 -30) (8 28 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_banneronpole (1 .5 0) (-8 -28 -30) (8 28 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A banner on a pole sticking out of a wall.
 -------  FIELDS  ------------------
 INVULNERABLE - can it be hurt
@@ -334,7 +336,8 @@ int barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 
 
 
-/*QUAKED obj_barrel (1 .5 0) (-12 -12 -19) (12 12 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_barrel (1 .5 0) (-12 -12 -19) (12 12 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A barrel.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -364,7 +367,8 @@ void SP_obj_barrel (edict_t *self)
 	}
 }
 
-/*QUAKED obj_broom (1 .5 0) (-2 -2 -25) (2 2 25) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_broom (1 .5 0) (-2 -2 -25) (2 2 25) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A broom.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -386,7 +390,8 @@ void SP_obj_broom (edict_t *self)
 }
 
 
-/*QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A highback wooden chair with a triangle at the top.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -406,7 +411,8 @@ void SP_obj_chair1 (edict_t *self)
 }
 
 
-/*QUAKED obj_chair2 (1 .5 0) (-18 -29 -30) (18 29 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_chair2 (1 .5 0) (-18 -29 -30) (18 29 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A thick chair with slanted sides
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -428,7 +434,8 @@ void SP_obj_chair2 (edict_t *self)
 }
 
 
-/*QUAKED obj_chair3 (1 .5 0) (-14 -21 -28) (14 21 28)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_chair3 (1 .5 0) (-14 -21 -28) (14 21 28)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A big stone throne.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -470,7 +477,8 @@ void chest1_use (edict_t *self, edict_t *other, edict_t *activator)
 	chest1_anim(self);
 }
 
-/*QUAKED obj_chest1 (1 .5 0) (-10 -18 -19) (10 18 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_chest1 (1 .5 0) (-10 -18 -19) (10 18 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A large chest with a snake carving on top. When used it opens its lid.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -491,7 +499,8 @@ void SP_obj_chest1 (edict_t *self)
 	self->use = chest1_use;
 }
 
-/*QUAKED obj_chest2 (1 .5 0) (-14 -17 -9) (14 17 9) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_chest2 (1 .5 0) (-14 -17 -9) (14 17 9) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A medium sized chest with the top open - for use in the mines
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -513,7 +522,8 @@ void SP_obj_chest2 (edict_t *self)
 
 }
 
-/*QUAKED obj_chest3 (1 .5 0) (-10 -17 -6) (10 17 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_chest3 (1 .5 0) (-10 -17 -6) (10 17 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A medium sized chest with the top closed - for use in the mines
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -565,7 +575,8 @@ void cog1_use (edict_t *self, edict_t *other, edict_t *activator)
 	cog1_anim(self);
 }
 
-/*QUAKED obj_cog1 (1 .5 0) (-8 -4 0) (8 4 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_cog1 (1 .5 0) (-8 -4 0) (8 4 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A cog with spokes coming out the front of it.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -647,7 +658,8 @@ void SpawnCorpse(edict_t *self)
 	ObjectInit(self,40,60,MAT_FLESH,SOLID_BBOX);
 }
 
-/*QUAKED obj_corpse1 (1 .5 0) (-30 -12 0) (30 12 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_corpse1 (1 .5 0) (-30 -12 0) (30 12 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
 Plague elf dead.
 ---------- KEYS -----------------
 style - (default 0)
@@ -671,7 +683,8 @@ void SP_obj_corpse1(edict_t *self)
 }
 
 
-/*QUAKED obj_corpse2 (1 .5 0) (-30 -12 0) (30 12 5)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_corpse2 (1 .5 0) (-30 -12 0) (30 12 5)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 Plague elf dead with a different skin
 ---------- KEYS -----------------
 style - (default 0)
@@ -842,7 +855,8 @@ int dying_elf_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	return (false);
 }
 
-/*QUAKED obj_dying_elf (1 .5 0) (-30 -12 0) (30 12 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_dying_elf (1 .5 0) (-30 -12 0) (30 12 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
 Plague elf lying on the ground shaking.
 ---------- KEYS -----------------
 style - skin to use
@@ -886,7 +900,8 @@ void SP_obj_dying_elf(edict_t *self)
 }
 
 
-/*QUAKED obj_sign1 (1 .5 0) (-29 -4 -16) (29 4 16)   INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_sign1 (1 .5 0) (-29 -4 -16) (29 4 16)   INVULNERABLE ANIMATE EXPLODING NOPUSH
 A square sign coming out of a wall.
 --------KEYS-------------------
 style -
@@ -925,7 +940,8 @@ void SP_obj_sign1 (edict_t *self)
 }
 
 
-/*QUAKED obj_sign4 (1 .5 0) (-8 -18 -29) (8 18 29)   INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_sign4 (1 .5 0) (-8 -18 -29) (8 18 29)   INVULNERABLE ANIMATE EXPLODING NOPUSH
 A square sign that is on top of a post. It is leaning badly.
 For the MINE or DESERT areas.
 style -
@@ -957,7 +973,8 @@ void SP_obj_sign4 (edict_t *self)
 	ObjectInit(self,40,150,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAK-ED obj_stalagmite1 (1 .5 0) (-32 -32 -200) (32 32 0) INVULNERABLE ANIMATE EXPLODING DARKSKIN
+/*
+ * QUAKED obj_stalagmite1 (1 .5 0) (-32 -32 -200) (32 32 0) INVULNERABLE ANIMATE EXPLODING DARKSKIN
 A big long thick stalagmite.These point up.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -981,7 +998,8 @@ void SP_obj_stalagmite1(edict_t *self)
 }
 
 
-/*QUAK-ED obj_stalagmite2 (1 .5 0) (-32 -32 -128) (32 32 0) DARKSKIN
+/*
+ * QUAKED obj_stalagmite2 (1 .5 0) (-32 -32 -128) (32 32 0) DARKSKIN
 A big squat stalagmite.These point up.
 -------  FIELDS  ------------------
 DARKSKIN - if checked it uses the dark skin
@@ -1000,7 +1018,8 @@ void SP_obj_stalagmite2(edict_t *self)
 	ObjectInit(self,200,300,MAT_BROWNSTONE,SOLID_BBOX);
 }
 
-/*QUAK-ED obj_stalagmite3 (1 .5 0) (-32 -32 -200) (32 32 0)  DARKSKIN
+/*
+ * QUAKED obj_stalagmite3 (1 .5 0) (-32 -32 -200) (32 32 0)  DARKSKIN
 A long pointy stalagmite. These point up
 -------  FIELDS  ------------------
 DARKSKIN - if checked it uses the dark skin
@@ -1019,7 +1038,8 @@ void SP_obj_stalagmite3(edict_t *self)
 	ObjectInit(self,200,200,MAT_BROWNSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_corvus (1 .5 0) (-16 -16 0) (16 16 32) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_corvus (1 .5 0) (-16 -16 0) (16 16 32) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A statue of Corvus.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1040,7 +1060,8 @@ void SP_obj_statue_corvus (edict_t *self)
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_dolphin1 (1 .5 0) (-68 -22 -30) (68 22 30) VULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_dolphin1 (1 .5 0) (-68 -22 -30) (68 22 30) VULNERABLE ANIMATE EXPLODING NOPUSH
 The dolphin on all fours
 -------  FIELDS  ------------------
 VULNERABLE - it can be hurt - default it can't be
@@ -1065,7 +1086,8 @@ void SP_obj_statue_dolphin1 (edict_t *self)
 	ObjectInit(self,300,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_dolphin2 (1 .5 0) (-17 -20 -70) (17 20 70) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_dolphin2 (1 .5 0) (-17 -20 -70) (17 20 70) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The dolphin on a wall. Head turned to the right
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1089,7 +1111,8 @@ void SP_obj_statue_dolphin2 (edict_t *self)
 	ObjectInit(self,300,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_dolphin3 (1 .5 0) (-17 -20 -70) (17 20 70) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_dolphin3 (1 .5 0) (-17 -20 -70) (17 20 70) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The dolphin on a wall. Head turned to the left
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1113,7 +1136,8 @@ void SP_obj_statue_dolphin3 (edict_t *self)
 	ObjectInit(self,300,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_dolphin4 (1 .5 0) (-63 -22 -37) (63 22 37) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_dolphin4 (1 .5 0) (-63 -22 -37) (63 22 37) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The dolphin up on two legs
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1137,7 +1161,8 @@ void SP_obj_statue_dolphin4 (edict_t *self)
 }
 
 
-/*QUAKED obj_statue_guardian (1 .5 0) (-100 -64 0) (64 64 128) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_guardian (1 .5 0) (-100 -64 0) (64 64 128) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A big statue of a fish guy on his haunches holding a spear.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1159,7 +1184,8 @@ void SP_obj_statue_guardian (edict_t *self)
 	ObjectInit(self,400,300,MAT_METAL,SOLID_BBOX);
 }
 
-/*QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A large wooden dining table with two legs.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1179,7 +1205,8 @@ void SP_obj_table1 (edict_t *self)
 
 }
 
-/*QUAKED obj_table2 (1 .5 0) (-28 -54 -17) (28 54 17) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_table2 (1 .5 0) (-28 -54 -17) (28 54 17) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A grey stone table.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1200,7 +1227,8 @@ void SP_obj_table2 (edict_t *self)
 	ObjectInit(self,80,150,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_throne (1 .5 0) (-20 -22 -44) (20 22 44) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_throne (1 .5 0) (-20 -22 -44) (20 22 44) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A highbacked throne.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1222,7 +1250,8 @@ void SP_obj_throne (edict_t *self)
 }
 
 
-/*QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A kettle.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1241,7 +1270,8 @@ void SP_obj_kettle (edict_t *self)
 	ObjectInit(self,40,100,MAT_METAL,SOLID_BBOX);
 }
 
-/*QUAKED obj_cauldron (1 .5 0) (-22 -22 -10) (22 22 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_cauldron (1 .5 0) (-22 -22 -10) (22 22 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A metal cauldron filled with green liquid
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1269,7 +1299,8 @@ void SP_obj_cauldron (edict_t *self)
 }
 
 
-/*QUAKED obj_firepot (1 .5 0) (-18 -18 -12) (18 18 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_firepot (1 .5 0) (-18 -18 -12) (18 18 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A grey stone firepot
 -------  FIELDS  ------------------
 INVULNERABLE - always invulnerable
@@ -1302,7 +1333,8 @@ void SP_obj_firepot (edict_t *self)
 	}
 }
 
-/*QUAKED obj_statue_duckbill1 (1 .5 0) (-67 -24 -51) (67 24 51) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_duckbill1 (1 .5 0) (-67 -24 -51) (67 24 51) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The duckbilled thing - tail to the right
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1326,7 +1358,8 @@ void SP_obj_statue_duckbill1 (edict_t *self)
 	ObjectInit(self,150,100,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_duckbill2 (1 .5 0) (-67 -24 -50) (67 24 50) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_duckbill2 (1 .5 0) (-67 -24 -50) (67 24 50) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The duckbilled thing - tail to the left
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1421,7 +1454,7 @@ void globetop_use (edict_t *self, edict_t *other, edict_t *activator)
 	if (self->monsterinfo.idle_time)
 		return;
 
-	gi.sound (self, CHAN_BODY, gi.soundindex ("objects/globetop.wav"), 1, ATTN_NORM, 0);
+	gi.sound (self, CHAN_BODY, gi.soundindex("objects/globetop.wav"), 1, ATTN_NORM, 0);
 
 	self->monsterinfo.idle_time = 1;
 
@@ -1436,7 +1469,7 @@ void globebottom_use (edict_t *self, edict_t *other, edict_t *activator)
 	if (self->monsterinfo.idle_time)
 		return;
 
-	gi.sound (self, CHAN_BODY, gi.soundindex ("objects/globebottomstart.wav"), 1, ATTN_NORM, 0);
+	gi.sound (self, CHAN_BODY, gi.soundindex("objects/globebottomstart.wav"), 1, ATTN_NORM, 0);
 
 	self->monsterinfo.idle_time = 1;
 
@@ -1446,7 +1479,8 @@ void globebottom_use (edict_t *self, edict_t *other, edict_t *activator)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-/*QUAKED obj_seasonglobe (1 .5 0) (-80 -80 0) (80 80 100) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_seasonglobe (1 .5 0) (-80 -80 0) (80 80 100) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The globe thingy
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -1501,7 +1535,8 @@ void SP_obj_seasonglobe (edict_t *bottom)
 
 
 
-/*QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A beer stein.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1520,7 +1555,8 @@ void SP_obj_stein (edict_t *self)
 	ObjectInit(self,15,10,MAT_METAL,SOLID_BBOX);
 }
 
-/*QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A paper scroll
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1539,7 +1575,8 @@ void SP_obj_scroll (edict_t *self)
 	ObjectInit(self,10,50,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_fountain_fish (1 .5 0) (-52 -34 -48) (52 34 48) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_fountain_fish (1 .5 0) (-52 -34 -48) (52 34 48) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A two headed fish fountain
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1561,7 +1598,8 @@ void SP_obj_fountain_fish (edict_t *self)
 	ObjectInit(self,40,50,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_boulderfish (1 .5 0) (-26 -16 -27) (26 16 27) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_boulderfish (1 .5 0) (-26 -16 -27) (26 16 27) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A statue of a fish. The one which raises up a boulder.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1582,7 +1620,8 @@ void SP_obj_statue_boulderfish (edict_t *self)
 	ObjectInit(self,200,150,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A potted plant with ferns
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1601,7 +1640,8 @@ void SP_obj_pottedplant (edict_t *self)
 	ObjectInit(self,20,50,MAT_POTTERY,SOLID_BBOX);
 }
 
-/*QUAKED obj_plant1 (1 .5 0) (-8 -8 -24) (8 8 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_plant1 (1 .5 0) (-8 -8 -24) (8 8 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A clump of tall, thin, plants
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1626,7 +1666,8 @@ void SP_obj_plant1 (edict_t *self)
 
 }
 
-/*QUAKED obj_plant2 (1 .5 0) (-20 -20 -10) (20 20 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_plant2 (1 .5 0) (-20 -20 -10) (20 20 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A plant with broad leaves.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1651,7 +1692,8 @@ void SP_obj_plant2 (edict_t *self)
 
 }
 
-/*QUAKED obj_plant3 (1 .5 0) (-8 -8 -12) (8 8 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_plant3 (1 .5 0) (-8 -8 -12) (8 8 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A group of ferns
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1682,7 +1724,8 @@ void SP_obj_plant3 (edict_t *self)
 
 }
 
-/*QUAKED obj_treetop (1 .5 0) (-176 -176 -125) (176 176 125) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_treetop (1 .5 0) (-176 -176 -125) (176 176 125) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A canopy for a tree.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1704,7 +1747,8 @@ void SP_obj_treetop (edict_t *self)
 	ObjectInit(self,40,50,MAT_WOOD,SOLID_NOT);
 }
 
-/*QUAKED obj_tree (1 .5 0) (-100 -100 -120) (100 100 120) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_tree (1 .5 0) (-100 -100 -120) (100 100 120) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A tree for Matt's level
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1726,7 +1770,8 @@ void SP_obj_tree (edict_t *self)
 	ObjectInit(self,40,50,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_tree2 (1 .5 0) (-50 -50 -286) (50 50 286) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_tree2 (1 .5 0) (-50 -50 -286) (50 50 286) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A tall spikey tree for the swamps
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1766,7 +1811,8 @@ void SP_obj_tree2 (edict_t *self)
 	self->target_ent = moss;
 }
 
-/*QUAKED obj_tree3 (1 .5 0) (-50 -50 -286) (50 50 286) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_tree3 (1 .5 0) (-50 -50 -286) (50 50 286) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A tall spikey tree with big roots on the bottom.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1804,7 +1850,8 @@ void SP_obj_tree3 (edict_t *self)
 	self->target_ent = moss;
 }
 
-/*QUAKED obj_treetall (1 .5 0) (-46 -46 -340) (46 46 340) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_treetall (1 .5 0) (-46 -46 -340) (46 46 340) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A very tall tree
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1841,7 +1888,8 @@ void SP_obj_treetall (edict_t *self)
 	self->target_ent = moss;
 }
 
-/*QUAKED obj_treefallen (1 .5 0) (-24 -62 -35) (24 62 35) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_treefallen (1 .5 0) (-24 -62 -35) (24 62 35) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A tree that is leaning as if it had over. Meant to be partially submerged in water or muck.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1866,7 +1914,8 @@ void SP_obj_treefallen (edict_t *self)
 }
 
 
-/*QUAKED obj_shovel (1 .5 0) (-8 -8 -20) (8 8 20)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_shovel (1 .5 0) (-8 -8 -20) (8 8 20)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A shovel
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1887,7 +1936,8 @@ void SP_obj_shovel (edict_t *self)
 	ObjectInit(self,20,40,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_woodpile (1 .5 0) (-12 -20 -7) (12 20 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_woodpile (1 .5 0) (-12 -20 -7) (12 20 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A pile of chopped  wood.
 -------  FIELDS  ------------------
 INVULNERABLE - Can't be hurt
@@ -1909,7 +1959,8 @@ void SP_obj_woodpile (edict_t *self)
 	ObjectInit(self,100,150,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A fishtrap
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1928,7 +1979,8 @@ void SP_obj_fishtrap (edict_t *self)
 	ObjectInit(self,30,100,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_bench (1 .5 0) (-10 -21 -10) (10 21 10)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_bench (1 .5 0) (-10 -21 -10) (10 21 10)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A stone bench to sit on
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1949,7 +2001,8 @@ void SP_obj_bench (edict_t *self)
 	ObjectInit(self,3,4,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_bucket (1 .5 0) (-8 -8 -9) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_bucket (1 .5 0) (-8 -8 -9) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A bucket
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -1970,7 +2023,8 @@ void SP_obj_bucket (edict_t *self)
 	ObjectInit(self,3,4,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_ropechain (1 .5 0) (-20 -20 -14) (20 20 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_ropechain (1 .5 0) (-20 -20 -14) (20 20 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A pile of rope or chain
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2000,7 +2054,8 @@ void SP_obj_ropechain (edict_t *self)
 }
 
 
-/*QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A wheelbarrow
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2019,7 +2074,8 @@ void SP_obj_wheelbarrow (edict_t *self)
 	ObjectInit(self,60,100,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_wheelbarrowdamaged (1 .5 0) (-38 -26 -20) (38 26 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_wheelbarrowdamaged (1 .5 0) (-38 -26 -20) (38 26 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A wheelbarrow  on it's side missing a wheel
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2042,7 +2098,8 @@ void SP_obj_wheelbarrowdamaged (edict_t *self)
 }
 
 
-/*QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
 An urn
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2063,7 +2120,8 @@ void SP_obj_urn (edict_t *self)
 
 
 
-/*QUAKED obj_bigcrystal (1 .5 0) (-35 -35 -50) (35 35 50) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_bigcrystal (1 .5 0) (-35 -35 -50) (35 35 50) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A big circular crystal which rotates.
 -------  KEYS  ------------------
 speed - rate of rotation
@@ -2092,7 +2150,8 @@ void SP_obj_bigcrystal(edict_t *self)
 }
 
 
-/*QUAKED obj_moss1 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_moss1 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
 
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2114,7 +2173,8 @@ void SP_obj_moss1(edict_t *self)
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
 }
 
-/*QUAKED obj_moss2 (1 .5 0) (-4 -9 -40) (4 9 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_moss2 (1 .5 0) (-4 -9 -40) (4 9 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
 ANIMATE - N/A
@@ -2135,7 +2195,8 @@ void SP_obj_moss2(edict_t *self)
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
 }
 
-/*QUAKED obj_moss3 (1 .5 0) (-4 -15 -40) (4 15 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_moss3 (1 .5 0) (-4 -15 -40) (4 15 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
 ANIMATE - N/A
@@ -2156,7 +2217,8 @@ void SP_obj_moss3(edict_t *self)
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
 }
 
-/*QUAKED obj_moss4 (1 .5 0) (-4 -12 -40) (4 12 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_moss4 (1 .5 0) (-4 -12 -40) (4 12 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
 ANIMATE - N/A
@@ -2177,7 +2239,8 @@ void SP_obj_moss4(edict_t *self)
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
 }
 
-/*QUAKED obj_moss5 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_moss5 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
 ANIMATE - N/A
@@ -2198,7 +2261,8 @@ void SP_obj_moss5(edict_t *self)
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
 }
 
-/*QUAKED obj_floor_candelabrum (1 .5 0) (-8 -8 -35) (8 8 35) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_floor_candelabrum (1 .5 0) (-8 -8 -35) (8 8 35) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A floor candelabrum.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be destroyed
@@ -2218,7 +2282,8 @@ void SP_obj_floor_candelabrum (edict_t *self)
 	ObjectInit(self,40,60,MAT_METAL,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_dragonhead (1 .5 0) (-76 -28 -46) (76 28 46) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_dragonhead (1 .5 0) (-76 -28 -46) (76 28 46) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A statue of a dragon head
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2240,7 +2305,8 @@ void SP_obj_statue_dragonhead (edict_t *self)
 	ObjectInit(self,200,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_statue_dragon (1 .5 0) (-53 -33 -72) (53 33 72)  INVULNERABLE  ANIMATE  EXPLODING  NOPUSH
+/*
+ * QUAKED obj_statue_dragon (1 .5 0) (-53 -33 -72) (53 33 72)  INVULNERABLE  ANIMATE  EXPLODING  NOPUSH
 A statue of a dragon
 ---------- KEYS -----------------
 style - (default 0)
@@ -2274,7 +2340,8 @@ void SP_obj_statue_dragon (edict_t *self)
 
 }
 
-/*QUAKED obj_flagonpole (1 .5 0) (-8 -8 0) (8 8 60)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_flagonpole (1 .5 0) (-8 -8 0) (8 8 60)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A flag on a pole
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2325,13 +2392,13 @@ void lever1_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("objects/lever1.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
 		self->think = lever1downthink;
 		self->nextthink = level.time + FRAMETIME;
 	}
 	else if (self->s.frame == 5)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("objects/lever1.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
 		self->think = lever1upthink;
 		self->nextthink = level.time + FRAMETIME;
 	}
@@ -2339,7 +2406,8 @@ void lever1_use (edict_t *self, edict_t *other, edict_t *activator)
 
 }
 
-/*QUAKED obj_lever1 (1 .5 0) (-6 -14 -17) (6 14 17)  INVULNERABLE  ANIMATE   EXPLODING   NOPUSH
+/*
+ * QUAKED obj_lever1 (1 .5 0) (-6 -14 -17) (6 14 17)  INVULNERABLE  ANIMATE   EXPLODING   NOPUSH
 A wooden floor lever that is triggerable.
 -------  FIELDS  ------------------
 INVULNERABLE - always invulnerable
@@ -2395,19 +2463,20 @@ void lever2_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("objects/lever2.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever2.wav"), 1, ATTN_NORM, 0);
 		self->think = lever2downthink;
 	}
 	else if (self->s.frame == 4)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("objects/lever2.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever2.wav"), 1, ATTN_NORM, 0);
 		self->think = lever2upthink;
 	}
  	self->nextthink = level.time + FRAMETIME;
 	G_UseTargets(self, activator);
 }
 
-/*QUAKED obj_lever2 (1 .5 0) (-14 -14 -9) (14 14 9)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_lever2 (1 .5 0) (-14 -14 -9) (14 14 9)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A wooden wheel lever that is triggerable.
 -------  FIELDS  ------------------
 INVULNERABLE - always invulnerable
@@ -2461,19 +2530,20 @@ void lever3_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("objects/lever3.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever3.wav"), 1, ATTN_NORM, 0);
 		self->think = lever3downthink;
 	}
 	else if (self->s.frame == 5)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("objects/lever3.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever3.wav"), 1, ATTN_NORM, 0);
 		self->think = lever3upthink;
 	}
  	self->nextthink = level.time + FRAMETIME;
 	G_UseTargets(self, activator);
 }
 
-/*QUAKED obj_lever3 (1 .5 0) (-4 -6 -16) (4 6 16)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_lever3 (1 .5 0) (-4 -6 -16) (4 6 16)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A lever for the wall...and it's triggerable.
 -------  FIELDS  ------------------
 INVULNERABLE - always invulnerable
@@ -2516,11 +2586,12 @@ void bush_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 	if (self->touch_debounce_time > level.time)
 		return;
 
-	//gi.sound (self, CHAN_BODY, gi.soundindex ("objects/bush.wav"), 1, ATTN_NORM, 0);
+	//gi.sound (self, CHAN_BODY, gi.soundindex("objects/bush.wav"), 1, ATTN_NORM, 0);
 	self->touch_debounce_time = level.time + 1;
 }
 
-/*QUAKED obj_bush1 (1 .5 0) (-34 -34 -19) (34 34 19)  INVULNERABLE  ANIMATE  EXPLODING  NOPUSH
+/*
+ * QUAKED obj_bush1 (1 .5 0) (-34 -34 -19) (34 34 19)  INVULNERABLE  ANIMATE  EXPLODING  NOPUSH
 A dome shaped bush
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -2547,7 +2618,8 @@ void SP_obj_bush1 (edict_t *self)
 
 }
 
-/*QUAKED obj_bush2 (1 .5 0) (-56 -56 -40) (56 56 40)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_bush2 (1 .5 0) (-56 -56 -40) (56 56 40)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A larger dome shaped bush
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2588,7 +2660,8 @@ void cactus_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, 1, 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
 }
 
-/*QUAKED obj_cactus (1 .5 0) (-18 -18 -44) (18 18 44)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_cactus (1 .5 0) (-18 -18 -44) (18 18 44)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A cactus.  Hurts the player 1 pt every five seconds he is pushes against it.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2612,7 +2685,8 @@ void SP_obj_cactus (edict_t *self)
 	self->touch = cactus_touch;
 }
 
-/*QUAKED obj_cactus3 (1 .5 0) (-14 -14 -32) (14 14 32)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_cactus3 (1 .5 0) (-14 -14 -32) (14 14 32)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A cactus.  Hurts the player 1 pt every five seconds he is pushes against it.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2663,18 +2737,19 @@ void cactus4_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("objects/lever1.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
 		self->think = cactus_open;
 	}
 	else if (self->s.frame == 16)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("objects/lever1.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
 		self->think = cactus_close;
 	}
 	self->nextthink = level.time + FRAMETIME;
 }
 
-/*QUAKED obj_cactus4 (1 .5 0) (-11 -11 -11) (11 11 11)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_cactus4 (1 .5 0) (-11 -11 -11) (11 11 11)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A small cactus that open up or closes. Is triggerable.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2699,7 +2774,8 @@ void SP_obj_cactus4 (edict_t *self)
 	self->touch = cactus_touch;
 }
 
-/*QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A tall basket with a lid on it.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2718,7 +2794,8 @@ void SP_obj_basket (edict_t *self)
 	ObjectInit(self,50,70,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_claybowl (1 .5 0) (-6 -6 -2) (6 6 2)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_claybowl (1 .5 0) (-6 -6 -2) (6 6 2)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A bowl made of clay
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2737,7 +2814,8 @@ void SP_obj_claybowl (edict_t *self)
 	ObjectInit(self,5,5,MAT_POTTERY,SOLID_BBOX);
 }
 
-/*QUAKED obj_clayjar (1 .5 0) (-15 -15 -24) (15 15 24)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_clayjar (1 .5 0) (-15 -15 -24) (15 15 24)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A big honking urn made of clay
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2756,7 +2834,8 @@ void SP_obj_clayjar (edict_t *self)
 	ObjectInit(self,25,125,MAT_POTTERY,SOLID_BBOX);
 }
 
-/*QUAKED obj_gorgonbones (1 .5 0) (-18 -38 -9) (18 38 1)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_gorgonbones (1 .5 0) (-18 -38 -9) (18 38 1)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 The bones of a dead gorgon.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2777,7 +2856,8 @@ void SP_obj_gorgonbones (edict_t *self)
 	ObjectInit(self,50,125,MAT_NONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_grass (1 .5 0) (-8 -8 -10) (8 8 10)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_grass (1 .5 0) (-8 -8 -10) (8 8 10)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A clump of grass
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2800,7 +2880,8 @@ void SP_obj_grass (edict_t *self)
 	self->s.effects|=EF_CAMERA_NO_CLIP;
 }
 
-/*QUAKED obj_swampflat_top (1 .5 0) (0 -100 -48) (2 100 48)  INVULNERABLE  ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_swampflat_top (1 .5 0) (0 -100 -48) (2 100 48)  INVULNERABLE  ANIMATE EXPLODING NOPUSH
 A flat poly to be used on the outer edge of swamp levels. Vegetation growing up.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2822,7 +2903,8 @@ void SP_obj_swampflat_top (edict_t *self)
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_swampflat_bottom (1 .5 0) (0 -100 -48) (2 100 48)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_swampflat_bottom (1 .5 0) (0 -100 -48) (2 100 48)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A flat poly to be used on the outer edge of swamp levels. Vegetation hanging down.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2846,7 +2928,8 @@ void SP_obj_swampflat_bottom (edict_t *self)
 
 }
 
-/*QUAKED obj_treestump (1 .5 0) (-18 -18 -16) (18 18 16)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_treestump (1 .5 0) (-18 -18 -16) (18 18 16)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A short tree stump
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2869,7 +2952,8 @@ void SP_obj_treestump (edict_t *self)
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_jawbone (1 .5 0) (-11 -11 -12) (11 11 12)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_jawbone (1 .5 0) (-11 -11 -12) (11 11 12)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 The jaws of a fish.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2893,7 +2977,8 @@ void SP_obj_jawbone (edict_t *self)
 
 }
 
-/*QUAKED obj_barrel_metal (1 .5 0) (-11 -12 -18) (11 12 18)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_barrel_metal (1 .5 0) (-11 -12 -18) (11 12 18)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A metal barrel.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2913,7 +2998,8 @@ void SP_obj_barrel_metal (edict_t *self)
 	self->s.skinnum = 1;
 }
 
-/*QUAKED obj_barrel_explosive (1 .5 0) (-11 -12 -18) (11 12 18)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+/*
+ * QUAKED obj_barrel_explosive (1 .5 0) (-11 -12 -18) (11 12 18)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
 A barrel that explodes and does damage.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2933,7 +3019,8 @@ void SP_obj_barrel_explosive (edict_t *self)
 	self->s.skinnum = 1;
 
 }
-/*QUAKED obj_gascan (1 .5 0) (-8 -9 -13) (8 9 13)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_gascan (1 .5 0) (-8 -9 -13) (8 9 13)  INVULNERABLE ANIMATE EXPLODING NOPUSH
 A metal gas can.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2954,7 +3041,8 @@ void SP_obj_gascan (edict_t *self)
 
 }
 
-/*QUAKED obj_pipe1 (1 .5 0) (-11 -24 -7) (11 24 7)  INVULNERABLE  ANIMATE   EXPLODING NOPUSH
+/*
+ * QUAKED obj_pipe1 (1 .5 0) (-11 -24 -7) (11 24 7)  INVULNERABLE  ANIMATE   EXPLODING NOPUSH
 A section of pipe with 90 degree bend in it.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2975,7 +3063,8 @@ void SP_obj_pipe1 (edict_t *self)
 
 }
 
-/*QUAKED obj_pipe2 (1 .5 0) (-6 -25 -4) (6 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_pipe2 (1 .5 0) (-6 -25 -4) (6 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A straight section of pipe.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -2996,7 +3085,8 @@ void SP_obj_pipe2 (edict_t *self)
 
 }
 
-/*QUAKED obj_pipewheel (1 .5 0) (-14 -14 -12) (14 14 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_pipewheel (1 .5 0) (-14 -14 -12) (14 14 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A shutoff valve for pipe.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3019,7 +3109,8 @@ void SP_obj_pipewheel (edict_t *self)
 
 }
 
-/*QUAKED obj_minecart (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_minecart (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A full mine cart used on the mine levels.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3040,7 +3131,8 @@ void SP_obj_minecart (edict_t *self)
 
 }
 
-/*QUAKED obj_minecart2 (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_minecart2 (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
 An empty mine cart used on the mine levels.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3062,7 +3154,8 @@ void SP_obj_minecart2 (edict_t *self)
 }
 
 
-/*QUAKED obj_minecart3 (1 .5 0) (-18 -29 -15) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_minecart3 (1 .5 0) (-18 -29 -15) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A busted mine cart used on the mine levels.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3083,7 +3176,8 @@ void SP_obj_minecart3 (edict_t *self)
 
 }
 
-/*QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A circular Andorian wall hanging.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3102,7 +3196,8 @@ void SP_obj_andwallhanging (edict_t *self)
 	ObjectInit(self,75,100,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_pick (1 .5 0) ( -12 -13 -2) (12 13 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_pick (1 .5 0) ( -12 -13 -2) (12 13 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A tool that is a pick.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3121,7 +3216,8 @@ void SP_obj_pick (edict_t *self)
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
 }
 
-/*QUAKED obj_metalchunk1 (1 .5 0) ( -10 -26 -4) (10 26 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_metalchunk1 (1 .5 0) ( -10 -26 -4) (10 26 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A chunk of twisted metal.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3140,7 +3236,8 @@ void SP_obj_metalchunk1 (edict_t *self)
 	ObjectInit(self,75,125,MAT_METAL,SOLID_BBOX);
 }
 
-/*QUAKED obj_metalchunk2 (1 .5 0) ( -10 -26 -7) (10 26 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_metalchunk2 (1 .5 0) ( -10 -26 -7) (10 26 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
 Another chunk of twisted metal.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3162,7 +3259,8 @@ void SP_obj_metalchunk2 (edict_t *self)
 }
 
 
-/*QUAKED obj_metalchunk3 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_metalchunk3 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
 Another chunk of twisted metal.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3183,7 +3281,8 @@ void SP_obj_metalchunk3 (edict_t *self)
 	self->s.frame = 2;
 }
 
-/*QUAKED obj_rocks1 (1 .5 0) ( -12 -13 -4) (12 13 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_rocks1 (1 .5 0) ( -12 -13 -4) (12 13 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A bunch of rocks together
 For the MINE levels
 -------  FIELDS  ------------------
@@ -3206,7 +3305,8 @@ void SP_obj_rocks1 (edict_t *self)
 
 }
 
-/*QUAKED obj_rocks2 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_rocks2 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A big rock
 For the MINE levels
 -------  FIELDS  ------------------
@@ -3262,7 +3362,8 @@ void hivepriestesssymbol_use (edict_t *self, edict_t *other, edict_t *activator)
 
 }
 
-/*QUAKED obj_hivepriestessssymbol (1 .5 0) ( -4 -4 -13) (4 4 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_hivepriestessssymbol (1 .5 0) ( -4 -4 -13) (4 4 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The Hive Priestess Symbol was created originally by T'jektaluck back in 14567 AH (After Hive).  It was stolen by Matt Pinkston in 20054.  He was promptly captured and fed Zots until he died from sugar overload.
 It starts off invisible.  When used it appears.
 For the HIVE level
@@ -3286,7 +3387,8 @@ void SP_obj_hivepriestessssymbol (edict_t *self)
 
 }
 
-/*QUAKED obj_queenthrone (1 .5 0) ( -40 -56 -49) (40 56 49) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_queenthrone (1 .5 0) ( -40 -56 -49) (40 56 49) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A throne for the queen
 For the HIVE levels
 -------  FIELDS  ------------------
@@ -3310,7 +3412,8 @@ void SP_obj_queenthrone (edict_t *self)
 
 }
 
-/*QUAKED obj_queenchair (1 .5 0) ( -30 -28 -31) (30 28 31) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_queenchair (1 .5 0) ( -30 -28 -31) (30 28 31) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A chair to go by the queen throne
 For the HIVE levels
 -------  FIELDS  ------------------
@@ -3333,7 +3436,8 @@ void SP_obj_queenchair (edict_t *self)
 
 }
 
-/*QUAKED obj_shrine (1 .5 0) ( -26 -38 -38) (26 38 38) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_shrine (1 .5 0) ( -26 -38 -38) (26 38 38) INVULNERABLE ANIMATE EXPLODING NOPUSH
 Its a shrine
 For all levels
 -------  FIELDS  ------------------
@@ -3405,7 +3509,8 @@ void SP_obj_shrine (edict_t *self)
 
 }
 
-/*QUAKED obj_larvaegg (1 .5 0) ( -6 -14 -6) (6 14 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_larvaegg (1 .5 0) ( -6 -14 -6) (6 14 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
 An egg for the larva
 For the HIVE levels
 -------  FIELDS  ------------------
@@ -3428,7 +3533,8 @@ void SP_obj_larvaegg (edict_t *self)
 
 }
 
-/*QUAKED obj_larvabrokenegg (1 .5 0) ( -6 -7 -5) (6 7 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_larvabrokenegg (1 .5 0) ( -6 -7 -5) (6 7 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A broken egg for the larva
 For the HIVE levels
 -------  FIELDS  ------------------
@@ -3451,7 +3557,8 @@ void SP_obj_larvabrokenegg (edict_t *self)
 
 }
 
-/*QUAKED obj_cocoon (1 .5 0) ( -20 -20 -36) (20 20 36) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_cocoon (1 .5 0) ( -20 -20 -36) (20 20 36) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A cocoon which hangs from the ceiling
 For the HIVE levels
 -------  FIELDS  ------------------
@@ -3474,7 +3581,8 @@ void SP_obj_cocoon (edict_t *self)
 	ObjectInit(self,75,125,MAT_INSECT,SOLID_BBOX);
 }
 
-/*QUAKED obj_cocoonopen (1 .5 0) ( -20 -20 -34) (20 20 34) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_cocoonopen (1 .5 0) ( -20 -20 -34) (20 20 34) INVULNERABLE ANIMATE EXPLODING NOPUSH
 An open cocoon which hangs from the ceiling
 For the HIVE levels
 -------  FIELDS  ------------------
@@ -3499,7 +3607,8 @@ void SP_obj_cocoonopen (edict_t *self)
 
 }
 
-/*QUAKED obj_venusflytrap (1 .5 0) ( -20 -20 -24) (20 20 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_venusflytrap (1 .5 0) ( -20 -20 -24) (20 20 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The venus flytrap - a viscous beast of a plant
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3543,7 +3652,8 @@ void tomb_use (edict_t *self, edict_t *other, edict_t *activator)
 	if (self->s.frame < 0)
 		self->s.frame=1;
 }
-/*QUAKED obj_statue_techeckriktomb (1 .5 0) ( -41 -11 -14) (41 11 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_techeckriktomb (1 .5 0) ( -41 -11 -14) (41 11 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
 The statue of the techeckrik laying down.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3576,7 +3686,8 @@ void tcheckrik_use (edict_t *self, edict_t *other, edict_t *activator)
 		--self->s.frame;
 }
 
-/*QUAKED obj_statue_techeckrikright (1 .5 0) ( -26 -40 -50) (26 40 50) INVULNERABLE ANIMATE EXPLODING NOPUSH NOGEM
+/*
+ * QUAKED obj_statue_techeckrikright (1 .5 0) ( -26 -40 -50) (26 40 50) INVULNERABLE ANIMATE EXPLODING NOPUSH NOGEM
 The statue of the techeckrik with his arms raised up to the right.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3608,7 +3719,8 @@ void SP_obj_statue_techeckrikright (edict_t *self)
 
 
 
-/*QUAKED obj_statue_techeckrikleft (1 .5 0) ( -26 -40 -50) (26 40 50) INVULNERABLE ANIMATE EXPLODING NOPUSH NOGEM
+/*
+ * QUAKED obj_statue_techeckrikleft (1 .5 0) ( -26 -40 -50) (26 40 50) INVULNERABLE ANIMATE EXPLODING NOPUSH NOGEM
 The statue of the techeckrik with his arms raised up to the left.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3651,7 +3763,7 @@ void spellbook_anim (edict_t *self)
 	}
 	else
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/spbkcls.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("misc/spbkcls.wav"), 1, ATTN_NORM, 0);
 		self->think = NULL;
 	}
 
@@ -3663,11 +3775,12 @@ void spellbook_use (edict_t *self, edict_t *other, edict_t *activator)
 
 	G_FreeEdict(self->target_ent);
 
-	gi.sound (self, CHAN_BODY, gi.soundindex ("misc/spbook.wav"), 1, ATTN_NORM, 0);
+	gi.sound (self, CHAN_BODY, gi.soundindex("misc/spbook.wav"), 1, ATTN_NORM, 0);
 
 }
 
-/*QUAKED obj_spellbook (1 .5 0) ( -14 -14 -35) (14 14 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_spellbook (1 .5 0) ( -14 -14 -35) (14 14 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A spell book that closes when triggered.
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3706,7 +3819,8 @@ void SP_obj_spellbook (edict_t *self)
 	self->target_ent = beam;
 }
 
-/*QUAKED obj_skullpole (1 .5 0) ( -10 -10 -47) (10 10 47) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_skullpole (1 .5 0) ( -10 -10 -47) (10 10 47) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A pole with skulls on it
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3729,7 +3843,8 @@ void SP_obj_skullpole (edict_t *self)
 
 }
 
-/*QUAKED obj_pot1 (1 .5 0) ( -3 -8 -8) (3 8 8) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_pot1 (1 .5 0) ( -3 -8 -8) (3 8 8) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A cooking pot which hangs from a wall
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3751,7 +3866,8 @@ void SP_obj_pot1 (edict_t *self)
 
 }
 
-/*QUAKED obj_pot2 (1 .5 0) ( -7 -7 -3) (7 7 3) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_pot2 (1 .5 0) ( -7 -7 -3) (7 7 3) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A cooking pot which lays flat on a table
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3771,7 +3887,8 @@ void SP_obj_pot2 (edict_t *self)
 
 }
 
-/*QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A bottle that looks like the one Jennie came out of in I Dream of Jennie
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3791,7 +3908,8 @@ void SP_obj_bottle1 (edict_t *self)
 
 }
 
-/*QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A wine jug
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3812,7 +3930,8 @@ void SP_obj_jug1 (edict_t *self)
 }
 
 
-/*QUAKED obj_torture_table (1 .5 0) ( -46 -14 -14) (46 14 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_torture_table (1 .5 0) ( -46 -14 -14) (46 14 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A table useful for wringing confessions from your broken and pitiful enemies.
 style - the frame of animation for model
  0 -table is down
@@ -3844,7 +3963,8 @@ void SP_obj_torture_table (edict_t *self)
 }
 
 
-/*QUAKED obj_torture_wallring (1 .5 0) ( -2 -4 -6) (2 4 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_torture_wallring (1 .5 0) ( -2 -4 -6) (2 4 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A ring that hangs from a wall
 -------  FIELDS  ------------------
 INVULNERABLE - it can't be hurt
@@ -3874,7 +3994,8 @@ void statue_tchecktrik_bust_use (edict_t *self, edict_t *other, edict_t *activat
 		self->s.frame = 1;
 }
 
-/*QUAKED obj_statue_tchecktrik_bust (1 .5 0) (-8 -12 -15) (8 12 15) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_tchecktrik_bust (1 .5 0) (-8 -12 -15) (8 12 15) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A bust of a tchecktrik.  When used a necklace appears aroundit's neck.
 style -
 0 - no necklace until used then necklace appears
@@ -3923,7 +4044,7 @@ void statue_sithraguard_use (edict_t *self, edict_t *other, edict_t *activator)
 	edict_t *shield;
 
 	statue_sithraguard_think(self);
-	gi.sound (self, CHAN_BODY, gi.soundindex ("items/statuearm.wav"), 1, ATTN_NORM, 0);
+	gi.sound (self, CHAN_BODY, gi.soundindex("items/statuearm.wav"), 1, ATTN_NORM, 0);
 
 	shield = G_Spawn();
 	VectorCopy(self->s.origin,shield->s.origin);
@@ -3942,7 +4063,8 @@ void statue_sithraguard_use (edict_t *self, edict_t *other, edict_t *activator)
 
 }
 
-/*QUAKED obj_statue_sithraguard (1 .5 0) (-22 -20 -57) (22 20 57) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_sithraguard (1 .5 0) (-22 -20 -57) (22 20 57) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A statue of a sithra guard with spear extended.  When used the guard pulls his arm back.
 style - type of statue
 -------  FIELDS  ------------------
@@ -3975,7 +4097,7 @@ void ironmaiden_open (edict_t *self)
 {
 
 	if (self->s.frame == 9)
-		gi.sound (self, CHAN_BODY, gi.soundindex ("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
+		gi.sound (self, CHAN_BODY, gi.soundindex("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
 
 	if (self->s.frame > 0)
 	{
@@ -4014,7 +4136,7 @@ void ironmaiden_use (edict_t *self, edict_t *other, edict_t *activator)
 	self->touch  = NULL;
 
 	ironmaiden_close(self);
-	gi.sound (self, CHAN_BODY, gi.soundindex ("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
+	gi.sound (self, CHAN_BODY, gi.soundindex("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
 
 }
 
@@ -4045,7 +4167,8 @@ void ironmaiden_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 }
 
 
-/*QUAKED obj_torture_ironmaiden (1 .5 0) (-18 -18 -49) (18 18 49) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_torture_ironmaiden (1 .5 0) (-18 -18 -49) (18 18 49) INVULNERABLE ANIMATE EXPLODING NOPUSH
 An iron maiden that closes when used
 -------  FIELDS  ------------------
 INVULNERABLE - N/A (can't be hurt)
@@ -4072,7 +4195,8 @@ void SP_obj_torture_ironmaiden (edict_t *self)
 }
 
 
-/*QUAKED obj_torture_rack (1 .5 0) (-22 -46 -19) (22 46 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_torture_rack (1 .5 0) (-22 -46 -19) (22 46 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A rack
 -------  FIELDS  ------------------
 INVULNERABLE - N/A (can't be hurt)
@@ -4094,7 +4218,8 @@ void SP_obj_torture_rack (edict_t *self)
 
 }
 
-/*QUAKED obj_torture_bed (1 .5 0) (-21 -43 -94) (21 43 94) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_torture_bed (1 .5 0) (-21 -43 -94) (21 43 94) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A bed of spikes that falls from the ceiling.
 -------  FIELDS  ------------------
 INVULNERABLE - N/A (can't be hurt)
@@ -4117,7 +4242,8 @@ void SP_obj_torture_bed (edict_t *self)
 }
 
 
-/*QUAKED obj_statue_saraphbust (1 .5 0) (-10 -20 -24) (10 20 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_saraphbust (1 .5 0) (-10 -20 -24) (10 20 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A bust of a saraph
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4165,7 +4291,8 @@ void biotank_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 	self->target_ent->ideal_yaw = anglemod(other->s.angles[YAW] + 180);
 }
 
-/*QUAKED obj_biotank (1 .5 0) (-20 -33 -52) (20 33 52) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_biotank (1 .5 0) (-20 -33 -52) (20 33 52) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A biotank
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4324,7 +4451,8 @@ void SP_obj_biotank (edict_t *self)
 }
 
 
-/*QUAKED obj_tapper (1 .5 0) (-2 -5 -2) (2 5 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_tapper (1 .5 0) (-2 -5 -2) (2 5 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A tapper for a keg
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4346,7 +4474,8 @@ void SP_obj_tapper (edict_t *self)
 }
 
 
-/*QUAKED obj_wallringplaque (1 .5 0) (-3 -20 -55) (3 20 55) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_wallringplaque (1 .5 0) (-3 -20 -55) (3 20 55) INVULNERABLE ANIMATE EXPLODING NOPUSH
 An iron plaque with rings hanging from it.  Great for hanging half corpses from
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4367,7 +4496,8 @@ void SP_obj_wallringplaque (edict_t *self)
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_hangingdude (1 .5 0) (-3 -20 -55) (3 20 55) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_hangingdude (1 .5 0) (-3 -20 -55) (3 20 55) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A half a dude hanging from a wall ring plaque
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4410,7 +4540,8 @@ void SP_obj_hangingdude (edict_t *self)
 
 }
 
-/*QUAKED obj_frypan (1 .5 0) (-1 -3 -10) (1 3 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_frypan (1 .5 0) (-1 -3 -10) (1 3 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A pan which is hanging on a nail
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4430,7 +4561,8 @@ void SP_obj_frypan (edict_t *self)
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_eggpan (1 .5 0) (-4 -10 -1) (4 10 1) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_eggpan (1 .5 0) (-4 -10 -1) (4 10 1) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A pan which is laying flat like it was on a stove
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4450,7 +4582,8 @@ void SP_obj_eggpan (edict_t *self)
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_nest (1 .5 0) (-25 -25 -4) (25 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_nest (1 .5 0) (-25 -25 -4) (25 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A big bird nest
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4471,7 +4604,8 @@ void SP_obj_nest (edict_t *self)
 }
 
 
-/*QUAKED obj_choppeddude (1 .5 0) (-15 -40 -8) (15 40 8) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_choppeddude (1 .5 0) (-15 -40 -8) (15 40 8) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A guy who's all chopped up and laying on a table
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4491,7 +4625,8 @@ void SP_obj_choppeddude (edict_t *self)
 	ObjectInit(self,250,200,MAT_FLESH,SOLID_BBOX);
 }
 
-/*QUAKED obj_lab_parts_container (1 .5 0) (-8 -8 -11) (8 8 11) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_lab_parts_container (1 .5 0) (-8 -8 -11) (8 8 11) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A container of moving body parts
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4510,7 +4645,8 @@ void SP_obj_lab_parts_container (edict_t *self)
 	ObjectInit(self,40,200,MAT_GLASS,SOLID_BBOX);
 }
 
-/*QUAKED obj_eyeball_jar (1 .5 0) (-13 -13 -18) (13 13 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_eyeball_jar (1 .5 0) (-13 -13 -18) (13 13 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A jar full of eyeballs
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4530,7 +4666,8 @@ void SP_obj_eyeball_jar (edict_t *self)
 	ObjectInit(self,50,200,MAT_GLASS,SOLID_BBOX);
 }
 
-/*QUAKED obj_lab_tray (1 .5 0) (-8 -8 -5) (8 8 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_lab_tray (1 .5 0) (-8 -8 -5) (8 8 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A tray with a beating heart and some tools on it.
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4557,7 +4694,8 @@ void ogle_moan (edict_t *self)
 	self->nextthink = level.time + irand (3, 10);
 }
 
-/*QUAKED obj_hanging_ogle (1 .5 0) (-8 -16 -34) (8 16 34) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_hanging_ogle (1 .5 0) (-8 -16 -34) (8 16 34) INVULNERABLE ANIMATE EXPLODING NOPUSH
 Poor little hanging ogle
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4604,7 +4742,8 @@ void SP_obj_hanging_ogle (edict_t *self)
 }
 
 
-/*QUAKED obj_ring_plaque2 (1 .5 0) (-2 -24 -20) (2 24 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_ring_plaque2 (1 .5 0) (-2 -24 -20) (2 24 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
 More rings mounted into a wall plate
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4626,7 +4765,8 @@ void SP_obj_ring_plaque2 (edict_t *self)
 }
 
 
-/*QUAKED obj_statue_sariph (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_statue_sariph (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
 Big statue in armor carrying an axe
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4646,7 +4786,8 @@ void SP_obj_statue_sariph (edict_t *self)
 	ObjectInit(self,250,200,MAT_STONE,SOLID_BBOX);
 }
 
-/*QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A push cart for the ogles to push around
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4667,7 +4808,8 @@ void SP_obj_pushcart (edict_t *self)
 
 
 
-/*QUAKED obj_bookopen (1 .5 0) (-8 -16 -2) (8 16 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_bookopen (1 .5 0) (-8 -16 -2) (8 16 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
 An open book
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4687,7 +4829,8 @@ void SP_obj_bookopen (edict_t *self)
 }
 
 
-/*QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A closed book standing up
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4707,7 +4850,8 @@ void SP_obj_bookclosed (edict_t *self)
 }
 
 
-/*QUAKED obj_web (1 .5 0) (-2 -18 -20) (2 18 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_web (1 .5 0) (-2 -18 -20) (2 18 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A cobweb
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4756,7 +4900,8 @@ void larva_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *su
 	T_Damage (self, other, other, vec3_origin, self->s.origin, vec3_origin, 10, 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
 }
 
-/*QUAKED obj_larva (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_larva (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A squirming larva
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt
@@ -4794,7 +4939,8 @@ void SP_obj_larva (edict_t *self)
 
 }
 
-/*QUAKED obj_bloodsplat (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+/*
+ * QUAKED obj_bloodsplat (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
 A red blood splat
 -------  FIELDS  ------------------
 INVULNERABLE - can't be hurt

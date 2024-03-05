@@ -78,7 +78,7 @@ typedef enum
 // IN_Update() called at the beginning of a frame to the
 // actual movement functions called at a later time.
 static float mouse_x, mouse_y;
-static int sdl_back_button = SDL_CONTROLLER_BUTTON_BACK;
+static unsigned char sdl_back_button = SDL_CONTROLLER_BUTTON_BACK;
 static int joystick_left_x, joystick_left_y, joystick_right_x, joystick_right_y;
 static float gyro_yaw, gyro_pitch;
 static qboolean mlooking;
@@ -495,47 +495,20 @@ IN_TranslateScancodeToQ2Key(SDL_Scancode sc)
 	return 0;
 }
 
-static int
-IN_TranslateGamepadBtnToQ2Key(int btn)
-{
-
-#define MY_BTN_CASE(X,Y) case SDL_CONTROLLER_BUTTON_ ## X : return K_ ## Y;
-
-	switch( btn )
-	{
-		// case SDL_CONTROLLER_BUTTON_A : return K_BTN_A;
-		MY_BTN_CASE(A,BTN_A)
-		MY_BTN_CASE(B,BTN_B)
-		MY_BTN_CASE(X,BTN_X)
-		MY_BTN_CASE(Y,BTN_Y)
-		MY_BTN_CASE(LEFTSHOULDER,SHOULDER_LEFT)
-		MY_BTN_CASE(RIGHTSHOULDER,SHOULDER_RIGHT)
-		MY_BTN_CASE(LEFTSTICK,STICK_LEFT)
-		MY_BTN_CASE(RIGHTSTICK,STICK_RIGHT)
-		MY_BTN_CASE(DPAD_UP,DPAD_UP)
-		MY_BTN_CASE(DPAD_DOWN,DPAD_DOWN)
-		MY_BTN_CASE(DPAD_LEFT,DPAD_LEFT)
-		MY_BTN_CASE(DPAD_RIGHT,DPAD_RIGHT)
-#if SDL_VERSION_ATLEAST(2, 0, 14)	// support for newer buttons
-		MY_BTN_CASE(PADDLE1,PADDLE_1)
-		MY_BTN_CASE(PADDLE2,PADDLE_2)
-		MY_BTN_CASE(PADDLE3,PADDLE_3)
-		MY_BTN_CASE(PADDLE4,PADDLE_4)
-		MY_BTN_CASE(MISC1,BTN_MISC1)
-		MY_BTN_CASE(TOUCHPAD,TOUCHPAD)
-#endif
-		MY_BTN_CASE(BACK,BTN_BACK)
-		MY_BTN_CASE(GUIDE,BTN_GUIDE)
-		MY_BTN_CASE(START,BTN_START)
-	}
-
-#undef MY_BTN_CASE
-
-	return 0;
-}
-
 static void IN_Controller_Init(qboolean notify_user);
 static void IN_Controller_Shutdown(qboolean notify_user);
+
+qboolean IN_NumpadIsOn()
+{
+    SDL_Keymod mod = SDL_GetModState();
+
+    if ((mod & KMOD_NUM) == KMOD_NUM)
+    {
+        return true;
+    }
+
+    return false;
+}
 
 /* ------------------------------------------------------------------ */
 
@@ -751,20 +724,16 @@ IN_Update(void)
 			case SDL_CONTROLLERBUTTONDOWN:
 			{
 				qboolean down = (event.type == SDL_CONTROLLERBUTTONDOWN);
+				unsigned char btn = event.cbutton.button;
 
 				// Handle Back Button first, to override its original key
-				if (event.cbutton.button == sdl_back_button)
+				if (btn == sdl_back_button)
 				{
 					Key_Event(K_JOY_BACK, down, true);
 					break;
 				}
 
-				key = IN_TranslateGamepadBtnToQ2Key(event.cbutton.button);
-				if(key != 0)
-				{
-					Key_Event(key, down, true);
-				}
-
+				Key_Event(K_BTN_A + btn, down, true);
 				break;
 			}
 
@@ -1045,8 +1014,8 @@ static thumbstick_t
 IN_RadialDeadzone(thumbstick_t stick, float deadzone)
 {
 	thumbstick_t result = {0};
-	float magnitude = min(IN_StickMagnitude(stick), 1.0f);
-	deadzone = min( max(deadzone, 0.0f), 0.9f);		// clamp to [0.0, 0.9]
+	float magnitude = Q_min(IN_StickMagnitude(stick), 1.0f);
+	deadzone = Q_min( Q_max(deadzone, 0.0f), 0.9f);		// clamp to [0.0, 0.9]
 
 	if ( magnitude > deadzone )
 	{
@@ -1070,7 +1039,7 @@ IN_SlopedAxialDeadzone(thumbstick_t stick, float deadzone)
 	float abs_y = fabsf(stick.y);
 	float sign_x = copysignf(1.0f, stick.x);
 	float sign_y = copysignf(1.0f, stick.y);
-	deadzone = min(deadzone, 0.5f);
+	deadzone = Q_min(deadzone, 0.5f);
 	float deadzone_x = deadzone * abs_y;	// deadzone of one axis depends...
 	float deadzone_y = deadzone * abs_x;	// ...on the value of the other axis
 
@@ -1141,7 +1110,7 @@ IN_SmoothedStickRotation(float value)
 	//				0 for immediate consumption
 	float immediate_weight = (fabsf(value) - bottom_threshold)
 					/ (top_threshold - bottom_threshold);
-	immediate_weight = min( max(immediate_weight, 0.0f), 1.0f ); // clamp to [0, 1] range
+	immediate_weight = Q_min( Q_max(immediate_weight, 0.0f), 1.0f ); // clamp to [0, 1] range
 
 	// now we can push the smooth sample
 	float smooth_weight = 1.0f - immediate_weight;
@@ -1171,7 +1140,7 @@ IN_FlickStick(thumbstick_t stick, float axial_deadzone)
 	thumbstick_t processed = stick;
 	float angle_change = 0;
 
-	if (IN_StickMagnitude(stick) > min(joy_flick_threshold->value, 1.0f))	// flick!
+	if (IN_StickMagnitude(stick) > Q_min(joy_flick_threshold->value, 1.0f))	// flick!
 	{
 		// Make snap-to-axis only if player wasn't already flicking
 		if (!is_flicking || flick_progress < FLICK_TIME)
@@ -1895,8 +1864,8 @@ Controller_Rumble(const char *name, vec3_t source, qboolean from_player,
 	}
 
 	effect_volume = joy_haptic_magnitude->value * intens * dist_prop * volume;
-	low_freq = min(effect_volume * low_freq, USHRT_MAX);
-	hi_freq = min(effect_volume * hi_freq, USHRT_MAX);
+	low_freq = Q_min(effect_volume * low_freq, USHRT_MAX);
+	hi_freq = Q_min(effect_volume * hi_freq, USHRT_MAX);
 
 	// Com_Printf("%-29s: vol %5u - %4u ms - dp %.3f l %5.0f h %5.0f\n",
 	//	name, effect_volume, duration, dist_prop, low_freq, hi_freq);

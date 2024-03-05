@@ -716,7 +716,8 @@ void FuncDoorStaticsInit()
 
 
 
-/*QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
+/*
+ * QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
 speed	default 150
 
 Plats are always drawn in the extended position, so they will light correctly.
@@ -835,19 +836,19 @@ void rotate_sounds (edict_t *ent)
 	}
 	else if (ent->sounds == 1)
 	{
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/stoneloop.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("doors/stoneloop.wav");
 	}
 	else if (ent->sounds == 2)
 	{
-		ent->moveinfo.sound_middle = gi.soundindex  ("objects/hugewheel.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("objects/hugewheel.wav");
 	}
 	else if (ent->sounds == 3)
 	{
-		ent->moveinfo.sound_middle = gi.soundindex  ("objects/pizzawheel.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("objects/pizzawheel.wav");
 	}
 	else if (ent->sounds == 4)
 	{
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/spankers.wav");
+		ent->moveinfo.sound_start = gi.soundindex("objects/spankers.wav");
 	}
 	else
 	{
@@ -859,7 +860,8 @@ void rotate_sounds (edict_t *ent)
 
 //====================================================================
 
-/*QUAKED func_rotating (0 .5 .8) ? START_ON REVERSE X_AXIS Y_AXIS TOUCH_PAIN STOP ANIMATED ANIMATED_FAST CRUSHER
+/*
+ * QUAKED func_rotating (0 .5 .8) ? START_ON REVERSE X_AXIS Y_AXIS TOUCH_PAIN STOP ANIMATED ANIMATED_FAST CRUSHER
 You need to have an origin brush as part of this entity.  The center of that brush will be
 the point around which it is rotated. It will rotate around the Z axis by default.  You can
 check either the X_AXIS or Y_AXIS box to change that.
@@ -1065,11 +1067,11 @@ int button_killed (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 void button_sounds(edict_t *self)
 {
 	if (self->sounds == 1)
-		self->moveinfo.sound_start = gi.soundindex ("doors/basicbutton.wav");
+		self->moveinfo.sound_start = gi.soundindex("doors/basicbutton.wav");
 	else if (self->sounds == 2)
-		self->moveinfo.sound_start = gi.soundindex ("doors/clankybutton.wav");
+		self->moveinfo.sound_start = gi.soundindex("doors/clankybutton.wav");
 	else if (self->sounds == 3)
-		self->moveinfo.sound_start = gi.soundindex ("doors/steambutton.wav");
+		self->moveinfo.sound_start = gi.soundindex("doors/steambutton.wav");
 }
 
 static void
@@ -1082,7 +1084,8 @@ VectorAbs(const vec3_t in, vec3_t out)
 	out[2] = (float)Q_fabs(in[2]);
 }
 
-/*QUAKED func_button (0 .5 .8) ? TOUCH
+/*
+ * QUAKED func_button (0 .5 .8) ? TOUCH
 When a button is touched, it moves some distance in the direction of it's angle, triggers all of it's targets, waits some time, then returns to it's original position where it can be triggered again.
 
 "angle"		determines the opening direction
@@ -1554,98 +1557,98 @@ void door_sounds (edict_t *ent)
 		ent->moveinfo.sound_end = 0;
 		break;
 	case DS_GENERIC:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/gendoorstart.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/gendoorstart.wav");
 		ent->moveinfo.sound_middle = 0;
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/gendoorstop.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/gendoorstop.wav");
 		break;
 	case DS_HEAVYSTONE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/stonestart.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/stoneloop.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/stoneend.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/stonestart.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("doors/stoneloop.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/stoneend.wav");
 		break;
 	case DS_SWINGARM:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/bigcreak.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/bigcreak.wav");
 		break;
 	case DS_SWINGBRIDGE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/stoneloop.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/stoneloop.wav");
 		ent->moveinfo.sound_middle = 0;
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/stoneend.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/stoneend.wav");
 		break;
 	case DS_MEDIUMWOOD:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk2.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/creak4.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/doorclose1.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/kchunk2.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("doors/creak4.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/doorclose1.wav");
 		break;
 	case DS_HUGEWOOD:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk1.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/creak2.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/doorshut1.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/kchunk1.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("doors/creak2.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/doorshut1.wav");
 		break;
 	case DS_MEDIUMSTONE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk7.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/stndoor.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud7.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/kchunk7.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("doors/stndoor.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/thud7.wav");
 		break;
 	case DS_LARGESTONE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk6.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/stoneloop.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud3.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/kchunk6.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("doors/stoneloop.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/thud3.wav");
 		break;
 	case DS_MEDIUMMETAL:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk3.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/metal1.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud2.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/kchunk3.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("doors/metal1.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/thud2.wav");
 		break;
 	case DS_FASTSLIDING:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/fastdoor.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/fastdoor.wav");
 		ent->moveinfo.sound_middle = 0;
 		ent->moveinfo.sound_end = 0;
 		break;
 	case DS_METALSLIDING:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk5.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/kchunk5.wav");
 		ent->moveinfo.sound_middle = 0;
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud2.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/thud2.wav");
 		break;
 	case DS_HUGESTONE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk5.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("objects/creak2a.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/thud4.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/kchunk5.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("objects/creak2a.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/thud4.wav");
 		break;
 	case DS_HUGEELEVATOR:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/elevatorstart.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("doors/elevatormove.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("doors/elevatorstop.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/elevatorstart.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("doors/elevatormove.wav");
+		ent->moveinfo.sound_end = gi.soundindex("doors/elevatorstop.wav");
 		break;
 	case DS_CRANEWAREHOUSE:
-		ent->moveinfo.sound_start = gi.soundindex  ("doors/kchunk6.wav");
-		ent->moveinfo.sound_middle = gi.soundindex  ("objects/winch2.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("objects/cratedown.wav");
+		ent->moveinfo.sound_start = gi.soundindex("doors/kchunk6.wav");
+		ent->moveinfo.sound_middle = gi.soundindex("objects/winch2.wav");
+		ent->moveinfo.sound_end = gi.soundindex("objects/cratedown.wav");
 		break;
 	case DS_HAMMERPUMP:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/oilpump.wav");
+		ent->moveinfo.sound_start = gi.soundindex("objects/oilpump.wav");
 		ent->moveinfo.sound_middle = 0;
 		ent->moveinfo.sound_end = 0;
 		break;
 	case DS_METALTABLE:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/slabslide.wav");
+		ent->moveinfo.sound_start = gi.soundindex("objects/slabslide.wav");
 		ent->moveinfo.sound_middle = 0;
 		ent->moveinfo.sound_end = 0;
 		break;
 	case DS_LABTABLE:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/globebottomstart.wav");
-		ent->moveinfo.sound_end = gi.soundindex  ("objects/globebottomend.wav");
+		ent->moveinfo.sound_start = gi.soundindex("objects/globebottomstart.wav");
+		ent->moveinfo.sound_end = gi.soundindex("objects/globebottomend.wav");
 		break;
 	case DS_PISTON:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/piston.wav");
+		ent->moveinfo.sound_start = gi.soundindex("objects/piston.wav");
 		break;
 	case DS_CLANG:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/klang.wav");
+		ent->moveinfo.sound_start = gi.soundindex("objects/klang.wav");
 		break;
 	case DS_UNDERWATER:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/submerge.wav");
+		ent->moveinfo.sound_start = gi.soundindex("objects/submerge.wav");
 		break;
 	case DS_BAM:
-		ent->moveinfo.sound_start = gi.soundindex  ("objects/bam1.wav");
+		ent->moveinfo.sound_start = gi.soundindex("objects/bam1.wav");
 		break;
 	default:
 		ent->moveinfo.sound_start = 0;
@@ -1655,7 +1658,8 @@ void door_sounds (edict_t *ent)
 	}
 }
 
-/*QUAKED func_door (0 .5 .8) ? START_OPEN x CRUSHER NOMONSTER ANIMATED TOGGLE ANIMATED_FAST
+/*
+ * QUAKED func_door (0 .5 .8) ? START_OPEN x CRUSHER NOMONSTER ANIMATED TOGGLE ANIMATED_FAST
 TOGGLE		wait in both the start and end states for a trigger event.
 START_OPEN	the door to moves to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not useful for touch or takedamage doors).
 NOMONSTER	monsters will not trigger this door
@@ -1754,7 +1758,7 @@ void SP_func_door (edict_t *self)
 	}
 	else if (self->targetname && self->message)
 	{
-		gi.soundindex ("misc/talk.wav");
+		gi.soundindex("misc/talk.wav");
 		self->isBlocking = door_touch;
 	}
 
@@ -1787,7 +1791,8 @@ void SP_func_door (edict_t *self)
 		self->think = Think_SpawnDoorTrigger;
 }
 
-/*QUAKED func_door_rotating (0 .5 .8) ? START_OPEN REVERSE CRUSHER NOMONSTER ANIMATED TOGGLE X_AXIS Y_AXIS SWINGAWAY x x x x x x x
+/*
+ * QUAKED func_door_rotating (0 .5 .8) ? START_OPEN REVERSE CRUSHER NOMONSTER ANIMATED TOGGLE X_AXIS Y_AXIS SWINGAWAY x x x x x x x
 TOGGLE causes the door to wait in both the start and end states for a trigger event.
 
 START_OPEN	the door to moves to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not useful for touch or takedamage doors).
@@ -1903,7 +1908,7 @@ void SP_func_door_rotating (edict_t *ent)
 
 	if (ent->targetname && ent->message)
 	{
-		gi.soundindex ("misc/talk.wav");
+		gi.soundindex("misc/talk.wav");
 		ent->isBlocking = door_touch;
 	}
 
@@ -1932,7 +1937,8 @@ void SP_func_door_rotating (edict_t *ent)
 }
 
 
-/*QUAKED func_water (0 .5 .8) ? START_OPEN
+/*
+ * QUAKED func_water (0 .5 .8) ? START_OPEN
 func_water is a moveable water brush.  It must be targeted to operate.  Use a non-water texture at your own risk.
 
 START_OPEN causes the water to move to its destination when spawned and operate in reverse.
@@ -2036,7 +2042,8 @@ void train_animbackwards(edict_t *self)
 #define TRAIN_TOGGLE		2
 #define TRAIN_BLOCK_STOPS	4
 
-/*QUAKED func_train (0 .5 .8) ? START_ON TOGGLE BLOCK_STOPS HASORIGIN NO_CLIP PUSHPULL
+/*
+ * QUAKED func_train (0 .5 .8) ? START_ON TOGGLE BLOCK_STOPS HASORIGIN NO_CLIP PUSHPULL
 Trains are moving platforms that players can ride.
 The targets origin specifies the min point of the train at each corner.
 The train spawns at the first target it is pointing at.
@@ -2352,7 +2359,7 @@ void SP_func_train (edict_t *self)
 	}
 
 	if (st.noise)
-		self->moveinfo.sound_middle = gi.soundindex  (st.noise);
+		self->moveinfo.sound_middle = gi.soundindex(st.noise);
 
 	if (!self->speed)
 		self->speed = 100;
@@ -2395,7 +2402,8 @@ void SP_func_train (edict_t *self)
 	}
 }
 
-/*QUAKED func_timer (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) START_ON
+/*
+ * QUAKED func_timer (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) START_ON
 "wait"			base time between triggering all targets, default is 1
 "random"		wait variance, default is 0
 
@@ -2457,12 +2465,12 @@ void SP_func_timer (edict_t *self)
 }
 
 
-/*QUAK-ED func_conveyor (0 .5 .8) ? START_ON TOGGLE
+/*
+ * QUAKED func_conveyor (0 .5 .8) ? START_ON TOGGLE
 Conveyors are stationary brushes that move what's on them.
 The brush should be have a surface with at least one current content enabled.
 speed	default 100
 */
-/*
 void func_conveyor_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->spawnflags & 1)
@@ -2479,8 +2487,7 @@ void func_conveyor_use (edict_t *self, edict_t *other, edict_t *activator)
 	if (!(self->spawnflags & 2))
 		self->count = 0;
 }
-*/
-/*
+
 void SP_func_conveyor (edict_t *self)
 {
 	if (!self->speed)
@@ -2498,9 +2505,9 @@ void SP_func_conveyor (edict_t *self)
 	self->solid = SOLID_BSP;
 	gi.linkentity (self);
 }
-*/
 
-/*QUAKED func_door_secret (0 .5 .8) ? always_shoot 1st_left 1st_down
+/*
+ * QUAKED func_door_secret (0 .5 .8) ? always_shoot 1st_left 1st_down
 A secret door.  Slide back and then to the side.
 
 open_once		doors never closes
@@ -2657,9 +2664,9 @@ void SP_func_door_secret (edict_t *ent)
 
 	door_sounds(ent);
 
-//	ent->moveinfo.sound_start = gi.soundindex  ("doors/stonestart.wav");
-//	ent->moveinfo.sound_middle = gi.soundindex  ("doors/stoneloop.wav");
-//	ent->moveinfo.sound_end = gi.soundindex  ("doors/stoneend.wav");
+//	ent->moveinfo.sound_start = gi.soundindex("doors/stonestart.wav");
+//	ent->moveinfo.sound_middle = gi.soundindex("doors/stoneloop.wav");
+//	ent->moveinfo.sound_end = gi.soundindex("doors/stoneend.wav");
 
 	ent->movetype = PHYSICSTYPE_PUSH;
 	ent->solid = SOLID_BSP;
@@ -2712,7 +2719,7 @@ void SP_func_door_secret (edict_t *ent)
 	}
 	else if (ent->targetname && ent->message)
 	{
-		gi.soundindex ("misc/talk.wav");
+		gi.soundindex("misc/talk.wav");
 		ent->isBlocking = door_touch;
 	}
 
@@ -2896,7 +2903,8 @@ void monsterspawner_use(edict_t *self, edict_t *other, edict_t *activator)
 	monsterspawner_go(self);
 }
 
-/*QUAKED func_monsterspawner (0 .5 .8) (-8 -8 -8) (8 8 8) ONDEATH RANDOMBUOY PEACEFUL
+/*
+ * QUAKED func_monsterspawner (0 .5 .8) (-8 -8 -8) (8 8 8) ONDEATH RANDOMBUOY PEACEFUL
 Triggerable monster spawner
 -----SPAWNFLAGS--------------
 ONDEATH - the next monster will not spawn until the current one is dead
@@ -3002,16 +3010,15 @@ void SP_func_monsterspawner (edict_t *self)
 }
 
 
-/*QUAK-ED func_killbox (1 0 0) ?
-Kills everything inside when fired, irrespective of protection.
-*/
 /*
+ * QUAKED func_killbox (1 0 0) ?
+ * Kills everything inside when fired, irrespective of protection.
+ */
 void use_killbox (edict_t *self, edict_t *other, edict_t *activator)
 {
 	KillBox (self);
 }
-*/
-/*
+
 void SP_func_killbox (edict_t *ent)
 {
 	gi.setmodel (ent, ent->model);
@@ -3019,25 +3026,23 @@ void SP_func_killbox (edict_t *ent)
 	ent->svflags = SVF_NOCLIENT;
 }
 
-*/
-
 
 //===========================
 //  These are just temp entities until the actual code is written for each monster
 //===========================
 
-/*QUAKED monster_chkroktk (1 .5 0) (-16 -16 -26) (16 16 26) AMBUSH ASLEEP
-The  chkroktk
-*/
+/*
+ * QUAKED monster_chkroktk (1 .5 0) (-16 -16 -26) (16 16 26) AMBUSH ASLEEP
+ * The  chkroktk
+ */
 void SP_monster_chkroktk (edict_t *self)
 {
 	self->style = MS_CHKROKTK;
 	monsterspawner_go(self);
 }
 
-
-
-/*QUAKED character_sidhe_guard (1 .5 0) (-16 -16 -26) (16 16 26) AMBUSH ASLEEP
+/*
+ * QUAKED character_sidhe_guard (1 .5 0) (-16 -16 -26) (16 16 26) AMBUSH ASLEEP
 The Sidhe Guard
 */
 void SP_character_sidhe_guard (edict_t *self)

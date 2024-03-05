@@ -42,8 +42,8 @@ int		r_aliasblendcolor;
 static vec3_t		r_shadelight;
 
 
-static daliasframe_t	*r_thisframe, *r_lastframe;
-static dmdl_t	*s_pmdl;
+static daliasxframe_t	*r_thisframe, *r_lastframe;
+static dmdx_t	*s_pmdl;
 
 static float	aliastransform[3][4];
 static float	aliasworldtransform[3][4];
@@ -61,7 +61,7 @@ static const float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 
 
 static void R_AliasTransformVector(const vec3_t in, vec3_t out, const float xf[3][4]);
-static void R_AliasTransformFinalVerts(const entity_t *currententity, int numpoints, finalvert_t *fv, dtrivertx_t *oldv, dtrivertx_t *newv );
+static void R_AliasTransformFinalVerts(const entity_t *currententity, int numpoints, finalvert_t *fv, dxtrivertx_t *oldv, dxtrivertx_t *newv );
 
 void R_AliasProjectAndClipTestFinalVert(finalvert_t *fv);
 
@@ -78,12 +78,14 @@ R_AliasCheckBBox
 #define BBOX_TRIVIAL_REJECT 8
 
 /*
-** R_AliasCheckFrameBBox
-**
-** Checks a specific alias frame bounding box
+ * R_AliasCheckFrameBBox
+ *
+ * Checks a specific alias frame bounding box
+ *
+ * TODO: Combine with R_CullAliasMeshModel
 */
 static unsigned long
-R_AliasCheckFrameBBox( daliasframe_t *frame, float worldxf[3][4] )
+R_AliasCheckFrameBBox( daliasxframe_t *frame, float worldxf[3][4] )
 {
 	// FIXME: should this really be using long and not int32_t or sth?
 	unsigned long aggregate_and_clipcode = ~0U,
@@ -99,7 +101,7 @@ R_AliasCheckFrameBBox( daliasframe_t *frame, float worldxf[3][4] )
 	for (i=0 ; i<3 ; i++)
 	{
 		mins[i] = frame->translate[i];
-		maxs[i] = mins[i] + frame->scale[i]*255;
+		maxs[i] = mins[i] + frame->scale[i] * 0xFFFF;
 	}
 
 	/*
@@ -109,9 +111,14 @@ R_AliasCheckFrameBBox( daliasframe_t *frame, float worldxf[3][4] )
 	R_AliasTransformVector( maxs, transformed_max, aliastransform );
 
 	if ( transformed_min[2] >= ALIAS_Z_CLIP_PLANE )
+	{
 		zfullyclipped = false;
+	}
+
 	if ( transformed_max[2] >= ALIAS_Z_CLIP_PLANE )
+	{
 		zfullyclipped = false;
+	}
 
 	if ( zfullyclipped )
 	{
@@ -128,19 +135,31 @@ R_AliasCheckFrameBBox( daliasframe_t *frame, float worldxf[3][4] )
 		unsigned long clipcode = 0;
 
 		if ( i & 1 )
+		{
 			tmp[0] = mins[0];
+		}
 		else
+		{
 			tmp[0] = maxs[0];
+		}
 
 		if ( i & 2 )
+		{
 			tmp[1] = mins[1];
+		}
 		else
+		{
 			tmp[1] = maxs[1];
+		}
 
 		if ( i & 4 )
+		{
 			tmp[2] = mins[2];
+		}
 		else
+		{
 			tmp[2] = maxs[2];
+		}
 
 		R_AliasTransformVector( tmp, transformed, worldxf );
 
@@ -149,7 +168,9 @@ R_AliasCheckFrameBBox( daliasframe_t *frame, float worldxf[3][4] )
 			float dp = DotProduct( transformed, view_clipplanes[j].normal );
 
 			if ( ( dp - view_clipplanes[j].dist ) < 0.0F )
+			{
 				clipcode |= 1 << j;
+			}
 		}
 
 		aggregate_and_clipcode &= clipcode;
@@ -392,12 +413,17 @@ R_AliasSetUpTransform(const entity_t *currententity)
 /*
 ================
 R_AliasTransformFinalVerts
+
+TODO: Combine with R_LerpVerts
 ================
 */
 static void
-R_AliasTransformFinalVerts(const entity_t *currententity, int numpoints, finalvert_t *fv, dtrivertx_t *oldv, dtrivertx_t *newv )
+R_AliasTransformFinalVerts(const entity_t *currententity, int numpoints, finalvert_t *fv, dxtrivertx_t *oldv, dxtrivertx_t *newv )
 {
 	int i;
+	qboolean colorOnly = 0 != (currententity->flags &
+			(RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE |
+			 RF_SHELL_HALF_DAM));
 
 	for ( i = 0; i < numpoints; i++, fv++, oldv++, newv++ )
 	{
@@ -405,14 +431,14 @@ R_AliasTransformFinalVerts(const entity_t *currententity, int numpoints, finalve
 		const float	*plightnormal;
 		vec3_t  lerped_vert;
 
-		lerped_vert[0] = r_lerp_move[0] + oldv->v[0]*r_lerp_backv[0] + newv->v[0]*r_lerp_frontv[0];
-		lerped_vert[1] = r_lerp_move[1] + oldv->v[1]*r_lerp_backv[1] + newv->v[1]*r_lerp_frontv[1];
-		lerped_vert[2] = r_lerp_move[2] + oldv->v[2]*r_lerp_backv[2] + newv->v[2]*r_lerp_frontv[2];
+		lerped_vert[0] = r_lerp_move[0] + oldv->v[0] * r_lerp_backv[0] + newv->v[0] * r_lerp_frontv[0];
+		lerped_vert[1] = r_lerp_move[1] + oldv->v[1] * r_lerp_backv[1] + newv->v[1] * r_lerp_frontv[1];
+		lerped_vert[2] = r_lerp_move[2] + oldv->v[2] * r_lerp_backv[2] + newv->v[2] * r_lerp_frontv[2];
 
 		plightnormal = r_avertexnormals[newv->lightnormalindex];
 
 		// added double damage shell
-		if ( currententity->flags & ( RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE | RF_SHELL_HALF_DAM) )
+		if ( colorOnly )
 		{
 			lerped_vert[0] += plightnormal[0] * POWERSUIT_SCALE;
 			lerped_vert[1] += plightnormal[1] * POWERSUIT_SCALE;
@@ -514,7 +540,8 @@ R_AliasSetupSkin(const entity_t *currententity, const model_t *currentmodel)
 		int skinnum;
 
 		skinnum = currententity->skinnum;
-		if ((skinnum >= s_pmdl->num_skins) || (skinnum < 0))
+		if ((skinnum >= s_pmdl->num_skins) || (skinnum < 0) ||
+			(skinnum >= currentmodel->numskins))
 		{
 			R_Printf(PRINT_ALL, "%s %s: no such skin # %d\n",
 				__func__, currentmodel->name, skinnum);
@@ -644,7 +671,7 @@ R_AliasSetupFrames
 =================
 */
 static void
-R_AliasSetupFrames(const entity_t *currententity, const model_t *currentmodel, dmdl_t *pmdl)
+R_AliasSetupFrames(const entity_t *currententity, const model_t *currentmodel, dmdx_t *pmdl)
 {
 	int thisframe = currententity->frame;
 	int lastframe = currententity->oldframe;
@@ -662,10 +689,10 @@ R_AliasSetupFrames(const entity_t *currententity, const model_t *currentmodel, d
 		lastframe = 0;
 	}
 
-	r_thisframe = (daliasframe_t *)((byte *)pmdl + pmdl->ofs_frames
+	r_thisframe = (daliasxframe_t *)((byte *)pmdl + pmdl->ofs_frames
 		+ thisframe * pmdl->framesize);
 
-	r_lastframe = (daliasframe_t *)((byte *)pmdl + pmdl->ofs_frames
+	r_lastframe = (daliasxframe_t *)((byte *)pmdl + pmdl->ofs_frames
 		+ lastframe * pmdl->framesize);
 }
 
@@ -675,7 +702,7 @@ R_AliasSetupFrames(const entity_t *currententity, const model_t *currentmodel, d
 ** Precomputes lerp coefficients used for the whole frame.
 */
 static void
-R_AliasSetUpLerpData(entity_t *currententity, dmdl_t *pmdl, float backlerp)
+R_AliasSetUpLerpData(entity_t *currententity, dmdx_t *pmdl, float backlerp)
 {
 	float	frontlerp;
 	vec3_t	translation, vectors[3];
@@ -731,7 +758,7 @@ R_AliasDrawModel
 void
 R_AliasDrawModel(entity_t *currententity, const model_t *currentmodel)
 {
-	s_pmdl = (dmdl_t *)currentmodel->extradata;
+	s_pmdl = (dmdx_t *)currentmodel->extradata;
 
 	if ( r_lerpmodels->value == 0 )
 		currententity->backlerp = 0;

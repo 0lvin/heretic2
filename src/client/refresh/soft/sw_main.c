@@ -43,7 +43,8 @@ pixel_t		*vid_alphamap = NULL;
 light_t		vid_lightthreshold = 0;
 static int	vid_minu, vid_minv, vid_maxu, vid_maxv;
 static int	vid_zminu, vid_zminv, vid_zmaxu, vid_zmaxv;
-static qboolean IsHighDPIaware;
+static qboolean IsHighDPIaware = false;
+static qboolean is_render_flushed = false;
 
 // last position  on map
 static vec3_t	lastvieworg;
@@ -54,8 +55,6 @@ static qboolean	palette_changed;
 refimport_t	ri;
 
 byte		d_8to24table[256 * 4];
-
-vec3_t		skyaxis;
 
 refdef_t	r_newrefdef;
 
@@ -174,7 +173,7 @@ static cvar_t	*vid_fullscreen;
 static cvar_t	*vid_gamma;
 
 static cvar_t	*r_lockpvs;
-static cvar_t	*r_palettedtexture;
+cvar_t	*r_palettedtexture;
 cvar_t	*r_cull;
 
 // sw_vars.c
@@ -213,12 +212,14 @@ int		cachewidth;
 pixel_t		*d_viewbuffer;
 zvalue_t	*d_pzbuffer;
 
-static void RE_BeginFrame( float camera_separation );
+static void RE_BeginFrame(float camera_separation);
 static void Draw_BuildGammaTable(void);
 static void RE_FlushFrame(int vmin, int vmax);
 static void RE_CleanFrame(void);
 static void RE_EndFrame(void);
 static void R_DrawBeam(const entity_t *e);
+static void RE_Draw_StretchDirectRaw(int x, int y, int w, int h,
+	int cols, int rows, const byte *data, int bits);
 
 /*
 ================
@@ -1484,6 +1485,8 @@ RE_BeginFrame( float camera_separation )
 	palette_changed = false;
 	// run without speed optimization
 	fastmoving = false;
+	/* window could redraw */
+	is_render_flushed = false;
 
 	while (r_vsync->modified)
 	{
@@ -1731,43 +1734,6 @@ R_DrawBeam(const entity_t *e)
 //===================================================================
 
 /*
-============
-RE_SetSky
-============
-*/
-// 3dstudio environment map names
-static const char	*suf[6] = {"rt", "bk", "lf", "ft", "up", "dn"};
-static const int	r_skysideimage[6] = {5, 2, 4, 1, 0, 3};
-extern mtexinfo_t		r_skytexinfo[6];
-
-static void
-RE_SetSky(const char *name, float rotate, int autorotate, const vec3_t axis)
-{
-	char	skyname[MAX_QPATH];
-	int		i;
-
-	Q_strlcpy (skyname, name, sizeof(skyname));
-	VectorCopy (axis, skyaxis);
-
-	for (i=0 ; i<6 ; i++)
-	{
-		image_t	*image;
-
-		image = (image_t *)GetSkyImage(skyname, suf[r_skysideimage[i]],
-			r_palettedtexture->value, (findimage_t)R_FindImage);
-
-		if (!image)
-		{
-			R_Printf(PRINT_ALL, "%s: can't load %s:%s sky\n",
-				__func__, skyname, suf[r_skysideimage[i]]);
-			image = r_notexture_mip;
-		}
-
-		r_skytexinfo[i].image = image;
-	}
-}
-
-/*
 ===============
 RE_RegisterSkin
 ===============
@@ -1851,7 +1817,7 @@ GetRefAPI(refimport_t imp)
 	refexport.DrawFill = RE_Draw_Fill;
 	refexport.DrawFadeScreen = RE_Draw_FadeScreen;
 
-	refexport.DrawStretchRaw = RE_Draw_StretchRaw;
+	refexport.DrawStretchRaw = RE_Draw_StretchDirectRaw;
 
 	refexport.Init = RE_Init;
 	refexport.IsVSyncActive = RE_IsVsyncActive;
@@ -1891,6 +1857,7 @@ GetRefAPI(refimport_t imp)
 
 static SDL_Window	*window = NULL;
 static SDL_Texture	*texture = NULL;
+static SDL_Texture	*texture_rgba = NULL;
 static SDL_Renderer	*renderer = NULL;
 
 int vid_buffer_height = 0;
@@ -1951,6 +1918,9 @@ RE_InitContext(void *win)
 		vid_buffer_width = vid.width;
 	}
 
+	/* do not create by default buffer for HUD/2D/Direct cinema*/
+	texture_rgba = NULL;
+	/* just buffer for 8bit -> 32bit covert and render */
 	texture = SDL_CreateTexture(renderer,
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 				    SDL_PIXELFORMAT_BGRA8888,
@@ -2083,6 +2053,12 @@ RE_ShutdownContext(void)
 	}
 	texture = NULL;
 
+	if (texture_rgba)
+	{
+		SDL_DestroyTexture(texture_rgba);
+	}
+	texture_rgba = NULL;
+
 	if (renderer)
 	{
 		SDL_DestroyRenderer(renderer);
@@ -2203,11 +2179,24 @@ RE_FlushFrame(int vmin, int vmax)
 	int pitch;
 	Uint32 *pixels;
 
+	if (vmin > vmax)
+	{
+		/* Looks like we already updated everything */
+		return;
+	}
+
+	if (is_render_flushed)
+	{
+		Com_Printf("%s: Render is already flushed\n", __func__);
+		return;
+	}
+
 	if (SDL_LockTexture(texture, NULL, (void**)&pixels, &pitch))
 	{
 		Com_Printf("Can't lock texture: %s\n", SDL_GetError());
 		return;
 	}
+
 	if (sw_partialrefresh->value)
 	{
 		RE_CopyFrame (pixels, pitch / sizeof(Uint32), vmin, vmax);
@@ -2233,8 +2222,101 @@ RE_FlushFrame(int vmin, int vmax)
 	swap_current ++;
 	vid_buffer = swap_frames[swap_current&1];
 
-	// All changes flushed
+	/* All changes flushed */
 	VID_NoDamageBuffer();
+
+	/* new draw is not required */
+	is_render_flushed = true;
+}
+
+static void
+RE_Draw_StretchDirectRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits)
+{
+	int pitch;
+	Uint32 *pixels;
+
+	if (!cols || !rows || !data)
+	{
+		return;
+	}
+
+	if (bits != 32 || x || y ||
+		w != vid_buffer_width || h != vid_buffer_height ||
+		cols > vid_buffer_width || rows > vid_buffer_height)
+	{
+		/* Not full screen update */
+		RE_Draw_StretchRaw(x, y, w, h, cols, rows, data, bits);
+		return;
+	}
+
+	if (is_render_flushed)
+	{
+		/* TODO: fix show fps */
+		Com_Printf("%s: Render is already flushed\n", __func__);
+		return;
+	}
+
+	if (!texture_rgba)
+	{
+		/* texture for direct rendering */
+		texture_rgba = SDL_CreateTexture(renderer,
+					    SDL_PIXELFORMAT_ABGR8888,
+					    SDL_TEXTUREACCESS_STREAMING,
+					    vid_buffer_width, vid_buffer_height);
+	}
+
+	/* Full screen update should be faster */
+	if (SDL_LockTexture(texture_rgba, NULL, (void**)&pixels, &pitch))
+	{
+		Com_Printf("Can't lock texture: %s\n", SDL_GetError());
+		return;
+	}
+
+	if (pitch < (cols * sizeof(Uint32)))
+	{
+		/* Oops: different texture format? */
+		SDL_UnlockTexture(texture_rgba);
+		/* Failback full image convert */
+		RE_Draw_StretchRaw(x, y, w, h, cols, rows, data, bits);
+		return;
+	}
+
+	if (cols == vid_buffer_width && rows == vid_buffer_height)
+	{
+		memcpy(pixels, data, vid_buffer_width * vid_buffer_height * sizeof(Uint32));
+	}
+	else
+	{
+		int i;
+
+		for (i = 0; i < rows; i++)
+		{
+			memcpy(pixels + i * vid_buffer_width,
+				data + i * cols * sizeof(Uint32),
+				cols * sizeof(Uint32)
+			);
+		}
+	}
+
+	SDL_UnlockTexture(texture_rgba);
+
+	if (cols == vid_buffer_width && rows == vid_buffer_height)
+	{
+		SDL_RenderCopy(renderer, texture_rgba, NULL, NULL);
+	}
+	else
+	{
+		SDL_Rect srcrect;
+		srcrect.x = 0;
+		srcrect.y = 0;
+		srcrect.w = cols;
+		srcrect.h = rows;
+		SDL_RenderCopy(renderer, texture_rgba, &srcrect, NULL);
+	}
+
+	SDL_RenderPresent(renderer);
+
+	is_render_flushed = true;
 }
 
 /*
@@ -2253,14 +2335,17 @@ RE_EndFrame (void)
 	{
 		vid_minu = 0;
 	}
+
 	if (vid_minv < 0)
 	{
 		vid_minv = 0;
 	}
+
 	if (vid_maxu > vid_buffer_width)
 	{
 		vid_maxu = vid_buffer_width;
 	}
+
 	if (vid_maxv > vid_buffer_height)
 	{
 		vid_maxv = vid_buffer_height;

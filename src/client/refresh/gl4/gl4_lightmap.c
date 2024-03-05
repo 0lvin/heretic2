@@ -33,13 +33,13 @@
 extern gl4lightmapstate_t gl4_lms;
 
 void
-GL4_LM_InitBlock(void)
+LM_InitBlock(void)
 {
 	memset(gl4_lms.allocated, 0, sizeof(gl4_lms.allocated));
 }
 
 void
-GL4_LM_UploadBlock(void)
+LM_UploadBlock(void)
 {
 	int map;
 
@@ -71,15 +71,16 @@ GL4_LM_UploadBlock(void)
  * returns a texture number and the position inside it
  */
 qboolean
-GL4_LM_AllocBlock(int w, int h, int *x, int *y)
+LM_AllocBlock(int w, int h, int *x, int *y)
 {
-	int i, j;
-	int best, best2;
+	int i, best;
 
 	best = BLOCK_HEIGHT;
 
 	for (i = 0; i < BLOCK_WIDTH - w; i++)
 	{
+		int		j, best2;
+
 		best2 = 0;
 
 		for (j = 0; j < w; j++)
@@ -117,12 +118,11 @@ GL4_LM_AllocBlock(int w, int h, int *x, int *y)
 }
 
 void
-GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
+LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
 {
-	int i, lindex, lnumverts;
+	int i, lnumverts;
 	medge_t *pedges, *r_pedge;
 	float *vec;
-	float s, t;
 	mpoly_t *poly;
 	vec3_t total;
 	vec3_t normal;
@@ -152,7 +152,11 @@ GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
 
 	for (i = 0; i < lnumverts; i++)
 	{
-		mvtx_t* vert = &poly->verts[i];
+		mvtx_t* vert;
+		float s, t;
+		int lindex;
+
+		vert = &poly->verts[i];
 
 		lindex = currentmodel->surfedges[fa->firstedge + i];
 
@@ -179,13 +183,13 @@ GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
 		vert->texCoord[1] = t;
 
 		/* lightmap texture coordinates */
-		s = DotProduct(vec, fa->texinfo->vecs[0]) + fa->texinfo->vecs[0][3];
+		s = DotProduct(vec, fa->lmvecs[0]) + fa->lmvecs[0][3];
 		s -= fa->texturemins[0];
 		s += fa->light_s * (1 << fa->lmshift);
 		s += (1 << fa->lmshift) * 0.5;
 		s /= BLOCK_WIDTH * (1 << fa->lmshift);
 
-		t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
+		t = DotProduct(vec, fa->lmvecs[1]) + fa->lmvecs[1][3];
 		t -= fa->texturemins[1];
 		t += fa->light_t * (1 << fa->lmshift);
 		t += (1 << fa->lmshift) * 0.5;
@@ -200,7 +204,7 @@ GL4_LM_BuildPolygonFromSurface(gl4model_t *currentmodel, msurface_t *fa)
 }
 
 void
-GL4_LM_CreateSurfaceLightmap(msurface_t *surf)
+LM_CreateSurfaceLightmap(msurface_t *surf)
 {
 	int smax, tmax;
 
@@ -212,12 +216,12 @@ GL4_LM_CreateSurfaceLightmap(msurface_t *surf)
 	smax = (surf->extents[0] >> surf->lmshift) + 1;
 	tmax = (surf->extents[1] >> surf->lmshift) + 1;
 
-	if (!GL4_LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
+	if (!LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
 	{
-		GL4_LM_UploadBlock();
-		GL4_LM_InitBlock();
+		LM_UploadBlock();
+		LM_InitBlock();
 
-		if (!GL4_LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
+		if (!LM_AllocBlock(smax, tmax, &surf->light_s, &surf->light_t))
 		{
 			Com_Error(ERR_FATAL,
 				"%s: Consecutive calls to LM_AllocBlock(%d,%d) failed\n",
@@ -231,9 +235,8 @@ GL4_LM_CreateSurfaceLightmap(msurface_t *surf)
 }
 
 void
-GL4_LM_BeginBuildingLightmaps(gl4model_t *m)
+LM_BeginBuildingLightmaps(gl4model_t *m)
 {
-
 	static lightstyle_t lightstyles[MAX_LIGHTSTYLES];
 	int i;
 
@@ -260,8 +263,8 @@ GL4_LM_BeginBuildingLightmaps(gl4model_t *m)
 }
 
 void
-GL4_LM_EndBuildingLightmaps(void)
+LM_EndBuildingLightmaps(void)
 {
-	GL4_LM_UploadBlock();
+	LM_UploadBlock();
 }
 

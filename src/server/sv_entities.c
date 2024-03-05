@@ -36,8 +36,9 @@ static YQ2_ALIGNAS_TYPE(int32_t) byte fatpvs[65536 / 8];
 /*
  * Writes a delta update of an entity_state_t list to the message.
  */
-void
-SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg)
+static void
+SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg,
+	int protocol)
 {
 	entity_state_t *oldent, *newent;
 	int oldindex, newindex;
@@ -98,7 +99,7 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg)
 			   note that players are always 'newentities', this
 			   updates their oldorigin always and prevents warping */
 			MSG_WriteDeltaEntity(oldent, newent, msg,
-					false, newent->number <= maxclients->value);
+					false, newent->number <= maxclients->value, protocol);
 			oldindex++;
 			newindex++;
 			continue;
@@ -107,7 +108,8 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg)
 		if (newnum < oldnum)
 		{
 			/* this is a new entity, send it from the baseline */
-			MSG_WriteDeltaEntity(&sv.baselines[newnum], newent, msg, true, true);
+			MSG_WriteDeltaEntity(&sv.baselines[newnum], newent, msg,
+				true, true, protocol);
 			newindex++;
 			continue;
 		}
@@ -142,7 +144,7 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg)
 	MSG_WriteShort(msg, 0);
 }
 
-void
+static void
 SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		sizebuf_t *msg)
 {
@@ -474,7 +476,7 @@ SV_WriteFrameToClient(client_t *client, sizebuf_t *msg)
 	SV_WritePlayerstateToClient(oldframe, frame, msg);
 
 	/* delta encode the entities */
-	SV_EmitPacketEntities(oldframe, frame, msg);
+	SV_EmitPacketEntities(oldframe, frame, msg, client->protocol);
 
 	/* Write our global effects to the client. */
 	SV_WriteClientEffectsToClient(oldframe, frame, msg);
@@ -484,7 +486,7 @@ SV_WriteFrameToClient(client_t *client, sizebuf_t *msg)
  * The client will interpolate the view position,
  * so we can't use a single PVS point
  */
-void
+static void
 SV_FatPVS(vec3_t org)
 {
 	int leafs[64];
@@ -558,6 +560,7 @@ SV_BuildClientFrame(client_t *client)
 	int l;
 	int clientarea, clientcluster;
 	int leafnum;
+	byte *clientphs;
 	byte *bitvector;
 
 	clent = client->edict;
@@ -575,14 +578,8 @@ SV_BuildClientFrame(client_t *client)
 	/* find the client's PVS */
 	for (i = 0; i < 3; i++)
 	{
-		if (clent->client->ps.remote_id == -1)
-		{
-			org[i] = clent->client->ps.pmove.origin[i] * 0.125;
-		}
-		else
-		{
-			org[i] = clent->client->ps.remote_vieworigin[i];
-		}
+		org[i] = clent->client->ps.pmove.origin[i] * 0.125 +
+				 clent->client->ps.viewoffset[i];
 	}
 
 	leafnum = CM_PointLeafnum(org);
@@ -596,7 +593,7 @@ SV_BuildClientFrame(client_t *client)
 	frame->ps = clent->client->ps;
 
 	SV_FatPVS(org);
-	CM_ClusterPHS(clientcluster);
+	clientphs = CM_ClusterPHS(clientcluster);
 
 	/* build up the list of visible entities */
 	frame->num_entities = 0;
@@ -614,7 +611,7 @@ SV_BuildClientFrame(client_t *client)
 
 		/* ignore ents without visible models unless they have an effect */
 		if (!ent->s.modelindex && !ent->s.effects &&
-			!ent->s.sound)
+			!ent->s.sound && !ent->s.event)
 		{
 			continue;
 		}
@@ -634,6 +631,17 @@ SV_BuildClientFrame(client_t *client)
 				}
 			}
 
+			/* beams just check one point for PHS */
+			if (ent->s.renderfx & RF_BEAM)
+			{
+				l = ent->clusternums[0];
+
+				if (!(clientphs[l >> 3] & (1 << (l & 7))))
+				{
+					continue;
+				}
+			}
+			else
 			{
 				bitvector = fatpvs;
 
@@ -741,9 +749,11 @@ SV_RecordDemoMessage(void)
 	{
 		/* ignore ents without visible models unless they have an effect */
 		if (ent->inuse && ent->s.number &&
-			(ent->s.modelindex || ent->s.effects || ent->s.sound) && !(ent->svflags & SVF_NOCLIENT))
+			(ent->s.modelindex || ent->s.effects || ent->s.sound ||
+			 ent->s.event) && !(ent->svflags & SVF_NOCLIENT))
 		{
-			MSG_WriteDeltaEntity(&nostate, &ent->s, &buf, false, true);
+			MSG_WriteDeltaEntity(&nostate, &ent->s, &buf,
+				false, true, PROTOCOL_VERSION);
 		}
 
 		e++;

@@ -56,7 +56,7 @@
 
 #include "../../ref_shared.h"
 
-#include "HandmadeMath.h"
+#include "../../files/HandmadeMath.h"
 
 #if 0 // only use this for development ..
 #define STUB_ONCE(msg) do { \
@@ -309,8 +309,6 @@ typedef struct image_s
 
 } gl3image_t;
 
-enum {MAX_GL3TEXTURES = 1024};
-
 // include this down here so it can use gl3image_t
 #include "model.h"
 
@@ -460,13 +458,13 @@ extern void GL3_BuildLightMap(msurface_t *surf, int offsetInLMbuf, int stride);
 // gl3_lightmap.c
 #define GL_LIGHTMAP_FORMAT GL_RGBA
 
-extern void GL3_LM_InitBlock(void);
-extern void GL3_LM_UploadBlock(void);
-extern qboolean GL3_LM_AllocBlock(int w, int h, int *x, int *y);
-extern void GL3_LM_BuildPolygonFromSurface(gl3model_t *currentmodel, msurface_t *fa);
-extern void GL3_LM_CreateSurfaceLightmap(msurface_t *surf);
-extern void GL3_LM_BeginBuildingLightmaps(gl3model_t *m);
-extern void GL3_LM_EndBuildingLightmaps(void);
+extern void LM_InitBlock(void);
+extern void LM_UploadBlock(void);
+extern qboolean LM_AllocBlock(int w, int h, int *x, int *y);
+extern void LM_BuildPolygonFromSurface(gl3model_t *currentmodel, msurface_t *fa);
+extern void LM_CreateSurfaceLightmap(msurface_t *surf);
+extern void LM_BeginBuildingLightmaps(gl3model_t *m);
+extern void LM_EndBuildingLightmaps(void);
 
 // gl3_warp.c
 extern void GL3_EmitWaterPolys(msurface_t *fa);

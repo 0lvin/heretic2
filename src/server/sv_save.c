@@ -26,8 +26,6 @@
 
 #include "header/server.h"
 
-void CM_ReadPortalState(fileHandle_t f);
-
 /*
  * Delete save/<XXX>/
  */
@@ -71,7 +69,7 @@ SV_WipeSavegame(char *savename)
 	Sys_FindClose();
 }
 
-void
+static void
 CopyFile(char *src, char *dst)
 {
 	FILE *f1, *f2;
@@ -327,7 +325,7 @@ SV_WriteServerFile(qboolean autosave)
 	Sys_SetWorkDir(workdir);
 }
 
-void
+static void
 SV_ReadServerFile(void)
 {
 	fileHandle_t f;

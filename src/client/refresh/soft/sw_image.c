@@ -21,9 +21,8 @@
 
 #include "header/local.h"
 
-#define	MAX_RIMAGES	1024
 static image_t		*r_whitetexture_mip = NULL;
-static image_t		r_images[MAX_RIMAGES];
+static image_t		r_images[MAX_TEXTURES];
 static int		numr_images;
 static int		image_max = 0;
 
@@ -82,13 +81,14 @@ R_ImageList_f (void)
 	}
 	R_Printf(PRINT_ALL, "Total texel count: %i\n", texels);
 	freeup = R_ImageHasFreeSpace();
-	R_Printf(PRINT_ALL, "Used %d of %d images%s.\n", used, image_max, freeup ? ", has free space" : "");
+	R_Printf(PRINT_ALL, "Used %d of %d / %d images%s.\n",
+		used, image_max, MAX_TEXTURES, freeup ? ", has free space" : "");
 }
 
 //=======================================================
 
 static image_t *
-R_FindFreeImage (void)
+R_FindFreeImage(char *name)
 {
 	image_t		*image;
 	int			i;
@@ -97,11 +97,21 @@ R_FindFreeImage (void)
 	for (i=0, image=r_images ; i<numr_images ; i++,image++)
 	{
 		if (!image->registration_sequence)
+		{
 			break;
+		}
+
+		if (!strcmp(image->name, name))
+		{
+			/* we already have such image */
+			image->registration_sequence = registration_sequence;
+			return image;
+		}
 	}
+
 	if (i == numr_images)
 	{
-		if (numr_images == MAX_RIMAGES)
+		if (numr_images == MAX_TEXTURES)
 			Com_Error(ERR_DROP, "%s: Max images", __func__);
 		numr_images++;
 	}
@@ -241,7 +251,7 @@ R_Convert32To8bit(const unsigned char* pic_in, pixel_t* pic_out, size_t size,
 
 /*
 ================
-R_LoadPic
+R_LoadPic8
 
 ================
 */
@@ -256,11 +266,17 @@ R_LoadPic8 (char *name, byte *pic, int width, int realwidth, int height, int rea
 
 	/* data_size/size are unsigned */
 	if (!pic || data_size == 0 || width <= 0 || height <= 0 || size == 0)
+	{
 		return NULL;
+	}
 
-	image = R_FindFreeImage();
+	image = R_FindFreeImage(name);
+
 	if (strlen(name) >= sizeof(image->name))
+	{
 		Com_Error(ERR_DROP, "%s: '%s' is too long", __func__, name);
+	}
+
 	strcpy (image->name, name);
 	image->registration_sequence = registration_sequence;
 
@@ -314,8 +330,8 @@ R_LoadPic8 (char *name, byte *pic, int width, int realwidth, int height, int rea
 	return image;
 }
 
-static image_t *
-R_LoadPic (char *name, byte *pic, int width, int realwidth, int height, int realheight,
+image_t *
+R_LoadPic(char *name, byte *pic, int width, int realwidth, int height, int realheight,
 	size_t data_size, imagetype_t type, int bits)
 {
 	if (!realwidth || !realheight)
@@ -611,7 +627,7 @@ R_ImageHasFreeSpace(void)
 	}
 
 	// should same size of free slots as currently used
-	return (numr_images + used) < MAX_RIMAGES;
+	return (numr_images + used) < MAX_TEXTURES;
 }
 
 static struct texture_buffer {

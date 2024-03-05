@@ -240,7 +240,7 @@ RE_Draw_StretchPicImplementation (int x, int y, int w, int h, const image_t *pic
 				if (picupscale > 1)
 				{
 					int i;
-					int pu = min(height-v, picupscale);
+					int pu = Q_min(height-v, picupscale);
 					pixel_t	*dest_orig = dest;
 
 					// copy first line to fill whole sector
@@ -326,7 +326,7 @@ RE_Draw_StretchRaw
 =============
 */
 void
-RE_Draw_StretchRaw (int x, int y, int w, int h, int cols, int rows, const byte *data, int bits)
+RE_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits)
 {
 	image_t	pic;
 	byte	*image_scaled;

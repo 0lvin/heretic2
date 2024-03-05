@@ -765,7 +765,7 @@ Cmd_RemoveCommand(const char *cmd_name)
 }
 
 qboolean
-Cmd_Exists(char *cmd_name)
+Cmd_Exists(const char *cmd_name)
 {
 	cmd_function_t *cmd;
 
@@ -913,7 +913,7 @@ Cmd_CompleteMapCommand(const char *partial)
 	char *pmatch[1024];
 	qboolean partialFillContinue = true;
 
-	if ((mapNames = FS_ListFiles2("maps/*.bsp", &nMaps, 0, 0)) != 0)
+	if ((mapNames = FS_ListFiles2("maps/*.bsp", &nMaps, 0, 0)) != NULL)
 	{
 		len = strlen(partial);
 		nbMatches = 0;

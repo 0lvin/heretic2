@@ -35,7 +35,7 @@
 // Screenshots
 // -----------
 
-#include "../../common/unzip/miniz.h"
+#include "../../common/unzip/miniz/miniz.h"
 
 static unsigned char*
 compress_for_stbiw(unsigned char *data, int data_len, int *out_len, int quality)
@@ -438,6 +438,7 @@ VID_LoadRenderer(void)
 	ri.FS_FreeFile = FS_FreeFile;
 	ri.FS_Gamedir = FS_Gamedir;
 	ri.FS_LoadFile = FS_LoadFile;
+	ri.FS_AllocFile = Z_Malloc;
 	ri.GLimp_InitGraphics = GLimp_InitGraphics;
 	ri.GLimp_GetDesktopMode = GLimp_GetDesktopMode;
 	ri.Sys_Error = Com_Error;

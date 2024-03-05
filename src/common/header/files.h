@@ -184,6 +184,46 @@ typedef struct
 	int ofs_end;    /* end of file */
 } dmdl_t;
 
+/* .MD2 Anachronox triangle model file format */
+
+#define ALIAS_ANACHRONOX_VERSION 15
+
+typedef struct
+{
+	int ident;
+	short version;
+	short resolution;
+
+	int skinwidth;
+	int skinheight;
+	int framesize;  /* byte size of each frame */
+
+	int num_skins;
+	int num_xyz;
+	int num_st;     /* greater than num_xyz for seams */
+	int num_tris;
+	int num_glcmds; /* dwords in strip/fan command list */
+	int num_frames;
+
+	int ofs_skins;  /* each skin is a MAX_SKINNAME string */
+	int ofs_st;     /* byte offset from start for stverts */
+	int ofs_tris;   /* offset for dtriangles */
+	int ofs_frames; /* offset for first frame */
+	int ofs_glcmds;
+	int ofs_end;    /* end of file */
+
+	/* Multiple surfaces */
+	int num_surfaces;
+	int ofs_surfaces;
+
+	/* Level of detail */
+	vec3_t lod_scale;
+
+	/* Tagged surfaces */
+	int num_tagged_triangles;
+	int ofs_tagged_triangles;
+} dmdla_t;
+
 /* .FM triangle model file format */
 
 #define RAVENFMHEADER		(('d' << 24) + ('a' << 16) + ('e' << 8) + 'h')
@@ -240,6 +280,129 @@ typedef struct dkm_header_s
 	int ofs_surf;          /* no idea */
 	int ofs_end;           /* end of file */
 } dkm_header_t;
+
+/* .MD3 mesh/anim files */
+#define ID3HEADER (('3' << 24) + ('P' << 16) + ('D' << 8) + 'I')
+#define ID3_VERSION 15
+
+typedef struct md3_vertex_s
+{
+	short origin[3];
+	short normalpitchyaw;
+} md3_vertex_t;
+
+typedef struct md3_frameinfo_s
+{
+	float mins[3];
+	float maxs[3];
+	float origin[3];
+	float radius;
+	char name[16];
+} md3_frameinfo_t;
+
+typedef struct md3_tag_s
+{
+	char name[MAX_SKINNAME];
+	vec3_t origin;
+	float rotationmatrix[9];
+} md3_tag_t;
+
+typedef struct md3_shader_s
+{
+	char name[MAX_SKINNAME];
+	int shadernum; /* not used by the disk format */
+} md3_shader_t;
+
+typedef struct md3_mesh_s
+{
+	int ident;
+
+	char name[MAX_SKINNAME];
+
+	int flags; /* unused */
+
+	int num_frames;
+	int num_shaders;
+	int num_xyz;
+	int num_tris;
+
+	/* lump offsets are relative to start of mesh */
+	int ofs_tris;
+	int ofs_shaders;
+	int ofs_st;
+	int ofs_verts;
+	int ofs_end;
+} md3_mesh_t;
+
+typedef struct md3_header_s
+{
+	int ident;
+	int version;
+
+	char name[MAX_SKINNAME];
+
+	int flags; /* unused by quake3, darkplaces uses it for quake-style modelflags (rocket trails, etc.) */
+
+	int num_frames;
+	int num_tags;
+	int num_meshes;
+	int num_skins; /* apparently unused */
+
+	/* lump offsets are relative to start of header (start of file) */
+	int ofs_frames;
+	int ofs_tags;
+	int ofs_meshes;
+	int ofs_end;
+} md3_header_t;
+
+/* .MD5 model file format */
+#define IDMD5HEADER (('V' << 24) + ('5' << 16) + ('D' << 8) + 'M')
+
+/* Internal model render format */
+typedef struct
+{
+	unsigned short v[3]; /* scaled short to fit in frame mins/maxs */
+	byte lightnormalindex;
+} dxtrivertx_t;
+
+typedef struct
+{
+	vec3_t scale;       /* multiply short verts by this */
+	vec3_t translate;   /* then add this */
+	char name[16];        /* frame name from grabbing */
+	dxtrivertx_t verts[1]; /* variable sized */
+} daliasxframe_t;
+
+typedef struct
+{
+	unsigned int start;
+	unsigned int num;
+} dmdxmesh_t;
+
+typedef struct
+{
+	int skinwidth;
+	int skinheight;
+	int framesize;  /* byte size of each frame */
+
+	int num_skins;
+	int num_xyz;
+	int num_st;     /* greater than num_xyz for seams */
+	int num_tris;
+	int num_glcmds; /* dwords in strip/fan command list */
+	int num_frames;
+	int num_meshes;
+	int num_imgbit; /* image format of embeded images */
+
+	int ofs_skins;  /* each skin is a MAX_SKINNAME string */
+	int ofs_st;     /* byte offset from start for stverts */
+	int ofs_tris;   /* offset for dtriangles */
+	int ofs_frames; /* offset for first frame */
+	int ofs_glcmds;
+	int ofs_meshes;
+	int ofs_imgbit; /* offest of embeded image */
+	int ofs_end;    /* end of file */
+} dmdx_t;
 
 /* .SP2 sprite file format */
 

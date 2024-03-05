@@ -22,7 +22,7 @@
 
 #include "header/local.h"
 
-image_t		vktextures[MAX_VKTEXTURES];
+image_t		vktextures[MAX_TEXTURES];
 int		numvktextures = 0;
 static int		img_loaded = 0;
 static int		image_max = 0;
@@ -631,7 +631,8 @@ void	Vk_ImageList_f (void)
 	}
 	R_Printf(PRINT_ALL, "Total texel count (not counting mipmaps): %i in %d images\n", texels, img_loaded);
 	freeup = Vk_ImageHasFreeSpace();
-	R_Printf(PRINT_ALL, "Used %d of %d images%s.\n", used, image_max, freeup ? ", has free space" : "");
+	R_Printf(PRINT_ALL, "Used %d of %d / %d images%s.\n",
+		used, image_max, MAX_TEXTURES, freeup ? ", has free space" : "");
 }
 
 typedef struct
@@ -858,15 +859,16 @@ Scale up the pixel values in a texture to increase the
 lighting range
 ================
 */
-static void Vk_LightScaleTexture (byte *in, int inwidth, int inheight)
+static void
+Vk_LightScaleTexture(byte *in, int inwidth, int inheight)
 {
 	int		i, c;
 	byte	*p;
 
 	p = (byte *)in;
 
-	c = inwidth*inheight;
-	for (i=0 ; i<c ; i++, p+=4)
+	c = inwidth * inheight;
+	for (i = 0; i < c; i++, p+=4)
 	{
 		p[0] = overbrightable[intensitytable[p[0]]];
 		p[1] = overbrightable[intensitytable[p[1]]];
@@ -943,82 +945,11 @@ Vk_Upload32Native(byte *data, int width, int height, imagetype_t type,
 
 /*
 ===============
-Vk_Upload32
-
-Returns number of mip levels and scales to nearest power of 2.
-===============
-*/
-#if 0
-static uint32_t Vk_Upload32 (byte *data, int width, int height, imagetype_t type,
-							 byte **texBuffer, int *upload_width, int *upload_height)
-{
-	int	scaled_width, scaled_height;
-	int	miplevel = 1;
-
-	*texBuffer = NULL;
-
-	for (scaled_width = 1; scaled_width < width; scaled_width <<= 1)
-		;
-	for (scaled_height = 1; scaled_height < height; scaled_height <<= 1)
-		;
-	if (type != it_pic)
-	{
-		// let people sample down the world textures for speed
-		scaled_width >>= (int)vk_picmip->value;
-		scaled_height >>= (int)vk_picmip->value;
-	}
-
-	if (scaled_width < 1)
-		scaled_width = 1;
-	if (scaled_height < 1)
-		scaled_height = 1;
-
-	*texBuffer = malloc(scaled_width * scaled_height * 4);
-	if (!*texBuffer)
-		Com_Error(ERR_DROP, "%s: too big", __func__);
-
-	*upload_width = scaled_width;
-	*upload_height = scaled_height;
-
-	if (scaled_width == width && scaled_height == height)
-	{
-		memcpy(*texBuffer, data, scaled_width * scaled_height * 4);
-	}
-	else
-	{
-		ResizeSTB(data, width, height,
-				  *texBuffer, scaled_width, scaled_height);
-	}
-
-	// world textures
-	if (type != it_pic && type != it_sky)
-	{
-		Vk_LightScaleTexture(*texBuffer, scaled_width, scaled_height);
-	}
-
-	while (scaled_width > 1 || scaled_height > 1)
-	{
-		scaled_width >>= 1;
-		scaled_height >>= 1;
-		if (scaled_width < 1)
-			scaled_width = 1;
-		if (scaled_height < 1)
-			scaled_height = 1;
-		miplevel++;
-	}
-
-	return miplevel;
-}
-#endif
-
-/*
-===============
 Vk_Upload8
 
 Returns number of mip levels
 ===============
 */
-
 static uint32_t
 Vk_Upload8(const byte *data, int width, int height, imagetype_t type,
 	byte **texBuffer, int *upload_width, int *upload_height)
@@ -1137,12 +1068,22 @@ Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		for (i = 0, image = vktextures; i<numvktextures; i++, image++)
 		{
 			if (image->vk_texture.resource.image == VK_NULL_HANDLE)
+			{
 				break;
+			}
+
+			if (!strcmp(image->name, name))
+			{
+				/* we already have such image */
+				image->registration_sequence = registration_sequence;
+				return image;
+			}
 		}
+
 		if (i == numvktextures)
 		{
-			if (numvktextures == MAX_VKTEXTURES)
-				Com_Error(ERR_DROP, "%s: MAX_VKTEXTURES", __func__);
+			if (numvktextures == MAX_TEXTURES)
+				Com_Error(ERR_DROP, "%s: MAX_TEXTURES", __func__);
 			numvktextures++;
 		}
 		image = &vktextures[i];
@@ -1246,7 +1187,7 @@ Finds or loads the given image or NULL
 ===============
 */
 image_t	*
-Vk_FindImage (const char *name, imagetype_t type)
+Vk_FindImage(const char *name, imagetype_t type)
 {
 	image_t	*image;
 	int	i, len;
@@ -1282,7 +1223,7 @@ Vk_FindImage (const char *name, imagetype_t type)
 		*ptr = '/';
 	}
 
-	// look for it
+	/* look for it */
 	for (i=0, image=vktextures ; i<numvktextures ; i++,image++)
 	{
 		if (!strcmp(name, image->name))
@@ -1292,9 +1233,9 @@ Vk_FindImage (const char *name, imagetype_t type)
 		}
 	}
 
-	//
-	// load the pic from disk
-	//
+	/*
+	 * load the pic from disk
+	 */
 	image = (image_t *)R_LoadImage(name, namewe, ext, type,
 		r_retexturing->value, (loadimage_t)Vk_LoadPic);
 
@@ -1311,12 +1252,14 @@ Vk_FindImage (const char *name, imagetype_t type)
 RE_RegisterSkin
 ===============
 */
-struct image_s *RE_RegisterSkin (const char *name)
+struct image_s *
+RE_RegisterSkin (const char *name)
 {
 	return Vk_FindImage (name, it_skin);
 }
 
-qboolean Vk_ImageHasFreeSpace(void)
+qboolean
+Vk_ImageHasFreeSpace(void)
 {
 	int		i, used;
 	image_t	*image;
@@ -1338,8 +1281,8 @@ qboolean Vk_ImageHasFreeSpace(void)
 		image_max = used;
 	}
 
-	// should same size of free slots as currently used
-	return (img_loaded + used) < MAX_VKTEXTURES;
+	/* should same size of free slots as currently used */
+	return (img_loaded + used) < MAX_TEXTURES;
 }
 
 /*
@@ -1357,11 +1300,11 @@ void Vk_FreeUnusedImages (void)
 
 	if (Vk_ImageHasFreeSpace())
 	{
-		// should be enough space for load next images
+		/* should be enough space for load next images */
 		return;
 	}
 
-	// never free r_notexture or particle texture
+	/* never free r_notexture or particle texture */
 	r_notexture->registration_sequence = registration_sequence;
 	r_particletexture->registration_sequence = registration_sequence;
 	r_squaretexture->registration_sequence = registration_sequence;
@@ -1369,18 +1312,24 @@ void Vk_FreeUnusedImages (void)
 	for (i = 0, image = vktextures; i < numvktextures; i++, image++)
 	{
 		if (image->registration_sequence == registration_sequence)
+		{
 			continue;		// used this sequence
+		}
 		if (!image->registration_sequence)
+		{
 			continue;		// free image_t slot
+		}
 		if (image->type == it_pic)
+		{
 			continue;		// don't free pics
+		}
 
 		if (r_validation->value > 0)
 		{
 			R_Printf(PRINT_ALL, "%s: Unload %s[%d]\n", __func__, image->name, img_loaded);
 		}
 
-		// free it
+		/* free it */
 		QVk_ReleaseTexture(&image->vk_texture);
 		memset(image, 0, sizeof(*image));
 
@@ -1391,7 +1340,7 @@ void Vk_FreeUnusedImages (void)
 		}
 	}
 
-	// free all unused blocks
+	/* free all unused blocks */
 	vulkan_memory_free_unused();
 }
 

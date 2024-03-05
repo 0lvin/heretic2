@@ -121,7 +121,8 @@ void SpawnFlame(edict_t *self,vec3_t origin)
 }
 
 
-/*QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
+/*
+ * QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
 
 	Non-displayed light.
 	Default light value is 300.
@@ -225,7 +226,8 @@ void firemove_think(edict_t *self)
 	self->think = NULL;
 }
 
-/*QUAKED env_fire (1 .5 0) (0 -10 -24) (20 10 0)  INVULNERABLE ANIMATE EXPLODING  FIRE_OFF MOVEABLE LIGHT_ON
+/*
+ * QUAKED env_fire (1 .5 0) (0 -10 -24) (20 10 0)  INVULNERABLE ANIMATE EXPLODING  FIRE_OFF MOVEABLE LIGHT_ON
 A fire about the size of a campfire. Triggerable.
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -350,7 +352,8 @@ static void TorchStart (edict_t *self)
 }
 
 
-/*QUAKED light_walltorch (1 .5 0) (-16 -10 -12) (10 10 12)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+/*
+ * QUAKED light_walltorch (1 .5 0) (-16 -10 -12) (10 10 12)  INVULNERABLE ANIMATE EXPLODING STARTOFF
 A torch that sticks out of a wall
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -383,7 +386,8 @@ void SP_light_walltorch (edict_t *self)
 
 }
 
-/*QUAKED light_floortorch (1 .5 0) (-14 -14 -17) (14 14 17)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+/*
+ * QUAKED light_floortorch (1 .5 0) (-14 -14 -17) (14 14 17)  INVULNERABLE ANIMATE EXPLODING STARTOFF
 A stand for a torch that sits on the floor.
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -416,7 +420,8 @@ void SP_light_floortorch (edict_t *self)
 }
 
 
-/*QUAK-ED light_flame (1 .5 0) (-16 -16 0) (16 16 34)  INVULNERABLE ANIMATE EXPLODING  STARTOFF
+/*
+ * QUAKED light_flame (1 .5 0) (-16 -16 0) (16 16 34)  INVULNERABLE ANIMATE EXPLODING  STARTOFF
 A 30 frame flame.
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -425,23 +430,22 @@ EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 -----------------------------------
 */
-/*void SP_light_flame (edict_t *self)
+void
+SP_light_flame(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, -34);
 	VectorSet(self->maxs, 16, 16, 0);
 
 	self->nextthink = level.time + 2;
-	self->think = flamethink;
+	// self->think = flamethink;
 
 	LightInit(self);
 
 	TorchInit(self);
 }
-*/
 
-
-
-/*QUAKED light_torch1 (1 .5 0) (-4 -6 -5) (6 6 20)  INVULNERABLE  ANIMATE   EXPLODING  STARTOFF  NOHALO
+/*
+ * QUAKED light_torch1 (1 .5 0) (-4 -6 -5) (6 6 20)  INVULNERABLE  ANIMATE   EXPLODING  STARTOFF  NOHALO
 Wall torch that uses a blue gem
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -475,7 +479,8 @@ void SP_light_torch1 (edict_t *self)
 	TorchInit(self);
 }
 
-/*QUAKED light_gem2 (1 .5 0) (-1 -6 -8) (4 6 8)  INVULNERABLE  ANIMATE   EXPLODING  STARTOFF  NOHALO
+/*
+ * QUAKED light_gem2 (1 .5 0) (-1 -6 -8) (4 6 8)  INVULNERABLE  ANIMATE   EXPLODING  STARTOFF  NOHALO
 A yellow gem in an octogonal frame
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -511,7 +516,8 @@ void SP_light_gem2 (edict_t *self)
 	TorchInit(self);
 }
 
-/*QUAKED light_chandelier1 (1 .5 0) (-36 -36 -43) (34 34 43)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+/*
+ * QUAKED light_chandelier1 (1 .5 0) (-36 -36 -43) (34 34 43)  INVULNERABLE ANIMATE EXPLODING STARTOFF
 A big gold chandelier for the great hall
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -532,7 +538,8 @@ void SP_light_chandelier1 (edict_t *self)
 }
 
 
-/*QUAKED light_chandelier2 (1 .5 0) (-18 -18 -40) (18 18 40)  INVULNERABLE ANIMATE EXPLODING  STARTOFF
+/*
+ * QUAKED light_chandelier2 (1 .5 0) (-18 -18 -40) (18 18 40)  INVULNERABLE ANIMATE EXPLODING  STARTOFF
 A very heavy chandelier that doesn't have a skin yet.
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -552,7 +559,8 @@ void SP_light_chandelier2 (edict_t *self)
 	TorchInit(self);
 }
 
-/*QUAKED light_chandelier3 (1 .5 0) (-34 -34 -80) (34 34 0)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+/*
+ * QUAKED light_chandelier3 (1 .5 0) (-34 -34 -80) (34 34 0)  INVULNERABLE ANIMATE EXPLODING STARTOFF
 A  thin gold chandelier
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -573,7 +581,8 @@ void SP_light_chandelier3 (edict_t *self)
 	TorchInit(self);
 }
 
-/*QUAKED light_lantern1 (1 .5 0) (-28 -8 -22) (4 8 22)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
+/*
+ * QUAKED light_lantern1 (1 .5 0) (-28 -8 -22) (4 8 22)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
 lantern on a wooden arm
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -603,7 +612,8 @@ void SP_light_lantern1 (edict_t *self)
 	TorchInit(self);
 }
 
-/*QUAKED light_lantern2 (1 .5 0) (-6 -6 -24) (6 6 40)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
+/*
+ * QUAKED light_lantern2 (1 .5 0) (-6 -6 -24) (6 6 40)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
 Lanern on a chain
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -633,7 +643,8 @@ void SP_light_lantern2 (edict_t *self)
 	TorchInit(self);
 }
 
-/*QUAKED light_lantern3 (1 .5 0) (-6 -6 -12) (6 6 11)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
+/*
+ * QUAKED light_lantern3 (1 .5 0) (-6 -6 -12) (6 6 11)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
 Ceiling lantern
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -663,7 +674,8 @@ void SP_light_lantern3 (edict_t *self)
 	TorchInit(self);
 }
 
-/*QUAKED light_lantern4 (1 .5 0) (-18 -7 -7) (7 7 14)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
+/*
+ * QUAKED light_lantern4 (1 .5 0) (-18 -7 -7) (7 7 14)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
 Wall lantern
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -692,7 +704,8 @@ void SP_light_lantern4 (edict_t *self)
 	TorchInit(self);
 }
 
-/*QUAKED light_lantern5 (1 .5 0) (-7 -7 -7) (7 7 14)  INVULNERABLE ANIMATE EXPLODING STARTOFF NOHALO
+/*
+ * QUAKED light_lantern5 (1 .5 0) (-7 -7 -7) (7 7 14)  INVULNERABLE ANIMATE EXPLODING STARTOFF NOHALO
 Lantern to place on a table
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -722,9 +735,8 @@ void SP_light_lantern5 (edict_t *self)
 	TorchInit(self);
 }
 
-
-
-/*QUAKED light_buglight (1 .5 0) (-7 -7 -7) (7 7 25)  INVULNERABLE ANIMATE EXPLODING STARTOFF NOHALO
+/*
+ * QUAKED light_buglight (1 .5 0) (-7 -7 -7) (7 7 25)  INVULNERABLE ANIMATE EXPLODING STARTOFF NOHALO
 A light shaped like a bug
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
@@ -755,7 +767,8 @@ void SP_light_buglight (edict_t *self)
 }
 
 
-/*QUAKED env_sun1 (1 .5 0) (-12 -12 0) (12 12 38) INVULNERABLE ANIMATE  EXPLODING
+/*
+ * QUAKED env_sun1 (1 .5 0) (-12 -12 0) (12 12 38) INVULNERABLE ANIMATE  EXPLODING
 Places two suns in the world and attaches a lens flare to them.
 One sun is blue, the other is yellow
 */

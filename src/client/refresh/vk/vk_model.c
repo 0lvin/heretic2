@@ -29,7 +29,6 @@
 
 static YQ2_ALIGNAS_TYPE(int) byte mod_novis[MAX_MAP_LEAFS / 8];
 
-#define MAX_MOD_KNOWN 512
 static model_t *models_known;
 static int	mod_numknown = 0;
 static int	mod_max = 0;
@@ -280,7 +279,7 @@ calcTexinfoAndQFacesSize(const byte *mod_base, const lump_t *fl, const lump_t *t
 
 			// R_SubdivideSurface(out, loadmodel); /* cut up polygon for warps */
 			// for each (pot. recursive) call to R_SubdividePolygon():
-			//   sizeof(mpoly_t) + ((numverts - 4) + 2) * sizeof(gl3_3D_vtx_t)
+			//   sizeof(mpoly_t) + ((numverts - 4) + 2) * sizeof(mvtx_t)
 
 			// this is tricky, how much is allocated depends on the size of the surface
 			// which we don't know (we'd need the vertices etc to know, but we can't load
@@ -338,7 +337,7 @@ Mod_LoadFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		lminfos = NULL;
 	}
 
-	Vk_BeginBuildingLightmaps(loadmodel);
+	LM_BeginBuildingLightmaps(loadmodel);
 
 	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
@@ -422,16 +421,16 @@ Mod_LoadFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		/* create lightmaps and polygons */
 		if (!(out->texinfo->flags & (SURF_SKY | SURF_TRANSPARENT | SURF_WARP)))
 		{
-			Vk_CreateSurfaceLightmap(out);
+			LM_CreateSurfaceLightmap(out);
 		}
 
 		if (!(out->texinfo->flags & SURF_WARP))
 		{
-			Vk_BuildPolygonFromSurface(loadmodel, out);
+			LM_BuildPolygonFromSurface(loadmodel, out);
 		}
 	}
 
-	Vk_EndBuildingLightmaps();
+	LM_EndBuildingLightmaps();
 }
 
 static void
@@ -464,7 +463,7 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		lminfos = NULL;
 	}
 
-	Vk_BeginBuildingLightmaps(loadmodel);
+	LM_BeginBuildingLightmaps(loadmodel);
 
 	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
@@ -534,7 +533,7 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 			}
 
 			R_SubdivideSurface(loadmodel->surfedges, loadmodel->vertexes,
-				loadmodel->edges, out);	// cut up polygon for warps
+				loadmodel->edges, out); /* cut up polygon for warps */
 		}
 
 		if (r_fixsurfsky->value)
@@ -548,16 +547,16 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		/* create lightmaps and polygons */
 		if (!(out->texinfo->flags & (SURF_SKY | SURF_TRANSPARENT | SURF_WARP)))
 		{
-			Vk_CreateSurfaceLightmap(out);
+			LM_CreateSurfaceLightmap(out);
 		}
 
 		if (!(out->texinfo->flags & SURF_WARP))
 		{
-			Vk_BuildPolygonFromSurface(loadmodel, out);
+			LM_BuildPolygonFromSurface(loadmodel, out);
 		}
 	}
 
-	Vk_EndBuildingLightmaps();
+	LM_EndBuildingLightmaps();
 }
 
 static void
@@ -815,10 +814,17 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 		case IDALIASHEADER:
 			/* fall through */
 		case IDMDLHEADER:
+			/* fall through */
+		case ID3HEADER:
+			/* fall through */
+		case IDMD5HEADER:
+			/* fall through */
+		case IDSPRITEHEADER:
 			{
-				mod->extradata = Mod_LoadAliasModel(mod->name, buf, modfilelen,
+				mod->extradata = Mod_LoadModel(mod->name, buf, modfilelen,
 					mod->mins, mod->maxs,
-					(struct image_s **)mod->skins, (findimage_t)Vk_FindImage,
+					(struct image_s ***)&mod->skins, &mod->numskins,
+					(findimage_t)Vk_FindImage, (loadimage_t)Vk_LoadPic,
 					&(mod->type));
 				if (!mod->extradata)
 				{
@@ -826,19 +832,6 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 						__func__, mod->name);
 				}
 			};
-			break;
-
-		case IDSPRITEHEADER:
-			{
-				mod->extradata = Mod_LoadSP2(mod->name, buf, modfilelen,
-					(struct image_s **)mod->skins, (findimage_t)Vk_FindImage,
-					&(mod->type));
-				if (!mod->extradata)
-				{
-					Com_Error(ERR_DROP, "%s: Failed to load %s",
-						__func__, mod->name);
-				}
-			}
 			break;
 
 		case IDBSPHEADER:
@@ -970,7 +963,8 @@ RE_RegisterModel(const char *name)
 		{
 			/* numframes is unused for SP2 but lets set it also  */
 			mod->numframes = Mod_ReLoadSkins((struct image_s **)mod->skins,
-				(findimage_t)Vk_FindImage, mod->extradata, mod->type);
+				(findimage_t)Vk_FindImage, (loadimage_t)Vk_LoadPic,
+				mod->extradata, mod->type);
 		}
 	}
 
@@ -1027,7 +1021,7 @@ Mod_Modellist_f (void)
 
 		if (!mod->name[0])
 			continue;
-		R_Printf(PRINT_ALL, "%8i : %s %s r: %f #%d\n",
+		R_Printf(PRINT_ALL, "%8i : %s %s r: %.2f #%d\n",
 			 mod->extradatasize, mod->name, in_use, mod->radius, mod->numsubmodels);
 		total += mod->extradatasize;
 	}

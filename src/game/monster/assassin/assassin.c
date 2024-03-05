@@ -1713,7 +1713,7 @@ void assassin_crouch_idle_decision (edict_t *self)
 		break;
 
 	case ANIM_CROUCH_TRANS:
-		self->monsterinfo.pausetime = 99999999;
+		self->monsterinfo.pausetime = 99999999.0f;
 		SetAnim(self, ANIM_CROUCH_IDLE);
 		break;
 

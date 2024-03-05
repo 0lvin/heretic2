@@ -41,10 +41,14 @@ R_TextureAnimation(const entity_t *currententity, const mtexinfo_t *tex)
 	int c;
 
 	if (!tex->next)
+	{
 		return tex->image;
+	}
 
 	if (!currententity)
+	{
 		return tex->image;
+	}
 
 	c = currententity->frame % tex->numframes;
 	while (c && tex)
@@ -57,18 +61,22 @@ R_TextureAnimation(const entity_t *currententity, const mtexinfo_t *tex)
 }
 
 qboolean
-R_AreaVisible(const byte *areabits, mleaf_t *pleaf)
+R_AreaVisible(const byte *areabits, const mleaf_t *pleaf)
 {
 	int area;
 
 	// check for door connected areas
 	if (!areabits)
+	{
 		return true;
+	}
 
 	area = pleaf->area;
 
 	if ((areabits[area >> 3] & (1 << (area & 7))))
+	{
 		return true;
+	}
 
 	return false; // not visible
 }
@@ -77,7 +85,7 @@ R_AreaVisible(const byte *areabits, mleaf_t *pleaf)
  * Returns true if the box is completely outside the frustom
  */
 qboolean
-R_CullBox(vec3_t mins, vec3_t maxs, cplane_t *frustum)
+R_CullBox(vec3_t mins, vec3_t maxs, const cplane_t *frustum)
 {
 	int i;
 
@@ -93,7 +101,7 @@ R_CullBox(vec3_t mins, vec3_t maxs, cplane_t *frustum)
 }
 
 static int
-R_SignbitsForPlane(cplane_t *out)
+R_SignbitsForPlane(const cplane_t *out)
 {
 	int bits, j;
 
@@ -306,12 +314,13 @@ R_SubdividePolygon(int numverts, float *verts, msurface_t *warpface)
  * can be done reasonably.
  */
 void
-R_SubdivideSurface(int *surfedges, mvertex_t *vertexes, medge_t *edges, msurface_t *fa)
+R_SubdivideSurface(const int *surfedges, mvertex_t *vertexes, medge_t *edges,
+	msurface_t *fa)
 {
+	const float *vec;
 	vec3_t verts[64];
 	int numverts;
 	int i;
-	float *vec;
 
 	/* convert edges back to a normal polygon */
 	numverts = 0;

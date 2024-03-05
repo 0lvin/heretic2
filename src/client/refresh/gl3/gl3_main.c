@@ -25,15 +25,14 @@
  * =======================================================================
  */
 
-
 #include "../ref_shared.h"
 #include "header/local.h"
 
 #define HANDMADE_MATH_IMPLEMENTATION
-#include "header/HandmadeMath.h"
+#include "../files/HandmadeMath.h"
 
 #define DG_DYNARR_IMPLEMENTATION
-#include "header/DG_dynarr.h"
+#include "../files/DG_dynarr.h"
 
 #ifdef YQ2_GL3_GLES3
   #define REF_VERSION "Yamagi Quake II OpenGL ES3 Refresher"
@@ -638,6 +637,8 @@ GL3_Init(void)
 
 	registration_sequence = 1; // from R_InitImages() (everything else from there shouldn't be needed anymore)
 
+	R_VertBufferInit();
+
 	GL3_Mod_Init();
 
 	GL3_InitParticleTexture();
@@ -670,6 +671,7 @@ GL3_Shutdown(void)
 		GL3_Mod_FreeAll();
 		GL3_ShutdownMeshes();
 		GL3_ShutdownImages();
+		R_VertBufferFree();
 		GL3_SurfShutdown();
 		GL3_Draw_ShutdownLocal();
 		GL3_ShutdownShaders();
@@ -853,7 +855,7 @@ GL3_DrawSpriteModel(entity_t *e, gl3model_t *currentmodel)
 	dsprframe_t *frame;
 	float *up, *right;
 	dsprite_t *psprite;
-	gl3image_t *skin;
+	gl3image_t *skin = NULL;
 
 	/* don't even bother culling, because it's just
 	   a single polygon without a surface cache */
@@ -1115,7 +1117,8 @@ GL3_DrawEntitiesOnList(void)
 					GL3_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					Com_Error(ERR_DROP, "Bad modeltype");
+					R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
 					break;
 			}
 		}
@@ -1161,7 +1164,8 @@ GL3_DrawEntitiesOnList(void)
 					GL3_DrawSpriteModel(currententity, currentmodel);
 					break;
 				default:
-					Com_Error(ERR_DROP, "Bad modeltype");
+					R_Printf(PRINT_ALL, "%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
 					break;
 			}
 		}
@@ -1170,7 +1174,6 @@ GL3_DrawEntitiesOnList(void)
 	GL3_DrawAliasShadows();
 
 	glDepthMask(1); /* back to writing */
-
 }
 
 static void
@@ -1671,8 +1674,10 @@ GL3_RenderView(refdef_t *fd)
 	if (r_speeds->value)
 	{
 		R_Printf(PRINT_ALL, "%4i wpoly %4i epoly %i tex %i lmaps\n",
-				c_brush_polys, c_alias_polys, c_visible_textures,
-				c_visible_lightmaps);
+			c_brush_polys,
+			c_alias_polys,
+			c_visible_textures,
+			c_visible_lightmaps);
 	}
 
 #if 0 // TODO: stereo stuff
@@ -1834,6 +1839,7 @@ GL3_BeginFrame(float camera_separation)
 {
 #if 0 // TODO: stereo stuff
 	gl_state.camera_separation = camera_separation;
+
 	// force a vid_restart if gl1_stereo has been modified.
 	if ( gl_state.stereo_mode != gl1_stereo->value ) {
 		// If we've gone from one mode to another with the same special buffer requirements there's no need to restart.
@@ -2028,9 +2034,9 @@ GetRefAPI(refimport_t imp)
 	re.EndWorldRenderpass = GL3_EndWorldRenderpass;
 	re.EndFrame = GL3_EndFrame;
 
-    // Tell the client that we're unsing the
+	// Tell the client that we're unsing the
 	// new renderer restart API.
-    ri.Vid_RequestRestart(RESTART_NO);
+	ri.Vid_RequestRestart(RESTART_NO);
 
 	return re;
 }

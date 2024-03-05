@@ -22,12 +22,9 @@ Drawbacks:
 * code use diffent angles values to quake2
 * huge amount of possibly dead code
 * broken jumps
-* message id to text procesed in client instead game code itself
-* broken guns select
 * no menu implementations
 * no books implementations
 * code is little bit mess
-* game, client_effects hard linked
 * only gl1 has full support render
 * soft,gl3,vk render has incorrect angles and no particles
 
@@ -64,45 +61,85 @@ Feel free to try this code but you mileage may vary.
 Have a look at the yquake2 repository for the "normal" Yamagi Quake II:
 https://github.com/yquake2/yquake2
 
-State:
- * GL1:
-   * base1: correct wall light, broken model light
-   * base2: correct wall light, broken model light, broken lift
-   * q64/outpost: no known issies
-   * mguhub: loaded, transparent walls and broken logic for surface fall in next maps
- * GL3/GLES3:
-   * base1: broken wall light, broken model light
-   * base2: broken wall light, broken model light, broken lift
-   * q64/outpost: no known issies
-   * mguhub: loaded, transparent walls and broken logic for surface fall in next maps
- * SOFT:
-   * base1: broken wall light, broken model light
-   * base2: broken wall light, broken model light, broken lift
-   * q64/outpost: no known issies
-   * mguhub: loaded, transparent walls and sky and broken logic for surface fall in next maps
- * VK:
-   * base1: correct wall light, broken model light
-   * base2: correct wall light, broken model light, broken lift
-   * q64/outpost: no known issies
-   * mguhub: loaded, transparent walls and broken logic for surface fall in next maps
+Alpha windows 64 bit [binaries](https://github.com/yquake2/yquake2remaster/releases).
 
-Goals (none of it finished):
-  * Single player support,
+State:
+ * GL1/GL3/GLES3/VK:
+   * base1: no known issies
+   * base2: no known issies
+   * q64/outpost: no known issies
+   * mguhub: loaded, sometimes broken logic for surface fall in next maps
+ * GL4:
+   * base1: unchecked
+   * base2: unchecked
+   * q64/outpost: unchecked
+   * mguhub: unchecked
+ * SOFT:
+   * base1: broken wall light
+   * base2: broken wall light
+   * q64/outpost: no known issies
+   * mguhub: broken wall light, sometimes broken logic for surface fall in next maps
+
+Monsters:
+  * incorrect dead animation for Arachnid,
+  * broken fire effect for Guardian,
+  * incorrect skin in soft render for Wizard mdl model.
+
+Models support:
+
+| Format | Original Game   | Frame vertex | Comments                                          |
+| ------ | --------------- | ------------ | ------------------------------------------------- |
+| mdl    | Quake 1         | 8 bit        | could be issues with textures                     |
+| md2    | Quake 2         | 8 bit        | full support                                      |
+| md2    | Anachronox      | 8/10/16 bit  | incorrect normals, does no suport tagged surfaces |
+| fm     | Heretic 2       | 8 bit        | show all meshes,                                  |
+| dkm    | Daikatana DKM1  | 8 bit        | unchecked with game                               |
+| dkm    | Daikatana DKM2  | 10 bit       | unchecked with game, incorrect normals            |
+| md3    | Quake 3         | 16 bit       | show all meshes, no tags support, unchecked, slow |
+| md5    | Doom 3/Quake 4  | float        | requires md2 for skins, show all meshes, slow     |
+
+All models support only single texture for all meshes and only up to 255 frames.
+
+Texture supported
+
+| Format | Original Game  | Comments |
+| ------ | -------------- | -------- |
+| wal    | Quake 2        | 8 bit    |
+| wal    | Daikatana      | 8 bit    |
+| m8     | Heretic 2      | 8 bit    |
+| m32    | Heretic 2      | 24 bit   |
+| pcx    | Quake2         | 24 bit   |
+| tga    | Quake2         | 24 bit   |
+| png    | retexturing    | 24 bit   |
+| jpg    | retexturing    | 24 bit   |
+| bmp    | Daikatana      | 24 bit   |
+
+Goals (finished):
   * BSPX DECOUPLEDLM light map support (base1),
   * QBSP map format support (mguhub),
-  * MD5 model support,
-  * modified ReRelease game code support with removed KEX only related code,
+  * Use ffmpeg for load any video,
   * RoQ and Theora cinematic videos support.
+  * Cinematic videos support in smk, mpeg, ogv format,
+  * Daikatana/Heretic map partial format support,
+  * Add debug progress loading code for maps.
+
+
+Goals (none of it finished):
+  * md5 improve load speed,
+  * Single player support,
+  * support surface flags for Daikatana, Heretic 2, Anachronox,
+  * support Anachronox pak format,
+  * modified ReRelease game code support with removed KEX only related code.
 
 Bonus goals:
-  * MDL/Quake1 model format support,
-  * FM/Heretic 2 model format support,
-  * Daikatana model/wal/map format support,
-  * Cinematic videos support in smk, mpeg format,
-  * Use ffmpeg for load any video,
-  * Load colormap as 24bit color,
-  * Use shared model chache in client code insted reimplemnet in each render,
-  * Add debug progress loading code.
+  * Use shared model cache in client code insted reimplemnet in each render,
+  * Check load soft colormap as 24bit color,
+  * Use separete texture hi-color buffer for ui in soft render,
+  * Convert map surface flag by game type,
+  * Cleanup function declarations in game save code,
+  * Use 3 bytes vertex normal,
+  * Support scalled textures for models and walls in soft render and fix
+    lighting with remastered maps.
 
 Not a goal:
   * multiplayer protocol support with KEX engine,

@@ -110,7 +110,10 @@ ResizeSTB(const byte *input_pixels, int input_width, int input_height,
 {
 	if (stbir_resize_uint8(input_pixels, input_width, input_height, 0,
 			       output_pixels, output_width, output_height, 0, 4))
+	{
 		return true;
+	}
+
 	return false;
 }
 
@@ -120,7 +123,7 @@ ResizeSTB(const byte *input_pixels, int input_width, int input_height,
 void
 SmoothColorImage(unsigned *dst, size_t size, size_t rstep)
 {
-	unsigned *full_size;
+	const unsigned *full_size;
 	unsigned last_color;
 	unsigned *last_diff;
 
@@ -250,7 +253,8 @@ scale2x(const byte *src, byte *dst, int width, int height)
 	{
 		const byte *in_buff = src;
 		byte *out_buff = dst;
-		byte *out_buff_full = dst + ((width * height) << 2);
+		const byte *out_buff_full = dst + ((width * height) << 2);
+
 		while (out_buff < out_buff_full)
 		{
 			int x;
@@ -337,7 +341,8 @@ scale3x(const byte *src, byte *dst, int width, int height)
 	{
 		const byte *in_buff = src;
 		byte *out_buff = dst;
-		byte *out_buff_full = dst + ((width * height) * 9);
+		const byte *out_buff_full = dst + ((width * height) * 9);
+
 		while (out_buff < out_buff_full)
 		{
 			int x;
@@ -491,8 +496,8 @@ LoadHiColorImage(const char *name, const char* namewe, const char *ext,
 	return image;
 }
 
-struct image_s *
-R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t type,
+static struct image_s *
+LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t type,
 	qboolean r_retexturing, loadimage_t load_image)
 {
 	struct image_s	*image = NULL;
@@ -556,15 +561,15 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 		}
 		else if (!strcmp(ext, "wal"))
 		{
-			image = LoadWal(namewe, type, load_image);
+			image = LoadWal(name, namewe, type, load_image);
 		}
 		else if (!strcmp(ext, "m8"))
 		{
-			image = LoadM8(namewe, type, load_image);
+			image = LoadM8(name, namewe, type, load_image);
 		}
 		else if (!strcmp(ext, "m32"))
 		{
-			image = LoadM32(namewe, type, load_image);
+			image = LoadM32(name, namewe, type, load_image);
 		}
 		else if (!strcmp(ext, "tga") ||
 		         !strcmp(ext, "png") ||
@@ -584,6 +589,54 @@ R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t t
 				free(pic);
 			}
 		}
+	}
+
+	return image;
+}
+
+struct image_s *
+R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t type,
+	qboolean r_retexturing, loadimage_t load_image)
+{
+	struct image_s	*image = NULL;
+
+	/* original name */
+	image = LoadImage_Ext(name, namewe, ext, type, r_retexturing, load_image);
+
+	/* pcx check */
+	if (!image)
+	{
+		image = LoadImage_Ext(name, namewe, "pcx", type, r_retexturing, load_image);
+	}
+
+	/* wal check */
+	if (!image)
+	{
+		image = LoadImage_Ext(name, namewe, "wal", type, r_retexturing, load_image);
+	}
+
+	/* tga check */
+	if (!image)
+	{
+		image = LoadImage_Ext(name, namewe, "tga", type, r_retexturing, load_image);
+	}
+
+	/* m32 check */
+	if (!image)
+	{
+		image = LoadImage_Ext(name, namewe, "m32", type, r_retexturing, load_image);
+	}
+
+	/* m8 check */
+	if (!image)
+	{
+		image = LoadImage_Ext(name, namewe, "m8", type, r_retexturing, load_image);
+	}
+
+	/* png check */
+	if (!image)
+	{
+		image = LoadImage_Ext(name, namewe, "png", type, r_retexturing, load_image);
 	}
 
 	return image;
@@ -611,25 +664,10 @@ GetSkyImage(const char *skyname, const char* surfname, qboolean palettedtexture,
 		image = find_image(pathname, it_sky);
 	}
 
-	/* Daikatana */
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "env/%s%s.pcx",
-				skyname, surfname);
-		image = find_image(pathname, it_sky);
-	}
-
 	/* Heretic 2 */
 	if (!image)
 	{
 		Com_sprintf(pathname, sizeof(pathname), "pics/Skies/%s%s.m32",
-			skyname, surfname);
-		image = find_image(pathname, it_sky);
-	}
-
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "pics/Skies/%s%s.m8",
 			skyname, surfname);
 		image = find_image(pathname, it_sky);
 	}
@@ -640,34 +678,11 @@ GetSkyImage(const char *skyname, const char* surfname, qboolean palettedtexture,
 struct image_s *
 GetTexImage(const char *name, findimage_t find_image)
 {
-	struct image_s	*image = NULL;
 	char	pathname[MAX_QPATH];
 
 	/* Quake 2 */
 	Com_sprintf(pathname, sizeof(pathname), "textures/%s.wal", name);
-	image = find_image(pathname, it_wall);
-
-	/* Quake2 Re-Release Nintendo 64 */
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "textures/%s.tga", name);
-		image = find_image(pathname, it_wall);
-	}
-
-	/* Heretic 2 */
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "textures/%s.m32", name);
-		image = find_image(pathname, it_wall);
-	}
-
-	if (!image)
-	{
-		Com_sprintf(pathname, sizeof(pathname), "textures/%s.m8", name);
-		image = find_image(pathname, it_wall);
-	}
-
-	return image;
+	return find_image(pathname, it_wall);
 }
 
 struct image_s *
@@ -685,7 +700,8 @@ R_FindPic(const char *name, findimage_t find_image)
 		if(!ext[0])
 		{
 			/* file has no extension */
-			strncpy(namewe, name, MAX_QPATH);
+			strncpy(namewe, name, sizeof(namewe) - 1);
+			namewe[sizeof(namewe) - 1] = 0;
 		}
 		else
 		{
@@ -696,41 +712,17 @@ R_FindPic(const char *name, findimage_t find_image)
 			/* Remove the extension */
 			memset(namewe, 0, MAX_QPATH);
 			memcpy(namewe, name, len - (strlen(ext) + 1));
+			namewe[len - (strlen(ext))] = 0;
 		}
 
 		/* Quake 2 */
 		Com_sprintf(pathname, sizeof(pathname), "pics/%s.pcx", namewe);
 		image = find_image(pathname, it_pic);
 
-		/* Quake 2 Re-Release */
-		if (!image)
-		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/%s.png", name);
-			image = find_image(pathname, it_pic);
-		}
-
 		/* Heretic 2 */
 		if (!image)
 		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/%s.m32", namewe);
-			image = find_image(pathname, it_pic);
-		}
-
-		if (!image)
-		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m32", namewe);
-			image = find_image(pathname, it_pic);
-		}
-
-		if (!image)
-		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/%s.m8", namewe);
-			image = find_image(pathname, it_pic);
-		}
-
-		if (!image)
-		{
-			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m8", namewe);
+			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m32", name);
 			image = find_image(pathname, it_pic);
 		}
 	}

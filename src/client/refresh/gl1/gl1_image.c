@@ -26,7 +26,7 @@
 
 #include "header/local.h"
 
-image_t gltextures[MAX_GLTEXTURES];
+image_t gltextures[MAX_TEXTURES];
 int numgltextures;
 static int image_max = 0;
 int base_textureid; /* gltextures[i] = base_textureid+i */
@@ -240,7 +240,7 @@ R_TextureMode(char *string)
 			if (gl_config.anisotropic && gl_anisotropic->value)
 			{
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-						max(gl_anisotropic->value, 1.f));
+						Q_max(gl_anisotropic->value, 1.f));
 			}
 		}
 		else /* texture has no mipmaps */
@@ -367,7 +367,8 @@ R_ImageList_f(void)
 			"Total texel count (not counting mipmaps): %i\n",
 			texels);
 	freeup = R_ImageHasFreeSpace();
-	R_Printf(PRINT_ALL, "Used %d of %d images%s.\n", used, image_max, freeup ? ", has free space" : "");
+	R_Printf(PRINT_ALL, "Used %d of %d / %d images%s.\n",
+		used, image_max, MAX_TEXTURES, freeup ? ", has free space" : "");
 }
 
 /*
@@ -559,11 +560,11 @@ R_Upload32Native(unsigned *data, int width, int height, qboolean mipmap)
 			break;
 		}
 	}
-    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, mipmap);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, mipmap);
 	glTexImage2D(GL_TEXTURE_2D, 0, comp, width,
 			height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
 			data);
-    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, false);
+	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, false);
 	return samples == gl_alpha_format;
 }
 
@@ -778,7 +779,7 @@ R_Upload32(unsigned *data, int width, int height, qboolean mipmap)
 	if (mipmap && gl_config.anisotropic && gl_anisotropic->value)
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-				max(gl_anisotropic->value, 1.f));
+				Q_max(gl_anisotropic->value, 1.f));
 	}
 	return res;
 }
@@ -863,8 +864,10 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	qboolean nolerp = false;
 	if (r_2D_unfiltered->value && type == it_pic)
 	{
-		// if r_2D_unfiltered is true(ish), nolerp should usually be true,
-		// *unless* the texture is on the r_lerp_list
+		/*
+		 * if r_2D_unfiltered is true(ish), nolerp should usually be true,
+		 * *unless* the texture is on the r_lerp_list
+		 */
 		nolerp = (r_lerp_list->string == NULL) || (strstr(r_lerp_list->string, name) == NULL);
 	}
 	else if (r_nolerp_list != NULL && r_nolerp_list->string != NULL)
@@ -879,13 +882,21 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		{
 			break;
 		}
+
+		if (!strcmp(image->name, name))
+		{
+			/* we already have such image */
+			image->registration_sequence = registration_sequence;
+			return image;
+		}
 	}
 
 	if (i == numgltextures)
 	{
-		if (numgltextures == MAX_GLTEXTURES)
+		if (numgltextures == MAX_TEXTURES)
 		{
-			Com_Error(ERR_DROP, "MAX_GLTEXTURES");
+			Com_Error(ERR_DROP, "%s: load %s is failed MAX_TEXTURES",
+				__func__, name);
 		}
 
 		numgltextures++;
@@ -1160,7 +1171,7 @@ R_ImageHasFreeSpace(void)
 	}
 
 	// should same size of free slots as currently used
-	return (numgltextures + used) < MAX_GLTEXTURES;
+	return (numgltextures + used) < MAX_TEXTURES;
 }
 
 void

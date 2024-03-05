@@ -147,7 +147,7 @@ endif
 # Highest supported optimizations are -O2, higher levels
 # will likely break this crappy code.
 ifdef DEBUG
-CFLAGS ?= -O0 -g -Wall -pipe
+CFLAGS ?= -O0 -g -Wall -pipe -DDEBUG
 ifdef ASAN
 override CFLAGS += -fsanitize=address -DUSE_SANITIZER
 endif
@@ -471,11 +471,6 @@ build/client/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
-
-build/client/%.o: %.cpp
-	@echo "===> CXX $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 endif
 
 release/quake2 : CFLAGS += -Wno-unused-result
@@ -1077,11 +1072,6 @@ build/player/%.o: %.c
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
-build/player/%.o: %.cpp
-	@echo "===> CXX $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
-
 release/baseq2/player.so : CFLAGS += -fPIC -Wno-unused-result
 release/baseq2/player.so : LDFLAGS += -shared
 endif
@@ -1150,11 +1140,6 @@ build/effects/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
-
-build/effects/%.o: %.cpp
-	@echo "===> CXX $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
 release/baseq2/effects.so : CFLAGS += -fPIC -Wno-unused-result
 release/baseq2/effects.so : LDFLAGS += -shared
@@ -1287,7 +1272,6 @@ CLIENT_OBJS_ := \
 	src/client/curl/download.o \
 	src/client/curl/qcurl.o \
 	src/client/input/sdl.o \
-	src/client/cinema/smacker.o \
 	src/client/menu/menu.o \
 	src/client/menu/qmenu.o \
 	src/client/menu/videomenu.o \
@@ -1320,8 +1304,10 @@ CLIENT_OBJS_ := \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
 	src/common/unzip/ioapi.o \
-	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
+	src/common/unzip/miniz/miniz.o \
+	src/common/unzip/miniz/miniz_tdef.o \
+	src/common/unzip/miniz/miniz_tinfl.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
 	src/server/sv_entities.o \
@@ -1364,9 +1350,12 @@ REFGL1_OBJS_ := \
 	src/client/refresh/gl1/gl1_surf.o \
 	src/client/refresh/gl1/gl1_warp.o \
 	src/client/refresh/gl1/gl1_sdl.o \
+	src/client/refresh/files/mesh.o \
 	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
+	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
+	src/client/refresh/files/models_md5.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
@@ -1400,9 +1389,12 @@ REFGL3_OBJS_ := \
 	src/client/refresh/gl3/gl3_surf.o \
 	src/client/refresh/gl3/gl3_warp.o \
 	src/client/refresh/gl3/gl3_shaders.o \
+	src/client/refresh/files/mesh.o \
 	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
+	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
+	src/client/refresh/files/models_md5.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
@@ -1442,9 +1434,12 @@ REFGL4_OBJS_ := \
 	src/client/refresh/gl4/gl4_surf.o \
 	src/client/refresh/gl4/gl4_warp.o \
 	src/client/refresh/gl4/gl4_shaders.o \
+	src/client/refresh/files/mesh.o \
 	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
+	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
+	src/client/refresh/files/models_md5.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
@@ -1485,9 +1480,13 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/soft/sw_scan.o \
 	src/client/refresh/soft/sw_sprite.o \
 	src/client/refresh/soft/sw_surf.o \
+	src/client/refresh/soft/sw_warp.o \
+	src/client/refresh/files/mesh.o \
 	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
+	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
+	src/client/refresh/files/models_md5.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
@@ -1528,9 +1527,12 @@ REFVK_OBJS_ := \
 	src/client/refresh/vk/vk_warp.o \
 	src/client/refresh/vk/vk_util.o \
 	src/client/refresh/vk/volk/volk.o \
+	src/client/refresh/files/mesh.o \
 	src/client/refresh/files/light.o \
 	src/client/refresh/files/surf.o \
+	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
+	src/client/refresh/files/models_md5.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
@@ -1574,8 +1576,10 @@ SERVER_OBJS_ := \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
 	src/common/unzip/ioapi.o \
-	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
+	src/common/unzip/miniz/miniz.o \
+	src/common/unzip/miniz/miniz_tdef.o \
+	src/common/unzip/miniz/miniz_tinfl.o \
 	src/game/common/h2singlylinkedlist.o \
 	src/game/common/resource_manager.o \
 	src/server/sv_cmd.o \

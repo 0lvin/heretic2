@@ -40,22 +40,26 @@ R_DrawSprite(entity_t *currententity, const model_t *currentmodel)
 	vec3_t		left, up, right, down;
 	dsprite_t	*s_psprite;
 	dsprframe_t	*s_psprframe;
-	image_t		*skin;
+	image_t		*skin = NULL;
 
 	s_psprite = (dsprite_t *)currentmodel->extradata;
 	currententity->frame %= s_psprite->numframes;
 
 	s_psprframe = &s_psprite->frames[currententity->frame];
 
-	skin = currentmodel->skins[currententity->frame];
+	if (currententity->frame < currentmodel->numskins)
+	{
+		skin = currentmodel->skins[currententity->frame];
+	}
+
 	if (!skin)
 	{
 		skin = r_notexture_mip;
 	}
 
 	r_polydesc.pixels       = skin->pixels[0];
-	r_polydesc.pixel_width  = min(s_psprframe->width, skin->width);
-	r_polydesc.pixel_height = min(s_psprframe->height, skin->height);
+	r_polydesc.pixel_width  = Q_min(s_psprframe->width, skin->width);
+	r_polydesc.pixel_height = Q_min(s_psprframe->height, skin->height);
 	r_polydesc.dist         = 0;
 
 	// generate the sprite's axes, completely parallel to the viewplane.

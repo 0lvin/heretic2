@@ -222,6 +222,12 @@ Set `0` by default.
   single player, the same way as in multiplayer.
   This cvar only works if the game.dll implements this behaviour.
 
+* **g_quick_weap**: If set to `1`, both *weapprev* and *weapnext*
+  commands will "count" how many times they have been called, making
+  possible to skip weapons by quickly tapping one of these keys.
+  By default this cvar is set to `0`, and will only work if the
+  game.dll implements this behaviour.
+
 * **g_swap_speed**: Sets the speed of the "changing weapon" animation.
   Default is `1`. If set to `2`, it will be double the speed, `3` is
   the triple... up until the max of `8`, since there are at least 2
@@ -240,6 +246,10 @@ Set `0` by default.
   and its items, weapon\_disintegrator and ammo\_disruptor, can be
   spawned in maps (in fact, some official Ground Zero maps contain
   these entities). This cvar is set to 0 by default.
+
+* **game**: current game value, mod name and directory.
+
+* **gametype**: replace menu to different mod type without change mod name in game variable.
 
 * **nextdemo**: Defines the next command to run after maps from the
   `nextserver` list. By default this is set to the empty string.
@@ -452,9 +462,8 @@ Set `0` by default.
 * **gl1_overbrightbits**: Enables overbright bits, brightness scaling of
   lightmaps and models. Higher values make shadows less dark. Possible
   values are `0` (no overbright bits), `1` (more correct lighting for
-  water), `2` (scale by factor 2), `3` (scale lighting by 3 only for the
-  dynamic meshes, like enemies and items), and `4` (scale lighting of
-  everything by 4). Applied in realtime, does not need `vid_restart`.
+  liquids), `2` (scale lighting by factor 2), and `4` (scale by factor
+  4). Applied in realtime, does not need `vid_restart`.
 
 * **gl1_particle_square**: If set to `1` particles are rendered as
   squares.

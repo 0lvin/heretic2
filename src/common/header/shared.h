@@ -128,12 +128,8 @@ typedef unsigned char byte;
 #define YAW 1                       /* left / right */
 #define ROLL 2                      /* fall over */
 
-#ifndef min
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#endif
+#define Q_min(a, b) (((a) < (b)) ? (a) : (b))
+#define Q_max(a, b) (((a) > (b)) ? (a) : (b))
 
 #define MAX_STRING_CHARS 2048       /* max length of a string passed to Cmd_TokenizeString */
 #define MAX_STRING_TOKENS 80        /* max tokens resulting from Cmd_TokenizeString */
@@ -177,11 +173,21 @@ typedef unsigned char byte;
  #define PRINTF_ATTR(FMT, VARGS) __attribute__((format(printf, FMT , VARGS )))
 #endif
 
+/* per-level limits Quake 2 Protocol version 26 */
+#define MAX_CLIENTS_Q2DEMO 256             /* absolute limit */
+#define MAX_EDICTS_Q2DEMO 1024             /* must change protocol to increase more */
+#define MAX_LIGHTSTYLES_Q2DEMO 256
+#define MAX_MODELS_Q2DEMO 256              /* these are sent over the net as bytes */
+#define MAX_SOUNDS_Q2DEMO 256              /* so they cannot be blindly increased */
+#define MAX_IMAGES_Q2DEMO 256
+#define MAX_ITEMS_Q2DEMO 256
+#define MAX_GENERAL_Q2DEMO (MAX_CLIENTS_Q2DEMO * 2)       /* general config strings */
+
 /* per-level limits */
 #define MAX_CLIENTS 32             /* absolute limit */
 #define MAX_EDICTS 1024             /* must change protocol to increase more */
 #define MAX_LIGHTSTYLES 256
-#define MAX_MODELS 256              /* these are sent over the net as bytes */
+#define MAX_MODELS 512              /* these are sent over the net as bytes */
 #define MAX_SOUNDS 768              /* so they cannot be blindly increased */
 #define MAX_IMAGES 256
 #define MAX_ITEMS 256
@@ -222,8 +228,11 @@ typedef enum
  * ==============================================================
  */
 
+/* Vectors */
 typedef float vec_t;
+typedef vec_t vec2_t[2];
 typedef vec_t vec3_t[3];
+typedef vec_t vec4_t[4];
 typedef vec_t vec5_t[5];
 
 typedef int fixed4_t;
@@ -284,7 +293,7 @@ void AngleVectors2(const vec3_t value1, vec3_t angles);
 int BoxOnPlaneSide(const vec3_t emins, const vec3_t emaxs, const struct cplane_s *plane);
 float anglemod(float a);
 float Q_fabs(float f);
-float LerpAngle(float a1, float a2, float frac);
+float LerpAngle(float a2, float a1, float frac);
 int BoxOnPlaneSide2(const vec3_t emins, const vec3_t emaxs, const struct cplane_s *p);
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p) \
@@ -344,6 +353,9 @@ int Q_strlcat(char *dst, const char *src, int size);
 
 /* Unicode wrappers that also make sure it's a regular file around fopen(). */
 FILE *Q_fopen(const char *file, const char *mode);
+
+/* Comparator function for qsort(), compares case-insensitive strings. */
+int Q_sort_stricmp(const void *s1, const void *s2);
 
 /* Comparator function for qsort(), compares strings. */
 int Q_sort_strcomp(const void *s1, const void *s2);
@@ -1313,6 +1325,16 @@ typedef enum
 #define CS_AIRACCEL 29              /* air acceleration control */
 #define CS_MAXCLIENTS 30
 #define CS_MAPCHECKSUM 31           /* for catching cheater maps */
+
+/* CS structure Quake 2 Protocol version 26 */
+#define CS_MODELS_Q2DEMO 32
+#define CS_SOUNDS_Q2DEMO (CS_MODELS_Q2DEMO + MAX_MODELS_Q2DEMO)
+#define CS_IMAGES_Q2DEMO (CS_SOUNDS_Q2DEMO + MAX_SOUNDS_Q2DEMO)
+#define CS_LIGHTS_Q2DEMO (CS_IMAGES_Q2DEMO + MAX_IMAGES_Q2DEMO)
+#define CS_ITEMS_Q2DEMO (CS_LIGHTS_Q2DEMO + MAX_LIGHTSTYLES_Q2DEMO)
+#define CS_PLAYERSKINS_Q2DEMO (CS_ITEMS_Q2DEMO + MAX_ITEMS_Q2DEMO)
+#define CS_GENERAL_Q2DEMO (CS_PLAYERSKINS_Q2DEMO + MAX_CLIENTS_Q2DEMO)
+#define MAX_CONFIGSTRINGS_Q2DEMO (CS_GENERAL_Q2DEMO + MAX_GENERAL_Q2DEMO)
 
 #define CS_MODELS 32
 #define CS_SOUNDS (CS_MODELS + MAX_MODELS)

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (c) ZeniMax Media Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,17 +30,25 @@
 #include "common/h2rand.h"
 #include "common/cl_strings.h"
 
-/*QUAK-ED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)
+/*
+ * QUAKED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)
 Fire an origin based temp entity event to the clients.
 "style"		type byte
 */
-void Use_Target_Tent (edict_t *ent, edict_t *other, edict_t *activator)
+void
+Use_Target_Tent(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	gi.CreateEffect(NULL, ent->style, 0, ent->s.origin, NULL);
 }
 
-void SP_target_temp_entity (edict_t *ent)
+void
+SP_target_temp_entity(edict_t *ent)
 {
+	if (!ent)
+	{
+		return;
+	}
+
 	ent->use = Use_Target_Tent;
 }
 
@@ -73,8 +82,14 @@ void use_target_explosion (edict_t *self, edict_t *other, edict_t *activator)
 	self->nextthink = level.time + self->delay;
 }
 
-void SP_target_explosion (edict_t *ent)
+void
+SP_target_explosion(edict_t *ent)
 {
+	if (!ent)
+	{
+		return;
+	}
+
 	ent->use = use_target_explosion;
 	ent->svflags = SVF_NOCLIENT;
 }
@@ -82,7 +97,8 @@ void SP_target_explosion (edict_t *ent)
 
 //==========================================================
 
-/*QUAKED target_changelevel (1 0 0) (-8 -8 -8) (8 8 8)
+/*
+ * QUAKED target_changelevel (1 0 0) (-8 -8 -8) (8 8 8)
 Changes map player is on.
 
 map - the map to change to
@@ -104,7 +120,9 @@ void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
 	if (!deathmatch->value && !coop->value)
 	{
 		if (g_edicts[1].health <= 0)
+		{
 			return;
+		}
 	}
 
 	// if noexit, do a ton of damage to other
@@ -145,7 +163,8 @@ void SP_target_changelevel (edict_t *ent)
 
 //==========================================================
 
-/*QUAKED target_splash (1 0 0) (-8 -8 -8) (8 8 8)
+/*
+ * QUAKED target_splash (1 0 0) (-8 -8 -8) (8 8 8)
 Creates a particle splash effect when used.
 
 Set "sounds" to one of the following:
@@ -184,7 +203,8 @@ void SP_target_splash (edict_t *self)
 
 //==========================================================
 
-/*QUAK-ED target_spawner (1 0 0) (-8 -8 -8) (8 8 8)
+/*
+ * QUAKED target_spawner (1 0 0) (-8 -8 -8) (8 8 8)
 Set target to the type of entity you want spawned.
 Useful for spawning monsters and gibs in the factory levels.
 
@@ -197,7 +217,7 @@ For gibs:
 	will just be dropped
 */
 void ED_CallSpawn (edict_t *ent);
-/*
+
 void use_target_spawner (edict_t *self, edict_t *other, edict_t *activator)
 {
 	edict_t	*ent;
@@ -213,8 +233,7 @@ void use_target_spawner (edict_t *self, edict_t *other, edict_t *activator)
 	if (self->speed)
 		VectorCopy (self->movedir, ent->velocity);
 }
-*/
-/*
+
 void SP_target_spawner (edict_t *self)
 {
 	self->use = use_target_spawner;
@@ -225,17 +244,18 @@ void SP_target_spawner (edict_t *self)
 		VectorScale (self->movedir, self->speed, self->movedir);
 	}
 }
-*/
+
 //==========================================================
 
-/*QUAK-ED target_blaster (1 0 0) (-8 -8 -8) (8 8 8) NOTRAIL NOEFFECTS
+/*
+ * QUAKED target_blaster (1 0 0) (-8 -8 -8) (8 8 8) NOTRAIL NOEFFECTS
 Fires a blaster bolt in the set direction when triggered.
 
 dmg		default is 15
 speed	default is 1000
 */
-/*
-void use_target_blaster (edict_t *self, edict_t *other, edict_t *activator)
+void
+use_target_blaster(edict_t *self, edict_t *other, edict_t *activator)
 {
 	int effect;
 
@@ -246,15 +266,16 @@ void use_target_blaster (edict_t *self, edict_t *other, edict_t *activator)
 	else
 		effect = EF_BLASTER;
 
-	fire_blaster (self, self->s.origin, self->movedir, self->dmg, self->speed, EF_BLASTER);
+	// fire_blaster (self, self->s.origin, self->movedir, self->dmg, self->speed, EF_BLASTER);
 	gi.sound (self, CHAN_VOICE, self->noise_index, 1, ATTN_NORM, 0);
 }
 
-void SP_target_blaster (edict_t *self)
+void
+SP_target_blaster(edict_t *self)
 {
 	self->use = use_target_blaster;
 	G_SetMovedir (self->s.angles, self->movedir);
-	self->noise_index = gi.soundindex ("weapons/laser2.wav");
+	self->noise_index = gi.soundindex("weapons/laser2.wav");
 
 	if (!self->dmg)
 		self->dmg = 15;
@@ -264,10 +285,10 @@ void SP_target_blaster (edict_t *self)
 	self->svflags = SVF_NOCLIENT;
 }
 
-*/
 //==========================================================
 
-/*QUAKED target_crosslevel_trigger (.5 .5 .5) (-8 -8 -8) (8 8 8) trigger1 trigger2 trigger3 trigger4 trigger5 trigger6 trigger7 trigger8
+/*
+ * QUAKED target_crosslevel_trigger (.5 .5 .5) (-8 -8 -8) (8 8 8) trigger1 trigger2 trigger3 trigger4 trigger5 trigger6 trigger7 trigger8
 Once this trigger is touched/used, any trigger_crosslevel_target with the same trigger number is automatically used when a level is started within the same unit.  It is OK to check multiple triggers.  Message, delay, target, and killtarget also work.
 */
 void trigger_crosslevel_trigger_use (edict_t *self, edict_t *other, edict_t *activator)
@@ -282,7 +303,8 @@ void SP_target_crosslevel_trigger (edict_t *self)
 	self->use = trigger_crosslevel_trigger_use;
 }
 
-/*QUAKED target_crosslevel_target (.5 .5 .5) (-8 -8 -8) (8 8 8) trigger1 trigger2 trigger3 trigger4 trigger5 trigger6 trigger7 trigger8
+/*
+ * QUAKED target_crosslevel_target (.5 .5 .5) (-8 -8 -8) (8 8 8) trigger1 trigger2 trigger3 trigger4 trigger5 trigger6 trigger7 trigger8
 Triggered by a trigger_crosslevel elsewhere within a unit.  If multiple triggers are checked, all must be true.  Delay, target and
 killtarget also work.
 
@@ -310,11 +332,11 @@ void SP_target_crosslevel_target (edict_t *self)
 
 //==========================================================
 
-/*QUAK-ED target_laser (0 .5 .8) (-8 -8 -8) (8 8 8) START_ON RED GREEN BLUE YELLOW ORANGE FAT
+/*
+ * QUAKED target_laser (0 .5 .8) (-8 -8 -8) (8 8 8) START_ON RED GREEN BLUE YELLOW ORANGE FAT
 When triggered, fires a laser.  You can either set a target
 or a direction.
 */
-/*
 void target_laser_think (edict_t *self)
 {
 	edict_t	*ignore;
@@ -353,8 +375,8 @@ void target_laser_think (edict_t *self)
 			break;
 
 		// hurt it if we can
-		if ((tr.ent->takedamage) && !(tr.ent->flags & FL_IMMUNE_LASER) && (tr.ent != self->owner))
-			T_Damage (tr.ent, self, self->owner, self->movedir, tr.endpos, vec3_origin, self->dmg, 1, 0);
+		//if ((tr.ent->takedamage) && !(tr.ent->flags & FL_IMMUNE_LASER) && (tr.ent != self->owner))
+		//	T_Damage (tr.ent, self, self->owner, self->movedir, tr.endpos, vec3_origin, self->dmg, 1, 0);
 
 		// if we hit something that's not a monster or player or is immune to lasers, we're done
 		if (!(tr.ent->svflags & SVF_MONSTER) && (!tr.ent->client))
@@ -470,10 +492,11 @@ void SP_target_laser (edict_t *self)
 	self->think = target_laser_start;
 	self->nextthink = level.time + 1;
 }
-*/
+
 //==========================================================
 
-/*QUAKED target_lightramp (0 .5 .8) (-8 -8 -8) (8 8 8) TOGGLE
+/*
+ * QUAKED target_lightramp (0 .5 .8) (-8 -8 -8) (8 8 8) TOGGLE
 speed		How many seconds the ramping will take
 message		two letters; starting lightlevel and ending lightlevel
 */
@@ -578,7 +601,8 @@ void SP_target_lightramp (edict_t *self)
 
 //==========================================================
 
-/*QUAK-ED target_earthquake (1 0 0) (-8 -8 -8) (8 8 8)
+/*
+ * QUAKED target_earthquake (1 0 0) (-8 -8 -8) (8 8 8)
 When triggered, this initiates a level-wide earthquake.
 All players and monsters are affected.
 "speed"		severity of the quake (default:200)
@@ -618,7 +642,8 @@ void target_earthquake_think (edict_t *self)
 		self->nextthink = level.time + FRAMETIME;
 }
 
-void target_earthquake_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+target_earthquake_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 
 	if (sv_jumpcinematic->value)	// Don't do this if jumping a cinematic
@@ -645,5 +670,72 @@ void SP_target_earthquake (edict_t *self)
 	self->think = target_earthquake_think;
 	self->use = target_earthquake_use;
 
-	self->noise_index = gi.soundindex ("world/quake.wav");
+	self->noise_index = gi.soundindex("world/quake.wav");
+}
+
+void
+target_music_use(edict_t *self, edict_t *other, edict_t *activator)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	gi.configstring(CS_CDTRACK, va("%i", self->sounds));
+}
+
+void
+SP_target_music(edict_t* self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->use = target_music_use;
+}
+
+void
+target_sky_use(edict_t *self, edict_t *other, edict_t *activator)
+{
+	float rotate;
+	int autorotate;
+
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->map && self->map[0])
+	{
+		gi.configstring(CS_SKY, self->map);
+	}
+
+	rotate = self->accel;
+	autorotate = self->style;
+	gi.configstring(CS_SKYROTATE, va("%f %d", rotate, autorotate));
+
+	gi.configstring(CS_SKYAXIS, va("%f %f %f",
+		self->movedir[0], self->movedir[1], self->movedir[2]));
+}
+
+void
+SP_target_sky(edict_t* self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->use = target_sky_use;
+
+	if (st.sky && st.sky[0])
+	{
+		self->map = st.sky;
+	}
+
+	VectorCopy(st.skyaxis, self->movedir);
+	self->accel = st.skyrotate;
+	self->style = st.skyautorotate;
 }
