@@ -28,6 +28,14 @@ Drawbacks:
 * only gl1 has full support render
 * soft,gl3,vk render has incorrect angles and no particles
 
+To check:
+* color type/paticles,
+* ANGLE_1 usage in client code,
+* different move code and noclip
+* Incorrect 16 bit frame fkag unset,
+* MAX_MODELS/MAX_SOUND define hardcode,
+* no action on button press.
+
 Minimal file set from Loki release:
 ```
 7f705e54da770186abd84f1a904faa28 baseq2/default.cfg

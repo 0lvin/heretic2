@@ -160,11 +160,9 @@ R_RotateForEntity(entity_t *e)
 {
 	glTranslatef(e->origin[0], e->origin[1], e->origin[2]);
 
-// jmarshall - Heretic 2 rotation fix from their ref_gl.dll
-	glRotatef(e->angles[1] / ANGLE_1, 0, 0, 1);
-	glRotatef(-e->angles[0] / ANGLE_1, 0, 1, 0);
-	glRotatef(-e->angles[2] / ANGLE_1, 1, 0, 0);
-// jmarshall end
+	glRotatef(e->angles[1], 0, 0, 1);
+	glRotatef(-e->angles[0], 0, 1, 0);
+	glRotatef(-e->angles[2], 1, 0, 0);
 }
 
 static void
