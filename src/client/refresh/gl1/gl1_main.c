@@ -158,7 +158,7 @@ cvar_t* r_fog_underwater_color_a;
 void
 R_RotateForEntity(entity_t *e)
 {
-	glTranslatef(e->origin[0], e->origin[1], e->origin[2] + 9);
+	glTranslatef(e->origin[0], e->origin[1], e->origin[2]);
 
 // jmarshall - Heretic 2 rotation fix from their ref_gl.dll
 	glRotatef(e->angles[1] / ANGLE_1, 0, 0, 1);
