@@ -126,6 +126,8 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg,
 
 			MSG_WriteLong(msg, bits);
 
+			printf("%s:%8x\n", __func__, bits);
+
 			if (bits & U_NUMBER16)
 			{
 				MSG_WriteShort(msg, oldnum);

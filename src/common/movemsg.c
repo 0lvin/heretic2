@@ -616,6 +616,8 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 
 	MSG_WriteLong(msg, bits);
 
+	printf("%s:%x\n", __func__, bits);
+
 	if (bits & U_NUMBER16)
 	{
 		MSG_WriteShort(msg, to->number);
