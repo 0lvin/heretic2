@@ -456,6 +456,7 @@ static qboolean
 RE_Init(void)
 {
 	R_RegisterVariables ();
+	R_VertBufferInit();
 	R_InitImages ();
 	Mod_Init ();
 	Draw_InitLocal ();
@@ -522,6 +523,7 @@ RE_Shutdown (void)
 	R_UnRegister ();
 	Mod_FreeAll ();
 	R_ShutdownImages ();
+	R_VertBufferFree();
 
 	RE_ShutdownContext();
 }
@@ -1399,7 +1401,7 @@ RE_RenderFrame (refdef_t *fd)
 	}
 	// Draw enemies, barrel etc...
 	// Use Z-Buffer mostly in read mode only.
-	R_DrawEntitiesOnList ();
+	R_DrawEntitiesOnList();
 
 	if (r_dspeeds->value)
 	{
@@ -1408,10 +1410,12 @@ RE_RenderFrame (refdef_t *fd)
 	}
 
 	// Duh !
-	R_DrawParticles ();
+	R_DrawParticles();
 
 	if (r_dspeeds->value)
+	{
 		dp_time2 = SDL_GetTicks();
+	}
 
 	// Perform pixel palette blending ia the pics/colormap.pcx lower part lookup table.
 	R_DrawAlphaSurfaces(&ent);
@@ -1434,13 +1438,19 @@ RE_RenderFrame (refdef_t *fd)
 	R_CalcPalette ();
 
 	if (sw_aliasstats->value)
-		R_PrintAliasStats ();
+	{
+		R_PrintAliasStats();
+	}
 
 	if (r_speeds->value)
-		R_PrintTimes ();
+	{
+		R_PrintTimes();
+	}
 
 	if (r_dspeeds->value)
+	{
 		R_PrintDSpeeds ();
+	}
 
 	R_ReallocateMapBuffers();
 }
