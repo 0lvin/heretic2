@@ -417,7 +417,7 @@ Mod_LoadFrames_DKM2(dmdx_t *pheader, const byte *src, size_t inframesize, vec3_t
 	}
 }
 
-static void
+void
 Mod_LoadFixImages(const char* mod_name, dmdx_t *pheader, qboolean internal)
 {
 	int i;
@@ -1038,6 +1038,93 @@ Mod_LoadCmdCompress(const dstvert_t *texcoords, dtriangle_t *triangles, int num_
 	return numcommands;
 }
 
+static int *
+Mod_LoadSTLookup(dmdx_t *pheader)
+{
+	const dstvert_t* st;
+	int *st_lookup;
+	int k;
+
+	st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
+
+	st_lookup = calloc(pheader->num_st, sizeof(int));
+
+	for(k = 1; k < pheader->num_st; k++)
+	{
+		int j;
+
+		st_lookup[k] = k;
+
+		for(j = 0; j < k; j++)
+		{
+			if ((st[j].s == st[k].s) && (st[j].t == st[k].t))
+			{
+				/* same value */
+				st_lookup[k] = j;
+				break;
+			}
+		}
+	}
+	return st_lookup;
+}
+
+static void
+Mod_LoadTrisCompress(dmdx_t *pheader)
+{
+	int *st_lookup;
+	dtriangle_t *tris;
+	int i;
+
+	st_lookup = Mod_LoadSTLookup(pheader);
+
+	tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
+	for (i = 0; i < pheader->num_tris; i++)
+	{
+		int k;
+
+		for (k = 0; k < 3; k++)
+		{
+			tris->index_st[k] = st_lookup[tris->index_st[k]];
+		}
+
+		tris++;
+	}
+
+	free(st_lookup);
+}
+
+void
+Mod_LoadCmdGenerate(dmdx_t *pheader)
+{
+	dmdxmesh_t *mesh_nodes;
+	const int *baseglcmds;
+	int num_tris, i;
+	int *pglcmds;
+
+	Mod_LoadTrisCompress(pheader);
+
+	baseglcmds = pglcmds = (int *)((byte *)pheader + pheader->ofs_glcmds);
+	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
+
+	num_tris = 0;
+	for (i = 0; i < pheader->num_meshes; i++)
+	{
+		mesh_nodes[i].ofs_glcmds = pglcmds - baseglcmds;
+
+		/* write glcmds */
+		mesh_nodes[i].num_glcmds = Mod_LoadCmdCompress(
+			(dstvert_t*)((byte *)pheader + pheader->ofs_st),
+			(dtriangle_t*)((byte *)pheader + pheader->ofs_tris) + num_tris,
+			mesh_nodes[i].num_tris,
+			pglcmds,
+			pheader->skinwidth, pheader->skinheight);
+
+		pglcmds += mesh_nodes[i].num_glcmds;
+		num_tris += mesh_nodes[i].num_tris;
+	}
+
+}
+
 /*
 =================
 Mod_LoadModel_MD3
@@ -1047,11 +1134,17 @@ static void *
 Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	struct image_s ***skins, int *numskins, modtype_t *type)
 {
+	int framesize, ofs_skins, ofs_frames, ofs_glcmds, ofs_meshes, ofs_tris,
+		ofs_st, ofs_end;
+	int num_xyz = 0, num_tris = 0, num_glcmds = 0, num_skins = 0, meshofs = 0;
 	dmdx_t *pheader = NULL;
-	const int *baseglcmds;
 	md3_header_t pinmodel;
 	void *extradata;
-	int *pglcmds;
+	dmdxmesh_t *mesh_nodes;
+	dtriangle_t *tris;
+	dstvert_t *st;
+	dmdx_vert_t *vertx;
+	char *skin;
 	int i;
 
 	if (modfilelen < sizeof(pinmodel))
@@ -1094,8 +1187,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		return NULL;
 	}
 
-	int num_xyz = 0, num_tris = 0, num_glcmds = 0, num_skins = 0;
-	int meshofs = pinmodel.ofs_meshes;
+	meshofs = pinmodel.ofs_meshes;
 
 	for (i = 0; i < pinmodel.num_meshes; i++)
 	{
@@ -1118,14 +1210,14 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		meshofs += LittleLong(md3_mesh->ofs_end);
 	}
 
-	int framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_xyz;
-	int ofs_skins = sizeof(dmdx_t);
-	int ofs_frames = ofs_skins + num_skins * MAX_SKINNAME;
-	int ofs_glcmds = ofs_frames + framesize * pinmodel.num_frames;
-	int ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
-	int ofs_tris = ofs_meshes + pinmodel.num_meshes * sizeof(dmdxmesh_t);
-	int ofs_st = ofs_tris + num_tris * sizeof(dtriangle_t);
-	int ofs_end = ofs_st + num_tris * 3 * sizeof(dstvert_t);
+	framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_xyz;
+	ofs_skins = sizeof(dmdx_t);
+	ofs_frames = ofs_skins + num_skins * MAX_SKINNAME;
+	ofs_glcmds = ofs_frames + framesize * pinmodel.num_frames;
+	ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
+	ofs_tris = ofs_meshes + pinmodel.num_meshes * sizeof(dmdxmesh_t);
+	ofs_st = ofs_tris + num_tris * sizeof(dtriangle_t);
+	ofs_end = ofs_st + num_tris * 3 * sizeof(dstvert_t);
 
 	*numskins = num_skins;
 	extradata = Hunk_Begin(ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
@@ -1150,16 +1242,14 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->ofs_glcmds = ofs_glcmds;
 	pheader->ofs_end = ofs_end;
 
+	mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
+	tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
+	st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
+	vertx = malloc(pinmodel.num_frames * pheader->num_xyz * sizeof(dmdx_vert_t));
+	skin = (char *)pheader + pheader->ofs_skins;
+
 	num_xyz = 0;
 	num_tris = 0;
-
-	baseglcmds = pglcmds = (int *)((byte *)pheader + pheader->ofs_glcmds);
-	dmdxmesh_t *mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
-	dtriangle_t *tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
-	dstvert_t *st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
-	dmdx_vert_t * vertx = malloc(pinmodel.num_frames * pheader->num_xyz * sizeof(dmdx_vert_t));
-	char *skin = (char *)pheader + pheader->ofs_skins;
-
 	meshofs = pinmodel.ofs_meshes;
 	for (i = 0; i < pinmodel.num_meshes; i++)
 	{
@@ -1167,7 +1257,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		md3_vertex_t *md3_vertex;
 		const float *fst;
 		const int *p;
-		int j, k;
+		int j;
 
 		md3_mesh = (md3_mesh_t*)((byte*)buffer + meshofs);
 		fst = (const float*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_st));
@@ -1190,9 +1280,8 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		/* load triangles */
 		p = (const int*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_tris));
 
-		mesh_nodes[i].ofs_glcmds = pglcmds - baseglcmds;
 		mesh_nodes[i].ofs_tris = num_tris;
-		mesh_nodes[i].num_tris = num_tris + LittleLong(md3_mesh->num_tris);
+		mesh_nodes[i].num_tris = LittleLong(md3_mesh->num_tris);
 
 		for (j = 0; j < LittleLong(md3_mesh->num_tris); j++)
 		{
@@ -1209,38 +1298,31 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 			}
 		}
 
-		/* write glcmds */
-		mesh_nodes[i].num_glcmds = Mod_LoadCmdCompress(
-			(dstvert_t*)((byte *)pheader + pheader->ofs_st),
-			(dtriangle_t*)((byte *)pheader + pheader->ofs_tris) + num_tris,
-			LittleLong(md3_mesh->num_tris),
-			pglcmds,
-			pheader->skinwidth, pheader->skinheight);
-
-		pglcmds += mesh_nodes[i].num_glcmds;
-
 		md3_vertex = (md3_vertex_t*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_verts));
 
-		for (k = 0; k < pinmodel.num_frames; k ++)
+		for (j = 0; j < pinmodel.num_frames; j ++)
 		{
-			for (j = 0; j < LittleLong(md3_mesh->num_xyz); j++, md3_vertex++)
+			int k, vert_pos;
+
+			vert_pos = num_xyz + j * pheader->num_xyz;
+
+			for (k = 0; k < LittleLong(md3_mesh->num_xyz); k++, md3_vertex++)
 			{
 				double npitch, nyaw;
 				short normalpitchyaw;
-				int vert_pos = num_xyz + k * pheader->num_xyz;
 
-				vertx[vert_pos + j].xyz[0] = (signed short)LittleShort(md3_vertex->origin[0]) * (1.0f / 64.0f);
-				vertx[vert_pos + j].xyz[1] = (signed short)LittleShort(md3_vertex->origin[1]) * (1.0f / 64.0f);
-				vertx[vert_pos + j].xyz[2] = (signed short)LittleShort(md3_vertex->origin[2]) * (1.0f / 64.0f);
+				vertx[vert_pos + k].xyz[0] = (signed short)LittleShort(md3_vertex->origin[0]) * (1.0f / 64.0f);
+				vertx[vert_pos + k].xyz[1] = (signed short)LittleShort(md3_vertex->origin[1]) * (1.0f / 64.0f);
+				vertx[vert_pos + k].xyz[2] = (signed short)LittleShort(md3_vertex->origin[2]) * (1.0f / 64.0f);
 
 				/* decompress the vertex normal */
 				normalpitchyaw = LittleShort(md3_vertex->normalpitchyaw);
 				npitch = (normalpitchyaw & 255) * (2 * M_PI) / 256.0;
 				nyaw = ((normalpitchyaw >> 8) & 255) * (2 * M_PI) / 256.0;
 
-				vertx[vert_pos + j].norm[0] = (float)(sin(npitch) * cos(nyaw));
-				vertx[vert_pos + j].norm[1] = (float)(sin(npitch) * sin(nyaw));
-				vertx[vert_pos + j].norm[2] = (float)cos(npitch);
+				vertx[vert_pos + k].norm[0] = (float)(sin(npitch) * cos(nyaw));
+				vertx[vert_pos + k].norm[1] = (float)(sin(npitch) * sin(nyaw));
+				vertx[vert_pos + k].norm[2] = (float)cos(npitch);
 			}
 		}
 
@@ -1263,6 +1345,8 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		inframe += sizeof(md3_frameinfo_t);
 	}
 	free(vertx);
+
+	Mod_LoadCmdGenerate(pheader);
 
 	Mod_LoadFixImages(mod_name, pheader, false);
 
@@ -2211,7 +2295,7 @@ Mod_LoadLimits(const char *mod_name, void *extradata, modtype_t type)
 		{
 			R_Printf(PRINT_DEVELOPER, "%s: model %s mesh #%d: %d commands, %d tris\n",
 				__func__, mod_name, i, mesh_nodes[i].num_glcmds, mesh_nodes[i].num_tris);
-			num_glcmds += mesh_nodes[i].num_tris;
+			num_glcmds += mesh_nodes[i].num_glcmds;
 		}
 		R_Printf(PRINT_DEVELOPER,
 			"%s: model %s num tris %d / num vert %d / commands %d of %d\n",
