@@ -321,16 +321,29 @@ G_UseTargets(edict_t *ent, edict_t *activator)
 	/* print the message */
 	if (activator && (ent->message) && !(activator->svflags & SVF_MONSTER))
 	{
-		gi.centerprintf(activator, "%s", ent->message);
+		int sound_index = 0;
+		char msg[1024];
 
-		if (ent->noise_index)
+		strncpy(msg, ent->message, sizeof(msg));
+
+		translate_text(msg, &sound_index);
+		gi.centerprintf(activator, "%s", msg);
+
+		if (sound_index)
 		{
-			gi.sound(activator, CHAN_AUTO, ent->noise_index, 1, ATTN_NORM, 0);
+			gi.sound(activator, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);
 		}
 		else
 		{
-			gi.sound(activator, CHAN_AUTO, gi.soundindex(
-							"misc/talk1.wav"), 1, ATTN_NORM, 0);
+			if (ent->noise_index)
+			{
+				gi.sound(activator, CHAN_AUTO, ent->noise_index, 1, ATTN_NORM, 0);
+			}
+			else
+			{
+				gi.sound(activator, CHAN_AUTO, gi.soundindex(
+								"misc/talk1.wav"), 1, ATTN_NORM, 0);
+			}
 		}
 	}
 

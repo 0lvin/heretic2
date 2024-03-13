@@ -137,6 +137,7 @@ cvar_t	*r_farsee;
 cvar_t	*r_lightmap;
 cvar_t	*r_colorlight;
 static cvar_t	*sw_aliasstats;
+cvar_t	*r_experimental;
 cvar_t	*sw_clearcolor;
 cvar_t	*sw_drawflat;
 cvar_t	*sw_draworder;
@@ -369,6 +370,7 @@ static void R_ScreenShot_f(void);
 static void
 R_RegisterVariables (void)
 {
+	r_experimental = ri.Cvar_Get ("r_experimental", "0", 0);
 	sw_aliasstats = ri.Cvar_Get ("sw_polymodelstats", "0", 0);
 	sw_clearcolor = ri.Cvar_Get ("sw_clearcolor", "2", 0);
 	sw_drawflat = ri.Cvar_Get ("sw_drawflat", "0", 0);

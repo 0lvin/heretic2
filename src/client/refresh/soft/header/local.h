@@ -387,6 +387,7 @@ extern void TransformVector(const vec3_t in, vec3_t out);
 
 //===========================================================================
 
+extern cvar_t	*r_experimental;
 extern cvar_t	*sw_clearcolor;
 extern cvar_t	*sw_drawflat;
 extern cvar_t	*sw_draworder;

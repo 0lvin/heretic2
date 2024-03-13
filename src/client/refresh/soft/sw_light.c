@@ -56,12 +56,10 @@ RI_AddDynamicLights(drawsurf_t* drawsurf)
 	msurface_t 	*surf;
 	int lnum;
 	int smax, tmax;
-	mtexinfo_t *tex;
 
 	surf = drawsurf->surf;
 	smax = (surf->extents[0] >> surf->lmshift) + 1;
 	tmax = (surf->extents[1] >> surf->lmshift) + 1;
-	tex = surf->texinfo;
 
 	if (blocklight_max <= blocklights + smax*tmax*3)
 	{
@@ -120,13 +118,11 @@ RI_AddDynamicLights(drawsurf_t* drawsurf)
 		for (i = 0; i < 3; i++)
 		{
 			impact[i] = dl->origin[i] -
-						surf->plane->normal[i] * dist;
+				surf->plane->normal[i] * dist;
 		}
 
-		local[0] = DotProduct(impact, tex->vecs[0]) +
-			tex->vecs[0][3];
-		local[1] = DotProduct(impact, tex->vecs[1]) +
-			tex->vecs[1][3];
+		local[0] = DotProduct(impact, surf->lmvecs[0]) + surf->lmvecs[0][3];
+		local[1] = DotProduct(impact, surf->lmvecs[1]) + surf->lmvecs[1][3];
 
 		local[0] -= surf->texturemins[0];
 		local[1] -= surf->texturemins[1];
@@ -141,6 +137,8 @@ RI_AddDynamicLights(drawsurf_t* drawsurf)
 				td = -td;
 			}
 
+			td *= surf->lmvlen[1];
+
 			for (s = 0; s < smax; s++)
 			{
 				int sd;
@@ -151,6 +149,8 @@ RI_AddDynamicLights(drawsurf_t* drawsurf)
 				{
 					sd = -sd;
 				}
+
+				sd *= surf->lmvlen[0];
 
 				if (sd > td)
 				{
