@@ -254,7 +254,7 @@ typedef struct fmheader_s
 
 typedef struct dkmtriangle_s
 {
-	short extra;         /* no idea */
+	short mesh_id;
 	short num_uvframes;  /* no idea */
 	short index_xyz[3];
 	short index_st[3];
