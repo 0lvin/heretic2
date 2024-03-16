@@ -312,7 +312,7 @@ typedef struct mdx_header_s
 	int ofs_tris;          /* offset for dtriangles */
 	int ofs_frames;        /* offset for first frame */
 	int ofs_glcmds;
-	int ofs_xyz;
+	int ofs_st;
 	int ofs_sfxdef;
 	int ofs_sfxent;
 	int ofs_bbox;
