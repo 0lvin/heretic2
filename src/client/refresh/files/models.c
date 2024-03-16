@@ -2230,13 +2230,6 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 	for (i=0 ; i<sizeof(dkm_header_t)/sizeof(int) ; i++)
 		((int *)&header)[i] = LittleLong(((int *)buffer)[i]);
 
-	if (header.ident != DKMHEADER)
-	{
-		R_Printf(PRINT_ALL, "%s: %s has wrong ident (%i should be %i)",
-				__func__, mod_name, header.ident, DKMHEADER);
-		return NULL;
-	}
-
 	if (header.version != DKM1_VERSION && header.version != DKM2_VERSION)
 	{
 		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)",
@@ -2330,6 +2323,42 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 	*type = mod_alias;
 
 	return extradata;
+}
+
+static void *
+Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
+	struct image_s ***skins, int *numskins, modtype_t *type)
+{
+	dmdx_t dmdxheader, *pheader = NULL;
+	mdx_header_t header = {0};
+	void *extradata = NULL;
+	int i;
+
+	if (sizeof(mdx_header_t) > modfilelen)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s file size(%d) too small",
+				__func__, mod_name, modfilelen);
+	}
+
+	/* byte swap the header fields and sanity check */
+	for (i=0 ; i<sizeof(mdx_header_t)/sizeof(int) ; i++)
+		((int *)&header)[i] = LittleLong(((int *)buffer)[i]);
+
+	if (header.version != MDX_VERSION)
+	{
+		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)",
+				__func__, mod_name, header.version, MDX_VERSION);
+		return NULL;
+	}
+
+	if (header.ofs_end < 0 || header.ofs_end > modfilelen)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s file size(%d) too small, should be %d",
+				__func__, mod_name, modfilelen, header.ofs_end);
+		return NULL;
+	}
+
+	return NULL;
 }
 
 /*
@@ -2527,6 +2556,11 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 
 	switch (LittleLong(*(unsigned *)buffer))
 	{
+		case MDXHEADER:
+			extradata = Mod_LoadModel_MDX(mod_name, buffer, modfilelen,
+				skins, numskins, type);
+			break;
+
 		case DKMHEADER:
 			extradata = Mod_LoadModel_DKM(mod_name, buffer, modfilelen,
 				skins, numskins, type);
