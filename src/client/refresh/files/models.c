@@ -1502,7 +1502,15 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 			(byte *)pheader + pheader->ofs_frames + i * pheader->framesize);
 		const md3_frameinfo_t *md3_frameinfo = (md3_frameinfo_t*)inframe;
 
-		strncpy(frame->name, md3_frameinfo->name, sizeof(frame->name) - 1);
+		if (md3_frameinfo->name[0])
+		{
+			strncpy(frame->name, md3_frameinfo->name, sizeof(frame->name) - 1);
+		}
+		else
+		{
+			snprintf(frame->name, 15, "%d", i);
+		}
+
 		PrepareFrameVertex(vertx + i * pheader->num_xyz,
 			pheader->num_xyz, frame);
 
