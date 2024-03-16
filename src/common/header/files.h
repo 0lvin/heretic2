@@ -280,6 +280,7 @@ typedef struct dkm_header_s
 	int ofs_tris;          /* offset for dtriangles */
 	int ofs_frames;        /* offset for first frame */
 	int ofs_glcmds;
+	/* has 52 * num_surf and additional 24 * x structures */
 	int ofs_surf;          /* no idea */
 	int ofs_end;           /* end of file */
 } dkm_header_t;

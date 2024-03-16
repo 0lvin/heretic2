@@ -36,7 +36,7 @@
 
 static vec3_t mins, maxs;
 
-static void
+void
 show_frames(const dmdx_t *mod)
 {
 	const byte *pframes;
@@ -132,7 +132,7 @@ init(const char *filename)
 
 		free(buffer);
 
-		show_frames(mem_mod);
+		// show_frames(mem_mod);
 
 		/* Initialize OpenGL context */
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
