@@ -280,7 +280,6 @@ Mod_LoadMD2TriangleList(dmdx_t *pheader, const dtriangle_t *pintri)
 		{
 			pouttri[i].index_xyz[j] = LittleShort(pintri[i].index_xyz[j]);
 			pouttri[i].index_st[j] = LittleShort(pintri[i].index_st[j]);
-			printf("%d -> %d\n", pouttri[i].index_xyz[j], pouttri[i].index_st[j]);
 		}
 	}
 }
@@ -293,15 +292,17 @@ Load MDX triangle lists
 =================
 */
 static void
-Mod_LoadMDXTriangleList(dmdx_t *pheader, const dtriangle_t *pintri,
-	const int *glcmds, int num_glcmds, int num_subobj)
+Mod_LoadMDXTriangleList(const char *mod_name, dmdx_t *pheader, const dtriangle_t *pintri,
+	const int *glcmds, int num_glcmds)
 {
 	int *mesh_ids = (int *)calloc(pheader->num_xyz, sizeof(int));
 	const int *order = glcmds;
 	const int *order_end = order + num_glcmds;
 	dstvert_t *stvert = (dstvert_t *)((byte *)pheader + pheader->ofs_st);
+	const dtriangle_t *pouttriofs;
+	dmdxmesh_t *mesh_nodes;
 	dtriangle_t *pouttri;
-	int i;
+	int m;
 
 	pouttri = (dtriangle_t *) ((byte *)pheader + pheader->ofs_tris);
 
@@ -323,7 +324,7 @@ Mod_LoadMDXTriangleList(dmdx_t *pheader, const dtriangle_t *pintri,
 		}
 
 		/* num meshes should be same as subobjects */
-		mesh_id = LittleLong(*order++) % num_subobj;
+		mesh_id = LittleLong(*order++) % pheader->num_meshes;
 
 		do
 		{
@@ -341,17 +342,48 @@ Mod_LoadMDXTriangleList(dmdx_t *pheader, const dtriangle_t *pintri,
 		while (--count);
 	}
 
-	for (i = 0; i < pheader->num_tris; i++)
-	{
-		int j;
+	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
+	pouttriofs = pouttri = (dtriangle_t *) ((char *)pheader + pheader->ofs_tris);
 
-		for (j = 0; j < 3; j++)
+	for (m = 0; m < pheader->num_meshes; m++)
+	{
+		int i;
+
+		mesh_nodes[m].ofs_tris = pouttri - pouttriofs;
+
+		for (i = 0; i < pheader->num_tris; i++)
 		{
-			int index = LittleShort(pintri[i].index_xyz[j]);
-			pouttri[i].index_xyz[j] = index;
-			/* ST is always zero in input */
-			pouttri[i].index_st[j] = index;
+			int j, index[3];
+
+			for (j = 0; j < 3; j++)
+			{
+				index[j] = LittleShort(pintri[i].index_xyz[j]);
+			}
+
+			/* sanity check for verts */
+			if (mesh_ids[index[0]] != mesh_ids[index[1]] ||
+				mesh_ids[index[1]] != mesh_ids[index[2]])
+			{
+				R_Printf(PRINT_DEVELOPER,
+					"%s: %s: Mesh detect could be wrong (%d != %d != %d)\n",
+					__func__, mod_name,
+					mesh_ids[index[0]], mesh_ids[index[1]], mesh_ids[index[2]]);
+			}
+
+			/* use only first vert for mesh detect */
+			if (mesh_ids[LittleShort(pintri[i].index_xyz[0])] == m)
+			{
+				for (j = 0; j < 3; j++)
+				{
+					pouttri->index_xyz[j] = index[j];
+					/* ST is always zero in input */
+					pouttri->index_st[j] = index[j];
+				}
+				pouttri++;
+			}
 		}
+
+		mesh_nodes[m].num_tris = pouttri - pouttriofs - mesh_nodes[m].ofs_tris;
 	}
 
 	free(mesh_ids);
@@ -2406,7 +2438,6 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 	dmdx_t dmdxheader, *pheader = NULL;
 	vec3_t translate = {0, 0, 0};
 	mdx_header_t header = {0};
-	dmdxmesh_t *mesh_nodes;
 	void *extradata = NULL;
 	int i;
 
@@ -2450,7 +2481,7 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 	dmdxheader.framesize = sizeof(daliasxframe_t) - sizeof(dxtrivertx_t);
 	dmdxheader.framesize += header.num_xyz * sizeof(dxtrivertx_t);
 
-	dmdxheader.num_meshes = 1;
+	dmdxheader.num_meshes = header.num_subobj;
 	dmdxheader.num_skins = header.num_skins;
 	dmdxheader.num_xyz = header.num_xyz;
 	dmdxheader.num_st = header.num_xyz;
@@ -2475,17 +2506,12 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 
 	memcpy(pheader, &dmdxheader, sizeof(dmdxheader));
 
-	/* create single mesh */
-	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
-	mesh_nodes[0].ofs_tris = 0;
-	mesh_nodes[0].num_tris = pheader->num_tris;
-
 	memcpy((byte*)pheader + pheader->ofs_skins, (byte *)buffer + header.ofs_skins,
 		pheader->num_skins * MAX_SKINNAME);
-	Mod_LoadMDXTriangleList(pheader,
+	Mod_LoadMDXTriangleList(mod_name, pheader,
 		(dtriangle_t *)((byte *)buffer + header.ofs_tris),
 		(int*)((byte *)buffer + header.ofs_glcmds),
-		header.num_glcmds, header.num_subobj);
+		header.num_glcmds);
 	Mod_LoadFrames_MD2(pheader, (byte *)buffer + header.ofs_frames,
 		header.framesize, translate);
 	Mod_LoadCmdGenerate(pheader);
