@@ -280,6 +280,36 @@ Mod_LoadMD2TriangleList(dmdx_t *pheader, const dtriangle_t *pintri)
 		{
 			pouttri[i].index_xyz[j] = LittleShort(pintri[i].index_xyz[j]);
 			pouttri[i].index_st[j] = LittleShort(pintri[i].index_st[j]);
+			printf("%d -> %d\n", pouttri[i].index_xyz[j], pouttri[i].index_st[j]);
+		}
+	}
+}
+
+/*
+=================
+Mod_LoadMDXTriangleList
+
+Load MDX triangle lists
+=================
+*/
+static void
+Mod_LoadMDXTriangleList(dmdx_t *pheader, const dtriangle_t *pintri)
+{
+	dtriangle_t *pouttri;
+	int i;
+
+	pouttri = (dtriangle_t *) ((byte *)pheader + pheader->ofs_tris);
+
+	for (i = 0; i < pheader->num_tris; i++)
+	{
+		int j;
+
+		for (j = 0; j < 3; j++)
+		{
+			int index = LittleShort(pintri[i].index_xyz[j]);
+			pouttri[i].index_xyz[j] = index;
+			/* ST is always zero in input */
+			pouttri[i].index_st[j] = index;
 		}
 	}
 }
@@ -2409,12 +2439,54 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 
 	memcpy((byte*)pheader + pheader->ofs_skins, (byte *)buffer + header.ofs_skins,
 		pheader->num_skins * MAX_SKINNAME);
-	Mod_LoadSTvertList(pheader,
-		(dstvert_t *)((byte *)buffer + header.ofs_st));
+	{
+		int *mesh_ids = (int *)calloc(pheader->num_xyz, sizeof(int));
+		int *order = (int*)((byte *)buffer + header.ofs_glcmds);
+		int *order_end = order + header.num_glcmds;
+		dstvert_t *stvert = (dstvert_t *)((byte *)pheader + pheader->ofs_st);
+
+		while (1)
+		{
+			int count, mesh_id;
+
+			/* get the vertex count and primitive type */
+			count = LittleLong(*order++);
+
+			if (!count || order >= order_end)
+			{
+				break; /* done */
+			}
+
+			if (count < 0)
+			{
+				count = -count;
+			}
+
+			/* num meshes should be same as subobjects */
+			mesh_id = LittleLong(*order++) % header.num_subobj;
+
+			do
+			{
+				int index_xyz;
+				vec2_t st;
+
+				memcpy(&st, order, sizeof(st));
+				index_xyz = LittleLong(order[2]);
+
+				mesh_ids[index_xyz] = mesh_id;
+				stvert[index_xyz].s = LittleFloat(st[0]) * pheader->skinwidth;
+				stvert[index_xyz].t = LittleFloat(st[1]) * pheader->skinheight;
+				order += 3;
+			}
+			while (--count);
+		}
+
+		free(mesh_ids);
+	}
+	Mod_LoadMDXTriangleList(pheader,
+		(dtriangle_t *)((byte *)buffer + header.ofs_tris));
 	Mod_LoadFrames_MD2(pheader, (byte *)buffer + header.ofs_frames,
 		header.framesize, translate);
-	Mod_LoadMD2TriangleList(pheader,
-		(dtriangle_t *)((byte *)buffer + header.ofs_tris));
 	Mod_LoadCmdGenerate(pheader);
 	Mod_LoadFixImages(mod_name, pheader, false);
 
