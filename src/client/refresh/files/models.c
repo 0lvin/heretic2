@@ -295,25 +295,28 @@ static void
 Mod_LoadMDXTriangleList(const char *mod_name, dmdx_t *pheader, const dtriangle_t *pintri,
 	const int *glcmds, int num_glcmds)
 {
-	int *mesh_ids = (int *)calloc(pheader->num_xyz, sizeof(int));
-	const int *order = glcmds;
-	const int *order_end = order + num_glcmds;
-	dstvert_t *stvert = (dstvert_t *)((byte *)pheader + pheader->ofs_st);
 	const dtriangle_t *pouttriofs;
 	dmdxmesh_t *mesh_nodes;
 	dtriangle_t *pouttri;
-	int m;
+	const int *glcmds_end;
+	dstvert_t *stvert;
+	int m, *mesh_ids;
 
+	pouttriofs = pouttri = (dtriangle_t *) ((char *)pheader + pheader->ofs_tris);
+	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
 	pouttri = (dtriangle_t *) ((byte *)pheader + pheader->ofs_tris);
+	stvert = (dstvert_t *)((byte *)pheader + pheader->ofs_st);
+	mesh_ids = (int *)calloc(pheader->num_xyz, sizeof(int));
+	glcmds_end = glcmds + num_glcmds;
 
 	while (1)
 	{
 		int count, mesh_id;
 
 		/* get the vertex count and primitive type */
-		count = LittleLong(*order++);
+		count = LittleLong(*glcmds++);
 
-		if (!count || order >= order_end)
+		if (!count || glcmds >= glcmds_end)
 		{
 			break; /* done */
 		}
@@ -324,26 +327,23 @@ Mod_LoadMDXTriangleList(const char *mod_name, dmdx_t *pheader, const dtriangle_t
 		}
 
 		/* num meshes should be same as subobjects */
-		mesh_id = LittleLong(*order++) % pheader->num_meshes;
+		mesh_id = LittleLong(*glcmds++) % pheader->num_meshes;
 
 		do
 		{
 			int index_xyz;
 			vec2_t st;
 
-			memcpy(&st, order, sizeof(st));
-			index_xyz = LittleLong(order[2]);
+			memcpy(&st, glcmds, sizeof(st));
+			index_xyz = LittleLong(glcmds[2]);
 
 			mesh_ids[index_xyz] = mesh_id;
 			stvert[index_xyz].s = LittleFloat(st[0]) * pheader->skinwidth;
 			stvert[index_xyz].t = LittleFloat(st[1]) * pheader->skinheight;
-			order += 3;
+			glcmds += 3;
 		}
 		while (--count);
 	}
-
-	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
-	pouttriofs = pouttri = (dtriangle_t *) ((char *)pheader + pheader->ofs_tris);
 
 	for (m = 0; m < pheader->num_meshes; m++)
 	{
