@@ -648,9 +648,7 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		}
 	}
 
-	if ((protocol == PROTOCOL_RELEASE_VERSION) ||
-		(protocol == PROTOCOL_DEMO_VERSION) ||
-		(protocol == PROTOCOL_RR97_VERSION))
+	if (IS_QII97_PROTOCOL(protocol))
 	{
 		if (bits & U_MODEL)
 		{

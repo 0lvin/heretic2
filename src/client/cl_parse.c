@@ -162,9 +162,7 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 		}
 	}
 
-	if ((cls.serverProtocol == PROTOCOL_RELEASE_VERSION) ||
-		(cls.serverProtocol == PROTOCOL_DEMO_VERSION) ||
-		(cls.serverProtocol == PROTOCOL_RR97_VERSION))
+	if (IS_QII97_PROTOCOL(cls.serverProtocol))
 	{
 		if (bits & U_MODEL)
 		{
@@ -567,46 +565,6 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 	}
 }
 
-static int
-CL_ConvertConfigStringFrom(int i)
-{
-	if (cls.serverProtocol == PROTOCOL_RELEASE_VERSION ||
-		cls.serverProtocol == PROTOCOL_DEMO_VERSION ||
-		cls.serverProtocol == PROTOCOL_RR97_VERSION)
-	{
-		if (i >= CS_MODELS_Q2DEMO && i < CS_SOUNDS_Q2DEMO)
-		{
-			i += CS_MODELS - CS_MODELS_Q2DEMO;
-		}
-		else if (i >= CS_SOUNDS_Q2DEMO && i < CS_IMAGES_Q2DEMO)
-		{
-			i += CS_SOUNDS - CS_SOUNDS_Q2DEMO;
-		}
-		else if (i >= CS_IMAGES_Q2DEMO && i < CS_LIGHTS_Q2DEMO)
-		{
-			i += CS_IMAGES - CS_IMAGES_Q2DEMO;
-		}
-		else if (i >= CS_LIGHTS_Q2DEMO && i < CS_ITEMS_Q2DEMO)
-		{
-			i += CS_LIGHTS - CS_LIGHTS_Q2DEMO;
-		}
-		else if (i >= CS_ITEMS_Q2DEMO && i < CS_PLAYERSKINS_Q2DEMO)
-		{
-			i += CS_ITEMS - CS_ITEMS_Q2DEMO;
-		}
-		else if (i >= CS_PLAYERSKINS_Q2DEMO && i < CS_GENERAL_Q2DEMO)
-		{
-			i += CS_PLAYERSKINS - CS_PLAYERSKINS_Q2DEMO;
-		}
-		else if (i >= CS_GENERAL_Q2DEMO && i < MAX_CONFIGSTRINGS_Q2DEMO)
-		{
-			i += CS_GENERAL - CS_GENERAL_Q2DEMO;
-		}
-	}
-
-	return i;
-}
-
 static void
 CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 {
@@ -699,12 +657,27 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 
 	if (flags & PS_WEAPONINDEX)
 	{
-		state->gunindex = MSG_ReadByte(&net_message);
+		if (IS_QII97_PROTOCOL(cls.serverProtocol))
+		{
+			state->gunindex = MSG_ReadByte(&net_message);
+		}
+		else
+		{
+			state->gunindex = MSG_ReadShort(&net_message);
+		}
 	}
 
 	if (flags & PS_WEAPONFRAME)
 	{
-		state->gunframe = MSG_ReadByte(&net_message);
+		if (IS_QII97_PROTOCOL(cls.serverProtocol))
+		{
+			state->gunframe = MSG_ReadByte(&net_message);
+		}
+		else
+		{
+			state->gunframe = MSG_ReadShort(&net_message);
+		}
+
 		state->gunoffset[0] = MSG_ReadChar(&net_message) * 0.25f;
 		state->gunoffset[1] = MSG_ReadChar(&net_message) * 0.25f;
 		state->gunoffset[2] = MSG_ReadChar(&net_message) * 0.25f;
@@ -961,9 +934,7 @@ CL_ParseServerData(void)
 
 	/* another demo hack */
 	if (Com_ServerState() && (
-		(i == PROTOCOL_RELEASE_VERSION) ||
-		(i == PROTOCOL_DEMO_VERSION) ||
-		(i == PROTOCOL_RR97_VERSION) ||
+		IS_QII97_PROTOCOL(i) ||
 		(i == PROTOCOL_RR22_VERSION) ||
 		(i == PROTOCOL_RR23_VERSION) ||
 		(i == PROTOCOL_VERSION)))
@@ -974,18 +945,25 @@ CL_ParseServerData(void)
 			case PROTOCOL_RELEASE_VERSION:
 				Com_Printf("Quake 2 Demo\n");
 				break;
+			case PROTOCOL_XATRIX_VERSION:
+				Com_Printf("Quake 2 Xatrix Demo\n");
+				break;
 			case PROTOCOL_DEMO_VERSION:
 				Com_Printf("Quake 2 Release Demo\n");
 				break;
-			case PROTOCOL_RR97_VERSION:
+			/* Network protocol */
+			case PROTOCOL_R97_VERSION:
 				Com_Printf("Quake 2\n");
 				break;
+			/* ReRelease Demo */
 			case PROTOCOL_RR22_VERSION:
 				Com_Printf("ReRelease Quake 2 Demo\n");
 				break;
+			/* ReRelease network protocol */
 			case PROTOCOL_RR23_VERSION:
 				Com_Printf("ReRelease Quake 2\n");
 				break;
+			/* Our new protocol */
 			case PROTOCOL_VERSION:
 				Com_Printf("ReRelease Quake 2 Custom version\n");
 				break;
@@ -1220,7 +1198,7 @@ CL_ParseConfigString(void)
 
 	i = MSG_ReadShort(&net_message);
 
-	i = CL_ConvertConfigStringFrom(i);
+	i = P_ConvertConfigStringFrom(i, cls.serverProtocol);
 
 	if ((i < 0) || (i >= MAX_CONFIGSTRINGS))
 	{
@@ -1232,7 +1210,7 @@ CL_ParseConfigString(void)
 	Q_strlcpy(olds, cl.configstrings[i], sizeof(olds));
 
 	length = strlen(s);
-	if (length > sizeof(cl.configstrings) - sizeof(cl.configstrings[0])*i - 1)
+	if (length > sizeof(cl.configstrings) - sizeof(cl.configstrings[0]) * i - 1)
 	{
 		Com_Error(ERR_DROP, "%s: oversize configstring", __func__);
 	}
@@ -1307,7 +1285,14 @@ CL_ParseStartSoundPacket(void)
 	float ofs;
 
 	flags = MSG_ReadByte(&net_message);
-	sound_num = MSG_ReadByte(&net_message);
+	if (IS_QII97_PROTOCOL(cls.serverProtocol))
+	{
+		sound_num = MSG_ReadByte(&net_message);
+	}
+	else
+	{
+		sound_num = MSG_ReadShort(&net_message);
+	}
 
 	if (flags & SND_VOLUME)
 	{

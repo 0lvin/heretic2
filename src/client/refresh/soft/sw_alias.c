@@ -479,7 +479,7 @@ R_AliasPreparePoints(const entity_t *currententity, finalvert_t *verts, const fi
 
 	for (i = 0; i < num_mesh_nodes; i++)
 	{
-		dtriangle_t	*ptri;
+		const dtriangle_t *ptri;
 		int num_tris;
 
 		if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)

@@ -956,7 +956,7 @@ Q2_DLL_EXPORTED client_fx_export_t *
 GetFXAPI(client_fx_import_t import)
 {
 	fxi = import;
-	effectsExport.api_version = API_VERSION;
+	effectsExport.api_version = GAME_API_VERSION;
 	effectsExport.Init = Init;
 	effectsExport.ShutDown = ShutDown;
 	effectsExport.Clear=Clear;

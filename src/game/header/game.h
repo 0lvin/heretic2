@@ -39,7 +39,8 @@
 #include "../common/q_physics.h"
 #include "../common/arrayed_list.h"
 
-#define GAME_API_VERSION 3
+#define GAME_API_R97_VERSION 3
+#define GAME_API_VERSION 4
 
 #define SVF_NOCLIENT 0x00000001 /* don't send entity to clients, even if it has effects */
 #define SVF_DEADMONSTER 0x00000002 /* treat as CONTENTS_DEADMONSTER for collision */
