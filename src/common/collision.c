@@ -1371,7 +1371,6 @@ CMod_LoadSurfaces(const char *name, mapsurface_t **map_surfaces, int *numtexinfo
 		Q_strlcpy(out->c.name, in->texture, sizeof(out->c.name));
 		Q_strlcpy(out->rname, in->texture, sizeof(out->rname));
 		out->c.flags = LittleLong(in->flags);
-		out->c.value = LittleLong(in->value);
 	}
 }
 
@@ -1956,7 +1955,17 @@ CM_LoadCachedMap(const char *name, model_t *mod)
 				__func__, name, header.ident, IDBSPHEADER);
 	}
 
-	if (header.version != BSPVERSION && header.version != BSPDKMVERSION)
+	if ((header.ident == IDBSPHEADER) &&
+		(header.version != BSPVERSION) &&
+		(header.version != BSPDKMVERSION))
+	{
+		Com_Error(ERR_DROP,
+				"%s: %s has wrong version number (%i should be %i)",
+				__func__, name, header.version, BSPVERSION);
+	}
+
+	if ((header.ident == QBSPHEADER) &&
+		(header.version != BSPVERSION))
 	{
 		Com_Error(ERR_DROP,
 				"%s: %s has wrong version number (%i should be %i)",
@@ -1970,6 +1979,8 @@ CM_LoadCachedMap(const char *name, model_t *mod)
 				(header.ident >> 16) & 0xFF,
 				(header.ident >> 24) & 0xFF,
 				header.version);
+
+	Mod_LoadValidateLumps(name, &header);
 
 	cmod_base = (byte *)buf;
 
