@@ -206,7 +206,7 @@ GL4_Register(void)
 	r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
 	gl_msaa_samples = ri.Cvar_Get ( "r_msaa_samples", "0", CVAR_ARCHIVE );
 	r_retexturing = ri.Cvar_Get("r_retexturing", "1", CVAR_ARCHIVE);
-	r_maptype = ri.Cvar_Get("maptype", "0", CVAR_ARCHIVE);
+	r_maptype = ri.Cvar_Get("maptype", "1", CVAR_ARCHIVE);
 	r_scale8bittextures = ri.Cvar_Get("r_scale8bittextures", "0", CVAR_ARCHIVE);
 	gl4_debugcontext = ri.Cvar_Get("gl4_debugcontext", "0", 0);
 	r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
