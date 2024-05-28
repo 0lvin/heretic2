@@ -31,7 +31,7 @@ int numgltextures;
 static int image_max = 0;
 int base_textureid; /* gltextures[i] = base_textureid+i */
 extern qboolean scrap_dirty;
-extern byte scrap_texels[MAX_SCRAPS][BLOCK_WIDTH * BLOCK_HEIGHT];
+extern byte *scrap_texels[MAX_SCRAPS];
 
 static byte intensitytable[256];
 static unsigned char gammatable[256];
@@ -145,13 +145,37 @@ R_SetTexturePalette(const unsigned palette[256])
 }
 
 void
+R_SelectTexture(GLenum texture)
+{
+	int tmu;
+
+	if (!gl_config.multitexture)
+	{
+		return;
+	}
+
+	tmu = texture - GL_TEXTURE0;
+
+	if (tmu == gl_state.currenttmu)
+	{
+		return;
+	}
+
+	gl_state.currenttmu = tmu;
+	gl_state.currenttarget = texture;
+
+	qglActiveTexture(texture);
+	qglClientActiveTexture(texture);
+}
+
+void
 R_TexEnv(GLenum mode)
 {
 	static int lastmodes[2] = {-1, -1};
 
 	if (mode != lastmodes[gl_state.currenttmu])
 	{
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mode); // FIXME: shouldn't this be glTexEnvi() ?
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, mode);
 		lastmodes[gl_state.currenttmu] = mode;
 	}
 }
@@ -173,6 +197,93 @@ R_Bind(int texnum)
 
 	gl_state.currenttextures[gl_state.currenttmu] = texnum;
 	glBindTexture(GL_TEXTURE_2D, texnum);
+}
+
+void
+R_MBind(GLenum target, int texnum)
+{
+	const int tmu = target - GL_TEXTURE0;
+
+	if (target != gl_state.currenttarget)
+	{
+		R_SelectTexture(target);
+	}
+
+	if (gl_state.currenttextures[tmu] == texnum)
+	{
+		return;
+	}
+
+	R_Bind(texnum);
+}
+
+void
+R_EnableMultitexture(qboolean enable)
+{
+	static qboolean active;
+
+	if (!gl_config.multitexture || enable == active)
+	{
+		return;	// current state is the right one
+	}
+
+	active = enable;
+	R_SelectTexture(GL_TEXTURE1);
+
+	if (active && !r_fullbright->value)
+	{
+		glEnable(GL_TEXTURE_2D);
+
+		if (gl_config.mtexcombine)
+		{
+			R_TexEnv(GL_COMBINE);
+
+			if (gl_lightmap->value)
+			{
+				glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+				glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
+				glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+				glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
+			}
+			else
+			{
+				glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+				glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
+				glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
+				glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+				glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
+				glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PREVIOUS);
+			}
+
+			R_SelectTexture(GL_TEXTURE0);
+			R_TexEnv(GL_COMBINE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE);
+			return;
+		}
+		else
+		{
+			if (gl_lightmap->value)
+			{
+				R_TexEnv(GL_REPLACE);
+			}
+			else
+			{
+				R_TexEnv(GL_MODULATE);
+			}
+		}
+
+	}
+	else	// disable multitexturing
+	{
+		glDisable(GL_TEXTURE_2D);
+		R_TexEnv(GL_REPLACE);
+	}
+
+	R_SelectTexture(GL_TEXTURE0);
+	R_TexEnv(GL_REPLACE);
 }
 
 void
@@ -527,11 +638,6 @@ R_BuildPalettedTexture(unsigned char *paletted_texture, unsigned char *scaled,
 		scaled += 4;
 	}
 }
-
-// Windows headers don't define this constant.
-#ifndef GL_GENERATE_MIPMAP
-#define GL_GENERATE_MIPMAP 0x8191
-#endif
 
 qboolean
 R_Upload32Native(unsigned *data, int width, int height, qboolean mipmap)
@@ -950,17 +1056,17 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 
 			for (j = 0; j < image->width; j++, k++)
 			{
-				scrap_texels[texnum][(y + i) * BLOCK_WIDTH + x + j] = pic[k];
+				scrap_texels[texnum][(y + i) * gl_state.scrap_width + x + j] = pic[k];
 			}
 		}
 
 		image->texnum = TEXNUM_SCRAPS + texnum;
 		image->scrap = true;
 		image->has_alpha = true;
-		image->sl = (x + 0.01) / (float)BLOCK_WIDTH;
-		image->sh = (x + image->width - 0.01) / (float)BLOCK_WIDTH;
-		image->tl = (y + 0.01) / (float)BLOCK_WIDTH;
-		image->th = (y + image->height - 0.01) / (float)BLOCK_WIDTH;
+		image->sl = (float)x / gl_state.scrap_width;
+		image->sh = (float)(x + image->width) / gl_state.scrap_width;
+		image->tl = (float)y / gl_state.scrap_height;
+		image->th = (float)(y + image->height) / gl_state.scrap_height;
 	}
 	else
 	{

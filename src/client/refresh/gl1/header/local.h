@@ -39,29 +39,11 @@
  #define GL_COLOR_INDEX8_EXT GL_COLOR_INDEX
 #endif
 
-#ifndef GL_EXT_texture_filter_anisotropic
- #define GL_TEXTURE_MAX_ANISOTROPY_EXT 0x84FE
- #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
-#endif
-
-#ifndef GL_VERSION_1_3
- #define GL_TEXTURE0 0x84C0
- #define GL_TEXTURE1 0x84C1
-#endif
-
-#ifndef GL_MULTISAMPLE
-#define GL_MULTISAMPLE 0x809D
-#endif
-
-#ifndef GL_MULTISAMPLE_FILTER_HINT_NV
-#define GL_MULTISAMPLE_FILTER_HINT_NV 0x8534
-#endif
-
 #define TEXNUM_LIGHTMAPS 1024
 #define TEXNUM_SCRAPS 1152
 #define TEXNUM_IMAGES 1153
 #define MAX_SCRAPS 1
-#define BLOCK_WIDTH 256
+#define BLOCK_WIDTH 256		// default values; now defined in glstate_t
 #define BLOCK_HEIGHT 256
 #define REF_VERSION "Yamagi Quake II OpenGL Refresher"
 #define MAX_LIGHTMAPS 256
@@ -161,6 +143,8 @@ extern cvar_t *gl1_overbrightbits;
 
 extern cvar_t *gl1_palettedtexture;
 extern cvar_t *gl1_pointparameters;
+extern cvar_t *gl1_multitexture;
+extern cvar_t *gl1_biglightmaps;
 
 extern cvar_t *gl1_particle_min_size;
 extern cvar_t *gl1_particle_max_size;
@@ -175,7 +159,6 @@ extern cvar_t *r_customwidth;
 extern cvar_t *r_customheight;
 
 extern cvar_t *r_retexturing;
-extern cvar_t *r_maptype;
 extern cvar_t *r_scale8bittextures;
 extern cvar_t *r_validation;
 
@@ -184,6 +167,7 @@ extern cvar_t *r_lerp_list;
 extern cvar_t *r_2D_unfiltered;
 extern cvar_t *r_videos_unfiltered;
 
+extern cvar_t *gl_version_override;
 extern cvar_t *gl_lightmap;
 extern cvar_t *gl_shadows;
 extern cvar_t *gl1_stencilshadow;
@@ -230,6 +214,9 @@ void R_TranslatePlayerSkin(int playernum);
 void R_Bind(int texnum);
 
 void R_TexEnv(GLenum value);
+void R_SelectTexture(GLenum);
+void R_MBind(GLenum target, int texnum);
+void R_EnableMultitexture(qboolean enable);
 
 void RI_PushDlights(void);
 
@@ -352,6 +339,8 @@ typedef struct
 	qboolean npottextures;
 	qboolean palettedtexture;
 	qboolean pointparameters;
+	qboolean multitexture;
+	qboolean mtexcombine;
 
 	// ----
 
@@ -377,6 +366,12 @@ typedef struct
 	enum stereo_modes stereo_mode;
 
 	qboolean stencil;
+
+	int	block_width,	// replaces BLOCK_WIDTH
+		block_height,	// replaces BLOCK_HEIGHT
+		max_lightmaps,	// the larger the lightmaps, the fewer the max lightmaps
+		scrap_width,	// size for scrap (atlas of 2D elements)
+		scrap_height;
 } glstate_t;
 
 typedef struct
@@ -385,15 +380,14 @@ typedef struct
 
 	msurface_t *lightmap_surfaces[MAX_LIGHTMAPS];
 
-	int allocated[BLOCK_WIDTH];
+	int *allocated;		// formerly allocated[BLOCK_WIDTH];
 
 	/* the lightmap texture data needs to be kept in
 	   main memory so texsubimage can update properly */
-	byte lightmap_buffer[LIGHTMAP_BYTES * BLOCK_WIDTH * BLOCK_HEIGHT];
+	byte *lightmap_buffer[MAX_LIGHTMAPS];
 } gllightmapstate_t;
 
-void LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa);
-void LM_CreateSurfaceLightmap(msurface_t *surf);
+void LM_CreateLightmapsPoligon(model_t *currentmodel, msurface_t *fa);
 void LM_EndBuildingLightmaps(void);
 void LM_BeginBuildingLightmaps(model_t *m);
 
@@ -425,6 +419,13 @@ void *RI_GetProcAddress (const char* proc);
  * Fills the actual size of the drawable into width and height.
  */
 void RI_GetDrawableSize(int* width, int* height);
+
+/*
+ * Returns the SDL major version. Implemented
+ * here to not polute gl1_main.c with the SDL
+ * headers.
+ */
+int RI_GetSDLVersion();
 
 /* g11_draw */
 extern image_t * RDraw_FindPic(const char *name);

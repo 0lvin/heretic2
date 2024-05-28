@@ -32,11 +32,10 @@
 
 static YQ2_ALIGNAS_TYPE(int) byte mod_novis[MAX_MAP_LEAFS / 8];
 
-static model_t	mod_known[MAX_MOD_KNOWN];
-static int	mod_numknown = 0;
-static int	mod_max = 0;
-
-int	registration_sequence;
+static model_t mod_known[MAX_MOD_KNOWN];
+static int mod_numknown = 0;
+static int mod_max = 0;
+int registration_sequence;
 
 //===============================================================================
 
@@ -164,15 +163,15 @@ Mod_LoadSubmodels(model_t *loadmodel, const byte *mod_base, const lump_t *l)
 		for (j = 0; j < 3; j++)
 		{
 			/* spread the mins / maxs by a pixel */
-			out->mins[j] = LittleFloat(in->mins[j]) - 1;
-			out->maxs[j] = LittleFloat(in->maxs[j]) + 1;
-			out->origin[j] = LittleFloat(in->origin[j]);
+			out->mins[j] = in->mins[j] - 1;
+			out->maxs[j] = in->maxs[j] + 1;
+			out->origin[j] = in->origin[j];
 		}
 
 		out->radius = Mod_RadiusFromBounds(out->mins, out->maxs);
-		out->firstnode = LittleLong(in->headnode);
-		out->firstmodelsurface = LittleLong(in->firstface);
-		out->nummodelsurfaces = LittleLong(in->numfaces);
+		out->firstnode = in->headnode;
+		out->firstmodelsurface = in->firstface;
+		out->nummodelsurfaces = in->numfaces;
 		// visleafs
 		out->numleafs = 0;
 		//  check limits
@@ -181,124 +180,6 @@ Mod_LoadSubmodels(model_t *loadmodel, const byte *mod_base, const lump_t *l)
 			Com_Error(ERR_DROP, "%s: Inline model %i has bad firstnode",
 					__func__, i);
 		}
-	}
-}
-
-static void
-Mod_LoadFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
-	const bspx_header_t *bspx_header)
-{
-	int i, count, surfnum;
-	msurface_t *out;
-	dface_t *in;
-
-	in = (void *)(mod_base + l->fileofs);
-
-	if (l->filelen % sizeof(*in))
-	{
-		Com_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, loadmodel->name);
-	}
-
-	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc((count + EXTRA_LUMP_FACES) * sizeof(*out));
-
-	loadmodel->surfaces = out;
-	loadmodel->numsurfaces = count;
-
-	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
-	{
-		int	side, ti, planenum, lightofs;
-
-		out->firstedge = LittleLong(in->firstedge);
-		out->numedges = LittleShort(in->numedges);
-
-		if (out->numedges < 3)
-		{
-			Com_Error(ERR_DROP, "%s: Surface with %d edges",
-					__func__, out->numedges);
-		}
-		out->flags = 0;
-
-		planenum = LittleShort(in->planenum);
-		side = LittleShort(in->side);
-
-		if (side)
-		{
-			out->flags |= SURF_PLANEBACK;
-		}
-
-		if (planenum < 0 || planenum >= loadmodel->numplanes)
-		{
-			Com_Error(ERR_DROP, "%s: Incorrect %d planenum.",
-					__func__, planenum);
-		}
-		out->plane = loadmodel->planes + planenum;
-
-		ti = LittleShort(in->texinfo);
-
-		if ((ti < 0) || (ti >= loadmodel->numtexinfo))
-		{
-			Com_Error(ERR_DROP, "%s: bad texinfo number",
-					__func__);
-		}
-
-		out->texinfo = loadmodel->texinfo + ti;
-
-		lightofs = -1;
-		if (lightofs < 0) {
-			memcpy(out->lmvecs, out->texinfo->vecs, sizeof(out->lmvecs));
-			out->lmshift = DEFAULT_LMSHIFT;
-			out->lmvlen[0] = 1.0f;
-			out->lmvlen[1] = 1.0f;
-
-			Mod_CalcSurfaceExtents(loadmodel->surfedges, loadmodel->vertexes,
-				loadmodel->edges, out);
-
-			lightofs = in->lightofs;
-		}
-
-		Mod_LoadSetSurfaceLighting(loadmodel->lightdata, loadmodel->numlightdata,
-			out, in->styles, lightofs);
-
-		/* set the drawing flags flag */
-		if (!out->texinfo->image)
-			continue;
-
-		if (r_fixsurfsky->value)
-		{
-			if (out->texinfo->flags & SURF_SKY)
-			{
-				out->flags |= SURF_DRAWSKY;
-				continue;
-			}
-		}
-
-		if (out->texinfo->flags & SURF_WARP)
-		{
-			out->flags |= SURF_DRAWTURB;
-
-			for (i = 0; i < 2; i++)
-			{
-				out->extents[i] = 16384;
-				out->texturemins[i] = -8192;
-			}
-			continue;
-		}
-
-		//==============
-		// this marks flowing surfaces as turbulent.
-		if (out->texinfo->flags & SURF_FLOWING)
-		{
-			out->flags |= SURF_DRAWTURB;
-			for (i=0 ; i<2 ; i++)
-			{
-				out->extents[i] = 16384;
-				out->texturemins[i] = -8192;
-			}
-			continue;
-		}
-		//==============
 	}
 }
 
@@ -328,8 +209,8 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 	{
 		int	side, ti, planenum, lightofs;
 
-		out->firstedge = LittleLong(in->firstedge);
-		out->numedges = LittleLong(in->numedges);
+		out->firstedge = in->firstedge;
+		out->numedges = in->numedges;
 
 		if (out->numedges < 3)
 		{
@@ -337,9 +218,10 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 					__func__, out->numedges);
 		}
 		out->flags = 0;
+		out->polys = NULL;
 
-		planenum = LittleLong(in->planenum);
-		side = LittleLong(in->side);
+		planenum = in->planenum;
+		side = in->side;
 
 		if (side)
 		{
@@ -406,10 +288,10 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 
 		//==============
 		// this marks flowing surfaces as turbulent.
-		if (out->texinfo->flags & SURF_FLOWING)
+		if (out->texinfo->flags & SURF_SCROLL)
 		{
 			out->flags |= SURF_DRAWTURB;
-			for (i=0 ; i<2 ; i++)
+			for (i = 0; i < 2; i++)
 			{
 				out->extents[i] = 16384;
 				out->texturemins[i] = -8192;
@@ -423,8 +305,8 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 static void
 Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 {
+	int lightgridsize = 0, hunkSize;
 	const bspx_header_t *bspx_header;
-	int i, lightgridsize = 0;
 	dheader_t *header;
 	byte *mod_base;
 
@@ -433,91 +315,17 @@ Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 		Com_Error(ERR_DROP, "%s: Loaded a brush model after the world", __func__);
 	}
 
-	header = (dheader_t *)buffer;
-
-	i = LittleLong(header->ident);
-
-	if (i != IDBSPHEADER && i != QBSPHEADER)
-	{
-		Com_Error(ERR_DROP, "%s: %s has wrong ident (%i should be %i)",
-				__func__, mod->name, i, IDBSPHEADER);
-	}
-
-	i = LittleLong(header->version);
-
-	if (i != BSPVERSION && i != BSPDKMVERSION)
-	{
-		Com_Error(ERR_DROP, "%s: %s has wrong version number (%i should be %i)",
-				__func__, mod->name, i, BSPVERSION);
-	}
-
-	/* swap all the lumps */
-	mod_base = (byte *)header;
-
-	for (i = 0; i < sizeof(dheader_t) / 4; i++)
-	{
-		((int *)header)[i] = LittleLong(((int *)header)[i]);
-	}
+	mod_base = (byte *)buffer;
+	header = (dheader_t *)mod_base;
 
 	/* check for BSPX extensions */
-	bspx_header = Mod_LoadBSPX(modfilelen, (byte*)header);
+	bspx_header = Mod_LoadBSPX(modfilelen, (byte*)mod_base, map_quake2rr);
 
 	// calculate the needed hunksize from the lumps
-	int hunkSize = 0;
-	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_VERTEXES],
-		sizeof(dvertex_t), sizeof(mvertex_t), EXTRA_LUMP_VERTEXES);
-	if (header->ident == IDBSPHEADER)
-	{
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_EDGES],
-			sizeof(dedge_t), sizeof(medge_t), EXTRA_LUMP_EDGES);
-	}
-	else
-	{
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_EDGES],
-			sizeof(dqedge_t), sizeof(medge_t), EXTRA_LUMP_EDGES);
-	}
-	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_SURFEDGES],
-		sizeof(int), sizeof(int), EXTRA_LUMP_SURFEDGES);
-	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_TEXINFO],
-		sizeof(texinfo_t), sizeof(mtexinfo_t), EXTRA_LUMP_TEXINFO);
-	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_LIGHTING],
-		1, 1, 0);
-	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_PLANES],
-		sizeof(dplane_t), sizeof(cplane_t), EXTRA_LUMP_PLANES);
-	if (header->ident == IDBSPHEADER)
-	{
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_FACES],
-			sizeof(dface_t), sizeof(msurface_t), EXTRA_LUMP_FACES);
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_LEAFFACES],
-			sizeof(short), sizeof(msurface_t *), 0); // yes, out is indeed a pointer!
-	}
-	else
-	{
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_FACES],
-			sizeof(dqface_t), sizeof(msurface_t), EXTRA_LUMP_FACES);
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_LEAFFACES],
-			sizeof(int), sizeof(msurface_t *), 0); // yes, out is indeed a pointer!
-	}
-	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_VISIBILITY],
-		1, 1, 0);
-	if (header->ident == IDBSPHEADER)
-	{
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_LEAFS],
-			sizeof(dleaf_t), sizeof(mleaf_t), 0);
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_NODES],
-			sizeof(dnode_t), sizeof(mnode_t), EXTRA_LUMP_NODES);
-	}
-	else
-	{
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_LEAFS],
-			sizeof(dqleaf_t), sizeof(mleaf_t), 0);
-		hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_NODES],
-			sizeof(dqnode_t), sizeof(mnode_t), EXTRA_LUMP_NODES);
-	}
+	hunkSize = Mod_CalcNonModelLumpHunkSize(mod_base, header, map_quake2rr);
+
 	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_MODELS],
 		sizeof(dmodel_t), sizeof(model_t), 0);
-
-	hunkSize += 5000000; // and 5MB extra just in case
 
 	/* Get size of octree on disk, need to recheck real size */
 	if (Mod_LoadBSPXFindLump(bspx_header, "LIGHTGRID_OCTREE", &lightgridsize, mod_base))
@@ -541,7 +349,7 @@ Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 	Mod_LoadVertexes(mod->name, &mod->vertexes, &mod->numvertexes, mod_base,
 		&header->lumps[LUMP_VERTEXES]);
 	Mod_LoadQBSPEdges(mod->name, &mod->edges, &mod->numedges,
-		mod_base, &header->lumps[LUMP_EDGES], header->ident);
+		mod_base, &header->lumps[LUMP_EDGES]);
 	Mod_LoadSurfedges(mod->name, &mod->surfedges, &mod->numsurfedges,
 		mod_base, &header->lumps[LUMP_SURFEDGES]);
 	Mod_LoadLighting(&mod->lightdata, &mod->numlightdata, mod_base,
@@ -550,23 +358,17 @@ Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 		mod_base, &header->lumps[LUMP_PLANES]);
 	Mod_LoadTexinfo(mod->name, &mod->texinfo, &mod->numtexinfo,
 		mod_base, &header->lumps[LUMP_TEXINFO], (findimage_t)R_FindImage,
-		r_notexture_mip, r_maptype->value);
-	if (header->ident == IDBSPHEADER)
-	{
-		Mod_LoadFaces(mod, mod_base, &header->lumps[LUMP_FACES], bspx_header);
-	}
-	else
-	{
-		Mod_LoadQFaces(mod, mod_base, &header->lumps[LUMP_FACES], bspx_header);
-	}
+		r_notexture_mip);
+
+	Mod_LoadQFaces(mod, mod_base, &header->lumps[LUMP_FACES], bspx_header);
+
 	Mod_LoadQBSPMarksurfaces(mod->name, &mod->marksurfaces, &mod->nummarksurfaces,
-		mod->surfaces, mod->numsurfaces, mod_base, &header->lumps[LUMP_LEAFFACES],
-		header->ident);
+		mod->surfaces, mod->numsurfaces, mod_base, &header->lumps[LUMP_LEAFFACES]);
 	Mod_LoadVisibility(mod->name, &mod->vis, &mod->numvisibility, mod_base,
 		&header->lumps[LUMP_VISIBILITY]);
 	Mod_LoadQBSPLeafs(mod->name, &mod->leafs, &mod->numleafs,
 		mod->marksurfaces, mod->nummarksurfaces, mod_base,
-		&header->lumps[LUMP_LEAFS], header->ident);
+		&header->lumps[LUMP_LEAFS]);
 	Mod_LoadQBSPNodes(mod->name, mod->planes, mod->numplanes, mod->leafs,
 		mod->numleafs, &mod->nodes, &mod->numnodes, mod_base,
 		&header->lumps[LUMP_NODES], header->ident);
@@ -574,6 +376,23 @@ Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 	mod->numframes = 2; /* regular and alternate animation */
 
 	R_InitSkyBox(mod);
+}
+
+/* Temporary solution, need to use load file dirrectly */
+static char *
+Mod_ReadFile(const char *name, int *size)
+{
+	char *buffer, *data;
+
+	*size = ri.FS_LoadFile(name, (void **)&buffer);
+	if (*size <= 0)
+	{
+		return NULL;
+	}
+
+	data = malloc(*size);
+	memcpy(data, buffer, *size);
+	return data;
 }
 
 /*
@@ -641,7 +460,7 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 	strcpy(mod->name, name);
 
 	/* load the file */
-	modfilelen = Mod_LoadFile(mod->name, &buf);
+	modfilelen = ri.Mod_LoadFile(mod->name, &buf);
 
 	if (!buf)
 	{
@@ -663,6 +482,8 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 	/* call the apropriate loader */
 	switch (LittleLong(*(unsigned *)buf))
 	{
+		case SDEFHEADER:
+			/* fall through */
 		case MDXHEADER:
 			/* fall through */
 		case DKMHEADER:
@@ -682,7 +503,7 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 				mod->extradata = Mod_LoadModel(mod->name, buf, modfilelen,
 					mod->mins, mod->maxs,
 					(struct image_s ***)&mod->skins, &mod->numskins,
-					(findimage_t)R_FindImage, (loadimage_t)R_LoadPic,
+					(findimage_t)R_FindImage, (loadimage_t)R_LoadPic, Mod_ReadFile,
 					&(mod->type));
 				if (!mod->extradata)
 				{
@@ -692,8 +513,7 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 			};
 			break;
 
-		case IDBSPHEADER:
-			/* fall through */
+		/* should have only preloaded formats for maps */
 		case QBSPHEADER:
 			Mod_LoadBrushModel(mod, buf, modfilelen);
 			break;

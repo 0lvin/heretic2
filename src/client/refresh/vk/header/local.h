@@ -31,12 +31,17 @@
 #include <stdio.h>
 #include <math.h>
 
+#ifdef USE_SDL3
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_vulkan.h>
+#else
 #if defined(__APPLE__)
 #include <SDL.h>
 #include <SDL_vulkan.h>
 #else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_vulkan.h>
+#endif
 #endif
 
 
@@ -137,7 +142,6 @@ extern  cvar_t  *vk_molten_fastmath;
 extern  cvar_t  *vk_molten_metalbuffers;
 #endif
 extern	cvar_t	*r_retexturing;
-extern	cvar_t	*r_maptype;
 extern	cvar_t	*r_scale8bittextures;
 extern	cvar_t	*r_nolerp_list;
 extern	cvar_t	*r_lerp_list;
@@ -222,10 +226,9 @@ void	Vk_TextureMode( char *string );
 void	Vk_LmapTextureMode( char *string );
 void	Vk_ImageList_f (void);
 
-void LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa);
-void LM_CreateSurfaceLightmap (msurface_t *surf);
-void LM_EndBuildingLightmaps (void);
-void LM_BeginBuildingLightmaps (model_t *m);
+void LM_CreateLightmapsPoligon(model_t *currentmodel, msurface_t *fa);
+void LM_EndBuildingLightmaps(void);
+void LM_BeginBuildingLightmaps(model_t *m);
 
 void	Vk_InitImages (void);
 void	Vk_ShutdownImages (void);

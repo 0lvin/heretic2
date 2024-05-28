@@ -80,9 +80,9 @@ const hmm_mat4 gl3_identityMat4 = {{
 }};
 
 cvar_t *gl_msaa_samples;
+cvar_t *gl_version_override;
 cvar_t *r_vsync;
 cvar_t *r_retexturing;
-cvar_t *r_maptype;
 cvar_t *r_scale8bittextures;
 cvar_t *vid_fullscreen;
 cvar_t *r_mode;
@@ -209,8 +209,8 @@ GL3_Register(void)
 	gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
 	r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
 	gl_msaa_samples = ri.Cvar_Get ( "r_msaa_samples", "0", CVAR_ARCHIVE );
+	gl_version_override = ri.Cvar_Get ( "gl_version_override", "0", CVAR_ARCHIVE );
 	r_retexturing = ri.Cvar_Get("r_retexturing", "1", CVAR_ARCHIVE);
-	r_maptype = ri.Cvar_Get("maptype", "1", CVAR_ARCHIVE);
 	r_scale8bittextures = ri.Cvar_Get("r_scale8bittextures", "0", CVAR_ARCHIVE);
 	gl3_debugcontext = ri.Cvar_Get("gl3_debugcontext", "0", 0);
 	r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
@@ -1997,6 +1997,7 @@ GetRefAPI(refimport_t imp)
 	ri = imp;
 
 	re.api_version = API_VERSION;
+	re.framework_version = GL3_GetSDLVersion();
 
 	re.Init = GL3_Init;
 	re.Shutdown = GL3_Shutdown;

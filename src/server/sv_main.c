@@ -693,6 +693,9 @@ SV_Shutdown(char *finalmsg, qboolean reconnect)
 	memset(&sv, 0, sizeof(sv));
 	Com_SetServerState(sv.state);
 
+	/* No old connect for sure */
+	sv_client = NULL;
+
 	/* free server static data */
 	if (svs.clients)
 	{

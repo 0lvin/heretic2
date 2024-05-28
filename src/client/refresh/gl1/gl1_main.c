@@ -79,6 +79,7 @@ cvar_t *r_validation;
 
 cvar_t *r_lightlevel;
 cvar_t *gl1_overbrightbits;
+cvar_t *gl_version_override;
 
 cvar_t *gl1_particle_min_size;
 cvar_t *gl1_particle_max_size;
@@ -90,6 +91,8 @@ cvar_t *gl1_particle_square;
 
 cvar_t *gl1_palettedtexture;
 cvar_t *gl1_pointparameters;
+cvar_t *gl1_multitexture;
+cvar_t *gl1_biglightmaps;
 
 cvar_t *gl_drawbuffer;
 cvar_t *gl_lightmap;
@@ -102,7 +105,6 @@ cvar_t *r_customwidth;
 cvar_t *r_customheight;
 
 cvar_t *r_retexturing;
-cvar_t *r_maptype;
 cvar_t *r_scale8bittextures;
 
 cvar_t *r_nolerp_list;
@@ -156,6 +158,10 @@ cvar_t* r_fog_underwater_color_a;
 
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
 
+void LM_FreeLightmapBuffers(void);
+void Scrap_Free(void);
+void Scrap_Init(void);
+
 void
 R_RotateForEntity(entity_t *e)
 {
@@ -176,6 +182,7 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	vec3_t point;
 	float *up, *right;
 
+	R_EnableMultitexture(false);
 	/* don't even bother culling, because it's just
 	   a single polygon without a surface cache */
 	psprite = (dsprite_t *)currentmodel->extradata;
@@ -277,6 +284,7 @@ R_DrawNullModel(entity_t *currententity)
 			shadelight, r_modulate->value, lightspot);
 	}
 
+	R_EnableMultitexture(false);
 	glPushMatrix();
 	R_RotateForEntity(currententity);
 
@@ -1278,6 +1286,7 @@ R_Register(void)
 	gl1_particle_att_c = ri.Cvar_Get("gl1_particle_att_c", "0.01", CVAR_ARCHIVE);
 	gl1_particle_square = ri.Cvar_Get("gl1_particle_square", "0", CVAR_ARCHIVE);
 
+	gl_version_override = ri.Cvar_Get("gl_version_override", "0", CVAR_ARCHIVE);
 	r_modulate = ri.Cvar_Get("r_modulate", "1", CVAR_ARCHIVE);
 	r_mode = ri.Cvar_Get("r_mode", "4", CVAR_ARCHIVE);
 	gl_lightmap = ri.Cvar_Get("r_lightmap", "0", 0);
@@ -1306,6 +1315,8 @@ R_Register(void)
 
 	gl1_palettedtexture = ri.Cvar_Get("r_palettedtextures", "0", CVAR_ARCHIVE);
 	gl1_pointparameters = ri.Cvar_Get("gl1_pointparameters", "1", CVAR_ARCHIVE);
+	gl1_multitexture = ri.Cvar_Get("gl1_multitexture", "2", CVAR_ARCHIVE);
+	gl1_biglightmaps = ri.Cvar_Get("gl1_biglightmaps", "1", CVAR_ARCHIVE);
 
 	gl_drawbuffer = ri.Cvar_Get("gl_drawbuffer", "GL_BACK", 0);
 	r_vsync = ri.Cvar_Get("r_vsync", "1", CVAR_ARCHIVE);
@@ -1322,7 +1333,6 @@ R_Register(void)
 	r_retexturing = ri.Cvar_Get("r_retexturing", "1", CVAR_ARCHIVE);
 	r_validation = ri.Cvar_Get("r_validation", "0", CVAR_ARCHIVE);
 	r_scale8bittextures = ri.Cvar_Get("r_scale8bittextures", "0", CVAR_ARCHIVE);
-	r_maptype = ri.Cvar_Get("maptype", "1", CVAR_ARCHIVE);
 
 	/* don't bilerp characters and crosshairs */
 	r_nolerp_list = ri.Cvar_Get("r_nolerp_list", DEFAULT_NOLERP_LIST, CVAR_ARCHIVE);
@@ -1487,7 +1497,7 @@ R_SetMode(void)
 qboolean
 RI_Init(void)
 {
-	int j;
+	int j, max_tex_size;
 	byte *colormap;
 	extern float r_turbsin[256];
 
@@ -1565,17 +1575,29 @@ RI_Init(void)
 	/* Point parameters */
 	R_Printf(PRINT_ALL, " - Point parameters: ");
 
-	if (strstr(gl_config.extensions_string, "GL_ARB_point_parameters"))
+	if ( strstr(gl_config.extensions_string, "GL_ARB_point_parameters") ||
+		strstr(gl_config.extensions_string, "GL_EXT_point_parameters") )	// should exist for all OGL 1.4 hw...
 	{
-			qglPointParameterfARB = (void (APIENTRY *)(GLenum, GLfloat))RI_GetProcAddress ( "glPointParameterfARB" );
-			qglPointParameterfvARB = (void (APIENTRY *)(GLenum, const GLfloat *))RI_GetProcAddress ( "glPointParameterfvARB" );
+		qglPointParameterf = (void (APIENTRY *)(GLenum, GLfloat))RI_GetProcAddress ( "glPointParameterf" );
+		qglPointParameterfv = (void (APIENTRY *)(GLenum, const GLfloat *))RI_GetProcAddress ( "glPointParameterfv" );
+
+		if (!qglPointParameterf || !qglPointParameterfv)
+		{
+			qglPointParameterf = (void (APIENTRY *)(GLenum, GLfloat))RI_GetProcAddress ( "glPointParameterfARB" );
+			qglPointParameterfv = (void (APIENTRY *)(GLenum, const GLfloat *))RI_GetProcAddress ( "glPointParameterfvARB" );
+		}
+		if (!qglPointParameterf || !qglPointParameterfv)
+		{
+			qglPointParameterf = (void (APIENTRY *)(GLenum, GLfloat))RI_GetProcAddress ( "glPointParameterfEXT" );
+			qglPointParameterfv = (void (APIENTRY *)(GLenum, const GLfloat *))RI_GetProcAddress ( "glPointParameterfvEXT" );
+		}
 	}
 
 	gl_config.pointparameters = false;
 
 	if (gl1_pointparameters->value)
 	{
-		if (qglPointParameterfARB && qglPointParameterfvARB)
+		if (qglPointParameterf && qglPointParameterfv)
 		{
 			gl_config.pointparameters = true;
 			R_Printf(PRINT_ALL, "Okay\n");
@@ -1659,9 +1681,101 @@ RI_Init(void)
 
 	// ----
 
+	/* Multitexturing */
+	gl_config.multitexture = gl_config.mtexcombine = false;
+
+	R_Printf(PRINT_ALL, " - Multitexturing: ");
+
+	if (strstr(gl_config.extensions_string, "GL_ARB_multitexture"))
+	{
+		qglActiveTexture = (void (APIENTRY *)(GLenum))RI_GetProcAddress ("glActiveTexture");
+		qglClientActiveTexture = (void (APIENTRY *)(GLenum))RI_GetProcAddress ("glClientActiveTexture");
+
+		if (!qglActiveTexture || !qglClientActiveTexture)
+		{
+			qglActiveTexture = (void (APIENTRY *)(GLenum))RI_GetProcAddress ("glActiveTextureARB");
+			qglClientActiveTexture = (void (APIENTRY *)(GLenum))RI_GetProcAddress ("glClientActiveTextureARB");
+		}
+	}
+
+	if (gl1_multitexture->value)
+	{
+		if (qglActiveTexture && qglClientActiveTexture)
+		{
+			gl_config.multitexture = true;
+			R_Printf(PRINT_ALL, "Okay\n");
+		}
+		else
+		{
+			R_Printf(PRINT_ALL, "Failed\n");
+		}
+	}
+	else
+	{
+		R_Printf(PRINT_ALL, "Disabled\n");
+	}
+
+	// ----
+
+	/* Multi texturing combine */
+	R_Printf(PRINT_ALL, " - Multitexturing combine: ");
+
+	if ( ( strstr(gl_config.extensions_string, "GL_ARB_texture_env_combine")
+		|| strstr(gl_config.extensions_string, "GL_EXT_texture_env_combine") ) )
+	{
+		if (gl_config.multitexture && gl1_multitexture->value > 1)
+		{
+			gl_config.mtexcombine = true;
+			R_Printf(PRINT_ALL, "Okay\n");
+		}
+		else
+		{
+			R_Printf(PRINT_ALL, "Disabled\n");
+		}
+	}
+	else
+	{
+		R_Printf(PRINT_ALL, "Failed\n");
+	}
+
+	// ----
+
+	/* Big lightmaps */
+	R_Printf(PRINT_ALL, " - Big lightmaps: ");
+
+	gl_state.block_width = BLOCK_WIDTH;
+	gl_state.block_height = BLOCK_HEIGHT;
+	gl_state.max_lightmaps = MAX_LIGHTMAPS;
+	gl_state.scrap_width = BLOCK_WIDTH;
+	gl_state.scrap_height = BLOCK_HEIGHT;
+	glGetIntegerv (GL_MAX_TEXTURE_SIZE, &max_tex_size);
+	if (max_tex_size > BLOCK_WIDTH)
+	{
+		if (gl1_biglightmaps->value)
+		{
+			gl_state.block_width = gl_state.block_height = Q_min(max_tex_size, 512);
+			gl_state.max_lightmaps = (BLOCK_WIDTH * BLOCK_HEIGHT * MAX_LIGHTMAPS)
+					/ (gl_state.block_width * gl_state.block_height);
+			gl_state.scrap_width = gl_state.scrap_height =
+					(gl_config.npottextures)? Q_min(max_tex_size, 384) : Q_min(max_tex_size, 256);
+			R_Printf(PRINT_ALL, "Okay\n");
+		}
+		else
+		{
+			R_Printf(PRINT_ALL, "Disabled\n");
+		}
+	}
+	else
+	{
+		R_Printf(PRINT_ALL, "Failed, detected texture size = %d\n", max_tex_size);
+	}
+
+	// ----
+
 	R_SetDefaultState();
 
 	R_VertBufferInit();
+	Scrap_Init();
 	R_InitImages();
 	Mod_Init();
 	R_InitParticleTexture();
@@ -1678,6 +1792,8 @@ RI_Shutdown(void)
 	ri.Cmd_RemoveCommand("imagelist");
 	ri.Cmd_RemoveCommand("gl_strings");
 
+	LM_FreeLightmapBuffers();
+	Scrap_Free();
 	Mod_FreeAll();
 
 	R_ShutdownImages();
@@ -1935,6 +2051,7 @@ R_DrawBeam(entity_t *e)
 		VectorAdd(start_points[i], direction, end_points[i]);
 	}
 
+	R_EnableMultitexture(false);
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glDepthMask(GL_FALSE);
@@ -2002,6 +2119,7 @@ GetRefAPI(refimport_t imp)
 	ri = imp;
 
 	refexport.api_version = API_VERSION;
+	refexport.framework_version = RI_GetSDLVersion();
 
 	refexport.Init = RI_Init;
 	refexport.Shutdown = RI_Shutdown;

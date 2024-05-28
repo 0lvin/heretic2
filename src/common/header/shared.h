@@ -467,14 +467,15 @@ typedef struct cvar_s
 
 /* lower bits are stronger, and will eat weaker brushes completely */
 #define CONTENTS_EMPTY			0x00000000	// nothing
-#define CONTENTS_SOLID			0x00000001	// An eye is never valid in a solid.
-#define CONTENTS_WINDOW			0x00000002	// Translucent, but not watery.
+#define CONTENTS_SOLID 1                /* an eye is never valid in a solid */
+#define CONTENTS_WINDOW 2               /* translucent, but not watery */
+#define CONTENTS_AUX 4
 #define CONTENTS_ILLUSIONARY	0x00000004  // Was CONTENTS_AUX.
-#define CONTENTS_LAVA			0x00000008
-#define CONTENTS_SLIME			0x00000010
-#define CONTENTS_WATER			0x00000020
-#define CONTENTS_MIST			0x00000040
-#define LAST_VISIBLE_CONTENTS	CONTENTS_MIST
+#define CONTENTS_LAVA 8
+#define CONTENTS_SLIME 16
+#define CONTENTS_WATER 32
+#define CONTENTS_MIST 64
+#define LAST_VISIBLE_CONTENTS 64
 
 /* remaining contents are non-visible, and don't eat brushes */
 #define CONTENTS_AREAPORTAL 0x8000
@@ -514,8 +515,14 @@ typedef struct cvar_s
 #define SURF_UNDULATE		0x00002000	/* rock surface up and down... */
 #define SURF_QUAKE		0x00004000	/* rock surface up and down when quake value on */
 #define SURF_ALPHATEST 0x02000000 /* KMQUAKE2 Alpha test flag */
+#define SURF_N64_UV 0x10000000    /* ReRelease Stretches texture UVs. */
+#define SURF_N64_SCROLL_X 0x20000000 /* ReRelease Texture scroll X-axis. */
+#define SURF_N64_SCROLL_Y 0x40000000 /* ReRelease Texture scroll Y-axis. */
+#define SURF_N64_SCROLL_FLIP 0x80000000 /* ReRelease Flip direction of texture scroll. */
 /* Transparnet but not explicitly warp */
-#define SURF_TRANSPARENT (SURF_TRANS33 | SURF_TRANS66)
+#define SURF_TRANSPARENT (SURF_TRANS33 | SURF_TRANS66 | SURF_ALPHATEST)
+/* Different flowing settings */
+#define SURF_SCROLL (SURF_FLOWING | SURF_N64_SCROLL_X | SURF_N64_SCROLL_Y)
 
 /* content masks */
 #define MASK_ALL (-1)

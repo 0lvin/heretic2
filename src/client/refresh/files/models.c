@@ -2,6 +2,7 @@
  * Copyright (C) 1997-2001 Id Software, Inc.
  * Copyright (c) 2005-2015 David HENRY
  * Copyright (c) 2011 Sajt (https://icculus.org/qshed/qwalk/)
+ * Copyright (c) 1998 Trey Harrison (SiN View)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,11 +151,63 @@ Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t transl
 			poutframe->translate[j] = LittleFloat(pinframe->translate[j]);
 			poutframe->translate[j] += translate[j];
 		}
-		// verts are all 8 bit, so no swapping needed
+
+		/* verts are all 8 bit, so no swapping needed */
 		for (j=0; j < pheader->num_xyz; j ++)
 		{
 			Mod_LoadFrames_VertMD2(poutframe->verts + j, pinframe->verts[j].v);
 			poutframe->verts[j].lightnormalindex = pinframe->verts[j].lightnormalindex;
+		}
+	}
+}
+
+/*
+=================
+Mod_LoadFrames_SAM
+
+Load the SiN sam animation format frames
+=================
+*/
+static void
+Mod_LoadFrames_SAM(dmdx_t *pheader, sin_sam_header_t **anims, int anim_num,
+	vec3_t translate, float scale)
+{
+	int curr_frame = 0, i;
+
+	for (i = 0; i < anim_num; i++)
+	{
+		sin_frame_t *pinframe;
+		int k;
+
+		pinframe = (sin_frame_t *) ((char *)anims[i] + anims[i]->ofs_frames);
+
+		for (k = 0; k < anims[i]->num_frames; k++)
+		{
+			daliasxframe_t *poutframe;
+			dtrivertx_t *verts;
+			int j;
+
+			poutframe = (daliasxframe_t *) ((byte *)pheader
+				+ pheader->ofs_frames + curr_frame * pheader->framesize);
+
+			memcpy(poutframe->name, anims[i]->name, sizeof(poutframe->name));
+
+			for (j = 0; j < 3; j++)
+			{
+				poutframe->scale[j] = LittleFloat(pinframe[k].scale[j]) * scale / 0xFF;
+				poutframe->translate[j] = LittleFloat(pinframe[k].translate[j]);
+				poutframe->translate[j] += translate[j];
+			}
+
+			verts = (dtrivertx_t*)((char *)(pinframe + k) + pinframe[k].ofs_verts);
+			/* verts are all 8 bit, so no swapping needed */
+			for (j=0; j < pheader->num_xyz; j ++)
+			{
+				Mod_LoadFrames_VertMD2(poutframe->verts + j, verts[j].v);
+				poutframe->verts[j].lightnormalindex = verts[j].lightnormalindex;
+			}
+
+			curr_frame ++;
 		}
 	}
 }
@@ -1377,7 +1430,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 
 	if (modfilelen < sizeof(pinmodel))
 	{
-		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be %ld)\n",
+		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be " YQ2_COM_PRIdS ")\n",
 				__func__, mod_name, modfilelen, sizeof(pinmodel));
 		return NULL;
 	}
@@ -1495,7 +1548,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		{
 			const md3_shader_t *md3_shader = (md3_shader_t*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_shaders)) + j;
 
-			strncpy(skin, md3_shader->name, MAX_SKINNAME - 1);
+			memcpy(skin, md3_shader->name, Q_min(sizeof(md3_shader->name), MAX_SKINNAME));
 			skin += MAX_SKINNAME;
 		}
 
@@ -1616,7 +1669,7 @@ Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
 
 	if (modfilelen < sizeof(pinmodel))
 	{
-		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be %ld)\n",
+		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be " YQ2_COM_PRIdS ")\n",
 				__func__, mod_name, modfilelen, sizeof(pinmodel));
 		return NULL;
 	}
@@ -1790,7 +1843,7 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 
 	if (modfilelen < sizeof(pinmodel))
 	{
-		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be %ld)\n",
+		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be " YQ2_COM_PRIdS ")\n",
 				__func__, mod_name, modfilelen, sizeof(pinmodel));
 		return NULL;
 	}
@@ -1941,50 +1994,6 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 	*type = mod_alias;
 
 	return extradata;
-}
-
-static void
-Mod_LoadSkinList_MD2(const char *mod_name, const void *buffer, int modfilelen,
-	char **skins, int *numskins)
-{
-	dmdl_t pinmodel;
-	int i;
-
-	if (modfilelen < sizeof(pinmodel))
-	{
-		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be %ld)\n",
-				__func__, mod_name, modfilelen, sizeof(pinmodel));
-		return;
-	}
-
-	for (i = 0; i < sizeof(pinmodel) / sizeof(int); i++)
-	{
-		((int *)&pinmodel)[i] = LittleLong(((int *)buffer)[i]);
-	}
-
-	if (pinmodel.version != ALIAS_VERSION)
-	{
-		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)\n",
-				__func__, mod_name, pinmodel.version, ALIAS_VERSION);
-	}
-
-	if (pinmodel.ofs_end < 0 || pinmodel.ofs_end > modfilelen)
-	{
-		R_Printf(PRINT_ALL, "%s: model %s file size(%d) too small, should be %d\n",
-				__func__, mod_name, modfilelen, pinmodel.ofs_end);
-	}
-
-	if (pinmodel.num_skins < 0)
-	{
-		R_Printf(PRINT_ALL, "%s: model %s file has incorrect skins count %d\n",
-				__func__, mod_name, pinmodel.num_skins);
-	}
-
-	*numskins = pinmodel.num_skins;
-	*skins = malloc(pinmodel.num_skins * MAX_SKINNAME);
-
-	memcpy(*skins, (char *)buffer + pinmodel.ofs_skins,
-		pinmodel.num_skins * MAX_SKINNAME);
 }
 
 /*
@@ -2523,6 +2532,297 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 	return extradata;
 }
 
+static void *
+Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_file,
+	struct image_s ***skins, int *numskins)
+{
+	char models_path[MAX_QPATH];
+	char base_model[MAX_QPATH * 2];
+	char skinnames[255][MAX_SKINNAME];
+	char animations[255][MAX_QPATH * 2];
+	int actions_num, skinnames_num, i, base_size;
+	sin_sbm_header_t *base;
+	sin_sam_header_t *anim[255];
+	void *extradata = NULL;
+	vec3_t translate = {0, 0, 0};
+	float scale;
+
+	actions_num = 0;
+	skinnames_num = 0;
+	scale = 1.0f;
+	memset(models_path, 0, sizeof(models_path));
+
+	if (strcmp(COM_Parse(&curr_buff), "SDEF"))
+	{
+		return NULL;
+	}
+
+	while (curr_buff)
+	{
+		const char *token;
+
+		token = COM_Parse(&curr_buff);
+		if (!*token)
+		{
+			continue;
+		}
+
+		/* found start of comment */
+		else if (!strncmp(token, "/*", 2))
+		{
+			token = COM_Parse(&curr_buff);
+
+			/* search end of comment */
+			while (curr_buff && strncmp(token, "*/", 2))
+			{
+				token = COM_Parse(&curr_buff);
+			}
+		}
+		else if (!strcmp(token, "path"))
+		{
+			strncpy(models_path, COM_Parse(&curr_buff), sizeof(models_path));
+		}
+		else if (!strcmp(token, "scale"))
+		{
+			scale = (float)strtod(COM_Parse(&curr_buff), (char **)NULL);
+		}
+		else if (!strcmp(token, "id") ||
+				 !strcmp(token, "group") ||
+				 !strcmp(token, "!init:") ||
+				 !strcmp(token, "!main:") ||
+				 !strcmp(token, "client") ||
+				 !strcmp(token, "server"))
+		{
+			/* Just skipped for now */
+			curr_buff = strchr(curr_buff, '\n');
+			if (curr_buff && *curr_buff == '\n')
+			{
+				curr_buff ++;
+			}
+		}
+		else
+		{
+			const char *ext;
+
+			ext = COM_FileExtension(token);
+			if (!Q_stricmp(ext, "sbm"))
+			{
+				snprintf(base_model, sizeof(base_model),
+					"%s/%s", models_path, token);
+			}
+			else if (!Q_stricmp(ext, "sam"))
+			{
+				if (actions_num >= 255)
+				{
+					R_Printf(PRINT_DEVELOPER, "%s: %s has huge list of animations %s\n",
+						__func__, mod_name, base_model);
+					continue;
+				}
+				snprintf(animations[actions_num], sizeof(animations[actions_num]),
+					"%s/%s", models_path, token);
+				actions_num ++;
+			}
+			else if (!Q_stricmp(ext, "tga"))
+			{
+				if (skinnames_num >= 255)
+				{
+					R_Printf(PRINT_DEVELOPER, "%s: %s has huge list of skinss %s\n",
+						__func__, mod_name, base_model);
+					continue;
+				}
+				snprintf(skinnames[skinnames_num], sizeof(skinnames[skinnames_num]),
+					"%s/%s", models_path, token);
+				skinnames_num ++;
+			}
+		}
+	}
+
+	base = (sin_sbm_header_t*)read_file(base_model, &base_size);
+	if (base_size <= 0)
+	{
+		R_Printf(PRINT_DEVELOPER, "%s: %s No base model for %s\n",
+			__func__, mod_name, base_model);
+		return NULL;
+	}
+
+	/* Convert from LittleLong */
+	for (i = 0; i < sizeof(sin_sbm_header_t) / 4; i ++)
+	{
+		((int *)base)[i] = LittleLong(((int *)base)[i]);
+	}
+
+	if ((base->ident != SBMHEADER) || (base->version != MDSINVERSION))
+	{
+		free(base);
+		R_Printf(PRINT_DEVELOPER, "%s: %s, Incorrect ident or version for %s\n",
+			__func__, mod_name, base_model);
+		return NULL;
+	}
+
+	int num_tris = 0;
+	{
+		sin_trigroup_t *trigroup = (sin_trigroup_t *)((char*)base + sizeof(sin_sbm_header_t));
+
+		for(i = 0; i < base->num_groups; i ++)
+		{
+			num_tris += LittleLong(trigroup[i].num_tris);
+		}
+	}
+
+	int framescount = 0;
+	int animation_num = 0;
+
+	for (i = 0; i < actions_num; i++)
+	{
+		int anim_size, j;
+
+		anim[animation_num] = (sin_sam_header_t*)read_file(animations[i], &anim_size);
+		if (anim_size <= 0)
+		{
+			R_Printf(PRINT_DEVELOPER, "%s: %s empty animation %s\n",
+				__func__, mod_name, animations[i]);
+			continue;
+		}
+
+		if (anim[animation_num]->num_xyz != base->num_xyz)
+		{
+			R_Printf(PRINT_DEVELOPER, "%s: %s, incorrect count tris in animation in %s\n",
+				__func__, mod_name, animations[i]);
+			continue;
+		}
+
+		/* Convert from LittleLong */
+		for (j = 0; j < sizeof(sin_sam_header_t) / 4; j ++)
+		{
+			((int *)anim[animation_num])[j] = LittleLong(
+				((int *)anim[animation_num])[j]);
+		}
+
+		if ((anim[animation_num]->ident != SAMHEADER) ||
+			(anim[animation_num]->version != MDSINVERSION))
+		{
+			free(base);
+			R_Printf(PRINT_DEVELOPER, "%s: %s, Incorrect ident or version for %s\n",
+				__func__, mod_name, base_model);
+			return NULL;
+		}
+
+		framescount += anim[animation_num]->num_frames;
+		animation_num ++;
+	}
+
+	if (!animation_num)
+	{
+		R_Printf(PRINT_DEVELOPER, "%s: %s no animation found\n",
+			__func__, mod_name);
+		free(base);
+		return NULL;
+	}
+
+	dmdx_t dmdxheader, *pheader = NULL;
+	dmdxheader.skinwidth = 256;
+	dmdxheader.skinheight = 256;
+
+	dmdxheader.framesize = sizeof(daliasxframe_t) - sizeof(dxtrivertx_t);
+	dmdxheader.framesize += base->num_xyz * sizeof(dxtrivertx_t);
+
+	dmdxheader.num_meshes = base->num_groups;
+	dmdxheader.num_skins = skinnames_num;
+	dmdxheader.num_xyz = base->num_xyz;
+	dmdxheader.num_st = base->num_st;
+	dmdxheader.num_tris = num_tris;
+	dmdxheader.num_frames = framescount;
+	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
+	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
+
+	/* just skip header */
+	dmdxheader.ofs_meshes = sizeof(dmdxheader);
+	dmdxheader.ofs_skins = dmdxheader.ofs_meshes + dmdxheader.num_meshes * sizeof(dmdxmesh_t);
+	dmdxheader.ofs_st = dmdxheader.ofs_skins + dmdxheader.num_skins * MAX_SKINNAME;
+	dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
+	dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
+	dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
+	dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
+
+	*numskins = dmdxheader.num_skins;
+	extradata = Hunk_Begin(dmdxheader.ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
+	pheader = Hunk_Alloc(dmdxheader.ofs_end);
+	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
+
+	memcpy(pheader, &dmdxheader, sizeof(dmdxheader));
+
+	memcpy((byte*)pheader + pheader->ofs_skins, (byte *)skinnames,
+		pheader->num_skins * MAX_SKINNAME);
+
+	/* st */
+	st_vert_t *st_in = (st_vert_t *)((char *)base + base->ofs_st);
+	dstvert_t *st_out = (dstvert_t *)((char *)pheader + pheader->ofs_st);
+	for (i = 0; i < pheader->num_st; i ++)
+	{
+		st_out[i].s = (int)(LittleFloat(st_in[i].s) * pheader->skinwidth + 256) % 256;
+		st_out[i].t = (int)(LittleFloat(st_in[i].t) * pheader->skinheight + 256) % 256;
+	}
+
+	/* tris and mesh */
+	sin_trigroup_t *trigroup_in = (sin_trigroup_t *)((char*)base + sizeof(sin_sbm_header_t));
+	dtriangle_t *pouttriofs = (dtriangle_t *) ((char *)pheader + pheader->ofs_tris);
+	dmdxmesh_t *mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
+
+	int tris_ofs = 0;
+	for(i = 0; i < base->num_groups; i ++)
+	{
+		sin_triangle_t *tri_in;
+		int j;
+
+		mesh_nodes[i].ofs_tris = tris_ofs;
+		mesh_nodes[i].num_tris = LittleLong(trigroup_in[i].num_tris);
+
+		/* offset from current group */
+		tri_in = (sin_triangle_t *)((char*)(trigroup_in + i) + LittleLong(trigroup_in[i].ofs_tris));
+		for (j = 0; j < mesh_nodes[i].num_tris; j++)
+		{
+			int k;
+
+			for (k = 0; k < 3; k++)
+			{
+				pouttriofs[tris_ofs + j].index_st[k] = LittleShort(tri_in[j].index_st[k]);
+				pouttriofs[tris_ofs + j].index_xyz[k] = LittleShort(tri_in[j].index_xyz[k]);
+			}
+		}
+		tris_ofs += mesh_nodes[i].num_tris;
+	}
+
+	Mod_LoadFrames_SAM(pheader, anim, animation_num, translate, scale);
+	Mod_LoadCmdGenerate(pheader);
+	Mod_LoadFixImages(mod_name, pheader, false);
+
+	for (i = 0; i < animation_num; i++)
+	{
+		free(anim[i]);
+	}
+
+	free(base);
+	return extradata;
+}
+
+static void *
+Mod_LoadModel_SDEF(const char *mod_name, const void *buffer, int modfilelen,
+	readfile_t read_file, struct image_s ***skins, int *numskins, modtype_t *type)
+{
+	void *extradata;
+	char *text;
+
+	text = malloc(modfilelen + 1);
+	memcpy(text, buffer, modfilelen);
+	text[modfilelen] = 0;
+	extradata = Mod_LoadModel_SDEF_Text(mod_name, text, read_file, skins, numskins);
+	free(text);
+
+	*type = mod_alias;
+
+	return extradata;
+}
+
 /*
 =================
 Mod_LoadSprite_SP2
@@ -2685,19 +2985,6 @@ Mod_LoadMinMaxUpdate(const char *mod_name, vec3_t mins, vec3_t maxs, void *extra
 	}
 }
 
-static void
-Mod_LoadSkinList(const char *mod_name, const void *buffer, int modfilelen,
-	char **skins, int *numskins)
-{
-	switch (LittleLong(*(unsigned *)buffer))
-	{
-		case IDALIASHEADER:
-			Mod_LoadSkinList_MD2(mod_name, buffer, modfilelen,
-				skins, numskins);
-			break;
-	}
-}
-
 /*
 =================
 Mod_LoadModel
@@ -2706,7 +2993,8 @@ Mod_LoadModel
 void *
 Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,
-	findimage_t find_image, loadimage_t load_image, modtype_t *type)
+	findimage_t find_image, loadimage_t load_image, readfile_t read_file,
+	modtype_t *type)
 {
 	void *extradata = NULL;
 
@@ -2718,6 +3006,11 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 
 	switch (LittleLong(*(unsigned *)buffer))
 	{
+		case SDEFHEADER:
+			extradata = Mod_LoadModel_SDEF(mod_name, buffer, modfilelen,
+				read_file, skins, numskins, type);
+			break;
+
 		case MDXHEADER:
 			extradata = Mod_LoadModel_MDX(mod_name, buffer, modfilelen,
 				skins, numskins, type);
@@ -2781,294 +3074,6 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 	}
 
 	return extradata;
-}
-
-/* Add md5 to full file name */
-static void
-Mod_LoadFileInsertMD5(char *newname, const char *oldname, int size)
-{
-	const char *filename;
-
-	filename = COM_SkipPath(oldname);
-	memset(newname, 0, size);
-	memcpy(newname, oldname, strlen(oldname) - strlen(filename));
-	Q_strlcat(newname, "md5/", size);
-	Q_strlcat(newname, filename, size);
-}
-
-static int
-Mod_LoadFileMD5Merge(const char *namewe, void **buffer)
-{
-	int fullsize, filesize_anim, filesize, filesize_skins;
-	char *final_buffer = NULL, *skins_list = NULL;
-	void *anim_buffer = NULL, *skins_buffer = NULL;
-	qboolean md5path = false;
-	char newname[256];
-
-	/* search mesh file */
-	Q_strlcpy(newname, namewe, sizeof(newname));
-	Q_strlcat(newname, ".md5mesh", sizeof(newname));
-	filesize = ri.FS_LoadFile(newname, buffer);
-
-	/* check overwrite file */
-	if (filesize <= 0)
-	{
-		char md5modelname[256];
-
-		Mod_LoadFileInsertMD5(md5modelname, newname, sizeof(md5modelname));
-
-		filesize = ri.FS_LoadFile(md5modelname, buffer);
-		/* no replace file */
-		if (filesize <= 0)
-		{
-			return filesize;
-		}
-
-		md5path = true;
-		strcpy(newname, md5modelname);
-	}
-
-	/* search animation file */
-	memcpy(newname + strlen(newname) - strlen("mesh"), "anim", strlen("anim"));
-	filesize_anim = ri.FS_LoadFile(newname, &anim_buffer);
-	if (filesize_anim <= 0)
-	{
-		ri.FS_FreeFile(*buffer);
-		return filesize;
-	}
-
-	/* search skins list */
-	Q_strlcpy(newname, namewe, sizeof(newname));
-	Q_strlcat(newname, ".md2", sizeof(newname));
-	filesize_skins = ri.FS_LoadFile(newname, &skins_buffer);
-	if (filesize_skins > 0)
-	{
-		char *skins = NULL;
-		int numskins = 0, i;
-
-		Mod_LoadSkinList(newname, skins_buffer, filesize_skins,
-			&skins, &numskins);
-		ri.FS_FreeFile(skins_buffer);
-
-		/*
-		 * 20 -> numSkins <num> | skin <num> "MAX_SKINNAME" + md5
-		 */
-		skins_list = malloc((numskins + 1) * (MAX_SKINNAME + 20));
-		sprintf(skins_list, "\nnumSkins %d\n", numskins);
-		for(i = 0; i < numskins; i++)
-		{
-			const char *skinname = skins + MAX_SKINNAME * i;
-
-			if (!md5path)
-			{
-				sprintf(skins_list + strlen(skins_list), "skin %d \"%s\"\n",
-					i, skinname);
-			}
-			else
-			{
-				char md5skinname[256];
-
-				Mod_LoadFileInsertMD5(md5skinname, skinname, sizeof(md5skinname));
-
-				sprintf(skins_list + strlen(skins_list), "skin %d \"%s\"\n",
-					i, md5skinname);
-			}
-		}
-	}
-
-	/* prepare final file */
-	fullsize = filesize + filesize_anim + 1;
-	if (skins_list)
-	{
-		fullsize += strlen(skins_list);
-	}
-
-	/* allocate new buffer, ERR_FATAL on alloc fail */
-	final_buffer = ri.FS_AllocFile(fullsize);
-
-	/* copy combined information */
-	memcpy(final_buffer, *buffer, filesize);
-	if (skins_list)
-	{
-		memcpy(final_buffer + filesize, skins_list, strlen(skins_list));
-		filesize += strlen(skins_list);
-		free(skins_list);
-	}
-	final_buffer[filesize] = 0;
-	memcpy(final_buffer + filesize + 1, anim_buffer, filesize_anim);
-
-	/* Remove old buffers */
-	ri.FS_FreeFile(anim_buffer);
-	ri.FS_FreeFile(*buffer);
-
-	*buffer = final_buffer;
-	return fullsize;
-}
-
-static int
-Mod_LoadFileWithoutExt(const char *namewe, void **buffer, const char* ext)
-{
-	char newname[256];
-	size_t tlen;
-
-	*buffer = NULL;
-
-	tlen = strlen(namewe);
-
-	if (!strcmp(ext, "fm") ||
-		!strcmp(ext, "dkm") ||
-		!strcmp(ext, "md2") ||
-		!strcmp(ext, "md3") ||
-		!strcmp(ext, "md5mesh") ||
-		!strcmp(ext, "mdx") ||
-		!strcmp(ext, "mdl"))
-	{
-		int filesize;
-
-		/* Check ReRelease / Doom 3 / Quake 4 model */
-		filesize = Mod_LoadFileMD5Merge(namewe, buffer);
-		if (filesize > 0)
-		{
-			R_Printf(PRINT_DEVELOPER, "%s: %s loaded as md5 (Doom 3)\n",
-				__func__, namewe);
-			return filesize;
-		}
-
-		/* Check Quake 3 model */
-		Q_strlcpy(newname, namewe, sizeof(newname));
-		Q_strlcpy(newname + tlen, ".md3", sizeof(newname));
-		filesize = ri.FS_LoadFile(newname, buffer);
-		if (filesize > 0)
-		{
-			R_Printf(PRINT_DEVELOPER, "%s: %s loaded as md3 (Quake 3)\n",
-				__func__, namewe);
-			return filesize;
-		}
-
-		/* Check Heretic2 model */
-		Q_strlcpy(newname, namewe, sizeof(newname));
-		Q_strlcat(newname, ".fm", sizeof(newname));
-		filesize = ri.FS_LoadFile(newname, buffer);
-		if (filesize > 0)
-		{
-			R_Printf(PRINT_DEVELOPER, "%s: %s loaded as fm (Heretic 2)\n",
-				__func__, namewe);
-			return filesize;
-		}
-
-		/* Check Quake 2 model */
-		Q_strlcpy(newname + tlen, ".md2", sizeof(newname));
-		filesize = ri.FS_LoadFile(newname, buffer);
-		if (filesize > 0)
-		{
-			R_Printf(PRINT_DEVELOPER, "%s: %s loaded as md2 (Quake 2/Anachronox)\n",
-				__func__, namewe);
-			return filesize;
-		}
-
-		/* Check Kingpin model */
-		Q_strlcpy(newname + tlen, ".mdx", sizeof(newname));
-		filesize = ri.FS_LoadFile(newname, buffer);
-		if (filesize > 0)
-		{
-			R_Printf(PRINT_DEVELOPER, "%s: %s loaded as mdx (Kingpin)\n",
-				__func__, namewe);
-			return filesize;
-		}
-
-		/* Check Daikatana model */
-		Q_strlcpy(newname + tlen, ".dkm", sizeof(newname));
-		filesize = ri.FS_LoadFile(newname, buffer);
-		if (filesize > 0)
-		{
-			R_Printf(PRINT_DEVELOPER, "%s: %s loaded as dkm (Daikatana)\n",
-				__func__, namewe);
-			return filesize;
-		}
-
-		/* Check Quake model */
-		Q_strlcpy(newname + tlen, ".mdl", sizeof(newname));
-		filesize = ri.FS_LoadFile(newname, buffer);
-		if (filesize > 0)
-		{
-			R_Printf(PRINT_DEVELOPER, "%s: %s loaded as mdl (Quake 1)\n",
-				__func__, namewe);
-			return filesize;
-		}
-	}
-
-	Q_strlcpy(newname, namewe, sizeof(newname));
-	Q_strlcat(newname, ".", sizeof(newname));
-	Q_strlcat(newname, ext, sizeof(newname));
-
-	return ri.FS_LoadFile(newname, buffer);
-}
-
-/*
-=================
-Mod_LoadFile
-=================
-*/
-int
-Mod_LoadFile(const char *name, void **buffer)
-{
-	char namewe[256];
-	const char* ext;
-	int filesize, len;
-	size_t tlen;
-
-	if (!name)
-	{
-		return -1;
-	}
-
-	ext = COM_FileExtension(name);
-	if(!ext[0])
-	{
-		/* file has no extension */
-		return -1;
-	}
-
-	len = strlen(name);
-	if (len < 5)
-	{
-		return -1;
-	}
-
-	/* Remove the extension */
-	tlen = len - (strlen(ext) + 1);
-	memset(namewe, 0, 256);
-	memcpy(namewe, name, tlen);
-
-	filesize = Mod_LoadFileWithoutExt(namewe, buffer, ext);
-	if (filesize > 0)
-	{
-		return filesize;
-	}
-
-	/* Replacement of ReRelease models */
-	if (!strcmp(namewe, "models/monsters/soldierh/tris"))
-	{
-		filesize = Mod_LoadFileWithoutExt("models/monsters/soldier/tris",
-			buffer, ext);
-	}
-	else if (!strcmp(namewe, "models/monsters/gladb/tris"))
-	{
-		filesize = Mod_LoadFileWithoutExt("models/monsters/gladiatr/tris",
-			buffer, ext);
-	}
-	else if (!strcmp(namewe, "models/monsters/boss5/tris"))
-	{
-		filesize = Mod_LoadFileWithoutExt("models/monsters/boss1/tris",
-			buffer, ext);
-	}
-	else if (!strcmp(namewe, "models/monsters/bitch2/tris"))
-	{
-		filesize = Mod_LoadFileWithoutExt("models/monsters/bitch/tris",
-			buffer, ext);
-	}
-
-	return filesize;
 }
 
 /*

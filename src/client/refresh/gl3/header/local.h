@@ -158,14 +158,15 @@ typedef struct
 	hmm_mat4 transProjViewMat4; // gl3state.projMat3D * gl3state.viewMat3D - so we don't have to do this in the shader
 	hmm_mat4 transModelMat4;
 
-	GLfloat scroll; // for SURF_FLOWING
+	GLfloat sscroll; // for SURF_FLOWING
+	GLfloat tscroll; // for SURF_FLOWING
 	GLfloat time; // for warping surfaces like water & possibly other things
 	GLfloat alpha; // for translucent surfaces (water, glass, ..)
 	GLfloat overbrightbits; // gl3_overbrightbits, applied to lightmaps (and elsewhere to models)
 	GLfloat particleFadeFactor; // gl3_particle_fade_factor, higher => less fading out towards edges
 
 	GLfloat lightScaleForTurb; // surfaces with SURF_DRAWTURB (water, lava) don't have lightmaps, use this instead
-		GLfloat _padding[2]; // again, some padding to ensure this has right size
+	GLfloat _padding; // again, some padding to ensure this has right size, round up to 16 bytes?
 } gl3Uni3D_t;
 
 extern const hmm_mat4 gl3_identityMat4;
@@ -393,6 +394,7 @@ extern qboolean GL3_IsVsyncActive(void);
 extern void GL3_EndFrame(void);
 extern void GL3_SetVsync(void);
 extern void GL3_ShutdownContext(void);
+extern int GL3_GetSDLVersion(void);
 
 // gl3_misc.c
 extern void GL3_InitParticleTexture(void);
@@ -461,8 +463,7 @@ extern void GL3_BuildLightMap(msurface_t *surf, int offsetInLMbuf, int stride);
 extern void LM_InitBlock(void);
 extern void LM_UploadBlock(void);
 extern qboolean LM_AllocBlock(int w, int h, int *x, int *y);
-extern void LM_BuildPolygonFromSurface(gl3model_t *currentmodel, msurface_t *fa);
-extern void LM_CreateSurfaceLightmap(msurface_t *surf);
+extern void LM_CreateLightmapsPoligon(gl3model_t *currentmodel, msurface_t *fa);
 extern void LM_BeginBuildingLightmaps(gl3model_t *m);
 extern void LM_EndBuildingLightmaps(void);
 
@@ -505,9 +506,9 @@ extern void GL3_UpdateUBOLights(void);
 // ############ Cvars ###########
 
 extern cvar_t *gl_msaa_samples;
+extern cvar_t *gl_version_override;
 extern cvar_t *r_vsync;
 extern cvar_t *r_retexturing;
-extern cvar_t *r_maptype;
 extern cvar_t *r_scale8bittextures;
 extern cvar_t *vid_fullscreen;
 extern cvar_t *r_mode;

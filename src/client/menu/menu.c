@@ -2274,8 +2274,7 @@ EnableOGGMusic(void *unused)
 
 		if (cls.state == ca_active)
 		{
-			int track = (int)strtol(cl.configstrings[CS_CDTRACK], (char **)NULL, 10);
-			OGG_PlayTrack(track, true, true);
+			OGG_PlayTrack(cl.configstrings[CS_CDTRACK], true, true);
 		}
 	}
 	else
@@ -5732,6 +5731,7 @@ PlayerModelList(void)
 
 		if (ContainsFile(s, "tris.fm") == false &&
 			ContainsFile(s, "tris.dkm") == false &&
+			ContainsFile(s, "tris.def") == false &&
 			ContainsFile(s, "tris.md2") == false &&
 			ContainsFile(s, "tris.md3") == false &&
 			ContainsFile(s, "tris.md5mesh") == false &&

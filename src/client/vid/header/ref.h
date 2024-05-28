@@ -168,7 +168,7 @@ typedef enum {
 } ref_restart_t;
 
 // FIXME: bump API_VERSION?
-#define	API_VERSION		3
+#define	API_VERSION		7
 #define EXPORT
 #define IMPORT
 
@@ -179,6 +179,11 @@ typedef struct
 {
 	// if api_version is different, the dll cannot be used
 	int		api_version;
+
+	// if framework_version is different, the dll cannot be used
+	// necessary because differend SDL major version cannot be
+	// mixed.
+	int		framework_version;
 
 	// called when the library is loaded
 	qboolean (EXPORT *Init) (void);
@@ -296,6 +301,9 @@ typedef struct
 	qboolean	(IMPORT *GLimp_GetDesktopMode)(int *pwidth, int *pheight);
 
 	void		(IMPORT *Vid_RequestRestart)(ref_restart_t rs);
+
+	/* Rerelease: Get file from cache/converted */
+	int (IMPORT *Mod_LoadFile)(const char *path, void **buffer);
 } refimport_t;
 
 // this is the only function actually exported at the linker level

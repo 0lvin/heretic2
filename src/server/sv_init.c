@@ -132,8 +132,11 @@ static void
 SV_CheckForSavegame(qboolean isautosave)
 {
 	char name[MAX_OSPATH];
+	char savename[MAX_OSPATH];
 	FILE *f;
 	int i;
+
+	Com_DPrintf("%s()\n", __func__);
 
 	if (sv_noreload->value)
 	{
@@ -145,8 +148,12 @@ SV_CheckForSavegame(qboolean isautosave)
 		return;
 	}
 
+	strncpy(savename, sv.name, sizeof(savename));
+	savename[sizeof(savename) - 1] = 0;
+	SV_CleanLevelFileName(savename);
+
 	Com_sprintf(name, sizeof(name), "%s/save/current/%s.sav",
-			FS_Gamedir(), sv.name);
+			FS_Gamedir(), savename);
 	f = Q_fopen(name, "rb");
 
 	if (!f)
@@ -187,8 +194,10 @@ static void
 SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 		qboolean attractloop, qboolean loadgame, qboolean isautosave)
 {
-	int i;
+	const char *entity_orig;
 	unsigned checksum;
+	char *entity;
+	int i, entitysize;
 
 	if (attractloop)
 	{
@@ -281,8 +290,21 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 	sv.state = ss_loading;
 	Com_SetServerState(sv.state);
 
+	/* copy original entities string */
+	entity_orig = CM_EntityString(&entitysize);
+	if (entitysize < 0)
+	{
+		entitysize = 0;
+	}
+	entity = malloc(entitysize + 1);
+	if (entitysize)
+	{
+		memcpy(entity, entity_orig, entitysize);
+	}
+	entity[entitysize] = 0; /* jit entity bug - null terminate the entity string! */
 	/* load and spawn all other entities */
-	ge->SpawnEntities(sv.name, CM_EntityString(), spawnpoint, loadgame);
+	ge->SpawnEntities(sv.name, entity, spawnpoint, loadgame);
+	free(entity);
 
 	/* all precaches are complete */
 	sv.state = serverstate;
@@ -562,6 +584,7 @@ SV_Map(qboolean attractloop, char *levelstring, qboolean loadgame, qboolean isau
 
 	if ((l > 4) && (!strcmp(level + l - 4, ".cin") ||
 					!strcmp(level + l - 4, ".ogv") ||
+					!strcmp(level + l - 4, ".avi") ||
 					!strcmp(level + l - 4, ".roq") ||
 					!strcmp(level + l - 4, ".mpg") ||
 					!strcmp(level + l - 4, ".smk")))

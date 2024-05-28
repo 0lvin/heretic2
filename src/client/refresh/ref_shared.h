@@ -102,6 +102,8 @@ extern struct image_s* LoadM8(const char *origname, const char *namewe, imagetyp
 	loadimage_t load_image);
 extern struct image_s* LoadM32(const char *origname, const char *namewe, imagetype_t type,
 	loadimage_t load_image);
+extern struct image_s* LoadSWL(const char *origname, const char *namewe, imagetype_t type,
+	loadimage_t load_image);
 extern void FixFileExt(const char *origname, const char *ext, char *filename, size_t size);
 extern void GetPCXPalette(byte **colormap, unsigned *d_8to24table);
 extern void GetPCXPalette24to8(const byte *d_8to24table, byte** d_16to8table);
@@ -110,6 +112,7 @@ extern void GetPCXInfo(const char *origname, int *width, int *height);
 extern void GetWalInfo(const char *name, int *width, int *height);
 extern void GetM8Info(const char *name, int *width, int *height);
 extern void GetM32Info(const char *name, int *width, int *height);
+extern void GetSWLInfo(const char *name, int *width, int *height);
 
 extern qboolean LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *height);
 extern qboolean ResizeSTB(const byte *input_pixels, int input_width, int input_height,
@@ -265,6 +268,7 @@ typedef struct msurface_s
 	/* lighting info */
 	int	dlightframe;
 	int	dlightbits;
+	qboolean dirty_lightmap;	// lightmap has dynamic lights from previous frame (mtex only)
 
 	int	lightmaptexturenum;
 	byte	styles[MAXLIGHTMAPS];
@@ -324,10 +328,12 @@ typedef struct
 } bspxlightgrid_t;
 
 /* Shared models func */
+typedef char* (*readfile_t)(const char *name, int *size);
 typedef struct image_s* (*findimage_t)(const char *name, imagetype_t type);
 extern void *Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,
-	findimage_t find_image, loadimage_t load_image, modtype_t *type);
+	findimage_t find_image, loadimage_t load_image, readfile_t read_file,
+	modtype_t *type);
 extern int Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image,
 	loadimage_t load_image, void *extradata, modtype_t type);
 extern struct image_s *GetSkyImage(const char *skyname, const char* surfname,
@@ -338,15 +344,15 @@ extern struct image_s *R_LoadImage(const char *name, const char* namewe, const c
 	imagetype_t type, qboolean r_retexturing, loadimage_t load_image);
 extern void Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces,
 	unsigned int *nummarksurfaces, msurface_t *surfaces, int numsurfaces,
-	const byte *mod_base, const lump_t *l, int ident);
+	const byte *mod_base, const lump_t *lMod_LoadQBSPMarksurfaces);
 extern void Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes,
 	mleaf_t *leafs, int numleafs, mnode_t **nodes, int *numnodes,
 	const byte *mod_base, const lump_t *l, int ident);
 extern void Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 	msurface_t **marksurfaces, unsigned int nummarksurfaces,
-	const byte *mod_base, const lump_t *l, int ident);
+	const byte *mod_base, const lump_t *l);
 extern void Mod_LoadQBSPEdges(const char *name, medge_t **edges, int *numedges,
-	const byte *mod_base, const lump_t *l, int ident);
+	const byte *mod_base, const lump_t *l);
 extern void Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,
 	const byte *mod_base, const lump_t *l);
 extern void Mod_LoadLighting(byte **lightdata, int *size, const byte *mod_base, const lump_t *l);
@@ -356,15 +362,17 @@ extern void Mod_CalcSurfaceExtents(const int *surfedges, mvertex_t *vertexes,
 	medge_t *edges, msurface_t *s);
 extern void Mod_LoadTexinfo(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
 	const byte *mod_base, const lump_t *l, findimage_t find_image,
-	struct image_s *notexture, maptype_t maptype);
+	struct image_s *notexture);
 extern void Mod_LoadSurfedges(const char *name, int **surfedges, int *numsurfedges,
 	const byte *mod_base, const lump_t *l);
 extern mleaf_t *Mod_PointInLeaf(const vec3_t p, mnode_t *node);
 extern const void *Mod_LoadBSPXFindLump(const bspx_header_t *bspx_header,
 	const char *lumpname, int *plumpsize, const byte *mod_base);
-extern const bspx_header_t *Mod_LoadBSPX(int filesize, const byte *mod_base);
+extern const bspx_header_t *Mod_LoadBSPX(int filesize, const byte *mod_base,
+	maptype_t maptype);
 extern int Mod_LoadBSPXDecoupledLM(const dlminfo_t* lminfos, int surfnum, msurface_t *out);
-extern int Mod_LoadFile(const char *name, void **buffer);
+extern int Mod_CalcNonModelLumpHunkSize(const byte *mod_base, const dheader_t *header,
+	maptype_t maptype);
 
 /* Surface logic */
 #define DLIGHT_CUTOFF 64
@@ -397,7 +405,7 @@ extern bspxlightgrid_t *Mod_LoadBSPXLightGrid(const bspx_header_t *bspx_header, 
 extern void R_LightPoint(const bspxlightgrid_t *grid, const entity_t *currententity, refdef_t *refdef, const msurface_t *surfaces,
 	const mnode_t *nodes, vec3_t p, vec3_t color, float modulate, vec3_t lightspot);
 extern void R_SetCacheState(msurface_t *surf, const refdef_t *r_newrefdef);
-extern void R_BuildLightMap(const msurface_t *surf, byte *dest, int stride, const byte *destmax,
+extern void R_BuildLightMap(const msurface_t *surf, byte *dest, int stride,
 	const refdef_t *r_newrefdef, float modulate, int r_framecount);
 extern void R_InitTemporaryLMBuffer(void);
 extern void R_FreeTemporaryLMBuffer(void);
@@ -411,5 +419,10 @@ extern void R_AddSkySurface(msurface_t *fa,
 extern void R_ClearSkyBox(float skymins[2][6], float skymaxs[2][6]);
 extern void R_MakeSkyVec(float s, float t, int axis, mvtx_t* vert,
 	qboolean farsee, float sky_min, float sky_max);
+extern void R_FlowingScroll(const refdef_t *r_newrefdef, int flags,
+	float *sscroll, float *tscroll);
+
+/* GL only code */
+extern const char* glshader_version(int major_version, int minor_version);
 
 #endif /* SRC_CLIENT_REFRESH_REF_SHARED_H_ */

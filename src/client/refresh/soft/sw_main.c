@@ -22,8 +22,12 @@
 #include <stdint.h>
 #include <limits.h>
 
+#ifdef USE_SDL3
+#include <SDL3/SDL.h>
+#else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
+#endif
 
 #include "header/local.h"
 
@@ -148,7 +152,6 @@ cvar_t	*sw_custom_particles;
 static cvar_t	*sw_anisotropic;
 cvar_t	*sw_texture_filtering;
 cvar_t	*r_retexturing;
-cvar_t	*r_maptype;
 cvar_t	*r_scale8bittextures;
 cvar_t	*sw_gunzposition;
 cvar_t	*r_validation;
@@ -383,7 +386,6 @@ R_RegisterVariables (void)
 	sw_texture_filtering = ri.Cvar_Get("sw_texture_filtering", "0", CVAR_ARCHIVE);
 	sw_anisotropic = ri.Cvar_Get("r_anisotropic", "0", CVAR_ARCHIVE);
 	r_retexturing = ri.Cvar_Get("r_retexturing", "1", CVAR_ARCHIVE);
-	r_maptype = ri.Cvar_Get("maptype", "1", CVAR_ARCHIVE);
 	r_scale8bittextures = ri.Cvar_Get("r_scale8bittextures", "0", CVAR_ARCHIVE);
 	sw_gunzposition = ri.Cvar_Get("sw_gunzposition", "8", CVAR_ARCHIVE);
 	r_validation = ri.Cvar_Get("r_validation", "0", CVAR_ARCHIVE);
@@ -588,10 +590,7 @@ R_ReallocateMapBuffers (void)
 
 	if (!r_numallocatedlights || r_outoflights)
 	{
-		if (!blocklights)
-		{
-			free(blocklights);
-		}
+		free(blocklights);
 
 		if (r_outoflights)
 		{
@@ -618,10 +617,7 @@ R_ReallocateMapBuffers (void)
 
 	if (!r_numallocatededges || r_outofedges)
 	{
-		if (!r_edges)
-		{
-			free(r_edges);
-		}
+		free(r_edges);
 
 		if (r_outofedges)
 		{
@@ -690,8 +686,11 @@ R_ReallocateMapBuffers (void)
 			r_outoftriangles = false;
 		}
 
-		if (r_numallocatedtriangles < vid.height)
-			r_numallocatedtriangles = vid.height;
+		// one more for the terminator
+		if (r_numallocatedtriangles < vid.height + 1)
+		{
+			r_numallocatedtriangles = vid.height + 1;
+		}
 
 		triangle_spans  = malloc(r_numallocatedtriangles * sizeof(spanpackage_t));
 		if (!triangle_spans)
@@ -702,7 +701,7 @@ R_ReallocateMapBuffers (void)
 		}
 		triangles_max = &triangle_spans[r_numallocatedtriangles];
 
-		R_Printf(PRINT_ALL, "Allocated %d triangles.\n", r_numallocatedtriangles);
+		R_Printf(PRINT_ALL, "Allocated %d triangle spans.\n", r_numallocatedtriangles);
 	}
 
 	if (!r_numallocatededgebasespans || r_outedgebasespans)
@@ -1805,10 +1804,19 @@ GetRefAPI(refimport_t imp)
 	// used different variable name for prevent confusion and cppcheck warnings
 	refexport_t	refexport;
 
+	// Need to communicate the SDL major version to the client.
+#ifdef USE_SDL3
+	SDL_Version ver;
+#else
+	SDL_version ver;
+#endif
+	SDL_VERSION(&ver);
+
 	memset(&refexport, 0, sizeof(refexport_t));
 	ri = imp;
 
 	refexport.api_version = API_VERSION;
+	refexport.framework_version = ver.major;
 
 	refexport.BeginRegistration = RE_BeginRegistration;
 	refexport.RegisterModel = RE_RegisterModel;
@@ -1893,11 +1901,19 @@ RE_InitContext(void *win)
 
 	if (r_vsync->value)
 	{
+#ifdef USE_SDL3
+		renderer = SDL_CreateRenderer(window, NULL, SDL_RENDERER_PRESENTVSYNC);
+#else
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+#endif
 	}
 	else
 	{
+#ifdef USE_SDL3
+		renderer = SDL_CreateRenderer(window, NULL, 0);
+#else
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+#endif
 	}
 
 	/* Select the color for drawing. It is set to black here. */
@@ -1913,7 +1929,11 @@ RE_InitContext(void *win)
 #if SDL_VERSION_ATLEAST(2, 26, 0)
 	// Figure out if we are high dpi aware.
 	int flags = SDL_GetWindowFlags(win);
+#ifdef USE_SDL3
+	IsHighDPIaware = (flags & SDL_WINDOW_HIGH_PIXEL_DENSITY) ? true : false;
+#else
 	IsHighDPIaware = (flags & SDL_WINDOW_ALLOW_HIGHDPI) ? true : false;
+#endif
 #endif
 
 	/* We can't rely on vid, because the context is created
@@ -1952,7 +1972,11 @@ RE_InitContext(void *win)
  */
 void RE_GetDrawableSize(int* width, int* height)
 {
+#ifdef USE_SDL3
+	SDL_GetCurrentRenderOutputSize(renderer, width, height);
+#else
 	SDL_GetRendererOutputSize(renderer, width, height);
+#endif
 }
 
 
@@ -2228,7 +2252,12 @@ RE_FlushFrame(int vmin, int vmax)
 
 	SDL_UnlockTexture(texture);
 
+#ifdef USE_SDL3
+	SDL_RenderTexture(renderer, texture, NULL, NULL);
+#else
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
+#endif
+
 	SDL_RenderPresent(renderer);
 
 	// replace use next buffer

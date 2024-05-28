@@ -29,25 +29,35 @@
 
 /* The .dat files are just a linear collapse of a directory tree */
 
-#define IDDATHEADER (('T' << 24) + ('A' << 16) + ('D' << 8) + 'A')
-#define IDDATVERSION 9
+#define DATHEADER (('T' << 24) + ('A' << 16) + ('D' << 8) + 'A')
+#define DATVERSION 9
 
 typedef struct
 {
 	char name[128];
 	int filepos;
 	int filelen;
-	int compressedlen;
+	int compressed_size;
 	int checksum;
 } ddatfile_t;
 
 typedef struct
 {
-	int ident; /* == IDDATHEADER */
+	int ident; /* == DATHEADER */
 	int dirofs;
 	int dirlen;
 	int version; /* == IDPAKVERSION */
 } ddatheader_t;
+
+/* The .sin files are just a linear collapse of a directory tree */
+
+#define SINHEADER (('K' << 24) + ('A' << 16) + ('P' << 8) + 'S')
+
+typedef struct
+{
+	char name[120];
+	int filepos, filelen;
+} dsinfile_t;
 
 /* The .pak files are just a linear collapse of a directory tree */
 
@@ -58,6 +68,12 @@ typedef struct
 	char name[56];
 	int filepos, filelen;
 } dpackfile_t;
+
+typedef struct
+{
+	char name[56];
+	int filepos, filelen, compressed_size, is_compressed;
+} dpackdkfile_t;
 
 typedef struct
 {
@@ -572,13 +588,40 @@ typedef struct {
 	int value;
 } dkmtex_t;
 
+/* .SWL SiN texture file format */
+
+#define SIN_PALETTE_SIZE 256 * 4
+
+typedef struct
+{
+	char name[64];
+	int width, height;
+	byte palette[SIN_PALETTE_SIZE];
+	short palcrc;
+	int offsets[MIPLEVELS];		// four mip maps stored
+	char animname[64];			// next frame in animation chain
+	int flags;
+	int contents;
+	short value;
+	short direct;
+	float animtime;
+	float nonlit;
+	short directangle;
+	short trans_angle;
+	float directstyle;
+	float translucence;
+	float friction;
+	float restitution;
+	float trans_mag;
+	float color[3];
+} sinmiptex_t;
+
 /* .BSP file format */
 
 #define IDBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'I') /* little-endian "IBSP" */
 #define QBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'Q') /* little-endian "QBSP" */
 #define BSPXHEADER (('X' << 24) + ('P' << 16) + ('S' << 8) + 'B') /* little-endian "BSPX" */
 #define BSPVERSION 38
-#define BSPDKMVERSION 41
 
 /* upper design bounds: leaffaces, leafbrushes, planes, and
  * verts are still bounded by 16 bit short limits,
@@ -696,14 +739,15 @@ typedef struct
 
 /* lower bits are stronger, and will eat weaker brushes completely */
 #define	CONTENTS_EMPTY			0x00000000	// nothing
-#define	CONTENTS_SOLID			0x00000001	// An eye is never valid in a solid.
-#define	CONTENTS_WINDOW			0x00000002	// Translucent, but not watery.
+#define CONTENTS_SOLID 1  /* an eye is never valid in a solid */
+#define CONTENTS_WINDOW 2 /* translucent, but not watery */
 #define	CONTENTS_ILLUSIONARY	0x00000004  // Was CONTENTS_AUX.
-#define	CONTENTS_LAVA			0x00000008
-#define	CONTENTS_SLIME			0x00000010
-#define	CONTENTS_WATER			0x00000020
-#define	CONTENTS_MIST			0x00000040
-#define	LAST_VISIBLE_CONTENTS	CONTENTS_MIST
+#define CONTENTS_AUX 4
+#define CONTENTS_LAVA 8
+#define CONTENTS_SLIME 16
+#define CONTENTS_WATER 32
+#define CONTENTS_MIST 64
+#define LAST_VISIBLE_CONTENTS 64
 
 /* remaining contents are non-visible, and don't eat brushes */
 #define CONTENTS_AREAPORTAL 0x8000
@@ -770,7 +814,7 @@ typedef struct
 	unsigned int numfaces; /* counting both sides */
 } dqnode_t;
 
-typedef struct texinfo_s
+typedef struct
 {
 	float vecs[2][4]; /* [s/t][xyz offset] */
 	int flags;        /* miptex flags + overrides light emission, etc */
@@ -778,6 +822,16 @@ typedef struct texinfo_s
 	char texture[32]; /* texture name (textures*.wal) */
 	int nexttexinfo;  /* for animations, -1 = end of chain */
 } texinfo_t;
+
+/* custom extended textinfo */
+typedef struct
+{
+	float vecs[2][4]; /* [s/t][xyz offset] */
+	int flags;        /* miptex flags + overrides light emission, etc */
+	int value;        /* used with some flags, unused in Quake2 */
+	char texture[64]; /* texture name (textures*.wal) */
+	int nexttexinfo;  /* for animations, -1 = end of chain */
+} xtexinfo_t;
 
 /* note that edge 0 is never used, because negative edge
    nums are used for counterclockwise use of the edge in
@@ -828,6 +882,7 @@ typedef struct {
 	float	vecs[2][4];
 } dlminfo_t;
 
+/* Quake2 Leafs struct */
 typedef struct
 {
 	int contents; /* OR of all brushes (not needed?) */
@@ -876,8 +931,8 @@ typedef struct
 
 typedef struct
 {
-	int firstside;
-	int numsides;
+	unsigned int firstside;
+	unsigned int numsides;
 	int contents;
 } dbrush_t;
 
@@ -909,6 +964,133 @@ typedef struct
 	int numareaportals;
 	int firstareaportal;
 } darea_t;
+
+/* Daikatana */
+#define BSPDKMVERSION 41
+#define HEADER_DKLUMPS 21
+
+/* Leafs struct */
+typedef struct
+{
+	int contents; /* OR of all brushes (not needed?) */
+
+	short cluster;
+	short area;
+
+	short mins[3]; /* for frustum culling */
+	short maxs[3];
+
+	unsigned short firstleafface;
+	unsigned short numleaffaces;
+
+	unsigned short firstleafbrush;
+	unsigned short numleafbrushes;
+
+	int unknow; /* some unused additional field */
+} ddkleaf_t;
+
+/* SiN structures */
+#define RBSPHEADER (('P' << 24) + ('S' << 16) + ('B' << 8) + 'R') /* little-endian "RBSP" */
+#define BSPSINVERSION 1
+
+typedef struct texsininfo_s
+{
+	float vecs[2][4]; /* [s/t][xyz offset] */
+	int flags;        /* miptex flags + overrides light emission, etc */
+	char texture[64]; /* texture name (textures*.wal) */
+	int nexttexinfo;  /* for animations, -1 = end of chain */
+	char unknown[76]; /* no idea what is it */
+} texrinfo_t;
+
+#define MAXSINLIGHTMAPS 16
+typedef struct
+{
+	unsigned short planenum;
+	short side;
+
+	int firstedge; /* we must support > 64k edges */
+	short numedges;
+	short texinfo;
+
+	/* lighting info */
+	byte styles[MAXSINLIGHTMAPS];
+	int lightofs; /* start of [numstyles*surfsize] samples */
+	int unknown;  /* no idea what is it */
+} drface_t;
+
+typedef struct
+{
+	unsigned short planenum; /* facing out of the leaf */
+	short texinfo;
+	int unknown;  /* no idea what is it */
+} drbrushside_t;
+
+#define SDEFHEADER (('F' << 24) + ('E' << 16) + ('D' << 8) + 'S') /* little-endian "SDEF" */
+#define SBMHEADER ((' ' << 24) + ('M' << 16) + ('B' << 8) + 'S') /* little-endian "SBM " */
+#define SAMHEADER ((' ' << 24) + ('M' << 16) + ('A' << 8) + 'S') /* little-endian "SAM " */
+#define MDSINVERSION 1
+
+typedef struct
+{
+	float s,t;
+} st_vert_t;
+
+typedef struct
+{
+	short index_xyz[3];
+	short index_st[3];
+	int id;
+} sin_triangle_t;
+
+typedef struct
+{
+	int id;
+	int num_tris;
+	int num_glcmds;		// dwords in strip/fan command list
+	int ofs_glcmds;
+	int ofs_tris;
+	int ofs_end;
+} sin_trigroup_t;
+
+typedef struct
+{
+	int ident;
+	int version;
+
+	int num_xyz;
+	int num_st;			// greater than num_xyz for seams
+	int num_groups;		// groups should be exactly after it as sin_trigroup_t
+
+	int ofs_st;			// byte offset from start for stverts
+	int ofs_end;		// end of file
+} sin_sbm_header_t;
+
+typedef struct
+{
+	float movedelta[3]; // used for driving the model around
+	float frametime;
+	float scale[3];	// multiply byte verts by this
+	float translate[3];	// then add this
+	int ofs_verts;
+} sin_frame_t;
+
+typedef struct
+{
+	int ident;
+	int version;
+	char name[64];
+	float scale[3]; // multiply byte verts by this
+	float translate[3]; // then add this
+	float totaldelta[3]; // total displacement of this animation
+	float totaltime;
+	int num_xyz;
+	int num_frames;
+	int ofs_frames;
+	int ofs_end; // end of file
+} sin_sam_header_t;
+
+/* Quake 1 BSP */
+#define BSPQ1VERSION 29
 
 #endif
 

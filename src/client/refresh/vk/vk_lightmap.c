@@ -116,12 +116,12 @@ LM_AllocBlock(int w, int h, int *x, int *y)
 	return true;
 }
 
-void
+static void
 LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa)
 {
-	int i, lnumverts;
 	medge_t *pedges, *r_pedge;
-	float *vec;
+	int i, lnumverts;
+	const float *vec;
 	mpoly_t *poly;
 	vec3_t total;
 	vec3_t normal;
@@ -146,7 +146,10 @@ LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa)
 	{
 		// if for some reason the normal sticks to the back of the plane, invert it
 		// so it's usable for the shader
-		for (i=0; i<3; ++i)  normal[i] = -normal[i];
+		for (i=0; i<3; ++i)
+		{
+			normal[i] = -normal[i];
+		}
 	}
 
 	for (i = 0; i < lnumverts; i++)
@@ -176,6 +179,12 @@ LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa)
 		t = DotProduct(vec, fa->texinfo->vecs[1]) + fa->texinfo->vecs[1][3];
 		t /= fa->texinfo->image->height;
 
+		if (fa->texinfo->flags & SURF_N64_UV)
+		{
+			s *= 0.5;
+			t *= 0.5;
+		}
+
 		VectorAdd(total, vec, total);
 		VectorCopy(vec, vert->pos);
 		vert->texCoord[0] = s;
@@ -202,7 +211,7 @@ LM_BuildPolygonFromSurface(model_t *currentmodel, msurface_t *fa)
 	}
 }
 
-void
+static void
 LM_CreateSurfaceLightmap(msurface_t *surf)
 {
 	int smax, tmax;
@@ -236,8 +245,22 @@ LM_CreateSurfaceLightmap(msurface_t *surf)
 
 	R_SetCacheState(surf, &r_newrefdef);
 	R_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES,
-		vk_lms.lightmap_buffer + sizeof(vk_lms.lightmap_buffer),
 		&r_newrefdef, r_modulate->value, r_framecount);
+}
+
+void
+LM_CreateLightmapsPoligon(model_t *currentmodel, msurface_t *fa)
+{
+	/* create lightmaps and polygons */
+	if (!(fa->texinfo->flags & (SURF_SKY | SURF_TRANSPARENT | SURF_WARP)))
+	{
+		LM_CreateSurfaceLightmap(fa);
+	}
+
+	if (!(fa->texinfo->flags & SURF_WARP))
+	{
+		LM_BuildPolygonFromSurface(currentmodel, fa);
+	}
 }
 
 void

@@ -29,7 +29,11 @@
 
 #include "header/local.h"
 
+#ifdef USE_SDL3
+#include <SDL3/SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 
 static SDL_Window* window = NULL;
 static SDL_GLContext context = NULL;
@@ -149,7 +153,20 @@ void GL4_SetVsync(void)
 		}
 	}
 
+#ifdef USE_SDL3
+	int vsyncState;
+       if (SDL_GL_GetSwapInterval(&vsyncState) != 0)
+       {
+               R_Printf(PRINT_ALL, "Failed to get vsync state, assuming vsync inactive.\n");
+               vsyncActive = false;
+       }
+       else
+       {
+               vsyncActive = vsyncState ? true : false;
+       }
+#else
 	vsyncActive = SDL_GL_GetSwapInterval() != 0;
+#endif
 }
 
 /*
@@ -215,8 +232,16 @@ int GL4_PrepareForWindow(void)
 		gl4config.stencil = false;
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+	if (gl_version_override->value)
+	{
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, gl_version_override->value);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	}
+	else
+	{
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+	}
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	// Set GL context flags.
@@ -278,7 +303,8 @@ int GL4_InitContext(void* win)
 	// Coders are stupid.
 	if (win == NULL)
 	{
-		Com_Error(ERR_FATAL, "R_InitContext() must not be called with NULL argument!");
+		Com_Error(ERR_FATAL, "%s() must not be called with NULL argument!",
+			__func__);
 
 		return false;
 	}
@@ -290,7 +316,8 @@ int GL4_InitContext(void* win)
 
 	if(context == NULL)
 	{
-		R_Printf(PRINT_ALL, "GL4_InitContext(): Creating OpenGL Context failed: %s\n", SDL_GetError());
+		R_Printf(PRINT_ALL, "%s(): Creating OpenGL Context failed: %s\n",
+			__func__, SDL_GetError());
 
 		window = NULL;
 
@@ -323,17 +350,30 @@ int GL4_InitContext(void* win)
 	GL4_SetVsync();
 
 	// Load GL pointrs through GLAD and check context.
-	if( !gladLoadGLLoader(SDL_GL_GetProcAddress))
+	if( !gladLoadGLLoader((void *)SDL_GL_GetProcAddress))
 	{
-		R_Printf(PRINT_ALL, "GL4_InitContext(): ERROR: loading OpenGL function pointers failed!\n");
+		R_Printf(PRINT_ALL, "%s(): ERROR: loading OpenGL function pointers failed!\n",
+			__func__);
 
 		return false;
 	}
 	else if (GLVersion.major < 4 || (GLVersion.major == 4 && GLVersion.minor < 6))
 	{
-		R_Printf(PRINT_ALL, "GL4_InitContext(): ERROR: glad only got GL version %d.%d!\n", GLVersion.major, GLVersion.minor);
+		if ((!gl_version_override->value) ||
+			(GLVersion.major < gl_version_override->value))
+		{
+			R_Printf(PRINT_ALL, "%s(): ERROR: glad only got GL version %d.%d!\n",
+				__func__, GLVersion.major, GLVersion.minor);
 
-		return false;
+			return false;
+		}
+		else
+		{
+			R_Printf(PRINT_ALL, "%s(): Warning: glad only got GL version %d.%d.\n"
+				"Some functionality could be broken.\n",
+				__func__, GLVersion.major, GLVersion.minor);
+
+		}
 	}
 	else
 	{
@@ -361,7 +401,11 @@ int GL4_InitContext(void* win)
 #if SDL_VERSION_ATLEAST(2, 26, 0)
 	// Figure out if we are high dpi aware.
 	int flags = SDL_GetWindowFlags(win);
+#ifdef USE_SDL3
+	IsHighDPIaware = (flags & SDL_WINDOW_HIGH_PIXEL_DENSITY) ? true : false;
+#else
 	IsHighDPIaware = (flags & SDL_WINDOW_ALLOW_HIGHDPI) ? true : false;
+#endif
 #endif
 
 	return true;
@@ -372,7 +416,11 @@ int GL4_InitContext(void* win)
  */
 void GL4_GetDrawableSize(int* width, int* height)
 {
+#ifdef USE_SDL3
+	SDL_GetWindowSizeInPixels(window, width, height);
+#else
 	SDL_GL_GetDrawableSize(window, width, height);
+#endif
 }
 
 /*
@@ -388,4 +436,22 @@ void GL4_ShutdownContext()
 			context = NULL;
 		}
 	}
+}
+
+/*
+ * Returns the SDL major version. Implemented
+ * here to not polute gl3_main.c with the SDL
+ * headers.
+ */
+int GL4_GetSDLVersion()
+{
+#ifdef USE_SDL3
+	SDL_Version ver;
+#else
+	SDL_version ver;
+#endif
+
+	SDL_VERSION(&ver);
+
+	return ver.major;
 }

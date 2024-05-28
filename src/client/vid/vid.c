@@ -439,6 +439,7 @@ VID_LoadRenderer(void)
 	ri.FS_Gamedir = FS_Gamedir;
 	ri.FS_LoadFile = FS_LoadFile;
 	ri.FS_AllocFile = Z_Malloc;
+	ri.Mod_LoadFile = Mod_LoadFile;
 	ri.GLimp_InitGraphics = GLimp_InitGraphics;
 	ri.GLimp_GetDesktopMode = GLimp_GetDesktopMode;
 	ri.Sys_Error = Com_Error;
@@ -456,9 +457,17 @@ VID_LoadRenderer(void)
 	// Let's check if we've got a compatible renderer.
 	if (re.api_version != API_VERSION)
 	{
+		Com_Printf("%s has incompatible api_version %d!\n", reflib_name, re.api_version);
+
 		VID_ShutdownRenderer();
 
-		Com_Printf("%s has incompatible api_version %d!\n", reflib_name, re.api_version);
+		return false;
+	}
+	else if (re.framework_version != GLimp_GetFrameworkVersion())
+	{
+		Com_Printf("%s has incompatible sdl_version %d!\n", reflib_name, re.framework_version);
+
+		VID_ShutdownRenderer();
 
 		return false;
 	}
@@ -525,8 +534,9 @@ VID_CheckChanges(void)
 		// Mkay, let's try our luck.
 		while (!VID_LoadRenderer())
 		{
-			// We try: custom -> gl3 -> gl1 -> soft.
+			// We try: custom -> gl3 -> gles3 -> gl1 -> soft.
 			if ((strcmp(vid_renderer->string, "gl3") != 0) &&
+				(strcmp(vid_renderer->string, "gles3") != 0) &&
 				(strcmp(vid_renderer->string, "gl1") != 0) &&
 				(strcmp(vid_renderer->string, "soft") != 0))
 			{
@@ -534,6 +544,11 @@ VID_CheckChanges(void)
 				Cvar_Set("vid_renderer", "gl3");
 			}
 			else if (strcmp(vid_renderer->string, "gl3") == 0)
+			{
+				Com_Printf("Retrying with gles3...\n");
+				Cvar_Set("vid_renderer", "gles3");
+			}
+			else if (strcmp(vid_renderer->string, "gles3") == 0)
 			{
 				Com_Printf("Retrying with gl1...\n");
 				Cvar_Set("vid_renderer", "gl1");
@@ -569,7 +584,7 @@ VID_Init(void)
 	// Console variables
 	vid_gamma = Cvar_Get("vid_gamma", "1.0", CVAR_ARCHIVE);
 	vid_fullscreen = Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
-	vid_renderer = Cvar_Get("vid_renderer", "gl1", CVAR_ARCHIVE);
+	vid_renderer = Cvar_Get("vid_renderer", "gl3", CVAR_ARCHIVE);
 
 	// Commands
 	Cmd_AddCommand("vid_restart", VID_Restart_f);

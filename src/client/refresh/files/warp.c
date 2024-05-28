@@ -380,3 +380,62 @@ R_MakeSkyVec(float s, float t, int axis, mvtx_t* vert, qboolean farsee,
 
 	vert->lmTexCoord[0] = vert->lmTexCoord[1] = 0.0f;
 }
+
+void
+R_FlowingScroll(const refdef_t *r_newrefdef, int flags, float *sscroll, float *tscroll)
+{
+	float multiply = 0.0;
+
+	*sscroll = 0;
+	*tscroll = 0;
+
+	if (flags & SURF_DRAWTURB)
+	{
+		if (flags & SURF_FLOWING)
+		{
+			multiply = 0.5; // mod 2
+		}
+	}
+	else if (flags & SURF_FLOWING)
+	{
+		if (flags & SURF_WARP)
+		{
+			multiply = 0.25; // mod 4
+		}
+		else
+		{
+			multiply = 0.025; // mod 40
+		}
+	}
+	else if (flags & (SURF_N64_SCROLL_X | SURF_N64_SCROLL_Y))
+	{
+		multiply = 0.0125; // mod 80
+	}
+
+	if (flags & (SURF_DRAWTURB | SURF_FLOWING | SURF_N64_SCROLL_X))
+	{
+		*sscroll = -64.0f * ((r_newrefdef->time * multiply) - (int)(r_newrefdef->time * multiply));
+	}
+
+	if (flags & SURF_N64_SCROLL_Y)
+	{
+		*tscroll = -64.0f * ((r_newrefdef->time * multiply) - (int)(r_newrefdef->time * multiply));
+	}
+
+	/* Opposite direction with SCROLL_X|Y ?, check at -1714 -824 238 q64/outpost */
+	if (!(flags & SURF_N64_SCROLL_FLIP) && (flags & (SURF_N64_SCROLL_Y | SURF_N64_SCROLL_X)))
+	{
+		*sscroll = -64 - *sscroll;
+		*tscroll = -64 - *tscroll;
+	}
+
+	if (*sscroll >= 0.0)
+	{
+		*sscroll = -64.0;
+	}
+
+	if (*tscroll >= 0.0)
+	{
+		*tscroll = -64.0;
+	}
+}

@@ -238,6 +238,7 @@ void SV_StartSound(vec3_t origin, edict_t *entity, int channel,
 void SV_ClientPrintf(client_t *cl, int level, const char *fmt, ...);
 void SV_BroadcastPrintf(int level, const char *fmt, ...);
 void SV_BroadcastCommand(const char *fmt, ...);
+int SV_GetRecomendedProtocol(void);
 
 void SV_Nextserver(void);
 void SV_ExecuteClientMessage(client_t *cl);
@@ -260,6 +261,7 @@ void SV_InitEdict(edict_t *e);
 void SV_WipeSavegame(char *savename);
 void SV_CopySaveGame(char *src, char *dst);
 void SV_WriteLevelFile(void);
+void SV_CleanLevelFileName(char *name);
 void SV_WriteServerFile(qboolean autosave);
 void SV_Loadgame_f(void);
 void SV_Savegame_f(void);

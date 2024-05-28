@@ -27,12 +27,10 @@
 
 #include "header/local.h"
 
-#include <SDL2/SDL.h>
-
-#if defined(__APPLE__)
-#include <OpenGL/gl.h>
+#ifdef USE_SDL3
+#include <SDL3/SDL.h>
 #else
-#include <GL/gl.h>
+#include <SDL2/SDL.h>
 #endif
 
 static SDL_Window* window = NULL;
@@ -155,7 +153,20 @@ void RI_SetVsync(void)
 		}
 	}
 
+#ifdef USE_SDL3
+	int vsyncState;
+	if (SDL_GL_GetSwapInterval(&vsyncState) != 0)
+	{
+		R_Printf(PRINT_ALL, "Failed to get vsync state, assuming vsync inactive.\n");
+		vsyncActive = false;
+	}
+	else
+	{
+		vsyncActive = vsyncState ? true : false;
+	}
+#else
 	vsyncActive = SDL_GL_GetSwapInterval() != 0;
+#endif
 }
 
 /*
@@ -164,6 +175,10 @@ void RI_SetVsync(void)
 void
 RI_UpdateGamma(void)
 {
+// TODO SDL3: Hardware gamma / gamma ramps are no longer supported with
+// SDL3. There's no replacement and sdl2-compat won't support it either.
+// See https://github.com/libsdl-org/SDL/pull/6617 for the rational.
+#ifndef USE_SDL3
 	float gamma = (vid_gamma->value);
 
 	Uint16 ramp[256];
@@ -173,6 +188,7 @@ RI_UpdateGamma(void)
 	{
 		R_Printf(PRINT_ALL, "Setting gamma failed: %s\n", SDL_GetError());
 	}
+#endif
 }
 
 /*
@@ -184,7 +200,8 @@ int RI_InitContext(void* win)
 	// Coders are stupid.
 	if (win == NULL)
 	{
-		Com_Error(ERR_FATAL, "R_InitContext() must not be called with NULL argument!");
+		Com_Error(ERR_FATAL, "%s() must not be called with NULL argument!",
+			__func__);
 
 		return false;
 	}
@@ -196,7 +213,8 @@ int RI_InitContext(void* win)
 
 	if (context == NULL)
 	{
-		R_Printf(PRINT_ALL, "R_InitContext(): Creating OpenGL Context failed: %s\n", SDL_GetError());
+		R_Printf(PRINT_ALL, "%s(): Creating OpenGL Context failed: %s\n",
+			__func__, SDL_GetError());
 
 		window = NULL;
 
@@ -209,9 +227,22 @@ int RI_InitContext(void* win)
 
 	if (gl_config.major_version < 1 || (gl_config.major_version == 1 && gl_config.minor_version < 4))
 	{
-		R_Printf(PRINT_ALL, "R_InitContext(): Got an OpenGL version %d.%d context - need (at least) 1.4!\n", gl_config.major_version, gl_config.minor_version);
+		if ((!gl_version_override->value) ||
+			(gl_config.major_version < gl_version_override->value))
+		{
+			R_Printf(PRINT_ALL, "%s(): Got an OpenGL version %d.%d context - need (at least) 1.4!\n",
+				__func__, gl_config.major_version, gl_config.minor_version);
 
-		return false;
+			return false;
+		}
+		else
+		{
+			R_Printf(PRINT_ALL, "%s(): Warning: glad only got GL version %d.%d.\n"
+				"Some functionality could be broken.\n",
+				__func__, gl_config.major_version, gl_config.minor_version);
+
+		}
+
 	}
 
 	// Check if we've got the requested MSAA.
@@ -251,7 +282,11 @@ int RI_InitContext(void* win)
 #if SDL_VERSION_ATLEAST(2, 26, 0)
 	// Figure out if we are high dpi aware.
 	int flags = SDL_GetWindowFlags(win);
+#ifdef USE_SDL3
+	IsHighDPIaware = (flags & SDL_WINDOW_HIGH_PIXEL_DENSITY) ? true : false;
+#else
 	IsHighDPIaware = (flags & SDL_WINDOW_ALLOW_HIGHDPI) ? true : false;
+#endif
 #endif
 
 	return true;
@@ -262,7 +297,11 @@ int RI_InitContext(void* win)
  */
 void RI_GetDrawableSize(int* width, int* height)
 {
+#ifdef USE_SDL3
+	SDL_GetWindowSizeInPixels(window, width, height);
+#else
 	SDL_GL_GetDrawableSize(window, width, height);
+#endif
 }
 
 /*
@@ -279,4 +318,22 @@ RI_ShutdownContext(void)
 			context = NULL;
 		}
 	}
+}
+
+/*
+ * Returns the SDL major version. Implemented
+ * here to not polute gl1_main.c with the SDL
+ * headers.
+ */
+int RI_GetSDLVersion()
+{
+#ifdef USE_SDL3
+	SDL_Version ver;
+#else
+	SDL_version ver;
+#endif
+
+	SDL_VERSION(&ver);
+
+	return ver.major;
 }

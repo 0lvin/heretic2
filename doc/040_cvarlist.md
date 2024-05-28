@@ -120,6 +120,11 @@ Set `0` by default.
 * **cl_kickangles**: If set to `0` angle kicks (weapon recoil, damage
   hits and the like) are ignored. Cheat-protected. Defaults to `1`.
 
+* **cl_laseralpha**: Controls how see-through laserbeams are.
+  The value ranges from 0.0 to 1.0, from completely invisible to
+  completely opaque. So higher value means better visibility.
+  Defaults to `0.3`.
+
 * **cl_limitsparksounds**: If set to `1` the number of sound generated
   when shooting into power screen and power shields is limited to 16.
   This works around global volume drops in some OpenAL implementations
@@ -403,12 +408,14 @@ Set `0` by default.
   has 59.95hz.
 
 * **vid_gamma**: The value used for gamma correction. Higher values look
-  brighter. The OpenGL 1.4 and software renderers use "Hardware Gamma",
-  setting the Gamma of the whole screen to this value in realtime
-  (except on MacOS where it's applied to textures on load and thus needs
-  a `vid_restart` after changing). The OpenGL 3.2 and Vulkan renderers
-  apply this to the window in realtime via shaders (on all platforms).
-  This is also set by the brightness slider in the video menu.
+  brighter. The OpenGL 3.2 OpenGL ES3 and Vulkan renderers apply this to
+  the window in realtime via shaders (on all platforms). When the game
+  is build against SDL2, the OpenGL 1.4 renderer uses "hardware gamma"
+  when available, increasing the brightness of the whole screen. On
+  MacOS the gamma is applied only at renderer start, so a `vid_restart`
+  is required. When the game is build against SDL3, the OpenGL 1.4
+  renderer doesn't support gamma. Have a look at `gl1_overbrightbits`
+  instead. This is also set by the brightness slider in the video menu.
 
 * **vid_fullscreen**: Sets the fullscreen mode. When set to `0` (the
   default) the game runs in window mode. When set to `1` the games
@@ -423,10 +430,12 @@ Set `0` by default.
   scaling factor of the underlying display. Example: The displays
   scaling factor is 1.25 and the user requests 1920x1080. The client
   will render at 1920\*1.25x1080\*1.25=2400x1350.
-  When set to `0` (the default) the client leaves the decision if the
-  window should be scaled to the underlying compositor. Scaling applied
-  by the compositor may introduce blur and sluggishness.
+  When set to `0` the client leaves the decision if the window should
+  be scaled to the underlying compositor. Scaling applied by the
+  compositor may introduce blur and sluggishness.
   Currently high dpi awareness is only supported under Wayland.
+  Defaults to `0` when build against SDL2 and to `1` when build against
+  SDL3.
 
 * **vid_maxfps**: The maximum framerate. *Note* that vsync (`r_vsync`)
   also restricts the framerate to the monitor refresh rate, so if vsync
@@ -439,9 +448,9 @@ Set `0` by default.
   game can be paused, e.g. not in multiplayer games. Defaults to `0`.
 
 * **vid_renderer**: Selects the renderer library. Possible options are
-  `gl1` (the default) for the old OpenGL 1.4 renderer, `gl3` for the
-  OpenGL 3.2 renderer, `gles3` for the OpenGL ES3 renderer
-  and `soft` for the software renderer.
+  `gl3` (the default) for the OpenGL 3.2 renderer, `gles3` for the
+  OpenGL ES3 renderer, gl1 for the original OpenGL 1.4 renderer and
+  `soft` for the software renderer.
 
 * **r_dynamic**: Enamble dynamic light in gl1 and vk renders.
 
@@ -464,12 +473,30 @@ Set `0` by default.
   Other supported values: `GL_NEAREST_MIPMAP_NEAREST`,
   `GL_NEAREST_MIPMAP_LINEAR`, `GL_LINEAR_MIPMAP_LINEAR`
 
+* **gl_version_override**: Override required by render OpenGL version,
+  should be used only for debug purpose and useful if OpenGL implementation
+  does not report required version and implements required by render extensions.
+  - `0`: check required version of OpenGL,
+  - `1`: render will try to run with OpenGL 1.0,
+  - `2`: render will try to run with OpenGL 2.0,
+  - `3`: render will try to run with OpenGL 3.0,
+  - `4`: render will try to run with OpenGL 4.0.
 
 ## Graphics (OpenGL 1.4 only)
+
+* **gl1_biglightmaps**: Enables lightmaps and scrap to use a bigger
+  texture size, which means fewer texture switches, improving
+  performance. Default is `1` (enabled). Requires a `vid_restart`.
 
 * **gl1_intensity**: Sets the color intensity. Must be a floating point
   value, at least `1.0` - default is `2.0`. Applied when textures are
   loaded, so it needs a `vid_restart`.
+
+* **gl1_multitexture**: Enables (`1`) the blending of color and light
+  textures on a single drawing pass; disabling this (`0`) does one pass
+  for color and another for light. Default is `2`, which also enables
+  texture combine mode (`GL_ARB_texture_env_combine`) when supported.
+  Requires a `vid_restart` when changed.
 
 * **gl1_overbrightbits**: Enables overbright bits, brightness scaling of
   lightmaps and models. Higher values make shadows less dark. Possible

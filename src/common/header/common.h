@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.31RR6"
+#define YQ2VERSION "8.31RR8"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -659,7 +659,7 @@ void CM_ModFreeAll(void);
 
 int CM_NumClusters(void);
 int CM_NumInlineModels(void);
-char *CM_EntityString(void);
+const char *CM_EntityString(int *size);
 
 /* creates a clipping hull for an arbitrary box */
 int CM_HeadnodeForBox(vec3_t mins, vec3_t maxs);
@@ -696,6 +696,10 @@ int CM_WriteAreaBits(byte *buffer, int area);
 qboolean CM_HeadnodeVisible(int headnode, byte *visbits);
 
 void CM_WritePortalState(FILE *f);
+int CM_LoadFile(const char *path, void **buffer);
+
+/* Shared Model load code */
+int Mod_LoadFile(const char *path, void **buffer);
 
 /* PLAYER MOVEMENT CODE */
 
