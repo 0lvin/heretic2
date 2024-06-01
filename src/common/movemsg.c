@@ -457,7 +457,7 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 	}
 
 	/* send an update */
-	bits = U_NUMBER16;
+	bits = 0;
 
 	if (to->number >= 256)
 	{

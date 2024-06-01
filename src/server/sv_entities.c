@@ -117,7 +117,7 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg,
 		if (newnum > oldnum)
 		{
 			/* the old entity isn't present in the new message */
-			bits = U_REMOVE | U_NUMBER16;
+			bits = U_REMOVE;
 
 			if (oldnum >= 256)
 			{
@@ -140,8 +140,9 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg,
 		}
 	}
 
+	/* next flags will be just single byte */
 	MSG_WriteLong(msg, 0);
-	MSG_WriteShort(msg, 0);
+	MSG_WriteByte(msg, 0);
 }
 
 static void
