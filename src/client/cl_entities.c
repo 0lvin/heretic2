@@ -692,19 +692,12 @@ CL_OffsetThirdPersonView(void)
 	float focusDist;
 	float forwardScale, sideScale;
 
-	//cl.refdef.vieworg[2] += cg.predictedPlayerState.viewheight;
-
 	VectorCopy(cl.refdef.viewangles, focusAngles);
-
-	// if dead, look at killer
-	//if (cg.predictedPlayerState.stats[STAT_HEALTH] <= 0) {
-	//	focusAngles[YAW] = cg.predictedPlayerState.stats[STAT_DEAD_YAW];
-	//	cg.refdefViewAngles[YAW] = cg.predictedPlayerState.stats[STAT_DEAD_YAW];
-	//}
 
 	if (focusAngles[PITCH] > 45) {
 		focusAngles[PITCH] = 45;        // don't go too far overhead
 	}
+
 	AngleVectors(focusAngles, forward, NULL, NULL);
 
 	VectorMA2(cl.refdef.vieworg, FOCUS_DISTANCE, forward, focusPoint);

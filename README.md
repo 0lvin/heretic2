@@ -19,9 +19,7 @@ It's on really initial steps, it could be complied ;-), it runs mostly without
 crashes. That's all what is good.
 
 Drawbacks:
-* code use diffent angles values to quake2
 * huge amount of possibly dead code
-* broken jumps
 * no menu implementations
 * no books implementations
 * code is little bit mess
@@ -29,12 +27,17 @@ Drawbacks:
 * soft,gl3,vk render has incorrect angles and no particles
 
 To check:
-* color type/paticles,
-* ANGLE_1 usage in client code,
-* different move code and noclip
-* Incorrect 16 bit frame fkag unset,
-* MAX_MODELS/MAX_SOUND define hardcode,
-* no action on button press.
+[ ] code use diffent angles values to quake2
+[ ] broken jumps
+[ ] third person code is different to quake 2
+[ ] effects protocol is different to quake 2
+[ ] progress bars has custom implementation
+[ ] color type/paticles,
+[ ] ANGLE_1 usage in client code,
+[ ] different move code and noclip
+[x] Incorrect 16 bit frame flag unset,
+[ ] MAX_MODELS/MAX_SOUND define hardcode,
+[ ] no action on button press.
 
 Minimal file set from Loki release:
 ```
