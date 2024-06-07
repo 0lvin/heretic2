@@ -129,9 +129,10 @@ Mod_LoadFrames
 Load the Quake2 md2 default format frames
 =================
 */
-static void
+static qboolean
 Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t translate)
 {
+	qboolean normalfix = true;
 	int i;
 
 	for (i=0 ; i < pheader->num_frames ; i++)
@@ -156,9 +157,19 @@ Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t transl
 		for (j=0; j < pheader->num_xyz; j ++)
 		{
 			Mod_LoadFrames_VertMD2(poutframe->verts + j, pinframe->verts[j].v);
-			poutframe->verts[j].lightnormalindex = pinframe->verts[j].lightnormalindex;
+
+			if (pinframe->verts[j].lightnormalindex)
+			{
+				/* normal is set? */
+				normalfix = false;
+			}
+
+			R_ConvertNormalMDL(pinframe->verts[j].lightnormalindex,
+				poutframe->verts[j].normal);
 		}
 	}
+
+	return normalfix;
 }
 
 /*
@@ -200,11 +211,13 @@ Mod_LoadFrames_SAM(dmdx_t *pheader, sin_sam_header_t **anims, int anim_num,
 			}
 
 			verts = (dtrivertx_t*)((char *)(pinframe + k) + pinframe[k].ofs_verts);
+
 			/* verts are all 8 bit, so no swapping needed */
 			for (j=0; j < pheader->num_xyz; j ++)
 			{
 				Mod_LoadFrames_VertMD2(poutframe->verts + j, verts[j].v);
-				poutframe->verts[j].lightnormalindex = verts[j].lightnormalindex;
+				R_ConvertNormalMDL(verts[j].lightnormalindex,
+					poutframe->verts[j].normal);
 			}
 
 			curr_frame ++;
@@ -261,7 +274,8 @@ Mod_LoadFrames_MD2Anox(dmdx_t *pheader, byte *src, size_t inframesize,
 					/* 3 bytes vert + 2 bytes */
 					inverts += 5;
 					/* norm convert logic is unknown */
-					poutframe->verts[j].lightnormalindex = 0;
+					memset(poutframe->verts[j].normal, 0,
+						sizeof(poutframe->verts[j].normal));
 				}
 				break;
 
@@ -287,7 +301,8 @@ Mod_LoadFrames_MD2Anox(dmdx_t *pheader, byte *src, size_t inframesize,
 					poutframe->verts[j].v[2] = tmp;
 
 					/* norm convert logic is unknown */
-					poutframe->verts[j].lightnormalindex = 0;
+					memset(poutframe->verts[j].normal, 0,
+						sizeof(poutframe->verts[j].normal));
 				}
 				break;
 
@@ -299,7 +314,8 @@ Mod_LoadFrames_MD2Anox(dmdx_t *pheader, byte *src, size_t inframesize,
 					/* 6 bytes vert + 2 bytes */
 					inverts += 8;
 					/* norm convert logic is unknown */
-					poutframe->verts[j].lightnormalindex = 0;
+					memset(poutframe->verts[j].normal, 0,
+						sizeof(poutframe->verts[j].normal));
 				}
 				break;
 
@@ -532,7 +548,7 @@ Mod_LoadFrames_DKM2(dmdx_t *pheader, const byte *src, size_t inframesize, vec3_t
 			Mod_LoadFrames_VertDKM2(outverts + j, *((int *)inverts));
 			inverts += sizeof(int);
 			/* norm convert logic is unknown */
-			outverts[j].lightnormalindex = 0;
+			memset(outverts[j].normal, 0, sizeof(outverts[j].normal));
 			inverts ++;
 		}
 	}
@@ -606,12 +622,16 @@ Mod_LoadFixNormals(dmdx_t *pheader)
 		/* save normals */
 		for(t = 0; t < pheader->num_xyz; t++)
 		{
+			int j;
+
 			VectorNormalize(normals[t]);
 			/* FIXME: QSS does not have such invert */
 			VectorInverse(normals[t]);
 
-			poutframe->verts[t].lightnormalindex =
-				R_CompressNormalMDL(normals[t]);
+			for (j = 0; j < 3; j ++)
+			{
+				poutframe->verts[t].normal[j] = normals[t][j] * 127;
+			}
 		}
 	}
 	free(normals);
@@ -1031,8 +1051,10 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 				for (j=0; j < num_xyz; j ++)
 				{
 					Mod_LoadFrames_VertMD2(poutvertx + j, pinvertx[j].v);
-					poutvertx[j].lightnormalindex = pinvertx[j].lightnormalindex;
+					R_ConvertNormalMDL(pinvertx[j].lightnormalindex,
+						poutvertx[j].normal);
 				}
+
 				curr_pos += sizeof(dtrivertx_t) * num_xyz;
 				frame_count++;
 			}
@@ -1835,6 +1857,7 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 	const dtriangle_t *pintri;
 	dmdxmesh_t *mesh_nodes;
 	const dstvert_t *pinst;
+	qboolean normalfix;
 	const int *pincmd;
 	dmdl_t pinmodel;
 	dmdx_t *pheader;
@@ -1976,7 +1999,7 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 	//
 	// load the frames
 	//
-	Mod_LoadFrames_MD2(pheader, (byte *)buffer + pinmodel.ofs_frames,
+	normalfix = Mod_LoadFrames_MD2(pheader, (byte *)buffer + pinmodel.ofs_frames,
 		pinmodel.framesize, translate);
 
 	//
@@ -1988,6 +2011,12 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 	/* register all skins */
 	memcpy((char *)pheader + pheader->ofs_skins, (char *)buffer + pinmodel.ofs_skins,
 		pheader->num_skins * MAX_SKINNAME);
+
+	if (normalfix)
+	{
+		/* look like normals is zero, lets fix it */
+		Mod_LoadFixNormals(pheader);
+	}
 
 	Mod_LoadFixImages(mod_name, pheader, false);
 
