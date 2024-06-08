@@ -841,6 +841,11 @@ build/baseq2/%.o: %.c
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
 
+build/baseq2/%.o: %.cpp
+	@echo "===> CXX $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
+
 release/baseq2/game.dll : LDFLAGS += -shared
 
 else ifeq ($(YQ2_OSTYPE), Darwin)
@@ -854,6 +859,11 @@ build/baseq2/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
+
+build/baseq2/%.o: %.cpp
+	@echo "===> CXX $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CXX) -c $(CFLAGS) $(SDLCFLAGS) $(ZIPCFLAGS) $(INCLUDE) -o $@ $<
 
 release/baseq2/game.dylib : CFLAGS += -fPIC
 release/baseq2/game.dylib : LDFLAGS += -shared

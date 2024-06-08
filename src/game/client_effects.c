@@ -2,7 +2,7 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include <dlfcn.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -214,6 +214,10 @@ extern particle_t r_aparticles[MAX_PARTICLES];
 
 static client_fx_import_t cl_game_import;
 
+#if _WIN32
+#else
+#include <dlfcn.h>
+
 // ************************************************************************************************
 // E_Freelib
 // ---------
@@ -402,3 +406,4 @@ E_Load(void)
 
 	return fxe;
 }
+#endif

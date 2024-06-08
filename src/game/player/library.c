@@ -6,7 +6,6 @@
 // Heretic II
 //
 
-#include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -22,6 +21,10 @@ player_export_t	*playerExport;
 // Handle to player DLL.
 
 static void *player_library;
+
+#ifdef _WIN32
+#else
+#include <dlfcn.h>
 
 // ************************************************************************************************
 // P_Freelib
@@ -147,3 +150,4 @@ P_Load(void)
 	return playerExport;
 }
 
+#endif
