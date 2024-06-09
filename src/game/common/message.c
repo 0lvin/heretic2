@@ -58,36 +58,6 @@ size_t SetParms(SinglyLinkedList_t *_this, const char *format, va_list marker, q
 					// ICScript_Advance
 
 					// It does keep the code all in one place, which is nice
-#ifdef _WIN32
-			if(entsAsNames)
-			{
-				int j = 0;
-				edict_t *ent = NULL;
-				char entityName[64];
-
-				do
-				{
-					entityName[j] = *(marker + j);
-				}while(*(marker + j++));
-
-				marker += j;
-
-				ent = G_Find (ent, FOFS(targetname), entityName);
-
-#ifdef _DEBUG
-				if(ent)
-				{
-					edict_t *ent2 = NULL;
-
-					ent2 = G_Find (ent, FOFS(targetname), entityName);
-
-					assert(!ent2);	// each entityName should be unique!!!
-				}
-#endif
-				parm.t_void_p = ent;
-				break;
-			}
-#endif
 		case 'v':	// _this better be not be a local variable or _this will be bunk when
 					// the message is received and parsed
 //			parm.t_float_p = va_arg(marker, float*);

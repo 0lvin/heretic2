@@ -7,6 +7,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#if defined(_WIN32)
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
 #include "../client/header/client.h"
 #include "header/game.h"
 #include "header/client_effects.h"
@@ -214,10 +220,6 @@ extern particle_t r_aparticles[MAX_PARTICLES];
 
 static client_fx_import_t cl_game_import;
 
-#if _WIN32
-#else
-#include <dlfcn.h>
-
 // ************************************************************************************************
 // E_Freelib
 // ---------
@@ -236,7 +238,12 @@ void E_Freelib()
 	}
 	fxe = NULL;
 
+#if _WIN32
+	FreeLibrary(effects_library);
+#else
 	dlclose (effects_library);
+#endif
+
 	effects_library = NULL;
 	Com_Printf("Shutting down Effect library.\n");
 }
@@ -253,8 +260,10 @@ E_Load(void)
 
 	char name[MAX_OSPATH];
 	char *path;
-	char *str_p;
-#ifdef __APPLE__
+#ifdef _WIN32
+	WCHAR wname[MAX_OSPATH];
+	const char *effectsname = "effects.dll";
+#elifdef __APPLE__
 	const char *effectsname = "effects.dylib";
 #else
 	const char *effectsname = "effects.so";
@@ -293,20 +302,29 @@ E_Load(void)
 
 		fclose(fp);
 
+#ifdef _WIN32
+		MultiByteToWideChar(CP_UTF8, 0, name, -1, wname, MAX_OSPATH);
+		effects_library = LoadLibraryW(wname);
+#else
+
 #ifdef USE_SANITIZER
 		effects_library = dlopen(name, RTLD_NOW | RTLD_NODELETE);
 #else
 		effects_library = dlopen(name, RTLD_NOW);
 #endif
 
+#endif
 		if (effects_library)
 		{
 			Com_Printf("Loading library: %s\n", name);
 			break;
 		}
+#ifndef _WIN32
 		else
 		{
-			Com_Printf("Loading library: %s\n: ", name);
+			char *str_p;
+
+			Com_Printf("Failed to load library: %s\n: ", name);
 
 			path = (char *)dlerror();
 			str_p = strchr(path, ':');   /* skip the path (already shown) */
@@ -324,9 +342,14 @@ E_Load(void)
 
 			return NULL;
 		}
+#endif
 	}
 
+#ifdef _WIN32
+	P_GetFXAPI = (void *)GetProcAddress(effects_library, "GetFXAPI");
+#else
 	P_GetFXAPI = (void *)dlsym(effects_library, "GetFXAPI");
+#endif
 
 	if (!P_GetFXAPI)
 	{
@@ -406,4 +429,3 @@ E_Load(void)
 
 	return fxe;
 }
-#endif

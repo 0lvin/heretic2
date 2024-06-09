@@ -14,6 +14,12 @@
 #include "../header/local.h"
 #include "../../common/header/common.h"
 
+#if defined(_WIN32)
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
 // Structure containing functions and data pointers exported from the player DLL.
 
 player_export_t	*playerExport;
@@ -21,10 +27,6 @@ player_export_t	*playerExport;
 // Handle to player DLL.
 
 static void *player_library;
-
-#ifdef _WIN32
-#else
-#include <dlfcn.h>
 
 // ************************************************************************************************
 // P_Freelib
@@ -43,7 +45,12 @@ void P_Freelib()
 		playerExport->Shutdown();
 	}
 
+#if _WIN32
+	FreeLibrary(player_library);
+#else
 	dlclose (player_library);
+#endif
+
 	player_library = NULL;
 }
 
@@ -60,8 +67,10 @@ P_Load(void)
 
 	char name[MAX_OSPATH];
 	char *path;
-	char *str_p;
-#ifdef __APPLE__
+#ifdef _WIN32
+	WCHAR wname[MAX_OSPATH];
+	const char *playername = "player.dll";
+#elifdef __APPLE__
 	const char *playername = "player.dylib";
 #else
 	const char *playername = "player.so";
@@ -101,10 +110,17 @@ P_Load(void)
 
 		fclose(fp);
 
+#ifdef _WIN32
+		MultiByteToWideChar(CP_UTF8, 0, name, -1, wname, MAX_OSPATH);
+		player_library = LoadLibraryW(wname);
+#else
+
 #ifdef USE_SANITIZER
 		player_library = dlopen(name, RTLD_NOW | RTLD_NODELETE);
 #else
 		player_library = dlopen(name, RTLD_NOW);
+#endif
+
 #endif
 
 		if (player_library)
@@ -112,9 +128,12 @@ P_Load(void)
 			Com_Printf("Loading library: %s\n", name);
 			break;
 		}
+#ifndef _WIN32
 		else
 		{
-			Com_Printf("Loading library: %s\n: ", name);
+			char *str_p;
+
+			Com_Printf("Failed to load library: %s\n: ", name);
 
 			path = (char *)dlerror();
 			str_p = strchr(path, ':');   /* skip the path (already shown) */
@@ -132,9 +151,14 @@ P_Load(void)
 
 			return NULL;
 		}
-	}
+#endif
+}
 
+#ifdef _WIN32
+	P_GetPlayerAPI = (void *)GetProcAddress(player_library, "GetPlayerAPI");
+#else
 	P_GetPlayerAPI = (void *)dlsym(player_library, "GetPlayerAPI");
+#endif
 
 	if (!P_GetPlayerAPI)
 	{
@@ -149,5 +173,3 @@ P_Load(void)
 
 	return playerExport;
 }
-
-#endif
