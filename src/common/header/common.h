@@ -219,7 +219,6 @@ enum svc_ops_e
 	svc_temp_entity,
 	svc_layout,
 	svc_inventory,
-	svc_client_effect,
 
 	/* the rest are private to the client and server */
 	svc_nop,
@@ -236,7 +235,8 @@ enum svc_ops_e
 	svc_playerinfo,             /* variable */
 	svc_packetentities,         /* [...] */
 	svc_deltapacketentities,    /* [...] */
-	svc_frame
+	svc_frame,
+	svc_client_effect,
 };
 
 /* ============================================== */

@@ -44,7 +44,7 @@ CL_AddPacketEntities(frame_t *frame)
 	unsigned int effects, renderfx;
 
 	/* To distinguish baseq2, xatrix and rogue. */
-	cvar_t *gametype = Cvar_Get("game",  "", CVAR_LATCH | CVAR_SERVERINFO);
+	cvar_t *gametype = Cvar_Get("gametype",  "", CVAR_LATCH | CVAR_SERVERINFO);
 	if (strcmp(gametype->string, "") == 0 && fxe && fxe->AddPacketEntities)
 	{
 		// TODO: Rewrite game type

@@ -40,7 +40,6 @@ static char *svc_strings[256] = {
 	"svc_layout",
 	"svc_inventory",
 
-	"svc_client_effect",
 	"svc_nop",
 	"svc_disconnect",
 	"svc_reconnect",
@@ -55,7 +54,8 @@ static char *svc_strings[256] = {
 	"svc_playerinfo",
 	"svc_packetentities",
 	"svc_deltapacketentities",
-	"svc_frame"
+	"svc_frame",
+	"svc_client_effect",
 };
 
 void

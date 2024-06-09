@@ -272,13 +272,11 @@ CL_PredictMovement(void)
 	memset (&pm, 0, sizeof(pm));
 	pm.trace = CL_PMTrace;
 	pm.pointcontents = CL_PMpointcontents;
-	//pm_airaccelerate = atof(cl.configstrings[CS_AIRACCEL]);
+	pm_airaccelerate = atof(cl.configstrings[CS_AIRACCEL]);
 	pm.s = cl.frame.playerstate.pmove;
 	pm.viewheight = cl.frame.playerstate.viewheight;
 	VectorCopy(cl.frame.playerstate.mins, pm.mins);
 	VectorCopy(cl.frame.playerstate.maxs, pm.maxs);
-
-	frame = 0;
 
 	/* run frames */
 	while (++ack <= current)
