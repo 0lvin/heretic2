@@ -58,9 +58,6 @@ particle_t r_particles[MAX_PARTICLES];
 
 static lightstyle_t r_lightstyles[MAX_LIGHTSTYLES];
 
-int r_anumparticles;
-particle_t r_aparticles[MAX_PARTICLES];
-
 char cl_weaponmodels[MAX_CLIENTWEAPONMODELS][MAX_QPATH];
 int num_cl_weaponmodels;
 
@@ -73,7 +70,6 @@ V_ClearScene(void)
 	r_numdlights = 0;
 	r_numentities = 0;
 	r_numparticles = 0;
-	r_anumparticles = 0;
 }
 
 void
@@ -672,8 +668,6 @@ V_RenderView(float stereo_separation)
 		cl.refdef.num_entities = r_numentities;
 		cl.refdef.entities = r_entities;
 		cl.refdef.num_particles = r_numparticles;
-		cl.refdef.anum_particles = r_anumparticles;
-		cl.refdef.aparticles = r_aparticles;
 		cl.refdef.particles = r_particles;
 		cl.refdef.num_dlights = r_numdlights;
 		cl.refdef.dlights = r_dlights;

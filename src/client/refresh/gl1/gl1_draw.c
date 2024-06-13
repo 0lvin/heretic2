@@ -27,8 +27,6 @@
 #include "header/local.h"
 
 image_t *draw_chars;
-image_t		*atlas_particle;
-image_t		*atlas_aparticle;
 
 extern qboolean scrap_dirty;
 void Scrap_Upload(void);
@@ -56,19 +54,6 @@ Draw_InitLocal(void)
 	if (!draw_chars)
 	{
 		Com_Error(ERR_FATAL, "%s: Couldn't load pics/conchars",
-			__func__);
-	}
-// jmarshall
-	atlas_particle = R_FindPic("particle", (findimage_t)R_FindImage);
-	if (!atlas_particle)
-	{
-		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load particle",
-			__func__);
-	}
-	atlas_aparticle = R_FindPic("aparticle", (findimage_t)R_FindImage);
-	if (!atlas_aparticle)
-	{
-		ri.Sys_Error(ERR_FATAL, "%s: Couldn't load aparticle",
 			__func__);
 	}
 }

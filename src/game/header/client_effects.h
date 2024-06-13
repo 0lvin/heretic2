@@ -78,9 +78,6 @@ typedef struct
 	int *r_numparticles;
 	particle_t *r_particles;
 
-	int *r_anumparticles;
-	particle_t *r_aparticles;
-
 	// Client versions of the game entities.
 
 	centity_t		*server_entities;

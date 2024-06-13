@@ -154,10 +154,6 @@ typedef struct {
 
 	int			num_particles;
 	particle_t	*particles;
-
-	int			anum_particles;
-	particle_t	*aparticles;
-
 } refdef_t;
 
 // Renderer restart type.

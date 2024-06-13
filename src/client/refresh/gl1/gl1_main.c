@@ -216,7 +216,9 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	}
 
 	if(currententity->flags & RF_NODEPTHTEST)
+	{
 		glDisable(GL_DEPTH_TEST);
+	}
 
 	if (currententity->flags & RF_TRANS_ADD)
 	{
@@ -256,7 +258,9 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 			break;
 	}
 	if (currententity->flags & RF_NODEPTHTEST)
+	{
 		glEnable(GL_DEPTH_TEST);
+	}
 
 	glDisable(GL_ALPHA_TEST);
 	R_TexEnv(GL_REPLACE);
@@ -564,7 +568,7 @@ R_DrawParticles2(int num_particles, const particle_t particles[])
 }
 
 void
-R_DrawParticles(int num_particles, particle_t* particles, int type)
+R_DrawParticles(int num_particles, particle_t* particles)
 {
 	const particle_t* p;
 	int				i;
@@ -573,16 +577,8 @@ R_DrawParticles(int num_particles, particle_t* particles, int type)
 
 	glEnable(GL_TEXTURE_2D);
 
-	if (type)
-	{
-		R_Bind(atlas_aparticle->texnum);
-		glBlendFunc(GL_ONE, GL_ONE);
-	}
-	else
-	{
-		R_Bind(atlas_particle->texnum);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
+	R_Bind(r_particletexture->texnum);
+	glBlendFunc(GL_ONE, GL_ONE);
 
 	glDepthMask(GL_FALSE);		// no z buffering
 	glEnable(GL_BLEND);
@@ -1129,8 +1125,7 @@ R_RenderView(const refdef_t *fd)
 
 	R_RenderDlights();
 
-	R_DrawParticles(r_newrefdef.num_particles, r_newrefdef.particles, 0);
-	R_DrawParticles(r_newrefdef.anum_particles, r_newrefdef.aparticles, 1);
+	R_DrawParticles(r_newrefdef.num_particles, r_newrefdef.particles);
 
 	R_DrawAlphaSurfaces();
 

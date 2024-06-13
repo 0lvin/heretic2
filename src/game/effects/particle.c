@@ -134,20 +134,21 @@ int AddParticlesToView(client_entity_t *ce)
 			alpha = 255 - (alpha - 255);	// A weird thing to do, but necessary because the alpha is
 											// based off a dtime from the CREATION of the particle
 		}
+
+		if ((*fxi.r_numparticles) >= MAX_PARTICLES)
+		{
+			return(numparticles);
+		}
+
+		r = &fxi.r_particles[*fxi.r_numparticles];
+
 		//add to additive particle list
 		if((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE))
 		{
-			if ((*fxi.r_anumparticles) >= MAX_PARTICLES)
-				return(numparticles);
-			r = &fxi.r_aparticles[*fxi.r_anumparticles];
 			part_info = 1;
 		}
 		else
 		{
-			if ((*fxi.r_numparticles) >= MAX_PARTICLES)
-				return(numparticles);
-
-			r = &fxi.r_particles[*fxi.r_numparticles];
 			part_info = 2;
 		}
 
@@ -156,7 +157,7 @@ int AddParticlesToView(client_entity_t *ce)
 		r->type = current->type;
 		r->color = current->color.c;
 
-		if(alpha > 255)
+		if(alpha > 255 || !((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE)))
 		{
 			r->alpha = 255;
 		}
@@ -232,8 +233,6 @@ int AddParticlesToView(client_entity_t *ce)
 		case 0:
 			break;
 		case 1:
-			(*fxi.r_anumparticles)++;
-			break;
 		case 2:
 			(*fxi.r_numparticles)++;
 			break;

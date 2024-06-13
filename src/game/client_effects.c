@@ -215,9 +215,6 @@ extern lightstyle_t r_lightstyles[MAX_LIGHTSTYLES];
 extern int r_numparticles;
 extern particle_t r_particles[MAX_PARTICLES];
 
-extern int r_anumparticles;
-extern particle_t r_aparticles[MAX_PARTICLES];
-
 static client_fx_import_t cl_game_import;
 
 // ************************************************************************************************
@@ -368,9 +365,6 @@ E_Load(void)
 
 	cl_game_import.r_numparticles = &r_numparticles;
 	cl_game_import.r_particles = r_particles;
-
-	cl_game_import.r_anumparticles = &r_anumparticles;
-	cl_game_import.r_aparticles = r_aparticles;
 
 	cl_game_import.server_entities = &cl_entities[0];
 	cl_game_import.parse_entities = cl_parse_entities;

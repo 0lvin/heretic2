@@ -432,9 +432,6 @@ extern void RDraw_Fill(int x, int y, int w, int h, int c);
 extern void RDraw_FadeScreen(void);
 extern void RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits);
 
-extern image_t* atlas_particle;
-extern image_t* atlas_aparticle;
-
 /* public interface funtions */
 extern int RI_PrepareForWindow(void);
 extern int RI_InitContext(void* win);
