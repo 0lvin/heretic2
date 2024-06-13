@@ -7,6 +7,8 @@
 /* This doesn't use the macro because of referencing weirdness. */
 #define NUM_PARTICLE_TYPES	62
 
+#define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
+
 #define FRAC		(1.0F / 256.0F)
 #define	UNIT		(1.0F / 128.0F)
 

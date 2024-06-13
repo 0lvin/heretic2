@@ -4,7 +4,7 @@
 //
 #include "../../common/header/common.h"
 #include "../../client/header/client.h"
-
+#include "../common/part_uvs.h"
 
 typedef enum ParticleTypes_e
 {
@@ -126,9 +126,6 @@ typedef struct client_particle_s
 } client_particle_t;
 
 #define PARTICLE_TRAIL_THINK_TIME 100 // spawns a particle puff 10 times per sec
-
-//particle render flags, <127 is the type
-#define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
 
 // Move flags...  Note, these are pretty much mutually exclusive.
 #define PFL_MOVE_MASK	0x0f000000	// Check how the particles move

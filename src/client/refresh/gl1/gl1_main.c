@@ -148,8 +148,6 @@ refimport_t ri;
 
 #include "../../../game/common/part_uvs.h"
 
-#define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
-
 void LM_FreeLightmapBuffers(void);
 void Scrap_Free(void);
 void Scrap_Init(void);
