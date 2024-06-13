@@ -146,15 +146,7 @@ cvar_t *gl1_stereo_convergence;
 
 refimport_t ri;
 
-cvar_t* r_fog_underwater_density;
-cvar_t* r_fog_underwater_color_r;
-cvar_t* r_fog_underwater_color_g;
-cvar_t* r_fog_underwater_color_b;
-cvar_t* r_fog_underwater_color_a;
-
-#include <ctype.h>
 #include "../../../game/common/part_uvs.h"
-#include "../../../game/common/angles.h"
 
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
 
@@ -228,29 +220,29 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 
 	glColor3f(currententity->color.r / 255.0f, currententity->color.g / 255.0f, currententity->color.b / 255.0f);
 
-		glBegin(GL_QUADS);
+	glBegin(GL_QUADS);
 
-		glTexCoord2f(0, 1);
-		VectorMA(currententity->origin, -frame->origin_y, up, point);
-		VectorMA(point, -frame->origin_x, right, point);
-		glVertex3fv(point);
+	glTexCoord2f(0, 1);
+	VectorMA(currententity->origin, -frame->origin_y, up, point);
+	VectorMA(point, -frame->origin_x, right, point);
+	glVertex3fv(point);
 
-		glTexCoord2f(0, 0);
-		VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
-		VectorMA(point, -frame->origin_x, right, point);
-		glVertex3fv(point);
+	glTexCoord2f(0, 0);
+	VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
+	VectorMA(point, -frame->origin_x, right, point);
+	glVertex3fv(point);
 
-		glTexCoord2f(1, 0);
-		VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
-		VectorMA(point, frame->width - frame->origin_x, right, point);
-		glVertex3fv(point);
+	glTexCoord2f(1, 0);
+	VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
+	VectorMA(point, frame->width - frame->origin_x, right, point);
+	glVertex3fv(point);
 
-		glTexCoord2f(1, 1);
-		VectorMA(currententity->origin, -frame->origin_y, up, point);
-		VectorMA(point, frame->width - frame->origin_x, right, point);
-		glVertex3fv(point);
+	glTexCoord2f(1, 1);
+	VectorMA(currententity->origin, -frame->origin_y, up, point);
+	VectorMA(point, frame->width - frame->origin_x, right, point);
+	glVertex3fv(point);
 
-		glEnd();
+	glEnd();
 
 	if (currententity->flags & RF_NODEPTHTEST)
 	{
@@ -823,36 +815,8 @@ R_SetupGL(void)
 }
 
 void
-GL_WaterFog()
-{
-	float color[4];
-
-	color[1] = r_fog_underwater_color_g->value;
-	color[2] = r_fog_underwater_color_b->value;
-	color[3] = r_fog_underwater_color_a->value;
-	color[0] = r_fog_underwater_color_r->value;
-	glFogi(GL_FOG_MODE, GL_EXP);
-	glFogf(GL_FOG_DENSITY, r_fog_underwater_density->value);
-
-	glFogfv(GL_FOG_COLOR, &color[0]);
-	glEnable(GL_FOG);
-	glClearColor(color[0], color[1], color[2], color[3]);
-	glClear(16640);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-}
-
-void
 R_Clear(void)
 {
-	if (r_newrefdef.rdflags & RDF_UNDERWATER)
-	{
-		GL_WaterFog();
-	}
-	else
-	{
-		glDisable(GL_FOG);
-	}
-
 	// Check whether the stencil buffer needs clearing, and do so if need be.
 	GLbitfield stencilFlags = 0;
 	if (gl_state.stereo_mode >= STEREO_MODE_ROW_INTERLEAVED && gl_state.stereo_mode <= STEREO_MODE_PIXEL_INTERLEAVED) {
@@ -1221,27 +1185,6 @@ RI_RenderFrame(refdef_t *fd)
 void
 R_Register(void)
 {
-	r_fog_underwater_density = ri.Cvar_Get(
-		"r_fog_underwater_density",
-		"0.0015",
-		0);
-	r_fog_underwater_color_r = ri.Cvar_Get(
-		"r_fog_underwater_color_r",
-		"0.1",
-		0);
-	r_fog_underwater_color_g = ri.Cvar_Get(
-		"r_fog_underwater_color_g",
-		"0.37",
-		0);
-	r_fog_underwater_color_b = ri.Cvar_Get(
-		"r_fog_underwater_color_b",
-		"0.6",
-		0);
-	r_fog_underwater_color_a = ri.Cvar_Get(
-		"r_fog_underwater_color_a",
-		"0.0",
-		0);
-
 	/* Init default value */
 	R_InitTemporaryLMBuffer();
 
