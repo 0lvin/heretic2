@@ -228,35 +228,30 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 
 	glColor3f(currententity->color.r / 255.0f, currententity->color.g / 255.0f, currententity->color.b / 255.0f);
 
-	switch (currententity->spriteType)
-	{
-		case 0xFFFFFFFF:
-		case 0:
-			glBegin(GL_QUADS);
+		glBegin(GL_QUADS);
 
-			glTexCoord2f(0, 1);
-			VectorMA(currententity->origin, -frame->origin_y, up, point);
-			VectorMA(point, -frame->origin_x, right, point);
-			glVertex3fv(point);
+		glTexCoord2f(0, 1);
+		VectorMA(currententity->origin, -frame->origin_y, up, point);
+		VectorMA(point, -frame->origin_x, right, point);
+		glVertex3fv(point);
 
-			glTexCoord2f(0, 0);
-			VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
-			VectorMA(point, -frame->origin_x, right, point);
-			glVertex3fv(point);
+		glTexCoord2f(0, 0);
+		VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
+		VectorMA(point, -frame->origin_x, right, point);
+		glVertex3fv(point);
 
-			glTexCoord2f(1, 0);
-			VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
-			VectorMA(point, frame->width - frame->origin_x, right, point);
-			glVertex3fv(point);
+		glTexCoord2f(1, 0);
+		VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
+		VectorMA(point, frame->width - frame->origin_x, right, point);
+		glVertex3fv(point);
 
-			glTexCoord2f(1, 1);
-			VectorMA(currententity->origin, -frame->origin_y, up, point);
-			VectorMA(point, frame->width - frame->origin_x, right, point);
-			glVertex3fv(point);
+		glTexCoord2f(1, 1);
+		VectorMA(currententity->origin, -frame->origin_y, up, point);
+		VectorMA(point, frame->width - frame->origin_x, right, point);
+		glVertex3fv(point);
 
-			glEnd();
-			break;
-	}
+		glEnd();
+
 	if (currententity->flags & RF_NODEPTHTEST)
 	{
 		glEnable(GL_DEPTH_TEST);
