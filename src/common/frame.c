@@ -333,7 +333,7 @@ Qcommon_Init(int argc, char **argv)
 	Cbuf_AddEarlyCommands(false);
 	Cbuf_Execute();
 	/* Set default maptype  */
-	Cvar_Get("maptype", "0", CVAR_ARCHIVE);
+	Cvar_Get("maptype", "1", CVAR_ARCHIVE);
 
 	// remember the initial game name that might have been set on commandline
 	{

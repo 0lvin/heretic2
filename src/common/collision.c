@@ -1857,7 +1857,7 @@ CM_LoadMap(const char *name, qboolean clientload, unsigned *checksum)
 	int i, sec_start;
 
 	map_noareas = Cvar_Get("map_noareas", "0", 0);
-	r_maptype = Cvar_Get("maptype", "0", CVAR_ARCHIVE);
+	r_maptype = Cvar_Get("maptype", "1", CVAR_ARCHIVE);
 
 	if (!name[0])
 	{
