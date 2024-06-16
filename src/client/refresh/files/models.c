@@ -2257,6 +2257,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 						__func__, blockname, version);
 					return NULL;
 				}
+
 				/* 516 mesh node size */
 				if (size != (num_mesh_nodes * 516))
 				{
@@ -2282,7 +2283,9 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 							{
 								if (min > (j * 8))
 								{
-									int k, v = in_mesh[j];
+									int k, v;
+
+									v = in_mesh[j] & 0xFF;
 
 									for (k = 0; k < 8; k ++)
 									{
@@ -2302,8 +2305,9 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 						{
 							if (in_mesh[j])
 							{
-								int v = in_mesh[j];
+								int v;
 
+								v = in_mesh[j] & 0xFF;
 								max = j * 8;
 
 								while (v)
