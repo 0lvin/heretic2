@@ -164,8 +164,9 @@ V_TestParticles(void)
 						   cl.v_right[j] * r + cl.v_up[j] * u;
 		}
 
-		// p->color = 8;
-		// p->alpha = cl_testparticles->value;
+		/* grey */
+		p->color = 0xFF7B7B7B;
+		p->alpha = cl_testparticles->value;
 	}
 }
 

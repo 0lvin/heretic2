@@ -486,8 +486,6 @@ enum { QGL_POINT_SPRITE = 0x8861 };
 static qboolean
 GL3_Init(void)
 {
-	byte *colormap;
-
 	Swap_Init(); // FIXME: for fucks sake, this doesn't have to be done at runtime!
 
 	R_Printf(PRINT_ALL, "Refresh: " REF_VERSION "\n");
@@ -502,8 +500,7 @@ GL3_Init(void)
 		return false;
 	}
 
-	GetPCXPalette(&colormap, d_8to24table);
-	free(colormap);
+	ri.VID_GetPalette(NULL, d_8to24table);
 
 	GL3_Register();
 
@@ -1035,7 +1032,7 @@ GL3_DrawParticles(void)
 
 		for ( i = 0, p = gl3_newrefdef.particles; i < numParticles; i++, p++ )
 		{
-			*(int *) color = d_8to24table [ p->color & 0xFF ];
+			*(int *) color = p->color;
 			part_vtx* cur = &buf[i];
 			vec3_t offset; // between viewOrg and particle position
 			VectorSubtract(viewOrg, p->origin, offset);

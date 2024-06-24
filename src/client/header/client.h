@@ -335,6 +335,7 @@ extern	cvar_t	*cl_kickangles;
 extern  cvar_t  *cl_r1q2_lightstyle;
 extern  cvar_t  *cl_limitsparksounds;
 extern	cvar_t	*cl_laseralpha;
+extern	cvar_t	*cl_nodownload_list;
 
 typedef struct
 {
@@ -398,8 +399,7 @@ typedef struct particle_s
 	vec3_t		org;
 	vec3_t		vel;
 	vec3_t		accel;
-	float		color;
-	float		colorvel;
+	unsigned	color;
 	float		alpha;
 	float		alphavel;
 } cparticle_t;
@@ -526,6 +526,11 @@ void V_AddEntity (entity_t *ent);
 void V_AddParticle (vec3_t org, unsigned int color, float alpha);
 void V_AddLight (vec3_t org, float intensity, float r, float g, float b);
 void V_AddLightStyle (int style, float r, float g, float b);
+void VID_ImageDecode(const char *filename, byte **pic, byte **palette,
+	int *width, int *height, int *bytesPerPixel);
+void VID_GetPalette(byte **colormap, unsigned *d_8to24table);
+void VID_GetPalette24to8(const byte *d_8to24table, byte** d_16to8table);
+unsigned VID_PaletteColor(byte color);
 
 void CL_RegisterTEntSounds (void);
 void CL_RegisterTEntModels (void);

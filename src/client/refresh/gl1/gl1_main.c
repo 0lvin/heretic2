@@ -194,8 +194,6 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	up = vup;
 	right = vright;
 
-
-
 	glColor4f(1, 1, 1, alpha);
 
 	skin = currentmodel->skins[currententity->frame];
@@ -465,8 +463,7 @@ RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1
 }
 
 void
-R_DrawParticles2(int num_particles, const particle_t particles[],
-		const unsigned *colortable)
+R_DrawParticles2(int num_particles, const particle_t particles[])
 {
 	const particle_t *p;
 	int i;
@@ -508,19 +505,14 @@ R_DrawParticles2(int num_particles, const particle_t particles[],
 			scale = 1 + scale * 0.004;
 		}
 
-#if 0
-		// TODO: Rework
-		*(unsigned *) color = colortable [ p->color ];
-#endif
+		*(unsigned *) color = p->color;
+
 		for (j=0; j<3; j++) // Copy the color for each point
 		{
 			clr[index_clr++] = color[0]/255.0f;
 			clr[index_clr++] = color[1]/255.0f;
 			clr[index_clr++] = color[2]/255.0f;
-#if 0
-			// TODO: Rework
 			clr[index_clr++] = p->alpha;
-#endif
 		}
 
 		// point 0
@@ -602,10 +594,8 @@ R_DrawParticles(int num_particles, particle_t* particles, int type)
 		VectorScale(vup, p->scale, up);
 		VectorScale(vright, -p->scale, right);
 
-		color[0] = p->color.r;
-		color[1] = p->color.g;
-		color[2] = p->color.b;
-		color[3] = p->color.a;
+		*(unsigned *) color = p->color;
+		color[3] = p->alpha;
 
 		tex_coords_t* texCoord = &part_TexCoords[p->type & PFL_FLAG_MASK];
 
@@ -1499,7 +1489,6 @@ qboolean
 RI_Init(void)
 {
 	int j, max_tex_size;
-	byte *colormap;
 	extern float r_turbsin[256];
 
 	Swap_Init();
@@ -1516,9 +1505,8 @@ RI_Init(void)
 	R_Printf(PRINT_ALL, "ref_gl1::R_Init() - DEBUG mode enabled\n");
 #endif
 
-	GetPCXPalette(&colormap, d_8to24table);
-	GetPCXPalette24to8((byte *)d_8to24table, &gl_state.d_16to8table);
-	free(colormap);
+	ri.VID_GetPalette(NULL, d_8to24table);
+	ri.VID_GetPalette24to8((byte *)d_8to24table, &gl_state.d_16to8table);
 
 	R_Register();
 

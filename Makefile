@@ -302,6 +302,9 @@ else ifeq ($(YQ2_OSTYPE),OpenBSD)
 INCLUDE ?= -I/usr/local/include
 else ifeq ($(YQ2_OSTYPE),Windows)
 INCLUDE ?= -I/usr/include
+else ifeq ($(YQ2_OSTYPE),Darwin)
+MOLTENVK_PATH ?= $(shell brew --prefix molten-vk)
+INCLUDE ?= -I/usr/local/include -I/opt/homebrew/include -I$(MOLTENVK_PATH)/libexec/include
 endif
 
 # ----------
@@ -317,6 +320,8 @@ else ifeq ($(YQ2_OSTYPE),OpenBSD)
 LDFLAGS ?= -L/usr/local/lib
 else ifeq ($(YQ2_OSTYPE),Windows)
 LDFLAGS ?= -L/usr/lib
+else ifeq ($(YQ2_OSTYPE),Darwin)
+LDFLAGS ?= -L/usr/local/lib -L/opt/homebrew/lib
 endif
 
 # Link address sanitizer if requested.
@@ -506,8 +511,9 @@ ifeq ($(WITH_OPENAL),yes)
 ifeq ($(YQ2_OSTYPE), OpenBSD)
 release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so"'
 else ifeq ($(YQ2_OSTYPE), Darwin)
-release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.dylib"' -I/usr/local/opt/openal-soft/include
-release/quake2 : LDFLAGS += -L/usr/local/opt/openal-soft/lib -rpath /usr/local/opt/openal-soft/lib
+OPENAL_PATH ?= $(shell brew --prefix openal-soft)
+release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.dylib"' -I$(OPENAL_PATH)/include
+release/quake2 : LDFLAGS += -L$(OPENAL_PATH)/lib -rpath $(OPENAL_PATH)/lib
 else
 release/quake2 : CFLAGS += -DUSE_OPENAL -DDEFAULT_OPENAL_DRIVER='"libopenal.so.1"'
 endif
@@ -736,6 +742,15 @@ ref_gl4:
 
 release/ref_gl4.dll : GLAD_INCLUDE = -Isrc/client/refresh/gl4/glad/include
 release/ref_gl4.dll : LDFLAGS += -shared
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+ref_gl4:
+	@echo "===> Building ref_gl4.dylib"
+	$(MAKE) release/ref_gl4.dylib
+
+release/ref_gl4.dylib : GLAD_INCLUDE = -Isrc/client/refresh/gl4/glad/include
+release/ref_gl4.dylib : LDFLAGS += -shared
 
 else # not Windows or Darwin - macOS doesn't support OpenGL 4.6
 
@@ -1308,6 +1323,7 @@ CLIENT_OBJS_ := \
 	src/client/sound/sdl.o \
 	src/client/sound/sound.o \
 	src/client/sound/wave.o \
+	src/client/vid/image.o \
 	src/client/vid/vid.o \
 	src/common/argproc.o \
 	src/common/clientserver.o \
@@ -1779,7 +1795,10 @@ release/ref_gl4.dll : $(REFGL4_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(REFGL4_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
 	$(Q)strip $@
-
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/ref_gl4.dylib : $(REFGL4_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGL4_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
 else
 release/ref_gl4.so : $(REFGL4_OBJS)
 	@echo "===> LD $@"

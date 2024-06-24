@@ -69,7 +69,8 @@ compress_for_stbiw(unsigned char *data, int data_len, int *out_len, int quality)
  * RGB or RGBA. The pixels must be given row-wise, stating at the top
  * left.
  */
-void VID_WriteScreenshot(int width, int height, int comp, const void* data)
+static void
+VID_WriteScreenshot(int width, int height, int comp, const void* data)
 {
 	char picname[80];
 	char checkname[MAX_OSPATH];
@@ -446,6 +447,9 @@ VID_LoadRenderer(void)
 	ri.Vid_GetModeInfo = VID_GetModeInfo;
 	ri.Vid_MenuInit = VID_MenuInit;
 	ri.Vid_WriteScreenshot = VID_WriteScreenshot;
+	ri.VID_ImageDecode = VID_ImageDecode;
+	ri.VID_GetPalette = VID_GetPalette;
+	ri.VID_GetPalette24to8 = VID_GetPalette24to8;
 	ri.Vid_RequestRestart = VID_RequestRestart;
 
 	// Exchange our export struct with the renderers import struct.
@@ -598,6 +602,8 @@ VID_Init(void)
 		Com_Error(ERR_FATAL, "Couldn't initialize the graphics subsystem!\n");
 	}
 
+	VID_ImageInit();
+
 	// Load the renderer and get things going.
 	VID_CheckChanges();
 }
@@ -609,6 +615,9 @@ void
 VID_Shutdown(void)
 {
 	VID_ShutdownRenderer();
+
+	VID_ImageDestroy();
+
 	GLimp_Shutdown();
 }
 

@@ -154,15 +154,15 @@ int AddParticlesToView(client_entity_t *ce)
 		assert(ptype < NUM_PARTICLE_TYPES);
 
 		r->type = current->type;
-		r->color.c = current->color.c;
+		r->color = current->color.c;
 
 		if(alpha > 255)
 		{
-			r->color.a = 255;
+			r->alpha = 255;
 		}
 		else
 		{
-			r->color.a = alpha;
+			r->alpha = alpha;
 		}
 
 		r->scale = current->scale + (d_time * current->d_scale);

@@ -105,8 +105,6 @@ extern struct image_s* LoadM32(const char *origname, const char *namewe, imagety
 extern struct image_s* LoadSWL(const char *origname, const char *namewe, imagetype_t type,
 	loadimage_t load_image);
 extern void FixFileExt(const char *origname, const char *ext, char *filename, size_t size);
-extern void GetPCXPalette(byte **colormap, unsigned *d_8to24table);
-extern void GetPCXPalette24to8(const byte *d_8to24table, byte** d_16to8table);
 extern void LoadPCX(const char *origname, byte **pic, byte **palette, int *width, int *height);
 extern void GetPCXInfo(const char *origname, int *width, int *height);
 extern void GetWalInfo(const char *name, int *width, int *height);
@@ -328,7 +326,7 @@ typedef struct
 } bspxlightgrid_t;
 
 /* Shared models func */
-typedef char* (*readfile_t)(const char *name, int *size);
+typedef int (*readfile_t)(const char *path, void **buffer);
 typedef struct image_s* (*findimage_t)(const char *name, imagetype_t type);
 extern void *Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,

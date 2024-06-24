@@ -122,8 +122,9 @@ typedef struct {
 
 typedef struct {
 	vec3_t	origin;
-	paletteRGBA_t	color;
-	float		scale;
+	unsigned	color;
+	float	alpha;
+	float	scale;
 	int		type;
 } particle_t;
 
@@ -296,6 +297,11 @@ typedef struct
 	// called with image data of width*height pixel which comp bytes per pixel (must be 3 or 4 for RGB or RGBA)
 	// expects the pixels data to be row-wise, starting at top left
 	void		(IMPORT *Vid_WriteScreenshot)( int width, int height, int comp, const void* data );
+	/* load image from file */
+	void		(IMPORT *VID_ImageDecode)( const char *filename, byte **pic, byte **palette,
+				int *width, int *height, int *bytesPerPixel);
+	void		(IMPORT *VID_GetPalette)(byte **colormap, unsigned *d_8to24table);
+	void		(IMPORT *VID_GetPalette24to8)(const byte *d_8to24table, byte** d_16to8table);
 
 	qboolean	(IMPORT *GLimp_InitGraphics)(int fullscreen, int *pwidth, int *pheight);
 	qboolean	(IMPORT *GLimp_GetDesktopMode)(int *pwidth, int *pheight);
