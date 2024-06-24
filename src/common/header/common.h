@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.31RR8"
+#define YQ2VERSION "8.31H8"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -44,7 +44,7 @@
 #endif
 
 #ifdef _WIN32
- #define CFGDIR "YamagiQ2"
+ #define CFGDIR "YamagiH2"
 #else
  #ifndef __HAIKU__
    #define CFGDIR ".yqh2"
