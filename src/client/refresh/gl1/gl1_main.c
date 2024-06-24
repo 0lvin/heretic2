@@ -554,42 +554,72 @@ R_DrawParticles2(int num_particles, const particle_t particles[])
 	YQ2_VLAFREE(clr);
 }
 
-void
-R_DrawParticles(int num_particles, particle_t* particles)
+static void
+R_DrawParticles(void)
 {
-	const particle_t* p;
-	int				i;
-	vec3_t			up, right;
-	byte			color[4];
+	qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
+	qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
 
-	glEnable(GL_TEXTURE_2D);
-
-	R_Bind(r_particletexture->texnum);
-	glBlendFunc(GL_ONE, GL_ONE);
-
-	glDepthMask(GL_FALSE);		// no z buffering
-	glEnable(GL_BLEND);
-	R_TexEnv(GL_MODULATE);
-	glBegin(GL_TRIANGLES);
-
-	for (p = particles, i = 0; i < num_particles; i++, p++)
+	if (r_newrefdef.num_particles <= 0) /* avoiding VLA with no size and vertexes built on it */
 	{
-		VectorScale(vup, p->scale, up);
-		VectorScale(vright, -p->scale, right);
-
-		*(unsigned *) color = p->color;
-		color[3] = p->alpha;
-
-		tex_coords_t* texCoord = &part_TexCoords[p->type & PFL_FLAG_MASK];
-
-		RB_RenderQuad(p->origin, right, up, color, texCoord->lx, texCoord->ty, texCoord->rx, texCoord->by);
+		return;
 	}
 
-	glEnd();
-	glDisable(GL_BLEND);
-	glColor4f(1, 1, 1, 1);
-	glDepthMask(1);		// back to normal Z buffering
-	R_TexEnv(GL_REPLACE);
+	if (gl_config.pointparameters && !(stereo_split_tb || stereo_split_lr))
+	{
+		int i;
+		YQ2_ALIGNAS_TYPE(unsigned) byte color[4];
+		const particle_t *p;
+
+		YQ2_VLA(GLfloat, vtx, 3 * r_newrefdef.num_particles);
+		YQ2_VLA(GLfloat, clr, 4 * r_newrefdef.num_particles);
+
+		unsigned int index_vtx = 0;
+		unsigned int index_clr = 0;
+
+		glDepthMask(GL_FALSE);
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+
+		// assume the particle size looks good with window height 480px and scale according to real resolution
+		glPointSize(gl1_particle_size->value * (float)r_newrefdef.height/480.0f);
+
+		for ( i = 0, p = r_newrefdef.particles; i < r_newrefdef.num_particles; i++, p++ )
+		{
+			*(int *) color = p->color;
+			clr[index_clr++] = color[0]/255.0f;
+			clr[index_clr++] = color[1]/255.0f;
+			clr[index_clr++] = color[2]/255.0f;
+			clr[index_clr++] = p->alpha;
+
+			vtx[index_vtx++] = p->origin[0];
+			vtx[index_vtx++] = p->origin[1];
+			vtx[index_vtx++] = p->origin[2];
+		}
+
+		glEnableClientState( GL_VERTEX_ARRAY );
+		glEnableClientState( GL_COLOR_ARRAY );
+
+		glVertexPointer( 3, GL_FLOAT, 0, vtx );
+		glColorPointer( 4, GL_FLOAT, 0, clr );
+		glDrawArrays( GL_POINTS, 0, r_newrefdef.num_particles );
+
+		glDisableClientState( GL_VERTEX_ARRAY );
+		glDisableClientState( GL_COLOR_ARRAY );
+
+		glDisable(GL_BLEND);
+		glColor4f( 1, 1, 1, 1 );
+		glDepthMask(GL_TRUE);
+		glEnable(GL_TEXTURE_2D);
+
+		YQ2_VLAFREE(vtx);
+		YQ2_VLAFREE(clr);
+	}
+	else
+	{
+		R_DrawParticles2(r_newrefdef.num_particles,
+				r_newrefdef.particles);
+	}
 }
 
 static void
@@ -1084,7 +1114,7 @@ R_RenderView(const refdef_t *fd)
 
 	R_RenderDlights();
 
-	R_DrawParticles(r_newrefdef.num_particles, r_newrefdef.particles);
+	R_DrawParticles();
 
 	R_DrawAlphaSurfaces();
 
