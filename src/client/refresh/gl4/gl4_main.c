@@ -964,7 +964,6 @@ GL4_DrawNullModel(entity_t *currententity)
 static void
 GL4_DrawParticles(void)
 {
-#if 0
 	// TODO: stereo
 	//qboolean stereo_split_tb = ((gl_state.stereo_mode == STEREO_SPLIT_VERTICAL) && gl_state.camera_separation);
 	//qboolean stereo_split_lr = ((gl_state.stereo_mode == STEREO_SPLIT_HORIZONTAL) && gl_state.camera_separation);
@@ -1036,7 +1035,6 @@ GL4_DrawParticles(void)
 
 		YQ2_VLAFREE(buf);
 	}
-#endif
 }
 
 static void

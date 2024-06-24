@@ -411,7 +411,6 @@ R_DrawEntitiesOnList(void)
 static void
 Vk_DrawParticles(int num_particles, const particle_t particles[])
 {
-#if 0
 	typedef struct {
 		float x,y,z,r,g,b,a,u,v;
 	} pvertex;
@@ -523,13 +522,11 @@ Vk_DrawParticles(int num_particles, const particle_t particles[])
 
 	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
 	vkCmdDraw(vk_activeCmdbuffer, (currentvertex - visibleParticles), 1, 0, 0);
-#endif
 }
 
 static void
 R_DrawParticles(void)
 {
-#if 0
 	if (vk_custom_particles->value == 1)
 	{
 		int i;
@@ -600,7 +597,6 @@ R_DrawParticles(void)
 	{
 		Vk_DrawParticles(r_newrefdef.num_particles, r_newrefdef.particles);
 	}
-#endif
 }
 
 static void
