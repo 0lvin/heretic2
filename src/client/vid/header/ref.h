@@ -87,8 +87,6 @@ typedef struct entity_s {
 												// frame by AddEffectsToView
 
 	paletteRGBA_t		color;
-
-	int					rootJoint;				// rootJoint of the entities skeleton
 	int					spriteType;
 
 	// info for fmodels and bmodels
@@ -98,8 +96,6 @@ typedef struct entity_s {
 
 	int					swapFrame;			// frame to swap clustered verts in for
 	int					oldSwapFrame;			// previous frame to swap clustered verts in for
-
-	struct LERPedReferences_s	*referenceInfo;
 
 	// info for dynamic sprites
 	float				verts[4][4];			// verts for dynamic sprites

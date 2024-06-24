@@ -1963,7 +1963,7 @@ R_DrawBeam(entity_t *e)
 	g *= 1 / 255.0F;
 	b *= 1 / 255.0F;
 
-	glColor4f(r, g, b, e->color.a);
+	glColor4f(r, g, b, e->alpha);
 
 	for ( i = 0; i < NUM_BEAM_SEGS; i++ )
 	{

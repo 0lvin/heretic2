@@ -119,7 +119,6 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 	newEnt->nextThinkTime = fxi.cl->time + nextThinkTime;
 	newEnt->startTime = fxi.cl->time;
 	newEnt->Update = RemoveSelfAI;
-	newEnt->r.rootJoint = NULL_ROOT_JOINT;
 
 	newEnt->r.swapFrame = -1;
 	return newEnt;
