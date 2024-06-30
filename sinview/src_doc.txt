@@ -1,0 +1,34 @@
+----------------------
+SinView 1.0 Source Code
+Copyright (c) Trey Harrison, 1998
+trey@u.washington.edu
+----------------------
+
+Instructions for VC++:
+
+You'll need the Glide2X SDK.
+You WONT need MFC. I hate MFC. Win32 is bad enough.
+
+You'll need to add ALL the .cpp files to the project.
+Add these to the list of libraries to link with:
+  glide2x.lib
+  comctl32.lib
+
+You'll need to add resource.rc to the project.
+
+And you'll need to add an additional include directory -
+files in the /engine subdirectory need to include files
+in the base directory. So if the tree was in D:\sinview
+you'd need to have D:\sinview as an additional include
+directory.
+
+As always, I tried to keep it readable, and cut-and-pasteable.
+
+Thanks to Mark D. at Ritual for help on the file formats.
+
+Sin and the Sin 'S' logo are trademarks
+of Ritual Entertainment (http://www.ritual.com)
+
+Trey Harrison
+trey@u.washington.edu
+

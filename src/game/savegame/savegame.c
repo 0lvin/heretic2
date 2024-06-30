@@ -281,6 +281,8 @@ InitGame(void)
 	game.clients = gi.TagMalloc(game.maxclients * sizeof(game.clients[0]), TAG_GAME);
 	globals.num_edicts = game.maxclients + 1;
 
+	InitMessages();
+
 	if (gamerules)
 	{
 		InitGameRules();

@@ -103,6 +103,9 @@ typedef struct
 	unsigned char data;   /* unbounded */
 } pcx_t;
 
+/* .MDL(HalfLife) triangle model file format */
+#define HLPOLYHEADER (('T' << 24) + ('S' << 16) + ('D' << 8) + 'I')
+
 /* .MDL triangle model file format */
 
 #define IDMDLHEADER (('O' << 24) + ('P' << 16) + ('D' << 8) + 'I')

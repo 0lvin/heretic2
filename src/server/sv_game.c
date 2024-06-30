@@ -437,6 +437,9 @@ SV_InitGameProgs(void)
 	import.TagFree = Z_Free;
 	import.FreeTags = Z_FreeTags;
 
+	import.FS_LoadFile = FS_LoadFile;
+	import.FS_FreeFile = FS_FreeFile;
+
 	import.cvar = Cvar_Get;
 	import.cvar_set = Cvar_Set;
 	import.cvar_forceset = Cvar_ForceSet;

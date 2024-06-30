@@ -1752,4 +1752,8 @@ qboolean Pickup_Sphere(edict_t * ent, edict_t * other);
 #include "../savegame/tables/gamefunc_decs.h"
 #endif
 
+/* Heretic 2 */
+void InitMessages(void);
+void translate_text(char *msg, int *sound_index);
+
 #endif /* GAME_LOCAL_H */
