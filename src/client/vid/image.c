@@ -175,8 +175,11 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 	pcx_width = pcx->xmax - pcx->xmin;
 	pcx_height = pcx->ymax - pcx->ymin;
 
-	if ((pcx->manufacturer != 0x0a) || (pcx->version != 5) ||
-		(pcx->encoding != 1) || (pcx->bits_per_pixel != 8))
+	if ((pcx->manufacturer != 0x0a) ||
+		(pcx->version != 5) ||
+		(pcx->encoding != 1) ||
+		(pcx->color_planes != 1) ||
+		(pcx->bits_per_pixel != 8))
 	{
 		Com_Printf("%s: Bad pcx file %s\n", __func__, name);
 		return;
