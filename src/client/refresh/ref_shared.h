@@ -96,13 +96,7 @@ extern void R_Printf(int level, const char* msg, ...) PRINTF_ATTR(2, 3);
 /* Shared images load */
 typedef struct image_s* (*loadimage_t)(const char *name, byte *pic, int width, int realwidth,
 	int height, int realheight, size_t data_size, imagetype_t type, int bits);
-extern struct image_s* LoadWal(const char *origname, const char *namewe, imagetype_t type,
-	loadimage_t load_image);
-extern struct image_s* LoadM8(const char *origname, const char *namewe, imagetype_t type,
-	loadimage_t load_image);
-extern void LoadSWL(const char *origname, byte **pic, byte **palette, int *width, int *height);
 extern void FixFileExt(const char *origname, const char *ext, char *filename, size_t size);
-extern void LoadPCX(const char *origname, byte **pic, byte **palette, int *width, int *height);
 extern void GetPCXInfo(const char *origname, int *width, int *height);
 extern void GetWalInfo(const char *name, int *width, int *height);
 extern void GetM8Info(const char *name, int *width, int *height);

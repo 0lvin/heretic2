@@ -58,7 +58,7 @@ FixFileExt(const char *origname, const char *ext, char *filename, size_t size)
 qboolean
 LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *height)
 {
-	int w, h, bytesPerPixel;
+	int w, h, bitesPerPixel;
 	char filename[256];
 	byte* data = NULL;
 
@@ -66,18 +66,18 @@ LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *hei
 
 	*pic = NULL;
 
-	ri.VID_ImageDecode(filename, &data, NULL, &w, &h, &bytesPerPixel);
+	ri.VID_ImageDecode(filename, &data, NULL, &w, &h, &bitesPerPixel);
 	if (data == NULL)
 	{
 		return false;
 	}
 
-	if (bytesPerPixel != 4)
+	if (bitesPerPixel != 32)
 	{
 		free(data);
 
 		R_Printf(PRINT_ALL, "%s unexpected file format of %s with %d bytes per pixel!\n",
-			__func__, filename, bytesPerPixel);
+			__func__, filename, bitesPerPixel);
 
 		return false;
 	}
@@ -500,29 +500,36 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 
 	if (!image)
 	{
-		if (!strcmp(ext, "pcx") || !strcmp(ext, "swl"))
+		int width = 0, height = 0, realwidth = 0, realheight = 0;
+		byte *pic = NULL, *palette = NULL;
+		char filename[256];
+		int bitesPerPixel;
+
+		/* name could not be used here as could have different extension
+		 * originaly */
+		FixFileExt(namewe, ext, filename, sizeof(filename));
+
+		ri.VID_ImageDecode(filename, &pic, &palette, &width, &height, &bitesPerPixel);
+
+		if (!pic)
 		{
-			int width = 0, height = 0, realwidth = 0, realheight = 0;
-			byte	*pic = NULL;
-			byte	*palette = NULL;
+			R_Printf(PRINT_DEVELOPER, "Bad %s file %s\n", ext, filename);
+			return NULL;
+		}
 
-			if (!strcmp(ext, "pcx"))
-			{
-				LoadPCX (namewe, &pic, &palette, &width, &height);
-			}
-			else if (!strcmp(ext, "swl"))
-			{
-				LoadSWL (namewe, &pic, &palette, &width, &height);
-			}
+		realheight = height;
+		realwidth = width;
 
-			if (!pic)
-			{
-				return NULL;
-			}
-
-			realheight = height;
-			realwidth = width;
-
+		if (bitesPerPixel == 32)
+		{
+			image = load_image(name, pic,
+				width, realwidth,
+				height, realheight,
+				width * height,
+				type, bitesPerPixel);
+		}
+		else
+		{
 			if (r_retexturing >= 2)
 			{
 				byte *image_scale = NULL;
@@ -566,44 +573,18 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 			else
 			{
 				image = load_image(name, pic,
-					width, width,
-					height, height,
-					width * height, type, 8);
-			}
-
-			if (palette)
-			{
-				free(palette);
-			}
-			free(pic);
-		}
-		else if (!strcmp(ext, "wal"))
-		{
-			image = LoadWal(name, namewe, type, load_image);
-		}
-		else if (!strcmp(ext, "m8"))
-		{
-			image = LoadM8(name, namewe, type, load_image);
-		}
-		else if (!strcmp(ext, "tga") ||
-		         !strcmp(ext, "m32") ||
-		         !strcmp(ext, "png") ||
-		         !strcmp(ext, "jpg"))
-		{
-			byte *pic = NULL;
-			int width = 0, height = 0;
-
-			if (LoadSTB (namewe, ext, &pic, &width, &height) && pic)
-			{
-				image = load_image(name, pic,
-					width, width,
-					height, height,
-					width * height,
-					type, 32);
-
-				free(pic);
+					width, realwidth,
+					height, realheight,
+					width * height, type, bitesPerPixel);
 			}
 		}
+
+		if (palette)
+		{
+			free(palette);
+		}
+
+		free(pic);
 	}
 
 	return image;

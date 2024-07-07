@@ -26,7 +26,7 @@
 
 #include "../../client/header/client.h"
 
-#define PCX_IDENT ((0x08 << 24) + (0x01 << 16) + (0x05 << 8) + 0x0a)
+#define PCX_IDENT ((0x05 << 8) + 0x0a)
 // don't need HDR stuff
 #define STBI_NO_LINEAR
 #define STBI_NO_HDR
@@ -135,7 +135,7 @@ fixQuitScreen(byte* px)
 }
 
 static void
-PCX_Decode(const byte *raw, int len, byte **pic, byte **palette,
+PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palette,
 	int *width, int *height)
 {
 	pcx_t *pcx;
@@ -145,7 +145,6 @@ PCX_Decode(const byte *raw, int len, byte **pic, byte **palette,
 	qboolean image_issues = false;
 	int dataByte, runLength;
 	byte *out, *pix;
-	char filename[256];
 
 	*pic = NULL;
 
@@ -179,7 +178,7 @@ PCX_Decode(const byte *raw, int len, byte **pic, byte **palette,
 	if ((pcx->manufacturer != 0x0a) || (pcx->version != 5) ||
 		(pcx->encoding != 1) || (pcx->bits_per_pixel != 8))
 	{
-		Com_Printf("Bad pcx file %s\n", filename);
+		Com_Printf("%s: Bad pcx file %s\n", __func__, name);
 		return;
 	}
 
@@ -193,7 +192,7 @@ PCX_Decode(const byte *raw, int len, byte **pic, byte **palette,
 	out = malloc(full_size);
 	if (!out)
 	{
-		Com_Printf("Can't allocate\n");
+		Com_Printf("%s: Can't allocate for %s\n", __func__, name);
 		return;
 	}
 
@@ -206,7 +205,7 @@ PCX_Decode(const byte *raw, int len, byte **pic, byte **palette,
 		*palette = malloc(768);
 		if (!(*palette))
 		{
-			Com_Printf("Can't allocate\n");
+			Com_Printf("%s: Can't allocate for %s\n", __func__, name);
 			free(out);
 			return;
 		}
@@ -279,23 +278,23 @@ PCX_Decode(const byte *raw, int len, byte **pic, byte **palette,
 
 	if (raw - (byte *)pcx > len)
 	{
-		Com_DPrintf("PCX file was malformed");
+		Com_DPrintf("%s: %s file was malformed\n", __func__, name);
 		free(*pic);
 		*pic = NULL;
 	}
 
 	if (image_issues)
 	{
-		Com_Printf("PCX file has possible size issues.\n");
+		Com_Printf("%s: %s file has possible size issues.\n", __func__, name);
 	}
 }
 
 static void
-SWL_Decode(const byte *raw, int len, byte **pic, byte **palette,
+SWL_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palette,
 	int *width, int *height)
 {
 	sinmiptex_t *mt;
-	int ofs, i;
+	int ofs;
 
 	mt = (sinmiptex_t *)raw;
 
@@ -308,7 +307,7 @@ SWL_Decode(const byte *raw, int len, byte **pic, byte **palette,
 
 	if (len < sizeof(*mt))
 	{
-		Com_DPrintf("%s: can't load, small header\n", __func__);
+		Com_DPrintf("%s: can't load %s small header\n", __func__, name);
 		return;
 	}
 
@@ -319,7 +318,7 @@ SWL_Decode(const byte *raw, int len, byte **pic, byte **palette,
 	if ((ofs <= 0) || (*width <= 0) || (*height <= 0) ||
 	    (((len - ofs) / *height) < *width))
 	{
-		Com_DPrintf("%s: can't load, small body\n", __func__);
+		Com_DPrintf("%s: can't load %s small body\n", __func__, name);
 		return;
 	}
 
@@ -328,6 +327,8 @@ SWL_Decode(const byte *raw, int len, byte **pic, byte **palette,
 
 	if (palette)
 	{
+		int i;
+
 		*palette = malloc(768);
 		for (i = 0; i < 256; i ++)
 		{
@@ -339,7 +340,7 @@ SWL_Decode(const byte *raw, int len, byte **pic, byte **palette,
 }
 
 static void
-M32_Decode(const byte *raw, int len, byte **pic, int *width, int *height)
+M32_Decode(const char *name, const byte *raw, int len, byte **pic, int *width, int *height)
 {
 	m32tex_t *mt;
 	int ofs;
@@ -353,13 +354,13 @@ M32_Decode(const byte *raw, int len, byte **pic, int *width, int *height)
 
 	if (len < sizeof(m32tex_t))
 	{
-		Com_DPrintf("%s: can't load, small header\n", __func__);
+		Com_DPrintf("%s: can't load %s small header\n", __func__, name);
 		return;
 	}
 
 	if (LittleLong (mt->version) != M32_VERSION)
 	{
-		Com_DPrintf("%s: can't load, wrong magic value.\n", __func__);
+		Com_DPrintf("%s: can't load %s wrong magic value.\n", __func__, name);
 		return;
 	}
 
@@ -370,16 +371,148 @@ M32_Decode(const byte *raw, int len, byte **pic, int *width, int *height)
 	if ((ofs <= 0) || (*width <= 0) || (*height <= 0) ||
 	    (((len - ofs) / *height) < (*width * 4)))
 	{
-		Com_DPrintf("%s: can't load, small body\n", __func__);
+		Com_DPrintf("%s: can't load %s small body\n", __func__, name);
 	}
 
 	*pic = malloc (len - ofs);
 	memcpy(*pic, (byte *)mt + ofs, len - ofs);
 }
 
+static void
+M8_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palette,
+	int *width, int *height)
+{
+	m8tex_t *mt;
+	int ofs;
+
+	mt = (m8tex_t *)raw;
+
+	if (!mt)
+	{
+		return;
+	}
+
+	if (len < sizeof(*mt))
+	{
+		Com_Printf("%s: can't load %s, small header\n", __func__, name);
+		return;
+	}
+
+	if (LittleLong (mt->version) != M8_VERSION)
+	{
+		Com_Printf("%s: can't load %s, wrong magic value.\n", __func__, name);
+		return;
+	}
+
+	*width = LittleLong(mt->width[0]);
+	*height = LittleLong(mt->height[0]);
+	ofs = LittleLong(mt->offsets[0]);
+
+	if ((ofs <= 0) || (*width <= 0) || (*height <= 0) ||
+	    (((len - ofs) / *height) < *width))
+	{
+		Com_Printf("%s: can't load %s, small body\n", __func__, name);
+		return;
+	}
+
+	*pic = malloc(len - ofs);
+	memcpy(*pic, (byte *)mt + ofs, len - ofs);
+	if (palette)
+	{
+		*palette = malloc(768);
+		memcpy(*palette, mt->palette, 768);
+	}
+}
+
+static void
+LoadWalQ2(const char *name, const byte *raw, int len, byte **pic, byte **palette,
+	int *width, int *height)
+{
+	const miptex_t *mt;
+	int ofs;
+
+	mt = (miptex_t *)raw;
+
+	if (len < sizeof(*mt))
+	{
+		Com_Printf("%s: can't load %s, small header\n", __func__, name);
+		return;
+	}
+
+	*width = LittleLong(mt->width);
+	*height = LittleLong(mt->height);
+	ofs = LittleLong(mt->offsets[0]);
+
+	if ((ofs <= 0) || (*width <= 0) || (*height <= 0) ||
+	    (((len - ofs) / *height) < *width))
+	{
+		Com_Printf("%s: can't load %s, small body\n", __func__, name);
+		return;
+	}
+
+	*pic = malloc (len - ofs);
+	memcpy(*pic, (byte *)mt + ofs, len - ofs);
+}
+
+static void
+LoadWalDKM(const char *name, const byte *raw, int len, byte **pic, byte **palette,
+	int *width, int *height)
+{
+	dkmtex_t *mt;
+	int ofs;
+
+	mt = (dkmtex_t *)raw;
+
+	if (len < sizeof(*mt))
+	{
+		Com_Printf("%s: can't load %s, small header\n", __func__, name);
+		return;
+	}
+
+	if (mt->version != DKM_WAL_VERSION)
+	{
+		Com_Printf("%s: can't load %s, wrong magic value.\n", __func__, name);
+		return;
+	}
+
+	*width = LittleLong(mt->width);
+	*height = LittleLong(mt->height);
+	ofs = LittleLong(mt->offsets[0]);
+
+	if ((ofs <= 0) || (*width <= 0) || (*height <= 0) ||
+	    (((len - ofs) / *height) < *width))
+	{
+		Com_Printf("%s: can't load %s, small body\n", __func__, name);
+		return;
+	}
+
+	*pic = malloc (len - ofs);
+	memcpy(*pic, (byte *)mt + ofs, len - ofs);
+
+	if (palette)
+	{
+		*palette = malloc(768);
+		memcpy(*palette, mt->palette, 768);
+	}
+}
+
+static void
+WAL_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palette,
+	int *width, int *height)
+{
+	if (*raw == DKM_WAL_VERSION)
+	{
+		LoadWalDKM(name, raw, len, pic, palette, width, height);
+	}
+	else
+	{
+		LoadWalQ2(name, raw, len, pic, palette, width, height);
+	}
+}
+
 void
 VID_ImageDecode(const char *filename, byte **pic, byte **palette,
-	int *width, int *height, int *bytesPerPixel)
+	int *width, int *height, int *bitesPerPixel)
 {
 	const char* ext;
 	int len, ident;
@@ -403,10 +536,10 @@ VID_ImageDecode(const char *filename, byte **pic, byte **palette,
 
 	*pic = NULL;
 
-	ident = LittleLong(*((int*)raw));
-	if (ident == PCX_IDENT)
+	ident = LittleShort(*((short*)raw));
+	if (!strcmp(ext, "pcx") && (ident == PCX_IDENT))
 	{
-		PCX_Decode(raw, len, pic, palette, width, height);
+		PCX_Decode(filename, raw, len, pic, palette, width, height);
 
 		if(*pic && width && height
 			&& *width == 319 && *height == 239
@@ -418,16 +551,26 @@ VID_ImageDecode(const char *filename, byte **pic, byte **palette,
 			fixQuitScreen(*pic);
 		}
 
-		*bytesPerPixel = 1;
+		*bitesPerPixel = 8;
+	}
+	else if (!strcmp(ext, "m8"))
+	{
+		M8_Decode(filename, raw, len, pic, palette, width, height);
+		*bitesPerPixel = 8;
 	}
 	else if (!strcmp(ext, "swl"))
 	{
-		SWL_Decode(raw, len, pic, palette, width, height);
-		*bytesPerPixel = 1;
+		SWL_Decode(filename, raw, len, pic, palette, width, height);
+		*bitesPerPixel = 8;
+	}
+	else if (!strcmp(ext, "wal"))
+	{
+		WAL_Decode(filename, raw, len, pic, palette, width, height);
+		*bitesPerPixel = 8;
 	}
 	else
 	{
-		int sourceBytesPerPixel = 0;
+		int sourcebitesPerPixel = 0;
 
 		/* other formats does not have palette directly */
 		if (palette)
@@ -437,23 +580,21 @@ VID_ImageDecode(const char *filename, byte **pic, byte **palette,
 
 		if (!strcmp(ext, "m32"))
 		{
-			M32_Decode(raw, len, pic, width, height);
-			printf("->%s:%p\n", filename, *pic);
+			M32_Decode(filename, raw, len, pic, width, height);
 		}
 		else
 		{
 			*pic = stbi_load_from_memory(raw, len, width, height,
-				&sourceBytesPerPixel, STBI_rgb_alpha);
+				&sourcebitesPerPixel, STBI_rgb_alpha);
+
+			if (*pic == NULL)
+			{
+				Com_DPrintf("%s couldn't load data from %s: %s!\n",
+					__func__, filename, stbi_failure_reason());
+			}
 		}
 
-		if (*pic == NULL)
-		{
-			Com_DPrintf("%s couldn't load data from %s: %s!\n",
-				__func__, filename, stbi_failure_reason());
-			return;
-		}
-
-		*bytesPerPixel = 4;
+		*bitesPerPixel = 32;
 	}
 
 	FS_FreeFile(raw);
@@ -533,14 +674,14 @@ static void
 LoadPalette(byte **colormap, unsigned *d_8to24table)
 {
 	const char * filename;
-	int bytesPerPixel;
+	int bitesPerPixel;
 	byte *pal = NULL;
 
 	filename = "pics/colormap.pcx";
 
 	/* get the palette and colormap */
 	VID_ImageDecode(filename, colormap, &pal, NULL, NULL,
-		&bytesPerPixel);
+		&bitesPerPixel);
 	if (!*colormap || !pal)
 	{
 		int width = 0, height = 0;
@@ -548,7 +689,7 @@ LoadPalette(byte **colormap, unsigned *d_8to24table)
 
 		filename = "pics/colormap.bmp";
 
-		VID_ImageDecode(filename, &pic, NULL, &width, &height, &bytesPerPixel);
+		VID_ImageDecode(filename, &pic, NULL, &width, &height, &bitesPerPixel);
 		if (pic && width == 256 && height == 320)
 		{
 			int i;
