@@ -100,10 +100,7 @@ extern struct image_s* LoadWal(const char *origname, const char *namewe, imagety
 	loadimage_t load_image);
 extern struct image_s* LoadM8(const char *origname, const char *namewe, imagetype_t type,
 	loadimage_t load_image);
-extern struct image_s* LoadM32(const char *origname, const char *namewe, imagetype_t type,
-	loadimage_t load_image);
-extern struct image_s* LoadSWL(const char *origname, const char *namewe, imagetype_t type,
-	loadimage_t load_image);
+extern void LoadSWL(const char *origname, byte **pic, byte **palette, int *width, int *height);
 extern void FixFileExt(const char *origname, const char *ext, char *filename, size_t size);
 extern void LoadPCX(const char *origname, byte **pic, byte **palette, int *width, int *height);
 extern void GetPCXInfo(const char *origname, int *width, int *height);
@@ -339,7 +336,7 @@ extern struct image_s *GetSkyImage(const char *skyname, const char* surfname,
 extern struct image_s *GetTexImage(const char *name, findimage_t find_image);
 extern struct image_s *R_FindPic(const char *name, findimage_t find_image);
 extern struct image_s *R_LoadImage(const char *name, const char* namewe, const char *ext,
-	imagetype_t type, qboolean r_retexturing, loadimage_t load_image);
+	imagetype_t type, int r_retexturing, loadimage_t load_image);
 extern void Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces,
 	unsigned int *nummarksurfaces, msurface_t *surfaces, int numsurfaces,
 	const byte *mod_base, const lump_t *lMod_LoadQBSPMarksurfaces);

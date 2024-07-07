@@ -488,7 +488,7 @@ LoadHiColorImage(const char *name, const char* namewe, const char *ext,
 
 static struct image_s *
 LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t type,
-	qboolean r_retexturing, loadimage_t load_image)
+	int r_retexturing, loadimage_t load_image)
 {
 	struct image_s	*image = NULL;
 
@@ -500,16 +500,43 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 
 	if (!image)
 	{
-		if (!strcmp(ext, "pcx"))
+		if (!strcmp(ext, "pcx") || !strcmp(ext, "swl"))
 		{
+			int width = 0, height = 0, realwidth = 0, realheight = 0;
 			byte	*pic = NULL;
 			byte	*palette = NULL;
-			int width = 0, height = 0;
 
-			LoadPCX (namewe, &pic, &palette, &width, &height);
+			if (!strcmp(ext, "pcx"))
+			{
+				LoadPCX (namewe, &pic, &palette, &width, &height);
+			}
+			else if (!strcmp(ext, "swl"))
+			{
+				LoadSWL (namewe, &pic, &palette, &width, &height);
+			}
+
 			if (!pic)
 			{
 				return NULL;
+			}
+
+			realheight = height;
+			realwidth = width;
+
+			if (r_retexturing >= 2)
+			{
+				byte *image_scale = NULL;
+
+				/* scale image paletted images */
+				image_scale = malloc(width * height * 4);
+				scale2x(pic, image_scale, width, height);
+
+				/* replace pic with scale */
+				free(pic);
+				pic = image_scale;
+
+				width *= 2;
+				height *= 2;
 			}
 
 			if (r_retexturing && palette)
@@ -519,6 +546,7 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 
 				size = width * height;
 
+				/* convert to full color */
 				image_buffer = malloc (size * 4);
 				for(i = 0; i < size; i++)
 				{
@@ -530,8 +558,8 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 				}
 
 				image = load_image(name, image_buffer,
-					width, width,
-					height, height,
+					width, realwidth,
+					height, realheight,
 					size, type, 32);
 				free (image_buffer);
 			}
@@ -557,15 +585,8 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 		{
 			image = LoadM8(name, namewe, type, load_image);
 		}
-		else if (!strcmp(ext, "m32"))
-		{
-			image = LoadM32(name, namewe, type, load_image);
-		}
-		else if (!strcmp(ext, "swl"))
-		{
-			image = LoadSWL(name, namewe, type, load_image);
-		}
 		else if (!strcmp(ext, "tga") ||
+		         !strcmp(ext, "m32") ||
 		         !strcmp(ext, "png") ||
 		         !strcmp(ext, "jpg"))
 		{
@@ -590,7 +611,7 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 
 struct image_s *
 R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t type,
-	qboolean r_retexturing, loadimage_t load_image)
+	int r_retexturing, loadimage_t load_image)
 {
 	struct image_s	*image = NULL;
 
