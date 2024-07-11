@@ -134,19 +134,67 @@ fixQuitScreen(byte* px)
 	}
 }
 
+static const byte *
+PCX_RLE_Decode(byte *pix, byte *pix_max, const byte *raw, const byte *raw_max, int bytes_per_line)
+{
+	int x;
+
+	for (x = 0; x < bytes_per_line; )
+	{
+		int runLength;
+		byte dataByte;
+
+		if (raw >= raw_max)
+		{
+			// no place for read
+			return raw;
+		}
+		dataByte = *raw++;
+
+		if ((dataByte & 0xC0) == 0xC0)
+		{
+			runLength = dataByte & 0x3F;
+			if (raw >= raw_max)
+			{
+				// no place for read
+				return raw;
+			}
+			dataByte = *raw++;
+		}
+		else
+		{
+			runLength = 1;
+		}
+
+		while (runLength-- > 0)
+		{
+			if (pix_max <= (pix + x))
+			{
+				// no place for write
+				return raw;
+			}
+			else
+			{
+				pix[x++] = dataByte;
+			}
+		}
+	}
+	return raw;
+}
+
 static void
 PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palette,
-	int *width, int *height)
+	int *width, int *height, int *bitesPerPixel)
 {
 	pcx_t *pcx;
-	int x, y;
+	int y;
 	int full_size;
 	int pcx_width, pcx_height;
 	qboolean image_issues = false;
-	int dataByte, runLength;
 	byte *out, *pix;
 
 	*pic = NULL;
+	*bitesPerPixel = 8;
 
 	if (palette)
 	{
@@ -178,7 +226,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 	if ((pcx->manufacturer != 0x0a) ||
 		(pcx->version != 5) ||
 		(pcx->encoding != 1) ||
-		(pcx->color_planes != 1) ||
+		((pcx->color_planes != 1) && (pcx->color_planes != 3)) ||
 		(pcx->bits_per_pixel != 8))
 	{
 		Com_Printf("%s: Bad pcx file %s\n", __func__, name);
@@ -192,6 +240,12 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 	}
 
 	full_size = (pcx_height + 1) * (pcx_width + 1);
+	if (pcx->color_planes == 3)
+	{
+		full_size *= 4;
+		*bitesPerPixel = 32;
+	}
+
 	out = malloc(full_size);
 	if (!out)
 	{
@@ -203,7 +257,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 	pix = out;
 
-	if (palette)
+	if (palette && (pcx->color_planes == 1))
 	{
 		*palette = malloc(768);
 		if (!(*palette))
@@ -232,50 +286,36 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 		*height = pcx_height + 1;
 	}
 
-	for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
+	if (pcx->color_planes == 3)
 	{
-		for (x = 0; x < pcx->bytes_per_line; )
+		int x, y;
+		byte *line;
+
+		line = malloc(pcx->bytes_per_line * pcx->color_planes);
+
+		for (y = 0; y <= pcx_height; y++, pix += (pcx_width + 1) * 4)
 		{
-			if (raw - (byte *)pcx > len)
-			{
-				// no place for read
-				image_issues = true;
-				x = pcx_width;
-				break;
-			}
-			dataByte = *raw++;
+			raw = PCX_RLE_Decode(line, line + (pcx_width + 1) * pcx->color_planes,
+				raw, (byte *)pcx + len,
+				pcx->bytes_per_line * pcx->color_planes);
 
-			if ((dataByte & 0xC0) == 0xC0)
-			{
-				runLength = dataByte & 0x3F;
-				if (raw - (byte *)pcx > len)
-				{
-					// no place for read
-					image_issues = true;
-					x = pcx_width;
-					break;
-				}
-				dataByte = *raw++;
+			for (x = 0; x < pcx_width + 1; x++) {
+				pix[4 * x + 0] = line[x];
+				pix[4 * x + 1] = line[x + pcx->bytes_per_line];
+				pix[4 * x + 2] = line[x + pcx->bytes_per_line * 2];
+				pix[4 * x + 3] = 255;
 			}
-			else
-			{
-				runLength = 1;
-			}
+		}
 
-			while (runLength-- > 0)
-			{
-				if ((*pic + full_size) <= (pix + x))
-				{
-					// no place for write
-					image_issues = true;
-					x += runLength;
-					runLength = 0;
-				}
-				else
-				{
-					pix[x++] = dataByte;
-				}
-			}
+		free(line);
+	}
+	else
+	{
+		for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
+		{
+			raw = PCX_RLE_Decode(pix, pix + pcx_width + 1,
+				raw, (byte *)pcx + len,
+				pcx->bytes_per_line);
 		}
 	}
 
@@ -542,10 +582,10 @@ VID_ImageDecode(const char *filename, byte **pic, byte **palette,
 	ident = LittleShort(*((short*)raw));
 	if (!strcmp(ext, "pcx") && (ident == PCX_IDENT))
 	{
-		PCX_Decode(filename, raw, len, pic, palette, width, height);
+		PCX_Decode(filename, raw, len, pic, palette, width, height, bitesPerPixel);
 
 		if(*pic && width && height
-			&& *width == 319 && *height == 239
+			&& *width == 319 && *height == 239 && *bitesPerPixel == 8
 			&& Q_strcasecmp(filename, "pics/quit.pcx") == 0
 			&& Com_BlockChecksum(raw, len) == 3329419434u)
 		{
@@ -553,8 +593,6 @@ VID_ImageDecode(const char *filename, byte **pic, byte **palette,
 			// so fix it
 			fixQuitScreen(*pic);
 		}
-
-		*bitesPerPixel = 8;
 	}
 	else if (!strcmp(ext, "m8"))
 	{
