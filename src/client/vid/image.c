@@ -225,11 +225,10 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 	if ((pcx->manufacturer != 0x0a) ||
 		(pcx->version != 5) ||
-		(pcx->encoding != 1) ||
-		((pcx->color_planes != 1) && (pcx->color_planes != 3)) ||
-		(pcx->bits_per_pixel != 8))
+		(pcx->encoding != 1))
 	{
-		Com_Printf("%s: Bad pcx file %s\n", __func__, name);
+		Com_Printf("%s: Bad pcx file %s: version: %d:%d, encoding: %d\n",
+			__func__, name, pcx->manufacturer, pcx->version, pcx->encoding);
 		return;
 	}
 
@@ -240,7 +239,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 	}
 
 	full_size = (pcx_height + 1) * (pcx_width + 1);
-	if (pcx->color_planes == 3)
+	if (pcx->color_planes == 3 && pcx->bits_per_pixel == 8)
 	{
 		full_size *= 4;
 		*bitesPerPixel = 32;
@@ -256,25 +255,6 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 	*pic = out;
 
 	pix = out;
-
-	if (palette && (pcx->color_planes == 1))
-	{
-		*palette = malloc(768);
-		if (!(*palette))
-		{
-			Com_Printf("%s: Can't allocate for %s\n", __func__, name);
-			free(out);
-			return;
-		}
-		if (len > 768)
-		{
-			memcpy(*palette, (byte *)pcx + len - 768, 768);
-		}
-		else
-		{
-			image_issues = true;
-		}
-	}
 
 	if (width)
 	{
@@ -309,14 +289,38 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 		free(line);
 	}
-	else
+	else if (pcx->color_planes == 1 && pcx->bits_per_pixel == 8)
 	{
+		if (palette)
+		{
+			*palette = malloc(768);
+			if (!(*palette))
+			{
+				Com_Printf("%s: Can't allocate for %s\n", __func__, name);
+				free(out);
+				return;
+			}
+			if (len > 768)
+			{
+				memcpy(*palette, (byte *)pcx + len - 768, 768);
+			}
+			else
+			{
+				image_issues = true;
+			}
+		}
+
 		for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
 		{
 			raw = PCX_RLE_Decode(pix, pix + pcx_width + 1,
 				raw, (byte *)pcx + len,
 				pcx->bytes_per_line);
 		}
+	}
+	else
+	{
+		Com_Printf("%s: Bad pcx file %s: planes: %d, bits: %d\n",
+			__func__, name, pcx->color_planes, pcx->bits_per_pixel);
 	}
 
 	if (raw - (byte *)pcx > len)
