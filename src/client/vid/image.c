@@ -326,12 +326,8 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 				pcx->bytes_per_line);
 		}
 	}
-	else
+	else if (pcx->bits_per_pixel == 1)
 	{
-		// PCX_Decode: Bad pcx file pics/lena4.pcx: planes: 4, bits: 1
-		Com_Printf("%s: Bad pcx file %s: planes: %d, bits: %d, palete %d -> %dx%d\n",
-			__func__, name, pcx->color_planes, pcx->bits_per_pixel, pcx->palette_type,
-			pcx_height, pcx_width);
 		byte *line;
 		int y;
 
@@ -374,6 +370,14 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 			}
 		}
 		free(line);
+	}
+	else
+	{
+		Com_Printf("%s: Bad pcx file %s: planes: %d, bits: %d, palete %d -> %dx%d\n",
+			__func__, name, pcx->color_planes, pcx->bits_per_pixel, pcx->palette_type,
+			pcx_height, pcx_width);
+		free(*pic);
+		*pic = NULL;
 	}
 
 	if (raw - (byte *)pcx > len)

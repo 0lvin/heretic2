@@ -42,16 +42,16 @@ baseq2/pics/prey0013.pcx +
 baseq2/pics/prey0014.pcx +
 baseq2/pics/prey0015.pcx +
 baseq2/pics/sw0024.pcx +
-baseq2/pics/sw0025.pcx
-baseq2/pics/sw0026.pcx
-baseq2/pics/sw0027.pcx
-baseq2/pics/swcp0002.pcx
-baseq2/pics/swcp0034.pcx
-baseq2/pics/swpic1.pcx
-baseq2/pics/swpic2.pcx
-baseq2/pics/swpic3.pcx
-baseq2/pics/swpic4.pcx
-baseq2/pics/swpic6.pcx
-baseq2/pics/swpic7.pcx
-baseq2/pics/swpic8.pcx
-baseq2/pics/swpic9.pcx
+baseq2/pics/sw0025.pcx +
+baseq2/pics/sw0026.pcx +
+baseq2/pics/sw0027.pcx +
+baseq2/pics/swcp0002.pcx +
+baseq2/pics/swcp0034.pcx +
+baseq2/pics/swpic1.pcx +
+baseq2/pics/swpic2.pcx +
+baseq2/pics/swpic3.pcx +
+baseq2/pics/swpic4.pcx +
+baseq2/pics/swpic6.pcx +
+baseq2/pics/swpic7.pcx +
+baseq2/pics/swpic8.pcx +
+baseq2/pics/swpic9.pcx +
