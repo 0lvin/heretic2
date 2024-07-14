@@ -461,40 +461,17 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 				for (x = 0; x <= pcx_width; x++)
 				{
-					unsigned v;
+					unsigned v, shift;
 
 					v = line[x / div] & 0xFF;
-
-					if (pcx->bits_per_pixel == 4)
-					{
-						if (x % 2 == 1)
-						{
-							pix[x] = (v >> 0) & mask;
-						}
-						else
-						{
-							pix[x] = (v >> 4) & mask;
-						}
-					}
-					else
-					{
-						if (x % 4 == 3)
-						{
-							pix[x] = (v >> 0) & mask;
-						}
-						else if (x % 4 == 2)
-						{
-							pix[x] = (v >> 2) & mask;
-						}
-						else if (x % 4 == 1)
-						{
-							pix[x] = (v >> 4) & mask;
-						}
-						else
-						{
-							pix[x] = (v >> 6) & mask;
-						}
-					}
+					/* for 2 bits:
+					 * 0 -> 6
+					 * 1 -> 4
+					 * 3 -> 2
+					 * 4 -> 0
+					 */
+					shift = pcx->bits_per_pixel * ((div - 1) - x % div);
+					pix[x] = (v >> shift) & mask;
 				}
 			}
 
