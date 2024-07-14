@@ -309,7 +309,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 				return;
 			}
 
-			if (len > 768)
+			if ((len > 768) && (((byte *)pcx)[len - 769] == 0x0C))
 			{
 				memcpy(*palette, (byte *)pcx + len - 768, 768);
 			}
@@ -329,8 +329,9 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 	else
 	{
 		// PCX_Decode: Bad pcx file pics/lena4.pcx: planes: 4, bits: 1
-		Com_Printf("%s: Bad pcx file %s: planes: %d, bits: %d\n",
-			__func__, name, pcx->color_planes, pcx->bits_per_pixel);
+		Com_Printf("%s: Bad pcx file %s: planes: %d, bits: %d, palete %d -> %dx%d\n",
+			__func__, name, pcx->color_planes, pcx->bits_per_pixel, pcx->palette_type,
+			pcx_height, pcx_width);
 		byte *line;
 		int y;
 
@@ -618,6 +619,7 @@ VID_ImageDecode(const char *filename, byte **pic, byte **palette,
 	byte *raw;
 
 	ext = COM_FileExtension(filename);
+	*pic = NULL;
 
 	/* load the file */
 	len = FS_LoadFile(filename, (void **)&raw);
@@ -632,8 +634,6 @@ VID_ImageDecode(const char *filename, byte **pic, byte **palette,
 		FS_FreeFile(raw);
 		return;
 	}
-
-	*pic = NULL;
 
 	ident = LittleShort(*((short*)raw));
 	if (!strcmp(ext, "pcx") && (ident == PCX_IDENT))
