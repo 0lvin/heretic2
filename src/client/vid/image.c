@@ -259,7 +259,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 		*height = pcx_height + 1;
 	}
 
-	if (pcx->color_planes == 3)
+	if (pcx->color_planes == 3 && pcx->bits_per_pixel == 8)
 	{
 		int x, y;
 		byte *line;
@@ -278,7 +278,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 				raw, (byte *)pcx + len,
 				pcx->bytes_per_line * pcx->color_planes);
 
-			for (x = 0; x < pcx_width + 1; x++) {
+			for (x = 0; x <= pcx_width; x++) {
 				pix[4 * x + 0] = line[x];
 				pix[4 * x + 1] = line[x + pcx->bytes_per_line];
 				pix[4 * x + 2] = line[x + pcx->bytes_per_line * 2];
