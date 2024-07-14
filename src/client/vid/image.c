@@ -450,51 +450,49 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 			for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
 			{
-				int x;
+				int x, mask, div;
 
 				raw = PCX_RLE_Decode(line, line + pcx->bytes_per_line,
 					raw, (byte *)pcx + len,
 					pcx->bytes_per_line);
 
-				if (pcx->bits_per_pixel == 4)
-				{
-					for (x = 0; x <= pcx_width; x++)
-					{
-						unsigned v;
+				mask = (1 << pcx->bits_per_pixel) - 1;
+				div = 8 / pcx->bits_per_pixel;
 
-						v = line[x / 2] & 0xFF;
+				for (x = 0; x <= pcx_width; x++)
+				{
+					unsigned v;
+
+					v = line[x / div] & 0xFF;
+
+					if (pcx->bits_per_pixel == 4)
+					{
 						if (x % 2 == 1)
 						{
-							pix[x] = (v >> 0) & 0x0f;
+							pix[x] = (v >> 0) & mask;
 						}
 						else
 						{
-							pix[x] = (v >> 4) & 0x0f;
+							pix[x] = (v >> 4) & mask;
 						}
 					}
-				}
-				else
-				{
-					for (x = 0; x <= pcx_width; x++)
+					else
 					{
-						unsigned v;
-
-						v = line[x / 4] & 0xFF;
 						if (x % 4 == 3)
 						{
-							pix[x] = (v >> 0) & 0x03;
+							pix[x] = (v >> 0) & mask;
 						}
 						else if (x % 4 == 2)
 						{
-							pix[x] = (v >> 2) & 0x03;
+							pix[x] = (v >> 2) & mask;
 						}
 						else if (x % 4 == 1)
 						{
-							pix[x] = (v >> 4) & 0x03;
+							pix[x] = (v >> 4) & mask;
 						}
 						else
 						{
-							pix[x] = (v >> 6) & 0x03;
+							pix[x] = (v >> 6) & mask;
 						}
 					}
 				}
