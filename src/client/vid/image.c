@@ -114,6 +114,7 @@ static unsigned char quitscreenfix[] = {
 
 static byte *colormap_cache = NULL;
 static unsigned d_8to24table_cache[256];
+static qboolean colormap_loaded = false;
 
 
 static void
@@ -135,7 +136,8 @@ fixQuitScreen(byte* px)
 }
 
 static const byte *
-PCX_RLE_Decode(byte *pix, byte *pix_max, const byte *raw, const byte *raw_max, int bytes_per_line)
+PCX_RLE_Decode(byte *pix, byte *pix_max, const byte *raw, const byte *raw_max,
+	int bytes_per_line, qboolean *image_issues)
 {
 	int x;
 
@@ -147,6 +149,7 @@ PCX_RLE_Decode(byte *pix, byte *pix_max, const byte *raw, const byte *raw_max, i
 		if (raw >= raw_max)
 		{
 			// no place for read
+			*image_issues = true;
 			return raw;
 		}
 		dataByte = *raw++;
@@ -157,6 +160,7 @@ PCX_RLE_Decode(byte *pix, byte *pix_max, const byte *raw, const byte *raw_max, i
 			if (raw >= raw_max)
 			{
 				// no place for read
+				*image_issues = true;
 				return raw;
 			}
 			dataByte = *raw++;
@@ -171,6 +175,7 @@ PCX_RLE_Decode(byte *pix, byte *pix_max, const byte *raw, const byte *raw_max, i
 			if (pix_max <= (pix + x))
 			{
 				// no place for write
+				*image_issues = true;
 				return raw;
 			}
 			else
@@ -217,7 +222,12 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 	if ((pcx->manufacturer != 0x0a) ||
 		(pcx->version != 5) ||
-		(pcx->encoding != 1))
+		(pcx->encoding != 1) ||
+		(pcx_width <= 0) ||
+		(pcx_height <= 0) ||
+		(bytes_per_line <= 0) ||
+		(pcx->color_planes <= 0) ||
+		(pcx->bits_per_pixel <= 0))
 	{
 		Com_Printf("%s: Bad pcx file %s: version: %d:%d, encoding: %d\n",
 			__func__, name, pcx->manufacturer, pcx->version, pcx->encoding);
@@ -273,7 +283,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 		{
 			data = PCX_RLE_Decode(line, line + (pcx_width + 1) * pcx->color_planes,
 				data, (byte *)pcx + len,
-				bytes_per_line * pcx->color_planes);
+				bytes_per_line * pcx->color_planes, &image_issues);
 
 			for (x = 0; x <= pcx_width; x++) {
 				int j;
@@ -314,7 +324,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 			data = PCX_RLE_Decode(line, line + bytes_per_line * pcx->color_planes,
 				data, (byte *)pcx + len,
-				bytes_per_line * pcx->color_planes);
+				bytes_per_line * pcx->color_planes, &image_issues);
 
 			for (x = 0; x <= pcx_width; x++)
 			{
@@ -332,100 +342,95 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 		}
 		free(line);
 	}
-	else if (pcx->color_planes == 1 &&
-		(pcx->bits_per_pixel == 2 ||
-		pcx->bits_per_pixel == 4 ||
-		pcx->bits_per_pixel == 8))
+	else if (pcx->color_planes == 1 && pcx->bits_per_pixel == 8)
 	{
-		if (pcx->bits_per_pixel == 8)
+		int y;
+
+		if (palette)
 		{
-			int y;
+			*palette = malloc(768);
 
-			if (palette)
+			if (!(*palette))
 			{
-				*palette = malloc(768);
-
-				if (!(*palette))
-				{
-					Com_Printf("%s: Can't allocate for %s\n", __func__, name);
-					free(out);
-					return;
-				}
-
-				if ((len > 768) && (((byte *)pcx)[len - 769] == 0x0C))
-				{
-					memcpy(*palette, (byte *)pcx + len - 768, 768);
-				}
-				else
-				{
-					image_issues = true;
-				}
+				Com_Printf("%s: Can't allocate for %s\n", __func__, name);
+				free(out);
+				return;
 			}
 
-			if (bytes_per_line <= pcx_width)
+			if ((len > 768) && (((byte *)pcx)[len - 769] == 0x0C))
 			{
-				bytes_per_line = pcx_width + 1;
+				memcpy(*palette, (byte *)pcx + len - 768, 768);
+			}
+			else
+			{
 				image_issues = true;
 			}
-
-			for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
-			{
-				data = PCX_RLE_Decode(pix, pix + pcx_width + 1,
-					data, (byte *)pcx + len,
-					bytes_per_line);
-			}
 		}
-		else
+
+		if (bytes_per_line <= pcx_width)
 		{
-			int y;
-
-			byte *line;
-
-			if (palette)
-			{
-				*palette = malloc(768);
-
-				if (!(*palette))
-				{
-					Com_Printf("%s: Can't allocate for %s\n", __func__, name);
-					free(out);
-					return;
-				}
-
-				memcpy(*palette, pcx->palette, sizeof(pcx->palette));
-			}
-
-			line = malloc(bytes_per_line);
-
-			for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
-			{
-				int x, mask, div;
-
-				data = PCX_RLE_Decode(line, line + bytes_per_line,
-					data, (byte *)pcx + len,
-					bytes_per_line);
-
-				mask = (1 << pcx->bits_per_pixel) - 1;
-				div = 8 / pcx->bits_per_pixel;
-
-				for (x = 0; x <= pcx_width; x++)
-				{
-					unsigned v, shift;
-
-					v = line[x / div] & 0xFF;
-					/* for 2 bits:
-					 * 0 -> 6
-					 * 1 -> 4
-					 * 3 -> 2
-					 * 4 -> 0
-					 */
-					shift = pcx->bits_per_pixel * ((div - 1) - x % div);
-					pix[x] = (v >> shift) & mask;
-				}
-			}
-
-			free(line);
+			bytes_per_line = pcx_width + 1;
+			image_issues = true;
 		}
+
+		for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
+		{
+			data = PCX_RLE_Decode(pix, pix + pcx_width + 1,
+				data, (byte *)pcx + len,
+				bytes_per_line, &image_issues);
+		}
+	}
+	else if (pcx->color_planes == 1 &&
+		(pcx->bits_per_pixel == 2 || pcx->bits_per_pixel == 4))
+	{
+		int y;
+
+		byte *line;
+
+		if (palette)
+		{
+			*palette = malloc(768);
+
+			if (!(*palette))
+			{
+				Com_Printf("%s: Can't allocate for %s\n", __func__, name);
+				free(out);
+				return;
+			}
+
+			memcpy(*palette, pcx->palette, sizeof(pcx->palette));
+		}
+
+		line = malloc(bytes_per_line);
+
+		for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
+		{
+			int x, mask, div;
+
+			data = PCX_RLE_Decode(line, line + bytes_per_line,
+				data, (byte *)pcx + len,
+				bytes_per_line, &image_issues);
+
+			mask = (1 << pcx->bits_per_pixel) - 1;
+			div = 8 / pcx->bits_per_pixel;
+
+			for (x = 0; x <= pcx_width; x++)
+			{
+				unsigned v, shift;
+
+				v = line[x / div] & 0xFF;
+				/* for 2 bits:
+				 * 0 -> 6
+				 * 1 -> 4
+				 * 3 -> 2
+				 * 4 -> 0
+				 */
+				shift = pcx->bits_per_pixel * ((div - 1) - x % div);
+				pix[x] = (v >> shift) & mask;
+			}
+		}
+
+		free(line);
 	}
 	else
 	{
@@ -680,8 +685,99 @@ WAL_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 	}
 }
 
-void
-VID_ImageDecode(const char *filename, byte **pic, byte **palette,
+static byte
+Convert24to8(const byte *d_8to24table, const int rgb[3])
+{
+	int i, best, diff;
+
+	best = 255;
+	diff = 1 << 20;
+
+	for (i = 0; i < 256; i ++)
+	{
+		int j, curr_diff;
+
+		curr_diff = 0;
+
+		for (j = 0; j < 3; j++)
+		{
+			int v;
+
+			v = d_8to24table[i * 4 + j] - rgb[j];
+			curr_diff += v * v;
+		}
+
+		if (curr_diff < diff)
+		{
+			diff = curr_diff;
+			best = i;
+		}
+	}
+
+	return best;
+}
+
+static void
+GenerateColormap(const byte *palette, byte *out_colormap)
+{
+	// https://quakewiki.org/wiki/Quake_palette
+	int num_fullbrights = 32; /* the last 32 colours will be full bright */
+	int x;
+
+	for (x = 0; x < 256; x++)
+	{
+		int y;
+
+		for (y = 0; y < 64; y++)
+		{
+			if (x < 256 - num_fullbrights)
+			{
+				int rgb[3], i;
+
+				for (i = 0; i < 3; i++)
+				{
+					/* divide by 32, rounding to nearest integer */
+					rgb[i] = (palette[x * 4 + i] * (63 - y) + 16) >> 5;
+					if (rgb[i] > 255)
+					{
+						rgb[i] = 255;
+					}
+				}
+
+				out_colormap[y * 256 + x] = Convert24to8(palette, rgb);
+			}
+			else
+			{
+				/* this colour is a fullbright, just keep the original colour */
+				out_colormap[y*256 + x] = x;
+			}
+		}
+	}
+}
+
+static void
+Convert24to32(unsigned *d_8to24table, byte *pal)
+{
+	int i;
+
+	for (i = 0; i < 256; i++)
+	{
+		unsigned v;
+		int	r, g, b;
+
+		r = pal[i*3+0];
+		g = pal[i*3+1];
+		b = pal[i*3+2];
+
+		v = (255U<<24) + (r<<0) + (g<<8) + (b<<16);
+		d_8to24table[i] = LittleLong(v);
+	}
+
+	d_8to24table[255] &= LittleLong(0xffffff);	// 255 is transparent
+}
+
+static void
+LoadImageWithPalette(const char *filename, byte **pic, byte **palette,
 	int *width, int *height, int *bitesPerPixel)
 {
 	const char* ext;
@@ -767,73 +863,18 @@ VID_ImageDecode(const char *filename, byte **pic, byte **palette,
 	FS_FreeFile(raw);
 }
 
-static byte
-Convert24to8(const byte *d_8to24table, const int rgb[3])
+void
+VID_ImageDecode(const char *filename, byte **pic, byte **palette,
+	int *width, int *height, int *bitesPerPixel)
 {
-	int i, best, diff;
+	LoadImageWithPalette(filename, pic, palette, width, height, bitesPerPixel);
 
-	best = 255;
-	diff = 1 << 20;
-
-	for (i = 0; i < 256; i ++)
+	if (palette && *palette && colormap_cache && !colormap_loaded)
 	{
-		int j, curr_diff;
-
-		curr_diff = 0;
-
-		for (j = 0; j < 3; j++)
-		{
-			int v;
-
-			v = d_8to24table[i * 4 + j] - rgb[j];
-			curr_diff += v * v;
-		}
-
-		if (curr_diff < diff)
-		{
-			diff = curr_diff;
-			best = i;
-		}
-	}
-
-	return best;
-}
-
-static void
-GenerateColormap(const byte *palette, byte *out_colormap)
-{
-	// https://quakewiki.org/wiki/Quake_palette
-	int num_fullbrights = 32; /* the last 32 colours will be full bright */
-	int x;
-
-	for (x = 0; x < 256; x++)
-	{
-		int y;
-
-		for (y = 0; y < 64; y++)
-		{
-			if (x < 256 - num_fullbrights)
-			{
-				int rgb[3], i;
-
-				for (i = 0; i < 3; i++)
-				{
-					/* divide by 32, rounding to nearest integer */
-					rgb[i] = (palette[x * 4 + i] * (63 - y) + 16) >> 5;
-					if (rgb[i] > 255)
-					{
-						rgb[i] = 255;
-					}
-				}
-
-				out_colormap[y*256+x] = Convert24to8(palette, rgb);
-			}
-			else
-			{
-				/* this colour is a fullbright, just keep the original colour */
-				out_colormap[y*256+x] = x;
-			}
-		}
+		/* Stil have no palette, lets use palete from first loaded image */
+		Convert24to32(d_8to24table_cache, *palette);
+		GenerateColormap((const byte *)d_8to24table_cache, colormap_cache);
+		colormap_loaded = true;
 	}
 }
 
@@ -847,7 +888,7 @@ LoadPalette(byte **colormap, unsigned *d_8to24table)
 	filename = "pics/colormap.pcx";
 
 	/* get the palette and colormap */
-	VID_ImageDecode(filename, colormap, &pal, NULL, NULL,
+	LoadImageWithPalette(filename, colormap, &pal, NULL, NULL,
 		&bitesPerPixel);
 	if (!*colormap || !pal)
 	{
@@ -856,7 +897,7 @@ LoadPalette(byte **colormap, unsigned *d_8to24table)
 
 		filename = "pics/colormap.bmp";
 
-		VID_ImageDecode(filename, &pic, NULL, &width, &height, &bitesPerPixel);
+		LoadImageWithPalette(filename, &pic, NULL, &width, &height, &bitesPerPixel);
 		if (pic && width == 256 && height == 320)
 		{
 			int i;
@@ -885,6 +926,7 @@ LoadPalette(byte **colormap, unsigned *d_8to24table)
 			}
 
 			free(pic);
+			colormap_loaded = true;
 			return;
 		}
 
@@ -924,28 +966,14 @@ LoadPalette(byte **colormap, unsigned *d_8to24table)
 		}
 
 		GenerateColormap((const byte *)d_8to24table, *colormap);
+		colormap_loaded = false;
 		return;
 	}
 	else
 	{
-		int i;
-
-		for (i = 0; i < 256; i++)
-		{
-			unsigned v;
-			int	r, g, b;
-
-			r = pal[i*3+0];
-			g = pal[i*3+1];
-			b = pal[i*3+2];
-
-			v = (255U<<24) + (r<<0) + (g<<8) + (b<<16);
-			d_8to24table[i] = LittleLong(v);
-		}
-
-		d_8to24table[255] &= LittleLong(0xffffff);	// 255 is transparent
-
+		Convert24to32(d_8to24table, pal);
 		free(pal);
+		colormap_loaded = true;
 	}
 }
 
@@ -995,6 +1023,7 @@ VID_ImageInit(void)
 	int i;
 
 	colormap_cache = NULL;
+	colormap_loaded = false;
 
 	for (i = 0; i < 256; i++)
 	{
