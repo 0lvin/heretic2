@@ -257,10 +257,10 @@ E_Load(void)
 
 	char name[MAX_OSPATH];
 	char *path;
-#ifdef _WIN32
+#if defined(_WIN32)
 	WCHAR wname[MAX_OSPATH];
 	const char *effectsname = "effects.dll";
-#elifdef __APPLE__
+#elif defined(__APPLE__)
 	const char *effectsname = "effects.dylib";
 #else
 	const char *effectsname = "effects.so";
