@@ -1668,6 +1668,45 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 
 /*
 =================
+Mod_LoadModel_MDR
+
+=================
+*/
+static void *
+Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
+	struct image_s ***skins, int *numskins, modtype_t *type)
+{
+	mdrHeader_t pinmodel;
+	void *extradata = NULL;
+	dmdx_t *pheader = NULL;
+	int i;
+
+	if (modfilelen < sizeof(pinmodel))
+	{
+		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be " YQ2_COM_PRIdS ")\n",
+				__func__, mod_name, modfilelen, sizeof(pinmodel));
+		return NULL;
+	}
+
+	for (i = 0; i < sizeof(pinmodel) / sizeof(int); i++)
+	{
+		((int *)&pinmodel)[i] = LittleLong(((int *)buffer)[i]);
+	}
+
+	if (pinmodel.version != MDR_VERSION)
+	{
+		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)\n",
+				__func__, mod_name, pinmodel.version, MDR_VERSION);
+		return NULL;
+	}
+
+	printf("MDR %s: %d\n", ((mdrHeader_t *)buffer)->name, pinmodel.version);
+
+	return extradata;
+}
+
+/*
+=================
 Mod_LoadModel_MD2Anox
 
 ANACHRONOX Model
@@ -3085,6 +3124,11 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 
 		case ID3HEADER:
 			extradata = Mod_LoadModel_MD3(mod_name, buffer, modfilelen,
+				skins, numskins, type);
+			break;
+
+		case MDR_IDENT:
+			extradata = Mod_LoadModel_MDR(mod_name, buffer, modfilelen,
 				skins, numskins, type);
 			break;
 
