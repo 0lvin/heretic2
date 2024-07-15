@@ -186,9 +186,9 @@ static void
 PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palette,
 	int *width, int *height, int *bitesPerPixel)
 {
-	pcx_t *pcx;
+	const pcx_t *pcx;
 	int full_size;
-	int pcx_width, pcx_height;
+	int pcx_width, pcx_height, bytes_per_line;
 	qboolean image_issues = false;
 	byte *out, *pix;
 
@@ -206,21 +206,13 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 	}
 
 	/* parse the PCX file */
-	pcx = (pcx_t *)raw;
-
-	pcx->xmin = LittleShort(pcx->xmin);
-	pcx->ymin = LittleShort(pcx->ymin);
-	pcx->xmax = LittleShort(pcx->xmax);
-	pcx->ymax = LittleShort(pcx->ymax);
-	pcx->hres = LittleShort(pcx->hres);
-	pcx->vres = LittleShort(pcx->vres);
-	pcx->bytes_per_line = LittleShort(pcx->bytes_per_line);
-	pcx->palette_type = LittleShort(pcx->palette_type);
+	pcx = (const pcx_t *)raw;
 
 	raw = &pcx->data;
 
-	pcx_width = pcx->xmax - pcx->xmin;
-	pcx_height = pcx->ymax - pcx->ymin;
+	bytes_per_line = LittleShort(pcx->bytes_per_line);
+	pcx_width = LittleShort(pcx->xmax) - LittleShort(pcx->xmin);
+	pcx_height = LittleShort(pcx->ymax) - LittleShort(pcx->ymin);
 
 	if ((pcx->manufacturer != 0x0a) ||
 		(pcx->version != 5) ||
@@ -265,28 +257,29 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 		int x, y;
 		byte *line;
 
-		if (pcx->bytes_per_line <= pcx_width)
+		if (bytes_per_line <= pcx_width)
 		{
-			pcx->bytes_per_line = pcx_width + 1;
+			bytes_per_line = pcx_width + 1;
 			image_issues = true;
 		}
 
+		/* clean image alpha */
 		memset(pix, 255, full_size);
 
-		line = malloc(pcx->bytes_per_line * pcx->color_planes);
+		line = malloc(bytes_per_line * pcx->color_planes);
 
 		for (y = 0; y <= pcx_height; y++, pix += (pcx_width + 1) * 4)
 		{
 			raw = PCX_RLE_Decode(line, line + (pcx_width + 1) * pcx->color_planes,
 				raw, (byte *)pcx + len,
-				pcx->bytes_per_line * pcx->color_planes);
+				bytes_per_line * pcx->color_planes);
 
 			for (x = 0; x <= pcx_width; x++) {
 				int j;
 
 				for (j = 0; j < pcx->color_planes; j++)
 				{
-					pix[4 * x + j] = line[x + pcx->bytes_per_line * j];
+					pix[4 * x + j] = line[x + bytes_per_line * j];
 				}
 			}
 		}
@@ -312,15 +305,15 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 			memcpy(*palette, pcx->palette, sizeof(pcx->palette));
 		}
 
-		line = malloc(pcx->bytes_per_line * pcx->color_planes);
+		line = malloc(bytes_per_line * pcx->color_planes);
 
 		for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
 		{
 			int x;
 
-			raw = PCX_RLE_Decode(line, line + pcx->bytes_per_line * pcx->color_planes,
+			raw = PCX_RLE_Decode(line, line + bytes_per_line * pcx->color_planes,
 				raw, (byte *)pcx + len,
-				pcx->bytes_per_line * pcx->color_planes);
+				bytes_per_line * pcx->color_planes);
 
 			for (x = 0; x <= pcx_width; x++)
 			{
@@ -331,7 +324,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 				for (i = pcx->color_planes - 1; i >= 0; i--) {
 					v <<= 1;
-					v  += !!(line[i * pcx->bytes_per_line + (x >> 3)] & m);
+					v  += !!(line[i * bytes_per_line + (x >> 3)] & m);
 				}
 				pix[x] = v;
 			}
@@ -357,15 +350,15 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 			memcpy(*palette, pcx->palette, sizeof(pcx->palette));
 		}
 
-		line = malloc(pcx->bytes_per_line * pcx->color_planes);
+		line = malloc(bytes_per_line * pcx->color_planes);
 
 		for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
 		{
 			int x;
 
-			raw = PCX_RLE_Decode(line, line + pcx->bytes_per_line * pcx->color_planes,
+			raw = PCX_RLE_Decode(line, line + bytes_per_line * pcx->color_planes,
 				raw, (byte *)pcx + len,
-				pcx->bytes_per_line * pcx->color_planes);
+				bytes_per_line * pcx->color_planes);
 
 			for (x = 0; x <= pcx_width; x++)
 			{
@@ -376,7 +369,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 
 				for (i = pcx->color_planes - 1; i >= 0; i--) {
 					v <<= 1;
-					v  += !!(line[i * pcx->bytes_per_line + (x >> 3)] & m);
+					v  += !!(line[i * bytes_per_line + (x >> 3)] & m);
 				}
 				pix[x] = v;
 			}
@@ -413,9 +406,9 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 				}
 			}
 
-			if (pcx->bytes_per_line <= pcx_width)
+			if (bytes_per_line <= pcx_width)
 			{
-				pcx->bytes_per_line = pcx_width + 1;
+				bytes_per_line = pcx_width + 1;
 				image_issues = true;
 			}
 
@@ -423,7 +416,7 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 			{
 				raw = PCX_RLE_Decode(pix, pix + pcx_width + 1,
 					raw, (byte *)pcx + len,
-					pcx->bytes_per_line);
+					bytes_per_line);
 			}
 		}
 		else
@@ -446,15 +439,15 @@ PCX_Decode(const char *name, const byte *raw, int len, byte **pic, byte **palett
 				memcpy(*palette, pcx->palette, sizeof(pcx->palette));
 			}
 
-			line = malloc(pcx->bytes_per_line);
+			line = malloc(bytes_per_line);
 
 			for (y = 0; y <= pcx_height; y++, pix += pcx_width + 1)
 			{
 				int x, mask, div;
 
-				raw = PCX_RLE_Decode(line, line + pcx->bytes_per_line,
+				raw = PCX_RLE_Decode(line, line + bytes_per_line,
 					raw, (byte *)pcx + len,
-					pcx->bytes_per_line);
+					bytes_per_line);
 
 				mask = (1 << pcx->bits_per_pixel) - 1;
 				div = 8 / pcx->bits_per_pixel;
