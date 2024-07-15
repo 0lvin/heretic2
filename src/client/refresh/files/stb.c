@@ -58,7 +58,7 @@ FixFileExt(const char *origname, const char *ext, char *filename, size_t size)
 qboolean
 LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *height)
 {
-	int w, h, bytesPerPixel;
+	int w, h, bitesPerPixel;
 	char filename[256];
 	byte* data = NULL;
 
@@ -66,18 +66,18 @@ LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *hei
 
 	*pic = NULL;
 
-	ri.VID_ImageDecode(filename, &data, NULL, &w, &h, &bytesPerPixel);
+	ri.VID_ImageDecode(filename, &data, NULL, &w, &h, &bitesPerPixel);
 	if (data == NULL)
 	{
 		return false;
 	}
 
-	if (bytesPerPixel != 4)
+	if (bitesPerPixel != 32)
 	{
 		free(data);
 
 		R_Printf(PRINT_ALL, "%s unexpected file format of %s with %d bytes per pixel!\n",
-			__func__, filename, bytesPerPixel);
+			__func__, filename, bitesPerPixel);
 
 		return false;
 	}
@@ -488,7 +488,7 @@ LoadHiColorImage(const char *name, const char* namewe, const char *ext,
 
 static struct image_s *
 LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t type,
-	qboolean r_retexturing, loadimage_t load_image)
+	int r_retexturing, loadimage_t load_image)
 {
 	struct image_s	*image = NULL;
 
@@ -500,16 +500,50 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 
 	if (!image)
 	{
-		if (!strcmp(ext, "pcx"))
-		{
-			byte	*pic = NULL;
-			byte	*palette = NULL;
-			int width = 0, height = 0;
+		int width = 0, height = 0, realwidth = 0, realheight = 0;
+		byte *pic = NULL, *palette = NULL;
+		char filename[256];
+		int bitesPerPixel;
 
-			LoadPCX (namewe, &pic, &palette, &width, &height);
-			if (!pic)
+		/* name could not be used here as could have different extension
+		 * originaly */
+		FixFileExt(namewe, ext, filename, sizeof(filename));
+
+		ri.VID_ImageDecode(filename, &pic, &palette, &width, &height, &bitesPerPixel);
+
+		if (!pic)
+		{
+			R_Printf(PRINT_DEVELOPER, "Bad %s file %s\n", ext, filename);
+			return NULL;
+		}
+
+		realheight = height;
+		realwidth = width;
+
+		if (bitesPerPixel == 32)
+		{
+			image = load_image(name, pic,
+				width, realwidth,
+				height, realheight,
+				width * height,
+				type, bitesPerPixel);
+		}
+		else
+		{
+			if (r_retexturing >= 2)
 			{
-				return NULL;
+				byte *image_scale = NULL;
+
+				/* scale image paletted images */
+				image_scale = malloc(width * height * 4);
+				scale2x(pic, image_scale, width, height);
+
+				/* replace pic with scale */
+				free(pic);
+				pic = image_scale;
+
+				width *= 2;
+				height *= 2;
 			}
 
 			if (r_retexturing && palette)
@@ -519,6 +553,7 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 
 				size = width * height;
 
+				/* convert to full color */
 				image_buffer = malloc (size * 4);
 				for(i = 0; i < size; i++)
 				{
@@ -530,59 +565,26 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 				}
 
 				image = load_image(name, image_buffer,
-					width, width,
-					height, height,
+					width, realwidth,
+					height, realheight,
 					size, type, 32);
 				free (image_buffer);
 			}
 			else
 			{
 				image = load_image(name, pic,
-					width, width,
-					height, height,
-					width * height, type, 8);
-			}
-
-			if (palette)
-			{
-				free(palette);
-			}
-			free(pic);
-		}
-		else if (!strcmp(ext, "wal"))
-		{
-			image = LoadWal(name, namewe, type, load_image);
-		}
-		else if (!strcmp(ext, "m8"))
-		{
-			image = LoadM8(name, namewe, type, load_image);
-		}
-		else if (!strcmp(ext, "m32"))
-		{
-			image = LoadM32(name, namewe, type, load_image);
-		}
-		else if (!strcmp(ext, "swl"))
-		{
-			image = LoadSWL(name, namewe, type, load_image);
-		}
-		else if (!strcmp(ext, "tga") ||
-		         !strcmp(ext, "png") ||
-		         !strcmp(ext, "jpg"))
-		{
-			byte *pic = NULL;
-			int width = 0, height = 0;
-
-			if (LoadSTB (namewe, ext, &pic, &width, &height) && pic)
-			{
-				image = load_image(name, pic,
-					width, width,
-					height, height,
-					width * height,
-					type, 32);
-
-				free(pic);
+					width, realwidth,
+					height, realheight,
+					width * height, type, bitesPerPixel);
 			}
 		}
+
+		if (palette)
+		{
+			free(palette);
+		}
+
+		free(pic);
 	}
 
 	return image;
@@ -590,7 +592,7 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 
 struct image_s *
 R_LoadImage(const char *name, const char* namewe, const char *ext, imagetype_t type,
-	qboolean r_retexturing, loadimage_t load_image)
+	int r_retexturing, loadimage_t load_image)
 {
 	struct image_s	*image = NULL;
 

@@ -26,298 +26,6 @@
 
 #include "../ref_shared.h"
 
-static struct image_s *
-LoadWalQ2(const char *origname, const char *name, const byte *data, size_t size,
-	imagetype_t type, loadimage_t load_image)
-{
-	int	width, height, ofs;
-	const miptex_t *mt;
-
-	mt = (miptex_t *)data;
-
-	if (size < sizeof(*mt))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
-		return NULL;
-	}
-
-	width = LittleLong(mt->width);
-	height = LittleLong(mt->height);
-	ofs = LittleLong(mt->offsets[0]);
-
-	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
-	    (((size - ofs) / height) < width))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
-		return NULL;
-	}
-
-	return load_image(origname, (byte *)data + ofs,
-		width, 0,
-		height, 0,
-		(size - ofs), type, 8);
-}
-
-static struct image_s *
-LoadWalDKM(const char *origname, const char *name, const byte *data, size_t size,
-	imagetype_t type, loadimage_t load_image)
-{
-	byte	*image_buffer = NULL;
-	int	width, height, ofs, i;
-	struct image_s	*image;
-	dkmtex_t	*mt;
-
-	mt = (dkmtex_t *)data;
-
-	if (size < sizeof(*mt))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
-		return NULL;
-	}
-
-	if (mt->version != DKM_WAL_VERSION)
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
-		return NULL;
-	}
-
-	width = LittleLong(mt->width);
-	height = LittleLong(mt->height);
-	ofs = LittleLong(mt->offsets[0]);
-
-	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
-	    (((size - ofs) / height) < width))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
-		return NULL;
-	}
-
-	image_buffer = malloc ((size - ofs) * 4);
-	for(i = 0; i < (size - ofs); i++)
-	{
-		unsigned char value = *((byte *)mt + ofs + i);
-		image_buffer[i * 4 + 0] = mt->palette[value].r;
-		image_buffer[i * 4 + 1] = mt->palette[value].g;
-		image_buffer[i * 4 + 2] = mt->palette[value].b;
-		image_buffer[i * 4 + 3] = value == 255 ? 0 : 255;
-	}
-
-	image = load_image(origname, image_buffer,
-		width, 0,
-		height, 0,
-		(size - ofs), type, 32);
-	free(image_buffer);
-
-	return image;
-}
-
-struct image_s *
-LoadWal(const char *origname, const char *namewe, imagetype_t type,
-	loadimage_t load_image)
-{
-	struct image_s	*image;
-	char	name[256];
-	byte	*data;
-	size_t	size;
-
-	FixFileExt(namewe, "wal", name, sizeof(name));
-
-	size = ri.FS_LoadFile(name, (void **)&data);
-
-	if (!data)
-	{
-		return NULL;
-	}
-
-	if (*data == DKM_WAL_VERSION)
-	{
-		image = LoadWalDKM(origname, name, data, size, type, load_image);
-	}
-	else
-	{
-		image = LoadWalQ2(origname, name, data, size, type, load_image);
-	}
-
-	ri.FS_FreeFile((void *)data);
-
-	return image;
-}
-
-struct image_s *
-LoadM8(const char *origname, const char *namewe, imagetype_t type,
-	loadimage_t load_image)
-{
-	int	width, height, ofs, size, i;
-	byte	*image_buffer = NULL;
-	struct	image_s *image;
-	char	name[256];
-	m8tex_t	*mt;
-
-	FixFileExt(namewe, "m8", name, sizeof(name));
-
-	size = ri.FS_LoadFile(name, (void **)&mt);
-
-	if (!mt)
-	{
-		return NULL;
-	}
-
-	if (size < sizeof(*mt))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
-		ri.FS_FreeFile((void *)mt);
-		return NULL;
-	}
-
-	if (LittleLong (mt->version) != M8_VERSION)
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
-		ri.FS_FreeFile ((void *)mt);
-		return NULL;
-	}
-
-	width = LittleLong(mt->width[0]);
-	height = LittleLong(mt->height[0]);
-	ofs = LittleLong(mt->offsets[0]);
-
-	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
-	    (((size - ofs) / height) < width))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
-		ri.FS_FreeFile((void *)mt);
-		return NULL;
-	}
-
-	image_buffer = malloc ((size - ofs) * 4);
-	for(i=0; i<(size - ofs); i++)
-	{
-		unsigned char value = *((byte *)mt + ofs + i);
-		image_buffer[i * 4 + 0] = mt->palette[value].r;
-		image_buffer[i * 4 + 1] = mt->palette[value].g;
-		image_buffer[i * 4 + 2] = mt->palette[value].b;
-		image_buffer[i * 4 + 3] = value == 255 ? 0 : 255;
-	}
-
-	image = load_image(origname, image_buffer,
-		width, 0,
-		height, 0,
-		(size - ofs), type, 32);
-	free(image_buffer);
-
-	ri.FS_FreeFile((void *)mt);
-
-	return image;
-}
-
-struct image_s *
-LoadSWL(const char *origname, const char *namewe, imagetype_t type,
-	loadimage_t load_image)
-{
-	int	width, height, ofs, size, i;
-	byte	*image_buffer = NULL;
-	struct	image_s *image;
-	char	name[256];
-	sinmiptex_t	*mt;
-
-	FixFileExt(namewe, "swl", name, sizeof(name));
-
-	size = ri.FS_LoadFile(name, (void **)&mt);
-
-	if (!mt)
-	{
-		return NULL;
-	}
-
-	if (size < sizeof(*mt))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
-		ri.FS_FreeFile((void *)mt);
-		return NULL;
-	}
-
-	width = LittleLong(mt->width);
-	height = LittleLong(mt->height);
-	ofs = LittleLong(mt->offsets[0]);
-
-	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
-	    (((size - ofs) / height) < width))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
-		ri.FS_FreeFile((void *)mt);
-		return NULL;
-	}
-
-	image_buffer = malloc ((size - ofs) * 4);
-	for(i=0; i<(size - ofs); i++)
-	{
-		byte value = *((byte *)mt + ofs + i);
-		memcpy(image_buffer + i * 4, mt->palette + value * 4, 4);
-	}
-
-	image = load_image(origname, image_buffer,
-		width, 0,
-		height, 0,
-		(size - ofs), type, 32);
-	free(image_buffer);
-
-	ri.FS_FreeFile((void *)mt);
-
-	return image;
-}
-
-struct image_s *
-LoadM32(const char *origname, const char *namewe, imagetype_t type,
-	loadimage_t load_image)
-{
-	m32tex_t	*mt;
-	int		width, height, ofs, size;
-	struct image_s	*image;
-	char name[256];
-
-	FixFileExt(namewe, "m32", name, sizeof(name));
-
-	size = ri.FS_LoadFile(name, (void **)&mt);
-
-	if (!mt)
-	{
-		return NULL;
-	}
-
-	if (size < sizeof(m32tex_t))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small header\n", __func__, name);
-		ri.FS_FreeFile((void *)mt);
-		return NULL;
-	}
-
-	if (LittleLong (mt->version) != M32_VERSION)
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, wrong magic value.\n", __func__, name);
-		ri.FS_FreeFile ((void *)mt);
-		return NULL;
-	}
-
-	width = LittleLong (mt->width[0]);
-	height = LittleLong (mt->height[0]);
-	ofs = LittleLong (mt->offsets[0]);
-
-	if ((ofs <= 0) || (width <= 0) || (height <= 0) ||
-	    (((size - ofs) / height) < (width * 4)))
-	{
-		R_Printf(PRINT_ALL, "%s: can't load %s, small body\n", __func__, name);
-		ri.FS_FreeFile((void *)mt);
-		return NULL;
-	}
-
-	image = load_image(origname, (byte *)mt + ofs,
-		width, 0,
-		height, 0,
-		(size - ofs) / 4, type, 32);
-	ri.FS_FreeFile ((void *)mt);
-
-	return image;
-}
-
 void
 GetWalInfo(const char *origname, int *width, int *height)
 {
@@ -447,6 +155,32 @@ GetSWLInfo(const char *origname, int *width, int *height)
 	*height = LittleLong(mt->height);
 
 	ri.FS_FreeFile((void *)mt);
+
+	return;
+}
+
+void
+GetPCXInfo(const char *origname, int *width, int *height)
+{
+	const pcx_t *pcx;
+	byte *raw;
+	char filename[256];
+
+	FixFileExt(origname, "pcx", filename, sizeof(filename));
+
+	ri.FS_LoadFile(filename, (void **)&raw);
+
+	if (!raw)
+	{
+		return;
+	}
+
+	pcx = (pcx_t *)raw;
+
+	*width = pcx->xmax + 1;
+	*height = pcx->ymax + 1;
+
+	ri.FS_FreeFile(raw);
 
 	return;
 }

@@ -1411,7 +1411,6 @@ REFGL1_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1451,7 +1450,6 @@ REFGL3_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1497,7 +1495,6 @@ REFGL4_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1544,7 +1541,6 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1591,7 +1587,6 @@ REFVK_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
