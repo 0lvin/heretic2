@@ -1702,6 +1702,15 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	printf("MDR %s: %d\n", ((mdrHeader_t *)buffer)->name, pinmodel.version);
 
+	printf("frames: %d, lods: %d, %d ~ %d\n", pinmodel.numFrames, pinmodel.numLODs, pinmodel.ofsFrames, sizeof(mdrHeader_t));
+
+	for (i = 0; i < 1/*pinmodel.numFrames*/; i++)
+	{
+		mdrFrame_t * frame = (mdrFrame_t*)(
+			(byte*)buffer + -pinmodel.ofsFrames +
+			(i * (sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.numBones - 1))));
+		printf("%d:%s\n", i, frame->name);
+	}
 	return extradata;
 }
 
