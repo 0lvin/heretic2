@@ -1666,6 +1666,114 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	return extradata;
 }
 
+#define MC_BITS_X (16)
+#define MC_BITS_Y (16)
+#define MC_BITS_Z (16)
+#define MC_BITS_VECT (16)
+
+#define MC_SCALE_X (1.0f/64)
+#define MC_SCALE_Y (1.0f/64)
+#define MC_SCALE_Z (1.0f/64)
+
+#define MC_MASK_X ((1<<(MC_BITS_X))-1)
+#define MC_MASK_Y ((1<<(MC_BITS_Y))-1)
+#define MC_MASK_Z ((1<<(MC_BITS_Z))-1)
+#define MC_MASK_VECT ((1<<(MC_BITS_VECT))-1)
+
+#define MC_SCALE_VECT (1.0f/(float)((1<<(MC_BITS_VECT-1))-2))
+
+#define MC_POS_X (0)
+#define MC_SHIFT_X (0)
+
+#define MC_POS_Y ((((MC_BITS_X))/8))
+#define MC_SHIFT_Y ((((MC_BITS_X)%8)))
+
+#define MC_POS_Z ((((MC_BITS_X+MC_BITS_Y))/8))
+#define MC_SHIFT_Z ((((MC_BITS_X+MC_BITS_Y)%8)))
+
+#define MC_POS_V11 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z))/8))
+#define MC_SHIFT_V11 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z)%8)))
+
+#define MC_POS_V12 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT))/8))
+#define MC_SHIFT_V12 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT)%8)))
+
+#define MC_POS_V13 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*2))/8))
+#define MC_SHIFT_V13 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*2)%8)))
+
+#define MC_POS_V21 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*3))/8))
+#define MC_SHIFT_V21 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*3)%8)))
+
+#define MC_POS_V22 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*4))/8))
+#define MC_SHIFT_V22 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*4)%8)))
+
+#define MC_POS_V23 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*5))/8))
+#define MC_SHIFT_V23 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*5)%8)))
+
+#define MC_POS_V31 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*6))/8))
+#define MC_SHIFT_V31 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*6)%8)))
+
+#define MC_POS_V32 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*7))/8))
+#define MC_SHIFT_V32 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*7)%8)))
+
+#define MC_POS_V33 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*8))/8))
+#define MC_SHIFT_V33 ((((MC_BITS_X+MC_BITS_Y+MC_BITS_Z+MC_BITS_VECT*8)%8)))
+
+static void
+MC_UnCompress(float mat[3][4],const unsigned char * comp)
+{
+	int val;
+
+	val=(int)((unsigned short *)(comp))[0];
+	val-=1<<(MC_BITS_X-1);
+	mat[0][3]=((float)(val))*MC_SCALE_X;
+
+	val=(int)((unsigned short *)(comp))[1];
+	val-=1<<(MC_BITS_Y-1);
+	mat[1][3]=((float)(val))*MC_SCALE_Y;
+
+	val=(int)((unsigned short *)(comp))[2];
+	val-=1<<(MC_BITS_Z-1);
+	mat[2][3]=((float)(val))*MC_SCALE_Z;
+
+	val=(int)((unsigned short *)(comp))[3];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[0][0]=((float)(val))*MC_SCALE_VECT;
+
+	val=(int)((unsigned short *)(comp))[4];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[0][1]=((float)(val))*MC_SCALE_VECT;
+
+	val=(int)((unsigned short *)(comp))[5];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[0][2]=((float)(val))*MC_SCALE_VECT;
+
+
+	val=(int)((unsigned short *)(comp))[6];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[1][0]=((float)(val))*MC_SCALE_VECT;
+
+	val=(int)((unsigned short *)(comp))[7];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[1][1]=((float)(val))*MC_SCALE_VECT;
+
+	val=(int)((unsigned short *)(comp))[8];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[1][2]=((float)(val))*MC_SCALE_VECT;
+
+
+	val=(int)((unsigned short *)(comp))[9];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[2][0]=((float)(val))*MC_SCALE_VECT;
+
+	val=(int)((unsigned short *)(comp))[10];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[2][1]=((float)(val))*MC_SCALE_VECT;
+
+	val=(int)((unsigned short *)(comp))[11];
+	val-=1<<(MC_BITS_VECT-1);
+	mat[2][2]=((float)(val))*MC_SCALE_VECT;
+}
+
 /*
 =================
 Mod_LoadModel_MDR
@@ -1702,15 +1810,37 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	printf("MDR %s: %d\n", ((mdrHeader_t *)buffer)->name, pinmodel.version);
 
-	printf("frames: %d, lods: %d, %d ~ %d\n", pinmodel.numFrames, pinmodel.numLODs, pinmodel.ofsFrames, sizeof(mdrHeader_t));
+	printf("frames: %d, lods: %d\n", pinmodel.numFrames, pinmodel.numLODs);
 
-	for (i = 0; i < 1/*pinmodel.numFrames*/; i++)
+	int unframesize = sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.numBones - 1);
+	char *frames = malloc(unframesize * pinmodel.numFrames);
+
+	if (pinmodel.ofsFrames < 0)
 	{
-		mdrFrame_t * frame = (mdrFrame_t*)(
-			(byte*)buffer + -pinmodel.ofsFrames +
-			(i * (sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.numBones - 1))));
-		printf("%d:%s\n", i, frame->name);
+		int compframesize = sizeof(mdrCompFrame_t) + sizeof(mdrCompBone_t) * (pinmodel.numBones - 1);
+		for (i = 0; i < pinmodel.numFrames; i++)
+		{
+			mdrCompFrame_t * inframe = (mdrCompFrame_t*)(
+				(byte*)buffer + -pinmodel.ofsFrames +
+				(i * compframesize));
+			mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+			int j;
+
+			memset(outframe->name, 0, sizeof(outframe->name));
+			for (j = 0; j < 3; j++)
+			{
+				outframe->bounds[0][j] = LittleFloat(inframe->bounds[0][j]);
+				outframe->bounds[1][j] = LittleFloat(inframe->bounds[1][j]);
+				outframe->localOrigin[j] = LittleFloat(inframe->localOrigin[j]);
+				outframe->radius = LittleFloat(inframe->radius);
+			}
+			for (j = 0; j < pinmodel.numBones; j ++)
+			{
+				MC_UnCompress(outframe->bones[j].matrix, inframe->bones[j].Comp);
+			}
+		}
 	}
+	free(frames);
 	return extradata;
 }
 
