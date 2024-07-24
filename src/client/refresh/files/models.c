@@ -1840,6 +1840,69 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			}
 		}
 	}
+	else
+	{
+		for (i = 0; i < pinmodel.numFrames; i++)
+		{
+			mdrFrame_t * inframe = (mdrFrame_t*)(
+				(byte*)buffer + pinmodel.ofsFrames +
+				(i * unframesize));
+			mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+			int j;
+
+			memcpy(outframe->name, inframe->name, sizeof(outframe->name));
+			for (j = 0; j < 3; j++)
+			{
+				outframe->bounds[0][j] = LittleFloat(inframe->bounds[0][j]);
+				outframe->bounds[1][j] = LittleFloat(inframe->bounds[1][j]);
+				outframe->localOrigin[j] = LittleFloat(inframe->localOrigin[j]);
+				outframe->radius = LittleFloat(inframe->radius);
+			}
+
+			int float_count = pinmodel.numBones * sizeof(mdrBone_t);
+			float *infloat, *outfloat;
+			infloat = (float *)&inframe->bones;
+			outfloat = (float *)&outframe->bones;
+			for (j = 0; j < float_count; j ++)
+			{
+				outfloat[j] = LittleFloat(infloat[j]);
+			}
+		}
+	}
+
+/*
+	for (i = 0; i < pinmodel.numFrames; i++)
+	{
+		mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+
+		printf("%s(%d): %.2fx%.2fx%.2f -> %.2fx%.2fx%.2f, origin %.2fx%.2fx%.2f, radius: %.2f\n",
+			outframe->name, i,
+			outframe->bounds[0][0], outframe->bounds[0][1], outframe->bounds[0][2],
+			outframe->bounds[1][0], outframe->bounds[1][1], outframe->bounds[1][2],
+			outframe->localOrigin[0], outframe->localOrigin[1], outframe->localOrigin[2],
+			outframe->radius
+		);
+	}
+
+	for (i = 0; i < pinmodel.numBones; i++)
+	{
+		mdrFrame_t *outframe = (mdrFrame_t *)frames;
+
+		int j;
+
+		for (j = 0; j < 3; j++)
+		{
+			printf("%d[%d]: %.2fx%.2fx%.2fx%.2f\n",
+				i, j,
+				outframe->bones[i].matrix[j][0],
+				outframe->bones[i].matrix[j][1],
+				outframe->bones[i].matrix[j][2],
+				outframe->bones[i].matrix[j][3]
+			);
+		}
+	}
+*/
+
 	free(frames);
 	return extradata;
 }
