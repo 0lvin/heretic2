@@ -1881,10 +1881,18 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	}
 
 	inlod = (mdrLOD_t*)(buffer + pinmodel.ofsLODs);
-	mdrSurface_t *insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
+	mdrSurface_t *insurf;
+
+	int numtri = 0, numvert = 0;
+	insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
 	for (i = 0; i < inlod->numSurfaces; i++)
 	{
-		printf("surf %d: %s\n", i, insurf->name);
+		numtri += LittleLong(insurf->numTriangles);
+		numvert += LittleLong(insurf->numVerts);
+
+		printf("surf %d: %s shader: %s tris: %d vert: %d\n",
+			i, insurf->name, insurf->shader, numtri, numvert);
+
 		insurf = (mdrSurface_t*)((char*)insurf + insurf->ofsEnd);
 	}
 
