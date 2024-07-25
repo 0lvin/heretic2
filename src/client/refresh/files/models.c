@@ -1870,38 +1870,24 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		}
 	}
 
-/*
-	for (i = 0; i < pinmodel.numFrames; i++)
-	{
-		mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+	mdrLOD_t *inlod;
 
-		printf("%s(%d): %.2fx%.2fx%.2f -> %.2fx%.2fx%.2f, origin %.2fx%.2fx%.2f, radius: %.2f\n",
-			outframe->name, i,
-			outframe->bounds[0][0], outframe->bounds[0][1], outframe->bounds[0][2],
-			outframe->bounds[1][0], outframe->bounds[1][1], outframe->bounds[1][2],
-			outframe->localOrigin[0], outframe->localOrigin[1], outframe->localOrigin[2],
-			outframe->radius
-		);
+	inlod = (mdrLOD_t*)(buffer + pinmodel.ofsLODs);
+	for (i = 0; i < pinmodel.numLODs; i ++)
+	{
+		printf("surfaces %d, surfofs %d lodend %d\n",
+			inlod->numSurfaces, inlod->ofsSurfaces, inlod->ofsEnd);
+		inlod = (mdrLOD_t*)((char *)inlod + inlod->ofsEnd);
 	}
 
-	for (i = 0; i < pinmodel.numBones; i++)
+	inlod = (mdrLOD_t*)(buffer + pinmodel.ofsLODs);
+	mdrSurface_t *insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
+	for (i = 0; i < inlod->numSurfaces; i++)
 	{
-		mdrFrame_t *outframe = (mdrFrame_t *)frames;
-
-		int j;
-
-		for (j = 0; j < 3; j++)
-		{
-			printf("%d[%d]: %.2fx%.2fx%.2fx%.2f\n",
-				i, j,
-				outframe->bones[i].matrix[j][0],
-				outframe->bones[i].matrix[j][1],
-				outframe->bones[i].matrix[j][2],
-				outframe->bones[i].matrix[j][3]
-			);
-		}
+		printf("surf %d: %s\n", i, insurf->name);
+		insurf = (mdrSurface_t*)((char*)insurf + insurf->ofsEnd);
 	}
-*/
+
 
 	free(frames);
 	return extradata;
