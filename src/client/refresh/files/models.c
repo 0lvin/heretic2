@@ -1896,6 +1896,20 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		insurf = (mdrSurface_t*)((char*)insurf + insurf->ofsEnd);
 	}
 
+	insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
+	for (i = 0; i < inlod->numSurfaces; i++)
+	{
+		int j;
+
+		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
+		for (j = 0; j < insurf->numVerts; j ++)
+		{
+			printf("vert %d: weight %d\n", j, inVert->numWeights);
+
+			inVert = (mdrVertex_t *)((char *)inVert +
+				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
+		}
+	}
 
 	free(frames);
 	return extradata;
