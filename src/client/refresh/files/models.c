@@ -1896,6 +1896,159 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		insurf = (mdrSurface_t*)((char*)insurf + insurf->ofsEnd);
 	}
 
+#if 0
+	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
+	num_glcmds = (10 * num_tris) + 1 * pinmodel.num_meshes;
+
+	framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_xyz;
+	ofs_skins = sizeof(dmdx_t);
+	ofs_frames = ofs_skins + num_skins * MAX_SKINNAME;
+	ofs_glcmds = ofs_frames + framesize * pinmodel.num_frames;
+	ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
+	ofs_tris = ofs_meshes + pinmodel.num_meshes * sizeof(dmdxmesh_t);
+	ofs_st = ofs_tris + num_tris * sizeof(dtriangle_t);
+	ofs_end = ofs_st + num_tris * 3 * sizeof(dstvert_t);
+
+	*numskins = num_skins;
+	extradata = Hunk_Begin(ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
+	pheader = Hunk_Alloc(ofs_end);
+	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
+
+	pheader->framesize = framesize;
+	pheader->skinheight = 256;
+	pheader->skinwidth = 256;
+	pheader->num_skins = *numskins;
+	pheader->num_glcmds = num_glcmds;
+	pheader->num_frames = pinmodel.num_frames;
+	pheader->num_xyz = num_xyz;
+	pheader->num_meshes = pinmodel.num_meshes;
+	pheader->num_st = num_tris * 3;
+	pheader->num_tris = num_tris;
+	pheader->ofs_meshes = ofs_meshes;
+	pheader->ofs_skins = ofs_skins;
+	pheader->ofs_st = ofs_st;
+	pheader->ofs_tris = ofs_tris;
+	pheader->ofs_frames = ofs_frames;
+	pheader->ofs_glcmds = ofs_glcmds;
+	pheader->ofs_end = ofs_end;
+
+	mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
+	tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
+	st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
+	vertx = malloc(pinmodel.num_frames * pheader->num_xyz * sizeof(dmdx_vert_t));
+	skin = (char *)pheader + pheader->ofs_skins;
+
+	num_xyz = 0;
+	num_tris = 0;
+	meshofs = pinmodel.ofs_meshes;
+	for (i = 0; i < pinmodel.num_meshes; i++)
+	{
+		const md3_mesh_t *md3_mesh;
+		md3_vertex_t *md3_vertex;
+		const float *fst;
+		const int *p;
+		int j;
+
+		md3_mesh = (md3_mesh_t*)((byte*)buffer + meshofs);
+		fst = (const float*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_st));
+
+		/* load shaders */
+		for (j = 0; j < LittleLong(md3_mesh->num_shaders); j++)
+		{
+			const md3_shader_t *md3_shader = (md3_shader_t*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_shaders)) + j;
+
+			memcpy(skin, md3_shader->name, Q_min(sizeof(md3_shader->name), MAX_SKINNAME));
+			skin += MAX_SKINNAME;
+		}
+
+		for (j = 0; j < LittleLong(md3_mesh->num_xyz); j++)
+		{
+			st[j + num_xyz].s = LittleFloat(fst[j * 2 + 0]) * pheader->skinwidth;
+			st[j + num_xyz].t = LittleFloat(fst[j * 2 + 1]) * pheader->skinheight;
+		}
+
+		/* load triangles */
+		p = (const int*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_tris));
+
+		mesh_nodes[i].ofs_tris = num_tris;
+		mesh_nodes[i].num_tris = LittleLong(md3_mesh->num_tris);
+
+		for (j = 0; j < LittleLong(md3_mesh->num_tris); j++)
+		{
+			int k;
+
+			for (k = 0; k < 3; k++)
+			{
+				int vert_id;
+
+				/* index */
+				vert_id = LittleLong(p[j * 3 + k]) + num_xyz;
+				tris[num_tris + j].index_xyz[k] = vert_id;
+				tris[num_tris + j].index_st[k] = vert_id;
+			}
+		}
+
+		md3_vertex = (md3_vertex_t*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_verts));
+
+		for (j = 0; j < pinmodel.num_frames; j ++)
+		{
+			int k, vert_pos;
+
+			vert_pos = num_xyz + j * pheader->num_xyz;
+
+			for (k = 0; k < LittleLong(md3_mesh->num_xyz); k++, md3_vertex++)
+			{
+				double npitch, nyaw;
+				short normalpitchyaw;
+
+				vertx[vert_pos + k].xyz[0] = (signed short)LittleShort(md3_vertex->origin[0]) * (1.0f / 64.0f);
+				vertx[vert_pos + k].xyz[1] = (signed short)LittleShort(md3_vertex->origin[1]) * (1.0f / 64.0f);
+				vertx[vert_pos + k].xyz[2] = (signed short)LittleShort(md3_vertex->origin[2]) * (1.0f / 64.0f);
+
+				/* decompress the vertex normal */
+				normalpitchyaw = LittleShort(md3_vertex->normalpitchyaw);
+				npitch = (normalpitchyaw & 255) * (2 * M_PI) / 256.0;
+				nyaw = ((normalpitchyaw >> 8) & 255) * (2 * M_PI) / 256.0;
+
+				vertx[vert_pos + k].norm[0] = (float)(sin(npitch) * cos(nyaw));
+				vertx[vert_pos + k].norm[1] = (float)(sin(npitch) * sin(nyaw));
+				vertx[vert_pos + k].norm[2] = (float)cos(npitch);
+			}
+		}
+
+		meshofs += LittleLong(md3_mesh->ofs_end);
+		num_xyz += LittleLong(md3_mesh->num_xyz);
+		num_tris += LittleLong(md3_mesh->num_tris);
+	}
+
+	byte *inframe = (unsigned char*)buffer + pinmodel.ofs_frames;
+	for (i = 0; i < pheader->num_frames; i ++)
+	{
+		daliasxframe_t *frame = (daliasxframe_t *)(
+			(byte *)pheader + pheader->ofs_frames + i * pheader->framesize);
+		const md3_frameinfo_t *md3_frameinfo = (md3_frameinfo_t*)inframe;
+
+		if (md3_frameinfo->name[0])
+		{
+			strncpy(frame->name, md3_frameinfo->name, sizeof(frame->name) - 1);
+		}
+		else
+		{
+			snprintf(frame->name, 15, "%d", i);
+		}
+
+		PrepareFrameVertex(vertx + i * pheader->num_xyz,
+			pheader->num_xyz, frame);
+
+		inframe += sizeof(md3_frameinfo_t);
+	}
+	free(vertx);
+
+	Mod_LoadCmdGenerate(pheader);
+
+	Mod_LoadFixImages(mod_name, pheader, false);
+#endif
+
 	insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
 	for (i = 0; i < inlod->numSurfaces; i++)
 	{
@@ -1904,14 +2057,40 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
-			printf("vert %d: weight %d\n", j, inVert->numWeights);
+			int k;
 
 			inVert = (mdrVertex_t *)((char *)inVert +
 				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
+
+			mdrFrame_t *outframe = (mdrFrame_t *)(frames /* + i * unframesize*/);
+
+			vec3_t	tempVert, tempNormal;
+			mdrWeight_t	*w;
+
+			VectorClear(tempVert);
+			VectorClear(tempNormal);
+			w = inVert->weights;
+			for ( k = 0 ; k < inVert->numWeights ; k++, w++ )
+			{
+				mdrBone_t *bone;
+
+				bone = outframe->bones + w->boneIndex;
+
+				tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
+				tempVert[1] += w->boneWeight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
+				tempVert[2] += w->boneWeight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
+
+				tempNormal[0] += w->boneWeight * DotProduct(bone->matrix[0], inVert->normal);
+				tempNormal[1] += w->boneWeight * DotProduct(bone->matrix[1], inVert->normal);
+				tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
+			}
 		}
 	}
 
 	free(frames);
+
+	*type = mod_alias;
+
 	return extradata;
 }
 

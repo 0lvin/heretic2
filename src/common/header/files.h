@@ -1099,7 +1099,6 @@ typedef struct
 
 #define MDR_IDENT (('5'<<24)+('M'<<16)+('D'<<8)+'R')
 #define MDR_VERSION 2
-#define	MDR_MAX_BONES 128
 
 typedef struct {
 	int boneIndex; // these are indexes into the boneReferences,
