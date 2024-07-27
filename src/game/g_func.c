@@ -3361,6 +3361,8 @@ again:
 	Move_Calc(self, dest, train_wait);
 	self->spawnflags |= TRAIN_START_ON;
 
+/*
+Rogue code, broke platforms in q64/outpost
 	if (self->team)
 	{
 		edict_t *e;
@@ -3383,6 +3385,7 @@ again:
 			Move_Calc(e, dst, train_piece_wait);
 		}
 	}
+*/
 }
 
 void
