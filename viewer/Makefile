@@ -58,7 +58,7 @@ check: check.c ${COMMON_FILES} ${COMMON_HEADERS}
 	gcc -g -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ${COMMON_FILES} check.c -lm -o check
 
 view-quake: mdlx.c ${COMMON_FILES} ${COMMON_HEADERS} rendergl.c
-	gcc -fsanitize=address -g -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ${COMMON_FILES} rendergl.c mdlx.c ${CFLAGS} -o view-quake
+	gcc -g -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ${COMMON_FILES} rendergl.c mdlx.c ${CFLAGS} -o view-quake
 
 sdlview: sdlview.c ${COMMON_FILES} ${COMMON_HEADERS}
 	gcc -g -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\" ${COMMON_FILES} rendergl.c sdlview.c -lm -I/usr/include/SDL2 -D_REENTRANT -lSDL2  -lGL -o sdlview

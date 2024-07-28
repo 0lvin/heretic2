@@ -1917,7 +1917,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
 	ofs_tris = ofs_meshes + inlod->numSurfaces * sizeof(dmdxmesh_t);
 	ofs_st = ofs_tris + num_tris * sizeof(dtriangle_t);
-	ofs_end = ofs_st + num_tris * 3 * sizeof(dstvert_t);
+	ofs_end = ofs_st + num_xyz * pinmodel.num_frames * sizeof(dstvert_t);
 
 	*numskins = num_skins;
 	extradata = Hunk_Begin(ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
@@ -1980,9 +1980,12 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			vec3_t	tempVert, tempNormal;
 			mdrWeight_t	*w;
 
-			//st[j + num_xyz /* + i * pheader->pheader->num_xyz */].s = LittleFloat(inVert->texCoords[0]) * pheader->skinwidth;
-			//st[j + num_xyz /* + i * pheader->pheader->num_xyz */].t = LittleFloat(inVert->texCoords[1]) * pheader->skinheight;
+			st[j + num_xyz /* + i * pheader->pheader->num_xyz */].s = LittleFloat(inVert->texCoords[0]) * pheader->skinwidth;
+			st[j + num_xyz /* + i * pheader->pheader->num_xyz */].t = LittleFloat(inVert->texCoords[1]) * pheader->skinheight;
 
+			printf("%d, %d\n",
+				st[j + num_xyz /* + i * pheader->pheader->num_xyz */].s,
+				st[j + num_xyz /* + i * pheader->pheader->num_xyz */].t);
 			VectorClear(tempVert);
 			VectorClear(tempNormal);
 			w = inVert->weights;
