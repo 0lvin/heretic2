@@ -1184,7 +1184,7 @@ typedef struct {
 	char name[MAX_QPATH]; // model name
 
 	// frames and bones are shared by all levels of detail
-	int numFrames;
+	int num_frames;
 	int numBones;
 	int ofsFrames; // mdrFrame_t[numFrames]
 

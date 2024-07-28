@@ -1788,8 +1788,13 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		ofs_st, ofs_end;
 	int num_xyz = 0, num_tris = 0, num_glcmds = 0, num_skins = 0, meshofs = 0;
 	mdrHeader_t pinmodel;
+	dmdxmesh_t *mesh_nodes;
+	dtriangle_t *tris;
+	dstvert_t *st;
 	void *extradata = NULL;
 	dmdx_t *pheader = NULL;
+	dmdx_vert_t *vertx;
+	char *skin;
 	int i;
 
 	if (modfilelen < sizeof(pinmodel))
@@ -1813,15 +1818,15 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	printf("MDR %s: %d\n", ((mdrHeader_t *)buffer)->name, pinmodel.version);
 
-	printf("frames: %d, lods: %d\n", pinmodel.numFrames, pinmodel.numLODs);
+	printf("frames: %d, lods: %d\n", pinmodel.num_frames, pinmodel.numLODs);
 
 	int unframesize = sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.numBones - 1);
-	char *frames = malloc(unframesize * pinmodel.numFrames);
+	char *frames = malloc(unframesize * pinmodel.num_frames);
 
 	if (pinmodel.ofsFrames < 0)
 	{
 		int compframesize = sizeof(mdrCompFrame_t) + sizeof(mdrCompBone_t) * (pinmodel.numBones - 1);
-		for (i = 0; i < pinmodel.numFrames; i++)
+		for (i = 0; i < pinmodel.num_frames; i++)
 		{
 			mdrCompFrame_t * inframe = (mdrCompFrame_t*)(
 				(byte*)buffer + -pinmodel.ofsFrames +
@@ -1845,7 +1850,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	}
 	else
 	{
-		for (i = 0; i < pinmodel.numFrames; i++)
+		for (i = 0; i < pinmodel.num_frames; i++)
 		{
 			mdrFrame_t * inframe = (mdrFrame_t*)(
 				(byte*)buffer + pinmodel.ofsFrames +
@@ -1906,7 +1911,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_xyz;
 	ofs_skins = sizeof(dmdx_t);
 	ofs_frames = ofs_skins + num_skins * MAX_SKINNAME;
-	ofs_glcmds = ofs_frames + framesize * pinmodel.numFrames;
+	ofs_glcmds = ofs_frames + framesize * pinmodel.num_frames;
 	ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
 	ofs_tris = ofs_meshes + inlod->numSurfaces * sizeof(dmdxmesh_t);
 	ofs_st = ofs_tris + num_tris * sizeof(dtriangle_t);
@@ -1922,7 +1927,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->skinwidth = 256;
 	pheader->num_skins = *numskins;
 	pheader->num_glcmds = num_glcmds;
-	pheader->num_frames = pinmodel.numFrames;
+	pheader->num_frames = pinmodel.num_frames;
 	pheader->num_xyz = num_xyz;
 	pheader->num_meshes = inlod->numSurfaces;
 	pheader->num_st = num_tris * 3;
@@ -1935,13 +1940,13 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->ofs_glcmds = ofs_glcmds;
 	pheader->ofs_end = ofs_end;
 
-#if 0
 	mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
 	tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
 	st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
 	vertx = malloc(pinmodel.num_frames * pheader->num_xyz * sizeof(dmdx_vert_t));
 	skin = (char *)pheader + pheader->ofs_skins;
 
+#if 0
 	num_xyz = 0;
 	num_tris = 0;
 	meshofs = pinmodel.ofs_meshes;

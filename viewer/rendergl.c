@@ -304,10 +304,17 @@ struct image_s*
 find_image(const char *name, imagetype_t type)
 {
 	int w, h, b;
-	byte *data = image_load(name, &w, &h, &b);
+	byte *data;
+
+	if (!name || !name[0])
+	{
+		return NULL;
+	}
+
+	data = image_load(name, &w, &h, &b);
 	if (!data)
 	{
-		R_Printf(PRINT_ALL, "%s: failed loading\n", name);
+		R_Printf(PRINT_ALL, "%s: failed loading!\n", name);
 	}
 	else
 	{

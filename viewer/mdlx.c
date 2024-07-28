@@ -147,7 +147,7 @@ main(int argc, char *argv[])
 		byte *data = image_load(argv[2], &w, &h, &b);
 		if (!data)
 		{
-			R_Printf(PRINT_ALL, "%s: failed loading\n", argv[2]);
+			R_Printf(PRINT_ALL, "%s: failed loading!\n", argv[2]);
 		}
 		else
 		{
