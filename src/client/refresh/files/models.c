@@ -1953,7 +1953,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	num_tris = 0;
 	meshofs = inlod->ofsSurfaces;
 
-//////
 	for (i = 0; i < inlod->numSurfaces; i++)
 	{
 		mdrSurface_t* insurf;
@@ -1985,6 +1984,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				vert_id = LittleLong(p[j * 3 + k]) + num_xyz;
 				tris[num_tris + j].index_xyz[k] = vert_id;
 				tris[num_tris + j].index_st[k] = vert_id;
+				printf("[%d]%d\n", k, vert_id);
 			}
 		}
 
@@ -2007,7 +2007,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				vec3_t	tempVert, tempNormal;
 				mdrWeight_t	*w;
 
-				vert_pos = num_xyz + f * pheader->num_xyz;
+				vert_pos = num_xyz + f * pheader->num_xyz + j;
 
 				VectorClear(tempVert);
 				VectorClear(tempNormal);
@@ -2027,13 +2027,13 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 					tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
 				}
 
-				vertx[vert_pos + j].xyz[0] = tempVert[0];
-				vertx[vert_pos + j].xyz[1] = tempVert[1];
-				vertx[vert_pos + j].xyz[2] = tempVert[2];
+				vertx[vert_pos].xyz[0] = tempVert[0];
+				vertx[vert_pos].xyz[1] = tempVert[1];
+				vertx[vert_pos].xyz[2] = tempVert[2];
 
-				vertx[vert_pos + j].norm[0] = tempNormal[0];
-				vertx[vert_pos + j].norm[1] = tempNormal[1];
-				vertx[vert_pos + j].norm[2] = tempNormal[2];
+				vertx[vert_pos].norm[0] = tempNormal[0];
+				vertx[vert_pos].norm[1] = tempNormal[1];
+				vertx[vert_pos].norm[2] = tempNormal[2];
 			}
 		}
 
