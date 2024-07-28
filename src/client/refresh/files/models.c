@@ -2061,9 +2061,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		num_tris += LittleLong(insurf->numTriangles);
 		num_xyz += LittleLong(insurf->numVerts);
 		meshofs += LittleLong(insurf->ofsEnd);
-
-		printf("surf %d: %s shader: %s tris: %d vert: %d\n",
-			i, insurf->name, insurf->shader, num_tris, num_xyz);
 	}
 
 #if 0
