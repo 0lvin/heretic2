@@ -1946,12 +1946,52 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	vertx = malloc(pinmodel.num_frames * pheader->num_xyz * sizeof(dmdx_vert_t));
 	skin = (char *)pheader + pheader->ofs_skins;
 
-#if 0
 	num_xyz = 0;
 	num_tris = 0;
-	meshofs = pinmodel.ofs_meshes;
-	for (i = 0; i < pinmodel.num_meshes; i++)
+	meshofs = inlod->ofsSurfaces;
+
+//////
+	insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
+	for (i = 0; i < inlod->numSurfaces; i++)
 	{
+		int j;
+
+		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
+		for (j = 0; j < insurf->numVerts; j ++)
+		{
+			int k;
+
+			inVert = (mdrVertex_t *)((char *)inVert +
+				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
+
+			mdrFrame_t *outframe = (mdrFrame_t *)(frames /* + i * unframesize*/);
+
+			vec3_t	tempVert, tempNormal;
+			mdrWeight_t	*w;
+
+			VectorClear(tempVert);
+			VectorClear(tempNormal);
+			w = inVert->weights;
+			for ( k = 0 ; k < inVert->numWeights ; k++, w++ )
+			{
+				mdrBone_t *bone;
+
+				bone = outframe->bones + w->boneIndex;
+
+				tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
+				tempVert[1] += w->boneWeight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
+				tempVert[2] += w->boneWeight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
+
+				tempNormal[0] += w->boneWeight * DotProduct(bone->matrix[0], inVert->normal);
+				tempNormal[1] += w->boneWeight * DotProduct(bone->matrix[1], inVert->normal);
+				tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
+			}
+		}
+	}
+//////
+	for (i = 0; i < inlod->numSurfaces; i++)
+	{
+#if 0
 		const md3_mesh_t *md3_mesh;
 		md3_vertex_t *md3_vertex;
 		const float *fst;
@@ -2050,53 +2090,14 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			pheader->num_xyz, frame);
 
 		inframe += sizeof(md3_frameinfo_t);
+#endif
 	}
 	free(vertx);
+	free(frames);
 
 	Mod_LoadCmdGenerate(pheader);
 
 	Mod_LoadFixImages(mod_name, pheader, false);
-#endif
-
-	insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
-	for (i = 0; i < inlod->numSurfaces; i++)
-	{
-		int j;
-
-		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
-		for (j = 0; j < insurf->numVerts; j ++)
-		{
-			int k;
-
-			inVert = (mdrVertex_t *)((char *)inVert +
-				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
-
-			mdrFrame_t *outframe = (mdrFrame_t *)(frames /* + i * unframesize*/);
-
-			vec3_t	tempVert, tempNormal;
-			mdrWeight_t	*w;
-
-			VectorClear(tempVert);
-			VectorClear(tempNormal);
-			w = inVert->weights;
-			for ( k = 0 ; k < inVert->numWeights ; k++, w++ )
-			{
-				mdrBone_t *bone;
-
-				bone = outframe->bones + w->boneIndex;
-
-				tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
-				tempVert[1] += w->boneWeight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
-				tempVert[2] += w->boneWeight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
-
-				tempNormal[0] += w->boneWeight * DotProduct(bone->matrix[0], inVert->normal);
-				tempNormal[1] += w->boneWeight * DotProduct(bone->matrix[1], inVert->normal);
-				tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
-			}
-		}
-	}
-
-	free(frames);
 
 	*type = mod_alias;
 
