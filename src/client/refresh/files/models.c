@@ -1985,9 +1985,11 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 		/* load vertex */
 		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
-		printf("%d => %d ? %d\n",
+		printf("%d => %f ? %d : %d ? %d\n",
 			insurf->ofsVerts,
 			(float)(insurf->ofsEnd - insurf->ofsVerts) / insurf->numVerts,
+			insurf->numVerts,
+			(sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1)),
 			insurf->numVerts * (sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1)));
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
@@ -2016,10 +2018,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				{
 					mdrBone_t *bone;
 
-					if (w->boneIndex >= pinmodel.numBones)
-					{
-						printf("%d -> %d(%d)\n", k, w->boneIndex, pinmodel.numBones);
-					}
 					bone = outframe->bones + w->boneIndex % pinmodel.numBones;
 
 					tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
