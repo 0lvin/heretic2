@@ -1955,10 +1955,17 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 //////
 	for (i = 0; i < inlod->numSurfaces; i++)
 	{
-		int j;
 		mdrSurface_t* insurf;
+		const float *fst;
+		const int *p;
+		int j;
 
 		insurf = (mdrSurface_t*)((char*)inlod + meshofs);
+
+		/* load shaders */
+		memcpy(skin, insurf->shader, Q_min(sizeof(insurf->shader), MAX_SKINNAME));
+		skin += MAX_SKINNAME;
+
 		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
@@ -1991,23 +1998,10 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			}
 		}
 #if 0
-		const md3_mesh_t *md3_mesh;
 		md3_vertex_t *md3_vertex;
-		const float *fst;
-		const int *p;
-		int j;
 
 		md3_mesh = (md3_mesh_t*)((byte*)buffer + meshofs);
 		fst = (const float*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_st));
-
-		/* load shaders */
-		for (j = 0; j < LittleLong(md3_mesh->num_shaders); j++)
-		{
-			const md3_shader_t *md3_shader = (md3_shader_t*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_shaders)) + j;
-
-			memcpy(skin, md3_shader->name, Q_min(sizeof(md3_shader->name), MAX_SKINNAME));
-			skin += MAX_SKINNAME;
-		}
 
 		for (j = 0; j < LittleLong(md3_mesh->num_xyz); j++)
 		{
