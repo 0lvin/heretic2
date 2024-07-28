@@ -1997,68 +1997,46 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			inVert = (mdrVertex_t *)((char *)inVert +
 				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
 
-			mdrFrame_t *outframe = (mdrFrame_t *)(frames /* + i * unframesize*/);
-
-			vec3_t	tempVert, tempNormal;
-			mdrWeight_t	*w;
-
 			st[j + num_xyz].s = LittleFloat(inVert->texCoords[0]) * pheader->skinwidth;
 			st[j + num_xyz].t = LittleFloat(inVert->texCoords[1]) * pheader->skinheight;
 
-			printf("%d, %d\n",
-				st[j + num_xyz].s,
-				st[j + num_xyz].t);
-			VectorClear(tempVert);
-			VectorClear(tempNormal);
-			w = inVert->weights;
-			for ( k = 0 ; k < inVert->numWeights ; k++, w++ )
+			for (i = 0; i < pinmodel.num_frames; i ++)
 			{
-				mdrBone_t *bone;
+				int k, vert_pos;
+				mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+				vec3_t	tempVert, tempNormal;
+				mdrWeight_t	*w;
 
-				bone = outframe->bones + w->boneIndex;
+				vert_pos = num_xyz + i * pheader->num_xyz;
 
-				tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
-				tempVert[1] += w->boneWeight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
-				tempVert[2] += w->boneWeight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
+				VectorClear(tempVert);
+				VectorClear(tempNormal);
+				w = inVert->weights;
+				for ( k = 0 ; k < inVert->numWeights ; k++, w++ )
+				{
+					mdrBone_t *bone;
 
-				tempNormal[0] += w->boneWeight * DotProduct(bone->matrix[0], inVert->normal);
-				tempNormal[1] += w->boneWeight * DotProduct(bone->matrix[1], inVert->normal);
-				tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
+					bone = outframe->bones + w->boneIndex;
+
+					tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
+					tempVert[1] += w->boneWeight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
+					tempVert[2] += w->boneWeight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
+
+					tempNormal[0] += w->boneWeight * DotProduct(bone->matrix[0], inVert->normal);
+					tempNormal[1] += w->boneWeight * DotProduct(bone->matrix[1], inVert->normal);
+					tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
+				}
+
+				vertx[vert_pos + j].xyz[0] = tempVert[0];
+				vertx[vert_pos + j].xyz[1] = tempVert[1];
+				vertx[vert_pos + j].xyz[2] = tempVert[2];
+
+				vertx[vert_pos + j].norm[0] = tempNormal[0];
+				vertx[vert_pos + j].norm[1] = tempNormal[1];
+				vertx[vert_pos + j].norm[2] = tempNormal[2];
 			}
 		}
-#if 0
-		md3_vertex_t *md3_vertex;
 
-		md3_mesh = (md3_mesh_t*)((byte*)buffer + meshofs);
-
-		md3_vertex = (md3_vertex_t*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_verts));
-
-		for (j = 0; j < pinmodel.num_frames; j ++)
-		{
-			int k, vert_pos;
-
-			vert_pos = num_xyz + j * pheader->num_xyz;
-
-			for (k = 0; k < LittleLong(md3_mesh->num_xyz); k++, md3_vertex++)
-			{
-				double npitch, nyaw;
-				short normalpitchyaw;
-
-				vertx[vert_pos + k].xyz[0] = (signed short)LittleShort(md3_vertex->origin[0]) * (1.0f / 64.0f);
-				vertx[vert_pos + k].xyz[1] = (signed short)LittleShort(md3_vertex->origin[1]) * (1.0f / 64.0f);
-				vertx[vert_pos + k].xyz[2] = (signed short)LittleShort(md3_vertex->origin[2]) * (1.0f / 64.0f);
-
-				/* decompress the vertex normal */
-				normalpitchyaw = LittleShort(md3_vertex->normalpitchyaw);
-				npitch = (normalpitchyaw & 255) * (2 * M_PI) / 256.0;
-				nyaw = ((normalpitchyaw >> 8) & 255) * (2 * M_PI) / 256.0;
-
-				vertx[vert_pos + k].norm[0] = (float)(sin(npitch) * cos(nyaw));
-				vertx[vert_pos + k].norm[1] = (float)(sin(npitch) * sin(nyaw));
-				vertx[vert_pos + k].norm[2] = (float)cos(npitch);
-			}
-		}
-#endif
 		num_tris += LittleLong(insurf->numTriangles);
 		num_xyz += LittleLong(insurf->numVerts);
 		meshofs += LittleLong(insurf->ofsEnd);
