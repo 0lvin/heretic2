@@ -1992,7 +1992,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
-			int k;
+			int f;
 
 			inVert = (mdrVertex_t *)((char *)inVert +
 				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
@@ -2000,14 +2000,14 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			st[j + num_xyz].s = LittleFloat(inVert->texCoords[0]) * pheader->skinwidth;
 			st[j + num_xyz].t = LittleFloat(inVert->texCoords[1]) * pheader->skinheight;
 
-			for (i = 0; i < pinmodel.num_frames; i ++)
+			for (f = 0; f < pinmodel.num_frames; f ++)
 			{
 				int k, vert_pos;
-				mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+				mdrFrame_t *outframe = (mdrFrame_t *)(frames + f * unframesize);
 				vec3_t	tempVert, tempNormal;
 				mdrWeight_t	*w;
 
-				vert_pos = num_xyz + i * pheader->num_xyz;
+				vert_pos = num_xyz + f * pheader->num_xyz;
 
 				VectorClear(tempVert);
 				VectorClear(tempNormal);
