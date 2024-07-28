@@ -1944,7 +1944,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
 	tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
 	st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
-	memset(st, 0, sizeof(dstvert_t) * pheader->num_st);
 	vertx = malloc(pinmodel.num_frames * pheader->num_xyz * sizeof(dmdx_vert_t));
 	skin = (char *)pheader + pheader->ofs_skins;
 
