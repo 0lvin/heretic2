@@ -1114,10 +1114,6 @@ typedef struct {
 } mdrVertex_t;
 
 typedef struct {
-	int indexes[3];
-} mdrTriangle_t;
-
-typedef struct {
 	int ident;
 
 	char name[MAX_QPATH]; // polyset name

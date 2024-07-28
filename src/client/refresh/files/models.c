@@ -1985,6 +1985,10 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 		/* load vertex */
 		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
+		printf("%d => %d ? %d\n",
+			insurf->ofsVerts,
+			(float)(insurf->ofsEnd - insurf->ofsVerts) / insurf->numVerts,
+			insurf->numVerts * (sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1)));
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
 			int f;
@@ -2029,8 +2033,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 				VectorCopy(tempVert, vertx[vert_pos].xyz);
 				VectorCopy(tempNormal, vertx[vert_pos].norm);
-
-				printf("%d: %.2fx%.2fx%.2f\n", vert_pos, tempVert[0], tempVert[1], tempVert[2]);
 			}
 		}
 
