@@ -2012,6 +2012,10 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				{
 					mdrBone_t *bone;
 
+					if (w->boneIndex >= pinmodel.numBones)
+					{
+						printf("%d -> %d(%d)\n", k, w->boneIndex, pinmodel.numBones);
+					}
 					bone = outframe->bones + w->boneIndex % pinmodel.numBones;
 
 					tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
