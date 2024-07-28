@@ -1816,9 +1816,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		return NULL;
 	}
 
-	printf("MDR %s: %d\n", ((mdrHeader_t *)buffer)->name, pinmodel.version);
-
 	printf("frames: %d, lods: %d\n", pinmodel.num_frames, pinmodel.numLODs);
+	pinmodel.num_frames = 1;
 
 	int unframesize = sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.numBones - 1);
 	char *frames = malloc(unframesize * pinmodel.num_frames);
@@ -1984,7 +1983,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				vert_id = LittleLong(p[j * 3 + k]) + num_xyz;
 				tris[num_tris + j].index_xyz[k] = vert_id;
 				tris[num_tris + j].index_st[k] = vert_id;
-				printf("[%d]%d\n", k, vert_id);
 			}
 		}
 
@@ -2011,6 +2009,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 				VectorClear(tempVert);
 				VectorClear(tempNormal);
+
 				w = inVert->weights;
 				for ( k = 0 ; k < inVert->numWeights ; k++, w++ )
 				{
@@ -2034,6 +2033,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				vertx[vert_pos].norm[0] = tempNormal[0];
 				vertx[vert_pos].norm[1] = tempNormal[1];
 				vertx[vert_pos].norm[2] = tempNormal[2];
+
+				printf("%d: %.2fx%.2fx%.2f\n", vert_pos, tempVert[0], tempVert[1], tempVert[2]);
 			}
 		}
 
