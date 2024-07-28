@@ -1821,6 +1821,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	int unframesize = sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.numBones - 1);
 	char *frames = malloc(unframesize * pinmodel.num_frames);
+	memset(frames, 0, unframesize * pinmodel.num_frames);
 
 	if (pinmodel.ofsFrames < 0)
 	{
@@ -1888,7 +1889,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	}
 
 	inlod = (mdrLOD_t*)(buffer + pinmodel.ofsLODs);
-
 
 	meshofs = inlod->ofsSurfaces;
 	for (i = 0; i < inlod->numSurfaces; i++)
