@@ -1889,18 +1889,20 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	}
 
 	inlod = (mdrLOD_t*)(buffer + pinmodel.ofsLODs);
-	mdrSurface_t *insurf;
 
-	insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
+
+	meshofs = inlod->ofsSurfaces;
 	for (i = 0; i < inlod->numSurfaces; i++)
 	{
+		mdrSurface_t* insurf;
+
+		insurf = (mdrSurface_t*)((char*)inlod + meshofs);
 		num_tris += LittleLong(insurf->numTriangles);
 		num_xyz += LittleLong(insurf->numVerts);
+		meshofs += LittleLong(insurf->ofsEnd);
 
 		printf("surf %d: %s shader: %s tris: %d vert: %d\n",
 			i, insurf->name, insurf->shader, num_tris, num_xyz);
-
-		insurf = (mdrSurface_t*)((char*)insurf + insurf->ofsEnd);
 	}
 
 	num_skins = inlod->numSurfaces;
@@ -1951,11 +1953,12 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	meshofs = inlod->ofsSurfaces;
 
 //////
-	insurf = (mdrSurface_t*)((char*)inlod + inlod->ofsSurfaces);
 	for (i = 0; i < inlod->numSurfaces; i++)
 	{
 		int j;
+		mdrSurface_t* insurf;
 
+		insurf = (mdrSurface_t*)((char*)inlod + meshofs);
 		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
@@ -1987,10 +1990,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
 			}
 		}
-	}
-//////
-	for (i = 0; i < inlod->numSurfaces; i++)
-	{
 #if 0
 		const md3_mesh_t *md3_mesh;
 		md3_vertex_t *md3_vertex;
@@ -2064,12 +2063,16 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				vertx[vert_pos + k].norm[2] = (float)cos(npitch);
 			}
 		}
+#endif
+		num_tris += LittleLong(insurf->numTriangles);
+		num_xyz += LittleLong(insurf->numVerts);
+		meshofs += LittleLong(insurf->ofsEnd);
 
-		meshofs += LittleLong(md3_mesh->ofs_end);
-		num_xyz += LittleLong(md3_mesh->num_xyz);
-		num_tris += LittleLong(md3_mesh->num_tris);
+		printf("surf %d: %s shader: %s tris: %d vert: %d\n",
+			i, insurf->name, insurf->shader, num_tris, num_xyz);
 	}
 
+#if 0
 	byte *inframe = (unsigned char*)buffer + pinmodel.ofs_frames;
 	for (i = 0; i < pheader->num_frames; i ++)
 	{
@@ -2090,8 +2093,9 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			pheader->num_xyz, frame);
 
 		inframe += sizeof(md3_frameinfo_t);
-#endif
 	}
+#endif
+
 	free(vertx);
 	free(frames);
 
