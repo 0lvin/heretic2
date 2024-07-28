@@ -2042,17 +2042,15 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		meshofs += LittleLong(insurf->ofsEnd);
 	}
 
-#if 0
-	byte *inframe = (unsigned char*)buffer + pinmodel.ofs_frames;
 	for (i = 0; i < pheader->num_frames; i ++)
 	{
 		daliasxframe_t *frame = (daliasxframe_t *)(
 			(byte *)pheader + pheader->ofs_frames + i * pheader->framesize);
-		const md3_frameinfo_t *md3_frameinfo = (md3_frameinfo_t*)inframe;
+		const mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
 
-		if (md3_frameinfo->name[0])
+		if (outframe->name[0])
 		{
-			strncpy(frame->name, md3_frameinfo->name, sizeof(frame->name) - 1);
+			strncpy(frame->name, outframe->name, sizeof(frame->name) - 1);
 		}
 		else
 		{
@@ -2061,10 +2059,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 		PrepareFrameVertex(vertx + i * pheader->num_xyz,
 			pheader->num_xyz, frame);
-
-		inframe += sizeof(md3_frameinfo_t);
 	}
-#endif
 
 	free(vertx);
 	free(frames);
