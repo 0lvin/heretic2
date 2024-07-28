@@ -2026,13 +2026,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 					tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
 				}
 
-				vertx[vert_pos].xyz[0] = tempVert[0];
-				vertx[vert_pos].xyz[1] = tempVert[1];
-				vertx[vert_pos].xyz[2] = tempVert[2];
-
-				vertx[vert_pos].norm[0] = tempNormal[0];
-				vertx[vert_pos].norm[1] = tempNormal[1];
-				vertx[vert_pos].norm[2] = tempNormal[2];
+				VectorCopy(tempVert, vertx[vert_pos].xyz);
+				VectorCopy(tempNormal, vertx[vert_pos].norm);
 
 				printf("%d: %.2fx%.2fx%.2f\n", vert_pos, tempVert[0], tempVert[1], tempVert[2]);
 			}
