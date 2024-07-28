@@ -1933,8 +1933,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->num_xyz = num_xyz;
 	pheader->num_meshes = inlod->numSurfaces;
 	pheader->num_st = num_xyz * pinmodel.num_frames;
-	pheader->num_st = num_tris * 3;
-	printf("%d -> %d x %d\n", pheader->num_st, num_xyz, pinmodel.num_frames);
 	pheader->num_tris = num_tris;
 	pheader->ofs_meshes = ofs_meshes;
 	pheader->ofs_skins = ofs_skins;
@@ -1947,6 +1945,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
 	tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
 	st = (dstvert_t*)((byte *)pheader + pheader->ofs_st);
+	memset(st, 0, sizeof(dstvert_t) * pheader->num_st);
 	vertx = malloc(pinmodel.num_frames * pheader->num_xyz * sizeof(dmdx_vert_t));
 	skin = (char *)pheader + pheader->ofs_skins;
 
