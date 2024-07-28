@@ -1932,7 +1932,9 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->num_frames = pinmodel.num_frames;
 	pheader->num_xyz = num_xyz;
 	pheader->num_meshes = inlod->numSurfaces;
+	pheader->num_st = num_xyz * pinmodel.num_frames;
 	pheader->num_st = num_tris * 3;
+	printf("%d -> %d x %d\n", pheader->num_st, num_xyz, pinmodel.num_frames);
 	pheader->num_tris = num_tris;
 	pheader->ofs_meshes = ofs_meshes;
 	pheader->ofs_skins = ofs_skins;
@@ -1979,6 +1981,9 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			vec3_t	tempVert, tempNormal;
 			mdrWeight_t	*w;
 
+			//st[j + num_xyz /* + i * pheader->pheader->num_xyz */].s = LittleFloat(inVert->texCoords[0]) * pheader->skinwidth;
+			//st[j + num_xyz /* + i * pheader->pheader->num_xyz */].t = LittleFloat(inVert->texCoords[1]) * pheader->skinheight;
+
 			VectorClear(tempVert);
 			VectorClear(tempNormal);
 			w = inVert->weights;
@@ -2001,13 +2006,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		md3_vertex_t *md3_vertex;
 
 		md3_mesh = (md3_mesh_t*)((byte*)buffer + meshofs);
-		fst = (const float*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_st));
-
-		for (j = 0; j < LittleLong(md3_mesh->num_xyz); j++)
-		{
-			st[j + num_xyz].s = LittleFloat(fst[j * 2 + 0]) * pheader->skinwidth;
-			st[j + num_xyz].t = LittleFloat(fst[j * 2 + 1]) * pheader->skinheight;
-		}
 
 		/* load triangles */
 		p = (const int*)((byte*)buffer + meshofs + LittleLong(md3_mesh->ofs_tris));
