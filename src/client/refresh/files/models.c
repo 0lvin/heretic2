@@ -2002,8 +2002,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			{
 				int k, vert_pos;
 				mdrFrame_t *outframe = (mdrFrame_t *)(frames + f * unframesize);
-				vec3_t	tempVert, tempNormal;
-				mdrWeight_t	*w;
+				vec3_t tempVert, tempNormal;
+				mdrWeight_t *w;
 
 				vert_pos = num_xyz + f * pheader->num_xyz + j;
 
