@@ -1955,7 +1955,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	for (i = 0; i < inlod->numSurfaces; i++)
 	{
 		mdrSurface_t* insurf;
-		const float *fst;
 		const int *p;
 		int j;
 
