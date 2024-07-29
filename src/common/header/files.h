@@ -1079,9 +1079,6 @@ typedef struct
 	int ofs_end; // end of file
 } sin_sam_header_t;
 
-/* Quake 1 BSP */
-#define BSPQ1VERSION 29
-
 /*
  * Here are the definitions for Ravensoft's model format of md4. Raven stores their
  * playermodels in .mdr files, in some games, which are pretty much like the md4
@@ -1193,6 +1190,9 @@ typedef struct {
 
 	int ofs_end; // end of file
 } mdr_header_t;
+
+/* Quake 1 BSP */
+#define BSPQ1VERSION 29
 
 #endif
 
