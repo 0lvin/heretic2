@@ -1104,14 +1104,14 @@ typedef struct {
 	int boneIndex; // these are indexes into the boneReferences,
 	float boneWeight; // not the global per-frame bone list
 	vec3_t offset;
-} mdrWeight_t;
+} mdr_weight_t;
 
 typedef struct {
 	vec3_t normal;
 	vec2_t texCoords;
 	int numWeights;
-	mdrWeight_t weights[1]; // variable sized
-} mdrVertex_t;
+	mdr_weight_t weights[1]; // variable sized
+} mdr_vertex_t;
 
 typedef struct {
 	int ident;
@@ -1136,7 +1136,7 @@ typedef struct {
 	int numBoneReferences;
 	int ofsBoneReferences;
 
-	int ofsEnd; // next surface follows
+	int ofs_end; // next surface follows
 } mdrSurface_t;
 
 typedef struct {
@@ -1165,7 +1165,7 @@ typedef struct {
 typedef struct {
 	int numSurfaces;
 	int ofsSurfaces; // first surface, others follow
-	int ofsEnd; // next lod follows
+	int ofs_end; // next lod follows
 } mdrLOD_t;
 
 typedef struct {
@@ -1188,11 +1188,11 @@ typedef struct {
 	int numLODs;
 	int ofsLODs;
 
-	int numTags;
+	int num_tags;
 	int ofsTags;
 
-	int ofsEnd; // end of file
-} mdrHeader_t;
+	int ofs_end; // end of file
+} mdr_header_t;
 
 #endif
 

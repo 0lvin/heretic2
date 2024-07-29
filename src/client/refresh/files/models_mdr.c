@@ -148,7 +148,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	int framesize, ofs_skins, ofs_frames, ofs_glcmds, ofs_meshes, ofs_tris,
 		ofs_st, ofs_end;
 	int num_xyz = 0, num_tris = 0, num_glcmds = 0, num_skins = 0, meshofs = 0;
-	mdrHeader_t pinmodel;
+	mdr_header_t pinmodel;
 	dmdxmesh_t *mesh_nodes;
 	dtriangle_t *tris;
 	dstvert_t *st;
@@ -246,7 +246,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		insurf = (mdrSurface_t*)((char*)inlod + meshofs);
 		num_tris += LittleLong(insurf->numTriangles);
 		num_xyz += LittleLong(insurf->numVerts);
-		meshofs += LittleLong(insurf->ofsEnd);
+		meshofs += LittleLong(insurf->ofs_end);
 	}
 
 	num_skins = inlod->numSurfaces;
@@ -330,7 +330,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		}
 
 		/* load vertex */
-		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
+		mdr_vertex_t * inVert = (mdr_vertex_t *)((char*)insurf + insurf->ofsVerts);
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
 			int f;
@@ -343,7 +343,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				int k, vert_pos;
 				mdrFrame_t *outframe = (mdrFrame_t *)(frames + f * unframesize);
 				vec3_t tempVert, tempNormal;
-				mdrWeight_t *w;
+				mdr_weight_t *w;
 
 				vert_pos = num_xyz + f * pheader->num_xyz + j;
 
@@ -369,13 +369,13 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				VectorCopy(tempVert, vertx[vert_pos].xyz);
 				VectorCopy(tempNormal, vertx[vert_pos].norm);
 			}
-			inVert = (mdrVertex_t *)((char *)inVert +
-				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
+			inVert = (mdr_vertex_t *)((char *)inVert +
+				sizeof(mdr_vertex_t) + sizeof(mdr_weight_t) * (inVert->numWeights - 1));
 		}
 
 		num_tris += LittleLong(insurf->numTriangles);
 		num_xyz += LittleLong(insurf->numVerts);
-		meshofs += LittleLong(insurf->ofsEnd);
+		meshofs += LittleLong(insurf->ofs_end);
 	}
 
 	for (i = 0; i < pheader->num_frames; i ++)
