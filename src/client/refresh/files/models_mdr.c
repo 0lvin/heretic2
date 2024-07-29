@@ -335,8 +335,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		{
 			int f;
 
-			st[j + num_xyz].s = LittleFloat(inVert->texCoords[0]) * pheader->skinwidth;
-			st[j + num_xyz].t = LittleFloat(inVert->texCoords[1]) * pheader->skinheight;
+			st[j + num_xyz].s = LittleFloat(inVert->tex_coords[0]) * pheader->skinwidth;
+			st[j + num_xyz].t = LittleFloat(inVert->tex_coords[1]) * pheader->skinheight;
 
 			for (f = 0; f < pinmodel.num_frames; f ++)
 			{
@@ -351,26 +351,26 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				VectorClear(tempNormal);
 
 				w = inVert->weights;
-				for ( k = 0 ; k < inVert->numWeights ; k++, w++ )
+				for ( k = 0 ; k < inVert->num_weights ; k++, w++ )
 				{
 					mdr_bone_t *bone;
 
 					bone = outframe->bones + w->bone_index % pinmodel.num_bones;
 
-					tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
-					tempVert[1] += w->boneWeight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
-					tempVert[2] += w->boneWeight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
+					tempVert[0] += w->bone_weight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
+					tempVert[1] += w->bone_weight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
+					tempVert[2] += w->bone_weight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
 
-					tempNormal[0] += w->boneWeight * DotProduct(bone->matrix[0], inVert->normal);
-					tempNormal[1] += w->boneWeight * DotProduct(bone->matrix[1], inVert->normal);
-					tempNormal[2] += w->boneWeight * DotProduct(bone->matrix[2], inVert->normal);
+					tempNormal[0] += w->bone_weight * DotProduct(bone->matrix[0], inVert->normal);
+					tempNormal[1] += w->bone_weight * DotProduct(bone->matrix[1], inVert->normal);
+					tempNormal[2] += w->bone_weight * DotProduct(bone->matrix[2], inVert->normal);
 				}
 
 				VectorCopy(tempVert, vertx[vert_pos].xyz);
 				VectorCopy(tempNormal, vertx[vert_pos].norm);
 			}
 			inVert = (mdr_vertex_t *)((char *)inVert +
-				sizeof(mdr_vertex_t) + sizeof(mdr_weight_t) * (inVert->numWeights - 1));
+				sizeof(mdr_vertex_t) + sizeof(mdr_weight_t) * (inVert->num_weights - 1));
 		}
 
 		num_tris += LittleLong(insurf->num_tris);

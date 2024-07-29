@@ -923,12 +923,12 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 
 		/* texcoordinates */
 		{
-			const mdl_texcoord_t *texcoords;
+			const mdl_texcoord_t *tex_coords;
 			dstvert_t *poutst;
 
 			poutst = (dstvert_t *) ((byte *)pheader + ofs_st);
 
-			texcoords = (mdl_texcoord_t *)curr_pos;
+			tex_coords = (mdl_texcoord_t *)curr_pos;
 			curr_pos += sizeof(mdl_texcoord_t) * num_st;
 
 			for(i = 0; i < num_st; i++)
@@ -936,15 +936,15 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 				int s, t;
 
 				/* Compute texture coordinates */
-				s = LittleLong(texcoords[i].s);
-				t = LittleLong(texcoords[i].t);
+				s = LittleLong(tex_coords[i].s);
+				t = LittleLong(tex_coords[i].t);
 
 				poutst[i * 2].s = s;
 				poutst[i * 2].t = t;
 				poutst[i * 2 + 1].s = s;
 				poutst[i * 2 + 1].t = t;
 
-				if (texcoords[i].onseam)
+				if (tex_coords[i].onseam)
 				{
 					/* Backface */
 					poutst[i * 2 + 1].s += skinwidth >> 1;
@@ -1239,7 +1239,7 @@ done:
 }
 
 int
-Mod_LoadCmdCompress(const dstvert_t *texcoords, dtriangle_t *triangles, int num_tris,
+Mod_LoadCmdCompress(const dstvert_t *tex_coords, dtriangle_t *triangles, int num_tris,
 	int *commands, int skinwidth, int skinheight)
 {
 	int i, j, numcommands = 0, startv, len, bestlen, type, besttype = -1;
@@ -1318,8 +1318,8 @@ Mod_LoadCmdCompress(const dstvert_t *texcoords, dtriangle_t *triangles, int num_
 			vec2_t cmdst;
 
 			/* st */
-			cmdst[0] = (texcoords[best_st[j]].s + 0.5f) / skinwidth;
-			cmdst[1] = (texcoords[best_st[j]].t + 0.5f) / skinheight;
+			cmdst[0] = (tex_coords[best_st[j]].s + 0.5f) / skinwidth;
+			cmdst[1] = (tex_coords[best_st[j]].t + 0.5f) / skinheight;
 			memcpy(commands + numcommands, &cmdst, sizeof(cmdst));
 			numcommands += 2;
 

@@ -1102,14 +1102,14 @@ typedef struct
 
 typedef struct {
 	int bone_index; // these are indexes into the boneReferences,
-	float boneWeight; // not the global per-frame bone list
+	float bone_weight; // not the global per-frame bone list
 	vec3_t offset;
 } mdr_weight_t;
 
 typedef struct {
 	vec3_t normal;
-	vec2_t texCoords;
-	int numWeights;
+	vec2_t tex_coords;
+	int num_weights;
 	mdr_weight_t weights[1]; // variable sized
 } mdr_vertex_t;
 
