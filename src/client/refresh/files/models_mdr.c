@@ -177,16 +177,16 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		return NULL;
 	}
 
-	int unframesize = sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.numBones - 1);
+	int unframesize = sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.num_bones - 1);
 	char *frames = malloc(unframesize * pinmodel.num_frames);
 
-	if (pinmodel.ofsFrames < 0)
+	if (pinmodel.ofs_frames < 0)
 	{
-		int compframesize = sizeof(mdrCompFrame_t) + sizeof(mdrCompBone_t) * (pinmodel.numBones - 1);
+		int compframesize = sizeof(mdrCompFrame_t) + sizeof(mdrCompBone_t) * (pinmodel.num_bones - 1);
 		for (i = 0; i < pinmodel.num_frames; i++)
 		{
 			mdrCompFrame_t * inframe = (mdrCompFrame_t*)(
-				(byte*)buffer + -pinmodel.ofsFrames +
+				(byte*)buffer + -pinmodel.ofs_frames +
 				(i * compframesize));
 			mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
 			int j;
@@ -199,7 +199,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				outframe->localOrigin[j] = LittleFloat(inframe->localOrigin[j]);
 				outframe->radius = LittleFloat(inframe->radius);
 			}
-			for (j = 0; j < pinmodel.numBones; j ++)
+			for (j = 0; j < pinmodel.num_bones; j ++)
 			{
 				MC_UnCompress(outframe->bones[j].matrix, inframe->bones[j].Comp);
 			}
@@ -210,7 +210,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		for (i = 0; i < pinmodel.num_frames; i++)
 		{
 			mdrFrame_t * inframe = (mdrFrame_t*)(
-				(byte*)buffer + pinmodel.ofsFrames +
+				(byte*)buffer + pinmodel.ofs_frames +
 				(i * unframesize));
 			mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
 			int j;
@@ -224,7 +224,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				outframe->radius = LittleFloat(inframe->radius);
 			}
 
-			int float_count = pinmodel.numBones * sizeof(mdrBone_t);
+			int float_count = pinmodel.num_bones * sizeof(mdrBone_t);
 			float *infloat, *outfloat;
 			infloat = (float *)&inframe->bones;
 			outfloat = (float *)&outframe->bones;
@@ -236,7 +236,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	}
 
 	mdrLOD_t *inlod;
-	inlod = (mdrLOD_t*)(buffer + pinmodel.ofsLODs);
+	inlod = (mdrLOD_t*)(buffer + pinmodel.ofs_lods);
 
 	meshofs = inlod->ofsSurfaces;
 	for (i = 0; i < inlod->numSurfaces; i++)
@@ -355,7 +355,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				{
 					mdrBone_t *bone;
 
-					bone = outframe->bones + w->boneIndex % pinmodel.numBones;
+					bone = outframe->bones + w->bone_index % pinmodel.num_bones;
 
 					tempVert[0] += w->boneWeight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
 					tempVert[1] += w->boneWeight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
