@@ -351,19 +351,21 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				VectorClear(tempNormal);
 
 				w = inVert->weights;
-				for ( k = 0 ; k < inVert->num_weights ; k++, w++ )
+				for ( k = 0; k < LittleLong(inVert->num_weights); k++, w++)
 				{
 					mdr_bone_t *bone;
+					float bone_weight;
 
-					bone = outframe->bones + w->bone_index % pinmodel.num_bones;
+					bone = outframe->bones + LittleLong(w->bone_index);
 
-					tempVert[0] += w->bone_weight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
-					tempVert[1] += w->bone_weight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
-					tempVert[2] += w->bone_weight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
+					bone_weight = LittleFloat(w->bone_weight);
+					tempVert[0] += bone_weight * (DotProduct(bone->matrix[0], w->offset) + bone->matrix[0][3]);
+					tempVert[1] += bone_weight * (DotProduct(bone->matrix[1], w->offset) + bone->matrix[1][3]);
+					tempVert[2] += bone_weight * (DotProduct(bone->matrix[2], w->offset) + bone->matrix[2][3]);
 
-					tempNormal[0] += w->bone_weight * DotProduct(bone->matrix[0], inVert->normal);
-					tempNormal[1] += w->bone_weight * DotProduct(bone->matrix[1], inVert->normal);
-					tempNormal[2] += w->bone_weight * DotProduct(bone->matrix[2], inVert->normal);
+					tempNormal[0] += bone_weight * DotProduct(bone->matrix[0], inVert->normal);
+					tempNormal[1] += bone_weight * DotProduct(bone->matrix[1], inVert->normal);
+					tempNormal[2] += bone_weight * DotProduct(bone->matrix[2], inVert->normal);
 				}
 
 				VectorCopy(tempVert, vertx[vert_pos].xyz);
