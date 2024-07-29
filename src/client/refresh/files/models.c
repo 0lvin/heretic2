@@ -1816,9 +1816,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		return NULL;
 	}
 
-	printf("frames: %d, lods: %d\n", pinmodel.num_frames, pinmodel.numLODs);
-	pinmodel.num_frames = 1;
-
 	int unframesize = sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.numBones - 1);
 	char *frames = malloc(unframesize * pinmodel.num_frames);
 
@@ -1889,9 +1886,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		num_tris += LittleLong(insurf->numTriangles);
 		num_xyz += LittleLong(insurf->numVerts);
 		meshofs += LittleLong(insurf->ofsEnd);
-
-		printf("surf %d: %s shader: %s tris: %d vert: %d\n",
-			i, insurf->name, insurf->shader, num_tris, num_xyz);
 	}
 
 	num_skins = inlod->numSurfaces;
