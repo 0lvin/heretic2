@@ -355,15 +355,24 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				{
 					mdr_bone_t *bone;
 					float bone_weight;
+					vec3_t innorm, inoffset;
 					int n;
 
 					bone = outframe->bones + LittleLong(w->bone_index);
 
-					bone_weight = LittleFloat(w->bone_weight);
+					VectorCopy(w->offset, inoffset);
+					VectorCopy(inVert->normal, innorm);
 					for (n = 0; n < 3; n++)
 					{
-						tempVert[n] += bone_weight * (DotProduct(bone->matrix[n], w->offset) + bone->matrix[n][3]);
-						tempNormal[n] += bone_weight * DotProduct(bone->matrix[n], inVert->normal);
+						inoffset[n] = LittleFloat(inoffset[n]);
+						innorm[n] = LittleFloat(innorm[n]);
+					}
+					bone_weight = LittleFloat(w->bone_weight);
+
+					for (n = 0; n < 3; n++)
+					{
+						tempVert[n] += bone_weight * (DotProduct(bone->matrix[n], inoffset) + bone->matrix[n][3]);
+						tempNormal[n] += bone_weight * DotProduct(bone->matrix[n], innorm);
 					}
 				}
 
