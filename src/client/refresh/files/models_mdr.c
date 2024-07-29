@@ -182,10 +182,10 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	if (pinmodel.ofs_frames < 0)
 	{
-		int compframesize = sizeof(mdrCompFrame_t) + sizeof(mdrCompBone_t) * (pinmodel.num_bones - 1);
+		int compframesize = sizeof(mdr_compframe_t) + sizeof(mdr_compbone_t) * (pinmodel.num_bones - 1);
 		for (i = 0; i < pinmodel.num_frames; i++)
 		{
-			mdrCompFrame_t * inframe = (mdrCompFrame_t*)(
+			mdr_compframe_t * inframe = (mdr_compframe_t*)(
 				(byte*)buffer + -pinmodel.ofs_frames +
 				(i * compframesize));
 			mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
@@ -196,7 +196,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			{
 				outframe->bounds[0][j] = LittleFloat(inframe->bounds[0][j]);
 				outframe->bounds[1][j] = LittleFloat(inframe->bounds[1][j]);
-				outframe->localOrigin[j] = LittleFloat(inframe->localOrigin[j]);
+				outframe->origin[j] = LittleFloat(inframe->origin[j]);
 				outframe->radius = LittleFloat(inframe->radius);
 			}
 			for (j = 0; j < pinmodel.num_bones; j ++)
@@ -220,7 +220,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			{
 				outframe->bounds[0][j] = LittleFloat(inframe->bounds[0][j]);
 				outframe->bounds[1][j] = LittleFloat(inframe->bounds[1][j]);
-				outframe->localOrigin[j] = LittleFloat(inframe->localOrigin[j]);
+				outframe->origin[j] = LittleFloat(inframe->origin[j]);
 				outframe->radius = LittleFloat(inframe->radius);
 			}
 

@@ -1145,22 +1145,22 @@ typedef struct {
 
 typedef struct {
 	vec3_t bounds[2]; // bounds of all surfaces of all LOD's for this frame
-	vec3_t localOrigin; // midpoint of bounds, used for sphere cull
-	float radius; // dist from localOrigin to corner
+	vec3_t origin; // midpoint of bounds, used for sphere cull
+	float radius; // dist from origin to corner
 	char name[16];
 	mdrBone_t bones[1]; // [num_bones]
 } mdrFrame_t;
 
 typedef struct {
 	unsigned char Comp[24]; // MC_COMP_BYTES is in MatComp.h, but don't want to couple
-} mdrCompBone_t;
+} mdr_compbone_t;
 
 typedef struct {
 	vec3_t bounds[2]; // bounds of all surfaces of all LOD's for this frame
-	vec3_t localOrigin; // midpoint of bounds, used for sphere cull
-	float radius; // dist from localOrigin to corner
-	mdrCompBone_t bones[1]; // [num_bones]
-} mdrCompFrame_t;
+	vec3_t origin; // midpoint of bounds, used for sphere cull
+	float radius; // dist from origin to corner
+	mdr_compbone_t bones[1]; // [num_bones]
+} mdr_compframe_t;
 
 typedef struct {
 	int num_surfaces;
