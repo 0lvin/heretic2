@@ -1882,8 +1882,25 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	inlod = (mdrLOD_t*)(buffer + pinmodel.ofsLODs);
 	for (i = 0; i < pinmodel.numLODs; i ++)
 	{
+		int j, meshofs = 0, num_tris = 0, num_xyz = 0;
+
 		printf("surfaces %d, surfofs %d lodend %d\n",
 			inlod->numSurfaces, inlod->ofsSurfaces, inlod->ofsEnd);
+
+		meshofs = inlod->ofsSurfaces;
+		for (j = 0; j < inlod->numSurfaces; j++)
+		{
+			mdrSurface_t* insurf;
+
+			insurf = (mdrSurface_t*)((char*)inlod + meshofs);
+			num_tris += LittleLong(insurf->numTriangles);
+			num_xyz += LittleLong(insurf->numVerts);
+			meshofs += LittleLong(insurf->ofsEnd);
+
+			printf("%d: surf %d: %s shader: %s tris: %d vert: %d\n",
+				i, j, insurf->name, insurf->shader, num_tris, num_xyz);
+		}
+
 		inlod = (mdrLOD_t*)((char *)inlod + inlod->ofsEnd);
 	}
 
@@ -1985,15 +2002,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 		/* load vertex */
 		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
-		printf("Vert size %d: count vert %d, header %d, verts: %d, tri %d, bones %d, end: %d, diff %d\n",
-			sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1),
-			insurf->numVerts,
-			insurf->ofsHeader,
-			insurf->ofsVerts,
-			insurf->ofsTriangles,
-			insurf->ofsBoneReferences,
-			insurf->ofsEnd,
-			insurf->ofsTriangles - insurf->ofsVerts);
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
 			int f;
