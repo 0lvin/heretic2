@@ -1163,10 +1163,10 @@ typedef struct {
 } mdrCompFrame_t;
 
 typedef struct {
-	int numSurfaces;
-	int ofsSurfaces; // first surface, others follow
+	int num_surfaces;
+	int ofs_surfaces; // first surface, others follow
 	int ofs_end; // next lod follows
-} mdrLOD_t;
+} mdr_lod_t;
 
 typedef struct {
 	int bone_index;

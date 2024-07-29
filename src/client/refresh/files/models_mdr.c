@@ -235,11 +235,11 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		}
 	}
 
-	mdrLOD_t *inlod;
-	inlod = (mdrLOD_t*)(buffer + pinmodel.ofs_lods);
+	mdr_lod_t *inlod;
+	inlod = (mdr_lod_t*)(buffer + pinmodel.ofs_lods);
 
-	meshofs = inlod->ofsSurfaces;
-	for (i = 0; i < inlod->numSurfaces; i++)
+	meshofs = inlod->ofs_surfaces;
+	for (i = 0; i < inlod->num_surfaces; i++)
 	{
 		mdrSurface_t* insurf;
 
@@ -249,17 +249,17 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		meshofs += LittleLong(insurf->ofs_end);
 	}
 
-	num_skins = inlod->numSurfaces;
+	num_skins = inlod->num_surfaces;
 
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
-	num_glcmds = (10 * num_tris) + 1 * inlod->numSurfaces;
+	num_glcmds = (10 * num_tris) + 1 * inlod->num_surfaces;
 
 	framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_xyz;
 	ofs_skins = sizeof(dmdx_t);
 	ofs_frames = ofs_skins + num_skins * MAX_SKINNAME;
 	ofs_glcmds = ofs_frames + framesize * pinmodel.num_frames;
 	ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
-	ofs_tris = ofs_meshes + inlod->numSurfaces * sizeof(dmdxmesh_t);
+	ofs_tris = ofs_meshes + inlod->num_surfaces * sizeof(dmdxmesh_t);
 	ofs_st = ofs_tris + num_tris * sizeof(dtriangle_t);
 	ofs_end = ofs_st + num_xyz * sizeof(dstvert_t);
 
@@ -275,7 +275,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->num_glcmds = num_glcmds;
 	pheader->num_frames = pinmodel.num_frames;
 	pheader->num_xyz = num_xyz;
-	pheader->num_meshes = inlod->numSurfaces;
+	pheader->num_meshes = inlod->num_surfaces;
 	pheader->num_st = num_xyz;
 	pheader->num_tris = num_tris;
 	pheader->ofs_meshes = ofs_meshes;
@@ -294,9 +294,9 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	num_xyz = 0;
 	num_tris = 0;
-	meshofs = inlod->ofsSurfaces;
+	meshofs = inlod->ofs_surfaces;
 
-	for (i = 0; i < inlod->numSurfaces; i++)
+	for (i = 0; i < inlod->num_surfaces; i++)
 	{
 		mdrSurface_t* insurf;
 		const int *p;
