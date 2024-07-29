@@ -48,7 +48,7 @@ image_load(const char* name, int *w, int *h, int *b)
 
 	VID_ImageDecode(name, &pic, &palette, w, h, &bytesPerPixel);
 
-	if (bytesPerPixel == 4 || !pic)
+	if (bytesPerPixel == 32 || !pic)
 	{
 		return pic;
 	}
