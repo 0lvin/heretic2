@@ -1108,7 +1108,7 @@ typedef struct {
 
 typedef struct {
 	vec3_t normal;
-	vec2_t tex_coords;
+	vec2_t texcoords;
 	int num_weights;
 	mdr_weight_t weights[1]; // variable sized
 } mdr_vertex_t;

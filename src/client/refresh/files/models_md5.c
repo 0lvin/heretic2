@@ -922,7 +922,7 @@ ReadMD5Model(const char *buffer, size_t size)
 							malloc(sizeof(md5_triangle_t) * mesh->num_tris);
 					}
 				}
-				else if (!strcmp(token, "num_weights"))
+				else if (!strcmp(token, "numweights"))
 				{
 					token = COM_Parse(&curr_buff);
 					mesh->num_weights = (int)strtol(token, (char **)NULL, 10);

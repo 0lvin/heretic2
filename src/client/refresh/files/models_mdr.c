@@ -335,8 +335,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		{
 			int f;
 
-			st[j + num_xyz].s = LittleFloat(inVert->tex_coords[0]) * pheader->skinwidth;
-			st[j + num_xyz].t = LittleFloat(inVert->tex_coords[1]) * pheader->skinheight;
+			st[j + num_xyz].s = LittleFloat(inVert->texcoords[0]) * pheader->skinwidth;
+			st[j + num_xyz].t = LittleFloat(inVert->texcoords[1]) * pheader->skinheight;
 
 			for (f = 0; f < pinmodel.num_frames; f ++)
 			{
