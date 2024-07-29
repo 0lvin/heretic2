@@ -1998,9 +1998,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		{
 			int f;
 
-			inVert = (mdrVertex_t *)((char *)inVert +
-				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
-
 			st[j + num_xyz].s = LittleFloat(inVert->texCoords[0]) * pheader->skinwidth;
 			st[j + num_xyz].t = LittleFloat(inVert->texCoords[1]) * pheader->skinheight;
 
@@ -2035,6 +2032,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				VectorCopy(tempVert, vertx[vert_pos].xyz);
 				VectorCopy(tempNormal, vertx[vert_pos].norm);
 			}
+			inVert = (mdrVertex_t *)((char *)inVert +
+				sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1));
 		}
 
 		num_tris += LittleLong(insurf->numTriangles);
