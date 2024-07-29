@@ -1985,12 +1985,15 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 		/* load vertex */
 		mdrVertex_t * inVert = (mdrVertex_t *)((char*)insurf + insurf->ofsVerts);
-		printf("%d => %f ? %d : %d ? %d\n",
-			insurf->ofsVerts,
-			(float)(insurf->ofsEnd - insurf->ofsVerts) / insurf->numVerts,
+		printf("Vert size %d: count vert %d, header %d, verts: %d, tri %d, bones %d, end: %d, diff %d\n",
+			sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1),
 			insurf->numVerts,
-			(sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1)),
-			insurf->numVerts * (sizeof(mdrVertex_t) + sizeof(mdrWeight_t) * (inVert->numWeights - 1)));
+			insurf->ofsHeader,
+			insurf->ofsVerts,
+			insurf->ofsTriangles,
+			insurf->ofsBoneReferences,
+			insurf->ofsEnd,
+			insurf->ofsTriangles - insurf->ofsVerts);
 		for (j = 0; j < insurf->numVerts; j ++)
 		{
 			int f;
