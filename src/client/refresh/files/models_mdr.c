@@ -177,7 +177,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		return NULL;
 	}
 
-	int unframesize = sizeof(mdrFrame_t) + sizeof(mdrBone_t) * (pinmodel.num_bones - 1);
+	int unframesize = sizeof(mdr_frame_t) + sizeof(mdr_bone_t) * (pinmodel.num_bones - 1);
 	char *frames = malloc(unframesize * pinmodel.num_frames);
 
 	if (pinmodel.ofs_frames < 0)
@@ -188,7 +188,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			mdr_compframe_t * inframe = (mdr_compframe_t*)(
 				(byte*)buffer + -pinmodel.ofs_frames +
 				(i * compframesize));
-			mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+			mdr_frame_t *outframe = (mdr_frame_t *)(frames + i * unframesize);
 			int j;
 
 			memset(outframe->name, 0, sizeof(outframe->name));
@@ -209,10 +209,10 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	{
 		for (i = 0; i < pinmodel.num_frames; i++)
 		{
-			mdrFrame_t * inframe = (mdrFrame_t*)(
+			mdr_frame_t * inframe = (mdr_frame_t*)(
 				(byte*)buffer + pinmodel.ofs_frames +
 				(i * unframesize));
-			mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+			mdr_frame_t *outframe = (mdr_frame_t *)(frames + i * unframesize);
 			int j;
 
 			memcpy(outframe->name, inframe->name, sizeof(outframe->name));
@@ -224,7 +224,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				outframe->radius = LittleFloat(inframe->radius);
 			}
 
-			int float_count = pinmodel.num_bones * sizeof(mdrBone_t);
+			int float_count = pinmodel.num_bones * sizeof(mdr_bone_t);
 			float *infloat, *outfloat;
 			infloat = (float *)&inframe->bones;
 			outfloat = (float *)&outframe->bones;
@@ -241,11 +241,11 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	meshofs = inlod->ofs_surfaces;
 	for (i = 0; i < inlod->num_surfaces; i++)
 	{
-		mdrSurface_t* insurf;
+		mdr_surface_t* insurf;
 
-		insurf = (mdrSurface_t*)((char*)inlod + meshofs);
-		num_tris += LittleLong(insurf->numTriangles);
-		num_xyz += LittleLong(insurf->numVerts);
+		insurf = (mdr_surface_t*)((char*)inlod + meshofs);
+		num_tris += LittleLong(insurf->num_tris);
+		num_xyz += LittleLong(insurf->num_verts);
 		meshofs += LittleLong(insurf->ofs_end);
 	}
 
@@ -298,21 +298,21 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	for (i = 0; i < inlod->num_surfaces; i++)
 	{
-		mdrSurface_t* insurf;
+		mdr_surface_t* insurf;
 		const int *p;
 		int j;
 
-		insurf = (mdrSurface_t*)((char*)inlod + meshofs);
+		insurf = (mdr_surface_t*)((char*)inlod + meshofs);
 
 		/* load shaders */
 		memcpy(skin, insurf->shader, Q_min(sizeof(insurf->shader), MAX_SKINNAME));
 		skin += MAX_SKINNAME;
 
 		/* load triangles */
-		p = (const int*)((byte*)insurf + LittleLong(insurf->ofsTriangles));
+		p = (const int*)((byte*)insurf + LittleLong(insurf->ofs_tris));
 
 		mesh_nodes[i].ofs_tris = num_tris;
-		mesh_nodes[i].num_tris = LittleLong(insurf->numTriangles);
+		mesh_nodes[i].num_tris = LittleLong(insurf->num_tris);
 
 		for (j = 0; j < mesh_nodes[i].num_tris; j++)
 		{
@@ -330,8 +330,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 		}
 
 		/* load vertex */
-		mdr_vertex_t * inVert = (mdr_vertex_t *)((char*)insurf + insurf->ofsVerts);
-		for (j = 0; j < insurf->numVerts; j ++)
+		mdr_vertex_t * inVert = (mdr_vertex_t *)((char*)insurf + insurf->ofs_verts);
+		for (j = 0; j < insurf->num_verts; j ++)
 		{
 			int f;
 
@@ -341,7 +341,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 			for (f = 0; f < pinmodel.num_frames; f ++)
 			{
 				int k, vert_pos;
-				mdrFrame_t *outframe = (mdrFrame_t *)(frames + f * unframesize);
+				mdr_frame_t *outframe = (mdr_frame_t *)(frames + f * unframesize);
 				vec3_t tempVert, tempNormal;
 				mdr_weight_t *w;
 
@@ -353,7 +353,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				w = inVert->weights;
 				for ( k = 0 ; k < inVert->numWeights ; k++, w++ )
 				{
-					mdrBone_t *bone;
+					mdr_bone_t *bone;
 
 					bone = outframe->bones + w->bone_index % pinmodel.num_bones;
 
@@ -373,8 +373,8 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 				sizeof(mdr_vertex_t) + sizeof(mdr_weight_t) * (inVert->numWeights - 1));
 		}
 
-		num_tris += LittleLong(insurf->numTriangles);
-		num_xyz += LittleLong(insurf->numVerts);
+		num_tris += LittleLong(insurf->num_tris);
+		num_xyz += LittleLong(insurf->num_verts);
 		meshofs += LittleLong(insurf->ofs_end);
 	}
 
@@ -382,7 +382,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	{
 		daliasxframe_t *frame = (daliasxframe_t *)(
 			(byte *)pheader + pheader->ofs_frames + i * pheader->framesize);
-		const mdrFrame_t *outframe = (mdrFrame_t *)(frames + i * unframesize);
+		const mdr_frame_t *outframe = (mdr_frame_t *)(frames + i * unframesize);
 
 		if (outframe->name[0])
 		{

@@ -1118,38 +1118,38 @@ typedef struct {
 
 	char name[MAX_QPATH]; // polyset name
 	char shader[MAX_QPATH];
-	int shaderIndex; // for in-game use
+	int shader_index; // for in-game use
 
-	int ofsHeader; // this will be a negative number
+	int ofs_header; // this will be a negative number
 
-	int numVerts;
-	int ofsVerts;
+	int num_verts;
+	int ofs_verts;
 
-	int numTriangles;
-	int ofsTriangles;
+	int num_tris;
+	int ofs_tris;
 
 	// Bone references are a set of ints representing all the bones
 	// present in any vertex weights for this surface.  This is
 	// needed because a model may have surfaces that need to be
 	// drawn at different sort times, and we don't want to have
 	// to re-interpolate all the bones for each surface.
-	int numBoneReferences;
-	int ofsBoneReferences;
+	int num_bonereferences;
+	int ofs_bonereferences;
 
 	int ofs_end; // next surface follows
-} mdrSurface_t;
+} mdr_surface_t;
 
 typedef struct {
 	float matrix[3][4];
-} mdrBone_t;
+} mdr_bone_t;
 
 typedef struct {
 	vec3_t bounds[2]; // bounds of all surfaces of all LOD's for this frame
 	vec3_t origin; // midpoint of bounds, used for sphere cull
 	float radius; // dist from origin to corner
 	char name[16];
-	mdrBone_t bones[1]; // [num_bones]
-} mdrFrame_t;
+	mdr_bone_t bones[1]; // [num_bones]
+} mdr_frame_t;
 
 typedef struct {
 	unsigned char Comp[24]; // MC_COMP_BYTES is in MatComp.h, but don't want to couple
@@ -1182,7 +1182,7 @@ typedef struct {
 	// frames and bones are shared by all levels of detail
 	int num_frames;
 	int num_bones;
-	int ofs_frames; // mdrFrame_t[numFrames]
+	int ofs_frames; // mdr_frame_t[numFrames]
 
 	// each level of detail has completely separate sets of surfaces
 	int num_lods;
