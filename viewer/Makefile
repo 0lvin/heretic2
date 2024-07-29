@@ -45,6 +45,7 @@ COMMON_FILES = \
 	../src/client/refresh/files/mesh.c \
 	../src/client/refresh/files/models.c \
 	../src/client/refresh/files/models_md5.c \
+	../src/client/refresh/files/models_mdr.c \
 	render.c
 
 COMMON_HEADERS =  ../src/common/header/files.h ../src/common/header/shared.h iqm.h render.h
