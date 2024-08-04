@@ -145,8 +145,6 @@ cvar_t *gl1_stereo_convergence;
 
 refimport_t ri;
 
-#define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
-
 void LM_FreeLightmapBuffers(void);
 void Scrap_Free(void);
 void Scrap_Init(void);
@@ -168,7 +166,7 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	const image_t *skin;
 	dsprite_t *psprite;
 	float alpha = 1.0F;
-	vec3_t point;
+	vec3_t point[4];
 	float *up, *right;
 
 	R_EnableMultitexture(false);
@@ -182,6 +180,16 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	/* normal sprite */
 	up = vup;
 	right = vright;
+
+	if (currententity->flags & RF_TRANSLUCENT)
+	{
+		alpha = currententity->alpha;
+	}
+
+	if (alpha != 1.0F)
+	{
+		glEnable(GL_BLEND);
+	}
 
 	glColor4f(1, 1, 1, alpha);
 
@@ -204,52 +212,47 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 		glDisable(GL_ALPHA_TEST);
 	}
 
-	if(currententity->flags & RF_NODEPTHTEST)
-	{
-		glDisable(GL_DEPTH_TEST);
-	}
-
 	if (currententity->flags & RF_TRANS_ADD)
 	{
-		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);
 	}
 
-	glColor3f(currententity->color.r / 255.0f, currententity->color.g / 255.0f, currententity->color.b / 255.0f);
+	GLfloat tex[] = {
+		0, 1,
+		0, 0,
+		1, 0,
+		1, 1
+	};
 
-	glBegin(GL_QUADS);
+	VectorMA(currententity->origin, -frame->origin_y, up, point[0]);
+	VectorMA(point[0], -frame->origin_x, right, point[0]);
 
-	glTexCoord2f(0, 1);
-	VectorMA(currententity->origin, -frame->origin_y, up, point);
-	VectorMA(point, -frame->origin_x, right, point);
-	glVertex3fv(point);
+	VectorMA(currententity->origin, frame->height - frame->origin_y, up, point[1]);
+	VectorMA(point[1], -frame->origin_x, right, point[1]);
 
-	glTexCoord2f(0, 0);
-	VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
-	VectorMA(point, -frame->origin_x, right, point);
-	glVertex3fv(point);
+	VectorMA(currententity->origin, frame->height - frame->origin_y, up, point[2]);
+	VectorMA(point[2], frame->width - frame->origin_x, right, point[2]);
 
-	glTexCoord2f(1, 0);
-	VectorMA(currententity->origin, frame->height - frame->origin_y, up, point);
-	VectorMA(point, frame->width - frame->origin_x, right, point);
-	glVertex3fv(point);
+	VectorMA(currententity->origin, -frame->origin_y, up, point[3]);
+	VectorMA(point[3], frame->width - frame->origin_x, right, point[3]);
 
-	glTexCoord2f(1, 1);
-	VectorMA(currententity->origin, -frame->origin_y, up, point);
-	VectorMA(point, frame->width - frame->origin_x, right, point);
-	glVertex3fv(point);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glEnd();
+	glVertexPointer(3, GL_FLOAT, 0, point);
+	glTexCoordPointer(2, GL_FLOAT, 0, tex);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-	if (currententity->flags & RF_NODEPTHTEST)
-	{
-		glEnable(GL_DEPTH_TEST);
-	}
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisable(GL_ALPHA_TEST);
 	R_TexEnv(GL_REPLACE);
 
-	glDisable(GL_BLEND);
+	if (alpha != 1.0F)
+	{
+		glDisable(GL_BLEND);
+	}
 
 	glColor4f(1, 1, 1, 1);
 }
