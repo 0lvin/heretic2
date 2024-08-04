@@ -1323,7 +1323,7 @@ CLIENT_OBJS_ := \
 	src/client/sound/sdl.o \
 	src/client/sound/sound.o \
 	src/client/sound/wave.o \
-	src/client/vid/image.o \
+	src/client/cl_image.o \
 	src/client/vid/vid.o \
 	src/common/argproc.o \
 	src/common/clientserver.o \
@@ -1407,10 +1407,12 @@ REFGL1_OBJS_ := \
 	src/client/refresh/gl1/gl1_sdl.o \
 	src/client/refresh/files/mesh.o \
 	src/client/refresh/files/light.o \
+	src/client/refresh/gl1/gl1_buffer.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
+	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1450,6 +1452,7 @@ REFGL3_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
+	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1495,6 +1498,7 @@ REFGL4_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
+	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1541,6 +1545,7 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
+	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1587,6 +1592,7 @@ REFVK_OBJS_ := \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/models_md5.o \
+	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \

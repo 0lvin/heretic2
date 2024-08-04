@@ -1076,64 +1076,80 @@ static int NextPow2(int v)
 
 // internal helper
 static uint8_t *QVk_GetIndexBuffer(VkDeviceSize size, VkDeviceSize *dstOffset, int currentBufferIdx);
-static void RebuildTriangleIndexBuffer()
+
+static void
+GenFanIndexes(uint16_t *data, int from, int to)
 {
-	int idx = 0;
-	VkDeviceSize dstOffset = 0;
-	VkDeviceSize bufferSize = 3 * vk_config.triangle_index_count * sizeof(uint16_t);
-	uint16_t *iboData = NULL;
-	uint16_t *fanData = malloc(bufferSize);
-	uint16_t *stripData = malloc(bufferSize);
+	int i;
 
 	// fill the index buffer so that we can emulate triangle fans via triangle lists
-	for (int i = 0; i < vk_config.triangle_index_count; ++i)
+	for (i = from; i < to; i++)
 	{
-		fanData[idx++] = 0;
-		fanData[idx++] = i + 1;
-		fanData[idx++] = i + 2;
+		*data = from;
+		data ++;
+		*data = i + 1;
+		data++;
+		*data = i + 2;
+		data ++;
 	}
+}
+
+static void
+GenStripIndexes(uint16_t *data, int from, int to)
+{
+	int i;
 
 	// fill the index buffer so that we can emulate triangle strips via triangle lists
-	idx = 0;
-	for (int i = 2; i < (vk_config.triangle_index_count + 2); ++i)
+	for (i = from + 2; i < to + 2; i++)
 	{
 		if ((i%2) == 0)
 		{
-			stripData[idx++] = i - 2;
-			stripData[idx++] = i - 1;
-			stripData[idx++] = i;
+			*data =  i - 2;
+			data ++;
+			*data =  i - 1;
+			data ++;
+			*data =  i;
+			data ++;
 		}
 		else
 		{
-			stripData[idx++] = i;
-			stripData[idx++] = i - 1;
-			stripData[idx++] = i - 2;
+			*data = i;
+			data ++;
+			*data =  i - 1;
+			data ++;
+			*data =  i - 2;
+			data ++;
 		}
 	}
+}
 
-	for (int i = 0; i < NUM_DYNBUFFERS; ++i)
-	{
-		VK_VERIFY(buffer_invalidate(&vk_dynIndexBuffers[i].resource));
+static void
+UpdateIndexBuffer(int index, uint16_t *data, VkDeviceSize bufferSize, VkDeviceSize *dstOffset)
+{
+	uint16_t *iboData = NULL;
 
-		iboData = (uint16_t *)QVk_GetIndexBuffer(bufferSize, &dstOffset, i);
-		if ((i%2) == 0)
-		{
-			memcpy(iboData, fanData, bufferSize);
-		}
-		else
-		{
-			memcpy(iboData, stripData, bufferSize);
-		}
+	VK_VERIFY(buffer_invalidate(&vk_dynIndexBuffers[index].resource));
+	iboData = (uint16_t *)QVk_GetIndexBuffer(bufferSize, dstOffset, index);
+	memcpy(iboData, data, bufferSize);
+	VK_VERIFY(buffer_flush(&vk_dynIndexBuffers[index].resource));
+}
 
-		VK_VERIFY(buffer_flush(&vk_dynIndexBuffers[i].resource));
-	}
+static void
+RebuildTriangleIndexBuffer()
+{
+	VkDeviceSize dstOffset = 0;
+	VkDeviceSize bufferSize = 3 * vk_config.triangle_index_count * sizeof(uint16_t);
+	uint16_t *data = malloc(bufferSize);
 
+	GenFanIndexes(data, 0, vk_config.triangle_index_count);
+	UpdateIndexBuffer(0, data, bufferSize, &dstOffset);
 	vk_triangleFanIbo = &vk_dynIndexBuffers[0].resource.buffer;
-	vk_triangleStripIbo = &vk_dynIndexBuffers[1].resource.buffer;
-	vk_triangleFanIboUsage = ((bufferSize % 4) == 0) ? bufferSize : (bufferSize + 4 - (bufferSize % 4));
 
-	free(fanData);
-	free(stripData);
+	GenStripIndexes(data, 0, vk_config.triangle_index_count);
+	UpdateIndexBuffer(1, data, bufferSize, &dstOffset);
+	vk_triangleStripIbo = &vk_dynIndexBuffers[1].resource.buffer;
+
+	free(data);
 }
 
 static void CreateStagingBuffer(VkDeviceSize size, qvkstagingbuffer_t *dstBuffer, int i)
@@ -2143,6 +2159,8 @@ qboolean QVk_Init(void)
 	CreateStagingBuffers();
 	// assign a dynamic index buffer for triangle fan emulation
 	RebuildTriangleIndexBuffer();
+	vk_triangleFanIboUsage = ROUNDUP(3 * vk_config.triangle_index_count * sizeof(uint16_t), 4);
+
 	CreatePipelines();
 	CreateSamplers();
 
@@ -2629,19 +2647,24 @@ QVk_CheckTriangleIbo(VkDeviceSize indexCount)
 	if (indexCount > vk_config.triangle_index_count)
 	{
 		vk_config.triangle_index_count *= BUFFER_RESIZE_FACTOR;
-		R_Printf(PRINT_ALL, "Resizing triangle index buffer to %u indices.\n", vk_config.triangle_index_count);
+		R_Printf(PRINT_ALL, "%s: Resizing triangle index buffer to %u indices.\n",
+			__func__, vk_config.triangle_index_count);
 		RebuildTriangleIndexBuffer();
+
+		vk_triangleFanIboUsage = ROUNDUP(3 * vk_config.triangle_index_count * sizeof(uint16_t), 4);
 	}
 }
 
-VkBuffer QVk_GetTriangleFanIbo(VkDeviceSize indexCount)
+VkBuffer
+QVk_GetTriangleFanIbo(VkDeviceSize indexCount)
 {
 	QVk_CheckTriangleIbo(indexCount);
 
 	return *vk_triangleFanIbo;
 }
 
-VkBuffer QVk_GetTriangleStripIbo(VkDeviceSize indexCount)
+VkBuffer
+QVk_GetTriangleStripIbo(VkDeviceSize indexCount)
 {
 	QVk_CheckTriangleIbo(indexCount);
 

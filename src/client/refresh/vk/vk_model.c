@@ -188,7 +188,7 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 
 	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
-		int	side, ti, planenum, lightofs;
+		int side, ti, planenum, lightofs;
 
 		out->firstedge = in->firstedge;
 		out->numedges = in->numedges;
@@ -474,6 +474,8 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 		case IDMDLHEADER:
 			/* fall through */
 		case ID3HEADER:
+			/* fall through */
+		case MDR_IDENT:
 			/* fall through */
 		case IDMD5HEADER:
 			/* fall through */
