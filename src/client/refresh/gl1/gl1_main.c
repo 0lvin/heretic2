@@ -224,6 +224,10 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	if (currententity->flags & RF_TRANS_ADD)
 	{
 		glBlendFunc(GL_ONE, GL_ONE);
+		dsprite_t *sprout = (dsprite_t *)currentmodel->extradata;
+
+		printf("%f => %xd (%s)\n", alpha, currententity->flags,
+			sprout->frames[currententity->frame].name);
 	}
 
 	GLfloat tex[] = {
