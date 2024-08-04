@@ -24,7 +24,8 @@ Drawbacks:
 * no books implementations
 * code is little bit mess
 * only gl1 has full support render
-* soft,gl3,vk render has incorrect angles and no particles
+* soft,gl3,vk render has incorrect angles
+* need to rewrite RF_TRANS_ADD to use quake2 logic
 
 To check:
  * [ ] code use diffent angles values to quake2

@@ -895,6 +895,11 @@ GL3_DrawSpriteModel(entity_t *e, gl3model_t *currentmodel)
 		GL3_UseProgram(gl3state.si3Dsprite.shaderProgram);
 	}
 
+	if (e->flags & RF_TRANS_ADD)
+	{
+		glBlendFunc(GL_ONE, GL_ONE);
+	}
+
 	verts[0].texCoord[0] = 0;
 	verts[0].texCoord[1] = 1;
 	verts[1].texCoord[0] = 0;
