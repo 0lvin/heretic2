@@ -145,8 +145,6 @@ cvar_t *gl1_stereo_convergence;
 
 refimport_t ri;
 
-#include "../../../game/common/part_uvs.h"
-
 #define	PFL_FLAG_MASK	0x0000007f	// Mask out any flags
 
 void LM_FreeLightmapBuffers(void);
@@ -421,38 +419,6 @@ R_DrawEntitiesOnList(void)
 }
 
 static void
-RB_RenderQuad(const vec3_t origin, vec3_t left, vec3_t up, byte* color, float s1, float t1, float s2, float t2) {
-	vec3_t vertexes[4];
-	vec3_t st[4];
-	int indexes[6] = { 0, 1, 3, 3, 1, 2 };
-
-	VectorSet(vertexes[0], origin[0] + left[0] + up[0], origin[1] + left[1] + up[1], origin[2] + left[2] + up[2]);
-	VectorSet(vertexes[1], origin[0] - left[0] + up[0], origin[1] - left[1] + up[1], origin[2] - left[2] + up[2]);
-	VectorSet(vertexes[2], origin[0] - left[0] - up[0], origin[1] - left[1] - up[1], origin[2] - left[2] - up[2]);
-	VectorSet(vertexes[3], origin[0] + left[0] - up[0], origin[1] + left[1] - up[1], origin[2] + left[2] - up[2]);
-
-	st[0][0] = s1;
-	st[0][1] = t1;
-
-	st[1][0] = s2;
-	st[1][1] = t1;
-
-	st[2][0] = s2;
-	st[2][1] = t2;
-
-	st[3][0] = s1;
-	st[3][1] = t2;
-
-	glColor4ubv(color);
-
-	for (int i = 0; i < 6; i++)
-	{
-		glTexCoord2f(st[indexes[i]][0], st[indexes[i]][1]);
-		glVertex3fv(vertexes[indexes[i]]);
-	}
-}
-
-void
 R_DrawParticles2(int num_particles, const particle_t particles[])
 {
 	const particle_t *p;
