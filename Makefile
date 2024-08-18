@@ -401,12 +401,17 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk ref_gl4 player effects
+.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles1 ref_gles3 ref_soft ref_vk ref_gl4 player effects
 
 # ----------
 
 # Builds everything
 all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk ref_gl4 player effects
+
+# ----------
+
+# Builds everything, including the GLES1 renderer
+with_gles1: all ref_gles1
 
 # ----------
 
@@ -634,6 +639,47 @@ build/ref_gl1/%.o: %.c
 	@echo "===> CC $<"
 	${Q}mkdir -p $(@D)
 	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
+
+# ----------
+
+# The OpenGL ES 1.0 renderer lib
+
+ifeq ($(YQ2_OSTYPE), Windows)
+
+ref_gles1:
+	@echo "===> Building ref_gles1.dll"
+	$(MAKE) release/ref_gles1.dll
+
+release/ref_gles1.dll : GLAD_INCLUDE = -Isrc/client/refresh/gl1/glad-gles1/include
+release/ref_gles1.dll : CFLAGS += -DYQ2_GL1_GLES
+release/ref_gles1.dll : LDFLAGS += -shared
+
+else ifeq ($(YQ2_OSTYPE), Darwin)
+
+ref_gles1:
+	@echo "===> Building ref_gles1.dylib"
+	$(MAKE) release/ref_gles1.dylib
+
+release/ref_gles1.dylib : GLAD_INCLUDE = -Isrc/client/refresh/gl1/glad-gles1/include
+release/ref_gles1.dylib : CFLAGS += -DYQ2_GL1_GLES
+release/ref_gles1.dylib : LDFLAGS += -shared
+
+else # not Windows or Darwin
+
+ref_gles1:
+	@echo "===> Building ref_gles1.so"
+	$(MAKE) release/ref_gles1.so
+
+release/ref_gles1.so : GLAD_INCLUDE = -Isrc/client/refresh/gl1/glad-gles1/include
+release/ref_gles1.so : CFLAGS += -DYQ2_GL1_GLES -fPIC
+release/ref_gles1.so : LDFLAGS += -shared
+
+endif # OS specific ref_gles1 stuff
+
+build/ref_gles1/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) $(GLAD_INCLUDE) -o $@ $<
 
 # ----------
 
@@ -1293,6 +1339,7 @@ EFFECTS_OBJS_ = \
 CLIENT_OBJS_ := \
 	src/backends/generic/misc.o \
 	src/client/cl_cin.o \
+	src/client/cl_image.o \
 	src/client/cl_console.o \
 	src/client/cl_download.o \
 	src/client/cl_effects.o \
@@ -1323,7 +1370,6 @@ CLIENT_OBJS_ := \
 	src/client/sound/sdl.o \
 	src/client/sound/sound.o \
 	src/client/sound/wave.o \
-	src/client/cl_image.o \
 	src/client/vid/vid.o \
 	src/common/argproc.o \
 	src/common/clientserver.o \
@@ -1421,6 +1467,9 @@ REFGL1_OBJS_ := \
 	src/common/shared/utils.o \
 	src/common/cmodels.o \
 	src/common/md4.o
+
+REFGL1_OBJS_GLADEES_ := \
+	src/client/refresh/gl1/glad-gles1/src/glad.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
 REFGL1_OBJS_ += \
@@ -1675,6 +1724,8 @@ endif
 # Rewrite paths to our object directory.
 CLIENT_OBJS = $(patsubst %,build/client/%,$(CLIENT_OBJS_))
 REFGL1_OBJS = $(patsubst %,build/ref_gl1/%,$(REFGL1_OBJS_))
+REFGLES1_OBJS = $(patsubst %,build/ref_gles1/%,$(REFGL1_OBJS_))
+REFGLES1_OBJS += $(patsubst %,build/ref_gles1/%,$(REFGL1_OBJS_GLADEES_))
 REFGL3_OBJS = $(patsubst %,build/ref_gl3/%,$(REFGL3_OBJS_))
 REFGL3_OBJS += $(patsubst %,build/ref_gl3/%,$(REFGL3_OBJS_GLADE_))
 REFGLES3_OBJS = $(patsubst %,build/ref_gles3/%,$(REFGL3_OBJS_))
@@ -1696,6 +1747,7 @@ GAME_DEPS= $(GAME_OBJS:.o=.d)
 PLAYER_DEPS= $(PLAYER_OBJS:.o=.d)
 EFFECTS_DEPS= $(EFFECTS_OBJS:.o=.d)
 REFGL1_DEPS= $(REFGL1_OBJS:.o=.d)
+REFGLES1_DEPS= $(REFGLES1_OBJS:.o=.d)
 REFGL3_DEPS= $(REFGL3_OBJS:.o=.d)
 REFGLES3_DEPS= $(REFGLES3_OBJS:.o=.d)
 REFGL4_DEPS= $(REFGL4_OBJS:.o=.d)
@@ -1707,6 +1759,7 @@ SERVER_DEPS= $(SERVER_OBJS:.o=.d)
 -include $(CLIENT_DEPS)
 -include $(GAME_DEPS)
 -include $(REFGL1_DEPS)
+-include $(REFGLES1_DEPS)
 -include $(REFGL3_DEPS)
 -include $(REFGLES3_DEPS)
 -include $(REFGL4_DEPS)
@@ -1756,6 +1809,22 @@ else
 release/ref_gl1.so : $(REFGL1_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(REFGL1_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+endif
+
+# release/ref_gles1.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/ref_gles1.dll : $(REFGLES1_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGLES1_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/ref_gles1.dylib : $(REFGLES1_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGLES1_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+else
+release/ref_gles1.so : $(REFGLES1_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFGLES1_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
 endif
 
 # release/ref_gl3.so

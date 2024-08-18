@@ -270,9 +270,6 @@ typedef struct
 	uint32_t    uniform_buffer_usage;
 	uint32_t    uniform_buffer_max_usage;
 	uint32_t    uniform_buffer_size;
-	uint32_t    triangle_index_usage;
-	uint32_t    triangle_index_max_usage;
-	uint32_t    triangle_index_count;
 } vkconfig_t;
 
 #define MAX_LIGHTMAPS 256
@@ -342,6 +339,7 @@ IMPLEMENTATION SPECIFIC FUNCTIONS
 qboolean Vkimp_CreateSurface(SDL_Window *window);
 
 extern mvtx_t	*verts_buffer;
+extern uint16_t	*vertIdxData;
 
 void	Mesh_Init (void);
 void	Mesh_Free (void);

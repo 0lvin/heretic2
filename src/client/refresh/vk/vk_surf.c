@@ -37,44 +37,7 @@ msurface_t *r_alpha_surfaces;
 vklightmapstate_t vk_lms;
 
 static void
-DrawVkPoly(mpoly_t *p, image_t *texture, const float *color)
-{
-	QVk_BindPipeline(&vk_drawPolyPipeline);
-
-	VkBuffer vbo;
-	VkDeviceSize vboOffset;
-	uint32_t uboOffset;
-	VkDescriptorSet uboDescriptorSet;
-	uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * p->numverts, &vbo, &vboOffset);
-	uint8_t *uboData  = QVk_GetUniformBuffer(sizeof(float) * 4, &uboOffset, &uboDescriptorSet);
-	memcpy(vertData, p->verts, sizeof(mvtx_t) * p->numverts);
-	memcpy(uboData,  color, sizeof(float) * 4);
-
-	VkDescriptorSet descriptorSets[] = {
-		texture->vk_texture.descriptorSet,
-		uboDescriptorSet
-	};
-
-	float gamma = 2.1F - vid_gamma->value;
-
-	vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout,
-		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(gamma), &gamma);
-
-	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawPolyPipeline.layout, 0, 2, descriptorSets, 1, &uboOffset);
-	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
-	vkCmdBindIndexBuffer(vk_activeCmdbuffer, QVk_GetTriangleFanIbo((p->numverts - 2) * 3), 0, VK_INDEX_TYPE_UINT16);
-	vkCmdDrawIndexed(vk_activeCmdbuffer, (p->numverts - 2) * 3, 1, 0, 0, 0);
-}
-
-//============
-//PGM
-/*
-================
-DrawVkFlowingPoly -- version of DrawVkPoly that handles scrolling texture
-================
-*/
-static void
-DrawVkFlowingPoly(msurface_t *fa, image_t *texture, const float *color)
+DrawVkPoly(msurface_t *fa, image_t *texture, const float *color)
 {
 	float sscroll, tscroll;
 	mpoly_t *p;
@@ -98,8 +61,8 @@ DrawVkFlowingPoly(msurface_t *fa, image_t *texture, const float *color)
 
 	QVk_BindPipeline(&vk_drawPolyPipeline);
 
-	VkBuffer vbo;
-	VkDeviceSize vboOffset;
+	VkDeviceSize vboOffset, dstOffset;
+	VkBuffer vbo, *buffer;
 	uint32_t uboOffset;
 	VkDescriptorSet uboDescriptorSet;
 	uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * p->numverts, &vbo, &vboOffset);
@@ -117,9 +80,14 @@ DrawVkFlowingPoly(msurface_t *fa, image_t *texture, const float *color)
 	vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout,
 		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(gamma), &gamma);
 
-	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawPolyPipeline.layout, 0, 2, descriptorSets, 1, &uboOffset);
+	Mesh_VertsRealloc((p->numverts - 2) * 3);
+	GenFanIndexes(vertIdxData, 0, p->numverts - 2);
+	buffer = UpdateIndexBuffer(vertIdxData, (p->numverts - 2) * 3 * sizeof(uint16_t), &dstOffset);
+
+	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+		vk_drawPolyPipeline.layout, 0, 2, descriptorSets, 1, &uboOffset);
 	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
-	vkCmdBindIndexBuffer(vk_activeCmdbuffer, QVk_GetTriangleFanIbo((p->numverts - 2) * 3), 0, VK_INDEX_TYPE_UINT16);
+	vkCmdBindIndexBuffer(vk_activeCmdbuffer, *buffer, dstOffset, VK_INDEX_TYPE_UINT16);
 	vkCmdDrawIndexed(vk_activeCmdbuffer, (p->numverts - 2) * 3, 1, 0, 0, 0);
 }
 
@@ -206,29 +174,29 @@ R_RenderBrushPoly(msurface_t *fa, const float *modelMatrix, float alpha,
 
 	//======
 	//PGM
-	if (fa->texinfo->flags & SURF_SCROLL)
-		DrawVkFlowingPoly(fa, image, color);
-	else
-		DrawVkPoly(fa->polys, image, color);
+	DrawVkPoly(fa, image, color);
 	//PGM
 	//======
 
-	/*
-	** check for lightmap modification
-	*/
+	/* check for lightmap modification */
 	for (maps = 0; maps < MAXLIGHTMAPS && fa->styles[maps] != 255; maps++)
 	{
-		if (r_newrefdef.lightstyles[fa->styles[maps]].white != fa->cached_light[maps])
+		if (r_newrefdef.lightstyles[fa->styles[maps]].white !=
+			fa->cached_light[maps])
+		{
 			goto dynamic;
+		}
 	}
 
-	// dynamic this frame or dynamic previously
+	/* dynamic this frame or dynamic previously */
 	if (fa->dlightframe == r_framecount)
 	{
 	dynamic:
+
 		if (r_dynamic->value)
 		{
-			if (!(fa->texinfo->flags & (SURF_SKY | SURF_TRANSPARENT | SURF_WARP)))
+			if (!(fa->texinfo->flags &
+				  (SURF_SKY | SURF_TRANSPARENT | SURF_WARP)))
 			{
 				is_dynamic = true;
 			}
@@ -237,7 +205,10 @@ R_RenderBrushPoly(msurface_t *fa, const float *modelMatrix, float alpha,
 
 	if (is_dynamic)
 	{
-		if ((fa->styles[maps] >= 32 || fa->styles[maps] == 0) && (fa->dlightframe != r_framecount))
+		if (maps < MAXLIGHTMAPS &&
+			((fa->styles[maps] >= 32) ||
+			 (fa->styles[maps] == 0)) &&
+			  (fa->dlightframe != r_framecount))
 		{
 			int smax, tmax, size;
 			byte *temp;
@@ -271,21 +242,16 @@ R_RenderBrushPoly(msurface_t *fa, const float *modelMatrix, float alpha,
 	}
 }
 
-
 /*
-================
-R_DrawAlphaSurfaces
-
-Draw water surfaces and windows.
-The BSP tree is waled front to back, so unwinding the chain
-of alpha_surfaces will draw back to front, giving proper ordering.
-================
-*/
+ * Draw water surfaces and windows.
+ * The BSP tree is waled front to back, so unwinding the chain
+ * of alpha_surfaces will draw back to front, giving proper ordering.
+ */
 void
 R_DrawAlphaSurfaces(void)
 {
-	msurface_t	*s;
-	float		intens;
+	msurface_t *s;
+	float intens;
 
 	// the textures are prescaled up for a better lighting range,
 	// so scale it back down
@@ -295,6 +261,7 @@ R_DrawAlphaSurfaces(void)
 	for (s = r_alpha_surfaces; s; s = s->texturechain)
 	{
 		c_brush_polys++;
+
 		if (s->texinfo->flags & SURF_TRANS33)
 		{
 			color[3] = 0.33f;
@@ -308,13 +275,9 @@ R_DrawAlphaSurfaces(void)
 		{
 			EmitWaterPolys(s, s->texinfo->image, NULL, color, false);
 		}
-		else if (s->texinfo->flags & SURF_SCROLL)			// PGM	9/16/98
-		{
-			DrawVkFlowingPoly(s, s->texinfo->image, color);	// PGM
-		}
 		else
 		{
-			DrawVkPoly(s->polys, s->texinfo->image, color);
+			DrawVkPoly(s, s->texinfo->image, color);
 		}
 	}
 
@@ -387,8 +350,9 @@ DrawTextureChains(entity_t *currententity)
 
 
 static void
-Vk_RenderLightmappedPoly(msurface_t *surf, const float *modelMatrix, float alpha,
-	const entity_t *currententity)
+Vk_RenderLightmappedPoly(msurface_t *surf, float alpha,
+	const entity_t *currententity, VkDescriptorSet *uboDescriptorSet,
+	uint32_t *uboOffset)
 {
 	int		i, nv = surf->polys->numverts;
 	int		map;
@@ -396,29 +360,6 @@ Vk_RenderLightmappedPoly(msurface_t *surf, const float *modelMatrix, float alpha
 	qboolean is_dynamic = false;
 	unsigned lmtex = surf->lightmaptexturenum;
 	mpoly_t *p;
-
-	struct {
-		float model[16];
-		float viewLightmaps;
-	} lmapPolyUbo;
-
-	lmapPolyUbo.viewLightmaps = r_lightmap->value ? 1.f : 0.f;
-
-	if (modelMatrix)
-	{
-		memcpy(lmapPolyUbo.model, modelMatrix, sizeof(float) * 16);
-	}
-	else
-	{
-		Mat_Identity(lmapPolyUbo.model);
-	}
-
-	QVk_BindPipeline(&vk_drawPolyLmapPipeline);
-
-	uint32_t uboOffset;
-	VkDescriptorSet uboDescriptorSet;
-	uint8_t *uboData = QVk_GetUniformBuffer(sizeof(lmapPolyUbo), &uboOffset, &uboDescriptorSet);
-	memcpy(uboData, &lmapPolyUbo, sizeof(lmapPolyUbo));
 
 	for (map = 0; map < MAXLIGHTMAPS && surf->styles[map] != 255; map++)
 	{
@@ -463,142 +404,69 @@ Vk_RenderLightmappedPoly(msurface_t *surf, const float *modelMatrix, float alpha
 			R_SetCacheState(surf, &r_newrefdef);
 
 			lmtex = surf->lightmaptexturenum;
-			QVk_UpdateTextureData(&vk_state.lightmap_textures[surf->lightmaptexturenum],
-				(byte*)temp, surf->light_s, surf->light_t, smax, tmax);
 		}
 		else
 		{
 			lmtex = surf->lightmaptexturenum + DYNLIGHTMAP_OFFSET;
-			QVk_UpdateTextureData(&vk_state.lightmap_textures[lmtex],
-				(byte*)temp, surf->light_s, surf->light_t, smax, tmax);
 		}
 
-		c_brush_polys++;
-
-		//==========
-		//PGM
-		if (surf->texinfo->flags & SURF_SCROLL)
-		{
-			float sscroll, tscroll;
-
-			R_FlowingScroll(&r_newrefdef, surf->texinfo->flags, &sscroll, &tscroll);
-
-			VkBuffer vbo;
-			VkDeviceSize vboOffset;
-			VkDescriptorSet descriptorSets[] = {
-				image->vk_texture.descriptorSet,
-				uboDescriptorSet,
-				vk_state.lightmap_textures[lmtex].descriptorSet
-			};
-			vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawPolyLmapPipeline.layout, 0, 3, descriptorSets, 1, &uboOffset);
-
-			for (p = surf->polys; p; p = p->chain)
-			{
-				memcpy(verts_buffer, p->verts, sizeof(mvtx_t) * nv);
-
-				for (i = 0; i < nv; i++)
-				{
-					verts_buffer[i].texCoord[0] += sscroll;
-					verts_buffer[i].texCoord[1] += tscroll;
-				}
-
-				uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * nv, &vbo, &vboOffset);
-				memcpy(vertData, verts_buffer, sizeof(mvtx_t) * nv);
-
-				vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
-				vkCmdBindIndexBuffer(vk_activeCmdbuffer, QVk_GetTriangleFanIbo((nv - 2) * 3), 0, VK_INDEX_TYPE_UINT16);
-				vkCmdDrawIndexed(vk_activeCmdbuffer, (nv - 2) * 3, 1, 0, 0, 0);
-			}
-		}
-		else
-		{
-			VkBuffer vbo;
-			VkDeviceSize vboOffset;
-			VkDescriptorSet descriptorSets[] = {
-				image->vk_texture.descriptorSet,
-				uboDescriptorSet,
-				vk_state.lightmap_textures[lmtex].descriptorSet
-			};
-			vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawPolyLmapPipeline.layout, 0, 3, descriptorSets, 1, &uboOffset);
-
-			for (p = surf->polys; p; p = p->chain)
-			{
-				uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * nv, &vbo, &vboOffset);
-				memcpy(vertData, p->verts, sizeof(mvtx_t) * nv);
-
-				vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
-				vkCmdBindIndexBuffer(vk_activeCmdbuffer, QVk_GetTriangleFanIbo((nv - 2) * 3), 0, VK_INDEX_TYPE_UINT16);
-				vkCmdDrawIndexed(vk_activeCmdbuffer, (nv - 2) * 3, 1, 0, 0, 0);
-			}
-		}
-		//PGM
-		//==========
+		QVk_UpdateTextureData(&vk_state.lightmap_textures[lmtex],
+			(byte*)temp, surf->light_s, surf->light_t, smax, tmax);
 	}
-	else
+
+	VkDeviceSize vboOffset, dstOffset;
+	VkBuffer vbo, *buffer;
+	uint8_t *vertData;
+	float sscroll, tscroll;
+	int pos_vect = 0, index_pos = 0;
+
+	c_brush_polys++;
+
+	//==========
+	//PGM
+	R_FlowingScroll(&r_newrefdef, surf->texinfo->flags, &sscroll, &tscroll);
+
+	for (p = surf->polys; p; p = p->chain)
 	{
-		c_brush_polys++;
-
-		//==========
-		//PGM
-		if (surf->texinfo->flags & SURF_SCROLL)
+		if (Mesh_VertsRealloc(pos_vect + nv))
 		{
-			float sscroll, tscroll;
-
-			R_FlowingScroll(&r_newrefdef, surf->texinfo->flags, &sscroll, &tscroll);
-
-			for (p = surf->polys; p; p = p->chain)
-			{
-				memcpy(verts_buffer, p->verts, sizeof(mvtx_t) * nv);
-
-				for (i = 0; i < nv; i++)
-				{
-					verts_buffer[i].texCoord[0] += sscroll;
-					verts_buffer[i].texCoord[1] += tscroll;
-				}
-
-				VkBuffer vbo;
-				VkDeviceSize vboOffset;
-				uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * nv, &vbo, &vboOffset);
-				memcpy(vertData, verts_buffer, sizeof(mvtx_t) * nv);
-
-				VkDescriptorSet descriptorSets[] = {
-					image->vk_texture.descriptorSet,
-					uboDescriptorSet,
-					vk_state.lightmap_textures[lmtex].descriptorSet
-				};
-				vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawPolyLmapPipeline.layout, 0, 3, descriptorSets, 1, &uboOffset);
-				vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
-				vkCmdBindIndexBuffer(vk_activeCmdbuffer, QVk_GetTriangleFanIbo((nv - 2) * 3), 0, VK_INDEX_TYPE_UINT16);
-				vkCmdDrawIndexed(vk_activeCmdbuffer, (nv - 2) * 3, 1, 0, 0, 0);
-			}
+			Com_Error(ERR_FATAL, "%s: can't allocate memory", __func__);
 		}
-		else
+
+		memcpy(verts_buffer + pos_vect, p->verts, sizeof(mvtx_t) * nv);
+		for (i = 0; i < nv; i++)
 		{
-			//PGM
-			//==========
-			for (p = surf->polys; p; p = p->chain)
-			{
-				VkBuffer vbo;
-				VkDeviceSize vboOffset;
-				uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * nv, &vbo, &vboOffset);
-				memcpy(vertData, p->verts, sizeof(mvtx_t) * nv);
-
-				VkDescriptorSet descriptorSets[] = {
-					image->vk_texture.descriptorSet,
-					uboDescriptorSet,
-					vk_state.lightmap_textures[lmtex].descriptorSet
-				};
-				vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawPolyLmapPipeline.layout, 0, 3, descriptorSets, 1, &uboOffset);
-				vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
-				vkCmdBindIndexBuffer(vk_activeCmdbuffer, QVk_GetTriangleFanIbo((nv - 2) * 3), 0, VK_INDEX_TYPE_UINT16);
-				vkCmdDrawIndexed(vk_activeCmdbuffer, (nv - 2) * 3, 1, 0, 0, 0);
-			}
-			//==========
-			//PGM
+			verts_buffer[pos_vect + i].texCoord[0] += sscroll;
+			verts_buffer[pos_vect + i].texCoord[1] += tscroll;
 		}
-		//PGM
-		//==========
+
+		GenFanIndexes(vertIdxData + index_pos,
+			pos_vect, nv - 2 + pos_vect);
+		pos_vect += nv;
+		index_pos += (nv - 2) * 3;
 	}
+
+	QVk_BindPipeline(&vk_drawPolyLmapPipeline);
+
+	VkDescriptorSet descriptorSets[] = {
+		image->vk_texture.descriptorSet,
+		*uboDescriptorSet,
+		vk_state.lightmap_textures[lmtex].descriptorSet
+	};
+
+	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+		vk_drawPolyLmapPipeline.layout, 0, 3, descriptorSets, 1, uboOffset);
+
+	vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * pos_vect, &vbo, &vboOffset);
+	memcpy(vertData, verts_buffer, sizeof(mvtx_t) * pos_vect);
+
+	buffer = UpdateIndexBuffer(vertIdxData, index_pos * sizeof(uint16_t), &dstOffset);
+
+	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
+	vkCmdBindIndexBuffer(vk_activeCmdbuffer, *buffer, dstOffset, VK_INDEX_TYPE_UINT16);
+	vkCmdDrawIndexed(vk_activeCmdbuffer, index_pos, 1, 0, 0, 0);
+	//PGM
+	//==========
 }
 
 static void
@@ -606,7 +474,7 @@ R_DrawInlineBModel(entity_t *currententity, const model_t *currentmodel, float *
 {
 	int i;
 	msurface_t *psurf;
-	float		alpha = 1.f;
+	float alpha = 1.f;
 
 	/* calculate dynamic lighting for bmodel */
 	if (!r_flashblend->value)
@@ -621,6 +489,27 @@ R_DrawInlineBModel(entity_t *currententity, const model_t *currentmodel, float *
 	{
 		alpha = .25f;
 	}
+
+	struct {
+		float model[16];
+		float viewLightmaps;
+	} lmapPolyUbo;
+
+	lmapPolyUbo.viewLightmaps = r_lightmap->value ? 1.f : 0.f;
+
+	if (modelMatrix)
+	{
+		memcpy(lmapPolyUbo.model, modelMatrix, sizeof(float) * 16);
+	}
+	else
+	{
+		Mat_Identity(lmapPolyUbo.model);
+	}
+
+	uint32_t uboOffset;
+	VkDescriptorSet uboDescriptorSet;
+	uint8_t *uboData = QVk_GetUniformBuffer(sizeof(lmapPolyUbo), &uboOffset, &uboDescriptorSet);
+	memcpy(uboData, &lmapPolyUbo, sizeof(lmapPolyUbo));
 
 	/* draw texture */
 	for (i = 0; i < currentmodel->nummodelsurfaces; i++, psurf++)
@@ -645,7 +534,8 @@ R_DrawInlineBModel(entity_t *currententity, const model_t *currentmodel, float *
 			}
 			else if (!(psurf->flags & SURF_DRAWTURB) && !r_showtris->value)
 			{
-				Vk_RenderLightmappedPoly(psurf, modelMatrix, alpha, currententity);
+				Vk_RenderLightmappedPoly(psurf, alpha, currententity,
+					&uboDescriptorSet, &uboOffset);
 			}
 			else
 			{
@@ -707,10 +597,10 @@ R_DrawBrushModel(entity_t *currententity, const model_t *currentmodel)
 		modelorg[2] = DotProduct(temp, up);
 	}
 
+	Mat_Identity(model);
+
 	currententity->angles[0] = -currententity->angles[0];	// stupid quake bug
 	currententity->angles[2] = -currententity->angles[2];	// stupid quake bug
-
-	Mat_Identity(model);
 	R_RotateForEntity(currententity, model);
 	currententity->angles[0] = -currententity->angles[0];	// stupid quake bug
 	currententity->angles[2] = -currententity->angles[2];	// stupid quake bug
@@ -810,6 +700,19 @@ R_RecursiveWorldNode(entity_t *currententity, mnode_t *node)
 		return;
 	}
 
+	struct {
+		float model[16];
+		float viewLightmaps;
+	} lmapPolyUbo;
+
+	lmapPolyUbo.viewLightmaps = r_lightmap->value ? 1.f : 0.f;
+	Mat_Identity(lmapPolyUbo.model);
+
+	uint32_t uboOffset;
+	VkDescriptorSet uboDescriptorSet;
+	uint8_t *uboData = QVk_GetUniformBuffer(sizeof(lmapPolyUbo), &uboOffset, &uboDescriptorSet);
+	memcpy(uboData, &lmapPolyUbo, sizeof(lmapPolyUbo));
+
 	/* draw stuff */
 	for (c = node->numsurfaces,
 		 surf = r_worldmodel->surfaces + node->firstsurface;
@@ -840,7 +743,8 @@ R_RecursiveWorldNode(entity_t *currententity, mnode_t *node)
 		{
 			if (!(surf->flags & SURF_DRAWTURB) && !r_showtris->value)
 			{
-				Vk_RenderLightmappedPoly(surf, NULL, 1.f, currententity);
+				Vk_RenderLightmappedPoly(surf, 1.f, currententity,
+					&uboDescriptorSet, &uboOffset);
 			}
 			else
 			{

@@ -211,7 +211,7 @@ typedef enum
 } qvkrenderpasstype_t;
 
 // Vulkan constants: command and dynamic buffer count
-#define NUM_CMDBUFFERS 2
+#define NUM_CMDBUFFERS 32
 #define NUM_DYNBUFFERS 2
 
 // Vulkan instance
@@ -329,8 +329,9 @@ void		QVk_DestroyPipeline(qvkpipeline_t *pipeline);
 uint8_t*	QVk_GetVertexBuffer(VkDeviceSize size, VkBuffer *dstBuffer, VkDeviceSize *dstOffset);
 uint8_t*	QVk_GetUniformBuffer(VkDeviceSize size, uint32_t *dstOffset, VkDescriptorSet *dstUboDescriptorSet);
 uint8_t*	QVk_GetStagingBuffer(VkDeviceSize size, int alignment, VkCommandBuffer *cmdBuffer, VkBuffer *buffer, uint32_t *dstOffset);
-VkBuffer	QVk_GetTriangleFanIbo(VkDeviceSize indexCount);
-VkBuffer	QVk_GetTriangleStripIbo(VkDeviceSize indexCount);
+void		GenFanIndexes(uint16_t *data, int from, int to);
+void		GenStripIndexes(uint16_t *data, int from, int to);
+VkBuffer*	UpdateIndexBuffer(uint16_t *data, VkDeviceSize bufferSize, VkDeviceSize *dstOffset);
 void		QVk_DrawColorRect(float *ubo, VkDeviceSize uboSize, qvkrenderpasstype_t rpType);
 void		QVk_DrawTexRect(const float *ubo, VkDeviceSize uboSize, qvktexture_t *texture);
 void		QVk_BindPipeline(qvkpipeline_t *pipeline);
