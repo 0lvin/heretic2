@@ -3,7 +3,7 @@
 // Copyright 1998 Raven Software
 //
 #ifndef FX_DUSTPUFF_H
-#define FX_DUSTPUFFS_H
+#define FX_DUSTPUFF_H
 
 #include "../../common/header/common.h"
 
