@@ -217,7 +217,7 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	float gamma = 2.1F - vid_gamma->value;
 
 	vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout,
-		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(gamma), &gamma);
+		VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_VERTEX_SIZE * sizeof(float), sizeof(gamma), &gamma);
 
 	if (currententity->frame < currentmodel->numskins)
 	{
@@ -510,7 +510,7 @@ Vk_DrawParticles(int num_particles, const particle_t particles[])
 	float gamma = 2.1F - vid_gamma->value;
 
 	vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout,
-		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(gamma), &gamma);
+		VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_VERTEX_SIZE * sizeof(float), sizeof(gamma), &gamma);
 
 	if (vk_custom_particles->value == 2)
 	{
@@ -617,8 +617,10 @@ R_PolyBlend(void)
 		return;
 	}
 
-	float polyTransform[] = { 0.f, 0.f, vid.width, vid.height, v_blend[0], v_blend[1], v_blend[2], v_blend[3] };
-	QVk_DrawColorRect(polyTransform, sizeof(polyTransform), RP_WORLD);
+	QVk_DrawColorRect(
+		0.f, 0.f, 1.0f, 1.0f,
+		v_blend[0], v_blend[1], v_blend[2], v_blend[3],
+		RP_WORLD);
 }
 
 static void
@@ -693,10 +695,12 @@ R_SetupFrame(void)
 	   unlike OpenGL, draw a rectangle in proper location - it's easier to do in Vulkan */
 	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
 	{
-		float clearArea[] = { (float)r_newrefdef.x / vid.width, (float)r_newrefdef.y / vid.height,
-							  (float)r_newrefdef.width / vid.width, (float)r_newrefdef.height / vid.height,
-							  .3f, .3f, .3f, 1.f };
-		QVk_DrawColorRect(clearArea, sizeof(clearArea), RP_UI);
+		QVk_DrawColorRect(
+			(float)r_newrefdef.x / vid.width,
+			(float)r_newrefdef.y / vid.height,
+			(float)r_newrefdef.width / vid.width,
+			(float)r_newrefdef.height / vid.height,
+			.3f, .3f, .3f, 1.f , RP_UI);
 	}
 }
 
@@ -840,6 +844,9 @@ R_SetupVulkan (void)
 	int		x, x2, y2, y, w, h;
 	float dist = (r_farsee->value == 0) ? 4096.0f : 8192.0f;
 
+	/* Render old elements before change viewport */
+	QVk_Draw2DCallsRender();
+
 	//
 	// set up viewport
 	//
@@ -894,7 +901,8 @@ R_SetupVulkan (void)
 	// precalculate view-projection matrix
 	Mat_Mul(r_view_matrix, r_projection_matrix, r_viewproj_matrix);
 	// view-projection matrix will always be stored as the first push constant item, so set no offset
-	vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(r_viewproj_matrix), r_viewproj_matrix);
+	vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout,
+		VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(r_viewproj_matrix), r_viewproj_matrix);
 }
 
 static void R_Flash( void )
@@ -985,6 +993,8 @@ RE_RenderView(refdef_t *fd)
 
 qboolean RE_EndWorldRenderpass(void)
 {
+	float dummy[PUSH_CONSTANT_VERTEX_SIZE] = {0};
+
 	// still some issues?
 	if (!vk_frameStarted)
 	{
@@ -1031,7 +1041,9 @@ qboolean RE_EndWorldRenderpass(void)
 		r_newrefdef.height,
 	};
 	vkCmdPushConstants(vk_activeCmdbuffer, vk_worldWarpPipeline.layout,
-		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(pushConsts), pushConsts);
+		VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(dummy), dummy);
+	vkCmdPushConstants(vk_activeCmdbuffer, vk_worldWarpPipeline.layout,
+		VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_VERTEX_SIZE * sizeof(float), sizeof(pushConsts), pushConsts);
 	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_worldWarpPipeline.layout, 0, 1, &vk_colorbuffer.descriptorSet, 0, NULL);
 	QVk_BindPipeline(&vk_worldWarpPipeline);
 	// Restore full viewport for future steps.
@@ -1064,7 +1076,7 @@ R_SetVulkan2D(const VkViewport* viewport, const VkRect2D* scissor)
 	{
 		float pushConsts[] = { vk_postprocess->value, (2.1 - vid_gamma->value)};
 		vkCmdPushConstants(vk_activeCmdbuffer, vk_postprocessPipeline.layout,
-			VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(pushConsts), pushConsts);
+			VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_VERTEX_SIZE * sizeof(float), sizeof(pushConsts), pushConsts);
 		vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_postprocessPipeline.layout, 0, 1, &vk_colorbufferWarp.descriptorSet, 0, NULL);
 		QVk_BindPipeline(&vk_postprocessPipeline);
 		vkCmdDraw(vk_activeCmdbuffer, 3, 1, 0, 0);

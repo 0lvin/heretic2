@@ -78,7 +78,7 @@ DrawVkPoly(msurface_t *fa, image_t *texture, const float *color)
 	float gamma = 2.1F - vid_gamma->value;
 
 	vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout,
-		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(gamma), &gamma);
+		VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_VERTEX_SIZE * sizeof(float), sizeof(gamma), &gamma);
 
 	Mesh_VertsRealloc((p->numverts - 2) * 3);
 	GenFanIndexes(vertIdxData, 0, p->numverts - 2);
@@ -399,7 +399,8 @@ Vk_RenderLightmappedPoly(msurface_t *surf, float alpha,
 		R_BuildLightMap(surf, temp, smax * 4,
 			&r_newrefdef, r_modulate->value, r_framecount);
 
-		if ((surf->styles[map] >= 32 || surf->styles[map] == 0) && (surf->dlightframe != r_framecount))
+		if ((surf->styles[map] >= 32 || surf->styles[map] == 0) &&
+			(surf->dlightframe != r_framecount))
 		{
 			R_SetCacheState(surf, &r_newrefdef);
 

@@ -89,7 +89,7 @@ qvkrenderpass_t vk_renderpasses[RP_COUNT] = {
 VkCommandPool vk_commandPool[NUM_CMDBUFFERS] = { 0 };
 VkCommandPool vk_transferCommandPool = VK_NULL_HANDLE;
 VkDescriptorPool vk_descriptorPool = VK_NULL_HANDLE;
-static VkCommandPool vk_stagingCommandPool[NUM_DYNBUFFERS] = { VK_NULL_HANDLE, VK_NULL_HANDLE };
+static VkCommandPool vk_stagingCommandPool[NUM_DYNBUFFERS] = { 0 };
 // Vulkan image views
 static VkImageView *vk_imageviews = NULL;
 // Vulkan framebuffers
@@ -113,7 +113,7 @@ static VkCommandBuffer *vk_commandbuffers = NULL;
 // command buffer double buffering fences
 static VkFence vk_fences[NUM_CMDBUFFERS];
 // semaphore: signal when next image is available for rendering
-static VkSemaphore vk_imageAvailableSemaphores[NUM_CMDBUFFERS];
+static VkSemaphore vk_imageAvailableSemaphores[NUM_IMG_SEMAPHORES];
 // semaphore: signal when rendering to current command buffer is complete
 static VkSemaphore vk_renderFinishedSemaphores[NUM_CMDBUFFERS];
 // tracker variables
@@ -122,6 +122,8 @@ VkCommandBuffer vk_activeCmdbuffer = VK_NULL_HANDLE;
 int vk_activeBufferIdx = 0;
 // index of currently acquired image
 static uint32_t vk_imageIndex = 0;
+// index of currently used image semaphore
+uint32_t vk_imageSemaphoreIdx = 0;
 // index of currently used staging buffer
 static int vk_activeStagingBuffer = 0;
 // started rendering frame?
@@ -223,9 +225,8 @@ enum {
 	QVk_DebugSetObjectName((uint64_t)shaders[SHADER_FRAG_INDEX].module, VK_OBJECT_TYPE_SHADER_MODULE, "Shader Module: "#namefrag".frag");
 
 // global static buffers (reused, never changing)
-static qvkbuffer_t vk_texRectVbo;
-static qvkbuffer_t vk_colorRectVbo;
 static qvkbuffer_t vk_rectIbo;
+static VkDeviceSize vk_rectIboffet;
 
 // global dynamic buffers (double buffered)
 static qvkbuffer_t vk_dynVertexBuffers[NUM_DYNBUFFERS];
@@ -235,7 +236,6 @@ static VkDescriptorSet vk_uboDescriptorSets[NUM_DYNBUFFERS];
 static qvkstagingbuffer_t vk_stagingBuffers[NUM_DYNBUFFERS];
 static int vk_activeDynBufferIdx = 0;
 static int vk_activeSwapBufferIdx = 0;
-static int vk_dynIndex = 0;
 
 // swap buffers used if primary dynamic buffers get full
 #define NUM_SWAPBUFFER_SLOTS 4
@@ -265,6 +265,21 @@ static const char *renderpassObjectNames[] = {
 	"RP_UI",
 	"RP_WORLD_WARP"
 };
+
+#define MAXDRAWCALLS 1024
+
+typedef enum
+{
+	CALL_COLOR,
+	CALL_TEX,
+} calltype_t;
+
+static int draw2dcolor_num = 0;
+static float draw2dcolor_calls[16 * MAXDRAWCALLS] = {0};
+static float draw2dcolor_r, draw2dcolor_g, draw2dcolor_b, draw2dcolor_a;
+static qvkrenderpasstype_t draw2dcolor_rpType;
+static calltype_t draw2dcolor_calltype;
+static qvktexture_t *draw2dcolor_texture = NULL;
 
 VkFormat QVk_FindDepthFormat()
 {
@@ -1118,18 +1133,16 @@ GenStripIndexes(uint16_t *data, int from, int to)
 }
 
 VkBuffer*
-UpdateIndexBuffer(uint16_t *data, VkDeviceSize bufferSize, VkDeviceSize *dstOffset)
+UpdateIndexBuffer(const uint16_t *data, VkDeviceSize bufferSize, VkDeviceSize *dstOffset)
 {
 	uint16_t *iboData = NULL;
 
-	vk_dynIndex = (vk_dynIndex + 1) % NUM_DYNBUFFERS;
-
-	VK_VERIFY(buffer_invalidate(&vk_dynIndexBuffers[vk_dynIndex].resource));
-	iboData = (uint16_t *)QVk_GetIndexBuffer(bufferSize, dstOffset, vk_dynIndex);
+	VK_VERIFY(buffer_invalidate(&vk_dynIndexBuffers[vk_activeDynBufferIdx].resource));
+	iboData = (uint16_t *)QVk_GetIndexBuffer(bufferSize, dstOffset, vk_activeDynBufferIdx);
 	memcpy(iboData, data, bufferSize);
-	VK_VERIFY(buffer_flush(&vk_dynIndexBuffers[vk_dynIndex].resource));
+	VK_VERIFY(buffer_flush(&vk_dynIndexBuffers[vk_activeDynBufferIdx].resource));
 
-	return &vk_dynIndexBuffers[vk_dynIndex].resource.buffer;
+	return &vk_dynIndexBuffers[vk_activeDynBufferIdx].resource.buffer;
 }
 
 static void CreateStagingBuffer(VkDeviceSize size, qvkstagingbuffer_t *dstBuffer, int i)
@@ -1223,42 +1236,6 @@ static void SubmitStagingBuffer(int index)
 	vk_activeStagingBuffer = (vk_activeStagingBuffer + 1) % NUM_DYNBUFFERS;
 }
 
-// internal helper
-static void CreateStaticBuffers()
-{
-	const float texVerts[] = {	-1., -1., 0., 0.,
-								 1.,  1., 1., 1.,
-								-1.,  1., 0., 1.,
-								 1., -1., 1., 0. };
-
-	const float colorVerts[] = { -1., -1.,
-								  1.,  1.,
-								 -1.,  1.,
-								  1., -1. };
-
-	const uint32_t indices[] = { 0, 1, 2, 0, 3, 1 };
-
-	QVk_CreateVertexBuffer(texVerts, sizeof(texVerts),
-		&vk_texRectVbo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0);
-	QVk_CreateVertexBuffer(colorVerts, sizeof(colorVerts),
-		&vk_colorRectVbo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0);
-	QVk_CreateIndexBuffer(indices, sizeof(indices),
-		&vk_rectIbo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0);
-
-	QVk_DebugSetObjectName((uint64_t)vk_texRectVbo.resource.buffer,
-		VK_OBJECT_TYPE_BUFFER, "Static Buffer: Textured Rectangle VBO");
-	QVk_DebugSetObjectName((uint64_t)vk_texRectVbo.resource.memory,
-		VK_OBJECT_TYPE_DEVICE_MEMORY, "Memory: Textured Rectangle VBO");
-	QVk_DebugSetObjectName((uint64_t)vk_colorRectVbo.resource.buffer,
-		VK_OBJECT_TYPE_BUFFER, "Static Buffer: Colored Rectangle VBO");
-	QVk_DebugSetObjectName((uint64_t)vk_colorRectVbo.resource.memory,
-		VK_OBJECT_TYPE_DEVICE_MEMORY, "Memory: Colored Rectangle VBO");
-	QVk_DebugSetObjectName((uint64_t)vk_rectIbo.resource.buffer,
-		VK_OBJECT_TYPE_BUFFER, "Static Buffer: Rectangle IBO");
-	QVk_DebugSetObjectName((uint64_t)vk_rectIbo.resource.memory,
-		VK_OBJECT_TYPE_DEVICE_MEMORY, "Memory: Rectangle IBO");
-}
-
 static void
 DestroyShaderModule(qvkshader_t *shaders)
 {
@@ -1271,6 +1248,38 @@ DestroyShaderModule(qvkshader_t *shaders)
 			memset(&shaders[i], 0, sizeof(qvkshader_t));
 		}
 	}
+}
+
+// internal helper
+static void
+CreateStaticBuffers()
+{
+	uint16_t *indices;
+	int i, size;
+
+	size = 6 * MAXDRAWCALLS * sizeof(*indices);
+	indices = malloc(size);
+
+	/* gen color index buffer */
+	draw2dcolor_num = 0;
+	for (i = 0; i < MAXDRAWCALLS; i ++)
+	{
+		indices[6 * i + 0] = i * 4 + 0;
+		indices[6 * i + 1] = i * 4 + 1;
+		indices[6 * i + 2] = i * 4 + 2;
+		indices[6 * i + 3] = i * 4 + 0;
+		indices[6 * i + 4] = i * 4 + 3;
+		indices[6 * i + 5] = i * 4 + 1;
+	}
+
+	QVk_CreateIndexBuffer(indices, size,
+			&vk_rectIbo, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0);
+	QVk_DebugSetObjectName((uint64_t)vk_rectIbo.resource.buffer,
+			VK_OBJECT_TYPE_BUFFER, "Static Buffer: Rectangle IBO");
+	QVk_DebugSetObjectName((uint64_t)vk_rectIbo.resource.memory,
+			VK_OBJECT_TYPE_DEVICE_MEMORY, "Memory: Rectangle IBO");
+	vk_rectIboffet = 0;
+	free(indices);
 }
 
 // internal helper
@@ -1565,8 +1574,6 @@ void QVk_Shutdown( void )
 		QVk_DestroyPipeline(&vk_shadowsPipelineFan);
 		QVk_DestroyPipeline(&vk_worldWarpPipeline);
 		QVk_DestroyPipeline(&vk_postprocessPipeline);
-		QVk_FreeBuffer(&vk_texRectVbo);
-		QVk_FreeBuffer(&vk_colorRectVbo);
 		QVk_FreeBuffer(&vk_rectIbo);
 		for (int i = 0; i < NUM_DYNBUFFERS; ++i)
 		{
@@ -1637,9 +1644,15 @@ void QVk_Shutdown( void )
 		}
 		if (vk_device.logical != VK_NULL_HANDLE)
 		{
-			for (int i = 0; i < NUM_CMDBUFFERS; ++i)
+			int i;
+
+			for (i = 0; i < NUM_IMG_SEMAPHORES; ++i)
 			{
 				vkDestroySemaphore(vk_device.logical, vk_imageAvailableSemaphores[i], NULL);
+			}
+
+			for (i = 0; i < NUM_CMDBUFFERS; ++i)
+			{
 				vkDestroySemaphore(vk_device.logical, vk_renderFinishedSemaphores[i], NULL);
 				vkDestroyFence(vk_device.logical, vk_fences[i], NULL);
 			}
@@ -2010,6 +2023,12 @@ qboolean QVk_Init(void)
 	vk_scissor.offset.y = 0;
 	vk_scissor.extent = vk_swapchain.extent;
 
+
+	for (i = 0; i < NUM_DYNBUFFERS; i++ )
+	{
+		vk_stagingCommandPool[i] = VK_NULL_HANDLE;
+	}
+
 	// setup fences and semaphores
 	VkFenceCreateInfo fCreateInfo = {
 		.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
@@ -2021,19 +2040,23 @@ qboolean QVk_Init(void)
 		.pNext = NULL,
 		.flags = 0
 	};
+
 	for (i = 0; i < NUM_CMDBUFFERS; ++i)
 	{
 		vk_commandPool[i] = VK_NULL_HANDLE;
 		VK_VERIFY(vkCreateFence(vk_device.logical, &fCreateInfo, NULL, &vk_fences[i]));
-		VK_VERIFY(vkCreateSemaphore(vk_device.logical, &sCreateInfo, NULL, &vk_imageAvailableSemaphores[i]));
 		VK_VERIFY(vkCreateSemaphore(vk_device.logical, &sCreateInfo, NULL, &vk_renderFinishedSemaphores[i]));
 
 		QVk_DebugSetObjectName((uint64_t)vk_fences[i],
 			VK_OBJECT_TYPE_FENCE, va("Fence #%d", i));
-		QVk_DebugSetObjectName((uint64_t)vk_imageAvailableSemaphores[i],
-			VK_OBJECT_TYPE_SEMAPHORE, va("Semaphore: image available #%d", i));
 		QVk_DebugSetObjectName((uint64_t)vk_renderFinishedSemaphores[i],
 			VK_OBJECT_TYPE_SEMAPHORE, va("Semaphore: render finished #%d", i));
+	}
+	for (i = 0; i < NUM_IMG_SEMAPHORES; ++i)
+	{
+		VK_VERIFY(vkCreateSemaphore(vk_device.logical, &sCreateInfo, NULL, &vk_imageAvailableSemaphores[i]));
+
+		QVk_DebugSetObjectName((uint64_t)vk_imageAvailableSemaphores[i], VK_OBJECT_TYPE_SEMAPHORE, va("Semaphore: image available #%d", i));
 	}
 	R_Printf(PRINT_ALL, "...created synchronization objects\n");
 
@@ -2131,7 +2154,7 @@ qboolean QVk_Init(void)
 
 	CreateDescriptorSetLayouts();
 	CreateDescriptorPool();
-	// create static vertex/index buffers reused in the games
+	// create static index buffers reused in the games
 	CreateStaticBuffers();
 	// create vertex, index and uniform buffer pools
 	CreateDynamicBuffers();
@@ -2177,7 +2200,7 @@ VkResult QVk_BeginFrame(const VkViewport* viewport, const VkRect2D* scissor)
 	ReleaseSwapBuffers();
 
 	VkResult result = vkAcquireNextImageKHR(vk_device.logical, vk_swapchain.sc, 500000000 /* 0.5 sec */,
-		vk_imageAvailableSemaphores[vk_activeBufferIdx], VK_NULL_HANDLE, &vk_imageIndex);
+		vk_imageAvailableSemaphores[vk_imageSemaphoreIdx], VK_NULL_HANDLE, &vk_imageIndex);
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || result == VK_ERROR_SURFACE_LOST_KHR || result == VK_TIMEOUT)
 	{
 		vk_recreateSwapchainNeeded = true;
@@ -2232,6 +2255,8 @@ VkResult QVk_EndFrame(qboolean force)
 	if (!vk_frameStarted)
 		return VK_SUCCESS;
 
+	QVk_Draw2DCallsRender();
+
 	// this may happen if Sys_Error is issued mid-frame, so we need to properly advance the draw pipeline
 	if (force)
 	{
@@ -2254,7 +2279,7 @@ VkResult QVk_EndFrame(qboolean force)
 	VkSubmitInfo submitInfo = {
 		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
 		.waitSemaphoreCount = 1,
-		.pWaitSemaphores = &vk_imageAvailableSemaphores[vk_activeBufferIdx],
+		.pWaitSemaphores = &vk_imageAvailableSemaphores[vk_imageSemaphoreIdx],
 		.signalSemaphoreCount = 1,
 		.pSignalSemaphores = &vk_renderFinishedSemaphores[vk_activeBufferIdx],
 		.pWaitDstStageMask = &waitStages,
@@ -2289,6 +2314,7 @@ VkResult QVk_EndFrame(qboolean force)
 	}
 
 	vk_activeBufferIdx = (vk_activeBufferIdx + 1) % NUM_CMDBUFFERS;
+	vk_imageSemaphoreIdx = (vk_imageSemaphoreIdx + 1) % NUM_IMG_SEMAPHORES;
 
 	vk_frameStarted = false;
 	return renderResult;
@@ -2651,50 +2677,185 @@ VkSampler QVk_UpdateTextureSampler(qvktexture_t *texture, qvksampler_t samplerTy
 	return vk_samplers[samplerIndex];
 }
 
-void QVk_DrawColorRect(float *ubo, VkDeviceSize uboSize, qvkrenderpasstype_t rpType)
+void
+QVk_Draw2DCallsRender(void)
 {
-	uint32_t uboOffset;
-	VkDescriptorSet uboDescriptorSet;
-	uint8_t *vertData = QVk_GetUniformBuffer(uboSize,
-		&uboOffset, &uboDescriptorSet);
-	memcpy(vertData, ubo, uboSize);
+	if (!draw2dcolor_num)
+	{
+		return;
+	}
 
-	QVk_BindPipeline(&vk_drawColorQuadPipeline[rpType]);
-	VkDeviceSize offsets = 0;
-	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-		vk_drawColorQuadPipeline[rpType].layout, 0, 1, &uboDescriptorSet, 1, &uboOffset);
-	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1,
-		&vk_colorRectVbo.resource.buffer, &offsets);
-	vkCmdBindIndexBuffer(vk_activeCmdbuffer, vk_rectIbo.resource.buffer,
-		0, VK_INDEX_TYPE_UINT32);
-	vkCmdDrawIndexed(vk_activeCmdbuffer, 6, 1, 0, 0, 0);
+	if (draw2dcolor_calltype == CALL_COLOR)
+	{
+		VkDescriptorSet uboDescriptorSet;
+		VkDeviceSize vboOffset, vertSize;
+		uint8_t *vertData, *uboData;
+		VkBuffer vbo;
+		uint32_t uboOffset;
+		float dummy[PUSH_CONSTANT_VERTEX_SIZE] = {0};
+
+		float imgTransform[] = {
+			0, 0,
+			1.0, 1.0,
+			draw2dcolor_r, draw2dcolor_g, draw2dcolor_b, draw2dcolor_a
+		};
+
+		uboData = QVk_GetUniformBuffer(sizeof(imgTransform),
+			&uboOffset, &uboDescriptorSet);
+		memcpy(uboData, imgTransform, sizeof(imgTransform));
+
+		vertSize = draw2dcolor_num * 8 * sizeof(float);
+		vertData = QVk_GetVertexBuffer(vertSize, &vbo, &vboOffset);
+		memcpy(vertData, draw2dcolor_calls, vertSize);
+
+		QVk_BindPipeline(&vk_drawColorQuadPipeline[draw2dcolor_rpType]);
+		vkCmdPushConstants(vk_activeCmdbuffer, vk_worldWarpPipeline.layout,
+			VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(dummy), dummy);
+		vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+			vk_drawColorQuadPipeline[draw2dcolor_rpType].layout, 0, 1, &uboDescriptorSet, 1, &uboOffset);
+		vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1,
+			&vbo, &vboOffset);
+		vkCmdBindIndexBuffer(vk_activeCmdbuffer,
+			vk_rectIbo.resource.buffer, vk_rectIboffet, VK_INDEX_TYPE_UINT16);
+		vkCmdDrawIndexed(vk_activeCmdbuffer, 6 * draw2dcolor_num, 1, 0, 0, 0);
+	}
+	else if (draw2dcolor_calltype == CALL_TEX)
+	{
+		VkDescriptorSet uboDescriptorSet;
+		VkDeviceSize vboOffset, vertSize;
+		uint8_t *vertData, *uboData;
+		VkBuffer vbo;
+		uint32_t uboOffset;
+		float gamma = 2.1F - vid_gamma->value;
+		float dummy[PUSH_CONSTANT_VERTEX_SIZE] = {0};
+
+		float imgTransform[] = {
+			0, 0, 1.0, 1.0,
+			0, 0, 1.0, 1.0
+		};
+
+		uboData = QVk_GetUniformBuffer(sizeof(imgTransform), &uboOffset, &uboDescriptorSet);
+		memcpy(uboData, imgTransform, sizeof(imgTransform));
+
+		QVk_BindPipeline(&vk_drawTexQuadPipeline[vk_state.current_renderpass]);
+		VkDescriptorSet descriptorSets[] = {
+			draw2dcolor_texture->descriptorSet,
+			uboDescriptorSet
+		};
+
+		vkCmdPushConstants(vk_activeCmdbuffer, vk_worldWarpPipeline.layout,
+			VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(dummy), dummy);
+		vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout,
+			VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_VERTEX_SIZE * sizeof(float), sizeof(gamma), &gamma);
+
+		vertSize = draw2dcolor_num * 16 * sizeof(float);
+		vertData = QVk_GetVertexBuffer(vertSize, &vbo, &vboOffset);
+		memcpy(vertData, draw2dcolor_calls, vertSize);
+
+		vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+			vk_drawTexQuadPipeline[draw2dcolor_rpType].layout, 0, 2, descriptorSets, 1, &uboOffset);
+		vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1,
+			&vbo, &vboOffset);
+		vkCmdBindIndexBuffer(vk_activeCmdbuffer,
+			vk_rectIbo.resource.buffer, vk_rectIboffet, VK_INDEX_TYPE_UINT16);
+		vkCmdDrawIndexed(vk_activeCmdbuffer, 6 * draw2dcolor_num, 1, 0, 0, 0);
+	}
+
+	draw2dcolor_num = 0;
 }
 
-void QVk_DrawTexRect(const float *ubo, VkDeviceSize uboSize, qvktexture_t *texture)
+void
+QVk_DrawColorRect(float x, float y, float w, float h, float r, float g, float b, float a,
+	qvkrenderpasstype_t rpType)
 {
-	uint32_t uboOffset;
-	VkDescriptorSet uboDescriptorSet;
-	uint8_t *uboData = QVk_GetUniformBuffer(uboSize, &uboOffset, &uboDescriptorSet);
-	memcpy(uboData, ubo, uboSize);
+	float *last;
+	int i;
 
-	QVk_BindPipeline(&vk_drawTexQuadPipeline[vk_state.current_renderpass]);
-	VkDeviceSize offsets = 0;
-	VkDescriptorSet descriptorSets[] = {
-		texture->descriptorSet,
-		uboDescriptorSet
-	};
+	if (draw2dcolor_num && (
+		(draw2dcolor_calltype != CALL_COLOR) ||
+		(draw2dcolor_num >= MAXDRAWCALLS) ||
+		(draw2dcolor_r != r) || (draw2dcolor_g != g) ||
+		(draw2dcolor_b != b) || (draw2dcolor_a != a)
+	))
+	{
+		/* not color call draws */
+		QVk_Draw2DCallsRender();
+	}
 
-	float gamma = 2.1F - vid_gamma->value;
+	if (!draw2dcolor_num)
+	{
+		/* init color and type */
+		draw2dcolor_r = r;
+		draw2dcolor_g = g;
+		draw2dcolor_b = b;
+		draw2dcolor_a = a;
+		draw2dcolor_rpType = rpType;
+		draw2dcolor_calltype = CALL_COLOR;
+	}
 
-	vkCmdPushConstants(vk_activeCmdbuffer, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout,
-		VK_SHADER_STAGE_FRAGMENT_BIT, 17 * sizeof(float), sizeof(gamma), &gamma);
+	/* save new row */
+	last = draw2dcolor_calls + draw2dcolor_num * 8;
+	draw2dcolor_num++;
 
-	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawTexQuadPipeline[vk_state.current_renderpass].layout, 0, 2, descriptorSets, 1, &uboOffset);
-	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1,
-		&vk_texRectVbo.resource.buffer, &offsets);
-	vkCmdBindIndexBuffer(vk_activeCmdbuffer,
-		vk_rectIbo.resource.buffer, 0, VK_INDEX_TYPE_UINT32);
-	vkCmdDrawIndexed(vk_activeCmdbuffer, 6, 1, 0, 0, 0);
+	last[0] = x;
+	last[1] = y;
+	last[2] = x + w;
+	last[3] = y + h;
+	last[4] = x;
+	last[5] = y + h;
+	last[6] = x + w;
+	last[7] = y;
+
+	for (i = 0; i < 8; i++)
+	{
+		last[i] = last[i] * 2 - 1;
+	}
+}
+
+
+void QVk_DrawTexRect(float x, float y, float w, float h,
+	float u, float v, float us, float vs, qvktexture_t *texture)
+{
+	float *last;
+
+	if (draw2dcolor_num && (
+		(draw2dcolor_calltype != CALL_TEX) ||
+		(draw2dcolor_num >= MAXDRAWCALLS) ||
+		(draw2dcolor_rpType != vk_state.current_renderpass) ||
+		(draw2dcolor_texture != texture)
+	))
+	{
+		QVk_Draw2DCallsRender();
+	}
+
+	if (!draw2dcolor_num)
+	{
+		/* different call draws */
+		draw2dcolor_texture = texture;
+		draw2dcolor_rpType = vk_state.current_renderpass;
+		draw2dcolor_calltype = CALL_TEX;
+	}
+
+	/* save new row */
+	last = draw2dcolor_calls + draw2dcolor_num * 16;
+	draw2dcolor_num++;
+
+	last[0] = x * 2 - 1;
+	last[1] = y * 2 - 1;
+	last[2] = u;
+	last[3] = v;
+	last[4] = (x + w) * 2 - 1;
+	last[5] = (y + h) * 2 - 1;
+	last[6] = u + us;
+	last[7] = v + vs;
+	last[8] = x * 2 - 1;
+	last[9] = (y + h) * 2 - 1;
+	last[10] = u;
+	last[11] = v + vs;
+	last[12] = (x + w) * 2 - 1;
+	last[13] = y * 2 - 1;
+	last[14] = u + us;
+	last[15] = v;
 }
 
 void QVk_BindPipeline(qvkpipeline_t *pipeline)

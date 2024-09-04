@@ -211,8 +211,12 @@ typedef enum
 } qvkrenderpasstype_t;
 
 // Vulkan constants: command and dynamic buffer count
-#define NUM_CMDBUFFERS 32
+#define NUM_CMDBUFFERS 2
 #define NUM_DYNBUFFERS 2
+// Vulkan constants: number of image semaphores (introduced with VulkanSDK 1.3.275)
+#define NUM_IMG_SEMAPHORES (NUM_CMDBUFFERS * 2)
+#define PUSH_CONSTANT_VERTEX_SIZE 17
+#define PUSH_CONSTANT_FRAGMENT_SIZE 11
 
 // Vulkan instance
 extern VkInstance vk_instance;
@@ -331,9 +335,12 @@ uint8_t*	QVk_GetUniformBuffer(VkDeviceSize size, uint32_t *dstOffset, VkDescript
 uint8_t*	QVk_GetStagingBuffer(VkDeviceSize size, int alignment, VkCommandBuffer *cmdBuffer, VkBuffer *buffer, uint32_t *dstOffset);
 void		GenFanIndexes(uint16_t *data, int from, int to);
 void		GenStripIndexes(uint16_t *data, int from, int to);
-VkBuffer*	UpdateIndexBuffer(uint16_t *data, VkDeviceSize bufferSize, VkDeviceSize *dstOffset);
-void		QVk_DrawColorRect(float *ubo, VkDeviceSize uboSize, qvkrenderpasstype_t rpType);
-void		QVk_DrawTexRect(const float *ubo, VkDeviceSize uboSize, qvktexture_t *texture);
+VkBuffer*	UpdateIndexBuffer(const uint16_t *data, VkDeviceSize bufferSize, VkDeviceSize *dstOffset);
+void		QVk_Draw2DCallsRender(void);
+void		QVk_DrawColorRect(float x, float y, float w, float h,
+				float r, float g, float b, float a, qvkrenderpasstype_t rpType);
+void		QVk_DrawTexRect(float x, float y, float w, float h,
+				float u, float v, float us, float vs, qvktexture_t *texture);
 void		QVk_BindPipeline(qvkpipeline_t *pipeline);
 void		QVk_SubmitStagingBuffers(void);
 void		Qvk_MemoryBarrier(VkCommandBuffer cmdBuffer, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask);
