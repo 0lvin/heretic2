@@ -265,14 +265,9 @@ static qboolean FXStaffElementThink(struct client_entity_s *Self, centity_t *own
 }
 
 // ************************************************************************************************
-// FXStaffThink
+// FXStaffLevel2Think
 // -----------------
 // ************************************************************************************************
-
-static qboolean FXTrailLevel2ThinkBurn(struct client_entity_s *Self, centity_t *owner)
-{
-	return true;
-}
 
 static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 {

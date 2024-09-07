@@ -119,21 +119,6 @@ enum {
 };
 
 // ************************************************************************************************
-// FXMorkprojTrailElementThink
-// ************************************************************************************************
-
-static qboolean FXMorkprojTrailElementThink(struct client_entity_s *self, centity_t *owner)
-{
-	if ( (self->alpha <= 0) || (self->r.scale <= 0) )
-		return false;
-
-	self->color.g -= 32;
-	self->color.b -= 32;
-
-	return true;
-}
-
-// ************************************************************************************************
 //FX_M_STRAFE
 // ************************************************************************************************
 
@@ -183,67 +168,6 @@ void FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, ve
 
 		AddEffect(NULL,SmokePuff);
 	}
-}
-
-static qboolean FXhpprojTrailElementThink(struct client_entity_s *self, centity_t *owner)
-{
-	if ( (self->alpha <= 0) || (self->r.scale <= 0) )
-		return false;
-
-	self->color.g -= 32;
-	self->color.b -= 32;
-
-	return true;
-}
-
-static qboolean FXMorkMissileSpawnerThink(struct client_entity_s *self, centity_t *owner)
-{
-	client_entity_t	*TrailEnt;
-
-	if (self->LifeTime < fxi.cl->time)
-		return false;
-
-	TrailEnt=ClientEntity_new(FX_M_EFFECTS,
-							  CEF_DONT_LINK,
-							  self->origin,
-							  NULL,
-							  1000);
-
-	TrailEnt->radius = 500;
-
-	TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	TrailEnt->r.model = Morkproj_models[3];
-
-	TrailEnt->r.color.c = 0xFFFFFFFF;
-	TrailEnt->alpha = 1.0;
-	TrailEnt->r.scale = 0.1;
-
-	TrailEnt->d_alpha = -2.5;
-	TrailEnt->d_scale = 2.0;
-
-	VectorCopy(self->origin, TrailEnt->origin);
-
-	TrailEnt->velocity[0] = irand(-16, 16);
-	TrailEnt->velocity[1] = irand(-16, 16);
-	TrailEnt->velocity[2] = irand(-16, 16);
-
-	AddEffect(NULL,TrailEnt);
-
-	return true;
-}
-
-// ************************************************************************************************
-// FXhpprojTrailThink
-// ************************************************************************************************
-
-static qboolean FXMorkTrailThink(struct client_entity_s *self, centity_t *owner)
-{
-	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
-		return false;
-
-	self->r.scale -= 0.1;
-
-	return true;
 }
 
 static qboolean FXCWTrailThink(struct client_entity_s *self, centity_t *owner)
@@ -310,45 +234,6 @@ static qboolean FXQuakeThink (struct client_entity_s *self, centity_t *owner)
 	FX_M_POWERPUFF
 
   ==================*/
-
-static qboolean FXMorkMissileTrailThink2(struct client_entity_s *self, centity_t *owner)
-{
-	client_entity_t	*TrailEnt;
-
-	self->r.scale = flrand(0.15, 0.35);
-
-	TrailEnt=ClientEntity_new(FX_M_EFFECTS,
-							  CEF_DONT_LINK,
-							  owner->origin,
-							  NULL,
-							  17);
-
-	TrailEnt->radius = 2000;
-
-	VectorCopy( owner->origin, TrailEnt->origin );
-
-	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
-	TrailEnt->r.model = Morkproj_models[2];
-
-	TrailEnt->r.spriteType = SPRITE_LINE;
-	TrailEnt->r.tile = 1;
-	TrailEnt->r.scale = 1.5;
-	TrailEnt->alpha = 1.0;
-	TrailEnt->r.scale = 1.0;
-
-	VectorCopy( self->startpos, TrailEnt->r.startpos );
-	VectorCopy( owner->origin , TrailEnt->r.endpos );
-
-	TrailEnt->d_alpha = -4.0;
-	TrailEnt->d_scale = 0.0;
-	TrailEnt->Update = FXMorkTrailThink2;
-
-	AddEffect(NULL,TrailEnt);
-
-	VectorCopy(owner->origin, self->startpos);
-
-	return true;
-}
 
 static qboolean FXMorkPPTrailThink(struct client_entity_s *self, centity_t *owner)
 {
@@ -1565,45 +1450,6 @@ qboolean ParticleFadeToBlue(client_particle_t *self, qboolean ignore)
 
 	if(self->color.r>=15)
 		self->color.r-=dec_rate;
-
-	return true;
-}
-
-static qboolean FXMorkMissileTrailThink_old(struct client_entity_s *self, centity_t *owner)
-{
-	client_entity_t	*TrailEnt;
-
-	//VectorCopy(owner->origin, self->origin);
-
-	TrailEnt=ClientEntity_new(FX_M_EFFECTS,
-							  CEF_DONT_LINK,
-							  owner->origin,
-							  NULL,
-							  17);
-
-	TrailEnt->radius = 2000;
-
-	VectorCopy( owner->origin, TrailEnt->origin );
-
-	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
-	TrailEnt->r.model = Morkproj_models[2];
-
-	TrailEnt->r.spriteType = SPRITE_LINE;
-	TrailEnt->r.tile = 1;
-	TrailEnt->r.scale = 4;
-	TrailEnt->alpha = 1.0;
-	TrailEnt->r.scale = 1.0;
-
-	VectorCopy( self->startpos, TrailEnt->r.startpos );
-	VectorCopy( owner->origin , TrailEnt->r.endpos );
-
-	TrailEnt->d_alpha = -1.5;
-	TrailEnt->d_scale = 0.0;
-	TrailEnt->Update = FXMorkTrailThink_old;
-
-	AddEffect(NULL,TrailEnt);
-
-	VectorCopy(owner->origin, self->startpos);
 
 	return true;
 }

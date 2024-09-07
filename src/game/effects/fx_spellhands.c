@@ -18,11 +18,6 @@
 #include "particle.h"
 #include "../header/g_playstats.h"
 
-// ************************************************************************************************
-// SpellHandsTrails
-// ----------------
-// ************************************************************************************************
-
 typedef struct
 {
 	char	*SpriteName;
@@ -31,13 +26,6 @@ typedef struct
 			Scale,
 			DScale;
 } trail_t;
-
-static trail_t SpellHandsTrails[NUM_SPELLHANDS]=
-{
-	{"sprites/spells/flyingfist.sp2",2.0,0.25,0.3,-1.25},
-	{"sprites/spells/spellhands_blue.sp2",1.5,0.25,0.4,-0.25},
-	{"sprites/spells/spark_ind.sp2",2.0,0.25,1.0,-1.25},
-};
 
 // --------------------------------------------------------------
 
