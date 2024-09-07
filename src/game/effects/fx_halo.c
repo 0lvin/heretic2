@@ -76,7 +76,7 @@ static qboolean FXHaloThink(struct client_entity_s *self, centity_t *Owner)
 
 	if (trace.fraction < 1.0)	//Hit something
 	{
-		if ((trace.ent != ((struct edict_s *)-1)))	//Model
+		if (trace.ent != WALL_ENTITY)	//Model
 		{
 			es = (entity_state_t *) trace.ent;
 

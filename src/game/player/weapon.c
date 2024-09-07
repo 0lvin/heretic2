@@ -563,10 +563,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 			AlertMonsters (Caster, Caster, 1, true);
 			gi.sound(Caster, CHAN_AUTO, gi.soundindex("weapons/staffhitwall.wav"), 1, ATTN_NORM, 0);
 
-			// NOTENOTE -1 means that the last entity was a wall...
-// jmarshall - 64bit
-			Caster->client->lastentityhit = (edict_t*)-1; // 0xFFFFFFFF;
-// jmarshall end
+			Caster->client->lastentityhit = WALL_ENTITY;
 		}
 	}
 }

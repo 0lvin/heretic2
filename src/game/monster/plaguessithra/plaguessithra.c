@@ -849,8 +849,10 @@ void ssithraCheckJump (edict_t *self)
 			}
 			else
 			{
-//				if (trace.ent == (struct edict_s *)-1)
-//					return;
+				if (trace.ent == WALL_ENTITY)
+				{
+					return;
+				}
 
 				if (trace.contents != CONTENTS_SOLID)
 				{
@@ -991,7 +993,7 @@ void ssithraCheckJump (edict_t *self)
 		//			}
 					else
 					{
-						if (trace.ent == (struct edict_s *)-1)
+						if (trace.ent == WALL_ENTITY)
 							return;
 
 		//				if (trace.contents != CONTENTS_SOLID)

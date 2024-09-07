@@ -46,4 +46,7 @@ float GetGravity();
 qboolean ReferencesInitialized(centity_t *owner);
 qboolean RefPointsValid(centity_t *owner);
 
+// NOTE: 1 means that the last entity was a wall...
+#define WALL_ENTITY (struct edict_s *)1
+
 #endif

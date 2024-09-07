@@ -307,7 +307,7 @@ int ai_hopdown(edict_t *self, vec3_t goalpos, float height_max)
 		}
 		else
 		{
-			if (trace.ent == (struct edict_s *)-1)
+			if (trace.ent == WALL_ENTITY)
 				return false;
 
 			if (trace.contents != CONTENTS_SOLID)

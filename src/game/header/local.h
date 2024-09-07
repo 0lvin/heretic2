@@ -1639,6 +1639,9 @@ struct edict_s
 	void			*script;
 };
 
+// NOTE: 1 means that the last entity was a wall...
+#define WALL_ENTITY (struct edict_s *)1
+
 /*
  * Uncomment for check that exported functions declarations are same as in
  * implementation. (-Wmissing-prototypes )

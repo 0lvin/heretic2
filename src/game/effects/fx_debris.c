@@ -763,7 +763,7 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 			return;
 
 		// hit the world
-		if(trace->ent == (struct edict_s *)-1)
+		if(trace->ent == WALL_ENTITY)
 		{
 			if(trace->contents&CONTENTS_SOLID)
 			{//hit a solid surface, make noise and leave any decals
