@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (c) ZeniMax Media Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,8 @@
  * =======================================================================
  *
  * The basic AI functions like enemy detection, attacking and so on.
+ * While mostly unused by the CTF code the functions must be here since
+ * big parts of the game logic rely on them.
  *
  * =======================================================================
  */

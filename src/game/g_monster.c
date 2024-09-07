@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (c) ZeniMax Media Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +20,8 @@
  *
  * =======================================================================
  *
- * Monster utility functions.
+ * Monster utility functions. While unused by the CTF code they must
+ * persist here since most of the other game codes has ties to it.
  *
  * =======================================================================
  */

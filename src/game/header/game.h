@@ -75,7 +75,7 @@ struct gclient_s
 	player_state_t ps;      /* communicated by server to clients */
 	int ping;
 	/* the game dll can add anything it wants
-	   after  this point in the structure */
+	   after this point in the structure */
 };
 
 struct edict_s
@@ -91,6 +91,8 @@ struct edict_s
 	int clusternums[MAX_ENT_CLUSTERS];
 	int headnode;                   /* unused if num_clusters != -1 */
 	int areanum, areanum2;
+
+	/* ================================ */
 
 	int svflags;                    /* SVF_NOCLIENT, SVF_DEADMONSTER, SVF_MONSTER, etc */
 	vec3_t mins, maxs;
