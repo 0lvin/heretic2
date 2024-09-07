@@ -865,8 +865,9 @@ SP_worldspawn(edict_t *ent)
 	/* make some data visible to the server */
 	if (ent->message && ent->message[0])
 	{
-		gi.configstring(CS_NAME, ent->message);
 		Q_strlcpy(level.level_name, ent->message, sizeof(level.level_name));
+		translate_text(level.level_name, NULL);
+		gi.configstring(CS_NAME, level.level_name);
 	}
 	else
 	{

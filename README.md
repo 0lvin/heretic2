@@ -1,3 +1,32 @@
+Project is fork of Yamagi Quake II with additional hacks for Heretic 2 support.
+
+https://icculus.org/projects/qshed/qwalk/
+https://sourceforge.net/p/quark/code/HEAD/tree/runtime/trunk/plugins/ie_fm_import.py
+
+
+Some code can be not GPL based and retrived from
+[H2 Toolkit](https://www.quaddicted.com/files/idgames2/planetquake/hereticii/files/Ht2Toolkit_v1.06.exe)
+or other places.
+
+Assets:
+ * [Linux/Loki](https://archive.org/embed/heretic-2-linux)
+ * [Demo](https://archive.org/details/h2_demo_us)
+
+Code parts:
+ * `.fm`: https://sourceforge.net/p/quark/code/HEAD/tree/runtime/trunk/plugins/ie_fm_import.py
+ * `.m8` - http://www.geocities.ws/jimmyvalavanis/programming/gformats/m8.html
+      https://github.com/TTimo/GtkRadiant/blob/master/plugins/imagem8/m8.h
+
+ * `.m32` - https://github.com/TTimo/GtkRadiant/blob/master/plugins/imagem8/m32.h
+ * `.dkm` - https://github.com/TrenchBroom/TrenchBroom/blob/master/common/src/IO/DkmParser.cpp
+ * `.mdl`:
+   * Half Life: https://gitlab.com/xonotic/darkplaces/-/blob/master/model_hlmdl.h
+
+General info: https://sites.google.com/site/heretichides/create-your-own-add-on-game/09-miscellanea
+
+Code reimplementation https://github.com/jmarshall23/Heretic2
+------------
+
 # Yamagi Quake II Remaster
 
 This is an experimental fork of Yamagi Quake II with ongoing work to add
