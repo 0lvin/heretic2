@@ -890,6 +890,9 @@ CL_CalcViewValues(void)
 	{
 		cl.refdef.blend[i] = ps->blend[i];
 	}
+
+	/* add the weapon */
+	CL_AddViewWeapon(ps, ops);
 }
 
 /*

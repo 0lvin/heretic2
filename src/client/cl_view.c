@@ -95,8 +95,8 @@ V_AddParticle(vec3_t org, unsigned int color, float alpha)
 
 	p = &r_particles[r_numparticles++];
 	VectorCopy(org, p->origin);
-	// p->color = color;
-	// p->alpha = alpha;
+	p->color = color;
+	p->alpha = alpha;
 }
 
 void
@@ -599,6 +599,9 @@ V_RenderView(float stereo_separation)
 		   this also calls CL_CalcViewValues which loads
 		   v_forward, etc. */
 		CL_AddEntities();
+
+		// before changing viewport we should trace the crosshair position
+		V_Render3dCrosshair();
 
 		if (cl_testparticles->value)
 		{

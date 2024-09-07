@@ -98,6 +98,7 @@ CL_ParseEntityBits(unsigned *bits)
 	{
 		number = MSG_ReadShort(&net_message);
 	}
+
 	else
 	{
 		number = MSG_ReadByte(&net_message);
@@ -742,6 +743,26 @@ static void
 CL_FireEntityEvents(frame_t *frame)
 {
 	// TODO: Rewrite?
+/*
+	entity_state_t *s1;
+	int pnum, num;
+
+	for (pnum = 0; pnum < frame->num_entities; pnum++)
+	{
+		num = (frame->parse_entities + pnum) & (MAX_PARSE_ENTITIES - 1);
+		s1 = &cl_parse_entities[num];
+
+		if (s1->event)
+		{
+			CL_EntityEvent(s1);
+		}
+
+		if (s1->effects & EF_TELEPORTER)
+		{
+			CL_TeleporterParticles(s1);
+		}
+	}
+*/
 }
 
 void
