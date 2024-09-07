@@ -994,7 +994,9 @@ void ssithraCheckJump (edict_t *self)
 					else
 					{
 						if (trace.ent == WALL_ENTITY)
+						{
 							return;
+						}
 
 		//				if (trace.contents != CONTENTS_SOLID)
 		//					return;

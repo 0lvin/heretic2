@@ -1133,7 +1133,6 @@ void
 SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
 {
 	signed int len;
-	signed int i;
 	int xoffset;
 	signed int j;
 	int offset2;
@@ -1255,21 +1254,21 @@ SCR_ExecuteLayoutString(char *s)
 		if (!strcmp(token, "xl"))
 		{
 			token = COM_Parse(&s);
-			x = atoi(token);
+			x = scale * (int)strtol(token, (char **)NULL, 10);
 			continue;
 		}
 
 		if (!strcmp(token, "xr"))
 		{
 			token = COM_Parse(&s);
-			x = viddef.width + atoi(token);
+			x = viddef.width + scale * (int)strtol(token, (char **)NULL, 10);
 			continue;
 		}
 
 		if (!strcmp(token, "xv"))
 		{
 			token = COM_Parse(&s);
-			x = viddef.width/2 - 160 + atoi(token);
+			x = viddef.width / 2 - scale * 160 + scale * (int)strtol(token, (char **)NULL, 10);
 			continue;
 		}
 
@@ -1284,41 +1283,49 @@ SCR_ExecuteLayoutString(char *s)
 		if (!strcmp(token, "yt"))
 		{
 			token = COM_Parse(&s);
-			y = atoi(token);
+			y = scale * (int)strtol(token, (char **)NULL, 10);
 			continue;
 		}
 
 		if (!strcmp(token, "yb"))
 		{
 			token = COM_Parse(&s);
-			y = viddef.height + atoi(token);
+			y = viddef.height + scale * (int)strtol(token, (char **)NULL, 10);
 			continue;
 		}
 
 		if (!strcmp(token, "yv"))
 		{
 			token = COM_Parse(&s);
-			y = viddef.height / 2 - 120 + atoi(token);
-			continue;
-		}
-
-		if (!strcmp(token, "yp"))
-		{
-			token = COM_Parse(&s);
-			y += atoi(token);
+			y = viddef.height / 2 - scale * 120 + scale * (int)strtol(token, (char **)NULL, 10);
 			continue;
 		}
 
 		if (!strcmp(token, "pic"))
 		{
-			SCR_DrawPic(x, y, &s, 0);
-			continue;
-		}
+			/* draw a pic from a stat number */
+			token = COM_Parse(&s);
+			index = (int)strtol(token, (char **)NULL, 10);
 
-		if (!strcmp(token, "pici"))
-		{
-			if ((cl.frame.playerstate.stats[STAT_LAYOUTS] & 4) != 0)
-				SCR_DrawPic(x, y, &s, 1);
+			if ((index < 0) || (index >= MAX_STATS))
+			{
+				Com_Error(ERR_DROP, "bad stats index %d (0x%x)", index, index);
+			}
+
+			value = cl.frame.playerstate.stats[index];
+
+			if (value >= MAX_IMAGES)
+			{
+				Com_Error(ERR_DROP, "Pic >= MAX_IMAGES");
+			}
+
+			if (cl.configstrings[CS_IMAGES + value][0] != '\0')
+			{
+				SCR_AddDirtyPoint(x, y);
+				SCR_AddDirtyPoint(x + 23*scale, y + 23*scale);
+				Draw_PicScaled(x, y, cl.configstrings[CS_IMAGES + value], scale);
+			}
+
 			continue;
 		}
 
@@ -1423,7 +1430,7 @@ SCR_ExecuteLayoutString(char *s)
 			token = COM_Parse(&s);
 			SCR_AddDirtyPoint(x, y);
 			SCR_AddDirtyPoint(x + 32, y + 32);
-			Draw_PicScaled(x, y, token, 1.0f);
+			Draw_PicScaled(x, y, (char *)token, scale);
 			continue;
 		}
 
@@ -1570,6 +1577,21 @@ SCR_ExecuteLayoutString(char *s)
 				}
 			}
 
+			continue;
+		}
+
+		if (!strcmp(token, "yp"))
+		{
+			token = COM_Parse(&s);
+			y += atoi(token);
+			continue;
+		}
+
+
+		if (!strcmp(token, "pici"))
+		{
+			if ((cl.frame.playerstate.stats[STAT_LAYOUTS] & 4) != 0)
+				SCR_DrawPic(x, y, &s, 1);
 			continue;
 		}
 
