@@ -259,7 +259,8 @@ CL_ParseParticles(void)
 
 	count = MSG_ReadByte(&net_message);
 
-	CL_ParticleEffect(pos, dir, color, count);
+	CL_ParticleEffect(pos, dir,
+		VID_PaletteColor(color), VID_PaletteColor(color + 7), count);
 }
 
 void
@@ -548,7 +549,8 @@ CL_ParseSteam(void)
 			MSG_ReadPos(&net_message, s->org);
 			MSG_ReadDir(&net_message, s->dir);
 			r = MSG_ReadByte(&net_message);
-			s->color = r & 0xff;
+			s->basecolor = VID_PaletteColor(r & 0xff);
+			s->finalcolor = VID_PaletteColor((r + 7) & 0xff);
 			s->magnitude = MSG_ReadShort(&net_message);
 			s->endtime = cl.time + MSG_ReadLong(&net_message);
 			s->think = CL_ParticleSteamEffect2;
@@ -574,7 +576,8 @@ CL_ParseSteam(void)
 		r = MSG_ReadByte(&net_message);
 		magnitude = MSG_ReadShort(&net_message);
 		color = r & 0xff;
-		CL_ParticleSteamEffect(pos, dir, color, cnt, magnitude);
+		CL_ParticleSteamEffect(pos, dir,
+			VID_PaletteColor(color), VID_PaletteColor(color + 7), cnt, magnitude);
 	}
 }
 
@@ -648,7 +651,15 @@ CL_ParseNuke(void)
 	}
 }
 
-static byte splash_color[] = {0x00, 0xe0, 0xb0, 0x50, 0xd0, 0xe0, 0xe8};
+static unsigned int splash_color[] = {
+	0xff000000, 0xff6b6b6b,
+	0xff07abff, 0xff002bab,
+	0xffcf7b77, 0xff734747,
+	0xff4b5f7b, 0xff2b374b,
+	0xff00ff00, 0xffffffff,
+	0xff07abff, 0xff002bab,
+	0xff001f9b, 0xff00001b,
+};
 
 void
 CL_ParseTEnt(void)
@@ -669,7 +680,7 @@ CL_ParseTEnt(void)
 		case TE_BLOOD: /* bullet hitting flesh */
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
-			CL_ParticleEffect(pos, dir, 0xe8, 60);
+			CL_ParticleEffect(pos, dir, 0xff001f9b, 0xff00001b, 60);
 			break;
 
 		case TE_GUNSHOT: /* bullet hitting wall */
@@ -680,11 +691,11 @@ CL_ParseTEnt(void)
 
 			if (type == TE_GUNSHOT)
 			{
-				CL_ParticleEffect(pos, dir, 0, 40);
+				CL_ParticleEffect(pos, dir, 0xff000000, 0xff6b6b6b, 40);
 			}
 			else
 			{
-				CL_ParticleEffect(pos, dir, 0xe0, 6);
+				CL_ParticleEffect(pos, dir, 0xff07abff, 0xff002bab, 6);
 			}
 
 			if (type != TE_SPARKS)
@@ -716,12 +727,12 @@ CL_ParseTEnt(void)
 
 			if (type == TE_SCREEN_SPARKS)
 			{
-				CL_ParticleEffect(pos, dir, 0xd0, 40);
+				CL_ParticleEffect(pos, dir, 0xff00ff00, 0xffffffff, 40);
 			}
 
 			else
 			{
-				CL_ParticleEffect(pos, dir, 0xb0, 40);
+				CL_ParticleEffect(pos, dir, 0xffcf7b77, 0xff734747, 40);
 			}
 
 			if (cl_limitsparksounds->value)
@@ -761,7 +772,7 @@ CL_ParseTEnt(void)
 		case TE_SHOTGUN: /* bullet hitting wall */
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
-			CL_ParticleEffect(pos, dir, 0, 20);
+			CL_ParticleEffect(pos, dir, 0xff000000, 0xff6b6b6b, 20);
 			CL_SmokeAndFlash(pos);
 			break;
 
@@ -773,14 +784,11 @@ CL_ParseTEnt(void)
 
 			if (r > 6)
 			{
-				color = 0x00;
-			}
-			else
-			{
-				color = splash_color[r];
+				r = 0;
 			}
 
-			CL_ParticleEffect(pos, dir, color, cnt);
+			CL_ParticleEffect(pos, dir,
+				splash_color[r * 2], splash_color[r * 2 + 1], cnt);
 
 			if (r == SPLASH_SPARKS)
 			{
@@ -807,7 +815,8 @@ CL_ParseTEnt(void)
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
 			color = MSG_ReadByte(&net_message);
-			CL_ParticleEffect2(pos, dir, color, cnt);
+			CL_ParticleEffect2(pos, dir,
+				VID_PaletteColor(color), VID_PaletteColor(color + 7), cnt);
 			break;
 
 		case TE_BLUEHYPERBLASTER:
@@ -1017,7 +1026,8 @@ CL_ParseTEnt(void)
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
 			color = MSG_ReadByte(&net_message);
-			CL_ParticleEffect2(pos, dir, color, cnt);
+			CL_ParticleEffect2(pos, dir,
+				VID_PaletteColor(color), VID_PaletteColor(color + 7), cnt);
 
 			ex = CL_AllocExplosion();
 			VectorCopy(pos, ex->ent.origin);
@@ -1035,7 +1045,7 @@ CL_ParseTEnt(void)
 		case TE_GREENBLOOD:
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
-			CL_ParticleEffect2(pos, dir, 0xdf, 30);
+			CL_ParticleEffect2(pos, dir, 0xff0fbfff, 0xff003bb7, 30);
 			break;
 
 		case TE_TUNNEL_SPARKS:
@@ -1043,7 +1053,7 @@ CL_ParseTEnt(void)
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
 			color = MSG_ReadByte(&net_message);
-			CL_ParticleEffect3(pos, dir, color, cnt);
+			CL_ParticleEffect3(pos, dir, VID_PaletteColor(color), cnt);
 			break;
 
 		case TE_BLASTER2:
@@ -1053,11 +1063,11 @@ CL_ParseTEnt(void)
 
 			if (type == TE_BLASTER2)
 			{
-				CL_BlasterParticles2(pos, dir, 0xd0);
+				CL_BlasterParticles2(pos, dir, 0xff00ff00, 0xffffffff);
 			}
 			else
 			{
-				CL_BlasterParticles2(pos, dir, 0x6f);
+				CL_BlasterParticles2(pos, dir, 0xffb7a787, 0xff5b430f);
 			}
 
 			ex = CL_AllocExplosion();
@@ -1162,7 +1172,7 @@ CL_ParseTEnt(void)
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadPos(&net_message, pos2);
 			color = MSG_ReadByte(&net_message);
-			CL_ForceWall(pos, pos2, color);
+			CL_ForceWall(pos, pos2, VID_PaletteColor(color));
 			break;
 
 		case TE_HEATBEAM:
@@ -1179,8 +1189,7 @@ CL_ParseTEnt(void)
 			MSG_ReadDir(&net_message, dir);
 			r = 8;
 			magnitude = 60;
-			color = r & 0xff;
-			CL_ParticleSteamEffect(pos, dir, color, cnt, magnitude);
+			CL_ParticleSteamEffect(pos, dir, 0xff7b7b7b, 0xffebebeb, cnt, magnitude);
 			S_StartSound(pos, 0, 0, cl_sfx_lashit, 1, ATTN_NORM, 0);
 			break;
 
@@ -1188,9 +1197,8 @@ CL_ParseTEnt(void)
 			cnt = 20;
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
-			color = 0xe0;
 			magnitude = 60;
-			CL_ParticleSteamEffect(pos, dir, color, cnt, magnitude);
+			CL_ParticleSteamEffect(pos, dir, 0xff07abff, 0xff002bab, cnt, magnitude);
 			S_StartSound(pos, 0, 0, cl_sfx_lashit, 1, ATTN_NORM, 0);
 			break;
 
@@ -1208,7 +1216,7 @@ CL_ParseTEnt(void)
 		case TE_MOREBLOOD:
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
-			CL_ParticleEffect(pos, dir, 0xe8, 250);
+			CL_ParticleEffect(pos, dir, 0xff001f9b, 0xff00001b, 250);
 			break;
 
 		case TE_CHAINFIST_SMOKE:
@@ -1216,20 +1224,20 @@ CL_ParseTEnt(void)
 			dir[1] = 0;
 			dir[2] = 1;
 			MSG_ReadPos(&net_message, pos);
-			CL_ParticleSmokeEffect(pos, dir, 0, 20, 20);
+			CL_ParticleSmokeEffect(pos, dir, 0xff000000, 0xff6b6b6b, 20, 20);
 			break;
 
 		case TE_ELECTRIC_SPARKS:
 			MSG_ReadPos(&net_message, pos);
 			MSG_ReadDir(&net_message, dir);
-			CL_ParticleEffect(pos, dir, 0x75, 40);
+			CL_ParticleEffect(pos, dir, 0xff5b430f, 0xff1f1700, 40);
 			S_StartSound(pos, 0, 0, cl_sfx_lashit, 1, ATTN_NORM, 0);
 			break;
 
 		case TE_TRACKER_EXPLOSION:
 			MSG_ReadPos(&net_message, pos);
 			CL_ColorFlash(pos, 0, 150, -1, -1, -1);
-			CL_ColorExplosionParticles(pos, 0, 1);
+			CL_ColorExplosionParticles(pos, 0xff000000, 0xff0f0f0f);
 			S_StartSound(pos, 0, 0, cl_sfx_disrexp, 1, ATTN_NORM, 0);
 			break;
 
