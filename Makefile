@@ -1092,6 +1092,7 @@ GAME_OBJS_ = \
 	src/game/monster/tcheckrik/tcheckrik_anim.o \
 	src/game/monster/tcheckrik/tcheckrik.o \
 	src/game/monster/tcheckrik/tcheckrik_spells.o \
+	src/game/player/chase.o \
 	src/game/player/client.o \
 	src/game/player/funcs.o \
 	src/game/player/hud.o \

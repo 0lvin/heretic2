@@ -3331,6 +3331,10 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	client->resp.cmd_angles[0] = SHORT2ANGLE(ucmd->angles[0]);
 	client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
 	client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
+	/* clean flags */
+	client->resp.game_helpchanged = false;
+	client->resp.helpchanged = false;
+	client->resp.spectator = false;
 
 	client->playerinfo.waterlevel = pm.waterlevel;
 	client->playerinfo.waterheight = pm.waterheight;

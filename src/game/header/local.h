@@ -1082,12 +1082,7 @@ void ED_CallSpawn(edict_t *ent);
 #define TRYSTEP_NOSUPPORT	4
 #define TRYSTEP_INWATER		5
 
-// ************************************************************************************************
-// client_respawn_t
-// ----------------
-// Client data that stays across deathmatch respawns.
-// ************************************************************************************************
-
+/* client data that stays across deathmatch respawns */
 typedef struct
 {
 	client_persistant_t coop_respawn; /* what to set client->pers to on a respawn */
@@ -1097,6 +1092,7 @@ typedef struct
 
 	int					game_helpchanged;
 	int					helpchanged;
+	qboolean spectator;             /* client is a spectator */
 } client_respawn_t;
 
 /* this structure is cleared on each PutClientInServer(),
@@ -1178,6 +1174,14 @@ struct gclient_s
 	float				flood_nextkill;			// next time for suicide
 
 	playerinfo_t		playerinfo;
+
+	/* Third person view */
+	int chasetoggle;
+	edict_t *chasecam;
+	edict_t *oldplayer;
+	int use;
+	int zoom;
+	int delayedstart;
 };
 
 // sides for a nonrotating box
@@ -1637,7 +1641,17 @@ struct edict_s
 	edict_t				*fire_damage_enemy;	//who burnt you to death- for proper burning death credit
 
 	void			*script;
+
+	/* Third person view */
+	int chasedist1;
+	int chasedist2;
 };
+
+void Cmd_Chasecam_Toggle(edict_t *ent);
+void ChasecamStart(edict_t *ent);
+void ChasecamRemove(edict_t *ent);
+void CheckChasecam_Viewent(edict_t *ent);
+void ChasecamTrack(edict_t *ent);
 
 // NOTE: 1 means that the last entity was a wall...
 #define WALL_ENTITY (struct edict_s *)1
