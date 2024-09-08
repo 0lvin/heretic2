@@ -742,8 +742,6 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 static void
 CL_FireEntityEvents(frame_t *frame)
 {
-	// TODO: Rewrite?
-/*
 	entity_state_t *s1;
 	int pnum, num;
 
@@ -762,7 +760,6 @@ CL_FireEntityEvents(frame_t *frame)
 			CL_TeleporterParticles(s1);
 		}
 	}
-*/
 }
 
 void
