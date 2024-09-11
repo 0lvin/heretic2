@@ -312,9 +312,8 @@ void barrel_explode_think(edict_t *self)
 	G_SetToFree(self);
 }
 
-
-
-int barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void
+barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	self->think = barrel_explode_think;
 	self->nextthink = level.time + FRAMETIME;
@@ -330,8 +329,6 @@ int barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	self->bounced = NULL;
 
 	gi.linkentity(self);
-
-	return 1;
 }
 
 
@@ -831,7 +828,8 @@ int dying_elf_pain (edict_t *self, edict_t *other, float kick, int damage)
 	return true;
 }
 
-int dying_elf_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void
+dying_elf_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		chance;
 
@@ -852,7 +850,6 @@ int dying_elf_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	}
 
 	BecomeDebris(self);
-	return (false);
 }
 
 /*

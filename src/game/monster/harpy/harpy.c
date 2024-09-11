@@ -140,10 +140,10 @@ void harpy_throw_wings(edict_t *self)
 	ThrowBodyPart(self, &gore_spot, throw_nodes, 50, FRAME_partfly1);
 }
 
-int head_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,vec3_t point)
+void
+head_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,vec3_t point)
 {
 	BecomeDebris(self);
-	return true;
 }
 
 void harpy_head_think (edict_t *self)

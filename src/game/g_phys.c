@@ -136,13 +136,11 @@ SV_RunThink(edict_t *ent)
 }
 
 /*
-==================
-SV_Impact
-
-Two entities have touched, so run their touch functions
-==================
-*/
-void SV_Impact (edict_t *e1, trace_t *trace)
+ * Two entities have touched, so
+ * run their touch functions
+ */
+void
+SV_Impact(edict_t *e1, trace_t *trace)
 {
 	edict_t *e2;
 

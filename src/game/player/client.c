@@ -49,8 +49,8 @@
 #include "../player/library/p_anim_branch.h"
 
 // FIXME: include headers.
-extern void	SetupPlayerinfo(edict_t *ent);
-extern void	WritePlayerinfo(edict_t *ent);
+extern void SetupPlayerinfo(edict_t *ent);
+extern void WritePlayerinfo(edict_t *ent);
 extern void PlayerChickenDeath(edict_t *ent);
 extern qboolean AddWeaponToInventory(gitem_t *item,edict_t *player);
 extern qboolean AddDefenseToInventory(gitem_t *item,edict_t *player);
@@ -74,7 +74,8 @@ void SP_misc_teleporter_dest (edict_t *ent);
 /*QUAKED info_player_start (1 0 0) (-16 -16 -24) (16 16 32)
 The normal starting point for a level.
 */
-void SP_info_player_start(edict_t *self)
+void
+SP_info_player_start(edict_t *self)
 {
 }
 
@@ -132,7 +133,8 @@ int	SexedSoundIndex (edict_t *ent, char *base)
 
 
 
-void ClientSetSkinType(edict_t *ent, char *skinname)
+void
+ClientSetSkinType(edict_t *ent, char *skinname)
 {
 	playerinfo_t *playerinfo;
 
@@ -201,7 +203,8 @@ byebye:
 
 }
 
-void SpawnBleeder (edict_t *self, edict_t *other, vec3_t bleed_dir, vec3_t bleed_spot)//, byte refpoint)
+void
+SpawnBleeder(edict_t *self, edict_t *other, vec3_t bleed_dir, vec3_t bleed_spot)//, byte refpoint)
 {
 	edict_t	*bleeder;
 
@@ -911,7 +914,6 @@ void player_leader_effect(void)
 
 }
 
-
 // ************************************************************************************************
 // ClientObituary
 // --------------
@@ -1111,36 +1113,54 @@ void player_make_gib(edict_t *self, edict_t *attacker)
 
 	gi.CreateEffect(NULL,
 					FX_FLESH_DEBRIS,
-   					0,
-   					self->s.origin,
-   					"bdb",
-   					irand(10, 30), self->mins, magb);
+					0,
+					self->s.origin,
+					"bdb",
+					irand(10, 30), self->mins, magb);
 
-   	self->takedamage = DAMAGE_NO;
+	self->takedamage = DAMAGE_NO;
 }
 
-int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,vec3_t point)
-{//FIXME: Make sure you can still dismember and gib player while dying
+void
+player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
+		int damage, vec3_t point /* unused */)
+{
+	//FIXME: Make sure you can still dismember and gib player while dying
 	int		i;
 
-	assert(self->client);
+	if (!self || !inflictor || !attacker)
+	{
+		return;
+	}
+
+	if (self->client->chasetoggle)
+	{
+		ChasecamRemove(self);
+		self->client->playerinfo.pers.chasetoggle = 1;
+	}
+	else
+	{
+		self->client->playerinfo.pers.chasetoggle = 0;
+	}
 
 	VectorClear(self->avelocity);
 
 	if(self->health < -99)
+	{
 		self->health = -99;//looks better on stat bar display
+	}
 
-	self->takedamage=DAMAGE_NO;
-	self->movetype=PHYSICSTYPE_STEP;
+	self->takedamage = DAMAGE_NO;
+	self->movetype = PHYSICSTYPE_STEP;
 
-	self->s.angles[PITCH]=0.0;
-	self->s.angles[ROLL]=0.0;
+	self->s.angles[PITCH] = 0.0;
+	self->s.angles[ROLL] = 0.0;
 
-	self->s.sound=0;
+	self->s.sound = 0;
 
-	self->maxs[2]=-8;
+	self->maxs[2] = -8;
 
-	self->solid=SOLID_NOT;
+	self->solid = SOLID_NOT;
 
 	// tell the leader client effect that this client is dead - so if we drawing the effect, please stop.
 	self->s.effects |= EF_CLIENT_DEAD;
@@ -1322,33 +1342,27 @@ int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,v
 	ClientObituary(self, inflictor, attacker);
 
 	gi.linkentity(self);
-
-	return(0);
 }
 
-/*
-=======================================================================
-
-  SelectSpawnPoint
-
-=======================================================================
-*/
+/* ======================================================================= */
 
 /*
-================
-PlayersRangeFromSpot
-
-Returns the distance to the nearest player from the given spot
-================
-*/
-float	PlayersRangeFromSpot (edict_t *spot)
+ * Returns the distance to the
+ * nearest player from the given spot
+ */
+float
+PlayersRangeFromSpot(edict_t *spot)
 {
-	edict_t	*player;
-	float	bestplayerdistance;
-	vec3_t	v;
-	int		n;
-	float	playerdistance;
+	edict_t *player;
+	float bestplayerdistance;
+	vec3_t v;
+	int n;
+	float playerdistance;
 
+	if (!spot)
+	{
+		return 0.0;
+	}
 
 	bestplayerdistance = 9999999;
 
@@ -1357,50 +1371,49 @@ float	PlayersRangeFromSpot (edict_t *spot)
 		player = &g_edicts[n];
 
 		if (!player->inuse)
+		{
 			continue;
+		}
 
 		if (player->health <= 0)
+		{
 			continue;
+		}
 
-		VectorSubtract (spot->s.origin, player->s.origin, v);
-		playerdistance = VectorLength (v);
+		VectorSubtract(spot->s.origin, player->s.origin, v);
+		playerdistance = VectorLength(v);
 
 		if (playerdistance < bestplayerdistance)
+		{
 			bestplayerdistance = playerdistance;
+		}
 	}
 
 	return bestplayerdistance;
 }
 
 /*
-================
-SelectRandomDeathmatchSpawnPoint
-
-go to a random point, but NOT the two points closest
-to other players
-================
-*/
-edict_t *SelectRandomDeathmatchSpawnPoint (void)
+ * go to a random point, but NOT the two
+ * points closest to other players
+ */
+edict_t *
+SelectRandomDeathmatchSpawnPoint(void)
 {
-	edict_t	*spot, *spot1, *spot2;
-	int		count = 0;
-	int		selection;
-	float	range, range1, range2;
+	edict_t *spot, *spot1, *spot2;
+	int count = 0;
+	int selection;
+	float range, range1, range2;
 
 	spot = NULL;
 	range1 = range2 = 99999;
 	spot1 = spot2 = NULL;
 
-	while ((spot = G_Find (spot, FOFS(classname), "info_player_deathmatch")) != NULL)
+	while ((spot = G_Find(spot, FOFS(classname),
+					"info_player_deathmatch")) != NULL)
 	{
-//		if(spot->damage_debounce_time > level.time)
-//			continue;//was just used
-
-//		if(irand(0,1))
-//			continue;//50% chance to skip it- helps make it more random
-
 		count++;
 		range = PlayersRangeFromSpot(spot);
+
 		if (range < range1)
 		{
 			range1 = range;
@@ -1414,24 +1427,41 @@ edict_t *SelectRandomDeathmatchSpawnPoint (void)
 	}
 
 	if (!count)
+	{
 		return NULL;
+	}
 
 	if (count <= 2)
 	{
 		spot1 = spot2 = NULL;
 	}
 	else
-		count -= 2;
+	{
+		if (spot1)
+		{
+			count--;
+		}
 
-	selection = irand(0, count -1 );
+		if (spot2)
+		{
+			count--;
+		}
+	}
+
+	selection = randk() % count;
 
 	spot = NULL;
+
 	do
 	{
-		spot = G_Find (spot, FOFS(classname), "info_player_deathmatch");
-		if (spot == spot1 || spot == spot2)
+		spot = G_Find(spot, FOFS(classname), "info_player_deathmatch");
+
+		if ((spot == spot1) || (spot == spot2))
+		{
 			selection++;
-	} while(selection--);
+		}
+	}
+	while (selection--);
 
 	return spot;
 }
@@ -1471,19 +1501,20 @@ SelectFarthestDeathmatchSpawnPoint(void)
 	return spot;
 }
 
-edict_t *SelectDeathmatchSpawnPoint (void)
+static edict_t *
+SelectDeathmatchSpawnPoint(void)
 {
-//	if ( (int)(dmflags->value) & DF_SPAWN_FARTHEST)
-	return SelectFarthestDeathmatchSpawnPoint ();
+//	if ((int)(dmflags->value) & DF_SPAWN_FARTHEST)
+	return SelectFarthestDeathmatchSpawnPoint();
 //	else
-//		return SelectRandomDeathmatchSpawnPoint ();
+//		return SelectRandomDeathmatchSpawnPoint();
 }
 
-edict_t *SelectCoopSpawnPoint (edict_t *ent)
+edict_t *SelectCoopSpawnPoint(edict_t *ent)
 {
-	int		index;
-	edict_t	*spot = NULL;
-	char	*target;
+	int index;
+	edict_t *spot = NULL;
+	char *target;
 
 	index = ent->client - game.clients;
 
@@ -1610,7 +1641,8 @@ void InitBodyQue (void)
 	}
 }
 
-int player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage,vec3_t point)
+void
+player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, vec3_t point)
 {
 	byte	magb;
 	float	mag;
@@ -1649,8 +1681,6 @@ int player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damag
    	self->s.modelindex=0;
 
 	gi.linkentity(self);
-
-	return(1);
 }
 
 void CopyToBodyQue (edict_t *ent)
@@ -1697,31 +1727,31 @@ void CopyToBodyQue (edict_t *ent)
 
 	gi.unlinkentity (body);
 
-	body->s=ent->s;
-	body->s.number=body-g_edicts;
-	body->s.skeletalType=SKEL_NULL;
-	body->s.effects&=~(EF_JOINTED|EF_SWAPFRAME);
-	body->s.rootJoint=NULL_ROOT_JOINT;
-	body->s.swapFrame=NO_SWAP_FRAME;
-	body->owner=ent->owner;
+	body->s = ent->s;
+	body->s.number = body-g_edicts;
+	body->s.skeletalType = SKEL_NULL;
+	body->s.effects &= ~(EF_JOINTED|EF_SWAPFRAME);
+	body->s.rootJoint = NULL_ROOT_JOINT;
+	body->s.swapFrame = NO_SWAP_FRAME;
+	body->owner = ent->owner;
 	VectorScale(ent->mins,0.5,body->mins);
 	VectorScale(ent->maxs,0.5,body->maxs);
-	body->maxs[2]=10;
+	body->maxs[2] = 10;
 	VectorCopy(ent->absmin,body->absmin);
 	VectorCopy(ent->absmax,body->absmax);
-	body->absmax[2]=10;
+	body->absmax[2] = 10;
 	VectorCopy(ent->size,body->size);
-	body->svflags=ent->svflags|SVF_DEADMONSTER; // Stops player getting stuck.
-	body->movetype=PHYSICSTYPE_STEP;
-	body->solid=SOLID_BBOX;
-	body->clipmask=MASK_PLAYERSOLID;
-	body->takedamage=DAMAGE_YES;
-	body->materialtype=MAT_FLESH;
-	body->health=25;
-	body->deadflag=DEAD_NO;
-	body->die=player_body_die;
+	body->svflags = ent->svflags|SVF_DEADMONSTER; // Stops player getting stuck.
+	body->movetype = PHYSICSTYPE_STEP;
+	body->solid = SOLID_BBOX;
+	body->clipmask = MASK_PLAYERSOLID;
+	body->takedamage = DAMAGE_YES;
+	body->materialtype = MAT_FLESH;
+	body->health = 25;
+	body->deadflag = DEAD_NO;
+	body->die = player_body_die;
 
-	gi.linkentity (body);
+	gi.linkentity(body);
 
 	// Clear out any client effectsBuffer_t on the corpse (inherited from the player who just died)
 	// as the engine will take care of deallocating any effects still on the player.
@@ -3026,6 +3056,11 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	float		knockback;
 	edict_t		*TargetEnt;
 
+	if (!ent || !ucmd)
+	{
+		return;
+	}
+
 	level.current_entity = ent;
 	client = ent->client;
 
@@ -3458,25 +3493,28 @@ ClientBeginServerFrame(edict_t *ent)
 
 	if (ent->deadflag & DEAD_DEAD)
 	{
-		// Wait for any button just going down.
-
-		if ( level.time > client->respawn_time)
+		/* wait for any button just going down */
+		if (level.time > client->respawn_time)
 		{
-			// In deathmatch, only wait for attack button.
-
+			/* in deathmatch, only wait for attack button */
 			if (deathmatch->value)
+			{
 				buttonMask = BUTTON_ATTACK;
+			}
 			else
+			{
 				buttonMask = -1;
+			}
 
-			if ( ( client->playerinfo.latched_buttons & buttonMask ) ||
-				(deathmatch->value && ((int)dmflags->value & DF_FORCE_RESPAWN) ) )
+			if ((client->playerinfo.latched_buttons & buttonMask ) ||
+				(deathmatch->value &&
+				 ((int)dmflags->value & DF_FORCE_RESPAWN) ) )
 			{
 				respawn(ent);
-
 				client->playerinfo.latched_buttons = 0;
 			}
 		}
+
 		return;
 	}
 

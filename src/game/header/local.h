@@ -1002,7 +1002,7 @@ int SexedSoundIndex(edict_t *ent, char *base);
 
 /* g_player.c */
 int player_pain(edict_t *self, edict_t *other, float kick, int damage);
-int player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
+void player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		int damage, vec3_t point);
 void player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation);
 void ResetPlayerBaseNodes(edict_t *ent);
@@ -1509,11 +1509,11 @@ struct edict_s
 
 	// Used by monsters and player.
 
-	int 				(*pain)(edict_t *self, edict_t *other, float kick, int damage);
+	int				(*pain)(edict_t *self, edict_t *other, float kick, int damage);
 
 	// Used by monsters, player, and some polys.
 
-	int  				(*die)(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+	void				(*die)(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
 
 	// used by the Morph Ovum
 

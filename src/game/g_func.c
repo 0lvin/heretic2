@@ -1518,7 +1518,8 @@ void door_blocked  (edict_t *self, edict_t *other)
 	}
 }
 
-int door_killed (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void
+door_killed (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	edict_t	*ent;
 
@@ -1527,9 +1528,7 @@ int door_killed (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 		ent->health = ent->max_health;
 		ent->takedamage = DAMAGE_NO;
 	}
-	door_use (self->teammaster, attacker, attacker);
-	return(0);
-
+	door_use(self->teammaster, attacker, attacker);
 }
 
 void door_touch (edict_t *self, trace_t *trace)
@@ -2648,15 +2647,15 @@ void door_secret_blocked  (edict_t *self, edict_t *other)
 	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0,MOD_CRUSH);
 }
 
-int door_secret_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void
+door_secret_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	self->takedamage = DAMAGE_NO;
 	door_secret_use (self, attacker, attacker);
-	return(0);
-
 }
 
-void SP_func_door_secret (edict_t *ent)
+void
+SP_func_door_secret(edict_t *ent)
 {
 	vec3_t	forward, right, up;
 	float	side;
