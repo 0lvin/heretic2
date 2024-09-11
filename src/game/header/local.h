@@ -1050,7 +1050,6 @@ void G_RunEntity(edict_t *ent);
 
 /* g_main.c */
 void SaveClientData(void);
-void FetchClientEntData(edict_t *ent);
 
 
 /* g_breakable.c */

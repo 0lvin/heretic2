@@ -1344,6 +1344,67 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	gi.linkentity(self);
 }
 
+/*
+ * Some information that should be persistant, like health,
+ * is still stored in the edict structure, so it needs to
+ * be mirrored out to the client structure before all the
+ * edicts are wiped.
+ */
+void
+SaveClientData(void)
+{
+	int i;
+	edict_t *ent;
+
+	for (i = 0; i < game.maxclients; i++)
+	{
+		ent = &g_edicts[1 + i];
+
+		if (!ent->inuse)
+		{
+			continue;
+		}
+
+		game.clients[i].playerinfo.pers.chasetoggle = ent->client->chasetoggle;
+		game.clients[i].playerinfo.pers.health = ent->health;
+		if (coop->value && game.clients[i].playerinfo.pers.health < 25)
+			game.clients[i].playerinfo.pers.health=25;
+		game.clients[i].playerinfo.pers.max_health = ent->max_health;
+
+		game.clients[i].playerinfo.pers.mission_num1 = ent->client->ps.mission_num1;
+		game.clients[i].playerinfo.pers.mission_num2 = ent->client->ps.mission_num2;
+
+		if (coop->value)
+		{
+			game.clients[i].playerinfo.pers.score = ent->client->resp.score;
+		}
+	}
+}
+
+static void
+FetchClientEntData(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->health = ent->client->playerinfo.pers.health;
+	if (coop->value && ent->health < 25)
+	{
+		ent->health = 25;
+	}
+	ent->max_health = ent->client->playerinfo.pers.max_health;
+
+	ent->client->ps.mission_num1 = ent->client->playerinfo.pers.mission_num1;
+	ent->client->ps.mission_num2 = ent->client->playerinfo.pers.mission_num2;
+
+	if (coop->value)
+	{
+		ent->client->resp.score = ent->client->playerinfo.pers.score;
+	}
+}
+
 /* ======================================================================= */
 
 /*
@@ -1763,8 +1824,26 @@ void CopyToBodyQue (edict_t *ent)
 	return;
 }
 
-void respawn (edict_t *self)
+void
+respawn(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->client->oldplayer)
+	{
+			G_FreeEdict (self->client->oldplayer);
+	}
+	self->client->oldplayer = NULL;
+
+	if (self->client->chasecam)
+	{
+			G_FreeEdict (self->client->chasecam);
+	}
+	self->client->chasecam = NULL;
+
 	if (deathmatch->value || coop->value)
 	{
 		// FIXME: make bodyque objects obey gravity.
@@ -1809,13 +1888,11 @@ void respawn (edict_t *self)
 
 		self->client->ps.pmove.pm_time = 50;
 
-
 		return;
 	}
 
-	// Restart the entire server.
-
-	gi.AddCommandString ("menu_loadgame\n");
+	/* restart the entire server */
+	gi.AddCommandString("menu_loadgame\n");
 }
 
 //==============================================================
@@ -1836,60 +1913,6 @@ void SpawnInitialPlayerEffects(edict_t *ent)
 
 	if (deathmatch->value || coop->value)
 	   	player_leader_effect();
-}
-
-/*
-==================
-SaveClientData
-
-Some information that should be persistant, like health, is still stored in the edict structure, so
-it needs to be mirrored out to the game.client structure(s) before all the edicts are wiped.
-==================
-*/
-
-void SaveClientData (void)
-{
-	int		i;
-	edict_t	*ent;
-
-	for(i=0;i<game.maxclients;i++)
-	{
-		ent=&g_edicts[1+i];
-
-		if(!ent->inuse)
-			continue;
-
-		game.clients[i].playerinfo.pers.health=ent->health;
-		if (coop->value && game.clients[i].playerinfo.pers.health < 25)
-			game.clients[i].playerinfo.pers.health=25;
-		game.clients[i].playerinfo.pers.max_health=ent->max_health;
-
-		game.clients[i].playerinfo.pers.mission_num1 = ent->client->ps.mission_num1;
-		game.clients[i].playerinfo.pers.mission_num2 = ent->client->ps.mission_num2;
-
-		if(coop->value)
-			game.clients[i].playerinfo.pers.score=ent->client->resp.score;
-	}
-}
-
-/*
-==================
-FetchClientEntData
-==================
-*/
-
-void FetchClientEntData (edict_t *ent)
-{
-	ent->health=ent->client->playerinfo.pers.health;
-	if (coop->value && ent->health < 25)
-		ent->health = 25;
-	ent->max_health=ent->client->playerinfo.pers.max_health;
-
-	ent->client->ps.mission_num1 = ent->client->playerinfo.pers.mission_num1;
-	ent->client->ps.mission_num2 = ent->client->playerinfo.pers.mission_num2;
-
-	if(coop->value)
-		ent->client->resp.score=ent->client->playerinfo.pers.score;
 }
 
 // ************************************************************************************************
@@ -2074,7 +2097,8 @@ void GiveLevelItems(edict_t *player)
 // --------------------
 // ************************************************************************************************
 
-void InitClientPersistant(edict_t *player)
+void
+InitClientPersistant(edict_t *player)
 {
 	gclient_t *client;
 	gitem_t	*item;
@@ -2179,6 +2203,9 @@ void InitClientPersistant(edict_t *player)
 #endif // G_NOAMMO
 
 	client->playerinfo.pers.connected = true;
+
+	/* Default chasecam to off */
+	client->playerinfo.pers.chasetoggle = 0;
 }
 
 /*
@@ -2189,7 +2216,8 @@ Called when a player connects to a server or respawns in a deathmatch.
 ============
 */
 
-void PutClientInServer (edict_t *ent)
+void
+PutClientInServer(edict_t *ent)
 {
 	int					index;
 	vec3_t				spawn_origin, spawn_angles;
@@ -2232,7 +2260,7 @@ void PutClientInServer (edict_t *ent)
 		resp = client->resp;
 
 		memcpy (userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
-		InitClientPersistant (ent);
+		InitClientPersistant(ent);
 		ClientUserinfoChanged (ent, userinfo);
 	}
 	else if (coop->value)
@@ -2906,7 +2934,7 @@ ClientConnect(edict_t *ent, char *userinfo)
 
 		if (!ent->client->playerinfo.pers.weapon)
 		{
-			InitClientPersistant (ent);
+			InitClientPersistant(ent);
 
 			// This is the very frist time that this player has entered the game (be it single player,
 			// coop or deathmatch) so we want to do a complete reset of the player's model.
