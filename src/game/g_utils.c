@@ -31,13 +31,34 @@
 #include "common/h2rand.h"
 #include "header/g_physics.h"
 
-void G_ProjectSource (vec3_t point, vec3_t distance, vec3_t forward, vec3_t right, vec3_t result)
+#define MAXCHOICES 8
+
+static vec3_t VEC_UP = {0, -1, 0};
+static vec3_t MOVEDIR_UP = {0, 0, 1};
+static vec3_t VEC_DOWN = {0, -2, 0};
+static vec3_t MOVEDIR_DOWN = {0, 0, -1};
+
+void
+G_ProjectSource(vec3_t point, vec3_t distance, vec3_t forward,
+		vec3_t right, vec3_t result)
 {
 	result[0] = point[0] + forward[0] * distance[0] + right[0] * distance[1];
 	result[1] = point[1] + forward[1] * distance[0] + right[1] * distance[1];
-	result[2] = point[2] + forward[2] * distance[0] + right[2] * distance[1] + distance[2];
+	result[2] = point[2] + forward[2] * distance[0] + right[2] * distance[1] +
+				distance[2];
 }
 
+void
+G_ProjectSource2(vec3_t point, vec3_t distance, vec3_t forward,
+		vec3_t right, vec3_t up, vec3_t result)
+{
+	result[0] = point[0] + forward[0] * distance[0] + right[0] * distance[1] +
+				up[0] * distance[2];
+	result[1] = point[1] + forward[1] * distance[0] + right[1] * distance[1] +
+				up[1] * distance[2];
+	result[2] = point[2] + forward[2] * distance[0] + right[2] * distance[1] +
+				up[2] * distance[2];
+}
 
 void G_SetToFree(edict_t *self)
 {
@@ -69,39 +90,51 @@ void G_SetToFree(edict_t *self)
 }
 
 /*
-=============
-G_Find
-
-Searches all active entities for the next one that holds
-the matching string at fieldofs (use the FOFS() macro) in the structure.
-
-Searches beginning at the edict after from, or the beginning if NULL
-NULL will be returned if the end of the list is reached.
-
-=============
-*/
-edict_t *G_Find (edict_t *from, int fieldofs, const char *match)
+ * Searches all active entities for the next
+ * one that holds the matching string at fieldofs
+ * (use the FOFS() macro) in the structure.
+ *
+ * Searches beginning at the edict after from, or
+ * the beginning. If NULL, NULL will be returned
+ * if the end of the list is reached.
+ */
+edict_t *
+G_Find(edict_t *from, int fieldofs, const char *match)
 {
-	char	*s;
+	char *s;
 
-	// if we aren't trying to find anything, then exit.
-	if (match == NULL)
+	if (!match)
+	{
 		return NULL;
+	}
 
 	if (!from)
+	{
 		from = g_edicts;
+	}
 	else
+	{
 		from++;
+	}
 
-	for ( ; from < &g_edicts[globals.num_edicts] ; from++)
+	for ( ; from < &g_edicts[globals.num_edicts]; from++)
 	{
 		if (!from->inuse)
+		{
 			continue;
-		s = *(char **) ((byte *)from + fieldofs);
+		}
+
+		s = *(char **)((byte *)from + fieldofs);
+
 		if (!s)
+		{
 			continue;
+		}
+
 		if (!Q_stricmp(s, match))
+		{
 			return from;
+		}
 	}
 
 	return NULL;
@@ -203,158 +236,6 @@ edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mi
 	return(NULL);	// Never gets here.
 }
 
-#define NEW_FINDS (1)
-
-#if !NEW_FINDS
-/*
-=================
-findradius
-
-Returns entities that have origins within a spherical area
-
-findradius (origin, radius)
-=================
-*/
-edict_t *findradius (edict_t *from, vec3_t org, float rad)
-{
-	vec3_t	eorg;
-	int		j;
-
-	if (!from)
-		from = g_edicts;
-	else
-		from++;
-	for ( ; from < &g_edicts[globals.num_edicts]; from++)
-	{
-		if (!from->inuse)
-			continue;
-		if (from->solid == SOLID_NOT)
-			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
-		if (VectorLength(eorg) > rad)
-			continue;
-		return from;
-	}
-
-	return NULL;
-}
-
-// THis works like findradius, except it uses the bbox of an ent to indicate the area to check.
-edict_t *findinblocking(edict_t *from, edict_t *checkent)
-{
-	vec3_t	min, max;
-	int		j;
-	qboolean ok;
-
-	if (!from)
-		from = g_edicts;
-	else
-		from++;
-
-	VectorAdd(checkent->s.origin, checkent->mins, min);
-	VectorAdd(checkent->s.origin, checkent->maxs, max);
-	for ( ; from < &g_edicts[globals.num_edicts]; from++)
-	{
-		if (!from->inuse)
-			continue;
-		if (from->solid == SOLID_NOT)
-			continue;
-		if (from == checkent)
-			continue;
-		ok=true;
-		for (j=0 ; j<3 ; j++)
-		{
-			if (	from->s.origin[j] + from->mins[j] > max[j] ||
-					from->s.origin[j] + from->maxs[j] < min[j])
-			{	// Automatic failure.
-				ok=false;
-				break;
-			}
-		}
-		if (ok)
-			return from;
-	}
-
-	return NULL;
-}
-
-
-/*
-=================
-finddistance
-
-Returns entities that have origins within a spherical shell area
-
-finddistance (origin, mindist, maxdist)
-=================
-*/
-edict_t *finddistance (edict_t *from, vec3_t org, float mindist, float maxdist)
-{
-	vec3_t	eorg;
-	int		j;
-	float elen;
-
-	if (!from)
-		from = g_edicts;
-	else
-		from++;
-	for ( ; from < &g_edicts[globals.num_edicts]; from++)
-	{
-		if (!from->inuse)
-			continue;
-		if (from->solid == SOLID_NOT)
-			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
-		elen = VectorLength(eorg);
-		if (elen > maxdist)
-			continue;
-		if (elen < mindist)
-			continue;
-		return from;
-	}
-
-	return NULL;
-}
-
-// THis works like findradius, except it uses two absolute positions to define where to search.
-edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max)
-{
-	int		j;
-	qboolean ok;
-
-	if (!from)
-		from = g_edicts;
-	else
-		from++;
-
-	for ( ; from < &g_edicts[globals.num_edicts]; from++)
-	{
-		if (!from->inuse)
-			continue;
-		if (from->solid == SOLID_NOT)
-			continue;
-
-		ok=true;
-		for (j=0 ; j<3 ; j++)
-		{
-			if (	from->s.origin[j] + from->mins[j] > max[j] ||
-					from->s.origin[j] + from->maxs[j] < min[j])
-			{	// Automatic failure.
-				ok=false;
-				break;
-			}
-		}
-		if (ok)
-			return from;
-	}
-
-	return NULL;
-}
-
-#else
-
 // THis works like findradius, except it uses the bbox of an ent to indicate the area to check.
 edict_t *findinblocking(edict_t *from, edict_t *checkent)
 {
@@ -379,15 +260,11 @@ edict_t *findinblocking(edict_t *from, edict_t *checkent)
 }
 
 /*
-=================
-findradius
-
-Returns entities that have origins within a spherical area
-
-findradius (origin, radius)
-=================
-*/
-edict_t *findradius (edict_t *from, vec3_t org, float rad)
+ * Returns entities that have origins
+ * within a spherical area
+ */
+edict_t *
+findradius(edict_t *from, vec3_t org, float rad)
 {
 	static float max2;
 	static vec3_t min;
@@ -407,20 +284,88 @@ edict_t *findradius (edict_t *from, vec3_t org, float rad)
 			max[j]+=rad;
 		}
 	}
+
 	while (1)
 	{
-		from=findinbounds(from,min,max);
+		from = findinbounds(from,min,max);
 		if (!from)
+		{
 			return 0;
+		}
+
 		if (!from->inuse)
+		{
 			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
+		}
+
+		for (j = 0; j < 3; j++)
+		{
+			eorg[j] = org[j] - (from->s.origin[j] +
+					   (from->mins[j] + from->maxs[j]) * 0.5);
+		}
+
 		elen = DotProduct(eorg,eorg);
 		if (elen > max2)
+		{
 			continue;
+		}
+
 		return from;
 	}
+
+	return NULL;
+}
+
+/*
+ * Returns entities that have origins within a spherical area
+ */
+edict_t *
+findradius2(edict_t *from, vec3_t org, float rad)
+{
+	/* rad must be positive */
+	vec3_t eorg;
+	int j;
+
+	if (!from)
+	{
+		from = g_edicts;
+	}
+	else
+	{
+		from++;
+	}
+
+	for ( ; from < &g_edicts[globals.num_edicts]; from++)
+	{
+		if (!from->inuse)
+		{
+			continue;
+		}
+
+		if (from->solid == SOLID_NOT)
+		{
+			continue;
+		}
+
+		if (!from->takedamage)
+		{
+			continue;
+		}
+
+		for (j = 0; j < 3; j++)
+		{
+			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j]) * 0.5);
+		}
+
+		if (VectorLength(eorg) > rad)
+		{
+			continue;
+		}
+
+		return from;
+	}
+
+	return NULL;
 }
 
 /*
@@ -498,101 +443,108 @@ edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max)
 	}
 	return NULL;
 }
-#endif
 
 /*
-=============
-G_PickTarget
-
-Searches all active entities for the next one that holds
-the matching string at fieldofs (use the FOFS() macro) in the structure.
-
-Searches beginning at the edict after from, or the beginning if NULL
-NULL will be returned if the end of the list is reached.
-
-=============
-*/
-#define MAXCHOICES	8
-
-edict_t *G_PickTarget (char *targetname)
+ * Searches all active entities for
+ * the next one that holds the matching
+ * string at fieldofs (use the FOFS() macro)
+ * in the structure.
+ *
+ * Searches beginning at the edict after from,
+ * or the beginning. If NULL, NULL will be
+ * returned if the end of the list is reached.
+ */
+edict_t *
+G_PickTarget(char *targetname)
 {
-	edict_t	*ent = NULL;
-	int		num_choices = 0;
-	edict_t	*choice[MAXCHOICES];
+	edict_t *ent = NULL;
+	int num_choices = 0;
+	edict_t *choice[MAXCHOICES];
 
 	if (!targetname)
 	{
-#ifdef _DEVEL
 		gi.dprintf("G_PickTarget called with NULL targetname\n");
-#endif
 		return NULL;
 	}
 
-	while(1)
+	while (1)
 	{
-		ent = G_Find (ent, FOFS(targetname), targetname);
+		ent = G_Find(ent, FOFS(targetname), targetname);
+
 		if (!ent)
+		{
 			break;
+		}
+
 		choice[num_choices++] = ent;
+
 		if (num_choices == MAXCHOICES)
+		{
 			break;
+		}
 	}
 
 	if (!num_choices)
 	{
-#ifdef _DEVEL
 		gi.dprintf("G_PickTarget: target %s not found\n", targetname);
-#endif
 		return NULL;
 	}
 
-	return choice[irand(0, num_choices - 1)];
+	return choice[randk() % num_choices];
 }
 
-
-
-void Think_Delay (edict_t *ent)
+void
+Think_Delay(edict_t *ent)
 {
-	G_UseTargets (ent, ent->activator);
-	G_FreeEdict (ent);
+	if (!ent)
+	{
+		return;
+	}
+
+	G_UseTargets(ent, ent->activator);
+	G_FreeEdict(ent);
 }
 
 /*
-==============================
-G_UseTargets
-
-the global "activator" should be set to the entity that initiated the firing.
-
-If self.delay is set, a DelayedUse entity will be created that will actually
-do the SUB_UseTargets after that many seconds have passed.
-
-Centerprints any self.message to the activator.
-
-Search for (string)targetname in all entities that
-match (string)self.target and call their .use function
-
-==============================
-*/
-void G_UseTargets (edict_t *ent, edict_t *activator)
+ * The global "activator" should be set to
+ * the entity that initiated the firing.
+ *
+ * If self.delay is set, a DelayedUse entity
+ * will be created that will actually do the
+ * SUB_UseTargets after that many seconds have passed.
+ *
+ * Centerprints any self.message to the activator.
+ *
+ * Search for (string)targetname in all entities that
+ * match (string)self.target and call their .use function
+ */
+void
+G_UseTargets(edict_t *ent, edict_t *activator)
 {
-	edict_t		*t;
+	edict_t *t;
 
-//
-// check for a delay
-//
+
+	if (!ent)
+	{
+		return;
+	}
+
+	/* check for a delay */
 	if (ent->delay)
 	{
-	// create a temp object to fire at a later time
+		/* create a temp object to fire at a later time */
 		t = G_Spawn();
 		t->movetype = PHYSICSTYPE_NONE;
 		t->classname = "DelayedUse";
 		t->nextthink = level.time + ent->delay;
 		t->think = Think_Delay;
 		t->activator = activator;
-#ifdef _DEVEL
+
 		if (!activator)
-			gi.dprintf ("Think_Delay with no activator\n");
-#endif
+		{
+			gi.dprintf("Think_Delay with no activator\n");
+		}
+
 		t->message = ent->message;
 		t->text_msg = ent->text_msg;
 		t->target = ent->target;
@@ -600,73 +552,68 @@ void G_UseTargets (edict_t *ent, edict_t *activator)
 		return;
 	}
 
-
-	//
-	// print the message
-	//
-	if ((ent->message) && !(activator->svflags & SVF_MONSTER))
+	/* print the message */
+	if (activator && (ent->message) && !(activator->svflags & SVF_MONSTER))
 	{
 		G_LevelMsgCenterPrintf(activator, (short)atoi(ent->message));
 		if (ent->noise_index)
 		{
-			gi.sound (activator, CHAN_AUTO, ent->noise_index, 1, ATTN_NORM, 0);
+			gi.sound(activator, CHAN_AUTO, ent->noise_index, 1, ATTN_NORM, 0);
 		}
 	}
 
-	if ((ent->text_msg) && !(activator->svflags & SVF_MONSTER))
+	if (activator && (ent->text_msg) && !(activator->svflags & SVF_MONSTER))
 	{
 		gi.centerprintf (activator, "%s", ent->text_msg);
 	}
 
-	//
-	// kill killtargets
-	//
+	/* kill killtargets */
 	if (ent->killtarget)
 	{
 		t = NULL;
-		while ((t = G_Find (t, FOFS(targetname), ent->killtarget)))
+
+		while ((t = G_Find(t, FOFS(targetname), ent->killtarget)))
 		{
 			G_QPostMessage(t,MSG_DEATH,PRI_DIRECTIVE,"eeei",t,ent,activator,100000);
 
 			if (!ent->inuse)
 			{
-#ifdef _DEVEL
 				gi.dprintf("entity was removed while using killtargets\n");
-#endif
 				return;
 			}
 		}
 	}
 
-//
-// fire targets
-//
+	/* fire targets */
 	if (ent->target)
 	{
 		t = NULL;
-		while ((t = G_Find (t, FOFS(targetname), ent->target)))
+
+		while ((t = G_Find(t, FOFS(targetname), ent->target)))
 		{
-			// doors fire area portals in a specific way
+			/* doors fire area portals in a specific way */
 			if (!Q_stricmp(t->classname, "func_areaportal") &&
-				(!Q_stricmp(ent->classname, "func_door") || !Q_stricmp(ent->classname, "func_door_rotating")))
+				(!Q_stricmp(ent->classname, "func_door") ||
+				 !Q_stricmp(ent->classname, "func_door_rotating")))
+			{
 				continue;
+			}
 
 			if (t == ent)
 			{
-#ifdef _DEVEL
 				gi.dprintf ("WARNING: %s used itself.\n", t->classname);
-#endif
 			}
 			else
 			{
 				if (t->use)
-					t->use (t, ent, activator);
+				{
+					t->use(t, ent, activator);
+				}
 			}
+
 			if (!ent->inuse)
 			{
-#ifdef _DEVEL
 				gi.dprintf("entity was removed while using targets\n");
-#endif
 				return;
 			}
 		}
@@ -699,33 +646,61 @@ qboolean PossessCorrectItem(edict_t *ent, gitem_t *item)
 }
 
 /*
-=============
-VectorToString
-
-This is just a convenience function
-for printing vectors
-=============
-*/
-char	*vtos (vec3_t v)
+ * This is just a convenience function
+ * for making temporary vectors for function calls
+ */
+float *
+tv(float x, float y, float z)
 {
-	static	int		index;
-	static	char	str[8][32];
-	char	*s;
+	static int index;
+	static vec3_t vecs[8];
+	float *v;
 
-	// use an array so that multiple vtos won't collide
+	/* use an array so that multiple
+	   tempvectors won't collide
+	   for a while */
+	v = vecs[index];
+	index = (index + 1) & 7;
+
+	v[0] = x;
+	v[1] = y;
+	v[2] = z;
+
+	return v;
+}
+
+/*
+ * This is just a convenience function
+ * for printing vectors
+ */
+char *
+vtos(vec3_t v)
+{
+	static int index;
+	static char str[8][32];
+	char *s;
+
+	/* use an array so that multiple vtos won't collide */
 	s = str[index];
-	index = (index + 1)&7;
+	index = (index + 1) & 7;
 
-	Com_sprintf (s, 32, "(%i %i %i)", (int)v[0], (int)v[1], (int)v[2]);
+	Com_sprintf(s, 32, "(%i %i %i)", (int)v[0], (int)v[1], (int)v[2]);
 
 	return s;
 }
 
-
-vec3_t VEC_UP		= {0.0, -1.0, 0.0};
-vec3_t MOVEDIR_UP	= {0.0, 0.0, 1.0};
-vec3_t VEC_DOWN		= {0.0, -2.0, 0.0};
-vec3_t MOVEDIR_DOWN	= {0.0, 0.0, -1.0};
+void
+get_normal_vector(const cplane_t *p, vec3_t normal)
+{
+	if (p)
+	{
+		VectorCopy(p->normal, normal);
+	}
+	else
+	{
+		VectorCopy(vec3_origin, normal);
+	}
+}
 
 void
 G_SetMovedir(vec3_t angles, vec3_t movedir)
@@ -746,35 +721,194 @@ G_SetMovedir(vec3_t angles, vec3_t movedir)
 	VectorClear(angles);
 }
 
-
-float vectoyaw (vec3_t vec)
+float
+vectoyaw(vec3_t vec)
 {
-	float	yaw;
+	float yaw;
 
 	if (vec[YAW] == 0 && vec[PITCH] == 0)
+	{
 		yaw = 0;
+	}
 	else
 	{
 		yaw = (float) (atan2(vec[YAW], vec[PITCH]) * (180 / M_PI));
 		if (yaw < 0)
+		{
 			yaw += 360;
+		}
 	}
 
 	return yaw;
 }
 
-char *G_CopyString (char *in)
+float
+vectoyaw2(vec3_t vec)
 {
-	char	*out;
+	float yaw;
 
-	out = (char *)gi.TagMalloc (strlen(in)+1, TAG_LEVEL);
-	strcpy (out, in);
+	if (vec[PITCH] == 0)
+	{
+		if (vec[YAW] == 0)
+		{
+			yaw = 0;
+		}
+		else if (vec[YAW] > 0)
+		{
+			yaw = 90;
+		}
+		else
+		{
+			yaw = 270;
+		}
+	}
+	else
+	{
+		yaw = (atan2(vec[YAW], vec[PITCH]) * 180 / M_PI);
+
+		if (yaw < 0)
+		{
+			yaw += 360;
+		}
+	}
+
+	return yaw;
+}
+
+void
+vectoangles(vec3_t value1, vec3_t angles)
+{
+	float forward;
+	float yaw, pitch;
+
+	if ((value1[1] == 0) && (value1[0] == 0))
+	{
+		yaw = 0;
+
+		if (value1[2] > 0)
+		{
+			pitch = 90;
+		}
+		else
+		{
+			pitch = 270;
+		}
+	}
+	else
+	{
+		if (value1[0])
+		{
+			yaw = (int)(atan2(value1[1], value1[0]) * 180 / M_PI);
+		}
+		else if (value1[1] > 0)
+		{
+			yaw = 90;
+		}
+		else
+		{
+			yaw = -90;
+		}
+
+		if (yaw < 0)
+		{
+			yaw += 360;
+		}
+
+		forward = sqrt(value1[0] * value1[0] + value1[1] * value1[1]);
+		pitch = (int)(atan2(value1[2], forward) * 180 / M_PI);
+
+		if (pitch < 0)
+		{
+			pitch += 360;
+		}
+	}
+
+	angles[PITCH] = -pitch;
+	angles[YAW] = yaw;
+	angles[ROLL] = 0;
+}
+
+void
+vectoangles2(vec3_t value1, vec3_t angles)
+{
+	float forward;
+	float yaw, pitch;
+
+	if ((value1[1] == 0) && (value1[0] == 0))
+	{
+		yaw = 0;
+
+		if (value1[2] > 0)
+		{
+			pitch = 90;
+		}
+		else
+		{
+			pitch = 270;
+		}
+	}
+	else
+	{
+		if (value1[0])
+		{
+			yaw = (atan2(value1[1], value1[0]) * 180 / M_PI);
+		}
+		else if (value1[1] > 0)
+		{
+			yaw = 90;
+		}
+		else
+		{
+			yaw = 270;
+		}
+
+		if (yaw < 0)
+		{
+			yaw += 360;
+		}
+
+		forward = sqrt(value1[0] * value1[0] + value1[1] * value1[1]);
+		pitch = (atan2(value1[2], forward) * 180 / M_PI);
+
+		if (pitch < 0)
+		{
+			pitch += 360;
+		}
+	}
+
+	angles[PITCH] = -pitch;
+	angles[YAW] = yaw;
+	angles[ROLL] = 0;
+}
+
+char *
+G_CopyString(char *in)
+{
+	char *out;
+
+	if (!in)
+	{
+		return NULL;
+	}
+
+	out = gi.TagMalloc(strlen(in) + 1, TAG_LEVEL);
+	strcpy(out, in);
 	return out;
 }
 
 
 void G_InitEdict (edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->nextthink)
+	{
+		self->nextthink = 0;
+	}
+
 	self->s.clientEffects.buf = NULL;
 	self->s.clientEffects.bufSize = 0;
 	self->s.clientEffects.freeBlock = 0;
@@ -856,9 +990,7 @@ void G_FreeEdict(edict_t *self)
 
 	if ((self - g_edicts) <= (maxclients->value + BODY_QUEUE_SIZE))
 	{
-#ifdef _DEVEL
 		gi.dprintf("tried to free special edict\n");
-#endif
 		return;
 	}
 
@@ -910,88 +1042,104 @@ void G_FreeEdict(edict_t *self)
 	self->svflags = SVF_NOCLIENT;	// so it will get removed from the client properly
 }
 
-
-/*
-============
-G_TouchTriggers
-
-============
-*/
-void	G_TouchTriggers (edict_t *ent)
+void
+G_TouchTriggers(edict_t *ent)
 {
-	int			i, num;
-	edict_t		*touch[MAX_EDICTS], *hit;
+	int i, num;
+	edict_t *touch[MAX_EDICTS], *hit;
 
-	// dead things don't activate triggers!
-	if ((ent->client || (ent->svflags & SVF_MONSTER)) && (ent->health <= 0))
+	if (!ent)
+	{
 		return;
+	}
 
-	num = gi.BoxEdicts (ent->absmin, ent->absmax, touch
-		, MAX_EDICTS, AREA_TRIGGERS);
+	/* dead things don't activate triggers! */
+	if ((ent->client || (ent->svflags & SVF_MONSTER)) && (ent->health <= 0))
+	{
+		return;
+	}
 
-	// be careful, it is possible to have an entity in this
-	// list removed before we get to it (killtriggered)
-	for (i=0 ; i<num ; i++)
+	num = gi.BoxEdicts(ent->absmin, ent->absmax, touch,
+			MAX_EDICTS, AREA_TRIGGERS);
+
+	/* be careful, it is possible to have an entity in this
+	   list removed before we get to it (killtriggered) */
+	for (i = 0; i < num; i++)
 	{
 		hit = touch[i];
+
 		if (!hit->inuse)
+		{
 			continue;
+		}
+
 		if (!hit->touch)
+		{
 			continue;
-		hit->touch (hit, ent, NULL, NULL);
+		}
+
+		hit->touch(hit, ent, NULL, NULL);
 	}
 }
 
 /*
-============
-G_TouchSolids
-
-Call after linking a new trigger in during gameplay
-to force all entities it covers to immediately touch it
-============
-*/
-void	G_TouchSolids (edict_t *ent)
+ * Call after linking a new trigger
+ * in during gameplay to force all
+ * entities it covers to immediately
+ * touch it
+ */
+void
+G_TouchSolids(edict_t *ent)
 {
-	int			i, num;
-	edict_t		*touch[MAX_EDICTS], *hit;
+	int i, num;
+	edict_t *touch[MAX_EDICTS], *hit;
 
-	num = gi.BoxEdicts (ent->absmin, ent->absmax, touch
-		, MAX_EDICTS, AREA_SOLID);
+	if (!ent)
+	{
+		return;
+	}
 
-	// be careful, it is possible to have an entity in this
-	// list removed before we get to it (killtriggered)
-	for (i=0 ; i<num ; i++)
+	num = gi.BoxEdicts(ent->absmin, ent->absmax, touch,
+			MAX_EDICTS, AREA_SOLID);
+
+	/* be careful, it is possible to have an entity in this
+	   list removed before we get to it (killtriggered) */
+	for (i = 0; i < num; i++)
 	{
 		hit = touch[i];
+
 		if (!hit->inuse)
+		{
 			continue;
+		}
+
 		if (ent->touch)
-			ent->touch (hit, ent, NULL, NULL);
+		{
+			ent->touch(hit, ent, NULL, NULL);
+		}
+
 		if (!ent->inuse)
+		{
 			break;
+		}
 	}
 }
 
-
-
+/*
+ * ==============================================================================
+ *
+ * Kill box
+ *
+ * ==============================================================================
+ */
 
 /*
-==============================================================================
-
-Kill box
-
-==============================================================================
-*/
-
-/*
-=================
-KillBox
-
-Kills all entities that would touch the proposed new positioning
-of ent.  Ent should be unlinked before calling this!
-=================
-*/
-qboolean KillBox (edict_t *ent)
+ * Kills all entities that would touch the
+ * proposed new positioning of ent. Ent s
+ * hould be unlinked before calling this!
+ */
+qboolean
+KillBox(edict_t *ent)
 {
 	edict_t *current=NULL;
 	vec3_t	mins, maxs;
