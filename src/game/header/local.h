@@ -1125,10 +1125,11 @@ struct gclient_s
 	float				next_drown_time;
 	int					old_waterlevel;
 
-	// Client can respawn when time > respawn_time.
+	float respawn_time;             /* can respawn when time > this */
+	int complete_reset;
 
-	float				respawn_time;
-	int					complete_reset;
+	edict_t *chase_target;          /* player we are chasing */
+	qboolean update_chase;          /* need to update chase info? */
 
 	//  Remote and walkby camera stuff.
 

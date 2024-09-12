@@ -1845,7 +1845,7 @@ respawn(edict_t *self)
 		{
 			// We're not set as a chicken, so duplicate ourselves.
 
-			CopyToBodyQue (self);
+			CopyToBodyQue(self);
 		}
 
 		// Create a persistant FX_REMOVE_EFFECTS effect - this is a special hack. If we just created
@@ -1867,7 +1867,7 @@ respawn(edict_t *self)
 			self->client->complete_reset=0;
 		}
 
-		PutClientInServer (self);
+		PutClientInServer(self);
 
 		// Do the teleport sound.
 
@@ -2030,7 +2030,8 @@ void SpawnInitialPlayerEffects(edict_t *ent)
 // player (to support players joining a coop game midway through).
 // ************************************************************************************************
 
-void GiveLevelItems(edict_t *player)
+static void
+GiveLevelItems(edict_t *player)
 {
 	gclient_t	*client;
 	gitem_t		*item,*weapon;
@@ -2316,35 +2317,40 @@ InitClientPersistant(edict_t *player)
 	client->playerinfo.pers.chasetoggle = 0;
 }
 
+
+/* ============================================================== */
+
 /*
-===========
-PutClientInServer
-
-Called when a player connects to a server or respawns in a deathmatch.
-============
-*/
-
+ * Called when a player connects to
+ * a server or respawns in a deathmatch.
+ */
 void
 PutClientInServer(edict_t *ent)
 {
-	int					index;
-	vec3_t				spawn_origin, spawn_angles;
-	gclient_t			*client;
-	int					i;
-	client_persistant_t	saved;
-	client_respawn_t	resp;
+	int index;
+	vec3_t spawn_origin, spawn_angles;
+	gclient_t *client;
+	int i, chasetoggle;
+	client_persistant_t saved;
+	client_respawn_t resp;
 	int					complete_reset;
 	int					plaguelevel;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	// ********************************************************************************************
 	// Find a spawn point. Do it before setting health back up, so farthest ranging doesn't count
 	// this client.
 	// ********************************************************************************************
 
-	SelectSpawnPoint (ent, spawn_origin, spawn_angles);
+	SelectSpawnPoint(ent, spawn_origin, spawn_angles);
 
-	index = ent-g_edicts-1;
+	index = ent - g_edicts - 1;
 	client = ent->client;
+	chasetoggle = client->playerinfo.pers.chasetoggle;
 
 	// The player's starting plague skin is determined by the worldspawn's s.skinnum.
 	if (!deathmatch->value)
@@ -2357,41 +2363,37 @@ PutClientInServer(edict_t *ent)
 			client->playerinfo.plaguelevel = 0;
 	}
 
-	// ********************************************************************************************
-	// Deathmatch wipes most client data every spawn.
-	// ********************************************************************************************
-
+	/* deathmatch wipes most client data every spawn */
 	if (deathmatch->value)
 	{
 		char userinfo[MAX_INFO_STRING];
 
 		resp = client->resp;
-
-		memcpy (userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
+		memcpy(userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
 		InitClientPersistant(ent);
-		ClientUserinfoChanged (ent, userinfo);
+		ClientUserinfoChanged(ent, userinfo);
 	}
 	else if (coop->value)
 	{
-		char	userinfo[MAX_INFO_STRING];
+		char userinfo[MAX_INFO_STRING];
 
 		resp = client->resp;
+		memcpy(userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
 
-		memcpy (userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
-
-		ClientUserinfoChanged (ent, userinfo);
+		ClientUserinfoChanged(ent, userinfo);
 
 		if (resp.score > client->playerinfo.pers.score)
+		{
 			client->playerinfo.pers.score = resp.score;
+		}
 	}
 	else
 	{
-		char	userinfo[MAX_INFO_STRING];
-		memcpy (userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
+		char userinfo[MAX_INFO_STRING];
 
+		memset(&resp, 0, sizeof(resp));
+		memcpy(userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
 		ClientUserinfoChanged (ent, userinfo);
-
-		memset (&resp, 0, sizeof(resp));
 	}
 
 
@@ -2399,13 +2401,13 @@ PutClientInServer(edict_t *ent)
 
 	if(!deathmatch->value)
 	{
-		complete_reset=client->complete_reset;
+		complete_reset = client->complete_reset;
 	}
 	else
 	{
 		// Deathmatch always means a complete reset of the player's model.
 
-		complete_reset=1;
+		complete_reset = 1;
 	}
 
 	// ********************************************************************************************
@@ -2425,15 +2427,12 @@ PutClientInServer(edict_t *ent)
 		InitClientPersistant(ent);
 
 	client->resp = resp;
+	client->playerinfo.pers.chasetoggle = chasetoggle;
 
-	// Rsestore data that is persistant accross level changes.
+	/* copy some data from the client to the entity */
+	FetchClientEntData(ent);
 
-	FetchClientEntData (ent);
-
-	// ********************************************************************************************
-	// Initialize the player's edict_t.
-	// ********************************************************************************************
-
+	/* clear entity values */
 	ent->groundentity = NULL;
 	ent->client = &game.clients[index];
 	ent->s.clientnum = index;
@@ -2469,28 +2468,31 @@ PutClientInServer(edict_t *ent)
 	ent->fire_damage_time = 0;
 	ent->fire_timestamp = 0;
 
-	ent->model = "players/male/tris.fm";
-
+	ent->model = "players/male/tris.md2";
 	ent->pain = player_pain;
 	ent->die = player_die;
 	ent->waterlevel = 0;
 	ent->watertype = 0;
 	ent->flags &= ~FL_NO_KNOCKBACK;
 	ent->svflags &= ~SVF_DEADMONSTER;
+	/* Third person view */
+	ent->svflags &= ~SVF_NOCLIENT;
+	/* Turn off prediction */
+	ent->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
 
-	VectorCopy (mins, ent->mins);
-	VectorCopy (maxs, ent->maxs);
-	VectorCopy (mins, ent->intentMins);
-	VectorCopy (maxs, ent->intentMaxs);
-	VectorClear (ent->velocity);
+	VectorCopy(mins, ent->mins);
+	VectorCopy(maxs, ent->maxs);
+	VectorCopy(mins, ent->intentMins);
+	VectorCopy(maxs, ent->intentMaxs);
+	VectorClear(ent->velocity);
 
 	// ********************************************************************************************
 	// Initialize the player's gclient_t and playerstate_t.
 	// ********************************************************************************************
 
-	client->ps.pmove.origin[0] = spawn_origin[0]*8;
-	client->ps.pmove.origin[1] = spawn_origin[1]*8;
-	client->ps.pmove.origin[2] = spawn_origin[2]*8;
+	client->ps.pmove.origin[0] = spawn_origin[0] * 8;
+	client->ps.pmove.origin[1] = spawn_origin[1] * 8;
+	client->ps.pmove.origin[2] = spawn_origin[2] * 8;
 
 	client->ps.fov = atoi(Info_ValueForKey(client->playerinfo.pers.userinfo, "fov"));
 
@@ -2501,10 +2503,11 @@ PutClientInServer(edict_t *ent)
 
 	VectorClear(client->ps.offsetangles);
 
-	// Set the delta angles.
-
+	/* set the delta angles. */
 	for (i=0 ; i<3 ; i++)
+	{
 		client->ps.pmove.delta_angles[i] = ANGLE2SHORT(spawn_angles[i] - client->resp.cmd_angles[i]);
+	}
 
 	// Reset the camera delta angles.
 
@@ -2534,12 +2537,32 @@ PutClientInServer(edict_t *ent)
 	ent->s.angles[PITCH] = 0;
 	ent->s.angles[YAW] = spawn_angles[YAW];
 	ent->s.angles[ROLL] = 0;
-	VectorCopy (ent->s.angles, client->ps.viewangles);
-	VectorCopy (ent->s.angles, client->v_angle);
+	VectorCopy(ent->s.angles, client->ps.viewangles);
+	VectorCopy(ent->s.angles, client->v_angle);
 
-	if(!KillBox(ent))
+
+	/* spawn a spectator */
+	if (client->playerinfo.pers.spectator)
 	{
-		// could't spawn in?
+		client->chase_target = NULL;
+
+		client->resp.spectator = true;
+
+		ent->movetype = MOVETYPE_NOCLIP;
+		ent->solid = SOLID_NOT;
+		ent->svflags |= SVF_NOCLIENT;
+		ent->client->ps.gunindex = 0;
+		gi.linkentity(ent);
+		return;
+	}
+	else
+	{
+		client->resp.spectator = false;
+	}
+
+	if (!KillBox(ent))
+	{
+		/* could't spawn in? */
 	}
 
 	ent->s.effects=(EF_CAMERA_NO_CLIP|EF_SWAPFRAME|EF_JOINTED|EF_PLAYER);
@@ -2550,7 +2573,14 @@ PutClientInServer(edict_t *ent)
 
 	// Link us into the physics system.
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
+
+	ent->client->chasetoggle = 0;
+	/* If chasetoggle set then turn on (delayed start of 5 frames - 0.5s) */
+	if (ent->client->playerinfo.pers.chasetoggle && !ent->client->chasetoggle)
+	{
+		ent->client->delayedstart = 5;
+	}
 
 	// ********************************************************************************************
 	// Initialize the player's playerinfo_t.
@@ -2624,30 +2654,32 @@ PutClientInServer(edict_t *ent)
 InitClientResp
 =====================
 */
-
-void InitClientResp (gclient_t *client)
+void
+InitClientResp(gclient_t *client)
 {
-	memset (&client->resp, 0, sizeof(client->resp));
+	memset(&client->resp, 0, sizeof(client->resp));
 	client->resp.enterframe = level.framenum;
 	client->resp.coop_respawn = client->playerinfo.pers;
 }
 
 /*
-=====================
-ClientBeginDeathmatch
-
-A client has just connected to the server in deathmatch mode, so clear everything out before starting them.
-=====================
-*/
-void ClientBeginDeathmatch (edict_t *ent)
+ * A client has just connected to the server in
+ * deathmatch mode, so clear everything out before
+ * starting them.
+ */
+void
+ClientBeginDeathmatch(edict_t *ent)
 {
-	G_InitEdict (ent);
+	if (!ent)
+	{
+		return;
+	}
 
-	InitClientResp (ent->client);
+	G_InitEdict(ent);
+	InitClientResp(ent->client);
 
-	// Locate ent at a spawn point.
-
-	PutClientInServer (ent);
+	/* locate ent at a spawn point */
+	PutClientInServer(ent);
 
 	// Do the teleport sound and client effect and announce the player's entry into the
 	// level.
@@ -2656,44 +2688,45 @@ void ClientBeginDeathmatch (edict_t *ent)
 	gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 	G_BroadcastObituary(PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 
-	// Make sure all view stuff is valid.
-
+	/* make sure all view stuff is valid */
 	ClientEndServerFrame(ent);
 }
 
 /*
-===========
-ClientBegin
-
-Called when a client has finished connecting, and is ready to be placed into the game. This will
-happen every level load.
-============
-*/
+ * called when a client has finished connecting, and is ready
+ * to be placed into the game.  This will happen every level load.
+ */
 void
 ClientBegin(edict_t *ent)
 {
-	int	i;
+	int i;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	ent->client = game.clients + (ent - g_edicts - 1);
 
 	if (deathmatch->value)
 	{
-		ClientBeginDeathmatch (ent);
-
+		ClientBeginDeathmatch(ent);
 		return;
 	}
 
-	// If there is already a body waiting for us (a loadgame), just take it, otherwise spawn one
-	// from scratch.
-
-	if (ent->inuse)
+	/* if there is already a body waiting for us (a loadgame),
+	   just take it, otherwise spawn one from scratch */
+	if (ent->inuse == true)
 	{
-		// The client has cleared the client side cl.inputangles upon connecting to the server, which
-		// is different from the state when the game is saved, so we need to compensate with
-		// delta_angles.
-
-		for(i=0;i<3;i++)
-			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->v_angle[i]);
+		/* the client has cleared the client side viewangles upon
+		   connecting to the server, which is different than the
+		   state when the game is saved, so we need to compensate
+		   with deltaangles */
+		for (i = 0; i < 3; i++)
+		{
+			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(
+					ent->client->v_angle[i]);
+		}
 
 		// The client has cleared the client side cl.viewangles upon connecting to the server, which
 		// is different from the state when the game is saved, so we need to compensate with
@@ -2712,28 +2745,26 @@ ClientBegin(edict_t *ent)
 	}
 	else
 	{
-		// A spawn point will completely reinitialize the entity except for the persistant data
-		// that was initialized at ClientConnect() time.
-
-		G_InitEdict (ent);
+		/* a spawn point will completely reinitialize the entity
+		   except for the persistant data that was initialized at
+		   ClientConnect() time */
+		G_InitEdict(ent);
 		ent->classname = "player";
-		InitClientResp (ent->client);
-		PutClientInServer (ent);
+		InitClientResp(ent->client);
+		PutClientInServer(ent);
 
 		// All resets should be partial, until ClientConnect() gets called again for a new game,
 		// respawn() occurs (which will do the correct reset type).
-
-		ent->client->complete_reset=0;
+		ent->client->complete_reset = 0;
 	}
 
-	if(level.intermissiontime)
+	if (level.intermissiontime)
 	{
 		MoveClientToIntermission(ent);
 	}
 	else
 	{
-		// Send effect if in a multiplayer game.
-
+		/* send effect if in a multiplayer game */
 		if (game.maxclients > 1)
 		{
 			// Do the teleport sound and client effect and announce the player's entry into the
@@ -2759,10 +2790,12 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 {
 	char *s, skin[MAX_QPATH], filename[MAX_QPATH];
 	int playernum;
-	qboolean found=false;
+	qboolean found = false;
 
-	assert(ent->client);
-//	assert(ent->client->playerinfo);
+	if (!ent || !userinfo)
+	{
+		return;
+	}
 
 	/* check for malformed or illegal info strings */
 	if (!Info_Validate(userinfo))
@@ -2772,13 +2805,25 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 
 	/* set name */
 	s = Info_ValueForKey(userinfo, "name");
-	strncpy(ent->client->playerinfo.pers.netname, s, sizeof(ent->client->playerinfo.pers.netname)-1);
+	Q_strlcpy(ent->client->playerinfo.pers.netname, s, sizeof(ent->client->playerinfo.pers.netname)-1);
 
-	// Set skin.
+	/* set spectator */
+	s = Info_ValueForKey(userinfo, "spectator");
 
-	s = Info_ValueForKey (userinfo, "skin");
+	/* spectators are only supported in deathmatch */
+	if (deathmatch->value && *s && strcmp(s, "0"))
+	{
+		ent->client->playerinfo.pers.spectator = true;
+	}
+	else
+	{
+		ent->client->playerinfo.pers.spectator = false;
+	}
 
-	playernum = ent-g_edicts-1;
+	/* set skin */
+	s = Info_ValueForKey(userinfo, "skin");
+
+	playernum = ent - g_edicts - 1;
 
 	// Please note that this function became very long with the various limitations of coop and single-play skins...
 	if (deathmatch->value)
@@ -3015,30 +3060,76 @@ ClientConnect(edict_t *ent, char *userinfo)
 {
 	char *value;
 
+	if (!ent || !userinfo)
+	{
+		return false;
+	}
+
 	/* check to see if they are on the banned IP list */
-	value = Info_ValueForKey (userinfo, "ip");
+	value = Info_ValueForKey(userinfo, "ip");
+
 	if (SV_FilterPacket(value))
+	{
+		Info_SetValueForKey(userinfo, "rejmsg", "Banned.");
 		return false;
+	}
 
-	// Check for a password.
+	/* check for a spectator */
+	value = Info_ValueForKey(userinfo, "spectator");
 
-	value = Info_ValueForKey (userinfo, "password");
+	if (deathmatch->value && *value && strcmp(value, "0"))
+	{
+		int i, numspec;
 
-	if (strcmp(password->string, value) != 0)
-		return false;
+		if (*spectator_password->string &&
+			strcmp(spectator_password->string, "none") &&
+			strcmp(spectator_password->string, value))
+		{
+			Info_SetValueForKey(userinfo, "rejmsg",
+					"Spectator password required or incorrect.");
+			return false;
+		}
 
-	// Ok, they can connect.
+		/* count spectators */
+		for (i = numspec = 0; i < maxclients->value; i++)
+		{
+			if (g_edicts[i + 1].inuse && g_edicts[i + 1].client->playerinfo.pers.spectator)
+			{
+				numspec++;
+			}
+		}
 
+		if (numspec >= maxspectators->value)
+		{
+			Info_SetValueForKey(userinfo, "rejmsg",
+					"Server spectator limit is full.");
+			return false;
+		}
+	}
+	else
+	{
+		/* check for a password */
+		value = Info_ValueForKey(userinfo, "password");
+
+		if (*password->string && strcmp(password->string, "none") &&
+			strcmp(password->string, value))
+		{
+			Info_SetValueForKey(userinfo, "rejmsg",
+					"Password required or incorrect.");
+			return false;
+		}
+	}
+
+	/* they can connect */
 	ent->client = game.clients + (ent - g_edicts - 1);
 
-	// If there isn't already a body waiting for us (a loadgame), spawn one from scratch. otherwise,
-	// just take what's there already.
-
+	/* if there is already a body waiting for us (a loadgame),
+	   just take it, otherwise spawn one from scratch */
 	if (ent->inuse == false)
 	{
 		// Clear the respawning variables.
 
-		InitClientResp (ent->client);
+		InitClientResp(ent->client);
 
 		if (!ent->client->playerinfo.pers.weapon)
 		{
@@ -3047,7 +3138,7 @@ ClientConnect(edict_t *ent, char *userinfo)
 			// This is the very frist time that this player has entered the game (be it single player,
 			// coop or deathmatch) so we want to do a complete reset of the player's model.
 
-			ent->client->complete_reset=1;
+			ent->client->complete_reset = 1;
 		}
 	}
 	else
@@ -3055,16 +3146,18 @@ ClientConnect(edict_t *ent, char *userinfo)
 		// The player has a body waiting from a (just) loaded game, so we want to do just a partial
 		// reset of the player's model.
 
-		ent->client->complete_reset=0;
+		ent->client->complete_reset = 0;
 	}
 
-	ClientUserinfoChanged (ent, userinfo);
+	ClientUserinfoChanged(ent, userinfo);
 
 	if (game.maxclients > 1)
-		gi.dprintf ("%s connected\n", ent->client->playerinfo.pers.netname);
+	{
+		gi.dprintf("%s connected\n", ent->client->playerinfo.pers.netname);
+	}
 
+	ent->svflags = 0; /* make sure we start with known default */
 	ent->client->playerinfo.pers.connected = true;
-
 	return true;
 }
 
@@ -3087,6 +3180,10 @@ ClientDisconnect(edict_t *ent)
 		return;
 	}
 
+	if(ent->client->chasetoggle)
+	{
+		ChasecamRemove(ent);
+	}
 
 	// Inform other players that the disconnecting client has left the game.
 
@@ -3127,11 +3224,11 @@ ClientDisconnect(edict_t *ent)
 	ent->inuse = false;
 	ent->classname = "disconnected";
 	ent->client->playerinfo.pers.connected = false;
-	playernum = ent-g_edicts-1;
-	gi.configstring (CS_PLAYERSKINS+playernum, "");
+
+	playernum = ent - g_edicts - 1;
+	gi.configstring(CS_PLAYERSKINS + playernum, "");
 
 	// Redo the leader effect cos this guy has gone, and he might have had it.
-
 	player_leader_effect();
 }
 
@@ -3139,8 +3236,10 @@ ClientDisconnect(edict_t *ent)
 
 static edict_t *pm_passent;
 
-// The pmove() routine doesn't need to know about passent and contentmask.
-
+/*
+ * pmove doesn't need to know
+ * about passent and contentmask
+ */
 static trace_t
 PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 {
@@ -3153,11 +3252,11 @@ PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 	}
 	else if (pm_passent->health > 0)
 	{
-		return gi.trace (start, mins, maxs, end, pm_passent, MASK_PLAYERSOLID);
+		return gi.trace(start, mins, maxs, end, pm_passent, MASK_PLAYERSOLID);
 	}
 	else
 	{
-		return gi.trace (start, mins, maxs, end, pm_passent, MASK_DEADSOLID);
+		return gi.trace(start, mins, maxs, end, pm_passent, MASK_DEADSOLID);
 	}
 }
 
@@ -3171,16 +3270,12 @@ CheckBlock(void *b, int c)
 	return v;
 }
 
-/*
-// ==============
-// ClientThink
-// -----------
-// This will be called once for each client-frame received from a client. So during a server frame,
-// for a given client, ClientThink() probably be called several times,
-// ==============
-*/
 extern edict_t	*TestEntityPosition(edict_t *self);
 
+/*
+ * This will be called once for each client frame, which will
+ * usually be a couple times for each server frame.
+ */
 void
 ClientThink(edict_t *ent, usercmd_t *ucmd)
 {
@@ -3208,11 +3303,19 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	if (level.intermissiontime)
 	{
+		if (client->chasetoggle)
+		{
+			ChasecamRemove(ent);
+		}
+
 		client->ps.pmove.pm_type = PM_INTERMISSION;
 
 		/* can exit intermission after five seconds */
-		if (level.time > level.intermissiontime + 5.0 && (ucmd->buttons & BUTTON_ANY) )
+		if ((level.time > level.intermissiontime + 5.0) &&
+			(ucmd->buttons & BUTTON_ANY))
+		{
 			level.exitintermission = true;
+		}
 
 		return;
 	}
