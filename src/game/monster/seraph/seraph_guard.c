@@ -472,9 +472,7 @@ void seraph_guard_pause( edict_t *self )
 		break;
 
 	default :
-#ifdef _DEVEL
 		gi.dprintf("seraph guard: Unusable mood %d!\n", self->ai_mood);
-#endif
 		break;
 	}
 }

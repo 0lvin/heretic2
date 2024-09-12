@@ -567,20 +567,17 @@ qboolean check_buoy_path(edict_t *self, int lb_id, int sb_id, int fb_id)
 
 	if(branch_counter++ >= MAX_BUOY_BRANCH_CHECKS)
 	{
-#ifdef _DEVEL
 		if(showbuoys->value)
 			gi.dprintf("Passed MAX_BUOY_DEPTH %d!!!\n", branch_counter);
 		else
-#endif
 			return false;//going too deep into buoys
 	}
 
 	if(check_depth < buoy_depth+1)
 	{
-#ifdef _DEVEL
 		if(showlitebuoys->value||showbuoys->value)
 			gi.dprintf("Hit max buoy check_depth (%d/%d) & failed\n", check_depth, buoy_depth);
-#endif
+
 		return false;//going too deep into buoys
 	}
 
@@ -611,10 +608,9 @@ qboolean check_buoy_path(edict_t *self, int lb_id, int sb_id, int fb_id)
 
 		if (start_buoy->nextbuoy[branch] == NULL_BUOY)
 		{
-#ifdef _DEVEL
 			if (showbuoys->value>2)
 				gi.dprintf("No #%d Branch off of %s\n", branch + 1, start_buoy->targetname);
-#endif
+
 			if(num_branches_checked == MAX_BUOY_BRANCHES)
 			{
 				start_buoy->opflags &= ~SF_DONT_TRY;
@@ -627,17 +623,14 @@ qboolean check_buoy_path(edict_t *self, int lb_id, int sb_id, int fb_id)
 
 		check_buoy = &level.buoy_list[start_buoy->nextbuoy[branch]];
 
-#ifdef _DEVEL
 		if(showbuoys->value>2)
 			gi.dprintf("Checking buoy %s off of %s\n", check_buoy->targetname, start_buoy->targetname);
-#endif
 
 		if (check_buoy == final_buoy)
 		{
-#ifdef _DEVEL
 			if (showbuoys->value)
 				gi.dprintf("buoy found...\n");
-#endif
+
 			start_buoy->opflags &= ~SF_DONT_TRY;
 			return true;
 		}
@@ -646,10 +639,9 @@ qboolean check_buoy_path(edict_t *self, int lb_id, int sb_id, int fb_id)
 //	Gil suggestion: unimplemented
 // || check_buoy->failed_depth <= buoy_depth)
 		{
-#ifdef _DEVEL
 			if(showbuoys->value>2)
 				gi.dprintf("Buoy %s marked as don't try, skipping\n", check_buoy->targetname);
-#endif
+
 			continue;
 		}
 
@@ -697,10 +689,9 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 	start_buoy->opflags |= SF_DONT_TRY;
 	if(self->lastbuoy > NULL_BUOY)
 	{//don't loop back around, the save_buoy last branch check will be a shorter path
-#ifdef _DEVEL
 		if(showbuoys->value)
 			gi.dprintf("Last buoy was %s...\n", level.buoy_list[self->lastbuoy].targetname);
-#endif
+
 		level.buoy_list[self->lastbuoy].opflags |= SF_DONT_TRY;
 	}
 
@@ -735,26 +726,23 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 
 		if(self->lastbuoy == start_buoy->nextbuoy[branch])
 		{
-#ifdef _DEVEL
 			if (showbuoys->value>2)
 				gi.dprintf("Saving %s's last (previous) buoy %s for last path check\n", self->classname, level.buoy_list[self->lastbuoy].targetname);
-#endif
+
 			save_buoy = &level.buoy_list[self->lastbuoy];
 			continue;
 		}
 
 		check_buoy = &level.buoy_list[start_buoy->nextbuoy[branch]];
 
-#ifdef _DEVEL
 		if(showbuoys->value>2)
 			gi.dprintf("(Start) Checking buoy %s off of %s\n", check_buoy->targetname, start_buoy->targetname);
-#endif
+
 		if (check_buoy == final_buoy)
 		{
-#ifdef _DEVEL
 			if(showlitebuoys->value||showbuoys->value)
 				gi.dprintf("%s FOUND CONNECTION FROM %s TO %s IN 1 STEP, %d BRANCHES CHECKED\n", self->classname, start_buoy->targetname, final_buoy->targetname, branch_counter);
-#endif
+
 			start_buoy->opflags &= ~SF_DONT_TRY;
 			if(self->lastbuoy > NULL_BUOY)
 				level.buoy_list[self->lastbuoy].opflags &= ~SF_DONT_TRY;
@@ -765,19 +753,17 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 //	Gil suggestion: unimplemented
 //	|| check_buoy->failed_depth <= buoy_depth)
 		{
-#ifdef _DEVEL
 			if(showbuoys->value>2)
 				gi.dprintf("Buoy %s marked as don't try, skipping\n", check_buoy->targetname);
-#endif
+
 			continue;
 		}
 
 		if(check_buoy_path(self, start_buoy->id, check_buoy->id, final_buoy->id))
 		{
-#ifdef _DEVEL
 			if(showlitebuoys->value||showbuoys->value)
 				gi.dprintf("%s FOUND CONNECTION FROM %s TO %s IN %d STEPS, %d BRANCHES CHECKED\n", self->classname, start_buoy->targetname, final_buoy->targetname, buoy_depth, branch_counter);
-#endif
+
 			start_buoy->opflags &= ~SF_DONT_TRY;
 			if(self->lastbuoy > NULL_BUOY)
 				level.buoy_list[self->lastbuoy].opflags &= ~SF_DONT_TRY;
@@ -796,16 +782,14 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 		save_buoy->opflags &= ~SF_DONT_TRY;
 		check_buoy = save_buoy;
 
-#ifdef _DEVEL
 		if (showbuoys->value>2)
 			gi.dprintf("Now checking saved buoy %s for last path check\n", check_buoy->targetname);
-#endif
+
 		if (check_buoy == final_buoy)
 		{
-#ifdef _DEVEL
 			if(showlitebuoys->value||showbuoys->value)
 				gi.dprintf("%s FOUND CONNECTION FROM %s TO %s IN 1 STEP, %d BRANCHES CHECKED\n", self->classname, start_buoy->targetname, final_buoy->targetname, branch_counter);
-#endif
+
 			start_buoy->opflags &= ~SF_DONT_TRY;
 			if(self->lastbuoy > NULL_BUOY)
 				level.buoy_list[self->lastbuoy].opflags &= ~SF_DONT_TRY;
@@ -819,10 +803,9 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 		{
 			if(check_buoy_path(self, start_buoy->id, check_buoy->id, final_buoy->id))
 			{
-#ifdef _DEVEL
 				if(showlitebuoys->value||showbuoys->value)
 					gi.dprintf("%s FOUND CONNECTION FROM %s TO %s IN %d STEPS, %d BRANCHES CHECKED\n", self->classname, start_buoy->targetname, final_buoy->targetname, buoy_depth, branch_counter);
-#endif
+
 				start_buoy->opflags &= ~SF_DONT_TRY;
 				if(self->lastbuoy > NULL_BUOY)
 					level.buoy_list[self->lastbuoy].opflags &= ~SF_DONT_TRY;
@@ -846,28 +829,25 @@ buoy_t	*find_next_buoy(edict_t *self, int sb_id, int fb_id)
 
 	if(!self->mintel)
 	{
-#ifdef _DEVEL
 		if(showlitebuoys->value||showbuoys->value)
 			gi.dprintf("Can't use buoys- no mintel!...\n");
-#endif
+
 		return NULL;
 	}
 
 	start_buoy = &level.buoy_list[sb_id];
 	final_buoy = &level.buoy_list[fb_id];
 
-#ifdef _DEVEL
 	if(showbuoys->value)
 		gi.dprintf("********************************************************\n    %s Beginning search from %s to %s\n********************************************************\n", self->classname, start_buoy->targetname, final_buoy->targetname);
-#endif
+
 	branch_counter = 0;
 
 	if(irand(0, 1))
 	{//progressive_depth- finds shortest
-#ifdef _DEVEL
 		if(showbuoys->value)
 			gi.dprintf("%s starting progressive depth buoy path check\n", self->classname);
-#endif
+
 		check_depth = 0;
 
 		while(check_depth < self->mintel && check_depth < MAX_PROGRESSIVE_CHECK_DEPTH)
@@ -883,10 +863,9 @@ buoy_t	*find_next_buoy(edict_t *self, int sb_id, int fb_id)
 	}
 	else
 	{//start at max depth- finds first
-#ifdef _DEVEL
 		if(showbuoys->value)
 			gi.dprintf("%s starting max depth(%d) buoy path check\n", self->classname, self->mintel);
-#endif
+
 		check_depth = self->mintel;
 		found = find_next_buoy_2(self, start_buoy->id, final_buoy->id);
 		if(found)
@@ -903,15 +882,14 @@ buoy_t	*find_next_buoy(edict_t *self, int sb_id, int fb_id)
 //	level.buoy_list[i].failed_depth = 999999999;
 	}
 
-#ifdef _DEVEL
+
 	if(showlitebuoys->value||showbuoys->value)
 		if(check_depth == self->mintel)
 			gi.dprintf("Hit my max buoy depth (%d) & failed\n", check_depth);
-#endif
-#ifdef _DEVEL
+
 	if(showlitebuoys->value||showbuoys->value)
 		gi.dprintf("Path from buoy %s(%s) to buoy %s(%s) not possible at depth of %d!\n", start_buoy->targetname, vtos(start_buoy->origin), final_buoy->targetname, vtos(final_buoy->origin), check_depth);
-#endif
+
 	check_depth = 0;
 	return NULL;
 }

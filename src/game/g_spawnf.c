@@ -160,9 +160,8 @@ void ED_ParseField (char *key, const char *value, edict_t *ent)
 			}
 		}
 	}
-#ifdef _DEVEL
 	gi.dprintf ("%s is not a field\n", key);
-#endif
+
 }
 
 /*
@@ -268,9 +267,7 @@ void G_FindTeams (void)
 		}
 	}
 
-#ifdef _DEVEL
 	gi.dprintf ("%i teams with %i entities\n", c, c2);
-#endif
 }
 
 void ConstructEntities(void)
@@ -400,9 +397,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean lo
 			// Check if it's a monster and if we're nomonster here...
 			if (sv_nomonsters && sv_nomonsters->value && strstr(ent->classname, "monster_"))
 			{
-#ifdef _DEVEL
 				gi.dprintf("monster '%s' not spawned.\n", ent->classname);
-#endif
+
 				G_FreeEdict (ent);
 				inhibit++;
 				continue;
@@ -414,9 +410,8 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint, qboolean lo
 		ED_CallSpawn (ent);
 	}
 
-#ifdef _DEVEL
 	gi.dprintf ("%i entities inhibited\n", inhibit);
-#endif
+
 	G_FindTeams ();
 }
 

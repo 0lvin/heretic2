@@ -1174,9 +1174,7 @@ void GkrokonPause(edict_t *self)
 		break;
 
 	default :
-#ifdef _DEVEL
 		gi.dprintf("Unusable mood %d for Gkrokon\n", self->ai_mood);
-#endif
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 		break;
 	}

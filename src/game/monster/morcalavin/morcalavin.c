@@ -1238,9 +1238,8 @@ void morcalavin_pause( edict_t *self )
 			break;
 
 		default :
-#ifdef _DEVEL
 			gi.dprintf("mork: Unusable mood %d!\n", self->ai_mood);
-#endif
+
 			break;
 	}
 }
@@ -1770,10 +1769,8 @@ void morcalavin_postthink(edict_t *self)
 
 			if (!self->targetEnt)
 			{
-#ifdef _DEVEL
 				if (level.time < 5.0)		// Otherwise it will print forever after Morcalavin is dead.
 					gi.dprintf("GDE Fault: YOU NEED TO PUT A BARRIER IN THIS ROOM FOR THE GAME TO WORK!!!n");
-#endif
 				return;
 			}
 

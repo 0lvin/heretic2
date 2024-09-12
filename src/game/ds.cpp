@@ -1404,9 +1404,7 @@ FieldDef::FieldDef(CScript *Script)
 
 	if (!Found)
 	{
-#ifdef _DEVEL
 		Com_Printf("Unknown field '%s'\n",Name);
-#endif //_DEVEL
 	}
 }
 
@@ -1443,9 +1441,7 @@ FieldDef::FieldDef(FILE *FH, CScript *Script)
 
 	if (!Found)
 	{
-#ifdef _DEVEL
 		Com_Printf("Unknown field '%s'\n",Name);
-#endif //_DEVEL
 	}
 }
 

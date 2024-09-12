@@ -922,9 +922,7 @@ void gorgon_mood(edict_t *self)
 		case AI_MOOD_NORMAL:
 			break;
 		default :
-#ifdef _DEVEL
 			gi.dprintf("gorgon: Unusable mood %d!\n", self->ai_mood);
-#endif
 			break;
 	}
 }

@@ -348,9 +348,7 @@ void chicken_pause (edict_t *self)
 					break;
 
 				default :
-#ifdef _DEVEL
 					gi.dprintf("Chicken Unusable mood %d!\n", self->ai_mood);
-#endif
 					break;
 				}
 			}

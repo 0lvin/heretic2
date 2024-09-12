@@ -488,10 +488,8 @@ void ssithra_check_namor(edict_t *self)
 		{
 			if(ssithraWaterLedgeNearEnemy(self))
 			{
-#ifdef _DEVEL
 				if(mgai_debug->value)
 					gi.dprintf("Ssithra facing and namor\n");
-#endif
 				SetAnim(self,ANIM_FACEANDNAMOR);
 			}
 		}
@@ -832,19 +830,15 @@ void ssithraCheckJump (edict_t *self)
 
 			if (trace.allsolid || trace.startsolid)
 			{
-#ifdef _DEVEL
 				if(mgai_debug->value)
 					gi.dprintf("checkdown allsolid\n");
-#endif
 				return;
 			}
 
 			if (trace.fraction == 1)
 			{
-#ifdef _DEVEL
 				if(mgai_debug->value)
 					gi.dprintf("checkdown- too far\n");
-#endif
 				return;
 			}
 			else
@@ -856,10 +850,9 @@ void ssithraCheckJump (edict_t *self)
 
 				if (trace.contents != CONTENTS_SOLID)
 				{
-#ifdef _DEVEL
 					if(mgai_debug->value)
 						gi.dprintf("checkjump trying to jump into water\n");
-#endif
+
 					if ((trace.contents&CONTENTS_WATER||trace.contents&CONTENTS_SLIME)||trace.ent == self->enemy)
 					{//jumping into water
 						VectorSubtract(trace.endpos, self->s.origin, source2);
@@ -887,10 +880,9 @@ void ssithraCheckJump (edict_t *self)
 				}
 				else
 				{
-#ifdef _DEVEL
 					if(mgai_debug->value)
 						gi.dprintf("checkjump down->whichjump\n");
-#endif
+
 					VectorSubtract(trace.endpos, self->s.origin, source2);
 					VectorNormalize(source2);
 					self->ideal_yaw = vectoyaw(source2);
@@ -903,10 +895,10 @@ void ssithraCheckJump (edict_t *self)
 				}
 			}
 		}
-#ifdef _DEVEL
 		else if(mgai_debug->value)
+		{
 			gi.dprintf("checkdown: not clear infront\n");
-#endif
+		}
 	}
 	else
 	{
@@ -1739,29 +1731,29 @@ void ssithra_pain_react (edict_t *self)
 {
 	if(!self->enemy)
 	{
-#ifdef _DEVEL
 		if(mgai_debug->value)
+		{
 			gi.dprintf("No react to pain\n");
-#endif
+		}
+
 		ssithra_decide_stand(self);
 		return;
 	}
 
 	if(self->enemy->health<=0||self->enemy == self||!self->enemy->takedamage)
 	{
-#ifdef _DEVEL
 		if(mgai_debug->value)
 			gi.dprintf("No react to pain\n");
-#endif
+
 		self->enemy=NULL;
 		ssithra_decide_stand(self);
 		return;
 	}
+
 	//go get him!
-#ifdef _DEVEL
 	if(mgai_debug->value)
 		gi.dprintf("pain_react -> run\n");
-#endif
+
 	ssithra_decide_gallop(self);
 }
 
@@ -2765,10 +2757,9 @@ qboolean SsithraCheckMood (edict_t *self)
 			break;
 
 		case AI_MOOD_DELAY:
-#ifdef _DEVEL
 			if(mgai_debug->value)
 				gi.dprintf("Delay on frame %d\n", self->monsterinfo.currframeindex);
-#endif
+
 			SetAnim(self, ANIM_DELAY);
 			return true;
 			break;
@@ -2795,10 +2786,8 @@ qboolean SsithraCheckMood (edict_t *self)
 			break;
 
 		default :
-#ifdef _DEVEL
-//			if(mgai_debug->value)
+			if(mgai_debug->value)
 				gi.dprintf("ssithra: Unusable mood %d!\n", self->ai_mood);
-#endif
 			break;
 	}
 	return false;

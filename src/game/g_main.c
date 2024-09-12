@@ -38,14 +38,6 @@
 #include "common/cl_strings.h"
 #include "effects/client_effects.h"
 
-//Used for monster_speeds timing stuff
-#ifdef _DEVEL
-__int64	begin_monster_time, end_monster_time;
-__int64	begin_ent_time, end_ent_time;
-__int64	next_update, all, mt, cur_all, cur_mt;
-int		num_monsters, num_ents;
-#endif //_DEVEL
-
 game_locals_t game;
 level_locals_t level;
 game_import_t gi;

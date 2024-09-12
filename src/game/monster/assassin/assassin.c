@@ -1482,9 +1482,7 @@ void assassin_pause (edict_t *self)
 			break;
 
 		default :
-#ifdef _DEVEL
 			gi.dprintf("assassin: Unusable mood %d!\n", self->ai_mood);
-#endif
 			break;
 		}
 	}
@@ -2781,20 +2779,14 @@ void assassinCheckDefense(edict_t *self, float enemydist, qboolean enemyvis, qbo
 {
 	if(!enemyinfront&&enemyvis&&enemydist<self->melee_range)
 	{
-#ifdef _DEVEL
 		if(assassinCheckTeleport(self, ASS_TP_DEF))
 			gi.dprintf("defense->teleport\n");
-#else
-		assassinCheckTeleport(self, ASS_TP_DEF);
-#endif
 	}
 	else if(!enemyvis && self->monsterinfo.last_successful_enemy_tracking_time + 6 - skill->value < level.time)
 	{
 		if(irand(0, 10) > 10 - (3 * (skill->value + 1)))//hard = 90%, med is 40%, easy is 30%
 		{
-#ifdef _DEVEL
 			gi.dprintf("Assassin trying to teleport to %s since can't find them...\n", self->classname, self->enemy->classname);
-#endif
 			assassinCheckTeleport(self, ASS_TP_OFF);
 		}
 	}

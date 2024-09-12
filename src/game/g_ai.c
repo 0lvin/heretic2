@@ -2482,9 +2482,7 @@ void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean igno
 
 	if(!alerter)
 	{
-#ifdef _DEVEL
 		gi.dprintf("Error: out of alerts and can't find any empty slots!\n");
-#endif
 		return;
 	}
 

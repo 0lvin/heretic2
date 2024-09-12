@@ -355,9 +355,8 @@ void DelayThink(edict_t *self)
 
 	if (!dest)
 	{
-#ifdef _DEVEL
 		gi.dprintf ("Shrine Trigger couldn't find shrine model\n");
-#endif
+
 		G_SetToFree (self);
 		return;
 	}
@@ -449,9 +448,8 @@ void deal_with_shrine_node(edict_t *self)
 
 	if (!dest)
 	{
-#ifdef _DEVEL
 		gi.dprintf ("Shrine Trigger couldn't find shrine model\n");
-#endif
+
 		return;
 	}
 

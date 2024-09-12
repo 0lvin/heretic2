@@ -405,10 +405,9 @@ qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bes
 
 		VectorCopy(dest->origin, self->monsterinfo.nav_goal);
 
-#ifdef _DEVEL
 		if (showbuoys->value)
 			gi.dprintf("Found 1-step JUMP connection at %s\n", dest->targetname);
-#endif
+
 		if(self->buoy_index!=NULL_BUOY)
 			self->lastbuoy = self->buoy_index;
 		else
@@ -434,10 +433,9 @@ qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bes
 
 		VectorCopy(bestbuoy->origin, self->monsterinfo.nav_goal);
 
-#ifdef _DEVEL
 		if (showbuoys->value)
 			gi.dprintf("Found 1-step connection at %s\n", bestbuoy->targetname);
-#endif
+
 		if(self->buoy_index!=NULL_BUOY)
 			self->lastbuoy = self->buoy_index;
 		else
@@ -453,12 +451,11 @@ qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bes
 
 		if (dest != NULL)
 		{
-#ifdef _DEVEL
 			if (showbuoys->value)
 			{
 				gi.dprintf("Found connection from %s to %s\n", bestbuoy->targetname, e_bestbuoy->targetname);
 			}
-#endif
+
 			if(dont_use_last)
 			{
 				if(self->lastbuoy == dest->id)//found same buoy just touched as next buoy
@@ -480,19 +477,16 @@ qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bes
 			}
 			return true;
 		}
-#ifdef _DEVEL
 		else if (showbuoys->value)
 		{
 			gi.dprintf("Failed to find a path\n");
 		}
-#endif
 	}
 
 	//EXPERIMENTAL
 	//ok, now you can backtrack since couldn't get there
 	//self->lastbuoy = NULL_BUOY;
 
-#ifdef _DEVEL
 	if(showlitebuoys->value||showbuoys->value)
 	{
 		if (!bestbuoy)
@@ -500,7 +494,7 @@ qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bes
 		else if (!e_bestbuoy)
 			gi.dprintf("%s COULDN'T FIND BUOYS FOR %s!!!\n", self->classname, self->enemy->classname);
 	}
-#endif
+
 	return false;
 }
 
@@ -628,10 +622,9 @@ qboolean MG_MakeStartForcedConnection(edict_t *self, int sforced_buoy, qboolean 
 
 	if (e_bestdist > MAX_BUOY_DIST)
 	{
-#ifdef _DEVEL
 		if(showlitebuoys->value||showbuoys->value)
 			gi.dprintf("%s's %s CLOSEST BUOY TOO FAR AWAY (%4.2f)\n", self->enemy->classname, vtos(self->s.origin), e_bestdist);
-#endif
+
 		return false;
 	}
 
@@ -645,10 +638,9 @@ qboolean MG_MakeStartForcedConnection(edict_t *self, int sforced_buoy, qboolean 
 			{//enemy best buoy is farther away from me and not my buoy
 				if(Clear_Path(self, e_bestbuoy->origin))
 				{//can go straight at enemy best buoy even though farther away
-#ifdef _DEVEL
 					if(showlitebuoys->value||showbuoys->value)
 						gi.dprintf("%s going after %s's buoy even though farther\n", self->classname, self->enemy->classname);
-#endif
+
 					bestbuoy = e_bestbuoy;
 					bestdist = e_bestdist;
 				}
@@ -661,10 +653,9 @@ qboolean MG_MakeStartForcedConnection(edict_t *self, int sforced_buoy, qboolean 
 	{//if going after a player, set his buoy for other monsters this frame
 		if(self->enemy->client)
 		{
-#ifdef _DEVEL
 			if(showbuoys->value)
 				gi.dprintf("%s setting player_buoy %d to %s\n", self->classname, self->enemy->s.number, e_bestbuoy->targetname);
-#endif
+
 			level.player_buoy[self->enemy->s.number - 1] = e_bestbuoy->id;
 		}
 	}
@@ -710,10 +701,9 @@ qboolean MG_MakeForcedConnection(edict_t *self, int forced_buoy, qboolean dont_u
 	e_bestdist = 0;
 	VectorCopy(e_bestbuoy->origin, goalpos);
 
-#ifdef _DEVEL
 	if(!e_bestbuoy)
 		gi.dprintf("ERROR: forced_buoy not a valid buoy!!!\n");
-#endif
+
 	if(self->maxs[0]>16)
 		radius = 24 + self->maxs[0];
 	else
@@ -766,10 +756,9 @@ qboolean MG_MakeForcedConnection(edict_t *self, int forced_buoy, qboolean dont_u
 
 	if (bestdist > MAX_BUOY_DIST)
 	{
-#ifdef _DEVEL
 		if(showlitebuoys->value||showbuoys->value)
 			gi.dprintf("%s's at %s CLOSEST BUOY TOO FAR AWAY (%4.2f)\n", self->classname, vtos(self->s.origin), bestdist);
-#endif
+
 		self->pathfind_nextthink = level.time + 3;//wait 3 seconds before trying to use buoys again
 		return false;
 	}
@@ -782,10 +771,9 @@ qboolean MG_MakeForcedConnection(edict_t *self, int forced_buoy, qboolean dont_u
 		{//enemy best buoy is farther away from me and not my buoy
 			if(Clear_Path(self, e_bestbuoy->origin))
 			{//can go straight at enemy best buoy even though farther away
-#ifdef _DEVEL
 				if(showlitebuoys->value||showbuoys->value)
 					gi.dprintf("%s going after forced_buoy %s even though farther\n", self->classname, e_bestbuoy->targetname);
-#endif
+
 				bestbuoy = e_bestbuoy;
 				bestdist = e_bestdist;
 			}
@@ -922,19 +910,17 @@ qboolean MG_MakeNormalConnection(edict_t *self, qboolean dont_use_last, qboolean
 
 	if (bestdist > MAX_BUOY_DIST)
 	{
-#ifdef _DEVEL
 		if(showlitebuoys->value||showbuoys->value)
 			gi.dprintf("%s's %s CLOSEST BUOY TOO FAR AWAY (%4.2f)\n", self->classname, vtos(self->s.origin), bestdist);
-#endif
+
 		return false;
 	}
 
 	if (!bestbuoy && !e_bestbuoy)
 	{
-#ifdef _DEVEL
 		if(showlitebuoys->value||showbuoys->value)
 			gi.dprintf("%s' %s COULDN'T FIND BUOYS FOR SELF OR %s!!!\n", self->classname, vtos(self->s.origin), self->enemy->classname);
-#endif
+
 		return false;
 	}
 
@@ -973,10 +959,9 @@ qboolean MG_MakeNormalConnection(edict_t *self, qboolean dont_use_last, qboolean
 
 	if (e_bestdist > MAX_BUOY_DIST)
 	{
-#ifdef _DEVEL
 		if(showlitebuoys->value||showbuoys->value)
 			gi.dprintf("%s's %s CLOSEST BUOY TOO FAR AWAY (%4.2f)\n", self->enemy->classname, vtos(self->s.origin), e_bestdist);
-#endif
+
 		return false;
 	}
 
@@ -990,10 +975,9 @@ qboolean MG_MakeNormalConnection(edict_t *self, qboolean dont_use_last, qboolean
 			{//enemy best buoy is farther away from me and not my buoy
 				if(Clear_Path(self, e_bestbuoy->origin))
 				{//can go straight at enemy best buoy even though farther away
-#ifdef _DEVEL
 					if(showlitebuoys->value||showbuoys->value)
 						gi.dprintf("%s going after %s's buoy even though farther\n", self->classname, self->enemy->classname);
-#endif
+
 					bestbuoy = e_bestbuoy;
 					bestdist = e_bestdist;
 				}
@@ -1005,10 +989,9 @@ qboolean MG_MakeNormalConnection(edict_t *self, qboolean dont_use_last, qboolean
 	{//if going after a player, set his buoy for other monsters this frame
 		if(self->enemy->client)
 		{
-#ifdef _DEVEL
 			if(showbuoys->value)
 				gi.dprintf("%s setting player_buoy %d to %s\n", self->classname, self->enemy->s.number, e_bestbuoy->targetname);
-#endif
+
 			level.player_buoy[self->enemy->s.number - 1] = e_bestbuoy->id;
 		}
 	}
@@ -1073,30 +1056,27 @@ int MG_MakeConnection_Go(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 					}
 					if(found_buoy)
 					{
-#ifdef _DEVEL
 						gi.dprintf("%s using player_buoy %d (%s) set previously this frame\n",
 								self->classname, self->enemy->s.number, found_buoy->targetname);
-#endif
 					}
 				}
 				self->forced_buoy = level.player_buoy[self->enemy->s.number - 1];//just stores id in player_buoy
 				if(first_buoy)
 				{
 					forced_buoy = &level.buoy_list[self->forced_buoy];
-#ifdef _DEVEL
+
 					if(showbuoys->value)
 						gi.dprintf("%s trying connection to player_buoy %d (%s) from first_buoy %s\n",
 								self->classname, self->enemy->s.number, found_buoy->targetname, first_buoy->targetname);
-#endif
+
 					found_path = MG_ResolveBuoyConnection(self, first_buoy, forced_buoy, forced_buoy->origin, dont_use_last, skipjump);
 				}
 				else
 				{
-#ifdef _DEVEL
 					if(showbuoys->value)
 						gi.dprintf("%s trying normal connection to player_buoy %d (%s)\n",
 								self->classname, self->enemy->s.number, found_buoy->targetname);
-#endif
+
 					found_path = MG_MakeForcedConnection(self, self->forced_buoy, dont_use_last, skipjump);
 				}
 			}
@@ -1112,20 +1092,19 @@ int MG_MakeConnection_Go(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 			if(first_buoy)
 			{
 				forced_buoy = &level.buoy_list[self->forced_buoy];
-#ifdef _DEVEL
+
 				if(showbuoys->value)
 					gi.dprintf("%s trying non-enemy forced_buoy connection to %s from first_buoy %s\n",
 							self->classname, forced_buoy->targetname, first_buoy->targetname);
-#endif
+
 				return MG_ResolveBuoyConnection(self, first_buoy, forced_buoy, forced_buoy->origin, dont_use_last, skipjump);
 			}
 			else
 			{
-#ifdef _DEVEL
 				if(showbuoys->value)
 					gi.dprintf("%s trying non-enemy forced_buoy connection to %s\n",
 							self->classname, level.buoy_list[self->forced_buoy].targetname);
-#endif
+
 				return MG_MakeForcedConnection(self, self->forced_buoy, dont_use_last, skipjump);
 			}
 		}
@@ -1153,25 +1132,22 @@ int MG_MakeConnection_Go(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 			}
 		}
 
-#ifdef _DEVEL
 		if(showbuoys->value)
 			gi.dprintf("%s searching for player(%d)'s bestbuoy\n", self->classname, self->enemy->s.number);
-#endif
+
 		if(first_buoy)
 		{
-#ifdef _DEVEL
 			if(showbuoys->value)
 				gi.dprintf("%s making connection from forced start %s to %s\n",
 						self->classname, first_buoy->targetname, self->enemy->classname);
-#endif
+
 			found_path = MG_MakeStartForcedConnection(self, first_buoy->id, dont_use_last, skipjump);
 		}
 		else
 		{
-#ifdef _DEVEL
 			if(showbuoys->value)
 				gi.dprintf("%s making normal connection to %s\n", self->classname, self->enemy->classname);
-#endif
+
 			found_path = MG_MakeNormalConnection(self, dont_use_last, skipjump);
 		}
 	}
@@ -1211,7 +1187,7 @@ last_resort:
 
 			if(first_buoy)
 			{
-#ifdef _DEVEL
+
 				if(showbuoys->value)
 				{
 					if(last_buoy_clear)
@@ -1221,7 +1197,7 @@ last_resort:
 						gi.dprintf("%s using player_last_buoy %d (%s) from first_buoy %s even though it doesn't connect to player!\n",
 								self->classname, self->enemy->s.number, found_buoy->targetname, first_buoy->targetname);
 				}
-#endif
+
 				if(MG_ResolveBuoyConnection(self, first_buoy, forced_buoy, forced_buoy->origin, dont_use_last, skipjump))
 				{
 					return 2;
@@ -1229,7 +1205,6 @@ last_resort:
 			}
 			else
 			{
-#ifdef _DEVEL
 				if(showbuoys->value)
 				{
 					if(last_buoy_clear)
@@ -1239,7 +1214,7 @@ last_resort:
 						gi.dprintf("%s using player_last_buoy %d (%s) even though it doesn't connect to player!\n",
 								self->classname, self->enemy->s.number, found_buoy->targetname);
 				}
-#endif
+
 				if(MG_MakeForcedConnection(self, forced_buoy->id, dont_use_last, skipjump))
 				{
 					return 2;
@@ -1248,10 +1223,9 @@ last_resort:
 		}
 	}
 	//damn, lost him!  Currrzzze you Corvuzzz!!!
-#ifdef _DEVEL
 	if(showbuoys->value)
 		gi.dprintf("FAILURE: %s Could not find %s in any way shape or form!!!\n", self->classname, self->enemy->classname);
-#endif
+
 	return false;
 }
 
@@ -1259,10 +1233,9 @@ qboolean MG_MakeConnection(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 {//just for debug info
 	qboolean	result;
 
-#ifdef _DEVEL
 	if(showbuoys->value)
 		gi.dprintf("========================================================\n    %s Start MakeConnection    \n========================================================\n", self->classname);
-#endif
+
 	result = MG_MakeConnection_Go (self, first_buoy, skipjump);
 
 	if(!(self->ai_mood_flags&AIMF_CANT_FIND_ENEMY))
@@ -1273,18 +1246,16 @@ qboolean MG_MakeConnection(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 
 	if(!result)
 	{//If can't find him(not including player_last_buoys) for 5 - 10 seconds, go into wander mode...
-#ifdef _DEVEL
 		if (showbuoys->value && !result)
 		{
 			gi.dprintf("MG_MakeConnection: failed\n");
 		}
-#endif
+
 		if(result == 3 && !(self->ai_mood_flags&AIMF_SEARCHING))
 		{
-#ifdef _DEVEL
 			if(showbuoys->value)
 				gi.dprintf("%s got to %s's last_buoy, searching normally...\n", self->classname, self->enemy->classname);
-#endif
+
 			self->monsterinfo.last_successful_enemy_tracking_time = level.time;
 			self->monsterinfo.searchType = SEARCH_COMMON;
 			self->ai_mood = AI_MOOD_PURSUE;
@@ -1300,10 +1271,9 @@ qboolean MG_MakeConnection(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 			}
 			else
 			{
-#ifdef _DEVEL
 				if(showbuoys->value)
 					gi.dprintf("%s giving up finding %s, wandering around\n", self->classname, self->enemy->classname);
-#endif
+
 				if(self->enemy->client)
 					self->oldenemy = self->enemy;
 				self->enemy = NULL;
@@ -1330,10 +1300,9 @@ qboolean MG_MakeConnection(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 			result = false;
 	}
 
-#ifdef _DEVEL
 	if(showbuoys->value)
 		gi.dprintf("========================================================\n    %s End MakeConnection    \n========================================================\n", self->classname);
-#endif
+
 	return result;
 }
 
@@ -1631,9 +1600,8 @@ void MG_AddBuoyEffect(edict_t *self, qboolean endbuoy)
 			{//check a 10 second debouce timer
 				if(!self->nextbuoy[0]->count)
 				{
-#ifdef _DEVEL
 					gi.dprintf("Adding green effect to buoy %s\n", self->nextbuoy[0]->targetname);
-#endif
+
 					gi.CreateEffect(&self->nextbuoy[0]->s,
 						FX_M_EFFECTS,
 						CEF_OWNERS_ORIGIN|CEF_FLAG6,//green
@@ -1651,9 +1619,8 @@ void MG_AddBuoyEffect(edict_t *self, qboolean endbuoy)
 			{
 				if(!self->nextbuoy[1]->s.frame)
 				{
-#ifdef _DEVEL
 					gi.dprintf("Adding red effect to buoy %s\n", self->nextbuoy[1]->targetname);
-#endif
+
 					gi.CreateEffect(&self->nextbuoy[1]->s,
 						FX_M_EFFECTS,
 						CEF_OWNERS_ORIGIN,//red
@@ -1753,19 +1720,17 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 		if (MG_ReachedBuoy(self, NULL))
 		{
 			MG_RemoveBuoyEffects(self);
-#ifdef _DEVEL
 			if (showbuoys->value)
 			{
 				gi.dprintf("Reached goal %s\n", current_buoy->targetname);
 			}
-#endif
+
 			//Check the possibility of activating something
 			if ((current_buoy->modflags & BUOY_ACTIVATE) && (self->ai_mood != AI_MOOD_DELAY))
 			{
-#ifdef _DEVEL
 				if (showbuoys->value)
 					gi.dprintf("Activating target %s\n", current_buoy->pathtarget);
-#endif
+
 				if (self->wait < level.time)
 				{
 					self->wait = level.time + current_buoy->wait;
@@ -1859,10 +1824,9 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 					current_buoy = &level.buoy_list[self->buoy_index];
 					if(jump_buoy == current_buoy)
 					{//Shit, found same buoy, shouldn't happen with dont_use_last = true! unless switching enemies
-#ifdef _DEVEL
 						if (showbuoys->value)
 							gi.dprintf("Warning: %s found same next buoy as last buoy at jump buoy\n",self->classname);
-#endif
+
 					}
 					else if(current_buoy->id == jump_buoy->jump_target_id)
 					{//go ahead and jump
@@ -1870,11 +1834,10 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 						{
 							vec3_t	jumpangles, jumpfwd, jump_spot;
 
-#ifdef _DEVEL
 							if (showbuoys->value)
 								gi.dprintf("Jumping after buoy %s at angle %4.2f with height %4.2f and speed %4.2f\n",
 										current_buoy->targetname, jump_buoy->jump_yaw, jump_buoy->jump_uspeed, jump_buoy->jump_fspeed);
-#endif
+
 							VectorSet(jumpangles, 0, jump_buoy->jump_yaw, 0);
 							AngleVectors(jumpangles, jumpfwd, NULL, NULL);
 
@@ -1895,14 +1858,13 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 					}
 					else
 					{//follow the new path
-#ifdef _DEVEL
 						if (showbuoys->value)
 						{
 							current_buoy = &level.buoy_list[self->buoy_index];
 							gi.dprintf("Heading to new goal %s\n", current_buoy->targetname);
 						}
-#endif
 						return;
+
 //WAS: oops, not the right one, set it back and search down below again
 //						current_buoy = jump_buoy;
 //						MG_AssignMonsterNextBuoy(self, current_buoy, NULL);
@@ -1920,34 +1882,29 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 			}
 			else
 			{
-#ifdef _DEVEL
 				if (showbuoys->value)
 				{
 					gi.dprintf("Heading to new goal %s\n", current_buoy->targetname);
 				}
-#endif
 			}
 		}
 
 		if(self->last_buoy_time > 0 && self->last_buoy_time + BUOY_SEARCH_TIME < level.time)
 		{
-#ifdef _DEVEL
 			if (showbuoys->value)
 			{
 				gi.dprintf("Buoy search timed out trying to get to %s\n", current_buoy->targetname);
 			}
-#endif
 
 			if(self->classID == CID_ASSASSIN)
 			{
 				if(MG_MonsterAttemptTeleport(self, current_buoy->origin, true))
 				{
 					self->monsterinfo.aiflags |= AI_OVERRIDE_GUIDE;
-#ifdef _DEVEL
+
 					if(showbuoys->value)
 						gi.dprintf("%s teleported to buoy %s (ignoring player LOS)\n",
 								self->classname, current_buoy->targetname);
-#endif
 					return;
 				}
 			}
@@ -1955,25 +1912,25 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 			{
 				if(cheating_monsters->value < 2)
 				{
-#ifdef _DEVEL
 					if(MG_MonsterAttemptTeleport(self, current_buoy->origin, false))
+					{
 						if(showbuoys->value)
+						{
 							gi.dprintf("%s cheated and teleported to buoy %s\n",
 									self->classname, current_buoy->targetname);
-#else
-					MG_MonsterAttemptTeleport(self, current_buoy->origin, false);
-#endif
+						}
+					}
 				}
 				else
 				{
-#ifdef _DEVEL
 					if(MG_MonsterAttemptTeleport(self, current_buoy->origin, true))
+					{
 						if(showbuoys->value)
+						{
 							gi.dprintf("%s cheated and teleported to buoy %s (ignoring player LOS)\n",
 									self->classname, current_buoy->targetname);
-#else
-					MG_MonsterAttemptTeleport(self, current_buoy->origin, true);
-#endif
+						}
+					}
 				}
 			}
 			if (!MG_MakeConnection(self, NULL, false))
@@ -1982,11 +1939,10 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 		}
 		else if(!irand(0, 4) && !clear_visible_pos(self, current_buoy->origin))
 		{//DAMN!  Lost sight of buoy, let's re-aquire
-#ifdef _DEVEL
 			if (showbuoys->value)
 				gi.dprintf("%s Lost sight of buoy %s looking for another...\n",
 						self->classname, current_buoy->targetname);
-#endif
+
 			if (!MG_MakeConnection(self, NULL, false))
 			{
 			}
@@ -2109,19 +2065,16 @@ void MG_BuoyNavigate(edict_t *self)
 
 			if(!found)
 			{
-#ifdef _DEVEL
 				if(showbuoys->value)
 					gi.dprintf("ERROR: %s can't find it's homebuoy %s\n", self->classname, self->homebuoy);
-#endif
 				return;
 			}
 
 			if(!MG_ReachedBuoy(self, found_buoy->origin))
 			{
-#ifdef _DEVEL
 				if(showbuoys->value)
 					gi.dprintf("%s heading for homebuoy %s\n", self->classname, self->homebuoy);
-#endif
+
 				self->ai_mood_flags|=AI_MOOD_FLAG_FORCED_BUOY;
 				self->forced_buoy = found_buoy->id;
 
@@ -2307,19 +2260,16 @@ void MG_GenericMoodSet(edict_t *self)
 
 				if(!found)
 				{
-#ifdef _DEVEL
 					if(showbuoys->value)
 						gi.dprintf("ERROR: %s can't find it's homebuoy %s\n", self->classname, self->homebuoy);
-#endif
+
 					return;
 				}
 
 				if(!MG_ReachedBuoy(self, found_buoy->origin))
 				{
-#ifdef _DEVEL
 					if(showbuoys->value)
 						gi.dprintf("%s heading for homebuoy %s\n", self->classname, self->homebuoy);
-#endif
 
 					self->ai_mood_flags|=AI_MOOD_FLAG_FORCED_BUOY;
 					self->forced_buoy = found_buoy->id;
@@ -2531,10 +2481,9 @@ enemy_too_close:
 	}
 	else//maybe turn and run for a bit?
 	{
-#ifdef _DEVEL
 		if(mgai_debug->value)
 			gi.dprintf("%s running away to get some distance from %s\n", self->classname, self->enemy->classname);
-#endif
+
 		self->monsterinfo.aiflags |= AI_FLEE;
 		self->monsterinfo.flee_finished = level.time + flrand(3, 6);
 		//self->ai_mood = AI_MOOD_DELAY;//fixme: this is not good!

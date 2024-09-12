@@ -134,9 +134,7 @@ void priestess_teleport_end ( edict_t *self )
 
 void blocker_throw ( edict_t *self, trace_t *trace )
 {
-#ifdef _DEVEL
 	gi.dprintf("ERROR blocker_throw : Entity touched teleport destination!\n");
-#endif
 }
 
 void priestess_teleport_move ( edict_t *self )
@@ -209,9 +207,7 @@ void priestess_teleport_move ( edict_t *self )
 	}
 	else
 	{
-#ifdef _DEVEL
 		gi.dprintf("ERROR priestess_teleport_move :Priestess unable to move to new teleport destination!\n");
-#endif
 		SetAnim(self, ANIM_SHIELD_END);
 	}
 }

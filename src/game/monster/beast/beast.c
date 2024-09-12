@@ -877,9 +877,7 @@ void tbeast_mood(edict_t *self)
 		case AI_MOOD_NORMAL:
 			break;
 		default :
-#ifdef _DEVEL
 			gi.dprintf("beast: Unusable mood %d!\n", self->ai_mood);
-#endif
 			break;
 	}
 }
@@ -1336,12 +1334,8 @@ void tbeast_run_think (edict_t *self, float dist)
 		if(trace.fraction == 1.0 || //nothing there - ledge
 			(!Vec3IsZero(trace.plane.normal) && trace.plane.normal[2]<0.7))//not a slope can go up
 		{
-#ifdef _DEVEL
 			if(TB_CheckJump(self))
 				gi.dprintf("Enemy was ahead!\n");
-#else
-			TB_CheckJump(self);
-#endif
 		}
 	}
 }

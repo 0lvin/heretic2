@@ -539,10 +539,9 @@ void target_lightramp_use (edict_t *self, edict_t *other, edict_t *activator)
 				break;
 			if (strcmp(e->classname, "light") != 0)
 			{
-#ifdef _DEVEL
 				gi.dprintf("%s at %s ", self->classname, vtos(self->s.origin));
 				gi.dprintf("target %s (%s at %s) is not a light\n", self->target, e->classname, vtos(e->s.origin));
-#endif
+
 			}
 			else
 			{
@@ -552,9 +551,8 @@ void target_lightramp_use (edict_t *self, edict_t *other, edict_t *activator)
 
 		if (!self->enemy)
 		{
-#ifdef _DEVEL
 			gi.dprintf("%s target %s not found at %s\n", self->classname, self->target, vtos(self->s.origin));
-#endif
+
 			G_FreeEdict (self);
 			return;
 		}
@@ -568,9 +566,8 @@ void SP_target_lightramp (edict_t *self)
 {
 	if (!self->message || strlen(self->message) != 2 || self->message[0] < 'a' || self->message[0] > 'z' || self->message[1] < 'a' || self->message[1] > 'z' || self->message[0] == self->message[1])
 	{
-#ifdef _DEVEL
 		gi.dprintf("target_lightramp has bad ramp (%s) at %s\n", self->message, vtos(self->s.origin));
-#endif
+
 		G_FreeEdict (self);
 		return;
 	}
@@ -583,9 +580,8 @@ void SP_target_lightramp (edict_t *self)
 
 	if (!self->target)
 	{
-#ifdef _DEVEL
 		gi.dprintf("%s with no target at %s\n", self->classname, vtos(self->s.origin));
-#endif
+
 		G_FreeEdict (self);
 		return;
 	}

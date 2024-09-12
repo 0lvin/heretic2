@@ -585,18 +585,16 @@ void trigger_elevator_use (edict_t *self, edict_t *other, edict_t *activator)
 
 	if (!other->pathtarget)
 	{
-#ifdef _DEVEL
 		gi.dprintf("elevator used with no pathtarget\n");
-#endif
+
 		return;
 	}
 
 	target = G_PickTarget (other->pathtarget);
 	if (!target)
 	{
-#ifdef _DEVEL
 		gi.dprintf("elevator used with bad pathtarget: %s\n", other->pathtarget);
-#endif
+
 		return;
 	}
 
@@ -608,24 +606,21 @@ void trigger_elevator_init (edict_t *self)
 {
 	if (!self->target)
 	{
-#ifdef _DEVEL
 		gi.dprintf("trigger_elevator has no target\n");
-#endif
+
 		return;
 	}
 	self->movetarget = G_PickTarget (self->target);
 	if (!self->movetarget)
 	{
-#ifdef _DEVEL
 		gi.dprintf("trigger_elevator unable to find target %s\n", self->target);
-#endif
+
 		return;
 	}
 	if (strcmp(self->movetarget->classname, "func_train") != 0)
 	{
-#ifdef _DEVEL
 		gi.dprintf("trigger_elevator target %s is not a train\n", self->target);
-#endif
+
 		return;
 	}
 
@@ -831,9 +826,7 @@ void mappercentage_use (edict_t *self, edict_t *other)
 
 	G_UseTargets(self, self);
 
-#ifdef _DEVEL
 	gi.dprintf("Map percentage updated to %d\n", (byte) self->count);
-#endif
 }
 
 /*QUAKED trigger_mappercentage (0.3 0.1 0.6) ?  MONSTER NOT_PLAYER TRIGGERED ANY

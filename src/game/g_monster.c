@@ -452,9 +452,7 @@ void M_MoveFrame (edict_t *self)
 	move = self->monsterinfo.currentmove;
 	if (move == NULL)
 	{	// if move is NULL, then this monster needs to have an anim set on it or all is lost.
-#ifdef _DEVEL
 		gi.dprintf("MONSTER: '%s', at %s has no move pointer.  Setting to move zero.\n", self->classname, self->s.origin);
-#endif
 		self->think = NULL;
 		self->nextthink = -1;
 		return;
@@ -1198,9 +1196,8 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 				int damage;
 
 				damage = irand(1, 3);
-#ifdef _DEVEL
 				gi.dprintf("%s doing %d damage to %s by standing on it\n", other->classname, damage, self->classname);
-#endif
+
 				T_Damage (self, other, other, dir, pos2, vec3_origin, damage, 0, DAMAGE_NO_KNOCKBACK|DAMAGE_AVOID_ARMOR,MOD_DIED);
 			}
 
@@ -1794,9 +1791,8 @@ void MG_parse_dismember_msg(edict_t *self, G_Message_t *msg)
 
 	if(!self->monsterinfo.dismember)
 	{
-#ifdef _DEVEL
 		gi.dprintf("ERROR: %s with dismember message handler but no dismember function\n", self->classname);
-#endif
+
 		return;
 	}
 
@@ -1915,15 +1911,13 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 
 	if (self->monsterinfo.searchType == SEARCH_BUOY && !charge_enemy)
 	{
-#ifdef _DEVEL
 		if(mgai_debug->value)
 			gi.dprintf("Vec to navgoal!\n");
-#endif
+
 		if(self->buoy_index < 0 || self->buoy_index > level.active_buoys)
 		{
-#ifdef _DEVEL
 			gi.dprintf("Error: SEARCH_BUOY but invalid index!!!\n");
-#endif
+
 			VectorClear(vec);
 			return;
 		}
@@ -1933,10 +1927,8 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	}
 	else if(self->goalentity && !charge_enemy)
 	{
-#ifdef _DEVEL
 		if(mgai_debug->value)
 			gi.dprintf("Vec to goalentity!\n");
-#endif
 
 		if(self->goalentity == self->enemy && self->ai_mood_flags & AI_MOOD_FLAG_PREDICT)
 		{//predict where he's goin
@@ -1951,10 +1943,9 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	}
 	else if(self->enemy)
 	{
-#ifdef _DEVEL
 		if(mgai_debug->value)
 			gi.dprintf("Vec to enemy!\n");
-#endif
+
 		if (self->ai_mood_flags & AI_MOOD_FLAG_PREDICT)
 		{//predict where he's goin
 			M_PredictTargetPosition( self->enemy, self->enemy->velocity, 8, targVec);
@@ -1968,10 +1959,9 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	}
 	else
 	{
-#ifdef _DEVEL
 		if(mgai_debug->value)
 			gi.dprintf("No goal to face!\n");
-#endif
+
 		VectorClear(vec);
 		return;
 	}

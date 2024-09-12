@@ -1787,10 +1787,9 @@ void SP_monster_ogle(edict_t *self)
 		}
 		else
 		{	// We gotta do SOMETHING if there is no target, otherwise the monster will puke.
-#ifdef _DEVEL
 			gi.dprintf("Ogle at (%s) set to push with no target.\n",
 					vtos(self->s.origin));
-#endif
+
 			SetAnim(self, ANIM_WORK3);
 			self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 		}

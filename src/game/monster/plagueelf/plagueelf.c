@@ -1362,9 +1362,7 @@ void plagueElf_pause (edict_t *self)
 		break;
 
 	default :
-#ifdef _DEVEL
-	//	gi.dprintf("plague elf: Unusable mood %d!\n", self->ai_mood);
-#endif
+		gi.dprintf("plague elf: Unusable mood %d!\n", self->ai_mood);
 		break;
 	}
 }

@@ -242,9 +242,7 @@ void player_repair_skin (edict_t *self)
 		return;
 
 	num_allowed_dmg_skins = 5 - floor(self->health/20);
-#ifdef _DEVEL
 	gi.dprintf("Allowed damaged nodes: %d\n", num_allowed_dmg_skins);
-#endif
 
 	if(num_allowed_dmg_skins <= 0)
 	{//restore all nodes
@@ -260,9 +258,8 @@ void player_repair_skin (edict_t *self)
 				continue;//these shouldn't be fucked with
 			else
 			{
-#ifdef _DEVEL
 				gi.dprintf("Healed player skin on node %d\n", i);
-#endif
+
 				self->client->playerinfo.pers.altparts &= ~(1<<i);
 				self->s.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
 				self->s.fmnodeinfo[i].skin = self->s.skinnum;
@@ -292,9 +289,7 @@ void player_repair_skin (edict_t *self)
 		}
 	}
 
-#ifdef _DEVEL
 	gi.dprintf("Found damaged nodes: %d\n", found_dmg_skins);
-#endif
 	if(found_dmg_skins<=num_allowed_dmg_skins)//no healing
 		return;
 
@@ -307,9 +302,7 @@ void player_repair_skin (edict_t *self)
 		{
 			if(self->s.fmnodeinfo[i].flags&FMNI_USE_SKIN)
 			{
-#ifdef _DEVEL
 				gi.dprintf("Healed player skin on node %d\n", i);
-#endif
 				self->s.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
 				self->s.fmnodeinfo[i].skin = self->s.skinnum;
 

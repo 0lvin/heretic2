@@ -120,9 +120,7 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 				dest = G_Find (dest, FOFS(targetname), self->target);
 				if (!dest)
 				{
-#ifdef _DEVEL
 					gi.dprintf ("Couldn't find multiple teleport destination %d\n",rand_targ);
-#endif
 					return;
 				}
 			}
@@ -133,9 +131,7 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 			dest = G_Find (dest, FOFS(targetname), self->target);
 			if (!dest)
 			{
-#ifdef _DEVEL
 				gi.dprintf ("Couldn't find teleport destination  %s\n",self->target);
-#endif
 				return;
 			}
 		}
