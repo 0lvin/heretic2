@@ -169,12 +169,12 @@ char *dm_statusbar =
 ;
 
 /*
-======================================================================
-
-INTERMISSION
-
-======================================================================
-*/
+ * ======================================================================
+ *
+ * INTERMISSION
+ *
+ * ======================================================================
+ */
 
 void
 MoveClientToIntermission(edict_t *ent)
@@ -184,7 +184,7 @@ MoveClientToIntermission(edict_t *ent)
 		return;
 	}
 
-	if(deathmatch->value)
+	if (deathmatch->value || coop->value)
 	{
 		ent->client->playerinfo.showscores = true;
 	}
@@ -202,12 +202,15 @@ MoveClientToIntermission(edict_t *ent)
 
 	ent->viewheight = 0;
 	ent->s.modelindex = 0;
+	ent->s.modelindex2 = 0;
+	ent->s.modelindex3 = 0;
+	ent->s.modelindex = 0;
 	ent->s.effects = 0;
 	ent->s.sound = 0;
 	ent->solid = SOLID_NOT;
 
 	/* add the layout */
-	if (deathmatch->value)
+	if (deathmatch->value || coop->value)
 	{
 		DeathmatchScoreboardMessage(ent, NULL);
 		gi.unicast(ent, true);
@@ -248,6 +251,9 @@ BeginIntermission(edict_t *targ)
 		{
 			respawn(client);
 		}
+
+		/* Save third person view */
+		client->client->playerinfo.pers.chasetoggle = client->client->chasetoggle;
 	}
 
 	level.intermissiontime = level.time;
@@ -360,6 +366,12 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 	char *p;
 	team_scores_t team_scores[MAX_CLIENTS];
 	team_scores_t temp_point;
+
+
+	if (!ent) /* killer can be NULL */
+	{
+		return;
+	}
 
 	string[0] = 0;
 	stringlength = 0;
@@ -630,19 +642,22 @@ static char *healthicons[2] =
 	"icons/i_health2.m8",
 };
 
-// ************************************************************************************************
-// G_SetStats
-// ----------
-// ************************************************************************************************
+/* ======================================================================= */
 
-void G_SetStats (edict_t *ent)
+void
+G_SetStats(edict_t *ent)
 {
 	int					i, count;
-	gitem_t				*item;
+	gitem_t *item;
 	gclient_t			*pi;
 	player_state_t		*ps;
 	client_persistant_t	*pers;
 	float				time;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	pi = ent->client;
 	ps = &ent->client->ps;
