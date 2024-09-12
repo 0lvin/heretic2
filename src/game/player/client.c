@@ -1564,45 +1564,80 @@ SelectDeathmatchSpawnPoint(void)
 //		return SelectRandomDeathmatchSpawnPoint();
 }
 
-edict_t *SelectCoopSpawnPoint(edict_t *ent)
+static edict_t *
+SelectCoopSpawnPoint(edict_t *ent)
 {
 	int index;
 	edict_t *spot = NULL;
 	char *target;
 
+	if (!ent)
+	{
+		return NULL;
+	}
+
 	index = ent->client - game.clients;
 
-	// Player 0 starts in normal player spawn point.
-
+	/* player 0 starts in normal player spawn point */
 	if (!index)
+	{
 		return NULL;
+	}
 
 	spot = NULL;
 
-	// Assume there are four coop spots at each spawnpoint.
-
+	/* assume there are four coop spots at each spawnpoint */
 	while (1)
 	{
-		spot = G_Find (spot, FOFS(classname), "info_player_coop");
+		spot = G_Find(spot, FOFS(classname), "info_player_coop");
 
 		if (!spot)
-			return NULL;	// we didn't have enough...
-
-//		try not to use the same spot for a bit to prevent telefrags
-//		if(spot->damage_debounce_time > level.time)
-//			continue;
+		{
+			return NULL; /* we didn't have enough... */
+		}
 
 		target = spot->targetname;
-		if (!target)
-			target = "";
-		if ( Q_stricmp(game.spawnpoint, target) == 0 )
-		{
-			// This is a coop spawn point for one of the clients here.
 
+		if (!target)
+		{
+			target = "";
+		}
+
+		if (Q_stricmp(game.spawnpoint, target) == 0)
+		{
+			/* this is a coop spawn point
+			   for one of the clients here */
 			index--;
 
 			if (!index)
-				return spot;// this is it
+			{
+				return spot; /* this is it */
+			}
+		}
+	}
+
+	return spot;
+}
+
+static edict_t *
+SelectSpawnPointByTarget(const char *spawnpoint)
+{
+	edict_t *spot = NULL;
+	while ((spot = G_Find(spot, FOFS(classname), "info_player_start")) != NULL)
+	{
+		if (!spawnpoint[0] && !spot->targetname)
+		{
+			break;
+		}
+
+		if (!spawnpoint[0] || !spot->targetname)
+		{
+			continue;
+		}
+
+		if (Q_stricmp(spawnpoint, spot->targetname) == 0)
+		{
+			break;
 		}
 	}
 
@@ -1610,25 +1645,30 @@ edict_t *SelectCoopSpawnPoint(edict_t *ent)
 }
 
 /*
-===========
-SelectSpawnPoint
-
-Chooses a player start, deathmatch start, coop start, etc
-============
-*/
-void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles)
+ * Chooses a player start, deathmatch start, coop start, etc
+ */
+void
+SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 {
-	edict_t	*spot = NULL;
+	edict_t *spot = NULL;
 	trace_t	tr;
-	vec3_t	endpos;
+	vec3_t endpos;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	if (deathmatch->value)
-		spot = SelectDeathmatchSpawnPoint ();
+	{
+		spot = SelectDeathmatchSpawnPoint();
+	}
 	else if (coop->value)
-		spot = SelectCoopSpawnPoint (ent);
+	{
+		spot = SelectCoopSpawnPoint(ent);
+	}
 
-	// Find a single player start spot.
-
+	/* find a single player start spot */
 	if (!spot)
 	{
 		while ((spot = G_Find (spot, FOFS(classname), "info_player_start")) != NULL)
@@ -1647,12 +1687,14 @@ void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles)
 		{
 			if (!game.spawnpoint[0])
 			{
-				// There wasn't a spawnpoint without a target, so use any.
-
-				spot = G_Find (spot, FOFS(classname), "info_player_start");
+				/* there wasn't a spawnpoint without a target, so use any */
+				spot = G_Find(spot, FOFS(classname), "info_player_start");
 			}
+
 			if (!spot)
-				gi.error ("Couldn't find spawn point %s\n", game.spawnpoint);
+			{
+				gi.error("Couldn't find spawn point '%s'\n", game.spawnpoint);
+			}
 		}
 	}
 
@@ -1670,29 +1712,32 @@ void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles)
 
 	// ???
 
-	VectorCopy (spot->s.angles, angles);
+	VectorCopy(spot->s.angles, angles);
 }
 
-//======================================================================
+/* ====================================================================== */
 
-int body_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+void
+InitBodyQue(void)
 {
-	BecomeDebris(self);
-	return true;
-}
-
-void InitBodyQue (void)
-{
-	int		i;
-	edict_t	*ent;
+	int i;
+	edict_t *ent;
 
 	level.body_que = 0;
 
-	for (i=0; i<BODY_QUEUE_SIZE ; i++)
+	for (i = 0; i < BODY_QUEUE_SIZE; i++)
 	{
 		ent = G_Spawn();
 		ent->classname = "bodyque";
 	}
+}
+
+void
+body_die(edict_t *self, edict_t *inflictor /* unused */,
+	   	edict_t *attacker /* unused */, int damage,
+		vec3_t point /* unused */)
+{
+	BecomeDebris(self);
 }
 
 void
@@ -1737,13 +1782,18 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 	gi.linkentity(self);
 }
 
-void CopyToBodyQue (edict_t *ent)
+static void
+CopyToBodyQue(edict_t *ent)
 {
-	edict_t	*body;
+	edict_t *body;
 	vec3_t	origin;
 
-	// Grab a body que and cycle to the next one.
+	if (!ent)
+	{
+		return;
+	}
 
+	/* grab a body que and cycle to the next one */
 	if(!ent->s.modelindex)
 	{
 		// Safety - was gibbed?
@@ -1765,10 +1815,10 @@ void CopyToBodyQue (edict_t *ent)
 		return;
 	}
 
-	body = &g_edicts[((int)maxclients->value) + 1 + level.body_que];
+	body = &g_edicts[(int)maxclients->value + 1 + level.body_que];
 	level.body_que = (level.body_que + 1) % BODY_QUEUE_SIZE;
 
-	gi.unlinkentity (ent);
+	gi.unlinkentity(ent);
 
 	// If the body was being used, then lets put an effect on it before removing it.
 
@@ -1779,7 +1829,7 @@ void CopyToBodyQue (edict_t *ent)
 		gi.CreateEffect(NULL, FX_CORPSE_REMOVE, 0, origin, "");
 	}
 
-	gi.unlinkentity (body);
+	gi.unlinkentity(body);
 
 	body->s = ent->s;
 	body->s.number = body-g_edicts;
@@ -1811,10 +1861,6 @@ void CopyToBodyQue (edict_t *ent)
 	// as the engine will take care of deallocating any effects still on the player.
 
 	memset(&body->s.clientEffects,0,sizeof(EffectsBuffer_t));
-
-	// FIXME: Re-create certain client effects that were on the player when he died (e.g. fire).
-
-	return;
 }
 
 void
@@ -2341,11 +2387,9 @@ PutClientInServer(edict_t *ent)
 		return;
 	}
 
-	// ********************************************************************************************
-	// Find a spawn point. Do it before setting health back up, so farthest ranging doesn't count
-	// this client.
-	// ********************************************************************************************
-
+	/* find a spawn point do it before setting
+	   health back up, so farthest ranging
+	   doesn't count this client */
 	SelectSpawnPoint(ent, spawn_origin, spawn_angles);
 
 	index = ent - g_edicts - 1;
