@@ -399,7 +399,7 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 	{
 		if(MG_MonsterAttemptTeleport(monster, found_buoy->origin, false))
 		{
-			if(BUOY_DEBUG)
+			if(showbuoys->value)
 				gi.dprintf("%s was teleported(safely) to %s by trigger_goto_buoy\n", monster->classname, found_buoy->targetname);
 		}
 		return;
@@ -408,19 +408,19 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 	{
 		if(MG_MonsterAttemptTeleport(monster, found_buoy->origin, true))
 		{
-			if(BUOY_DEBUG)
+			if(showbuoys->value)
 				gi.dprintf("%s was teleported(unsafely) to %s by trigger_goto_buoy\n", monster->classname, found_buoy->targetname);
 		}
 		return;
 	}
 
-	if(BUOY_DEBUG)
+	if(showbuoys->value)
 		gi.dprintf("%s forced to go to buoy %s by trigger_goto_buoy\n", monster->classname, self->pathtarget);
 
 	if(self->spawnflags&TSF_BUOY_IGNORE_ENEMY)//make him ignore enemy until gets to dest buoy
 	{
 		monster->ai_mood_flags|=AI_MOOD_FLAG_IGNORE_ENEMY;
-		if(BUOY_DEBUG)
+		if(showbuoys->value)
 			gi.dprintf("%s forced to ignore enemy by trigger_goto_buoy\n", monster->classname, self->pathtarget);
 	}
 
@@ -515,7 +515,7 @@ void trigger_goto_buoy_use_go (edict_t *self)
 
 	if(!monster)
 	{
-		if(BUOY_DEBUG)
+		if(showbuoys->value)
 			gi.dprintf("ERROR: trigger_goto_buoy can't find it's target monster %s\n", self->pathtarget);
 		return;
 	}
@@ -619,7 +619,7 @@ void SP_trigger_goto_buoy(edict_t *self)
 		G_FreeEdict(self);
 		return;
 	}
-	else if(BUOY_DEBUG)
+	else if(showbuoys->value)
 	{
 		self->think = trigger_goto_buoy_find_target;
 		self->nextthink = level.time + 0.5;

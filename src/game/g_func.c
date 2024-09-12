@@ -2863,7 +2863,7 @@ pickbuoy:
 		if(!MG_MonsterAttemptTeleport(monster, start_buoy->origin, true))//ignorLOS since we checked above and can't see smonster at this point yet
 			goto pickbuoy;//can't teleport there, there's something obstructing that spot- try another
 
-		if(BUOY_DEBUG)
+		if(showbuoys->value)
 			gi.dprintf("%s monsterspawn-teleported to buoy %s\n", monster->classname, start_buoy->targetname);
 		//step7: ok, put them there, let's continue
 	}

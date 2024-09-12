@@ -459,7 +459,7 @@ void M_ReactToDamage (edict_t *targ, edict_t *attacker)
 		return;
 
 	//FIXME: in SP, after player dead, allow this?  Or Make attacker lose it's enemy?
-	if(!ANARCHY && attacker->classID == targ->classID)
+	if(!anarchy->value && attacker->classID == targ->classID)
 		return;//monsters of same type won't fight each other
 
 	if (targ->classID == CID_OGLE && (!targ->monsterinfo.awake || attacker->client))//ogles do their own checks to get angry at their first enemy
@@ -537,17 +537,17 @@ void M_ReactToDamage (edict_t *targ, edict_t *attacker)
 			{//attacker wasn't after me and my enemy is invalid or don't have one... go after atacker's enemy
 				if (targ->enemy)
 				{
-					if (targ->enemy->client||ANARCHY)
+					if (targ->enemy->client||anarchy->value)
 						targ->oldenemy = targ->enemy;
 				}
 				targ->enemy = attacker->enemy;
 				FoundTarget (targ, true);
 			}
-			else if( (attacker->classID!=targ->classID&&!irand(0,2)) ||ANARCHY)
-			{//30% chance to get mad (only if they're not my class), or always get mad if ANARCHY
+			else if( (attacker->classID!=targ->classID&&!irand(0,2)) ||anarchy->value)
+			{//30% chance to get mad (only if they're not my class), or always get mad if anarchy->value
 				if (targ->enemy)
 				{
-					if (targ->enemy->client||ANARCHY)
+					if (targ->enemy->client||anarchy->value)
 						targ->oldenemy = targ->enemy;
 				}
 				targ->enemy = attacker;

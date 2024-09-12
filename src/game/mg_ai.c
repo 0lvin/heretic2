@@ -655,7 +655,7 @@ qboolean MG_GetGoalPos (edict_t *self, vec3_t goalpos)
 	else
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("No goal to face!\n");
 #endif
 		VectorClear(goalpos);
@@ -676,7 +676,7 @@ float MG_FaceGoal (edict_t *self, qboolean doturn)
 	else
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("No goal to face!\n");
 #endif
 		return false;
@@ -855,7 +855,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 	qboolean	can_move = false;
 
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("Extra Check Jump\n");
 #endif
 	if (self->monsterinfo.searchType == SEARCH_BUOY)
@@ -905,19 +905,19 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 		int inwater;
 
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("check jump down\n");
 #endif
 		inwater = (gi.pointcontents(self->s.origin) & CONTENTS_WATER);
 
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("checking jump down: ");
 #endif
 		if(inwater)
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("checkdown allsolid\n");
 #endif
 			return false;
@@ -946,7 +946,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 			if (trace.allsolid || trace.startsolid)
 			{
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("checkdown allsolid\n");
 #endif
 				return false;
@@ -955,7 +955,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 			if (trace.fraction == 1)
 			{
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("checkdown- too far\n");
 #endif
 				return false;
@@ -969,7 +969,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 				else
 				{
 #ifdef _DEVEL
-					if(MGAI_DEBUG)
+					if(mgai_debug->value)
 						gi.dprintf("checkjump down->whichjump\n");
 #endif
 					VectorSubtract(trace.endpos, self->s.origin, source2);
@@ -994,14 +994,14 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 
 					self->monsterinfo.jump_time = level.time + 1;
 #ifdef _DEVEL
-					if(MGAI_DEBUG)
+					if(mgai_debug->value)
 						gi.dprintf("Extra jump down\n");
 #endif
 				}
 			}
 		}
 #ifdef _DEVEL
-		else if(MGAI_DEBUG)
+		else if(mgai_debug->value)
 			gi.dprintf("checkdown: not clear infront\n");
 #endif
 	}
@@ -1017,7 +1017,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 		{//check to jump over something
 
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("check jump over\n");
 #endif
 			AngleVectors(self->s.angles, vf, NULL, NULL);
@@ -1046,14 +1046,14 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 				else
 					self->nextthink = level.time + 0.3;
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("Extra jump over\n");
 #endif
 			}
 			else
 			{
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("check jump up\n");
 #endif
 				VectorCopy(self->maxs, maxs);
@@ -1079,7 +1079,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 					if (trace.fraction < 0.1)
 					{
 #ifdef _DEVEL
-						if(MGAI_DEBUG)
+						if(mgai_debug->value)
 							gi.dprintf("Can't jump up, no ledge\n");
 #endif
 						return false;
@@ -1115,7 +1115,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 							self->nextthink = level.time + 0.3;
 						self->monsterinfo.jump_time = level.time + 1;
 #ifdef _DEVEL
-						if(MGAI_DEBUG)
+						if(mgai_debug->value)
 							gi.dprintf("Extra jump up\n");
 #endif
 					}
@@ -1123,7 +1123,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 				else
 				{
 #ifdef _DEVEL
-					if(MGAI_DEBUG)
+					if(mgai_debug->value)
 						gi.dprintf("Can't jump up, blocked\n");
 #endif
 					return false;
@@ -1162,14 +1162,14 @@ qboolean MG_CheckJump (edict_t *self)
 		return TB_CheckJump(self);
 
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("Check Jump\n");
 #endif
 	//FIXME: Allow jump in/out of water if not too deep
 	if(self->flags & FL_INWATER)// && !(self->flags&FL_AMPHIBIAN))?
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Can't jump- inwater\n");
 #endif
 		return false;
@@ -1197,7 +1197,7 @@ qboolean MG_CheckJump (edict_t *self)
 		if(!self->goalentity->groundentity && self->classID != CID_GORGON)
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("goalentity in air\n");
 #endif
 			return false;
@@ -1216,7 +1216,7 @@ qboolean MG_CheckJump (edict_t *self)
 	if(jump_height<0.3)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("jump direction more than 60 degrees off of forward\n");
 #endif
 		return false;
@@ -1243,7 +1243,7 @@ qboolean MG_CheckJump (edict_t *self)
     if(self->monsterinfo.jump_time > level.time)            //Don't jump too many times in a row
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("just jumped\n");
 #endif
 		return false;
@@ -1251,7 +1251,7 @@ qboolean MG_CheckJump (edict_t *self)
     else if(!ignore_height&&targ_absmin[2]+36>=self->absmin[2])//&&self->think!=SpiderJumpBegin&&self->classname!="monster_mezzoman"&&self->model!="models/yakman.mdl")
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("not above goalentity, and not spider\n");
 #endif
 		return false;
@@ -1259,7 +1259,7 @@ qboolean MG_CheckJump (edict_t *self)
     else if(!self->groundentity)//flags&FL_ONGROUND)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("not on ground\n");
 #endif
 		return false;
@@ -1267,7 +1267,7 @@ qboolean MG_CheckJump (edict_t *self)
     else if(sub_len>777 && !ignore_height)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("too far away\n");
 #endif
 		return false;
@@ -1275,7 +1275,7 @@ qboolean MG_CheckJump (edict_t *self)
     else if(sub_len <= 100)//&&self->think!=SpiderMeleeBegin)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("too close & not spider\n");
 #endif
 		return false;
@@ -1284,7 +1284,7 @@ qboolean MG_CheckJump (edict_t *self)
     else if(!infront_pos(self, targ_org))
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("goalentity not in front\n");
 #endif
 		return false;
@@ -1293,7 +1293,7 @@ qboolean MG_CheckJump (edict_t *self)
     else if(!clear_visible_pos(self, targ_org)&&!LOS(self, vis_check_spot, spot2))
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("can't see goalentity\n");
 #endif
 		return false;
@@ -1305,7 +1305,7 @@ qboolean MG_CheckJump (edict_t *self)
 		(contents&CONTENTS_WATER||contents&CONTENTS_SLIME||contents&CONTENTS_LAVA))
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("goalentity in water or lava\n");
 #endif
 		return false;
@@ -1325,7 +1325,7 @@ qboolean MG_CheckJump (edict_t *self)
 	if(trace.fraction<1.0||trace.allsolid||trace.startsolid)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("not enough room above\n");
 #endif
 		return false;
@@ -1344,7 +1344,7 @@ qboolean MG_CheckJump (edict_t *self)
 	    if(trace.fraction<1.0||trace.allsolid||trace.startsolid)
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("not enough room in front\n");
 #endif
 			return false;
@@ -1358,7 +1358,7 @@ qboolean MG_CheckJump (edict_t *self)
 		if(contents&CONTENTS_WATER||contents&CONTENTS_SLIME||contents&CONTENTS_LAVA)
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("won't jump in water\n");
 #endif
 			return false;
@@ -1397,7 +1397,7 @@ qboolean MG_CheckJump (edict_t *self)
 		self->nextthink = level.time + 0.3;
 
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("JUMP!!!\n");
 #endif
 	return true;
@@ -1506,13 +1506,13 @@ void MG_CheckEvade (edict_t *self)
 		if(ent->movetype == MOVETYPE_FLYMISSILE && ent->solid && ent->owner!=self)
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("Monster checking evade from %s projectile\n", ent->classname);
 #endif
 			if(Vec3IsZero(ent->velocity))
 			{
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("ERROR: NULL velocity on %s projectile!\n", ent->classname);
 #endif
 			}
@@ -1526,7 +1526,7 @@ void MG_CheckEvade (edict_t *self)
 				if(trace.ent == self)
 				{//going to get hit!
 #ifdef _DEVEL
-					if(MGAI_DEBUG)
+					if(mgai_debug->value)
 						gi.dprintf("Dodging projectile impact, going to hit %s\n", HitLocName[hl]);
 #endif
 					hl = T_GetHitLocation(self, ent, trace.endpos);
@@ -1540,7 +1540,7 @@ void MG_CheckEvade (edict_t *self)
 					ent_dist = VectorNormalize(bad_dir);
 					proj_offset = DotProduct(bad_dir, proj_dir);
 #ifdef _DEVEL
-					if(MGAI_DEBUG)
+					if(mgai_debug->value)
 						gi.dprintf("Proj dot prod: %f\n", proj_offset);
 #endif
 					if(proj_offset > ent_dist/600)//farther it is, smaller angle deviation allowed for evasion
@@ -1550,7 +1550,7 @@ void MG_CheckEvade (edict_t *self)
 						if(trace.ent == self)
 						{
 #ifdef _DEVEL
-							if(MGAI_DEBUG)
+							if(mgai_debug->value)
 								gi.dprintf("Dodging projectile close pass, going to hit %s\n", HitLocName[hl]);
 #endif
 							hl = T_GetHitLocation(self, ent, trace.endpos);
@@ -1576,7 +1576,7 @@ void old_ai_run (edict_t *self, float dist);
 void ai_run (edict_t *self, float dist)
 {
 	//if dumb fleeing or fleeing and can't use buoys...
-	if((DEACTIVATE_BUOYS||!(self->monsterinfo.aiflags & AI_USING_BUOYS))
+	if((deactivate_buoys->value||!(self->monsterinfo.aiflags & AI_USING_BUOYS))
 				&&
 				(self->monsterinfo.aiflags & AI_COWARD ||
 					(self->monsterinfo.aiflags&AI_FLEE
@@ -1599,7 +1599,7 @@ void ai_run (edict_t *self, float dist)
 		}
 	}
 
-	if(!DEACTIVATE_BUOYS)
+	if(!deactivate_buoys->value)
 	{
 		if(self->monsterinfo.aiflags & AI_USING_BUOYS)
 		{
@@ -1624,7 +1624,7 @@ void ai_run (edict_t *self, float dist)
 	if(self->goalentity == self->enemy)
 	{
 		//sfs--only do this visibility check when debugging (gets expensive at big distances)
-		if(MGAI_DEBUG && !visible(self, self->enemy))
+		if(mgai_debug->value && !visible(self, self->enemy))
 		{
 			gi.dprintf("ERROR: goal is invis enemy!\n");
 		}
@@ -1762,7 +1762,7 @@ void MG_PostDeathThink (edict_t *self)
 	if(!self->groundentity || Vec3NotZero(self->velocity))
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Falling!\n");
 #endif
 		if(self->groundentity&&self->friction == 1.0)//check avelocity?
@@ -1919,7 +1919,7 @@ void MG_PostDeathThink (edict_t *self)
 	{
 	case 1:
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Forward trace %f\n", trace1.fraction);
 #endif
 		VectorMA(self->velocity, 200, forward, self->velocity);
@@ -1941,7 +1941,7 @@ void MG_PostDeathThink (edict_t *self)
 
 	case 2:
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("back trace %f\n", trace2.fraction);
 #endif
 		VectorMA(self->velocity, -200, forward, self->velocity);
@@ -1963,7 +1963,7 @@ void MG_PostDeathThink (edict_t *self)
 
 	case 3:
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Right trace %f\n", trace3.fraction);
 #endif
 		VectorMA(self->velocity, 200, right, self->velocity);
@@ -1985,7 +1985,7 @@ void MG_PostDeathThink (edict_t *self)
 
 	case 4:
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Left trace %f\n", trace4.fraction);
 #endif
 		VectorMA(self->velocity, -200, right, self->velocity);
@@ -2009,7 +2009,7 @@ void MG_PostDeathThink (edict_t *self)
 	if(whichtrace == -1)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Deadmonster slide = stuck! (size is %4.2f)\n", self->dead_size);
 #endif
 		self->post_think = MG_PostDeathThink;
@@ -2017,7 +2017,7 @@ void MG_PostDeathThink (edict_t *self)
 		return;
 	}
 #ifdef _DEVEL
-	else if(MGAI_DEBUG)
+	else if(mgai_debug->value)
 		gi.dprintf("Deadmonster slide = On ground (size was %4.2f)\n", self->dead_size);
 #endif
 	self->friction = 1.0;
@@ -2047,7 +2047,7 @@ void MG_CheckLanded (edict_t *self, float next_anim)
 	vec3_t pos;
 
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("self->velocity %f %f %f\n", self->velocity[0], self->velocity[1], self->velocity[2]);
 #endif
 
@@ -2083,7 +2083,7 @@ void MG_ApplyJump (edict_t *self)
 	VectorCopy(self->movedir, self->velocity);
 	VectorNormalize(self->movedir);
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("Jump velocity will be: %4.2f %4.2f %4.2f\n", self->velocity[0], self->velocity[1], self->velocity[2]);
 #endif
 	self->monsterinfo.aiflags &= ~AI_OVERRIDE_GUIDE;
@@ -2242,7 +2242,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			if(MG_TestMove(self, self->ideal_yaw, dist))
 			{//can move in that dir turn there for rest of this
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("Move in ideal tested true while using best_move...!\n");
 #endif
 				turnamt = Q_fabs(MG_ChangeWhichYaw(self, YAW_IDEAL));
@@ -2270,7 +2270,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 	if(trace.succeeded)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Move forward succeeded!\n");
 #endif
 		return true;
@@ -2349,7 +2349,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 					{
 						if(infront(self, trace.ent))
 						{//smash it!
-							if(MGAI_DEBUG)
+							if(mgai_debug->value)
 								gi.dprintf("%s breaking blocking %s!\n", self->classname, trace.ent->classname);
 							self->monsterinfo.aiflags |= AI_STRAIGHT_TO_ENEMY;//go straight at enemy, not buoys
 							self->oldenemy_debounce_time = level.time + 7;//attack it for 7 seconds max
@@ -2368,7 +2368,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			if(self->monsterinfo.idle_time < level.time)
 			{//not already following a weird dir
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("Move forward hit wall, newdir\n");
 #endif
 				self->monsterinfo.idle_time = level.time + flrand(0.5, 1.2);
@@ -2378,7 +2378,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			return false;
 		}
 #ifdef _DEVEL
-		else if(MGAI_DEBUG)
+		else if(mgai_debug->value)
 			gi.dprintf("Bumped world - t_f: %f t_allsolid: %d, t_startsolid %d\n",trace.fraction, trace.allsolid, trace.startsolid);
 #endif
 	}
@@ -2391,7 +2391,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			if(MG_CheckJump(self))//can jump off it
 			{
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("Move forward jumped off ledge!\n");
 #endif
 				return true;
@@ -2401,7 +2401,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 				if(MG_ExtraCheckJump(self))
 				{
 #ifdef _DEVEL
-					if(MGAI_DEBUG)
+					if(mgai_debug->value)
 						gi.dprintf("Move straight to goal extra jumped off ledge!\n");
 #endif
 					return true;
@@ -2412,7 +2412,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 		if(trace.fraction >= 0.5)//even assassins skip this
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("Can't jump off, getting newdir\n");
 #endif
 			if(self->monsterinfo.idle_time < level.time)
@@ -2426,7 +2426,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 	}
 
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		if(trace.allsolid || trace.startsolid)
 			gi.dprintf("Move forward allsolid or startsolid!\n");
 #endif
@@ -2437,7 +2437,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 	if(self->monsterinfo.idle_time > level.time)
 	{//heading somewhere for a few secs, turn here
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Turning to newdir, not bumping\n");
 #endif
 		/*		turnamt = Q_fabs(MG_ChangeWhichYaw(self, YAW_BEST_MOVE));
@@ -2459,7 +2459,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 	{//a wall?
 		vec3_t	wall_angles, wall_right, self_forward, new_forward, vf;
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Move forward hit wall, checking left/right/back...\n");
 #endif
 
@@ -2484,7 +2484,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 		if(DotProduct(wall_right,self_forward)>0)
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("turning left\n");
 #endif
 			VectorCopy(wall_right, new_forward);
@@ -2492,7 +2492,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 		else
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("turning right\n");
 #endif
 			VectorScale(wall_right, -1, new_forward);
@@ -2537,7 +2537,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 		if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 		{//Uh oh, try other way
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("turn other way\n");
 #endif
 			VectorScale(new_forward, -1, new_forward);
@@ -2563,7 +2563,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 			{//Uh oh!  Go straight away from wall
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("turn all the way around\n");
 #endif
 				self->best_move_yaw=wall_angles[YAW];
@@ -2582,7 +2582,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 	//Must have bumped into something very strange (other monster?)
 	//just pick a new random dir
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("Don't know what I hit, choosing newdir for a second\n");
 #endif
 	MG_NewDir(self, dist);
@@ -2643,7 +2643,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 			if(MG_TestMove(self, self->ideal_yaw, dist))
 			{//can move in that dir turn there for rest of this
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("Move in ideal tested true while using best_move...!\n");
 #endif
 				turnamt = Q_fabs(MG_ChangeWhichYaw(self, YAW_IDEAL));
@@ -2673,7 +2673,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 	if(trace.succeeded)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Move forward succeeded!\n");
 #endif
 		return true;
@@ -2739,7 +2739,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 			if(self->monsterinfo.idle_time < level.time)
 			{//not already following a weird dir
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("Move forward hit wall, newdir\n");
 #endif
 				self->monsterinfo.idle_time = level.time + flrand(0.5, 1.2);
@@ -2749,7 +2749,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 			return false;
 		}
 #ifdef _DEVEL
-		else if(MGAI_DEBUG)
+		else if(mgai_debug->value)
 			gi.dprintf("Bumped world - t_f: %f t_allsolid: %d, t_startsolid %d\n",trace.fraction, trace.allsolid, trace.startsolid);
 #endif
 	}
@@ -2759,7 +2759,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 	{//why not tracefraction == 1.0?
 		if(trace.fraction >= 0.5)//even assassins skip this
 		{
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("Can't jump off, getting newdir\n");
 
 			if(self->monsterinfo.idle_time < level.time)
@@ -2773,7 +2773,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 	}*/
 
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		if(trace.allsolid || trace.startsolid)
 			gi.dprintf("Move forward allsolid or startsolid!\n");
 #endif
@@ -2784,7 +2784,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 	if(self->monsterinfo.idle_time > level.time)
 	{//heading somewhere for a few secs, turn here
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Turning to newdir, not bumping\n");
 #endif
 		/*		turnamt = Q_fabs(MG_ChangeWhichYaw(self, YAW_BEST_MOVE));
@@ -2806,7 +2806,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 	{//a wall?
 		vec3_t	wall_angles, wall_right, self_forward, new_forward, vf;
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Move forward hit wall, checking left/right/back...\n");
 #endif
 		//If facing a wall, turn faster, more facing the wall, faster the turn
@@ -2830,7 +2830,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 		if(DotProduct(wall_right,self_forward)>0)
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("turning left\n");
 #endif
 			VectorCopy(wall_right, new_forward);
@@ -2838,7 +2838,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 		else
 		{
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("turning right\n");
 #endif
 			VectorScale(wall_right, -1, new_forward);
@@ -2879,7 +2879,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 		if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 		{//Uh oh, try other way
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("turn other way\n");
 #endif
 			VectorScale(new_forward, -1, new_forward);
@@ -2900,7 +2900,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 			if (trace.fraction < 1||trace.allsolid||trace.startsolid)
 			{//Uh oh!  Go straight away from wall
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("turn all the way around\n");
 #endif
 				self->best_move_yaw=wall_angles[YAW];
@@ -2919,7 +2919,7 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 	//Must have bumped into something very strange (other monster?)
 	//just pick a new random dir
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("Don't know what I hit, choosing newdir for a second\n");
 #endif
 

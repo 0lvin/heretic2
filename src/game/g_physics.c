@@ -505,7 +505,7 @@ void HandleCollision(edict_t *self, trace_t *trace, vec3_t move, int forceful, i
 //	assert(self->solid != SOLID_NOT);
 //	assert(other->solid != SOLID_NOT);
 
-	if(IMPACT_DAMAGE)
+	if(impact_damage->value)
 	{
 		if(flags&CH_ISBLOCKED || flags&CH_BOUNCED)
 		{

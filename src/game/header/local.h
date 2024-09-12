@@ -1205,16 +1205,6 @@ void c_swapplayer(edict_t *Self,edict_t *Cinematic);
 void remove_non_cinematic_entites(edict_t *owner);
 void reinstate_non_cinematic_entites(edict_t *owner);
 
-//For simplicity of use.. take it out later
-
-#define BUOY_DEBUG	showbuoys->value
-#define BUOY_DEBUG_LITE	showlitebuoys->value
-#define MGAI_DEBUG	mgai_debug->value
-#define DEACTIVATE_BUOYS deactivate_buoys->value
-#define ANARCHY anarchy->value
-#define IMPACT_DAMAGE impact_damage->value
-#define CHEATING_MONSTERS cheating_monsters->value
-
 void ProcessScripts(void);
 void ShutdownScripts(qboolean Complete);
 

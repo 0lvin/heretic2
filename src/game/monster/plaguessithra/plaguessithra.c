@@ -489,7 +489,7 @@ void ssithra_check_namor(edict_t *self)
 			if(ssithraWaterLedgeNearEnemy(self))
 			{
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("Ssithra facing and namor\n");
 #endif
 				SetAnim(self,ANIM_FACEANDNAMOR);
@@ -511,7 +511,7 @@ void ssithraWhichJump(edict_t *self)
 
 	if(ssithraCheckInWater(self)&&!(gi.pointcontents(targ_org)&CONTENTS_WATER))
 	{
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Ssithra_whichjump->namor\n");
 		SetAnim(self,ANIM_NAMOR);
 	}
@@ -719,7 +719,7 @@ void ssithraNamorJump (edict_t *self)
 	if(!MG_GetTargOrg(self, targ_org))
 		return;
 
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("Namor Jump\n");
 
 	//FIXME: jumps too high sometimes?
@@ -795,12 +795,12 @@ void ssithraCheckJump (edict_t *self)
 
 		inwater = ssithraCheckInWater(self);
 
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("checking jump down: ");
 
 		if(inwater)
 		{
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("checkdown allsolid\n");
 			return;
 		}
@@ -833,7 +833,7 @@ void ssithraCheckJump (edict_t *self)
 			if (trace.allsolid || trace.startsolid)
 			{
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("checkdown allsolid\n");
 #endif
 				return;
@@ -842,7 +842,7 @@ void ssithraCheckJump (edict_t *self)
 			if (trace.fraction == 1)
 			{
 #ifdef _DEVEL
-				if(MGAI_DEBUG)
+				if(mgai_debug->value)
 					gi.dprintf("checkdown- too far\n");
 #endif
 				return;
@@ -857,7 +857,7 @@ void ssithraCheckJump (edict_t *self)
 				if (trace.contents != CONTENTS_SOLID)
 				{
 #ifdef _DEVEL
-					if(MGAI_DEBUG)
+					if(mgai_debug->value)
 						gi.dprintf("checkjump trying to jump into water\n");
 #endif
 					if ((trace.contents&CONTENTS_WATER||trace.contents&CONTENTS_SLIME)||trace.ent == self->enemy)
@@ -888,7 +888,7 @@ void ssithraCheckJump (edict_t *self)
 				else
 				{
 #ifdef _DEVEL
-					if(MGAI_DEBUG)
+					if(mgai_debug->value)
 						gi.dprintf("checkjump down->whichjump\n");
 #endif
 					VectorSubtract(trace.endpos, self->s.origin, source2);
@@ -904,7 +904,7 @@ void ssithraCheckJump (edict_t *self)
 			}
 		}
 #ifdef _DEVEL
-		else if(MGAI_DEBUG)
+		else if(mgai_debug->value)
 			gi.dprintf("checkdown: not clear infront\n");
 #endif
 	}
@@ -1740,7 +1740,7 @@ void ssithra_pain_react (edict_t *self)
 	if(!self->enemy)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("No react to pain\n");
 #endif
 		ssithra_decide_stand(self);
@@ -1750,7 +1750,7 @@ void ssithra_pain_react (edict_t *self)
 	if(self->enemy->health<=0||self->enemy == self||!self->enemy->takedamage)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("No react to pain\n");
 #endif
 		self->enemy=NULL;
@@ -1759,7 +1759,7 @@ void ssithra_pain_react (edict_t *self)
 	}
 	//go get him!
 #ifdef _DEVEL
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("pain_react -> run\n");
 #endif
 	ssithra_decide_gallop(self);
@@ -2766,7 +2766,7 @@ qboolean SsithraCheckMood (edict_t *self)
 
 		case AI_MOOD_DELAY:
 #ifdef _DEVEL
-			if(MGAI_DEBUG)
+			if(mgai_debug->value)
 				gi.dprintf("Delay on frame %d\n", self->monsterinfo.currframeindex);
 #endif
 			SetAnim(self, ANIM_DELAY);
@@ -2796,7 +2796,7 @@ qboolean SsithraCheckMood (edict_t *self)
 
 		default :
 #ifdef _DEVEL
-//			if(MGAI_DEBUG)
+//			if(mgai_debug->value)
 				gi.dprintf("ssithra: Unusable mood %d!\n", self->ai_mood);
 #endif
 			break;

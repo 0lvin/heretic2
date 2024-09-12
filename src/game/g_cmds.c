@@ -1285,7 +1285,7 @@ Cmd_CrazyMonsters_f(edict_t *ent)
 	edict_t *enemy_ent;
 
 	gi.cprintf(ent, PRINT_HIGH, "Berzerking all level monsters\n");
-	ANARCHY = true;
+	anarchy->value = true;
 	for (searchent = g_edicts; searchent < &g_edicts[globals.num_edicts]; searchent++)
 	{
 		if (!searchent->inuse)

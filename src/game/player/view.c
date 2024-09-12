@@ -933,7 +933,7 @@ ClientEndServerFrame(edict_t *ent)
 
 	playerExport->PlayerUpdateCmdFlags(&ent->client->playerinfo);
 
-	if(BUOY_DEBUG) // Note this is a bit of a hack
+	if(showbuoys->value) // Note this is a bit of a hack
 	{
 		if(ent->client->playerinfo.seqcmd[ACMDL_ACTION])
 		{

@@ -420,7 +420,7 @@ void M_droptofloor (edict_t *ent)
 		return;
 	}
 
-	if(MGAI_DEBUG)
+	if(mgai_debug->value)
 		gi.dprintf("%s at %s dropped to floor at %s\n", ent->classname, vtos(ent->s.origin), vtos(trace.endpos));
 
 	VectorCopy (trace.endpos, ent->s.origin);
@@ -1916,7 +1916,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	if (self->monsterinfo.searchType == SEARCH_BUOY && !charge_enemy)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Vec to navgoal!\n");
 #endif
 		if(self->buoy_index < 0 || self->buoy_index > level.active_buoys)
@@ -1934,7 +1934,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	else if(self->goalentity && !charge_enemy)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Vec to goalentity!\n");
 #endif
 
@@ -1952,7 +1952,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	else if(self->enemy)
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("Vec to enemy!\n");
 #endif
 		if (self->ai_mood_flags & AI_MOOD_FLAG_PREDICT)
@@ -1969,7 +1969,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	else
 	{
 #ifdef _DEVEL
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("No goal to face!\n");
 #endif
 		VectorClear(vec);

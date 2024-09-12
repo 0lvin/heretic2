@@ -495,7 +495,7 @@ void ai_charge (edict_t *self, float dist)
 
 	if(!self->enemy)
 	{
-		if(MGAI_DEBUG)
+		if(mgai_debug->value)
 			gi.dprintf("ERROR: AI_CHARGE at a NULL enemy!\n");
 		MG_FaceGoal(self, true);//get ideal yaw and turn
 		return;//send stand MSG?
@@ -1195,7 +1195,7 @@ startcheck:
 	}
 	else
 	{
-		if(ANARCHY)
+		if(anarchy->value)
 		{//crazy monsters mode
 			int	checkcnt = 0;
 			client = self;
@@ -1286,7 +1286,7 @@ startcheck:
 	{
 		if(flag)
 		{//not a secondary enemy
-			if(!ANARCHY)
+			if(!anarchy->value)
 			{
 				if (ok_to_wake(self, false, true))
 				{//eating or in a cinematic or not awake or targeted, leave them alone
@@ -1296,12 +1296,12 @@ startcheck:
 
 			if (!client->enemy)
 			{
-				if(!ANARCHY)
+				if(!anarchy->value)
 					goto nextcheck;
 			}
 			else
 			{
-				if (client->enemy->health<0 && !ANARCHY)
+				if (client->enemy->health<0 && !anarchy->value)
 					goto nextcheck;
 
 				if (client->enemy->flags & FL_NOTARGET)
@@ -1311,7 +1311,7 @@ startcheck:
 			if(!visible(self, client))
 				goto nextcheck;
 
-			if(!ANARCHY)
+			if(!anarchy->value)
 				self->enemy = client->enemy;
 			else
 				self->enemy = client;
