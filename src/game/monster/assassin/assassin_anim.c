@@ -9,7 +9,7 @@
 
 #include "../../header/local.h"
 
-#include "../../header/c_ai.h"
+#include "../../character/ai.h"
 #include "assassin_anim.h"
 #include "assassin.h"
 #include "../../header/g_monster.h"

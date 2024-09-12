@@ -12,7 +12,7 @@
 #include "plaguessithra_anim.h"
 #include "plaguessithra.h"
 #include "../../header/g_monster.h"
-#include "../../header/c_ai.h"
+#include "../../character/ai.h"
 
 
 void old_ai_run (edict_t *self, float dist);

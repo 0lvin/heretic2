@@ -38,7 +38,7 @@
 #include "assassin_anim.h"
 #include "../../header/g_hitlocation.h"
 #include "../../header/g_misc.h"
-#include "../../header/c_ai.h"
+#include "../../character/ai.h"
 #include "../../common/angles.h"
 #include "../../player/library/p_anim_branch.h"
 #include "../../player/library/p_anims.h"

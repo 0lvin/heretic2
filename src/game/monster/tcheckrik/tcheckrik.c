@@ -40,7 +40,7 @@
 #include "../../header/g_misc.h"
 #include "../../common/angles.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/c_ai.h"
+#include "../../character/ai.h"
 
 #include "../stats/stats.h"
 

@@ -13,7 +13,7 @@
 #include "mother.h"
 
 #include "../../header/g_monster.h"
-#include "../../header/c_ai.h"
+#include "../../character/ai.h"
 
 void mother_growl(edict_t *self);
 

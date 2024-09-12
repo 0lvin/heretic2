@@ -11,7 +11,7 @@
 
 #include "tcheckrik_anim.h"
 #include "tcheckrik.h"
-#include "../../header/c_ai.h"
+#include "../../character/ai.h"
 #include "../../header/g_monster.h"
 
 //all of the anim frames that used to live in m_insect.h
