@@ -1232,7 +1232,7 @@ startcheck:
 				if ((self->monsterinfo.otherenemyname) && (self->monsterinfo.chase_finished < level.time))
 				{
 					ent = NULL;
-					while((ent=findradius(ent,self->s.origin,175)) != NULL)
+					while((ent = newfindradius(ent,self->s.origin,175)) != NULL)
 					{
 						if (!strcmp(ent->classname,self->monsterinfo.otherenemyname)&&ent!=self)
 						{
@@ -1760,7 +1760,7 @@ qboolean ai_inpack(edict_t *self)
 	edict_t *ent;
 
 	ent = NULL;
-	while ((ent = findradius(ent, self->s.origin, 1024)) != NULL)
+	while ((ent = newfindradius(ent, self->s.origin, 1024)) != NULL)
 	{
 		if (ent == self)
 			continue;

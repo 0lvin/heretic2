@@ -1596,7 +1596,7 @@ void pelf_PollResponse ( edict_t *self, int sound_event, int sound_id, float tim
 {
 	edict_t *ent = NULL, *last_valid = NULL;
 
-	while((ent = findradius(ent, self->s.origin, PLAGUEELF_SUPPORT_RADIUS)) != NULL)
+	while((ent = newfindradius(ent, self->s.origin, PLAGUEELF_SUPPORT_RADIUS)) != NULL)
 	{
 		//Not us
 		if (ent==self)

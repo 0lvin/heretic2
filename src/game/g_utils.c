@@ -60,35 +60,6 @@ G_ProjectSource2(vec3_t point, vec3_t distance, vec3_t forward,
 				up[2] * distance[2];
 }
 
-void G_SetToFree(edict_t *self)
-{
-	if(self->PersistantCFX)
-	{
-		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_ENTITY);
-		self->PersistantCFX = 0;
-	}
-
-	self->think = G_FreeEdict;
-	self->nextthink = level.time + FRAMETIME;
-	self->svflags &= ~SVF_NOCLIENT;
-
-	self->next_pre_think = -1;
-	self->next_post_think = -1;
-
-	self->takedamage = DAMAGE_NO;
-	self->movetype = PHYSICSTYPE_NONE;
-	self->solid = SOLID_NOT;
-	self->touch = NULL;
-	self->blocked = NULL;
-	self->isBlocked = NULL;
-	self->isBlocking = NULL;
-	self->bounced = NULL;
-	VectorClear(self->mins);
-	VectorClear(self->maxs);
-
-	gi.linkentity(self);
-}
-
 /*
  * Searches all active entities for the next
  * one that holds the matching string at fieldofs
@@ -140,125 +111,6 @@ G_Find(edict_t *from, int fieldofs, const char *match)
 	return NULL;
 }
 
-
-//
-//=================
-// FindOnPath
-//
-// Returns damageable entities that lie along a given pathway.  This is NOT 100% guaranteed to return a given edict only once.
-//
-//=================
-
-edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos)
-{
-	vec3_t	vect, curpos;
-	trace_t trace;
-	float	skipamount;
-	edict_t *tracebuddy;
-
-	VectorCopy(startpos, curpos);
-	tracebuddy = startent;
-	while(1)
-	{
-		trace = gi.trace(curpos, mins, maxs, endpos, tracebuddy, MASK_SHOT);
-
-		// If we started inside something.
-		if (trace.startsolid || trace.allsolid)
-		{
-			if (trace.ent && trace.ent->takedamage)
-			{	// Found an item.  Skip forward a distance and return the ent.
-				skipamount = maxs[2];
-				if (skipamount < 4)
-					skipamount = 4;
-				VectorSubtract(endpos, curpos, vect);
-				if (VectorNormalize(vect) < skipamount)	// skip to the end.
-					VectorCopy(endpos, *resultpos);
-				else
-					VectorMA(curpos, skipamount, vect, *resultpos);
-
-				return(trace.ent);
-			}
-			else
-			{	// Didn't stop on anything useful, continue to next trace.
-				skipamount = maxs[2];	// Skip forward a bit.
-				if (skipamount < 4)
-					skipamount = 4;
-				VectorSubtract(endpos, curpos, vect);
-				if (VectorNormalize(vect) < skipamount)	// skip to the end.
-					return(NULL);		// Didn't find anything.
-				else
-					VectorMA(curpos, skipamount, vect, curpos);
-				if (trace.ent)
-					tracebuddy = trace.ent;
-				continue;	// Do another trace.
-			}
-		}
-
-		// If we did not start inside something, but stopped at something.
-		if (trace.fraction < .99)
-		{
-			if (trace.ent && trace.ent->takedamage)
-			{	// Found an item.  Skip forward a distance and return the ent.
-				skipamount = maxs[2];
-				if (skipamount < 4)
-					skipamount = 4;
-				VectorSubtract(endpos, trace.endpos, vect);
-				if (VectorNormalize(vect) < skipamount)	// skip to the end.
-					VectorCopy(endpos, *resultpos);
-				else
-					VectorMA(trace.endpos, skipamount, vect, *resultpos);
-
-				return(trace.ent);
-			}
-			else
-			{	// Didn't stop on anything useful, continue to next trace.
-				skipamount = maxs[2];	// Skip forward a bit.
-				if (skipamount < 4)
-					skipamount = 4;
-				VectorSubtract(endpos, trace.endpos, vect);
-				if (VectorNormalize(vect) < skipamount)	// skip to the end.
-					return(NULL);		// Didn't find anything.
-				else
-					VectorMA(trace.endpos, skipamount, vect, curpos);
-				if (trace.ent)
-					tracebuddy = trace.ent;
-				continue;	// Do another trace.
-			}
-		}
-
-		// If we finished the whole move.
-		{
-			VectorCopy(endpos, *resultpos);
-			return(NULL);
-		}
-	};
-
-	return(NULL);	// Never gets here.
-}
-
-// THis works like findradius, except it uses the bbox of an ent to indicate the area to check.
-edict_t *findinblocking(edict_t *from, edict_t *checkent)
-{
-	static vec3_t	min, max;
-
-	if (!from)
-	{
-		VectorAdd(checkent->s.origin, checkent->mins, min);
-		VectorAdd(checkent->s.origin, checkent->maxs, max);
-	}
-	while (1)
-	{
-		from=findinbounds(from,min,max);
-		if (!from)
-			return 0;
-		if (!from->inuse)
-			continue;
-		if (from == checkent)
-			continue;
-		return from;
-	}
-}
-
 /*
  * Returns entities that have origins
  * within a spherical area
@@ -266,34 +118,26 @@ edict_t *findinblocking(edict_t *from, edict_t *checkent)
 edict_t *
 findradius(edict_t *from, vec3_t org, float rad)
 {
-	static float max2;
-	static vec3_t min;
-	static vec3_t max;
-	vec3_t	eorg;
-	int		j;
-	float elen;
+	vec3_t eorg;
+	int j;
 
 	if (!from)
 	{
-		max2=rad*rad;
-		VectorCopy(org,min);
-		VectorCopy(org,max);
-		for (j=0 ; j<3 ; j++)
-		{
-			min[j]-=rad;
-			max[j]+=rad;
-		}
+		from = g_edicts;
+	}
+	else
+	{
+		from++;
 	}
 
-	while (1)
+	for ( ; from < &g_edicts[globals.num_edicts]; from++)
 	{
-		from = findinbounds(from,min,max);
-		if (!from)
+		if (!from->inuse)
 		{
-			return 0;
+			continue;
 		}
 
-		if (!from->inuse)
+		if (from->solid == SOLID_NOT)
 		{
 			continue;
 		}
@@ -304,8 +148,7 @@ findradius(edict_t *from, vec3_t org, float rad)
 					   (from->mins[j] + from->maxs[j]) * 0.5);
 		}
 
-		elen = DotProduct(eorg,eorg);
-		if (elen > max2)
+		if (VectorLength(eorg) > rad)
 		{
 			continue;
 		}
@@ -365,82 +208,6 @@ findradius2(edict_t *from, vec3_t org, float rad)
 		return from;
 	}
 
-	return NULL;
-}
-
-/*
-=================
-finddistance
-
-Returns entities that have origins within a spherical shell area
-
-finddistance (origin, mindist, maxdist)
-=================
-*/
-edict_t *finddistance (edict_t *from, vec3_t org, float mindist, float maxdist)
-{
-	static float min2;
-	static float max2;
-	static vec3_t min;
-	static vec3_t max;
-	vec3_t	eorg;
-	int		j;
-	float elen;
-
-	if (!from)
-	{
-		min2=mindist*mindist;
-		max2=maxdist*maxdist;
-		VectorCopy(org,min);
-		VectorCopy(org,max);
-		for (j=0 ; j<3 ; j++)
-		{
-			min[j]-=maxdist;
-			max[j]+=maxdist;
-		}
-	}
-	while (1)
-	{
-		from=findinbounds(from,min,max);
-		if (!from)
-			return 0;
-		if (!from->inuse)
-			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
-		elen = DotProduct(eorg,eorg);
-		if (elen > max2)
-			continue;
-		if (elen < min2)
-			continue;
-		return from;
-	}
-}
-
-edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max)
-{
-	static edict_t *touchlist[MAX_EDICTS];
-	static int index=-1;
-	static int num;
-
-	if (!from)
-	{
-		num = gi.BoxEdicts(min,max, touchlist, MAX_EDICTS, AREA_SOLID);
-		index=0;
-	}
-	else
-	{
-		assert(touchlist[index]==from);
-		// you cannot adjust the pointers yourself...
-		// this means you did not call it with the previous edict
-		index++;
-	}
-	for (;index<num;index++)
-	{
-		if (!touchlist[index]->inuse)
-			continue;
-		return touchlist[index];
-	}
 	return NULL;
 }
 
@@ -618,31 +385,6 @@ G_UseTargets(edict_t *ent, edict_t *activator)
 			}
 		}
 	}
-}
-
-qboolean PossessCorrectItem(edict_t *ent, gitem_t *item)
-{
-	edict_t	*t;
-
-	if(!ent->target_ent)
-	{
-		return false;
-	}
-	ent = ent->target_ent;
-	t = NULL;
-	while ((t = G_Find (t, FOFS(targetname), ent->target)))
-	{
-		// doors fire area portals in a specific way
-		if (!Q_stricmp(t->classname, "func_areaportal") &&
-			(!Q_stricmp(ent->classname, "func_door") || !Q_stricmp(ent->classname, "func_door_rotating")))
-			continue;
-
-		if(t->item == item)
-		{
-			return true;
-		}
-	}
-	return false;
 }
 
 /*
@@ -896,35 +638,35 @@ G_CopyString(char *in)
 	return out;
 }
 
-
-void G_InitEdict (edict_t *self)
+void
+G_InitEdict(edict_t *e)
 {
-	if (!self)
+	if (!e)
 	{
 		return;
 	}
 
-	if (self->nextthink)
+	if (e->nextthink)
 	{
-		self->nextthink = 0;
+		e->nextthink = 0;
 	}
 
-	self->s.clientEffects.buf = NULL;
-	self->s.clientEffects.bufSize = 0;
-	self->s.clientEffects.freeBlock = 0;
-	self->s.clientEffects.numEffects = 0;
+	e->s.clientEffects.buf = NULL;
+	e->s.clientEffects.bufSize = 0;
+	e->s.clientEffects.freeBlock = 0;
+	e->s.clientEffects.numEffects = 0;
 
-	self->inuse = true;
-	self->movetype = PHYSICSTYPE_NONE;
-	self->classname = "noclass";
-	self->gravity = 1.0F;
-	self->friction = 1.0F;
-	self->elasticity = ELASTICITY_SLIDE;
-	self->s.number = self - g_edicts;
-	self->s.scale = 1.0F;
-	self->msgHandler = NULL;
-	self->svflags = 0;
-	self->reflected_time = level.time;
+	e->inuse = true;
+	e->movetype = PHYSICSTYPE_NONE;
+	e->classname = "noclass";
+	e->gravity = 1.0;
+	e->friction = 1.0;
+	e->elasticity = ELASTICITY_SLIDE;
+	e->s.number = e - g_edicts;
+	e->s.scale = 1.0;
+	e->msgHandler = NULL;
+	e->svflags = 0;
+	e->reflected_time = level.time;
 
 }
 
@@ -939,7 +681,8 @@ instead of being removed and recreated, which can cause interpolated
 angles and bad trails.
 =================
 */
-edict_t *G_Spawn (void)
+edict_t *
+G_Spawn (void)
 {
 	int			i;
 	edict_t		*e;
@@ -952,7 +695,7 @@ edict_t *G_Spawn (void)
 		// freeing and allocating, so relax the replacement policy
 		if(!e->inuse && e->freetime <= level.time)
 		{
-			G_InitEdict (e);
+			G_InitEdict(e);
 
 			++e->s.usageCount;
 			return e;
@@ -962,33 +705,36 @@ edict_t *G_Spawn (void)
 	if (i == game.maxentities)
 	{
 		assert(0);
-		gi.error ("ED_Alloc: Spawning more than %d edicts", game.maxentities);
+		gi.error("%s: Spawning more than %d edicts", 
+			__func__, game.maxentities);
 	}
 
 	globals.num_edicts++;
-	G_InitEdict (e);
+	G_InitEdict(e);
 	return e;
 }
 
 /*
-=================
-G_FreeEdict
-
-Marks the edict as free
-=================
-*/
-void G_FreeEdict(edict_t *self)
+ * Marks the edict as free
+ */
+void
+G_FreeEdict(edict_t *ed)
 {
 	SinglyLinkedList_t msgs;
 	char *temp;
 	unsigned int	usageCount;
 	int		entnum;
 
-	gi.unlinkentity (self);		// unlink from world
+	if (!ed)
+	{
+		return;
+	}
+
+	gi.unlinkentity(ed);		// unlink from world
 
 	// From Quake2 3.17 code release.
 
-	if ((self - g_edicts) <= (maxclients->value + BODY_QUEUE_SIZE))
+	if ((ed - g_edicts) <= (maxclients->value + BODY_QUEUE_SIZE))
 	{
 		gi.dprintf("tried to free special edict\n");
 		return;
@@ -997,49 +743,49 @@ void G_FreeEdict(edict_t *self)
 	// Start non-quake2.
 
 	// Portals need to be marked as open even if they are freed in deathmatch, only when deliberately removed for netplay.
-	if (self->classname && level.time <= 0.2)			// Just upon startup
+	if (ed->classname && level.time <= 0.2)			// Just upon startup
 	{
-		if (Q_stricmp(self->classname, "func_areaportal") == 0)
-			gi.SetAreaPortalState (self->style, true);
+		if (Q_stricmp(ed->classname, "func_areaportal") == 0)
+			gi.SetAreaPortalState (ed->style, true);
 	}
 
-	if(self->s.effects & EF_JOINTED)
+	if(ed->s.effects & EF_JOINTED)
 	{
-		FreeSkeleton(self->s.rootJoint);
+		FreeSkeleton(ed->s.rootJoint);
 	}
 
-	if(self->s.clientEffects.buf)
+	if(ed->s.clientEffects.buf)
 	{
-		temp = (char *)self->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
+		temp = (char *)ed->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
 	}
 	else
 	{
 		temp = NULL;
 	}
 
-	msgs = self->msgQ.msgs;
-	usageCount = self->s.usageCount;
-	entnum = self->s.number;
+	msgs = ed->msgQ.msgs;
+	usageCount = ed->s.usageCount;
+	entnum = ed->s.number;
 
 	// End non-quake2.
 
-	memset(self, 0, sizeof(*self));
+	memset(ed, 0, sizeof(*ed));
 
 	// Start non-quake2.
 
-	self->s.usageCount = usageCount;
-	self->msgQ.msgs = msgs;
-	self->s.clientEffects.buf = (byte *)temp;
-	self->s.number = entnum;
+	ed->s.usageCount = usageCount;
+	ed->msgQ.msgs = msgs;
+	ed->s.clientEffects.buf = (byte *)temp;
+	ed->s.number = entnum;
 
 	// End non-quake2.
 
-	self->classname = "freed";
-	self->freetime = level.time + 2.0;
-	self->inuse = false;
-	self->s.skeletalType = SKEL_NULL;
+	ed->classname = "freed";
+	ed->freetime = level.time + 2.0;
+	ed->inuse = false;
+	ed->s.skeletalType = SKEL_NULL;
 
-	self->svflags = SVF_NOCLIENT;	// so it will get removed from the client properly
+	ed->svflags = SVF_NOCLIENT;	// so it will get removed from the client properly
 }
 
 void
@@ -1141,7 +887,7 @@ G_TouchSolids(edict_t *ent)
 qboolean
 KillBox(edict_t *ent)
 {
-	edict_t *current=NULL;
+	edict_t *current = NULL;
 	vec3_t	mins, maxs;
 
 	// since we can't trust the absmin and absmax to be set correctly on entry, I'll create my own versions
@@ -1168,7 +914,7 @@ KillBox(edict_t *ent)
 
 	}
 
-	return true;		// all clear
+	return true; /* all clear */
 }
 
 /*
@@ -1196,42 +942,6 @@ qboolean ClearBBox (edict_t *self)
 	return false;
 }
 
-/*
-=================
-oldfindradius
-
-Returns entities that have origins within a spherical area
-
-oldfindradius (origin, radius)
-=================
-*/
-edict_t *oldfindradius (edict_t *from, vec3_t org, float rad)
-{
-	vec3_t	eorg;
-	int		j;
-
-	if (!from)
-		from = g_edicts;
-	else
-		from++;
-	for ( ; from < &g_edicts[globals.num_edicts]; from++)
-	{
-		if (!from->inuse)
-			continue;
-		if (from->solid == SOLID_NOT)
-			continue;
-		for (j=0 ; j<3 ; j++)
-			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
-		if (VectorLength(eorg) > rad)
-			continue;
-		return from;
-	}
-
-	return NULL;
-}
-
-
-
 // ========================================
 // LinkMissile(edict_t *self)
 //
@@ -1241,13 +951,319 @@ edict_t *oldfindradius (edict_t *from, vec3_t org, float rad)
 // So when we link the entity (for rendering, etc) we set
 // SOLID_NOT so certain things don't happen.
 // ========================================
-void G_LinkMissile(edict_t *self)
+void G_LinkMissile(edict_t *ed)
 {
-    int oldsolid;
+	int oldsolid;
 
-	oldsolid=self->solid;
+	oldsolid = ed->solid;
 
-//  self->solid=SOLID_NOT; // comment this line out for old behaviour
-    gi.linkentity(self);
-    self->solid= (solid_t) oldsolid;
+    gi.linkentity(ed);
+    ed->solid = (solid_t) oldsolid;
+}
+
+void G_SetToFree(edict_t *self)
+{
+	if(self->PersistantCFX)
+	{
+		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_ENTITY);
+		self->PersistantCFX = 0;
+	}
+
+	self->think = G_FreeEdict;
+	self->nextthink = level.time + FRAMETIME;
+	self->svflags &= ~SVF_NOCLIENT;
+
+	self->next_pre_think = -1;
+	self->next_post_think = -1;
+
+	self->takedamage = DAMAGE_NO;
+	self->movetype = PHYSICSTYPE_NONE;
+	self->solid = SOLID_NOT;
+	self->touch = NULL;
+	self->blocked = NULL;
+	self->isBlocked = NULL;
+	self->isBlocking = NULL;
+	self->bounced = NULL;
+	VectorClear(self->mins);
+	VectorClear(self->maxs);
+
+	gi.linkentity(self);
+}
+
+qboolean PossessCorrectItem(edict_t *ent, gitem_t *item)
+{
+	edict_t	*t;
+
+	if(!ent->target_ent)
+	{
+		return false;
+	}
+	ent = ent->target_ent;
+	t = NULL;
+	while ((t = G_Find (t, FOFS(targetname), ent->target)))
+	{
+		// doors fire area portals in a specific way
+		if (!Q_stricmp(t->classname, "func_areaportal") &&
+			(!Q_stricmp(ent->classname, "func_door") || !Q_stricmp(ent->classname, "func_door_rotating")))
+			continue;
+
+		if(t->item == item)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+/*
+=================
+finddistance
+
+Returns entities that have origins within a spherical shell area
+
+finddistance (origin, mindist, maxdist)
+=================
+*/
+edict_t *finddistance (edict_t *from, vec3_t org, float mindist, float maxdist)
+{
+	static float min2;
+	static float max2;
+	static vec3_t min;
+	static vec3_t max;
+	vec3_t	eorg;
+	int		j;
+	float elen;
+
+	if (!from)
+	{
+		min2=mindist*mindist;
+		max2=maxdist*maxdist;
+		VectorCopy(org,min);
+		VectorCopy(org,max);
+		for (j=0 ; j<3 ; j++)
+		{
+			min[j]-=maxdist;
+			max[j]+=maxdist;
+		}
+	}
+	while (1)
+	{
+		from=findinbounds(from,min,max);
+		if (!from)
+			return 0;
+		if (!from->inuse)
+			continue;
+		for (j=0 ; j<3 ; j++)
+			eorg[j] = org[j] - (from->s.origin[j] + (from->mins[j] + from->maxs[j])*0.5);
+		elen = DotProduct(eorg,eorg);
+		if (elen > max2)
+			continue;
+		if (elen < min2)
+			continue;
+		return from;
+	}
+}
+
+edict_t *
+findinbounds(edict_t *from, vec3_t min, vec3_t max)
+{
+	static edict_t *touchlist[MAX_EDICTS];
+	static int index=-1;
+	static int num;
+
+	if (!from)
+	{
+		num = gi.BoxEdicts(min,max, touchlist, MAX_EDICTS, AREA_SOLID);
+		index=0;
+	}
+	else
+	{
+		assert(touchlist[index]==from);
+		// you cannot adjust the pointers yourself...
+		// this means you did not call it with the previous edict
+		index++;
+	}
+	for (;index<num;index++)
+	{
+		if (!touchlist[index]->inuse)
+			continue;
+		return touchlist[index];
+	}
+	return NULL;
+}
+
+//
+//=================
+// FindOnPath
+//
+// Returns damageable entities that lie along a given pathway.  This is NOT 100% guaranteed to return a given edict only once.
+//
+//=================
+
+edict_t *
+findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos)
+{
+	vec3_t	vect, curpos;
+	trace_t trace;
+	float	skipamount;
+	edict_t *tracebuddy;
+
+	VectorCopy(startpos, curpos);
+	tracebuddy = startent;
+	while(1)
+	{
+		trace = gi.trace(curpos, mins, maxs, endpos, tracebuddy, MASK_SHOT);
+
+		// If we started inside something.
+		if (trace.startsolid || trace.allsolid)
+		{
+			if (trace.ent && trace.ent->takedamage)
+			{	// Found an item.  Skip forward a distance and return the ent.
+				skipamount = maxs[2];
+				if (skipamount < 4)
+					skipamount = 4;
+				VectorSubtract(endpos, curpos, vect);
+				if (VectorNormalize(vect) < skipamount)	// skip to the end.
+					VectorCopy(endpos, *resultpos);
+				else
+					VectorMA(curpos, skipamount, vect, *resultpos);
+
+				return(trace.ent);
+			}
+			else
+			{	// Didn't stop on anything useful, continue to next trace.
+				skipamount = maxs[2];	// Skip forward a bit.
+				if (skipamount < 4)
+					skipamount = 4;
+				VectorSubtract(endpos, curpos, vect);
+				if (VectorNormalize(vect) < skipamount)	// skip to the end.
+					return(NULL);		// Didn't find anything.
+				else
+					VectorMA(curpos, skipamount, vect, curpos);
+				if (trace.ent)
+					tracebuddy = trace.ent;
+				continue;	// Do another trace.
+			}
+		}
+
+		// If we did not start inside something, but stopped at something.
+		if (trace.fraction < .99)
+		{
+			if (trace.ent && trace.ent->takedamage)
+			{	// Found an item.  Skip forward a distance and return the ent.
+				skipamount = maxs[2];
+				if (skipamount < 4)
+					skipamount = 4;
+				VectorSubtract(endpos, trace.endpos, vect);
+				if (VectorNormalize(vect) < skipamount)	// skip to the end.
+					VectorCopy(endpos, *resultpos);
+				else
+					VectorMA(trace.endpos, skipamount, vect, *resultpos);
+
+				return(trace.ent);
+			}
+			else
+			{	// Didn't stop on anything useful, continue to next trace.
+				skipamount = maxs[2];	// Skip forward a bit.
+				if (skipamount < 4)
+					skipamount = 4;
+				VectorSubtract(endpos, trace.endpos, vect);
+				if (VectorNormalize(vect) < skipamount)	// skip to the end.
+					return(NULL);		// Didn't find anything.
+				else
+					VectorMA(trace.endpos, skipamount, vect, curpos);
+				if (trace.ent)
+					tracebuddy = trace.ent;
+				continue;	// Do another trace.
+			}
+		}
+
+		// If we finished the whole move.
+		{
+			VectorCopy(endpos, *resultpos);
+			return(NULL);
+		}
+	};
+
+	return(NULL);	// Never gets here.
+}
+
+// THis works like findradius, except it uses the bbox of an ent to indicate the area to check.
+edict_t *findinblocking(edict_t *from, edict_t *checkent)
+{
+	static vec3_t	min, max;
+
+	if (!from)
+	{
+		VectorAdd(checkent->s.origin, checkent->mins, min);
+		VectorAdd(checkent->s.origin, checkent->maxs, max);
+	}
+	while (1)
+	{
+		from=findinbounds(from,min,max);
+		if (!from)
+			return 0;
+		if (!from->inuse)
+			continue;
+		if (from == checkent)
+			continue;
+		return from;
+	}
+}
+
+/*
+ * Returns entities that have origins
+ * within a spherical area
+ */
+edict_t *
+newfindradius(edict_t *from, vec3_t org, float rad)
+{
+	vec3_t eorg;
+	int j;
+	static float max2;
+	static vec3_t min;
+	static vec3_t max;
+	float elen;
+
+	if (!from)
+	{
+		max2=rad*rad;
+		VectorCopy(org,min);
+		VectorCopy(org,max);
+		for (j=0 ; j<3 ; j++)
+		{
+			min[j]-=rad;
+			max[j]+=rad;
+		}
+	}
+
+	while (1)
+	{
+		from = findinbounds(from,min,max);
+		if (!from)
+		{
+			return 0;
+		}
+
+		if (!from->inuse)
+		{
+			continue;
+		}
+
+		for (j = 0; j < 3; j++)
+		{
+			eorg[j] = org[j] - (from->s.origin[j] +
+					   (from->mins[j] + from->maxs[j]) * 0.5);
+		}
+
+		elen = DotProduct(eorg,eorg);
+		if (elen > max2)
+		{
+			continue;
+		}
+
+		return from;
+	}
+
+	return NULL;
 }

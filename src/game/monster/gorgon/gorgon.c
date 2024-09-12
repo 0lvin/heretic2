@@ -228,7 +228,7 @@ void gorgonRoar (edict_t *self)
 	if(!self->enemy)
 		return;
 
-	while((found = findradius(found, self->s.origin, GORGON_ALERT_DIST)))
+	while((found = newfindradius(found, self->s.origin, GORGON_ALERT_DIST)))
 	{
 		if(found->health>0)
 		{
@@ -264,7 +264,7 @@ qboolean gorgonFindAsleepGorgons (edict_t *self)
 {//sees if there are any gorgons in range that aren't awake
 	edict_t *found = NULL;
 
-	while((found = findradius(found, self->s.origin, GORGON_ALERT_DIST)))
+	while((found = newfindradius(found, self->s.origin, GORGON_ALERT_DIST)))
 	{
 		if(found!=self)
 		{

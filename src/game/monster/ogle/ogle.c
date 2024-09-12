@@ -1252,7 +1252,7 @@ qboolean ogle_findtarget (edict_t *self)
 	edict_t		*found = NULL;
 
 	//take down weak overlords
-	while((found = findradius(found, self->s.origin, 1024)))
+	while((found = newfindradius(found, self->s.origin, 1024)))
 	{
 		if(found->classID == CID_SERAPH_OVERLORD && found->health > 0 && (found->health<SERAPH_HEALTH/2 || found->ai_mood == AI_MOOD_FLEE))
 		{
@@ -1265,7 +1265,7 @@ qboolean ogle_findtarget (edict_t *self)
 	/*//Used to go after other stuff and break it...
 	found = NULL;
 	//ok, search for utensils of their oppression
-	while(found = findradius(found, self->s.origin, 512))
+	while(found = newfindradius(found, self->s.origin, 512))
 	{
 		if(found->classID == CID_OBJECT)
 		{
@@ -1303,7 +1303,7 @@ qboolean ogle_findtarget (edict_t *self)
 
 	found = NULL;
 	//help out other ogles
-	while((found = findradius(found, self->s.origin, 1024)))
+	while((found = newfindradius(found, self->s.origin, 1024)))
 	{
 		if(found->classID == CID_OGLE && found->health > 0 && found != self)
 		{

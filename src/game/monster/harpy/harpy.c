@@ -1308,7 +1308,7 @@ void harpy_check_dodge(edict_t *self)
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 	VectorNormalize(vec);
 
-	while ((ent = findradius(ent, self->s.origin, HARPY_PROJECTILE_RADIUS)) != NULL)
+	while ((ent = newfindradius(ent, self->s.origin, HARPY_PROJECTILE_RADIUS)) != NULL)
 	{
 		//We're only interested in his projectiles
 		if (ent->owner != self->enemy)
@@ -1432,7 +1432,7 @@ void move_harpy_hover(edict_t *self)
 			VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 			VectorNormalize(vec);
 
-			while ((ent = findradius(ent, self->s.origin, HARPY_PROJECTILE_RADIUS)) != NULL)
+			while ((ent = newfindradius(ent, self->s.origin, HARPY_PROJECTILE_RADIUS)) != NULL)
 			{
 				//We're only interested in his projectiles
 				if (ent->owner != self->enemy)

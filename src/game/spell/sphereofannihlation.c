@@ -391,7 +391,7 @@ void SphereExplodeThink(edict_t *self)
 {
 	edict_t *ent=NULL;
 
-	while((ent=findradius(ent, self->s.origin, self->dmg_radius)))
+	while((ent = newfindradius(ent, self->s.origin, self->dmg_radius)))
 	{
 		if (ent->takedamage && ent != self->owner && ent->fire_timestamp < self->fire_timestamp)
 		{

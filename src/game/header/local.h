@@ -878,14 +878,14 @@ edict_t *G_Find(edict_t *from, int fieldofs, const char *match);
 edict_t *G_Spawn(void);
 
 
-edict_t *oldfindradius (edict_t *from, vec3_t org, float rad);
-edict_t *findradius (edict_t *from, vec3_t org, float rad);
-edict_t *findinblocking (edict_t *from, edict_t *checkent);
+edict_t *findradius(edict_t *from, vec3_t org, float rad);
+edict_t *newfindradius(edict_t *from, vec3_t org, float rad);
+edict_t *findinblocking(edict_t *from, edict_t *checkent);
 edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max);
 edict_t *oldfindinbounds(edict_t *from, vec3_t min, vec3_t max);
-edict_t *finddistance (edict_t *from, vec3_t org, float mindist, float maxdist);
+edict_t *finddistance(edict_t *from, vec3_t org, float mindist, float maxdist);
 edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos);
-edict_t *G_PickTarget (char *targetname);
+edict_t *G_PickTarget(char *targetname);
 
 //commonly used functions
 int range (edict_t *self, edict_t *other);

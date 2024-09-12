@@ -1269,7 +1269,7 @@ void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, floa
 					(int)maxdamage, (int)maxdamage, DAMAGE_RADIUS|dflags,MeansOfDeath);
 		}
 	}
-	while ((ent = findradius(ent, inflictor->s.origin, radius)) != NULL)
+	while ((ent = newfindradius(ent, inflictor->s.origin, radius)) != NULL)
 	{
 		if (ent == ignore)
 			continue;
@@ -1330,7 +1330,7 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 
 	assert(radius>0);
 
-	while ((ent = findradius(ent, origin, radius)) != NULL)
+	while ((ent = newfindradius(ent, origin, radius)) != NULL)
 	{
 		if (ent == ignore)
 			continue;

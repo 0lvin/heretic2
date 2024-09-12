@@ -307,7 +307,7 @@ void seraph_enforce(edict_t *self)
 
 	ogle = NULL;
 
-	while((ogle = findradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
+	while((ogle = newfindradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
 	{
 		if (ogle->classID != CID_OGLE)
 			continue;
@@ -368,7 +368,7 @@ void seraph_oversee(edict_t *self)
 	edict_t	*ogle;
 	ogle=NULL;
 
-	while((ogle = findradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
+	while((ogle = newfindradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
 	{
 		if (ogle->ai_mood != AI_MOOD_REST)
 			continue;
