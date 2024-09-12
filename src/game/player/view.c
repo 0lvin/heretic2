@@ -45,11 +45,11 @@
 static edict_t *current_player;
 static gclient_t *current_client;
 
-static float				xyspeed;
+static float xyspeed;
 
-static float				bobmove;
-static int				bobcycle;		// odd cycles are right foot going forward
-static float				bobfracsin;		// sin(bobfrac*M_PI)
+static float bobmove;
+static int bobcycle; /* odd cycles are right foot going forward */
+static float bobfracsin; /* sin(bobfrac*M_PI) */
 
 extern void Cmd_WeapPrev_f(edict_t *ent);
 extern void Cmd_Use_f(edict_t *ent);
@@ -426,14 +426,10 @@ void PlayerTimerUpdate(edict_t *ent)
 }
 
 /*
-===============
-P_DamageFeedback
-
-Handles color blends and view kicks
-===============
-*/
-
-void P_DamageFeedback (edict_t *player)
+ * Handles color blends and view kicks
+ */
+static void
+P_DamageFeedback(edict_t *player)
 {
 	gclient_t	*client;
 	int			count;
@@ -916,6 +912,8 @@ ClientEndServerFrame(edict_t *ent)
 	SetupPlayerinfo(ent);
 
 	playerExport->PlayerFallingDamage(&ent->client->playerinfo);
+
+	/* apply all the damage taken this frame */
 	P_DamageFeedback(ent);
 
 	WritePlayerinfo(ent);
@@ -1094,4 +1092,9 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.advancedstaff = current_client->playerinfo.advancedstaff;
 
 	current_client->ps.cinematicfreeze = current_client->playerinfo.sv_cinematicfreeze;
+
+	if (ent->client->chasetoggle == 1)
+	{
+		CheckChasecam_Viewent(ent);
+	}
 }
