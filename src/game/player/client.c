@@ -3320,6 +3320,44 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		return;
 	}
 
+	if (client->chasetoggle)
+	{
+		ent->client->ps.pmove.pm_flags |= PMF_NO_PREDICTION;
+	}
+	else
+	{
+		ent->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
+	}
+
+	/* +use now does the cool look around stuff but only in SP games */
+	if ((ucmd->buttons & BUTTON_USE) && (!deathmatch->value))
+	{
+		client->use = 1;
+		if ((ucmd->forwardmove < 0) && (client->zoom < 60))
+		{
+			client->zoom++;
+		}
+		else if ((ucmd->forwardmove > 0) && (client->zoom > -40))
+		{
+			client->zoom--;
+		}
+		ucmd->forwardmove = 0;
+		ucmd->sidemove = 0;
+	}
+	else if (client->use)
+	{
+		if (client->oldplayer)
+		{
+			// set angles
+			for (i=0 ; i<3 ; i++)
+			{
+				ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(
+					ent->client->oldplayer->s.angles[i] - ent->client->resp.cmd_angles[i]);
+			}
+		}
+		client->use = 0;
+	}
+
 	// ********************************************************************************************
 	// Movement stuff.
 	// ********************************************************************************************
