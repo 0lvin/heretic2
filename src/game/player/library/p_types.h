@@ -336,6 +336,7 @@ typedef struct
 	// For calculating total unit score in co-op games.
 	int			score;
 
+	qboolean spectator;         /* client is a spectator */
 	int chasetoggle;       /* Chasetoggle */
 } client_persistant_t;
 

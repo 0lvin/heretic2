@@ -1888,11 +1888,126 @@ respawn(edict_t *self)
 	gi.AddCommandString("menu_loadgame\n");
 }
 
+/*
+ * only called when pers.spectator changes
+ * note that resp.spectator should be the
+ * opposite of pers.spectator here
+ */
+void
+spectator_respawn(edict_t *ent)
+{
+	int i, numspec;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	/* if the user wants to become a spectator,
+	   make sure he doesn't exceed max_spectators */
+	if (ent->client->playerinfo.pers.spectator)
+	{
+		char *value = Info_ValueForKey(ent->client->playerinfo.pers.userinfo, "spectator");
+
+		if (*spectator_password->string &&
+			strcmp(spectator_password->string, "none") &&
+			strcmp(spectator_password->string, value))
+		{
+			gi.cprintf(ent, PRINT_HIGH, "Spectator password incorrect.\n");
+			ent->client->playerinfo.pers.spectator = false;
+			gi.WriteByte(svc_stufftext);
+			gi.WriteString("spectator 0\n");
+			gi.unicast(ent, true);
+			return;
+		}
+
+		/* count spectators */
+		for (i = 1, numspec = 0; i <= maxclients->value; i++)
+		{
+			if (g_edicts[i].inuse && g_edicts[i].client->playerinfo.pers.spectator)
+			{
+				numspec++;
+			}
+		}
+
+		if (numspec >= maxspectators->value)
+		{
+			gi.cprintf(ent, PRINT_HIGH, "Server spectator limit is full.");
+			ent->client->playerinfo.pers.spectator = false;
+
+			/* reset his spectator var */
+			gi.WriteByte(svc_stufftext);
+			gi.WriteString("spectator 0\n");
+			gi.unicast(ent, true);
+			return;
+		}
+
+		/* Third person view */
+		if (ent->client->chasetoggle)
+		{
+			ChasecamRemove(ent);
+			ent->client->playerinfo.pers.chasetoggle = 1;
+		}
+		else
+		{
+			ent->client->playerinfo.pers.chasetoggle = 0;
+		}
+	}
+	else
+	{
+		/* he was a spectator and wants to join the
+		   game he must have the right password */
+		char *value = Info_ValueForKey(ent->client->playerinfo.pers.userinfo, "password");
+
+		if (*password->string && strcmp(password->string, "none") &&
+			strcmp(password->string, value))
+		{
+			gi.cprintf(ent, PRINT_HIGH, "Password incorrect.\n");
+			ent->client->playerinfo.pers.spectator = true;
+			gi.WriteByte(svc_stufftext);
+			gi.WriteString("spectator 1\n");
+			gi.unicast(ent, true);
+			return;
+		}
+	}
+
+	/* clear client on respawn */
+	ent->client->resp.score = ent->client->playerinfo.pers.score = 0;
+
+	ent->svflags &= ~SVF_NOCLIENT;
+	PutClientInServer(ent);
+
+	/* add a teleportation effect */
+	if (!ent->client->playerinfo.pers.spectator)
+	{
+		/* send effect */
+		gi.WriteByte(svc_muzzleflash);
+		gi.WriteShort(ent - g_edicts);
+		gi.WriteByte(MZ_LOGIN);
+		gi.multicast(ent->s.origin, MULTICAST_PVS);
+
+		/* hold in place briefly */
+		ent->client->ps.pmove.pm_flags = PMF_TIME_TELEPORT;
+		ent->client->ps.pmove.pm_time = 14;
+	}
+
+	ent->client->respawn_time = level.time;
+
+	if (ent->client->playerinfo.pers.spectator)
+	{
+		gi.bprintf(PRINT_HIGH, "%s has moved to the sidelines\n",
+				ent->client->playerinfo.pers.netname);
+	}
+	else
+	{
+		gi.bprintf(PRINT_HIGH, "%s joined the game\n",
+				ent->client->playerinfo.pers.netname);
+	}
+}
+
 //==============================================================
 
-
 extern void PlayerRestartShrineFX(edict_t *self);
-
 
 void SpawnInitialPlayerEffects(edict_t *ent)
 {
