@@ -3768,6 +3768,16 @@ ClientBeginServerFrame(edict_t *ent)
 
 	client = ent->client;
 
+	if (client->delayedstart > 0)
+	{
+		client->delayedstart--;
+	}
+
+	if (client->delayedstart == 1)
+	{
+		ChasecamStart(ent);
+	}
+
 	if (ent->deadflag & DEAD_DEAD)
 	{
 		/* wait for any button just going down */
