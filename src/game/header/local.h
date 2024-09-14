@@ -196,9 +196,7 @@ typedef struct
 
 // jmarshall: this wasn't extern in the original code,
 // this is now correct, wondering if this will cause knock ons?
-extern unsigned	*level_msgbuf;
 extern unsigned	*game_msgbuf;
-extern trig_message_t level_msgtxt[];
 extern trig_message_t game_msgtxt[];
 
 

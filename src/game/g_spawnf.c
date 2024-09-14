@@ -502,7 +502,7 @@ void SP_worldspawn (edict_t *ent)
 	if (ent->message && ent->message[0])
 	{
 		gi.configstring (CS_LEVEL_NUMBER, ent->message );
-		gi.configstring (CS_NAME, level_msgtxt[atoi(ent->message)].string);
+		gi.configstring (CS_NAME, LocalizationMessage(ent->message, NULL));
 		strncpy (level.level_name, ent->message, sizeof(level.level_name));
 		gi.dprintf("Unique Level Index : %d\n", atoi(ent->message));
 	}

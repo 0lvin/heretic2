@@ -2989,8 +2989,11 @@ void CScript::HandlePrint(void)
 	}
 	else
 	{
+		char message[10];
+
 		TextIndex = Text->GetIntValue();
-		TextValue = level_msgtxt[TextIndex].string;
+		snprintf(message, sizeof(message), "%d", TextIndex);
+		TextValue = LocalizationMessage(message, NULL);
 	}
 
 	if (Flags & PRINT_LEVEL)

@@ -173,67 +173,60 @@ G_CPrintf(edict_t* ent, int printlevel, short stringid)
 void
 G_BCaption(int printlevel, short stringid)
 {
-	if (stringid > MAX_MESSAGESTRINGS || !level_msgtxt[stringid].string[0])
-	{
-		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
-		return;
-	}
+	char message[10];
+	int sound_index = 0;
 
-	gi.bprintf(printlevel, "%s", level_msgtxt[stringid].string);
-	if (level_msgtxt[stringid].wav && level_msgtxt[stringid].wav[0])
+	snprintf(message, sizeof(message), "%d", stringid);
+	gi.bprintf(printlevel, "%s", LocalizationMessage(message, &sound_index));
+
+	if (sound_index)
 	{
-		gi.sound(NULL, CHAN_AUTO, gi.soundindex(level_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
+		gi.sound(NULL, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);
 	}
 }
 
 void
 G_LevelMsgCenterPrintf(edict_t* ent, short stringid)
 {
-	if (stringid > MAX_MESSAGESTRINGS || !level_msgtxt[stringid].string[0])
-	{
-		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
-		return;
-	}
+	char message[10];
+	int sound_index = 0;
 
-	gi.centerprintf(ent, "%s", level_msgtxt[stringid].string);
+	snprintf(message, sizeof(message), "%d", stringid);
+	gi.centerprintf(ent, "%s", LocalizationMessage(message, &sound_index));
 
-	if (level_msgtxt[stringid].wav && level_msgtxt[stringid].wav[0])
+	if (sound_index)
 	{
-		gi.sound(ent, CHAN_AUTO, gi.soundindex(level_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
+		gi.sound(ent, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);
 	}
 }
 
 void
 G_CaptionPrintf(edict_t* ent, short stringid)
 {
-	if (stringid > MAX_MESSAGESTRINGS || !level_msgtxt[stringid].string[0])
-	{
-		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
-		return;
-	}
+	char message[10];
+	int sound_index = 0;
 
-	gi.centerprintf(ent, "%s", level_msgtxt[stringid].string);
+	snprintf(message, sizeof(message), "%d", stringid);
+	gi.centerprintf(ent, "%s", LocalizationMessage(message, &sound_index));
 
-	if (level_msgtxt[stringid].wav && level_msgtxt[stringid].wav[0])
+	if (sound_index)
 	{
-		gi.sound(ent, CHAN_AUTO, gi.soundindex(level_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
+		gi.sound(ent, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);
 	}
 }
 
 void
 G_BroadcastObituary(int printlevel, short stringid, short client1, short client2)
 {
-	if (stringid > MAX_MESSAGESTRINGS || !level_msgtxt[stringid].string[0])
-	{
-		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
-		return;
-	}
+	char message[10];
+	int sound_index = 0;
 
-	gi.bprintf(printlevel, "%s", level_msgtxt[stringid].string);
+	snprintf(message, sizeof(message), "%d", stringid);
+	gi.bprintf(printlevel, "%s", LocalizationMessage(message, &sound_index));
 
-	if (level_msgtxt[stringid].wav && level_msgtxt[stringid].wav[0])
+	if (sound_index)
 	{
-		gi.sound(NULL, CHAN_AUTO, gi.soundindex(level_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
+		gi.sound(NULL, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);
 	}
 }
 
@@ -271,32 +264,26 @@ G_TraceBoundingForm(FormMove_t* formMove)
 
 void G_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
 {
-	if (msg > MAX_MESSAGESTRINGS || !level_msgtxt[msg].string[0])
-	{
-		gi.dprintf("%s: Unknow message %d\n", __func__, msg);
-		return;
-	}
+	char message[10];
+	int sound_index = 0;
 
-	gi.centerprintf(ent, "%s", level_msgtxt[msg].string);
+	snprintf(message, sizeof(message), "%d", msg);
+	gi.centerprintf(ent, "%s", LocalizationMessage(message, &sound_index));
 
-	if (level_msgtxt[msg].wav && level_msgtxt[msg].wav[0])
+	if (sound_index)
 	{
-		gi.sound(ent, CHAN_AUTO, gi.soundindex(level_msgtxt[msg].wav), 1, ATTN_NORM, 0);
+		gi.sound(ent, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);
 	}
 }
 
 void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
 {
-	if (msg1 > MAX_MESSAGESTRINGS || msg2 > MAX_MESSAGESTRINGS ||
-		!level_msgtxt[msg1].string[0] ||
-		!level_msgtxt[msg2].string[0])
-	{
-		gi.dprintf("%s: Unknow message %d -> %d\n", __func__, msg1, msg2);
-		return;
-	}
+	char message[10];
 
-	gi.centerprintf(ent, "%s", level_msgtxt[msg1].string);
-	gi.centerprintf(ent, "%s", level_msgtxt[msg2].string);
+	snprintf(message, sizeof(message), "%d", msg1);
+	gi.centerprintf(ent, "%s", LocalizationMessage(message, NULL));
+	snprintf(message, sizeof(message), "%d", msg2);
+	gi.centerprintf(ent, "%s", LocalizationMessage(message, NULL));
 }
 
 qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
@@ -356,7 +343,6 @@ ShutdownGame(void)
 	game.entitiesSpawned = false;
 
 	gi.FS_FreeFile(game_msgbuf);
-	gi.FS_FreeFile(level_msgbuf);
 
 	gi.FreeTags(TAG_LEVEL);
 	gi.FreeTags(TAG_GAME);

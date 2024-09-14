@@ -308,9 +308,7 @@ static field_t		clientfields[] =
 	{NULL, 0, F_INT}
 };
 
-trig_message_t	level_msgtxt[MAX_MESSAGESTRINGS];
 trig_message_t	game_msgtxt[MAX_MESSAGESTRINGS];
-unsigned		*level_msgbuf;
 unsigned		*game_msgbuf;
 
 
@@ -382,14 +380,9 @@ static void Load_FileStrings(char *buffer, trig_message_t *msgtxt, int length)
 
 static void Load_Strings(void)
 {
-	cvar_t	*levelmsg_name, *gamemsg_name;
+	cvar_t	*gamemsg_name;
 	char	*buffer;
 	int		length;
-
-	levelmsg_name = gi.cvar("file_levelmsg", "levelmsg.txt", 0);
-	length = LoadTextFile (levelmsg_name->string, &buffer);
-	level_msgbuf = (unsigned *) buffer;
-	Load_FileStrings(buffer, level_msgtxt, length);
 
 	gamemsg_name = gi.cvar("file_gamemsg", "gamemsg.txt", 1);
 	length = LoadTextFile (gamemsg_name->string, &buffer);
