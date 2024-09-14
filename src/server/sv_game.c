@@ -775,6 +775,10 @@ SV_InitGameProgs(void)
 	import.SetAreaPortalState = CM_SetAreaPortalState;
 	import.AreasConnected = CM_AreasConnected;
 
+	/* Extension to classic Quake2 API */
+	import.FS_LoadFile = FS_LoadFile;
+	import.FS_FreeFile = FS_FreeFile;
+
 	/* Heretic 2 specific */
 	import.FS_NextPath = FS_NextPath;
 
@@ -785,9 +789,6 @@ SV_InitGameProgs(void)
 	import.CreatePersistantEffect = SV_CreatePersistantEffect;
 	import.RemovePersistantEffect = SV_RemovePersistantEffect;
 	import.ClearPersistantEffects = SV_ClearPersistantEffects;
-
-	import.FS_LoadFile = FS_LoadFile;
-	import.FS_FreeFile = FS_FreeFile;
 
 	import.Persistant_Effects_Array = &SV_Persistant_Effects;
 

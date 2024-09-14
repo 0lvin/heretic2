@@ -1039,6 +1039,7 @@ GAME_OBJS_ = \
 	src/game/g_stateinfo.o \
 	src/game/g_svcmds.o \
 	src/game/g_target.o \
+	src/game/g_translate.o \
 	src/game/g_trigger.o \
 	src/game/g_utils.o \
 	src/game/g_waterfx.o \

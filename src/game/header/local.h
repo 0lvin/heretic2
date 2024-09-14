@@ -1051,6 +1051,9 @@ void G_RunEntity(edict_t *ent);
 /* g_main.c */
 void SaveClientData(void);
 
+/* g_translate.c */
+void LocalizationInit(void);
+const char* LocalizationMessage(const char *message, int *sound_index);
 
 /* g_breakable.c */
 void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage);

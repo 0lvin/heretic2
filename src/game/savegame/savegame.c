@@ -497,6 +497,9 @@ InitGame(void)
 
 	gi.cvar("flash_screen", "1", 0);
 
+	/* initilize localization */
+	LocalizationInit();
+
 	if (!P_Load())
 	{
 		Sys_Error("Unable to player library");

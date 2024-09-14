@@ -190,6 +190,15 @@ typedef struct
 
 	void (*DebugGraph)(float value, int color);
 
+	/* Extended to classic Quake2 API.
+	   files will be memory mapped read only
+	   the returned buffer may be part of a larger pak file,
+	   or a discrete file from anywhere in the quake search path
+	   a -1 return means the file does not exist
+	   NULL can be passed for buf to just determine existance */
+	int (*FS_LoadFile) (const char *name, void **buf);
+	void (*FS_FreeFile) (void *buf);
+
 	/* Heretic 2 specific */
 	void	(*CreateEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 	void	(*RemoveEffects)(entity_state_t *ent, int type);
@@ -204,12 +213,9 @@ typedef struct
 	// file, or a discrete file from anywhere in the quake search path. A -1 return means the file
 	// does not exist. NULL can be passed for buf to just determine existance.
 	char	*(*FS_NextPath)(const char *prevpath);
-	int		(*FS_LoadFile) (const char *name, void **buf);
-	void	(*FS_FreeFile) (void *buf);
 
 	// pointer to the server side persistant effects arrary
 	void	*Persistant_Effects_Array;
-
 } game_import_t;
 
 /* functions exported by the game subsystem */
