@@ -66,7 +66,7 @@ G_ProjectSource2(vec3_t point, vec3_t distance, vec3_t forward,
  * if the end of the list is reached.
  */
 edict_t *
-G_Find(edict_t *from, int fieldofs, char *match)
+G_Find(edict_t *from, int fieldofs, const char *match)
 {
 	char *s;
 
@@ -321,30 +321,19 @@ G_UseTargets(edict_t *ent, edict_t *activator)
 	/* print the message */
 	if (activator && (ent->message) && !(activator->svflags & SVF_MONSTER))
 	{
-		int sound_index = 0;
-		char msg[1024];
+		int sound_index;
 
-		strncpy(msg, ent->message, sizeof(msg));
-
-		translate_text(msg, &sound_index);
-		gi.centerprintf(activator, "%s", msg);
-
-		if (sound_index)
+		if (ent->noise_index)
 		{
-			gi.sound(activator, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);
+			sound_index = ent->noise_index;
 		}
 		else
 		{
-			if (ent->noise_index)
-			{
-				gi.sound(activator, CHAN_AUTO, ent->noise_index, 1, ATTN_NORM, 0);
-			}
-			else
-			{
-				gi.sound(activator, CHAN_AUTO, gi.soundindex(
-								"misc/talk1.wav"), 1, ATTN_NORM, 0);
-			}
+			sound_index = gi.soundindex("misc/talk1.wav");
 		}
+
+		gi.centerprintf(activator, "%s", LocalizationMessage(ent->message, &sound_index));
+		gi.sound(activator, CHAN_AUTO, sound_index, 1, ATTN_NORM, 0);
 	}
 
 	/* kill killtargets */
@@ -422,7 +411,7 @@ G_UseTargets(edict_t *ent, edict_t *activator)
 
 			if (t == ent)
 			{
-				gi.dprintf("WARNING: Entity used itself.\n");
+				gi.dprintf ("WARNING: %s used itself.\n", t->classname);
 			}
 			else
 			{
@@ -784,7 +773,9 @@ G_Spawn(void)
 	edict_t *e = G_SpawnOptional();
 
 	if (!e)
-		gi.error ("ED_Alloc: no free edicts");
+	{
+		gi.error("%s: no free edicts", __func__);
+	}
 
 	return e;
 }

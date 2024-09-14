@@ -765,7 +765,7 @@ void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane,
 qboolean KillBox(edict_t *ent);
 void G_ProjectSource(vec3_t point, vec3_t distance, vec3_t forward,
 		vec3_t right, vec3_t result);
-edict_t *G_Find(edict_t *from, int fieldofs, char *match);
+edict_t *G_Find(edict_t *from, int fieldofs, const char *match);
 edict_t *findradius(edict_t *from, vec3_t org, float rad);
 edict_t *G_PickTarget(char *targetname);
 void G_UseTargets(edict_t *ent, edict_t *activator);
@@ -993,6 +993,10 @@ void SV_AddGravity(edict_t *ent);
 /* g_main.c */
 void SaveClientData(void);
 void EndDMLevel(void);
+
+/* g_translate.c */
+void LocalizationInit(void);
+const char* LocalizationMessage(const char *message, int *sound_index);
 
 /* g_chase.c */
 void UpdateChaseCam(edict_t *ent);
@@ -1751,9 +1755,5 @@ qboolean Pickup_Sphere(edict_t * ent, edict_t * other);
 #include "../savegame/savegame.h"
 #include "../savegame/tables/gamefunc_decs.h"
 #endif
-
-/* Heretic 2 */
-void InitMessages(void);
-void translate_text(char *msg, int *sound_index);
 
 #endif /* GAME_LOCAL_H */

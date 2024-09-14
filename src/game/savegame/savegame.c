@@ -264,6 +264,9 @@ InitGame(void)
 	g_quick_weap = gi.cvar("g_quick_weap", "1", CVAR_ARCHIVE);
 	g_swap_speed = gi.cvar("g_swap_speed", "1", 0);
 
+	/* initilize localization */
+	LocalizationInit();
+
 	/* items */
 	InitItems();
 
@@ -280,8 +283,6 @@ InitGame(void)
 	game.maxclients = maxclients->value;
 	game.clients = gi.TagMalloc(game.maxclients * sizeof(game.clients[0]), TAG_GAME);
 	globals.num_edicts = game.maxclients + 1;
-
-	InitMessages();
 
 	if (gamerules)
 	{
