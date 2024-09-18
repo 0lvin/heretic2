@@ -904,7 +904,19 @@ void G_TouchSolids (edict_t *ent);
 void G_LinkMissile(edict_t *ent);
 char *G_CopyString (char *in);
 char *vtos (vec3_t v);
-float vectoyaw (vec3_t vec);
+float vectoyaw(vec3_t vec);
+void vectoangles(vec3_t vec, vec3_t angles);
+
+void G_ProjectSource2(vec3_t point, vec3_t distance, vec3_t forward, vec3_t right,
+		vec3_t up, vec3_t result);
+float vectoyaw2(vec3_t vec);
+void vectoangles2(vec3_t vec, vec3_t angles);
+edict_t *findradius2(edict_t *from, vec3_t org, float rad);
+
+/* g_spawn.c */
+void ED_CallSpawn(edict_t *ent);
+void DynamicSpawnInit(void);
+
 
 /* g_combat.c */
 qboolean OnSameTeam(edict_t *ent1, edict_t *ent2);

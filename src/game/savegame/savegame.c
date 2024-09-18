@@ -493,6 +493,9 @@ InitGame(void)
 	/* initilize localization */
 	LocalizationInit();
 
+	/* initilize dynamic object spawn */
+	DynamicSpawnInit();
+
 	if (!P_Load())
 	{
 		Sys_Error("Unable to player library");

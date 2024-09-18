@@ -29,6 +29,10 @@
 
 #include "models.h"
 
+static void *
+Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen,
+	struct image_s ***skins, int *numskins, readfile_t read_file, modtype_t *type);
+
 /*
 =================
 Mod_LoadSTvertList
@@ -2856,6 +2860,91 @@ Mod_LoadModel_SDEF(const char *mod_name, const void *buffer, int modfilelen,
 	return extradata;
 }
 
+static void *
+Mod_LoadModel_MDA_Text(const char *mod_name, char *curr_buff,
+	readfile_t read_file, struct image_s ***skins, int *numskins, modtype_t *type)
+{
+	char base_model[MAX_QPATH * 2] = {0};
+
+	while (curr_buff)
+	{
+		const char *token;
+
+		token = COM_Parse(&curr_buff);
+		if (!*token)
+		{
+			continue;
+		}
+
+		/* found basemodel */
+		else if (!strncmp(token, "basemodel", 9))
+		{
+			token = COM_Parse(&curr_buff);
+			if (!token)
+			{
+				return NULL;
+			}
+			strncpy(base_model, token, sizeof(base_model) - 1);
+			/* other fields is unused for now */
+			break;
+		}
+	}
+
+	if (base_model[0])
+	{
+		void *extradata, *base;
+		int base_size;
+		char *curr;
+
+		curr = base_model;
+		while (*curr)
+		{
+			if (*curr == '\\')
+			{
+				*curr = '/';
+			}
+			curr++;
+		}
+
+		base_size = read_file(base_model, (void **)&base);
+		if (base_size <= 0)
+		{
+			R_Printf(PRINT_DEVELOPER, "%s: %s No base model for %s\n",
+				__func__, mod_name, base_model);
+			return NULL;
+		}
+
+		/* little bit recursive load */
+		extradata = Mod_LoadModelFile(mod_name, base, base_size,
+			skins, numskins,
+			read_file, type);
+
+		free(base);
+		return extradata;
+	}
+
+	return NULL;
+}
+
+static void *
+Mod_LoadModel_MDA(const char *mod_name, const void *buffer, int modfilelen,
+	readfile_t read_file, struct image_s ***skins, int *numskins, modtype_t *type)
+{
+	void *extradata;
+	char *text;
+
+	text = malloc(modfilelen + 1 - 4);
+	memcpy(text, (char *)buffer + 4, modfilelen - 4);
+	text[modfilelen - 4] = 0;
+
+	extradata = Mod_LoadModel_MDA_Text(mod_name, text, read_file, skins,
+		numskins, type);
+
+	free(text);
+
+	return extradata;
+}
+
 /*
 =================
 Mod_LoadSprite_SP2
@@ -3023,11 +3112,9 @@ Mod_LoadMinMaxUpdate(const char *mod_name, vec3_t mins, vec3_t maxs, void *extra
 Mod_LoadModel
 =================
 */
-void *
-Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
-	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,
-	findimage_t find_image, loadimage_t load_image, readfile_t read_file,
-	modtype_t *type)
+static void *
+Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen,
+	struct image_s ***skins, int *numskins, readfile_t read_file, modtype_t *type)
 {
 	void *extradata = NULL;
 
@@ -3039,6 +3126,11 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 
 	switch (LittleLong(*(unsigned *)buffer))
 	{
+		case MDAHEADER:
+			extradata = Mod_LoadModel_MDA(mod_name, buffer, modfilelen,
+				read_file, skins, numskins, type);
+			break;
+
 		case SDEFHEADER:
 			extradata = Mod_LoadModel_SDEF(mod_name, buffer, modfilelen,
 				read_file, skins, numskins, type);
@@ -3104,6 +3196,25 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 			break;
 	}
 
+	return extradata;
+}
+
+/*
+=================
+Mod_LoadModel
+=================
+*/
+void *
+Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
+	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,
+	findimage_t find_image, loadimage_t load_image, readfile_t read_file,
+	modtype_t *type)
+{
+	void *extradata;
+
+	extradata = Mod_LoadModelFile(mod_name, buffer, modfilelen, skins, numskins,
+		read_file, type);
+
 	if (extradata)
 	{
 		Mod_LoadMinMaxUpdate(mod_name, mins, maxs, extradata, *type);
@@ -3150,12 +3261,13 @@ Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image, loadimage_t load
 	else if (type == mod_alias)
 	{
 		dmdx_t *pheader;
-		int	i;
 
 		pheader = (dmdx_t *)extradata;
 		if (pheader->ofs_imgbit && load_image)
 		{
 			byte* images = (byte *)pheader + pheader->ofs_imgbit;
+			int i;
+
 			for (i = 0; i < pheader->num_skins; i++)
 			{
 				skins[i] = load_image(
@@ -3169,7 +3281,9 @@ Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image, loadimage_t load
 		}
 		else
 		{
-			for (i=0; i < pheader->num_skins; i++)
+			int i;
+
+			for (i = 0; i < pheader->num_skins; i++)
 			{
 				skins[i] = find_image((char *)pheader + pheader->ofs_skins + i*MAX_SKINNAME, it_skin);
 			}
