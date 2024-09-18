@@ -69,6 +69,7 @@
 
 #include "../../common/header/common.h" // YQ2ARCH
 #include "../header/local.h"
+#include "savegame.h"
 #include "../header/g_skeletons.h"
 #include "../header/g_physics.h"
 #include "../header/g_playstats.h"
@@ -105,7 +106,7 @@
 #endif
 
 /*
- * Older operating systen and architecture detection
+ * Older operating system and architecture detection
  * macros, implemented by savegame version YQ2-1.
  */
 #if defined(__APPLE__)
@@ -424,10 +425,8 @@ InitGame(void)
 	maxspectators = gi.cvar("maxspectators", "4", CVAR_SERVERINFO);
 	deathmatch = gi.cvar("deathmatch", "0", CVAR_LATCH);
 	coop = gi.cvar("coop", "0", CVAR_LATCH);
-
 	skill = gi.cvar("skill", "1", CVAR_LATCH);
-	maxentities = gi.cvar("maxentities", "1024", CVAR_LATCH);
-
+	maxentities = gi.cvar("maxentities", "2048", CVAR_LATCH);
 	sv_nomonsters = gi.cvar("nomonsters", "0", CVAR_SERVERINFO|CVAR_LATCH);
 	sv_freezemonsters = gi.cvar("freezemonsters", "0", 0);
 
@@ -732,8 +731,6 @@ ReadField(FILE *f, field_t *field, byte *base)
 	}
 }
 
-//=========================================================
-
 /* ========================================================= */
 
 /*
@@ -742,25 +739,25 @@ ReadField(FILE *f, field_t *field, byte *base)
 static void
 WriteClient(FILE *f, gclient_t *client)
 {
-	field_t		*field;
-	gclient_t	temp;
+	field_t *field;
+	gclient_t temp;
 
-	// all of the ints, floats, and vectors stay as they are
+	/* all of the ints, floats, and vectors stay as they are */
 	temp = *client;
 
-	// change the pointers to lengths or indexes
-	for (field=clientfields ; field->name ; field++)
+	/* change the pointers to indexes */
+	for (field = clientfields; field->name; field++)
 	{
-		WriteField1 (f, field, (byte *)&temp);
+		WriteField1(f, field, (byte *)&temp);
 	}
 
-	// write the block
-	fwrite (&temp, sizeof(temp), 1, f);
+	/* write the block */
+	fwrite(&temp, sizeof(temp), 1, f);
 
-	// now write any allocated data following the edict
-	for (field=clientfields ; field->name ; field++)
+	/* now write any allocated data following the edict */
+	for (field = clientfields; field->name; field++)
 	{
-		WriteField2 (f, field, (byte *)client);
+		WriteField2(f, field, (byte *)client);
 	}
 }
 
