@@ -72,21 +72,6 @@ float SwapFloat(float v)
 	return dat2.f;
 }
 
-void strlcpy(char *dest, const char *src, size_t size)
-{
-	size_t i;
-
-	memset(dest, 0, size);
-
-	for (i = 0; i < size - 1; i++)
-	{
-		dest[i] = src[i];
-
-		if (src[i] == '\0')
-			break;
-	}
-}
-
 bool_t yesno(void)
 {
 	char buffer[16];

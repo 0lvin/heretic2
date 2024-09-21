@@ -22,6 +22,9 @@
 
 #include "matrix.h"
 #include "image.h"
+
+#define MAX_QPATH 64
+
 #include "../src/common/header/files.h"
 
 #define MAX_NAMESIZE 64

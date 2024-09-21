@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef float vec_t;
 typedef vec_t vec2_t[2];
@@ -83,7 +84,6 @@ char *mem_copystring(mem_pool_t *pool, const char *string);
 char *copystring(const char *string);
 char *mem_sprintf(mem_pool_t *pool, const char *format, ...);
 char *msprintf(const char *format, ...);
-void strlcpy(char *dest, const char *src, size_t size);
 
 #ifdef WIN32
 # define strcasecmp _stricmp

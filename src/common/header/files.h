@@ -227,6 +227,7 @@ typedef struct
 
 /* .MD2 Anachronox triangle model file format */
 
+#define ALIAS_ANACHRONOX_VERSION_OLD 14
 #define ALIAS_ANACHRONOX_VERSION 15
 
 typedef struct
