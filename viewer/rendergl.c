@@ -432,7 +432,7 @@ reshape(int w, int h)
 
 	glMatrixMode (GL_PROJECTION);
 	glLoadIdentity ();
-	perspectiveGL(45.0, w/(GLdouble)h, 0.1, 1000.0);
+	perspectiveGL(45.0, w/(GLdouble)h, 0.1, 10000.0);
 
 	glMatrixMode (GL_MODELVIEW);
 	glLoadIdentity ();
