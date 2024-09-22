@@ -225,6 +225,7 @@ typedef struct
 /* .MD2 Anachronox triangle model file format */
 
 #define MDAHEADER (('1' << 24) + ('A' << 16) + ('D' << 8) + 'M')
+#define ALIAS_ANACHRONOX_VERSION_OLD 14
 #define ALIAS_ANACHRONOX_VERSION 15
 
 typedef struct
@@ -797,7 +798,7 @@ typedef struct
 
 typedef struct
 {
-	int planenum;
+	unsigned int planenum;
 	int children[2];         /* negative numbers are -(leafs+1), not nodes */
 	short mins[3];           /* for frustom culling */
 	short maxs[3];
@@ -807,7 +808,7 @@ typedef struct
 
 typedef struct
 {
-	int planenum;
+	unsigned int planenum;
 	int children[2];         /* negative numbers are -(leafs+1), not nodes */
 	float mins[3];           /* for frustom culling */
 	float maxs[3];
@@ -851,10 +852,10 @@ typedef struct
 typedef struct
 {
 	unsigned short planenum;
-	short side;
+	unsigned short side;
 
-	int firstedge; /* we must support > 64k edges */
-	short numedges;
+	unsigned int firstedge; /* we must support > 64k edges */
+	unsigned short numedges;
 	short texinfo;
 
 	/* lighting info */
@@ -865,10 +866,10 @@ typedef struct
 typedef struct
 {
 	unsigned int planenum;
-	int side;
+	unsigned int side;
 
-	int firstedge; /* we must support > 64k edges */
-	int numedges;
+	unsigned int firstedge; /* we must support > 64k edges */
+	unsigned int numedges;
 	int texinfo;
 
 	/* lighting info */
@@ -1007,10 +1008,10 @@ typedef struct texsininfo_s
 typedef struct
 {
 	unsigned short planenum;
-	short side;
+	unsigned short side;
 
-	int firstedge; /* we must support > 64k edges */
-	short numedges;
+	unsigned int firstedge; /* we must support > 64k edges */
+	unsigned short numedges;
 	short texinfo;
 
 	/* lighting info */
