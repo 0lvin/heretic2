@@ -135,13 +135,30 @@
  #define ARCH_1 "unknown"
 #endif
 
+/* ========================================================= */
+
+/*
+ * Prototypes for forward
+ * declaration for all game
+ * functions.
+ */
+#include "tables/gamefunc_decs.h"
+
 /*
  * List with function pointer
  * to each of the functions
  * prototyped above.
  */
 static functionList_t functionList[] = {
+	#include "tables/gamefunc_list.h"
 };
+
+/*
+ * Prototypes for forward
+ * declaration for all game
+ * mmove_t functions.
+ */
+#include "tables/gamemmove_decs.h"
 
 /*
  * List with pointers to
@@ -150,104 +167,41 @@ static functionList_t functionList[] = {
  * above.
  */
 static mmoveList_t mmoveList[] = {
+	#include "tables/gamemmove_list.h"
 };
 
+/*
+ * Fields to be saved (used in g_spawn.c)
+ */
 field_t fields[] = {
-	{"classname", FOFS(classname), F_LSTRING},
-	{"origin", FOFS(s.origin), F_VECTOR},
-	{"model", FOFS(model), F_LSTRING},
-	{"spawnflags", FOFS(spawnflags), F_INT},
-	{"speed", FOFS(speed), F_FLOAT},
-	{"accel", FOFS(accel), F_FLOAT},
-	{"decel", FOFS(decel), F_FLOAT},
-	{"target", FOFS(target), F_LSTRING},
-	{"targetname", FOFS(targetname), F_LSTRING},
-	{"scripttarget", FOFS(scripttarget), F_LSTRING},
-	{"pathtarget", FOFS(pathtarget), F_LSTRING},
-	{"jumptarget", FOFS(jumptarget), F_LSTRING},
-	{"deathtarget", FOFS(deathtarget), F_LSTRING},
-	{"killtarget", FOFS(killtarget), F_LSTRING},
-	{"combattarget", FOFS(combattarget), F_LSTRING},
-	{"message", FOFS(message), F_LSTRING},
-	{"text_msg", FOFS(text_msg), F_LSTRING},
-	{"team", FOFS(team), F_LSTRING},
-	{"wait", FOFS(wait), F_FLOAT},
-	{"delay", FOFS(delay), F_FLOAT},
-	{"time", FOFS(time), F_FLOAT},
-	{"random", FOFS(random), F_FLOAT},
-	{"style", FOFS(style), F_INT},
-	{"count", FOFS(count), F_INT},
-	{"health", FOFS(health), F_INT},
-	{"skinnum", FOFS(s.skinnum), F_INT},
-	{"sounds", FOFS(sounds), F_INT},
-	{"light", 0, F_IGNORE},
-	{"dmg", FOFS(dmg), F_INT},
-	{"angles", FOFS(s.angles), F_VECTOR},
-	{"angle", FOFS(s.angles), F_ANGLEHACK},
-	{"mass", FOFS(mass), F_INT},
-	{"volume", FOFS(volume), F_FLOAT},
-	{"attenuation", FOFS(attenuation), F_FLOAT},
-	{"map", FOFS(map), F_LSTRING},
-	{"materialtype", FOFS(materialtype), F_INT},
-	{"scale", FOFS(s.scale), F_FLOAT},
-	{"color", FOFS(s.color), F_RGBA},
-	{"frame", FOFS(s.frame), F_INT},
-	{"mintel", FOFS(mintel), F_INT},
-	{"melee_range", FOFS(melee_range), F_FLOAT},
-	{"missile_range", FOFS(missile_range), F_FLOAT},
-	{"min_missile_range", FOFS(min_missile_range), F_FLOAT},
-	{"bypass_missile_chance", FOFS(bypass_missile_chance), F_INT},
-	{"jump_chance", FOFS(jump_chance), F_INT},
-	{"wakeup_distance", FOFS(wakeup_distance), F_FLOAT},
-	{"c_mode", FOFS(monsterinfo.c_mode), F_INT, F_INT},
-	{"homebuoy", FOFS(homebuoy), F_LSTRING},
-	{"wakeup_target", FOFS(wakeup_target), F_LSTRING},
-	{"pain_target", FOFS(pain_target), F_LSTRING},
-
-	// temp spawn vars -- only valid when the spawn function is called
-	{"lip", STOFS(lip), F_INT, FFL_SPAWNTEMP},
-	{"distance", STOFS(distance), F_INT, FFL_SPAWNTEMP},
-	{"height", STOFS(height), F_INT, FFL_SPAWNTEMP},
-	{"noise", STOFS(noise), F_LSTRING, FFL_SPAWNTEMP},
-	{"pausetime", STOFS(pausetime), F_FLOAT, FFL_SPAWNTEMP},
-	{"item", STOFS(item), F_LSTRING, FFL_SPAWNTEMP},
-	{"gravity", STOFS(gravity), F_LSTRING, FFL_SPAWNTEMP},
-	{"sky", STOFS(sky), F_LSTRING, FFL_SPAWNTEMP},
-	{"skyrotate", STOFS(skyrotate), F_FLOAT, FFL_SPAWNTEMP},
-	{"skyaxis", STOFS(skyaxis), F_VECTOR, FFL_SPAWNTEMP},
-	{"minyaw", STOFS(minyaw), F_FLOAT, FFL_SPAWNTEMP},
-	{"maxyaw", STOFS(maxyaw), F_FLOAT, FFL_SPAWNTEMP},
-	{"minpitch", STOFS(minpitch), F_FLOAT, FFL_SPAWNTEMP},
-	{"maxpitch", STOFS(maxpitch), F_FLOAT, FFL_SPAWNTEMP},
-	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP},
-	{"rotate", STOFS(rotate), F_INT, FFL_SPAWNTEMP},
-	{"target2", FOFS(target2), F_LSTRING},
-	{"pathtargetname",  FOFS(pathtargetname), F_LSTRING},
-	{"zangle", STOFS(zangle), F_FLOAT, FFL_SPAWNTEMP},
-	{"file", STOFS(file), F_LSTRING, FFL_SPAWNTEMP},
-	{"radius", STOFS(radius), F_INT, FFL_SPAWNTEMP},
-	{"offensive", STOFS(offensive), F_INT, FFL_SPAWNTEMP},
-	{"defensive", STOFS(defensive), F_INT, FFL_SPAWNTEMP},
-	{"spawnflags2", STOFS(spawnflags2), F_INT, FFL_SPAWNTEMP},
-	{"cooptimeout", STOFS(cooptimeout), F_INT, FFL_SPAWNTEMP},
-
-	{"script", STOFS(script), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm1", STOFS(parms[0]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm2", STOFS(parms[1]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm3", STOFS(parms[2]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm4", STOFS(parms[3]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm5", STOFS(parms[4]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm6", STOFS(parms[5]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm7", STOFS(parms[6]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm8", STOFS(parms[7]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm9", STOFS(parms[8]), F_LSTRING, FFL_SPAWNTEMP},
-	{"parm10", STOFS(parms[9]), F_LSTRING, FFL_SPAWNTEMP},
-
+	#include "tables/fields.h"
 };
 
-// jmarshall
-int numItemsInFieldsArray = sizeof(fields) / sizeof(field_t);
-// jmarshall end
+/*
+ * Level fields to
+ * be saved
+ */
+static field_t levelfields[] = {
+	#include "tables/levelfields.h"
+};
+
+/*
+ * Client fields to
+ * be saved
+ */
+static field_t clientfields[] = {
+	#include "tables/clientfields.h"
+};
+
+/* ========================================================= */
+
+static field_t bouyfields[] = {
+	{"", BYOFS(pathtarget), F_LSTRING},
+	{"", BYOFS(target), F_LSTRING},
+	{"", BYOFS(targetname), F_LSTRING},
+	{"", BYOFS(jump_target), F_LSTRING},
+	{NULL, 0, F_INT}
+};
 
 void LoadScripts(FILE* FH, qboolean DoGlobals);
 void SaveScripts(FILE* FH, qboolean DoGlobals);
@@ -301,38 +255,7 @@ static field_t		savefields[] =
 	{NULL, 0, F_INT}
 };
 
-/*
- * Level fields to
- * be saved
- */
-static field_t levelfields[] = {
-	{"", LLOFS(changemap), F_LSTRING},
-	{"", LLOFS(sight_client), F_EDICT},
-	{"", LLOFS(sight_entity), F_EDICT},
-	{NULL, 0, F_INT}
-};
 
-static field_t bouyfields[] = {
-	{"", BYOFS(pathtarget), F_LSTRING},
-	{"", BYOFS(target), F_LSTRING},
-	{"", BYOFS(targetname), F_LSTRING},
-	{"", BYOFS(jump_target), F_LSTRING},
-	{NULL, 0, F_INT}
-};
-
-/*
- * Client fields to
- * be saved
- */
-static field_t clientfields[] = {
-	{"", CLOFS(playerinfo.pers.weapon), F_ITEM},
-	{"", CLOFS(playerinfo.pers.lastweapon), F_ITEM},
-	{"", CLOFS(playerinfo.pers.defence), F_ITEM},
-	{"", CLOFS(playerinfo.pers.lastdefence), F_ITEM},
-	{"", CLOFS(playerinfo.pers.newweapon), F_ITEM},
-
-	{NULL, 0, F_INT}
-};
 
 trig_message_t	game_msgtxt[MAX_MESSAGESTRINGS];
 unsigned		*game_msgbuf;
@@ -563,12 +486,8 @@ InitGame(void)
 
 	G_InitItems();
 
-	// ********************************************************************************************
-	// Initialise hep messages.
-	// ********************************************************************************************
-
-	Com_sprintf(game.helpmessage1, sizeof(game.helpmessage1), "No help message1");
-	Com_sprintf(game.helpmessage2, sizeof(game.helpmessage2), "No help message2");
+	Com_sprintf(game.helpmessage1, sizeof(game.helpmessage1), "");
+	Com_sprintf(game.helpmessage2, sizeof(game.helpmessage2), "");
 
 	/* initialize all entities for this game */
 	game.maxentities = maxentities->value;
