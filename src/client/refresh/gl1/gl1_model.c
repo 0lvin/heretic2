@@ -213,7 +213,8 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 
 	for (surfnum = 0; surfnum < count; surfnum++, in++, out++)
 	{
-		int	side, ti, planenum, lightofs;
+		unsigned int planenum;
+		int	ti, side, lightofs;
 
 		out->firstedge = in->firstedge;
 		out->numedges = in->numedges;
@@ -234,14 +235,14 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 			out->flags |= SURF_PLANEBACK;
 		}
 
-		if (planenum < 0 || planenum >= loadmodel->numplanes)
+		if (planenum >= loadmodel->numplanes)
 		{
 			Com_Error(ERR_DROP, "%s: Incorrect %d planenum.",
 					__func__, planenum);
 		}
 		out->plane = loadmodel->planes + planenum;
 
-		ti = LittleLong(in->texinfo);
+		ti = in->texinfo;
 
 		if ((ti < 0) || (ti >= loadmodel->numtexinfo))
 		{
@@ -477,6 +478,8 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 	/* call the apropriate loader */
 	switch (LittleLong(*(unsigned *)buf))
 	{
+		case MDAHEADER:
+			/* fall through */
 		case SDEFHEADER:
 			/* fall through */
 		case MDXHEADER:
@@ -623,7 +626,7 @@ RI_RegisterModel(const char *name)
 		else
 		{
 			/* numframes is unused for SP2 but lets set it also  */
-			mod->numframes = Mod_ReLoadSkins((struct image_s **)mod->skins,
+			mod->numframes = Mod_ReLoadSkins(name, (struct image_s **)mod->skins,
 				(findimage_t)R_FindImage, (loadimage_t)R_LoadPic,
 				mod->extradata, mod->type);
 		}

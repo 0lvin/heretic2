@@ -29,6 +29,10 @@
 
 #include "models.h"
 
+static void *
+Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen,
+	struct image_s ***skins, int *numskins, readfile_t read_file, modtype_t *type);
+
 /*
 =================
 Mod_LoadSTvertList
@@ -1537,12 +1541,14 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->num_meshes = pinmodel.num_meshes;
 	pheader->num_st = num_tris * 3;
 	pheader->num_tris = num_tris;
+	pheader->num_imgbit = 0;
 	pheader->ofs_meshes = ofs_meshes;
 	pheader->ofs_skins = ofs_skins;
 	pheader->ofs_st = ofs_st;
 	pheader->ofs_tris = ofs_tris;
 	pheader->ofs_frames = ofs_frames;
 	pheader->ofs_glcmds = ofs_glcmds;
+	pheader->ofs_imgbit = 0;
 	pheader->ofs_end = ofs_end;
 
 	mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
@@ -1793,6 +1799,7 @@ Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->num_tris = pinmodel.num_tris;
 	pheader->num_glcmds = pinmodel.num_glcmds;
 	pheader->num_frames = pinmodel.num_frames;
+	pheader->num_imgbit = 0;
 
 	pheader->ofs_meshes = ofs_meshes;
 	pheader->ofs_skins = ofs_skins;
@@ -1800,6 +1807,7 @@ Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->ofs_tris = ofs_tris;
 	pheader->ofs_glcmds = ofs_glcmds;
 	pheader->ofs_frames = ofs_frames;
+	pheader->ofs_imgbit = 0;
 	pheader->ofs_end = ofs_end;
 
 	/* create single mesh */
@@ -1935,6 +1943,7 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->num_tris = pinmodel.num_tris;
 	pheader->num_glcmds = pinmodel.num_glcmds;
 	pheader->num_frames = pinmodel.num_frames;
+	pheader->num_imgbit = 0;
 
 	pheader->ofs_meshes = ofs_meshes;
 	pheader->ofs_skins = ofs_skins;
@@ -1942,6 +1951,7 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->ofs_tris = ofs_tris;
 	pheader->ofs_glcmds = ofs_glcmds;
 	pheader->ofs_frames = ofs_frames;
+	pheader->ofs_imgbit = 0;
 	pheader->ofs_end = ofs_end;
 
 	/* create single mesh */
@@ -2100,6 +2110,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 			dmdxheader.num_glcmds = LittleLong(header->num_glcmds);
 			dmdxheader.num_frames = LittleLong(header->num_frames);
 			dmdxheader.num_meshes = LittleLong(header->num_mesh_nodes);
+			dmdxheader.num_imgbit = 0;
 
 			// just skip header and meshes
 			dmdxheader.ofs_meshes = sizeof(dmdxheader);
@@ -2108,6 +2119,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 			dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
 			dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
 			dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
+			dmdxheader.ofs_imgbit = 0;
 			dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
 
 			if (dmdxheader.num_xyz <= 0)
@@ -2431,6 +2443,7 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 	dmdxheader.num_frames = header.num_frames;
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
+	dmdxheader.num_imgbit = 0;
 
 	/* just skip header */
 	dmdxheader.ofs_meshes = sizeof(dmdxheader);
@@ -2439,6 +2452,7 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 	dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
 	dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
 	dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
+	dmdxheader.ofs_imgbit = 0;
 	dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
 
 	*numskins = dmdxheader.num_skins;
@@ -2533,6 +2547,7 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 	dmdxheader.num_frames = header.num_frames;
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
+	dmdxheader.num_imgbit = 0;
 
 	/* just skip header */
 	dmdxheader.ofs_meshes = sizeof(dmdxheader);
@@ -2541,6 +2556,7 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 	dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
 	dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
 	dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
+	dmdxheader.ofs_imgbit = 0;
 	dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
 
 	*numskins = dmdxheader.num_skins;
@@ -2768,6 +2784,7 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 	dmdxheader.num_frames = framescount;
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
+	dmdxheader.num_imgbit = 0;
 
 	/* just skip header */
 	dmdxheader.ofs_meshes = sizeof(dmdxheader);
@@ -2776,6 +2793,7 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 	dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
 	dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
 	dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
+	dmdxheader.ofs_imgbit = 0;
 	dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
 
 	*numskins = dmdxheader.num_skins;
@@ -2853,6 +2871,164 @@ Mod_LoadModel_SDEF(const char *mod_name, const void *buffer, int modfilelen,
 	free(text);
 
 	*type = mod_alias;
+
+	return extradata;
+}
+
+static void *
+Mod_LoadModel_MDA_Text(const char *mod_name, char *curr_buff,
+	readfile_t read_file, struct image_s ***skins, int *numskins, modtype_t *type)
+{
+	char base_model[MAX_QPATH * 2] = {0};
+	char base_skin[MAX_QPATH * 2] = {0};
+
+	while (curr_buff)
+	{
+		const char *token;
+
+		token = COM_Parse(&curr_buff);
+		if (!*token)
+		{
+			continue;
+		}
+
+		/* found basemodel */
+		else if (!strcmp(token, "basemodel"))
+		{
+			char *curr;
+
+			token = COM_Parse(&curr_buff);
+			if (!token)
+			{
+				return NULL;
+			}
+			strncpy(base_model, token, sizeof(base_model) - 1);
+
+			curr = base_model;
+			while (*curr)
+			{
+				if (*curr == '\\')
+				{
+					*curr = '/';
+				}
+				curr++;
+			}
+
+			if (base_skin[0])
+			{
+				/* other fields is unused for now */
+				break;
+			}
+		}
+		/* TODO: should be profile {*} -> skin -> pass -> map */
+		else if (!strcmp(token, "map"))
+		{
+			char* token_end = NULL;
+			char *curr;
+
+			token = COM_Parse(&curr_buff);
+			if (!token)
+			{
+				return NULL;
+			}
+
+			if (token[0] == '"')
+			{
+				token ++;
+			}
+
+			token_end = strchr(token, '"');
+			if (token_end)
+			{
+				/* remove end " */
+				*token_end = 0;
+			}
+
+			strncpy(base_skin, token, sizeof(base_skin) - 1);
+
+			curr = base_skin;
+			while (*curr)
+			{
+				if (*curr == '\\')
+				{
+					*curr = '/';
+				}
+				curr++;
+			}
+
+			if (base_model[0])
+			{
+				/* other fields is unused for now */
+				break;
+			}
+		}
+	}
+
+	if (base_model[0])
+	{
+		void *extradata, *base;
+		int base_size;
+
+		base_size = read_file(base_model, (void **)&base);
+		if (base_size <= 0)
+		{
+			R_Printf(PRINT_DEVELOPER, "%s: %s No base model for %s\n",
+				__func__, mod_name, base_model);
+			return NULL;
+		}
+
+		/* little bit recursive load */
+		extradata = Mod_LoadModelFile(mod_name, base, base_size,
+			skins, numskins,
+			read_file, type);
+
+		/* check skin path */
+		if (extradata && *type == mod_alias)
+		{
+			dmdx_t *pheader;
+			int	i;
+
+			pheader = (dmdx_t *)extradata;
+			for (i=0; i < pheader->num_skins; i++)
+			{
+				char *skin;
+
+				/* Update included model with skin path */
+				skin = (char *)pheader + pheader->ofs_skins + i * MAX_SKINNAME;
+				if (!strchr(skin, '/') && !strchr(skin, '\\'))
+				{
+					char skin_path[MAX_QPATH * 2] = {0};
+
+					strncpy(skin_path, base_skin, sizeof(skin_path));
+					strcpy(strrchr(skin_path, '/') + 1, skin);
+
+					strncpy(skin, skin_path, MAX_SKINNAME);
+				}
+			}
+		}
+
+		free(base);
+		return extradata;
+	}
+
+	return NULL;
+}
+
+static void *
+Mod_LoadModel_MDA(const char *mod_name, const void *buffer, int modfilelen,
+	readfile_t read_file, struct image_s ***skins, int *numskins, modtype_t *type)
+{
+	void *extradata;
+	char *text;
+
+	text = malloc(modfilelen + 1 - 4);
+	memcpy(text, (char *)buffer + 4, modfilelen - 4);
+	text[modfilelen - 4] = 0;
+
+	extradata = Mod_LoadModel_MDA_Text(mod_name, text, read_file, skins,
+		numskins, type);
+
+	free(text);
 
 	return extradata;
 }
@@ -3024,11 +3200,9 @@ Mod_LoadMinMaxUpdate(const char *mod_name, vec3_t mins, vec3_t maxs, void *extra
 Mod_LoadModel
 =================
 */
-void *
-Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
-	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,
-	findimage_t find_image, loadimage_t load_image, readfile_t read_file,
-	modtype_t *type)
+static void *
+Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen,
+	struct image_s ***skins, int *numskins, readfile_t read_file, modtype_t *type)
 {
 	void *extradata = NULL;
 
@@ -3040,6 +3214,11 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 
 	switch (LittleLong(*(unsigned *)buffer))
 	{
+		case MDAHEADER:
+			extradata = Mod_LoadModel_MDA(mod_name, buffer, modfilelen,
+				read_file, skins, numskins, type);
+			break;
+
 		case SDEFHEADER:
 			extradata = Mod_LoadModel_SDEF(mod_name, buffer, modfilelen,
 				read_file, skins, numskins, type);
@@ -3106,10 +3285,29 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 			break;
 	}
 
+	return extradata;
+}
+
+/*
+=================
+Mod_LoadModel
+=================
+*/
+void *
+Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
+	vec3_t mins, vec3_t maxs, struct image_s ***skins, int *numskins,
+	findimage_t find_image, loadimage_t load_image, readfile_t read_file,
+	modtype_t *type)
+{
+	void *extradata;
+
+	extradata = Mod_LoadModelFile(mod_name, buffer, modfilelen, skins, numskins,
+		read_file, type);
+
 	if (extradata)
 	{
 		Mod_LoadMinMaxUpdate(mod_name, mins, maxs, extradata, *type);
-		Mod_ReLoadSkins(*skins, find_image, load_image, extradata, *type);
+		Mod_ReLoadSkins(mod_name, *skins, find_image, load_image, extradata, *type);
 		Mod_LoadLimits(mod_name, extradata, *type);
 	}
 
@@ -3124,8 +3322,8 @@ Reload images in SP2/MD2 (mark registration_sequence)
 =================
 */
 int
-Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image, loadimage_t load_image,
-	void *extradata, modtype_t type)
+Mod_ReLoadSkins(const char *name, struct image_s **skins, findimage_t find_image,
+	loadimage_t load_image, void *extradata, modtype_t type)
 {
 	if (type == mod_sprite)
 	{
@@ -3152,12 +3350,13 @@ Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image, loadimage_t load
 	else if (type == mod_alias)
 	{
 		dmdx_t *pheader;
-		int	i;
 
 		pheader = (dmdx_t *)extradata;
-		if (pheader->ofs_imgbit && load_image)
+		if (pheader->ofs_imgbit && pheader->num_imgbit && load_image)
 		{
 			byte* images = (byte *)pheader + pheader->ofs_imgbit;
+			int i;
+
 			for (i = 0; i < pheader->num_skins; i++)
 			{
 				skins[i] = load_image(
@@ -3171,9 +3370,26 @@ Mod_ReLoadSkins(struct image_s **skins, findimage_t find_image, loadimage_t load
 		}
 		else
 		{
-			for (i=0; i < pheader->num_skins; i++)
+			int i;
+
+			for (i = 0; i < pheader->num_skins; i++)
 			{
-				skins[i] = find_image((char *)pheader + pheader->ofs_skins + i*MAX_SKINNAME, it_skin);
+				char *skin;
+
+				skin = (char *)pheader + pheader->ofs_skins + i * MAX_SKINNAME;
+				skins[i] = find_image(skin, it_skin);
+
+				if (!skins[i] && !strchr(skin, '/') && !strchr(skin, '\\'))
+				{
+					char skin_path[MAX_QPATH * 2] = {0};
+
+					strncpy(skin_path, name, sizeof(skin_path));
+					strcpy(strrchr(skin_path, '/') + 1, skin);
+
+					R_Printf(PRINT_DEVELOPER, "Model %s: No original skin found, %s is used\n",
+						name, skin_path);
+					skins[i] = find_image(skin_path, it_skin);
+				}
 			}
 		}
 		return  pheader->num_frames;
