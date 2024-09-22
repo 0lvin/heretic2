@@ -134,6 +134,24 @@
 #else
  #define ARCH_1 "unknown"
 #endif
+
+/*
+ * List with function pointer
+ * to each of the functions
+ * prototyped above.
+ */
+static functionList_t functionList[] = {
+};
+
+/*
+ * List with pointers to
+ * each of the mmove_t
+ * functions prototyped
+ * above.
+ */
+static mmoveList_t mmoveList[] = {
+};
+
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},
 	{"origin", FOFS(s.origin), F_VECTOR},
@@ -242,6 +260,9 @@ void SaveScripts(FILE* FH, qboolean DoGlobals);
 // some of these, and if one were accidentally present twice
 // it would double swizzle (fuck) the pointer.
 
+/*
+ * Fields to be saved (used in g_spawn.c)
+ */
 static field_t		savefields[] =
 {
 	{"", FOFS(classname), F_LSTRING},
@@ -280,16 +301,18 @@ static field_t		savefields[] =
 	{NULL, 0, F_INT}
 };
 
-static field_t		levelfields[] =
-{
+/*
+ * Level fields to
+ * be saved
+ */
+static field_t levelfields[] = {
 	{"", LLOFS(changemap), F_LSTRING},
 	{"", LLOFS(sight_client), F_EDICT},
 	{"", LLOFS(sight_entity), F_EDICT},
 	{NULL, 0, F_INT}
 };
 
-static field_t		bouyfields[] =
-{
+static field_t bouyfields[] = {
 	{"", BYOFS(pathtarget), F_LSTRING},
 	{"", BYOFS(target), F_LSTRING},
 	{"", BYOFS(targetname), F_LSTRING},
@@ -297,9 +320,11 @@ static field_t		bouyfields[] =
 	{NULL, 0, F_INT}
 };
 
-
-static field_t		clientfields[] =
-{
+/*
+ * Client fields to
+ * be saved
+ */
+static field_t clientfields[] = {
 	{"", CLOFS(playerinfo.pers.weapon), F_ITEM},
 	{"", CLOFS(playerinfo.pers.lastweapon), F_ITEM},
 	{"", CLOFS(playerinfo.pers.defence), F_ITEM},
@@ -403,8 +428,6 @@ InitGame(void)
 	gi.dprintf("Game is starting up.\n");
 	gi.dprintf("Game is %s built on %s.\n", GAMEVERSION, BUILD_DATE);
 
-	G_InitResourceManagers();
-
 	gun_x = gi.cvar("gun_x", "0", 0);
 	gun_y = gi.cvar("gun_y", "0", 0);
 	gun_z = gi.cvar("gun_z", "0", 0);
@@ -412,7 +435,11 @@ InitGame(void)
 	sv_rollangle = gi.cvar("sv_rollangle", "2", 0);
 	sv_maxvelocity = gi.cvar("sv_maxvelocity", "2000", 0);
 	sv_gravity = gi.cvar("sv_gravity", "675.0", 0);
-	sv_friction = gi.cvar("sv_friction", "1600.0", 0);
+	sv_stopspeed = gi.cvar("sv_stopspeed", "100", 0);
+	g_showlogic = gi.cvar("g_showlogic", "0", 0);
+	huntercam = gi.cvar("huntercam", "1", CVAR_SERVERINFO|CVAR_LATCH);
+	strong_mines = gi.cvar("strong_mines", "0", 0);
+	randomrespawn = gi.cvar("randomrespawn", "0", 0);
 
 	/* noset vars */
 	dedicated = gi.cvar("dedicated", "0", CVAR_NOSET);
@@ -425,19 +452,26 @@ InitGame(void)
 	maxspectators = gi.cvar("maxspectators", "4", CVAR_SERVERINFO);
 	deathmatch = gi.cvar("deathmatch", "0", CVAR_LATCH);
 	coop = gi.cvar("coop", "0", CVAR_LATCH);
+	coop_pickup_weapons = gi.cvar("coop_pickup_weapons", "1", CVAR_ARCHIVE);
+	coop_baseq2 = gi.cvar("coop_baseq2", "0", CVAR_LATCH);
+	coop_elevator_delay = gi.cvar("coop_elevator_delay", "1.0", CVAR_ARCHIVE);
 	skill = gi.cvar("skill", "1", CVAR_LATCH);
 	maxentities = gi.cvar("maxentities", "2048", CVAR_LATCH);
-	sv_nomonsters = gi.cvar("nomonsters", "0", CVAR_SERVERINFO|CVAR_LATCH);
-	sv_freezemonsters = gi.cvar("freezemonsters", "0", 0);
+	gamerules = gi.cvar("gamerules", "0", CVAR_LATCH);			//PGM
+	g_footsteps = gi.cvar("g_footsteps", "1", CVAR_ARCHIVE);
+	g_monsterfootsteps = gi.cvar("g_monsterfootsteps", "0", CVAR_ARCHIVE);
+	g_fix_triggered = gi.cvar("g_fix_triggered", "0", 0);
+	g_commanderbody_nogod = gi.cvar("g_commanderbody_nogod", "0", CVAR_ARCHIVE);
 
 	/* change anytime vars */
 	dmflags = gi.cvar("dmflags", "0", CVAR_SERVERINFO);
-	advancedstaff = gi.cvar("advancedstaff", "1", CVAR_SERVERINFO);
-
 	fraglimit = gi.cvar("fraglimit", "0", CVAR_SERVERINFO);
 	timelimit = gi.cvar("timelimit", "0", CVAR_SERVERINFO);
+	capturelimit = gi.cvar("capturelimit", "0", CVAR_SERVERINFO);
+	instantweap = gi.cvar("instantweap", "0", CVAR_SERVERINFO);
 	password = gi.cvar("password", "", CVAR_USERINFO);
 	spectator_password = gi.cvar("spectator_password", "", CVAR_USERINFO);
+	needpass = gi.cvar("needpass", "0", CVAR_SERVERINFO);
 	filterban = gi.cvar("filterban", "1", 0);
 	g_select_empty = gi.cvar("g_select_empty", "0", CVAR_ARCHIVE);
 	run_pitch = gi.cvar("run_pitch", "0.002", 0);
@@ -445,6 +479,42 @@ InitGame(void)
 	bob_up = gi.cvar("bob_up", "0.005", 0);
 	bob_pitch = gi.cvar("bob_pitch", "0.002", 0);
 	bob_roll = gi.cvar("bob_roll", "0.002", 0);
+
+	/* flood control */
+	flood_msgs = gi.cvar("flood_msgs", "4", 0);
+	flood_persecond = gi.cvar("flood_persecond", "4", 0);
+	flood_waitdelay = gi.cvar("flood_waitdelay", "10", 0);
+
+	/* dm map list */
+	sv_maplist = gi.cvar("sv_maplist", "", 0);
+
+	/* disruptor availability */
+	g_disruptor = gi.cvar("g_disruptor", "0", 0);
+
+	/* others */
+	aimfix = gi.cvar("aimfix", "0", CVAR_ARCHIVE);
+	g_machinegun_norecoil = gi.cvar("g_machinegun_norecoil", "0", CVAR_ARCHIVE);
+	g_quick_weap = gi.cvar("g_quick_weap", "1", CVAR_ARCHIVE);
+	g_swap_speed = gi.cvar("g_swap_speed", "1", CVAR_ARCHIVE);
+
+	sv_cinematicfreeze = gi.cvar("sv_cinematicfreeze", "0", 0);
+	sv_jumpcinematic = gi.cvar("sv_jumpcinematic", "0", 0);
+	log_file_name = gi.cvar("log_file_name", "", CVAR_ARCHIVE);
+	log_file_footer = gi.cvar("log_file_footer", "", CVAR_ARCHIVE);
+	log_file_header = gi.cvar("log_file_header", "", CVAR_ARCHIVE);
+	log_file_line_header = gi.cvar("log_file_line_header", "", CVAR_ARCHIVE);
+
+	blood_level = gi.cvar("blood_level", VIOLENCE_DEFAULT_STR, CVAR_ARCHIVE);
+	dm_no_bodies = gi.cvar("dm_no_bodies", "0", CVAR_ARCHIVE);
+
+	gi.cvar("flash_screen", "1", 0);
+
+	flood_killdelay = gi.cvar("flood_killdelay", "10", 0);
+
+	advancedstaff = gi.cvar("advancedstaff", "1", CVAR_SERVERINFO);
+	sv_friction = gi.cvar("sv_friction", "1600.0", 0);
+	sv_nomonsters = gi.cvar("nomonsters", "0", CVAR_SERVERINFO|CVAR_LATCH);
+	sv_freezemonsters = gi.cvar("freezemonsters", "0", 0);
 
 	autorotate = gi.cvar("autorotate", "0", 0);
 	blood = gi.cvar("blood", "1", 0);
@@ -471,37 +541,14 @@ InitGame(void)
 	no_shield = gi.cvar("no_shield","0",0);
 
 	game_test = gi.cvar("game_test", "0", 0);
-	flood_msgs = gi.cvar("flood_msgs", "4", 0);
-	flood_persecond = gi.cvar("flood_persecond", "4", 0);
-	flood_waitdelay = gi.cvar("flood_waitdelay", "10", 0);
-	flood_killdelay = gi.cvar("flood_killdelay", "10", 0);
-	sv_maplist = gi.cvar("sv_maplist", "", 0);
-
-	sv_cinematicfreeze = gi.cvar("sv_cinematicfreeze", "0", 0);
-	sv_jumpcinematic = gi.cvar("sv_jumpcinematic", "0", 0);
-	log_file_name = gi.cvar("log_file_name", "", CVAR_ARCHIVE);
-	log_file_footer = gi.cvar("log_file_footer", "", CVAR_ARCHIVE);
-	log_file_header = gi.cvar("log_file_header", "", CVAR_ARCHIVE);
-	log_file_line_header = gi.cvar("log_file_line_header", "", CVAR_ARCHIVE);
-
-	blood_level = gi.cvar("blood_level", VIOLENCE_DEFAULT_STR, CVAR_ARCHIVE);
-	dm_no_bodies = gi.cvar("dm_no_bodies", "0", CVAR_ARCHIVE);
-
-	gi.cvar("flash_screen", "1", 0);
-
-	/* others */
-#if 0
-	aimfix = gi.cvar("aimfix", "0", CVAR_ARCHIVE);
-	g_machinegun_norecoil = gi.cvar("g_machinegun_norecoil", "0", CVAR_ARCHIVE);
-	g_quick_weap = gi.cvar("g_quick_weap", "1", CVAR_ARCHIVE);
-	g_swap_speed = gi.cvar("g_swap_speed", "1", CVAR_ARCHIVE);
-#endif
 
 	/* initilize localization */
 	LocalizationInit();
 
 	/* initilize dynamic object spawn */
 	DynamicSpawnInit();
+
+	G_InitResourceManagers();
 
 	if (!P_Load())
 	{
@@ -520,33 +567,124 @@ InitGame(void)
 	// Initialise hep messages.
 	// ********************************************************************************************
 
-	Com_sprintf (game.helpmessage1, sizeof(game.helpmessage1), "No help message1");
-	Com_sprintf (game.helpmessage2, sizeof(game.helpmessage2), "No help message2");
+	Com_sprintf(game.helpmessage1, sizeof(game.helpmessage1), "No help message1");
+	Com_sprintf(game.helpmessage2, sizeof(game.helpmessage2), "No help message2");
 
-	// ********************************************************************************************
-	// Initialize all entities for this game.
-	// ********************************************************************************************
-
+	/* initialize all entities for this game */
 	game.maxentities = maxentities->value;
-	g_edicts = (edict_t *)gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
+	g_edicts = gi.TagMalloc(game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;
 	globals.max_edicts = game.maxentities;
 
-	// ********************************************************************************************
-	// Initialize all clients for this game.
-	// ********************************************************************************************
-
+	/* initialize all clients for this game */
 	game.maxclients = maxclients->value;
-	game.clients = (gclient_t *)gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
-	globals.num_edicts = game.maxclients+1;
+	game.clients = gi.TagMalloc(game.maxclients * sizeof(game.clients[0]), TAG_GAME);
+	globals.num_edicts = game.maxclients + 1;
 
 	level.cinActive = false;
 
 	Load_Strings();
 }
 
-//=========================================================
+/* ========================================================= */
 
+/*
+ * Helper function to get
+ * the human readable function
+ * definition by an address.
+ * Called by WriteField1 and
+ * WriteField2.
+ */
+static functionList_t *
+GetFunctionByAddress(byte *adr)
+{
+	int i;
+
+	for (i = 0; functionList[i].funcStr; i++)
+	{
+		if (functionList[i].funcPtr == adr)
+		{
+			return &functionList[i];
+		}
+	}
+
+	return NULL;
+}
+
+/*
+ * Helper function to get the
+ * pointer to a function by
+ * it's human readable name.
+ * Called by WriteField1 and
+ * WriteField2.
+ */
+static byte *
+FindFunctionByName(char *name)
+{
+	int i;
+
+	for (i = 0; functionList[i].funcStr; i++)
+	{
+		if (!strcmp(name, functionList[i].funcStr))
+		{
+			return functionList[i].funcPtr;
+		}
+	}
+
+	return NULL;
+}
+
+/*
+ * Helper function to get the
+ * human readable definition of
+ * a mmove_t struct by a pointer.
+ */
+static mmoveList_t *
+GetMmoveByAddress(mmove_t *adr)
+{
+	int i;
+
+	for (i = 0; mmoveList[i].mmoveStr; i++)
+	{
+		if (mmoveList[i].mmovePtr == adr)
+		{
+			return &mmoveList[i];
+		}
+	}
+
+	return NULL;
+}
+
+/*
+ * Helper function to get the
+ * pointer to a mmove_t struct
+ * by a human readable definition.
+ */
+static mmove_t *
+FindMmoveByName(char *name)
+{
+	int i;
+
+	for (i = 0; mmoveList[i].mmoveStr; i++)
+	{
+		if (!strcmp(name, mmoveList[i].mmoveStr))
+		{
+			return mmoveList[i].mmovePtr;
+		}
+	}
+
+	return NULL;
+}
+
+
+/* ========================================================= */
+
+/*
+ * The following two functions are
+ * doing the dirty work to write the
+ * data generated by the functions
+ * below this block into files.
+ */
 static void
 WriteField1(FILE *f, field_t *field, byte *base)
 {
@@ -622,7 +760,7 @@ WriteField1(FILE *f, field_t *field, byte *base)
 			break;
 
 		default:
-			gi.error("WriteEdict: unknown field type");
+			gi.error("%s: unknown field type", __func__);
 	}
 }
 
@@ -656,6 +794,15 @@ WriteField2(FILE *f, field_t *field, byte *base)
 	}
 }
 
+/* ========================================================= */
+
+/*
+ * This function does the dirty
+ * work to read the data from a
+ * file. The processing of the
+ * data is done in the functions
+ * below
+ */
 static void
 ReadField(FILE *f, field_t *field, byte *base)
 {
@@ -735,7 +882,7 @@ ReadField(FILE *f, field_t *field, byte *base)
 			break;
 
 		default:
-			gi.error("ReadEdict: unknown field type");
+			gi.error("%s: unknown field type", __func__);
 	}
 }
 
@@ -770,62 +917,62 @@ WriteClient(FILE *f, gclient_t *client)
 }
 
 /*
-==============
-ReadClient
-
-All pointer variables (except function pointers) must be handled specially.
-==============
-*/
+ * Read the client struct from a file
+ */
 static void
 ReadClient(FILE *f, gclient_t *client)
 {
-	field_t		*field;
+	field_t *field;
 
-	fread (client, sizeof(*client), 1, f);
+	fread(client, sizeof(*client), 1, f);
 
-	for (field=clientfields ; field->name ; field++)
+	for (field = clientfields; field->name; field++)
 	{
-		ReadField (f, field, (byte *)client);
+		ReadField(f, field, (byte *)client);
 	}
 }
 
+/* ========================================================= */
+
 /*
-============
-WriteGame
-
-This will be called whenever the game goes to a new level,
-and when the user explicitly saves the game.
-
-Game information include cross level data, like multi level
-triggers, help computer info, and all client states.
-
-A single player death will automatically restore from the
-last save position.
-============
-*/
-void WriteGame (char *filename, qboolean autosave)
+ * Writes the game struct into
+ * a file. This is called whenever
+ * the game goes to a new level or
+ * the user saves the game. The saved
+ * information consists of:
+ * - cross level data
+ * - client states
+ * - help computer info
+ */
+void
+WriteGame(const char *filename, qboolean autosave)
 {
-	FILE	*f;
-	int		i;
+	FILE *f;
+	int i;
 	char	str[16];
 	PerEffectsBuffer_t	*peffect;
 
-	SaveClientData ();
+	SaveClientData();
 
-	f = fopen (filename, "wb");
+	f = Q_fopen(filename, "wb");
+
 	if (!f)
-		gi.error ("Couldn't open %s", filename);
+	{
+		gi.error("%s: Couldn't open %s", __func__, filename);
+	}
 
-	memset (str, 0, sizeof(str));
-	strcpy (str, __DATE__);
-	fwrite (str, sizeof(str), 1, f);
+	memset(str, 0, sizeof(str));
+	strcpy(str, __DATE__);
+	fwrite(str, sizeof(str), 1, f);
 
 	game.autosaved = autosave;
-	fwrite (&game, sizeof(game), 1, f);
+	fwrite(&game, sizeof(game), 1, f);
 	game.autosaved = false;
 
-	for (i=0 ; i<game.maxclients ; i++)
-		WriteClient (f, &game.clients[i]);
+	for (i = 0; i < game.maxclients; i++)
+	{
+		WriteClient(f, &game.clients[i]);
+	}
 
 	SaveScripts(f, true);
 
@@ -841,7 +988,7 @@ void WriteGame (char *filename, qboolean autosave)
 	// save all the current persistant effects
 	fwrite (gi.Persistant_Effects_Array, (sizeof(PerEffectsBuffer_t) * MAX_PERSISTANT_EFFECTS), 1, f);
 
-	fclose (f);
+	fclose(f);
 
 	// this is a bit bogus - search through the client effects and renable all FX_PLAYER_EFFECTS
 	peffect = (PerEffectsBuffer_t*) gi.Persistant_Effects_Array;
@@ -854,18 +1001,28 @@ void WriteGame (char *filename, qboolean autosave)
 
 }
 
-void ReadGame (char *filename)
+/*
+ * Read the game structs from
+ * a file. Called when ever a
+ * savegames is loaded.
+ */
+void
+ReadGame(const char *filename)
 {
-	FILE	*f;
-	int		i;
+	FILE *f;
+	int i;
 	char	str[16];
 
 
-	f = fopen (filename, "rb");
+	f = Q_fopen(filename, "rb");
+
 	if (!f)
-		gi.error ("Couldn't open %s", filename);
+	{
+		gi.error("%s: Couldn't open %s", __func__, filename);
+	}
 
 	fread (str, sizeof(str), 1, f);
+
 	if (strcmp (str, __DATE__))
 	{
 		fclose (f);
@@ -878,63 +1035,62 @@ void ReadGame (char *filename)
 	g_edicts = (edict_t *) gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;
 
-	fread (&game, sizeof(game), 1, f);
-	game.clients = (gclient_t *)gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
-	for (i=0 ; i<game.maxclients ; i++)
-		ReadClient (f, &game.clients[i]);
+	fread(&game, sizeof(game), 1, f);
+	game.clients = gi.TagMalloc(game.maxclients * sizeof(game.clients[0]),
+			TAG_GAME);
+
+	for (i = 0; i < game.maxclients; i++)
+	{
+		ReadClient(f, &game.clients[i]);
+	}
 
 	LoadScripts(f, true);
 
-	fclose (f);
+	fclose(f);
 }
 
-
-//==========================================================
-
+/* ========================================================== */
 
 /*
-==============
-WriteEdict
-
-All pointer variables (except function pointers) must be handled specially.
-==============
-*/
-static void WriteEdict (FILE *f, edict_t *ent)
+ * Helper function to write the
+ * edict into a file. Called by
+ * WriteLevel.
+ */
+static void
+WriteEdict(FILE *f, edict_t *ent)
 {
-	field_t		*field;
-	edict_t		temp;
+	field_t *field;
+	edict_t temp;
 
-	// all of the ints, floats, and vectors stay as they are
+	/* all of the ints, floats, and vectors stay as they are */
 	temp = *ent;
 
-	// change the pointers to lengths or indexes
-	for (field=savefields ; field->name ; field++)
+	/* change the pointers to lengths or indexes */
+	for (field = savefields; field->name; field++)
 	{
-		WriteField1 (f, field, (byte *)&temp);
+		WriteField1(f, field, (byte *)&temp);
 	}
 
-	// write the block
-	fwrite (&temp, sizeof(temp), 1, f);
+	/* write the block */
+	fwrite(&temp, sizeof(temp), 1, f);
 
-	// now write any allocated data following the edict
-	for (field=savefields ; field->name ; field++)
+	/* now write any allocated data following the edict */
+	for (field = savefields; field->name; field++)
 	{
-		WriteField2 (f, field, (byte *)ent);
+		WriteField2(f, field, (byte *)ent);
 	}
-
 }
 
 /*
-==============
-WriteLevelLocals
-
-All pointer variables (except function pointers) must be handled specially.
-==============
-*/
-static void WriteLevelLocals (FILE *f)
+ * Helper function to write the
+ * level local data into a file.
+ * Called by WriteLevel.
+ */
+static void
+WriteLevelLocals(FILE *f)
 {
-	field_t		*field;
-	level_locals_t		temp;
+	field_t *field;
+	level_locals_t temp;
 	cvar_t *r_farclipdist;
 	cvar_t *r_fog;
 	cvar_t *r_fog_density;
@@ -948,13 +1104,13 @@ static void WriteLevelLocals (FILE *f)
 	r_fog_density = gi.cvar("r_fog_density", "0", 0);
 	level.fog_density = r_fog_density->value;
 
-	// all of the ints, floats, and vectors stay as they are
+	/* all of the ints, floats, and vectors stay as they are */
 	temp = level;
 
-	// change the pointers to lengths or indexes
-	for (field=levelfields ; field->name ; field++)
+	/* change the pointers to lengths or indexes */
+	for (field = levelfields; field->name; field++)
 	{
-		WriteField1 (f, field, (byte *)&temp);
+		WriteField1(f, field, (byte *)&temp);
 	}
 
 	for (i = 0; i< level.active_buoys; i++)
@@ -966,13 +1122,13 @@ static void WriteLevelLocals (FILE *f)
 		}
 	}
 
-	// write the block
-	fwrite (&temp, sizeof(temp), 1, f);
+	/* write the block */
+	fwrite(&temp, sizeof(temp), 1, f);
 
-	// now write any allocated data following the edict
-	for (field=levelfields ; field->name ; field++)
+	/* now write any allocated data following the edict */
+	for (field = levelfields; field->name; field++)
 	{
-		WriteField2 (f, field, (byte *)&level);
+		WriteField2(f, field, (byte *)&level);
 	}
 
 	for (i = 0; i< level.active_buoys; i++)
@@ -986,17 +1142,94 @@ static void WriteLevelLocals (FILE *f)
 
 }
 
+/*
+ * Writes the current level
+ * into a file.
+ */
+void
+WriteLevel(const char *filename)
+{
+	int i;
+	edict_t *ent;
+	FILE *f;
+	void	*base;
+	PerEffectsBuffer_t	*peffect;
+
+	f = Q_fopen(filename, "wb");
+
+	if (!f)
+	{
+		gi.error("%s: Couldn't open %s", __func__, filename);
+	}
+
+	/* write out edict size for checking */
+	i = sizeof(edict_t);
+	fwrite(&i, sizeof(i), 1, f);
+
+	// write out a function pointer for checking
+	base = (void *)InitGame;
+	fwrite (&base, sizeof(base), 1, f);
+
+	/* write out level_locals_t */
+	WriteLevelLocals(f);
+
+	/* write out all the entities */
+	for (i = 0; i < globals.num_edicts; i++)
+	{
+		ent = &g_edicts[i];
+
+		// we don't want to not save player entities, even if they are not in use, since when we go from
+		// level to a level we've already been to, there maybe monsters that are targeting the player,
+		// and they have problems if they are targeted at a player that has no data in them, even if the player is
+		// not inuse.
+		if (!ent->inuse && !ent->client)
+			continue;
+
+		fwrite (&i, sizeof(i), 1, f);
+		WriteEdict (f, ent);
+	}
+
+	i = -1;
+	fwrite(&i, sizeof(i), 1, f);
+
+	SaveScripts(f, false);
+
+	// this is a bit bogus - search through the client effects and kill all the FX_PLAYER_EFFECTS before saving, since they will be re-created
+	// upon players re-joining the game after a load anyway.
+	peffect = (PerEffectsBuffer_t*) gi.Persistant_Effects_Array;
+	for (i=0; i<MAX_PERSISTANT_EFFECTS; i++, peffect++)
+	{
+		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
+			peffect->numEffects = 0;
+	}
+
+	// save all the current persistant effects
+	fwrite (gi.Persistant_Effects_Array, (sizeof(PerEffectsBuffer_t) * MAX_PERSISTANT_EFFECTS), 1, f);
+
+	fclose(f);
+
+	// this is a bit bogus - search through the client effects and renable all FX_PLAYER_EFFECTS
+	peffect = (PerEffectsBuffer_t*) gi.Persistant_Effects_Array;
+	for (i=0; i<MAX_PERSISTANT_EFFECTS; i++, peffect++)
+	{
+		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
+			peffect->numEffects = 1;
+
+	}
+}
+
+/* ========================================================== */
 
 /*
-==============
-ReadEdict
-
-All pointer variables (except function pointers) must be handled specially.
-==============
-*/
-static void ReadEdict (FILE *f, edict_t *ent)
+ * A helper function to
+ * read the edict back
+ * into the memory. Called
+ * by ReadLevel.
+ */
+static void
+ReadEdict(FILE *f, edict_t *ent)
 {
-	field_t		*field;
+	field_t *field;
 	SinglyLinkedList_t msgs;
 	byte *temp;
 	void *s;
@@ -1013,7 +1246,7 @@ static void ReadEdict (FILE *f, edict_t *ent)
 	msgs = ent->msgQ.msgs;
 
 	s = ent->script;
-	fread (ent, sizeof(*ent), 1, f);
+	fread(ent, sizeof(*ent), 1, f);
 	ent->script = s;
 
 	ent->s.clientEffects.buf = temp;
@@ -1021,38 +1254,30 @@ static void ReadEdict (FILE *f, edict_t *ent)
 	ent->msgQ.msgs = msgs;
 	ent->last_alert = NULL;
 
-/*
-	// Only clients need skeletons - these are set up when all else is done. -MW.
-
-	if(ent->s.skeletalType != SKEL_NULL)
+	for (field = savefields; field->name; field++)
 	{
-		CreateSkeleton(ent->s.skeletalType);
-	}
-*/
-	for (field=savefields ; field->name ; field++)
-	{
-		ReadField (f, field, (byte *)ent);
+		ReadField(f, field, (byte *)ent);
 	}
 }
 
 /*
-==============
-ReadLevelLocals
-
-All pointer variables (except function pointers) must be handled specially.
-==============
-*/
-static void ReadLevelLocals (FILE *f)
+ * A helper function to
+ * read the level local
+ * data from a file.
+ * Called by ReadLevel.
+ */
+static void
+ReadLevelLocals(FILE *f)
 {
-	field_t		*field;
+	field_t *field;
 	char		temp[20];
 	int			i;
 
-	fread (&level, sizeof(level), 1, f);
+	fread(&level, sizeof(level), 1, f);
 
-	for (field=levelfields ; field->name ; field++)
+	for (field = levelfields; field->name; field++)
 	{
-		ReadField (f, field, (byte *)&level);
+		ReadField(f, field, (byte *)&level);
 	}
 
 	for (i = 0; i< level.active_buoys; i++)
@@ -1085,81 +1310,6 @@ static void ReadLevelLocals (FILE *f)
 }
 
 /*
- * Writes the current level
- * into a file.
- */
-void
-WriteLevel(const char *filename)
-{
-	int		i;
-	edict_t	*ent;
-	FILE	*f;
-	void	*base;
-	PerEffectsBuffer_t	*peffect;
-
-	f = fopen (filename, "wb");
-	if (!f)
-		gi.error ("Couldn't open %s", filename);
-
-	// write out edict size for checking
-	i = sizeof(edict_t);
-	fwrite (&i, sizeof(i), 1, f);
-
-	// write out a function pointer for checking
-	base = (void *)InitGame;
-	fwrite (&base, sizeof(base), 1, f);
-
-	// write out level_locals_t
-	WriteLevelLocals (f);
-
-	// write out all the configstrings
-//	fwrite (sv.configstrings, sizeof(sv.configstrings), 1, f);
-
-	// write out all the entities
-	for (i=0 ; i<globals.num_edicts ; i++)
-	{
-		ent = &g_edicts[i];
-
-		// we don't want to not save player entities, even if they are not in use, since when we go from
-		// level to a level we've already been to, there maybe monsters that are targeting the player,
-		// and they have problems if they are targeted at a player that has no data in them, even if the player is
-		// not inuse.
-		if (!ent->inuse && !ent->client)
-			continue;
-
-		fwrite (&i, sizeof(i), 1, f);
-		WriteEdict (f, ent);
-	}
-	i = -1;
-	fwrite (&i, sizeof(i), 1, f);
-
-	SaveScripts(f, false);
-
-	// this is a bit bogus - search through the client effects and kill all the FX_PLAYER_EFFECTS before saving, since they will be re-created
-	// upon players re-joining the game after a load anyway.
-	peffect = (PerEffectsBuffer_t*) gi.Persistant_Effects_Array;
-	for (i=0; i<MAX_PERSISTANT_EFFECTS; i++, peffect++)
-	{
-		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
-			peffect->numEffects = 0;
-	}
-
-	// save all the current persistant effects
-	fwrite (gi.Persistant_Effects_Array, (sizeof(PerEffectsBuffer_t) * MAX_PERSISTANT_EFFECTS), 1, f);
-
-	fclose (f);
-
-	// this is a bit bogus - search through the client effects and renable all FX_PLAYER_EFFECTS
-	peffect = (PerEffectsBuffer_t*) gi.Persistant_Effects_Array;
-	for (i=0; i<MAX_PERSISTANT_EFFECTS; i++, peffect++)
-	{
-		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
-			peffect->numEffects = 1;
-
-	}
-}
-
-/*
  * Reads a level back into the memory.
  * SpawnEntities were already called
  * in the same way when the level was
@@ -1173,79 +1323,82 @@ ReadLevel(const char *filename)
 {
 	void G_ClearMessageQueues();
 
-	int		entnum;
-	FILE	*f;
-	int		i;
-	void	*base;
-	edict_t	*ent;
+	int entnum;
+	FILE *f;
+	int i;
+	void *base;
+	edict_t *ent;
 
-	f = fopen (filename, "rb");
+	f = Q_fopen(filename, "rb");
+
 	if (!f)
-		gi.error ("Couldn't open %s", filename);
-
-//	G_ClearMessageQueues();
-
-	// Free any dynamic memory allocated by loading the level base state.
-
-	gi.FreeTags (TAG_LEVEL);
-
-	// Wipe all the entities.
-
-	memset (g_edicts, 0, game.maxentities*sizeof(g_edicts[0]));
-
-	globals.num_edicts = maxclients->value+1;
-
-	// Check edict size.
-
-	fread (&i, sizeof(i), 1, f);
-	if (i != sizeof(edict_t))
 	{
-		fclose (f);
-		gi.error ("ReadLevel: mismatched edict size");
+		gi.error("%s: Couldn't open %s", __func__, filename);
 	}
 
-	fread (&base, sizeof(base), 1, f);
+	/* free any dynamic memory allocated by
+	   loading the level  base state */
+	gi.FreeTags(TAG_LEVEL);
+
+	/* wipe all the entities */
+	memset(g_edicts, 0, game.maxentities * sizeof(g_edicts[0]));
+	globals.num_edicts = maxclients->value + 1;
+
+	/* check edict size */
+	fread(&i, sizeof(i), 1, f);
+
+	if (i != sizeof(edict_t))
+	{
+		fclose(f);
+		gi.error("%s: mismatched edict size", __func__);
+	}
+
+	fread(&base, sizeof(base), 1, f);
 	if (base != (void *)InitGame)
 	{
 		fclose (f);
 		gi.error ("ReadLevel: function pointers have moved - file was saved on different version.");
 	}
 
-	// Load the level locals.
+	/* load the level locals */
+	ReadLevelLocals(f);
 
-	ReadLevelLocals (f);
-
-	// Load all the entities.
-
+	/* load all the entities */
 	while (1)
 	{
-		if (fread (&entnum, sizeof(entnum), 1, f) != 1)
+		if (fread(&entnum, sizeof(entnum), 1, f) != 1)
 		{
-			fclose (f);
-			gi.error ("ReadLevel: failed to read entnum");
+			fclose(f);
+			gi.error("%s: failed to read entnum", __func__);
 		}
+
 		if (entnum == -1)
+		{
 			break;
+		}
+
 		if (entnum >= globals.num_edicts)
-			globals.num_edicts = entnum+1;
+		{
+			globals.num_edicts = entnum + 1;
+		}
 
 		ent = &g_edicts[entnum];
-		ReadEdict (f, ent);
+		ReadEdict(f, ent);
 
-		// Let the server rebuild world links for this ent.
+		/* let the server rebuild world links for this ent */
+		memset(&ent->area, 0, sizeof(ent->area));
 
 		ent->last_alert = NULL;
-		memset (&ent->area, 0, sizeof(ent->area));
 
 		// NOTE NOTE
 		// Missiles must be linked in specially.  G_LinkMissile links as a SOLID_NOT, even though the entity is SOLID_BBOX
 		if (ent->movetype == MOVETYPE_FLYMISSILE && ent->solid == SOLID_BBOX)
 		{
-			G_LinkMissile (ent);
+			G_LinkMissile(ent);
 		}
 		else
 		{
-			gi.linkentity (ent);
+			gi.linkentity(ent);
 		}
 
 		// Force the monsters just loaded to point at the right anim.

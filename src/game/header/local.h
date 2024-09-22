@@ -704,10 +704,13 @@ typedef struct
 extern edict_t *g_edicts;
 
 #define FOFS(x) (size_t)&(((edict_t *)NULL)->x)
-#define	STOFS(x) (size_t)&(((spawn_temp_t *)NULL)->x)
-#define	LLOFS(x) (size_t)&(((level_locals_t *)NULL)->x)
-#define	CLOFS(x) (size_t)&(((gclient_t *)NULL)->x)
+#define STOFS(x) (size_t)&(((spawn_temp_t *)NULL)->x)
+#define LLOFS(x) (size_t)&(((level_locals_t *)NULL)->x)
+#define CLOFS(x) (size_t)&(((gclient_t *)NULL)->x)
 #define	BYOFS(x) (size_t)&(((buoy_t *)NULL)->x)
+
+#define random() ((randk() & 0x7fff) / ((float)0x7fff))
+#define crandom() (2.0 * (random() - 0.5))
 
 extern	game_locals_t	game;
 extern	level_locals_t	level;
@@ -721,19 +724,29 @@ extern	int				snd_fry;
 extern cvar_t *maxentities;
 extern cvar_t *deathmatch;
 extern cvar_t *coop;
+extern cvar_t *coop_baseq2;	/* treat spawnflags according to baseq2 rules */
+extern cvar_t *coop_pickup_weapons;
+extern cvar_t *coop_elevator_delay;
+extern cvar_t *coop_pickup_weapons;
 extern cvar_t *dmflags;
-extern cvar_t *advancedstaff;
 extern cvar_t *skill;
 extern cvar_t *fraglimit;
 extern cvar_t *timelimit;
+extern cvar_t *capturelimit;
+extern cvar_t *instantweap;
 extern cvar_t *password;
 extern cvar_t *spectator_password;
 extern cvar_t *needpass;
 extern cvar_t *g_select_empty;
+extern cvar_t *dedicated;
+extern cvar_t *g_footsteps;
+extern cvar_t *g_monsterfootsteps;
+extern cvar_t *g_fix_triggered;
+extern cvar_t *g_commanderbody_nogod;
+
 extern cvar_t *filterban;
 
 extern cvar_t *sv_gravity;
-extern cvar_t *sv_friction;
 extern cvar_t *sv_maxvelocity;
 
 extern cvar_t *gun_x, *gun_y, *gun_z;
@@ -747,6 +760,45 @@ extern cvar_t *bob_pitch;
 extern cvar_t *bob_roll;
 
 extern cvar_t *sv_cheats;
+extern cvar_t *maxclients;
+extern cvar_t *maxspectators;
+
+extern cvar_t *flood_msgs;
+extern cvar_t *flood_persecond;
+extern cvar_t *flood_waitdelay;
+
+extern cvar_t *sv_maplist;
+
+extern cvar_t *sv_stopspeed;
+
+extern cvar_t *g_showlogic;
+extern cvar_t *gamerules;
+extern cvar_t *huntercam;
+extern cvar_t *strong_mines;
+extern cvar_t *randomrespawn;
+
+extern cvar_t *g_disruptor;
+
+extern cvar_t *aimfix;
+extern cvar_t *g_machinegun_norecoil;
+extern cvar_t *g_quick_weap;
+extern cvar_t *g_swap_speed;
+extern cvar_t *autorotate;
+extern cvar_t *blood;
+
+extern cvar_t *checkanim;		// specifies whether monsters should check to see if most of the
+										// distance of a move animation is unobstructed before setting it
+extern cvar_t *allowillegalskins;
+
+extern cvar_t *monster_speeds;
+extern cvar_t *pvs_cull;
+
+extern cvar_t *game_test; // sfs--for testing the speed impact of code changes
+extern cvar_t *dm_no_bodies;
+
+extern cvar_t *player_dll;
+extern cvar_t *advancedstaff;
+extern cvar_t *sv_friction;
 extern cvar_t *sv_nomonsters;
 extern cvar_t *blood_level;
 extern cvar_t *showbuoys;
@@ -775,28 +827,7 @@ extern cvar_t *sv_jumpcinematic;
 
 extern cvar_t *sv_freezemonsters;
 
-extern cvar_t *maxclients;
-extern cvar_t *maxspectators;
-extern cvar_t *sv_maplist;
 
-extern cvar_t *autorotate;
-extern cvar_t *blood;
-
-extern cvar_t *checkanim;		// specifies whether monsters should check to see if most of the
-										// distance of a move animation is unobstructed before setting it
-extern cvar_t *allowillegalskins;
-
-extern cvar_t *monster_speeds;
-extern cvar_t *pvs_cull;
-
-extern cvar_t *game_test; // sfs--for testing the speed impact of code changes
-extern cvar_t *dm_no_bodies;
-
-extern cvar_t *player_dll;
-
-extern cvar_t *flood_msgs;
-extern cvar_t *flood_persecond;
-extern cvar_t *flood_waitdelay;
 extern cvar_t *flood_killdelay;
 
 extern	edict_t			*g_edicts;
@@ -810,29 +841,26 @@ extern	int				self_spawn;
 // ************************************************************************************************
 
 #define DROPPED_ITEM		0x00008000
-#define	DROPPED_PLAYER_ITEM	0x00010000
+#define DROPPED_PLAYER_ITEM	0x00010000
 
-// fields are needed for spawning from the entity string
-// and saving / loading games
-
-#define FFL_SPAWNTEMP		1
-
-// ************************************************************************************************
-// fieldtype_t
-// -----------
-// ************************************************************************************************
+/* fields are needed for spawning from the entity
+   string and saving / loading games */
+#define FFL_SPAWNTEMP 1
+#define FFL_NOSPAWN 2
 
 typedef enum
 {
 	F_INT,
 	F_FLOAT,
-	F_LSTRING, /* string on disk, pointer in memory, TAG_LEVEL */
-	F_GSTRING, /* string on disk, pointer in memory, TAG_GAME */
+	F_LSTRING,          /* string on disk, pointer in memory, TAG_LEVEL */
+	F_GSTRING,          /* string on disk, pointer in memory, TAG_GAME */
 	F_VECTOR,
 	F_ANGLEHACK,
-	F_EDICT, /* index on disk, pointer in memory */
-	F_ITEM, /* index on disk, pointer in memory */
-	F_CLIENT, /* index on disk, pointer in memory */
+	F_EDICT,            /* index on disk, pointer in memory */
+	F_ITEM,             /* index on disk, pointer in memory */
+	F_CLIENT,           /* index on disk, pointer in memory */
+	F_FUNCTION,
+	F_MMOVE,
 	F_RGBA,
 	F_RGB,
 	F_IGNORE
@@ -848,7 +876,6 @@ typedef struct
 } field_t;
 
 extern field_t fields[];
-// extern gitem_t itemlist[];
 
 
 /* g_cmds.c */
@@ -916,7 +943,6 @@ edict_t *findradius2(edict_t *from, vec3_t org, float rad);
 /* g_spawn.c */
 void ED_CallSpawn(edict_t *ent);
 void DynamicSpawnInit(void);
-
 
 /* g_combat.c */
 qboolean OnSameTeam(edict_t *ent1, edict_t *ent2);

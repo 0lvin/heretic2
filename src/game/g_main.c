@@ -51,12 +51,15 @@ edict_t *g_edicts;
 
 cvar_t *deathmatch;
 cvar_t *coop;
+cvar_t *coop_baseq2;	/* treat spawnflags according to baseq2 rules */
 cvar_t *coop_pickup_weapons;
 cvar_t *coop_elevator_delay;
 cvar_t *dmflags;
 cvar_t *skill;
 cvar_t *fraglimit;
 cvar_t *timelimit;
+cvar_t *capturelimit;
+cvar_t *instantweap;
 cvar_t *password;
 cvar_t *spectator_password;
 cvar_t *needpass;
@@ -94,6 +97,21 @@ cvar_t *flood_persecond;
 cvar_t *flood_waitdelay;
 
 cvar_t *sv_maplist;
+cvar_t *sv_stopspeed;
+
+cvar_t *gib_on;
+cvar_t *g_showlogic;
+cvar_t *gamerules;
+cvar_t *huntercam;
+cvar_t *strong_mines;
+cvar_t *randomrespawn;
+
+cvar_t *g_disruptor;
+
+cvar_t *aimfix;
+cvar_t *g_machinegun_norecoil;
+cvar_t *g_quick_weap;
+cvar_t *g_swap_speed;
 
 cvar_t *advancedstaff;
 cvar_t *sv_friction;
@@ -148,7 +166,7 @@ void ReadGame(const char *filename);
 void WriteLevel(const char *filename);
 void ReadLevel(const char *filename);
 void InitGame(void);
-void G_RunFrame(void);
+static void G_RunFrame(void);
 void ConstructEntities(void);
 void G_ClearMessageQueues();
 
@@ -316,7 +334,7 @@ void G_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int 
 
 /* =================================================================== */
 
-void
+static void
 ShutdownGame(void)
 {
 	void G_ReleaseResourceManagers();
@@ -425,14 +443,14 @@ Com_Printf(const char *msg, ...)
 
 /* ====================================================================== */
 
-void
+static void
 ClientEndServerFrames(void)
 {
 	int i;
 	edict_t *ent;
 
 	/* calc the player views now that all
-	   pushing  and damage has been added */
+	   pushing and damage has been added */
 	for (i = 0; i < maxclients->value; i++)
 	{
 		ent = g_edicts + 1 + i;
@@ -449,7 +467,7 @@ ClientEndServerFrames(void)
 /*
  * Returns the created target changelevel
  */
-edict_t *
+static edict_t *
 CreateTargetChangeLevel(char *map)
 {
 	edict_t *ent;
@@ -537,8 +555,10 @@ EndDMLevel(void)
 		ent = G_Find(NULL, FOFS(classname), "target_changelevel");
 
 		if (!ent)
-		{   /* the map designer didn't include a changelevel,
-			   so create a fake ent that goes back to the same level */
+		{
+			/* the map designer didn't include a changelevel,
+			   so create a fake ent that goes back to the same
+			   level */
 			BeginIntermission(CreateTargetChangeLevel(level.mapname));
 			return;
 		}
@@ -547,7 +567,7 @@ EndDMLevel(void)
 	}
 }
 
-void
+static void
 CheckNeedPass(void)
 {
 	int need;
@@ -595,7 +615,7 @@ CheckDMRules(void)
 	{
 		if (level.time >= timelimit->value * 60)
 		{
-			G_BroadcastObituary(PRINT_HIGH, GM_TIMELIMIT, 0, 0);
+			gi.bprintf(PRINT_HIGH, "Timelimit hit.\n");
 			EndDMLevel();
 			return;
 		}
@@ -614,7 +634,7 @@ CheckDMRules(void)
 
 			if (cl->resp.score >= fraglimit->value)
 			{
-				G_BroadcastObituary (PRINT_HIGH, GM_FRAGLIMIT, 0, 0);
+				gi.bprintf(PRINT_HIGH, "Fraglimit hit.\n");
 				EndDMLevel();
 				return;
 			}
@@ -622,7 +642,7 @@ CheckDMRules(void)
 	}
 }
 
-void
+static void
 ExitLevel(void)
 {
 	char command[256];
@@ -805,7 +825,7 @@ UpdatePlayerBuoys(void)
 /*
  * Advances the world by 0.1 seconds
  */
-void
+static void
 G_RunFrame(void)
 {
 	void		UpdateSkeletons();
