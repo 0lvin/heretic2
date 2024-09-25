@@ -167,6 +167,22 @@ model_load(const char *filename)
 	{
 		printf("%04x:0x%08x:0x%08x\n", i * 4, ((int*)buffer)[i],
 			((int*)buffer)[i + 1] - ((int*)buffer)[i]);
+
+		if ((((int*)buffer)[i + 1] < mesh_size) &&
+			(((int*)buffer)[i] < mesh_size) &&
+			(((int*)buffer)[i + 1] > 0) &&
+			(((int*)buffer)[i] > 0))
+		{
+			int ofs;
+
+			printf("\n[%08x:%08x]:",
+				((int*)buffer)[i], ((int*)buffer)[i + 1] - ((int*)buffer)[i]);
+			for (ofs = ((int*)buffer)[i]; ofs < ((int*)buffer)[i + 1]; ofs ++)
+			{
+				printf("%02x", ((char*)buffer)[ofs]);
+			}
+		}
+		printf("\n");
 	}
 
 	starttime = clock();
