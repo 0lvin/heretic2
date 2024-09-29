@@ -1628,8 +1628,7 @@ void SP_monster_high_priestess (edict_t *self)
 		return;
 	}
 
-	if (!walkmonster_start(self))			// Failed initialization
-		return;
+	walkmonster_start(self);
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_HIGHPRIESTESS;

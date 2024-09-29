@@ -731,8 +731,7 @@ NOTE: A value of zero will result in defaults, if you actually want zero as the 
 void SP_monster_mssithra (edict_t *self)
 {
 	// Generic Monster Initialization
-	if (!walkmonster_start (self))		// failed initialization
-		return;
+	walkmonster_start(self);
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_MSSITHRA;

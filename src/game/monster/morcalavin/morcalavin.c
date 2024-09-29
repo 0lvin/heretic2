@@ -1894,8 +1894,7 @@ Morky
 */
 void SP_monster_morcalavin (edict_t *self)
 {
-	if (!walkmonster_start(self))		// Failed initialization
-		return;
+	walkmonster_start(self);
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_MORK;

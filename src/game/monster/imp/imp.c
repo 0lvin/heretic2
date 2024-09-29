@@ -1398,10 +1398,10 @@ wakeup_distance			= 1024
 
 NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1
 */
-void SP_monster_imp(edict_t *self)
+void
+SP_monster_imp(edict_t *self)
 {
-	if (!flymonster_start(self))
-		return;				// Failed initialization
+	flymonster_start(self);
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_IMP;

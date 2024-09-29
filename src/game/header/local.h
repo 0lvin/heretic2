@@ -992,9 +992,9 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 /* g_monster.c */
 void M_droptofloor(edict_t *ent);
 void monster_think(edict_t *self);
-qboolean walkmonster_start(edict_t *self);
-qboolean swimmonster_start(edict_t *self);
-qboolean flymonster_start(edict_t *self);
+void walkmonster_start(edict_t *self);
+void swimmonster_start(edict_t *self);
+void flymonster_start(edict_t *self);
 void AttackFinished(edict_t *self, float time);
 void PauseTime(edict_t *self, float time);
 void monster_death_use(edict_t *self);

@@ -2320,8 +2320,7 @@ void SP_monster_gorgon (edict_t *self)
 	}
 
 	// Generic Monster Initialization
-	if (!walkmonster_start(self))		// Failed initialization
-		return;
+	walkmonster_start(self);
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_GORGON;

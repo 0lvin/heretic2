@@ -1072,10 +1072,10 @@ wakeup_distance			= 1024
 NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1
 */
 
-void SP_Monster_Gkrokon(edict_t *self)
+void
+SP_Monster_Gkrokon(edict_t *self)
 {
-	if (!walkmonster_start(self))		// Failed initialization
-		return;
+	walkmonster_start(self);
 
 	self->msgHandler=DefaultMsgHandler;
 	self->classID=CID_GKROKON;

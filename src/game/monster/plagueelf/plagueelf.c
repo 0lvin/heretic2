@@ -1974,8 +1974,7 @@ void SP_monster_plagueElf (edict_t *self)
 
 	self->classID = CID_PLAGUEELF;
 
-	if (!walkmonster_start(self))		// Failed initialization
-		return;
+	walkmonster_start(self);
 
 	self->msgHandler = DefaultMsgHandler;
 	self->monsterinfo.dismember = plagueElf_dismember;

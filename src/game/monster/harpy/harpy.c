@@ -1635,10 +1635,10 @@ CIRCLING - harpy circles around in the air
 "pain_target" - monsters will fire this target the first time it gets hurt (only once)
 
 */
-void SP_monster_harpy(edict_t *self)
+void
+SP_monster_harpy(edict_t *self)
 {
-	if (!flymonster_start(self))
-		return;				// Failed initialization
+	flymonster_start(self);
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_HARPY;

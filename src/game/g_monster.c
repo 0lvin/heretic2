@@ -586,24 +586,26 @@ void monster_use (edict_t *self, edict_t *other, edict_t *activator)
 
 void monster_start_go (edict_t *self);
 
-
-/*-------------------------------------------------------------------------
-	monster_triggered_spawn
--------------------------------------------------------------------------*/
-void monster_triggered_spawn (edict_t *self)
+void
+monster_triggered_spawn(edict_t *self)
 {
 	vec3_t	pos;
 
+	if (!self)
+	{
+		return;
+	}
+
 	self->s.origin[2] += 1;
-	KillBox (self);
+	KillBox(self);
 
 	self->solid = SOLID_BBOX;
 	self->movetype = PHYSICSTYPE_STEP;
 	self->svflags &= ~SVF_NOCLIENT;
 	self->air_finished = level.time + M_HOLD_BREATH_TIME;
-	gi.linkentity (self);
+	gi.linkentity(self);
 
-	monster_start_go (self);
+	monster_start_go(self);
 
 	if((self->classID==CID_ASSASSIN) && (self->spawnflags & MSF_ASS_TPORTAMBUSH))
 	{
@@ -614,7 +616,7 @@ void monster_triggered_spawn (edict_t *self)
 	}
 	else if (self->enemy && !(self->spawnflags & MSF_AMBUSH) && !(self->enemy->flags & FL_NOTARGET))
 	{
-		FoundTarget (self, true);
+		FoundTarget(self, true);
 	}
 	else
 	{
@@ -622,25 +624,36 @@ void monster_triggered_spawn (edict_t *self)
 	}
 }
 
-/*-------------------------------------------------------------------------
-	monster_triggered_spawn_use
--------------------------------------------------------------------------*/
-void monster_triggered_spawn_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+monster_triggered_spawn_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 {
-	// we have a one frame delay here so we don't telefrag the guy who activated us
+	if (!self || !activator)
+	{
+		return;
+	}
+
+	/* we have a one frame delay here so we
+	   don't telefrag the guy who activated us */
 	self->spawnflags &= ~MSF_ASLEEP;
 	self->think = monster_triggered_spawn;
 	self->nextthink = level.time + FRAMETIME;
+
 	if (activator->client)
+	{
 		self->enemy = activator;
+	}
+
 	self->use = monster_use;
 }
 
-/*-------------------------------------------------------------------------
-	monster_triggered_start
--------------------------------------------------------------------------*/
-void monster_triggered_start (edict_t *self)
+void
+monster_triggered_start(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	self->solid = SOLID_NOT;
 	self->movetype = PHYSICSTYPE_NONE;
 	self->svflags |= SVF_NOCLIENT;
@@ -648,36 +661,41 @@ void monster_triggered_start (edict_t *self)
 	self->use = monster_triggered_spawn_use;
 }
 
-
 /*
-================
-monster_death_use
-
-When a monster dies, it fires all of its targets with the current
-enemy as activator.
-================
-*/
-void monster_death_use (edict_t *self)
+ * When a monster dies, it fires all of its targets
+ * with the current enemy as activator.
+ */
+void
+monster_death_use(edict_t *self)
 {
-	self->flags &= ~(FL_FLY|FL_SWIM);
+	if (!self)
+	{
+		return;
+	}
+
+	self->flags &= ~(FL_FLY | FL_SWIM);
 //	self->monsterinfo.aiflags &= AI_GOOD_GUY;//WHY mask out everything above this flag???
 
 	if (self->item)
 	{
-		Drop_Item (self, self->item);
+		Drop_Item(self, self->item);
 		self->item = NULL;
 	}
-
-	if (self->target)
-		G_UseTargets (self, self->enemy);
 
 	if (self->deathtarget)
 	{
 		self->target = self->deathtarget;
-		G_UseTargets (self, self->enemy);
 	}
+
+	if (!self->target)
+	{
+		return;
+	}
+
+	G_UseTargets(self, self->enemy);
 }
 
+/* ================================================================== */
 
 //============================================================================
 
@@ -717,10 +735,8 @@ void MG_CheckInGround (edict_t *self)
 	}
 }
 
-/*-------------------------------------------------------------------------
-	monster_start
--------------------------------------------------------------------------*/
-qboolean monster_start (edict_t *self)
+qboolean
+monster_start(edict_t *self)
 {
 	if ((deathmatch->value == 1) && !((int)sv_cheats->value & self_spawn))
 	{
@@ -743,26 +759,17 @@ qboolean monster_start (edict_t *self)
 	self->monsterinfo.alert = defaultMonsterAlerted;//I don't understand why I get a warning here...
 
 	self->max_health = self->health;
+
 	self->clipmask = MASK_MONSTERSOLID;
 	if(!self->materialtype)
 		self->materialtype = MAT_FLESH;
 
 	// Stop the camera clipping with monsters, except the trial beast.
 
-	if(self->classID!=CID_TBEAST)
+	if(self->classID != CID_TBEAST)
+	{
 		self->s.effects|=EF_CAMERA_NO_CLIP;
-// jmarshall - we will add real shadows, this is clogging up the effects system.
-	//if (G_MonsterShadow[self->classID].useShadow)
-	//{
-	//	gi.CreateEffect(&self->s,
-	//					FX_SHADOW,
-	//					CEF_OWNERS_ORIGIN,
-	//					self->s.origin,
-	//					"f",
-	//					G_MonsterShadow[self->classID].scale);
-	//}
-// jmarshall end
-
+	}
 
 	self->s.skinnum = 0;
 	self->deadflag = DEAD_NO;
@@ -771,14 +778,20 @@ qboolean monster_start (edict_t *self)
 	self->monsterinfo.nextframeindex = -1;
 
 	if (!self->monsterinfo.checkattack)
+	{
 		self->monsterinfo.checkattack = M_CheckAttack;
-	VectorCopy (self->s.origin, self->s.old_origin);
+	}
+
+	VectorCopy(self->s.origin, self->s.old_origin);
 
 	if (st.item)
 	{
 		self->item = playerExport->FindItemByClassname (st.item);
 		if (!self->item)
-			gi.dprintf("%s at %s has bad item: %s\n", self->classname, vtos(self->s.origin), st.item);
+		{
+			gi.dprintf("%s at %s has bad item: %s\n", self->classname,
+					vtos(self->s.origin), st.item);
+		}
 	}
 
 	// randomize what frame they start on
@@ -817,18 +830,23 @@ void MG_BBoxAndOriginAdjustForScale (edict_t *self)
 	gi.linkentity(self);
 }
 
-/*-------------------------------------------------------------------------
-	monster_start_go
--------------------------------------------------------------------------*/
-void monster_start_go (edict_t *self)
+void
+monster_start_go(edict_t *self)
 {
-	vec3_t	v;
+	vec3_t v;
 	float	volume;
+
+	if (!self)
+	{
+		return;
+	}
 
 	self->nextthink = level.time + FRAMETIME;
 
 	if (self->health <= 0)
+	{
 		return;
+	}
 
 	MG_BBoxAndOriginAdjustForScale(self);
 	MG_CheckInGround(self);
@@ -893,7 +911,7 @@ void monster_start_go (edict_t *self)
 				self->target = NULL;
 		}
 
-		// validate combattarget
+		/* validate combattarget */
 		if (self->combattarget)
 		{
 			edict_t		*target;
@@ -976,11 +994,8 @@ void monster_start_go (edict_t *self)
 	self->think = monster_think;
 }
 
-
-/*-------------------------------------------------------------------------
-	walkmonster_start_go
--------------------------------------------------------------------------*/
-void walkmonster_start_go (edict_t *self)
+void
+walkmonster_start_go(edict_t *self)
 {
 	if (!(self->spawnflags & MSF_ASLEEP) && level.time < 1)
 	{
@@ -1001,55 +1016,53 @@ void walkmonster_start_go (edict_t *self)
 		monster_triggered_start (self);
 }
 
-/*-------------------------------------------------------------------------
-	walkmonster_start
--------------------------------------------------------------------------*/
-qboolean walkmonster_start (edict_t *self)
+void
+walkmonster_start(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	self->think = walkmonster_start_go;
 
-	if (!monster_start(self))
-		return false;				// Failed initialization
-	else
-		return true;
+	monster_start(self);
 }
 
-
-/*-------------------------------------------------------------------------
-	flymonster_start_go
--------------------------------------------------------------------------*/
-void flymonster_start_go (edict_t *self)
+void
+flymonster_start_go (edict_t *self)
 {
 	if (!M_walkmove (self, 0, 0))
+	{
 		gi.dprintf ("%s in solid at %s\n", self->classname, vtos(self->s.origin));
+	}
 
 	if (!self->yaw_speed)
+	{
 		self->yaw_speed = 10;
+	}
 
 	if(!self->viewheight)
+	{
 		self->viewheight = 25;
+	}
 
 	monster_start_go (self);
 
 	if (self->spawnflags & MSF_ASLEEP)
+	{
 		monster_triggered_start (self);
+	}
 }
 
-
-/*-------------------------------------------------------------------------
-	flymonster_start
--------------------------------------------------------------------------*/
-qboolean flymonster_start (edict_t *self)
+void
+flymonster_start(edict_t *self)
 {
 	self->flags |= FL_FLY;
 	self->think = flymonster_start_go;
 
-	if (!monster_start(self))
-		return false;			// Failed initialization
-	else
-		return true;
+	monster_start(self);
 }
-
 
 /*-------------------------------------------------------------------------
 	swimmonster_start_go
@@ -1066,19 +1079,18 @@ void swimmonster_start_go (edict_t *self)
 		monster_triggered_start (self);
 }
 
-/*-------------------------------------------------------------------------
-	swimmonster_start
--------------------------------------------------------------------------*/
-qboolean swimmonster_start (edict_t *self)
+void
+swimmonster_start(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	self->flags |= FL_SWIM;
 	self->think = swimmonster_start_go;
 	M_CatagorizePosition (self);
-
-	if (!monster_start(self))
-		return false;			// Failed initialization
-	else
-		return true;
+	monster_start(self);
 }
 
 /*

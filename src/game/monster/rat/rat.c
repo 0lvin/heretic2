@@ -787,8 +787,7 @@ COWARD - Runs away
 void SP_monster_rat_giant (edict_t *self)
 {
 	// Generic Monster Initialization
-	if (!walkmonster_start(self))		// Failed initialization
-		return;
+	walkmonster_start(self);
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_RAT;
