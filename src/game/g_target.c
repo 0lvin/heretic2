@@ -32,11 +32,12 @@
 
 /*
  * QUAKED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)
-Fire an origin based temp entity event to the clients.
-"style"		type byte
-*/
+ *
+ * Fire an origin based temp entity event to the clients.
+ * "style"		type byte
+ */
 void
-Use_Target_Tent(edict_t *ent, edict_t *other, edict_t *activator)
+Use_Target_Tent(edict_t *ent, edict_t *other /* unused */, edict_t *activator /* unused */)
 {
 	gi.CreateEffect(NULL, ent->style, 0, ent->s.origin, NULL);
 }
@@ -52,29 +53,53 @@ SP_target_temp_entity(edict_t *ent)
 	ent->use = Use_Target_Tent;
 }
 
+/* ========================================================== */
 
-void target_explosion_explode (edict_t *self)
+/*
+ * QUAKED target_explosion (1 0 0) (-8 -8 -8) (8 8 8)
+ * Spawns an explosion temporary entity when used.
+ *
+ * "delay"		wait this long before going off
+ * "dmg"		how much radius damage should be done, defaults to 0
+ */
+void
+target_explosion_explode(edict_t *self)
 {
-	float		save;
+	float save;
+
+	if (!self)
+	{
+		return;
+	}
 
 	gi.CreateEffect(NULL, FX_EXPLOSION1, 0, self->s.origin, NULL);
 
 	T_DamageRadius(self, self->activator, NULL, self->dmg+40,
-					self->dmg, self->dmg/4, DAMAGE_NORMAL,MOD_DIED);
+			self->dmg, self->dmg/4, DAMAGE_NORMAL, MOD_DIED);
 
 	save = self->delay;
 	self->delay = 0;
-	G_UseTargets (self, self->activator);
+	G_UseTargets(self, self->activator);
 	self->delay = save;
 }
 
-void use_target_explosion (edict_t *self, edict_t *other, edict_t *activator)
+void
+use_target_explosion(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 {
+	if (!self)
+	{
+		return;
+	}
 	self->activator = activator;
+
+	if (!activator)
+	{
+		return;
+	}
 
 	if (!self->delay)
 	{
-		target_explosion_explode (self);
+		target_explosion_explode(self);
 		return;
 	}
 
@@ -94,8 +119,7 @@ SP_target_explosion(edict_t *ent)
 	ent->svflags = SVF_NOCLIENT;
 }
 
-
-//==========================================================
+/* ========================================================== */
 
 /*
  * QUAKED target_changelevel (1 0 0) (-8 -8 -8) (8 8 8)
@@ -112,10 +136,18 @@ If an info_player_start is not given a random one on the level is chosen
 
 
 */
-void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
+void
+use_target_changelevel(edict_t *self, edict_t *other, edict_t *activator)
 {
+	if (!self || !other  || !activator)
+	{
+		return;
+	}
+
 	if (level.intermissiontime)
-		return;		// allready activated
+	{
+		return; /* already activated */
+	}
 
 	if (!deathmatch->value && !coop->value)
 	{
@@ -125,43 +157,48 @@ void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator)
 		}
 	}
 
-	// if noexit, do a ton of damage to other
-	if (deathmatch->value && !( (int)dmflags->value & DF_ALLOW_EXIT) && other != world)
+	/* if noexit, do a ton of damage to other */
+	if (deathmatch->value && !((int)dmflags->value & DF_ALLOW_EXIT) &&
+		(other != world))
 	{
-		T_Damage (activator, self, self, vec3_origin, other->s.origin, vec3_origin, 10000, 10000, DAMAGE_AVOID_ARMOR,MOD_EXIT);
+		T_Damage(activator, self, self, vec3_origin, other->s.origin, vec3_origin, 10000, 10000, DAMAGE_AVOID_ARMOR,MOD_EXIT);
 		return;
 	}
 
-	// if multiplayer, let everyone know who hit the exit
+	/* if multiplayer, let everyone know who hit the exit */
 	if (deathmatch->value)
 	{
 		if (activator && activator->client)
+		{
 			G_BroadcastObituary (PRINT_HIGH, GM_EXIT, activator->s.number, 0);
+		}
 	}
 
-	// if going to a new unit, clear cross triggers
+	/* if going to a new unit, clear cross triggers */
 	if (strstr(self->map, "*"))
+	{
 		game.serverflags &= ~(SFL_CROSS_TRIGGER_MASK);
+	}
 
 	gi.dprintf("***\n*** Unit complete. ***\n***\n");
 
-	BeginIntermission (self);
+	BeginIntermission(self);
 }
 
-void SP_target_changelevel (edict_t *ent)
+void
+SP_target_changelevel(edict_t *ent)
 {
 	if (!ent->map)
 	{
 		gi.dprintf("target_changelevel with no map at %s\n", vtos(ent->s.origin));
-		G_FreeEdict (ent);
+		G_FreeEdict(ent);
 		return;
 	}
 	ent->use = use_target_changelevel;
 	ent->svflags = SVF_NOCLIENT;
 }
 
-
-//==========================================================
+/* ========================================================== */
 
 /*
  * QUAKED target_splash (1 0 0) (-8 -8 -8) (8 8 8)
@@ -669,6 +706,90 @@ void SP_target_earthquake (edict_t *self)
 	self->noise_index = gi.soundindex("world/quake.wav");
 }
 
+/*
+ * QUAKED target_gravity (1 0 0) (-8 -8 -8) (8 8 8) NOTRAIL NOEFFECTS
+ * [Sam-KEX] Changes gravity, as seen in the N64 version
+ */
+void
+use_target_gravity(edict_t *self, edict_t *other, edict_t *activator)
+{
+	gi.cvar_set("sv_gravity", va("%f", self->gravity));
+}
+
+void
+SP_target_gravity(edict_t* self)
+{
+	self->use = use_target_gravity;
+	self->gravity = atof(st.gravity);
+}
+
+/*
+ * QUAKED target_soundfx (1 0 0) (-8 -8 -8) (8 8 8) NOTRAIL NOEFFECTS
+ * [Sam-KEX] Plays a sound fx, as seen in the N64 version
+*/
+void
+update_target_soundfx(edict_t *self)
+{
+	gi.positioned_sound(self->s.origin, self, CHAN_VOICE, self->noise_index,
+		self->volume, self->attenuation, 0);
+}
+
+void
+use_target_soundfx(edict_t *self, edict_t *other, edict_t *activator)
+{
+	self->think = update_target_soundfx;
+	self->nextthink = level.time + self->delay;
+}
+
+void
+SP_target_soundfx(edict_t* self)
+{
+	if (!self->volume)
+	{
+		self->volume = 1.0;
+	}
+
+	if (!self->attenuation)
+	{
+		self->attenuation = 1.0;
+	}
+	else if (self->attenuation == -1)
+	{
+		/* use -1 so 0 defaults to 1 */
+		self->attenuation = 0;
+	}
+
+	self->noise_index = atoi(st.noise);
+
+	switch(self->noise_index)
+	{
+	case 1:
+		self->noise_index = gi.soundindex("world/x_alarm.wav");
+		break;
+	case 2:
+		self->noise_index = gi.soundindex("world/flyby1.wav");
+		break;
+	case 4:
+		self->noise_index = gi.soundindex("world/amb12.wav");
+		break;
+	case 5:
+		self->noise_index = gi.soundindex("world/amb17.wav");
+		break;
+	case 7:
+		self->noise_index = gi.soundindex("world/bigpump2.wav");
+		break;
+	default:
+		gi.dprintf("%s: unknown noise %d\n", self->classname, self->noise_index);
+		return;
+	}
+
+	self->use = use_target_soundfx;
+}
+
+/*
+ * QUAKED target_music (1 0 0) (-8 -8 -8) (8 8 8)
+ * Change music when used
+ */
 void
 target_music_use(edict_t *self, edict_t *other, edict_t *activator)
 {

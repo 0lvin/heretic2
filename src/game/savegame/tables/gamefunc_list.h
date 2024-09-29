@@ -25,3 +25,9 @@
  *
  * =======================================================================
  */
+
+{"use_target_gravity", (byte *)use_target_gravity},
+{"update_target_soundfx", (byte *)update_target_soundfx},
+{"use_target_soundfx", (byte *)use_target_soundfx},
+{"visible", (byte *)visible},
+{0, 0}
