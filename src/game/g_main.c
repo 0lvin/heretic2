@@ -153,7 +153,7 @@ cvar_t *log_file_header;
 cvar_t *log_file_footer;
 cvar_t *log_file_line_header;
 
-void SpawnEntities(const char *mapname, char *entities, const char *spawnpoint, qboolean loadgame);
+void SpawnEntities(const char *mapname, char *entities, const char *spawnpoint);
 void ClientThink(edict_t *ent, usercmd_t *cmd);
 qboolean ClientConnect(edict_t *ent, char *userinfo);
 void ClientUserinfoChanged(edict_t *ent, char *userinfo);

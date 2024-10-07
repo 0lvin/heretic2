@@ -21,9 +21,6 @@
 #include "../stats/stats.h"
 #include "../../header/g_hitlocation.h"
 
-/*QUAKED monster_elflord (1 .5 0) (-16 -16 -0) (16 16 32)
-*/
-
 //Mirrored on client side
 enum cwatcher_elflord_effect_id_s
 {
@@ -790,7 +787,7 @@ void ElflordStaticsInit()
 	classStatics[CID_ELFLORD].resInfo = &resInfo;
 }
 
-/*QUAKED SP_monster_elflord (0.5 0.5 1) (-24 -24 -64) (24 24 16)
+/*QUAKED monster_elflord (0.5 0.5 1) (-24 -24 -64) (24 24 16)
 
 Celestial Watcher
 

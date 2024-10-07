@@ -320,7 +320,7 @@ ED_ParseField(const char *key, const char *value, edict_t *ent)
 
 	for (f = fields; f->name; f++)
 	{
-		if (!Q_stricmp(f->name, key))
+		if (!(f->flags & FFL_NOSPAWN) && !Q_strcasecmp(f->name, (char *)key))
 		{
 			/* found it */
 			if (f->flags & FFL_SPAWNTEMP)
@@ -371,8 +371,10 @@ ED_ParseField(const char *key, const char *value, edict_t *ent)
 					((byte *)(b+f->ofs))[2] = color[2];
 					break;
 				default:
-					return;
+					break;
 			}
+
+			return;
 		}
 	}
 
@@ -398,6 +400,7 @@ ED_ParseEdict(char *data, edict_t *ent)
 
 	init = false;
 	memset(&st, 0, sizeof(st));
+	st.skyautorotate = 1;
 
 	/* go through all the dictionary pairs */
 	while (1)
@@ -452,15 +455,82 @@ ED_ParseEdict(char *data, edict_t *ent)
 }
 
 /*
-================
-G_FindTeams
+ * Chain together all entities with a matching team field.
+ *
+ * All but the first will have the FL_TEAMSLAVE flag set.
+ * All but the last will have the teamchain field set to the next one
+ */
+static void
+G_FixTeams(void)
+{
+	edict_t *e, *e2, *chain;
+	int i, j;
+	int c, c2;
 
-Chain together all entities with a matching team field.
+	c = 0;
+	c2 = 0;
 
-All but the first will have the FL_TEAMSLAVE flag set.
-All but the last will have the teamchain field set to the next one
-================
-*/
+	for (i = 1, e = g_edicts + i; i < globals.num_edicts; i++, e++)
+	{
+		if (!e->inuse)
+		{
+			continue;
+		}
+
+		if (!e->team)
+		{
+			continue;
+		}
+
+		if (!strcmp(e->classname, "func_train"))
+		{
+			if (e->flags & FL_TEAMSLAVE)
+			{
+				chain = e;
+				e->teammaster = e;
+				e->teamchain = NULL;
+				e->flags &= ~FL_TEAMSLAVE;
+				c++;
+				c2++;
+
+				for (j = 1, e2 = g_edicts + j;
+					 j < globals.num_edicts;
+					 j++, e2++)
+				{
+					if (e2 == e)
+					{
+						continue;
+					}
+
+					if (!e2->inuse)
+					{
+						continue;
+					}
+
+					if (!e2->team)
+					{
+						continue;
+					}
+
+					if (!strcmp(e->team, e2->team))
+					{
+						c2++;
+						chain->teamchain = e2;
+						e2->teammaster = e;
+						e2->teamchain = NULL;
+						chain = e2;
+						e2->flags |= FL_TEAMSLAVE;
+						e2->movetype = MOVETYPE_PUSH;
+						e2->speed = e->speed;
+					}
+				}
+			}
+		}
+	}
+
+	gi.dprintf("%i teams repaired\n", c);
+}
+
 static void
 G_FindTeams(void)
 {
@@ -521,29 +591,23 @@ G_FindTeams(void)
 		}
 	}
 
+	G_FixTeams();
+
 	gi.dprintf("%i teams with %i entities.\n", c, c2);
 }
 
 /*
-==============
-SpawnEntities
-
-Creates a server's entity / program execution context by
-parsing textual entity definitions out of an ent file.
-==============
-*/
-int loadingBaseEnts;
-
+ * Creates a server's entity / program execution context by
+ * parsing textual entity definitions out of an ent file.
+ */
 void
-SpawnEntities(const char *mapname, char *entities, const char *spawnpoint, qboolean loadgame)
+SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 {
 	edict_t *ent;
 	int inhibit;
 	const char *com_token;
 	int i;
 	float skill_level;
-
-	loadingBaseEnts = loadgame;
 
 	if (!mapname || !entities || !spawnpoint)
 	{
@@ -619,6 +683,36 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint, qbool
 
 		entities = ED_ParseEdict(entities, ent);
 
+		/* yet another map hack */
+		if (!Q_stricmp(level.mapname, "command") &&
+			!Q_stricmp(ent->classname, "trigger_once") &&
+			!Q_stricmp(ent->model, "*27"))
+		{
+			ent->spawnflags &= ~SPAWNFLAG_NOT_HARD;
+		}
+
+		/* ahh, the joys of map hacks .. */
+		if (!Q_stricmp(level.mapname, "rhangar2") &&
+			!Q_stricmp(ent->classname, "func_door_rotating") &&
+			ent->targetname && !Q_stricmp(ent->targetname, "t265"))
+		{
+			ent->spawnflags &= ~SPAWNFLAG_NOT_COOP;
+		}
+
+		if (!Q_stricmp(level.mapname, "rhangar2") &&
+			!Q_stricmp(ent->classname, "trigger_always") &&
+		   	ent->target && !Q_stricmp(ent->target, "t265"))
+		{
+			ent->spawnflags |= SPAWNFLAG_NOT_COOP;
+		}
+
+		if (!Q_stricmp(level.mapname, "rhangar2") &&
+			!Q_stricmp(ent->classname, "func_wall") &&
+		   	!Q_stricmp(ent->model, "*15"))
+		{
+			ent->spawnflags |= SPAWNFLAG_NOT_COOP;
+		}
+
 		/* remove things (except the world) from
 		   different skill levels or deathmatch */
 		if (ent != g_edicts)
@@ -651,12 +745,15 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint, qbool
 			{
 				gi.dprintf("monster '%s' not spawned.\n", ent->classname);
 
-				G_FreeEdict (ent);
+				G_FreeEdict(ent);
 				inhibit++;
 				continue;
 			}
 
-			ent->spawnflags &= ~(SPAWNFLAG_NOT_EASY|SPAWNFLAG_NOT_MEDIUM|SPAWNFLAG_NOT_HARD|SPAWNFLAG_NOT_COOP|SPAWNFLAG_NOT_DEATHMATCH);
+			ent->spawnflags &=
+				~(SPAWNFLAG_NOT_EASY | SPAWNFLAG_NOT_MEDIUM |
+				  SPAWNFLAG_NOT_HARD |
+				  SPAWNFLAG_NOT_COOP | SPAWNFLAG_NOT_DEATHMATCH);
 		}
 
 		ED_CallSpawn(ent);

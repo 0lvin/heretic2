@@ -230,7 +230,7 @@ typedef struct
 	void (*Shutdown)(void);
 
 	/* each new level entered will cause a call to SpawnEntities */
-	void (*SpawnEntities)(const char *mapname, char *entstring, const char *spawnpoint, qboolean loadgame);
+	void (*SpawnEntities)(const char *mapname, char *entstring, const char *spawnpoint);
 
 	/* Read/Write Game is for storing persistant cross level information
 	   about the world state and the clients.

@@ -308,7 +308,7 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 	}
 	entity[entitysize] = 0; /* jit entity bug - null terminate the entity string! */
 	/* load and spawn all other entities */
-	ge->SpawnEntities(sv.name, entity, spawnpoint, loadgame);
+	ge->SpawnEntities(sv.name, entity, spawnpoint);
 	free(entity);
 
 	/* all precaches are complete */
