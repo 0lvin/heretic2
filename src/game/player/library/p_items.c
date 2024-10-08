@@ -29,7 +29,7 @@ gitem_t	*p_itemlist=NULL;
 // The complete list of all items that may be picked up / dropped / used etc. by players.
 // ************************************************************************************************
 
-static gitem_t itemlist[]=
+gitem_t itemlist[]=
 {
 	// Leave index 0 empty.
 

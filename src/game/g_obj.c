@@ -818,14 +818,16 @@ void dying_elf_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 	}
 }
 
-int dying_elf_pain (edict_t *self, edict_t *other, float kick, int damage)
+void
+dying_elf_pain (edict_t *self, edict_t *other, float kick, int damage)
 {
 	self->enemy = other;
 	dying_elf_reach_anim(self);
-	if (self->enemy->client || self->enemy->svflags & SVF_MONSTER)
-		dying_elf_sounds(self, DYING_ELF_PAIN_VOICE);
 
-	return true;
+	if (self->enemy->client || self->enemy->svflags & SVF_MONSTER)
+	{
+		dying_elf_sounds(self, DYING_ELF_PAIN_VOICE);
+	}
 }
 
 void

@@ -147,10 +147,9 @@ ClientSetSkinType(edict_t *ent, char *skinname)
 }
 
 
-int player_pain (edict_t *self, edict_t *other, float kick, int damage)
+void player_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	// player pain is handled at the end of the frame in P_DamageFeedback
-	return(0);
 }
 
 void BleederThink (edict_t *self)

@@ -487,7 +487,7 @@ void create_sphere(edict_t *Sphere)
 // ****************************************************************************
 
 void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
-								  float Value,qboolean *ReleaseFlagsPtr)
+								  float Value, float *ReleaseFlagsPtr)
 {
 	edict_t	*Sphere;
 	int	flags;

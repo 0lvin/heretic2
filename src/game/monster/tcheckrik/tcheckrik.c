@@ -287,7 +287,7 @@ void insect_dead(edict_t *self)
 {
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 	self->msgHandler = DeadMsgHandler;
-	self->deadState = DEAD_DEAD;
+	self->deadflag = DEAD_DEAD;
 	M_EndDeath(self);
 }
 
@@ -327,7 +327,7 @@ void insect_dead_pain (edict_t *self, G_Message_t *msg)
 		if(!(self->svflags & SVF_PARTS_GIBBED))
 			MG_parse_dismember_msg(self, msg);
 
-	if(self->curAnimID!=ANIM_TWITCH&&self->deadState!=DEAD_DEAD)
+	if(self->curAnimID != ANIM_TWITCH && self->deadflag != DEAD_DEAD)
 		return;//still dying
 
 	if(self->s.frame==FRAME_knock15)
@@ -354,7 +354,7 @@ void insect_wait_twitch (edict_t *self)
 	{
 		self->s.effects |= EF_DISABLE_EXTRA_FX;
 		self->msgHandler = DeadMsgHandler;
-		self->deadState = DEAD_DEAD;
+		self->deadflag = DEAD_DEAD;
 		M_EndDeath(self);
 		self->think = NULL;
 	}

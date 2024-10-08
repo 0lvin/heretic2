@@ -612,7 +612,7 @@ void assassin_Touch(edict_t *self, trace_t *trace)
 void assassin_dead(edict_t *self)
 {
 	self->msgHandler = DeadMsgHandler;
-	self->deadState = DEAD_DEAD;
+	self->deadflag = DEAD_DEAD;
 	M_EndDeath(self);
 }
 

@@ -987,7 +987,7 @@ void gorgon_dead(edict_t *self)
 {
 	self->pre_think = NULL;
 	self->next_pre_think = -1;
-	self->deadState = DEAD_DEAD;
+	self->deadflag = DEAD_DEAD;
 	self->svflags |= SVF_DEADMONSTER;
 	M_EndDeath(self);
 }

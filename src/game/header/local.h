@@ -260,18 +260,19 @@ typedef struct
 	int framenum;
 	float time;
 
-	char level_name[MAX_QPATH]; /* the descriptive name (Outer Base, etc) */
-	char mapname[MAX_QPATH]; /* the server name (base1, etc) */
-	char nextmap[MAX_QPATH]; /* go here when fraglimit is hit */
+	char level_name[MAX_QPATH];         /* the descriptive name (Outer Base, etc) */
+	char mapname[MAX_QPATH];            /* the server name (base1, etc) */
+	char nextmap[MAX_QPATH];            /* go here when fraglimit is hit */
+	char forcemap[MAX_QPATH];           /* go here */
 
 	/* intermission state */
-	float intermissiontime; /* time the intermission was started */
+	float intermissiontime;             /* time the intermission was started */
 	char *changemap;
 	int exitintermission;
 	vec3_t intermission_origin;
 	vec3_t intermission_angle;
 
-	edict_t *sight_client; /* changed once each frame for coop games */
+	edict_t *sight_client;			     /* changed once each frame for coop games */
 
 	edict_t *sight_entity;
 	int sight_entity_framenum;
@@ -291,9 +292,13 @@ typedef struct
 	int total_monsters;
 	int killed_monsters;
 
-	edict_t *current_entity; /* entity running from G_RunFrame */
-	int body_que; /* dead bodies */
+	edict_t *current_entity;        /* entity running from G_RunFrame */
+	int body_que;                   /* dead bodies */
 
+	int power_cubes;                /* ugly necessity for coop */
+
+	edict_t *disguise_violator;
+	int disguise_violation_framenum;
 	float		far_clip_dist_f;
 	float		fog;
 	float		fog_density;
@@ -382,7 +387,7 @@ typedef enum
 
 
 /* spawn_temp_t is only used to hold entity field values that
-   can be set from the editor, but aren't actualy present
+   can be set from the editor, but aren't actualy present/
    in edict_t during gameplay */
 typedef struct
 {
@@ -392,6 +397,7 @@ typedef struct
 	int skyautorotate;
 	vec3_t skyaxis;
 	char *nextmap;
+	char *music;
 
 	int lip;
 	int distance;
@@ -613,36 +619,41 @@ typedef struct
 	char		*otherenemyname;				// ClassName of secondary enemy (other than player).
 												// E.g. a Rat's secondary enemy is a gib.
 
-	animmove_t	*currentmove;
-	int			aiflags;
-	int			aistate;						// Last order given to the monster (ORD_XXX).
-	int			currframeindex;					// Index to current monster frame.
-	int			nextframeindex;					// Used to force the next frameindex.
-	float		thinkinc;						// Time between thinks for this entity.
-	float		scale;
+	animmove_t *currentmove;
+	int aiflags;
+	int aistate;						// Last order given to the monster (ORD_XXX).
+	int currframeindex;					// Index to current monster frame.
+	int nextframeindex;					// Used to force the next frameindex.
+	float thinkinc;						// Time between thinks for this entity.
+	float scale;
 
-	void		(*idle)(edict_t *self);
-	void		(*search)(edict_t *self);
-	void		(*dodge)(edict_t *self, edict_t *other, float eta);
-	int			(*attack)(edict_t *self);
-	void		(*sight)(edict_t *self, edict_t *other);
-	void		(*dismember)(edict_t *self, int damage, int HitLocation);
-	qboolean	(*alert)(edict_t *self, alertent_t *alerter, edict_t *enemy);
-	qboolean	(*checkattack)(edict_t *self);
+	void (*stand)(edict_t *self);
+	void (*idle)(edict_t *self);
+	void (*search)(edict_t *self);
+	void (*walk)(edict_t *self);
+	void (*run)(edict_t *self);
+	void (*dodge)(edict_t *self, edict_t *other, float eta, trace_t *tr);
+	void (*attack)(edict_t *self);
+	void (*melee)(edict_t *self);
+	void (*sight)(edict_t *self, edict_t *other);
+	qboolean (*checkattack)(edict_t *self);
+	void (*dismember)(edict_t *self, int damage, int HitLocation);
+	qboolean (*alert)(edict_t *self, alertent_t *alerter, edict_t *enemy);
 
-	float		pausetime;
-	float		attack_finished;
+	float pausetime;
+	float attack_finished;
+
+	vec3_t saved_goal;
+	float search_time;
+	float misc_debounce_time;
+	vec3_t last_sighting;
+	int attack_state;
+	int lefty;
+	float idle_time;
+	int linkcount;
+
 	float		flee_finished;					// When a monster is done fleeing
 	float		chase_finished;					// When the monster can look for secondary monsters.
-
-	vec3_t		saved_goal;
-	float		search_time;
-	float		misc_debounce_time;
-	vec3_t		last_sighting;
-	int			attack_state;
-	int			lefty;
-	float		idle_time;
-	int			linkcount;
 
 	int			searchType;
 	vec3_t		nav_goal;
@@ -701,6 +712,15 @@ typedef struct
 
 // The structure for each monster class.
 
+extern game_locals_t game;
+extern level_locals_t level;
+extern game_import_t gi;
+extern game_export_t globals;
+extern spawn_temp_t st;
+
+extern int sm_meat_index;
+extern int snd_fry;
+
 extern edict_t *g_edicts;
 
 #define FOFS(x) (size_t)&(((edict_t *)NULL)->x)
@@ -711,15 +731,6 @@ extern edict_t *g_edicts;
 
 #define random() ((randk() & 0x7fff) / ((float)0x7fff))
 #define crandom() (2.0 * (random() - 0.5))
-
-extern	game_locals_t	game;
-extern	level_locals_t	level;
-extern	game_import_t	gi;
-extern	spawn_temp_t	st;
-extern	game_export_t	globals;
-
-extern	int				sm_meat_index;
-extern	int				snd_fry;
 
 extern cvar_t *maxentities;
 extern cvar_t *deathmatch;
@@ -876,6 +887,7 @@ typedef struct
 } field_t;
 
 extern field_t fields[];
+extern gitem_t itemlist[];
 
 
 /* g_cmds.c */
@@ -900,37 +912,39 @@ qboolean KillBox(edict_t *ent);
 void G_ProjectSource(vec3_t point, vec3_t distance, vec3_t forward,
 		vec3_t right, vec3_t result);
 edict_t *G_Find(edict_t *from, int fieldofs, const char *match);
-edict_t *G_Spawn(void);
-
-
 edict_t *findradius(edict_t *from, vec3_t org, float rad);
+edict_t *G_PickTarget(char *targetname);
+void G_UseTargets(edict_t *ent, edict_t *activator);
+void G_SetMovedir(vec3_t angles, vec3_t movedir);
+
+void G_InitEdict(edict_t *e);
+edict_t *G_SpawnOptional(void);
+edict_t *G_Spawn(void);
+void G_FreeEdict(edict_t *e);
+
+void G_TouchTriggers(edict_t *ent);
+void G_TouchSolids(edict_t *ent);
+
 edict_t *newfindradius(edict_t *from, vec3_t org, float rad);
 edict_t *findinblocking(edict_t *from, edict_t *checkent);
 edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max);
 edict_t *oldfindinbounds(edict_t *from, vec3_t min, vec3_t max);
 edict_t *finddistance(edict_t *from, vec3_t org, float mindist, float maxdist);
 edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos);
-edict_t *G_PickTarget(char *targetname);
 
 //commonly used functions
-int range (edict_t *self, edict_t *other);
-qboolean clear_visible (edict_t *self, edict_t *other);
-qboolean visible (edict_t *self, edict_t *other);
-qboolean visible_pos (edict_t *self, vec3_t spot2);
-qboolean infront (edict_t *self, edict_t *other);
-qboolean infront_pos (edict_t *self, vec3_t pos);
-qboolean ahead (edict_t *self, edict_t *other);
+int range(edict_t *self, edict_t *other);
+qboolean clear_visible(edict_t *self, edict_t *other);
+qboolean visible(edict_t *self, edict_t *other);
+qboolean visible_pos(edict_t *self, vec3_t spot2);
+qboolean infront(edict_t *self, edict_t *other);
+qboolean infront_pos(edict_t *self, vec3_t pos);
+qboolean ahead(edict_t *self, edict_t *other);
 
-void G_UseTargets (edict_t *ent, edict_t *activator);
-void G_SetMovedir (vec3_t angles, vec3_t movedir);
-void G_InitEdict (edict_t *e);
-void G_FreeEdict (edict_t *e);
-void G_SetToFree (edict_t *);
-void G_TouchTriggers (edict_t *ent);
-void G_TouchSolids (edict_t *ent);
+void G_SetToFree(edict_t *);
 void G_LinkMissile(edict_t *ent);
-char *G_CopyString (char *in);
-char *vtos (vec3_t v);
+char *G_CopyString(char *in);
+char *vtos(vec3_t v);
 float vectoyaw(vec3_t vec);
 void vectoangles(vec3_t vec, vec3_t angles);
 
@@ -1004,7 +1018,7 @@ void M_CheckGround(edict_t *ent);
 
 /* g_misc.c */
 void ThrowClientHead(edict_t *self, int damage);
-void ThrowGib(edict_t *self, char *gibname, int damage, int type);
+void ThrowGib(edict_t *self, const char *gibname, int damage, int type);
 void BecomeExplosion1(edict_t *self);
 
 /* g_ai.c */
@@ -1037,7 +1051,7 @@ void ClientBeginServerFrame(edict_t *ent);
 int SexedSoundIndex(edict_t *ent, char *base);
 
 /* g_player.c */
-int player_pain(edict_t *self, edict_t *other, float kick, int damage);
+void player_pain(edict_t *self, edict_t *other, float kick, int damage);
 void player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		int damage, vec3_t point);
 void player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation);
@@ -1123,22 +1137,21 @@ void ED_CallSpawn(edict_t *ent);
 /* client data that stays across deathmatch respawns */
 typedef struct
 {
-	client_persistant_t coop_respawn; /* what to set client->pers to on a respawn */
-	int enterframe; /* level.framenum the client entered the game */
-	int score; /* frags, etc */
-	vec3_t cmd_angles; /* angles sent over in the last command */
-
-	int					game_helpchanged;
-	int					helpchanged;
+	client_persistant_t coop_respawn;   /* what to set client->pers to on a respawn */
+	int enterframe;                 /* level.framenum the client entered the game */
+	int score;                      /* frags, etc */
+	vec3_t cmd_angles;              /* angles sent over in the last command */
+	int game_helpchanged;
+	int helpchanged;
 	qboolean spectator;             /* client is a spectator */
 } client_respawn_t;
 
-/* this structure is cleared on each PutClientInServer(),
-   except for 'client->pers' */
+/* this structure is cleared on each
+   PutClientInServer(), except for 'client->pers' */
 struct gclient_s
 {
 	/* known to server */
-	player_state_t ps; /* communicated by server to clients */
+	player_state_t ps;              /* communicated by server to clients */
 	int ping;
 
 	// All other fields below are private to the game.
@@ -1270,19 +1283,18 @@ extern player_export_t *playerExport;	// interface to player library.
 struct edict_s
 {
 	entity_state_t s;
-	struct gclient_s *client; /* NULL if not a player
-							     the server expects the first part
-							     of gclient_s to be a player_state_t
-							     but the rest of it is opaque */
+	struct gclient_s *client;       /* NULL if not a player the server expects the first part
+	                                   of gclient_s to be a player_state_t but the rest of it is
+									   opaque */
 
 	qboolean inuse;
 	int linkcount;
 
-	link_t area; /* linked to a division node or leaf */
+	link_t area;                    /* linked to a division node or leaf */
 
-	int num_clusters; /* if -1, use headnode instead */
+	int num_clusters;               /* if -1, use headnode instead */
 	int clusternums[MAX_ENT_CLUSTERS];
-	int headnode; /* unused if num_clusters != -1 */
+	int headnode;                   /* unused if num_clusters != -1 */
 	int areanum, areanum2;
 
 	/* ================================ */
@@ -1298,9 +1310,18 @@ struct edict_s
 	/* EXPECTS THE FIELDS IN THAT ORDER! */
 
 	/* ================================ */
+
 	int movetype;
 	int flags;
 
+	char *model;
+
+	/* only used locally in game, not by server */
+	char *message;
+	char *classname;
+	int spawnflags;
+
+	char *text_msg;
 	edict_t *groundentity;		// entity serving as ground
 	int groundentity_linkcount;	// if self and groundentity's don't match, groundentity should be cleared
 	vec3_t groundNormal;		// normal of the ground
@@ -1317,11 +1338,8 @@ struct edict_s
 	G_MessageHandler_t	msgHandler;
 	int					classID;
 
-	void				(*think)(edict_t *self);
 	void				(*ai)(edict_t *self);
 	float				freetime;			// Server time when the object was freed.
-	char				*classname;
-	int					spawnflags;
 
 	// Used by the game physics.
 
@@ -1342,10 +1360,6 @@ struct edict_s
 	// Used to determine whether something will stop, slide, or bounce on impact
 	float				elasticity;
 
-	// Used by anything that can collide (physics).
-
-	void				(*touch)(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
-
 	// Used to indicate teams, (a way to group things).
 
 	char				*team;			// Team name.
@@ -1362,15 +1376,9 @@ struct edict_s
 		edict_t				*teammaster;
 	};
 
-	float				nextthink;
-
 	// Fields used by only one class of game entity (monster, player, poly, trigger, etc).
 
-	char				*model;			// Model name, which could instead be stored in
-
-	char				*message;		// index to message_text for printing and wave files
-
-	char				*text_msg;		// Text printed to con for door, polys, triggers, etc.
+		// Text printed to con for door, polys, triggers, etc.
 
 	// These really all could be changed to ints or hashed or something (currently, we do a search
 	// on all the active edicts using strcmps). We should be able to assign indexes in the BSP, by
@@ -1405,11 +1413,10 @@ struct edict_s
 
 	float				air_finished;	// Used by things that can breath (monsters and player).
 
-	edict_t				*goalentity;	// Used primarily by monsters.
-	edict_t				*movetarget;	// Used primarily by monsters, also a little use
-										// by poly/trigger
-	float				yaw_speed;		// Used by monsters and player.
-	float				ideal_yaw;		// Used by monsters and player.
+	edict_t *goalentity;
+	edict_t *movetarget;
+	float yaw_speed;
+	float ideal_yaw;
 	float				ideal_pitch;	// Used by monsters and player.
 	float				yawOffset;		// Used in CreateMove_Step
 
@@ -1419,29 +1426,38 @@ struct edict_s
 	float timestamp;		// Used by a couple of ojects.
 
 	// Used by just about every type of entity.
-
+	float nextthink;
+	void (*prethink)(edict_t *ent);
+	void (*think)(edict_t *self);
+	void (*blocked)(edict_t *self, edict_t *other);         /* move to moveinfo? */
+	void (*touch)(edict_t *self, edict_t *other, cplane_t *plane,
+			csurface_t *surf);
 	void (*use)(edict_t *self, edict_t *other, edict_t *activator);
+	void (*pain)(edict_t *self, edict_t *other, float kick, int damage);
+	void (*die)(edict_t *self, edict_t *inflictor, edict_t *attacker,
+			int damage, vec3_t point);
 
-	int health;			// Used by anything that can be destroyed.
-	int max_health;		// Used by anything that can be destroyed.
+	int health;
+	int max_health;
+	int gib_health;
+	int deadflag;
+
+	float show_hostile;
+	float powerarmor_time;
+
+	char *map;                  /* target_changelevel */
+
+	int viewheight;             /* height above origin where eyesight is determined */
+
 	int bloodType;		// type of stuff to spawn off when hit
 
-	union {
-	int deadflag;		// More like a dead state, used by things that can die.
-										// Would probably be better off with a more general state
-										// (or two or three).
-	int deadState;
-	};
+	edict_t *mynoise;           /* can go in client only */
+	edict_t *mynoise2;
 
-	union {
-	qboolean			show_hostile;	// Only used by monsters (or g_ai.c at least)- not really
-										// sure what for.
+	vec3_t move_origin;
+	vec3_t move_angles;
+
 	void				(*TriggerActivated)(edict_t *self, edict_t *activator);
-	};
-
-	char				*map;			// target_changelevel (used only by).
-
-	int					viewheight;		// height above origin where eyesight is determined
 										// used by anything which can "see", player and monsters
 	float				reflected_time;	// used by objects to tell if they've been repulsed by something..
 
@@ -1473,9 +1489,6 @@ struct edict_s
 	edict_t				*activator;		// this that used something, used by monsters, items, and
 										// polys.
 	// Used by player only.
-
-	edict_t				*mynoise;		// Can go in client only.
-	edict_t				*mynoise2;
 
 	edict_t				*last_buoyed_enemy;		// used by monsters.
 
@@ -1525,24 +1538,10 @@ struct edict_s
 	float				gravity;		// Per entity gravity multiplier (1.0 is normal) Used for
 										// lowgrav artifact, flares.
 
-	// Not currently used by anyone, but it's a part of physics. Probably should remove it.
-	void				(*prethink) (edict_t *ent);
-
-	// Move into the moveinfo structure? Used by polys and turret and in physics.
-	void				(*blocked)(edict_t *self, edict_t *other);
-
 	// Used by animating entities.
 
 	int					curAnimID;
 	int					lastAnimID;
-
-	// Used by monsters and player.
-
-	int				(*pain)(edict_t *self, edict_t *other, float kick, int damage);
-
-	// Used by monsters, player, and some polys.
-
-	void				(*die)(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
 
 	// used by the Morph Ovum
 

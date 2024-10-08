@@ -31,7 +31,7 @@ enum cwatcher_elflord_effect_id_s
 } cwatcher_elflord_effect_id_t;
 
 void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
-								  float Value,qboolean *ReleaseFlagsPtr);
+								  float Value, float *ReleaseFlagsPtr);
 
 /*----------------------------------------------------------------------
   Elf Lord Base Info
@@ -295,7 +295,7 @@ void elflord_soa_loop(edict_t *self)
 
 void elflord_soa_end(edict_t *self)
 {
-	self->show_hostile = false;
+	self->show_hostile = 0;
 	gi.sound(self, CHAN_WEAPON, sounds[SND_SAFIRE], 1, ATTN_NORM, 0);
 	SetAnim(self, ANIM_ATTACK_SOA_END);
 }
@@ -365,7 +365,7 @@ void elflord_soa_start(edict_t *self, G_Message_t *msg)
 		return;
 
 	gi.sound(self, CHAN_VOICE, sounds[SND_SACHARGE], 1, ATTN_NORM, 0);
-	self->show_hostile = true;
+	self->show_hostile = level.time + 1;
 
 	AngleVectors(self->s.angles, forward, NULL, NULL);
 	VectorCopy(self->s.origin, startpos);
@@ -396,7 +396,7 @@ void elflord_soa_go(edict_t *self)
 	vec3_t forward;
 
 	gi.sound(self, CHAN_VOICE, sounds[SND_SAFIRE], 1, ATTN_NORM, 0);
-	self->show_hostile = false;
+	self->show_hostile = 0;
 
 	AngleVectors(self->s.angles, forward, NULL, NULL);
 	SpellCastSphereOfAnnihilation(self,

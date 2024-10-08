@@ -514,7 +514,7 @@ void end_think(edict_t *self)
 
 }
 
-int hanging_chicken_pain(edict_t *self, edict_t *other, float kick, int damage)
+void hanging_chicken_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	self->health = 10000;
 	VectorCopy(self->targetEnt->s.origin, self->s.origin);
@@ -529,16 +529,22 @@ int hanging_chicken_pain(edict_t *self, edict_t *other, float kick, int damage)
 	sir_nate_of_the_embarassingly_shortshanks_pain(self, other, kick, damage);
 
 	if (damage < 100)
+	{
 		gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
+	}
 	else
+	{
 		gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
+	}
 
 	if (irand(0,1))
+	{
 		gi.sound (self, CHAN_AUTO, gi.soundindex("monsters/chicken/pain1.wav"), 1, ATTN_NORM, 0);
+	}
 	else
+	{
 		gi.sound (self, CHAN_AUTO, gi.soundindex("monsters/chicken/pain2.wav"), 1, ATTN_NORM, 0);
-
-	return true;
+	}
 }
 
 void hanging_chicken_think(edict_t *self)

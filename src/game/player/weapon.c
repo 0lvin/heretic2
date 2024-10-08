@@ -48,7 +48,7 @@ extern void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngl
 extern void SpellCastMagicMissileSpread(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
 										float NoOfMissiles,float Separation);
 extern void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
-										 float Value,qboolean *ReleaseFlagsPtr);
+										 float Value, float *ReleaseFlagsPtr);
 extern void SpellCastMaceball(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value);
 extern void SpellCastWall(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_t AimDir, float Value);
 extern void SpellCastRipper(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir);
@@ -703,7 +703,7 @@ void WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
 void WeaponThink_SphereOfAnnihilation(edict_t *Caster,char *Format,...)
 {
 	va_list		Marker;
-	qboolean	*ReleaseFlagsPtr;
+	float	*ReleaseFlagsPtr;
 	vec3_t		Forward;
 
 	// Get pointer to missile's release flag.
@@ -714,7 +714,7 @@ void WeaponThink_SphereOfAnnihilation(edict_t *Caster,char *Format,...)
 
 	assert(*Format=='g');
 
-	ReleaseFlagsPtr=va_arg(Marker,qboolean *);
+	ReleaseFlagsPtr = va_arg(Marker, float *);
 
 	va_end(Marker);
 

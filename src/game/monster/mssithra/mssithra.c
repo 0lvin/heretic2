@@ -164,7 +164,7 @@ void mssithra_death(edict_t *self, G_Message_t *msg)
 void mssithra_dead(edict_t *self)
 {//maybe allow dead bodies to be chopped?  Make BBOX small?
 	self->msgHandler = DeadMsgHandler;
-	self->deadState = DEAD_DEAD;
+	self->deadflag = DEAD_DEAD;
 
 	self->think = NULL;
 	self->nextthink = 0;

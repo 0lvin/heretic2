@@ -1152,7 +1152,7 @@ void ActivateTriggers(edict_t *self)
 	SinglyLinkedList_t list;
 
 	// dead things don't activate triggers
-	if(self->deadState != DEAD_NO)
+	if(self->deadflag != DEAD_NO)
 	{
 		return;
 	}

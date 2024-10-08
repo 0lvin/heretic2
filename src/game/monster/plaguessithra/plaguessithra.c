@@ -1219,7 +1219,6 @@ void ssithraSplit (edict_t *self, int BodyPart)
 
 	tophalf->s.skinnum = self->s.skinnum;
 	tophalf->deadflag = DEAD_DEAD;
-	tophalf->deadState = DEAD_DEAD;
 	tophalf->svflags |= SVF_DEADMONSTER;
 	tophalf->monsterinfo.thinkinc = MONSTER_THINK_INC;//FRAMETIME;
 	tophalf->monsterinfo.nextframeindex = -1;
@@ -1809,7 +1808,7 @@ void ssithra_death(edict_t *self, G_Message_t *msg)
 	{
 		if (self->health == -69)
 		{//maybe allow dead bodies to be chopped?  Make BBOX small?
-			self->deadState = DEAD_DEAD;
+			self->deadflag = DEAD_DEAD;
 
 			gi.linkentity(self);
 
@@ -1834,7 +1833,7 @@ void ssithra_dead(edict_t *self)
 {//maybe allow dead bodies to be chopped?  Make BBOX small?
 	self->msgHandler = DeadMsgHandler;
 	self->svflags |= SVF_DEADMONSTER;	// now treat as a different content type
-	self->deadState = DEAD_DEAD;
+	self->deadflag = DEAD_DEAD;
 
 	self->flags |= FL_DONTANIMATE;
 
