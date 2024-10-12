@@ -61,7 +61,7 @@ extern void CalculatePIV(edict_t *player);
 #define FOV_DEFAULT			75.0
 
 // NOTENOTE: The precious, delicate player bbox coords!
-
+/* Recheck with pmove */
 vec3_t	mins = {-14, -14, -34};
 vec3_t	maxs = { 14,  14,  25};
 
@@ -3567,13 +3567,13 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 		if ( (client->playerinfo.edictflags & FL_AVERAGE_CHICKEN) )
 		{
-			VectorSet(ent->mins,-8,-8,-14);
-			VectorSet(ent->maxs,8,8,14);
+			VectorSet(ent->mins, -8, -8, -14);
+			VectorSet(ent->maxs, 8, 8, 14);
 		}
 		else if ( (client->playerinfo.edictflags & FL_SUPER_CHICKEN) )
 		{
-			VectorSet(ent->mins,-16,-16,-36);
-			VectorSet(ent->maxs,16,16,36);
+			VectorSet(ent->mins, -16, -16, -36);
+			VectorSet(ent->maxs, 16, 16, 36);
 		}
 
 		pm.intentMins = ent->mins;
