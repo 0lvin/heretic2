@@ -971,6 +971,11 @@ Pmove(pmove_t *pmove)
 		pm->cmd.upmove = 0;
 	}
 
+#ifndef DEDICATED_ONLY
+	VectorCopy(cl.frame.playerstate.mins, pm->mins);
+	VectorCopy(cl.frame.playerstate.maxs, pm->maxs);
+#endif
+
 	PM_GroundTrace();
 
 	PM_CheckJump();
