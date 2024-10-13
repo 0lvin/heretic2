@@ -467,7 +467,7 @@ void target_laser_start (edict_t *self)
 {
 	edict_t *ent;
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 	self->s.renderfx |= RF_BEAM|RF_TRANSLUCENT;
 	self->s.modelindex = 1;			// must be non-zero

@@ -147,7 +147,7 @@ void SP_flamethrower(edict_t *self)
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_FLAMETHROWER;
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_TRIGGER;
 
 	if (!self->wait)

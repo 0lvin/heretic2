@@ -137,7 +137,7 @@ void RingThink(edict_t *self)
 			if (ent->takedamage)
 			{
 				VectorMA(ent->s.origin, -ent->maxs[0], vel, hitloc);
-				if (ent->movetype != PHYSICSTYPE_NONE)
+				if (ent->movetype != MOVETYPE_NONE)
 					T_Damage (ent, ent, self, vel, hitloc, vec3_origin, 4, (int)scale, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_ROR);
 				else
 					T_Damage (ent, ent, self, vel, hitloc, vec3_origin, 4, 0, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_ROR);
@@ -255,7 +255,7 @@ void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_
 	newent->owner = Caster;
 	newent->solid = SOLID_NOT;
 	newent->svflags |= SVF_NOCLIENT;
-	newent->movetype = PHYSICSTYPE_NONE;
+	newent->movetype = MOVETYPE_NONE;
 	newent->classname = "Spell_Ring";
 	newent->nextthink = level.time + 0.1;
 	newent->think = RingThink;

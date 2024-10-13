@@ -1657,7 +1657,7 @@ void SP_monster_tcheckrik_male (edict_t *self)
 	self->mass = MASS_TC_MALE;
 	self->yaw_speed = 20;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;
@@ -1818,7 +1818,7 @@ void SP_monster_tcheckrik_female (edict_t *self)
 	self->mass = MASS_TC_FEMALE;
 	self->yaw_speed = 20;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;

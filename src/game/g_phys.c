@@ -1159,7 +1159,6 @@ G_RunEntity(edict_t *ent)
 	case MOVETYPE_STOP:
 		SV_Physics_Pusher (ent);
 		break;
-	case 0:
 	case MOVETYPE_NONE:
 		SV_Physics_None (ent);
 		break;

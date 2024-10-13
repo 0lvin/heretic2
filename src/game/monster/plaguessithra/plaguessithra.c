@@ -123,8 +123,8 @@ void ssithra_blocked (edict_t *self, trace_t *trace)
 	if(trace->ent == NULL)
 		return;
 
-	if(trace->ent->movetype==PHYSICSTYPE_NONE||
-		trace->ent->movetype==PHYSICSTYPE_PUSH)
+	if(trace->ent->movetype==MOVETYPE_NONE||
+		trace->ent->movetype==MOVETYPE_PUSH)
 		return;
 
 	strength = VectorLength(self->velocity);
@@ -1236,7 +1236,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	tophalf->materialtype = MAT_FLESH;
 	tophalf->mass = self->mass = 300;
 
-	tophalf->movetype = PHYSICSTYPE_STEP;
+	tophalf->movetype = MOVETYPE_STEP;
 
 	tophalf->solid=SOLID_BBOX;
 	tophalf->owner = self;
@@ -3078,7 +3078,7 @@ void SP_monster_plague_ssithra (edict_t *self)
 	self->mass = SSITHRA_MASS;
 	self->yaw_speed = 20;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;

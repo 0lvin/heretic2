@@ -2545,9 +2545,9 @@ qboolean ai_have_enemy (edict_t *self)
 
 qboolean movable (edict_t *ent)
 {
-	if(	ent->movetype!=PHYSICSTYPE_NONE &&
+	if(	ent->movetype!=MOVETYPE_NONE &&
 		ent->movetype!=MOVETYPE_PUSH &&
-		ent->movetype!=PHYSICSTYPE_PUSH)
+		ent->movetype!=MOVETYPE_PUSH)
 		return true;
 
 	return false;

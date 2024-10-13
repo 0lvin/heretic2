@@ -721,14 +721,14 @@ Cmd_Noclip_f(edict_t *ent)
 		return;
 	}
 
-	if (ent->movetype == PHYSICSTYPE_NOCLIP)
+	if (ent->movetype == MOVETYPE_NOCLIP)
 	{
-		ent->movetype = PHYSICSTYPE_STEP;
+		ent->movetype = MOVETYPE_STEP;
 		msg = "noclip OFF\n";
 	}
 	else
 	{
-		ent->movetype = PHYSICSTYPE_NOCLIP;
+		ent->movetype = MOVETYPE_NOCLIP;
 		msg = "noclip ON\n";
 	}
 

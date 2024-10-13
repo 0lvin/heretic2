@@ -1720,7 +1720,7 @@ void SP_monster_ogle(edict_t *self)
 	self->mass = OGLE_MASS;
 	self->yaw_speed = 16;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->solid=SOLID_BBOX;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);

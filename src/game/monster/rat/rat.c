@@ -728,7 +728,7 @@ void SP_monster_rat (edict_t *self)
 	self->yaw_speed = 20;
 
 	self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
-	self->movetype=PHYSICSTYPE_STEP;
+	self->movetype=MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;
@@ -802,7 +802,7 @@ void SP_monster_rat_giant (edict_t *self)
 	self->yaw_speed = 20;
 
 	self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
-	self->movetype=PHYSICSTYPE_STEP;
+	self->movetype=MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;

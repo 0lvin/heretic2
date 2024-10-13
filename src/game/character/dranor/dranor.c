@@ -113,7 +113,7 @@ void Dranor_c_anims(edict_t *self, G_Message_t *msg)
 			curr_anim = ANIM_C_DEATH1;
 			self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 			self->takedamage = DAMAGE_YES;
-			self->movetype = PHYSICSTYPE_STOP;
+			self->movetype = MOVETYPE_STOP;
 			self->solid = SOLID_BBOX;
 			break;
 		case MSG_C_IDLE1:

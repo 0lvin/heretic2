@@ -60,7 +60,7 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 	trace_t	trace;
 
 	// bmodels need special checking because their origin is 0,0,0
-	if (targ->movetype == PHYSICSTYPE_PUSH || targ->classID == CID_BBRUSH)
+	if (targ->movetype == MOVETYPE_PUSH || targ->classID == CID_BBRUSH)
 	{
 		VectorAdd (targ->absmin, targ->absmax, dest);
 		VectorScale (dest, 0.5, dest);
@@ -150,7 +150,7 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 	trace_t	trace;
 
 	// bmodels need special checking because their origin is 0,0,0
-	if (targ->movetype == PHYSICSTYPE_PUSH || targ->classID == CID_BBRUSH)
+	if (targ->movetype == MOVETYPE_PUSH || targ->classID == CID_BBRUSH)
 	{
 		VectorAdd (targ->absmin, targ->absmax, dest);
 		VectorScale (dest, 0.5, dest);
@@ -324,7 +324,7 @@ void SpawnReward(edict_t *self, edict_t *attacker)
 
 	newitem = G_Spawn();
 
-	newitem->movetype = PHYSICSTYPE_STEP;
+	newitem->movetype = MOVETYPE_STEP;
 	AngleVectors(self->s.angles,forward,NULL,NULL);
 	VectorCopy(self->s.origin,newitem->s.origin);
 
@@ -386,7 +386,7 @@ void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, v
 		if (attacker->client)
 			SpawnReward(targ, attacker);
 	}
-	if (targ->movetype == PHYSICSTYPE_PUSH || targ->movetype == PHYSICSTYPE_STOP || targ->movetype == PHYSICSTYPE_NONE)
+	if (targ->movetype == MOVETYPE_PUSH || targ->movetype == MOVETYPE_STOP || targ->movetype == MOVETYPE_NONE)
 	{
 		// Doors, triggers, breakable brushes, etc. die with their own KillBrush() routine.
 		if (targ->classID == CID_BBRUSH)
@@ -861,9 +861,9 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	if (!(dflags & DAMAGE_NO_KNOCKBACK) && !(targ->svflags & SVF_BOSS))
 	{//hey, knockback of less than about 25 isn't going to do squat...
 		if ((knockback) &&
-				(targ->movetype != PHYSICSTYPE_NONE) &&
-				(targ->movetype != PHYSICSTYPE_PUSH) &&
-				(targ->movetype != PHYSICSTYPE_STOP))
+				(targ->movetype != MOVETYPE_NONE) &&
+				(targ->movetype != MOVETYPE_PUSH) &&
+				(targ->movetype != MOVETYPE_STOP))
 		{
 			vec3_t	kvel;
 			float	mass, force, upvel;

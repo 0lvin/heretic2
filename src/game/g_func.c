@@ -168,7 +168,7 @@ int CIDForSpawnerStyle[MS_MAX] =
 
   object characteristics that use move segments
   ---------------------------------------------
-  PHYSICSTYPE_PUSH, or PHYSICSTYPE_STOP
+  MOVETYPE_PUSH, or MOVETYPE_STOP
   action when touched
   action when blocked
   action when used
@@ -643,7 +643,7 @@ void plat_spawn_inside_trigger (edict_t *ent)
 	trigger = G_Spawn();
 
 	trigger->touch = Touch_Plat_Center;
-	trigger->movetype = PHYSICSTYPE_NONE;
+	trigger->movetype = MOVETYPE_NONE;
 	trigger->solid = SOLID_TRIGGER;
 	trigger->enemy = ent;
 
@@ -761,7 +761,7 @@ void SP_func_plat (edict_t *ent)
 	VectorClear (ent->s.angles);
 
 	ent->solid = SOLID_BSP;
-	ent->movetype = PHYSICSTYPE_PUSH;
+	ent->movetype = MOVETYPE_PUSH;
 	ent->clipmask = MASK_PLAYERSOLID;
 	ent->blocked = plat_blocked;
 	ent->use = Use_Plat;
@@ -917,9 +917,9 @@ void SP_func_rotating (edict_t *ent)
 
 	ent->solid = SOLID_BSP;
 	if (ent->spawnflags & 32)
-		ent->movetype = PHYSICSTYPE_STOP;
+		ent->movetype = MOVETYPE_STOP;
 	else
-		ent->movetype = PHYSICSTYPE_PUSH;
+		ent->movetype = MOVETYPE_PUSH;
 
 	rotate_sounds(ent);
 
@@ -1110,7 +1110,7 @@ void SP_func_button (edict_t *ent)
 	float	dist;
 
 	G_SetMovedir (ent->s.angles, ent->movedir);
-	ent->movetype = PHYSICSTYPE_STOP;
+	ent->movetype = MOVETYPE_STOP;
 	ent->solid = SOLID_BSP;
   	ent->takedamage = DAMAGE_NO;
 	gi.setmodel (ent, ent->model);
@@ -1469,7 +1469,7 @@ void Think_SpawnDoorTrigger (edict_t *ent)
 	VectorCopy (maxs, other->maxs);
 	other->owner = ent;
 	other->solid = SOLID_TRIGGER;
-	other->movetype = PHYSICSTYPE_NONE;
+	other->movetype = MOVETYPE_NONE;
 	other->touch = Touch_DoorTrigger;
 
 	if (ent->spawnflags & DOOR_START_OPEN)
@@ -1716,7 +1716,7 @@ void SP_func_door (edict_t *self)
 	door_sounds(self);
 
 	G_SetMovedir (self->s.angles, self->movedir);
-	self->movetype = PHYSICSTYPE_PUSH;
+	self->movetype = MOVETYPE_PUSH;
 	self->solid = SOLID_BSP;
 	self->blocked = door_blocked;
 	self->use = door_use;
@@ -1883,7 +1883,7 @@ void SP_func_door_rotating (edict_t *ent)
 	VectorMA (ent->s.angles, st.distance, ent->movedir, ent->pos2);
 	ent->moveinfo.distance = st.distance;
 
-	ent->movetype = PHYSICSTYPE_PUSH;
+	ent->movetype = MOVETYPE_PUSH;
 	ent->solid = SOLID_BSP;
 	ent->blocked = door_blocked;
 	ent->use = door_use;
@@ -1970,7 +1970,7 @@ void SP_func_water (edict_t *self)
 	vec3_t	abs_movedir;
 
 	G_SetMovedir (self->s.angles, self->movedir);
-	self->movetype = PHYSICSTYPE_PUSH;
+	self->movetype = MOVETYPE_PUSH;
 	self->solid = SOLID_BSP;
 	gi.setmodel (self, self->model);
 	gi.linkentity (self);
@@ -2338,7 +2338,7 @@ void SP_func_train (edict_t *self)
 	vec3_t space;
 	float spacecube;
 
-	self->movetype = PHYSICSTYPE_PUSH;
+	self->movetype = MOVETYPE_PUSH;
 
 	self->blocked = train_blocked;
 	if (self->spawnflags & TRAIN_BLOCK_STOPS)
@@ -2680,7 +2680,7 @@ SP_func_door_secret(edict_t *ent)
 //	ent->moveinfo.sound_middle = gi.soundindex("doors/stoneloop.wav");
 //	ent->moveinfo.sound_end = gi.soundindex("doors/stoneend.wav");
 
-	ent->movetype = PHYSICSTYPE_PUSH;
+	ent->movetype = MOVETYPE_PUSH;
 	ent->solid = SOLID_BSP;
 	gi.setmodel (ent, ent->model);
 	gi.linkentity (ent);

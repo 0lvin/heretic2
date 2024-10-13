@@ -753,7 +753,7 @@ void SP_monster_mssithra (edict_t *self)
 	self->viewheight = 88;
 	self->monsterinfo.aiflags |= AI_BRUTAL|AI_AGRESSIVE;
 
-	self->movetype=PHYSICSTYPE_STEP;//MOVETYPE_STEP
+	self->movetype=MOVETYPE_STEP;//MOVETYPE_STEP
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;

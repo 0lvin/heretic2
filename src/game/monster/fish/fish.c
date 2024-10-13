@@ -1160,7 +1160,7 @@ void SP_monster_fish (edict_t *self)
 	// random(ish) speed
 	self->old_yaw = flrand(0.65,1.0);
 
-	self->movetype=PHYSICSTYPE_STEP;
+	self->movetype=MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;

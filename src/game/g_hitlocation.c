@@ -121,7 +121,7 @@ HitLocation_t T_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoin
 	vec3_t			point;
 
 	// Work out which type of location table to use
-/*	if(target->movetype == PHYSICSTYPE_FLY)
+/*	if(target->movetype == MOVETYPE_FLY)
 	{
 		LocType = LT_WINGED;
 	}

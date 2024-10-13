@@ -666,7 +666,7 @@ void tbeast_go_die (edict_t *self, edict_t *other, edict_t *activator)
 	self->takedamage = DAMAGE_NO;
 
 	self->solid = SOLID_NOT;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->clipmask = 0;
 	VectorClear(self->mins);
 	VectorClear(self->maxs);
@@ -982,7 +982,7 @@ void tbeastbite (edict_t *self, float ofsf, float ofsr, float ofsu)
 
 void tbeast_dead(edict_t *self)
 {
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->deadflag = DEAD_DEAD;
 	self->think = NULL;
 	self->nextthink = 0;
@@ -1371,7 +1371,7 @@ void tbeast_throw_toy(edict_t *self)
 	self->targetEnt->velocity[0] = self->targetEnt->velocity[1] = 0;
 	self->targetEnt->velocity[2] = 500;
 	if(self->targetEnt->movetype>NUM_PHYSICSTYPES)
-		self->targetEnt->movetype = PHYSICSTYPE_STEP;
+		self->targetEnt->movetype = MOVETYPE_STEP;
 	VectorRandomCopy(vec3_origin,self->targetEnt->avelocity,300);
 
 	if(Q_stricmp(self->targetEnt->classname,"player"))
@@ -1496,7 +1496,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 	self->targetEnt = found;
 	self->targetEnt->flags |= FL_FLY;
-	self->targetEnt->movetype = PHYSICSTYPE_FLY;
+	self->targetEnt->movetype = MOVETYPE_FLY;
 
 	if(!found->client)
 	{
@@ -2726,7 +2726,7 @@ void SP_monster_trial_beast (edict_t *self)
 	self->isBlocked = tbeast_blocked;
 	self->bounced = tbeast_blocked;
 
-	self->movetype=PHYSICSTYPE_STEP;
+	self->movetype=MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	//problem- staff won't work on him!

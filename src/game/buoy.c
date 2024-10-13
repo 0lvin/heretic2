@@ -533,7 +533,7 @@ void SP_info_buoy(edict_t *self)
 		}
 	}
 
-	self->movetype=PHYSICSTYPE_NONE;
+	self->movetype=MOVETYPE_NONE;
 
 	self->solid = SOLID_NOT;
 	self->clipmask = 0;

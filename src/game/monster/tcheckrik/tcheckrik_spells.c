@@ -333,7 +333,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 	Globe->enemy=Caster->enemy;
 	Globe->count=0;
 	Globe->clipmask=MASK_MONSTERSOLID;
-	Globe->movetype = PHYSICSTYPE_FLY;
+	Globe->movetype = MOVETYPE_FLY;
 	Globe->solid=SOLID_NOT;
 	Globe->nextthink=level.time+0.1;
 	Globe->think=GlobeOfOuchinessGrowThink;

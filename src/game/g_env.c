@@ -54,7 +54,7 @@ count - number of rocks (default 1 rock per 28 x 28 square)
 void SP_env_dust (edict_t *self)
 {
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 
 	self->svflags |= SVF_NOCLIENT;
@@ -173,7 +173,7 @@ void SP_env_smoke (edict_t *self)
 void SP_env_muck (edict_t *self)
 {
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 
 	self->svflags |= SVF_NOCLIENT;

@@ -180,7 +180,7 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 
 void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid)
 {
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = (solid_t)solid;
 	self->msgHandler = DefaultMsgHandler;
 	self->takedamage = DAMAGE_YES;
@@ -212,7 +212,7 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid)
 
 	if (!(self->spawnflags & OBJ_NOPUSH))	// PUSHABLE
 	{
-		self->movetype = PHYSICSTYPE_STOP;
+		self->movetype = MOVETYPE_STOP;
 		self->monsterinfo.aiflags = AI_NOSTEP;
 		self->touch = objpush_touch;
 
@@ -320,7 +320,7 @@ barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
 	self->owner = attacker;					// The one to get credit for this should be the one destroying the barrel.
 
 	self->takedamage = DAMAGE_NO;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 	self->touch = NULL;
 	self->blocked = NULL;
@@ -878,7 +878,7 @@ void SP_obj_dying_elf(edict_t *self)
 
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 
 	self->touch_debounce_time = -1;
 	self->touch = dying_elf_touch;
@@ -1493,7 +1493,7 @@ void SP_obj_seasonglobe (edict_t *bottom)
 	edict_t *top;
 
 	bottom->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	bottom->movetype = PHYSICSTYPE_NONE;
+	bottom->movetype = MOVETYPE_NONE;
 	bottom->solid = SOLID_BBOX;
 	VectorSet(bottom->mins, -80, -80, 0);
 	VectorSet(bottom->maxs, 80, 80, 320);
@@ -1511,7 +1511,7 @@ void SP_obj_seasonglobe (edict_t *bottom)
 
 	VectorCopy(bottom->s.origin,top->s.origin);
 	top->s.origin[2] += 36;
-	top->movetype = PHYSICSTYPE_NONE;
+	top->movetype = MOVETYPE_NONE;
 	top->solid = SOLID_BBOX;
 	VectorSet(top->mins, -80, -80, 0);
 	VectorSet(top->maxs, 80, 80, 100);
@@ -1798,7 +1798,7 @@ void SP_obj_tree2 (edict_t *self)
 	VectorCopy(self->s.origin,moss->s.origin);
 	VectorCopy(self->s.angles,moss->s.angles);
 	moss->s.modelindex = gi.modelindex("models/objects/plants/tree2/moss2/tris.fm");
-	moss->movetype = PHYSICSTYPE_NONE;
+	moss->movetype = MOVETYPE_NONE;
 	moss->solid = SOLID_NOT;
 	moss->s.scale = self->s.scale;
 	moss->s.renderfx |= RF_TRANSLUCENT;
@@ -1838,7 +1838,7 @@ void SP_obj_tree3 (edict_t *self)
 	VectorCopy(self->s.origin,moss->s.origin);
 	VectorCopy(self->s.angles,moss->s.angles);
 	moss->s.modelindex = gi.modelindex("models/objects/plants/tree3/moss3/tris.fm");
-	moss->movetype = PHYSICSTYPE_NONE;
+	moss->movetype = MOVETYPE_NONE;
 	moss->solid = SOLID_NOT;
 	moss->s.scale = self->s.scale;
 	moss->s.renderfx |= RF_TRANSLUCENT;
@@ -1877,7 +1877,7 @@ void SP_obj_treetall (edict_t *self)
 	VectorCopy(self->s.origin,moss->s.origin);
 	VectorCopy(self->s.angles,moss->s.angles);
 	moss->s.modelindex = gi.modelindex("models/objects/plants/talltree/moss1/tris.fm");
-	moss->movetype = PHYSICSTYPE_NONE;
+	moss->movetype = MOVETYPE_NONE;
 	moss->solid = SOLID_NOT;
 	moss->s.renderfx |= RF_TRANSLUCENT;
 	moss->s.scale = self->s.scale;
@@ -2144,7 +2144,7 @@ void SP_obj_bigcrystal(edict_t *self)
 
 	self->avelocity[1] = self->speed;
 
-	self->movetype = PHYSICSTYPE_FLY;
+	self->movetype = MOVETYPE_FLY;
 	self->gravity = 0;
 }
 
@@ -3633,7 +3633,7 @@ void SP_obj_venusflytrap (edict_t *self)
 
 	VectorCopy(self->s.origin,leaves->s.origin);
 	leaves->s.origin[2] -= 16;
-	leaves->movetype = PHYSICSTYPE_NONE;
+	leaves->movetype = MOVETYPE_NONE;
 	leaves->solid = SOLID_NOT;
 	leaves->s.modelindex = gi.modelindex("models/objects/plants/v-plant/tris.fm");
 	BboxYawAndScale(leaves);
@@ -3808,7 +3808,7 @@ void SP_obj_spellbook (edict_t *self)
 
 	VectorCopy(self->s.origin,beam->s.origin);
 	beam->s.origin[2] += 2;
-	beam->movetype = PHYSICSTYPE_NONE;
+	beam->movetype = MOVETYPE_NONE;
 	beam->solid = SOLID_NOT;
 	beam->s.modelindex = gi.modelindex("models/objects/spellbook/beam/tris.fm");
 	BboxYawAndScale(beam);
@@ -4052,7 +4052,7 @@ void statue_sithraguard_use (edict_t *self, edict_t *other, edict_t *activator)
 	shield->s.scale = self->s.scale;
 	shield->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	shield->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	shield->movetype = PHYSICSTYPE_NONE;
+	shield->movetype = MOVETYPE_NONE;
 	shield->solid = SOLID_NOT;
 
 	BboxYawAndScale(shield);
@@ -4397,7 +4397,7 @@ void SP_obj_biotank (edict_t *self)
 
 	VectorCopy(self->s.origin,fish->s.origin);
 	fish->s.origin[2] -= 8;
-	fish->movetype = PHYSICSTYPE_FLY;
+	fish->movetype = MOVETYPE_FLY;
 	fish->solid = SOLID_NOT;
 	fish->gravity = 0;
 
@@ -4513,7 +4513,7 @@ void SP_obj_hangingdude (edict_t *self)
 	VectorSet(self->mins, -3, -20, -55);
 	VectorSet(self->maxs,  3,  20,  55);
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 	self->s.modelindex = gi.modelindex("models/objects/torture/guy1/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
@@ -4529,7 +4529,7 @@ void SP_obj_hangingdude (edict_t *self)
 	ring->s.modelindex = gi.modelindex("models/objects/torture/plaque/tris.fm");
 	ring->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	ring->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ring->movetype = PHYSICSTYPE_NONE;
+	ring->movetype = MOVETYPE_NONE;
 	ring->solid = SOLID_BBOX;
 	VectorSet(ring->mins, -3, -20, -55);
 	VectorSet(ring->maxs,  3,  20,  55);
@@ -4726,7 +4726,7 @@ void SP_obj_hanging_ogle (edict_t *self)
 
 	VectorCopy(self->s.angles,ring->s.angles);
 	ring->s.modelindex = gi.modelindex("models/objects/torture/plaque2/tris.fm");
-	ring->movetype = PHYSICSTYPE_NONE;
+	ring->movetype = MOVETYPE_NONE;
 	ring->solid = SOLID_NOT;
 	ring->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	ring->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
@@ -4918,7 +4918,7 @@ void SP_obj_larva (edict_t *self)
 
 	ObjectInit(self,2,100,MAT_INSECT,SOLID_BBOX);
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->count = 19;
 
 	self->think = larva_anim;

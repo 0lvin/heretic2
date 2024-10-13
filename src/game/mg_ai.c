@@ -1631,8 +1631,8 @@ void mg_ai_charge (edict_t *self, float dist)
 
 qboolean canmove (edict_t *self)
 {
-	if(	self->movetype!=PHYSICSTYPE_NONE &&
-		self->movetype!=PHYSICSTYPE_PUSH)
+	if(	self->movetype!=MOVETYPE_NONE &&
+		self->movetype!=MOVETYPE_PUSH)
 		return true;
 	return false;
 }

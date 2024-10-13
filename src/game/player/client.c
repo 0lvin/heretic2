@@ -1143,7 +1143,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	}
 
 	self->takedamage = DAMAGE_NO;
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 
 	self->s.angles[PITCH] = 0.0;
 	self->s.angles[ROLL] = 0.0;
@@ -1768,7 +1768,7 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 	VectorClear(self->absmin);
 	VectorClear(self->absmax);
 	VectorClear(self->size);
-	self->movetype=PHYSICSTYPE_NONE;
+	self->movetype=MOVETYPE_NONE;
 	self->solid=SOLID_NOT;
 	self->clipmask=0;
 	self->takedamage=DAMAGE_NO;
@@ -1845,7 +1845,7 @@ CopyToBodyQue(edict_t *ent)
 	body->absmax[2] = 10;
 	VectorCopy(ent->size,body->size);
 	body->svflags = ent->svflags|SVF_DEADMONSTER; // Stops player getting stuck.
-	body->movetype = PHYSICSTYPE_STEP;
+	body->movetype = MOVETYPE_STEP;
 	body->solid = SOLID_BBOX;
 	body->clipmask = MASK_PLAYERSOLID;
 	body->takedamage = DAMAGE_YES;
@@ -2481,7 +2481,7 @@ PutClientInServer(edict_t *ent)
 	ent->s.clientnum = index;
 	ent->takedamage = DAMAGE_AIM;
 	ent->materialtype = MAT_FLESH;
-	ent->movetype = PHYSICSTYPE_STEP;
+	ent->movetype = MOVETYPE_STEP;
 	ent->viewheight = 0;
 	ent->inuse = true;
 	ent->s.scale = 1.0f;
@@ -3404,7 +3404,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	// ********************************************************************************************
 	// Movement stuff.
 	// ********************************************************************************************
-	if (ent->movetype == PHYSICSTYPE_NOCLIP)
+	if (ent->movetype == MOVETYPE_NOCLIP)
 		client->ps.pmove.pm_type = PM_SPECTATOR;
 	else if ((ent->s.modelindex != 255) && !(ent->flags & FL_CHICKEN))	// We're not set as a chicken
 		client->ps.pmove.pm_type = PM_GIB;
@@ -3460,7 +3460,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	pm.cmd = *ucmd;
 	client->pcmd = *ucmd;
 
-	if (ent->movetype != PHYSICSTYPE_NOCLIP)
+	if (ent->movetype != MOVETYPE_NOCLIP)
 	{
 		pm.cmd.forwardmove = client->playerinfo.fwdvel;
 		pm.cmd.sidemove = client->playerinfo.sidevel;
@@ -3721,7 +3721,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	// Process touch triggers that the client could activate.
 
-	if (ent->movetype != PHYSICSTYPE_NOCLIP)
+	if (ent->movetype != MOVETYPE_NOCLIP)
 		G_TouchTriggers (ent);
 
 	// Touch other objects.

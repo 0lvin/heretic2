@@ -377,28 +377,28 @@ typedef struct
 typedef enum physicsType_e
 {
 	// new system
-	PHYSICSTYPE_NONE,			// MOVETYPE_NONE			0
-	PHYSICSTYPE_STATIC,
-	PHYSICSTYPE_NOCLIP,			// MOVETYPE_NOCLIP			2
-	PHYSICSTYPE_FLY,			// MOVETYPE_FLY				3
-	PHYSICSTYPE_STEP,			// MOVETYPE_WALK, MOVETYPE_STEP, MOVETYPE_TOSS, MOVETYPE_BOUNCE
-	PHYSICSTYPE_PUSH,			// MOVETYPE_PUSH			5
-	PHYSICSTYPE_STOP,			// MOVETYPE_STOP			6
-	MOVETYPE_FLYMISSILE,		// MOVETYPE_FYMISSILE (extra size to monsters)
-	PHYSICSTYPE_SCRIPT_ANGULAR,	// MOVETYPE_SCRIPT_ANGULAR	8
+	// MOVETYPE_NONE			0
+	MOVETYPE_NONE,			// never moves
+	MOVETYPE_STATIC,
+	// MOVETYPE_NOCLIP			2
+	MOVETYPE_NOCLIP,
+	// MOVETYPE_FLY				3
+	MOVETYPE_FLY,
+	// MOVETYPE_WALK, MOVETYPE_STEP, MOVETYPE_TOSS, MOVETYPE_BOUNCE
+	MOVETYPE_STEP,			// origin and angles change with no interaction
+	// MOVETYPE_PUSH			5
+	MOVETYPE_PUSH,			// no clip to world, push on box contact
+	// MOVETYPE_STOP			6
+	MOVETYPE_STOP,			// no clip to world, stops on box contact
+	// MOVETYPE_FYMISSILE (extra size to monsters)
+	MOVETYPE_FLYMISSILE,
+	// MOVETYPE_SCRIPT_ANGULAR	8
+	MOVETYPE_SCRIPT_ANGULAR,	// moves with the rotation of another entity
 	NUM_PHYSICSTYPES,
 
-	MOVETYPE_NONE,			// never moves
-	MOVETYPE_NOCLIP,		// origin and angles change with no interaction
-	MOVETYPE_PUSH,			// no clip to world, push on box contact
-	MOVETYPE_STOP,			// no clip to world, stops on box contact
-	MOVETYPE_WALK,			// gravity
-	MOVETYPE_STEP,			// gravity, special edge handling
-	MOVETYPE_FLY,
+	MOVETYPE_WALK,
 	MOVETYPE_TOSS,			// gravity
 	MOVETYPE_BOUNCE,
-
-	MOVETYPE_SCRIPT_ANGULAR,	// moves with the rotation of another entity
 } physicsType_t;
 
 // ************************************************************************************************

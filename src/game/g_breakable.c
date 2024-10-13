@@ -88,7 +88,7 @@ void BBrushStaticsInit(void)
 void BBrushInit(edict_t *self)
 {
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_BBRUSH;
 
@@ -245,12 +245,12 @@ void SP_breakable_brush (edict_t *ent)
 
 	if (ent->spawnflags & 64)
 	{
-		ent->movetype = PHYSICSTYPE_PUSH;
+		ent->movetype = MOVETYPE_PUSH;
 //		ent->think = M_droptofloor;
 //		ent->nextthink = level.time + 2 * FRAMETIME;
 	}
 	else
-		ent->movetype = PHYSICSTYPE_NONE;
+		ent->movetype = MOVETYPE_NONE;
 
 	if (ent->spawnflags & 128)
 		ent->svflags |= SVF_NO_PLAYER_DAMAGE;

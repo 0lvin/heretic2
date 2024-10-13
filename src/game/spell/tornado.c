@@ -63,7 +63,7 @@ static void TornadoThink(edict_t *self)
 					damage = 0;
 
    				VectorMA(ent->s.origin, -ent->maxs[0], vel, hitloc);
-   				if (ent->movetype != PHYSICSTYPE_NONE)
+   				if (ent->movetype != MOVETYPE_NONE)
    					T_Damage (ent, ent, self->targetEnt, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
    				else
    					T_Damage (ent, ent, self->targetEnt, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
@@ -133,7 +133,7 @@ void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, ve
 	};
 
 	tornado = G_Spawn();
-	tornado->movetype = PHYSICSTYPE_NONE;
+	tornado->movetype = MOVETYPE_NONE;
 	tornado->classname = "Spell_Tornado_time";
 	tornado->think = create_tornado;
 	tornado->nextthink = level.time + TORN_DUR;

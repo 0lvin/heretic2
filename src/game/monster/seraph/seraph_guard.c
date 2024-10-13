@@ -72,7 +72,7 @@ void create_guard_proj(edict_t *self,edict_t *proj)
 	void guard_beam_blocked( edict_t *self, trace_t *trace );
 
 	proj->svflags |= SVF_ALWAYS_SEND;
-	proj->movetype = PHYSICSTYPE_FLY;
+	proj->movetype = MOVETYPE_FLY;
 	proj->gravity = 0;
 	proj->solid = SOLID_BBOX;
 	proj->classname = "Guard_Missile";
@@ -1216,7 +1216,7 @@ void SP_monster_seraph_guard(edict_t *self)
 		self->mass = SGUARD_MASS  * 10;
 		self->yaw_speed = 12;
 
-		self->movetype = PHYSICSTYPE_STEP;
+		self->movetype = MOVETYPE_STEP;
 		self->solid=SOLID_BBOX;
 
 		if (!self->s.scale)
@@ -1269,7 +1269,7 @@ void SP_monster_seraph_guard(edict_t *self)
 
 		if(irand(0, 2))
 			self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
-		self->movetype = PHYSICSTYPE_STEP;
+		self->movetype = MOVETYPE_STEP;
 		self->solid=SOLID_BBOX;
 		self->monsterinfo.dismember = seraph_guard_dismember;
 

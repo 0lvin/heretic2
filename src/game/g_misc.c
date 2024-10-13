@@ -342,13 +342,13 @@ ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 
 	if (type == GIB_ORGANIC)
 	{
-		gib->movetype = PHYSICSTYPE_STEP;
+		gib->movetype = MOVETYPE_STEP;
 		gib->touch = gib_touch;
 		vscale = 0.5;
 	}
 	else
 	{
-		gib->movetype = PHYSICSTYPE_STEP;
+		gib->movetype = MOVETYPE_STEP;
 		vscale = 1.0;
 	}
 
@@ -815,7 +815,7 @@ SP_path_corner(edict_t *self)
 		self->moveinfo.sound_middle = gi.soundindex(st.noise);
 
 	self->solid = SOLID_TRIGGER;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->touch = path_corner_touch;
 	VectorSet(self->mins, -8, -8, -8);
 	VectorSet(self->maxs, 8, 8, 8);
@@ -1014,7 +1014,7 @@ SP_info_notnull(edict_t *self)
 	VectorCopy(self->s.origin, self->absmax);
 
 	self->solid = SOLID_TRIGGER;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 
 };
 
@@ -1069,7 +1069,7 @@ SP_func_wall(edict_t *self)
 		return;
 	}
 
-	self->movetype = PHYSICSTYPE_PUSH;
+	self->movetype = MOVETYPE_PUSH;
 	gi.setmodel(self, self->model);
 
 	if (self->spawnflags & 8)
@@ -1163,7 +1163,7 @@ func_object_release(edict_t *self)
 		return;
 	}
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->touch = func_object_touch;
 }
 
@@ -1207,14 +1207,14 @@ SP_func_object(edict_t *self)
 	if (self->spawnflags == 0)
 	{
 		self->solid = SOLID_BSP;
-		self->movetype = PHYSICSTYPE_PUSH;
+		self->movetype = MOVETYPE_PUSH;
 		self->think = func_object_release;
 		self->nextthink = level.time + 2 * FRAMETIME;
 	}
 	else
 	{
 		self->solid = SOLID_NOT;
-		self->movetype = PHYSICSTYPE_PUSH;
+		self->movetype = MOVETYPE_PUSH;
 		self->use = func_object_use;
 		self->svflags |= SVF_NOCLIENT;
 	}
@@ -1281,7 +1281,7 @@ void ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
 		else
 		{
 			newitem = G_Spawn();
-			newitem->movetype = PHYSICSTYPE_STEP;
+			newitem->movetype = MOVETYPE_STEP;
 			AngleVectors(holdangles,forward,NULL,NULL);
 
 			VectorCopy(self->s.origin,newitem->s.origin);
@@ -1316,7 +1316,7 @@ void SP_item_spitter(edict_t *self)
 {
 	self->style = 1;	// To show it hasn't been used yet
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 
 	VectorSet(self->mins,-4,-4,-4);
 	VectorSet(self->maxs,4,4,4);
@@ -1382,7 +1382,7 @@ void respawner_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 void misc_update_spawner (edict_t *ent)
 {
 
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->touch = respawner_touch;
@@ -1468,7 +1468,7 @@ void SP_misc_teleporter (edict_t *ent)
 	ent->msgHandler = DefaultMsgHandler;
 	ent->classID = CID_TELEPORTER;
 
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 
@@ -1618,7 +1618,7 @@ void SP_misc_magic_portal (edict_t *self)
 	self->gravity = 0;
 	self->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 	self->svflags |= SVF_ALWAYS_SEND;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 	self->touch = NULL;
 
@@ -1761,7 +1761,7 @@ void sound_ambient_init(edict_t *self)
 	VectorSet(self->mins,-4,-4,-4);
 	VectorSet(self->maxs,4,4,4);
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 
 	if (self->attenuation <= 0.01)
 		self->attenuation = 1;
@@ -2419,7 +2419,7 @@ void SP_misc_remote_camera(edict_t *Self)
 		return;
 	}
 
-	Self->movetype = PHYSICSTYPE_NONE;
+	Self->movetype = MOVETYPE_NONE;
 	Self->solid=SOLID_NOT;
 	VectorSet(Self->mins,-4,-4,-4);
 	VectorSet(Self->maxs,4,4,4);
@@ -2515,7 +2515,7 @@ void SkyFly (edict_t *self)
 /*	}
 //They're not being drawn, even after this is set- why not?  Did they stop?
 	self->svflags |= SVF_ALWAYS_SEND;
-	self->movetype = PHYSICSTYPE_NOCLIP;
+	self->movetype = MOVETYPE_NOCLIP;
 	self->solid = SOLID_NOT;
 
 	self->touch = NULL;
@@ -2575,7 +2575,7 @@ void SP_misc_fire_sparker (edict_t *self)
 
 	self->svflags |= SVF_ALWAYS_SEND;
 	self->solid = SOLID_NOT;
-	self->movetype = PHYSICSTYPE_NOCLIP;
+	self->movetype = MOVETYPE_NOCLIP;
 	self->clipmask = 0;
 
 	self->use = fire_spark_use;

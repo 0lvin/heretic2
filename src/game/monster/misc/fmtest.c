@@ -9,7 +9,7 @@ static void
 MakeSolidObject(edict_t *ent, char *Model, float MinX, float MinY, float MinZ,
 					 float MaxX, float MaxY, float MaxZ)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->solid = SOLID_BBOX;
 	VectorSet (ent->mins, MinX, MinY, MinZ);
 	VectorSet (ent->maxs, MaxX, MaxY, MaxZ);

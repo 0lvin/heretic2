@@ -194,7 +194,7 @@ void priestess_teleport_move ( edict_t *self )
 		VectorSet(blocker->maxs,  24,  24,  36);
 
 		blocker->solid = SOLID_BBOX;
-		blocker->movetype = PHYSICSTYPE_NONE;
+		blocker->movetype = MOVETYPE_NONE;
 
 		//If the player touches this entity somehow, he's thrown back
 		blocker->isBlocked = blocker_throw;
@@ -613,7 +613,7 @@ void priestess_proj1_touch( edict_t *self, edict_t *other, cplane_t *plane, csur
 void create_priestess_proj(edict_t *self,edict_t *proj)
 {
 	proj->svflags |= SVF_ALWAYS_SEND;
-	proj->movetype = PHYSICSTYPE_FLY;
+	proj->movetype = MOVETYPE_FLY;
 	proj->gravity = 0;
 	proj->solid = SOLID_BBOX;
 	proj->classname = "HPriestess_Missile";
@@ -1644,7 +1644,7 @@ void SP_monster_high_priestess (edict_t *self)
 	self->mass = HP_MASS;
 	self->yaw_speed = 24;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->solid=SOLID_BBOX;
 	self->clipmask = MASK_MONSTERSOLID;
 

@@ -600,7 +600,7 @@ monster_triggered_spawn(edict_t *self)
 	KillBox(self);
 
 	self->solid = SOLID_BBOX;
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->svflags &= ~SVF_NOCLIENT;
 	self->air_finished = level.time + M_HOLD_BREATH_TIME;
 	gi.linkentity(self);
@@ -655,7 +655,7 @@ monster_triggered_start(edict_t *self)
 	}
 
 	self->solid = SOLID_NOT;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->svflags |= SVF_NOCLIENT;
 	self->nextthink = 0;
 	self->use = monster_triggered_spawn_use;

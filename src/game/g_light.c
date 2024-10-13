@@ -27,7 +27,7 @@ void LightStaticsInit()
 
 void LightInit(edict_t *self)
 {
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_LIGHT;
@@ -92,7 +92,7 @@ void create_fire_touch (edict_t *owner,vec3_t origin)
 
 	flame->spawnflags |= OBJ_NOPUSH;
 
-	flame->movetype = PHYSICSTYPE_NONE;
+	flame->movetype = MOVETYPE_NONE;
 	flame->touch = fire_touch;
 
 	ObjectInit(flame,2,2,MAT_NONE,SOLID_TRIGGER);
@@ -272,7 +272,7 @@ void SP_env_fire (edict_t *self)
 		self->gravity = 0;
 		self->s.effects |= EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
 //		self->svflags |= SVF_ALWAYS_SEND;
-		self->movetype = PHYSICSTYPE_FLY;
+		self->movetype = MOVETYPE_FLY;
 
 		self->model = 0;
 		self->solid = SOLID_NOT;
@@ -777,7 +777,7 @@ void SP_env_sun1 (edict_t *self)
 	vec3_t origin;
 
 	self->solid = SOLID_NOT;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 
 //	VectorSet(origin, 200, -100, 4000);
 

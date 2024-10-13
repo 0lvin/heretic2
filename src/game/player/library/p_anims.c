@@ -419,7 +419,7 @@ void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 		seqctrl = &SeqCtrl[playerinfo->lowerseq];
 
 	// Check for noclip, just to make things more robust.
-	if (playerinfo->movetype == PHYSICSTYPE_NOCLIP)
+	if (playerinfo->movetype == MOVETYPE_NOCLIP)
 	{
 		if (playerinfo->lowerseq != ASEQ_STAND)
 		{

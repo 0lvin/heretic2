@@ -254,7 +254,7 @@ void SpellCastMaceball(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	ball->gravity = MACEBALL_GRAVITY;
 	ball->svflags = SVF_DO_NO_IMPACT_DMG;
 
-	ball->movetype = PHYSICSTYPE_STEP;
+	ball->movetype = MOVETYPE_STEP;
 
 	ball->solid = SOLID_BBOX;
 	ball->clipmask = MASK_MONSTERSOLID;

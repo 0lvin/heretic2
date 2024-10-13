@@ -65,7 +65,7 @@ void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int 
 
 void create_gkrokon_spoo(edict_t *Spoo)
 {
-	Spoo->movetype=PHYSICSTYPE_FLY;
+	Spoo->movetype=MOVETYPE_FLY;
 	Spoo->solid=SOLID_BBOX;
 	Spoo->classname="Gkrokon_Spoo";
 	Spoo->touch=GkrokonSpooTouch;
@@ -1088,7 +1088,7 @@ SP_Monster_Gkrokon(edict_t *self)
 	self->materialtype = MAT_INSECT;
 	self->mass=GKROKON_MASS;
 	self->yaw_speed=20;
-	self->movetype=PHYSICSTYPE_STEP;
+	self->movetype=MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 	self->solid=SOLID_BBOX;
 	self->monsterinfo.dismember = beetle_dismember;

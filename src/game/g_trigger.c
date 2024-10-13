@@ -144,7 +144,7 @@ void InitTrigger(edict_t *self)
 
 	// Triggers still use the touch function even with the new physics
 	self->touch = Touch_Multi;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->svflags |= SVF_NOCLIENT;
 
 	if(self->spawnflags & TRIGGER_TRIGGERED)
@@ -547,7 +547,7 @@ void SP_trigger_PlayerPushButton(edict_t *self)
 
 	self->wait = FRAMETIME;
 	self->touch = trigger_playerpushbutton;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->svflags |= SVF_NOCLIENT;
 	self->solid = SOLID_TRIGGER;
 
@@ -766,7 +766,7 @@ void SP_choose_CDTrack(edict_t *self)
 
 	// Triggers still use the touch function even with the new physics
 	self->touch = choose_CDTrack_touch;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->svflags |= SVF_NOCLIENT;
 	self->solid = SOLID_TRIGGER;
 
@@ -803,7 +803,7 @@ void SP_trigger_quit_to_menu(edict_t *self)
 
 	self->touch = trigger_quit_to_menu_touch;
 	self->use = trigger_quit_to_menu_use;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->svflags |= SVF_NOCLIENT;
 
 	self->solid = SOLID_TRIGGER;

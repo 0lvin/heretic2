@@ -2898,7 +2898,7 @@ void SP_monster_assassin (edict_t *self)
 	self->mass = ASSASSIN_MASS;
 	self->yaw_speed = 20;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;

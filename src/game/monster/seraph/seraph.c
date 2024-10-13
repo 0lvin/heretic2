@@ -1069,7 +1069,7 @@ void SP_monster_seraph_overlord(edict_t *self)
 	self->mass = SERAPH_MASS;
 	self->yaw_speed = 18;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->solid=SOLID_BBOX;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);

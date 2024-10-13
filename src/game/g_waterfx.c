@@ -248,7 +248,7 @@ void SP_obj_fishhead2 (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Cant push it
 	self->takedamage = DAMAGE_NO;
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 	self->takedamage = DAMAGE_NO;
 	self->clipmask = MASK_MONSTERSOLID;
@@ -284,7 +284,7 @@ void SP_obj_stalactite1(edict_t *self)
 		self->PersistantCFX = gi.CreatePersistantEffect(NULL, FX_DRIPPER, 0, origin, "bb", self->count, 2);
 	}
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 
 	VectorSet(self->mins, -24, -24, -99);
@@ -321,7 +321,7 @@ void SP_obj_stalactite2(edict_t *self)
 		self->PersistantCFX = gi.CreatePersistantEffect(NULL, FX_DRIPPER, 0, origin, "bb", self->count, 2);
 	}
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 
 	VectorSet(self->mins,-60,-60,-64);
@@ -357,7 +357,7 @@ void SP_obj_stalactite3(edict_t *self)
 		self->PersistantCFX = gi.CreatePersistantEffect(NULL, FX_DRIPPER, 0, origin, "bb", self->count, 2);
 	}
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 
 	VectorSet(self->mins, -23, -23, -98);

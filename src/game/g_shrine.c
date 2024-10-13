@@ -399,7 +399,7 @@ void deal_with_shrine_node(edict_t *self)
 	{
 		delay = G_Spawn ();
 		delay->svflags |= SVF_NOCLIENT;
-		delay->movetype = PHYSICSTYPE_NONE;
+		delay->movetype = MOVETYPE_NONE;
 		delay->solid = SOLID_NOT;
 		delay->think = DelayThink;
 		delay->owner = self;
@@ -584,7 +584,7 @@ void shrine_heal_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface
 
 void shrine_heal(edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_HEAL;
@@ -699,7 +699,7 @@ void shrine_armor_silver_touch	(edict_t *self, edict_t *other, cplane_t *plane, 
 
 void shrine_armor (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_ARMOR_SILVER;
@@ -806,7 +806,7 @@ void shrine_armor_gold_touch (edict_t *self, edict_t *other, cplane_t *plane, cs
 
 void shrine_armor_gold (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_ARMOR_GOLD;
@@ -924,7 +924,7 @@ void shrine_staff_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 void shrine_staff (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_STAFF;
@@ -1025,7 +1025,7 @@ void shrine_lung_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface
 */
 void shrine_lung (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_LUNGS;
@@ -1142,7 +1142,7 @@ void shrine_light_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 void shrine_light (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_LIGHT;
@@ -1245,7 +1245,7 @@ void shrine_mana_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface
 
 void shrine_mana (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_MANA;
@@ -1355,7 +1355,7 @@ void shrine_ghost_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 void shrine_ghost (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_GHOST;
@@ -1468,7 +1468,7 @@ void shrine_reflect_touch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 void shrine_reflect (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_REFLECT;
@@ -1584,7 +1584,7 @@ void shrine_powerup_touch (edict_t *self, edict_t *other, cplane_t *plane, csurf
 
 void shrine_powerup (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_POWERUP;
@@ -1698,7 +1698,7 @@ void shrine_speed_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfac
 */
 void shrine_speed (edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_SPEED;
@@ -1930,7 +1930,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 void shrine_random(edict_t *ent)
 {
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->solid = SOLID_TRIGGER;
 	ent->shrine_type = SHRINE_RANDOM;

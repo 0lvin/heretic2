@@ -869,7 +869,7 @@ SP_worldspawn(edict_t *ent)
 {
 	int	i;
 
-	ent->movetype = PHYSICSTYPE_PUSH;
+	ent->movetype = MOVETYPE_PUSH;
 	ent->solid = SOLID_BSP;
 	ent->inuse = true; /* since the world doesn't use G_Spawn() */
 	ent->s.modelindex = 1; /* world model is always index 1 */

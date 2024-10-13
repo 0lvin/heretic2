@@ -124,7 +124,7 @@ edict_t *RadiusDamageEnt(	edict_t *posowner,//for position
 	}
 	else
 	{
-		self->movetype = PHYSICSTYPE_FLY;
+		self->movetype = MOVETYPE_FLY;
 		self->gravity = 0;
 
 		VectorCopy(offset, self->velocity);
@@ -176,7 +176,7 @@ static void spreader_grenade_think(edict_t *self)
 	edict_t *ent;
 	vec3_t temp;
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 
 	if(self->monsterinfo.pausetime < level.time)
@@ -448,7 +448,7 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 
 	VectorSet (grenade->avelocity, flrand(300,600), flrand(300,600), flrand(300,600));
 
-	grenade->movetype = PHYSICSTYPE_STEP;
+	grenade->movetype = MOVETYPE_STEP;
 	grenade->elasticity = 1;
 	grenade->friction = 1;
 	grenade->clipmask = MASK_SHOT;

@@ -1014,7 +1014,7 @@ void gorgon_hop (edict_t *self)
 
 	if (self->s.frame == FRAME_hop8)
 	{
-		self->movetype = PHYSICSTYPE_STEP;
+		self->movetype = MOVETYPE_STEP;
 		self->velocity[2] = -10;
 	}
 	else
@@ -1047,7 +1047,7 @@ void gorgon_hop (edict_t *self)
 			VectorScale (forward, -50*JUMP_SCALE, self->velocity);
 		}
 
-		//self->movetype = PHYSICSTYPE_TOSS;
+		//self->movetype = MOVETYPE_TOSS;
 		//self->groundentity = self;
 		self->velocity[2] += 175;
 	}
@@ -1586,7 +1586,7 @@ void gorgon_throw_toy(edict_t *self)
 	self->enemy->velocity[0] = self->enemy->velocity[1] = 0;
 	self->enemy->velocity[2] = 500;
 	if(self->enemy->movetype>NUM_PHYSICSTYPES)
-		self->enemy->movetype = PHYSICSTYPE_STEP;
+		self->enemy->movetype = MOVETYPE_STEP;
 	VectorRandomCopy(vec3_origin,self->enemy->avelocity,300);
 
 	if(Q_stricmp(self->enemy->classname,"player"))
@@ -1700,7 +1700,7 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	//FIXME: if health is low, just chomp it now
 	self->enemy->flags |= FL_FLY;
 	if(self->enemy->movetype>NUM_PHYSICSTYPES)
-		self->enemy->movetype = PHYSICSTYPE_FLY;
+		self->enemy->movetype = MOVETYPE_FLY;
 
 	if(Q_stricmp(self->enemy->classname,"player"))
 	{
@@ -2220,7 +2220,7 @@ void SP_monster_gorgon_leader (edict_t *self)
 	self->yaw_speed = 10;
 	self->isBlocked = gorgon_blocked;
 
-	self->movetype=PHYSICSTYPE_STEP;
+	self->movetype=MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;
@@ -2334,7 +2334,7 @@ void SP_monster_gorgon (edict_t *self)
 		self->yaw_speed = 15;
 	self->dmg = 0;//used for slight turn during run
 
-	self->movetype=PHYSICSTYPE_STEP;
+	self->movetype=MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 	self->solid=SOLID_BBOX;
 

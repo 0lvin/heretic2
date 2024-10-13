@@ -220,12 +220,12 @@ void c_corvus_init(edict_t *self,int classId)
 	{
 		self->s.modelindex = 0;
 		self->solid = SOLID_NOT;
-		self->movetype = PHYSICSTYPE_NONE;
+		self->movetype = MOVETYPE_NONE;
 	}
 	else
 	{
 		self->solid=SOLID_BBOX;
-		self->movetype = PHYSICSTYPE_STEP;
+		self->movetype = MOVETYPE_STEP;
 	}
 
 	//set up my mood function
@@ -273,12 +273,12 @@ void c_character_init(edict_t *self,int classId)
 	{
 		self->s.modelindex = 0;
 		self->solid = SOLID_NOT;
-		self->movetype = PHYSICSTYPE_NONE;
+		self->movetype = MOVETYPE_NONE;
 	}
 	else
 	{
 		self->solid=SOLID_BBOX;
-		self->movetype = PHYSICSTYPE_STEP;
+		self->movetype = MOVETYPE_STEP;
 	}
 
 	BboxYawAndScale(self);

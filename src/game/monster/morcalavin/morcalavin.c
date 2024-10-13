@@ -123,7 +123,7 @@ void morcalavin_big_shot( edict_t *self )
 	VectorSet(proj->mins, -4, -4, -4);
 	VectorSet(proj->maxs,  4,  4,  4);
 
-	proj->movetype = PHYSICSTYPE_FLY;
+	proj->movetype = MOVETYPE_FLY;
 	proj->gravity = 0;
 	proj->clipmask = MASK_SHOT;
 
@@ -250,7 +250,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	proj->owner = self;
 
 	proj->svflags |= SVF_ALWAYS_SEND;
-	proj->movetype = PHYSICSTYPE_FLY;
+	proj->movetype = MOVETYPE_FLY;
 	proj->gravity = 0;
 	proj->solid = SOLID_BBOX;
 	proj->classname = "Morcalavin_Tracking_Missile";
@@ -583,7 +583,7 @@ void morcalavin_start_missile(edict_t *self)
 	VectorSet(proj->mins, -4, -4, -4);
 	VectorSet(proj->maxs,  4,  4,  4);
 
-	proj->movetype = PHYSICSTYPE_FLY;
+	proj->movetype = MOVETYPE_FLY;
 	proj->gravity = 0;
 	proj->clipmask = MASK_SHOT;
 
@@ -701,7 +701,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 void create_morcalavin_proj(edict_t *self,edict_t *proj)
 {
 	proj->svflags |= SVF_ALWAYS_SEND;
-	proj->movetype = PHYSICSTYPE_FLY;
+	proj->movetype = MOVETYPE_FLY;
 	proj->gravity = 0;
 	proj->solid = SOLID_BBOX;
 	proj->classname = "Morcalavin_Missile";
@@ -1910,7 +1910,7 @@ void SP_monster_morcalavin (edict_t *self)
 	self->mass = MORK_MASS;
 	self->yaw_speed = 24;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->solid=SOLID_BBOX;
 
 	//This is the number of times he's died (used to calculate window of opportunity for the player)
@@ -2054,7 +2054,7 @@ void SP_obj_morcalavin_barrier (edict_t *self)
 	gi.setmodel(self, self->model);
 
 	self->solid = SOLID_TRIGGER;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 
 	self->touch = morcalavin_barrier_touch;
 	self->use   = morcalavin_barrier_use;

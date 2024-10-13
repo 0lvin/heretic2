@@ -500,11 +500,11 @@ void P_WorldEffects (void)
 
 	// If we are in no clip, or we have special lungs, we don't need air.
 
-	if(current_player->movetype == PHYSICSTYPE_NOCLIP)
+	if(current_player->movetype == MOVETYPE_NOCLIP)
 	{
 		current_player->air_finished = level.time+HOLD_BREATH_TIME;
 
-		if(current_player->movetype == PHYSICSTYPE_NOCLIP)
+		if(current_player->movetype == MOVETYPE_NOCLIP)
 			return;
 	}
 

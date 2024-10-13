@@ -52,7 +52,7 @@ edict_t *CreateFireBlast(vec3_t startpos, vec3_t angles, edict_t *owner, int hea
 
 	wall->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 	wall->svflags |= SVF_ALWAYS_SEND|SVF_DO_NO_IMPACT_DMG;
-	wall->movetype = PHYSICSTYPE_FLY;
+	wall->movetype = MOVETYPE_FLY;
 	wall->isBlocked = FireBlastBlocked;
 
 	wall->classname = "Spell_FireBlast";
@@ -277,7 +277,7 @@ edict_t *CreateFireWall(vec3_t startpos, vec3_t angles, edict_t *owner, int heal
 
 	wall->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 	wall->svflags |= SVF_ALWAYS_SEND;
-	wall->movetype = PHYSICSTYPE_FLY;
+	wall->movetype = MOVETYPE_FLY;
 	wall->isBlocked = WallMissileBlocked;
 
 	wall->classname = "Spell_FireWall";

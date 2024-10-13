@@ -1990,7 +1990,7 @@ void SP_monster_plagueElf (edict_t *self)
 	self->mass = PLAGUEELF_MASS;
 	self->yaw_speed = 20;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;

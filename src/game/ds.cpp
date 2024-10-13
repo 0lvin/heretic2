@@ -408,7 +408,7 @@ void SP_script_runner (edict_t *ent)
 		}
 	}
 
-	ent->movetype = PHYSICSTYPE_NONE;
+	ent->movetype = MOVETYPE_NONE;
 	ent->solid = SOLID_NOT;
 	ent->svflags |= SVF_NOCLIENT;
 	ent->use = script_use;

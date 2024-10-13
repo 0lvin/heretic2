@@ -115,7 +115,7 @@ void elford_Attack( edict_t *self )
 
 		projectile->classname = "elflord_projectile";
 		projectile->solid = SOLID_BBOX;
-		projectile->movetype = PHYSICSTYPE_FLY;
+		projectile->movetype = MOVETYPE_FLY;
 		projectile->clipmask = MASK_SHOT;
 
 		AngleVectors(self->s.angles, vf, vr, NULL);
@@ -189,7 +189,7 @@ void elflord_StartBeam(edict_t *self)
 
 	beam->classname = "elflord_Beam";
 	beam->solid = SOLID_NOT;
-	beam->movetype = PHYSICSTYPE_NONE;
+	beam->movetype = MOVETYPE_NONE;
 	beam->owner = self;
 	beam->svflags |= SVF_ALWAYS_SEND;
 
@@ -812,7 +812,7 @@ void SP_monster_elflord (edict_t *self)
 	self->mass = ELFLORD_MASS;
 	self->yaw_speed = 20;
 
-	self->movetype=PHYSICSTYPE_STEP;
+	self->movetype=MOVETYPE_STEP;
 	self->flags |= FL_FLY;
 	self->gravity = 0.0;
 	self->clipmask= MASK_MONSTERSOLID;

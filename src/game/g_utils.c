@@ -301,7 +301,7 @@ G_UseTargets(edict_t *ent, edict_t *activator)
 	{
 		/* create a temp object to fire at a later time */
 		t = G_Spawn();
-		t->movetype = PHYSICSTYPE_NONE;
+		t->movetype = MOVETYPE_NONE;
 		t->classname = "DelayedUse";
 		t->nextthink = level.time + ent->delay;
 		t->think = Think_Delay;
@@ -665,7 +665,7 @@ G_InitEdict(edict_t *e)
 	e->s.clientEffects.numEffects = 0;
 
 	e->inuse = true;
-	e->movetype = PHYSICSTYPE_NONE;
+	e->movetype = MOVETYPE_NONE;
 	e->classname = "noclass";
 	e->gravity = 1.0;
 	e->friction = 1.0;
@@ -985,7 +985,7 @@ void G_SetToFree(edict_t *self)
 	self->next_post_think = -1;
 
 	self->takedamage = DAMAGE_NO;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 	self->touch = NULL;
 	self->blocked = NULL;

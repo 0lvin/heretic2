@@ -1339,7 +1339,7 @@ qboolean MG_CheckClearPathToEnemy(edict_t *self)
 	if(!self->groundentity || (self->flags & FL_INWATER && self->enemy->flags & FL_INWATER))
 		return true;
 
-	if(self->flags & FL_FLY || self->movetype == PHYSICSTYPE_FLY || !self->gravity || self->classID == CID_GORGON)
+	if(self->flags & FL_FLY || self->movetype == MOVETYPE_FLY || !self->gravity || self->classID == CID_GORGON)
 		return true;
 
 	if((self->flags & FL_INWATER || (self->flags & FL_SWIM) || (self->flags & FL_AMPHIBIAN))&&
@@ -1404,7 +1404,7 @@ qboolean MG_CheckClearPathToSpot(edict_t *self, vec3_t spot)
 	if(!self->groundentity || (self->flags & FL_INWATER && gi.pointcontents(spot)&MASK_WATER))
 		return true;
 
-	if(self->flags & FL_FLY || self->movetype == PHYSICSTYPE_FLY || !self->gravity || self->classID == CID_GORGON)
+	if(self->flags & FL_FLY || self->movetype == MOVETYPE_FLY || !self->gravity || self->classID == CID_GORGON)
 		return true;
 
 	//Now lets see if there is a solid ground or steps path to the enemy

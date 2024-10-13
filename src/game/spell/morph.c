@@ -130,7 +130,7 @@ void reset_morph_to_elf(edict_t *ent)
 {
 	// we have no damage, and no motion type
 	ent->takedamage = DAMAGE_AIM;
-	ent->movetype = PHYSICSTYPE_STEP;
+	ent->movetype = MOVETYPE_STEP;
 	ent->health = ent->max_health;
 
 	// move the camera back to where it should be, and reset our lungs and stuff
@@ -336,7 +336,7 @@ void Perform_Morph(edict_t *self)
 	}
 
 	// not being knocked back, and stepping like a chicken
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);
 
 	// reseting which skin we use, and new scale

@@ -152,7 +152,7 @@ void harpy_head_think (edict_t *self)
 
 	if(!self->owner || self->owner->health <= 0)
 	{
-		self->movetype = PHYSICSTYPE_STEP;
+		self->movetype = MOVETYPE_STEP;
 		self->elasticity = 0.8;
 		self->gravity = 1.0;
 		self->solid = SOLID_BBOX;
@@ -191,7 +191,7 @@ void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, in
 	head->s.effects |= EF_CAMERA_NO_CLIP;
 	head->svflags |= SVF_ALWAYS_SEND;
 	head->solid = SOLID_NOT;
-	head->movetype = PHYSICSTYPE_NOCLIP;
+	head->movetype = MOVETYPE_NOCLIP;
 	head->gravity = 0;
 	head->clipmask = 0;
 	head->materialtype = victim->materialtype;
@@ -616,7 +616,7 @@ void move_harpy_tumble(edict_t *self)
 	trace_t	trace;
 	vec3_t	endpos;
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->gravity = 1;
 
 	VectorSet(self->mins, -16, -16, 0);
@@ -725,7 +725,7 @@ void harpy_die(edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->gravity = 1;
 	self->elasticity = 1.1;
 
@@ -1652,7 +1652,7 @@ SP_monster_harpy(edict_t *self)
 	self->mass = HARPY_MASS;
 	self->yaw_speed = 14;
 
-	self->movetype = PHYSICSTYPE_FLY;
+	self->movetype = MOVETYPE_FLY;
 	self->gravity = 0;
 	self->flags |= FL_FLY;
 	self->solid = SOLID_BBOX;

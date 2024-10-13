@@ -143,7 +143,7 @@ void SP_monster_tcheckrik_mothers (edict_t *self)
 	self->mass = 2000;
 	self->yaw_speed = 20;
 
-	self->movetype = PHYSICSTYPE_STATIC;
+	self->movetype = MOVETYPE_STATIC;
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;

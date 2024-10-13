@@ -184,7 +184,7 @@ edict_t *MeteorBarrierReflect(edict_t *self, edict_t *other, vec3_t vel)
 	Meteor->solid = self->solid;
 	VectorCopy(BBMin,Meteor->mins);
 	VectorCopy(BBMax,Meteor->maxs);
-	Meteor->movetype = PHYSICSTYPE_FLY;
+	Meteor->movetype = MOVETYPE_FLY;
 	Meteor->think = MeteorBarrierBounceThink;
 	Meteor->nextthink = level.time+0.1;
 	Meteor->reflect_debounce_time = self->reflect_debounce_time -1;
@@ -295,7 +295,7 @@ static void MeteorBarrierSearchThink(edict_t *self)
 			VectorCopy(BBMax,self->maxs);
 			self->accel = 0.0;
 			self->think = MeteorBarrierHuntThink;
-			self->movetype = PHYSICSTYPE_FLY;
+			self->movetype = MOVETYPE_FLY;
 			self->nextthink = level.time + 0.1;
 			self->svflags = SVF_ALWAYS_SEND;
 			self->s.effects |= EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
@@ -379,7 +379,7 @@ static void MeteorBarrierSearchInitThink(edict_t *self)
 
 void create_meteor(edict_t *Meteor)
 {
-   	Meteor->movetype = PHYSICSTYPE_NOCLIP;
+   	Meteor->movetype = MOVETYPE_NOCLIP;
    	Meteor->classname = "Spell_MeteorBarrier";
    	Meteor->isBlocked = MeteorBarrierTouch;
    	Meteor->isBlocking = MeteorBarrierTouch;

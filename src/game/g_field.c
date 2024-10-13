@@ -25,7 +25,7 @@ void InitField(edict_t *self)
 
 	self->classID = CID_TRIGGER;	// fields are basically triggers
 	self->solid = SOLID_TRIGGER;
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	gi.setmodel (self, self->model);
 	self->svflags = SVF_NOCLIENT;
 
@@ -232,7 +232,7 @@ void SP_trigger_Damage(edict_t *self)
 	if (self->spawnflags & 2)
 		self->use = DamageField_Use;
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	gi.linkentity (self);
 }
 

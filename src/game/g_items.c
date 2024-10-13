@@ -738,7 +738,7 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	VectorSet (dropped->maxs, 15, 15, 15);
 	gi.setmodel (dropped, dropped->item->world_model);
 	dropped->solid = SOLID_TRIGGER;
-	dropped->movetype = PHYSICSTYPE_NONE;
+	dropped->movetype = MOVETYPE_NONE;
 	dropped->touch = drop_temp_touch;
 	dropped->owner = ent;
 
@@ -901,7 +901,7 @@ void itemsdroptofloor (edict_t *ent)
 	trace_t		tr;
 	vec3_t		dest;
 
-	ent->movetype = PHYSICSTYPE_STATIC;
+	ent->movetype = MOVETYPE_STATIC;
 	ent->solid = SOLID_TRIGGER;
 	ent->touch = Touch_Item;
 	ent->think = NULL;

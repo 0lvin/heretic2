@@ -317,7 +317,7 @@ void imp_ai_pirch(edict_t *self)
 
 void move_imp_tumble(edict_t *self)
 {
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->gravity = 1;
 
 	VectorSet(self->mins, -16, -16, 0);
@@ -412,7 +412,7 @@ void imp_die(edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 	self->gravity = 1;
 	self->elasticity = 1.1;
 
@@ -1147,7 +1147,7 @@ void fireball_blocked( edict_t *self, trace_t *trace );
 void create_imp_proj(edict_t *self,edict_t *proj)
 {
 	proj->svflags |= SVF_ALWAYS_SEND;
-	proj->movetype = PHYSICSTYPE_FLY;
+	proj->movetype = MOVETYPE_FLY;
 	proj->gravity = 0;
 	proj->solid = SOLID_BBOX;
 	proj->classname = "imp fireball";
@@ -1414,7 +1414,7 @@ SP_monster_imp(edict_t *self)
 	self->mass = IMP_MASS;
 	self->yaw_speed = 14;
 
-	self->movetype = PHYSICSTYPE_FLY;
+	self->movetype = MOVETYPE_FLY;
 	self->gravity = 0;
 	self->flags |= FL_FLY;
 	self->solid = SOLID_BBOX;

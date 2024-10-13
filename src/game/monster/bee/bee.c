@@ -84,7 +84,7 @@ void SP_monster_bee(edict_t *self)
 	self->mass = BEE_MASS;
 	self->yaw_speed = 32;
 
-//	self->movetype = PHYSICSTYPE_STEP;
+//	self->movetype = MOVETYPE_STEP;
 	self->solid=SOLID_BBOX;
 
 	VectorSet(self->mins, -16, -16, -24);

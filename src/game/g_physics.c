@@ -29,15 +29,15 @@ static void Physics_ScriptAngular(edict_t *self);
 
 void (*physicsFuncs[NUM_PHYSICSTYPES])(edict_t *self) =
 {
-	Physics_None,			// PHYSICSTYPE_NONE
-	Physics_Static,			// PHYSICSTYPE_STATIC
-	Physics_NoclipMove,		// PHYSICSTYPE_NOCLIP
-	Physics_FlyMove,		// PHYSICSTYPE_FLY
-	Physics_StepMove,		// PHYSICSTYPE_STEP
-	Physics_Push,			// PHYSICSTYPE_PUSH
-	Physics_Push,			// PHYSICSTYPE_STOP
+	Physics_None,			// MOVETYPE_NONE
+	Physics_Static,			// MOVETYPE_STATIC
+	Physics_NoclipMove,		// MOVETYPE_NOCLIP
+	Physics_FlyMove,		// MOVETYPE_FLY
+	Physics_StepMove,		// MOVETYPE_STEP
+	Physics_Push,			// MOVETYPE_PUSH
+	Physics_Push,			// MOVETYPE_STOP
 	Physics_FlyMove,		// MOVETYPE_FLYMISSILE
-	Physics_ScriptAngular,	// PHYSICSTYPE_SCRIPT_ANGULAR
+	Physics_ScriptAngular,	// MOVETYPE_SCRIPT_ANGULAR
 };
 
 void PhysicsCheckWaterTransition(edict_t *self)
@@ -2158,10 +2158,10 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 
 		switch(check->movetype)
 		{
-		case PHYSICSTYPE_PUSH:
-		case PHYSICSTYPE_STOP:
-		case PHYSICSTYPE_NONE:
-		case PHYSICSTYPE_NOCLIP:
+		case MOVETYPE_PUSH:
+		case MOVETYPE_STOP:
+		case MOVETYPE_NONE:
+		case MOVETYPE_NOCLIP:
 			continue;
 		}
 
@@ -2184,7 +2184,7 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 			}
 		}
 
-		if((pusher->movetype == PHYSICSTYPE_PUSH) || (check->groundentity == pusher))
+		if((pusher->movetype == MOVETYPE_PUSH) || (check->groundentity == pusher))
 		{
 			// move this entity
 			pushed_p->ent = check;

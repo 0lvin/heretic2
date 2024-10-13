@@ -715,13 +715,13 @@ void spawn_hanging_chicken(edict_t *self)
 	self->mins[0] = -32;
 	self->mins[1] = -32;
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 
 	VectorClear(self->velocity);
 
 	end_ent	 = G_Spawn();
-	end_ent->movetype = PHYSICSTYPE_NONE;
+	end_ent->movetype = MOVETYPE_NONE;
 	end_ent->solid = SOLID_NOT;
 	end_ent->svflags |= SVF_ALWAYS_SEND;
 	end_ent->owner = self;
@@ -773,7 +773,7 @@ void spawn_hanging_chicken(edict_t *self)
 	VectorSet(chicken->mins, -16, -16, -8);
 	VectorSet(chicken->maxs,  16,  16, 16);
 
-	chicken->movetype = PHYSICSTYPE_STEP;
+	chicken->movetype = MOVETYPE_STEP;
 	chicken->gravity = 0;
 	chicken->solid = SOLID_BBOX;
 	chicken->takedamage = DAMAGE_YES;
@@ -823,14 +823,14 @@ void SP_obj_rope(edict_t *self)
 	self->mins[0] = -32;
 	self->mins[1] = -32;
 
-	self->movetype = PHYSICSTYPE_NONE;
+	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_TRIGGER;
 	self->touch = rope_touch;
 
 	VectorClear(self->velocity);
 
 	end_ent	 = G_Spawn();
-	end_ent->movetype = PHYSICSTYPE_NONE;
+	end_ent->movetype = MOVETYPE_NONE;
 	end_ent->solid = SOLID_NOT;
 	end_ent->svflags |= SVF_ALWAYS_SEND;
 	end_id	 = end_ent->s.number;
@@ -847,7 +847,7 @@ void SP_obj_rope(edict_t *self)
 	self->rope_end = end_ent;
 
 	grab_ent = G_Spawn();
-	grab_ent->movetype = PHYSICSTYPE_NONE;
+	grab_ent->movetype = MOVETYPE_NONE;
 	grab_ent->solid = SOLID_NOT;
 	grab_ent->svflags |= SVF_ALWAYS_SEND;
 	grab_id	 = grab_ent->s.number;

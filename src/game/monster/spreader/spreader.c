@@ -939,7 +939,7 @@ void spreader_isblocked (edict_t *self, trace_t *trace)
 	{
 		if(trace->surface->flags & SURF_SKY)
 		{
-			self->movetype = PHYSICSTYPE_NOCLIP;
+			self->movetype = MOVETYPE_NOCLIP;
 			self->solid = SOLID_NOT;
 			self->isBlocked = NULL;
 			self->bounced = NULL;
@@ -949,7 +949,7 @@ void spreader_isblocked (edict_t *self, trace_t *trace)
 
 	other = trace->ent;
 
-	if((other->movetype != PHYSICSTYPE_NONE) && (other->movetype != PHYSICSTYPE_PUSH))
+	if((other->movetype != MOVETYPE_NONE) && (other->movetype != MOVETYPE_PUSH))
 	{
 		if(other == self->enemy && self->touch_debounce_time > level.time)
 			return;
@@ -1027,7 +1027,7 @@ void spreaderTakeOff (edict_t *self)
 	if(irand(0,10)<5)
 		self->avelocity[YAW]*=-1;
 
-	self->movetype = PHYSICSTYPE_FLY;
+	self->movetype = MOVETYPE_FLY;
 	self->svflags |= SVF_ALWAYS_SEND;
 
 	spreader_dropweapon (self);
@@ -1088,11 +1088,11 @@ void spreaderSolidAgain (edict_t *self)
 
 	if(!gi.pointcontents(org))
 	{
-		if(self->movetype == PHYSICSTYPE_STEP)
+		if(self->movetype == MOVETYPE_STEP)
 			return;
 
 		self->svflags &= ~SVF_ALWAYS_SEND;
-		self->movetype = PHYSICSTYPE_STEP;
+		self->movetype = MOVETYPE_STEP;
 		self->solid = SOLID_BBOX;
 		self->isBlocked = spreaderSplat;
 		self->bounced = spreaderSplat;
@@ -1114,7 +1114,7 @@ void spreaderSolidAgain (edict_t *self)
 
 void spreaderDropDown (edict_t *self)
 {
-	self->movetype = PHYSICSTYPE_NOCLIP;
+	self->movetype = MOVETYPE_NOCLIP;
 	self->solid=SOLID_NOT;
 	self->velocity[2] = -200;
 	self->avelocity[0] = irand(-300, 300);
@@ -1153,7 +1153,7 @@ void spreaderFly (edict_t *self)
 
 	if(self->s.origin[2]>3900)
 	{
-		self->movetype = PHYSICSTYPE_NONE;
+		self->movetype = MOVETYPE_NONE;
 		VectorClear(self->velocity);
 		self->think = spreaderDropDown;
 		self->nextthink = level.time + flrand(1.5, 3);
@@ -1321,7 +1321,7 @@ void SP_monster_spreader (edict_t *self)
 	self->yaw_speed = 20;
 
 	self->s.origin[2] += 40;
-	self->movetype = PHYSICSTYPE_STEP;
+	self->movetype = MOVETYPE_STEP;
 
 	self->solid=SOLID_BBOX;
 
