@@ -972,7 +972,7 @@ G_RunFrame(void)
 		{
 			EntityThink(ent);
 
-			assert(ent->movetype < NUM_PHYSICSTYPES);
+			assert(ent->movetype <= MOVETYPE_SCRIPT_ANGULAR);
 
 			if(!ent->inuse)
 			{

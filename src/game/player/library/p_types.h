@@ -394,7 +394,6 @@ typedef enum physicsType_e
 	MOVETYPE_FLYMISSILE,
 	// MOVETYPE_SCRIPT_ANGULAR	8
 	MOVETYPE_SCRIPT_ANGULAR,	// moves with the rotation of another entity
-	NUM_PHYSICSTYPES,
 
 	MOVETYPE_WALK,
 	MOVETYPE_TOSS,			// gravity

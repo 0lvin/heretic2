@@ -1585,8 +1585,11 @@ void gorgon_throw_toy(edict_t *self)
 	self->enemy->flags &= ~FL_FLY;
 	self->enemy->velocity[0] = self->enemy->velocity[1] = 0;
 	self->enemy->velocity[2] = 500;
-	if(self->enemy->movetype>NUM_PHYSICSTYPES)
+	if(self->enemy->movetype > MOVETYPE_SCRIPT_ANGULAR)
+	{
 		self->enemy->movetype = MOVETYPE_STEP;
+	}
+
 	VectorRandomCopy(vec3_origin,self->enemy->avelocity,300);
 
 	if(Q_stricmp(self->enemy->classname,"player"))
@@ -1699,8 +1702,10 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 //	gi.dprintf("SNAGGED!\n");
 	//FIXME: if health is low, just chomp it now
 	self->enemy->flags |= FL_FLY;
-	if(self->enemy->movetype>NUM_PHYSICSTYPES)
+	if(self->enemy->movetype > MOVETYPE_SCRIPT_ANGULAR)
+	{
 		self->enemy->movetype = MOVETYPE_FLY;
+	}
 
 	if(Q_stricmp(self->enemy->classname,"player"))
 	{

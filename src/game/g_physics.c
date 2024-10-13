@@ -27,19 +27,6 @@ static void Physics_StepMove(edict_t *self);
 static void Physics_Push(edict_t *self);
 static void Physics_ScriptAngular(edict_t *self);
 
-void (*physicsFuncs[NUM_PHYSICSTYPES])(edict_t *self) =
-{
-	Physics_None,			// MOVETYPE_NONE
-	Physics_Static,			// MOVETYPE_STATIC
-	Physics_NoclipMove,		// MOVETYPE_NOCLIP
-	Physics_FlyMove,		// MOVETYPE_FLY
-	Physics_StepMove,		// MOVETYPE_STEP
-	Physics_Push,			// MOVETYPE_PUSH
-	Physics_Push,			// MOVETYPE_STOP
-	Physics_FlyMove,		// MOVETYPE_FLYMISSILE
-	Physics_ScriptAngular,	// MOVETYPE_SCRIPT_ANGULAR
-};
-
 void PhysicsCheckWaterTransition(edict_t *self)
 {//fixme: a high detail option?  Or just not in netplay?- maybe a flag for client to take care of
 	//disabling for now since it might cause too much net traffic
@@ -303,14 +290,32 @@ void EntityPhysics(edict_t *self)
 {
 	assert(self->inuse);
 
-	if(self->movetype < 0 || self->movetype >= NUM_PHYSICSTYPES)
+	switch (self->movetype)
 	{
-		assert(0);
-		gi.error ("SV_Physics: bad movetype %i", self->movetype);
-		return;
-	}
-
-	physicsFuncs[self->movetype](self);
+		case MOVETYPE_NONE:
+			Physics_None(self); break;
+		case MOVETYPE_STATIC:
+			Physics_Static(self); break;
+		case MOVETYPE_NOCLIP:
+			Physics_NoclipMove(self); break;
+		case MOVETYPE_FLY:
+			Physics_FlyMove(self); break;
+		case MOVETYPE_WALK:
+		case MOVETYPE_STEP:
+		case MOVETYPE_TOSS:
+		case MOVETYPE_BOUNCE:
+			Physics_StepMove(self); break;
+		case MOVETYPE_PUSH:
+		case MOVETYPE_STOP:
+			Physics_Push(self); break;
+		case MOVETYPE_FLYMISSILE:
+			Physics_FlyMove(self); break;
+		case MOVETYPE_SCRIPT_ANGULAR:
+			Physics_ScriptAngular(self); break;
+		default:
+			gi.error ("SV_Physics: bad movetype %i", self->movetype);
+			return;
+	};
 }
 
 //---------------------------------------------------------------------------------

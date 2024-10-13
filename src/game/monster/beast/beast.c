@@ -1370,8 +1370,11 @@ void tbeast_throw_toy(edict_t *self)
 	self->targetEnt->flags &= ~FL_FLY;
 	self->targetEnt->velocity[0] = self->targetEnt->velocity[1] = 0;
 	self->targetEnt->velocity[2] = 500;
-	if(self->targetEnt->movetype>NUM_PHYSICSTYPES)
+	if(self->targetEnt->movetype > MOVETYPE_SCRIPT_ANGULAR)
+	{
 		self->targetEnt->movetype = MOVETYPE_STEP;
+	}
+
 	VectorRandomCopy(vec3_origin,self->targetEnt->avelocity,300);
 
 	if(Q_stricmp(self->targetEnt->classname,"player"))

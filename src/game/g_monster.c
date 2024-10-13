@@ -443,11 +443,6 @@ void M_MoveFrame (edict_t *self)
 {
 	animmove_t	*move;
 	int		index;
-	qboolean wasnewphys = false;
-
-
-	if(self->movetype < NUM_PHYSICSTYPES)
-		wasnewphys = true;
 
 	move = self->monsterinfo.currentmove;
 	if (move == NULL)
@@ -532,11 +527,6 @@ void M_MoveFrame (edict_t *self)
 
 		if (move->frame[index].thinkfunc)
 			move->frame[index].thinkfunc (self);
-	}
-
-	if(wasnewphys)
-	{
-		assert(self->movetype < NUM_PHYSICSTYPES);
 	}
 }
 
