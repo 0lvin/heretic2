@@ -15,6 +15,7 @@
 #include "../../common/fx.h"
 #include "../../monster/misc/player.h"
 #include "../../../common/header/common.h"
+#include "../../header/local.h"
 
 //FIXME:  Include header
 qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);

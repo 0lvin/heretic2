@@ -458,8 +458,10 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 			self->materialtype = MAT_POTTERY;
 
 	if (DebrisSound[self->materialtype].Name)
-		gi.sound (self, CHAN_VOICE, gi.soundindex(DebrisSound[self->materialtype].Name) ,
-			2, ATTN_NORM, 0);
+	{
+		gi.sound(self, CHAN_VOICE,
+			gi.soundindex(DebrisSound[self->materialtype].Name), 1, ATTN_NORM, 0);
+	}
 }
 
 void BecomeDebris2(edict_t *self, float damage)

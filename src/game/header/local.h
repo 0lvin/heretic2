@@ -38,9 +38,8 @@
 #include "buoy.h"
 #include "../player/library/player.h"
 
-// The "gameversion" client command will print this plus compile date.
-
-#define	GAMEVERSION	"yQRHeretic2"
+/* the "gameversion" client command will print this plus compile date */
+#define GAMEVERSION "yQRHeretic2"
 
 // Protocol bytes that can be directly added to messages.
 
@@ -90,57 +89,77 @@
 #define AIMF_CANT_FIND_ENEMY		0x00001000		//Monster can't find enemy with buoys or vision
 #define AIMF_SEARCHING				0x00002000		//Monster now in dumb search mode...
 
-// ************************************************************************************************
-// SPAWNFLAG_XXX
-// -------------
-// Held in 'edict_t'->spawnflags. These are set with checkboxes on each entity in the map editor.
-// ************************************************************************************************
+/* these are set with checkboxes on each entity in the map editor */
 
-#define	SPAWNFLAG_NOT_EASY			0x00000100
-#define	SPAWNFLAG_NOT_MEDIUM		0x00000200
-#define	SPAWNFLAG_NOT_HARD			0x00000400
-#define	SPAWNFLAG_NOT_DEATHMATCH	0x00000800
-#define	SPAWNFLAG_NOT_COOP			0x00001000
+/* edict->spawnflags */
+#define SPAWNFLAG_NOT_EASY 0x00000100
+#define SPAWNFLAG_NOT_MEDIUM 0x00000200
+#define SPAWNFLAG_NOT_HARD 0x00000400
+#define SPAWNFLAG_NOT_DEATHMATCH 0x00000800
+#define SPAWNFLAG_NOT_COOP 0x00001000
 
 // ************************************************************************************************
 // Timing constants that define the world heartbeat.
 // ************************************************************************************************
 
-#define	FRAMETIME			0.1
+#define FRAMETIME 0.1
 #define MONSTER_THINK_INC   0.099
 #define FRAMES_PER_SECOND	10.0
 
-// ************************************************************************************************
-// TAG_XXX
-// -------
-// Memory tags to allow dynamic memory to be selectively cleaned up.
-// ************************************************************************************************
+/* memory tags to allow dynamic memory to be cleaned up */
+#define TAG_GAME 765        /* clear when unloading the dll */
+#define TAG_LEVEL 766       /* clear when loading a new level */
 
-#define	TAG_GAME	765			// clear when unloading the dll
-#define	TAG_LEVEL	766			// clear when loading a new level
+#define MELEE_DISTANCE 80
 
-// ************************************************************************************************
-// damage_t
-// --------
-// ************************************************************************************************
+#define BODY_QUEUE_SIZE 8
 
 typedef enum
 {
 	DAMAGE_NO,
-	DAMAGE_YES, /* will take damage if hit */
-	DAMAGE_AIM, /* auto targeting recognizes this */
+	DAMAGE_YES,         /* will take damage if hit */
+	DAMAGE_AIM,          /* auto targeting recognizes this */
 	DAMAGE_NO_RADIUS, /* Will not take damage from radius blasts */
 } damage_t;
 
 #define GIB_ORGANIC 1
-
 #define BODY_QUEUE_SIZE		8
 
-// ************************************************************************************************
-// RANGE_XXX
-// ---------
-// ************************************************************************************************
+typedef enum
+{
+	WEAPON_READY,
+	WEAPON_ACTIVATING,
+	WEAPON_DROPPING,
+	WEAPON_FIRING
+} weaponstate_t;
 
+typedef enum
+{
+	AMMO_BULLETS,
+	AMMO_SHELLS,
+	AMMO_ROCKETS,
+	AMMO_GRENADES,
+	AMMO_CELLS,
+	AMMO_SLUGS,
+	AMMO_MAGSLUG,
+	AMMO_TRAP,
+	AMMO_FLECHETTES,
+	AMMO_TESLA,
+	AMMO_PROX,
+	AMMO_DISRUPTOR
+} ammo_t;
+
+/* Maximum debris / gibs per frame */
+#define MAX_GIBS 20
+#define MAX_DEBRIS 20
+
+/* deadflag */
+#define DEAD_NO 0
+#define DEAD_DYING 1
+#define DEAD_DEAD 2
+#define DEAD_RESPAWNABLE 3
+
+/* range */
 #define RANGE_MELEE 0
 #define RANGE_NEAR 1
 #define RANGE_MID 2
@@ -154,6 +173,16 @@ typedef enum
 #define ARMOR_COMBAT 2
 #define ARMOR_BODY 3
 #define ARMOR_SHARD 4
+
+/* power armor types */
+#define POWER_ARMOR_NONE 0
+#define POWER_ARMOR_SCREEN 1
+#define POWER_ARMOR_SHIELD 2
+
+/* handedness values */
+#define RIGHT_HANDED 0
+#define LEFT_HANDED 1
+#define CENTER_HANDED 2
 
 // ************************************************************************************************
 // SHRINE_XXX
@@ -187,6 +216,80 @@ enum
 #define SFL_CROSS_TRIGGER_8 0x00000080
 #define SFL_CROSS_TRIGGER_MASK 0x000000ff
 
+/* noise types for PlayerNoise */
+#define PNOISE_SELF 0
+#define PNOISE_WEAPON 1
+#define PNOISE_IMPACT 2
+
+/* edict->movetype values */
+typedef enum
+{
+	MOVETYPE_NONE,      /* never moves */
+	MOVETYPE_STATIC,
+	MOVETYPE_NOCLIP,    /* origin and angles change with no interaction */
+	MOVETYPE_STEP,      /* gravity, special edge handling */
+	MOVETYPE_FLY,
+	MOVETYPE_PUSH,      /* no clip to world, push on box contact */
+	MOVETYPE_STOP,      /* no clip to world, stops on box contact */
+
+	MOVETYPE_WALK,      /* gravity */
+	MOVETYPE_TOSS,      /* gravity */
+	MOVETYPE_FLYMISSILE, /* extra size to monsters */
+	MOVETYPE_BOUNCE, /* added this (the comma at the end of line) */
+	MOVETYPE_WALLBOUNCE,
+	MOVETYPE_NEWTOSS,    /* for deathball */
+	MOVETYPE_SCRIPT_ANGULAR,	// moves with the rotation of another entity
+} movetype_t;
+
+typedef struct
+{
+	int base_count;
+	int max_count;
+	float normal_protection;
+	float energy_protection;
+	int armor;
+	float max_armor;
+	float spell_protection;
+} gitem_armor_t;
+
+/* gitem_t->flags */
+#define IT_WEAPON 0x00000001                /* use makes active weapon */
+#define IT_AMMO 0x00000002
+#define IT_ARMOR 0x00000004
+#define IT_STAY_COOP 0x00000008
+#define IT_KEY 0x00000010
+#define IT_POWERUP 0x00000020
+#define IT_MELEE 0x00000040
+#define IT_NOT_GIVEABLE 0x00000080      /* item can not be given */
+#define IT_INSTANT_USE 0x000000100		/* item is insta-used on pickup if dmflag is set */
+#define IT_TECH 0x000000200 /* CTF */
+/* Custom heretic 2 IT_* flags */
+#define IT_PUZZLE 0x00000010
+#define IT_DEFENSE 0x00000020
+#define IT_OFFENSE 0x00000040
+#define IT_HEALTH 0x00000080
+
+/* gitem_t->weapmodel for weapons indicates model index */
+#define WEAP_BLASTER 1
+#define WEAP_SHOTGUN 2
+#define WEAP_SUPERSHOTGUN 3
+#define WEAP_MACHINEGUN 4
+#define WEAP_CHAINGUN 5
+#define WEAP_GRENADES 6
+#define WEAP_GRENADELAUNCHER 7
+#define WEAP_ROCKETLAUNCHER 8
+#define WEAP_HYPERBLASTER 9
+#define WEAP_RAILGUN 10
+#define WEAP_BFG 11
+#define WEAP_PHALANX 12
+#define WEAP_BOOMER 13
+#define WEAP_DISRUPTOR 14
+#define WEAP_ETFRIFLE 15
+#define WEAP_PLASMA 16
+#define WEAP_PROXLAUNCH 17
+#define WEAP_CHAINFIST 18
+#define WEAP_GRAPPLE 19
+
 #define MAX_MESSAGESTRINGS 1000
 typedef struct
 {
@@ -207,15 +310,15 @@ typedef struct
 {
 	char helpmessage1[512];
 	char helpmessage2[512];
-	int helpchanged; /* flash F1 icon if non 0, play sound
-					    and increment only if 1, 2, or 3 */
+	int helpchanged;            /* flash F1 icon if non 0, play sound */
+	                            /* and increment only if 1, 2, or 3 */
 
-	gclient_t *clients; /* [maxclients] */
+	gclient_t *clients;         /* [maxclients] */
 
 	/* can't store spawnpoint in level, because
 	   it would get overwritten by the savegame
 	   restore */
-	char spawnpoint[512]; /* needed for coop respawns */
+	char spawnpoint[512];       /* needed for coop respawns */
 
 	/* store latched cvars here that we want to get at often */
 	int maxclients;
@@ -721,6 +824,76 @@ extern spawn_temp_t st;
 extern int sm_meat_index;
 extern int snd_fry;
 
+extern int debristhisframe;
+extern int gibsthisframe;
+
+/* means of death */
+#define MOD_UNKNOWN 0
+#define MOD_BLASTER 1
+#define MOD_SHOTGUN 2
+#define MOD_SSHOTGUN 3
+#define MOD_MACHINEGUN 4
+#define MOD_CHAINGUN 5
+#define MOD_GRENADE 6
+#define MOD_G_SPLASH 7
+#define MOD_ROCKET 8
+#define MOD_R_SPLASH 9
+#define MOD_HYPERBLASTER 10
+#define MOD_RAILGUN 11
+#define MOD_BFG_LASER 12
+#define MOD_BFG_BLAST 13
+#define MOD_BFG_EFFECT 14
+#define MOD_HANDGRENADE 15
+#define MOD_HG_SPLASH 16
+#define MOD_WATER 17
+#define MOD_SLIME 18
+#define MOD_LAVA 19
+#define MOD_CRUSH 20
+#define MOD_TELEFRAG 21
+#define MOD_FALLING 22
+#define MOD_SUICIDE 23
+#define MOD_HELD_GRENADE 24
+#define MOD_EXPLOSIVE 25
+#define MOD_BARREL 26
+#define MOD_BOMB 27
+#define MOD_EXIT 28
+#define MOD_SPLASH 29
+#define MOD_TARGET_LASER 30
+#define MOD_TRIGGER_HURT 31
+#define MOD_HIT 32
+#define MOD_TARGET_BLASTER 33
+#define MOD_RIPPER 34
+#define MOD_PHALANX 35
+#define MOD_BRAINTENTACLE 36
+#define MOD_BLASTOFF 37
+#define MOD_GEKK 38
+#define MOD_TRAP 39
+#define MOD_GRAPPLE 40
+#define MOD_FRIENDLY_FIRE 0x8000000
+#define MOD_CHAINFIST 41
+#define MOD_DISINTEGRATOR 42
+#define MOD_ETF_RIFLE 43
+#define MOD_BLASTER2 44
+#define MOD_HEATBEAM 45
+#define MOD_TESLA 46
+#define MOD_PROX 47
+#define MOD_NUKE 48
+#define MOD_VENGEANCE_SPHERE 49
+#define MOD_HUNTER_SPHERE 50
+#define MOD_DEFENDER_SPHERE 51
+#define MOD_TRACKER 52
+#define MOD_DBALL_CRUSH 53
+#define MOD_DOPPLE_EXPLODE 54
+#define MOD_DOPPLE_VENGEANCE 55
+#define MOD_DOPPLE_HUNTER 56
+
+/* Easier handling of AI skill levels */
+#define SKILL_EASY 0
+#define SKILL_MEDIUM 1
+#define SKILL_HARD 2
+#define SKILL_HARDPLUS 3
+
+extern int meansOfDeath;
 extern edict_t *g_edicts;
 
 #define FOFS(x) (size_t)&(((edict_t *)NULL)->x)
@@ -844,15 +1017,25 @@ extern cvar_t *flood_killdelay;
 extern	edict_t			*g_edicts;
 
 extern	int				self_spawn;
-#define world			(&g_edicts[0])
 
-// ************************************************************************************************
-// 'DROPPED_XXX'.
-// --------------
-// ************************************************************************************************
+/* this is for the count of monsters */
+#define ENT_SLOTS_LEFT \
+	(ent->monsterinfo.monster_slots - \
+	 ent->monsterinfo.monster_used)
+#define SELF_SLOTS_LEFT \
+	(self->monsterinfo.monster_slots - \
+	 self->monsterinfo.monster_used)
 
-#define DROPPED_ITEM		0x00008000
-#define DROPPED_PLAYER_ITEM	0x00010000
+#define world (&g_edicts[0])
+
+/* item spawnflags */
+#define ITEM_TRIGGER_SPAWN 0x00000001
+#define ITEM_NO_TOUCH 0x00000002
+/* 6 bits reserved for editor flags */
+/* 8 bits used as power cube id bits for coop games */
+#define DROPPED_ITEM 0x00010000
+#define DROPPED_PLAYER_ITEM 0x00020000
+#define ITEM_TARGETS_USED 0x00040000
 
 /* fields are needed for spawning from the entity
    string and saving / loading games */

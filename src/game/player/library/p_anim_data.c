@@ -17,6 +17,7 @@
 #include "../../monster/misc/player.h"
 #include "../../common/fx.h"
 #include "../../common/reference.h"
+#include "../../header/local.h"
 
 //NOTENOTE: This value is applied generically to all player move functions that travel along
 //			the ground to defeat the friction addition in the new system

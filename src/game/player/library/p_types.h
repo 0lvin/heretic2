@@ -69,18 +69,6 @@ typedef struct
 } pacelsizes_t;
 
 // ************************************************************************************************
-// gitem_armour_t
-// --------------
-// ************************************************************************************************
-
-typedef struct
-{
-	float	max_armor;
-	float	normal_protection;
-	float	spell_protection;
-} gitem_armor_t;
-
-// ************************************************************************************************
 // weaponready_e
 // -------------
 // Indicates what actual weapon model the player has readied.
@@ -151,23 +139,6 @@ enum helltype_e
 	HELL_TYPE_POWER
 };
 
-// ************************************************************************************************
-// ammo_t
-// ------
-// ************************************************************************************************
-
-typedef enum
-{
-	MODEL_HEALTH1,
-	MODEL_HEALTH2,
-	AMMO_BULLETS,
-	AMMO_SHELLS,
-	AMMO_ROCKETS,
-	AMMO_GRENADES,
-	AMMO_CELLS,
-	AMMO_SLUGS
-} ammo_t;
-
 #define PICKUP_MIN  0, 0, 0
 #define PICKUP_MAX  0, 0, 0
 
@@ -180,21 +151,6 @@ typedef enum
 #define PNOISE_SELF		0
 #define PNOISE_WEAPON	1
 #define PNOISE_IMPACT	2
-
-// ************************************************************************************************
-// IT_XXX
-// ------
-// Held in 'gitem_t'->flags.
-// ************************************************************************************************
-
-#define	IT_WEAPON		1		// use makes active weapon
-#define	IT_AMMO			2
-#define IT_ARMOR		4
-#define IT_STAY_COOP	8
-#define IT_PUZZLE		16
-#define IT_DEFENSE		32
-#define IT_OFFENSE		64
-#define IT_HEALTH		128
 
 // ************************************************************************************************
 // gitem_t
@@ -367,52 +323,6 @@ typedef struct
 #define FL_RESPAWN			0x80000000	// used for item respawning
 
 #define FL_CHICKEN			(FL_AVERAGE_CHICKEN | FL_SUPER_CHICKEN)
-
-// ************************************************************************************************
-// movetype_t
-// ----------
-// 'edict_t'->movetype values.
-// ************************************************************************************************
-
-typedef enum physicsType_e
-{
-	// new system
-	// MOVETYPE_NONE			0
-	MOVETYPE_NONE,			// never moves
-	MOVETYPE_STATIC,
-	// MOVETYPE_NOCLIP			2
-	MOVETYPE_NOCLIP,
-	// MOVETYPE_FLY				3
-	MOVETYPE_FLY,
-	// MOVETYPE_WALK, MOVETYPE_STEP, MOVETYPE_TOSS, MOVETYPE_BOUNCE
-	MOVETYPE_STEP,			// origin and angles change with no interaction
-	// MOVETYPE_PUSH			5
-	MOVETYPE_PUSH,			// no clip to world, push on box contact
-	// MOVETYPE_STOP			6
-	MOVETYPE_STOP,			// no clip to world, stops on box contact
-	// MOVETYPE_FYMISSILE (extra size to monsters)
-	MOVETYPE_FLYMISSILE,
-	// MOVETYPE_SCRIPT_ANGULAR	8
-	MOVETYPE_SCRIPT_ANGULAR,	// moves with the rotation of another entity
-
-	MOVETYPE_WALK,
-	MOVETYPE_TOSS,			// gravity
-	MOVETYPE_BOUNCE,
-} physicsType_t;
-
-// ************************************************************************************************
-// DEAD_XXX
-// --------
-// Held in 'edict_t'->deadflag.
-// ************************************************************************************************
-
-typedef enum deadState_e
-{
-	DEAD_NO=0,
-	DEAD_DYING,
-	DEAD_DEAD,
-	NUM_DEADSTATE
-} deadState_t;
 
 // ************************************************************************************************
 // HANDFX_XXX
