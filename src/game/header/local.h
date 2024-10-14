@@ -41,53 +41,19 @@
 /* the "gameversion" client command will print this plus compile date */
 #define GAMEVERSION "yQRHeretic2"
 
-// Protocol bytes that can be directly added to messages.
+/* protocol bytes that can be directly added to messages */
+#define svc_muzzleflash 1
+#define svc_muzzleflash2 2
+#define svc_temp_entity 3
+#define svc_layout 4
+#define svc_inventory 5
+#define svc_stufftext 11
 
-// volume mask for ent->sound_data - makes room for attn value in the lower bits
-#define ENT_VOL_MASK	0xf8
+/* ================================================================== */
 
-// ************************************************************************************************
-// AI_MOOD_XXX
-// -------------
-// Held in 'edict_t'->ai_mood. Used by higher level AI functions to relay states to lower functions
-// ************************************************************************************************
-
-#define	AI_MOOD_NORMAL		0		//Not using any high level functionality (TEMP)
-#define	AI_MOOD_ATTACK		1		//Used in conjuntion with ai_mood_flags to attack the target
-#define	AI_MOOD_NAVIGATE	2		//Just walk towards the guide, ignoring everything else
-#define	AI_MOOD_STAND		3		//Just stand there and wait to be adivsed
-#define	AI_MOOD_PURSUE		4		//Run towards your enemy but don't attack
-#define	AI_MOOD_FALLBACK	5		//Back away from your enemy, but face him
-#define	AI_MOOD_DELAY		6		//Same as stand, but will allow interruption anywhere
-#define AI_MOOD_WANDER		7		//Wandering around buoy to buoy in a walk
-#define AI_MOOD_JUMP		8		//Jump towards goalentity
-#define AI_MOOD_REST		9		//The Ogle at rest
-#define AI_MOOD_POINT_NAVIGATE	10	//Navigate to a point, not an entity
-#define AI_MOOD_FLEE		11		//run away!
-#define AI_MOOD_BACKUP		12		//backstep while attacking
-#define AI_MOOD_WALK		13		//walking, no buoys
-#define AI_MOOD_EAT			14		//sitting around, eating
-
-// ************************************************************************************************
-// AI_MOOD_FLAG_XXX
-// -------------
-// Held in 'edict_t'->ai_mood_flags. Used in conjuction with ai_mood
-// ************************************************************************************************
-
-#define	AI_MOOD_FLAG_MISSILE		0x00000001		//Check for a missile attack
-#define	AI_MOOD_FLAG_MELEE			0x00000002		//Check for a melee attack
-#define AI_MOOD_FLAG_WHIP			0x00000004		//Check for a whipping attack (no damage)
-#define AI_MOOD_FLAG_PREDICT		0x00000008		//Monster will predict movement on target
-#define AI_MOOD_FLAG_IGNORE			0x00000010		//Monster will ignore moods
-#define AI_MOOD_FLAG_FORCED_BUOY	0x00000020		//Monster will head towards it's forced_buoy
-#define AI_MOOD_FLAG_IGNORE_ENEMY	0x00000040		//Monster will ignore it's enemy unless attacked or otherwise directed
-#define AI_MOOD_FLAG_BACKSTAB		0x00000080		//Monster will advance on and attack enemy only from behind
-#define AI_MOOD_FLAG_DUMB_FLEE		0x00000100		//Monster will flee by simply running directly away from player
-#define AI_MOOD_FLAG_GOTO_FIXED		0x00000200		//Monster will become fixed upon getting to it's forced_buoy
-#define AI_MOOD_FLAG_GOTO_STAND		0x00000400		//Monster will stand upon getting to it's forced_buoy
-#define AI_MOOD_FLAG_GOTO_WANDER	0x00000800		//Monster will wander upon getting to it's forced_buoy
-#define AIMF_CANT_FIND_ENEMY		0x00001000		//Monster can't find enemy with buoys or vision
-#define AIMF_SEARCHING				0x00002000		//Monster now in dumb search mode...
+/* view pitching times */
+#define DAMAGE_TIME 0.5
+#define FALL_TIME 0.3
 
 /* these are set with checkboxes on each entity in the map editor */
 
@@ -98,13 +64,29 @@
 #define SPAWNFLAG_NOT_DEATHMATCH 0x00000800
 #define SPAWNFLAG_NOT_COOP 0x00001000
 
-// ************************************************************************************************
-// Timing constants that define the world heartbeat.
-// ************************************************************************************************
+/* edict->flags */
+#define FL_FLY 0x00000001
+#define FL_SWIM 0x00000002                  /* implied immunity to drowining */
+#define FL_IMMUNE_LASER 0x00000004
+#define FL_INWATER 0x00000008
+#define FL_GODMODE 0x00000010
+#define FL_NOTARGET 0x00000020
+#define FL_IMMUNE_SLIME 0x00000040
+#define FL_IMMUNE_LAVA 0x00000080
+#define FL_PARTIALGROUND 0x00000100         /* not all corners are valid */
+#define FL_WATERJUMP 0x00000200             /* player jumping out of water */
+#define FL_TEAMSLAVE 0x00000400             /* not the first on the team */
+#define FL_NO_KNOCKBACK 0x00000800
+#define FL_POWER_ARMOR 0x00001000           /* power armor (if any) is active */
+#define FL_COOP_TAKEN 0x00002000 /* Another client has already taken it */
+#define FL_RESPAWN 0x80000000               /* used for item respawning */
+
+#define FL_MECHANICAL 0x00002000            /* entity is mechanical, use sparks not blood */
+#define FL_SAM_RAIMI 0x00004000             /* entity is in sam raimi cam mode */
+#define FL_DISGUISED 0x00008000             /* entity is in disguise, monsters will not recognize. */
+#define FL_NOGIB 0x00010000                 /* player has been vaporized by a nuke, drop no gibs */
 
 #define FRAMETIME 0.1
-#define MONSTER_THINK_INC   0.099
-#define FRAMES_PER_SECOND	10.0
 
 /* memory tags to allow dynamic memory to be cleaned up */
 #define TAG_GAME 765        /* clear when unloading the dll */
@@ -121,9 +103,6 @@ typedef enum
 	DAMAGE_AIM,          /* auto targeting recognizes this */
 	DAMAGE_NO_RADIUS, /* Will not take damage from radius blasts */
 } damage_t;
-
-#define GIB_ORGANIC 1
-#define BODY_QUEUE_SIZE		8
 
 typedef enum
 {
@@ -165,7 +144,68 @@ typedef enum
 #define RANGE_MID 2
 #define RANGE_FAR 3
 
-#define MELEE_DISTANCE	80
+/* gib types */
+#define GIB_ORGANIC 1
+#define GIB_METALLIC 1
+
+/* monster ai flags */
+#define AI_STAND_GROUND 0x00000001
+#define AI_TEMP_STAND_GROUND 0x00000002
+#define AI_SOUND_TARGET 0x00000004
+#define AI_LOST_SIGHT 0x00000008
+#define AI_PURSUIT_LAST_SEEN 0x00000010
+#define AI_PURSUE_NEXT 0x00000020
+#define AI_PURSUE_TEMP 0x00000040
+#define AI_HOLD_FRAME 0x00000080
+#define AI_GOOD_GUY 0x00000100
+#define AI_BRUTAL 0x00000200
+#define AI_NOSTEP 0x00000400
+#define AI_DUCKED 0x00000800
+#define AI_COMBAT_POINT 0x00001000
+#define AI_MEDIC 0x00002000
+#define AI_RESURRECTING 0x00004000
+#define AI_IGNORE_PAIN 0x00008000
+
+/* Heretic 2 */
+#define AI_EATING				0x00002000
+#define AI_FLEE					0x00008000
+#define AI_FALLBACK				0x00010000
+#define AI_COWARD				0x00020000	//Babies (FLEE to certain distance & WATCH)
+#define AI_AGRESSIVE			0x00040000	//never run away
+#define AI_SHOVE				0x00080000	//shove others out of the way.
+#define AI_DONT_THINK			0x00100000	//animate, don't think or move
+#define AI_SWIM_OK				0x00200000	//ok to go in water
+#define AI_OVERRIDE_GUIDE		0x00400000
+#define AI_NO_MELEE				0x00800000	//not allowed to melee
+#define AI_NO_MISSILE			0x01000000	//not allowed to missile
+#define AI_USING_BUOYS			0x02000000	//Using Buoyah! Navigation System(tm)
+#define AI_STRAIGHT_TO_ENEMY	0x04000000	//Charge straight at enemy no matter what anything else tells you
+#define AI_NIGHTVISION			0x08000000	//light level does not effect this monster's vision or aim
+#define AI_NO_ALERT				0x10000000	//monster does not pay attemntion to alerts
+
+/* ROGUE */
+#define AI_WALK_WALLS 0x00008000
+#define AI_MANUAL_STEERING 0x00010000
+#define AI_TARGET_ANGER 0x00020000
+#define AI_DODGING 0x00040000
+#define AI_CHARGING 0x00080000
+#define AI_HINT_PATH 0x00100000
+#define AI_IGNORE_SHOTS 0x00200000
+#define AI_DO_NOT_COUNT 0x00400000          /* set for healed monsters */
+#define AI_SPAWNED_CARRIER 0x00800000       /* both do_not_count and spawned are set for spawned monsters */
+#define AI_SPAWNED_MEDIC_C 0x01000000       /* both do_not_count and spawned are set for spawned monsters */
+#define AI_SPAWNED_WIDOW 0x02000000         /* both do_not_count and spawned are set for spawned monsters */
+#define AI_SPAWNED_MASK 0x03800000          /* mask to catch all three flavors of spawned */
+#define AI_BLOCKED 0x04000000               /* used by blocked_checkattack: set to say I'm attacking while blocked */
+                                            /* (prevents run-attacks) */
+/* monster attack state */
+#define AS_STRAIGHT 1
+#define AS_SLIDING 2
+#define AS_MELEE 3
+#define AS_MISSILE 4
+#define AS_BLIND 5
+/* Heretic 2 */
+#define AS_DIVING 5
 
 /* armor types */
 #define ARMOR_NONE 0
@@ -183,27 +223,6 @@ typedef enum
 #define RIGHT_HANDED 0
 #define LEFT_HANDED 1
 #define CENTER_HANDED 2
-
-// ************************************************************************************************
-// SHRINE_XXX
-// ----------
-// ************************************************************************************************
-
-enum
-{
-	SHRINE_MANA,
-	SHRINE_LUNGS,
-	SHRINE_ARMOR_SILVER,
-	SHRINE_ARMOR_GOLD,
-	SHRINE_LIGHT,
-	SHRINE_SPEED,
-	SHRINE_HEAL,
-	SHRINE_STAFF,
-	SHRINE_GHOST,
-	SHRINE_REFLECT,
-	SHRINE_POWERUP,
-	SHRINE_RANDOM
-};
 
 /* game.serverflags values */
 #define SFL_CROSS_TRIGGER_1 0x00000001
@@ -290,19 +309,6 @@ typedef struct
 #define WEAP_CHAINFIST 18
 #define WEAP_GRAPPLE 19
 
-#define MAX_MESSAGESTRINGS 1000
-typedef struct
-{
-	char *string;
-	char *wav;
-} trig_message_t;
-
-// jmarshall: this wasn't extern in the original code,
-// this is now correct, wondering if this will cause knock ons?
-extern unsigned	*game_msgbuf;
-extern trig_message_t game_msgtxt[];
-
-
 /* this structure is left intact through an entire game
    it should be initialized at dll load time, and read/written to
    the server.ssv file for savegames */
@@ -337,6 +343,91 @@ typedef struct
 
 	qboolean entitiesSpawned;
 } game_locals_t;
+
+#define MONSTER_THINK_INC   0.099
+#define FRAMES_PER_SECOND	10.0
+
+// volume mask for ent->sound_data - makes room for attn value in the lower bits
+#define ENT_VOL_MASK	0xf8
+
+// ************************************************************************************************
+// AI_MOOD_XXX
+// -------------
+// Held in 'edict_t'->ai_mood. Used by higher level AI functions to relay states to lower functions
+// ************************************************************************************************
+
+#define	AI_MOOD_NORMAL		0		//Not using any high level functionality (TEMP)
+#define	AI_MOOD_ATTACK		1		//Used in conjuntion with ai_mood_flags to attack the target
+#define	AI_MOOD_NAVIGATE	2		//Just walk towards the guide, ignoring everything else
+#define	AI_MOOD_STAND		3		//Just stand there and wait to be adivsed
+#define	AI_MOOD_PURSUE		4		//Run towards your enemy but don't attack
+#define	AI_MOOD_FALLBACK	5		//Back away from your enemy, but face him
+#define	AI_MOOD_DELAY		6		//Same as stand, but will allow interruption anywhere
+#define AI_MOOD_WANDER		7		//Wandering around buoy to buoy in a walk
+#define AI_MOOD_JUMP		8		//Jump towards goalentity
+#define AI_MOOD_REST		9		//The Ogle at rest
+#define AI_MOOD_POINT_NAVIGATE	10	//Navigate to a point, not an entity
+#define AI_MOOD_FLEE		11		//run away!
+#define AI_MOOD_BACKUP		12		//backstep while attacking
+#define AI_MOOD_WALK		13		//walking, no buoys
+#define AI_MOOD_EAT			14		//sitting around, eating
+
+// ************************************************************************************************
+// AI_MOOD_FLAG_XXX
+// -------------
+// Held in 'edict_t'->ai_mood_flags. Used in conjuction with ai_mood
+// ************************************************************************************************
+
+#define	AI_MOOD_FLAG_MISSILE		0x00000001		//Check for a missile attack
+#define	AI_MOOD_FLAG_MELEE			0x00000002		//Check for a melee attack
+#define AI_MOOD_FLAG_WHIP			0x00000004		//Check for a whipping attack (no damage)
+#define AI_MOOD_FLAG_PREDICT		0x00000008		//Monster will predict movement on target
+#define AI_MOOD_FLAG_IGNORE			0x00000010		//Monster will ignore moods
+#define AI_MOOD_FLAG_FORCED_BUOY	0x00000020		//Monster will head towards it's forced_buoy
+#define AI_MOOD_FLAG_IGNORE_ENEMY	0x00000040		//Monster will ignore it's enemy unless attacked or otherwise directed
+#define AI_MOOD_FLAG_BACKSTAB		0x00000080		//Monster will advance on and attack enemy only from behind
+#define AI_MOOD_FLAG_DUMB_FLEE		0x00000100		//Monster will flee by simply running directly away from player
+#define AI_MOOD_FLAG_GOTO_FIXED		0x00000200		//Monster will become fixed upon getting to it's forced_buoy
+#define AI_MOOD_FLAG_GOTO_STAND		0x00000400		//Monster will stand upon getting to it's forced_buoy
+#define AI_MOOD_FLAG_GOTO_WANDER	0x00000800		//Monster will wander upon getting to it's forced_buoy
+#define AIMF_CANT_FIND_ENEMY		0x00001000		//Monster can't find enemy with buoys or vision
+#define AIMF_SEARCHING				0x00002000		//Monster now in dumb search mode...
+
+#define BODY_QUEUE_SIZE		8
+
+#define MELEE_DISTANCE	80
+
+// ************************************************************************************************
+// SHRINE_XXX
+// ----------
+// ************************************************************************************************
+
+enum
+{
+	SHRINE_MANA,
+	SHRINE_LUNGS,
+	SHRINE_ARMOR_SILVER,
+	SHRINE_ARMOR_GOLD,
+	SHRINE_LIGHT,
+	SHRINE_SPEED,
+	SHRINE_HEAL,
+	SHRINE_STAFF,
+	SHRINE_GHOST,
+	SHRINE_REFLECT,
+	SHRINE_POWERUP,
+	SHRINE_RANDOM
+};
+#define MAX_MESSAGESTRINGS 1000
+typedef struct
+{
+	char *string;
+	char *wav;
+} trig_message_t;
+
+// jmarshall: this wasn't extern in the original code,
+// this is now correct, wondering if this will cause knock ons?
+extern unsigned	*game_msgbuf;
+extern trig_message_t game_msgtxt[];
 
 // ************************************************************************************************
 // alertent_t
@@ -567,54 +658,6 @@ typedef struct
 } moveinfo_t;
 
 // ************************************************************************************************
-// AI_XXX
-// ------
-// Monster AI flags.
-// ************************************************************************************************
-
-#define AI_STAND_GROUND			0x00000001
-#define AI_TEMP_STAND_GROUND	0x00000002
-#define AI_SOUND_TARGET			0x00000004
-#define AI_LOST_SIGHT			0x00000008
-#define AI_PURSUIT_LAST_SEEN	0x00000010
-#define AI_PURSUE_NEXT			0x00000020
-#define AI_PURSUE_TEMP			0x00000040
-#define AI_HOLD_FRAME			0x00000080
-#define AI_GOOD_GUY				0x00000100
-#define AI_BRUTAL				0x00000200
-#define AI_NOSTEP				0x00000400	//1024
-#define AI_DUCKED				0x00000800
-#define AI_COMBAT_POINT			0x00001000
-#define AI_EATING				0x00002000
-#define AI_RESURRECTING			0x00004000
-#define AI_FLEE					0x00008000
-#define AI_FALLBACK				0x00010000
-#define AI_COWARD				0x00020000	//Babies (FLEE to certain distance & WATCH)
-#define AI_AGRESSIVE			0x00040000	//never run away
-#define AI_SHOVE				0x00080000	//shove others out of the way.
-#define AI_DONT_THINK			0x00100000	//animate, don't think or move
-#define AI_SWIM_OK				0x00200000	//ok to go in water
-#define AI_OVERRIDE_GUIDE		0x00400000
-#define AI_NO_MELEE				0x00800000	//not allowed to melee
-#define AI_NO_MISSILE			0x01000000	//not allowed to missile
-#define AI_USING_BUOYS			0x02000000	//Using Buoyah! Navigation System(tm)
-#define AI_STRAIGHT_TO_ENEMY	0x04000000	//Charge straight at enemy no matter what anything else tells you
-#define AI_NIGHTVISION			0x08000000	//light level does not effect this monster's vision or aim
-#define AI_NO_ALERT				0x10000000	//monster does not pay attemntion to alerts
-
-// ************************************************************************************************
-// AS_XXX
-// ------
-// Monster attack states.
-// ************************************************************************************************
-
-#define AS_STRAIGHT	1
-#define AS_SLIDING	2
-#define	AS_MELEE	3
-#define	AS_MISSILE	4
-#define	AS_DIVING	5
-
-// ************************************************************************************************
 // C_ANIM_XXX
 // ------
 // Cinmatic Animation flags
@@ -658,23 +701,12 @@ typedef struct
 	void (*thinkfunc)(edict_t *self);
 } mframe_t;
 
-// ************************************************************************************************
-// mmove_t
-// -------
-// ************************************************************************************************
-
 typedef struct
 {
 	int framecount;					// Number of frames in the animation frame array.
 	mframe_t *frame;
 	void (*endfunc)(edict_t *self);
 } mmove_t;
-
-
-// ************************************************************************************************
-// animframe_t
-// -----------
-// ************************************************************************************************
 
 typedef struct
 {

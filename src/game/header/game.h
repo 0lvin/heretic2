@@ -42,18 +42,22 @@
 #define GAME_API_R97_VERSION 3
 #define GAME_API_VERSION 4
 
-#define SVF_NOCLIENT 0x00000001 /* don't send entity to clients, even if it has effects */
-#define SVF_DEADMONSTER 0x00000002 /* treat as CONTENTS_DEADMONSTER for collision */
-#define SVF_MONSTER 0x00000004 /* treat as CONTENTS_MONSTER for collision */
+/* edict->svflags */
+#define SVF_NOCLIENT 0x00000001             /* don't send entity to clients, even if it has effects */
+#define SVF_DEADMONSTER 0x00000002          /* treat as CONTENTS_DEADMONSTER for collision */
+#define SVF_MONSTER 0x00000004              /* treat as CONTENTS_MONSTER for collision */
+#define SVF_DAMAGEABLE 0x00000008
+#define SVF_PROJECTILE 0x00000010           /* entity is simple projectile, used for network optimization */
 
 #define MAX_ENT_CLUSTERS 16
 
+/* edict->solid values */
 typedef enum
 {
-	SOLID_NOT, /* no interaction with other objects */
-	SOLID_TRIGGER, /* only touch when inside, after moving */
-	SOLID_BBOX, /* touch on edge */
-	SOLID_BSP /* bsp clip, touch on edge */
+	SOLID_NOT,      /* no interaction with other objects */
+	SOLID_TRIGGER,  /* only touch when inside, after moving */
+	SOLID_BBOX,     /* touch on edge */
+	SOLID_BSP       /* bsp clip, touch on edge */
 } solid_t;
 
 /* =============================================================== */
@@ -151,10 +155,10 @@ typedef struct
 	   if it is not passed to linkentity. If the size, position, or
 	   solidity changes, it must be relinked. */
 	void (*linkentity)(edict_t *ent);
-	void (*unlinkentity)(edict_t *ent); /* call before removing an interactive edict */
+	void (*unlinkentity)(edict_t *ent);         /* call before removing an interactive edict */
 	int (*BoxEdicts)(vec3_t mins, vec3_t maxs, edict_t **list, int maxcount,
 			int areatype);
-	void (*Pmove)(pmove_t *pmove); /* player movement code common with client prediction */
+	void (*Pmove)(pmove_t *pmove);				/* player movement code common with client prediction */
 
 	/* network messaging */
 	void (*multicast)(vec3_t origin, multicast_t to);
@@ -165,8 +169,8 @@ typedef struct
 	void (*WriteLong)(int c);
 	void (*WriteFloat)(float f);
 	void (*WriteString)(const char *s);
-	void (*WritePosition)(vec3_t pos); /* some fractional bits */
-	void (*WriteDir)(vec3_t pos); /* single byte encoded, very coarse */
+	void (*WritePosition)(vec3_t pos);      /* some fractional bits */
+	void (*WriteDir)(vec3_t pos);           /* single byte encoded, very coarse */
 	void (*WriteAngle)(float f);
 
 	/* managed memory allocation */
@@ -182,7 +186,7 @@ typedef struct
 	/* ClientCommand and ServerCommand parameter access */
 	int (*argc)(void);
 	char *(*argv)(int n);
-	char *(*args)(void); /* concatenation of all argv >= 1 */
+	char *(*args)(void);					/* concatenation of all argv >= 1 */
 
 	/* add commands to the server console as if
 	   they were typed in for map changing, etc */
@@ -255,7 +259,7 @@ typedef struct
 	void (*RunFrame)(void);
 
 	/* ServerCommand will be called when an "sv <command>"
-	   command is issued on the  server console. The game can
+	   command is issued on the server console. The game can
 	   issue gi.argc() / gi.argv() commands to get the rest
 	   of the parameters */
 	void (*ServerCommand)(void);
