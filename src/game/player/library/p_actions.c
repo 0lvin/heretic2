@@ -1598,7 +1598,7 @@ void PlayerActionSwimIdleSound(playerinfo_t *playerinfo, float value)
 	}
 	else
 	{
-	  	playerinfo->G_Sound(SND_PRED_ID15,
+		playerinfo->G_Sound(SND_PRED_ID15,
 							playerinfo->leveltime,
 							playerinfo->self,
 							CHAN_VOICE,

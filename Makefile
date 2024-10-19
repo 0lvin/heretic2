@@ -1028,6 +1028,7 @@ GAME_OBJS_ = \
 	src/game/g_hitlocation.o \
 	src/game/g_items.o \
 	src/game/g_light.o \
+	src/game/g_newai.o \
 	src/game/g_main.o \
 	src/game/g_message.o \
 	src/game/g_misc.o \

@@ -113,7 +113,7 @@ static qboolean FXHaloThink(struct client_entity_s *self, centity_t *Owner)
 				}
 				else
 				{
-				  	self->flags &= ~CEF_NO_DRAW;
+					self->flags &= ~CEF_NO_DRAW;
 
 					if (self->alpha < 0.5)
 						self->alpha += 0.25;

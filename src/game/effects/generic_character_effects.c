@@ -805,7 +805,7 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self, centity_t *owner)
 
 		for(i = 0; i < count; i++)
 		{
-	  		color.c = 0xffffff40;
+			color.c = 0xffffff40;
 
 			flame = ClientParticle_new(PART_32x32_STEAM, color, hand_flame_dur);
 			VectorSet(	flame->origin,

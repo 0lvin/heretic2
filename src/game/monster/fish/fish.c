@@ -502,7 +502,7 @@ void fish_blocked(edict_t *self, trace_t *trace)
 			// first decide if this guy is dead
 			if (trace->ent->deadflag == DEAD_DEAD)
 			{
-			  	fish_bounce_direction(self);
+				fish_bounce_direction(self);
 				self->enemy = NULL;
 			}
 			// nope, so lets BITE THE BASTARD :)
@@ -573,7 +573,7 @@ void finished_swim(edict_t *self)
 	if (temp <= 5)
 	{
 		self->speed = 20;
-	  	self->ai_mood = AI_MOOD_STAND;
+		self->ai_mood = AI_MOOD_STAND;
 		SetAnim(self, ANIM_STAND1);
 	}
 }
@@ -620,7 +620,7 @@ void finished_runswim(edict_t *self)
 	if (temp <= 5)
 	{
 		self->speed = 20;
-	  	self->ai_mood = AI_MOOD_STAND;
+		self->ai_mood = AI_MOOD_STAND;
 		SetAnim(self, ANIM_STAND1);
 	}
 }
@@ -923,7 +923,7 @@ void fish_hunt(edict_t *self)
 			if(self->curAnimID == ANIM_PAIN1)
 			{
 				self->speed = 20;
-	  			self->ai_mood = AI_MOOD_STAND;
+				self->ai_mood = AI_MOOD_STAND;
 				SetAnim(self, ANIM_STAND1);
 			}
 			return;
@@ -994,7 +994,7 @@ void fish_pause (edict_t *self)
 		}
 		else	// far enough that I break off..
 		{
-		  	self->enemy = NULL;
+			self->enemy = NULL;
 			self->ai_mood = AI_MOOD_WANDER;
 			fish_bounce_direction(self);
 		}

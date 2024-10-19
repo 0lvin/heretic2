@@ -967,16 +967,16 @@ static const short KillBy[MOD_MAX] =
 	0,			// MOD_UNKNOWN
 
 	GM_OBIT_STAFF,			// MOD_STAFF
-	GM_OBIT_FIREBALL,	  	// MOD_FIREBALL
-	GM_OBIT_MMISSILE,	  	// MOD_MMISSILE
+	GM_OBIT_FIREBALL,		// MOD_FIREBALL
+	GM_OBIT_MMISSILE,		// MOD_MMISSILE
 	GM_OBIT_SPHERE,			// MOD_SPHERE
-	GM_OBIT_SPHERE_SPL,	  	// MOD_SPHERE_SPL
-	GM_OBIT_IRONDOOM,	  	// MOD_IRONDOOM
-	GM_OBIT_FIREWALL,	  	// MOD_FIREWALL
+	GM_OBIT_SPHERE_SPL,		// MOD_SPHERE_SPL
+	GM_OBIT_IRONDOOM,		// MOD_IRONDOOM
+	GM_OBIT_FIREWALL,		// MOD_FIREWALL
 	GM_OBIT_STORM,			// MOD_STORM
-	GM_OBIT_PHOENIX,	  	// MOD_PHOENIX
+	GM_OBIT_PHOENIX,		// MOD_PHOENIX
 	GM_OBIT_PHOENIX_SPL,  	// MOD_PHOENIX_SPL
-	GM_OBIT_HELLSTAFF,	  	// MOD_HELLSTAFF
+	GM_OBIT_HELLSTAFF,		// MOD_HELLSTAFF
 
 	GM_OBIT_STAFF,			// MOD_P_STAFF
 	GM_OBIT_FIREBALL,		// MOD_P_FIREBALL
@@ -1050,7 +1050,7 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 					if(friendlyFire)
 						attacker->client->resp.score--;
 					else
-				   		attacker->client->resp.score++;
+						attacker->client->resp.score++;
 
 					player_leader_effect();
 				}
@@ -1068,7 +1068,7 @@ void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 			if(deathmatch->value)
 			{
 				self->client->resp.score--;
-			   	player_leader_effect();
+				player_leader_effect();
 			}
 
 			self->enemy = NULL;
@@ -1229,7 +1229,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		// Won`t get sent to client if mi 0 unless flag is set
 		self->svflags |= SVF_ALWAYS_SEND;
 		self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
-	   	self->deadflag=DEAD_DEAD;
+		self->deadflag=DEAD_DEAD;
 
 		self->client->playerinfo.deadflag=DEAD_DEAD;
 	}
@@ -1256,7 +1256,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
    				PlayerChickenDeath(self);
    				player_make_gib(self, attacker);
-  		   		self->s.modelindex=0;
+  				self->s.modelindex=0;
 				// Won`t get sent to client if mi 0 unless flag is set
 				self->svflags |= SVF_ALWAYS_SEND;
 				self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
@@ -1733,7 +1733,7 @@ InitBodyQue(void)
 
 void
 body_die(edict_t *self, edict_t *inflictor /* unused */,
-	   	edict_t *attacker /* unused */, int damage,
+		edict_t *attacker /* unused */, int damage,
 		vec3_t point /* unused */)
 {
 	BecomeDebris(self);
@@ -2065,7 +2065,7 @@ void SpawnInitialPlayerEffects(edict_t *ent)
 // jmarshall end
 
 	if (deathmatch->value || coop->value)
-	   	player_leader_effect();
+		player_leader_effect();
 }
 
 // ************************************************************************************************

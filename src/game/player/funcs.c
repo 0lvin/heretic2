@@ -956,7 +956,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 		}
 
 		if(!deathmatch->value)
-		  	return true;
+			return true;
 	}
 
 	return false;

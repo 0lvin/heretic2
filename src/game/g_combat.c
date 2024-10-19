@@ -811,7 +811,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			// be sure we still have some damage
 			if (!damage)
 			{
-	  			damage = 1;
+				damage = 1;
 				armorabsorb = 1;
 			}
 			else

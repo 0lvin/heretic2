@@ -694,7 +694,7 @@ AddServerEntities(frame_t *frame)
 		}
 // jmarshall end
 
-	  	VectorCopy(ent->origin, ent->oldorigin);
+		VectorCopy(ent->origin, ent->oldorigin);
 		VectorCopy(cent->origin, cent->lerp_origin);
 
 		// Set model.

@@ -124,7 +124,7 @@ gitem_t itemlist[]=
 		"array",								// Pickup name (char *)
 		GM_FORCEBLAST, 							// pickup message
 		GM_NOFORCE,										// can`t use message
-		NULL,		   							// Pickup (f)
+		NULL,									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
@@ -736,7 +736,7 @@ gitem_t itemlist[]=
 		"Town Key",									// Pickup name (char *)
 		GM_F_TOWNKEY,										// pickup message
 		GM_NEED_TOWNKEY,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -762,7 +762,7 @@ gitem_t itemlist[]=
 		"Cog",										// Pickup name (char *)
 		GM_F_COG,										// pickup message
 		GM_NEED_COG,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -788,7 +788,7 @@ gitem_t itemlist[]=
 		"Defensive Shield",						// Pickup name (char *)
 		GM_F_SHIELD,										// pickup message
 		GM_NEED_SHIELD,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -814,7 +814,7 @@ gitem_t itemlist[]=
 		"Potion",									// Pickup name (char *)
 		GM_F_POTION,										// pickup message
 		GM_NEED_POTION,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -841,7 +841,7 @@ gitem_t itemlist[]=
 		"Container",								// Pickup name (char *)
 		GM_F_CONT,										// pickup message
 		GM_NEED_CONT,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -868,7 +868,7 @@ gitem_t itemlist[]=
 		"Full Container",							// Pickup name (char *)
 		GM_F_CONTFULL,										// pickup message
 		GM_NEED_CONTFULL,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -894,7 +894,7 @@ gitem_t itemlist[]=
 		"Crystal",									// Pickup name (char *)
 		GM_F_CRYSTAL,										// pickup message
 		GM_NEED_CRYSTAL,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -920,7 +920,7 @@ gitem_t itemlist[]=
 		"Canyon Key",								// Pickup name (char *)
 		GM_F_CANYONKEY,										// pickup message
 		GM_NEED_CANYONKEY,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -946,7 +946,7 @@ gitem_t itemlist[]=
 		"Hive 2 Amulet",							// Pickup name (char *)
 		GM_F_AMULET,										// pickup message
 		GM_NEED_AMULET,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -972,7 +972,7 @@ gitem_t itemlist[]=
 		"Hive 2 Spear",								// Pickup name (char *)
 		GM_F_SPEAR,										// pickup message
 		GM_NEED_SPEAR,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -998,7 +998,7 @@ gitem_t itemlist[]=
 		"Hive 2 Gem",								// Pickup name (char *)
 		GM_F_GEM,										// pickup message
 		GM_NEED_GEM,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1024,7 +1024,7 @@ gitem_t itemlist[]=
 		"Minecart Wheel",							// Pickup name (char *)
 		GM_F_CARTWHEEL,										// pickup message
 		GM_NEED_CARTWHEEL,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1050,7 +1050,7 @@ gitem_t itemlist[]=
 		"Ore",										// Pickup name (char *)
 		GM_F_UNREFORE,										// pickup message
 		GM_NEED_UNREFORE,										// can`t use message
-		NULL,		 	  					// Pickup (f)
+		NULL,		 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1076,7 +1076,7 @@ gitem_t itemlist[]=
 		"Refined Ore",								// Pickup name (char *)
 		GM_F_REFORE,										// pickup message
 		GM_NEED_REFORE,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1102,7 +1102,7 @@ gitem_t itemlist[]=
 		"Dungeon Key",								// Pickup name (char *)
 		GM_F_DUNGEONKEY,										// pickup message
 		GM_NEED_DUNGEONKEY,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1128,7 +1128,7 @@ gitem_t itemlist[]=
 		"Cloud Key",								// Pickup name (char *)
 		GM_F_CLOUDKEY,										// pickup message
 		GM_NEED_CLOUDKEY,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1155,7 +1155,7 @@ gitem_t itemlist[]=
 		"Key",										// Pickup name (char *)
 		GM_F_HIGHKEY,										// pickup message
 		GM_NEED_HIGHKEY,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1181,7 +1181,7 @@ gitem_t itemlist[]=
 		"Symbol",									// Pickup name (char *)
 		GM_F_SYMBOL,										// pickup message
 		GM_NEED_SYMBOL,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1207,7 +1207,7 @@ gitem_t itemlist[]=
 		"Tome",										// Pickup name (char *)
 		GM_F_TOME,										// pickup message
 		GM_NEED_TOME,										// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -1232,7 +1232,7 @@ gitem_t itemlist[]=
 		"Tavern Key",								// Pickup name (char *)
 		GM_F_TAVERNKEY,								// pickup message
 		GM_NEED_TAVERNKEY,							// can`t use message
-		NULL,				 	  					// Pickup (f)
+		NULL,				 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)

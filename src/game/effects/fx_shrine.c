@@ -325,7 +325,7 @@ static qboolean FXShrineLungsThink(struct client_entity_s *self, centity_t *owne
 			VectorScale(vel, flrand(1.0,LUNG_RAD), vel);
 			vel[2] = -30.0;
 
-		  	color.c = 0xffffff40;
+			color.c = 0xffffff40;
 
 			ce = ClientParticle_new(PART_32x32_STEAM, color, 450);
 
@@ -1077,7 +1077,7 @@ static qboolean FXShrineBallThink(struct client_entity_s *self, centity_t *owner
 			part = ShrineParticle[self->SpawnInfo][irand(0,1)];
 
 		if (part == PART_32x32_STEAM)
-	  		color.c = 0xffffff40;
+			color.c = 0xffffff40;
 		else
 			color.c = 0xffffffff;
 

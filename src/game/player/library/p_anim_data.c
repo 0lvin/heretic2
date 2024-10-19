@@ -1481,15 +1481,15 @@ paceldata_t PlayerChickenData[ASEQ_MAX] =
 	{	&chickenp_move_stand,		0,	0,	PLAYER_FLAG_STAND|PLAYER_FLAG_FALLBREAK	},	// ASEQ_PIVOTR
 	{	&chickenp_move_stand,		0,	0,	PLAYER_FLAG_STAND|PLAYER_FLAG_FALLBREAK	},	// ASEQ_PIVOTR_END
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_TURN180
-	{	&chickenp_move_run,	  		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_RUNF_GO,
+	{	&chickenp_move_run,			0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_RUNF_GO,
 	{	&chickenp_move_runattack,	0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_RUNF,
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_RUNF_END,
-	{	&chickenp_move_walk,	  	0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_WALKF_GO
+	{	&chickenp_move_walk,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_WALKF_GO
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_WALKF
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_WALKF_END,
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_CREEPF,
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_CREEPF_END,
-	{	&chickenp_move_back,	  	0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_WALKB,
+	{	&chickenp_move_back,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_WALKB,
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_CREEPB,
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_CREEPB_END,
 	{	&chickenp_move_dummy,		0,	0,	PLAYER_FLAG_FALLBREAK					},	// ASEQ_CROUCH_GO,

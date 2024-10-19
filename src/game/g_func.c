@@ -81,7 +81,13 @@ void door_secret_move5(edict_t *self);
 void door_secret_move6(edict_t *self);
 void door_secret_done(edict_t *self);
 
+void train_next(edict_t *self);
 void door_go_up(edict_t *self, edict_t *activator);
+void door_go_down(edict_t *self);
+void plat2_go_down(edict_t *ent);
+void plat2_go_up(edict_t *ent);
+void plat2_spawn_danger_area(edict_t *ent);
+void plat2_kill_danger_area(edict_t *ent);
 void Think_AccelMove(edict_t *ent);
 void plat_go_down(edict_t *ent);
 
@@ -770,9 +776,10 @@ plat_blocked(edict_t *self, edict_t *other)
 
 	if ((other->svflags & SVF_MONSTER) && (!other->client) && !(other->svflags & SVF_MONSTER))
 	{
-		// give it a chance to go away on it's own terms (like gibs)
-		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, 3000, 1, DAMAGE_AVOID_ARMOR,MOD_CRUSH);
-		// if it's still there, nuke it
+		/* give it a chance to go away on it's own terms (like gibs) */
+		T_Damage(other, self, self, vec3_origin, other->s.origin,
+				vec3_origin, 3000, 1, DAMAGE_AVOID_ARMOR, MOD_CRUSH);
+		/* if it's still there, nuke it */
 		if(other->health > 0)
 			BecomeDebris(other);
 		return;
@@ -780,7 +787,8 @@ plat_blocked(edict_t *self, edict_t *other)
 
 	if (self->spawnflags & DOOR_CRUSHER)
 	{
-		T_Damage(other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg * 10, 1, 0,MOD_CRUSH);
+		T_Damage(other, self, self, vec3_origin, other->s.origin,
+				vec3_origin, self->dmg * 10, 1, 0, MOD_CRUSH);
 		return;
 	}
 
@@ -813,6 +821,37 @@ Use_Plat(edict_t *ent, edict_t *other, edict_t *activator /* unused */)
 	plat_go_down(ent);
 }
 
+void
+wait_and_change_think(edict_t* ent)
+{
+	void (*afterwaitfunc)(edict_t *) = ent->moveinfo.endfunc;
+	ent->moveinfo.endfunc = NULL;
+	afterwaitfunc(ent);
+}
+
+/*
+ * In coop mode, this waits for coop_elevator_delay seconds
+ * before calling afterwaitfunc(ent); otherwise it just calls
+ * afterwaitfunc(ent);
+ */
+static void
+wait_and_change(edict_t* ent, void (*afterwaitfunc)(edict_t *))
+{
+	float waittime = coop_elevator_delay->value;
+	if (coop->value && waittime > 0.0f)
+	{
+		if(ent->nextthink == 0)
+		{
+			ent->moveinfo.endfunc = afterwaitfunc;
+			ent->think = wait_and_change_think;
+			ent->nextthink = level.time + waittime;
+		}
+	}
+	else
+	{
+		afterwaitfunc(ent);
+	}
+}
 
 void
 Touch_Plat_Center(edict_t *ent, edict_t *other, cplane_t *plane /* unsed */,
@@ -899,61 +938,27 @@ plat_spawn_inside_trigger(edict_t *ent)
 	return trigger;
 }
 
-void FuncRotate_Deactivate(edict_t *self, G_Message_t *msg)
-{
-	VectorClear(self->velocity);
-	VectorClear(self->avelocity);
-}
-
-void FuncRotate_Activate(edict_t *self, G_Message_t *msg)
-{
-	self->use(self,NULL,NULL);
-	gi.linkentity(self);
-}
-
-void FuncRotateStaticsInit()
-{
-	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
-	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
-}
-
-
-
-void FuncDoor_Deactivate(edict_t *self, G_Message_t *msg)
-{
-	VectorClear(self->velocity);
-	VectorClear(self->avelocity);
-}
-
-void FuncDoor_Activate(edict_t *self, G_Message_t *msg)
-{
-	self->use(self,NULL,NULL);
-	gi.linkentity(self);
-}
-
-void FuncDoorStaticsInit()
-{
-	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
-	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
-}
-
-
-
 /*
  * QUAKED func_plat (0 .5 .8) ? PLAT_LOW_TRIGGER
-speed	default 150
-
-Plats are always drawn in the extended position, so they will light correctly.
-
-If the plat is the target of another trigger or button, it will start out disabled in the extended position until it is trigger, when it will lower and become a normal plat.
-
-"speed"	overrides default 200.
-"accel" overrides default 500
-"lip"	overrides default 8 pixel lip
-
-If the "height" key is set, that will determine the amount the plat moves, instead of being implicitly determoveinfoned by the model's height.
-
-"sounds"
+ *
+ * speed -> default 150
+ *
+ * Plats are always drawn in the extended position,
+ * so they will light correctly.
+ *
+ * If the plat is the target of another trigger or button,
+ * it will start out disabled in the extended position until
+ * it is trigger, when it will lower and become a normal plat.
+ *
+ * "speed"	overrides default 200.
+ * "accel"  overrides default 500
+ * "lip"	overrides default 8 pixel lip
+ *
+ * If the "height" key is set, that will determine the amount
+ * the plat moves, instead of being implicitly determoveinfoned
+ * by the model's height.
+ *
+ * Set "sounds" to one of the following:
 0)	silent
 1)	generic door
 2)	heavy stone door
@@ -981,13 +986,19 @@ If the "height" key is set, that will determine the amount the plat moves, inste
 void
 SP_func_plat(edict_t *ent)
 {
-	VectorClear(ent->s.angles);
+	if (!ent)
+	{
+		return;
+	}
 
+	VectorClear(ent->s.angles);
 	ent->solid = SOLID_BSP;
 	ent->movetype = MOVETYPE_PUSH;
+
+	gi.setmodel(ent, ent->model);
 	ent->clipmask = MASK_PLAYERSOLID;
+
 	ent->blocked = plat_blocked;
-	ent->use = Use_Plat;
 
 	if (!ent->speed)
 	{
@@ -1023,17 +1034,24 @@ SP_func_plat(edict_t *ent)
 	}
 
 	if (!st.lip)
+	{
 		st.lip = 8;
+	}
 
-	// pos1 is the top position, pos2 is the bottom
-	VectorCopy (ent->s.origin, ent->pos1);
-	VectorCopy (ent->s.origin, ent->pos2);
+	/* pos1 is the top position, pos2 is the bottom */
+	VectorCopy(ent->s.origin, ent->pos1);
+	VectorCopy(ent->s.origin, ent->pos2);
+
 	if (st.height)
+	{
 		ent->pos2[2] -= st.height;
+	}
 	else
 	{
 		ent->pos2[2] -= (ent->maxs[2] - ent->mins[2]) - st.lip;
 	}
+
+	ent->use = Use_Plat;
 
 	if (ent->targetname)
 	{
@@ -1044,6 +1062,7 @@ SP_func_plat(edict_t *ent)
 		VectorCopy(ent->pos2, ent->s.origin);
 		ent->moveinfo.state = STATE_BOTTOM;
 	}
+
 	ent->moveinfo.speed = ent->speed;
 	ent->moveinfo.accel = ent->accel;
 	ent->moveinfo.decel = ent->decel;
@@ -1059,14 +1078,622 @@ SP_func_plat(edict_t *ent)
 
 	door_sounds(ent);
 
-	gi.setmodel(ent, ent->model);
 	gi.linkentity (ent);
 
 	plat_spawn_inside_trigger(ent);	// the "start moving" trigger
 
 }
 
-void rotate_sounds (edict_t *ent)
+void
+plat2_spawn_danger_area(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	vec3_t mins, maxs;
+
+	VectorCopy(ent->mins, mins);
+	VectorCopy(ent->maxs, maxs);
+	maxs[2] = ent->mins[2] + 64;
+
+	SpawnBadArea(mins, maxs, 0, ent);
+}
+
+void
+plat2_kill_danger_area(edict_t *ent)
+{
+	edict_t *t;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	t = NULL;
+
+	while ((t = G_Find(t, FOFS(classname), "bad_area")))
+	{
+		if (t->owner == ent)
+		{
+			G_FreeEdict(t);
+		}
+	}
+}
+
+void
+plat2_hit_top(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (!(ent->flags & FL_TEAMSLAVE))
+	{
+		if (ent->moveinfo.sound_end)
+		{
+			gi.sound(ent, CHAN_NO_PHS_ADD + CHAN_VOICE, ent->moveinfo.sound_end,
+					1, ATTN_STATIC, 0);
+		}
+
+		ent->s.sound = 0;
+	}
+
+	ent->moveinfo.state = STATE_TOP;
+
+	if (ent->plat2flags & PLAT2_CALLED)
+	{
+		ent->plat2flags = PLAT2_WAITING;
+
+		if (!(ent->spawnflags & PLAT2_TOGGLE))
+		{
+			ent->think = plat2_go_down;
+			ent->nextthink = level.time + 5.0;
+		}
+
+		if (deathmatch->value)
+		{
+			ent->last_move_time = level.time - 1.0;
+		}
+		else
+		{
+			ent->last_move_time = level.time - 2.0;
+		}
+	}
+	else if (!(ent->spawnflags & PLAT2_TOP) &&
+			 !(ent->spawnflags & PLAT2_TOGGLE))
+	{
+		ent->plat2flags = 0;
+		ent->think = plat2_go_down;
+		ent->nextthink = level.time + 2.0;
+		ent->last_move_time = level.time;
+	}
+	else
+	{
+		ent->plat2flags = 0;
+		ent->last_move_time = level.time;
+	}
+
+	G_UseTargets(ent, ent);
+}
+
+void
+plat2_hit_bottom(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (!(ent->flags & FL_TEAMSLAVE))
+	{
+		if (ent->moveinfo.sound_end)
+		{
+			gi.sound(ent, CHAN_NO_PHS_ADD + CHAN_VOICE,
+					ent->moveinfo.sound_end, 1,
+					ATTN_STATIC, 0);
+		}
+
+		ent->s.sound = 0;
+	}
+
+	ent->moveinfo.state = STATE_BOTTOM;
+
+	if (ent->plat2flags & PLAT2_CALLED)
+	{
+		ent->plat2flags = PLAT2_WAITING;
+
+		if (!(ent->spawnflags & PLAT2_TOGGLE))
+		{
+			ent->think = plat2_go_up;
+			ent->nextthink = level.time + 5.0;
+		}
+
+		if (deathmatch->value)
+		{
+			ent->last_move_time = level.time - 1.0;
+		}
+		else
+		{
+			ent->last_move_time = level.time - 2.0;
+		}
+	}
+	else if ((ent->spawnflags & PLAT2_TOP) && !(ent->spawnflags & PLAT2_TOGGLE))
+	{
+		ent->plat2flags = 0;
+		ent->think = plat2_go_up;
+		ent->nextthink = level.time + 2.0;
+		ent->last_move_time = level.time;
+	}
+	else
+	{
+		ent->plat2flags = 0;
+		ent->last_move_time = level.time;
+	}
+
+	plat2_kill_danger_area(ent);
+	G_UseTargets(ent, ent);
+}
+
+void
+plat2_go_down(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (!(ent->flags & FL_TEAMSLAVE))
+	{
+		if (ent->moveinfo.sound_start)
+		{
+			gi.sound(ent, CHAN_NO_PHS_ADD + CHAN_VOICE,
+					ent->moveinfo.sound_start, 1,
+					ATTN_STATIC, 0);
+		}
+
+		ent->s.sound = ent->moveinfo.sound_middle;
+	}
+
+	ent->moveinfo.state = STATE_DOWN;
+	ent->plat2flags |= PLAT2_MOVING;
+
+	Move_Calc(ent, ent->moveinfo.end_origin, plat2_hit_bottom);
+}
+
+void
+plat2_go_up(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (!(ent->flags & FL_TEAMSLAVE))
+	{
+		if (ent->moveinfo.sound_start)
+		{
+			gi.sound(ent, CHAN_NO_PHS_ADD + CHAN_VOICE,
+					ent->moveinfo.sound_start, 1,
+					ATTN_STATIC, 0);
+		}
+
+		ent->s.sound = ent->moveinfo.sound_middle;
+	}
+
+	ent->moveinfo.state = STATE_UP;
+	ent->plat2flags |= PLAT2_MOVING;
+
+	plat2_spawn_danger_area(ent);
+
+	Move_Calc(ent, ent->moveinfo.start_origin, plat2_hit_top);
+}
+
+void
+plat2_operate(edict_t *ent, edict_t *other)
+{
+	int otherState;
+	float pauseTime;
+	float platCenter;
+	edict_t *trigger;
+
+	if (!ent || !other)
+	{
+		return;
+	}
+
+	trigger = ent;
+	ent = ent->enemy; /* now point at the plat, not the trigger */
+
+	if (ent->plat2flags & PLAT2_MOVING)
+	{
+		return;
+	}
+
+	if ((ent->last_move_time + 2) > level.time)
+	{
+		return;
+	}
+
+	platCenter = (trigger->absmin[2] + trigger->absmax[2]) / 2;
+
+	if (ent->moveinfo.state == STATE_TOP)
+	{
+		otherState = STATE_TOP;
+
+		if (ent->spawnflags & PLAT2_BOX_LIFT)
+		{
+			if (platCenter > other->s.origin[2])
+			{
+				otherState = STATE_BOTTOM;
+			}
+		}
+		else
+		{
+			if (trigger->absmax[2] > other->s.origin[2])
+			{
+				otherState = STATE_BOTTOM;
+			}
+		}
+	}
+	else
+	{
+		otherState = STATE_BOTTOM;
+
+		if (other->s.origin[2] > platCenter)
+		{
+			otherState = STATE_TOP;
+		}
+	}
+
+	ent->plat2flags = PLAT2_MOVING;
+
+	if (deathmatch->value)
+	{
+		pauseTime = 0.3;
+	}
+	else
+	{
+		pauseTime = 0.5;
+	}
+
+	if (ent->moveinfo.state != otherState)
+	{
+		ent->plat2flags |= PLAT2_CALLED;
+		pauseTime = 0.1;
+	}
+
+	ent->last_move_time = level.time;
+
+	if (ent->moveinfo.state == STATE_BOTTOM)
+	{
+		ent->think = plat2_go_up;
+		ent->nextthink = level.time + pauseTime;
+	}
+	else
+	{
+		ent->think = plat2_go_down;
+		ent->nextthink = level.time + pauseTime;
+	}
+}
+
+void
+Touch_Plat_Center2(edict_t *ent, edict_t *other,
+		cplane_t *plane /* unused */, csurface_t *surf /* unused */)
+{
+	if (!ent || !other)
+	{
+		return;
+	}
+
+	/* this requires monsters to actively trigger plats, not just step on them. */
+	if (other->health <= 0)
+	{
+		return;
+	}
+
+	/* don't let non-monsters activate plat2s */
+	if ((!(other->svflags & SVF_MONSTER)) && (!other->client))
+	{
+		return;
+	}
+
+	plat2_operate(ent, other);
+}
+
+void
+plat2_blocked(edict_t *self, edict_t *other)
+{
+	if (!self || !other)
+	{
+		return;
+	}
+
+	if (!(other->svflags & SVF_MONSTER) && (!other->client))
+	{
+		/* give it a chance to go away on it's own terms (like gibs) */
+		T_Damage(other, self, self, vec3_origin, other->s.origin,
+				vec3_origin, 100000, 1, 0, MOD_CRUSH);
+
+		/* if it's still there, nuke it */
+		if (other->inuse)
+		{
+			BecomeExplosion1(other);
+		}
+
+		return;
+	}
+
+	/* gib dead things */
+	if (other->health < 1)
+	{
+		T_Damage(other, self, self, vec3_origin, other->s.origin,
+				vec3_origin, 100, 1, 0, MOD_CRUSH);
+	}
+
+	T_Damage(other, self, self, vec3_origin, other->s.origin,
+			vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
+
+	if (self->moveinfo.state == STATE_UP)
+	{
+		plat2_go_down(self);
+	}
+	else if (self->moveinfo.state == STATE_DOWN)
+	{
+		plat2_go_up(self);
+	}
+}
+
+void
+Use_Plat2(edict_t *ent, edict_t *other /* unused */,
+		edict_t *activator)
+{
+	edict_t *trigger;
+	int i;
+
+	if (!ent || !activator)
+	{
+		return;
+	}
+
+	if (ent->moveinfo.state > STATE_BOTTOM)
+	{
+		return;
+	}
+
+	if ((ent->last_move_time + 2) > level.time)
+	{
+		return;
+	}
+
+	for (i = 1, trigger = g_edicts + 1; i < globals.num_edicts; i++, trigger++)
+	{
+		if (!trigger->inuse)
+		{
+			continue;
+		}
+
+		if (trigger->touch == Touch_Plat_Center2)
+		{
+			if (trigger->enemy == ent)
+			{
+				plat2_operate(trigger, activator);
+				return;
+			}
+		}
+	}
+}
+
+void
+plat2_activate(edict_t *ent, edict_t *other /* unused */,
+		edict_t *activator /* unused */)
+{
+	edict_t *trigger;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->use = Use_Plat2;
+	trigger = plat_spawn_inside_trigger(ent); /* the "start moving" trigger */
+
+	trigger->maxs[0] += 10;
+	trigger->maxs[1] += 10;
+	trigger->mins[0] -= 10;
+	trigger->mins[1] -= 10;
+
+	gi.linkentity(trigger);
+
+	trigger->touch = Touch_Plat_Center2; /* Override trigger touch function */
+
+	plat2_go_down(ent);
+}
+
+/* QUAKED func_plat2 (0 .5 .8) ? PLAT_LOW_TRIGGER PLAT2_TOGGLE PLAT2_TOP PLAT2_TRIGGER_TOP PLAT2_TRIGGER_BOTTOM BOX_LIFT
+ * speed default 150
+ *
+ * PLAT_LOW_TRIGGER - creates a short trigger field at the bottom
+ * PLAT2_TOGGLE - plat will not return to default position.
+ * PLAT2_TOP - plat's default position will the the top.
+ * PLAT2_TRIGGER_TOP - plat will trigger it's targets each time it hits top
+ * PLAT2_TRIGGER_BOTTOM - plat will trigger it's targets each time it hits bottom
+ * BOX_LIFT - this indicates that the lift is a box, rather than just a platform
+ *
+ * Plats are always drawn in the extended position, so they will light correctly.
+ *
+ * If the plat is the target of another trigger or button, it will start out
+ * disabled in the extended position until it is trigger, when it will lower
+ * and become a normal plat.
+ *
+ * "speed"	overrides default 200.
+ * "accel" overrides default 500
+ * "lip"	no default
+ *
+ * If the "height" key is set, that will determine the amount the plat moves,
+ *  instead of being implicitly determoveinfoned by the model's height.
+ *
+ */
+void
+SP_func_plat2(edict_t *ent)
+{
+	edict_t *trigger;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	VectorClear(ent->s.angles);
+	ent->solid = SOLID_BSP;
+	ent->movetype = MOVETYPE_PUSH;
+
+	gi.setmodel(ent, ent->model);
+
+	ent->blocked = plat2_blocked;
+
+	if (!ent->speed)
+	{
+		ent->speed = 20;
+	}
+	else
+	{
+		ent->speed *= 0.1;
+	}
+
+	if (!ent->accel)
+	{
+		ent->accel = 5;
+	}
+	else
+	{
+		ent->accel *= 0.1;
+	}
+
+	if (!ent->decel)
+	{
+		ent->decel = 5;
+	}
+	else
+	{
+		ent->decel *= 0.1;
+	}
+
+	if (deathmatch->value)
+	{
+		ent->speed *= 2;
+		ent->accel *= 2;
+		ent->decel *= 2;
+	}
+
+	/* Added to kill things it's being blocked by */
+	if (!ent->dmg)
+	{
+		ent->dmg = 2;
+	}
+
+	/* pos1 is the top position, pos2 is the bottom */
+	VectorCopy(ent->s.origin, ent->pos1);
+	VectorCopy(ent->s.origin, ent->pos2);
+
+	if (st.height)
+	{
+		ent->pos2[2] -= (st.height - st.lip);
+	}
+	else
+	{
+		ent->pos2[2] -= (ent->maxs[2] - ent->mins[2]) - st.lip;
+	}
+
+	ent->moveinfo.state = STATE_TOP;
+
+	if (ent->targetname)
+	{
+		ent->use = plat2_activate;
+	}
+	else
+	{
+		ent->use = Use_Plat2;
+
+		trigger = plat_spawn_inside_trigger(ent); /* the "start moving" trigger */
+
+		trigger->maxs[0] += 10;
+		trigger->maxs[1] += 10;
+		trigger->mins[0] -= 10;
+		trigger->mins[1] -= 10;
+
+		gi.linkentity(trigger);
+		trigger->touch = Touch_Plat_Center2; /* Override trigger touch function */
+
+		if (!(ent->spawnflags & PLAT2_TOP))
+		{
+			VectorCopy(ent->pos2, ent->s.origin);
+			ent->moveinfo.state = STATE_BOTTOM;
+		}
+	}
+
+	gi.linkentity(ent);
+
+	ent->moveinfo.speed = ent->speed;
+	ent->moveinfo.accel = ent->accel;
+	ent->moveinfo.decel = ent->decel;
+	ent->moveinfo.wait = ent->wait;
+	VectorCopy(ent->pos1, ent->moveinfo.start_origin);
+	VectorCopy(ent->s.angles, ent->moveinfo.start_angles);
+	VectorCopy(ent->pos2, ent->moveinfo.end_origin);
+	VectorCopy(ent->s.angles, ent->moveinfo.end_angles);
+
+	ent->moveinfo.sound_start = gi.soundindex("plats/pt1_strt.wav");
+	ent->moveinfo.sound_middle = gi.soundindex("plats/pt1_mid.wav");
+	ent->moveinfo.sound_end = gi.soundindex("plats/pt1_end.wav");
+}
+
+void
+FuncRotate_Deactivate(edict_t *self, G_Message_t *msg)
+{
+	VectorClear(self->velocity);
+	VectorClear(self->avelocity);
+}
+
+void
+FuncRotate_Activate(edict_t *self, G_Message_t *msg)
+{
+	self->use(self,NULL,NULL);
+	gi.linkentity(self);
+}
+
+void
+FuncRotateStaticsInit()
+{
+	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
+	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
+}
+
+void
+FuncDoor_Deactivate(edict_t *self, G_Message_t *msg)
+{
+	VectorClear(self->velocity);
+	VectorClear(self->avelocity);
+}
+
+void
+FuncDoor_Activate(edict_t *self, G_Message_t *msg)
+{
+	self->use(self,NULL,NULL);
+	gi.linkentity(self);
+}
+
+void
+FuncDoorStaticsInit()
+{
+	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
+	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
+}
+
+void
+rotate_sounds(edict_t *ent)
 {
 	if (ent->sounds == 0)
 	{
@@ -1098,16 +1725,20 @@ void rotate_sounds (edict_t *ent)
 	}
 }
 
-//====================================================================
+/* ==================================================================== */
 
 /*
- * QUAKED func_rotating (0 .5 .8) ? START_ON REVERSE X_AXIS Y_AXIS TOUCH_PAIN STOP ANIMATED ANIMATED_FAST CRUSHER
-You need to have an origin brush as part of this entity.  The center of that brush will be
-the point around which it is rotated. It will rotate around the Z axis by default.  You can
-check either the X_AXIS or Y_AXIS box to change that.
-----------KEYS-------------
-"speed" determines how fast it moves; default value is 100.
-"dmg"	damage to inflict when blocked (2 default)
+ * QUAKED func_rotating (0 .5 .8) ? START_ON REVERSE X_AXIS Y_AXIS TOUCH_PAIN STOP ANIMATED ANIMATED_FAST EAST MED HARD DM COOP ACCEL
+ *
+ * You need to have an origin brush as part of this entity.
+ * The center of that brush will be the point around which it
+ * is rotated. It will rotate around the Z axis by default.
+ * You can check either the X_AXIS or Y_AXIS box to change that.
+ *
+ * func_rotating will use it's targets when it stops and starts.
+ *
+ * "speed" determines how fast it moves; default value is 100.
+ * "dmg"   damage to inflict when blocked (2 default)
 "sounds"
 0 -	silent
 1 -	generic rotate
@@ -1118,6 +1749,58 @@ check either the X_AXIS or Y_AXIS box to change that.
 REVERSE will cause the it to rotate in the opposite direction.
 STOP mean it will stop moving instead of pushing entities
 */
+void
+rotating_accel(edict_t *self)
+{
+	float current_speed;
+
+	if (!self)
+	{
+		return;
+	}
+
+	current_speed = VectorLength(self->avelocity);
+
+	if (current_speed >= (self->speed - self->accel)) /* done */
+	{
+		VectorScale(self->movedir, self->speed, self->avelocity);
+		G_UseTargets(self, self);
+	}
+	else
+	{
+		current_speed += self->accel;
+		VectorScale(self->movedir, current_speed, self->avelocity);
+		self->think = rotating_accel;
+		self->nextthink = level.time + FRAMETIME;
+	}
+}
+
+void
+rotating_decel(edict_t *self)
+{
+	float current_speed;
+
+	if (!self)
+	{
+		return;
+	}
+
+	current_speed = VectorLength(self->avelocity);
+
+	if (current_speed <= self->decel) /* done */
+	{
+		VectorClear(self->avelocity);
+		G_UseTargets(self, self);
+		self->touch = NULL;
+	}
+	else
+	{
+		current_speed -= self->decel;
+		VectorScale(self->movedir, current_speed, self->avelocity);
+		self->think = rotating_decel;
+		self->nextthink = level.time + FRAMETIME;
+	}
+}
 
 void
 rotating_blocked(edict_t *self, edict_t *other)
@@ -1133,7 +1816,7 @@ rotating_blocked(edict_t *self, edict_t *other)
 
 void
 rotating_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-	   	csurface_t *surf /* unused */)
+		csurface_t *surf /* unused */)
 {
 	if (!self || !other)
 	{
@@ -1149,7 +1832,7 @@ rotating_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 
 void
 rotating_use(edict_t *self, edict_t *other /* unused */,
-	   	edict_t *activator /* unused */)
+		edict_t *activator /* unused */)
 {
 	if (!self)
 	{
@@ -1166,7 +1849,7 @@ rotating_use(edict_t *self, edict_t *other /* unused */,
 	{
 		self->s.sound = self->moveinfo.sound_middle;
 		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
-		VectorScale (self->movedir, self->speed, self->avelocity);
+		VectorScale(self->movedir, self->speed, self->avelocity);
 		if (self->spawnflags & 16)
 		{
 			self->touch = rotating_touch;
@@ -1182,10 +1865,8 @@ SP_func_rotating(edict_t *ent)
 		return;
 	}
 
-	ent->msgHandler = DefaultMsgHandler;
-	ent->classID = CID_FUNC_ROTATE;
-
 	ent->solid = SOLID_BSP;
+
 	if (ent->spawnflags & 32)
 	{
 		ent->movetype = MOVETYPE_STOP;
@@ -1195,6 +1876,8 @@ SP_func_rotating(edict_t *ent)
 		ent->movetype = MOVETYPE_PUSH;
 	}
 
+	ent->msgHandler = DefaultMsgHandler;
+	ent->classID = CID_FUNC_ROTATE;
 	rotate_sounds(ent);
 
 	/* set the axis of rotation */
@@ -1262,34 +1945,56 @@ SP_func_rotating(edict_t *ent)
 	gi.linkentity(ent);
 }
 
-/*
-======================================================================
+/* ==================================================================== */
 
-BUTTONS
+/* BUTTONS */
 
-======================================================================
-*/
+void button_fire(edict_t *self);
 
-
-void button_fire (edict_t *self);
-
-void button_killed2(edict_t *self, G_Message_t *msg)
+void
+button_killed2(edict_t *self, G_Message_t *msg)
 {
-
 	self->activator = self->enemy;
 	button_fire (self);
 	self->health = self->max_health;
 
 }
 
-
-void ButtonStaticsInit()
+void
+ButtonStaticsInit()
 {
 	classStatics[CID_BUTTON].msgReceivers[MSG_DEATH] = button_killed2;
 }
 
-void button_done (edict_t *self)
+/*
+ * QUAKED func_button (0 .5 .8) ?
+ *
+ * When a button is touched, it moves some distance
+ * in the direction of it's angle, triggers all of it's
+ * targets, waits some time, then returns to it's original
+ * position where it can be triggered again.
+ *
+ * "angle"		determines the opening direction
+ * "target"	    all entities with a matching targetname will be used
+ * "speed"		override the default 40 speed
+ * "wait"		override the default 1 second wait (-1 = never return)
+ * "lip"		override the default 4 pixel lip remaining at end of move
+ * "health"	    if set, the button must be killed instead of touched
+ * "sounds"
+ *    1) silent
+ *    2) steam metal
+ *    3) wooden clunk
+ *    4) metallic click
+ *    5) in-out
+ */
+void
+button_done(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	self->moveinfo.state = STATE_BOTTOM;
 	self->s.frame = 0;
 }
@@ -1448,44 +2153,61 @@ When a button is touched, it moves some distance in the direction of it's angle,
 --------SPAWNFLAGS--------
 TOUCH - player can touch button to set it off
 */
-void SP_func_button (edict_t *ent)
-{
-	vec3_t	abs_movedir;
-	float	dist;
 
-	G_SetMovedir (ent->s.angles, ent->movedir);
+void
+SP_func_button(edict_t *ent)
+{
+	vec3_t abs_movedir;
+	float dist;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	G_SetMovedir(ent->s.angles, ent->movedir);
 	ent->movetype = MOVETYPE_STOP;
 	ent->solid = SOLID_BSP;
   	ent->takedamage = DAMAGE_NO;
 	gi.setmodel(ent, ent->model);
-	gi.linkentity(ent);
 
 	button_sounds(ent);
 
-//	ent->health = 5;
 	if (!ent->speed)
+	{
 		ent->speed = 40;
+	}
+
 	if (!ent->accel)
+	{
 		ent->accel = ent->speed;
+	}
+
 	if (!ent->decel)
+	{
 		ent->decel = ent->speed;
+	}
 
 	if (!ent->wait)
+	{
 		ent->wait = 3;
-	if (!st.lip)
-		st.lip = 4;
+	}
 
-	VectorCopy (ent->s.origin, ent->pos1);
+	if (!st.lip)
+	{
+		st.lip = 4;
+	}
+
+	VectorCopy(ent->s.origin, ent->pos1);
 	VectorAbs(ent->movedir, abs_movedir);
 	dist = DotProduct(abs_movedir, ent->size) - st.lip;
-	VectorMA (ent->pos1, dist, ent->movedir, ent->pos2);
+	VectorMA(ent->pos1, dist, ent->movedir, ent->pos2);
 
 	ent->use = button_use;
 
 	if (ent->health)
 	{
 		ent->max_health = ent->health;
-//		ent->die = button_killed;
 		ent->takedamage = DAMAGE_YES;
 	}
 
@@ -1500,55 +2222,115 @@ void SP_func_button (edict_t *ent)
 	ent->moveinfo.accel = ent->accel;
 	ent->moveinfo.decel = ent->decel;
 	ent->moveinfo.wait = ent->wait;
-	VectorCopy (ent->pos1, ent->moveinfo.start_origin);
-	VectorCopy (ent->s.angles, ent->moveinfo.start_angles);
-	VectorCopy (ent->pos2, ent->moveinfo.end_origin);
-	VectorCopy (ent->s.angles, ent->moveinfo.end_angles);
+	VectorCopy(ent->pos1, ent->moveinfo.start_origin);
+	VectorCopy(ent->s.angles, ent->moveinfo.start_angles);
+	VectorCopy(ent->pos2, ent->moveinfo.end_origin);
+	VectorCopy(ent->s.angles, ent->moveinfo.end_angles);
 
 	ent->msgHandler = DefaultMsgHandler;
+	gi.linkentity(ent);
 }
 
+/* ==================================================================== */
+
 /*
-======================================================================
+ * DOORS
+ *
+ * spawn a trigger surrounding the entire team
+ * unless it is already targeted by another
+ */
 
-DOORS
+/*
+ * QUAKED func_door (0 .5 .8) ? START_OPEN x CRUSHER NOMONSTER ANIMATED TOGGLE ANIMATED_FAST
+ *
+ * TOGGLE		wait in both the start and end states for a trigger event.
+ * START_OPEN	the door to moves to its destination when spawned, and operate in reverse.
+ *              It is used to temporarily or permanently close off an area when triggered
+ *              (not useful for touch or takedamage doors).
+ * NOMONSTER	monsters will not trigger this door
+ *
+ * "message"	is printed when the door is touched if it is a trigger door and it hasn't been fired yet
+ * "angle"		determines the opening direction
+ * "targetname" if set, no touch field will be spawned and a remote button or trigger field activates the door.
+ * "health"	    if set, door must be shot open
+ * "speed"		movement speed (100 default)
+ * "wait"		wait before returning (3 default, -1 = never return)
+ * "lip"		lip remaining at end of move (8 default)
+ * "dmg"		damage to inflict when blocked (2 default)
+ * "sounds"
+0)	silent
+1)	generic door
+2)	heavy stone door
+3)  for swing arm on palace level
+4)  for stone bridge in palace level
+5)  small/medium wood door swinging
+6)  large/huge wood door swinging
+7)  medium sized stone/wood door sliding
+8)  large stone/wood sliding door or portcullis
+9)  average metal door swinging
+10) Fast sliding doors
+11) Hive, Metal, Multipaneled sliding
+12) Huge stone door swinging
+13) Medium/large elevator
+14) Crane (warehouse)
+15) hammerlike pump in oglemine1
+16) sliding metal table in cloudlabs
+17) lab table which rotates up to ceiling - cloublabs
+18) piston sound
+19) short, sharp metal clang
+20) something going under water
+21) the bam sound
+ */
 
-  spawn a trigger surrounding the entire team unless it is
-  allready targeted by another
-
-======================================================================
-*/
-
-
-void door_use_areaportals(edict_t *self, qboolean open)
+void
+door_use_areaportals(edict_t *self, qboolean open)
 {
-	edict_t	*t = NULL;
+	edict_t *t = NULL;
+
+	if (!self)
+	{
+		return;
+	}
 
 	if (!self->target)
+	{
 		return;
+	}
 
-	while ((t = G_Find (t, FOFS(targetname), self->target)))
+	while ((t = G_Find(t, FOFS(targetname), self->target)))
 	{
 		if (Q_stricmp(t->classname, "func_areaportal") == 0)
 		{
-			gi.SetAreaPortalState (t->style, open);
+			gi.SetAreaPortalState(t->style, open);
 		}
 	}
 }
 
-void door_go_down (edict_t *self);
-
-void door_hit_top (edict_t *self)
+void
+door_hit_top(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	if (!(self->flags & FL_TEAMSLAVE))
 	{
 		if (self->moveinfo.sound_end)
-			gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+		{
+			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+		}
+
 		self->s.sound = 0;
 	}
+
 	self->moveinfo.state = STATE_TOP;
+
 	if (self->spawnflags & DOOR_TOGGLE)
+	{
 		return;
+	}
+
 	if (self->moveinfo.wait >= 0)
 	{
 		self->think = door_go_down;
@@ -1573,9 +2355,15 @@ door_hit_bottom(edict_t *self)
 	if (!(self->flags & FL_TEAMSLAVE))
 	{
 		if (self->moveinfo.sound_end)
-			gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+		{
+			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
+					self->moveinfo.sound_end, 1,
+					ATTN_IDLE, 0);
+		}
+
 		self->s.sound = 0;
 	}
+
 	self->moveinfo.state = STATE_BOTTOM;
 
 	if (self->moveinfo.wait == -2)	// Endlessly cycle
@@ -1599,7 +2387,12 @@ door_go_down(edict_t *self)
 	if (!(self->flags & FL_TEAMSLAVE))
 	{
 		if (self->moveinfo.sound_start)
-			gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_start, 1, ATTN_IDLE, 0);
+		{
+			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
+					self->moveinfo.sound_start,
+					1, ATTN_IDLE, 0);
+		}
+
 		self->s.sound = self->moveinfo.sound_middle;
 		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
 	}
@@ -1678,6 +2471,117 @@ door_go_up(edict_t *self, edict_t *activator)
 	door_use_areaportals(self, true);
 }
 
+void
+smart_water_go_up(edict_t *self)
+{
+	float distance;
+	edict_t *lowestPlayer;
+	edict_t *ent;
+	float lowestPlayerPt;
+	int i;
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->moveinfo.state == STATE_TOP)
+	{
+		/* reset top wait time */
+		if (self->moveinfo.wait >= 0)
+		{
+			self->nextthink = level.time + self->moveinfo.wait;
+		}
+
+		return;
+	}
+
+	if (self->health)
+	{
+		if (self->absmax[2] >= self->health)
+		{
+			VectorClear(self->velocity);
+			self->nextthink = 0;
+			self->moveinfo.state = STATE_TOP;
+			return;
+		}
+	}
+
+	if (!(self->flags & FL_TEAMSLAVE))
+	{
+		if (self->moveinfo.sound_start)
+		{
+			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
+					self->moveinfo.sound_start, 1,
+					ATTN_STATIC, 0);
+		}
+
+		self->s.sound = self->moveinfo.sound_middle;
+	}
+
+	/* find the lowest player point. */
+	lowestPlayerPt = 999999;
+	lowestPlayer = NULL;
+
+	for (i = 0; i < game.maxclients; i++)
+	{
+		ent = &g_edicts[1 + i];
+
+		/* don't count dead or unused player slots */
+		if ((ent->inuse) && (ent->health > 0))
+		{
+			if (ent->absmin[2] < lowestPlayerPt)
+			{
+				lowestPlayerPt = ent->absmin[2];
+				lowestPlayer = ent;
+			}
+		}
+	}
+
+	if (!lowestPlayer)
+	{
+		return;
+	}
+
+	distance = lowestPlayerPt - self->absmax[2];
+
+	/* for the calculations, make sure we
+	   intend to go up at least a little. */
+	if (distance < self->accel)
+	{
+		distance = 100;
+		self->moveinfo.speed = 5;
+	}
+	else
+	{
+		self->moveinfo.speed = distance / self->accel;
+	}
+
+	if (self->moveinfo.speed < 5)
+	{
+		self->moveinfo.speed = 5;
+	}
+	else if (self->moveinfo.speed > self->speed)
+	{
+		self->moveinfo.speed = self->speed;
+	}
+
+	/* should this allow any movement other than straight up? */
+	VectorSet(self->moveinfo.dir, 0, 0, 1);
+	VectorScale(self->moveinfo.dir, self->moveinfo.speed, self->velocity);
+	self->moveinfo.remaining_distance = distance;
+
+	if (self->moveinfo.state != STATE_UP)
+	{
+		G_UseTargets(self, lowestPlayer);
+		door_use_areaportals(self, true);
+		self->moveinfo.state = STATE_UP;
+	}
+
+	self->think = smart_water_go_up;
+	self->nextthink = level.time + FRAMETIME;
+}
+
 /*
 qboolean smart_door_side_check (edict_t *self, edict_t *activator)
 
@@ -1717,9 +2621,15 @@ smart_door_side_check(edict_t *self, edict_t *activator)
 
 edict_t	*TestEntityPosition(edict_t *self);
 void
-door_use(edict_t *self, edict_t *other, edict_t *activator)
+door_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 {
-	edict_t	*ent;
+	edict_t *ent;
+	vec3_t center;
+
+	if (!self || !activator)
+	{
+		return;
+	}
 
 	if(Vec3IsZero(self->avelocity))
 	{
@@ -1931,10 +2841,12 @@ door_blocked(edict_t *self, edict_t *other)
 
 	if ((other->svflags & SVF_MONSTER) && !other->client && !(other->svflags & SVF_BOSS))
 	{
-		// give it a chance to go away on it's own terms (like gibs)
-		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, 3000, 1, DAMAGE_AVOID_ARMOR,MOD_CRUSH);
+		/* give it a chance to go away on it's own terms (like gibs) */
+		T_Damage(other, self, self, vec3_origin, other->s.origin,
+				vec3_origin, 3000, 1, DAMAGE_AVOID_ARMOR,MOD_CRUSH);
+
 		/* if it's still there, nuke it */
-		if(other->health > 0)
+		if (other->health > 0)
 		{
 			BecomeDebris(other);
 		}
@@ -1944,14 +2856,14 @@ door_blocked(edict_t *self, edict_t *other)
 
 	if (self->spawnflags & DOOR_CRUSHER)
 	{
-		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg * 10, 1, 0,MOD_CRUSH);
+		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg * 10, 1, 0, MOD_CRUSH);
 		return;
 	}
-	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0,MOD_CRUSH);
+	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
 
 	/* if a door has a negative wait, it would never
-	   come back if blocked, (unless -2)
-	   so let it just squash the object to death real fast */
+	   come back if blocked, (unless -2) so let it just squash the 
+	   object to death real fast */
 	if ((self->moveinfo.wait >= 0) || (self->moveinfo.wait == -2))
 	{
 		if (self->moveinfo.state == STATE_DOWN)
@@ -2134,48 +3046,15 @@ door_sounds(edict_t *ent)
 	}
 }
 
-/*
- * QUAKED func_door (0 .5 .8) ? START_OPEN x CRUSHER NOMONSTER ANIMATED TOGGLE ANIMATED_FAST
-TOGGLE		wait in both the start and end states for a trigger event.
-START_OPEN	the door to moves to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not useful for touch or takedamage doors).
-NOMONSTER	monsters will not trigger this door
-
-"message"	is printed when the door is touched if it is a trigger door and it hasn't been fired yet
-"angle"		determines the opening direction
-"targetname" if set, no touch field will be spawned and a remote button or trigger field activates the door.
-"health"	if set, door must be shot open
-"height"    if set, tells how far up door opens
-"speed"		movement speed (100 default)
-"wait"		wait before returning (3 default, -1 = never return,-2 = never stop cycle)
-"lip"		lip remaining at end of move (8 default)
-"dmg"		damage to inflict when blocked (2 default)
-"sounds"
-0)	silent
-1)	generic door
-2)	heavy stone door
-3)  for swing arm on palace level
-4)  for stone bridge in palace level
-5)  small/medium wood door swinging
-6)  large/huge wood door swinging
-7)  medium sized stone/wood door sliding
-8)  large stone/wood sliding door or portcullis
-9)  average metal door swinging
-10) Fast sliding doors
-11) Hive, Metal, Multipaneled sliding
-12) Huge stone door swinging
-13) Medium/large elevator
-14) Crane (warehouse)
-15) hammerlike pump in oglemine1
-16) sliding metal table in cloudlabs
-17) lab table which rotates up to ceiling - cloublabs
-18) piston sound
-19) short, sharp metal clang
-20) something going under water
-21) the bam sound
-  */
-void SP_func_door (edict_t *self)
+void
+SP_func_door(edict_t *self)
 {
-	vec3_t	abs_movedir;
+	vec3_t abs_movedir;
+
+	if (!self)
+	{
+		return;
+	}
 
 	door_sounds(self);
 
@@ -2206,7 +3085,7 @@ void SP_func_door (edict_t *self)
 		self->dmg = 2;
 
 	// calculate second position
-	VectorCopy (self->s.origin, self->pos1);
+	VectorCopy(self->s.origin, self->pos1);
 	VectorAbs(self->movedir, abs_movedir);
 
 	if (!st.height)
@@ -2219,9 +3098,9 @@ void SP_func_door (edict_t *self)
 	// if it starts open, switch the positions
 	if (self->spawnflags & DOOR_START_OPEN)
 	{
-		VectorCopy (self->pos2, self->s.origin);
-		VectorCopy (self->pos1, self->pos2);
-		VectorCopy (self->s.origin, self->pos1);
+		VectorCopy(self->pos2, self->s.origin);
+		VectorCopy(self->pos1, self->pos2);
+		VectorCopy(self->s.origin, self->pos1);
 	}
 
 	self->moveinfo.state = STATE_BOTTOM;
@@ -2242,10 +3121,10 @@ void SP_func_door (edict_t *self)
 	self->moveinfo.accel = self->accel;
 	self->moveinfo.decel = self->decel;
 	self->moveinfo.wait = self->wait;
-	VectorCopy (self->pos1, self->moveinfo.start_origin);
-	VectorCopy (self->s.angles, self->moveinfo.start_angles);
-	VectorCopy (self->pos2, self->moveinfo.end_origin);
-	VectorCopy (self->s.angles, self->moveinfo.end_angles);
+	VectorCopy(self->pos1, self->moveinfo.start_origin);
+	VectorCopy(self->s.angles, self->moveinfo.start_angles);
+	VectorCopy(self->pos2, self->moveinfo.end_origin);
+	VectorCopy(self->s.angles, self->moveinfo.end_angles);
 
 	VectorSubtract(self->maxs, self->mins, self->s.bmodel_origin);
 	Vec3ScaleAssign(0.5, self->s.bmodel_origin);
@@ -2262,37 +3141,41 @@ void SP_func_door (edict_t *self)
 
 	self->nextthink = level.time + FRAMETIME;
 	if (self->health || self->targetname)
+	{
 		self->think = Think_CalcMoveSpeed;
+	}
 	else
+	{
 		self->think = Think_SpawnDoorTrigger;
+	}
 }
 
 /*
- * QUAKED func_door_rotating (0 .5 .8) ? START_OPEN REVERSE CRUSHER NOMONSTER ANIMATED TOGGLE X_AXIS Y_AXIS SWINGAWAY x x x x x x x
-TOGGLE causes the door to wait in both the start and end states for a trigger event.
-
-START_OPEN	the door to moves to its destination when spawned, and operate in reverse.  It is used to temporarily or permanently close off an area when triggered (not useful for touch or takedamage doors).
-NOMONSTER	monsters will not trigger this door
-
-You need to have an origin brush as part of this entity.  The center of that brush will be
-the point around which it is rotated. It will rotate around the Z axis by default.  You can
-check either the X_AXIS or Y_AXIS box to change that.
-
-"distance" is how many degrees the door will be rotated.
-"speed" determines how fast the door moves; default value is 100.
-
-REVERSE will cause the door to rotate in the opposite direction.
-
-SWINGAWAY door will always swing away from the activator...
-
-"message"	is printed when the door is touched if it is a trigger door and it hasn't been fired yet
-"angle"		determines the opening direction
-"targetname" if set, no touch field will be spawned and a remote button or trigger field activates the door.
-"health"	if set, door must be shot open
-"speed"		movement speed (100 default)
-"wait"		wait before returning (3 default, -1 = never return,-2 = never stop cycle)
-"dmg"		damage to inflict when blocked (2 default)
-"sounds"
+ * QUAKED func_door_rotating (0 .5 .8) ? START_OPEN REVERSE CRUSHER NOMONSTER ANIMATED TOGGLE X_AXIS Y_AXIS
+ *
+ * TOGGLE       causes the door to wait in both the start and end states for a trigger event.
+ * START_OPEN	the door to moves to its destination when spawned, and operate in reverse.
+ *              It is used to temporarily or permanently close off an area when triggered
+ *              (not useful for touch or takedamage doors).
+ * NOMONSTER	monsters will not trigger this door
+ *
+ * You need to have an origin brush as part of this entity.  The center of that brush will be
+ * the point around which it is rotated. It will rotate around the Z axis by default.  You can
+ * check either the X_AXIS or Y_AXIS box to change that.
+ *
+ * "distance" is how many degrees the door will be rotated.
+ * "speed" determines how fast the door moves; default value is 100.
+ *
+ * REVERSE will cause the door to rotate in the opposite direction.
+ *
+ * "message"	is printed when the door is touched if it is a trigger door and it hasn't been fired yet
+ * "angle"		determines the opening direction
+ * "targetname" if set, no touch field will be spawned and a remote button or trigger field activates the door.
+ * "health"	    if set, door must be shot open
+ * "speed"		movement speed (100 default)
+ * "wait"		wait before returning (3 default, -1 = never return)
+ * "dmg"		damage to inflict when blocked (2 default)
+ * "sounds"
 0)	silent
 1)	generic door
 2)	heavy stone door
@@ -2437,56 +3320,69 @@ SP_func_door_rotating(edict_t *ent)
 
 	ent->nextthink = level.time + FRAMETIME;
 	if (ent->health || ent->targetname)
+	{
 		ent->think = Think_CalcMoveSpeed;
+	}
 	else
+	{
 		ent->think = Think_SpawnDoorTrigger;
+	}
 }
 
 
+/* ==================================================================== */
+
 /*
  * QUAKED func_water (0 .5 .8) ? START_OPEN
-func_water is a moveable water brush.  It must be targeted to operate.  Use a non-water texture at your own risk.
-
-START_OPEN causes the water to move to its destination when spawned and operate in reverse.
-
-"angle"		determines the opening direction (up or down only)
-"speed"		movement speed (25 default)
-"wait"		wait before returning (-1 default, -1 = TOGGLE)
-"lip"		lip remaining at end of move (0 default)
-"sounds"	(yes, these need to be changed)
-0)	no sound
-1)	water
-2)	lava
-*/
-
-void SP_func_water (edict_t *self)
+ *
+ * func_water is a moveable water brush.  It must be targeted to operate.
+ * Use a non-water texture at your own risk.
+ *
+ * START_OPEN causes the water to move to its destination when spawned
+ *             and operate in reverse.
+ *
+ * "angle"		determines the opening direction (up or down only)
+ * "speed"		movement speed (25 default)
+ * "wait"		wait before returning (-1 default, -1 = TOGGLE)
+ * "lip"		lip remaining at end of move (0 default)
+ * "sounds"	    (yes, these need to be changed)
+ *    0)	no sound
+ *    1)	water
+ *    2)	lava
+ */
+void
+SP_func_water(edict_t *self)
 {
-	vec3_t	abs_movedir;
+	vec3_t abs_movedir;
 
-	G_SetMovedir (self->s.angles, self->movedir);
+	if (!self)
+	{
+		return;
+	}
+
+	G_SetMovedir(self->s.angles, self->movedir);
 	self->movetype = MOVETYPE_PUSH;
 	self->solid = SOLID_BSP;
 	gi.setmodel(self, self->model);
-	gi.linkentity(self);
 
-	// calculate second position
-	VectorCopy (self->s.origin, self->pos1);
+	/* calculate second position */
+	VectorCopy(self->s.origin, self->pos1);
 	VectorAbs(self->movedir, abs_movedir);
 	self->moveinfo.distance = DotProduct(abs_movedir, self->size) - st.lip;
 	VectorMA (self->pos1, self->moveinfo.distance, self->movedir, self->pos2);
 
-	// if it starts open, switch the positions
+	/* if it starts open, switch the positions */
 	if (self->spawnflags & DOOR_START_OPEN)
 	{
-		VectorCopy (self->pos2, self->s.origin);
-		VectorCopy (self->pos1, self->pos2);
-		VectorCopy (self->s.origin, self->pos1);
+		VectorCopy(self->pos2, self->s.origin);
+		VectorCopy(self->pos1, self->pos2);
+		VectorCopy(self->s.origin, self->pos1);
 	}
 
-	VectorCopy (self->pos1, self->moveinfo.start_origin);
-	VectorCopy (self->s.angles, self->moveinfo.start_angles);
-	VectorCopy (self->pos2, self->moveinfo.end_origin);
-	VectorCopy (self->s.angles, self->moveinfo.end_angles);
+	VectorCopy(self->pos1, self->moveinfo.start_origin);
+	VectorCopy(self->s.angles, self->moveinfo.start_angles);
+	VectorCopy(self->pos2, self->moveinfo.end_origin);
+	VectorCopy(self->s.angles, self->moveinfo.end_angles);
 
 	VectorSubtract(self->maxs, self->mins, self->s.bmodel_origin);
 	Vec3ScaleAssign(0.5, self->s.bmodel_origin);
@@ -2495,25 +3391,34 @@ void SP_func_water (edict_t *self)
 	self->moveinfo.state = STATE_BOTTOM;
 
 	if (!self->speed)
+	{
 		self->speed = 25;
-	self->moveinfo.accel = self->moveinfo.decel = self->moveinfo.speed = self->speed;
+	}
+
+	self->moveinfo.accel = self->moveinfo.decel =
+		self->moveinfo.speed = self->speed;
 
 	if (!self->wait)
+	{
 		self->wait = -1;
+	}
+
 	self->moveinfo.wait = self->wait;
 
 	self->use = door_use;
 
 	if (self->wait == -1)
+	{
 		self->spawnflags |= DOOR_TOGGLE;
+	}
 
 	self->classname = "func_door";
 
+	gi.linkentity(self);
 }
 
-void train_next (edict_t *self);
-
-void train_anim(edict_t *self)
+void
+train_anim(edict_t *self)
 {
 
 	if ((self->s.frame == 0)  && (self->moveinfo.sound_middle))   // Start sound if there is one
@@ -2529,7 +3434,8 @@ void train_anim(edict_t *self)
 		train_next (self);
 }
 
-void train_animbackwards(edict_t *self)
+void
+train_animbackwards(edict_t *self)
 {
 
 	if (((self->s.frame + 1) == self->count) && (self->moveinfo.sound_middle))   // Start sound if there is one
@@ -2544,16 +3450,21 @@ void train_animbackwards(edict_t *self)
 	else
 		train_next (self);
 }
+
 #define TRAIN_START_ON		1
 #define TRAIN_TOGGLE		2
 #define TRAIN_BLOCK_STOPS	4
 
+/* ==================================================================== */
+
 /*
- * QUAKED func_train (0 .5 .8) ? START_ON TOGGLE BLOCK_STOPS HASORIGIN NO_CLIP PUSHPULL
-Trains are moving platforms that players can ride.
-The targets origin specifies the min point of the train at each corner.
-The train spawns at the first target it is pointing at.
-If the train is the target of a button or trigger, it will not begin moving until activated. This means if it has a targetname it won't move unless triggered.
+ * QUAKED func_train (0 .5 .8) ? START_ON TOGGLE BLOCK_STOPS
+ *
+ * Trains are moving platforms that players can ride.
+ * The targets origin specifies the min point of the train
+ * at each corner. The train spawns at the first target it
+ * is pointing at. If the train is the target of a button
+ * or trigger, it will not begin moving until activated.
 
 -------KEYS------
 NO_CLIP - train will not block anything.
@@ -2585,8 +3496,14 @@ materialtype -
 	10 = MAT_NONE - just makes smoke
 
 */
-void train_blocked (edict_t *self, edict_t *other)
+void
+train_blocked(edict_t *self, edict_t *other)
 {
+	if (!self || !other)
+	{
+		return;
+	}
+
 	if ((other->svflags & SVF_MONSTER) && (!other->client) && !(other->svflags & SVF_BOSS))
 	{
 		// give it a chance to go away on it's own terms (like gibs)
@@ -2598,35 +3515,47 @@ void train_blocked (edict_t *self, edict_t *other)
 	}
 
 	if (level.time < self->touch_debounce_time)
+	{
 		return;
+	}
 
 	if (!self->dmg)
+	{
 		return;
+	}
+
 	self->touch_debounce_time = level.time + 0.5;
-	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0,MOD_CRUSH);
+	T_Damage(other, self, self, vec3_origin, other->s.origin,
+			vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
 }
 
-void train_wait (edict_t *self)
+void
+train_wait(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
 
 	if (self->target_ent->moveinfo.sound_middle)
 		gi.sound(self->target_ent, CHAN_VOICE, self->target_ent->moveinfo.sound_middle, 1, ATTN_NORM, 0);
 
 	if (self->target_ent->pathtarget)
 	{
-		char	*savetarget;
-		edict_t	*ent;
+		char *savetarget;
+		edict_t *ent;
 
 		ent = self->target_ent;
 		savetarget = ent->target;
 		ent->target = ent->pathtarget;
-
-		G_UseTargets (ent, self->activator);
+		G_UseTargets(ent, self->activator);
 		ent->target = savetarget;
 
-		// make sure we didn't get killed by a killtarget
+		/* make sure we didn't get killed by a killtarget */
 		if (!self->inuse)
+		{
 			return;
+		}
 	}
 
 	if (self->moveinfo.wait)
@@ -2654,24 +3583,33 @@ void train_wait (edict_t *self)
 		}
 		else if (self->spawnflags & TRAIN_TOGGLE)  // && wait < 0
 		{
-			train_next (self);
+			train_next(self);
 			self->spawnflags &= ~TRAIN_START_ON;
-			VectorClear (self->velocity);
+			VectorClear(self->velocity);
 			self->nextthink = 0;
 		}
 
 		if (!(self->flags & FL_TEAMSLAVE))
 		{
 			if (self->moveinfo.sound_end)
-				gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+			{
+				gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
+						self->moveinfo.sound_end, 1,
+						ATTN_IDLE, 0);
+			}
+
 			self->s.sound = 0;
 		}
 	}
 	else
 	{
-		train_next (self);
+		train_next(self);
 	}
+}
 
+void
+train_piece_wait(edict_t *self)
+{
 }
 
 void
@@ -2741,13 +3679,18 @@ again:
 
 
 	if (self->spawnflags & 8)	// Has an origin
-		VectorCopy (ent->s.origin, dest);
-	else						// No origin
-		VectorSubtract (ent->s.origin, self->mins, dest);
-	self->moveinfo.state = STATE_TOP;
+	{
+		VectorCopy(ent->s.origin, dest);
+	}
+	else
+	{
+		// No origin
+		VectorSubtract(ent->s.origin, self->mins, dest);
+	}
 
-	VectorCopy (self->s.origin, self->moveinfo.start_origin);
-	VectorCopy (dest, self->moveinfo.end_origin);
+	self->moveinfo.state = STATE_TOP;
+	VectorCopy(self->s.origin, self->moveinfo.start_origin);
+	VectorCopy(dest, self->moveinfo.end_origin);
 
 	if (ent->speed)
 	{
@@ -2845,7 +3788,7 @@ func_train_find(edict_t *self)
 
 void
 train_use(edict_t *self, edict_t *other /* unused */,
-	   	edict_t *activator)
+		edict_t *activator)
 {
 	if (!self || !activator)
 	{
@@ -2979,41 +3922,57 @@ SP_func_train(edict_t *self)
 
 /*
  * QUAKED func_timer (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) START_ON
-"wait"			base time between triggering all targets, default is 1
-"random"		wait variance, default is 0
-
-so, the basic time between firing is a random time between
-(wait - random) and (wait + random)
-
-"delay"			delay before first firing when turned on, default is 0
-
-"pausetime"		additional delay used only the very first time
-				and only if spawned with START_ON
-
-These can used but not touched.
-*/
-void func_timer_think (edict_t *self)
+ *
+ * "wait"	base time between triggering all targets, default is 1
+ * "random"	wait variance, default is 0
+ *
+ * so, the basic time between firing is a random time
+ * between (wait - random) and (wait + random)
+ *
+ * "delay"			delay before first firing when turned on, default is 0
+ * "pausetime"		additional delay used only the very first time
+ *                  and only if spawned with START_ON
+ *
+ * These can used but not touched.
+ */
+void
+func_timer_think(edict_t *self)
 {
-	G_UseTargets (self, self->activator);
-	self->nextthink = level.time + self->wait + flrand(-self->random, self->random);
+	if (!self)
+	{
+		return;
+	}
+
+	G_UseTargets(self, self->activator);
+	self->nextthink = level.time + self->wait + crandom() * self->random;
 }
 
-void func_timer_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+func_timer_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 {
+	if (!self || !activator)
+	{
+		return;
+	}
+
 	self->activator = activator;
 
-	// if on, turn it off
+	/* if on, turn it off */
 	if (self->nextthink)
 	{
 		self->nextthink = 0;
 		return;
 	}
 
-	// turn it on
+	/* turn it on */
 	if (self->delay)
+	{
 		self->nextthink = level.time + self->delay;
+	}
 	else
-		func_timer_think (self);
+	{
+		func_timer_think(self);
+	}
 }
 
 void
@@ -3062,7 +4021,7 @@ SP_func_timer(edict_t *self)
  */
 void
 func_conveyor_use(edict_t *self, edict_t *other /* unused */,
-	   	edict_t *activator /* unused */)
+		edict_t *activator /* unused */)
 {
 	if (!self)
 	{
@@ -3167,7 +4126,7 @@ door_secret_use(edict_t *self, edict_t *other /* unused */,
 
 	if (self->moveinfo.sound_start)
 	{
-		gi.sound(self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_start, 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_start, 1, ATTN_IDLE, 0);
 	}
 
 	Move_Calc(self, self->pos1, door_secret_move1);
@@ -3196,7 +4155,7 @@ door_secret_move2(edict_t *self)
 
 	if (self->moveinfo.sound_middle)
 	{
-		gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_middle, 1, ATTN_IDLE, 0);
+		gi.sound (self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_middle, 1, ATTN_IDLE, 0);
 	}
 
 	Move_Calc(self, self->pos2, door_secret_move3);
@@ -3212,7 +4171,7 @@ door_secret_move3(edict_t *self)
 
 	if (self->moveinfo.sound_end)
 	{
-		gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+		gi.sound (self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
 	}
 
 	if (self->wait == -1)
@@ -3234,7 +4193,7 @@ door_secret_move4(edict_t *self)
 
 	if (self->moveinfo.sound_middle)
 	{
-		gi.sound(self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_middle, 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_middle, 1, ATTN_IDLE, 0);
 	}
 
 	Move_Calc(self, self->pos1, door_secret_move5);
@@ -3250,7 +4209,7 @@ door_secret_move5(edict_t *self)
 
 	if (self->moveinfo.sound_end)
 	{
-		gi.sound(self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
 	}
 
 	self->nextthink = level.time + 1.0;
@@ -3267,7 +4226,7 @@ door_secret_move6(edict_t *self)
 
 	if (self->moveinfo.sound_start)
 	{
-		gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE, self->moveinfo.sound_start, 1, ATTN_IDLE, 0);
+		gi.sound (self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_start, 1, ATTN_IDLE, 0);
 	}
 
 	Move_Calc(self, vec3_origin, door_secret_done);
@@ -3352,7 +4311,6 @@ SP_func_door_secret(edict_t *ent)
 	ent->movetype = MOVETYPE_PUSH;
 	ent->solid = SOLID_BSP;
 	gi.setmodel(ent, ent->model);
-	gi.linkentity(ent);
 
 	ent->blocked = door_secret_blocked;
 	ent->use = door_secret_use;
@@ -3423,9 +4381,271 @@ SP_func_door_secret(edict_t *ent)
 
 	ent->classname = "func_door";
 
+	gi.linkentity(ent);
 }
 
-void monsterspawner_go (edict_t *self)
+/* ==================================================================== */
+
+/*
+ * QUAKED func_killbox (1 0 0) ?
+ *
+ * Kills everything inside when fired,
+ * irrespective of protection.
+ */
+void
+use_killbox(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	KillBox(self);
+}
+
+void
+SP_func_killbox(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	gi.setmodel(ent, ent->model);
+	ent->use = use_killbox;
+	ent->svflags = SVF_NOCLIENT;
+}
+
+/*
+ * QUAKED rotating_light (0 .5 .8) (-8 -8 -8) (8 8 8) START_OFF ALARM
+ * "health"	if set, the light may be killed.
+ */
+
+#define START_OFF 1
+
+void
+rotating_light_alarm(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->spawnflags & START_OFF)
+	{
+		self->think = NULL;
+		self->nextthink = 0;
+	}
+	else
+	{
+		gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
+				self->moveinfo.sound_start, 1,
+				ATTN_STATIC, 0);
+		self->nextthink = level.time + 1;
+	}
+}
+
+void
+rotating_light_killed(edict_t *self, edict_t *inflictor /* unused */,
+		edict_t *attacker /* unused */, int damage /* unused */,
+		vec3_t point /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_WELDING_SPARKS);
+	gi.WriteByte(30);
+	gi.WritePosition(self->s.origin);
+	gi.WriteDir(vec3_origin);
+	gi.WriteByte(0xe0 + (rand() & 7));
+	gi.multicast(self->s.origin, MULTICAST_PVS);
+
+	self->s.effects &= ~EF_SPINNINGLIGHTS;
+	self->use = NULL;
+
+	self->think = G_FreeEdict;
+	self->nextthink = level.time + 0.1;
+}
+
+void
+rotating_light_use(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->spawnflags & START_OFF)
+	{
+		self->spawnflags &= ~START_OFF;
+		self->s.effects |= EF_SPINNINGLIGHTS;
+
+		if (self->spawnflags & 2)
+		{
+			self->think = rotating_light_alarm;
+			self->nextthink = level.time + 0.1;
+		}
+	}
+	else
+	{
+		self->spawnflags |= START_OFF;
+		self->s.effects &= ~EF_SPINNINGLIGHTS;
+	}
+}
+
+void
+SP_rotating_light(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_STOP;
+	self->solid = SOLID_BBOX;
+
+	self->s.modelindex = gi.modelindex("models/objects/light/tris.md2");
+
+	self->s.frame = 0;
+
+	self->use = rotating_light_use;
+
+	if (self->spawnflags & START_OFF)
+	{
+		self->s.effects &= ~EF_SPINNINGLIGHTS;
+	}
+	else
+	{
+		self->s.effects |= EF_SPINNINGLIGHTS;
+	}
+
+	if (!self->speed)
+	{
+		self->speed = 32;
+	}
+
+	if (!self->health)
+	{
+		self->health = 10;
+		self->max_health = self->health;
+		self->die = rotating_light_killed;
+		self->takedamage = DAMAGE_YES;
+	}
+	else
+	{
+		self->max_health = self->health;
+		self->die = rotating_light_killed;
+		self->takedamage = DAMAGE_YES;
+	}
+
+	if (self->spawnflags & 2)
+	{
+		self->moveinfo.sound_start = gi.soundindex("misc/alarm.wav");
+	}
+
+	gi.linkentity(self);
+}
+
+/*
+ * QUAKED func_object_repair (1 .5 0) (-8 -8 -8) (8 8 8)
+ * object to be repaired.
+ * The default delay is 1 second
+ * "delay" the delay in seconds for spark to occur
+ */
+void
+object_repair_fx(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->nextthink = level.time + ent->delay;
+
+	if (ent->health <= 100)
+	{
+		ent->health++;
+	}
+	else
+	{
+		gi.WriteByte(svc_temp_entity);
+		gi.WriteByte(TE_WELDING_SPARKS);
+		gi.WriteByte(10);
+		gi.WritePosition(ent->s.origin);
+		gi.WriteDir(vec3_origin);
+		gi.WriteByte(0xe0 + (rand() & 7));
+		gi.multicast(ent->s.origin, MULTICAST_PVS);
+	}
+}
+
+void
+object_repair_dead(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	G_UseTargets(ent, ent);
+	ent->nextthink = level.time + 0.1;
+	ent->think = object_repair_fx;
+}
+
+void
+object_repair_sparks(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->health < 0)
+	{
+		ent->nextthink = level.time + 0.1;
+		ent->think = object_repair_dead;
+		return;
+	}
+
+	ent->nextthink = level.time + ent->delay;
+
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_WELDING_SPARKS);
+	gi.WriteByte(10);
+	gi.WritePosition(ent->s.origin);
+	gi.WriteDir(vec3_origin);
+	gi.WriteByte(0xe0 + (rand() & 7));
+	gi.multicast(ent->s.origin, MULTICAST_PVS);
+}
+
+void
+SP_object_repair(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	ent->classname = "object_repair";
+	ent->think = object_repair_sparks;
+	ent->nextthink = level.time + 1.0;
+	ent->health = 100;
+
+	if (!ent->delay)
+	{
+		ent->delay = 1.0;
+	}
+
+	gi.linkentity(ent);
+}
+
+void monsterspawner_go(edict_t *self)
 {
 	edict_t	*monster;
 	vec3_t angle,holdorigin;
@@ -3706,24 +4926,6 @@ void SP_func_monsterspawner (edict_t *self)
 	gi.linkentity(self);
 
 }
-
-
-/*
- * QUAKED func_killbox (1 0 0) ?
- * Kills everything inside when fired, irrespective of protection.
- */
-void use_killbox (edict_t *self, edict_t *other, edict_t *activator)
-{
-	KillBox (self);
-}
-
-void SP_func_killbox (edict_t *ent)
-{
-	gi.setmodel(ent, ent->model);
-	ent->use = use_killbox;
-	ent->svflags = SVF_NOCLIENT;
-}
-
 
 //===========================
 //  These are just temp entities until the actual code is written for each monster

@@ -524,9 +524,9 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	// has the target got reflection turned on ?
 	if(EntReflecting(other, true, true) && self->reflect_debounce_time)
 	{
-	   	Create_rand_relect_vect(self->velocity, self->velocity);
-	   	Vec3ScaleAssign(ARROW_SPEED/2, self->velocity);
-	   	MorphReflect(self, other, self->velocity);
+		Create_rand_relect_vect(self->velocity, self->velocity);
+		Vec3ScaleAssign(ARROW_SPEED/2, self->velocity);
+		MorphReflect(self, other, self->velocity);
 
 		return;
 	}

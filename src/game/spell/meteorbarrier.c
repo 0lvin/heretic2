@@ -436,7 +436,7 @@ void SpellCastMeteorBarrier(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec
 		Meteor->reflect_debounce_time = MAX_REFLECT;
 		Meteor->health = I;
 		Meteor->think = MeteorBarrierSearchInitThink;
-	   	Meteor->count = 0;
+		Meteor->count = 0;
 		Meteor->random = 0;							// Lifetime count
 		Meteor->solid = SOLID_NOT;
 		Meteor->owner = Caster;

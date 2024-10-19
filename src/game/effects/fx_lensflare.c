@@ -332,9 +332,9 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		VectorSet(Explosion->up, 0.0f, 0.0f, 0.0f);
 
-	  	Explosion->r.color.r = tint.r;
-	  	Explosion->r.color.g = tint.g;
-	  	Explosion->r.color.b = tint.b;
+		Explosion->r.color.r = tint.r;
+		Explosion->r.color.g = tint.g;
+		Explosion->r.color.b = tint.b;
 		Explosion->alpha=alpha;
 
 		switch (I)
@@ -453,9 +453,9 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 
 		VectorSet(Explosion->up, 0.0f, 0.0f, 0.0f);
 
-	  	Explosion->r.color.r = tint->r;
-	  	Explosion->r.color.g = tint->g;
-	  	Explosion->r.color.b = tint->b;
+		Explosion->r.color.r = tint->r;
+		Explosion->r.color.g = tint->g;
+		Explosion->r.color.b = tint->b;
 		Explosion->alpha = (float)(tint->a)/255.0;
 
 		switch (I)

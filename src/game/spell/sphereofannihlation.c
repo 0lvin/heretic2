@@ -79,7 +79,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 			VectorCopy(Self->owner->s.origin, Self->s.origin);
 			Self->s.origin[0] += Forward[0]*20.0;
 			Self->s.origin[1] += Forward[1]*20.0;
-	   		Self->s.origin[2] += Self->owner->viewheight-5.0;
+			Self->s.origin[2] += Self->owner->viewheight-5.0;
 		}
 
 		Self->nextthink=level.time+0.1;
@@ -123,7 +123,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 		Self->touch=SphereOfAnnihilationTouch;
 		Self->think=NULL;
 
-	   	VectorSet(Self->mins, -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS);
+		VectorSet(Self->mins, -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS);
 		VectorSet(Self->maxs, SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS);
 
 		Self->s.sound = 0;
@@ -285,7 +285,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *Self)
 			VectorCopy(Self->owner->s.origin, Self->s.origin);
 			Self->s.origin[0] += Forward[0]*20.0;
 			Self->s.origin[1] += Forward[1]*20.0;
-	   		Self->s.origin[2] += Self->owner->viewheight-5.0;
+			Self->s.origin[2] += Self->owner->viewheight-5.0;
 		}
 
 		Self->nextthink=level.time+0.1;
@@ -397,7 +397,7 @@ void SphereExplodeThink(edict_t *self)
 		{
 			T_Damage(ent, self, self->owner, self->velocity, ent->s.origin, vec3_origin, self->dmg, 0, 0, MOD_SPHERE);
 			ent->fire_timestamp = self->fire_timestamp;
-		   	gi.CreateEffect(&ent->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vec3_origin);
+			gi.CreateEffect(&ent->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vec3_origin);
 		}
 	}
 
@@ -681,7 +681,7 @@ static void SphereWatcherGrowThink(edict_t *Self)
 		Self->think=SphereWatcherFlyThink;
 		Self->nextthink=level.time+0.1;
 
-	   	VectorSet(Self->mins, -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS);
+		VectorSet(Self->mins, -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS);
 		VectorSet(Self->maxs, SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS);
 
 		Self->s.sound = 0;

@@ -49,7 +49,7 @@ static qboolean FXMorphMissileThink(client_entity_t *missile, centity_t *owner)
 	vec3_t				scaled_vel;
 	client_entity_t	*trail;
 	int					count;
-	paletteRGBA_t	  	color;
+	paletteRGBA_t		color;
 	vec3_t				diff, curpos;
 	int					dur;
 

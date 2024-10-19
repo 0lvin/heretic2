@@ -46,7 +46,7 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner
 	vec3_t			Trailend,Trailstart;
 	vec3_t			Real_Trailend,Real_Trailstart;
 	vec3_t			TrailDelta;
-	float		   	TrailLength;
+	float			TrailLength;
 
 	client_particle_t	*ce;
 	paletteRGBA_t		color;

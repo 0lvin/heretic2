@@ -439,7 +439,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 										   _BBMax,					// Bounding box max.
 										   TempVec,					// End pos.
 										   Finder,					// Ignore this edict.
-										   CONTENTS_SOLID);	  		// Contents mask.
+										   CONTENTS_SOLID);			// Contents mask.
 
 							if((Trace.fraction!=1.0)||(Trace.startsolid))
 							{
@@ -589,7 +589,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 										   _BBMax,					// Bounding box max.
 										   TempVec,					// End pos.
 										   Finder,					// Ignore this edict.
-										   CONTENTS_SOLID);	  		// Contents mask.
+										   CONTENTS_SOLID);			// Contents mask.
 
 							if((Trace.fraction!=1.0)||(Trace.startsolid))
 							{
@@ -682,7 +682,7 @@ edict_t *FindSpellTargetInRadius(edict_t *searchent, float radius, vec3_t search
 							   _maxs,					// Bounding box max.
 							   entpos,					// End pos.
 							   searchent,				// Ignore this edict.
-							   CONTENTS_SOLID);	  		// Contents mask.
+							   CONTENTS_SOLID);			// Contents mask.
 
 				if((Trace.fraction!=1.0)||(Trace.startsolid))
 				{

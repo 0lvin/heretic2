@@ -2079,13 +2079,13 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 	playerinfo->G_WeapNext(playerinfo->self);
 	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 	{
-	   	PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
-	   	return(ASEQ_WRRBOW_END);
+		PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
+		return(ASEQ_WRRBOW_END);
 	}
 	else
 	{
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_WPHBOW_END);
-	   	return(ASEQ_WPHBOW_END);
+		return(ASEQ_WPHBOW_END);
 	}
 }
 

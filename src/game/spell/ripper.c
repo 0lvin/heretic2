@@ -70,7 +70,7 @@ static void RipperExplodeBallThink(edict_t *self)
    					// What the hell, let's spawn a big gush of blood in the travelling direction.
    					VectorScale(self->movedir, RIPPER_EXPLODE_SPEED*0.25, vel);
 					if(trace.ent->materialtype == MAT_INSECT)
-	   					gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, self->last_org, "ub", vel, (byte)20);
+						gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, self->last_org, "ub", vel, (byte)20);
    					else
 						gi.CreateEffect(NULL, FX_BLOOD, 0, self->last_org, "ub", vel, (byte)20);
 

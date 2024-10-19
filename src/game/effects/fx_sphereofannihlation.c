@@ -349,9 +349,9 @@ static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_
 											flrand(-10.0, 10.0)+ Self->r.origin[2]);
 		}
 
-	   	VectorCopy(Owner->current.angles,Temp);
-	   	VectorScale(Temp,180.0/M_PI,Temp);
-	   	AngleVectors(Temp,Forward2,Right2,NULL);
+		VectorCopy(Owner->current.angles,Temp);
+		VectorScale(Temp,180.0/M_PI,Temp);
+		AngleVectors(Temp,Forward2,Right2,NULL);
 
 
 		// Set my velocity and accelaration.
