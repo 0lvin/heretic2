@@ -1449,8 +1449,6 @@
 #define FRAME_bckfly1         	1421
 #define FRAME_bckfly2         	1422
 
-#define MODEL_SCALE		1.000000
-
 #define NUM_MESH_NODES		16
 
 #define MESH_BASE2		0
@@ -1471,3 +1469,5 @@
 #define MESH__HEAD		15
 
 #define NUM_PLAYER_NODES	16
+
+#define MODEL_SCALE 1.000000
