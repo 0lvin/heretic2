@@ -60,7 +60,7 @@ init(const char *filename)
 	{
 		GLfloat lightpos[] = { 5.0f, 10.0f, 0.0f, 1.0f };
 
-		// show_frames(mem_mod);
+		show_frames(mem_mod);
 
 		/* Initialize OpenGL context */
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
