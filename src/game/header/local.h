@@ -606,25 +606,26 @@ typedef struct
 	float minpitch;
 	float maxpitch;
 
-	int		rotate;
-	float	zangle;
-	char	*file;
-	int		radius;
+	float radius;
+	float fade_start_dist;
+	float fade_end_dist;
+	char *image;
 
-	// Weapons to be given to the player on spawning.
+	int rotate;
+	float zangle;
+	char *file;
 
-	int		offensive;
-	int		defensive;
-	int		spawnflags2;
+	/* Weapons to be given to the player on spawning. */
+	int offensive;
+	int defensive;
+	int spawnflags2;
 
-	// Time to wait (in seconds) for all clients to have joined a map in coop.
+	/* Time to wait (in seconds) for all clients to have joined a map in coop. */
+	int cooptimeout;
 
-	int		cooptimeout;
-
-	// Scripting stuff.
-
-	char	*script;
-	char	*parms[16];
+	/* Scripting stuff. */
+	char *script;
+	char *parms[16];
 } spawn_temp_t;
 
 typedef struct
@@ -1087,9 +1088,9 @@ typedef enum
 	F_CLIENT,           /* index on disk, pointer in memory */
 	F_FUNCTION,
 	F_MMOVE,
+	F_IGNORE,
 	F_RGBA,
-	F_RGB,
-	F_IGNORE
+	F_LRAWSTRING,       /* raw string on disk, pointer in memory, TAG_LEVEL */
 } fieldtype_t;
 
 typedef struct
@@ -1174,10 +1175,6 @@ float vectoyaw2(vec3_t vec);
 void vectoangles2(vec3_t vec, vec3_t angles);
 edict_t *findradius2(edict_t *from, vec3_t org, float rad);
 
-/* g_spawn.c */
-void ED_CallSpawn(edict_t *ent);
-void DynamicSpawnInit(void);
-
 /* g_combat.c */
 qboolean OnSameTeam(edict_t *ent1, edict_t *ent2);
 qboolean CanDamage(edict_t *targ, edict_t *inflictor);
@@ -1224,6 +1221,32 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 #define DAMAGE_BURNING				(DAMAGE_ONFIRE|DAMAGE_NO_KNOCKBACK|DAMAGE_NO_BLOOD|DAMAGE_FIRE|DAMAGE_AVOID_ARMOR)
 
 /* g_monster.c */
+void monster_fire_bullet(edict_t *self, vec3_t start, vec3_t dir, int damage,
+		int kick, int hspread, int vspread, int flashtype);
+void monster_fire_shotgun(edict_t *self, vec3_t start, vec3_t aimdir,
+		int damage, int kick, int hspread, int vspread, int count,
+		int flashtype);
+void monster_fire_blaster(edict_t *self, vec3_t start, vec3_t dir,
+		int damage, int speed, int flashtype, int effect);
+void monster_fire_grenade(edict_t *self, vec3_t start, vec3_t aimdir,
+		int damage, int speed, int flashtype);
+void monster_fire_rocket(edict_t *self, vec3_t start, vec3_t dir,
+		int damage, int speed, int flashtype);
+void monster_fire_railgun(edict_t *self, vec3_t start, vec3_t aimdir,
+		int damage, int kick, int flashtype);
+void monster_fire_bfg(edict_t *self, vec3_t start, vec3_t aimdir,
+		int damage, int speed, int kick, float damage_radius,
+		int flashtype);
+void monster_fire_ionripper(edict_t *self, vec3_t start, vec3_t dir, int damage,
+		int speed, int flashtype, int effect);
+void monster_fire_heat(edict_t *self, vec3_t start, vec3_t dir, int damage,
+		int speed, int flashtype);
+void monster_fire_heatbeam(edict_t *self, vec3_t start, vec3_t dir, vec3_t offset,
+		int damage, int kick, int flashtype);
+void monster_dabeam(edict_t *self);
+void monster_fire_blueblaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
+		int speed, int flashtype, int effect);
+
 void M_droptofloor(edict_t *ent);
 void monster_think(edict_t *self);
 void walkmonster_start(edict_t *self);
@@ -1234,7 +1257,15 @@ void PauseTime(edict_t *self, float time);
 void monster_death_use(edict_t *self);
 void M_CatagorizePosition(edict_t *ent);
 qboolean M_CheckAttack(edict_t *self);
+void M_FlyCheck(edict_t *self);
 void M_CheckGround(edict_t *ent);
+
+void monster_fire_blaster2(edict_t *self, vec3_t start, vec3_t dir, int damage,
+		int speed, int flashtype, int effect);
+void monster_fire_tracker(edict_t *self, vec3_t start, vec3_t dir, int damage,
+		int speed, edict_t *enemy, int flashtype);
+void stationarymonster_start(edict_t *self);
+void monster_done_dodge(edict_t *self);
 
 /* g_misc.c */
 void ThrowHead(edict_t *self, const char *gibname, int damage, int type);
@@ -1311,6 +1342,7 @@ void InitClientPersistant(edict_t *player);
 void InitClientResp(gclient_t *client);
 void InitBodyQue(void);
 void ClientBeginServerFrame(edict_t *ent);
+void ClientUserinfoChanged(edict_t *ent, char *userinfo);
 int SexedSoundIndex(edict_t *ent, char *base);
 
 /* g_player.c */
@@ -1338,13 +1370,22 @@ void InitPlayerinfo(edict_t *ent);
 void MoveClientToIntermission(edict_t *client);
 void MoveClientsToIntermission(vec3_t ViewOrigin, vec3_t ViewAngles);
 void G_SetStats(edict_t *ent);
+void G_SetSpectatorStats(edict_t *ent);
+void G_CheckChaseStats(edict_t *ent);
 void ValidateSelectedItem(edict_t *ent);
 void SelectPrevItem(edict_t *ent, int itflags);
 void SelectNextItem(edict_t *ent, int itflags);
 void DeathmatchScoreboardMessage(edict_t *client, edict_t *killer);
+void HelpComputerMessage(edict_t *client);
+void InventoryMessage(edict_t *client);
 
 /* g_pweapon.c */
 void PlayerNoise(edict_t *who, vec3_t where, int type);
+void P_ProjectSource(edict_t *ent, vec3_t distance,
+		vec3_t forward, vec3_t right, vec3_t result);
+void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
+		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames,
+		int *fire_frames, void (*fire)(edict_t *ent));
 
 /* g_resourcemanagers.c */
 void G_InitResourceManagers();
@@ -1360,9 +1401,11 @@ void M_MoveAwayFromGoal(edict_t *ent, float dist);
 
 /* g_phys.c */
 void G_RunEntity(edict_t *ent);
+void SV_AddGravity(edict_t *ent);
 
 /* g_main.c */
 void SaveClientData(void);
+void EndDMLevel(void);
 
 /* g_translate.c */
 void LocalizationInit(void);
@@ -1433,6 +1476,20 @@ int CountPlayers(void);
 void monster_jump_start(edict_t *self);
 qboolean monster_jump_finished(edict_t *self);
 
+/* g_sphere.c */
+void Defender_Launch(edict_t *self);
+void Vengeance_Launch(edict_t *self);
+void Hunter_Launch(edict_t *self);
+
+/* g_newdm.c */
+void InitGameRules(void);
+edict_t *DoRandomRespawn(edict_t *ent);
+void PrecacheForRandomRespawn(void);
+qboolean Tag_PickupToken(edict_t *ent, edict_t *other);
+void Tag_DropToken(edict_t *ent, gitem_t *item);
+void Tag_PlayerDeath(edict_t *targ, edict_t *inflictor, edict_t *attacker);
+void fire_doppleganger(edict_t *ent, vec3_t start, vec3_t aimdir);
+
 /* g_breakable.c */
 void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage);
 
@@ -1440,13 +1497,29 @@ void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage);
 void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
 
 
-/* g_spawnf.c */
-//sfs--this is used to get a classname for guys spawned while game is running
-char *ED_NewString(const char *string);
+/* g_spawn.c */
 void ED_CallSpawn(edict_t *ent);
+char *ED_NewString(const char *string, qboolean raw);
+void DynamicSpawnInit(void);
+edict_t *CreateFlyMonster(vec3_t origin, vec3_t angles, vec3_t mins,
+		vec3_t maxs, char *classname);
+edict_t *CreateGroundMonster(vec3_t origin, vec3_t angles, vec3_t mins,
+		vec3_t maxs, char *classname, int height);
+qboolean FindSpawnPoint(vec3_t startpoint, vec3_t mins, vec3_t maxs,
+		vec3_t spawnpoint, float maxMoveUp);
+qboolean CheckSpawnPoint(vec3_t origin, vec3_t mins, vec3_t maxs);
+qboolean CheckGroundSpawnPoint(vec3_t origin, vec3_t entMins, vec3_t entMaxs,
+		float height, float gravity);
+void SpawnGrow_Spawn(vec3_t startpos, int size);
+void Widowlegs_Spawn(vec3_t startpos, vec3_t angles);
+void ThrowSmallStuff(edict_t *self, vec3_t point);
+void ThrowWidowGibSized(edict_t *self, char *gibname, int damage, int type,
+		vec3_t startpos, int hitsound, qboolean fade);
 
+/* p_client.c */
+void RemoveAttackingPainDaemons(edict_t *self);
 
-//============================================================================
+/* ============================================================================ */
 
 
 // ************************************************************************************************
@@ -1468,11 +1541,34 @@ typedef struct
 	client_persistant_t coop_respawn;   /* what to set client->pers to on a respawn */
 	int enterframe;                 /* level.framenum the client entered the game */
 	int score;                      /* frags, etc */
+	int ctf_team;                   /* CTF team */
+	int ctf_state;
+	float ctf_lasthurtcarrier;
+	float ctf_lastreturnedflag;
+	float ctf_flagsince;
+	float ctf_lastfraggedcarrier;
+	qboolean id_state;
+	float lastidtime;
+	qboolean voted;    /* for elections */
+	qboolean ready;
+	qboolean admin;
+	struct ghost_s *ghost; /* for ghost codes */
 	vec3_t cmd_angles;              /* angles sent over in the last command */
 	int game_helpchanged;
 	int helpchanged;
 	qboolean spectator;             /* client is a spectator */
 } client_respawn_t;
+
+/*
+ * CTF menu
+ */
+typedef struct pmenuhnd_s
+{
+	struct pmenu_s *entries;
+	int cur;
+	int num;
+	void *arg;
+} pmenuhnd_t;
 
 /* this structure is cleared on each
    PutClientInServer(), except for 'client->pers' */
@@ -1482,10 +1578,12 @@ struct gclient_s
 	player_state_t ps;              /* communicated by server to clients */
 	int ping;
 
-	// All other fields below are private to the game.
+	/* private to game */
+	client_persistant_t pers;
+	client_respawn_t resp;
+	pmove_state_t old_pmove;        /* for detecting out-of-pmove changes */
 
-	client_respawn_t	resp;
-	pmove_state_t		old_pmove;				// For detecting out-of-pmove changes.
+	float invisible_framenum;
 
 	// Damage stuff. Sum up damage over an entire frame.
 

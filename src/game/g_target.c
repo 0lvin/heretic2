@@ -30,6 +30,18 @@
 #include "common/h2rand.h"
 #include "common/cl_strings.h"
 
+#define TARGET_HELP_PRIMARY 1
+#define TARGET_HELP_THINK_DELAY 0.3f
+
+#define LASER_ON 0x0001
+#define LASER_RED 0x0002
+#define LASER_GREEN 0x0004
+#define LASER_BLUE 0x0008
+#define LASER_YELLOW 0x0010
+#define LASER_ORANGE 0x0020
+#define LASER_FAT 0x0040
+#define LASER_STOPWINDOW 0x0080
+
 /*
  * QUAKED target_temp_entity (1 0 0) (-8 -8 -8) (8 8 8)
  *
@@ -704,6 +716,55 @@ void SP_target_earthquake (edict_t *self)
 	self->use = target_earthquake_use;
 
 	self->noise_index = gi.soundindex("world/quake.wav");
+}
+
+/*
+ * QUAKED target_camera (1 0 0) (-8 -8 -8) (8 8 8)
+ * [Sam-KEX] Creates a camera path as seen in the N64 version.
+*/
+void
+use_target_camera(edict_t *self, edict_t *other, edict_t *activator)
+{
+	edict_t *target;
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->sounds)
+	{
+		gi.configstring(CS_CDTRACK, va("%i", self->sounds));
+	}
+
+	if (!self->killtarget)
+	{
+		return;
+	}
+
+	target = G_PickTarget(self->killtarget);
+
+	if (!target || !target->use)
+	{
+		return;
+	}
+
+	/* TODO: Fully implement target camera logic */
+	target->use(target, self, activator);
+}
+
+void
+SP_target_camera(edict_t* self)
+{
+	if (deathmatch->value)
+	{
+		/* auto-remove for deathmatch */
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->use = use_target_camera;
+	self->svflags = SVF_NOCLIENT;
 }
 
 /*

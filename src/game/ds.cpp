@@ -2475,8 +2475,11 @@ Variable *CScript::HandleSpawn(void)
 
 				switch (f->type)
 				{
+					case F_LRAWSTRING:
+						*(char **)(b + f->ofs) = ED_NewString(Value->GetStringValue(), true);
+						break;
 					case F_LSTRING:
-						*(char **)(b+f->ofs) = ED_NewString (Value->GetStringValue());
+						*(char **)(b + f->ofs) = ED_NewString(Value->GetStringValue(), false);
 						break;
 					case F_VECTOR:
 						Value->GetVectorValue(*(vec3_t *)(b+f->ofs));

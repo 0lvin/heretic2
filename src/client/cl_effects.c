@@ -2093,6 +2093,80 @@ CL_ClearEffects(void)
 }
 
 void
+CL_FlameEffects(vec3_t origin)
+{
+	int n, count;
+
+	count = rand() & 0xF;
+
+	/* Particles going down */
+	for(n = 0; n < count; n++)
+	{
+		cparticle_t *p;
+		int j;
+
+		if (!free_particles)
+		{
+			return;
+		}
+
+		p = free_particles;
+		free_particles = p->next;
+		p->next = active_particles;
+		active_particles = p;
+
+		VectorClear(p->accel);
+		p->time = cl.time;
+
+		p->alpha = 1.0;
+		p->alphavel = -1.0 / (1 + frandk() * 0.2);
+		p->color = CL_CombineColors(0xff007fef, 0xff003bb7,
+					(float)(randk() & 15) / 15.0);
+
+		for (j = 0; j < 3; j++)
+		{
+			p->org[j] = origin[j] + crandk() * 5;
+			p->vel[j] = crandk() * 5;
+		}
+
+		p->vel[2] = crandk() * -10;
+		p->accel[2] = -PARTICLE_GRAVITY;
+	}
+
+	count = rand() & 0x7;
+
+	/* Particles go up */
+	for (n = 0; n < count; n++)
+	{
+		cparticle_t *p;
+		int j;
+
+		if (!free_particles)
+		{
+			return;
+		}
+
+		p = free_particles;
+		free_particles = p->next;
+		p->next = active_particles;
+		active_particles = p;
+		VectorClear(p->accel);
+
+		p->time = cl.time;
+
+		p->alpha = 1.0;
+		p->alphavel = -1.0 / (1 + frandk() * 0.5);
+		p->color = CL_CombineColors(0xff0000ff, 0xff002f2f,
+					(float)(randk() & 15) / 15.0);
+		for (j=0 ; j<3 ; j++)
+		{
+			p->org[j] = origin[j] + crandk() * 3;
+		}
+		p->vel[2] = 20 + crandk() * 5;
+	}
+}
+
+void
 CL_Flashlight(int ent, vec3_t pos)
 {
 	cdlight_t *dl;

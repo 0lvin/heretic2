@@ -325,7 +325,8 @@ void SP_trigger_puzzle(edict_t *self)
 	self->use = trigger_key_use;
 }
 
-void trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
+void
+trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	int	index;
 	edict_t *puzzle;

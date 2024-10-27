@@ -2862,7 +2862,7 @@ door_blocked(edict_t *self, edict_t *other)
 	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
 
 	/* if a door has a negative wait, it would never
-	   come back if blocked, (unless -2) so let it just squash the 
+	   come back if blocked, (unless -2) so let it just squash the
 	   object to death real fast */
 	if ((self->moveinfo.wait >= 0) || (self->moveinfo.wait == -2))
 	{
@@ -4672,9 +4672,9 @@ void monsterspawner_go(edict_t *self)
 		return;
 
 	monster = G_Spawn();
-	monster->classname = ED_NewString(MonsterSpawnerClassname[self->style].name);
+	monster->classname = ED_NewString(MonsterSpawnerClassname[self->style].name, true);
 
-//copy my designer-modified fields to the monster to overrride defaults
+	/* copy my designer-modified fields to the monster to overrride defaults */
 	monster->classID = CIDForSpawnerStyle[self->style];
 	if(self->mintel)
 		monster->mintel = self->mintel;

@@ -625,9 +625,11 @@ WriteField1(FILE *f, field_t *field, byte *base)
 		case F_ANGLEHACK:
 		case F_VECTOR:
 		case F_IGNORE:
+		case F_RGBA:
 			break;
 
 		case F_LSTRING:
+		case F_LRAWSTRING:
 		case F_GSTRING:
 
 			if (*(char **)p)
@@ -700,6 +702,7 @@ WriteField2(FILE *f, field_t *field, byte *base)
 	{
 		case F_GSTRING:
 		case F_LSTRING:
+		case F_LRAWSTRING:
 
 			if (*(char **)p)
 			{
@@ -737,9 +740,11 @@ ReadField(FILE *f, field_t *field, byte *base)
 		case F_ANGLEHACK:
 		case F_VECTOR:
 		case F_IGNORE:
+		case F_RGBA:
 			break;
 
 		case F_LSTRING:
+		case F_LRAWSTRING:
 			len = *(int *)p;
 
 			if (!len)

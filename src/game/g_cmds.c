@@ -37,7 +37,6 @@
 #include "header/g_itemstats.h"
 #include "common/cl_strings.h"
 
-
 extern gitem_armor_t silver_armor_info;
 extern gitem_armor_t gold_armor_info;
 extern qboolean AddWeaponToInventory(gitem_t *it,edict_t *player);
@@ -48,7 +47,7 @@ qboolean CheckFlood(edict_t *ent);
 void ED_CallSpawn(edict_t *ent);
 void MorphPlayerToChicken(edict_t *self, edict_t *caster);
 
-int		self_spawn = false;
+int self_spawn = false;
 
 static char *
 ClientTeam(edict_t *ent, char* value)
@@ -1226,7 +1225,7 @@ Cmd_SpawnEntity_f(edict_t *ent)
 	self_spawn = true;
 
 	newent = G_Spawn();
-	newent->classname = ED_NewString(gi.argv(1));
+	newent->classname = ED_NewString(gi.argv(1), true);
 	AngleVectors(ent->s.angles, forward, NULL, NULL);
 	VectorScale(forward, 100, forward);
 	VectorAdd(ent->s.origin, forward, newent->s.origin);
