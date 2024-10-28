@@ -100,8 +100,7 @@ typedef enum
 {
 	DAMAGE_NO,
 	DAMAGE_YES,         /* will take damage if hit */
-	DAMAGE_AIM,          /* auto targeting recognizes this */
-	DAMAGE_NO_RADIUS, /* Will not take damage from radius blasts */
+	DAMAGE_AIM          /* auto targeting recognizes this */
 } damage_t;
 
 typedef enum
@@ -204,8 +203,6 @@ typedef enum
 #define AS_MELEE 3
 #define AS_MISSILE 4
 #define AS_BLIND 5
-/* Heretic 2 */
-#define AS_DIVING 5
 
 /* armor types */
 #define ARMOR_NONE 0
@@ -705,6 +702,8 @@ typedef struct
 typedef struct
 {
 	int framecount;					// Number of frames in the animation frame array.
+	int firstframe;
+	int lastframe;
 	mframe_t *frame;
 	void (*endfunc)(edict_t *self);
 } mmove_t;
@@ -756,7 +755,7 @@ typedef struct
 												// E.g. a Rat's secondary enemy is a gib.
 
 	animmove_t *currentmove;
-	int aiflags;
+	unsigned int aiflags;           /* unsigned, since we're close to the max */
 	int aistate;						// Last order given to the monster (ORD_XXX).
 	int currframeindex;					// Index to current monster frame.
 	int nextframeindex;					// Used to force the next frameindex.
@@ -846,7 +845,10 @@ typedef struct
 	float	waterheight;
 } acelsizes_t;
 
-// The structure for each monster class.
+/* this determines how long to wait after a duck to duck again.
+   this needs to be longer than the time after the monster_duck_up
+   in all of the animation sequences */
+#define DUCK_INTERVAL 0.5
 
 extern game_locals_t game;
 extern level_locals_t level;
@@ -1105,9 +1107,17 @@ typedef struct
 extern field_t fields[];
 extern gitem_t itemlist[];
 
+/* player/client.c */
+void ClientBegin(edict_t *ent);
+void ClientDisconnect(edict_t *ent);
+void ClientUserinfoChanged(edict_t *ent, char *userinfo);
+qboolean ClientConnect(edict_t *ent, char *userinfo);
+void ClientThink(edict_t *ent, usercmd_t *cmd);
 
 /* g_cmds.c */
+qboolean CheckFlood(edict_t *ent);
 void Cmd_Help_f(edict_t *ent);
+void ClientCommand(edict_t *ent);
 void Cmd_Score_f(edict_t *ent);
 
 /* g_items.c */
@@ -1699,6 +1709,7 @@ extern pushed_t	pushed[MAX_EDICTS], * pushed_p;
 extern edict_t *obstacle;
 extern player_export_t *playerExport;	// interface to player library.
 
+#include "../player/library/player.h"
 #include "../../common/header/common.h"
 #include "g_message.h"
 #include "../common/message.h"
@@ -1741,6 +1752,7 @@ struct edict_s
 	int flags;
 
 	char *model;
+	float freetime;                 /* sv.time when the object was freed */
 
 	/* only used locally in game, not by server */
 	char *message;
@@ -1765,7 +1777,6 @@ struct edict_s
 	int					classID;
 
 	void				(*ai)(edict_t *self);
-	float				freetime;			// Server time when the object was freed.
 
 	// Used by the game physics.
 
@@ -1878,11 +1889,26 @@ struct edict_s
 	edict_t *mynoise;           /* can go in client only */
 	edict_t *mynoise2;
 
-	int bloodType;		// type of stuff to spawn off when hit
-	int plat2flags;
+	int noise_index;
+	int noise_index2;
+	float volume;
+	float attenuation;
+
+	/* timing variables */
+	float wait;
+	float delay;                /* before firing targets */
+	float random;
+
+	float last_sound_time;
+
+	int watertype;
+	int waterlevel;
 
 	vec3_t move_origin;
 	vec3_t move_angles;
+
+	int bloodType;		// type of stuff to spawn off when hit
+	int plat2flags;
 
 	void				(*TriggerActivated)(edict_t *self, edict_t *activator);
 										// used by anything which can "see", player and monsters
@@ -1919,21 +1945,6 @@ struct edict_s
 
 	edict_t				*last_buoyed_enemy;		// used by monsters.
 
-	int					noise_index;	// Used only by targets
-
-	float				volume;			// used only by target_speaker
-
-	union {
-	float				attenuation;	// used only by target_speaker
-	float				maxrange;		// used for ai
-	};
-
-	// Timing variables.
-
-	float				wait;			// Used by polys, triggers, and targets.
-	float				delay;			// Delay before firing targets. Used by a few polys and targets.
-	float				random;			// Used by func_timer and spl_meteorbarrier.
-
 	// Used to delay monster 5 before going after a player sound. Only set on player.
 
 	union
@@ -1958,8 +1969,6 @@ struct edict_s
 	// Used for determining effects of liquids in the environment.
 
 	float				speed;
-	int					watertype;		// Used to indicate current liquid actor is in.
-	int					waterlevel;		// Used by monsters and players and grenades.
 
 	int					mass;
 	float				gravity;		// Per entity gravity multiplier (1.0 is normal) Used for
@@ -2024,9 +2033,9 @@ struct edict_s
 	/* move this to clientinfo? */
 	int light_level;
 
-	int style; /* also used as areaportal number */
+	int style;                  /* also used as areaportal number */
 
-	gitem_t *item; /* for bonus items */
+	gitem_t *item;              /* for bonus items */
 
 	/* common data blocks */
 	moveinfo_t moveinfo;
@@ -2102,14 +2111,281 @@ struct edict_s
 	int chasedist2;
 };
 
+#define SPHERE_DEFENDER 0x0001
+#define SPHERE_HUNTER 0x0002
+#define SPHERE_VENGEANCE 0x0004
+#define SPHERE_DOPPLEGANGER 0x0100
+
+#define SPHERE_TYPE 0x00FF
+#define SPHERE_FLAGS 0xFF00
+
+/* deathmatch games */
+#define     RDM_TAG 2
+#define     RDM_DEATHBALL 3
+
+typedef struct dm_game_rs
+{
+	void (*GameInit)(void);
+	void (*PostInitSetup)(void);
+	void (*ClientBegin)(edict_t *ent);
+	void (*SelectSpawnPoint)(edict_t *ent, vec3_t origin, vec3_t angles);
+	void (*PlayerDeath)(edict_t *targ, edict_t *inflictor, edict_t *attacker);
+	void (*Score)(edict_t *attacker, edict_t *victim, int scoreChange);
+	void (*PlayerEffects)(edict_t *ent);
+	void (*DogTag)(edict_t *ent, edict_t *killer, char **pic);
+	void (*PlayerDisconnect)(edict_t *ent);
+	int (*ChangeDamage)(edict_t *targ, edict_t *attacker, int damage, int mod);
+	int (*ChangeKnockback)(edict_t *targ, edict_t *attacker, int knockback, int mod);
+	int (*CheckDMRules)(void);
+} dm_game_rt;
+
+extern dm_game_rt DMGame;
+
+void Tag_GameInit(void);
+void Tag_PostInitSetup(void);
+void Tag_PlayerDeath(edict_t *targ, edict_t *inflictor, edict_t *attacker);
+void Tag_Score(edict_t *attacker, edict_t *victim, int scoreChange);
+void Tag_PlayerEffects(edict_t *ent);
+void Tag_DogTag(edict_t *ent, edict_t *killer, char **pic);
+void Tag_PlayerDisconnect(edict_t *ent);
+int Tag_ChangeDamage(edict_t *targ, edict_t *attacker, int damage, int mod);
+
+void DBall_GameInit(void);
+void DBall_ClientBegin(edict_t *ent);
+void DBall_SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
+int DBall_ChangeKnockback(edict_t *targ, edict_t *attacker, int knockback, int mod);
+int DBall_ChangeDamage(edict_t *targ, edict_t *attacker, int damage, int mod);
+void DBall_PostInitSetup(void);
+int DBall_CheckDMRules(void);
+
+/*
+ * CTF Menu
+ */
+enum
+{
+	PMENU_ALIGN_LEFT,
+	PMENU_ALIGN_CENTER,
+	PMENU_ALIGN_RIGHT
+};
+
+typedef void (*SelectFunc_t)(edict_t *ent, pmenuhnd_t *hnd);
+
+typedef struct pmenu_s
+{
+	char *text;
+	int align;
+	SelectFunc_t SelectFunc;
+} pmenu_t;
+
+pmenuhnd_t *PMenu_Open(edict_t *ent,
+		pmenu_t *entries,
+		int cur,
+		int num,
+		void *arg);
+void PMenu_Close(edict_t *ent);
+void PMenu_UpdateEntry(pmenu_t *entry,
+		const char *text,
+		int align,
+		SelectFunc_t SelectFunc);
+void PMenu_Do_Update(edict_t *ent);
+void PMenu_Update(edict_t *ent);
+void PMenu_Next(edict_t *ent);
+void PMenu_Prev(edict_t *ent);
+void PMenu_Select(edict_t *ent);
+
+/*
+ * CTF specific stuff.
+ */
+
+#define CTF_VERSION 1.52
+#define CTF_VSTRING2(x) # x
+#define CTF_VSTRING(x) CTF_VSTRING2(x)
+#define CTF_STRING_VERSION CTF_VSTRING(CTF_VERSION)
+
+#define STAT_CTF_TEAM1_PIC 18
+#define STAT_CTF_TEAM1_CAPS 19
+#define STAT_CTF_TEAM2_PIC 20
+#define STAT_CTF_TEAM2_CAPS 21
+#define STAT_CTF_FLAG_PIC 22
+#define STAT_CTF_JOINED_TEAM1_PIC 23
+#define STAT_CTF_JOINED_TEAM2_PIC 24
+#define STAT_CTF_TEAM1_HEADER 25
+#define STAT_CTF_TEAM2_HEADER 26
+#define STAT_CTF_TECH 27
+#define STAT_CTF_ID_VIEW 28
+#define STAT_CTF_MATCH 29
+#define STAT_CTF_ID_VIEW_COLOR 30
+#define STAT_CTF_TEAMINFO 31
+
+#define CONFIG_CTF_MATCH (CS_AIRACCEL - 1)
+#define CONFIG_CTF_TEAMINFO (CS_AIRACCEL - 2)
+
+typedef enum
+{
+	CTF_NOTEAM,
+	CTF_TEAM1,
+	CTF_TEAM2
+} ctfteam_t;
+
+typedef enum
+{
+	CTF_GRAPPLE_STATE_FLY,
+	CTF_GRAPPLE_STATE_PULL,
+	CTF_GRAPPLE_STATE_HANG
+} ctfgrapplestate_t;
+
+typedef struct ghost_s
+{
+	char netname[16];
+	int number;
+
+	/* stats */
+	int deaths;
+	int kills;
+	int caps;
+	int basedef;
+	int carrierdef;
+
+	int code; /* ghost code */
+	int team; /* team */
+	int score; /* frags at time of disconnect */
+	edict_t *ent;
+} ghost_t;
+
+extern cvar_t *ctf;
+extern char *ctf_statusbar;
+
+#define CTF_TEAM1_SKIN "ctf_r"
+#define CTF_TEAM2_SKIN "ctf_b"
+
+#define DF_CTF_FORCEJOIN 131072
+#define DF_ARMOR_PROTECT 262144
+#define DF_CTF_NO_TECH 524288
+
+#define CTF_CAPTURE_BONUS 15        /* what you get for capture */
+#define CTF_TEAM_BONUS 10           /* what your team gets for capture */
+#define CTF_RECOVERY_BONUS 1        /* what you get for recovery */
+#define CTF_FLAG_BONUS 0            /* what you get for picking up enemy flag */
+#define CTF_FRAG_CARRIER_BONUS 2    /* what you get for fragging enemy flag carrier */
+#define CTF_FLAG_RETURN_TIME 40     /* seconds until auto return */
+
+#define CTF_CARRIER_DANGER_PROTECT_BONUS 2      /* bonus for fraggin someone who has recently hurt your flag carrier */
+#define CTF_CARRIER_PROTECT_BONUS 1             /* bonus for fraggin someone while either you or your target are near your flag carrier */
+#define CTF_FLAG_DEFENSE_BONUS 1                /* bonus for fraggin someone while either you or your target are near your flag */
+#define CTF_RETURN_FLAG_ASSIST_BONUS 1          /* awarded for returning a flag that causes a capture to happen almost immediately */
+#define CTF_FRAG_CARRIER_ASSIST_BONUS 2         /* award for fragging a flag carrier if a capture happens almost immediately */
+
+#define CTF_TARGET_PROTECT_RADIUS 400           /* the radius around an object being defended where a target will be worth extra frags */
+#define CTF_ATTACKER_PROTECT_RADIUS 400         /* the radius around an object being defended where an attacker will get extra frags when making kills */
+
+#define CTF_CARRIER_DANGER_PROTECT_TIMEOUT 8
+#define CTF_FRAG_CARRIER_ASSIST_TIMEOUT 10
+#define CTF_RETURN_FLAG_ASSIST_TIMEOUT 10
+
+#define CTF_AUTO_FLAG_RETURN_TIMEOUT 30         /* number of seconds before dropped flag auto-returns */
+
+#define CTF_TECH_TIMEOUT 60                     /* seconds before techs spawn again */
+
+#define CTF_GRAPPLE_SPEED 650                   /* speed of grapple in flight */
+#define CTF_GRAPPLE_PULL_SPEED 650              /* speed player is pulled at */
+
+void CTFInit(void);
+void CTFSpawn(void);
+void CTFPrecache(void);
+
+void SP_info_player_team1(edict_t *self);
+void SP_info_player_team2(edict_t *self);
+
+char *CTFTeamName(int team);
+char *CTFOtherTeamName(int team);
+void CTFAssignSkin(edict_t *ent, char *s);
+void CTFAssignTeam(gclient_t *who);
+edict_t *SelectCTFSpawnPoint(edict_t *ent);
+qboolean CTFPickup_Flag(edict_t *ent, edict_t *other);
+void CTFDrop_Flag(edict_t *ent, gitem_t *item);
+void CTFEffects(edict_t *player);
+void CTFCalcScores(void);
+void SetCTFStats(edict_t *ent);
+void CTFDeadDropFlag(edict_t *self);
+void CTFScoreboardMessage(edict_t *ent, edict_t *killer);
+void CTFTeam_f(edict_t *ent);
+void CTFID_f(edict_t *ent);
+void CTFSay_Team(edict_t *who, char *msg);
+void CTFFlagSetup(edict_t *ent);
+void CTFResetFlag(int ctf_team);
+void CTFFragBonuses(edict_t *targ, edict_t *inflictor, edict_t *attacker);
+void CTFCheckHurtCarrier(edict_t *targ, edict_t *attacker);
+
+/* GRAPPLE */
+void CTFWeapon_Grapple(edict_t *ent);
+void CTFPlayerResetGrapple(edict_t *ent);
+void CTFGrapplePull(edict_t *self);
+void CTFResetGrapple(edict_t *self);
+
+/* TECH */
+gitem_t *CTFWhat_Tech(edict_t *ent);
+qboolean CTFPickup_Tech(edict_t *ent, edict_t *other);
+void CTFDrop_Tech(edict_t *ent, gitem_t *item);
+void CTFDeadDropTech(edict_t *ent);
+void CTFSetupTechSpawn(void);
+int CTFApplyResistance(edict_t *ent, int dmg);
+int CTFApplyStrength(edict_t *ent, int dmg);
+qboolean CTFApplyStrengthSound(edict_t *ent);
+qboolean CTFApplyHaste(edict_t *ent);
+void CTFApplyHasteSound(edict_t *ent);
+void CTFApplyRegeneration(edict_t *ent);
+qboolean CTFHasRegeneration(edict_t *ent);
+void CTFRespawnTech(edict_t *ent);
+void CTFResetTech(void);
+
+void CTFOpenJoinMenu(edict_t *ent);
+qboolean CTFStartClient(edict_t *ent);
+void CTFVoteYes(edict_t *ent);
+void CTFVoteNo(edict_t *ent);
+void CTFReady(edict_t *ent);
+void CTFNotReady(edict_t *ent);
+qboolean CTFNextMap(void);
+qboolean CTFMatchSetup(void);
+qboolean CTFMatchOn(void);
+void CTFGhost(edict_t *ent);
+void CTFAdmin(edict_t *ent);
+qboolean CTFInMatch(void);
+void CTFStats(edict_t *ent);
+void CTFWarp(edict_t *ent);
+void CTFBoot(edict_t *ent);
+void CTFPlayerList(edict_t *ent);
+
+qboolean CTFCheckRules(void);
+
+void SP_misc_ctf_banner(edict_t *ent);
+void SP_misc_ctf_small_banner(edict_t *ent);
+
 void Cmd_Chasecam_Toggle(edict_t *ent);
 void ChasecamStart(edict_t *ent);
 void ChasecamRemove(edict_t *ent);
 void CheckChasecam_Viewent(edict_t *ent);
 void ChasecamTrack(edict_t *ent);
 
-// NOTE: 1 means that the last entity was a wall...
-#define WALL_ENTITY (struct edict_s *)1
+void CTFObserver(edict_t *ent);
+
+void SP_trigger_teleport(edict_t *ent);
+void SP_info_teleport_destination(edict_t *ent);
+
+void CTFSetPowerUpEffect(edict_t *ent, int def);
+
+qboolean Pickup_Adrenaline(edict_t * ent, edict_t * other);
+qboolean Pickup_Ammo(edict_t * ent , edict_t * other);
+qboolean Pickup_AncientHead(edict_t * ent, edict_t * other);
+qboolean Pickup_Armor(edict_t * ent, edict_t * other);
+qboolean Pickup_Bandolier(edict_t * ent, edict_t * other);
+qboolean Pickup_Doppleganger(edict_t * ent, edict_t * other);
+qboolean Pickup_Health(edict_t * ent, edict_t * other);
+qboolean Pickup_Key(edict_t * ent, edict_t * other);
+qboolean Pickup_Nuke(edict_t * ent, edict_t * other);
+qboolean Pickup_Pack(edict_t * ent, edict_t * other);
+qboolean Pickup_PowerArmor(edict_t * ent, edict_t * other);
+qboolean Pickup_Powerup(edict_t * ent, edict_t * other);
+qboolean Pickup_Sphere(edict_t * ent, edict_t * other);
 
 /*
  * Uncomment for check that exported functions declarations are same as in
@@ -2122,6 +2398,10 @@ void ChasecamTrack(edict_t *ent);
 #endif
 
 /* Heretic 2 */
+
+// NOTE: 1 means that the last entity was a wall...
+#define WALL_ENTITY (struct edict_s *)1
+
 void G_CPrintf(edict_t* ent, int printlevel, short stringid);
 void G_BCaption(int printlevel, short stringid);
 void G_LevelMsgCenterPrintf(edict_t* ent, short msg);

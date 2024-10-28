@@ -556,78 +556,6 @@ void SP_trigger_PlayerPushButton(edict_t *self)
 	gi.linkentity (self);
 }
 
-//----------------------------------------------------------------------
-// Player Push Button Trigger
-//----------------------------------------------------------------------
-
-void trigger_elevator_use (edict_t *self, edict_t *other, edict_t *activator);
-void trigger_elevator_init (edict_t *self);
-
-/*QUAKED trigger_elevator (0.3 0.1 0.6) (-8 -8 -8) (8 8 8)
-*/
-void SP_trigger_Elevator (edict_t *self)
-{
-	self->classID = CID_TRIGGER;
-
-	self->think = trigger_elevator_init;
-	self->nextthink = level.time + FRAMETIME;
-}
-
-void trigger_elevator_use (edict_t *self, edict_t *other, edict_t *activator)
-{
-	void train_resume (edict_t *self);
-	edict_t *target;
-
-	if (self->movetarget->nextthink)
-	{
-//		gi.dprintf("elevator busy\n");
-		return;
-	}
-
-	if (!other->pathtarget)
-	{
-		gi.dprintf("elevator used with no pathtarget\n");
-
-		return;
-	}
-
-	target = G_PickTarget (other->pathtarget);
-	if (!target)
-	{
-		gi.dprintf("elevator used with bad pathtarget: %s\n", other->pathtarget);
-
-		return;
-	}
-
-	self->movetarget->target_ent = target;
-	train_resume (self->movetarget);
-}
-
-void trigger_elevator_init (edict_t *self)
-{
-	if (!self->target)
-	{
-		gi.dprintf("trigger_elevator has no target\n");
-
-		return;
-	}
-	self->movetarget = G_PickTarget (self->target);
-	if (!self->movetarget)
-	{
-		gi.dprintf("trigger_elevator unable to find target %s\n", self->target);
-
-		return;
-	}
-	if (strcmp(self->movetarget->classname, "func_train") != 0)
-	{
-		gi.dprintf("trigger_elevator target %s is not a train\n", self->target);
-
-		return;
-	}
-
-	self->use = trigger_elevator_use;
-	self->svflags = SVF_NOCLIENT;
-}
 
 //----------------------------------------------------------------------
 // Suspend Trigger
@@ -775,7 +703,6 @@ void SP_choose_CDTrack(edict_t *self)
 	gi.linkentity(self);
 
 }
-void M_Menu_Quit_f (void);
 
 void trigger_quit_to_menu_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {

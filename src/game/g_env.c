@@ -80,7 +80,7 @@ void smoke_use (edict_t *self, edict_t *other, edict_t *activator)
 
 		speed = Q_ftol(self->speed);
 		wait = Q_ftol(self->wait);
-		maxrange = Q_ftol(self->maxrange);
+		maxrange = Q_ftol(self->attenuation);
 
 		self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
 								FX_ENVSMOKE,
@@ -133,9 +133,9 @@ void SP_env_smoke (edict_t *self)
 
 	// set the distance
 	if (st.distance)
-		self->maxrange = st.distance;
+		self->attenuation = st.distance;
 	else
-		self->maxrange = 100;
+		self->attenuation = 100;
 
 	// set the speed
 	if (!self->speed)
@@ -147,7 +147,7 @@ void SP_env_smoke (edict_t *self)
 	// make us all bytes
 	speed = Q_ftol(self->speed);
 	wait = Q_ftol(self->wait);
-	maxrange = Q_ftol(self->maxrange);
+	maxrange = Q_ftol(self->attenuation);
 
 	self->s.effects |= EF_NODRAW_ALWAYS_SEND;
 	gi.linkentity(self);

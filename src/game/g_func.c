@@ -3921,6 +3921,98 @@ SP_func_train(edict_t *self)
 /* ==================================================================== */
 
 /*
+ * QUAKED trigger_elevator (0.3 0.1 0.6) (-8 -8 -8) (8 8 8)
+ */
+void
+trigger_elevator_use(edict_t *self, edict_t *other,
+		edict_t *activator /* unused */)
+{
+	edict_t *target;
+
+	if (!self || !other)
+	{
+		return;
+	}
+
+	if (self->movetarget->nextthink)
+	{
+		return;
+	}
+
+	if (!other->pathtarget)
+	{
+		gi.dprintf("elevator used with no pathtarget\n");
+		return;
+	}
+
+	target = G_PickTarget(other->pathtarget);
+
+	if (!target)
+	{
+		gi.dprintf("elevator used with bad pathtarget: %s\n",
+				other->pathtarget);
+		return;
+	}
+
+	self->movetarget->target_ent = target;
+	train_resume(self->movetarget);
+}
+
+void
+trigger_elevator_init(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (!self->target)
+	{
+		gi.dprintf("trigger_elevator has no target\n");
+		return;
+	}
+
+	self->movetarget = G_PickTarget(self->target);
+
+	if (!self->movetarget)
+	{
+		gi.dprintf("trigger_elevator unable to find target %s\n", self->target);
+		return;
+	}
+
+	if (strcmp(self->movetarget->classname, "func_train") != 0)
+	{
+		gi.dprintf("trigger_elevator target %s is not a train\n", self->target);
+		return;
+	}
+
+	self->use = trigger_elevator_use;
+	self->svflags = SVF_NOCLIENT;
+}
+
+void
+SP_trigger_elevator(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->classID = CID_TRIGGER;
+
+	self->think = trigger_elevator_init;
+	self->nextthink = level.time + FRAMETIME;
+}
+
+void
+SP_trigger_Elevator(edict_t *self)
+{
+	SP_trigger_elevator(self);
+}
+
+/* ==================================================================== */
+
+/*
  * QUAKED func_timer (0.3 0.1 0.6) (-8 -8 -8) (8 8 8) START_ON
  *
  * "wait"	base time between triggering all targets, default is 1
@@ -4692,12 +4784,12 @@ void monsterspawner_go(edict_t *self)
 	VectorScale(STDMinsForClass[monster->classID], monster->s.scale, monster->mins);
 	VectorScale(STDMaxsForClass[monster->classID], monster->s.scale, monster->maxs);
 
-	if (self->maxrange)
+	if (self->attenuation)
 	{
 		VectorClear(angle);
 		angle[0] = flrand(0,360);
 		AngleVectors(angle, forward, NULL, NULL);
-		VectorMA(self->s.origin, self->maxrange, forward, monster->s.origin);
+		VectorMA(self->s.origin, self->attenuation, forward, monster->s.origin);
 	}
 	else if(self->spawnflags & 2)//randombuoy
 	{
@@ -4919,7 +5011,7 @@ void SP_func_monsterspawner (edict_t *self)
 		self->nextthink = level.time + self->wait;
 	}
 
-	self->maxrange = st.distance;
+	self->attenuation = st.distance;
 
 	self->enemy = NULL;
 

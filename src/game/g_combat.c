@@ -1273,7 +1273,7 @@ void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, floa
 	{
 		if (ent == ignore)
 			continue;
-		if (!ent->takedamage||ent->takedamage==DAMAGE_NO_RADIUS)
+		if (!ent->takedamage)
 			continue;
 		if (ent == attacker && dflags & DAMAGE_ATTACKER_IMMUNE)
 			continue;
@@ -1334,7 +1334,7 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 	{
 		if (ent == ignore)
 			continue;
-		if (!ent->takedamage||ent->takedamage==DAMAGE_NO_RADIUS)
+		if (!ent->takedamage)
 			continue;
 		if (ent == attacker && dflags & DAMAGE_ATTACKER_IMMUNE)
 			continue;

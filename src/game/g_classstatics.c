@@ -65,7 +65,7 @@ void Corvus9StaticsInit();
 
 void (*classStaticsInits[NUM_CLASSIDS])() =
 {
-	NULL,
+	NULL, // 0
 	RatStaticsInit,
 	GorgonStaticsInit,
 	PlagueElfStaticsInit,
