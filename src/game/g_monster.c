@@ -1015,7 +1015,6 @@ walkmonster_start(edict_t *self)
 	}
 
 	self->think = walkmonster_start_go;
-
 	monster_start(self);
 }
 

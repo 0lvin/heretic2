@@ -200,7 +200,6 @@ extern void KillChildren ( edict_t * self ) ;
 extern void Killed ( edict_t * targ , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
 extern void LookAtKiller ( edict_t * self , edict_t * inflictor , edict_t * attacker ) ;
 extern void M_CatagorizePosition ( edict_t * ent ) ;
-// extern void M_ChangeYaw ( edict_t * ent ) ;
 extern void M_CheckGround ( edict_t * ent ) ;
 extern void M_FliesOff ( edict_t * self ) ;
 extern void M_FliesOn ( edict_t * self ) ;

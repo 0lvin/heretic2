@@ -44,6 +44,7 @@ void Trigger_Activate(edict_t *self, G_Message_t *msg);
 
 void trigger_enable(edict_t *self, edict_t *other, edict_t *activator);
 void Use_Multi(edict_t *self, edict_t *other, edict_t *activator);
+void InitField(edict_t *self);
 
 void TriggerStaticsInit()
 {
@@ -105,7 +106,7 @@ void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 	// Just monster will trigger it
 	else if(other->svflags & SVF_MONSTER)
 	{
-		if(!(self->spawnflags & TRIGGER_MONSTER))
+		if (!(self->spawnflags & TRIGGER_MONSTER))
 		{
 			return;
 		}
@@ -117,7 +118,7 @@ void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 
 	if(!Vec3IsZero(self->movedir))
 	{
-		vec3_t	forward;
+		vec3_t forward;
 
 		AngleVectors(other->s.angles, forward, NULL, NULL);
 
@@ -643,67 +644,6 @@ void ActivateTrigger_Activated(edict_t *self, edict_t *activator)
 	}
 }
 
-// make every active client out there change CD track.
-void everyone_play_track(int track, int loop)
-{
-	printf("Play CD track %d -> %d\n", track, loop);
-	gi.configstring(CS_CDTRACK, va("%i", track));
-}
-
-void choose_CDTrack_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	// if we aren't a player, forget it
-	if (!other->client)
-		return;
-
-	// make everyone play this track
-	everyone_play_track(self->style, self->spawnflags);
-	// kill this trigger
-	G_SetToFree(self);
-}
-
-void choose_CDTrack_use (edict_t *self, edict_t *other, edict_t *activator)
-{
-	// make everyone play this track
-	everyone_play_track(self->style, self->spawnflags);
-	// kill this trigger
-	G_SetToFree(self);
-}
-
-/*QUAKED choose_CDTrack (.5 .5 .5) ? NO_LOOP
-Variable sized repeatable trigger which chooses a CD track.
-------KEYS-----------
-style - # of CD track to play
-NO_LOOP - allows you to set the track to play not to loop
-*/
-void SP_choose_CDTrack(edict_t *self)
-{
-	self->msgHandler = DefaultMsgHandler;
-	self->classID = CID_TRIGGER;
-
-	self->use = choose_CDTrack_use;
-
-	if (self->spawnflags & 1)
-		self->spawnflags = false;
-	else
-		self->spawnflags = true;
-
-	if(!self->wait)
-	{
-		self->wait = 0.2;
-	}
-
-	// Triggers still use the touch function even with the new physics
-	self->touch = choose_CDTrack_touch;
-	self->movetype = MOVETYPE_NONE;
-	self->svflags |= SVF_NOCLIENT;
-	self->solid = SOLID_TRIGGER;
-
-	gi.setmodel(self, self->model);
-	gi.linkentity(self);
-
-}
-
 void trigger_quit_to_menu_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if(!other->client)
@@ -1168,7 +1108,8 @@ void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
 /*QUAKED trigger_endgame (.5 .5 .5) ?
 End game trigger. once used, game over
 */
-void SP_trigger_endgame(edict_t *self)
+void
+SP_trigger_endgame(edict_t *self)
 {
 	InitTrigger(self);
 	self->touch = Touch_endgame;
@@ -1202,11 +1143,168 @@ void SP_trigger_PlayerPushLever(edict_t *self)
 }
 
 /*
- * QUAKED choose_cdtrack (.5 .5 .5) ?
- * Sets CD track
+ * ==============================================================================
  *
- * style: CD Track Id
+ * trigger_gravity
+ *
+ * ==============================================================================
  */
+
+void
+trigger_gravity_use(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->solid == SOLID_NOT)
+	{
+		self->solid = SOLID_TRIGGER;
+	}
+	else
+	{
+		self->solid = SOLID_NOT;
+	}
+
+	gi.linkentity(self);
+}
+
+/*
+ * QUAKED trigger_gravity (.5 .5 .5) ?
+ * Changes the touching entites gravity to
+ * the value of "gravity".  1.0 is standard
+ * gravity for the level.
+ */
+void
+trigger_gravity_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	if (!self || !other)
+	{
+		return;
+	}
+
+	other->gravity = self->gravity;
+	G_UseTargets(self, self);
+
+}
+
+/*
+ * QUAKED trigger_gravity (.5 .5 .5) ? TOGGLE START_OFF
+ * Changes the touching entites gravity to
+ * the value of "gravity".  1.0 is standard
+ * gravity for the level.
+ *
+ * TOGGLE - trigger_gravity can be turned on and off
+ * START_OFF - trigger_gravity starts turned off (implies TOGGLE)
+ */
+void
+SP_trigger_gravity(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (st.gravity == 0)
+	{
+		gi.dprintf("trigger_gravity without gravity set at %s\n",
+				vtos(self->s.origin));
+		G_FreeEdict(self);
+		return;
+	}
+
+	InitField(self);
+
+	self->gravity = (int)strtol(st.gravity, (char **)NULL, 10);
+
+	self->touch = trigger_gravity_touch;
+}
+
+/*
+ * ==============================================================================
+ *
+ * trigger_monsterjump
+ *
+ * ==============================================================================
+ */
+
+/*
+ * QUAKED trigger_monsterjump (.5 .5 .5) ?
+ * Walking monsters that touch this will jump in the direction of the trigger's angle
+ *
+ * "speed"  default to 200, the speed thrown forward
+ * "height" default to 200, the speed thrown upwards
+ */
+
+void
+trigger_monsterjump_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	if (!self || !other)
+	{
+		return;
+	}
+
+	if (other->flags & (FL_FLY | FL_SWIM))
+	{
+		return;
+	}
+
+	if (other->svflags & SVF_DEADMONSTER)
+	{
+		return;
+	}
+
+	if (!(other->svflags & SVF_MONSTER))
+	{
+		return;
+	}
+
+	VectorMA(other->velocity, self->speed, self->movedir, other->velocity);
+	other->velocity[2] += self->accel;
+
+	other->groundentity = NULL;
+}
+
+void
+SP_trigger_monsterjump(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->s.angles[YAW] == 0)
+	{
+		self->s.angles[YAW] = 360;
+	}
+
+	InitField(self);
+
+	if (!self->speed)
+	{
+		self->speed = 200;
+	}
+
+	if (!st.height)
+	{
+		self->accel = 200;
+	}
+	else
+		self->accel = st.height;
+
+	self->touch = trigger_monsterjump_touch;
+}
+
+/*
+ * QUAKED choose_cdtrack (.5 .5 .5) ? NO_LOOP
+ * Variable sized repeatable trigger which chooses a CD track.
+ * ------KEYS-----------
+ * style - # of CD track to play
+ * NO_LOOP - allows you to set the track to play not to loop
+*/
 void
 choose_cdtrack_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 		csurface_t *surf /* unused */)
@@ -1216,7 +1314,22 @@ choose_cdtrack_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */
 		return;
 	}
 
+	// if we aren't a player, forget it
+	if (!other->client)
+	{
+		return;
+	}
+
 	gi.configstring(CS_CDTRACK, va("%i", self->style));
+
+	/* kill this trigger */
+	G_SetToFree(self);
+}
+
+void
+choose_cdtrack_use(edict_t *self, edict_t *other, edict_t *activator)
+{
+	choose_cdtrack_touch(self, other, NULL, NULL);
 }
 
 void
@@ -1227,6 +1340,27 @@ SP_choose_cdtrack(edict_t *self)
 		return;
 	}
 
-	InitTrigger(self);
+	self->msgHandler = DefaultMsgHandler;
+	self->classID = CID_TRIGGER;
+
+	self->use = choose_cdtrack_use;
+
+	if (self->spawnflags & 1)
+		self->spawnflags = false;
+	else
+		self->spawnflags = true;
+
+	if(!self->wait)
+	{
+		self->wait = 0.2;
+	}
+
+	/* Triggers still use the touch function even with the new physics */
 	self->touch = choose_cdtrack_touch;
+	self->movetype = MOVETYPE_NONE;
+	self->svflags |= SVF_NOCLIENT;
+	self->solid = SOLID_TRIGGER;
+
+	gi.setmodel(self, self->model);
+	gi.linkentity(self);
 }

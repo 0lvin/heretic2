@@ -1739,16 +1739,19 @@ rotate_sounds(edict_t *ent)
  *
  * "speed" determines how fast it moves; default value is 100.
  * "dmg"   damage to inflict when blocked (2 default)
-"sounds"
-0 -	silent
-1 -	generic rotate
-2 - huge wheel ogles push in cloudlabs
-3 - rock crusher which turns at end of conveyor on ogle2
-4 - 'spanking' paddles on gauntlet
---------SPAWNFLAGS------------
-REVERSE will cause the it to rotate in the opposite direction.
-STOP mean it will stop moving instead of pushing entities
-*/
+ * "accel" if specified, is how much the rotation speed will increase per .1sec.
+ *
+ * "sounds"
+ * 0 -	silent
+ * 1 -	generic rotate
+ * 2 - huge wheel ogles push in cloudlabs
+ * 3 - rock crusher which turns at end of conveyor on ogle2
+ * 4 - 'spanking' paddles on gauntlet
+ * --------SPAWNFLAGS------------
+ * REVERSE will cause the it to rotate in the opposite direction.
+ * STOP mean it will stop moving instead of pushing entities
+ * ACCEL means it will accelerate to it's final speed and decelerate when shutting down.
+ */
 void
 rotating_accel(edict_t *self)
 {
@@ -2258,28 +2261,28 @@ SP_func_button(edict_t *ent)
  * "lip"		lip remaining at end of move (8 default)
  * "dmg"		damage to inflict when blocked (2 default)
  * "sounds"
-0)	silent
-1)	generic door
-2)	heavy stone door
-3)  for swing arm on palace level
-4)  for stone bridge in palace level
-5)  small/medium wood door swinging
-6)  large/huge wood door swinging
-7)  medium sized stone/wood door sliding
-8)  large stone/wood sliding door or portcullis
-9)  average metal door swinging
-10) Fast sliding doors
-11) Hive, Metal, Multipaneled sliding
-12) Huge stone door swinging
-13) Medium/large elevator
-14) Crane (warehouse)
-15) hammerlike pump in oglemine1
-16) sliding metal table in cloudlabs
-17) lab table which rotates up to ceiling - cloublabs
-18) piston sound
-19) short, sharp metal clang
-20) something going under water
-21) the bam sound
+ * 0)	silent
+ * 1)	generic door
+ * 2)	heavy stone door
+ * 3)  for swing arm on palace level
+ * 4)  for stone bridge in palace level
+ * 5)  small/medium wood door swinging
+ * 6)  large/huge wood door swinging
+ * 7)  medium sized stone/wood door sliding
+ * 8)  large stone/wood sliding door or portcullis
+ * 9)  average metal door swinging
+ * 10) Fast sliding doors
+ * 11) Hive, Metal, Multipaneled sliding
+ * 12) Huge stone door swinging
+ * 13) Medium/large elevator
+ * 14) Crane (warehouse)
+ * 15) hammerlike pump in oglemine1
+ * 16) sliding metal table in cloudlabs
+ * 17) lab table which rotates up to ceiling - cloublabs
+ * 18) piston sound
+ * 19) short, sharp metal clang
+ * 20) something going under water
+ * 21) the bam sound
  */
 
 void
@@ -4002,12 +4005,6 @@ SP_trigger_elevator(edict_t *self)
 
 	self->think = trigger_elevator_init;
 	self->nextthink = level.time + FRAMETIME;
-}
-
-void
-SP_trigger_Elevator(edict_t *self)
-{
-	SP_trigger_elevator(self);
 }
 
 /* ==================================================================== */

@@ -16,7 +16,8 @@ extern void SP_misc_teleporter (edict_t *self);
 
 void InitTrigger(edict_t *self);
 
-void InitField(edict_t *self)
+void
+InitField(edict_t *self)
 {
 	if(!Vec3IsZero(self->s.angles))
 	{
@@ -278,80 +279,6 @@ void DamageField_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, self->dmg, dflags | DAMAGE_SPELL|DAMAGE_AVOID_ARMOR,MOD_DIED);
 
 	G_UseTargets(self, self);
-}
-
-//----------------------------------------------------------------------
-// Gravity Field
-//----------------------------------------------------------------------
-
-void GravityField_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
-
-/*QUAKED trigger_Gravity (.5 .5 .5) ?
-Changes the Touching entites Gravity to
-the value of "Gravity".  1.0 is standard
-Gravity for the level.
-*/
-void SP_trigger_Gravity(edict_t *self)
-{
-	if (st.gravity == 0)
-	{
-		gi.dprintf("trigger_Gravity without gravity set at %s\n", vtos(self->s.origin));
-		G_FreeEdict  (self);
-		return;
-	}
-
-	InitField(self);
-	self->gravity = atoi(st.gravity);
-	self->touch = GravityField_Touch;
-}
-
-void GravityField_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	other->gravity = self->gravity;
-	G_UseTargets(self, self);
-
-}
-
-//----------------------------------------------------------------------
-// Monster Jump Field
-//----------------------------------------------------------------------
-
-void MonsterJumpField_Touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	if (other->flags & (FL_FLY | FL_SWIM) )
-		return;
-	if (other->svflags & SVF_DEADMONSTER)
-		return;
-	if ( !(other->svflags & SVF_MONSTER))
-		return;
-
-	VectorMA(other->velocity, self->speed, self->movedir, other->velocity);
-	other->velocity[2] += self->accel;
-
-	other->groundentity = NULL;
-}
-
-/*QUAKED trigger_MonsterJump (.5 .5 .5) ?
-Walking monsters that Touch this will jump in the direction of the trigger's angle
-"speed" default to 200, the speed thrown forward
-"height" default to 200, the speed thrown upwards
-*/
-void SP_trigger_MonsterJump(edict_t *self)
-{
-	if (self->s.angles[YAW] == 0)
-		self->s.angles[YAW] = 360;
-
-	InitField(self);
-
-	if (!self->speed)
-		self->speed = 200;
-
-	if (!st.height)
-		self->accel = 200;
-	else
-		self->accel = st.height;
-
-	self->touch = MonsterJumpField_Touch;
 }
 
 //----------------------------------------------------------------------

@@ -795,6 +795,8 @@ void Use_Item (edict_t *ent, edict_t *other, edict_t *activator)
 	gi.linkentity (ent);
 }
 
+/* ====================================================================== */
+
 static void
 FixObjectPosition(edict_t *ent)
 {
