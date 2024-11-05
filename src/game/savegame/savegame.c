@@ -469,7 +469,7 @@ InitGame(void)
 	LocalizationInit();
 
 	/* initilize dynamic object spawn */
-	DynamicSpawnInit();
+	SpawnInit();
 
 	G_InitResourceManagers();
 

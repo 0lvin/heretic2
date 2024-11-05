@@ -1200,3 +1200,33 @@ void SP_trigger_PlayerPushLever(edict_t *self)
 	self->TriggerActivated = trigger_playerpushlever;
 
 }
+
+/*
+ * QUAKED choose_cdtrack (.5 .5 .5) ?
+ * Sets CD track
+ *
+ * style: CD Track Id
+ */
+void
+choose_cdtrack_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	gi.configstring(CS_CDTRACK, va("%i", self->style));
+}
+
+void
+SP_choose_cdtrack(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	InitTrigger(self);
+	self->touch = choose_cdtrack_touch;
+}

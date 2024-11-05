@@ -795,12 +795,64 @@ void Use_Item (edict_t *ent, edict_t *other, edict_t *activator)
 	gi.linkentity (ent);
 }
 
+static void
+FixObjectPosition(edict_t *ent)
+{
+	int i;
+
+	for (i = 0; i < 3; i++)
+	{
+		int j;
+
+		for (j = 0; j < 3; j++)
+		{
+			vec3_t pos;
+			trace_t tr_pos;
+			int k;
+
+			VectorCopy(ent->s.origin, pos);
+
+			/* move by min */
+			for (k = 0; k < i + 1; k++)
+			{
+				int v;
+
+				v = (j + k) % 3;
+				pos[v] = ent->s.origin[v] - ent->mins[v];
+			}
+
+			tr_pos = gi.trace(pos, ent->mins, ent->maxs, ent->s.origin, ent, MASK_SOLID);
+			if (!tr_pos.startsolid)
+			{
+				VectorCopy(tr_pos.endpos, ent->s.origin);
+				return;
+			}
+
+			/* move by max */
+			for (k = 0; k < i + 1; k++)
+			{
+				int v;
+
+				v = (j + k) % 3;
+				pos[v] = ent->s.origin[v] - ent->maxs[v];
+			}
+			tr_pos = gi.trace(pos, ent->mins, ent->maxs, ent->s.origin, ent, MASK_SOLID);
+			if (!tr_pos.startsolid)
+			{
+				VectorCopy(tr_pos.endpos, ent->s.origin);
+				return;
+			}
+		}
+	}
+}
+
 // ************************************************************************************************
 // ValidItem
 // ---------
 // ************************************************************************************************
 
-qboolean ValidItem(gitem_t *item)
+qboolean
+ValidItem(gitem_t *item)
 {
 	// Some items will be prevented in deathmatch.
 
@@ -992,7 +1044,6 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 
 	ent->s.effects = item->world_model_flags;
 	ent->s.renderfx = RF_GLOW;
-//	ent->svflags |= SVF_ALWAYS_SEND;				// make sure SVF_NOCLIENT gets set in think
 	ent->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 
 	if (item->flags & IT_WEAPON)
