@@ -659,23 +659,22 @@ G_InitEdict(edict_t *e)
 		e->nextthink = 0;
 	}
 
+	e->inuse = true;
+	e->classname = "noclass";
+	e->gravity = 1.0;
+	e->s.number = e - g_edicts;
+
 	e->s.clientEffects.buf = NULL;
 	e->s.clientEffects.bufSize = 0;
 	e->s.clientEffects.freeBlock = 0;
 	e->s.clientEffects.numEffects = 0;
-
-	e->inuse = true;
 	e->movetype = MOVETYPE_NONE;
-	e->classname = "noclass";
-	e->gravity = 1.0;
 	e->friction = 1.0;
 	e->elasticity = ELASTICITY_SLIDE;
-	e->s.number = e - g_edicts;
 	e->s.scale = 1.0;
 	e->msgHandler = NULL;
 	e->svflags = 0;
 	e->reflected_time = level.time;
-
 }
 
 /*
@@ -690,7 +689,7 @@ angles and bad trails.
 =================
 */
 edict_t *
-G_Spawn (void)
+G_Spawn(void)
 {
 	int			i;
 	edict_t		*e;

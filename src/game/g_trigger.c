@@ -30,11 +30,22 @@
 #include "common/fx.h"
 #include "header/g_playstats.h"
 #include "common/cl_strings.h"
+#include "player/library/p_main.h"
 
-#define TRIGGER_MONSTER		1
-#define TRIGGER_NOT_PLAYER	2
-#define TRIGGER_TRIGGERED	4
-#define TRIGGER_ANY			8
+#define TRIGGER_MONSTER 0x01
+#define TRIGGER_NOT_PLAYER 0x02
+#define TRIGGER_TRIGGERED 0x04
+#define TRIGGER_TOGGLE 0x08
+
+#define PUSH_ONCE 0x01
+#define PUSH_START_OFF 0x02
+#define PUSH_SILENT 0x04
+
+static int windsound;
+
+void trigger_push_active(edict_t *self);
+void hurt_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */);
 
 #define PUZZLE_SHOWNO_INVENTORY 16
 #define PUZZLE_DONT_REMOVE		32
@@ -52,8 +63,12 @@ void TriggerStaticsInit()
 	classStatics[CID_TRIGGER].msgReceivers[G_MSG_UNSUSPEND] = Trigger_Activate;
 }
 
-// the wait time has passed, so set back up for another activation
-void multi_wait(edict_t *self)
+/*
+ * The wait time has passed, so
+ * set back up for another activation
+ */
+void
+multi_wait(edict_t *self)
 {
 	self->think = NULL;
 	if(self->activator)
@@ -92,7 +107,7 @@ void TriggerActivated(edict_t *self)
 void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	// Monsters or players can trigger it
-	if ((self->spawnflags & TRIGGER_ANY) && ((strcmp(other->classname, "player") == 0) ||
+	if ((self->spawnflags & TRIGGER_TOGGLE) && ((strcmp(other->classname, "player") == 0) ||
 		(other->svflags & SVF_MONSTER)))
 		;
 	// Player cannot trigger it
@@ -1140,6 +1155,254 @@ void SP_trigger_PlayerPushLever(edict_t *self)
 
 	self->TriggerActivated = trigger_playerpushlever;
 
+}
+
+//----------------------------------------------------------------------
+// Force Field
+//----------------------------------------------------------------------
+
+#define FIELD_FORCE_ONCE		1
+
+
+void
+trigger_push_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	vec3_t forward,up;
+
+	if(other->health > 0)
+	{
+		if (other->client)	// A player???
+		{
+			// don't take falling damage immediately from this
+			VectorCopy(other->velocity, other->client->playerinfo.oldvelocity);
+			other->client->playerinfo.flags |= PLAYER_FLAG_USE_ENT_POS;
+			other->groundentity = NULL;
+		}
+
+		AngleVectors(self->s.angles,forward,NULL,up);
+
+		VectorMA(other->velocity,self->speed,forward,other->velocity);
+		VectorMA(other->velocity,self->speed,up,other->velocity);
+
+	}
+
+	G_UseTargets(self, self);
+
+	if(self->spawnflags & FIELD_FORCE_ONCE)
+	{
+		G_FreeEdict (self);
+	}
+}
+
+void
+push_touch_trigger(edict_t *self, edict_t *activator)
+{
+	trigger_push_touch(self, activator, NULL, NULL);
+}
+
+void
+TrigPush_Deactivate(edict_t *self, G_Message_t *msg)
+{
+	self->solid = SOLID_NOT;
+	self->touch = NULL;
+}
+
+void
+TrigPush_Activate(edict_t *self, G_Message_t *msg)
+{
+	self->solid = SOLID_TRIGGER;
+	self->touch = trigger_push_touch;
+	gi.linkentity(self);
+}
+
+void
+TrigPushStaticsInit()
+{
+	classStatics[CID_TRIG_PUSH].msgReceivers[G_MSG_SUSPEND] = TrigPush_Deactivate;
+	classStatics[CID_TRIG_PUSH].msgReceivers[G_MSG_UNSUSPEND] = TrigPush_Activate;
+}
+
+/*
+ * QUAKED trigger_push (.5 .5 .5) ? FORCE_ONCE
+ * Pushes the player
+ * "speed"		defaults to 1000
+ * angle - the angle to push the player along the X,Y
+ * zangle - the up direction to push the player (0 is straight up, 180 is straight down)
+ *
+ * If targeted, it will toggle on and off when used.
+ *
+ * FORCE_ONCE - pushes once and then goes away
+ */
+void
+SP_trigger_push(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	InitTrigger(self);
+	self->solid = SOLID_TRIGGER;
+	self->msgHandler = DefaultMsgHandler;
+	self->classID = CID_TRIG_PUSH;
+
+	if (!self->speed)
+	{
+		self->speed = 500;
+	}
+
+	self->s.angles[2] = st.zangle;
+
+	// Can't really use the normal trigger setup cause it doesn't update velocity often enough
+	self->touch = trigger_push_touch;
+	self->TriggerActivated = push_touch_trigger;
+}
+
+/*
+ * ==============================================================================
+ *
+ * trigger_hurt
+ *
+ * ==============================================================================
+ */
+
+/*
+ * QUAKED trigger_hurt (.5 .5 .5) ? START_OFF TOGGLE SILENT NO_PROTECTION SLOW
+ *
+ * Any entity that touches this will be hurt.
+ *
+ * It does dmg points of damage each server frame
+ *
+ * SILENT			supresses playing the sound
+ * SLOW			changes the damage rate to once per second
+ * NO_PROTECTION	*nothing* stops the damage
+ *
+ * "dmg"			default 5 (whole numbers only)
+ *
+ */
+void
+hurt_use(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->solid == SOLID_NOT)
+	{
+		int	i, num;
+		edict_t	*touch[MAX_EDICTS], *hurtme;
+
+		self->solid = SOLID_TRIGGER;
+		num = gi.BoxEdicts(self->absmin, self->absmax,
+				touch, MAX_EDICTS, AREA_SOLID);
+
+		/* Check for idle monsters in
+		   trigger hurt */
+		for (i = 0 ; i < num ; i++)
+		{
+			hurtme = touch[i];
+			hurt_touch (self, hurtme, NULL, NULL);
+		}
+	}
+	else
+	{
+		self->solid = SOLID_NOT;
+	}
+
+	gi.linkentity(self);
+
+	if (!(self->spawnflags & 2))
+	{
+		self->use = NULL;
+	}
+}
+
+void
+hurt_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	int dflags;
+
+	if (!self || !other)
+	{
+		return;
+	}
+
+	if (!other->takedamage)
+	{
+		return;
+	}
+
+	if (self->timestamp > level.time)
+	{
+		return;
+	}
+
+	if (self->spawnflags & 16)
+	{
+		self->timestamp = level.time + 1;
+	}
+	else
+	{
+		self->timestamp = level.time + FRAMETIME;
+	}
+
+	if (!(self->spawnflags & 4))
+	{
+		if ((level.framenum % 10) == 0)
+		{
+			gi.sound(other, CHAN_AUTO, self->noise_index, 1, ATTN_NORM, 0);
+		}
+	}
+
+	if (self->spawnflags & 8)
+	{
+		dflags = DAMAGE_NO_PROTECTION;
+	}
+	else
+	{
+		dflags = 0;
+	}
+
+	T_Damage(other, self, self, vec3_origin, other->s.origin, vec3_origin,
+			self->dmg, self->dmg, dflags, MOD_TRIGGER_HURT);
+}
+
+void
+SP_trigger_hurt(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	InitTrigger(self);
+
+	self->noise_index = gi.soundindex("world/electro.wav");
+	self->touch = hurt_touch;
+
+	if (!self->dmg)
+	{
+		self->dmg = 5;
+	}
+
+	if (self->spawnflags & 1)
+	{
+		self->solid = SOLID_NOT;
+	}
+	else
+	{
+		self->solid = SOLID_TRIGGER;
+	}
+
+	if (self->spawnflags & 2)
+	{
+		self->use = hurt_use;
+	}
+
+	gi.linkentity(self);
 }
 
 /*

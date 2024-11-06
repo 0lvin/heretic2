@@ -405,7 +405,7 @@ endif
 
 # ----------
 
-# Builds everything
+# Builds everything but the GLES1 renderer
 all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk ref_gl4 player effects
 
 # ----------
@@ -1018,6 +1018,7 @@ GAME_OBJS_ = \
 	src/game/game_utilities.o \
 	src/game/g_breakable.o \
 	src/game/g_classstatics.o \
+	src/game/g_chase.o \
 	src/game/g_cmds.o \
 	src/game/g_combat.o \
 	src/game/g_defaultmessagehandler.o \

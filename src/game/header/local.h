@@ -1593,14 +1593,39 @@ struct gclient_s
 	client_respawn_t resp;
 	pmove_state_t old_pmove;        /* for detecting out-of-pmove changes */
 
+	qboolean showscores;            /* set layout stat */
+	qboolean inmenu;                /* in menu */
+	pmenuhnd_t *menu;               /* current menu */
+	qboolean showinventory;         /* set layout stat */
+	qboolean showhelp;
+	qboolean showhelpicon;
+
+	int ammo_index;
+
+	int buttons;
+	int oldbuttons;
+	int latched_buttons;
+
+	qboolean weapon_thunk;
+
+	gitem_t *newweapon;
+
+	/* sum up damage over an entire frame, so
+	   shotgun blasts give a single big kick */
+	int damage_armor;               /* damage absorbed by armor */
+	int damage_parmor;              /* damage absorbed by power armor */
+	int damage_blood;               /* damage taken out of health */
+	int damage_knockback;           /* impact damage */
+	vec3_t damage_from;             /* origin for vector calculation */
+	qboolean damage_gas;            /* Did damage come from plague mist? */
+
+	float killer_yaw;               /* when dead, look at killer */
+
 	float invisible_framenum;
 
 	// Damage stuff. Sum up damage over an entire frame.
 
-	qboolean			damage_gas;				// Did damage come from plague mist?
-	int					damage_blood;			// Damage taken out of health.
-	int					damage_knockback;		// Impact damage.
-	vec3_t				damage_from;			// Origin for vector calculation.
+
 
 	//
 
