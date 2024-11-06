@@ -255,7 +255,7 @@ static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *pla
 
 	if (surf && (surf->flags & SURF_SKY))
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
@@ -424,11 +424,11 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	if(self->monsterinfo.aiflags & AI_NO_MISSILE)
 		return;//fixme: actually prevent these anims
 
-	AngleVectors (self->s.angles, forward, right, NULL);
+	AngleVectors(self->s.angles, forward, right, NULL);
 	G_ProjectSource (self->s.origin, offset, forward, right, start);
 
 	grenade = G_Spawn();
-	VectorCopy (start, grenade->s.origin);
+	VectorCopy(start, grenade->s.origin);
 
 	M_PredictTargetPosition( self->enemy, self->enemy->velocity, 15, predPos);
 
@@ -436,9 +436,9 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	distance = VectorLength (v);
 	distance *= 1.25;
 
-	VectorCopy (forward, aim);
+	VectorCopy(forward, aim);
 	VectoAngles (aim, dir);
-	AngleVectors (dir, forward, right, up);
+	AngleVectors(dir, forward, right, up);
 
 	VectorScale (aim, distance, grenade->velocity);
 	VectorMA (grenade->velocity, flrand(100.0F, 125.0F), up, grenade->velocity);
@@ -446,15 +446,15 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	//FIXME: Difficulty modifier here
 	VectorMA (grenade->velocity, flrand(-10.0F, 10.0F), right, grenade->velocity);
 
-	VectorSet (grenade->avelocity, flrand(300,600), flrand(300,600), flrand(300,600));
+	VectorSet(grenade->avelocity, flrand(300,600), flrand(300,600), flrand(300,600));
 
 	grenade->movetype = MOVETYPE_STEP;
 	grenade->elasticity = 1;
 	grenade->friction = 1;
 	grenade->clipmask = MASK_SHOT;
 	grenade->solid = SOLID_BBOX;
-	VectorSet (grenade->mins, -1, -1, -1);
-	VectorSet (grenade->maxs, 1, 1, 1);
+	VectorSet(grenade->mins, -1, -1, -1);
+	VectorSet(grenade->maxs, 1, 1, 1);
 
 	grenade->s.modelindex = gi.modelindex ("models/monsters/spreader/bomb/tris.fm");
 	grenade->owner = self;
@@ -471,5 +471,5 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	grenade->classname = "spreader_grenade";
 
 	grenade->s.effects |= EF_CAMERA_NO_CLIP;
-	gi.linkentity (grenade);
+	gi.linkentity(grenade);
 }

@@ -806,7 +806,7 @@ void fish_dead(edict_t *self)
 		self->PersistantCFX = 0;
 	}
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 // he bit the player - decide what to do
@@ -1100,7 +1100,7 @@ void SP_monster_fish (edict_t *self)
 
 	if ((deathmatch->value == 1) && !((int)sv_cheats->value & self_spawn))
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
@@ -1140,8 +1140,8 @@ void SP_monster_fish (edict_t *self)
 
 	self->monsterinfo.aiflags |= AI_NO_ALERT;//pay no attention to alert ents
 
-	VectorCopy (self->s.origin, self->s.old_origin);
-	VectorCopy (self->s.angles, self->movedir);
+	VectorCopy(self->s.origin, self->s.old_origin);
+	VectorCopy(self->s.angles, self->movedir);
 
 	if (!self->mass)
 		self->mass = FISH_MASS;

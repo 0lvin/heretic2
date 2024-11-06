@@ -1336,7 +1336,7 @@ void SP_item_spitter(edict_t *self)
 	else
 		self->mass = 0;
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 //=================================================================================
@@ -1373,9 +1373,9 @@ void respawner_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 	}
 
 	VectorSet(spot->s.origin, self->mins[0]+((self->size[0]) /2), self->mins[1]+((self->size[1]) /2) ,self->mins[2]+self->size[2]);
-	VectorCopy (self->s.angles, spot->s.angles);
+	VectorCopy(self->s.angles, spot->s.angles);
 
-	G_FreeEdict (self);
+	G_FreeEdict(self);
 }
 
 /*QUAKED misc_update_spawner (.5 .5 .5) ?
@@ -1390,7 +1390,7 @@ void misc_update_spawner (edict_t *ent)
 	ent->touch = respawner_touch;
 
 	gi.setmodel(ent,ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 
 }
 
@@ -1426,7 +1426,7 @@ void Teleporter_Activate(edict_t *self, G_Message_t *msg)
 		effect->solid = SOLID_NOT;
 		effect->s.effects |= EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
 		self->enemy = effect;
-		gi.linkentity (effect);
+		gi.linkentity(effect);
 
 		real_origin[0] = ((self->maxs[0] - self->mins[0]) / 2.0) + self->mins[0];
 		real_origin[1] = ((self->maxs[1] - self->mins[1]) / 2.0) + self->mins[1];
@@ -1463,7 +1463,7 @@ void SP_misc_teleporter (edict_t *ent)
 	if (!ent->target && (!(ent->spawnflags&DEATHMATCH_RANDOM) || !deathmatch->value))
 	{
 		gi.dprintf ("teleporter without a target.\n");
-		G_FreeEdict (ent);
+		G_FreeEdict(ent);
 		return;
 	}
 
@@ -1475,7 +1475,7 @@ void SP_misc_teleporter (edict_t *ent)
 	ent->solid = SOLID_TRIGGER;
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 
 	// if we don't have mult dests - probably redundant
 	if (!(ent->spawnflags & 8))
@@ -1492,7 +1492,7 @@ void SP_misc_teleporter (edict_t *ent)
 		effect->solid = SOLID_NOT;
 		effect->s.effects |= EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
 		ent->enemy = effect;
-		gi.linkentity (effect);
+		gi.linkentity(effect);
 
 		real_origin[0] = ((ent->maxs[0] - ent->mins[0]) / 2.0) + ent->mins[0];
 		real_origin[1] = ((ent->maxs[1] - ent->mins[1]) / 2.0) + ent->mins[1];
@@ -1515,9 +1515,9 @@ void SP_misc_teleporter_dest (edict_t *ent)
 
 	ent->s.skinnum = 0;
 	ent->solid = SOLID_NOT;
-	VectorSet (ent->mins, -32, -32, -24);
-	VectorSet (ent->maxs, 32, 32, -16);
-	gi.linkentity (ent);
+	VectorSet(ent->mins, -32, -32, -24);
+	VectorSet(ent->maxs, 32, 32, -16);
+	gi.linkentity(ent);
 
 	VectorCopy(ent->s.origin, endpos);
 	endpos[2] -= 500;

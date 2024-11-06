@@ -1664,8 +1664,8 @@ void SP_monster_tcheckrik_male (edict_t *self)
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
 	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
-//	VectorSet (self->mins, -16, -16, -32);
-//	VectorSet (self->maxs, 16, 16, 32);
+//	VectorSet(self->mins, -16, -16, -32);
+//	VectorSet(self->maxs, 16, 16, 32);
 	self->viewheight = self->maxs[2]*0.8;
 
 	self->touch = M_Touch;

@@ -260,7 +260,7 @@ void SP_breakable_brush (edict_t *ent)
 	ent->use = KillBrushUse;
 
 	gi.setmodel (ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 
 	// Use size to calculate mass
 	VectorSubtract(ent->maxs, ent->mins, space);

@@ -414,7 +414,7 @@ void SP_script_runner (edict_t *ent)
 	ent->use = script_use;
 
 //	gi.setmodel (ent, ent->model);
-//	gi.linkentity (ent);
+//	gi.linkentity(ent);
 }
 #ifdef __cplusplus
 } //end extern "C"
@@ -3502,7 +3502,7 @@ void CScript::HandleTrigger(bool Enable)
 		{
 			trigger_ent->solid = SOLID_TRIGGER;
 			trigger_ent->use = Use_Multi;
-			gi.linkentity (trigger_ent);
+			gi.linkentity(trigger_ent);
 		}
 		else
 		{

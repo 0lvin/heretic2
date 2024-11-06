@@ -965,7 +965,7 @@ void tbeastbite (edict_t *self, float ofsf, float ofsr, float ofsu)
 	{
 		gi.sound(self, CHAN_WEAPON, sounds[SND_CHOMP], 1, ATTN_NORM, 0);
 
-		VectorCopy (self->enemy->s.origin, temp);
+		VectorCopy(self->enemy->s.origin, temp);
 		temp[2] += 5;
 
 		VectorSubtract(self->enemy->s.origin, self->s.origin, v);
@@ -987,7 +987,7 @@ void tbeast_dead(edict_t *self)
 	self->think = NULL;
 	self->nextthink = 0;
 	level.fighting_beast = false;
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 void tbeast_land(edict_t *self)

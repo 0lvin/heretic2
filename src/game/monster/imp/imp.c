@@ -424,7 +424,7 @@ void imp_die(edict_t *self, G_Message_t *msg)
 		BecomeDebris(self);
 		self->think = NULL;
 		self->nextthink = 0;
-		gi.linkentity (self);
+		gi.linkentity(self);
 		return;
 	}
 

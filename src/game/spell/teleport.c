@@ -29,8 +29,8 @@ void Perform_Teleport(edict_t *self)
 	self->client->playerinfo.flags |= PLAYER_FLAG_RELEASEROPE;
 
 	//physically move the player, bearing in mind thats what a teleport is
-	VectorCopy (self->client->tele_dest, self->client->playerinfo.origin);
-	VectorCopy (self->client->tele_dest, self->s.origin);
+	VectorCopy(self->client->tele_dest, self->client->playerinfo.origin);
+	VectorCopy(self->client->tele_dest, self->s.origin);
 
 	// set angles
 	for (i=0 ; i<3 ; i++)
@@ -39,8 +39,8 @@ void Perform_Teleport(edict_t *self)
 	self->s.angles[PITCH] = 0;
 	self->s.angles[YAW] = self->client->tele_angles[YAW];
 	self->s.angles[ROLL] = 0;
-	VectorCopy (self->client->tele_angles, self->client->ps.viewangles);
-	VectorCopy (self->client->tele_angles, self->client->v_angle);
+	VectorCopy(self->client->tele_angles, self->client->ps.viewangles);
+	VectorCopy(self->client->tele_angles, self->client->v_angle);
 
 	// reset the cvar Farclip dist, incase it was modified by a trigger - there should be no teleport
 	// destinations or spawn points anywhere where the far clip has been modified.
@@ -53,7 +53,7 @@ void Perform_Teleport(edict_t *self)
 	KillBox (self);
 
 	// re link us
-	gi.linkentity (self);
+	gi.linkentity(self);
 
 	// draw the teleport splash at the destination
 	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN | ((byte)self->client->tele_type << 5), NULL, "" );

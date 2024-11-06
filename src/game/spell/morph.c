@@ -167,8 +167,8 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->client->playerinfo.renderfx &= ~RF_IGNORE_REFS;
 
 	// reset our mins and max's. And then let the physics move us out of anyone elses bounding box
-	VectorCopy (mins, ent->intentMins);
-	VectorCopy (maxs, ent->intentMaxs);
+	VectorCopy(mins, ent->intentMins);
+	VectorCopy(maxs, ent->intentMaxs);
 	ent->physicsFlags |= PF_RESIZE;
 
 	// reset our thinking

@@ -1446,7 +1446,7 @@ void priestess_dead( edict_t *self )
 	}
 	gi.RemoveEffects(&self->s, 0);
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 
 	self->think = G_FreeEdict;
 	self->nextthink = level.time + 0.1;

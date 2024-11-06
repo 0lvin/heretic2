@@ -89,8 +89,8 @@ The talking tome of power (sounds like a hot babe)
 */
 void SP_character_tome (edict_t *self)
 {
-	VectorSet (self->mins, -4, -8, -12);
-	VectorSet (self->maxs, 4, 8, 12);
+	VectorSet(self->mins, -4, -8, -12);
+	VectorSet(self->maxs, 4, 8, 12);
 
 	c_character_init(self,CID_C_TOME);
 }

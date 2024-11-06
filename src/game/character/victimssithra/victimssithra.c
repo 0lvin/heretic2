@@ -119,8 +119,8 @@ The Ssithra Victim for use in the torture scene
 */
 void SP_character_ssithra_victim (edict_t *self)
 {
-	VectorSet (self->mins, -40, -16, -2);
-	VectorSet (self->maxs, 40, 16, 2);
+	VectorSet(self->mins, -40, -16, -2);
+	VectorSet(self->maxs, 40, 16, 2);
 
 	c_character_init(self,CID_SSITHRA_VICTIM);
 

@@ -198,8 +198,8 @@ INVISIBLE - you won't see her
 */
 void SP_character_highpriestess (edict_t *self)
 {
-	VectorSet (self->mins, -16, -16, -32);
-	VectorSet (self->maxs, 16, 16, 32);
+	VectorSet(self->mins, -16, -16, -32);
+	VectorSet(self->maxs, 16, 16, 32);
 
 	c_character_init(self,CID_C_HIGHPRIESTESS);
 }

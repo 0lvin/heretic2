@@ -1695,7 +1695,7 @@ void SP_monster_ogle(edict_t *self)
 
 	if ((deathmatch->value == 1) && !((int)sv_cheats->value & self_spawn))
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 

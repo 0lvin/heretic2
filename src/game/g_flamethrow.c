@@ -31,7 +31,7 @@ void FlameThrower_Activate(edict_t *self, G_Message_t *msg)
 	self->solid = SOLID_TRIGGER;
 	self->use = flamethrower_use;
 	self->touch = flamethrower_touch;
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 
@@ -164,5 +164,5 @@ void SP_flamethrower(edict_t *self)
 
 	self->use = flamethrower_use;
 	self->touch = flamethrower_touch;
-	gi.linkentity (self);
+	gi.linkentity(self);
 }

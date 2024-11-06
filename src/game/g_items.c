@@ -37,8 +37,8 @@
 #include "common/h2rand.h"
 #include "header/g_itemstats.h"
 
-#define HEALTH_IGNORE_MAX	1
-#define HEALTH_TIMED		2
+#define HEALTH_IGNORE_MAX 1
+#define HEALTH_TIMED 2
 
 #define ITEM_COOP_ONLY		1
 #define ITEM_NO_DROP		2
@@ -48,7 +48,8 @@
 // --------------
 // ************************************************************************************************
 
-void RespawnedThink(edict_t *ent)
+void
+RespawnedThink(edict_t *ent)
 {
 	ent->think = NULL;
 //	ent->svflags |= SVF_NOCLIENT;
@@ -490,9 +491,10 @@ Pickup_Ammo
 ===============
 */
 
-qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
+qboolean
+Pickup_Ammo(edict_t *ent, edict_t *other)
 {
-	int		count;
+	int count;
 
 	if (other->flags & FL_CHICKEN)
 	{
@@ -500,12 +502,18 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 	}
 
 	if (ent->count)
+	{
 		count = ent->count;
+	}
 	else
+	{
 		count = ent->item->quantity;
+	}
 
-	if (!Add_Ammo (other, ent->item, count))
+	if (!Add_Ammo(other, ent->item, count))
+	{
 		return false;
+	}
 
 	G_CPrintf(other, PRINT_HIGH, ent->item->msg_pickup);
 
@@ -520,32 +528,38 @@ Separate routine so we can distinguish between ammo and mana.
 ===============
 */
 
-qboolean Pickup_Mana (edict_t *ent, edict_t *other)
+qboolean
+Pickup_Mana(edict_t *ent, edict_t *other)
 {
 	return(Pickup_Ammo(ent, other));
 }
 
-/*
-===============
-Drop_Ammo
-===============
-*/
-
-void Drop_Ammo (edict_t *ent, gitem_t *item)
+void
+Drop_Ammo(edict_t *ent, gitem_t *item)
 {
-	edict_t	*dropped;
-	int		index;
+	edict_t *dropped;
+	int index;
+
+	if (!ent || !item)
+	{
+		return;
+	}
 
 	index = playerExport->GetItemIndex(item);
-	dropped = Drop_Item (ent, item);
+	dropped = Drop_Item(ent, item);
 
 	if (ent->client->playerinfo.pers.inventory.Items[index] >= item->quantity)
+	{
 		dropped->count = item->quantity;
+	}
 	else
+	{
 		dropped->count = ent->client->playerinfo.pers.inventory.Items[index];
+	}
+
 	ent->client->playerinfo.pers.inventory.Items[index] -= dropped->count;
 
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 }
 
 /*
@@ -554,7 +568,8 @@ Pickup_Health
 ===============
 */
 
-qboolean Pickup_Health (edict_t *ent, edict_t *other)
+qboolean
+Pickup_Health(edict_t *ent, edict_t *other)
 {
 	if (other->flags & FL_CHICKEN)
 	{
@@ -604,7 +619,8 @@ Touch_Item
 ===============
 */
 
-void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if(strcmp(other->classname,"player"))
 	{
@@ -648,7 +664,7 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 
 	gi.CreateEffect(NULL, FX_PICKUP, 0, ent->s.origin, "");
 
-	G_UseTargets (ent, other);
+	G_UseTargets(ent, other);
 
 	// Handle respawn / removal of the item.
 
@@ -684,29 +700,36 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	}
 }
 
-/*
-================
-drop_temp_touch
-================
-*/
+/* ====================================================================== */
 
 static void
-drop_temp_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+drop_temp_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	if (other == ent->owner)
+	if (!ent || !other)
+	{
 		return;
+	}
 
-	Touch_Item (ent, other, plane, surf);
+	if (other == ent->owner)
+	{
+		return;
+	}
+
+	/* plane and surf are unused in Touch_Item
+	   but since the function is part of the
+	   game <-> client interface dropping
+	   them is too much pain. */
+	Touch_Item(ent, other, plane, surf);
 }
 
-/*
-================
-drop_make_touchable
-================
-*/
-
-static void drop_make_touchable (edict_t *ent)
+void
+drop_make_touchable(edict_t *ent)
 {
+	if (!ent)
+	{
+		return;
+	}
+
 	ent->touch = Touch_Item;
 
 	if (deathmatch->value)
@@ -716,17 +739,17 @@ static void drop_make_touchable (edict_t *ent)
 	}
 }
 
-/*
-================
-Drop_Item
-================
-*/
-
-edict_t *Drop_Item (edict_t *ent, gitem_t *item)
+edict_t *
+Drop_Item(edict_t *ent, gitem_t *item)
 {
-	edict_t	*dropped;
-	vec3_t	forward, right;
-	vec3_t	offset;
+	edict_t *dropped;
+	vec3_t forward, right;
+	vec3_t offset;
+
+	if (!ent || !item)
+	{
+		return NULL;
+	}
 
 	dropped = G_Spawn();
 
@@ -735,9 +758,9 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	dropped->spawnflags = DROPPED_ITEM;
 	dropped->s.effects = item->world_model_flags;
 	dropped->s.renderfx = RF_GLOW;
-	VectorSet (dropped->mins, -15, -15, -15);
-	VectorSet (dropped->maxs, 15, 15, 15);
-	gi.setmodel (dropped, dropped->item->world_model);
+	VectorSet(dropped->mins, -15, -15, -15);
+	VectorSet(dropped->maxs, 15, 15, 15);
+	gi.setmodel(dropped, dropped->item->world_model);
 	dropped->solid = SOLID_TRIGGER;
 	dropped->movetype = MOVETYPE_NONE;
 	dropped->touch = drop_temp_touch;
@@ -745,19 +768,19 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 
 	if (ent->client)
 	{
-		trace_t	trace;
+		trace_t trace;
 
-		AngleVectors (ent->client->v_angle, forward, right, NULL);
+		AngleVectors(ent->client->v_angle, forward, right, NULL);
 		VectorSet(offset, 24, 0, -16);
 		G_ProjectSource (ent->s.origin, offset, forward, right, dropped->s.origin);
 		trace = gi.trace(ent->s.origin, dropped->mins, dropped->maxs,
 			dropped->s.origin, ent, CONTENTS_SOLID);
-		VectorCopy (trace.endpos, dropped->s.origin);
+		VectorCopy(trace.endpos, dropped->s.origin);
 	}
 	else
 	{
-		AngleVectors (ent->s.angles, forward, right, NULL);
-		VectorCopy (ent->s.origin, dropped->s.origin);
+		AngleVectors(ent->s.angles, forward, right, NULL);
+		VectorCopy(ent->s.origin, dropped->s.origin);
 	}
 
 	VectorScale (forward, 100, dropped->velocity);
@@ -766,18 +789,19 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	dropped->think = drop_make_touchable;
 	dropped->nextthink = level.time + 1;
 
-	gi.linkentity (dropped);
+	gi.linkentity(dropped);
 
 	return dropped;
 }
 
-/*
-================
-Use_Item
-================
-*/
-void Use_Item (edict_t *ent, edict_t *other, edict_t *activator)
+void
+Use_Item(edict_t *ent, edict_t *other /* unused */, edict_t *activator /* unused */)
 {
+	if (!ent)
+	{
+		return;
+	}
+
 //	ent->svflags &= ~SVF_NOCLIENT;
 	ent->use = NULL;
 
@@ -792,7 +816,7 @@ void Use_Item (edict_t *ent, edict_t *other, edict_t *activator)
 		ent->touch = Touch_Item;
 	}
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 /* ====================================================================== */
@@ -845,6 +869,68 @@ FixObjectPosition(edict_t *ent)
 				return;
 			}
 		}
+	}
+}
+
+void
+droptofloor(edict_t *ent)
+{
+	trace_t tr;
+	vec3_t dest;
+	float *v;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->solid = SOLID_TRIGGER;
+	ent->movetype = MOVETYPE_STATIC;
+	ent->touch = Touch_Item;
+	ent->think = NULL;
+
+	if (!(ent->spawnflags & ITEM_NO_DROP))
+	{
+		v = tv(0, 0, -128);
+		VectorAdd(ent->s.origin, v, dest);
+
+		tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
+
+		if (tr.startsolid)
+		{
+			FixObjectPosition(ent);
+
+			tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
+		}
+
+		if (tr.startsolid)
+		{
+			if (strcmp(ent->classname, "foodcube") == 0)
+			{
+				VectorCopy(ent->s.origin, tr.endpos);
+				ent->velocity[2] = 0;
+			}
+			else
+			{
+				gi.dprintf("%s: %s startsolid at %s\n",
+						__func__,
+						ent->classname,
+						vtos(ent->s.origin));
+				G_FreeEdict(ent);
+				return;
+			}
+		}
+
+		tr.endpos[2] += 24;
+		VectorCopy(tr.endpos, ent->s.origin);
+	}
+
+	gi.linkentity(ent);
+
+	// if we loading a saved game - the objects will already be out there
+	if (!ent->PersistantCFX)
+	{
+		SpawnItemEffect(ent, ent->item);
 	}
 }
 
@@ -905,12 +991,13 @@ ValidItem(gitem_t *item)
 // ---------------
 // ************************************************************************************************
 
-void SpawnItemEffect(edict_t *ent, gitem_t *item)
+void
+SpawnItemEffect(edict_t *ent, gitem_t *item)
 {
 
 	if(!ValidItem(item))
 	{
-		G_FreeEdict (ent);
+		G_FreeEdict(ent);
 		return;
 	}
 
@@ -944,51 +1031,6 @@ void SpawnItemEffect(edict_t *ent, gitem_t *item)
 	}
 }
 
-
-/*
-================
-droptofloor
-================
-*/
-
-void itemsdroptofloor (edict_t *ent)
-{
-	trace_t		tr;
-	vec3_t		dest;
-
-	ent->movetype = MOVETYPE_STATIC;
-	ent->solid = SOLID_TRIGGER;
-	ent->touch = Touch_Item;
-	ent->think = NULL;
-
-	if (!(ent->spawnflags & ITEM_NO_DROP))
-	{
-		VectorSet(dest, 0.0, 0.0, -128.0);
-		Vec3AddAssign (ent->s.origin, dest);
-
-		gi.linkentity (ent);
-
-		tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
-		if (tr.startsolid)
-		{
-			gi.dprintf ("droptofloor: %s startsolid at %s (inhibited)\n", ent->classname, vtos(ent->s.origin));
-			G_FreeEdict (ent);
-			return;
-		}
-
-		tr.endpos[2] += 24;
-		VectorCopy(tr.endpos,ent->s.origin);
-	}
-
-
-	gi.linkentity (ent);
-
-	// if we loading a saved game - the objects will already be out there
-	if (!ent->PersistantCFX)
-		SpawnItemEffect(ent, ent->item);
-}
-
-
 /*
 ===============
 PrecacheItem
@@ -998,7 +1040,8 @@ spawned in a level, and for each item in each client's inventory.
 ===============
 */
 
-void PrecacheItem (gitem_t *it)
+void
+PrecacheItem(gitem_t *it)
 {
 	gitem_t	*ammo;
 
@@ -1020,6 +1063,7 @@ void PrecacheItem (gitem_t *it)
 			PrecacheItem (ammo);
 	}
 }
+
 // ************************************************************************************************
 // SpawnItem
 // ---------
@@ -1027,7 +1071,8 @@ void PrecacheItem (gitem_t *it)
 // the floor because they might be on an entity that hasn't spawned yet.
 // ************************************************************************************************
 
-void SpawnItem (edict_t *ent, gitem_t *item)
+void
+SpawnItem(edict_t *ent, gitem_t *item)
 {
 	if ((ent->spawnflags & ITEM_COOP_ONLY) && (!coop->value))
 		return;
@@ -1036,14 +1081,13 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 
 	if(!ValidItem(item))
 	{
-		G_FreeEdict (ent);
+		G_FreeEdict(ent);
 		return;
 	}
 
 	ent->item = item;
-	ent->nextthink = level.time + (2 * FRAMETIME);    // items start after other solids
-	ent->think = itemsdroptofloor;
-
+	ent->nextthink = level.time + 2 * FRAMETIME; /* items start after other solids */
+	ent->think = droptofloor;
 	ent->s.effects = item->world_model_flags;
 	ent->s.renderfx = RF_GLOW;
 	ent->s.effects |= EF_ALWAYS_ADD_EFFECTS;
@@ -1090,8 +1134,8 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 	// FIXME: Until all objects have bounding boxes, default to these vals.
 	if (Vec3IsZero(ent->mins))
 	{
-		VectorSet (ent->mins, -10.0, -10.0, -10.0);
-		VectorSet (ent->maxs, 10.0, 10.0, 10.0);
+		VectorSet(ent->mins, -10.0, -10.0, -10.0);
+		VectorSet(ent->maxs, 10.0, 10.0, 10.0);
 	}
 
 	ent->classname = item->classname;

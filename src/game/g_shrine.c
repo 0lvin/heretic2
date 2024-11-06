@@ -435,7 +435,7 @@ void deal_with_shrine_node(edict_t *self)
 
 		delay->nextthink = level.time + time;
 		delay->oldtouch = self->touch;
-		gi.linkentity (delay);
+		gi.linkentity(delay);
 	}
 
 	// Turn off the touch for this shrine.
@@ -715,7 +715,7 @@ void shrine_armor (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -824,7 +824,7 @@ void shrine_armor_gold (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -940,7 +940,7 @@ void shrine_staff (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -1041,7 +1041,7 @@ void shrine_lung (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -1158,7 +1158,7 @@ void shrine_light (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -1261,7 +1261,7 @@ void shrine_mana (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -1371,7 +1371,7 @@ void shrine_ghost (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -1484,7 +1484,7 @@ void shrine_reflect (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -1600,7 +1600,7 @@ void shrine_powerup (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -1717,7 +1717,7 @@ void shrine_speed (edict_t *ent)
 	}
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 // ************************************************************************************************
@@ -1940,5 +1940,5 @@ void shrine_random(edict_t *ent)
 		ent->touch = shrine_random_touch;
 
 	gi.setmodel(ent, ent->model);
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }

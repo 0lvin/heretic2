@@ -1060,7 +1060,7 @@ void MoveEntity_Slide(edict_t *self)
 
 		if (i != numplanes)
 		{	// good slide
-			VectorCopy (new_velocity, self->velocity);
+			VectorCopy(new_velocity, self->velocity);
 
 //			gi.dprintf("Acceptable slide for bump %i\n", bumpcount);
 
@@ -2266,7 +2266,7 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 
 			if(!block)
 			{	// pushed ok
-				gi.linkentity (check);
+				gi.linkentity(check);
 
 				if(check->client)
 				{

@@ -148,8 +148,8 @@ void SP_monster_tcheckrik_mothers (edict_t *self)
 
 	self->solid=SOLID_BBOX;
 
-	VectorSet (self->mins, -40, -40, -75);
-	VectorSet (self->maxs,  40,  40,  75);
+	VectorSet(self->mins, -40, -40, -75);
+	VectorSet(self->maxs,  40,  40,  75);
 	self->viewheight = self->maxs[2]*0.8;
 
 	self->s.modelindex = classStatics[CID_MOTHER].resInfo->modelIndex;

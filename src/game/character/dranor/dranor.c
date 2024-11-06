@@ -178,8 +178,8 @@ The elf who talks like Sean Connery
 */
 void SP_character_dranor (edict_t *self)
 {
-	VectorSet (self->mins, -16, -16, -32);
-	VectorSet (self->maxs, 16, 16, 32);
+	VectorSet(self->mins, -16, -16, -32);
+	VectorSet(self->maxs, 16, 16, 32);
 
 	c_character_init(self,CID_DRANOR);
 

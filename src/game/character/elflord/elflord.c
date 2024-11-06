@@ -188,8 +188,8 @@ The Celestial Watcher who whispers when he talks
 */
 void SP_character_elflord (edict_t *self)
 {
-	VectorSet (self->mins, -24, -24, -78);
-	VectorSet (self->maxs, 24, 24, 16);
+	VectorSet(self->mins, -24, -24, -78);
+	VectorSet(self->maxs, 24, 24, 16);
 
 	c_character_init(self,CID_C_ELFLORD);
 

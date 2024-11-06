@@ -175,10 +175,10 @@ void M_CheckGround (edict_t *ent)
 //	ent->groundentity = trace.ent;
 //	ent->groundentity_linkcount = trace.ent->linkcount;
 //	if (!trace.startsolid && !trace.allsolid)
-//		VectorCopy (trace.endpos, ent->s.origin);
+//		VectorCopy(trace.endpos, ent->s.origin);
 	if (!trace.startsolid && !trace.allsolid)
 	{
-		VectorCopy (trace.endpos, ent->s.origin);
+		VectorCopy(trace.endpos, ent->s.origin);
 		ent->groundentity = trace.ent;
 		ent->groundentity_linkcount = trace.ent->linkcount;
 		ent->velocity[2] = 0;
@@ -397,7 +397,7 @@ void M_droptofloor (edict_t *ent)
 	ent->nextthink = level.time + FRAMETIME;
 
 	ent->s.origin[2] += 1.0;
-	VectorCopy (ent->s.origin, end);
+	VectorCopy(ent->s.origin, end);
 	end[2] -= 256;
 
 	trace = gi.trace(ent->s.origin, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);
@@ -408,7 +408,7 @@ void M_droptofloor (edict_t *ent)
 		if(ent->think == M_droptofloor)
 		{
 			ent->think = NULL;//don't try again
-			gi.linkentity (ent);
+			gi.linkentity(ent);
 			M_CatagorizePosition (ent);
 		}
 		return;
@@ -423,9 +423,9 @@ void M_droptofloor (edict_t *ent)
 	if(mgai_debug->value)
 		gi.dprintf("%s at %s dropped to floor at %s\n", ent->classname, vtos(ent->s.origin), vtos(trace.endpos));
 
-	VectorCopy (trace.endpos, ent->s.origin);
+	VectorCopy(trace.endpos, ent->s.origin);
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 	M_CheckGround (ent);
 	M_CatagorizePosition (ent);
 
@@ -730,7 +730,7 @@ monster_start(edict_t *self)
 {
 	if ((deathmatch->value == 1) && !((int)sv_cheats->value & self_spawn))
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return false;
 	}
 
@@ -1668,7 +1668,7 @@ void M_EndDeath( edict_t *self)
 	}
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 

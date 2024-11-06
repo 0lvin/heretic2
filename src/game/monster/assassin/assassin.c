@@ -380,12 +380,12 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 	VectorCopy(self->enemy->s.origin, enemy_pos);
 	enemy_pos[2] += self->enemy->viewheight;
 
-	AngleVectors (self->s.angles, Forward, right, NULL);
-	VectorCopy (self->s.origin, Arrow->s.origin);
+	AngleVectors(self->s.angles, Forward, right, NULL);
+	VectorCopy(self->s.origin, Arrow->s.origin);
 	Arrow->s.origin[2] += 8;
 	VectorMA (Arrow->s.origin, 8, Forward, Arrow->s.origin);
 	VectorMA (Arrow->s.origin, right_ofs, right, Arrow->s.origin);
-	VectorCopy (self->movedir, Arrow->movedir);
+	VectorCopy(self->movedir, Arrow->movedir);
 	VectoAngles (Forward, Arrow->s.angles);
 
 	extrapolateFiredir (self, Arrow->s.origin, ASSASSIN_DAGGER_SPEED, self->enemy, 0.3, check_lead);
@@ -2089,13 +2089,13 @@ void assassinStop (edict_t *self)
 
 void assassinSetCrouched (edict_t *self)
 {
-	VectorSet (self->maxs, 16, 16, 0);
+	VectorSet(self->maxs, 16, 16, 0);
 	self->viewheight = 0;
 }
 
 void assassinUndoCrouched (edict_t *self)
 {
-	VectorSet (self->maxs, 16, 16, 48);
+	VectorSet(self->maxs, 16, 16, 48);
 	self->viewheight = 40;
 }
 

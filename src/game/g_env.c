@@ -64,7 +64,7 @@ void SP_env_dust (edict_t *self)
 	self->moveinfo.sound_middle = gi.soundindex ("world/quakeshort.wav");
 
 	gi.setmodel (self, self->model);
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 #define START_OFF 8
@@ -181,5 +181,5 @@ void SP_env_muck (edict_t *self)
 	self->use = env_dust_use;
 
 	gi.setmodel (self, self->model);
-	gi.linkentity (self);
+	gi.linkentity(self);
 }

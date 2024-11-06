@@ -965,7 +965,7 @@ void gorgonbite (edict_t *self)
 		else
 			gi.sound(self, CHAN_WEAPON, sounds[SND_MELEEHIT2], 1, ATTN_NORM, 0);
 
-		VectorCopy (self->enemy->s.origin, temp);
+		VectorCopy(self->enemy->s.origin, temp);
 		temp[2] += 5;
 
 		VectorSubtract(self->enemy->s.origin, self->s.origin, v);
@@ -1021,29 +1021,29 @@ void gorgon_hop (edict_t *self)
 	{
 		if (self->monsterinfo.currentmove == &gorgon_move_melee6)	// hop left
 		{
-			VectorCopy (self->s.angles, temp);
+			VectorCopy(self->s.angles, temp);
 			temp[YAW] -= 15;
-			AngleVectors (temp, NULL, right, NULL);
+			AngleVectors(temp, NULL, right, NULL);
 			VectorScale (right, -40*JUMP_SCALE, self->velocity);
 		}
 		else if (self->monsterinfo.currentmove == &gorgon_move_melee7)  // hop right
 		{
-			VectorCopy (self->s.angles, temp);
+			VectorCopy(self->s.angles, temp);
 			temp[YAW] += 15;
-			AngleVectors (temp, NULL, right, NULL);
+			AngleVectors(temp, NULL, right, NULL);
 			VectorScale (right, 40*JUMP_SCALE, self->velocity);
 		}
 		else if (self->monsterinfo.currentmove == &gorgon_move_melee8)  // hop forward
 		{
-			VectorCopy (self->s.angles, temp);
-			AngleVectors (temp, forward, NULL, NULL);
+			VectorCopy(self->s.angles, temp);
+			AngleVectors(temp, forward, NULL, NULL);
 
 			VectorScale (forward, 50*JUMP_SCALE, self->velocity);
 		}
 		else if (self->monsterinfo.currentmove == &gorgon_move_melee9)  // hop backward
 		{
-			VectorCopy (self->s.angles, temp);
-			AngleVectors (temp, forward, NULL, NULL);
+			VectorCopy(self->s.angles, temp);
+			AngleVectors(temp, forward, NULL, NULL);
 			VectorScale (forward, -50*JUMP_SCALE, self->velocity);
 		}
 
@@ -1221,7 +1221,7 @@ qboolean gorgon_check_jump (edict_t *self)
 	//   Calculate velocity to make monster jump to hit arc spot
 
 	// choose landing spot behind enemy
-	AngleVectors (angles, forward, right, up);
+	AngleVectors(angles, forward, right, up);
 
 	VectorMA (landing_spot, 60, forward, landing_spot);
 
@@ -1256,12 +1256,12 @@ qboolean gorgon_check_jump (edict_t *self)
 	landing_spot_angles[ROLL] = 0;
 	landing_spot_angles[YAW] = vectoyaw(v);
 
-	AngleVectors (landing_spot_angles, forward, right, up);
+	AngleVectors(landing_spot_angles, forward, right, up);
 
 	VectorMA (landing_spot, 20, forward, arc_spot);
 	VectorMA (landing_spot, 180, up, arc_spot);
 
-	AngleVectors (self->s.angles, forward, right, up);
+	AngleVectors(self->s.angles, forward, right, up);
 
 	// Calculate velocity to make monster jump to hit arc spot
 	VectorSubtract (arc_spot,self->s.origin, v);  // Face monster to arc spot
@@ -1272,7 +1272,7 @@ qboolean gorgon_check_jump (edict_t *self)
 
 	hold = len / 200;
 
-	AngleVectors (angles, forward, right, up);
+	AngleVectors(angles, forward, right, up);
 	VectorScale (forward, 300 * hold, self->movedir);
 
 	self->movedir[2] = 200 * hold;
@@ -1324,7 +1324,7 @@ void gorgon_jump (edict_t *self)
 	//   Calculate velocity to make monster jump to hit arc spot
 
 	// choose landing spot behind enemy
-	AngleVectors (angles, forward, right, up);
+	AngleVectors(angles, forward, right, up);
 
 	VectorMA (landing_spot, 60, forward, landing_spot);
 
@@ -1359,12 +1359,12 @@ void gorgon_jump (edict_t *self)
 	landing_spot_angles[ROLL] = 0;
 	landing_spot_angles[YAW] = vectoyaw(v);
 
-	AngleVectors (landing_spot_angles, forward, right, up);
+	AngleVectors(landing_spot_angles, forward, right, up);
 
 	VectorMA (landing_spot, 20, forward, arc_spot);
 	VectorMA (landing_spot, 180, up, arc_spot);
 
-	AngleVectors (self->s.angles, forward, right, up);
+	AngleVectors(self->s.angles, forward, right, up);
 
 	// Calculate velocity to make monster jump to hit arc spot
 	VectorSubtract (arc_spot,self->s.origin, v);  // Face monster to arc spot
@@ -1375,7 +1375,7 @@ void gorgon_jump (edict_t *self)
 
 	hold = len / 200;
 
-	AngleVectors (angles, forward, right, up);
+	AngleVectors(angles, forward, right, up);
 	VectorScale (forward, 300 * hold, self->velocity);
 
 	self->velocity[2] = 200 * hold;

@@ -109,10 +109,10 @@ ChasecamRemove(edict_t *ent)
 	ent->s.modelindex = ent->client->oldplayer->s.modelindex;
 	ent->svflags &= ~SVF_NOCLIENT;
 
-	G_FreeEdict (ent->client->oldplayer);
+	G_FreeEdict(ent->client->oldplayer);
 	ent->client->oldplayer = NULL;
 	ent->client->chasetoggle = 0;
-	G_FreeEdict (ent->client->chasecam);
+	G_FreeEdict(ent->client->chasecam);
 	ent->client->chasecam = NULL;
 }
 
@@ -326,7 +326,7 @@ CheckChasecam_Viewent(edict_t *ent)
 
 		ent->client->oldplayer->flags = ent->flags;
 		/* end Lazarus */
-		gi.linkentity (ent->client->oldplayer);
+		gi.linkentity(ent->client->oldplayer);
 	}
 }
 

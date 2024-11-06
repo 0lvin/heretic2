@@ -312,7 +312,7 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 
 						dl = &fxi.r_dlights[(*fxi.r_numdlights)++];
 
-						VectorCopy (current->r.origin, dl->origin);
+						VectorCopy(current->r.origin, dl->origin);
 
 						dl->intensity = ce_dlight->intensity;
 

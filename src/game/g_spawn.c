@@ -878,7 +878,7 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 					((skill->value >= 2) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
 					)
 					{
-						G_FreeEdict (ent);
+						G_FreeEdict(ent);
 						inhibit++;
 						continue;
 					}

@@ -1224,9 +1224,9 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	tophalf->monsterinfo.nextframeindex = -1;
 	tophalf->friction = 0.1;
 
-	VectorCopy (self->s.origin, tophalf->s.origin);
-	VectorCopy (tophalf->s.origin, tophalf->s.old_origin);
-	VectorCopy (self->s.angles, tophalf->s.angles);
+	VectorCopy(self->s.origin, tophalf->s.origin);
+	VectorCopy(tophalf->s.origin, tophalf->s.old_origin);
+	VectorCopy(self->s.angles, tophalf->s.angles);
 
 	if(!self->s.frame)//?!?!
 		tophalf->s.frame = FRAME_startle32;
@@ -1850,7 +1850,7 @@ void ssithraWaterDead(edict_t *self)
 	self->think = fish_deadfloat;
 	self->nextthink = level.time + 0.1;
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 void ssithraCollapse (edict_t *self)

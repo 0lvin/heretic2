@@ -138,7 +138,7 @@ qboolean clear_visible_pos (edict_t *self, vec3_t spot2)
 	if (!self)
 		return false;
 
-	VectorCopy (self->s.origin, spot1);
+	VectorCopy(self->s.origin, spot1);
 	spot1[2] += self->viewheight;
 	if(self->classID == CID_TBEAST)
 	{

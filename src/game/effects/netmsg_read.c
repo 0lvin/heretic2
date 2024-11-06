@@ -185,7 +185,7 @@ void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir)
 		assert(0);
 		fxi.Com_Error (ERR_DROP, "MSF_ReadDirMag: out of range");
 	}
-	VectorCopy (bytedirs[b], dir);
+	VectorCopy(bytedirs[b], dir);
 
 	// Scale by magnitude
 	b = fxi.MSG_ReadByte(sb);

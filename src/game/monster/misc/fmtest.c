@@ -11,11 +11,11 @@ MakeSolidObject(edict_t *ent, char *Model, float MinX, float MinY, float MinZ,
 {
 	ent->movetype = MOVETYPE_NONE;
 	ent->solid = SOLID_BBOX;
-	VectorSet (ent->mins, MinX, MinY, MinZ);
-	VectorSet (ent->maxs, MaxX, MaxY, MaxZ);
+	VectorSet(ent->mins, MinX, MinY, MinZ);
+	VectorSet(ent->maxs, MaxX, MaxY, MaxZ);
 	gi.setmodel(ent, Model);
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 }
 
 static void

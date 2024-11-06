@@ -161,8 +161,8 @@ The scout
 */
 void SP_character_ssithra_scout (edict_t *self)
 {
-	VectorSet (self->mins, -26, -16, -13);
-	VectorSet (self->maxs, 26, 16, 13);
+	VectorSet(self->mins, -26, -16, -13);
+	VectorSet(self->maxs, 26, 16, 13);
 
 	c_character_init(self,CID_SSITHRA_SCOUT);
 }

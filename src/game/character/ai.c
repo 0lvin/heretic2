@@ -199,10 +199,10 @@ void c_corvus_init(edict_t *self,int classId)
 	self->yaw_speed = 20;
 	VectorClear(self->knockbackvel);
 
-	VectorCopy (c_mins, self->mins);
-	VectorCopy (c_maxs, self->maxs);
-	VectorCopy (c_mins, self->intentMins);
-	VectorCopy (c_maxs, self->intentMaxs);
+	VectorCopy(c_mins, self->mins);
+	VectorCopy(c_maxs, self->maxs);
+	VectorCopy(c_mins, self->intentMins);
+	VectorCopy(c_maxs, self->intentMaxs);
 	self->viewheight = self->maxs[2]*0.8;
 
 

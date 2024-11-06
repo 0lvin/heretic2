@@ -80,7 +80,7 @@ void BboxYawAndScale(edict_t *self)
 	VectorCopy(self->mins,holdmins);
 	VectorCopy(self->maxs,holdmaxs);
 
-	AngleVectors (self->s.angles,forward, right,NULL);
+	AngleVectors(self->s.angles,forward, right,NULL);
 
 	VectorMA (self->s.origin, holdmins[0],forward, point[0]);
 	VectorMA (point[0], holdmins[1],right, point[0]);
@@ -147,7 +147,7 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 	VectorCopy(self->mins,holdmins);
 	VectorCopy(self->maxs,holdmaxs);
 
-	AngleVectors (self->s.angles,forward, right,NULL);
+	AngleVectors(self->s.angles,forward, right,NULL);
 
 	VectorMA (self->s.origin, holdmins[0],forward, point[0]);
 	VectorMA (point[0], holdmins[1],right, point[0]);
@@ -199,7 +199,7 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 
 }
 
-void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid)
+void ObjectInit(edict_t *self,int health,int mass, int materialtype, int solid)
 {
 	self->movetype = MOVETYPE_NONE;
 	self->solid = (solid_t)solid;
@@ -242,7 +242,7 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid)
 	}
 	else
 	{
-		gi.linkentity (self);
+		gi.linkentity(self);
 	}
 }
 
@@ -1567,7 +1567,7 @@ void SP_obj_seasonglobe (edict_t *bottom)
 	bottom->use = globebottom_use;
 	bottom->yaw_speed = 2.5;
 	VectorSet(bottom->s.angles, 0, 90, 0);
-	gi.linkentity (bottom);
+	gi.linkentity(bottom);
 
 	top = G_Spawn();
 
@@ -1588,7 +1588,7 @@ void SP_obj_seasonglobe (edict_t *bottom)
 	top->yaw_speed = 2.5;
 	top->target = bottom->target;
 	VectorSet(top->s.angles, 0, 120, 0);
-	gi.linkentity (top);
+	gi.linkentity(top);
 
 	bottom->enemy = top;
 	top->enemy = bottom;
@@ -1867,7 +1867,7 @@ void SP_obj_tree2 (edict_t *self)
 
 
 	BboxYawAndScale(moss);
-	gi.linkentity (moss);
+	gi.linkentity(moss);
 
 	self->target_ent = moss;
 }
@@ -1906,7 +1906,7 @@ void SP_obj_tree3 (edict_t *self)
 	moss->s.renderfx |= RF_TRANSLUCENT;
 
 	BboxYawAndScale(moss);
-	gi.linkentity (moss);
+	gi.linkentity(moss);
 
 	self->target_ent = moss;
 }
@@ -1944,7 +1944,7 @@ void SP_obj_treetall (edict_t *self)
 	moss->s.renderfx |= RF_TRANSLUCENT;
 	moss->s.scale = self->s.scale;
 	BboxYawAndScale(moss);
-	gi.linkentity (moss);
+	gi.linkentity(moss);
 
 	self->target_ent = moss;
 }
@@ -3700,7 +3700,7 @@ void SP_obj_venusflytrap (edict_t *self)
 	leaves->s.modelindex = gi.modelindex("models/objects/plants/v-plant/tris.fm");
 	BboxYawAndScale(leaves);
 	leaves->s.angles[YAW] = self->s.angles[YAW];
-	gi.linkentity (leaves);
+	gi.linkentity(leaves);
 
 	self->target_ent = leaves;
 
@@ -3875,7 +3875,7 @@ void SP_obj_spellbook (edict_t *self)
 	beam->s.modelindex = gi.modelindex("models/objects/spellbook/beam/tris.fm");
 	BboxYawAndScale(beam);
 	beam->s.angles[YAW] = self->s.angles[YAW];
-	gi.linkentity (beam);
+	gi.linkentity(beam);
 
 	self->target_ent = beam;
 }
@@ -4118,7 +4118,7 @@ void statue_sithraguard_use (edict_t *self, edict_t *other, edict_t *activator)
 	shield->solid = SOLID_NOT;
 
 	BboxYawAndScale(shield);
-	gi.linkentity (shield);
+	gi.linkentity(shield);
 
 
 
@@ -4502,7 +4502,7 @@ void SP_obj_biotank (edict_t *self)
 	BboxYawAndScale(fish);
 	fish->s.angles[YAW] = self->s.angles[YAW];
 
-	gi.linkentity (fish);
+	gi.linkentity(fish);
 
 	fish->think = fish_anim;
 	fish->nextthink = level.time + FRAMETIME;
@@ -4582,7 +4582,7 @@ void SP_obj_hangingdude (edict_t *self)
 	self->s.frame = 0;
 	BboxYawAndScale(self);
 	self->targetname = "guy1";
-	gi.linkentity (self);
+	gi.linkentity(self);
 
 
 	ring = G_Spawn();
@@ -4597,7 +4597,7 @@ void SP_obj_hangingdude (edict_t *self)
 	VectorSet(ring->maxs,  3,  20,  55);
 
 	BboxYawAndScale(ring);
-	gi.linkentity (ring);
+	gi.linkentity(ring);
 
 }
 
@@ -4794,7 +4794,7 @@ void SP_obj_hanging_ogle (edict_t *self)
 	ring->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	BboxYawAndScale(ring);
-	gi.linkentity (ring);
+	gi.linkentity(ring);
 
 	self->target_ent = ring;
 

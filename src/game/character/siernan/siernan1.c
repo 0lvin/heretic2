@@ -213,8 +213,8 @@ LEANING - leaning against a wall, idling
 */
 void SP_character_siernan1 (edict_t *self)
 {
-	VectorSet (self->mins, -10, -10, -20);
-	VectorSet (self->maxs, 10, 10, 20);
+	VectorSet(self->mins, -10, -10, -20);
+	VectorSet(self->maxs, 10, 10, 20);
 
 	self->s.scale = self->monsterinfo.scale = 1.2;
 

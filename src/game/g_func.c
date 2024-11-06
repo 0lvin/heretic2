@@ -1078,7 +1078,7 @@ SP_func_plat(edict_t *ent)
 
 	door_sounds(ent);
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 
 	plat_spawn_inside_trigger(ent);	// the "start moving" trigger
 
@@ -3242,7 +3242,7 @@ SP_func_door_rotating(edict_t *ent)
 		st.distance = 90;
 	}
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 
 	VectorCopy(ent->s.angles, ent->pos1);
 	VectorMA(ent->s.angles, st.distance, ent->movedir, ent->pos2);

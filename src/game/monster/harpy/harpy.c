@@ -709,7 +709,7 @@ void harpy_dead_pain(edict_t *self, G_Message_t *msg)
 		BecomeDebris(self);
 		self->think = NULL;
 		self->nextthink = 0;
-		gi.linkentity (self);
+		gi.linkentity(self);
 		return;
 	}
 	else if(msg)
@@ -738,7 +738,7 @@ void harpy_die(edict_t *self, G_Message_t *msg)
 		gi.sound(self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 
 		BecomeDebris(self);
-		gi.linkentity (self);
+		gi.linkentity(self);
 		return;
 	}
 

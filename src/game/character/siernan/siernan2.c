@@ -100,8 +100,8 @@ The cinematic siernan laying down
 */
 void SP_character_siernan2 (edict_t *self)
 {
-	VectorSet (self->mins, -17, -25, 0);
-	VectorSet (self->maxs, 22, 12, 16);
+	VectorSet(self->mins, -17, -25, 0);
+	VectorSet(self->maxs, 22, 12, 16);
 
 	self->s.scale = self->monsterinfo.scale = 1;
 

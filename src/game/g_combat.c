@@ -1232,7 +1232,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 		client->damage_blood += take;
 		client->damage_knockback += knockback;
-		VectorCopy (point, client->damage_from);
+		VectorCopy(point, client->damage_from);
 	}
 }
 

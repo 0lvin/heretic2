@@ -366,7 +366,7 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 	}
 
 	neworg[2] += stepsize;
-	VectorCopy (neworg, end);
+	VectorCopy(neworg, end);
 	end[2] -= stepsize * 2;
 
 	trace = gi.trace(neworg, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);

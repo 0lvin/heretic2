@@ -89,7 +89,7 @@ void TrigDamage_Activate(edict_t *self, G_Message_t *msg)
 {
 	self->solid = SOLID_TRIGGER;
 	self->use = DamageField_Use;
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 
@@ -140,7 +140,7 @@ void SP_trigger_Damage(edict_t *self)
 		self->use = DamageField_Use;
 
 	self->movetype = MOVETYPE_NONE;
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 void DamageField_Use(edict_t *self, edict_t *other, edict_t *activator)

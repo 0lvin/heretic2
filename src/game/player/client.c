@@ -86,7 +86,7 @@ void SP_info_player_deathmatch(edict_t *self)
 {
 	if (!deathmatch->value)
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 //	SP_misc_teleporter_dest (self);
@@ -99,7 +99,7 @@ void SP_info_player_coop(edict_t *self)
 {
 	if(!coop->value)
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 //	SP_misc_teleporter_dest (self);
@@ -1872,13 +1872,13 @@ respawn(edict_t *self)
 
 	if (self->client->oldplayer)
 	{
-			G_FreeEdict (self->client->oldplayer);
+			G_FreeEdict(self->client->oldplayer);
 	}
 	self->client->oldplayer = NULL;
 
 	if (self->client->chasecam)
 	{
-			G_FreeEdict (self->client->chasecam);
+			G_FreeEdict(self->client->chasecam);
 	}
 	self->client->chasecam = NULL;
 
@@ -2573,9 +2573,9 @@ PutClientInServer(edict_t *ent)
 
 	// Set up the model's origin, making sure it's off the ground.
 
-	VectorCopy (spawn_origin, ent->s.origin);
+	VectorCopy(spawn_origin, ent->s.origin);
 	ent->s.origin[2] += 1;
-	VectorCopy (ent->s.origin, ent->s.old_origin);
+	VectorCopy(ent->s.origin, ent->s.old_origin);
 
 	ent->s.angles[PITCH] = 0;
 	ent->s.angles[YAW] = spawn_angles[YAW];
@@ -3717,7 +3717,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		VectorCopy(client->aimangles,client->ps.viewangles);
 	}
 
-	gi.linkentity (ent);
+	gi.linkentity(ent);
 
 	// Process touch triggers that the client could activate.
 

@@ -193,7 +193,7 @@ void Trigger_Activate(edict_t *self, G_Message_t *msg)
 {
 	self->solid = SOLID_TRIGGER;
 	self->use = Use_Multi;
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 void Trigger_Sounds(edict_t *self)
@@ -240,7 +240,7 @@ void trigger_enable(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->solid = SOLID_TRIGGER;
 	self->use = Use_Multi;
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 void Use_Multi(edict_t *self, edict_t *other, edict_t *activator)
@@ -540,7 +540,7 @@ void SP_trigger_PlayerUsePuzzle(edict_t *self)
 	self->TriggerActivated = trigger_playerusepuzzle;
 
 	gi.setmodel (self, self->model);
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 //----------------------------------------------------------------------
@@ -569,7 +569,7 @@ void SP_trigger_PlayerPushButton(edict_t *self)
 	self->solid = SOLID_TRIGGER;
 
 	gi.setmodel (self, self->model);
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 
@@ -1190,7 +1190,7 @@ trigger_push_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 	if(self->spawnflags & FIELD_FORCE_ONCE)
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 	}
 }
 

@@ -664,7 +664,7 @@ void gorgon_death2throw (edict_t *self)
 {
 	vec3_t		forward;
 
-	AngleVectors (self->s.angles, forward, NULL, NULL);
+	AngleVectors(self->s.angles, forward, NULL, NULL);
 
 	VectorScale (forward, -375, self->velocity);
 	self->velocity[2] = 200;

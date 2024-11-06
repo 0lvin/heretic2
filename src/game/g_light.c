@@ -56,7 +56,7 @@ void LightInit(edict_t *self)
 
 	BboxYawAndScale(self);
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 void TorchInit (edict_t *self)
@@ -64,7 +64,7 @@ void TorchInit (edict_t *self)
 	// no targeted lights in deathmatch, because they cause global messages
 	if (self->targetname && deathmatch->value)
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 
@@ -173,7 +173,7 @@ void SP_light (edict_t *self)
 	// no targeted lights in deathmatch, because they cause global messages
 	if (!self->targetname || deathmatch->value)
 	{
-		G_FreeEdict (self);
+		G_FreeEdict(self);
 		return;
 	}
 

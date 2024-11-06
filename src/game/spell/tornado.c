@@ -150,10 +150,10 @@ void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, ve
 
 	VectorCopy(startpos, tornado->s.origin);
 	tornado->s.origin[2] += 1.0;
-	VectorCopy (tornado->s.origin, end);
+	VectorCopy(tornado->s.origin, end);
 	end[2] -= 256;
 
-	gi.linkentity (tornado);
+	gi.linkentity(tornado);
 
 	trace = gi.trace(tornado->s.origin, NULL, NULL, end, tornado, MASK_SOLID);
 

@@ -92,7 +92,7 @@ qboolean ahead (edict_t *self, edict_t *other)
 	else
 		VectorCopy(self->s.angles,check_angles);
 
-	AngleVectors (check_angles, forward, NULL, NULL);
+	AngleVectors(check_angles, forward, NULL, NULL);
 	VectorSubtract (other->s.origin, self->s.origin, vec);
 	VectorNormalize (vec);
 	dot = DotProduct (vec, forward);
@@ -132,7 +132,7 @@ qboolean visible_pos (edict_t *self, vec3_t spot2)
 	vec3_t	spot1;
 	trace_t	trace;
 
-	VectorCopy (self->s.origin, spot1);
+	VectorCopy(self->s.origin, spot1);
 	spot1[2] += self->viewheight;
 	trace = gi.trace(spot1, vec3_origin, vec3_origin, spot2, self, MASK_OPAQUE);
 
@@ -170,8 +170,8 @@ qboolean MG_CheckBottom (edict_t *ent)
 	}
 	else//lenient, max 16 corner checking
 	{
-		VectorCopy (ent->mins, mins);
-		VectorCopy (ent->maxs, maxs);
+		VectorCopy(ent->mins, mins);
+		VectorCopy(ent->maxs, maxs);
 
 		//some leniency is ok here, no?
 		mins[0] *= 0.75;
@@ -326,7 +326,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 
 	trace.succeeded = false;
 	// try the move
-	VectorCopy (self->s.origin, save_org);
+	VectorCopy(self->s.origin, save_org);
 	if(self->monsterinfo.scale)
 	{//scale movement by monster's scale
 	//scale here, not before since any function can call this
@@ -408,10 +408,10 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 
 			if (trace.fraction == 1)
 			{
-				VectorCopy (trace.endpos, self->s.origin);
+				VectorCopy(trace.endpos, self->s.origin);
 				if (relink)
 				{
-					gi.linkentity (self);
+					gi.linkentity(self);
 					G_TouchTriggers (self);
 				}
 				return trace;//true
@@ -440,7 +440,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 		stepsize = 1;
 
 	test_org[2] += stepsize;
-	VectorCopy (test_org, end);
+	VectorCopy(test_org, end);
 	end[2] -= stepsize*2;
 
 	trace = gi.trace(test_org, self->mins, self->maxs, end, self, clipmask);
@@ -497,7 +497,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 			VectorAdd (self->s.origin, move, self->s.origin);
 			if (relink)
 			{
-				gi.linkentity (self);
+				gi.linkentity(self);
 				G_TouchTriggers (self);
 			}
 			self->groundentity = NULL;
@@ -512,7 +512,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 // check point traces down for dangling corners
 	//DO THE MOVE!
 	//ok, put me there
-	VectorCopy (trace.endpos, self->s.origin);
+	VectorCopy(trace.endpos, self->s.origin);
 
 	if(contents&MASK_WATER && self->flags & FL_AMPHIBIAN);
 	else if (!MG_CheckBottom(self))// && self->classID!=CID_TBEAST)
@@ -522,14 +522,14 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 			// and is trying to correct or can float
 			if (relink)
 			{
-				gi.linkentity (self);
+				gi.linkentity(self);
 				G_TouchTriggers (self);
 			}
 			trace.succeeded = true;
 			return trace;//true!
 		}
 		//whoops, let's not make that move after all
-		VectorCopy (save_org, self->s.origin);
+		VectorCopy(save_org, self->s.origin);
 		G_QPostMessage(self, MSG_BLOCKED, PRI_DIRECTIVE, NULL);
 		return trace;
 	}
@@ -545,11 +545,11 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 // the move is ok
 	if (relink)
 	{
-		gi.linkentity (self);
+		gi.linkentity(self);
 		G_TouchTriggers (self);
 	}
 	else
-		VectorCopy (save_org, self->s.origin);
+		VectorCopy(save_org, self->s.origin);
 
 	trace.succeeded = true;
 	return trace;//true!
@@ -832,7 +832,7 @@ qboolean infront_pos (edict_t *self, vec3_t pos)
 	else
 		VectorCopy(self->s.angles,check_angles);
 
-	AngleVectors (check_angles, forward, NULL, NULL);
+	AngleVectors(check_angles, forward, NULL, NULL);
 	VectorSubtract (pos, self->s.origin, vec);
 	VectorNormalize (vec);
 	dot = DotProduct (vec, forward);
@@ -1988,7 +1988,7 @@ void MG_PostDeathThink (edict_t *self)
 	else
 		self->next_post_think = level.time + flrand(10, 20);
 
-	gi.linkentity (self);
+	gi.linkentity(self);
 }
 
 void MG_CheckLanded (edict_t *self, float next_anim)
