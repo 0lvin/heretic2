@@ -481,7 +481,7 @@ InitGame(void)
 
 	// Server side only elements.
 
-	G_InitItems();
+	InitItems();
 
 	Com_sprintf(game.helpmessage1, sizeof(game.helpmessage1), "");
 	Com_sprintf(game.helpmessage2, sizeof(game.helpmessage2), "");

@@ -603,11 +603,17 @@ typedef struct
 	float minpitch;
 	float maxpitch;
 
+	/* misc_flare */
 	float radius;
 	float fade_start_dist;
 	float fade_end_dist;
 	char *image;
+	unsigned rgba;
 
+	/* Addional fields for models */
+	vec3_t scale;
+
+	/* Heretic 2 */
 	int rotate;
 	float zangle;
 	char *file;
@@ -1114,16 +1120,24 @@ void Cmd_Score_f(edict_t *ent);
 
 /* g_items.c */
 void PrecacheItem(gitem_t *it);
-void G_InitItems(void);
+void InitItems(void);
 void SetItemNames(void);
+gitem_t *FindItem(char *pickup_name);
+gitem_t *FindItemByClassname(char *classname);
+
 edict_t *Drop_Item(edict_t *ent, gitem_t *item);
 void SetRespawn(edict_t *ent);
+void ChangeWeapon(edict_t *ent);
 void SpawnItem(edict_t *ent, gitem_t *item);
 void SpawnItemEffect(edict_t *ent, gitem_t *item);
 gitem_t	*IsItem(edict_t *ent);
 void Think_Weapon(edict_t *ent);
 int ArmorIndex(edict_t *ent);
+int PowerArmorType(edict_t *ent);
+gitem_t *GetItemByIndex(int index);
 qboolean Add_Ammo(edict_t *ent, gitem_t *item, int count);
+void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane,
+		csurface_t *surf);
 
 /* g_utils.c */
 qboolean KillBox(edict_t *ent);

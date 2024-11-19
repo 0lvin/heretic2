@@ -653,8 +653,26 @@ use_target_spawner(edict_t *self, edict_t *other /* unused */, edict_t *activato
 void
 SP_target_spawner(edict_t *self)
 {
+	vec3_t	forward;
+	vec3_t	fact2spawnpoint1 = {-1504, 512, 72};
+
+	if (!self)
+	{
+		return;
+	}
+
 	self->use = use_target_spawner;
 	self->svflags = SVF_NOCLIENT;
+
+	/* Maphack for the insane spawner in Mobs-Egerlings
+	   beloved fact2. Found in KMQuake2 */
+	if (!Q_stricmp(level.mapname, "fact2")
+		&& VectorCompare(self->s.origin, fact2spawnpoint1) )
+	{
+		VectorSet(forward, 0, 0, 1);
+		VectorMA (self->s.origin, -8, forward, self->s.origin);
+	}
+
 	if (self->speed)
 	{
 		G_SetMovedir(self->s.angles, self->movedir);

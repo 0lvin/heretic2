@@ -190,8 +190,8 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 		int locid;
 	vec3_t fwd, right, up;
 	vec3_t atkpos, startpos, endpos, hitdir, hitangles, diffangles;
-	vec3_t mins={-12, -12, -12};
-	vec3_t maxs={12, 12, 12};
+	vec3_t mins = { -12, -12, -12};
+	vec3_t maxs = { 12, 12, 12};
 	int damage, powerlevel, dflags;
 	playerinfo_t *playerinfo;
 
@@ -203,12 +203,18 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 
 	powerlevel = playerinfo->pers.stafflevel;
 	if (playerinfo->powerup_timer > level.time)
+	{
 		powerlevel++;							// powerups now power up your staff, too.
+	}
 
 	if (powerlevel <= STAFF_LEVEL_NONE)
+	{
 		return;
+	}
 	else if (powerlevel >= STAFF_LEVEL_MAX)
+	{
 		powerlevel = STAFF_LEVEL_MAX-1;
+	}
 
 	assert(strlen(Format));
 	va_start(Marker,Format);

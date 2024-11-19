@@ -1178,11 +1178,11 @@ gitem_t	*IsItem(edict_t *ent)
 }
 
 // ************************************************************************************************
-// G_InitItems
+// InitItems
 // -----------
 // ************************************************************************************************
 
-void G_InitItems(void)
+void InitItems(void)
 {
 	gitem_t* p_itemlist = playerExport->GetPlayerItems();
 

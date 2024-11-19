@@ -96,7 +96,10 @@ realcheck:
 			stop, ent, MASK_MONSTERSOLID);
 
 	if (trace.fraction == 1.0)
+	{
 		return false;
+	}
+
 	mid = bottom = trace.endpos[2];
 
 	/* the corners must be within 16 of the midpoint */
@@ -326,6 +329,7 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 					test[1] = trace.endpos[1];
 					test[2] = trace.endpos[2] + ent->mins[2] + 1;
 					contents = gi.pointcontents(test);
+
 					if (!(contents & MASK_WATER))
 					{
 						G_QPostMessage(ent, MSG_BLOCKED, PRI_DIRECTIVE, NULL);
