@@ -1457,6 +1457,11 @@ DynamicSpawnInit(void)
 					* max attenuation
 				 */
 
+
+				/* Fix path */
+				Q_replacebackslash(dynamicentities[curr_pos].model_path);
+
+				/* go to next row */
 				curr_pos ++;
 			}
 
@@ -1524,6 +1529,10 @@ DynamicSpawnInit(void)
 				/* Additional field for cover for color from QUAKED */
 				line = DynamicFloatParse(line, dynamicentities[curr_pos].color, 3, '|');
 
+				/* Fix path */
+				Q_replacebackslash(dynamicentities[curr_pos].model_path);
+
+				/* go to next row */
 				curr_pos ++;
 			}
 			curr += linesize;

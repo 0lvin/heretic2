@@ -1225,7 +1225,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 		player_make_gib(self, attacker);
 
-		self->s.modelindex=0;
+		self->s.modelindex = 0;
 		// Won`t get sent to client if mi 0 unless flag is set
 		self->svflags |= SVF_ALWAYS_SEND;
 		self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
@@ -1256,7 +1256,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
    				PlayerChickenDeath(self);
    				player_make_gib(self, attacker);
-  				self->s.modelindex=0;
+  				self->s.modelindex = 0;
 				// Won`t get sent to client if mi 0 unless flag is set
 				self->svflags |= SVF_ALWAYS_SEND;
 				self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
@@ -1776,7 +1776,7 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 	self->health=0;
 	self->die=NULL;
 	self->deadflag=DEAD_DEAD;
-   	self->s.modelindex=0;
+   	self->s.modelindex = 0;
 
 	gi.linkentity(self);
 }
@@ -2569,7 +2569,7 @@ PutClientInServer(edict_t *ent)
 
 	// Modelindex is always 255 for player models.
 
-	ent->s.modelindex=255;
+	ent->s.modelindex = CUSTOM_PLAYER_MODEL;
 
 	// Set up the model's origin, making sure it's off the ground.
 
@@ -3406,7 +3406,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	// ********************************************************************************************
 	if (ent->movetype == MOVETYPE_NOCLIP)
 		client->ps.pmove.pm_type = PM_SPECTATOR;
-	else if ((ent->s.modelindex != 255) && !(ent->flags & FL_CHICKEN))	// We're not set as a chicken
+	else if ((ent->s.modelindex != CUSTOM_PLAYER_MODEL) && !(ent->flags & FL_CHICKEN))	// We're not set as a chicken
 		client->ps.pmove.pm_type = PM_GIB;
 	else if (ent->deadflag)
 		client->ps.pmove.pm_type = PM_DEAD;

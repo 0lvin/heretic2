@@ -163,7 +163,7 @@ CL_AddPacketEntities(frame_t *frame)
 		else
 		{
 			/* set skin */
-			if (s1->modelindex == 255)
+			if (s1->modelindex == CUSTOM_PLAYER_MODEL)
 			{
 				/* use custom player skin */
 				ent.skinnum = 0;
@@ -388,7 +388,7 @@ CL_AddPacketEntities(frame_t *frame)
 		/* duplicate for linked models */
 		if (s1->modelindex2)
 		{
-			if (s1->modelindex2 == 255)
+			if (s1->modelindex2 == CUSTOM_PLAYER_MODEL)
 			{
 				/* custom weapon */
 				ci = &cl.clientinfo[s1->skinnum & 0xff];
