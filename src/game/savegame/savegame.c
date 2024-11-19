@@ -419,13 +419,10 @@ InitGame(void)
 	g_machinegun_norecoil = gi.cvar("g_machinegun_norecoil", "0", CVAR_ARCHIVE);
 	g_quick_weap = gi.cvar("g_quick_weap", "1", CVAR_ARCHIVE);
 	g_swap_speed = gi.cvar("g_swap_speed", "1", CVAR_ARCHIVE);
+	g_language = gi.cvar("g_language", "english", CVAR_ARCHIVE);
 
 	sv_cinematicfreeze = gi.cvar("sv_cinematicfreeze", "0", 0);
 	sv_jumpcinematic = gi.cvar("sv_jumpcinematic", "0", 0);
-	log_file_name = gi.cvar("log_file_name", "", CVAR_ARCHIVE);
-	log_file_footer = gi.cvar("log_file_footer", "", CVAR_ARCHIVE);
-	log_file_header = gi.cvar("log_file_header", "", CVAR_ARCHIVE);
-	log_file_line_header = gi.cvar("log_file_line_header", "", CVAR_ARCHIVE);
 
 	blood_level = gi.cvar("blood_level", VIOLENCE_DEFAULT_STR, CVAR_ARCHIVE);
 	dm_no_bodies = gi.cvar("dm_no_bodies", "0", CVAR_ARCHIVE);

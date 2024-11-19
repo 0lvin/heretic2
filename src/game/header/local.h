@@ -1002,6 +1002,8 @@ extern cvar_t *aimfix;
 extern cvar_t *g_machinegun_norecoil;
 extern cvar_t *g_quick_weap;
 extern cvar_t *g_swap_speed;
+extern cvar_t *g_language;
+
 extern cvar_t *autorotate;
 extern cvar_t *blood;
 
@@ -1035,23 +1037,13 @@ extern cvar_t *no_phoenix;
 extern cvar_t *no_morph;
 extern cvar_t *no_shield;
 extern cvar_t *no_teleport;
-extern cvar_t *log_file_name;
-extern cvar_t *log_file_header;
-extern cvar_t *log_file_footer;
-extern cvar_t *log_file_line_header;
-
 extern cvar_t *sv_cinematicfreeze;
 extern cvar_t *sv_jumpcinematic;
-
-
 extern cvar_t *sv_freezemonsters;
-
-
 extern cvar_t *flood_killdelay;
 
-extern	edict_t			*g_edicts;
-
-extern	int				self_spawn;
+extern edict_t *g_edicts;
+extern int self_spawn;
 
 /* this is for the count of monsters */
 #define ENT_SLOTS_LEFT \

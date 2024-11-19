@@ -112,6 +112,7 @@ cvar_t *aimfix;
 cvar_t *g_machinegun_norecoil;
 cvar_t *g_quick_weap;
 cvar_t *g_swap_speed;
+cvar_t *g_language;
 
 cvar_t *advancedstaff;
 cvar_t *sv_friction;
@@ -148,10 +149,6 @@ cvar_t *singing_ogles;
 cvar_t *sv_cinematicfreeze;
 cvar_t *sv_jumpcinematic;
 cvar_t *blood_level;
-cvar_t *log_file_name;
-cvar_t *log_file_header;
-cvar_t *log_file_footer;
-cvar_t *log_file_line_header;
 
 void SpawnEntities(const char *mapname, char *entities, const char *spawnpoint);
 void ClientThink(edict_t *ent, usercmd_t *cmd);
