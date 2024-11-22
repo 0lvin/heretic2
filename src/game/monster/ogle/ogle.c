@@ -1733,7 +1733,11 @@ void SP_monster_ogle(edict_t *self)
 
 	if (self->monsterinfo.scale)
 	{
-		self->s.scale = self->monsterinfo.scale = MODEL_SCALE;
+		self->monsterinfo.scale = MODEL_SCALE;
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
 	}
 
 	self->monsterinfo.otherenemyname = "monster_rat";

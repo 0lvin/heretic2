@@ -296,7 +296,7 @@ ED_CallSpawn(edict_t *ent)
 	if (s)
 	{
 		// found it
-		if((s->CID != -1) && !Cid_init[s->CID])	 	// Need to call once per level that item is on
+		if((s->CID != -1) && !Cid_init[s->CID])		// Need to call once per level that item is on
 		{
 			classStaticsInits[s->CID]();
 			Cid_init[s->CID] = -1;
@@ -973,7 +973,7 @@ NOBODIES - In DM, no bodies will be left behind by players- for maps with large 
 "message"		text to print at user logon
 "skinnum"		plague level for corvus: 0-2
 "cooptimeout"	time to wait (in seconds) for all clients to have joined a map in coop (default is 0).
-"scale" 	EAX environment type for this map.
+"scale"	EAX environment type for this map.
 
  0 EAX_GENERIC,
  1 EAX_ALL_STONE,
@@ -1084,13 +1084,17 @@ SP_worldspawn(edict_t *ent)
 		gi.cvar_set("s_reverb_preset", "0");
 	}
 
-	// just in case
-	ent->s.scale = 0;
+	/* just in case, fix scale */
+	VectorClear(ent->s.scale);
 
 	if (st.sky && st.sky[0])
+	{
 		gi.configstring (CS_SKY, st.sky);
+	}
 	else
+	{
 		gi.configstring (CS_SKY, "desert");
+	}
 
 	gi.configstring (CS_SKYROTATE, va("%f", st.skyrotate) );
 

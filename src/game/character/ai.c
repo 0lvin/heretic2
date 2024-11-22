@@ -203,12 +203,15 @@ void c_corvus_init(edict_t *self,int classId)
 	VectorCopy(c_maxs, self->maxs);
 	VectorCopy(c_mins, self->intentMins);
 	VectorCopy(c_maxs, self->intentMaxs);
-	self->viewheight = self->maxs[2]*0.8;
-
+	self->viewheight = self->maxs[2] * 0.8;
 
 	if (!self->monsterinfo.scale)
 	{
-		self->s.scale = self->monsterinfo.scale = 1;
+		self->monsterinfo.scale = 1;
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
 	}
 
 	self->materialtype = MAT_FLESH;
@@ -261,7 +264,11 @@ void c_character_init(edict_t *self,int classId)
 
 	if (!self->monsterinfo.scale)
 	{
-		self->s.scale = self->monsterinfo.scale = 1;
+		self->monsterinfo.scale = 1;
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
 	}
 
 	self->count = self->s.modelindex;

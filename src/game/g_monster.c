@@ -273,7 +273,7 @@ void M_WorldEffects (edict_t *ent)
 
 	if (ent->health > 0)
 	{
- 		if (!(ent->flags & FL_SWIM))
+		if (!(ent->flags & FL_SWIM))
 		{
 			if (ent->waterlevel < 3 || (ent->monsterinfo.aiflags&AI_SWIM_OK))
 			{
@@ -802,18 +802,28 @@ void MG_BBoxAndOriginAdjustForScale (edict_t *self)
 {
 	float	o_mins2;
 
-	if(!self->s.scale)
+	if(!self->s.scale[0] ||
+		!self->s.scale[1] ||
+		!self->s.scale[2])
 	{
 		if(!self->monsterinfo.scale)
-			self->s.scale = self->monsterinfo.scale = 1.0f;
+		{
+			self->monsterinfo.scale = 1.0f;
+			VectorSet(self->s.scale,
+				self->monsterinfo.scale,
+				self->monsterinfo.scale,
+				self->monsterinfo.scale);
+		}
 	}
 	else if(!self->monsterinfo.scale)
-		self->monsterinfo.scale = self->s.scale;
+	{
+		self->monsterinfo.scale = AVG_VEC3T(self->s.scale);
+	}
 
 	o_mins2 = self->mins[2];
 
-	Vec3ScaleAssign(self->s.scale, self->mins);
-	Vec3ScaleAssign(self->s.scale, self->maxs);
+	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->mins);
+	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->maxs);
 
 	self->s.origin[2] += o_mins2 - self->mins[2];
 
@@ -844,8 +854,10 @@ monster_start_go(edict_t *self)
 	if(!self->mass)
 		self->mass = 100;
 
-	if(self->s.scale)
-		self->mass *= self->s.scale;
+	if(AVG_VEC3T(self->s.scale))
+	{
+		self->mass *= AVG_VEC3T(self->s.scale);
+	}
 
 	if(self->spawnflags & MSF_COWARD)//start off running away- FIXME: let them specify a flee_time and use AI_FLEE if one is set?  Would anyone ever use this?!?!?
 		self->monsterinfo.aiflags |= AI_COWARD;

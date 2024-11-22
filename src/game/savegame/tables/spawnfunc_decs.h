@@ -104,7 +104,7 @@ extern void SP_monster_fish (edict_t *self);
 extern void SP_monster_harpy (edict_t *self);
 extern void SP_monster_spreader (edict_t *self);
 extern void SP_monster_elflord (edict_t *self);
-extern void SP_monster_plague_ssithra (edict_t *self);
+extern void SP_monster_ssithra (edict_t *self);
 extern void SP_monster_mssithra (edict_t *self);
 extern void SP_monster_chkroktk (edict_t *self);
 extern void SP_monster_tcheckrik_male (edict_t *self);

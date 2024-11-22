@@ -1242,7 +1242,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	tophalf->owner = self;
 
 	VectorSet(tophalf->mins,-16,-16,self->mins[2]);
-   	VectorSet(tophalf->maxs,16,16,16);
+	VectorSet(tophalf->maxs,16,16,16);
 	VectorSet(self->maxs,16,16,0);
 	tophalf->s.origin[2] += 10;
 
@@ -1252,7 +1252,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 
 	tophalf->s.modelindex = self->s.modelindex;
 
-	tophalf->s.scale = tophalf->s.scale;
+	VectorCopy(self->s.scale, tophalf->s.scale);
 
 	tophalf->monsterinfo.otherenemyname = "obj_barrel";
 
@@ -2275,7 +2275,7 @@ void create_ssith_arrow(edict_t *Arrow)
 	Arrow->touch = ssithraArrowTouch;
 	Arrow->enemy = NULL;
 	Arrow->clipmask = MASK_SHOT;
-	Arrow->s.scale = 0.75;
+	VectorSet(Arrow->s.scale, 0.75, 0.75, 0.75);
 	Arrow->s.effects |= EF_CAMERA_NO_CLIP;
 	Arrow->svflags |= SVF_ALWAYS_SEND;
 	Arrow->s.modelindex = gi.modelindex("models/objects/exarrow/tris.fm");
@@ -2385,11 +2385,11 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 	AngleVectors(self->s.angles, Forward, right, NULL);
 
 	VectorCopy(self->s.origin,Arrow->s.origin);
-	VectorMA(Arrow->s.origin, 12*self->s.scale, Forward, Arrow->s.origin);
-	VectorMA(Arrow->s.origin, 4*self->s.scale, right, Arrow->s.origin);
+	VectorMA(Arrow->s.origin, 12 * AVG_VEC3T(self->s.scale), Forward, Arrow->s.origin);
+	VectorMA(Arrow->s.origin, 4 * AVG_VEC3T(self->s.scale), right, Arrow->s.origin);
 	Arrow->s.origin[2] += z_offs;
 
-	Arrow->s.scale = 1.5;
+	VectorSet(Arrow->s.scale, 1.5, 1.5, 1.5);
 
 	VectorCopy(self->movedir,Arrow->movedir);
 	VectoAngles(Forward,Arrow->s.angles);
@@ -2444,8 +2444,8 @@ void ssithraStartDuckArrow(edict_t *self)
 	vec3_t	startpos, vf, vr;
 
 	AngleVectors(self->s.angles, vf, vr, NULL);
-	VectorMA(self->s.origin, 18*self->s.scale, vf, startpos);
-	VectorMA(startpos, 4*self->s.scale, vr, startpos);
+	VectorMA(self->s.origin, 18 * AVG_VEC3T(self->s.scale), vf, startpos);
+	VectorMA(startpos, 4 * AVG_VEC3T(self->s.scale), vr, startpos);
 
 	gi.sound(self, CHAN_WEAPON, Sounds[SND_ARROW_CHARGE] , 1, ATTN_NORM, 0);
 
@@ -2628,9 +2628,9 @@ void ssithraCrouch (edict_t *self)
 
 void ssithraUnCrouch(edict_t *self)
 {
-	self->maxs[2] = STDMaxsForClass[self->classID][2] * self->s.scale;
+	self->maxs[2] = STDMaxsForClass[self->classID][2] * AVG_VEC3T(self->s.scale);
 	gi.linkentity(self);
-	self->viewheight = self->maxs[2]*0.8;
+	self->viewheight = self->maxs[2] * 0.8;
 }
 
 void ssithra_evade (edict_t *self, G_Message_t *msg)
@@ -3028,7 +3028,7 @@ wakeup_distance			= 1024
 
 NOTE: A value of zero will result in defaults, if you actually want zero as the value, use -1
 */
-void SP_monster_plague_ssithra (edict_t *self)
+void SP_monster_ssithra (edict_t *self)
 {
 	qboolean alpha = true;
 
@@ -3098,7 +3098,11 @@ void SP_monster_plague_ssithra (edict_t *self)
 		self->s.skinnum = 0;
 
 	//scaling them up in code like this is bad for designers
-	self->s.scale = self->monsterinfo.scale = (MODEL_SCALE)+0.1;// + flrand(0.1, 0.3));
+	self->monsterinfo.scale = (MODEL_SCALE) + 0.1;// + flrand(0.1, 0.3));
+	VectorSet(self->s.scale,
+		self->monsterinfo.scale,
+		self->monsterinfo.scale,
+		self->monsterinfo.scale);
 	// Note that at less than 110% of the size
 
 	//Turn off dismemberment caps, can't see them, so save some polys
@@ -3158,7 +3162,13 @@ void SP_monster_plague_ssithra (edict_t *self)
 	if(alpha)//tough guy!
 	{//TODO: other ssithras won't attack this guy and will follow him
 		self->health += 75;
-		self->s.scale = self->monsterinfo.scale = MODEL_SCALE + 0.5;
+
+		self->monsterinfo.scale = MODEL_SCALE + 0.5;
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
+
 		self->spawnflags|=MSF_SSITHRA_ALPHA;
 		self->s.color[0] = 255;
 		self->s.color[1] = 255;

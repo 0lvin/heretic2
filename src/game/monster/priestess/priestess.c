@@ -199,7 +199,7 @@ void priestess_teleport_move ( edict_t *self )
 		//If the player touches this entity somehow, he's thrown back
 		blocker->isBlocked = blocker_throw;
 		blocker->isBlocking = blocker_throw;
-		blocker->bounced = 	blocker_throw;
+		blocker->bounced =	blocker_throw;
 
 		self->movetarget = blocker;
 
@@ -618,7 +618,7 @@ void create_priestess_proj(edict_t *self,edict_t *proj)
 	proj->solid = SOLID_BBOX;
 	proj->classname = "HPriestess_Missile";
 	proj->dmg = 1.0;
-	proj->s.scale = 1.0;
+	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
 
@@ -679,7 +679,7 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 		VectorCopy(angles, ang);
 
 		ang[PITCH]  = flrand( -4, 4 ) + -ang[PITCH];
-		ang[YAW] 	+= flrand( -4, 4 );
+		ang[YAW]	+= flrand( -4, 4 );
 
 		AngleVectors( ang, vel, NULL, NULL );
 
@@ -1662,7 +1662,11 @@ void SP_monster_high_priestess (edict_t *self)
 
 	if (self->monsterinfo.scale)
 	{
-		self->s.scale = self->monsterinfo.scale = MODEL_SCALE;
+		self->monsterinfo.scale = MODEL_SCALE;
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
 	}
 
 	MG_InitMoods( self );

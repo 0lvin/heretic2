@@ -503,12 +503,12 @@ void BecomeDebris2(edict_t *self, float damage)
 	//What the hell is this???
 	if (self->spawnflags & 4 && !(self->svflags&SVF_MONSTER))
 	{   // Need to create an explosion effect for this
- 		if(self->owner)
+		if(self->owner)
 		{
 			T_DamageRadius(self, self->owner, self, 60.0,
 						self->dmg, self->dmg/2, DAMAGE_NORMAL|DAMAGE_AVOID_ARMOR,MOD_DIED);
 		}
- 		else
+		else
 		{
 			T_DamageRadius(self, self, self, 60.0,
 						self->dmg, self->dmg/2, DAMAGE_NORMAL|DAMAGE_AVOID_ARMOR,MOD_DIED);
@@ -599,7 +599,7 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 	}
 
 	if(mat == MAT_FLESH || mat == MAT_INSECT)
-   	{
+	{
 		if(self->materialtype == MAT_INSECT)
 		{
 			flags |= CEF_FLAG8;
@@ -612,10 +612,10 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 
 		gi.CreateEffect(NULL,
 						FX_FLESH_DEBRIS,
-   						flags,
-   						spot,
-   						"bdb",
-   						NoOfChunks, self->mins, magb);
+						flags,
+						spot,
+						"bdb",
+						NoOfChunks, self->mins, magb);
 	}
 	else
 	{
@@ -1379,7 +1379,7 @@ void respawner_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 }
 
 /*QUAKED misc_update_spawner (.5 .5 .5) ?
-  	This creates the spawner update entity, which upates the spawner position when triggered
+	This creates the spawner update entity, which upates the spawner position when triggered
 */
 void misc_update_spawner (edict_t *ent)
 {
@@ -1614,7 +1614,7 @@ void SP_misc_magic_portal (edict_t *self)
 	// Set up the basics.
 	VectorSet(self->mins, -16, -16, -32);
 	VectorSet(self->maxs, 16, 16, 32);
-	self->s.scale = 1;
+	VectorSet(self->s.scale, 1, 1, 1);
 	self->mass = 250;
 	self->friction = 0;
 	self->gravity = 0;
@@ -1679,16 +1679,16 @@ void soundambient_think(edict_t *self)
 		self->s.sound = gi.soundindex("ambient/ocean.wav");
 		break;
 	case AS_SMALLFOUNTAIN:
-   		self->s.sound = gi.soundindex("ambient/smallfountain.wav");
+		self->s.sound = gi.soundindex("ambient/smallfountain.wav");
 		break;
 	case AS_LARGEFOUNTAIN:
-   		self->s.sound = gi.soundindex("ambient/fountainloop.wav");
+		self->s.sound = gi.soundindex("ambient/fountainloop.wav");
 		break;
 	case AS_SEWERWATER:
-   		self->s.sound = gi.soundindex("ambient/sewerflow.wav");
+		self->s.sound = gi.soundindex("ambient/sewerflow.wav");
 		break;
 	case AS_OUTSIDEWATERWAY:
-   		self->s.sound = gi.soundindex("ambient/river.wav");
+		self->s.sound = gi.soundindex("ambient/river.wav");
 		break;
 	case AS_CAULDRONBUBBLE:
 		self->s.sound = gi.soundindex("ambient/cauldronbubble.wav");
@@ -1699,35 +1699,35 @@ void soundambient_think(edict_t *self)
 	case AS_MUDPOOL:
 		self->s.sound = gi.soundindex("ambient/mudpool.wav");
 		break;
-   	case AS_WINDEERIE:
-   		self->s.sound = gi.soundindex("ambient/windeerie.wav");
+	case AS_WINDEERIE:
+		self->s.sound = gi.soundindex("ambient/windeerie.wav");
 		break;
-   	case AS_WINDNOISY:
-   		self->s.sound = gi.soundindex("ambient/windnoisy.wav");
+	case AS_WINDNOISY:
+		self->s.sound = gi.soundindex("ambient/windnoisy.wav");
 		break;
-   	case AS_WINDSOFTHI:
-   		self->s.sound = gi.soundindex("ambient/windsofthi.wav");
+	case AS_WINDSOFTHI:
+		self->s.sound = gi.soundindex("ambient/windsofthi.wav");
 		break;
-   	case AS_WINDSOFTLO:
-   		self->s.sound = gi.soundindex("ambient/windsoftlow.wav");
+	case AS_WINDSOFTLO:
+		self->s.sound = gi.soundindex("ambient/windsoftlow.wav");
 		break;
-   	case AS_WINDSTRONG1:
-   		self->s.sound = gi.soundindex("ambient/windstrong1.wav");
+	case AS_WINDSTRONG1:
+		self->s.sound = gi.soundindex("ambient/windstrong1.wav");
 		break;
-   	case AS_WINDSTRONG2:
-   		self->s.sound = gi.soundindex("ambient/windstrong2.wav");
+	case AS_WINDSTRONG2:
+		self->s.sound = gi.soundindex("ambient/windstrong2.wav");
 		break;
-   	case AS_WINDWHISTLE:
-   		self->s.sound = gi.soundindex("ambient/windwhistle.wav");
+	case AS_WINDWHISTLE:
+		self->s.sound = gi.soundindex("ambient/windwhistle.wav");
 		break;
-   	case AS_CONVEYOR:
-   		self->s.sound = gi.soundindex("objects/conveyor.wav");
+	case AS_CONVEYOR:
+		self->s.sound = gi.soundindex("objects/conveyor.wav");
 		break;
-   	case AS_BUCKETCONVEYOR:
-   		self->s.sound = gi.soundindex("objects/bucketconveyor.wav");
+	case AS_BUCKETCONVEYOR:
+		self->s.sound = gi.soundindex("objects/bucketconveyor.wav");
 		break;
-   	case AS_SPIT:
-   		self->s.sound = gi.soundindex("objects/spit.wav");
+	case AS_SPIT:
+		self->s.sound = gi.soundindex("objects/spit.wav");
 		break;
 	default:
 		style = Q_ftol(self->style);
@@ -2451,7 +2451,7 @@ void SpawnClientAnim(edict_t *self, byte type, char *sound)
 			self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 		}
 	}
-	scale = (byte)(self->s.scale * 50);
+	scale = (byte)(AVG_VEC3T(self->s.scale) * 50);
 	assert((scale > 0) && (scale < 255));
 	skin = (byte)self->s.skinnum;
 

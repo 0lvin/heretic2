@@ -1678,9 +1678,15 @@ void SP_monster_tcheckrik_male (edict_t *self)
 	else
 		self->s.skinnum = 0;
 
-	if (!self->s.scale)
+	if (!self->s.scale[0] ||
+		!self->s.scale[1] ||
+		!self->s.scale[2])
 	{
-		self->s.scale = self->monsterinfo.scale = MODEL_SCALE;
+		self->monsterinfo.scale = MODEL_SCALE;
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
 	}
 
 	self->materialtype = MAT_INSECT;
@@ -1835,9 +1841,15 @@ void SP_monster_tcheckrik_female (edict_t *self)
 	self->s.skinnum = 0;
 //	self->s.skinnum = 2;
 
-	if (!self->s.scale)
+	if (!self->s.scale[0] ||
+		!self->s.scale[1] ||
+		!self->s.scale[2])
 	{
-		self->s.scale = self->monsterinfo.scale = MODEL_SCALE;
+		self->monsterinfo.scale = MODEL_SCALE;
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
 	}
 
 	self->materialtype = MAT_INSECT;

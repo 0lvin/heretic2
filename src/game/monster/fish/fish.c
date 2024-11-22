@@ -158,8 +158,8 @@ void fish_walk(edict_t *self)
 // update the yaw on the first frame of a new animation -stop jittering
 void fish_update_yaw(edict_t *self)
 {
- 	self->s.angles[YAW] += self->best_move_yaw;
- 	self->best_move_yaw = 0;
+	self->s.angles[YAW] += self->best_move_yaw;
+	self->best_move_yaw = 0;
 }
 
 
@@ -318,8 +318,8 @@ void fish_check_distance(edict_t *self)
 	// determine if we are too far from the camera to warrant animating or ai
 	if (G_CheckDistances(self->s.origin, FISH_ACTIVATE_DIST))
 	{
-	 	self->nextthink = level.time + FRAMETIME;
-	 	self->think = fish_think;
+		self->nextthink = level.time + FRAMETIME;
+		self->think = fish_think;
 	}
 
 }
@@ -349,7 +349,7 @@ void fish_think (edict_t *self)
 	// determine if we are too far from the camera to warrant animating or ai
 	if (!G_CheckDistances(self->s.origin, FISH_ACTIVATE_DIST))
 	{
-	 	self->think = fish_check_distance;
+		self->think = fish_check_distance;
 		VectorClear(self->velocity);
 		return;
 	}
@@ -654,7 +654,7 @@ void fish_dead_pain(edict_t *self, G_Message_t *msg)
 void fish_death(edict_t *self, G_Message_t *msg)
 {
 	VectorClear(self->velocity);
- 	self->deadflag = DEAD_DEAD;
+	self->deadflag = DEAD_DEAD;
 	if(self->health<-60)
 	{
 		gi.sound(self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
@@ -1169,21 +1169,27 @@ void SP_monster_fish (edict_t *self)
 
 	self->shrine_type = 0;
 
-	if (self->s.scale == 1)
-		self->s.scale = self->monsterinfo.scale = MODEL_SCALE * flrand(0.5,1.0);
+	if (AVG_VEC3T(self->s.scale) == 1)
+	{
+		self->monsterinfo.scale = MODEL_SCALE * flrand(0.5, 1.0);
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
+	}
 
 	VectorSet(self->mins, -16, -16, -8);
 	VectorSet(self->maxs, 16, 16, 8);
 
 	// scale the max's and mins according to scale of model
-	Vec3ScaleAssign(self->s.scale, self->mins);
-	Vec3ScaleAssign(self->s.scale, self->maxs);
+	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->mins);
+	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->maxs);
 
 	// give us the bubble spawner
- 	self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
- 												FX_WATER_BUBBLE,
- 												CEF_OWNERS_ORIGIN | CEF_BROADCAST,
- 												NULL,
+	self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+												FX_WATER_BUBBLE,
+												CEF_OWNERS_ORIGIN | CEF_BROADCAST,
+												NULL,
 												"");
 
 	SetAnim(self, ANIM_STAND1);

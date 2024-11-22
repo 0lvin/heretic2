@@ -173,7 +173,7 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 	}
 	else
 	{
-  		G_MsgDualCenterPrintf(attacker, GM_SIR_NATE_FAILURE, (short)(self->count + GM_SIR_NATE_INSTRUCTIONS0));
+		G_MsgDualCenterPrintf(attacker, GM_SIR_NATE_FAILURE, (short)(self->count + GM_SIR_NATE_INSTRUCTIONS0));
 	}
 	return false;
 }
@@ -785,7 +785,7 @@ void spawn_hanging_chicken(edict_t *self)
 
 	chicken->targetEnt = self->rope_end;
 
-	chicken->s.scale = 1;
+	VectorSet(chicken->s.scale, 1, 1, 1);
 	chicken->classname = "NATE";
 	chicken->think = hanging_chicken_think;
 	chicken->nextthink = level.time + 0.1;

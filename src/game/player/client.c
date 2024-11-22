@@ -141,7 +141,7 @@ ClientSetSkinType(edict_t *ent, char *skinname)
 	playerinfo = &(ent->client->playerinfo);
 
 	SetupPlayerinfo_effects(ent);
- 	playerExport->PlayerUpdateModelAttributes(playerinfo);
+	playerExport->PlayerUpdateModelAttributes(playerinfo);
 	WritePlayerinfo_effects(ent);
 
 }
@@ -975,7 +975,7 @@ static const short KillBy[MOD_MAX] =
 	GM_OBIT_FIREWALL,		// MOD_FIREWALL
 	GM_OBIT_STORM,			// MOD_STORM
 	GM_OBIT_PHOENIX,		// MOD_PHOENIX
-	GM_OBIT_PHOENIX_SPL,  	// MOD_PHOENIX_SPL
+	GM_OBIT_PHOENIX_SPL,	// MOD_PHOENIX_SPL
 	GM_OBIT_HELLSTAFF,		// MOD_HELLSTAFF
 
 	GM_OBIT_STAFF,			// MOD_P_STAFF
@@ -1248,39 +1248,39 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 			Cmd_Score_f(self);
 
-   			// Check if a chicken?
+			// Check if a chicken?
 
-   			if (self->flags & FL_CHICKEN)
-   			{
+			if (self->flags & FL_CHICKEN)
+			{
 				// We're a chicken, so die a chicken's death.
 
-   				PlayerChickenDeath(self);
-   				player_make_gib(self, attacker);
-  				self->s.modelindex = 0;
+				PlayerChickenDeath(self);
+				player_make_gib(self, attacker);
+				self->s.modelindex = 0;
 				// Won`t get sent to client if mi 0 unless flag is set
 				self->svflags |= SVF_ALWAYS_SEND;
 				self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
-   			}
+			}
 			else if ( (self->client->playerinfo.flags & PLAYER_FLAG_SURFSWIM) || (self->waterlevel >= 2) )
-   			{
-   				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DROWN);
-   				gi.sound(self,CHAN_BODY,gi.soundindex("*drowndeath.wav"),1,ATTN_NORM,0);
-   			}
+			{
+				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DROWN);
+				gi.sound(self,CHAN_BODY,gi.soundindex("*drowndeath.wav"),1,ATTN_NORM,0);
+			}
 			else if ( !Q_stricmp(inflictor->classname, "plague_mist"))
 			{
-   				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_CHOKE);
+				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_CHOKE);
 				gi.sound(self,CHAN_BODY,gi.soundindex("*chokedeath.wav"),1,ATTN_NORM,0);
 			}
 			else if ( self->fire_damage_time == -1 )
 			{
-   				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_B);
+				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_B);
 				if (blood_level && (int)(blood_level->value) <= VIOLENCE_BLOOD)	// Don't scream bloody murder in Germany.
 					gi.sound(self,CHAN_BODY,gi.soundindex("*death1.wav"),1,ATTN_NORM,0);
 				else
 					gi.sound(self,CHAN_BODY,gi.soundindex("*firedeath.wav"),1,ATTN_NORM,0);
 			}
-   			else
-   			{	// "Normal" deaths.
+			else
+			{	// "Normal" deaths.
 				vec3_t fwd;
 				float speed;
 
@@ -1302,11 +1302,11 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 					playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_A);
 				}
 
-   				if (irand(0,1))
-   					gi.sound(self,CHAN_BODY,gi.soundindex("*death1.wav"),1,ATTN_NORM,0);
-   				else
-   					gi.sound(self,CHAN_BODY,gi.soundindex("*death2.wav"),1,ATTN_NORM,0);
-   			}
+				if (irand(0,1))
+					gi.sound(self,CHAN_BODY,gi.soundindex("*death1.wav"),1,ATTN_NORM,0);
+				else
+					gi.sound(self,CHAN_BODY,gi.soundindex("*death2.wav"),1,ATTN_NORM,0);
+			}
 
 			// Make sure it doesn't try and finish an animation.
 
@@ -1756,10 +1756,10 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 
 	gi.CreateEffect(NULL,
 					FX_FLESH_DEBRIS,
-   					0,
-   					self->s.origin,
-   					"bdb",
-   					irand(10, 30), mins, magb);
+					0,
+					self->s.origin,
+					"bdb",
+					irand(10, 30), mins, magb);
 
 	gi.unlinkentity(self);
 
@@ -1776,7 +1776,7 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 	self->health=0;
 	self->die=NULL;
 	self->deadflag=DEAD_DEAD;
-   	self->s.modelindex = 0;
+	self->s.modelindex = 0;
 
 	gi.linkentity(self);
 }
@@ -2484,7 +2484,7 @@ PutClientInServer(edict_t *ent)
 	ent->movetype = MOVETYPE_STEP;
 	ent->viewheight = 0;
 	ent->inuse = true;
-	ent->s.scale = 1.0f;
+	VectorSet(ent->s.scale, 1.0f, 1.0f, 1.0f);
 	ent->classname = "player";
 	ent->mass = 200;
 	ent->solid = SOLID_BBOX;

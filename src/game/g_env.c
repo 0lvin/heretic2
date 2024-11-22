@@ -75,7 +75,7 @@ void smoke_use (edict_t *self, edict_t *other, edict_t *activator)
 	byte	scale,speed,wait,maxrange;
 	if (self->spawnflags & START_OFF)
 	{
-		scale = (byte)(self->s.scale * 32.0);
+		scale = (byte)(AVG_VEC3T(self->s.scale) * 32.0);
 		AngleVectors(self->s.angles, dir, NULL, NULL);
 
 		speed = Q_ftol(self->speed);
@@ -119,16 +119,21 @@ void SP_env_smoke (edict_t *self)
 	byte	scale,speed,wait,maxrange;
 
 	// set scale
-	if (!self->s.scale)
-		self->s.scale = 1;
-	scale = (byte)(self->s.scale * 32.0);
+	if (!self->s.scale[0] ||
+		!self->s.scale[1] ||
+		!self->s.scale[2])
+	{
+		VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+	}
+
+	scale = (byte)(AVG_VEC3T(self->s.scale) * 32.0);
 
 	// allow us to use this stuff
 	if (self->targetname)
 		self->use = smoke_use;
 
 	// set the wait between puffs
-   	if (!self->wait)
+	if (!self->wait)
 		self->wait = 5;
 
 	// set the distance

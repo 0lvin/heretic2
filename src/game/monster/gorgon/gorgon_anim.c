@@ -595,7 +595,7 @@ void gorgon_starttwitch(edict_t *self)
 
 void gorgon_nexttwitch(edict_t *self)
 {
- 	self->monsterinfo.thinkinc = FRAMETIME * 4  + flrand(0.0, 4.0);
+	self->monsterinfo.thinkinc = FRAMETIME * 4  + flrand(0.0, 4.0);
 }
 
 static animframe_t gorgon_frames_death2twitch [] =
@@ -610,8 +610,8 @@ void gorgon_death2twitch (edict_t *self)
 {
 	VectorSet(self->mins,-24,-24,0);
 	VectorSet(self->maxs,24,24,18);
-	VectorScale(self->mins, self->s.scale, self->mins);
-	VectorScale(self->maxs, self->s.scale, self->maxs);
+	VectorScale(self->mins, AVG_VEC3T(self->s.scale), self->mins);
+	VectorScale(self->maxs, AVG_VEC3T(self->s.scale), self->maxs);
 	self->monsterinfo.currentmove = &gorgon_move_death2twitch;
 	self->monsterinfo.nextframeindex = 0;
 }

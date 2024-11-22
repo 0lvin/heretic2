@@ -1151,7 +1151,7 @@ void create_imp_proj(edict_t *self,edict_t *proj)
 	proj->gravity = 0;
 	proj->solid = SOLID_BBOX;
 	proj->classname = "imp fireball";
-	proj->s.scale = 1.0;
+	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = (MASK_SHOT|CONTENTS_WATER);
 	proj->s.effects=EF_MARCUS_FLAG1;
 	proj->enemy = self->enemy;
@@ -1432,8 +1432,14 @@ SP_monster_imp(edict_t *self)
 
 	self->isBlocked = imp_blocked;
 
-	if (!self->s.scale)
-		self->monsterinfo.scale = self->s.scale = flrand(0.7, 1.2);
+	if (!self->s.scale[0] ||
+		!self->s.scale[1] ||
+		!self->s.scale[2])
+	{
+		float scale = flrand(0.7, 1.2);
+		self->monsterinfo.scale = scale;
+		VectorSet(self->s.scale, scale, scale, scale);
+	}
 
 	self->monsterinfo.otherenemyname = "monster_rat";
 

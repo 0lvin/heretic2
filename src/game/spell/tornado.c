@@ -38,22 +38,22 @@ static void TornadoThink(edict_t *self)
 	while((ent = findringradius(ent, self->s.origin, TORN_EFFECT_RADIUS, self)))
 	{
 		if (ent->mass && ent!=self->owner)
-   		{
-   			VectorSubtract(ent->s.origin, self->s.origin, vel);
-   			scale = (TORN_EFFECT_RADIUS - VectorLength(vel))
-   						* (TORN_KNOCKBACK_SCALE/TORN_EFFECT_RADIUS)
-   						* sqrt(TORN_MASS_FACTOR / ent->mass)
-   						+ TORN_KNOCKBACK_BASE;
+		{
+			VectorSubtract(ent->s.origin, self->s.origin, vel);
+			scale = (TORN_EFFECT_RADIUS - VectorLength(vel))
+						* (TORN_KNOCKBACK_SCALE/TORN_EFFECT_RADIUS)
+						* sqrt(TORN_MASS_FACTOR / ent->mass)
+						+ TORN_KNOCKBACK_BASE;
 			scale *= 20; // just for yucks
 			VectorNormalize(vel);
 			Vec3ScaleAssign(scale, vel);
 			vel[2] += 200;
-   			// Vel is just passing the direction of the knockback.
-   			G_QPostMessage(ent, MSG_REPULSE, PRI_DIRECTIVE, "fff", vel[0], vel[1], vel[2] );
+			// Vel is just passing the direction of the knockback.
+			G_QPostMessage(ent, MSG_REPULSE, PRI_DIRECTIVE, "fff", vel[0], vel[1], vel[2] );
 			damage = TORN_DAMAGE;
 			// double the damage if this tornado is powered up
-   			if (ent->takedamage)
-   			{
+			if (ent->takedamage)
+			{
 				// Do a nasty looking blast at the impact point
 				gi.CreateEffect(&ent->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", ent->velocity);
 				VectorClear(ent->velocity);
@@ -62,13 +62,13 @@ static void TornadoThink(edict_t *self)
 				if(EntReflecting(ent, true, true))
 					damage = 0;
 
-   				VectorMA(ent->s.origin, -ent->maxs[0], vel, hitloc);
-   				if (ent->movetype != MOVETYPE_NONE)
-   					T_Damage (ent, ent, self->targetEnt, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
-   				else
-   					T_Damage (ent, ent, self->targetEnt, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
-   			}
-   		}
+				VectorMA(ent->s.origin, -ent->maxs[0], vel, hitloc);
+				if (ent->movetype != MOVETYPE_NONE)
+					T_Damage (ent, ent, self->targetEnt, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
+				else
+					T_Damage (ent, ent, self->targetEnt, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
+			}
+		}
 	}
 
 	if (self->jump_time < level.time)
@@ -78,9 +78,9 @@ static void TornadoThink(edict_t *self)
 		Vec3ScaleAssign((flrand(0,110.0)), endpos);
 		endpos[2] = 100.0;
 		VectorAdd(endpos, self->s.origin, endpos);
-   		gi.CreateEffect(NULL, FX_LIGHTNING, 0,
-   			self->s.origin, "vbb", endpos, (byte)RED_RAIN_LIGHTNING_WIDTH, (byte)0);
-   		gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/Lightning.wav"),1,ATTN_NORM,0);
+		gi.CreateEffect(NULL, FX_LIGHTNING, 0,
+			self->s.origin, "vbb", endpos, (byte)RED_RAIN_LIGHTNING_WIDTH, (byte)0);
+		gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/Lightning.wav"),1,ATTN_NORM,0);
 		self->jump_time = level.time + flrand(0.2, 1.0);
 	}
 
@@ -203,7 +203,7 @@ void Createtornbolt(edict_t *tornbolt)
 	tornbolt->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 	tornbolt->svflags |= SVF_ALWAYS_SEND;
 	tornbolt->movetype = MOVETYPE_FLYMISSILE;
-	tornbolt->s.scale = 1.0;
+	VectorSet(tornbolt->s.scale, 1.0, 1.0, 1.0);
 
 	tornbolt->touch = tornboltTouch;
 	tornbolt->think = tornboltInitThink;

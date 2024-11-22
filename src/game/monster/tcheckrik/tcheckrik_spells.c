@@ -31,7 +31,7 @@ static void InsectStaffThink(edict_t *self)
 
 	// Grow myself a bit.
 
-	self->s.scale=1.0;
+	VectorSet(self->s.scale, 1.0, 1.0, 1.0);
 
 	// Do autotargeting.
 
@@ -87,7 +87,7 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 
 		InsectStaff->owner = self->owner;
 		InsectStaff->enemy = NULL;
-		InsectStaff->s.scale= self->s.scale;
+		VectorCopy(self->s.scale, InsectStaff->s.scale);
 
 		VectorCopy(self->s.origin, InsectStaff->s.origin);
 		Create_rand_relect_vect(self->velocity, InsectStaff->velocity);
@@ -169,7 +169,7 @@ void create_insect_staff_bolt(edict_t *InsectStaff)
 	InsectStaff->solid = SOLID_BBOX;
 	InsectStaff->classname = "Spell_InsectStaff";
 	InsectStaff->touch = InsectStaffTouch;
- 	InsectStaff->dmg = irand(TC_FEMALE_DMG_HACK_MIN, TC_FEMALE_DMG_HACK_MAX) * (skill->value + 1)/3;
+	InsectStaff->dmg = irand(TC_FEMALE_DMG_HACK_MIN, TC_FEMALE_DMG_HACK_MAX) * (skill->value + 1)/3;
 	InsectStaff->clipmask = MASK_MONSTERSOLID|MASK_SHOT;
 	VectorClear(InsectStaff->mins);
 	VectorClear(InsectStaff->maxs);
@@ -196,7 +196,7 @@ void SpellCastInsectStaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 
 	create_insect_staff_bolt(InsectStaff);
 
-	InsectStaff->s.scale = 0.1;
+	VectorSet(InsectStaff->s.scale, 0.1, 0.1, 0.1);
 	InsectStaff->owner = Caster;
 	InsectStaff->enemy = Caster->enemy;
 
@@ -265,15 +265,19 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 
 		self->count+=irand(1,2);
 
-		if((self->count>10)&&(self->s.scale<GLOBE_MAX_SCALE))
+		if((self->count > 10) && (AVG_VEC3T(self->s.scale) < GLOBE_MAX_SCALE))
 		{
-			if(self->count>20)
+			if(self->count > 20)
 			{
-				self->s.scale-=0.01;
+				self->s.scale[0] -= 0.01;
+				self->s.scale[1] -= 0.01;
+				self->s.scale[2] -= 0.01;
 			}
 			else
 			{
-				self->s.scale+=0.1;
+				self->s.scale[0] += 0.1;
+				self->s.scale[1] += 0.1;
+				self->s.scale[2] += 0.1;
 			}
 
 			if(self->count>25)
@@ -328,8 +332,8 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 	Globe->s.effects |= EF_ALWAYS_ADD_EFFECTS|EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	Globe->owner=Caster;
 	Globe->classname="Spell_GlobeOfOuchiness";
-	Globe->dmg=0;
-	Globe->s.scale=1.0;
+	Globe->dmg = 0;
+	VectorSet(Globe->s.scale, 1.0, 1.0, 1.0);
 	Globe->enemy=Caster->enemy;
 	Globe->count=0;
 	Globe->clipmask=MASK_MONSTERSOLID;

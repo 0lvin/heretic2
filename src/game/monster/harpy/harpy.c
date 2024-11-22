@@ -1672,9 +1672,11 @@ SP_monster_harpy(edict_t *self)
 	self->isBlocked = harpy_blocked;
 	self->bounced = harpy_blocked;
 
-	if (!self->s.scale)
+	if (!self->s.scale[0] || !self->s.scale[1] || !self->s.scale[2])
 	{
-		self->monsterinfo.scale = self->s.scale = flrand(1.25, 1.75);
+		float scale = flrand(1.25, 1.75);
+		self->monsterinfo.scale = scale;
+		VectorSet(self->s.scale, scale, scale, scale);
 	}
 
 	self->monsterinfo.otherenemyname = "monster_rat";

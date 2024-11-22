@@ -33,10 +33,10 @@
 #define SPREADER_MASS		(300.0)*/
 
 //FIXME I basically pulled these numbers out of the air
-#define SPREADER_TOO_CLOSE 	70
+#define SPREADER_TOO_CLOSE	70
 #define SPREADER_CLOSE		120
-#define SPREADER_FAR 		300
-#define SPREADER_TOO_FAR 	600
+#define SPREADER_FAR		300
+#define SPREADER_TOO_FAR	600
 
 #ifndef TRYSTEP_OK
 #define TRYSTEP_OK			0
@@ -257,7 +257,7 @@ qboolean spreader_check_uncrouch(edict_t *self)
 	mins[2] = 0;
 	maxs[2] = 1;
 
-	desired_height = STDMaxsForClass[CID_SPREADER][2] * self->s.scale;
+	desired_height = STDMaxsForClass[CID_SPREADER][2] * AVG_VEC3T(self->s.scale);
 
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] += desired_height;
@@ -271,7 +271,7 @@ qboolean spreader_check_uncrouch(edict_t *self)
 	self->intentMaxs[2] = 40;
 */
 	self->maxs[2] = desired_height;
-	self->viewheight = self->maxs[2] - 8 * self->s.scale;
+	self->viewheight = self->maxs[2] - 8 * AVG_VEC3T(self->s.scale);
 
 //	self->physicsFlags |= PF_RESIZE;
 	return true;

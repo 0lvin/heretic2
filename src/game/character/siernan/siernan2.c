@@ -103,7 +103,11 @@ void SP_character_siernan2 (edict_t *self)
 	VectorSet(self->mins, -17, -25, 0);
 	VectorSet(self->maxs, 22, 12, 16);
 
-	self->s.scale = self->monsterinfo.scale = 1;
+	self->monsterinfo.scale = 1;
+	VectorSet(self->s.scale,
+		self->monsterinfo.scale,
+		self->monsterinfo.scale,
+		self->monsterinfo.scale);
 
 	c_character_init(self,CID_C_SIERNAN2);
 }

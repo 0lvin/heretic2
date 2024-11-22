@@ -154,9 +154,15 @@ void SP_monster_tcheckrik_mothers (edict_t *self)
 
 	self->s.modelindex = classStatics[CID_MOTHER].resInfo->modelIndex;
 
-	if (!self->s.scale)
+	if (!self->s.scale[0] ||
+		!self->s.scale[1] ||
+		!self->s.scale[2])
 	{
-		self->s.scale = self->monsterinfo.scale = MODEL_SCALE;
+		self->monsterinfo.scale = MODEL_SCALE;
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
 	}
 
 	self->materialtype = MAT_INSECT;

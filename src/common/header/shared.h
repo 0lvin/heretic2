@@ -1436,24 +1436,20 @@ typedef struct entity_state_s
 	int event;              /* impulse events -- muzzle flashes, footsteps, etc */
 							/* events only go out for a single frame, they */
 							/* are automatically cleared each frame */
+	vec3_t scale;
+
 	short			clientnum;		// In Quake 2, the client num was passed in skinnum.  We need this value, however.
 
 	// For specific path to skin.
 
 	char			skinname[MAX_QPATH];
 
-	// Model scale.
-
-	float			scale;
-
 	// EF_XXX.
 
 	// What's this exactly?
-
 	byte color[4];
 
 	// For looping sounds, so we can set volume and attenuation.
-
 	byte			sound_data;
 
 	// required so we can place sounds for bmodels correctly in 3d space
@@ -1467,14 +1463,12 @@ typedef struct entity_state_s
 	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
 
 	// Skeletal info. Only relevant for player models (i.e. have U_JOINTED).
-
 	short			skeletalType;
 	short			rootJoint;
 
 	short			swapFrame;
 
 	// Used by the client to verify is this still the same entity it last had.
-
 	byte			usageCount;
 } entity_state_t;
 

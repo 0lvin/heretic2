@@ -726,7 +726,7 @@ AddServerEntities(frame_t *frame)
 			ent->skin = NULL;			// No custom skin.
 		}
 
-		ent->scale = s1->scale;
+		ent->scale = (s1->scale[0] + s1->scale[1] + s1->scale[2]) / 3;
 
 		if(s1->color[0] ||
 		   s1->color[1] ||

@@ -2171,7 +2171,7 @@ SP_func_button(edict_t *ent)
 	G_SetMovedir(ent->s.angles, ent->movedir);
 	ent->movetype = MOVETYPE_STOP;
 	ent->solid = SOLID_BSP;
-  	ent->takedamage = DAMAGE_NO;
+	ent->takedamage = DAMAGE_NO;
 	gi.setmodel(ent, ent->model);
 
 	button_sounds(ent);
@@ -4776,10 +4776,10 @@ void monsterspawner_go(edict_t *self)
 	monster->jump_chance = self->jump_chance;
 	monster->wakeup_distance = self->wakeup_distance;
 
-	monster->s.scale = self->s.scale;
+	VectorCopy(self->s.scale, monster->s.scale);
 
-	VectorScale(STDMinsForClass[monster->classID], monster->s.scale, monster->mins);
-	VectorScale(STDMaxsForClass[monster->classID], monster->s.scale, monster->maxs);
+	VectorScale(STDMinsForClass[monster->classID], AVG_VEC3T(monster->s.scale), monster->mins);
+	VectorScale(STDMaxsForClass[monster->classID], AVG_VEC3T(monster->s.scale), monster->maxs);
 
 	if (self->attenuation)
 	{
@@ -4997,8 +4997,12 @@ void SP_func_monsterspawner (edict_t *self)
 	if (!self->wait)
 		self->wait = 10;
 
-	if(!self->s.scale)
-		self->s.scale = 1.0f;
+	if (!self->s.scale[0] ||
+		!self->s.scale[1] ||
+		!self->s.scale[2])
+	{
+		VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+	}
 
 	if (self->targetname)
 		self->use = monsterspawner_use;

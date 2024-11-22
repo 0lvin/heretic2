@@ -400,7 +400,7 @@ void create_ssithra_arrow(edict_t *Arrow)
 
 	VectorSet(Arrow->mins,-1.0,-1.0,-1.0);
 	VectorSet(Arrow->maxs,1.0,1.0,1.0);
-	Arrow->s.scale = 1.5;
+	VectorSet(Arrow->s.scale, 1.5, 1.5, 1.5);
 }
 
 void mssithraArrow(edict_t *self)
@@ -767,7 +767,11 @@ void SP_monster_mssithra (edict_t *self)
 
 	if (!self->monsterinfo.scale)
 	{
-		self->s.scale = self->monsterinfo.scale = (MODEL_SCALE + 0.25);
+		self->monsterinfo.scale = (MODEL_SCALE + 0.25);
+		VectorSet(self->s.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale,
+			self->monsterinfo.scale);
 	}
 
 	self->monsterinfo.otherenemyname = "obj_barrel";

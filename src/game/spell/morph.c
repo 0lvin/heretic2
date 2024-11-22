@@ -37,7 +37,7 @@ extern void SpawnInitialPlayerEffects(edict_t *ent);
 extern void MorphPlayerToChicken(edict_t *self, edict_t *caster);
 
 extern	vec3_t	mins;
-extern 	vec3_t	maxs;
+extern	vec3_t	maxs;
 
 void create_morph(edict_t *morph);
 
@@ -139,7 +139,7 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->deadflag = DEAD_NO;
 	ent->air_finished = level.time + HOLD_BREATH_TIME;
 
-	ent->s.scale = 1.0;
+	VectorSet(ent->s.scale, 1.0, 1.0, 1.0);
 
 	// set the model back to corvux
 #ifdef COMP_FMOD
@@ -312,7 +312,7 @@ void Perform_Morph(edict_t *self)
 		self->gravity = 1.0;
 
 		self->monsterinfo.scale = 2.5;
-		self->s.scale = 2.5;
+		VectorSet(self->s.scale, 2.5, 2.5, 2.5);
 
 		VectorSet(self->mins, -16, -16, -48);
 		VectorSet(self->maxs,  16,  16,  64);
@@ -484,30 +484,30 @@ void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 edict_t *MorphReflect(edict_t *self, edict_t *other, vec3_t vel)
 {
 	edict_t	*morph;
-	byte 	yaw, pitch;
+	byte	yaw, pitch;
 
-   	// create a new missile to replace the old one - this is necessary cos physics will do nasty shit
-   	// with the existing one,since we hit something. Hence, we create a new one totally.
-   	morph = G_Spawn();
-   	create_morph(morph);
-   	morph->reflect_debounce_time = self->reflect_debounce_time -1;
+	// create a new missile to replace the old one - this is necessary cos physics will do nasty shit
+	// with the existing one,since we hit something. Hence, we create a new one totally.
+	morph = G_Spawn();
+	create_morph(morph);
+	morph->reflect_debounce_time = self->reflect_debounce_time -1;
 	morph->reflected_time=self->reflected_time;
-   	morph->owner = other;
-   	morph->enemy = self->enemy;
-   	VectorCopy(self->s.origin, morph->s.origin);
+	morph->owner = other;
+	morph->enemy = self->enemy;
+	VectorCopy(self->s.origin, morph->s.origin);
 	VectorCopy(vel, morph->velocity);
 	VectorNormalize2(morph->velocity, morph->movedir);
-   	AnglesFromDir(morph->movedir, morph->s.angles);
-   	G_LinkMissile(morph);
-   	yaw = Q_ftol((morph->s.angles[YAW]/6.2831) * 255.0);
-   	pitch = Q_ftol((morph->s.angles[PITCH]/6.2831) * 255.0);
-   	gi.CreateEffect(&morph->s, FX_SPELL_MORPHMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "bb", yaw,pitch);
+	AnglesFromDir(morph->movedir, morph->s.angles);
+	G_LinkMissile(morph);
+	yaw = Q_ftol((morph->s.angles[YAW]/6.2831) * 255.0);
+	pitch = Q_ftol((morph->s.angles[PITCH]/6.2831) * 255.0);
+	gi.CreateEffect(&morph->s, FX_SPELL_MORPHMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "bb", yaw,pitch);
 
-   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
-   	G_SetToFree(self);
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
+	G_SetToFree(self);
 
-   	// Do a nasty looking blast at the impact point
-   	gi.CreateEffect(&morph->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", morph->velocity);
+	// Do a nasty looking blast at the impact point
+	gi.CreateEffect(&morph->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", morph->velocity);
 	return(morph);
 }
 
@@ -642,7 +642,7 @@ void SpellCastMorph(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t u
 {
 	edict_t		*morph;
 	int			i;
-	byte 			yaw;
+	byte			yaw;
 	float			current_ang;
 	vec3_t		temp_angles;
 	short	morpharray[NUM_OF_OVUMS];

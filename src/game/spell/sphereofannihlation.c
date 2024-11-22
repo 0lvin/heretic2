@@ -65,12 +65,19 @@ static void SphereOfAnnihilationGrowThink(edict_t *Self)
 	{
 		if (Self->count < SPHERE_MAX_CHARGES)
 		{
+			float scale;
+
 			Self->count++;
-			Self->s.scale = SPHERE_INIT_SCALE + (SPHERE_SCALE_PER_CHARGE * Self->count);
+			scale = SPHERE_INIT_SCALE + (SPHERE_SCALE_PER_CHARGE * Self->count);
+			VectorSet(Self->s.scale, scale, scale, scale);
 		}
 		else
-		{	// If at max size, pulse like crazy!
-			Self->s.scale = SPHERE_MAX_SCALE + flrand(0, SPHERE_SCALE_PULSE);
+		{
+			/* If at max size, pulse like crazy! */
+			float scale;
+
+			scale = SPHERE_MAX_SCALE + flrand(0, SPHERE_SCALE_PULSE);
+			VectorSet(Self->s.scale, scale, scale, scale);
 		}
 
 		// detect if we have teleported, since we need to move with the player if thats so
@@ -191,11 +198,11 @@ static void SpherePowerLaserThink(edict_t *Self)
 				VectorSubtract(tr.endpos, startPos, tempVect);
 				traceDist = VectorLength(tempVect);
 				gi.CreateEffect(NULL, FX_WEAPON_SPHEREPOWER, 0, startPos, "xbb",
-					shootDir, (byte)(Self->s.scale*7.5), (byte)(traceDist/8));
+					shootDir, (byte)(AVG_VEC3T(Self->s.scale) * 7.5), (byte)(traceDist/8));
 
-			 	// re-constitute aimangle
-			 	aimangles[1] += flrand(160,200);
-			 	aimangles[0] += flrand(-20,20);
+				// re-constitute aimangle
+				aimangles[1] += flrand(160,200);
+				aimangles[0] += flrand(-20,20);
 
 				break;
 			}
@@ -204,7 +211,7 @@ static void SpherePowerLaserThink(edict_t *Self)
 				if (tr.ent->fire_timestamp < Self->fire_timestamp)
 				{
 					damage = SPHERE_DAMAGE;
-					T_Damage(tr.ent,Self,Self->owner,shootDir,tr.endpos,shootDir,
+					T_Damage(tr.ent, Self, Self->owner, shootDir, tr.endpos, shootDir,
 							damage, damage, DAMAGE_SPELL, MOD_P_SPHERE);
 					tr.ent->fire_timestamp = Self->fire_timestamp;
 				}
@@ -236,7 +243,7 @@ static void SpherePowerLaserThink(edict_t *Self)
 		flags|=CEF_FLAG6;
 
 	gi.CreateEffect(NULL, FX_WEAPON_SPHEREPOWER, flags, startPos, "xbb",
-			shootDir, (byte)(Self->s.scale*7.5), (byte)(traceDist/8));
+			shootDir, (byte)(AVG_VEC3T(Self->s.scale) * 7.5), (byte)(traceDist/8));
 
 	if (--Self->count <= 0)
 		G_SetToFree(Self);
@@ -271,20 +278,27 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *Self)
 	{
 		if (Self->count < SPHERE_MAX_CHARGES)
 		{
+			float scale;
+
 			Self->count++;
-			Self->s.scale = SPHERE_INIT_SCALE + (SPHERE_SCALE_PER_CHARGE * Self->count);
+			scale = SPHERE_INIT_SCALE + (SPHERE_SCALE_PER_CHARGE * Self->count);
+			VectorSet(Self->s.scale, scale, scale, scale);
 		}
 		else
-		{	// If at max size, pulse like crazy!
-			Self->s.scale = SPHERE_MAX_SCALE + flrand(0, SPHERE_SCALE_PULSE);
+		{
+			/* If at max size, pulse like crazy! */
+			float scale;
+
+			scale = SPHERE_MAX_SCALE + flrand(0, SPHERE_SCALE_PULSE);
+			VectorSet(Self->s.scale, scale, scale, scale);
 		}
 
 		// detect if we have teleported, since we need to move with the player if thats so
 		if(Self->owner->client)
 		{
 			VectorCopy(Self->owner->s.origin, Self->s.origin);
-			Self->s.origin[0] += Forward[0]*20.0;
-			Self->s.origin[1] += Forward[1]*20.0;
+			Self->s.origin[0] += Forward[0] * 20.0;
+			Self->s.origin[1] += Forward[1] * 20.0;
 			Self->s.origin[2] += Self->owner->viewheight-5.0;
 		}
 
@@ -338,52 +352,52 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *Self)
 edict_t *SphereReflect(edict_t *self, edict_t *other, vec3_t vel)
 {
 	edict_t	*Sphere;
-   	Sphere = G_Spawn();
-   	create_sphere(Sphere);
-   	Sphere->owner = other;
-   	Sphere->enemy = self->enemy;
-   	Sphere->reflect_debounce_time = self->reflect_debounce_time -1;
+	Sphere = G_Spawn();
+	create_sphere(Sphere);
+	Sphere->owner = other;
+	Sphere->enemy = self->enemy;
+	Sphere->reflect_debounce_time = self->reflect_debounce_time -1;
 	Sphere->reflected_time=self->reflected_time;
 
-   	Sphere->count=self->count;
-   	Sphere->solid=self->solid;
-   	Sphere->dmg=self->dmg;
-   	Sphere->dmg_radius=self->dmg_radius;
-   	Sphere->s.scale=self->s.scale;
+	Sphere->count=self->count;
+	Sphere->solid=self->solid;
+	Sphere->dmg=self->dmg;
+	Sphere->dmg_radius=self->dmg_radius;
+	VectorCopy(self->s.scale, Sphere->s.scale);
 
-   	VectorCopy(vel, Sphere->velocity);
+	VectorCopy(vel, Sphere->velocity);
 
-   	Sphere->touch=SphereOfAnnihilationTouch;
-   	Sphere->nextthink=level.time+0.1;
+	Sphere->touch=SphereOfAnnihilationTouch;
+	Sphere->nextthink=level.time+0.1;
 
-   	VectorCopy(self->mins, Sphere->mins);
-   	VectorCopy(self->maxs, Sphere->maxs);
+	VectorCopy(self->mins, Sphere->mins);
+	VectorCopy(self->maxs, Sphere->maxs);
 
-   	VectorCopy(self->s.origin, Sphere->s.origin);
-   	G_LinkMissile(Sphere);
+	VectorCopy(self->s.origin, Sphere->s.origin);
+	G_LinkMissile(Sphere);
 
-   	gi.CreateEffect(&Sphere->s,
-   				FX_WEAPON_SPHERE,
-   				CEF_OWNERS_ORIGIN,
-   				NULL,
-   				"s",
-   				(short)Sphere->owner->s.number);
+	gi.CreateEffect(&Sphere->s,
+				FX_WEAPON_SPHERE,
+				CEF_OWNERS_ORIGIN,
+				NULL,
+				"s",
+				(short)Sphere->owner->s.number);
 
-   	gi.CreateEffect(&Sphere->s,
-   				FX_WEAPON_SPHEREGLOWBALLS,
-   				CEF_OWNERS_ORIGIN,
-   				NULL,
-   				"s",
-   				-1);
+	gi.CreateEffect(&Sphere->s,
+				FX_WEAPON_SPHEREGLOWBALLS,
+				CEF_OWNERS_ORIGIN,
+				NULL,
+				"s",
+				-1);
 
 
-   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
-   	G_SetToFree(self);
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
+	G_SetToFree(self);
 
-   	// Do a nasty looking blast at the impact point
-   	gi.CreateEffect(&Sphere->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", Sphere->velocity);
+	// Do a nasty looking blast at the impact point
+	gi.CreateEffect(&Sphere->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", Sphere->velocity);
 
-   	return(Sphere);
+	return(Sphere);
 }
 
 
@@ -521,7 +535,8 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 	Sphere->count = 0;
 	Sphere->solid = SOLID_NOT;
 	Sphere->dmg = 0;
-	Sphere->s.scale = SPHERE_INIT_SCALE;
+	VectorSet(Sphere->s.scale,
+		SPHERE_INIT_SCALE, SPHERE_INIT_SCALE, SPHERE_INIT_SCALE);
 	Sphere->owner = Caster;
 	Sphere->enemy = Caster->enemy;
 	create_sphere(Sphere);
@@ -621,15 +636,19 @@ static void SphereWatcherGrowThink(edict_t *Self)
 
 		Self->count+=irand(1,2);
 
-		if((Self->count>10)&&(Self->s.scale<SPHERE_MAX_SCALE))
+		if((Self->count > 10) && (AVG_VEC3T(Self->s.scale) < SPHERE_MAX_SCALE))
 		{
-			if(Self->count>20)
+			if(Self->count > 20)
 			{
-				Self->s.scale-=0.01;
+				Self->s.scale[0] -= 0.01;
+				Self->s.scale[1] -= 0.01;
+				Self->s.scale[2] -= 0.01;
 			}
 			else
 			{
-				Self->s.scale+=0.1;
+				Self->s.scale[0] += 0.1;
+				Self->s.scale[1] += 0.1;
+				Self->s.scale[2] += 0.1;
 			}
 
 			if(Self->count>25)
@@ -672,11 +691,11 @@ static void SphereWatcherGrowThink(edict_t *Self)
 		Self->health=0;
 		Self->count=0;
 		Self->dmg=	SPHERE_WATCHER_DAMAGE_MIN +
-					(SPHERE_WATCHER_DAMAGE_RANGE*((Self->s.scale-SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE));
+					(SPHERE_WATCHER_DAMAGE_RANGE*((AVG_VEC3T(Self->s.scale) - SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE));
 		Self->dmg_radius =
 					SPHERE_WATCHER_EXPLOSION_RADIUS_MIN +
 					(SPHERE_WATCHER_EXPLOSION_RADIUS_MAX - SPHERE_WATCHER_EXPLOSION_RADIUS_MIN) *
-							(Self->s.scale-SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE;
+							(AVG_VEC3T(Self->s.scale) - SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE;
 		Self->touch=SphereWatcherTouch;
 		Self->think=SphereWatcherFlyThink;
 		Self->nextthink=level.time+0.1;
@@ -701,53 +720,53 @@ static void SphereWatcherGrowThink(edict_t *Self)
 edict_t *SphereWatcherReflect(edict_t *self, edict_t *other, vec3_t vel)
 {
 	edict_t	*Sphere;
-   	Sphere = G_Spawn();
-   	create_sphere(Sphere);
-   	Sphere->owner = other;
-   	Sphere->enemy = self->enemy;
-   	Sphere->reflect_debounce_time = self->reflect_debounce_time -1;
+	Sphere = G_Spawn();
+	create_sphere(Sphere);
+	Sphere->owner = other;
+	Sphere->enemy = self->enemy;
+	Sphere->reflect_debounce_time = self->reflect_debounce_time -1;
 	Sphere->reflected_time=self->reflected_time;
 
-   	Sphere->count=self->count;
-   	Sphere->solid=self->solid;
-   	Sphere->dmg=self->dmg;
-   	Sphere->dmg_radius=self->dmg_radius;
-   	Sphere->s.scale=self->s.scale;
+	Sphere->count=self->count;
+	Sphere->solid=self->solid;
+	Sphere->dmg=self->dmg;
+	Sphere->dmg_radius=self->dmg_radius;
+	VectorCopy(self->s.scale, Sphere->s.scale);
 
-   	VectorCopy(vel, Sphere->velocity);
+	VectorCopy(vel, Sphere->velocity);
 
-   	Sphere->touch=SphereWatcherTouch;
-   	Sphere->think=SphereWatcherFlyThink;
-   	Sphere->nextthink=level.time+0.1;
+	Sphere->touch=SphereWatcherTouch;
+	Sphere->think=SphereWatcherFlyThink;
+	Sphere->nextthink=level.time+0.1;
 
-   	VectorCopy(self->mins, Sphere->mins);
-   	VectorCopy(self->maxs, Sphere->maxs);
+	VectorCopy(self->mins, Sphere->mins);
+	VectorCopy(self->maxs, Sphere->maxs);
 
-   	VectorCopy(self->s.origin, Sphere->s.origin);
-   	G_LinkMissile(Sphere);
+	VectorCopy(self->s.origin, Sphere->s.origin);
+	G_LinkMissile(Sphere);
 
-   	gi.CreateEffect(&Sphere->s,
-   				FX_WEAPON_SPHERE,
-   				CEF_OWNERS_ORIGIN,
-   				NULL,
-   				"s",
-   				(short)Sphere->owner->s.number);
+	gi.CreateEffect(&Sphere->s,
+				FX_WEAPON_SPHERE,
+				CEF_OWNERS_ORIGIN,
+				NULL,
+				"s",
+				(short)Sphere->owner->s.number);
 
-   	gi.CreateEffect(&Sphere->s,
-   				FX_WEAPON_SPHEREGLOWBALLS,
-   				CEF_OWNERS_ORIGIN,
-   				NULL,
-   				"s",
-   				-1);
+	gi.CreateEffect(&Sphere->s,
+				FX_WEAPON_SPHEREGLOWBALLS,
+				CEF_OWNERS_ORIGIN,
+				NULL,
+				"s",
+				-1);
 
 
-   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
-   	G_SetToFree(self);
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
+	G_SetToFree(self);
 
-   	// Do a nasty looking blast at the impact point
-   	gi.CreateEffect(&Sphere->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", Sphere->velocity);
+	// Do a nasty looking blast at the impact point
+	gi.CreateEffect(&Sphere->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", Sphere->velocity);
 
-   	return(Sphere);
+	return(Sphere);
 }
 
 
@@ -791,7 +810,7 @@ static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, c
 		makeScorch = CEF_FLAG6;
 	}
 	gi.CreateEffect(&self->s, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN | makeScorch, NULL,
-					"db", self->movedir, (byte)(self->s.scale * 7.5));
+					"db", self->movedir, (byte)(AVG_VEC3T(self->s.scale) * 7.5));
 
 	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereImpact.wav"),2,ATTN_NORM,0);
 

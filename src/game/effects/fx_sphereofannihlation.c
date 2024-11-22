@@ -64,7 +64,11 @@ static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, 
 	else
 		detail_scale = 1.0;
 
-	Self->r.scale=Owner->current.scale * detail_scale;
+	Self->r.scale = (
+		Owner->current.scale[0] +
+		Owner->current.scale[1] +
+		Owner->current.scale[2]
+	) / 3 * detail_scale;
 
 	return true;
 }
@@ -191,7 +195,11 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	SphereThinker->r.model = sphere_models[1];
 	SphereThinker->r.flags |= RF_TRANSLUCENT;
-	SphereThinker->r.scale = Owner->current.scale;
+	SphereThinker->r.scale = (
+		Owner->current.scale[0] +
+		Owner->current.scale[1] +
+		Owner->current.scale[2]
+	) / 3;
 	SphereThinker->radius = 70.0;
 	SphereThinker->Update = FXSphereOfAnnihilationSphereThink;
 	SphereThinker->AddToView = LinkedEntityUpdatePlacement;
@@ -537,7 +545,7 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 		ce->velocity[0]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
 		ce->velocity[1]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
 		ce->velocity[2]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
-	 	AddParticleToList(Explosion, ce);
+		AddParticleToList(Explosion, ce);
 
 	}
 }
@@ -595,7 +603,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	//make the line beam down the side
 	beam = ClientEntity_new(-1, CEF_DONT_LINK, spot1, NULL, 200);
 	beam->r.model = sphere_models[5];
- 	beam->r.spriteType = SPRITE_LINE;
+	beam->r.spriteType = SPRITE_LINE;
 	beam->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	beam->r.scale = (size-3) * 6;
 	beam->radius = 256;
@@ -631,7 +639,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 		VectorMA(ce->velocity, flrand(-15, 15), up, ce->velocity);
 		VectorMA(ce->origin, flrand(-size*.4, size*.4), right, ce->origin);
 		VectorMA(ce->origin, flrand(-size*.4, size*.4), up, ce->origin);
- 		AddParticleToList(exp1, ce);
+		AddParticleToList(exp1, ce);
 	}
 	if (Flags & CEF_FLAG6)
 	{

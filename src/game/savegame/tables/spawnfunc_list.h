@@ -108,7 +108,7 @@
 {"monster_palace_plague_guard", SP_monster_palace_plague_guard,CID_PLAGUEELF},
 {"monster_palace_plague_guard_invisible", SP_monster_palace_plague_guard_invisible,CID_PLAGUEELF},
 {"monster_elflord", SP_monster_elflord,CID_ELFLORD},
-{"monster_ssithra",SP_monster_plague_ssithra,CID_SSITHRA},
+{"monster_ssithra",SP_monster_ssithra,CID_SSITHRA},
 {"monster_mssithra",SP_monster_mssithra,CID_MSSITHRA},
 {"monster_chkroktk",SP_monster_chkroktk,CID_RAT},
 {"monster_tcheckrik_female",SP_monster_tcheckrik_female,CID_TCHECKRIK},

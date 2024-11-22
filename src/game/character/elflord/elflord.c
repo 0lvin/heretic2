@@ -41,7 +41,7 @@ float mist_yaw;
 void Elflord_c_gib(edict_t *self, G_Message_t *msg)
 {
 	gi.CreateEffect(&self->s, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN , NULL,
-					"db", self->movedir, (byte)(self->s.scale * 7.5));
+					"db", self->movedir, (byte)(AVG_VEC3T(self->s.scale) * 7.5));
 
 	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereImpact.wav"),2,ATTN_NORM,0);
 
@@ -193,6 +193,9 @@ void SP_character_elflord (edict_t *self)
 
 	c_character_init(self,CID_C_ELFLORD);
 
-	self->s.scale = self->monsterinfo.scale = 2.0;
-
+	self->monsterinfo.scale = 2.0;
+	VectorSet(self->s.scale,
+		self->monsterinfo.scale,
+		self->monsterinfo.scale,
+		self->monsterinfo.scale);
 }
