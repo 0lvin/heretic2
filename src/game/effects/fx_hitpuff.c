@@ -67,10 +67,11 @@ void FXLightningHit(centity_t *owner, int type, int flags, vec3_t origin)
 	blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT; // |
 	blast->r.frame = 1;
 	blast->radius = 64.0;
-	blast->r.scale=1.0;
-	blast->d_alpha=-4.0;
-	blast->d_scale=-2.0;
-	fxi.S_StartSound(blast->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/HellHit.wav"), 1, ATTN_NORM, 0);
+	VectorSet(blast->r.scale, 1.0, 1.0, 1.0);
+	blast->d_alpha = -4.0;
+	blast->d_scale = -2.0;
+	fxi.S_StartSound(blast->r.origin, -1, CHAN_WEAPON,
+		fxi.S_RegisterSound("weapons/HellHit.wav"), 1, ATTN_NORM, 0);
 	blast->dlight = CE_DLight_new(color, 75.0f, 0.0f);
 	VectorClear(blast->velocity);
 	AddEffect(NULL, blast);

@@ -86,7 +86,8 @@ qboolean RopeCheckToHide(struct client_entity_s *self, centity_t *owner)
 	FXRopeTopDrawAttached
 -----------------------------------------------*/
 
-static qboolean FXRopeTopDrawAttached(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXRopeTopDrawAttached(struct client_entity_s *self, centity_t *owner)
 {
 	qboolean		ret;
 	vec3_t			vec;
@@ -112,7 +113,8 @@ static qboolean FXRopeTopDrawAttached(struct client_entity_s *self, centity_t *o
 	FXRopeMiddleDrawAttached
 -----------------------------------------------*/
 
-static qboolean FXRopeMiddleDrawAttached(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXRopeMiddleDrawAttached(struct client_entity_s *self, centity_t *owner)
 {
 	qboolean		ret;
 
@@ -140,7 +142,8 @@ static qboolean FXRopeMiddleDrawAttached(struct client_entity_s *self, centity_t
 	FXRopeBottomDrawAttached
 -----------------------------------------------*/
 
-static qboolean FXRopeBottomDrawAttached(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXRopeBottomDrawAttached(struct client_entity_s *self, centity_t *owner)
 {
 	centity_t		*end, *grab;
 	qboolean		ret;
@@ -237,7 +240,8 @@ static qboolean FXRopeBottomDrawAttached(struct client_entity_s *self, centity_t
 	FXRopeTopDraw
 -----------------------------------------------*/
 
-static qboolean FXRopeTopDraw(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXRopeTopDraw(struct client_entity_s *self, centity_t *owner)
 {
 	float			lerp, oldtime, newtime;
 	//float			c_segs;
@@ -340,7 +344,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		rope->r.model = rope_models[model_type];
 
-		rope->r.scale = 3;
+		VectorSet(rope->r.scale, 3, 3, 3);
 		rope->radius = radius;
 
 		rope->r.spriteType = SPRITE_LINE;
@@ -379,7 +383,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		VectorCopy(top, rope->direction);
 
-		rope->r.scale = 3;
+		VectorSet(rope->r.scale, 3, 3, 3);
 		rope->radius = radius;
 		VectorCopy(top, rope->r.startpos);
 
@@ -410,7 +414,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		ropem->r.model = rope_models[model_type];
 
-		ropem->r.scale = 3;
+		VectorSet(ropem->r.scale, 3, 3, 3);
 		ropem->radius = radius;
 
 		ropem->r.tile = 1;
@@ -439,7 +443,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 			ropeb->r.model = rope_models[model_type];
 
-			ropeb->r.scale = 3;
+			VectorSet(ropeb->r.scale, 3, 3, 3);
 			ropeb->radius = radius;
 
 			ropeb->r.spriteType = SPRITE_LINE;

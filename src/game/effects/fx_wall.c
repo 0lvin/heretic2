@@ -50,7 +50,8 @@ void PreCacheWall()
 #define FIREWORM_BLASTNUM		12
 #define FIREWORM_BLASTRAD		32
 
-static qboolean FXFireWormThink(client_entity_t *worm, centity_t *owner)
+static qboolean
+FXFireWormThink(client_entity_t *worm, centity_t *owner)
 {
 	client_entity_t		*blast;
 	client_particle_t	*spark, *spark2;
@@ -75,18 +76,21 @@ static qboolean FXFireWormThink(client_entity_t *worm, centity_t *owner)
 		}
 		else
 		{
+			float scale;
+
 			blast = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_ADDITIVE_PARTS, worm->endpos, NULL, 500);
 			blast->r.model = wall_models[2];
 			blast->r.frame = 2;		// Circular halo for blast.
 			blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			blast->alpha = 0.95;
 			blast->d_alpha = -0.5;
-			blast->r.scale = 0.25*worm->r.scale;
-			blast->d_scale = -3.0*worm->r.scale;
+			scale = 0.25 * AVG_VEC3T(worm->r.scale);
+			VectorSet(blast->r.scale, scale, scale, scale);
+			blast->d_scale = -3.0* AVG_VEC3T(worm->r.scale);
 			VectorSet(blast->velocity,
-						flrand(-0.25*FIREWORM_BLASTVEL*worm->r.scale, 0.25*FIREWORM_BLASTVEL*worm->r.scale),
-						flrand(-0.25*FIREWORM_BLASTVEL*worm->r.scale, 0.25*FIREWORM_BLASTVEL*worm->r.scale),
-						flrand(0, 0.25*FIREWORM_BLASTVEL*worm->r.scale));
+						flrand(-0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale), 0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale)),
+						flrand(-0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale), 0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale)),
+						flrand(0, 0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale)));
 			AddEffect(NULL, blast);
 
 			// Spray out in a big ring
@@ -102,14 +106,14 @@ static qboolean FXFireWormThink(client_entity_t *worm, centity_t *owner)
 				// Higher particle
 				spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 500);
 
-				VectorScale(diffpos, FIREWORM_BLASTRAD*worm->r.scale, spark->origin);
-				VectorScale(diffpos, flrand(0.45, 0.5)*FIREWORM_BLASTVEL*worm->r.scale, spark->velocity);
-				spark->velocity[2] += flrand(0.80, 1.0)*FIREWORM_BLASTVEL*worm->r.scale;
+				VectorScale(diffpos, FIREWORM_BLASTRAD* AVG_VEC3T(worm->r.scale), spark->origin);
+				VectorScale(diffpos, flrand(0.45, 0.5)*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale), spark->velocity);
+				spark->velocity[2] += flrand(0.80, 1.0)*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale);
 
 				spark->color.a = 254;
 				spark->d_alpha = flrand(-512.0, -768.0);
-				spark->scale = 16.0*worm->r.scale;
-				spark->d_scale = flrand(8.0, 16.0)*worm->r.scale;
+				spark->scale = 16.0* AVG_VEC3T(worm->r.scale);
+				spark->d_scale = flrand(8.0, 16.0)* AVG_VEC3T(worm->r.scale);
 
 				AddParticleToList(blast, spark);
 
@@ -122,8 +126,8 @@ static qboolean FXFireWormThink(client_entity_t *worm, centity_t *owner)
 
 				spark2->color.a = 254;
 				spark2->d_alpha = flrand(-512.0, -768.0);
-				spark2->scale = 16.0*worm->r.scale;
-				spark2->d_scale = flrand(8.0, 16.0)*worm->r.scale;
+				spark2->scale = 16.0* AVG_VEC3T(worm->r.scale);
+				spark2->d_scale = flrand(8.0, 16.0)* AVG_VEC3T(worm->r.scale);
 
 				AddParticleToList(blast, spark2);
 			}
@@ -134,14 +138,14 @@ static qboolean FXFireWormThink(client_entity_t *worm, centity_t *owner)
 				spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 500);
 
 				VectorSet(spark->velocity,
-							flrand(-0.1*FIREWORM_BLASTVEL*worm->r.scale, 0.1*FIREWORM_BLASTVEL*worm->r.scale),
-							flrand(-0.1*FIREWORM_BLASTVEL*worm->r.scale, 0.1*FIREWORM_BLASTVEL*worm->r.scale),
-							flrand(-0.2*FIREWORM_BLASTVEL*worm->r.scale, 0.2*FIREWORM_BLASTVEL*worm->r.scale));
+							flrand(-0.1*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale), 0.1*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale)),
+							flrand(-0.1*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale), 0.1*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale)),
+							flrand(-0.2*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale), 0.2*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale)));
 				spark->velocity[2] += FIREWORM_BLASTVEL;
 
 				spark->color.a = 254;
 				spark->d_alpha = flrand(-512.0, -768.0);
-				spark->scale = 16.0*worm->r.scale;
+				spark->scale = 16.0* AVG_VEC3T(worm->r.scale);
 				spark->d_scale = flrand(-8.0, -16.0);
 
 				AddParticleToList(blast, spark);
@@ -172,16 +176,16 @@ static qboolean FXFireWormThink(client_entity_t *worm, centity_t *owner)
 		spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 500);
 
 		VectorSet(spark->velocity,
-					flrand(-0.25*FIREWORM_TRAILVEL, 0.25*FIREWORM_TRAILVEL),
-					flrand(-0.25*FIREWORM_TRAILVEL, 0.25*FIREWORM_TRAILVEL),
-					flrand(-0.25*FIREWORM_TRAILVEL, 0.25*FIREWORM_TRAILVEL));
+					flrand(-0.25 * FIREWORM_TRAILVEL, 0.25 * FIREWORM_TRAILVEL),
+					flrand(-0.25 * FIREWORM_TRAILVEL, 0.25 * FIREWORM_TRAILVEL),
+					flrand(-0.25 * FIREWORM_TRAILVEL, 0.25 * FIREWORM_TRAILVEL));
 		VectorMA(spark->velocity, 0.5, worm->velocity, spark->velocity);
 		VectorScale(spark->velocity, -2.0, spark->acceleration);
 
 		spark->color.a = 254;
 		spark->d_alpha = flrand(-512.0, -768.0);
-		spark->scale = 20.0*worm->r.scale;
-		spark->d_scale = flrand(8.0, 16.0)*worm->r.scale;
+		spark->scale = 20.0* AVG_VEC3T(worm->r.scale);
+		spark->d_scale = flrand(8.0, 16.0)* AVG_VEC3T(worm->r.scale);
 
 		AddParticleToList(blast, spark);
 	}
@@ -224,7 +228,7 @@ static void FXFireWaveImpact(client_entity_t *wall)
 		blast->radius = 64.0;
 
 		blast->alpha = 0.95;
-		blast->r.scale = 1.6;
+		VectorSet(blast->r.scale, 1.6, 1.6, 1.6);
 		blast->d_scale = -2.0;
 		blast->d_alpha = -2.0;
 
@@ -235,7 +239,8 @@ static void FXFireWaveImpact(client_entity_t *wall)
 }
 
 
-static qboolean FXFireWaveThink(client_entity_t *wall, centity_t *owner)
+static qboolean
+FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 {
 	client_entity_t *blast, *worm;
 	vec3_t			destpt,	spawnpt, spawnvel, bottom, minmax={0,0,0};
@@ -331,8 +336,9 @@ static qboolean FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		blast->acceleration[2] += -300.0;
 		blast->alpha = 0.01;
 		blast->d_alpha = flrand(4.0, 5.0);
-		blast->r.scale = scale*detailscale;
-		blast->d_scale = scale*detailscale * flrand(-1.0, -1.5);
+		VectorSet(blast->r.scale,
+			scale * detailscale, scale * detailscale, scale * detailscale);
+		blast->d_scale = scale * detailscale * flrand(-1.0, -1.5);
 
 		AddEffect(NULL, blast);
 
@@ -377,14 +383,17 @@ static qboolean FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		blast->acceleration[2] += 300.0;
 		blast->alpha = 0.01;
 		blast->d_alpha = flrand(4.0, 5.0);
-		blast->r.scale = scale*detailscale;
+		VectorSet(blast->r.scale,
+			scale * detailscale, scale * detailscale, scale * detailscale);
 		blast->d_scale = scale*detailscale * flrand(-1.0, -1.5);
 
 		AddEffect(NULL, blast);
 	}
 
 	if (fxi.cl->time >= wall->nextEventTime)
-	{	// Spawn a worm.
+	{
+		// Spawn a worm.
+		float scale;
 
 		// Find a random spot somewhere to have a fire worm hit.
 		VectorMA(wall->r.origin, flrand(-1.0,1.0) * wall->radius, wall->right, destpt);
@@ -414,7 +423,8 @@ static qboolean FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		worm->alpha = 0.95;
 
 		// New worm, but a small one.
-		worm->r.scale = 0.5*detailscale;
+		scale = 0.5*detailscale;
+		VectorSet(worm->r.scale, scale, scale, scale);
 
 		worm->Update = FXFireWormThink;
 		worm->color.c = 0xff0080ff;
@@ -486,6 +496,7 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t			bottom, minmax={0,0,0};
 	trace_t			trace;
 	float			detailscale;
+	float scale;
 
 	switch((int)(r_detail->value))
 	{
@@ -528,7 +539,9 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorCopy(spawnpt, worm->startpos);
 	VectorCopy(origin, worm->endpos);
 	worm->alpha = 0.95;
-	worm->r.scale = 1.5*detailscale;
+	scale = 1.5*detailscale;
+	VectorSet(worm->r.scale, scale, scale, scale);
+
 	worm->Update = FXFireWormThink;
 	worm->color.c = 0xff0080ff;
 	worm->dlight = CE_DLight_new(worm->color, 128.0, 0.0);
@@ -581,7 +594,7 @@ static void FXFireBurstImpact(client_entity_t *wall)
 		blast->radius = 64.0;
 
 		blast->alpha = 0.95;
-		blast->r.scale = 1.2;
+		VectorSet(blast->r.scale, 1.2, 1.2, 1.2);
 		blast->d_scale = -2.0;
 		blast->d_alpha = -2.0;
 
@@ -595,7 +608,8 @@ static void FXFireBurstImpact(client_entity_t *wall)
 
 #define FIREBURST_PART_SPEED		160
 
-static qboolean FXFireBurstThink(client_entity_t *wall, centity_t *owner)
+static qboolean
+FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 {
 	client_entity_t		*burst;
 
@@ -674,6 +688,8 @@ static qboolean FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 		j=1;
 //		for(j = 0; j < 2; j++)
 		{
+			float scale;
+
 			burst = ClientEntity_new(FX_WEAPON_FIREBURST, 0, org, NULL, 1000);
 
 			burst->r.model = wall_models[1];
@@ -689,7 +705,8 @@ static qboolean FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 				burst->velocity[2] *= .5;
 			}
 
-			burst->r.scale = flrand(0.5, 0.75)*detailscale;
+			scale = flrand(0.5, 0.75) * detailscale;
+			VectorSet(burst->r.scale, scale, scale, scale);
 			burst->radius = 20.0;
 			burst->d_scale = 1.0;
 			burst->d_alpha = -2.5;
@@ -745,7 +762,7 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 	wall->Update = FXFireBurstThink;
 	wall->radius = FIREBLAST_RADIUS;
 	wall->color.c = 0xff00afff;
-//	wall->r.scale = 8.0;
+//	VectorSet(wall->r.scale, 8.0, 8.0, 8.0);
 //	wall->d_scale = 56.0;
 	wall->dlight = CE_DLight_new(wall->color, 150.0F, 0.0F);
 	wall->lastThinkTime = fxi.cl->time;
@@ -760,7 +777,7 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 	wall->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	wall->radius = 64.0;
 
-	wall->r.scale = 0.1;
+	VectorSet(wall->r.scale, 0.1, 0.1, 0.1);
 	wall->d_scale = 4.0;
 	wall->alpha = 0.95;
 	wall->d_alpha = -2.0;

@@ -39,6 +39,8 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	while (i--)
 	{
+		float scale;
+
 		TrailEnt=ClientEntity_new(Type, Flags & ~CEF_NO_DRAW, Origin, 0, 500);
 
 		TrailEnt->r.model = armorhit_models[0];
@@ -47,7 +49,8 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		TrailEnt->r.color.c = 0xFFFFFFFF;
-		TrailEnt->r.scale = flrand(1.0, 2.5);
+		scale = flrand(1.0, 2.5);
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 		TrailEnt->alpha = flrand(1.0, 0.75);
 		TrailEnt->d_alpha = -2.0;
 		TrailEnt->d_scale = -1.0;

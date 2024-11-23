@@ -42,7 +42,8 @@ void PreCacheMorph()
 #define	PART_OFF			5.0
 #define NUM_TRAIL_PARTS		6
 
-static qboolean FXMorphMissileThink(client_entity_t *missile, centity_t *owner)
+static qboolean
+FXMorphMissileThink(client_entity_t *missile, centity_t *owner)
 {
 	int					i;
 	client_particle_t	*ce;
@@ -130,7 +131,7 @@ void FXMorphMissile(centity_t *owner, int type, int flags, vec3_t origin)
 		Vec3ScaleAssign(ARROW_SPEED, missile->velocity);
 
 	missile->r.model = morph_models[1];
-	missile->r.scale = 3.0;
+	VectorSet(missile->r.scale, 3.0, 3.0, 3.0);
 	missile->r.angles[0] = -1.57;
 	missile->Update = FXMorphMissileThink;
 	missile->radius = 32.0F;
@@ -173,7 +174,7 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 		Vec3ScaleAssign(ARROW_SPEED, missile->velocity);
 
 		missile->r.model = morph_models[1];
-		missile->r.scale = 3.0;
+		VectorSet(missile->r.scale, 3.0, 3.0, 3.0);
 		missile->r.angles[0] = -1.57;
 		missile->Update = FXMorphMissileThink;
 		missile->radius = 32.0F;
@@ -195,8 +196,8 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 		glow->color.c = MORPH_COL;
 		glow->r.color.c = MORPH_COL;
 		glow->dlight = CE_DLight_new(glow->color, GLOW_INTENSITY, -GLOW_INTENSITY);
- 		glow->d_scale = 1.8;
- 		glow->r.scale = 0.5;
+		glow->d_scale = 1.8;
+		VectorSet(glow->r.scale, 0.5, 0.5, 0.5);
 		glow->d_alpha = -1.0;
 		glow->SpawnInfo = MORPH_GLOW_DUR;
 
@@ -263,12 +264,13 @@ void FXMorphExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		ce->velocity[1]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
 		ce->velocity[2]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
 
-	 	AddParticleToList(dlight, ce);
+		AddParticleToList(dlight, ce);
 	}
 }
 
 // make the feather float down
-static qboolean FXFeatherThink(client_entity_t *self, centity_t *owner)
+static qboolean
+FXFeatherThink(client_entity_t *self, centity_t *owner)
 {
 	float scale;
 
@@ -354,6 +356,8 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 		while (i--)
 		{
+			float scale;
+
 			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN , origin, NULL, 40);
 			feather->radius = 5.0F;
 			feather->r.model = morph_models[irand(2, 3)];
@@ -361,7 +365,8 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 			feather->Update = FXFeatherThink;
 			feather->acceleration[2] = irand(-85, -120);
 			VectorSet(feather->velocity, flrand(-100,100), flrand(-100,100), flrand(50,150));
-			feather->r.scale = flrand(0.5, 1.5);
+			scale = flrand(0.5, 1.5);
+			VectorSet(feather->r.scale, scale, scale, scale);
 			feather->SpawnInfo = 170;
 			feather->yscale = flrand(0.05,0.2);
 			feather->xscale = flrand(-0.2,0.2);
@@ -377,6 +382,8 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		for (i=0; i<20; i++)
 		{
+			float scale;
+
 			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN , origin, NULL, 40);
 			feather->radius = 5.0F;
 			feather->r.model = morph_models[irand(2, 3)];
@@ -384,7 +391,8 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 			feather->Update = FXFeatherThink;
 			feather->acceleration[2] = -85;
 			VectorSet(feather->velocity, flrand(-FEATH_RAD,FEATH_RAD), flrand(-FEATH_RAD,FEATH_RAD), flrand(80,140));
-			feather->r.scale = flrand(0.5, 2.5);
+			scale = flrand(0.5, 2.5);
+			VectorSet(feather->r.scale, scale, scale, scale);
 			feather->SpawnInfo = 170;
 			feather->yscale = flrand(0.1,0.3);
 			feather->xscale = flrand(-0.3,0.3);

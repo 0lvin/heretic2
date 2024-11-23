@@ -58,8 +58,9 @@ qboolean FXBubbleThink(client_entity_t *bubble, centity_t *owner)
 
 static qboolean FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *owner)
 {
-	client_entity_t		*bubble;
+	client_entity_t *bubble;
 	vec3_t origin;
+	float scale;
 
 	VectorCopy(spawner->r.origin, origin);
 
@@ -72,7 +73,8 @@ static qboolean FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *ow
 	bubble = ClientEntity_new(-1, 0, origin, NULL, spawner->SpawnData);
 
 	bubble->r.model = bubbler_models[0];
-	bubble->r.scale = flrand(0.10, 0.20);
+	scale = flrand(0.10, 0.20);
+	VectorSet(bubble->r.scale, scale, scale, scale);
 	bubble->r.flags = RF_TRANSLUCENT;
 
 	bubble->radius = flrand(0.5, 1.5);
@@ -122,7 +124,7 @@ void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	int					time;
 	client_entity_t		*bubble;
-	float up, down;
+	float up, down, scale;
 	vec3_t	dest;
 
 	GetSolidDist(Origin, 1.0, 1000, &up);
@@ -137,7 +139,8 @@ void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	bubble = ClientEntity_new(FX_BUBBLE, Flags, Origin, NULL, time);
 
 	bubble->r.model = bubbler_models[0];
-	bubble->r.scale = flrand(0.025, 0.10);
+	scale = flrand(0.025, 0.10);
+	VectorSet(bubble->r.scale, scale, scale, scale);
 	bubble->r.flags = RF_TRANSLUCENT;
 	bubble->radius = BUBBLE_RADIUS*2;
 	bubble->acceleration[2] = BUBBLE_ACCELERATION;

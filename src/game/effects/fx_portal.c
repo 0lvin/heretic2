@@ -128,7 +128,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		ripple->r.model = portal_models[0];
 		//ripple->r.flags |= RF_TRANS_ADD_ALPHA | RF_TRANS_ADD | RF_TRANSLUCENT | RF_FIXED | RF_TRANS_GHOST;
 		ripple->r.flags |= RF_TRANS_ADD_ALPHA | RF_TRANS_ADD | RF_FIXED | RF_TRANS_GHOST;
-		ripple->r.scale = 0.1f;
+		VectorSet(ripple->r.scale, 0.1f, 0.1f, 0.1f);
 		ripple->d_scale = 1.0f;
 		if(!(self->flags & CEF_NO_DRAW))
 		{
@@ -196,6 +196,8 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 
 		while (i--)
 		{
+			float scale;
+
 			line=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, 0, owner->current.origin, 0, 600);
 
 			line->r.model = portal_models[2];
@@ -204,7 +206,8 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 
 			line->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			line->r.color.c = 0xFFFFFFFF;
-			line->r.scale = flrand(1.0, 2.5);
+			scale = flrand(1.0, 2.5);
+			VectorSet(line->r.scale, scale, scale, scale);
 			line->alpha = flrand(1.0, 0.75);
 			line->d_alpha = -2.0;
 			line->d_scale = -1.0;

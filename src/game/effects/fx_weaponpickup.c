@@ -113,17 +113,25 @@ void FXWeaponPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	VectorCopy(ce->r.origin, ce->origin);
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;
+
 	if(!tag)//sorry bob, just temporary...
-		ce->flags|=CEF_NO_DRAW;
+	{
+		ce->flags |= CEF_NO_DRAW;
+	}
 	else
+	{
 		ce->r.model = weapon_models[tag - 2];
-	ce->r.scale = 0.5;
+	}
+
+	VectorSet(ce->r.scale, 0.5, 0.5, 0.5);
 	ce->radius = 10.0;
 	ce->alpha = 0.8;
 	ce->Update = FXWeaponPickupThink;
 
 	if (tag == ITEM_WEAPON_FIREWALL)
-		ce->r.scale = 1;
+	{
+		VectorSet(ce->r.scale, 1.0, 1.0, 1.0);
+	}
 
 	if (tag == ITEM_WEAPON_PHOENIXBOW)
 		ce->r.skinnum = 1;

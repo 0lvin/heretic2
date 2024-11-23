@@ -53,9 +53,11 @@ extern void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin,
 // FXSphereOfAnnihilationSphereThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, centity_t *Owner)
 {
-	float		detail_scale;
+	float		detail_scale, scale;
+
 	if(r_detail->value == DETAIL_LOW)
 		detail_scale = 0.7;
 	else
@@ -64,11 +66,8 @@ static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, 
 	else
 		detail_scale = 1.0;
 
-	Self->r.scale = (
-		Owner->current.scale[0] +
-		Owner->current.scale[1] +
-		Owner->current.scale[2]
-	) / 3 * detail_scale;
+	scale = AVG_VEC3T(Owner->current.scale) * detail_scale;
+	VectorSet(Self->r.scale, scale, scale, scale);
 
 	return true;
 }
@@ -77,7 +76,8 @@ static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, 
 // FXSphereOfAnnihilationAuraThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	vec3_t			TrailStart,Trail;
 	float			TrailLength,DeltaTrailLength;
@@ -195,11 +195,7 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	SphereThinker->r.model = sphere_models[1];
 	SphereThinker->r.flags |= RF_TRANSLUCENT;
-	SphereThinker->r.scale = (
-		Owner->current.scale[0] +
-		Owner->current.scale[1] +
-		Owner->current.scale[2]
-	) / 3;
+	VectorCopy(Owner->current.scale, SphereThinker->r.scale);
 	SphereThinker->radius = 70.0;
 	SphereThinker->Update = FXSphereOfAnnihilationSphereThink;
 	SphereThinker->AddToView = LinkedEntityUpdatePlacement;
@@ -211,7 +207,8 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 // FXSphereOfAnnihilationGlowballThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	client_entity_t	*Spark;
 	int			dur;
@@ -278,7 +275,8 @@ static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self
 // FXSphereOfAnnihilationGlowballSpawnerThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	client_entity_t	*Glowball;
 	centity_t		*controller;
@@ -445,7 +443,8 @@ void FXSphereOfAnnihilationGlowballs(centity_t *Owner,int Type,int Flags,vec3_t 
 // FXSphereOfAnnihilationSphereExplodeThink -
 // ****************************************************************************
 
-static qboolean FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	float	Frac,
 			Multiplier;
@@ -469,7 +468,7 @@ static qboolean FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s 
 
 		Self->r.angles[1]+=(M_PI/27.0);
 
-		Self->radius=FX_SPHERE_EXPLOSION_BASE_RADIUS*Self->r.scale;
+		Self->radius = FX_SPHERE_EXPLOSION_BASE_RADIUS * AVG_VEC3T(Self->r.scale);
 
 		Multiplier=1.0-Frac/(Self->NoOfAnimFrames-1);
 
@@ -505,18 +504,18 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 		FXClientScorchmark(Origin, Dir);
 	}
 	// Create an expanding ball of blue fire.
-	Explosion=ClientEntity_new(Type,Flags | CEF_ADDITIVE_PARTS,Origin,NULL,50);
+	Explosion = ClientEntity_new(Type,Flags | CEF_ADDITIVE_PARTS,Origin,NULL,50);
 
 	Explosion->r.model = sphere_models[3];
-	Explosion->r.flags=RF_FULLBRIGHT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	Explosion->r.scale=0.01;
-	Explosion->color.c=0xffffffff;
-	Explosion->d_scale=2.5;
-	Explosion->NoOfAnimFrames=(int)Size;
-	Explosion->AnimSpeed=1.0;
-	Explosion->radius=FX_SPHERE_EXPLOSION_BASE_RADIUS*Explosion->r.scale;
-	Explosion->dlight=CE_DLight_new(LightColor,Explosion->radius/0.7,0);
-	Explosion->Update=FXSphereOfAnnihilationSphereExplodeThink;
+	Explosion->r.flags = RF_FULLBRIGHT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	VectorSet(Explosion->r.scale, 0.01, 0.01, 0.01);
+	Explosion->color.c = 0xffffffff;
+	Explosion->d_scale = 2.5;
+	Explosion->NoOfAnimFrames = (int)Size;
+	Explosion->AnimSpeed = 1.0;
+	Explosion->radius = FX_SPHERE_EXPLOSION_BASE_RADIUS * AVG_VEC3T(Explosion->r.scale);
+	Explosion->dlight = CE_DLight_new(LightColor, Explosion->radius/0.7,0);
+	Explosion->Update = FXSphereOfAnnihilationSphereExplodeThink;
 
 	AddEffect(NULL,Explosion);
 
@@ -565,6 +564,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	byte				len2;
 	int					len;
 	int					count;
+	float scale;
 
 	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREPOWER].formatString,dir,&size, &len2);
 
@@ -583,9 +583,9 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	exp1->r.model = sphere_models[6];
 	exp1->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 	exp1->r.frame = 0;
-	exp1->radius=128;
-	exp1->d_alpha=-4.0;
-	exp1->r.scale=.25;
+	exp1->radius = 128;
+	exp1->d_alpha = -4.0;
+	VectorSet(exp1->r.scale, .25, .25, .25);
 	exp1->d_scale = -0.5;
 	if (Flags & CEF_FLAG8)
 	{
@@ -605,7 +605,8 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	beam->r.model = sphere_models[5];
 	beam->r.spriteType = SPRITE_LINE;
 	beam->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	beam->r.scale = (size-3) * 6;
+	scale = (size - 3) * 6;
+	VectorSet(beam->r.scale, scale, scale, scale);
 	beam->radius = 256;
 	beam->alpha = 0.95;
 	beam->d_alpha = -5.0;
@@ -649,7 +650,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 		exp1->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 		exp1->r.frame = 0;
 		exp1->radius=128;
-		exp1->r.scale= 1;
+		VectorSet(exp1->r.scale, 1.0, 1.0, 1.0);
 		exp1->d_scale = 1;
 		exp1->d_alpha = -2.0;
 		AddEffect(NULL, exp1);
@@ -674,12 +675,13 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 // FXSpherePlayerExplodeThink -
 // ****************************************************************************
 
-static qboolean FXSpherePlayerExplodeThink(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXSpherePlayerExplodeThink(struct client_entity_s *self, centity_t *Owner)
 {
 	if (fxi.cl->time > self->nextEventTime)
 	{
 		self->d_alpha = -5.0;
-		self->dlight->d_intensity = -self->radius*2.0;
+		self->dlight->d_intensity = -self->radius * 2.0;
 
 		if (fxi.cl->time > self->nextEventTime + 1000)
 		{
@@ -688,14 +690,15 @@ static qboolean FXSpherePlayerExplodeThink(struct client_entity_s *self, centity
 	}
 	else
 	{
-		self->dlight->intensity=(FX_SPHERE_EXPLOSION_BASE_RADIUS*self->r.scale*1.7);
+		self->dlight->intensity = (FX_SPHERE_EXPLOSION_BASE_RADIUS * AVG_VEC3T(self->r.scale) * 1.7);
 	}
 
 	return true;
 }
 
 
-static qboolean FXSpherePlayerExplodeAddToView(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXSpherePlayerExplodeAddToView(struct client_entity_s *self, centity_t *Owner)
 {
 	self->r.angles[0]+=(M_PI/32.0)*(fxi.cl->time-self->lastThinkTime)/50.0;
 	self->r.angles[1]+=(M_PI/27.0)*(fxi.cl->time-self->lastThinkTime)/50.0;
@@ -706,7 +709,8 @@ static qboolean FXSpherePlayerExplodeAddToView(struct client_entity_s *self, cen
 }
 
 
-static qboolean FXSpherePlayerExplodeGlowballThink(client_entity_t *glowball, centity_t *owner)
+static qboolean
+FXSpherePlayerExplodeGlowballThink(client_entity_t *glowball, centity_t *owner)
 {
 	vec3_t angvect;
 
@@ -727,7 +731,8 @@ static qboolean FXSpherePlayerExplodeGlowballThink(client_entity_t *glowball, ce
 }
 
 
-static qboolean FXSpherePlayerExplodeGlowballTerminate(client_entity_t *glowball, centity_t *owner)
+static qboolean
+FXSpherePlayerExplodeGlowballTerminate(client_entity_t *glowball, centity_t *owner)
 {
 	// Don't instantly delete yourself.  Don't accept any more updates and die out within a second.
 	glowball->d_alpha = -5.0;						// Fade out.
@@ -758,7 +763,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	explosion->r.model = sphere_models[3];
 	explosion->r.flags=RF_FULLBRIGHT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	explosion->r.scale=0.01;
+	VectorSet(explosion->r.scale, 0.01, 0.01, 0.01);
 	explosion->color.c=0xffffffff;
 	explosion->alpha = 1.0;
 	explosion->d_alpha = 0.0;
@@ -789,7 +794,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		glowball->AddToView = FXSpherePlayerExplodeGlowballThink;
 		glowball->alpha = 1.0;
 		glowball->d_alpha = 0.0;
-		glowball->r.scale = 1.0;
+		VectorSet(glowball->r.scale, 1.0, 1.0, 1.0);
 		glowball->d_scale = 3.0;
 		glowball->Update = FXSpherePlayerExplodeGlowballTerminate;
 		glowball->lastThinkTime = glowball->SpawnDelay = fxi.cl->time;
@@ -825,7 +830,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	explosion->r.frame = 1;
 	explosion->radius= 128;
 	explosion->d_alpha= -4.0;
-	explosion->r.scale= 1.0;
+	VectorSet(explosion->r.scale, 1.0, 1.0, 1.0);
 	explosion->d_scale = -4.0;
 
 	AddEffect(NULL, explosion);

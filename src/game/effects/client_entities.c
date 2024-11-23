@@ -105,7 +105,7 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 	AnglesFromDirI(newEnt->direction, newEnt->r.angles);
 //	AnglesFromDirAndUp(newEnt->direction, newEnt->up, newEnt->r.angles);
 
-	newEnt->r.scale = 1.0F;
+	VectorSet(newEnt->r.scale, 1.0F, 1.0F, 1.0F);
 	newEnt->r.color.c = 0xffffffff;
 	newEnt->alpha = 1.0F;
 	newEnt->radius = 1.0F;
@@ -355,7 +355,7 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 
 			current->r.color.a = Q_ftol(current->alpha * 255.0);
 
-			if(current->r.color.a && (current->r.scale > 0.0))
+			if(current->r.color.a && (AVG_VEC3T(current->r.scale) > 0.0))
 			{
 				if(!AddEntityToView(&current->r))
 				{
@@ -388,7 +388,7 @@ void AddEffect(centity_t* owner, client_entity_t* fx)
 		}
 
 		// copy up the scale on a model so it can be culled properly
-		fx->r.cl_scale = fx->r.scale;
+		fx->r.cl_scale = AVG_VEC3T(fx->r.scale);
 	}
 
 #define NUM_TRACES 100		// I really, really hope we don't ever see more than _this
@@ -469,9 +469,11 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 
 			d_size = d_time * current->d_scale;
 
-			current->radius *= (1 + d_size/r->scale);
+			current->radius *= (1 + d_size / AVG_VEC3T(r->scale));
 
-			r->scale += d_size;
+			r->scale[0] += d_size;
+			r->scale[1] += d_size;
+			r->scale[2] += d_size;
 
 			// Apply scale to spritelines as appropriate.
 			if (current->r.spriteType == SPRITE_LINE)
@@ -484,7 +486,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 				}
 				else
 				{	// Otherwise the second scale is copied from the first.
-					r->scale2 = r->scale;
+					r->scale2 = AVG_VEC3T(r->scale);
 				}
 			}
 

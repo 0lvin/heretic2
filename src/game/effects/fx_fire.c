@@ -50,7 +50,7 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 	spawner->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	spawner->radius = 128.0;
 
-	spawner->r.scale = 1.0;
+	VectorSet(spawner->r.scale, 1.0, 1.0, 1.0);
 	spawner->d_scale = -2.0;
 	spawner->alpha = 0.95;
 	spawner->d_alpha = -2.0;
@@ -63,15 +63,15 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2) | PFL_NEARCULL, spawner->color, 1000);
 
-		radius = spawner->r.scale * FLARE_SPAWN_RADIUS;
+		radius = AVG_VEC3T(spawner->r.scale) * FLARE_SPAWN_RADIUS;
 		VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-radius, -radius));
 
-		flame->scale = FLARE_SCALE * spawner->r.scale;
+		flame->scale = FLARE_SCALE * AVG_VEC3T(spawner->r.scale);
 		VectorSet(flame->velocity,
 						flrand(-FLARE_SPEED, FLARE_SPEED),
 						flrand(-FLARE_SPEED, FLARE_SPEED),
 						flrand(-FLARE_SPEED, FLARE_SPEED));
-		flame->acceleration[2] = FLARE_ACCEL * spawner->r.scale;
+		flame->acceleration[2] = FLARE_ACCEL * AVG_VEC3T(spawner->r.scale);
 		flame->d_scale = flrand(-20.0, -10.0);
 		flame->d_alpha = flrand(-320.0, -256.0);
 
@@ -104,12 +104,12 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 
 			flame = ClientParticle_new(PART_32x32_STEAM | PFL_NEARCULL, color, 2000);
 
-			radius = spawner->r.scale * FIRE_SPAWN_RADIUS;
-			VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), 8 * spawner->r.scale);
+			radius = AVG_VEC3T(spawner->r.scale) * FIRE_SPAWN_RADIUS;
+			VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), 8 * AVG_VEC3T(spawner->r.scale));
 
-			flame->scale = (FIRE_SCALE * spawner->r.scale) / 2;
+			flame->scale = (FIRE_SCALE * AVG_VEC3T(spawner->r.scale)) / 2;
 			VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
-			flame->acceleration[2] = FIRE_ACCEL * spawner->r.scale;
+			flame->acceleration[2] = FIRE_ACCEL * AVG_VEC3T(spawner->r.scale);
 			flame->d_scale = flrand(15.0, 20.0);
 			flame->d_alpha = flrand(-100.0, -50.0);
 			flame->duration = (color.a * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
@@ -120,12 +120,12 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 		{
 			flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2) | PFL_NEARCULL, spawner->color, 2000);
 
-			radius = spawner->r.scale * FIRE_SPAWN_RADIUS;
-			VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-16.0F, -8.0F) * spawner->r.scale);
+			radius = AVG_VEC3T(spawner->r.scale) * FIRE_SPAWN_RADIUS;
+			VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-16.0F, -8.0F) * AVG_VEC3T(spawner->r.scale));
 
-			flame->scale = FIRE_SCALE * spawner->r.scale;
+			flame->scale = FIRE_SCALE * AVG_VEC3T(spawner->r.scale);
 			VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
-			flame->acceleration[2] = FIRE_ACCEL * spawner->r.scale;
+			flame->acceleration[2] = FIRE_ACCEL * AVG_VEC3T(spawner->r.scale);
 			flame->d_scale = flrand(-10.0, -5.0);
 			flame->d_alpha = flrand(-200.0, -160.0);
 			flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
@@ -143,13 +143,14 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 
 void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
 {
-	client_entity_t		*spawner;
-	byte				scale;
+	client_entity_t *spawner;
+	byte scale;
 
 	spawner = ClientEntity_new(type, flags, origin, NULL, 17);
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_FIRE].formatString, &scale);
-	spawner->r.scale = scale / 32.0;
+	VectorSet(spawner->r.scale,
+		scale / 32.0, scale / 32.0, scale / 32.0);
 
 	spawner->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 	spawner->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_CULLED | CEF_CHECK_OWNER | CEF_VIEWSTATUSCHANGED;
@@ -196,13 +197,13 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 
 				flame = ClientParticle_new(PART_32x32_STEAM | PFL_NEARCULL, color, 2000);
 
-				radius = spawner->r.scale;
-				VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-0.25, 0.75) * spawner->r.scale);
+				radius = AVG_VEC3T(spawner->r.scale);
+				VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-0.25, 0.75) * AVG_VEC3T(spawner->r.scale));
 				VectorAdd(flame->origin, spawner->origin, flame->origin);
 
-				flame->scale = spawner->r.scale*2.0;
+				flame->scale = AVG_VEC3T(spawner->r.scale) * 2.0;
 				VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
-				flame->acceleration[2] = FIRE_ACCEL * spawner->r.scale;
+				flame->acceleration[2] = FIRE_ACCEL * AVG_VEC3T(spawner->r.scale);
 				flame->d_scale = flrand(15.0, 20.0);
 				flame->d_alpha = flrand(-100.0, -50.0);
 				flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
@@ -213,7 +214,7 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 			{
 				flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2) | PFL_NEARCULL, spawner->color, 1000);
 
-				radius = spawner->r.scale ;
+				radius = AVG_VEC3T(spawner->r.scale);
 				VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-0.25, 0.75)*radius);
 				// If dead, then move the flame down a tad.
 				if(owner->current.effects&EF_DISABLE_EXTRA_FX)
@@ -222,9 +223,9 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 				}
 				VectorAdd(flame->origin, spawner->origin, flame->origin);
 
-				flame->scale = spawner->r.scale*2.0;
+				flame->scale = AVG_VEC3T(spawner->r.scale) *2.0;
 				VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(32.0, 48.0));
-				flame->acceleration[2] = 2.0 * spawner->r.scale;
+				flame->acceleration[2] = 2.0 * AVG_VEC3T(spawner->r.scale);
 				flame->d_scale = flrand(-20.0, -10.0);
 				flame->d_alpha = flrand(-400.0, -320.0);
 				flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
@@ -277,8 +278,11 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 	{
 		flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2) | PFL_NEARCULL, spawner->color, 1000);
 
-		radius = spawner->r.scale * FIRE_SPAWN_RADIUS;
-		VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-8.0F, 0.0F) * spawner->r.scale);
+		radius = AVG_VEC3T(spawner->r.scale) * FIRE_SPAWN_RADIUS;
+		VectorSet(flame->origin,
+			flrand(-radius, radius),
+			flrand(-radius, radius),
+			flrand(-8.0F, 0.0F) * AVG_VEC3T(spawner->r.scale));
 		// If dead, then move the flame down a tad.
 		if(owner->current.effects&EF_DISABLE_EXTRA_FX)
 		{
@@ -286,9 +290,9 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 		}
 		VectorAdd(flame->origin, spawner->origin, flame->origin);
 
-		flame->scale = FIRE_ENT_SCALE * spawner->r.scale;
+		flame->scale = FIRE_ENT_SCALE * AVG_VEC3T(spawner->r.scale);
 		VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
-		flame->acceleration[2] = FIRE_ACCEL * spawner->r.scale;
+		flame->acceleration[2] = FIRE_ACCEL * AVG_VEC3T(spawner->r.scale);
 		flame->d_scale = flrand(-10.0, -5.0);
 		flame->d_alpha = flrand(-200.0, -160.0);
 		flame->duration = (255.0 * 1000.0) / -flame->d_alpha;		// time taken to reach zero alpha
@@ -303,16 +307,18 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 //FIXME: have it constantly check a flag so it can go out if under water!
 void FXFireOnEntity(centity_t *owner, int type, int flags, vec3_t origin)
 {
-	client_entity_t		*spawner;
-	byte				scale;
-	byte				lifetime;
-	byte				style;
+	client_entity_t *spawner;
+	byte scale;
+	float scalef;
+	byte lifetime;
+	byte style;
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_FIRE_ON_ENTITY].formatString, &scale, &lifetime, &style);
 
 	spawner = ClientEntity_new(type, flags, origin, NULL, 17);
 
-	spawner->r.scale = sqrt((float)scale)*0.5;
+	scalef = sqrt((float)scale) * 0.5;
+	VectorSet(spawner->r.scale, scalef, scalef, scalef);
 	spawner->nextEventTime = fxi.cl->time + (100*(int)lifetime);		// How long to last.  Lifetime was in 10th secs.
 
 	spawner->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;

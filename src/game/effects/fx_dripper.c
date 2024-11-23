@@ -41,7 +41,7 @@ qboolean FXDripThinkSolid(client_entity_t *drip, centity_t *owner)
 	mist = ClientEntity_new(-1, 0, origin, NULL, 500);
 
 	mist->r.model = drip_models[0];
-	mist->r.scale = 0.5F;
+	VectorSet(mist->r.scale, 0.5, 0.5, 0.5);
 	mist->r.flags = RF_TRANSLUCENT;
 
 	mist->alpha = 0.4F;
@@ -72,7 +72,7 @@ qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
 	mist = ClientEntity_new(-1, 0, origin, NULL, 500);
 
 	mist->r.model = drip_models[0];
-	mist->r.scale = 0.5F;
+	VectorSet(mist->r.scale, 0.5, 0.5, 0.5);
 	mist->r.flags = RF_TRANSLUCENT;
 
 	mist->d_scale = -2.0;
@@ -105,7 +105,7 @@ qboolean FXDripThinkLava(client_entity_t *drip, centity_t *owner)
 	mist = ClientEntity_new(-1, 0, origin, NULL, 500);
 
 	mist->r.model = drip_models[1];
-	mist->r.scale = 0.5F;
+	VectorSet(mist->r.scale, 0.5, 0.5, 0.5);
 	mist->r.flags = RF_TRANSLUCENT;
 
 	mist->alpha = 0.4F;
@@ -134,7 +134,7 @@ static qboolean FXDripperParticleSpawner(client_entity_t *spawner, centity_t *ow
 	drip = ClientEntity_new(-1, 0, spawner->r.origin, NULL, spawner->SpawnDelay);
 
 	drip->r.model = drip_models[2];
-	drip->r.scale = 0.1F;
+	VectorSet(drip->r.scale, 0.1, 0.1, 0.1);
 	drip->r.flags = RF_TRANSLUCENT | RF_ALPHA_TEXTURE;
 	drip->r.frame = spawner->r.frame;
 

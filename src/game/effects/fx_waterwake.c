@@ -54,7 +54,7 @@ void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 	self->r.origin[1]=CreatorClientEntity->origin[1];
 	self->r.origin[0]=CreatorClientEntity->origin[0];
 	self->alpha=0.7;
-	self->r.scale=0.3;
+	VectorSet(self->r.scale, 0.3, 0.3, 0.3);;
 	self->r.flags |= RF_FIXED|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 	self->r.angles[YAW]=YawAngle;
 

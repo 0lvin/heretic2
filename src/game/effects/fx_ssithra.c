@@ -43,7 +43,8 @@ enum
 // FXSsithraArrowTrailThink
 // ************************************************************************************************
 
-static qboolean FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t			accel_dir;
@@ -65,15 +66,21 @@ static qboolean FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t
 		VectorNormalize(accel_dir);
 
 		if (self->flags & CEF_FLAG7)
-		{//powered
+		{
+			float scale;
+
+			//powered
 			TrailEnt->r.flags |= (RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA);
 			TrailEnt->r.model = arrow_models[1];
-			TrailEnt->r.scale = (ARROW_SCALE + flrand(0.0, 0.05));
+			scale = (ARROW_SCALE + flrand(0.0, 0.05));
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-8.0, 8.0));
 			VectorScale(accel_dir, flrand(-100.0, -400.0), TrailEnt->velocity);
 		}
 		else
 		{
+			float scale;
+
 			//make _this use tinting instead of darken?
 			TrailEnt->r.flags |= RF_TRANSLUCENT;//darken
 			TrailEnt->r.color.r = 75;
@@ -81,7 +88,8 @@ static qboolean FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t
 			TrailEnt->r.color.b = 100;
 			TrailEnt->r.color.a = 100;
 			TrailEnt->r.model = arrow_models[0];
-			TrailEnt->r.scale = ARROW_SCALE + flrand(-0.2, 0.2);
+			scale = ARROW_SCALE + flrand(-0.2, 0.2);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
 			VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
 		}
@@ -115,7 +123,7 @@ void FXDoSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin, vec3
 	missile->r.flags |= RF_GLOW;
 	missile->r.model = arrow_models[2];
 	missile->r.skinnum = 0;
-	missile->r.scale = 1.0;
+	VectorSet(missile->r.scale, 1.0, 1.0, 1.0);
 	LightColor.c = 0xff2040ff;		// Orange light
 	lightsize = 120.0;
 
@@ -145,7 +153,7 @@ void FXDoSsithraArrow2(centity_t *owner, int type, int flags, vec3_t origin, vec
 	missile->flags |= CEF_FLAG7;
 	missile->r.model = arrow_models[2];
 	missile->r.skinnum = 0;
-	missile->r.scale = 1.5;
+	VectorSet(missile->r.scale, 1.5, 1.5, 1.5);
 	LightColor.c = 0xff0000ff;		// Red light
 	lightsize = 160.0;
 
@@ -186,14 +194,17 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 
 	while(i--)
 	{
+		float scale;
+
 		if (!i)
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
 		SmokePuff->r.model = arrow_models[0];
-		SmokePuff->r.scale=flrand(0.8,1.6);
-		SmokePuff->d_scale=-2.0;
+		scale = flrand(0.8, 1.6);
+		VectorSet(SmokePuff->r.scale, scale, scale, scale);
+		SmokePuff->d_scale = -2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 64.0);
 		SmokePuff->acceleration[0] = flrand(-200, 200);
@@ -241,14 +252,17 @@ void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3
 
 	while(i--)
 	{
+		float scale;
+
 		if (!i)
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
 		SmokePuff->r.model = arrow_models[1];
-		SmokePuff->r.scale=flrand(1.2,2.0);
-		SmokePuff->d_scale=-2.0;
+		scale = flrand(1.2,2.0);
+		VectorSet(SmokePuff->r.scale, scale, scale, scale);
+		SmokePuff->d_scale = -2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 200);
 		SmokePuff->velocity[2] += 100.0;

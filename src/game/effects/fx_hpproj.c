@@ -90,7 +90,8 @@ void PreCacheHPMissile()
 
 #define PRIESTESS_TELEPORT_LINEHEIGHT 764
 
-static qboolean FXHPTeleportLineThink(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPTeleportLineThink(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t		*effect;
 	client_particle_t	*p;
@@ -109,11 +110,15 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self, centity_t *O
 
 		self->SpawnInfo = 1;
 		self->d_alpha = -1.0;
-		self->r.scale += 16;
+		self->r.scale[0] += 16;
+		self->r.scale[1] += 16;
+		self->r.scale[2] += 16;
 	}
 	else
 	{
-		self->r.scale += 1.5;
+		self->r.scale[0] += 1.5;
+		self->r.scale[1] += 1.5;
+		self->r.scale[2] += 1.5;
 
 		//Spawn some particles and some rock chunks
 
@@ -157,6 +162,8 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self, centity_t *O
 
 		while(i--)
 		{
+			float scale;
+
 			effect=ClientEntity_new(  FX_HP_MISSILE,
 									  CEF_DONT_LINK,
 									  self->origin,
@@ -165,7 +172,8 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self, centity_t *O
 
 			effect->r.model = hpproj_models[irand(8,9)];
 
-			effect->r.scale = flrand(0.1, 0.5);
+			scale = flrand(0.1, 0.5);
+			VectorSet(effect->r.scale, scale, scale, scale);
 
 			VectorCopy(self->r.origin, effect->r.origin);
 			effect->r.origin[0] += irand(-32,32);
@@ -176,7 +184,7 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self, centity_t *O
 
 			effect->acceleration[0] = irand(-150, 150);
 			effect->acceleration[1] = irand(-150, 150);
-			effect->acceleration[2] = irand( 300, 600 - ( self->r.scale * 100) );
+			effect->acceleration[2] = irand( 300, 600 - (AVG_VEC3T(self->r.scale) * 100) );
 
 			effect->d_alpha = -0.25;
 
@@ -189,15 +197,18 @@ static qboolean FXHPTeleportLineThink(struct client_entity_s *self, centity_t *O
 	return true;
 }
 
-static qboolean FXHPTeleportLineThink2(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPTeleportLineThink2(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->alpha <= 0.0f)
 		return false;
 
-	if (self->r.scale <= 0.0f)
+	if (AVG_VEC3T(self->r.scale) <= 0.0f)
 		return false;
 
-	self->r.scale -= 4;
+	self->r.scale[0] -= 4;
+	self->r.scale[1] -= 4;
+	self->r.scale[2] -= 4;
 
 	return true;
 }
@@ -206,7 +217,8 @@ static qboolean FXHPTeleportLineThink2(struct client_entity_s *self, centity_t *
 	FXHPMissileSpawnerThink
 -----------------------------------------------*/
 
-static qboolean FXHPMissileSpawnerThink(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPMissileSpawnerThink(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -226,7 +238,7 @@ static qboolean FXHPMissileSpawnerThink(struct client_entity_s *self, centity_t 
 
 	TrailEnt->r.color.c = 0xFFFFFFFF;
 	TrailEnt->alpha = 1.0;
-	TrailEnt->r.scale = 0.1;
+	VectorSet(TrailEnt->r.scale, 0.1, 0.1, 0.1);
 
 	TrailEnt->d_alpha = -2.5;
 	TrailEnt->d_scale = 4.0;
@@ -246,7 +258,8 @@ static qboolean FXHPMissileSpawnerThink(struct client_entity_s *self, centity_t 
 	FXHPMissileSpawnerThink2
 -----------------------------------------------*/
 
-static qboolean FXHPMissileSpawnerThink2(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPMissileSpawnerThink2(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -270,7 +283,7 @@ static qboolean FXHPMissileSpawnerThink2(struct client_entity_s *self, centity_t
 	TrailEnt->r.color.a = 255;
 
 	TrailEnt->alpha = 0.5;
-	TrailEnt->r.scale = 0.25;
+	VectorSet(TrailEnt->r.scale, 0.25, 0.25, 0.25);
 
 	TrailEnt->d_alpha = -2.5;
 	TrailEnt->d_scale = 2.0;
@@ -290,9 +303,10 @@ static qboolean FXHPMissileSpawnerThink2(struct client_entity_s *self, centity_t
 	FXHPHaloDie
 -----------------------------------------------*/
 
-static qboolean FXHPHaloDie(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPHaloDie(struct client_entity_s *self, centity_t *Owner)
 {
-	if (self->r.scale <= 0.0f)
+	if (AVG_VEC3T(self->r.scale) <= 0.0f)
 		return false;
 
 	if (self->alpha <= 0.0f)
@@ -304,7 +318,8 @@ static qboolean FXHPHaloDie(struct client_entity_s *self, centity_t *Owner)
 	FXHPMissileSpawnerThink3
 -----------------------------------------------*/
 
-static qboolean FXHPMissileSpawnerThink3(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPMissileSpawnerThink3(struct client_entity_s *self, centity_t *Owner)
 {
 	if (self->LifeTime < fxi.cl->time)
 	{
@@ -316,11 +331,13 @@ static qboolean FXHPMissileSpawnerThink3(struct client_entity_s *self, centity_t
 
 	if (self->d_scale == 0.0)
 	{
-		self->r.scale = flrand(1.75, 2.25);
+		float scale = flrand(1.75, 2.25);
+
+		VectorSet(self->r.scale, scale, scale, scale);
 		return true;
 	}
 
-	if (self->r.scale >= 2)
+	if (AVG_VEC3T(self->r.scale) >= 2)
 		self->d_scale = 0.0;
 
 	if (self->alpha > 0.5)
@@ -336,12 +353,17 @@ static qboolean FXHPMissileSpawnerThink3(struct client_entity_s *self, centity_t
 	FXHPTrailThink
 -----------------------------------------------*/
 
-static qboolean FXHPTrailThink(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPTrailThink(struct client_entity_s *self, centity_t *Owner)
 {
-	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
+	if (self->alpha <= 0.1 || AVG_VEC3T(self->r.scale) <= 0.0)
+	{
 		return false;
+	}
 
-	self->r.scale -= 0.1;
+	self->r.scale[0] -= 0.1;
+	self->r.scale[1] -= 0.1;
+	self->r.scale[2] -= 0.1;
 
 	return true;
 }
@@ -350,12 +372,17 @@ static qboolean FXHPTrailThink(struct client_entity_s *self, centity_t *Owner)
 	FXHPTrailThink2
 -----------------------------------------------*/
 
-static qboolean FXHPTrailThink2(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPTrailThink2(struct client_entity_s *self, centity_t *Owner)
 {
-	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
+	if (self->alpha <= 0.1 || AVG_VEC3T(self->r.scale) <= 0.0)
+	{
 		return false;
+	}
 
-	self->r.scale -= 0.15;
+	self->r.scale[0] -= 0.15;
+	self->r.scale[1] -= 0.15;
+	self->r.scale[2] -= 0.15;
 
 	return true;
 }
@@ -364,12 +391,17 @@ static qboolean FXHPTrailThink2(struct client_entity_s *self, centity_t *Owner)
 	FXHPTrailThink3
 -----------------------------------------------*/
 
-static qboolean FXHPTrailThink3(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPTrailThink3(struct client_entity_s *self, centity_t *Owner)
 {
-	if (self->alpha <= 0.1 || self->r.scale <= 0.0)
+	if (self->alpha <= 0.1 || AVG_VEC3T(self->r.scale) <= 0.0)
+	{
 		return false;
+	}
 
-	self->r.scale -= 0.25;
+	self->r.scale[0] -= 0.25;
+	self->r.scale[1] -= 0.25;
+	self->r.scale[2] -= 0.25;
 
 	return true;
 }
@@ -378,9 +410,13 @@ static qboolean FXHPTrailThink3(struct client_entity_s *self, centity_t *Owner)
 	FXHPBugThink
 -----------------------------------------------*/
 
-static qboolean FXHPBugThink(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPBugThink(struct client_entity_s *self, centity_t *Owner)
 {
-	self->r.scale = flrand(0.2, 0.4);
+	float scale;
+
+	scale = flrand(0.2, 0.4);
+	VectorSet(self->r.scale, scale, scale, scale);
 	self->alpha = flrand(0.3, 0.5);
 
 	return true;
@@ -390,11 +426,14 @@ static qboolean FXHPBugThink(struct client_entity_s *self, centity_t *Owner)
 	FXHPMissileTrailThink
 -----------------------------------------------*/
 
-static qboolean FXHPMissileTrailThink(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPMissileTrailThink(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
+	float scale;
 
-	self->r.scale = flrand(0.35, 0.65);
+	scale = flrand(0.35, 0.65);
+	VectorSet(self->r.scale, scale, scale, scale);
 
 	TrailEnt=ClientEntity_new(FX_HP_MISSILE,
 							  CEF_DONT_LINK,
@@ -411,9 +450,9 @@ static qboolean FXHPMissileTrailThink(struct client_entity_s *self, centity_t *O
 
  	TrailEnt->r.spriteType = SPRITE_LINE;
 	TrailEnt->r.tile = 1;
-	TrailEnt->r.scale = 2.5;
+	VectorSet(TrailEnt->r.scale, 2.5, 2.5, 2.5);
 	TrailEnt->alpha = 1.0;
-	TrailEnt->r.scale = 1.0;
+	VectorSet(TrailEnt->r.scale, 1.0, 1.0, 1.0);
 
 	VectorCopy( self->startpos, TrailEnt->r.startpos );
 	VectorCopy( Owner->origin , TrailEnt->r.endpos );
@@ -433,11 +472,15 @@ static qboolean FXHPMissileTrailThink(struct client_entity_s *self, centity_t *O
 	FXHPMissileTrailThink2
 -----------------------------------------------*/
 
-static qboolean FXHPMissileTrailThink2(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPMissileTrailThink2(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
+	float scale;
 
-	self->r.scale = flrand(0.35, 0.55);
+	scale = flrand(0.35, 0.55);
+	VectorSet(self->r.scale, scale, scale, scale);
+
 
 	TrailEnt=ClientEntity_new(FX_HP_MISSILE,
 							  CEF_DONT_LINK,
@@ -454,9 +497,9 @@ static qboolean FXHPMissileTrailThink2(struct client_entity_s *self, centity_t *
 
 	TrailEnt->r.spriteType = SPRITE_LINE;
 	TrailEnt->r.tile = 1;
-	TrailEnt->r.scale = 2;
+	VectorSet(TrailEnt->r.scale, 2.0, 2.0, 2.0);
 	TrailEnt->alpha = 1.0;
-	TrailEnt->r.scale = 1.0;
+	VectorSet(TrailEnt->r.scale, 1.0, 1.0, 1.0);
 
 	VectorCopy( self->startpos, TrailEnt->r.startpos );
 	VectorCopy( Owner->origin , TrailEnt->r.endpos );
@@ -476,7 +519,8 @@ static qboolean FXHPMissileTrailThink2(struct client_entity_s *self, centity_t *
 	FXHPMissileTrailThink3
 -----------------------------------------------*/
 
-static qboolean FXHPMissileTrailThink3(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHPMissileTrailThink3(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
 
@@ -495,9 +539,9 @@ static qboolean FXHPMissileTrailThink3(struct client_entity_s *self, centity_t *
 
 	TrailEnt->r.spriteType = SPRITE_LINE;
 	TrailEnt->r.tile = 1;
-	TrailEnt->r.scale = 2.0;
+	VectorSet(TrailEnt->r.scale, 2.0, 2.0, 2.0);
 	TrailEnt->alpha = 1.0;
-	TrailEnt->r.scale = 1.0;
+	VectorSet(TrailEnt->r.scale, 1.0, 1.0, 1.0);
 
 	VectorCopy( self->startpos, TrailEnt->r.startpos );
 	VectorCopy( Owner->origin , TrailEnt->r.endpos );
@@ -529,13 +573,16 @@ void FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
 
 	while(i--)
 	{
+		float scale;
+
 		if (!i)
 			SmokePuff=ClientEntity_new(FX_HP_MISSILE,0,Owner->origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(FX_HP_MISSILE,0,Owner->origin,NULL,1500);
 
 		SmokePuff->r.model = hpproj_models[3];
-		SmokePuff->r.scale=flrand(0.5,1.0);
+		scale = flrand(0.5, 1.0);
+		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale = flrand(-1.0, -1.5);
 
 		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -571,13 +618,16 @@ void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 
 	while(i--)
 	{
+		float scale;
+
 		if (!i)
 			SmokePuff=ClientEntity_new(FX_HP_MISSILE,0,Owner->origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(FX_HP_MISSILE,0,Owner->origin,NULL,1500);
 
 		SmokePuff->r.model = hpproj_models[0];
-		SmokePuff->r.scale=flrand(0.5,1.0);
+		scale = flrand(0.5,1.0);
+		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale=-2.0;
 
 		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -611,14 +661,15 @@ void FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	Trail->r.model = hpproj_models[3];
 	Trail->r.color.c = 0xffff5555;
 	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	Trail->r.scale = 0.1;
+	VectorSet(Trail->r.scale, 0.1, 0.1, 0.1);
 	Trail->d_scale = 2.0;
 	Trail->d_alpha = -2.0;
 
 	AddEffect(NULL,Trail);
 }
 
-static qboolean PriestessLinkedEntityUpdatePlacement(struct client_entity_s *self, centity_t *owner)
+static qboolean
+PriestessLinkedEntityUpdatePlacement(struct client_entity_s *self, centity_t *owner)
 {
 	LinkedEntityUpdatePlacement(self, owner);
 	VectorCopy(self->r.origin, self->r.startpos);
@@ -637,7 +688,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	paletteRGBA_t	BugColor = {{{229, 250, 88, 255}}};
 	paletteRGBA_t	BrightColor = {{{255, 255, 255, 255}}};
 	vec3_t			vel, boltDir, boltAng, oldPos, ang, huntdir;
-	float			boltStep, width, alpha;
+	float			boltStep, width, alpha, scale;
 	byte			effectType;
 	int				bends, i, bolts, j;
 
@@ -661,7 +712,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.model = hpproj_models[3];
 		Trail->r.color.c = 0x00999999;
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		Trail->r.scale = 0.5;
+		VectorSet(Trail->r.scale, 0.5, 0.5, 0.5);
 		Trail->AddToView = PriestessLinkedEntityUpdatePlacement;
 
 		VectorCopy(Origin, Trail->startpos);
@@ -686,7 +737,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.model = hpproj_models[3];
 		Trail->r.color.c = 0x00999999;
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		Trail->r.scale = 0.45;
+		VectorSet(Trail->r.scale, 0.45, 0.45, 0.45);
 		Trail->AddToView = PriestessLinkedEntityUpdatePlacement;
 
 		VectorCopy(Owner->origin, Trail->startpos);
@@ -714,7 +765,8 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.angles[PITCH] -= ANGLE_90;
 
 		Trail->r.color.c = 0xFF999999;
-		Trail->r.scale = flrand(0.3, 0.4);
+		scale = flrand(0.3, 0.4);
+		VectorSet(Trail->r.scale, scale, scale, scale);
 		Trail->AddToView = LinkedEntityUpdatePlacement;
 
 		VectorCopy(Owner->origin, Trail->startpos);
@@ -740,7 +792,8 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-		Trail->r.scale = flrand(0.3, 0.4);
+		scale = flrand(0.3, 0.4);
+		VectorSet(Trail->r.scale, scale, scale, scale);
 
 		Trail->AddToView = LinkedEntityUpdatePlacement;
 
@@ -759,6 +812,8 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		while (i--)
 		{
+			float scale;
+
 			Trail = ClientEntity_new( Type, CEF_DONT_LINK, Origin, NULL, 2000);
 
 			Trail->radius = 500;
@@ -767,9 +822,10 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 			Trail->r.spriteType = SPRITE_LINE;
 			Trail->r.tile = 1;
-			Trail->r.scale = irand(1.0, 2.0);
+			scale = irand(1.0, 2.0);
+			VectorSet(Trail->r.scale, scale, scale, scale);
 			Trail->alpha = 1.0;
-			Trail->r.scale = 1.0;
+			VectorSet(Trail->r.scale, 1.0, 1.0, 1.0);
 
 			ang[PITCH] = irand( 0, 720 );
 			ang[YAW]   = irand( 0, 720 );
@@ -830,9 +886,9 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 				Trail->r.model = hpproj_models[10];
 
 				Trail->r.spriteType = SPRITE_LINE;
-				Trail->r.scale = width;
+				VectorSet(Trail->r.scale, width, width, width);
 				Trail->alpha = 1.0;
-				Trail->r.scale = 1.0;
+				VectorSet(Trail->r.scale, 1.0, 1.0, 1.0);
 
 				VectorCopy(vel, Trail->r.origin);
 
@@ -934,7 +990,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 		Trail->r.model = hpproj_models[4];
-		Trail->r.scale = 0.1;
+		VectorSet(Trail->r.scale, 0.1, 0.1, 0.1);
 		Trail->alpha = 1.0;
 		Trail->d_alpha = -1.0;
 		Trail->d_scale = 4.0;
@@ -952,7 +1008,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->Update=FXHPMissileSpawnerThink3;
 
 		Trail->r.model = hpproj_models[4];
-		Trail->r.scale = 0.1;
+		VectorSet(Trail->r.scale, 0.1, 0.1, 0.1);
 		Trail->alpha = 0.1;
 		Trail->d_alpha = 0.5;
 		Trail->d_scale = 2.0;
@@ -985,9 +1041,9 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.model = hpproj_models[7];
 		Trail->r.spriteType = SPRITE_LINE;
 		Trail->r.tile = 1.0;
-		Trail->r.scale = 2;
+		VectorSet(Trail->r.scale, 2.0, 2.0, 2.0);
 		Trail->alpha = 1.0;
-		Trail->r.scale = 1.0;
+		VectorSet(Trail->r.scale, 1.0, 1.0, 1.0);
 
 		VectorCopy( Origin, Trail->r.startpos );
 		Trail->r.startpos[2] -= 128;
@@ -1016,9 +1072,9 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->r.model = hpproj_models[7];
 		Trail->r.spriteType = SPRITE_LINE;
 		Trail->r.tile = 1.0;
-		Trail->r.scale = 64;
+		VectorSet(Trail->r.scale, 64, 64, 64);
 		Trail->alpha = 1.0;
-		Trail->r.scale = 1.0;
+		VectorSet(Trail->r.scale, 1.0, 1.0, 1.0);
 
 		VectorCopy( Origin, Trail->r.startpos );
 		Trail->r.startpos[2] -= 128;
@@ -1085,7 +1141,7 @@ qboolean HPStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 	Trail->r.model = hpstaff_models[0];
-	Trail->r.scale = 0.75;
+	VectorSet(Trail->r.scale, 0.75, 0.75, 0.75);
 	Trail->alpha = 0.5;
 	Trail->d_alpha = -2.0;
 	Trail->d_scale = -2.0;

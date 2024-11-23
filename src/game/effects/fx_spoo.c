@@ -71,7 +71,7 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
 
 		VectorSet(TrailEnt->velocity, flrand(-64.0F, 64.0F), flrand(-64.0F, 64.0F), -64.0F);
 
-		TrailEnt->r.scale = 0.65;
+		VectorSet(TrailEnt->r.scale, 0.65, 0.65, 0.65);
 		TrailEnt->alpha = 1.0f;
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_FULLBRIGHT;
 		TrailEnt->d_scale = flrand(-4.0, -3.5);
@@ -114,6 +114,8 @@ void FXSpooSplat(centity_t *owner,int type,int Flags,vec3_t origin)
 
 	while (count--)
 	{
+		float scale;
+
 		TrailEnt=ClientEntity_new(FX_SPOO,
 								  0,
 								  origin,
@@ -128,7 +130,8 @@ void FXSpooSplat(centity_t *owner,int type,int Flags,vec3_t origin)
 
 		VectorSet(TrailEnt->acceleration, 0, 0, -128);
 
-		TrailEnt->r.scale = flrand(0.75, 1.0);
+		scale = flrand(0.75, 1.0);
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 		TrailEnt->alpha=1.0;
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT;

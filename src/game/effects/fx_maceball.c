@@ -45,11 +45,12 @@ void PreCacheMaceball()
 #define BALL_GROWTH		0.05
 #define BALL_MAX		(6.0 * BALL_RADIUS)
 
-static qboolean FXMaceballThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXMaceballThink(struct client_entity_s *self, centity_t *owner)
 {
 	self->dlight->intensity = 150.0 + (cos(fxi.cl->time * 0.01) * 20.0);
 	self->r.angles[2] += ANGLE_30;
-	if(self->r.scale >= BALL_MAX)
+	if (AVG_VEC3T(self->r.scale) >= BALL_MAX)
 	{
 		self->d_scale = 0.0;
 	}
@@ -63,7 +64,7 @@ void FXMaceball(centity_t *owner, int type, int flags, vec3_t origin)
 	glow = ClientEntity_new(type, flags, origin, 0, 100);
 
 	glow->r.model = mace_models[0];
-	glow->r.scale = BALL_RADIUS;
+	VectorSet(glow->r.scale, BALL_RADIUS, BALL_RADIUS, BALL_RADIUS);
 	glow->d_scale = BALL_GROWTH;
 	glow->color.c = 0xff00ffff;
 	glow->dlight = CE_DLight_new(glow->color, 150.0F, 0.0F);
@@ -138,7 +139,7 @@ void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 		VectorAdd(ring->velocity, norm, ring->velocity);
 		VectorAdd(ring->velocity2, norm, ring->velocity2);
 
-		ring->r.scale = .5;
+		VectorSet(ring->r.scale, .5, .5, .5);
 		ring->d_scale = 16.0;
 		ring->alpha = 0.1;
 		ring->d_alpha = 4.0;
@@ -195,7 +196,7 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	explosion=ClientEntity_new(type,CEF_DONT_LINK|CEF_ADDITIVE_PARTS,origin,dir,750);
 	explosion->r.model = mace_models[3];
 	explosion->r.flags |= RF_TRANSLUCENT;
-	explosion->r.scale = 0.17;
+	VectorSet(explosion->r.scale, 0.17, 0.17, 0.17);
 	explosion->d_scale = -0.17;
 	explosion->d_alpha = -1.4;
 	explosion->radius = 64.0;
@@ -241,7 +242,8 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 // ---------------------
 // ************************************************************************************************
 
-static qboolean FXRipperExplodeLightThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXRipperExplodeLightThink(struct client_entity_s *self, centity_t *owner)
 {
 	if (fxi.cl->time > self->lastThinkTime)
 		return false;
@@ -254,7 +256,8 @@ static qboolean FXRipperExplodeLightThink(struct client_entity_s *self, centity_
 
 
 
-static qboolean FXRipperExplodeBallThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXRipperExplodeBallThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t *trail;
 	vec3_t	diff, curpos;
@@ -271,7 +274,7 @@ static qboolean FXRipperExplodeBallThink(struct client_entity_s *self, centity_t
 		trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		VectorCopy(self->velocity, trail->velocity);
 		VectorScale(trail->velocity, -1.0, trail->acceleration);
-		trail->r.scale = scale;
+		VectorSet(trail->r.scale, scale, scale, scale);
 		trail->d_scale = -scale;
 		trail->alpha = 0.3;
 		trail->d_alpha = -0.6;
@@ -336,7 +339,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		Vec3ScaleAssign(RIPPER_EXPLODE_SPEED, ripper->velocity);
 
 		// Set up the basic attributes
-		ripper->r.scale = 0.25;
+		VectorSet(ripper->r.scale, 0.25, 0.25, 0.25);
 		ripper->r.color = color;
 		ripper->radius = 10.0F;
 		ripper->Update = FXRipperExplodeBallThink;
@@ -357,7 +360,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	flash->radius = 20.0;
 
-	flash->r.scale = 0.75;
+	VectorSet(flash->r.scale, 0.75, 0.75, 0.75);
 	flash->d_scale = -1.0;
 	flash->d_alpha = -1.4;
 	fxi.S_StartSound(flash->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/RipperImpact.wav"), 1, ATTN_NORM, 0);
@@ -399,7 +402,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		VectorAdd(ring->velocity, flash->velocity, ring->velocity);
 		VectorAdd(ring->velocity2, flash->velocity, ring->velocity2);
 
-		ring->r.scale = .5;
+		VectorSet(ring->r.scale, .5, .5, .5);
 		ring->d_scale = 32.0;
 		ring->alpha = 0.1;
 		ring->d_alpha = 3.0;
@@ -435,7 +438,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		VectorCopy(origin, flash->r.startpos);
 		flash->radius = length*0.5;
 
-		flash->r.scale = 8.0;
+		VectorSet(flash->r.scale, 8.0, 8.0, 8.0);
 		flash->d_scale = -8.0;
 		flash->alpha = 0.5;
 		flash->d_alpha = -1.0;
@@ -455,7 +458,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 			flash->r.frame = 1;
 			flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-			flash->r.scale = .16;
+			VectorSet(flash->r.scale, .16, .16, .16);
 			flash->d_scale = -.16;
 			flash->alpha = 0.5;
 			flash->d_alpha = -1.0;

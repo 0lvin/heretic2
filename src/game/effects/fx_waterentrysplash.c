@@ -27,14 +27,16 @@ void PreCacheWaterSplash()
 #define	SCALE 0.3
 #define SPLASH_RADIUS 20
 
-static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean
+FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner);
 
 // ************************************************************************************************
 // FXWaterEntryRippleThinkerThink
 // ------------------------------
 // ************************************************************************************************
 
-static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	client_entity_t	*EntryRipple;
 
@@ -58,15 +60,15 @@ static qboolean FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, cen
 
 		if (Self->flags & CEF_FLAG7)
 		{	// Random ripples.
-			EntryRipple->r.scale=0.1;
+			VectorSet(EntryRipple->r.scale, 0.1, 0.1, 0.1);
 			EntryRipple->d_scale=0.7;
 			EntryRipple->r.origin[0] += flrand(-6.0,6.0);
 			EntryRipple->r.origin[1] += flrand(-6.0,6.0);
 		}
 		else
 		{
-			EntryRipple->r.scale=SCALE;
-			EntryRipple->d_scale=1.0;
+			VectorSet(EntryRipple->r.scale, SCALE, SCALE, SCALE);
+			EntryRipple->d_scale = 1.0;
 		}
 
 		AddEffect(NULL,EntryRipple);
@@ -126,9 +128,12 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		DeltaTheta=(2*M_PI)/12;
 		for(Theta=0.0;Theta<(2*M_PI);Theta+=DeltaTheta)
 		{
+			float scale;
+
 			splash = ClientEntity_new(Type,Flags,Origin,Dir,500);
 			splash->r.model = water_models[1];
-			splash->r.scale = flrand(0.15, 0.25);
+			scale = flrand(0.15, 0.25);
+			VectorSet(splash->r.scale, scale, scale, scale);
 			splash->r.flags = RF_TRANSLUCENT;
 			splash->r.frame = 1;
 			splash->radius = 2.0;
@@ -153,9 +158,12 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		DeltaTheta=(2*M_PI)/6;
 		for(Theta=0.0;Theta<(2*M_PI);Theta+=DeltaTheta)
 		{
+			float scale;
+
 			splash = ClientEntity_new(Type,Flags,Origin,Dir,800);
 			splash->r.model = water_models[1];
-			splash->r.scale = flrand(0.1, 0.2);
+			scale = flrand(0.1, 0.2);
+			VectorSet(splash->r.scale, scale, scale, scale);
 			splash->r.flags = RF_TRANSLUCENT;
 			splash->r.frame = 1;
 			splash->radius = 2.0;
@@ -182,7 +190,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		splash=ClientEntity_new(FX_WATER_ENTRYSPLASH, Flags&(~CEF_OWNERS_ORIGIN), Origin, Dir, 1200);
 
 		splash->r.model = water_models[0];
-		splash->r.scale=SCALE*2.0;
+		VectorSet(splash->r.scale, SCALE * 2.0, SCALE * 2.0, SCALE * 2.0);
 		splash->r.frame=0;
 		splash->r.flags |= RF_FIXED|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 		splash->alpha=0.6;
@@ -201,7 +209,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		splash=ClientEntity_new(FX_WATER_ENTRYSPLASH, Flags&(~CEF_OWNERS_ORIGIN), Origin, Dir, 1200);
 
 		splash->r.model = water_models[0];
-		splash->r.scale=SCALE;
+		VectorSet(splash->r.scale, SCALE, SCALE, SCALE);
 		splash->r.frame=0;
 		splash->r.flags |= RF_FIXED|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 		splash->alpha=0.6;

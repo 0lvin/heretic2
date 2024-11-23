@@ -40,8 +40,9 @@ static qboolean FXTBDustPuffThink(client_entity_t *DustPuff, centity_t *owner)
 
 void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 {
-	client_entity_t		*DustPuff;
-	vec3_t				angles, forward;
+	client_entity_t *DustPuff;
+	vec3_t angles, forward;
+	float scale;
 
 	VectorSet(angles, 0, inangle, 0);
 	DustPuff = ClientEntity_new(type, flags, origin, NULL, 100);
@@ -55,7 +56,8 @@ void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 	VectorScale(forward, flrand(30.0F, 100.0F), DustPuff->velocity);
 	DustPuff->velocity[2] = flrand(25.0F, 75.0F);
 	DustPuff->acceleration[2] = DustPuff->velocity[2] * -1.23F;
-	DustPuff->r.scale = flrand(0.15, 0.3);
+	scale = flrand(0.15, 0.3);
+	VectorSet(DustPuff->r.scale, scale, scale, scale);
 	DustPuff->d_scale = 0.75F;
 	DustPuff->d_alpha = -1.0F;
 

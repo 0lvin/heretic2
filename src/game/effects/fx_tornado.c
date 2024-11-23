@@ -97,7 +97,7 @@ void FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->LifeTime = fxi.cl->time + (TORN_DUR * 1000) + 200;
 
 	glow->r.model = torn_models[0];
-	glow->r.scale = 0.4;
+	VectorSet(glow->r.scale, 0.4, 0.4, 0.4);
 
 	AddEffect(owner, glow);
 }
@@ -267,7 +267,7 @@ void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	burst->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	burst->r.frame = 1;
 	burst->radius=64;
-	burst->r.scale=1.0;
+	VectorSet(burst->r.scale, 1.0, 1.0, 1.0);
 	burst->d_alpha=-4.0;
 	burst->d_scale=-4.0;
 	AddEffect(NULL, burst);

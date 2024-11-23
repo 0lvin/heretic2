@@ -95,7 +95,7 @@ void FXAnimate(centity_t *owner, int type, int flags, vec3_t origin)
 	atype = anim & 0x7f;
 
 	self->r.model = FXAnimModel[atype].model;
-	self->r.scale = scale * 0.02;
+	VectorSet(self->r.scale, scale * 0.02, scale * 0.02, scale * 0.02);
 	self->r.skinnum = skinnum;
 
 	self->alpha = FXAnimModel[atype].alpha;

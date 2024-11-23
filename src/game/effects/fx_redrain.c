@@ -115,7 +115,8 @@ qboolean FXRedRainDropUpdate(client_entity_t *drop, centity_t *owner)
 // Red Rain area
 
 // This constantly starts new drops up at the top.  It also spawns a splash, which is set to go off at the appropriate fall time
-static qboolean FXRedRainThink(client_entity_t *rain, centity_t *owner)
+static qboolean
+FXRedRainThink(client_entity_t *rain, centity_t *owner)
 {
 	client_entity_t		*splash;
 	client_entity_t		*drop;
@@ -162,7 +163,7 @@ static qboolean FXRedRainThink(client_entity_t *rain, centity_t *owner)
 		drop->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		drop->alpha = 0.75;
 		drop->SpawnInfo = rain->SpawnInfo;
-		drop->r.scale = width;
+		VectorSet(drop->r.scale, width, width, width);
 		drop->radius = RAIN_HEIGHT;
 		VectorCopy(origin, drop->r.startpos);
 		VectorCopy(origin, drop->r.endpos);
@@ -237,7 +238,8 @@ void FXRedRain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 
 // The red rain projectile's trail of red sparks.
-static qboolean FXRedRainMissileThink(client_entity_t *missile, centity_t *owner)
+static qboolean
+FXRedRainMissileThink(client_entity_t *missile, centity_t *owner)
 {
 	int					i;
 	client_entity_t		*ce;
@@ -260,7 +262,7 @@ static qboolean FXRedRainMissileThink(client_entity_t *missile, centity_t *owner
 		{
 			ce->r.model = rain_models[0];
 		}
-		ce->r.scale = 1.0F;
+		VectorSet(ce->r.scale, 1.0F, 1.0F, 1.0F);
 		ce->d_scale = 2.0F;
 		ce->r.frame = 0;
 		ce->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -335,7 +337,8 @@ void FXRedRainMissile(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 
 // Thinker for the explosion, just fades the light
-static qboolean FXRedRainDLightThink(client_entity_t *dlight, centity_t *owner)
+static qboolean
+FXRedRainDLightThink(client_entity_t *dlight, centity_t *owner)
 {
 	dlight->dlight->intensity -= 10.0F;
 	if(dlight->dlight->intensity < 0.0F)
@@ -344,7 +347,8 @@ static qboolean FXRedRainDLightThink(client_entity_t *dlight, centity_t *owner)
 	return true;
 }
 
-static qboolean RedRainExplosionThink(client_entity_t *explosion, centity_t *owner)
+static qboolean
+RedRainExplosionThink(client_entity_t *explosion, centity_t *owner)
 {	// The explosion bit should be drawn to orbit the rain generation spot.
 	vec3_t targetpos, diffpos, dir, randomvect;
 	float	radius;
@@ -354,7 +358,7 @@ static qboolean RedRainExplosionThink(client_entity_t *explosion, centity_t *own
 
 	if (explosion->LifeTime > 1000)
 	{	// Vary intesity
-		explosion->alpha = 1.0 - explosion->r.scale*0.1;
+		explosion->alpha = 1.0 - AVG_VEC3T(explosion->r.scale) * 0.1;
 	}
 	else if(explosion->LifeTime == 1000)
 	{	// Fade them out
@@ -438,12 +442,12 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 		{
 			explo->SpawnInfo = 1;
 			explo->r.frame = 1;
-			explo->r.scale = 3;
+			VectorSet(explo->r.scale, 3, 3, 3);
 		}
 		else
 		{
 			explo->r.frame = 0;
-			explo->r.scale = 2.5;
+			VectorSet(explo->r.scale, 2.5, 2.5, 2.5);
 		}
 
 		AddEffect(owner, explo);
@@ -462,7 +466,7 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 	explo->r.frame = 0;
 	explo->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	explo->radius = 16.0F;
-	explo->r.scale = 8.0F;
+	VectorSet(explo->r.scale, 8.0F, 8.0F, 8.0F);
 	explo->d_scale = -16.0F;
 	explo->d_alpha = -2.0F;
 	AddEffect(NULL, explo);

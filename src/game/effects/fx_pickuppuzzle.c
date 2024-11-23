@@ -64,7 +64,8 @@ void PreCachePuzzleItems()
 
 // --------------------------------------------------------------
 
-static qboolean FXPuzzlePickupThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXPuzzlePickupThink(struct client_entity_s *self, centity_t *owner)
 {
 	// Rotate and bob
 	VectorCopy(owner->current.origin, self->r.origin);
@@ -79,6 +80,7 @@ void FXPuzzlePickup(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*ce;
 	byte				tag;
 	vec3_t angles;
+	float scale;
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_PICKUP_PUZZLE].formatString, &tag,&angles);
 
@@ -89,7 +91,8 @@ void FXPuzzlePickup(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorCopy(ce->r.origin, ce->origin);
 	ce->r.model = PuzzleModels[tag].model;
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;
-	ce->r.scale = PuzzleModels[tag].scale;
+	scale = PuzzleModels[tag].scale;
+	VectorSet(ce->r.scale, scale, scale, scale);
 
 	ce->radius = 10.0;
 	ce->alpha = 0.8;

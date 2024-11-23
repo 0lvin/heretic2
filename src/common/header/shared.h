@@ -1436,6 +1436,7 @@ typedef struct entity_state_s
 	int event;              /* impulse events -- muzzle flashes, footsteps, etc */
 							/* events only go out for a single frame, they */
 							/* are automatically cleared each frame */
+	/* New protocol fields */
 	vec3_t scale;
 
 	short			clientnum;		// In Quake 2, the client num was passed in skinnum.  We need this value, however.

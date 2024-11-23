@@ -34,10 +34,16 @@ static qboolean FXDrawCrosshair(struct client_entity_s *cross_hair, centity_t *o
 	// Get new destination
 	if (fxi.Get_Crosshair(cross_hair->r.origin, &type))
 	{
+		float scale;
+
 		if (type > 2)
+		{
 			cross_hair->r.frame = 0;
+		}
 		else
+		{
 			cross_hair->r.frame = type;
+		}
 
 		cross_hair->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
 
@@ -50,7 +56,8 @@ static qboolean FXDrawCrosshair(struct client_entity_s *cross_hair, centity_t *o
 			alpha = 0.0f;
 
 		cross_hair->alpha = 0.25 + alpha * 0.5;
-		cross_hair->r.scale = alpha * 0.5;
+		scale = alpha * 0.5;
+		VectorSet(cross_hair->r.scale, scale, scale, scale);
 
 		cross_hair->flags &= ~(CEF_CULLED | CEF_DISAPPEARED | CEF_NO_DRAW);
 	}

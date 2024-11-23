@@ -72,7 +72,7 @@ void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 
 	teleport_fx->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	teleport_fx->r.frame = 0;
-	teleport_fx->r.scale = 1.8;
+	VectorSet(teleport_fx->r.scale, 1.8, 1.8, 1.8);
 	teleport_fx->d_scale = -3.0;
 
   	AddEffect(owner, teleport_fx);
@@ -137,7 +137,7 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 
 	teleport_fx->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	teleport_fx->r.frame = 0;
-	teleport_fx->r.scale = 0.5;
+	VectorSet(teleport_fx->r.scale, 0.5, 0.5, 0.5);
 	teleport_fx->d_scale = 3.0;
 
   	AddEffect(owner, teleport_fx);

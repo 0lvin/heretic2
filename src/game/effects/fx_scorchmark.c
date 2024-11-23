@@ -24,7 +24,8 @@ void PreCacheScorch()
 }
 
 
-static qboolean EndLessLoop(struct client_entity_s *self, centity_t *owner)
+static qboolean
+EndLessLoop(struct client_entity_s *self, centity_t *owner)
 {
 	return true;
 }
@@ -36,7 +37,8 @@ static qboolean EndLessLoop(struct client_entity_s *self, centity_t *owner)
 // The origin comes in 8 from the wall
 // No scorchmark generated if no wall found (_this does happen)
 
-static qboolean GetTruePlane(vec3_t origin, vec3_t direction)
+static qboolean
+GetTruePlane(vec3_t origin, vec3_t direction)
 {
 	trace_t		trace;
 	vec3_t		end;
@@ -76,7 +78,7 @@ void FXClientScorchmark(vec3_t origin, vec3_t dir)
 		scorchmark->r.flags |= RF_FIXED | RF_TRANSLUCENT;
 
 		scorchmark->radius = 10.0;
-		scorchmark->r.scale = 0.6;
+		VectorSet(scorchmark->r.scale, 0.6, 0.6, 0.6);
 
 		scorchmark->Update = EndLessLoop;
 
@@ -104,7 +106,7 @@ void FXScorchmark(centity_t *owner, int type, int flags, vec3_t origin)
 		scorchmark->r.flags |= RF_FIXED | RF_TRANSLUCENT;
 
 		scorchmark->radius = 10.0;
-		scorchmark->r.scale = 0.6;
+		VectorSet(scorchmark->r.scale, 0.6, 0.6, 0.6);
 
 		scorchmark->Update = EndLessLoop;
 

@@ -38,7 +38,8 @@
 #define SMOKETRAIL_SCALE	0.25
 #define SMOKETRAIL_ALPHA	0.5
 
-static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner);
+static qboolean
+FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner);
 void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir);
 
 
@@ -58,7 +59,8 @@ void PreCachePhoenix()
 // -----------------------------------------------------------------------------------------
 
 
-static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner)
+static qboolean
+FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner)
 {
 	int					i;
 	int					dur;
@@ -94,7 +96,8 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 		smoke->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		smoke->radius = 64.0F;
 		smoke->alpha = SMOKETRAIL_ALPHA;
-		smoke->r.scale = SMOKETRAIL_SCALE;
+		VectorSet(smoke->r.scale,
+			SMOKETRAIL_SCALE, SMOKETRAIL_SCALE, SMOKETRAIL_SCALE);
 		smoke->velocity[0] = right[0]*2.0;
 		smoke->velocity[1] = right[1]*2.0;
 		smoke->velocity[2] = right[2]*2.0;
@@ -114,7 +117,8 @@ static qboolean FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner
 		smoke->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		smoke->radius = 128.0F;
 		smoke->alpha = SMOKETRAIL_ALPHA;
-		smoke->r.scale = SMOKETRAIL_SCALE;
+		VectorSet(smoke->r.scale,
+			SMOKETRAIL_SCALE, SMOKETRAIL_SCALE, SMOKETRAIL_SCALE);
 		smoke->velocity[0] = -right[0]*2.0;
 		smoke->velocity[1] = -right[1]*2.0;
 		smoke->velocity[2] = -right[2]*2.0;
@@ -210,7 +214,7 @@ void FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	missile->lastThinkTime = fxi.cl->time + (50*7);	// Time to play last frame.
 	missile->NoOfAnimFrames = 7;					// End on frame number 7.
 	missile->Scale = 1;								// Positive frame count
-	missile->r.scale= .8;
+	VectorSet(missile->r.scale, .8, .8, .8);
 	if(flags & CEF_FLAG6)
 	{
 		missile->Update = FXPhoenixMissilePowerThink;
@@ -272,7 +276,8 @@ qboolean FXPhoenixExplosionSmallBallThink(client_entity_t *explosion, centity_t 
 	return true;
 }
 
-static qboolean FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *owner)
+static qboolean
+FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *owner)
 {
 	client_entity_t *newbird;
 	vec3_t	pos;
@@ -300,7 +305,7 @@ static qboolean FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *ow
 	newbird->r.frame = 1;
 	newbird->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	newbird->radius	= 128;
-	newbird->r.scale= bird->r.scale;
+	VectorCopy(bird->r.scale, newbird->r.scale);
 	newbird->alpha	= bird->alpha;
 	newbird->d_alpha= -(newbird->alpha*4.0);
 	newbird->d_scale= 2.0;
@@ -319,7 +324,7 @@ client_entity_t *CreatePhoenixSmallExplosion(vec3_t ballorigin)
 	subexplosion->r.model = phoen_models[4];
 	subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	subexplosion->alpha = 1.0;
-	subexplosion->r.scale = 1.0;
+	VectorSet(subexplosion->r.scale, 1.0, 1.0, 1.0);
 	subexplosion->radius=128;
 	subexplosion->startTime = fxi.cl->time;
 	subexplosion->lastThinkTime = fxi.cl->time;
@@ -374,7 +379,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 							flrand(-EXPLODE_BALL_SPEED, EXPLODE_BALL_SPEED) + (dir[0]*EXPLODE_BALL_SPEED),
 							flrand(-EXPLODE_BALL_SPEED, EXPLODE_BALL_SPEED) + (dir[1]*EXPLODE_BALL_SPEED),
 							flrand(-EXPLODE_BALL_SPEED, EXPLODE_BALL_SPEED) + (dir[2]*EXPLODE_BALL_SPEED));
-			subexplosion->r.scale = 0.1;
+			VectorSet(subexplosion->r.scale, 0.1, 0.1, 0.1);
 			subexplosion->d_scale = 3.0 + ballnum;
 			subexplosion->d_alpha = -1.5 - 0.5*ballnum;
 
@@ -388,7 +393,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->flags |= CEF_ADDITIVE_PARTS | CEF_PULSE_ALPHA;
 	explosion->alpha = 0.1;
-	explosion->r.scale= 0.1;
+	VectorSet(explosion->r.scale, 0.1, 0.1, 0.1);
 	explosion->d_alpha = 3.0;
 	explosion->d_scale=5.0;
 	explosion->radius=128;
@@ -427,7 +432,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 1;
 	explosion->radius=128;
-	explosion->r.scale=1.5;
+	VectorSet(explosion->r.scale, 1.5, 1.5, 1.5);
 	explosion->d_alpha=-4.0;
 	explosion->d_scale=-4.0;
 	AddEffect(NULL, explosion);
@@ -446,7 +451,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 0;
 	explosion->radius=128;
-	explosion->r.scale=0.1;
+	VectorSet(explosion->r.scale, 0.1, 0.1, 0.1);
 	VectorScale(dir, 0.25, explosion->velocity);
 	explosion->acceleration[2] = 64;
 	explosion->alpha = 1.0;
@@ -468,7 +473,8 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 #define PHOENIXPOWER_PARTS_PER_TRAIL 8
 #define PHOENIXPOWER_RADIUS 72.0
 
-static qboolean FXPhoenixExplosionBirdThinkPower(client_entity_t *bird, centity_t *owner)
+static qboolean
+FXPhoenixExplosionBirdThinkPower(client_entity_t *bird, centity_t *owner)
 {
 	bird->LifeTime--;
 	if (bird->LifeTime <= 0)
@@ -503,7 +509,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->flags |= CEF_ADDITIVE_PARTS;
 	explosion->alpha = 1.0;
-	explosion->r.scale= .1;
+	VectorSet(explosion->r.scale, .1, .1, .1);
 	explosion->d_alpha=-2.0/1.5;
 	explosion->radius=128;
 	explosion->LifeTime=EXPLODE_LIFETIME;
@@ -537,9 +543,9 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 			subexplosion->r.model = phoen_models[2];
 			subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 			subexplosion->r.frame = 1;
-			subexplosion->radius=128;
-			subexplosion->r.scale=1.5;
-			subexplosion->d_alpha=-1.0;
+			subexplosion->radius = 128;
+			VectorSet(subexplosion->r.scale, 1.5, 1.5, 1.5);
+			subexplosion->d_alpha = -1.0;
 			AddEffect(NULL, subexplosion);
 
 			for(j = 0; j < numParts; j++)
@@ -568,8 +574,8 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 			subexplosion->r.model = phoen_models[2];
 			subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 			subexplosion->r.frame = 1;
-			subexplosion->radius=128;
-			subexplosion->r.scale=1.5;
+			subexplosion->radius = 128;
+			VectorSet(subexplosion->r.scale, 1.5, 1.5, 1.5);
 			subexplosion->d_alpha=-1.0;
 			AddEffect(NULL, subexplosion);
 
@@ -603,7 +609,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 0;
 	explosion->radius=128;
-	explosion->r.scale=1.0;
+	VectorSet(explosion->r.scale, 1.0, 1.0, 1.0);
 	VectorScale(dir, 192.0, explosion->velocity);
 	explosion->acceleration[2] = 256.0;
 	explosion->alpha = 1.0;
@@ -619,7 +625,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 0;
 	explosion->radius=128;
-	explosion->r.scale=1.0;
+	VectorSet(explosion->r.scale, 1.0, 1.0, 1.0);
 	VectorScale(dir, 192.0, explosion->velocity);
 	explosion->acceleration[2] = 256.0;
 	explosion->alpha = 1.0;
@@ -632,7 +638,8 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/PhoenixPowerHit.wav"), 1, ATTN_NORM, 0);
 }
 
-static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner)
+static qboolean
+FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner)
 {
 	int					i, dur;
 	client_particle_t	*flame;
@@ -668,7 +675,10 @@ static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *
 	smoke->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	smoke->radius = 64.0F;
 	smoke->alpha = SMOKETRAIL_ALPHA;
-	smoke->r.scale = SMOKETRAIL_SCALE * 2.5;
+	VectorSet(smoke->r.scale,
+		SMOKETRAIL_SCALE * 2.5,
+		SMOKETRAIL_SCALE * 2.5,
+		SMOKETRAIL_SCALE * 2.5);
 	smoke->velocity[0] = sideVal * right[0]*2.0;
 	smoke->velocity[1] = sideVal * right[1]*2.0;
 	smoke->velocity[2] = sideVal * right[2]*2.0;

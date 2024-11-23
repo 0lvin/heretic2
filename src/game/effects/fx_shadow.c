@@ -36,7 +36,8 @@ void PrecacheShadow()
 	shadow_models[0] = fxi.RegisterModel("models/fx/shadow/tris.fm");
 }
 
-static qboolean FXShadowUpdate(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShadowUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t startpos, endpos;
 	vec3_t minmax = {0, 0, 0};
@@ -82,13 +83,15 @@ static qboolean FXShadowUpdate(struct client_entity_s *self, centity_t *owner)
 
 
 
-static qboolean FXShadowReferenceUpdate(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShadowReferenceUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t startpos, endpos;
 	vec3_t minmax = {0, 0, 0};
 	trace_t trace;
 	int refpoint;
 	matrix3_t		rotmatrix;
+	float scale;
 
 	// This tells if we are wasting our time, because the reference points are culled.
 	if (!RefPointsValid(owner))
@@ -132,7 +135,9 @@ static qboolean FXShadowReferenceUpdate(struct client_entity_s *self, centity_t 
 
 	// Did hit the ground
 	self->alpha = (1.0 - trace.fraction) * 0.8 + 0.01;
-	self->r.scale = (1.0 - trace.fraction) * 0.8;
+	scale = (1.0 - trace.fraction) * 0.8;
+	VectorSet(self->r.scale, scale, scale, scale);
+
 	if (r_detail->value != DETAIL_HIGH)
 	{
 		// Raise the shadow slightly off the target wall
@@ -165,7 +170,7 @@ void FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 	self->radius = SHADOW_CHECK_DIST;
-	self->r.scale = scale;
+	VectorSet(self->r.scale, scale, scale, scale);
 	self->AddToView = FXShadowUpdate;
 
 	AddEffect(owner, self);
@@ -184,7 +189,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 	self->radius = SHADOW_CHECK_DIST;
-	self->r.scale = 1.0;
+	VectorSet(self->r.scale, 1.0, 1.0, 1.0);
 	self->AddToView = FXShadowUpdate;
 	AddEffect(owner, self);
 	FXShadowUpdate(self, owner);
@@ -196,7 +201,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 	self->radius = SHADOW_CHECK_DIST;
 	self->refPoint = CORVUS_LEFTFOOT;
-	self->r.scale = 0.8;
+	VectorSet(self->r.scale, 0.8, 0.8, 0.8);
 	self->AddToView = FXShadowReferenceUpdate;
 	AddEffect(owner, self);
 	FXShadowUpdate(self, owner);
@@ -208,7 +213,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
 	self->radius = SHADOW_CHECK_DIST;
 	self->refPoint = CORVUS_RIGHTFOOT;
-	self->r.scale = 0.8;
+	VectorSet(self->r.scale, 0.8, 0.8, 0.8);
 	self->AddToView = FXShadowReferenceUpdate;
 	AddEffect(owner, self);
 	FXShadowUpdate(self, owner);

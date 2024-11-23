@@ -66,6 +66,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	vec3_t			dir;
 	byte			powerlevel;
 	int				i, white;
+	float scale;
 
 	fxi.GetEffect(owner,Flags,clientEffectSpawners[FX_WEAPON_STAFF_STRIKE].formatString, &dir, &powerlevel);
 
@@ -81,7 +82,8 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		TrailEnt->r.model = staffhit_models[1];
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		TrailEnt->r.scale = flrand(0.75, 1.0);
+		scale = flrand(0.75, 1.0);
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 		TrailEnt->alpha = 0.75;
 		TrailEnt->d_alpha = -2.0;
 		TrailEnt->d_scale = -2.0;
@@ -111,7 +113,8 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 			TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			TrailEnt->r.color.c = 0xFFFFFFFF;
-			TrailEnt->r.scale = flrand(1.0, 2.5);
+			scale = flrand(1.0, 2.5);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->alpha = 1.0;
 			TrailEnt->d_alpha = -1.0;
 			TrailEnt->d_scale = -1.0;
@@ -143,7 +146,8 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			TrailEnt->r.model = staffhit_models[3];
 
 			TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-			TrailEnt->r.scale = flrand(0.25, 0.5);
+			scale = flrand(0.25, 0.5);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->alpha = 0.9;
 			TrailEnt->d_alpha = -2.0;
 			TrailEnt->d_scale = 2.0;
@@ -176,7 +180,8 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		TrailEnt->r.model = staffhit_models[1];
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		TrailEnt->r.scale = flrand(0.75, 1.0);
+		scale = flrand(0.75, 1.0);
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 		TrailEnt->alpha = 0.75;
 		TrailEnt->d_alpha = -2.0;
 		TrailEnt->d_scale = -2.0;
@@ -192,6 +197,8 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		while (i--)
 		{
+			float scale;
+
 			TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, Flags & ~CEF_NO_DRAW, Origin, 0, 500);
 
 			TrailEnt->r.model = staffhit_models[0];
@@ -200,7 +207,8 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 			TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			TrailEnt->r.color.c = 0xFFFFFFFF;
-			TrailEnt->r.scale = flrand(1.0, 2.5);
+			scale = flrand(1.0, 2.5);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->alpha = flrand(1.0, 0.75);
 			TrailEnt->d_alpha = -2.0;
 			TrailEnt->d_scale = -1.0;
@@ -233,7 +241,8 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 // ------------------------
 // ************************************************************************************************
 
-static qboolean FXStaffElementThink(struct client_entity_s *Self, centity_t *owner)
+static qboolean
+FXStaffElementThink(struct client_entity_s *Self, centity_t *owner)
 {
 	float	Frac,
 			Multiplier;
@@ -269,7 +278,8 @@ static qboolean FXStaffElementThink(struct client_entity_s *Self, centity_t *own
 // -----------------
 // ************************************************************************************************
 
-static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
+static qboolean
+FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 {
 	int				I;
 	int				NoOfIntervals, white;
@@ -327,6 +337,8 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owne
 
 	while (NoOfIntervals >= 0)
 	{
+		float scale;
+
 		VectorMA(curpivot, STAFF_LENGTH, adjnormal, newpoint);
 
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 2000);
@@ -341,7 +353,8 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owne
 
 		TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-		TrailEnt->r.scale = flrand(0.2, 0.3);
+		scale = flrand(0.2, 0.3);
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 		TrailEnt->d_scale = flrand(-0.5, -1.0);
 
 		TrailEnt->velocity[0] = irand(-8, 8);
@@ -380,6 +393,8 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owne
 
 		if (!irand(0,3))
 		{
+			float scale;
+
 			TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 5000);
 
 			TrailEnt->r.model = staff_models[STAFF_TRAIL_SMOKE];
@@ -388,7 +403,8 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owne
 
 			TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-			TrailEnt->r.scale = flrand(0.1, 0.15);
+			scale = flrand(0.1, 0.15);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->d_scale = 1.0;
 
 			TrailEnt->alpha = 0.75;
@@ -436,7 +452,8 @@ static qboolean FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owne
 	return true;
 }
 
-static qboolean FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owner)
+static qboolean
+FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owner)
 {
 	int				I;
 	int				NoOfIntervals, white;
@@ -503,7 +520,7 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owne
 
 		TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD;
 
-		TrailEnt->r.scale = 0.3;
+		VectorSet(TrailEnt->r.scale, 0.3, 0.3, 0.3);
 		TrailEnt->d_scale = -0.75;
 
 		TrailEnt->alpha = 0.75;
@@ -547,7 +564,8 @@ static qboolean FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owne
 	return true;
 }
 
-static qboolean FXStaffThink(struct client_entity_s *Self, centity_t *owner)
+static qboolean
+FXStaffThink(struct client_entity_s *Self, centity_t *owner)
 {
 	int				I;
 	int				NoOfIntervals;
@@ -619,14 +637,15 @@ static qboolean FXStaffThink(struct client_entity_s *Self, centity_t *owner)
 
 		if (owner->current.effects & EF_BLOOD_ENABLED)
 		{
-			TrailEnt->r.color.c=0x50000018;
-			TrailEnt->r.scale=Self->xscale;
+			TrailEnt->r.color.c = 0x50000018;
 		}
 		else
 		{
 			TrailEnt->r.color = Self->color;
-			TrailEnt->r.scale=Self->xscale;
 		}
+
+		VectorSet(TrailEnt->r.scale,
+			Self->xscale, Self->xscale, Self->xscale);
 
 		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
 
@@ -717,7 +736,8 @@ void FXStaff(centity_t *owner,int Type,int Flags,vec3_t Origin)
 // -----------------
 // ************************************************************************************************
 
-static qboolean FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
+static qboolean
+FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
 {
 	int				NoOfIntervals;
 	client_entity_t	*TrailEnt;
@@ -771,7 +791,10 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self, centity_t *owne
 			TrailEnt->d_scale=-0.25;
 			TrailEnt->d_alpha=-0.1;
 			TrailEnt->color.c=color;
-			TrailEnt->r.scale=Self->NoOfAnimFrames*.05;
+			VectorSet(TrailEnt->r.scale,
+				Self->NoOfAnimFrames * .05,
+				Self->NoOfAnimFrames * .05,
+				Self->NoOfAnimFrames * .05);
 			TrailEnt->AnimSpeed=0.20;
 			TrailEnt->NoOfAnimFrames=2;
 			TrailEnt->Update=FXStaffElementThink;
@@ -782,11 +805,14 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self, centity_t *owne
 		}
 		else if(Self->classID == STAFF_TRAIL2)
 		{
+			float scale;
+
 			TrailEnt->r.frame = 0;
 
 			TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-			TrailEnt->r.scale = flrand(0.1, 0.2);
+			scale = flrand(0.1, 0.2);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->d_scale = flrand(-0.25, -0.5);
 
 			TrailEnt->velocity[0] = irand(-8, 8);
@@ -808,7 +834,7 @@ static qboolean FXStaffCreateThink(struct client_entity_s *Self, centity_t *owne
 
 			TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD;
 
-			TrailEnt->r.scale = 0.2;
+			VectorSet(TrailEnt->r.scale, 0.2, 0.2, 0.2);
 			TrailEnt->d_scale = -0.35;
 
 			TrailEnt->alpha = 0.75;
@@ -921,7 +947,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	stafffx->color.r=255;
 	stafffx->color.g=255;
 	stafffx->color.b=255;
-	stafffx->r.scale=0.5;
+	VectorSet(stafffx->r.scale, 0.5, 0.5, 0.5);
 	stafffx->AnimSpeed=0.20;
 	stafffx->NoOfAnimFrames=2;
 	stafffx->Update=FXStaffElementThink;
@@ -945,7 +971,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		stafffx->color.r=255;
 		stafffx->color.g=255;
 		stafffx->color.b=255;
-		stafffx->r.scale=0.5;
+		VectorSet(stafffx->r.scale, 0.5, 0.5, 0.5);
 		stafffx->AnimSpeed=0.20;
 		stafffx->NoOfAnimFrames=2;
 		stafffx->Update=FXStaffElementThink;
@@ -962,7 +988,8 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 // -----------------
 // ************************************************************************************************
 
-static qboolean FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
+static qboolean
+FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
 {
 	int				NoOfIntervals;
 	client_entity_t	*TrailEnt;
@@ -1012,11 +1039,14 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owne
 		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
 		if(Self->classID == STAFF_TRAIL || Self->refPoint == STAFF_TYPE_HELL)
 		{
+			float scale;
+
 			TrailEnt->r.frame=1;
 			TrailEnt->d_scale=-0.25;
 			TrailEnt->d_alpha=-0.1;
 			TrailEnt->color.c=color;
-			TrailEnt->r.scale=Self->NoOfAnimFrames*.05;
+			scale = Self->NoOfAnimFrames * .05;
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->AnimSpeed=0.20;
 			TrailEnt->NoOfAnimFrames=2;
 			TrailEnt->Update=FXStaffElementThink;
@@ -1026,11 +1056,14 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owne
 		}
 		else if(Self->classID == STAFF_TRAIL2)
 		{
+			float scale;
+
 			TrailEnt->r.frame = 0;
 
 			TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-			TrailEnt->r.scale = flrand(0.1, 0.2);
+			scale = flrand(0.1, 0.2);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->d_scale = flrand(-0.5, -1.0);
 
 			TrailEnt->velocity[0] = irand(-8, 8);
@@ -1052,7 +1085,7 @@ static qboolean FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owne
 
 			TrailEnt->r.flags=RF_TRANSLUCENT | RF_TRANS_ADD;
 
-			TrailEnt->r.scale = 0.2;
+			VectorSet(TrailEnt->r.scale, 0.2, 0.2, 0.2);
 			TrailEnt->d_scale = -0.35;
 
 			TrailEnt->alpha = 0.75;

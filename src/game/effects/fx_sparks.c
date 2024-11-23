@@ -69,9 +69,9 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 		effect->acceleration[2] = flrand(-200.0, -100.0);
 
 		if (type == FX_BLOCK_SPARKS)
-			effect->r.scale = 0.5;
+			VectorSet(effect->r.scale, 0.5, 0.5, 0.5);
 		else
-			effect->r.scale = 0.25;
+			VectorSet(effect->r.scale, 0.25, 0.25, 0.25);
 
 		effect->d_scale = flrand(-0.25, -0.75);
 		effect->color.c = 0xFFFFFFFF;
@@ -82,6 +82,8 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 	//Create spark streaks
 	for(i = 0; i < count; i++)
 	{
+		float scale;
+
 		effect = ClientEntity_new(type, flags, origin, NULL, 1000);
 
 		effect->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -89,9 +91,10 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 		effect->r.model = spark_models[MODEL_SPARKSTREAK];
 		effect->r.spriteType = SPRITE_LINE;
 		effect->r.tile = 1.0;
-		effect->r.scale = 2;
+		VectorSet(effect->r.scale, 2, 2, 2);
 		effect->alpha = 1.0;
-		effect->r.scale = flrand(0.5, 1.0);
+		scale = flrand(0.5, 1.0);
+		VectorSet(effect->r.scale, scale, scale, scale);
 
 		VectorRandomCopy(dir, work, 0.5);
 		VectorScale(work, irand(100.0, 125.0), effect->velocity);

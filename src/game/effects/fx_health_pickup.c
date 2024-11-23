@@ -82,9 +82,9 @@ void FXHealthPickup(centity_t *owner, int type, int flags, vec3_t origin)
 	ce->r.flags = RF_GLOW | RF_TRANSLUCENT | RF_TRANS_ADD;
 
 	if ((flags & CEF_FLAG6) >> 5)	// Full health
-		ce->r.scale = 1;
+		VectorSet(ce->r.scale, 1.0, 1.0, 1.0);
 	else
-		ce->r.scale = 1.5;
+		VectorSet(ce->r.scale, 1.5, 1.5, 1.5);
 	ce->radius = 10.0;
 	ce->alpha = 0.8;
 	ce->Update = FXHealthPickupThink;

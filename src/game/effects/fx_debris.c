@@ -224,9 +224,13 @@ void DoFireTrail (client_entity_t *spawner)
 
 	material = spawner->SpawnInfo & SIF_FLAG_MASK;
 	if(material == MAT_FLESH || material == MAT_INSECT || spawner->effectID == FX_BODYPART)
-		master_scale = spawner->r.scale * 3.33;
+	{
+		master_scale = AVG_VEC3T(spawner->r.scale) * 3.33;
+	}
 	else
-		master_scale = spawner->r.scale;
+	{
+		master_scale = AVG_VEC3T(spawner->r.scale);
+	}
 
 	if (r_detail->value < DETAIL_NORMAL)
 		flame_duration = 700.0;
@@ -238,13 +242,16 @@ void DoFireTrail (client_entity_t *spawner)
 	{
 		flame = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), color, flame_duration);
 
-		radius = spawner->r.scale * 2.0;
-		VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-4.0F, -2.0F) * spawner->r.scale);
+		radius = AVG_VEC3T(spawner->r.scale) * 2.0;
+		VectorSet(flame->origin,
+			flrand(-radius, radius),
+			flrand(-radius, radius),
+			flrand(-4.0F, -2.0F) * AVG_VEC3T(spawner->r.scale));
 		VectorAdd(flame->origin, spawner->r.origin, flame->origin);
 
 		flame->scale = master_scale;
 		VectorSet(flame->velocity, flrand(-1.0, 1.0), flrand(-1, 1.0), flrand(17.0, 20.0));
-		flame->acceleration[2] = 32.0 * spawner->r.scale;
+		flame->acceleration[2] = 32.0 * AVG_VEC3T(spawner->r.scale);
 		flame->d_scale = flrand(-5.0, -2.5);
 		flame->d_alpha = flrand(-200.0, -160.0);
 
@@ -505,7 +512,7 @@ client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float k
 
 	debris->r.model = debrisChunks[index].model;
 
-	debris->r.scale = scale;
+	VectorSet(debris->r.scale, scale, scale, scale);
 	debris->r.angles[0] = flrand(-ANGLE_180, ANGLE_180);
 	debris->r.angles[1] = flrand(-ANGLE_90, ANGLE_90);
 
@@ -894,12 +901,12 @@ qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
 	if(self->SpawnInfo&SIF_INLAVA)
 		FXDarkSmoke(self->r.origin, flrand(0.2, 0.5), flrand(30, 50));
 
-	if ((self->alpha < 0.1f)||(self->r.scale < 0.1f))
+	if ((self->alpha < 0.1f)||(AVG_VEC3T(self->r.scale) < 0.1f))
 	{
 		if(self->flags&CEF_FLAG6)
 		{//let the smoke die out
 			self->alpha = 0.0f;
-			self->r.scale = 0.0f;
+			VectorClear(self->r.scale);
 			self->Update = FXDebris_Remove;
 			self->updateTime = 1000;
 			return true;
@@ -916,7 +923,7 @@ qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
 			self->flags &= ~CEF_FLAG6;
 			self->d_alpha = -0.01;
 		}
-		else if(flrand(0.0, 0.3)>self->r.scale)
+		else if(flrand(0.0, 0.3) > AVG_VEC3T(self->r.scale))
 		{
 			self->dlight = NULL;
  			self->flags &= ~CEF_FLAG6;

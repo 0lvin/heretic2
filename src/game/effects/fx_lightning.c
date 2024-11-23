@@ -55,11 +55,12 @@ void PreCacheLightning()
 client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t end, float radius)
 {
 	client_entity_t *lightning;
+	float scale;
 
 	lightning = ClientEntity_new(FX_LIGHTNING, CEF_DONT_LINK, start, NULL, 250);
 	lightning->r.model = lightning_models[type];
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	lightning->r.scale = width;
+	VectorSet(lightning->r.scale, width, width, width);
 	lightning->radius = radius;
 	lightning->alpha = 0.95;
 	lightning->d_alpha = -4.0;
@@ -72,7 +73,8 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	lightning->r.model = lightning_models[type];
 	lightning->r.frame = 1;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	lightning->r.scale = width * LIGHTNING_WIDTH_MULT;
+	scale = width * LIGHTNING_WIDTH_MULT;
+	VectorSet(lightning->r.scale, scale, scale, scale);
 	lightning->radius = radius;
 	lightning->alpha = 0.5;
 	lightning->d_alpha = -1.250;
@@ -87,7 +89,8 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	lightning->r.model = lightning_models[type + LIGHTNING_JOINT_OFFSET];
 	lightning->r.frame = 0;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	lightning->r.scale = width * LIGHTNING_JOINT_SCALE;
+	scale = width * LIGHTNING_JOINT_SCALE;
+	VectorSet(lightning->r.scale, scale, scale, scale);
 	lightning->radius = radius;
 	lightning->alpha = 0.95;
 	lightning->d_alpha = -2.0;
@@ -172,7 +175,8 @@ void LightningBolt(int model, float width, vec3_t startpos, vec3_t endpos)
 }
 
 
-static qboolean FXLightningThink(client_entity_t *thinker, centity_t *owner)
+static qboolean
+FXLightningThink(client_entity_t *thinker, centity_t *owner)
 {
 	if (fxi.cl->time - thinker->lastThinkTime < thinker->LifeTime)
 	{
@@ -232,7 +236,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	client_entity_t		*lightning;
 	client_particle_t	*spark;
 	int					i;
-	float				length;
+	float				length, scale;
 	float				curang, degreeinc;
 	vec3_t				lastvel, upvel;
 
@@ -245,7 +249,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	lightning = ClientEntity_new(FX_POWER_LIGHTNING, CEF_AUTO_ORIGIN, Origin, NULL, 750);
 	lightning->r.model = lightning_models[LIGHTNING_TYPE_GREEN];
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	lightning->r.scale = width;
+	VectorSet(lightning->r.scale, width, width, width);
 	lightning->d_scale = -0.5*width;
 	lightning->radius = length;
 	lightning->alpha = 0.95;
@@ -260,7 +264,8 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	lightning->r.model = lightning_models[LIGHTNING_TYPE_GREEN];
 	lightning->r.frame = 1;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	lightning->r.scale = width * LIGHTNING_POWER_WIDTH_MULT;
+	scale = width * LIGHTNING_POWER_WIDTH_MULT;
+	VectorSet(lightning->r.scale, scale, scale, scale);
 	lightning->d_scale = -0.5*width;
 	lightning->radius = length;
 	lightning->alpha = 0.5;
@@ -275,7 +280,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	lightning->r.model = lightning_models[6];		// The bright halo model
 	lightning->r.frame = 1;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	lightning->r.scale = 0.75;
+	VectorSet(lightning->r.scale, 0.75, 0.75, 0.75);
 	lightning->d_scale = 2.0;
 	lightning->radius = 128.0;
 	lightning->alpha = 0.95;
@@ -285,7 +290,8 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	// Now add a bunch of sparks to the source too to add interest.
 	for(i=0; i<8; i++)
-	{	// Half green, half yellow particles
+	{
+		// Half green, half yellow particles
 		if (i&0x01)
 			spark = ClientParticle_new(PART_16x16_SPARK_Y, lightning->color, 1000);
 		else
@@ -303,7 +309,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	lightning->r.origin[2] += 8.0;
 	lightning->r.frame = 1;
 	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	lightning->r.scale = 2.0;
+	VectorSet(lightning->r.scale, 2.0, 2.0, 2.0);
 	lightning->d_scale = -2.0;
 	lightning->radius = 128.0;
 	lightning->alpha = 0.95;
@@ -364,7 +370,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		VectorAdd(lightning->velocity, upvel, lightning->velocity);
 		VectorAdd(lightning->velocity2, upvel, lightning->velocity2);
 
-		lightning->r.scale = .5;
+		VectorSet(lightning->r.scale, .5, .5, .5);
 		lightning->d_scale = 32.0;
 		lightning->alpha = 0.1;
 		lightning->d_alpha = 3.0;

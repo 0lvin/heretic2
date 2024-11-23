@@ -121,9 +121,13 @@ void FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	if ((tag == ITEM_AMMO_MANA_COMBO_HALF) || (tag == ITEM_AMMO_MANA_DEFENSIVE_FULL) ||
 		(tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
-		ce->r.scale = 1.25;
+	{
+		VectorSet(ce->r.scale, 1.25, 1.25, 1.25);
+	}
 	else
-		ce->r.scale = 1.0;
+	{
+		VectorSet(ce->r.scale, 1.0, 1.0, 1.0);
+	}
 	ce->radius = 10.0;
 	ce->alpha = 0.8;
 	ce->Update = FXAmmoPickupThink;

@@ -105,7 +105,8 @@ Main Player routine  - make large player, and fade it into us
 
 
 // kill the expanding player model when it fades away
-static qboolean shrine_player_update(struct client_entity_s *self, centity_t *owner)
+static qboolean
+shrine_player_update(struct client_entity_s *self, centity_t *owner)
 {
 	if (!(--self->SpawnInfo))
 	{
@@ -119,7 +120,7 @@ static qboolean shrine_player_update(struct client_entity_s *self, centity_t *ow
 // Create a model of the player, and have it expand and fade, with a tint
 void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
-	client_entity_t  	*shrine_fx;
+	client_entity_t	*shrine_fx;
 	byte					shrine_type;
 
 	// no longer used - causes really hard to find crashes.
@@ -130,14 +131,14 @@ void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	origin[2] += 60.0;
 
 	// create the player shrine effect around the player to begin with
- 	shrine_fx = ClientEntity_new(type, flags, origin, NULL, 100);
+	shrine_fx = ClientEntity_new(type, flags, origin, NULL, 100);
 	shrine_fx->radius = 20.0F;
 	if (owner->current.effects & EF_CHICKEN)
 		shrine_fx->r.model = shrine_models[1];
 	else
 		shrine_fx->r.model = shrine_models[0];
 	shrine_fx->d_scale = -1.2;
-	shrine_fx->r.scale = 3.0;
+	VectorSet(shrine_fx->r.scale, 3.0, 3.0, 3.0);
 	shrine_fx->velocity[2] = -35.5;
 	shrine_fx->r.flags = RF_TRANSLUCENT ;
 	shrine_fx->r.fmnodeinfo = &owner->current.fmnodeinfo[0];
@@ -152,7 +153,7 @@ void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	shrine_fx->AddToView = LinkedEntityUpdatePlacement;
 	VectorDegreesToRadians(&owner->current.angles[0],shrine_fx->r.angles);
 
-  	AddEffect(owner, shrine_fx);
+	AddEffect(owner, shrine_fx);
 
 }
 
@@ -165,7 +166,8 @@ Mana effect routine
 ----------------------------------------
 */
 
-static qboolean FXShrineManaThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineManaThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
@@ -235,7 +237,8 @@ Armor effect routine
 */
 
 
-static qboolean FXShrineArmorThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineArmorThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
@@ -301,7 +304,8 @@ Lungs effect routines
 ----------------------------------------
 */
 
-static qboolean FXShrineLungsThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineLungsThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
@@ -373,8 +377,8 @@ void FXShrineLightEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->r.model = shrine_models[0];
 	glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	glow->AddToView = LinkedEntityUpdatePlacement;
- 	glow->d_scale = 5.0;
- 	glow->r.scale = 0.1;
+	glow->d_scale = 5.0;
+	VectorSet(glow->r.scale, 0.1, 0.1, 0.1);
 	glow->d_alpha = -0.45;
 	glow->alpha = 1.0;
 
@@ -391,7 +395,8 @@ Staff Powerup Routines
 
 
 // create the two circles that ring the player
-static qboolean FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	vec3_t				vel;
@@ -648,7 +653,8 @@ void FXCreateLightning(struct client_entity_s *self, centity_t *owner)
 
 
 // make the lightning effect re-occur
-static qboolean FXShrineHealthThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineHealthThink(struct client_entity_s *self, centity_t *owner)
 {
 
 	if (!(--self->SpawnInfo))
@@ -690,7 +696,8 @@ Reflect effect routines
 */
 
 // create the two circles that ring the player
-static qboolean FXShrineReflectThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineReflectThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	int					count, i;
@@ -789,7 +796,8 @@ Ghosting effect Routines
 */
 
 // make the glow go away
-static qboolean FXShrineGlowThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineGlowThink(struct client_entity_s *self, centity_t *owner)
 {
 	if (!(--self->SpawnInfo))
 	{
@@ -797,12 +805,13 @@ static qboolean FXShrineGlowThink(struct client_entity_s *self, centity_t *owner
 	}
 
 	self->d_alpha = -0.45;
- 	self->d_scale = -1.0;
+	self->d_scale = -1.0;
 	return true;
 }
 
 // create the little glow bits..
-static qboolean FXShrineGhostThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineGhostThink(struct client_entity_s *self, centity_t *owner)
 {
 	int					i;
 	client_entity_t		*glow;
@@ -823,8 +832,8 @@ static qboolean FXShrineGhostThink(struct client_entity_s *self, centity_t *owne
 		glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		glow->SpawnInfo = 2;
 		glow->AddToView = OffsetLinkedEntityUpdatePlacement;
-	 	glow->d_scale = flrand(0.5, 2.0);
-	 	glow->r.scale = 0.1;
+		glow->d_scale = flrand(0.5, 2.0);
+		VectorSet(glow->r.scale, 0.1, 0.1, 0.1);
 		glow->d_alpha = 1.0;
 		glow->alpha = 0.1;
 		glow->Update = FXShrineGlowThink;
@@ -855,7 +864,8 @@ Speed effect routine
 */
 
 // create the two circles that ring the player
-static qboolean FXShrineSpeedThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineSpeedThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	int					count, i;
@@ -937,7 +947,8 @@ Weapons Power Up effect routine
 */
 
 // create the two circles that ring the player
-static qboolean FXShrinePowerupThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrinePowerupThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	int					count, i;
@@ -1055,7 +1066,8 @@ static short ShrineParticle[12][2] =
 
 
 // make the shrine glow ball effect shimmer, and give off steam
-static qboolean FXShrineBallThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXShrineBallThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t		*ce;
 	paletteRGBA_t			color;
@@ -1202,7 +1214,7 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	burst->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	burst->r.frame = 1;
 	burst->radius=64;
-	burst->r.scale=1.0;
+	VectorSet(burst->r.scale, 1.0, 1.0, 1.0);
 	burst->d_alpha=-4.0;
 	burst->d_scale=-4.0;
 	AddEffect(NULL, burst);

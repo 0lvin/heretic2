@@ -64,7 +64,7 @@ void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 						flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED),
 						flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED),
 						flrand(-BARREL_EXPLODE_SPEED, BARREL_EXPLODE_SPEED));
-		subexplosion->r.scale = 0.1;
+		VectorSet(subexplosion->r.scale, 0.1, 0.1, 0.1);
 		subexplosion->d_scale = 3.0 + ballnum;
 		subexplosion->d_alpha = -1.5 - 0.5*ballnum;
 
@@ -77,7 +77,7 @@ void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->flags |= CEF_ADDITIVE_PARTS | CEF_PULSE_ALPHA;
 	explosion->alpha = 0.1;
-	explosion->r.scale= 0.1;
+	VectorSet(explosion->r.scale, 0.1, 0.1, 0.1);
 	explosion->d_alpha = 3.0;
 	explosion->d_scale=5.0;
 	explosion->radius=128;
@@ -115,7 +115,7 @@ void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 1;
 	explosion->radius=128;
-	explosion->r.scale=2.0;
+	VectorSet(explosion->r.scale, 2.0, 2.0, 2.0);
 	explosion->d_alpha=-4.0;
 	explosion->d_scale=-4.0;
 	AddEffect(NULL, explosion);

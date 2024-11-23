@@ -18,9 +18,12 @@
 #include "utilities.h"
 #include "../header/g_playstats.h"
 
-static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self, centity_t *Owner);
+static qboolean
+FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner);
+static qboolean
+FXMagicMissileModelThink1(struct client_entity_s *Self, centity_t *Owner);
+static qboolean
+FXMagicMissileModelThink2(struct client_entity_s *Self, centity_t *Owner);
 
 #define	NUM_MISSILE_MODELS	3
 
@@ -45,7 +48,8 @@ void PreCacheArray()
 #define ARRAY_TRAIL_COUNT	3
 #define TRAIL_SPEED			32.0
 
-static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	int				i;
 	client_entity_t	*trail;
@@ -58,6 +62,8 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t
 //	for(i = 0; i < count; i++)
 	for (i=0; i<2; i++)	// Each cardinal direction
 	{
+		float scale;
+
 		trail = ClientEntity_new(FX_WEAPON_MAGICMISSILE,
 								   0,
 								   Self->r.origin,
@@ -79,7 +85,8 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t
 
 		trail->r.model = array_models[0];
 		trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		trail->r.scale = flrand(ARRAY_TRAIL_SCALE, ARRAY_TRAIL_SCALE + 0.1);
+		scale = flrand(ARRAY_TRAIL_SCALE, ARRAY_TRAIL_SCALE + 0.1);
+		VectorSet(trail->r.scale, scale, scale, scale);
 		trail->d_scale = -1.0;
 		trail->d_alpha = -2.0;
 		trail->radius = 20.0;
@@ -100,7 +107,7 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t
 	VectorMA(trail->r.origin, -0.1, Self->velocity, trail->r.endpos);
 	VectorScale(Self->velocity, 0.9, trail->velocity);
 	VectorScale(Self->velocity, 0.5, trail->velocity2);
-	trail->r.scale = 12.0;
+	VectorSet(trail->r.scale, 12.0, 12.0, 12.0);
 	trail->d_scale = -24.0;
 	trail->d_alpha = -2.0;
 
@@ -114,14 +121,15 @@ static qboolean FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t
 // -------------------------
 // ************************************************************************************************
 
-static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXMagicMissileModelThink1(struct client_entity_s *Self, centity_t *Owner)
 {
-	Self->d_scale=0.0;
-	Self->r.scale = 0.8;
+	Self->d_scale = 0.0;
+	VectorSet(Self->r.scale, 0.8, 0.8, 0.8);
 
-	Self->Update=FXMagicMissileModelThink2;
+	Self->Update = FXMagicMissileModelThink2;
 
-	FXMagicMissileTrailThink(Self,Owner);
+	FXMagicMissileTrailThink(Self, Owner);
 	return true;
 }
 
@@ -130,7 +138,8 @@ static qboolean FXMagicMissileModelThink1(struct client_entity_s *Self, centity_
 // -------------------------
 // ************************************************************************************************
 
-static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXMagicMissileModelThink2(struct client_entity_s *Self, centity_t *Owner)
 {
 	FXMagicMissileTrailThink(Self,Owner);
 	return true;
@@ -173,7 +182,7 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	VectorScale(Missile->up, TRAIL_SPEED, Missile->up);
 
 	Missile->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD;
-	Missile->r.scale=0.4;
+	VectorSet(Missile->r.scale, 0.4, 0.4, 0.4);
 	Missile->alpha=1.0;
 	Missile->d_alpha=0.0;
 	Missile->d_scale=4.0;
@@ -208,10 +217,13 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 	for(i = 0; i < NUM_ARRAY_EXPLODE_PARTS; i++)
 	{
+		float scale;
+
 		smokepuff = ClientEntity_new(type, flags, origin, 0, 500);
 
 		smokepuff->r.model = array_models[1];
-		smokepuff->r.scale = flrand(ARRAY_SCALE * 0.75, ARRAY_SCALE * 1.5);
+		scale = flrand(ARRAY_SCALE * 0.75, ARRAY_SCALE * 1.5);
+		VectorSet(smokepuff->r.scale, scale, scale, scale);
 		smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 		VectorRandomCopy(dir, smokepuff->velocity, ARRAY_EXPLODE_SPEED);
@@ -230,7 +242,7 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	smokepuff->r.model = array_models[0];
 	smokepuff->r.frame = 0;
 
-	smokepuff->r.scale = 2.0;
+	VectorSet(smokepuff->r.scale, 2.0, 2.0, 2.0);
 	smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 	VectorScale(dir, 8.0, smokepuff->velocity);
@@ -258,7 +270,7 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t *puff;
 	client_particle_t *spark;
 	paletteRGBA_t pal;
-	float length, scale;
+	float length;
 	short slength[BLAST_NUM_SHOTS], syaw, spitch;
 	int		shot;
 	vec3_t	angles;
@@ -278,6 +290,8 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 	angles[YAW] -= BLAST_ANGLE_INC * (BLAST_NUM_SHOTS-1) * 0.5;
 	for (shot=0; shot<BLAST_NUM_SHOTS; shot++)
 	{
+		float scale;
+
 		AngleVectors(angles, unit, NULL, NULL);
 		length = (float)slength[shot];
 		VectorMA(origin, length, unit, endpos);
@@ -294,7 +308,7 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 			puff = ClientEntity_new(type, flags | CEF_ADDITIVE_PARTS, curpos, NULL, 750);
 			puff->r.model = array_models[1];
 			puff->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-			puff->r.scale = scale;
+			VectorSet(puff->r.scale, scale, scale, scale);
 			puff->radius = 14.0;
 			puff->alpha = 0.95;
 //			puff->d_alpha = -1.0;
@@ -313,7 +327,8 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 		puff->r.model = array_models[0];
 		puff->r.frame = 0;
 		puff->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		puff->r.scale = 1.0 + length * 0.001;		// Bigger when further out.
+		scale = 1.0 + length * 0.001;		// Bigger when further out.
+		VectorSet(puff->r.scale, scale, scale, scale);
 		puff->alpha = 0.95;
 		puff->d_scale = -5.0;
 		puff->d_alpha = -1.0;

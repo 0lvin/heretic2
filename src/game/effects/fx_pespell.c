@@ -48,7 +48,8 @@ enum
 // FXPESpellTrailThink
 // ************************************************************************************************
 
-static qboolean FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t			accel_dir;
@@ -62,6 +63,8 @@ static qboolean FXPESpellTrailThink(struct client_entity_s *self, centity_t *own
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
 	while(i--)
 	{
+		float scale;
+
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
 		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
@@ -69,7 +72,8 @@ static qboolean FXPESpellTrailThink(struct client_entity_s *self, centity_t *own
 		VectorNormalize(accel_dir);
 
 		TrailEnt->r.model = spell_models[0];
-		TrailEnt->r.scale = SPELL_SCALE + flrand(0.0, 0.05);
+		scale = SPELL_SCALE + flrand(0.0, 0.05);
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 
 		TrailEnt->r.color.r = irand(40, 60);
 		TrailEnt->r.color.g = irand(245, 255);
@@ -155,13 +159,16 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 
 	while(i--)
 	{
+		float scale;
+
 		if (!i)
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
 		SmokePuff->r.model = spell_models[1];
-		SmokePuff->r.scale=flrand(0.8,1.6);
+		scale = flrand(0.8, 1.6);
+		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale=-2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 64.0);
@@ -198,7 +205,8 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 // FXPESpell2TrailThink
 // ************************************************************************************************
 
-static qboolean FXPESpell2TrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXPESpell2TrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t			accel_dir;
@@ -212,6 +220,8 @@ static qboolean FXPESpell2TrailThink(struct client_entity_s *self, centity_t *ow
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
 	while(i--)
 	{
+		float scale;
+
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
 		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
@@ -221,7 +231,8 @@ static qboolean FXPESpell2TrailThink(struct client_entity_s *self, centity_t *ow
 		TrailEnt->r.model = spell_models[2];
 		TrailEnt->r.frame = irand(0,1);
 
-		TrailEnt->r.scale = SPELL_SCALE + flrand(0.0, 0.05);
+		scale = SPELL_SCALE + flrand(0.0, 0.05);
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 
 		/*TrailEnt->r.color.g = irand(40, 60);
 		TrailEnt->r.color.b = irand(245, 255);
@@ -307,13 +318,16 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 
 	while(i--)
 	{
+		float scale;
+
 		if (!i)
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
 		SmokePuff->r.model = spell_models[3];
-		SmokePuff->r.scale=flrand(0.8,1.6);
+		scale = flrand(0.8, 1.6);
+		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale=-2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 64.0);
@@ -351,7 +365,8 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 // FXPESpell3TrailThink
 // ************************************************************************************************
 
-static qboolean FXPESpell3TrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXPESpell3TrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t			accel_dir;
@@ -365,6 +380,8 @@ static qboolean FXPESpell3TrailThink(struct client_entity_s *self, centity_t *ow
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
 	while(i--)
 	{
+		float scale;
+
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
 		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
@@ -372,7 +389,8 @@ static qboolean FXPESpell3TrailThink(struct client_entity_s *self, centity_t *ow
 		VectorNormalize(accel_dir);
 
 		TrailEnt->r.model = spell_models[0];
-		TrailEnt->r.scale = SPELL_SCALE + flrand(0.0, 0.05);
+		scale = SPELL_SCALE + flrand(0.0, 0.05);
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 
 		/*TrailEnt->r.color.g = irand(40, 60);
 		TrailEnt->r.color.r = irand(245, 255);
@@ -458,13 +476,16 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 
 	while(i--)
 	{
+		float scale;
+
 		if (!i)
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,500);
 		else
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
 		SmokePuff->r.model = spell_models[4];
-		SmokePuff->r.scale=flrand(1.0, 1.8);
+		scale = flrand(1.0, 1.8);
+		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale=-2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 64.0);

@@ -82,19 +82,21 @@ static qboolean FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *s
 // FXInsectStaffTrailThink
 // ************************************************************************************************
 
-static qboolean FXInsectStaffTrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXInsectStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t			TrailStart,Trail;
 	float			TrailLength,DeltaTrailLength;
 	vec3_t			Right,Up;
 	int				NoOfIntervals;
-	float			Theta,DeltaTheta;
+	float			Theta, DeltaTheta, scale;
 	client_entity_t	*TrailEnt;
 
 	VectorCopy(owner->origin,TrailStart);
 	VectorSubtract(owner->origin, self->origin, Trail);
 
-	self->r.scale = flrand(0.8, 1.3);
+	scale = flrand(0.8, 1.3);
+	VectorSet(self->r.scale, scale, scale, scale);
 	if((TrailLength=VectorNormalize(Trail))>0.05)
 	{
 		PerpendicularVector(Right,Trail);
@@ -113,6 +115,7 @@ static qboolean FXInsectStaffTrailThink(struct client_entity_s *self, centity_t 
 
 		while(TrailLength>0.0)
 		{
+			float scale;
 
 			TrailEnt=ClientEntity_new(FX_I_EFFECTS,
 									  self->flags&~(CEF_OWNERS_ORIGIN|CEF_NO_DRAW),
@@ -128,7 +131,8 @@ static qboolean FXInsectStaffTrailThink(struct client_entity_s *self, centity_t 
 
 			VectorRandomCopy(self->velocity, TrailEnt->velocity, flrand(0, 4));
 
-			TrailEnt->r.scale = FIST_SCALE+flrand(0.0, 0.05);
+			scale = FIST_SCALE + flrand(0.0, 0.05);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->d_alpha = flrand(-1.75, -2);
 			TrailEnt->d_scale = flrand(-0.75, -1.0);
 			TrailEnt->radius=20.0;
@@ -156,12 +160,14 @@ void FXInsectStaff(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	client_entity_t	*Trail;
 	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
+	float scale;
 
 	Trail=ClientEntity_new(type, flags, origin, NULL, 17);
 
 	Trail->r.model = ins_models[0];
 	Trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD;
-	Trail->r.scale = flrand(0.8, 1.3);
+	scale = flrand(0.8, 1.3);
+	VectorSet(Trail->r.scale, scale, scale, scale);
 	Trail->d_alpha = 0.0f;
 	Trail->d_scale = 0.0f;
 	Trail->r.color.c = 0xffffffff;
@@ -229,9 +235,13 @@ void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec
 // FXGlobeOfOuchinessGlobeThink -
 // ****************************************************************************
 
-static qboolean FXGlobeOfOuchinessGlobeThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXGlobeOfOuchinessGlobeThink(struct client_entity_s *self, centity_t *owner)
 {
-	self->r.scale = flrand(0.35, 0.50);
+	float scale;
+
+	scale = flrand(0.35, 0.50);
+	VectorSet(self->r.scale, scale, scale, scale);
 
 	return true;
 }
@@ -240,7 +250,8 @@ static qboolean FXGlobeOfOuchinessGlobeThink(struct client_entity_s *self, centi
 // FXGlobeOfOuchinessAuraThink -
 // ****************************************************************************
 
-static qboolean FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t			TrailStart,Trail;
 	float			TrailLength,DeltaTrailLength;
@@ -313,10 +324,10 @@ static qboolean FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centit
 
 void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short CasterEntnum)
 {
-	client_entity_t	*GlobeThinker,
-					*AuraThinker;
-	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
-	int				caster_update;
+	client_entity_t *GlobeThinker, *AuraThinker;
+	paletteRGBA_t LightColor = {{{0, 0, 255, 255}}};
+	int caster_update;
+	float scale;
 
 	// Create a fiery blue aura around the globe.
 
@@ -342,7 +353,8 @@ void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short Cast
 
 	GlobeThinker->r.model = globe_models[1];
 	GlobeThinker->r.flags |= RF_TRANSLUCENT|RF_TRANS_ADD;
-	GlobeThinker->r.scale = flrand(0.15, 0.20);
+	scale = flrand(0.15, 0.20);
+	VectorSet(GlobeThinker->r.scale, scale, scale, scale);
 
 	GlobeThinker->r.color.r=irand(128, 180);
 	GlobeThinker->r.color.g=irand(128, 180);
@@ -359,7 +371,8 @@ void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short Cast
 // FXGlobeOfOuchinessGlowballThink -
 // ****************************************************************************
 
-static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*Spark;
 
@@ -369,6 +382,7 @@ static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, ce
 	if(self->color.r>3)
 	{
 		// Create a trailing spark.
+		float scale;
 
 		Spark=ClientEntity_new(FX_I_EFFECTS,
 							   self->flags&~(CEF_OWNERS_ORIGIN),
@@ -378,7 +392,8 @@ static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, ce
 
 		Spark->r.model = globe_models[2];
 		Spark->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		Spark->r.scale = FIST_SCALE+flrand(0.0, 0.05);
+		scale = FIST_SCALE + flrand(0.0, 0.05);
+		VectorSet(Spark->r.scale, scale, scale, scale);
 		Spark->d_alpha = flrand(-1.75, -2);
 		Spark->d_scale = flrand(-0.75, -1.0);
 		Spark->radius=20.0;
@@ -414,7 +429,8 @@ static qboolean FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, ce
 // FXGlobeOfOuchinessGlowballSpawnerThink -
 // ****************************************************************************
 
-static qboolean FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*Glowball;
 	vec3_t			Forward,Right,
@@ -573,7 +589,7 @@ void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 	hellbolt->r.model = spear_models[0];
 	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-	hellbolt->r.scale = 1.0;
+	VectorSet(hellbolt->r.scale, 1.0, 1.0, 1.0);
 	hellbolt->r.color = LightColor;
 	hellbolt->d_alpha = 0.0;
 	hellbolt->radius = 10.0F;
@@ -590,11 +606,12 @@ qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*spark;
 	int					i;
-	float				dist;
+	float				dist, scale;
 	vec3_t				dir;
 
 	self->r.color.a = irand(128, 136);
-	self->r.scale = flrand(0.1, 0.5);
+	scale = flrand(0.1, 0.5);
+	VectorSet(self->r.scale, scale, scale, scale);
 
 	if(!VectorCompare(owner->lerp_origin, self->startpos2))
 		VectorCopy(owner->lerp_origin, self->startpos2);
@@ -635,6 +652,7 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*hellbolt;
 	paletteRGBA_t	LightColor = {{{255, 128, 255, 255}}};
+	float scale;
 
 	hellbolt = ClientEntity_new(type, CEF_OWNERS_ORIGIN | CEF_ABSOLUTE_PARTS, origin, NULL, 20);
 
@@ -642,7 +660,8 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 	hellbolt->r.color.c = 0xffffffff;
-	hellbolt->r.scale = flrand(0.2, 0.4);
+	scale = flrand(0.2, 0.4);
+	VectorSet(hellbolt->r.scale, scale, scale, scale);
 	hellbolt->d_alpha = 0.0;
 	hellbolt->radius = 10.0F;
 	hellbolt->AddToView = LinkedEntityUpdatePlacement;
@@ -662,7 +681,8 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 	hellbolt->r.color.c = 0x33ffffff;
-	hellbolt->r.scale = flrand(1, 2);
+	scale = flrand(1, 2);
+	VectorSet(hellbolt->r.scale, scale, scale, scale);
 	hellbolt->d_alpha = 0.0;
 	hellbolt->radius = 10.0F;
 	hellbolt->AddToView = LinkedEntityUpdatePlacement;
@@ -689,11 +709,14 @@ void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Di
 
 	for(i = 0; i < NUM_SPEAR_EXPLODES; i++)
 	{
+		float scale;
+
 		smokepuff = ClientEntity_new(type, flags, origin, NULL, 500);
 
 		smokepuff->r.model = spear_models[1];
 		smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		smokepuff->r.scale = flrand(0.2, 0.3);
+		scale = flrand(0.2, 0.3);
+		VectorSet(smokepuff->r.scale, scale, scale, scale);
 		smokepuff->r.color = lightcolor;
 
 		VectorRandomCopy(Dir, smokepuff->velocity, 64);
@@ -715,18 +738,22 @@ void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Di
 
 void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Dir)
 {
-	client_entity_t	*smokepuff;
-	int				i;
+	client_entity_t *smokepuff;
+	float scale;
+	int i;
 
 	Vec3ScaleAssign(32.0, Dir);
 
 	for(i = 0; i < NUM_SPEAR_EXPLODES; i++)
 	{
+		float scale;
+
 		smokepuff = ClientEntity_new(type, flags, origin, NULL, 500);
 
 		smokepuff->r.model = spear_models[2];
 		smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		smokepuff->r.scale = flrand(0.7, 1);
+		scale = flrand(0.7, 1);
+		VectorSet(smokepuff->r.scale, scale, scale, scale);
 
 		VectorRandomCopy(Dir, smokepuff->velocity, 64);
 		VectorSet(smokepuff->acceleration, 0.0, 0.0, GetGravity() * 0.3);
@@ -750,7 +777,8 @@ void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t D
 	smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 	smokepuff->r.color.c = 0x77ffffff;
-	smokepuff->r.scale = flrand(0.3, 0.5);
+	scale = flrand(0.3, 0.5);
+	VectorSet(smokepuff->r.scale, scale, scale, scale);
 	smokepuff->d_scale = 2;
 	smokepuff->d_alpha = -2;
 	smokepuff->radius = 10.0F;
@@ -763,7 +791,8 @@ void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t D
 //	INSECT_SPEAR,
 //	INSECT_RIGHTFOOT,
 //	INSECT_LEFTFOOT,
-static qboolean FXStaffElementThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXStaffElementThink(struct client_entity_s *self, centity_t *owner)
 {
 	float	Frac,
 			Multiplier;
@@ -799,7 +828,8 @@ static qboolean FXStaffElementThink(struct client_entity_s *self, centity_t *own
 // -----------------
 // ************************************************************************************************
 
-static qboolean FXISwordTrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXISwordTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	int				NoOfIntervals;
 	client_entity_t	*TrailEnt;
@@ -842,6 +872,8 @@ static qboolean FXISwordTrailThink(struct client_entity_s *self, centity_t *owne
 
 	while (NoOfIntervals >= 0)
 	{
+		float scale;
+
 		VectorMA(last_org, incr, diff, newpoint);
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, self->flags & ~CEF_NO_DRAW, newpoint, 0, 100);
 		VectorCopy(newpoint, TrailEnt->origin);
@@ -852,7 +884,8 @@ static qboolean FXISwordTrailThink(struct client_entity_s *self, centity_t *owne
 		TrailEnt->d_scale=-0.25;
 		TrailEnt->d_alpha=-0.1;
 		TrailEnt->color.c=0x50000018;
-		TrailEnt->r.scale=self->xscale*2.0;
+		scale = self->xscale * 2.0;
+		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 		TrailEnt->startTime=fxi.cl->frame.servertime-100;
 		TrailEnt->AnimSpeed=0.20;
 		TrailEnt->NoOfAnimFrames=2;

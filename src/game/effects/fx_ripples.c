@@ -25,7 +25,8 @@ void PreCacheRipples()
 
 // --------------------------------------------------------------
 
-static qboolean FXRippleSpawner(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FXRippleSpawner(client_entity_t *spawner, centity_t *owner)
 {
 	client_entity_t		*ripple;
 	float				alpha;
@@ -34,9 +35,9 @@ static qboolean FXRippleSpawner(client_entity_t *spawner, centity_t *owner)
 
 	ripple = ClientEntity_new(-1, 0, spawner->origin, spawner->direction, 1000);
 
- 	ripple->r.model = ripple_models[0];
+	ripple->r.model = ripple_models[0];
 	ripple->r.flags |= RF_FIXED | RF_TRANSLUCENT | RF_ALPHA_TEXTURE;
-	ripple->r.scale = SCALE;
+	VectorSet(ripple->r.scale, SCALE, SCALE, SCALE);
 	ripple->d_scale = DELTA_SCALE;
 	ripple->alpha = alpha;
 	ripple->d_alpha = -alpha;

@@ -45,15 +45,16 @@ Approach(float curr, float dest, float rate)
 static qboolean
 FXMistThink(client_entity_t *mist, centity_t *owner)
 {
-	float	mod;
+	float	mod, scale;
 
 	mist->flags &= ~CEF_DISAPPEARED;
 
 	mist->Scale += flrand(-0.05, 0.05) * mist->SpawnData;
 	mist->Scale = Q_min( Q_max(mist->Scale, 0.6 * mist->SpawnData), 1.4 * mist->SpawnData);
-	mist->r.scale = Approach(mist->r.scale, mist->Scale, 0.003 * mist->SpawnData);
+	scale = Approach(AVG_VEC3T(mist->r.scale), mist->Scale, 0.003 * mist->SpawnData);
+	VectorSet(mist->r.scale, scale, scale, scale);
 
-	mod = (mist->r.scale / mist->SpawnData) * MIST_ALPHA;
+	mod = (AVG_VEC3T(mist->r.scale) / mist->SpawnData) * MIST_ALPHA;
 	if(mist->r.depth > MIST_FAR)
 	{
 		mist->alpha = mod;
@@ -80,7 +81,7 @@ void FXMist(centity_t *owner, int type, int flags, vec3_t origin)
 
 	mist->r.model = mist_models[0];
 	mist->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	mist->r.scale = mist->SpawnData;
+	VectorSet(mist->r.scale, mist->SpawnData, mist->SpawnData, mist->SpawnData);
 
 	mist->flags |= CEF_NOMOVE;
 	mist->Update = FXMistThink;

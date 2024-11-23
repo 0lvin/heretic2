@@ -154,10 +154,19 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 		}
 
 		effect->alpha = 0.35;
-		if(speed>1)
-			effect->r.scale = flrand(0.3, 0.75);
+
+		if(speed > 1)
+		{
+			float scale;
+
+			scale = flrand(0.3, 0.75);
+			VectorSet(effect->r.scale, scale, scale, scale);
+		}
 		else
-			effect->r.scale = 0.1;
+		{
+			VectorSet(effect->r.scale, 0.1, 0.1, 0.1);
+		}
+
 		effect->d_scale = 2.0;
 		effect->d_alpha = -2.0;
 		effect->color.c = 0xFFFFFFFF;
@@ -209,10 +218,16 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 
 		effect->Update = PebbleUpdate;
 		effect->alpha = 1.0;
-		if(speed>1)
-			effect->r.scale = flrand(0.8, 1.5) * speed/100;
+		if(speed > 1)
+		{
+			float scale = flrand(0.8, 1.5) * speed / 100;
+			VectorSet(effect->r.scale, scale, scale, scale);
+		}
 		else
-			effect->r.scale = flrand(0.1, 0.25);
+		{
+			float scale = flrand(0.1, 0.25);
+			VectorSet(effect->r.scale, scale, scale, scale);
+		}
 		effect->d_scale = 0.0;
 		effect->d_alpha = 0.0;
 		effect->color.c = 0xFFFFFFFF;
@@ -246,7 +261,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 		VectorScale(work, 50.0, effect->velocity);
 		effect->acceleration[2] = -100.0;
 		effect->alpha = 0.5;
-		effect->r.scale = 0.1;
+		VectorSet(effect->r.scale, 0.1, 0.1, 0.1);
 		effect->d_scale = 1.0;
 		effect->d_alpha = -1.0;
 		effect->color.c = 0xFFFFFFFF;
@@ -261,7 +276,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 		effect->r.model = genfx_models[5];
 		effect->r.frame = 0;
 		effect->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		effect->r.scale = 0.4;
+		VectorSet(effect->r.scale, 0.4, 0.4, 0.4);
 		effect->alpha = .95;
 		effect->d_scale = -1.6;
 		effect->d_alpha = -3.0;			// Alpha goes up to 1, then down to zero.

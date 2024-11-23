@@ -55,7 +55,7 @@ void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 	VectoAngles(vel, hellbolt->r.angles);
 	VectorCopy(vel, hellbolt->velocity);
 
-	hellbolt->r.scale = 0.5;
+	VectorSet(hellbolt->r.scale, 0.5, 0.5, 0.5);
 	hellbolt->r.color = lightcolor;
 	hellbolt->d_alpha = 0.0;
 	hellbolt->radius = 10.0F;
@@ -171,17 +171,18 @@ void FXHellstaffPowerBurn(centity_t *owner, int type, int flags, vec3_t origin)
 
 
 // CreateEffect FX_WEAPON_HELLSTAFF_POWER
-void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
+void
+FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 {
-	vec3_t				endpos, curpos, dpos, angles;
-	vec3_t				fwd, right, up, dir;
-	client_entity_t		*beam, *beam2;
-	paletteRGBA_t		lightcolor = {{{255, 255, 255, 255}}};
-	int					i;
-	client_particle_t	*spark;
-	float				len;
-	int					count;
-	byte				blen;
+	vec3_t endpos, curpos, dpos, angles;
+	vec3_t fwd, right, up, dir;
+	client_entity_t *beam, *beam2;
+	paletteRGBA_t lightcolor = {{{255, 255, 255, 255}}};
+	int i;
+	client_particle_t *spark;
+	float len, scale;
+	int count;
+	byte blen;
 
 	VectorClear(angles);
 	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_HELLSTAFF_POWER].formatString, &dir, &blen);
@@ -196,7 +197,8 @@ void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	beam = ClientEntity_new(-1, CEF_DONT_LINK | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS, origin, NULL, 333);
 	beam->r.model = hell_models[1];
 	beam->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	beam->r.scale = flrand(6.0, 10.0);
+	scale = flrand(6.0, 10.0);
+	VectorSet(beam->r.scale, scale, scale, scale);
 	beam->r.tile = len/flrand(40.0, 48.0);
 	beam->r.tileoffset = flrand(0.0, 1.0);
 	beam->radius = 40.0;
@@ -212,7 +214,8 @@ void FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	beam2->r.model = hell_models[1];
 	beam2->r.frame = 1;
 	beam2->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	beam2->r.scale = beam->r.scale * 1.4;
+	scale *= 1.4;
+	VectorSet(beam2->r.scale, scale, scale, scale);
 	beam2->r.tile = beam->r.tile;
 	beam2->r.tileoffset = beam->r.tileoffset;
 	beam2->radius = 40.0;

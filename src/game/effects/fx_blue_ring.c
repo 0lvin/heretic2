@@ -45,7 +45,8 @@ void FXBlueRing(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		flameitem->r.model = blue_models[0];
 		flameitem->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		flameitem->r.frame = 0;
-		flameitem->r.scale = FLAME_INIT_SCALE;
+		VectorSet(flameitem->r.scale,
+			FLAME_INIT_SCALE, FLAME_INIT_SCALE, FLAME_INIT_SCALE);
 		flameitem->d_scale = FLAME_DELTA_SCALE;
 
 		VectorSet(flameitem->velocity, FLAME_ABSVEL * cos(curAng), FLAME_ABSVEL * sin(curAng), 0);

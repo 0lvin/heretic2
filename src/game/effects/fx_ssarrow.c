@@ -79,7 +79,7 @@ static qboolean FXSsithraArrowMissileThink(client_entity_t *missile, centity_t *
 		ce->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		ce->r.color = missile->color;
 		ce->radius = 16.0F;
-		ce->r.scale = 0.1F;
+		VectorSet(ce->r.scale, 0.1F, 0.1F, 0.1F);
 		ce->d_scale = 2.0F;
 		ce->d_alpha = -2.2F;
 		AddEffect(NULL, ce);

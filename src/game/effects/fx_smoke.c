@@ -34,7 +34,7 @@ void FXDarkSmoke(vec3_t origin, float scale, float range)
 	effect = ClientEntity_new(-1, RF_TRANSLUCENT, origin, NULL, 500);
 
 	effect->r.model = smoke_models[0];
-	effect->r.scale = scale;
+	VectorSet(effect->r.scale, scale, scale, scale);
 	effect->r.color.c = 0xaa777777;
 
 	duration = Q_ftol(GetTimeToReachDistance(50.0, 0.0, range));
@@ -57,7 +57,7 @@ void FXSmoke(vec3_t origin, float scale, float range)
 	effect = ClientEntity_new(-1, RF_TRANSLUCENT, origin, NULL, 500);
 
 	effect->r.model = smoke_models[0];
-	effect->r.scale = scale;
+	VectorSet(effect->r.scale, scale, scale, scale);
 	effect->r.color.c = 0xffffffff;
 
 	duration = Q_ftol(GetTimeToReachDistance(50.0, 0.0, range));
@@ -72,13 +72,15 @@ void FXSmoke(vec3_t origin, float scale, float range)
 	AddEffect(NULL, effect);	// add the effect as independent world effect
 }
 
-static qboolean FXSmokeSpawner(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXSmokeSpawner(struct client_entity_s *self, centity_t *owner)
 {
-	FXSmoke(self->r.origin, self->r.scale, self->Scale);
+	FXSmoke(self->r.origin, AVG_VEC3T(self->r.scale), self->Scale);
 	return true;
 }
 
-static qboolean FXSmokeSpawner2(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXSmokeSpawner2(struct client_entity_s *self, centity_t *owner)
 {
 	if(self->LifeTime--)
 	{
@@ -114,11 +116,15 @@ void FXEnvSmoke(centity_t *owner,int type,int flags,vec3_t origin)
 	}
 	else
 	{
+		float fscale;
+
 		fxi.GetEffect(owner,flags,clientEffectSpawners[FX_ENVSMOKE].formatString, &scale, &dir, &speed, &wait, &maxrange);
 		AnglesFromDir(dir, self->r.angles);
 		self->velocity[0] = speed * 10;
 		self->Scale = maxrange;
-		self->r.scale = 32.0 / scale;
+		fscale = 32.0 / scale;
+		VectorSet(self->r.scale, fscale, fscale, fscale);
+
 		self->updateTime = wait * 1000;
 		self->Update = FXSmokeSpawner;
 		AddEffect(owner, self);

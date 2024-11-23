@@ -40,7 +40,8 @@ void PreCacheFist()
 // FXFlyingFistTrailThink
 // ************************************************************************************************
 
-static qboolean FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t			accel_dir;
@@ -71,15 +72,21 @@ static qboolean FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *
 
 		if (self->flags & CEF_FLAG7)
 		{
+			float scale;
+
 			TrailEnt->r.model = fist_models[1];
-			TrailEnt->r.scale = 3.0 * (trailscale + flrand(0.0, 0.05));
+			scale = 3.0 * (trailscale + flrand(0.0, 0.05));
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-8.0, 8.0));
 			VectorScale(accel_dir, flrand(-100.0, -400.0), TrailEnt->velocity);
 		}
 		else
 		{
+			float scale;
+
 			TrailEnt->r.model = fist_models[0];
-			TrailEnt->r.scale = trailscale + flrand(0.0, 0.05);
+			scale = trailscale + flrand(0.0, 0.05);
+			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
 			VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
 		}
@@ -127,9 +134,9 @@ void FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
 		missile->r.model = fist_models[2];
 		missile->r.skinnum = 1;
 		if (flags & CEF_FLAG8)		// Wimpy shot, because didn't have mana.
-			missile->r.scale = 1.0;
+			VectorSet(missile->r.scale, 1.0, 1.0, 1.0);
 		else
-			missile->r.scale = 1.5;
+			VectorSet(missile->r.scale, 1.5, 1.5, 1.5);
 
 		LightColor.c = 0xff0000ff;		// Red light
 		lightsize = 160.0;
@@ -228,12 +235,18 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 			blastvel = FIST_POWER_BLAST_VEL;
 			if (wimpy)
 			{
-				blastvel*=0.3;
-				SmokePuff->r.scale=flrand(0.8,1.4);
+				float scale;
+
+				blastvel *= 0.3;
+				scale = flrand(0.8, 1.4);
+				VectorSet(SmokePuff->r.scale, scale, scale, scale);
 			}
 			else
 			{
-				SmokePuff->r.scale=flrand(1.2,2.0);
+				float scale;
+
+				scale = flrand(1.2, 2.0);
+				VectorSet(SmokePuff->r.scale, scale, scale, scale);
 			}
 
 			VectorRandomCopy(dir, SmokePuff->velocity, blastvel);
@@ -242,16 +255,22 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 		}
 		else
 		{	// Non-powered up.
-			SmokePuff->d_scale=-2.0;
+			SmokePuff->d_scale = -2.0;
 			blastvel = FIST_BLAST_VEL;
 			if (wimpy)
 			{
-				blastvel*=0.5;
-				SmokePuff->r.scale=flrand(0.5,1.0);
+				float scale;
+
+				blastvel *= 0.5;
+				scale = flrand(0.5, 1.0);
+				VectorSet(SmokePuff->r.scale, scale, scale, scale);
 			}
 			else
 			{
-				SmokePuff->r.scale=flrand(0.8,1.6);
+				float scale;
+
+				scale = flrand(0.8, 1.6);
+				VectorSet(SmokePuff->r.scale, scale, scale, scale);
 			}
 
 			VectorRandomCopy(dir, SmokePuff->velocity, blastvel);

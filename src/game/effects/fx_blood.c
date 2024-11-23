@@ -392,6 +392,8 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 
 	if(trueplane || GetTruePlane(origin, normal))
 	{
+		float scale;
+
 		bloodmark = ClientEntity_new(FX_BLOOD, CEF_NOMOVE, origin, tnormal, 1000);
 
 		bloodmark->r.angles[ROLL] = flrand(0, ANGLE_360);
@@ -422,7 +424,8 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 		bloodmark->alpha = 1.0;
 
 		bloodmark->radius = 10.0;
-		bloodmark->r.scale = flrand(0.2, 0.45);
+		scale = flrand(0.2, 0.45);
+		VectorSet(bloodmark->r.scale, scale, scale, scale);
 
 		if(tnormal[2] <= -0.7 && !irand(0, 2) && bloodmark->r.frame != 2 && bloodmark->r.frame != 4)
 		{
