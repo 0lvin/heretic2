@@ -271,6 +271,7 @@ StaticSpawnSearch(const char *classname)
 	return NULL;
 }
 
+
 /*
  * Finds the spawn function for
  * the entity and calls it
@@ -498,7 +499,6 @@ ED_ParseField(const char *key, const char *value, edict_t *ent)
 	byte *b;
 	float v;
 	vec3_t vec;
-	int color[4];
 
 	if (!ent || !value || !key)
 	{
