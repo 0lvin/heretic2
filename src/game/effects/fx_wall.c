@@ -86,7 +86,7 @@ FXFireWormThink(client_entity_t *worm, centity_t *owner)
 			blast->d_alpha = -0.5;
 			scale = 0.25 * AVG_VEC3T(worm->r.scale);
 			VectorSet(blast->r.scale, scale, scale, scale);
-			blast->d_scale = -3.0* AVG_VEC3T(worm->r.scale);
+			blast->d_scale = -3.0 * AVG_VEC3T(worm->r.scale);
 			VectorSet(blast->velocity,
 						flrand(-0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale), 0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale)),
 						flrand(-0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale), 0.25*FIREWORM_BLASTVEL* AVG_VEC3T(worm->r.scale)),

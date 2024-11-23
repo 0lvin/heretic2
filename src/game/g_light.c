@@ -262,17 +262,19 @@ void firemove_think(edict_t *self)
 
 /*
  * QUAKED env_fire (1 .5 0) (0 -10 -24) (20 10 0)  INVULNERABLE ANIMATE EXPLODING  FIRE_OFF MOVEABLE LIGHT_ON
-A fire about the size of a campfire. Triggerable.
--------  FIELDS  ------------------
-INVULNERABLE - N/A
-ANIMATE -  N/A
-EXPLODING - N/A
-FIRE_OFF - fire will start off
-MOVEABLE - fire will move if given a velocity
-LIGHT_ON - fire will have light attached to it - if moveable, not required
------------------------------------
-scale - size of flame (default 1) (no bigger than 8)
-*/
+ * Heretic 2: Flame effect. Does not emit light.
+ * A fire about the size of a campfire. Triggerable.
+ *
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A
+ * ANIMATE -  N/A
+ * EXPLODING - N/A
+ * FIRE_OFF - fire will start off
+ * MOVEABLE - fire will move if given a velocity
+ * LIGHT_ON - fire will have light attached to it - if moveable, not required
+ * -----------------------------------
+ * scale - size of flame (default 1) (no bigger than 8)
+ */
 void
 SP_env_fire(edict_t *self)
 {
@@ -372,7 +374,7 @@ SP_env_fire(edict_t *self)
 						self->s.origin,
 						"b",scale);
 
-	create_fire_touch (self,self->s.origin);
+	create_fire_touch(self,self->s.origin);
 }
 
 static void TorchUse (edict_t *self, edict_t *other, edict_t *activator)
@@ -406,15 +408,16 @@ static void TorchStart (edict_t *self)
 
 /*
  * QUAKED light_walltorch (1 .5 0) (-16 -10 -12) (10 10 12)  INVULNERABLE ANIMATE EXPLODING STARTOFF
-A torch that sticks out of a wall
--------  FIELDS  ------------------
-INVULNERABLE - N/A
-ANIMATE - Places a flame on it
-EXPLODING - N/A
-STARTOFF - Light will start off if targeted (default is on)
------------------------------------
-*/
-void SP_light_walltorch (edict_t *self)
+ * A torch that sticks out of a wall
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A
+ * ANIMATE - Places a flame on it
+ * EXPLODING - N/A
+ * STARTOFF - Light will start off if targeted (default is on)
+ * -----------------------------------
+ */
+void
+SP_light_walltorch(edict_t *self)
 {
 	vec3_t holdorigin;
 

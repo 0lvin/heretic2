@@ -1563,9 +1563,11 @@ SP_trigger_monsterjump(edict_t *self)
 
 /*
  * QUAKED choose_cdtrack (.5 .5 .5) ? NO_LOOP
+ * Heretic 2: Sets CD track
+ *
  * Variable sized repeatable trigger which chooses a CD track.
  * ------KEYS-----------
- * style - # of CD track to play
+ * style: CD Track Id
  * NO_LOOP - allows you to set the track to play not to loop
 */
 void

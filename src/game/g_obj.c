@@ -356,6 +356,7 @@ barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
 /*
  * QUAKED object_flame1 (1 .5 .5) (-3 -3 -6) (3 3 11)
  *
+ * Dawn of Darkness:
  * "sounds"
  *    0) no sound (default)
  *    1) sound torch
@@ -5020,6 +5021,7 @@ void SP_obj_bloodsplat (edict_t *self)
 /*
  * QUAKED object_big_fire (1 .5 .5) (-3 -3 -6) (3 3 11)
  *
+ * Dawn of Darkness:
  * "sounds"
  *    0) no sound (default)
  *    1) sound campfire
@@ -5062,7 +5064,7 @@ SP_object_big_fire(edict_t *self)
 /*
  * QUAKED object_campfire (1 .5 .5) (-10 -10 -5) (10 10 5)
  *
- *
+ * Dawn of Darkness:
  * "sounds"
  *    0) no sound (default)
  *    1) sound campfire
