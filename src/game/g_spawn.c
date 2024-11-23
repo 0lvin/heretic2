@@ -71,6 +71,24 @@ static int ndynamicentities;
 static int nstaticentities;
 
 static void
+DynamicSpawnSetScale(edict_t *self)
+{
+	/* copy to other parts if zero */
+	if (!st.scale[1])
+	{
+		st.scale[1] = st.scale[0];
+	}
+
+	if (!st.scale[2])
+	{
+		st.scale[2] = st.scale[0];
+	}
+
+	/* Copy to entity scale field */
+	VectorCopy(st.scale, self->s.scale);
+}
+
+static void
 DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 {
 	/* update properties by dynamic properties */
@@ -116,19 +134,7 @@ DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 	/* has updated scale */
 	if (st.scale[0] || st.scale[1] || st.scale[2])
 	{
-		/* copy to other parts if zero */
-		if (!st.scale[1])
-		{
-			st.scale[1] = st.scale[0];
-		}
-
-		if (!st.scale[2])
-		{
-			st.scale[2] = st.scale[0];
-		}
-
-		/* Copy to entity scale field */
-		VectorCopy(st.scale, self->s.scale);
+		DynamicSpawnSetScale(self);
 	}
 	else
 	{
@@ -288,6 +294,7 @@ ED_CallSpawn(edict_t *ent)
 		return;
 	}
 
+	/* check item spawn functions */
 	if((item = IsItem(ent)))
 	{
 		SpawnItem(ent, item);
@@ -304,6 +311,19 @@ ED_CallSpawn(edict_t *ent)
 		if (dyn_id >= 0)
 		{
 			DynamicSpawnUpdate(ent, &dynamicentities[dyn_id]);
+		}
+	}
+
+	/* No dynamic description */
+	if (dyn_id < 0)
+	{
+		if (st.scale[0])
+		{
+			DynamicSpawnSetScale(ent);
+		}
+		else
+		{
+			VectorSet(ent->s.scale, 1.0, 1.0, 1.0);
 		}
 	}
 
@@ -1477,7 +1497,6 @@ DynamicSpawnInit(void)
 					* min attenuation
 					* max attenuation
 				 */
-
 
 				/* Fix path */
 				Q_replacebackslash(dynamicentities[curr_pos].model_path);
