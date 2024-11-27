@@ -749,6 +749,7 @@ typedef struct
  * it has a zero index model. */
 #define EF_ROTATE 0x00000001                /* rotate (bonus items) */
 #define EF_GIB 0x00000002                   /* leave a trail */
+#define EF_BOB 0x00000004                   /* ReRelease BoB effect */
 #define EF_BLASTER 0x00000008               /* redlight + trail */
 #define EF_ROCKET 0x00000010                /* redlight + trail */
 #define EF_GRENADE 0x00000020
@@ -816,6 +817,10 @@ typedef struct
 												// torch is activated.
 #define EF_CHICKEN					0x00400000	// The flag that tells the system that the player is
 												// a chicken, and not corvus.
+
+/* entity_state_t->rr_effects
+ * ReRelease flags, values are diffeent to quake 2 RR code */
+#define EF_FLASHLIGHT 0x00000001         /* project flashlight, only for players */
 
 /* entity_state_t->renderfx flags */
 #define RF_MINLIGHT 1               /* allways have some light (viewmodel) */
@@ -1437,7 +1442,8 @@ typedef struct entity_state_s
 							/* events only go out for a single frame, they */
 							/* are automatically cleared each frame */
 	/* New protocol fields */
-	vec3_t scale;
+	vec3_t scale; /* model scale */
+	unsigned int rr_effects;
 
 	short			clientnum;		// In Quake 2, the client num was passed in skinnum.  We need this value, however.
 

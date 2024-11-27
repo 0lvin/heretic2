@@ -35,13 +35,12 @@ CL_AddPacketEntities(frame_t *frame)
 {
 	entity_t ent = {0};
 	entity_state_t *s1;
-	float autorotate;
+	float autorotate, autobob;
 	int i;
 	int pnum;
 	centity_t *cent;
 	int autoanim;
 	clientinfo_t *ci;
-	unsigned int effects, renderfx;
 
 	/* To distinguish baseq2, xatrix and rogue. */
 	cvar_t *gametype = Cvar_Get("gametype",  "", CVAR_LATCH | CVAR_SERVERINFO);
@@ -57,15 +56,19 @@ CL_AddPacketEntities(frame_t *frame)
 
 	/* brush models can auto animate their frames */
 	autoanim = 2 * cl.time / 1000;
+	autobob = 5 * sinf(cl.time / 400.0f);
 
 	for (pnum = 0; pnum < frame->num_entities; pnum++)
 	{
+		unsigned int effects, renderfx, rr_effects;
+
 		s1 = &cl_parse_entities[(frame->parse_entities +
 				pnum) & (MAX_PARSE_ENTITIES - 1)];
 
 		cent = &cl_entities[s1->number];
 
 		effects = s1->effects;
+		rr_effects = s1->rr_effects;
 		renderfx = s1->renderfx;
 
 		/* set frame */
@@ -139,8 +142,13 @@ CL_AddPacketEntities(frame_t *frame)
 			for (i = 0; i < 3; i++)
 			{
 				ent.origin[i] = ent.oldorigin[i] = cent->prev.origin[i] + cl.lerpfrac *
-				   	(cent->current.origin[i] - cent->prev.origin[i]);
+					(cent->current.origin[i] - cent->prev.origin[i]);
 			}
+		}
+
+		if (effects & EF_BOB) {
+			ent.origin[2] += autobob;
+			ent.oldorigin[2] += autobob;
 		}
 
 		/* tweak the color of beams */
@@ -259,6 +267,20 @@ CL_AddPacketEntities(frame_t *frame)
 				a2 = cent->prev.angles[i];
 				ent.angles[i] = LerpAngle(a2, a1, cl.lerpfrac);
 			}
+		}
+
+		if (rr_effects & EF_FLASHLIGHT) {
+			vec3_t forward, start, end;
+			trace_t trace;
+			int mask = CONTENTS_SOLID | CONTENTS_MONSTER;
+
+			AngleVectors(ent.angles, forward, NULL, NULL);
+			VectorMA(ent.origin, 1024, forward, end);
+			VectorCopy(ent.origin, start);
+
+			trace = CM_BoxTrace(start, end, vec3_origin, vec3_origin, 0, mask);
+
+			V_AddLight(trace.endpos, 128, 1, 1, 1);
 		}
 
 		if (s1->number == cl.playernum + 1)

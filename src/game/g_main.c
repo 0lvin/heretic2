@@ -113,6 +113,7 @@ cvar_t *g_machinegun_norecoil;
 cvar_t *g_quick_weap;
 cvar_t *g_swap_speed;
 cvar_t *g_language;
+cvar_t *g_itemsbobeffect;
 
 cvar_t *advancedstaff;
 cvar_t *sv_friction;

@@ -110,7 +110,8 @@ void DoRespawn(edict_t *ent)
 // ---------------
 // ************************************************************************************************
 
-void PreRespawnThink(edict_t *ent)
+void
+PreRespawnThink(edict_t *ent)
 {
 	int delay;
 	float clients;
@@ -149,7 +150,8 @@ void PreRespawnThink(edict_t *ent)
 // ----------
 // ************************************************************************************************
 
-void SetRespawn(edict_t *ent)
+void
+SetRespawn(edict_t *ent)
 {
 	// So it'll get sent to the client again.
 
@@ -192,7 +194,8 @@ void SetRespawn(edict_t *ent)
 // -------------
 // ************************************************************************************************
 
-qboolean Pickup_Puzzle(edict_t *ent, edict_t *other)
+qboolean
+Pickup_Puzzle(edict_t *ent, edict_t *other)
 {
 	gitem_t	*item;
 
@@ -331,7 +334,8 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 // -------------
 // ************************************************************************************************
 
-qboolean Pickup_Weapon(edict_t *ent,edict_t *other)
+qboolean
+Pickup_Weapon(edict_t *ent,edict_t *other)
 {
 	if (other->flags & FL_CHICKEN)
 	{
@@ -427,19 +431,23 @@ qboolean Add_AmmoToInventory (edict_t *ent, gitem_t *item, int count,int max)
 	return true;
 }
 
-/*
-===============
-Add_Ammo
-===============
-*/
+/* ====================================================================== */
 
-qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
+qboolean
+Add_Ammo(edict_t *ent, gitem_t *item, int count)
 {
 	int bo;
-	int	max;
+	int max;
+
+	if (!ent || !item)
+	{
+		return false;
+	}
 
 	if (!ent->client)
+	{
 		return false;
+	}
 
 	if ((item->tag == ITEM_AMMO_MANA_OFFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
 	{
@@ -482,14 +490,11 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 		return(Add_AmmoToInventory (ent,item,count,max));
 	}
 	else
+	{
+		gi.dprintf("undefined ammo type\n");
 		return false;
+	}
 }
-
-/*
-===============
-Pickup_Ammo
-===============
-*/
 
 qboolean
 Pickup_Ammo(edict_t *ent, edict_t *other)
@@ -571,6 +576,11 @@ Pickup_Health
 qboolean
 Pickup_Health(edict_t *ent, edict_t *other)
 {
+	if (!ent || !other)
+	{
+		return false;
+	}
+
 	if (other->flags & FL_CHICKEN)
 	{
 		return false;
@@ -702,7 +712,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 
 /* ====================================================================== */
 
-static void
+void
 drop_temp_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (!ent || !other)
@@ -772,9 +782,10 @@ Drop_Item(edict_t *ent, gitem_t *item)
 
 		AngleVectors(ent->client->v_angle, forward, right, NULL);
 		VectorSet(offset, 24, 0, -16);
-		G_ProjectSource (ent->s.origin, offset, forward, right, dropped->s.origin);
+		G_ProjectSource(ent->s.origin, offset, forward, right,
+				dropped->s.origin);
 		trace = gi.trace(ent->s.origin, dropped->mins, dropped->maxs,
-			dropped->s.origin, ent, CONTENTS_SOLID);
+				dropped->s.origin, ent, CONTENTS_SOLID);
 		VectorCopy(trace.endpos, dropped->s.origin);
 	}
 	else
@@ -783,7 +794,7 @@ Drop_Item(edict_t *ent, gitem_t *item)
 		VectorCopy(ent->s.origin, dropped->s.origin);
 	}
 
-	VectorScale (forward, 100, dropped->velocity);
+	VectorScale(forward, 100, dropped->velocity);
 	dropped->velocity[2] = 300;
 
 	dropped->think = drop_make_touchable;
@@ -1144,6 +1155,7 @@ SpawnItem(edict_t *ent, gitem_t *item)
 		ent->flags |= FL_RESPAWN;
 	}
 }
+
 // ************************************************************************************************
 // IsItem
 // ------
@@ -1176,6 +1188,31 @@ gitem_t	*IsItem(edict_t *ent)
 
 	return NULL;
 }
+
+void
+P_ToggleFlashlight(edict_t *ent, qboolean state)
+{
+	if (!!(ent->flags & FL_FLASHLIGHT) == state)
+	{
+		return;
+	}
+
+	ent->flags ^= FL_FLASHLIGHT;
+
+	gi.sound(ent, CHAN_AUTO,
+		gi.soundindex(ent->flags & FL_FLASHLIGHT ?
+			"items/flashlight_on.wav" : "items/flashlight_off.wav"),
+		1.f, ATTN_STATIC, 0);
+}
+
+void
+Use_Flashlight(edict_t *ent, gitem_t *inv)
+{
+	P_ToggleFlashlight(ent, !(ent->flags & FL_FLASHLIGHT));
+}
+
+/* ====================================================================== */
+
 
 // ************************************************************************************************
 // InitItems

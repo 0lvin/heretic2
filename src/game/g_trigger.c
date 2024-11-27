@@ -226,7 +226,7 @@ sounds  - sound made when activating
 2)	none
 3)	large switch
 */
-void SP_trigger_Multiple(edict_t *self)
+void SP_trigger_multiple(edict_t *self)
 {
 	InitTrigger(self);
 
@@ -270,7 +270,7 @@ sounds
 "message"	string to be displayed when triggered
 */
 
-void SP_trigger_Once(edict_t *self)
+void SP_trigger_once(edict_t *self)
 {
 	InitTrigger(self);
 
@@ -436,7 +436,7 @@ If NOMESSAGE is not set, t will print "1 more.. " etc when triggered and "sequen
 
 After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
 */
-void SP_trigger_Counter(edict_t *self)
+void SP_trigger_counter(edict_t *self)
 {
 	self->classID = CID_TRIGGER;
 
@@ -489,7 +489,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 /*QUAKED trigger_always (.5 .5 .5) (-8 -8 -8) (8 8 8)
 This trigger will always fire.  It is activated by the world.
 */
-void SP_trigger_Always(edict_t *self)
+void SP_trigger_always(edict_t *self)
 {
 	self->classID = CID_TRIGGER;
 
@@ -1559,6 +1559,56 @@ SP_trigger_monsterjump(edict_t *self)
 		self->accel = st.height;
 
 	self->touch = trigger_monsterjump_touch;
+}
+
+/* QUAKED trigger_flashlight (.5 .5 .5) ?
+ * Players moving against this trigger will have their flashlight turned on or off.
+ * "style" default to 0, set to 1 to always turn flashlight on, 2 to always turn off,
+ *      otherwise "angles" are used to control on/off state
+ */
+
+#define SPAWNFLAG_FLASHLIGHT_CLIPPED 1
+
+void
+trigger_flashlight_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	if (!other->client)
+	{
+		return;
+	}
+
+	if (self->style == 1)
+	{
+		P_ToggleFlashlight(other, true);
+	}
+	else if (self->style == 2)
+	{
+		P_ToggleFlashlight(other, false);
+	}
+	else if (VectorLength(other->velocity) > 6)
+	{
+		vec3_t forward;
+
+		VectorNormalize2(other->velocity, forward);
+
+		P_ToggleFlashlight(other, _DotProduct(forward, self->movedir) > 0);
+	}
+}
+
+void
+SP_trigger_flashlight(edict_t *self)
+{
+	if (self->s.angles[YAW] == 0)
+	{
+		self->s.angles[YAW] = 360;
+	}
+
+	InitTrigger(self);
+	self->touch = trigger_flashlight_touch;
+	self->movedir[2] = (float) st.height;
+
+	gi.linkentity(self);
 }
 
 /*
