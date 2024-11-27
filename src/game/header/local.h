@@ -787,13 +787,44 @@ typedef struct
 
 	vec3_t saved_goal;
 	float search_time;
-	float misc_debounce_time;
+	float trail_time;
 	vec3_t last_sighting;
 	int attack_state;
 	int lefty;
 	float idle_time;
 	int linkcount;
 
+	int power_armor_type;
+	int power_armor_power;
+
+	qboolean (*blocked)(edict_t *self, float dist);
+	float last_hint_time;           /* last time the monster checked for hintpaths. */
+	edict_t *goal_hint;             /* which hint_path we're trying to get to */
+	int medicTries;
+	edict_t *badMedic1, *badMedic2; /* these medics have declared this monster "unhealable" */
+	edict_t *healer;				/* this is who is healing this monster */
+	void (*duck)(edict_t *self, float eta);
+	void (*unduck)(edict_t *self);
+	void (*sidestep)(edict_t *self);
+	float base_height;
+	float next_duck_time;
+	float duck_wait_time;
+	edict_t *last_player_enemy;
+	qboolean blindfire;				/* will the monster blindfire? */
+	float blind_fire_delay;
+	vec3_t blind_fire_target;
+
+	/* used by the spawners to not spawn too much and keep track of #s of monsters spawned */
+	int monster_slots;
+	int monster_used;
+	edict_t *commander;
+
+	/* powerup timers, used by widow, our friend */
+	float quad_framenum;
+	float invincible_framenum;
+	float double_framenum;
+
+	float misc_debounce_time;
 	float		flee_finished;					// When a monster is done fleeing
 	float		chase_finished;					// When the monster can look for secondary monsters.
 
@@ -1942,7 +1973,6 @@ struct edict_s
 	vec3_t move_angles;
 
 	int bloodType;		// type of stuff to spawn off when hit
-	int plat2flags;
 
 	void				(*TriggerActivated)(edict_t *self, edict_t *activator);
 										// used by anything which can "see", player and monsters
@@ -2075,6 +2105,22 @@ struct edict_s
 	moveinfo_t moveinfo;
 	monsterinfo_t monsterinfo;
 
+	int orders;
+
+	int plat2flags;
+	vec3_t offset;
+	vec3_t gravityVector;
+	edict_t *bad_area;
+	edict_t *hint_chain;
+	edict_t *monster_hint_chain;
+	edict_t *target_hint_chain;
+	int hint_chain_id;
+	float lastMoveTime;
+
+	/* Third person view */
+	int chasedist1;
+	int chasedist2;
+
 	vec3_t				v_angle_ofs;			//View Angle ofset- for when monsters look around, for line of sight checks
 
 	int					ai_mood;		// Used by high level ai to relay simple moods to lower level functions (INTEGRAL FOR SWITCH)
@@ -2139,10 +2185,6 @@ struct edict_s
 	edict_t				*fire_damage_enemy;	//who burnt you to death- for proper burning death credit
 
 	void			*script;
-
-	/* Third person view */
-	int chasedist1;
-	int chasedist2;
 };
 
 #define SPHERE_DEFENDER 0x0001
