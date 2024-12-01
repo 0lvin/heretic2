@@ -1042,6 +1042,7 @@ extern cvar_t *g_quick_weap;
 extern cvar_t *g_swap_speed;
 extern cvar_t *g_language;
 extern cvar_t *g_itemsbobeffect;
+extern cvar_t *g_game;
 
 extern cvar_t *autorotate;
 extern cvar_t *blood;

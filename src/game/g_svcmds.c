@@ -250,18 +250,19 @@ SV_WriteIP_f
 */
 void SVCmd_WriteIP_f (void)
 {
-	FILE	*f;
-	char	name[MAX_OSPATH];
-	byte	b[4];
-	int		i;
-	cvar_t	*game;
+	FILE *f;
+	char name[MAX_OSPATH];
+	YQ2_ALIGNAS_TYPE(unsigned) byte b[4];
+	int i;
 
-	game = gi.cvar("game", "", 0);
-
-	if (!*game->string)
-		sprintf (name, "%s/listip.cfg", GAMEVERSION);
+	if (!*g_game->string)
+	{
+		sprintf(name, "%s/listip.cfg", GAMEVERSION);
+	}
 	else
-		sprintf (name, "%s/listip.cfg", game->string);
+	{
+		sprintf(name, "%s/listip.cfg", g_game->string);
+	}
 
 	gi.cprintf (NULL, PRINT_HIGH, "Writing %s.\n", name);
 
