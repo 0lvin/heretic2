@@ -29,6 +29,12 @@
 #include "savegame/tables/spawnfunc_decs.h"
 #include "header/g_skeletons.h"
 
+#define LEG_WAIT_TIME 1
+#define MAX_LEGSFRAME 23
+
+#define SPAWNGROW_LIFESPAN 0.3
+#define STEPSIZE 18
+
 typedef struct
 {
 	const char *name;
@@ -295,12 +301,23 @@ ED_CallSpawn(edict_t *ent)
 		return;
 	}
 
-	/* check item spawn functions */
-	if((item = IsItem(ent)))
-	{
-		SpawnItem(ent, item);
+	ent->gravityVector[0] = 0.0;
+	ent->gravityVector[1] = 0.0;
+	ent->gravityVector[2] = -1.0;
 
-		return;
+	if (!strcmp(ent->classname, "weapon_nailgun"))
+	{
+		ent->classname = (FindItem("ETF Rifle"))->classname;
+	}
+
+	if (!strcmp(ent->classname, "ammo_nails"))
+	{
+		ent->classname = (FindItem("Flechettes"))->classname;
+	}
+
+	if (!strcmp(ent->classname, "weapon_heatbeam"))
+	{
+		ent->classname = (FindItem("Plasma Beam"))->classname;
 	}
 
 	/* search dynamic definitions */
@@ -326,6 +343,14 @@ ED_CallSpawn(edict_t *ent)
 		{
 			VectorSet(ent->s.scale, 1.0, 1.0, 1.0);
 		}
+	}
+
+	/* check item spawn functions */
+	if((item = IsItem(ent)))
+	{
+		SpawnItem(ent, item);
+
+		return;
 	}
 
 	/* check normal spawn functions */
@@ -1066,7 +1091,7 @@ SP_worldspawn(edict_t *ent)
 
 	// Set configstrings for items.
 
-	SetItemNames ();
+	SetItemNames();
 
 	if (st.nextmap)
 		strcpy (level.nextmap, st.nextmap);
