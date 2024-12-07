@@ -613,6 +613,7 @@ typedef struct
 
 	/* Addional fields for models */
 	vec3_t scale;
+	float health_multiplier;
 
 	/* Heretic 2 */
 	int rotate;

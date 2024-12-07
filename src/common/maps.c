@@ -76,6 +76,78 @@ Mod_LoadSurfConvertFlags(int flags, maptype_t maptype)
 }
 
 /*
+ * Convert other games flags to Quake 2 material name
+ */
+static void
+Mod_LoadMaterialConvertFlags(int flags, maptype_t maptype, char *value)
+{
+	const char **material = NULL;
+	int i;
+
+	if (maptype == map_heretic2)
+	{
+		const char *surface_materials[] = {
+			"gravel",
+			"metal",
+			"stone",
+			"wood",
+		};
+
+		flags = (flags >> 24) & 0x3;
+
+		strcpy(value, surface_materials[flags]);
+		return;
+	}
+	else if (maptype == map_sin)
+	{
+		const char *surface_materials[] = {
+			"",
+			"wood",
+			"metal",
+			"stone",
+			"concrete",
+			"dirt",
+			"flesh",
+			"grill",
+			"glass",
+			"fabric",
+			"monitor",
+			"gravel",
+			"vegetation",
+			"paper",
+			"dust",
+			"water",
+		};
+
+		flags = (flags >> 27) & 0xf;
+
+		strcpy(value, surface_materials[flags]);
+		return;
+	}
+
+	switch (maptype)
+	{
+		case map_daikatana: material = daikatana_material; break;
+		case map_kingpin: material = kingpin_material; break;
+		default: break;
+	}
+
+	if (!material)
+	{
+		return;
+	}
+
+	for (i = 0; i < 32; i++)
+	{
+		if (flags & (1 << i) && material[i])
+		{
+			strcpy(value, material[i]);
+			return;
+		}
+	}
+}
+
+/*
  * Convert other games flags to Quake 2 context flags
  */
 static int
@@ -257,6 +329,39 @@ Mod_Load2QBSP_QBSP_NODES(byte *outbuf, dheader_t *outheader,
 }
 
 static void
+Mod_Load2QBSP_MATERIALS_TEXINFO(xtexinfo_t *out, int count)
+{
+	int i;
+
+	for (i = 0; i < count; i++)
+	{
+		if (out->texture[0])
+		{
+			char material_path[80];
+			byte *raw;
+			int len;
+
+			snprintf(material_path, sizeof(material_path), "textures/%s.mat", out->texture);
+
+			/* load the file */
+			len = FS_LoadFile(material_path, (void **)&raw);
+			if (len > 0)
+			{
+				int j;
+
+				j = Q_min(sizeof(out->material) - 1, len);
+				memcpy(out->material, raw, j);
+				out->material[j] = 0;
+
+				FS_FreeFile(raw);
+			}
+		}
+
+		out ++;
+	}
+}
+
+static void
 Mod_Load2QBSP_IBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 	const byte *inbuf, const lump_t *lumps, size_t rule_size,
 	maptype_t maptype, int outlumppos, int inlumppos)
@@ -271,7 +376,7 @@ Mod_Load2QBSP_IBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 
 	for (i = 0; i < count; i++)
 	{
-		int j;
+		int j, inflags;
 
 		for (j = 0; j < 4; j++)
 		{
@@ -279,8 +384,11 @@ Mod_Load2QBSP_IBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 			out->vecs[1][j] = LittleFloat(in->vecs[1][j]);
 		}
 
-		out->flags = Mod_LoadSurfConvertFlags(LittleLong(in->flags), maptype);
+		inflags = LittleLong(in->flags);
+		out->flags = Mod_LoadSurfConvertFlags(inflags, maptype);
 		out->nexttexinfo = LittleLong(in->nexttexinfo);
+		memset(out->material, 0, sizeof(out->material));
+		Mod_LoadMaterialConvertFlags(inflags, maptype, out->material);
 		strncpy(out->texture, in->texture,
 			Q_min(sizeof(out->texture), sizeof(in->texture)));
 
@@ -290,6 +398,9 @@ Mod_Load2QBSP_IBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 		out++;
 		in++;
 	}
+
+	Mod_Load2QBSP_MATERIALS_TEXINFO(
+		(xtexinfo_t *)(outbuf + outheader->lumps[outlumppos].fileofs), count);
 }
 
 static void
@@ -307,7 +418,7 @@ Mod_Load2QBSP_RBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 
 	for (i = 0; i < count; i++)
 	{
-		int j;
+		int j, inflags;
 
 		for (j = 0; j < 4; j++)
 		{
@@ -315,8 +426,11 @@ Mod_Load2QBSP_RBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 			out->vecs[1][j] = LittleFloat(in->vecs[1][j]);
 		}
 
-		out->flags = Mod_LoadSurfConvertFlags(LittleLong(in->flags), maptype);
+		inflags = LittleLong(in->flags);
+		out->flags = Mod_LoadSurfConvertFlags(inflags, maptype);
 		out->nexttexinfo = LittleLong(in->nexttexinfo);
+		memset(out->material, 0, sizeof(out->material));
+		Mod_LoadMaterialConvertFlags(inflags, maptype, out->material);
 		strncpy(out->texture, in->texture,
 			Q_min(sizeof(out->texture), sizeof(in->texture)));
 
@@ -326,6 +440,9 @@ Mod_Load2QBSP_RBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 		out++;
 		in++;
 	}
+
+	Mod_Load2QBSP_MATERIALS_TEXINFO(
+		(xtexinfo_t *)(outbuf + outheader->lumps[outlumppos].fileofs), count);
 }
 
 static void
