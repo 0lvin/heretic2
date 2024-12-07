@@ -1183,7 +1183,6 @@ PLAYER_OBJS_ = \
 	src/game/common/h2vector.o \
 	src/game/common/h2rand.o \
 	src/common/shared/shared.o \
-	src/game/player/library/surfaceprops.o \
 	src/game/player/library/p_actions.o \
 	src/game/player/library/p_animactor.o \
 	src/game/player/library/p_anim_branch.o \

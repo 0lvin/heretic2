@@ -3658,9 +3658,9 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	client->playerinfo.velocity[2] = ent->velocity[2] = pm.velocity[2] * 0.125;
 // jmarshall end
 
-	client->playerinfo.GroundSurface=pm.GroundSurface;
-	memcpy(&client->playerinfo.GroundPlane,&pm.GroundPlane,sizeof(cplane_t));
-	client->playerinfo.GroundContents=*pm.GroundContents;
+	client->playerinfo.GroundSurface = pm.GroundSurface;
+	memcpy(&client->playerinfo.GroundPlane, &pm.GroundPlane, sizeof(cplane_t));
+	client->playerinfo.GroundContents =* pm.GroundContents;
 
 	// If we're move-locked, don't update the edict's origin and velocity, otherwise copy the
 	// origin and velocity from playerinfo (which have been written by Pmove()) into the edict's

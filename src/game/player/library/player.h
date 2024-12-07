@@ -177,5 +177,6 @@ void Weapon_EquipBow(playerinfo_t* playerinfo, gitem_t* Weapon);
 void Weapon_EquipArmor(playerinfo_t* playerinfo, gitem_t* Weapon);
 int Weapon_CurrentShotsLeft(playerinfo_t* playerinfo);
 int Defence_CurrentShotsLeft(playerinfo_t* playerinfo, int intent);
+const char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
 
 #endif	// PLAYER_H

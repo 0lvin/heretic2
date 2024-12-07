@@ -11,7 +11,6 @@
 #include "p_anims.h"
 #include "p_ctrl.h"
 #include "p_main.h"
-#include "surfaceprops.h"
 #include "../../common/h2rand.h"
 #include "../../common/fx.h"
 
@@ -243,7 +242,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	// Don't do dust in the water!
 
-	if(playerinfo->waterlevel==0)
+	if(playerinfo->waterlevel == 0)
 		if(!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID15,
 									   playerinfo->G_GetEntityStatePtr(playerinfo->self),

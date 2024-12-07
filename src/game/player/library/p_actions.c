@@ -14,7 +14,6 @@
 #include "p_weapon.h"
 #include "p_weapon.h"
 #include "../../header/g_items.h"
-#include "surfaceprops.h"
 #include "../../monster/misc/player.h"
 #include "../../common/fx.h"
 #include "../../common/h2rand.h"
@@ -1465,6 +1464,20 @@ void PlayerActionBowTrailEnd(playerinfo_t *playerinfo, float value)
 	playerinfo->effects &= ~EF_TRAILS_ENABLED;
 }
 
+const char *
+GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo)
+{
+	csurface_t *groundSurface;
+
+	groundSurface = playerinfo->GroundSurface;
+	if (groundSurface && groundSurface->material[0])
+	{
+		return groundSurface->material;
+	}
+
+	return NULL;
+}
+
 /*-----------------------------------------------
 	PlayerActionFootstep
 -----------------------------------------------*/
@@ -1513,9 +1526,9 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 	}
 	else
 	{
-		char	*material;
+		const char *material;
 
-		material=GetClientGroundSurfaceMaterialName(playerinfo);
+		material = GetClientGroundSurfaceMaterialName(playerinfo);
 
 		if (!material)
 			return;
@@ -2896,12 +2909,14 @@ void PlayerActionIdleSound(playerinfo_t *playerinfo, float value)
 void PlayerActionVaultSound(playerinfo_t *playerinfo, float value)
 {
 	char VaultSound[64];
-	char *Material=NULL;
+	char *Material = NULL;
 
-	Material=GetClientGroundSurfaceMaterialName(playerinfo);
+	Material = GetClientGroundSurfaceMaterialName(playerinfo);
 
 	if(!Material)
+	{
 		return;
+	}
 
 	strcpy(VaultSound,"player/");
 	strcat(VaultSound, Material);
