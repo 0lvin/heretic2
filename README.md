@@ -24,11 +24,11 @@ Drawbacks:
 * no books implementations
 * code is little bit mess
 * only gl1 has full support render
-* soft,gl3,vk render has incorrect angles
 * need to rewrite RF_TRANS_ADD to use quake2 logic
 
 To check:
- * [ ] code use diffent angles values to quake2
+ * [ ] code use different angles values to quake2
+ * [ ] unsupported foodstep with unsupported player ground surface,
  * [ ] broken jumps
  * [ ] third person code is different to quake 2
  * [ ] effects protocol is different to quake 2
@@ -38,7 +38,8 @@ To check:
  * [ ] different move code and noclip
  * [x] Incorrect 16 bit frame flag unset,
  * [ ] MAX_MODELS/MAX_SOUND define hardcode,
- * [ ] no action on button press.
+ * [ ] no action on button press,
+ * [x] soft,gl3,vk render has incorrect angles (used same angle in all renders).
 
 Minimal file set from Loki release:
 ```
