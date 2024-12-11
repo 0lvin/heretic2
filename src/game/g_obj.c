@@ -118,7 +118,7 @@ void BboxYawAndScale(edict_t *self)
 
 	}
 
-	scale = AVG_VEC3T(self->s.scale);
+	scale = AVG_VEC3T(self->rrs.scale);
 	if (scale == 0)
 		scale = 1;
 
@@ -185,7 +185,7 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 
 	}
 
-	scale = AVG_VEC3T(self->s.scale);
+	scale = AVG_VEC3T(self->rrs.scale);
 	if (scale == 0)
 		scale = 1;
 
@@ -683,30 +683,30 @@ void SpawnCorpse(edict_t *self)
 	else if (self->style == 4)
 	{
 		self->s.frame = FRAME_skewered;
-		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 	}
 
 	chance = irand(0, 3);
 	if(chance < 1)
 	{
 		//show the hammer
-		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 	}
 	else if(chance < 2)
 	{
 		//show the hoe
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 	}
 	else
 	{
 		//show the gaff (that hook thingie)
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 	}
 
 	VectorSet(self->mins,-30,-12,-2);
@@ -951,10 +951,10 @@ void SP_obj_dying_elf(edict_t *self)
 	ObjectInit(self, 40, 60, MAT_FLESH, SOLID_BBOX);
 
 	// No weapons
-	self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
 	self->s.frame = FRAME_fetal1;
 	self->think = dying_elf_idle;
@@ -1352,7 +1352,7 @@ void SP_obj_cauldron (edict_t *self)
 	if (self->spawnflags & OBJ_ANIMATE)	// Animate it
 	{
 		self->s.sound = gi.soundindex("ambient/cauldronbubble.wav");
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 	}
 
 	self->spawnflags |= OBJ_NOPUSH;
@@ -1377,7 +1377,7 @@ void SP_obj_firepot (edict_t *self)
 
 	self->s.modelindex = gi.modelindex("models/objects/pots/firepot/tris.fm");
 	self->s.sound = gi.soundindex("ambient/fireplace.wav");
-	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
+	self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 
 	VectorSet(self->mins, -18, -18, -12);
 	VectorSet(self->maxs, 18, 18, 12);
@@ -1562,7 +1562,7 @@ void SP_obj_seasonglobe (edict_t *bottom)
 	VectorSet(bottom->maxs, 80, 80, 320);
 	bottom->s.modelindex = gi.modelindex("models/objects/globe/globebottom/tris.fm");
 	bottom->s.frame = 1;
-	VectorSet(bottom->s.scale, 1.75, 1.75, 1.75);
+	VectorSet(bottom->rrs.scale, 1.75, 1.75, 1.75);
 	BboxYawAndScale(bottom);
 	bottom->targetname = "globebottom";
 	bottom->use = globebottom_use;
@@ -1580,7 +1580,7 @@ void SP_obj_seasonglobe (edict_t *bottom)
 	VectorSet(top->maxs, 80, 80, 100);
 	top->s.modelindex = gi.modelindex("models/objects/globe/globetop/tris.fm");
 	top->s.frame = 1;
-	VectorSet(top->s.scale, 1.75, 1.75, 1.75);
+	VectorSet(top->rrs.scale, 1.75, 1.75, 1.75);
 	BboxYawAndScale(top);
 
 	bottom->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
@@ -1863,7 +1863,7 @@ void SP_obj_tree2 (edict_t *self)
 	moss->s.modelindex = gi.modelindex("models/objects/plants/tree2/moss2/tris.fm");
 	moss->movetype = MOVETYPE_NONE;
 	moss->solid = SOLID_NOT;
-	VectorCopy(self->s.scale, moss->s.scale);
+	VectorCopy(self->rrs.scale, moss->rrs.scale);
 	moss->s.renderfx |= RF_TRANSLUCENT;
 
 	BboxYawAndScale(moss);
@@ -1902,7 +1902,7 @@ void SP_obj_tree3 (edict_t *self)
 	moss->s.modelindex = gi.modelindex("models/objects/plants/tree3/moss3/tris.fm");
 	moss->movetype = MOVETYPE_NONE;
 	moss->solid = SOLID_NOT;
-	VectorCopy(self->s.scale, moss->s.scale);
+	VectorCopy(self->rrs.scale, moss->rrs.scale);
 	moss->s.renderfx |= RF_TRANSLUCENT;
 
 	BboxYawAndScale(moss);
@@ -1942,7 +1942,7 @@ void SP_obj_treetall (edict_t *self)
 	moss->movetype = MOVETYPE_NONE;
 	moss->solid = SOLID_NOT;
 	moss->s.renderfx |= RF_TRANSLUCENT;
-	VectorCopy(self->s.scale, moss->s.scale);
+	VectorCopy(self->rrs.scale, moss->rrs.scale);
 	BboxYawAndScale(moss);
 	gi.linkentity(moss);
 
@@ -2015,7 +2015,7 @@ void SP_obj_woodpile (edict_t *self)
 
 	VectorSet(self->mins, -12, -20, -7);
 	VectorSet(self->maxs, 12, 20, 7);
-	VectorSet(self->s.scale, 2, 2, 2);
+	VectorSet(self->rrs.scale, 2, 2, 2);
 
 	ObjectInit(self,100,150,MAT_WOOD,SOLID_BBOX);
 }
@@ -3565,7 +3565,7 @@ void SP_obj_shrine (edict_t *self)
 	// make the ball appear in the middle
 	VectorScale(self->s.angles, ANGLE_TO_RAD, offset);
 	DirFromAngles(offset, offset2);
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_SHRINE_BALL, CEF_BROADCAST, self->s.origin,
+	self->PersistantCFX = gi.CreatePersistantEffect(self, FX_SHRINE_BALL, CEF_BROADCAST, self->s.origin,
 														"db", offset2, (byte)(self->style-1));
 
 }
@@ -4111,7 +4111,7 @@ void statue_sithraguard_use (edict_t *self, edict_t *other, edict_t *activator)
 	VectorCopy(self->s.origin,shield->s.origin);
 	VectorCopy(self->s.angles,shield->s.angles);
 	shield->s.modelindex = gi.modelindex("models/objects/statue/sithshield/tris.fm");
-	VectorCopy(self->s.scale, shield->s.scale);
+	VectorCopy(self->rrs.scale, shield->rrs.scale);
 	shield->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	shield->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 	shield->movetype = MOVETYPE_NONE;
@@ -4385,9 +4385,9 @@ void SP_obj_biotank (edict_t *self)
 
 	VectorCopy(self->s.origin,glass->s.origin);
 	AngleVectors(self->s.angles, forward, right, NULL);
-	VectorMA(glass->s.origin, (-8 * AVG_VEC3T(self->s.scale)), right, glass->s.origin);
+	VectorMA(glass->s.origin, (-8 * AVG_VEC3T(self->rrs.scale)), right, glass->s.origin);
 	VectorCopy(self->s.angles,glass->s.angles);
-	VectorCopy(self->s.scale, glass->s.scale);
+	VectorCopy(self->rrs.scale, glass->rrs.scale);
 	glass->s.angles[1] += 90.0f;
 	glass->s.renderfx |= RF_TRANSLUCENT;
 	glass->s.modelindex = gi.modelindex("models/objects/labs/bioglass2/tris.fm");
@@ -4403,9 +4403,9 @@ void SP_obj_biotank (edict_t *self)
 
 	VectorCopy(self->s.origin,glass->s.origin);
 	AngleVectors(self->s.angles, forward, right, NULL);
-	VectorMA(glass->s.origin, (26 * AVG_VEC3T(self->s.scale)), right, glass->s.origin);
+	VectorMA(glass->s.origin, (26 * AVG_VEC3T(self->rrs.scale)), right, glass->s.origin);
 	VectorCopy(self->s.angles,glass->s.angles);
-	VectorCopy(self->s.scale, glass->s.scale);
+	VectorCopy(self->rrs.scale, glass->rrs.scale);
 	glass->s.angles[1] += 270.0f;
 	glass->s.renderfx |= RF_TRANSLUCENT;
 	glass->s.modelindex = gi.modelindex("models/objects/labs/bioglass2/tris.fm");
@@ -4420,10 +4420,10 @@ void SP_obj_biotank (edict_t *self)
 
 	VectorCopy(self->s.origin,glass->s.origin);
 	AngleVectors(self->s.angles, forward, right, NULL);
-	VectorMA(glass->s.origin, (9 * AVG_VEC3T(self->s.scale)), right, glass->s.origin);
-	VectorMA(glass->s.origin, (-17 * AVG_VEC3T(self->s.scale)), forward, glass->s.origin);
+	VectorMA(glass->s.origin, (9 * AVG_VEC3T(self->rrs.scale)), right, glass->s.origin);
+	VectorMA(glass->s.origin, (-17 * AVG_VEC3T(self->rrs.scale)), forward, glass->s.origin);
 	VectorCopy(self->s.angles,glass->s.angles);
-	VectorCopy(self->s.scale, glass->s.scale);
+	VectorCopy(self->rrs.scale, glass->rrs.scale);
 	glass->s.renderfx |= RF_TRANSLUCENT;
 	glass->s.modelindex = gi.modelindex("models/objects/labs/bioglass2/tris.fm");
 	glass->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
@@ -4437,9 +4437,9 @@ void SP_obj_biotank (edict_t *self)
 
 	VectorCopy(self->s.origin,glass->s.origin);
 	AngleVectors(self->s.angles, forward, right, NULL);
-	VectorMA(glass->s.origin, (9 * AVG_VEC3T(self->s.scale)), right, glass->s.origin);
-	VectorMA(glass->s.origin, (17 * AVG_VEC3T(self->s.scale)), forward, glass->s.origin);
-	VectorCopy(self->s.scale, glass->s.scale);
+	VectorMA(glass->s.origin, (9 * AVG_VEC3T(self->rrs.scale)), right, glass->s.origin);
+	VectorMA(glass->s.origin, (17 * AVG_VEC3T(self->rrs.scale)), forward, glass->s.origin);
+	VectorCopy(self->rrs.scale, glass->rrs.scale);
 	VectorCopy(self->s.angles,glass->s.angles);
 	glass->s.angles[1] += 180.0f;
 	glass->s.renderfx |= RF_TRANSLUCENT;
@@ -4471,29 +4471,29 @@ void SP_obj_biotank (edict_t *self)
 		fish->s.modelindex = gi.modelindex("models/objects/labs/labfish/tris.fm");
 		fish->count = 30;
 		self->s.sound = gi.soundindex("objects/slowbubbles.wav");
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 	}
 	else if (self->style==2)
 	{
 		fish->s.modelindex = gi.modelindex("models/objects/labs/labfish2/tris.fm");
 		fish->count = 60;
 		self->s.sound = gi.soundindex("objects/slowbubbles.wav");
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 	}
 	else if (self->style==3)
 	{
 		fish->s.modelindex = gi.modelindex("models/objects/labs/labfish3/tris.fm");
 		fish->count = 100;
 		self->s.sound = gi.soundindex("objects/fastbubbles.wav");
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 	}
 	else
 	{
 		fish->s.modelindex = gi.modelindex("models/monsters/bee/tris.fm");
 		fish->count = 60;
-		VectorSet(fish->s.scale, 2, 2, 2);
+		VectorSet(fish->rrs.scale, 2, 2, 2);
 		self->s.sound = gi.soundindex("objects/fastbubbles.wav");
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 	}
 
 	BboxYawAndScale(fish);
@@ -4985,7 +4985,7 @@ void SP_obj_larva (edict_t *self)
 	self->nextthink += FRAMETIME * flrand(1, 6);	// Don't all start at the same time
 
 	self->s.sound = gi.soundindex("misc/larva.wav");
-	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
+	self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 
 	self->svflags = SVF_ALLOW_AUTO_TARGET;
 

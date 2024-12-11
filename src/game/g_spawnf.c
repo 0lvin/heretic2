@@ -22,7 +22,7 @@ void ConstructEntities(void)
 		InitBBoxDisplayInfo(i, ent->mins, ent->maxs);
 #endif
 
-		ent->s.skeletalType = SKEL_NULL;
+		ent->rrs.skeletalType = SKEL_NULL;
 	}
 
 	// Allocate skeletons for clients only.
@@ -31,8 +31,8 @@ void ConstructEntities(void)
 	{
 		edict_t *ent;
 		ent=&globals.edicts[1+i];
-		ent->s.skeletalType=SKEL_CORVUS;
-		ent->s.rootJoint = CreateSkeleton(ent->s.skeletalType);
+		ent->rrs.skeletalType=SKEL_CORVUS;
+		ent->rrs.rootJoint = CreateSkeleton(ent->rrs.skeletalType);
 	}
 
 	game.entitiesSpawned = true;

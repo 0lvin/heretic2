@@ -154,14 +154,14 @@ void chicken_death(edict_t *self, G_Message_t *msg)
 	gi.sound (self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	BecomeDebris(self);
-	gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
+	gi.CreateEffect(self, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
 
 }
 
 // fade the original monster back in again
 void MorphOriginalIn(edict_t *self)
 {
-	self->s.color[3] += MORPH_TELE_FADE;
+	self->rrs.color[3] += MORPH_TELE_FADE;
 	self->nextthink = level.time + FRAMETIME;
 	if (!(--self->morph_timer))
 	{
@@ -174,7 +174,7 @@ void MorphChickenOut(edict_t *self)
 {
 	edict_t	*newent;
 
-	self->s.color[3] -= MORPH_TELE_FADE;
+	self->rrs.color[3] -= MORPH_TELE_FADE;
 	self->nextthink = level.time + FRAMETIME;
 	if (self->morph_timer < level.time)
 	{
@@ -186,10 +186,10 @@ void MorphChickenOut(edict_t *self)
 		newent->enemy = self->enemy;
 		ED_CallSpawn(newent);
 
-		self->s.color[0] = 255;
-		self->s.color[1] = 255;
-		self->s.color[2] = 255;
-		self->s.color[3] = 255;
+		self->rrs.color[0] = 255;
+		self->rrs.color[1] = 255;
+		self->rrs.color[2] = 255;
+		self->rrs.color[3] = 255;
 
 		newent->oldthink = newent->think;
 		newent->think = MorphOriginalIn;
@@ -211,7 +211,7 @@ void MorphChickenOut(edict_t *self)
 		// do the teleport sound
 		gi.sound(newent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 		// do the teleport effect
-		gi.CreateEffect(&newent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, NULL, "" );
+		gi.CreateEffect(newent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, NULL, "" );
 		G_FreeEdict(self);
 	}
 }
@@ -229,7 +229,7 @@ void chicken_check (edict_t *self)
 		return;
 
 	//	make that pretty effect around us
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, NULL, "" );
+	gi.CreateEffect(self, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, NULL, "" );
 
 	// deal with the existing chicken
 	self->think = MorphChickenOut;

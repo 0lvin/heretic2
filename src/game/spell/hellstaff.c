@@ -58,7 +58,7 @@ edict_t *HellboltReflect(edict_t *self, edict_t *other, vec3_t vel)
 	VectorNormalize2(vel, hellbolt->movedir);
 	VectoAngles(hellbolt->movedir, hellbolt->s.angles);
    	G_LinkMissile(hellbolt);
-   	gi.CreateEffect(&hellbolt->s, FX_WEAPON_HELLBOLT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "t", hellbolt->velocity);
+   	gi.CreateEffect(hellbolt, FX_WEAPON_HELLBOLT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "t", hellbolt->velocity);
 
    	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
    	G_SetToFree(self);
@@ -66,7 +66,7 @@ edict_t *HellboltReflect(edict_t *self, edict_t *other, vec3_t vel)
    	// Do a nasty looking blast at the impact point
    	// only do this rarely, since we hit alot.
    	if (!(irand(0,10)))
-   		gi.CreateEffect(&hellbolt->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", hellbolt->velocity);
+   		gi.CreateEffect(hellbolt, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", hellbolt->velocity);
 
 	return(hellbolt);
 }
@@ -119,7 +119,7 @@ static void HellboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	{
 		makeScorch = CEF_FLAG6;
 	}
-	gi.CreateEffect(&self->s, FX_WEAPON_HELLBOLTEXPLODE, CEF_OWNERS_ORIGIN | makeScorch, NULL, "d", self->movedir);
+	gi.CreateEffect(self, FX_WEAPON_HELLBOLTEXPLODE, CEF_OWNERS_ORIGIN | makeScorch, NULL, "d", self->movedir);
 	G_SetToFree(self);
 }
 
@@ -337,7 +337,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 			HellboltTouch(hellbolt, trace.ent, &trace.plane, trace.surface);
 			return;
 		}
-		gi.CreateEffect(&hellbolt->s, FX_WEAPON_HELLBOLT, CEF_OWNERS_ORIGIN, NULL, "t", hellbolt->velocity);
+		gi.CreateEffect(hellbolt, FX_WEAPON_HELLBOLT, CEF_OWNERS_ORIGIN, NULL, "t", hellbolt->velocity);
 	}
 }
 // end

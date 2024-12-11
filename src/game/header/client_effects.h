@@ -84,7 +84,7 @@ typedef struct
 
 	// Buffer into which net stuff is parsed.
 
-	entity_state_t	*parse_entities;
+	entity_xstate_t	*parse_entities;
 
 	sizebuf_t		*net_message;
 	float			*PlayerAlpha;

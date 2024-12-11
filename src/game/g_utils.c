@@ -664,14 +664,14 @@ G_InitEdict(edict_t *e)
 	e->gravity = 1.0;
 	e->s.number = e - g_edicts;
 
-	e->s.clientEffects.buf = NULL;
-	e->s.clientEffects.bufSize = 0;
-	e->s.clientEffects.freeBlock = 0;
-	e->s.clientEffects.numEffects = 0;
+	e->rrs.clientEffects.buf = NULL;
+	e->rrs.clientEffects.bufSize = 0;
+	e->rrs.clientEffects.freeBlock = 0;
+	e->rrs.clientEffects.numEffects = 0;
 	e->movetype = MOVETYPE_NONE;
 	e->friction = 1.0;
 	e->elasticity = ELASTICITY_SLIDE;
-	VectorSet(e->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(e->rrs.scale, 1.0, 1.0, 1.0);
 	e->msgHandler = NULL;
 	e->svflags = 0;
 	e->reflected_time = level.time;
@@ -704,7 +704,7 @@ G_Spawn(void)
 		{
 			G_InitEdict(e);
 
-			++e->s.usageCount;
+			++e->rrs.usageCount;
 			return e;
 		}
 	}
@@ -758,12 +758,12 @@ G_FreeEdict(edict_t *ed)
 
 	if(ed->s.effects & EF_JOINTED)
 	{
-		FreeSkeleton(ed->s.rootJoint);
+		FreeSkeleton(ed->rrs.rootJoint);
 	}
 
-	if(ed->s.clientEffects.buf)
+	if(ed->rrs.clientEffects.buf)
 	{
-		temp = (char *)ed->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
+		temp = (char *)ed->rrs.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
 	}
 	else
 	{
@@ -771,7 +771,7 @@ G_FreeEdict(edict_t *ed)
 	}
 
 	msgs = ed->msgQ.msgs;
-	usageCount = ed->s.usageCount;
+	usageCount = ed->rrs.usageCount;
 	entnum = ed->s.number;
 
 	// End non-quake2.
@@ -780,9 +780,9 @@ G_FreeEdict(edict_t *ed)
 
 	// Start non-quake2.
 
-	ed->s.usageCount = usageCount;
+	ed->rrs.usageCount = usageCount;
 	ed->msgQ.msgs = msgs;
-	ed->s.clientEffects.buf = (byte *)temp;
+	ed->rrs.clientEffects.buf = (byte *)temp;
 	ed->s.number = entnum;
 
 	// End non-quake2.
@@ -790,7 +790,7 @@ G_FreeEdict(edict_t *ed)
 	ed->classname = "freed";
 	ed->freetime = level.time + 2.0;
 	ed->inuse = false;
-	ed->s.skeletalType = SKEL_NULL;
+	ed->rrs.skeletalType = SKEL_NULL;
 
 	ed->svflags = SVF_NOCLIENT;	// so it will get removed from the client properly
 }

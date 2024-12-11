@@ -1157,9 +1157,9 @@ ReadEdict(FILE *f, edict_t *ent)
 	byte *temp;
 	void *s;
 
-	if(ent->s.clientEffects.buf)
+	if(ent->rrs.clientEffects.buf)
 	{
-		temp = ent->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
+		temp = ent->rrs.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
 	}
 	else
 	{
@@ -1172,7 +1172,7 @@ ReadEdict(FILE *f, edict_t *ent)
 	fread(ent, sizeof(*ent), 1, f);
 	ent->script = s;
 
-	ent->s.clientEffects.buf = temp;
+	ent->rrs.clientEffects.buf = temp;
 
 	ent->msgQ.msgs = msgs;
 	ent->last_alert = NULL;

@@ -323,7 +323,7 @@ void plagueElf_strike (edict_t *self)
 	int			damage;
 
 	//FIXME: Account for weapon being knocked out of hand?
-	if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 		return;
 
 	switch ( self->curAnimID )
@@ -361,7 +361,7 @@ void plagueElf_strike (edict_t *self)
 		}
 		else
 		{
-			if (!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW) || !(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW) || !(self->rrs.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
 			{//it's the hoe or the hook
 				gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACKHIT1], 1, ATTN_NORM, 0);
 			}
@@ -370,11 +370,11 @@ void plagueElf_strike (edict_t *self)
 
 			damage = irand(PLAGUEELF_DMG_MIN, PLAGUEELF_DMG_MAX);
 
-			if(!(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
+			if(!(self->rrs.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
 				damage+=PLAGUEELF_DMG_HOE;
-			else if(!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
+			else if(!(self->rrs.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
 				damage+=PLAGUEELF_DMG_GAFF;
-			else if(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
+			else if(self->rrs.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
 				damage+=PLAGUEELF_DMG_HAMMER;
 
 			//Hurt whatever we were whacking away at
@@ -534,7 +534,7 @@ void create_pe_spell(edict_t *Spell)
 	Spell->touch=plagueElfSpellTouch;
 	Spell->enemy=NULL;
 	Spell->clipmask=MASK_MONSTERSOLID|MASK_PLAYERSOLID|MASK_SHOT;
-	VectorSet(Spell->s.scale, 0.5, 0.5, 0.5);
+	VectorSet(Spell->rrs.scale, 0.5, 0.5, 0.5);
 	Spell->s.effects |= EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	Spell->svflags |= SVF_ALWAYS_SEND;
 }
@@ -580,7 +580,7 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 
 		make_pe_spell_reflect(self,Spell);
 
-		gi.CreateEffect(&Spell->s,
+		gi.CreateEffect(Spell,
 			FX_PE_SPELL,
 			CEF_OWNERS_ORIGIN,
 			NULL,
@@ -657,7 +657,7 @@ void plagueElf_spell(edict_t *self)
 
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
 			return;
 
 //		gi.sound(self, CHAN_WEAPON, Sounds[SND_SPELL], 1, ATTN_NORM, 0);
@@ -703,7 +703,7 @@ void plagueElf_spell(edict_t *self)
 		else
 			Spell->red_rain_count = FX_PE_MAKE_SPELL;
 
-		gi.CreateEffect(&Spell->s,
+		gi.CreateEffect(Spell,
 			FX_PE_SPELL,
 			CEF_OWNERS_ORIGIN,
 			NULL,
@@ -727,7 +727,7 @@ void plagueElf_c_spell(edict_t *self)
 	vec3_t	Forward, right, firedir, holdpos;
 	edict_t	*Spell;
 
-	if(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)	// Was his arm lopped off?
+	if(self->rrs.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)	// Was his arm lopped off?
 		return;
 
 	self->monsterinfo.attack_finished = level.time + 0.4;
@@ -776,7 +776,7 @@ void plagueElf_c_spell(edict_t *self)
 	else
 		Spell->red_rain_count = FX_PE_MAKE_SPELL;
 
-	gi.CreateEffect(&Spell->s,
+	gi.CreateEffect(Spell,
 		FX_PE_SPELL,
 		CEF_OWNERS_ORIGIN,
 		NULL,
@@ -863,10 +863,10 @@ void pelf_dismember_sound(edict_t *self)
 qboolean canthrownode_pe (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_pe[BP];
-		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
 		return true;
 	}
 	return false;
@@ -904,7 +904,7 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 	vec3_t handspot, forward, right, up;
 	float chance;
 
-	if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 		return false;
 
 	VectorClear(handspot);
@@ -913,63 +913,63 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 	VectorMA(handspot,8,right,handspot);
 	VectorMA(handspot,-6,up,handspot);
 
-	if(self->deadflag == DEAD_DEAD||(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW))
+	if(self->deadflag == DEAD_DEAD||(self->rrs.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW))
 		chance = 0;
 	else
 		chance = 3;
-	if(!(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
 	{
 		if(irand(0,10)<chance)
 		{//just take off top
 			ThrowWeapon(self, &handspot, BIT_HOE, 0, FRAME_torsooff);
-			self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,2,5,flrand(2,7));
 		}
 		else
 		{
 			ThrowWeapon(self, &handspot, BIT_HANDLE|BIT_HOE, 0, FRAME_partfly);
-			self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,4,8,flrand(3,8));
 		}
 		return true;
 	}
-	if(!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
 	{
 		if(irand(0,10)<chance)
 		{//just take off top
 			ThrowWeapon(self, &handspot, BIT_GAFF, 0, FRAME_partfly);
-			self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,2,6,flrand(2,7));
 		}
 		else
 		{
 			ThrowWeapon(self, &handspot, BIT_HANDLE|BIT_GAFF, 0, FRAME_partfly);
-			self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,4,8,flrand(3,8));
 		}
 		return true;
 	}
-	if(!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
 	{
 		if(irand(0,10)<chance)
 		{//just take off top
 			ThrowWeapon(self, &handspot, BIT_HAMMER, 0, FRAME_partfly);
-			self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,2,6,flrand(2,7));
 		}
 		else
 		{
 			ThrowWeapon(self, &handspot, BIT_HANDLE|BIT_HAMMER, 0, FRAME_partfly);
-			self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,4,8,flrand(3,8));
 		}
 		return true;
 	}
 	ThrowWeapon(self, &handspot, BIT_HANDLE, 0, FRAME_partfly);
-	self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 	if(self->deadflag != DEAD_DEAD)
 		plagueElf_chicken(self,6,8,flrand(5,10));
 	return true;
@@ -1008,12 +1008,12 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 	}
 
 	if(
-		(HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW) ||
-		(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)||
+		(HitLocation == hl_ArmUpperLeft&& self->rrs.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW) ||
+		(HitLocation == hl_ArmUpperRight&& self->rrs.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)||
 		(
 			(HitLocation == hl_TorsoFront|| HitLocation == hl_TorsoBack) &&
-			self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW &&
-			self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW &&
+			self->rrs.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW &&
+			self->rrs.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW &&
 			irand(0,10)<4)
 		)
 		HitLocation = hl_Head;//Decap
@@ -1022,9 +1022,9 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.25)
 				plagueElf_dropweapon (self, (int)damage);
@@ -1048,15 +1048,15 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_TorsoFront://split in half?
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__BODY].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(self->health > 0 && flrand(0,self->health)<damage*0.3 && dismember_ok)
 			{
@@ -1083,15 +1083,15 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			{
 				if(flrand(0,self->health)<damage*0.5)
 					plagueElf_dropweapon (self, (int)damage);
-				self->s.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperLeft:
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__L_ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.4)
 				plagueElf_dropweapon (self, (int)damage);
@@ -1109,16 +1109,16 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__L_ARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__L_ARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__L_ARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__L_ARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
 			//Knock weapon out of hand?
-			if(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__R_ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -1136,8 +1136,8 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			{
 				if(flrand(0,self->health)<damage*0.75)
 					plagueElf_dropweapon (self, (int)damage);
-				self->s.fmnodeinfo[MESH__R_ARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__R_ARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__R_ARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__R_ARM].skin = self->s.skinnum+1;
 			}
 			break;
 
@@ -1145,14 +1145,14 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 		case hl_LegLowerLeft://left leg
 			if(self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__L_LEG].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__L_LEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__L_LEG].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__L_LEG].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__L_LEG].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__L_LEG].skin = self->s.skinnum+1;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__L_LEG].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__L_LEG].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode_pe(self, MESH__L_LEG, &throw_nodes))
 				{
@@ -1168,14 +1168,14 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 		case hl_LegLowerRight://right leg
 			if(self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__R_LEG].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__R_LEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__R_LEG].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__R_LEG].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__R_LEG].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__R_LEG].skin = self->s.skinnum+1;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__R_LEG].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__R_LEG].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode_pe(self, MESH__R_LEG, &throw_nodes))
 				{
@@ -1196,17 +1196,17 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 	if(throw_nodes)
 		self->pain_debounce_time = 0;
 
-	if(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 		self->monsterinfo.aiflags |= AI_NO_MISSILE;
 	}
-	else if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
+	else if(self->rrs.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 		if(self->missile_range)
 		{
-			if(!(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW))
+			if(!(self->rrs.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW))
 			{
 				self->monsterinfo.aiflags &= ~AI_NO_MISSILE;
 				self->melee_range = 0;
@@ -1265,17 +1265,17 @@ void plagueElf_pause (edict_t *self)
 
 	if(self->ai_mood == AI_MOOD_FLEE)
 	{
-		if(self->s.color[3] != 255 && self->pre_think!=pelf_phase_in)
+		if(self->rrs.color[3] != 255 && self->pre_think!=pelf_phase_in)
 			pelf_init_phase_in(self);
 	}
 	else
 	{
 		if(!skill->value)
 		{
-			if(self->s.color[3] > 50 && self->pre_think!=pelf_phase_out)
+			if(self->rrs.color[3] > 50 && self->pre_think!=pelf_phase_out)
 				pelf_init_phase_out(self);
 		}
-		else if(self->s.color[3] && self->pre_think!=pelf_phase_out)
+		else if(self->rrs.color[3] && self->pre_think!=pelf_phase_out)
 			pelf_init_phase_out(self);
 	}
 
@@ -1370,7 +1370,7 @@ void plagueElf_pause (edict_t *self)
 void pelf_land(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, gi.soundindex("misc/land.wav"), 1, ATTN_NORM, 0);
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					   FX_DUST_PUFF,
 					   CEF_OWNERS_ORIGIN,
 					   self->s.origin,
@@ -1737,18 +1737,18 @@ void pelf_phase_out (edict_t *self)
 {
 	int	interval = 60;
 
-	if(self->s.color[3] > interval)
+	if(self->rrs.color[3] > interval)
 	{
-		self->s.color[3] -= irand(interval/2, interval);
+		self->rrs.color[3] -= irand(interval/2, interval);
 		self->pre_think = pelf_phase_out;
 		self->next_pre_think = level.time + 0.05;
 	}
 	else
 	{
 		if(!skill->value)
-			self->s.color[3] = 50;
+			self->rrs.color[3] = 50;
 		else
-			self->s.color[3] = 0;
+			self->rrs.color[3] = 0;
 		self->pre_think = NULL;
 		self->next_pre_think = -1;
 	}
@@ -1759,9 +1759,9 @@ void pelf_phase_in (edict_t *self)
 {
 	int	interval = 60;
 
-	if(self->s.color[3] < 255 - interval)
+	if(self->rrs.color[3] < 255 - interval)
 	{
-		self->s.color[3] += irand(interval/2, interval);
+		self->rrs.color[3] += irand(interval/2, interval);
 		self->pre_think = pelf_phase_in;
 		self->next_pre_think = level.time + 0.05;
 	}
@@ -1769,10 +1769,10 @@ void pelf_phase_in (edict_t *self)
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
 
-		self->s.color[0] = 255;
-		self->s.color[1] = 255;
-		self->s.color[2] = 255;
-		self->s.color[3] = 255;
+		self->rrs.color[0] = 255;
+		self->rrs.color[1] = 255;
+		self->rrs.color[2] = 255;
+		self->rrs.color[3] = 255;
 
 		if(self->health <= 0)
 		{
@@ -2015,12 +2015,12 @@ void SP_monster_plagueElf (edict_t *self)
 			self->s.skinnum = 2;
 	}
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -2062,10 +2062,10 @@ void SP_monster_plagueElf (edict_t *self)
 		if(!self->bypass_missile_chance)
 			self->bypass_missile_chance = 60;
 
-		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 	}
@@ -2076,20 +2076,20 @@ void SP_monster_plagueElf (edict_t *self)
 		if(chance < 1)
 		{
 			//show the hammer
-			self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 		}
 		else if(chance < 2)
 		{
 			//show the hoe
-			self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 		}
 		else
 		{
 			//show the gaff (that hook thingie)
-			self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 		}
 
 		self->monsterinfo.aiflags |= AI_NO_MISSILE;
@@ -2176,13 +2176,13 @@ void SP_monster_palace_plague_guard (edict_t *self)
 
 	self->spawnflags |= MSF_PELF_MISSILE;
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		float scale = flrand(1.0, 1.3);
 		self->monsterinfo.scale = scale;
-		VectorSet(self->s.scale, scale, scale, scale);
+		VectorSet(self->rrs.scale, scale, scale, scale);
 	}
 
 	SP_monster_plagueElf(self);
@@ -2261,10 +2261,10 @@ void SP_monster_palace_plague_guard_invisible (edict_t *self)
 
 	self->s.skinnum = PALACE_ELF_SKIN;
 
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
-	self->s.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
+	self->rrs.color[3] = 255;
 
 	if(!(self->spawnflags&MSF_EXTRA4))//these guys start visible
 		pelf_init_phase_out(self);

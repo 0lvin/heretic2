@@ -163,38 +163,38 @@ void SP_obj_corpse_ogle(edict_t *self)
 
 	if (self->monsterinfo.ogleflags & OF_PUSHING)
 	{
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_PICK_UP)
 	{
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_PICK_DOWN)
 	{
 		SetAnim(self, ANIM_WORK5);
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_CHISEL_UP)
 	{
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_HAMMER_UP)
 	{
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_HAMMER_DOWN)
 	{
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 	else
 	{
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 
 	ObjectInit(self,40,80,MAT_FLESH,SOLID_BBOX);
@@ -476,33 +476,33 @@ void ogle_cast_off_tools_of_oppression ( edict_t *self )
 {
 	int		throw_nodes = 0;
 
-	if (!(self->s.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
+	if (!(self->rrs.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
 	{//Cast off the hammer and nail
 		throw_nodes |= BPN_NAIL;
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
 		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
 
 		throw_nodes |= BPN_HAMMER | BPN_HANDLE;
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
 		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
 	}
-	else if (!(self->s.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
+	else if (!(self->rrs.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
 	{//Cast off the pick
 		throw_nodes |= BPN_PICK | BPN_HANDLE;
 
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
 		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
 	}
-	else if (!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
+	else if (!(self->rrs.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
 	{//Cast off the hammer
 		throw_nodes |= BPN_HAMMER | BPN_HANDLE;
 
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
 		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
 	}
@@ -772,7 +772,7 @@ void ogle_strike(edict_t *self)
 		else
 		{
 			//Hurt whatever we were whacking away at
-			if (!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
 				gi.sound (self, CHAN_WEAPON, sounds[SND_HAMMER_FLESH], 1, ATTN_NORM, 0);
 			else
 				gi.sound (self, CHAN_WEAPON, sounds[SND_PICK_FLESH], 1, ATTN_NORM, 0);
@@ -914,14 +914,14 @@ void ogle_pick_dust(edict_t *self)
 	gi.CreateEffect(NULL, FX_OGLE_HITPUFF, type, dustPos, "v", vf);
 
 	//Check for the chisel and hammer
-	if (!(self->s.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
+	if (!(self->rrs.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
 	{
 		if (irand(0,1))
 			gi.sound (self, CHAN_WEAPON, sounds[SND_SPIKE1], 1, ATTN_IDLE, 0);
 		else
 			gi.sound (self, CHAN_WEAPON, sounds[SND_SPIKE2], 1, ATTN_IDLE, 0);
 	}
-	else if (!(self->s.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
+	else if (!(self->rrs.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
 	{
 		if (irand(0,1))
 			gi.sound (self, CHAN_WEAPON, sounds[SND_PICK1], 1, ATTN_IDLE, 0);
@@ -1005,18 +1005,18 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 	case hl_Head:
-			self->s.fmnodeinfo[MESH__TORSO].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__TORSO].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__TORSO].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__TORSO].skin = self->s.skinnum+1;
 		break;
 
 	case hl_TorsoFront:
 	case hl_TorsoBack:
-			self->s.fmnodeinfo[MESH__TORSO].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__TORSO].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__TORSO].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__TORSO].skin = self->s.skinnum+1;
 		break;
 
 	case hl_ArmUpperLeft:
-		if(self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
 			break;
 
 		if (dismember_ok)
@@ -1026,32 +1026,32 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 			VectorMA(gore_spot,-8,right,gore_spot);
 
 			throw_nodes |= BPN_LUPARM;
-			self->s.fmnodeinfo[MESH__LUPARM].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__LUPARM].flags |= FMNI_NO_DRAW;
 
-			if (!(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_L4ARM;
-				self->s.fmnodeinfo[MESH__L4ARM].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__L4ARM].flags |= FMNI_NO_DRAW;
 			}
 
-			if (!(self->s.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_NAIL;
-				self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
 			}
 
 			ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 		}
 		else
 		{
-			self->s.fmnodeinfo[MESH__LUPARM].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__LUPARM].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__LUPARM].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__LUPARM].skin = self->s.skinnum+1;
 		}
 
 		break;
 
 	case hl_ArmLowerLeft:
-		if(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
 			break;
 
 		if (dismember_ok)
@@ -1061,26 +1061,26 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 			VectorMA(gore_spot,-8,right,gore_spot);
 
 			throw_nodes |= BPN_L4ARM;
-			self->s.fmnodeinfo[MESH__L4ARM].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__L4ARM].flags |= FMNI_NO_DRAW;
 
-			if (!(self->s.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_NAIL;
-				self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
 			}
 
 			ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 		}
 		else
 		{
-			self->s.fmnodeinfo[MESH__L4ARM].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__L4ARM].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__L4ARM].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__L4ARM].skin = self->s.skinnum+1;
 		}
 
 		break;
 
 	case hl_ArmUpperRight:
-		if(self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
 			break;
 
 		if (dismember_ok)
@@ -1090,30 +1090,30 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 			VectorMA(gore_spot,8,right,gore_spot);
 
 			throw_nodes |= BPN_RUPARM;
-			self->s.fmnodeinfo[MESH__RUPARM].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__RUPARM].flags |= FMNI_NO_DRAW;
 
-			if (!(self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_R4ARM;
-				self->s.fmnodeinfo[MESH__R4ARM].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__R4ARM].flags |= FMNI_NO_DRAW;
 			}
 
-			if (!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_HAMMER;
-				self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 			}
 
-			if (!(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_HANDLE;
-				self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 			}
 
-			if (!(self->s.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_PICK;
-				self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 			}
 
 			ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
@@ -1123,14 +1123,14 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		}
 		else
 		{
-			self->s.fmnodeinfo[MESH__RUPARM].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__RUPARM].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__RUPARM].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__RUPARM].skin = self->s.skinnum+1;
 		}
 
 		break;
 
 	case hl_ArmLowerRight:
-		if(self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
 			break;
 
 		if (dismember_ok)
@@ -1140,24 +1140,24 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 			VectorMA(gore_spot,8,right,gore_spot);
 
 			throw_nodes |= BPN_R4ARM;
-			self->s.fmnodeinfo[MESH__R4ARM].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__R4ARM].flags |= FMNI_NO_DRAW;
 
-			if (!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_HAMMER;
-				self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 			}
 
-			if (!(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_HANDLE;
-				self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 			}
 
-			if (!(self->s.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
+			if (!(self->rrs.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
 			{
 				throw_nodes |= BPN_PICK;
-				self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 			}
 
 			ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
@@ -1167,22 +1167,22 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		}
 		else
 		{
-			self->s.fmnodeinfo[MESH__R4ARM].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__R4ARM].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__R4ARM].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__R4ARM].skin = self->s.skinnum+1;
 		}
 
 		break;
 
 	case hl_LegUpperLeft:
 	case hl_LegLowerLeft:
-			self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
 		break;
 
 	case hl_LegUpperRight:
 	case hl_LegLowerRight:
-			self->s.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
 		break;
 	}
 }
@@ -1734,7 +1734,7 @@ void SP_monster_ogle(edict_t *self)
 	if (self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -1785,9 +1785,9 @@ void SP_monster_ogle(edict_t *self)
 			SetAnim(self, ANIM_REST4);
 			self->use = ogle_start_push;
 
-			self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 		}
 		else
 		{	// We gotta do SOMETHING if there is no target, otherwise the monster will puke.
@@ -1795,7 +1795,7 @@ void SP_monster_ogle(edict_t *self)
 					vtos(self->s.origin));
 
 			SetAnim(self, ANIM_WORK3);
-			self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 		}
 	}
 	else if (self->monsterinfo.ogleflags & OF_PICK_UP)
@@ -1804,8 +1804,8 @@ void SP_monster_ogle(edict_t *self)
 			SetAnim(self, ANIM_C_IDLE1);
 		else
 			SetAnim(self, ANIM_WORK4);
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_PICK_DOWN)
 	{
@@ -1813,8 +1813,8 @@ void SP_monster_ogle(edict_t *self)
 			SetAnim(self, ANIM_C_IDLE1);
 		else
 		SetAnim(self, ANIM_WORK5);
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_CHISEL_UP)
 	{
@@ -1828,7 +1828,7 @@ void SP_monster_ogle(edict_t *self)
 				SetAnim(self, ANIM_WORK2);
 		}
 
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_HAMMER_UP)
 	{
@@ -1836,8 +1836,8 @@ void SP_monster_ogle(edict_t *self)
 			SetAnim(self, ANIM_C_IDLE1);
 		else
 			SetAnim(self, ANIM_WORK4);
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 	else if (self->monsterinfo.ogleflags & OF_HAMMER_DOWN)
 	{
@@ -1845,8 +1845,8 @@ void SP_monster_ogle(edict_t *self)
 			SetAnim(self, ANIM_C_IDLE1);
 		else
 			SetAnim(self, ANIM_WORK5);
-		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 	else
 	{
@@ -1854,7 +1854,7 @@ void SP_monster_ogle(edict_t *self)
 			SetAnim(self, ANIM_C_IDLE1);
 		else
 			SetAnim(self, ANIM_WORK3);
-		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 
 	if (self->monsterinfo.ogleflags & OF_CINEMATIC)

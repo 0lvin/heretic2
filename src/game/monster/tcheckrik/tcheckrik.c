@@ -218,14 +218,14 @@ void insectCut (edict_t *self, float attacktype)
 	switch((int)attacktype)
 	{
 	case TC_ATK_STAB:
-		if(self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW)
 			return;
 		VectorMA(pos2, -16, right, pos2);
 		damage = irand(TC_DMG_STAB_MIN, TC_DMG_STAB_MAX);
 		break;
 	case TC_ATK_HACK:
-//		if(self->s.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
-		if(self->s.fmnodeinfo[MESH__MALEHAND].flags & FMNI_NO_DRAW)
+//		if(self->rrs.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__MALEHAND].flags & FMNI_NO_DRAW)
 		{
 			VectorMA (pos1, 12, forward, pos1);
 			pos1[2]+= 28;
@@ -270,7 +270,7 @@ void insectCut (edict_t *self, float attacktype)
 
 	T_Damage (trace.ent, self, self, dir, trace.endpos, vec3_origin, damage, damage*2, DAMAGE_DISMEMBER,MOD_DIED);
 
-/*	gi.CreateEffect(&self->s,
+/*	gi.CreateEffect(self,
 		FX_I_EFFECTS,
 		0,
 		vec3_origin,
@@ -400,7 +400,7 @@ void insect_death(edict_t *self, G_Message_t *msg)
 	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
-	gi.RemoveEffects(&self->s, FX_I_EFFECTS);
+	gi.RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 
 	self->deadflag = DEAD_DEAD;
@@ -512,9 +512,9 @@ void insect_melee(edict_t *self, G_Message_t *msg)
 
 	if(self->mass == MASS_TC_MALE)
 	{//male
-		if(irand(0, 1)&&self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW)
+		if(irand(0, 1)&&self->rrs.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW)
 			SetAnim(self, ANIM_SPEAR);
-		else// if(self->s.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
+		else// if(self->rrs.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
 			SetAnim(self, ANIM_SWORD);
 	}
 	else//if no staff, diff spell?
@@ -654,7 +654,7 @@ void insectSpell(edict_t *self, float whichspell)
 	switch((int)whichspell)
 	{
 	case TC_SPL_GLOW:
-		if(self->s.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW)
 		{//no staff, weaker spell
 			VectorCopy(self->s.origin, org);
 			VectorMA(org, 8, forward, org);
@@ -678,7 +678,7 @@ void insectSpell(edict_t *self, float whichspell)
 		}
 		break;
 	case TC_SPL_FIRE:
-		if(self->s.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW)
 		{//no staff
 			VectorCopy(self->s.origin, org);	// We need to initialize org, don't we?
 			VectorMA(org, 16, forward, org);
@@ -697,7 +697,7 @@ void insectSpell(edict_t *self, float whichspell)
 		}
 		break;
 	case TC_SPL_FIRE2:
-		if(!(self->s.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW))
+		if(!(self->rrs.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW))
 		{//no staff
 			VectorCopy(self->s.origin, org);
 			VectorMA(org, 16, forward, org);
@@ -720,7 +720,7 @@ void insectSpell(edict_t *self, float whichspell)
 
 void insectReleaseSpell (edict_t *self)
 {
-	gi.RemoveEffects(&self->s, FX_I_EFFECTS);
+	gi.RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX | EF_MARCUS_FLAG1;
 	self->damage_debounce_time = true;
 }
@@ -751,10 +751,10 @@ int Bit_for_MeshNode_tc [16] =
 qboolean canthrownode_tc (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_tc[BP];
-		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
 		return true;
 	}
 	return false;
@@ -787,42 +787,42 @@ void insect_dropweapon (edict_t *self, int weapon)
 	VectorClear(handspot);
 	AngleVectors(self->s.angles,forward,right,up);
 
-//	if(self->deadflag == DEAD_DEAD||(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW))
+//	if(self->deadflag == DEAD_DEAD||(self->rrs.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW))
 //		chance = 0;
 //	else
 //		chance = 3;
 	if((!weapon || weapon&BIT_STAFF) &&
-		!(self->s.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW))
+		!(self->rrs.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW))
 	{
 		VectorMA(handspot,8,forward,handspot);
 		VectorMA(handspot,5,right,handspot);
 		VectorMA(handspot,12,up,handspot);
 		ThrowWeapon(self, &handspot, BIT_STAFF, 0, FRAME_partfly);
-		self->s.fmnodeinfo[MESH__STAFF].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__STAFF].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
 //		insect_chicken(self,2,4,flrand(3,8));
 		return;
 	}
 	if((!weapon || weapon&BIT_SPEAR)&&
-		!(self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW))
+		!(self->rrs.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW))
 	{
 		VectorMA(handspot,6,forward,handspot);
 		VectorMA(handspot,4,right,handspot);
 		ThrowWeapon(self, &handspot, BIT_SPEAR, 0, FRAME_partfly);
-		self->s.fmnodeinfo[MESH__SPEAR].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__SPEAR].flags |= FMNI_NO_DRAW;
 //		insect_chicken(self,2,4,flrand(3,8));
 		return;
 	}
 	if((!weapon || weapon&BIT_SWORD)&&
-		!(self->s.fmnodeinfo[MESH__MALEHAND].flags & FMNI_NO_DRAW))
-//		!(self->s.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW))
+		!(self->rrs.fmnodeinfo[MESH__MALEHAND].flags & FMNI_NO_DRAW))
+//		!(self->rrs.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW))
 	{
 		VectorMA(handspot,6,forward,handspot);
 		VectorMA(handspot,-6,right,handspot);
 		VectorMA(handspot,-6,up,handspot);
 		ThrowWeapon(self, &handspot, BIT_SWORD, 0, FRAME_partfly);
-		self->s.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;
-//		self->s.fmnodeinfo[MESH__SWORD].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;
+//		self->rrs.fmnodeinfo[MESH__SWORD].flags |= FMNI_NO_DRAW;
 //		insect_chicken(self,2,4,flrand(3,8));
 		return;
 	}
@@ -861,12 +861,12 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 	}
 
 	if(
-		(HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW) ||
-		(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)||
+		(HitLocation == hl_ArmUpperLeft&& self->rrs.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW) ||
+		(HitLocation == hl_ArmUpperRight&& self->rrs.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)||
 		(
 			(HitLocation == hl_TorsoFront|| HitLocation == hl_TorsoBack) &&
-			self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW &&
-			self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW &&
+			self->rrs.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW &&
+			self->rrs.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW &&
 			irand(0,10)<4)
 		)
 		HitLocation = hl_Head;//Decap
@@ -876,9 +876,9 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.25)
 				insect_dropweapon (self, 0);
@@ -904,76 +904,76 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				if(irand(0,1)||self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+				if(irand(0,1)||self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				{
 					if(self->mass == MASS_TC_MALE)
 					{
-						if(irand(0,1)||self->s.fmnodeinfo[MESH__RMANDIBLE].flags & FMNI_USE_SKIN)
+						if(irand(0,1)||self->rrs.fmnodeinfo[MESH__RMANDIBLE].flags & FMNI_USE_SKIN)
 						{
-							self->s.fmnodeinfo[MESH__LMANDIBLE].flags |= FMNI_USE_SKIN;
-							self->s.fmnodeinfo[MESH__LMANDIBLE].skin = self->s.skinnum+1;
+							self->rrs.fmnodeinfo[MESH__LMANDIBLE].flags |= FMNI_USE_SKIN;
+							self->rrs.fmnodeinfo[MESH__LMANDIBLE].skin = self->s.skinnum+1;
 						}
 						else
 						{
-							self->s.fmnodeinfo[MESH__RMANDIBLE].flags |= FMNI_USE_SKIN;
-							self->s.fmnodeinfo[MESH__RMANDIBLE].skin = self->s.skinnum+1;
+							self->rrs.fmnodeinfo[MESH__RMANDIBLE].flags |= FMNI_USE_SKIN;
+							self->rrs.fmnodeinfo[MESH__RMANDIBLE].skin = self->s.skinnum+1;
 						}
 					}
 					else
 					{
-						self->s.fmnodeinfo[MESH__CROWN].flags |= FMNI_USE_SKIN;
-						self->s.fmnodeinfo[MESH__CROWN].skin = self->s.skinnum+1;
+						self->rrs.fmnodeinfo[MESH__CROWN].flags |= FMNI_USE_SKIN;
+						self->rrs.fmnodeinfo[MESH__CROWN].skin = self->s.skinnum+1;
 					}
 				}
 				else
 				{
-					self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
-					self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
+					self->rrs.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
+					self->rrs.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
 				}
 			}
 			break;
 		case hl_TorsoFront://split in half?
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 				break;
 			if(flrand(0,self->health)<damage*0.5)
 				insect_dropweapon (self, 0);
-			self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 			break;
 		case hl_ArmUpperLeft:
 			if(self->mass == MASS_TC_FEMALE)
 			{//female
-				if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 					return;
-				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				return;
 			}
 			else
 			{//male - sword arm
-				if(self->s.fmnodeinfo[MESH__L2NDARM].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__L2NDARM].flags & FMNI_USE_SKIN)
 					damage*=1.5;//greater chance to cut off if previously damaged
 				if(flrand(0,self->health)<damage*0.4)
 					insect_dropweapon (self, BIT_SWORD);
-				self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__L2NDARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__L2NDARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmLowerLeft://left arm
 			if(self->mass == MASS_TC_FEMALE)
 			{//female
-				if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 					return;
-				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				return;
 			}
 			else
 			{//male - left spear arm
-				if(self->s.fmnodeinfo[MESH__L2NDARM].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__L2NDARM].flags & FMNI_NO_DRAW)
 					break;
-				if(self->s.fmnodeinfo[MESH__L2NDARM].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__L2NDARM].flags & FMNI_USE_SKIN)
 					damage*=1.5;//greater chance to cut off if previously damaged
 				if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 				{
@@ -984,8 +984,8 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 						VectorMA(gore_spot,-10,right,gore_spot);
 //						insect_chicken(self,6,8,flrand(7,15));
 						ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
-						if(self->s.fmnodeinfo[MESH__R2NDARM].flags & FMNI_NO_DRAW&&
-							!(self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW))
+						if(self->rrs.fmnodeinfo[MESH__R2NDARM].flags & FMNI_NO_DRAW&&
+							!(self->rrs.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW))
 							insect_dropweapon (self, BIT_SPEAR);
 					}
 				}
@@ -993,30 +993,30 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				{
 					if(flrand(0,self->health)<damage*0.4)
 						insect_dropweapon (self, BIT_SPEAR);
-					self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;
-					self->s.fmnodeinfo[MESH__L2NDARM].skin = self->s.skinnum+1;
+					self->rrs.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;
+					self->rrs.fmnodeinfo[MESH__L2NDARM].skin = self->s.skinnum+1;
 				}
 			}
 			break;
 		case hl_ArmUpperRight:
 			if(self->mass == MASS_TC_FEMALE)
 			{//female
-				if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 					damage*=1.5;//greater chance to cut off if previously damaged
 				else
 				{
-					self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
-					self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
+					self->rrs.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
+					self->rrs.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				}
 				if(flrand(0,self->health)<damage*0.4)
 					insect_dropweapon (self, BIT_STAFF);
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 					return;
-				self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				return;
 			}
 			//male - right upper arm- nothing in it
@@ -1024,21 +1024,21 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_ArmLowerRight://right arm
 			if(self->mass == MASS_TC_FEMALE)
 			{//female
-				if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 					damage*=1.5;//greater chance to cut off if previously damaged
 				else
 				{
-					self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
-					self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
+					self->rrs.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
+					self->rrs.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				}
 				if(flrand(0,self->health)<damage*0.4)
 					insect_dropweapon (self, BIT_STAFF);
 			}
 			else
 			{//male - right spear arm
-				if(self->s.fmnodeinfo[MESH__R2NDARM].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__R2NDARM].flags & FMNI_NO_DRAW)
 					break;
-				if(self->s.fmnodeinfo[MESH__R2NDARM].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__R2NDARM].flags & FMNI_USE_SKIN)
 					damage*=1.5;//greater chance to cut off if previously damaged
 				if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 				{
@@ -1049,8 +1049,8 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 						VectorMA(gore_spot,-10,right,gore_spot);
 //						insect_chicken(self,6,8,flrand(7,15));
 						ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
-						if(self->s.fmnodeinfo[MESH__L2NDARM].flags & FMNI_NO_DRAW&&
-							!(self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW))
+						if(self->rrs.fmnodeinfo[MESH__L2NDARM].flags & FMNI_NO_DRAW&&
+							!(self->rrs.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW))
 							insect_dropweapon (self, BIT_SPEAR);
 					}
 				}
@@ -1058,8 +1058,8 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				{
 					if(flrand(0,self->health)<damage*0.4)
 						insect_dropweapon (self, BIT_SPEAR);
-					self->s.fmnodeinfo[MESH__R2NDARM].flags |= FMNI_USE_SKIN;
-					self->s.fmnodeinfo[MESH__R2NDARM].skin = self->s.skinnum+1;
+					self->rrs.fmnodeinfo[MESH__R2NDARM].flags |= FMNI_USE_SKIN;
+					self->rrs.fmnodeinfo[MESH__R2NDARM].skin = self->s.skinnum+1;
 				}
 			}
 			break;
@@ -1068,15 +1068,15 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_LegLowerLeft://left leg
 			if(self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
 				break;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__LLEG].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode_tc(self, MESH__LLEG, &throw_nodes))
 				{
@@ -1091,15 +1091,15 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_LegLowerRight://right leg
 			if(self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__RLEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
 				break;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__RLEG].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode_tc(self, MESH__RLEG, &throw_nodes))
 				{
@@ -1121,17 +1121,17 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 
 	/*if(self->mass == MASS_TC_FEMALE)
 	{
-		if(self->s.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MISSILE;
 	}
 	else*/
 	if(self->mass == MASS_TC_MALE)
 	{
-//		if(self->s.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
-		if(self->s.fmnodeinfo[MESH__MALEHAND].flags & FMNI_NO_DRAW)
+//		if(self->rrs.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__MALEHAND].flags & FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MELEE;
 
-		if(self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MISSILE;
 	}
 }
@@ -1154,7 +1154,7 @@ void insect_pain(edict_t *self, G_Message_t *msg)
 	if(!force_damage&&flrand(0,self->health)>damage)
 		return;
 
-	gi.RemoveEffects(&self->s, FX_I_EFFECTS);
+	gi.RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 	//sound
 	insect_random_pain_sound(self);
@@ -1201,7 +1201,7 @@ void insect_pause (edict_t *self)
 				self->melee_range = 48;
 
 				self->bypass_missile_chance = 0;
-				self->s.fmnodeinfo[MESH__MALEHAND].flags &= ~FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__MALEHAND].flags &= ~FMNI_NO_DRAW;
 			}
 		}
 	}
@@ -1678,12 +1678,12 @@ void SP_monster_tcheckrik_male (edict_t *self)
 	else
 		self->s.skinnum = 0;
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -1692,16 +1692,16 @@ void SP_monster_tcheckrik_male (edict_t *self)
 	self->materialtype = MAT_INSECT;
 
 	//turn on/off the weapons that aren't used
-	self->s.fmnodeinfo[MESH__CROWN].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__RWINGS].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__LWINGS].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__STAFF].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__FEMHAND].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__CROWN].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__CROWN].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__RWINGS].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__LWINGS].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__STAFF].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__FEMHAND].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__CROWN].flags |= FMNI_NO_DRAW;
 
 	if(self->spawnflags & MSF_INSECT_BEAST_FODDER)
-		self->s.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;//?
+		self->rrs.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;//?
 
 	//FIXME (somewhere: otherenemy should be more than just *one* kind
 	self->monsterinfo.otherenemyname = "monster_rat";
@@ -1732,7 +1732,7 @@ void SP_monster_tcheckrik_male (edict_t *self)
 		G_QPostMessage(self,MSG_STAND,PRI_DIRECTIVE, NULL);
 	}
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					FX_I_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					vec3_origin,
@@ -1841,12 +1841,12 @@ void SP_monster_tcheckrik_female (edict_t *self)
 	self->s.skinnum = 0;
 //	self->s.skinnum = 2;
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -1855,15 +1855,15 @@ void SP_monster_tcheckrik_female (edict_t *self)
 	self->materialtype = MAT_INSECT;
 
 	//turn on/off the weapons that aren't used
-	self->s.fmnodeinfo[MESH__LMANDIBLE].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__RMANDIBLE].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__R2NDARM].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;//?
-//	self->s.fmnodeinfo[MESH__SWORD].flags |= FMNI_NO_DRAW;//?
-	self->s.fmnodeinfo[MESH__SPEAR].flags |= FMNI_NO_DRAW;//?
+	self->rrs.fmnodeinfo[MESH__LMANDIBLE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__RMANDIBLE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__R2NDARM].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;//?
+//	self->rrs.fmnodeinfo[MESH__SWORD].flags |= FMNI_NO_DRAW;//?
+	self->rrs.fmnodeinfo[MESH__SPEAR].flags |= FMNI_NO_DRAW;//?
 
-//	self->s.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
+//	self->rrs.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
 
 	//FIXME (somewhere: otherenemy should be more than just *one* kind
 	self->monsterinfo.otherenemyname = "monster_rat";
@@ -1884,7 +1884,7 @@ void SP_monster_tcheckrik_female (edict_t *self)
 
 	self->monsterinfo.aiflags |= AI_NO_MELEE;
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					FX_I_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					vec3_origin,
@@ -1896,9 +1896,9 @@ void SP_monster_tcheckrik_female (edict_t *self)
 
 	if(self->spawnflags & MSF_INSECT_ALTERNATE)
 	{
-		self->s.color[3] = 255;
-		self->s.color[0] = 250;
-		self->s.color[1] = 150;
-		self->s.color[2] = 100;
+		self->rrs.color[3] = 255;
+		self->rrs.color[0] = 250;
+		self->rrs.color[1] = 150;
+		self->rrs.color[2] = 100;
 	}
 }

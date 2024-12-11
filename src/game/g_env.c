@@ -75,20 +75,20 @@ void smoke_use (edict_t *self, edict_t *other, edict_t *activator)
 	byte	scale,speed,wait,maxrange;
 	if (self->spawnflags & START_OFF)
 	{
-		scale = (byte)(AVG_VEC3T(self->s.scale) * 32.0);
+		scale = (byte)(AVG_VEC3T(self->rrs.scale) * 32.0);
 		AngleVectors(self->s.angles, dir, NULL, NULL);
 
 		speed = Q_ftol(self->speed);
 		wait = Q_ftol(self->wait);
 		maxrange = Q_ftol(self->attenuation);
 
-		self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+		self->PersistantCFX = gi.CreatePersistantEffect(self,
 								FX_ENVSMOKE,
 								CEF_BROADCAST,self->s.origin,
 								"bdbbb",scale,dir,speed,wait,maxrange);
 
 		self->s.sound = gi.soundindex("ambient/fountainloop.wav");
-		self->s.sound_data = (127 & ENT_VOL_MASK) | ATTN_STATIC;
+		self->rrs.sound_data = (127 & ENT_VOL_MASK) | ATTN_STATIC;
 		self->spawnflags &= ~START_OFF;
 	}
 	else
@@ -98,7 +98,7 @@ void smoke_use (edict_t *self, edict_t *other, edict_t *activator)
 			gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_SMOKE);
 			self->PersistantCFX = 0;
 		}
-		gi.RemoveEffects(&self->s, FX_ENVSMOKE);
+		gi.RemoveEffects(self, FX_ENVSMOKE);
 		self->spawnflags |= START_OFF;
 	}
 }
@@ -119,14 +119,14 @@ void SP_env_smoke (edict_t *self)
 	byte	scale,speed,wait,maxrange;
 
 	// set scale
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
-		VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+		VectorSet(self->rrs.scale, 1.0, 1.0, 1.0);
 	}
 
-	scale = (byte)(AVG_VEC3T(self->s.scale) * 32.0);
+	scale = (byte)(AVG_VEC3T(self->rrs.scale) * 32.0);
 
 	// allow us to use this stuff
 	if (self->targetname)
@@ -165,7 +165,7 @@ void SP_env_smoke (edict_t *self)
 	else
 	{
 		AngleVectors(self->s.angles, dir, NULL, NULL);
-		self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+		self->PersistantCFX = gi.CreatePersistantEffect(self,
 								FX_ENVSMOKE,
 								CEF_BROADCAST,self->s.origin,
 								"bdbbb",scale,dir,speed,wait,maxrange);

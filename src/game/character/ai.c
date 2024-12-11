@@ -147,31 +147,31 @@ void c_swapplayer(edict_t *Self,edict_t *Cinematic)
 
 	for (i=0;i<NUM_MESH_NODES;++i)
 	{
-		Cinematic->s.fmnodeinfo[i].flags =  Self->s.fmnodeinfo[i].flags;
-		Cinematic->s.fmnodeinfo[i].skin = Self->s.fmnodeinfo[i].skin;
+		Cinematic->rrs.fmnodeinfo[i].flags =  Self->rrs.fmnodeinfo[i].flags;
+		Cinematic->rrs.fmnodeinfo[i].skin = Self->rrs.fmnodeinfo[i].skin;
 	}
 
 	// Open up hands
-	if (Cinematic->s.fmnodeinfo[MESH__RHANDHI].flags & FMNI_NO_DRAW)
-		Cinematic->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
+	if (Cinematic->rrs.fmnodeinfo[MESH__RHANDHI].flags & FMNI_NO_DRAW)
+		Cinematic->rrs.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
 
-	if (Cinematic->s.fmnodeinfo[MESH__LHANDHI].flags & FMNI_NO_DRAW)
-		Cinematic->s.fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
+	if (Cinematic->rrs.fmnodeinfo[MESH__LHANDHI].flags & FMNI_NO_DRAW)
+		Cinematic->rrs.fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
 
 	// If bow is active put it on his back
-	if (!(Cinematic->s.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
-		Cinematic->s.fmnodeinfo[MESH__BOFF].flags &= ~FMNI_NO_DRAW;
+	if (!(Cinematic->rrs.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
+		Cinematic->rrs.fmnodeinfo[MESH__BOFF].flags &= ~FMNI_NO_DRAW;
 
 	// If staff is active put it on his hip
-	if (!(Cinematic->s.fmnodeinfo[MESH__STAFACTV].flags & FMNI_NO_DRAW))
-		Cinematic->s.fmnodeinfo[MESH__STOFF].flags &= ~FMNI_NO_DRAW;
+	if (!(Cinematic->rrs.fmnodeinfo[MESH__STAFACTV].flags & FMNI_NO_DRAW))
+		Cinematic->rrs.fmnodeinfo[MESH__STOFF].flags &= ~FMNI_NO_DRAW;
 
 
 	// Get rid of all weapons in the hands
-	Cinematic->s.fmnodeinfo[MESH__BLADSTF].flags |= FMNI_NO_DRAW;
-	Cinematic->s.fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
-	Cinematic->s.fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
-	Cinematic->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
+	Cinematic->rrs.fmnodeinfo[MESH__BLADSTF].flags |= FMNI_NO_DRAW;
+	Cinematic->rrs.fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
+	Cinematic->rrs.fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
+	Cinematic->rrs.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
 }
 
 #define ENT_INVISIBLE 1
@@ -208,7 +208,7 @@ void c_corvus_init(edict_t *self,int classId)
 	if (!self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = 1;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -265,7 +265,7 @@ void c_character_init(edict_t *self,int classId)
 	if (!self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = 1;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);

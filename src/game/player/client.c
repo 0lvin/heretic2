@@ -218,7 +218,7 @@ SpawnBleeder(edict_t *self, edict_t *other, vec3_t bleed_dir, vec3_t bleed_spot)
 	bleeder->think = BleederThink;
 	bleeder->nextthink = level.time + 0.1;
 //when refpoints on arms and head in for corvus, do this:
-/*	gi.CreateEffect(&self->s.,
+/*	gi.CreateEffect(self.,
 			FX_LINKEDBLOOD,
 			0,
 			self->s.origin,
@@ -260,8 +260,8 @@ void player_repair_skin (edict_t *self)
 				gi.dprintf("Healed player skin on node %d\n", i);
 
 				self->client->playerinfo.pers.altparts &= ~(1<<i);
-				self->s.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
-				self->s.fmnodeinfo[i].skin = self->s.skinnum;
+				self->rrs.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[i].skin = self->s.skinnum;
 			}
 		}
 		SetupPlayerinfo_effects(self);
@@ -281,7 +281,7 @@ void player_repair_skin (edict_t *self)
 			i == MESH__BOWACTV)
 			continue;//these shouldn't be fucked with
 
-		if(!(self->s.fmnodeinfo[i].flags&FMNI_NO_DRAW)&&(self->s.fmnodeinfo[i].flags&FMNI_USE_SKIN))
+		if(!(self->rrs.fmnodeinfo[i].flags&FMNI_NO_DRAW)&&(self->rrs.fmnodeinfo[i].flags&FMNI_USE_SKIN))
 		{
 			hurt_nodes[found_dmg_skins] = i;
 			found_dmg_skins++;
@@ -297,13 +297,13 @@ void player_repair_skin (edict_t *self)
 	while(to_fix > 0 && checked<100)
 	{//heal num damaged nodes over allowed
 		i = hurt_nodes[irand(0, (found_dmg_skins - 1))];
-		if(!(self->s.fmnodeinfo[i].flags&FMNI_NO_DRAW))
+		if(!(self->rrs.fmnodeinfo[i].flags&FMNI_NO_DRAW))
 		{
-			if(self->s.fmnodeinfo[i].flags&FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[i].flags&FMNI_USE_SKIN)
 			{
 				gi.dprintf("Healed player skin on node %d\n", i);
-				self->s.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
-				self->s.fmnodeinfo[i].skin = self->s.skinnum;
+				self->rrs.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[i].skin = self->s.skinnum;
 
 				self->client->playerinfo.pers.altparts &= ~(1<<i);
 
@@ -335,29 +335,29 @@ void ResetPlayerBaseNodes (edict_t *ent)
 
 	ent->client->playerinfo.pers.altparts = 0;
 
-	ent->s.fmnodeinfo[MESH_BASE2].flags &= ~FMNI_NO_DRAW;
-	ent->s.fmnodeinfo[MESH__BACK].flags &= ~FMNI_NO_DRAW;
-	ent->s.fmnodeinfo[MESH__RARM].flags &= ~FMNI_NO_DRAW;
-	ent->s.fmnodeinfo[MESH__LARM].flags &= ~FMNI_NO_DRAW;
-	ent->s.fmnodeinfo[MESH__HEAD].flags &= ~FMNI_NO_DRAW;
-	ent->s.fmnodeinfo[MESH__RLEG].flags &= ~FMNI_NO_DRAW;
-	ent->s.fmnodeinfo[MESH__LLEG].flags &= ~FMNI_NO_DRAW;
+	ent->rrs.fmnodeinfo[MESH_BASE2].flags &= ~FMNI_NO_DRAW;
+	ent->rrs.fmnodeinfo[MESH__BACK].flags &= ~FMNI_NO_DRAW;
+	ent->rrs.fmnodeinfo[MESH__RARM].flags &= ~FMNI_NO_DRAW;
+	ent->rrs.fmnodeinfo[MESH__LARM].flags &= ~FMNI_NO_DRAW;
+	ent->rrs.fmnodeinfo[MESH__HEAD].flags &= ~FMNI_NO_DRAW;
+	ent->rrs.fmnodeinfo[MESH__RLEG].flags &= ~FMNI_NO_DRAW;
+	ent->rrs.fmnodeinfo[MESH__LLEG].flags &= ~FMNI_NO_DRAW;
 
-	ent->s.fmnodeinfo[MESH_BASE2].flags &= ~FMNI_USE_SKIN;
-	ent->s.fmnodeinfo[MESH__BACK].flags &= ~FMNI_USE_SKIN;
-	ent->s.fmnodeinfo[MESH__RARM].flags &= ~FMNI_USE_SKIN;
-	ent->s.fmnodeinfo[MESH__LARM].flags &= ~FMNI_USE_SKIN;
-	ent->s.fmnodeinfo[MESH__HEAD].flags &= ~FMNI_USE_SKIN;
-	ent->s.fmnodeinfo[MESH__RLEG].flags &= ~FMNI_USE_SKIN;
-	ent->s.fmnodeinfo[MESH__LLEG].flags &= ~FMNI_USE_SKIN;
+	ent->rrs.fmnodeinfo[MESH_BASE2].flags &= ~FMNI_USE_SKIN;
+	ent->rrs.fmnodeinfo[MESH__BACK].flags &= ~FMNI_USE_SKIN;
+	ent->rrs.fmnodeinfo[MESH__RARM].flags &= ~FMNI_USE_SKIN;
+	ent->rrs.fmnodeinfo[MESH__LARM].flags &= ~FMNI_USE_SKIN;
+	ent->rrs.fmnodeinfo[MESH__HEAD].flags &= ~FMNI_USE_SKIN;
+	ent->rrs.fmnodeinfo[MESH__RLEG].flags &= ~FMNI_USE_SKIN;
+	ent->rrs.fmnodeinfo[MESH__LLEG].flags &= ~FMNI_USE_SKIN;
 
-	ent->s.fmnodeinfo[MESH_BASE2].skin = ent->s.skinnum;
-	ent->s.fmnodeinfo[MESH__BACK].skin = ent->s.skinnum;
-	ent->s.fmnodeinfo[MESH__RARM].skin = ent->s.skinnum;
-	ent->s.fmnodeinfo[MESH__LARM].skin = ent->s.skinnum;
-	ent->s.fmnodeinfo[MESH__HEAD].skin = ent->s.skinnum;
-	ent->s.fmnodeinfo[MESH__RLEG].skin = ent->s.skinnum;
-	ent->s.fmnodeinfo[MESH__LLEG].skin = ent->s.skinnum;
+	ent->rrs.fmnodeinfo[MESH_BASE2].skin = ent->s.skinnum;
+	ent->rrs.fmnodeinfo[MESH__BACK].skin = ent->s.skinnum;
+	ent->rrs.fmnodeinfo[MESH__RARM].skin = ent->s.skinnum;
+	ent->rrs.fmnodeinfo[MESH__LARM].skin = ent->s.skinnum;
+	ent->rrs.fmnodeinfo[MESH__HEAD].skin = ent->s.skinnum;
+	ent->rrs.fmnodeinfo[MESH__RLEG].skin = ent->s.skinnum;
+	ent->rrs.fmnodeinfo[MESH__LLEG].skin = ent->s.skinnum;
 
 	// FIXME: Turn hands back on too? But two pairs, which one? Shouldn't playerExport->PlayerUpdateModelAttributes do that?
 
@@ -406,10 +406,10 @@ int Bit_for_MeshNode_player [16] =
 qboolean canthrownode_player (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_player[BP];
-		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
 		return true;
 	}
 	return false;
@@ -440,29 +440,29 @@ void player_dropweapon (edict_t *self, int damage, int whichweaps)
 	VectorMA(handspot,8,right,handspot);
 	VectorMA(handspot,-6,up,handspot);
 
-	if(whichweaps & BIT_BLADSTF && !(self->s.fmnodeinfo[MESH__BLADSTF].flags & FMNI_NO_DRAW))
+	if(whichweaps & BIT_BLADSTF && !(self->rrs.fmnodeinfo[MESH__BLADSTF].flags & FMNI_NO_DRAW))
 	{
 //		self->client->playerinfo.stafflevel = 0;
 		ThrowWeapon(self, &handspot, BIT_BLADSTF, damage, 0);
-		self->s.fmnodeinfo[MESH__BLADSTF].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__BLADSTF].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
 	}
-	if(whichweaps & BIT_HELSTF && !(self->s.fmnodeinfo[MESH__HELSTF].flags & FMNI_NO_DRAW))
+	if(whichweaps & BIT_HELSTF && !(self->rrs.fmnodeinfo[MESH__HELSTF].flags & FMNI_NO_DRAW))
 	{
 //		self->client->playerinfo.helltype = 0;
 		ThrowWeapon(self, &handspot, BIT_HELSTF, damage, 0);
-		self->s.fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
 	}
-	if(whichweaps & BIT_BOWACTV && !(self->s.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
+	if(whichweaps & BIT_BOWACTV && !(self->rrs.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
 	{
 //		self->client->playerinfo.bowtype = 0;
 		ThrowWeapon(self, &handspot, BIT_BOFF, damage, 0);
-		self->s.fmnodeinfo[MESH__BOFF].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
-		self->s.fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__BOFF].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
 	}
 }
 
@@ -550,9 +550,9 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 
 			// NOTE I AM CUTTING DOWN THE DECAP CHANCE JUST A LITTLE BIT...  HAPPENED TOO OFTEN.
@@ -582,14 +582,14 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.25)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH__HEAD);
-				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_TorsoFront://split in half?
-			if(self->s.fmnodeinfo[MESH_BASE2].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH_BASE2].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH_BASE2].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH_BASE2].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
@@ -620,14 +620,14 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH_BASE2);
-				self->s.fmnodeinfo[MESH_BASE2].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH_BASE2].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH_BASE2].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH_BASE2].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__BACK].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__BACK].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__BACK].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__BACK].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
@@ -658,15 +658,15 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH__BACK);
-				self->s.fmnodeinfo[MESH__BACK].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__BACK].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__BACK].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__BACK].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperLeft:
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__LARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__LARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__LARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health) < damage && dismember_ok)
 			{
@@ -690,16 +690,16 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.4)
 //					player_dropweapon (self, (int)damage, BIT_BOWACTV);
 				self->client->playerinfo.pers.altparts |= (1<<MESH__LARM);
-				self->s.fmnodeinfo[MESH__LARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
 			//Knock weapon out of hand?
-			if(self->s.fmnodeinfo[MESH__RARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__RARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__RARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__RARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health) < damage && dismember_ok)
 			{
@@ -726,8 +726,8 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 //				if(flrand(0,self->health)<damage*0.75)
 //					player_dropweapon (self, (int)damage, BIT_HELSTF|BIT_BLADSTF);
 				self->client->playerinfo.pers.altparts |= (1<<MESH__RARM);
-				self->s.fmnodeinfo[MESH__RARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RARM].skin = self->s.skinnum+1;
 			}
 			break;
 
@@ -735,15 +735,15 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 		case hl_LegLowerLeft://left leg
 			if(self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
 					break;
 				self->client->playerinfo.pers.altparts |= (1<<MESH__LLEG);
-				self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__LLEG].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode_player(self, MESH__LLEG, &throw_nodes))
 				{
@@ -759,15 +759,15 @@ void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocatio
 		case hl_LegLowerRight://right leg
 			if(self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__RLEG].flags & FMNI_USE_SKIN)
 					break;
 				self->client->playerinfo.pers.altparts |= (1<<MESH__RLEG);
-				self->s.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__RLEG].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode_player(self, MESH__RLEG, &throw_nodes))
 				{
@@ -814,7 +814,7 @@ void player_decap (edict_t *self, edict_t *other)
 	//FIXME: special manipulations of hit locations depending on anim.
 
 	VectorClear(gore_spot);
-	if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 		return;
 
 	player_dropweapon (self, 100, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
@@ -889,15 +889,15 @@ void player_leader_effect(void)
 			if (ent->client->resp.score == score && ent->inuse)
 			{
 				if (!ent->Leader_PersistantCFX)
-					ent->Leader_PersistantCFX = gi.CreatePersistantEffect
-						(&ent->s, FX_SHOW_LEADER, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "" );
+					ent->Leader_PersistantCFX = gi.CreatePersistantEffect(
+						ent, FX_SHOW_LEADER, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "" );
 			}
 			// if not, then if we have the effect, remove it
 			else
 			if (ent->Leader_PersistantCFX)
 			{
 				gi.RemovePersistantEffect(ent->Leader_PersistantCFX, REMOVE_LEADER);
-				gi.RemoveEffects(&ent->s, FX_SHOW_LEADER);
+				gi.RemoveEffects(ent, FX_SHOW_LEADER);
 				ent->Leader_PersistantCFX =0;
 			}
 
@@ -1193,7 +1193,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 			if (self->client->Meteors[i]->PersistantCFX)
 			{
 				gi.RemovePersistantEffect(self->client->Meteors[i]->PersistantCFX, REMOVE_METEOR);
-				gi.RemoveEffects(&self->s, FX_SPELL_METEORBARRIER+i);
+				gi.RemoveEffects(self, FX_SPELL_METEORBARRIER+i);
 				self->client->Meteors[i]->PersistantCFX = 0;
 			}
 			G_SetToFree(self->client->Meteors[i]);
@@ -1206,12 +1206,12 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	// Create a persistant FX_REMOVE_EFFECTS effect - this is a special hack. If we just created
 	// a regular FX_REMOVE_EFFECTS effect, it will overwrite the next FX_PLAYER_PERSISTANT sent
 	// out. Luverly jubberly!!!
-	gi.CreatePersistantEffect(&self->s,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
+	gi.CreatePersistantEffect(self,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
 
 	// Get rid of all the stuff set up in PlayerFirstSeenInit...
-	gi.RemoveEffects(&self->s, FX_SHADOW);
-	gi.RemoveEffects(&self->s, FX_WATER_PARTICLES);
-	gi.RemoveEffects(&self->s, FX_CROSSHAIR);
+	gi.RemoveEffects(self, FX_SHADOW);
+	gi.RemoveEffects(self, FX_WATER_PARTICLES);
+	gi.RemoveEffects(self, FX_CROSSHAIR);
 
 	// Remove any shrine effects we have going.
 	PlayerKillShrineFX(self);
@@ -1832,10 +1832,10 @@ CopyToBodyQue(edict_t *ent)
 
 	body->s = ent->s;
 	body->s.number = body-g_edicts;
-	body->s.skeletalType = SKEL_NULL;
+	body->rrs.skeletalType = SKEL_NULL;
 	body->s.effects &= ~(EF_JOINTED|EF_SWAPFRAME);
-	body->s.rootJoint = NULL_ROOT_JOINT;
-	body->s.swapFrame = NO_SWAP_FRAME;
+	body->rrs.rootJoint = NULL_ROOT_JOINT;
+	body->rrs.swapFrame = NO_SWAP_FRAME;
 	body->owner = ent->owner;
 	VectorScale(ent->mins,0.5,body->mins);
 	VectorScale(ent->maxs,0.5,body->maxs);
@@ -1859,7 +1859,7 @@ CopyToBodyQue(edict_t *ent)
 	// Clear out any client effectsBuffer_t on the corpse (inherited from the player who just died)
 	// as the engine will take care of deallocating any effects still on the player.
 
-	memset(&body->s.clientEffects,0,sizeof(EffectsBuffer_t));
+	memset(&body->rrs.clientEffects,0,sizeof(EffectsBuffer_t));
 }
 
 void
@@ -1897,7 +1897,7 @@ respawn(edict_t *self)
 		// a regular FX_REMOVE_EFFECTS effect, it will overwrite the next FX_PLAYER_PERSISTANT sent
 		// out. Luverly jubberly!!!
 
-		gi.CreatePersistantEffect(&self->s,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
+		gi.CreatePersistantEffect(self,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
 
 		if(deathmatch->value)
 		{
@@ -1920,7 +1920,7 @@ respawn(edict_t *self)
 
 		// Add a teleportation effect.
 
-		gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
+		gi.CreateEffect(self, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
 
 		// Hold in place briefly.
 
@@ -2060,7 +2060,7 @@ void SpawnInitialPlayerEffects(edict_t *ent)
 
 	// Don't need to keep track of this persistant effect, since its started but never stopped.
 // jmarshall - this doesn't seem to be used anywhere?
-	//gi.CreatePersistantEffect(&ent->s, FX_PLAYER_PERSISTANT,
+	//gi.CreatePersistantEffect(ent, FX_PLAYER_PERSISTANT,
 	//	CEF_BROADCAST | CEF_OWNERS_ORIGIN, NULL, "");
 // jmarshall end
 
@@ -2478,13 +2478,13 @@ PutClientInServer(edict_t *ent)
 	/* clear entity values */
 	ent->groundentity = NULL;
 	ent->client = &game.clients[index];
-	ent->s.clientnum = index;
+	ent->rrs.clientnum = index;
 	ent->takedamage = DAMAGE_AIM;
 	ent->materialtype = MAT_FLESH;
 	ent->movetype = MOVETYPE_STEP;
 	ent->viewheight = 0;
 	ent->inuse = true;
-	VectorSet(ent->s.scale, 1.0f, 1.0f, 1.0f);
+	VectorSet(ent->rrs.scale, 1.0f, 1.0f, 1.0f);
 	ent->classname = "player";
 	ent->mass = 200;
 	ent->solid = SOLID_BBOX;
@@ -2503,10 +2503,10 @@ PutClientInServer(edict_t *ent)
 	client->tele_dest[0] = client->tele_dest[1] = client->tele_dest[2] = 0;
 	client->tele_count = 0;
 	/* Restore model visibility. */
-	ent->s.color[0] = 0;
-	ent->s.color[1] = 0;
-	ent->s.color[2] = 0;
-	ent->s.color[3] = 0;
+	ent->rrs.color[0] = 0;
+	ent->rrs.color[1] = 0;
+	ent->rrs.color[2] = 0;
+	ent->rrs.color[3] = 0;
 
 	ent->fire_damage_time = 0;
 	ent->fire_timestamp = 0;
@@ -2612,7 +2612,7 @@ PutClientInServer(edict_t *ent)
 
 	// Set up skeletal info. Note, skeleton has been created already.
 
-	ent->s.skeletalType = SKEL_CORVUS;
+	ent->rrs.skeletalType = SKEL_CORVUS;
 
 	// Link us into the physics system.
 
@@ -2660,7 +2660,7 @@ PutClientInServer(edict_t *ent)
 
 		// Just in case we were on fire when we died.
 
-		gi.RemoveEffects(&ent->s, FX_FIRE_ON_ENTITY);
+		gi.RemoveEffects(ent, FX_FIRE_ON_ENTITY);
 
 		// Make us invincible for a few seconds after spawn.
 
@@ -2728,7 +2728,7 @@ ClientBeginDeathmatch(edict_t *ent)
 	// level.
 
 	gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
-	gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
+	gi.CreateEffect(ent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 	G_BroadcastObituary(PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 
 	/* make sure all view stuff is valid */
@@ -2814,7 +2814,7 @@ ClientBegin(edict_t *ent)
 			// level.
 
 			gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
-			gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
+			gi.CreateEffect(ent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 			G_BroadcastObituary (PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 		}
 	}
@@ -3238,14 +3238,14 @@ ClientDisconnect(edict_t *ent)
 
 	// Send teleport effect.
 
-	gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
+	gi.CreateEffect(ent, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 
 	// Clean up after leaving.
 
 	if (ent->Leader_PersistantCFX)
 	{
 		gi.RemovePersistantEffect(ent->Leader_PersistantCFX, REMOVE_LEADER_CLIENT);
-		gi.RemoveEffects(&ent->s, FX_SHOW_LEADER);
+		gi.RemoveEffects(ent, FX_SHOW_LEADER);
 		ent->Leader_PersistantCFX =0;
 	}
 

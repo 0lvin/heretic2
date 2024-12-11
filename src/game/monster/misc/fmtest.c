@@ -25,26 +25,26 @@ flag_think (edict_t *self)
 	if (self->s.frame > 10)
 		self->s.frame = 0;
 
-/*	self->s.fmnodeinfo[1].skin++;
-	if (self->s.fmnodeinfo[1].skin > 5)
-		self->s.fmnodeinfo[1].skin = 0;
+/*	self->rrs.fmnodeinfo[1].skin++;
+	if (self->rrs.fmnodeinfo[1].skin > 5)
+		self->rrs.fmnodeinfo[1].skin = 0;
 
 
-	self->s.fmnodeinfo[0].flags &= ~FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[0].flags &= ~FMNI_NO_DRAW;
 	if (random() > 0.5)
-		self->s.fmnodeinfo[0].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[0].flags |= FMNI_NO_DRAW;
 
-	self->s.fmnodeinfo[1].flags &= ~FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[1].flags &= ~FMNI_NO_DRAW;
 	if (random() > 0.5)
-		self->s.fmnodeinfo[1].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[1].flags |= FMNI_NO_DRAW;
 
-	self->s.fmnodeinfo[2].flags &= ~FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[2].flags &= ~FMNI_NO_DRAW;
 	if (random() > 0.5)
-		self->s.fmnodeinfo[2].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[2].flags |= FMNI_NO_DRAW;
 
-	self->s.fmnodeinfo[3].flags &= ~FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[3].flags &= ~FMNI_NO_DRAW;
 	if (random() > 0.5)
-		self->s.fmnodeinfo[3].flags |= FMNI_NO_DRAW;*/
+		self->rrs.fmnodeinfo[3].flags |= FMNI_NO_DRAW;*/
 
 	self->nextthink = level.time + FRAMETIME;
 }

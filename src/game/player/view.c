@@ -60,7 +60,7 @@ extern void PrintLocalBuoyInfo(vec3_t org);
 void G_set_looping_sound(edict_t *self, int sound_num)
 {
 	self->s.sound = sound_num;
-	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
+	self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 }
 
 
@@ -258,15 +258,15 @@ void SetupPlayerinfo(edict_t *ent)
 
 	// From entity_state_t.
 	ent->client->playerinfo.frame = ent->s.frame,
-	ent->client->playerinfo.swapFrame = ent->s.swapFrame;
+	ent->client->playerinfo.swapFrame = ent->rrs.swapFrame;
 	ent->client->playerinfo.effects = ent->s.effects;
 	ent->client->playerinfo.renderfx = ent->s.renderfx;
 	ent->client->playerinfo.skinnum = ent->s.skinnum;
-	ent->client->playerinfo.clientnum = ent->s.clientnum;
+	ent->client->playerinfo.clientnum = ent->rrs.clientnum;
 
 	for(i = 0; i < MAX_FM_MESH_NODES; i++)
 	{
-		ent->client->playerinfo.fmnodeinfo[i] = ent->s.fmnodeinfo[i];
+		ent->client->playerinfo.fmnodeinfo[i] = ent->rrs.fmnodeinfo[i];
 	}
 
 	// From pmove_state_t.
@@ -308,15 +308,15 @@ void WritePlayerinfo(edict_t *ent)
 
 	// From entity_state_t.
 	ent->s.frame = ent->client->playerinfo.frame,
-	ent->s.swapFrame = ent->client->playerinfo.swapFrame;
+	ent->rrs.swapFrame = ent->client->playerinfo.swapFrame;
 	ent->s.effects = ent->client->playerinfo.effects;
 	ent->s.renderfx = ent->client->playerinfo.renderfx;
 	ent->s.skinnum = ent->client->playerinfo.skinnum;
-	ent->s.clientnum = ent->client->playerinfo.clientnum;
+	ent->rrs.clientnum = ent->client->playerinfo.clientnum;
 
 	for(i = 0; i < MAX_FM_MESH_NODES;i++)
 	{
-		ent->s.fmnodeinfo[i] = ent->client->playerinfo.fmnodeinfo[i];
+		ent->rrs.fmnodeinfo[i] = ent->client->playerinfo.fmnodeinfo[i];
 	}
 
 	// From pmove_state_t.
@@ -343,11 +343,11 @@ void SetupPlayerinfo_effects(edict_t *ent)
 	ent->client->playerinfo.effects = ent->s.effects;
 	ent->client->playerinfo.renderfx = ent->s.renderfx;
 	ent->client->playerinfo.skinnum = ent->s.skinnum;
-	ent->client->playerinfo.clientnum = ent->s.clientnum;
+	ent->client->playerinfo.clientnum = ent->rrs.clientnum;
 
 	for(i = 0; i < MAX_FM_MESH_NODES; i++)
 	{
-		ent->client->playerinfo.fmnodeinfo[i] = ent->s.fmnodeinfo[i];
+		ent->client->playerinfo.fmnodeinfo[i] = ent->rrs.fmnodeinfo[i];
 	}
 }
 
@@ -363,11 +363,11 @@ void WritePlayerinfo_effects(edict_t *ent)
 	ent->s.effects = ent->client->playerinfo.effects;
 	ent->s.renderfx = ent->client->playerinfo.renderfx;
 	ent->s.skinnum = ent->client->playerinfo.skinnum;
-	ent->s.clientnum = ent->client->playerinfo.clientnum;
+	ent->rrs.clientnum = ent->client->playerinfo.clientnum;
 
 	for(i = 0; i < MAX_FM_MESH_NODES; i++)
 	{
-		ent->s.fmnodeinfo[i] = ent->client->playerinfo.fmnodeinfo[i];
+		ent->rrs.fmnodeinfo[i] = ent->client->playerinfo.fmnodeinfo[i];
 	}
 }
 

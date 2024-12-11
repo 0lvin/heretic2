@@ -104,7 +104,7 @@ void SP_character_siernan2 (edict_t *self)
 	VectorSet(self->maxs, 22, 12, 16);
 
 	self->monsterinfo.scale = 1;
-	VectorSet(self->s.scale,
+	VectorSet(self->rrs.scale,
 		self->monsterinfo.scale,
 		self->monsterinfo.scale,
 		self->monsterinfo.scale);

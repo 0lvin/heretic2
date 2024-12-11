@@ -106,6 +106,8 @@ struct edict_s
 	int clipmask;
 	edict_t *owner;
 
+	/* Additional state from ReRelease */
+	entity_rrstate_t rrs;
 	/* the game dll can add anything it wants
 	   after this point in the structure */
 };
@@ -205,11 +207,11 @@ typedef struct
 	void (*FS_FreeFile) (void *buf);
 
 	/* Heretic 2 specific */
-	void	(*CreateEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	void	(*RemoveEffects)(entity_state_t *ent, int type);
-	void	(*CreateEffectEvent) (byte EventId,entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	void	(*RemoveEffectsEvent)(byte EventId,entity_state_t *ent, int type);
-	int		(*CreatePersistantEffect) (entity_state_t *ent, int type, int flags, vec3_t origin, char *format, ...);
+	void	(*CreateEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
+	void	(*RemoveEffects)(edict_t *ent, int type);
+	void	(*CreateEffectEvent) (byte EventId, edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
+	void	(*RemoveEffectsEvent)(byte EventId, edict_t *ent, int type);
+	int		(*CreatePersistantEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 	qboolean	(*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
 					// The effect is not removed on the client									// This should be done by removing the effects from the owning entity or freein
 	void	(*ClearPersistantEffects) (void);

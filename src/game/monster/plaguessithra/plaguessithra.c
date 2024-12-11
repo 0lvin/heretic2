@@ -422,7 +422,7 @@ qboolean ssithraCheckInWater (edict_t *self)
 	}
 	else
 	{
-		if(!(self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW))
+		if(!(self->rrs.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW))
 			self->monsterinfo.aiflags &= ~AI_NO_MELEE;
 		return false;
 	}
@@ -691,8 +691,8 @@ void ssithraJump (edict_t *self, float upspd,float fwdspd,float rtspd)
 	if(self->spawnflags & MSF_FIXED)
 		return;
 
-	if((self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_NO_DRAW)||
-		(self->s.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_NO_DRAW))
+	if((self->rrs.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_NO_DRAW)||
+		(self->rrs.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_NO_DRAW))
 	{
 		upspd*=2;
 		fwdspd/=2;
@@ -1200,7 +1200,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	VectorScale(dir, 40.0, dir);
 
 	//Why doesn't this work?
-	gi.CreateEffect(&self->s, FX_BLOOD, 0, p1, "ub", dir, 20);
+	gi.CreateEffect(self, FX_BLOOD, 0, p1, "ub", dir, 20);
 	VectorAdd(self->s.origin,p2,p2);
 	SprayDebris(self,p2, 6,200);
 
@@ -1252,7 +1252,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 
 	tophalf->s.modelindex = self->s.modelindex;
 
-	VectorCopy(self->s.scale, tophalf->s.scale);
+	VectorCopy(self->rrs.scale, tophalf->rrs.scale);
 
 	tophalf->monsterinfo.otherenemyname = "obj_barrel";
 
@@ -1261,18 +1261,18 @@ void ssithraSplit (edict_t *self, int BodyPart)
 		node_num++;
 		if(!((int)(BodyPart)&(int)(whichnode)))
 		{//turn off this node on top
-			tophalf->s.fmnodeinfo[node_num].flags |= FMNI_NO_DRAW;
+			tophalf->rrs.fmnodeinfo[node_num].flags |= FMNI_NO_DRAW;
 		}
 		else
 		{//turn on this node on top and keep them
-			tophalf->s.fmnodeinfo[node_num] = self->s.fmnodeinfo[node_num];//copy skins and flags and colors
-			tophalf->s.fmnodeinfo[node_num].flags &= ~FMNI_NO_DRAW;
-			self->s.fmnodeinfo[node_num].flags |= FMNI_NO_DRAW;
+			tophalf->rrs.fmnodeinfo[node_num] = self->rrs.fmnodeinfo[node_num];//copy skins and flags and colors
+			tophalf->rrs.fmnodeinfo[node_num].flags &= ~FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[node_num].flags |= FMNI_NO_DRAW;
 		}
 	}
-	tophalf->s.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags &= ~FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__CAPLOWERTORSO].flags &= ~FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_NO_DRAW;
+	tophalf->rrs.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags &= ~FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__CAPLOWERTORSO].flags &= ~FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_NO_DRAW;
 
 	self->nextthink = 9999999999999999.0f;
 }
@@ -1296,10 +1296,10 @@ void ssithraSplit (edict_t *self, int BodyPart)
 qboolean canthrownode (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode[BP];
-		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
 		return true;
 	}
 	return false;
@@ -1426,11 +1426,11 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 		}
 
-		if((HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW) ||
-			(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW)||
+		if((HitLocation == hl_ArmUpperLeft&& self->rrs.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW) ||
+			(HitLocation == hl_ArmUpperRight&& self->rrs.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW)||
 			((HitLocation == hl_TorsoFront|| HitLocation == hl_TorsoBack) &&
-			(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW) &&
-			(self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW))&&
+			(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW) &&
+			(self->rrs.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW))&&
 			irand(0,10)<4)
 			HitLocation = hl_Head;//Decap
 	}
@@ -1441,10 +1441,10 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
 			// Is the pain skin engaged?
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
@@ -1454,7 +1454,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode(self, MESH__RIGHT1SPIKE,&throw_nodes);
 				canthrownode(self, MESH__RIGHT2SPIKE,&throw_nodes);
 
-				self->s.fmnodeinfo[MESH__CAPTOPUPPERTORSO].flags &= ~FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__CAPTOPUPPERTORSO].flags &= ~FMNI_NO_DRAW;
 
 				gore_spot[2]+=18;
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
@@ -1462,7 +1462,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
 
-				if(self->health > 0 && irand(0,10)<3&&!(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW))
+				if(self->health > 0 && irand(0,10)<3&&!(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW))
 				{//shooting blind, headless, FIX: make it so can still chop off arms or legs here
 					SetAnim(self,ANIM_HEADLESS);
 					self->msgHandler=DyingMsgHandler;
@@ -1477,8 +1477,8 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			else
 			{
 				// Set the pain skin
-				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
 
 				if(flrand(0,self->health/4)<damage)
 				{//no red spray with these, particles?
@@ -1508,16 +1508,16 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 		case hl_TorsoFront://split in half?
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
 				gore_spot[2]+=12;
 				//seal up the caps left by this split
-				self->s.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags &= ~FMNI_NO_DRAW;
-				self->s.fmnodeinfo[MESH__CAPLOWERTORSO].flags &= ~FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags &= ~FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__CAPLOWERTORSO].flags &= ~FMNI_NO_DRAW;
 
 				canthrownode(self, MESH__UPPERTORSO,&throw_nodes);
 				canthrownode(self, MESH__CAPBOTTOMUPPERTORSO,&throw_nodes);
@@ -1545,15 +1545,15 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			else
 			{
 				// Set the pain skin
-				self->s.fmnodeinfo[MESH__UPPERTORSO].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__UPPERTORSO].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__UPPERTORSO].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__UPPERTORSO].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperLeft:
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__LEFTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -1568,15 +1568,15 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			else
 			{
 				// Set the pain skin
-				self->s.fmnodeinfo[MESH__LEFTARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LEFTARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LEFTARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LEFTARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
-			if(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -1591,8 +1591,8 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			else
 			{
 				// Set the pain skin
-				self->s.fmnodeinfo[MESH__RIGHTARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RIGHTARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RIGHTARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RIGHTARM].skin = self->s.skinnum+1;
 			}
 			break;
 
@@ -1600,15 +1600,15 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_LegLowerLeft://left leg
 			if(self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__LEFTLEG].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LEFTLEG].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LEFTLEG].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LEFTLEG].skin = self->s.skinnum+1;
 				break;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode(self, MESH__LEFTLEG, &throw_nodes))
 				{
@@ -1623,15 +1623,15 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_LegLowerRight://right leg
 			if(self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__RIGHTLEG].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RIGHTLEG].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RIGHTLEG].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RIGHTLEG].skin = self->s.skinnum+1;
 				break;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode(self, MESH__RIGHTLEG, &throw_nodes))
 				{
@@ -1649,8 +1649,8 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 	if(throw_nodes)
 		self->pain_debounce_time = 0;
 
-	if(self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW&&
-		self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW&&
+		self->rrs.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
 		self->ai_mood_flags &= ~AI_MOOD_FLAG_BACKSTAB;
@@ -1658,12 +1658,12 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 	}
 	else
 	{
-		if(self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW)
 		{
 			self->monsterinfo.aiflags |= AI_NO_MELEE;
 			self->ai_mood_flags &= ~AI_MOOD_FLAG_BACKSTAB;
 		}
-		if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 		{
 			self->monsterinfo.aiflags |= AI_NO_MISSILE;
 			self->ai_mood_flags &= ~AI_MOOD_FLAG_BACKSTAB;
@@ -2051,49 +2051,49 @@ void ssithraSwipe (edict_t *self)
 }
 
 // the arrow needs to bounce
-void make_arrow_reflect(edict_t *self, edict_t *Arrow)
+void make_arrow_reflect(edict_t *self, edict_t *arrow)
 {
-	create_ssith_arrow(Arrow);
-	Arrow->s.modelindex = self->s.modelindex;
-	VectorCopy(self->s.origin, Arrow->s.origin);
-	Arrow->owner = self->owner;
-	Arrow->enemy = self->enemy;
+	create_ssith_arrow(arrow);
+	arrow->s.modelindex = self->s.modelindex;
+	VectorCopy(self->s.origin, arrow->s.origin);
+	arrow->owner = self->owner;
+	arrow->enemy = self->enemy;
 
-	Arrow->touch=self->touch;
-	Arrow->nextthink=self->nextthink;
-	Arrow->think=G_FreeEdict;
-	Arrow->health = self->health;
+	arrow->touch = self->touch;
+	arrow->nextthink = self->nextthink;
+	arrow->think = G_FreeEdict;
+	arrow->health = self->health;
 
-	Create_rand_relect_vect(self->velocity, Arrow->velocity);
+	Create_rand_relect_vect(self->velocity, arrow->velocity);
 
-	VectoAngles(Arrow->velocity, Arrow->s.angles);
-	Arrow->s.angles[YAW]+=90;
+	VectoAngles(arrow->velocity, arrow->s.angles);
+	arrow->s.angles[YAW] += 90;
 
-	Vec3ScaleAssign(SSITHRA_SPOO_SPEED/2,Arrow->velocity);
+	Vec3ScaleAssign(SSITHRA_SPOO_SPEED/2,arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 }
 
 void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
 {
 	float damage;
 	vec3_t	normal;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
 	// are we reflecting ?
 	if(EntReflecting(other, true, true))
 	{
-		Arrow = G_Spawn();
+		arrow = G_Spawn();
 
-		make_arrow_reflect(self,Arrow);
+		make_arrow_reflect(self, arrow);
 
-		gi.CreateEffect(&Arrow->s,
+		gi.CreateEffect(arrow,
 			FX_SSITHRA_ARROW,
 			CEF_OWNERS_ORIGIN,
 			NULL,
 			"bv",
 			FX_SS_MAKE_ARROW2,
-			Arrow->velocity);
+			arrow->velocity);
 
 		G_SetToFree(self);
 
@@ -2140,7 +2140,7 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 {
 	float damage;
 	vec3_t	normal;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
 	if(Surface&&(Surface->flags&SURF_SKY))
 	{
@@ -2150,9 +2150,9 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 
 	if(EntReflecting(Other, true, true))
 	{
-		Arrow = G_Spawn();
+		arrow = G_Spawn();
 
-		make_arrow_reflect(self,Arrow);
+		make_arrow_reflect(self, arrow);
 
 		gi.CreateEffect( NULL,
 					 FX_M_EFFECTS,
@@ -2162,13 +2162,13 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 					 FX_MSSITHRA_EXPLODE,
 					 self->movedir);
 		/*
-		gi.CreateEffect(&Arrow->s,
+		gi.CreateEffect(arrow,
 			FX_SSITHRA_ARROW,
 			CEF_OWNERS_ORIGIN,
 			NULL,
 			"bv",
 			FX_SS_MAKE_ARROW,
-			Arrow->velocity);
+			arrow->velocity);
 		*/
 
 		G_SetToFree(self);
@@ -2267,63 +2267,63 @@ void ssithraDuckArrowTouch (edict_t *self,edict_t *other,cplane_t *plane,csurfac
 	}
 }
 
-void create_ssith_arrow(edict_t *Arrow)
+void create_ssith_arrow(edict_t *arrow)
 {
-	Arrow->movetype = MOVETYPE_FLYMISSILE;
-	Arrow->solid = SOLID_BBOX;
-	Arrow->classname = "Ssithra_Arrow";
-	Arrow->touch = ssithraArrowTouch;
-	Arrow->enemy = NULL;
-	Arrow->clipmask = MASK_SHOT;
-	VectorSet(Arrow->s.scale, 0.75, 0.75, 0.75);
-	Arrow->s.effects |= EF_CAMERA_NO_CLIP;
-	Arrow->svflags |= SVF_ALWAYS_SEND;
-	Arrow->s.modelindex = gi.modelindex("models/objects/exarrow/tris.fm");
+	arrow->movetype = MOVETYPE_FLYMISSILE;
+	arrow->solid = SOLID_BBOX;
+	arrow->classname = "Ssithra_Arrow";
+	arrow->touch = ssithraArrowTouch;
+	arrow->enemy = NULL;
+	arrow->clipmask = MASK_SHOT;
+	VectorSet(arrow->rrs.scale, 0.75, 0.75, 0.75);
+	arrow->s.effects |= EF_CAMERA_NO_CLIP;
+	arrow->svflags |= SVF_ALWAYS_SEND;
+	arrow->s.modelindex = gi.modelindex("models/objects/exarrow/tris.fm");
 }
 
 void ssithraDoArrow(edict_t *self, float z_offs)
 {
 	vec3_t	Forward,check_lead, right, enemy_dir;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
-	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 		return;
 
 	gi.sound(self,CHAN_WEAPON,Sounds[SND_ARROW1],1,ATTN_NORM,0);
 	self->monsterinfo.attack_finished = level.time + 0.4;
-	Arrow = G_Spawn();
+	arrow = G_Spawn();
 
-	create_ssith_arrow(Arrow);
+	create_ssith_arrow(arrow);
 
 	if(self->spawnflags & MSF_SSITHRA_ALPHA)
-		Arrow->touch=ssithraArrowTouch;
+		arrow->touch=ssithraArrowTouch;
 	else
-		Arrow->touch=ssithraArrowTouch;
+		arrow->touch=ssithraArrowTouch;
 
-	Arrow->owner=self;
-	Arrow->enemy=self->enemy;
+	arrow->owner=self;
+	arrow->enemy=self->enemy;
 
-	Arrow->health = 0; // tell the touch function what kind of arrow we are;
+	arrow->health = 0; // tell the touch function what kind of arrow we are;
 
 	AngleVectors(self->s.angles, Forward, right, NULL);
 
-	VectorCopy(self->s.origin,Arrow->s.origin);
-	VectorMA(Arrow->s.origin, 16, Forward, Arrow->s.origin);
-	VectorMA(Arrow->s.origin, -4, right, Arrow->s.origin);
-	Arrow->s.origin[2] += 16;
+	VectorCopy(self->s.origin,arrow->s.origin);
+	VectorMA(arrow->s.origin, 16, Forward, arrow->s.origin);
+	VectorMA(arrow->s.origin, -4, right, arrow->s.origin);
+	arrow->s.origin[2] += 16;
 
-	VectorCopy(self->movedir,Arrow->movedir);
-	VectoAngles(Forward,Arrow->s.angles);
+	VectorCopy(self->movedir,arrow->movedir);
+	VectoAngles(Forward,arrow->s.angles);
 
 	VectorClear(check_lead);
 	if(skill->value > 1)
 	{
-		extrapolateFiredir(self, Arrow->s.origin,
+		extrapolateFiredir(self, arrow->s.origin,
 			SSITHRA_SPOO_SPEED, self->enemy, 0.3, check_lead);
 	}
 	else
 	{
-		VectorSubtract(self->enemy->s.origin, Arrow->s.origin, enemy_dir);
+		VectorSubtract(self->enemy->s.origin, arrow->s.origin, enemy_dir);
 		VectorNormalize(enemy_dir);
 		if(DotProduct(enemy_dir, Forward) >= 0.3)
 		{
@@ -2333,76 +2333,76 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 
 	if(Vec3IsZero(check_lead))
 	{
-		VectorScale(Forward,SSITHRA_SPOO_SPEED,Arrow->velocity);
+		VectorScale(Forward,SSITHRA_SPOO_SPEED,arrow->velocity);
 	}
 	else
 	{
-		VectorScale(check_lead,SSITHRA_SPOO_SPEED,Arrow->velocity);
+		VectorScale(check_lead,SSITHRA_SPOO_SPEED,arrow->velocity);
 	}
 
-	VectorCopy(Arrow->velocity, Arrow->movedir);
-	VectorNormalize(Arrow->movedir);
-	VectoAngles(Arrow->movedir, Arrow->s.angles);
-	Arrow->s.angles[PITCH] = anglemod(Arrow->s.angles[PITCH] * -1);
-	Arrow->s.angles[YAW] += 90;
+	VectorCopy(arrow->velocity, arrow->movedir);
+	VectorNormalize(arrow->movedir);
+	VectoAngles(arrow->movedir, arrow->s.angles);
+	arrow->s.angles[PITCH] = anglemod(arrow->s.angles[PITCH] * -1);
+	arrow->s.angles[YAW] += 90;
 
-	gi.CreateEffect(&Arrow->s,
+	gi.CreateEffect(arrow,
 		FX_M_EFFECTS,
 		CEF_OWNERS_ORIGIN,
-		Arrow->s.origin,
+		arrow->s.origin,
 		"bv",
 		FX_MSSITHRA_ARROW,
-		Arrow->velocity);
+		arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 
-	Arrow->nextthink=level.time+3;
-	Arrow->think=G_FreeEdict;//ssithraArrowThink;
+	arrow->nextthink=level.time+3;
+	arrow->think=G_FreeEdict;//ssithraArrowThink;
 }
 
 void ssithraDoDuckArrow(edict_t *self, float z_offs)
 {
 	vec3_t	Forward,check_lead, right, enemy_dir;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
-	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 		return;
 
 	gi.sound(self, CHAN_WEAPON, Sounds[SND_ARROW_FIRE] , 1, ATTN_NORM, 0);
 
 	self->monsterinfo.attack_finished = level.time + 0.4;
-	Arrow = G_Spawn();
+	arrow = G_Spawn();
 
-	create_ssith_arrow(Arrow);
+	create_ssith_arrow(arrow);
 
-	Arrow->touch=ssithraDuckArrowTouch;
+	arrow->touch=ssithraDuckArrowTouch;
 
-	Arrow->owner=self;
-	Arrow->enemy=self->enemy;
+	arrow->owner=self;
+	arrow->enemy=self->enemy;
 
-	Arrow->health = 0; // tell the touch function what kind of arrow we are;
+	arrow->health = 0; // tell the touch function what kind of arrow we are;
 
 	AngleVectors(self->s.angles, Forward, right, NULL);
 
-	VectorCopy(self->s.origin,Arrow->s.origin);
-	VectorMA(Arrow->s.origin, 12 * AVG_VEC3T(self->s.scale), Forward, Arrow->s.origin);
-	VectorMA(Arrow->s.origin, 4 * AVG_VEC3T(self->s.scale), right, Arrow->s.origin);
-	Arrow->s.origin[2] += z_offs;
+	VectorCopy(self->s.origin,arrow->s.origin);
+	VectorMA(arrow->s.origin, 12 * AVG_VEC3T(self->rrs.scale), Forward, arrow->s.origin);
+	VectorMA(arrow->s.origin, 4 * AVG_VEC3T(self->rrs.scale), right, arrow->s.origin);
+	arrow->s.origin[2] += z_offs;
 
-	VectorSet(Arrow->s.scale, 1.5, 1.5, 1.5);
+	VectorSet(arrow->rrs.scale, 1.5, 1.5, 1.5);
 
-	VectorCopy(self->movedir,Arrow->movedir);
-	VectoAngles(Forward,Arrow->s.angles);
+	VectorCopy(self->movedir,arrow->movedir);
+	VectoAngles(Forward,arrow->s.angles);
 
 	VectorClear(check_lead);
 	if(skill->value > 1)
 	{
-		extrapolateFiredir(self, Arrow->s.origin,
+		extrapolateFiredir(self, arrow->s.origin,
 			SSITHRA_SPOO_SPEED, self->enemy, 0.3, check_lead);
 	}
 	else
 	{
-		VectorSubtract(self->enemy->s.origin, Arrow->s.origin, enemy_dir);
+		VectorSubtract(self->enemy->s.origin, arrow->s.origin, enemy_dir);
 		VectorNormalize(enemy_dir);
 		if(DotProduct(enemy_dir, Forward) >= 0.3)
 		{
@@ -2412,31 +2412,31 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 
 	if(Vec3IsZero(check_lead))
 	{
-		VectorScale(Forward,SSITHRA_SPOO_SPEED*1.5,Arrow->velocity);
+		VectorScale(Forward,SSITHRA_SPOO_SPEED*1.5,arrow->velocity);
 	}
 	else
 	{
-		VectorScale(check_lead,SSITHRA_SPOO_SPEED*1.5,Arrow->velocity);
+		VectorScale(check_lead,SSITHRA_SPOO_SPEED*1.5,arrow->velocity);
 	}
 
-	VectorCopy(Arrow->velocity, Arrow->movedir);
-	VectorNormalize(Arrow->movedir);
-	VectoAngles(Arrow->movedir, Arrow->s.angles);
-	Arrow->s.angles[PITCH] = anglemod(Arrow->s.angles[PITCH] * -1);
-	Arrow->s.angles[YAW] += 90;
+	VectorCopy(arrow->velocity, arrow->movedir);
+	VectorNormalize(arrow->movedir);
+	VectoAngles(arrow->movedir, arrow->s.angles);
+	arrow->s.angles[PITCH] = anglemod(arrow->s.angles[PITCH] * -1);
+	arrow->s.angles[YAW] += 90;
 
-	gi.CreateEffect(&Arrow->s,
+	gi.CreateEffect(arrow,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN | CEF_FLAG6,
-					Arrow->s.origin,
+					arrow->s.origin,
 					"bv",
 					FX_MSSITHRA_ARROW,
-					Arrow->velocity);
+					arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 
-	Arrow->nextthink=level.time+5;
-	Arrow->think=ssithraArrowExplode;
+	arrow->nextthink=level.time+5;
+	arrow->think=ssithraArrowExplode;
 }
 
 void ssithraStartDuckArrow(edict_t *self)
@@ -2444,8 +2444,8 @@ void ssithraStartDuckArrow(edict_t *self)
 	vec3_t	startpos, vf, vr;
 
 	AngleVectors(self->s.angles, vf, vr, NULL);
-	VectorMA(self->s.origin, 18 * AVG_VEC3T(self->s.scale), vf, startpos);
-	VectorMA(startpos, 4 * AVG_VEC3T(self->s.scale), vr, startpos);
+	VectorMA(self->s.origin, 18 * AVG_VEC3T(self->rrs.scale), vf, startpos);
+	VectorMA(startpos, 4 * AVG_VEC3T(self->rrs.scale), vr, startpos);
 
 	gi.sound(self, CHAN_WEAPON, Sounds[SND_ARROW_CHARGE] , 1, ATTN_NORM, 0);
 
@@ -2485,9 +2485,9 @@ void ssithraArrow(edict_t *self)
 void ssithraPanicArrow(edict_t *self)
 {//fixme; adjust for up/down
 	vec3_t	Forward,firedir;//, up;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
-	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 	{
 		if(self->curAnimID == ANIM_HEADLESS || self->curAnimID == ANIM_HEADLESSLOOP)
 			ssithraKillSelf(self);
@@ -2497,40 +2497,40 @@ void ssithraPanicArrow(edict_t *self)
 //	gi.dprintf("Ssithra fire panic arrow\n");
 	gi.sound(self,CHAN_WEAPON,Sounds[SND_ARROW2],1,ATTN_NORM,0);
 	self->monsterinfo.attack_finished = level.time + 0.4;
-	Arrow = G_Spawn();
+	arrow = G_Spawn();
 
-//	Arrow->s.modelindex=gi.modelindex("models/objects/projectiles/sitharrow/tris.fm");
+//	arrow->s.modelindex=gi.modelindex("models/objects/projectiles/sitharrow/tris.fm");
 
-	create_ssith_arrow(Arrow);
+	create_ssith_arrow(arrow);
 
-	Arrow->owner=self;
+	arrow->owner=self;
 
-	Arrow->health = 1; // tell the touch function what kind of arrow we are;
+	arrow->health = 1; // tell the touch function what kind of arrow we are;
 
 	VectorAdd(self->s.angles,self->v_angle_ofs,firedir);
 	AngleVectors(firedir,Forward,NULL,NULL);
-	VectorCopy(self->s.origin,Arrow->s.origin);
-	VectorMA(Arrow->s.origin,12,Forward,Arrow->s.origin);
-	VectorCopy(self->movedir,Arrow->movedir);
-	VectoAngles(Forward,Arrow->s.angles);
+	VectorCopy(self->s.origin,arrow->s.origin);
+	VectorMA(arrow->s.origin,12,Forward,arrow->s.origin);
+	VectorCopy(self->movedir,arrow->movedir);
+	VectoAngles(Forward,arrow->s.angles);
 
-	VectorScale(Forward,SSITHRA_SPOO_SPEED,Arrow->velocity);
+	VectorScale(Forward,SSITHRA_SPOO_SPEED,arrow->velocity);
 
-	VectoAngles(Arrow->velocity, Arrow->s.angles);
-	Arrow->s.angles[YAW]+=90;
+	VectoAngles(arrow->velocity, arrow->s.angles);
+	arrow->s.angles[YAW]+=90;
 //fixme: redo these- make them look like squid ink?
-	gi.CreateEffect(&Arrow->s,
+	gi.CreateEffect(arrow,
 		FX_SSITHRA_ARROW,
 		CEF_OWNERS_ORIGIN,
 		NULL,
 		"bv",
 		FX_SS_MAKE_ARROW,
-		Arrow->velocity);
+		arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 
-	Arrow->nextthink=level.time+3;
-	Arrow->think=G_FreeEdict;//ssithraArrowThink;
+	arrow->nextthink=level.time+3;
+	arrow->think=G_FreeEdict;//ssithraArrowThink;
 }
 
 void ssithra_water_shoot (edict_t *self)
@@ -2628,7 +2628,7 @@ void ssithraCrouch (edict_t *self)
 
 void ssithraUnCrouch(edict_t *self)
 {
-	self->maxs[2] = STDMaxsForClass[self->classID][2] * AVG_VEC3T(self->s.scale);
+	self->maxs[2] = STDMaxsForClass[self->classID][2] * AVG_VEC3T(self->rrs.scale);
 	gi.linkentity(self);
 	self->viewheight = self->maxs[2] * 0.8;
 }
@@ -3099,86 +3099,86 @@ void SP_monster_ssithra (edict_t *self)
 
 	//scaling them up in code like this is bad for designers
 	self->monsterinfo.scale = (MODEL_SCALE) + 0.1;// + flrand(0.1, 0.3));
-	VectorSet(self->s.scale,
+	VectorSet(self->rrs.scale,
 		self->monsterinfo.scale,
 		self->monsterinfo.scale,
 		self->monsterinfo.scale);
 	// Note that at less than 110% of the size
 
 	//Turn off dismemberment caps, can't see them, so save some polys
-	self->s.fmnodeinfo[MESH__CAPLOWERTORSO].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__CAPTOPUPPERTORSO].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__CAPHEAD].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__CAPLOWERTORSO].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__CAPTOPUPPERTORSO].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__CAPHEAD].flags |= FMNI_NO_DRAW;
 	if(!(self->spawnflags&MSF_SSITHRA_ALPHA))
 	{
 		if(irand(0,10)<6)
 		{
 			if(irand(0,10)<5)
 			{
-				self->s.fmnodeinfo[MESH__CENTERSPIKE].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__CENTERSPIKE].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__CENTERSPIKE].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__CENTERSPIKE].skin = self->s.skinnum+1;
 			}
 			else
-				self->s.fmnodeinfo[MESH__CENTERSPIKE].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__CENTERSPIKE].flags |= FMNI_NO_DRAW;
 			alpha = false;
 		}
 		if(irand(0,10)<6)
 		{
 			if(irand(0,10)<5)
 			{
-				self->s.fmnodeinfo[MESH__LEFT1SPIKE].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LEFT1SPIKE].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LEFT1SPIKE].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LEFT1SPIKE].skin = self->s.skinnum+1;
 			}
 			else
-				self->s.fmnodeinfo[MESH__LEFT1SPIKE].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__LEFT1SPIKE].flags |= FMNI_NO_DRAW;
 			alpha = false;
 		}
 		if(irand(0,10)<6)
 		{
 			if(irand(0,10)<5)
 			{
-				self->s.fmnodeinfo[MESH__RIGHT1SPIKE].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RIGHT1SPIKE].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RIGHT1SPIKE].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RIGHT1SPIKE].skin = self->s.skinnum+1;
 			}
 			else
-				self->s.fmnodeinfo[MESH__RIGHT1SPIKE].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__RIGHT1SPIKE].flags |= FMNI_NO_DRAW;
 			alpha = false;
 		}
 		if(irand(0,10)<6)
 		{
 			if(irand(0,10)<5)
 			{
-				self->s.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RIGHT2SPIKE].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RIGHT2SPIKE].skin = self->s.skinnum+1;
 			}
 			else
-				self->s.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_NO_DRAW;
 			alpha = false;
 		}
 	}
 
-	self->s.color[3] = 255;
+	self->rrs.color[3] = 255;
 	if(alpha)//tough guy!
 	{//TODO: other ssithras won't attack this guy and will follow him
 		self->health += 75;
 
 		self->monsterinfo.scale = MODEL_SCALE + 0.5;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
 
 		self->spawnflags|=MSF_SSITHRA_ALPHA;
-		self->s.color[0] = 255;
-		self->s.color[1] = 255;
-		self->s.color[2] = 128;
+		self->rrs.color[0] = 255;
+		self->rrs.color[1] = 255;
+		self->rrs.color[2] = 128;
 	}
 	else
 	{
-		self->s.color[0] = 200 + irand(-50, 50);
-		self->s.color[1] = 200 + irand(-50, 50);
-		self->s.color[2] = 200 + irand(-50, 50);
+		self->rrs.color[0] = 200 + irand(-50, 50);
+		self->rrs.color[1] = 200 + irand(-50, 50);
+		self->rrs.color[2] = 200 + irand(-50, 50);
 	}
 
 	self->monsterinfo.otherenemyname = "obj_barrel";

@@ -907,7 +907,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 
 			if (((edict_t *)playerinfo->self)->client->tele_count--)
 			{
-				((edict_t *)playerinfo->self)->s.color[3] -= TELE_FADE_OUT;
+				((edict_t *)playerinfo->self)->rrs.color[3] -= TELE_FADE_OUT;
 
 				return true;
 			}
@@ -942,7 +942,7 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 
 			if (((edict_t *)playerinfo->self)->client->tele_count--)
 			{
-				((edict_t *)playerinfo->self)->s.color[3] += TELE_FADE;
+				((edict_t *)playerinfo->self)->rrs.color[3] += TELE_FADE;
 			}
 			else
 			{
@@ -974,7 +974,7 @@ void PlayerChickenDeath(edict_t *self)
 	//gi.sound (self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->client->playerinfo.deadflag = DEAD_DEAD;
-	gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
+	gi.CreateEffect(self, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
 
 	// fix that respawning bug
 	self->morph_timer = level.time -1;
@@ -996,14 +996,14 @@ void PlayerChickenDeath(edict_t *self)
 	self->s.effects = 0;
 
 	self->s.skinnum = 0;	// Hey, the skinnum stores the skin now, capiche?
-	self->s.clientnum = self - g_edicts - 1;
+	self->rrs.clientnum = self - g_edicts - 1;
 
 	self->s.modelindex = 255;		// will use the skin specified model
 	self->s.frame = 0;
 
 	// Turn our skeleton back on.
 
-	self->s.skeletalType = SKEL_CORVUS;
+	self->rrs.skeletalType = SKEL_CORVUS;
 	self->s.effects |= (EF_SWAPFRAME|EF_JOINTED);
 	self->s.effects &= ~EF_CHICKEN;
 	self->flags &= ~FL_CHICKEN;
@@ -1026,22 +1026,22 @@ void G_SetJointAngles(playerinfo_t *playerinfo)
 
 	self=(edict_t *)playerinfo->self;
 
-	SetJointAngVel(self->s.rootJoint+CORVUS_HEAD,PITCH,playerinfo->targetjointangles[PITCH],ANGLE_45);
-	SetJointAngVel(self->s.rootJoint+CORVUS_HEAD,ROLL,playerinfo->targetjointangles[YAW],ANGLE_45);
+	SetJointAngVel(self->rrs.rootJoint+CORVUS_HEAD,PITCH,playerinfo->targetjointangles[PITCH],ANGLE_45);
+	SetJointAngVel(self->rrs.rootJoint+CORVUS_HEAD,ROLL,playerinfo->targetjointangles[YAW],ANGLE_45);
 
 	if(!playerinfo->headjointonly)
 	{
-		SetJointAngVel(self->s.rootJoint+CORVUS_UPPERBACK,PITCH,playerinfo->targetjointangles[PITCH],ANGLE_45);
-		SetJointAngVel(self->s.rootJoint+CORVUS_LOWERBACK,PITCH,playerinfo->targetjointangles[PITCH],ANGLE_45);
-		SetJointAngVel(self->s.rootJoint+CORVUS_UPPERBACK,ROLL,playerinfo->targetjointangles[YAW],ANGLE_45);
-		SetJointAngVel(self->s.rootJoint+CORVUS_LOWERBACK,ROLL,playerinfo->targetjointangles[YAW],ANGLE_45);
+		SetJointAngVel(self->rrs.rootJoint+CORVUS_UPPERBACK,PITCH,playerinfo->targetjointangles[PITCH],ANGLE_45);
+		SetJointAngVel(self->rrs.rootJoint+CORVUS_LOWERBACK,PITCH,playerinfo->targetjointangles[PITCH],ANGLE_45);
+		SetJointAngVel(self->rrs.rootJoint+CORVUS_UPPERBACK,ROLL,playerinfo->targetjointangles[YAW],ANGLE_45);
+		SetJointAngVel(self->rrs.rootJoint+CORVUS_LOWERBACK,ROLL,playerinfo->targetjointangles[YAW],ANGLE_45);
 	}
 	else
 	{
-		SetJointAngVel(self->s.rootJoint+CORVUS_UPPERBACK,PITCH,0,ANGLE_45);
-		SetJointAngVel(self->s.rootJoint+CORVUS_LOWERBACK,PITCH,0,ANGLE_45);
-		SetJointAngVel(self->s.rootJoint+CORVUS_UPPERBACK,ROLL,0,ANGLE_45);
-		SetJointAngVel(self->s.rootJoint+CORVUS_LOWERBACK,ROLL,0,ANGLE_45);
+		SetJointAngVel(self->rrs.rootJoint+CORVUS_UPPERBACK,PITCH,0,ANGLE_45);
+		SetJointAngVel(self->rrs.rootJoint+CORVUS_LOWERBACK,PITCH,0,ANGLE_45);
+		SetJointAngVel(self->rrs.rootJoint+CORVUS_UPPERBACK,ROLL,0,ANGLE_45);
+		SetJointAngVel(self->rrs.rootJoint+CORVUS_LOWERBACK,ROLL,0,ANGLE_45);
 	}
 }
 
@@ -1057,13 +1057,13 @@ void G_ResetJointAngles(playerinfo_t *playerinfo)
 
 	self=(edict_t *)playerinfo->self;
 
-	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,PITCH,0,ANGLE_45);
-	SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,PITCH,0,ANGLE_45);
-	SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,PITCH,0,ANGLE_45);
+	SetJointAngVel(self->rrs.rootJoint + CORVUS_HEAD,PITCH,0,ANGLE_45);
+	SetJointAngVel(self->rrs.rootJoint + CORVUS_UPPERBACK,PITCH,0,ANGLE_45);
+	SetJointAngVel(self->rrs.rootJoint + CORVUS_LOWERBACK,PITCH,0,ANGLE_45);
 
-	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,ROLL,0,ANGLE_45);
-	SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,ROLL,0,ANGLE_45);
-	SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,ROLL,0,ANGLE_45);
+	SetJointAngVel(self->rrs.rootJoint + CORVUS_HEAD,ROLL,0,ANGLE_45);
+	SetJointAngVel(self->rrs.rootJoint + CORVUS_UPPERBACK,ROLL,0,ANGLE_45);
+	SetJointAngVel(self->rrs.rootJoint + CORVUS_LOWERBACK,ROLL,0,ANGLE_45);
 }
 
 // ************************************************************************************************

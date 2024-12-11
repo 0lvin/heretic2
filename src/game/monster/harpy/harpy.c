@@ -124,12 +124,12 @@ void harpy_throw_wings(edict_t *self)
 	int				throw_nodes = 0;
 	vec3_t			gore_spot;
 
-	if (!(self->s.fmnodeinfo[MESH_RWING].flags & FMNI_NO_DRAW))
+	if (!(self->rrs.fmnodeinfo[MESH_RWING].flags & FMNI_NO_DRAW))
 	{
 		throw_nodes |= BPN_for_hitloc[hl_rwing];
 	}
 
-	if (!(self->s.fmnodeinfo[MESH_LWING].flags & FMNI_NO_DRAW))
+	if (!(self->rrs.fmnodeinfo[MESH_LWING].flags & FMNI_NO_DRAW))
 	{
 		throw_nodes |= BPN_for_hitloc[hl_lwing];
 	}
@@ -210,7 +210,7 @@ void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, in
 
 	head->s.origin[2] += 100;
 
-	gi.CreateEffect(&head->s,//owner
+	gi.CreateEffect(head,//owner
 					FX_BODYPART,//type
 					flags,//can't mess with this, sends only 1st byte and effects message
 					head->s.origin,//spot,
@@ -638,7 +638,7 @@ void move_harpy_tumble(edict_t *self)
 
 	if ( (self->groundentity != NULL) || (trace.fraction != 1) || (trace.startsolid) || (trace.allsolid) || (self->monsterinfo.jump_time < level.time) )
 	{
-		gi.CreateEffect(&self->s, FX_DUST_PUFF, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
+		gi.CreateEffect(self, FX_DUST_PUFF, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
 
 		VectorCopy(self->s.angles, self->movedir);
 		harpy_death_noise(self);
@@ -773,7 +773,7 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 	{
 		case hl_head:
 
-			if (self->s.fmnodeinfo[MESH_HEAD].flags & FMNI_NO_DRAW)
+			if (self->rrs.fmnodeinfo[MESH_HEAD].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
 
 			if (irand(0,10) > 2)
@@ -784,7 +784,7 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_rightlowerleg:
 		case hl_rightupperleg:
 
-			if (self->s.fmnodeinfo[MESH_RUARM].flags & FMNI_NO_DRAW)
+			if (self->rrs.fmnodeinfo[MESH_RUARM].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
 
 			if (irand(0,10) > 4)
@@ -795,7 +795,7 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_leftlowerleg:
 		case hl_leftupperleg:
 
-			if (self->s.fmnodeinfo[MESH_LUARM].flags & FMNI_NO_DRAW)
+			if (self->rrs.fmnodeinfo[MESH_LUARM].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
 
 			if (irand(0,10) > 4)
@@ -805,7 +805,7 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 
 		case hl_rwing:
 
-			if (self->s.fmnodeinfo[MESH_RWING].flags & FMNI_NO_DRAW)
+			if (self->rrs.fmnodeinfo[MESH_RWING].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
 
 			if (irand(0,10) > 6)
@@ -815,7 +815,7 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 
 		case hl_lwing:
 
-			if (self->s.fmnodeinfo[MESH_LWING].flags & FMNI_NO_DRAW)
+			if (self->rrs.fmnodeinfo[MESH_LWING].flags & FMNI_NO_DRAW)
 				dismember_ok = false;
 
 			if (irand(0,10) > 6)
@@ -845,30 +845,30 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 		{
 			case hl_head :
 
-				self->s.fmnodeinfo[MESH_HEAD].flags |= FMNI_NO_DRAW;
-				self->s.fmnodeinfo[MESH_HORN].flags |= FMNI_NO_DRAW;
-				self->s.fmnodeinfo[MESH_HORNS].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_HEAD].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_HORN].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_HORNS].flags |= FMNI_NO_DRAW;
 				break;
 
 			case hl_leftlowerleg :
 			case hl_leftupperleg :
 
-				self->s.fmnodeinfo[MESH_LUARM].flags |= FMNI_NO_DRAW;
-				self->s.fmnodeinfo[MESH_LLARM].flags |= FMNI_NO_DRAW;
-				self->s.fmnodeinfo[MESH_LHAND].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_LUARM].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_LLARM].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_LHAND].flags |= FMNI_NO_DRAW;
 				break;
 
 			case hl_rightlowerleg :
 			case hl_rightupperleg :
 
-				self->s.fmnodeinfo[MESH_RUARM].flags |= FMNI_NO_DRAW;
-				self->s.fmnodeinfo[MESH_RLARM].flags |= FMNI_NO_DRAW;
-				self->s.fmnodeinfo[MESH_RHAND].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_RUARM].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_RLARM].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH_RHAND].flags |= FMNI_NO_DRAW;
 				break;
 
 			default	:
 
-				self->s.fmnodeinfo[MeshLoc].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MeshLoc].flags |= FMNI_NO_DRAW;
 				break;
 		}
 
@@ -891,10 +891,10 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 		{
 			MeshLoc = MESH_for_hitloc[HitLocation];
 
-			if (!(self->s.fmnodeinfo[MeshLoc].flags & FMNI_USE_SKIN))
+			if (!(self->rrs.fmnodeinfo[MeshLoc].flags & FMNI_USE_SKIN))
 			{
-				self->s.fmnodeinfo[MeshLoc].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MeshLoc].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MeshLoc].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MeshLoc].skin = self->s.skinnum+1;
 			}
 		}
 	}
@@ -1672,11 +1672,11 @@ SP_monster_harpy(edict_t *self)
 	self->isBlocked = harpy_blocked;
 	self->bounced = harpy_blocked;
 
-	if (!self->s.scale[0] || !self->s.scale[1] || !self->s.scale[2])
+	if (!self->rrs.scale[0] || !self->rrs.scale[1] || !self->rrs.scale[2])
 	{
 		float scale = flrand(1.25, 1.75);
 		self->monsterinfo.scale = scale;
-		VectorSet(self->s.scale, scale, scale, scale);
+		VectorSet(self->rrs.scale, scale, scale, scale);
 	}
 
 	self->monsterinfo.otherenemyname = "monster_rat";
@@ -1699,19 +1699,19 @@ SP_monster_harpy(edict_t *self)
 	}
 
 	if(irand(0,1))
-		self->s.fmnodeinfo[MESH_HORNS].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH_HORNS].flags |= FMNI_NO_DRAW;
 
 	if(irand(0,1))
-		self->s.fmnodeinfo[MESH_HORN].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH_HORN].flags |= FMNI_NO_DRAW;
 
 	if(irand(0,1))
-		self->s.fmnodeinfo[MESH_BACKSPIKES].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH_BACKSPIKES].flags |= FMNI_NO_DRAW;
 
 	if(irand(0,4))
-		self->s.fmnodeinfo[MESH_NECKSPIKES].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH_NECKSPIKES].flags |= FMNI_NO_DRAW;
 
 	if(irand(0,2))
-		self->s.fmnodeinfo[MESH_TAILSPIKES].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH_TAILSPIKES].flags |= FMNI_NO_DRAW;
 
 	gi.linkentity(self);
 }

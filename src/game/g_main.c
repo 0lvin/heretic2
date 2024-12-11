@@ -671,7 +671,7 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 		{//FIXME: make hiss and smoke too
 			gi.dprintf("%s fire doused\n", self->classname);
 			self->fire_damage_time = 0;
-//			gi.RemoveEffects(&self->s, FX_FIRE_ON_ENTITY);//turn off CFX too
+//			gi.RemoveEffects(self, FX_FIRE_ON_ENTITY);//turn off CFX too
 			self->s.effects &= ~EF_ON_FIRE;			// Use this to instead notify the fire to stop.
 			gi.CreateEffect(NULL,
 					FX_ENVSMOKE,
@@ -726,7 +726,7 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 	else if(self->fire_damage_time>0)
 	{
 		self->fire_damage_time = 0;
-//		gi.RemoveEffects(&self->s, FX_FIRE_ON_ENTITY);//turn off CFX too
+//		gi.RemoveEffects(self, FX_FIRE_ON_ENTITY);//turn off CFX too
 		self->s.effects &= ~EF_ON_FIRE;		// Use this to instead notify the fire to stop.
 		return;
 	}

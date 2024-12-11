@@ -39,18 +39,18 @@ edict_t *PhoenixMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	VectorCopy(vel, phoenix->velocity);
 	G_LinkMissile(phoenix);
-	gi.CreateEffect(&phoenix->s, FX_WEAPON_PHOENIXMISSILE, CEF_OWNERS_ORIGIN | (phoenix->health << 5) | CEF_FLAG8, NULL, "t", phoenix->velocity);
+	gi.CreateEffect(phoenix, FX_WEAPON_PHOENIXMISSILE, CEF_OWNERS_ORIGIN | (phoenix->health << 5) | CEF_FLAG8, NULL, "t", phoenix->velocity);
 	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// travel sound on the weapon itself - the one on the original arrow will be deleted when the object is removed.
 	phoenix->s.sound = gi.soundindex("weapons/PhoenixTravel.wav");
-	phoenix->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
+	phoenix->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 	// but just to be safe..
 	self->s.sound = 0;
 
 	// Do a nasty looking blast at the impact point
-	gi.CreateEffect(&phoenix->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", phoenix->velocity);
+	gi.CreateEffect(phoenix, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", phoenix->velocity);
 
 	return(phoenix);
 }
@@ -120,13 +120,13 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	VectorNormalize2(self->velocity,self->movedir);
 	// Start the explosion
 	if (plane->normal)
-		gi.CreateEffect(&self->s, FX_WEAPON_PHOENIXEXPLODE, CEF_BROADCAST |(self->health << 5)| makeScorch, self->s.origin, "td", plane->normal, self->movedir);
+		gi.CreateEffect(self, FX_WEAPON_PHOENIXEXPLODE, CEF_BROADCAST |(self->health << 5)| makeScorch, self->s.origin, "td", plane->normal, self->movedir);
 	else
-		gi.CreateEffect(&self->s, FX_WEAPON_PHOENIXEXPLODE, CEF_BROADCAST |(self->health << 5)| makeScorch, self->s.origin, "td", self->movedir, self->movedir);
+		gi.CreateEffect(self, FX_WEAPON_PHOENIXEXPLODE, CEF_BROADCAST |(self->health << 5)| makeScorch, self->s.origin, "td", self->movedir, self->movedir);
 
 	VectorClear(self->velocity);
    // Turn off the client effect
-	gi.RemoveEffects(&self->s, FX_WEAPON_PHOENIXMISSILE);
+	gi.RemoveEffects(self, FX_WEAPON_PHOENIXMISSILE);
 
 	G_SetToFree(self);
 }
@@ -196,7 +196,7 @@ void SpellCastPhoenix(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 
 	// travel sound on the weapon itself
 	phoenix->s.sound = gi.soundindex("weapons/PhoenixTravel.wav");
-	phoenix->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
+	phoenix->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 
 	if (Caster->client->playerinfo.powerup_timer > level.time)
 	{
@@ -225,7 +225,7 @@ void SpellCastPhoenix(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 		PhoenixMissileTouch(phoenix, trace.ent, &trace.plane, trace.surface);
 		return;
 	}
-	gi.CreateEffect(&phoenix->s, FX_WEAPON_PHOENIXMISSILE, CEF_OWNERS_ORIGIN|(phoenix->health<<5), NULL, "t", phoenix->velocity);
+	gi.CreateEffect(phoenix, FX_WEAPON_PHOENIXMISSILE, CEF_OWNERS_ORIGIN|(phoenix->health<<5), NULL, "t", phoenix->velocity);
 }
 
 // end

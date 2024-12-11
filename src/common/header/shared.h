@@ -1442,7 +1442,72 @@ typedef struct entity_state_s
 	int event;              /* impulse events -- muzzle flashes, footsteps, etc */
 							/* events only go out for a single frame, they */
 							/* are automatically cleared each frame */
+} entity_state_t;
+
+/* ReRelease states */
+typedef struct entity_rrstate_s
+{
 	/* New protocol fields */
+	vec3_t scale; /* model scale */
+	unsigned int effects;
+
+	short			clientnum;		// In Quake 2, the client num was passed in skinnum.  We need this value, however.
+
+	// For specific path to skin.
+
+	char			skinname[MAX_QPATH];
+
+	// EF_XXX.
+
+	// What's this exactly?
+	byte color[4];
+
+	// For looping sounds, so we can set volume and attenuation.
+	byte			sound_data;
+
+	// required so we can place sounds for bmodels correctly in 3d space
+	vec3_t			bmodel_origin;
+
+	// Header block for list of all client effects attatched to this entity.
+	EffectsBuffer_t clientEffects;
+
+	// Specifies which parts (nodes) of the model are on/off, node colors etc.
+
+	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
+
+	// Skeletal info. Only relevant for player models (i.e. have U_JOINTED).
+	short			skeletalType;
+	short			rootJoint;
+
+	short			swapFrame;
+
+	// Used by the client to verify is this still the same entity it last had.
+	byte			usageCount;
+} entity_rrstate_t;
+
+typedef struct entity_xstate_s
+{
+	/* keep it insync with entity_state_t */
+	int number;             /* edict index */
+
+	vec3_t origin;
+	vec3_t angles;
+	vec3_t old_origin;      /* for lerping */
+	int modelindex;
+	int modelindex2, modelindex3, modelindex4;      /* weapons, CTF flags, etc */
+	int frame;
+	int skinnum;
+	unsigned int effects;
+	int renderfx;
+	int solid;              /* for client side prediction, 8*(bits 0-4) is x/y radius */
+							/* 8*(bits 5-9) is z down distance, 8(bits10-15) is z up */
+							/* gi.linkentity sets this properly */
+	int sound;              /* for looping sounds, to guarantee shutoff */
+	int event;              /* impulse events -- muzzle flashes, footsteps, etc */
+							/* events only go out for a single frame, they */
+							/* are automatically cleared each frame */
+
+	/* New protocol fields, sync with entity_rrstate_t */
 	vec3_t scale; /* model scale */
 	unsigned int rr_effects;
 
@@ -1478,7 +1543,7 @@ typedef struct entity_state_s
 
 	// Used by the client to verify is this still the same entity it last had.
 	byte			usageCount;
-} entity_state_t;
+} entity_xstate_t;
 
 /* ============================================== */
 

@@ -1602,7 +1602,7 @@ void MG_AddBuoyEffect(edict_t *self, qboolean endbuoy)
 				{
 					gi.dprintf("Adding green effect to buoy %s\n", self->nextbuoy[0]->targetname);
 
-					gi.CreateEffect(&self->nextbuoy[0]->s,
+					gi.CreateEffect(self->nextbuoy[0],
 						FX_M_EFFECTS,
 						CEF_OWNERS_ORIGIN|CEF_FLAG6,//green
 						self->nextbuoy[0]->s.origin,
@@ -1621,7 +1621,7 @@ void MG_AddBuoyEffect(edict_t *self, qboolean endbuoy)
 				{
 					gi.dprintf("Adding red effect to buoy %s\n", self->nextbuoy[1]->targetname);
 
-					gi.CreateEffect(&self->nextbuoy[1]->s,
+					gi.CreateEffect(self->nextbuoy[1],
 						FX_M_EFFECTS,
 						CEF_OWNERS_ORIGIN,//red
 						self->nextbuoy[1]->s.origin,

@@ -206,7 +206,7 @@ void RingThink(edict_t *self)
 				ent->owner = self->owner;
 
 				// Do a nasty looking blast at the impact point
-				gi.CreateEffect(&ent->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", ent->velocity);
+				gi.CreateEffect(ent, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", ent->velocity);
 			}
 		}
 
@@ -246,13 +246,13 @@ void RingThink(edict_t *self)
 
 // Formula for knockback:	1 to 0 (center to outside) * KNOCKBACK_SCALE + KNOCKBACK_BASE
 //							This total is multiplied by (MASS_FACTOR / mass).  (If mass > 200, less, if < 200, more)
-void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value)
+void SpellCastBlueRing(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value)
 {
 	edict_t		*newent;
 
 	// create the actual effect entity
 	newent = G_Spawn();
-	newent->owner = Caster;
+	newent->owner = caster;
 	newent->solid = SOLID_NOT;
 	newent->svflags |= SVF_NOCLIENT;
 	newent->movetype = MOVETYPE_NONE;
@@ -261,11 +261,11 @@ void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_
 	newent->think = RingThink;
 	newent->count = RING_THINKS;
 	newent->timestamp = level.time;
-	VectorCopy(Caster->s.origin, newent->s.origin);
+	VectorCopy(caster->s.origin, newent->s.origin);
 	gi.linkentity(newent);
 
 	// fire off a special effect.
-	gi.CreateEffect(&Caster->s, FX_SPELL_BLUERING, CEF_OWNERS_ORIGIN, 0, "");
+	gi.CreateEffect(caster, FX_SPELL_BLUERING, CEF_OWNERS_ORIGIN, 0, "");
 }
 
 // end

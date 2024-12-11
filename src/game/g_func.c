@@ -734,7 +734,7 @@ plat_go_down(edict_t *ent)
 		}
 
 		ent->s.sound = ent->moveinfo.sound_middle;
-		ent->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
+		ent->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
 	}
 
 	ent->moveinfo.state = STATE_DOWN;
@@ -759,7 +759,7 @@ plat_go_up(edict_t *ent)
 		}
 
 		ent->s.sound = ent->moveinfo.sound_middle;
-		ent->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
+		ent->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
 	}
 
 	ent->moveinfo.state = STATE_UP;
@@ -1072,9 +1072,9 @@ SP_func_plat(edict_t *ent)
 	VectorCopy(ent->pos2, ent->moveinfo.end_origin);
 	VectorCopy(ent->s.angles, ent->moveinfo.end_angles);
 
-	VectorSubtract(ent->maxs, ent->mins, ent->s.bmodel_origin);
-	Vec3ScaleAssign(0.5, ent->s.bmodel_origin);
-	VectorAdd(ent->mins, ent->s.bmodel_origin, ent->s.bmodel_origin);
+	VectorSubtract(ent->maxs, ent->mins, ent->rrs.bmodel_origin);
+	Vec3ScaleAssign(0.5, ent->rrs.bmodel_origin);
+	VectorAdd(ent->mins, ent->rrs.bmodel_origin, ent->rrs.bmodel_origin);
 
 	door_sounds(ent);
 
@@ -1851,7 +1851,7 @@ rotating_use(edict_t *self, edict_t *other /* unused */,
 	else
 	{
 		self->s.sound = self->moveinfo.sound_middle;
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
 		VectorScale(self->movedir, self->speed, self->avelocity);
 		if (self->spawnflags & 16)
 		{
@@ -1940,9 +1940,9 @@ SP_func_rotating(edict_t *ent)
 	if (ent->spawnflags & 256) // Because of a mixup in flags
 		ent->spawnflags |= 4;
 
-	VectorSubtract(ent->maxs, ent->mins, ent->s.bmodel_origin);
-	Vec3ScaleAssign(0.5, ent->s.bmodel_origin);
-	VectorAdd(ent->mins, ent->s.bmodel_origin, ent->s.bmodel_origin);
+	VectorSubtract(ent->maxs, ent->mins, ent->rrs.bmodel_origin);
+	Vec3ScaleAssign(0.5, ent->rrs.bmodel_origin);
+	VectorAdd(ent->mins, ent->rrs.bmodel_origin, ent->rrs.bmodel_origin);
 
 	gi.setmodel(ent, ent->model);
 	gi.linkentity(ent);
@@ -2397,7 +2397,7 @@ door_go_down(edict_t *self)
 		}
 
 		self->s.sound = self->moveinfo.sound_middle;
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
 	}
 
 	if (self->max_health)
@@ -2456,7 +2456,7 @@ door_go_up(edict_t *self, edict_t *activator)
 		}
 
 		self->s.sound = self->moveinfo.sound_middle;
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
 	}
 
 	self->moveinfo.state = STATE_UP;
@@ -3129,9 +3129,9 @@ SP_func_door(edict_t *self)
 	VectorCopy(self->pos2, self->moveinfo.end_origin);
 	VectorCopy(self->s.angles, self->moveinfo.end_angles);
 
-	VectorSubtract(self->maxs, self->mins, self->s.bmodel_origin);
-	Vec3ScaleAssign(0.5, self->s.bmodel_origin);
-	VectorAdd(self->mins, self->s.bmodel_origin, self->s.bmodel_origin);
+	VectorSubtract(self->maxs, self->mins, self->rrs.bmodel_origin);
+	Vec3ScaleAssign(0.5, self->rrs.bmodel_origin);
+	VectorAdd(self->mins, self->rrs.bmodel_origin, self->rrs.bmodel_origin);
 
 	if (self->spawnflags & 16)
 		self->s.effects |= EF_ANIM_ALL;
@@ -3314,9 +3314,9 @@ SP_func_door_rotating(edict_t *ent)
 	VectorCopy(ent->s.origin, ent->moveinfo.end_origin);
 	VectorCopy(ent->pos2, ent->moveinfo.end_angles);
 
-	VectorSubtract(ent->maxs, ent->mins, ent->s.bmodel_origin);
-	Vec3ScaleAssign(0.5, ent->s.bmodel_origin);
-	VectorAdd(ent->mins, ent->s.bmodel_origin, ent->s.bmodel_origin);
+	VectorSubtract(ent->maxs, ent->mins, ent->rrs.bmodel_origin);
+	Vec3ScaleAssign(0.5, ent->rrs.bmodel_origin);
+	VectorAdd(ent->mins, ent->rrs.bmodel_origin, ent->rrs.bmodel_origin);
 
 	if (ent->spawnflags & 16)
 		ent->s.effects |= EF_ANIM_ALL;
@@ -3387,9 +3387,9 @@ SP_func_water(edict_t *self)
 	VectorCopy(self->pos2, self->moveinfo.end_origin);
 	VectorCopy(self->s.angles, self->moveinfo.end_angles);
 
-	VectorSubtract(self->maxs, self->mins, self->s.bmodel_origin);
-	Vec3ScaleAssign(0.5, self->s.bmodel_origin);
-	VectorAdd(self->mins, self->s.bmodel_origin, self->s.bmodel_origin);
+	VectorSubtract(self->maxs, self->mins, self->rrs.bmodel_origin);
+	Vec3ScaleAssign(0.5, self->rrs.bmodel_origin);
+	VectorAdd(self->mins, self->rrs.bmodel_origin, self->rrs.bmodel_origin);
 
 	self->moveinfo.state = STATE_BOTTOM;
 
@@ -3677,7 +3677,7 @@ again:
 		}
 
 		self->s.sound = self->moveinfo.sound_middle;
-		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
+		self->rrs.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
 	}
 
 
@@ -3902,9 +3902,9 @@ SP_func_train(edict_t *self)
 	spacecube = space[0] * space[1] * space[2];
 	self->mass = spacecube / 64;   //
 
-	VectorSubtract(self->maxs, self->mins, self->s.bmodel_origin);
-	Vec3ScaleAssign(0.5, self->s.bmodel_origin);
-	VectorAdd(self->mins, self->s.bmodel_origin, self->s.bmodel_origin);
+	VectorSubtract(self->maxs, self->mins, self->rrs.bmodel_origin);
+	Vec3ScaleAssign(0.5, self->rrs.bmodel_origin);
+	VectorAdd(self->mins, self->rrs.bmodel_origin, self->rrs.bmodel_origin);
 
 	gi.linkentity(self);
 
@@ -4776,10 +4776,10 @@ void monsterspawner_go(edict_t *self)
 	monster->jump_chance = self->jump_chance;
 	monster->wakeup_distance = self->wakeup_distance;
 
-	VectorCopy(self->s.scale, monster->s.scale);
+	VectorCopy(self->rrs.scale, monster->rrs.scale);
 
-	VectorScale(STDMinsForClass[monster->classID], AVG_VEC3T(monster->s.scale), monster->mins);
-	VectorScale(STDMaxsForClass[monster->classID], AVG_VEC3T(monster->s.scale), monster->maxs);
+	VectorScale(STDMinsForClass[monster->classID], AVG_VEC3T(monster->rrs.scale), monster->mins);
+	VectorScale(STDMaxsForClass[monster->classID], AVG_VEC3T(monster->rrs.scale), monster->maxs);
 
 	if (self->attenuation)
 	{
@@ -4997,11 +4997,11 @@ void SP_func_monsterspawner (edict_t *self)
 	if (!self->wait)
 		self->wait = 10;
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
-		VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+		VectorSet(self->rrs.scale, 1.0, 1.0, 1.0);
 	}
 
 	if (self->targetname)

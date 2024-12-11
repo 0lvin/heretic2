@@ -40,8 +40,8 @@ float mist_yaw;
 
 void Elflord_c_gib(edict_t *self, G_Message_t *msg)
 {
-	gi.CreateEffect(&self->s, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN , NULL,
-					"db", self->movedir, (byte)(AVG_VEC3T(self->s.scale) * 7.5));
+	gi.CreateEffect(self, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN , NULL,
+					"db", self->movedir, (byte)(AVG_VEC3T(self->rrs.scale) * 7.5));
 
 	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereImpact.wav"),2,ATTN_NORM,0);
 
@@ -136,14 +136,14 @@ void Elflord_c_anims(edict_t *self, G_Message_t *msg)
 			curr_anim = ANIM_C_ACTION2;
 			break;
 		case MSG_C_DEATH1:
-			self->s.fmnodeinfo[MESH__LIGHT25].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__HEAD25].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__LIGHT25].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HEAD25].flags |= FMNI_NO_DRAW;
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
 			curr_anim = ANIM_C_DEATH1;
 			break;
 		case MSG_C_DEATH2:
-			self->s.fmnodeinfo[MESH__LIGHT25].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__HEAD25].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__LIGHT25].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HEAD25].flags |= FMNI_NO_DRAW;
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
 			curr_anim = ANIM_C_DEATH2;
 			break;
@@ -194,7 +194,7 @@ void SP_character_elflord (edict_t *self)
 	c_character_init(self,CID_C_ELFLORD);
 
 	self->monsterinfo.scale = 2.0;
-	VectorSet(self->s.scale,
+	VectorSet(self->rrs.scale,
 		self->monsterinfo.scale,
 		self->monsterinfo.scale,
 		self->monsterinfo.scale);

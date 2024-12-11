@@ -150,7 +150,7 @@ void morcalavin_big_shot( edict_t *self )
 	gi.linkentity(proj);
 
 	//Create the effect
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					proj->s.origin,
@@ -187,7 +187,7 @@ void morcalavin_proj_track( edict_t *self )
 	//Timeout?
 	if (self->monsterinfo.attack_finished < level.time)
 	{
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -255,7 +255,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	proj->solid = SOLID_BBOX;
 	proj->classname = "Morcalavin_Tracking_Missile";
 	proj->dmg = 1.0;
-	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(proj->rrs.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
 
@@ -294,7 +294,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 
 	gi.sound (self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				NULL,
@@ -331,7 +331,7 @@ void morcalavin_proj2_blocked( edict_t *self, trace_t *trace )
 
 		exp = HPMISSILE1_EXPLODE;
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -394,7 +394,7 @@ void morcalavin_proj3_blocked( edict_t *self, trace_t *trace )
 
 		exp = HPMISSILE1_EXPLODE;
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -606,7 +606,7 @@ void morcalavin_start_missile(edict_t *self)
 	gi.linkentity(proj);
 
 	//Create the effect
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					proj->s.origin,
@@ -654,7 +654,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 
 		exp = HPMISSILE1_EXPLODE;
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -681,7 +681,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 		T_Damage( trace->ent, self, self->owner, hitDir, self->s.origin, trace->plane.normal, damage, 0, DAMAGE_SPELL | DAMAGE_NO_KNOCKBACK,MOD_DIED );
 	}
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_HP_MISSILE,
 				CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -706,7 +706,7 @@ void create_morcalavin_proj(edict_t *self,edict_t *proj)
 	proj->solid = SOLID_BBOX;
 	proj->classname = "Morcalavin_Missile";
 	proj->dmg = 1.0;
-	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(proj->rrs.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
 
@@ -768,7 +768,7 @@ void morcalavin_taunt_shot(edict_t *self)
 
 	gi.sound (self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				NULL,
@@ -783,15 +783,15 @@ void morcalavin_phase_out (edict_t *self)
 {
 	int	interval = 40;
 
-	if(self->s.color[3] > interval)
+	if(self->rrs.color[3] > interval)
 	{
-		self->s.color[3] -= irand(interval/2, interval);
+		self->rrs.color[3] -= irand(interval/2, interval);
 		self->pre_think = morcalavin_phase_out;
 		self->next_pre_think = level.time + 0.05;
 	}
 	else
 	{
-		self->s.color[3] = 0;
+		self->rrs.color[3] = 0;
 		self->pre_think = NULL;
 		self->next_pre_think = -1;
 	}
@@ -801,9 +801,9 @@ void morcalavin_phase_in (edict_t *self)
 {
 	int	interval = 12;
 
-	if(self->s.color[3] < 255 - interval)
+	if(self->rrs.color[3] < 255 - interval)
 	{
-		self->s.color[3] += irand(interval/2, interval);
+		self->rrs.color[3] += irand(interval/2, interval);
 		self->pre_think = morcalavin_phase_in;
 		self->next_pre_think = level.time + 0.05;
 	}
@@ -811,10 +811,10 @@ void morcalavin_phase_in (edict_t *self)
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
 
-		self->s.color[0] = 255;
-		self->s.color[1] = 255;
-		self->s.color[2] = 255;
-		self->s.color[3] = 255;
+		self->rrs.color[0] = 255;
+		self->rrs.color[1] = 255;
+		self->rrs.color[2] = 255;
+		self->rrs.color[3] = 255;
 
 		if(self->health <= 0 || self->monsterinfo.lefty >= 6)
 		{
@@ -965,7 +965,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
 		VectoAngles(proj->velocity, proj->s.angles);
 
-		gi.CreateEffect(&proj->s,
+		gi.CreateEffect(proj,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					NULL,
@@ -996,7 +996,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/seraph/guard/spellhit.wav"), 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -1052,7 +1052,7 @@ void morcalavin_beam( edict_t *self)
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/seraph/guard/spell.wav"), 1, ATTN_NORM, 0);
 
 	//TODO: Spawn a muzzle flash
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				vec3_origin,
@@ -1103,7 +1103,7 @@ void morcalavin_beam2( edict_t *self)
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/seraph/guard/spell.wav"), 1, ATTN_NORM, 0);
 
 	//TODO: Spawn a muzzle flash
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				vec3_origin,
@@ -1376,7 +1376,7 @@ void mork_ai_run (edict_t *self, float dist)
 	else
 	{
 		/*
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_M_EFFECTS,
 					0,
 					vec3_origin,
@@ -1839,7 +1839,7 @@ morcalavin_resist_death (edict_t *self, edict_t *inflictor, edict_t *attacker, i
 	gi.sound(self, CHAN_VOICE, sounds[SND_FALL], 1, ATTN_NORM, 0);
 	SetAnim(self, ANIM_FALL);
 
-	self->s.color[3] = 0xFF;
+	self->rrs.color[3] = 0xFF;
 	self->pre_think = NULL;
 	self->next_pre_think = -1;
 
@@ -1935,7 +1935,7 @@ void SP_monster_morcalavin (edict_t *self)
 	if (self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -1945,10 +1945,10 @@ void SP_monster_morcalavin (edict_t *self)
 
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
-	self->s.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
+	self->rrs.color[3] = 255;
 
 	self->s.renderfx |= RF_GLOW;
 
@@ -2063,10 +2063,10 @@ void SP_obj_morcalavin_barrier (edict_t *self)
 	self->touch = morcalavin_barrier_touch;
 	self->use   = morcalavin_barrier_use;
 
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
-	self->s.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
+	self->rrs.color[3] = 255;
 
 	self->count = 1;
 	self->health = true;

@@ -437,8 +437,8 @@ MSG_WriteData(sizebuf_t* sb, byte* data, int len)
  * Can delta from either a baseline or a previous packet_entity
  */
 void
-MSG_WriteDeltaEntity(entity_state_t *from,
-		entity_state_t *to,
+MSG_WriteDeltaEntity(const entity_xstate_t *from,
+		const entity_xstate_t *to,
 		sizebuf_t *msg,
 		qboolean force,
 		qboolean newentity,
@@ -540,14 +540,14 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		}
 	}
 
-	if ((to->effects != from->effects) || (to->rr_effects != from->rr_effects))
+	if (to->effects != from->effects)
 	{
-		if ((to->effects < 256) && (to->rr_effects < 256))
+		if (to->effects < 256)
 		{
 			bits |= U_EFFECTS8;
 		}
 
-		else if ((to->effects < 0x8000) && (to->rr_effects < 0x8000))
+		else if (to->effects < 0x8000)
 		{
 			bits |= U_EFFECTS16;
 		}
@@ -556,6 +556,11 @@ MSG_WriteDeltaEntity(entity_state_t *from,
 		{
 			bits |= U_EFFECTS8 | U_EFFECTS16;
 		}
+	}
+
+	if (to->rr_effects != from->rr_effects)
+	{
+		bits |= U_EFFECTS8 | U_EFFECTS16;
 	}
 
 	if (to->renderfx != from->renderfx)

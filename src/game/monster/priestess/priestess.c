@@ -220,10 +220,10 @@ void priestess_teleport_self_effects( edict_t *self )
 {
 	self->s.renderfx |= RF_ALPHA_TEXTURE;
 
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
-	self->s.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
+	self->rrs.color[3] = 255;
 }
 
 /*-----------------------------------------------
@@ -232,12 +232,12 @@ void priestess_teleport_self_effects( edict_t *self )
 
 void priestess_delta_alpha( edict_t *self, float amount )
 {
-	if (self->s.color[3] + amount > 255)
-		self->s.color[3] = 255;
-	else if (self->s.color[3] + amount < 0)
-		self->s.color[3] = 0;
+	if (self->rrs.color[3] + amount > 255)
+		self->rrs.color[3] = 255;
+	else if (self->rrs.color[3] + amount < 0)
+		self->rrs.color[3] = 0;
 	else
-		self->s.color[3] += amount;
+		self->rrs.color[3] += amount;
 }
 
 /*-----------------------------------------------
@@ -250,10 +250,10 @@ void priestess_stop_alpha ( edict_t *self )
 
 	self->s.renderfx &= ~RF_ALPHA_TEXTURE;
 
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
-	self->s.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
+	self->rrs.color[3] = 255;
 }
 
 /*-----------------------------------------------
@@ -334,7 +334,7 @@ void priestess_proj1_think( edict_t *self )
 	{
 		gi.sound (self, CHAN_BODY, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -385,7 +385,7 @@ priestess_proj2_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 {
 	gi.sound (self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_HP_MISSILE,
 				CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -408,7 +408,7 @@ void priestess_proj2_think( edict_t *self )
 	{
 		gi.sound (self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -477,7 +477,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 			break;
 		}
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -532,7 +532,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 		T_Damage( trace->ent, self, self->owner, hitDir, self->s.origin, trace->plane.normal, damage, 0, DAMAGE_SPELL | DAMAGE_NO_KNOCKBACK,MOD_DIED );
 	}
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_HP_MISSILE,
 				CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -618,7 +618,7 @@ void create_priestess_proj(edict_t *self,edict_t *proj)
 	proj->solid = SOLID_BBOX;
 	proj->classname = "HPriestess_Missile";
 	proj->dmg = 1.0;
-	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(proj->rrs.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
 
@@ -693,7 +693,7 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 		if (!irand(0,10))
 			proj->think = priestess_proj1_drunken;
 
-		gi.CreateEffect(&proj->s,
+		gi.CreateEffect(proj,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					NULL,
@@ -754,7 +754,7 @@ void priestess_fire2( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	gi.sound (self, CHAN_AUTO, sounds[SND_HOMINGATK], 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_HP_MISSILE,
 				CEF_OWNERS_ORIGIN,
 				proj->s.origin,
@@ -827,7 +827,7 @@ void priestess_fire3( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	gi.sound (self, CHAN_AUTO, sounds[SND_BUGS], 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_HP_MISSILE,
 				CEF_OWNERS_ORIGIN,
 				startPos,
@@ -1444,7 +1444,7 @@ void priestess_dead( edict_t *self )
 		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_PRIESTESS);
 		self->PersistantCFX = 0;
 	}
-	gi.RemoveEffects(&self->s, 0);
+	gi.RemoveEffects(self, 0);
 
 	gi.linkentity(self);
 
@@ -1663,7 +1663,7 @@ void SP_monster_high_priestess (edict_t *self)
 	if (self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -1672,7 +1672,7 @@ void SP_monster_high_priestess (edict_t *self)
 	MG_InitMoods( self );
 
 	//Setup her reference points
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+	self->PersistantCFX = gi.CreatePersistantEffect(self,
 							FX_HP_STAFF,
 							CEF_OWNERS_ORIGIN | CEF_BROADCAST,
 							vec3_origin,

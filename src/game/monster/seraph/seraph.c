@@ -752,10 +752,10 @@ void seraph_back (edict_t *self, float dist)
 qboolean canthrownode_so (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_so[BP];
-		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
 		return true;
 	}
 	return false;
@@ -766,7 +766,7 @@ void seraph_dropweapon (edict_t *self)
 {
 	vec3_t handspot, forward, right, up;
 
-	if(!(self->s.fmnodeinfo[MESH__WHIP].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[MESH__WHIP].flags & FMNI_NO_DRAW))
 	{
 		VectorClear(handspot);
 		AngleVectors(self->s.angles,forward,right,up);
@@ -775,7 +775,7 @@ void seraph_dropweapon (edict_t *self)
 		VectorMA(handspot,5,right,handspot);
 		VectorMA(handspot,12,up,handspot);
 		ThrowWeapon(self, &handspot, BIT_WHIP, 0, FRAME_partfly);
-		self->s.fmnodeinfo[MESH__WHIP].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__WHIP].flags |= FMNI_NO_DRAW;
 		return;
 	}
 }
@@ -803,9 +803,9 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__PITHEAD].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__PITHEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__PITHEAD].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__PITHEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
@@ -827,41 +827,41 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__PITHEAD].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__PITHEAD].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__PITHEAD].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__PITHEAD].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(self->s.fmnodeinfo[MESH__FRTORSO].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__FRTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage)
 			{
-				self->s.fmnodeinfo[MESH__FRTORSO].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__FRTORSO].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__FRTORSO].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__FRTORSO].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__BKTORSO].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__BKTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health) < damage)
 			{
-				self->s.fmnodeinfo[MESH__BKTORSO].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__BKTORSO].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__BKTORSO].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__BKTORSO].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_ArmUpperLeft:
 			if(flrand(0,self->health)<damage)
 			{
-				self->s.fmnodeinfo[MESH__LFTUPARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LFTUPARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LFTUPARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LFTUPARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__LHANDBOSS].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__LHANDBOSS].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LHANDBOSS].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__LHANDBOSS].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -875,19 +875,19 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__LHANDBOSS].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LHANDBOSS].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LHANDBOSS].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LHANDBOSS].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperRight:
 			if(flrand(0,self->health)<damage)
 			{
-				self->s.fmnodeinfo[MESH__RTARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RTARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RTARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RTARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmLowerRight://right arm
-			if(self->s.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
 				break;
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -902,32 +902,32 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__RHAND].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RHAND].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RHAND].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RHAND].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
-			if(self->s.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
 				break;
-			self->s.fmnodeinfo[MESH__LFTLEG].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__LFTLEG].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__LFTLEG].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__LFTLEG].skin = self->s.skinnum+1;
 			break;
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
-			if(self->s.fmnodeinfo[MESH__RTLEG].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__RTLEG].flags & FMNI_USE_SKIN)
 				break;
-			self->s.fmnodeinfo[MESH__RTLEG].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__RTLEG].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__RTLEG].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__RTLEG].skin = self->s.skinnum+1;
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 
 //FIXME: when get missile anim
-//	if(self->s.fmnodeinfo[MESH__LHANDGRD].flags & FMNI_NO_DRAW)
+//	if(self->rrs.fmnodeinfo[MESH__LHANDGRD].flags & FMNI_NO_DRAW)
 //		self->monsterinfo.aiflags |= AI_NO_MISSILE;
 
 	if(self->monsterinfo.aiflags & AI_NO_MELEE)//&&self->monsterinfo.aiflags & AI_NO_MISSILE)
@@ -1084,27 +1084,27 @@ void SP_monster_seraph_overlord(edict_t *self)
 
 	self->monsterinfo.otherenemyname = "monster_rat";
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
 	}
 
 	//Turn off the Guard pieces!
-	self->s.fmnodeinfo[MESH__AXE].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__GUARDHEAD].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__LHANDGRD].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__ARMSPIKES].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__SHOULDPAD].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__AXE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__GUARDHEAD].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__LHANDGRD].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__ARMSPIKES].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__SHOULDPAD].flags |= FMNI_NO_DRAW;
 
 	MG_InitMoods(self);
 
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 
-	self->melee_range *= AVG_VEC3T(self->s.scale);
+	self->melee_range *= AVG_VEC3T(self->rrs.scale);
 }

@@ -49,7 +49,7 @@ void create_morph(edict_t *morph);
 
 void MorphFadeIn(edict_t *self)
 {
-	self->s.color[3] += MORPH_TELE_FADE;
+	self->rrs.color[3] += MORPH_TELE_FADE;
 	self->nextthink = level.time + 0.1;
 	if (!(--self->morph_timer))
 	{
@@ -67,7 +67,7 @@ void MorphFadeOut(edict_t *self)
 {
 	edict_t	*newent;
 
-	self->s.color[3] -= MORPH_TELE_FADE;
+	self->rrs.color[3] -= MORPH_TELE_FADE;
 	self->nextthink = level.time + 0.1;
 	if (!(--self->morph_timer))
 	{
@@ -88,13 +88,13 @@ void MorphFadeOut(edict_t *self)
 		// time we stay a chicken
 		newent->time = level.time + 20;
 		ED_CallSpawn(newent);
-		newent->s.color[0] = 255;
-		newent->s.color[1] = 255;
-		newent->s.color[2] = 255;
-		newent->s.color[3] = 255;
+		newent->rrs.color[0] = 255;
+		newent->rrs.color[1] = 255;
+		newent->rrs.color[2] = 255;
+		newent->rrs.color[3] = 255;
 		newent->morph_timer = MORPH_TELE_TIME;
 		newent->think = MorphFadeIn;
-		gi.CreateEffect(&newent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
+		gi.CreateEffect(newent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
 		// do the teleport sound
 		gi.sound(newent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 
@@ -116,7 +116,7 @@ void CleanUpMorph(edict_t *self)
 	self->client->playerinfo.renderfx &= ~RF_TRANSLUCENT;
 	self->client->playerinfo.flags &=~PLAYER_FLAG_MORPHING;
 	self->client->shrine_framenum = level.time - 1;;
-	self->s.color[3] = 255;
+	self->rrs.color[3] = 255;
 }
 
 // *************************************************************************************************
@@ -139,7 +139,7 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->deadflag = DEAD_NO;
 	ent->air_finished = level.time + HOLD_BREATH_TIME;
 
-	VectorSet(ent->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(ent->rrs.scale, 1.0, 1.0, 1.0);
 
 	// set the model back to corvux
 #ifdef COMP_FMOD
@@ -160,7 +160,7 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->client->playerinfo.frame = 0;
 
 	// turn our skeleton back on
-	ent->s.skeletalType = SKEL_CORVUS;
+	ent->rrs.skeletalType = SKEL_CORVUS;
 	ent->client->playerinfo.effects|=(EF_SWAPFRAME|EF_JOINTED|EF_CAMERA_NO_CLIP|EF_PLAYER);
 	ent->client->playerinfo.effects&=~EF_CHICKEN;
 	ent->client->playerinfo.edictflags &= ~FL_CHICKEN;
@@ -188,7 +188,7 @@ void reset_morph_to_elf(edict_t *ent)
 //	SpawnInitialPlayerEffects(ent);
 
 	// draw the teleport splash at the destination
-	gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN|CEF_FLAG6, ent->s.origin, "");
+	gi.CreateEffect(ent, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN|CEF_FLAG6, ent->s.origin, "");
 
 	// restart the loop and tell us next time we aren't de-materialising
 	ent->client->tele_count = TELE_TIME;
@@ -227,10 +227,10 @@ void MorphChickenToPlayer(edict_t *self)
 	// make the player still
 	self->flags |= FL_LOCKMOVE;
 	// allow the player to fade out
-	self->s.color[3] = 255;
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
+	self->rrs.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
 	self->s.renderfx |= RF_TRANSLUCENT;
 
 	// make us not think at all
@@ -240,7 +240,7 @@ void MorphChickenToPlayer(edict_t *self)
 	self->client->tele_dest[0] = self->client->tele_dest[1] = self->client->tele_dest[2] = 0;
 
 	// draw the teleport splash at the teleport source
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN |CEF_FLAG6, NULL, "" );
+	gi.CreateEffect(self, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN |CEF_FLAG6, NULL, "" );
 	// do the teleport sound
 	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 
@@ -286,7 +286,7 @@ void Perform_Morph(edict_t *self)
 
 	self->client->playerinfo.effects &= ~(EF_JOINTED|EF_SWAPFRAME);
 	self->client->playerinfo.effects |= EF_CHICKEN;
-	self->s.skeletalType = SKEL_NULL;
+	self->rrs.skeletalType = SKEL_NULL;
 	self->client->playerinfo.renderfx |= RF_IGNORE_REFS;
 
 	if (!irand(0,10))
@@ -312,7 +312,7 @@ void Perform_Morph(edict_t *self)
 		self->gravity = 1.0;
 
 		self->monsterinfo.scale = 2.5;
-		VectorSet(self->s.scale, 2.5, 2.5, 2.5);
+		VectorSet(self->rrs.scale, 2.5, 2.5, 2.5);
 
 		VectorSet(self->mins, -16, -16, -48);
 		VectorSet(self->maxs,  16,  16,  64);
@@ -357,7 +357,7 @@ void Perform_Morph(edict_t *self)
 	playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_STAND);
 
 	// draw the teleport splash at the destination
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN|CEF_FLAG6, self->s.origin, "");
+	gi.CreateEffect(self, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN|CEF_FLAG6, self->s.origin, "");
 
 	// restart the loop and tell us next time we aren't de-materialising
 	self->client->tele_count = TELE_TIME;
@@ -403,10 +403,10 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 	self->client->playerinfo.flags |= FL_LOCKMOVE;
 
 	// allow the player to fade out
-	self->s.color[3] = 255;
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
+	self->rrs.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
 	self->s.renderfx |= RF_TRANSLUCENT;
 
 	// make it so that the stuff that does the demateriasation in G_ANIM_ACTOR knows we are fading out, not in
@@ -416,7 +416,7 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 	self->morph_timer = level.time + MORPH_DUR;
 
 	// draw the teleport splash at the teleport source
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL, "");
+	gi.CreateEffect(self, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL, "");
 		// do the teleport sound
 	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 
@@ -461,10 +461,10 @@ void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 	self->client->playerinfo.flags |= FL_LOCKMOVE;
 
 	// allow the player to fade out
-	self->s.color[3] = 255;
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
+	self->rrs.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
 
 	self->client->playerinfo.renderfx |= RF_TRANSLUCENT;
 
@@ -475,7 +475,7 @@ void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 	self->morph_timer = level.time + MORPH_DUR;
 
 	// draw the teleport splash at the teleport source
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL, "");
+	gi.CreateEffect(self, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL, "");
 		// do the teleport sound
 	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 
@@ -501,13 +501,13 @@ edict_t *MorphReflect(edict_t *self, edict_t *other, vec3_t vel)
 	G_LinkMissile(morph);
 	yaw = Q_ftol((morph->s.angles[YAW]/6.2831) * 255.0);
 	pitch = Q_ftol((morph->s.angles[PITCH]/6.2831) * 255.0);
-	gi.CreateEffect(&morph->s, FX_SPELL_MORPHMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "bb", yaw,pitch);
+	gi.CreateEffect(morph, FX_SPELL_MORPHMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "bb", yaw,pitch);
 
 	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
-	gi.CreateEffect(&morph->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", morph->velocity);
+	gi.CreateEffect(morph, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", morph->velocity);
 	return(morph);
 }
 
@@ -567,7 +567,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 			other->morph_timer = MORPH_TELE_TIME;
 			other->enemy = self->owner;
 			VectorClear(other->velocity);
-			gi.CreateEffect(&other->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
+			gi.CreateEffect(other, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
 		}
 		else
 			MorphPlayerToChicken(other, self->owner);
@@ -638,7 +638,7 @@ void create_morph(edict_t *morph)
 // SpellCastMorph
 // ****************************************************************************
 
-void SpellCastMorph(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t unused, float value)
+void SpellCastMorph(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t unused, float value)
 {
 	edict_t		*morph;
 	int			i;
@@ -669,7 +669,7 @@ void SpellCastMorph(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t u
 
 		create_morph(morph);
 		morph->reflect_debounce_time = MAX_REFLECT;
-		morph->owner = Caster;
+		morph->owner = caster;
 		G_LinkMissile(morph);
 
 		// if we are the first effect, calculate our yaw
@@ -683,7 +683,7 @@ void SpellCastMorph(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t u
 	}
 
 	// create the client effect that gets seen on screen
-	gi.CreateEffect(&Caster->s, FX_SPELL_MORPHMISSILE_INITIAL, CEF_OWNERS_ORIGIN, NULL, "bssssss",
+	gi.CreateEffect(caster, FX_SPELL_MORPHMISSILE_INITIAL, CEF_OWNERS_ORIGIN, NULL, "bssssss",
 			yaw,
 			morpharray[0],
 			morpharray[1],

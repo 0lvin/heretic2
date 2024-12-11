@@ -1334,24 +1334,24 @@ qboolean MG_CheckJump (edict_t *self)
 //FIXME: make them do whatever jump function they have if they have one
 	self->monsterinfo.jump_time = level.time + 2;        //Only try to jump once every 7 seconds
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
-		VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+		VectorSet(self->rrs.scale, 1.0, 1.0, 1.0);
 	}
 
 	if(!jumpup)
 	{
-		VectorScale(jumpdir, jump_height*18 * AVG_VEC3T(self->s.scale), self->velocity);
+		VectorScale(jumpdir, jump_height*18 * AVG_VEC3T(self->rrs.scale), self->velocity);
 		//self->velocity=jumpdir*jump_height*18*self->scale;//was 18
-		self->velocity[2] = jump_height*14 * AVG_VEC3T(self->s.scale);//was 12
+		self->velocity[2] = jump_height*14 * AVG_VEC3T(self->rrs.scale);//was 12
 	}
 	else
 	{
-		VectorScale(jumpdir, jump_height*14 * AVG_VEC3T(self->s.scale), self->velocity);
+		VectorScale(jumpdir, jump_height*14 * AVG_VEC3T(self->rrs.scale), self->velocity);
 		//self->velocity=jumpdir*jump_height*14*self->scale;//was 10
-		self->velocity[2] = jump_height*17 * AVG_VEC3T(self->s.scale);//was 14
+		self->velocity[2] = jump_height*17 * AVG_VEC3T(self->rrs.scale);//was 14
 	}
 	//self->groundentity = NULL?
 	if(classStatics[self->classID].msgReceivers[MSG_JUMP])
@@ -1660,15 +1660,15 @@ void body_phase_out (edict_t *self)
 {
 	int	interval = 30;
 
-	if(self->s.color[3] > interval)
+	if(self->rrs.color[3] > interval)
 	{
-		self->s.color[3] -= irand(interval/2, interval);
+		self->rrs.color[3] -= irand(interval/2, interval);
 		self->post_think = body_phase_out;
 		self->next_post_think = level.time + 0.05;
 	}
 	else
 	{
-		self->s.color[3] = 0;
+		self->rrs.color[3] = 0;
 		self->post_think = NULL;
 		self->next_post_think = -1;
 
@@ -1980,13 +1980,13 @@ void MG_PostDeathThink (edict_t *self)
 	VectorClear(self->avelocity);
 	pitch_roll_for_slope(self, NULL);
 
-	if(!self->s.color[0])
-		self->s.color[0] = 255;
-	if(!self->s.color[1])
-		self->s.color[1] = 255;
-	if(!self->s.color[2])
-		self->s.color[2] = 255;
-	self->s.color[3] = 255;
+	if(!self->rrs.color[0])
+		self->rrs.color[0] = 255;
+	if(!self->rrs.color[1])
+		self->rrs.color[1] = 255;
+	if(!self->rrs.color[2])
+		self->rrs.color[2] = 255;
+	self->rrs.color[3] = 255;
 
 	self->post_think = body_phase_out;
 	if(self->classID == CID_RAT)

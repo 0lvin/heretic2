@@ -245,7 +245,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 	if(playerinfo->waterlevel == 0)
 		if(!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID15,
-									   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+									   playerinfo->self,
 									   FX_DUST_PUFF,
 									   CEF_OWNERS_ORIGIN,
 									   playerinfo->origin,

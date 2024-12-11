@@ -105,7 +105,7 @@ void spreader_showgrenade(edict_t *self)
 	if(self->monsterinfo.aiflags & AI_NO_MISSILE)
 		return;//fixme: actually prevent these anims
 
-	self->s.fmnodeinfo[MESH__BOMB].flags &= ~FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__BOMB].flags &= ~FMNI_NO_DRAW;
 }
 
 void spreader_pain_sound(edict_t *self)
@@ -150,7 +150,7 @@ void spreader_idlenoise(edict_t *self)
 
 void spreader_hidegrenade(edict_t *self)
 {
-	self->s.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW;
 	gi.sound(self, CHAN_AUTO, sounds[SND_THROW], 1, ATTN_IDLE, 0);
 }
 
@@ -232,7 +232,7 @@ void spreader_dead(edict_t *self)
 		gas->svflags |= SVF_ALWAYS_SEND;
 		gas->s.effects=EF_MARCUS_FLAG1;
 
-		gi.CreateEffect(&gas->s, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, offset, "vb", spraydir, 100);//sprayorg, not offset?
+		gi.CreateEffect(gas, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, offset, "vb", spraydir, 100);//sprayorg, not offset?
 	}
 
 	M_EndDeath(self);
@@ -257,7 +257,7 @@ qboolean spreader_check_uncrouch(edict_t *self)
 	mins[2] = 0;
 	maxs[2] = 1;
 
-	desired_height = STDMaxsForClass[CID_SPREADER][2] * AVG_VEC3T(self->s.scale);
+	desired_height = STDMaxsForClass[CID_SPREADER][2] * AVG_VEC3T(self->rrs.scale);
 
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] += desired_height;
@@ -271,7 +271,7 @@ qboolean spreader_check_uncrouch(edict_t *self)
 	self->intentMaxs[2] = 40;
 */
 	self->maxs[2] = desired_height;
-	self->viewheight = self->maxs[2] - 8 * AVG_VEC3T(self->s.scale);
+	self->viewheight = self->maxs[2] - 8 * AVG_VEC3T(self->rrs.scale);
 
 //	self->physicsFlags |= PF_RESIZE;
 	return true;
@@ -705,10 +705,10 @@ static int Bit_for_MeshNode_ps [13] =
 qboolean canthrownode_ps (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_ps[BP];
-		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
 		return true;
 	}
 	return false;
@@ -720,13 +720,13 @@ void spreader_dropweapon (edict_t *self)
 
 	AngleVectors(self->s.angles,NULL,right,NULL);
 
-	if(self->s.fmnodeinfo[BIT_BOMB].flags & FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[BIT_BOMB].flags & FMNI_NO_DRAW)
 		return;
 
 	VectorClear(handspot);
 	VectorMA(handspot, -12, right, handspot);
 	ThrowWeapon(self, &handspot, BIT_BOMB, 0, 0);
-	self->s.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW;
 }
 
 void spreader_dead_pain (edict_t *self, G_Message_t *msg)
@@ -761,9 +761,9 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
@@ -784,13 +784,13 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0, self->health) < damage*0.3 && !irand(0,9))		// One in 10 chance of the takeoff even if reqs met.
 			{//fly straight up, hit cieling, head squish, otherwise go though sky
@@ -809,12 +809,12 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0, self->health) < damage*0.7 && !irand(0,3))		// 25% chance of the takeoff even if reqs met..
 			{//fly straight up, hit cieling, head squish, otherwise go though sky
@@ -833,17 +833,17 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_ArmUpperLeft:
 		case hl_ArmLowerLeft://left arm
 			//what about hose?
-			if(self->s.fmnodeinfo[MESH__LFTARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__LFTARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LFTARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__LFTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -857,14 +857,14 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__LFTARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LFTARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LFTARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LFTARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
 			//what about grenade?
-			if(self->s.fmnodeinfo[MESH__RITARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__RITARM].flags & FMNI_NO_DRAW)
 				break;
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -879,24 +879,24 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__RITARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RITARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RITARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RITARM].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
-			if(self->s.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
 				break;
-			self->s.fmnodeinfo[MESH__LFTLEG].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__LFTLEG].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__LFTLEG].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__LFTLEG].skin = self->s.skinnum+1;
 			break;
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
-			if(self->s.fmnodeinfo[MESH__RITLEG].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__RITLEG].flags & FMNI_USE_SKIN)
 				break;
-			self->s.fmnodeinfo[MESH__RITLEG].flags |= FMNI_USE_SKIN;
-			self->s.fmnodeinfo[MESH__RITLEG].skin = self->s.skinnum+1;
+			self->rrs.fmnodeinfo[MESH__RITLEG].flags |= FMNI_USE_SKIN;
+			self->rrs.fmnodeinfo[MESH__RITLEG].skin = self->s.skinnum+1;
 			break;
 
 		default:
@@ -905,17 +905,17 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__LFTARM].flags&FMNI_NO_DRAW&&
-		self->s.fmnodeinfo[MESH__RITARM].flags&FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__LFTARM].flags&FMNI_NO_DRAW&&
+		self->rrs.fmnodeinfo[MESH__RITARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
 	}
 	else
 	{
-		if(self->s.fmnodeinfo[MESH__LFTARM].flags&FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__LFTARM].flags&FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MELEE;
 
-		if(self->s.fmnodeinfo[MESH__RITARM].flags&FMNI_NO_DRAW)
+		if(self->rrs.fmnodeinfo[MESH__RITARM].flags&FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MISSILE;
 	}
 
@@ -966,7 +966,7 @@ void spreader_isblocked (edict_t *self, trace_t *trace)
 	}
 
 
-	self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__HEAD].flags |= FMNI_NO_DRAW;
 	VectorCopy(self->s.origin, gore_spot);
 	gore_spot[2]+=self->maxs[2] - 8;
 	SprayDebris(self, gore_spot, 8, 100);
@@ -1013,7 +1013,7 @@ void spreaderTakeOff (edict_t *self)
 	gas->svflags |= SVF_ALWAYS_SEND;
 	gas->s.effects=EF_MARCUS_FLAG1;
 
-	gi.CreateEffect(&gas->s, FX_PLAGUEMISTEXPLODE, CEF_OWNERS_ORIGIN, self->pos1, "b", 70);
+	gi.CreateEffect(gas, FX_PLAGUEMISTEXPLODE, CEF_OWNERS_ORIGIN, self->pos1, "b", 70);
 
 	gi.sound(self, CHAN_VOICE, sounds[SND_PAIN], 1, ATTN_NORM, 0);
 	gi.sound(self, CHAN_WEAPON, sounds[SND_SPRAYSTART], 1, ATTN_NORM, 0);
@@ -1173,7 +1173,7 @@ void spreaderFlyLoop (edict_t *self)
 void spreader_land(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, gi.soundindex("misc/land.wav"), 1, ATTN_NORM, 0);
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					   FX_DUST_PUFF,
 					   CEF_OWNERS_ORIGIN,
 					   self->s.origin,
@@ -1330,7 +1330,7 @@ void SP_monster_spreader (edict_t *self)
 	self->viewheight = 36;
 
 	self->s.modelindex = classStatics[CID_SPREADER].resInfo->modelIndex;
-	self->s.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW; //hide the bomb
+	self->rrs.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW; //hide the bomb
 
 	self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 

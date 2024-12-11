@@ -135,7 +135,7 @@
 {"jumptarget", FOFS(jumptarget), F_LSTRING},
 {"scripttarget", FOFS(scripttarget), F_LSTRING},
 {"materialtype", FOFS(materialtype), F_INT},
-{"color", FOFS(s.color), F_RGBA},
+{"color", FOFS(rrs.color), F_RGBA},
 {"frame", FOFS(s.frame), F_INT},
 {"mintel", FOFS(mintel), F_INT},
 {"melee_range", FOFS(melee_range), F_FLOAT},

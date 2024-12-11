@@ -183,8 +183,8 @@ void SP_character_dranor (edict_t *self)
 
 	c_character_init(self,CID_DRANOR);
 
-	self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 	self->health = 30;
 
 }

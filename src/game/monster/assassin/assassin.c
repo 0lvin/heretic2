@@ -181,38 +181,38 @@ void assassin_jump(edict_t *self, G_Message_t *msg)
 
 edict_t *AssassinArrowReflect(edict_t *self, edict_t *other, vec3_t vel)
 {
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
-	Arrow = G_Spawn();
+	arrow = G_Spawn();
 
-	create_assassin_dagger(Arrow);
-	Arrow->s.modelindex = self->s.modelindex;
-	VectorCopy(self->s.origin, Arrow->s.origin);
-	Arrow->owner = other;
-	Arrow->enemy = self->owner;
-	Arrow->nextthink=self->nextthink;
-	VectorScale(self->avelocity, -0.5, Arrow->avelocity);
-	VectorCopy(vel, Arrow->velocity);
-	VectorNormalize2(vel, Arrow->movedir);
-	AnglesFromDir(Arrow->movedir, Arrow->s.angles);
-	Arrow->reflect_debounce_time = self->reflect_debounce_time -1;
-	Arrow->reflected_time=self->reflected_time;
+	create_assassin_dagger(arrow);
+	arrow->s.modelindex = self->s.modelindex;
+	VectorCopy(self->s.origin, arrow->s.origin);
+	arrow->owner = other;
+	arrow->enemy = self->owner;
+	arrow->nextthink=self->nextthink;
+	VectorScale(self->avelocity, -0.5, arrow->avelocity);
+	VectorCopy(vel, arrow->velocity);
+	VectorNormalize2(vel, arrow->movedir);
+	AnglesFromDir(arrow->movedir, arrow->s.angles);
+	arrow->reflect_debounce_time = self->reflect_debounce_time -1;
+	arrow->reflected_time=self->reflected_time;
 
-	gi.CreateEffect(&Arrow->s,
+	gi.CreateEffect(arrow,
 				FX_M_EFFECTS,
 				0,
-				Arrow->avelocity,
+				arrow->avelocity,
 				"bv",
 				FX_ASS_DAGGER,
-				Arrow->velocity);
+				arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 
 	G_SetToFree(self);
 
-	gi.CreateEffect(&Arrow->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vel);
+	gi.CreateEffect(arrow, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vel);
 
-	return(Arrow);
+	return (arrow);
 }
 
 
@@ -339,102 +339,102 @@ void assassinDaggerTouch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 }
 
 // create the guts of the dagger
-void create_assassin_dagger(edict_t *Arrow)
+void create_assassin_dagger(edict_t *arrow)
 {
-	Arrow->movetype=MOVETYPE_FLYMISSILE;
-	Arrow->solid=SOLID_BBOX;
-	Arrow->classname="Assassin_Dagger";
-	Arrow->touch=assassinDaggerTouch;
-	Arrow->gravity = 0.0f;
-	Arrow->clipmask=MASK_SHOT;
-	Arrow->s.effects |= EF_CAMERA_NO_CLIP;
-	Arrow->svflags |= SVF_ALWAYS_SEND;
-	VectorSet(Arrow->s.scale, 0.5, 0.5, 0.5);
-	Arrow->think = G_FreeEdict;//ssithraArrowThink;
+	arrow->movetype = MOVETYPE_FLYMISSILE;
+	arrow->solid=SOLID_BBOX;
+	arrow->classname="Assassin_Dagger";
+	arrow->touch=assassinDaggerTouch;
+	arrow->gravity = 0.0f;
+	arrow->clipmask=MASK_SHOT;
+	arrow->s.effects |= EF_CAMERA_NO_CLIP;
+	arrow->svflags |= SVF_ALWAYS_SEND;
+	VectorSet(arrow->rrs.scale, 0.5, 0.5, 0.5);
+	arrow->think = G_FreeEdict;//ssithraArrowThink;
 
-	VectorSet(Arrow->mins, -1.0, -1.0, -1.0);
-	VectorSet(Arrow->maxs, 1.0, 1.0, 1.0);
+	VectorSet(arrow->mins, -1.0, -1.0, -1.0);
+	VectorSet(arrow->maxs, 1.0, 1.0, 1.0);
 }
 
 void assassinThrowDagger(edict_t *self, float right_ofs)
 {//fixme; adjust for up/down
 	vec3_t	Forward,check_lead, right, enemy_pos, enemy_dir;//, up;
-	edict_t	*Arrow;
-	float	   enemy_dist, eta;//, spoo_arc;
+	edict_t	*arrow;
+	float	enemy_dist, eta;//, spoo_arc;
 
 
-//	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+//	if(self->rrs.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 //		return;
 
 
 //	gi.sound(self,CHAN_WEAPON,Sounds[SND_ARROW1],1,ATTN_NORM,0);
 	self->monsterinfo.attack_finished = level.time + 0.4;
-	Arrow = G_Spawn();
+	arrow = G_Spawn();
 
-	create_assassin_dagger(Arrow);
+	create_assassin_dagger(arrow);
 
-	Arrow->reflect_debounce_time = MAX_REFLECT;
-	Arrow->nextthink=level.time+3;
-	Arrow->enemy=self->enemy;
-	Arrow->owner=self;
+	arrow->reflect_debounce_time = MAX_REFLECT;
+	arrow->nextthink=level.time+3;
+	arrow->enemy=self->enemy;
+	arrow->owner=self;
 	VectorCopy(self->enemy->s.origin, enemy_pos);
 	enemy_pos[2] += self->enemy->viewheight;
 
 	AngleVectors(self->s.angles, Forward, right, NULL);
-	VectorCopy(self->s.origin, Arrow->s.origin);
-	Arrow->s.origin[2] += 8;
-	VectorMA (Arrow->s.origin, 8, Forward, Arrow->s.origin);
-	VectorMA (Arrow->s.origin, right_ofs, right, Arrow->s.origin);
-	VectorCopy(self->movedir, Arrow->movedir);
-	VectoAngles (Forward, Arrow->s.angles);
+	VectorCopy(self->s.origin, arrow->s.origin);
+	arrow->s.origin[2] += 8;
+	VectorMA (arrow->s.origin, 8, Forward, arrow->s.origin);
+	VectorMA (arrow->s.origin, right_ofs, right, arrow->s.origin);
+	VectorCopy(self->movedir, arrow->movedir);
+	VectoAngles (Forward, arrow->s.angles);
 
-	extrapolateFiredir (self, Arrow->s.origin, ASSASSIN_DAGGER_SPEED, self->enemy, 0.3, check_lead);
+	extrapolateFiredir (self, arrow->s.origin, ASSASSIN_DAGGER_SPEED, self->enemy, 0.3, check_lead);
 
-	VectorSubtract(enemy_pos, Arrow->s.origin, enemy_dir);
+	VectorSubtract(enemy_pos, arrow->s.origin, enemy_dir);
 	enemy_dist = VectorNormalize(enemy_dir);
 	if(Vec3IsZero(check_lead))
 	{
 		if(DotProduct(enemy_dir, Forward)>0.3)
-			VectorScale(enemy_dir, ASSASSIN_DAGGER_SPEED, Arrow->velocity);
+			VectorScale(enemy_dir, ASSASSIN_DAGGER_SPEED, arrow->velocity);
 		else
-			VectorScale(Forward, ASSASSIN_DAGGER_SPEED, Arrow->velocity);
+			VectorScale(Forward, ASSASSIN_DAGGER_SPEED, arrow->velocity);
 	}
 	else
 	{
-		VectorScale(check_lead, ASSASSIN_DAGGER_SPEED, Arrow->velocity);
+		VectorScale(check_lead, ASSASSIN_DAGGER_SPEED, arrow->velocity);
 	}
 
-	VectorCopy(Arrow->velocity, Arrow->movedir);
-	VectorNormalize(Arrow->movedir);
-	VectoAngles(Arrow->movedir, Arrow->s.angles);
-	Arrow->s.angles[PITCH] = -90;
+	VectorCopy(arrow->velocity, arrow->movedir);
+	VectorNormalize(arrow->movedir);
+	VectoAngles(arrow->movedir, arrow->s.angles);
+	arrow->s.angles[PITCH] = -90;
 
 	eta = enemy_dist / ASSASSIN_DAGGER_SPEED;//eta
 
 //	gi.dprintf("ETA: %f\n", eta);
 	//ideally, spin @1110 degrees in 1 sec
-	Arrow->avelocity[PITCH] = -1/eta * (360*3 +30 + flrand(-10,10));
-//	gi.dprintf("avel: %f\n", Arrow->avelocity[PITCH]);
-//	gi.dprintf("final rotation: %f\n", Arrow->avelocity[PITCH]*eta);
-//	gi.dprintf("final angle: %f\n", anglemod(Arrow->s.angles[PITCH]+Arrow->avelocity[PITCH]*eta));
+	arrow->avelocity[PITCH] = -1/eta * (360*3 +30 + flrand(-10,10));
+//	gi.dprintf("avel: %f\n", arrow->avelocity[PITCH]);
+//	gi.dprintf("final rotation: %f\n", arrow->avelocity[PITCH]*eta);
+//	gi.dprintf("final angle: %f\n", anglemod(arrow->s.angles[PITCH]+arrow->avelocity[PITCH]*eta));
 
 /*
 //doesn't make desired effect
 	if(right_ofs>0)
-		Arrow->s.angles[ROLL] = flrand(0, 35);
+		arrow->s.angles[ROLL] = flrand(0, 35);
 	else if(right_ofs<0)
-		Arrow->s.angles[ROLL] = flrand(-35, 0);
+		arrow->s.angles[ROLL] = flrand(-35, 0);
 */
 
-	gi.CreateEffect(&Arrow->s,
+	gi.CreateEffect(arrow,
 				FX_M_EFFECTS,
 				0,
-				Arrow->avelocity,
+				arrow->avelocity,
 				"bv",
 				FX_ASS_DAGGER,
-				Arrow->velocity);
+				arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 }
 
 /*-------------------------------------------------------------------------
@@ -489,13 +489,13 @@ void assassindagger (edict_t *self, float right_ofs)
 				}
 			}
 
-			/*			if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
+			/*			if(self->rrs.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 				damage-=5;
-			else if(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW)
+			else if(self->rrs.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW)
 				damage+=5;
-			else if(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW)
+			else if(self->rrs.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW)
 				damage+=7;
-			else if(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
+			else if(self->rrs.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
 				damage+=10;*/
 
 			T_Damage (self->enemy, self, self, dir, org, vec3_origin, damage, 0, 0,MOD_DIED);
@@ -506,9 +506,9 @@ void assassindagger (edict_t *self, float right_ofs)
 		if((int)right_ofs & BIT_RKNIFE)
 		{//turn off dagger
 			thrownum++;
-			if(!(self->s.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW))
+			if(!(self->rrs.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW))
 			{
-				self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
 				assassinThrowDagger(self, 12);
 			}
 		}
@@ -516,9 +516,9 @@ void assassindagger (edict_t *self, float right_ofs)
 		if((int)right_ofs & BIT_LKNIFE)
 		{
 			thrownum++;
-			if(!(self->s.fmnodeinfo[MESH__LKNIFE].flags & FMNI_NO_DRAW))
+			if(!(self->rrs.fmnodeinfo[MESH__LKNIFE].flags & FMNI_NO_DRAW))
 			{
-				self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
+				self->rrs.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
 				assassinThrowDagger(self, -12);
 			}
 		}
@@ -654,16 +654,16 @@ void assassin_death(edict_t *self, G_Message_t *msg)
 		gi.sound(self, CHAN_BODY, Sounds[SND_GIB], 1, ATTN_NORM, 0);
 		if(irand(0,10)<5)
 		{
-			self->s.fmnodeinfo[MESH__TORSOFT].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__TORSOBK].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__R4ARM].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__L4ARM].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__KNIFES].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__LUPARM].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__RUPARM].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
-			self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__TORSOFT].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__TORSOBK].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__HEAD].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__R4ARM].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__L4ARM].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__KNIFES].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__LUPARM].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__RUPARM].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
+			self->rrs.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
 
 			SprayDebris(self, self->s.origin, 12, 100);
 		}
@@ -722,21 +722,21 @@ void assassin_random_attack(edict_t *self)
 	chance = irand(0,3);
 
 
-	if((chance < 1&&!(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW)) ||
-		(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW&&!(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW)) )
+	if((chance < 1&&!(self->rrs.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW)) ||
+		(self->rrs.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW&&!(self->rrs.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW)) )
 	{
 		SetAnim(self, ANIM_DAGGERL);
 	}
-	else if((chance < 2&&!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)) ||
-		(!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW) )
+	else if((chance < 2&&!(self->rrs.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)) ||
+		(!(self->rrs.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&self->rrs.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW) )
 	{
 		if(irand(0, 1))
 			SetAnim(self, ANIM_DAGGERR);
 		else
 			SetAnim(self, ANIM_NEWDAGGER);
 	}
-	else if(!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&
-		!(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW))
+	else if(!(self->rrs.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&
+		!(self->rrs.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW))
 	{
 		if(irand(0, 1))
 			SetAnim(self, ANIM_DAGGERB);
@@ -867,10 +867,10 @@ int Bit_for_MeshNode_as [16] =
 qboolean canthrownode_as (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if(!(self->rrs.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_as[BP];
-		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
 		return true;
 	}
 	return false;
@@ -883,19 +883,19 @@ void assassin_dropweapon (edict_t *self, int whichknives)
 
 	AngleVectors(self->s.angles,NULL,right,NULL);
 
-	if(!(self->s.fmnodeinfo[MESH__LKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_LKNIFE)
+	if(!(self->rrs.fmnodeinfo[MESH__LKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_LKNIFE)
 	{
 		VectorClear(handspot);
 		VectorMA(handspot, -12, right, handspot);
 		ThrowWeapon(self, &handspot, BIT_LKNIFE, 0, FRAME_prtfly);//FRAME_atakc3);
-		self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
 	}
-	if(!(self->s.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_RKNIFE)
+	if(!(self->rrs.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_RKNIFE)
 	{
 		VectorClear(handspot);
 		VectorMA(handspot, 12, right, handspot);
 		ThrowWeapon(self, &handspot, BIT_RKNIFE, 0, FRAME_prtfly);//FRAME_atakc3);
-		self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
+		self->rrs.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
 	}
 }
 
@@ -1001,12 +1001,12 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 		}
 
 		if(
-			(HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW) ||
-			(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)||
+			(HitLocation == hl_ArmUpperLeft&& self->rrs.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW) ||
+			(HitLocation == hl_ArmUpperRight&& self->rrs.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)||
 			(
 				(HitLocation == hl_TorsoFront|| HitLocation == hl_TorsoBack) &&
-				self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW &&
-				self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW &&
+				self->rrs.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW &&
+				self->rrs.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW &&
 				irand(0,10)<4)
 			)
 			HitLocation = hl_Head;//Decap
@@ -1018,9 +1018,9 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
@@ -1041,15 +1041,15 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(self->s.fmnodeinfo[MESH__TORSOFT].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__TORSOFT].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__TORSOFT].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__TORSOFT].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
@@ -1080,14 +1080,14 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			{
 //				if(flrand(0,self->health)<damage*0.5)
 //					assassin_dropweapon (self, (int)damage);
-				self->s.fmnodeinfo[MESH__TORSOFT].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__TORSOFT].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__TORSOFT].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__TORSOFT].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__TORSOBK].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__TORSOBK].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__TORSOBK].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__TORSOBK].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
 			{
@@ -1118,15 +1118,15 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			{
 //				if(flrand(0,self->health)<damage*0.5)
 //					assassin_dropweapon (self, (int)damage);
-				self->s.fmnodeinfo[MESH__TORSOBK].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__TORSOBK].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__TORSOBK].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__TORSOBK].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_ArmUpperLeft:
-			if(self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__LUPARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 //			if(flrand(0,self->health)<damage*0.4)
 //				assassin_dropweapon (self, (int)damage);
@@ -1144,14 +1144,14 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__LUPARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LUPARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LUPARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LUPARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_USE_SKIN)
+			if(self->rrs.fmnodeinfo[MESH__L4ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -1166,12 +1166,12 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__L4ARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__L4ARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__L4ARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__L4ARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmUpperRight:
-			if(self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
 				break;
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -1187,12 +1187,12 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__RUPARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RUPARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RUPARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RUPARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmLowerRight://right arm
-			if(self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
+			if(self->rrs.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
 				break;
 			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
 			{
@@ -1207,23 +1207,23 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				self->s.fmnodeinfo[MESH__R4ARM].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__R4ARM].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__R4ARM].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__R4ARM].skin = self->s.skinnum+1;
 			}
 			break;
 
 		case hl_LegUpperLeft:
 			if(self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__LTHIGH].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__LTHIGH].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__LTHIGH].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LTHIGH].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LTHIGH].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LTHIGH].skin = self->s.skinnum+1;
 				break;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LTHIGH].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__LTHIGH].flags & FMNI_NO_DRAW)
 					break;
 				canthrownode_as(self, MESH__LCALF, &throw_nodes);
 				if(canthrownode_as(self, MESH__LTHIGH, &throw_nodes))
@@ -1238,15 +1238,15 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_LegLowerLeft://left leg
 			if(self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__LCALF].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__LCALF].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__LCALF].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__LCALF].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__LCALF].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__LCALF].skin = self->s.skinnum+1;
 				break;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LCALF].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__LCALF].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode_as(self, MESH__LCALF, &throw_nodes))
 				{
@@ -1261,15 +1261,15 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_LegUpperRight:
 			if(self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__RTHIGH].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__RTHIGH].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__RTHIGH].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RTHIGH].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RTHIGH].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RTHIGH].skin = self->s.skinnum+1;
 				break;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RTHIGH].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__RTHIGH].flags & FMNI_NO_DRAW)
 					break;
 				canthrownode_as(self, MESH__RCALF, &throw_nodes);
 				if(canthrownode_as(self, MESH__RTHIGH, &throw_nodes))
@@ -1284,15 +1284,15 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_LegLowerRight://right leg
 			if(self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__RCALF].flags & FMNI_USE_SKIN)
+				if(self->rrs.fmnodeinfo[MESH__RCALF].flags & FMNI_USE_SKIN)
 					break;
-				self->s.fmnodeinfo[MESH__RCALF].flags |= FMNI_USE_SKIN;
-				self->s.fmnodeinfo[MESH__RCALF].skin = self->s.skinnum+1;
+				self->rrs.fmnodeinfo[MESH__RCALF].flags |= FMNI_USE_SKIN;
+				self->rrs.fmnodeinfo[MESH__RCALF].skin = self->s.skinnum+1;
 				break;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RCALF].flags & FMNI_NO_DRAW)
+				if(self->rrs.fmnodeinfo[MESH__RCALF].flags & FMNI_NO_DRAW)
 					break;
 				if(canthrownode_as(self, MESH__RCALF, &throw_nodes))
 				{
@@ -1310,8 +1310,8 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW&&
-		self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)
+	if(self->rrs.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW&&
+		self->rrs.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
@@ -1406,8 +1406,8 @@ void assassin_pause (edict_t *self)
 	float	len;
 
 //this gets stuck on, sometimes
-	self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
-	self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
 
 	if(self->monsterinfo.aiflags&AI_OVERRIDE_GUIDE)
 		return;
@@ -2078,7 +2078,7 @@ void assassinCrouchedCheckAttack (edict_t *self, float attack)
 
 void assassinNodeOn (edict_t *self, float node)
 {
-	self->s.fmnodeinfo[(int)node].flags &= ~FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[(int)node].flags &= ~FMNI_NO_DRAW;
 }
 
 void assassinStop (edict_t *self)
@@ -2185,7 +2185,7 @@ void assassinSmoke(edict_t *self)
 	VectorCopy(self->s.origin, pos);
 	pos[2]+=self->mins[2];
 	gi.CreateEffect(NULL, FX_TPORTSMOKE, 0, pos, "");//, "db", hitangles, 5);
-	//gi.CreateEffect(&self->s, FX_DUST_PUFF, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
+	//gi.CreateEffect(self, FX_DUST_PUFF, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
 }
 
 void assassinGone(edict_t *self)
@@ -2608,20 +2608,20 @@ void assassinCloak (edict_t *self)
 {
 	int	interval = 15;
 
-	if(self->s.color[0] > 50)
-		self->s.color[0] += irand(-interval*3, 0);
-	if(self->s.color[1] > 50)
-		self->s.color[1] += irand(-interval*3, 0);
-	if(self->s.color[2] > 50)
-		self->s.color[2] += irand(-interval*3, 0);
+	if(self->rrs.color[0] > 50)
+		self->rrs.color[0] += irand(-interval*3, 0);
+	if(self->rrs.color[1] > 50)
+		self->rrs.color[1] += irand(-interval*3, 0);
+	if(self->rrs.color[2] > 50)
+		self->rrs.color[2] += irand(-interval*3, 0);
 
-	if(self->s.color[3] > 150)
-		self->s.color[3] += irand(-interval, 0);
+	if(self->rrs.color[3] > 150)
+		self->rrs.color[3] += irand(-interval, 0);
 
-	if(self->s.color[0] > 50||
-		self->s.color[1] > 50||
-		self->s.color[2] > 50||
-		self->s.color[3] > 150)
+	if(self->rrs.color[0] > 50||
+		self->rrs.color[1] > 50||
+		self->rrs.color[2] > 50||
+		self->rrs.color[3] > 150)
 	{
 		self->pre_think = assassinCloak;
 		self->next_pre_think = level.time + FRAMETIME;
@@ -2641,30 +2641,30 @@ void assassinDeCloak (edict_t *self)
 	if(!(self->s.renderfx & RF_ALPHA_TEXTURE))
 		return;
 
-	if(self->s.color[0]<255 - 10)
-		self->s.color[0] += 10;
+	if(self->rrs.color[0]<255 - 10)
+		self->rrs.color[0] += 10;
 	else
-		self->s.color[0] = 255;
+		self->rrs.color[0] = 255;
 
-	if(self->s.color[1]<255 - 10)
-		self->s.color[1] += 10;
+	if(self->rrs.color[1]<255 - 10)
+		self->rrs.color[1] += 10;
 	else
-		self->s.color[1] = 255;
+		self->rrs.color[1] = 255;
 
-	if(self->s.color[2]<255 - 10)
-		self->s.color[2] += 10;
+	if(self->rrs.color[2]<255 - 10)
+		self->rrs.color[2] += 10;
 	else
-		self->s.color[2] = 255;
+		self->rrs.color[2] = 255;
 
-	if(self->s.color[3]<255 - 5)
-		self->s.color[3] += 5;
+	if(self->rrs.color[3]<255 - 5)
+		self->rrs.color[3] += 5;
 	else
-		self->s.color[3] = 255;
+		self->rrs.color[3] = 255;
 
-	if(self->s.color[0] == 255&&
-		self->s.color[1] == 255&&
-		self->s.color[2] == 255&&
-		self->s.color[3] == 255)
+	if(self->rrs.color[0] == 255&&
+		self->rrs.color[1] == 255&&
+		self->rrs.color[2] == 255&&
+		self->rrs.color[3] == 255)
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
 		self->s.renderfx &= ~RF_ALPHA_TEXTURE;
@@ -2702,10 +2702,10 @@ void assassinInitCloak (edict_t *self)
 	self->svflags |= SVF_NO_AUTOTARGET;
 	gi.sound(self,CHAN_AUTO,Sounds[SND_CLOAK],1,ATTN_NORM,0);
 
-	self->s.color[0] = 255;
-	self->s.color[1] = 255;
-	self->s.color[2] = 255;
-	self->s.color[3] = 255;
+	self->rrs.color[0] = 255;
+	self->rrs.color[1] = 255;
+	self->rrs.color[2] = 255;
+	self->rrs.color[3] = 255;
 
 	self->pre_think = assassinCloak;
 	self->next_pre_think = level.time + FRAMETIME;
@@ -2946,7 +2946,7 @@ void SP_monster_assassin (edict_t *self)
 
 	self->svflags |= SVF_WAIT_NOTSOLID;
 
-	self->s.fmnodeinfo[MESH__KNIFES].flags |= FMNI_NO_DRAW;
+	self->rrs.fmnodeinfo[MESH__KNIFES].flags |= FMNI_NO_DRAW;
 
 	VectorCopy(self->s.origin, self->pos1);
 }

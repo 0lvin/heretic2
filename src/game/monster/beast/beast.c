@@ -266,7 +266,7 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 
 		if(stop)
 		{
-			gi.CreateEffect(&self->s,
+			gi.CreateEffect(self,
 							FX_QUAKE,
 							0,
 							vec3_origin,
@@ -770,7 +770,7 @@ void tbeast_footstep (edict_t *self)
 	VectorSet(up, flrand(-20, 20), flrand(-20, 20), flrand(20, 100));
 	gi.CreateEffect(NULL, FX_OGLE_HITPUFF, 0, pos, "v", up);
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_QUAKE,
 				0,
 				vec3_origin,
@@ -997,7 +997,7 @@ void tbeast_land(edict_t *self)
 
 //	self->gravity = 1.0;
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					FX_QUAKE,
 					0,
 					vec3_origin,
@@ -1426,9 +1426,9 @@ void tbeast_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 	if(flrand(0,1)<0.5)
 	{
 		if(self->targetEnt->materialtype == MAT_INSECT)
-			gi.CreateEffect(&self->targetEnt->s, FX_BLOOD, CEF_FLAG8, self->targetEnt->s.origin, "ub", blooddir, 200);
+			gi.CreateEffect(self->targetEnt, FX_BLOOD, CEF_FLAG8, self->targetEnt->s.origin, "ub", blooddir, 200);
 		else
-			gi.CreateEffect(&self->targetEnt->s, FX_BLOOD, 0, self->targetEnt->s.origin, "ub", blooddir, 200);
+			gi.CreateEffect(self->targetEnt, FX_BLOOD, 0, self->targetEnt->s.origin, "ub", blooddir, 200);
 	}
 }
 
@@ -2081,7 +2081,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 							self->takedamage = DAMAGE_NO;
 						}
 					}
-					gi.CreateEffect(&self->s,
+					gi.CreateEffect(self,
 						FX_QUAKE,
 						0,
 						vec3_origin,

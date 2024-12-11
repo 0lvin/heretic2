@@ -68,7 +68,7 @@ edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 	shortyaw = (short)(magicmissile->s.angles[YAW]*(65536.0/360.0));
 	shortpitch = (short)(magicmissile->s.angles[PITCH]*(65536.0/360.0));
 
-	gi.CreateEffect(&magicmissile->s,
+	gi.CreateEffect(magicmissile,
 				FX_WEAPON_MAGICMISSILE,
 				CEF_OWNERS_ORIGIN|CEF_FLAG6,
 				0,
@@ -79,7 +79,7 @@ edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
-	gi.CreateEffect(&magicmissile->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", magicmissile->velocity);
+	gi.CreateEffect(magicmissile, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", magicmissile->velocity);
 
 	return(magicmissile);
 }
@@ -153,7 +153,7 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 	{
 		makeScorch = CEF_FLAG6;
 	}
-	gi.CreateEffect(&self->s, FX_WEAPON_MAGICMISSILEEXPLODE, CEF_OWNERS_ORIGIN | makeScorch, self->s.origin, "d", self->movedir);
+	gi.CreateEffect(self, FX_WEAPON_MAGICMISSILEEXPLODE, CEF_OWNERS_ORIGIN | makeScorch, self->s.origin, "d", self->movedir);
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/MagicMissileHit.wav"), 2, ATTN_NORM, 0);
 
 	G_SetToFree(self);
@@ -182,29 +182,29 @@ void create_magic(edict_t *MagicMissile)
 // SpellCastMagicMissile
 // ****************************************************************************
 
-void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir)
+void SpellCastMagicMissile(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir)
 {
-	edict_t	*MagicMissile;
+	edict_t	*magicmissile;
 	trace_t trace;
 	vec3_t	TempVec;
 	short	shortyaw, shortpitch;
 
 	// Spawn the magic-missile.
 
-	MagicMissile=G_Spawn();
+	magicmissile = G_Spawn();
 
-	VectorNormalize2(AimDir, MagicMissile->movedir);
-	VectorMA(StartPos,1.0,AimDir,MagicMissile->s.origin);
+	VectorNormalize2(AimDir, magicmissile->movedir);
+	VectorMA(StartPos,1.0,AimDir, magicmissile->s.origin);
 
-	create_magic(MagicMissile);
-	MagicMissile->owner=Caster;
-	MagicMissile->reflect_debounce_time = MAX_REFLECT;
-	G_LinkMissile(MagicMissile);
+	create_magic(magicmissile);
+	magicmissile->owner = caster;
+	magicmissile->reflect_debounce_time = MAX_REFLECT;
+	G_LinkMissile(magicmissile);
 
-	trace = gi.trace(Caster->s.origin, MagicMissile->mins, MagicMissile->maxs, MagicMissile->s.origin, Caster, MASK_PLAYERSOLID);
+	trace = gi.trace(caster->s.origin, magicmissile->mins, magicmissile->maxs, magicmissile->s.origin, caster, MASK_PLAYERSOLID);
 	if (trace.startsolid)
 	{
-		MagicMissileTouch(MagicMissile, trace.ent, &trace.plane, trace.surface);
+		MagicMissileTouch(magicmissile, trace.ent, &trace.plane, trace.surface);
 		return;
 	}
 
@@ -212,41 +212,41 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 	// a) Lies in a 45 degree degree horizontal, 180 degree vertical cone from my facing.
 	// b) Lies within 0 to 1000 meters of myself.
 	// c) Is visible (i.e. LOS exists from the missile to myself).
-	MagicMissile->enemy = FindNearestVisibleActorInFrustum(MagicMissile,
+	magicmissile->enemy = FindNearestVisibleActorInFrustum(magicmissile,
 													AimAngles,
 													0.0,
 													1000.0,
 													ANGLE_30,
 													ANGLE_180,
 													SVF_MONSTER,
-													MagicMissile->s.origin,
+													magicmissile->s.origin,
 													NULL, NULL);
 
-	if(MagicMissile->enemy)
+	if(magicmissile->enemy)
 	{
-		VectorCopy(MagicMissile->s.origin,TempVec);
-		VectorSubtract(MagicMissile->enemy->s.origin,TempVec,TempVec);
+		VectorCopy(magicmissile->s.origin, TempVec);
+		VectorSubtract(magicmissile->enemy->s.origin, TempVec, TempVec);
 
-		TempVec[0]+=(MagicMissile->enemy->mins[0]+MagicMissile->enemy->maxs[0])/2.0;
-		TempVec[1]+=(MagicMissile->enemy->mins[1]+MagicMissile->enemy->maxs[1])/2.0;
-		TempVec[2]+=(MagicMissile->enemy->mins[2]+MagicMissile->enemy->maxs[2])/2.0;
+		TempVec[0]+=(magicmissile->enemy->mins[0] + magicmissile->enemy->maxs[0])/2.0;
+		TempVec[1]+=(magicmissile->enemy->mins[1] + magicmissile->enemy->maxs[1])/2.0;
+		TempVec[2]+=(magicmissile->enemy->mins[2] + magicmissile->enemy->maxs[2])/2.0;
 
 		VectorNormalize(TempVec);
-		VectoAngles(TempVec,MagicMissile->s.angles);
+		VectoAngles(TempVec, magicmissile->s.angles);
 		// The pitch is flipped in these?
-		MagicMissile->s.angles[PITCH] = -MagicMissile->s.angles[PITCH];
-		VectorScale(TempVec,MAGICMISSILE_SPEED,MagicMissile->velocity);
+		magicmissile->s.angles[PITCH] = -magicmissile->s.angles[PITCH];
+		VectorScale(TempVec, MAGICMISSILE_SPEED, magicmissile->velocity);
 	}
 	else
 	{
-		VectorScale(AimDir,MAGICMISSILE_SPEED,MagicMissile->velocity);
-		VectorCopy(AimAngles,MagicMissile->s.angles);
+		VectorScale(AimDir,MAGICMISSILE_SPEED, magicmissile->velocity);
+		VectorCopy(AimAngles, magicmissile->s.angles);
 	}
 
-	shortyaw = (short)(MagicMissile->s.angles[YAW]*(65536.0/360.0));
-	shortpitch = (short)(MagicMissile->s.angles[PITCH]*(65536.0/360.0));
+	shortyaw = (short)(magicmissile->s.angles[YAW]*(65536.0/360.0));
+	shortpitch = (short)(magicmissile->s.angles[PITCH]*(65536.0/360.0));
 
-	gi.CreateEffect(&MagicMissile->s,
+	gi.CreateEffect(magicmissile,
 				FX_WEAPON_MAGICMISSILE,
 				CEF_OWNERS_ORIGIN,
 				0,
@@ -254,8 +254,8 @@ void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3
 				shortyaw, shortpitch);
 
 
-	MagicMissile->think=MagicMissileThink2;
-	MagicMissile->nextthink=level.time+0.1;
+	magicmissile->think = MagicMissileThink2;
+	magicmissile->nextthink = level.time + 0.1;
 }
 
 
@@ -303,7 +303,7 @@ static void MagicMissileThink1(edict_t *self)
 	shortyaw = (short)(self->s.angles[YAW]*(65536.0/360.0));
 	shortpitch = (short)(self->s.angles[PITCH]*(65536.0/360.0));
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_WEAPON_MAGICMISSILE,
 				CEF_OWNERS_ORIGIN,
 				0,

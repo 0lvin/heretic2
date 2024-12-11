@@ -566,7 +566,7 @@ static void
 AddServerEntities(frame_t *frame)
 {
 	entity_t			*ent;
-	entity_state_t		*s1;
+	entity_xstate_t		*s1;
 	float				autorotate, macerotate;
 	int					i;
 	int					pnum;

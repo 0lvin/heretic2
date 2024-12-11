@@ -115,7 +115,7 @@ extern ResourceManager_t FXBufMgnr;
  * Can go from either a baseline or a previous packet_entity
  */
 static void
-CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
+CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int bits)
 {
 	/* set everything to the state we are delta'ing from */
 	*to = *from;
@@ -235,6 +235,7 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
 	if ((bits & U_SKIN8) && (bits & U_SKIN16))
 	{
 		to->skinnum = MSG_ReadLong(&net_message);
+
 		/* Additional scale with skinnum */
 		if (cls.serverProtocol == PROTOCOL_VERSION)
 		{
@@ -364,10 +365,10 @@ CL_ParseDelta(entity_state_t *from, entity_state_t *to, int number, int bits)
  * the current frame
  */
 static void
-CL_DeltaEntity(frame_t *frame, int newnum, entity_state_t *old, int bits)
+CL_DeltaEntity(frame_t *frame, int newnum, entity_xstate_t *old, int bits)
 {
 	centity_t *ent;
-	entity_state_t *state;
+	entity_xstate_t *state;
 
 	ent = &cl_entities[newnum];
 
@@ -432,8 +433,7 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 {
 	unsigned int newnum;
 	unsigned bits;
-	entity_state_t
-	*oldstate = NULL;
+	entity_xstate_t *oldstate = NULL;
 	int oldindex, oldnum;
 
 	newframe->parse_entities = cl.parse_entities;
@@ -792,11 +792,13 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 static void
 CL_FireEntityEvents(frame_t *frame)
 {
-	entity_state_t *s1;
-	int pnum, num;
+	int pnum;
 
 	for (pnum = 0; pnum < frame->num_entities; pnum++)
 	{
+		entity_xstate_t *s1;
+		int num;
+
 		num = (frame->parse_entities + pnum) & (MAX_PARSE_ENTITIES - 1);
 		s1 = &cl_parse_entities[num];
 
@@ -1083,10 +1085,10 @@ CL_ParseServerData(void)
 static void
 CL_ParseBaseline(void)
 {
-	entity_state_t *es;
+	entity_xstate_t nullstate;
+	entity_xstate_t *es;
 	unsigned bits;
 	int newnum;
-	entity_state_t nullstate;
 
 	memset(&nullstate, 0, sizeof(nullstate));
 

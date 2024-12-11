@@ -56,7 +56,7 @@ void Perform_Teleport(edict_t *self)
 	gi.linkentity(self);
 
 	// draw the teleport splash at the destination
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN | ((byte)self->client->tele_type << 5), NULL, "" );
+	gi.CreateEffect(self, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN | ((byte)self->client->tele_type << 5), NULL, "" );
 
 	// restart the loop and tell us next time we aren't de-materialising
 	self->client->tele_count = TELE_TIME;
@@ -75,7 +75,7 @@ void CleanUpTeleport(edict_t *self)
 	self->flags &= ~FL_LOCKMOVE;
 	self->client->playerinfo.flags &=~PLAYER_FLAG_TELEPORT;
 	self->client->ps.pmove.pm_flags &= ~PMF_LOCKMOVE;
-	self->s.color[3] = 255;
+	self->rrs.color[3] = 255;
 	self->client->shrine_framenum = level.time - 1;;
 }
 
@@ -169,13 +169,13 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	// make the player still
 	other->flags |= FL_LOCKMOVE;
 	// allow the player to fade out
-	other->s.color[3] = 255;
-	other->s.color[0] = 255;
-	other->s.color[1] = 255;
-	other->s.color[2] = 255;
+	other->rrs.color[3] = 255;
+	other->rrs.color[0] = 255;
+	other->rrs.color[1] = 255;
+	other->rrs.color[2] = 255;
 
 	// draw the teleport splash at the teleport source
-	gi.CreateEffect(&other->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)other->client->tele_type << 5), NULL, "" );
+	gi.CreateEffect(other, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)other->client->tele_type << 5), NULL, "" );
 	// do the teleport sound
 	gi.sound(other,CHAN_VOICE,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 
@@ -225,13 +225,13 @@ void SpellCastTeleport(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t A
 	// make the player still
 	caster->flags |= FL_LOCKMOVE;
 	// allow the player to fade out
-	caster->s.color[0] = 255;
-	caster->s.color[1] = 255;
-	caster->s.color[2] = 255;
-	caster->s.color[3] = 255;
+	caster->rrs.color[0] = 255;
+	caster->rrs.color[1] = 255;
+	caster->rrs.color[2] = 255;
+	caster->rrs.color[3] = 255;
 
 	// draw the teleport splash at the teleport source
-	gi.CreateEffect(&caster->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)caster->client->tele_type << 5), NULL, "" );
+	gi.CreateEffect(caster, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)caster->client->tele_type << 5), NULL, "" );
 	// do the teleport sound
 	gi.sound(caster,CHAN_VOICE,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 }
