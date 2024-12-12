@@ -334,7 +334,7 @@ ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 	gi.setmodel(gib, gibname);
 	gib->solid = SOLID_NOT;
 
-	gi.CreateEffect(&gib->s,FX_GIB_TRAIL,CEF_OWNERS_ORIGIN,gib->s.origin,NULL);
+	gi.CreateEffect(gib, FX_GIB_TRAIL, CEF_OWNERS_ORIGIN, gib->s.origin, NULL);
 
 	gib->flags |= FL_NO_KNOCKBACK;
 	gib->takedamage = DAMAGE_YES;
@@ -1400,7 +1400,7 @@ void Teleporter_Deactivate(edict_t *self, G_Message_t *msg)
 	// if there's an effect out there, kill it
 	if (self->enemy)
 	{
-		gi.RemoveEffects(&self->enemy->s, FX_TELEPORT_PAD);
+		gi.RemoveEffects(self->enemy, FX_TELEPORT_PAD);
 		if (self->enemy->PersistantCFX)
 		{
 			gi.RemovePersistantEffect(self->enemy->PersistantCFX, REMOVE_TELEPORT_PAD);
@@ -1433,7 +1433,7 @@ void Teleporter_Activate(edict_t *self, G_Message_t *msg)
 		real_origin[2] = ((self->maxs[2] - self->mins[2]) / 2.0) + self->mins[2];
 
 		if (!(self->spawnflags & 1))
-			effect->PersistantCFX = gi.CreatePersistantEffect(&effect->s, FX_TELEPORT_PAD, CEF_BROADCAST, real_origin, "");
+			effect->PersistantCFX = gi.CreatePersistantEffect(effect, FX_TELEPORT_PAD, CEF_BROADCAST, real_origin, "");
 	}
 }
 
@@ -1499,7 +1499,7 @@ void SP_misc_teleporter (edict_t *ent)
 		real_origin[2] = ((ent->maxs[2] - ent->mins[2]) / 2.0) + ent->mins[2];
 
 		if (!(ent->spawnflags & 1))
-			effect->PersistantCFX = gi.CreatePersistantEffect(&effect->s, FX_TELEPORT_PAD, CEF_BROADCAST, real_origin, "");
+			effect->PersistantCFX = gi.CreatePersistantEffect(effect, FX_TELEPORT_PAD, CEF_BROADCAST, real_origin, "");
 	}
 
 }
@@ -1569,7 +1569,7 @@ void misc_magic_portal_use (edict_t *self, edict_t *other, edict_t *activator)
 		// We aren't engaged yet.  Make solid and start the effect.
 		self->solid = SOLID_TRIGGER;
 		self->touch = misc_magic_portal_touch;
-		self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_MAGIC_PORTAL, CEF_BROADCAST, self->s.origin,
+		self->PersistantCFX = gi.CreatePersistantEffect(self, FX_MAGIC_PORTAL, CEF_BROADCAST, self->s.origin,
 								"vbb", self->s.angles, (byte)style, (byte)count);
 		self->s.effects &= ~EF_DISABLE_EXTRA_FX;
 	}
@@ -1732,7 +1732,7 @@ void soundambient_think(edict_t *self)
 	default:
 		style = Q_ftol(self->style);
 		wait = Q_ftol(self->wait);
-		gi.CreatePersistantEffect(&self->s,
+		gi.CreatePersistantEffect(self,
 					FX_SOUND,
 					CEF_BROADCAST | CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -1751,7 +1751,7 @@ void sound_ambient_use (edict_t *self, edict_t *other, edict_t *activator)
 	if (self->count)	// This is just a flag to show it's on
 	{
 		self->count = 0;
-		gi.RemoveEffects(&self->s,0);
+		gi.RemoveEffects(self,0);
 	}
 	else
 		soundambient_think(self);
@@ -2456,7 +2456,7 @@ void SpawnClientAnim(edict_t *self, byte type, char *sound)
 	skin = (byte)self->s.skinnum;
 
 //	self->svflags |= SVF_ALWAYS_SEND;
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+	self->PersistantCFX = gi.CreatePersistantEffect(self,
 							FX_ANIMATE,
 							CEF_BROADCAST,
 							self->s.origin,
@@ -2545,13 +2545,13 @@ void fire_spark_think (edict_t *self)
 void fire_spark_gone (edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->use = NULL;
-	gi.RemoveEffects(&self->s, FX_SPARKS);
+	gi.RemoveEffects(self, FX_SPARKS);
 	G_FreeEdict(self);
 }
 
 void fire_spark_use (edict_t *self, edict_t *other, edict_t *activator)
 {
-	gi.CreateEffect(&self->s, FX_SPARKS, CEF_FLAG6|CEF_FLAG7|CEF_FLAG8, self->s.origin, "d", vec3_up);
+	gi.CreateEffect(self, FX_SPARKS, CEF_FLAG6|CEF_FLAG7|CEF_FLAG8, self->s.origin, "d", vec3_up);
 
 	self->use = fire_spark_gone;
 

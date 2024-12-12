@@ -19,7 +19,7 @@ void SpellCastShield(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aim
 	caster->client->playerinfo.shield_timer = level.time + (float)SHIELD_DURATION;
 
 	// Start the lightning effect.
-	caster->PersistantCFX = gi.CreatePersistantEffect(&caster->s, FX_SPELL_LIGHTNINGSHIELD, CEF_OWNERS_ORIGIN|CEF_BROADCAST, NULL, "");
+	caster->PersistantCFX = gi.CreatePersistantEffect(caster, FX_SPELL_LIGHTNINGSHIELD, CEF_OWNERS_ORIGIN|CEF_BROADCAST, NULL, "");
 
 	gi.sound(caster,CHAN_WEAPON,gi.soundindex("weapons/Shield.wav"),1,ATTN_NORM,0);
 	caster->s.sound = gi.soundindex("weapons/ShieldIdle.wav");
@@ -80,7 +80,7 @@ void SpellLightningShieldAttack(edict_t *self)
 				self->s.origin, "vbb", found->s.origin, (byte)SHIELD_LIGHTNING_WIDTH, (byte)0);
 
 		// Do a nasty looking blast at the impact point
-		gi.CreateEffect(&found->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", dir);
+		gi.CreateEffect(found, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", dir);
 
 		gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/ShieldAttack.wav"), 2, ATTN_NORM,0);
 

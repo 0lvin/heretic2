@@ -1652,9 +1652,9 @@ void gorgon_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 	if(flrand(0,1)<0.5)
 	{
 		if(self->enemy->materialtype == MAT_INSECT)
-			gi.CreateEffect(&self->enemy->s, FX_BLOOD, CEF_FLAG8, self->enemy->s.origin, "ub", blooddir, 200);
+			gi.CreateEffect(self->enemy, FX_BLOOD, CEF_FLAG8, self->enemy->s.origin, "ub", blooddir, 200);
 		else
-			gi.CreateEffect(&self->enemy->s, FX_BLOOD, 0, self->enemy->s.origin, "ub", blooddir, 200);
+			gi.CreateEffect(self->enemy, FX_BLOOD, 0, self->enemy->s.origin, "ub", blooddir, 200);
 	}
 }
 
@@ -2014,7 +2014,7 @@ void gorgon_prethink (edict_t *self)
 	}
 	else
 	{
-		gi.RemoveEffects (&self->s, FX_M_EFFECTS);
+		gi.RemoveEffects(self, FX_M_EFFECTS);
 		self->gravity = 1.0f;
 		self->svflags &= ~SVF_TAKE_NO_IMPACT_DMG;
 		if(AVG_VEC3T(self->s.scale) > 0.5)

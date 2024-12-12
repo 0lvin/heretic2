@@ -387,7 +387,7 @@ trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 				puzzle->solid = SOLID_NOT;
 
 				// Once picked up, the item is gone forever, so remove it's client effect(s).
-				gi.RemoveEffects(&puzzle->s,0);
+				gi.RemoveEffects(puzzle,0);
 
 				// The persistent part is removed from the server here.
 				G_SetToFree(puzzle);
@@ -819,7 +819,7 @@ void quake_use (edict_t *self, edict_t *other)
 	count = (byte)self->count;
 	time = (byte) self->time * 10;
 
-	gi.CreateEffect(&self->s, FX_QUAKE, CEF_BROADCAST, self->s.origin,"bbb",count,time,self->style);
+	gi.CreateEffect(self, FX_QUAKE, CEF_BROADCAST, self->s.origin,"bbb",count,time,self->style);
 
 	G_UseTargets(self, self);
 

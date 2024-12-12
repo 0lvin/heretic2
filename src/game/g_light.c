@@ -136,7 +136,7 @@ void SpawnFlame(edict_t *self,vec3_t origin)
 		scale = AVG_VEC3T(self->s.scale) * 32;
 	}
 
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+	self->PersistantCFX = gi.CreatePersistantEffect(self,
 								FX_FIRE,
 								CEF_BROADCAST,
 								origin,
@@ -209,7 +209,7 @@ void fire_use (edict_t *self, edict_t *other, edict_t *activator)
 			scale = AVG_VEC3T(self->s.scale) * 32;
 		}
 
-		self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+		self->PersistantCFX = gi.CreatePersistantEffect(self,
 					FX_FIRE,
 					CEF_BROADCAST,
 					self->s.origin,
@@ -237,7 +237,7 @@ void fire_use (edict_t *self, edict_t *other, edict_t *activator)
 			self->PersistantCFX = 0;
 		}
 		self->s.sound = 0;
-		gi.RemoveEffects(&self->s, FX_FIRE);
+		gi.RemoveEffects(self, FX_FIRE);
 		self->spawnflags |= FIRE_OFF;
 		G_FreeEdict(self->enemy);
 
@@ -251,7 +251,7 @@ void firemove_think(edict_t *self)
 
 	scale = AVG_VEC3T(self->s.scale) * 8;
 
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+	self->PersistantCFX = gi.CreatePersistantEffect(self,
 				FX_FIRE_ON_ENTITY,
 				CEF_BROADCAST | CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -368,7 +368,7 @@ SP_env_fire(edict_t *self)
 	if (self->spawnflags & 32)
 		flags |= CEF_FLAG6;
 
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+	self->PersistantCFX = gi.CreatePersistantEffect(self,
 						FX_FIRE,
 						flags,
 						self->s.origin,

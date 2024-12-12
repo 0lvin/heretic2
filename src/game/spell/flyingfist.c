@@ -91,14 +91,14 @@ edict_t *FlyingFistReflect(edict_t *self, edict_t *other, vec3_t vel)
 	G_LinkMissile(flyingfist);
 
 	// create new trails for the new missile
-	gi.CreateEffect(&flyingfist->s, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
+	gi.CreateEffect(flyingfist, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
 					"t", flyingfist->velocity);
 
 	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
-	gi.CreateEffect(&flyingfist->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", flyingfist->velocity);
+	gi.CreateEffect(flyingfist, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", flyingfist->velocity);
 
 	return(flyingfist);
 }
@@ -295,6 +295,6 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 	}
 	// Spawn effect after it has been determined it has not started in wall
 	// This is so it won`t try to remove it before it exists
-	gi.CreateEffect(&flyingfist->s, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | flags, NULL,
+	gi.CreateEffect(flyingfist, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | flags, NULL,
 					"t", flyingfist->velocity);
 }

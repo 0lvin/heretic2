@@ -36,7 +36,7 @@ void remove_non_cinematic_entites(edict_t *owner)
 			// kill the rain sound
 			gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/null.wav"), 1, ATTN_NORM,0);
 			// remove the entity
-			gi.RemoveEffects(&ent->s, FX_WEAPON_REDRAIN);
+			gi.RemoveEffects(ent, FX_WEAPON_REDRAIN);
 			G_SetToFree(ent);
 		}
 	}
@@ -53,7 +53,7 @@ void remove_non_cinematic_entites(edict_t *owner)
 			// kill the rain arrow travel sound
 			gi.sound(ent, CHAN_VOICE, gi.soundindex("misc/null.wav"), 1, ATTN_NORM,0);
 			// remove the entity
-			gi.RemoveEffects(&ent->s, FX_WEAPON_REDRAINMISSILE);
+			gi.RemoveEffects(ent, FX_WEAPON_REDRAINMISSILE);
 			G_SetToFree(ent);
 		}
 	}
@@ -117,7 +117,7 @@ void remove_non_cinematic_entites(edict_t *owner)
 			if (ent->PersistantCFX)
 			{
 				gi.RemovePersistantEffect(ent->PersistantCFX, REMOVE_METEOR);
-				gi.RemoveEffects(&ent->owner->s, FX_SPELL_METEORBARRIER+ent->health);
+				gi.RemoveEffects(ent->owner, FX_SPELL_METEORBARRIER+ent->health);
 				ent->PersistantCFX = 0;
 			}
 			// kill the meteorbarrier ambient sound
@@ -144,14 +144,14 @@ void remove_non_cinematic_entites(edict_t *owner)
 		ent->client->playerinfo.cinematic_starttime = level.time;
 
 		if (ent->client->playerinfo.powerup_timer > ent->client->playerinfo.cinematic_starttime)
-			gi.RemoveEffects(&ent->s, FX_TOME_OF_POWER);
+			gi.RemoveEffects(ent, FX_TOME_OF_POWER);
 
 		if (ent->client->playerinfo.speed_timer > ent->client->playerinfo.cinematic_starttime)
-			gi.RemoveEffects(&ent->s, FX_FOOT_TRAIL);
+			gi.RemoveEffects(ent, FX_FOOT_TRAIL);
 
 		if (ent->client->playerinfo.shield_timer > ent->client->playerinfo.leveltime)
 		{
-			gi.RemoveEffects(&ent->s, FX_SPELL_LIGHTNINGSHIELD);
+			gi.RemoveEffects(ent, FX_SPELL_LIGHTNINGSHIELD);
 			ent->client->playerinfo.cin_shield_timer = ent->client->playerinfo.shield_timer;
 			ent->client->playerinfo.shield_timer = 0;
 		}
@@ -189,7 +189,7 @@ void reinstate_non_cinematic_entites(edict_t *owner)
 			{
 				ent->client->playerinfo.light_timer += level.time - ent->client->playerinfo.cinematic_starttime;
 				ent->s.effects |= EF_LIGHT_ENABLED;
-				gi.CreateEffect(&ent->s, FX_PLAYER_TORCH, CEF_OWNERS_ORIGIN, NULL, "");
+				gi.CreateEffect(ent, FX_PLAYER_TORCH, CEF_OWNERS_ORIGIN, NULL, "");
 			}
 
 			if (ent->client->playerinfo.reflect_timer > ent->client->playerinfo.cinematic_starttime)
@@ -209,14 +209,14 @@ void reinstate_non_cinematic_entites(edict_t *owner)
 				ent->client->playerinfo.powerup_timer += level.time - ent->client->playerinfo.cinematic_starttime;
 				ent->s.effects |= EF_POWERUP_ENABLED;
 				ent->client->playerinfo.effects |= EF_POWERUP_ENABLED;
-				gi.CreateEffect(&ent->s, FX_TOME_OF_POWER, CEF_OWNERS_ORIGIN, NULL, "");
+				gi.CreateEffect(ent, FX_TOME_OF_POWER, CEF_OWNERS_ORIGIN, NULL, "");
 			}
 
 			if (ent->client->playerinfo.cin_shield_timer > ent->client->playerinfo.cinematic_starttime)
 			{
 				ent->client->playerinfo.shield_timer =
 					ent->client->playerinfo.cin_shield_timer + level.time - ent->client->playerinfo.cinematic_starttime;
-				ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_SPELL_LIGHTNINGSHIELD, CEF_OWNERS_ORIGIN|CEF_BROADCAST, NULL, "");
+				ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_SPELL_LIGHTNINGSHIELD, CEF_OWNERS_ORIGIN|CEF_BROADCAST, NULL, "");
 			}
 
 			if (ent->client->playerinfo.speed_timer > ent->client->playerinfo.cinematic_starttime)
@@ -224,7 +224,7 @@ void reinstate_non_cinematic_entites(edict_t *owner)
 				ent->client->playerinfo.speed_timer += level.time - ent->client->playerinfo.cinematic_starttime;
 				ent->s.effects |= EF_SPEED_ACTIVE;
 				ent->client->playerinfo.effects |= EF_SPEED_ACTIVE;
-				gi.CreateEffect(&ent->s, FX_FOOT_TRAIL, CEF_OWNERS_ORIGIN, NULL, "");
+				gi.CreateEffect(ent, FX_FOOT_TRAIL, CEF_OWNERS_ORIGIN, NULL, "");
 			}
 
 			// since we messed around with model stuff, like armor nodes and the like, lets update the model.

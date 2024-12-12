@@ -1200,7 +1200,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	VectorScale(dir, 40.0, dir);
 
 	//Why doesn't this work?
-	gi.CreateEffect(&self->s, FX_BLOOD, 0, p1, "ub", dir, 20);
+	gi.CreateEffect(self, FX_BLOOD, 0, p1, "ub", dir, 20);
 	VectorAdd(self->s.origin,p2,p2);
 	SprayDebris(self,p2, 6,200);
 
@@ -2051,49 +2051,49 @@ void ssithraSwipe (edict_t *self)
 }
 
 // the arrow needs to bounce
-void make_arrow_reflect(edict_t *self, edict_t *Arrow)
+void make_arrow_reflect(edict_t *self, edict_t *arrow)
 {
-	create_ssith_arrow(Arrow);
-	Arrow->s.modelindex = self->s.modelindex;
-	VectorCopy(self->s.origin, Arrow->s.origin);
-	Arrow->owner = self->owner;
-	Arrow->enemy = self->enemy;
+	create_ssith_arrow(arrow);
+	arrow->s.modelindex = self->s.modelindex;
+	VectorCopy(self->s.origin, arrow->s.origin);
+	arrow->owner = self->owner;
+	arrow->enemy = self->enemy;
 
-	Arrow->touch=self->touch;
-	Arrow->nextthink=self->nextthink;
-	Arrow->think=G_FreeEdict;
-	Arrow->health = self->health;
+	arrow->touch = self->touch;
+	arrow->nextthink = self->nextthink;
+	arrow->think = G_FreeEdict;
+	arrow->health = self->health;
 
-	Create_rand_relect_vect(self->velocity, Arrow->velocity);
+	Create_rand_relect_vect(self->velocity, arrow->velocity);
 
-	VectoAngles(Arrow->velocity, Arrow->s.angles);
-	Arrow->s.angles[YAW]+=90;
+	VectoAngles(arrow->velocity, arrow->s.angles);
+	arrow->s.angles[YAW] += 90;
 
-	Vec3ScaleAssign(SSITHRA_SPOO_SPEED/2,Arrow->velocity);
+	Vec3ScaleAssign(SSITHRA_SPOO_SPEED/2,arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 }
 
 void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
 {
 	float damage;
 	vec3_t	normal;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
 	// are we reflecting ?
 	if(EntReflecting(other, true, true))
 	{
-		Arrow = G_Spawn();
+		arrow = G_Spawn();
 
-		make_arrow_reflect(self,Arrow);
+		make_arrow_reflect(self, arrow);
 
-		gi.CreateEffect(&Arrow->s,
+		gi.CreateEffect(arrow,
 			FX_SSITHRA_ARROW,
 			CEF_OWNERS_ORIGIN,
 			NULL,
 			"bv",
 			FX_SS_MAKE_ARROW2,
-			Arrow->velocity);
+			arrow->velocity);
 
 		G_SetToFree(self);
 
@@ -2140,7 +2140,7 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 {
 	float damage;
 	vec3_t	normal;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
 	if(Surface&&(Surface->flags&SURF_SKY))
 	{
@@ -2150,9 +2150,9 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 
 	if(EntReflecting(Other, true, true))
 	{
-		Arrow = G_Spawn();
+		arrow = G_Spawn();
 
-		make_arrow_reflect(self,Arrow);
+		make_arrow_reflect(self, arrow);
 
 		gi.CreateEffect( NULL,
 					 FX_M_EFFECTS,
@@ -2162,13 +2162,13 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 					 FX_MSSITHRA_EXPLODE,
 					 self->movedir);
 		/*
-		gi.CreateEffect(&Arrow->s,
+		gi.CreateEffect(arrow,
 			FX_SSITHRA_ARROW,
 			CEF_OWNERS_ORIGIN,
 			NULL,
 			"bv",
 			FX_SS_MAKE_ARROW,
-			Arrow->velocity);
+			arrow->velocity);
 		*/
 
 		G_SetToFree(self);
@@ -2267,63 +2267,63 @@ void ssithraDuckArrowTouch (edict_t *self,edict_t *other,cplane_t *plane,csurfac
 	}
 }
 
-void create_ssith_arrow(edict_t *Arrow)
+void create_ssith_arrow(edict_t *arrow)
 {
-	Arrow->movetype = MOVETYPE_FLYMISSILE;
-	Arrow->solid = SOLID_BBOX;
-	Arrow->classname = "Ssithra_Arrow";
-	Arrow->touch = ssithraArrowTouch;
-	Arrow->enemy = NULL;
-	Arrow->clipmask = MASK_SHOT;
-	VectorSet(Arrow->s.scale, 0.75, 0.75, 0.75);
-	Arrow->s.effects |= EF_CAMERA_NO_CLIP;
-	Arrow->svflags |= SVF_ALWAYS_SEND;
-	Arrow->s.modelindex = gi.modelindex("models/objects/exarrow/tris.fm");
+	arrow->movetype = MOVETYPE_FLYMISSILE;
+	arrow->solid = SOLID_BBOX;
+	arrow->classname = "Ssithra_Arrow";
+	arrow->touch = ssithraArrowTouch;
+	arrow->enemy = NULL;
+	arrow->clipmask = MASK_SHOT;
+	VectorSet(arrow->s.scale, 0.75, 0.75, 0.75);
+	arrow->s.effects |= EF_CAMERA_NO_CLIP;
+	arrow->svflags |= SVF_ALWAYS_SEND;
+	arrow->s.modelindex = gi.modelindex("models/objects/exarrow/tris.fm");
 }
 
 void ssithraDoArrow(edict_t *self, float z_offs)
 {
 	vec3_t	Forward,check_lead, right, enemy_dir;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
 	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 		return;
 
 	gi.sound(self,CHAN_WEAPON,Sounds[SND_ARROW1],1,ATTN_NORM,0);
 	self->monsterinfo.attack_finished = level.time + 0.4;
-	Arrow = G_Spawn();
+	arrow = G_Spawn();
 
-	create_ssith_arrow(Arrow);
+	create_ssith_arrow(arrow);
 
 	if(self->spawnflags & MSF_SSITHRA_ALPHA)
-		Arrow->touch=ssithraArrowTouch;
+		arrow->touch=ssithraArrowTouch;
 	else
-		Arrow->touch=ssithraArrowTouch;
+		arrow->touch=ssithraArrowTouch;
 
-	Arrow->owner=self;
-	Arrow->enemy=self->enemy;
+	arrow->owner=self;
+	arrow->enemy=self->enemy;
 
-	Arrow->health = 0; // tell the touch function what kind of arrow we are;
+	arrow->health = 0; // tell the touch function what kind of arrow we are;
 
 	AngleVectors(self->s.angles, Forward, right, NULL);
 
-	VectorCopy(self->s.origin,Arrow->s.origin);
-	VectorMA(Arrow->s.origin, 16, Forward, Arrow->s.origin);
-	VectorMA(Arrow->s.origin, -4, right, Arrow->s.origin);
-	Arrow->s.origin[2] += 16;
+	VectorCopy(self->s.origin,arrow->s.origin);
+	VectorMA(arrow->s.origin, 16, Forward, arrow->s.origin);
+	VectorMA(arrow->s.origin, -4, right, arrow->s.origin);
+	arrow->s.origin[2] += 16;
 
-	VectorCopy(self->movedir,Arrow->movedir);
-	VectoAngles(Forward,Arrow->s.angles);
+	VectorCopy(self->movedir,arrow->movedir);
+	VectoAngles(Forward,arrow->s.angles);
 
 	VectorClear(check_lead);
 	if(skill->value > 1)
 	{
-		extrapolateFiredir(self, Arrow->s.origin,
+		extrapolateFiredir(self, arrow->s.origin,
 			SSITHRA_SPOO_SPEED, self->enemy, 0.3, check_lead);
 	}
 	else
 	{
-		VectorSubtract(self->enemy->s.origin, Arrow->s.origin, enemy_dir);
+		VectorSubtract(self->enemy->s.origin, arrow->s.origin, enemy_dir);
 		VectorNormalize(enemy_dir);
 		if(DotProduct(enemy_dir, Forward) >= 0.3)
 		{
@@ -2333,37 +2333,37 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 
 	if(Vec3IsZero(check_lead))
 	{
-		VectorScale(Forward,SSITHRA_SPOO_SPEED,Arrow->velocity);
+		VectorScale(Forward,SSITHRA_SPOO_SPEED,arrow->velocity);
 	}
 	else
 	{
-		VectorScale(check_lead,SSITHRA_SPOO_SPEED,Arrow->velocity);
+		VectorScale(check_lead,SSITHRA_SPOO_SPEED,arrow->velocity);
 	}
 
-	VectorCopy(Arrow->velocity, Arrow->movedir);
-	VectorNormalize(Arrow->movedir);
-	VectoAngles(Arrow->movedir, Arrow->s.angles);
-	Arrow->s.angles[PITCH] = anglemod(Arrow->s.angles[PITCH] * -1);
-	Arrow->s.angles[YAW] += 90;
+	VectorCopy(arrow->velocity, arrow->movedir);
+	VectorNormalize(arrow->movedir);
+	VectoAngles(arrow->movedir, arrow->s.angles);
+	arrow->s.angles[PITCH] = anglemod(arrow->s.angles[PITCH] * -1);
+	arrow->s.angles[YAW] += 90;
 
-	gi.CreateEffect(&Arrow->s,
+	gi.CreateEffect(arrow,
 		FX_M_EFFECTS,
 		CEF_OWNERS_ORIGIN,
-		Arrow->s.origin,
+		arrow->s.origin,
 		"bv",
 		FX_MSSITHRA_ARROW,
-		Arrow->velocity);
+		arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 
-	Arrow->nextthink=level.time+3;
-	Arrow->think=G_FreeEdict;//ssithraArrowThink;
+	arrow->nextthink=level.time+3;
+	arrow->think=G_FreeEdict;//ssithraArrowThink;
 }
 
 void ssithraDoDuckArrow(edict_t *self, float z_offs)
 {
 	vec3_t	Forward,check_lead, right, enemy_dir;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
 	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 		return;
@@ -2371,38 +2371,38 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 	gi.sound(self, CHAN_WEAPON, Sounds[SND_ARROW_FIRE] , 1, ATTN_NORM, 0);
 
 	self->monsterinfo.attack_finished = level.time + 0.4;
-	Arrow = G_Spawn();
+	arrow = G_Spawn();
 
-	create_ssith_arrow(Arrow);
+	create_ssith_arrow(arrow);
 
-	Arrow->touch=ssithraDuckArrowTouch;
+	arrow->touch=ssithraDuckArrowTouch;
 
-	Arrow->owner=self;
-	Arrow->enemy=self->enemy;
+	arrow->owner=self;
+	arrow->enemy=self->enemy;
 
-	Arrow->health = 0; // tell the touch function what kind of arrow we are;
+	arrow->health = 0; // tell the touch function what kind of arrow we are;
 
 	AngleVectors(self->s.angles, Forward, right, NULL);
 
-	VectorCopy(self->s.origin,Arrow->s.origin);
-	VectorMA(Arrow->s.origin, 12 * AVG_VEC3T(self->s.scale), Forward, Arrow->s.origin);
-	VectorMA(Arrow->s.origin, 4 * AVG_VEC3T(self->s.scale), right, Arrow->s.origin);
-	Arrow->s.origin[2] += z_offs;
+	VectorCopy(self->s.origin,arrow->s.origin);
+	VectorMA(arrow->s.origin, 12 * AVG_VEC3T(self->s.scale), Forward, arrow->s.origin);
+	VectorMA(arrow->s.origin, 4 * AVG_VEC3T(self->s.scale), right, arrow->s.origin);
+	arrow->s.origin[2] += z_offs;
 
-	VectorSet(Arrow->s.scale, 1.5, 1.5, 1.5);
+	VectorSet(arrow->s.scale, 1.5, 1.5, 1.5);
 
-	VectorCopy(self->movedir,Arrow->movedir);
-	VectoAngles(Forward,Arrow->s.angles);
+	VectorCopy(self->movedir,arrow->movedir);
+	VectoAngles(Forward,arrow->s.angles);
 
 	VectorClear(check_lead);
 	if(skill->value > 1)
 	{
-		extrapolateFiredir(self, Arrow->s.origin,
+		extrapolateFiredir(self, arrow->s.origin,
 			SSITHRA_SPOO_SPEED, self->enemy, 0.3, check_lead);
 	}
 	else
 	{
-		VectorSubtract(self->enemy->s.origin, Arrow->s.origin, enemy_dir);
+		VectorSubtract(self->enemy->s.origin, arrow->s.origin, enemy_dir);
 		VectorNormalize(enemy_dir);
 		if(DotProduct(enemy_dir, Forward) >= 0.3)
 		{
@@ -2412,31 +2412,31 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 
 	if(Vec3IsZero(check_lead))
 	{
-		VectorScale(Forward,SSITHRA_SPOO_SPEED*1.5,Arrow->velocity);
+		VectorScale(Forward,SSITHRA_SPOO_SPEED*1.5,arrow->velocity);
 	}
 	else
 	{
-		VectorScale(check_lead,SSITHRA_SPOO_SPEED*1.5,Arrow->velocity);
+		VectorScale(check_lead,SSITHRA_SPOO_SPEED*1.5,arrow->velocity);
 	}
 
-	VectorCopy(Arrow->velocity, Arrow->movedir);
-	VectorNormalize(Arrow->movedir);
-	VectoAngles(Arrow->movedir, Arrow->s.angles);
-	Arrow->s.angles[PITCH] = anglemod(Arrow->s.angles[PITCH] * -1);
-	Arrow->s.angles[YAW] += 90;
+	VectorCopy(arrow->velocity, arrow->movedir);
+	VectorNormalize(arrow->movedir);
+	VectoAngles(arrow->movedir, arrow->s.angles);
+	arrow->s.angles[PITCH] = anglemod(arrow->s.angles[PITCH] * -1);
+	arrow->s.angles[YAW] += 90;
 
-	gi.CreateEffect(&Arrow->s,
+	gi.CreateEffect(arrow,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN | CEF_FLAG6,
-					Arrow->s.origin,
+					arrow->s.origin,
 					"bv",
 					FX_MSSITHRA_ARROW,
-					Arrow->velocity);
+					arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 
-	Arrow->nextthink=level.time+5;
-	Arrow->think=ssithraArrowExplode;
+	arrow->nextthink=level.time+5;
+	arrow->think=ssithraArrowExplode;
 }
 
 void ssithraStartDuckArrow(edict_t *self)
@@ -2485,7 +2485,7 @@ void ssithraArrow(edict_t *self)
 void ssithraPanicArrow(edict_t *self)
 {//fixme; adjust for up/down
 	vec3_t	Forward,firedir;//, up;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 
 	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 	{
@@ -2497,40 +2497,40 @@ void ssithraPanicArrow(edict_t *self)
 //	gi.dprintf("Ssithra fire panic arrow\n");
 	gi.sound(self,CHAN_WEAPON,Sounds[SND_ARROW2],1,ATTN_NORM,0);
 	self->monsterinfo.attack_finished = level.time + 0.4;
-	Arrow = G_Spawn();
+	arrow = G_Spawn();
 
-//	Arrow->s.modelindex=gi.modelindex("models/objects/projectiles/sitharrow/tris.fm");
+//	arrow->s.modelindex=gi.modelindex("models/objects/projectiles/sitharrow/tris.fm");
 
-	create_ssith_arrow(Arrow);
+	create_ssith_arrow(arrow);
 
-	Arrow->owner=self;
+	arrow->owner=self;
 
-	Arrow->health = 1; // tell the touch function what kind of arrow we are;
+	arrow->health = 1; // tell the touch function what kind of arrow we are;
 
 	VectorAdd(self->s.angles,self->v_angle_ofs,firedir);
 	AngleVectors(firedir,Forward,NULL,NULL);
-	VectorCopy(self->s.origin,Arrow->s.origin);
-	VectorMA(Arrow->s.origin,12,Forward,Arrow->s.origin);
-	VectorCopy(self->movedir,Arrow->movedir);
-	VectoAngles(Forward,Arrow->s.angles);
+	VectorCopy(self->s.origin,arrow->s.origin);
+	VectorMA(arrow->s.origin,12,Forward,arrow->s.origin);
+	VectorCopy(self->movedir,arrow->movedir);
+	VectoAngles(Forward,arrow->s.angles);
 
-	VectorScale(Forward,SSITHRA_SPOO_SPEED,Arrow->velocity);
+	VectorScale(Forward,SSITHRA_SPOO_SPEED,arrow->velocity);
 
-	VectoAngles(Arrow->velocity, Arrow->s.angles);
-	Arrow->s.angles[YAW]+=90;
+	VectoAngles(arrow->velocity, arrow->s.angles);
+	arrow->s.angles[YAW]+=90;
 //fixme: redo these- make them look like squid ink?
-	gi.CreateEffect(&Arrow->s,
+	gi.CreateEffect(arrow,
 		FX_SSITHRA_ARROW,
 		CEF_OWNERS_ORIGIN,
 		NULL,
 		"bv",
 		FX_SS_MAKE_ARROW,
-		Arrow->velocity);
+		arrow->velocity);
 
-	G_LinkMissile(Arrow);
+	G_LinkMissile(arrow);
 
-	Arrow->nextthink=level.time+3;
-	Arrow->think=G_FreeEdict;//ssithraArrowThink;
+	arrow->nextthink=level.time+3;
+	arrow->think=G_FreeEdict;//ssithraArrowThink;
 }
 
 void ssithra_water_shoot (edict_t *self)

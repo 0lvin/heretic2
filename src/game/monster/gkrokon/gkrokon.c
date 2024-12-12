@@ -102,7 +102,7 @@ edict_t *GkrokonSpooReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	gi.linkentity(Spoo);
 
-	gi.CreateEffect(&Spoo->s,
+	gi.CreateEffect(Spoo,
 			FX_SPOO,
 			CEF_OWNERS_ORIGIN,
 			Spoo->s.origin,
@@ -164,7 +164,7 @@ void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *S
 	T_DamageRadius(self, self->owner, self, 5.0,
 					self->dmg, self->dmg/4, DAMAGE_NO_KNOCKBACK|DAMAGE_ATTACKER_IMMUNE,MOD_DIED);
 
-	gi.RemoveEffects(&self->s, 0);
+	gi.RemoveEffects(self, 0);
 
 	if(IsDecalApplicable(self, Other, self->s.origin, Surface, Plane, planeDir))
 	{
@@ -235,7 +235,7 @@ void GkrokonSpoo(edict_t *self)
 
 	gi.sound(Spoo,CHAN_WEAPON,sounds[SND_SPOO],1,ATTN_NORM,0);
 
-	gi.CreateEffect(&Spoo->s,
+	gi.CreateEffect(Spoo,
 				FX_SPOO,
 				CEF_OWNERS_ORIGIN,
 				Spoo->s.origin,

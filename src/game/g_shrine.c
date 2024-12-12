@@ -102,11 +102,11 @@ void PlayerKillShrineFX(edict_t *self)
 	// turn off the run shrine should we need to
 
 	self->s.effects &= ~EF_SPEED_ACTIVE;
-	gi.RemoveEffects(&self->s, FX_FOOT_TRAIL);
+	gi.RemoveEffects(self, FX_FOOT_TRAIL);
 
 	// Kill any lights that may already be out there for this player.
 
-	gi.RemoveEffects(&self->s, FX_PLAYER_TORCH);
+	gi.RemoveEffects(self, FX_PLAYER_TORCH);
 
 	// Kill lungs.
 
@@ -134,7 +134,7 @@ void PlayerKillShrineFX(edict_t *self)
 
 	// Kill any tomes that may already be out there for this player.
 
-	gi.RemoveEffects(&self->s, FX_TOME_OF_POWER);
+	gi.RemoveEffects(self, FX_TOME_OF_POWER);
 
 	// Turn off the tome at the client effect end through client flags that are passed down.
 
@@ -156,11 +156,11 @@ void PlayerRestartShrineFX(edict_t *self)
 	{
 		// Kill any lights that may already be out there for this player.
 
-		gi.RemoveEffects(&self->s, FX_PLAYER_TORCH);
+		gi.RemoveEffects(self, FX_PLAYER_TORCH);
 
 		// Create the light and the tome of power.
 
-		gi.CreateEffect(&self->s, FX_PLAYER_TORCH, CEF_OWNERS_ORIGIN, NULL, "");
+		gi.CreateEffect(self, FX_PLAYER_TORCH, CEF_OWNERS_ORIGIN, NULL, "");
 	}
 
 	// If we have a powerup, turn it on.
@@ -169,11 +169,11 @@ void PlayerRestartShrineFX(edict_t *self)
 	{
 		// Kill any lights that may already be out there for this player.
 
-		gi.RemoveEffects(&self->s, FX_TOME_OF_POWER);
+		gi.RemoveEffects(self, FX_TOME_OF_POWER);
 
 		// Create the light and the tome of power.
 
-		gi.CreateEffect(&self->s, FX_TOME_OF_POWER, CEF_OWNERS_ORIGIN, NULL, "");
+		gi.CreateEffect(self, FX_TOME_OF_POWER, CEF_OWNERS_ORIGIN, NULL, "");
 	}
 
 	// If we have a powerup, turn it on.
@@ -182,11 +182,11 @@ void PlayerRestartShrineFX(edict_t *self)
 	{
 		// Kill any lights that may already be out there for this player.
 
-		gi.RemoveEffects(&self->s, FX_FOOT_TRAIL);
+		gi.RemoveEffects(self, FX_FOOT_TRAIL);
 
 		// Create the light and the tome of power.
 
-		gi.CreateEffect(&self->s, FX_FOOT_TRAIL, CEF_OWNERS_ORIGIN, NULL, "");
+		gi.CreateEffect(self, FX_FOOT_TRAIL, CEF_OWNERS_ORIGIN, NULL, "");
 	}
 
 }
@@ -369,7 +369,7 @@ void DelayThink(edict_t *self)
 
 	VectorScale(dest->s.angles, ANGLE_TO_RAD, offset);
 	DirFromAngles(offset, offset2);
-	dest->PersistantCFX=gi.CreatePersistantEffect(&dest->s,
+	dest->PersistantCFX=gi.CreatePersistantEffect(dest,
 												  FX_SHRINE_BALL,
 												  CEF_BROADCAST,
 												  dest->s.origin,
@@ -455,7 +455,7 @@ void deal_with_shrine_node(edict_t *self)
 
 	// But kill the shrine ball thats out there for this shrine.
 
-	gi.RemoveEffects(&dest->s, FX_SHRINE_BALL);
+	gi.RemoveEffects(dest, FX_SHRINE_BALL);
 
 	// Kill the glowing ball in the middle.
 	if (dest->PersistantCFX)
@@ -467,7 +467,7 @@ void deal_with_shrine_node(edict_t *self)
 	// Make the shrine ball explode.
 	VectorScale(dest->s.angles, ANGLE_TO_RAD, offset);
 	DirFromAngles(offset, offset2);
-	gi.CreateEffect(&dest->s,FX_SHRINE_BALL_EXPLODE,CEF_OWNERS_ORIGIN,dest->s.origin,"db",offset2,(byte)(dest->style-1));
+	gi.CreateEffect(dest,FX_SHRINE_BALL_EXPLODE,CEF_OWNERS_ORIGIN,dest->s.origin,"db",offset2,(byte)(dest->style-1));
 }
 
 void shrine_restore_player(edict_t *other)
@@ -505,7 +505,7 @@ void player_shrine_health_effect(edict_t *self)
 {
 	// Start up the shrine heal effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_HEALTH, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_HEALTH, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -613,7 +613,7 @@ void player_shrine_armor_silver_effect(edict_t *self)
 {
 	// Start up the shrine armor effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_ARMOR, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_ARMOR, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -728,7 +728,7 @@ void player_shrine_armor_gold_effect(edict_t *self)
 {
 	// Start up the shrine armor effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_ARMOR, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_ARMOR, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -846,7 +846,7 @@ void player_shrine_staff_effect(edict_t *self)
 	else
 		gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine7.wav"),1,ATTN_NORM,0);
 
-	gi.CreateEffect(&self->s, FX_SHRINE_STAFF, flags, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_STAFF, flags, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -953,7 +953,7 @@ void player_shrine_lungs_effect(edict_t *self)
 {
 	// Start up the shrine lung effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_LUNGS, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_LUNGS, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -1056,15 +1056,15 @@ void player_shrine_light_effect(edict_t *self)
 
 	// Kill any lights that may already be out there for this player.
 
-	gi.RemoveEffects(&self->s, FX_PLAYER_TORCH);
+	gi.RemoveEffects(self, FX_PLAYER_TORCH);
 
 	// Create the light and the tome of power.
 
-	gi.CreateEffect(&self->s, FX_PLAYER_TORCH, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_PLAYER_TORCH, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Start up the shrine light effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_LIGHT, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_LIGHT, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -1171,7 +1171,7 @@ void player_shrine_mana_effect(edict_t *self)
 {
  	// Start up the shrine mana effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_MANA, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_MANA, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -1276,7 +1276,7 @@ void player_shrine_ghost_effect(edict_t *self)
 
 	// Start up the shrine ghost effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_GHOST, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_GHOST, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -1386,7 +1386,7 @@ void player_shrine_reflect_effect(edict_t *self)
 
 	// Start up the shrine staff effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_REFLECT, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_REFLECT, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -1499,15 +1499,15 @@ void player_shrine_powerup_effect(edict_t *self)
 
 	// Kill any tomes that may already be out there for this player.
 
-	gi.RemoveEffects(&self->s, FX_TOME_OF_POWER);
+	gi.RemoveEffects(self, FX_TOME_OF_POWER);
 
 	// Create the tome of power.
 
-	gi.CreateEffect(&self->s, FX_TOME_OF_POWER, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_TOME_OF_POWER, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Start up the shrine powerup effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_POWERUP, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_POWERUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -1615,7 +1615,7 @@ void player_shrine_speed_effect(edict_t *self)
 
 	// Start up the shrine powerup effect.
 
-	gi.CreateEffect(&self->s, FX_SHRINE_SPEED, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(self, FX_SHRINE_SPEED, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// Do the SHRINE sound.
 
@@ -1645,11 +1645,11 @@ void shrine_speed_core (edict_t *self, edict_t *other)
 
 	// Kill any tomes that may already be out there for this player.
 
-	gi.RemoveEffects(&other->s, FX_FOOT_TRAIL);
+	gi.RemoveEffects(other, FX_FOOT_TRAIL);
 
 	// Create the tome of power.
 
-	gi.CreateEffect(&other->s, FX_FOOT_TRAIL, CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(other, FX_FOOT_TRAIL, CEF_OWNERS_ORIGIN, NULL, "");
 
 	// restore dismemberment, and stop us being on fire
 	shrine_restore_player(other);

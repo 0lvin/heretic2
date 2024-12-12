@@ -210,7 +210,7 @@ static void RipperImpact(edict_t *caster, edict_t *other, vec3_t startpos, vec3_
 	//		little and make things more confusing than they are...)
 	//	Currently this sends 29 bytes plus the entity it's attached to.
 	//		This is down from (12 plus the entity) times eight, plus another effect for impact, plus another for the trail.
-	gi.CreateEffect(&ripper->s, FX_WEAPON_RIPPEREXPLODE, CEF_OWNERS_ORIGIN, NULL, "vbssssssss",
+	gi.CreateEffect(ripper, FX_WEAPON_RIPPEREXPLODE, CEF_OWNERS_ORIGIN, NULL, "vbssssssss",
 			startpos,
 			byaw,
 			ballarray[0],

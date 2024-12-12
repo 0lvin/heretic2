@@ -40,7 +40,7 @@ float mist_yaw;
 
 void Elflord_c_gib(edict_t *self, G_Message_t *msg)
 {
-	gi.CreateEffect(&self->s, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN , NULL,
+	gi.CreateEffect(self, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN , NULL,
 					"db", self->movedir, (byte)(AVG_VEC3T(self->s.scale) * 7.5));
 
 	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereImpact.wav"),2,ATTN_NORM,0);

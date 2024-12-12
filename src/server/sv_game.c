@@ -389,8 +389,8 @@ game_export_t* GetGameAPI(game_import_t* import);
 void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
 
-void
-SV_CreateEffectEvent(byte EventId, entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...)
+static void
+SV_CreateEffectEvent(byte EventId, edict_t* ent, int type, int flags, vec3_t origin, char* format, ...)
 {
 	if (developer && developer->value)
 	{
@@ -398,8 +398,8 @@ SV_CreateEffectEvent(byte EventId, entity_state_t* ent, int type, int flags, vec
 	}
 }
 
-void
-SV_RemoveEffectsEvent(byte EventId, entity_state_t* ent, int type)
+static void
+SV_RemoveEffectsEvent(byte EventId, edict_t* ent, int type)
 {
 	if (developer && developer->value)
 	{
@@ -416,10 +416,10 @@ qboolean SV_RemovePersistantEffect(int toRemove, int call_from)
 	return false;
 }
 
-void
-SV_RemoveEffects(entity_state_t* ent, int type)
+static void
+SV_RemoveEffects(edict_t* ent, int type)
 {
-	ent->clientEffects.numEffects = 0;
+	ent->s.clientEffects.numEffects = 0;
 }
 
 void
@@ -498,7 +498,7 @@ SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, sizebuf_
 }
 
 int
-SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...)
+SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, ...)
 {
 	int enta;
 	int effectID = -1;
@@ -509,7 +509,7 @@ SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origi
 	va_start(args, format);
 
 	if (ent) {
-		enta = ent->number;
+		enta = ent->s.number;
 	}
 	else {
 		enta = -1;
@@ -559,17 +559,17 @@ SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origi
 
 	if (ent != NULL)
 	{
-		ent->clientEffects.buf = &effect->buf[0];
-		ent->clientEffects.bufSize = sizeof(effect->buf);
-		ent->clientEffects.numEffects = 1;
+		ent->s.clientEffects.buf = &effect->buf[0];
+		ent->s.clientEffects.bufSize = sizeof(effect->buf);
+		ent->s.clientEffects.numEffects = 1;
 
 		if (type == (int)FX_MAGIC_PORTAL)
 		{
-			ent->clientEffects.isPersistant = true;
+			ent->s.clientEffects.isPersistant = true;
 		}
 		else
 		{
-			ent->clientEffects.isPersistant = false;
+			ent->s.clientEffects.isPersistant = false;
 		}
 	}
 
@@ -605,7 +605,7 @@ SV_CreatePersistantEffect(entity_state_t* ent, int type, int flags, vec3_t origi
 }
 
 void
-SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* format, ...)
+SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, ...)
 {
 	int enta;
 	int effectID = -1;
@@ -616,7 +616,7 @@ SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* f
 	va_start(args, format);
 
 	if (ent) {
-		enta = ent->number;
+		enta = ent->s.number;
 	}
 	else {
 		enta = -1;
@@ -660,9 +660,9 @@ SV_CreateEffect(entity_state_t* ent, int type, int flags, vec3_t origin, char* f
 
 	if (ent != NULL)
 	{
-		ent->clientEffects.buf = &effect->buf[0];
-		ent->clientEffects.bufSize = sizeof(effect->buf);
-		ent->clientEffects.numEffects = 1;
+		ent->s.clientEffects.buf = &effect->buf[0];
+		ent->s.clientEffects.bufSize = sizeof(effect->buf);
+		ent->s.clientEffects.numEffects = 1;
 	}
 
 	testflags = flags;

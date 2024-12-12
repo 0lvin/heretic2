@@ -580,7 +580,7 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 
 		make_pe_spell_reflect(self,Spell);
 
-		gi.CreateEffect(&Spell->s,
+		gi.CreateEffect(Spell,
 			FX_PE_SPELL,
 			CEF_OWNERS_ORIGIN,
 			NULL,
@@ -703,7 +703,7 @@ void plagueElf_spell(edict_t *self)
 		else
 			Spell->red_rain_count = FX_PE_MAKE_SPELL;
 
-		gi.CreateEffect(&Spell->s,
+		gi.CreateEffect(Spell,
 			FX_PE_SPELL,
 			CEF_OWNERS_ORIGIN,
 			NULL,
@@ -776,7 +776,7 @@ void plagueElf_c_spell(edict_t *self)
 	else
 		Spell->red_rain_count = FX_PE_MAKE_SPELL;
 
-	gi.CreateEffect(&Spell->s,
+	gi.CreateEffect(Spell,
 		FX_PE_SPELL,
 		CEF_OWNERS_ORIGIN,
 		NULL,
@@ -1370,7 +1370,7 @@ void plagueElf_pause (edict_t *self)
 void pelf_land(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, gi.soundindex("misc/land.wav"), 1, ATTN_NORM, 0);
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					   FX_DUST_PUFF,
 					   CEF_OWNERS_ORIGIN,
 					   self->s.origin,

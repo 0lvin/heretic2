@@ -270,7 +270,7 @@ void insectCut (edict_t *self, float attacktype)
 
 	T_Damage (trace.ent, self, self, dir, trace.endpos, vec3_origin, damage, damage*2, DAMAGE_DISMEMBER,MOD_DIED);
 
-/*	gi.CreateEffect(&self->s,
+/*	gi.CreateEffect(self,
 		FX_I_EFFECTS,
 		0,
 		vec3_origin,
@@ -400,7 +400,7 @@ void insect_death(edict_t *self, G_Message_t *msg)
 	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
-	gi.RemoveEffects(&self->s, FX_I_EFFECTS);
+	gi.RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 
 	self->deadflag = DEAD_DEAD;
@@ -720,7 +720,7 @@ void insectSpell(edict_t *self, float whichspell)
 
 void insectReleaseSpell (edict_t *self)
 {
-	gi.RemoveEffects(&self->s, FX_I_EFFECTS);
+	gi.RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX | EF_MARCUS_FLAG1;
 	self->damage_debounce_time = true;
 }
@@ -1154,7 +1154,7 @@ void insect_pain(edict_t *self, G_Message_t *msg)
 	if(!force_damage&&flrand(0,self->health)>damage)
 		return;
 
-	gi.RemoveEffects(&self->s, FX_I_EFFECTS);
+	gi.RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 	//sound
 	insect_random_pain_sound(self);
@@ -1732,7 +1732,7 @@ void SP_monster_tcheckrik_male (edict_t *self)
 		G_QPostMessage(self,MSG_STAND,PRI_DIRECTIVE, NULL);
 	}
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					FX_I_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					vec3_origin,
@@ -1884,7 +1884,7 @@ void SP_monster_tcheckrik_female (edict_t *self)
 
 	self->monsterinfo.aiflags |= AI_NO_MELEE;
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					FX_I_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					vec3_origin,

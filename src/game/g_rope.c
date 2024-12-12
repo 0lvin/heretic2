@@ -221,7 +221,7 @@ void rope_think(edict_t *self)
 				//Create the new rope that's attached to the player
 				self->rope_grab->s.effects |= EF_ALTCLIENTFX;
 
-				gi.CreateEffect(&self->enemy->s,
+				gi.CreateEffect(self->enemy,
 								FX_ROPE, CEF_BROADCAST | CEF_OWNERS_ORIGIN | CEF_FLAG6,
 								rope_top,
 								"ssbvvv",
@@ -530,11 +530,11 @@ void hanging_chicken_pain(edict_t *self, edict_t *other, float kick, int damage)
 
 	if (damage < 100)
 	{
-		gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
+		gi.CreateEffect(self, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
 	}
 	else
 	{
-		gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
+		gi.CreateEffect(self, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
 	}
 
 	if (irand(0,1))
@@ -748,7 +748,7 @@ void spawn_hanging_chicken(edict_t *self)
 	VectorCopy(self->s.origin, rope_end);
 	rope_end[2] += self->mins[2];
 
-	gi.CreatePersistantEffect(&self->s, FX_ROPE, CEF_BROADCAST, self->s.origin, "ssbvvv", end_id, end_id, model_type, end_ent->s.origin, end_ent->s.origin, end_ent->s.origin );
+	gi.CreatePersistantEffect(self, FX_ROPE, CEF_BROADCAST, self->s.origin, "ssbvvv", end_id, end_id, model_type, end_ent->s.origin, end_ent->s.origin, end_ent->s.origin );
 
 	self->think = rope_end_think2;
 	self->nextthink = level.time + 0.1;
@@ -889,7 +889,7 @@ void SP_obj_rope(edict_t *self)
 
 	rope_sway(self);
 
-	gi.CreatePersistantEffect(&self->s, FX_ROPE, CEF_BROADCAST, self->s.origin, "ssbvvv", grab_id, end_id, model_type, self->s.origin, grab_ent->s.origin, end_ent->s.origin );
+	gi.CreatePersistantEffect(self, FX_ROPE, CEF_BROADCAST, self->s.origin, "ssbvvv", grab_id, end_id, model_type, self->s.origin, grab_ent->s.origin, end_ent->s.origin );
 
 	self->think = rope_sway;
 	self->nextthink = level.time + 1;

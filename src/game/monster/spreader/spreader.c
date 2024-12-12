@@ -232,7 +232,7 @@ void spreader_dead(edict_t *self)
 		gas->svflags |= SVF_ALWAYS_SEND;
 		gas->s.effects=EF_MARCUS_FLAG1;
 
-		gi.CreateEffect(&gas->s, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, offset, "vb", spraydir, 100);//sprayorg, not offset?
+		gi.CreateEffect(gas, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, offset, "vb", spraydir, 100);//sprayorg, not offset?
 	}
 
 	M_EndDeath(self);
@@ -1013,7 +1013,7 @@ void spreaderTakeOff (edict_t *self)
 	gas->svflags |= SVF_ALWAYS_SEND;
 	gas->s.effects=EF_MARCUS_FLAG1;
 
-	gi.CreateEffect(&gas->s, FX_PLAGUEMISTEXPLODE, CEF_OWNERS_ORIGIN, self->pos1, "b", 70);
+	gi.CreateEffect(gas, FX_PLAGUEMISTEXPLODE, CEF_OWNERS_ORIGIN, self->pos1, "b", 70);
 
 	gi.sound(self, CHAN_VOICE, sounds[SND_PAIN], 1, ATTN_NORM, 0);
 	gi.sound(self, CHAN_WEAPON, sounds[SND_SPRAYSTART], 1, ATTN_NORM, 0);
@@ -1173,7 +1173,7 @@ void spreaderFlyLoop (edict_t *self)
 void spreader_land(edict_t *self)
 {
 	gi.sound(self, CHAN_BODY, gi.soundindex("misc/land.wav"), 1, ATTN_NORM, 0);
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					   FX_DUST_PUFF,
 					   CEF_OWNERS_ORIGIN,
 					   self->s.origin,

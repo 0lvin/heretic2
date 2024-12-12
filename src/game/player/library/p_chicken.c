@@ -246,7 +246,7 @@ void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 
 		if(!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID13,
-									   playerinfo->G_GetEntityStatePtr((edict_t *)playerinfo->self),
+									   playerinfo->self,
 									   FX_CHICKEN_EXPLODE,
 									   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 									   NULL,
@@ -278,7 +278,7 @@ void PlayerChickenFlap (playerinfo_t *playerinfo)
 
 	if(!playerinfo->isclient)
 		playerinfo->G_CreateEffect(EFFECT_PRED_ID14,
-								   (entity_state_t *)playerinfo->self, // jmarshall: believe this is right.
+								   playerinfo->self, // jmarshall: believe this is right.
 								   FX_CHICKEN_EXPLODE,
 								   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 								   NULL,

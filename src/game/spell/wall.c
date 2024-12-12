@@ -73,7 +73,7 @@ edict_t *CreateFireBlast(vec3_t startpos, vec3_t angles, edict_t *owner, int hea
 
 	angle_yaw = (short)(angles[YAW]*(65536.0/360.0));
 	angle_pitch = (short)(angles[PITCH]*(65536.0/360.0));
-	gi.CreateEffect(&wall->s, FX_WEAPON_FIREBURST, CEF_OWNERS_ORIGIN, NULL, "ss", angle_yaw, angle_pitch);
+	gi.CreateEffect(wall, FX_WEAPON_FIREBURST, CEF_OWNERS_ORIGIN, NULL, "ss", angle_yaw, angle_pitch);
 
 	return wall;
 }
@@ -99,7 +99,7 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 			{
 				T_Damage(trace->ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
 						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
-				gi.CreateEffect(&(trace->ent->s), FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
+				gi.CreateEffect(trace->ent, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 				gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/FirewallDamage.wav"),1,ATTN_NORM,0);
 
@@ -171,7 +171,7 @@ void FireBlastThink(edict_t *self)
 		{
 			T_Damage(ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
 					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
-			gi.CreateEffect(&ent->s, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
+			gi.CreateEffect(ent, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 			gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/FirewallDamage.wav"),1,ATTN_NORM,0);
 
@@ -297,7 +297,7 @@ edict_t *CreateFireWall(vec3_t startpos, vec3_t angles, edict_t *owner, int heal
 
 	angle_yaw = (short)(angles[YAW]*(65536.0/360.0));
 	angle_pitch = (short)(angles[PITCH]*(65536.0/360.0));
-	gi.CreateEffect(&wall->s, FX_WEAPON_FIREWAVE, CEF_OWNERS_ORIGIN | flags, startpos, "ss", angle_yaw, angle_pitch);
+	gi.CreateEffect(wall, FX_WEAPON_FIREWAVE, CEF_OWNERS_ORIGIN | flags, startpos, "ss", angle_yaw, angle_pitch);
 
 	return wall;
 }
@@ -340,7 +340,7 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 			{
 				T_Damage(trace->ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
 						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
-				gi.CreateEffect(&(trace->ent->s), FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
+				gi.CreateEffect(trace->ent, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 				trace->ent->fire_timestamp = self->fire_timestamp;
 
@@ -422,7 +422,7 @@ void WallMissileThink(edict_t *self)
 		{
 			T_Damage(ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
 					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
-			gi.CreateEffect(&ent->s, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
+			gi.CreateEffect(ent, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
 			ent->fire_timestamp = self->fire_timestamp;
 

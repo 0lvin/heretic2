@@ -63,7 +63,7 @@ static void MeteorBarrierDie(edict_t *self, int Flags)
 	if (self->PersistantCFX)
 	{
 		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
-		gi.RemoveEffects(&self->owner->s, FX_SPELL_METEORBARRIER+self->health);
+		gi.RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
 		self->PersistantCFX = 0;
 	}
 
@@ -197,7 +197,7 @@ edict_t *MeteorBarrierReflect(edict_t *self, edict_t *other, vec3_t vel)
 	if (self->PersistantCFX)
 	{
 		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
-		gi.RemoveEffects(&self->owner->s, FX_SPELL_METEORBARRIER+self->health);
+		gi.RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
 		self->PersistantCFX = 0;
 	}
 
@@ -205,13 +205,13 @@ edict_t *MeteorBarrierReflect(edict_t *self, edict_t *other, vec3_t vel)
 	Meteor->owner->client->Meteors[Meteor->health] = Meteor;
 
 	// create a client effect for this new meteor
-	gi.CreateEffect(&Meteor->s, FX_SPELL_METEORBARRIER_TRAVEL, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "");
+	gi.CreateEffect(Meteor, FX_SPELL_METEORBARRIER_TRAVEL, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "");
 
 	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
-	gi.CreateEffect(&Meteor->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", Meteor->velocity);
+	gi.CreateEffect(Meteor, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", Meteor->velocity);
 
 	return(Meteor);
 }
@@ -311,13 +311,13 @@ static void MeteorBarrierSearchThink(edict_t *self)
 			}
 
 			gi.sound(self,CHAN_BODY,gi.soundindex("weapons/MeteorBarrierSeek.wav"),1,ATTN_NORM,0);
-			gi.CreateEffect(&self->s, FX_SPELL_METEORBARRIER_TRAVEL, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "");
+			gi.CreateEffect(self, FX_SPELL_METEORBARRIER_TRAVEL, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "");
 
 			// remove the persistant effect from the persistant effect list
 			if (self->PersistantCFX)
 			{
 				gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
-				gi.RemoveEffects(&self->owner->s, FX_SPELL_METEORBARRIER+self->health);
+				gi.RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
 				self->PersistantCFX = 0;
 			}
 
@@ -397,7 +397,7 @@ void create_meteor(edict_t *Meteor)
 
 // Spawn the meteors
 
-void SpellCastMeteorBarrier(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value)
+void SpellCastMeteorBarrier(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value)
 {
 	int		I, cast;
 	edict_t	*Meteor;
@@ -408,27 +408,27 @@ void SpellCastMeteorBarrier(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec
 	for(I = 0; I < 4; I++)
 	{
 		// If my caster is a player, then make sure they only have one instance of me active, then
-		if(Caster->client)
+		if(caster->client)
 		{
-			if(Caster->client->Meteors[I])
+			if(caster->client->Meteors[I])
 				continue;
 		}
 
 		// enough mana to do this ?
-		if (Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.def_ammo_index] < Caster->client->playerinfo.pers.defence->quantity)
+		if (caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.def_ammo_index] < caster->client->playerinfo.pers.defence->quantity)
 			break;
 
 		// decrement our mana
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.def_ammo_index] -= Caster->client->playerinfo.pers.defence->quantity;
+			caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.def_ammo_index] -= caster->client->playerinfo.pers.defence->quantity;
 
 		cast = true;
 		Meteor = G_Spawn();
 		Meteor->svflags |= SVF_NOCLIENT;
 
-		if(Caster->client)
+		if(caster->client)
 		{
-			Caster->client->Meteors[I] = Meteor;
+			caster->client->Meteors[I] = Meteor;
 		}
 
 		VectorCopy(StartPos, Meteor->s.origin);
@@ -439,19 +439,19 @@ void SpellCastMeteorBarrier(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec
 		Meteor->count = 0;
 		Meteor->random = 0;							// Lifetime count
 		Meteor->solid = SOLID_NOT;
-		Meteor->owner = Caster;
-		Caster->client->playerinfo.meteor_count |= 1<<I;				// determine how many meteors are still attached to the player
+		Meteor->owner = caster;
+		caster->client->playerinfo.meteor_count |= 1<<I;				// determine how many meteors are still attached to the player
 
 		gi.linkentity(Meteor);
 
-		Meteor->PersistantCFX = gi.CreatePersistantEffect(&Caster->s, FX_SPELL_METEORBARRIER+I, CEF_BROADCAST|CEF_OWNERS_ORIGIN|(I<<5), NULL, "" );
+		Meteor->PersistantCFX = gi.CreatePersistantEffect(caster, FX_SPELL_METEORBARRIER+I, CEF_BROADCAST|CEF_OWNERS_ORIGIN|(I<<5), NULL, "" );
 
 	}
 	if(cast)
 	{
-		gi.sound(Caster,CHAN_WEAPON,gi.soundindex("weapons/MeteorBarrierCast.wav"),1,ATTN_NORM,0);
-	 	Caster->s.sound = gi.soundindex("weapons/MeteorBarrierAmbient.wav");
-	 	Caster->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
+		gi.sound(caster,CHAN_WEAPON,gi.soundindex("weapons/MeteorBarrierCast.wav"),1,ATTN_NORM,0);
+		caster->s.sound = gi.soundindex("weapons/MeteorBarrierAmbient.wav");
+		caster->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 	}
 }
 // end

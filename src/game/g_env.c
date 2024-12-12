@@ -82,7 +82,7 @@ void smoke_use (edict_t *self, edict_t *other, edict_t *activator)
 		wait = Q_ftol(self->wait);
 		maxrange = Q_ftol(self->attenuation);
 
-		self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+		self->PersistantCFX = gi.CreatePersistantEffect(self,
 								FX_ENVSMOKE,
 								CEF_BROADCAST,self->s.origin,
 								"bdbbb",scale,dir,speed,wait,maxrange);
@@ -98,7 +98,7 @@ void smoke_use (edict_t *self, edict_t *other, edict_t *activator)
 			gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_SMOKE);
 			self->PersistantCFX = 0;
 		}
-		gi.RemoveEffects(&self->s, FX_ENVSMOKE);
+		gi.RemoveEffects(self, FX_ENVSMOKE);
 		self->spawnflags |= START_OFF;
 	}
 }
@@ -165,7 +165,7 @@ void SP_env_smoke (edict_t *self)
 	else
 	{
 		AngleVectors(self->s.angles, dir, NULL, NULL);
-		self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+		self->PersistantCFX = gi.CreatePersistantEffect(self,
 								FX_ENVSMOKE,
 								CEF_BROADCAST,self->s.origin,
 								"bdbbb",scale,dir,speed,wait,maxrange);

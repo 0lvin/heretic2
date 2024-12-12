@@ -154,7 +154,7 @@ void chicken_death(edict_t *self, G_Message_t *msg)
 	gi.sound (self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	BecomeDebris(self);
-	gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
+	gi.CreateEffect(self, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
 
 }
 
@@ -211,7 +211,7 @@ void MorphChickenOut(edict_t *self)
 		// do the teleport sound
 		gi.sound(newent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 		// do the teleport effect
-		gi.CreateEffect(&newent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, NULL, "" );
+		gi.CreateEffect(newent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, NULL, "" );
 		G_FreeEdict(self);
 	}
 }
@@ -229,7 +229,7 @@ void chicken_check (edict_t *self)
 		return;
 
 	//	make that pretty effect around us
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, NULL, "" );
+	gi.CreateEffect(self, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, NULL, "" );
 
 	// deal with the existing chicken
 	self->think = MorphChickenOut;

@@ -26,7 +26,7 @@ void waterdrip_go(edict_t *self)
 		frame = 1;
 	}
 
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_DRIPPER, CEF_BROADCAST,
+	self->PersistantCFX = gi.CreatePersistantEffect(self, FX_DRIPPER, CEF_BROADCAST,
 		self->s.origin, "bb", self->count, frame);
 
 	self->think = NULL;
@@ -39,7 +39,7 @@ void waterdrip_use (edict_t *self, edict_t *other, edict_t *activator)
 		waterdrip_go(self);
 	else
 	{
-		gi.RemoveEffects(&self->s,0);
+		gi.RemoveEffects(self,0);
 		self->PersistantCFX = 0;
 	}
 }
@@ -85,7 +85,7 @@ void fountain_use (edict_t *self, edict_t *other, edict_t *activator)
 	frame = 0;
 	if (self->spawnflags & FOUNTAIN_OFF)
 	{
-		self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_FOUNTAIN, CEF_BROADCAST, self->s.origin, "vsb", self->s.angles, drop, frame);
+		self->PersistantCFX = gi.CreatePersistantEffect(self, FX_FOUNTAIN, CEF_BROADCAST, self->s.origin, "vsb", self->s.angles, drop, frame);
 		self->s.sound = gi.soundindex("ambient/fountainloop.wav");
 		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 		self->spawnflags &= ~FOUNTAIN_OFF;
@@ -97,7 +97,7 @@ void fountain_use (edict_t *self, edict_t *other, edict_t *activator)
 			gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_WATER);
 			self->PersistantCFX = 0;
 		}
-		gi.RemoveEffects(&self->s, FX_FOUNTAIN);
+		gi.RemoveEffects(self, FX_FOUNTAIN);
 		self->spawnflags |= FOUNTAIN_OFF;
 		self->s.sound = 0;
 	}
@@ -140,7 +140,7 @@ void SP_env_water_fountain(edict_t *self)
 
 	drop = -self->delay * 8.0;
 	frame = 0;
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_FOUNTAIN, CEF_BROADCAST, self->s.origin, "vsb", self->s.angles, drop, frame);
+	self->PersistantCFX = gi.CreatePersistantEffect(self, FX_FOUNTAIN, CEF_BROADCAST, self->s.origin, "vsb", self->s.angles, drop, frame);
 	self->s.sound = gi.soundindex("ambient/fountainloop.wav");
 	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 }
@@ -174,7 +174,7 @@ void SP_env_waterfall_base(edict_t *self)
 	yaw = Q_ftol((self->s.angles[1] * 256.0) / 360.0);
 
 	gi.linkentity(self);
-	gi.CreatePersistantEffect(&self->s, FX_WATERFALLBASE, CEF_BROADCAST, self->s.origin, "bbb", xrad, yrad, yaw);
+	gi.CreatePersistantEffect(self, FX_WATERFALLBASE, CEF_BROADCAST, self->s.origin, "bbb", xrad, yrad, yaw);
 
 }
 
@@ -383,7 +383,7 @@ void SP_env_mist(edict_t *self)
 	VectorSet(self->mins, -5, -5, -5);
 	VectorSet(self->maxs, 5, 5, 5);
 
-	gi.CreatePersistantEffect(&self->s, FX_MIST, CEF_BROADCAST, self->s.origin, "b", scale);
+	gi.CreatePersistantEffect(self, FX_MIST, CEF_BROADCAST, self->s.origin, "b", scale);
 	gi.linkentity(self);
 }
 
@@ -401,7 +401,7 @@ void SP_env_bubbler(edict_t *self)
 	VectorSet(self->maxs, 5, 5, 5);
 
 	self->s.effects |= EF_ALWAYS_ADD_EFFECTS;
-	gi.CreatePersistantEffect(&self->s, FX_BUBBLER, CEF_BROADCAST, self->s.origin, "b", self->count);
+	gi.CreatePersistantEffect(self, FX_BUBBLER, CEF_BROADCAST, self->s.origin, "b", self->count);
 	gi.linkentity(self);
 }
 

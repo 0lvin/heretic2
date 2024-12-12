@@ -974,7 +974,7 @@ void PlayerChickenDeath(edict_t *self)
 	//gi.sound (self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->client->playerinfo.deadflag = DEAD_DEAD;
-	gi.CreateEffect(&self->s, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
+	gi.CreateEffect(self, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
 
 	// fix that respawning bug
 	self->morph_timer = level.time -1;

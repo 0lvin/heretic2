@@ -21,7 +21,7 @@ void create_redarrow(edict_t *redarrow);
 
 void RedRainRemove(edict_t *self)
 {
-	gi.RemoveEffects(&self->s, 0);
+	gi.RemoveEffects(self, 0);
 	G_SetToFree(self);
 }
 
@@ -126,7 +126,7 @@ void RedRainThink(edict_t *self)
 						gi.sound(victim,CHAN_WEAPON,gi.soundindex("weapons/Lightning.wav"),1,ATTN_NORM,0);
 
 						// Do a nasty looking blast at the impact point
-						gi.CreateEffect(&victim->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN | CEF_FLAG7, NULL, "t", diffpos);
+						gi.CreateEffect(victim, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN | CEF_FLAG7, NULL, "t", diffpos);
 
 						if(!(EntReflecting(victim, true, true)))
 						{
@@ -209,14 +209,14 @@ edict_t *RedRainMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 	redarrow->reflect_debounce_time = self->reflect_debounce_time -1;
 	redarrow->reflected_time=self->reflected_time;
 	G_LinkMissile(redarrow);
-	gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE,
+	gi.CreateEffect(redarrow, FX_WEAPON_REDRAINMISSILE,
 			CEF_OWNERS_ORIGIN|(redarrow->health<<5)|CEF_FLAG8, NULL, "t", redarrow->velocity);
 
 	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
-	gi.CreateEffect(&redarrow->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", redarrow->velocity);
+	gi.CreateEffect(redarrow, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", redarrow->velocity);
 
 	return(redarrow);
 }
@@ -332,14 +332,14 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 	// Start the red rain
 	// Send along the health as a flag, to indicate if powered up.
-	gi.CreateEffect(&damagearea->s, FX_WEAPON_REDRAIN, CEF_BROADCAST|(self->health<<5), org, "");
+	gi.CreateEffect(damagearea, FX_WEAPON_REDRAIN, CEF_BROADCAST|(self->health<<5), org, "");
 
 //	gi.sound(damagearea, CHAN_VOICE, gi.soundindex("weapons/RedRainFall.wav"), 2, ATTN_NORM,0);
 	damagearea->s.sound = gi.soundindex("weapons/RedRainFall.wav");
 	damagearea->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 
 	// Turn off the client effect
-	gi.RemoveEffects(&self->s, FX_WEAPON_REDRAINMISSILE);
+	gi.RemoveEffects(self, FX_WEAPON_REDRAINMISSILE);
 	G_SetToFree(self);
 }
 
@@ -384,7 +384,7 @@ void create_redarrow(edict_t *redarrow)
 // SpellCastRedRain
 // ****************************************************************************
 
-void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t unused, float value)
+void SpellCastRedRain(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t unused, float value)
 {
 	edict_t		*redarrow;
 	trace_t		trace;
@@ -393,9 +393,9 @@ void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 
 	redarrow = G_Spawn();
 
-	Caster->red_rain_count++;
+	caster->red_rain_count++;
 	// health indicates a level of powerup
-	if (Caster->client->playerinfo.powerup_timer > level.time)
+	if (caster->client->playerinfo.powerup_timer > level.time)
 	{	// Shoot powered up red rain.
  		redarrow->health = 1;
 		powerup=true;
@@ -410,14 +410,14 @@ void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	//Check ahead first to see if it's going to hit anything at this angle
 	AngleVectors(AimAngles, forward, NULL, NULL);
 	VectorMA(StartPos, RED_ARROW_SPEED, forward, endpos);
-	trace = gi.trace(StartPos, vec3_origin, vec3_origin, endpos, Caster, MASK_MONSTERSOLID);
-	if(trace.ent && ok_to_autotarget(Caster, trace.ent))
+	trace = gi.trace(StartPos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
+	if(trace.ent && ok_to_autotarget(caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, RED_ARROW_SPEED, redarrow->velocity);
 	}
 	else
 	{//autotarget current enemy
-		GetAimVelocity(Caster->enemy, redarrow->s.origin, RED_ARROW_SPEED, AimAngles, redarrow->velocity);
+		GetAimVelocity(caster->enemy, redarrow->s.origin, RED_ARROW_SPEED, AimAngles, redarrow->velocity);
 	}
 	VectorNormalize2(redarrow->velocity, dir);
 	// naughty naughty - this requires a normalised vector
@@ -426,29 +426,29 @@ void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	create_redarrow(redarrow);
 	redarrow->reflect_debounce_time = MAX_REFLECT;
 
-	redarrow->owner = Caster;
+	redarrow->owner = caster;
 	G_LinkMissile(redarrow);
 
-	gi.RemoveEffects(&Caster->s, FX_WEAPON_REDRAINGLOW);
+	gi.RemoveEffects(caster, FX_WEAPON_REDRAINGLOW);
 
 	if (powerup)
 	{	// Play powerup firing sound
-		gi.sound(Caster, CHAN_WEAPON, gi.soundindex("weapons/RedRainPowerFire.wav"), 1, ATTN_NORM, 0);
+		gi.sound(caster, CHAN_WEAPON, gi.soundindex("weapons/RedRainPowerFire.wav"), 1, ATTN_NORM, 0);
 	}
 	else
 	{	// Player normal red rain firing sound
-		gi.sound(Caster, CHAN_WEAPON, gi.soundindex("weapons/RedRainFire.wav"), 1, ATTN_NORM, 0);
+		gi.sound(caster, CHAN_WEAPON, gi.soundindex("weapons/RedRainFire.wav"), 1, ATTN_NORM, 0);
 	}
 
 	// remove the bow ready sound
-	Caster->s.sound = 0;
+	caster->s.sound = 0;
 
 	// Trace from the player's origin because then if we hit a wall, the effect won't be inside it...
-	trace = gi.trace(Caster->s.origin, redarrow->mins, redarrow->maxs, redarrow->s.origin, Caster, MASK_PLAYERSOLID);
+	trace = gi.trace(caster->s.origin, redarrow->mins, redarrow->maxs, redarrow->s.origin, caster, MASK_PLAYERSOLID);
 	if (trace.startsolid || trace.fraction < .99)
 	{
 		if (trace.startsolid)
-			VectorCopy(Caster->s.origin, redarrow->s.origin);
+			VectorCopy(caster->s.origin, redarrow->s.origin);
 		else
 			VectorCopy(trace.endpos, redarrow->s.origin);
 		RedRainMissileTouch(redarrow, trace.ent, &trace.plane, trace.surface);
@@ -458,12 +458,12 @@ void SpellCastRedRain(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	// Create the missile and trail effect only if we successfully launch the missile
 	if (powerup)
 	{	// Magenta trail
-		gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6,
+		gi.CreateEffect(redarrow, FX_WEAPON_REDRAINMISSILE, CEF_OWNERS_ORIGIN|CEF_FLAG6,
 					NULL, "t", redarrow->velocity);
 	}
 	else
 	{	// Red trail
-		gi.CreateEffect(&redarrow->s, FX_WEAPON_REDRAINMISSILE, CEF_OWNERS_ORIGIN,
+		gi.CreateEffect(redarrow, FX_WEAPON_REDRAINMISSILE, CEF_OWNERS_ORIGIN,
 					NULL, "t", redarrow->velocity);
 	}
 }

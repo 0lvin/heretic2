@@ -58,7 +58,7 @@ extern void SpellCastPhoenix(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,ve
 extern void SpellCastHellstaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir);
 
 static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJoint,
-								vec3_t DefaultStartPos,vec3_t ActualStartPos,edict_t *Caster);
+								vec3_t DefaultStartPos,vec3_t ActualStartPos, edict_t *caster);
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
 // ************************************************************************************************
@@ -74,7 +74,7 @@ extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboole
 // *************************************************************************************************
 
 static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJoint,
-								vec3_t DefaultStartPos,vec3_t ActualStartPos,edict_t *Caster)
+								vec3_t DefaultStartPos,vec3_t ActualStartPos, edict_t *caster)
 {
 	matrix3_t	LowerRotationMatrix,UpperRotationMatrix;
 	vec3_t		LowerbackJointAngles,UpperbackJointAngles,
@@ -84,19 +84,19 @@ static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJo
 
 	// Get matrices corresponding to the current angles of the upper and lower back joints.
 
-	LowerbackJointAngles[PITCH]=GetJointAngle(Caster->s.rootJoint+CORVUS_LOWERBACK,PITCH);
-	LowerbackJointAngles[YAW]=GetJointAngle(Caster->s.rootJoint+CORVUS_LOWERBACK,YAW);
-	LowerbackJointAngles[ROLL]=GetJointAngle(Caster->s.rootJoint+CORVUS_LOWERBACK,ROLL);
+	LowerbackJointAngles[PITCH]=GetJointAngle(caster->s.rootJoint+CORVUS_LOWERBACK,PITCH);
+	LowerbackJointAngles[YAW]=GetJointAngle(caster->s.rootJoint+CORVUS_LOWERBACK,YAW);
+	LowerbackJointAngles[ROLL]=GetJointAngle(caster->s.rootJoint+CORVUS_LOWERBACK,ROLL);
 	Matrix3FromAngles(LowerbackJointAngles,LowerRotationMatrix);
 
-	UpperbackJointAngles[PITCH]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,PITCH);
-	UpperbackJointAngles[YAW]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,YAW);
-	UpperbackJointAngles[ROLL]=GetJointAngle(Caster->s.rootJoint+CORVUS_UPPERBACK,ROLL);
+	UpperbackJointAngles[PITCH]=GetJointAngle(caster->s.rootJoint+CORVUS_UPPERBACK,PITCH);
+	UpperbackJointAngles[YAW]=GetJointAngle(caster->s.rootJoint+CORVUS_UPPERBACK,YAW);
+	UpperbackJointAngles[ROLL]=GetJointAngle(caster->s.rootJoint+CORVUS_UPPERBACK,ROLL);
 	Matrix3FromAngles(UpperbackJointAngles,UpperRotationMatrix);
 
 	// Get vector from player model's origin to upper joint.
 
-	VectorAdd(Caster->s.origin,OriginToUpperJoint,UpperJoint);
+	VectorAdd(caster->s.origin,OriginToUpperJoint,UpperJoint);
 
 	// Get vector from lower joint to upper joint.
 
@@ -104,8 +104,8 @@ static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJo
 
 	// Get vector from upper joint to the default flying-fist's start position.
 
-	AngleVectors(Caster->s.angles,Forward,Right,Up);
-	VectorMA(Caster->s.origin,DefaultStartPos[0],Right,StartPos);
+	AngleVectors(caster->s.angles,Forward,Right,Up);
+	VectorMA(caster->s.origin,DefaultStartPos[0],Right,StartPos);
 	VectorMA(StartPos,DefaultStartPos[1],Forward,StartPos);
 	VectorMA(StartPos,DefaultStartPos[2],Up,StartPos);
 	VectorSubtract(StartPos,UpperJoint,StartPos);
@@ -122,7 +122,7 @@ static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJo
 
 	// Finally, add on the model's origin to give the correct start position for the flying-fist.
 
-	VectorAdd(StartPos,Caster->s.origin,StartPos);
+	VectorAdd(StartPos,caster->s.origin,StartPos);
 
 	VectorCopy(StartPos,ActualStartPos);
 }
@@ -183,7 +183,7 @@ int sworddamage[STAFF_LEVEL_MAX][2] =
 	{	SWORD_POWER2_DMG_MIN,	SWORD_POWER2_DMG_MAX	},		// STAFF_LEVEL_POWER2
 };
 
-void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
+void WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
 {
 	va_list Marker;
 	char CurrentChar;
@@ -197,8 +197,8 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 
 	trace_t trace;
 
-	assert(Caster->client);
-	playerinfo = &Caster->client->playerinfo;
+	assert(caster->client);
+	playerinfo = &caster->client->playerinfo;
 	assert(playerinfo);
 
 	powerlevel = playerinfo->pers.stafflevel;
@@ -223,37 +223,37 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 	locid=va_arg(Marker,int);
 	va_end(Marker);
 
-	AngleVectors(Caster->client->aimangles, fwd, right, up);
+	AngleVectors(caster->client->aimangles, fwd, right, up);
 
 	// Set up the area to check.
 	VectorCopy(swordpositions[locid], atkpos);
-	VectorMA(Caster->s.origin, atkpos[0], fwd, endpos);
+	VectorMA(caster->s.origin, atkpos[0], fwd, endpos);
 	VectorMA(endpos, -atkpos[1], right, endpos);
 	VectorMA(endpos, atkpos[2], up, endpos);
 
 	// Now if we are the first attack of this sweep (1, 5, 9, 13), starting in solid means a hit.  If not, then we must avoid startsolid entities.
 	if ((locid & 0x03) == 0x01)
 	{	// First check of the swing.
-		Caster->client->lastentityhit = NULL;
+		caster->client->lastentityhit = NULL;
 		VectorCopy(endpos, startpos);
 	}
 	else
 	{
 		VectorCopy(swordpositions[locid-1], atkpos);
-		VectorMA(Caster->s.origin, atkpos[0], fwd, startpos);
+		VectorMA(caster->s.origin, atkpos[0], fwd, startpos);
 		VectorMA(startpos, -atkpos[1], right, startpos);
 		VectorMA(startpos, atkpos[2], up, startpos);
 	}
-	startpos[2] += Caster->viewheight;
-	endpos[2] += Caster->viewheight;
+	startpos[2] += caster->viewheight;
+	endpos[2] += caster->viewheight;
 
 	// For showing where the sword attacks are.
 //	gi.CreateEffect(NULL, FX_TEST_BBOX, 0, endpos, "fff", maxs[0], mins[2], maxs[2]);
 
-	VectorCopy(endpos, Caster->client->laststaffpos);
-	Caster->client->laststaffuse = level.time;
+	VectorCopy(endpos, caster->client->laststaffpos);
+	caster->client->laststaffuse = level.time;
 
-	trace = gi.trace(startpos, mins, maxs, endpos, Caster, MASK_PLAYERSOLID|CONTENTS_DEADMONSTER);
+	trace = gi.trace(startpos, mins, maxs, endpos, caster, MASK_PLAYERSOLID|CONTENTS_DEADMONSTER);
 	if(level.fighting_beast)
 	{
 		edict_t *ent;
@@ -264,12 +264,12 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 
 	if (trace.ent && trace.ent->takedamage)
 	{
-		if (!trace.startsolid || trace.ent != Caster->client->lastentityhit)
+		if (!trace.startsolid || trace.ent != caster->client->lastentityhit)
 		{
 			if (playerinfo->advancedstaff && trace.ent->client && trace.ent->client->playerinfo.block_timer >= level.time)
 			{	// Crimminy, what if they're blocking?
 				// Check angle
-				VectorSubtract(Caster->s.origin, trace.ent->s.origin, hitdir);
+				VectorSubtract(caster->s.origin, trace.ent->s.origin, hitdir);
 				VectorNormalize(hitdir);
 				VectoAngles(hitdir, hitangles);
 				diffangles[YAW] = hitangles[YAW] - trace.ent->client->aimangles[YAW];
@@ -303,20 +303,20 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 										hitdir);
 					}
 
-					AlertMonsters (Caster, Caster, 1, true);
+					AlertMonsters(caster, caster, 1, true);
 					switch(irand(1,3))
 					{
 					case 1:
-						gi.sound(Caster, CHAN_AUTO, gi.soundindex("weapons/ArmorRic1.wav"), 1, ATTN_NORM, 0);
+						gi.sound(caster,  CHAN_AUTO, gi.soundindex("weapons/ArmorRic1.wav"), 1, ATTN_NORM, 0);
 						break;
 					case 2:
-						gi.sound(Caster, CHAN_AUTO, gi.soundindex("weapons/ArmorRic2.wav"), 1, ATTN_NORM, 0);
+						gi.sound(caster,  CHAN_AUTO, gi.soundindex("weapons/ArmorRic2.wav"), 1, ATTN_NORM, 0);
 						break;
 					case 3:
-						gi.sound(Caster, CHAN_AUTO, gi.soundindex("weapons/ArmorRic3.wav"), 1, ATTN_NORM, 0);
+						gi.sound(caster,  CHAN_AUTO, gi.soundindex("weapons/ArmorRic3.wav"), 1, ATTN_NORM, 0);
 						break;
 					}
-					Caster->client->lastentityhit = trace.ent;
+					caster->client->lastentityhit = trace.ent;
 
 					// Now we're in trouble, go into the attack recoil...
 					switch((locid-1)>>2)
@@ -382,21 +382,21 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 										hitdir);
 					}
 
-					AlertMonsters (Caster, Caster, 1, true);
+					AlertMonsters (caster, caster, 1, true);
 					switch(irand(1,3))
 					{
 					case 1:
-						gi.sound(Caster, CHAN_AUTO, gi.soundindex("weapons/ArmorRic1.wav"), 1, ATTN_NORM, 0);
+						gi.sound(caster,  CHAN_AUTO, gi.soundindex("weapons/ArmorRic1.wav"), 1, ATTN_NORM, 0);
 						break;
 					case 2:
-						gi.sound(Caster, CHAN_AUTO, gi.soundindex("weapons/ArmorRic2.wav"), 1, ATTN_NORM, 0);
+						gi.sound(caster,  CHAN_AUTO, gi.soundindex("weapons/ArmorRic2.wav"), 1, ATTN_NORM, 0);
 						break;
 					case 3:
-						gi.sound(Caster, CHAN_AUTO, gi.soundindex("weapons/ArmorRic3.wav"), 1, ATTN_NORM, 0);
+						gi.sound(caster,  CHAN_AUTO, gi.soundindex("weapons/ArmorRic3.wav"), 1, ATTN_NORM, 0);
 						break;
 					}
-					Caster->client->lastentityhit = trace.ent;
-					trace.ent->client->lastentityhit = Caster;
+					caster->client->lastentityhit = trace.ent;
+					trace.ent->client->lastentityhit = caster;
 
 					// Now we're in trouble, go into the attack recoil...
 					switch((locid-1)>>2)
@@ -437,7 +437,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 				}
 			}
 
-			if (CanDamage (trace.ent, Caster))
+			if (CanDamage (trace.ent, caster))
 			{
 				VectorSubtract(endpos, startpos, hitdir);
 				VectorNormalize2(hitdir, hitdir);
@@ -465,7 +465,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 					break;
 				}
 
-				if(Caster->client)
+				if(caster->client)
 				{
 					if(playerinfo->flags & PLAYER_FLAG_NO_LARM)
 					{
@@ -488,20 +488,20 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 					break;
 				}
 
-				T_Damage (trace.ent, Caster, Caster, fwd, trace.endpos, hitdir, damage, damage*4, dflags,MOD_STAFF);
+				T_Damage (trace.ent, caster, caster, fwd, trace.endpos, hitdir, damage, damage*4, dflags,MOD_STAFF);
 
 				// If we hit a monster, stick a trail of blood on the staff...
 				if (trace.ent->svflags & SVF_MONSTER)
 				{
 					if(trace.ent->materialtype == MAT_INSECT)//yellow blood
-						gi.CreateEffect(&Caster->s, FX_LINKEDBLOOD, CEF_FLAG8|CEF_OWNERS_ORIGIN, NULL, "bb", 30, CORVUS_BLADE);
+						gi.CreateEffect(caster, FX_LINKEDBLOOD, CEF_FLAG8|CEF_OWNERS_ORIGIN, NULL, "bb", 30, CORVUS_BLADE);
 					else
-						gi.CreateEffect(&Caster->s, FX_LINKEDBLOOD, CEF_OWNERS_ORIGIN, NULL, "bb", 30, CORVUS_BLADE);
+						gi.CreateEffect(caster, FX_LINKEDBLOOD, CEF_OWNERS_ORIGIN, NULL, "bb", 30, CORVUS_BLADE);
 				}
 
 				if (trace.ent->svflags & SVF_MONSTER || trace.ent->client)
 				{
-					Caster->s.effects |= EF_BLOOD_ENABLED;
+					caster->s.effects |= EF_BLOOD_ENABLED;
 					playerinfo->effects |= EF_BLOOD_ENABLED;
 				}
 
@@ -509,7 +509,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 				switch (powerlevel)
 				{
 				case STAFF_LEVEL_BASIC:
-					gi.sound(Caster,CHAN_AUTO,gi.soundindex("weapons/staffhit.wav"),1,ATTN_NORM,0);
+					gi.sound(caster, CHAN_AUTO,gi.soundindex("weapons/staffhit.wav"),1,ATTN_NORM,0);
 					break;
 
 				case STAFF_LEVEL_POWER1:
@@ -521,7 +521,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 									trace.plane.normal,
 									powerlevel);
 
-					gi.sound(Caster,CHAN_AUTO,gi.soundindex("weapons/staffhit_2.wav"),1,ATTN_NORM,0);
+					gi.sound(caster, CHAN_AUTO,gi.soundindex("weapons/staffhit_2.wav"),1,ATTN_NORM,0);
 					break;
 
 				case STAFF_LEVEL_POWER2:
@@ -533,17 +533,17 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 									trace.plane.normal,
 									powerlevel);
 
-					gi.sound(Caster,CHAN_AUTO,gi.soundindex("weapons/staffhit_3.wav"),1,ATTN_NORM,0);
+					gi.sound(caster, CHAN_AUTO,gi.soundindex("weapons/staffhit_3.wav"),1,ATTN_NORM,0);
 					break;
 				}
 
-				Caster->client->lastentityhit = trace.ent;
+				caster->client->lastentityhit = trace.ent;
 			}
 		}
 	}
 	else if (trace.fraction < 1.0 || trace.startsolid)
 	{	// Hit a wall or such...
-		if (Caster->client->lastentityhit == NULL && Vec3NotZero(trace.plane.normal))
+		if (caster->client->lastentityhit == NULL && Vec3NotZero(trace.plane.normal))
 		{	// Don't do sparks if already hit something
 			VectoAngles(trace.plane.normal, hitangles);
 
@@ -566,10 +566,10 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 								hitdir);
 			}
 
-			AlertMonsters (Caster, Caster, 1, true);
-			gi.sound(Caster, CHAN_AUTO, gi.soundindex("weapons/staffhitwall.wav"), 1, ATTN_NORM, 0);
+			AlertMonsters (caster, caster, 1, true);
+			gi.sound(caster, CHAN_AUTO, gi.soundindex("weapons/staffhitwall.wav"), 1, ATTN_NORM, 0);
 
-			Caster->client->lastentityhit = WALL_ENTITY;
+			caster->client->lastentityhit = WALL_ENTITY;
 		}
 	}
 }
@@ -578,7 +578,7 @@ void WeaponThink_SwordStaff(edict_t *Caster,char *Format,...)
 // WeaponThink_FlyingFist
 // ----------------------
 // ************************************************************************************************
-void WeaponThink_FlyingFist(edict_t *Caster,char *Format,...)
+void WeaponThink_FlyingFist(edict_t *caster, char *Format, ...)
 {
 	vec3_t	OriginToLowerJoint={0.945585,2.26076,0.571354},
 			OriginToUpperJoint={1.80845,2.98912,3.27800},
@@ -588,19 +588,19 @@ void WeaponThink_FlyingFist(edict_t *Caster,char *Format,...)
 
 	// Set up the Magic-missile's starting position and aiming angles then cast the spell.
 
-	Weapon_CalcStartPos(OriginToLowerJoint,OriginToUpperJoint,DefaultStartPos,StartPos,Caster);
+	Weapon_CalcStartPos(OriginToLowerJoint, OriginToUpperJoint, DefaultStartPos, StartPos, caster);
 
-	AngleVectors(Caster->client->aimangles,Forward,NULL,NULL);
+	AngleVectors(caster->client->aimangles,Forward,NULL,NULL);
 
-	StartPos[2] += Caster->viewheight - 14.0;
-	SpellCastFlyingFist(Caster,StartPos,Caster->client->aimangles,Forward,0.0);
+	StartPos[2] += caster->viewheight - 14.0;
+	SpellCastFlyingFist(caster, StartPos,caster->client->aimangles,Forward,0.0);
 
 	// Take off mana, but if there is none, then fire a wimpy fizzle-weapon.
-	if (Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.weap_ammo_index] > 0)
+	if (caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index] > 0)
 	{
 		if (!(deathmatch->value && ((int)dmflags->value & DF_INFINITE_MANA)))
-				Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.weap_ammo_index] -=
-						Caster->client->playerinfo.pers.weapon->quantity;
+				caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index] -=
+						caster->client->playerinfo.pers.weapon->quantity;
 	}
 }
 
@@ -706,7 +706,7 @@ void WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
 // -------------------------------
 // ************************************************************************************************
 
-void WeaponThink_SphereOfAnnihilation(edict_t *Caster,char *Format,...)
+void WeaponThink_SphereOfAnnihilation(edict_t *caster, char *Format, ...)
 {
 	va_list		Marker;
 	float	*ReleaseFlagsPtr;
@@ -726,17 +726,17 @@ void WeaponThink_SphereOfAnnihilation(edict_t *Caster,char *Format,...)
 
 	// Set up the Sphere-of-annihilation's aiming angles then cast the spell.
 
-	AngleVectors(Caster->client->aimangles,Forward,NULL,NULL);
+	AngleVectors(caster->client->aimangles,Forward,NULL,NULL);
 
-	SpellCastSphereOfAnnihilation(Caster,
+	SpellCastSphereOfAnnihilation(caster,
 								 NULL,
-								 Caster->client->aimangles,		//v_angle,
+								 caster->client->aimangles,		//v_angle,
 								 Forward,
 								 0.0,
 								 ReleaseFlagsPtr);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.weap_ammo_index]-= Caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index]-= caster->client->playerinfo.pers.weapon->quantity;
 }
 
 // ************************************************************************************************

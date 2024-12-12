@@ -210,7 +210,7 @@ void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, in
 
 	head->s.origin[2] += 100;
 
-	gi.CreateEffect(&head->s,//owner
+	gi.CreateEffect(head,//owner
 					FX_BODYPART,//type
 					flags,//can't mess with this, sends only 1st byte and effects message
 					head->s.origin,//spot,
@@ -638,7 +638,7 @@ void move_harpy_tumble(edict_t *self)
 
 	if ( (self->groundentity != NULL) || (trace.fraction != 1) || (trace.startsolid) || (trace.allsolid) || (self->monsterinfo.jump_time < level.time) )
 	{
-		gi.CreateEffect(&self->s, FX_DUST_PUFF, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
+		gi.CreateEffect(self, FX_DUST_PUFF, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
 
 		VectorCopy(self->s.angles, self->movedir);
 		harpy_death_noise(self);

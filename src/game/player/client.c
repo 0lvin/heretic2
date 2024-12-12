@@ -218,7 +218,7 @@ SpawnBleeder(edict_t *self, edict_t *other, vec3_t bleed_dir, vec3_t bleed_spot)
 	bleeder->think = BleederThink;
 	bleeder->nextthink = level.time + 0.1;
 //when refpoints on arms and head in for corvus, do this:
-/*	gi.CreateEffect(&self->s.,
+/*	gi.CreateEffect(self.,
 			FX_LINKEDBLOOD,
 			0,
 			self->s.origin,
@@ -889,15 +889,15 @@ void player_leader_effect(void)
 			if (ent->client->resp.score == score && ent->inuse)
 			{
 				if (!ent->Leader_PersistantCFX)
-					ent->Leader_PersistantCFX = gi.CreatePersistantEffect
-						(&ent->s, FX_SHOW_LEADER, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "" );
+					ent->Leader_PersistantCFX = gi.CreatePersistantEffect(
+						ent, FX_SHOW_LEADER, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "" );
 			}
 			// if not, then if we have the effect, remove it
 			else
 			if (ent->Leader_PersistantCFX)
 			{
 				gi.RemovePersistantEffect(ent->Leader_PersistantCFX, REMOVE_LEADER);
-				gi.RemoveEffects(&ent->s, FX_SHOW_LEADER);
+				gi.RemoveEffects(ent, FX_SHOW_LEADER);
 				ent->Leader_PersistantCFX =0;
 			}
 
@@ -1193,7 +1193,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 			if (self->client->Meteors[i]->PersistantCFX)
 			{
 				gi.RemovePersistantEffect(self->client->Meteors[i]->PersistantCFX, REMOVE_METEOR);
-				gi.RemoveEffects(&self->s, FX_SPELL_METEORBARRIER+i);
+				gi.RemoveEffects(self, FX_SPELL_METEORBARRIER+i);
 				self->client->Meteors[i]->PersistantCFX = 0;
 			}
 			G_SetToFree(self->client->Meteors[i]);
@@ -1206,12 +1206,12 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	// Create a persistant FX_REMOVE_EFFECTS effect - this is a special hack. If we just created
 	// a regular FX_REMOVE_EFFECTS effect, it will overwrite the next FX_PLAYER_PERSISTANT sent
 	// out. Luverly jubberly!!!
-	gi.CreatePersistantEffect(&self->s,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
+	gi.CreatePersistantEffect(self,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
 
 	// Get rid of all the stuff set up in PlayerFirstSeenInit...
-	gi.RemoveEffects(&self->s, FX_SHADOW);
-	gi.RemoveEffects(&self->s, FX_WATER_PARTICLES);
-	gi.RemoveEffects(&self->s, FX_CROSSHAIR);
+	gi.RemoveEffects(self, FX_SHADOW);
+	gi.RemoveEffects(self, FX_WATER_PARTICLES);
+	gi.RemoveEffects(self, FX_CROSSHAIR);
 
 	// Remove any shrine effects we have going.
 	PlayerKillShrineFX(self);
@@ -1897,7 +1897,7 @@ respawn(edict_t *self)
 		// a regular FX_REMOVE_EFFECTS effect, it will overwrite the next FX_PLAYER_PERSISTANT sent
 		// out. Luverly jubberly!!!
 
-		gi.CreatePersistantEffect(&self->s,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
+		gi.CreatePersistantEffect(self,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
 
 		if(deathmatch->value)
 		{
@@ -1920,7 +1920,7 @@ respawn(edict_t *self)
 
 		// Add a teleportation effect.
 
-		gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
+		gi.CreateEffect(self, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
 
 		// Hold in place briefly.
 
@@ -2060,7 +2060,7 @@ void SpawnInitialPlayerEffects(edict_t *ent)
 
 	// Don't need to keep track of this persistant effect, since its started but never stopped.
 // jmarshall - this doesn't seem to be used anywhere?
-	//gi.CreatePersistantEffect(&ent->s, FX_PLAYER_PERSISTANT,
+	//gi.CreatePersistantEffect(ent, FX_PLAYER_PERSISTANT,
 	//	CEF_BROADCAST | CEF_OWNERS_ORIGIN, NULL, "");
 // jmarshall end
 
@@ -2660,7 +2660,7 @@ PutClientInServer(edict_t *ent)
 
 		// Just in case we were on fire when we died.
 
-		gi.RemoveEffects(&ent->s, FX_FIRE_ON_ENTITY);
+		gi.RemoveEffects(ent, FX_FIRE_ON_ENTITY);
 
 		// Make us invincible for a few seconds after spawn.
 
@@ -2728,7 +2728,7 @@ ClientBeginDeathmatch(edict_t *ent)
 	// level.
 
 	gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
-	gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
+	gi.CreateEffect(ent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 	G_BroadcastObituary(PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 
 	/* make sure all view stuff is valid */
@@ -2814,7 +2814,7 @@ ClientBegin(edict_t *ent)
 			// level.
 
 			gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
-			gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
+			gi.CreateEffect(ent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 			G_BroadcastObituary (PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 		}
 	}
@@ -3238,14 +3238,14 @@ ClientDisconnect(edict_t *ent)
 
 	// Send teleport effect.
 
-	gi.CreateEffect(&ent->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
+	gi.CreateEffect(ent, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 
 	// Clean up after leaving.
 
 	if (ent->Leader_PersistantCFX)
 	{
 		gi.RemovePersistantEffect(ent->Leader_PersistantCFX, REMOVE_LEADER_CLIENT);
-		gi.RemoveEffects(&ent->s, FX_SHOW_LEADER);
+		gi.RemoveEffects(ent, FX_SHOW_LEADER);
 		ent->Leader_PersistantCFX =0;
 	}
 

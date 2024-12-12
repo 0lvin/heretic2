@@ -451,7 +451,7 @@ void fish_think (edict_t *self)
 
 void fish_under_water_wake (edict_t *self)
 {
-	gi.CreateEffect(&self->s, FX_M_EFFECTS, CEF_OWNERS_ORIGIN, self->s.origin, "bv", FX_UNDER_WATER_WAKE, vec3_origin);
+	gi.CreateEffect(self, FX_M_EFFECTS, CEF_OWNERS_ORIGIN, self->s.origin, "bv", FX_UNDER_WATER_WAKE, vec3_origin);
 }
 
 void fish_swim_sound (edict_t *self, float fast)
@@ -799,7 +799,7 @@ void fish_dead(edict_t *self)
 	self->nextthink = level.time + 0.1;
 
 	// stop the fish making bubbles
-	gi.RemoveEffects(&self->s, FX_WATER_BUBBLE);
+	gi.RemoveEffects(self, FX_WATER_BUBBLE);
 	if (self->PersistantCFX)
 	{
 		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_FISH);
@@ -1186,7 +1186,7 @@ void SP_monster_fish (edict_t *self)
 	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->maxs);
 
 	// give us the bubble spawner
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s,
+	self->PersistantCFX = gi.CreatePersistantEffect(self,
 												FX_WATER_BUBBLE,
 												CEF_OWNERS_ORIGIN | CEF_BROADCAST,
 												NULL,

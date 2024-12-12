@@ -1016,7 +1016,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 					if (!was_dead)
 						targ->s.effects &= ~EF_DISABLE_EXTRA_FX;	// The flag causes the fire to stop generating.
 					targ->s.effects |= EF_ON_FIRE;
-					gi.CreateEffect(&targ->s, FX_FIRE_ON_ENTITY, CEF_OWNERS_ORIGIN, NULL, "bbb", (int)scale, 255, 1);//we'll turn this off manually
+					gi.CreateEffect(targ, FX_FIRE_ON_ENTITY, CEF_OWNERS_ORIGIN, NULL, "bbb", (int)scale, 255, 1);//we'll turn this off manually
 				}
 				else
 					targ->fire_damage_time += duration;
@@ -1160,7 +1160,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 					if (!was_dead)
 						targ->s.effects &= ~EF_DISABLE_EXTRA_FX;	// The flag causes the fire to stop generating.
 					targ->s.effects |= EF_ON_FIRE;			// The flag causes the fire to stop generating.
-					gi.CreateEffect(&targ->s, FX_FIRE_ON_ENTITY, CEF_OWNERS_ORIGIN, NULL, "bbb", (int)scale, 40, 0);
+					gi.CreateEffect(targ, FX_FIRE_ON_ENTITY, CEF_OWNERS_ORIGIN, NULL, "bbb", (int)scale, 40, 0);
 				}
 			}
 

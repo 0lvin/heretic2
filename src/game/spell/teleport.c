@@ -56,7 +56,7 @@ void Perform_Teleport(edict_t *self)
 	gi.linkentity(self);
 
 	// draw the teleport splash at the destination
-	gi.CreateEffect(&self->s, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN | ((byte)self->client->tele_type << 5), NULL, "" );
+	gi.CreateEffect(self, FX_PLAYER_TELEPORT_IN, CEF_BROADCAST|CEF_OWNERS_ORIGIN | ((byte)self->client->tele_type << 5), NULL, "" );
 
 	// restart the loop and tell us next time we aren't de-materialising
 	self->client->tele_count = TELE_TIME;
@@ -175,7 +175,7 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	other->s.color[2] = 255;
 
 	// draw the teleport splash at the teleport source
-	gi.CreateEffect(&other->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)other->client->tele_type << 5), NULL, "" );
+	gi.CreateEffect(other, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)other->client->tele_type << 5), NULL, "" );
 	// do the teleport sound
 	gi.sound(other,CHAN_VOICE,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 
@@ -231,7 +231,7 @@ void SpellCastTeleport(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t A
 	caster->s.color[3] = 255;
 
 	// draw the teleport splash at the teleport source
-	gi.CreateEffect(&caster->s, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)caster->client->tele_type << 5), NULL, "" );
+	gi.CreateEffect(caster, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)caster->client->tele_type << 5), NULL, "" );
 	// do the teleport sound
 	gi.sound(caster,CHAN_VOICE,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
 }

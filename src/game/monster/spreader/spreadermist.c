@@ -236,7 +236,7 @@ static void spreader_grenade_bounce ( edict_t *self, trace_t *trace )
 		gas->svflags |= SVF_ALWAYS_SEND;
 		gas->s.effects = EF_MARCUS_FLAG1;
 */
-		gi.CreateEffect(&self->s, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, self->s.origin, "vb", vel, 50);
+		gi.CreateEffect(self, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, self->s.origin, "vb", vel, 50);
 
 		spreader_grenade_explode (self);
 	}
@@ -284,7 +284,7 @@ static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *pla
 	gas->svflags |= SVF_ALWAYS_SEND;
 	gas->s.effects = EF_MARCUS_FLAG1;
 */
-	gi.CreateEffect(&self->s, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, self->s.origin, "vb", vel, 50);
+	gi.CreateEffect(self, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, self->s.origin, "vb", vel, 50);
 
 	spreader_grenade_explode (self);
 

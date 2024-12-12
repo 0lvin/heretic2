@@ -332,7 +332,7 @@ void move_imp_tumble(edict_t *self)
 
 	if (self->groundentity != NULL || self->monsterinfo.jump_time < level.time)
 	{
-		gi.CreateEffect(&self->s, FX_DUST_PUFF, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
+		gi.CreateEffect(self, FX_DUST_PUFF, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
 
 		VectorCopy(self->s.angles, self->movedir);
 		imp_death_noise(self);
@@ -1136,7 +1136,7 @@ void FireFizzle (edict_t *self)
 	gi.sound (self, CHAN_BODY, sounds[SND_FIZZLE], 1, ATTN_NORM, 0);
 	VectorSet(dir, flrand(0, 1),flrand(0, 1), flrand(0.5, 1));
 	VectorNormalize(dir);
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 					FX_ENVSMOKE,
 					CEF_BROADCAST,self->s.origin,
 					"bdbbb",irand(1,3),dir,irand(1,2),irand(3, 4),irand(1,2));
@@ -1189,7 +1189,7 @@ edict_t *ImpFireballReflect(edict_t *self, edict_t *other, vec3_t vel)
 	fireball->reflected_time=self->reflected_time;
 	fireball->ideal_yaw = self->ideal_yaw;
 
-	gi.CreateEffect(&fireball->s,
+	gi.CreateEffect(fireball,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				NULL,
@@ -1201,7 +1201,7 @@ edict_t *ImpFireballReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	G_SetToFree(self);
 
-	gi.CreateEffect(&fireball->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vel);
+	gi.CreateEffect(fireball, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vel);
 
 	return(fireball);
 }
@@ -1251,7 +1251,7 @@ void fireball_blocked( edict_t *self, trace_t *trace )
 
 	gi.sound(self, CHAN_BODY, sounds[SND_FBHIT], 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -1309,7 +1309,7 @@ void imp_fireball (edict_t *self)
 	VectorNormalize(proj->movedir);
 	VectoAngles(proj->movedir, proj->s.angles);
 
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,//just so I don't have to make a new FX_ id
 				CEF_OWNERS_ORIGIN,
 				NULL,

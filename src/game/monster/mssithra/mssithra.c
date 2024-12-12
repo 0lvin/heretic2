@@ -327,7 +327,7 @@ edict_t *MssithraAlphaArrowReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	G_LinkMissile(arrow);
 
-	gi.CreateEffect(&arrow->s,
+	gi.CreateEffect(arrow,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN | CEF_FLAG6,
 					NULL,
@@ -337,7 +337,7 @@ edict_t *MssithraAlphaArrowReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	G_SetToFree(self);
 
-	gi.CreateEffect(&arrow->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vel);
+	gi.CreateEffect(arrow, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", vel);
 
 	return(arrow);;
 }
@@ -407,7 +407,7 @@ void mssithraArrow(edict_t *self)
 {//fixme; adjust for up/down
 	vec3_t	Forward, targ_pos;
 	vec3_t	Right, fire_spot, fire_dir;// , up;
-	edict_t	*Arrow;
+	edict_t	*arrow;
 	float	spread;
 	int	num_shots = 3;
 
@@ -440,13 +440,13 @@ void mssithraArrow(edict_t *self)
 
 	while(num_shots)
 	{
-		Arrow = G_Spawn();
+		arrow = G_Spawn();
 
-		create_ssithra_arrow(Arrow);
-		Arrow->reflect_debounce_time = MAX_REFLECT;
+		create_ssithra_arrow(arrow);
+		arrow->reflect_debounce_time = MAX_REFLECT;
 
-		VectorCopy(fire_spot,Arrow->s.origin);
-		VectorCopy(self->movedir,Arrow->movedir);
+		VectorCopy(fire_spot, arrow->s.origin);
+		VectorCopy(self->movedir, arrow->movedir);
 
 		//Increase the spread for lower levels
 		switch((int)skill->value)
@@ -482,28 +482,28 @@ void mssithraArrow(edict_t *self)
 			break;
 		}
 
-		VectorAdd(fire_dir, Right, Arrow->movedir);
-		VectorNormalize(Arrow->movedir);
-		VectorScale(Arrow->movedir,MSSITHRA_ARROW_SPEED,Arrow->velocity);
+		VectorAdd(fire_dir, Right, arrow->movedir);
+		VectorNormalize(arrow->movedir);
+		VectorScale(arrow->movedir, MSSITHRA_ARROW_SPEED, arrow->velocity);
 
-		VectoAngles(Arrow->velocity, Arrow->s.angles);
-		Arrow->s.angles[YAW] += 90;
+		VectoAngles(arrow->velocity, arrow->s.angles);
+		arrow->s.angles[YAW] += 90;
 
-		Arrow->owner=self;
-		Arrow->enemy=self->enemy;
+		arrow->owner=self;
+		arrow->enemy=self->enemy;
 
-		gi.CreateEffect(&Arrow->s,
+		gi.CreateEffect(arrow,
 						FX_M_EFFECTS,
 						CEF_OWNERS_ORIGIN | CEF_FLAG6,
 						NULL,
 						"bv",
 						FX_MSSITHRA_ARROW,
-						Arrow->velocity);
+						arrow->velocity);
 
-		G_LinkMissile(Arrow);
+		G_LinkMissile(arrow);
 
-		Arrow->nextthink=level.time+5;
-		Arrow->think=G_FreeEdict;//mssithraArrowThink;
+		arrow->nextthink = level.time+5;
+		arrow->think = G_FreeEdict;//mssithraArrowThink;
 
 		num_shots--;
 	}

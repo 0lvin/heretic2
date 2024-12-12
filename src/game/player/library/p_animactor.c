@@ -179,7 +179,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			{
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID26,
-												playerinfo->G_GetEntityStatePtr(playerinfo->self),
+												playerinfo->self,
 												FX_SPELLHANDS);
 				else
 					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID26,
@@ -195,7 +195,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			{
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID27,
-												playerinfo->G_GetEntityStatePtr(playerinfo->self),
+												playerinfo->self,
 												FX_WEAPON_REDRAINGLOW);
 				else
 					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID27,
@@ -212,7 +212,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			{
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID28,
-												playerinfo->G_GetEntityStatePtr(playerinfo->self),
+												playerinfo->self,
 												FX_FIREHANDS);
 				else
 					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID28,
@@ -229,7 +229,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			{
 				if(!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID29,
-												playerinfo->G_GetEntityStatePtr(playerinfo->self),
+												playerinfo->self,
 												FX_STAFF);
 				else
 					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID29,
@@ -783,7 +783,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 
 		if(!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID11,
-									   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+									   playerinfo->self,
 									   FX_FOOTSTEP,
 									   CEF_OWNERS_ORIGIN,
 									   playerinfo->origin,
@@ -812,7 +812,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 
 		if(!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID12,
-									   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+									   playerinfo->self,
 									   FX_FALLSHORT,
 									   CEF_OWNERS_ORIGIN,
 									   playerinfo->origin,

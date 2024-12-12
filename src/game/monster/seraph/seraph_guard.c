@@ -115,7 +115,7 @@ void guard_beam_blocked( edict_t *self, trace_t *trace )
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
 		VectoAngles(proj->velocity, proj->s.angles);
 
-		gi.CreateEffect(&proj->s,
+		gi.CreateEffect(proj,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					NULL,
@@ -144,7 +144,7 @@ void guard_beam_blocked( edict_t *self, trace_t *trace )
 
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/seraph/guard/spellhit.wav"), 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -201,7 +201,7 @@ void guard_beam( edict_t *self)
 
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/seraph/guard/spell.wav"), 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				vec3_origin,

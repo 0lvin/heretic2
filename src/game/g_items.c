@@ -205,7 +205,7 @@ DoRespawn(edict_t *ent)
 
 	// Create a respawn client-effect (this isn't currenlty doing anything on the client).
 
-	//gi.CreateEffect(&ent->s,FX_ITEM_RESPAWN,CEF_OWNERS_ORIGIN,ent->s.origin,NULL);
+	//gi.CreateEffect(ent,FX_ITEM_RESPAWN,CEF_OWNERS_ORIGIN,ent->s.origin,NULL);
 
 	// So it'll get sent to the client again.
 
@@ -722,7 +722,7 @@ Pickup_Health(edict_t *ent, edict_t *other)
 		if(other->fire_damage_time<=0)
 		{
 			other->fire_damage_time = 0;
-//			gi.RemoveEffects(&other->s, FX_FIRE_ON_ENTITY);//turn off CFX too
+//			gi.RemoveEffects(other, FX_FIRE_ON_ENTITY);//turn off CFX too
 			other->s.effects |= EF_MARCUS_FLAG1;		// Notify the effect to turn itself off.
 		}
 	}
@@ -822,7 +822,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 
 		// Once picked up, the item is gone forever, so remove it's client effect(s).
 
-		gi.RemoveEffects(&ent->s,0);
+		gi.RemoveEffects(ent,0);
 
 		// The persistent part is removed from the server here.
 
@@ -1139,26 +1139,26 @@ SpawnItemEffect(edict_t *ent, gitem_t *item)
 
 	if(ent->item->flags & IT_PUZZLE)
 	{
-		ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_PICKUP_PUZZLE, CEF_BROADCAST, ent->s.origin, "bv", ent->item->tag,ent->s.angles);
+		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_PUZZLE, CEF_BROADCAST, ent->s.origin, "bv", ent->item->tag,ent->s.angles);
 	}
 	else if(ent->item->flags & IT_WEAPON)
 	{
-		ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_PICKUP_WEAPON, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
+		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_WEAPON, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
 	}
 	else if(ent->item->flags & IT_AMMO)
 	{
-		ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_PICKUP_AMMO, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
+		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_AMMO, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
 	}
 	else if(ent->item->flags & IT_DEFENSE)
 	{
-		ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_PICKUP_DEFENSE, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
+		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_DEFENSE, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
 	}
 	else
 	{
 		if (ent->item->tag)
-			ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_PICKUP_HEALTH, CEF_FLAG6|CEF_BROADCAST, ent->s.origin, "");
+			ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_HEALTH, CEF_FLAG6|CEF_BROADCAST, ent->s.origin, "");
 		else
-			ent->PersistantCFX = gi.CreatePersistantEffect(&ent->s, FX_PICKUP_HEALTH, CEF_BROADCAST, ent->s.origin, "");
+			ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_HEALTH, CEF_BROADCAST, ent->s.origin, "");
 	}
 }
 

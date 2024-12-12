@@ -39,7 +39,7 @@ PlayerClearEffects(playerinfo_t *playerinfo)
 	// Remove all special effects from the player.
 	if(!playerinfo->isclient)
 		playerinfo->G_RemoveEffects(EFFECT_PRED_ID30,
-									playerinfo->G_GetEntityStatePtr(playerinfo->self),
+									playerinfo->self,
 									FX_REMOVE_EFFECTS);
 	else
 		playerinfo->CL_RemoveEffects(EFFECT_PRED_ID30,
@@ -761,7 +761,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 				lifetime = 4;		// .4 seconds is normal fireball throw time.
 			if(!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID16,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_SPELLHANDS,
 										   CEF_OWNERS_ORIGIN,
 										   NULL,
@@ -783,7 +783,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 				lifetime = 6;		// .6 seconds is normal fireball throw time
 			if(!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID17,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_SPELLHANDS,
 										   CEF_OWNERS_ORIGIN|CEF_FLAG8,
 										   NULL,
@@ -804,7 +804,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 				lifetime = 11;		// 1.1 seconds is normal fireball throw time
 			if(!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID19,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_FIREHANDS,
 										   CEF_OWNERS_ORIGIN|CEF_FLAG6,
 										   NULL,
@@ -836,7 +836,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if(!playerinfo->isclient)
 			{
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID20,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_STAFF,
 										   CEF_OWNERS_ORIGIN,
 										   NULL,
@@ -864,7 +864,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
 			if(!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID18,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_SPELLHANDS,
 										   CEF_OWNERS_ORIGIN|CEF_FLAG6|CEF_FLAG7,
 										   NULL,
@@ -885,7 +885,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if(!playerinfo->isclient)
 			{
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID21,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_WEAPON_REDRAINGLOW,
 										   CEF_OWNERS_ORIGIN,
 										   NULL,
@@ -908,7 +908,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
 			if(!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID22,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_WEAPON_REDRAINGLOW,
 										   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 										   NULL,
@@ -929,7 +929,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
 			if(!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID23,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_FIREHANDS,
 										   CEF_OWNERS_ORIGIN,
 										   NULL,
@@ -949,7 +949,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
 			if(!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID24,
-										   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+										   playerinfo->self,
 										   FX_FIREHANDS,
 										   CEF_OWNERS_ORIGIN,
 										   NULL,

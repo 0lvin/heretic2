@@ -150,7 +150,7 @@ void morcalavin_big_shot( edict_t *self )
 	gi.linkentity(proj);
 
 	//Create the effect
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					proj->s.origin,
@@ -187,7 +187,7 @@ void morcalavin_proj_track( edict_t *self )
 	//Timeout?
 	if (self->monsterinfo.attack_finished < level.time)
 	{
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -294,7 +294,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 
 	gi.sound (self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				NULL,
@@ -331,7 +331,7 @@ void morcalavin_proj2_blocked( edict_t *self, trace_t *trace )
 
 		exp = HPMISSILE1_EXPLODE;
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -394,7 +394,7 @@ void morcalavin_proj3_blocked( edict_t *self, trace_t *trace )
 
 		exp = HPMISSILE1_EXPLODE;
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -606,7 +606,7 @@ void morcalavin_start_missile(edict_t *self)
 	gi.linkentity(proj);
 
 	//Create the effect
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					proj->s.origin,
@@ -654,7 +654,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 
 		exp = HPMISSILE1_EXPLODE;
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_HP_MISSILE,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -681,7 +681,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 		T_Damage( trace->ent, self, self->owner, hitDir, self->s.origin, trace->plane.normal, damage, 0, DAMAGE_SPELL | DAMAGE_NO_KNOCKBACK,MOD_DIED );
 	}
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_HP_MISSILE,
 				CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -768,7 +768,7 @@ void morcalavin_taunt_shot(edict_t *self)
 
 	gi.sound (self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				NULL,
@@ -965,7 +965,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
 		VectoAngles(proj->velocity, proj->s.angles);
 
-		gi.CreateEffect(&proj->s,
+		gi.CreateEffect(proj,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					NULL,
@@ -996,7 +996,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/seraph/guard/spellhit.wav"), 1, ATTN_NORM, 0);
 
-	gi.CreateEffect(&self->s,
+	gi.CreateEffect(self,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				self->s.origin,
@@ -1052,7 +1052,7 @@ void morcalavin_beam( edict_t *self)
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/seraph/guard/spell.wav"), 1, ATTN_NORM, 0);
 
 	//TODO: Spawn a muzzle flash
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				vec3_origin,
@@ -1103,7 +1103,7 @@ void morcalavin_beam2( edict_t *self)
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/seraph/guard/spell.wav"), 1, ATTN_NORM, 0);
 
 	//TODO: Spawn a muzzle flash
-	gi.CreateEffect(&proj->s,
+	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
 				CEF_OWNERS_ORIGIN,
 				vec3_origin,
@@ -1376,7 +1376,7 @@ void mork_ai_run (edict_t *self, float dist)
 	else
 	{
 		/*
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_M_EFFECTS,
 					0,
 					vec3_origin,

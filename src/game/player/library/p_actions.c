@@ -899,7 +899,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 			if(!playerinfo->isclient)
 			{
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID3,
-										   playerinfo->G_GetEntityStatePtr((edict_t *)playerinfo->self),
+										   playerinfo->self,
 										   FX_STAFF_CREATEPOOF,
 										   CEF_OWNERS_ORIGIN,
 										   NULL,
@@ -918,7 +918,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 			if(!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID4,
-										   playerinfo->G_GetEntityStatePtr((edict_t *)playerinfo->self),
+										   playerinfo->self,
 										   FX_STAFF_CREATEPOOF,
 										   CEF_OWNERS_ORIGIN|CEF_FLAG6,
 										   NULL,
@@ -1192,7 +1192,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 								0);
 
 		playerinfo->G_CreateEffect(EFFECT_PRED_ID7,
-								   (entity_state_t *)playerinfo->self, // jmarshall: I think this is right.
+								   playerinfo->self, // jmarshall: I think this is right.
 								   FX_STAFF_CREATE,
 								   flags,
 								   NULL,
@@ -1321,7 +1321,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 		}
 
 		playerinfo->G_CreateEffect(EFFECT_PRED_ID8,
-								   playerinfo->G_GetEntityStatePtr((edict_t *)playerinfo->self),
+								   playerinfo->self,
 								   FX_STAFF_REMOVE,
 								   flags,
 								   NULL,
@@ -3691,7 +3691,7 @@ void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 	{
 		if(!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID10,
-									   playerinfo->G_GetEntityStatePtr(playerinfo->self),
+									   playerinfo->self,
 									   FX_DUST_PUFF,
 									   CEF_OWNERS_ORIGIN,
 									   playerinfo->origin,

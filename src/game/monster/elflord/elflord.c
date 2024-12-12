@@ -149,13 +149,13 @@ void elford_Attack( edict_t *self )
 
 		gi.linkentity(projectile);
 
-		gi.CreateEffect(	&projectile->s,
-							FX_CWATCHER,
-							CEF_OWNERS_ORIGIN,
-							projectile->s.origin,
-							"bv",
-							CW_STAR,
-							self->s.origin);
+		gi.CreateEffect(projectile,
+						FX_CWATCHER,
+						CEF_OWNERS_ORIGIN,
+						projectile->s.origin,
+						"bv",
+						CW_STAR,
+						self->s.origin);
 
 		projectile->isBlocking = projectile->bounced = projectile->isBlocked = elflord_projectile_blocked;
 	}
@@ -202,13 +202,13 @@ void elflord_StartBeam(edict_t *self)
 
 	gi.linkentity(beam);
 
-	gi.CreateEffect(	&beam->s,
-						FX_CWATCHER,
-						CEF_OWNERS_ORIGIN,
-						beam->s.origin,
-						"bv",
-						CW_BEAM,
-						self->pos2);
+	gi.CreateEffect(beam,
+					FX_CWATCHER,
+					CEF_OWNERS_ORIGIN,
+					beam->s.origin,
+					"bv",
+					CW_BEAM,
+					self->pos2);
 
 	gi.sound(self, CHAN_VOICE, sounds[SND_BEAM], 0.5, ATTN_NONE, 0);
 

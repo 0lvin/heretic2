@@ -97,7 +97,7 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 
 		G_LinkMissile(InsectStaff);
 
-		gi.CreateEffect(&InsectStaff->s,
+		gi.CreateEffect(InsectStaff,
 					FX_I_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					vec3_origin,
@@ -148,7 +148,7 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 	{
 		gi.sound(self, CHAN_BODY, gi.soundindex("monsters/imp/fbfire.wav"), 1, ATTN_NORM, 0);
 
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 					FX_M_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					self->s.origin,
@@ -207,7 +207,7 @@ void SpellCastInsectStaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 		Vec3ScaleAssign(2, InsectStaff->velocity);
 		InsectStaff->dmg *= 2;
 		InsectStaff->count = 1;
-		gi.CreateEffect(&InsectStaff->s,
+		gi.CreateEffect(InsectStaff,
 					FX_M_EFFECTS,//just so I don't have to make a new FX_ id
 					CEF_OWNERS_ORIGIN,
 					NULL,
@@ -218,7 +218,7 @@ void SpellCastInsectStaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 	else
 	{
 		InsectStaff->count = 0;
-		gi.CreateEffect(&InsectStaff->s,
+		gi.CreateEffect(InsectStaff,
 						FX_I_EFFECTS,
 						CEF_OWNERS_ORIGIN,
 						vec3_origin,
@@ -246,7 +246,7 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 
 	if(self->owner->s.effects&EF_DISABLE_EXTRA_FX)
 	{
-		gi.RemoveEffects(&self->s,0);
+		gi.RemoveEffects(self,0);
 		G_FreeEdict(self);
 		return;
 	}
@@ -346,7 +346,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 
 	VectorSet(tempvec, (float)(Caster->s.number), 0, 0);
 
-	gi.CreateEffect(&Globe->s,
+	gi.CreateEffect(Globe,
 					FX_I_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					vec3_origin,
@@ -354,7 +354,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 					FX_I_GLOBE,
 					tempvec);
 
-	gi.CreateEffect(&Globe->s,
+	gi.CreateEffect(Globe,
 					FX_I_EFFECTS,
 					CEF_OWNERS_ORIGIN,
 					vec3_origin,
@@ -428,7 +428,7 @@ edict_t *SpearProjReflect(edict_t *self, edict_t *other, vec3_t vel)
 	spearproj->red_rain_count = self->red_rain_count;
 	if (spearproj->health == 1)
 	{
-		gi.CreateEffect(&spearproj->s,
+		gi.CreateEffect(spearproj,
 			FX_I_EFFECTS,
 			CEF_OWNERS_ORIGIN,
 			NULL,
@@ -438,7 +438,7 @@ edict_t *SpearProjReflect(edict_t *self, edict_t *other, vec3_t vel)
 	}
 	else
 	{
-		gi.CreateEffect(&spearproj->s,
+		gi.CreateEffect(spearproj,
 			FX_I_EFFECTS,
 			CEF_OWNERS_ORIGIN,
 			vec3_origin,
@@ -518,7 +518,7 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 
 	if(self->count)
 	{
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 			FX_I_EFFECTS,
 			makeScorch,
 			vec3_origin,
@@ -528,7 +528,7 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 	}
 	else
 	{
-		gi.CreateEffect(&self->s,
+		gi.CreateEffect(self,
 			FX_I_EFFECTS,
 			makeScorch,
 			vec3_origin,
@@ -671,7 +671,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 		spearproj->health = 1;			// To indicate the homing projectile
 		spearproj->red_rain_count = 1;
 
-		gi.CreateEffect(&spearproj->s,
+		gi.CreateEffect(spearproj,
 			FX_I_EFFECTS,
 			CEF_OWNERS_ORIGIN,
 			NULL,
@@ -682,7 +682,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 	else
 	{
 		spearproj->count = 0;
-		gi.CreateEffect(&spearproj->s,
+		gi.CreateEffect(spearproj,
 			FX_I_EFFECTS,
 			CEF_OWNERS_ORIGIN,
 			vec3_origin,

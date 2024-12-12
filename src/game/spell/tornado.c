@@ -55,7 +55,7 @@ static void TornadoThink(edict_t *self)
 			if (ent->takedamage)
 			{
 				// Do a nasty looking blast at the impact point
-				gi.CreateEffect(&ent->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", ent->velocity);
+				gi.CreateEffect(ent, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", ent->velocity);
 				VectorClear(ent->velocity);
 
 				// no damage if reflection is on.
@@ -111,7 +111,7 @@ void create_tornado(edict_t *tornado)
 	tornado->s.effects |= EF_SPEED_ACTIVE;
 	tornado->jump_time = level.time + flrand(0.2, 1.0);
 
-	tornado->PersistantCFX = gi.CreatePersistantEffect(&tornado->s, FX_TORNADO, CEF_BROADCAST|CEF_OWNERS_ORIGIN | flags , NULL, "");
+	tornado->PersistantCFX = gi.CreatePersistantEffect(tornado, FX_TORNADO, CEF_BROADCAST|CEF_OWNERS_ORIGIN | flags , NULL, "");
 
 }
 
@@ -182,7 +182,7 @@ void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, ve
 		}
 	}
 
-	gi.CreateEffect(&tornado->s, FX_TORNADO_BALL, CEF_OWNERS_ORIGIN | flags , NULL, "");
+	gi.CreateEffect(tornado, FX_TORNADO_BALL, CEF_OWNERS_ORIGIN | flags , NULL, "");
 }
 
 
@@ -238,14 +238,14 @@ edict_t *tornboltReflect(edict_t *self, edict_t *other, vec3_t vel)
 	G_LinkMissile(tornbolt);
 
 	// create new trails for the new missile
-	gi.CreateEffect(&tornbolt->s, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
+	gi.CreateEffect(tornbolt, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
 					"t", tornbolt->velocity);
 
 	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
 	G_SetToFree(self);
 
 	// Do a nasty looking blast at the impact point
-	gi.CreateEffect(&tornbolt->s, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", tornbolt->velocity);
+	gi.CreateEffect(tornbolt, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", tornbolt->velocity);
 
 	return(tornbolt);
 }
@@ -360,6 +360,6 @@ void SpellCasttornbolt(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	}
 	// Spawn effect after it has been determined it has not started in wall
 	// This is so it won`t try to remove it before it exists
-	gi.CreateEffect(&tornbolt->s, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
+	gi.CreateEffect(tornbolt, FX_WEAPON_FLYINGFIST, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL,
 					"t", tornbolt->velocity);
 }

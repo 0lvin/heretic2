@@ -3565,7 +3565,7 @@ void SP_obj_shrine (edict_t *self)
 	// make the ball appear in the middle
 	VectorScale(self->s.angles, ANGLE_TO_RAD, offset);
 	DirFromAngles(offset, offset2);
-	self->PersistantCFX = gi.CreatePersistantEffect(&self->s, FX_SHRINE_BALL, CEF_BROADCAST, self->s.origin,
+	self->PersistantCFX = gi.CreatePersistantEffect(self, FX_SHRINE_BALL, CEF_BROADCAST, self->s.origin,
 														"db", offset2, (byte)(self->style-1));
 
 }
