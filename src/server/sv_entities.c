@@ -283,11 +283,6 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_MINSMAXS;
 	}
 
-	if (ps->remote_id != ops->remote_id)
-	{
-		pflags |= PS_REMOTE_ID;
-	}
-
 	/* write it */
 	MSG_WriteByte(msg, svc_playerinfo);
 	MSG_WriteLong(msg, pflags);
@@ -414,11 +409,6 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		MSG_WriteFloat(msg, ps->maxs[0]);
 		MSG_WriteFloat(msg, ps->maxs[1]);
 		MSG_WriteFloat(msg, ps->maxs[2]);
-	}
-
-	if (pflags & PS_REMOTE_ID)
-	{
-		MSG_WriteShort(msg, ps->remote_id);
 	}
 
 	if (pflags & PS_REMOTE_VIEWORIGIN)

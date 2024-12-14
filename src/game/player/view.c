@@ -969,15 +969,6 @@ ClientEndServerFrame(edict_t *ent)
 	}
 
 	// ********************************************************************************************
-	//  Reflect remote camera views(s) in the client's playerstate.
-	// ********************************************************************************************
-
-	if(current_client->RemoteCameraLockCount>0)
-		current_client->ps.remote_id = current_client->RemoteCameraNumber;
-	else
-		current_client->ps.remote_id = -1;
-
-	// ********************************************************************************************
 	// Reflect inventory changes in the client's playetstate.
 	// ********************************************************************************************
 

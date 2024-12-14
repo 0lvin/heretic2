@@ -1575,7 +1575,6 @@ typedef struct
 
 	vec3_t			remote_vieworigin,
 		remote_viewangles;
-	int				remote_id;
 
 	// Deltas added to the player model's client determined angles.
 

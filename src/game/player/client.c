@@ -2557,8 +2557,6 @@ PutClientInServer(edict_t *ent)
 	for (i=0 ; i<3 ; i++)
 		client->ps.pmove.camera_delta_angles[i]=0;
 
-	client->ps.remote_id=-1;
-
 	// ********************************************************************************************
 	// Initialize the player's entity_state_t.
 	// ********************************************************************************************
