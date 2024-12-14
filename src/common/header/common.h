@@ -274,7 +274,6 @@ enum clc_ops_e
 #define PS_WEAPONFRAME (1 << 13)
 #define PS_RDFLAGS (1 << 14)
 
-#define PS_REMOTE_VIEWORIGIN (1 << 16)
 #define PS_MINSMAXS (1 << 18)
 
 /*============================================== */

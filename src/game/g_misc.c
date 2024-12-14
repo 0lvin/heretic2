@@ -2088,6 +2088,7 @@ void misc_remote_camera_think(edict_t *Self)
 			VectorCopy(Self->enemy->s.origin,Self->s.origin);
 		}
 
+#if 0
 		// Update the position on client(s).
 
 		if(Self->spawnflags&1)
@@ -2125,6 +2126,7 @@ void misc_remote_camera_think(edict_t *Self)
 				}
 			}
 		}
+#endif
 	}
 
 	// ********************************************************************************************
@@ -2276,9 +2278,10 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 			int	i;
 
 			Self->enemy=NULL;
-
+#if 0
 			for(i=0;i<3;i++)
 				Self->activator->client->ps.remote_vieworigin[i]=Self->s.origin[i];
+#endif
 		}
 		else
 		{
@@ -2295,9 +2298,10 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 
 				if(!cl_ent->inuse)
 					continue;
-
+#if 0
 				for(j=0;j<3;j++)
 					cl_ent->client->ps.remote_vieworigin[j]=Self->s.origin[j];
+#endif
 			}
 		}
 	}
@@ -2314,6 +2318,7 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 				VectorCopy(Self->enemy->s.origin,Self->s.origin);
 			}
 
+#if 0
 			// Update the position on client(s).
 
 			if(Self->spawnflags&1)
@@ -2351,6 +2356,7 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 					}
 				}
 			}
+#endif
 		}
 	}
 	// ********************************************************************************************

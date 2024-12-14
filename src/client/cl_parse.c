@@ -761,13 +761,6 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 		state->maxs[2] = MSG_ReadFloat(&net_message);
 	}
 
-	if (flags & PS_REMOTE_VIEWORIGIN)
-	{
-		state->remote_vieworigin[0] = MSG_ReadShort(&net_message);
-		state->remote_vieworigin[1] = MSG_ReadShort(&net_message);
-		state->remote_vieworigin[2] = MSG_ReadShort(&net_message);
-	}
-
 	/* parse stats */
 	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
 }

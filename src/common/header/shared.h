@@ -1571,10 +1571,6 @@ typedef struct
 
 	short stats[MAX_STATS];     /* fast status bar updates */
 
-	/* For remote camera views */
-
-	vec3_t			remote_vieworigin;
-
 	// Deltas added to the player model's client determined angles.
 
 	vec3_t			offsetangles;
