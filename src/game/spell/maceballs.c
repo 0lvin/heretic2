@@ -39,14 +39,14 @@ void MaceballThink(edict_t *self)
 //	self->s.angles[YAW] += MACEBALL_ROT*0.5;
 //	self->s.angles[PITCH] += MACEBALL_ROT*2.0;
 
-	if (AVG_VEC3T(self->s.scale) < MACEBALL_SCALE)
+	if (AVG_VEC3T(self->rrs.scale) < MACEBALL_SCALE)
 	{
-		self->s.scale[0] += MACEBALL_SCALEINC;
-		self->s.scale[0] += MACEBALL_SCALEINC;
-		self->s.scale[0] += MACEBALL_SCALEINC;
-		if (AVG_VEC3T(self->s.scale) > MACEBALL_SCALE)
+		self->rrs.scale[0] += MACEBALL_SCALEINC;
+		self->rrs.scale[0] += MACEBALL_SCALEINC;
+		self->rrs.scale[0] += MACEBALL_SCALEINC;
+		if (AVG_VEC3T(self->rrs.scale) > MACEBALL_SCALE)
 		{
-			VectorSet(self->s.scale,
+			VectorSet(self->rrs.scale,
 				MACEBALL_SCALE, MACEBALL_SCALE, MACEBALL_SCALE);
 		}
 	}
@@ -270,7 +270,7 @@ void SpellCastMaceball(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	ball->classname = "Spell_Maceball";
 	ball->touch_debounce_time = level.time + MACEBALL_LIFE;		// The ball will expire the next bounce after this one.
 	ball->s.modelindex = gi.modelindex("models/spells/maceball/tris.fm");
-	VectorSet(ball->s.scale,
+	VectorSet(ball->rrs.scale,
 		MACEBALL_SCALEINC, MACEBALL_SCALEINC, MACEBALL_SCALEINC);
 	ball->dmg = MACEBALL_DAMAGE;
 	ball->health = 2;

@@ -255,7 +255,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	proj->solid = SOLID_BBOX;
 	proj->classname = "Morcalavin_Tracking_Missile";
 	proj->dmg = 1.0;
-	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(proj->rrs.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
 
@@ -706,7 +706,7 @@ void create_morcalavin_proj(edict_t *self,edict_t *proj)
 	proj->solid = SOLID_BBOX;
 	proj->classname = "Morcalavin_Missile";
 	proj->dmg = 1.0;
-	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(proj->rrs.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
 
@@ -1935,7 +1935,7 @@ void SP_monster_morcalavin (edict_t *self)
 	if (self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);

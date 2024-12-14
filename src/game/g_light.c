@@ -105,8 +105,8 @@ void create_fire_touch (edict_t *owner,vec3_t origin)
 
 	VectorCopy(origin,flame->s.origin);
 
-	VectorCopy(owner->s.scale, flame->s.scale);
-	flame->dmg = 3 * AVG_VEC3T(owner->s.scale);
+	VectorCopy(owner->rrs.scale, flame->rrs.scale);
+	flame->dmg = 3 * AVG_VEC3T(owner->rrs.scale);
 
 	VectorSet(flame->mins, -8, -8, -2);
 	VectorSet(flame->maxs, 8, 8, 14);
@@ -127,13 +127,13 @@ void SpawnFlame(edict_t *self,vec3_t origin)
 
 	// NOTE - LIMIT ON SCALE is x 8.
 
-	if (AVG_VEC3T(self->s.scale) >= 8.0)
+	if (AVG_VEC3T(self->rrs.scale) >= 8.0)
 	{
 		scale = 255;
 	}
 	else
 	{
-		scale = AVG_VEC3T(self->s.scale) * 32;
+		scale = AVG_VEC3T(self->rrs.scale) * 32;
 	}
 
 	self->PersistantCFX = gi.CreatePersistantEffect(self,
@@ -200,13 +200,13 @@ void fire_use (edict_t *self, edict_t *other, edict_t *activator)
 	if (self->spawnflags & FIRE_OFF)
 	{
 		// NOTE - LIMIT ON SCALE is x 8
-		if (AVG_VEC3T(self->s.scale) >= 8.0)
+		if (AVG_VEC3T(self->rrs.scale) >= 8.0)
 		{
 			scale = 255;
 		}
 		else
 		{
-			scale = AVG_VEC3T(self->s.scale) * 32;
+			scale = AVG_VEC3T(self->rrs.scale) * 32;
 		}
 
 		self->PersistantCFX = gi.CreatePersistantEffect(self,
@@ -217,7 +217,7 @@ void fire_use (edict_t *self, edict_t *other, edict_t *activator)
 
 		create_fire_touch(self,self->s.origin);
 
-		if (AVG_VEC3T(self->s.scale) < 1)
+		if (AVG_VEC3T(self->rrs.scale) < 1)
 		{
 			self->s.sound = gi.soundindex("ambient/smallfire.wav");
 		}
@@ -249,7 +249,7 @@ void firemove_think(edict_t *self)
 {
 	byte scale;
 
-	scale = AVG_VEC3T(self->s.scale) * 8;
+	scale = AVG_VEC3T(self->rrs.scale) * 8;
 
 	self->PersistantCFX = gi.CreatePersistantEffect(self,
 				FX_FIRE_ON_ENTITY,
@@ -287,11 +287,11 @@ SP_env_fire(edict_t *self)
 		return;
 	}
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
-		VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+		VectorSet(self->rrs.scale, 1.0, 1.0, 1.0);
 	}
 
 	if (self->targetname)
@@ -336,7 +336,7 @@ SP_env_fire(edict_t *self)
 	if (self->spawnflags & FIRE_OFF)
 		return;
 
-	if (AVG_VEC3T(self->s.scale) < 1)
+	if (AVG_VEC3T(self->rrs.scale) < 1)
 	{
 		self->s.sound = gi.soundindex("ambient/smallfire.wav");
 	}
@@ -348,13 +348,13 @@ SP_env_fire(edict_t *self)
 	self->s.sound_data = (127 & ENT_VOL_MASK) | ATTN_STATIC;
 
 	// NOTE - LIMIT ON SCALE is x 8
-	if (AVG_VEC3T(self->s.scale) >= 8.0)
+	if (AVG_VEC3T(self->rrs.scale) >= 8.0)
 	{
 		scale = 255;
 	}
 	else
 	{
-		scale = AVG_VEC3T(self->s.scale) * 32;
+		scale = AVG_VEC3T(self->rrs.scale) * 32;
 	}
 
 	if (self->spawnflags & FIRE_MOVEABLE)

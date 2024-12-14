@@ -379,7 +379,7 @@ void SP_env_mist(edict_t *self)
 	byte		scale;
 
 	self->s.effects |= EF_ALWAYS_ADD_EFFECTS;
-	scale = Q_ftol(AVG_VEC3T(self->s.scale) * 10.0);
+	scale = Q_ftol(AVG_VEC3T(self->rrs.scale) * 10.0);
 	VectorSet(self->mins, -5, -5, -5);
 	VectorSet(self->maxs, 5, 5, 5);
 

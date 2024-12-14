@@ -610,8 +610,8 @@ void gorgon_death2twitch (edict_t *self)
 {
 	VectorSet(self->mins,-24,-24,0);
 	VectorSet(self->maxs,24,24,18);
-	VectorScale(self->mins, AVG_VEC3T(self->s.scale), self->mins);
-	VectorScale(self->maxs, AVG_VEC3T(self->s.scale), self->maxs);
+	VectorScale(self->mins, AVG_VEC3T(self->rrs.scale), self->mins);
+	VectorScale(self->maxs, AVG_VEC3T(self->rrs.scale), self->maxs);
 	self->monsterinfo.currentmove = &gorgon_move_death2twitch;
 	self->monsterinfo.nextframeindex = 0;
 }

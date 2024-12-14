@@ -4776,10 +4776,10 @@ void monsterspawner_go(edict_t *self)
 	monster->jump_chance = self->jump_chance;
 	monster->wakeup_distance = self->wakeup_distance;
 
-	VectorCopy(self->s.scale, monster->s.scale);
+	VectorCopy(self->rrs.scale, monster->rrs.scale);
 
-	VectorScale(STDMinsForClass[monster->classID], AVG_VEC3T(monster->s.scale), monster->mins);
-	VectorScale(STDMaxsForClass[monster->classID], AVG_VEC3T(monster->s.scale), monster->maxs);
+	VectorScale(STDMinsForClass[monster->classID], AVG_VEC3T(monster->rrs.scale), monster->mins);
+	VectorScale(STDMaxsForClass[monster->classID], AVG_VEC3T(monster->rrs.scale), monster->maxs);
 
 	if (self->attenuation)
 	{
@@ -4997,11 +4997,11 @@ void SP_func_monsterspawner (edict_t *self)
 	if (!self->wait)
 		self->wait = 10;
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
-		VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+		VectorSet(self->rrs.scale, 1.0, 1.0, 1.0);
 	}
 
 	if (self->targetname)

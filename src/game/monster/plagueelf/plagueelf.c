@@ -534,7 +534,7 @@ void create_pe_spell(edict_t *Spell)
 	Spell->touch=plagueElfSpellTouch;
 	Spell->enemy=NULL;
 	Spell->clipmask=MASK_MONSTERSOLID|MASK_PLAYERSOLID|MASK_SHOT;
-	VectorSet(Spell->s.scale, 0.5, 0.5, 0.5);
+	VectorSet(Spell->rrs.scale, 0.5, 0.5, 0.5);
 	Spell->s.effects |= EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	Spell->svflags |= SVF_ALWAYS_SEND;
 }
@@ -2015,12 +2015,12 @@ void SP_monster_plagueElf (edict_t *self)
 			self->s.skinnum = 2;
 	}
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -2176,13 +2176,13 @@ void SP_monster_palace_plague_guard (edict_t *self)
 
 	self->spawnflags |= MSF_PELF_MISSILE;
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		float scale = flrand(1.0, 1.3);
 		self->monsterinfo.scale = scale;
-		VectorSet(self->s.scale, scale, scale, scale);
+		VectorSet(self->rrs.scale, scale, scale, scale);
 	}
 
 	SP_monster_plagueElf(self);

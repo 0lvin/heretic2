@@ -92,7 +92,7 @@ edict_t *GkrokonSpooReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	Spoo->enemy=self->owner;
 	Spoo->owner=other;
-	VectorCopy(self->s.scale, Spoo->s.scale);
+	VectorCopy(self->rrs.scale, Spoo->rrs.scale);
 	Spoo->dmg = self->dmg;
 
 	VectorCopy(self->s.origin, Spoo->s.origin);
@@ -210,7 +210,7 @@ void GkrokonSpoo(edict_t *self)
 	create_gkrokon_spoo(Spoo);
 	Spoo->reflect_debounce_time = MAX_REFLECT;
 
-	VectorSet(Spoo->s.scale, 0.5, 0.5, 0.5);
+	VectorSet(Spoo->rrs.scale, 0.5, 0.5, 0.5);
 	Spoo->enemy=self->enemy;
 	Spoo->owner=self;
 	AngleVectors(self->s.angles,Forward,NULL,up);

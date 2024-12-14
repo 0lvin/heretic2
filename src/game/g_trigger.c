@@ -996,7 +996,7 @@ void ClipDistance_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface
 	{
 		if (r_farclipdist->value == FAR_CLIP_DIST_VAL)
 		{
-			sprintf(temp, "%f", AVG_VEC3T(self->s.scale));
+			sprintf(temp, "%f", AVG_VEC3T(self->rrs.scale));
 			gi.cvar_set("r_farclipdist", temp);
 
 		}

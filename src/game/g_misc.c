@@ -1614,7 +1614,7 @@ void SP_misc_magic_portal (edict_t *self)
 	// Set up the basics.
 	VectorSet(self->mins, -16, -16, -32);
 	VectorSet(self->maxs, 16, 16, 32);
-	VectorSet(self->s.scale, 1, 1, 1);
+	VectorSet(self->rrs.scale, 1, 1, 1);
 	self->mass = 250;
 	self->friction = 0;
 	self->gravity = 0;
@@ -2451,7 +2451,7 @@ void SpawnClientAnim(edict_t *self, byte type, char *sound)
 			self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 		}
 	}
-	scale = (byte)(AVG_VEC3T(self->s.scale) * 50);
+	scale = (byte)(AVG_VEC3T(self->rrs.scale) * 50);
 	assert((scale > 0) && (scale < 255));
 	skin = (byte)self->s.skinnum;
 
@@ -2615,7 +2615,7 @@ SP_misc_flare(edict_t* ent)
 	/* Radius saved to scale */
 	for (i = 0; i < 3; i++)
 	{
-		ent->s.scale[i] = st.radius;
+		ent->rrs.scale[i] = st.radius;
 	}
 
 	if (ent->spawnflags & SPAWNFLAG_FLARE_RED)

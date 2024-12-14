@@ -139,7 +139,7 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->deadflag = DEAD_NO;
 	ent->air_finished = level.time + HOLD_BREATH_TIME;
 
-	VectorSet(ent->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(ent->rrs.scale, 1.0, 1.0, 1.0);
 
 	// set the model back to corvux
 #ifdef COMP_FMOD
@@ -312,7 +312,7 @@ void Perform_Morph(edict_t *self)
 		self->gravity = 1.0;
 
 		self->monsterinfo.scale = 2.5;
-		VectorSet(self->s.scale, 2.5, 2.5, 2.5);
+		VectorSet(self->rrs.scale, 2.5, 2.5, 2.5);
 
 		VectorSet(self->mins, -16, -16, -48);
 		VectorSet(self->maxs,  16,  16,  64);

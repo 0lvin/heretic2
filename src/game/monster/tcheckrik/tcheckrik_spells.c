@@ -31,7 +31,7 @@ static void InsectStaffThink(edict_t *self)
 
 	// Grow myself a bit.
 
-	VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(self->rrs.scale, 1.0, 1.0, 1.0);
 
 	// Do autotargeting.
 
@@ -87,7 +87,7 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 
 		InsectStaff->owner = self->owner;
 		InsectStaff->enemy = NULL;
-		VectorCopy(self->s.scale, InsectStaff->s.scale);
+		VectorCopy(self->rrs.scale, InsectStaff->rrs.scale);
 
 		VectorCopy(self->s.origin, InsectStaff->s.origin);
 		Create_rand_relect_vect(self->velocity, InsectStaff->velocity);
@@ -196,7 +196,7 @@ void SpellCastInsectStaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 
 	create_insect_staff_bolt(InsectStaff);
 
-	VectorSet(InsectStaff->s.scale, 0.1, 0.1, 0.1);
+	VectorSet(InsectStaff->rrs.scale, 0.1, 0.1, 0.1);
 	InsectStaff->owner = Caster;
 	InsectStaff->enemy = Caster->enemy;
 
@@ -265,19 +265,19 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 
 		self->count+=irand(1,2);
 
-		if((self->count > 10) && (AVG_VEC3T(self->s.scale) < GLOBE_MAX_SCALE))
+		if((self->count > 10) && (AVG_VEC3T(self->rrs.scale) < GLOBE_MAX_SCALE))
 		{
 			if(self->count > 20)
 			{
-				self->s.scale[0] -= 0.01;
-				self->s.scale[1] -= 0.01;
-				self->s.scale[2] -= 0.01;
+				self->rrs.scale[0] -= 0.01;
+				self->rrs.scale[1] -= 0.01;
+				self->rrs.scale[2] -= 0.01;
 			}
 			else
 			{
-				self->s.scale[0] += 0.1;
-				self->s.scale[1] += 0.1;
-				self->s.scale[2] += 0.1;
+				self->rrs.scale[0] += 0.1;
+				self->rrs.scale[1] += 0.1;
+				self->rrs.scale[2] += 0.1;
 			}
 
 			if(self->count>25)
@@ -333,7 +333,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 	Globe->owner=Caster;
 	Globe->classname="Spell_GlobeOfOuchiness";
 	Globe->dmg = 0;
-	VectorSet(Globe->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(Globe->rrs.scale, 1.0, 1.0, 1.0);
 	Globe->enemy=Caster->enemy;
 	Globe->count=0;
 	Globe->clipmask=MASK_MONSTERSOLID;

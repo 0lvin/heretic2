@@ -785,7 +785,7 @@ void spawn_hanging_chicken(edict_t *self)
 
 	chicken->targetEnt = self->rope_end;
 
-	VectorSet(chicken->s.scale, 1, 1, 1);
+	VectorSet(chicken->rrs.scale, 1, 1, 1);
 	chicken->classname = "NATE";
 	chicken->think = hanging_chicken_think;
 	chicken->nextthink = level.time + 0.1;

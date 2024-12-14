@@ -1734,7 +1734,7 @@ void SP_monster_ogle(edict_t *self)
 	if (self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);

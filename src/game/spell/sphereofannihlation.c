@@ -69,7 +69,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 
 			self->count++;
 			scale = SPHERE_INIT_SCALE + (SPHERE_SCALE_PER_CHARGE * self->count);
-			VectorSet(self->s.scale, scale, scale, scale);
+			VectorSet(self->rrs.scale, scale, scale, scale);
 		}
 		else
 		{
@@ -77,7 +77,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 			float scale;
 
 			scale = SPHERE_MAX_SCALE + flrand(0, SPHERE_SCALE_PULSE);
-			VectorSet(self->s.scale, scale, scale, scale);
+			VectorSet(self->rrs.scale, scale, scale, scale);
 		}
 
 		// detect if we have teleported, since we need to move with the player if thats so
@@ -198,7 +198,7 @@ static void SpherePowerLaserThink(edict_t *self)
 				VectorSubtract(tr.endpos, startPos, tempVect);
 				traceDist = VectorLength(tempVect);
 				gi.CreateEffect(NULL, FX_WEAPON_SPHEREPOWER, 0, startPos, "xbb",
-					shootDir, (byte)(AVG_VEC3T(self->s.scale) * 7.5), (byte)(traceDist/8));
+					shootDir, (byte)(AVG_VEC3T(self->rrs.scale) * 7.5), (byte)(traceDist/8));
 
 				// re-constitute aimangle
 				aimangles[1] += flrand(160,200);
@@ -243,7 +243,7 @@ static void SpherePowerLaserThink(edict_t *self)
 		flags|=CEF_FLAG6;
 
 	gi.CreateEffect(NULL, FX_WEAPON_SPHEREPOWER, flags, startPos, "xbb",
-			shootDir, (byte)(AVG_VEC3T(self->s.scale) * 7.5), (byte)(traceDist/8));
+			shootDir, (byte)(AVG_VEC3T(self->rrs.scale) * 7.5), (byte)(traceDist/8));
 
 	if (--self->count <= 0)
 		G_SetToFree(self);
@@ -282,7 +282,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 
 			self->count++;
 			scale = SPHERE_INIT_SCALE + (SPHERE_SCALE_PER_CHARGE * self->count);
-			VectorSet(self->s.scale, scale, scale, scale);
+			VectorSet(self->rrs.scale, scale, scale, scale);
 		}
 		else
 		{
@@ -290,7 +290,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 			float scale;
 
 			scale = SPHERE_MAX_SCALE + flrand(0, SPHERE_SCALE_PULSE);
-			VectorSet(self->s.scale, scale, scale, scale);
+			VectorSet(self->rrs.scale, scale, scale, scale);
 		}
 
 		// detect if we have teleported, since we need to move with the player if thats so
@@ -363,7 +363,7 @@ edict_t *SphereReflect(edict_t *self, edict_t *other, vec3_t vel)
 	Sphere->solid=self->solid;
 	Sphere->dmg=self->dmg;
 	Sphere->dmg_radius=self->dmg_radius;
-	VectorCopy(self->s.scale, Sphere->s.scale);
+	VectorCopy(self->rrs.scale, Sphere->rrs.scale);
 
 	VectorCopy(vel, Sphere->velocity);
 
@@ -535,7 +535,7 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 	Sphere->count = 0;
 	Sphere->solid = SOLID_NOT;
 	Sphere->dmg = 0;
-	VectorSet(Sphere->s.scale,
+	VectorSet(Sphere->rrs.scale,
 		SPHERE_INIT_SCALE, SPHERE_INIT_SCALE, SPHERE_INIT_SCALE);
 	Sphere->owner = Caster;
 	Sphere->enemy = Caster->enemy;
@@ -636,19 +636,19 @@ static void SphereWatcherGrowThink(edict_t *self)
 
 		self->count+=irand(1,2);
 
-		if((self->count > 10) && (AVG_VEC3T(self->s.scale) < SPHERE_MAX_SCALE))
+		if((self->count > 10) && (AVG_VEC3T(self->rrs.scale) < SPHERE_MAX_SCALE))
 		{
 			if(self->count > 20)
 			{
-				self->s.scale[0] -= 0.01;
-				self->s.scale[1] -= 0.01;
-				self->s.scale[2] -= 0.01;
+				self->rrs.scale[0] -= 0.01;
+				self->rrs.scale[1] -= 0.01;
+				self->rrs.scale[2] -= 0.01;
 			}
 			else
 			{
-				self->s.scale[0] += 0.1;
-				self->s.scale[1] += 0.1;
-				self->s.scale[2] += 0.1;
+				self->rrs.scale[0] += 0.1;
+				self->rrs.scale[1] += 0.1;
+				self->rrs.scale[2] += 0.1;
 			}
 
 			if(self->count>25)
@@ -691,11 +691,11 @@ static void SphereWatcherGrowThink(edict_t *self)
 		self->health=0;
 		self->count=0;
 		self->dmg=	SPHERE_WATCHER_DAMAGE_MIN +
-					(SPHERE_WATCHER_DAMAGE_RANGE*((AVG_VEC3T(self->s.scale) - SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE));
+					(SPHERE_WATCHER_DAMAGE_RANGE*((AVG_VEC3T(self->rrs.scale) - SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE));
 		self->dmg_radius =
 					SPHERE_WATCHER_EXPLOSION_RADIUS_MIN +
 					(SPHERE_WATCHER_EXPLOSION_RADIUS_MAX - SPHERE_WATCHER_EXPLOSION_RADIUS_MIN) *
-							(AVG_VEC3T(self->s.scale) - SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE;
+							(AVG_VEC3T(self->rrs.scale) - SPHERE_INIT_SCALE)/SPHERE_SCALE_RANGE;
 		self->touch=SphereWatcherTouch;
 		self->think=SphereWatcherFlyThink;
 		self->nextthink=level.time+0.1;
@@ -731,7 +731,7 @@ edict_t *SphereWatcherReflect(edict_t *self, edict_t *other, vec3_t vel)
 	Sphere->solid=self->solid;
 	Sphere->dmg=self->dmg;
 	Sphere->dmg_radius=self->dmg_radius;
-	VectorCopy(self->s.scale, Sphere->s.scale);
+	VectorCopy(self->rrs.scale, Sphere->rrs.scale);
 
 	VectorCopy(vel, Sphere->velocity);
 
@@ -810,7 +810,7 @@ static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, c
 		makeScorch = CEF_FLAG6;
 	}
 	gi.CreateEffect(self, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN | makeScorch, NULL,
-					"db", self->movedir, (byte)(AVG_VEC3T(self->s.scale) * 7.5));
+					"db", self->movedir, (byte)(AVG_VEC3T(self->rrs.scale) * 7.5));
 
 	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereImpact.wav"),2,ATTN_NORM,0);
 

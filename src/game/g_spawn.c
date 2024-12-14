@@ -91,7 +91,7 @@ DynamicSpawnSetScale(edict_t *self)
 	}
 
 	/* Copy to entity scale field */
-	VectorCopy(st.scale, self->s.scale);
+	VectorCopy(st.scale, self->rrs.scale);
 }
 
 static void
@@ -144,7 +144,7 @@ DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 	}
 	else
 	{
-		VectorCopy(data->scale, self->s.scale);
+		VectorCopy(data->scale, self->rrs.scale);
 	}
 }
 
@@ -346,7 +346,7 @@ ED_CallSpawn(edict_t *ent)
 		}
 		else
 		{
-			VectorSet(ent->s.scale, 1.0, 1.0, 1.0);
+			VectorSet(ent->rrs.scale, 1.0, 1.0, 1.0);
 		}
 	}
 
@@ -1152,7 +1152,7 @@ SP_worldspawn(edict_t *ent)
 	}
 
 	/* just in case, fix scale */
-	VectorClear(ent->s.scale);
+	VectorClear(ent->rrs.scale);
 
 	if (st.sky && st.sky[0])
 	{

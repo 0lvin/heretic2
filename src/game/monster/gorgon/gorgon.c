@@ -595,14 +595,14 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 		SetAnim(self, ANIM_MELEE5);
 		return;
 	}
-	max_hop_range = AVG_VEC3T(self->s.scale) * GORGON_STD_MAXHOP_RNG;
+	max_hop_range = AVG_VEC3T(self->rrs.scale) * GORGON_STD_MAXHOP_RNG;
 	if (len < max_hop_range)  // Hop forward
 	{//cheacks ahead to see if can hop at it
 //		gi.dprintf(" too far\n");
 		//Setup the trace
 //		gi.dprintf("Hopping forward\n");
 		VectorCopy(self->s.origin, source);
-		VectorMA(source, 64 * AVG_VEC3T(self->s.scale), forward, source);
+		VectorMA(source, 64 * AVG_VEC3T(self->rrs.scale), forward, source);
 
 		trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT);
 
@@ -611,7 +611,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 		else
 		{
 			VectorCopy(self->s.origin, source);
-			VectorMA(source, 32 * AVG_VEC3T(self->s.scale), forward, source);
+			VectorMA(source, 32 * AVG_VEC3T(self->rrs.scale), forward, source);
 
 			trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT);
 
@@ -953,7 +953,7 @@ void gorgonbite (edict_t *self)
 	VectorMA(self->s.origin, self->maxs[2]*0.5, up, melee_point);
 	VectorMA(melee_point, self->maxs[0], forward, melee_point);
 
-	melee_range = AVG_VEC3T(self->s.scale) * GORGON_STD_MELEE_RNG * 1.25;//give axtra range
+	melee_range = AVG_VEC3T(self->rrs.scale) * GORGON_STD_MELEE_RNG * 1.25;//give axtra range
 	VectorMA(melee_point, melee_range, forward, bite_endpos);
 
 	//let's do this the right way
@@ -1565,7 +1565,7 @@ void gorgon_ready_catch (edict_t *self)
 		return;
 	}
 
-	ok_zdist = 128 * (AVG_VEC3T(self->s.scale) * 0.5/2.5);
+	ok_zdist = 128 * (AVG_VEC3T(self->rrs.scale) * 0.5/2.5);
 	if(ok_zdist<48)
 		ok_zdist = 48;
 
@@ -1612,10 +1612,10 @@ void gorgon_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 		return;
 
 	//adjust for scale
-	ofsf *= AVG_VEC3T(self->s.scale) * 0.5/2.5;
-	ofsr *= AVG_VEC3T(self->s.scale) * 0.5/2.5;
+	ofsf *= AVG_VEC3T(self->rrs.scale) * 0.5/2.5;
+	ofsr *= AVG_VEC3T(self->rrs.scale) * 0.5/2.5;
 	ofsu += self->mins[2];//because origin moved up since those were calced
-	ofsu *= AVG_VEC3T(self->s.scale) * 0.25/2.5;
+	ofsu *= AVG_VEC3T(self->rrs.scale) * 0.25/2.5;
 
 	AngleVectors(self->s.angles, forward, right, up);
 	VectorMA(self->s.origin, ofsf, forward, enemy_ofs);
@@ -1665,7 +1665,7 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	trace_t trace;
 
 	//adjust for scale
-	ok_zdist = 64 * (AVG_VEC3T(self->s.scale) * 0.5/2.5);
+	ok_zdist = 64 * (AVG_VEC3T(self->rrs.scale) * 0.5/2.5);
 	if(ok_zdist<24)
 		ok_zdist = 24;
 
@@ -1746,7 +1746,7 @@ void gorgon_gore_toy(edict_t *self, float jumpht)
 	if(self->count)
 		return;
 
-	ok_zdist = 56 * (AVG_VEC3T(self->s.scale) * 0.5/2.5);
+	ok_zdist = 56 * (AVG_VEC3T(self->rrs.scale) * 0.5/2.5);
 	if(ok_zdist<36)
 		ok_zdist = 36;
 	enemy_zdist = self->enemy->s.origin[2] - self->s.origin[2];
@@ -1882,7 +1882,7 @@ qboolean gorgonCheckSlipGo (edict_t *self, qboolean frompain)
 
 void gorgonCheckSlip (edict_t *self)
 {
-	if(!(self->spawnflags & MSF_GORGON_SPEEDY) && AVG_VEC3T(self->s.scale) > 0.75)
+	if(!(self->spawnflags & MSF_GORGON_SPEEDY) && AVG_VEC3T(self->rrs.scale) > 0.75)
 	{
 		gorgonCheckMood(self);
 		return;
@@ -2017,7 +2017,7 @@ void gorgon_prethink (edict_t *self)
 		gi.RemoveEffects(self, FX_M_EFFECTS);
 		self->gravity = 1.0f;
 		self->svflags &= ~SVF_TAKE_NO_IMPACT_DMG;
-		if(AVG_VEC3T(self->s.scale) > 0.5)
+		if(AVG_VEC3T(self->rrs.scale) > 0.5)
 		{
 			self->svflags &= ~SVF_DO_NO_IMPACT_DMG;
 		}
@@ -2246,12 +2246,12 @@ void SP_monster_gorgon_leader (edict_t *self)
 
 	scale = 2;//flrand(0.9, 1.4);
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = scale;
-		VectorSet(self->s.scale, scale, scale, scale);
+		VectorSet(self->rrs.scale, scale, scale, scale);
 	}
 
 	self->monsterinfo.aiflags |= AI_NIGHTVISION;
@@ -2370,21 +2370,21 @@ void SP_monster_gorgon (edict_t *self)
 
 		self->monsterinfo.aiflags |= AI_COWARD;
 		self->monsterinfo.scale = 0.5;
-		VectorSet(self->s.scale, 0.5, 0.5, 0.5);
+		VectorSet(self->rrs.scale, 0.5, 0.5, 0.5);
 	}
 	else
 	{
 		if (!self->health)
 			self->health = GORGON_HEALTH;
 
-		if (!self->s.scale[0] ||
-			!self->s.scale[1] ||
-			!self->s.scale[2])
+		if (!self->rrs.scale[0] ||
+			!self->rrs.scale[1] ||
+			!self->rrs.scale[2])
 		{
 			float scale = flrand(GORGON_SCALE_MIN, GORGON_SCALE_MAX);
-			VectorSet(self->s.scale, scale, scale, scale);
+			VectorSet(self->rrs.scale, scale, scale, scale);
 		}
-		self->monsterinfo.scale = AVG_VEC3T(self->s.scale);
+		self->monsterinfo.scale = AVG_VEC3T(self->rrs.scale);
 	}
 
 	self->max_health = self->health = MonsterHealth(self->health);

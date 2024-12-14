@@ -1334,24 +1334,24 @@ qboolean MG_CheckJump (edict_t *self)
 //FIXME: make them do whatever jump function they have if they have one
 	self->monsterinfo.jump_time = level.time + 2;        //Only try to jump once every 7 seconds
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
-		VectorSet(self->s.scale, 1.0, 1.0, 1.0);
+		VectorSet(self->rrs.scale, 1.0, 1.0, 1.0);
 	}
 
 	if(!jumpup)
 	{
-		VectorScale(jumpdir, jump_height*18 * AVG_VEC3T(self->s.scale), self->velocity);
+		VectorScale(jumpdir, jump_height*18 * AVG_VEC3T(self->rrs.scale), self->velocity);
 		//self->velocity=jumpdir*jump_height*18*self->scale;//was 18
-		self->velocity[2] = jump_height*14 * AVG_VEC3T(self->s.scale);//was 12
+		self->velocity[2] = jump_height*14 * AVG_VEC3T(self->rrs.scale);//was 12
 	}
 	else
 	{
-		VectorScale(jumpdir, jump_height*14 * AVG_VEC3T(self->s.scale), self->velocity);
+		VectorScale(jumpdir, jump_height*14 * AVG_VEC3T(self->rrs.scale), self->velocity);
 		//self->velocity=jumpdir*jump_height*14*self->scale;//was 10
-		self->velocity[2] = jump_height*17 * AVG_VEC3T(self->s.scale);//was 14
+		self->velocity[2] = jump_height*17 * AVG_VEC3T(self->rrs.scale);//was 14
 	}
 	//self->groundentity = NULL?
 	if(classStatics[self->classID].msgReceivers[MSG_JUMP])

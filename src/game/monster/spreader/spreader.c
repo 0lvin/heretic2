@@ -257,7 +257,7 @@ qboolean spreader_check_uncrouch(edict_t *self)
 	mins[2] = 0;
 	maxs[2] = 1;
 
-	desired_height = STDMaxsForClass[CID_SPREADER][2] * AVG_VEC3T(self->s.scale);
+	desired_height = STDMaxsForClass[CID_SPREADER][2] * AVG_VEC3T(self->rrs.scale);
 
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] += desired_height;
@@ -271,7 +271,7 @@ qboolean spreader_check_uncrouch(edict_t *self)
 	self->intentMaxs[2] = 40;
 */
 	self->maxs[2] = desired_height;
-	self->viewheight = self->maxs[2] - 8 * AVG_VEC3T(self->s.scale);
+	self->viewheight = self->maxs[2] - 8 * AVG_VEC3T(self->rrs.scale);
 
 //	self->physicsFlags |= PF_RESIZE;
 	return true;

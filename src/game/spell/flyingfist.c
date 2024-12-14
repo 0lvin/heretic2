@@ -52,7 +52,7 @@ void CreateFlyingFist(edict_t *flyingfist)
 	flyingfist->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 	flyingfist->svflags |= SVF_ALWAYS_SEND;
 	flyingfist->movetype = MOVETYPE_FLYMISSILE;
-	VectorSet(flyingfist->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(flyingfist->rrs.scale, 1.0, 1.0, 1.0);
 
 	flyingfist->touch = FlyingFistTouch;
 	flyingfist->think = FlyingFistInitThink;

@@ -77,7 +77,7 @@ void create_guard_proj(edict_t *self,edict_t *proj)
 	proj->solid = SOLID_BBOX;
 	proj->classname = "Guard_Missile";
 	proj->dmg = flrand(SGUARD_DMG_SPELL_MIN, SGUARD_DMG_SPELL_MAX);
-	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(proj->rrs.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
 
@@ -319,7 +319,7 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 	if(self->monsterinfo.aiflags & AI_NO_MELEE)
 		return;
 
-	damage *= AVG_VEC3T(self->s.scale);
+	damage *= AVG_VEC3T(self->rrs.scale);
 
 	self->monsterinfo.attack_finished = level.time + (3 - skill->value) * 2 + flrand(0, 1);
 
@@ -342,8 +342,8 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 		break;
 	}
 
-	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), soff);
-	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), eoff);
+	Vec3ScaleAssign(AVG_VEC3T(self->rrs.scale), soff);
+	Vec3ScaleAssign(AVG_VEC3T(self->rrs.scale), eoff);
 
 	VectorSet(mins, -4, -4, -4);
 	VectorSet(maxs,  4,  4,  4);
@@ -599,13 +599,13 @@ void seraph_guard_fire (edict_t *self)
 		vec3_t	soff, eoff, mins, maxs, bloodDir, direction;
 		float	damage;
 
-		damage = 15 * AVG_VEC3T(self->s.scale);
+		damage = 15 * AVG_VEC3T(self->rrs.scale);
 
 		VectorSet(soff, 12, -18, 24);
 		VectorSet(eoff, 88, -4, -16);
 
-		Vec3ScaleAssign(AVG_VEC3T(self->s.scale), soff);
-		Vec3ScaleAssign(AVG_VEC3T(self->s.scale), eoff);
+		Vec3ScaleAssign(AVG_VEC3T(self->rrs.scale), soff);
+		Vec3ScaleAssign(AVG_VEC3T(self->rrs.scale), eoff);
 
 		VectorSet(mins, -4, -4, -4);
 		VectorSet(maxs,  4,  4,  4);
@@ -1145,7 +1145,7 @@ void golem_awaken (edict_t *self, edict_t *other, edict_t *activator)
 	self->monsterinfo.dismember = seraph_guard_dismember;
 	MG_InitMoods(self);
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
-	self->melee_range *= AVG_VEC3T(self->s.scale);
+	self->melee_range *= AVG_VEC3T(self->rrs.scale);
 
 	self->enemy = activator;
 	FoundTarget(self, false);
@@ -1219,12 +1219,12 @@ void SP_monster_seraph_guard(edict_t *self)
 		self->movetype = MOVETYPE_STEP;
 		self->solid=SOLID_BBOX;
 
-		if (!self->s.scale[0] ||
-			!self->s.scale[1] ||
-			!self->s.scale[2])
+		if (!self->rrs.scale[0] ||
+			!self->rrs.scale[1] ||
+			!self->rrs.scale[2])
 		{
 			self->monsterinfo.scale = 2.5;
-			VectorSet(self->s.scale,
+			VectorSet(self->rrs.scale,
 				self->monsterinfo.scale,
 				self->monsterinfo.scale,
 				self->monsterinfo.scale);
@@ -1279,12 +1279,12 @@ void SP_monster_seraph_guard(edict_t *self)
 		self->solid=SOLID_BBOX;
 		self->monsterinfo.dismember = seraph_guard_dismember;
 
-		if (!self->s.scale[0] ||
-			!self->s.scale[1] ||
-			!self->s.scale[2])
+		if (!self->rrs.scale[0] ||
+			!self->rrs.scale[1] ||
+			!self->rrs.scale[2])
 		{
 			self->monsterinfo.scale = MODEL_SCALE;
-			VectorSet(self->s.scale,
+			VectorSet(self->rrs.scale,
 				self->monsterinfo.scale,
 				self->monsterinfo.scale,
 				self->monsterinfo.scale);
@@ -1309,6 +1309,6 @@ void SP_monster_seraph_guard(edict_t *self)
 
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 
-		self->melee_range *= AVG_VEC3T(self->s.scale);
+		self->melee_range *= AVG_VEC3T(self->rrs.scale);
 	}
 }

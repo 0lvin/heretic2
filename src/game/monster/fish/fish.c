@@ -1169,10 +1169,10 @@ void SP_monster_fish (edict_t *self)
 
 	self->shrine_type = 0;
 
-	if (AVG_VEC3T(self->s.scale) == 1)
+	if (AVG_VEC3T(self->rrs.scale) == 1)
 	{
 		self->monsterinfo.scale = MODEL_SCALE * flrand(0.5, 1.0);
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -1182,8 +1182,8 @@ void SP_monster_fish (edict_t *self)
 	VectorSet(self->maxs, 16, 16, 8);
 
 	// scale the max's and mins according to scale of model
-	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->mins);
-	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->maxs);
+	Vec3ScaleAssign(AVG_VEC3T(self->rrs.scale), self->mins);
+	Vec3ScaleAssign(AVG_VEC3T(self->rrs.scale), self->maxs);
 
 	// give us the bubble spawner
 	self->PersistantCFX = gi.CreatePersistantEffect(self,

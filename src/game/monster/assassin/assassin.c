@@ -349,7 +349,7 @@ void create_assassin_dagger(edict_t *arrow)
 	arrow->clipmask=MASK_SHOT;
 	arrow->s.effects |= EF_CAMERA_NO_CLIP;
 	arrow->svflags |= SVF_ALWAYS_SEND;
-	VectorSet(arrow->s.scale, 0.5, 0.5, 0.5);
+	VectorSet(arrow->rrs.scale, 0.5, 0.5, 0.5);
 	arrow->think = G_FreeEdict;//ssithraArrowThink;
 
 	VectorSet(arrow->mins, -1.0, -1.0, -1.0);

@@ -835,7 +835,7 @@ void SP_monster_elflord (edict_t *self)
 	self->count = 1;
 	self->monsterinfo.otherenemyname = "player";
 
-	VectorSet(self->s.scale, 2.0, 2.0, 2.0);
+	VectorSet(self->rrs.scale, 2.0, 2.0, 2.0);
 
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 

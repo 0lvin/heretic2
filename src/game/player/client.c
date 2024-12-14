@@ -2484,7 +2484,7 @@ PutClientInServer(edict_t *ent)
 	ent->movetype = MOVETYPE_STEP;
 	ent->viewheight = 0;
 	ent->inuse = true;
-	VectorSet(ent->s.scale, 1.0f, 1.0f, 1.0f);
+	VectorSet(ent->rrs.scale, 1.0f, 1.0f, 1.0f);
 	ent->classname = "player";
 	ent->mass = 200;
 	ent->solid = SOLID_BBOX;

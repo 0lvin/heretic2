@@ -2193,7 +2193,7 @@ old_ai_run(edict_t *self, float dist)
 		if(trace.ent->takedamage && self->monsterinfo.aiflags & AI_SHOVE && trace.fraction <= 0.5)
 		{//hurt them some too?
 			if(self->classID == CID_GORGON &&
-				(AVG_VEC3T(self->s.scale) > 1.5) &&
+				(AVG_VEC3T(self->rrs.scale) > 1.5) &&
 				trace.ent->classID!=self->classID &&
 				trace.ent->health <= 200&&
 				infront(self, self->enemy))//chomp!

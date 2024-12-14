@@ -784,13 +784,13 @@ monster_start(edict_t *self)
 
 	for (i = 0; i < 3; i++)
 	{
-		if (!self->s.scale[i])
+		if (!self->rrs.scale[i])
 		{
 			/* fix empty scale */
-			self->s.scale[i] = 1.0f;
+			self->rrs.scale[i] = 1.0f;
 		}
 
-		scale += self->s.scale[i];
+		scale += self->rrs.scale[i];
 	}
 
 	scale /= 3;
@@ -806,8 +806,8 @@ monster_start(edict_t *self)
 
 		for (i = 0; i < 3; i++)
 		{
-			self->mins[i] *= self->s.scale[i];
-			self->maxs[i] *= self->s.scale[i];
+			self->mins[i] *= self->rrs.scale[i];
+			self->maxs[i] *= self->rrs.scale[i];
 		}
 	}
 
@@ -841,14 +841,14 @@ void MG_BBoxAndOriginAdjustForScale (edict_t *self)
 {
 	float	o_mins2;
 
-	if(!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if(!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		if(!self->monsterinfo.scale)
 		{
 			self->monsterinfo.scale = 1.0f;
-			VectorSet(self->s.scale,
+			VectorSet(self->rrs.scale,
 				self->monsterinfo.scale,
 				self->monsterinfo.scale,
 				self->monsterinfo.scale);
@@ -856,13 +856,13 @@ void MG_BBoxAndOriginAdjustForScale (edict_t *self)
 	}
 	else if(!self->monsterinfo.scale)
 	{
-		self->monsterinfo.scale = AVG_VEC3T(self->s.scale);
+		self->monsterinfo.scale = AVG_VEC3T(self->rrs.scale);
 	}
 
 	o_mins2 = self->mins[2];
 
-	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->mins);
-	Vec3ScaleAssign(AVG_VEC3T(self->s.scale), self->maxs);
+	Vec3ScaleAssign(AVG_VEC3T(self->rrs.scale), self->mins);
+	Vec3ScaleAssign(AVG_VEC3T(self->rrs.scale), self->maxs);
 
 	self->s.origin[2] += o_mins2 - self->mins[2];
 
@@ -893,9 +893,9 @@ monster_start_go(edict_t *self)
 	if(!self->mass)
 		self->mass = 100;
 
-	if(AVG_VEC3T(self->s.scale))
+	if(AVG_VEC3T(self->rrs.scale))
 	{
-		self->mass *= AVG_VEC3T(self->s.scale);
+		self->mass *= AVG_VEC3T(self->rrs.scale);
 	}
 
 	if(self->spawnflags & MSF_COWARD)//start off running away- FIXME: let them specify a flee_time and use AI_FLEE if one is set?  Would anyone ever use this?!?!?

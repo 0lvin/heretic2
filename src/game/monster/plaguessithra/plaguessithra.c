@@ -1252,7 +1252,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 
 	tophalf->s.modelindex = self->s.modelindex;
 
-	VectorCopy(self->s.scale, tophalf->s.scale);
+	VectorCopy(self->rrs.scale, tophalf->rrs.scale);
 
 	tophalf->monsterinfo.otherenemyname = "obj_barrel";
 
@@ -2275,7 +2275,7 @@ void create_ssith_arrow(edict_t *arrow)
 	arrow->touch = ssithraArrowTouch;
 	arrow->enemy = NULL;
 	arrow->clipmask = MASK_SHOT;
-	VectorSet(arrow->s.scale, 0.75, 0.75, 0.75);
+	VectorSet(arrow->rrs.scale, 0.75, 0.75, 0.75);
 	arrow->s.effects |= EF_CAMERA_NO_CLIP;
 	arrow->svflags |= SVF_ALWAYS_SEND;
 	arrow->s.modelindex = gi.modelindex("models/objects/exarrow/tris.fm");
@@ -2385,11 +2385,11 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 	AngleVectors(self->s.angles, Forward, right, NULL);
 
 	VectorCopy(self->s.origin,arrow->s.origin);
-	VectorMA(arrow->s.origin, 12 * AVG_VEC3T(self->s.scale), Forward, arrow->s.origin);
-	VectorMA(arrow->s.origin, 4 * AVG_VEC3T(self->s.scale), right, arrow->s.origin);
+	VectorMA(arrow->s.origin, 12 * AVG_VEC3T(self->rrs.scale), Forward, arrow->s.origin);
+	VectorMA(arrow->s.origin, 4 * AVG_VEC3T(self->rrs.scale), right, arrow->s.origin);
 	arrow->s.origin[2] += z_offs;
 
-	VectorSet(arrow->s.scale, 1.5, 1.5, 1.5);
+	VectorSet(arrow->rrs.scale, 1.5, 1.5, 1.5);
 
 	VectorCopy(self->movedir,arrow->movedir);
 	VectoAngles(Forward,arrow->s.angles);
@@ -2444,8 +2444,8 @@ void ssithraStartDuckArrow(edict_t *self)
 	vec3_t	startpos, vf, vr;
 
 	AngleVectors(self->s.angles, vf, vr, NULL);
-	VectorMA(self->s.origin, 18 * AVG_VEC3T(self->s.scale), vf, startpos);
-	VectorMA(startpos, 4 * AVG_VEC3T(self->s.scale), vr, startpos);
+	VectorMA(self->s.origin, 18 * AVG_VEC3T(self->rrs.scale), vf, startpos);
+	VectorMA(startpos, 4 * AVG_VEC3T(self->rrs.scale), vr, startpos);
 
 	gi.sound(self, CHAN_WEAPON, Sounds[SND_ARROW_CHARGE] , 1, ATTN_NORM, 0);
 
@@ -2628,7 +2628,7 @@ void ssithraCrouch (edict_t *self)
 
 void ssithraUnCrouch(edict_t *self)
 {
-	self->maxs[2] = STDMaxsForClass[self->classID][2] * AVG_VEC3T(self->s.scale);
+	self->maxs[2] = STDMaxsForClass[self->classID][2] * AVG_VEC3T(self->rrs.scale);
 	gi.linkentity(self);
 	self->viewheight = self->maxs[2] * 0.8;
 }
@@ -3099,7 +3099,7 @@ void SP_monster_ssithra (edict_t *self)
 
 	//scaling them up in code like this is bad for designers
 	self->monsterinfo.scale = (MODEL_SCALE) + 0.1;// + flrand(0.1, 0.3));
-	VectorSet(self->s.scale,
+	VectorSet(self->rrs.scale,
 		self->monsterinfo.scale,
 		self->monsterinfo.scale,
 		self->monsterinfo.scale);
@@ -3164,7 +3164,7 @@ void SP_monster_ssithra (edict_t *self)
 		self->health += 75;
 
 		self->monsterinfo.scale = MODEL_SCALE + 0.5;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);

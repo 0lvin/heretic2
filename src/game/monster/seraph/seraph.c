@@ -1084,12 +1084,12 @@ void SP_monster_seraph_overlord(edict_t *self)
 
 	self->monsterinfo.otherenemyname = "monster_rat";
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -1106,5 +1106,5 @@ void SP_monster_seraph_overlord(edict_t *self)
 
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 
-	self->melee_range *= AVG_VEC3T(self->s.scale);
+	self->melee_range *= AVG_VEC3T(self->rrs.scale);
 }

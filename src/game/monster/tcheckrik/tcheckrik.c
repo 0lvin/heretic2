@@ -1678,12 +1678,12 @@ void SP_monster_tcheckrik_male (edict_t *self)
 	else
 		self->s.skinnum = 0;
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -1841,12 +1841,12 @@ void SP_monster_tcheckrik_female (edict_t *self)
 	self->s.skinnum = 0;
 //	self->s.skinnum = 2;
 
-	if (!self->s.scale[0] ||
-		!self->s.scale[1] ||
-		!self->s.scale[2])
+	if (!self->rrs.scale[0] ||
+		!self->rrs.scale[1] ||
+		!self->rrs.scale[2])
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);

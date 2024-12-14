@@ -66,7 +66,12 @@ FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, centity_t *Owner
 	else
 		detail_scale = 1.0;
 
+#if _RREXTEND
 	scale = AVG_VEC3T(Owner->current.scale) * detail_scale;
+#else
+	scale = detail_scale;
+#endif
+
 	VectorSet(Self->r.scale, scale, scale, scale);
 
 	return true;
@@ -195,7 +200,11 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	SphereThinker->r.model = sphere_models[1];
 	SphereThinker->r.flags |= RF_TRANSLUCENT;
+
+#if _RREXTEND
 	VectorCopy(Owner->current.scale, SphereThinker->r.scale);
+#endif
+
 	SphereThinker->radius = 70.0;
 	SphereThinker->Update = FXSphereOfAnnihilationSphereThink;
 	SphereThinker->AddToView = LinkedEntityUpdatePlacement;

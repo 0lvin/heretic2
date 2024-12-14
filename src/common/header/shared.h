@@ -1442,9 +1442,6 @@ typedef struct entity_state_s
 	int event;              /* impulse events -- muzzle flashes, footsteps, etc */
 							/* events only go out for a single frame, they */
 							/* are automatically cleared each frame */
-	/* New protocol fields */
-	vec3_t scale; /* model scale */
-	unsigned int rr_effects;
 
 	short			clientnum;		// In Quake 2, the client num was passed in skinnum.  We need this value, however.
 
@@ -1479,6 +1476,14 @@ typedef struct entity_state_s
 	// Used by the client to verify is this still the same entity it last had.
 	byte			usageCount;
 } entity_state_t;
+
+/* ReRelease states */
+typedef struct entity_rrstate_s
+{
+	/* New protocol fields */
+	vec3_t scale; /* model scale */
+	unsigned int effects;
+} entity_rrstate_t;
 
 /* ============================================== */
 

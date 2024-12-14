@@ -203,7 +203,7 @@ void Createtornbolt(edict_t *tornbolt)
 	tornbolt->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 	tornbolt->svflags |= SVF_ALWAYS_SEND;
 	tornbolt->movetype = MOVETYPE_FLYMISSILE;
-	VectorSet(tornbolt->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(tornbolt->rrs.scale, 1.0, 1.0, 1.0);
 
 	tornbolt->touch = tornboltTouch;
 	tornbolt->think = tornboltInitThink;

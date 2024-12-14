@@ -618,7 +618,7 @@ void create_priestess_proj(edict_t *self,edict_t *proj)
 	proj->solid = SOLID_BBOX;
 	proj->classname = "HPriestess_Missile";
 	proj->dmg = 1.0;
-	VectorSet(proj->s.scale, 1.0, 1.0, 1.0);
+	VectorSet(proj->rrs.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = MASK_SHOT;
 	proj->nextthink = level.time + 0.1;
 
@@ -1663,7 +1663,7 @@ void SP_monster_high_priestess (edict_t *self)
 	if (self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);

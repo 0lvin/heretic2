@@ -208,7 +208,7 @@ void c_corvus_init(edict_t *self,int classId)
 	if (!self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = 1;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
@@ -265,7 +265,7 @@ void c_character_init(edict_t *self,int classId)
 	if (!self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = 1;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);

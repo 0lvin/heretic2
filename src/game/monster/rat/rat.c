@@ -429,7 +429,7 @@ void ratbite (edict_t *self)
 			VectorMA(trace.endpos, flrand(0, 8), dir, endpos);
 			VectorScale(dir, -1, normal);
 			// do 1 point.
-			if(AVG_VEC3T(self->s.scale) > 1.5)
+			if(AVG_VEC3T(self->rrs.scale) > 1.5)
 				T_Damage (trace.ent, self, self, dir, endpos, normal, RAT_DMG_BITE * irand(2, 4), 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
 			else
 				T_Damage (trace.ent, self, self, dir, endpos, normal, RAT_DMG_BITE, 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
@@ -449,7 +449,7 @@ void ratbite (edict_t *self)
 
 void rat_pain_init(edict_t *self)
 {
-	if (AVG_VEC3T(self->s.scale) < 2.0 && irand(0,100) < 50)
+	if (AVG_VEC3T(self->rrs.scale) < 2.0 && irand(0,100) < 50)
 	{
 		self->monsterinfo.aiflags |= AI_FLEE;				// Run away
 		self->monsterinfo.flee_finished = level.time + flrand(3.0, 7.0);
@@ -584,7 +584,7 @@ void rat_ai_stand(edict_t *self, float dist)
 			//Is he close enough to scare us away?
 			if (M_DistanceToTarget(self, self->enemy) < MAX_RAT_IGNORE_DIST)
 			{
-				if (AVG_VEC3T(self->s.scale) < 2.0 || irand(0,1))
+				if (AVG_VEC3T(self->rrs.scale) < 2.0 || irand(0,1))
 				{
 					//Just attack him
 					FoundTarget(self, true);
@@ -746,13 +746,13 @@ void SP_monster_rat (edict_t *self)
 	if (self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = MODEL_SCALE;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
 	}
 
-	self->viewheight = self->maxs[2] * 0.5 * AVG_VEC3T(self->s.scale);
+	self->viewheight = self->maxs[2] * 0.5 * AVG_VEC3T(self->rrs.scale);
 
 	self->use = rat_use;
 	self->touch = rat_touch;
@@ -819,23 +819,23 @@ void SP_monster_rat_giant (edict_t *self)
 
 	self->s.skinnum = 0;
 
-	if (AVG_VEC3T(self->s.scale) < 2.0)
+	if (AVG_VEC3T(self->rrs.scale) < 2.0)
 	{
 		self->monsterinfo.scale = 2.0;
-		VectorSet(self->s.scale,
+		VectorSet(self->rrs.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale,
 			self->monsterinfo.scale);
 	}
 	else
 	{
-		self->monsterinfo.scale = AVG_VEC3T(self->s.scale);
+		self->monsterinfo.scale = AVG_VEC3T(self->rrs.scale);
 	}
 
 	//Init this to -1 because we can't check for supporters in this function
 	self->monsterinfo.supporters = -1;
 
-	self->viewheight = self->maxs[2] * 0.5 * AVG_VEC3T(self->s.scale);
+	self->viewheight = self->maxs[2] * 0.5 * AVG_VEC3T(self->rrs.scale);
 
 	self->use = rat_use;
 	self->touch = rat_touch;
