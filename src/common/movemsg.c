@@ -437,8 +437,8 @@ MSG_WriteData(sizebuf_t* sb, byte* data, int len)
  * Can delta from either a baseline or a previous packet_entity
  */
 void
-MSG_WriteDeltaEntity(entity_state_t *from,
-		entity_state_t *to,
+MSG_WriteDeltaEntity(const entity_xstate_t *from,
+		const entity_xstate_t *to,
 		sizebuf_t *msg,
 		qboolean force,
 		qboolean newentity,
