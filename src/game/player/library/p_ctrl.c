@@ -16,9 +16,9 @@
 
 void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 {
-	char	LandSound[64];
-	char	*material=NULL;
-	qboolean	hardfall=false;
+	const char *material = NULL;
+	qboolean hardfall = false;
+	char LandSound[64];
 
 	// Initialise the appropriate landing sound.
 
@@ -243,18 +243,26 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 	// Don't do dust in the water!
 
 	if(playerinfo->waterlevel == 0)
+	{
 		if(!playerinfo->isclient)
-			playerinfo->G_CreateEffect(EFFECT_PRED_ID15,
-									   playerinfo->self,
-									   FX_DUST_PUFF,
-									   CEF_OWNERS_ORIGIN,
-									   playerinfo->origin,
-									   "");
+		{
+			playerinfo->G_CreateEffect(
+				EFFECT_PRED_ID15,
+				playerinfo->self,
+				FX_DUST_PUFF,
+				CEF_OWNERS_ORIGIN,
+				playerinfo->origin,
+				"");
+		}
 		else
-			playerinfo->CL_CreateEffect(EFFECT_PRED_ID15,
-										playerinfo->self,
-										FX_DUST_PUFF,
-										CEF_OWNERS_ORIGIN,
-										playerinfo->origin,
-										"");
+		{
+			playerinfo->CL_CreateEffect(
+				EFFECT_PRED_ID15,
+				playerinfo->self,
+				FX_DUST_PUFF,
+				CEF_OWNERS_ORIGIN,
+				playerinfo->origin,
+				"");
+		}
+	}
 }

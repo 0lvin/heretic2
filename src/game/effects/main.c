@@ -727,11 +727,7 @@ AddServerEntities(frame_t *frame)
 			ent->skin = NULL;			// No custom skin.
 		}
 
-#if _RREXTEND
 		VectorCopy(s1->scale, ent->scale);
-#else
-		VectorSet(ent->scale, 1.0, 1.0, 1.0);
-#endif
 
 		if(s1->color[0] ||
 		   s1->color[1] ||
