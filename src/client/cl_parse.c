@@ -768,13 +768,6 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 		state->remote_vieworigin[2] = MSG_ReadShort(&net_message);
 	}
 
-	if (flags & PS_REMOTE_VIEWANGLES)
-	{
-		state->remote_viewangles[0] = MSG_ReadShort(&net_message);
-		state->remote_viewangles[1] = MSG_ReadShort(&net_message);
-		state->remote_viewangles[2] = MSG_ReadShort(&net_message);
-	}
-
 	/* parse stats */
 	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
 }

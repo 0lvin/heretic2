@@ -1573,8 +1573,7 @@ typedef struct
 
 	/* For remote camera views */
 
-	vec3_t			remote_vieworigin,
-		remote_viewangles;
+	vec3_t			remote_vieworigin;
 
 	// Deltas added to the player model's client determined angles.
 

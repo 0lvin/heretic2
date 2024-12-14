@@ -2143,7 +2143,7 @@ void misc_remote_camera_think(edict_t *Self)
 		Self->s.angles[PITCH]=-Self->s.angles[PITCH];
 
 		// Update the angles on client(s).
-
+#if 0
 		if(Self->spawnflags&1)
 		{
 			// Just for the activator.
@@ -2179,6 +2179,7 @@ void misc_remote_camera_think(edict_t *Self)
 				}
 			}
 		}
+#endif
 	}
 
 	// Think again or remove myself?
@@ -2363,7 +2364,7 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 	Self->s.angles[PITCH]=-Self->s.angles[PITCH];
 
 	// Update the angles on client(s).
-
+#if 0
 	if(Self->spawnflags&1)
 	{
 		// Just for the activator.
@@ -2399,6 +2400,7 @@ void Use_misc_remote_camera(edict_t *Self,edict_t *Other,edict_t *Activator)
 			}
 		}
 	}
+#endif
 
 	// ********************************************************************************************
 	// Setup next think stuff.

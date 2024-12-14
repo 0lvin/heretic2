@@ -40,6 +40,7 @@ To check:
  * [ ] MAX_MODELS/MAX_SOUND define hardcode,
  * [ ] no action on button press,
  * [x] soft,gl3,vk render has incorrect angles (used same angle in all renders).
+ * [ ] correctly implement misc_remote_camera.
 
 Minimal file set from Loki release:
 ```
