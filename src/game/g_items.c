@@ -1208,6 +1208,9 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	if ((ent->spawnflags & ITEM_COOP_ONLY) && (!coop->value))
 		return;
 
+	/* RREXTEND: Reset dynamic model assign */
+	ent->s.modelindex = 0;
+
 	PrecacheItem(item);
 
 	if(!ValidItem(item))

@@ -566,7 +566,6 @@ static void
 AddServerEntities(frame_t *frame)
 {
 	entity_t			*ent;
-	entity_state_t		*s1;
 	float				autorotate, macerotate;
 	int					i;
 	int					pnum;
@@ -603,6 +602,8 @@ AddServerEntities(frame_t *frame)
 
 	for(pnum = 0, ent = sv_ents; pnum<numEntsToAdd; ++pnum)
 	{
+		entity_xstate_t *s1;
+
 		s1 = &fxi.parse_entities[(frame->parse_entities +
 				pnum) & (MAX_PARSE_ENTITIES - 1)];
 
