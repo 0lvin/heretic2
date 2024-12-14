@@ -276,7 +276,6 @@ enum clc_ops_e
 
 #define PS_REMOTE_VIEWANGLES (1 << 15)
 #define PS_REMOTE_VIEWORIGIN (1 << 16)
-#define PS_VIEWHEIGHT (1 << 17)
 #define PS_MINSMAXS (1 << 18)
 #define PS_REMOTE_ID (1 << 19)
 

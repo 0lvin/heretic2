@@ -1013,11 +1013,6 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.pmove.velocity[2] = ent->velocity[2] * 8.0;
 
 	// ********************************************************************************************
-	//  Reflect viewheight changes in client's playerstate.
-	// ********************************************************************************************
-	current_client->ps.viewheight = ent->viewheight;
-
-	// ********************************************************************************************
 	// Write all the shit that animation system modifies out to the playerstate (for prediction).
 	// ********************************************************************************************
 	current_client->ps.maxs[0] = current_client->playerinfo.maxs[0];

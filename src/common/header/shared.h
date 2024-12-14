@@ -1577,10 +1577,6 @@ typedef struct
 		remote_viewangles;
 	int				remote_id;
 
-	// Z displacement of player's head from origin.
-
-	short			viewheight;
-
 	// Deltas added to the player model's client determined angles.
 
 	vec3_t			offsetangles;

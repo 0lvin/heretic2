@@ -780,11 +780,6 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 		state->remote_viewangles[2] = MSG_ReadShort(&net_message);
 	}
 
-	if (flags & PS_VIEWHEIGHT)
-	{
-		state->viewheight = MSG_ReadShort(&net_message);
-	}
-
 	/* parse stats */
 	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
 }

@@ -288,11 +288,6 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_REMOTE_ID;
 	}
 
-	if (ps->viewheight != ops->viewheight)
-	{
-		pflags |= PS_VIEWHEIGHT;
-	}
-
 	/* write it */
 	MSG_WriteByte(msg, svc_playerinfo);
 	MSG_WriteLong(msg, pflags);
@@ -438,11 +433,6 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		MSG_WriteShort(msg, ps->remote_viewangles[0]);
 		MSG_WriteShort(msg, ps->remote_viewangles[1]);
 		MSG_WriteShort(msg, ps->remote_viewangles[2]);
-	}
-
-	if (pflags & PS_VIEWHEIGHT)
-	{
-		MSG_WriteShort(msg, ps->viewheight);
 	}
 
 	/* send stats */
