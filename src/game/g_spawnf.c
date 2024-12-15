@@ -18,10 +18,6 @@ void ConstructEntities(void)
 	{
 		SLList_DefaultCon(&ent->msgQ.msgs);
 
-#ifdef BBOX_DISPLAY_HACK
-		InitBBoxDisplayInfo(i, ent->mins, ent->maxs);
-#endif
-
 		ent->s.skeletalType = SKEL_NULL;
 	}
 

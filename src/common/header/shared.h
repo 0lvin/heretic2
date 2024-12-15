@@ -189,8 +189,6 @@ typedef unsigned char byte;
 #define PRINT_MEDIUM 1              /* death messages */
 #define PRINT_HIGH 2                /* critical messages */
 #define PRINT_CHAT 3                /* chat messages */
-#define	PRINT_CAPTION 4             /* captioning at bottom */
-#define	PRINT_TEAM 5                /* chat message to team members */
 
 #define ERR_FATAL 0                 /* exit the entire game with a popup window */
 #define ERR_DROP 1                  /* print to console and disconnect from game */
@@ -479,11 +477,9 @@ typedef struct cvar_s
  */
 
 /* lower bits are stronger, and will eat weaker brushes completely */
-#define CONTENTS_EMPTY			0x00000000	// nothing
 #define CONTENTS_SOLID 1                /* an eye is never valid in a solid */
 #define CONTENTS_WINDOW 2               /* translucent, but not watery */
 #define CONTENTS_AUX 4
-#define CONTENTS_ILLUSIONARY	0x00000004  // Was CONTENTS_AUX.
 #define CONTENTS_LAVA 8
 #define CONTENTS_SLIME 16
 #define CONTENTS_WATER 32
@@ -522,11 +518,6 @@ typedef struct cvar_s
 #define SURF_TRANS66 0x20
 #define SURF_FLOWING 0x40       /* scroll towards angle */
 #define SURF_NODRAW 0x80        /* don't bother referencing the texture */
-#define SURF_TALL_WALL		0x00000400	/* Face doesn't get broken up as normal. */
-#define SURF_ALPHA_TEXTURE	0x00000800	/* texture has alpha in it, and should show through in bsp process */
-#define SURF_ANIMSPEED		0x00001000	/* value will hold the anim speed in fps */
-#define SURF_UNDULATE		0x00002000	/* rock surface up and down... */
-#define SURF_QUAKE		0x00004000	/* rock surface up and down when quake value on */
 #define SURF_ALPHATEST 0x02000000 /* KMQUAKE2 Alpha test flag */
 #define SURF_N64_UV 0x10000000    /* ReRelease Stretches texture UVs. */
 #define SURF_N64_SCROLL_X 0x20000000 /* ReRelease Texture scroll X-axis. */
@@ -616,7 +607,6 @@ typedef struct
 	struct edict_s *ent;    /* not set by CM_*() functions */
 
 	byte succeeded;         /* not always set, just in special cases, subjective */
-	byte architecture;      /* set if the moved collided with world (not entities) */
 	// N&C: Custom added.
 	vec3_t offsets[8];	/* [signbits][x] = either size[0][x] or size[1][x] */
 } trace_t;
@@ -706,12 +696,6 @@ typedef struct
 	/* command (in) */
 	usercmd_t cmd;
 	qboolean snapinitial;           /* if s has been changed outside pmove */
-	qboolean run_shrine;
-	qboolean high_max;
-
-	/* In and outn */
-	float waterheight;
-	float desiredWaterHeight;
 
 	/* results (out) */
 	int numtouch;
@@ -726,6 +710,10 @@ typedef struct
 	int watertype;
 	int waterlevel;
 
+	/* callbacks to test the world */
+	trace_t (*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
+	int (*pointcontents)(vec3_t point);
+
 	vec3_t	camera_viewangles;	/* camera angles from client */
 	float *origin;
 	float *velocity;
@@ -738,9 +726,14 @@ typedef struct
 	float knockbackfactor;
 	struct edict_s* self;
 
-	/* callbacks to test the world */
-	trace_t (*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
-	int (*pointcontents)(vec3_t point);
+	qboolean run_shrine;
+	qboolean high_max;
+
+	/* In and outn */
+	float waterheight;
+	float desiredWaterHeight;
+
+
 } pmove_t;
 
 /* entity_state_t->effects

@@ -877,9 +877,6 @@ G_RunFrame(void)
 		// If entity not in use - don`t process
 		if(!ent->inuse)
 		{
-#ifdef BBOX_DISPLAY_HACK
-			DisableBBoxDisplay(i);
-#endif
 			continue;
 		}
 
@@ -915,9 +912,6 @@ G_RunFrame(void)
 			}
 		}
 
-#ifdef BBOX_DISPLAY_HACK
-		EnableBBoxDisplay(i);
-#endif
 		level.current_entity = ent;
 
 		if(ent->msgHandler)	// eventually this check wont be needed
