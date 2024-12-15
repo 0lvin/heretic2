@@ -559,8 +559,6 @@ SkipEffect:
 }
 
 static entity_t		sv_ents[MAX_ENTITIES];
-static fmnodeinfo_t	sv_ents_fmnodeinfos[MAX_ENTITIES][MAX_FM_MESH_NODES];
-
 
 static void
 AddServerEntities(frame_t *frame)
@@ -655,18 +653,14 @@ AddServerEntities(frame_t *frame)
 
 		// Handle flex-model nodes.
 
-		ent->fmnodeinfo = sv_ents_fmnodeinfos[pnum];
-// jmarshall - removed legacy prediction.
-		//if(isPredictedPlayer)
-		//{
-		//	memcpy(ent->fmnodeinfo,fxi.predictinfo->fmnodeinfo,sizeof(s1->fmnodeinfo));
-		//}
-		//else
-		//{
-		//	memcpy(ent->fmnodeinfo,s1->fmnodeinfo,sizeof(s1->fmnodeinfo));
-		//}
-		memcpy(ent->fmnodeinfo, s1->fmnodeinfo, sizeof(s1->fmnodeinfo));
-// jmarshall end
+		ent->rr_mesh = 0;
+		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
+		{
+			if (s1->fmnodeinfo[i].flags & FMNI_NO_DRAW)
+			{
+				ent->rr_mesh |= (1 << i);
+			}
+		}
 
 		// What's going on here?
 // jmarshall - removed legacy prediction.

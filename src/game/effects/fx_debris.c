@@ -342,7 +342,7 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 	{
 		debris->r.model = fxi.cl->model_draw[modelindex];
 	}
-	debris->r.fmnodeinfo = FMNodeInfo_new();
+	debris->r.rr_mesh = 0;
 	debris->r.frame = frame;//first frame should be parts frame of a flexmodel
 //need to copy base skin also
 	debris->r.skinnum = owner->current.skinnum;
@@ -352,21 +352,17 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 		node_num++;
 		if(!((int)(BodyPart)&(int)(whichnode)))
 		{
-			debris->r.fmnodeinfo[node_num].flags |= FMNI_NO_DRAW;
-		}
-		else
-		{
-			debris->r.fmnodeinfo[node_num] = owner->current.fmnodeinfo[node_num];//copy skins and flags and colors
-			debris->r.fmnodeinfo[node_num].flags &= ~FMNI_NO_DRAW;
+			debris->r.rr_mesh |= (1 << node_num);
 		}
 	}
 	//turn off first node always?
 	if(modelindex != 255 || (modelindex == 255 && !(BodyPart & 1)))
-		debris->r.fmnodeinfo[0].flags |= FMNI_NO_DRAW;
+	{
+		debris->r.rr_mesh |= (1 << 0);
+	}
 	else
 	{
-		debris->r.fmnodeinfo[0] = owner->current.fmnodeinfo[0];//copy skins and flags and colors
-		debris->r.fmnodeinfo[0].flags &= ~FMNI_NO_DRAW;
+		debris->r.rr_mesh &= ~(1 << 0);
 	}
 
 	debris->flags |= (CEF_CLIP_TO_WORLD | CEF_ABSOLUTE_PARTS);

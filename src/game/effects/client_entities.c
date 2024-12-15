@@ -136,11 +136,6 @@ void ClientEntity_delete(client_entity_t *toDelete, centity_t *owner)
 		CE_DLight_delete(toDelete->dlight);
 	}
 
-	if(toDelete->r.fmnodeinfo)
-	{
-		ResMngr_DeallocateResource(&FMNodeInfoMngr, toDelete->r.fmnodeinfo, sizeof(fmnodeinfo_t)*MAX_FM_MESH_NODES);
-	}
-
 	if(owner && toDelete->refMask)
 	{
 		DisableRefPoints(owner->referenceInfo, toDelete->refMask);
@@ -388,7 +383,7 @@ void AddEffect(centity_t* owner, client_entity_t* fx)
 		}
 
 		// copy up the scale on a model so it can be culled properly
-		fx->r.cl_scale = AVG_VEC3T(fx->r.scale);
+		VectorCopy(fx->r.scale, fx->r.scale);
 	}
 
 #define NUM_TRACES 100		// I really, really hope we don't ever see more than _this

@@ -1476,6 +1476,7 @@ typedef struct entity_rrstate_s
 	/* New protocol fields */
 	vec3_t scale; /* model scale */
 	unsigned int effects;
+	unsigned int mesh;
 } entity_rrstate_t;
 
 typedef struct entity_xstate_s
@@ -1536,6 +1537,7 @@ typedef struct entity_xstate_s
 	/* New protocol fields, sync with entity_rrstate_t */
 	vec3_t scale; /* model scale */
 	unsigned int rr_effects;
+	unsigned int rr_mesh;
 } entity_xstate_t;
 
 /* ============================================== */

@@ -110,7 +110,7 @@ shrine_player_update(struct client_entity_s *self, centity_t *owner)
 {
 	if (!(--self->SpawnInfo))
 	{
-		self->r.fmnodeinfo = NULL;
+		self->r.rr_mesh = 0;
 		return false;
 	}
 
@@ -141,7 +141,7 @@ void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorSet(shrine_fx->r.scale, 3.0, 3.0, 3.0);
 	shrine_fx->velocity[2] = -35.5;
 	shrine_fx->r.flags = RF_TRANSLUCENT ;
-	shrine_fx->r.fmnodeinfo = &owner->current.fmnodeinfo[0];
+	shrine_fx->r.rr_mesh = 1 ? (owner->current.fmnodeinfo[0].flags & FMNI_NO_DRAW) : 0;
 	shrine_fx->Update = shrine_player_update;
 	shrine_fx->SpawnInfo = PLAYER_FADE_TIME;
 	shrine_fx->d_alpha = 0.45;

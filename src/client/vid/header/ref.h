@@ -69,6 +69,7 @@ typedef struct entity_s {
 	float	backlerp; /* 0.0 = current, 1.0 = old */
 	int		skinnum; /* also used as RF_BEAM's palette index */
 	vec3_t	scale; /* model scale before render */
+	unsigned	rr_mesh; /* disabled meshes */
 
 	int		lightstyle; /* for flashing entities */
 	float	alpha; /* ignore if RF_TRANSLUCENT isn't set */
@@ -77,10 +78,6 @@ typedef struct entity_s {
 	int		flags;
 
 	/* Heretic 2 */
-	float				cl_scale;				// scale of model - but only for client entity models - not server side models
-												// required for scaling mins and maxs that are used to cull models - mins and maxs
-												// are scaled on the server side, but not on the client side when the models are loaded in
-
 	float				depth;					// distance to the camera origin, gets set every
 												// frame by AddEffectsToView
 
@@ -88,10 +85,6 @@ typedef struct entity_s {
 	int					spriteType;
 
 	// info for fmodels and bmodels
-	fmnodeinfo_t		*fmnodeinfo;	// client entities which use a flexible model will need
-										// to fill this in, and then release it when they die
-										// happily most client entities are sprites
-
 	int					swapFrame;			// frame to swap clustered verts in for
 	int					oldSwapFrame;			// previous frame to swap clustered verts in for
 

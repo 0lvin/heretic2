@@ -226,9 +226,6 @@ DrawAliasFrameLerp(dmdx_t *paliashdr, entity_t* entity, vec3_t shadelight,
 	int num_mesh_nodes;
 	dmdxmesh_t *mesh_nodes;
 	vec4_t *s_lerped;
-	fmnodeinfo_t *nodeinfo;
-
-	nodeinfo = entity->fmnodeinfo;
 
 	// draw without texture? used for quad damage effect etc, I think
 	qboolean colorOnly = 0 != (entity->flags &
@@ -302,7 +299,7 @@ DrawAliasFrameLerp(dmdx_t *paliashdr, entity_t* entity, vec3_t shadelight,
 
 	for (i = 0; i < num_mesh_nodes; i++)
 	{
-		if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)
+		if (entity->rr_mesh & (1 << i))
 		{
 			continue;
 		}

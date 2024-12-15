@@ -443,9 +443,6 @@ R_AliasPreparePoints(const entity_t *currententity, finalvert_t *verts, const fi
 	int i, num_mesh_nodes;
 	qboolean colorOnly;
 	vec4_t *s_lerped;
-	fmnodeinfo_t *nodeinfo;
-
-	nodeinfo = currententity->fmnodeinfo;
 
 	if ((verts + s_pmdl->num_xyz) >= verts_max)
 	{
@@ -479,7 +476,7 @@ R_AliasPreparePoints(const entity_t *currententity, finalvert_t *verts, const fi
 		const dtriangle_t *ptri;
 		int num_tris;
 
-		if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)
+		if (currententity->rr_mesh & (1 << i))
 		{
 			continue;
 		}

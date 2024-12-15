@@ -318,9 +318,6 @@ Vk_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp
 	qboolean colorOnly = 0 != (currententity->flags &
 			(RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE | RF_SHELL_DOUBLE |
 			 RF_SHELL_HALF_DAM));
-	fmnodeinfo_t *nodeinfo;
-
-	nodeinfo = currententity->fmnodeinfo;
 
 	frame = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames
 							  + currententity->frame * paliashdr->framesize);
@@ -386,7 +383,7 @@ Vk_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp
 
 	for (i = 0; i < num_mesh_nodes; i++)
 	{
-		if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)
+		if (currententity->rr_mesh & (1 << i))
 		{
 			continue;
 		}

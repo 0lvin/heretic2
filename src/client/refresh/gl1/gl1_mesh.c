@@ -114,8 +114,7 @@ R_DrawAliasDrawCommands(const entity_t *currententity, int *order, const int *or
  */
 static void
 R_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp,
-	vec4_t *s_lerped, const float *shadelight, const float *shadevector,
-	fmnodeinfo_t *nodeinfo)
+	vec4_t *s_lerped, const float *shadelight, const float *shadevector)
 {
 	daliasxframe_t *frame, *oldframe;
 	const dxtrivertx_t *ov;
@@ -182,7 +181,7 @@ R_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp,
 
 	for (i = 0; i < num_mesh_nodes; i++)
 	{
-		if (nodeinfo && nodeinfo[i].flags & FMNI_NO_DRAW)
+		if (currententity->rr_mesh & (1 << i))
 		{
 			continue;
 		}
@@ -562,7 +561,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 	R_UpdateGLBuffer(buf_alias, skin->texnum, 0, currententity->flags, 1);
 	R_DrawAliasFrameLerp(currententity, paliashdr, currententity->backlerp,
-		s_lerped, shadelight, shadevector, currententity->fmnodeinfo);
+		s_lerped, shadelight, shadevector);
 	R_ApplyGLBuffer();
 
 	R_TexEnv(GL_REPLACE);
