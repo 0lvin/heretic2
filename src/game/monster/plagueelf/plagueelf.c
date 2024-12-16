@@ -867,6 +867,7 @@ qboolean canthrownode_pe (edict_t *self, int BP, int *throw_nodes)
 	{
 		*throw_nodes |= Bit_for_MeshNode_pe[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	return false;
@@ -932,6 +933,7 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 			self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,4,8,flrand(3,8));
 		}
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	if(!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
@@ -949,6 +951,7 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 			self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,4,8,flrand(3,8));
 		}
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	if(!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
@@ -966,10 +969,12 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 			self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 			plagueElf_chicken(self,4,8,flrand(3,8));
 		}
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	ThrowWeapon(self, &handspot, BIT_HANDLE, 0, FRAME_partfly);
 	self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	if(self->deadflag != DEAD_DEAD)
 		plagueElf_chicken(self,6,8,flrand(5,10));
 	return true;
@@ -2095,6 +2100,7 @@ void SP_monster_plagueElf (edict_t *self)
 		self->monsterinfo.aiflags |= AI_NO_MISSILE;
 	}
 
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	self->monsterinfo.supporters = -1;
 
 	//set up my mood function

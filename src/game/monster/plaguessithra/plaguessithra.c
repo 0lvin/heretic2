@@ -1271,8 +1271,11 @@ void ssithraSplit (edict_t *self, int BodyPart)
 		}
 	}
 	tophalf->s.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags &= ~FMNI_NO_DRAW;
+	tophalf->rrs.mesh = GenNoDrawInfo(tophalf->s.fmnodeinfo);
+
 	self->s.fmnodeinfo[MESH__CAPLOWERTORSO].flags &= ~FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	self->nextthink = 9999999999999999.0f;
 }
@@ -1300,6 +1303,7 @@ qboolean canthrownode (edict_t *self, int BP, int *throw_nodes)
 	{
 		*throw_nodes |= Bit_for_MeshNode[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	return false;
@@ -1455,8 +1459,9 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode(self, MESH__RIGHT2SPIKE,&throw_nodes);
 
 				self->s.fmnodeinfo[MESH__CAPTOPUPPERTORSO].flags &= ~FMNI_NO_DRAW;
+				self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
-				gore_spot[2]+=18;
+				gore_spot[2] += 18;
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
@@ -1518,6 +1523,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				//seal up the caps left by this split
 				self->s.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags &= ~FMNI_NO_DRAW;
 				self->s.fmnodeinfo[MESH__CAPLOWERTORSO].flags &= ~FMNI_NO_DRAW;
+				self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 				canthrownode(self, MESH__UPPERTORSO,&throw_nodes);
 				canthrownode(self, MESH__CAPBOTTOMUPPERTORSO,&throw_nodes);
@@ -3157,6 +3163,7 @@ void SP_monster_ssithra (edict_t *self)
 			alpha = false;
 		}
 	}
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	self->s.color[3] = 255;
 	if(alpha)//tough guy!

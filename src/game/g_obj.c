@@ -708,6 +708,7 @@ void SpawnCorpse(edict_t *self)
 		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 	}
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	VectorSet(self->mins,-30,-12,-2);
 	VectorSet(self->maxs,30,12,2);
@@ -955,6 +956,8 @@ void SP_obj_dying_elf(edict_t *self)
 	self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
+
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	self->s.frame = FRAME_fetal1;
 	self->think = dying_elf_idle;

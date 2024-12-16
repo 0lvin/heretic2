@@ -756,6 +756,7 @@ qboolean canthrownode_so (edict_t *self, int BP, int *throw_nodes)
 	{
 		*throw_nodes |= Bit_for_MeshNode_so[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	return false;
@@ -776,6 +777,7 @@ void seraph_dropweapon (edict_t *self)
 		VectorMA(handspot,12,up,handspot);
 		ThrowWeapon(self, &handspot, BIT_WHIP, 0, FRAME_partfly);
 		self->s.fmnodeinfo[MESH__WHIP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return;
 	}
 }
@@ -1101,6 +1103,7 @@ void SP_monster_seraph_overlord(edict_t *self)
 	self->s.fmnodeinfo[MESH__LHANDGRD].flags |= FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__ARMSPIKES].flags |= FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__SHOULDPAD].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	MG_InitMoods(self);
 

@@ -159,6 +159,8 @@ void Elflord_c_anims(edict_t *self, G_Message_t *msg)
 			return;
 	}
 
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
+
 	SetAnim(self, curr_anim);
 }
 

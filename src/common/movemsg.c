@@ -617,10 +617,9 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		bits |= U_SOUND;
 	}
 
-	for (int i = 0; i < MAX_FM_MESH_NODES; i++)
+	if (to->rr_mesh != from->rr_mesh)
 	{
-		if (to->fmnodeinfo[i].flags != from->fmnodeinfo[i].flags)
-			bits |= U_FM_FLAGS;
+		bits |= U_FM_FLAGS;
 	}
 
 	/* write the message */
@@ -657,10 +656,7 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 
 	if (bits & U_FM_FLAGS)
 	{
-		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
-		{
-			MSG_WriteShort(msg, to->fmnodeinfo[i].flags);
-		}
+		MSG_WriteLong(msg, to->rr_mesh);
 	}
 
 	if (IS_QII97_PROTOCOL(protocol))

@@ -2484,6 +2484,7 @@ qboolean Pickup_Sphere(edict_t * ent, edict_t * other);
 #define WALL_ENTITY (struct edict_s *)1
 #define AVG_VEC3T(scale) (((scale)[0] + (scale)[1] + (scale)[2]) / 3)
 
+unsigned GenNoDrawInfo(fmnodeinfo_t *fmnodeinfo);
 void G_CPrintf(edict_t* ent, int printlevel, short stringid);
 void G_BCaption(int printlevel, short stringid);
 void G_LevelMsgCenterPrintf(edict_t* ent, short msg);

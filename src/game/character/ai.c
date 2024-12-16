@@ -147,7 +147,7 @@ void c_swapplayer(edict_t *Self,edict_t *Cinematic)
 
 	for (i=0;i<NUM_MESH_NODES;++i)
 	{
-		Cinematic->s.fmnodeinfo[i].flags =  Self->s.fmnodeinfo[i].flags;
+		Cinematic->s.fmnodeinfo[i].flags = Self->s.fmnodeinfo[i].flags;
 		Cinematic->s.fmnodeinfo[i].skin = Self->s.fmnodeinfo[i].skin;
 	}
 
@@ -172,6 +172,7 @@ void c_swapplayer(edict_t *Self,edict_t *Cinematic)
 	Cinematic->s.fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
 	Cinematic->s.fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
 	Cinematic->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
+	Cinematic->rrs.mesh = GenNoDrawInfo(Cinematic->s.fmnodeinfo);
 }
 
 #define ENT_INVISIBLE 1

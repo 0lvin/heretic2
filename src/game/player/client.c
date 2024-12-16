@@ -361,6 +361,17 @@ void ResetPlayerBaseNodes (edict_t *ent)
 
 	// FIXME: Turn hands back on too? But two pairs, which one? Shouldn't playerExport->PlayerUpdateModelAttributes do that?
 
+	/* Sync mesh list */
+	ent->rrs.mesh = 0;
+
+	for (int i = 0; i < MAX_FM_MESH_NODES; i++)
+	{
+		if (ent->s.fmnodeinfo[i].flags & FMNI_NO_DRAW)
+		{
+			ent->rrs.mesh |= (1 << i);
+		}
+	}
+
 	SetupPlayerinfo_effects(ent);
 	playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 	WritePlayerinfo_effects(ent);
@@ -410,6 +421,7 @@ qboolean canthrownode_player (edict_t *self, int BP, int *throw_nodes)
 	{
 		*throw_nodes |= Bit_for_MeshNode_player[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh |= (1 << BP);
 		return true;
 	}
 	return false;
@@ -448,6 +460,7 @@ void player_dropweapon (edict_t *self, int damage, int whichweaps)
 		self->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
 	}
+
 	if(whichweaps & BIT_HELSTF && !(self->s.fmnodeinfo[MESH__HELSTF].flags & FMNI_NO_DRAW))
 	{
 //		self->client->playerinfo.helltype = 0;
@@ -456,6 +469,7 @@ void player_dropweapon (edict_t *self, int damage, int whichweaps)
 		self->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
 	}
+
 	if(whichweaps & BIT_BOWACTV && !(self->s.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
 	{
 //		self->client->playerinfo.bowtype = 0;
@@ -463,6 +477,17 @@ void player_dropweapon (edict_t *self, int damage, int whichweaps)
 		self->s.fmnodeinfo[MESH__BOFF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
+	}
+
+	/* Sync mesh list */
+	self->rrs.mesh = 0;
+
+	for (int i = 0; i < MAX_FM_MESH_NODES; i++)
+	{
+		if (self->s.fmnodeinfo[i].flags & FMNI_NO_DRAW)
+		{
+			self->rrs.mesh |= (1 << i);
+		}
 	}
 }
 

@@ -313,10 +313,15 @@ void WritePlayerinfo(edict_t *ent)
 	ent->s.renderfx = ent->client->playerinfo.renderfx;
 	ent->s.skinnum = ent->client->playerinfo.skinnum;
 	ent->s.clientnum = ent->client->playerinfo.clientnum;
+	ent->rrs.mesh = 0;
 
 	for(i = 0; i < MAX_FM_MESH_NODES;i++)
 	{
 		ent->s.fmnodeinfo[i] = ent->client->playerinfo.fmnodeinfo[i];
+		if (ent->client->playerinfo.fmnodeinfo[i].flags & FMNI_NO_DRAW)
+		{
+			ent->rrs.mesh |= (1 << i);
+		}
 	}
 
 	// From pmove_state_t.
@@ -364,10 +369,15 @@ void WritePlayerinfo_effects(edict_t *ent)
 	ent->s.renderfx = ent->client->playerinfo.renderfx;
 	ent->s.skinnum = ent->client->playerinfo.skinnum;
 	ent->s.clientnum = ent->client->playerinfo.clientnum;
+	ent->rrs.mesh = 0;
 
 	for(i = 0; i < MAX_FM_MESH_NODES; i++)
 	{
 		ent->s.fmnodeinfo[i] = ent->client->playerinfo.fmnodeinfo[i];
+		if (ent->s.fmnodeinfo[i].flags & FMNI_NO_DRAW)
+		{
+			ent->rrs.mesh |= (1 << i);
+		}
 	}
 }
 

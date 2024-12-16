@@ -855,6 +855,7 @@ qboolean canthrownode_sg (edict_t *self, int BP, int *throw_nodes)
 	{
 		*throw_nodes |= Bit_for_MeshNode_sg[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	return false;
@@ -875,6 +876,7 @@ void seraph_guard_dropweapon (edict_t *self)
 		VectorMA(handspot,12,up,handspot);
 		ThrowWeapon(self, &handspot, BIT_AXE, 0, FRAME_partfly);
 		self->s.fmnodeinfo[MESH__AXE].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return;
 	}
 }
@@ -1246,6 +1248,7 @@ void SP_monster_seraph_guard(edict_t *self)
 		self->s.fmnodeinfo[MESH__WHIP].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__LHANDBOSS].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__PITHEAD].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 		self->s.frame = FRAME_idle;
 
@@ -1304,6 +1307,7 @@ void SP_monster_seraph_guard(edict_t *self)
 		self->s.fmnodeinfo[MESH__WHIP].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__LHANDBOSS].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__PITHEAD].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 		MG_InitMoods(self);
 

@@ -156,6 +156,7 @@ static void spreader_grenade_explode (edict_t *self)
 
 	self->bounced = NULL;
 	self->isBlocked = NULL;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 //	self->think = G_FreeEdict;
 //	self->nextthink = level.time + self->delay;
 }

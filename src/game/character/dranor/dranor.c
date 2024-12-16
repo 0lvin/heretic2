@@ -186,5 +186,5 @@ void SP_character_dranor (edict_t *self)
 	self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 	self->health = 30;
-
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 }

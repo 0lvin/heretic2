@@ -1274,3 +1274,19 @@ newfindradius(edict_t *from, vec3_t org, float rad)
 
 	return NULL;
 }
+
+unsigned
+GenNoDrawInfo(fmnodeinfo_t *fmnodeinfo)
+{
+	unsigned rr_mesh = 0;
+	int i;
+
+	for(i = 0; i < MAX_FM_MESH_NODES; i++)
+	{
+		if (fmnodeinfo[i].flags & FMNI_NO_DRAW)
+		{
+			rr_mesh |= (1 << i);
+		}
+	}
+	return rr_mesh;
+}

@@ -755,6 +755,7 @@ qboolean canthrownode_tc (edict_t *self, int BP, int *throw_nodes)
 	{
 		*throw_nodes |= Bit_for_MeshNode_tc[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	return false;
@@ -800,6 +801,7 @@ void insect_dropweapon (edict_t *self, int weapon)
 		ThrowWeapon(self, &handspot, BIT_STAFF, 0, FRAME_partfly);
 		self->s.fmnodeinfo[MESH__STAFF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 //		insect_chicken(self,2,4,flrand(3,8));
 		return;
 	}
@@ -811,6 +813,7 @@ void insect_dropweapon (edict_t *self, int weapon)
 		ThrowWeapon(self, &handspot, BIT_SPEAR, 0, FRAME_partfly);
 		self->s.fmnodeinfo[MESH__SPEAR].flags |= FMNI_NO_DRAW;
 //		insect_chicken(self,2,4,flrand(3,8));
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return;
 	}
 	if((!weapon || weapon&BIT_SWORD)&&
@@ -824,6 +827,7 @@ void insect_dropweapon (edict_t *self, int weapon)
 		self->s.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;
 //		self->s.fmnodeinfo[MESH__SWORD].flags |= FMNI_NO_DRAW;
 //		insect_chicken(self,2,4,flrand(3,8));
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return;
 	}
 }
@@ -1173,7 +1177,8 @@ void insect_pain(edict_t *self, G_Message_t *msg)
 /*-------------------------------------------------------------------------
 	insect_pause
 -------------------------------------------------------------------------*/
-void insect_pause (edict_t *self)
+void
+insect_pause(edict_t *self)
 {
 	vec3_t	v;
 	float	len;
@@ -1205,6 +1210,8 @@ void insect_pause (edict_t *self)
 			}
 		}
 	}
+
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	if(self->monsterinfo.aiflags&AI_OVERRIDE_GUIDE)
 	{
@@ -1703,6 +1710,8 @@ void SP_monster_tcheckrik_male (edict_t *self)
 	if(self->spawnflags & MSF_INSECT_BEAST_FODDER)
 		self->s.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;//?
 
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
+
 	//FIXME (somewhere: otherenemy should be more than just *one* kind
 	self->monsterinfo.otherenemyname = "monster_rat";
 
@@ -1865,6 +1874,7 @@ void SP_monster_tcheckrik_female (edict_t *self)
 
 //	self->s.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
 
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	//FIXME (somewhere: otherenemy should be more than just *one* kind
 	self->monsterinfo.otherenemyname = "monster_rat";
 

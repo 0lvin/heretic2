@@ -872,6 +872,8 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 		}
 
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
+
 		if (HitLocation == hl_rwing || HitLocation == hl_lwing || HitLocation == hl_head)
 		{
 			self->monsterinfo.jump_time = level.time + 2;
@@ -1713,5 +1715,6 @@ SP_monster_harpy(edict_t *self)
 	if(irand(0,2))
 		self->s.fmnodeinfo[MESH_TAILSPIKES].flags |= FMNI_NO_DRAW;
 
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	gi.linkentity(self);
 }

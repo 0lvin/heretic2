@@ -523,6 +523,8 @@ void assassindagger (edict_t *self, float right_ofs)
 			}
 		}
 
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
+
 		if(thrownum>1)
 			gi.sound (self, CHAN_WEAPON, Sounds[SND_THROW2], 1, ATTN_NORM, 0);
 		else if(thrownum>0)
@@ -664,6 +666,7 @@ void assassin_death(edict_t *self, G_Message_t *msg)
 			self->s.fmnodeinfo[MESH__RUPARM].flags |= FMNI_NO_DRAW;
 			self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
 			self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
+			self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 			SprayDebris(self, self->s.origin, 12, 100);
 		}
@@ -871,6 +874,7 @@ qboolean canthrownode_as (edict_t *self, int BP, int *throw_nodes)
 	{
 		*throw_nodes |= Bit_for_MeshNode_as[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	return false;
@@ -897,6 +901,8 @@ void assassin_dropweapon (edict_t *self, int whichknives)
 		ThrowWeapon(self, &handspot, BIT_RKNIFE, 0, FRAME_prtfly);//FRAME_atakc3);
 		self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
 	}
+
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 }
 
 int assassin_convert_hitloc_dead(int hl)
@@ -1310,7 +1316,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW&&
+	if(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW &&
 		self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
@@ -1408,6 +1414,7 @@ void assassin_pause (edict_t *self)
 //this gets stuck on, sometimes
 	self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	if(self->monsterinfo.aiflags&AI_OVERRIDE_GUIDE)
 		return;
@@ -2079,6 +2086,7 @@ void assassinCrouchedCheckAttack (edict_t *self, float attack)
 void assassinNodeOn (edict_t *self, float node)
 {
 	self->s.fmnodeinfo[(int)node].flags &= ~FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 }
 
 void assassinStop (edict_t *self)
@@ -2947,6 +2955,7 @@ void SP_monster_assassin (edict_t *self)
 	self->svflags |= SVF_WAIT_NOTSOLID;
 
 	self->s.fmnodeinfo[MESH__KNIFES].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	VectorCopy(self->s.origin, self->pos1);
 }

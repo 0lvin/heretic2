@@ -351,7 +351,9 @@ void Perform_Morph(edict_t *self)
 	self->physicsFlags |= PF_RESIZE;
 
 	for (i=0;i<MAX_FM_MESH_NODES;i++)
+	{
 		self->client->playerinfo.fmnodeinfo[i].flags &= ~FMNI_NO_DRAW;
+	}
 
 	// reset our animation
 	playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_STAND);

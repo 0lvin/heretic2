@@ -197,6 +197,7 @@ void SP_obj_corpse_ogle(edict_t *self)
 		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	ObjectInit(self,40,80,MAT_FLESH,SOLID_BBOX);
 }
 
@@ -507,6 +508,7 @@ void ogle_cast_off_tools_of_oppression ( edict_t *self )
 		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
 	}
 
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	self->monsterinfo.aiflags |= AI_NO_MELEE;
 }
 
@@ -1185,6 +1187,8 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 			self->s.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
 		break;
 	}
+
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 }
 
 void ogle_death_pain(edict_t *self, G_Message_t *msg)
@@ -1856,6 +1860,8 @@ void SP_monster_ogle(edict_t *self)
 			SetAnim(self, ANIM_WORK3);
 		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
+
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	if (self->monsterinfo.ogleflags & OF_CINEMATIC)
 	{

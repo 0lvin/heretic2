@@ -786,6 +786,7 @@ void SP_monster_mssithra (edict_t *self)
 
 	//Turn the goofy bolts off!
 	self->s.fmnodeinfo[MESH__BOLTS].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	self->dmg = 0;
 	self->svflags|=SVF_BOSS;

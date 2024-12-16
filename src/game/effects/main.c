@@ -652,15 +652,7 @@ AddServerEntities(frame_t *frame)
 		}
 
 		// Handle flex-model nodes.
-
-		ent->rr_mesh = 0;
-		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
-		{
-			if (s1->fmnodeinfo[i].flags & FMNI_NO_DRAW)
-			{
-				ent->rr_mesh |= (1 << i);
-			}
-		}
+		ent->rr_mesh = s1->rr_mesh;
 
 		// What's going on here?
 // jmarshall - removed legacy prediction.

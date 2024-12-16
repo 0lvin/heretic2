@@ -106,6 +106,7 @@ void spreader_showgrenade(edict_t *self)
 		return;//fixme: actually prevent these anims
 
 	self->s.fmnodeinfo[MESH__BOMB].flags &= ~FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 }
 
 void spreader_pain_sound(edict_t *self)
@@ -151,6 +152,7 @@ void spreader_idlenoise(edict_t *self)
 void spreader_hidegrenade(edict_t *self)
 {
 	self->s.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	gi.sound(self, CHAN_AUTO, sounds[SND_THROW], 1, ATTN_IDLE, 0);
 }
 
@@ -709,6 +711,7 @@ qboolean canthrownode_ps (edict_t *self, int BP, int *throw_nodes)
 	{
 		*throw_nodes |= Bit_for_MeshNode_ps[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
+		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
 	return false;
@@ -727,6 +730,7 @@ void spreader_dropweapon (edict_t *self)
 	VectorMA(handspot, -12, right, handspot);
 	ThrowWeapon(self, &handspot, BIT_BOMB, 0, 0);
 	self->s.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 }
 
 void spreader_dead_pain (edict_t *self, G_Message_t *msg)
@@ -967,6 +971,7 @@ void spreader_isblocked (edict_t *self, trace_t *trace)
 
 
 	self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_NO_DRAW;
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	VectorCopy(self->s.origin, gore_spot);
 	gore_spot[2]+=self->maxs[2] - 8;
 	SprayDebris(self, gore_spot, 8, 100);
@@ -1331,6 +1336,7 @@ void SP_monster_spreader (edict_t *self)
 
 	self->s.modelindex = classStatics[CID_SPREADER].resInfo->modelIndex;
 	self->s.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW; //hide the bomb
+	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 

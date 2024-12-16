@@ -151,15 +151,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 
 	if (bits & U_FM_FLAGS)
 	{
-		to->rr_mesh = 0;
-		for (int i = 0; i < MAX_FM_MESH_NODES; i++)
-		{
-			to->fmnodeinfo[i].flags = MSG_ReadShort(&net_message);
-			if (to->fmnodeinfo[i].flags & FMNI_NO_DRAW)
-			{
-				to->rr_mesh |= (1 << i);
-			}
-		}
+		to->rr_mesh = MSG_ReadLong(&net_message);
 	}
 
 	if (cls.serverProtocol != PROTOCOL_VERSION)
