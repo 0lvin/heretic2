@@ -149,11 +149,6 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		to->clientEffects.numEffects = 0;
 	}
 
-	if (bits & U_FM_FLAGS)
-	{
-		to->rr_mesh = MSG_ReadLong(&net_message);
-	}
-
 	if (cls.serverProtocol != PROTOCOL_VERSION)
 	{
 		int i;

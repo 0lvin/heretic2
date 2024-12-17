@@ -219,7 +219,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID52,
 								 playerinfo->origin,
-								 CHAN_FOOTSTEP,
+								 CHAN_BODY,
 								 "*fall.wav",
 								 1,
 								 ATTN_NORM,
@@ -230,7 +230,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 			playerinfo->G_Sound(SND_PRED_ID52,
 								playerinfo->leveltime,
 								playerinfo->self,
-								CHAN_FOOTSTEP,
+								CHAN_BODY,
 								playerinfo->G_SoundIndex("*fall.wav"),
 								1,
 								ATTN_NORM,

@@ -1496,12 +1496,12 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 	if (absstep >= STEP_OFFSET)
 	{
 		basestep = absstep - STEP_OFFSET;
-		channel = CHAN_FOOTSTEP;
+		channel = CHAN_BODY;
 	}
 	else
 	{
 		basestep = absstep;
-		channel = CHAN_FOOTSTEP2;
+		channel = CHAN_BODY;
 	}
 
 	if(!basestep)

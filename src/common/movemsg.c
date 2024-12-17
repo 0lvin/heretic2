@@ -617,11 +617,6 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		bits |= U_SOUND;
 	}
 
-	if (to->rr_mesh != from->rr_mesh)
-	{
-		bits |= U_FM_FLAGS;
-	}
-
 	/* write the message */
 	if (!bits && !force)
 	{
@@ -652,11 +647,6 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 			MSG_WriteShort(msg, to->clientEffects.bufSize);
 			MSG_WriteData(msg, to->clientEffects.buf, to->clientEffects.bufSize);
 		}
-	}
-
-	if (bits & U_FM_FLAGS)
-	{
-		MSG_WriteLong(msg, to->rr_mesh);
 	}
 
 	if (IS_QII97_PROTOCOL(protocol))

@@ -339,8 +339,7 @@ enum clc_ops_e
 #define U_SKIN16 (1 << 25)
 #define U_SOUND (1 << 26)
 #define U_SOLID (1 << 27)
-#define U_FM_FLAGS (1 << 28)
-#define U_CLIENT_EFFECTS (1 << 29)
+#define U_CLIENT_EFFECTS (1 << 28)
 
 /* CMD - Command text buffering and command execution */
 

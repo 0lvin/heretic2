@@ -1204,9 +1204,6 @@ typedef enum
 #define CHAN_VOICE 2
 #define CHAN_ITEM 3
 #define CHAN_BODY 4
-#define CHAN_FOOTSTEP			5
-#define CHAN_FOOTSTEP2			6
-#define CHAN_WEAPON2			7
 /* modifier flags */
 #define CHAN_NO_PHS_ADD 8           /* send to all clients, not just ones in PHS (ATTN 0 will also do this) */
 #define CHAN_RELIABLE 16            /* send by reliable message, not datagram */
@@ -1216,9 +1213,6 @@ typedef enum
 #define ATTN_NORM 1
 #define ATTN_IDLE 2
 #define ATTN_STATIC 3               /* diminish very rapidly with distance */
-#define ATTN_VERYSTATIC 4
-#define ATTN_LEFT 256
-#define ATTN_RIGHT 512
 
 /* player_state->stats[] indexes */
 #define STAT_HEALTH_ICON 0

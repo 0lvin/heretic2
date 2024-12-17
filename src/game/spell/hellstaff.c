@@ -266,7 +266,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		// We altenate sound slots to make the quick-firing work well with the sounds.
 		if (caster->client->playerinfo.flags & PLAYER_FLAG_ALTFIRE)
 		{	// Use the alternate slot, clear the flag.
-			gi.sound(caster, CHAN_WEAPON2, gi.soundindex("weapons/HellLaserFire.wav"), 1, ATTN_NORM, 0);
+			gi.sound(caster, CHAN_WEAPON, gi.soundindex("weapons/HellLaserFire.wav"), 1, ATTN_NORM, 0);
 			caster->client->playerinfo.flags &= ~PLAYER_FLAG_ALTFIRE;
 		}
 		else
@@ -322,7 +322,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		// This alternation avoids cutting sounds out prematurely.
 		if (caster->client->playerinfo.flags & PLAYER_FLAG_ALTFIRE)
 		{	// Use the alternate slot, clear the flag.
-			gi.sound(caster, CHAN_WEAPON2, gi.soundindex("weapons/HellFire.wav"), 1, ATTN_NORM, 0);
+			gi.sound(caster, CHAN_WEAPON, gi.soundindex("weapons/HellFire.wav"), 1, ATTN_NORM, 0);
 			caster->client->playerinfo.flags &= ~PLAYER_FLAG_ALTFIRE;
 		}
 		else
