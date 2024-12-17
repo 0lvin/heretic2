@@ -558,7 +558,7 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		}
 	}
 
-	if (to->rr_effects != from->rr_effects)
+	if (to->rr_effects != from->rr_effects || to->rr_mesh != from->rr_mesh)
 	{
 		bits |= U_EFFECTS8 | U_EFFECTS16;
 	}
@@ -777,16 +777,19 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		if ((bits & (U_EFFECTS8 | U_EFFECTS16)) == (U_EFFECTS8 | U_EFFECTS16))
 		{
 			MSG_WriteLong(msg, to->rr_effects);
+			MSG_WriteLong(msg, to->rr_mesh);
 		}
 
 		else if (bits & U_EFFECTS8)
 		{
 			MSG_WriteByte(msg, to->rr_effects);
+			MSG_WriteByte(msg, to->rr_mesh);
 		}
 
 		else if (bits & U_EFFECTS16)
 		{
 			MSG_WriteShort(msg, to->rr_effects);
+			MSG_WriteShort(msg, to->rr_mesh);
 		}
 	}
 
