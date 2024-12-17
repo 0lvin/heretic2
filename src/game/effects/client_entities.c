@@ -148,11 +148,6 @@ void ClientEntity_delete(client_entity_t *toDelete, centity_t *owner)
 	ResMngr_DeallocateResource(&EntityMngr, toDelete, sizeof(*toDelete));
 }
 
-fmnodeinfo_t *FMNodeInfo_new()
-{
-	return (fmnodeinfo_t *)ResMngr_AllocateResource(&FMNodeInfoMngr, sizeof(fmnodeinfo_t)*MAX_FM_MESH_NODES);
-}
-
 void AddEffectToList(client_entity_t **root, client_entity_t *fx)
 {
 	assert(root);
