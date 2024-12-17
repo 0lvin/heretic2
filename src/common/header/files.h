@@ -743,7 +743,6 @@ typedef struct
 #define	CONTENTS_EMPTY			0x00000000	// nothing
 #define CONTENTS_SOLID 1  /* an eye is never valid in a solid */
 #define CONTENTS_WINDOW 2 /* translucent, but not watery */
-#define	CONTENTS_ILLUSIONARY	0x00000004  // Was CONTENTS_AUX.
 #define CONTENTS_AUX 4
 #define CONTENTS_LAVA 8
 #define CONTENTS_SLIME 16
@@ -772,14 +771,6 @@ typedef struct
 #define CONTENTS_DETAIL 0x8000000       /* brushes to be added after vis leafs */
 #define CONTENTS_TRANSLUCENT 0x10000000 /* auto set if any surface has trans */
 #define CONTENTS_LADDER 0x20000000
-// This flag is special in that it is not stored in the .bsp by QuakeEd. It is passed into the trace
-// functions to say that anything with CONTENTS_CAMERANOBLOCK should be ignored. So we can get away
-// with defining it = CONTENTS_CAMERANOBLOCK.
-#define	CONTENTS_CAMERABLOCK	0x20000000	// Was CONTENTS_LADDER.
-// This flag is special in that it is NOT passed into the trace functions, but may be stored in the
-//.bsp by QuakeEd to say that traces with CONTENTS_CAMERABLOCK as the mask will ignore any brushes
-// with this flag.
-#define	CONTENTS_CAMERANOBLOCK	0x40000000
 // Only do the trace against the world, not entities within it. Not stored in the .bsp and passed
 // only as an argument to trace fucntions.
 #define CONTENTS_WORLD_ONLY		0x80000000

@@ -273,8 +273,7 @@ enum clc_ops_e
 #define PS_WEAPONINDEX (1 << 12)
 #define PS_WEAPONFRAME (1 << 13)
 #define PS_RDFLAGS (1 << 14)
-
-#define PS_MINSMAXS (1 << 18)
+#define PS_MINSMAXS (1 << 15)
 
 /*============================================== */
 
@@ -298,7 +297,6 @@ enum clc_ops_e
 #define SND_POS (1 << 2)            /* three coordinates */
 #define SND_ENT (1 << 3)            /* a short 0-2: channel, 3-12: entity */
 #define SND_OFFSET (1 << 4)         /* a byte, msec offset from frame start */
-#define SND_PRED_INFO (1<<5)        /* a byte and a float */
 
 #define DEFAULT_SOUND_PACKET_VOLUME 1.0
 #define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
@@ -316,7 +314,6 @@ enum clc_ops_e
 #define U_EVENT (1 << 5)
 #define U_REMOVE (1 << 6)       /* REMOVE this entity, don't add it */
 #define U_MOREBITS1 (1 << 7)      /* read one additional byte */
-#define U_CLIENT_EFFECTS (1 << 7)
 
 /* second byte */
 #define U_NUMBER16 (1 << 8)      /* NUMBER8 is implicit if not set */
@@ -326,7 +323,6 @@ enum clc_ops_e
 #define U_RENDERFX8 (1 << 12)     /* fullbright, etc */
 #define U_EFFECTS8 (1 << 14)     /* autorotate, trails, etc */
 #define U_MOREBITS2 (1 << 15)     /* read one additional byte */
-#define U_SCALE (1 << 15)
 
 /* third byte */
 #define U_SKIN8 (1 << 16)
@@ -337,17 +333,14 @@ enum clc_ops_e
 #define U_MODEL3 (1 << 21)
 #define U_MODEL4 (1 << 22)
 #define U_MOREBITS3 (1 << 23)     /* read one additional byte */
-#define U_JOINTED (1 << 23)
 
 /* fourth byte */
 #define U_OLDORIGIN (1 << 24)
 #define U_SKIN16 (1 << 25)
 #define U_SOUND (1 << 26)
 #define U_SOLID (1 << 27)
-#define U_ABSLIGHT (1 << 28)
-#define U_USAGE_COUNT (1 << 29)
-#define U_FM_FLAGS (1 << 30)
-#define U_FM_SKIN (1 << 31)
+#define U_FM_FLAGS (1 << 28)
+#define U_CLIENT_EFFECTS (1 << 29)
 
 /* CMD - Command text buffering and command execution */
 
