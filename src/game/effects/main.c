@@ -9,7 +9,6 @@
 #include "../../common/header/common.h"
 #include "client_effects.h"
 #include "../common/fx.h"
-#include "../common/resourcemanager.h"
 #include "client_entities.h"
 #include "particle.h"
 #include "ce_dlight.h"
@@ -77,7 +76,6 @@ void Init()
 	int i;
 
 	InitResourceManager();
-	ResMngr_Con(fxi.FXBufMngr, 192, 256);
 	InitParticleMngrMngr();
 	InitFMNodeInfoMngr();
 	InitEntityMngr();
@@ -131,8 +129,8 @@ void Clear()
 
 		if(owner->current.clientEffects.buf)
 		{
-			ResMngr_DeallocateResource(fxi.FXBufMngr, owner->current.clientEffects.buf, sizeof(char[ENTITY_FX_BUF_SIZE]));
-			owner->current.clientEffects.buf=0;
+			fxi.TagFree(owner->current.clientEffects.buf);
+			owner->current.clientEffects.buf = 0;
 		}
 	}
 
@@ -165,7 +163,6 @@ void ShutDown()
 	ReleaseFMNodeInfoMngr();
 	ReleaseDLightMngr();
 	ReleaseMsgMngr();
-	ResMngr_Des(fxi.FXBufMngr);
 	ShutdownResourceManager();
 }
 
@@ -527,7 +524,7 @@ SkipEffect:
 	if(owner) // free the buffer allocated in CL_ParseDelta and passed onto owner->current
 	{
 		fxBuf->freeBlock = 0;
-		ResMngr_DeallocateResource(fxi.FXBufMngr, fxBuf->buf, sizeof(char[ENTITY_FX_BUF_SIZE]));
+		fxi.TagFree(fxBuf->buf);
 		fxBuf->buf = NULL;
 		fxBuf->numEffects = 0;
 		fxBuf->bufSize = 0;

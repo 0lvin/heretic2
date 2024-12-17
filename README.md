@@ -37,7 +37,7 @@ To check:
  * [ ] ANGLE_1 usage in client code,
  * [ ] different move code and noclip
  * [x] Incorrect 16 bit frame flag unset,
- * [ ] MAX_MODELS/MAX_SOUND define hardcode,
+ * [x] MAX_MODELS/MAX_SOUND define hardcode,
  * [ ] no action on button press,
  * [x] soft,gl3,vk render has incorrect angles (used same angle in all renders).
  * [ ] correctly implement misc_remote_camera.
