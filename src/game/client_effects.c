@@ -17,7 +17,6 @@
 #include "header/game.h"
 #include "header/client_effects.h"
 #include "effects/client_effects.h"
-#include "common/resourcemanager.h"
 
 // Structure containing functions and data pointers exported from the effects DLL.
 client_fx_export_t *fxe;
@@ -33,8 +32,6 @@ predictinfo_t predictInfo;
 EffectsBuffer_t clientPredEffects;
 float PlayerAlpha = 1.0f;
 void CL_ClearLightStyles(void);
-
-ResourceManager_t FXBufMgnr = {0};
 
 int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 	sizebuf_t* msg;
@@ -375,7 +372,6 @@ E_Load(void)
 	cl_game_import.PlayerEntPtr = (entity_t**)&cl_entities[0];
 	cl_game_import.PlayerAlpha = (float*)&PlayerAlpha;
 	cl_game_import.predictinfo = &predictInfo;
-	cl_game_import.FXBufMngr = &FXBufMgnr;
 	cl_game_import.cl_effectpredict = &cl_effectpredict[0];
 	cl_game_import.Sys_Error = CL_Sys_Error;
 	cl_game_import.Com_Error = Com_Error;

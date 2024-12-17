@@ -88,7 +88,6 @@ typedef struct
 
 	sizebuf_t		*net_message;
 	float			*PlayerAlpha;
-	struct			ResourceManager_s *FXBufMngr;
 	entity_t		**PlayerEntPtr;
 
 	// Client prediction stuff.

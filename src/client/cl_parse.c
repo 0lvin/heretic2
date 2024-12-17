@@ -26,7 +26,6 @@
 
 #include "header/client.h"
 #include "input/header/input.h"
-#include "../game/common/resourcemanager.h"
 #include "../game/header/client_effects.h"
 
 static int bitcounts[32]; /* just for protocol profiling */
@@ -109,8 +108,6 @@ CL_ParseEntityBits(unsigned *bits)
 	return number;
 }
 
-extern ResourceManager_t FXBufMgnr;
-
 /*
  * Can go from either a baseline or a previous packet_entity
  */
@@ -131,7 +128,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		{
 			if (to->clientEffects.buf != NULL)
 			{
-				ResMngr_DeallocateResource(&FXBufMgnr, to->clientEffects.buf, 0);
+				Z_Free(to->clientEffects.buf);
 				to->clientEffects.buf = NULL;
 				to->clientEffects.numEffects = 0;
 			}
@@ -139,7 +136,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		else
 		{
 			to->clientEffects.numEffects = numEffects;
-			to->clientEffects.buf = (byte*)ResMngr_AllocateResource(&FXBufMgnr, ENTITY_FX_BUF_SIZE);
+			to->clientEffects.buf = (byte*)Z_Malloc(ENTITY_FX_BUF_SIZE);
 			to->clientEffects.bufSize = MSG_ReadShort(&net_message);;
 			MSG_ReadData(&net_message, to->clientEffects.buf, to->clientEffects.bufSize);
 		}
