@@ -1321,7 +1321,16 @@ SP_worldspawn(edict_t *ent)
 		gi.cvar_set("sv_cooptimeout", tmp);
 	}
 
-	//---------------
+	if (st.start_items && *st.start_items)
+	{
+		level.start_items = st.start_items;
+	}
+	else
+	{
+		level.start_items = NULL;
+	}
+
+	/* --------------- */
 
 	// GRAVITY for all games.
 

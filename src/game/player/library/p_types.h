@@ -206,8 +206,8 @@ extern int p_num_items;
 
 extern int GetItemIndex(gitem_t* x);
 extern gitem_t *GetItemByIndex(int index);
-extern gitem_t *FindItemByClassname(char *classname);
-extern gitem_t *FindItem(char *pickupname);
+extern gitem_t *FindItemByClassname(const char *classname);
+extern gitem_t *FindItem(const char *pickupname);
 extern void InitItems(void);
 
 #define	ITEM_INDEX(x) GetItemIndex(x)

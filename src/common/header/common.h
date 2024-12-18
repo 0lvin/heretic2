@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.42H10"
+#define YQ2VERSION "8.42H11"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -646,6 +646,7 @@ cmodel_t *CM_InlineModel(const char *name);       /* *1, *2, etc */
 int CM_MapSurfacesNum(void);
 mapsurface_t* CM_MapSurfaces(int surfnum);
 
+void CM_ModInit(void);
 void CM_ModFreeAll(void);
 
 int CM_NumClusters(void);

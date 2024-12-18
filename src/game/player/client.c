@@ -26,9 +26,9 @@
  */
 
 #include "../header/local.h"
+#include "../monster/misc/player.h"
 #include "../header/g_defaultmessagehandler.h"
 #include "../header/g_skeletons.h"
-#include "../monster/misc/player.h"
 #include "../player/library/p_newmove.h"
 #include "../player/library/p_main.h"
 #include "../player/library/p_ctrl.h"
@@ -82,7 +82,8 @@ SP_info_player_start(edict_t *self)
 /*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 32)
 potential spawning position for deathmatch games
 */
-void SP_info_player_deathmatch(edict_t *self)
+void
+SP_info_player_deathmatch(edict_t *self)
 {
 	if (!deathmatch->value)
 	{
@@ -95,7 +96,8 @@ void SP_info_player_deathmatch(edict_t *self)
 /*QUAKED info_player_coop (1 0 1) (-16 -16 -24) (16 16 32)
 potential spawning position for coop games
 */
-void SP_info_player_coop(edict_t *self)
+void
+SP_info_player_coop(edict_t *self)
 {
 	if(!coop->value)
 	{
@@ -122,16 +124,15 @@ SP_info_player_intermission(edict_t *self)
 }
 
 
-int	SexedSoundIndex (edict_t *ent, char *base)
+int
+SexedSoundIndex(edict_t *ent, char *base)
 {
-	char	buffer[MAX_QPATH];
+	char buffer[MAX_QPATH];
 
 	Com_sprintf (buffer, sizeof(buffer), "%s/%s.wav", ent->client->playerinfo.pers.sounddir, base);
 
 	return gi.soundindex(buffer);
 }
-
-
 
 void
 ClientSetSkinType(edict_t *ent, char *skinname)
@@ -147,12 +148,14 @@ ClientSetSkinType(edict_t *ent, char *skinname)
 }
 
 
-void player_pain(edict_t *self, edict_t *other, float kick, int damage)
+void
+player_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	// player pain is handled at the end of the frame in P_DamageFeedback
 }
 
-void BleederThink (edict_t *self)
+void
+BleederThink(edict_t *self)
 {
 	vec3_t	bleed_spot, bleed_dir, forward, right, up;
 	int		damage;
@@ -323,7 +326,8 @@ void player_repair_skin (edict_t *self)
 	WritePlayerinfo_effects(self);
 }
 
-void ResetPlayerBaseNodes (edict_t *ent)
+void
+ResetPlayerBaseNodes(edict_t *ent)
 {
 	if(!ent->client)
 		return;
@@ -414,7 +418,8 @@ int Bit_for_MeshNode_player [16] =
 	BIT_HEAD,//		15 - head
 };
 
-qboolean canthrownode_player (edict_t *self, int BP, int *throw_nodes)
+qboolean
+canthrownode_player(edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
 	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
@@ -427,7 +432,8 @@ qboolean canthrownode_player (edict_t *self, int BP, int *throw_nodes)
 	return false;
 }
 
-void player_dropweapon (edict_t *self, int damage, int whichweaps)
+void
+player_dropweapon(edict_t *self, int damage, int whichweaps)
 {//FIXME: OR in the BIT_... to playerinfo->altparts!
 	vec3_t handspot, forward, right, up;
 
@@ -491,7 +497,8 @@ void player_dropweapon (edict_t *self, int damage, int whichweaps)
 	}
 }
 
-void player_dismember (edict_t *self, edict_t *other, int damage, int HitLocation)
+void
+player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 {//FIXME: Make sure you can still dismember and gib player while dying
 	int				throw_nodes = 0;
 	vec3_t			gore_spot, right, blood_dir, blood_spot;
@@ -831,7 +838,8 @@ finish:
 	WritePlayerinfo_effects(self);
 }
 
-void player_decap (edict_t *self, edict_t *other)
+void
+player_decap(edict_t *self, edict_t *other)
 {
 	int				throw_nodes = 0;
 	vec3_t			gore_spot;
@@ -1143,7 +1151,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		int damage, vec3_t point /* unused */)
 {
 	//FIXME: Make sure you can still dismember and gib player while dying
-	int		i;
+	int i;
 
 	if (!self || !inflictor || !attacker)
 	{
@@ -1359,6 +1367,228 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	ClientObituary(self, inflictor, attacker);
 
 	gi.linkentity(self);
+}
+
+/* ======================================================================= */
+
+static void
+Player_GiveStartItems(edict_t *ent, const char *ptr)
+{
+	if (!ptr || !*ptr)
+	{
+		return;
+	}
+
+	while (*ptr)
+	{
+		char buffer[MAX_QPATH + 1] = {0};
+		const char *buffer_end = NULL, *item_name = NULL;
+		char *curr_buf;
+
+		buffer_end = strchr(ptr, ';');
+		if (!buffer_end)
+		{
+			buffer_end = ptr + strlen(ptr);
+		}
+		strncpy(buffer, ptr, Q_min(MAX_QPATH, buffer_end - ptr));
+
+		curr_buf = buffer;
+		item_name = COM_Parse(&curr_buf);
+		if (item_name)
+		{
+			gitem_t *item;
+
+			item = FindItemByClassname(item_name);
+			if (!item || !item->pickup)
+			{
+				gi.dprintf("%s: Invalid g_start_item entry: %s\n", __func__, item_name);
+			}
+			else
+			{
+				edict_t *dummy;
+				int count = 1;
+
+				if (*curr_buf)
+				{
+					count = atoi(COM_Parse(&curr_buf));
+				}
+
+				if (count == 0)
+				{
+					ent->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 0;
+					continue;
+				}
+
+				dummy = G_Spawn();
+				dummy->item = item;
+				dummy->count = count;
+				dummy->spawnflags |= DROPPED_PLAYER_ITEM;
+				item->pickup(dummy, ent);
+				G_FreeEdict(dummy);
+			}
+		}
+
+		/* skip end of section */
+		ptr = buffer_end;
+		if (*ptr == ';')
+		{
+			ptr ++;
+		}
+	}
+}
+
+/*
+ * This is only called when the game first
+ * initializes in single player, but is called
+ * after each death and level change in deathmatch
+ */
+void
+InitClientPersistant(edict_t *ent)
+{
+	gclient_t *client;
+	gitem_t *item;
+
+	client = ent->client;
+
+	if (!client)
+	{
+		return;
+	}
+
+	memset(&client->playerinfo.pers, 0, sizeof(client->playerinfo.pers));
+
+	// ********************************************************************************************
+	// Set up player's health.
+	// ********************************************************************************************
+
+	client->playerinfo.pers.health = 100;
+
+	// ********************************************************************************************
+	// Set up maximums amounts for health, mana and ammo for bows and hellstaff.
+	// ********************************************************************************************
+
+	client->playerinfo.pers.max_health		= 100;
+	client->playerinfo.pers.max_offmana		= MAX_OFF_MANA;
+	client->playerinfo.pers.max_defmana		= MAX_DEF_MANA;
+	client->playerinfo.pers.max_redarrow	= MAX_RAIN_AMMO;
+	client->playerinfo.pers.max_phoenarr	= MAX_PHOENIX_AMMO;
+	client->playerinfo.pers.max_hellstaff	= MAX_HELL_AMMO;
+
+	// ********************************************************************************************
+	// Give defensive and offensive weapons to player.
+	// ********************************************************************************************
+
+	client->playerinfo.pers.weapon=0;
+	client->playerinfo.pers.defence=0;
+
+	// Give just the sword-staff and flying-fist to the player as starting weapons.
+
+	item = playerExport->FindItem("staff");
+	AddWeaponToInventory(item, ent);
+	client->playerinfo.pers.selected_item = playerExport->GetItemIndex(item);
+	client->playerinfo.pers.weapon = item;
+	client->playerinfo.pers.lastweapon = item;
+	client->playerinfo.weap_ammo_index = 0;
+
+	if(!(((int)dmflags->value) & DF_NO_OFFENSIVE_SPELL))
+	{
+		item = playerExport->FindItem("fball");
+		AddWeaponToInventory(item, ent);
+		client->playerinfo.pers.selected_item = playerExport->GetItemIndex(item);
+		client->playerinfo.pers.weapon = item;
+		client->playerinfo.pers.lastweapon = item;
+		client->playerinfo.weap_ammo_index = playerExport->GetItemIndex(playerExport->FindItem(item->ammo));
+	}
+
+	item = playerExport->FindItem("powerup");
+	AddDefenseToInventory(item, ent);
+	client->playerinfo.pers.defence = item;
+
+	// ********************************************************************************************
+	// Start player with half offensive and defensive mana - as instructed by Brian P.
+	// ********************************************************************************************
+
+	item = playerExport->FindItem("Off-mana");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = client->playerinfo.pers.max_offmana / 2;
+
+	item = playerExport->FindItem("Def-mana");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = client->playerinfo.pers.max_defmana / 2;
+
+#ifdef G_NOAMMO
+
+	// Start with all weapons if G_NOAMMO is defined.
+
+	gi.dprintf("Starting with unlimited ammo.\n");
+
+	item = playerExport->FindItem("hell");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	item = playerExport->FindItem("array");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	item = playerExport->FindItem("rain");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	item = playerExport->FindItem("sphere");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	item = playerExport->FindItem("phoen");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	item = playerExport->FindItem("mace");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	item = playerExport->FindItem("fwall");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	item = playerExport->FindItem("meteor");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	item = playerExport->FindItem("morph");
+	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+
+	client->bowtype = BOW_TYPE_REDRAIN;
+	client->armortype = ARMOR_TYPE_SILVER;
+
+#endif // G_NOAMMO
+
+	client->playerinfo.pers.connected = true;
+
+	/* Default chasecam to off */
+	client->playerinfo.pers.chasetoggle = 0;
+
+	/* start items */
+	if (*g_start_items->string)
+	{
+		if ((deathmatch->value || coop->value) && !sv_cheats->value)
+		{
+			gi.cprintf(ent, PRINT_HIGH,
+				"You must run the server with '+set cheats 1' to enable 'g_start_items'.\n");
+			return;
+		}
+		else
+		{
+			Player_GiveStartItems(ent, g_start_items->string);
+		}
+	}
+
+	if (level.start_items && *level.start_items)
+	{
+		Player_GiveStartItems(ent, level.start_items);
+	}
+}
+
+void
+InitClientResp(gclient_t *client)
+{
+	if (!client)
+	{
+		return;
+	}
+
+	memset(&client->resp, 0, sizeof(client->resp));
+	client->resp.enterframe = level.framenum;
+	client->resp.coop_respawn = client->playerinfo.pers;
 }
 
 /*
@@ -1582,10 +1812,7 @@ SelectFarthestDeathmatchSpawnPoint(void)
 static edict_t *
 SelectDeathmatchSpawnPoint(void)
 {
-//	if ((int)(dmflags->value) & DF_SPAWN_FARTHEST)
 	return SelectFarthestDeathmatchSpawnPoint();
-//	else
-//		return SelectRandomDeathmatchSpawnPoint();
 }
 
 static edict_t *
@@ -1854,9 +2081,9 @@ CopyToBodyQue(edict_t *ent)
 	}
 
 	gi.unlinkentity(body);
-
 	body->s = ent->s;
-	body->s.number = body-g_edicts;
+	body->s.number = body - g_edicts;
+
 	body->s.skeletalType = SKEL_NULL;
 	body->s.effects &= ~(EF_JOINTED|EF_SWAPFRAME);
 	body->s.rootJoint = NULL_ROOT_JOINT;
@@ -2271,123 +2498,6 @@ GiveLevelItems(edict_t *player)
 	WritePlayerinfo_effects(player);
 }
 
-// ************************************************************************************************
-// InitClientPersistant
-// --------------------
-// ************************************************************************************************
-
-void
-InitClientPersistant(edict_t *player)
-{
-	gclient_t *client;
-	gitem_t	*item;
-
-	client=player->client;
-
-	memset(&client->playerinfo.pers, 0, sizeof(client->playerinfo.pers));
-
-	// ********************************************************************************************
-	// Set up player's health.
-	// ********************************************************************************************
-
-	client->playerinfo.pers.health = 100;
-
-	// ********************************************************************************************
-	// Set up maximums amounts for health, mana and ammo for bows and hellstaff.
-	// ********************************************************************************************
-
-	client->playerinfo.pers.max_health		= 100;
-	client->playerinfo.pers.max_offmana		= MAX_OFF_MANA;
-	client->playerinfo.pers.max_defmana		= MAX_DEF_MANA;
-	client->playerinfo.pers.max_redarrow	= MAX_RAIN_AMMO;
-	client->playerinfo.pers.max_phoenarr	= MAX_PHOENIX_AMMO;
-	client->playerinfo.pers.max_hellstaff	= MAX_HELL_AMMO;
-
-	// ********************************************************************************************
-	// Give defensive and offensive weapons to player.
-	// ********************************************************************************************
-
-	client->playerinfo.pers.weapon=0;
-	client->playerinfo.pers.defence=0;
-
-	// Give just the sword-staff and flying-fist to the player as starting weapons.
-
-	item = playerExport->FindItem("staff");
-	AddWeaponToInventory(item,player);
-	client->playerinfo.pers.selected_item = playerExport->GetItemIndex(item);
-	client->playerinfo.pers.weapon = item;
-	client->playerinfo.pers.lastweapon = item;
-	client->playerinfo.weap_ammo_index = 0;
-
-	if(!(((int)dmflags->value)&DF_NO_OFFENSIVE_SPELL))
-	{
-		item=playerExport->FindItem("fball");
-		AddWeaponToInventory(item,player);
-		client->playerinfo.pers.selected_item = playerExport->GetItemIndex(item);
-		client->playerinfo.pers.weapon = item;
-		client->playerinfo.pers.lastweapon = item;
-		client->playerinfo.weap_ammo_index = playerExport->GetItemIndex(playerExport->FindItem(item->ammo));
-	}
-
-	item=playerExport->FindItem("powerup");
-	AddDefenseToInventory(item,player);
-	client->playerinfo.pers.defence = item;
-
-	// ********************************************************************************************
-	// Start player with half offensive and defensive mana - as instructed by Brian P.
-	// ********************************************************************************************
-
-	item = playerExport->FindItem("Off-mana");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = client->playerinfo.pers.max_offmana / 2;
-
-	item = playerExport->FindItem("Def-mana");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = client->playerinfo.pers.max_defmana / 2;
-
-#ifdef G_NOAMMO
-
-	// Start with all weapons if G_NOAMMO is defined.
-
-	gi.dprintf("Starting with unlimited ammo.\n");
-
-	item = playerExport->FindItem("hell");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	item = playerExport->FindItem("array");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	item = playerExport->FindItem("rain");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	item = playerExport->FindItem("sphere");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	item = playerExport->FindItem("phoen");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	item = playerExport->FindItem("mace");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	item = playerExport->FindItem("fwall");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	item = playerExport->FindItem("meteor");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	item = playerExport->FindItem("morph");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
-
-	client->bowtype = BOW_TYPE_REDRAIN;
-	client->armortype = ARMOR_TYPE_SILVER;
-
-#endif // G_NOAMMO
-
-	client->playerinfo.pers.connected = true;
-
-	/* Default chasecam to off */
-	client->playerinfo.pers.chasetoggle = 0;
-}
-
-
 /* ============================================================== */
 
 /*
@@ -2713,19 +2823,6 @@ PutClientInServer(edict_t *ent)
 		client->playerinfo.pers.newweapon=item;
 		client->playerinfo.switchtoweapon=WEAPON_READY_SWORDSTAFF;
 	}
-}
-
-/*
-=====================
-InitClientResp
-=====================
-*/
-void
-InitClientResp(gclient_t *client)
-{
-	memset(&client->resp, 0, sizeof(client->resp));
-	client->resp.enterframe = level.framenum;
-	client->resp.coop_respawn = client->playerinfo.pers;
 }
 
 /*
@@ -3193,7 +3290,7 @@ ClientConnect(edict_t *ent, char *userinfo)
 	   just take it, otherwise spawn one from scratch */
 	if (ent->inuse == false)
 	{
-		// Clear the respawning variables.
+		/* clear the respawning variables */
 
 		InitClientResp(ent->client);
 
@@ -3872,4 +3969,36 @@ ClientBeginServerFrame(edict_t *ent)
 	}
 
 	client->playerinfo.latched_buttons = 0;
+}
+
+/*
+ * This is called to clean up the pain daemons that
+ * the disruptor attaches to clients to damage them.
+ */
+void
+RemoveAttackingPainDaemons(edict_t *self)
+{
+	edict_t *tracker;
+
+	if (!self)
+	{
+		return;
+	}
+
+	tracker = G_Find(NULL, FOFS(classname), "pain daemon");
+
+	while (tracker)
+	{
+		if (tracker->enemy == self)
+		{
+			G_FreeEdict(tracker);
+		}
+
+		tracker = G_Find(tracker, FOFS(classname), "pain daemon");
+	}
+
+	if (self->client)
+	{
+		self->client->tracker_pain_framenum = 0;
+	}
 }

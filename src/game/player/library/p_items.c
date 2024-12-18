@@ -1326,7 +1326,7 @@ GetItemByIndex(int Index)
 // -------------------
 // ************************************************************************************************
 
-gitem_t *FindItemByClassname(char *Classname)
+gitem_t *FindItemByClassname(const char *Classname)
 {
 	int		I;
 	gitem_t	*Item;
@@ -1350,7 +1350,8 @@ gitem_t *FindItemByClassname(char *Classname)
 // --------
 // ************************************************************************************************
 
-gitem_t *FindItem(char *PickupName)
+gitem_t *
+FindItem(const char *PickupName)
 {
 	int		I;
 	gitem_t	*Item;

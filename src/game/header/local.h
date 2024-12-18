@@ -491,6 +491,9 @@ typedef struct
 
 	edict_t *disguise_violator;
 	int disguise_violation_framenum;
+
+	char *start_items;
+
 	float		far_clip_dist_f;
 	float		fog;
 	float		fog_density;
@@ -598,6 +601,7 @@ typedef struct
 	float pausetime;
 	char *item;
 	char *gravity;
+	char *start_items;
 
 	float minyaw;
 	float maxyaw;
@@ -1043,6 +1047,7 @@ extern cvar_t *g_quick_weap;
 extern cvar_t *g_swap_speed;
 extern cvar_t *g_language;
 extern cvar_t *g_itemsbobeffect;
+extern cvar_t *g_start_items;
 extern cvar_t *g_game;
 
 extern cvar_t *autorotate;
@@ -1157,8 +1162,8 @@ void Cmd_Score_f(edict_t *ent);
 void PrecacheItem(gitem_t *it);
 void InitItems(void);
 void SetItemNames(void);
-gitem_t *FindItem(char *pickup_name);
-gitem_t *FindItemByClassname(char *classname);
+gitem_t *FindItem(const char *pickup_name);
+gitem_t *FindItemByClassname(const char *classname);
 
 edict_t *Drop_Item(edict_t *ent, gitem_t *item);
 void SetRespawn(edict_t *ent);
@@ -1389,7 +1394,7 @@ edict_t *PlayerTrail_LastSpot(void);
 void respawn(edict_t *ent);
 void BeginIntermission(edict_t *targ);
 void PutClientInServer(edict_t *ent);
-void InitClientPersistant(edict_t *player);
+void InitClientPersistant(edict_t *ent);
 void InitClientResp(gclient_t *client);
 void InitBodyQue(void);
 void ClientBeginServerFrame(edict_t *ent);
@@ -1659,12 +1664,48 @@ struct gclient_s
 	int damage_blood;               /* damage taken out of health */
 	int damage_knockback;           /* impact damage */
 	vec3_t damage_from;             /* origin for vector calculation */
-	qboolean damage_gas;            /* Did damage come from plague mist? */
 
 	float killer_yaw;               /* when dead, look at killer */
 
-	float invisible_framenum;
+	weaponstate_t weaponstate;
+	vec3_t kick_angles;				/* weapon kicks */
+	vec3_t kick_origin;
+	float v_dmg_roll, v_dmg_pitch, v_dmg_time;          /* damage kicks */
+	float fall_time, fall_value;    /* for view drop on fall */
+	float damage_alpha;
+	float bonus_alpha;
+	vec3_t damage_blend;
+	vec3_t v_angle;                 /* aiming direction */
+	float bobtime;                  /* so off-ground doesn't change it */
+	vec3_t oldviewangles;
+	vec3_t oldvelocity;
 
+	float next_drown_time;
+	int old_waterlevel;
+	int breather_sound;
+
+	int machinegun_shots;           /* for weapon raising */
+
+	/* animation vars */
+	int anim_end;
+	int anim_priority;
+	qboolean anim_duck;
+	qboolean anim_run;
+
+	/* powerup timers */
+	float quad_framenum;
+	float invincible_framenum;
+	float invisible_framenum;
+	float breather_framenum;
+	float enviro_framenum;
+
+	qboolean grenade_blew_up;
+	float grenade_time;
+	float quadfire_framenum;
+	qboolean trap_blew_up;
+	float trap_time;
+
+	qboolean damage_gas;            /* Did damage come from plague mist? */
 	// Damage stuff. Sum up damage over an entire frame.
 
 
@@ -1674,11 +1715,6 @@ struct gclient_s
 	usercmd_t			pcmd;
 	short				oldcmdangles[3];
 	vec3_t				aimangles;				// Spell / weapon aiming direction.
-	vec3_t				oldviewangles;
-	vec3_t				v_angle;				// Entity facing angles.
-	float				bobtime;				// So off-ground doesn't change it.
-	float				next_drown_time;
-	int					old_waterlevel;
 
 	float respawn_time;             /* can respawn when time > this */
 	int complete_reset;
@@ -1708,10 +1744,6 @@ struct gclient_s
 	vec3_t				laststaffpos;
 	float				laststaffuse;
 
-	// Powerup timers.
-
-	float				invincible_framenum;
-
 	// Shrine stuff.
 
 	float				shrine_framenum;
@@ -1729,6 +1761,13 @@ struct gclient_s
 	float				flood_nextkill;			// next time for suicide
 
 	playerinfo_t		playerinfo;
+
+	float double_framenum;
+	float ir_framenum;
+	float nuke_framenum;
+	float tracker_pain_framenum;
+
+	edict_t *owned_sphere;          /* this points to the player's sphere */
 
 	/* Third person view */
 	int chasetoggle;

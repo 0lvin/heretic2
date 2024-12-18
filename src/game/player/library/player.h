@@ -124,8 +124,8 @@ typedef struct
 
 	int (*GetItemIndex)(gitem_t* x);
 	gitem_t* (*GetItemByIndex)(int index);
-	gitem_t* (*FindItemByClassname)(char *classname);
-	gitem_t* (*FindItem)(char *pickupname);
+	gitem_t* (*FindItemByClassname)(const char *classname);
+	gitem_t* (*FindItem)(const char *pickupname);
 	void (*InitItems)(void);
 } player_export_t;
 
