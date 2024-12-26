@@ -24,49 +24,49 @@
 /*----------------------------------------------------------------------
   morcalavin
 -----------------------------------------------------------------------*/
-static animframe_t morcalavin_frames_c_idle1 [] =
+static mframe_t morcalavin_frames_c_idle1 [] =
 {
 	{FRAME_talka1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_talka1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_talka1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t morcalavin_move_c_idle1 = {3, morcalavin_frames_c_idle1, ai_c_cycleend};
+mmove_t morcalavin_move_c_idle1 = {3, morcalavin_frames_c_idle1, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   morcalavin
 -----------------------------------------------------------------------*/
-static animframe_t morcalavin_frames_c_idle2 [] =
+static mframe_t morcalavin_frames_c_idle2 [] =
 {
 	{FRAME_talkb1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t morcalavin_move_c_idle2 = {1, morcalavin_frames_c_idle2, ai_c_cycleend};
+mmove_t morcalavin_move_c_idle2 = {1, morcalavin_frames_c_idle2, ai_c_cycleend};
 
 
 
 /*----------------------------------------------------------------------
   morcalavin
 -----------------------------------------------------------------------*/
-static animframe_t morcalavin_frames_c_idle3 [] =
+static mframe_t morcalavin_frames_c_idle3 [] =
 {
 	{FRAME_talkc66, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t morcalavin_move_c_idle3 = {1, morcalavin_frames_c_idle3, ai_c_cycleend};
+mmove_t morcalavin_move_c_idle3 = {1, morcalavin_frames_c_idle3, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   morcalavin
 -----------------------------------------------------------------------*/
-static animframe_t morcalavin_frames_c_idle4 [] =
+static mframe_t morcalavin_frames_c_idle4 [] =
 {
 	{FRAME_talkc1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t morcalavin_move_c_idle4 = {1, morcalavin_frames_c_idle4, ai_c_cycleend};
+mmove_t morcalavin_move_c_idle4 = {1, morcalavin_frames_c_idle4, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   morcalavin
 -----------------------------------------------------------------------*/
-static animframe_t morcalavin_frames_c_action1 [] =
+static mframe_t morcalavin_frames_c_action1 [] =
 {
 	{FRAME_talka1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_talka2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -369,13 +369,13 @@ static animframe_t morcalavin_frames_c_action1 [] =
 	{FRAME_talka299, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_talka300, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t morcalavin_move_c_action1 = {300, morcalavin_frames_c_action1, ai_c_cycleend};
+mmove_t morcalavin_move_c_action1 = {300, morcalavin_frames_c_action1, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   morcalavin
 -----------------------------------------------------------------------*/
-static animframe_t morcalavin_frames_c_action2 [] =
+static mframe_t morcalavin_frames_c_action2 [] =
 {
 	{FRAME_talkb1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_talkb2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -479,13 +479,13 @@ static animframe_t morcalavin_frames_c_action2 [] =
 	{FRAME_talkb100, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_talkb101, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t morcalavin_move_c_action2 = {101, morcalavin_frames_c_action2, ai_c_cycleend};
+mmove_t morcalavin_move_c_action2 = {101, morcalavin_frames_c_action2, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   morcalavin
 -----------------------------------------------------------------------*/
-static animframe_t morcalavin_frames_c_action3 [] =
+static mframe_t morcalavin_frames_c_action3 [] =
 {
 	{FRAME_talkc1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_talkc2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -570,4 +570,4 @@ static animframe_t morcalavin_frames_c_action3 [] =
 	{FRAME_talkc81, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_talkc82, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t morcalavin_move_c_action3 = {82, morcalavin_frames_c_action3, ai_c_cycleend};
+mmove_t morcalavin_move_c_action3 = {82, morcalavin_frames_c_action3, ai_c_cycleend};

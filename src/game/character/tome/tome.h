@@ -11,5 +11,5 @@ typedef enum AnimID_e
 
 void MG_InitMoods(edict_t *self);
 
-extern animmove_t tome_move_c_idle1;
-extern animmove_t tome_move_c_idle2;
+extern mmove_t tome_move_c_idle1;
+extern mmove_t tome_move_c_idle2;

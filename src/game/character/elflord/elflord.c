@@ -22,7 +22,7 @@
 /*----------------------------------------------------------------------
   Elf Lord Base Info
 -----------------------------------------------------------------------*/
-static animmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[ NUM_ANIMS] =
 {
 	&Elflord_move_c_action1,
 	&Elflord_move_c_action2,

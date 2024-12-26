@@ -701,50 +701,22 @@ typedef struct
 #define SIGHT_VISIBLE_TARGET 1		//Saw this target
 #define SIGHT_ANNOUNCED_TARGET 2	//Target was announced by another monster
 
-
-// ************************************************************************************************
-// mframe_t
-// --------
-// ************************************************************************************************
-
 typedef struct
 {
-	int framenum; // Index to current animation frame.
-	void (*aifunc)(edict_t *self, float dist);
-	float dist;
+	int framenum;
+	void (*movefunc)(edict_t *self, float var1, float var2, float var3);
+	float var1, var2, var3;
+	void (*actionfunc)(edict_t *self, float var4);
+	float var4;
 	void (*thinkfunc)(edict_t *self);
 } mframe_t;
 
 typedef struct
 {
-	int framecount;					// Number of frames in the animation frame array.
-	int firstframe;
-	int lastframe;
+	int numframes;
 	mframe_t *frame;
 	void (*endfunc)(edict_t *self);
 } mmove_t;
-
-typedef struct
-{
-	int		framenum;
-	void	(*movefunc)(edict_t *self, float var1, float var2, float var3);
-	float	var1, var2, var3;
-	void	(*actionfunc)(edict_t *self, float var4);
-	float	var4;
-	void	(*thinkfunc)(edict_t *self);
-} animframe_t;
-
-// ************************************************************************************************
-// animmove_t
-// ----------
-// ************************************************************************************************
-
-typedef struct
-{
-	int			numframes;
-	animframe_t	*frame;
-	void		(*endfunc)(edict_t *self);
-} animmove_t;
 
 
 // ************************************************************************************************
@@ -770,7 +742,7 @@ typedef struct
 	char		*otherenemyname;				// ClassName of secondary enemy (other than player).
 												// E.g. a Rat's secondary enemy is a gib.
 
-	animmove_t *currentmove;
+	mmove_t *currentmove;
 	unsigned int aiflags;           /* unsigned, since we're close to the max */
 	int aistate;						// Last order given to the monster (ORD_XXX).
 	int currframeindex;					// Index to current monster frame.
@@ -873,7 +845,7 @@ typedef struct
 
 typedef struct
 {
-	animmove_t	*move;
+	mmove_t	*move;
 	short		fly;
 	short		lockmove;
 	int			playerflags;

@@ -22,7 +22,7 @@ void BboxYawAndScale(edict_t *self);
 /*----------------------------------------------------------------------
   victimSsithra Base Info
 -----------------------------------------------------------------------*/
-static animmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[ NUM_ANIMS] =
 {
 	&victimSsithra_move_c_action1,
 	&victimSsithra_move_c_action2,

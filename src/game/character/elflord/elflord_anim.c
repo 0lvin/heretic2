@@ -16,7 +16,7 @@
 void Elflord_c_throwhead(edict_t *self);
 void elflord_mist(edict_t *self, float x, float y, float z);
 
-static animframe_t Elflord_frames_c_death1 [] =
+static mframe_t Elflord_frames_c_death1 [] =
 {
 	{FRAME_death1, ai_c_move, 0, 0, 0, NULL, 0, Elflord_c_throwhead},
 	{FRAME_death2, elflord_mist, 0, 0, 0, NULL, 0, NULL},
@@ -34,10 +34,10 @@ static animframe_t Elflord_frames_c_death1 [] =
 	{FRAME_death14, elflord_mist, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death15, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t Elflord_move_c_death1 = { 15, Elflord_frames_c_death1, ai_c_cycleend};
+mmove_t Elflord_move_c_death1 = { 15, Elflord_frames_c_death1, ai_c_cycleend};
 
 
-static animframe_t Elflord_frames_c_death2 [] =
+static mframe_t Elflord_frames_c_death2 [] =
 {
 	{FRAME_death1, elflord_mist,  0, 0, 0, NULL, 0, Elflord_c_boom},
 	{FRAME_death2, ai_c_move, 0,  0, 0, NULL, 0, NULL},
@@ -55,9 +55,9 @@ static animframe_t Elflord_frames_c_death2 [] =
 	{FRAME_death14, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death15, elflord_mist, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t Elflord_move_c_death2 = { 15, Elflord_frames_c_death2, ai_c_cycleend};
+mmove_t Elflord_move_c_death2 = { 15, Elflord_frames_c_death2, ai_c_cycleend};
 
-static animframe_t Elflord_frames_c_idle1 [] =
+static mframe_t Elflord_frames_c_idle1 [] =
 {
 	{FRAME_idle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -84,9 +84,9 @@ static animframe_t Elflord_frames_c_idle1 [] =
 	{FRAME_idle23, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle24, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t Elflord_move_c_idle1 = { 24, Elflord_frames_c_idle1, ai_c_cycleend};
+mmove_t Elflord_move_c_idle1 = { 24, Elflord_frames_c_idle1, ai_c_cycleend};
 
-static animframe_t Elflord_frames_c_idle2 [] =
+static mframe_t Elflord_frames_c_idle2 [] =
 {
 	{FRAME_cidle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -109,10 +109,10 @@ static animframe_t Elflord_frames_c_idle2 [] =
 	{FRAME_cidle19, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cidle20, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t Elflord_move_c_idle2 = { 20, Elflord_frames_c_idle2, ai_c_cycleend};
+mmove_t Elflord_move_c_idle2 = { 20, Elflord_frames_c_idle2, ai_c_cycleend};
 
 
-static animframe_t Elflord_frames_c_action1 [] =
+static mframe_t Elflord_frames_c_action1 [] =
 {
 	{FRAME_Dialoguea1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialoguea2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -356,10 +356,10 @@ static animframe_t Elflord_frames_c_action1 [] =
 	{FRAME_Dialoguea219, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialoguea220, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t Elflord_move_c_action1 = { 220, Elflord_frames_c_action1, ai_c_cycleend};
+mmove_t Elflord_move_c_action1 = { 220, Elflord_frames_c_action1, ai_c_cycleend};
 
 
-static animframe_t Elflord_frames_c_action2 [] =
+static mframe_t Elflord_frames_c_action2 [] =
 {
 	{FRAME_Dialogueb1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialogueb2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -588,4 +588,4 @@ static animframe_t Elflord_frames_c_action2 [] =
 	{FRAME_Dialogueb205, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialogueb206, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t Elflord_move_c_action2 = { 206, Elflord_frames_c_action2, ai_c_cycleend};
+mmove_t Elflord_move_c_action2 = { 206, Elflord_frames_c_action2, ai_c_cycleend};

@@ -49,7 +49,7 @@ void imp_blocked (edict_t *self, trace_t *trace);
 	imp base info
 -----------------------------------------------------------------*/
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&imp_move_die1,
 	&imp_move_fly1,

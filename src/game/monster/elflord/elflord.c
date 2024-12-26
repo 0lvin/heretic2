@@ -37,7 +37,7 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
   Elf Lord Base Info
 -----------------------------------------------------------------------*/
 
-static animmove_t *animations[] =
+static mmove_t *animations[] =
 {
 	&elflord_move_idle,
 	&elflord_move_run,

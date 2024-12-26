@@ -45,25 +45,25 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t elflord_move_idle;
-extern animmove_t elflord_move_run;
-extern animmove_t elflord_move_charge;
-extern animmove_t elflord_move_charge_trans;
-extern animmove_t elflord_move_floatback;
-extern animmove_t elflord_move_dodgeright;
-extern animmove_t elflord_move_dodgeleft;
-extern animmove_t elflord_move_soa_begin;
-extern animmove_t elflord_move_soa_loop;
-extern animmove_t elflord_move_soa_end;
-extern animmove_t elflord_move_ls;
-extern animmove_t elflord_move_pain;
-extern animmove_t elflord_move_death_btrans;
-extern animmove_t elflord_move_death_loop;
-extern animmove_t elflord_move_shield;
-extern animmove_t elflord_move_attack;
-extern animmove_t elflord_move_move;
-extern animmove_t elflord_move_wait;
-extern animmove_t elflord_move_come_to_life;
+extern mmove_t elflord_move_idle;
+extern mmove_t elflord_move_run;
+extern mmove_t elflord_move_charge;
+extern mmove_t elflord_move_charge_trans;
+extern mmove_t elflord_move_floatback;
+extern mmove_t elflord_move_dodgeright;
+extern mmove_t elflord_move_dodgeleft;
+extern mmove_t elflord_move_soa_begin;
+extern mmove_t elflord_move_soa_loop;
+extern mmove_t elflord_move_soa_end;
+extern mmove_t elflord_move_ls;
+extern mmove_t elflord_move_pain;
+extern mmove_t elflord_move_death_btrans;
+extern mmove_t elflord_move_death_loop;
+extern mmove_t elflord_move_shield;
+extern mmove_t elflord_move_attack;
+extern mmove_t elflord_move_move;
+extern mmove_t elflord_move_wait;
+extern mmove_t elflord_move_come_to_life;
 
 qboolean elfLordCheckAttack (edict_t *self);
 void elflord_Attack(edict_t *self);

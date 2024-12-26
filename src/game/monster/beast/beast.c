@@ -88,7 +88,7 @@ static vec3_t GetRightFootOffsetForFrameIndex[18] =
 	{ -128.00F,  32.00F,  -2.00F},	// 18
 };
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&tbeast_move_biteup,
 	&tbeast_move_bitelow,

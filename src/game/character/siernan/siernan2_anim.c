@@ -24,7 +24,7 @@
 /*----------------------------------------------------------------------
   Siernan
 -----------------------------------------------------------------------*/
-static animframe_t siernan2_frames_c_action1 [] =
+static mframe_t siernan2_frames_c_action1 [] =
 {
 	{FRAME_Minions1,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions2,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -158,12 +158,12 @@ static animframe_t siernan2_frames_c_action1 [] =
 	{FRAME_Minions129,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions130,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t siernan2_move_c_action1 = {130, siernan2_frames_c_action1, ai_c_cycleend};
+mmove_t siernan2_move_c_action1 = {130, siernan2_frames_c_action1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Siernan
 -----------------------------------------------------------------------*/
-static animframe_t siernan2_frames_c_action2 [] =
+static mframe_t siernan2_frames_c_action2 [] =
 {
 	{FRAME_Minions1,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions2,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -287,12 +287,12 @@ static animframe_t siernan2_frames_c_action2 [] =
 	{FRAME_Minions119,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions120,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t siernan2_move_c_action2 = {120, siernan2_frames_c_action2, ai_c_cycleend};
+mmove_t siernan2_move_c_action2 = {120, siernan2_frames_c_action2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Siernan
 -----------------------------------------------------------------------*/
-static animframe_t siernan2_frames_c_idle1 [] =
+static mframe_t siernan2_frames_c_idle1 [] =
 {
 	{FRAME_Minions1,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions1,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -301,4 +301,4 @@ static animframe_t siernan2_frames_c_idle1 [] =
 	{FRAME_Minions1,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions1,  ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t siernan2_move_c_idle1 = {6, siernan2_frames_c_idle1, ai_c_cycleend};
+mmove_t siernan2_move_c_idle1 = {6, siernan2_frames_c_idle1, ai_c_cycleend};

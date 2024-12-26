@@ -40,7 +40,7 @@
 qboolean MG_CheckClearPathToEnemy( edict_t *self );
 void MG_Pathfind(edict_t *self, qboolean check_clear_path);
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&ogle_move_walk1,
 	&ogle_move_push1,

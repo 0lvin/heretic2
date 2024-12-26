@@ -37,7 +37,7 @@ void ssithra_ai_run (edict_t *self, float dist)
 /*----------------------------------------------------------------------
   Ssithra Idle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_idle1 [] =
+static mframe_t ssithra_frames_idle1 [] =
 {
 	{FRAME_idle01,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idle02,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -80,12 +80,12 @@ static animframe_t ssithra_frames_idle1 [] =
 	{FRAME_idle39,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idle40, 	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t ssithra_move_idle1 = {40, ssithra_frames_idle1, SsithraMood};
+mmove_t ssithra_move_idle1 = {40, ssithra_frames_idle1, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra Walk - walking along
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_walk1 [] =
+static mframe_t ssithra_frames_walk1 [] =
 {
 	{FRAME_walk1, 	NULL, 0, 0, 0,  ai_walk, 5, NULL},
 	{FRAME_walk2, 	NULL, 0, 0, 0,  ai_walk, 5, NULL},
@@ -102,12 +102,12 @@ static animframe_t ssithra_frames_walk1 [] =
 	{FRAME_walk13, 	NULL, 0, 0, 0,  ai_walk, 2, NULL},
 	{FRAME_walk14, 	NULL, 0, 0, 0,  ai_walk, 5, NULL},
 };
-animmove_t ssithra_move_walk1 = {14, ssithra_frames_walk1, SsithraMood};
+mmove_t ssithra_move_walk1 = {14, ssithra_frames_walk1, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra backpedal - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_backpedal1 [] =
+static mframe_t ssithra_frames_backpedal1 [] =
 {
 	{FRAME_backpedal1,	NULL, 0, 0, 0,  ai_charge2, -5, NULL},
 	{FRAME_backpedal2,	NULL, 0, 0, 0,  ai_charge2, -5, NULL},
@@ -120,12 +120,12 @@ static animframe_t ssithra_frames_backpedal1 [] =
 	{FRAME_backpedal9,	NULL, 0, 0, 0,  ai_charge2, -5, NULL},
 	{FRAME_backpedal10, 	NULL, 0, 0, 0,  ai_charge2, -5, NULL},
 };
-animmove_t ssithra_move_backpedal1 = {10, ssithra_frames_backpedal1, ssithra_decide_backpedal};
+mmove_t ssithra_move_backpedal1 = {10, ssithra_frames_backpedal1, ssithra_decide_backpedal};
 
 /*----------------------------------------------------------------------
   Ssithra bound - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_bound1 [] =
+static mframe_t ssithra_frames_bound1 [] =
 {
 	{FRAME_bound09,	NULL, 0, 0, 0,  ssithra_ai_run, 16, NULL},//ssithraBoundCheck,
 	{FRAME_bound10,	NULL, 0, 0, 0,  ssithra_ai_run, 16, NULL},
@@ -136,13 +136,13 @@ static animframe_t ssithra_frames_bound1 [] =
 	{FRAME_bound15,	NULL, 0, 0, 0,  ssithra_ai_run, 16, NULL},
 	{FRAME_bound16,	NULL, 0, 0, 0,  ssithra_ai_run, 12, NULL},
 };
-animmove_t ssithra_move_bound1 = {8, ssithra_frames_bound1, SsithraMood};
+mmove_t ssithra_move_bound1 = {8, ssithra_frames_bound1, SsithraMood};
 
 
 /*----------------------------------------------------------------------
   Ssithra death_a
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_death_a1 [] =
+static mframe_t ssithra_frames_death_a1 [] =
 {
 	{FRAME_death_a1,	ssithraSound, SND_DIE, CHAN_VOICE, 0,  NULL, 0, NULL},
 	{FRAME_death_a2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -157,12 +157,12 @@ static animframe_t ssithra_frames_death_a1 [] =
 	{FRAME_death_a11,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death_a12,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_death_a1 = {12, ssithra_frames_death_a1, ssithra_dead};
+mmove_t ssithra_move_death_a1 = {12, ssithra_frames_death_a1, ssithra_dead};
 
 /*----------------------------------------------------------------------
   Ssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_death_b1 [] =
+static mframe_t ssithra_frames_death_b1 [] =
 {
 	{FRAME_death_b1,	ssithraSound, SND_DIE, CHAN_VOICE, 0,  NULL, 0, NULL},
 	{FRAME_death_b2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -201,12 +201,12 @@ static animframe_t ssithra_frames_death_b1 [] =
 	{FRAME_death_b35,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death_b36,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_death_b1 = {36, ssithra_frames_death_b1, ssithra_dead};
+mmove_t ssithra_move_death_b1 = {36, ssithra_frames_death_b1, ssithra_dead};
 
 /*----------------------------------------------------------------------
   Ssithra dive - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_dive1 [] =
+static mframe_t ssithra_frames_dive1 [] =
 {
 	{FRAME_dive1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_dive2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -235,26 +235,26 @@ static animframe_t ssithra_frames_dive1 [] =
 	{FRAME_dive25,	NULL, 0, 0, 0,  ai_move , 6, ssithraCheckHitWaterSplash},
 	{FRAME_dive26,	NULL, 0, 0, 0,  ai_move , 3, ssithraCheckHitWaterSplash},
 };
-animmove_t ssithra_move_dive1 = {26, ssithra_frames_dive1, ssithra_decide_swimforward};
+mmove_t ssithra_move_dive1 = {26, ssithra_frames_dive1, ssithra_decide_swimforward};
 
 /*----------------------------------------------------------------------
   Ssithra duckshoot
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_unduck [] =
+static mframe_t ssithra_frames_unduck [] =
 {
 	{FRAME_duckshoot3,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_duckshoot2,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraUnCrouch},
 	{FRAME_duckshoot1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t ssithra_move_unduck = {3, ssithra_frames_unduck, ssithra_decide_gallop};
+mmove_t ssithra_move_unduck = {3, ssithra_frames_unduck, ssithra_decide_gallop};
 
-static animframe_t ssithra_frames_duckloop [] =
+static mframe_t ssithra_frames_duckloop [] =
 {
 	{FRAME_duckshoot6,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_duckloop = {1, ssithra_frames_duckloop, ssithraCheckUnDuck};
+mmove_t ssithra_move_duckloop = {1, ssithra_frames_duckloop, ssithraCheckUnDuck};
 
-static animframe_t ssithra_frames_duckshoot1 [] =
+static mframe_t ssithra_frames_duckshoot1 [] =
 {
 	{FRAME_duckshoot1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_duckshoot2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -270,12 +270,12 @@ static animframe_t ssithra_frames_duckshoot1 [] =
 	{FRAME_duckshoot5,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckDuckArrow},
 	{FRAME_duckshoot6,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t ssithra_move_duckshoot1 = {11, ssithra_frames_duckshoot1, ssithraCheckUnDuck};
+mmove_t ssithra_move_duckshoot1 = {11, ssithra_frames_duckshoot1, ssithraCheckUnDuck};
 
 /*----------------------------------------------------------------------
   Ssithra duck
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_duck1 [] =
+static mframe_t ssithra_frames_duck1 [] =
 {//oops, duckframes same as duckshoot?
 	{FRAME_duckshoot1,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE,  NULL, 0, ssithraGrowlSound},
 	{FRAME_duckshoot2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -284,12 +284,12 @@ static animframe_t ssithra_frames_duck1 [] =
 	{FRAME_duckshoot5,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_duckshoot6,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_duck1 = {6, ssithra_frames_duck1, ssithra_decide_gallop};
+mmove_t ssithra_move_duck1 = {6, ssithra_frames_duck1, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra gallop - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_gallop1 [] =
+static mframe_t ssithra_frames_gallop1 [] =
 {
 	{FRAME_gallop1,	ssithraJump, 100, 50, 0,  ssithra_ai_run, 20, NULL},
 //	{FRAME_gallop1,	NULL, 0, 0, 0,  ssithra_ai_run, 20, NULL},
@@ -301,12 +301,12 @@ static animframe_t ssithra_frames_gallop1 [] =
 	{FRAME_gallop7,	NULL, 0, 0, 0,  ssithra_ai_run, 24, NULL},
 	{FRAME_gallop8,	NULL, 0, 0, 0,  ssithra_ai_run, 22, NULL},
 };
-animmove_t ssithra_move_gallop1 = {8, ssithra_frames_gallop1, ssithra_decide_gallop};
+mmove_t ssithra_move_gallop1 = {8, ssithra_frames_gallop1, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra jump from buoy
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_fjump[] =
+static mframe_t ssithra_frames_fjump[] =
 {
 	{FRAME_bound09,	NULL, 0, 0, 0,  NULL, 0, ssithraApplyJump},
 	{FRAME_bound10,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -317,12 +317,12 @@ static animframe_t ssithra_frames_fjump[] =
 	{FRAME_bound15,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_bound16,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_fjump = {8, ssithra_frames_fjump, ssithra_decide_gallop};
+mmove_t ssithra_move_fjump = {8, ssithra_frames_fjump, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra idlebasic - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_idlebasic1 [] =
+static mframe_t ssithra_frames_idlebasic1 [] =
 {
 	{FRAME_idlebasic01,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idlebasic02,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -365,12 +365,12 @@ static animframe_t ssithra_frames_idlebasic1 [] =
 	{FRAME_idlebasic39,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idlebasic40, 	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t ssithra_move_idlebasic1 = {40, ssithra_frames_idlebasic1, SsithraMood};
+mmove_t ssithra_move_idlebasic1 = {40, ssithra_frames_idlebasic1, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra idleright - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_idleright1 [] =
+static mframe_t ssithra_frames_idleright1 [] =
 {
 	{FRAME_idleright01,	ssithraSound, SND_GROWL2, CHAN_VOICE, ATTN_IDLE,  ai_stand, 0, ssithraGrowlSound},
 	{FRAME_idleright02,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -398,12 +398,12 @@ static animframe_t ssithra_frames_idleright1 [] =
 	{FRAME_idleright19,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idleright20,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t ssithra_move_idleright1 = {24, ssithra_frames_idleright1, SsithraMood};
+mmove_t ssithra_move_idleright1 = {24, ssithra_frames_idleright1, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_melee1 [] =
+static mframe_t ssithra_frames_melee1 [] =
 {
 	{FRAME_melee1,	ssithraSound, SND_SWIPE, CHAN_WEAPON, 0,  ai_charge2, 20, NULL},
 	{FRAME_melee2,	NULL, 0, 0, 0,  ai_charge2, 10, NULL},
@@ -413,12 +413,12 @@ static animframe_t ssithra_frames_melee1 [] =
 	{FRAME_melee6,	NULL, 0, 0, 0,  ai_charge2, 3, NULL},
 	{FRAME_melee7,	NULL, 0, 0, 0,  ai_charge2, 3, NULL},
 };
-animmove_t ssithra_move_melee1 = {7, ssithra_frames_melee1, ssithra_decide_gallop};
+mmove_t ssithra_move_melee1 = {7, ssithra_frames_melee1, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_meleest [] =
+static mframe_t ssithra_frames_meleest [] =
 {
 	{FRAME_Melee_stand1,	ssithraSound, SND_SWIPE, CHAN_WEAPON, 0,  NULL, 0, NULL},
 	{FRAME_Melee_stand2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -428,12 +428,12 @@ static animframe_t ssithra_frames_meleest [] =
 	{FRAME_Melee_stand6,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_Melee_stand7,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t ssithra_move_meleest = {7, ssithra_frames_meleest, ssithra_decide_gallop};
+mmove_t ssithra_move_meleest = {7, ssithra_frames_meleest, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra namor - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_namor1 [] =
+static mframe_t ssithra_frames_namor1 [] =
 {
 	{FRAME_namor1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_namor2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -461,22 +461,22 @@ static animframe_t ssithra_frames_namor1 [] =
 	{FRAME_namor24,	NULL, 0, 0, 0,  ssithraForward, 120, ssithraCheckLeaveWaterSplash},
 	{FRAME_namor25,	NULL, 0, 0, 0,  ssithraForward, 60, ssithraCheckLeaveWaterSplash},
 };
-animmove_t ssithra_move_namor1 = {25, ssithra_frames_namor1, ssithra_decide_gallop};
+mmove_t ssithra_move_namor1 = {25, ssithra_frames_namor1, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra pain_a - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_pain_a1 [] =
+static mframe_t ssithra_frames_pain_a1 [] =
 {
 	{FRAME_pain_a1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_pain_a2,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_pain_a1 = {2, ssithra_frames_pain_a1, ssithra_pain_react};
+mmove_t ssithra_move_pain_a1 = {2, ssithra_frames_pain_a1, ssithra_pain_react};
 
 /*----------------------------------------------------------------------
   Ssithra shoot
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_shoot1 [] =
+static mframe_t ssithra_frames_shoot1 [] =
 {
 	{FRAME_shoot1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_shoot2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -487,12 +487,12 @@ static animframe_t ssithra_frames_shoot1 [] =
 	{FRAME_shoot6,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckLoop},
 	{FRAME_shoot5,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };//7 - 11 not used- weird anim for turning while shooting only!
-animmove_t ssithra_move_shoot1 = {8, ssithra_frames_shoot1, ssithra_decide_gallop};
+mmove_t ssithra_move_shoot1 = {8, ssithra_frames_shoot1, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra lunge from shooting
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_lunge [] =
+static mframe_t ssithra_frames_lunge [] =
 {
 	{FRAME_shoot12,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraApplyJump},
 	{FRAME_shoot13,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -505,12 +505,12 @@ static animframe_t ssithra_frames_lunge [] =
 	{FRAME_shoot20, 	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_shoot21,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t ssithra_move_lunge = {10, ssithra_frames_lunge, ssithra_decide_gallop};
+mmove_t ssithra_move_lunge = {10, ssithra_frames_lunge, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_startle1 [] =
+static mframe_t ssithra_frames_startle1 [] =
 {
 	{FRAME_startle2,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE,  ai_stand, 0, ssithraGrowlSound},
 	{FRAME_startle3,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -551,21 +551,21 @@ static animframe_t ssithra_frames_startle1 [] =
 	{FRAME_startle38,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_startle39,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t ssithra_move_startle1 = {38, ssithra_frames_startle1, SsithraMood};
+mmove_t ssithra_move_startle1 = {38, ssithra_frames_startle1, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_spinleft_go [] =
+static mframe_t ssithra_frames_spinleft_go [] =
 {
 	{FRAME_idlebasic41,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_spinleft_go = {1, ssithra_frames_spinleft_go, ssithra_decide_gallop};
+mmove_t ssithra_move_spinleft_go = {1, ssithra_frames_spinleft_go, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_spinleft [] =
+static mframe_t ssithra_frames_spinleft [] =
 {
 	{FRAME_idlebasic41,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE,  NULL, 0, NULL},
 	{FRAME_idlebasic42,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -588,21 +588,21 @@ static animframe_t ssithra_frames_spinleft [] =
 	{FRAME_idlebasic59,	NULL, 0, 0, 0,  ai_spin, 30, NULL},
 	{FRAME_idlebasic60,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_spinleft = {20, ssithra_frames_spinleft, ssithra_decide_gallop};
+mmove_t ssithra_move_spinleft = {20, ssithra_frames_spinleft, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra startle - turn left as you aniimate turn around
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_spinright_go [] =
+static mframe_t ssithra_frames_spinright_go [] =
 {
 	{FRAME_idlebasic41,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_spinright_go = {1, ssithra_frames_spinright_go, ssithra_decide_gallop};
+mmove_t ssithra_move_spinright_go = {1, ssithra_frames_spinright_go, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_spinright [] =
+static mframe_t ssithra_frames_spinright [] =
 {
 	{FRAME_idlebasic61,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE,  NULL, 0, NULL},
 	{FRAME_idlebasic62,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -625,13 +625,13 @@ static animframe_t ssithra_frames_spinright [] =
 	{FRAME_idlebasic79,	NULL, 0, 0, 0,  ai_spin, -30, NULL},
 	{FRAME_idlebasic80,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_spinright = {20, ssithra_frames_spinright, ssithra_decide_gallop};
+mmove_t ssithra_move_spinright = {20, ssithra_frames_spinright, ssithra_decide_gallop};
 
 
 /*----------------------------------------------------------------------
   Ssithra swimforward - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_swimforward1 [] =
+static mframe_t ssithra_frames_swimforward1 [] =
 {
 	{FRAME_swimforward01,	NULL, 0, 0, 0,  ssithra_ai_run, 10, ssithraCheckRipple},
 	{FRAME_swimforward02,	NULL, 0, 0, 0,  ssithra_ai_run, 10, NULL},
@@ -649,12 +649,12 @@ static animframe_t ssithra_frames_swimforward1 [] =
 	{FRAME_swimforward14,	NULL, 0, 0, 0,  ssithra_ai_run, 10, ssithraCheckRipple},
 	{FRAME_swimforward15,	NULL, 0, 0, 0,  ssithra_ai_run, 10, ssithraCheckRipple},
 };
-animmove_t ssithra_move_swimforward1 = {15, ssithra_frames_swimforward1, ssithra_decide_swimforward};
+mmove_t ssithra_move_swimforward1 = {15, ssithra_frames_swimforward1, ssithra_decide_swimforward};
 
 /*----------------------------------------------------------------------
   Ssithra swimwander - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_swimwander [] =
+static mframe_t ssithra_frames_swimwander [] =
 {
 	{FRAME_swimforward01,	NULL, 0, 0, 0,  ai_walk, 10, ssithraCheckRipple},
 	{FRAME_swimforward02,	NULL, 0, 0, 0,  ai_walk, 10, ssithraCheckRipple},
@@ -672,12 +672,12 @@ static animframe_t ssithra_frames_swimwander [] =
 	{FRAME_swimforward14,	NULL, 0, 0, 0,  ai_walk, 10, ssithraCheckRipple},
 	{FRAME_swimforward15,	NULL, 0, 0, 0,  ai_walk, 10, ssithraCheckRipple},
 };
-animmove_t ssithra_move_swimwander = {15, ssithra_frames_swimwander, ssithra_decide_swimforward};
+mmove_t ssithra_move_swimwander = {15, ssithra_frames_swimwander, ssithra_decide_swimforward};
 
 /*----------------------------------------------------------------------
   Ssithra water_death - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_water_death1 [] =
+static mframe_t ssithra_frames_water_death1 [] =
 {
 	{FRAME_water_death1,	ssithraSound, SND_DIE, CHAN_VOICE, 0,  NULL, 0, NULL},
 	{FRAME_water_death2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -729,12 +729,12 @@ static animframe_t ssithra_frames_water_death1 [] =
 	{FRAME_water_death48,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_water_death49,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_water_death1 = {49, ssithra_frames_water_death1, ssithraWaterDead};
+mmove_t ssithra_move_water_death1 = {49, ssithra_frames_water_death1, ssithraWaterDead};
 
 /*----------------------------------------------------------------------
   Ssithra water_idle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_water_idle1 [] =
+static mframe_t ssithra_frames_water_idle1 [] =
 {//water idle sound?
 	{FRAME_water_idle1,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_water_idle2,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -757,32 +757,32 @@ static animframe_t ssithra_frames_water_idle1 [] =
 	{FRAME_water_idle19,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_water_idle20, NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t ssithra_move_water_idle1 = {20, ssithra_frames_water_idle1, SsithraMood};
+mmove_t ssithra_move_water_idle1 = {20, ssithra_frames_water_idle1, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra water_pain_a - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_water_pain_a1 [] =
+static mframe_t ssithra_frames_water_pain_a1 [] =
 {
 	{FRAME_water_pain_a1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_water_pain_a2,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_water_pain_a1 = {2, ssithra_frames_water_pain_a1, ssithra_pain_react};
+mmove_t ssithra_move_water_pain_a1 = {2, ssithra_frames_water_pain_a1, ssithra_pain_react};
 
 /*----------------------------------------------------------------------
   Ssithra water_pain_b - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_water_pain_b1 [] =
+static mframe_t ssithra_frames_water_pain_b1 [] =
 {
 	{FRAME_water_pain_b1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_water_pain_b2,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_water_pain_b1 = {2, ssithra_frames_water_pain_b1, ssithra_pain_react};
+mmove_t ssithra_move_water_pain_b1 = {2, ssithra_frames_water_pain_b1, ssithra_pain_react};
 
 /*----------------------------------------------------------------------
   Ssithra water_shoot - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_water_shoot1 [] =
+static mframe_t ssithra_frames_water_shoot1 [] =
 {
 	{FRAME_water_shoot01,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_water_shoot2,		NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -802,9 +802,9 @@ static animframe_t ssithra_frames_water_shoot1 [] =
 	{FRAME_water_shoot16,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_water_shoot17,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t ssithra_move_water_shoot1 = {17, ssithra_frames_water_shoot1, ssithra_decide_swimforward};
+mmove_t ssithra_move_water_shoot1 = {17, ssithra_frames_water_shoot1, ssithra_decide_swimforward};
 
-static animframe_t ssithra_frames_run1 [] =
+static mframe_t ssithra_frames_run1 [] =
 {
 	{FRAME_run1,	NULL, 0, 0, 0,  ssithra_ai_run, 16, ssithraBoundCheck},
 	{FRAME_run2,	NULL, 0, 0, 0,  ssithra_ai_run, 18, ssithraDiveCheck},
@@ -815,12 +815,12 @@ static animframe_t ssithra_frames_run1 [] =
 	{FRAME_run7,	NULL, 0, 0, 0,  ssithra_ai_run, 20, NULL},
 	{FRAME_run8,	NULL, 0, 0, 0,  ssithra_ai_run, 18, NULL},
 };
-animmove_t ssithra_move_run1 = {8, ssithra_frames_run1, ssithra_decide_gallop};
+mmove_t ssithra_move_run1 = {8, ssithra_frames_run1, ssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   Ssithra face and namor
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_faceandnamor [] =
+static mframe_t ssithra_frames_faceandnamor [] =
 {
 	{FRAME_water_idle1,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckFacedNamor},
 	{FRAME_water_idle2,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckFacedNamor},
@@ -843,12 +843,12 @@ static animframe_t ssithra_frames_faceandnamor [] =
 	{FRAME_water_idle19,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckFacedNamor},
 	{FRAME_water_idle20, NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckFacedNamor},
 };
-animmove_t ssithra_move_faceandnamor = {20, ssithra_frames_faceandnamor, SsithraMood};
+mmove_t ssithra_move_faceandnamor = {20, ssithra_frames_faceandnamor, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra look left
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_lookleft [] =
+static mframe_t ssithra_frames_lookleft [] =
 {
 	{FRAME_idlebasic41,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE,  ai_stand, 0, NULL},
 	{FRAME_idlebasic42,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -871,12 +871,12 @@ static animframe_t ssithra_frames_lookleft [] =
 	{FRAME_idlebasic59,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idlebasic60,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t ssithra_move_lookleft = {20, ssithra_frames_lookleft, SsithraMood};
+mmove_t ssithra_move_lookleft = {20, ssithra_frames_lookleft, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra look right
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_lookright [] =
+static mframe_t ssithra_frames_lookright [] =
 {
 	{FRAME_idlebasic61,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE,  ai_stand, 0, NULL},
 	{FRAME_idlebasic62,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -899,31 +899,31 @@ static animframe_t ssithra_frames_lookright [] =
 	{FRAME_idlebasic79,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idlebasic80,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t ssithra_move_lookright = {20, ssithra_frames_lookright, SsithraMood};
+mmove_t ssithra_move_lookright = {20, ssithra_frames_lookright, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra trans up
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_transup [] =
+static mframe_t ssithra_frames_transup [] =
 {
 	{FRAME_Water_trans1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_Water_trans2,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_Water_trans3,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_Water_trans4,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_transup = {4, ssithra_frames_transup, ssithra_water_shoot};
+mmove_t ssithra_move_transup = {4, ssithra_frames_transup, ssithra_water_shoot};
 
 /*----------------------------------------------------------------------
   Ssithra trans down
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_transdown [] =
+static mframe_t ssithra_frames_transdown [] =
 {
 	{FRAME_Water_trans4,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_Water_trans3,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_Water_trans2,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_Water_trans1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_transdown = {4, ssithra_frames_transdown, ssithra_decide_swimforward};
+mmove_t ssithra_move_transdown = {4, ssithra_frames_transdown, ssithra_decide_swimforward};
 
 /*
 Headless
@@ -932,7 +932,7 @@ Headless
 /*----------------------------------------------------------------------
   Ssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_death_c [] =
+static mframe_t ssithra_frames_death_c [] =
 {
 	{FRAME_shoot5,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_shoot4,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -976,9 +976,9 @@ static animframe_t ssithra_frames_death_c [] =
 	{FRAME_death_b35,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death_b36,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_death_c = {41, ssithra_frames_death_c, ssithra_dead};
+mmove_t ssithra_move_death_c = {41, ssithra_frames_death_c, ssithra_dead};
 
-static animframe_t ssithra_frames_headlessloop [] =
+static mframe_t ssithra_frames_headlessloop [] =
 {
 	{FRAME_shoot8,	NULL, 0, 0, 0,  ai_spin, -5, NULL},
 	{FRAME_shoot9,	NULL, 0, 0, 0,  ai_spin, -4, ssithraPanicArrow},
@@ -987,9 +987,9 @@ static animframe_t ssithra_frames_headlessloop [] =
 	{FRAME_shoot12, 	NULL, 0, 0, 0,  ai_spin, -3, NULL},
 	{FRAME_shoot13,	NULL, 0, 0, 0,  ai_spin, -4, NULL},
 };
-animmove_t ssithra_move_headlessloop = {6, ssithra_frames_headlessloop, ssithraCollapse};
+mmove_t ssithra_move_headlessloop = {6, ssithra_frames_headlessloop, ssithraCollapse};
 
-static animframe_t ssithra_frames_headless [] =
+static mframe_t ssithra_frames_headless [] =
 {
 	{FRAME_shoot1,	NULL, 0, 0, 0,  ai_spin, -20, NULL},
 	{FRAME_shoot2,	NULL, 0, 0, 0,  ai_spin, -12, NULL},
@@ -1005,33 +1005,33 @@ static animframe_t ssithra_frames_headless [] =
 	{FRAME_shoot12,	NULL, 0, 0, 0,  ai_spin, -5, NULL},
 	{FRAME_shoot13,	NULL, 0, 0, 0,  ai_spin, -5, NULL},
 };
-animmove_t ssithra_move_headless = {13, ssithra_frames_headless, ssithraCollapse};
+mmove_t ssithra_move_headless = {13, ssithra_frames_headless, ssithraCollapse};
 
 /*----------------------------------------------------------------------
   Ssithra dead
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_dead_a [] =
+static mframe_t ssithra_frames_dead_a [] =
 {
 	{FRAME_death_a12,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_dead_a = {1, ssithra_frames_dead_a, NULL};
+mmove_t ssithra_move_dead_a = {1, ssithra_frames_dead_a, NULL};
 
-static animframe_t ssithra_frames_dead_b [] =
+static mframe_t ssithra_frames_dead_b [] =
 {
 	{FRAME_death_b36,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_dead_b = {1, ssithra_frames_dead_b, NULL};
+mmove_t ssithra_move_dead_b = {1, ssithra_frames_dead_b, NULL};
 
-static animframe_t ssithra_frames_dead_water [] =
+static mframe_t ssithra_frames_dead_water [] =
 {
 	{FRAME_water_death49,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_dead_water = {1, ssithra_frames_dead_water, NULL};
+mmove_t ssithra_move_dead_water = {1, ssithra_frames_dead_water, NULL};
 
 /*----------------------------------------------------------------------
   Ssithra sliced
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_sliced [] =
+static mframe_t ssithra_frames_sliced [] =
 {
 	{FRAME_death_b1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death_b2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -1070,13 +1070,13 @@ static animframe_t ssithra_frames_sliced [] =
 	{FRAME_death_b35,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death_b36,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_sliced = {36, ssithra_frames_sliced, ssithraKillSelf};
+mmove_t ssithra_move_sliced = {36, ssithra_frames_sliced, ssithraKillSelf};
 
 
 /*----------------------------------------------------------------------
   Ssithra delay - stop and look around
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_delay [] =
+static mframe_t ssithra_frames_delay [] =
 {
 	{FRAME_startle2,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE,  NULL, 0, SsithraMood},
 	{FRAME_startle3,	NULL, 0, 0, 0,  NULL, 0, SsithraMood},
@@ -1117,12 +1117,12 @@ static animframe_t ssithra_frames_delay [] =
 	{FRAME_startle38,	NULL, 0, 0, 0,  NULL, 0, SsithraMood},
 	{FRAME_startle39,	NULL, 0, 0, 0,  NULL, 0, SsithraMood},
 };
-animmove_t ssithra_move_delay = {38, ssithra_frames_delay, SsithraMood};
+mmove_t ssithra_move_delay = {38, ssithra_frames_delay, SsithraMood};
 
 /*----------------------------------------------------------------------
   Ssithra Idle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_idle1 [] =
+static mframe_t ssithra_c_frames_idle1 [] =
 {
 	{FRAME_idle01,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idle02,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1165,12 +1165,12 @@ static animframe_t ssithra_c_frames_idle1 [] =
 	{FRAME_idle39,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idle40, 	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_idle1 = {40, ssithra_c_frames_idle1, ai_c_cycleend};
+mmove_t ssithra_c_move_idle1 = {40, ssithra_c_frames_idle1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra Walk - walking along
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_walk1 [] =
+static mframe_t ssithra_c_frames_walk1 [] =
 {
 	{FRAME_walk1, 	ai_c_move, 0, 0, 0,  NULL, 2, NULL},
 	{FRAME_walk2, 	ai_c_move, 0, 0, 0,  NULL, 3, NULL},
@@ -1187,12 +1187,12 @@ static animframe_t ssithra_c_frames_walk1 [] =
 	{FRAME_walk13, 	ai_c_move, 0, 0, 0,  NULL, 2, NULL},
 	{FRAME_walk14, 	ai_c_move, 0, 0, 0,  NULL, 2, NULL},
 };
-animmove_t ssithra_c_move_walk1 = {14, ssithra_c_frames_walk1, ai_c_cycleend};
+mmove_t ssithra_c_move_walk1 = {14, ssithra_c_frames_walk1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra backpedal -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_backpedal1 [] =
+static mframe_t ssithra_c_frames_backpedal1 [] =
 {
 	{FRAME_backpedal1,	ai_c_move, -5, 0, 0,  NULL, 0, NULL},
 	{FRAME_backpedal2,	ai_c_move, -5, 0, 0,  NULL, 0, NULL},
@@ -1205,13 +1205,13 @@ static animframe_t ssithra_c_frames_backpedal1 [] =
 	{FRAME_backpedal9,	ai_c_move, -5, 0, 0,  NULL, 0, NULL},
 	{FRAME_backpedal10, 	ai_c_move, -5, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_backpedal1 = {10, ssithra_c_frames_backpedal1, ai_c_cycleend};
+mmove_t ssithra_c_move_backpedal1 = {10, ssithra_c_frames_backpedal1, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   Ssithra bound -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action1 [] =
+static mframe_t ssithra_c_frames_action1 [] =
 {
 	{FRAME_bound09,	ai_c_move, 16, 0, 0,  NULL, 0, NULL},
 	{FRAME_bound10,	ai_c_move, 16, 0, 0,  NULL, 0, NULL},
@@ -1222,12 +1222,12 @@ static animframe_t ssithra_c_frames_action1 [] =
 	{FRAME_bound15,	ai_c_move, 16, 0, 0,  NULL, 0, NULL},
 	{FRAME_bound16,	ai_c_move, 12, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action1 = {8, ssithra_c_frames_action1, ai_c_cycleend};
+mmove_t ssithra_c_move_action1 = {8, ssithra_c_frames_action1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra death_a
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_death2 [] =
+static mframe_t ssithra_c_frames_death2 [] =
 {
 	{FRAME_death_a1,	ssithraSound, SND_DIE, CHAN_VOICE, 0,  NULL, 0, NULL},
 	{FRAME_death_a2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1242,12 +1242,12 @@ static animframe_t ssithra_c_frames_death2 [] =
 	{FRAME_death_a11,ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death_a12,ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_death2 = {12, ssithra_c_frames_death2, ai_c_cycleend};
+mmove_t ssithra_c_move_death2 = {12, ssithra_c_frames_death2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_death3 [] =
+static mframe_t ssithra_c_frames_death3 [] =
 {
 	{FRAME_death_b1,		ssithraSound, SND_DIE, CHAN_VOICE, 0,  NULL, 0, NULL},
 	{FRAME_death_b2,		ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1286,12 +1286,12 @@ static animframe_t ssithra_c_frames_death3 [] =
 	{FRAME_death_b35,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death_b36,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_death3 = {36, ssithra_c_frames_death3, ai_c_cycleend};
+mmove_t ssithra_c_move_death3 = {36, ssithra_c_frames_death3, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra dive - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action2 [] =
+static mframe_t ssithra_c_frames_action2 [] =
 {
 	{FRAME_dive1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_dive2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1320,26 +1320,26 @@ static animframe_t ssithra_c_frames_action2 [] =
 	{FRAME_dive25,	ai_c_move, 0, 0, 0,  ai_move , 6, ssithraCheckHitWaterSplash},
 	{FRAME_dive26,	ai_c_move, 0, 0, 0,  ai_move , 3, ssithraCheckHitWaterSplash},
 };
-animmove_t ssithra_c_move_action2 = {26, ssithra_c_frames_action2, ai_c_cycleend};
+mmove_t ssithra_c_move_action2 = {26, ssithra_c_frames_action2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra duckshoot
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action3 [] =
+static mframe_t ssithra_c_frames_action3 [] =
 {
 	{FRAME_duckshoot3,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_duckshoot2,	ai_c_move, 0, 0, 0,  NULL, 0, ssithraUnCrouch},
 	{FRAME_duckshoot1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action3 = {3, ssithra_c_frames_action3, ai_c_cycleend};
+mmove_t ssithra_c_move_action3 = {3, ssithra_c_frames_action3, ai_c_cycleend};
 
-static animframe_t ssithra_c_frames_action4 [] =
+static mframe_t ssithra_c_frames_action4 [] =
 {
 	{FRAME_duckshoot6,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action4 = {1, ssithra_c_frames_action4, ai_c_cycleend};
+mmove_t ssithra_c_move_action4 = {1, ssithra_c_frames_action4, ai_c_cycleend};
 
-static animframe_t ssithra_c_frames_action5 [] =
+static mframe_t ssithra_c_frames_action5 [] =
 {
 	{FRAME_duckshoot1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_duckshoot2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1348,12 +1348,12 @@ static animframe_t ssithra_c_frames_action5 [] =
 	{FRAME_duckshoot5,	ai_c_move, 0, 0, 0,  NULL, 0, ssithraCheckDuckArrow},
 	{FRAME_duckshoot6,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action5 = {6, ssithra_c_frames_action5, ai_c_cycleend};
+mmove_t ssithra_c_move_action5 = {6, ssithra_c_frames_action5, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra duck
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action6 [] =
+static mframe_t ssithra_c_frames_action6 [] =
 {//oops, duckframes same as duckshoot?
 	{FRAME_duckshoot1,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE,  NULL, 0, NULL},
 	{FRAME_duckshoot2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1362,12 +1362,12 @@ static animframe_t ssithra_c_frames_action6 [] =
 	{FRAME_duckshoot5,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_duckshoot6,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action6 = {6, ssithra_c_frames_action6, ai_c_cycleend};
+mmove_t ssithra_c_move_action6 = {6, ssithra_c_frames_action6, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra gallop - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_run1 [] =
+static mframe_t ssithra_c_frames_run1 [] =
 {
 	{FRAME_gallop1,	ai_c_move, 20, 0, 0,  NULL, 0, NULL},
 	{FRAME_gallop2,	ai_c_move, 24, 0, 0,  NULL, 0, NULL},
@@ -1378,12 +1378,12 @@ static animframe_t ssithra_c_frames_run1 [] =
 	{FRAME_gallop7,	ai_c_move, 24, 0, 0,  NULL, 0, NULL},
 	{FRAME_gallop8,	ai_c_move, 22, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_run1 = {8, ssithra_c_frames_run1, ai_c_cycleend};
+mmove_t ssithra_c_move_run1 = {8, ssithra_c_frames_run1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra jump from buoy
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action7[] =
+static mframe_t ssithra_c_frames_action7[] =
 {
 	{FRAME_bound09,	ai_c_move, 0, 0, 0,  NULL, 0, ssithraApplyJump},
 	{FRAME_bound10,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1394,12 +1394,12 @@ static animframe_t ssithra_c_frames_action7[] =
 	{FRAME_bound15,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_bound16,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action7 = {8, ssithra_c_frames_action7, ai_c_cycleend};
+mmove_t ssithra_c_move_action7 = {8, ssithra_c_frames_action7, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra idle2 -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_idle2 [] =
+static mframe_t ssithra_c_frames_idle2 [] =
 {
 	{FRAME_idlebasic01,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idlebasic02,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1442,12 +1442,12 @@ static animframe_t ssithra_c_frames_idle2 [] =
 	{FRAME_idlebasic39,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idlebasic40, 	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_idle2 = {40, ssithra_c_frames_idle2, ai_c_cycleend};
+mmove_t ssithra_c_move_idle2 = {40, ssithra_c_frames_idle2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra idle3 -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_idle3 [] =
+static mframe_t ssithra_c_frames_idle3 [] =
 {
 	{FRAME_idleright01,	ssithraSound, SND_GROWL2, CHAN_VOICE, ATTN_IDLE,  NULL, 0, NULL},
 	{FRAME_idleright02,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1475,12 +1475,12 @@ static animframe_t ssithra_c_frames_idle3 [] =
 	{FRAME_idleright19,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idleright20,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_idle3 = {24, ssithra_c_frames_idle3, ai_c_cycleend};
+mmove_t ssithra_c_move_idle3 = {24, ssithra_c_frames_idle3, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra attack1 -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_attack1 [] =
+static mframe_t ssithra_c_frames_attack1 [] =
 {
 	{FRAME_melee1,	ai_c_move, 20, 0, 0,  NULL, 0, NULL},
 	{FRAME_melee2,	ai_c_move, 10, 0, 0,  NULL, 0, NULL},
@@ -1490,12 +1490,12 @@ static animframe_t ssithra_c_frames_attack1 [] =
 	{FRAME_melee6,	ai_c_move, 3,  0, 0,  NULL, 0, NULL},
 	{FRAME_melee7,	ai_c_move, 3,  0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_attack1 = {7, ssithra_c_frames_attack1, ai_c_cycleend};
+mmove_t ssithra_c_move_attack1 = {7, ssithra_c_frames_attack1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_attack2 [] =
+static mframe_t ssithra_c_frames_attack2 [] =
 {
 	{FRAME_Melee_stand1,	ssithraSound, SND_SWIPE, CHAN_WEAPON, 0,  NULL, 0, NULL},
 	{FRAME_Melee_stand2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1505,12 +1505,12 @@ static animframe_t ssithra_c_frames_attack2 [] =
 	{FRAME_Melee_stand6,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_Melee_stand7,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_attack2 = {7, ssithra_c_frames_attack2, ai_c_cycleend};
+mmove_t ssithra_c_move_attack2 = {7, ssithra_c_frames_attack2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra namor - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action8 [] =
+static mframe_t ssithra_c_frames_action8 [] =
 {
 	{FRAME_namor1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_namor2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1538,22 +1538,22 @@ static animframe_t ssithra_c_frames_action8 [] =
 	{FRAME_namor24,	ai_c_move, 0, 0, 0,  NULL, 0, ssithraCheckLeaveWaterSplash},
 	{FRAME_namor25,	ai_c_move, 0, 0, 0,  NULL, 0, ssithraCheckLeaveWaterSplash},
 };
-animmove_t ssithra_c_move_action8 = {25, ssithra_c_frames_action8, ai_c_cycleend};
+mmove_t ssithra_c_move_action8 = {25, ssithra_c_frames_action8, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra pain_a - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_pain1 [] =
+static mframe_t ssithra_c_frames_pain1 [] =
 {
 	{FRAME_pain_a1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_pain_a2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_pain1 = {2, ssithra_c_frames_pain1, ai_c_cycleend};
+mmove_t ssithra_c_move_pain1 = {2, ssithra_c_frames_pain1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra shoot
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_attack3 [] =
+static mframe_t ssithra_c_frames_attack3 [] =
 {
 	{FRAME_shoot1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_shoot2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -1564,12 +1564,12 @@ static animframe_t ssithra_c_frames_attack3 [] =
 	{FRAME_shoot6,	NULL, 0, 0, 0,  ai_charge2, 0, ssithraCheckLoop},
 	{FRAME_shoot5,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t ssithra_c_move_attack3 = {8, ssithra_c_frames_attack3, ai_c_cycleend};
+mmove_t ssithra_c_move_attack3 = {8, ssithra_c_frames_attack3, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra lunge from shooting
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action9 [] =
+static mframe_t ssithra_c_frames_action9 [] =
 {
 	{FRAME_shoot12,	ai_c_move, 0, 0, 0,  NULL, 0, ssithraApplyJump},
 	{FRAME_shoot13,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1582,12 +1582,12 @@ static animframe_t ssithra_c_frames_action9 [] =
 	{FRAME_shoot20, 	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_shoot21,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action9 = {10, ssithra_c_frames_action9, ai_c_cycleend};
+mmove_t ssithra_c_move_action9 = {10, ssithra_c_frames_action9, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra startle -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action10 [] =
+static mframe_t ssithra_c_frames_action10 [] =
 {
 	{FRAME_startle2,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE,  NULL, 0, NULL},
 	{FRAME_startle3,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1628,12 +1628,12 @@ static animframe_t ssithra_c_frames_action10 [] =
 	{FRAME_startle38,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_startle39,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action10 = {38, ssithra_c_frames_action10, ai_c_cycleend};
+mmove_t ssithra_c_move_action10 = {38, ssithra_c_frames_action10, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra startle -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action11 [] =
+static mframe_t ssithra_c_frames_action11 [] =
 {
 	{FRAME_idlebasic41,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE,  NULL, 0, NULL},
 	{FRAME_idlebasic42,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1656,12 +1656,12 @@ static animframe_t ssithra_c_frames_action11 [] =
 	{FRAME_idlebasic59,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idlebasic60,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action11 = {20, ssithra_c_frames_action11, ai_c_cycleend};
+mmove_t ssithra_c_move_action11 = {20, ssithra_c_frames_action11, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra startle -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_action12 [] =
+static mframe_t ssithra_c_frames_action12 [] =
 {
 	{FRAME_idlebasic61,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE,  NULL, 0, NULL},
 	{FRAME_idlebasic62,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1684,13 +1684,13 @@ static animframe_t ssithra_c_frames_action12 [] =
 	{FRAME_idlebasic79,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idlebasic80,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_action12 = {20, ssithra_c_frames_action12, ai_c_cycleend};
+mmove_t ssithra_c_move_action12 = {20, ssithra_c_frames_action12, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   Ssithra swimforward - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_swim1 [] =
+static mframe_t ssithra_c_frames_swim1 [] =
 {
 	{FRAME_swimforward01,	ai_c_move, 16, 0, 0,  NULL, 16, ssithraCheckRipple},
 	{FRAME_swimforward02,	ai_c_move, 16, 0, 0,  NULL, 16, NULL},
@@ -1708,12 +1708,12 @@ static animframe_t ssithra_c_frames_swim1 [] =
 	{FRAME_swimforward14,	ai_c_move, 16, 0, 0,  NULL, 16, ssithraCheckRipple},
 	{FRAME_swimforward15,	ai_c_move, 16, 0, 0,  NULL, 16, ssithraCheckRipple},
 };
-animmove_t ssithra_c_move_swim1 = {15, ssithra_c_frames_swim1, ai_c_cycleend};
+mmove_t ssithra_c_move_swim1 = {15, ssithra_c_frames_swim1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra water_death -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_death1 [] =
+static mframe_t ssithra_c_frames_death1 [] =
 {
 	{FRAME_water_death1,	ssithraSound, SND_DIE, CHAN_VOICE, 0,  NULL, 0, NULL},
 	{FRAME_water_death2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1765,12 +1765,12 @@ static animframe_t ssithra_c_frames_death1 [] =
 	{FRAME_water_death48,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_water_death49,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_death1 = {49, ssithra_c_frames_death1, ai_c_cycleend};
+mmove_t ssithra_c_move_death1 = {49, ssithra_c_frames_death1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra water_idle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_frames_idle4 [] =
+static mframe_t ssithra_frames_idle4 [] =
 {//water idle sound?
 	{FRAME_water_idle1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_water_idle2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -1793,24 +1793,24 @@ static animframe_t ssithra_frames_idle4 [] =
 	{FRAME_water_idle19,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_water_idle20, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_move_idle4 = {20, ssithra_frames_idle4, ai_c_cycleend};
+mmove_t ssithra_move_idle4 = {20, ssithra_frames_idle4, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra water_pain_a -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_pain2 [] =
+static mframe_t ssithra_c_frames_pain2 [] =
 {
 	{FRAME_water_pain_a1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_water_pain_a2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_pain2 = {2, ssithra_c_frames_pain2, ai_c_cycleend};
+mmove_t ssithra_c_move_pain2 = {2, ssithra_c_frames_pain2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Ssithra water_pain_b -
 -----------------------------------------------------------------------*/
-static animframe_t ssithra_c_frames_pain3 [] =
+static mframe_t ssithra_c_frames_pain3 [] =
 {
 	{FRAME_water_pain_b1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_water_pain_b2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t ssithra_c_move_pain3 = {2, ssithra_c_frames_pain3, ai_c_cycleend};
+mmove_t ssithra_c_move_pain3 = {2, ssithra_c_frames_pain3, ai_c_cycleend};

@@ -72,31 +72,31 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t GkrokonMoveStand1;
-extern animmove_t GkrokonMoveStand2;
-extern animmove_t GkrokonMoveStand3;
-extern animmove_t GkrokonMoveStand4;
-extern animmove_t GkrokonMoveCrouch1;
-extern animmove_t GkrokonMoveCrouch2;
-extern animmove_t GkrokonMoveCrouch3;
-extern animmove_t GkrokonMoveWalk1;
-extern animmove_t GkrokonMoveRun1;
-extern animmove_t GkrokonMoveRun2;
-extern animmove_t GkrokonMoveRunAway;
-extern animmove_t GkrokonMoveJump1;
-extern animmove_t GkrokonMoveForcedJump;
-extern animmove_t GkrokonMoveMeleeAttack1;
-extern animmove_t GkrokonMoveMeleeAttack2;
-extern animmove_t GkrokonMoveMissileAttack1;
-extern animmove_t GkrokonMoveMissileAttack2;
-extern animmove_t GkrokonMoveEat1;
-extern animmove_t GkrokonMoveEat2;
-extern animmove_t GkrokonMoveEat3;
-extern animmove_t GkrokonMovePain1;
-extern animmove_t GkrokonMoveDeath1;
-//extern animmove_t GkrokonMoveDeath_hold;
-extern animmove_t GkrokonMoveHop1;
-extern animmove_t GkrokonMoveDelay;
+extern mmove_t GkrokonMoveStand1;
+extern mmove_t GkrokonMoveStand2;
+extern mmove_t GkrokonMoveStand3;
+extern mmove_t GkrokonMoveStand4;
+extern mmove_t GkrokonMoveCrouch1;
+extern mmove_t GkrokonMoveCrouch2;
+extern mmove_t GkrokonMoveCrouch3;
+extern mmove_t GkrokonMoveWalk1;
+extern mmove_t GkrokonMoveRun1;
+extern mmove_t GkrokonMoveRun2;
+extern mmove_t GkrokonMoveRunAway;
+extern mmove_t GkrokonMoveJump1;
+extern mmove_t GkrokonMoveForcedJump;
+extern mmove_t GkrokonMoveMeleeAttack1;
+extern mmove_t GkrokonMoveMeleeAttack2;
+extern mmove_t GkrokonMoveMissileAttack1;
+extern mmove_t GkrokonMoveMissileAttack2;
+extern mmove_t GkrokonMoveEat1;
+extern mmove_t GkrokonMoveEat2;
+extern mmove_t GkrokonMoveEat3;
+extern mmove_t GkrokonMovePain1;
+extern mmove_t GkrokonMoveDeath1;
+//extern mmove_t GkrokonMoveDeath_hold;
+extern mmove_t GkrokonMoveHop1;
+extern mmove_t GkrokonMoveDelay;
 
 void GkrokonSpooTouch2(edict_t *self,trace_t *trace);
 

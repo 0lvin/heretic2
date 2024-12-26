@@ -26,7 +26,7 @@
 /*----------------------------------------------------------------------
   Chicken Standing -
 -----------------------------------------------------------------------*/
-static animframe_t chicken_frames_stand1 [] =
+static mframe_t chicken_frames_stand1 [] =
 {
 	{FRAME_wait1,	NULL, 0, 0, 0,  ai_stand, 0, chicken_check},
 	{FRAME_wait2,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -35,12 +35,12 @@ static animframe_t chicken_frames_stand1 [] =
 	{FRAME_wait5,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_wait6,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t chicken_move_stand1 = {6, chicken_frames_stand1, chicken_pause};
+mmove_t chicken_move_stand1 = {6, chicken_frames_stand1, chicken_pause};
 
 /*----------------------------------------------------------------------
   Chicken running -
 -----------------------------------------------------------------------*/
-static animframe_t chicken_frames_run [] =
+static mframe_t chicken_frames_run [] =
 {
 	{FRAME_run1,	NULL, 0, 0, 0,  ai_run, ENEMY_RUN_SPEED, chicken_check},
 	{FRAME_run2,	NULL, 0, 0, 0,  ai_run, ENEMY_RUN_SPEED, NULL},
@@ -49,12 +49,12 @@ static animframe_t chicken_frames_run [] =
 	{FRAME_run5,	NULL, 0, 0, 0,  ai_run, ENEMY_RUN_SPEED, NULL},
 	{FRAME_run6,	chickenSound, CHAN_BODY, SND_CLAW, ATTN_NORM,  ai_run, ENEMY_RUN_SPEED, NULL},
 };
-animmove_t chicken_move_run = {6, chicken_frames_run, chicken_pause};
+mmove_t chicken_move_run = {6, chicken_frames_run, chicken_pause};
 
 /*----------------------------------------------------------------------
   Chicken walking -
 -----------------------------------------------------------------------*/
-static animframe_t chicken_frames_walk [] =
+static mframe_t chicken_frames_walk [] =
 {
 	{FRAME_walk1,	NULL, 0, 0, 0,  ai_walk, ENEMY_WALK_SPEED, chicken_check},
 	{FRAME_walk2,	NULL, 0, 0, 0,  ai_walk, ENEMY_WALK_SPEED, NULL},
@@ -65,12 +65,12 @@ static animframe_t chicken_frames_walk [] =
 	{FRAME_walk7,	chickenSound, CHAN_BODY, SND_CLAW, ATTN_NORM,  ai_walk, ENEMY_WALK_SPEED, chicken_check},
 	{FRAME_walk8,	NULL, 0, 0, 0,  ai_walk, ENEMY_WALK_SPEED, NULL},
 };
-animmove_t chicken_move_walk = {8, chicken_frames_walk, chicken_pause};
+mmove_t chicken_move_walk = {8, chicken_frames_walk, chicken_pause};
 
 /*----------------------------------------------------------------------
   Chicken cluck -
 -----------------------------------------------------------------------*/
-static animframe_t chicken_frames_cluck [] =
+static mframe_t chicken_frames_cluck [] =
 {
 	{FRAME_cluck1,	NULL, 0, 0, 0,  ai_stand, 0, chicken_check},
 	{FRAME_cluck2,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -92,12 +92,12 @@ static animframe_t chicken_frames_cluck [] =
 	{FRAME_cluck18,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_cluck19,	NULL, 0, 0, 0,  ai_stand, 0, chicken_check},
 };
-animmove_t chicken_move_cluck = {19, chicken_frames_cluck, chicken_eat_again};
+mmove_t chicken_move_cluck = {19, chicken_frames_cluck, chicken_eat_again};
 
 /*----------------------------------------------------------------------
   Chicken attacking -
 -----------------------------------------------------------------------*/
-static animframe_t chicken_frames_attack [] =
+static mframe_t chicken_frames_attack [] =
 {
 	{FRAME_attack1,	NULL, 0, 0, 0,  ai_stand, 0, chicken_check},
 	{FRAME_attack2,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -106,12 +106,12 @@ static animframe_t chicken_frames_attack [] =
 	{FRAME_attack5,	NULL, 0, 0, 0,  ai_stand, 0, chicken_bite},
 	{FRAME_attack6,	NULL, 0, 0, 0,  ai_stand, 0, chicken_check},
 };
-animmove_t chicken_move_attack = {6, chicken_frames_attack, chicken_pause};
+mmove_t chicken_move_attack = {6, chicken_frames_attack, chicken_pause};
 
 /*----------------------------------------------------------------------
   Chicken eating -
 -----------------------------------------------------------------------*/
-static animframe_t chicken_frames_eat [] =
+static mframe_t chicken_frames_eat [] =
 {
 	{FRAME_peck1,	NULL, 0, 0, 0,  ai_stand, 0, chicken_check},
 	{FRAME_peck2,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -143,12 +143,12 @@ static animframe_t chicken_frames_eat [] =
 	{FRAME_peck28,	NULL, 0, 0, 0,  ai_stand, 0, chicken_check},
 	{FRAME_peck29,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t chicken_move_eat = {29, chicken_frames_eat, chicken_eat_again};
+mmove_t chicken_move_eat = {29, chicken_frames_eat, chicken_eat_again};
 
 /*----------------------------------------------------------------------
   Chicken jumping -
 -----------------------------------------------------------------------*/
-static animframe_t chicken_frames_jump [] =
+static mframe_t chicken_frames_jump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0,  ai_walk, 8, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0,  ai_walk, 8, NULL},
@@ -157,4 +157,4 @@ static animframe_t chicken_frames_jump [] =
 	{FRAME_jump5,	NULL, 0, 0, 0,  ai_walk, 8, NULL},
 	{FRAME_jump6,	NULL, 0, 0, 0,  ai_walk, 8, NULL},
 };
-animmove_t chicken_move_jump = {6, chicken_frames_jump, chicken_pause};
+mmove_t chicken_move_jump = {6, chicken_frames_jump, chicken_pause};

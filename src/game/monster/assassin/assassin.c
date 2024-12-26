@@ -53,7 +53,7 @@ void assassinInitDeCloak (edict_t *self);
 /*----------------------------------------------------------------------
   assassin Base Info
 -----------------------------------------------------------------------*/
-static animmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[ NUM_ANIMS] =
 {
 	&assassin_move_daggerl,// = {14, assassin_frames_daggerl, assassin_pause},
 	&assassin_move_daggerr,//= {15, assassin_frames_daggerr, assassin_pause},

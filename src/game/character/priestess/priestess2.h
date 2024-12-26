@@ -20,11 +20,11 @@ typedef enum AnimID_e
 
 #define MODEL_SCALE		1.000000
 
-extern animmove_t priestess2_move_c_action1;
-extern animmove_t priestess2_move_c_action2;
-extern animmove_t priestess2_move_c_action3;
-extern animmove_t priestess2_move_c_action4;
-extern animmove_t priestess2_move_c_action5;
-extern animmove_t priestess2_move_c_action6;
-extern animmove_t priestess2_move_c_action7;
-extern animmove_t priestess2_move_c_idle1;
+extern mmove_t priestess2_move_c_action1;
+extern mmove_t priestess2_move_c_action2;
+extern mmove_t priestess2_move_c_action3;
+extern mmove_t priestess2_move_c_action4;
+extern mmove_t priestess2_move_c_action5;
+extern mmove_t priestess2_move_c_action6;
+extern mmove_t priestess2_move_c_action7;
+extern mmove_t priestess2_move_c_idle1;

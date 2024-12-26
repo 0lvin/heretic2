@@ -22,7 +22,7 @@ Copyright 1998 Raven Software
 /*----------------------------------------------------------------------
   plagueElf Base Info
 -----------------------------------------------------------------------*/
-static animmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[ NUM_ANIMS] =
 {
 	// Cinematics
 	&tome_move_c_idle1,

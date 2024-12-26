@@ -19,7 +19,7 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t mother_move_pain;
-extern animmove_t mother_move_stand;
+extern mmove_t mother_move_pain;
+extern mmove_t mother_move_stand;
 
 void mother_pause (edict_t *self);

@@ -47,22 +47,22 @@ typedef enum SoundID_e
 } SoundID_t;
 
 
-extern animmove_t mssithra_move_idle1;
-extern animmove_t mssithra_move_walk1;
-extern animmove_t mssithra_move_backpedal1;
-extern animmove_t mssithra_move_death1;
-extern animmove_t mssithra_move_claw1;
-extern animmove_t mssithra_move_jump1;
-extern animmove_t mssithra_move_fjump;
-extern animmove_t mssithra_move_shoota1;
-extern animmove_t mssithra_move_shootb1;
-extern animmove_t mssithra_move_roar;
-extern animmove_t mssithra_move_run1;
-extern animmove_t mssithra_move_delay;
+extern mmove_t mssithra_move_idle1;
+extern mmove_t mssithra_move_walk1;
+extern mmove_t mssithra_move_backpedal1;
+extern mmove_t mssithra_move_death1;
+extern mmove_t mssithra_move_claw1;
+extern mmove_t mssithra_move_jump1;
+extern mmove_t mssithra_move_fjump;
+extern mmove_t mssithra_move_shoota1;
+extern mmove_t mssithra_move_shootb1;
+extern mmove_t mssithra_move_roar;
+extern mmove_t mssithra_move_run1;
+extern mmove_t mssithra_move_delay;
 
-extern animmove_t mssithra_move_shoot1_trans;
-extern animmove_t mssithra_move_shoot1_loop;
-extern animmove_t mssithra_move_shoot1_detrans;
+extern mmove_t mssithra_move_shoot1_trans;
+extern mmove_t mssithra_move_shoot1_loop;
+extern mmove_t mssithra_move_shoot1_detrans;
 
 void mssithraSwipe(edict_t *self);
 void mssithraArrow(edict_t *self);

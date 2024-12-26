@@ -15,7 +15,7 @@
 /*----------------------------------------------------------------------
   mssithra Idle - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_idle1 [] =
+static mframe_t mssithra_frames_idle1 [] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idle2,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -39,12 +39,12 @@ static animframe_t mssithra_frames_idle1 [] =
 	{FRAME_idle20, 	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idle21,	NULL, 0, 0, 0,  ai_stand, 0, NULL},
 };
-animmove_t mssithra_move_idle1 = {21, mssithra_frames_idle1, mssithraMood};
+mmove_t mssithra_move_idle1 = {21, mssithra_frames_idle1, mssithraMood};
 
 /*----------------------------------------------------------------------
   mssithra Walk - walking along
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_walk1 [] =
+static mframe_t mssithra_frames_walk1 [] =
 {
 	{FRAME_walk1, 	NULL, 0, 0, 0,  ai_walk, 8, NULL},
 	{FRAME_walk2, 	NULL, 0, 0, 0,  ai_walk, 8, NULL},
@@ -63,12 +63,12 @@ static animframe_t mssithra_frames_walk1 [] =
 	{FRAME_walk15, 	NULL, 0, 0, 0,  ai_walk, 9, NULL},
 	{FRAME_walk16, 	NULL, 0, 0, 0,  ai_walk, 8, NULL},
 };
-animmove_t mssithra_move_walk1 = {16, mssithra_frames_walk1, NULL};//mssithraMood};
+mmove_t mssithra_move_walk1 = {16, mssithra_frames_walk1, NULL};//mssithraMood};
 
 /*----------------------------------------------------------------------
   mssithra Walk - walking along
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_run1 [] =
+static mframe_t mssithra_frames_run1 [] =
 {
 	{FRAME_walk1, 	NULL, 0, 0, 0,  ai_run, 8, NULL},
 	{FRAME_walk2, 	NULL, 0, 0, 0,  ai_run, 8, NULL},
@@ -87,12 +87,12 @@ static animframe_t mssithra_frames_run1 [] =
 	{FRAME_walk15, 	NULL, 0, 0, 0,  ai_run, 9, NULL},
 	{FRAME_walk16, 	NULL, 0, 0, 0,  ai_run, 9, NULL},
 };
-animmove_t mssithra_move_run1 = {16, mssithra_frames_run1, NULL};//mssithra_decide_gallop};
+mmove_t mssithra_move_run1 = {16, mssithra_frames_run1, NULL};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra backpedal - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_backpedal1 [] =
+static mframe_t mssithra_frames_backpedal1 [] =
 {
 	{FRAME_walk16,	NULL, 0, 0, 0,  ai_charge2, -8, NULL},
 	{FRAME_walk15,	NULL, 0, 0, 0,  ai_charge2, -8, NULL},
@@ -111,13 +111,13 @@ static animframe_t mssithra_frames_backpedal1 [] =
 	{FRAME_walk2,	NULL, 0, 0, 0,  ai_charge2, -9, NULL},
 	{FRAME_walk1,	NULL, 0, 0, 0,  ai_charge2, -9, NULL},
 };
-animmove_t mssithra_move_backpedal1 = {16, mssithra_frames_backpedal1, NULL};//mssithra_decide_backpedal};
+mmove_t mssithra_move_backpedal1 = {16, mssithra_frames_backpedal1, NULL};//mssithra_decide_backpedal};
 
 
 /*----------------------------------------------------------------------
   mssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_death1 [] =
+static mframe_t mssithra_frames_death1 [] =
 {
 	{FRAME_death1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -165,13 +165,13 @@ static animframe_t mssithra_frames_death1 [] =
 	{FRAME_death44,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_death45,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t mssithra_move_death1 = {45, mssithra_frames_death1, mssithra_dead};
+mmove_t mssithra_move_death1 = {45, mssithra_frames_death1, mssithra_dead};
 
 
 /*----------------------------------------------------------------------
   mssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_claw1 [] =
+static mframe_t mssithra_frames_claw1 [] =
 {
 	{FRAME_claw1,	NULL, 0, 0, 0,  ai_charge2, 20, NULL},
 	{FRAME_claw2,	NULL, 0, 0, 0,  ai_charge2, 10, mmssithraRandomGrowlSound},
@@ -184,13 +184,13 @@ static animframe_t mssithra_frames_claw1 [] =
 	{FRAME_claw9,	NULL, 0, 0, 0,  ai_charge2, 3, NULL},
 	{FRAME_claw10,	NULL, 0, 0, 0,  ai_charge2, 3, NULL},
 };
-animmove_t mssithra_move_claw1 = {7, mssithra_frames_claw1, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_claw1 = {7, mssithra_frames_claw1, mssithraMood};//mssithra_decide_gallop};
 
 
 /*----------------------------------------------------------------------
   mssithra jump
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_jump1 [] =
+static mframe_t mssithra_frames_jump1 [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -207,12 +207,12 @@ static animframe_t mssithra_frames_jump1 [] =
 	{FRAME_jump13,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_jump14,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t mssithra_move_jump1 = {14, mssithra_frames_jump1, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_jump1 = {14, mssithra_frames_jump1, mssithraMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra forced jump
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_fjump [] =
+static mframe_t mssithra_frames_fjump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -229,13 +229,13 @@ static animframe_t mssithra_frames_fjump [] =
 	{FRAME_jump13,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_jump14,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t mssithra_move_fjump = {14, mssithra_frames_fjump, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_fjump = {14, mssithra_frames_fjump, mssithraMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra pain_a - looking around and standing
 -----------------------------------------------------------------------*/
 /*
-static animframe_t mssithra_frames_pain1 [] =
+static mframe_t mssithra_frames_pain1 [] =
 {
 	{FRAME_pain1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_pain2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -243,13 +243,13 @@ static animframe_t mssithra_frames_pain1 [] =
 	{FRAME_pain4,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_pain5,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t mssithra_move_pain1 = {5, mssithra_frames_pain1, mssithra_pain_react};
+mmove_t mssithra_move_pain1 = {5, mssithra_frames_pain1, mssithra_pain_react};
 */
 
 /*----------------------------------------------------------------------
   mssithra shoot
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_shoota1 [] =
+static mframe_t mssithra_frames_shoota1 [] =
 {
 	{FRAME_shoota1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL}, //0
 	{FRAME_shoota2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -275,12 +275,12 @@ static animframe_t mssithra_frames_shoota1 [] =
 	{FRAME_shoota22,	NULL, 0, 0, 0,  ai_charge2, 0, mmssithraRandomGrowlSound},
 	{FRAME_shoota23,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t mssithra_move_shoota1 = {23, mssithra_frames_shoota1, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_shoota1 = {23, mssithra_frames_shoota1, mssithraMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra shoot
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_shootb1 [] =
+static mframe_t mssithra_frames_shootb1 [] =
 {
 	{FRAME_shootb1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},//0
 	{FRAME_shootb2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -305,12 +305,12 @@ static animframe_t mssithra_frames_shootb1 [] =
 	{FRAME_shootb21,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_shootb22,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t mssithra_move_shootb1 = {22, mssithra_frames_shootb1, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_shootb1 = {22, mssithra_frames_shootb1, mssithraMood};//mssithra_decide_gallop};
 
 /*----------------------------------------------------------------------
   mssithra roar
 -----------------------------------------------------------------------*/
-static animframe_t mssithra_frames_roar [] =
+static mframe_t mssithra_frames_roar [] =
 {
 	{FRAME_roar1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_roar2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -337,10 +337,10 @@ static animframe_t mssithra_frames_roar [] =
 	{FRAME_roar23,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_roar24,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t mssithra_move_roar = {24, mssithra_frames_roar, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_roar = {24, mssithra_frames_roar, mssithraMood};//mssithra_decide_gallop};
 
 
-static animframe_t mssithra_frames_delay [] =
+static mframe_t mssithra_frames_delay [] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idle2,	NULL, 0, 0, 0,  NULL, 0, NULL},
@@ -364,18 +364,18 @@ static animframe_t mssithra_frames_delay [] =
 	{FRAME_idle20, 	NULL, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idle21,	NULL, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t mssithra_move_delay = {21, mssithra_frames_delay, NULL};//mssithraMood};
+mmove_t mssithra_move_delay = {21, mssithra_frames_delay, NULL};//mssithraMood};
 
 //New shooting animations
-static animframe_t mssithra_frames_shoot1_trans [] =
+static mframe_t mssithra_frames_shoot1_trans [] =
 {
 	{FRAME_newshot1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_newshot2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_newshot3,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t mssithra_move_shoot1_trans = {3, mssithra_frames_shoot1_trans, mssithra_ShotLoop};
+mmove_t mssithra_move_shoot1_trans = {3, mssithra_frames_shoot1_trans, mssithra_ShotLoop};
 
-static animframe_t mssithra_frames_shoot1_loop [] =
+static mframe_t mssithra_frames_shoot1_loop [] =
 {
 	{FRAME_newshot4,	NULL, 0, 0, 0,  ai_charge2, 0, mssithraArrow},
 	{FRAME_newshot5,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
@@ -384,12 +384,12 @@ static animframe_t mssithra_frames_shoot1_loop [] =
 	{FRAME_newshot8,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_newshot9,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t mssithra_move_shoot1_loop = {6, mssithra_frames_shoot1_loop, mssithraCheckShotLoop};
+mmove_t mssithra_move_shoot1_loop = {6, mssithra_frames_shoot1_loop, mssithraCheckShotLoop};
 
-static animframe_t mssithra_frames_shoot1_detrans [] =
+static mframe_t mssithra_frames_shoot1_detrans [] =
 {
 	{FRAME_newshot3,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_newshot2,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 	{FRAME_newshot1,	NULL, 0, 0, 0,  ai_charge2, 0, NULL},
 };
-animmove_t mssithra_move_shoot1_detrans = {3, mssithra_frames_shoot1_detrans, mssithraMood};
+mmove_t mssithra_move_shoot1_detrans = {3, mssithra_frames_shoot1_detrans, mssithraMood};

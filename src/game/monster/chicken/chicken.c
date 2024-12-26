@@ -35,7 +35,7 @@ extern void ED_CallSpawn (edict_t *ent);
   Chicken Base Info
 -----------------------------------------------------------------------*/
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&chicken_move_stand1,
 	&chicken_move_walk,

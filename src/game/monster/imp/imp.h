@@ -50,22 +50,22 @@ void imp_pain1_noise(edict_t *self);
 void imp_pain2_noise(edict_t *self);
 void imp_attack_noise(edict_t *self);
 
-extern animmove_t imp_move_die1;
-extern animmove_t imp_move_fly1;
-extern animmove_t imp_move_flyback;
-extern animmove_t imp_move_hover1;
-extern animmove_t imp_move_fireball;
-extern animmove_t imp_move_dive_go;
-extern animmove_t imp_move_dive_loop;
-extern animmove_t imp_move_dive_end;
-extern animmove_t imp_move_dive_out;
-extern animmove_t imp_move_pain1;
-extern animmove_t imp_move_tumble;
-extern animmove_t imp_move_takeoff;
+extern mmove_t imp_move_die1;
+extern mmove_t imp_move_fly1;
+extern mmove_t imp_move_flyback;
+extern mmove_t imp_move_hover1;
+extern mmove_t imp_move_fireball;
+extern mmove_t imp_move_dive_go;
+extern mmove_t imp_move_dive_loop;
+extern mmove_t imp_move_dive_end;
+extern mmove_t imp_move_dive_out;
+extern mmove_t imp_move_pain1;
+extern mmove_t imp_move_tumble;
+extern mmove_t imp_move_takeoff;
 //Pirches
-extern animmove_t imp_move_perch;
-extern animmove_t imp_move_dup;
-extern animmove_t imp_move_ddown;
+extern mmove_t imp_move_perch;
+extern mmove_t imp_move_dup;
+extern mmove_t imp_move_ddown;
 
 
 qboolean SV_StepDirection (edict_t *ent, float yaw, float dist);

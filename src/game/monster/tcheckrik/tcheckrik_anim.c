@@ -22,7 +22,7 @@
 //
   insect backpedalling
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_back [] =
+static mframe_t insect_frames_back [] =
 {
 	{FRAME_backpeddle1,	NULL, 0, 0, 0, ai_charge, -18, NULL}, //insectgrowl,
 	{FRAME_backpeddle2,	NULL, 0, 0, 0, ai_charge, -16, NULL},
@@ -35,12 +35,12 @@ static animframe_t insect_frames_back [] =
 	{FRAME_backpeddle9,	NULL, 0, 0, 0, ai_charge, -10, NULL},
 	{FRAME_backpeddle10,	NULL, 0, 0, 0, ai_charge, -6, NULL},
 };
-animmove_t insect_move_back = {10, insect_frames_back, insect_pause};
+mmove_t insect_move_back = {10, insect_frames_back, insect_pause};
 
 /*-------------------------------------------------------------------------
 	insect_frames_death3
 -------------------------------------------------------------------------*/
-static animframe_t insect_frames_deathfr [] =
+static mframe_t insect_frames_deathfr [] =
 {
 	{FRAME_deathfr1, NULL, 0, 0, 0, ai_move, -24, NULL},
 	{FRAME_deathfr2, NULL, 0, 0, 0, ai_move, -18, NULL}, //after this frame, goes into knockback?!!?!?
@@ -65,7 +65,7 @@ static animframe_t insect_frames_deathfr [] =
 	{FRAME_deathfr21, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deathfr22, NULL, 0, 0, 0, NULL, 0, insect_dead},
 };
-animmove_t insect_move_deathfr = {22, insect_frames_deathfr, NULL};
+mmove_t insect_move_deathfr = {22, insect_frames_deathfr, NULL};
 
 /*-------------------------------------------------------------------------
 	insect death
@@ -73,19 +73,19 @@ animmove_t insect_move_deathfr = {22, insect_frames_deathfr, NULL};
 /*------------------------------------------------------------------
 	insect knock -- the insect
 -------------------------------------------------------------------*/
-static animframe_t insect_frames_knock1_go [] =
+static mframe_t insect_frames_knock1_go [] =
 {
 	{FRAME_knock1, NULL, 0, 0, 0, NULL, 0, insect_flyback_move},
 };
-animmove_t insect_move_knock1_go = { 1, insect_frames_knock1_go, insect_flyback_loop };
+mmove_t insect_move_knock1_go = { 1, insect_frames_knock1_go, insect_flyback_loop };
 
-static animframe_t insect_frames_knock1_loop [] =
+static mframe_t insect_frames_knock1_loop [] =
 {
 	{FRAME_knock2, NULL, 0, 0, 0, NULL, 0, insect_flyback_move},
 };
-animmove_t insect_move_knock1_loop = { 1, insect_frames_knock1_loop, NULL };
+mmove_t insect_move_knock1_loop = { 1, insect_frames_knock1_loop, NULL };
 
-static animframe_t insect_frames_knock1_end [] =
+static mframe_t insect_frames_knock1_end [] =
 {
 	{FRAME_knock3, insect_sound, CHAN_BODY, SND_THUD, ATTN_NORM, ai_move, -4, insect_flyback_move},
 	{FRAME_knock4, NULL, 0, 0, 0, ai_move, -3, insect_flyback_move},
@@ -102,9 +102,9 @@ static animframe_t insect_frames_knock1_end [] =
 	{FRAME_knock15, NULL, 0, 0, 0, ai_move, 0, MG_NoBlocking},
 	{FRAME_knock15, NULL, 0, 0, 0, NULL, 0, insect_wait_twitch},
 };
-animmove_t insect_move_knock1_end = { 14, insect_frames_knock1_end, NULL };
+mmove_t insect_move_knock1_end = { 14, insect_frames_knock1_end, NULL };
 
-static animframe_t insect_frames_twitch [] =
+static mframe_t insect_frames_twitch [] =
 {//takes a couple steps back.. may clip!!!
 	{FRAME_knock16, NULL, 0, 0, 0, NULL, 0, insect_random_idle_sound},
 	{FRAME_knock17, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -112,12 +112,12 @@ static animframe_t insect_frames_twitch [] =
 	{FRAME_knock19, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_knock19, NULL, 0, 0, 0, NULL, 0, insect_wait_twitch},
 };
-animmove_t insect_move_twitch = {5, insect_frames_twitch, NULL};
+mmove_t insect_move_twitch = {5, insect_frames_twitch, NULL};
 
 /*----------------------------------------------------------------------
   insect standing around
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_idle [] =
+static mframe_t insect_frames_idle [] =
 {
 	{FRAME_idle1, NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idle2, NULL, 0, 0, 0,  ai_stand, 0, NULL},
@@ -170,12 +170,12 @@ static animframe_t insect_frames_idle [] =
 	{FRAME_idle49, NULL, 0, 0, 0,  ai_stand, 0, NULL},
 	{FRAME_idle50, NULL, 0, 0, 0,  ai_stand, 0, NULL}
 };
-animmove_t insect_move_idle = { 50, insect_frames_idle, insect_pause};
+mmove_t insect_move_idle = { 50, insect_frames_idle, insect_pause};
 
 /*----------------------------------------------------------------------
   insect land
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_land [] =
+static mframe_t insect_frames_land [] =
 {
 	{FRAME_jump11,	insect_sound, CHAN_BODY, SND_THUD, ATTN_NORM, NULL, 0, NULL}, //sound
 	{FRAME_jump12,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -184,21 +184,21 @@ static animframe_t insect_frames_land [] =
 	{FRAME_jump15,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jump16,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t insect_move_land = {6, insect_frames_land, insect_pause};
+mmove_t insect_move_land = {6, insect_frames_land, insect_pause};
 
 /*----------------------------------------------------------------------
   insect in air
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_inair [] =
+static mframe_t insect_frames_inair [] =
 {
 	{FRAME_jump10,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ANIM_LAND, NULL}, //hang here until land
 };
-animmove_t insect_move_inair = {1, insect_frames_inair, NULL};
+mmove_t insect_move_inair = {1, insect_frames_inair, NULL};
 
 /*----------------------------------------------------------------------
   insect forced jump
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_forcedjump [] =
+static mframe_t insect_frames_forcedjump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -210,21 +210,21 @@ static animframe_t insect_frames_forcedjump [] =
 	{FRAME_jump8,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
 	{FRAME_jump9,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ANIM_LAND, NULL}
 };
-animmove_t insect_move_forcedjump = {9, insect_frames_forcedjump, insect_go_inair};
+mmove_t insect_move_forcedjump = {9, insect_frames_forcedjump, insect_go_inair};
 
 /*----------------------------------------------------------------------
   insect in air
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_finair [] =
+static mframe_t insect_frames_finair [] =
 {
 	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL}, //hang here until land
 };
-animmove_t insect_move_finair = {1, insect_frames_finair, NULL};
+mmove_t insect_move_finair = {1, insect_frames_finair, NULL};
 
 /*----------------------------------------------------------------------
   insect forced jump
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_fjump [] =
+static mframe_t insect_frames_fjump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -236,12 +236,12 @@ static animframe_t insect_frames_fjump [] =
 	{FRAME_jump8,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
 	{FRAME_jump9,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL}
 };
-animmove_t insect_move_fjump = {9, insect_frames_fjump, insect_go_finair};
+mmove_t insect_move_fjump = {9, insect_frames_fjump, insect_go_finair};
 
 /*----------------------------------------------------------------------
   insect Pain - insect gets hit
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_paina [] =
+static mframe_t insect_frames_paina [] =
 {
 	{FRAME_paina1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_paina2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -251,12 +251,12 @@ static animframe_t insect_frames_paina [] =
 	{FRAME_paina6,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_paina7,	NULL, 0, 0, 0, NULL, 0, NULL}
 };
-animmove_t insect_move_paina = {7, insect_frames_paina, insect_pause};
+mmove_t insect_move_paina = {7, insect_frames_paina, insect_pause};
 
 /*----------------------------------------------------------------------
   insect Pain - insect gets hit
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_painc [] =
+static mframe_t insect_frames_painc [] =
 {
 	{FRAME_paina1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_paina2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -265,12 +265,12 @@ static animframe_t insect_frames_painc [] =
 	{FRAME_paina5,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_paina6,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t insect_move_painc = {6, insect_frames_painc, insect_pause};
+mmove_t insect_move_painc = {6, insect_frames_painc, insect_pause};
 
 /*----------------------------------------------------------------------
   insect Running - insect running
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_run [] =
+static mframe_t insect_frames_run [] =
 {
 	{FRAME_Run1,	NULL, 0, 0, 0, ai_run, 12, insectgrowl},
 	{FRAME_Run2,	NULL, 0, 0, 0, ai_run, 13, insect_pause},
@@ -284,12 +284,12 @@ static animframe_t insect_frames_run [] =
 	{FRAME_Run10,	NULL, 0, 0, 0, ai_run, 14, insect_pause},
 	{FRAME_Run10,	NULL, 0, 0, 0, ai_run, 14, insect_pause},
 };
-animmove_t insect_move_run = {11, insect_frames_run, insect_pause};
+mmove_t insect_move_run = {11, insect_frames_run, insect_pause};
 
 /*----------------------------------------------------------------------
   insect spear - insect attacking
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_spear [] =
+static mframe_t insect_frames_spear [] =
 {
 	{FRAME_SpearB1,	NULL, 0, 0, 0, ai_charge, 0, insectgrowl},
 	{FRAME_SpearB2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -303,12 +303,12 @@ static animframe_t insect_frames_spear [] =
 	{FRAME_SpearB10,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_SpearB11,	NULL, 0, 0, 0, ai_charge, 0, NULL}
 };
-animmove_t insect_move_spear = {11, insect_frames_spear, insect_pause};
+mmove_t insect_move_spear = {11, insect_frames_spear, insect_pause};
 
 /*----------------------------------------------------------------------
   insect sword - insect attacking
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_sword [] =
+static mframe_t insect_frames_sword [] =
 {
 	{FRAME_sword1,	NULL, 0, 0, 0, ai_charge, 0, insectgrowl},
 	{FRAME_sword2,	insect_sound, CHAN_WEAPON, SND_SWIPE, ATTN_NORM, ai_charge, 0, NULL},
@@ -320,13 +320,13 @@ static animframe_t insect_frames_sword [] =
 	{FRAME_sword8,	NULL, 0, 0, 0, insectCheckLoop, 1, NULL},
 	{FRAME_sword9,	NULL, 0, 0, 0, ai_charge, 0, NULL}, // check for loop
 };
-animmove_t insect_move_sword = {9, insect_frames_sword, insect_pause};
+mmove_t insect_move_sword = {9, insect_frames_sword, insect_pause};
 
 /*----------------------------------------------------------------------
   insect spell - insect attacking
 -----------------------------------------------------------------------*/
 
-static animframe_t insect_frames_spell [] =
+static mframe_t insect_frames_spell [] =
 {
 	{FRAME_spell1,	NULL, 0, 0, 0, insectSpell, TC_SPL_GLOW, NULL},
 	{FRAME_spell2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -346,13 +346,13 @@ static animframe_t insect_frames_spell [] =
 	{FRAME_spell16,	NULL, 0, 0, 0, ai_charge, 0, NULL},//check for loop?
 	{FRAME_spell17,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 };
-animmove_t insect_move_spell = {17, insect_frames_spell, insect_pause};
+mmove_t insect_move_spell = {17, insect_frames_spell, insect_pause};
 
 /*----------------------------------------------------------------------
   insect spell - insect attacking 2nd spell
 -----------------------------------------------------------------------*/
 
-static animframe_t insect_frames_spell2 [] =
+static mframe_t insect_frames_spell2 [] =
 {
 	{FRAME_spell1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_spell3,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -367,10 +367,10 @@ static animframe_t insect_frames_spell2 [] =
 	{FRAME_spell16,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_spell17,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 };
-animmove_t insect_move_spell2 = {12, insect_frames_spell2, insect_pause};
+mmove_t insect_move_spell2 = {12, insect_frames_spell2, insect_pause};
 
 /*
-static animframe_t insect_frames_spell [] =
+static mframe_t insect_frames_spell [] =
 {
 	{FRAME_spell1,	NULL, 0, 0, 0, ai_charge, 0, insectSpell},
 	{FRAME_spell2,	NULL, 0, 0, 0, ai_charge, 0, insectSpell},
@@ -381,12 +381,12 @@ static animframe_t insect_frames_spell [] =
 	{FRAME_spell7,	NULL, 0, 0, 0, ai_charge, 0, NULL},//check for loop?
 	{FRAME_spell8,	NULL, 0, 0, 0, ai_charge, 0, NULL}
 };
-animmove_t insect_move_spell = {8, insect_frames_spell, insect_pause};
+mmove_t insect_move_spell = {8, insect_frames_spell, insect_pause};
 */
 /*----------------------------------------------------------------------
   insect Walking - insect walking
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_walk [] =
+static mframe_t insect_frames_walk [] =
 {
 	{FRAME_Walk1,	NULL, 0, 0, 0, ai_walk, 6, insectgrowl},
 	{FRAME_Walk2,	NULL, 0, 0, 0, ai_walk, 6, NULL},
@@ -409,14 +409,14 @@ static animframe_t insect_frames_walk [] =
 	{FRAME_Walk19,	NULL, 0, 0, 0, ai_walk, 6, NULL},
 	{FRAME_Walk20,	NULL, 0, 0, 0, ai_walk, 6, NULL}
 };
-animmove_t insect_move_walk = {20, insect_frames_walk, insect_pause};
+mmove_t insect_move_walk = {20, insect_frames_walk, insect_pause};
 
 /*
 
   Insect standing by- not thinking, just waiting for a door or plat or something
 
 */
-static animframe_t insect_frames_delay [] =
+static mframe_t insect_frames_delay [] =
 {
 	{FRAME_idle1, NULL, 0, 0, 0, NULL, 0, insect_pause},
 	{FRAME_idle2, NULL, 0, 0, 0, NULL, 0, insect_pause},
@@ -469,7 +469,7 @@ static animframe_t insect_frames_delay [] =
 	{FRAME_idle49, NULL, 0, 0, 0,  NULL, 0, insect_pause},
 	{FRAME_idle50, NULL, 0, 0, 0,  NULL, 0, insect_pause}
 };
-animmove_t insect_delay = {50 , insect_frames_delay, insect_pause};
+mmove_t insect_delay = {50 , insect_frames_delay, insect_pause};
 
 
 
@@ -480,7 +480,7 @@ animmove_t insect_delay = {50 , insect_frames_delay, insect_pause};
 //
   insect
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_action1 [] =
+static mframe_t insect_frames_c_action1 [] =
 {
 	{FRAME_ts_lean2talk1,	ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_ts_lean2talk2,	ai_c_move, 4, 0, 0, NULL, 0, NULL},
@@ -492,13 +492,13 @@ static animframe_t insect_frames_c_action1 [] =
 	{FRAME_ts_lean2talk8,	ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_ts_lean2talk9,	ai_c_move, 4, 0, 0, NULL, 0, NULL},
 };
-animmove_t insect_move_c_action1 = {9, insect_frames_c_action1, ai_c_cycleend};
+mmove_t insect_move_c_action1 = {9, insect_frames_c_action1, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   insect
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_action2 [] =
+static mframe_t insect_frames_c_action2 [] =
 {
 	{FRAME_ts_listen1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_listen2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -561,13 +561,13 @@ static animframe_t insect_frames_c_action2 [] =
 	{FRAME_ts_listen59, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_listen60, ai_c_move, 0, 0, 0,  NULL, 0, NULL}
 };
-animmove_t insect_move_c_action2 = { 60, insect_frames_c_action2, ai_c_cycleend};
+mmove_t insect_move_c_action2 = { 60, insect_frames_c_action2, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   insect
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_action3 [] =
+static mframe_t insect_frames_c_action3 [] =
 {
 	{FRAME_ts_spear1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_spear2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -580,13 +580,13 @@ static animframe_t insect_frames_c_action3 [] =
 	{FRAME_ts_spear9, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_spear10, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t insect_move_c_action3 = { 10, insect_frames_c_action3, ai_c_cycleend};
+mmove_t insect_move_c_action3 = { 10, insect_frames_c_action3, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   insect
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_action4 [] =
+static mframe_t insect_frames_c_action4 [] =
 {
 	{FRAME_ts_talk1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_talk2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -649,13 +649,13 @@ static animframe_t insect_frames_c_action4 [] =
 	{FRAME_ts_talk59, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_talk60, ai_c_move, 0, 0, 0,  NULL, 0, NULL}
 };
-animmove_t insect_move_c_action4 = { 60, insect_frames_c_action4, ai_c_cycleend};
+mmove_t insect_move_c_action4 = { 60, insect_frames_c_action4, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   insect standing around
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_idle1 [] =
+static mframe_t insect_frames_c_idle1 [] =
 {
 	{FRAME_idle1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idle2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -708,24 +708,24 @@ static animframe_t insect_frames_c_idle1 [] =
 	{FRAME_idle49, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_idle50, ai_c_move, 0, 0, 0,  NULL, 0, NULL}
 };
-animmove_t insect_move_c_idle1 = { 50, insect_frames_c_idle1, ai_c_cycleend};
+mmove_t insect_move_c_idle1 = { 50, insect_frames_c_idle1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   insect standing around
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_idle2 [] =
+static mframe_t insect_frames_c_idle2 [] =
 {
 	{FRAME_ts_rdy2idle1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_rdy2idle2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_rdy2idle3, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_rdy2idle4, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t insect_move_c_idle2 = { 4, insect_frames_c_idle2, ai_c_cycleend};
+mmove_t insect_move_c_idle2 = { 4, insect_frames_c_idle2, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   insect standing around
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_idle3 [] =
+static mframe_t insect_frames_c_idle3 [] =
 {
 	{FRAME_ts_idle1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_idle2, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -788,12 +788,12 @@ static animframe_t insect_frames_c_idle3 [] =
 	{FRAME_ts_idle59, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_ts_idle60, ai_c_move, 0, 0, 0,  NULL, 0, NULL}
 };
-animmove_t insect_move_c_idle3 = { 60, insect_frames_c_idle3, ai_c_cycleend};
+mmove_t insect_move_c_idle3 = { 60, insect_frames_c_idle3, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   insect Running - insect running
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_run [] =
+static mframe_t insect_frames_c_run [] =
 {
 	{FRAME_Run1,	ai_c_move, 12, 0, 0, NULL, 0, NULL},
 	{FRAME_Run2,	ai_c_move, 13, 0, 0, NULL, 0, NULL},
@@ -806,13 +806,13 @@ static animframe_t insect_frames_c_run [] =
 	{FRAME_Run9,	ai_c_move, 14, 0, 0, NULL, 0, NULL},
 	{FRAME_Run10, ai_c_move, 14, 0, 0, NULL, 0, NULL}
 };
-animmove_t insect_move_c_run = {10, insect_frames_c_run, ai_c_cycleend};
+mmove_t insect_move_c_run = {10, insect_frames_c_run, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   insect spear - insect attacking
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_attack1 [] =
+static mframe_t insect_frames_c_attack1 [] =
 {
 	{FRAME_SpearB1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_SpearB2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -826,13 +826,13 @@ static animframe_t insect_frames_c_attack1 [] =
 	{FRAME_SpearB10,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_SpearB11,	ai_c_move, 0, 0, 0, NULL, 0, NULL}
 };
-animmove_t insect_move_c_attack1 = {11, insect_frames_c_attack1, ai_c_cycleend};
+mmove_t insect_move_c_attack1 = {11, insect_frames_c_attack1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   insect spell - insect attacking
 -----------------------------------------------------------------------*/
 
-static animframe_t insect_frames_c_attack2 [] =
+static mframe_t insect_frames_c_attack2 [] =
 {
 	{FRAME_spell1,	ai_c_move, 0, 0, 0, NULL, TC_SPL_GLOW, NULL},
 	{FRAME_spell2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -852,13 +852,13 @@ static animframe_t insect_frames_c_attack2 [] =
 	{FRAME_spell16,	ai_c_move, 0, 0, 0, NULL, 0, NULL}, //check for loop?
 	{FRAME_spell17,	ai_c_move, 0, 0, 0, NULL, 0, NULL}
 };
-animmove_t insect_move_c_attack2 = {17, insect_frames_c_attack2, ai_c_cycleend};
+mmove_t insect_move_c_attack2 = {17, insect_frames_c_attack2, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   insect sword - insect attacking
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_attack3 [] =
+static mframe_t insect_frames_c_attack3 [] =
 {
 	{FRAME_sword1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_sword2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -870,12 +870,12 @@ static animframe_t insect_frames_c_attack3 [] =
 	{FRAME_sword8,	ai_c_move, 0, 0, 0, NULL, 1, NULL},
 	{FRAME_sword9,	ai_c_move, 0, 0, 0, NULL, 0, NULL} // check for loop
 };
-animmove_t insect_move_c_attack3 = {9, insect_frames_c_attack3, ai_c_cycleend};
+mmove_t insect_move_c_attack3 = {9, insect_frames_c_attack3, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   insect backpedalling
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_backpedal [] =
+static mframe_t insect_frames_c_backpedal [] =
 {
 	{FRAME_backpeddle1,	ai_c_move, -10, 0, 0, NULL, 0, NULL},
 	{FRAME_backpeddle2,	ai_c_move, -12, 0, 0, NULL, 0, NULL},
@@ -888,13 +888,13 @@ static animframe_t insect_frames_c_backpedal [] =
 	{FRAME_backpeddle9,	ai_c_move, -10, 0, 0, NULL, 0, NULL},
 	{FRAME_backpeddle10,	ai_c_move, -12, 0, 0, NULL, 0, NULL},
 };
-animmove_t insect_move_c_backpedal = {10, insect_frames_c_backpedal, ai_c_cycleend};
+mmove_t insect_move_c_backpedal = {10, insect_frames_c_backpedal, ai_c_cycleend};
 
 
 /*-------------------------------------------------------------------------
 	insect_frames_death1
 -------------------------------------------------------------------------*/
-static animframe_t insect_frames_c_death1 [] =
+static mframe_t insect_frames_c_death1 [] =
 {//takes a couple steps back.. may clip!!!
 	{FRAME_deathfr1, ai_c_move, -24, 0, 0, NULL, 0, insectdeathsqueal},
 	{FRAME_deathfr2, ai_c_move, -18, 0, 0, NULL, 0, NULL},
@@ -919,12 +919,12 @@ static animframe_t insect_frames_c_death1 [] =
 	{FRAME_deathfr21, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deathfr22, insect_sound, CHAN_BODY, SND_THUD, ATTN_NORM, NULL, 0, NULL},
 };
-animmove_t insect_move_c_death1 = {22, insect_frames_c_death1, insect_c_reallydead};
+mmove_t insect_move_c_death1 = {22, insect_frames_c_death1, insect_c_reallydead};
 
 /*----------------------------------------------------------------------
   insect Pain - insect gets hit
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_pain1 [] =
+static mframe_t insect_frames_c_pain1 [] =
 {
 	{FRAME_paina1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_paina2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -934,13 +934,13 @@ static animframe_t insect_frames_c_pain1 [] =
 	{FRAME_paina6,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_paina7,	ai_c_move, 0, 0, 0, NULL, 0, NULL}
 };
-animmove_t insect_move_c_pain1 = {7, insect_frames_c_pain1, ai_c_cycleend};
+mmove_t insect_move_c_pain1 = {7, insect_frames_c_pain1, ai_c_cycleend};
 
 
 /*----------------------------------------------------------------------
   insect Walking - insect walking
 -----------------------------------------------------------------------*/
-static animframe_t insect_frames_c_walk [] =
+static mframe_t insect_frames_c_walk [] =
 {
 	{FRAME_Walk1,	ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_Walk2,	ai_c_move, 4, 0, 0, NULL, 0, NULL},
@@ -963,4 +963,4 @@ static animframe_t insect_frames_c_walk [] =
 	{FRAME_Walk19,	ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_Walk20,	ai_c_move, 4, 0, 0, NULL, 0, NULL}
 };
-animmove_t insect_move_c_walk = {20, insect_frames_c_walk, ai_c_cycleend};
+mmove_t insect_move_c_walk = {20, insect_frames_c_walk, ai_c_cycleend};

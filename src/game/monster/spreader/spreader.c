@@ -50,7 +50,7 @@
 /*---------------------------------------------------------------
 	spreader Base Info
 ---------------------------------------------------------------*/
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&spreader_move_attack1,
 	&spreader_move_attack2,

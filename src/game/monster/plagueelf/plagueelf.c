@@ -46,7 +46,7 @@
 /*----------------------------------------------------------------------
   plagueElf Base Info
 -----------------------------------------------------------------------*/
-static animmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[ NUM_ANIMS] =
 {
 	&plagueElf_move_stand1,
 	&plagueElf_move_walk1,

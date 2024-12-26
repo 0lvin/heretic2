@@ -24,18 +24,18 @@ typedef enum AnimID_e
 
 void MG_InitMoods(edict_t *self);
 
-extern animmove_t corvus2_move_c_action1;
-extern animmove_t corvus2_move_c_idle1;
-extern animmove_t corvus2_move_c_idle2;
-extern animmove_t corvus2_move_c_idle3;
-extern animmove_t corvus2_move_c_walkstart;
-extern animmove_t corvus2_move_c_walk1;
-extern animmove_t corvus2_move_c_walk2;
-extern animmove_t corvus2_move_c_walkstop1;
-extern animmove_t corvus2_move_c_walkstop2;
-extern animmove_t corvus2_move_c_pivotleftgo;
-extern animmove_t corvus2_move_c_pivotleft;
-extern animmove_t corvus2_move_c_pivotleftstop;
-extern animmove_t corvus2_move_c_pivotrightgo;
-extern animmove_t corvus2_move_c_pivotright;
-extern animmove_t corvus2_move_c_pivotrightstop;
+extern mmove_t corvus2_move_c_action1;
+extern mmove_t corvus2_move_c_idle1;
+extern mmove_t corvus2_move_c_idle2;
+extern mmove_t corvus2_move_c_idle3;
+extern mmove_t corvus2_move_c_walkstart;
+extern mmove_t corvus2_move_c_walk1;
+extern mmove_t corvus2_move_c_walk2;
+extern mmove_t corvus2_move_c_walkstop1;
+extern mmove_t corvus2_move_c_walkstop2;
+extern mmove_t corvus2_move_c_pivotleftgo;
+extern mmove_t corvus2_move_c_pivotleft;
+extern mmove_t corvus2_move_c_pivotleftstop;
+extern mmove_t corvus2_move_c_pivotrightgo;
+extern mmove_t corvus2_move_c_pivotright;
+extern mmove_t corvus2_move_c_pivotrightstop;

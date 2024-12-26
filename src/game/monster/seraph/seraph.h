@@ -60,7 +60,7 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t	seraph_move_walk1,
+extern mmove_t	seraph_move_walk1,
 					seraph_move_walk2,
 					seraph_move_whip1,
 					seraph_move_whip1_loop,

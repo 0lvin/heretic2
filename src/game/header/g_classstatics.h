@@ -93,7 +93,7 @@ typedef enum ClassID_e
 typedef struct ClassResourceInfo_s
 {
 	int		numAnims;
-	animmove_t **animations;
+	mmove_t **animations;
 	int		modelIndex;
 	int		numSounds;
 	int		*sounds;

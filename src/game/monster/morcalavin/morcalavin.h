@@ -78,7 +78,7 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t morcalavin_move_float,
+extern mmove_t morcalavin_move_float,
 					morcalavin_move_hurtidle,
 					morcalavin_move_attack1,
 					morcalavin_move_attack2,

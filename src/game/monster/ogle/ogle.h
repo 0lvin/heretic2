@@ -118,7 +118,7 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t	ogle_move_walk1,
+extern mmove_t	ogle_move_walk1,
 					ogle_move_push1,
 					ogle_move_push2,
 					ogle_move_push3,

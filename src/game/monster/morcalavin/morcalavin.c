@@ -49,7 +49,7 @@ enum {
 	HPLIGHTNING_BOLT,
 };
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&morcalavin_move_float,
 	&morcalavin_move_hurtidle,

@@ -68,7 +68,7 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t	priestess_move_stand1,
+extern mmove_t	priestess_move_stand1,
 					priestess_move_attack1_go,
 					priestess_move_attack1_loop,
 					priestess_move_attack1_end,

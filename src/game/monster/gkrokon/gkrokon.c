@@ -24,7 +24,7 @@
 static int sounds[NUM_SOUNDS];
 static ClassResourceInfo_t resInfo;
 
-static animmove_t *Animations[NUM_ANIMS] =
+static mmove_t *Animations[NUM_ANIMS] =
 {
 	&GkrokonMoveStand1,
 	&GkrokonMoveStand2,

@@ -25,19 +25,19 @@ typedef enum AnimID_e
 
 void MG_InitMoods(edict_t *self);
 
-extern animmove_t corvus9_move_c_action1;
-extern animmove_t corvus9_move_c_action2;
-extern animmove_t corvus9_move_c_action3;
-extern animmove_t corvus9_move_c_action4;
-extern animmove_t corvus9_move_c_action5;
-extern animmove_t corvus9_move_c_action6;
-extern animmove_t corvus9_move_c_action7;
-extern animmove_t corvus9_move_c_action8;
-extern animmove_t corvus9_move_c_action9;
-extern animmove_t corvus9_move_c_action10;
-extern animmove_t corvus9_move_c_action11;
-extern animmove_t corvus9_move_c_idle1;
-extern animmove_t corvus9_move_c_idle2;
-extern animmove_t corvus9_move_c_idle3;
-extern animmove_t corvus9_move_c_walk1;
-extern animmove_t corvus9_move_c_walk2;
+extern mmove_t corvus9_move_c_action1;
+extern mmove_t corvus9_move_c_action2;
+extern mmove_t corvus9_move_c_action3;
+extern mmove_t corvus9_move_c_action4;
+extern mmove_t corvus9_move_c_action5;
+extern mmove_t corvus9_move_c_action6;
+extern mmove_t corvus9_move_c_action7;
+extern mmove_t corvus9_move_c_action8;
+extern mmove_t corvus9_move_c_action9;
+extern mmove_t corvus9_move_c_action10;
+extern mmove_t corvus9_move_c_action11;
+extern mmove_t corvus9_move_c_idle1;
+extern mmove_t corvus9_move_c_idle2;
+extern mmove_t corvus9_move_c_idle3;
+extern mmove_t corvus9_move_c_walk1;
+extern mmove_t corvus9_move_c_walk2;

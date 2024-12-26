@@ -61,7 +61,7 @@ void ai_runaway (edict_t *self, float dist);
   Rat Base Info
 -----------------------------------------------------------------------*/
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&rat_move_eat1,
 	&rat_move_eat2,

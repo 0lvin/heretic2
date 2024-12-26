@@ -22,7 +22,7 @@ Copyright 1998 Raven Software
 /*----------------------------------------------------------------------
   Corvus1 Base Info
 -----------------------------------------------------------------------*/
-static animmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[ NUM_ANIMS] =
 {
 	// Cinematics
 	&corvus_move_c_action1,

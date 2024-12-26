@@ -11,7 +11,7 @@
 /*----------------------------------------------------
 imp dying 1
 ----------------------------------------------------*/
-static animframe_t imp_frames_die1[] =
+static mframe_t imp_frames_die1[] =
 {
 	{FRAME_death1, NULL, 0, 0, 0, NULL, 0, imp_fix_angles},
 	{FRAME_death2, NULL, 0, 0, 0, NULL, 0, imp_fix_angles},
@@ -28,12 +28,12 @@ static animframe_t imp_frames_die1[] =
 	{FRAME_death13, NULL, 0, 0, 0, NULL, 0, imp_fix_angles},
 	{FRAME_death14, NULL, 0, 0, 0, NULL, 0, imp_fix_angles},
 };
-animmove_t imp_move_die1 = {14,imp_frames_die1, imp_dead};
+mmove_t imp_move_die1 = {14,imp_frames_die1, imp_dead};
 
 /*----------------------------------------------------
 imp flying 1
 ----------------------------------------------------*/
-static animframe_t imp_frames_fly1[] =
+static mframe_t imp_frames_fly1[] =
 {
 	{FRAME_impfly1, imp_ai_fly, 32, 0, 0, NULL, 15, imp_flap_noise},
 	{FRAME_impfly2, imp_ai_fly, 32, 0, 0, NULL, 15, move_imp_fly},
@@ -56,12 +56,12 @@ static animframe_t imp_frames_fly1[] =
 	{FRAME_impfly18, imp_ai_fly, 24, 0, 0, NULL, 15, move_imp_fly},
 	{FRAME_impfly20, imp_ai_fly, 26, 0, 0, NULL, 15, move_imp_fly},
 };
-animmove_t imp_move_fly1 = {20, imp_frames_fly1, imp_pause};
+mmove_t imp_move_fly1 = {20, imp_frames_fly1, imp_pause};
 
 /*------------------------------------------------------
 imp flying backwards 1
 ------------------------------------------------------*/
-static animframe_t imp_frames_flyback[] =
+static mframe_t imp_frames_flyback[] =
 {
 	{FRAME_impfly1, imp_ai_fly, -16, 0, 8, NULL, 0, imp_flap_noise},
 	{FRAME_impfly2, imp_ai_fly, -32, 0, 32, NULL, 0, move_imp_fly},
@@ -84,13 +84,13 @@ static animframe_t imp_frames_flyback[] =
 	{FRAME_impfly19, imp_ai_fly, -26, 0, 27, NULL, 0, move_imp_fly},
 	{FRAME_impfly20, imp_ai_fly, -24, 0, 24, NULL, 0, move_imp_fly},
 };
-animmove_t imp_move_flyback = { 20, imp_frames_flyback, imp_pause};
+mmove_t imp_move_flyback = { 20, imp_frames_flyback, imp_pause};
 
 
 /*------------------------------------------------------
 imp hit from swoop
 ------------------------------------------------------*/
-static animframe_t imp_frames_dive_end[] =
+static mframe_t imp_frames_dive_end[] =
 {
 	{FRAME_swpend1, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise},
 	{FRAME_swpend2, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly},
@@ -108,12 +108,12 @@ static animframe_t imp_frames_dive_end[] =
 	{FRAME_swpend14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly},
 	{FRAME_swpend15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly},
 };
-animmove_t imp_move_dive_end = { 15, imp_frames_dive_end, imp_flyback};
+mmove_t imp_move_dive_end = { 15, imp_frames_dive_end, imp_flyback};
 
 /*------------------------------------------------------
 imp hit from swoop
 ------------------------------------------------------*/
-static animframe_t imp_frames_dive_out[] =
+static mframe_t imp_frames_dive_out[] =
 {
 	{FRAME_swpout1, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise},
 	{FRAME_swpout2, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly},
@@ -131,12 +131,12 @@ static animframe_t imp_frames_dive_out[] =
 	{FRAME_swpout14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly},
 	{FRAME_swpout15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly},
 };
-animmove_t imp_move_dive_out = { 15, imp_frames_dive_out, imp_flyback};
+mmove_t imp_move_dive_out = { 15, imp_frames_dive_out, imp_flyback};
 
 /*-------------------------------------------------------
 imp hovering
 -------------------------------------------------------*/
-static animframe_t imp_frames_hover1[] =
+static mframe_t imp_frames_hover1[] =
 {
 	{FRAME_impfly1, NULL, 0, 0, 0, imp_ai_hover, 2, imp_flap_noise},
 	{FRAME_impfly2, NULL, 0, 0, 0, imp_ai_hover, 2, imp_check_dodge},
@@ -159,9 +159,9 @@ static animframe_t imp_frames_hover1[] =
 	{FRAME_impfly19, NULL, 0, 0, 0, imp_ai_hover, 2, NULL},
 	{FRAME_impfly20, NULL, 0, 0, 0, imp_ai_hover, 2, imp_check_dodge},
 };
-animmove_t imp_move_hover1 = {20, imp_frames_hover1, move_imp_hover};
+mmove_t imp_move_hover1 = {20, imp_frames_hover1, move_imp_hover};
 
-static animframe_t imp_frames_tumble[] =
+static mframe_t imp_frames_tumble[] =
 {
 	{FRAME_impfly1, NULL, 0, 0, 0, imp_ai_hover, 2, move_imp_tumble},
 	{FRAME_impfly2, NULL, 0, 0, 0, imp_ai_hover, 2, move_imp_tumble},
@@ -184,12 +184,12 @@ static animframe_t imp_frames_tumble[] =
 	{FRAME_impfly19, NULL, 0, 0, 0, imp_ai_hover, 2, move_imp_tumble},
 	{FRAME_impfly20, NULL, 0, 0, 0, imp_ai_hover, 2, move_imp_tumble},
 };
-animmove_t imp_move_tumble = {20, imp_frames_tumble, NULL};
+mmove_t imp_move_tumble = {20, imp_frames_tumble, NULL};
 
 /*-------------------------------------------------------
 imp firing fireball
 -------------------------------------------------------*/
-static animframe_t imp_frames_fireball[] =
+static mframe_t imp_frames_fireball[] =
 {
 	{FRAME_impfir1, NULL, 0, 0, 0, imp_ai_hover, 2, imp_flap_noise},
 	{FRAME_impfir2, NULL, 0, 0, 0, imp_ai_hover, 1, NULL},
@@ -215,13 +215,13 @@ static animframe_t imp_frames_fireball[] =
 	{FRAME_impfir20, NULL, 0, 0, 0, imp_ai_hover, 1, NULL},
 	{FRAME_impfir21, NULL, 0, 0, 0, imp_ai_hover, -1, NULL},
 };
-animmove_t imp_move_fireball = {21, imp_frames_fireball, move_imp_hover};
+mmove_t imp_move_fireball = {21, imp_frames_fireball, move_imp_hover};
 
 
 /*-------------------------------------------------------
 imp diving and attacking
 -------------------------------------------------------*/
-static animframe_t imp_frames_dive_go[] =
+static mframe_t imp_frames_dive_go[] =
 {
 	{FRAME_swoop1, NULL, 0, 0, 0, NULL, 0, imp_dive_noise},
 	{FRAME_swoop2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -244,9 +244,9 @@ static animframe_t imp_frames_dive_go[] =
 	{FRAME_swoop19, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive},
 	{FRAME_swoop20, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive},
 };
-animmove_t imp_move_dive_go = {6, imp_frames_dive_go, imp_dive_loop};
+mmove_t imp_move_dive_go = {6, imp_frames_dive_go, imp_dive_loop};
 
-static animframe_t imp_frames_dive_loop[] =
+static mframe_t imp_frames_dive_loop[] =
 {
 	{FRAME_swpcyc1, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive},
 	{FRAME_swpcyc2, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive},
@@ -273,12 +273,12 @@ static animframe_t imp_frames_dive_loop[] =
 	{FRAME_swpcyc3, NULL, 0, 0, 0, imp_hit, 0, move_imp_dive},
 	{FRAME_swpcyc4, NULL, 0, 0, 0, imp_hit, true, move_imp_dive},
 };
-animmove_t imp_move_dive_loop = {24, imp_frames_dive_loop, NULL};
+mmove_t imp_move_dive_loop = {24, imp_frames_dive_loop, NULL};
 
 /*-------------------------------------------------------
 imp pain
 -------------------------------------------------------*/
-static animframe_t imp_frames_pain1 [] =
+static mframe_t imp_frames_pain1 [] =
 {
 	{FRAME_death1, NULL, 0, 0, 0, NULL, 2, move_imp_hover},
 	{FRAME_death2, NULL, 0, 0, 0, NULL, 1, move_imp_hover},
@@ -286,10 +286,10 @@ static animframe_t imp_frames_pain1 [] =
 	{FRAME_death2, NULL, 0, 0, 0, NULL, -2, move_imp_hover},
 	{FRAME_death1, NULL, 0, 0, 0, NULL, -2, move_imp_hover},
 };
-animmove_t imp_move_pain1 = { 5, imp_frames_pain1, imp_pause};
+mmove_t imp_move_pain1 = { 5, imp_frames_pain1, imp_pause};
 
 //perch
-static animframe_t imp_frames_perch[] =
+static mframe_t imp_frames_perch[] =
 {
 	{FRAME_impwat1  	, NULL, 0, 0, 0, NULL, 0, imp_ai_pirch},
 	{FRAME_impwat2  	, NULL, 0, 0, 0, NULL, 0, imp_ai_pirch},
@@ -316,9 +316,9 @@ static animframe_t imp_frames_perch[] =
 	{FRAME_impwat23 	, NULL, 0, 0, 0, NULL, 0, imp_ai_pirch},
 	{FRAME_impwat24 	, NULL, 0, 0, 0, NULL, 0, imp_ai_pirch},
 };
-animmove_t imp_move_perch = { 24, imp_frames_perch, NULL};
+mmove_t imp_move_perch = { 24, imp_frames_perch, NULL};
 
-animframe_t	imp_frames_takeoff [] =
+mframe_t	imp_frames_takeoff [] =
 {
 	{FRAME_impup1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_impup2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -344,9 +344,9 @@ animframe_t	imp_frames_takeoff [] =
 	{FRAME_impup22, imp_ai_fly, -8, 0, 16, NULL, 0, NULL},
 	{FRAME_impup23, imp_ai_fly, -16, 0, 32, NULL, 0, NULL},
 };
-animmove_t imp_move_takeoff = { 23, imp_frames_takeoff, imp_pause};
+mmove_t imp_move_takeoff = { 23, imp_frames_takeoff, imp_pause};
 
-static animframe_t imp_frames_dup[] =
+static mframe_t imp_frames_dup[] =
 {
 	{FRAME_swpend6, imp_ai_fly, -36, 0, 24, NULL, 0, move_imp_fly},
 	{FRAME_swpend7, imp_ai_fly, -32, 0, 16, NULL, 0, imp_flap_noise},
@@ -359,9 +359,9 @@ static animframe_t imp_frames_dup[] =
 	{FRAME_swpend14, imp_ai_fly, -64, 0, 64, NULL, 0, move_imp_fly},
 	{FRAME_swpend15, imp_ai_fly, -52, 0, 54, NULL, 0, move_imp_fly},
 };
-animmove_t imp_move_dup = { 10, imp_frames_dup, imp_pause};
+mmove_t imp_move_dup = { 10, imp_frames_dup, imp_pause};
 
-static animframe_t imp_frames_ddown[] =
+static mframe_t imp_frames_ddown[] =
 {
 	{FRAME_swoop1, NULL, 0, 0, 0, NULL, 0, imp_dive_noise},
 	{FRAME_swoop2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -379,4 +379,4 @@ static animframe_t imp_frames_ddown[] =
 	{FRAME_swpout12, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_swpout15, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t imp_move_ddown = {15, imp_frames_ddown , imp_pause};
+mmove_t imp_move_ddown = {15, imp_frames_ddown , imp_pause};

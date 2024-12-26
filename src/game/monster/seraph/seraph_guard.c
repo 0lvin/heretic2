@@ -27,7 +27,7 @@
 
 void MG_InitMoods(edict_t *self);
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&seraph_guard_move_stand,
 	&seraph_guard_move_run,

@@ -408,7 +408,7 @@ void spreader_mist_fast(edict_t *self, float x, float y, float z)
 	spreader_toss_grenade -- this is where the grenade actually gets to
 	come to life and become; sorry about the confusion between this and
 	spreader_throw().  This is a "think func" for the
-	spreader_move_attack1 animmove_t
+	spreader_move_attack1 mmove_t
 -------------------------------------------------------------------------*/
 void spreader_toss_grenade(edict_t *self) //self is the tosser
 {

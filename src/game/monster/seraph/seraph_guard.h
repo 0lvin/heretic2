@@ -47,7 +47,7 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t	seraph_guard_move_stand,
+extern mmove_t	seraph_guard_move_stand,
 					seraph_guard_move_run,
 					seraph_guard_move_fjump,
 					seraph_guard_move_runmelee,

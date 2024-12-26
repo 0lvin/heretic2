@@ -48,7 +48,7 @@ void fish_think(edict_t *self);
 /*----------------------------------------------------------------------
   Fish Base Info
 -----------------------------------------------------------------------*/
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&fish_move_bite,
 	&fish_move_melee,

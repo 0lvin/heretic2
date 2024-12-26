@@ -80,7 +80,7 @@ int MESH_for_hitloc [hl_harpy_max] =
 	MESH_RLARM//hl_rightlowerleg
 };
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&harpy_move_die1,
 	&harpy_move_fly1,

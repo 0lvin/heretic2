@@ -16,7 +16,7 @@
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static animframe_t ssithra_frames_c_action1 [] =
+static mframe_t ssithra_frames_c_action1 [] =
 {
 	{FRAME_rackpain1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_rackpain2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -39,12 +39,12 @@ static animframe_t ssithra_frames_c_action1 [] =
 	{FRAME_rackpain19,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_rackpain20,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t victimSsithra_move_c_action1 = {20, ssithra_frames_c_action1, ai_c_cycleend};
+mmove_t victimSsithra_move_c_action1 = {20, ssithra_frames_c_action1, ai_c_cycleend};
 
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static animframe_t ssithra_frames_c_action2 [] =
+static mframe_t ssithra_frames_c_action2 [] =
 {
 	{FRAME_release1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_release2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -70,12 +70,12 @@ static animframe_t ssithra_frames_c_action2 [] =
 	{FRAME_release22,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_release23,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t victimSsithra_move_c_action2 = {23, ssithra_frames_c_action2, ai_c_cycleend};
+mmove_t victimSsithra_move_c_action2 = {23, ssithra_frames_c_action2, ai_c_cycleend};
 
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static animframe_t ssithra_frames_c_action3 [] =
+static mframe_t ssithra_frames_c_action3 [] =
 {
 	{FRAME_recover1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_recover2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -111,12 +111,12 @@ static animframe_t ssithra_frames_c_action3 [] =
 	{FRAME_recover32,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_recover33,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t victimSsithra_move_c_action3 = {33, ssithra_frames_c_action3, ai_c_cycleend};
+mmove_t victimSsithra_move_c_action3 = {33, ssithra_frames_c_action3, ai_c_cycleend};
 
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static animframe_t ssithra_frames_c_action4 [] =
+static mframe_t ssithra_frames_c_action4 [] =
 {
 	{FRAME_tv_toolate1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_tv_toolate2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -275,13 +275,13 @@ static animframe_t ssithra_frames_c_action4 [] =
 	{FRAME_tv_toolate141,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_tv_toolate142,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t victimSsithra_move_c_action4 = {142, ssithra_frames_c_action4, ai_c_cycleend};
+mmove_t victimSsithra_move_c_action4 = {142, ssithra_frames_c_action4, ai_c_cycleend};
 
 
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static animframe_t ssithra_frames_c_action5 [110] =
+static mframe_t ssithra_frames_c_action5 [110] =
 {
 	{FRAME_tv_itwillA1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_tv_itwillA2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -394,12 +394,12 @@ static animframe_t ssithra_frames_c_action5 [110] =
 	{FRAME_tv_itwillA109,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_tv_itwillA110,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t victimSsithra_move_c_action5 = {110, ssithra_frames_c_action5, ai_c_cycleend};
+mmove_t victimSsithra_move_c_action5 = {110, ssithra_frames_c_action5, ai_c_cycleend};
 
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static animframe_t ssithra_frames_c_action6 [129] =
+static mframe_t ssithra_frames_c_action6 [129] =
 {
 	{FRAME_tv_itwillB1,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_tv_itwillB2,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -531,4 +531,4 @@ static animframe_t ssithra_frames_c_action6 [129] =
 	{FRAME_tv_itwillB128,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_tv_itwillB129,	ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t victimSsithra_move_c_action6 = {129, ssithra_frames_c_action6, ai_c_cycleend};
+mmove_t victimSsithra_move_c_action6 = {129, ssithra_frames_c_action6, ai_c_cycleend};

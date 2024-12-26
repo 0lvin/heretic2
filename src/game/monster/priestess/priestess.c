@@ -55,7 +55,7 @@ enum {
 	AS_JUMP_LEFT,
 } HighPriestessAttackStates_e;
 
-static animmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[NUM_ANIMS] =
 {
 	&priestess_move_stand1,
 	&priestess_move_attack1_go,

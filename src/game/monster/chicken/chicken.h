@@ -47,34 +47,34 @@ typedef enum SoundID_e
 	NUM_SOUNDS
 } SoundID_t;
 
-extern animmove_t chicken_move_stand1;
-extern animmove_t chicken_move_walk;
-extern animmove_t chicken_move_run;
-extern animmove_t chicken_move_cluck;
-extern animmove_t chicken_move_attack;
-extern animmove_t chicken_move_eat;
-extern animmove_t chicken_move_jump;
+extern mmove_t chicken_move_stand1;
+extern mmove_t chicken_move_walk;
+extern mmove_t chicken_move_run;
+extern mmove_t chicken_move_cluck;
+extern mmove_t chicken_move_attack;
+extern mmove_t chicken_move_eat;
+extern mmove_t chicken_move_jump;
 
 //Dummy anim to catch sequence leaks
-extern animmove_t chickenp_move_dummy;
+extern mmove_t chickenp_move_dummy;
 
-extern animmove_t chickenp_move_stand;
-extern animmove_t chickenp_move_stand1;
-extern animmove_t chickenp_move_stand2;
-extern animmove_t chickenp_move_walk;
-extern animmove_t chickenp_move_run;
-extern animmove_t chickenp_move_back;
-extern animmove_t chickenp_move_runb;
-extern animmove_t chickenp_move_bite;
-extern animmove_t chickenp_move_strafel;
-extern animmove_t chickenp_move_strafer;
-extern animmove_t chickenp_move_jump;
-extern animmove_t chickenp_move_wjump;
-extern animmove_t chickenp_move_wjumpb;
-extern animmove_t chickenp_move_rjump;
-extern animmove_t chickenp_move_rjumpb;
-extern animmove_t chickenp_move_jump_loop;
-extern animmove_t chickenp_move_attack;
+extern mmove_t chickenp_move_stand;
+extern mmove_t chickenp_move_stand1;
+extern mmove_t chickenp_move_stand2;
+extern mmove_t chickenp_move_walk;
+extern mmove_t chickenp_move_run;
+extern mmove_t chickenp_move_back;
+extern mmove_t chickenp_move_runb;
+extern mmove_t chickenp_move_bite;
+extern mmove_t chickenp_move_strafel;
+extern mmove_t chickenp_move_strafer;
+extern mmove_t chickenp_move_jump;
+extern mmove_t chickenp_move_wjump;
+extern mmove_t chickenp_move_wjumpb;
+extern mmove_t chickenp_move_rjump;
+extern mmove_t chickenp_move_rjumpb;
+extern mmove_t chickenp_move_jump_loop;
+extern mmove_t chickenp_move_attack;
 
 void chicken_stand(edict_t *self, G_Message_t *msg);
 void chicken_walk(edict_t *self, G_Message_t *msg);

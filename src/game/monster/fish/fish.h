@@ -40,17 +40,17 @@ typedef enum SoundID_e
 } SoundID_t;
 
 
-extern animmove_t fish_move_bite;
-extern animmove_t fish_move_melee;
-extern animmove_t fish_move_run1;
-extern animmove_t fish_move_run2;
-extern animmove_t fish_move_run3;
-extern animmove_t fish_move_walk1;
-extern animmove_t fish_move_walk2;
-extern animmove_t fish_move_walk3;
-extern animmove_t fish_move_stand1;
-extern animmove_t fish_move_pain1;
-extern animmove_t fish_move_death;
+extern mmove_t fish_move_bite;
+extern mmove_t fish_move_melee;
+extern mmove_t fish_move_run1;
+extern mmove_t fish_move_run2;
+extern mmove_t fish_move_run3;
+extern mmove_t fish_move_walk1;
+extern mmove_t fish_move_walk2;
+extern mmove_t fish_move_walk3;
+extern mmove_t fish_move_stand1;
+extern mmove_t fish_move_pain1;
+extern mmove_t fish_move_death;
 
 void fish_pain(edict_t *self, G_Message_t *msg);
 void fish_death(edict_t *self, G_Message_t *msg);

@@ -25,7 +25,7 @@
 /*----------------------------------------------------------------------
   Tome of Power
 -----------------------------------------------------------------------*/
-static animframe_t tome_frames_c_idle1 [] =
+static mframe_t tome_frames_c_idle1 [] =
 {
 	{FRAME_poly000, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_poly001, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
@@ -59,13 +59,13 @@ static animframe_t tome_frames_c_idle1 [] =
 	{FRAME_poly029, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 	{FRAME_poly030, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t tome_move_c_idle1 = {31, tome_frames_c_idle1, ai_c_cycleend};
+mmove_t tome_move_c_idle1 = {31, tome_frames_c_idle1, ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   Tome of Power
 -----------------------------------------------------------------------*/
-static animframe_t tome_frames_c_idle2 [] =
+static mframe_t tome_frames_c_idle2 [] =
 {
 	{FRAME_poly000, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
-animmove_t tome_move_c_idle2 = {1, tome_frames_c_idle2, ai_c_cycleend};
+mmove_t tome_move_c_idle2 = {1, tome_frames_c_idle2, ai_c_cycleend};

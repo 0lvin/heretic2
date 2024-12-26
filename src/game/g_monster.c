@@ -441,7 +441,7 @@ void M_droptofloor (edict_t *ent)
 extern qboolean MonsterAdvanceFrame;
 void M_MoveFrame (edict_t *self)
 {
-	animmove_t	*move;
+	mmove_t	*move;
 	int		index;
 
 	move = self->monsterinfo.currentmove;
@@ -504,7 +504,7 @@ void M_MoveFrame (edict_t *self)
 	index = self->monsterinfo.currframeindex;
 	self->s.frame = move->frame[index].framenum;
 
-	//this is consistent with the animmove_t in the monster anims.
+	//this is consistent with the mmove_t in the monster anims.
 	//currently all of the *real* movement happens in the
 	//"actionfunc" instead of the move func
 	if(!(self->monsterinfo.aiflags & AI_DONT_THINK))

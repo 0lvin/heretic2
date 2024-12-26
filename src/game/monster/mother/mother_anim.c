@@ -19,7 +19,7 @@ void mother_growl(edict_t *self);
 
 /*----------------------------------------------------------------------
 -----------------------------------------------------------------------*/
-static animframe_t mother_frames_pain [] =
+static mframe_t mother_frames_pain [] =
 {
 	{FRAME_pain001, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain003, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -32,11 +32,11 @@ static animframe_t mother_frames_pain [] =
 	{FRAME_pain017, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain019, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t mother_move_pain = {10, mother_frames_pain, mother_pause};
+mmove_t mother_move_pain = {10, mother_frames_pain, mother_pause};
 
 /*----------------------------------------------------------------------
 -----------------------------------------------------------------------*/
-static animframe_t mother_frames_stand [] =
+static mframe_t mother_frames_stand [] =
 {
 	{FRAME_poly000, NULL, 0, 0, 0, NULL, 0, mother_growl},
 	{FRAME_poly001, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -100,4 +100,4 @@ static animframe_t mother_frames_stand [] =
 	{FRAME_poly059, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_poly060, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-animmove_t mother_move_stand = {61, mother_frames_stand, mother_pause};
+mmove_t mother_move_stand = {61, mother_frames_stand, mother_pause};

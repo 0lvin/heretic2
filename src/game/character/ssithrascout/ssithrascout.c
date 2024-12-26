@@ -20,7 +20,7 @@
 /*----------------------------------------------------------------------
   victimSsithra Base Info
 -----------------------------------------------------------------------*/
-static animmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[ NUM_ANIMS] =
 {
 	&scout_move_c_action1,
 	&scout_move_c_action2,

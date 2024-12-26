@@ -16,10 +16,10 @@ typedef enum AnimID_e
 
 void MG_InitMoods(edict_t *self);
 
-extern animmove_t morcalavin_move_c_action1;
-extern animmove_t morcalavin_move_c_action2;
-extern animmove_t morcalavin_move_c_action3;
-extern animmove_t morcalavin_move_c_idle1;
-extern animmove_t morcalavin_move_c_idle2;
-extern animmove_t morcalavin_move_c_idle3;
-extern animmove_t morcalavin_move_c_idle4;
+extern mmove_t morcalavin_move_c_action1;
+extern mmove_t morcalavin_move_c_action2;
+extern mmove_t morcalavin_move_c_action3;
+extern mmove_t morcalavin_move_c_idle1;
+extern mmove_t morcalavin_move_c_idle2;
+extern mmove_t morcalavin_move_c_idle3;
+extern mmove_t morcalavin_move_c_idle4;
