@@ -423,6 +423,7 @@ InitGame(void)
 	g_itemsbobeffect = gi.cvar("g_itemsbobeffect", "0", CVAR_ARCHIVE);
 	g_game = gi.cvar("game", "", 0);
 	g_start_items = gi.cvar("g_start_items", "", 0);
+	ai_model_scale = gi.cvar("ai_model_scale", "0", 0);
 
 	sv_cinematicfreeze = gi.cvar("sv_cinematicfreeze", "0", 0);
 	sv_jumpcinematic = gi.cvar("sv_jumpcinematic", "0", 0);
@@ -608,7 +609,7 @@ static void
 WriteField1(FILE *f, field_t *field, byte *base)
 {
 	void *p;
-	int len;
+	size_t len;
 	int index;
 
 	if (field->flags & FFL_SPAWNTEMP)
@@ -688,7 +689,7 @@ WriteField1(FILE *f, field_t *field, byte *base)
 static void
 WriteField2(FILE *f, field_t *field, byte *base)
 {
-	int len;
+	size_t len;
 	void *p;
 
 	if (field->flags & FFL_SPAWNTEMP)

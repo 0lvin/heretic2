@@ -26,7 +26,8 @@
 
 #include "header/local.h"
 
-static YQ2_ALIGNAS_TYPE(int) byte mod_novis[MAX_MAP_LEAFS / 8];
+static byte *mod_novis = NULL;
+static size_t mod_novis_len = 0;
 
 static model_t mod_known[MAX_MOD_KNOWN];
 static int mod_numknown = 0;
@@ -65,15 +66,34 @@ Mod_HasFreeSpace(void)
 const byte *
 Mod_ClusterPVS(int cluster, const model_t *model)
 {
-	if ((cluster == -1) || !model->vis)
+	if (!mod_novis)
 	{
+		Com_Error(ERR_DROP, "%s: incrorrect init of PVS/PHS", __func__);
+	}
+
+	if (!model->vis)
+	{
+		Mod_DecompressVis(NULL, mod_novis, NULL,
+			(model->numclusters + 7) >> 3);
 		return mod_novis;
 	}
 
-	return Mod_DecompressVis((byte *)model->vis +
-			model->vis->bitofs[cluster][DVIS_PVS],
+	if (cluster == -1)
+	{
+		memset(mod_novis, 0, (model->numclusters + 7) >> 3);
+		return mod_novis;
+	}
+
+	if (cluster < 0 || cluster >= model->numvisibility)
+	{
+		Com_Error(ERR_DROP, "%s: bad cluster", __func__);
+	}
+
+	Mod_DecompressVis((byte *)model->vis +
+			model->vis->bitofs[cluster][DVIS_PVS], mod_novis,
 			(byte *)model->vis + model->numvisibility,
-			(model->vis->numclusters + 7) >> 3);
+			(model->numclusters + 7) >> 3);
+	return mod_novis;
 }
 
 void
@@ -117,7 +137,8 @@ void
 Mod_Init(void)
 {
 	mod_max = 0;
-	memset(mod_novis, 0xff, sizeof(mod_novis));
+	mod_novis = NULL;
+	mod_novis_len = 0;
 }
 
 static void
@@ -362,13 +383,28 @@ Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 	Mod_LoadVisibility(mod->name, &mod->vis, &mod->numvisibility, mod_base,
 		&header->lumps[LUMP_VISIBILITY]);
 	Mod_LoadQBSPLeafs(mod->name, &mod->leafs, &mod->numleafs,
-		mod->marksurfaces, mod->nummarksurfaces, mod_base,
-		&header->lumps[LUMP_LEAFS]);
+		mod->marksurfaces, mod->nummarksurfaces, &mod->numclusters,
+		mod_base, &header->lumps[LUMP_LEAFS]);
 	Mod_LoadQBSPNodes(mod->name, mod->planes, mod->numplanes, mod->leafs,
 		mod->numleafs, &mod->nodes, &mod->numnodes, mod_base,
 		&header->lumps[LUMP_NODES], header->ident);
 	Mod_LoadSubmodels(mod, mod_base, &header->lumps[LUMP_MODELS]);
 	mod->numframes = 2; /* regular and alternate animation */
+
+	if (mod->vis && mod->numclusters != mod->vis->numclusters)
+	{
+		Com_Error(ERR_DROP, "%s: Map %s has incorrect number of clusters %d != %d",
+			__func__, mod->name, mod->numclusters, mod->vis->numclusters);
+	}
+
+	if ((mod->numleafs > mod_novis_len) || !mod_novis)
+	{
+		/* reallocate buffers for PVS/PHS buffers*/
+		mod_novis_len = (mod->numleafs + 63) & ~63;
+		mod_novis = malloc(mod_novis_len / 8);
+		Com_Printf("Allocated " YQ2_COM_PRIdS " bit leafs of PVS/PHS buffer\n",
+			mod_novis_len);
+	}
 }
 
 /* Temporary solution, need to use load file dirrectly */
@@ -581,6 +617,14 @@ Mod_FreeAll(void)
 			Mod_Free(&mod_known[i]);
 		}
 	}
+
+	/* Free PVS buffer */
+	if (mod_novis)
+	{
+		free(mod_novis);
+		mod_novis = NULL;
+	}
+	mod_novis_len = 0;
 }
 
 /*

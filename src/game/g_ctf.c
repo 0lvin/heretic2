@@ -1600,6 +1600,7 @@ SetCTFStats(edict_t *ent)
 void
 SP_info_player_team1(edict_t *self)
 {
+	DynamicResetSpawnModels(self);
 }
 
 /*
@@ -1609,6 +1610,7 @@ SP_info_player_team1(edict_t *self)
 void
 SP_info_player_team2(edict_t *self)
 {
+	DynamicResetSpawnModels(self);
 }
 
 /*------------------------------------------------------------------------*/
@@ -2073,7 +2075,7 @@ CTFScoreboardMessage(edict_t *ent, edict_t *killer)
 {
 	char entry[1024];
 	char string[1400];
-	int len;
+	size_t len;
 	int i, j, k, n;
 	int sorted[2][MAX_CLIENTS];
 	int sortedscores[2][MAX_CLIENTS];

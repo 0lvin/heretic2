@@ -115,6 +115,7 @@ cvar_t *g_swap_speed;
 cvar_t *g_language;
 cvar_t *g_itemsbobeffect;
 cvar_t *g_start_items;
+cvar_t *ai_model_scale;
 cvar_t *g_game;
 
 cvar_t *advancedstaff;
@@ -364,6 +365,9 @@ ShutdownGame(void)
 
 	gi.FreeTags(TAG_LEVEL);
 	gi.FreeTags(TAG_GAME);
+
+	SpawnFree();
+	LocalizationFree();
 
 	P_Freelib();	// free the player lib
 }

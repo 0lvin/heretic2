@@ -31,7 +31,7 @@
 
 static int bitcounts[32]; /* just for protocol profiling */
 
-static char *svc_strings[256] = {
+static const char *svc_strings[256] = {
 	"svc_bad",
 
 	"svc_muzzleflash",
@@ -427,10 +427,10 @@ CL_DeltaEntity(frame_t *frame, int newnum, entity_xstate_t *old, int bits)
 static void
 CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 {
-	unsigned int newnum;
-	unsigned bits;
 	entity_xstate_t *oldstate = NULL;
 	int oldindex, oldnum;
+	unsigned int newnum;
+	unsigned bits;
 
 	newframe->parse_entities = cl.parse_entities;
 	newframe->num_entities = 0;
@@ -786,8 +786,8 @@ CL_FireEntityEvents(frame_t *frame)
 	}
 }
 
-void
-SHOWNET(char *s)
+static void
+SHOWNET(const char *s)
 {
 	if (cl_shownet->value >= 2)
 	{
@@ -1229,7 +1229,8 @@ CL_ParseClientinfo(int player)
 static void
 CL_ParseConfigString(void)
 {
-	int i, length;
+	size_t length;
+	int i;
 	char *s;
 	char olds[MAX_QPATH];
 

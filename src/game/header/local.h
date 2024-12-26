@@ -492,7 +492,8 @@ typedef struct
 	edict_t *disguise_violator;
 	int disguise_violation_framenum;
 
-	char *start_items;
+	char *start_items;             /* level start items */
+	float next_auto_save;          /* target_autosave */
 
 	float		far_clip_dist_f;
 	float		fog;
@@ -614,6 +615,9 @@ typedef struct
 	float fade_end_dist;
 	char *image;
 	unsigned rgba;
+	char *goals;
+	int effects;
+	int renderfx;
 
 	/* Addional fields for models */
 	vec3_t scale;
@@ -1048,6 +1052,7 @@ extern cvar_t *g_swap_speed;
 extern cvar_t *g_language;
 extern cvar_t *g_itemsbobeffect;
 extern cvar_t *g_start_items;
+extern cvar_t *ai_model_scale;
 extern cvar_t *g_game;
 
 extern cvar_t *autorotate;
@@ -1465,6 +1470,7 @@ void EndDMLevel(void);
 
 /* g_translate.c */
 void LocalizationInit(void);
+void LocalizationFree(void);
 const char* LocalizationMessage(const char *message, int *sound_index);
 
 /* g_chase.c */
@@ -1555,8 +1561,10 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
 
 /* g_spawn.c */
 void ED_CallSpawn(edict_t *ent);
+void DynamicResetSpawnModels(edict_t *self);
 char *ED_NewString(const char *string, qboolean raw);
 void SpawnInit(void);
+void SpawnFree(void);
 void P_ToggleFlashlight(edict_t *ent, qboolean state);
 edict_t *CreateFlyMonster(vec3_t origin, vec3_t angles, vec3_t mins,
 		vec3_t maxs, char *classname);

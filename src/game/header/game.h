@@ -61,6 +61,18 @@ typedef enum
 	SOLID_BSP       /* bsp clip, touch on edge */
 } solid_t;
 
+typedef enum
+{
+	GESTURE_NONE = -1,
+	GESTURE_FLIP_OFF,
+	GESTURE_SALUTE,
+	GESTURE_TAUNT,
+	GESTURE_WAVE,
+	GESTURE_POINT,
+	GESTURE_POINT_NO_PING,
+	GESTURE_MAX
+} gesture_type_t;
+
 /* =============================================================== */
 
 /* link_t is only used for entity area links now */
@@ -205,6 +217,7 @@ typedef struct
 	   NULL can be passed for buf to just determine existance */
 	int (*FS_LoadFile) (const char *name, void **buf);
 	void (*FS_FreeFile) (void *buf);
+	const char * (*get_configstring)(int num);
 
 	/* Heretic 2 specific */
 	void	(*CreateEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);

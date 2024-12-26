@@ -72,7 +72,7 @@ typedef struct
 	char name[MAX_QPATH];
 	unsigned checksum;
 	byte *cache; /* raw converted map */
-	int cache_size;
+	size_t cache_size;
 
 	cleaf_t *map_leafs;
 	int emptyleaf;
@@ -128,8 +128,9 @@ static int model_num = 0;
 static model_t *cmod = models;
 
 // DG: is casted to int32_t* in SV_FatPVS() so align accordingly
-static YQ2_ALIGNAS_TYPE(int32_t) byte pvsrow[MAX_MAP_LEAFS / 8];
-static byte phsrow[MAX_MAP_LEAFS / 8];
+static byte *pvsrow = NULL;
+static byte *phsrow = NULL;
+static size_t pxsrow_len = 0;
 static cbrush_t *box_brush;
 static cleaf_t *box_leaf;
 static cplane_t *box_planes;
@@ -1660,7 +1661,8 @@ CMod_LoadEntityString(const char *name, const char **map_entitystring, int *nume
 	if (sv_entfile->value)
 	{
 		char *buffer = NULL, entname[256];
-		int nameLen, bufLen = -1;
+		size_t nameLen;
+		int bufLen = -1;
 
 		nameLen = strlen(name);
 		if (strcmp(name + nameLen - 4, ".bsp") || nameLen > (MAX_QPATH - 1))
@@ -1743,6 +1745,11 @@ CM_ModInit(void)
 {
 	memset(models, 0, sizeof(models));
 
+	/* init buffers for PVS/PHS buffers*/
+	pvsrow = NULL;
+	phsrow = NULL;
+	pxsrow_len = 0;
+
 	map_noareas = Cvar_Get("map_noareas", "0", 0);
 	r_maptype = Cvar_Get("maptype", "0", CVAR_ARCHIVE);
 	r_game = Cvar_Get("game", "", CVAR_LATCH | CVAR_SERVERINFO);
@@ -1757,17 +1764,32 @@ CM_ModFreeAll(void)
 	{
 		CM_ModFree(&models[i]);
 	}
+
+	/* Free up buffer for PVS/PHS */
+	if (pvsrow)
+	{
+		free(pvsrow);
+		pvsrow = NULL;
+	}
+
+	if (phsrow)
+	{
+		free(phsrow);
+		phsrow = NULL;
+	}
+	pxsrow_len = 0;
+
 	Com_Printf("Server models free up\n");
 }
 
 static void
 CM_LoadCachedMap(const char *name, model_t *mod)
 {
-	int filelen, hunkSize;
+	size_t length, hunkSize;
 	byte *cmod_base, *filebuf;
 	maptype_t maptype;
 	dheader_t *header;
-	size_t length;
+	int filelen;
 
 	filelen = FS_LoadFile(name, (void **)&filebuf);
 
@@ -1786,7 +1808,10 @@ CM_LoadCachedMap(const char *name, model_t *mod)
 	{
 		maptype = map_heretic2;
 	}
+
 	cmod_base = Mod_Load2QBSP(name, (byte *)filebuf, filelen, &length, &maptype);
+	FS_FreeFile(filebuf);
+
 	header = (dheader_t *)cmod_base;
 
 	/* load into heap */
@@ -1851,11 +1876,11 @@ CM_LoadCachedMap(const char *name, model_t *mod)
 
 	if (!mod->map_vis)
 	{
-		Com_Error(ERR_DROP, "%s: Map %s has no visual clusters.",
+		Com_DPrintf("%s: Map %s has no visual clusters.",
 			__func__, name);
 	}
 
-	if (mod->numclusters != mod->map_vis->numclusters)
+	if (mod->map_vis && mod->numclusters != mod->map_vis->numclusters)
 	{
 		Com_Error(ERR_DROP, "%s: Map %s has incorrect number of clusters %d != %d",
 			__func__, name, mod->numclusters, mod->map_vis->numclusters);
@@ -1865,11 +1890,20 @@ CM_LoadCachedMap(const char *name, model_t *mod)
 	CMod_LoadEntityString(mod->name, &mod->map_entitystring, &mod->numentitychars,
 		mod->cache, &header->lumps[LUMP_ENTITIES]);
 	mod->extradatasize = Hunk_End();
-	Com_DPrintf("Allocated %d from expected %d hunk size\n",
+	Com_DPrintf("Allocated %d from expected " YQ2_COM_PRIdS " hunk size\n",
 		mod->extradatasize, hunkSize);
 
 	free(cmod_base);
-	FS_FreeFile(filebuf);
+
+	if ((mod->numleafs > pxsrow_len) || !pvsrow || !phsrow)
+	{
+		/* reallocate buffers for PVS/PHS buffers*/
+		pxsrow_len = (mod->numleafs + 63) & ~63;
+		pvsrow = malloc(pxsrow_len / 8);
+		phsrow = malloc(pxsrow_len / 8);
+		Com_Printf("Allocated " YQ2_COM_PRIdS " bit leafs of PVS/PHS buffer\n",
+			pxsrow_len);
+	}
 }
 
 /*
@@ -2061,85 +2095,48 @@ CM_MapSurfaces(int surfnum)
 	return cmod->map_surfaces + surfnum;
 }
 
-static void
-CM_DecompressVis(byte *in, byte *out)
+static byte *
+CM_Cluster(int cluster, int type, byte *buffer)
 {
-	int c;
-	byte *out_p;
-	int row;
-
-	row = (cmod->numclusters + 7) >> 3;
-	out_p = out;
-
-	if (!in || !cmod->numvisibility)
+	if (!buffer)
 	{
-		/* no vis info, so make all visible */
-		while (row)
-		{
-			*out_p++ = 0xff;
-			row--;
-		}
-
-		return;
+		Com_Error(ERR_DROP, "%s: incrorrect init of PVS/PHS", __func__);
 	}
 
-	do
+	if (!cmod->map_vis)
 	{
-		if (*in)
-		{
-			*out_p++ = *in++;
-			continue;
-		}
-
-		c = in[1];
-		in += 2;
-
-		if ((out_p - out) + c > row)
-		{
-			c = row - (out_p - out);
-			Com_DPrintf("warning: Vis decompression overrun\n");
-		}
-
-		while (c)
-		{
-			*out_p++ = 0;
-			c--;
-		}
+		Mod_DecompressVis(NULL, buffer, NULL, (cmod->numclusters + 7) >> 3);
 	}
-	while (out_p - out < row);
+	else if (cluster == -1)
+	{
+		memset(buffer, 0, (cmod->numclusters + 7) >> 3);
+	}
+	else
+	{
+		if (cluster < 0 || cluster >= cmod->numclusters)
+		{
+			Com_Error(ERR_DROP, "%s: bad cluster", __func__);
+		}
+
+		Mod_DecompressVis((byte *)cmod->map_vis +
+				cmod->map_vis->bitofs[cluster][type], buffer,
+				(byte *)cmod->map_vis + cmod->numvisibility,
+				(cmod->numclusters + 7) >> 3);
+	}
+
+	return buffer;
 }
 
 byte *
 CM_ClusterPVS(int cluster)
 {
-	if (cluster == -1 || !cmod->map_vis)
-	{
-		memset(pvsrow, 0, (cmod->numclusters + 7) >> 3);
-	}
-	else
-	{
-		CM_DecompressVis((byte *)cmod->map_vis +
-				cmod->map_vis->bitofs[cluster][DVIS_PVS], pvsrow);
-	}
-
-	return pvsrow;
+	return CM_Cluster(cluster, DVIS_PVS, pvsrow);
 }
 
 byte *
 CM_ClusterPHS(int cluster)
 {
-	if (cluster == -1 || !cmod->map_vis)
-	{
-		memset(phsrow, 0, (cmod->numclusters + 7) >> 3);
-	}
-
-	else
-	{
-		CM_DecompressVis((byte *)cmod->map_vis +
-				cmod->map_vis->bitofs[cluster][DVIS_PHS], phsrow);
-	}
-
-	return phsrow;
+	return CM_Cluster(cluster, DVIS_PHS, phsrow);
 }
 
 /*

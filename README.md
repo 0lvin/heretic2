@@ -157,6 +157,8 @@ Games:
 * Quake 2 ReRelease:
   * SDK: <https://github.com/id-Software/quake2-rerelease-dll>
   * Tech info: <https://bethesda.net/en/article/6NIyBxapXOurTKtF4aPiF4/enhancing-quake-ii>
+  * PSX source: <https://www.moddb.com/mods/quake-ii-psx/downloads/quake-ii-psx-10-sources>
+  * PSX Mod: <https://www.moddb.com/mods/quake-ii-psx>
 * Anachronox:
   * SDK: <https://github.com/hogsy/chronon>
   * SDK: <https://code.idtech.space/ion-storm/anachronox-sdk>
@@ -180,12 +182,23 @@ Games:
 * Dawn of Darkness:
   * Docs: <https://www.moddb.com/mods/dawn-of-darkness1/downloads/dod-mood-scripts-gsm-tutorials-fgd-and-def-file>
   * Demo: [Episode 1](https://www.moddb.com/mods/dawn-of-darkness1/downloads/dawn-of-darkness-episode-1)
+* Additional maps used for check maps support:
+  * PSX: <https://www.moddb.com/mods/quake-ii-psx/downloads/quake-ii-psx-10>
+  * ReRelease N64 Jam: <https://www.moddb.com/games/quake-2/addons/quake-2-re-release-n64-sp-map-jam>
+  * ReRelease Basic Jam: <https://www.moddb.com/games/quake-2/addons/quake-2-re-release-back-to-baseq2ics-jam-1>
+  * ReRelease PSX Jam: <https://www.moddb.com/mods/psx-jam-1/downloads/quake-2-re-release-psx-jam-1>
 
 Games check videos:
 
+* 8.42RR11:
+
+[![First episode](https://img.youtube.com/vi/Ha1FuVXaQSE/0.jpg)](https://www.youtube.com/watch?v=Ha1FuVXaQSE)
+[![Q2DQ2](https://img.youtube.com/vi/6P3wJojExyI/0.jpg)](https://www.youtube.com/watch?v=6P3wJojExyI)
+[![8.42RR11](https://img.youtube.com/vi/ukqBrx80ESM/0.jpg)](https://www.youtube.com/watch?v=ukqBrx80ESM)
+
 * 8.42RR10:
 
-[![Latest Video](https://img.youtube.com/vi/obIrzYsNxBY/0.jpg)](https://www.youtube.com/watch?v=obIrzYsNxBY)
+[![8.42RR10](https://img.youtube.com/vi/obIrzYsNxBY/0.jpg)](https://www.youtube.com/watch?v=obIrzYsNxBY)
 
 * 8.42RR9:
 
@@ -200,50 +213,32 @@ Games check videos:
 [![8.31RR7](https://img.youtube.com/vi/VAFs1HtQU_0/0.jpg)](https://www.youtube.com/watch?v=VAFs1HtQU_0)
 
 
-Goals:
+Goals, fully finished goals could be checked in [here](CHANGELOG):
 
-* [x] BSPX DECOUPLEDLM light map support (base1),
-* [x] QBSP map format support (mguhub),
-* [x] Use ffmpeg for load any video,
-* [x] RoQ and Theora cinematic videos support.
-* [x] Cinematic videos support in smk, mpeg, ogv format,
-* [x] Daikatana/Heretic 2 map partial format support,
-* [x] md5 improve load speed,
-* [x] support Anachronox .dat format,
-* [x] suport Daikatana/SiN .pak/.sin format from pakextract,
-* [x] Support flow/scale flags for Q64 maps,
-* [x] Add debug progress loading code for maps,
-* [x] MDR model format from Star Trek: Voyager – Elite Force,
-* [x] MDA entity format from Anachronox,
 * [ ] CTC entity format from Anachronox,
 * [ ] ATD texture format from Anachronox,
 * [ ] MDA model skin selection by tag,
 * [ ] SDEF/MDA dynamicaly allocate list of skins,
 * [ ] Support material load textures/textureinfo.dat from Anachronox,
+* [ ] Fix invisiable entities in basicsjam1_ziutek,
+* [ ] Make lightmap textures dynamic n64jam_palmlix,
 * [x] Support textures/*/*.mat load from ReRelease (footstep),
 * [ ] Support textures/*/*.mat load from ReRelease texture effects,
 * [ ] Support textures/*/*_glow.png load from ReRelease,
 * [ ] Support tactile/*/*.bnvib/.wav feedback load from ReRelease,
 * [ ] Fix physics with incorrect floor height in psx/base0.bsp,
 * [ ] Fix statusbar for DoD `roarke`,
-* [x] Fix strange white flying boxes in psx/base0.bsp,
-* [x] RGB particles support instead palette based one,
-* [x] Get rid of VID_PaletteColor client internal api use,
-* [x] Broken maps groups from base2 to next,
 * [ ] Group `it_pic` images in vulkan render,
 * [ ] Rearange surfaces in vulkan render before render,
 * [ ] Fully implement `target_camera`,
 * [ ] Fully implement `misc_flare`,
-* [x] Fix player height with enabled flashlight,
 * [ ] Single player ReRelease support,
 * [ ] Support effects and additional flags for ReRelease when possible.
 * [ ] Use shared model cache in client code insted reimplemnet in each render,
-* [x] Check load soft colormap as 24bit color from loaded image,
 * [ ] Fix transparent textures in Daikatana/SiN maps,
 * [ ] Use separete texture hi-color buffer for ui in soft render,
 * [ ] Cleanup function declarations in game save code,
 * [ ] Fix broken base3 with sorted fields names,
-* [x] Use 3 bytes vertex normal,
 * [ ] Support scalled textures for models and walls in soft render and fix
     lighting with remastered maps,
 * [ ] Modified ReRelease game code support with removed KEX only related code.

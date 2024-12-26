@@ -232,7 +232,7 @@ ValidateSelectedItem(edict_t *ent)
 /*
  * Give items to a client
  */
-void
+static void
 Cmd_Give_f(edict_t *ent)
 {
 	char *name;
@@ -635,7 +635,7 @@ Cmd_Give_f(edict_t *ent)
 /*
  * Sets client to godmode
  */
-void
+static void
 Cmd_God_f(edict_t *ent)
 {
 	char *msg;
@@ -669,7 +669,7 @@ Cmd_God_f(edict_t *ent)
 /*
  * Sets client to notarget
  */
-void
+static void
 Cmd_Notarget_f(edict_t *ent)
 {
 	char *msg;
@@ -703,7 +703,7 @@ Cmd_Notarget_f(edict_t *ent)
 /*
  * argv(0) noclip
  */
-void
+static void
 Cmd_Noclip_f(edict_t *ent)
 {
 	char *msg;
@@ -915,7 +915,7 @@ Cmd_WeapPrev_f(edict_t *ent)
 Cmd_WeapNext_f
 =================
 */
-void
+static void
 Cmd_WeapNext_f(edict_t *ent)
 {
 	gclient_t	*cl;
@@ -1071,7 +1071,7 @@ Cmd_DefNext_f(edict_t *ent)
 							   0);
 }
 
-void
+static void
 Cmd_WeapLast_f(edict_t *ent)
 {
 	gclient_t *cl;
@@ -1099,7 +1099,7 @@ Cmd_WeapLast_f(edict_t *ent)
 	it->use(&ent->client->playerinfo,it);
 }
 
-void
+static void
 Cmd_Kill_f(edict_t *ent)
 {
 	if(ent->client->flood_nextkill > level.time)
@@ -1131,7 +1131,7 @@ Cmd_Kill_f(edict_t *ent)
 	}
 }
 
-int
+static int
 PlayerSort(void const *a, void const *b)
 {
 	int anum, bnum;
@@ -1160,7 +1160,7 @@ PlayerSort(void const *a, void const *b)
 	return 0;
 }
 
-void
+static void
 Cmd_Players_f(edict_t *ent)
 {
 	int i;
@@ -1401,7 +1401,7 @@ flooded(edict_t *ent)
 	return false;
 }
 
-void
+static void
 Cmd_Say_f(edict_t *ent, qboolean team, qboolean arg0)
 {
 	int j;

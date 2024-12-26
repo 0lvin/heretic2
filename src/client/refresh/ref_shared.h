@@ -110,10 +110,6 @@ extern void SmoothColorImage(unsigned *dst, size_t size, size_t rstep);
 extern void scale2x(const byte *src, byte *dst, int width, int height);
 extern void scale3x(const byte *src, byte *dst, int width, int height);
 
-extern float Mod_RadiusFromBounds(const vec3_t mins, const vec3_t maxs);
-extern const byte* Mod_DecompressVis(const byte *in, const byte* numvisibility,
-	int row);
-
 /* Shared models struct */
 
 enum {
@@ -340,7 +336,7 @@ extern void Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes,
 	const byte *mod_base, const lump_t *l, int ident);
 extern void Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 	msurface_t **marksurfaces, unsigned int nummarksurfaces,
-	const byte *mod_base, const lump_t *l);
+	int *numclusters, const byte *mod_base, const lump_t *l);
 extern void Mod_LoadQBSPEdges(const char *name, medge_t **edges, int *numedges,
 	const byte *mod_base, const lump_t *l);
 extern void Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,

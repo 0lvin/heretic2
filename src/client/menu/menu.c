@@ -767,7 +767,7 @@ M_Main_Draw(void)
 		( int )(cls.realtime / 100) % NUM_CURSOR_FRAMES);
 }
 
-const char *
+static const char *
 M_Main_Key(int key)
 {
 	return Default_MenuKey(&s_main, key);
@@ -1340,12 +1340,20 @@ char *controller_bindnames[][2] =
 	{"+movedown", "down / crouch"},
 	{"weapnext", "next weapon"},
 	{"weapprev", "previous weapon"},
-	{"cycleweap weapon_chaingun weapon_machinegun weapon_blaster", "long range: quickswitch 1"},
-	{"cycleweap weapon_supershotgun weapon_shotgun", "close range: quickswitch 2"},
-	{"cycleweap weapon_rocketlauncher weapon_grenadelauncher ammo_grenades", "explosives: quickswitch 3"},
-	{"cycleweap weapon_bfg weapon_railgun weapon_hyperblaster", "special: quickswitch 4"},
-	{"prefweap weapon_railgun weapon_hyperblaster weapon_chaingun weapon_supershotgun weapon_machinegun weapon_shotgun weapon_blaster", "best safe weapon"},
-	{"prefweap weapon_bfg weapon_railgun weapon_rocketlauncher weapon_hyperblaster weapon_grenadelauncher weapon_chaingun ammo_grenades weapon_supershotgun", "best unsafe weapon"},
+	{"cycleweap weapon_plasmabeam weapon_boomer weapon_chaingun weapon_etf_rifle"
+	 " weapon_machinegun weapon_blaster", "long range: quickswitch 1"},
+	{"cycleweap weapon_supershotgun weapon_shotgun weapon_chainfist",
+	 "close range: quickswitch 2"},
+	{"cycleweap weapon_phalanx weapon_rocketlauncher weapon_proxlauncher"
+	 " weapon_grenadelauncher ammo_grenades", "explosives: quickswitch 3"},
+	{"cycleweap weapon_bfg weapon_disintegrator weapon_railgun weapon_hyperblaster"
+	 " ammo_tesla ammo_trap", "special: quickswitch 4"},
+	{"prefweap weapon_railgun weapon_plasmabeam weapon_boomer weapon_hyperblaster weapon_chaingun"
+	 " weapon_supershotgun weapon_etf_rifle weapon_machinegun weapon_shotgun weapon_blaster",
+	 "best safe weapon"},
+	{"prefweap weapon_bfg weapon_disintegrator weapon_phalanx weapon_railgun weapon_rocketlauncher"
+	 " weapon_plasmabeam weapon_boomer weapon_hyperblaster weapon_grenadelauncher weapon_chaingun"
+	 " weapon_proxlauncher ammo_grenades weapon_supershotgun", "best unsafe weapon"},
 	{"centerview", "center view"},
 	{"inven", "inventory"},
 	{"invuse", "use item"},
@@ -1503,12 +1511,20 @@ char *controller_alt_bindnames[][2] =
 {
 	{"weapnext", "next weapon"},
 	{"weapprev", "previous weapon"},
-	{"cycleweap weapon_chaingun weapon_machinegun weapon_blaster", "long range: quickswitch 1"},
-	{"cycleweap weapon_supershotgun weapon_shotgun", "close range: quickswitch 2"},
-	{"cycleweap weapon_rocketlauncher weapon_grenadelauncher ammo_grenades", "explosives: quickswitch 3"},
-	{"cycleweap weapon_bfg weapon_railgun weapon_hyperblaster", "special: quickswitch 4"},
-	{"prefweap weapon_railgun weapon_hyperblaster weapon_chaingun weapon_supershotgun weapon_machinegun weapon_shotgun weapon_blaster", "best safe weapon"},
-	{"prefweap weapon_bfg weapon_railgun weapon_rocketlauncher weapon_hyperblaster weapon_grenadelauncher weapon_chaingun ammo_grenades weapon_supershotgun", "best unsafe weapon"},
+	{"cycleweap weapon_plasmabeam weapon_boomer weapon_chaingun weapon_etf_rifle"
+	 " weapon_machinegun weapon_blaster", "long range: quickswitch 1"},
+	{"cycleweap weapon_supershotgun weapon_shotgun weapon_chainfist",
+	 "close range: quickswitch 2"},
+	{"cycleweap weapon_phalanx weapon_rocketlauncher weapon_proxlauncher"
+	 " weapon_grenadelauncher ammo_grenades", "explosives: quickswitch 3"},
+	{"cycleweap weapon_bfg weapon_disintegrator weapon_railgun weapon_hyperblaster"
+	 " ammo_tesla ammo_trap", "special: quickswitch 4"},
+	{"prefweap weapon_railgun weapon_plasmabeam weapon_boomer weapon_hyperblaster weapon_chaingun"
+	 " weapon_supershotgun weapon_etf_rifle weapon_machinegun weapon_shotgun weapon_blaster",
+	 "best safe weapon"},
+	{"prefweap weapon_bfg weapon_disintegrator weapon_phalanx weapon_railgun weapon_rocketlauncher"
+	 " weapon_plasmabeam weapon_boomer weapon_hyperblaster weapon_grenadelauncher weapon_chaingun"
+	 " weapon_proxlauncher ammo_grenades weapon_supershotgun", "best unsafe weapon"},
 	{"centerview", "center view"},
 	{"inven", "inventory"},
 	{"invuse", "use item"},
@@ -1543,7 +1559,7 @@ DrawControllerAltButtonBindingFunc(void *self)
 	}
 	else
 	{
-		int x;
+		size_t x;
 		const char *name;
 
 		name = Key_KeynumToString(keys[0]);
@@ -2268,7 +2284,7 @@ ControlsSetMenuItemValues(void)
 {
 	s_options_oggshuffle_box.curvalue = Cvar_VariableValue("ogg_shuffle");
 	s_options_oggenable_box.curvalue = (Cvar_VariableValue("ogg_enable") != 0);
-	s_options_quality_list.curvalue = (Cvar_VariableValue("s_loadas8bit") == 0);
+	s_options_quality_list.curvalue = (Cvar_VariableValue("s_openal") == 0);
 	s_options_alwaysrun_box.curvalue = (cl_run->value != 0);
 	s_options_invertmouse_box.curvalue = (m_pitch->value < 0);
 	s_options_lookstrafe_box.curvalue = (lookstrafe->value != 0);
@@ -2353,18 +2369,9 @@ ConsoleFunc(void *unused)
 }
 
 static void
-UpdateSoundQualityFunc(void *unused)
+UpdateSoundBackendFunc(void *unused)
 {
-	if (s_options_quality_list.curvalue == 0)
-	{
-		Cvar_SetValue("s_khz", 22);
-		Cvar_SetValue("s_loadas8bit", false);
-	}
-	else
-	{
-		Cvar_SetValue("s_khz", 44);
-		Cvar_SetValue("s_loadas8bit", false);
-	}
+	Cvar_Set("s_openal", (s_options_quality_list.curvalue == 0)? "1":"0" );
 
 	m_popup_string = "Restarting the sound system. This\n"
 			         "could take up to a minute, so\n"
@@ -2400,9 +2407,9 @@ Options_MenuInit(void)
 		0
 	};
 
-	static const char *quality_items[] =
+	static const char *sound_items[] =
 	{
-		"normal", "high", 0
+		"openal", "sdl", 0
 	};
 
 	static const char *yesno_names[] =
@@ -2470,9 +2477,9 @@ Options_MenuInit(void)
 	s_options_quality_list.generic.type = MTYPE_SPINCONTROL;
 	s_options_quality_list.generic.x = 0;
 	s_options_quality_list.generic.y = (y += 10);
-	s_options_quality_list.generic.name = "sound quality";
-	s_options_quality_list.generic.callback = UpdateSoundQualityFunc;
-	s_options_quality_list.itemnames = quality_items;
+	s_options_quality_list.generic.name = "sound backend";
+	s_options_quality_list.generic.callback = UpdateSoundBackendFunc;
+	s_options_quality_list.itemnames = sound_items;
 
 	s_options_sensitivity_slider.generic.type = MTYPE_SLIDER;
 	s_options_sensitivity_slider.generic.x = 0;
@@ -3377,7 +3384,7 @@ ModsFunc(void *unused)
 	M_Menu_Mods_f();
 }
 
-void
+static void
 Game_MenuInit(void)
 {
 	Mods_NamesInit();
@@ -4392,7 +4399,7 @@ StartServer_MenuInit(void)
 			char shortname[MAX_TOKEN_CHARS];
 			char longname[MAX_TOKEN_CHARS];
 			char scratch[200];
-			int j, l;
+			size_t j, l;
 
 			strcpy(shortname, COM_Parse(&s));
 			l = strlen(shortname);
@@ -5055,7 +5062,7 @@ DMOptions_MenuDraw(void)
 	Menu_Draw(&s_dmoptions_menu);
 }
 
-const char *
+static const char *
 DMOptions_MenuKey(int key)
 {
 	return Default_MenuKey(&s_dmoptions_menu, key);
@@ -5287,7 +5294,7 @@ AddressBook_MenuInit(void)
 	}
 }
 
-const char *
+static const char *
 AddressBook_MenuKey(int key)
 {
 	if (key == K_ESCAPE)
@@ -5412,7 +5419,7 @@ IconOfSkinExists(const char* skin, char** pcxfiles, int npcxfiles,
 static void
 StripExtension(char* path)
 {
-	int length;
+	size_t length;
 
 	length = strlen(path) - 1;
 
@@ -5695,7 +5702,8 @@ HasSkinsInDir(const char *dirname, int *num)
 {
 	char **list_png, **list_pcx, **list_m8;
 	char **curr = NULL, **list = NULL;
-	int num_png, num_pcx, num_m8, dirname_size;
+	int num_png, num_pcx, num_m8;
+	size_t dirname_size;
 
 	*num = 0;
 	/* dir name size plus one for skip slash */
@@ -5987,7 +5995,8 @@ PlayerConfig_ScanDirectories(void)
 	return result;
 }
 
-void ListModels_f(void)
+static void
+ListModels_f(void)
 {
 	PlayerConfig_ScanDirectories();
 
@@ -6430,6 +6439,7 @@ M_Init(void)
 	Cmd_AddCommand("menu_gyro", M_Menu_Gyro_f);
 	Cmd_AddCommand("menu_buttons", M_Menu_ControllerButtons_f);
 	Cmd_AddCommand("menu_altbuttons", M_Menu_ControllerAltButtons_f);
+	Cmd_AddCommand("menu_sticks", M_Menu_Stick_f);
 	Cmd_AddCommand("menu_quit", M_Menu_Quit_f);
 
 	/* initialize the server address book cvars (adr0, adr1, ...)

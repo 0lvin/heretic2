@@ -94,6 +94,24 @@ DynamicSpawnSetScale(edict_t *self)
 	VectorCopy(st.scale, self->rrs.scale);
 }
 
+/*
+ * Spawn method does not require any models to attach, so remove posible model
+ * attached by dynamic spawn. In most cases spawn function will replace model
+ * to correct one if need.
+ */
+void
+DynamicResetSpawnModels(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->s.modelindex = 0;
+	self->s.modelindex2 = 0;
+	self->s.modelindex3 = 0;
+}
+
 static void
 DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 {
@@ -101,7 +119,8 @@ DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 	char model_path[MAX_QPATH * 3];
 	char *semicolon, *curr;
 
-	strncpy(model_path, data->model_path, sizeof(model_path));
+	Q_strlcpy(model_path, data->model_path,
+		Q_min(sizeof(model_path), sizeof(data->model_path)));
 
 	/* first model */
 	curr = model_path;
@@ -422,7 +441,7 @@ char *
 ED_NewString(const char *string, qboolean raw)
 {
 	char *newb;
-	int l;
+	size_t l;
 
 	if (!string)
 	{
@@ -589,7 +608,7 @@ ED_ParseField(const char *key, const char *value, edict_t *ent)
 		}
 	}
 
-	gi.dprintf("%s is not a field. Value is %s\n", key, value);
+	gi.dprintf("'%s' is not a field. Value is '%s'\n", key, value);
 }
 
 /*
@@ -1575,7 +1594,7 @@ DynamicSpawnInit(void)
 
 	if (ndynamicentities)
 	{
-		dynamicentities = gi.TagMalloc(ndynamicentities * sizeof(*dynamicentities), TAG_GAME);
+		dynamicentities = malloc(ndynamicentities * sizeof(*dynamicentities));
 		memset(dynamicentities, 0, ndynamicentities * sizeof(*dynamicentities));
 	}
 	curr_pos = 0;
@@ -1803,4 +1822,17 @@ SpawnInit(void)
 {
 	StaticSpawnInit();
 	DynamicSpawnInit();
+}
+
+void
+SpawnFree(void)
+{
+	if (dynamicentities || ndynamicentities)
+	{
+		gi.dprintf("Free %d dynamic definitions\n", ndynamicentities);
+		free(dynamicentities);
+	}
+
+	dynamicentities = NULL;
+	ndynamicentities = 0;
 }

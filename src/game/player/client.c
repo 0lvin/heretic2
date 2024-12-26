@@ -121,6 +121,7 @@ SP_info_player_intermission(edict_t *self)
 	 * since the info_player_intermission
 	 * needs a callback function. Like
 	 * every entity. */
+	DynamicResetSpawnModels(self);
 }
 
 

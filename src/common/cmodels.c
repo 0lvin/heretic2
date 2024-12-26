@@ -69,15 +69,16 @@ Mod_LoadVisibility(const char *name, dvis_t **vis, int *numvisibility,
 
 	if (!l->filelen)
 	{
-		Com_Printf("%s: Map %s has too small visibility lump\n",
+		Com_DPrintf("%s: Map %s has too small visibility lump\n",
 			__func__, name);
 		*vis = NULL;
+		*numvisibility = 0;
 		return;
 	}
 
 	*numvisibility = l->filelen;
 
-	out = Hunk_Alloc(l->filelen);
+	out = Hunk_Alloc((l->filelen + 63) & ~63);
 	*vis = out;
 	memcpy(out, mod_base + l->fileofs, l->filelen);
 
@@ -143,4 +144,70 @@ Mod_LoadPlanes(const char *name, cplane_t **planes, int *numplanes,
 		out->type = in->type;
 		out->signbits = bits;
 	}
+}
+
+/*
+===================
+Mod_DecompressVis
+===================
+*/
+void
+Mod_DecompressVis(const byte *in, byte *out, const byte* numvisibility, int row)
+{
+	byte *out_p;
+
+	out_p = out;
+
+	if (!in || !numvisibility)
+	{
+		/* no vis info, so make all visible */
+		while (row)
+		{
+			*out_p++ = 0xff;
+			row--;
+		}
+
+		return;
+	}
+
+	do
+	{
+		int c;
+
+		if (*in && (in + 2) < numvisibility)
+		{
+			*out_p++ = *in++;
+			continue;
+		}
+
+		c = in[1];
+		in += 2;
+
+		if ((out_p - out) + c > row)
+		{
+			c = row - (out_p - out);
+			Com_DPrintf("%s: warning: Vis decompression overrun\n", __func__);
+		}
+
+		while (c)
+		{
+			*out_p++ = 0;
+			c--;
+		}
+	}
+	while (out_p - out < row);
+}
+
+float
+Mod_RadiusFromBounds(const vec3_t mins, const vec3_t maxs)
+{
+	int i;
+	vec3_t corner;
+
+	for (i = 0; i < 3; i++)
+	{
+		corner[i] = fabs(mins[i]) > fabs(maxs[i]) ? fabs(mins[i]) : fabs(maxs[i]);
+	}
+
+	return VectorLength(corner);
 }

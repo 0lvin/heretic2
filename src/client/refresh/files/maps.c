@@ -159,8 +159,17 @@ Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *le
 	int numleafs, mnode_t **nodes, int *numnodes, const byte *mod_base,
 	const lump_t *l, int ident)
 {
-	int r_leaftovis[MAX_MAP_LEAFS], r_vistoleaf[MAX_MAP_LEAFS];
+	int *r_leaftovis, *r_vistoleaf;
 	int numvisleafs;
+
+	r_leaftovis = malloc(numleafs * sizeof(int));
+	r_vistoleaf = malloc(numleafs * sizeof(int));
+	if (!r_leaftovis || !r_vistoleaf)
+	{
+		Com_Error(ERR_DROP, "%s: Can't allocate %d leaf temporary buf.",
+				__func__, numleafs);
+		return;
+	}
 
 	Mod_LoadQNodes(name, planes, numplanes, leafs, numleafs, nodes, numnodes,
 		mod_base, l);
@@ -169,6 +178,9 @@ Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *le
 
 	numvisleafs = 0;
 	Mod_NumberLeafs(leafs, *nodes, r_leaftovis, r_vistoleaf, &numvisleafs);
+
+	free(r_leaftovis);
+	free(r_vistoleaf);
 }
 
 /*
@@ -705,7 +717,7 @@ Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned 
 void
 Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 	msurface_t **marksurfaces, unsigned int nummarksurfaces,
-	const byte *mod_base, const lump_t *l)
+	int *numclusters, const byte *mod_base, const lump_t *l)
 {
 	dqleaf_t *in;
 	mleaf_t *out;
@@ -724,6 +736,7 @@ Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 
 	*leafs = out;
 	*numleafs = count;
+	*numclusters = 0;
 
 	for (i = 0; i < count; i++, in++, out++)
 	{
@@ -747,6 +760,11 @@ Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 		{
 			Com_Error(ERR_DROP, "%s: wrong marksurfaces position in %s",
 				__func__, name);
+		}
+
+		if (out->cluster >= *numclusters)
+		{
+			*numclusters = out->cluster + 1;
 		}
 	}
 }

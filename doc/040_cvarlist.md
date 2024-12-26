@@ -106,6 +106,9 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 * **cl_http_max_connections**: Maximum number of parallel downloads. Set
   to `4` by default. A higher number may help with slow servers.
 
+* **cl_http_verifypeer**: SSL certificate validation. Set to `1`
+  by default, set to `0` to disable.
+
 * **cl_http_proxy**: Proxy to use, empty by default.
 
 * **cl_http_show_dw_progress**: Show a HTTP download progress bar.
@@ -546,6 +549,10 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 * **gl1_stencilshadow**: If `gl_shadows` is set to `1`, this makes them
   look a bit better (no flickering) by using the stencil buffer. Does
   not work when `gl1_stereo` is `3`, `4` or `5`.
+
+* **gl1_waterwarp**: Intensity of the "squeeze/stretch" effect on the
+  FOV when diving underwater. Can be any floating point number, `0`
+  disables it (Vanilla Quake II look). Default `1.0`.
 
 * **gl1_lightmapcopies**: When enabled (`1`), keep 3 copies of the same
   lightmap rotating, shifting to another one when drawing a new frame.
