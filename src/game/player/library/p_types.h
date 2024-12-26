@@ -294,6 +294,7 @@ typedef struct
 
 	qboolean spectator;         /* client is a spectator */
 	int chasetoggle;       /* Chasetoggle */
+	int helpchanged;
 } client_persistant_t;
 
 // ************************************************************************************************

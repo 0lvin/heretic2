@@ -1406,8 +1406,6 @@ void G_SetStats(edict_t *ent);
 void G_SetSpectatorStats(edict_t *ent);
 void G_CheckChaseStats(edict_t *ent);
 void ValidateSelectedItem(edict_t *ent);
-void SelectPrevItem(edict_t *ent, int itflags);
-void SelectNextItem(edict_t *ent, int itflags);
 void DeathmatchScoreboardMessage(edict_t *client, edict_t *killer);
 void HelpComputerMessage(edict_t *client);
 void InventoryMessage(edict_t *client);

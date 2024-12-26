@@ -49,6 +49,8 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster);
 
 int self_spawn = false;
 
+gitem_t *CTFWhat_Tech(edict_t *ent);
+
 static char *
 ClientTeam(edict_t *ent, char* value)
 {
@@ -110,17 +112,12 @@ OnSameTeam(edict_t *ent1, edict_t *ent2)
 	return false;
 }
 
-void
+static void
 SelectNextItem(edict_t *ent, int itflags)
 {
 	gclient_t *cl;
 	int i, index;
 	gitem_t *it;
-
-	if(sv_cinematicfreeze->value)
-	{
-		return;
-	}
 
 	if (!ent)
 	{
@@ -128,6 +125,11 @@ SelectNextItem(edict_t *ent, int itflags)
 	}
 
 	cl = ent->client;
+
+	if(sv_cinematicfreeze->value)
+	{
+		return;
+	}
 
 	/* scan  for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
@@ -158,17 +160,12 @@ SelectNextItem(edict_t *ent, int itflags)
 	cl->playerinfo.pers.selected_item = -1;
 }
 
-void
+static void
 SelectPrevItem(edict_t *ent, int itflags)
 {
 	gclient_t *cl;
 	int i, index;
 	gitem_t *it;
-
-	if(sv_cinematicfreeze->value)
-	{
-		return;
-	}
 
 	if (!ent)
 	{
@@ -176,6 +173,11 @@ SelectPrevItem(edict_t *ent, int itflags)
 	}
 
 	cl = ent->client;
+
+	if(sv_cinematicfreeze->value)
+	{
+		return;
+	}
 
 	/* scan for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
@@ -248,7 +250,7 @@ Cmd_Give_f(edict_t *ent)
 
 	if ((deathmatch->value || coop->value) && !sv_cheats->value)
 	{
-		gi.cprintf( ent, PRINT_HIGH,
+		gi.cprintf(ent, PRINT_HIGH,
 				"You must run the server with '+set cheats 1' to enable this command.\n");
 		return;
 	}
@@ -715,7 +717,7 @@ Cmd_Noclip_f(edict_t *ent)
 
 	if ((deathmatch->value || coop->value) && !sv_cheats->value)
 	{
-		gi.cprintf( ent, PRINT_HIGH,
+		gi.cprintf(ent, PRINT_HIGH,
 				"You must run the server with '+set cheats 1' to enable this command.\n");
 		return;
 	}
@@ -861,6 +863,40 @@ Cmd_Use_f(edict_t *ent)
 	{
 		it->use(&ent->client->playerinfo,it);
 	}
+}
+
+/*
+ * Display the current help message
+ */
+void
+Cmd_Help_f(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	/* this is for backwards compatibility */
+	if (deathmatch->value)
+	{
+		Cmd_Score_f(ent);
+		return;
+	}
+
+	ent->client->showinventory = false;
+	ent->client->showscores = false;
+
+	if (ent->client->showhelp &&
+		(ent->client->resp.game_helpchanged == game.helpchanged))
+	{
+		ent->client->showhelp = false;
+		return;
+	}
+
+	ent->client->showhelp = true;
+	ent->client->pers.helpchanged = 0;
+	HelpComputerMessage(ent);
+	gi.unicast(ent, true);
 }
 
 /*
@@ -1102,7 +1138,12 @@ Cmd_WeapLast_f(edict_t *ent)
 static void
 Cmd_Kill_f(edict_t *ent)
 {
-	if(ent->client->flood_nextkill > level.time)
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->client->flood_nextkill > level.time)
 	{
 		G_MsgVarCenterPrintf(ent, GM_NOKILL, (int)(ent->client->flood_nextkill - level.time) + 1);
 		return;
@@ -1211,30 +1252,6 @@ Cmd_Players_f(edict_t *ent)
 }
 
 void
-Cmd_SpawnEntity_f(edict_t *ent)
-{
-	vec3_t	forward;
-	edict_t	*newent;
-
-	if (deathmatch->value && !sv_cheats->value)
-	{
-		G_CPrintf(ent, PRINT_HIGH,  GM_NOCHEATS);
-		return;
-	}
-	gi.cprintf(ent, PRINT_HIGH, "Spawning : %s\n", gi.argv(1));
-	self_spawn = true;
-
-	newent = G_Spawn();
-	newent->classname = ED_NewString(gi.argv(1), true);
-	AngleVectors(ent->s.angles, forward, NULL, NULL);
-	VectorScale(forward, 100, forward);
-	VectorAdd(ent->s.origin, forward, newent->s.origin);
-	VectorCopy(ent->s.angles, newent->s.angles);
-	ED_CallSpawn(newent);
-	self_spawn = false;
-}
-
-void
 Cmd_ToggleInventory_f(edict_t *ent)
 {
 	gclient_t *cl;
@@ -1333,8 +1350,8 @@ Cmd_NextMonsterFrame_f(edict_t *ent)
 	MonsterAdvanceFrame = true;
 }
 
-static qboolean
-flooded(edict_t *ent)
+qboolean
+CheckFlood(edict_t *ent)
 {
 	gclient_t *cl;
 	int i;
@@ -1419,7 +1436,7 @@ Cmd_Say_f(edict_t *ent, qboolean team, qboolean arg0)
 		return;
 	}
 
-	if (flooded(ent))
+	if (CheckFlood(ent))
 	{
 		return;
 	}
@@ -1496,6 +1513,642 @@ Cmd_Say_f(edict_t *ent, qboolean team, qboolean arg0)
 	}
 }
 
+static void
+Cmd_Ent_Count_f(edict_t *ent)
+{
+	int x;
+	edict_t *e;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	x = 0;
+
+	for (e = g_edicts; e < &g_edicts[globals.num_edicts]; e++)
+	{
+		if (e->inuse)
+		{
+			x++;
+		}
+	}
+
+	gi.dprintf("%d entites active\n", x);
+}
+
+static void
+Cmd_PlayerList_f(edict_t *ent)
+{
+	int i;
+	char st[80];
+	char text[1400];
+	edict_t *e2;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	/* connect time, ping, score, name */
+	*text = 0;
+
+	for (i = 0, e2 = g_edicts + 1; i < maxclients->value; i++, e2++)
+	{
+		size_t text_len;
+
+		if (!e2->inuse)
+		{
+			continue;
+		}
+
+		Com_sprintf(st, sizeof(st), "%02d:%02d %4d %3d %s%s\n",
+				(level.framenum - e2->client->resp.enterframe) / 600,
+				((level.framenum - e2->client->resp.enterframe) % 600) / 10,
+				e2->client->ping,
+				e2->client->resp.score,
+				e2->client->pers.netname,
+				e2->client->resp.spectator ? " (spectator)" : "");
+
+		text_len = strlen(text);
+
+		if ((text_len + strlen(st)) > (sizeof(text) - 50))
+		{
+			snprintf(text + text_len, sizeof(text) - text_len, "And more...\n");
+			gi.cprintf(ent, PRINT_HIGH, "%s", text);
+			return;
+		}
+
+		strcat(text, st);
+	}
+
+	gi.cprintf(ent, PRINT_HIGH, "%s", text);
+}
+
+static void
+Cmd_Teleport_f(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if ((deathmatch->value || coop->value) && !sv_cheats->value)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		return;
+	}
+
+	if (gi.argc() != 4)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Usage: teleport x y z\n");
+		return;
+	}
+
+	/* Unlink it to prevent unwanted interactions with
+	   other entities. This works because linkentity()
+	   uses the first available slot and the player is
+	   always at postion 0. */
+	gi.unlinkentity(ent);
+
+	/* Set new position */
+	ent->s.origin[0] = atof(gi.argv(1));
+	ent->s.origin[1] = atof(gi.argv(2));
+	ent->s.origin[2] = atof(gi.argv(3)) + 10.0;
+
+	/* Remove velocity and keep the entity briefly in place
+	   to give the server and clients time to catch up. */
+	VectorClear(ent->velocity);
+	ent->client->ps.pmove.pm_time = 20;
+	ent->client->ps.pmove.pm_flags |= PMF_TIME_TELEPORT;
+
+	/* Remove viewangles. They'll be recalculated
+	   by the client at the next frame. */
+	VectorClear(ent->s.angles);
+	VectorClear(ent->client->ps.viewangles);
+	VectorClear(ent->client->v_angle);
+
+	/* Telefrag everything that's in the target location. */
+	KillBox(ent);
+
+	/* And link it back in. */
+	gi.linkentity(ent);
+}
+
+static void
+Cmd_SpawnEntity_f(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if ((deathmatch->value || coop->value) && !sv_cheats->value)
+	{
+		gi.cprintf(ent, PRINT_HIGH,
+			"You must run the server with '+set cheats 1' to enable this command.\n");
+		return;
+	}
+
+	if (gi.argc() < 5 || gi.argc() > 9)
+	{
+		gi.cprintf(ent, PRINT_HIGH,
+			"Usage: spawnentity classname x y z <angle_x angle_y angle_z> <flags>\n");
+		return;
+	}
+
+	ent = G_Spawn();
+
+	// set position
+	ent->s.origin[0] = atof(gi.argv(2));
+	ent->s.origin[1] = atof(gi.argv(3));
+	ent->s.origin[2] = atof(gi.argv(4));
+	// angles
+	if (gi.argc() >= 8)
+	{
+		ent->s.angles[0] = atof(gi.argv(5));
+		ent->s.angles[1] = atof(gi.argv(6));
+		ent->s.angles[2] = atof(gi.argv(7));
+	}
+	// flags
+	if (gi.argc() >= 9)
+	{
+		ent->spawnflags = atoi(gi.argv(8));
+	}
+
+	ent->classname = G_CopyString(gi.argv(1));
+
+	ED_CallSpawn(ent);
+}
+
+static void
+Cmd_SpawnOnStartByClass(char *classname, const vec3_t origin)
+{
+	edict_t *opponent = G_Spawn();
+
+	// set position
+	opponent->s.origin[0] = origin[0];
+	opponent->s.origin[1] = origin[1];
+	opponent->s.origin[2] = origin[2];
+	// and class
+	opponent->classname = G_CopyString(classname);
+
+	ED_CallSpawn(opponent);
+
+	gi.dprintf("Spawned entity at %f %f %f\n",
+		origin[0], origin[1], origin[2]);
+}
+
+static void
+Cmd_SpawnOnStart_f(edict_t *ent)
+{
+	edict_t *cur = NULL;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	if ((deathmatch->value || coop->value) && !sv_cheats->value)
+	{
+		gi.cprintf(ent, PRINT_HIGH,
+			"You must run the server with '+set cheats 1' to enable this command.\n");
+		return;
+	}
+
+	if (gi.argc() != 2)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Usage: spawnonstart classname\n");
+		return;
+	}
+
+	while ((cur = G_Find(cur, FOFS(classname),
+		"info_player_deathmatch")) != NULL)
+	{
+		Cmd_SpawnOnStartByClass(gi.argv(1), cur->s.origin);
+	}
+
+	while ((cur = G_Find(cur, FOFS(classname),
+		"info_player_coop")) != NULL)
+	{
+		Cmd_SpawnOnStartByClass(gi.argv(1), cur->s.origin);
+	}
+
+	while ((cur = G_Find(cur, FOFS(classname),
+		"info_player_start")) != NULL)
+	{
+		Cmd_SpawnOnStartByClass(gi.argv(1), cur->s.origin);
+	}
+}
+
+static void
+Cmd_ListEntities_f(edict_t *ent)
+{
+	if ((deathmatch->value || coop->value) && !sv_cheats->value)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "You must run the server with '+set cheats 1' to enable this command.\n");
+		return;
+	}
+
+	if (gi.argc() < 2)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Usage: listentities <all|ammo|items|keys|monsters|weapons>\n");
+		return;
+	}
+
+	/* What to print? */
+	qboolean all = false;
+	qboolean ammo = false;
+	qboolean items = false;
+	qboolean keys = false;
+	qboolean monsters = false;
+	qboolean weapons = false;
+
+	for (int i = 1; i < gi.argc(); i++)
+	{
+		const char *arg = gi.argv(i);
+
+		if (Q_stricmp(arg, "all") == 0)
+		{
+			all = true;
+		}
+		else if (Q_stricmp(arg, "ammo") == 0)
+		{
+			ammo = true;
+		}
+		else if (Q_stricmp(arg, "items") == 0)
+		{
+			items = true;
+		}
+		else if (Q_stricmp(arg, "keys") == 0)
+		{
+			keys = true;
+		}
+		else if (Q_stricmp(arg, "monsters") == 0)
+		{
+			monsters = true;
+		}
+		else if (Q_stricmp(arg, "weapons") == 0)
+		{
+			weapons = true;
+		}
+		else
+		{
+			gi.cprintf(ent, PRINT_HIGH, "Usage: listentities <all|ammo|items|keys|monsters|weapons>\n");
+		}
+	}
+
+	/* Print what's requested. */
+	for (int i = 0; i < globals.num_edicts; i++)
+	{
+		edict_t *cur = &g_edicts[i];
+		qboolean print = false;
+
+		/* Ensure that the entity is valid. */
+		if (!cur->classname)
+		{
+			continue;
+		}
+
+		if (all)
+		{
+			print = true;
+		}
+		else
+		{
+			if (ammo)
+			{
+				if (strncmp(cur->classname, "ammo_", 5) == 0)
+				{
+					print = true;
+				}
+			}
+
+			if (items)
+			{
+				if (strncmp(cur->classname, "item_", 5) == 0)
+				{
+					print = true;
+				}
+			}
+
+			if (keys)
+			{
+				if (strncmp(cur->classname, "key_", 4) == 0)
+				{
+					print = true;
+				}
+			}
+
+			if (monsters)
+			{
+				if (strncmp(cur->classname, "monster_", 8) == 0)
+				{
+					print = true;
+				}
+			}
+
+			if (weapons)
+			{
+				if (strncmp(cur->classname, "weapon_", 7) == 0)
+				{
+					print = true;
+				}
+			}
+		}
+
+		if (print)
+		{
+			/* We use dprintf() because cprintf() may flood the server... */
+			gi.dprintf("%s: %.3f %.3f %.3f\n",
+				cur->classname, cur->s.origin[0], cur->s.origin[1], cur->s.origin[2]);
+		}
+	}
+}
+
+#if 0
+static int
+get_ammo_usage(gitem_t *weap)
+{
+	if (!weap)
+	{
+		return 0;
+	}
+
+	/* handles grenades and tesla which only use 1 ammo per shot */
+	/* have to check this because they don't store their ammo usage in weap->quantity */
+	if (weap->flags & IT_AMMO)
+	{
+		return 1;
+	}
+
+	/* weapons store their ammo usage in the quantity field */
+	return weap->quantity;
+}
+
+static gitem_t *
+cycle_weapon(edict_t *ent)
+{
+	gclient_t *cl;
+	gitem_t *noammo_fallback;
+	gitem_t *noweap_fallback;
+	gitem_t *weap;
+	gitem_t *ammo;
+	int i;
+	int start;
+	int num_weaps;
+	const char *weapname = NULL;
+
+	if (!ent)
+	{
+		return NULL;
+	}
+
+	cl = ent->client;
+
+	if (!cl)
+	{
+		return NULL;
+	}
+
+	num_weaps = gi.argc();
+
+	/* find where we want to start the search for the next eligible weapon */
+	if (cl->newweapon)
+	{
+		weapname = cl->newweapon->classname;
+	}
+	else if (cl->pers.weapon)
+	{
+		weapname = cl->pers.weapon->classname;
+	}
+
+	if (weapname)
+	{
+		for (i = 1; i < num_weaps; i++)
+		{
+			if (Q_stricmp(weapname, gi.argv(i)) == 0)
+			{
+				break;
+			}
+		}
+
+		i++;
+
+		if (i >= num_weaps)
+		{
+			i = 1;
+		}
+	}
+	else
+	{
+		i = 1;
+	}
+
+	start = i;
+	noammo_fallback = NULL;
+	noweap_fallback = NULL;
+
+	/* find the first eligible weapon in the list we can switch to */
+	do
+	{
+		weap = FindItemByClassname(gi.argv(i));
+
+		if (weap && weap != cl->pers.weapon && (weap->flags & IT_WEAPON) && weap->use)
+		{
+			if (cl->pers.inventory[ITEM_INDEX(weap)] > 0)
+			{
+				if (weap->ammo)
+				{
+					ammo = FindItem(weap->ammo);
+					if (ammo)
+					{
+						if (cl->pers.inventory[ITEM_INDEX(ammo)] >= get_ammo_usage(weap))
+						{
+							return weap;
+						}
+
+						if (!noammo_fallback)
+						{
+							noammo_fallback = weap;
+						}
+					}
+				}
+				else
+				{
+					return weap;
+				}
+			}
+			else if (!noweap_fallback)
+			{
+				noweap_fallback = weap;
+			}
+		}
+
+		i++;
+
+		if (i >= num_weaps)
+		{
+			i = 1;
+		}
+	} while (i != start);
+
+	/* if no weapon was found, the fallbacks will be used for
+	   printing the appropriate error message to the console
+	*/
+
+	if (noammo_fallback)
+	{
+		return noammo_fallback;
+	}
+
+	return noweap_fallback;
+}
+
+static void
+Cmd_CycleWeap_f(edict_t *ent)
+{
+	gitem_t *weap;
+	gclient_t *cl;
+	int num_weaps;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	num_weaps = gi.argc();
+	if (num_weaps <= 1)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Usage: cycleweap classname1 classname2 .. classnameN\n");
+		return;
+	}
+
+	weap = cycle_weapon(ent);
+	if (!weap) return;
+
+	cl = ent->client;
+	if (cl->pers.inventory[ITEM_INDEX(weap)] <= 0)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Out of item: %s\n", weap->pickup_name);
+		return;
+	}
+
+	weap->use(ent, weap);
+	if (num_weaps > 3 && cl->newweapon == weap)
+	{
+		cl->ps.stats[STAT_PICKUP_ICON] = gi.imageindex(weap->icon);
+		cl->ps.stats[STAT_PICKUP_STRING] = CS_ITEMS + ITEM_INDEX(weap);
+		cl->pickup_msg_time = level.time + 0.7f;
+	}
+}
+
+static gitem_t *
+preferred_weapon(edict_t *ent)
+{
+	gclient_t *cl;
+	gitem_t *noammo_fallback;
+	gitem_t *noweap_fallback;
+	gitem_t *weap;
+	gitem_t *ammo;
+	int i;
+	int num_weaps;
+
+	if (!ent)
+	{
+		return NULL;
+	}
+
+	cl = ent->client;
+
+	if (!cl)
+	{
+		return NULL;
+	}
+
+	num_weaps = gi.argc();
+	noammo_fallback = NULL;
+	noweap_fallback = NULL;
+
+	/* find the first eligible weapon in the list we can switch to */
+	for (i = 1; i < num_weaps; i++)
+	{
+		weap = FindItemByClassname(gi.argv(i));
+
+		if (weap && (weap->flags & IT_WEAPON) && weap->use)
+		{
+			if (cl->pers.inventory[ITEM_INDEX(weap)] > 0)
+			{
+				if (weap->ammo)
+				{
+					ammo = FindItem(weap->ammo);
+					if (ammo)
+					{
+						if (cl->pers.inventory[ITEM_INDEX(ammo)] >= get_ammo_usage(weap))
+						{
+							return weap;
+						}
+
+						if (!noammo_fallback)
+						{
+							noammo_fallback = weap;
+						}
+					}
+				}
+				else
+				{
+					return weap;
+				}
+			}
+			else if (!noweap_fallback)
+			{
+				noweap_fallback = weap;
+			}
+		}
+	}
+
+	/* if no weapon was found, the fallbacks will be used for
+	   printing the appropriate error message to the console
+	*/
+
+	if (noammo_fallback)
+	{
+		return noammo_fallback;
+	}
+
+	return noweap_fallback;
+}
+
+static void
+Cmd_PrefWeap_f(edict_t *ent)
+{
+	gitem_t *weap;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	if (gi.argc() <= 1)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Usage: prefweap classname1 classname2 .. classnameN\n");
+		return;
+	}
+
+	weap = preferred_weapon(ent);
+	if (weap)
+	{
+		if (ent->client->pers.inventory[ITEM_INDEX(weap)] <= 0)
+		{
+			gi.cprintf(ent, PRINT_HIGH, "Out of item: %s\n", weap->pickup_name);
+		}
+		else
+		{
+			weap->use(ent, weap);
+		}
+	}
+}
+#endif
 
 void
 Cmd_ShowCoords_f(edict_t *ent)
@@ -1554,7 +2207,7 @@ ClientCommand(edict_t *ent)
 		return;
 	}
 
-	if (Q_stricmp(cmd, "say_team") == 0)
+	if ((Q_stricmp(cmd, "say_team") == 0) || (Q_stricmp(cmd, "steam") == 0))
 	{
 		Cmd_Say_f(ent, true, false);
 		return;
@@ -1563,6 +2216,12 @@ ClientCommand(edict_t *ent)
 	if (Q_stricmp(cmd, "score") == 0)
 	{
 		Cmd_Score_f(ent);
+		return;
+	}
+
+	if (Q_stricmp(cmd, "help") == 0)
+	{
+		Cmd_Help_f(ent);
 		return;
 	}
 
@@ -1679,6 +2338,30 @@ ClientCommand(edict_t *ent)
 		else if (ent->client->ps.fov > 160)
 			ent->client->ps.fov = 160;
 	}
+	else if (Q_stricmp(cmd, "playerlist") == 0)
+	{
+		Cmd_PlayerList_f(ent);
+	}
+	else if (Q_stricmp(cmd, "entcount") == 0)
+	{
+		Cmd_Ent_Count_f(ent);
+	}
+	else if (Q_stricmp(cmd, "teleport") == 0)
+	{
+		Cmd_Teleport_f(ent);
+	}
+	else if (Q_stricmp(cmd, "spawnentity") == 0)
+	{
+		Cmd_SpawnEntity_f(ent);
+	}
+	else if (Q_stricmp(cmd, "spawnonstart") == 0)
+	{
+		Cmd_SpawnOnStart_f(ent);
+	}
+	else if (Q_stricmp(cmd, "listentities") == 0)
+	{
+		Cmd_ListEntities_f(ent);
+	}
 	else if (Q_stricmp(cmd, "thirdperson") == 0)
 	{
 		Cmd_Chasecam_Toggle(ent);
@@ -1687,37 +2370,4 @@ ClientCommand(edict_t *ent)
 	{
 		Cmd_Say_f(ent, false, true);
 	}
-}
-
-// Flood protection
-qboolean
-CheckFlood(edict_t *ent)
-{
-	int					i;
-
-	if (flood_msgs->value)
-	{
-		if (level.time < ent->client->flood_locktill)
-		{
-			G_MsgVarCenterPrintf(ent, GM_SHUTUP, (int)(ent->client->flood_locktill - level.time));
-			 return true;
-		}
-
-		i = ent->client->flood_whenhead - flood_msgs->value + 1;
-		if (i < 0)
-		{
-			i = (sizeof(ent->client->flood_when) / sizeof(ent->client->flood_when[0])) + i;
-		}
-
-		if (ent->client->flood_when[i] && (level.time - ent->client->flood_when[i] < flood_persecond->value))
-		{
-			ent->client->flood_locktill = level.time + flood_waitdelay->value;
-			G_MsgVarCenterPrintf(ent, GM_SHUTUP, (int)flood_waitdelay->value);
-			return true;
-		}
-
-		ent->client->flood_whenhead = (ent->client->flood_whenhead + 1) % (sizeof(ent->client->flood_when) / sizeof(ent->client->flood_when[0]));
-		ent->client->flood_when[ent->client->flood_whenhead] = level.time;
-	}
-	return false;
 }
