@@ -3588,7 +3588,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		pm.cmd.upmove = client->playerinfo.upvel;
 	}
 
-	if(client->RemoteCameraLockCount > 0)
+	if (client->RemoteCameraLockCount > 0)
 	{
 		pm.cmd.forwardmove = 0;
 		pm.cmd.sidemove = 0;
