@@ -26,9 +26,9 @@
  */
 
 #include "../header/local.h"
+#include "../monster/misc/player.h"
 #include "../header/g_skeletons.h"
 #include "../header/g_teleport.h"
-#include "../monster/misc/player.h"
 #include "../player/library/player.h"
 #include "../player/library/p_animactor.h"
 #include "../player/library/p_anims.h"
@@ -45,6 +45,7 @@
 static edict_t *current_player;
 static gclient_t *current_client;
 
+static vec3_t forward, right, up;
 static float xyspeed;
 
 static float bobmove;
@@ -57,19 +58,15 @@ extern void PrintLocalBuoyInfo(vec3_t org);
 
 
 // ** setup a looping sound on the client
-void G_set_looping_sound(edict_t *self, int sound_num)
+void
+G_set_looping_sound(edict_t *self, int sound_num)
 {
 	self->s.sound = sound_num;
 	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 }
 
-
-// ************************************************************************************************
-// ClientServerRand
-// ----------------
-// ************************************************************************************************
-
-static int ClientServerRand(playerinfo_t *playerinfo,int mn,int mx)
+static int
+ClientServerRand(playerinfo_t *playerinfo,int mn, int mx)
 {
 	int t;
 
@@ -83,12 +80,8 @@ static int ClientServerRand(playerinfo_t *playerinfo,int mn,int mx)
 	return(t+mn);
 }
 
-// ************************************************************************************************
-// InitPlayerinfo
-// --------------
-// ************************************************************************************************
-
-void InitPlayerinfo(edict_t *ent)
+void
+InitPlayerinfo(edict_t *ent)
 {
 	// Client side function callbacks (approximating functionality of server function callbacks).
 
@@ -159,12 +152,8 @@ void InitPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.ishistory = false;
 }
 
-// ************************************************************************************************
-// SetupPlayerinfo
-// ---------------
-// ************************************************************************************************
-
-void SetupPlayerinfo(edict_t *ent)
+void
+SetupPlayerinfo(edict_t *ent)
 {
 	int	i;
 
@@ -274,12 +263,8 @@ void SetupPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.pm_w_flags = ent->client->ps.pmove.w_flags;
 }
 
-// ************************************************************************************************
-// WritePlayerinfo
-// ---------------
-// ************************************************************************************************
-
-void WritePlayerinfo(edict_t *ent)
+void
+WritePlayerinfo(edict_t *ent)
 {
 	int	i;
 
@@ -493,17 +478,11 @@ P_DamageFeedback(edict_t *player)
 	client->damage_knockback = 0;
 }
 
-/*
-=============
-P_WorldEffects
-=============
-*/
-
-void P_WorldEffects (void)
+void
+P_WorldEffects(void)
 {
-	int		waterlevel,old_waterlevel;
-	vec3_t	Origin,
-			Dir;
+	int waterlevel, old_waterlevel;
+	vec3_t Origin, Dir;
 
 	if (current_player->client->playerinfo.deadflag > DEAD_NO)
 		return;
@@ -713,40 +692,46 @@ void P_WorldEffects (void)
 					 DAMAGE_SUFFOCATION,
 					 MOD_SLIME);
 		}
+		/* if out of air, start drowning */
 		else if ((current_player->air_finished + current_player->client->playerinfo.lungs_timer) < level.time)
 		{
-			// If out of air, start drowning.
-
-			if (current_player->client->next_drown_time < level.time && current_player->health > 0)
+			/* drown! */
+			if ((current_player->client->next_drown_time < level.time) &&
+				(current_player->health > 0))
 			{
 				current_player->client->next_drown_time = level.time + 1;
 
-				// Take more damage the longer underwater.
-
+				/* take more damage the longer underwater */
 				current_player->dmg += 2;
 
 				if (current_player->dmg > 15)
+				{
 					current_player->dmg = 15;
+				}
 
-				// Play a gurp sound instead of a normal pain sound.
-
-				if (irand(0, 1))
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning1.wav"), 1, ATTN_NORM, 0);
+				/* play a gurp sound instead of a normal pain sound */
+				if (current_player->health <= current_player->dmg)
+				{
+					gi.sound(current_player, CHAN_VOICE,
+							gi.soundindex("player/drown1.wav"), 1, ATTN_NORM, 0);
+				}
+				else if (randk() & 1)
+				{
+					gi.sound(current_player, CHAN_VOICE,
+						gi.soundindex("*drowning1.wav"), 1, ATTN_NORM, 0);
+				}
 				else
-					gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning2.wav"), 1, ATTN_NORM, 0);
+				{
+					gi.sound(current_player, CHAN_VOICE,
+							gi.soundindex("*drowning2.wav"), 1, ATTN_NORM, 0);
+				}
 
 				current_player->pain_debounce_time = level.time;
 
-				T_Damage(current_player,
-						 world,
-						 world,
-						 vec3_origin,
-						 current_player->s.origin,
-						 vec3_origin,
-						 current_player->dmg,
-						 0,
-						 DAMAGE_SUFFOCATION,
-						 MOD_WATER);
+				T_Damage(current_player, world, world, vec3_origin,
+						current_player->s.origin, vec3_origin,
+						current_player->dmg, 0, DAMAGE_SUFFOCATION,
+						MOD_WATER);
 			}
 
 		}
@@ -809,14 +794,18 @@ void P_WorldEffects (void)
 	}
 }
 
-/*
-===============
-G_SetClientSound
-===============
-*/
-
-void G_SetClientSound (edict_t *ent)
+void
+G_SetClientSound(edict_t *ent)
 {
+}
+
+void
+G_SetClientFrame(edict_t *ent, float speed)
+{
+	if (speed)
+	{
+		xyspeed = speed;
+	}
 }
 
 // ************************************************************************************************
@@ -935,6 +924,7 @@ ClientEndServerFrame(edict_t *ent)
 	// ********************************************************************************************
 	G_SetStats(ent);
 	G_SetClientSound(ent);
+	G_SetClientFrame(ent, 0);
 
 	// ********************************************************************************************
 	// Handle player animation.

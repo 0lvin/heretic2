@@ -1352,6 +1352,7 @@
 {"target_actor_touch", (byte *)target_actor_touch},
 {"target_anger_use", (byte *)target_anger_use},
 {"target_angle", (byte *)target_angle},
+{"target_camera_dummy_think", (byte *)target_camera_dummy_think},
 {"target_crosslevel_target_think", (byte *)target_crosslevel_target_think},
 {"target_earthquake_think", (byte *)target_earthquake_think},
 {"target_earthquake_use", (byte *)target_earthquake_use},
@@ -1451,6 +1452,7 @@
 {"use_target_steam", (byte *)use_target_steam},
 */
 {"use_target_gravity", (byte *)use_target_gravity},
+{"update_target_camera_think", (byte *)update_target_camera_think},
 {"update_target_soundfx", (byte *)update_target_soundfx},
 {"use_target_soundfx", (byte *)use_target_soundfx},
 {"visible", (byte *)visible},
