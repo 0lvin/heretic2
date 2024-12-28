@@ -994,6 +994,18 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 	G_FindTeams();
 }
 
+// EAX world preset types
+enum
+{
+	EAX_GENERIC,
+	EAX_ALL_STONE,
+	EAX_ARENA,
+	EAX_CITY_AND_SEWERS,
+	EAX_CITY_AND_ALLEYS,
+	EAX_FOREST,
+	EAX_PSYCHOTIC,
+};
+
 typedef struct
 {
 	char	*level_name;

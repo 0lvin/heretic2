@@ -287,4 +287,26 @@ typedef enum HighPriestessStaff_e
 	HP_STAFF_TRAIL,
 } HighPriestessStaff_t;
 
+
+#define MAX_PERSISTANT_EFFECTS		512
+
+typedef struct PerEffectsBuffer_s
+{
+	byte	buf[ENTITY_FX_BUF_SIZE];
+	int		bufSize;
+	int		freeBlock;
+	int		numEffects;
+	int		send_mask;
+	int		demo_send_mask;
+	int		fx_num;
+	// jmarshall
+	qboolean inUse;
+	qboolean needsUpdate;
+	qboolean nonPersistant;
+
+	void* entity;
+	int data_size;
+	// jmarshall end
+} PerEffectsBuffer_t;
+
 #endif
