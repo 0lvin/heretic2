@@ -323,6 +323,13 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 	ge->SpawnEntities(sv.name, entity, spawnpoint);
 	free(entity);
 
+	/* verify game didn't clobber important stuff */
+	if ((int)checksum !=
+		(int)strtol(sv.configstrings[CS_MAPCHECKSUM], (char **)NULL, 10))
+	{
+		Com_Error(ERR_DROP, "Game DLL corrupted server configstrings");
+	}
+
 	/* all precaches are complete */
 	sv.state = serverstate;
 	Com_SetServerState(sv.state);
@@ -330,15 +337,12 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 	/* create a baseline for more efficient communications */
 	SV_CreateBaseline();
 
+	/* run two frames to allow everything to settle */
+	ge->RunFrame();
+	ge->RunFrame();
+
 	/* check for a savegame */
 	SV_CheckForSavegame(isautosave);
-
-	/* run two frames to allow everything to settle */
-	if (!loadgame)
-	{
-		ge->RunFrame();
-		ge->RunFrame();
-	}
 
 	/* set serverinfo variable */
 	Cvar_FullSet("mapname", sv.name, CVAR_SERVERINFO | CVAR_NOSET);
