@@ -1264,8 +1264,6 @@ EFFECTS_OBJS_ = \
 	src/game/effects/ce_message.o \
 	src/game/effects/client_effects.o \
 	src/game/effects/client_entities.o \
-	src/game/effects/font1.o \
-	src/game/effects/font2.o \
 	src/game/effects/fx_ammo_pickup.o \
 	src/game/effects/fx_animate.o \
 	src/game/effects/fx_assassin.o \
