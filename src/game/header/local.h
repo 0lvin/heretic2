@@ -1451,6 +1451,8 @@ void ChasePrev(edict_t *ent);
 void GetChaseTarget(edict_t *ent);
 
 /* savegame */
+void ConstructEntities(void);
+void G_ClearMessageQueues();
 void InitGame(void);
 void ReadLevel(const char *filename);
 void WriteLevel(const char *filename);

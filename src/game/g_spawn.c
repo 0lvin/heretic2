@@ -992,6 +992,7 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 	gi.dprintf("%i entities inhibited.\n", inhibit);
 
 	G_FindTeams();
+	ConstructEntities();
 }
 
 // EAX world preset types

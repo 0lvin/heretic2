@@ -289,6 +289,4 @@ typedef struct
 	int edict_size;
 	int num_edicts;             /* current number, <= max_edicts */
 	int max_edicts;
-
-	void (*ConstructEntities)(void);
 } game_export_t;

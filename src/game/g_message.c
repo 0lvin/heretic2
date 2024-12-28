@@ -201,8 +201,11 @@ void G_ClearMessageQueue(edict_t *self)
 
 	// If either of these fire - do a rebuild all
 	// otherwise it will try to free random memory and lead to an unstable system
-	assert(msgs->front);
-	assert(msgs->rearSentinel);
+	if (!msgs->front || !msgs->rearSentinel)
+	{
+		gi.dprintf("Message queue is uninitializad\n");
+		return;
+	}
 
 	while(!SLList_IsEmpty(msgs))
 	{

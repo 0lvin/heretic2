@@ -333,8 +333,6 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 	/* check for a savegame */
 	SV_CheckForSavegame(isautosave);
 
-	ge->ConstructEntities();
-
 	/* run two frames to allow everything to settle */
 	if (!loadgame)
 	{
