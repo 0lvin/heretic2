@@ -2023,7 +2023,8 @@ volume   range of .1 to 1   (default .5)
   1 - full volume
 -----------------------------------
 */
-void SP_sound_ambient_silverspring (edict_t *self)
+void
+SP_sound_ambient_silverspring(edict_t *self)
 {
 	self->style = SilverSpringSoundID[self->style];
 	sound_ambient_init(self);
@@ -2072,7 +2073,8 @@ remove_camera(edict_t *self)
 	}
 }
 
-void misc_remote_camera_think(edict_t *self)
+void
+misc_remote_camera_think(edict_t *self)
 {
 	// ********************************************************************************************
 	// Attempt to find my owner entity (i.e. what I'm fixed to). If nothing is found, then my
@@ -2395,7 +2397,8 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void SP_misc_remote_camera(edict_t *self)
+void
+SP_misc_remote_camera(edict_t *self)
 {
 	self->enemy = self->targetEnt = NULL;
 

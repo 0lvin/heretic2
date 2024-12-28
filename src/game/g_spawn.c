@@ -1175,11 +1175,6 @@ static char *dm_statusbar =
 " xr -96 "
 " bar 23 60 16 " // Powerup time left
 "endif "
-
-#if	0
-"xc 0 "			// Frag
-"num 3 15 "
-#endif
 ;
 
 /*QUAKED worldspawn (0 0 0) ? NOBODIES

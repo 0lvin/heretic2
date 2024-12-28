@@ -1062,36 +1062,7 @@ SCR_TouchPics(void)
 	}
 }
 
-void
-SCR_DrawPic(int x, int y, char** stat, int flags)
-{
-	const char* token;
-	int statval;
-	char* image;
-
-	token = (const char*)COM_Parse(stat);
-	statval = cl.frame.playerstate.stats[atoi(token)];
-	if (statval)
-	{
-		/*
-		TODO: rewrite, do we need alpha in DrawPic?
-		float alpha;
-
-		alpha = 1.0;
-		if (flags && (statval & 0x8000) == 0)
-			alpha = 0.5;
-		*/
-		image = cl.configstrings[(statval & 0x7FFF) + 1056];
-		if (*image)
-		{
-			SCR_AddDirtyPoint(x, y);
-			SCR_AddDirtyPoint(x + 31, y + 31);
-			Draw_PicScaled(x, y, image, 1.0f);
-		}
-	}
-}
-
-char* scr_number_table[] = {
+static char* scr_number_table[] = {
 	"menu/num_0.m32",
 	"menu/num_1.m32",
 	"menu/num_2.m32",
@@ -1117,111 +1088,93 @@ char* scr_number_table[] = {
 	"menu/num_neg.m32",
 };
 
-byte
-SCR_CharTableOffset(char c, qboolean lessZero)
+static void
+SCR_DrawNum(int x, int y, int stat, float scale, qboolean inverse)
 {
-	byte result; // al
-
-	if (c == 45)
-	{
-		result = 20;
-	}
-	else
-	{
-		result = c + 10 * lessZero - 48;
-	}
-
-	return result;
-}
-
-void
-SCR_DrawNum(int x, int y, int num, int stat, qboolean lessZero)
-{
-	signed int len;
-	int xoffset;
-	signed int j;
-	int offset2;
-	int stride;
+	int len, xoffset, j, yoffset, num;
 	char buffer[16];
-	int yoffset;
 
-	stride = 0;
-	yoffset = y + 16;
-	if (num >= 1)
+	num = 3;
+	yoffset = y + 16 * scale;
+	Com_sprintf(buffer, sizeof(buffer), "%i", stat);
+	len = strlen(buffer);
+	if (len > num)
 	{
-		if (num > 3)
-			num = 3;
-		Com_sprintf(buffer, 16, "%i", stat);
-		len = strlen(buffer);
-		if (len > num)
-			len = num;
-		stride += (8 * len);
-		xoffset = 19 * num - stride + x - 30;
-		SCR_AddDirtyPoint(xoffset, yoffset);
-		SCR_AddDirtyPoint(19 * num + x - 30, yoffset + 8);
-		for (j = 0; j < len; ++j)
-		{
-			offset2 = SCR_CharTableOffset(buffer[j], lessZero);
-			Draw_PicScaled(xoffset, yoffset, scr_number_table[offset2], 1.0f);
-			xoffset += 8;
-		}
+		len = num;
 	}
-}
 
-/*
- * TODO: Rewrite
- */
-void
-SCR_RenderBar(int x, int y, int statnum, int statvalue, int statval2)
-{
-	int v6;
-	int v7;
-	char* v8;
-	long v9;
-	int v10;
-	int v11;
-	char* a2;
-	short a5;
+	xoffset = 19 * num * scale - (8 * len * scale) + x - 30  * scale;
+	SCR_AddDirtyPoint(xoffset, yoffset);
+	SCR_AddDirtyPoint(x + 19 * num * scale - 30 * scale, yoffset + 8 * scale);
+	for (j = 0; j < len; ++j)
+	{
+		int c = buffer[j];
 
-	v11 = cl.frame.playerstate.stats[statval2];
-	v10 = cl.frame.playerstate.stats[statval2 + 1];
-	SCR_AddDirtyPoint(x, y - 3);
-	v6 = statnum;
-	SCR_AddDirtyPoint(x + statnum, statvalue + y + 3);
-	v7 = cl.frame.playerstate.stats[statval2 + 2];
-	a5 = v7;
-	if ((v7 & 0x8000u) != 0)
-	{
-		v7 = -v7;
-		v6 = 2 * statnum;
-		a5 = v7;
-		statnum *= 2;
-	}
-	v8 = cl.configstrings[v11 + 1056];
-	a2 = v8;
-	if (*v8)
-	{
-		if (statvalue <= v6)
+		if (c == '-')
 		{
-			if (cl.configstrings[v10 + 1056][0])
-			{
-				re.DrawStretchPic(x - 3, y, v6 + 6, statvalue, cl.configstrings[v10 + 1056]);
-				v7 = a5;
-				v8 = a2;
-			}
-			re.DrawStretchPic(x, y, v6 - ((double)statnum - (double)(v6 * v7) * 0.01),
-				statvalue,
-				v8);
+			c = 20;
 		}
 		else
 		{
-			if (cl.configstrings[v10 + 1056][0])
+			c = c - '0' + (inverse ? 10 : 0);
+		}
+		Draw_PicScaled(xoffset, yoffset, scr_number_table[c], scale);
+		xoffset += 8 * scale;
+	}
+}
+
+static void
+SCR_RenderBar(int x, int y, int width, int height, int stat_prefix, float scale)
+{
+	int icon_image_id;
+	char* icon_name;
+
+	icon_image_id = cl.frame.playerstate.stats[stat_prefix];
+	icon_name = cl.configstrings[CS_IMAGES + icon_image_id];
+	if (*icon_name)
+	{
+		int background_image_id;
+		int value;
+
+		background_image_id = cl.frame.playerstate.stats[stat_prefix + 1];
+		SCR_AddDirtyPoint(x, y - 3 * scale);
+		SCR_AddDirtyPoint(x + width * scale, height * scale + y + 3 * scale);
+		value = cl.frame.playerstate.stats[stat_prefix + 2];
+		if (value < 0)
+		{
+			value = -value;
+			width *= 2;
+		}
+
+		if (height <= width)
+		{
+			int bar_width;
+
+			if (cl.configstrings[CS_IMAGES + background_image_id][0])
 			{
-				re.DrawStretchPic(x, y - 3, v6, statvalue + 6, cl.configstrings[v10 + 1056]);
-				v7 = a5;
+				re.DrawStretchPic(x - 3 * scale, y, (width + 6)  * scale, height * scale,
+					cl.configstrings[CS_IMAGES + background_image_id]);
 			}
-			v9 = (double)statvalue - (double)(statvalue * v7) * 0.01;
-			re.DrawStretchPic(x, y + v9, v6, statvalue - v9, a2);
+			bar_width = width - (width * value * 0.01);
+			re.DrawStretchPic(x, y,
+				(width - bar_width) * scale,
+				height * scale,
+				icon_name);
+		}
+		else
+		{
+			int bar_height;
+
+			if (cl.configstrings[CS_IMAGES + background_image_id][0])
+			{
+				re.DrawStretchPic(x, y - 3 * scale, width * scale, (height + 6) * scale,
+					cl.configstrings[CS_IMAGES + background_image_id]);
+			}
+			bar_height = height - (height * value * 0.01);
+			re.DrawStretchPic(x, y + bar_height * scale,
+				width * scale,
+				(height - bar_height) * scale,
+				icon_name);
 		}
 	}
 }
@@ -1271,14 +1224,6 @@ SCR_ExecuteLayoutString(char *s)
 		{
 			token = COM_Parse(&s);
 			x = viddef.width / 2 - scale * 160 + scale * (int)strtol(token, (char **)NULL, 10);
-			continue;
-		}
-
-		if (!strcmp(token, "xc"))
-		{
-			token = COM_Parse(&s);
-			int temp = 40 * cl.frame.playerstate.stats[STAT_PUZZLE_COUNT];
-			x = ((viddef.width - temp) >> 1) + atoi(token);
 			continue;
 		}
 
@@ -1349,9 +1294,9 @@ SCR_ExecuteLayoutString(char *s)
 			clientinfo_t *ci;
 
 			token = COM_Parse(&s);
-			x = viddef.width / 2 - scale * 160 + scale*(int)strtol(token, (char **)NULL, 10);
+			x = viddef.width / 2 - scale * 160 + scale * (int)strtol(token, (char **)NULL, 10);
 			token = COM_Parse(&s);
-			y = viddef.height / 2 - scale * 120 + scale*(int)strtol(token, (char **)NULL, 10);
+			y = viddef.height / 2 - scale * 120 + scale * (int)strtol(token, (char **)NULL, 10);
 			SCR_AddDirtyPoint(x, y);
 			SCR_AddDirtyPoint(x + scale * 159, y + scale * 31);
 
@@ -1456,28 +1401,34 @@ SCR_ExecuteLayoutString(char *s)
 
 		if (!strcmp(token, "num"))
 		{
-			int num, stat;
+			int value, width;
 
 			/* draw a number */
 			token = COM_Parse(&s);
-			num = atoi(token);
+			width = (int)strtol(token, (char **)NULL, 10);
 			token = COM_Parse(&s);
-			stat = cl.frame.playerstate.stats[atoi(token)];
-			SCR_DrawNum(x, y, num, stat, stat <= 0);
+			value = cl.frame.playerstate.stats[(int)strtol(token, (char **)NULL, 10)];
+			SCR_DrawFieldScaled(x, y, 0, width, value, scale);
 			continue;
 		}
 
 		if (!strcmp(token, "hnum"))
 		{
-			int stat = cl.frame.playerstate.stats[1];
-			if (cl.frame.playerstate.stats[1] < -99)
-				stat = -99;
-
 			qboolean inverse = false;
-			if (stat < 25)
-				inverse = true;
+			int stat;
 
-			SCR_DrawNum(x, y, 3, stat, inverse);
+			stat = cl.frame.playerstate.stats[STAT_HEALTH];
+			if (stat < -99)
+			{
+				stat = -99;
+			}
+
+			if (stat < 25)
+			{
+				inverse = true;
+			}
+
+			SCR_DrawNum(x, y, stat, scale, inverse);
 			continue;
 		}
 
@@ -1621,17 +1572,55 @@ SCR_ExecuteLayoutString(char *s)
 			continue;
 		}
 
-		if (!strcmp(token, "yp"))
+		if (!strcmp(token, "xc"))
 		{
 			token = COM_Parse(&s);
-			y += atoi(token);
+			int temp = 40 * cl.frame.playerstate.stats[STAT_PUZZLE_COUNT];
+			x = ((viddef.width - temp) >> 1) + atoi(token);
 			continue;
 		}
 
 		if (!strcmp(token, "pici"))
 		{
-			if ((cl.frame.playerstate.stats[STAT_LAYOUTS] & 4) != 0)
-				SCR_DrawPic(x, y, &s, 1);
+			int value, index;
+
+			token = COM_Parse(&s);
+			index = (int)strtol(token, (char **)NULL, 10);
+
+			if (!(cl.frame.playerstate.stats[STAT_LAYOUTS] & 4))
+			{
+				continue;
+			}
+
+			if ((index < 0) || (index >= MAX_STATS))
+			{
+				Com_DPrintf("%s: bad stats index %d (0x%x) in pici\n",
+					__func__, index, index);
+				continue;
+			}
+
+			value = cl.frame.playerstate.stats[index];
+			value &= 0x7FFF;
+
+			if (value >= MAX_IMAGES)
+			{
+				Com_DPrintf("%s: Pic %d >= MAX_IMAGES in pici\n",
+					__func__, value);
+				continue;
+			}
+
+			if (cl.configstrings[CS_IMAGES + value][0] != '\0')
+			{
+				char* image;
+
+				image = cl.configstrings[CS_IMAGES + value];
+				if (*image)
+				{
+					SCR_AddDirtyPoint(x, y);
+					SCR_AddDirtyPoint(x + 31 * scale, y + 31 * scale);
+					Draw_PicScaled(x, y, image, scale);
+				}
+			}
 			continue;
 		}
 
@@ -1642,8 +1631,8 @@ SCR_ExecuteLayoutString(char *s)
 			token = COM_Parse(&s);
 			int statnum = atoi(token);
 			token = COM_Parse(&s);
-			int statvalue = atoi(token);
-			SCR_RenderBar(x, y, statnum, statvalue, statvalue2);
+			int height = atoi(token);
+			SCR_RenderBar(x, y, statnum, height, statvalue2, scale);
 			continue;
 		}
 
@@ -1651,8 +1640,10 @@ SCR_ExecuteLayoutString(char *s)
 		{
 			token = COM_Parse(&s);
 			int statetype = atoi(token);
-			int statnum = cl.frame.playerstate.stats[statetype];
-			SCR_RenderBar(x, y, statnum, cl.frame.playerstate.stats[statetype + 1], statetype + 2);
+			SCR_RenderBar(x, y,
+				cl.frame.playerstate.stats[statetype],
+				cl.frame.playerstate.stats[statetype + 1],
+				statetype + 2, scale);
 			continue;
 		}
 
