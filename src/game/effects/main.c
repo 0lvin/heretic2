@@ -686,7 +686,7 @@ AddServerEntities(frame_t *frame)
 
 		// Set model.
 
-		if (s1->modelindex == 255)
+		if (s1->modelindex == CUSTOM_PLAYER_MODEL)
 		{
 			// Use custom model and skin for player.
 

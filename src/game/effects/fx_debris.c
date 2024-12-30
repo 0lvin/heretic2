@@ -332,7 +332,7 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 
 	debris->classID = CID_DEBRIS;
 	debris->msgHandler = CE_DefaultMsgHandler;
-	if(modelindex == 255)//FIXME: these will tilt up and down with the player's torso!!!
+	if(modelindex == CUSTOM_PLAYER_MODEL)//FIXME: these will tilt up and down with the player's torso!!!
 	{	// Player special model.
 		debris->r.model = fxi.cl->clientinfo[owner->baseline.number - 1].model;
 		if (!debris->r.model)
@@ -356,7 +356,8 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 		}
 	}
 	//turn off first node always?
-	if(modelindex != 255 || (modelindex == 255 && !(BodyPart & 1)))
+	if(modelindex != CUSTOM_PLAYER_MODEL ||
+		(modelindex == CUSTOM_PLAYER_MODEL && !(BodyPart & 1)))
 	{
 		debris->r.rr_mesh |= (1 << 0);
 	}

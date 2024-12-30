@@ -156,7 +156,7 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->client->playerinfo.effects = 0;
 	ent->client->playerinfo.skinnum = 0;
 	ent->client->playerinfo.clientnum = ent - g_edicts - 1;
-	ent->s.modelindex = 255;		// will use the skin specified model
+	ent->s.modelindex = CUSTOM_PLAYER_MODEL;		// will use the skin specified model
 	ent->client->playerinfo.frame = 0;
 
 	// turn our skeleton back on

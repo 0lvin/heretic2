@@ -998,7 +998,7 @@ void PlayerChickenDeath(edict_t *self)
 	self->s.skinnum = 0;	// Hey, the skinnum stores the skin now, capiche?
 	self->s.clientnum = self - g_edicts - 1;
 
-	self->s.modelindex = 255;		// will use the skin specified model
+	self->s.modelindex = CUSTOM_PLAYER_MODEL;		// will use the skin specified model
 	self->s.frame = 0;
 
 	// Turn our skeleton back on.

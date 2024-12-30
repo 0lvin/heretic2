@@ -22,8 +22,10 @@ qboolean PlayerFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 	// Is the modelindex valid? E.g. when a player is dead, his modelindex is 0, hence his
 	// referenceInfo will be invailid.
 
-	if(owner->current.modelindex!=255)
+	if(owner->current.modelindex != CUSTOM_PLAYER_MODEL)
+	{
 		return false;
+	}
 
 	// Enable all Corvus' reference points.
 
