@@ -65,6 +65,12 @@ M_CheckBottom(edict_t *ent)
 	   world, don't bother with the tougher checks
 	   the corners must be within 16 of the midpoint */
 	start[2] = mins[2] - 1;
+
+	if (ent->gravityVector[2] > 0)
+	{
+		start[2] = maxs[2] + 1;
+	}
+
 	for (x = 0; x <= 1; x++)
 	{
 		for (y = 0; y <= 1; y++)
@@ -91,7 +97,18 @@ realcheck:
 	/* the midpoint must be within 16 of the bottom */
 	start[0] = stop[0] = (mins[0] + maxs[0]) * 0.5;
 	start[1] = stop[1] = (mins[1] + maxs[1]) * 0.5;
-	stop[2] = start[2] - 2 * STEPSIZE;
+
+	if (ent->gravityVector[2] < 0)
+	{
+		start[2] = mins[2];
+		stop[2] = start[2] - (2 * STEPSIZE);
+	}
+	else
+	{
+		start[2] = maxs[2];
+		stop[2] = start[2] + (2 * STEPSIZE);
+	}
+
 	trace = gi.trace(start, vec3_origin, vec3_origin,
 			stop, ent, MASK_MONSTERSOLID);
 
@@ -113,15 +130,31 @@ realcheck:
 			trace = gi.trace(start, vec3_origin, vec3_origin,
 					stop, ent, MASK_MONSTERSOLID);
 
-			if ((trace.fraction != 1.0) && (trace.endpos[2] > bottom))
+			if (ent->gravityVector[2] > 0)
 			{
-				bottom = trace.endpos[2];
-			}
+				if ((trace.fraction != 1.0) && (trace.endpos[2] < bottom))
+				{
+					bottom = trace.endpos[2];
+				}
 
-			if ((trace.fraction == 1.0) ||
-				(mid - trace.endpos[2] > STEPSIZE))
+				if ((trace.fraction == 1.0) ||
+					(trace.endpos[2] - mid > STEPSIZE))
+				{
+					return false;
+				}
+			}
+			else
 			{
-				return false;
+				if ((trace.fraction != 1.0) && (trace.endpos[2] > bottom))
+				{
+					bottom = trace.endpos[2];
+				}
+
+				if ((trace.fraction == 1.0) ||
+					(mid - trace.endpos[2] > STEPSIZE))
+				{
+					return false;
+				}
 			}
 		}
 	}
@@ -218,6 +251,7 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 	float stepsize;
 	vec3_t test;
 	int contents;
+	edict_t *current_bad = NULL;
 	float minheight;
 
 	if (!ent)
@@ -225,6 +259,39 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 		return false;
 	}
 
+#if 0
+	if (ent->health > 0)
+	{
+		current_bad = CheckForBadArea(ent);
+
+		if (current_bad)
+		{
+			ent->bad_area = current_bad;
+
+			if (ent->enemy && !strcmp(ent->enemy->classname, "tesla"))
+			{
+				/* if the tesla is in front of us, back up... */
+				if (IsBadAhead(ent, current_bad, move))
+				{
+					VectorScale(move, -1, move);
+				}
+			}
+		}
+		else if (ent->bad_area)
+		{
+			/* if we're no longer in a bad area, get back to business. */
+			ent->bad_area = NULL;
+
+			if (ent->oldenemy)
+			{
+				ent->enemy = ent->oldenemy;
+				ent->goalentity = ent->oldenemy;
+				FoundTarget(ent, false);
+				return true;
+			}
+		}
+	}
+#endif
 	/* try the move */
 	VectorCopy(ent->s.origin, oldorg);
 	VectorAdd(ent->s.origin, move, neworg);
@@ -280,21 +347,60 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 				}
 				else
 				{
-					if (dz > 8)
+					if (strcmp(ent->classname, "monster_fixbot") == 0)
 					{
-						neworg[2] -= 8;
-					}
-					else if (dz > 0)
-					{
-						neworg[2] -= dz;
-					}
-					else if (dz < -8)
-					{
-						neworg[2] += 8;
+						if ((ent->s.frame >= 105) && (ent->s.frame <= 120))
+						{
+							if (dz > 12)
+							{
+								neworg[2]--;
+							}
+							else if (dz < -12)
+							{
+								neworg[2]++;
+							}
+						}
+						else if ((ent->s.frame >= 31) && (ent->s.frame <= 88))
+						{
+							if (dz > 12)
+							{
+								neworg[2] -= 12;
+							}
+							else if (dz < -12)
+							{
+								neworg[2] += 12;
+							}
+						}
+						else
+						{
+							if (dz > 12)
+							{
+								neworg[2] -= 8;
+							}
+							else if (dz < -12)
+							{
+								neworg[2] += 8;
+							}
+						}
 					}
 					else
 					{
-						neworg[2] += dz;
+						if (dz > 8)
+						{
+							neworg[2] -= 8;
+						}
+						else if (dz > 0)
+						{
+							neworg[2] -= dz;
+						}
+						else if (dz < -8)
+						{
+							neworg[2] += 8;
+						}
+						else
+						{
+							neworg[2] += dz;
+						}
 					}
 				}
 			}
@@ -338,16 +444,26 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 				}
 			}
 
-			if (trace.fraction == 1)
+			if ((trace.fraction == 1) && (!trace.allsolid) && (!trace.startsolid))
 			{
 				VectorCopy(trace.endpos, ent->s.origin);
-				if (relink)
-				{
-					gi.linkentity(ent);
-					G_TouchTriggers(ent);
-				}
 
-				return true;
+#if 0
+				if (!current_bad && CheckForBadArea(ent))
+				{
+					VectorCopy(oldorg, ent->s.origin);
+				}
+				else
+#endif
+				{
+					if (relink)
+					{
+						gi.linkentity(ent);
+						G_TouchTriggers(ent);
+					}
+
+					return true;
+				}
 			}
 
 			if (!ent->enemy)
@@ -369,9 +485,9 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 		stepsize = 1;
 	}
 
-	neworg[2] += stepsize;
-	VectorCopy(neworg, end);
-	end[2] -= stepsize * 2;
+	/* trace from 1 stepsize gravityUp to 2 stepsize gravityDown. */
+	VectorMA(neworg, -1 * stepsize, ent->gravityVector, neworg);
+	VectorMA(neworg, 2 * stepsize, ent->gravityVector, end);
 
 	trace = gi.trace(neworg, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);
 
@@ -399,8 +515,16 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 	{
 		test[0] = trace.endpos[0];
 		test[1] = trace.endpos[1];
-		test[2] = trace.endpos[2] + ent->mins[2];
-		test[2] += (ent->maxs[2] - ent->mins[2]) * 0.4;
+
+		if (ent->gravityVector[2] > 0)
+		{
+			test[2] = trace.endpos[2] + ent->maxs[2] - 1;
+		}
+		else
+		{
+			test[2] = trace.endpos[2] + ent->mins[2] + 1;
+		}
+
 		contents = gi.pointcontents(test);
 
 		if (contents & MASK_WATER)
@@ -422,6 +546,8 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 				G_TouchTriggers(ent);
 			}
 
+			ent->groundentity = NULL;
+
 			return true;
 		}
 
@@ -431,6 +557,30 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 
 	/* check point traces down for dangling corners */
 	VectorCopy(trace.endpos, ent->s.origin);
+
+#if 0
+	if (ent->health > 0)
+	{
+		/* use AI_BLOCKED to tell the calling layer that we're now mad at a tesla */
+		new_bad = CheckForBadArea(ent);
+
+		if (!current_bad && new_bad)
+		{
+			if (new_bad->owner && !strcmp(new_bad->owner->classname, "tesla"))
+			{
+				if (!ent->enemy || !ent->enemy->inuse ||
+					!ent->enemy->client || !visible(ent, ent->enemy))
+				{
+					TargetTesla(ent, new_bad->owner);
+					ent->monsterinfo.aiflags |= AI_BLOCKED;
+				}
+			}
+
+			VectorCopy(oldorg, ent->s.origin);
+			return false;
+		}
+	}
+#endif
 
 	if (!M_CheckBottom(ent))
 	{
@@ -596,6 +746,13 @@ SV_StepDirection(edict_t *ent, float yaw, float dist)
 
 	if (SV_movestep(ent, move, false))
 	{
+		ent->monsterinfo.aiflags &= ~AI_BLOCKED;
+
+		if (!ent->inuse)
+		{
+			return true;
+		}
+
 		delta = ent->s.angles[YAW] - ent->ideal_yaw;
 
 		if (strncmp(ent->classname, "monster_widow", 13))
@@ -708,6 +865,17 @@ SV_NewChaseDir(edict_t *actor, edict_t *enemy, float dist)
 		SV_StepDirection(actor, d[2], dist))
 	{
 		return;
+	}
+
+	if (actor->monsterinfo.blocked)
+	{
+		if ((actor->inuse) && (actor->health > 0))
+		{
+			if ((actor->monsterinfo.blocked)(actor, dist))
+			{
+				return;
+			}
+		}
 	}
 
 	/* there is no direct path to the player, so pick another direction */
@@ -828,9 +996,16 @@ M_MoveToGoal(edict_t *ent, float dist)
 	//		return;
 
 	/* bump around... */
-	if ((((randk() & 3) == 1)) ||
+	if ((((randk() & 3) == 1) &&
+		 !(ent->monsterinfo.aiflags & AI_CHARGING)) ||
 		!SV_StepDirection(ent, ent->ideal_yaw, dist))
 	{
+		if (ent->monsterinfo.aiflags & AI_BLOCKED)
+		{
+			ent->monsterinfo.aiflags &= ~AI_BLOCKED;
+			return;
+		}
+
 		if (ent->inuse)
 		{
 			SV_NewChaseDir(ent, goal, dist);
@@ -853,6 +1028,7 @@ qboolean
 M_walkmove(edict_t *ent, float yaw, float dist)
 {
 	vec3_t move;
+	qboolean retval;
 
 	if (!ent)
 	{
@@ -870,5 +1046,7 @@ M_walkmove(edict_t *ent, float yaw, float dist)
 	move[1] = sin(yaw) * dist;
 	move[2] = 0;
 
-	return SV_movestep(ent, move, true);
+	retval = SV_movestep(ent, move, true);
+	ent->monsterinfo.aiflags &= ~AI_BLOCKED;
+	return retval;
 }
