@@ -678,6 +678,59 @@ G_InitEdict(edict_t *e)
 }
 
 /*
+ * Either finds a free edict, or allocates a
+ * new one.  Try to avoid reusing an entity
+ * that was recently freed, because it can
+ * cause the client to think the entity
+ * morphed into something else instead of
+ * being removed and recreated, which can
+ * cause interpolated angles and bad trails.
+ */
+#define POLICY_DEFAULT		0
+#define POLICY_DESPERATE	1
+
+static edict_t *
+G_FindFreeEdict(int policy)
+{
+	edict_t *e;
+
+	for (e = g_edicts + game.maxclients + 1 ; e < &g_edicts[globals.num_edicts] ; e++)
+	{
+		/* the first couple seconds of server time can involve a lot of
+		   freeing and allocating, so relax the replacement policy
+		*/
+		if (!e->inuse && (policy == POLICY_DESPERATE || e->freetime < 2.0f || (level.time - e->freetime) > 0.5f))
+		{
+			G_InitEdict(e);
+			return e;
+		}
+	}
+
+	return NULL;
+}
+
+edict_t *
+G_SpawnOptional(void)
+{
+	edict_t	*e = G_FindFreeEdict (POLICY_DEFAULT);
+
+	if (e)
+	{
+		return e;
+	}
+
+	if (globals.num_edicts >= game.maxentities)
+	{
+		return G_FindFreeEdict (POLICY_DESPERATE);
+	}
+
+	e = &g_edicts[globals.num_edicts++];
+	G_InitEdict(e);
+
+	return e;
+}
+
+/*
 =================
 G_Spawn
 

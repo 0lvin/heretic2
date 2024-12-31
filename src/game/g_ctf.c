@@ -628,6 +628,7 @@ SelectCTFSpawnPoint(edict_t *ent)
 	return spot;
 }
 
+#if 0
 /*------------------------------------------------------------------------*/
 
 /*
@@ -2368,10 +2369,12 @@ FindTechSpawn(void)
 
 	return spot;
 }
+#endif
 
 static void
 TechThink(edict_t *tech)
 {
+#if 0
 	edict_t *spot;
 
 	if ((spot = FindTechSpawn()) != NULL)
@@ -2384,22 +2387,26 @@ TechThink(edict_t *tech)
 		tech->nextthink = level.time + CTF_TECH_TIMEOUT;
 		tech->think = TechThink;
 	}
+#endif
 }
 
 void
 CTFDrop_Tech(edict_t *ent, gitem_t *item)
 {
+#if 0
 	edict_t *tech;
 
 	tech = Drop_Item(ent, item);
 	tech->nextthink = level.time + CTF_TECH_TIMEOUT;
 	tech->think = TechThink;
 	ent->client->pers.inventory[ITEM_INDEX(item)] = 0;
+#endif
 }
 
 void
 CTFDeadDropTech(edict_t *ent)
 {
+#if 0
 	gitem_t *tech;
 	edict_t *dropped;
 	int i;
@@ -2424,6 +2431,7 @@ CTFDeadDropTech(edict_t *ent)
 
 		i++;
 	}
+#endif
 }
 
 static void
@@ -2467,6 +2475,7 @@ SpawnTech(gitem_t *item, edict_t *spot)
 static void
 SpawnTechs(edict_t *ent)
 {
+#if 0
 	gitem_t *tech;
 	edict_t *spot;
 	int i;
@@ -2488,6 +2497,7 @@ SpawnTechs(edict_t *ent)
 	{
 		G_FreeEdict(ent);
 	}
+#endif
 }
 
 /*
@@ -2496,6 +2506,7 @@ SpawnTechs(edict_t *ent)
 void
 CTFRespawnTech(edict_t *ent)
 {
+#if 0
 	edict_t *spot;
 
 	if ((spot = FindTechSpawn()) != NULL)
@@ -2504,6 +2515,7 @@ CTFRespawnTech(edict_t *ent)
 	}
 
 	G_FreeEdict(ent);
+#endif
 }
 
 void
@@ -2521,6 +2533,7 @@ CTFSetupTechSpawn(void)
 	ent->think = SpawnTechs;
 }
 
+#if 0
 void
 CTFResetTech(void)
 {
@@ -5241,4 +5254,4 @@ CTFSetPowerUpEffect(edict_t *ent, int def)
 		ent->s.effects |= def;
 	}
 }
-
+#endif

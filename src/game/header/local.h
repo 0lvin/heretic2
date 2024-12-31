@@ -1211,10 +1211,17 @@ edict_t *findradius2(edict_t *from, vec3_t org, float rad);
 /* g_combat.c */
 qboolean OnSameTeam(edict_t *ent1, edict_t *ent2);
 qboolean CanDamage(edict_t *targ, edict_t *inflictor);
-qboolean CanDamageFromLoc(edict_t *targ, edict_t *inflictor, vec3_t origin);
+qboolean CheckTeamDamage(edict_t *targ, edict_t *attacker);
 void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker,
 		vec3_t dir, vec3_t point, vec3_t normal, int damage,
 		int knockback, int dflags, int mod);
+void T_RadiusDamage(edict_t *inflictor, edict_t *attacker,
+		float damage, edict_t *ignore, float radius,
+		int mod);
+void T_RadiusNukeDamage(edict_t *inflictor, edict_t *attacker, float damage,
+		edict_t *ignore, float radius, int mod);
+void cleanupHealTarget(edict_t *ent);
+qboolean CanDamageFromLoc(edict_t *targ, edict_t *inflictor, vec3_t origin);
 void T_DamageRadius(edict_t *inflictor, edict_t *attacker,
 		edict_t *ignore, float radius,
 		float maxdamage, float mindamage, int dflags,int MeansOfDeath);
@@ -1222,36 +1229,50 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 							float maxdamage, float mindamage, int dflags,int MeansOfDeath);
 
 /* damage flags */
-#define DAMAGE_NORMAL 0x00000000 /* No modifiers to damage */
-#define DAMAGE_RADIUS 0x00000001 /* damage was indirect */
-#define DAMAGE_NO_KNOCKBACK			0x00000002	// do not affect velocity, just view angles
-#define DAMAGE_ALL_KNOCKBACK		0x00000004  // Ignore damage
-#define DAMAGE_EXTRA_KNOCKBACK		0x00000008	// throw in some extra z
-#define DAMAGE_NO_PROTECTION		0x00000010  // invulnerability, and godmode have no effect
-#define DAMAGE_NO_BLOOD				0x00000020  // don't spawn any blood
-#define DAMAGE_EXTRA_BLOOD			0x00000040	// Lots of blood
-#define DAMAGE_SPELL				0x00000080  // this came from a spell, - for use in calcing armor effects
-#define DAMAGE_DISMEMBER			0x00000100  // Force this hit to use dismemberment message
-#define DAMAGE_ATTACKER_IMMUNE		0x00000200  // Inflictor receives no effect
-#define DAMAGE_ATTACKER_KNOCKBACK	0x00000400  // Inflictor takes knockback only
-#define DAMAGE_REDRAIN				0x00000800	// Red rain acid damage
-#define DAMAGE_BUBBLE				0x00001000	// Drowning damage
-#define DAMAGE_FIRE					0x00002000  // Fire damage
-#define DAMAGE_ALIVE_ONLY			0x00004000	// Only damage living things made of flesh
-#define DAMAGE_BLEEDING				0x00008000	// No protection
-#define DAMAGE_AVOID_ARMOR			0x00010000	// don't do the armor effect
-#define DAMAGE_DOUBLE_DISMEMBER		0x00020000  // Force this hit to use dismemberment message with TWICE the chance of cutting
-#define DAMAGE_HURT_FRIENDLY		0x00040000  // Always hurt friendly entities (e.g. fellow coop players).
-#define DAMAGE_POWERPHOENIX			0x00080000	// Extra knockback to shooter, 1/4 damage.
-#define DAMAGE_FIRE_LINGER			0x00100000	// Do extra fire linger damage.
-#define DAMAGE_ENEMY_MAX			0x00200000	// Do maximum damage directly to the enemy in radius
-#define DAMAGE_ONFIRE				0x00400000	// If the damage is FROM a fire...
-#define DAMAGE_PHOENIX				0x00800000	// Phoenix-oriented damage.  Do minimal fire for show, but short duration.
+#define DAMAGE_NORMAL 0x00000000            /* No modifiers to damage */
+#define DAMAGE_RADIUS 0x00000001            /* damage was indirect */
+#define DAMAGE_NO_ARMOR 0x00000002          /* armour does not protect from this damage */
+#define DAMAGE_ENERGY 0x00000004            /* damage is from an energy based weapon */
+#define DAMAGE_NO_KNOCKBACK 0x00000008      /* do not affect velocity, just view angles */
+#define DAMAGE_BULLET 0x00000010            /* damage is from a bullet (used for ricochets) */
+#define DAMAGE_NO_PROTECTION 0x00000020     /* armor, shields, invulnerability, and godmode have no effect */
+#define DAMAGE_DESTROY_ARMOR 0x00000040     /* damage is done to armor and health. */
+#define DAMAGE_NO_REG_ARMOR 0x00000080      /* damage skips regular armor */
+#define DAMAGE_NO_POWER_ARMOR 0x00000100    /* damage skips power armor */
+#define DAMAGE_ALL_KNOCKBACK 0x00000200     /* Ignore damage */
+#define DAMAGE_EXTRA_KNOCKBACK 0x00000400   /* throw in some extra z */
+#define DAMAGE_NO_BLOOD 0x00000800          /* don't spawn any blood */
+#define DAMAGE_EXTRA_BLOOD 0x00001000       /* Lots of blood */
+#define DAMAGE_SPELL 0x00002000             /* this came from a spell, - for use in calcing armor effects */
+#define DAMAGE_DISMEMBER 0x00004000         /* Force this hit to use dismemberment message */
+#define DAMAGE_ATTACKER_IMMUNE 0x00008000   /* Inflictor receives no effect */
+#define DAMAGE_ATTACKER_KNOCKBACK 0x00010000 /* Inflictor takes knockback only */
+#define DAMAGE_REDRAIN 0x00020000           /* Red rain acid damage */
+#define DAMAGE_BUBBLE 0x00040000            /* Drowning damage */
+#define DAMAGE_FIRE 0x00080000              /* Fire damage */
+#define DAMAGE_ALIVE_ONLY 0x00100000        /* Only damage living things made of flesh */
+#define DAMAGE_BLEEDING 0x00200000          /* No protection */
+#define DAMAGE_AVOID_ARMOR 0x00400000       /* don't do the armor effect */
+#define DAMAGE_DOUBLE_DISMEMBER 0x00800000  /* Force this hit to use dismemberment message with TWICE the chance of cutting */
+#define DAMAGE_HURT_FRIENDLY 0x01000000     /* Always hurt friendly entities (e.g. fellow coop players). */
+#define DAMAGE_POWERPHOENIX 0x02000000      /* Extra knockback to shooter, 1/4 damage. */
+#define DAMAGE_FIRE_LINGER 0x04000000       /* Do extra fire linger damage. */
+#define DAMAGE_ENEMY_MAX 0x08000000         /* Do maximum damage directly to the enemy in radius */
+#define DAMAGE_ONFIRE 0x10000000            /* If the damage is FROM a fire... */
+#define DAMAGE_PHOENIX 0x20000800           /* Phoenix-oriented damage.  Do minimal fire for show, but short duration. */
 
 #define DAMAGE_SUFFOCATION			(DAMAGE_NO_KNOCKBACK|DAMAGE_NO_BLOOD|DAMAGE_BUBBLE|DAMAGE_AVOID_ARMOR)
 #define DAMAGE_LAVA					(DAMAGE_NO_KNOCKBACK|DAMAGE_NO_BLOOD|DAMAGE_FIRE|DAMAGE_AVOID_ARMOR)
 #define DAMAGE_SLIME				(DAMAGE_NO_KNOCKBACK|DAMAGE_NO_BLOOD|DAMAGE_AVOID_ARMOR)
 #define DAMAGE_BURNING				(DAMAGE_ONFIRE|DAMAGE_NO_KNOCKBACK|DAMAGE_NO_BLOOD|DAMAGE_FIRE|DAMAGE_AVOID_ARMOR)
+
+#define DEFAULT_BULLET_HSPREAD 300
+#define DEFAULT_BULLET_VSPREAD 500
+#define DEFAULT_SHOTGUN_HSPREAD 1000
+#define DEFAULT_SHOTGUN_VSPREAD 500
+#define DEFAULT_DEATHMATCH_SHOTGUN_COUNT 12
+#define DEFAULT_SHOTGUN_COUNT 12
+#define DEFAULT_SSHOTGUN_COUNT 20
 
 /* g_monster.c */
 void monster_fire_bullet(edict_t *self, vec3_t start, vec3_t dir, int damage,
@@ -1849,9 +1870,106 @@ struct edict_s
 	char *classname;
 	int spawnflags;
 
+	edict_t *goalentity;
+	edict_t *movetarget;
+	float yaw_speed;
+	float ideal_yaw;
+
+	float nextthink;
+	void (*prethink)(edict_t *ent);
+	void (*think)(edict_t *self);
+	void (*blocked)(edict_t *self, edict_t *other);         /* move to moveinfo? */
+	void (*touch)(edict_t *self, edict_t *other, cplane_t *plane,
+			csurface_t *surf);
+	void (*use)(edict_t *self, edict_t *other, edict_t *activator);
+	void (*pain)(edict_t *self, edict_t *other, float kick, int damage);
+	void (*die)(edict_t *self, edict_t *inflictor, edict_t *attacker,
+			int damage, vec3_t point);
+
+	int health;
+	int max_health;
+	int gib_health;
+	int deadflag;
+
+	float show_hostile;
+	float powerarmor_time;
+
+	char *map;                  /* target_changelevel */
+
+	int viewheight;             /* height above origin where eyesight is determined */
+	int takedamage;
+	int dmg;
+	int radius_dmg;
+	float dmg_radius;
+	int sounds;                 /* now also used for player death sound aggregation */
+	// int count;
+
+	edict_t *chain;
+	edict_t *enemy;
+	edict_t *oldenemy;
+	edict_t *activator;
+	edict_t *groundentity;
+	int groundentity_linkcount;
+	// edict_t *teamchain;
+	// edict_t *teammaster;
+
+	edict_t *mynoise;           /* can go in client only */
+	edict_t *mynoise2;
+
+	int noise_index;
+	int noise_index2;
+	float volume;
+	float attenuation;
+
+	/* timing variables */
+	float wait;
+	float delay;                /* before firing targets */
+	float random;
+
+	float last_sound_time;
+
+	int watertype;
+	int waterlevel;
+
+	vec3_t move_origin;
+	vec3_t move_angles;
+
+	/* move this to clientinfo? */
+	int light_level;
+
+	int style;                  /* also used as areaportal number */
+
+	gitem_t *item;              /* for bonus items */
+
+	/* common data blocks */
+	moveinfo_t moveinfo;
+	monsterinfo_t monsterinfo;
+
+	int orders;
+
+	int plat2flags;
+	vec3_t offset;
+	vec3_t gravityVector;
+	edict_t *bad_area;
+	edict_t *hint_chain;
+	edict_t *monster_hint_chain;
+	edict_t *target_hint_chain;
+	int hint_chain_id;
+	float lastMoveTime;
+
+	/* Third person view */
+	int chasedist1;
+	int chasedist2;
+
+	float				ideal_pitch;	// Used by monsters and player.
+	float				yawOffset;		// Used in CreateMove_Step
+
+	float				accel;			// Used mostly in g_func.c.
+	float				decel;			// Used mostly in g_func.c.
+
+	float timestamp;		// Used by a couple of ojects.
+
 	char *text_msg;
-	edict_t *groundentity;		// entity serving as ground
-	int groundentity_linkcount;	// if self and groundentity's don't match, groundentity should be cleared
 	vec3_t groundNormal;		// normal of the ground
 
 	vec3_t intentMins, intentMaxs;	// if PF_RESIZE is set, then physics will attempt to change
@@ -1940,82 +2058,11 @@ struct edict_s
 
 	float				air_finished;	// Used by things that can breath (monsters and player).
 
-	edict_t *goalentity;
-	edict_t *movetarget;
-	float yaw_speed;
-	float ideal_yaw;
-	float				ideal_pitch;	// Used by monsters and player.
-	float				yawOffset;		// Used in CreateMove_Step
-
-	float				accel;			// Used mostly in g_func.c.
-	float				decel;			// Used mostly in g_func.c.
-
-	float timestamp;		// Used by a couple of ojects.
-
-	// Used by just about every type of entity.
-	float nextthink;
-	void (*prethink)(edict_t *ent);
-	void (*think)(edict_t *self);
-	void (*blocked)(edict_t *self, edict_t *other);         /* move to moveinfo? */
-	void (*touch)(edict_t *self, edict_t *other, cplane_t *plane,
-			csurface_t *surf);
-	void (*use)(edict_t *self, edict_t *other, edict_t *activator);
-	void (*pain)(edict_t *self, edict_t *other, float kick, int damage);
-	void (*die)(edict_t *self, edict_t *inflictor, edict_t *attacker,
-			int damage, vec3_t point);
-
-	int health;
-	int max_health;
-	int gib_health;
-	int deadflag;
-
-	float show_hostile;
-	float powerarmor_time;
-
-	char *map;                  /* target_changelevel */
-
-	int viewheight;             /* height above origin where eyesight is determined */
-
-	edict_t *mynoise;           /* can go in client only */
-	edict_t *mynoise2;
-
-	int noise_index;
-	int noise_index2;
-	float volume;
-	float attenuation;
-
-	/* timing variables */
-	float wait;
-	float delay;                /* before firing targets */
-	float random;
-
-	float last_sound_time;
-
-	int watertype;
-	int waterlevel;
-
-	vec3_t move_origin;
-	vec3_t move_angles;
-
 	int bloodType;		// type of stuff to spawn off when hit
 
 	void				(*TriggerActivated)(edict_t *self, edict_t *activator);
 										// used by anything which can "see", player and monsters
 	float				reflected_time;	// used by objects to tell if they've been repulsed by something..
-
-	// Except for a DAMAGE_AIM value in the turret and one commented out in the player this looks
-	// like a flag indicating if it takes damage anyone ever heard of using a bit for a flag, or
-	// even better a whole bunch of flags in an 'int'.
-
-	int					takedamage;
-
-	// Unless something will do both normal and radius damage, we only need one field. In fact we
-	// may want to move this into class statics or something.
-
-	int					dmg;			// the damage something does.
-	float				dmg_radius;		// the radius of damage.
-
-	int					sounds;			// used by a trigger and a splash, could be a class static
 
 	union {
 	int					count;			// used by polys, triggers, and items.
@@ -2024,11 +2071,6 @@ struct edict_s
 
 	int					targeted;		// used by Ogle to denote a targeted action queued up
 	int					lastbuoy;		// used to save a buoy in checking
-
-	edict_t				*chain;			// used by items and player in the body queue.
-	edict_t				*enemy;			// used by monsters, player, and a poly or two.
-	edict_t				*oldenemy;		// used by monsters.
-	edict_t				*activator;		// this that used something, used by monsters, items, and
 										// polys.
 	// Used by player only.
 
@@ -2119,32 +2161,6 @@ struct edict_s
 
 	vec3_t				pos1,pos2;		// Used by polys and turrets.
 
-	/* move this to clientinfo? */
-	int light_level;
-
-	int style;                  /* also used as areaportal number */
-
-	gitem_t *item;              /* for bonus items */
-
-	/* common data blocks */
-	moveinfo_t moveinfo;
-	monsterinfo_t monsterinfo;
-
-	int orders;
-
-	int plat2flags;
-	vec3_t offset;
-	vec3_t gravityVector;
-	edict_t *bad_area;
-	edict_t *hint_chain;
-	edict_t *monster_hint_chain;
-	edict_t *target_hint_chain;
-	int hint_chain_id;
-	float lastMoveTime;
-
-	/* Third person view */
-	int chasedist1;
-	int chasedist2;
 
 	vec3_t				v_angle_ofs;			//View Angle ofset- for when monsters look around, for line of sight checks
 

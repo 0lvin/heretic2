@@ -259,7 +259,6 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 		return false;
 	}
 
-#if 0
 	if (ent->health > 0)
 	{
 		current_bad = CheckForBadArea(ent);
@@ -291,7 +290,7 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 			}
 		}
 	}
-#endif
+
 	/* try the move */
 	VectorCopy(ent->s.origin, oldorg);
 	VectorAdd(ent->s.origin, move, neworg);
@@ -448,13 +447,11 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 			{
 				VectorCopy(trace.endpos, ent->s.origin);
 
-#if 0
 				if (!current_bad && CheckForBadArea(ent))
 				{
 					VectorCopy(oldorg, ent->s.origin);
 				}
 				else
-#endif
 				{
 					if (relink)
 					{
@@ -558,7 +555,6 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 	/* check point traces down for dangling corners */
 	VectorCopy(trace.endpos, ent->s.origin);
 
-#if 0
 	if (ent->health > 0)
 	{
 		/* use AI_BLOCKED to tell the calling layer that we're now mad at a tesla */
@@ -580,7 +576,6 @@ SV_movestep(edict_t *ent, vec3_t move, qboolean relink)
 			return false;
 		}
 	}
-#endif
 
 	if (!M_CheckBottom(ent))
 	{
@@ -711,7 +706,7 @@ M_ChangePitch(edict_t *ent)
 	}
 	//FIXME do we need a pitchspeed?
 
-	ent->s.angles[PITCH] = anglemod (current + move);
+	ent->s.angles[PITCH] = anglemod(current + move);
 }
 
 /*
@@ -947,8 +942,6 @@ SV_CloseEnough(edict_t *ent, edict_t *goal, float dist)
 	return true;
 }
 
-
-
 /*
 ======================
 M_MoveFromGoal
@@ -1021,7 +1014,7 @@ M_movetoside - move creature to the side determined by the given yaw
 void
 M_movetoside(edict_t *self,float yaw, float dist)
 {
-	M_walkmove (self, yaw, dist);
+	M_walkmove(self, yaw, dist);
 }
 
 qboolean

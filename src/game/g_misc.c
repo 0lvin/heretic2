@@ -37,7 +37,11 @@
 #include "monster/stats/stats.h"
 #include "header/g_playstats.h"
 
-void ED_CallSpawn (edict_t *ent);
+
+int debristhisframe;
+int gibsthisframe;
+
+void ED_CallSpawn(edict_t *ent);
 
 extern	vec3_t	mins;
 
@@ -366,6 +370,66 @@ ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 	gi.linkentity(gib);
 }
 
+/* ===================================================== */
+
+void
+debris_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
+		int damage /* unused */, vec3_t point /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	G_FreeEdict(self);
+}
+
+void
+ThrowDebris(edict_t *self, char *modelname, float speed, vec3_t origin)
+{
+	edict_t *chunk;
+	vec3_t v;
+
+	if (!self || !modelname)
+	{
+		return;
+	}
+
+	if (debristhisframe >= MAX_DEBRIS)
+	{
+		return;
+	}
+
+	chunk = G_SpawnOptional();
+
+	if (!chunk)
+	{
+		return;
+	}
+
+	debristhisframe++;
+
+	VectorCopy(origin, chunk->s.origin);
+	gi.setmodel(chunk, modelname);
+	v[0] = 100 * crandom();
+	v[1] = 100 * crandom();
+	v[2] = 100 + 100 * crandom();
+	VectorMA(self->velocity, speed, v, chunk->velocity);
+	chunk->movetype = MOVETYPE_BOUNCE;
+	chunk->solid = SOLID_NOT;
+	chunk->avelocity[0] = random() * 600;
+	chunk->avelocity[1] = random() * 600;
+	chunk->avelocity[2] = random() * 600;
+	chunk->think = G_FreeEdict;
+	chunk->nextthink = level.time + 5 + random() * 5;
+	chunk->s.frame = 0;
+	chunk->flags = 0;
+	chunk->classname = "debris";
+	chunk->takedamage = DAMAGE_YES;
+	chunk->die = debris_die;
+	chunk->health = 250;
+	gi.linkentity(chunk);
+}
 void
 BecomeExplosion1(edict_t *self)
 {
@@ -465,7 +529,8 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 	}
 }
 
-void BecomeDebris2(edict_t *self, float damage)
+void
+BecomeDebris2(edict_t *self, float damage)
 {
 	float		size;
 	int			violence=VIOLENCE_DEFAULT;

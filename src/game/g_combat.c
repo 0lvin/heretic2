@@ -45,40 +45,71 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *slope);
 void MG_PostDeathThink (edict_t *self);
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
+
+void M_SetEffects(edict_t *self);
+
 /*
-============
-CanDamage
-
-Returns true if the inflictor can directly damage the target.  Used for
-explosions and melee attacks.
-============
-*/
-
-qboolean CanDamage (edict_t *targ, edict_t *inflictor)
+ * clean up heal targets for medic
+ */
+void
+cleanupHealTarget(edict_t *ent)
 {
-	vec3_t	dest, diff;
-	trace_t	trace;
+	if (!ent)
+	{
+		return;
+	}
 
-	// bmodels need special checking because their origin is 0,0,0
+	ent->monsterinfo.healer = NULL;
+	ent->takedamage = DAMAGE_YES;
+	ent->monsterinfo.aiflags &= ~AI_RESURRECTING;
+	M_SetEffects(ent);
+}
+
+/*
+ * Returns true if the inflictor can
+ * directly damage the target. Used for
+ * explosions and melee attacks.
+ */
+qboolean
+CanDamage(edict_t *targ, edict_t *inflictor)
+{
+	vec3_t dest, diff;
+	trace_t trace;
+
+	if (!targ || !inflictor)
+	{
+		return false;
+	}
+
+	/* bmodels need special checking because their origin is 0,0,0 */
 	if (targ->movetype == MOVETYPE_PUSH || targ->classID == CID_BBRUSH)
 	{
-		VectorAdd (targ->absmin, targ->absmax, dest);
-		VectorScale (dest, 0.5, dest);
-		trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
+		VectorAdd(targ->absmin, targ->absmax, dest);
+		VectorScale(dest, 0.5, dest);
+		trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin,
+				dest, inflictor, MASK_SOLID);
 
 		if (trace.fraction == 1.0)
+		{
 			return true;
+		}
 
 		if (trace.ent == targ)
+		{
 			return true;
+		}
 
 		return false;
 	}
 
 	// Try a basic trace straight to the origin.  This takes care of 99% of the tests.
-	trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, targ->s.origin, inflictor, MASK_SOLID);
+	trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin,
+			targ->s.origin, inflictor, MASK_SOLID);
+
 	if (trace.fraction == 1.0)
+	{
 		return true;
+	}
 
 	// Well, a trace from origin to origin didn't work, so try tracing to the edges of the victim.
 
@@ -136,15 +167,17 @@ qboolean CanDamage (edict_t *targ, edict_t *inflictor)
 	dest[2] += targ->maxs[2];
 	trace = gi.trace(inflictor->s.origin, vec3_origin, vec3_origin, dest, inflictor, MASK_SOLID);
 	if (trace.fraction > .99)
+	{
 		return true;
+	}
 
 	// None of the traces were successful, so no good.
 	return false;
 }
 
-
 // Same function, except the origin point of the damage doesn't have to be the same as the inflictor's
-qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
+qboolean
+CanDamageFromLoc(edict_t *targ, edict_t *inflictor, vec3_t origin)
 {
 	vec3_t	dest, diff;
 	trace_t	trace;
@@ -232,7 +265,8 @@ qboolean CanDamageFromLoc (edict_t *targ, edict_t *inflictor, vec3_t origin)
 	return false;
 }
 
-void SpawnReward(edict_t *self, edict_t *attacker)
+void
+SpawnReward(edict_t *self, edict_t *attacker)
 {
 	gitem_t	*item, *lookup;
 	edict_t *newitem;
@@ -342,7 +376,8 @@ Killed
 ============
 */
 
-void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point, int mod)
+void
+Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point, int mod)
 {
 	vec3_t hitdir;
 
@@ -450,7 +485,8 @@ void Killed (edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, v
 M_ReactToDamage
 ============
 */
-void M_ReactToDamage (edict_t *targ, edict_t *attacker)
+void
+M_ReactToDamage(edict_t *targ, edict_t *attacker)
 {
 	if (!(attacker->client) && !(attacker->svflags & SVF_MONSTER))
 		return;
@@ -1167,7 +1203,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			if(!targ->takedamage)//already killed by decapitation or some other killing dismemberment
 				return;
 
-			Killed (targ, inflictor, attacker, take, point, MeansOfDeath);
+			Killed(targ, inflictor, attacker, take, point, MeansOfDeath);
 
 			return;
 		}
@@ -1197,10 +1233,11 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			else
 				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", targ, attacker, force_pain, take, hl);
 
-			// In Nightmare skill-level, monsters don't go into pain frames often.
-
-			if (skill->value >= 3)
+			/* nightmare mode monsters don't go into pain frames often */
+			if (skill->value == SKILL_HARDPLUS)
+			{
 				targ->pain_debounce_time = level.time + 5;
+			}
 		}
 	}
 	else if (client)
@@ -1223,10 +1260,12 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		}
 	}
 
-	// Add to the damage inflicted on a player this frame. The total will be turned into screen
-	// blends and view angle kicks at the end of the frame.
-
-	if(client)
+	/* add to the damage inflicted on a
+	   player this frame the total will
+	   be turned into screen blends and
+	   view angle kicks at the end of
+	   the frame */
+	if (client)
 	{
 		client->damage_gas = (!Q_stricmp(inflictor->classname, "plague_mist") || !Q_stricmp(inflictor->classname, "spreader_grenade")) ? true : false;
 
@@ -1236,18 +1275,14 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	}
 }
 
-// ************************************************************************************************
-// T_DamageRadius
-// --------------
-// ************************************************************************************************
-
-void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
+void
+T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
 							float maxdamage, float mindamage, int dflags,int MeansOfDeath)
 {
-	float	points, dist;
-	edict_t	*ent = NULL;
-	vec3_t	v, center;
-	vec3_t	dir, hitspot;
+	float points, dist;
+	edict_t *ent = NULL;
+	vec3_t v, center;
+	vec3_t dir, hitspot;
 	edict_t *damageenemy = NULL;
 
 	assert(radius>0);
@@ -1272,9 +1307,15 @@ void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, floa
 	while ((ent = newfindradius(ent, inflictor->s.origin, radius)) != NULL)
 	{
 		if (ent == ignore)
+		{
 			continue;
+		}
+
 		if (!ent->takedamage)
+		{
 			continue;
+		}
+
 		if (ent == attacker && dflags & DAMAGE_ATTACKER_IMMUNE)
 			continue;
 		if ((dflags & DAMAGE_ALIVE_ONLY) && (ent->materialtype != MAT_FLESH||ent->health<=0))
@@ -1317,25 +1358,32 @@ void T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, floa
 	}
 }
 
-
 // Same function, except the origin point of the damage doesn't have to be the same as the inflictor's
-void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
+void
+T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
 							float maxdamage, float mindamage, int dflags,int MeansOfDeath)
 {
-	float	points, dist;
-	edict_t	*ent = NULL;
-	vec3_t	v, center, dir;
-	vec3_t	hitspot;
+	float points, dist;
+	edict_t *ent = NULL;
+	vec3_t v, center, dir;
+	vec3_t hitspot;
 
 
 	assert(radius>0);
 
 	while ((ent = newfindradius(ent, origin, radius)) != NULL)
 	{
+		/* ignore nobody */
 		if (ent == ignore)
+		{
 			continue;
+		}
+
 		if (!ent->takedamage)
+		{
 			continue;
+		}
+
 		if (ent == attacker && dflags & DAMAGE_ATTACKER_IMMUNE)
 			continue;
 		if ((dflags & DAMAGE_ALIVE_ONLY) && (ent->materialtype != MAT_FLESH||ent->health<=0))
@@ -1343,11 +1391,13 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 
 		// if we are reflecting, stop us from taking damage
 		if((EntReflecting(ent, true, true)))
+		{
 			continue;
+		}
 
-		VectorAdd (ent->mins, ent->maxs, center);
-		VectorMA (ent->s.origin, 0.5, center, center);
-		VectorSubtract (origin, center, v);
+		VectorAdd(ent->mins, ent->maxs, center);
+		VectorMA(ent->s.origin, 0.5, center, center);
+		VectorSubtract(origin, center, v);
 		dist = VectorNormalize(v);
 		VectorScale(v, -1, dir);
 		// Scale from maxdamage at center to mindamage at outer edge
@@ -1375,6 +1425,178 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 					T_Damage(ent, inflictor, attacker, dir, hitspot, vec3_origin,
 								(int)points, (int)points, DAMAGE_RADIUS|dflags, MeansOfDeath);
 			}
+		}
+	}
+}
+
+void
+T_RadiusDamage(edict_t *inflictor, edict_t *attacker, float damage,
+		edict_t *ignore, float radius, int mod)
+{
+	float points;
+	edict_t *ent = NULL;
+	vec3_t v;
+	vec3_t dir;
+
+	if (!inflictor || !attacker)
+	{
+		return;
+	}
+
+	while ((ent = findradius(ent, inflictor->s.origin, radius)) != NULL)
+	{
+		if (ent == ignore)
+		{
+			continue;
+		}
+
+		if (!ent->takedamage)
+		{
+			continue;
+		}
+
+		VectorAdd(ent->mins, ent->maxs, v);
+		VectorMA(ent->s.origin, 0.5, v, v);
+		VectorSubtract(inflictor->s.origin, v, v);
+		points = damage - 0.5 * VectorLength(v);
+
+		if (ent == attacker)
+		{
+			points = points * 0.5;
+		}
+
+		if (points > 0)
+		{
+			if (CanDamage(ent, inflictor))
+			{
+				VectorSubtract(ent->s.origin, inflictor->s.origin, dir);
+				T_Damage(ent, inflictor, attacker, dir, inflictor->s.origin,
+						vec3_origin, (int)points, (int)points, DAMAGE_RADIUS,
+						mod);
+			}
+		}
+	}
+}
+
+void
+T_RadiusNukeDamage(edict_t *inflictor, edict_t *attacker, float damage,
+		edict_t *ignore, float radius, int mod)
+{
+	float points;
+	edict_t *ent = NULL;
+	vec3_t v;
+	vec3_t dir;
+	float len;
+	float killzone, killzone2;
+	trace_t tr;
+	float dist;
+
+	killzone = radius;
+	killzone2 = radius * 2.0;
+
+	if (!inflictor || !attacker || !ignore)
+	{
+		return;
+	}
+
+	while ((ent = findradius(ent, inflictor->s.origin, killzone2)) != NULL)
+	{
+		/* ignore nobody */
+		if (ent == ignore)
+		{
+			continue;
+		}
+
+		if (!ent->takedamage)
+		{
+			continue;
+		}
+
+		if (!ent->inuse)
+		{
+			continue;
+		}
+
+		if (!(ent->client || (ent->svflags & SVF_MONSTER) ||
+			  (ent->svflags & SVF_DAMAGEABLE)))
+		{
+			continue;
+		}
+
+		VectorAdd(ent->mins, ent->maxs, v);
+		VectorMA(ent->s.origin, 0.5, v, v);
+		VectorSubtract(inflictor->s.origin, v, v);
+		len = VectorLength(v);
+
+		if (len <= killzone)
+		{
+			if (ent->client)
+			{
+				ent->flags |= FL_NOGIB;
+			}
+
+			points = 10000;
+		}
+		else if (len <= killzone2)
+		{
+			points = (damage / killzone) * (killzone2 - len);
+		}
+		else
+		{
+			points = 0;
+		}
+
+		if (points > 0)
+		{
+			if (ent->client)
+			{
+				ent->client->nuke_framenum = level.framenum + 20;
+			}
+
+			VectorSubtract(ent->s.origin, inflictor->s.origin, dir);
+			T_Damage(ent, inflictor, attacker, dir, inflictor->s.origin,
+					vec3_origin, (int)points, (int)points, DAMAGE_RADIUS,
+					mod);
+		}
+	}
+
+	/* skip the worldspawn */
+	ent = g_edicts + 1;
+
+	/* cycle through players */
+	while (ent)
+	{
+		if ((ent->client) &&
+			(ent->client->nuke_framenum != level.framenum + 20) && (ent->inuse))
+		{
+			tr = gi.trace(inflictor->s.origin, NULL, NULL, ent->s.origin,
+					inflictor, MASK_SOLID);
+
+			if (tr.fraction == 1.0)
+			{
+				ent->client->nuke_framenum = level.framenum + 20;
+			}
+			else
+			{
+				dist = realrange(ent, inflictor);
+
+				if (dist < 2048)
+				{
+					ent->client->nuke_framenum = Q_max(ent->client->nuke_framenum,
+							level.framenum + 15);
+				}
+				else
+				{
+					ent->client->nuke_framenum = Q_max(ent->client->nuke_framenum,
+							level.framenum + 10);
+				}
+			}
+
+			ent++;
+		}
+		else
+		{
+			ent = NULL;
 		}
 	}
 }

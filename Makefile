@@ -1024,6 +1024,7 @@ GAME_OBJS_ = \
 	src/game/g_classstatics.o \
 	src/game/g_chase.o \
 	src/game/g_cmds.o \
+	src/game/g_ctf.o \
 	src/game/g_combat.o \
 	src/game/g_defaultmessagehandler.o \
 	src/game/g_env.o \
@@ -1039,6 +1040,7 @@ GAME_OBJS_ = \
 	src/game/g_monster.o \
 	src/game/g_moveinfo.o \
 	src/game/g_newai.o \
+	src/game/g_newweap.o \
 	src/game/g_obj.o \
 	src/game/g_physics.o \
 	src/game/g_phys.o \
@@ -1054,6 +1056,7 @@ GAME_OBJS_ = \
 	src/game/g_translate.o \
 	src/game/g_trigger.o \
 	src/game/g_utils.o \
+	src/game/g_weapon.o \
 	src/game/g_waterfx.o \
 	src/game/mg_ai.o \
 	src/game/mg_guide.o \

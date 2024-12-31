@@ -1757,20 +1757,40 @@ Pickup for the Tornado defensive spell.
 	game.num_items = playerExport->GetPlayerItemsCount();
 }
 
-/*
-===============
-SetItemNames - called by worldspawn.
-===============
-*/
-
-void SetItemNames(void)
+void
+SP_item_foodcube(edict_t *self)
 {
-	int		i;
-	gitem_t	*it;
+	if (!self)
+	{
+		return;
+	}
 
-	for (i=0 ; i<game.num_items ; i++)
+	if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->model = "models/objects/trapfx/tris.md2";
+	SpawnItem(self, FindItem("Health"));
+	self->spawnflags |= DROPPED_ITEM;
+	self->style = HEALTH_IGNORE_MAX;
+	gi.soundindex("items/s_health.wav");
+	self->classname = "foodcube";
+}
+
+/*
+ * Called by worldspawn
+ */
+void
+SetItemNames(void)
+{
+	int i;
+	gitem_t *it;
+
+	for (i = 0; i < game.num_items; i++)
 	{
 		it = playerExport->GetPlayerItems() + i;
-		gi.configstring (CS_ITEMS+i, it->pickup_name);
+		gi.configstring(CS_ITEMS + i, it->pickup_name);
 	}
 }

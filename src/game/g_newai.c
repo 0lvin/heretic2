@@ -13,8 +13,6 @@
 
 #include "header/local.h"
 
-#if 0
-
 #define STATE_TOP 0
 #define STATE_BOTTOM 1
 #define STATE_UP 2
@@ -275,7 +273,7 @@ hintpath_stop(edict_t *self)
 		/* if we can see our target, go nuts */
 		if (visible(self, self->enemy))
 		{
-			FoundTarget(self);
+			FoundTarget(self, false);
 			return;
 		}
 
@@ -967,7 +965,6 @@ face_wall(edict_t *self)
 
 	return false;
 }
-#endif
 
 void
 badarea_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
@@ -1012,7 +1009,6 @@ SpawnBadArea(vec3_t mins, vec3_t maxs, float lifespan, edict_t *owner)
 	return badarea;
 }
 
-#if 0
 edict_t *
 CheckForBadArea(edict_t *ent)
 {
@@ -1303,7 +1299,7 @@ M_MonsterDodge(edict_t *self, edict_t *attacker, float eta, trace_t *tr)
 	if (!self->enemy)
 	{
 		self->enemy = attacker;
-		FoundTarget(self);
+		FoundTarget(self, false);
 	}
 
 	if ((eta < 0.1) || (eta > 5))
@@ -1507,7 +1503,7 @@ TargetTesla(edict_t *self, edict_t *tesla)
 		}
 		else
 		{
-			FoundTarget(self);
+			FoundTarget(self, false);
 		}
 	}
 }
@@ -1675,4 +1671,3 @@ blind_rocket_ok(edict_t *self, vec3_t start, vec3_t right, vec3_t target, float 
 
 	return !tr.allsolid && (tr.fraction >= 0.5f);
 }
-#endif
