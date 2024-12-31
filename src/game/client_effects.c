@@ -80,7 +80,7 @@ CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 			break;
 		case 'p':
 		case 'v':
-			MSG_ReadPosExt(msg, va_arg(args, float*), cls.serverProtocol);
+			MSG_ReadPos(msg, va_arg(args, float*), cls.serverProtocol);
 			break;
 		case 's':
 		{
@@ -91,7 +91,7 @@ CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 		case 't':
 		case 'u':
 		case 'x':
-			MSG_ReadPosExt(msg, va_arg(args, float*), cls.serverProtocol);
+			MSG_ReadPos(msg, va_arg(args, float*), cls.serverProtocol);
 			break;
 		default:
 			break;
@@ -177,6 +177,12 @@ CL_Printf(int errLevel, const char* fmt, ...) {
 	va_end(argptr);
 
 	Com_Printf("%s", msg);
+}
+
+static void
+CL_ReadPos(sizebuf_t *sb, vec3_t pos)
+{
+	MSG_ReadPos(sb, pos, cls.serverProtocol);
 }
 
 extern int r_numentities;
@@ -379,7 +385,7 @@ E_Load(void)
 	cl_game_import.MSG_ReadShort = MSG_ReadShort;
 	cl_game_import.MSG_ReadLong = MSG_ReadLong;
 	cl_game_import.MSG_ReadFloat = MSG_ReadFloat;
-	cl_game_import.MSG_ReadPos = MSG_ReadPos;
+	cl_game_import.MSG_ReadPos = CL_ReadPos;
 	cl_game_import.MSG_ReadDir = MSG_ReadDir;
 	cl_game_import.MSG_ReadData = MSG_ReadData;
 	cl_game_import.CL_RunLightStyles = CL_RunLightStyles;
