@@ -459,19 +459,15 @@ SV_WriteEffectToBuffer(sizebuf_t* msg, char* format, va_list args)
 			break;
 		case 'p':
 		case 'v':
-			MSG_WritePos(msg, va_arg(args, float*));
+			MSG_WritePos(msg, va_arg(args, float*), SV_GetRecomendedProtocol());
 			break;
 		case 's':
 			MSG_WriteShort(msg, va_arg(args, int));
 			break;
 		case 't':
-			MSG_WritePos(msg, va_arg(args, float*));
-			break;
 		case 'u':
-			MSG_WritePos(msg, va_arg(args, float*));
-			break;
 		case 'x':
-			MSG_WritePos(msg, va_arg(args, float*));
+			MSG_WritePos(msg, va_arg(args, float*), SV_GetRecomendedProtocol());
 			break;
 		default:
 			break;
@@ -604,7 +600,7 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 	}
 
 	if ((testflags & CEF_OWNERS_ORIGIN) == 0) {
-		MSG_WritePos(&msg, origin);
+		MSG_WritePos(&msg, origin, SV_GetRecomendedProtocol());
 	}
 
 	MSG_WriteByte(&msg, 0x3a);
@@ -696,7 +692,7 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 	}
 
 	if ((testflags & CEF_OWNERS_ORIGIN) == 0) {
-		MSG_WritePos(&msg, origin);
+		MSG_WritePos(&msg, origin, SV_GetRecomendedProtocol());
 	}
 
 	MSG_WriteByte(&msg, 0x3a);
