@@ -1902,7 +1902,7 @@ struct edict_s
 	int radius_dmg;
 	float dmg_radius;
 	int sounds;                 /* now also used for player death sound aggregation */
-	// int count;
+	int count;
 
 	edict_t *chain;
 	edict_t *enemy;
@@ -2063,11 +2063,6 @@ struct edict_s
 	void				(*TriggerActivated)(edict_t *self, edict_t *activator);
 										// used by anything which can "see", player and monsters
 	float				reflected_time;	// used by objects to tell if they've been repulsed by something..
-
-	union {
-	int					count;			// used by polys, triggers, and items.
-	int					curr_model;		// used by player during cinematics
-	};
 
 	int					targeted;		// used by Ogle to denote a targeted action queued up
 	int					lastbuoy;		// used to save a buoy in checking

@@ -159,7 +159,7 @@ void remove_non_cinematic_entites(edict_t *owner)
 		// No looping sound attached.
 		ent->s.sound = 0;
 
-		ent->curr_model = ent->s.modelindex;	// Temp holder, should be fine because player isn't doing anything during cinematics
+		ent->count = ent->s.modelindex;	// Temp holder, should be fine because player isn't doing anything during cinematics
 		ent->client->playerinfo.c_mode = 1;		// Show it's in cinematic mode
 		ent->s.modelindex = 0;
 		ent->solid = SOLID_NOT;
@@ -235,7 +235,7 @@ void reinstate_non_cinematic_entites(edict_t *owner)
 		}
 
 		ent->client->playerinfo.c_mode = 0;	// Show cinematic mode is off
-		ent->s.modelindex = ent->curr_model;
+		ent->s.modelindex = ent->count;
 		ent->solid = SOLID_BBOX;
 	}
 
