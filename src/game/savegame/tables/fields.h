@@ -136,7 +136,7 @@
 {"skinnum", FOFS(s.skinnum), F_INT},
 {"time", FOFS(time), F_FLOAT},
 {"text_msg", FOFS(text_msg), F_LSTRING},
-{"jumptarget", FOFS(jumptarget), F_LSTRING},
+{"jumptarget", FOFS(combattarget), F_LSTRING},
 {"scripttarget", FOFS(scripttarget), F_LSTRING},
 {"materialtype", FOFS(materialtype), F_INT},
 {"color", FOFS(s.color), F_RGBA},

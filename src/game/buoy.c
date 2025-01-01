@@ -45,7 +45,7 @@ int insert_buoy(edict_t *self)
 	buoy->modflags = self->spawnflags;
 	if(buoy->modflags & BUOY_JUMP)
 	{
-		buoy->jump_target = self->jumptarget;
+		buoy->jump_target = self->combattarget;
 		buoy->jump_fspeed = self->speed;
 		buoy->jump_yaw = self->s.angles[YAW];
 		buoy->jump_uspeed = self->movedir[2];
@@ -63,7 +63,7 @@ int insert_buoy(edict_t *self)
 
 	//save the connections for easier debugging
 	buoy->target = self->target;
-	buoy->jump_target = self->jumptarget;
+	buoy->jump_target = self->combattarget;
 	buoy->targetname = self->targetname;
 
 	buoy->wait = self->wait;
@@ -245,7 +245,7 @@ void info_buoy_link(edict_t *self)
 
 	if(self->spawnflags&BUOY_JUMP)
 	{
-		if(!self->jumptarget)
+		if(!self->combattarget)
 		{
 			if (showbuoys->value)
 			{
@@ -257,7 +257,7 @@ void info_buoy_link(edict_t *self)
 		else
 		{
 			ent = NULL;
-			if((ent = G_Find(ent, FOFS(targetname), self->jumptarget)))
+			if((ent = G_Find(ent, FOFS(targetname), self->combattarget)))
 			{
 				assign_jumpbuoy(self, ent);
 				if(showbuoys->value>1)
@@ -273,7 +273,7 @@ void info_buoy_link(edict_t *self)
 			}
 			else if(showbuoys->value)
 			{
-				gi.dprintf("Buoy %s(%s) could not find jumptarget buoy %s\n", self->targetname, vtos(self->s.origin), self->jumptarget);
+				gi.dprintf("Buoy %s(%s) could not find jumptarget buoy %s\n", self->targetname, vtos(self->s.origin), self->combattarget);
 				self->ai_mood_flags |= SF_BROKEN;
 			}
 		}

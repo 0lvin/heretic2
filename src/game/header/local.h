@@ -1830,7 +1830,7 @@ struct edict_s
 	char *team;
 	char *pathtarget;
 	// char *deathtarget;
-	// char *combattarget;
+	char *combattarget;
 	edict_t *target_ent;
 
 	float speed, accel, decel;
@@ -1995,11 +1995,6 @@ struct edict_s
 	union {
 	char				*deathtarget;	// Target to be triggered on my death.
 	char				*pathtargetname; // Used to target buoys to doors or plats or etc
-	};
-
-	union {
-	char				*combattarget;	// Monsters are the primary user of this.
-	char				*jumptarget;	// for buoys only
 	};
 
 	int bloodType;		// type of stuff to spawn off when hit
