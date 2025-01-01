@@ -145,7 +145,7 @@ typedef enum
 #define RANGE_FAR 3
 
 /* gib types */
-#define GIB_ORGANIC 1
+#define GIB_ORGANIC 0
 #define GIB_METALLIC 1
 
 /* monster ai flags */
@@ -730,24 +730,11 @@ typedef struct
 	qboolean turning;	// Does this action support turning
 } c_animflags_t;
 
-
-// ************************************************************************************************
-// monsterinfo_t
-// -------------
-// ************************************************************************************************
-
 typedef struct
 {
-// Not used in new system
-	char		*otherenemyname;				// ClassName of secondary enemy (other than player).
-												// E.g. a Rat's secondary enemy is a gib.
-
 	mmove_t *currentmove;
 	unsigned int aiflags;           /* unsigned, since we're close to the max */
-	int aistate;						// Last order given to the monster (ORD_XXX).
-	int currframeindex;					// Index to current monster frame.
-	int nextframeindex;					// Used to force the next frameindex.
-	float thinkinc;						// Time between thinks for this entity.
+	int nextframe;
 	float scale;
 
 	void (*stand)(edict_t *self);
@@ -805,6 +792,12 @@ typedef struct
 	float invincible_framenum;
 	float double_framenum;
 
+	int aistate;						// Last order given to the monster (ORD_XXX).
+	int currframeindex;					// Index to current monster frame.
+	int nextframeindex;					// Used to force the next frameindex.
+	float thinkinc;						// Time between thinks for this entity.
+	char		*otherenemyname;				// ClassName of secondary enemy (other than player).
+												// E.g. a Rat's secondary enemy is a gib.
 	float misc_debounce_time;
 	float		flee_finished;					// When a monster is done fleeing
 	float		chase_finished;					// When the monster can look for secondary monsters.
@@ -837,32 +830,6 @@ typedef struct
 	float		last_successful_enemy_tracking_time;	//last time successfully saw enemy or found a path to him
 	float		coop_check_debounce_time;
 } monsterinfo_t;
-
-// ************************************************************************************************
-// aceldata_t
-// ----------
-// ************************************************************************************************
-
-typedef struct
-{
-	mmove_t	*move;
-	short		fly;
-	short		lockmove;
-	int			playerflags;
-} aceldata_t;
-
-// ************************************************************************************************
-// acelsizes_t
-// -----------
-// ************************************************************************************************
-
-typedef struct
-{
-	vec3_t	boundbox[2];
-	int		altmove;
-	float	viewheight;
-	float	waterheight;
-} acelsizes_t;
 
 /* this determines how long to wait after a duck to duck again.
    this needs to be longer than the time after the monster_duck_up
@@ -1707,6 +1674,45 @@ struct gclient_s
 	qboolean trap_blew_up;
 	float trap_time;
 
+	int silencer_shots;
+	int weapon_sound;
+
+	float pickup_msg_time;
+
+	float flood_locktill;           /* locked from talking */
+	float flood_when[10];           /* when messages were said */
+	int flood_whenhead;             /* head pointer for when said */
+
+	float respawn_time;             /* can respawn when time > this */
+
+	edict_t *chase_target;          /* player we are chasing */
+	qboolean update_chase;          /* need to update chase info? */
+
+	void *ctf_grapple;              /* entity of grapple */
+	int ctf_grapplestate;               /* true if pulling */
+	float ctf_grapplereleasetime;       /* time of grapple release */
+	float ctf_regentime;            /* regen tech */
+	float ctf_techsndtime;
+	float ctf_lasttechmsg;
+	float menutime;                 /* time to update menu */
+	qboolean menudirty;
+
+	float double_framenum;
+	float ir_framenum;
+	float nuke_framenum;
+	float tracker_pain_framenum;
+
+	edict_t *owned_sphere;          /* this points to the player's sphere */
+
+	/* Third person view */
+	int chasetoggle;
+	edict_t *chasecam;
+	edict_t *oldplayer;
+	int use;
+	int zoom;
+	int delayedstart;
+
+	int complete_reset;
 	qboolean damage_gas;            /* Did damage come from plague mist? */
 	// Damage stuff. Sum up damage over an entire frame.
 
@@ -1717,12 +1723,6 @@ struct gclient_s
 	usercmd_t			pcmd;
 	short				oldcmdangles[3];
 	vec3_t				aimangles;				// Spell / weapon aiming direction.
-
-	float respawn_time;             /* can respawn when time > this */
-	int complete_reset;
-
-	edict_t *chase_target;          /* player we are chasing */
-	qboolean update_chase;          /* need to update chase info? */
 
 	//  Remote and walkby camera stuff.
 
@@ -1756,28 +1756,11 @@ struct gclient_s
 
 	// Anti flooding vars
 
-	float				flood_locktill;			// locked from talking
-	float				flood_when[10];			// when messages were said
-	int					flood_whenhead;			// head pointer for when said
 	float				flood_nextnamechange;	// next time for valid nick change
 	float				flood_nextkill;			// next time for suicide
 
 	playerinfo_t		playerinfo;
 
-	float double_framenum;
-	float ir_framenum;
-	float nuke_framenum;
-	float tracker_pain_framenum;
-
-	edict_t *owned_sphere;          /* this points to the player's sphere */
-
-	/* Third person view */
-	int chasetoggle;
-	edict_t *chasecam;
-	edict_t *oldplayer;
-	int use;
-	int zoom;
-	int delayedstart;
 };
 
 // sides for a nonrotating box
