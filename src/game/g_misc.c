@@ -370,6 +370,118 @@ ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 	gi.linkentity(gib);
 }
 
+void
+ThrowHeadACID(edict_t *self, const char *gibname, int damage, int type)
+{
+	vec3_t vd;
+	float vscale;
+
+	if (!self || !gibname)
+	{
+		return;
+	}
+
+	self->s.skinnum = 0;
+	self->s.frame = 0;
+	VectorClear(self->mins);
+	VectorClear(self->maxs);
+
+	self->s.modelindex2 = 0;
+	gi.setmodel(self, gibname);
+
+	self->clipmask = MASK_SHOT;
+	self->solid = SOLID_BBOX;
+
+	self->s.effects |= EF_GREENGIB;
+	self->s.effects &= ~EF_FLIES;
+	self->s.effects |= RF_FULLBRIGHT;
+	self->s.sound = 0;
+	self->flags |= FL_NO_KNOCKBACK;
+	self->svflags &= ~SVF_MONSTER;
+	self->takedamage = DAMAGE_YES;
+	self->die = gib_die;
+	self->dmg = 2;
+
+	if (type == GIB_ORGANIC)
+	{
+		self->movetype = MOVETYPE_TOSS;
+		vscale = 0.5;
+	}
+	else
+	{
+		self->movetype = MOVETYPE_BOUNCE;
+		vscale = 1.0;
+	}
+
+	VelocityForDamage(damage, vd);
+	VectorMA(self->velocity, vscale, vd, self->velocity);
+	ClipGibVelocity(self);
+
+	self->avelocity[YAW] = crandom() * 600;
+
+	self->think = G_FreeEdict;
+	self->nextthink = level.time + 10 + random() * 10;
+
+	gi.linkentity(self);
+}
+
+void
+ThrowClientHead(edict_t *self, int damage)
+{
+	vec3_t vd;
+	char *gibname;
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (randk() & 1)
+	{
+		gibname = "models/objects/gibs/head2/tris.md2";
+		self->s.skinnum = 1; /* second skin is player */
+	}
+	else
+	{
+		gibname = "models/objects/gibs/skull/tris.md2";
+		self->s.skinnum = 0;
+	}
+
+	self->s.origin[2] += 32;
+	self->s.frame = 0;
+	gi.setmodel(self, gibname);
+	VectorSet(self->mins, -16, -16, 0);
+	VectorSet(self->maxs, 16, 16, 16);
+
+	self->takedamage = DAMAGE_NO;
+	self->solid = SOLID_BBOX;
+	self->s.effects = EF_GIB;
+	self->s.sound = 0;
+	self->flags |= FL_NO_KNOCKBACK;
+
+	// The entity still has the monsters clipmaks.
+	// Reset it to MASK_SHOT to be on the save side.
+	// (MASK_SHOT is used by xatrix)
+	self->clipmask = MASK_SHOT;
+
+	self->movetype = MOVETYPE_BOUNCE;
+	VelocityForDamage(damage, vd);
+	VectorAdd(self->velocity, vd, self->velocity);
+
+	if (self->client) /* bodies in the queue don't have a client anymore */
+	{
+		// self->client->anim_priority = ANIM_DEATH;
+		self->client->anim_end = self->s.frame;
+	}
+	else
+	{
+		self->think = NULL;
+		self->nextthink = 0;
+	}
+
+	gi.linkentity(self);
+}
+
 /* ===================================================== */
 
 void
