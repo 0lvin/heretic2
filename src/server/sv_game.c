@@ -459,19 +459,15 @@ SV_WriteEffectToBuffer(sizebuf_t* msg, char* format, va_list args)
 			break;
 		case 'p':
 		case 'v':
-			MSG_WritePos(msg, va_arg(args, float*));
+			MSG_WritePosExt(msg, va_arg(args, float*), SV_GetRecomendedProtocol());
 			break;
 		case 's':
 			MSG_WriteShort(msg, va_arg(args, int));
 			break;
 		case 't':
-			MSG_WritePos(msg, va_arg(args, float*));
-			break;
 		case 'u':
-			MSG_WritePos(msg, va_arg(args, float*));
-			break;
 		case 'x':
-			MSG_WritePos(msg, va_arg(args, float*));
+			MSG_WritePosExt(msg, va_arg(args, float*), SV_GetRecomendedProtocol());
 			break;
 		default:
 			break;

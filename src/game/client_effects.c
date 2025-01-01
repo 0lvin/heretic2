@@ -36,7 +36,8 @@ void CL_ClearLightStyles(void);
 
 ResourceManager_t FXBufMgnr = {0};
 
-int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
+static int
+CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 	sizebuf_t* msg;
 	va_list args;
 
@@ -79,7 +80,7 @@ int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 			break;
 		case 'p':
 		case 'v':
-			MSG_ReadPos(msg, va_arg(args, float*));
+			MSG_ReadPosExt(msg, va_arg(args, float*), cls.serverProtocol);
 			break;
 		case 's':
 		{
@@ -88,13 +89,9 @@ int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 		}
 			break;
 		case 't':
-			MSG_ReadPos(msg, va_arg(args, float*));
-			break;
 		case 'u':
-			MSG_ReadPos(msg, va_arg(args, float*));
-			break;
 		case 'x':
-			MSG_ReadPos(msg, va_arg(args, float*));
+			MSG_ReadPosExt(msg, va_arg(args, float*), cls.serverProtocol);
 			break;
 		default:
 			break;
@@ -104,12 +101,7 @@ int CL_GetEffect(centity_t* ent, int flags, char* format, ...) {
 	return len;
 }
 
-void CL_ShutdownClientEffects()
-{
-	fxe->ShutDown();
-}
-
-qboolean
+static qboolean
 InCameraPVS(vec3_t point)
 {
 	if (developer && developer->value)
@@ -120,7 +112,7 @@ InCameraPVS(vec3_t point)
 }
 
 // Screen flash set
-void
+static void
 Activate_Screen_Flash(int color)
 {
 	if (developer && developer->value)
@@ -130,7 +122,7 @@ Activate_Screen_Flash(int color)
 }
 
 // Screen flash set
-void
+static void
 Activate_Screen_Shake(float intensity, float duration, float current_time, int flags)
 {
 	if (developer && developer->value)
@@ -139,26 +131,7 @@ Activate_Screen_Shake(float intensity, float duration, float current_time, int f
 	}
 }
 
-// Screen flash unset
-void
-Deactivate_Screen_Flash(void)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void
-Deactivate_Screen_Shake(void)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-qboolean
+static qboolean
 Get_Crosshair(vec3_t origin, byte* type)
 {
 	if (developer && developer->value)
@@ -170,7 +143,7 @@ Get_Crosshair(vec3_t origin, byte* type)
 
 trace_t CL_PMTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 
-trace_t
+static trace_t
 CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, int flags)
 {
 	if (developer && developer->value)
@@ -181,7 +154,8 @@ CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, i
 	return CL_PMTrace(start, mins, maxs, end); // jmarshall: incomplete
 }
 
-void CL_Sys_Error(int errLevel, const char* fmt, ...)
+static void
+CL_Sys_Error(int errLevel, const char* fmt, ...)
 {
 	va_list		argptr;
 	char		msg[4096];
@@ -193,7 +167,8 @@ void CL_Sys_Error(int errLevel, const char* fmt, ...)
 	Sys_Error(msg); // TODO vargs
 }
 
-void CL_Printf(int errLevel, const char* fmt, ...) {
+static void
+CL_Printf(int errLevel, const char* fmt, ...) {
 	va_list		argptr;
 	char		msg[4096];
 
@@ -222,7 +197,8 @@ static client_fx_import_t cl_game_import;
 // ---------
 // ************************************************************************************************
 
-void E_Freelib()
+void
+E_Freelib()
 {
 	if(!effects_library)
 	{
