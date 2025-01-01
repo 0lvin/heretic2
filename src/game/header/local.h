@@ -1911,7 +1911,7 @@ struct edict_s
 	edict_t *groundentity;
 	int groundentity_linkcount;
 	edict_t *teamchain;
-	// edict_t *teammaster;
+	edict_t *teammaster;
 
 	edict_t *mynoise;           /* can go in client only */
 	edict_t *mynoise2;
@@ -2008,11 +2008,6 @@ struct edict_s
 	// Used to indicate teams, (a way to group things).
 
 	char				*team;			// Team name.
-
-	union {
-		edict_t				*guidemaster;
-		edict_t				*teammaster;
-	};
 
 	// Fields used by only one class of game entity (monster, player, poly, trigger, etc).
 
