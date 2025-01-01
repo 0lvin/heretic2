@@ -166,23 +166,6 @@ typedef enum
 #define AI_RESURRECTING 0x00004000
 #define AI_IGNORE_PAIN 0x00008000
 
-/* Heretic 2 */
-#define AI_EATING				0x00002000
-#define AI_FLEE					0x00008000
-#define AI_FALLBACK				0x00010000
-#define AI_COWARD				0x00020000	//Babies (FLEE to certain distance & WATCH)
-#define AI_AGRESSIVE			0x00040000	//never run away
-#define AI_SHOVE				0x00080000	//shove others out of the way.
-#define AI_DONT_THINK			0x00100000	//animate, don't think or move
-#define AI_SWIM_OK				0x00200000	//ok to go in water
-#define AI_OVERRIDE_GUIDE		0x00400000
-#define AI_NO_MELEE				0x00800000	//not allowed to melee
-#define AI_NO_MISSILE			0x01000000	//not allowed to missile
-#define AI_USING_BUOYS			0x02000000	//Using Buoyah! Navigation System(tm)
-#define AI_STRAIGHT_TO_ENEMY	0x04000000	//Charge straight at enemy no matter what anything else tells you
-#define AI_NIGHTVISION			0x08000000	//light level does not effect this monster's vision or aim
-#define AI_NO_ALERT				0x10000000	//monster does not pay attemntion to alerts
-
 /* ROGUE */
 #define AI_WALK_WALLS 0x00008000
 #define AI_MANUAL_STEERING 0x00010000
@@ -580,7 +563,6 @@ typedef enum
 } MOD_t;
 
 #define MOD_FRIENDLY_FIRE	0x8000000
-
 
 /* spawn_temp_t is only used to hold entity field values that
    can be set from the editor, but aren't actualy present/
@@ -1547,20 +1529,6 @@ void RemoveAttackingPainDaemons(edict_t *self);
 
 /* ============================================================================ */
 
-
-// ************************************************************************************************
-// TRYSTEP_
-// --------
-// Used for ai_trystep (g_ai)
-// ************************************************************************************************
-
-#define TRYSTEP_OK			0
-#define TRYSTEP_ALLSOLID	1
-#define TRYSTEP_STARTSOLID	2
-#define TRYSTEP_OFFEDGE		3
-#define TRYSTEP_NOSUPPORT	4
-#define TRYSTEP_INWATER		5
-
 /* client data that stays across deathmatch respawns */
 typedef struct
 {
@@ -1853,6 +1821,29 @@ struct edict_s
 	char *classname;
 	int spawnflags;
 
+	float timestamp;
+
+	float angle;					/* set in qe3, -1 = up, -2 = down */
+	char *target;
+	char *targetname;
+	char *killtarget;
+	char *team;
+	char *pathtarget;
+	// char *deathtarget;
+	// char *combattarget;
+	// edict_t *target_ent;
+
+	float speed, accel, decel;
+	vec3_t movedir;
+	vec3_t pos1, pos2;
+
+	vec3_t velocity;
+	vec3_t avelocity;
+	int mass;
+	float air_finished;
+	float gravity;              /* per entity gravity multiplier (1.0 is normal) */
+	                            /* use for lowgrav artifact, flares */
+
 	edict_t *goalentity;
 	edict_t *movetarget;
 	float yaw_speed;
@@ -1868,6 +1859,13 @@ struct edict_s
 	void (*pain)(edict_t *self, edict_t *other, float kick, int damage);
 	void (*die)(edict_t *self, edict_t *inflictor, edict_t *attacker,
 			int damage, vec3_t point);
+
+	float touch_debounce_time;		/* now also used by fixbots for timeouts when getting stuck */
+	float pain_debounce_time;
+	float damage_debounce_time;
+	// float fly_sound_debounce_time;	/* now also used by insane marines to store pain sound timeout */
+									/* and by fixbots for storing object_repair timeout when getting stuck */
+	// float last_move_time;
 
 	int health;
 	int max_health;
@@ -1947,11 +1945,6 @@ struct edict_s
 	float				ideal_pitch;	// Used by monsters and player.
 	float				yawOffset;		// Used in CreateMove_Step
 
-	float				accel;			// Used mostly in g_func.c.
-	float				decel;			// Used mostly in g_func.c.
-
-	float timestamp;		// Used by a couple of ojects.
-
 	char *text_msg;
 	vec3_t groundNormal;		// normal of the ground
 
@@ -1990,8 +1983,6 @@ struct edict_s
 
 	// Used to indicate teams, (a way to group things).
 
-	char				*team;			// Team name.
-
 	// Fields used by only one class of game entity (monster, player, poly, trigger, etc).
 
 		// Text printed to con for door, polys, triggers, etc.
@@ -2000,13 +1991,7 @@ struct edict_s
 	// on all the active edicts using strcmps). We should be able to assign indexes in the BSP, by
 	// doing the string strcmps at BSP time. The player seem to use any of the target stuff.
 
-	char				*target;		// Name of the entity's target.
-	char				*targetname;	// What other entities use to target-lock this entity.
 	char				*scripttarget;
-	char				*killtarget;	// Used only in G_UseTargets, which fires all
-										// of its targets.
-	char				*pathtarget;	// Used by trains, also used by monsters in some
-										// way as well.
 	union {
 	char				*deathtarget;	// Target to be triggered on my death.
 	char				*pathtargetname; // Used to target buoys to doors or plats or etc
@@ -2023,11 +2008,6 @@ struct edict_s
 	edict_t				*slave;
 	edict_t				*rope_end;		//Used by the rope to store the rope end entity
 	};
-
-	vec3_t				movedir;		// Used by just about everything that moves, but not used in
-										// physics.
-
-	float				air_finished;	// Used by things that can breath (monsters and player).
 
 	int bloodType;		// type of stuff to spawn off when hit
 
@@ -2059,17 +2039,7 @@ struct edict_s
 	int					PersistantCFX;	// index to client effect linked to edict
 	int					Leader_PersistantCFX;	// non of this should really go in here.. really it should be in the client, but its 2 in the morning, so fuck it
 
-	vec3_t				velocity;			// linear velocity
-	vec3_t				avelocity;			// angular velocity
 	vec3_t				knockbackvel;
-
-	// Used for determining effects of liquids in the environment.
-
-	float				speed;
-
-	int					mass;
-	float				gravity;		// Per entity gravity multiplier (1.0 is normal) Used for
-										// lowgrav artifact, flares.
 
 	// Used by animating entities.
 
@@ -2080,17 +2050,8 @@ struct edict_s
 
 	void				(*oldthink)(edict_t *self);
 
-	// Used by polys and triggers.
-
-	float				touch_debounce_time;
-
 	// Used by monsters and player.
 
-	float				pain_debounce_time;
-
-	// Used by monsters and player.
-
-	float				damage_debounce_time;
 	float				attack_debounce_time;
 
 	//used by reflecting projectiles
@@ -2124,9 +2085,6 @@ struct edict_s
 	float				last_move_time;	// Only used by target_earthquake (poly/trigger)
 	float				old_yaw;		// Used by the Seraph to return to his exact position and angles
 	};
-
-	vec3_t				pos1,pos2;		// Used by polys and turrets.
-
 
 	vec3_t				v_angle_ofs;			//View Angle ofset- for when monsters look around, for line of sight checks
 
@@ -2481,6 +2439,34 @@ qboolean Pickup_Sphere(edict_t * ent, edict_t * other);
 #endif
 
 /* Heretic 2 */
+#define AI_EATING				0x00002000
+#define AI_FLEE					0x00008000
+#define AI_FALLBACK				0x00010000
+#define AI_COWARD				0x00020000	//Babies (FLEE to certain distance & WATCH)
+#define AI_AGRESSIVE			0x00040000	//never run away
+#define AI_SHOVE				0x00080000	//shove others out of the way.
+#define AI_DONT_THINK			0x00100000	//animate, don't think or move
+#define AI_SWIM_OK				0x00200000	//ok to go in water
+#define AI_OVERRIDE_GUIDE		0x00400000
+#define AI_NO_MELEE				0x00800000	//not allowed to melee
+#define AI_NO_MISSILE			0x01000000	//not allowed to missile
+#define AI_USING_BUOYS			0x02000000	//Using Buoyah! Navigation System(tm)
+#define AI_STRAIGHT_TO_ENEMY	0x04000000	//Charge straight at enemy no matter what anything else tells you
+#define AI_NIGHTVISION			0x08000000	//light level does not effect this monster's vision or aim
+#define AI_NO_ALERT				0x10000000	//monster does not pay attemntion to alerts
+
+// ************************************************************************************************
+// TRYSTEP_
+// --------
+// Used for ai_trystep (g_ai)
+// ************************************************************************************************
+
+#define TRYSTEP_OK			0
+#define TRYSTEP_ALLSOLID	1
+#define TRYSTEP_STARTSOLID	2
+#define TRYSTEP_OFFEDGE		3
+#define TRYSTEP_NOSUPPORT	4
+#define TRYSTEP_INWATER		5
 
 // NOTE: 1 means that the last entity was a wall...
 #define WALL_ENTITY (struct edict_s *)1
