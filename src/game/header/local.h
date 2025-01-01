@@ -1831,7 +1831,7 @@ struct edict_s
 	char *pathtarget;
 	// char *deathtarget;
 	// char *combattarget;
-	// edict_t *target_ent;
+	edict_t *target_ent;
 
 	float speed, accel, decel;
 	vec3_t movedir;
@@ -2002,13 +2002,6 @@ struct edict_s
 	char				*jumptarget;	// for buoys only
 	};
 
-	union {
-	edict_t				*target_ent;	// Used by player, trains, and turrets. Monsters
-										// should be able to use this for current target as well.
-	edict_t				*slave;
-	edict_t				*rope_end;		//Used by the rope to store the rope end entity
-	};
-
 	int bloodType;		// type of stuff to spawn off when hit
 
 	void				(*TriggerActivated)(edict_t *self, edict_t *activator);
@@ -2102,8 +2095,6 @@ struct edict_s
 	float				oldenemy_debounce_time;//How long to hunt enemy before looking for oldenemy again
 
 	float				best_move_yaw;
-//	int					jump_chance;	//0 - 100 chance that monster will try to jump to get around when possible/neccessary - in a table in m_stats
-
 	float				mood_nextthink;			//not used anymore?
 	void				(*mood_think)(edict_t *self);//you mood setting function
 

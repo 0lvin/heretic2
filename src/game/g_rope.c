@@ -226,11 +226,11 @@ void rope_think(edict_t *self)
 								rope_top,
 								"ssbvvv",
 								self->teamchain->s.number,	//ID for the grab entity
-								self->rope_end->s.number,	//ID for the end entity
+								self->target_ent->s.number,	//ID for the end entity
 								self->bloodType,			//Model type
 								rope_top,					//Top of the rope
 								self->teamchain->s.origin,	//Grab's current origin (???)
-								self->rope_end->s.origin);	//End's current origin	(???)
+								self->target_ent->s.origin);	//End's current origin	(???)
 			}
 
 			trace = gi.trace(self->teamchain->s.origin, vec3_origin, vec3_origin, self->s.origin, self->enemy, MASK_SOLID);
@@ -269,7 +269,7 @@ void rope_think(edict_t *self)
 
 void rope_end_think2( edict_t *self )
 {
-	edict_t	*grab = self->rope_end;
+	edict_t	*grab = self->target_ent;
 	trace_t	trace;
 	vec3_t	rope_end, rope_top, end_rest, end_vel, end_vec, end_dest;
 	float	grab_len,  mag, end_len;
@@ -342,7 +342,7 @@ void rope_end_think2( edict_t *self )
 
 void rope_end_think( edict_t *self )
 {
-	edict_t	*grab = self->rope_end;
+	edict_t	*grab = self->target_ent;
 	vec3_t	rope_end, rope_top, end_rest, end_vel, end_vec, end_dest;
 	float	grab_len,  mag, end_len;
 
@@ -389,7 +389,7 @@ void rope_end_think( edict_t *self )
 
 void rope_sway(edict_t *self)
 {
-	//edict_t	*end  = self->slave;
+	//edict_t	*end  = self->target_ent;
 	edict_t	*grab = self->teamchain;
 	vec3_t	rope_end, rope_top, grab_end;
 	vec3_t	v_rope, v_grab, v_dest, rope_rest, v_dir;
@@ -405,7 +405,7 @@ void rope_sway(edict_t *self)
 		rope_rest[1] += (cos((float) level.time * 2)) * 1.75;
 
 		VectorCopy(rope_rest, self->pos1);
-		VectorCopy(rope_rest, self->slave->s.origin);
+		VectorCopy(rope_rest, self->target_ent->s.origin);
 
 		VectorCopy(self->s.origin, rope_top);
 		rope_top[2] += self->maxs[2];
@@ -644,10 +644,10 @@ void hanging_chicken_think(edict_t *self)
 				if(force>100)
 				{
 					VectorMA(trace.endpos, -force/5, vec, self->teamchain->s.origin);
-					VectorScale(self->enemy->rope_end->velocity, -0.5 * force/400 , self->enemy->rope_end->velocity);
+					VectorScale(self->enemy->target_ent->velocity, -0.5 * force/400 , self->enemy->target_ent->velocity);
 				}
 				else
-					VectorScale(self->enemy->rope_end->velocity, -0.5, self->enemy->rope_end->velocity);
+					VectorScale(self->enemy->target_ent->velocity, -0.5, self->enemy->target_ent->velocity);
 			}
 		}
 	}
@@ -736,7 +736,7 @@ void spawn_hanging_chicken(edict_t *self)
 
 	//gi.setmodel(end_ent, "models/objects/barrel/normal/tris.fm");
 
-	self->rope_end = end_ent;
+	self->target_ent = end_ent;
 
 	VectorCopy(self->s.origin, rope_end);
 	rope_end[2] += self->mins[2];
@@ -781,9 +781,9 @@ void spawn_hanging_chicken(edict_t *self)
 	chicken->svflags = SVF_DO_NO_IMPACT_DMG | SVF_ALLOW_AUTO_TARGET;
 	chicken->s.effects = EF_CAMERA_NO_CLIP;
 
-	VectorCopy(self->rope_end->s.origin, chicken->s.origin);
+	VectorCopy(self->target_ent->s.origin, chicken->s.origin);
 
-	chicken->teamchain = self->rope_end;
+	chicken->teamchain = self->target_ent;
 
 	VectorSet(chicken->rrs.scale, 1, 1, 1);
 	chicken->classname = "NATE";
@@ -844,7 +844,7 @@ void SP_obj_rope(edict_t *self)
 
 	//gi.setmodel(end_ent, "models/objects/barrel/normal/tris.fm");
 
-	self->rope_end = end_ent;
+	self->target_ent = end_ent;
 
 	grab_ent = G_Spawn();
 	grab_ent->movetype = MOVETYPE_NONE;

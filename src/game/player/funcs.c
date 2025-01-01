@@ -363,7 +363,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 
 		trace = playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
-		if (trace.fraction < 1.0 || trace.endpos[2] < ((edict_t *)playerinfo->self)->teamchain->rope_end->s.origin[2])
+		if (trace.fraction < 1.0 || trace.endpos[2] < ((edict_t *)playerinfo->self)->teamchain->target_ent->s.origin[2])
 		{
 			// We bumped into something or have come to the end of the rope
 
@@ -541,7 +541,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 	rope = (edict_t *)playerinfo->targetEnt;
 
 	//Get the position of the rope's end
-	VectorCopy(rope->rope_end->s.origin, rope_end);
+	VectorCopy(rope->target_ent->s.origin, rope_end);
 
 	VectorCopy(rope->s.origin, rope_top);
 	rope_top[2] += rope->maxs[2];
