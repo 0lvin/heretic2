@@ -347,7 +347,7 @@ qboolean seraph_checkscare(edict_t *self, edict_t *ogle)
 		{
 			//Necessary info for the AI_MOOD_POINT_NAVIGATE stuff
 			VectorCopy(self->s.origin, self->monsterinfo.nav_goal);
-			self->old_yaw = self->s.angles[YAW];
+			self->last_move_time = self->s.angles[YAW];
 			self->ai_mood = AI_MOOD_POINT_NAVIGATE;
 			self->movetarget = self->goalentity = self->enemy = ogle;
 

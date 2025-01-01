@@ -180,12 +180,12 @@ void fish_new_direction(edict_t *self)
 	// decide which animation to use
 	if (self->ai_mood == AI_MOOD_WANDER)
 	{
-		self->speed = FISH_FAST * self->old_yaw;
+		self->speed = FISH_FAST * self->last_move_time;
 		fish_run(self);
 	}
 	else
 	{
-		self->speed = FISH_SLOW * self->old_yaw;
+		self->speed = FISH_SLOW * self->last_move_time;
 		fish_walk(self);
 	}
 }
@@ -208,12 +208,12 @@ void fish_bounce_direction(edict_t *self)
 	// decide which animation to use
 	if (self->ai_mood == AI_MOOD_WANDER)
 	{
-		self->speed = FISH_FAST * self->old_yaw;
+		self->speed = FISH_FAST * self->last_move_time;
 		fish_run(self);
 	}
 	else
 	{
-		self->speed = FISH_SLOW * self->old_yaw;
+		self->speed = FISH_SLOW * self->last_move_time;
 		fish_walk(self);
 	}
 }
@@ -934,7 +934,7 @@ void fish_hunt(edict_t *self)
 	// set movement type
 	self->ai_mood = AI_MOOD_PURSUE;
 	//	make us run after it
-	self->speed = FISH_HUNT * self->old_yaw;
+	self->speed = FISH_HUNT * self->last_move_time;
 	fish_run(self);
 }
 
@@ -1158,7 +1158,7 @@ void SP_monster_fish (edict_t *self)
 	self->yaw_speed = 11;
 	self->dmg_radius = 4;
 	// random(ish) speed
-	self->old_yaw = flrand(0.65,1.0);
+	self->last_move_time = flrand(0.65,1.0);
 
 	self->movetype=MOVETYPE_STEP;
 	VectorClear(self->knockbackvel);

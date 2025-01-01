@@ -1865,7 +1865,7 @@ struct edict_s
 	float damage_debounce_time;
 	// float fly_sound_debounce_time;	/* now also used by insane marines to store pain sound timeout */
 									/* and by fixbots for storing object_repair timeout when getting stuck */
-	// float last_move_time;
+	float last_move_time;
 
 	int health;
 	int max_health;
@@ -2079,11 +2079,6 @@ struct edict_s
 	union {
 	float				last_buoy_time;
 	float				fly_sound_debounce_time;
-	};
-
-	union {
-	float				last_move_time;	// Only used by target_earthquake (poly/trigger)
-	float				old_yaw;		// Used by the Seraph to return to his exact position and angles
 	};
 
 	vec3_t				v_angle_ofs;			//View Angle ofset- for when monsters look around, for line of sight checks
