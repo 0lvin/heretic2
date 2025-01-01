@@ -1863,7 +1863,7 @@ struct edict_s
 	float touch_debounce_time;		/* now also used by fixbots for timeouts when getting stuck */
 	float pain_debounce_time;
 	float damage_debounce_time;
-	// float fly_sound_debounce_time;	/* now also used by insane marines to store pain sound timeout */
+	float fly_sound_debounce_time;	/* now also used by insane marines to store pain sound timeout */
 									/* and by fixbots for storing object_repair timeout when getting stuck */
 	float last_move_time;
 
@@ -2075,11 +2075,6 @@ struct edict_s
 // jmarshall end
 
 	// Only set in trigger_push_touch and probably only on players.
-
-	union {
-	float				last_buoy_time;
-	float				fly_sound_debounce_time;
-	};
 
 	vec3_t				v_angle_ofs;			//View Angle ofset- for when monsters look around, for line of sight checks
 

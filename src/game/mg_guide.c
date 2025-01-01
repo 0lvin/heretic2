@@ -321,7 +321,7 @@ void MG_AssignMonsterNextBuoy(edict_t *self, buoy_t *startbuoy, buoy_t *endbuoy)
 	else
 		self->lastbuoy = NULL_BUOY;
 	self->buoy_index = startbuoy->id;
-	self->last_buoy_time = level.time;
+	self->fly_sound_debounce_time = level.time;
 	if(showbuoys->value>1)
 	{
 		showme = G_Find(NULL, FOFS(targetname), startbuoy->targetname);
@@ -415,7 +415,7 @@ qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bes
 
 		self->buoy_index =dest->id;
 
-		self->last_buoy_time = level.time;
+		self->fly_sound_debounce_time = level.time;
 		return true;
 	}
 
@@ -441,7 +441,7 @@ qboolean MG_ResolveBuoyConnection(edict_t *self, buoy_t *bestbuoy, buoy_t *e_bes
 		else
 			self->lastbuoy = NULL_BUOY;
 		self->buoy_index = bestbuoy->id;
-		self->last_buoy_time = level.time;
+		self->fly_sound_debounce_time = level.time;
 		return true;
 	}
 
@@ -1889,7 +1889,7 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 			}
 		}
 
-		if(self->last_buoy_time > 0 && self->last_buoy_time + BUOY_SEARCH_TIME < level.time)
+		if(self->fly_sound_debounce_time > 0 && self->fly_sound_debounce_time + BUOY_SEARCH_TIME < level.time)
 		{
 			if (showbuoys->value)
 			{
