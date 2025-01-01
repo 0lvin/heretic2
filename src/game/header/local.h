@@ -1829,7 +1829,7 @@ struct edict_s
 	char *killtarget;
 	char *team;
 	char *pathtarget;
-	// char *deathtarget;
+	char *deathtarget;
 	char *combattarget;
 	edict_t *target_ent;
 
@@ -1992,10 +1992,6 @@ struct edict_s
 	// doing the string strcmps at BSP time. The player seem to use any of the target stuff.
 
 	char				*scripttarget;
-	union {
-	char				*deathtarget;	// Target to be triggered on my death.
-	char				*pathtargetname; // Used to target buoys to doors or plats or etc
-	};
 
 	int bloodType;		// type of stuff to spawn off when hit
 

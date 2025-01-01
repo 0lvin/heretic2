@@ -157,7 +157,7 @@
 
 {"rotate", STOFS(rotate), F_INT, FFL_SPAWNTEMP},
 {"target2", FOFS(target2), F_LSTRING},
-{"pathtargetname",  FOFS(pathtargetname), F_LSTRING},
+{"pathtargetname",  FOFS(deathtarget), F_LSTRING},
 {"zangle", STOFS(zangle), F_FLOAT, FFL_SPAWNTEMP},
 {"file", STOFS(file), F_LSTRING, FFL_SPAWNTEMP},
 {"radius", STOFS(radius), F_INT, FFL_SPAWNTEMP},

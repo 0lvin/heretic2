@@ -358,10 +358,14 @@ void PrintLocalBuoyInfo(vec3_t org)
 
 					gi.dprintf("\nACTIVATE\n");
 					gi.dprintf("pathtarget: %s\n", level.buoy_list[i].pathtarget);
-					if((found = G_Find(NULL, FOFS(pathtargetname), level.buoy_list[i].pathtarget)))
+					if((found = G_Find(NULL, FOFS(deathtarget), level.buoy_list[i].pathtarget)))
+					{
 						gi.dprintf("entity to activate: %s\n", found->classname);
+					}
 					else
+					{
 						gi.dprintf("ERROR: no entity found to activate!!!\n");
+					}
 					gi.dprintf("wait: %4.2f\n", level.buoy_list[i].wait);
 					gi.dprintf("delay: %4.2f\n", level.buoy_list[i].delay);
 					level.buoy_list[i].print_debounce_time = level.time + 1;
