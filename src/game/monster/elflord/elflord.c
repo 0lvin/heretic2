@@ -212,7 +212,7 @@ void elflord_StartBeam(edict_t *self)
 
 	gi.sound(self, CHAN_VOICE, sounds[SND_BEAM], 0.5, ATTN_NONE, 0);
 
-	self->targetEnt = beam;
+	self->teamchain = beam;
 }
 
 /*-----------------------------------------------
@@ -221,8 +221,8 @@ void elflord_StartBeam(edict_t *self)
 
 void elflord_EndBeam(edict_t *self)
 {
-	self->targetEnt->think = G_FreeEdict;
-	self->targetEnt->nextthink = level.time + 0.1;
+	self->teamchain->think = G_FreeEdict;
+	self->teamchain->nextthink = level.time + 0.1;
 }
 
 /*-----------------------------------------------
@@ -414,8 +414,8 @@ void elflord_soa_go(edict_t *self)
 void elflord_death_start(edict_t *self, G_Message_t *msg)
 {
 	//Turn off a beam if it's on
-	if (self->targetEnt)
-		G_FreeEdict(self->targetEnt);
+	if (self->teamchain)
+		G_FreeEdict(self->teamchain);
 
 	self->health = 0;
 	self->max_health = 0;
@@ -520,8 +520,8 @@ void elflord_track(edict_t *self)
 	if (!M_ValidTarget(self, self->enemy))
 	{
 		//Remove the beam
-		self->targetEnt->think = G_FreeEdict;
-		self->targetEnt->nextthink = level.time + 0.1;
+		self->teamchain->think = G_FreeEdict;
+		self->teamchain->nextthink = level.time + 0.1;
 
 		//Don't finish what we were doing
 		SetAnim(self, ANIM_HOVER);
@@ -546,7 +546,7 @@ void elflord_track(edict_t *self)
 		T_Damage(trace.ent, self, self, newdir, trace.endpos, trace.plane.normal, irand(ELFLORD_BEAM_MIN_DAMAGE, ELFLORD_BEAM_MAX_DAMAGE), 0, DAMAGE_NORMAL, MOD_DIED);
 	}
 
-	VectorCopy(trace.endpos, self->targetEnt->s.origin);
+	VectorCopy(trace.endpos, self->teamchain->s.origin);
 
 	VectoAngles(newdir, self->s.angles);
 

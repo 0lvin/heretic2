@@ -1197,8 +1197,8 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	{
 		// Turn off the rope graphic immediately.
 
-		self->targetEnt->count = 0;
-		self->targetEnt->rope_grab->s.effects &= ~EF_ALTCLIENTFX;
+		self->teamchain->count = 0;
+		self->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
 
 		self->monsterinfo.jump_time = level.time + 10;
 		self->client->playerinfo.flags |= PLAYER_FLAG_RELEASEROPE;
@@ -3376,10 +3376,10 @@ ClientDisconnect(edict_t *ent)
 	{
 		// ..unhook the rope graphic from the disconnecting player.
 
-		ent->targetEnt->count = 0;
-		ent->targetEnt->rope_grab->s.effects &= ~EF_ALTCLIENTFX;
-		ent->targetEnt->enemy=NULL;
-		ent->targetEnt=NULL;
+		ent->teamchain->count = 0;
+		ent->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
+		ent->teamchain->enemy=NULL;
+		ent->teamchain=NULL;
 	}
 
 	gi.unlinkentity(ent);
@@ -3539,7 +3539,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	// If we are not currently on a rope, then clear out any ropes as valid for a check.
 	if (!(client->playerinfo.flags & PLAYER_FLAG_ONROPE))
 	{
-		ent->targetEnt = NULL;
+		ent->teamchain = NULL;
 	}
 
 	// If we are turn-locked, then set the PMF_LOCKTURN flag that informs the client of this (the

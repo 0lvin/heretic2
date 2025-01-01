@@ -1767,7 +1767,7 @@ void morcalavin_postthink(edict_t *self)
 			self->monsterinfo.jump_time = -1;
 			gi.sound(self, CHAN_AUTO, sounds[TAUNT_LAUGH1], 1, ATTN_NONE, 0);
 
-			if (!self->targetEnt)
+			if (!self->teamchain)
 			{
 				if (level.time < 5.0)		// Otherwise it will print forever after Morcalavin is dead.
 					gi.dprintf("GDE Fault: YOU NEED TO PUT A BARRIER IN THIS ROOM FOR THE GAME TO WORK!!!n");
@@ -1780,7 +1780,7 @@ void morcalavin_postthink(edict_t *self)
 			{
 				self->monsterinfo.sound_start = self->monsterinfo.attack_finished = level.time + ( self->delay );
 				self->monsterinfo.sound_start += 1.5;
-				self->targetEnt->monsterinfo.attack_finished = self->monsterinfo.attack_finished;
+				self->teamchain->monsterinfo.attack_finished = self->monsterinfo.attack_finished;
 				self->delay *= 2;
 			}
 			else
@@ -1985,7 +1985,7 @@ void morcalavin_barrier_think(edict_t *self)
 		else
 		{
 			self->owner = owner;
-			owner->targetEnt = self;
+			owner->teamchain = self;
 		}
 	}
 

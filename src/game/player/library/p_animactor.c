@@ -297,10 +297,10 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		if (playerinfo->flags & PLAYER_FLAG_ONROPE)
 		{
 			//Turn off the rope graphic immediately
-			((edict_t *)playerinfo->self)->targetEnt->count = 0;
-			((edict_t *)playerinfo->self)->targetEnt->rope_grab->s.effects &= ~EF_ALTCLIENTFX;
-			((edict_t *)playerinfo->self)->targetEnt->enemy = NULL;
-			((edict_t *)playerinfo->self)->targetEnt = NULL;
+			((edict_t *)playerinfo->self)->teamchain->count = 0;
+			((edict_t *)playerinfo->self)->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
+			((edict_t *)playerinfo->self)->teamchain->enemy = NULL;
+			((edict_t *)playerinfo->self)->teamchain = NULL;
 
 			((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
 			playerinfo->flags &= ~PLAYER_FLAG_RELEASEROPE;

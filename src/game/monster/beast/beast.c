@@ -1348,15 +1348,15 @@ void tbeast_ready_catch (edict_t *self)
 {
 	float enemy_zdist, ok_zdist;
 
-	if(!self->targetEnt)
+	if(!self->teamchain)
 		return;
 
 	ok_zdist = 128;
 	if(ok_zdist<48)
 		ok_zdist = 48;
 
-	enemy_zdist = (self->targetEnt->s.origin[2] + self->targetEnt->mins[2]) - self->s.origin[2];
-	if(enemy_zdist<=self->maxs[2] + ok_zdist && self->targetEnt->velocity[2]<=-60)
+	enemy_zdist = (self->teamchain->s.origin[2] + self->teamchain->mins[2]) - self->s.origin[2];
+	if(enemy_zdist<=self->maxs[2] + ok_zdist && self->teamchain->velocity[2]<=-60)
 		SetAnim(self,ANIM_CATCH);
 	else
 		SetAnim(self,ANIM_READY_CATCH);
@@ -1364,24 +1364,24 @@ void tbeast_ready_catch (edict_t *self)
 
 void tbeast_throw_toy(edict_t *self)
 {
-	if(!self->targetEnt)
+	if(!self->teamchain)
 		return;
 
-	self->targetEnt->flags &= ~FL_FLY;
-	self->targetEnt->velocity[0] = self->targetEnt->velocity[1] = 0;
-	self->targetEnt->velocity[2] = 500;
-	if(self->targetEnt->movetype > MOVETYPE_SCRIPT_ANGULAR)
+	self->teamchain->flags &= ~FL_FLY;
+	self->teamchain->velocity[0] = self->teamchain->velocity[1] = 0;
+	self->teamchain->velocity[2] = 500;
+	if(self->teamchain->movetype > MOVETYPE_SCRIPT_ANGULAR)
 	{
-		self->targetEnt->movetype = MOVETYPE_STEP;
+		self->teamchain->movetype = MOVETYPE_STEP;
 	}
 
-	VectorRandomCopy(vec3_origin,self->targetEnt->avelocity,300);
+	VectorRandomCopy(vec3_origin,self->teamchain->avelocity,300);
 
-	if(Q_stricmp(self->targetEnt->classname,"player"))
-		G_QPostMessage(self->targetEnt, MSG_DEATH, PRI_DIRECTIVE, NULL);
+	if(Q_stricmp(self->teamchain->classname,"player"))
+		G_QPostMessage(self->teamchain, MSG_DEATH, PRI_DIRECTIVE, NULL);
 
-	if(self->targetEnt->client)
-		gi.sound(self->targetEnt, CHAN_VOICE, sounds[SND_CORVUS_DIE], 1, ATTN_NORM, 0);
+	if(self->teamchain->client)
+		gi.sound(self->teamchain, CHAN_VOICE, sounds[SND_CORVUS_DIE], 1, ATTN_NORM, 0);
 }
 
 void tbeast_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
@@ -1394,41 +1394,41 @@ void tbeast_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 	AngleVectors(self->s.angles, forward, right, up);
 	VectorMA(self->s.origin, ofsf + TB_FWD_OFFSET - 32, forward, enemy_ofs);
 	VectorMA(enemy_ofs, ofsr, right, enemy_ofs);
-	VectorMA(enemy_ofs, ofsu + TB_UP_OFFSET, up, self->targetEnt->s.origin);
-	VectorSubtract(self->targetEnt->s.origin, self->s.origin, blooddir);
+	VectorMA(enemy_ofs, ofsu + TB_UP_OFFSET, up, self->teamchain->s.origin);
+	VectorSubtract(self->teamchain->s.origin, self->s.origin, blooddir);
 
 	VectorScale(blooddir, -1, enemy_face);
 	enemy_face[2]/=10;
-	VectoAngles(enemy_face, self->targetEnt->s.angles);
+	VectoAngles(enemy_face, self->teamchain->s.angles);
 
-	switch(self->targetEnt->count)
+	switch(self->teamchain->count)
 	{
 		case 1:
-			self->targetEnt->s.angles[PITCH]=anglemod(self->targetEnt->s.angles[PITCH]+90);//can't do roll?
+			self->teamchain->s.angles[PITCH]=anglemod(self->teamchain->s.angles[PITCH]+90);//can't do roll?
 			break;
 		case 2:
-			self->targetEnt->s.angles[PITCH]=anglemod(self->targetEnt->s.angles[PITCH]-90);//can't do roll?
+			self->teamchain->s.angles[PITCH]=anglemod(self->teamchain->s.angles[PITCH]-90);//can't do roll?
 			break;
 		case 3:
-			self->targetEnt->s.angles[ROLL]=anglemod(self->targetEnt->s.angles[ROLL]+90);//can't do roll?
+			self->teamchain->s.angles[ROLL]=anglemod(self->teamchain->s.angles[ROLL]+90);//can't do roll?
 			break;
 		case 4:
-			self->targetEnt->s.angles[ROLL]=anglemod(self->targetEnt->s.angles[ROLL]-90);//can't do roll?
+			self->teamchain->s.angles[ROLL]=anglemod(self->teamchain->s.angles[ROLL]-90);//can't do roll?
 			break;
 		default:
 			break;
 	}
 
 
-	VectorClear(self->targetEnt->velocity);
-	VectorClear(self->targetEnt->avelocity);
+	VectorClear(self->teamchain->velocity);
+	VectorClear(self->teamchain->avelocity);
 
 	if(flrand(0,1)<0.5)
 	{
-		if(self->targetEnt->materialtype == MAT_INSECT)
-			gi.CreateEffect(self->targetEnt, FX_BLOOD, CEF_FLAG8, self->targetEnt->s.origin, "ub", blooddir, 200);
+		if(self->teamchain->materialtype == MAT_INSECT)
+			gi.CreateEffect(self->teamchain, FX_BLOOD, CEF_FLAG8, self->teamchain->s.origin, "ub", blooddir, 200);
 		else
-			gi.CreateEffect(self->targetEnt, FX_BLOOD, 0, self->targetEnt->s.origin, "ub", blooddir, 200);
+			gi.CreateEffect(self->teamchain, FX_BLOOD, 0, self->teamchain->s.origin, "ub", blooddir, 200);
 	}
 }
 
@@ -1497,9 +1497,9 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	else
 		SetAnim(self, ANIM_BITELOW_SFIN);
 
-	self->targetEnt = found;
-	self->targetEnt->flags |= FL_FLY;
-	self->targetEnt->movetype = MOVETYPE_FLY;
+	self->teamchain = found;
+	self->teamchain->flags |= FL_FLY;
+	self->teamchain->movetype = MOVETYPE_FLY;
 
 	if(!found->client)
 	{
@@ -1545,44 +1545,44 @@ void tbeast_gore_toy(edict_t *self, float jumpht)
 	else
 		self->count = 0;
 
-	if(!self->targetEnt)
+	if(!self->teamchain)
 		return;
 
-	if(self->targetEnt->health<0)
+	if(self->teamchain->health<0)
 		return;
 
 	if(self->count)
 		return;
 
 	ok_zdist = 128;
-	enemy_zdist = self->targetEnt->s.origin[2] - self->s.origin[2];
+	enemy_zdist = self->teamchain->s.origin[2] - self->s.origin[2];
 	if(enemy_zdist <= self->maxs[2] + ok_zdist || jumpht == -1)
 	{//FIXME: waits grabs it too low, waits too long
-		self->wait = self->targetEnt->materialtype;
+		self->wait = self->teamchain->materialtype;
 
 		gi.sound(self, CHAN_WEAPON, sounds[SND_SNATCH], 1, ATTN_NORM, 0);
 		if(jumpht!=-1)
 			self->count = 1;
 		VectorCopy(self->velocity,dir);
 		VectorNormalize(dir);
-		num_chunks = (byte)(self->targetEnt->health/4);
+		num_chunks = (byte)(self->teamchain->health/4);
 		if(num_chunks>15)
 			num_chunks = 15;
-		SprayDebris(self->targetEnt, self->targetEnt->s.origin, num_chunks, self->targetEnt->health*4);//self->enemy is thingtype wood?!
+		SprayDebris(self->teamchain, self->teamchain->s.origin, num_chunks, self->teamchain->health*4);//self->enemy is thingtype wood?!
 
-		if(Q_stricmp(self->targetEnt->classname,"player"))
+		if(Q_stricmp(self->teamchain->classname,"player"))
 		{
-			gi.sound(self->targetEnt, CHAN_WEAPON, sounds[SND_CATCH], 1, ATTN_NORM, 0);
-			BecomeDebris(self->targetEnt);
+			gi.sound(self->teamchain, CHAN_WEAPON, sounds[SND_CATCH], 1, ATTN_NORM, 0);
+			BecomeDebris(self->teamchain);
 		}
 		else
 		{
-			self->targetEnt->nextthink = level.time;
-			T_Damage (self->targetEnt, self, self, self->velocity, self->targetEnt->s.origin, dir, 2000, 300, DAMAGE_DISMEMBER|DAMAGE_NO_PROTECTION,MOD_DIED);
+			self->teamchain->nextthink = level.time;
+			T_Damage (self->teamchain, self, self, self->velocity, self->teamchain->s.origin, dir, 2000, 300, DAMAGE_DISMEMBER|DAMAGE_NO_PROTECTION,MOD_DIED);
 		}
-		if(self->enemy == self->targetEnt)
+		if(self->enemy == self->teamchain)
 			self->enemy = NULL;
-		self->targetEnt = NULL;
+		self->teamchain = NULL;
 	}
 }
 
@@ -1609,15 +1609,15 @@ void tbeast_anger_sound (edict_t *self)
 	else if (chance < 60)
 		tbeast_growl(self);
 
-	if(self->targetEnt)
+	if(self->teamchain)
 	{
 		chance = (byte)irand(1,3);
 
-		SprayDebris(self->targetEnt, self->targetEnt->s.origin, chance, 100);
-		if(!self->targetEnt->client)
+		SprayDebris(self->teamchain, self->teamchain->s.origin, chance, 100);
+		if(!self->teamchain->client)
 		{
-			G_QPostMessage(self->targetEnt, MSG_DISMEMBER, PRI_DIRECTIVE, "ii", self->targetEnt->health*0.5, irand(1,13));//do I need last three if not sending them?
-			G_QPostMessage(self->targetEnt, MSG_PAIN, PRI_DIRECTIVE, "eeiii", self, self, true, 200, 0);
+			G_QPostMessage(self->teamchain, MSG_DISMEMBER, PRI_DIRECTIVE, "ii", self->teamchain->health*0.5, irand(1,13));//do I need last three if not sending them?
+			G_QPostMessage(self->teamchain, MSG_PAIN, PRI_DIRECTIVE, "eeiii", self, self, true, 200, 0);
 		}
 	}
 }
@@ -2020,7 +2020,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 	if(trace->ent->svflags & SVF_TOUCHED_BEAST)
 		return;
 
-	if(trace->ent == self->targetEnt)
+	if(trace->ent == self->teamchain)
 		return;
 
 	if(trace->ent->classID == CID_FUNC_DOOR)
@@ -2361,7 +2361,7 @@ void tbeast_fake_touch(edict_t *self)
 		if(!Q_stricmp(other->classname, "worldspawn"))
 			continue;
 
-		if(other == self->targetEnt)
+		if(other == self->teamchain)
 			continue;
 
 		if(self->curAnimID != ANIM_CHARGE && self->curAnimID != ANIM_QUICK_CHARGE)

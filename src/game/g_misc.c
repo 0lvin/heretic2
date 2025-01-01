@@ -2200,12 +2200,12 @@ misc_remote_camera_think(edict_t *self)
 	// Find my target entity and then orientate myself to look at it.
 	// ********************************************************************************************
 
-	if((self->targetEnt = G_Find(NULL, FOFS(targetname), self->target)))
+	if((self->teamchain = G_Find(NULL, FOFS(targetname), self->target)))
 	{
 		/* Calculate the angles from myself to my target. */
 		vec3_t	forward;
 
-		VectorSubtract(self->targetEnt->s.origin, self->s.origin, forward);
+		VectorSubtract(self->teamchain->s.origin, self->s.origin, forward);
 		VectorNormalize(forward);
 		VectoAngles(forward, self->s.angles);
 		self->s.angles[PITCH] = -self->s.angles[PITCH];
@@ -2414,8 +2414,8 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 	// Find my target entity and then orientate myself to look at it.
 	// ********************************************************************************************
 
-	self->targetEnt = G_Find(NULL, FOFS(targetname), self->target);
-	VectorSubtract(self->targetEnt->s.origin, self->s.origin, forward);
+	self->teamchain = G_Find(NULL, FOFS(targetname), self->target);
+	VectorSubtract(self->teamchain->s.origin, self->s.origin, forward);
 	VectorNormalize(forward);
 	VectoAngles(forward, self->s.angles);
 	self->s.angles[PITCH] = -self->s.angles[PITCH];
@@ -2465,7 +2465,7 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_misc_remote_camera(edict_t *self)
 {
-	self->enemy = self->targetEnt = NULL;
+	self->enemy = self->teamchain = NULL;
 
 	if (!self->target)
 	{

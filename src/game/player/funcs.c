@@ -73,7 +73,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	if ( (playerinfo->seqcmd[ACMDL_JUMP]) )
 	{
 		playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
-		VectorCopy(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,playerinfo->velocity);
+		VectorCopy(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,playerinfo->velocity);
 		threshold = VectorLengthSquared(playerinfo->velocity);
 
 		if (threshold < 300*300)
@@ -91,9 +91,9 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 
 		((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
 
-		((edict_t *)playerinfo->self)->targetEnt->rope_grab->s.effects &= ~EF_ALTCLIENTFX;
-		((edict_t *)playerinfo->self)->targetEnt->enemy = NULL;
-		((edict_t *)playerinfo->self)->targetEnt = NULL;
+		((edict_t *)playerinfo->self)->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
+		((edict_t *)playerinfo->self)->teamchain->enemy = NULL;
+		((edict_t *)playerinfo->self)->teamchain = NULL;
 
 		playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 		playerExport->PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFWD);
@@ -105,7 +105,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	{
 		AngleVectors(playerinfo->angles, NULL, vr, NULL);
 		VectorScale(vr, -32, vr);
-		VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vr,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
+		VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vr,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
 
 		switch (playerinfo->lowerseq)
 		{
@@ -131,7 +131,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	{
 		AngleVectors(playerinfo->angles, NULL, vr, NULL);
 		VectorScale(vr, 32, vr);
-		VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vr,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
+		VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vr,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
 
 		switch (playerinfo->lowerseq)
 		{
@@ -170,24 +170,24 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK])
 	{
-		if (((edict_t *)playerinfo->self)->targetEnt->rope_grab->monsterinfo.jump_time < level.time)
+		if (((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.jump_time < level.time)
 		{
-			((edict_t *)playerinfo->self)->targetEnt->rope_grab->monsterinfo.jump_time = level.time + 2;
+			((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.jump_time = level.time + 2;
 			AngleVectors(playerinfo->angles, vf, NULL, NULL);
 			VectorMA(vf, 400, vf, vf);
-			VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vf,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
+			VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vf,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
 		}
 	}
 
 	if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
-		if (((edict_t *)playerinfo->self)->targetEnt->rope_grab->monsterinfo.search_time < level.time)
+		if (((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.search_time < level.time)
 		{
-			((edict_t *)playerinfo->self)->targetEnt->rope_grab->monsterinfo.search_time = level.time + 2;
+			((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.search_time = level.time + 2;
 
 			AngleVectors(playerinfo->angles, NULL, vr, NULL);
 			VectorScale(vr, -64, vr);
-			VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vr,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
+			VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vr,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
 
 			switch (playerinfo->lowerseq)
 			{
@@ -216,13 +216,13 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 	}
 	else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
-		if (((edict_t *)playerinfo->self)->targetEnt->rope_grab->monsterinfo.flee_finished < level.time)
+		if (((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.flee_finished < level.time)
 		{
-			((edict_t *)playerinfo->self)->targetEnt->rope_grab->monsterinfo.flee_finished = level.time + 2;
+			((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.flee_finished = level.time + 2;
 
 			AngleVectors(playerinfo->angles, NULL, vr, NULL);
 			VectorScale(vr, 64, vr);
-			VectorAdd(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,vr,((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity);
+			VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vr,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
 
 			switch (playerinfo->lowerseq)
 			{
@@ -264,7 +264,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		{
 			// We bumped into something.
 
-			((edict_t *)playerinfo->self)->targetEnt->rope_grab->viewheight = ((edict_t *)playerinfo->self)->targetEnt->rope_grab->accel;
+			((edict_t *)playerinfo->self)->teamchain->teamchain->viewheight = ((edict_t *)playerinfo->self)->teamchain->teamchain->accel;
 
 			switch (playerinfo->lowerseq)
 			{
@@ -363,11 +363,11 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 
 		trace = playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
-		if (trace.fraction < 1.0 || trace.endpos[2] < ((edict_t *)playerinfo->self)->targetEnt->rope_end->s.origin[2])
+		if (trace.fraction < 1.0 || trace.endpos[2] < ((edict_t *)playerinfo->self)->teamchain->rope_end->s.origin[2])
 		{
 			// We bumped into something or have come to the end of the rope
 
-			((edict_t *)playerinfo->self)->targetEnt->rope_grab->viewheight = ((edict_t *)playerinfo->self)->targetEnt->rope_grab->accel;
+			((edict_t *)playerinfo->self)->teamchain->teamchain->viewheight = ((edict_t *)playerinfo->self)->teamchain->teamchain->accel;
 
 			switch (playerinfo->lowerseq)
 			{
@@ -462,15 +462,15 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 	else if ( (playerinfo->seqcmd[ACMDL_JUMP]) )
 	{
 		playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
-		VectorCopy(((edict_t *)playerinfo->self)->targetEnt->rope_grab->velocity,playerinfo->velocity);
+		VectorCopy(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,playerinfo->velocity);
 		playerinfo->velocity[2]=150.0;
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
 		((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
 
-		((edict_t *)playerinfo->self)->targetEnt->rope_grab->s.effects &= ~EF_ALTCLIENTFX;
-		((edict_t *)playerinfo->self)->targetEnt->enemy = NULL;
-		((edict_t *)playerinfo->self)->targetEnt = NULL;
+		((edict_t *)playerinfo->self)->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
+		((edict_t *)playerinfo->self)->teamchain->enemy = NULL;
+		((edict_t *)playerinfo->self)->teamchain = NULL;
 
 		playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 
@@ -549,7 +549,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
   	//If we're above the rope then we can't grab it
 	if (playerinfo->origin[2] > rope_top[2])
 	{
-		//((edict_t *)playerinfo->self)->targetEnt = NULL;
+		//((edict_t *)playerinfo->self)->teamchain = NULL;
 		return false;
 	}
 
@@ -562,7 +562,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 	//Player is below the rope's length
 	if (len > dist)
 	{
-		//((edict_t *)playerinfo->self)->targetEnt = NULL;
+		//((edict_t *)playerinfo->self)->teamchain = NULL;
 		return false;
 	}
 
@@ -576,32 +576,32 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 
 		if (!(playerinfo->flags & PLAYER_FLAG_ONROPE))
 		{
-			VectorCopy(playerinfo->velocity,((edict_t *)playerinfo->targetEnt)->rope_grab->velocity);
-			VectorScale(((edict_t *)playerinfo->targetEnt)->rope_grab->velocity,2,((edict_t *)playerinfo->targetEnt)->rope_grab->velocity);
+			VectorCopy(playerinfo->velocity,((edict_t *)playerinfo->targetEnt)->teamchain->velocity);
+			VectorScale(((edict_t *)playerinfo->targetEnt)->teamchain->velocity,2,((edict_t *)playerinfo->targetEnt)->teamchain->velocity);
 			VectorClear(playerinfo->velocity);
-			VectorCopy(playerinfo->origin,((edict_t *)playerinfo->targetEnt)->rope_grab->s.origin);
+			VectorCopy(playerinfo->origin,((edict_t *)playerinfo->targetEnt)->teamchain->s.origin);
 			VectorSubtract(playerinfo->origin,rope_top,vec);
-			rope->rope_grab->viewheight=VectorLength(vec);
+			rope->teamchain->viewheight=VectorLength(vec);
 		}
 		else
 		{
 			trace = playerinfo->G_Trace(playerinfo->origin,
 									  playerinfo->mins,
 									  playerinfo->maxs,
-									  ((edict_t *)playerinfo->targetEnt)->rope_grab->s.origin,
+									  ((edict_t *)playerinfo->targetEnt)->teamchain->s.origin,
 										(edict_t*)playerinfo->self,
 									  MASK_PLAYERSOLID);
 
 			if (trace.fraction < 1.0f || trace.startsolid || trace.allsolid)
 				return false;
 
-			VectorCopy(((edict_t *)playerinfo->targetEnt)->rope_grab->s.origin, playerinfo->origin);
+			VectorCopy(((edict_t *)playerinfo->targetEnt)->teamchain->s.origin, playerinfo->origin);
 		}
 
 		return true;
 	}
 
-	//((edict_t *)playerinfo->self)->targetEnt = NULL;
+	//((edict_t *)playerinfo->self)->teamchain = NULL;
 	return false;
 }
 
@@ -620,8 +620,8 @@ void G_PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2
 		if (playerinfo->targetEnt)
 		{
 			//Update the rope's information about the player's position
-			((edict_t *)playerinfo->targetEnt)->rope_grab->accel=((edict_t *)playerinfo->targetEnt)->rope_grab->viewheight;
-			((edict_t *)playerinfo->targetEnt)->rope_grab->viewheight-=height;
+			((edict_t *)playerinfo->targetEnt)->teamchain->accel=((edict_t *)playerinfo->targetEnt)->teamchain->viewheight;
+			((edict_t *)playerinfo->targetEnt)->teamchain->viewheight-=height;
 		}
 	}
 }
@@ -671,8 +671,8 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 
 void G_PlayerActionTakePuzzle(playerinfo_t *playerinfo)
 {
-	if(((edict_t *)playerinfo->self)->targetEnt->use)
-		((edict_t *)playerinfo->self)->targetEnt->use(((edict_t *)playerinfo->self)->targetEnt,((edict_t *)playerinfo->self),((edict_t *)playerinfo->self));
+	if(((edict_t *)playerinfo->self)->teamchain->use)
+		((edict_t *)playerinfo->self)->teamchain->use(((edict_t *)playerinfo->self)->teamchain,((edict_t *)playerinfo->self),((edict_t *)playerinfo->self));
 }
 
 // ************************************************************************************************

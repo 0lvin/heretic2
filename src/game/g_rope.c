@@ -206,7 +206,7 @@ void rope_think(edict_t *self)
 		return;
 
 	//See if the player has chosen this rope as the one to grab
-	if (self->enemy->targetEnt == self)
+	if (self->enemy->teamchain == self)
 	{
 		//If he's already grabbed it...
 		if ( (self->enemy->client->playerinfo.flags & PLAYER_FLAG_ONROPE) && (!(self->enemy->client->playerinfo.flags & PLAYER_FLAG_RELEASEROPE)) )
@@ -219,41 +219,41 @@ void rope_think(edict_t *self)
 				rope_top[2] += self->maxs[2];
 
 				//Create the new rope that's attached to the player
-				self->rope_grab->s.effects |= EF_ALTCLIENTFX;
+				self->teamchain->s.effects |= EF_ALTCLIENTFX;
 
 				gi.CreateEffect(self->enemy,
 								FX_ROPE, CEF_BROADCAST | CEF_OWNERS_ORIGIN | CEF_FLAG6,
 								rope_top,
 								"ssbvvv",
-								self->rope_grab->s.number,	//ID for the grab entity
+								self->teamchain->s.number,	//ID for the grab entity
 								self->rope_end->s.number,	//ID for the end entity
 								self->bloodType,			//Model type
 								rope_top,					//Top of the rope
-								self->rope_grab->s.origin,	//Grab's current origin (???)
+								self->teamchain->s.origin,	//Grab's current origin (???)
 								self->rope_end->s.origin);	//End's current origin	(???)
 			}
 
-			trace = gi.trace(self->rope_grab->s.origin, vec3_origin, vec3_origin, self->s.origin, self->enemy, MASK_SOLID);
+			trace = gi.trace(self->teamchain->s.origin, vec3_origin, vec3_origin, self->s.origin, self->enemy, MASK_SOLID);
 
 			if ( (trace.fraction == 1) && (!trace.startsolid && !trace.allsolid) )
-				trace = gi.trace(self->enemy->s.origin, self->enemy->mins, self->enemy->maxs, self->rope_grab->s.origin, self->enemy, MASK_PLAYERSOLID);
+				trace = gi.trace(self->enemy->s.origin, self->enemy->mins, self->enemy->maxs, self->teamchain->s.origin, self->enemy, MASK_PLAYERSOLID);
 
 			//If the rope's movement is clear, move the player and the rope
 			if ( (trace.fraction == 1) && (!trace.startsolid && !trace.allsolid) )
 			{
-				VectorCopy(self->rope_grab->s.origin, self->enemy->s.origin);
+				VectorCopy(self->teamchain->s.origin, self->enemy->s.origin);
 			}
 			else
 			{
 				//Otherwise stop the player and the rope from entering a solid brush
-				VectorScale(self->rope_grab->velocity, -0.5, self->rope_grab->velocity);
-				VectorCopy(self->enemy->s.origin, self->rope_grab->s.origin);
+				VectorScale(self->teamchain->velocity, -0.5, self->teamchain->velocity);
+				VectorCopy(self->enemy->s.origin, self->teamchain->s.origin);
 			}
 		}
 		else
 		{
 			self->count = 0;
-			self->rope_grab->s.effects &= ~EF_ALTCLIENTFX;
+			self->teamchain->s.effects &= ~EF_ALTCLIENTFX;
 		}
 	}
 	else
@@ -282,7 +282,7 @@ void rope_end_think2( edict_t *self )
 
 	if(!CHICKEN_KNOCKBACK)
 	{//otherwise, done in hanging_chicken_think
-		trace = gi.trace(grab->s.origin, self->targetEnt->mins, self->targetEnt->maxs, end_pos, self->targetEnt, MASK_MONSTERSOLID);
+		trace = gi.trace(grab->s.origin, self->teamchain->mins, self->teamchain->maxs, end_pos, self->teamchain, MASK_MONSTERSOLID);
 
 		if ((trace.fraction < 1 || trace.startsolid || trace.allsolid) && trace.ent != self)
 		{
@@ -347,10 +347,10 @@ void rope_end_think( edict_t *self )
 	float	grab_len,  mag, end_len;
 
 	//Setup the top of the rope entity (the rope's attach point)
-	VectorCopy(self->rope_grab->s.origin, rope_top);
+	VectorCopy(self->teamchain->s.origin, rope_top);
 
 	//Find the length of the end segment
-	grab_len = Q_fabs(self->maxs[2]+self->mins[2]) - self->rope_grab->viewheight;
+	grab_len = Q_fabs(self->maxs[2]+self->mins[2]) - self->teamchain->viewheight;
 
 	//Find the vector to the rope's point of rest
 	VectorCopy(rope_top, end_rest);
@@ -390,7 +390,7 @@ void rope_end_think( edict_t *self )
 void rope_sway(edict_t *self)
 {
 	//edict_t	*end  = self->slave;
-	edict_t	*grab = self->rope_grab;
+	edict_t	*grab = self->teamchain;
 	vec3_t	rope_end, rope_top, grab_end;
 	vec3_t	v_rope, v_grab, v_dest, rope_rest, v_dir;
 	float	rope_len, grab_len, dist, mag;
@@ -491,7 +491,7 @@ void rope_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 	if ( !Q_stricmp(other->classname, "player") )
 	{
 		//If the player is already on a rope, forget him as a valid grabber
-		if ( (other->targetEnt) && (other->client->playerinfo.flags & PLAYER_FLAG_ONROPE) )
+		if ( (other->teamchain) && (other->client->playerinfo.flags & PLAYER_FLAG_ONROPE) )
 			return;
 
 		//If we've got a player on the rope, and this guy isn't it, then don't let him grab
@@ -500,7 +500,7 @@ void rope_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 
 		self->enemy = other;
 		self->viewheight = other->s.origin[2];
-		other->targetEnt = self;
+		other->teamchain = self;
 	}
 }
 
@@ -517,10 +517,10 @@ void end_think(edict_t *self)
 void hanging_chicken_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	self->health = 10000;
-	VectorCopy(self->targetEnt->s.origin, self->s.origin);
+	VectorCopy(self->teamchain->s.origin, self->s.origin);
 	self->velocity[2] = 0;
 
-	VectorCopy(self->velocity, self->targetEnt->velocity);
+	VectorCopy(self->velocity, self->teamchain->velocity);
 	VectorClear(self->velocity);
 	VectorClear(self->knockbackvel);
 
@@ -554,7 +554,7 @@ void hanging_chicken_think(edict_t *self)
 	int			i, mag;
 	trace_t		trace;
 
-	VectorCopy(self->targetEnt->velocity, vec);
+	VectorCopy(self->teamchain->velocity, vec);
 	vec[2] = 0;
 	mag = VectorLength(vec);
 
@@ -575,7 +575,7 @@ void hanging_chicken_think(edict_t *self)
 	//knockback
 	if(CHICKEN_KNOCKBACK)
 	{
-		trace = gi.trace(self->s.origin, self->mins, self->maxs, self->targetEnt->s.origin, self, self->clipmask);
+		trace = gi.trace(self->s.origin, self->mins, self->maxs, self->teamchain->s.origin, self, self->clipmask);
 		if(trace.ent)
 		{
 			if(movable(trace.ent))
@@ -583,7 +583,7 @@ void hanging_chicken_think(edict_t *self)
 				vec3_t	kvel;
 				float	mass, force, upvel;
 
-				VectorSubtract(self->targetEnt->s.origin, self->s.origin, vec);
+				VectorSubtract(self->teamchain->s.origin, self->s.origin, vec);
 
 				force = VectorNormalize(vec);
 				mass = VectorLength(trace.ent->size) * 3;
@@ -643,7 +643,7 @@ void hanging_chicken_think(edict_t *self)
 
 				if(force>100)
 				{
-					VectorMA(trace.endpos, -force/5, vec, self->targetEnt->s.origin);
+					VectorMA(trace.endpos, -force/5, vec, self->teamchain->s.origin);
 					VectorScale(self->enemy->rope_end->velocity, -0.5 * force/400 , self->enemy->rope_end->velocity);
 				}
 				else
@@ -651,8 +651,8 @@ void hanging_chicken_think(edict_t *self)
 			}
 		}
 	}
-	VectorCopy(self->targetEnt->s.origin, self->s.origin);
-	VectorSubtract(self->targetEnt->owner->s.origin, self->s.origin, vec);
+	VectorCopy(self->teamchain->s.origin, self->s.origin);
+	VectorSubtract(self->teamchain->owner->s.origin, self->s.origin, vec);
 	VectorNormalize(vec);
 	VectoAngles(vec, angles);
 
@@ -783,7 +783,7 @@ void spawn_hanging_chicken(edict_t *self)
 
 	VectorCopy(self->rope_end->s.origin, chicken->s.origin);
 
-	chicken->targetEnt = self->rope_end;
+	chicken->teamchain = self->rope_end;
 
 	VectorSet(chicken->rrs.scale, 1, 1, 1);
 	chicken->classname = "NATE";
@@ -791,7 +791,7 @@ void spawn_hanging_chicken(edict_t *self)
 	chicken->nextthink = level.time + 0.1;
 	chicken->materialtype = MAT_FLESH;
 
-	self->targetEnt = chicken;
+	self->teamchain = chicken;
 
 	gi.linkentity(chicken);
 }
@@ -860,7 +860,7 @@ void SP_obj_rope(edict_t *self)
 	VectorCopy(self->s.origin, grab_ent->s.origin);
 	grab_ent->s.origin[2] += self->maxs[2] + 4;
 
-	self->rope_grab = grab_ent;
+	self->teamchain = grab_ent;
 
 	VectorCopy(self->s.origin, rope_end);
 	rope_end[2] += self->mins[2];

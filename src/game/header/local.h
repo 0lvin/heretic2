@@ -1910,7 +1910,7 @@ struct edict_s
 	edict_t *activator;
 	edict_t *groundentity;
 	int groundentity_linkcount;
-	// edict_t *teamchain;
+	edict_t *teamchain;
 	// edict_t *teammaster;
 
 	edict_t *mynoise;           /* can go in client only */
@@ -2008,13 +2008,6 @@ struct edict_s
 	// Used to indicate teams, (a way to group things).
 
 	char				*team;			// Team name.
-
-	union {
-	edict_t				*teamchain;
-	edict_t				*targetEnt;
-	edict_t				*slavechain;
-	edict_t				*rope_grab;		//Used to by the rope to hold the part of the rope which the player is holding
-	};
 
 	union {
 		edict_t				*guidemaster;

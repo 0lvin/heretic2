@@ -315,7 +315,7 @@ void seraph_enforce(edict_t *self)
 		if (ogle->ai_mood != AI_MOOD_REST)
 			continue;
 
-		if (ogle->targetEnt != self)
+		if (ogle->teamchain != self)
 			continue;
 
 		//Setup within the ogle code
@@ -379,7 +379,7 @@ void seraph_oversee(edict_t *self)
 		if (ogle->targeted)
 			return;
 
-		if (ogle->targetEnt != self)
+		if (ogle->teamchain != self)
 			return;
 
 		//See if we can scare this one

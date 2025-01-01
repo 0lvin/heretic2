@@ -395,16 +395,16 @@ void ogle_mood_think ( edict_t *self )
 
 	if (!self->enemy)
 	{
-		if (self->targetEnt && self->targetEnt->health > 0)
+		if (self->teamchain && self->teamchain->health > 0)
 		{
-			if (self->targetEnt->health < SERAPH_HEALTH/2 || self->targetEnt->ai_mood == AI_MOOD_FLEE)
+			if (self->teamchain->health < SERAPH_HEALTH/2 || self->teamchain->ai_mood == AI_MOOD_FLEE)
 			{
 				if (irand(0,1))
 					gi.sound (self, CHAN_BODY, sounds[SND_ENRAGE1], 1, ATTN_NORM, 0);
 				else
 					gi.sound (self, CHAN_BODY, sounds[SND_ENRAGE2], 1, ATTN_NORM, 0);
 
-				self->enemy = self->targetEnt;
+				self->enemy = self->teamchain;
 				self->ai_mood = AI_MOOD_PURSUE;
 				return;
 			}
@@ -544,7 +544,7 @@ void ogle_init_overlord(edict_t *self)
 			continue;
 
 		//Restore what we lost from monsterstart()
-		self->targetEnt = seraph;
+		self->teamchain = seraph;
 		self->nextthink = level.time + 0.1;
 		self->think = walkmonster_start_go;
 		self->use = ogle_use;

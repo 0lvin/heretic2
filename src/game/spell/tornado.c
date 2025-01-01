@@ -64,9 +64,9 @@ static void TornadoThink(edict_t *self)
 
 				VectorMA(ent->s.origin, -ent->maxs[0], vel, hitloc);
 				if (ent->movetype != MOVETYPE_NONE)
-					T_Damage (ent, ent, self->targetEnt, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
+					T_Damage (ent, ent, self->teamchain, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
 				else
-					T_Damage (ent, ent, self->targetEnt, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
+					T_Damage (ent, ent, self->teamchain, vel, hitloc, vec3_origin, damage, 600, DAMAGE_RADIUS | DAMAGE_SPELL,MOD_TORN);
 			}
 		}
 	}
@@ -146,7 +146,7 @@ void SpellCastDropTornado(edict_t *caster, vec3_t startpos, vec3_t aimangles, ve
 	tornado->svflags |= SVF_ALWAYS_SEND;
 	tornado->solid = SOLID_NOT;
 	tornado->clipmask = MASK_SOLID;
-	tornado->targetEnt = caster;
+	tornado->teamchain = caster;
 
 	VectorCopy(startpos, tornado->s.origin);
 	tornado->s.origin[2] += 1.0;

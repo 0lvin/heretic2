@@ -235,7 +235,7 @@ SetupPlayerinfo(edict_t *ent)
 	VectorCopy(ent->maxs, ent->client->playerinfo.maxs);
 	ent->client->playerinfo.enemy = ent->enemy;
 	ent->client->playerinfo.target = ent->target;
-	ent->client->playerinfo.targetEnt = ent->targetEnt;
+	ent->client->playerinfo.targetEnt = ent->teamchain;
 	ent->client->playerinfo.target_ent = ent->target_ent;
 	ent->client->playerinfo.nextthink = ent->nextthink;
 	ent->client->playerinfo.viewheight = ent->viewheight;
@@ -280,7 +280,7 @@ WritePlayerinfo(edict_t *ent)
 	VectorCopy(ent->client->playerinfo.mins, ent->mins);
 	VectorCopy(ent->client->playerinfo.maxs, ent->maxs);
 	ent->enemy = (edict_t *)ent->client->playerinfo.enemy;
-	ent->targetEnt = (edict_t*)ent->client->playerinfo.targetEnt;
+	ent->teamchain = (edict_t*)ent->client->playerinfo.targetEnt;
 	ent->target_ent = (edict_t*)ent->client->playerinfo.target_ent;
 	ent->target =  (char*)ent->client->playerinfo.target;
 	ent->nextthink = ent->client->playerinfo.nextthink;
