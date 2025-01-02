@@ -208,7 +208,7 @@ void priestess_teleport_move ( edict_t *self )
 	else
 	{
 		gi.dprintf("ERROR priestess_teleport_move :Priestess unable to move to new teleport destination!\n");
-		SetAnim(self, ANIM_SHIELD_END);
+		SetAnim(self, PRIESTESS_ANIM_SHIELD_END);
 	}
 }
 
@@ -287,7 +287,7 @@ void priestess_teleport_return ( edict_t *self )
 	VectorCopy(end, self->s.origin);
 	gi.linkentity(self);
 
-	SetAnim(self, ANIM_SHIELD_END);
+	SetAnim(self, PRIESTESS_ANIM_SHIELD_END);
 }
 
 /*
@@ -979,7 +979,7 @@ void priestess_attack3_loop ( edict_t *self )
 {
 	vec3_t	spawnSpot, vf, vr;
 
-	SetAnim(self, ANIM_ATTACK3_LOOP);
+	SetAnim(self, PRIESTESS_ANIM_ATTACK3_LOOP);
 	self->monsterinfo.attack_finished = level.time + 4;
 
 	AngleVectors(self->s.angles, vf, vr, NULL);
@@ -1076,7 +1076,7 @@ void priestess_attack3_loop_fire ( edict_t *self )
 {
 	if (self->monsterinfo.attack_finished < level.time)
 	{
-		SetAnim(self, ANIM_ATTACK3_END);
+		SetAnim(self, PRIESTESS_ANIM_ATTACK3_END);
 		return;
 	}
 
@@ -1122,11 +1122,11 @@ void priestess_pounce_attack ( edict_t *self )
 
 		if (len < 64)
 		{
-			SetAnim(self, ANIM_POUNCE_ATTACK);
+			SetAnim(self, PRIESTESS_ANIM_POUNCE_ATTACK);
 		}
 		else if (len < 128)
 		{
-			SetAnim(self, ANIM_ATTACK2);
+			SetAnim(self, PRIESTESS_ANIM_ATTACK2);
 		}
 		else
 		{
@@ -1352,7 +1352,7 @@ void priestess_pause( edict_t *self )
 
 		if (!clear_LOS && chance < 75)
 		{
-			SetAnim(self, ANIM_SHIELD_GO);
+			SetAnim(self, PRIESTESS_ANIM_SHIELD_GO);
 			return;
 		}
 
@@ -1361,58 +1361,58 @@ void priestess_pause( edict_t *self )
 		if (len < 64)
 		{
 			if (chance < 20)
-				SetAnim(self, ANIM_ATTACK2);
+				SetAnim(self, PRIESTESS_ANIM_ATTACK2);
 			else if (chance < 40)
-				SetAnim(self, ANIM_BACKUP);
+				SetAnim(self, PRIESTESS_ANIM_BACKUP);
 			else
-				SetAnim(self, ANIM_JUMP_BACK);
+				SetAnim(self, PRIESTESS_ANIM_JUMP_BACK);
 		}
 		else
 		{
 			if (chance < 40 && self->monsterinfo.jump_time < level.time)
 			{
-				SetAnim(self, ANIM_ATTACK3_GO);
+				SetAnim(self, PRIESTESS_ANIM_ATTACK3_GO);
 			}
 			else if (chance < 40 && self->monsterinfo.attack_state != AS_LIGHT_MISSILE)
 			{
 				self->monsterinfo.search_time = 2;
 				self->monsterinfo.attack_state = AS_LIGHT_MISSILE;
-				SetAnim(self, ANIM_ATTACK1_GO);
+				SetAnim(self, PRIESTESS_ANIM_ATTACK1_GO);
 			}
 			else if (chance < 80 && self->monsterinfo.attack_state != AS_POUNCE)
 			{
 				self->monsterinfo.attack_state = AS_POUNCE;
 
 				if (len > 256)
-					SetAnim(self, ANIM_JUMP_POUNCE);
+					SetAnim(self, PRIESTESS_ANIM_JUMP_POUNCE);
 				else
-					SetAnim(self, ANIM_JUMP_ATTACK);
+					SetAnim(self, PRIESTESS_ANIM_JUMP_ATTACK);
 			}
 			else if (chance < 90 && self->monsterinfo.attack_finished < level.time)
 			{
-				SetAnim(self, ANIM_SHIELD_GO);
+				SetAnim(self, PRIESTESS_ANIM_SHIELD_GO);
 				self->monsterinfo.attack_finished = level.time + 5;
 			}
 			else if (self->monsterinfo.attack_state != AS_JUMP_RIGHT)
 			{
 				self->monsterinfo.attack_state = AS_JUMP_RIGHT;
-				SetAnim(self, ANIM_JUMP_RIGHT);
+				SetAnim(self, PRIESTESS_ANIM_JUMP_RIGHT);
 			}
 			else
 			{
 				self->monsterinfo.attack_state = AS_JUMP_LEFT;
-				SetAnim(self, ANIM_JUMP_LEFT);
+				SetAnim(self, PRIESTESS_ANIM_JUMP_LEFT);
 			}
 		}
 
-		//SetAnim(self, ANIM_SHIELD_GO);
+		//SetAnim(self, PRIESTESS_ANIM_SHIELD_GO);
 		//self->monsterinfo.attack_state = AS_LIGHT_MISSILE;
 		//self->monsterinfo.search_time = 2;
-		//SetAnim(self, ANIM_STAND1);
-		//SetAnim(self, ANIM_ATTACK3_GO);
-		//SetAnim(self, ANIM_ATTACK1_GO);
-		//SetAnim(self, ANIM_JUMP_ATTACK);
-		//SetAnim(self, ANIM_JUMP_POUNCE);
+		//SetAnim(self, PRIESTESS_ANIM_STAND1);
+		//SetAnim(self, PRIESTESS_ANIM_ATTACK3_GO);
+		//SetAnim(self, PRIESTESS_ANIM_ATTACK1_GO);
+		//SetAnim(self, PRIESTESS_ANIM_JUMP_ATTACK);
+		//SetAnim(self, PRIESTESS_ANIM_JUMP_POUNCE);
 
 		return;
 	}
@@ -1478,7 +1478,7 @@ void priestess_death( edict_t *self, G_Message_t *msg )
 
 	M_ShowLifeMeter( self, 0, 0);
 
-	SetAnim(self, ANIM_DEATH);
+	SetAnim(self, PRIESTESS_ANIM_DEATH);
 }
 
 
@@ -1489,9 +1489,9 @@ void priestess_death( edict_t *self, G_Message_t *msg )
 void priestess_evade( edict_t *self, G_Message_t *msg )
 {
 	if (irand(0,1))
-		SetAnim(self, ANIM_DODGE_LEFT);
+		SetAnim(self, PRIESTESS_ANIM_DODGE_LEFT);
 	else
-		SetAnim(self, ANIM_DODGE_RIGHT);
+		SetAnim(self, PRIESTESS_ANIM_DODGE_RIGHT);
 }
 
 /*-----------------------------------------------
@@ -1500,7 +1500,7 @@ void priestess_evade( edict_t *self, G_Message_t *msg )
 
 void priestess_stand(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_STAND1);
+	SetAnim(self, PRIESTESS_ANIM_STAND1);
 }
 
 /*-----------------------------------------------
@@ -1509,7 +1509,7 @@ void priestess_stand(edict_t *self, G_Message_t *msg)
 
 void priestess_missile(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_ATTACK2);
+	SetAnim(self, PRIESTESS_ANIM_ATTACK2);
 }
 
 /*-----------------------------------------------
@@ -1518,7 +1518,7 @@ void priestess_missile(edict_t *self, G_Message_t *msg)
 
 void priestess_run(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_WALK);
+	SetAnim(self, PRIESTESS_ANIM_WALK);
 }
 
 /*-----------------------------------------------
@@ -1532,8 +1532,8 @@ void priestess_pain(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
-	if (self->curAnimID == ANIM_ATTACK3_GO || self->curAnimID == ANIM_ATTACK3_LOOP ||
-		self->curAnimID == ANIM_SHIELD_GO)
+	if (self->curAnimID == PRIESTESS_ANIM_ATTACK3_GO || self->curAnimID == PRIESTESS_ANIM_ATTACK3_LOOP ||
+		self->curAnimID == PRIESTESS_ANIM_SHIELD_GO)
 		return;
 
 	//Weighted random based on health compared to the maximum it was at
@@ -1544,7 +1544,7 @@ void priestess_pain(edict_t *self, G_Message_t *msg)
 		else
 			gi.sound (self, CHAN_AUTO, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 
-		SetAnim(self, ANIM_PAIN);
+		SetAnim(self, PRIESTESS_ANIM_PAIN);
 	}
 }
 

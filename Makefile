@@ -1098,9 +1098,9 @@ GAME_OBJS_ = \
 	src/game/monster/rat/rat_anim.o \
 	src/game/monster/rat/rat.o \
 	src/game/monster/seraph/seraph_anim.o \
-	src/game/monster/seraph/seraph_guard_anim.o \
-	src/game/monster/seraph/seraph_guard.o \
 	src/game/monster/seraph/seraph.o \
+	src/game/monster/seraph_guard/seraph_guard_anim.o \
+	src/game/monster/seraph_guard/seraph_guard.o \
 	src/game/monster/spreader/spreader_anim.o \
 	src/game/monster/spreader/spreadermist.o \
 	src/game/monster/spreader/spreader.o \

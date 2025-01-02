@@ -161,7 +161,7 @@ qboolean MG_CheckBottom (edict_t *ent)
 	qboolean	realcheck = false;
 
 //normal corner checking
-	if(ent->classID==CID_TBEAST)
+	if(ent->classID == CID_TBEAST)
 	{
 		return TB_CheckBottom(ent);
 //		VectorAdd (ent->s.origin, ent->mins, mins);
@@ -228,7 +228,7 @@ qboolean MG_CheckBottom (edict_t *ent)
 			}
 			else
 			{
-//				if(ent->classID==CID_TBEAST)
+//				if(ent->classID == CID_TBEAST)
 //				{
 //					ent->groundentity = world;
 //					return true;//super hack- let big guy go up slopes
@@ -283,7 +283,7 @@ qboolean MG_CheckBottom (edict_t *ent)
 				}
 				else//only return false if two adjacent corners off a ledge
 				{
-					if(ent->classID==CID_TBEAST)
+					if(ent->classID == CID_TBEAST)
 					{
 //						ent->groundentity = trace.ent;
 						return true;//super hack- let big guy go up slopes
@@ -428,7 +428,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 	clipmask = MASK_MONSTERSOLID;
 	if (!(self->monsterinfo.aiflags & AI_NOSTEP))
 	{
-		if(self->classID==CID_TBEAST)
+		if(self->classID == CID_TBEAST)
 		{
 			clipmask = MASK_SOLID;
 			stepsize = STEPSIZE * 3;

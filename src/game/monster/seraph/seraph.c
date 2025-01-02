@@ -68,7 +68,7 @@ enum
 	NUM_OGLE_ANIMS
 };
 
-static mmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[SERAPH_NUM_ANIMS] =
 {
 	&seraph_move_walk1,
 	&seraph_move_walk2,
@@ -130,7 +130,7 @@ void seraph_dead ( edict_t *self )
 
 void seraph_death_loop ( edict_t *self )
 {
-	SetAnim(self, ANIM_DEATH2_LOOP);
+	SetAnim(self, SERAPH_ANIM_DEATH2_LOOP);
 }
 
 void seraph_check_land ( edict_t *self )
@@ -145,11 +145,11 @@ void seraph_check_land ( edict_t *self )
 
 	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
-	if ( (trace.fraction < 1 || trace.allsolid || trace.startsolid ) && self->curAnimID != ANIM_DEATH2_END && self->curAnimID != ANIM_DEATH2_GO)
+	if ( (trace.fraction < 1 || trace.allsolid || trace.startsolid ) && self->curAnimID != SERAPH_ANIM_DEATH2_END && self->curAnimID != SERAPH_ANIM_DEATH2_GO)
 	{
 		self->elasticity = 1.25;
 		self->friction = 0.5;
-		SetAnim(self, ANIM_DEATH2_END);
+		SetAnim(self, SERAPH_ANIM_DEATH2_END);
 	}
 }
 
@@ -189,7 +189,7 @@ void seraph_sound_whip(edict_t *self)
 //Become startled and look around
 void seraph_startle(edict_t *self)
 {
-	SetAnim(self, ANIM_STARTLE);
+	SetAnim(self, SERAPH_ANIM_STARTLE);
 }
 
 //Seraph has finished his startle, either track down the enemy, or go back to normal
@@ -199,7 +199,7 @@ void seraph_done_startle(edict_t *self)
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 }
 
-//Seraph has finished ANIM_GET2WORK, and must reset its enemy
+//Seraph has finished SERAPH_ANIM_GET2WORK, and must reset its enemy
 void seraph_done_get2work(edict_t *self)
 {
 	if(self->enemy)
@@ -219,9 +219,9 @@ void seraph_ai_walk(edict_t *self, float dist)
 	{
 		self->ai_mood = AI_MOOD_STAND;
 		if (irand(0,1))
-			SetAnim(self, ANIM_GET2WORK);
+			SetAnim(self, SERAPH_ANIM_GET2WORK);
 		else
-			SetAnim(self, ANIM_GET2WORK2);
+			SetAnim(self, SERAPH_ANIM_GET2WORK2);
 	}
 	else
 	{
@@ -231,7 +231,7 @@ void seraph_ai_walk(edict_t *self, float dist)
 
 void seraph2idle (edict_t *self)
 {
-	SetAnim(self, ANIM_STAND1);
+	SetAnim(self, SERAPH_ANIM_STAND1);
 }
 
 //Upper level AI interfacing
@@ -262,15 +262,15 @@ void seraph_pause(edict_t *self)
 		break;
 
 	case AI_MOOD_WANDER:
-		SetAnim(self, ANIM_WALK1);
+		SetAnim(self, SERAPH_ANIM_WALK1);
 		break;
 
 	case AI_MOOD_POINT_NAVIGATE:
-		SetAnim(self, ANIM_WALK2);
+		SetAnim(self, SERAPH_ANIM_WALK2);
 		break;
 
 	case AI_MOOD_JUMP:
-		SetAnim(self, ANIM_FJUMP);
+		SetAnim(self, SERAPH_ANIM_FJUMP);
 		break;
 
 	default :
@@ -401,9 +401,9 @@ void seraph_idle(edict_t *self)
 	seraph_oversee(self);
 
 	//Check to see if we were supposed to point at an ogle
-	if ( (self->ai_mood == AI_MOOD_ATTACK) && (self->ai_mood_flags & AI_MOOD_FLAG_WHIP) && (self->curAnimID != ANIM_POINT1) )
+	if ( (self->ai_mood == AI_MOOD_ATTACK) && (self->ai_mood_flags & AI_MOOD_FLAG_WHIP) && (self->curAnimID != SERAPH_ANIM_POINT1) )
 	{
-		SetAnim(self, ANIM_POINT1);
+		SetAnim(self, SERAPH_ANIM_POINT1);
 		self->ai_mood = AI_MOOD_STAND;
 		self->ai_mood_flags &= ~AI_MOOD_FLAG_WHIP;
 		return;
@@ -412,43 +412,43 @@ void seraph_idle(edict_t *self)
 	//See if we're going to go scare an ogle
 	if ( (self->ai_mood == AI_MOOD_POINT_NAVIGATE) )
 	{
-		SetAnim(self, ANIM_WALK2);
+		SetAnim(self, SERAPH_ANIM_WALK2);
 		return;
 	}
 
 	switch( self->curAnimID )
 	{
-		case ANIM_STAND1:
+		case SERAPH_ANIM_STAND1:
 			if (chance < 20)
-				SetAnim(self, ANIM_STAND1_TR);
+				SetAnim(self, SERAPH_ANIM_STAND1_TR);
 			else if (chance < 40)
-				SetAnim(self, ANIM_STAND1_TL);
+				SetAnim(self, SERAPH_ANIM_STAND1_TL);
 			break;
 
 		//Right
-		case ANIM_POINT1:
-		case ANIM_STAND1_TR:
-			SetAnim(self, ANIM_STAND1_R);
+		case SERAPH_ANIM_POINT1:
+		case SERAPH_ANIM_STAND1_TR:
+			SetAnim(self, SERAPH_ANIM_STAND1_R);
 			break;
 
-		case ANIM_STAND1_R:
+		case SERAPH_ANIM_STAND1_R:
 			if (chance < 50)
-				SetAnim(self, ANIM_STAND1_TRC);
+				SetAnim(self, SERAPH_ANIM_STAND1_TRC);
 			break;
 
-		case ANIM_STAND1_TLC:
-		case ANIM_STAND1_TRC:
-			SetAnim(self, ANIM_STAND1);
+		case SERAPH_ANIM_STAND1_TLC:
+		case SERAPH_ANIM_STAND1_TRC:
+			SetAnim(self, SERAPH_ANIM_STAND1);
 			break;
 
 		//Left
-		case ANIM_STAND1_TL:
-			SetAnim(self, ANIM_STAND1_L);
+		case SERAPH_ANIM_STAND1_TL:
+			SetAnim(self, SERAPH_ANIM_STAND1_L);
 			break;
 
-		case ANIM_STAND1_L:
+		case SERAPH_ANIM_STAND1_L:
 			if (chance < 50)
-				SetAnim(self, ANIM_STAND1_TLC);
+				SetAnim(self, SERAPH_ANIM_STAND1_TLC);
 			break;
 	}
 }
@@ -523,7 +523,7 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
 
-	M_StartDeath(self, ANIM_DEATH1);
+	M_StartDeath(self, SERAPH_ANIM_DEATH1);
 
 	if (!Q_stricmp(attacker->classname, "monster_ogle"))
 	{
@@ -531,7 +531,7 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 		self->takedamage = DAMAGE_NO;
 		self->solid = SOLID_BBOX;
 
-		SetAnim(self, ANIM_DEATH1);
+		SetAnim(self, SERAPH_ANIM_DEATH1);
 
 		soundID = irand(SND_DEATH1, SND_DEATH4);
 		gi.sound (self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
@@ -547,7 +547,7 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 	{
 		seraph_dropweapon (self);
 
-		SetAnim(self, ANIM_DEATH2_GO);
+		SetAnim(self, SERAPH_ANIM_DEATH2_GO);
 
 		VectorCopy(targ->velocity, vf);
 		VectorNormalize(vf);
@@ -567,7 +567,7 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 	}
 	else
 	{
-		SetAnim(self, ANIM_DEATH1);
+		SetAnim(self, SERAPH_ANIM_DEATH1);
 	}
 
 	soundID = irand(SND_DEATH1, SND_DEATH4);
@@ -577,10 +577,10 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 //Check to see if the Seraph is already standing, if not, transition into it
 void seraph_stand(edict_t *self, G_Message_t *msg)
 {
-	if (self->curAnimID == ANIM_READY2IDLE)
-		SetAnim(self, ANIM_STAND1);
+	if (self->curAnimID == SERAPH_ANIM_READY2IDLE)
+		SetAnim(self, SERAPH_ANIM_STAND1);
 	else
-		SetAnim(self, ANIM_READY2IDLE);
+		SetAnim(self, SERAPH_ANIM_READY2IDLE);
 }
 
 //Classic run-attack function
@@ -588,7 +588,7 @@ void seraph_run(edict_t *self, G_Message_t *msg)
 {
 	if (M_ValidTarget(self, self->enemy))
 	{
-		SetAnim(self, ANIM_RUN1);
+		SetAnim(self, SERAPH_ANIM_RUN1);
 		return;
 	}
 
@@ -604,7 +604,7 @@ void seraph_melee(edict_t *self, G_Message_t *msg)
 	int		ret;
 
 	//Don't interrupt a current animation with another melee call inside of it
-	if (self->curAnimID == ANIM_ATTACK1_LOOP)
+	if (self->curAnimID == SERAPH_ANIM_ATTACK1_LOOP)
 		return;
 
 	if(self->enemy)
@@ -615,7 +615,7 @@ void seraph_melee(edict_t *self, G_Message_t *msg)
 	{
 		if(self->ai_mood == AI_MOOD_FLEE)
 		{
-			SetAnim(self, ANIM_BACKUP2);
+			SetAnim(self, SERAPH_ANIM_BACKUP2);
 			return;
 		}
 		//Set this for any uses below
@@ -629,12 +629,12 @@ void seraph_melee(edict_t *self, G_Message_t *msg)
 			ret  = M_PredictTargetEvasion( self, self->enemy, attackVel, self->enemy->velocity, self->melee_range, 5 );
 
 			if (ret)
-				SetAnim(self, ANIM_ATTACK1_LOOP);
+				SetAnim(self, SERAPH_ANIM_ATTACK1_LOOP);
 			else
-				SetAnim(self, ANIM_RUN1_WHIP);
+				SetAnim(self, SERAPH_ANIM_RUN1_WHIP);
 		}
 		else
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, SERAPH_ANIM_RUN1);
 
 		return;
 	}
@@ -662,7 +662,7 @@ void seraph_pain(edict_t *self, G_Message_t *msg)
 
 		gi.sound (self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
 
-		SetAnim(self, ANIM_PAIN);
+		SetAnim(self, SERAPH_ANIM_PAIN);
 	}
 
 	if(attacker)
@@ -744,7 +744,7 @@ void seraph_back (edict_t *self, float dist)
 		if(!irand(0, 1000))
 		{
 			self->monsterinfo.aiflags |= AI_COWARD;
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, SERAPH_ANIM_RUN1);
 		}
 	}
 }
@@ -933,7 +933,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 //		self->monsterinfo.aiflags |= AI_NO_MISSILE;
 
 	if(self->monsterinfo.aiflags & AI_NO_MELEE)//&&self->monsterinfo.aiflags & AI_NO_MISSILE)
-		SetAnim(self, ANIM_BACKUP);
+		SetAnim(self, SERAPH_ANIM_BACKUP);
 }
 
 void ser_ovl_SightSound(edict_t *self, G_Message_t *Msg)
@@ -962,7 +962,7 @@ void SeraphOverlordStaticsInit()
 	classStatics[CID_SERAPH_OVERLORD].msgReceivers[MSG_DISMEMBER] = MG_parse_dismember_msg;
 	classStatics[CID_SERAPH_OVERLORD].msgReceivers[MSG_VOICE_SIGHT] = ser_ovl_SightSound;
 
-	resInfo.numAnims = NUM_ANIMS;
+	resInfo.numAnims = SERAPH_NUM_ANIMS;
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/overlord/tris.fm");
 	resInfo.numSounds = NUM_SOUNDS;

@@ -552,7 +552,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 	{
 		if (attacker->enemy)		// This really should be an assert, but there are problems with this.
 		{
-			if(attacker->enemy==targ && attacker->classID==targ->classID && !(targ->monsterinfo.aiflags&AI_AGRESSIVE))
+			if(attacker->enemy==targ && attacker->classID ==targ->classID && !(targ->monsterinfo.aiflags&AI_AGRESSIVE))
 			{//attacker was shooting at me(targ) and is my class, but I'm not agressive so I didn't hit him first
 				if(irand(0,10)<7)
 				{//run away!

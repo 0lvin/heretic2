@@ -6,26 +6,26 @@
 
 typedef enum AnimID_e
 {
-	ANIM_HOVER,				//hover
-	ANIM_FLOAT_FORWARD,		//float forward
-	ANIM_CHARGE,			//charge forward
-	ANIM_CHARGE_BTRANS,		//transition to charge
-	ANIM_FLOAT_BACK,		//float backwards (w / attack)
-	ANIM_DODGE_RIGHT,		//dodge right
-	ANIM_DODGE_LEFT,		//dodge	left
-	ANIM_ATTACK_SOA_BTRANS,	//attack 1 (lightning sphere) beginning
-	ANIM_ATTACK_SOA_LOOP,	//attack 1 (lightning sphere) loop
-	ANIM_ATTACK_SOA_END,	//attack 1 (lightning sphere) ending
-	ANIM_ATTACK_LS,			//attack 2 (light surge)
-	ANIM_PAIN1,				//pain
-	ANIM_DIE_BTRANS,		//death beginning
-	ANIM_DIE_LOOP,			//death loop
-	ANIM_SHIELD,			//shield
-	ANIM_ATTACK,
-	ANIM_MOVE,
-	ANIM_WAIT,
-	ANIM_COME_TO_LIFE,
-	NUM_ANIMS
+	ELFLORD_ANIM_HOVER,				//hover
+	ELFLORD_ANIM_FLOAT_FORWARD,		//float forward
+	ELFLORD_ANIM_CHARGE,			//charge forward
+	ELFLORD_ANIM_CHARGE_BTRANS,		//transition to charge
+	ELFLORD_ANIM_FLOAT_BACK,		//float backwards (w / attack)
+	ELFLORD_ANIM_DODGE_RIGHT,		//dodge right
+	ELFLORD_ANIM_DODGE_LEFT,		//dodge	left
+	ELFLORD_ANIM_ATTACK_SOA_BTRANS,	//attack 1 (lightning sphere) beginning
+	ELFLORD_ANIM_ATTACK_SOA_LOOP,	//attack 1 (lightning sphere) loop
+	ELFLORD_ANIM_ATTACK_SOA_END,	//attack 1 (lightning sphere) ending
+	ELFLORD_ANIM_ATTACK_LS,			//attack 2 (light surge)
+	ELFLORD_ANIM_PAIN1,				//pain
+	ELFLORD_ANIM_DIE_BTRANS,		//death beginning
+	ELFLORD_ANIM_DIE_LOOP,			//death loop
+	ELFLORD_ANIM_SHIELD,			//shield
+	ELFLORD_ANIM_ATTACK,
+	ELFLORD_ANIM_MOVE,
+	ELFLORD_ANIM_WAIT,
+	ELFLORD_ANIM_COME_TO_LIFE,
+	ELFLORD_NUM_ANIMS
 } AnimID_t;
 
 

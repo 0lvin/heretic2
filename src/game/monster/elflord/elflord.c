@@ -268,7 +268,7 @@ void elflord_ai_stand (edict_t *self, float dist)
 
 void elflord_finish_death(edict_t *self)
 {
-	SetAnim(self, ANIM_DIE_LOOP);
+	SetAnim(self, ELFLORD_ANIM_DIE_LOOP);
 }
 
 /*-----------------------------------------------
@@ -277,7 +277,7 @@ void elflord_finish_death(edict_t *self)
 
 void elfLordGoCharge(edict_t *self)
 {
-	SetAnim(self, ANIM_CHARGE);
+	SetAnim(self, ELFLORD_ANIM_CHARGE);
 }
 
 /*-----------------------------------------------
@@ -286,7 +286,7 @@ void elfLordGoCharge(edict_t *self)
 
 void elflord_soa_loop(edict_t *self)
 {
-	SetAnim(self, ANIM_ATTACK_SOA_LOOP);
+	SetAnim(self, ELFLORD_ANIM_ATTACK_SOA_LOOP);
 }
 
 /*-----------------------------------------------
@@ -297,7 +297,7 @@ void elflord_soa_end(edict_t *self)
 {
 	self->show_hostile = 0;
 	gi.sound(self, CHAN_WEAPON, sounds[SND_SAFIRE], 1, ATTN_NORM, 0);
-	SetAnim(self, ANIM_ATTACK_SOA_END);
+	SetAnim(self, ELFLORD_ANIM_ATTACK_SOA_END);
 }
 
 /*-----------------------------------------------
@@ -306,7 +306,7 @@ void elflord_soa_end(edict_t *self)
 
 void elflord_stand(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_HOVER);
+	SetAnim(self, ELFLORD_ANIM_HOVER);
 }
 
 /*-----------------------------------------------
@@ -350,7 +350,7 @@ void elflordRandomRushSound(edict_t *self)
 
 void elflord_run(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_FLOAT_FORWARD);
+	SetAnim(self, ELFLORD_ANIM_FLOAT_FORWARD);
 }
 
 /*-----------------------------------------------
@@ -375,7 +375,7 @@ void elflord_soa_start(edict_t *self, G_Message_t *msg)
 								 forward,
 								 0.0,
 								 &self->show_hostile);
-	SetAnim(self, ANIM_ATTACK_SOA_BTRANS);
+	SetAnim(self, ELFLORD_ANIM_ATTACK_SOA_BTRANS);
 }
 
 /*-----------------------------------------------
@@ -524,7 +524,7 @@ void elflord_track(edict_t *self)
 		self->teamchain->nextthink = level.time + 0.1;
 
 		//Don't finish what we were doing
-		SetAnim(self, ANIM_HOVER);
+		SetAnim(self, ELFLORD_ANIM_HOVER);
 		return;
 	}
 
@@ -610,7 +610,7 @@ qboolean elfLordCheckAttack (edict_t *self)
 
 	if (!M_ValidTarget(self, self->enemy))
 	{
-		SetAnim(self, ANIM_HOVER);
+		SetAnim(self, ELFLORD_ANIM_HOVER);
 		return false;
 	}
 
@@ -619,7 +619,7 @@ qboolean elfLordCheckAttack (edict_t *self)
 	if (self->count < self->max_health)
 	{
 		VectorClear(self->velocity);
-		SetAnim(self, ANIM_COME_TO_LIFE);
+		SetAnim(self, ELFLORD_ANIM_COME_TO_LIFE);
 		return false;
 	}
 
@@ -628,7 +628,7 @@ qboolean elfLordCheckAttack (edict_t *self)
 		if (!self->dmg)
 		{
 			elflord_MoveToFinalPosition(self);
-			SetAnim(self, ANIM_MOVE);
+			SetAnim(self, ELFLORD_ANIM_MOVE);
 			self->dmg = 1;
 			return false;
 		}
@@ -661,24 +661,24 @@ qboolean elfLordCheckAttack (edict_t *self)
 
 	if(irand(0,100) < p_chance)
 	{
-		SetAnim(self, ANIM_ATTACK);
+		SetAnim(self, ELFLORD_ANIM_ATTACK);
 		return false;
 	}
 	else if(irand(0,100) < beam_chance)
 	{
-		SetAnim(self, ANIM_ATTACK_LS);
+		SetAnim(self, ELFLORD_ANIM_ATTACK_LS);
 		return false;
 	}
 	else if(irand(0,100) < soa_chance)
 	{
-		SetAnim(self, ANIM_ATTACK_SOA_BTRANS);
+		SetAnim(self, ELFLORD_ANIM_ATTACK_SOA_BTRANS);
 		return false;
 	}
 
 	if (!self->dmg)
 	{
 		elflord_FindMoveTarget(self);
-		SetAnim(self, ANIM_MOVE);
+		SetAnim(self, ELFLORD_ANIM_MOVE);
 		return false;
 	}
 
@@ -705,7 +705,7 @@ void elfLordPause(edict_t *self)
 
 void elfLordWakeUp (edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_COME_TO_LIFE);
+	SetAnim(self, ELFLORD_ANIM_COME_TO_LIFE);
 }
 
 /*-----------------------------------------------
@@ -765,7 +765,7 @@ void ElflordStaticsInit()
 	classStatics[CID_ELFLORD].msgReceivers[MSG_PAIN] = elflord_pain;
 	classStatics[CID_ELFLORD].msgReceivers[MSG_SIGHT] = elfLordWakeUp;
 
-	resInfo.numAnims = NUM_ANIMS;
+	resInfo.numAnims = ELFLORD_NUM_ANIMS;
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/elflord/tris.fm");
 

@@ -61,7 +61,7 @@ void ai_runaway (edict_t *self, float dist);
   Rat Base Info
 -----------------------------------------------------------------------*/
 
-static mmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[RAT_NUM_ANIMS] =
 {
 	&rat_move_eat1,
 	&rat_move_eat2,
@@ -109,7 +109,7 @@ void rat_pain(edict_t *self, G_Message_t *msg)
 {
 	rat_pain_init(self);
 
-	SetAnim(self, ANIM_PAIN1);
+	SetAnim(self, RAT_ANIM_PAIN1);
 
 	return;
 }
@@ -123,9 +123,9 @@ void rat_death(edict_t *self, G_Message_t *msg)
 	{
 		// Big enough death to be thrown back
 		if (irand(0,10) < 5)
-			SetAnim(self, ANIM_DIE2);
+			SetAnim(self, RAT_ANIM_DIE2);
 		else
-			SetAnim(self, ANIM_DIE1);
+			SetAnim(self, RAT_ANIM_DIE1);
 		return;
 	}
 
@@ -144,11 +144,11 @@ void rat_death(edict_t *self, G_Message_t *msg)
 		// Big enough death to be thrown back
 		if (self->health <= -20)
 		{
-			SetAnim(self, ANIM_DIE1);
+			SetAnim(self, RAT_ANIM_DIE1);
 		}
 		else
 		{
-			SetAnim(self, ANIM_DIE2);
+			SetAnim(self, RAT_ANIM_DIE2);
 		}
 	}
 }
@@ -175,7 +175,7 @@ void rat_run(edict_t *self, G_Message_t *msg)
 			{
 				if (delta < 10)
 				{
-					SetAnim(self, ANIM_MELEE2);
+					SetAnim(self, RAT_ANIM_MELEE2);
 					return;
 				}
 			}
@@ -184,17 +184,17 @@ void rat_run(edict_t *self, G_Message_t *msg)
 		// Look right
 		if (delta > 25 && delta <= 180)
 		{
-			SetAnim(self, ANIM_RUN3);
+			SetAnim(self, RAT_ANIM_RUN3);
 			return;
 		}
 		else if (delta > 180 && delta < 335)	// Look left
 		{
-			SetAnim(self, ANIM_RUN2);
+			SetAnim(self, RAT_ANIM_RUN2);
 			return;
 		}
 		else
 		{
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, RAT_ANIM_RUN1);
 			return;
 		}
 
@@ -210,7 +210,7 @@ void rat_run(edict_t *self, G_Message_t *msg)
 //----------------------------------------------------------------------
 void rat_walk(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_WALK1);
+	SetAnim(self, RAT_ANIM_WALK1);
 }
 
 //----------------------------------------------------------------------
@@ -222,11 +222,11 @@ void rat_melee(edict_t *self, G_Message_t *msg)
 	{
 		if (irand(0,1) < 1)
 		{
-			SetAnim(self, ANIM_MELEE1);
+			SetAnim(self, RAT_ANIM_MELEE1);
 		}
 		else
 		{
-			SetAnim(self, ANIM_MELEE3);
+			SetAnim(self, RAT_ANIM_MELEE3);
 		}
 
 		return;
@@ -242,11 +242,11 @@ void rat_watch(edict_t *self, G_Message_t *msg)
 {
 	if (irand(0, 1))
 	{
-		SetAnim(self, ANIM_WATCH1);
+		SetAnim(self, RAT_ANIM_WATCH1);
 	}
 	else
 	{
-		SetAnim(self, ANIM_WATCH2);
+		SetAnim(self, RAT_ANIM_WATCH2);
 	}
 }
 
@@ -262,33 +262,33 @@ void rat_stand(edict_t *self, G_Message_t *msg)
 	// On the ground
 	switch(self->curAnimID)
 	{
-	case ANIM_STAND1:
+	case RAT_ANIM_STAND1:
 		if (chance < 95)
-			SetAnim(self, ANIM_STAND1);
+			SetAnim(self, RAT_ANIM_STAND1);
 		else
-			SetAnim(self, ANIM_STAND2);
+			SetAnim(self, RAT_ANIM_STAND2);
 
 		break;
-	case ANIM_STAND2:
+	case RAT_ANIM_STAND2:
 		if(chance < 75)
-			SetAnim(self, ANIM_STAND3);
+			SetAnim(self, RAT_ANIM_STAND3);
 		else
-			SetAnim(self, ANIM_STAND4 + irand(0, 4));
+			SetAnim(self, RAT_ANIM_STAND4 + irand(0, 4));
 		break;
-	case ANIM_STAND4:
-	case ANIM_STAND5:
-	case ANIM_STAND6:
-	case ANIM_STAND7:
-			SetAnim(self, ANIM_STAND8);
+	case RAT_ANIM_STAND4:
+	case RAT_ANIM_STAND5:
+	case RAT_ANIM_STAND6:
+	case RAT_ANIM_STAND7:
+			SetAnim(self, RAT_ANIM_STAND8);
 			break;
-	case ANIM_STAND8:
-		SetAnim(self, ANIM_STAND1);
+	case RAT_ANIM_STAND8:
+		SetAnim(self, RAT_ANIM_STAND1);
 		break;
 	default:
 		if(chance < 75)
-			SetAnim(self, ANIM_STAND3);
+			SetAnim(self, RAT_ANIM_STAND3);
 		else
-			SetAnim(self, ANIM_STAND4 + irand(0, 4));
+			SetAnim(self, RAT_ANIM_STAND4 + irand(0, 4));
 		break;
 	}
 }
@@ -303,15 +303,15 @@ void rat_eat(edict_t *self, G_Message_t *msg)
 	chance = irand(0, 10);
 	if (chance < 4)
 	{
-		SetAnim(self, ANIM_EATING1);
+		SetAnim(self, RAT_ANIM_EATING1);
 	}
 	else if (chance < 8)
 	{
-		SetAnim(self, ANIM_EATING3);
+		SetAnim(self, RAT_ANIM_EATING3);
 	}
 	else
 	{
-		SetAnim(self, ANIM_EATING2);
+		SetAnim(self, RAT_ANIM_EATING2);
 	}
 }
 
@@ -659,7 +659,7 @@ void RatStaticsInit()
 	classStatics[CID_RAT].msgReceivers[MSG_JUMP] = M_jump;
 	classStatics[CID_RAT].msgReceivers[MSG_DEATH_PAIN] = rat_dead_pain;
 
-	resInfo.numAnims = NUM_ANIMS;
+	resInfo.numAnims = RAT_NUM_ANIMS;
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/rat/tris.fm");
 

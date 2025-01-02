@@ -31,7 +31,7 @@
 
 /*----------------------------------------------------------------------
 -----------------------------------------------------------------------*/
-static mmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[MOTHER_NUM_ANIMS] =
 {
 	&mother_move_pain,
 	&mother_move_stand,
@@ -63,7 +63,7 @@ void mother_pain(edict_t *self, G_Message_t *msg)
 	if (self->pain_debounce_time < level.time)
 	{
 		self->pain_debounce_time = level.time + 1;
-		SetAnim(self, ANIM_PAIN);
+		SetAnim(self, MOTHER_ANIM_PAIN);
 	}
 
 	gi.sound(self, CHAN_BODY, sounds[SND_PAIN], 1, ATTN_NORM, 0);
@@ -75,7 +75,7 @@ void mother_pain(edict_t *self, G_Message_t *msg)
 -------------------------------------------------------------------------*/
 void mother_stand(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_STAND);
+	SetAnim(self, MOTHER_ANIM_STAND);
 
 	return;
 }
@@ -108,7 +108,7 @@ void MotherStaticsInit()
 	sounds[SND_PAIN] = gi.soundindex("monsters/insect/painf.wav");
 	sounds[SND_GIB] = gi.soundindex("monsters/insect/gib.wav");
 
-	resInfo.numAnims = NUM_ANIMS;
+	resInfo.numAnims = MOTHER_NUM_ANIMS;
 	resInfo.animations = animations;
 
 	resInfo.modelIndex = gi.modelindex("models/monsters/mother/tris.fm");

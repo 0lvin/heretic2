@@ -1171,7 +1171,7 @@ monster_triggered_spawn(edict_t *self)
 		}
 	}
 
-	if((self->classID==CID_ASSASSIN) && (self->spawnflags & MSF_ASS_TPORTAMBUSH))
+	if((self->classID == CID_ASSASSIN) && (self->spawnflags & MSF_ASS_TPORTAMBUSH))
 	{
 		FoundTarget (self, true);
 		VectorCopy(self->s.origin, pos);
