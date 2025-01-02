@@ -27,7 +27,7 @@
 
 void MG_InitMoods(edict_t *self);
 
-static mmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[SERAPH_GUARD_NUM_ANIMS] =
 {
 	&seraph_guard_move_stand,
 	&seraph_guard_move_run,
@@ -241,16 +241,16 @@ void seraph_guard_checkpoke ( edict_t *self )
 				chance = irand(0,100);
 
 				if (chance < 40)
-					SetAnim(self, ANIM_MELEE3);
+					SetAnim(self, SERAPH_GUARD_ANIM_MELEE3);
 				else if (chance < 60)
-					SetAnim(self, ANIM_MELEE2);
+					SetAnim(self, SERAPH_GUARD_ANIM_MELEE2);
 			}
 			else
 			{
 				if (irand(0,1))
-					SetAnim(self, ANIM_RUN_MELEE);
+					SetAnim(self, SERAPH_GUARD_ANIM_RUN_MELEE);
 				else
-					SetAnim(self, ANIM_MELEE2);
+					SetAnim(self, SERAPH_GUARD_ANIM_MELEE2);
 			}
 		}
 
@@ -266,7 +266,7 @@ void seraph_guard_checkpoke ( edict_t *self )
 
 void seraph_guard_death_loop ( edict_t *self )
 {
-	SetAnim(self, ANIM_DEATH2_LOOP);
+	SetAnim(self, SERAPH_GUARD_ANIM_DEATH2_LOOP);
 }
 
 /*--------------------------------------
@@ -286,12 +286,12 @@ void seraph_guard_check_land ( edict_t *self )
 	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
 	if ( (	trace.fraction < 1 || trace.startsolid || trace.allsolid) &&
-			self->curAnimID != ANIM_DEATH2_END &&
-			self->curAnimID != ANIM_DEATH2_GO)
+			self->curAnimID != SERAPH_GUARD_ANIM_DEATH2_END &&
+			self->curAnimID != SERAPH_GUARD_ANIM_DEATH2_GO)
 	{
 		self->elasticity = 1.25;
 		self->friction = 0.5;
-		SetAnim(self, ANIM_DEATH2_END);
+		SetAnim(self, SERAPH_GUARD_ANIM_DEATH2_END);
 	}
 }
 
@@ -325,12 +325,12 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 
 	switch (self->curAnimID)
 	{
-	case ANIM_MELEE2:
+	case SERAPH_GUARD_ANIM_MELEE2:
 		VectorSet(soff, 16, -16, 24);
 		VectorSet(eoff, 124,-16, 16);
 		break;
 
-	case ANIM_MELEE3:
+	case SERAPH_GUARD_ANIM_MELEE3:
 		VectorSet(soff, 32, -48, 34);
 		VectorSet(eoff, 64, 64, -8);
 		break;
@@ -370,7 +370,7 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 			VectorMA(dir, -hitDir[1], right, dir);
 			VectorMA(dir, hitDir[2], up, dir);*/
 
-			if(self->curAnimID == ANIM_MELEE3)
+			if(self->curAnimID == SERAPH_GUARD_ANIM_MELEE3)
 			{
 				gi.CreateEffect(NULL,
 					FX_WEAPON_STAFF_STRIKE,
@@ -397,7 +397,7 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 				T_Damage(victim, self, self, direction, trace.endpos, bloodDir,
 					damage, 0, DAMAGE_NO_KNOCKBACK|DAMAGE_DISMEMBER|DAMAGE_DOUBLE_DISMEMBER|DAMAGE_EXTRA_BLOOD,MOD_DIED);
 			}
-			if(self->curAnimID == ANIM_MELEE3)
+			if(self->curAnimID == SERAPH_GUARD_ANIM_MELEE3)
 			{
 				if(victim->client)
 				{
@@ -432,7 +432,7 @@ void seraphGuardApplyJump (edict_t *self)
 
 void seraph_guard_pause( edict_t *self )
 {
-	if(self->spawnflags & MSF_FIXED && self->curAnimID == ANIM_DELAY && self->enemy)
+	if(self->spawnflags & MSF_FIXED && self->curAnimID == SERAPH_GUARD_ANIM_DELAY && self->enemy)
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 		MG_FaceGoal(self, true);
@@ -460,15 +460,15 @@ void seraph_guard_pause( edict_t *self )
 		break;
 
 	case AI_MOOD_DELAY:
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, SERAPH_GUARD_ANIM_DELAY);
 		break;
 
 	case AI_MOOD_WANDER:
-		SetAnim(self, ANIM_WALK);
+		SetAnim(self, SERAPH_GUARD_ANIM_WALK);
 		break;
 
 	case AI_MOOD_JUMP:
-		SetAnim(self, ANIM_FJUMP);
+		SetAnim(self, SERAPH_GUARD_ANIM_FJUMP);
 		break;
 
 	default :
@@ -508,7 +508,7 @@ void seraph_guard_pain(edict_t *self, G_Message_t *msg)
 		soundID = irand(SND_PAIN1, SND_PAIN4);
 		gi.sound (self, CHAN_WEAPON, sounds[soundID], 1, ATTN_NORM, 0);
 
-		SetAnim(self, ANIM_PAIN);
+		SetAnim(self, SERAPH_GUARD_ANIM_PAIN);
 	}
 }
 
@@ -518,7 +518,7 @@ void seraph_guard_pain(edict_t *self, G_Message_t *msg)
 
 void seraph_guard_stand(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_STAND);
+	SetAnim(self, SERAPH_GUARD_ANIM_STAND);
 }
 
 /*--------------------------------------
@@ -532,14 +532,14 @@ void seraph_guard_melee(edict_t *self, G_Message_t *msg)
 	int		ret;
 
 	//Don't interrupt a current animation with another melee call inside of it
-	if (self->curAnimID == ANIM_MELEE1 || self->curAnimID == ANIM_MELEE2)
+	if (self->curAnimID == SERAPH_GUARD_ANIM_MELEE1 || self->curAnimID == SERAPH_GUARD_ANIM_MELEE2)
 		return;
 
 	if (M_ValidTarget(self, self->enemy))
 	{
 		if(self->ai_mood == AI_MOOD_FLEE)
 		{
-			SetAnim(self, ANIM_BACKUP);
+			SetAnim(self, SERAPH_GUARD_ANIM_BACKUP);
 			return;
 		}
 		//Set this for any uses below
@@ -551,7 +551,7 @@ void seraph_guard_melee(edict_t *self, G_Message_t *msg)
 		{
 			if(self->s.fmnodeinfo[MESH__AXE].flags & FMNI_NO_DRAW)
 			{
-				SetAnim(self, ANIM_MISSILE);
+				SetAnim(self, SERAPH_GUARD_ANIM_MISSILE);
 				return;
 			}
 
@@ -562,22 +562,22 @@ void seraph_guard_melee(edict_t *self, G_Message_t *msg)
 			if (ret)
 			{
 				if(dist < 88 && !irand(0, 3))
-					SetAnim(self, ANIM_MISSILE);//punch
+					SetAnim(self, SERAPH_GUARD_ANIM_MISSILE);//punch
 				else if(irand(0, 4))
 				{
 					if(irand(0, 10))
-						SetAnim(self, ANIM_MELEE1);
+						SetAnim(self, SERAPH_GUARD_ANIM_MELEE1);
 					else
-						SetAnim(self, ANIM_MISSILE);
+						SetAnim(self, SERAPH_GUARD_ANIM_MISSILE);
 				}
 				else
-					SetAnim(self, ANIM_MELEE2);
+					SetAnim(self, SERAPH_GUARD_ANIM_MELEE2);
 			}
 			else
-				SetAnim(self, ANIM_RUN_MELEE);
+				SetAnim(self, SERAPH_GUARD_ANIM_RUN_MELEE);
 		}
 		else
-			SetAnim(self, ANIM_RUN);
+			SetAnim(self, SERAPH_GUARD_ANIM_RUN);
 
 		return;
 	}
@@ -660,7 +660,7 @@ void seraph_guard_missile(edict_t *self, G_Message_t *msg)
 	{
 		if(self->ai_mood == AI_MOOD_FLEE)
 		{
-			SetAnim(self, ANIM_BACKUP);
+			SetAnim(self, SERAPH_GUARD_ANIM_BACKUP);
 			return;
 		}
 		//Set this for any uses below
@@ -676,15 +676,15 @@ void seraph_guard_missile(edict_t *self, G_Message_t *msg)
 			if(irand(0, 4))
 			{
 				if(irand(0, 10))
-					SetAnim(self, ANIM_MELEE1);
+					SetAnim(self, SERAPH_GUARD_ANIM_MELEE1);
 				else
-					SetAnim(self, ANIM_MISSILE);
+					SetAnim(self, SERAPH_GUARD_ANIM_MISSILE);
 			}
 			else
-				SetAnim(self, ANIM_MELEE2);
+				SetAnim(self, SERAPH_GUARD_ANIM_MELEE2);
 		}
 		else if(ahead(self, self->enemy))
-			SetAnim(self, ANIM_MISSILE);
+			SetAnim(self, SERAPH_GUARD_ANIM_MISSILE);
 
 		return;
 	}
@@ -716,7 +716,7 @@ void seraph_guard_death(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
 
-	M_StartDeath(self, ANIM_DEATH1);
+	M_StartDeath(self, SERAPH_GUARD_ANIM_DEATH1);
 
 	if (self->health < -80)
 	{
@@ -726,7 +726,7 @@ void seraph_guard_death(edict_t *self, G_Message_t *msg)
 	{
 		seraph_guard_dropweapon(self);
 
-		SetAnim(self, ANIM_DEATH2_GO);
+		SetAnim(self, SERAPH_GUARD_ANIM_DEATH2_GO);
 
 		VectorCopy(targ->velocity, vf);
 		VectorNormalize(vf);
@@ -744,7 +744,7 @@ void seraph_guard_death(edict_t *self, G_Message_t *msg)
 	}
 	else
 	{
-		SetAnim(self, ANIM_DEATH1);
+		SetAnim(self, SERAPH_GUARD_ANIM_DEATH1);
 	}
 
 	soundID = irand(SND_DEATH1, SND_DEATH4);
@@ -766,13 +766,13 @@ void seraph_guard_run(edict_t *self, G_Message_t *msg)
 	{
 		if(self->ai_mood == AI_MOOD_FLEE)
 		{
-			SetAnim(self, ANIM_RUN);
+			SetAnim(self, SERAPH_GUARD_ANIM_RUN);
 			return;
 		}
 
 		if(self->monsterinfo.attack_finished > level.time || self->monsterinfo.aiflags & AI_NO_MELEE)
 		{
-			SetAnim(self, ANIM_RUN);
+			SetAnim(self, SERAPH_GUARD_ANIM_RUN);
 			return;
 		}
 
@@ -788,9 +788,9 @@ void seraph_guard_run(edict_t *self, G_Message_t *msg)
 
 			//See what the predicted outcome is
 			if (ret && (M_CheckMeleeHit( self, self->melee_range, &trace) == self->enemy))
-				SetAnim(self, ANIM_MELEE1);
+				SetAnim(self, SERAPH_GUARD_ANIM_MELEE1);
 			else
-				SetAnim(self, ANIM_RUN_MELEE);
+				SetAnim(self, SERAPH_GUARD_ANIM_RUN_MELEE);
 		}
 		else if (dist < 200)
 		{
@@ -799,13 +799,13 @@ void seraph_guard_run(edict_t *self, G_Message_t *msg)
 
 			//See what the predicted outcome is
 			if (ret && (M_CheckMeleeHit( self, 150, &trace) == self->enemy))
-				SetAnim(self, ANIM_RUN_MELEE);
+				SetAnim(self, SERAPH_GUARD_ANIM_RUN_MELEE);
 			else
-				SetAnim(self, ANIM_RUN);
+				SetAnim(self, SERAPH_GUARD_ANIM_RUN);
 		}
 		else
 		{
-			SetAnim(self, ANIM_RUN);
+			SetAnim(self, SERAPH_GUARD_ANIM_RUN);
 		}
 
 		return;
@@ -843,7 +843,7 @@ void seraph_guard_back (edict_t *self, float dist)
 		if(!irand(0, 1000))
 		{
 			self->monsterinfo.aiflags |= AI_COWARD;
-			SetAnim(self, ANIM_RUN);
+			SetAnim(self, SERAPH_GUARD_ANIM_RUN);
 		}
 	}
 }
@@ -902,10 +902,10 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 
 	if(HitLocation == hl_TorsoFront && dismember_ok)
 	{//melee swing at chest during my melee swing
-		if(self->curAnimID == ANIM_MELEE1 ||
-			self->curAnimID == ANIM_MELEE2 ||
-			self->curAnimID == ANIM_MELEE3||
-			self->curAnimID == ANIM_RUN_MELEE)
+		if(self->curAnimID == SERAPH_GUARD_ANIM_MELEE1 ||
+			self->curAnimID == SERAPH_GUARD_ANIM_MELEE2 ||
+			self->curAnimID == SERAPH_GUARD_ANIM_MELEE3||
+			self->curAnimID == SERAPH_GUARD_ANIM_RUN_MELEE)
 		{
 			if(!irand(0, 2))
 				HitLocation = hl_ArmLowerLeft;
@@ -1075,7 +1075,7 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 	if(self->monsterinfo.aiflags & AI_NO_MELEE && self->monsterinfo.aiflags & AI_NO_MISSILE)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
-		SetAnim(self, ANIM_BACKUP);
+		SetAnim(self, SERAPH_GUARD_ANIM_BACKUP);
 	}
 }
 
@@ -1105,7 +1105,7 @@ void SeraphGuardStaticsInit()
 	classStatics[CID_SERAPH_GUARD].msgReceivers[MSG_DISMEMBER] = MG_parse_dismember_msg;
 	classStatics[CID_SERAPH_GUARD].msgReceivers[MSG_VOICE_SIGHT] = ser_grd_SightSound;
 
-	resInfo.numAnims = NUM_ANIMS;
+	resInfo.numAnims = SERAPH_GUARD_NUM_ANIMS;
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/guard/tris.fm");
 	resInfo.numSounds = NUM_SOUNDS;

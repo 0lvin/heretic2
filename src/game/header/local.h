@@ -1529,6 +1529,15 @@ void RemoveAttackingPainDaemons(edict_t *self);
 
 /* ============================================================================ */
 
+/* client_t->anim_priority */
+#define ANIM_BASIC 0            /* stand / run */
+#define ANIM_WAVE 1
+#define ANIM_JUMP 2
+#define ANIM_PAIN 3
+#define ANIM_ATTACK 4
+#define ANIM_DEATH 5
+#define ANIM_REVERSE 6
+
 /* client data that stays across deathmatch respawns */
 typedef struct
 {

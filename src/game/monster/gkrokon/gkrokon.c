@@ -24,7 +24,7 @@
 static int sounds[NUM_SOUNDS];
 static ClassResourceInfo_t resInfo;
 
-static mmove_t *Animations[NUM_ANIMS] =
+static mmove_t *Animations[GKROKON_NUM_ANIMS] =
 {
 	&GkrokonMoveStand1,
 	&GkrokonMoveStand2,
@@ -260,10 +260,10 @@ void SkitterAway(edict_t *self)
 	if (irand(0,10) < 2 && self->monsterinfo.attack_finished < level.time)
 	{
 		self->monsterinfo.attack_finished = level.time + 5;
-		SetAnim(self, ANIM_SNEEZE);
+		SetAnim(self, GKROKON_ANIM_SNEEZE);
 	}
 	else
-		SetAnim(self, ANIM_RUNAWAY);
+		SetAnim(self, GKROKON_ANIM_RUNAWAY);
 }
 
 /*-----------------------------------------------
@@ -411,7 +411,7 @@ void beetle_idle_sound(edict_t *self)
 void beetle_skitter(edict_t *self, G_Message_t *Msg)
 {
 	if(self->spawnflags&MSF_FIXED)
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, GKROKON_ANIM_DELAY);
 	else
 		SkitterAway(self);
 }
@@ -434,9 +434,9 @@ void beetle_check_mood (edict_t *self, G_Message_t *msg)
 void beetle_walk(edict_t *self,G_Message_t *Msg)
 {
 	if(self->spawnflags&MSF_FIXED)
-		SetAnim(self, ANIM_STAND3);
+		SetAnim(self, GKROKON_ANIM_STAND3);
 	else
-		SetAnim(self,ANIM_WALK1);
+		SetAnim(self, GKROKON_ANIM_WALK1);
 }
 
 /*-----------------------------------------------
@@ -452,16 +452,16 @@ void beetle_run(edict_t *self, G_Message_t *Msg)
 	if(self->ai_mood == AI_MOOD_FLEE)
 	{
 		if(irand(0,1))
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, GKROKON_ANIM_RUN1);
 		else
-			SetAnim(self, ANIM_RUN2);
+			SetAnim(self, GKROKON_ANIM_RUN2);
 
 		return;
 	}
 
-	if (self->curAnimID == ANIM_STAND1)
+	if (self->curAnimID == GKROKON_ANIM_STAND1)
 	{
-		SetAnim(self, ANIM_STAND2);
+		SetAnim(self, GKROKON_ANIM_STAND2);
 		return;
 	}
 
@@ -474,15 +474,15 @@ void beetle_run(edict_t *self, G_Message_t *Msg)
 		if (dist < 300)
 		{
 			if (chance < 5)
-				SetAnim(self, ANIM_STAND3);
+				SetAnim(self, GKROKON_ANIM_STAND3);
 			else if (chance < 20)
-				SetAnim(self, ANIM_RUN2);
+				SetAnim(self, GKROKON_ANIM_RUN2);
 			else
-				SetAnim(self, ANIM_RUN1);
+				SetAnim(self, GKROKON_ANIM_RUN1);
 		}
 		else
 		{
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, GKROKON_ANIM_RUN1);
 		}
 
 		return;
@@ -499,9 +499,9 @@ void beetle_run(edict_t *self, G_Message_t *Msg)
 void beetle_stand(edict_t *self,G_Message_t *Msg)
 {
 	if (self->spawnflags & MSF_EXTRA1)
-		SetAnim(self, ANIM_STAND1);
+		SetAnim(self, GKROKON_ANIM_STAND1);
 	else
-		SetAnim(self, ANIM_STAND3);
+		SetAnim(self, GKROKON_ANIM_STAND3);
 }
 
 /*-----------------------------------------------
@@ -524,52 +524,52 @@ void beetle_missile(edict_t *self,G_Message_t *Msg)
 			if(self->spawnflags&MSF_FIXED)
 			{
 				if (dist < self->missile_range)
-					SetAnim(self, ANIM_MISSILE1);
-				else if(self->curAnimID == ANIM_CROUCH1 && !irand(0, 2))
-					SetAnim(self, ANIM_CROUCH2);//go into stand
-				else if(self->curAnimID == ANIM_STAND3 && !irand(0, 10))
-					SetAnim(self, ANIM_CROUCH3);//go into a crouch
+					SetAnim(self, GKROKON_ANIM_MISSILE1);
+				else if(self->curAnimID == GKROKON_ANIM_CROUCH1 && !irand(0, 2))
+					SetAnim(self, GKROKON_ANIM_CROUCH2);//go into stand
+				else if(self->curAnimID == GKROKON_ANIM_STAND3 && !irand(0, 10))
+					SetAnim(self, GKROKON_ANIM_CROUCH3);//go into a crouch
 				else
-					SetAnim(self, ANIM_DELAY);//stand around
+					SetAnim(self, GKROKON_ANIM_DELAY);//stand around
 			}
 			else if (dist < 64)
 			{
 				if (chance < 10)
-					SetAnim(self, ANIM_MISSILE1);
+					SetAnim(self, GKROKON_ANIM_MISSILE1);
 				else if (chance < 30)
 				{
-					SetAnim(self, ANIM_RUNAWAY);
+					SetAnim(self, GKROKON_ANIM_RUNAWAY);
 					self->monsterinfo.flee_finished = level.time + 1;
 				}
 				else
 				{
 					if (irand(0,1))
-						SetAnim(self, ANIM_MELEE1);
+						SetAnim(self, GKROKON_ANIM_MELEE1);
 					else
-						SetAnim(self, ANIM_MELEE2);
+						SetAnim(self, GKROKON_ANIM_MELEE2);
 				}
 			}
 			else if ((dist > 64) && (dist < 200))
 			{
 				if (chance < 40)
-					SetAnim(self, ANIM_MISSILE1);
+					SetAnim(self, GKROKON_ANIM_MISSILE1);
 				else if ((self->monsterinfo.flee_finished < level.time) && (dist > 100))
-					SetAnim(self, ANIM_RUN2);
+					SetAnim(self, GKROKON_ANIM_RUN2);
 				else
-					SetAnim(self, ANIM_STAND3);
+					SetAnim(self, GKROKON_ANIM_STAND3);
 			}
 			else if (dist < 300)
 			{
 				if (chance < 5)
-					SetAnim(self, ANIM_STAND3);
+					SetAnim(self, GKROKON_ANIM_STAND3);
 				else if (chance < 20)
-					SetAnim(self, ANIM_RUN2);
+					SetAnim(self, GKROKON_ANIM_RUN2);
 				else
-					SetAnim(self, ANIM_RUN1);
+					SetAnim(self, GKROKON_ANIM_RUN1);
 			}
 			else
 			{
-				SetAnim(self, ANIM_RUN1);
+				SetAnim(self, GKROKON_ANIM_RUN1);
 			}
 		}
 		else if (irand(0,10) < 6)
@@ -579,7 +579,7 @@ void beetle_missile(edict_t *self,G_Message_t *Msg)
 		else
 		{
 			if(self->spawnflags&MSF_FIXED)
-				SetAnim(self, ANIM_DELAY);
+				SetAnim(self, GKROKON_ANIM_DELAY);
 			else
 				SkitterAway(self);
 		}
@@ -612,7 +612,7 @@ void beetle_pain(edict_t *self,G_Message_t *Msg)
 		else
 			gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 
-		SetAnim(self, ANIM_PAIN1);
+		SetAnim(self, GKROKON_ANIM_PAIN1);
 	}
 
 	if (!irand(0,2))
@@ -633,13 +633,13 @@ void beetle_eat(edict_t *self,G_Message_t *Msg)
 	switch (chance)
 	{
 	case 0:
-		SetAnim(self, ANIM_EAT1);
+		SetAnim(self, GKROKON_ANIM_EAT1);
 		break;
 	case 1:
-		SetAnim(self, ANIM_EAT2);
+		SetAnim(self, GKROKON_ANIM_EAT2);
 		break;
 	case 2:
-		SetAnim(self, ANIM_EAT3);
+		SetAnim(self, GKROKON_ANIM_EAT3);
 		break;
 	}
 }
@@ -655,7 +655,7 @@ void beetle_death(edict_t *self,G_Message_t *Msg)
 
 	G_ParseMsgParms(Msg, "eeei", &targ, &inflictor, &attacker, &damage);
 
-	M_StartDeath(self, ANIM_DIE1);
+	M_StartDeath(self, GKROKON_ANIM_DIE1);
 
 	if (self->health < -80)
 	{
@@ -679,7 +679,7 @@ void beetle_death(edict_t *self,G_Message_t *Msg)
 			VectorMA(self->velocity, -400, forward, self->velocity);
 			self->velocity[2] += 150;
 		}
-		SetAnim(self, ANIM_DIE1);
+		SetAnim(self, GKROKON_ANIM_DIE1);
 	}
 
 	gi.sound (self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
@@ -989,9 +989,9 @@ void GkrokonStaticsInit(void)
 	classStatics[CID_GKROKON].msgReceivers[MSG_DEATH_PAIN] = beetle_dead_pain;
 	classStatics[CID_GKROKON].msgReceivers[MSG_DISMEMBER] = MG_parse_dismember_msg;
 
-	resInfo.numAnims=NUM_ANIMS;
-	resInfo.animations=Animations;
-	resInfo.modelIndex=gi.modelindex("models/monsters/gkrokon/tris.fm");
+	resInfo.numAnims = GKROKON_NUM_ANIMS;
+	resInfo.animations = Animations;
+	resInfo.modelIndex = gi.modelindex("models/monsters/gkrokon/tris.fm");
 
 	sounds[SND_PAIN1]=gi.soundindex("monsters/beetle/pain1.wav");
 	sounds[SND_PAIN2]=gi.soundindex("monsters/beetle/pain2.wav");
@@ -1130,7 +1130,7 @@ SP_Monster_Gkrokon(edict_t *self)
 
 void GkrokonPause(edict_t *self)
 {
-	if(self->spawnflags & MSF_FIXED && self->curAnimID == ANIM_DELAY && self->enemy)
+	if(self->spawnflags & MSF_FIXED && self->curAnimID == GKROKON_ANIM_DELAY && self->enemy)
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 		MG_FaceGoal(self, true);
@@ -1165,9 +1165,9 @@ void GkrokonPause(edict_t *self)
 
 	case AI_MOOD_JUMP:
 		if(self->spawnflags&MSF_FIXED || self->jump_chance<=0)
-			SetAnim(self, ANIM_DELAY);
+			SetAnim(self, GKROKON_ANIM_DELAY);
 		else
-			SetAnim(self, ANIM_FJUMP);
+			SetAnim(self, GKROKON_ANIM_FJUMP);
 		break;
 
 	case AI_MOOD_EAT:
@@ -1183,12 +1183,12 @@ void GkrokonPause(edict_t *self)
 
 void beetle_to_stand (edict_t *self)
 {
-	SetAnim(self, ANIM_STAND3);
+	SetAnim(self, GKROKON_ANIM_STAND3);
 	GkrokonPause(self);
 }
 
 void beetle_to_crouch (edict_t *self)
 {
-	SetAnim(self, ANIM_CROUCH1);
+	SetAnim(self, GKROKON_ANIM_CROUCH1);
 	GkrokonPause(self);
 }

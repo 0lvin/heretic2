@@ -198,7 +198,7 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 	qboolean	stop = false;
 	edict_t		*pillar = NULL;
 
-	if(self->curAnimID==ANIM_CHARGE || (self->curAnimID==ANIM_QUICK_CHARGE && self->s.frame >= FRAME_charge1 && self->s.frame <= FRAME_charge10))
+	if(self->curAnimID == BEAST_ANIM_CHARGE || (self->curAnimID == BEAST_ANIM_QUICK_CHARGE && self->s.frame >= FRAME_charge1 && self->s.frame <= FRAME_charge10))
 	{
 		if(trace->ent == world)
 		{
@@ -278,7 +278,7 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 			self->velocity[0] = self->velocity[1] = 0;
 			self->sounds++;
 			if(self->sounds!=2 && irand(0, 1))
-				SetAnim(self, ANIM_STUN);
+				SetAnim(self, BEAST_ANIM_STUN);
 		}
 	}
 }
@@ -290,7 +290,7 @@ void tbeast_charge (edict_t *self, float force)
 
 	if(!M_ValidTarget(self, self->enemy))
 	{
-		SetAnim(self, ANIM_WALK);
+		SetAnim(self, BEAST_ANIM_WALK);
 		return;
 	}
 
@@ -320,9 +320,9 @@ void tbeast_eat(edict_t *self, G_Message_t *msg)
 		return;
 
 	if(!irand(0,1))
-		SetAnim(self, ANIM_EATING_TWITCH);
+		SetAnim(self, BEAST_ANIM_EATING_TWITCH);
 	else
-		SetAnim(self, ANIM_EATING);
+		SetAnim(self, BEAST_ANIM_EATING);
 }
 
 /*----------------------------------------------------------------------
@@ -330,7 +330,7 @@ void tbeast_eat(edict_t *self, G_Message_t *msg)
 -----------------------------------------------------------------------*/
 void tbeast_watch(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_STAND);
+	SetAnim(self, BEAST_ANIM_STAND);
 }
 
 /*----------------------------------------------------------------------
@@ -343,7 +343,7 @@ void tbeast_stand(edict_t *self, G_Message_t *msg)
 
 	if (self->ai_mood == AI_MOOD_DELAY)
 	{
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, BEAST_ANIM_DELAY);
 		return;
 	}
 
@@ -373,19 +373,19 @@ void tbeast_stand(edict_t *self, G_Message_t *msg)
 		if (!irand(0, 3))
 		{
 			tbeast_growl(self);
-			SetAnim(self, ANIM_STAND);
+			SetAnim(self, BEAST_ANIM_STAND);
 			return;
 		}
 		else
 		{
 			if (self->monsterinfo.aiflags & AI_EATING)
-				SetAnim(self, ANIM_EATING);
+				SetAnim(self, BEAST_ANIM_EATING);
 
 			return;
 		}
 	}
 
-	SetAnim(self, ANIM_STAND);
+	SetAnim(self, BEAST_ANIM_STAND);
 }
 
 
@@ -405,7 +405,7 @@ void tbeast_walk(edict_t *self, G_Message_t *msg)
 
 	if (!self->enemy)//?goal?
 	{
-		SetAnim(self, ANIM_WALK);
+		SetAnim(self, BEAST_ANIM_WALK);
 		return;
 	}
 
@@ -418,7 +418,7 @@ void tbeast_walk(edict_t *self, G_Message_t *msg)
 			(self->s.origin[2] > targ_org[2] + 18)))
 		{
 			gi.dprintf("Jump from walk at enemy\n");
-			SetAnim(self,ANIM_JUMP);
+			SetAnim(self, BEAST_ANIM_JUMP);
 			return;
 		}
 	}*/
@@ -426,15 +426,15 @@ void tbeast_walk(edict_t *self, G_Message_t *msg)
 	delta = anglemod(self->s.angles[YAW] - self->ideal_yaw);
 	if (delta > 25 && delta <= 180)
 	{
-		SetAnim(self, ANIM_WALKRT);
+		SetAnim(self, BEAST_ANIM_WALKRT);
 	}
 	else if (delta > 180 && delta < 335)
 	{
-		SetAnim(self, ANIM_WALKLEFT);
+		SetAnim(self, BEAST_ANIM_WALKLEFT);
 	}
 	else
 	{
-		SetAnim(self, ANIM_WALK);
+		SetAnim(self, BEAST_ANIM_WALK);
 	}
 }
 
@@ -442,9 +442,9 @@ void tbeast_init_charge (edict_t *self)
 {
 //	gi.dprintf("Beast CHARGE!\n");
 	if(!ahead(self, self->enemy) || !irand(0,3))
-		SetAnim(self, ANIM_QUICK_CHARGE);
+		SetAnim(self, BEAST_ANIM_QUICK_CHARGE);
 	else
-		SetAnim(self, ANIM_CHARGE);
+		SetAnim(self, BEAST_ANIM_CHARGE);
 }
 
 /*----------------------------------------------------------------------
@@ -473,9 +473,9 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 	if ((len > 250 || !skill->value) && self->monsterinfo.attack_finished > level.time)
 	{//too soon to attack again
 		if (flrand(0, 1) < 0.9 && !skill->value)
-			SetAnim(self, ANIM_STAND);
+			SetAnim(self, BEAST_ANIM_STAND);
 		else
-			SetAnim(self, ANIM_ROAR);
+			SetAnim(self, BEAST_ANIM_ROAR);
 
 		return;
 	}
@@ -488,17 +488,17 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 		if(self->enemy->absmin[2] > melee_point[2] + 128)
 		{
 //			gi.dprintf(" snatch extra high\n");
-			SetAnim(self,ANIM_BITEUP2);
+			SetAnim(self, BEAST_ANIM_BITEUP2);
 		}
 		else if(self->enemy->absmin[2] > melee_point[2])
 		{
 //			gi.dprintf(" snatch high\n");
-			SetAnim(self,ANIM_BITEUP);
+			SetAnim(self, BEAST_ANIM_BITEUP);
 		}
 		else
 		{
 //			gi.dprintf(" snatch low\n");
-			SetAnim(self,ANIM_BITELOW);
+			SetAnim(self, BEAST_ANIM_BITELOW);
 		}
 
 		self->monsterinfo.attack_finished = level.time + flrand(2, 3);
@@ -507,7 +507,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 	else if(len - seperation < self->melee_range && !irand(0,2))
 	{
 //		gi.dprintf("walk attack\n");
-		SetAnim(self,ANIM_WALKATK);
+		SetAnim(self, BEAST_ANIM_WALKATK);
 	}
 
 	if (self->enemy->classID != CID_TCHECKRIK && ((irand(0, 1) && infront(self, self->enemy)) || ahead(self, self->enemy)) && shoulder_room_ahead(self))
@@ -515,7 +515,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 		tbeast_init_charge(self);
 	}
 	else
-		SetAnim(self, ANIM_WALK);
+		SetAnim(self, BEAST_ANIM_WALK);
 }
 
 void tbeast_start_charge(edict_t *self, G_Message_t *msg)
@@ -526,7 +526,7 @@ void tbeast_start_charge(edict_t *self, G_Message_t *msg)
 		tbeast_init_charge(self);
 	}
 	else
-		SetAnim(self, ANIM_WALK);
+		SetAnim(self, BEAST_ANIM_WALK);
 }
 
 #define TBEAST_SBAR_SIZE	3500
@@ -549,7 +549,7 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 	if(!self->dmg)
 	{
 		self->dmg = true;
-		SetAnim(self, ANIM_CHARGE);
+		SetAnim(self, BEAST_ANIM_CHARGE);
 		return;
 	}
 
@@ -565,7 +565,7 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 				if (!irand(0, 2))
 				{
 					gi.dprintf("Jump from run at enemy\n");
-					SetAnim(self, ANIM_JUMP);
+					SetAnim(self, BEAST_ANIM_JUMP);
 					return;
 				}
 			}
@@ -581,15 +581,15 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 		delta = anglemod(self->s.angles[YAW] - self->ideal_yaw);
 		if (delta > 45 && delta <= 180)
 		{
-			SetAnim(self, ANIM_WALKRT);		// Turn right
+			SetAnim(self, BEAST_ANIM_WALKRT);		// Turn right
 		}
 		else if (delta > 180 && delta < 315)
 		{
-			SetAnim(self, ANIM_WALKLEFT);		// Turn left
+			SetAnim(self, BEAST_ANIM_WALKLEFT);		// Turn left
 		}
 		else
 		{
-			SetAnim(self, ANIM_WALK);		// Run on
+			SetAnim(self, BEAST_ANIM_WALK);		// Run on
 		}
 	}
 }
@@ -632,7 +632,7 @@ void tbeast_pain(edict_t *self, G_Message_t *msg)
 	else
 		gi.sound(self, CHAN_VOICE, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 
-	SetAnim(self, ANIM_STUN);
+	SetAnim(self, BEAST_ANIM_STUN);
 }
 
 
@@ -652,7 +652,7 @@ void tbeast_death(edict_t *self, G_Message_t *msg)
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 
-	SetAnim(self, ANIM_DIE_NORM);
+	SetAnim(self, BEAST_ANIM_DIE_NORM);
 }
 
 void pitch_roll_for_slope (edict_t *forwhom, vec3_t *slope);
@@ -680,7 +680,7 @@ void tbeast_go_die (edict_t *self, edict_t *other, edict_t *activator)
 	self->post_think = NULL;
 	self->next_post_think = -1;
 	self->touch = NULL;
-	SetAnim(self, ANIM_DIE);
+	SetAnim(self, BEAST_ANIM_DIE);
 	pitch_roll_for_slope(self, NULL);
 	G_UseTargets(self, activator);
 }
@@ -856,7 +856,7 @@ void tbeast_mood(edict_t *self)
 			break;
 
 		case AI_MOOD_NAVIGATE:
-			SetAnim(self, ANIM_WALK);
+			SetAnim(self, BEAST_ANIM_WALK);
 			break;
 
 		case AI_MOOD_STAND:
@@ -897,7 +897,7 @@ void tbeast_pause (edict_t *self)
 	vec3_t	v;
 	float	len;
 
-	if(self->enemy && self->enemy->classID != CID_TCHECKRIK && self->curAnimID == ANIM_STUN && self->pain_debounce_time > level.time + 7 && ahead(self, self->enemy))
+	if(self->enemy && self->enemy->classID != CID_TCHECKRIK && self->curAnimID == BEAST_ANIM_STUN && self->pain_debounce_time > level.time + 7 && ahead(self, self->enemy))
 	{
 		tbeast_init_charge(self);
 		return;
@@ -1205,19 +1205,19 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 			z_diff = self->s.origin[2] + TB_HIBITE_U + TB_UP_OFFSET - self->enemy->s.origin[2];
 			if(z_diff < -128)
 			{
-				SetAnim(self, ANIM_BITEUP2);
+				SetAnim(self, BEAST_ANIM_BITEUP2);
 				return true;
 			}
 			else if(Q_fabs(z_diff)<=32)
 			{
-				SetAnim(self, ANIM_BITEUP);
+				SetAnim(self, BEAST_ANIM_BITEUP);
 				return true;
 			}
 			else if(z_diff < -32 && z_diff > -200)
 				skiplow = true;
 			else if(z_diff > 40 && z_diff < -24)
 			{
-				SetAnim(self, ANIM_BITELOW);
+				SetAnim(self, BEAST_ANIM_BITELOW);
 				return true;
 			}
 		}
@@ -1256,7 +1256,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 				VectorScale(forward, 250, self->movedir);
 				self->movedir[2] = 400;
 				self->monsterinfo.jump_time = level.time + 7;
-				SetAnim(self, ANIM_FJUMP);
+				SetAnim(self, BEAST_ANIM_FJUMP);
 				return true;
 			}
 		}
@@ -1284,7 +1284,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 			VectorScale(forward, 300, self->movedir);
 			self->movedir[2] = 600;
 			self->monsterinfo.jump_time = level.time + 7;
-			SetAnim(self, ANIM_FJUMP);
+			SetAnim(self, BEAST_ANIM_FJUMP);
 			return true;
 		}
 	}
@@ -1357,9 +1357,9 @@ void tbeast_ready_catch (edict_t *self)
 
 	enemy_zdist = (self->teamchain->s.origin[2] + self->teamchain->mins[2]) - self->s.origin[2];
 	if(enemy_zdist<=self->maxs[2] + ok_zdist && self->teamchain->velocity[2]<=-60)
-		SetAnim(self,ANIM_CATCH);
+		SetAnim(self, BEAST_ANIM_CATCH);
 	else
-		SetAnim(self,ANIM_READY_CATCH);
+		SetAnim(self, BEAST_ANIM_READY_CATCH);
 }
 
 void tbeast_throw_toy(edict_t *self)
@@ -1491,11 +1491,11 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 //	gi.dprintf("SNAGGED!\n");
 
 	if(ofsu == TB_HIBITE_U + 128)
-		SetAnim(self, ANIM_BITEUP2_SFIN);
+		SetAnim(self, BEAST_ANIM_BITEUP2_SFIN);
 	else if(ofsu == TB_HIBITE_U)
-		SetAnim(self, ANIM_BITEUP_SFIN);
+		SetAnim(self, BEAST_ANIM_BITEUP_SFIN);
 	else
-		SetAnim(self, ANIM_BITELOW_SFIN);
+		SetAnim(self, BEAST_ANIM_BITELOW_SFIN);
 
 	self->teamchain = found;
 	self->teamchain->flags |= FL_FLY;
@@ -1524,7 +1524,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 void tbeast_go_snatch (edict_t *self)
 {
-	SetAnim(self, ANIM_SNATCH);
+	SetAnim(self, BEAST_ANIM_SNATCH);
 }
 
 void tbeast_gore_toy(edict_t *self, float jumpht)
@@ -1659,29 +1659,29 @@ void tbeast_done_gore (edict_t *self)
 	M_ValidTarget(self, self->enemy);
 
 	self->monsterinfo.aiflags |= AI_EATING;
-	SetAnim(self, ANIM_EATDOWN);
+	SetAnim(self, BEAST_ANIM_EATDOWN);
 }
 
 void tbeast_inair (edict_t *self)
 {
-	SetAnim(self, ANIM_INAIR);
+	SetAnim(self, BEAST_ANIM_INAIR);
 }
 
 void tbeast_check_landed (edict_t *self)
 {
 	if(TB_CheckBottom(self))
-		SetAnim(self, ANIM_LAND);
+		SetAnim(self, BEAST_ANIM_LAND);
 }
 
 void tbeast_ginair (edict_t *self)
 {
-	SetAnim(self, ANIM_GINAIR);
+	SetAnim(self, BEAST_ANIM_GINAIR);
 }
 
 void tbeast_gcheck_landed (edict_t *self)
 {
 	if(TB_CheckBottom(self))
-		SetAnim(self, ANIM_GLAND);
+		SetAnim(self, BEAST_ANIM_GLAND);
 }
 
 void tbeast_chomp(edict_t *self, float ofsf, float ofsr, float ofsu)
@@ -1790,7 +1790,8 @@ float LerpAngleChange (float curangle, float endangle, float step)
 
 int tbeast_inwalkframes(edict_t *self)
 {
-	if(self->curAnimID == ANIM_CHARGE||self->curAnimID==ANIM_QUICK_CHARGE)
+	if((self->curAnimID == BEAST_ANIM_CHARGE) ||
+		(self->curAnimID == BEAST_ANIM_QUICK_CHARGE))
 	{
 		switch(self->s.frame)
 		{
@@ -2091,7 +2092,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 						7);
 
 					if(self->sounds!=2 && irand(0, 1))
-						SetAnim(self, ANIM_STUN);
+						SetAnim(self, BEAST_ANIM_STUN);
 				}
 			}
 		}
@@ -2364,7 +2365,7 @@ void tbeast_fake_touch(edict_t *self)
 		if(other == self->teamchain)
 			continue;
 
-		if(self->curAnimID != ANIM_CHARGE && self->curAnimID != ANIM_QUICK_CHARGE)
+		if(self->curAnimID != BEAST_ANIM_CHARGE && self->curAnimID != BEAST_ANIM_QUICK_CHARGE)
 		{
 			if(leg_check_index > -1 && other->takedamage && movable(other))
 			{//Hey!  Check and see if they're close to my mouth and chomp 'em!
@@ -2419,7 +2420,7 @@ void tbeast_fake_touch(edict_t *self)
 			if(!irand(0,10))
 			{
 //				gi.dprintf("Jump to throw off something\n");
-				SetAnim(self, ANIM_JUMP);
+				SetAnim(self, BEAST_ANIM_JUMP);
 				VectorSubtract(other->s.origin, self->s.origin, dir);
 				VectorNormalize(dir);
 				VectorScale(dir, 500, other->velocity);
@@ -2534,15 +2535,15 @@ void tbeast_post_think (edict_t *self)
 //	if(!TB_CheckBottom(self))
 //	{
 //		gi.dprintf("Beast not on ground jump!\n");
-//		SetAnim(self, ANIM_JUMP);
+//		SetAnim(self, BEAST_ANIM_JUMP);
 //	}
 
 	if(!irand(0, 10))
 	{
-		if(self->curAnimID == ANIM_WALK ||
-			self->curAnimID == ANIM_WALKLEFT ||
-			self->curAnimID == ANIM_WALKRT ||
-			self->curAnimID == ANIM_WALKATK)
+		if(self->curAnimID == BEAST_ANIM_WALK ||
+			self->curAnimID == BEAST_ANIM_WALKLEFT ||
+			self->curAnimID == BEAST_ANIM_WALKRT ||
+			self->curAnimID == BEAST_ANIM_WALKATK)
 		{
 			VectorCopy(self->s.origin, end);
 			end[2] -= 64;
@@ -2560,7 +2561,7 @@ void tbeast_post_think (edict_t *self)
 	{
 //		gi.dprintf("Beast not on ground jump!\n");
 		TB_CheckJump (self);
-		//SetAnim(self, ANIM_JUMP);
+		//SetAnim(self, BEAST_ANIM_JUMP);
 	}
 
 	tbeast_fake_touch(self);
@@ -2610,7 +2611,7 @@ void tbeast_go_charge (edict_t *self, edict_t *other, edict_t *activator)
 	self->enemy = activator;//are we certain activator is client?
 	//do a FoundTarget(self, false);?
 	self->dmg = true;
-	SetAnim(self, ANIM_CHARGE);
+	SetAnim(self, BEAST_ANIM_CHARGE);
 	self->use = tbeast_go_die;
 }
 

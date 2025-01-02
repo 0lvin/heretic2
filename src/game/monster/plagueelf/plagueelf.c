@@ -46,7 +46,7 @@
 /*----------------------------------------------------------------------
   plagueElf Base Info
 -----------------------------------------------------------------------*/
-static mmove_t *animations[ NUM_ANIMS] =
+static mmove_t *animations[PLAGUEELF_NUM_ANIMS] =
 {
 	&plagueElf_move_stand1,
 	&plagueElf_move_walk1,
@@ -201,70 +201,70 @@ void plagueElf_c_anims(edict_t *self, G_Message_t *msg)
 	{
 		case MSG_C_ATTACK1:
 			self->monsterinfo.c_anim_flag |= C_ANIM_MOVE;
-			curr_anim = ANIM_C_ATTACK1;
+			curr_anim = PLAGUEELF_ANIM_C_ATTACK1;
 			break;
 		case MSG_C_ATTACK2:
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
-			curr_anim = ANIM_C_ATTACK2;
+			curr_anim = PLAGUEELF_ANIM_C_ATTACK2;
 			break;
 		case MSG_C_ATTACK3:
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
-			curr_anim = ANIM_C_ATTACK3;
+			curr_anim = PLAGUEELF_ANIM_C_ATTACK3;
 			break;
 		case MSG_C_ATTACK4:
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
-			curr_anim = ANIM_C_ATTACK4;
+			curr_anim = PLAGUEELF_ANIM_C_ATTACK4;
 			break;
 		case MSG_C_DEATH1:
 			self->monsterinfo.c_anim_flag |= C_ANIM_DONE;
-			curr_anim = ANIM_C_DEATH1;
+			curr_anim = PLAGUEELF_ANIM_C_DEATH1;
 			break;
 		case MSG_C_DEATH2:
 			self->monsterinfo.c_anim_flag |= C_ANIM_DONE;
-			curr_anim = ANIM_C_DEATH2;
+			curr_anim = PLAGUEELF_ANIM_C_DEATH2;
 			break;
 		case MSG_C_DEATH3:
 			self->monsterinfo.c_anim_flag |= C_ANIM_DONE;
-			curr_anim = ANIM_C_DEATH3;
+			curr_anim = PLAGUEELF_ANIM_C_DEATH3;
 			break;
 		case MSG_C_DEATH4:
 			self->monsterinfo.c_anim_flag |= C_ANIM_DONE;
-			curr_anim = ANIM_C_DEATH4;
+			curr_anim = PLAGUEELF_ANIM_C_DEATH4;
 			break;
 		case MSG_C_IDLE1:
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT | C_ANIM_IDLE;
-			curr_anim = ANIM_C_IDLE1;
+			curr_anim = PLAGUEELF_ANIM_C_IDLE1;
 			break;
 		case MSG_C_IDLE2:
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
-			curr_anim = ANIM_C_IDLE2;
+			curr_anim = PLAGUEELF_ANIM_C_IDLE2;
 			break;
 		case MSG_C_IDLE3:
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
-			curr_anim = ANIM_C_IDLE3;
+			curr_anim = PLAGUEELF_ANIM_C_IDLE3;
 			break;
 		case MSG_C_PAIN1:
 			self->monsterinfo.c_anim_flag |= C_ANIM_REPEAT;
-			curr_anim = ANIM_C_PAIN1;
+			curr_anim = PLAGUEELF_ANIM_C_PAIN1;
 			break;
 		case MSG_C_RUN1:
 			self->monsterinfo.c_anim_flag |= C_ANIM_MOVE;
-			curr_anim = ANIM_C_RUN1;
+			curr_anim = PLAGUEELF_ANIM_C_RUN1;
 			break;
 		case MSG_C_THINKAGAIN:			// Think for yourself, elf.
 			self->monsterinfo.c_mode = 0;
 			self->enemy = self->monsterinfo.c_ent;
 			FoundTarget(self, true);
 //			self->takedamage = DAMAGE_YES;
-			curr_anim = ANIM_C_THINKAGAIN;
+			curr_anim = PLAGUEELF_ANIM_C_THINKAGAIN;
 			break;
 		case MSG_C_WALK1:
 			self->monsterinfo.c_anim_flag |= C_ANIM_MOVE;
-			curr_anim = ANIM_C_WALK1;
+			curr_anim = PLAGUEELF_ANIM_C_WALK1;
 			break;
 		case MSG_C_WALK2:
 			self->monsterinfo.c_anim_flag |= C_ANIM_MOVE;
-			curr_anim = ANIM_C_WALK2;
+			curr_anim = PLAGUEELF_ANIM_C_WALK2;
 			break;
 		default:
 			return;
@@ -282,7 +282,7 @@ void plagueElf_c_anims(edict_t *self, G_Message_t *msg)
 
 void plagueelf_death_loop ( edict_t *self )
 {
-	SetAnim(self, ANIM_KDEATH_LOOP);
+	SetAnim(self, PLAGUEELF_ANIM_KDEATH_LOOP);
 }
 
 /*-------------------------------------------------------------------------
@@ -304,11 +304,11 @@ void plagueelf_check_land ( edict_t *self )
 
 	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
-	if ( ( trace.fraction < 1 || trace.allsolid || trace.startsolid ) && self->curAnimID != ANIM_KDEATH_END && self->curAnimID != ANIM_KDEATH_GO)
+	if ( ( trace.fraction < 1 || trace.allsolid || trace.startsolid ) && self->curAnimID != PLAGUEELF_ANIM_KDEATH_END && self->curAnimID != PLAGUEELF_ANIM_KDEATH_GO)
 	{
 		self->elasticity = 1.25;
 		self->friction = 0.5;
-		SetAnim(self, ANIM_KDEATH_END);
+		SetAnim(self, PLAGUEELF_ANIM_KDEATH_END);
 	}
 }
 
@@ -328,17 +328,17 @@ void plagueElf_strike (edict_t *self)
 
 	switch ( self->curAnimID )
 	{
-	case ANIM_MELEE1:
+	case PLAGUEELF_ANIM_MELEE1:
 		VectorSet(soff, -8, 0, 32);
 		VectorSet(eoff, 36, 8, 16);
 		break;
 
-	case ANIM_MELEE2:
+	case PLAGUEELF_ANIM_MELEE2:
 		VectorSet(soff, -8, -16, 32);
 		VectorSet(eoff, 36, 0, 0);
 		break;
 
-	case ANIM_RUNATK1:
+	case PLAGUEELF_ANIM_RUNATK1:
 		VectorSet(soff, 2, -4, 24);
 		VectorSet(eoff, 50, 4, 4);
 		break;
@@ -406,9 +406,9 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	if(self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		if (irand(0,10) < 5)
-			SetAnim(self, ANIM_DIE2);
+			SetAnim(self, PLAGUEELF_ANIM_DIE2);
 		else
-			SetAnim(self, ANIM_DIE1);
+			SetAnim(self, PLAGUEELF_ANIM_DIE1);
 		return;
 	}
 
@@ -431,7 +431,7 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	else if (self->health < -10)
 	{
 		self->svflags |= SVF_DEADMONSTER;
-		SetAnim(self, ANIM_KDEATH_GO);
+		SetAnim(self, PLAGUEELF_ANIM_KDEATH_GO);
 
 		VectorCopy(targ->velocity, vf);
 		VectorNormalize(vf);
@@ -454,24 +454,24 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	{
 		chance = irand(0,3);
 		if(chance == 0)
-			SetAnim(self, ANIM_DIE1);
+			SetAnim(self, PLAGUEELF_ANIM_DIE1);
 		else if(chance == 1)
-			SetAnim(self, ANIM_DIE2);
+			SetAnim(self, PLAGUEELF_ANIM_DIE2);
 		else if(chance == 2)
-			SetAnim(self, ANIM_DIE3);
+			SetAnim(self, PLAGUEELF_ANIM_DIE3);
 		else
-			SetAnim(self, ANIM_DIE4);
+			SetAnim(self, PLAGUEELF_ANIM_DIE4);
 	}
 	else
 	{
 		if(self->count == 1)
-			SetAnim(self, ANIM_DIE1);
+			SetAnim(self, PLAGUEELF_ANIM_DIE1);
 		else if(self->count == 2)
-			SetAnim(self, ANIM_DIE2);
+			SetAnim(self, PLAGUEELF_ANIM_DIE2);
 		else if(self->count == 3)
-			SetAnim(self, ANIM_DIE3);
+			SetAnim(self, PLAGUEELF_ANIM_DIE3);
 		else
-			SetAnim(self, ANIM_DIE4);
+			SetAnim(self, PLAGUEELF_ANIM_DIE4);
 	}
 }
 
@@ -804,7 +804,7 @@ void plagueElf_missile(edict_t *self, G_Message_t *msg)
 {
 	pelf_init_phase_in(self);
 
-	SetAnim(self, ANIM_MISSILE);
+	SetAnim(self, PLAGUEELF_ANIM_MISSILE);
 }
 
 /*-------------------------------------------------------------------------
@@ -819,7 +819,7 @@ void plagueElf_melee(edict_t *self, G_Message_t *msg)
 	{//A monster in melee will continue too long if the player backs away, this prevents it
 		if(self->spawnflags&MSF_FIXED||self->monsterinfo.aiflags&AI_NO_MELEE)
 		{
-			SetAnim(self, ANIM_MISSILE);
+			SetAnim(self, PLAGUEELF_ANIM_MISSILE);
 			return;
 		}
 		AngleVectors(self->s.angles, vf, NULL, NULL);
@@ -829,16 +829,16 @@ void plagueElf_melee(edict_t *self, G_Message_t *msg)
 		if (ret)
 		{
 			if(irand(0,10)<5)
-				SetAnim(self, ANIM_MELEE1);
+				SetAnim(self, PLAGUEELF_ANIM_MELEE1);
 			else
-				SetAnim(self, ANIM_MELEE2);
+				SetAnim(self, PLAGUEELF_ANIM_MELEE2);
 		}
 		else
 		{
 			if(self->spawnflags&MSF_FIXED)
-				SetAnim(self, ANIM_DELAY);
+				SetAnim(self, PLAGUEELF_ANIM_DELAY);
 			else
-				SetAnim(self, ANIM_RUNATK1);
+				SetAnim(self, PLAGUEELF_ANIM_RUNATK1);
 		}
 	}
 	else//If our enemy is dead, we need to stand
@@ -1001,8 +1001,9 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 		return;
 //	gi.dprintf("HL: %d",HitLocation);
 
-	if(self->curAnimID==ANIM_MELEE1||self->curAnimID==ANIM_MELEE1)
-	{//Hit chest during melee, may have hit arms
+	if(self->curAnimID == PLAGUEELF_ANIM_MELEE1)
+	{
+		/* Hit chest during melee, may have hit arms */
 		if(HitLocation == hl_TorsoFront&&irand(0,10)<4)
 		{
 			if(irand(0,10)<7)
@@ -1248,7 +1249,7 @@ void plagueElf_pain(edict_t *self, G_Message_t *msg)
 	if (self->pain_debounce_time < level.time)
 	{
 		self->pain_debounce_time = level.time + 1;
-		SetAnim(self, ANIM_PAIN1);
+		SetAnim(self, PLAGUEELF_ANIM_PAIN1);
 	}
 }
 
@@ -1284,7 +1285,7 @@ void plagueElf_pause (edict_t *self)
 			pelf_init_phase_out(self);
 	}
 
-	if(self->spawnflags & MSF_FIXED && self->curAnimID == ANIM_DELAY && self->enemy)
+	if(self->spawnflags & MSF_FIXED && self->curAnimID == PLAGUEELF_ANIM_DELAY && self->enemy)
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 		MG_FaceGoal(self, true);
@@ -1303,7 +1304,7 @@ void plagueElf_pause (edict_t *self)
 
 	case AI_MOOD_PURSUE:
 		if(self->ai_mood_flags&AI_MOOD_FLAG_DUMB_FLEE)
-			SetAnim(self, ANIM_SCARED);
+			SetAnim(self, PLAGUEELF_ANIM_SCARED);
 		else
 			G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
 		break;
@@ -1323,21 +1324,21 @@ void plagueElf_pause (edict_t *self)
 			{
 				if(M_DistanceToTarget(self, self->enemy) < 100)
 				{
-					if(self->curAnimID == ANIM_SCARED)
+					if(self->curAnimID == PLAGUEELF_ANIM_SCARED)
 						dying_elf_sounds (self, DYING_ELF_PAIN_VOICE);
 					if(irand(0,1))
-						SetAnim(self, ANIM_CRAZY_A);
+						SetAnim(self, PLAGUEELF_ANIM_CRAZY_A);
 					else
-						SetAnim(self, ANIM_CRAZY_B);
+						SetAnim(self, PLAGUEELF_ANIM_CRAZY_B);
 					break;
 				}
 			}
-			SetAnim(self, ANIM_SCARED);
+			SetAnim(self, PLAGUEELF_ANIM_SCARED);
 		}
 		else if(irand(0,1))
-			SetAnim(self, ANIM_CRAZY_A);
+			SetAnim(self, PLAGUEELF_ANIM_CRAZY_A);
 		else
-			SetAnim(self, ANIM_CRAZY_B);
+			SetAnim(self, PLAGUEELF_ANIM_CRAZY_B);
 		break;
 
 	case AI_MOOD_STAND:
@@ -1345,14 +1346,14 @@ void plagueElf_pause (edict_t *self)
 		break;
 
 	case AI_MOOD_DELAY:
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, PLAGUEELF_ANIM_DELAY);
 		break;
 
 	case AI_MOOD_WANDER:
 		if(self->spawnflags&MSF_FIXED)
-			SetAnim(self, ANIM_DELAY);
+			SetAnim(self, PLAGUEELF_ANIM_DELAY);
 		else
-			SetAnim(self, ANIM_WALK1);
+			SetAnim(self, PLAGUEELF_ANIM_WALK1);
 		break;
 
 	case AI_MOOD_BACKUP:
@@ -1361,9 +1362,9 @@ void plagueElf_pause (edict_t *self)
 
 	case AI_MOOD_JUMP:
 		if(self->spawnflags&MSF_FIXED)
-			SetAnim(self, ANIM_DELAY);
+			SetAnim(self, PLAGUEELF_ANIM_DELAY);
 		else
-			SetAnim(self, ANIM_FJUMP);
+			SetAnim(self, PLAGUEELF_ANIM_FJUMP);
 		break;
 
 	default :
@@ -1384,15 +1385,15 @@ void pelf_land(edict_t *self)
 
 void pelf_go_inair(edict_t *self)
 {
-	SetAnim(self, ANIM_INAIR);
+	SetAnim(self, PLAGUEELF_ANIM_INAIR);
 }
 
 void pelf_jump (edict_t *self, G_Message_t *msg)
 {
 	if(self->spawnflags&MSF_FIXED)
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, PLAGUEELF_ANIM_DELAY);
 	else
-		SetAnim(self, ANIM_FJUMP);
+		SetAnim(self, PLAGUEELF_ANIM_FJUMP);
 }
 
 void pelf_check_mood (edict_t *self, G_Message_t *msg)
@@ -1407,15 +1408,15 @@ void pelf_check_mood (edict_t *self, G_Message_t *msg)
 -------------------------------------------------------------------------*/
 void plagueElf_run(edict_t *self, G_Message_t *msg)
 {
-	if(self->curAnimID == ANIM_CURSING || self->curAnimID == ANIM_POINT)
+	if(self->curAnimID == PLAGUEELF_ANIM_CURSING || self->curAnimID == PLAGUEELF_ANIM_POINT)
 		return;
 
 	if (M_ValidTarget(self, self->enemy))
 	{
 		if(self->spawnflags&MSF_FIXED)
-			SetAnim(self, ANIM_DELAY);
+			SetAnim(self, PLAGUEELF_ANIM_DELAY);
 		else
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, PLAGUEELF_ANIM_RUN1);
 	}
 	else//If our enemy is dead, we need to stand
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
@@ -1451,9 +1452,9 @@ void plagueElfsqueal (edict_t *self)
 void plagueElf_stand(edict_t *self, G_Message_t *msg)
 {
 	if (self->ai_mood == AI_MOOD_DELAY)
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, PLAGUEELF_ANIM_DELAY);
 	else
-		SetAnim(self, ANIM_SHAKE1);
+		SetAnim(self, PLAGUEELF_ANIM_SHAKE1);
 
 	return;
 }
@@ -1463,24 +1464,24 @@ void plagueElf_stand(edict_t *self, G_Message_t *msg)
 -------------------------------------------------------------------------*/
 void plagueElf_walk(edict_t *self, G_Message_t *msg)
 {
-	if(self->curAnimID == ANIM_CURSING || self->curAnimID == ANIM_POINT)
+	if(self->curAnimID == PLAGUEELF_ANIM_CURSING || self->curAnimID == PLAGUEELF_ANIM_POINT)
 		return;
 
 	if(self->spawnflags&MSF_FIXED)
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, PLAGUEELF_ANIM_DELAY);
 	else if(irand(0, 1))
-		SetAnim(self, ANIM_WALK1);
+		SetAnim(self, PLAGUEELF_ANIM_WALK1);
 	else
-		SetAnim(self, ANIM_WALK2);
+		SetAnim(self, PLAGUEELF_ANIM_WALK2);
 	return;
 }
 
 void plagueElf_go_run(edict_t *self)
 {
 	if(self->spawnflags&MSF_FIXED)
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, PLAGUEELF_ANIM_DELAY);
 	else
-		SetAnim(self, ANIM_RUN1);
+		SetAnim(self, PLAGUEELF_ANIM_RUN1);
 }
 
 /*
@@ -1589,9 +1590,9 @@ void pelf_SightSound ( edict_t *self, G_Message_t *msg )
 		if(support)
 		{//FIXME: make sure enemy is far enough away to anim!
 			if(irand(0, 1))
-				SetAnim(self, ANIM_CURSING);
+				SetAnim(self, PLAGUEELF_ANIM_CURSING);
 			else
-				SetAnim(self, ANIM_POINT);
+				SetAnim(self, PLAGUEELF_ANIM_POINT);
 		}
 	}
 }
@@ -1676,9 +1677,9 @@ void pelf_EchoResponse  ( edict_t *self, G_Message_t *msg )
 		if(irand(0, 4))
 		{//FIXME: make sure enemy is far enough away to anim!
 			if(irand(0, 1))
-				SetAnim(self, ANIM_CURSING);
+				SetAnim(self, PLAGUEELF_ANIM_CURSING);
 			else
-				SetAnim(self, ANIM_POINT);
+				SetAnim(self, PLAGUEELF_ANIM_POINT);
 		}
 		break;
 
@@ -1693,9 +1694,9 @@ void pelf_EchoResponse  ( edict_t *self, G_Message_t *msg )
 		if(irand(0, 2))
 		{//FIXME: make sure enemy is far enough away to anim!
 			if(irand(0, 1))
-				SetAnim(self, ANIM_CURSING);
+				SetAnim(self, PLAGUEELF_ANIM_CURSING);
 			else
-				SetAnim(self, ANIM_POINT);
+				SetAnim(self, PLAGUEELF_ANIM_POINT);
 
 		}
 		break;
@@ -1731,9 +1732,9 @@ void pelf_check_too_close(edict_t *self)
 	if(M_DistanceToTarget(self, self->enemy) < flrand(0, 100))
 	{
 		if(irand(0,1))
-			SetAnim(self, ANIM_CRAZY_A);
+			SetAnim(self, PLAGUEELF_ANIM_CRAZY_A);
 		else
-			SetAnim(self, ANIM_CRAZY_B);
+			SetAnim(self, PLAGUEELF_ANIM_CRAZY_B);
 	}
 }
 
@@ -1851,7 +1852,7 @@ void PlagueElfStaticsInit()
 	classStatics[CID_PLAGUEELF].msgReceivers[MSG_C_PAIN1] = plagueElf_c_anims;
 	classStatics[CID_PLAGUEELF].msgReceivers[MSG_C_GIB1] = plagueElf_c_gib;
 
-	resInfo.numAnims = NUM_ANIMS;
+	resInfo.numAnims = PLAGUEELF_NUM_ANIMS;
 	resInfo.animations = animations;
 
 	//note that the name is different in the path

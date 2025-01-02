@@ -853,7 +853,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 		return;
 //	gi.dprintf("HL: %d",HitLocation);
 
-/*	if(self->curAnimID==ANIM_MELEE1||self->curAnimID==ANIM_MELEE1)
+/*	if(self->curAnimID ==ANIM_MELEE1||self->curAnimID ==ANIM_MELEE1)
 	{//Hit chest during melee, may have hit arms
 		if(HitLocation == hl_TorsoFront&&irand(0,10)<4)
 		{

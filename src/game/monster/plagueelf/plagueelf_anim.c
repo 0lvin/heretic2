@@ -221,7 +221,7 @@ mmove_t plagueElf_move_land = {5, plagueElf_frames_land, plagueElf_pause};
 -----------------------------------------------------------------------*/
 static mframe_t plagueElf_frames_inair [] =
 {
-	{FRAME_jump20,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, 0},
+	{FRAME_jump20,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, 0},
 };
 mmove_t plagueElf_move_inair = {1, plagueElf_frames_inair, NULL};
 
@@ -239,17 +239,17 @@ static mframe_t plagueElf_frames_fjump [] =
 	{FRAME_jump7,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jump8,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jump9,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump11,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump12,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump13,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump14,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump15,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump16,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump17,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump18,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump19,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump20,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
+	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump11,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump12,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump13,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump14,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump15,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump16,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump17,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump18,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump19,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
+	{FRAME_jump20,	NULL, 0, 0, 0, MG_CheckLanded, PLAGUEELF_ANIM_LAND, NULL},
 };
 mmove_t plagueElf_move_fjump = {20, plagueElf_frames_fjump, pelf_go_inair};
 

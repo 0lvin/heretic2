@@ -341,7 +341,7 @@ void chicken_pause (edict_t *self)
 				case AI_MOOD_JUMP:
 					VectorCopy(self->movedir, self->velocity);
 					VectorNormalize(self->movedir);
-					SetAnim(self, ANIM_JUMP);
+					SetAnim(self, CHICKEN_ANIM_JUMP);
 					break;
 				case AI_MOOD_EAT:
 					G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
@@ -373,7 +373,7 @@ void chicken_eat_again (edict_t *self)
 //----------------------------------------------------------------------
 void chicken_attack(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_ATTACK);
+	SetAnim(self, CHICKEN_ANIM_ATTACK);
 }
 
 //----------------------------------------------------------------------
@@ -387,7 +387,7 @@ void chicken_jump(edict_t *self, G_Message_t *msg)
 		gi.sound(self, CHAN_VOICE, sounds[SND_JUMP2], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, sounds[SND_JUMP3], 1, ATTN_NORM, 0);
-	SetAnim(self, ANIM_JUMP);
+	SetAnim(self, CHICKEN_ANIM_JUMP);
 }
 
 //----------------------------------------------------------------------
@@ -399,7 +399,7 @@ void chicken_eat(edict_t *self, G_Message_t *msg)
 		gi.sound(self, CHAN_VOICE, sounds[SND_PECK1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, sounds[SND_PECK2], 1, ATTN_NORM, 0);
-	SetAnim(self, ANIM_EAT);
+	SetAnim(self, CHICKEN_ANIM_EAT);
 }
 
 //----------------------------------------------------------------------
@@ -412,7 +412,7 @@ void chicken_cluck(edict_t *self, G_Message_t *msg)
 	else
 		gi.sound(self, CHAN_VOICE, sounds[SND_CLUCK2], 1, ATTN_NORM, 0);
 
-	SetAnim(self, ANIM_CLUCK);
+	SetAnim(self, CHICKEN_ANIM_CLUCK);
 }
 
 //----------------------------------------------------------------------
@@ -420,7 +420,7 @@ void chicken_cluck(edict_t *self, G_Message_t *msg)
 //----------------------------------------------------------------------
 void chicken_run(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_RUN);
+	SetAnim(self, CHICKEN_ANIM_RUN);
 }
 
 //----------------------------------------------------------------------
@@ -428,7 +428,7 @@ void chicken_run(edict_t *self, G_Message_t *msg)
 //----------------------------------------------------------------------
 void chicken_walk(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_WALK);
+	SetAnim(self, CHICKEN_ANIM_WALK);
 }
 
 //----------------------------------------------------------------------
@@ -436,7 +436,7 @@ void chicken_walk(edict_t *self, G_Message_t *msg)
 //----------------------------------------------------------------------
 void chicken_stand(edict_t *self, G_Message_t *msg)
 {
-	SetAnim(self, ANIM_STAND1);
+	SetAnim(self, CHICKEN_ANIM_STAND1);
 }
 
 void chickensqueal (edict_t *self)

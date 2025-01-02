@@ -82,7 +82,7 @@ qboolean gorgon_check_jump (edict_t *self);
 #define GORGON_STD_MELEE_RNG	48
 #define GORGON_STD_MAXHOP_RNG	200
 
-static mmove_t *animations[NUM_ANIMS] =
+static mmove_t *animations[GORGON_NUM_ANIMS] =
 {
 	&gorgon_move_stand1,
 	&gorgon_move_stand2,
@@ -206,7 +206,7 @@ void gorgon_roar_response_go (edict_t *self)
 	if(self->ai_mood == AI_MOOD_EAT)
 		self->ai_mood = AI_MOOD_PURSUE;
 
-	SetAnim(self, ANIM_ROAR2);
+	SetAnim(self, GORGON_ANIM_ROAR2);
 
 	self->nextthink = level.time + 0.1;
 }
@@ -299,13 +299,13 @@ void gorgon_eat(edict_t *self, G_Message_t *msg)
 	if (chance < 90)	// Eating
 	{
 		if (chance < 80)
-			SetAnim(self, ANIM_EAT_LOOP);
+			SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		else
-			SetAnim(self, ANIM_EAT_PULLBACK);
+			SetAnim(self, GORGON_ANIM_EAT_PULLBACK);
 	}
 	else
 	{
-		SetAnim(self, ANIM_EAT_TEAR);
+		SetAnim(self, GORGON_ANIM_EAT_TEAR);
 	}
 
 	self->monsterinfo.misc_debounce_time = level.time + 5;
@@ -320,11 +320,11 @@ void gorgon_watch(edict_t *self, G_Message_t *msg)
 
 	chance = irand(0, 100);
 	if (chance < 10)
-		SetAnim(self, ANIM_STAND2);
+		SetAnim(self, GORGON_ANIM_STAND2);
 	else if (chance < 20)
-		SetAnim(self, ANIM_STAND3);
+		SetAnim(self, GORGON_ANIM_STAND3);
 	else
-		SetAnim(self, ANIM_STAND1);
+		SetAnim(self, GORGON_ANIM_STAND1);
 }
 
 qboolean gorgon_check_attack(edict_t *self)
@@ -369,9 +369,9 @@ qboolean gorgon_check_attack(edict_t *self)
 			gorgon_growl(self);
 
 			if (dot2 > 0) //to the right
-				SetAnim(self, ANIM_STAND3);
+				SetAnim(self, GORGON_ANIM_STAND3);
 			else  //to the left
-				SetAnim(self, ANIM_STAND2);
+				SetAnim(self, GORGON_ANIM_STAND2);
 
 			return true;
 		}
@@ -383,11 +383,11 @@ qboolean gorgon_check_attack(edict_t *self)
 		{
 			chance = irand(0, 100);
 			if (chance < 10)
-				SetAnim(self, ANIM_EAT_TEAR);
+				SetAnim(self, GORGON_ANIM_EAT_TEAR);
 			else if (chance < 20)
-				SetAnim(self, ANIM_EAT_PULLBACK);
+				SetAnim(self, GORGON_ANIM_EAT_PULLBACK);
 			else
-				SetAnim(self, ANIM_EAT_LOOP);
+				SetAnim(self, GORGON_ANIM_EAT_LOOP);
 			return true;
 		}
 
@@ -403,7 +403,7 @@ void gorgon_stand(edict_t *self, G_Message_t *msg)
 
 	if (self->ai_mood == AI_MOOD_DELAY)
 	{
-		SetAnim(self, ANIM_DELAY);
+		SetAnim(self, GORGON_ANIM_DELAY);
 		return;
 	}
 
@@ -414,21 +414,21 @@ void gorgon_stand(edict_t *self, G_Message_t *msg)
 	{
 		chance = irand(0, 100);
 		if (chance < 10)
-			SetAnim(self, ANIM_EAT_TEAR);
+			SetAnim(self, GORGON_ANIM_EAT_TEAR);
 		else if (chance < 20)
-			SetAnim(self, ANIM_EAT_PULLBACK);
+			SetAnim(self, GORGON_ANIM_EAT_PULLBACK);
 		else
-			SetAnim(self, ANIM_EAT_LOOP);
+			SetAnim(self, GORGON_ANIM_EAT_LOOP);
 	}
 	else
 	{
 		chance = irand(0, 100);
 		if (chance < 10)
-			SetAnim(self, ANIM_STAND2);
+			SetAnim(self, GORGON_ANIM_STAND2);
 		else if (chance < 20)
-			SetAnim(self, ANIM_STAND3);
+			SetAnim(self, GORGON_ANIM_STAND3);
 		else
-			SetAnim(self, ANIM_STAND1);
+			SetAnim(self, GORGON_ANIM_STAND1);
 	}
 
 	self->monsterinfo.misc_debounce_time = level.time + 5;
@@ -451,7 +451,7 @@ void gorgon_walk(edict_t *self, G_Message_t *msg)
 
 	if (!self->enemy)//?goal?
 	{
-		SetAnim(self, ANIM_WALK1);
+		SetAnim(self, GORGON_ANIM_WALK1);
 		return;
 	}
 
@@ -466,7 +466,7 @@ void gorgon_walk(edict_t *self, G_Message_t *msg)
 		{
 			self->monsterinfo.aiflags |= AI_FLEE;
 			self->monsterinfo.flee_finished = level.time + flrand(4.0, 7.0);
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, GORGON_ANIM_RUN1);
 			return;
 		}
 	}
@@ -481,7 +481,7 @@ void gorgon_walk(edict_t *self, G_Message_t *msg)
 		{
 			if(gorgon_check_jump(self))
 			{
-				SetAnim(self, ANIM_FJUMP);
+				SetAnim(self, GORGON_ANIM_FJUMP);
 				return;
 			}
 		}
@@ -490,15 +490,15 @@ void gorgon_walk(edict_t *self, G_Message_t *msg)
 	delta = anglemod(self->s.angles[YAW] - self->ideal_yaw);
 	if (delta > 25 && delta <= 180)
 	{
-		SetAnim(self, ANIM_WALK3);
+		SetAnim(self, GORGON_ANIM_WALK3);
 	}
 	else if (delta > 180 && delta < 335)
 	{
-		SetAnim(self, ANIM_WALK2);
+		SetAnim(self, GORGON_ANIM_WALK2);
 	}
 	else
 	{
-		SetAnim(self, ANIM_WALK1);
+		SetAnim(self, GORGON_ANIM_WALK1);
 	}
 }
 
@@ -534,13 +534,13 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 //		gi.dprintf("Waiting for next attack\n");
 		chance = flrand(0, 1);
 		if (chance < 0.6)
-			SetAnim(self, ANIM_STAND4);
+			SetAnim(self, GORGON_ANIM_STAND4);
 		else if (chance < 0.7)
-			SetAnim(self, ANIM_MELEE6);		// Hop left
+			SetAnim(self, GORGON_ANIM_MELEE6);		// Hop left
 		else if (chance < 0.8)
-			SetAnim(self, ANIM_MELEE7);		// Hop right
+			SetAnim(self, GORGON_ANIM_MELEE7);		// Hop right
 		else
-			SetAnim(self, ANIM_MELEE9);		// Hop backward
+			SetAnim(self, GORGON_ANIM_MELEE9);		// Hop backward
 
 		return;
 	}
@@ -556,33 +556,33 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 			if(self->enemy->s.origin[2] > self->s.origin[2])
 			{
 //				gi.dprintf(" snatch high\n");
-				SetAnim(self,ANIM_SNATCHHI);
+				SetAnim(self, GORGON_ANIM_SNATCHHI);
 			}
 			else
 			{
 //				gi.dprintf(" snatch low\n");
-				SetAnim(self,ANIM_SNATCHLOW);
+				SetAnim(self, GORGON_ANIM_SNATCHLOW);
 			}
 		}
 		else if (chance < 0.25)
 		{
 //			gi.dprintf(" melee1\n");
-			SetAnim(self, ANIM_MELEE1);		// Attack left
+			SetAnim(self, GORGON_ANIM_MELEE1);		// Attack left
 		}
 		else if (chance < 0.5)
 		{
 //			gi.dprintf(" melee2\n");
-			SetAnim(self, ANIM_MELEE2);		// Attack right
+			SetAnim(self, GORGON_ANIM_MELEE2);		// Attack right
 		}
 		else if (chance < 0.75)
 		{
 //			gi.dprintf(" melee3\n");
-			SetAnim(self, ANIM_MELEE3);		// Attack Up
+			SetAnim(self, GORGON_ANIM_MELEE3);		// Attack Up
 		}
 		else
 		{
 //			gi.dprintf(" melee4\n");
-			SetAnim(self, ANIM_MELEE4);		// Pull back
+			SetAnim(self, GORGON_ANIM_MELEE4);		// Pull back
 		}
 
 		self->monsterinfo.attack_finished = level.time + flrand(0, 3 - skill->value);
@@ -592,7 +592,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 	//Out of melee range
 	if (len < 150)// && enemy_vis)
 	{
-		SetAnim(self, ANIM_MELEE5);
+		SetAnim(self, GORGON_ANIM_MELEE5);
 		return;
 	}
 	max_hop_range = AVG_VEC3T(self->rrs.scale) * GORGON_STD_MAXHOP_RNG;
@@ -607,7 +607,7 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 		trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT);
 
 		if (trace.ent == self->enemy || trace.fraction == 1)
-			SetAnim(self, ANIM_MELEE8);
+			SetAnim(self, GORGON_ANIM_MELEE8);
 		else
 		{
 			VectorCopy(self->s.origin, source);
@@ -616,9 +616,9 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 			trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SHOT);
 
 			if (trace.fraction == 1)
-				SetAnim(self, ANIM_MELEE7);
+				SetAnim(self, GORGON_ANIM_MELEE7);
 			else
-				SetAnim(self, ANIM_MELEE6);
+				SetAnim(self, GORGON_ANIM_MELEE6);
 		}
 	}
 }
@@ -666,13 +666,13 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 				if(gorgonFindAsleepGorgons(self))
 				{
 					self->damage_debounce_time = level.time + 10;
-					SetAnim(self, ANIM_ROAR);//threaten, brings other monsters
+					SetAnim(self, GORGON_ANIM_ROAR);//threaten, brings other monsters
 					return;
 				}
 				else if (!self->dmg_radius)
 				{//make a wakeup roar
 					self->dmg_radius = true;
-					SetAnim(self, ANIM_ROAR2);
+					SetAnim(self, GORGON_ANIM_ROAR2);
 				}
 			}
 		}
@@ -690,7 +690,7 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 						{//20% chance to jump at a buoy
 							if(gorgon_check_jump(self))
 							{
-								SetAnim(self, ANIM_FJUMP);
+								SetAnim(self, GORGON_ANIM_FJUMP);
 								return;
 							}
 						}
@@ -703,15 +703,15 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 	delta = anglemod(self->s.angles[YAW] - self->ideal_yaw);
 	if (delta > 45 && delta <= 180)
 	{
-		SetAnim(self, ANIM_RUN3);		// Turn right
+		SetAnim(self, GORGON_ANIM_RUN3);		// Turn right
 	}
 	else if (delta > 180 && delta < 315)
 	{
-		SetAnim(self, ANIM_RUN2);		// Turn left
+		SetAnim(self, GORGON_ANIM_RUN2);		// Turn left
 	}
 	else
 	{
-		SetAnim(self, ANIM_RUN1);		// Run on
+		SetAnim(self, GORGON_ANIM_RUN1);		// Run on
 	}
 }
 
@@ -751,11 +751,11 @@ void gorgon_pain(edict_t *self, G_Message_t *msg)
 	if(skill->value > 1.0 || !gorgonCheckSlipGo(self, true))
 	{
 		if (chance < 33)
-			SetAnim(self, ANIM_PAIN1);
+			SetAnim(self, GORGON_ANIM_PAIN1);
 		else if (chance < 66)
-			SetAnim(self, ANIM_PAIN2);
+			SetAnim(self, GORGON_ANIM_PAIN2);
 		else
-			SetAnim(self, ANIM_PAIN3);
+			SetAnim(self, GORGON_ANIM_PAIN3);
 	}
 }
 
@@ -780,9 +780,9 @@ void gorgon_death(edict_t *self, G_Message_t *msg)
 	{
 		gi.sound(self, CHAN_VOICE, sounds[SND_DIE], 1, ATTN_NORM, 0);
 		if (irand(0,10) < 5)  // Big enough death to be thrown back
-			SetAnim(self, ANIM_DIE2);
+			SetAnim(self, GORGON_ANIM_DIE2);
 		else
-			SetAnim(self, ANIM_DIE1);
+			SetAnim(self, GORGON_ANIM_DIE1);
 		return;
 	}
 	self->msgHandler = DeadMsgHandler;
@@ -811,9 +811,9 @@ void gorgon_death(edict_t *self, G_Message_t *msg)
 	self->takedamage = DAMAGE_YES;
 
 	if (self->health <= -10)  // Big enough death to be thrown back
-		SetAnim(self, ANIM_DIE2);
+		SetAnim(self, GORGON_ANIM_DIE2);
 	else
-		SetAnim(self, ANIM_DIE1);
+		SetAnim(self, GORGON_ANIM_DIE1);
 }
 
 
@@ -883,18 +883,18 @@ void gorgon_mood(edict_t *self)
 			{
 				gorgonGoSwim(self);
 			}
-			if(self->curAnimID == ANIM_RUN1 ||
-				self->curAnimID == ANIM_RUN2||
-				self->curAnimID == ANIM_RUN3)
+			if(self->curAnimID == GORGON_ANIM_RUN1 ||
+				self->curAnimID == GORGON_ANIM_RUN2||
+				self->curAnimID == GORGON_ANIM_RUN3)
 				return;
 			else
-				SetAnim(self, ANIM_RUN1);
+				SetAnim(self, GORGON_ANIM_RUN1);
 			break;
 		case AI_MOOD_STAND:
 			G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 			break;
 		case AI_MOOD_DELAY:
-			SetAnim(self, ANIM_DELAY);
+			SetAnim(self, GORGON_ANIM_DELAY);
 			break;
 		case AI_MOOD_WANDER:
 		case AI_MOOD_FLEE:
@@ -902,18 +902,18 @@ void gorgon_mood(edict_t *self)
 			{
 				gorgonGoSwim(self);
 			}
-			if(self->curAnimID == ANIM_RUN1 ||
-				self->curAnimID == ANIM_RUN2||
-				self->curAnimID == ANIM_RUN3)
+			if(self->curAnimID == GORGON_ANIM_RUN1 ||
+				self->curAnimID == GORGON_ANIM_RUN2||
+				self->curAnimID == GORGON_ANIM_RUN3)
 				return;
 			else
-				SetAnim(self, ANIM_RUN1);
+				SetAnim(self, GORGON_ANIM_RUN1);
 			break;
 		case AI_MOOD_JUMP:
 			if(self->jump_chance < irand(0, 100))
-				SetAnim(self, ANIM_DELAY);
+				SetAnim(self, GORGON_ANIM_DELAY);
 			else
-				SetAnim(self, ANIM_FJUMP);
+				SetAnim(self, GORGON_ANIM_FJUMP);
 			break;
 		case AI_MOOD_EAT://FIXME: this is not neccessary?
 			gorgon_ai_eat(self, 0);
@@ -1119,7 +1119,7 @@ void gorgonZeroPitch (edict_t *self)
 
 void gorgonGoSwim (edict_t *self)
 {
-	SetAnim(self, ANIM_SWIM);
+	SetAnim(self, GORGON_ANIM_SWIM);
 }
 
 void gorgonCheckInWater (edict_t *self)
@@ -1134,7 +1134,7 @@ void gorgonCheckInWater (edict_t *self)
 	if(trace.fraction < 1.0)
 	{
 		if(trace.contents & CONTENTS_SOLID || trace.contents & CONTENTS_MONSTER)
-			SetAnim(self, ANIM_INAIR);
+			SetAnim(self, GORGON_ANIM_INAIR);
 	}
 }
 
@@ -1153,9 +1153,9 @@ void gorgon_check_landed (edict_t *self)
 	if(self->groundentity)
 	{
 		if(irand(0, 1))
-			SetAnim(self, ANIM_LAND2);
+			SetAnim(self, GORGON_ANIM_LAND2);
 		else
-			SetAnim(self, ANIM_LAND);
+			SetAnim(self, GORGON_ANIM_LAND);
 	}
 	else if(self->velocity[2]<0)
 	{
@@ -1166,18 +1166,18 @@ void gorgon_check_landed (edict_t *self)
 		if(contents&CONTENTS_SOLID)
 		{
 			if(irand(0, 1))
-				SetAnim(self, ANIM_LAND2);
+				SetAnim(self, GORGON_ANIM_LAND2);
 			else
-				SetAnim(self, ANIM_LAND);
+				SetAnim(self, GORGON_ANIM_LAND);
 		}
 		else if(contents&CONTENTS_WATER)
-			SetAnim(self, ANIM_TO_SWIM);
+			SetAnim(self, GORGON_ANIM_TO_SWIM);
 	}
 }
 
 void gorgon_go_inair (edict_t *self)
 {
-	SetAnim(self, ANIM_INAIR);
+	SetAnim(self, GORGON_ANIM_INAIR);
 }
 
 qboolean gorgon_check_jump (edict_t *self)
@@ -1293,9 +1293,9 @@ void gorgon_jump (edict_t *self)
 	if(!MG_GetTargOrg(self, landing_spot))
 	{
 		if(!irand(0,3))
-			SetAnim(self, ANIM_ROAR2);
+			SetAnim(self, GORGON_ANIM_ROAR2);
 		else
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, GORGON_ANIM_RUN1);
 		return;
 	}
 
@@ -1305,9 +1305,9 @@ void gorgon_jump (edict_t *self)
 	if(len > 400)
 	{
 		if(!irand(0,3))
-			SetAnim(self, ANIM_ROAR2);
+			SetAnim(self, GORGON_ANIM_ROAR2);
 		else
-			SetAnim(self, ANIM_RUN1);
+			SetAnim(self, GORGON_ANIM_RUN1);
 		return;
 	}
 
@@ -1503,20 +1503,20 @@ void gorgon_evade (edict_t *self, G_Message_t *msg)
 	chance = irand(0, 100);
 	if(chance < frontflip_chance)
 	{
-		SetAnim(self, ANIM_MELEE8);//hop forward
+		SetAnim(self, GORGON_ANIM_MELEE8);//hop forward
 		return;
 	}
 
 	chance = irand(0, 100);
 	if(chance < backflip_chance)
 	{
-		if(self->curAnimID == ANIM_RUN1&&irand(0,10)<8)//running, do the front jump
+		if(self->curAnimID == GORGON_ANIM_RUN1&&irand(0,10)<8)//running, do the front jump
 		{
-			SetAnim(self, ANIM_MELEE10);//jump forward
+			SetAnim(self, GORGON_ANIM_MELEE10);//jump forward
 		}
 		else
 		{
-			SetAnim(self, ANIM_MELEE9);//hop forward
+			SetAnim(self, GORGON_ANIM_MELEE9);//hop forward
 		}
 		return;
 	}
@@ -1524,28 +1524,28 @@ void gorgon_evade (edict_t *self, G_Message_t *msg)
 	chance = irand(0, 100);
 	if(chance < dodgeleft_chance)
 	{
-		SetAnim(self, ANIM_MELEE6);//hop left
+		SetAnim(self, GORGON_ANIM_MELEE6);//hop left
 		return;
 	}
 
 	chance = irand(0, 100);
 	if(chance < dodgeright_chance)
 	{
-		SetAnim(self, ANIM_MELEE7);//hop left
+		SetAnim(self, GORGON_ANIM_MELEE7);//hop left
 		return;
 	}
 
 	chance = irand(0, 100);
 	if(chance < jump_chance)
 	{
-		SetAnim(self, ANIM_MELEE10);//jump forward
+		SetAnim(self, GORGON_ANIM_MELEE10);//jump forward
 		return;
 	}
 
 	chance = irand(0, 100);
 	if(chance < duck_chance)
 	{
-		SetAnim(self, ANIM_PAIN1);//jump forward
+		SetAnim(self, GORGON_ANIM_PAIN1);//jump forward
 		return;
 	}
 }
@@ -1561,7 +1561,7 @@ void gorgon_ready_catch (edict_t *self)
 
 	if(!ai_have_enemy(self))
 	{
-		SetAnim(self,ANIM_CATCH);
+		SetAnim(self, GORGON_ANIM_CATCH);
 		return;
 	}
 
@@ -1572,9 +1572,9 @@ void gorgon_ready_catch (edict_t *self)
 	enemy_zdist = self->enemy->absmin[2] - self->absmax[2];
 
 	if(enemy_zdist <= 0 || (enemy_zdist <= ok_zdist && self->enemy->velocity[2] <= -60))
-		SetAnim(self,ANIM_CATCH);
+		SetAnim(self, GORGON_ANIM_CATCH);
 	else
-		SetAnim(self,ANIM_READY_CATCH);
+		SetAnim(self, GORGON_ANIM_READY_CATCH);
 }
 
 void gorgon_throw_toy(edict_t *self)
@@ -1693,10 +1693,10 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 					self->enemy = self->oldenemy;
 				}
 
-		if(self->curAnimID == ANIM_SNATCHLOW)
-			SetAnim(self,ANIM_MISS);
+		if(self->curAnimID == GORGON_ANIM_SNATCHLOW)
+			SetAnim(self, GORGON_ANIM_MISS);
 		else
-			SetAnim(self,ANIM_MELEE2);//?
+			SetAnim(self, GORGON_ANIM_MELEE2);//?
 		return;
 	}
 //	gi.dprintf("SNAGGED!\n");
@@ -1814,7 +1814,7 @@ void gorgon_anger_sound (edict_t *self)
 
 void gorgon_go_snatch (edict_t *self)
 {
-	SetAnim(self,ANIM_SNATCH);
+	SetAnim(self, GORGON_ANIM_SNATCH);
 }
 
 void gorgon_done_gore (edict_t *self)
@@ -1830,7 +1830,7 @@ void gorgon_done_gore (edict_t *self)
 			return;
 		}
 	}
-	SetAnim(self,ANIM_EAT_LOOP);
+	SetAnim(self, GORGON_ANIM_EAT_LOOP);
 }
 
 /* ========================================
@@ -1866,13 +1866,13 @@ qboolean gorgonCheckSlipGo (edict_t *self, qboolean frompain)
 	{//fall down, go boom
 		if(frompain)
 		{
-			SetAnim(self, ANIM_SLIP_PAIN);
+			SetAnim(self, GORGON_ANIM_SLIP_PAIN);
 			return true;
 		}
 		else if(self->monsterinfo.misc_debounce_time < level.time && !irand(0, 4))
 		{
 			self->monsterinfo.misc_debounce_time = level.time + 7;
-			SetAnim(self, ANIM_SLIP);
+			SetAnim(self, GORGON_ANIM_SLIP);
 			return true;
 		}
 	}
@@ -1975,9 +1975,9 @@ void gorgon_ai_swim (edict_t *self, float dist)
 						if(dist < self->melee_range + VectorLength(self->velocity) * 0.1)
 						{
 							if(irand(0, 1))
-								SetAnim(self, ANIM_SWIM_BITE_A);
+								SetAnim(self, GORGON_ANIM_SWIM_BITE_A);
 							else
-								SetAnim(self, ANIM_SWIM_BITE_B);
+								SetAnim(self, GORGON_ANIM_SWIM_BITE_B);
 							self->monsterinfo.attack_finished = level.time + flrand(0, 3 - skill->value);
 						}
 						else if(self->monsterinfo.jump_time < level.time)
@@ -1985,7 +1985,7 @@ void gorgon_ai_swim (edict_t *self, float dist)
 							if(!(self->enemy->flags & FL_INWATER))
 							{
 								if(dist < GORGON_STD_MAXHOP_RNG * 2)
-									SetAnim(self, ANIM_OUT_WATER);
+									SetAnim(self, GORGON_ANIM_OUT_WATER);
 							}
 						}
 					}
@@ -2009,8 +2009,8 @@ void gorgon_prethink (edict_t *self)
 			self->wait = true;
 		}
 
-		if(self->curAnimID == ANIM_INAIR)
-			SetAnim(self, ANIM_TO_SWIM);
+		if(self->curAnimID == GORGON_ANIM_INAIR)
+			SetAnim(self, GORGON_ANIM_TO_SWIM);
 	}
 	else
 	{
@@ -2029,10 +2029,10 @@ void gorgon_prethink (edict_t *self)
 			self->wait = false;
 		}
 
-		if(self->curAnimID == ANIM_SWIM ||
-			self->curAnimID == ANIM_SWIM_BITE_A ||
-			self->curAnimID == ANIM_SWIM_BITE_B)
-			SetAnim(self, ANIM_RUN1);
+		if(self->curAnimID == GORGON_ANIM_SWIM ||
+			self->curAnimID == GORGON_ANIM_SWIM_BITE_A ||
+			self->curAnimID == GORGON_ANIM_SWIM_BITE_B)
+			SetAnim(self, GORGON_ANIM_RUN1);
 
 		gorgonFixPitch(self);
 	}
@@ -2058,7 +2058,7 @@ void gorgon_ai_eat(edict_t *self, float crap)
 				return;
 			}
 		}
-		else if(self->curAnimID == ANIM_EAT_LOOP && !irand(0, 5))
+		else if(self->curAnimID == GORGON_ANIM_EAT_LOOP && !irand(0, 5))
 		{
 			if(visible(self, self->enemy))
 			{
@@ -2068,11 +2068,11 @@ void gorgon_ai_eat(edict_t *self, float crap)
 				if(fdot < 0)
 				{
 					if(rdot > 0.3)
-						SetAnim(self, ANIM_EAT_RIGHT);
+						SetAnim(self, GORGON_ANIM_EAT_RIGHT);
 					if(rdot < -0.3)
-						SetAnim(self, ANIM_EAT_LEFT);
+						SetAnim(self, GORGON_ANIM_EAT_LEFT);
 					else
-						SetAnim(self, ANIM_EAT_UP);
+						SetAnim(self, GORGON_ANIM_EAT_UP);
 					return;
 				}
 			}
@@ -2087,57 +2087,57 @@ void gorgon_ai_eat(edict_t *self, float crap)
 
 	switch(self->curAnimID)
 	{
-	case ANIM_EAT_DOWN:
-		SetAnim(self, ANIM_EAT_LOOP);
+	case GORGON_ANIM_EAT_DOWN:
+		SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		break;
 
-	case ANIM_EAT_UP:
-		SetAnim(self, ANIM_LOOK_AROUND);
+	case GORGON_ANIM_EAT_UP:
+		SetAnim(self, GORGON_ANIM_LOOK_AROUND);
 		break;
 
-	case ANIM_EAT_LOOP:
+	case GORGON_ANIM_EAT_LOOP:
 		if(irand(0, 1))
-			SetAnim(self, ANIM_EAT_LOOP);
+			SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		else if(irand(0, 1))
-			SetAnim(self, ANIM_EAT_PULLBACK);
+			SetAnim(self, GORGON_ANIM_EAT_PULLBACK);
 		else if(irand(0, 1))
-			SetAnim(self, ANIM_EAT_TEAR);
+			SetAnim(self, GORGON_ANIM_EAT_TEAR);
 		else if(irand(0, 1))//fixme- check gorgon to right
-			SetAnim(self, ANIM_EAT_SNAP);
+			SetAnim(self, GORGON_ANIM_EAT_SNAP);
 		else if(irand(0, 1))//fixme- check if gorgon to left snapped
-			SetAnim(self, ANIM_EAT_REACT);
+			SetAnim(self, GORGON_ANIM_EAT_REACT);
 		else if(irand(0, 1))//fixme- check enemy
-			SetAnim(self, ANIM_EAT_LEFT);
+			SetAnim(self, GORGON_ANIM_EAT_LEFT);
 		else//fixme- check enemy
-			SetAnim(self, ANIM_EAT_RIGHT);
+			SetAnim(self, GORGON_ANIM_EAT_RIGHT);
 		break;
 
-	case ANIM_EAT_TEAR:
-		SetAnim(self, ANIM_EAT_LOOP);
+	case GORGON_ANIM_EAT_TEAR:
+		SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		break;
 
-	case ANIM_EAT_PULLBACK:
-		SetAnim(self, ANIM_EAT_LOOP);
+	case GORGON_ANIM_EAT_PULLBACK:
+		SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		break;
 
-	case ANIM_LOOK_AROUND:
-		SetAnim(self, ANIM_EAT_DOWN);
+	case GORGON_ANIM_LOOK_AROUND:
+		SetAnim(self, GORGON_ANIM_EAT_DOWN);
 		break;
 
-	case ANIM_EAT_LEFT:
-		SetAnim(self, ANIM_EAT_LOOP);
+	case GORGON_ANIM_EAT_LEFT:
+		SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		break;
 
-	case ANIM_EAT_RIGHT:
-		SetAnim(self, ANIM_EAT_LOOP);
+	case GORGON_ANIM_EAT_RIGHT:
+		SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		break;
 
-	case ANIM_EAT_SNAP:
-		SetAnim(self, ANIM_EAT_LOOP);
+	case GORGON_ANIM_EAT_SNAP:
+		SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		break;
 
-	case ANIM_EAT_REACT:
-		SetAnim(self, ANIM_EAT_LOOP);
+	case GORGON_ANIM_EAT_REACT:
+		SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		break;
 	}
 }
@@ -2146,7 +2146,7 @@ void gorgon_jump_msg (edict_t *self, G_Message_t *msg)
 {
 	if(self->jump_chance < irand(0, 100))
 		return;
-	SetAnim(self, ANIM_FJUMP);
+	SetAnim(self, GORGON_ANIM_FJUMP);
 }
 
 void GorgonStaticsInit()
@@ -2166,7 +2166,7 @@ void GorgonStaticsInit()
 	classStatics[CID_GORGON].msgReceivers[MSG_VOICE_POLL] = gorgon_roar_response;
 	classStatics[CID_GORGON].msgReceivers[MSG_EVADE] = gorgon_evade;
 
-	resInfo.numAnims = NUM_ANIMS;
+	resInfo.numAnims = GORGON_NUM_ANIMS;
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/gorgon/tris.fm");
 

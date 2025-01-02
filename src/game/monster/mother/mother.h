@@ -4,9 +4,9 @@
 //
 typedef enum AnimID_e
 {
-	ANIM_PAIN,
-	ANIM_STAND,
-	NUM_ANIMS
+	MOTHER_ANIM_PAIN,
+	MOTHER_ANIM_STAND,
+	MOTHER_NUM_ANIMS
 } AnimID_t;
 
 typedef enum SoundID_e

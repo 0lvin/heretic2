@@ -183,7 +183,7 @@ mmove_t assassin_move_uncrouch = {1, assassin_frames_uncrouch, assassin_pause};
 -----------------------------------------------------------------------*/
 static mframe_t assassin_frames_evinair [] =
 {
-	{FRAME_jump12,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL}, // hang here until land
+	{FRAME_jump12,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL}, // hang here until land
 };
 mmove_t assassin_move_evinair = {1, assassin_frames_evinair, NULL};
 
@@ -192,7 +192,7 @@ mmove_t assassin_move_evinair = {1, assassin_frames_evinair, NULL};
 -----------------------------------------------------------------------*/
 static mframe_t assassin_frames_inair [] =
 {
-	{FRAME_jump12,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ANIM_LAND, NULL}, // hang here until land
+	{FRAME_jump12,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL}, // hang here until land
 };
 mmove_t assassin_move_inair = {1, assassin_frames_inair, NULL};
 
@@ -216,9 +216,9 @@ static mframe_t assassin_frames_evade_jump [] =
 {
 	{FRAME_jump7,	assassinGoJump, 100, 400, 0, ai_charge, 0, assassingrowl},
 	{FRAME_jump8,	NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_jump9,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump11,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
+	{FRAME_jump9,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_jump11,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
 };
 mmove_t assassin_move_evade_jump = {5, assassin_frames_evade_jump, assassin_go_evinair};
 
@@ -231,9 +231,9 @@ static mframe_t assassin_frames_evade_backflip [] =
 	{FRAME_bkflp7,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_bkflp8,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_bkflp9,	assassin_sound, CHAN_ITEM, SND_FLIP, ATTN_NORM, NULL, 0, NULL},
-	{FRAME_bkflp10,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_BFLAND, NULL},
-	{FRAME_bkflp11,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_BFLAND, NULL},
-	{FRAME_bkflp12,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_BFLAND, NULL},
+	{FRAME_bkflp10,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_BFLAND, NULL},
+	{FRAME_bkflp11,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_BFLAND, NULL},
+	{FRAME_bkflp12,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_BFLAND, NULL},
 };
 mmove_t assassin_move_evade_backflip = {7, assassin_frames_evade_backflip, assassin_go_bfinair};
 
@@ -245,9 +245,9 @@ static mframe_t assassin_frames_evade_frontflip [] =
 	{FRAME_fntflp6,	assassinGoJump, 150, 400, 0, NULL, 0, assassingrowl},
 	{FRAME_fntflp7,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_fntflp8,	assassin_sound, CHAN_ITEM, SND_FLIP, ATTN_NORM, NULL, 0, NULL},
-	{FRAME_fntflp9,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_FFLAND, NULL},
-	{FRAME_fntflp10, NULL, 0, 0, 0, MG_CheckLanded, ANIM_FFLAND, NULL},
-	{FRAME_fntflp11, NULL, 0, 0, 0, MG_CheckLanded, ANIM_FFLAND, NULL},
+	{FRAME_fntflp9,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_FFLAND, NULL},
+	{FRAME_fntflp10, NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_FFLAND, NULL},
+	{FRAME_fntflp11, NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_FFLAND, NULL},
 };
 mmove_t assassin_move_evade_frontflip = {6, assassin_frames_evade_frontflip, assassin_go_ffinair};
 
@@ -357,9 +357,9 @@ static mframe_t assassin_frames_jump [] =
 	{FRAME_jump6,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump7,	assassinGoJump, 50, 500, 0, ai_charge, 0, assassingrowl},
 	{FRAME_jump8,	NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_jump9,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump11,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
+	{FRAME_jump9,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_jump11,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
 };
 mmove_t assassin_move_jump = {11, assassin_frames_jump, assassin_go_inair};
 
@@ -376,9 +376,9 @@ static mframe_t assassin_frames_forcedjump [] =
 	{FRAME_jump6,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump7,	assassin_sound, CHAN_VOICE, SND_JUMP, ATTN_NORM, ai_charge, 0, MG_ApplyJump},
 	{FRAME_jump8,	MG_InAirMove, 50, 0, 0, NULL, 0, NULL},
-	{FRAME_jump9,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump10,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump11,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
+	{FRAME_jump9,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_jump10,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_jump11,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
 };
 mmove_t assassin_move_forcedjump = {11, assassin_frames_forcedjump, assassin_go_inair};
 
@@ -396,9 +396,9 @@ static mframe_t assassin_frames_fjump [] =
 	{FRAME_jump6,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump7,	assassin_sound, CHAN_VOICE, SND_JUMP, ATTN_NORM, ai_charge, 0, MG_ApplyJump},
 	{FRAME_jump8,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump9,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_jump11,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
+	{FRAME_jump9,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_jump10,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_jump11,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
 };
 mmove_t assassin_move_fjump = {11, assassin_frames_fjump, assassin_go_evinair};
 //BACKFLIP
@@ -418,7 +418,7 @@ mmove_t assassin_move_bfland = {3, assassin_frames_bfland, assassin_pause};
 -----------------------------------------------------------------------*/
 static mframe_t assassin_frames_bfinair [] =
 {
-	{FRAME_bkflp13,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_BFLAND, NULL},
+	{FRAME_bkflp13,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_BFLAND, NULL},
 };
 mmove_t assassin_move_bfinair = {1, assassin_frames_bfinair, NULL};
 
@@ -436,9 +436,9 @@ static mframe_t assassin_frames_backflip [] =
 	{FRAME_bkflp7,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_bkflp8,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_bkflp9,	assassin_sound, CHAN_ITEM, SND_FLIP, ATTN_NORM, NULL, 0, NULL},
-	{FRAME_bkflp10,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_BFLAND, NULL},
-	{FRAME_bkflp11,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_BFLAND, NULL},
-	{FRAME_bkflp12,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_BFLAND, NULL},
+	{FRAME_bkflp10,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_BFLAND, NULL},
+	{FRAME_bkflp11,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_BFLAND, NULL},
+	{FRAME_bkflp12,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_BFLAND, NULL},
 };
 mmove_t assassin_move_backflip = {12, assassin_frames_backflip, assassin_go_bfinair};
 
@@ -482,7 +482,7 @@ mmove_t assassin_move_ffland = {5, assassin_frames_ffland, assassin_pause};
 -----------------------------------------------------------------------*/
 static mframe_t assassin_frames_ffinair [] =
 {
-	{FRAME_fntflp11, NULL, 0, 0, 0, MG_CheckLanded, ANIM_FFLAND, NULL},
+	{FRAME_fntflp11, NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_FFLAND, NULL},
 };
 mmove_t assassin_move_ffinair = {1, assassin_frames_ffinair, NULL};
 
@@ -498,9 +498,9 @@ static mframe_t assassin_frames_frontflip [] =
 	{FRAME_fntflp5,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_fntflp6,	assassinGoJump, 150, 400, 0, NULL, 0, assassingrowl},
 	{FRAME_fntflp7,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_fntflp8,	assassin_sound, CHAN_ITEM, SND_FLIP, ATTN_NORM, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_fntflp9,	NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
-	{FRAME_fntflp10, NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
+	{FRAME_fntflp8,	assassin_sound, CHAN_ITEM, SND_FLIP, ATTN_NORM, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_fntflp9,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
+	{FRAME_fntflp10, NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL},
 };
 mmove_t assassin_move_frontflip = {10, assassin_frames_frontflip, assassin_go_ffinair};
 
