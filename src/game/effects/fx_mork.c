@@ -3653,7 +3653,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 			break;*/
 
 		case FX_IMP_FIRE:
-			fx = ClientEntity_new(FX_SPARKS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK|CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS, org, NULL, 20);
+			fx = ClientEntity_new(FX_SPARKS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK | CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS, org, NULL, 20);
 
 			fx->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 			fx->r.model = Imp_models[2];

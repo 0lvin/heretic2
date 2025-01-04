@@ -72,7 +72,7 @@ static qboolean FXHaloThink(struct client_entity_s *self, centity_t *Owner)
 				maxs,
 				fxi.cl->refdef.vieworg,
 				(CONTENTS_SOLID | CONTENTS_MONSTER | CONTENTS_DEADMONSTER),
-				CEF_CLIP_TO_ALL);
+				CEF_CLIP_TO_WORLD);
 
 	if (trace.fraction < 1.0)	//Hit something
 	{

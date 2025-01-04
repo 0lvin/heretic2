@@ -315,8 +315,7 @@ SP_env_fire(edict_t *self)
 		self->mass = 250;
 		self->friction = 0;
 		self->gravity = 0;
-		self->s.effects |= EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
-//		self->svflags |= SVF_ALWAYS_SEND;
+		self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
 		self->movetype = MOVETYPE_FLY;
 
 		self->model = 0;
@@ -328,7 +327,7 @@ SP_env_fire(edict_t *self)
 	{
 		VectorSet(self->mins, 0, -10, -24);
 		VectorSet(self->maxs, 20, 10, 0);
-		self->s.effects |= EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
+		self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
 	}
 
 	gi.linkentity(self);
@@ -366,7 +365,9 @@ SP_env_fire(edict_t *self)
 	// add a light or no ?
 	flags = CEF_BROADCAST;
 	if (self->spawnflags & 32)
+	{
 		flags |= CEF_FLAG6;
+	}
 
 	self->PersistantCFX = gi.CreatePersistantEffect(self,
 						FX_FIRE,

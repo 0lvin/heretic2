@@ -358,7 +358,7 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		{
 			float scale;
 
-			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN , origin, NULL, 40);
+			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN, origin, NULL, 40);
 			feather->radius = 5.0F;
 			feather->r.model = morph_models[irand(2, 3)];
 			feather->r.flags= RF_TRANSLUCENT;
@@ -384,7 +384,7 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		{
 			float scale;
 
-			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN , origin, NULL, 40);
+			feather = ClientEntity_new(type, flags & ~CEF_OWNERS_ORIGIN, origin, NULL, 40);
 			feather->radius = 5.0F;
 			feather->r.model = morph_models[irand(2, 3)];
 			feather->r.flags= RF_TRANSLUCENT;

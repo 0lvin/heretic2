@@ -152,14 +152,16 @@ void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorSet(spawner->r.scale,
 		scale / 32.0, scale / 32.0, scale / 32.0);
 
-	spawner->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+	spawner->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	spawner->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_CULLED | CEF_CHECK_OWNER | CEF_VIEWSTATUSCHANGED;
 	spawner->color.c = 0xe5007fff;
 	spawner->radius = 96.0;
 	spawner->Update = FXFireThink;
 
 	if(flags & CEF_FLAG6)
+	{
 		spawner->dlight = CE_DLight_new(spawner->color, 150.0F, 00.0F);
+	}
 
 	AddEffect(owner, spawner);
 }

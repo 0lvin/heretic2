@@ -15,7 +15,6 @@
 #define CEF_OWNERS_ORIGIN			0x00000001  // Use the owner's origin only, with no additional
 												// displacment.
 #define CEF_BROADCAST				0x00000002	// sent to all client's
-#define CEF_ENTNUM16				0x00000004	// index is a short
 #define CEF_MULTICAST				0x00000008	// places the effect into the world buffer
 												// instead of the owner's buffer (no effect
 												// on independent effects), resulting in the
@@ -48,19 +47,9 @@
 #define CEF_CULLED					0x04000000	// Culled from view this frame (set or unset) in AddEffectsToView().
 #define CEF_CLIP_TO_WORLD			0x08000000	// Turns on collision detection with the world. Additionally, the
 												// entity needs to have a message handler in order to recieve MSG_COLLISION.
-#define CEF_CLIP_TO_ENTITIES		0x10000000	// Turn on collision detection with server entities (not client only
-												// entities) requires CEF_CLIP_TO_WORLD to be turned on as well.
-												// NOTE:  This only clip against entities in the current frame, not
-												// all entities in the world
 #define CEF_DISAPPEARED				0x20000000	// Alpha faded out, or scaled to nothing needs to be turned off if entity
 												// later scales up or fades back in.
 #define CEF_CHECK_OWNER				0x40000000	// if we are owned, then check to see if our owner has been server culled before it gets to the client
 #define CEF_NO_DRAW					0x80000000	// Doesn't get added to the render list.
-
-#define CEF_CLIP_TO_ALL				(CEF_CLIP_TO_WORLD|CEF_CLIP_TO_ENTITIES)
-
-//
-
-#define	EFFECT_PRED_INFO			0x4000
 
 #endif // EFFECTFLAGS_H

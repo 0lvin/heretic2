@@ -368,7 +368,7 @@ ParseClientEffects
 static void
 ParseEffects(centity_t *owner)
 {
-	int				i, index;
+	int				i;
 	int				num,flags = 0;
 	unsigned		short effect;
 	vec3_t			position;
@@ -428,6 +428,8 @@ ParseEffects(centity_t *owner)
 
 	for(i = 0; i < num; ++i)
 	{
+		int index = 0;
+
 		EffectIsFromServer=false;
 
 		if(owner)
@@ -436,35 +438,11 @@ ParseEffects(centity_t *owner)
 		}
 
 		effect = fxi.MSG_ReadShort(msg_read);
-// jmarshall
-		//if(effect&EFFECT_PRED_INFO)
-		//{
-		//	// EFFECT_PRED_INFO bit if set (only on effects sent by server, never on predicted
-		//	// effects) indicates we should read a byte that uniquely identifies the client effect
-		//	// int the player code.
-		//
-		//	eventId=MSG_ReadByte(msg_read);
-		//	effect&=~EFFECT_PRED_INFO;
-		//	EffectIsFromServer=true;
-		//}
-// jmarshall end
 
-//#if	_DEVEL
-#if 0
-		Cvar_Set("cfxpl", MSG_ReadString(msg_read));
-#endif
 		flags = fxi.MSG_ReadShort(msg_read);
 
-		if(flags & (CEF_BROADCAST|CEF_MULTICAST))
+		if(flags & (CEF_BROADCAST | CEF_MULTICAST))
 		{
-			//if(flags & CEF_ENTNUM16)
-			//{
-			//	index = fxi.MSG_ReadShort(msg_read);
-			//}
-			//else
-			//{
-			//	index = fxi.MSG_ReadByte(msg_read);
-			//}
 			index = fxi.MSG_ReadShort(msg_read);
 
 			if(index)	// 0 should indicate the world
@@ -853,9 +831,9 @@ AddServerEntities(frame_t *frame)
 		// Add player's packet_entity_t to refresh list of entity_t's and save the entity_t pointer
 		// in PlayerEntPtr.
 
-		if(s1->number==fxi.cl->playernum+1)
+		if(s1->number == fxi.cl->playernum + 1)
 		{
-			if((fxi.cl_predict->value)&&(fxi.clientPredEffects->numEffects))
+			if((fxi.cl_predict->value) && (fxi.clientPredEffects->numEffects))
 			{
 				*(fxi.cl_effectpredict)=1;
 				ParseEffects(cent);

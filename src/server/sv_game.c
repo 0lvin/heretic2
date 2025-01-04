@@ -519,14 +519,16 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 
 	va_start(args, format);
 
-	if (ent) {
+	if (ent)
+	{
 		enta = ent->s.number;
 	}
 	else {
 		enta = -1;
 	}
 
-	if (sv_numeffects >= 512) {
+	if (sv_numeffects >= MAX_PERSISTANT_EFFECTS)
+	{
 		Com_Printf("Warning : Unable to create persistant effect\n");
 		va_end(args);
 		return -1;
@@ -586,26 +588,22 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 
 	testflags = flags;
 
-	//if ((flags & 0xA) != 0 && enta > 255)
-	//	testflags = flags | CEF_ENTNUM16;
-
 	MSG_WriteShort(&msg, testflags);
 
 	if ((testflags & CEF_BROADCAST) != 0 && enta >= 0)
 	{
-		//if (enta <= 255)
-		//	MSG_WriteByte(&msg, enta);
-		//else
 		MSG_WriteShort(&msg, enta);
 	}
 
-	if ((testflags & CEF_OWNERS_ORIGIN) == 0) {
+	if ((testflags & CEF_OWNERS_ORIGIN) == 0)
+	{
 		MSG_WritePos(&msg, origin, SV_GetRecomendedProtocol());
 	}
 
 	MSG_WriteByte(&msg, 0x3a);
 
-	if (format && format[0]) {
+	if (format && format[0])
+	{
 		SV_WriteEffectToBuffer(&msg, format, args);
 	}
 
@@ -626,14 +624,17 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 
 	va_start(args, format);
 
-	if (ent) {
+	if (ent)
+	{
 		enta = ent->s.number;
 	}
-	else {
+	else
+	{
 		enta = -1;
 	}
 
-	if (sv_numeffects >= 512) {
+	if (sv_numeffects >= MAX_PERSISTANT_EFFECTS)
+	{
 		Com_Printf("Warning : Unable to create persistant effect\n");
 		va_end(args);
 		return;
@@ -678,16 +679,10 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 
 	testflags = flags;
 
-	//if ((flags & 0xA) != 0 && enta > 255)
-	//	testflags = flags | CEF_ENTNUM16;
-
 	MSG_WriteShort(&msg, testflags);
 
 	if ((testflags & CEF_BROADCAST) != 0 && enta >= 0)
 	{
-		//if (enta <= 255)
-		//	MSG_WriteByte(&msg, enta);
-		//else
 		MSG_WriteShort(&msg, enta);
 	}
 
