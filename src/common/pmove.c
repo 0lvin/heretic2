@@ -185,8 +185,9 @@ PM_Friction(void)
 	vel[2] = vel[2] * newspeed;
 }
 
-//Used for speedoomter display.
-void GetPlayerSpeed(float* speed, float* speedxy) {
+/* Used for speedoomter display. */
+void GetPlayerSpeed(float *speed, float *speedxy)
+{
 	*speedxy = sqrt(pml.velocity[0] * pml.velocity[0] + pml.velocity[1] * pml.velocity[1]);
 	*speed = VectorLength(pml.velocity);
 }
