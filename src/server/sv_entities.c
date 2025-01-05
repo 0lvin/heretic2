@@ -153,9 +153,11 @@ static void
 SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		sizebuf_t *msg, int protocol)
 {
+	int i;
 	int pflags;
 	player_state_t *ps, *ops;
 	player_state_t dummy;
+	int statbits;
 
 	ps = &to->ps;
 
@@ -265,6 +267,8 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_WEAPONFRAME;
 	}
 
+	pflags |= PS_WEAPONINDEX;
+
 	if (ps->mins[0] != ops->mins[0] || ps->mins[1] != ops->mins[1] || ps->mins[2] != ops->mins[2] ||
 		ps->maxs[0] != ops->maxs[0] || ps->maxs[1] != ops->maxs[1] || ps->maxs[2] != ops->maxs[2])
 	{
@@ -273,7 +277,7 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 
 	/* write it */
 	MSG_WriteByte(msg, svc_playerinfo);
-	MSG_WriteLong(msg, pflags);
+	MSG_WriteShort(msg, pflags);
 
 	/* write the pmove_state_t */
 	if (pflags & PS_M_TYPE)

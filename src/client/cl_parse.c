@@ -654,7 +654,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 		memset(state, 0, sizeof(*state));
 	}
 
-	flags = MSG_ReadLong(&net_message);
+	flags = MSG_ReadShort(&net_message);
 
 	/* parse the pmove_state_t */
 	if (flags & PS_M_TYPE)
