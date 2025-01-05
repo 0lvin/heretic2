@@ -122,10 +122,15 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg,
 
 			if (oldnum >= 256)
 			{
-				bits |= U_NUMBER16;
+				bits |= U_NUMBER16 | U_MOREBITS1;
 			}
 
-			MSG_WriteLong(msg, bits);
+			MSG_WriteByte(msg, bits & 255);
+
+			if (bits & 0x0000ff00)
+			{
+				MSG_WriteByte(msg, (bits >> 8) & 255);
+			}
 
 			if (bits & U_NUMBER16)
 			{
@@ -141,9 +146,7 @@ SV_EmitPacketEntities(client_frame_t *from, client_frame_t *to, sizebuf_t *msg,
 		}
 	}
 
-	/* next flags will be just single byte */
-	MSG_WriteLong(msg, 0);
-	MSG_WriteByte(msg, 0);
+	MSG_WriteShort(msg, 0);
 }
 
 static void

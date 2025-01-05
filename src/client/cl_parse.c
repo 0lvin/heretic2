@@ -89,10 +89,38 @@ CL_RegisterSounds(void)
 static int
 CL_ParseEntityBits(unsigned *bits)
 {
-	unsigned total;
+	unsigned b, total;
+	int i;
 	int number;
 
-	total = MSG_ReadLong(&net_message);
+	total = MSG_ReadByte(&net_message);
+
+	if (total & U_MOREBITS1)
+	{
+		b = MSG_ReadByte(&net_message);
+		total |= b << 8;
+	}
+
+	if (total & U_MOREBITS2)
+	{
+		b = MSG_ReadByte(&net_message);
+		total |= b << 16;
+	}
+
+	if (total & U_MOREBITS3)
+	{
+		b = MSG_ReadByte(&net_message);
+		total |= b << 24;
+	}
+
+	/* count the bits for net profiling */
+	for (i = 0; i < 32; i++)
+	{
+		if (total & (1u << i))
+		{
+			bitcounts[i]++;
+		}
+	}
 
 	if (total & U_NUMBER16)
 	{

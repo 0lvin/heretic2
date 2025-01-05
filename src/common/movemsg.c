@@ -624,13 +624,51 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		bits |= U_SOUND;
 	}
 
+	if (newentity || (to->renderfx & RF_BEAM))
+	{
+		bits |= U_OLDORIGIN;
+	}
+
 	/* write the message */
 	if (!bits && !force)
 	{
 		return; /* nothing to send! */
 	}
 
-	MSG_WriteLong(msg, bits);
+	if (bits & 0xff000000)
+	{
+		bits |= U_MOREBITS3 | U_MOREBITS2 | U_MOREBITS1;
+	}
+
+	else if (bits & 0x00ff0000)
+	{
+		bits |= U_MOREBITS2 | U_MOREBITS1;
+	}
+
+	else if (bits & 0x0000ff00)
+	{
+		bits |= U_MOREBITS1;
+	}
+
+	MSG_WriteByte(msg, bits);
+
+	if (bits & 0xff000000)
+	{
+		MSG_WriteByte(msg, (bits >> 8) & 255);
+		MSG_WriteByte(msg, (bits >> 16) & 255);
+		MSG_WriteByte(msg, (bits >> 24) & 255);
+	}
+
+	else if (bits & 0x00ff0000)
+	{
+		MSG_WriteByte(msg, (bits >> 8) & 255);
+		MSG_WriteByte(msg, (bits >> 16) & 255);
+	}
+
+	else if (bits & 0x0000ff00)
+	{
+		MSG_WriteByte(msg, (bits >> 8) & 255);
+	}
 
 	if (bits & U_NUMBER16)
 	{
