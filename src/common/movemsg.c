@@ -341,7 +341,7 @@ MSG_WriteDeltaUsercmd(sizebuf_t *buf, usercmd_t *from, usercmd_t *cmd)
 		bits |= CM_IMPULSE;
 	}
 
-	MSG_WriteLong(buf, bits);
+	MSG_WriteByte(buf, bits);
 
 	if (bits & CM_ANGLE1)
 	{
@@ -650,7 +650,7 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		bits |= U_MOREBITS1;
 	}
 
-	MSG_WriteByte(msg, bits);
+	MSG_WriteByte(msg, bits & 255);
 
 	if (bits & 0xff000000)
 	{
@@ -1108,7 +1108,7 @@ MSG_ReadDeltaUsercmd(sizebuf_t *msg_read, usercmd_t *from, usercmd_t *move)
 
 	memcpy(move, from, sizeof(*move));
 
-	bits = MSG_ReadLong(msg_read);
+	bits = MSG_ReadByte(msg_read);
 
 	/* read current angles */
 	if (bits & CM_ANGLE1)
