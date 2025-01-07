@@ -597,8 +597,8 @@ typedef struct mapsurface_s  /* used internally due to name len probs */
 /* a trace is returned when a box is swept through the world */
 typedef struct
 {
-	byte allsolid;      /* if true, plane is not valid */
-	byte startsolid;    /* if true, the initial point was in a solid area */
+	qboolean allsolid;      /* if true, plane is not valid */
+	qboolean startsolid;    /* if true, the initial point was in a solid area */
 	float fraction;         /* time completed, 1.0 = didn't hit anything */
 	vec3_t endpos;          /* final position */
 	cplane_t plane;         /* surface normal at impact */
@@ -667,10 +667,9 @@ typedef struct
 #define BUTTON_CREEP 8
 #define BUTTON_RUN 16
 #define BUTTON_AUTOAIM 32
-#define BUTTON_LOOKAROUND 64
-#define BUTTON_QUICKTURN 128
-#define BUTTON_INVENTORY 256
-#define BUTTON_ANY 512 /* any key whatsoever */
+#define BUTTON_QUICKTURN 64
+#define BUTTON_INVENTORY 128
+#define BUTTON_ANY 256 /* any key whatsoever */
 
 /* usercmd_t is sent to the server each client frame */
 typedef struct usercmd_s

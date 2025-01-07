@@ -65,7 +65,6 @@ typedef struct
 	qboolean groundPlane;
 	trace_t groundTrace;
 	float impactSpeed;
-	int GroundContacts;
 	int waterlevel;
 } pml_t;
 
@@ -675,31 +674,31 @@ PM_AddCurrents(vec3_t wishvel)
 		wishvel[2] = v1 * v6 + wishvel[2];
 	}
 
-	if ((pml.GroundContacts & 0xFC0000) != 0 && pm->groundentity)
+	if ((pml.groundcontents & 0xFC0000) != 0 && pm->groundentity)
 	{
 		v3 = 0.0;
 		v5 = 0.0;
-		if ((pml.GroundContacts & 0x40000) != 0)
+		if (pml.groundcontents & CONTENTS_CURRENT_0)
 		{
 			v3 = 1.0;
 		}
 
-		if ((pml.GroundContacts & 0x80000) != 0)
+		if (pml.groundcontents & CONTENTS_CURRENT_90)
 		{
 			v5 = 0.0 + 1.0;
 		}
 
-		if ((pml.GroundContacts & 0x100000) != 0)
+		if (pml.groundcontents & CONTENTS_CURRENT_180)
 		{
 			v3 = v3 - 1.0;
 		}
 
-		if ((pml.GroundContacts & 0x200000) != 0)
+		if (pml.groundcontents & CONTENTS_CURRENT_270)
 		{
 			v5 = v5 - 1.0;
 		}
 
-		if ((pml.GroundContacts & 0xC00000) != 0)
+		if (pml.groundcontents & (CONTENTS_CURRENT_UP | CONTENTS_CURRENT_DOWN))
 		{
 			Com_Printf("CONTENTS_CURRENT_UP or CONTENTS_CURRENT_DOWN not supported on groundcontents (conveyor belts)\n");
 		}
