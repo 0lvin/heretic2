@@ -631,74 +631,95 @@ PM_AirAccelerate(vec3_t wishdir, float wishspeed, float accel)
 	}
 }
 
-// TODO: Rewrite
 static void
 PM_AddCurrents(vec3_t wishvel)
 {
-	long double v1;
-	float v2;
-	float v3;
-	float v4;
-	float v5;
-	float v6;
-
-	if ((pm->watertype & 0xFC0000) != 0)
+	/* add water currents  */
+	if (pm->watertype & MASK_CURRENT)
 	{
-		v2 = 0.0;
-		v4 = 0.0;
-		v6 = 0.0;
-		if ((pm->watertype & 0x40000) != 0)
-			v2 = 1.0;
-		if ((pm->watertype & 0x80000) != 0)
-			v4 = 0.0 + 1.0;
-		if ((pm->watertype & 0x100000) != 0)
-			v2 = v2 - 1.0;
-		if ((pm->watertype & 0x200000) != 0)
-			v4 = v4 - 1.0;
-		if ((pm->watertype & 0x400000) != 0)
-			v6 = 0.0 + 1.0;
-		if ((pm->watertype & 0x800000) != 0)
-			v6 = v6 - 1.0;
-		v1 = 400.0;
-		if (pm->waterlevel == 1 && pm->groundentity)
-			v1 = 200.0;
-		wishvel[0] = v1 * v2 + wishvel[0];
-		wishvel[1] = v1 * v4 + wishvel[1];
-		wishvel[2] = v1 * v6 + wishvel[2];
+		vec3_t v;
+		float s;
+
+		VectorClear(v);
+
+		if (pm->watertype & CONTENTS_CURRENT_0)
+		{
+			v[0] += 1;
+		}
+
+		if (pm->watertype & CONTENTS_CURRENT_90)
+		{
+			v[1] += 1;
+		}
+
+		if (pm->watertype & CONTENTS_CURRENT_180)
+		{
+			v[0] -= 1;
+		}
+
+		if (pm->watertype & CONTENTS_CURRENT_270)
+		{
+			v[1] -= 1;
+		}
+
+		if (pm->watertype & CONTENTS_CURRENT_UP)
+		{
+			v[2] += 1;
+		}
+
+		if (pm->watertype & CONTENTS_CURRENT_DOWN)
+		{
+			v[2] -= 1;
+		}
+
+		s = pm_waterspeed;
+
+		if ((pm->waterlevel == 1) && (pm->groundentity))
+		{
+			s /= 2;
+		}
+
+		VectorMA(wishvel, s, v, wishvel);
 	}
 
-	if ((pml.groundcontents & 0xFC0000) != 0 && pm->groundentity)
+	/* add conveyor belt velocities */
+	if (pm->groundentity)
 	{
-		v3 = 0.0;
-		v5 = 0.0;
+		vec3_t v;
+
+		VectorClear(v);
+
 		if (pml.groundcontents & CONTENTS_CURRENT_0)
 		{
-			v3 = 1.0;
+			v[0] += 1;
 		}
 
 		if (pml.groundcontents & CONTENTS_CURRENT_90)
 		{
-			v5 = 0.0 + 1.0;
+			v[1] += 1;
 		}
 
 		if (pml.groundcontents & CONTENTS_CURRENT_180)
 		{
-			v3 = v3 - 1.0;
+			v[0] -= 1;
 		}
 
 		if (pml.groundcontents & CONTENTS_CURRENT_270)
 		{
-			v5 = v5 - 1.0;
+			v[1] -= 1;
 		}
 
-		if (pml.groundcontents & (CONTENTS_CURRENT_UP | CONTENTS_CURRENT_DOWN))
+		if (pml.groundcontents & CONTENTS_CURRENT_UP)
 		{
-			Com_Printf("CONTENTS_CURRENT_UP or CONTENTS_CURRENT_DOWN not supported on groundcontents (conveyor belts)\n");
+			v[2] += 1;
 		}
 
-		wishvel[0] = v3 * 100.0 + wishvel[0];
-		wishvel[1] = v5 * 100.0 + wishvel[1];
-		wishvel[2] = 100.0 * 0.0 + wishvel[2];
+		if (pml.groundcontents & CONTENTS_CURRENT_DOWN)
+		{
+			v[2] -= 1;
+		}
+
+		VectorMA(wishvel, 100, v, wishvel);
 	}
 }
 
@@ -1782,19 +1803,12 @@ Pmove(pmove_t *pmove)
 		PM_AirMove();
 	}
 
-	// Convert it back into nonsense Quake 2 compression.
-	pm->s.origin[0] = pml.origin[0] * 8.0f;
-	pm->s.origin[1] = pml.origin[1] * 8.0f;
-	pm->s.origin[2] = pml.origin[2] * 8.0f;
-
-	pm->s.velocity[0] = pml.velocity[0] * 8.0f;
-	pm->s.velocity[1] = pml.velocity[1] * 8.0f;
-	pm->s.velocity[2] = pml.velocity[2] * 8.0f;
-
 	// jmarshall: TODO: I believe this is used for first person view.
 	pm->cmd.aimangles[0] = pm->cmd.angles[0];
 	pm->cmd.aimangles[1] = pm->cmd.angles[1];
 	pm->cmd.aimangles[2] = pm->cmd.angles[2];
 
 	pml.waterlevel = pm->waterlevel;
+
+	PM_SnapPosition();
 }
