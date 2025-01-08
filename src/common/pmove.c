@@ -64,7 +64,6 @@ typedef struct
 	qboolean walking;
 	qboolean groundPlane;
 	trace_t groundTrace;
-	float impactSpeed;
 	int waterlevel;
 } pml_t;
 
@@ -360,12 +359,6 @@ PM_SlideMove(qboolean gravity)
 			if (into >= 0.1)
 			{
 				continue;		// move doesn't interact with the plane
-			}
-
-			// see how hard we are hitting things
-			if (-into > pml.impactSpeed)
-			{
-				pml.impactSpeed = -into;
 			}
 
 			// slide along the plane
