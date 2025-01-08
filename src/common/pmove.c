@@ -64,7 +64,6 @@ typedef struct
 	qboolean walking;
 	qboolean groundPlane;
 	trace_t groundTrace;
-	int waterlevel;
 } pml_t;
 
 pmove_t *pm;
@@ -75,7 +74,7 @@ float pm_stopspeed = 100;
 float pm_maxspeed = 300;
 float pm_duckspeed = 100;
 float pm_accelerate = 10;
-float pm_airaccelerate = 1;
+float pm_airaccelerate = 0;
 float pm_wateraccelerate = 10;
 float pm_friction = 6;
 float pm_waterfriction = 1;
@@ -509,11 +508,6 @@ PM_Friction(void)
 	vel = pml.velocity;
 
 	VectorCopy(vel, vec);
-	if (pml.walking)
-	{
-		vec[2] = 0; /* ignore slope movement */
-	}
-
 	speed = VectorLength(vec);
 
 	if (speed < 1)
@@ -536,8 +530,8 @@ PM_Friction(void)
 		}
 	}
 
-	/* apply water friction even if just wading */
-	if (pm->waterlevel)
+	/* apply water friction */
+	if (pm->waterlevel && !pml.ladder)
 	{
 		drop += speed * pm_waterfriction * pm->waterlevel * pml.frametime;
 	}
@@ -634,6 +628,50 @@ PM_AirAccelerate(vec3_t wishdir, float wishspeed, float accel)
 static void
 PM_AddCurrents(vec3_t wishvel)
 {
+	/* account for ladders */
+	if (pml.ladder && (fabs(pml.velocity[2]) <= 200))
+	{
+		if ((pm->viewangles[PITCH] <= -15) && (pm->cmd.forwardmove > 0))
+		{
+			wishvel[2] = 200;
+		}
+		else if ((pm->viewangles[PITCH] >= 15) && (pm->cmd.forwardmove > 0))
+		{
+			wishvel[2] = -200;
+		}
+		else if (pm->cmd.upmove > 0)
+		{
+			wishvel[2] = 200;
+		}
+		else if (pm->cmd.upmove < 0)
+		{
+			wishvel[2] = -200;
+		}
+		else
+		{
+			wishvel[2] = 0;
+		}
+
+		/* limit horizontal speed when on a ladder */
+		if (wishvel[0] < -25)
+		{
+			wishvel[0] = -25;
+		}
+		else if (wishvel[0] > 25)
+		{
+			wishvel[0] = 25;
+		}
+
+		if (wishvel[1] < -25)
+		{
+			wishvel[1] = -25;
+		}
+		else if (wishvel[1] > 25)
+		{
+			wishvel[1] = 25;
+		}
+	}
+
 	/* add water currents  */
 	if (pm->watertype & MASK_CURRENT)
 	{
@@ -1802,13 +1840,6 @@ Pmove(pmove_t *pmove)
 		// airborne
 		PM_AirMove();
 	}
-
-	// jmarshall: TODO: I believe this is used for first person view.
-	pm->cmd.aimangles[0] = pm->cmd.angles[0];
-	pm->cmd.aimangles[1] = pm->cmd.angles[1];
-	pm->cmd.aimangles[2] = pm->cmd.angles[2];
-
-	pml.waterlevel = pm->waterlevel;
 
 	PM_SnapPosition();
 }

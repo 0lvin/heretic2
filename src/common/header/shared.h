@@ -680,8 +680,6 @@ typedef struct usercmd_s
 	short forwardmove, sidemove, upmove;
 	byte impulse;           /* remove? */
 	byte lightlevel;        /* light level the player is standing on */
-	byte prediction;
-	short aimangles[3];
 	short camera_vieworigin[3];
 	short camera_viewangles[3];
 } usercmd_t;

@@ -4105,13 +4105,13 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	if(!ent->deadflag)
 	{
-		VectorCopy(pm.viewangles,client->v_angle);
+		VectorCopy(pm.viewangles, client->v_angle);
 
-		client->aimangles[0]=SHORT2ANGLE(ucmd->aimangles[0]);
-		client->aimangles[1]=SHORT2ANGLE(ucmd->aimangles[1]);
-		client->aimangles[2]=SHORT2ANGLE(ucmd->aimangles[2]);
+		client->aimangles[0] = SHORT2ANGLE(ucmd->angles[0]);
+		client->aimangles[1] = SHORT2ANGLE(ucmd->angles[1]);
+		client->aimangles[2] = SHORT2ANGLE(ucmd->angles[2]);
 
-		VectorCopy(client->aimangles,client->ps.viewangles);
+		VectorCopy(client->aimangles, client->ps.viewangles);
 	}
 
 	gi.linkentity(ent);
