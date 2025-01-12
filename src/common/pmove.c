@@ -503,12 +503,10 @@ PM_Friction(void)
 	float speed, newspeed, control;
 	float friction;
 	float drop;
-	vec3_t vec;
 
 	vel = pml.velocity;
 
-	VectorCopy(vel, vec);
-	speed = VectorLength(vec);
+	speed = VectorLength(vel);
 
 	if (speed < 1)
 	{
@@ -566,13 +564,9 @@ PM_Accelerate(vec3_t wishdir, float wishspeed, float accel)
 {
 	int i;
 	float addspeed, accelspeed, currentspeed;
-	vec3_t newvel;
 
-	newvel[0] = pm->s.velocity[0];
-	newvel[1] = pm->s.velocity[1];
-	newvel[2] = pm->s.velocity[2];
-
-	currentspeed = DotProduct(newvel, wishdir);
+	currentspeed = DotProduct(pml.velocity, wishdir);
+	currentspeed *= 8;
 	addspeed = wishspeed - currentspeed;
 
 	if (addspeed <= 0)
@@ -765,49 +759,51 @@ PM_AddCurrents(vec3_t wishvel)
 static void
 PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
 {
-	long double v4;
-	long double v5;
-	long double v6;
+	vec_t v;
 
-	v4 = 300.0;
 	if (high_max || runshrine)
-		v4 = 600.0;
-	v6 = v4;
-	v5 = v4;
-	if (v4 < VectorNormalize2(vel, norm))
 	{
-		*vel = *norm * v6;
-		vel[1] = norm[1] * v5;
-		vel[2] = norm[2] * v5;
+		v = 600.0;
+	}
+	else
+	{
+		v = 300.0;
+	}
+
+	if (v < VectorNormalize2(vel, norm))
+	{
+		vel[0] = norm[0] * v;
+		vel[1] = norm[1] * v;
+		vel[2] = norm[2] * v;
 	}
 }
 
 // TODO: Rewrite
-static int
+static void
 PM_SetVelInLiquid(float a1)
 {
-	long double v2;
-	qboolean v3;
+	float forwardmove;
+	qboolean runshrine;
 	float v15;
 	float v16;
 	vec3_t norm;
 	vec3_t vel;
 
 	PM_Friction();
-	v2 = (long double)pm->cmd.forwardmove;
-	v15 = v2;
-	v3 = 0;
+	forwardmove = pm->cmd.forwardmove;
+	v15 = forwardmove;
+	runshrine = false;
 	v16 = (float)pm->cmd.sidemove;
-	if (pm->run_shrine && v2 > 0.0)
+	if (pm->run_shrine && forwardmove > 0.0)
 	{
-		v3 = 1;
-		v15 = v2 * 1.65;
+		runshrine = true;
+		v15 = forwardmove * 1.65;
 	}
 	vel[0] = pml.forward[0] * v15 + pml.right[0] * v16;
 	vel[1] = pml.forward[1] * v15 + pml.right[1] * v16;
 	vel[2] = v15 * pml.forward[2] + v16 * pml.right[2];
 	PM_AddCurrents(vel);
-	PM_BoundVelocity(vel, norm, v3, 0);
+	PM_BoundVelocity(vel, norm, runshrine, 0);
 	PM_Accelerate(vel, pm_airaccelerate, 10.0);
 	if (pm->groundentity)
 	{
@@ -815,16 +811,13 @@ PM_SetVelInLiquid(float a1)
 		pml.velocity[1] = vel[1];
 		pml.velocity[2] = vel[2];
 	}
-	return 0;
 }
 
 static void
 PM_WaterMove(void)
 {
-	if (!PM_SetVelInLiquid(0.5))
-	{
-		PM_StepSlideMove(false);
-	}
+	PM_SetVelInLiquid(0.5);
+	PM_StepSlideMove(false);
 }
 
 static void
@@ -1018,7 +1011,7 @@ PM_CheckJump(void)
 
 	if ((pm->s.pm_flags & 8) == 0 && pm->cmd.upmove > 9)
 	{
-		pm->groundentity = 0;
+		pm->groundentity = NULL;
 		pml.velocity[2] = 200.0;
 		pml.walking = false;
 	}
@@ -1696,22 +1689,21 @@ PM_CheckInWater()
 static void
 PM_WaterSurfMove()
 {
-	byte v0;
+	byte flags;
 
-	if (!PM_SetVelInLiquid(0.5))
+	PM_SetVelInLiquid(0.5);
+	flags = pm->s.w_flags;
+	if (flags & WF_SINK)
 	{
-		v0 = pm->s.w_flags;
-		if ((v0 & 0x10) != 0)
-		{
-			pm->s.w_flags = v0 & 0xEF;
-		}
-		else
-		{
-			pml.velocity[2] = (pm->waterheight/* - *(float*)&pml.desiredWaterHeight*/) / pml.frametime;
-			pml.velocity[2] = sin(Sys_Milliseconds() * 0.006666666666666667) * 8.0 + pml.velocity[2];
-		}
-		PM_StepSlideMove(true);
+		pm->s.w_flags = flags & ~WF_SINK;
 	}
+	else
+	{
+		pml.velocity[2] = (pm->waterheight/* - *(float*)&pml.desiredWaterHeight*/) / pml.frametime;
+		pml.velocity[2] = sin(Sys_Milliseconds() * 0.006666666666666667) * 8.0 + pml.velocity[2];
+	}
+
+	PM_StepSlideMove(true);
 }
 
 /*
@@ -1756,28 +1748,6 @@ Pmove(pmove_t *pmove)
 		return;
 	}
 
-	int time = pm->s.pm_time;
-	if (time)
-	{
-		int _msec = pm->cmd.msec >> 3;
-		int msec = _msec;
-
-		if (!_msec)
-		{
-			msec = 1;
-		}
-
-		if (msec < pm->s.pm_time)
-		{
-			pm->s.pm_time = time - msec;
-		}
-		else
-		{
-			pm->s.pm_flags &= 0xE7u;
-			pm->s.pm_time = 0;
-		}
-	}
-
 	AngleVectors(pm->viewangles, pml.forward, pml.right, pml.up);
 
 	if (pm->s.pm_type >= PM_DEAD)
@@ -1798,6 +1768,47 @@ Pmove(pmove_t *pmove)
 #endif
 
 		return; /* no movement at all */
+	}
+
+	/* set mins, maxs, and viewheight */
+	PM_CheckDuck();
+
+	if (pm->snapinitial)
+	{
+		PM_InitialSnapPosition();
+	}
+
+	/* set groundentity, watertype, and waterlevel */
+	PM_CatagorizePosition();
+
+	if (pm->s.pm_type == PM_DEAD)
+	{
+		PM_DeadMove();
+	}
+
+	PM_CheckSpecialMovement();
+
+	/* drop timing counter */
+	if (pm->s.pm_time)
+	{
+		int msec;
+
+		msec = pm->cmd.msec >> 3;
+
+		if (!msec)
+		{
+			msec = 1;
+		}
+
+		if (msec >= pm->s.pm_time)
+		{
+			pm->s.pm_flags &= ~(PMF_TIME_WATERJUMP | PMF_TIME_LAND | PMF_TIME_TELEPORT);
+			pm->s.pm_time = 0;
+		}
+		else
+		{
+			pm->s.pm_time -= msec;
+		}
 	}
 
 #ifndef DEDICATED_ONLY
@@ -1826,7 +1837,7 @@ Pmove(pmove_t *pmove)
 			PM_WaterSurfMove();
 		}
 	}
-	else if (pm->waterlevel > 2)
+	else if (pm->waterlevel >= 2)
 	{
 		PM_WaterMove();
 	}
