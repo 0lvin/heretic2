@@ -600,7 +600,7 @@ ED_ParseField(const char *key, const char *value, edict_t *ent)
 		}
 	}
 
-	gi.dprintf("%s is not a field. Value is %s\n", key, value);
+	gi.dprintf("'%s' is not a field. Value is '%s'\n", key, value);
 }
 
 /*
@@ -2220,7 +2220,7 @@ DynamicSpawnInit(void)
 
 	if (ndynamicentities)
 	{
-		dynamicentities = gi.TagMalloc(ndynamicentities * sizeof(*dynamicentities), TAG_GAME);
+		dynamicentities = malloc(ndynamicentities * sizeof(*dynamicentities));
 		memset(dynamicentities, 0, ndynamicentities * sizeof(*dynamicentities));
 	}
 	curr_pos = 0;
@@ -2448,4 +2448,17 @@ SpawnInit(void)
 {
 	StaticSpawnInit();
 	DynamicSpawnInit();
+}
+
+void
+SpawnFree(void)
+{
+	if (dynamicentities || ndynamicentities)
+	{
+		gi.dprintf("Free %d dynamic definitions\n", ndynamicentities);
+		free(dynamicentities);
+	}
+
+	dynamicentities = NULL;
+	ndynamicentities = 0;
 }

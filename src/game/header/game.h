@@ -56,6 +56,18 @@ typedef enum
 	SOLID_BSP       /* bsp clip, touch on edge */
 } solid_t;
 
+typedef enum
+{
+	GESTURE_NONE = -1,
+	GESTURE_FLIP_OFF,
+	GESTURE_SALUTE,
+	GESTURE_TAUNT,
+	GESTURE_WAVE,
+	GESTURE_POINT,
+	GESTURE_POINT_NO_PING,
+	GESTURE_MAX
+} gesture_type_t;
+
 /* =============================================================== */
 
 /* link_t is only used for entity area links now */
@@ -167,8 +179,8 @@ typedef struct
 	void (*WriteLong)(int c);
 	void (*WriteFloat)(float f);
 	void (*WriteString)(const char *s);
-	void (*WritePosition)(vec3_t pos);      /* some fractional bits */
-	void (*WriteDir)(vec3_t pos);           /* single byte encoded, very coarse */
+	void (*WritePosition)(const vec3_t pos);      /* some fractional bits */
+	void (*WriteDir)(const vec3_t pos);           /* single byte encoded, very coarse */
 	void (*WriteAngle)(float f);
 
 	/* managed memory allocation */
@@ -200,6 +212,7 @@ typedef struct
 	   NULL can be passed for buf to just determine existance */
 	int (*FS_LoadFile) (const char *name, void **buf);
 	void (*FS_FreeFile) (void *buf);
+	const char * (*get_configstring)(int num);
 } game_import_t;
 
 /* functions exported by the game subsystem */

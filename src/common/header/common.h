@@ -112,8 +112,8 @@ void MSG_WriteShort(sizebuf_t *sb, int c);
 void MSG_WriteLong(sizebuf_t *sb, int c);
 void MSG_WriteFloat(sizebuf_t *sb, float f);
 void MSG_WriteString(sizebuf_t *sb, const char *s);
-void MSG_WriteCoord(sizebuf_t *sb, float f);
-void MSG_WritePos(sizebuf_t *sb, vec3_t pos);
+void MSG_WriteCoord(sizebuf_t *sb, float f, int protocol);
+void MSG_WritePos(sizebuf_t *sb, const vec3_t pos, int protocol);
 void MSG_WriteAngle(sizebuf_t *sb, float f);
 void MSG_WriteAngle16(sizebuf_t *sb, float f);
 void MSG_WriteDeltaUsercmd(sizebuf_t *sb, struct usercmd_s *from,
@@ -121,7 +121,7 @@ void MSG_WriteDeltaUsercmd(sizebuf_t *sb, struct usercmd_s *from,
 void MSG_WriteDeltaEntity(const struct entity_xstate_s *from,
 		const struct entity_xstate_s *to, sizebuf_t *msg,
 		qboolean force, qboolean newentity, int protocol);
-void MSG_WriteDir(sizebuf_t *sb, vec3_t vector);
+void MSG_WriteDir(sizebuf_t *sb, const vec3_t vector);
 
 void MSG_BeginReading(sizebuf_t *sb);
 
@@ -133,8 +133,8 @@ float MSG_ReadFloat(sizebuf_t *sb);
 char *MSG_ReadString(sizebuf_t *sb);
 char *MSG_ReadStringLine(sizebuf_t *sb);
 
-float MSG_ReadCoord(sizebuf_t *sb);
-void MSG_ReadPos(sizebuf_t *sb, vec3_t pos);
+float MSG_ReadCoord(sizebuf_t *sb, int protocol);
+void MSG_ReadPos(sizebuf_t *sb, vec3_t pos, int protocol);
 float MSG_ReadAngle(sizebuf_t *sb);
 float MSG_ReadAngle16(sizebuf_t *sb);
 void MSG_ReadDeltaUsercmd(sizebuf_t *sb,
@@ -537,7 +537,7 @@ extern qboolean userinfo_modified;
 /* NET */
 
 #define PORT_ANY -1
-#define MAX_MSGLEN 1400             /* max length of a message */
+#define MAX_MSGLEN 32768            /* max length of a message */
 #define PACKET_HEADER 10            /* two ints and a short */
 
 typedef enum
@@ -783,8 +783,6 @@ YQ2_ATTR_NORETURN void Com_Quit(void);
 
 /* Ugly work around for unsupported
  * format specifiers unter mingw. */
-#define YQ2_COM_PRIu64 PRIu64
-
 #ifdef WIN32
 #define YQ2_COM_PRId64 "%I64d"
 #define YQ2_COM_PRIdS "%Id"

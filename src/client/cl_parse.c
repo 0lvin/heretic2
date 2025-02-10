@@ -29,7 +29,7 @@
 
 static int bitcounts[32]; /* just for protocol profiling */
 
-static char *svc_strings[256] = {
+static const char *svc_strings[256] = {
 	"svc_bad",
 
 	"svc_muzzleflash",
@@ -295,17 +295,17 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 
 	if (bits & U_ORIGIN1)
 	{
-		to->origin[0] = MSG_ReadCoord(&net_message);
+		to->origin[0] = MSG_ReadCoord(&net_message, cls.serverProtocol);
 	}
 
 	if (bits & U_ORIGIN2)
 	{
-		to->origin[1] = MSG_ReadCoord(&net_message);
+		to->origin[1] = MSG_ReadCoord(&net_message, cls.serverProtocol);
 	}
 
 	if (bits & U_ORIGIN3)
 	{
-		to->origin[2] = MSG_ReadCoord(&net_message);
+		to->origin[2] = MSG_ReadCoord(&net_message, cls.serverProtocol);
 	}
 
 	if (bits & U_ANGLE1)
@@ -325,7 +325,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 
 	if (bits & U_OLDORIGIN)
 	{
-		MSG_ReadPos(&net_message, to->old_origin);
+		MSG_ReadPos(&net_message, to->old_origin, cls.serverProtocol);
 	}
 
 	if (bits & U_SOUND)
@@ -419,10 +419,10 @@ CL_DeltaEntity(frame_t *frame, int newnum, entity_xstate_t *old, int bits)
 static void
 CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 {
-	unsigned int newnum;
-	unsigned bits;
 	entity_xstate_t *oldstate = NULL;
 	int oldindex, oldnum;
+	unsigned int newnum;
+	unsigned bits;
 
 	newframe->parse_entities = cl.parse_entities;
 	newframe->num_entities = 0;
@@ -595,7 +595,7 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 }
 
 static void
-CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
+CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 {
 	int flags, i, statbits;
 	player_state_t *state;
@@ -623,9 +623,18 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 
 	if (flags & PS_M_ORIGIN)
 	{
-		state->pmove.origin[0] = MSG_ReadShort(&net_message);
-		state->pmove.origin[1] = MSG_ReadShort(&net_message);
-		state->pmove.origin[2] = MSG_ReadShort(&net_message);
+		if (IS_QII97_PROTOCOL(protocol))
+		{
+			state->pmove.origin[0] = MSG_ReadShort(&net_message);
+			state->pmove.origin[1] = MSG_ReadShort(&net_message);
+			state->pmove.origin[2] = MSG_ReadShort(&net_message);
+		}
+		else
+		{
+			state->pmove.origin[0] = MSG_ReadLong(&net_message);
+			state->pmove.origin[1] = MSG_ReadLong(&net_message);
+			state->pmove.origin[2] = MSG_ReadLong(&net_message);
+		}
 	}
 
 	if (flags & PS_M_VELOCITY)
@@ -686,7 +695,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 
 	if (flags & PS_WEAPONINDEX)
 	{
-		if (IS_QII97_PROTOCOL(cls.serverProtocol))
+		if (IS_QII97_PROTOCOL(protocol))
 		{
 			state->gunindex = MSG_ReadByte(&net_message);
 		}
@@ -698,7 +707,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 
 	if (flags & PS_WEAPONFRAME)
 	{
-		if (IS_QII97_PROTOCOL(cls.serverProtocol))
+		if (IS_QII97_PROTOCOL(protocol))
 		{
 			state->gunframe = MSG_ReadByte(&net_message);
 		}
@@ -745,7 +754,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe)
 			if (i == STAT_PICKUP_STRING)
 			{
 				state->stats[i] = P_ConvertConfigStringFrom(state->stats[i],
-					cls.serverProtocol);
+					protocol);
 			}
 		}
 	}
@@ -777,7 +786,7 @@ CL_FireEntityEvents(frame_t *frame)
 }
 
 static void
-SHOWNET(char *s)
+SHOWNET(const char *s)
 {
 	if (cl_shownet->value >= 2)
 	{
@@ -871,7 +880,7 @@ CL_ParseFrame(void)
 		Com_Error(ERR_DROP, "CL_ParseFrame: 0x%X not playerinfo", cmd);
 	}
 
-	CL_ParsePlayerstate(old, &cl.frame);
+	CL_ParsePlayerstate(old, &cl.frame, cls.serverProtocol);
 
 	/* read packet entities */
 	cmd = MSG_ReadByte(&net_message);
@@ -1207,7 +1216,8 @@ CL_ParseClientinfo(int player)
 static void
 CL_ParseConfigString(void)
 {
-	size_t i, length;
+	size_t length;
+	int i;
 	char *s;
 	char olds[MAX_QPATH];
 
@@ -1360,7 +1370,7 @@ CL_ParseStartSoundPacket(void)
 	if (flags & SND_POS)
 	{
 		/* positioned in space */
-		MSG_ReadPos(&net_message, pos_v);
+		MSG_ReadPos(&net_message, pos_v, cls.serverProtocol);
 
 		pos = pos_v;
 	}

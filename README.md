@@ -48,6 +48,7 @@ State:
   * base2: no known issues,
   * mguhub: sometimes broken logic for surface fall in next maps.
 * SOFT:
+  * build with SDL3 has glitch in menu,
   * base1: broken wall light and wall glitch,
   * base2: broken wall light and wall glitch,
   * q64/outpost: scale textures unsupported,
@@ -95,6 +96,13 @@ Texture support:
 | jpg    | retexturing    | 24 bit   |
 | bmp    | Daikatana      | 24 bit   |
 
+Sprites support:
+
+| Format | Original Game  | Comments                      |
+| ------ | -------------- | ----------------------------- |
+| sp2    | Quake 2        |                               |
+| atd    | Anachronox     | Show first frame of animation |
+
 Maps support:
 
 | Format | Version | Game                                       |
@@ -119,6 +127,8 @@ Games:
 * Quake 2 ReRelease:
   * SDK: <https://github.com/id-Software/quake2-rerelease-dll>
   * Tech info: <https://bethesda.net/en/article/6NIyBxapXOurTKtF4aPiF4/enhancing-quake-ii>
+  * PSX source: <https://www.moddb.com/mods/quake-ii-psx/downloads/quake-ii-psx-10-sources>
+  * PSX Mod: <https://www.moddb.com/mods/quake-ii-psx>
 * Anachronox:
   * SDK: <https://github.com/hogsy/chronon>
   * SDK: <https://code.idtech.space/ion-storm/anachronox-sdk>
@@ -142,12 +152,19 @@ Games:
 * Dawn of Darkness:
   * Docs: <https://www.moddb.com/mods/dawn-of-darkness1/downloads/dod-mood-scripts-gsm-tutorials-fgd-and-def-file>
   * Demo: [Episode 1](https://www.moddb.com/mods/dawn-of-darkness1/downloads/dawn-of-darkness-episode-1)
+* Additional maps used for check maps support:
+  * PSX: <https://www.moddb.com/mods/quake-ii-psx/downloads/quake-ii-psx-10>
+  * ReRelease N64 Jam: <https://www.moddb.com/games/quake-2/addons/quake-2-re-release-n64-sp-map-jam>
+  * ReRelease Basic Jam: <https://www.moddb.com/games/quake-2/addons/quake-2-re-release-back-to-baseq2ics-jam-1>
+  * ReRelease PSX Jam: <https://www.moddb.com/mods/psx-jam-1/downloads/quake-2-re-release-psx-jam-1>
 
 Games check videos:
 
 * 8.42RR11:
 
-[![Latest Video](https://img.youtube.com/vi/ukqBrx80ESM/0.jpg)](https://www.youtube.com/watch?v=ukqBrx80ESM)
+[![First episode](https://img.youtube.com/vi/Ha1FuVXaQSE/0.jpg)](https://www.youtube.com/watch?v=Ha1FuVXaQSE)
+[![Q2DQ2](https://img.youtube.com/vi/6P3wJojExyI/0.jpg)](https://www.youtube.com/watch?v=6P3wJojExyI)
+[![8.42RR11](https://img.youtube.com/vi/ukqBrx80ESM/0.jpg)](https://www.youtube.com/watch?v=ukqBrx80ESM)
 
 * 8.42RR10:
 
@@ -169,21 +186,20 @@ Games check videos:
 Goals, fully finished goals could be checked in [here](CHANGELOG):
 
 * [ ] CTC entity format from Anachronox,
-* [ ] ATD texture format from Anachronox,
-* [ ] MDA model skin selection by tag,
-* [ ] SDEF/MDA dynamicaly allocate list of skins,
+* [ ] SDEF dynamicaly allocate list of skins,
 * [ ] Support material load textures/textureinfo.dat from Anachronox,
+* [ ] Fix invisiable entities in basicsjam1_ziutek,
+* [ ] Make lightmap textures dynamic n64jam_palmlix,
 * [x] Support textures/*/*.mat load from ReRelease (footstep),
 * [ ] Support textures/*/*.mat load from ReRelease texture effects,
 * [ ] Support textures/*/*_glow.png load from ReRelease,
 * [ ] Support tactile/*/*.bnvib/.wav feedback load from ReRelease,
 * [ ] Fix physics with incorrect floor height in psx/base0.bsp,
+* [ ] Make pmove_state_t.origin 29.3 (PS_M_ORIGIN) >4k coord values support,
 * [ ] Fix statusbar for DoD `roarke`,
 * [ ] Group `it_pic` images in vulkan render,
 * [ ] Rearange surfaces in vulkan render before render,
-* [ ] Fully implement `target_camera`,
 * [ ] Fully implement `misc_flare`,
-* [ ] Fully implement `misc_player_mannequin`,
 * [ ] Single player ReRelease support,
 * [ ] Support effects and additional flags for ReRelease when possible.
 * [ ] Use shared model cache in client code insted reimplemnet in each render,

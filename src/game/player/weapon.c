@@ -379,7 +379,6 @@ qboolean
 Pickup_Weapon(edict_t *ent, edict_t *other)
 {
 	int index;
-	gitem_t *ammo;
 
 	if (!ent || !other)
 	{
@@ -402,18 +401,29 @@ Pickup_Weapon(edict_t *ent, edict_t *other)
 
 	if (!(ent->spawnflags & DROPPED_ITEM))
 	{
-		/* give them some ammo with it */
-		ammo = FindItem(ent->item->ammo);
+		if (ent->item->ammo)
+		{
+			gitem_t *ammo;
 
-		/* Don't get infinite ammo with trap */
-		if (((int)dmflags->value & DF_INFINITE_AMMO) &&
-			Q_stricmp(ent->item->pickup_name, "ammo_trap"))
-		{
-			Add_Ammo(other, ammo, 1000);
-		}
-		else
-		{
-			Add_Ammo(other, ammo, ammo->quantity);
+			/* give them some ammo with it */
+			ammo = FindItem(ent->item->ammo);
+			if (!ammo)
+			{
+				gi.dprintf("Ammo %s for item %s has not be found\n",
+					ent->item->ammo, ent->item->classname);
+				return false;
+			}
+
+			/* Don't get infinite ammo with trap */
+			if (((int)dmflags->value & DF_INFINITE_AMMO) &&
+				Q_stricmp(ent->item->pickup_name, "ammo_trap"))
+			{
+				Add_Ammo(other, ammo, 1000);
+			}
+			else
+			{
+				Add_Ammo(other, ammo, ammo->quantity);
+			}
 		}
 
 		if (!(ent->spawnflags & DROPPED_PLAYER_ITEM))
@@ -3239,7 +3249,7 @@ Weapon_Ionripper(edict_t *ent)
 	static int pause_frames[] = {36, 0};
 	static int fire_frames[] = {5, 0};
 
-  	if (!ent)
+	if (!ent)
 	{
 		return;
 	}
@@ -3267,7 +3277,7 @@ weapon_phalanx_fire(edict_t *ent)
 	float damage_radius;
 	int radius_damage;
 
-  	if (!ent)
+	if (!ent)
 	{
 		return;
 	}
@@ -3335,7 +3345,7 @@ Weapon_Phalanx(edict_t *ent)
 	static int pause_frames[] = {29, 42, 55, 0};
 	static int fire_frames[] = {7, 8, 0};
 
-  	if (!ent)
+	if (!ent)
 	{
 		return;
 	}
@@ -3363,7 +3373,7 @@ weapon_trap_fire(edict_t *ent, qboolean held)
 	int speed;
 	float radius;
 
-  	if (!ent)
+	if (!ent)
 	{
 		return;
 	}
@@ -3391,7 +3401,7 @@ weapon_trap_fire(edict_t *ent, qboolean held)
 void
 Weapon_Trap(edict_t *ent)
 {
-  	if (!ent)
+	if (!ent)
 	{
 		return;
 	}

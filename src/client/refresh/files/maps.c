@@ -80,8 +80,8 @@ Mod_NumberLeafs(mleaf_t *leafs, mnode_t *node, int *r_leaftovis, int *r_vistolea
 
 static void
 Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
-	int numleafs, mnode_t **nodes, int *numnodes, const byte *mod_base,
-	const lump_t *l)
+	int numleafs, mnode_t **nodes, int *numnodes, vec3_t mins, vec3_t maxs,
+	const byte *mod_base, const lump_t *l)
 {
 	dqnode_t *in;
 	mnode_t *out;
@@ -101,6 +101,24 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 	*nodes = out;
 	*numnodes = count;
 
+	/* Set initial min/max */
+	if (count)
+	{
+		for (i = 0; i < 3; i++)
+		{
+			mins[i] = in->mins[i];
+			maxs[i] = in->maxs[i];
+		}
+	}
+	else
+	{
+		for (i = 0; i < 3; i++)
+		{
+			mins[i] = 0;
+			maxs[i] = 0;
+		}
+	}
+
 	for (i = 0; i < count; i++, in++, out++)
 	{
 		int j, planenum;
@@ -109,6 +127,17 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 		{
 			out->minmaxs[j] = in->mins[j];
 			out->minmaxs[3 + j] = in->maxs[j];
+
+			/* update min/max */
+			if (mins[j] > in->mins[j])
+			{
+				mins[j] = in->mins[j];
+			}
+
+			if (maxs[j] < in->maxs[j])
+			{
+				maxs[j] = in->maxs[j];
+			}
 		}
 
 		planenum = LittleLong(in->planenum) & 0xFFFFFFFF;
@@ -156,19 +185,31 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 
 void
 Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs,
-	int numleafs, mnode_t **nodes, int *numnodes, const byte *mod_base,
-	const lump_t *l, int ident)
+	int numleafs, mnode_t **nodes, int *numnodes, vec3_t mins, vec3_t maxs,
+	const byte *mod_base, const lump_t *l, int ident)
 {
-	int r_leaftovis[MAX_MAP_LEAFS], r_vistoleaf[MAX_MAP_LEAFS];
+	int *r_leaftovis, *r_vistoleaf;
 	int numvisleafs;
 
+	r_leaftovis = malloc(numleafs * sizeof(int));
+	r_vistoleaf = malloc(numleafs * sizeof(int));
+	if (!r_leaftovis || !r_vistoleaf)
+	{
+		Com_Error(ERR_DROP, "%s: Can't allocate %d leaf temporary buf.",
+				__func__, numleafs);
+		return;
+	}
+
 	Mod_LoadQNodes(name, planes, numplanes, leafs, numleafs, nodes, numnodes,
-		mod_base, l);
+		mins, maxs, mod_base, l);
 
 	Mod_SetParent(*nodes, NULL); /* sets nodes and leafs */
 
 	numvisleafs = 0;
 	Mod_NumberLeafs(leafs, *nodes, r_leaftovis, r_vistoleaf, &numvisleafs);
+
+	free(r_leaftovis);
+	free(r_vistoleaf);
 }
 
 /*
@@ -705,7 +746,7 @@ Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned 
 void
 Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 	msurface_t **marksurfaces, unsigned int nummarksurfaces,
-	const byte *mod_base, const lump_t *l)
+	int *numclusters, const byte *mod_base, const lump_t *l)
 {
 	dqleaf_t *in;
 	mleaf_t *out;
@@ -724,6 +765,7 @@ Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 
 	*leafs = out;
 	*numleafs = count;
+	*numclusters = 0;
 
 	for (i = 0; i < count; i++, in++, out++)
 	{
@@ -747,6 +789,11 @@ Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 		{
 			Com_Error(ERR_DROP, "%s: wrong marksurfaces position in %s",
 				__func__, name);
+		}
+
+		if (out->cluster >= *numclusters)
+		{
+			*numclusters = out->cluster + 1;
 		}
 	}
 }

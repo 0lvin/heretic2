@@ -1474,12 +1474,161 @@ SP_target_earthquake(edict_t *self)
 
 /*
  * QUAKED target_camera (1 0 0) (-8 -8 -8) (8 8 8)
- * [Sam-KEX] Creates a camera path as seen in the N64 version.
-*/
+ *
+ * ReRelease: Creates a camera path as seen in the N64 version.
+ */
+static void
+camera_lookat_pathtarget(edict_t* self, vec3_t origin, vec3_t* dest)
+{
+	if(self->pathtarget)
+	{
+		edict_t* pt = NULL;
+
+		pt = G_Find(pt, FOFS(targetname), self->pathtarget);
+		if (pt)
+		{
+			float yaw, pitch, d;
+			vec3_t delta;
+
+			VectorSubtract(pt->s.origin, origin, delta);
+
+			d = delta[0] * delta[0] + delta[1] * delta[1];
+			if(d == 0.0f)
+			{
+				yaw = 0.0f;
+				pitch = (delta[2] > 0.0f) ? 90.0f : -90.0f;
+			}
+			else
+			{
+				yaw = atan2(delta[1], delta[0]) * (180.0f / M_PI);
+				pitch = atan2(delta[2], sqrt(d)) * (180.0f / M_PI);
+			}
+
+			(*dest)[YAW] = yaw;
+			(*dest)[PITCH] = -pitch;
+			(*dest)[ROLL] = 0;
+		}
+	}
+}
+
+void
+update_target_camera_think(edict_t *self)
+{
+	if (self->movetarget)
+	{
+		self->moveinfo.remaining_distance -= (self->moveinfo.move_speed * FRAMETIME) * 0.8f;
+
+		if(self->moveinfo.remaining_distance <= 0)
+		{
+			VectorCopy(self->movetarget->s.origin, self->s.origin);
+			self->nextthink = level.time + self->movetarget->wait;
+			if (self->movetarget->target)
+			{
+				self->movetarget = G_PickTarget(self->movetarget->target);
+
+				if (self->movetarget)
+				{
+					vec3_t diff;
+
+					self->moveinfo.move_speed = self->movetarget->speed ? self->movetarget->speed : 55;
+					VectorSubtract(self->movetarget->s.origin, self->s.origin, diff);
+					self->moveinfo.remaining_distance = VectorNormalize(diff);
+					self->moveinfo.distance = self->moveinfo.remaining_distance;
+				}
+			}
+			else
+			{
+				self->movetarget = NULL;
+			}
+
+			return;
+		}
+		else
+		{
+			vec3_t delta, newpos;
+			float frac;
+			int i;
+
+			frac = 1.0f - (self->moveinfo.remaining_distance / self->moveinfo.distance);
+
+			VectorSubtract(self->movetarget->s.origin, self->s.origin, delta);
+			VectorScale(delta, frac, delta);
+
+			VectorAdd(self->s.origin, delta, newpos);
+
+			camera_lookat_pathtarget(self, newpos, &level.intermission_angle);
+			VectorCopy(newpos, level.intermission_origin);
+
+			/* move all clients to the intermission point */
+			for (i = 0; i < game.maxclients; i++)
+			{
+				edict_t *client = g_edicts + 1 + i;
+
+				if (!client->inuse)
+				{
+					continue;
+				}
+
+				MoveClientToIntermission(client);
+			}
+		}
+	}
+	else
+	{
+		if (self->killtarget)
+		{
+			edict_t *t = NULL;
+
+			/* destroy dummy player */
+			if (self->enemy)
+			{
+				G_FreeEdict(self->enemy);
+			}
+
+			level.intermissiontime = 0;
+
+			while ((t = G_Find(t, FOFS(targetname), self->killtarget)))
+			{
+				t->use(t, self, self->activator);
+			}
+
+			level.intermissiontime = level.time;
+
+			/* end of unit requires a wait */
+			if (level.changemap && !strchr(level.changemap, '*'))
+			{
+				level.exitintermission = true;
+			}
+		}
+
+		self->think = NULL;
+		return;
+	}
+
+	self->nextthink = level.time + FRAMETIME;
+}
+
+void
+target_camera_dummy_think(edict_t *self)
+{
+	/*
+	 * bit of a hack, but this will let the dummy
+	 * move like a player
+	 */
+	self->client = self->owner->client;
+	G_SetClientFrame(self, sqrtf(
+		self->velocity[0] * self->velocity[0] +
+		self->velocity[1] * self->velocity[1]));
+	self->client = NULL;
+
+	self->nextthink = level.time + FRAMETIME;
+}
+
 void
 use_target_camera(edict_t *self, edict_t *other, edict_t *activator)
 {
-	edict_t *target;
+	vec3_t diff;
+	int i;
 
 	if (!self)
 	{
@@ -1491,20 +1640,77 @@ use_target_camera(edict_t *self, edict_t *other, edict_t *activator)
 		gi.configstring(CS_CDTRACK, va("%i", self->sounds));
 	}
 
-	if (!self->killtarget)
+	if (!self->target)
 	{
 		return;
 	}
 
-	target = G_PickTarget(self->killtarget);
+	self->movetarget = G_PickTarget(self->target);
 
-	if (!target || !target->use)
+	if (!self->movetarget)
 	{
 		return;
 	}
 
-	/* TODO: Fully implement target camera logic */
-	target->use(target, self, activator);
+	level.intermissiontime = level.time;
+	level.exitintermission = 0;
+
+	/* spawn fake player dummy where we were */
+	if (activator->client)
+	{
+		edict_t *dummy;
+
+		dummy = self->enemy = G_Spawn();
+		dummy->owner = activator;
+		dummy->clipmask = activator->clipmask;
+		VectorCopy(activator->s.origin, dummy->s.origin);
+		VectorCopy(activator->s.angles, dummy->s.angles);
+		dummy->groundentity = activator->groundentity;
+		dummy->groundentity_linkcount = dummy->groundentity ? dummy->groundentity->linkcount : 0;
+		dummy->think = target_camera_dummy_think;
+		dummy->nextthink = level.time + FRAMETIME;
+		dummy->solid = SOLID_BBOX;
+		dummy->movetype = MOVETYPE_STEP;
+		VectorCopy(activator->mins, dummy->mins);
+		VectorCopy(activator->maxs, dummy->maxs);
+		dummy->s.modelindex = dummy->s.modelindex2 = CUSTOM_PLAYER_MODEL;
+		dummy->s.skinnum = activator->s.skinnum;
+		VectorCopy(activator->velocity, dummy->velocity);
+		dummy->s.renderfx = RF_MINLIGHT;
+		dummy->s.frame = activator->s.frame;
+		gi.linkentity(dummy);
+	}
+
+	camera_lookat_pathtarget(self, self->s.origin, &level.intermission_angle);
+	VectorCopy(self->s.origin, level.intermission_origin);
+
+	/* move all clients to the intermission point */
+	for (i = 0; i < game.maxclients; i++)
+	{
+		edict_t* client = g_edicts + 1 + i;
+		if (!client->inuse)
+		{
+			continue;
+		}
+
+		/* respawn any dead clients */
+		if (client->health <= 0)
+		{
+			respawn(client);
+		}
+
+		MoveClientToIntermission(client);
+	}
+
+	self->activator = activator;
+	self->think = update_target_camera_think;
+	self->nextthink = level.time + self->wait;
+	self->moveinfo.move_speed = self->speed;
+
+	VectorSubtract(self->movetarget->s.origin, self->s.origin,  diff);
+
+	self->moveinfo.remaining_distance = VectorNormalize(diff);
+	self->moveinfo.distance = self->moveinfo.remaining_distance;
 }
 
 void
@@ -1523,7 +1729,8 @@ SP_target_camera(edict_t* self)
 
 /*
  * QUAKED target_gravity (1 0 0) (-8 -8 -8) (8 8 8) NOTRAIL NOEFFECTS
- * [Sam-KEX] Changes gravity, as seen in the N64 version
+ *
+ * ReRelease: Changes gravity, as seen in the N64 version
  */
 void
 use_target_gravity(edict_t *self, edict_t *other, edict_t *activator)
@@ -1540,8 +1747,9 @@ SP_target_gravity(edict_t* self)
 
 /*
  * QUAKED target_soundfx (1 0 0) (-8 -8 -8) (8 8 8) NOTRAIL NOEFFECTS
- * [Sam-KEX] Plays a sound fx, as seen in the N64 version
-*/
+ *
+ * ReRelease: Plays a sound fx, as seen in the N64 version
+ */
 void
 update_target_soundfx(edict_t *self)
 {
@@ -1628,6 +1836,40 @@ SP_target_music(edict_t* self)
 }
 
 /*
+ * QUAKED target_autosave (0 1 0) (-8 -8 -8) (8 8 8)
+ *
+ * Auto save on command.
+ */
+void
+use_target_autosave(edict_t *ent, edict_t *other, edict_t *activator)
+{
+	float save_time = gi.cvar("g_athena_auto_save_min_time", "60", CVAR_NOSET)->value;
+
+	if (level.time - level.next_auto_save > save_time)
+	{
+		gi.AddCommandString("save quick\n");
+		level.next_auto_save = level.time;
+	}
+}
+
+void
+SP_target_autosave(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->use = use_target_autosave;
+}
+
+/*
  * QUAKED target_sky (1 0 0) (-8 -8 -8) (8 8 8)
  *
  * Change sky parameters
@@ -1639,10 +1881,6 @@ SP_target_music(edict_t* self)
 void
 target_sky_use(edict_t *self, edict_t *other, edict_t *activator)
 {
-	float rotate;
-	int autorotate;
-
-
 	if (!self)
 	{
 		return;
@@ -1653,12 +1891,31 @@ target_sky_use(edict_t *self, edict_t *other, edict_t *activator)
 		gi.configstring(CS_SKY, self->map);
 	}
 
-	rotate = self->accel;
-	autorotate = self->style;
-	gi.configstring(CS_SKYROTATE, va("%f %d", rotate, autorotate));
+	if (self->count & 3)
+	{
+		float rotate;
+		int autorotate;
 
-	gi.configstring(CS_SKYAXIS, va("%f %f %f",
-		self->movedir[0], self->movedir[1], self->movedir[2]));
+		sscanf(gi.get_configstring(CS_SKYROTATE), "%f %i", &rotate, &autorotate);
+
+		if (self->count & 1)
+		{
+			rotate = self->accel;
+		}
+
+		if (self->count & 2)
+		{
+			autorotate = self->style;
+		}
+
+		gi.configstring(CS_SKYROTATE, va("%f %d", rotate, autorotate));
+	}
+
+	if (self->count & 4)
+	{
+		gi.configstring(CS_SKYAXIS, va("%f %f %f",
+			self->movedir[0], self->movedir[1], self->movedir[2]));
+	}
 }
 
 void
@@ -1676,7 +1933,23 @@ SP_target_sky(edict_t* self)
 		self->map = st.sky;
 	}
 
-	VectorCopy(st.skyaxis, self->movedir);
-	self->accel = st.skyrotate;
-	self->style = st.skyautorotate;
+	if (self->movedir[0] &&
+		self->movedir[1] &&
+		self->movedir[2])
+	{
+		self->count |= 4;
+		VectorCopy(st.skyaxis, self->movedir);
+	}
+
+	if (st.skyrotate)
+	{
+		self->count |= 1;
+		self->accel = st.skyrotate;
+	}
+
+	if (st.skyautorotate)
+	{
+		self->count |= 2;
+		self->style = st.skyautorotate;
+	}
 }

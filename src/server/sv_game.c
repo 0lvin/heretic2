@@ -224,6 +224,21 @@ PF_Configstring(int index, const char *val)
 	}
 }
 
+/* Direct get value for config string, index in library range */
+static const char *
+PF_ConfigstringGet(int index)
+{
+	index = P_ConvertConfigStringFrom(index, SV_GetRecomendedProtocol());
+
+	if ((index < 0) || (index >= MAX_CONFIGSTRINGS))
+	{
+		Com_Error(ERR_DROP, "configstring: bad index %i\n", index);
+	}
+
+	/* change the string in sv */
+	return sv.configstrings[index];
+}
+
 static void
 PF_WriteChar(int c)
 {
@@ -261,13 +276,13 @@ PF_WriteString(const char *s)
 }
 
 static void
-PF_WritePos(vec3_t pos)
+PF_WritePos(const vec3_t pos)
 {
-	MSG_WritePos(&sv.multicast, pos);
+	MSG_WritePos(&sv.multicast, pos, SV_GetRecomendedProtocol());
 }
 
 static void
-PF_WriteDir(vec3_t dir)
+PF_WriteDir(const vec3_t dir)
 {
 	MSG_WriteDir(&sv.multicast, dir);
 }
@@ -420,6 +435,7 @@ SV_InitGameProgs(void)
 	import.imageindex = SV_ImageIndex;
 
 	import.configstring = PF_Configstring;
+	import.get_configstring = PF_ConfigstringGet;
 	import.sound = PF_StartSound;
 	import.positioned_sound = SV_StartSound;
 

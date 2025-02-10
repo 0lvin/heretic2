@@ -295,7 +295,7 @@ PM_Friction(void)
 
 	vel = pml.velocity;
 
-	speed = (float)sqrt(vel[0] * vel[0] + vel[1] * vel[1] + vel[2] * vel[2]);
+	speed = VectorLength(vel);
 
 	if (speed < 1)
 	{
@@ -336,8 +336,9 @@ PM_Friction(void)
 	vel[2] = vel[2] * newspeed;
 }
 
-//Used for speedoomter display.
-void GetPlayerSpeed(float* speed, float* speedxy) {
+/* Used for speedoomter display. */
+void GetPlayerSpeed(float *speed, float *speedxy)
+{
 	*speedxy = sqrt(pml.velocity[0] * pml.velocity[0] + pml.velocity[1] * pml.velocity[1]);
 	*speed = VectorLength(pml.velocity);
 }
@@ -407,9 +408,6 @@ PM_AirAccelerate(vec3_t wishdir, float wishspeed, float accel)
 static void
 PM_AddCurrents(vec3_t wishvel)
 {
-	vec3_t v;
-	float s;
-
 	/* account for ladders */
 	if (pml.ladder && (fabs(pml.velocity[2]) <= 200))
 	{
@@ -454,9 +452,12 @@ PM_AddCurrents(vec3_t wishvel)
 		}
 	}
 
-	/* add water currents  */
+	/* add water currents */
 	if (pm->watertype & MASK_CURRENT)
 	{
+		vec3_t v;
+		float s;
+
 		VectorClear(v);
 
 		if (pm->watertype & CONTENTS_CURRENT_0)
@@ -502,6 +503,8 @@ PM_AddCurrents(vec3_t wishvel)
 	/* add conveyor belt velocities */
 	if (pm->groundentity)
 	{
+		vec3_t v;
+
 		VectorClear(v);
 
 		if (pml.groundcontents & CONTENTS_CURRENT_0)
@@ -1485,9 +1488,8 @@ Pmove(pmove_t *pmove)
 	PM_CatagorizePosition();
 
 #if !defined(DEDICATED_ONLY)
-    PM_UpdateUnderwaterSfx();
+	PM_UpdateUnderwaterSfx();
 #endif
 
 	PM_SnapPosition();
 }
-
