@@ -48,7 +48,14 @@ COMMON_FILES = \
 	../src/client/refresh/files/models_mdr.c \
 	render.c
 
-COMMON_HEADERS =  ../src/common/header/files.h ../src/common/header/shared.h iqm.h render.h
+COMMON_HEADERS =  \
+	../src/common/header/files.h \
+	../src/common/header/shared.h \
+	../src/client/refresh/files/stb_image.h \
+	../src/client/refresh/files/stb_truetype.h \
+	../src/client/refresh/files/stb_image_resize.h \
+	iqm.h \
+	render.h
 
 all: view-quake view-iqm sdlview
 clean:
