@@ -112,7 +112,7 @@ display ()
 
 	/* Draw the model */
 	RenderFrameItp(n, interp, mem_mod);
-	my_stbtt_print(0, 0, "abcde ЀЀЃґуля, з'їсти, істота, Європа");
+	// my_stbtt_print(0, 0, "abcde ЀЀЃґуля, з'їсти, істота, Європа");
 
 	glutSwapBuffers ();
 	glutPostRedisplay ();
