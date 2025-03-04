@@ -2414,10 +2414,8 @@ qboolean Pickup_Sphere(edict_t * ent, edict_t * other);
  * implementation. (-Wmissing-prototypes )
  *
  */
-#if 0
 #include "../savegame/savegame.h"
 #include "../savegame/tables/gamefunc_decs.h"
-#endif
 
 /* Heretic 2 */
 #define AI_EATING				0x00002000
