@@ -392,12 +392,12 @@ body_think(edict_t *self)
 	}
 
 	self->s.frame++;
-
+#if 0
 	if (self->s.frame > FRAME_stand40)
 	{
 		self->s.frame = FRAME_stand01;
 	}
-
+#endif
 	self->nextthink = level.time + 0.1;
 }
 

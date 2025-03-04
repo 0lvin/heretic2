@@ -217,7 +217,7 @@ target_anger_use(edict_t *self, edict_t *other /* unused */, edict_t *activator 
 
 					t->enemy = target;
 					t->monsterinfo.aiflags |= AI_TARGET_ANGER;
-					FoundTarget(t);
+					FoundTarget(t, true);
 				}
 			}
 
