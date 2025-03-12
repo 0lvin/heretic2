@@ -114,8 +114,8 @@ Tag_Score(edict_t *attacker, edict_t *victim, int scoreChange)
 			if (tag_count == 5)
 			{
 				quad = FindItem("Quad Damage");
-				attacker->client->pers.inventory[ITEM_INDEX(quad)]++;
-				quad->use(attacker, quad);
+				attacker->client->pers.inventory.Items[ITEM_INDEX(quad)]++;
+				Use_Quad(attacker, quad);
 				tag_count = 0;
 			}
 		}
@@ -163,7 +163,7 @@ Tag_PickupToken(edict_t *ent, edict_t *other)
 		tag_token = ent;
 	}
 
-	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+	other->client->pers.inventory.Items[ITEM_INDEX(ent->item)]++;
 
 	tag_owner = other;
 	tag_count = 0;
@@ -263,7 +263,7 @@ Tag_DropToken(edict_t *ent, gitem_t *item)
 
 	gi.linkentity(tag_token);
 
-	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ent->client->pers.inventory.Items[ITEM_INDEX(item)]--;
 	ValidateSelectedItem(ent);
 }
 

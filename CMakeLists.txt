@@ -469,6 +469,8 @@ set(Client-Source
 	${CLIENT_SRC_DIR}/cl_cin.c
 	${CLIENT_SRC_DIR}/cl_console.c
 	${CLIENT_SRC_DIR}/cl_download.c
+	${GAME_SRC_DIR}/common/resource_manager.c
+	${GAME_SRC_DIR}/client_effects.c
 	${CLIENT_SRC_DIR}/cl_effects.c
 	${CLIENT_SRC_DIR}/cl_entities.c
 	${CLIENT_SRC_DIR}/cl_input.c
