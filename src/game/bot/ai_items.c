@@ -1,29 +1,34 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 1997-2001 Id Software, Inc.
+ * Copyright (C) 2001 Steve Yeager
+ * Copyright (C) 2001-2004 Pat AfterMoon
+ * Copyright (c) ZeniMax Media Inc.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ *
+ * --------------------------------------------------------------
+ * The ACE Bot is a product of Steve Yeager, and is available from
+ * the ACE Bot homepage, at http://www.axionfx.com/ace.
+ *
+ * This program is a modification of the ACE Bot, and is therefore
+ * in NO WAY supported by Steve Yeager.
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
---------------------------------------------------------------
-The ACE Bot is a product of Steve Yeager, and is available from
-the ACE Bot homepage, at http://www.axionfx.com/ace.
-
-This program is a modification of the ACE Bot, and is therefore
-in NO WAY supported by Steve Yeager.
-*/
-
-#include "g_local.h"
+#include "../header/local.h"
 #include "ai_local.h"
 
 //ACE
@@ -34,7 +39,8 @@ in NO WAY supported by Steve Yeager.
 //==========================================
 void AI_EnemyAdded(edict_t *ent)
 {
-	players[num_players++] = ent;
+	if( num_AIEnemies < MAX_EDICTS )
+		AIEnemies[num_AIEnemies++] = ent;
 }
 
 //==========================================
@@ -47,27 +53,26 @@ void AI_EnemyRemoved(edict_t *ent)
 	int pos;
 
 	// watch for 0 players
-	if(num_players == 0)
+	if(num_AIEnemies < 1)
 		return;
 
-
 	// special case for only one player
-	if(num_players == 1)
+	if(num_AIEnemies == 1)
 	{
-		num_players = 0;
+		num_AIEnemies = 0;
 		return;
 	}
 
 	// Find the player
-	for(i=0;i<num_players;i++)
-		if(ent == players[i])
+	for(i=0;i<num_AIEnemies;i++)
+		if(ent == AIEnemies[i])
 			pos = i;
 
 	// decrement
-	for(i=pos;i<num_players-1;i++)
-		players[i] = players[i+1];
+	for( i=pos; i<num_AIEnemies-1; i++ )
+		AIEnemies[i] = AIEnemies[i+1];
 
-	num_players--;
+	num_AIEnemies--;
 }
 
 
@@ -206,25 +211,25 @@ float AI_ItemWeight(edict_t *self, edict_t *it)
 	//IT_WEAPON
 	if (it->item->flags & IT_WEAPON)
 	{
-		return self->ai.status.inventoryWeights[ITEM_INDEX(it->item)];
+		return self->ai->status.inventoryWeights[ITEM_INDEX(it->item)];
 	}
 
 	//IT_AMMO
 	if (it->item->flags & IT_AMMO)
 	{
-		return self->ai.status.inventoryWeights[ITEM_INDEX(it->item)];
+		return self->ai->status.inventoryWeights[ITEM_INDEX(it->item)];
 	}
 
 	//IT_ARMOR
 	if (it->item->flags & IT_ARMOR)
 	{
-		return self->ai.status.inventoryWeights[ITEM_INDEX(it->item)];
+		return self->ai->status.inventoryWeights[ITEM_INDEX(it->item)];
 	}
 
 	//IT_FLAG
 	if (it->item->flags & IT_FLAG)
 	{
-		return self->ai.status.inventoryWeights[ITEM_INDEX(it->item)];
+		return self->ai->status.inventoryWeights[ITEM_INDEX(it->item)];
 	}
 
 	//IT_HEALTH
@@ -249,7 +254,7 @@ float AI_ItemWeight(edict_t *self, edict_t *it)
 
 		if (weight < 0.2)
 			weight = 0.2;
-		
+
 		return weight;
 	}
 
@@ -260,7 +265,7 @@ float AI_ItemWeight(edict_t *self, edict_t *it)
 	//IT_TECH
 	if (it->item->flags & IT_TECH)
 	{
-		return self->ai.status.inventoryWeights[ITEM_INDEX(it->item)];
+		return self->ai->status.inventoryWeights[ITEM_INDEX(it->item)];
 	}
 
 	//IT_STAY_COOP
@@ -269,7 +274,7 @@ float AI_ItemWeight(edict_t *self, edict_t *it)
 
 	//item didn't have a recognizable item flag
 //	if (AIDevel.debugMode)
-//		G_PrintMsg (NULL, PRINT_HIGH, "(AI_ItemWeight) WARNING: Item with unhandled item flag:%s\n", it->classname);
+//		gi.cprintf(NULL, PRINT_HIGH, "(AI_ItemWeight) WARNING: Item with unhandled item flag:%s\n", it->classname);
 
 	return 0;
 }
@@ -281,7 +286,7 @@ float AI_ItemWeight(edict_t *self, edict_t *it)
 void SP_item_botroam (edict_t *ent)
 {
 	float weight;
-	
+
 	//try to convert Q3 weights (doh)
 	if(st.weight)
 	{
@@ -296,6 +301,6 @@ void SP_item_botroam (edict_t *ent)
 	}
 	else
 		weight = 30;	//default value
-				
+
 	ent->count = (int)weight;
 }

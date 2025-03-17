@@ -269,6 +269,12 @@ typedef struct
 #define IT_OFFENSE 0x00000040
 #define IT_HEALTH 0x00000080
 
+#if 0
+/* gitem_t->weapmodel for weapons indicates model index */
+#define IT_HEALTH 0x000000400 /* JABot */
+#define IT_FLAG	0x000000800 /* JABot */
+#endif
+
 /* gitem_t->weapmodel for weapons indicates model index */
 #define WEAP_BLASTER 1
 #define WEAP_SHOTGUN 2
@@ -289,6 +295,11 @@ typedef struct
 #define WEAP_PROXLAUNCH 17
 #define WEAP_CHAINFIST 18
 #define WEAP_GRAPPLE 19
+
+//JABot[start]
+#define WEAP_NONE			0
+#define WEAP_TOTAL			20
+//JABot[end]
 
 /* this structure is left intact through an entire game
    it should be initialized at dll load time, and read/written to
@@ -604,6 +615,8 @@ typedef struct
 	/* Addional fields for models */
 	vec3_t scale;
 	float health_multiplier;
+
+	int weight;//JABot
 
 	/* Heretic 2 */
 	int rotate;
@@ -1529,6 +1542,8 @@ void RemoveAttackingPainDaemons(edict_t *self);
 
 /* ============================================================================ */
 
+#include "ai.h"//JABot
+
 /* client_t->anim_priority */
 #define ANIM_BASIC 0            /* stand / run */
 #define ANIM_WAVE 1
@@ -1950,6 +1965,13 @@ struct edict_s
 	/* Third person view */
 	int chasedist1;
 	int chasedist2;
+
+	// ai_handle_t		*ai;		//jabot092(2)
+	qboolean		is_swim;	//AI_CategorizePosition
+	qboolean		is_step;
+	qboolean		is_ladder;
+	qboolean		was_swim;
+	qboolean		was_step;
 
 	float				ideal_pitch;	// Used by monsters and player.
 	float				yawOffset;		// Used in CreateMove_Step
@@ -2408,6 +2430,16 @@ qboolean Pickup_Pack(edict_t * ent, edict_t * other);
 qboolean Pickup_PowerArmor(edict_t * ent, edict_t * other);
 qboolean Pickup_Powerup(edict_t * ent, edict_t * other);
 qboolean Pickup_Sphere(edict_t * ent, edict_t * other);
+
+void CopyToBodyQue(edict_t *ent);
+void Use_Plat(edict_t *ent, edict_t *other, edict_t *activator);
+void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
+
+/* platforms states */
+#define STATE_TOP 0
+#define STATE_BOTTOM 1
+#define STATE_UP 2
+#define STATE_DOWN 3
 
 /*
  * Uncomment for check that exported functions declarations are same as in

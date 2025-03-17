@@ -2310,7 +2310,7 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 	gi.linkentity(self);
 }
 
-static void
+void
 CopyToBodyQue(edict_t *ent)
 {
 	edict_t *body;
@@ -2992,7 +2992,6 @@ PutClientInServer(edict_t *ent)
 	ent->s.angles[ROLL] = 0;
 	VectorCopy(ent->s.angles, client->ps.viewangles);
 	VectorCopy(ent->s.angles, client->v_angle);
-
 
 	/* spawn a spectator */
 	if (client->playerinfo.pers.spectator)

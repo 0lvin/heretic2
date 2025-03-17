@@ -27,10 +27,12 @@
 
 #include "header/local.h"
 
+#define MAX_IPFILTERS 1024
 
-void	Svcmd_Test_f (void)
+static void
+Svcmd_Test_f(void)
 {
-	gi.cprintf (NULL, PRINT_HIGH, "Svcmd_Test_f()\n");
+	gi.cprintf(NULL, PRINT_HIGH, "Svcmd_Test_f()\n");
 }
 
 /*
@@ -76,179 +78,205 @@ typedef struct
 	unsigned compare;
 } ipfilter_t;
 
-#define	MAX_IPFILTERS	1024
+static ipfilter_t ipfilters[MAX_IPFILTERS];
+static int numipfilters;
 
-ipfilter_t	ipfilters[MAX_IPFILTERS];
-int			numipfilters;
-
-/*
-=================
-StringToFilter
-=================
-*/
-static qboolean StringToFilter (char *s, ipfilter_t *f)
+static qboolean
+StringToFilter(char *s, ipfilter_t *f)
 {
-	char	num[128];
-	int		i, j;
-	byte	b[4];
-	byte	m[4];
+	char num[128];
+	int i, j;
+	YQ2_ALIGNAS_TYPE(unsigned) byte b[4];
+	YQ2_ALIGNAS_TYPE(unsigned) byte m[4];
 
-	for (i=0 ; i<4 ; i++)
+	if (!s || !f)
+	{
+		return false;
+	}
+
+	for (i = 0; i < 4; i++)
 	{
 		b[i] = 0;
 		m[i] = 0;
 	}
 
-	for (i=0 ; i<4 ; i++)
+	for (i = 0; i < 4; i++)
 	{
-		if (*s < '0' || *s > '9')
+		if ((*s < '0') || (*s > '9'))
 		{
 			gi.cprintf(NULL, PRINT_HIGH, "Bad filter address: %s\n", s);
 			return false;
 		}
 
 		j = 0;
+
 		while (*s >= '0' && *s <= '9')
 		{
 			num[j++] = *s++;
 		}
+
 		num[j] = 0;
-		b[i] = atoi(num);
+		b[i] = (int)strtol(num, (char **)NULL, 10);
+
 		if (b[i] != 0)
+		{
 			m[i] = 255;
+		}
 
 		if (!*s)
+		{
 			break;
+		}
+
 		s++;
 	}
 
+	/* PVS NOTE: maybe use memcpy here instead? */
 	f->mask = *(unsigned *)m;
 	f->compare = *(unsigned *)b;
 
 	return true;
 }
 
-/*
-=================
-SV_FilterPacket
-=================
-*/
-qboolean SV_FilterPacket (char *from)
+qboolean
+SV_FilterPacket(char *from)
 {
-	int		i;
-	unsigned	in;
-	byte m[4];
+	int i;
+	unsigned in;
+	YQ2_ALIGNAS_TYPE(unsigned) byte m[4];
 	char *p;
+
+	if (!from)
+	{
+		return false;
+	}
 
 	i = 0;
 	p = from;
-	while (*p && i < 4) {
+
+	while (*p && i < 4)
+	{
 		m[i] = 0;
-		while (*p >= '0' && *p <= '9') {
-			m[i] = m[i]*10 + (*p - '0');
+
+		while (*p >= '0' && *p <= '9')
+		{
+			m[i] = m[i] * 10 + (*p - '0');
 			p++;
 		}
-		if (!*p || *p == ':')
+
+		if (!*p || (*p == ':'))
+		{
 			break;
+		}
+
 		i++, p++;
 	}
 
+	/* PVS NOTE: maybe use memcpy instead? */
 	in = *(unsigned *)m;
 
-	for (i=0 ; i<numipfilters ; i++)
-		if ( (in & ipfilters[i].mask) == ipfilters[i].compare)
-			return (int)filterban->value;
+	for (i = 0; i < numipfilters; i++)
+	{
+		if ((in & ipfilters[i].mask) == ipfilters[i].compare)
+		{
+			return (filterban->value != 0);
+		}
+	}
 
-	return (int)!filterban->value;
+	return (filterban->value == 0);
 }
 
-
-/*
-=================
-SV_AddIP_f
-=================
-*/
-void SVCmd_AddIP_f (void)
+static void
+SVCmd_AddIP_f(void)
 {
-	int		i;
+	int i;
 
-	if (gi.argc() < 3) {
+	if (gi.argc() < 3)
+	{
 		gi.cprintf(NULL, PRINT_HIGH, "Usage:  addip <ip-mask>\n");
 		return;
 	}
 
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
+	{
 		if (ipfilters[i].compare == 0xffffffff)
-			break;		// free spot
+		{
+			break; /* free spot */
+		}
+	}
+
 	if (i == numipfilters)
 	{
 		if (numipfilters == MAX_IPFILTERS)
 		{
-			gi.cprintf (NULL, PRINT_HIGH, "IP filter list is full\n");
+			gi.cprintf(NULL, PRINT_HIGH, "IP filter list is full\n");
 			return;
 		}
+
 		numipfilters++;
 	}
 
-	if (!StringToFilter (gi.argv(2), &ipfilters[i]))
+	if (!StringToFilter(gi.argv(2), &ipfilters[i]))
+	{
 		ipfilters[i].compare = 0xffffffff;
+	}
 }
 
-/*
-=================
-SV_RemoveIP_f
-=================
-*/
-void SVCmd_RemoveIP_f (void)
+static void
+SVCmd_RemoveIP_f(void)
 {
-	ipfilter_t	f;
-	int			i, j;
+	ipfilter_t f;
+	int i, j;
 
-	if (gi.argc() < 3) {
+	if (gi.argc() < 3)
+	{
 		gi.cprintf(NULL, PRINT_HIGH, "Usage:  sv removeip <ip-mask>\n");
 		return;
 	}
 
-	if (!StringToFilter (gi.argv(2), &f))
+	if (!StringToFilter(gi.argv(2), &f))
+	{
 		return;
+	}
 
-	for (i=0 ; i<numipfilters ; i++)
-		if (ipfilters[i].mask == f.mask
-		&& ipfilters[i].compare == f.compare)
+	for (i = 0; i < numipfilters; i++)
+	{
+		if ((ipfilters[i].mask == f.mask) &&
+			(ipfilters[i].compare == f.compare))
 		{
-			for (j=i+1 ; j<numipfilters ; j++)
-				ipfilters[j-1] = ipfilters[j];
+			for (j = i + 1; j < numipfilters; j++)
+			{
+				ipfilters[j - 1] = ipfilters[j];
+			}
+
 			numipfilters--;
-			gi.cprintf (NULL, PRINT_HIGH, "Removed.\n");
+			gi.cprintf(NULL, PRINT_HIGH, "Removed.\n");
 			return;
 		}
-	gi.cprintf (NULL, PRINT_HIGH, "Didn't find %s.\n", gi.argv(2));
+	}
+
+	gi.cprintf(NULL, PRINT_HIGH, "Didn't find %s.\n", gi.argv(2));
 }
 
-/*
-=================
-SV_ListIP_f
-=================
-*/
-void SVCmd_ListIP_f (void)
+static void
+SVCmd_ListIP_f(void)
 {
-	int		i;
-	byte	b[4];
+	int i;
+	YQ2_ALIGNAS_TYPE(unsigned) byte b[4];
 
-	gi.cprintf (NULL, PRINT_HIGH, "Filter list:\n");
-	for (i=0 ; i<numipfilters ; i++)
+	gi.cprintf(NULL, PRINT_HIGH, "Filter list:\n");
+
+	for (i = 0; i < numipfilters; i++)
 	{
+		/* PVS NOTE: maybe use memcpy instead? */
 		*(unsigned *)b = ipfilters[i].compare;
-		gi.cprintf (NULL, PRINT_HIGH, "%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
+		gi.cprintf(NULL, PRINT_HIGH, "%3i.%3i.%3i.%3i\n", b[0],
+				b[1], b[2], b[3]);
 	}
 }
 
-/*
-=================
-SV_WriteIP_f
-=================
-*/
-void SVCmd_WriteIP_f (void)
+static void
+SVCmd_WriteIP_f(void)
 {
 	FILE *f;
 	char name[MAX_OSPATH];
@@ -264,24 +292,26 @@ void SVCmd_WriteIP_f (void)
 		sprintf(name, "%s/listip.cfg", g_game->string);
 	}
 
-	gi.cprintf (NULL, PRINT_HIGH, "Writing %s.\n", name);
+	gi.cprintf(NULL, PRINT_HIGH, "Writing %s.\n", name);
 
-	f = fopen (name, "wb");
+	f = Q_fopen(name, "wb");
+
 	if (!f)
 	{
-		gi.cprintf (NULL, PRINT_HIGH, "Couldn't open %s\n", name);
+		gi.cprintf(NULL, PRINT_HIGH, "Couldn't open %s\n", name);
 		return;
 	}
 
 	fprintf(f, "set filterban %d\n", (int)filterban->value);
 
-	for (i=0 ; i<numipfilters ; i++)
+	for (i = 0; i < numipfilters; i++)
 	{
+		/* PVS NOTE: maybe use memcpy instead? */
 		*(unsigned *)b = ipfilters[i].compare;
-		fprintf (f, "sv addip %i.%i.%i.%i\n", b[0], b[1], b[2], b[3]);
+		fprintf(f, "sv addip %i.%i.%i.%i\n", b[0], b[1], b[2], b[3]);
 	}
 
-	fclose (f);
+	fclose(f);
 }
 
 /*
@@ -293,6 +323,15 @@ void
 ServerCommand(void)
 {
 	char *cmd;
+
+#if 0
+	// JABot[start]
+	if (BOT_ServerCommand())
+	{
+		return;
+	}
+	// [end]
+#endif
 
 	cmd = gi.argv(1);
 
@@ -316,6 +355,14 @@ ServerCommand(void)
 	{
 		SVCmd_WriteIP_f();
 	}
+#if 0
+	/* JABot[start] */
+	else if(Q_stricmp(cmd, "removebot") == 0)
+	{
+		BOT_RemoveBot(gi.argv(2));
+	}
+	/* [end] */
+#endif
 	else
 	{
 		gi.cprintf(NULL, PRINT_HIGH, "Unknown server command \"%s\"\n", cmd);

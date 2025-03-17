@@ -184,16 +184,22 @@ GL4_Draw_StringScaled(int x, int y, float scale, qboolean alt, const char *messa
 
 			if (value >= 32 && value < MAX_FONTCODE)
 			{
+				float xf = 0, yf = 0, xdiff;
 				stbtt_aligned_quad q;
-				float xf = 0, yf = 0;
 
 				stbtt_GetBakedQuad(draw_fontcodes, gl4_font_height, gl4_font_height,
 					value - 32, &xf, &yf, &q, 1);
 
+				xdiff = (8 - xf / font_scale) / 2;
+				if (xdiff < 0)
+				{
+					xdiff = 0;
+				}
+
 				GL4_UseProgram(gl4state.si2D.shaderProgram);
 				GL4_Bind(alt ? draw_font_alt->texnum : draw_font->texnum);
 				drawTexturedRectangle(
-					(float)(x + q.x0 * scale / font_scale),
+					(float)(x + (xdiff + q.x0 / font_scale) * scale),
 					(float)(y + q.y0 * scale / font_scale + 8 * scale),
 					(q.x1 - q.x0) * scale / font_scale,
 					(q.y1 - q.y0) * scale / font_scale,
@@ -270,14 +276,7 @@ GL4_Draw_PicScaled(int x, int y, const char *pic, float factor, const char *altt
 		if (alttext && alttext[0])
 		{
 			/* Show alttext if provided */
-			int l, i;
-
-			l = strlen(alttext);
-			for (i = 0; i < l; i++)
-			{
-				GL4_Draw_CharScaled(x + i * 8 * factor, y, alttext[i], factor);
-			}
-
+			GL4_Draw_StringScaled(x, y, factor, false, alttext);
 			return;
 		}
 

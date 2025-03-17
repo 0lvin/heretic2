@@ -48,3 +48,18 @@ original clients (Vanilla Quake II) commands are still in place.
 * **listlights**: Show lights style and dlights list.
 
 * **thirdperson**: Third person view.
+
+## Jabot
+
+* **sv makenodes**: Start creating a navigation file from scratch.
+
+* **sv editnodes**: Modify the loaded navigation file.
+
+* **sv savenodes**: Save nodes file
+
+* **sv addbotroam**: Drop a bot roam node
+
+* **sv addbot <team> <name> <skin>**: Spawn a bot (consult ACEbot readme,
+  it's just the same thing)
+
+* **sv removebot <name>**: Remove a bot ("all" removes every bot in the map).

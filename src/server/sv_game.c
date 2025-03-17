@@ -207,7 +207,7 @@ PF_Configstring(int index, const char *val)
 
 	if ((internal_index < 0) || (internal_index >= MAX_CONFIGSTRINGS))
 	{
-		Com_Error(ERR_DROP, "configstring: bad internal_index %i\n", internal_index);
+		Com_Error(ERR_DROP, "configstring: bad index %i\n", internal_index);
 	}
 
 	/* change the string in sv */
@@ -787,6 +787,8 @@ SV_InitGameProgs(void)
 	/* Extension to classic Quake2 API */
 	import.FS_LoadFile = FS_LoadFile;
 	import.FS_FreeFile = FS_FreeFile;
+	import.FS_Gamedir = FS_Gamedir;
+	import.FS_CreatePath = FS_CreatePath;
 
 	/* Heretic 2 specific */
 	import.FS_NextPath = FS_NextPath;

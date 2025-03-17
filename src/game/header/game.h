@@ -215,8 +215,10 @@ typedef struct
 	   or a discrete file from anywhere in the quake search path
 	   a -1 return means the file does not exist
 	   NULL can be passed for buf to just determine existance */
-	int (*FS_LoadFile) (const char *name, void **buf);
-	void (*FS_FreeFile) (void *buf);
+	int (*FS_LoadFile)(const char *name, void **buf);
+	void (*FS_FreeFile)(void *buf);
+	const char * (*FS_Gamedir)(void);
+	void (*FS_CreatePath)(const char *path);
 	const char * (*get_configstring)(int num);
 
 	/* Heretic 2 specific */
@@ -232,7 +234,7 @@ typedef struct
 	// Files will be memory mapped read only. The returned buffer may be part of a larger '.pak'
 	// file, or a discrete file from anywhere in the quake search path. A -1 return means the file
 	// does not exist. NULL can be passed for buf to just determine existance.
-	char	*(*FS_NextPath)(const char *prevpath);
+	const char	*(*FS_NextPath)(const char *prevpath);
 
 	// pointer to the server side persistant effects arrary
 	void	*Persistant_Effects_Array;

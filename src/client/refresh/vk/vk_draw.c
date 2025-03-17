@@ -109,13 +109,19 @@ RE_Draw_StringScaled(int x, int y, float scale, qboolean alt, const char *messag
 
 			if (value >= 32 && value < MAX_FONTCODE)
 			{
+				float xf = 0, yf = 0, xdiff;
 				stbtt_aligned_quad q;
-				float xf = 0, yf = 0;
 
 				stbtt_GetBakedQuad(draw_fontcodes, vk_font_height, vk_font_height,
 					value - 32, &xf, &yf, &q, 1);
 
-				QVk_DrawTexRect((float)(x + q.x0 * scale / font_scale) / vid.width,
+				xdiff = (8 - xf / font_scale) / 2;
+				if (xdiff < 0)
+				{
+					xdiff = 0;
+				}
+
+				QVk_DrawTexRect((float)(x + (xdiff + q.x0 / font_scale) * scale) / vid.width,
 								(float)(y + q.y0 * scale / font_scale + 8 * scale) / vid.height,
 								(q.x1 - q.x0) * scale / font_scale / vid.width,
 								(q.y1 - q.y0) * scale / font_scale / vid.height,
@@ -220,15 +226,7 @@ RE_Draw_PicScaled(int x, int y, const char *name, float scale, const char *altte
 		if (alttext && alttext[0])
 		{
 			/* Show alttext if provided */
-			size_t l;
-			int i;
-
-			l = strlen(alttext);
-			for (i = 0; i < l; i++)
-			{
-				RE_Draw_CharScaled(x + i * 8 * scale, y, alttext[i], scale);
-			}
-
+			RE_Draw_StringScaled(x, y, scale, false, alttext);
 			return;
 		}
 
@@ -236,7 +234,7 @@ RE_Draw_PicScaled(int x, int y, const char *name, float scale, const char *altte
 		return;
 	}
 
-	RE_Draw_StretchPic(x, y, vk->width*scale, vk->height*scale, name);
+	RE_Draw_StretchPic(x, y, vk->width * scale, vk->height * scale, name);
 }
 
 /*

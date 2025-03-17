@@ -642,6 +642,9 @@ ExitLevel(void)
 {
 	char command[256];
 
+	level.exitintermission = 0;
+	level.intermissiontime = 0;
+
 	Com_sprintf(command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
 	gi.AddCommandString(command);
 	level.changemap = NULL;
@@ -995,4 +998,10 @@ G_RunFrame(void)
 
 	/* build the playerstate_t structures for all players */
 	ClientEndServerFrames();
+
+#if 0
+	//JABot[start]
+	AITools_Frame();	//give think time to AI debug tools
+	//[end]
+#endif
 }
