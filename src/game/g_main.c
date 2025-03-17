@@ -45,7 +45,8 @@ game_export_t globals;
 spawn_temp_t st;
 
 int sm_meat_index;
-qboolean MonsterAdvanceFrame = false;
+int snd_fry;
+int meansOfDeath;
 
 edict_t *g_edicts;
 
@@ -118,6 +119,8 @@ cvar_t *g_start_items;
 cvar_t *ai_model_scale;
 cvar_t *g_game;
 
+static void G_RunFrame(void);
+
 cvar_t *advancedstaff;
 cvar_t *sv_friction;
 cvar_t *flood_killdelay;
@@ -154,7 +157,7 @@ cvar_t *sv_cinematicfreeze;
 cvar_t *sv_jumpcinematic;
 cvar_t *blood_level;
 
-static void G_RunFrame(void);
+qboolean MonsterAdvanceFrame = false;
 
 /* ========================================================= */
 
@@ -350,7 +353,6 @@ ShutdownGame(void)
 
 	gi.FreeTags(TAG_LEVEL);
 	gi.FreeTags(TAG_GAME);
-
 	SpawnFree();
 	LocalizationFree();
 
@@ -485,6 +487,12 @@ EndDMLevel(void)
 	if ((int)dmflags->value & DF_SAME_LEVEL)
 	{
 		BeginIntermission(CreateTargetChangeLevel(level.mapname));
+		return;
+	}
+
+	if (*level.forcemap)
+	{
+		BeginIntermission(CreateTargetChangeLevel(level.forcemap));
 		return;
 	}
 
@@ -828,11 +836,13 @@ G_RunFrame(void)
 	level.framenum++;
 	level.time = level.framenum * FRAMETIME;
 
-	// choose a client for monsters to target this frame
-	// Only targets one client for all monsters
-	AI_SetSightClient ();
+	gibsthisframe = 0;
+	debristhisframe = 0;
 
-	// exit intermissions
+	/* choose a client for monsters to target this frame */
+	AI_SetSightClient();
+
+	/* exit intermissions */
 	if (level.exitintermission)
 	{
 		ExitLevel();
@@ -848,12 +858,11 @@ G_RunFrame(void)
 	else
 		SetNumPlayers();//for shrines and pick-ups
 
-	//
-	// treat each object in turn
-	// even the world gets a chance to think
-	//
+	/* treat each object in turn
+	   even the world gets a chance
+	   to think */
 	ent = g_edicts;
-	for(i = 0; i < globals.num_edicts; i++, ent++)
+	for (i = 0; i < globals.num_edicts; i++, ent++)
 	{
 
 		if (sv_cinematicfreeze->value)
@@ -863,7 +872,7 @@ G_RunFrame(void)
 		}
 
 		// If entity not in use - don`t process
-		if(!ent->inuse)
+		if (!ent->inuse)
 		{
 			continue;
 		}
@@ -986,6 +995,4 @@ G_RunFrame(void)
 
 	/* build the playerstate_t structures for all players */
 	ClientEndServerFrames();
-
-	assert(Vec3IsZero(vec3_origin));
 }

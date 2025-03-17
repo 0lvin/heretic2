@@ -959,9 +959,9 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 			else
 			{
 				if (((coop->value) && (ent->spawnflags & SPAWNFLAG_NOT_COOP)) ||
-					((skill->value == 0) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
-					((skill->value == 1) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
-					((skill->value >= 2) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
+					((skill->value == SKILL_EASY) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
+					((skill->value == SKILL_MEDIUM) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
+					((skill->value >= SKILL_HARD) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
 					)
 					{
 						G_FreeEdict(ent);
@@ -1237,6 +1237,11 @@ SP_worldspawn(edict_t *ent)
 {
 	int	i;
 
+	if (!ent)
+	{
+		return;
+	}
+
 	ent->movetype = MOVETYPE_PUSH;
 	ent->solid = SOLID_BSP;
 	ent->inuse = true; /* since the world doesn't use G_Spawn() */
@@ -1251,27 +1256,27 @@ SP_worldspawn(edict_t *ent)
 	if((ent->spawnflags & 1) && (deathmatch->value || coop->value))
 		level.body_que = -1;
 
-	// Set configstrings for items.
-
+	/* set configstrings for items */
 	SetItemNames();
 
 	if (st.nextmap)
-		strcpy (level.nextmap, st.nextmap);
+	{
+		strcpy(level.nextmap, st.nextmap);
+	}
 
-	// Make some data visible to the server.
-
+	/* make some data visible to the server */
 	if (ent->message && ent->message[0])
 	{
-		gi.configstring (CS_LEVEL_NUMBER, ent->message );
-		gi.configstring (CS_NAME, LocalizationMessage(ent->message, NULL));
-		strncpy (level.level_name, ent->message, sizeof(level.level_name));
+		gi.configstring(CS_LEVEL_NUMBER, ent->message );
+		gi.configstring(CS_NAME, LocalizationMessage(ent->message, NULL));
+		strncpy(level.level_name, ent->message, sizeof(level.level_name));
 		gi.dprintf("Unique Level Index : %d\n", atoi(ent->message));
 	}
 	else
 	{
 		if(ent->text_msg)
 			gi.configstring (CS_NAME, ent->text_msg);
-		strncpy (level.level_name, level.mapname, sizeof(level.level_name));
+		strncpy(level.level_name, level.mapname, sizeof(level.level_name));
 		gi.dprintf("Warning : No Unique Level Index\n");
 	}
 
