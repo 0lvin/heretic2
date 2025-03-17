@@ -263,17 +263,15 @@ typedef struct
 #define IT_NOT_GIVEABLE 0x00000080      /* item can not be given */
 #define IT_INSTANT_USE 0x000000100		/* item is insta-used on pickup if dmflag is set */
 #define IT_TECH 0x000000200 /* CTF */
-/* Custom heretic 2 IT_* flags */
-#define IT_PUZZLE 0x00000010
-#define IT_DEFENSE 0x00000020
-#define IT_OFFENSE 0x00000040
-#define IT_HEALTH 0x00000080
 
-#if 0
 /* gitem_t->weapmodel for weapons indicates model index */
 #define IT_HEALTH 0x000000400 /* JABot */
 #define IT_FLAG	0x000000800 /* JABot */
-#endif
+
+/* Custom heretic 2 IT_* flags */
+#define IT_PUZZLE 0x00001000
+#define IT_DEFENSE 0x00002000
+#define IT_OFFENSE 0x00004000
 
 /* gitem_t->weapmodel for weapons indicates model index */
 #define WEAP_BLASTER 1
@@ -1966,7 +1964,7 @@ struct edict_s
 	int chasedist1;
 	int chasedist2;
 
-	// ai_handle_t		*ai;		//jabot092(2)
+	ai_handle_t		*ai;		//jabot092(2)
 	qboolean		is_swim;	//AI_CategorizePosition
 	qboolean		is_step;
 	qboolean		is_ladder;
@@ -1990,8 +1988,6 @@ struct edict_s
 	MsgQueue_t			msgQ;
 	G_MessageHandler_t	msgHandler;
 	int					classID;
-
-	void				(*ai)(edict_t *self);
 
 	// Used by the game physics.
 
