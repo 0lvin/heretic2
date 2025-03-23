@@ -419,6 +419,10 @@ Con_Print(char *txt)
 				con.x = 0;
 				break;
 
+			case '\t':
+				con.x = (con.x / 4 + 1) * 4;
+				break;
+
 			case '\r':
 				con.x = 0;
 				cr = 1;

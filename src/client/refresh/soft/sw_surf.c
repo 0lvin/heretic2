@@ -465,8 +465,16 @@ D_CacheSurface(const entity_t *currententity, msurface_t *surface, int miplevel)
 	surfscale = 1.0 / (1 << miplevel);
 	r_drawsurf.surfmip = miplevel;
 	r_drawsurf.surfwidth = surface->extents[0] >> miplevel;
+	if (!r_drawsurf.surfwidth)
+	{
+		r_drawsurf.surfwidth = 1;
+	}
 	r_drawsurf.rowbytes = r_drawsurf.surfwidth;
 	r_drawsurf.surfheight = surface->extents[1] >> miplevel;
+	if (!r_drawsurf.surfheight)
+	{
+		r_drawsurf.surfheight = 1;
+	}
 
 	//
 	// allocate memory if needed

@@ -382,7 +382,7 @@ R_LoadPic(const char *name, const byte *pic, int width, int realwidth, int heigh
 			// temporary image memory size
 			int uploadwidth, uploadheight;
 
-			if (type == it_pic)
+			if (type == it_pic || type == it_skin)
 			{
 				uploadwidth = realwidth;
 				uploadheight = realheight;
@@ -442,7 +442,7 @@ R_LoadPic(const char *name, const byte *pic, int width, int realwidth, int heigh
 	else
 	/* used with WAL and 8bit textures */
 	{
-		if (r_scale8bittextures->value && type == it_pic)
+		if (r_scale8bittextures->value && (type == it_pic || type == it_skin))
 		{
 			byte *scaled = NULL;
 			image_t	*image;
