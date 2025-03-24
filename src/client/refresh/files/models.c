@@ -1947,7 +1947,7 @@ Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
 	ofs_glcmds = ofs_tris + pinmodel.num_tris * sizeof(dtriangle_t);
 	ofs_frames = ofs_glcmds + pinmodel.num_glcmds * sizeof(int);
 	ofs_animgroup = ofs_frames + framesize * pinmodel.num_frames;
-	ofs_end = ofs_animgroup + sizeof(dmdxframegroup_t);
+	ofs_end = ofs_animgroup + pinmodel.num_frames * sizeof(dmdxframegroup_t);
 
 	extradata = Hunk_Begin(ofs_end);
 	pheader = Hunk_Alloc(ofs_end);
@@ -1966,7 +1966,7 @@ Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->num_glcmds = pinmodel.num_glcmds;
 	pheader->num_frames = pinmodel.num_frames;
 	pheader->num_imgbit = 0;
-	pheader->num_animgroup = 1;
+	pheader->num_animgroup = pinmodel.num_frames;
 
 	pheader->ofs_meshes = ofs_meshes;
 	pheader->ofs_skins = ofs_skins;
