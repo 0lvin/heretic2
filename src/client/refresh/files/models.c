@@ -94,11 +94,11 @@ Mod_LoadAnimGroupList
 Generate animations groups from frames
 =================
 */
-static void
+void
 Mod_LoadAnimGroupList(dmdx_t *pheader)
 {
 	char newname[16] = {0}, oldname[16] = {0};
-	int i, newframe = 0, oldframe = 0, currgroup = 0;
+	int i, oldframe = 0, currgroup = 0;
 	dmdxframegroup_t *pframegroup;
 
 	pframegroup = (dmdxframegroup_t *)((char *)pheader + pheader->ofs_animgroup);
@@ -111,39 +111,27 @@ Mod_LoadAnimGroupList(dmdx_t *pheader)
 		poutframe = (daliasxframe_t *) ((byte *)pheader
 			+ pheader->ofs_frames + i * pheader->framesize);
 
-		for (j = 0; j < sizeof(poutframe->name); j++)
-		{
-			if ((poutframe->name[j] >= 'a' && poutframe->name[j] <= 'z') ||
-				(poutframe->name[j] >= 'A' && poutframe->name[j] <= 'Z') ||
-				(poutframe->name[j] == '_'))
-			{
-				newname[j] = poutframe->name[j];
-				continue;
-			}
+		strncpy(newname, poutframe->name, sizeof(poutframe->name) - 1);
 
-			if ((j > 0) && newname[j - 1] == '_')
-			{
-				newname[j - 1] = 0;
-			}
-			else
+		for (j = strlen(newname) - 1; j > 0; j--)
+		{
+			if ((newname[j] >= '0' && newname[j] <= '9') ||
+				(newname[j] == '_'))
 			{
 				newname[j] = 0;
+				continue;
 			}
 			break;
 		}
 
-		if (!strcmp(newname, oldname))
+		if (strcmp(newname, oldname))
 		{
-			newframe = i;
-		}
-		else
-		{
-			if ((newframe != oldframe) && (currgroup < pheader->num_animgroup))
+			if ((i != oldframe) && (currgroup < pheader->num_animgroup))
 			{
 				strncpy(pframegroup[currgroup].name, oldname,
 					sizeof(pframegroup[currgroup].name) - 1);
 				pframegroup[currgroup].ofs = oldframe;
-				pframegroup[currgroup].num = newframe - oldframe;
+				pframegroup[currgroup].num = i - oldframe;
 				currgroup++;
 			}
 			strcpy(oldname, newname);
@@ -156,7 +144,7 @@ Mod_LoadAnimGroupList(dmdx_t *pheader)
 		strncpy(pframegroup[currgroup].name, oldname,
 			sizeof(pframegroup[currgroup].name) - 1);
 		pframegroup[currgroup].ofs = oldframe;
-		pframegroup[currgroup].num = newframe - oldframe;
+		pframegroup[currgroup].num = i - oldframe;
 		currgroup++;
 	}
 
@@ -784,21 +772,6 @@ Mod_LoadFixImages(const char* mod_name, dmdx_t *pheader, qboolean internal)
 
 }
 
-void
-Mod_LoadUpdateAnimGroups(const char *mod_name, dmdx_t *pheader)
-{
-	dmdxframegroup_t *framegroups;
-
-	framegroups = (dmdxframegroup_t *)((char *)pheader + pheader->ofs_animgroup);
-	if (pheader->num_animgroup == 1)
-	{
-		/* create single animation group by default*/
-		strcpy(framegroups[0].name, "frame");
-		framegroups[0].ofs = 0;
-		framegroups[0].num = pheader->num_frames;
-	}
-}
-
 /*
  * Calculate offsets and allocate memory for model
  */
@@ -822,7 +795,6 @@ Mod_LoadAllocate(const char *mod_name, dmdx_t *dmdxheader, void **extradata)
 	pheader = Hunk_Alloc(dmdxheader->ofs_end);
 
 	memcpy(pheader, dmdxheader, sizeof(dmdx_t));
-	Mod_LoadUpdateAnimGroups(mod_name, pheader);
 
 	return pheader;
 }
@@ -1691,7 +1663,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	ofs_tris = ofs_meshes + pinmodel.num_meshes * sizeof(dmdxmesh_t);
 	ofs_st = ofs_tris + num_tris * sizeof(dtriangle_t);
 	ofs_animgroup = ofs_st + num_tris * 3 * sizeof(dstvert_t);
-	ofs_end = ofs_animgroup + sizeof(dmdxframegroup_t);
+	ofs_end = ofs_animgroup + pinmodel.num_frames * sizeof(dmdxframegroup_t);
 
 	extradata = Hunk_Begin(ofs_end);
 	pheader = Hunk_Alloc(ofs_end);
@@ -1707,7 +1679,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	pheader->num_st = num_tris * 3;
 	pheader->num_tris = num_tris;
 	pheader->num_imgbit = 0;
-	pheader->num_animgroup = 1;
+	pheader->num_animgroup = pinmodel.num_frames;
 	pheader->ofs_meshes = ofs_meshes;
 	pheader->ofs_skins = ofs_skins;
 	pheader->ofs_st = ofs_st;
@@ -1820,7 +1792,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		}
 		else
 		{
-			snprintf(frame->name, 15, "%d", i);
+			snprintf(frame->name, sizeof(frame->name), "frame%d", i);
 		}
 
 		PrepareFrameVertex(vertx + i * pheader->num_xyz,
