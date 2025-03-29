@@ -35,11 +35,6 @@
  * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 
-#include "../../common/header/common.h"
-#include "../common/singlylinkedlist.h"
-#include "../common/q_physics.h"
-#include "../common/arrayed_list.h"
-
 #define GAME_API_R97_VERSION 3
 #define GAME_API_VERSION 4
 

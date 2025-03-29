@@ -37,6 +37,7 @@
 #include "game.h"
 #include "buoy.h"
 #include "../player/library/player.h"
+#include "../common/q_physics.h"
 
 /* the "gameversion" client command will print this plus compile date */
 #define GAMEVERSION "yQRHeretic2"
