@@ -31,7 +31,13 @@
 
 static void *
 Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, readfile_t read_file, modtype_t *type);
+	readfile_t read_file, modtype_t *type);
+
+typedef struct
+{
+	char name[MAX_SKINNAME];
+	char value[MAX_SKINNAME];
+} def_entry_t;
 
 /*
 =================
@@ -79,6 +85,70 @@ Mod_LoadCmdList(const char *mod_name, dmdx_t *pheader, const int *pincmd)
 		R_Printf(PRINT_ALL, "%s: Entity %s has possible last element issues with %d verts.\n",
 			__func__, mod_name, poutcmd[pheader->num_glcmds-1]);
 	}
+}
+
+/*
+=================
+Mod_LoadAnimGroupList
+
+Generate animations groups from frames
+=================
+*/
+void
+Mod_LoadAnimGroupList(dmdx_t *pheader)
+{
+	char newname[16] = {0}, oldname[16] = {0};
+	int i, oldframe = 0, currgroup = 0;
+	dmdxframegroup_t *pframegroup;
+
+	pframegroup = (dmdxframegroup_t *)((char *)pheader + pheader->ofs_animgroup);
+
+	for (i = 0; i < pheader->num_frames; i++)
+	{
+		daliasxframe_t *poutframe;
+		int j;
+
+		poutframe = (daliasxframe_t *) ((byte *)pheader
+			+ pheader->ofs_frames + i * pheader->framesize);
+
+		strncpy(newname, poutframe->name, sizeof(poutframe->name) - 1);
+
+		for (j = strlen(newname) - 1; j > 0; j--)
+		{
+			if ((newname[j] >= '0' && newname[j] <= '9') ||
+				(newname[j] == '_'))
+			{
+				newname[j] = 0;
+				continue;
+			}
+			break;
+		}
+
+		if (strcmp(newname, oldname))
+		{
+			if ((i != oldframe) && (currgroup < pheader->num_animgroup))
+			{
+				strncpy(pframegroup[currgroup].name, oldname,
+					sizeof(pframegroup[currgroup].name) - 1);
+				pframegroup[currgroup].ofs = oldframe;
+				pframegroup[currgroup].num = i - oldframe;
+				currgroup++;
+			}
+			strcpy(oldname, newname);
+			oldframe = i;
+		}
+	}
+
+	if (currgroup < pheader->num_animgroup)
+	{
+		strncpy(pframegroup[currgroup].name, oldname,
+			sizeof(pframegroup[currgroup].name) - 1);
+		pframegroup[currgroup].ofs = oldframe;
+		pframegroup[currgroup].num = i - oldframe;
+		currgroup++;
+	}
+
+	pheader->num_animgroup = currgroup;
 }
 
 /*
@@ -139,7 +209,7 @@ Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t transl
 	qboolean normalfix = true;
 	int i;
 
-	for (i=0 ; i < pheader->num_frames ; i++)
+	for (i = 0; i < pheader->num_frames; i++)
 	{
 		daliasframe_t *pinframe;
 		daliasxframe_t *poutframe;
@@ -184,15 +254,24 @@ Load the SiN sam animation format frames
 =================
 */
 static void
-Mod_LoadFrames_SAM(dmdx_t *pheader, sin_sam_header_t **anims, int anim_num,
-	vec3_t translate, float scale)
+Mod_LoadFrames_SAM(dmdx_t *pheader, sin_sam_header_t **anims, def_entry_t *animations,
+	int anim_num, vec3_t translate, float scale)
 {
+	dmdxframegroup_t *framegroups;
 	int curr_frame = 0, i;
+
+	framegroups = (dmdxframegroup_t *)((char *)pheader + pheader->ofs_animgroup);
 
 	for (i = 0; i < anim_num; i++)
 	{
 		sin_frame_t *pinframe;
 		int k;
+
+		/* create single animation group by default*/
+		strncpy(framegroups[i].name, animations[i].name,
+			sizeof(framegroups[0].name) - 1);
+		framegroups[i].ofs = curr_frame;
+		framegroups[i].num = anims[i]->num_frames;
 
 		pinframe = (sin_frame_t *) ((char *)anims[i] + anims[i]->ofs_frames);
 
@@ -464,7 +543,7 @@ Mod_LoadMDXTriangleList(const char *mod_name, dmdx_t *pheader, const dtriangle_t
 
 /*
 =================
-Mod_LoadMD2TriangleList
+Mod_LoadDKMTriangleList
 
 Load DKM triangle lists
 =================
@@ -502,6 +581,32 @@ Mod_LoadDKMTriangleList(dmdx_t *pheader, const dkmtriangle_t *pintri)
 		}
 
 		mesh_nodes[m].num_tris = pouttri - pouttriofs - mesh_nodes[m].ofs_tris;
+	}
+}
+
+/*
+=================
+Mod_LoadDKMAnimGroupList
+
+Load DKM animation group lists
+=================
+*/
+static void
+Mod_LoadDKMAnimGroupList(dmdx_t *pheader, const byte *iframegroup)
+{
+	dmdxframegroup_t *pframegroup;
+	int i;
+
+	pframegroup = (dmdxframegroup_t *)((char *)pheader + pheader->ofs_animgroup);
+
+	for (i = 0; i < pheader->num_animgroup; i++)
+	{
+		memcpy(pframegroup[i].name, iframegroup, 16);
+		iframegroup += 16;
+		pframegroup[i].ofs = LittleLong(((int*)iframegroup)[0]);
+		pframegroup[i].num = LittleLong(((int*)iframegroup)[1]) + 1;
+		pframegroup[i].num -= pframegroup[i].ofs;
+		iframegroup += 8;
 	}
 }
 
@@ -667,6 +772,36 @@ Mod_LoadFixImages(const char* mod_name, dmdx_t *pheader, qboolean internal)
 
 }
 
+/*
+ * Calculate offsets and allocate memory for model
+ */
+dmdx_t *
+Mod_LoadAllocate(const char *mod_name, dmdx_t *dmdxheader, void **extradata)
+{
+	dmdx_t *pheader = NULL;
+
+	/* just skip header */
+	dmdxheader->ofs_meshes = sizeof(dmdx_t);
+	dmdxheader->ofs_skins = dmdxheader->ofs_meshes + dmdxheader->num_meshes * sizeof(dmdxmesh_t);
+	dmdxheader->ofs_st = dmdxheader->ofs_skins + dmdxheader->num_skins * MAX_SKINNAME;
+	dmdxheader->ofs_tris = dmdxheader->ofs_st + dmdxheader->num_st * sizeof(dstvert_t);
+	dmdxheader->ofs_frames = dmdxheader->ofs_tris + dmdxheader->num_tris * sizeof(dtriangle_t);
+	dmdxheader->ofs_glcmds = dmdxheader->ofs_frames + dmdxheader->num_frames * dmdxheader->framesize;
+	dmdxheader->ofs_imgbit = dmdxheader->ofs_glcmds + dmdxheader->num_glcmds * sizeof(int);
+	dmdxheader->ofs_animgroup = dmdxheader->ofs_imgbit + (
+		dmdxheader->skinwidth * dmdxheader->skinheight *
+		dmdxheader->num_skins * dmdxheader->num_imgbit / 8
+	);
+	dmdxheader->ofs_end = dmdxheader->ofs_animgroup + dmdxheader->num_animgroup * sizeof(dmdxframegroup_t);
+
+	*extradata = Hunk_Begin(dmdxheader->ofs_end);
+	pheader = Hunk_Alloc(dmdxheader->ofs_end);
+
+	memcpy(pheader, dmdxheader, sizeof(dmdx_t));
+
+	return pheader;
+}
+
 /* get full count of frames */
 static int
 Mod_LoadMDLCountFrames(const char *mod_name, const byte *buffer,
@@ -794,20 +929,18 @@ Mod_LoadModel_MDL
 */
 static void *
 Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, modtype_t *type)
+	modtype_t *type)
 {
-	const mdl_header_t		*pinmodel;
-	int		version;
-	dmdx_t		*pheader;
-	void	*extradata;
+	const mdl_header_t *pinmodel;
+	dmdx_t dmdxheader, *pheader;
 	dmdxmesh_t *mesh_nodes;
+	void *extradata;
+	int version;
 
 	/* local copy of all values */
 	int skinwidth, skinheight, framesize;
 	int num_meshes, num_skins, num_xyz, num_st, num_tris, num_glcmds,
-		num_frames, frame_count;
-	int ofs_meshes, ofs_skins, ofs_st, ofs_tris, ofs_frames, ofs_glcmds,
-		ofs_imgbit, ofs_end;
+		num_frames, frame_count, num_animgroup;
 
 	pinmodel = (mdl_header_t *)buffer;
 
@@ -830,6 +963,7 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	num_glcmds = (10 * num_tris) + 1;
 	num_frames = LittleLong(pinmodel->num_frames);
+	num_animgroup = num_frames;
 
 	framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * (num_xyz - 1);
 
@@ -871,45 +1005,23 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 		return NULL;
 	}
 
-	/* generate offsets */
-	ofs_meshes = sizeof(*pheader); // just skip header and go
-	ofs_skins = ofs_meshes + num_meshes * sizeof(dmdxmesh_t);
-	ofs_st = ofs_skins + num_skins * MAX_SKINNAME;
-	ofs_tris = ofs_st + num_st * sizeof(dstvert_t) * 2;
-	ofs_glcmds = ofs_tris + num_tris * sizeof(dtriangle_t);
-	ofs_frames = ofs_glcmds + num_glcmds * sizeof(int);
-	ofs_imgbit = ofs_frames + framesize * frame_count;
-	/* one less as single vertx in frame by default */
-	ofs_end = ofs_imgbit + (skinwidth * skinheight * num_skins);
-
-	*numskins = num_skins;
-	extradata = Hunk_Begin(ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-	pheader = Hunk_Alloc(ofs_end);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
-
 	/* copy back all values */
-	memset(pheader, 0, sizeof(*pheader));
-	pheader->skinwidth = skinwidth;
-	pheader->skinheight = skinheight;
-	pheader->framesize = framesize;
+	memset(&dmdxheader, 0, sizeof(dmdxheader));
+	dmdxheader.skinwidth = skinwidth;
+	dmdxheader.skinheight = skinheight;
+	dmdxheader.framesize = framesize;
 
-	pheader->num_meshes = num_meshes;
-	pheader->num_skins = num_skins;
-	pheader->num_xyz = num_xyz;
-	pheader->num_st = num_st * 2;
-	pheader->num_tris = num_tris;
-	pheader->num_glcmds = num_glcmds;
-	pheader->num_imgbit = 8;
-	pheader->num_frames = frame_count;
+	dmdxheader.num_meshes = num_meshes;
+	dmdxheader.num_skins = num_skins;
+	dmdxheader.num_xyz = num_xyz;
+	dmdxheader.num_st = num_st * 2;
+	dmdxheader.num_tris = num_tris;
+	dmdxheader.num_glcmds = num_glcmds;
+	dmdxheader.num_imgbit = 8;
+	dmdxheader.num_frames = frame_count;
+	dmdxheader.num_animgroup = num_animgroup;
 
-	pheader->ofs_meshes = ofs_meshes;
-	pheader->ofs_skins = ofs_skins;
-	pheader->ofs_st = ofs_st;
-	pheader->ofs_tris = ofs_tris;
-	pheader->ofs_frames = ofs_frames;
-	pheader->ofs_glcmds = ofs_glcmds;
-	pheader->ofs_imgbit = ofs_imgbit;
-	pheader->ofs_end = ofs_end;
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 
 	/* create single mesh */
 	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
@@ -933,7 +1045,7 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 			const mdl_texcoord_t *texcoords;
 			dstvert_t *poutst;
 
-			poutst = (dstvert_t *) ((byte *)pheader + ofs_st);
+			poutst = (dstvert_t *) ((byte *)pheader + pheader->ofs_st);
 
 			texcoords = (mdl_texcoord_t *)curr_pos;
 			curr_pos += sizeof(mdl_texcoord_t) * num_st;
@@ -964,7 +1076,7 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 			const mdl_triangle_t *triangles;
 			dtriangle_t *pouttri;
 
-			pouttri = (dtriangle_t *) ((byte *)pheader + ofs_tris);
+			pouttri = (dtriangle_t *) ((byte *)pheader + pheader->ofs_tris);
 
 			triangles = (mdl_triangle_t *) curr_pos;
 			curr_pos += sizeof(mdl_triangle_t) * num_tris;
@@ -1034,7 +1146,8 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 				daliasframe_t *frame;
 				int j;
 
-				frame = (daliasframe_t *) ((byte *)pheader + ofs_frames + frame_count * framesize);
+				frame = (daliasframe_t *) ((byte *)pheader + pheader->ofs_frames +
+					frame_count * framesize);
 				frame->scale[0] = scale[0];
 				frame->scale[1] = scale[1];
 				frame->scale[2] = scale[2];
@@ -1068,6 +1181,7 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 		}
 	}
 
+	Mod_LoadAnimGroupList(pheader);
 	Mod_LoadCmdGenerate(pheader);
 
 	Mod_LoadFixImages(mod_name, pheader, true);
@@ -1442,12 +1556,11 @@ Mod_LoadModel_MD3
 */
 static void *
 Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, modtype_t *type)
+	modtype_t *type)
 {
-	int framesize, ofs_skins, ofs_frames, ofs_glcmds, ofs_meshes, ofs_tris,
-		ofs_st, ofs_end;
-	int num_xyz = 0, num_tris = 0, num_glcmds = 0, num_skins = 0, meshofs = 0;
-	dmdx_t *pheader = NULL;
+	int framesize, num_xyz = 0, num_tris = 0, num_glcmds = 0, num_skins = 0,
+		meshofs = 0;
+	dmdx_t dmdxheader, *pheader;
 	md3_header_t pinmodel;
 	void *extradata;
 	dmdxmesh_t *mesh_nodes;
@@ -1521,38 +1634,23 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	num_glcmds = (10 * num_tris) + 1 * pinmodel.num_meshes;
 
 	framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_xyz;
-	ofs_skins = sizeof(dmdx_t);
-	ofs_frames = ofs_skins + num_skins * MAX_SKINNAME;
-	ofs_glcmds = ofs_frames + framesize * pinmodel.num_frames;
-	ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
-	ofs_tris = ofs_meshes + pinmodel.num_meshes * sizeof(dmdxmesh_t);
-	ofs_st = ofs_tris + num_tris * sizeof(dtriangle_t);
-	ofs_end = ofs_st + num_tris * 3 * sizeof(dstvert_t);
 
-	*numskins = num_skins;
-	extradata = Hunk_Begin(ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-	pheader = Hunk_Alloc(ofs_end);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
+	/* copy back all values */
+	memset(&dmdxheader, 0, sizeof(dmdxheader));
+	dmdxheader.framesize = framesize;
+	dmdxheader.skinheight = 256;
+	dmdxheader.skinwidth = 256;
+	dmdxheader.num_skins = num_skins;
+	dmdxheader.num_glcmds = num_glcmds;
+	dmdxheader.num_frames = pinmodel.num_frames;
+	dmdxheader.num_xyz = num_xyz;
+	dmdxheader.num_meshes = pinmodel.num_meshes;
+	dmdxheader.num_st = num_tris * 3;
+	dmdxheader.num_tris = num_tris;
+	dmdxheader.num_imgbit = 0;
+	dmdxheader.num_animgroup = pinmodel.num_frames;
 
-	pheader->framesize = framesize;
-	pheader->skinheight = 256;
-	pheader->skinwidth = 256;
-	pheader->num_skins = *numskins;
-	pheader->num_glcmds = num_glcmds;
-	pheader->num_frames = pinmodel.num_frames;
-	pheader->num_xyz = num_xyz;
-	pheader->num_meshes = pinmodel.num_meshes;
-	pheader->num_st = num_tris * 3;
-	pheader->num_tris = num_tris;
-	pheader->num_imgbit = 0;
-	pheader->ofs_meshes = ofs_meshes;
-	pheader->ofs_skins = ofs_skins;
-	pheader->ofs_st = ofs_st;
-	pheader->ofs_tris = ofs_tris;
-	pheader->ofs_frames = ofs_frames;
-	pheader->ofs_glcmds = ofs_glcmds;
-	pheader->ofs_imgbit = 0;
-	pheader->ofs_end = ofs_end;
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 
 	mesh_nodes = (dmdxmesh_t *)((byte *)pheader + pheader->ofs_meshes);
 	tris = (dtriangle_t*)((byte *)pheader + pheader->ofs_tris);
@@ -1656,7 +1754,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 		}
 		else
 		{
-			snprintf(frame->name, 15, "%d", i);
+			snprintf(frame->name, sizeof(frame->name), "frame%d", i);
 		}
 
 		PrepareFrameVertex(vertx + i * pheader->num_xyz,
@@ -1666,6 +1764,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen,
 	}
 	free(vertx);
 
+	Mod_LoadAnimGroupList(pheader);
 	Mod_LoadCmdGenerate(pheader);
 
 	Mod_LoadFixImages(mod_name, pheader, false);
@@ -1684,19 +1783,17 @@ ANACHRONOX Model
 */
 static void *
 Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, modtype_t *type)
+	modtype_t *type)
 {
-	int framesize, ofs_meshes, ofs_skins, ofs_st, ofs_tris, ofs_glcmds,
-		ofs_frames, ofs_end;
 	vec3_t translate = {0, 0, 0};
+	dmdx_t dmdxheader, *pheader;
 	const dtriangle_t *pintri;
 	const dstvert_t *pinst;
 	dmdxmesh_t *mesh_nodes;
 	const int *pincmd;
 	dmdla_t pinmodel;
+	int i, framesize;
 	void *extradata;
-	dmdx_t *pheader;
-	int i;
 
 	if (modfilelen < sizeof(pinmodel))
 	{
@@ -1775,43 +1872,23 @@ Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
 
 	framesize = sizeof(daliasxframe_t) +
 		(pinmodel.num_xyz - 1) * sizeof(dxtrivertx_t);
-	ofs_meshes = sizeof(*pheader); // just skip header and go
-	ofs_skins = ofs_meshes + 1 * sizeof(dmdxmesh_t);
-	ofs_st = ofs_skins + pinmodel.num_skins * MAX_SKINNAME;
-	ofs_tris = ofs_st + pinmodel.num_st * sizeof(dstvert_t);
-	ofs_glcmds = ofs_tris + pinmodel.num_tris * sizeof(dtriangle_t);
-	ofs_frames = ofs_glcmds + pinmodel.num_glcmds * sizeof(int);
-	ofs_end = ofs_frames + framesize * pinmodel.num_frames;
-
-	*numskins = pinmodel.num_skins;
-	extradata = Hunk_Begin(ofs_end +
-		Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-	pheader = Hunk_Alloc(ofs_end);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
 
 	/* Copy values as we have mostly same data format */
-	memset(pheader, 0, sizeof(*pheader));
-	pheader->skinwidth = pinmodel.skinwidth;
-	pheader->skinheight = pinmodel.skinheight;
-	pheader->framesize = framesize;
+	memset(&dmdxheader, 0, sizeof(dmdxheader));
+	dmdxheader.skinwidth = pinmodel.skinwidth;
+	dmdxheader.skinheight = pinmodel.skinheight;
+	dmdxheader.framesize = framesize;
+	dmdxheader.num_meshes = 1;
+	dmdxheader.num_skins = pinmodel.num_skins;
+	dmdxheader.num_xyz = pinmodel.num_xyz;
+	dmdxheader.num_st = pinmodel.num_st;
+	dmdxheader.num_tris = pinmodel.num_tris;
+	dmdxheader.num_glcmds = pinmodel.num_glcmds;
+	dmdxheader.num_frames = pinmodel.num_frames;
+	dmdxheader.num_imgbit = 0;
+	dmdxheader.num_animgroup = pinmodel.num_frames;
 
-	pheader->num_meshes = 1;
-	pheader->num_skins = pinmodel.num_skins;
-	pheader->num_xyz = pinmodel.num_xyz;
-	pheader->num_st = pinmodel.num_st;
-	pheader->num_tris = pinmodel.num_tris;
-	pheader->num_glcmds = pinmodel.num_glcmds;
-	pheader->num_frames = pinmodel.num_frames;
-	pheader->num_imgbit = 0;
-
-	pheader->ofs_meshes = ofs_meshes;
-	pheader->ofs_skins = ofs_skins;
-	pheader->ofs_st = ofs_st;
-	pheader->ofs_tris = ofs_tris;
-	pheader->ofs_glcmds = ofs_glcmds;
-	pheader->ofs_frames = ofs_frames;
-	pheader->ofs_imgbit = 0;
-	pheader->ofs_end = ofs_end;
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 
 	/* create single mesh */
 	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
@@ -1837,7 +1914,7 @@ Mod_LoadModel_MD2Anox(const char *mod_name, const void *buffer, int modfilelen,
 	//
 	Mod_LoadFrames_MD2Anox(pheader, (byte *)buffer + pinmodel.ofs_frames,
 		pinmodel.framesize, translate, pinmodel.resolution);
-
+	Mod_LoadAnimGroupList(pheader);
 	Mod_LoadFixNormals(pheader);
 
 	//
@@ -1862,19 +1939,18 @@ Mod_LoadModel_MD2
 */
 static void *
 Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, modtype_t *type)
+	modtype_t *type)
 {
-	int ofs_meshes, ofs_skins, ofs_st, ofs_tris, ofs_glcmds, ofs_frames, ofs_end;
 	vec3_t translate = {0, 0, 0};
+	dmdx_t dmdxheader, *pheader;
 	const dtriangle_t *pintri;
 	dmdxmesh_t *mesh_nodes;
 	const dstvert_t *pinst;
 	qboolean normalfix;
 	const int *pincmd;
-	dmdl_t pinmodel;
-	dmdx_t *pheader;
-	void *extradata;
 	int i, framesize;
+	dmdl_t pinmodel;
+	void *extradata;
 
 	if (modfilelen < sizeof(pinmodel))
 	{
@@ -1919,43 +1995,24 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 
 	framesize = sizeof(daliasxframe_t) +
 		(pinmodel.num_xyz - 1) * sizeof(dxtrivertx_t);
-	ofs_meshes = sizeof(*pheader); // just skip header and go
-	ofs_skins = ofs_meshes + 1 * sizeof(dmdxmesh_t);
-	ofs_st = ofs_skins + pinmodel.num_skins * MAX_SKINNAME;
-	ofs_tris = ofs_st + pinmodel.num_st * sizeof(dstvert_t);
-	ofs_glcmds = ofs_tris + pinmodel.num_tris * sizeof(dtriangle_t);
-	ofs_frames = ofs_glcmds + pinmodel.num_glcmds * sizeof(int);
-	ofs_end = ofs_frames + framesize * pinmodel.num_frames;
 
-	*numskins = pinmodel.num_skins;
-	extradata = Hunk_Begin(ofs_end +
-		Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-	pheader = Hunk_Alloc(ofs_end);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
+	/* copy back all values */
+	memset(&dmdxheader, 0, sizeof(dmdxheader));
+	dmdxheader.skinwidth = pinmodel.skinwidth;
+	dmdxheader.skinheight = pinmodel.skinheight;
+	dmdxheader.framesize = framesize;
 
-	/* Copy values as we have mostly same data format */
-	memset(pheader, 0, sizeof(*pheader));
-	pheader->skinwidth = pinmodel.skinwidth;
-	pheader->skinheight = pinmodel.skinheight;
-	pheader->framesize = framesize;
+	dmdxheader.num_meshes = 1;
+	dmdxheader.num_skins = pinmodel.num_skins;
+	dmdxheader.num_xyz = pinmodel.num_xyz;
+	dmdxheader.num_st = pinmodel.num_st;
+	dmdxheader.num_tris = pinmodel.num_tris;
+	dmdxheader.num_glcmds = pinmodel.num_glcmds;
+	dmdxheader.num_frames = pinmodel.num_frames;
+	dmdxheader.num_imgbit = 0;
+	dmdxheader.num_animgroup = pinmodel.num_frames;
 
-	pheader->num_meshes = 1;
-	pheader->num_skins = pinmodel.num_skins;
-	pheader->num_xyz = pinmodel.num_xyz;
-	pheader->num_st = pinmodel.num_st;
-	pheader->num_tris = pinmodel.num_tris;
-	pheader->num_glcmds = pinmodel.num_glcmds;
-	pheader->num_frames = pinmodel.num_frames;
-	pheader->num_imgbit = 0;
-
-	pheader->ofs_meshes = ofs_meshes;
-	pheader->ofs_skins = ofs_skins;
-	pheader->ofs_st = ofs_st;
-	pheader->ofs_tris = ofs_tris;
-	pheader->ofs_glcmds = ofs_glcmds;
-	pheader->ofs_frames = ofs_frames;
-	pheader->ofs_imgbit = 0;
-	pheader->ofs_end = ofs_end;
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 
 	/* create single mesh */
 	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
@@ -2017,6 +2074,11 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen,
 		pinmodel.framesize, translate);
 
 	//
+	// Update animation groups by frames
+	//
+	Mod_LoadAnimGroupList(pheader);
+
+	//
 	// load the glcmds
 	//
 	pincmd = (int *)((byte *)buffer + pinmodel.ofs_glcmds);
@@ -2046,7 +2108,6 @@ Mod_LoadModel_Flex
 */
 static void *
 Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins,
 	modtype_t *type)
 {
 	char *src = (char *)buffer;
@@ -2114,16 +2175,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 			dmdxheader.num_frames = LittleLong(header->num_frames);
 			dmdxheader.num_meshes = LittleLong(header->num_mesh_nodes);
 			dmdxheader.num_imgbit = 0;
-
-			// just skip header and meshes
-			dmdxheader.ofs_meshes = sizeof(dmdxheader);
-			dmdxheader.ofs_skins = dmdxheader.ofs_meshes + sizeof(dmdxmesh_t) * dmdxheader.num_meshes;
-			dmdxheader.ofs_st = dmdxheader.ofs_skins + dmdxheader.num_skins * MAX_SKINNAME;
-			dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
-			dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
-			dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
-			dmdxheader.ofs_imgbit = 0;
-			dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
+			dmdxheader.num_animgroup = dmdxheader.num_frames;
 
 			if (dmdxheader.num_xyz <= 0)
 			{
@@ -2159,14 +2211,10 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 				return NULL;
 			}
 
-			*numskins = dmdxheader.num_skins;
-			extradata = Hunk_Begin(dmdxheader.ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-			pheader = Hunk_Alloc(dmdxheader.ofs_end);
-			*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
-
-			memcpy(pheader, &dmdxheader, sizeof(*pheader));
+			pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 		}
-		else {
+		else
+		{
 			if (!pheader)
 			{
 				R_Printf(PRINT_ALL, "%s: %s has broken header.\n",
@@ -2243,6 +2291,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 				}
 
 				Mod_LoadFrames_MD2(pheader, (byte *)src, inframesize, translate);
+				Mod_LoadAnimGroupList(pheader);
 			}
 			else if (Q_strncasecmp(blockname, "glcmds", sizeof(blockname)) == 0)
 			{
@@ -2378,7 +2427,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen,
 
 static void *
 Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, modtype_t *type)
+	modtype_t *type)
 {
 	dmdx_t dmdxheader, *pheader = NULL;
 	dkm_header_t header = {0};
@@ -2447,23 +2496,9 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
 	dmdxheader.num_imgbit = 0;
+	dmdxheader.num_animgroup = header.num_animgroup;
 
-	/* just skip header */
-	dmdxheader.ofs_meshes = sizeof(dmdxheader);
-	dmdxheader.ofs_skins = dmdxheader.ofs_meshes + dmdxheader.num_meshes * sizeof(dmdxmesh_t);
-	dmdxheader.ofs_st = dmdxheader.ofs_skins + dmdxheader.num_skins * MAX_SKINNAME;
-	dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
-	dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
-	dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
-	dmdxheader.ofs_imgbit = 0;
-	dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
-
-	*numskins = dmdxheader.num_skins;
-	extradata = Hunk_Begin(dmdxheader.ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-	pheader = Hunk_Alloc(dmdxheader.ofs_end);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
-
-	memcpy(pheader, &dmdxheader, sizeof(dmdxheader));
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 
 	memcpy((byte*)pheader + pheader->ofs_skins, (byte *)buffer + header.ofs_skins,
 		pheader->num_skins * MAX_SKINNAME);
@@ -2479,9 +2514,12 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 		Mod_LoadFrames_DKM2(pheader, (byte *)buffer + header.ofs_frames,
 			header.framesize, header.translate);
 	}
+	Mod_LoadAnimGroupList(pheader);
 
 	Mod_LoadDKMTriangleList(pheader,
 		(dkmtriangle_t *)((byte *)buffer + header.ofs_tris));
+	Mod_LoadDKMAnimGroupList(pheader,
+		(byte *)buffer + header.ofs_animgroup);
 
 	Mod_LoadCmdGenerate(pheader);
 	Mod_LoadFixNormals(pheader);
@@ -2494,7 +2532,7 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen,
 
 static void *
 Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, modtype_t *type)
+	modtype_t *type)
 {
 	dmdx_t dmdxheader, *pheader = NULL;
 	vec3_t translate = {0, 0, 0};
@@ -2551,23 +2589,9 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
 	dmdxheader.num_imgbit = 0;
+	dmdxheader.num_animgroup = header.num_frames;
 
-	/* just skip header */
-	dmdxheader.ofs_meshes = sizeof(dmdxheader);
-	dmdxheader.ofs_skins = dmdxheader.ofs_meshes + dmdxheader.num_meshes * sizeof(dmdxmesh_t);
-	dmdxheader.ofs_st = dmdxheader.ofs_skins + dmdxheader.num_skins * MAX_SKINNAME;
-	dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
-	dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
-	dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
-	dmdxheader.ofs_imgbit = 0;
-	dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
-
-	*numskins = dmdxheader.num_skins;
-	extradata = Hunk_Begin(dmdxheader.ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-	pheader = Hunk_Alloc(dmdxheader.ofs_end);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
-
-	memcpy(pheader, &dmdxheader, sizeof(dmdxheader));
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 
 	memcpy((byte*)pheader + pheader->ofs_skins, (byte *)buffer + header.ofs_skins,
 		pheader->num_skins * MAX_SKINNAME);
@@ -2577,6 +2601,7 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 		header.num_glcmds);
 	Mod_LoadFrames_MD2(pheader, (byte *)buffer + header.ofs_frames,
 		header.framesize, translate);
+	Mod_LoadAnimGroupList(pheader);
 	Mod_LoadCmdGenerate(pheader);
 	Mod_LoadFixImages(mod_name, pheader, false);
 
@@ -2585,20 +2610,15 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen,
 	return extradata;
 }
 
-typedef struct
-{
-	char value[MAX_SKINNAME];
-} def_entry_t;
-
 static void *
-Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_file,
-	struct image_s ***skins, int *numskins)
+Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_file)
 {
 	char models_path[MAX_QPATH];
 	char base_model[MAX_QPATH * 2];
 	def_entry_t *skinnames = NULL;
 	def_entry_t *animations = NULL;
 	int actions_num, skinnames_num, i, base_size;
+	dmdx_t dmdxheader, *pheader = NULL;
 	sin_sbm_header_t *base;
 	sin_sam_header_t **anim;
 	void *extradata = NULL;
@@ -2608,6 +2628,7 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 	int animation_num = 0;
 	int num_tris = 0;
 	sin_trigroup_t *trigroup;
+	char prevvalue[MAX_SKINNAME] = {0};
 
 	actions_num = 0;
 	skinnames_num = 0;
@@ -2671,6 +2692,7 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 			{
 				snprintf(base_model, sizeof(base_model),
 					"%s/%s", models_path, token);
+				prevvalue[0] = 0;
 			}
 			else if (!Q_stricmp(ext, "sam"))
 			{
@@ -2679,6 +2701,17 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 				snprintf(animations[actions_num - 1].value,
 					sizeof(animations[actions_num - 1].value),
 					"%s/%s", models_path, token);
+				if (prevvalue[0])
+				{
+					strncpy(animations[actions_num - 1].name, prevvalue,
+						sizeof(animations[actions_num - 1].name) - 1);
+				}
+				else
+				{
+					sprintf(animations[actions_num - 1].name,
+						"optional%d", actions_num);
+				}
+				prevvalue[0] = 0;
 			}
 			else if (!Q_stricmp(ext, "tga"))
 			{
@@ -2687,6 +2720,21 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 				snprintf(skinnames[skinnames_num - 1].value,
 					sizeof(skinnames[skinnames_num - 1].value),
 					"%s/%s", models_path, token);
+				if (prevvalue[0])
+				{
+					strncpy(skinnames[skinnames_num - 1].name, prevvalue,
+						sizeof(skinnames[skinnames_num - 1].name) - 1);
+				}
+				else
+				{
+					sprintf(skinnames[skinnames_num - 1].name,
+						"optional%d", skinnames_num);
+				}
+				prevvalue[0] = 0;
+			}
+			else
+			{
+				strncpy(prevvalue, token, sizeof(prevvalue) - 1);
 			}
 		}
 	}
@@ -2776,7 +2824,6 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 		return NULL;
 	}
 
-	dmdx_t dmdxheader, *pheader = NULL;
 	dmdxheader.skinwidth = 256;
 	dmdxheader.skinheight = 256;
 
@@ -2792,23 +2839,10 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
 	dmdxheader.num_imgbit = 0;
+	dmdxheader.num_animgroup = animation_num;
 
-	/* just skip header */
-	dmdxheader.ofs_meshes = sizeof(dmdxheader);
-	dmdxheader.ofs_skins = dmdxheader.ofs_meshes + dmdxheader.num_meshes * sizeof(dmdxmesh_t);
-	dmdxheader.ofs_st = dmdxheader.ofs_skins + dmdxheader.num_skins * MAX_SKINNAME;
-	dmdxheader.ofs_tris = dmdxheader.ofs_st + dmdxheader.num_st * sizeof(dstvert_t);
-	dmdxheader.ofs_frames = dmdxheader.ofs_tris + dmdxheader.num_tris * sizeof(dtriangle_t);
-	dmdxheader.ofs_glcmds = dmdxheader.ofs_frames + dmdxheader.num_frames * dmdxheader.framesize;
-	dmdxheader.ofs_imgbit = 0;
-	dmdxheader.ofs_end = dmdxheader.ofs_glcmds + dmdxheader.num_glcmds * sizeof(int);
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 
-	*numskins = dmdxheader.num_skins;
-	extradata = Hunk_Begin(dmdxheader.ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-	pheader = Hunk_Alloc(dmdxheader.ofs_end);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
-
-	memcpy(pheader, &dmdxheader, sizeof(dmdxheader));
 	for (i = 0; i < pheader->num_skins; i ++)
 	{
 		strncpy((char*)pheader + pheader->ofs_skins +  i * MAX_SKINNAME,
@@ -2853,7 +2887,7 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 		tris_ofs += mesh_nodes[i].num_tris;
 	}
 
-	Mod_LoadFrames_SAM(pheader, anim, animation_num, translate, scale);
+	Mod_LoadFrames_SAM(pheader, anim, animations, animation_num, translate, scale);
 	Mod_LoadCmdGenerate(pheader);
 	Mod_LoadFixImages(mod_name, pheader, false);
 
@@ -2872,7 +2906,7 @@ Mod_LoadModel_SDEF_Text(const char *mod_name, char *curr_buff, readfile_t read_f
 
 static void *
 Mod_LoadModel_SDEF(const char *mod_name, const void *buffer, int modfilelen,
-	readfile_t read_file, struct image_s ***skins, int *numskins, modtype_t *type)
+	readfile_t read_file, modtype_t *type)
 {
 	void *extradata;
 	char *text;
@@ -2880,7 +2914,7 @@ Mod_LoadModel_SDEF(const char *mod_name, const void *buffer, int modfilelen,
 	text = malloc(modfilelen + 1);
 	memcpy(text, buffer, modfilelen);
 	text[modfilelen] = 0;
-	extradata = Mod_LoadModel_SDEF_Text(mod_name, text, read_file, skins, numskins);
+	extradata = Mod_LoadModel_SDEF_Text(mod_name, text, read_file);
 	free(text);
 
 	*type = mod_alias;
@@ -3223,7 +3257,7 @@ Mod_LoadModel_MDA_Free(mda_model_t *mda)
 
 static void *
 Mod_LoadModel_MDA_Text(const char *mod_name, char *curr_buff, size_t len,
-	readfile_t read_file, struct image_s ***skins, int *numskins, modtype_t *type)
+	readfile_t read_file, modtype_t *type)
 {
 	mda_model_t mda = {0};
 	const char *profile_name;
@@ -3257,7 +3291,6 @@ Mod_LoadModel_MDA_Text(const char *mod_name, char *curr_buff, size_t len,
 
 		/* little bit recursive load */
 		extradata = Mod_LoadModelFile(mod_name, base, base_size,
-			skins, numskins,
 			read_file, type);
 		free(base);
 
@@ -3327,7 +3360,7 @@ Mod_LoadModel_MDA_Text(const char *mod_name, char *curr_buff, size_t len,
 
 static void *
 Mod_LoadModel_MDA(const char *mod_name, const void *buffer, int modfilelen,
-	readfile_t read_file, struct image_s ***skins, int *numskins, modtype_t *type)
+	readfile_t read_file, modtype_t *type)
 {
 	void *extradata;
 	char *text;
@@ -3337,7 +3370,7 @@ Mod_LoadModel_MDA(const char *mod_name, const void *buffer, int modfilelen,
 	text[modfilelen - 4] = 0;
 
 	extradata = Mod_LoadModel_MDA_Text(mod_name, text, modfilelen - 4,
-		read_file, skins, numskins, type);
+		read_file, type);
 
 	free(text);
 
@@ -3353,7 +3386,6 @@ support for .sp2 sprites
 */
 static void *
 Mod_LoadSprite_SP2 (const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins,
 	modtype_t *type)
 {
 	const dsprite_t *sprin;
@@ -3364,10 +3396,8 @@ Mod_LoadSprite_SP2 (const char *mod_name, const void *buffer, int modfilelen,
 	sprin = (dsprite_t *)buffer;
 	numframes = LittleLong(sprin->numframes);
 
-	*numskins = numframes;
-	extradata = Hunk_Begin(modfilelen + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
+	extradata = Hunk_Begin(modfilelen);
 	sprout = Hunk_Alloc(modfilelen);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
 
 	sprout->ident = LittleLong(sprin->ident);
 	sprout->version = LittleLong(sprin->version);
@@ -3402,13 +3432,108 @@ Mod_LoadSprite_SP2 (const char *mod_name, const void *buffer, int modfilelen,
 	return extradata;
 }
 
+/*
+=================
+Mod_LoadModelFile
+=================
+*/
+static void *
+Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen,
+	readfile_t read_file, modtype_t *type)
+{
+	void *extradata = NULL;
+
+	/* code needs at least 2 ints for detect file type */
+	if (!buffer || modfilelen < (sizeof(unsigned) * 2))
+	{
+		return NULL;
+	}
+
+	switch (LittleLong(*(unsigned *)buffer))
+	{
+		case MDAHEADER:
+			extradata = Mod_LoadModel_MDA(mod_name, buffer, modfilelen,
+				read_file, type);
+			break;
+
+		case SDEFHEADER:
+			extradata = Mod_LoadModel_SDEF(mod_name, buffer, modfilelen,
+				read_file, type);
+			break;
+
+		case MDXHEADER:
+			extradata = Mod_LoadModel_MDX(mod_name, buffer, modfilelen,
+				type);
+			break;
+
+		case DKMHEADER:
+			extradata = Mod_LoadModel_DKM(mod_name, buffer, modfilelen,
+				type);
+			break;
+
+		case RAVENFMHEADER:
+			extradata = Mod_LoadModel_Flex(mod_name, buffer, modfilelen,
+				type);
+			break;
+
+		case IDALIASHEADER:
+			{
+				/* next short after file type */
+				short version;
+
+				version = LittleShort(((short*)buffer)[2]);
+				if (version == ALIAS_ANACHRONOX_VERSION ||
+					version == ALIAS_ANACHRONOX_VERSION_OLD)
+				{
+					extradata = Mod_LoadModel_MD2Anox(mod_name, buffer, modfilelen,
+						type);
+				}
+				else
+				{
+					extradata = Mod_LoadModel_MD2(mod_name, buffer, modfilelen,
+						type);
+				}
+			}
+			break;
+
+		case IDMDLHEADER:
+			extradata = Mod_LoadModel_MDL(mod_name, buffer, modfilelen,
+				type);
+			break;
+
+		case ID3HEADER:
+			extradata = Mod_LoadModel_MD3(mod_name, buffer, modfilelen,
+				type);
+			break;
+
+		case MDR_IDENT:
+			extradata = Mod_LoadModel_MDR(mod_name, buffer, modfilelen,
+				type);
+			break;
+
+		case IDMD5HEADER:
+			extradata = Mod_LoadModel_MD5(mod_name, buffer, modfilelen,
+				type);
+			break;
+
+		case IDSPRITEHEADER:
+			extradata = Mod_LoadSprite_SP2(mod_name, buffer, modfilelen,
+				type);
+			break;
+	}
+
+	return extradata;
+}
+
+
 static void
 Mod_LoadLimits(const char *mod_name, void *extradata, modtype_t type)
 {
 	if (type == mod_alias)
 	{
+		dmdxframegroup_t *framegroups;
 		dmdxmesh_t *mesh_nodes;
-		int num_mesh_nodes, i, num_glcmds = 0;
+		int i, num_glcmds = 0;
 		dmdx_t *pheader;
 
 		pheader = (dmdx_t *)extradata;
@@ -3425,15 +3550,21 @@ Mod_LoadLimits(const char *mod_name, void *extradata, modtype_t type)
 					__func__, mod_name, pheader->skinwidth, MAX_LBM_WIDTH);
 		}
 
-		num_mesh_nodes = pheader->num_meshes;
 		mesh_nodes = (dmdxmesh_t *)((char*)pheader + pheader->ofs_meshes);
-
-		for (i = 0; i < num_mesh_nodes; i++)
+		for (i = 0; i < pheader->num_meshes; i++)
 		{
 			R_Printf(PRINT_DEVELOPER, "%s: model %s mesh #%d: %d commands, %d tris\n",
 				__func__, mod_name, i, mesh_nodes[i].num_glcmds, mesh_nodes[i].num_tris);
 			num_glcmds += mesh_nodes[i].num_glcmds;
 		}
+
+		framegroups = (dmdxframegroup_t *)((char *)pheader + pheader->ofs_animgroup);
+		for (i = 0; i < pheader->num_animgroup; i++)
+		{
+			R_Printf(PRINT_DEVELOPER, "%s: model %s animation group #%d: '%s' %d -> %d\n",
+				__func__, mod_name, i, framegroups[i].name, framegroups[i].ofs, framegroups[i].num);
+		}
+
 		R_Printf(PRINT_DEVELOPER,
 			"%s: model %s num tris %d / num vert %d / commands %d of %d / frames %d\n",
 			__func__, mod_name, pheader->num_tris, pheader->num_xyz, num_glcmds,
@@ -3506,97 +3637,28 @@ Mod_LoadMinMaxUpdate(const char *mod_name, vec3_t mins, vec3_t maxs, void *extra
 	}
 }
 
-/*
-=================
-Mod_LoadModelFile
-=================
-*/
-static void *
-Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, readfile_t read_file, modtype_t *type)
+static void
+Mod_AllocateSkins(const char *mod_name, struct image_s ***skins, int *numskins,
+	void *extradata, modtype_t type)
 {
-	void *extradata = NULL;
-
-	/* code needs at least 2 ints for detect file type */
-	if (!buffer || modfilelen < (sizeof(unsigned) * 2))
+	if (type == mod_sprite)
 	{
-		return NULL;
-	}
+		dsprite_t	*sprout;
 
-	switch (LittleLong(*(unsigned *)buffer))
+		sprout = (dsprite_t *)extradata;
+
+		*numskins = sprout->numframes;
+		*skins = malloc(Q_max(*numskins, 1) * sizeof(struct image_s *));
+	}
+	else if (type == mod_alias)
 	{
-		case MDAHEADER:
-			extradata = Mod_LoadModel_MDA(mod_name, buffer, modfilelen,
-				read_file, skins, numskins, type);
-			break;
+		const dmdx_t *pheader;
 
-		case SDEFHEADER:
-			extradata = Mod_LoadModel_SDEF(mod_name, buffer, modfilelen,
-				read_file, skins, numskins, type);
-			break;
+		pheader = (dmdx_t *)extradata;
 
-		case MDXHEADER:
-			extradata = Mod_LoadModel_MDX(mod_name, buffer, modfilelen,
-				skins, numskins, type);
-			break;
-
-		case DKMHEADER:
-			extradata = Mod_LoadModel_DKM(mod_name, buffer, modfilelen,
-				skins, numskins, type);
-			break;
-
-		case RAVENFMHEADER:
-			extradata = Mod_LoadModel_Flex(mod_name, buffer, modfilelen,
-				skins, numskins, type);
-			break;
-
-		case IDALIASHEADER:
-			{
-				/* next short after file type */
-				short version;
-
-				version = LittleShort(((short*)buffer)[2]);
-				if (version == ALIAS_ANACHRONOX_VERSION ||
-					version == ALIAS_ANACHRONOX_VERSION_OLD)
-				{
-					extradata = Mod_LoadModel_MD2Anox(mod_name, buffer, modfilelen,
-						skins, numskins, type);
-				}
-				else
-				{
-					extradata = Mod_LoadModel_MD2(mod_name, buffer, modfilelen,
-						skins, numskins, type);
-				}
-			}
-			break;
-
-		case IDMDLHEADER:
-			extradata = Mod_LoadModel_MDL(mod_name, buffer, modfilelen,
-				skins, numskins, type);
-			break;
-
-		case ID3HEADER:
-			extradata = Mod_LoadModel_MD3(mod_name, buffer, modfilelen,
-				skins, numskins, type);
-			break;
-
-		case MDR_IDENT:
-			extradata = Mod_LoadModel_MDR(mod_name, buffer, modfilelen,
-				skins, numskins, type);
-			break;
-
-		case IDMD5HEADER:
-			extradata = Mod_LoadModel_MD5(mod_name, buffer, modfilelen,
-				skins, numskins, type);
-			break;
-
-		case IDSPRITEHEADER:
-			extradata = Mod_LoadSprite_SP2(mod_name, buffer, modfilelen,
-				skins, numskins, type);
-			break;
+		*numskins = pheader->num_skins;
+		*skins = malloc(Q_max(*numskins, 1) * sizeof(struct image_s *));
 	}
-
-	return extradata;
 }
 
 /*
@@ -3612,11 +3674,11 @@ Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
 {
 	void *extradata;
 
-	extradata = Mod_LoadModelFile(mod_name, buffer, modfilelen, skins, numskins,
-		read_file, type);
+	extradata = Mod_LoadModelFile(mod_name, buffer, modfilelen, read_file, type);
 
 	if (extradata)
 	{
+		Mod_AllocateSkins(mod_name, skins, numskins, extradata, *type);
 		Mod_LoadMinMaxUpdate(mod_name, mins, maxs, extradata, *type);
 		Mod_ReLoadSkins(mod_name, *skins, find_image, load_image, extradata, *type);
 		Mod_LoadLimits(mod_name, extradata, *type);

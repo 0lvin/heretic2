@@ -317,9 +317,12 @@ typedef struct dkm_header_s
 	int ofs_tris;          /* offset for dtriangles */
 	int ofs_frames;        /* offset for first frame */
 	int ofs_glcmds;
-	/* has 52 * num_surf and additional 24 * x structures */
+	/* has 52 * num_surf */
 	int ofs_surf;          /* meshes */
 	int ofs_end;           /* end of file */
+	/* has additional 24 * num_animgroup structures */
+	int num_animgroup;     /* num of animation group */
+	int ofs_animgroup;     /* offset of animation group */
 } dkm_header_t;
 
 /* Kingpin mdx format */
@@ -473,6 +476,7 @@ typedef struct
 	int num_frames;
 	int num_meshes;
 	int num_imgbit; /* image format of embeded images */
+	int num_animgroup;
 
 	int ofs_skins;  /* each skin is a MAX_SKINNAME string */
 	int ofs_st;     /* byte offset from start for stverts */
@@ -481,6 +485,7 @@ typedef struct
 	int ofs_glcmds;
 	int ofs_meshes;
 	int ofs_imgbit; /* offest of embeded image */
+	int ofs_animgroup; /* offset to animation frames group */
 	int ofs_end;    /* end of file */
 } dmdx_t;
 

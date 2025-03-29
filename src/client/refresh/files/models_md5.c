@@ -97,6 +97,7 @@ typedef struct md5_model_s
 	md5_frame_t *skelFrames;
 	vec2_t *st;
 	char *skins;
+	char *framenames;
 
 	int num_frames;
 	int num_joints;
@@ -104,6 +105,7 @@ typedef struct md5_model_s
 	int num_verts;
 	int num_tris;
 	int num_skins;
+	int num_framenames;
 	float frameRate;
 } md5_model_t;
 
@@ -683,6 +685,12 @@ FreeModelMd5(md5_model_t *mdl)
 		mdl->skins = NULL;
 	}
 
+	if (mdl->framenames)
+	{
+		free(mdl->framenames);
+		mdl->framenames = NULL;
+	}
+
 	if (mdl->meshes)
 	{
 		int i;
@@ -770,6 +778,17 @@ ReadMD5Model(const char *buffer, size_t size)
 				memset(mdl->skins, 0, mdl->num_skins * MAX_SKINNAME);
 			}
 		}
+		else if (!strcmp(token, "numFramenames"))
+		{
+			token = COM_Parse(&curr_buff);
+			mdl->num_framenames = (int)strtol(token, (char **)NULL, 10);
+
+			if (mdl->num_framenames > 0)
+			{
+				mdl->framenames = malloc(mdl->num_framenames * 16);
+				memset(mdl->framenames, 0, mdl->num_framenames * 16);
+			}
+		}
 		else if (!strcmp(token, "numJoints"))
 		{
 			token = COM_Parse(&curr_buff);
@@ -808,6 +827,22 @@ ReadMD5Model(const char *buffer, size_t size)
 
 				skinname = mdl->skins + pos * MAX_SKINNAME;
 				strncpy(skinname, token, MAX_SKINNAME - 1);
+			}
+		}
+		else if (!strcmp(token, "framename"))
+		{
+			int pos;
+
+			token = COM_Parse(&curr_buff);
+			pos = (int)strtol(token, (char **)NULL, 10);
+			token = COM_Parse(&curr_buff);
+
+			if (pos >= 0 && pos < mdl->num_framenames)
+			{
+				char *framename;
+
+				framename = mdl->framenames + pos * 16;
+				strncpy(framename, token, 15);
 			}
 		}
 		else if (!strcmp(token, "joints"))
@@ -1220,13 +1255,12 @@ MD5_ComputeNormals(md5_model_t *md5file)
 /* mesh and anim should be in same buffer with zero as separator */
 void *
 Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
-	struct image_s ***skins, int *numskins, modtype_t *type)
+	modtype_t *type)
 {
-	int framesize, ofs_skins, ofs_frames, ofs_glcmds, ofs_meshes, ofs_tris, ofs_st, ofs_end;
-	int i, num_verts = 0, num_tris = 0, num_glcmds = 0;
+	int framesize, i, num_verts = 0, num_tris = 0, num_glcmds = 0;
+	dmdx_t dmdxheader, *pheader;
 	int mesh_size, anim_size;
 	void *extradata = NULL;
-	dmdx_t *pheader = NULL;
 	dmdxmesh_t *mesh_nodes;
 	const byte *endbuffer;
 	md5_model_t *md5file;
@@ -1300,44 +1334,39 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
 	MD5_ComputeNormals(md5file);
 
 	framesize = sizeof(daliasxframe_t) + sizeof(dxtrivertx_t) * num_verts;
-	ofs_skins = sizeof(dmdx_t);
-	ofs_frames = ofs_skins + md5file->num_skins * MAX_SKINNAME;
-	ofs_glcmds = ofs_frames + framesize * md5file->num_frames;
-	ofs_meshes = ofs_glcmds + num_glcmds * sizeof(int);
-	ofs_tris = ofs_meshes + md5file->num_meshes * sizeof(dmdxmesh_t);
-	ofs_st = ofs_tris + md5file->num_tris * 3 * sizeof(dtriangle_t);
-	ofs_end = ofs_st + md5file->num_tris * 3 * sizeof(dstvert_t);
 
-	*numskins = md5file->num_skins;
-	extradata = Hunk_Begin(ofs_end + Q_max(*numskins, MAX_MD2SKINS) * sizeof(struct image_s *));
-	pheader = Hunk_Alloc(ofs_end);
-	*skins = Hunk_Alloc((*numskins) * sizeof(struct image_s *));
+	/* copy back all values */
+	memset(&dmdxheader, 0, sizeof(dmdxheader));
+	dmdxheader.framesize = framesize;
+	dmdxheader.skinheight = 256;
+	dmdxheader.skinwidth = 256;
+	dmdxheader.num_skins = md5file->num_skins;
+	dmdxheader.num_glcmds = num_glcmds;
+	dmdxheader.num_frames = md5file->num_frames;
+	dmdxheader.num_xyz = num_verts;
+	dmdxheader.num_meshes = md5file->num_meshes;
+	dmdxheader.num_st = md5file->num_tris * 3;
+	dmdxheader.num_tris = md5file->num_tris;
+	dmdxheader.num_imgbit = 0;
+	dmdxheader.num_animgroup = md5file->num_frames;
 
-	pheader->framesize = framesize;
-	pheader->skinheight = 256;
-	pheader->skinwidth = 256;
-	pheader->num_skins = *numskins;
-	pheader->num_glcmds = num_glcmds;
-	pheader->num_frames = md5file->num_frames;
-	pheader->num_xyz = num_verts;
-	pheader->num_meshes = md5file->num_meshes;
-	pheader->num_st = md5file->num_tris * 3;
-	pheader->num_tris = md5file->num_tris;
-	pheader->num_imgbit = 0;
-	pheader->ofs_meshes = ofs_meshes;
-	pheader->ofs_skins = ofs_skins;
-	pheader->ofs_st = ofs_st;
-	pheader->ofs_tris = ofs_tris;
-	pheader->ofs_frames = ofs_frames;
-	pheader->ofs_glcmds = ofs_glcmds;
-	pheader->ofs_imgbit = 0;
-	pheader->ofs_end = ofs_end;
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
 
 	for(i = 0; i < md5file->num_frames; i ++)
 	{
 		daliasxframe_t *frame = (daliasxframe_t *)(
 			(byte *)pheader + pheader->ofs_frames + i * pheader->framesize);
-		snprintf(frame->name, 15, "%d", i);
+
+		if (md5file->framenames && (i < md5file->num_framenames))
+		{
+			strncpy(frame->name, md5file->framenames + i * 16,
+				sizeof(frame->name) - 1);
+		}
+		else
+		{
+			snprintf(frame->name, sizeof(frame->name), "frame%d", i);
+		}
+
 		PrepareFrameVertex((md5file->skelFrames + i)->vertexArray,
 			num_verts, frame);
 	}
@@ -1379,6 +1408,7 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen,
 		num_tris += md5file->meshes[i].num_tris;
 	}
 
+	Mod_LoadAnimGroupList(pheader);
 	Mod_LoadCmdGenerate(pheader);
 
 	/* register all skins */

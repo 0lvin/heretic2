@@ -671,10 +671,16 @@ G_InitEdict(edict_t *e)
 	e->movetype = MOVETYPE_NONE;
 	e->friction = 1.0;
 	e->elasticity = ELASTICITY_SLIDE;
-	VectorSet(e->rrs.scale, 1.0, 1.0, 1.0);
+
 	e->msgHandler = NULL;
 	e->svflags = 0;
 	e->reflected_time = level.time;
+
+	e->gravityVector[0] = 0.0;
+	e->gravityVector[1] = 0.0;
+	e->gravityVector[2] = -1.0;
+
+	VectorSet(e->rrs.scale, 1.0, 1.0, 1.0);
 }
 
 /*

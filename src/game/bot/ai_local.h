@@ -131,17 +131,12 @@ void		AI_InitNavigationData(void);
 int			AI_FlagsForNode( vec3_t origin, edict_t *passent );
 float		AI_Distance( vec3_t o1, vec3_t o2 );
 
-void AITools_AddBotRoamNode(void);
-
 
 // ai_tools.c
 //----------------------------------------------------------
 void		AIDebug_SetChased(edict_t *ent);
 void		AITools_DrawPath(edict_t *self, int node_from, int node_to);
 void		AITools_DrawLine(vec3_t origin, vec3_t dest);
-void		AITools_InitEditnodes( void );
-void		AITools_InitMakenodes( void );
-void		AITools_SaveNodes( void );
 qboolean	AI_LoadPLKFile( char *mapname );
 
 // ai_links.c
@@ -160,8 +155,6 @@ int			AI_GravityBoxToLink(int n1, int n2);
 //----------------------------------------------------------
 qboolean	AI_CanPick_Ammo (edict_t *ent, gitem_t *item);
 qboolean	AI_CanUseArmor (gitem_t *item, edict_t *other);
-void		AI_BotRoamFinishTimeouts(edict_t *self);
-
 
 //bot_classes
 //----------------------------------------------------------

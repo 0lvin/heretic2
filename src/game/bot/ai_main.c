@@ -85,12 +85,15 @@ void G_FreeAI( edict_t *ent )
 // G_SpawnAI
 // allocate ai_handle_t for this entity
 //==========================================
-void G_SpawnAI( edict_t *ent )
+void
+G_SpawnAI(edict_t *ent)
 {
-	if( !ent->ai )
-		ent->ai = gi.TagMalloc (sizeof(ai_handle_t), TAG_LEVEL);
+	if(!ent->ai)
+	{
+		ent->ai = gi.TagMalloc(sizeof(ai_handle_t), TAG_LEVEL);
+	}
 
-	memset( ent->ai, 0, sizeof(ai_handle_t));
+	memset(ent->ai, 0, sizeof(ai_handle_t));
 }
 
 //==========================================
@@ -127,10 +130,9 @@ void AI_ResetWeights(edict_t *ent)
 // AI_ResetNavigation
 // Init bot navigation. Called at first spawn & each respawn
 //==========================================
-void AI_ResetNavigation(edict_t *ent)
+void
+AI_ResetNavigation(edict_t *ent)
 {
-	int		i;
-
 	ent->enemy = NULL;
 	ent->movetarget = NULL;
 	ent->ai->state_combat_timeout = 0.0;
@@ -146,71 +148,9 @@ void AI_ResetNavigation(edict_t *ent)
 	ent->ai->current_node = INVALID;
 	ent->ai->next_node = INVALID;
 
-	VectorSet( ent->ai->move_vector, 0, 0, 0 );
-
-	//reset bot_roams timeouts
-	for( i=0; i<nav.num_broams; i++)
-		ent->ai->status.broam_timeouts[i] = 0.0;
+	VectorSet(ent->ai->move_vector, 0, 0, 0);
 }
 
-
-//==========================================
-// AI_BotRoamForLRGoal
-//
-// Try assigning a bot roam node as LR Goal
-//==========================================
-qboolean AI_BotRoamForLRGoal(edict_t *self, int current_node)
-{
-	int		i;
-	float	cost;
-	float	weight, best_weight = 0.0;
-	int		goal_node = INVALID;
-	// int		best_broam = INVALID;
-	float	dist;
-
-	if (!nav.num_broams)
-		return false;
-
-	for( i=0; i<nav.num_broams; i++)
-	{
-		if( self->ai->status.broam_timeouts[i] > level.time)
-			continue;
-
-		//limit cost finding by distance
-		dist = AI_Distance( self->s.origin, nodes[nav.broams[i].node].origin );
-		if( dist > 10000 )
-			continue;
-
-		//find cost
-		cost = AI_FindCost(current_node, nav.broams[i].node, self->ai->pers.moveTypesMask);
-		if(cost == INVALID || cost < 3) // ignore invalid and very short hops
-			continue;
-
-		cost *= random(); // Allow random variations for broams
-		weight = nav.broams[i].weight / cost;	// Check against cost of getting there
-
-		if(weight > best_weight)
-		{
-			best_weight = weight;
-			goal_node = nav.broams[i].node;
-			// best_broam = i;
-		}
-	}
-
-	if(best_weight == 0.0 || goal_node == INVALID)
-		return false;
-
-	//set up the goal
-	self->ai->state = BOT_STATE_MOVE;
-	self->ai->tries = 0;	// Reset the count of how many times we tried this goal
-
-//	if(AIDevel.debugChased && bot_showlrgoal->value)
-//		gi.cprintf(AIDevel.chaseguy, PRINT_HIGH, "%s: selected a bot roam of weight %f at node %d for LR goal.\n",self->ai->pers.netname, nav.broams[best_broam].weight, goal_node);
-
-	AI_SetGoal(self,goal_node);
-
-	return true;
-}
 
 //==========================================
 // AI_PickLongRangeGoal
@@ -222,14 +162,15 @@ qboolean AI_BotRoamForLRGoal(edict_t *self, int current_node)
 // jal: I don't think there is any problem by calling it,
 // now that we have stored the costs at the nav.costs table (I don't do it anyway)
 //==========================================
-void AI_PickLongRangeGoal(edict_t *self)
+void
+AI_PickLongRangeGoal(edict_t *self)
 {
-	int		i;
-	int		node;
-	float	weight,best_weight=0.0;
-	int		current_node, goal_node = INVALID;
+	int i;
+	int node;
+	float weight, best_weight = 0.0;
+	int current_node, goal_node = INVALID;
 	// edict_t *goal_ent = NULL;
-	float	cost;
+	float cost;
 	float dist;
 
 	// look for a target
@@ -329,15 +270,11 @@ void AI_PickLongRangeGoal(edict_t *self)
 	// If do not find a goal, go wandering....
 	if(best_weight == 0.0 || goal_node == INVALID)
 	{
-		//BOT_ROAMS
-		if (!AI_BotRoamForLRGoal(self, current_node))
-		{
-			self->ai->goal_node = INVALID;
-			self->ai->state = BOT_STATE_WANDER;
-			self->ai->wander_timeout = level.time + 1.0;
-//			if(AIDevel.debugChased && bot_showlrgoal->value)
-//				gi.cprintf(AIDevel.chaseguy, PRINT_HIGH, "%s: did not find a LR goal, wandering.\n",self->ai->pers.netname);
-		}
+		self->ai->goal_node = INVALID;
+		self->ai->state = BOT_STATE_WANDER;
+		self->ai->wander_timeout = level.time + 1.0;
+//		if(AIDevel.debugChased && bot_showlrgoal->value)
+//			gi.cprintf(AIDevel.chaseguy, PRINT_HIGH, "%s: did not find a LR goal, wandering.\n",self->ai->pers.netname);
 		return; // no path?
 	}
 
@@ -422,17 +359,20 @@ void AI_PickShortRangeGoal(edict_t *self)
 //  AI_CategorizePosition
 //  Categorize waterlevel and groundentity/stepping
 //===================
-void AI_CategorizePosition (edict_t *ent)
+void
+AI_CategorizePosition(edict_t *ent)
 {
 	qboolean stepping = AI_IsStep(ent);
 
 	ent->was_swim = ent->is_swim;
 	ent->was_step = ent->is_step;
 
-	ent->is_ladder = AI_IsLadder( ent->s.origin, ent->s.angles, ent->mins, ent->maxs, ent );
+	ent->is_ladder = AI_IsLadder(ent->s.origin, ent->s.angles,
+		ent->mins, ent->maxs, ent);
 
 	M_CatagorizePosition(ent);
-	if (ent->waterlevel > 2 || (ent->waterlevel && !stepping)) {
+	if (ent->waterlevel > 2 || (ent->waterlevel && !stepping))
+	{
 		ent->is_swim = true;
 		ent->is_step = false;
 		return;
@@ -447,25 +387,32 @@ void AI_CategorizePosition (edict_t *ent)
 // AI_Think
 // think funtion for AIs
 //==========================================
-void AI_Think (edict_t *self)
+void
+AI_Think(edict_t *self)
 {
-	if( !self->ai )	//jabot092(2)
+	if (!self->ai )	//jabot092(2)
+	{
 		return;
+	}
 
 	AIDebug_SetChased(self);	//jal:debug shit
 	AI_CategorizePosition(self);
 
 	//freeze AI when dead
-	if( self->deadflag ) {
+	if (self->deadflag)
+	{
 		self->ai->pers.deadFrame(self);
 		return;
 	}
 
 	//if completely stuck somewhere
-	if(VectorLength(self->velocity) > 37)
+	if (VectorLength(self->velocity) > 37)
+	{
 		self->ai->bloqued_timeout = level.time + 10.0;
+	}
 
-	if( self->ai->bloqued_timeout < level.time ) {
+	if (self->ai->bloqued_timeout < level.time)
+	{
 		self->ai->pers.bloquedTimeout(self);
 		return;
 	}
@@ -474,23 +421,26 @@ void AI_Think (edict_t *self)
 	self->ai->pers.UpdateStatus(self);
 
 	//update position in path, set up move vector
-	if( self->ai->state == BOT_STATE_MOVE ) {
-
-		if( !AI_FollowPath(self) )
+	if (self->ai->state == BOT_STATE_MOVE)
+	{
+		if (!AI_FollowPath(self))
 		{
-			AI_SetUpMoveWander( self );
+			AI_SetUpMoveWander(self);
 			self->ai->wander_timeout = level.time - 1;	//do it now
 		}
 	}
 
-	//pick a new long range goal
-	if( self->ai->state == BOT_STATE_WANDER && self->ai->wander_timeout < level.time)
+	/* pick a new long range goal */
+	if (self->ai->state == BOT_STATE_WANDER &&
+		self->ai->wander_timeout < level.time)
+	{
 		AI_PickLongRangeGoal(self);
+	}
 
-	//Find any short range goal
+	/* Find any short range goal */
 	AI_PickShortRangeGoal(self);
 
-	//run class based states machine
+	/* run class based states machine */
 	self->ai->pers.RunFrame(self);
 }
 
