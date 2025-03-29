@@ -1104,11 +1104,9 @@ gitem_t *FindItem(const char *pickup_name);
 gitem_t *FindItemByClassname(const char *classname);
 
 edict_t *Drop_Item(edict_t *ent, gitem_t *item);
-void SetRespawn(edict_t *ent);
+void SetRespawn(edict_t *ent, float delay);
 void ChangeWeapon(edict_t *ent);
 void SpawnItem(edict_t *ent, gitem_t *item);
-void SpawnItemEffect(edict_t *ent, gitem_t *item);
-gitem_t	*IsItem(edict_t *ent);
 void Think_Weapon(edict_t *ent);
 int ArmorIndex(edict_t *ent);
 int PowerArmorType(edict_t *ent);
@@ -1134,25 +1132,6 @@ void G_FreeEdict(edict_t *e);
 
 void G_TouchTriggers(edict_t *ent);
 void G_TouchSolids(edict_t *ent);
-
-edict_t *newfindradius(edict_t *from, vec3_t org, float rad);
-edict_t *findinblocking(edict_t *from, edict_t *checkent);
-edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max);
-edict_t *oldfindinbounds(edict_t *from, vec3_t min, vec3_t max);
-edict_t *finddistance(edict_t *from, vec3_t org, float mindist, float maxdist);
-edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos);
-
-//commonly used functions
-int range(edict_t *self, edict_t *other);
-qboolean clear_visible(edict_t *self, edict_t *other);
-qboolean visible(edict_t *self, edict_t *other);
-qboolean visible_pos(edict_t *self, vec3_t spot2);
-qboolean infront(edict_t *self, edict_t *other);
-qboolean infront_pos(edict_t *self, vec3_t pos);
-qboolean ahead(edict_t *self, edict_t *other);
-
-void G_SetToFree(edict_t *);
-void G_LinkMissile(edict_t *ent);
 
 char *G_CopyString(char *in);
 
@@ -1182,12 +1161,6 @@ void T_RadiusDamage(edict_t *inflictor, edict_t *attacker,
 void T_RadiusNukeDamage(edict_t *inflictor, edict_t *attacker, float damage,
 		edict_t *ignore, float radius, int mod);
 void cleanupHealTarget(edict_t *ent);
-qboolean CanDamageFromLoc(edict_t *targ, edict_t *inflictor, vec3_t origin);
-void T_DamageRadius(edict_t *inflictor, edict_t *attacker,
-		edict_t *ignore, float radius,
-		float maxdamage, float mindamage, int dflags,int MeansOfDeath);
-void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
-							float maxdamage, float mindamage, int dflags,int MeansOfDeath);
 
 /* damage flags */
 #define DAMAGE_NORMAL 0x00000000            /* No modifiers to damage */
@@ -1268,7 +1241,6 @@ void walkmonster_start(edict_t *self);
 void swimmonster_start(edict_t *self);
 void flymonster_start(edict_t *self);
 void AttackFinished(edict_t *self, float time);
-void PauseTime(edict_t *self, float time);
 void monster_death_use(edict_t *self);
 void M_CatagorizePosition(edict_t *ent);
 qboolean M_CheckAttack(edict_t *self);
@@ -1358,12 +1330,12 @@ void InitClientResp(gclient_t *client);
 void InitBodyQue(void);
 void ClientBeginServerFrame(edict_t *ent);
 void ClientUserinfoChanged(edict_t *ent, char *userinfo);
-int SexedSoundIndex(edict_t *ent, char *base);
 
 /* g_player.c */
 void player_pain(edict_t *self, edict_t *other, float kick, int damage);
 void player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		int damage, vec3_t point);
+int SexedSoundIndex(edict_t *ent, char *base);
 void player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation);
 void ResetPlayerBaseNodes(edict_t *ent);
 void player_repair_skin(edict_t *self);
@@ -1766,8 +1738,39 @@ typedef enum Box_BoundingForm_Sides_e
 	NUM_BOX_BOUNDINGFORM_SIDES
 } Box_BoundingForm_Sides_t;
 
-qboolean FindTarget (edict_t *self);
-void MG_PostDeathThink (edict_t *self);
+
+void SpawnItemEffect(edict_t *ent, gitem_t *item);
+gitem_t	*IsItem(edict_t *ent);
+
+edict_t *newfindradius(edict_t *from, vec3_t org, float rad);
+edict_t *findinblocking(edict_t *from, edict_t *checkent);
+edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max);
+edict_t *oldfindinbounds(edict_t *from, vec3_t min, vec3_t max);
+edict_t *finddistance(edict_t *from, vec3_t org, float mindist, float maxdist);
+edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos);
+
+//commonly used functions
+int range(edict_t *self, edict_t *other);
+qboolean clear_visible(edict_t *self, edict_t *other);
+qboolean visible(edict_t *self, edict_t *other);
+qboolean visible_pos(edict_t *self, vec3_t spot2);
+qboolean infront(edict_t *self, edict_t *other);
+qboolean infront_pos(edict_t *self, vec3_t pos);
+qboolean ahead(edict_t *self, edict_t *other);
+
+void G_SetToFree(edict_t *);
+void G_LinkMissile(edict_t *ent);
+
+qboolean CanDamageFromLoc(edict_t *targ, edict_t *inflictor, vec3_t origin);
+void T_DamageRadius(edict_t *inflictor, edict_t *attacker,
+		edict_t *ignore, float radius,
+		float maxdamage, float mindamage, int dflags,int MeansOfDeath);
+void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
+							float maxdamage, float mindamage, int dflags,int MeansOfDeath);
+void PauseTime(edict_t *self, float time);
+
+qboolean FindTarget(edict_t *self);
+void MG_PostDeathThink(edict_t *self);
 qboolean movable (edict_t *ent);
 qboolean EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer);
 void SkyFly (edict_t *self);

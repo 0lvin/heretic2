@@ -271,7 +271,7 @@ PreRespawnThink(edict_t *ent)
 // ************************************************************************************************
 
 void
-SetRespawn(edict_t *ent)
+SetRespawn(edict_t *ent, float delay)
 {
 	// So it'll get sent to the client again.
 
@@ -687,12 +687,6 @@ Drop_Ammo(edict_t *ent, gitem_t *item)
 	ValidateSelectedItem(ent);
 }
 
-/*
-===============
-Pickup_Health
-===============
-*/
-
 qboolean
 Pickup_Health(edict_t *ent, edict_t *other)
 {
@@ -808,11 +802,11 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 		return;
 	}
 
-	if(ent->flags&FL_RESPAWN)
+	if(ent->flags & FL_RESPAWN)
 	{
 		// The item should respawn.
 
-		SetRespawn(ent);
+		SetRespawn(ent, ent->item->quantity);
 	}
 	else
 	{
