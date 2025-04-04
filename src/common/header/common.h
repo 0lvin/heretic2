@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.42H12"
+#define YQ2VERSION "8.51H12"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -144,7 +144,6 @@ void MSG_ReadDeltaUsercmd(sizebuf_t *sb,
 void MSG_ReadDir(sizebuf_t *sb, vec3_t vector);
 
 void MSG_ReadData(sizebuf_t *sb, void *buffer, int size);
-void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
 /* ================================================================== */
 
@@ -909,7 +908,9 @@ void Sys_SetupFPU(void);
 
 /* ======================================================================= */
 
-// For ambient sounds.
+void Mods_NamesFinish(void);
+
+/* For ambient sounds. */
 typedef enum AmbientSoundID_e
 {
 	AS_NOTHING = 0,
@@ -963,14 +964,10 @@ typedef enum AmbientSoundID_e
 #define ENTITY_FX_BUF_SIZE 192
 #define FLOAT_ZERO_EPSILON 0.0005f
 
-float Q_fabs(float f);
-
 typedef struct edict_s edict_t;
 typedef struct sfx_s sfx_t;
 typedef struct client_entity_s client_entity_t;
 
-float ClampCvar(float min, float max, float value);
-char *Cvar_CompleteVariableNext(char *partial, char *last);
-void NET_TotalShutdown(void);
+void MSG_WriteData(sizebuf_t* sb, byte* data, int NET_TotalShutdownlen);
 
 #endif

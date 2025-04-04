@@ -288,8 +288,6 @@ FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 	vec3_t			dpivot, curpivot;
 	vec3_t			dnormal, curnormal, adjnormal;
 	vec3_t			diff, newpoint;
-	int				model;
-
 	matrix3_t	rotation;
 	vec3_t		origin;
 
@@ -344,8 +342,6 @@ FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 2000);
 
 		VectorCopy(newpoint, TrailEnt->origin);
-
-		model = irand(0,100);
 
 		TrailEnt->r.model = staff_models[STAFF_TRAIL2];
 
@@ -919,7 +915,6 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t *stafffx;
 	vec3_t spawnpt;
-	paletteRGBA_t	LightColor;
 
 	// This tells if we are wasting our time, because the reference points are culled.
 	if (!RefPointsValid(owner))
@@ -928,12 +923,10 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	if(Flags & CEF_FLAG6)
 	{
 		VectorCopy(owner->referenceInfo->references[CORVUS_HELL_HEAD].placement.origin, spawnpt);
-		LightColor.c = 0xff2020ff;
 	}
 	else
 	{
 		VectorCopy(owner->referenceInfo->references[CORVUS_BLADE].placement.origin, spawnpt);
-		LightColor.c = 0xffff5050;
 	}
 
 	stafffx=ClientEntity_new(FX_SPELLHANDS, Flags & ~CEF_NO_DRAW, spawnpt, 0, 100);

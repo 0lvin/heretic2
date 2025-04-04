@@ -991,8 +991,10 @@ M_MoveFrame(edict_t *self)
 	}
 
 	move = self->monsterinfo.currentmove;
-	if (move == NULL)
-	{	// if move is NULL, then this monster needs to have an anim set on it or all is lost.
+
+	if (!move)
+	{
+		/* if move is NULL, then this monster needs to have an anim set on it or all is lost. */
 		gi.dprintf("MONSTER: '%s', at %s has no move pointer.  Setting to move zero.\n", self->classname, self->s.origin);
 		self->think = NULL;
 		self->nextthink = -1;
