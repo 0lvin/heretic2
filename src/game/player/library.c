@@ -8,7 +8,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "../player/library/player.h"
 #include "../header/local.h"
@@ -66,7 +65,7 @@ P_Load(void)
 	player_export_t *(*P_GetPlayerAPI)(game_import_t *import);
 
 	char name[MAX_OSPATH];
-	char *path;
+	const char *path;
 #ifdef _WIN32
 	WCHAR wname[MAX_OSPATH];
 	const char *playername = "player.dll";
@@ -131,7 +130,7 @@ P_Load(void)
 #ifndef _WIN32
 		else
 		{
-			char *str_p;
+			const char *str_p;
 
 			Com_Printf("Failed to load library: %s\n: ", name);
 
