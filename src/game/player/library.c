@@ -69,10 +69,12 @@ P_Load(void)
 #ifdef _WIN32
 	WCHAR wname[MAX_OSPATH];
 	const char *playername = "player.dll";
-#elifdef __APPLE__
+#else
+#ifdef __APPLE__
 	const char *playername = "player.dylib";
 #else
 	const char *playername = "player.so";
+#endif
 #endif
 
 	if (player_library)
