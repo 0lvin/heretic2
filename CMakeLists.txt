@@ -9,7 +9,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # CMake project configuration.
-project(yquake2 C)
+project(yquake2 C CXX)
 
 # Cmake module search path.
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/stuff/cmake/modules ${CMAKE_MODULE_PATH})
@@ -345,108 +345,173 @@ set(Game-Source
 	${COMMON_SRC_DIR}/shared/flash.c
 	${COMMON_SRC_DIR}/shared/rand.c
 	${COMMON_SRC_DIR}/shared/shared.c
-	${GAME_SRC_DIR}/bot/ai_class_dmbot.c
-	${GAME_SRC_DIR}/bot/ai_class_monster_default.c
-	${GAME_SRC_DIR}/bot/ai_dropnodes.c
-	${GAME_SRC_DIR}/bot/ai_items.c
-	${GAME_SRC_DIR}/bot/ai_links.c
-	${GAME_SRC_DIR}/bot/ai_local.h
-	${GAME_SRC_DIR}/bot/ai_main.c
-	${GAME_SRC_DIR}/bot/ai_movement.c
-	${GAME_SRC_DIR}/bot/ai_navigation.c
-	${GAME_SRC_DIR}/bot/ai_nodes.c
-	${GAME_SRC_DIR}/bot/ai_nodes_local.h
-	${GAME_SRC_DIR}/bot/ai_nodes_shared.h
-	${GAME_SRC_DIR}/bot/ai_tools.c
-	${GAME_SRC_DIR}/bot/ai_weapons.c
-	${GAME_SRC_DIR}/bot/ai_weapons.h
-	${GAME_SRC_DIR}/bot/astar.c
-	${GAME_SRC_DIR}/bot/bot_spawn.c
-	${GAME_SRC_DIR}/dm/ball.c
-	${GAME_SRC_DIR}/dm/tag.c
+	${GAME_SRC_DIR}/common/h2vector.c
+	${GAME_SRC_DIR}/common/h2rand.c
+	${GAME_SRC_DIR}/common/h2singlylinkedlist.c
+	${GAME_SRC_DIR}/common/resource_manager.c
+	${GAME_SRC_DIR}/common/h2matrix.c
+	${GAME_SRC_DIR}/common/arrayed_list.c
+	${GAME_SRC_DIR}/common/skeletons.c
+	${GAME_SRC_DIR}/common/h2physics.c
+	${GAME_SRC_DIR}/common/message.c
+	${GAME_SRC_DIR}/buoy.c
+	${GAME_SRC_DIR}/character/ai.c
+	${GAME_SRC_DIR}/character/corvus/corvus1_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus1.c
+	${GAME_SRC_DIR}/character/corvus/corvus2_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus2.c
+	${GAME_SRC_DIR}/character/corvus/corvus3_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus3.c
+	${GAME_SRC_DIR}/character/corvus/corvus4_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus4.c
+	${GAME_SRC_DIR}/character/corvus/corvus5_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus5.c
+	${GAME_SRC_DIR}/character/corvus/corvus6_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus6.c
+	${GAME_SRC_DIR}/character/corvus/corvus7_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus7.c
+	${GAME_SRC_DIR}/character/corvus/corvus8_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus8.c
+	${GAME_SRC_DIR}/character/corvus/corvus9_anim.c
+	${GAME_SRC_DIR}/character/corvus/corvus9.c
+	${GAME_SRC_DIR}/character/dranor/dranor_anim.c
+	${GAME_SRC_DIR}/character/dranor/dranor.c
+	${GAME_SRC_DIR}/character/elflord/elflord_anim.c
+	${GAME_SRC_DIR}/character/elflord/elflord.c
+	${GAME_SRC_DIR}/character/morcalavin/morcalavin_anim.c
+	${GAME_SRC_DIR}/character/morcalavin/morcalavin.c
+	${GAME_SRC_DIR}/character/priestess/priestess2_anim.c
+	${GAME_SRC_DIR}/character/priestess/priestess2.c
+	${GAME_SRC_DIR}/character/priestess/priestess_anim.c
+	${GAME_SRC_DIR}/character/priestess/priestess.c
+	${GAME_SRC_DIR}/character/siernan/siernan1_anim.c
+	${GAME_SRC_DIR}/character/siernan/siernan1.c
+	${GAME_SRC_DIR}/character/siernan/siernan2_anim.c
+	${GAME_SRC_DIR}/character/siernan/siernan2.c
+	${GAME_SRC_DIR}/character/ssithrascout/ssithrascout_anim.c
+	${GAME_SRC_DIR}/character/ssithrascout/ssithrascout.c
+	${GAME_SRC_DIR}/character/tome/tome_anim.c
+	${GAME_SRC_DIR}/character/tome/tome.c
+	${GAME_SRC_DIR}/character/victimssithra/victimssithra_anim.c
+	${GAME_SRC_DIR}/character/victimssithra/victimssithra.c
+	${GAME_SRC_DIR}/decals.c
+	${GAME_SRC_DIR}/ds.cpp
 	${GAME_SRC_DIR}/g_ai.c
+	${GAME_SRC_DIR}/game_utilities.c
+	${GAME_SRC_DIR}/g_breakable.c
+	${GAME_SRC_DIR}/g_classstatics.c
 	${GAME_SRC_DIR}/g_chase.c
 	${GAME_SRC_DIR}/g_cmds.c
-	${GAME_SRC_DIR}/g_combat.c
 	${GAME_SRC_DIR}/g_ctf.c
+	${GAME_SRC_DIR}/g_combat.c
+	${GAME_SRC_DIR}/g_defaultmessagehandler.c
+	${GAME_SRC_DIR}/g_env.c
+	${GAME_SRC_DIR}/g_field.c
+	${GAME_SRC_DIR}/g_flamethrow.c
 	${GAME_SRC_DIR}/g_func.c
+	${GAME_SRC_DIR}/g_hitlocation.c
 	${GAME_SRC_DIR}/g_items.c
 	${GAME_SRC_DIR}/g_light.c
 	${GAME_SRC_DIR}/g_main.c
+	${GAME_SRC_DIR}/g_message.c
 	${GAME_SRC_DIR}/g_misc.c
 	${GAME_SRC_DIR}/g_monster.c
+	${GAME_SRC_DIR}/g_moveinfo.c
 	${GAME_SRC_DIR}/g_newai.c
-	${GAME_SRC_DIR}/g_newdm.c
-	${GAME_SRC_DIR}/g_newfnc.c
-	${GAME_SRC_DIR}/g_newtarg.c
-	${GAME_SRC_DIR}/g_newtrig.c
 	${GAME_SRC_DIR}/g_newweap.c
 	${GAME_SRC_DIR}/g_obj.c
+	${GAME_SRC_DIR}/g_physics.c
 	${GAME_SRC_DIR}/g_phys.c
+	${GAME_SRC_DIR}/g_resourcemanagers.c
+	${GAME_SRC_DIR}/g_rope.c
+	${GAME_SRC_DIR}/g_shrine.c
+	${GAME_SRC_DIR}/g_skeletons.c
+	${GAME_SRC_DIR}/g_spawnf.c
 	${GAME_SRC_DIR}/g_spawn.c
-	${GAME_SRC_DIR}/g_sphere.c
+	${GAME_SRC_DIR}/g_stateinfo.c
 	${GAME_SRC_DIR}/g_svcmds.c
 	${GAME_SRC_DIR}/g_target.c
 	${GAME_SRC_DIR}/g_translate.c
 	${GAME_SRC_DIR}/g_trigger.c
-	${GAME_SRC_DIR}/g_turret.c
 	${GAME_SRC_DIR}/g_utils.c
 	${GAME_SRC_DIR}/g_weapon.c
-	${GAME_SRC_DIR}/menu/menu.c
-	${GAME_SRC_DIR}/monster/actor/actor.c
-	${GAME_SRC_DIR}/monster/arachnid/arachnid.c
-	${GAME_SRC_DIR}/monster/army/army.c
-	${GAME_SRC_DIR}/monster/berserker/berserker.c
-	${GAME_SRC_DIR}/monster/boss2/boss2.c
-	${GAME_SRC_DIR}/monster/boss3/boss31.c
-	${GAME_SRC_DIR}/monster/boss3/boss32.c
-	${GAME_SRC_DIR}/monster/boss3/boss3.c
-	${GAME_SRC_DIR}/monster/boss5/boss5.c
-	${GAME_SRC_DIR}/monster/brain/brain.c
-	${GAME_SRC_DIR}/monster/carrier/carrier.c
-	${GAME_SRC_DIR}/monster/chick/chick.c
-	${GAME_SRC_DIR}/monster/demon/demon.c
-	${GAME_SRC_DIR}/monster/dog/dog.c
-	${GAME_SRC_DIR}/monster/enforcer/enforcer.c
-	${GAME_SRC_DIR}/monster/fixbot/fixbot.c
-	${GAME_SRC_DIR}/monster/flipper/flipper.c
-	${GAME_SRC_DIR}/monster/float/float.c
-	${GAME_SRC_DIR}/monster/flyer/flyer.c
-	${GAME_SRC_DIR}/monster/gekk/gekk.c
-	${GAME_SRC_DIR}/monster/gladiator/gladb.c
-	${GAME_SRC_DIR}/monster/gladiator/gladiator.c
-	${GAME_SRC_DIR}/monster/guardian/guardian.c
-	${GAME_SRC_DIR}/monster/gunner/gunner.c
-	${GAME_SRC_DIR}/monster/hknight/hknight.c
-	${GAME_SRC_DIR}/monster/hover/hover.c
-	${GAME_SRC_DIR}/monster/infantry/infantry.c
-	${GAME_SRC_DIR}/monster/insane/insane.c
-	${GAME_SRC_DIR}/monster/knight/knight.c
-	${GAME_SRC_DIR}/monster/medic/medic.c
+	${GAME_SRC_DIR}/g_waterfx.c
+	${GAME_SRC_DIR}/mg_ai.c
+	${GAME_SRC_DIR}/mg_guide.c
+	${GAME_SRC_DIR}/monster/assassin/assassin_anim.c
+	${GAME_SRC_DIR}/monster/assassin/assassin.c
+	${GAME_SRC_DIR}/monster/beast/beast_anim.c
+	${GAME_SRC_DIR}/monster/beast/beast.c
+	${GAME_SRC_DIR}/monster/bee/bee.c
+	${GAME_SRC_DIR}/monster/chicken/chicken_anim.c
+	${GAME_SRC_DIR}/monster/chicken/chicken.c
+	${GAME_SRC_DIR}/monster/elflord/elflord_anims.c
+	${GAME_SRC_DIR}/monster/elflord/elflord.c
+	${GAME_SRC_DIR}/monster/fish/fish_anim.c
+	${GAME_SRC_DIR}/monster/fish/fish.c
+	${GAME_SRC_DIR}/monster/gkrokon/gkrokon_anim.c
+	${GAME_SRC_DIR}/monster/gkrokon/gkrokon.c
+	${GAME_SRC_DIR}/monster/gorgon/gorgon_anim.c
+	${GAME_SRC_DIR}/monster/gorgon/gorgon.c
+	${GAME_SRC_DIR}/monster/harpy/harpy_anim.c
+	${GAME_SRC_DIR}/monster/harpy/harpy.c
+	${GAME_SRC_DIR}/monster/imp/imp_anim.c
+	${GAME_SRC_DIR}/monster/imp/imp.c
+	${GAME_SRC_DIR}/monster/misc/fmtest.c
 	${GAME_SRC_DIR}/monster/misc/move.c
-	${GAME_SRC_DIR}/monster/mutant/mutant.c
-	${GAME_SRC_DIR}/monster/ogre/ogre.c
-	${GAME_SRC_DIR}/monster/parasite/parasite.c
-	${GAME_SRC_DIR}/monster/rotfish/fish.c
-	${GAME_SRC_DIR}/monster/shalrath/shalrath.c
-	${GAME_SRC_DIR}/monster/shambler/shambler.c
-	${GAME_SRC_DIR}/monster/soldier/soldier.c
-	${GAME_SRC_DIR}/monster/stalker/stalker.c
-	${GAME_SRC_DIR}/monster/supertank/supertank.c
-	${GAME_SRC_DIR}/monster/tank/tank.c
-	${GAME_SRC_DIR}/monster/tarbaby/tarbaby.c
-	${GAME_SRC_DIR}/monster/turret/turret.c
-	${GAME_SRC_DIR}/monster/widow/widow2.c
-	${GAME_SRC_DIR}/monster/widow/widow.c
-	${GAME_SRC_DIR}/monster/wizard/wizard.c
-	${GAME_SRC_DIR}/monster/zombie/zombie.c
+	${GAME_SRC_DIR}/monster/morcalavin/morcalavin_anim.c
+	${GAME_SRC_DIR}/monster/morcalavin/morcalavin.c
+	${GAME_SRC_DIR}/monster/mother/mother_anim.c
+	${GAME_SRC_DIR}/monster/mother/mother.c
+	${GAME_SRC_DIR}/monster/mssithra/mssithra_anim.c
+	${GAME_SRC_DIR}/monster/mssithra/mssithra.c
+	${GAME_SRC_DIR}/monster/ogle/ogle_anim.c
+	${GAME_SRC_DIR}/monster/ogle/ogle.c
+	${GAME_SRC_DIR}/monster/plagueelf/plagueelf_anim.c
+	${GAME_SRC_DIR}/monster/plagueelf/plagueelf.c
+	${GAME_SRC_DIR}/monster/plaguessithra/plaguessithra_anim.c
+	${GAME_SRC_DIR}/monster/plaguessithra/plaguessithra.c
+	${GAME_SRC_DIR}/monster/priestess/priestess_anim.c
+	${GAME_SRC_DIR}/monster/priestess/priestess.c
+	${GAME_SRC_DIR}/monster/rat/rat_anim.c
+	${GAME_SRC_DIR}/monster/rat/rat.c
+	${GAME_SRC_DIR}/monster/seraph/seraph_anim.c
+	${GAME_SRC_DIR}/monster/seraph/seraph.c
+	${GAME_SRC_DIR}/monster/seraph_guard/seraph_guard_anim.c
+	${GAME_SRC_DIR}/monster/seraph_guard/seraph_guard.c
+	${GAME_SRC_DIR}/monster/spreader/spreader_anim.c
+	${GAME_SRC_DIR}/monster/spreader/spreadermist.c
+	${GAME_SRC_DIR}/monster/spreader/spreader.c
+	${GAME_SRC_DIR}/monster/stats/stats.c
+	${GAME_SRC_DIR}/monster/tcheckrik/tcheckrik_anim.c
+	${GAME_SRC_DIR}/monster/tcheckrik/tcheckrik.c
+	${GAME_SRC_DIR}/monster/tcheckrik/tcheckrik_spells.c
 	${GAME_SRC_DIR}/player/chase.c
 	${GAME_SRC_DIR}/player/client.c
+	${GAME_SRC_DIR}/player/funcs.c
 	${GAME_SRC_DIR}/player/hud.c
-	${GAME_SRC_DIR}/player/trail.c
+	${GAME_SRC_DIR}/player/library.c
+	${GAME_SRC_DIR}/player/item.c
 	${GAME_SRC_DIR}/player/view.c
 	${GAME_SRC_DIR}/player/weapon.c
 	${GAME_SRC_DIR}/savegame/savegame.c
+	${GAME_SRC_DIR}/spell/blast.c
+	${GAME_SRC_DIR}/spell/bluering.c
+	${GAME_SRC_DIR}/spell/flyingfist.c
+	${GAME_SRC_DIR}/spell/hellstaff.c
+	${GAME_SRC_DIR}/spell/maceballs.c
+	${GAME_SRC_DIR}/spell/magicmissile.c
+	${GAME_SRC_DIR}/spell/meteorbarrier.c
+	${GAME_SRC_DIR}/spell/morph.c
+	${GAME_SRC_DIR}/spell/phoenix.c
+	${GAME_SRC_DIR}/spell/powerup.c
+	${GAME_SRC_DIR}/spell/redrain.c
+	${GAME_SRC_DIR}/spell/ripper.c
+	${GAME_SRC_DIR}/spell/shield.c
+	${GAME_SRC_DIR}/spell/sphereofannihlation.c
+	${GAME_SRC_DIR}/spell/teleport.c
+	${GAME_SRC_DIR}/spell/tornado.c
+	${GAME_SRC_DIR}/spell/wall.c
 	)
 
 set(Game-Header
@@ -501,6 +566,9 @@ set(Client-Source
 	${CLIENT_SRC_DIR}/cl_screen.c
 	${CLIENT_SRC_DIR}/cl_tempentities.c
 	${CLIENT_SRC_DIR}/cl_view.c
+	${GAME_SRC_DIR}/common/h2singlylinkedlist.c
+	${GAME_SRC_DIR}/common/resource_manager.c
+	${GAME_SRC_DIR}/client_effects.c
 	${CLIENT_SRC_DIR}/curl/download.c
 	${CLIENT_SRC_DIR}/curl/qcurl.c
 	${CLIENT_SRC_DIR}/menu/menu.c
