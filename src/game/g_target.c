@@ -1878,7 +1878,7 @@ target_sky_use(edict_t *self, edict_t *other, edict_t *activator)
 		float rotate;
 		int autorotate;
 
-		sscanf(gi.get_configstring(CS_SKYROTATE), "%f %i", &rotate, &autorotate);
+		sscanf(gi.GetConfigString(CS_SKYROTATE), "%f %i", &rotate, &autorotate);
 
 		if (self->count & 1)
 		{

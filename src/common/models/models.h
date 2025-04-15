@@ -27,7 +27,8 @@
 #ifndef SRC_CLIENT_REFRESH_FILES_MODELS_H_
 #define SRC_CLIENT_REFRESH_FILES_MODELS_H_
 
-#include "../ref_shared.h"
+#include "../header/common.h"
+#include "../header/cmodel.h"
 
 /* Unpacked vertex info model convert */
 typedef struct dmdx_vert_s
@@ -36,17 +37,24 @@ typedef struct dmdx_vert_s
 	vec3_t norm;
 } dmdx_vert_t;
 
-extern void PrepareFrameVertex(dmdx_vert_t *vertexArray, int num_verts,
+typedef struct
+{
+	char name[MAX_SKINNAME];
+	char value[MAX_SKINNAME];
+} def_entry_t;
+
+void PrepareFrameVertex(dmdx_vert_t *vertexArray, int num_verts,
 	daliasxframe_t *frame_out);
-extern void *Mod_LoadModel_MD5(const char *mod_name, const void *buffer,
-	int modfilelen, modtype_t *type);
-extern void *Mod_LoadModel_MDR(const char *mod_name, const void *buffer,
-	int modfilelen, modtype_t *type);
-extern int Mod_LoadCmdCompress(const dstvert_t *texcoords, dtriangle_t *triangles,
+void *Mod_LoadModel_MD5(const char *mod_name, const void *buffer,
+	int modfilelen);
+void *Mod_LoadModel_MDR(const char *mod_name, const void *buffer,
+	int modfilelen);
+int Mod_LoadCmdCompress(const dstvert_t *texcoords, dtriangle_t *triangles,
 	int num_tris, int *commands, int skinwidth, int skinheight);
-extern void Mod_LoadCmdGenerate(dmdx_t *pheader);
-extern void Mod_LoadFixImages(const char* mod_name, dmdx_t *pheader, qboolean internal);
-extern void Mod_LoadAnimGroupList(dmdx_t *pheader);
-extern dmdx_t *Mod_LoadAllocate(const char *mod_name, dmdx_t *dmdxheader, void **extradata);
+void Mod_LoadCmdGenerate(dmdx_t *pheader);
+void Mod_LoadFixImages(const char* mod_name, dmdx_t *pheader, qboolean internal);
+void Mod_LoadAnimGroupList(dmdx_t *pheader);
+dmdx_t *Mod_LoadAllocate(const char *mod_name, dmdx_t *dmdxheader, void **extradata);
+void *Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen);
 
 #endif /* SRC_CLIENT_REFRESH_FILES_MODELS_H_ */

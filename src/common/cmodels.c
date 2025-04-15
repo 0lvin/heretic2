@@ -161,12 +161,7 @@ Mod_DecompressVis(const byte *in, byte *out, const byte* numvisibility, int row)
 	if (!in || !numvisibility)
 	{
 		/* no vis info, so make all visible */
-		while (row)
-		{
-			*out_p++ = 0xff;
-			row--;
-		}
-
+		memset(out_p, 0xff, row);
 		return;
 	}
 
@@ -174,10 +169,18 @@ Mod_DecompressVis(const byte *in, byte *out, const byte* numvisibility, int row)
 	{
 		int c;
 
-		if (((in + 2) < numvisibility) && *in)
+		if ((in < numvisibility) && *in)
 		{
 			*out_p++ = *in++;
 			continue;
+		}
+
+		if (in >= numvisibility)
+		{
+			/* not enough data */
+			memset(out_p, 0xff, row - (out_p - out));
+			Com_DPrintf("%s: warning: Vis has not enough data to decompress\n", __func__);
+			return;
 		}
 
 		c = in[1];
@@ -189,11 +192,8 @@ Mod_DecompressVis(const byte *in, byte *out, const byte* numvisibility, int row)
 			Com_DPrintf("%s: warning: Vis decompression overrun\n", __func__);
 		}
 
-		while (c)
-		{
-			*out_p++ = 0;
-			c--;
-		}
+		memset(out_p, 0, c);
+		out_p += c;
 	}
 	while (out_p - out < row);
 }
@@ -210,4 +210,49 @@ Mod_RadiusFromBounds(const vec3_t mins, const vec3_t maxs)
 	}
 
 	return VectorLength(corner);
+}
+
+void
+Mod_UpdateMinMaxByFrames(const dmdx_t *paliashdr, int from, int to, float *mins, float *maxs)
+{
+	daliasxframe_t *frame;
+	int i;
+
+	if ((from > paliashdr->num_frames) || (to > paliashdr->num_frames))
+	{
+		return;
+	}
+
+	frame = (daliasxframe_t *) ((byte *)paliashdr
+		+ paliashdr->ofs_frames + from * paliashdr->framesize);
+
+	VectorCopy(frame->translate, mins);
+	VectorCopy(frame->translate, maxs);
+
+	for (i = from; i < to; i++)
+	{
+		int j;
+
+		frame = (daliasxframe_t *) ((byte *)paliashdr
+			+ paliashdr->ofs_frames + i * paliashdr->framesize);
+
+		for (j = 0; j < 3; j++)
+		{
+			float curr;
+
+			curr = frame->translate[j];
+
+			if (mins[j] > curr)
+			{
+				mins[j] = curr;
+			}
+
+			curr += frame->scale[j] * 0xFFFF;
+
+			if (maxs[j] < curr)
+			{
+				maxs[j] = curr;
+			}
+		}
+	}
 }

@@ -266,7 +266,7 @@ static int LoadTextFile(char *name, char **addr)
 	int		length;
 	char	*buffer;
 
-	length = gi.FS_LoadFile(name, (void **)&buffer);
+	length = gi.LoadFile(name, (void **)&buffer);
 	if(length <= 0)
 	{
 		Sys_Error("Unable to load %s", name);
@@ -275,7 +275,7 @@ static int LoadTextFile(char *name, char **addr)
 	*addr = (char *)gi.TagMalloc(length + 1, 0);
 	memcpy(*addr, buffer, length);
 	*(*addr + length) = 0;
-	gi.FS_FreeFile(buffer);
+	gi.FreeFile(buffer);
 
 	return(length + 1);
 }

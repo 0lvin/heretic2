@@ -365,7 +365,7 @@ barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
 void
 object_flame1_think(edict_t *self)
 {
-	self->s.frame = (self->s.frame + 1) % 64;
+	M_SetAnimGroupFrame(self, "flame");
 	self->nextthink = level.time + FRAMETIME;
 }
 
@@ -5032,7 +5032,7 @@ void SP_obj_bloodsplat (edict_t *self)
 void
 object_big_fire_think(edict_t *self)
 {
-	self->s.frame = (self->s.frame + 1) % 60;
+	M_SetAnimGroupFrame(self, "bigfire");
 	self->nextthink = level.time + FRAMETIME;
 
 	/* add particles */

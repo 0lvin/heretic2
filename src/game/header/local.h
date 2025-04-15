@@ -1097,6 +1097,8 @@ void ClientCommand(edict_t *ent);
 void Cmd_Score_f(edict_t *ent);
 
 /* g_items.c */
+void droptofloor(edict_t *ent);
+void FixEntityPosition(edict_t *ent);
 void PrecacheItem(gitem_t *it);
 void InitItems(void);
 void SetItemNames(void);
@@ -1384,6 +1386,7 @@ void M_MoveToGoal(edict_t *ent, float dist);
 float M_ChangeYaw(edict_t *ent);
 void M_ChangePitch(edict_t *ent);
 void M_MoveAwayFromGoal(edict_t *ent, float dist);
+void M_SetAnimGroupFrame(edict_t *self, const char *name);
 
 /* g_phys.c */
 void G_RunEntity(edict_t *ent);

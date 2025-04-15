@@ -142,8 +142,7 @@ Mod_LoadModel_MDR
 =================
 */
 void *
-Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
-	modtype_t *type)
+Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen)
 {
 	int framesize, num_xyz = 0, num_tris = 0, num_glcmds = 0, num_skins = 0, meshofs = 0;
 	dmdx_t dmdxheader, *pheader;
@@ -158,7 +157,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	if (modfilelen < sizeof(pinmodel))
 	{
-		R_Printf(PRINT_ALL, "%s: %s has incorrect header size (%i should be " YQ2_COM_PRIdS ")\n",
+		Com_Printf("%s: %s has incorrect header size (%i should be " YQ2_COM_PRIdS ")\n",
 				__func__, mod_name, modfilelen, sizeof(pinmodel));
 		return NULL;
 	}
@@ -170,7 +169,7 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 
 	if (pinmodel.version != MDR_VERSION)
 	{
-		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)\n",
+		Com_Printf("%s: %s has wrong version number (%i should be %i)\n",
 				__func__, mod_name, pinmodel.version, MDR_VERSION);
 		return NULL;
 	}
@@ -398,8 +397,6 @@ Mod_LoadModel_MDR(const char *mod_name, const void *buffer, int modfilelen,
 	Mod_LoadCmdGenerate(pheader);
 
 	Mod_LoadFixImages(mod_name, pheader, false);
-
-	*type = mod_alias;
 
 	return extradata;
 }

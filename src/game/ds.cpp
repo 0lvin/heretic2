@@ -1973,7 +1973,7 @@ void CScript::LoadFile(void)
 {
 	int Version;
 
-	Length = gi.FS_LoadFile(Name, (void **)&Data);
+	Length = gi.LoadFile(Name, (void **)&Data);
 	if (Length == -1)
 	{
 		Com_Printf("***********************************************\n");
@@ -2003,7 +2003,7 @@ void CScript::Free(bool DoData)
 
 	if (Data && DoData)
 	{
-		gi.FS_FreeFile(Data);
+		gi.FreeFile(Data);
 		Data = NULL;
 	}
 

@@ -1403,7 +1403,10 @@ CLIENT_OBJS_ := \
 	src/common/glob.o \
 	src/common/md4.o \
 	src/common/maps.o \
-	src/common/models.o \
+	src/common/models/loadfile.o \
+	src/common/models/models.o \
+	src/common/models/models_md5.o \
+	src/common/models/models_mdr.o \
 	src/common/movemsg.o \
 	src/common/frame.o \
 	src/common/netchan.o \
@@ -1478,8 +1481,6 @@ REFGL1_OBJS_ := \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
-	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1520,8 +1521,6 @@ REFGL3_OBJS_ := \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
-	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1565,8 +1564,6 @@ REFGL4_OBJS_ := \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
-	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1611,8 +1608,6 @@ REFSOFT_OBJS_ := \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
-	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1657,8 +1652,6 @@ REFVK_OBJS_ := \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
-	src/client/refresh/files/models_md5.o \
-	src/client/refresh/files/models_mdr.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1692,7 +1685,10 @@ SERVER_OBJS_ := \
 	src/common/md4.o \
 	src/common/frame.o \
 	src/common/maps.o \
-	src/common/models.o \
+	src/common/models/loadfile.o \
+	src/common/models/models.o \
+	src/common/models/models_md5.o \
+	src/common/models/models_mdr.o \
 	src/common/movemsg.o \
 	src/common/netchan.o \
 	src/common/pmove.o \

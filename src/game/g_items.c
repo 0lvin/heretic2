@@ -946,8 +946,8 @@ Use_Item(edict_t *ent, edict_t *other /* unused */, edict_t *activator /* unused
 
 /* ====================================================================== */
 
-static void
-FixObjectPosition(edict_t *ent)
+void
+FixEntityPosition(edict_t *ent)
 {
 	int i;
 
@@ -1000,9 +1000,10 @@ FixObjectPosition(edict_t *ent)
 void
 droptofloor(edict_t *ent)
 {
+	vec3_t mins, maxs, dest;
 	trace_t tr;
-	vec3_t dest;
 	float *v;
+	int i;
 
 	if (!ent)
 	{
@@ -1014,6 +1015,17 @@ droptofloor(edict_t *ent)
 	ent->touch = Touch_Item;
 	ent->think = NULL;
 
+	/* set real size of item model except height to items fly hack */
+	VectorCopy(ent->mins, mins);
+	VectorCopy(ent->maxs, maxs);
+	gi.GetModelInfo(ent->s.modelindex, NULL, mins, maxs);
+
+	for (i = 0; i < 2; i++)
+	{
+		ent->mins[i] = mins[i];
+		ent->maxs[i] = maxs[i];
+	}
+
 	if (!(ent->spawnflags & ITEM_NO_DROP))
 	{
 		v = tv(0, 0, -128);
@@ -1023,7 +1035,7 @@ droptofloor(edict_t *ent)
 
 		if (tr.startsolid)
 		{
-			FixObjectPosition(ent);
+			FixEntityPosition(ent);
 
 			tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
 		}

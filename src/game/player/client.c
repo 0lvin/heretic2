@@ -3273,7 +3273,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			strcpy(skin, s);
 
 		sprintf(filename, "players/%s.m8", skin);
-		if (gi.FS_LoadFile(filename, NULL) == -1)
+		if (gi.LoadFile(filename, NULL) == -1)
 		{
 			if (strstr(s, "female/"))
 			{	// This was a female skin, fall back to Kiera.
@@ -3295,7 +3295,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			strcpy(skin, s);
 
 		sprintf(filename, "players/%s.m8", skin);
-		if (gi.FS_LoadFile(filename, NULL) != -1)
+		if (gi.LoadFile(filename, NULL) != -1)
 		{
 			if (allowillegalskins->value)
 			{
@@ -3304,10 +3304,10 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			else
 			{
 				sprintf(filename, "players/%sP1.m8", skin);
-				if (gi.FS_LoadFile(filename, NULL) != -1)
+				if (gi.LoadFile(filename, NULL) != -1)
 				{
 					sprintf(filename, "players/%sP2.m8", skin);
-					if (gi.FS_LoadFile(filename, NULL) != -1)
+					if (gi.LoadFile(filename, NULL) != -1)
 					{
 						found=true;
 					}
@@ -3334,7 +3334,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			if (allowillegalskins->value)
 			{	// Do the check for a valid skin in case an illegal skin has been let through.
 				sprintf(filename, "players/%sP1.m8", skin);
-				if (gi.FS_LoadFile(filename, NULL) != -1)
+				if (gi.LoadFile(filename, NULL) != -1)
 				{	// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
 				}
@@ -3352,7 +3352,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			if (allowillegalskins->value)
 			{	// Do the check for a valid skin in case an illegal skin has been let through.
 				sprintf(filename, "players/%sP2.m8", skin);
-				if (gi.FS_LoadFile(filename, NULL) != -1)
+				if (gi.LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
@@ -3360,7 +3360,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				else
 				{	// No plague 2 skin, try for a plague 1 skin.
 					sprintf(filename, "players/%sP1.m8", skin);
-					if (gi.FS_LoadFile(filename, NULL) != -1)
+					if (gi.LoadFile(filename, NULL) != -1)
 					{
 						/* The plague1 skin exists. */
 						gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
@@ -3393,7 +3393,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			sprintf(filename, "players/%s.m8", skin);
 
 			/* no, so see if it exists */
-			if (gi.FS_LoadFile(filename, NULL) != -1)
+			if (gi.LoadFile(filename, NULL) != -1)
 			{
 				strcpy(skin, "male/Corvus");
 			}
@@ -3405,7 +3405,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				sprintf(filename, "players/%sP1.m8", skin);
 
 				/* no, so see if it exists */
-				if (gi.FS_LoadFile(filename, NULL) != -1)
+				if (gi.LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
@@ -3418,7 +3418,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			case 2:		// Plague level 2
 				sprintf(filename, "players/%sP2.m8", skin);
 				/* no, so see if it exists */
-				if (gi.FS_LoadFile(filename, NULL) != -1)
+				if (gi.LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
 					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
@@ -3429,7 +3429,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 					sprintf(filename, "players/%sP1.m8", skin);
 
 					/* no, so see if it exists */
-					if (gi.FS_LoadFile(filename, NULL) != -1)
+					if (gi.LoadFile(filename, NULL) != -1)
 					{
 						// The plague1 skin exists.
 						gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );

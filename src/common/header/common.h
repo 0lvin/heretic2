@@ -691,6 +691,11 @@ int CM_LoadFile(const char *path, void **buffer);
 
 /* Shared Model load code */
 int Mod_LoadFile(const char *path, void **buffer);
+void Mod_AliasesInit(void);
+void Mod_AliasesFreeAll(void);
+const dmdxframegroup_t *Mod_GetModelInfo(const char *name, int *num,
+	float *mins, float *maxs);
+void Mod_GetModelFrameInfo(const char *name, int num, float *mins, float *maxs);
 
 /* PLAYER MOVEMENT CODE */
 

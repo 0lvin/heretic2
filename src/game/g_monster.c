@@ -972,6 +972,44 @@ M_SetEffects(edict_t *ent)
 	}
 }
 
+static void
+M_SetAnimGroupFrameValues(edict_t *self, const char *name,
+	int *ofs_frames, int *num_frames)
+{
+	const dmdxframegroup_t * frames;
+	int num, i;
+
+	frames = gi.GetModelInfo(self->s.modelindex, &num, NULL, NULL);
+	for (i = 0; i < num; i++)
+	{
+		if (!strcmp(frames[i].name, name))
+		{
+			*ofs_frames = frames[i].ofs;
+			*num_frames = frames[i].num;
+			break;
+		}
+	}
+}
+
+void
+M_SetAnimGroupFrame(edict_t *self, const char *name)
+{
+	int i, ofs_frames = 0, num_frames = 1;
+
+	M_SetAnimGroupFrameValues(self, name, &ofs_frames, &num_frames);
+
+	i = self->s.frame - ofs_frames;
+	if (i < 0)
+	{
+		i = 0;
+	}
+	i++;
+
+	self->s.frame = ofs_frames + i % num_frames;
+	gi.GetModelFrameInfo(self->s.modelindex, self->s.frame,
+		self->mins, self->maxs);
+}
+
 /* ------------------------------------------------------------------------------
 	M_MoveFrame - unless a nextframe is specified, advance to the next frame listed in
 	the Animation Frame Array.   Execute any aifunction or think function specified
@@ -1300,6 +1338,30 @@ MG_CheckInGround(edict_t *self)
 	}
 }
 
+static void
+M_FixStuckMonster(edict_t *self)
+{
+	trace_t tr;
+
+	tr = gi.trace(self->s.origin, self->mins, self->maxs, self->s.origin, self, MASK_SOLID);
+	if (!tr.startsolid)
+	{
+		return;
+	}
+
+	FixEntityPosition(self);
+
+	tr = gi.trace(self->s.origin, self->mins, self->maxs, self->s.origin, self, MASK_SOLID);
+
+	if (tr.startsolid)
+	{
+		gi.dprintf("%s: %s startsolid at %s\n",
+				__func__,
+				self->classname,
+				vtos(self->s.origin));
+	}
+}
+
 qboolean
 monster_start(edict_t *self)
 {
@@ -1398,6 +1460,8 @@ monster_start(edict_t *self)
 	}
 
 	VectorCopy(self->s.origin, self->s.old_origin);
+
+	M_FixStuckMonster(self);
 
 	if (st.item)
 	{

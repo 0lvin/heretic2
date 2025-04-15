@@ -185,9 +185,19 @@ dynamicspawn_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 	gi.centerprintf(other, "Entity description: %s", self->message);
 }
 
+void
+dynamicspawn_think(edict_t *self)
+{
+	M_SetAnimGroupFrame(self, "idle");
+	self->nextthink = level.time + FRAMETIME;
+}
+
 static void
 DynamicSpawn(edict_t *self, dynamicentity_t *data)
 {
+	const dmdxframegroup_t * frames;
+	int num, i;
+
 	/* All other properties could be updated in DynamicSpawnUpdate */
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
@@ -197,6 +207,26 @@ DynamicSpawn(edict_t *self, dynamicentity_t *data)
 	{
 		self->message = data->description;
 	}
+
+	/* Set Mins/Maxs based on first frame */
+	gi.GetModelFrameInfo(self->s.modelindex, self->s.frame,
+		self->mins, self->maxs);
+
+	/* Set Mins/Maxs based on whole model frames in animation group */
+	frames = gi.GetModelInfo(self->s.modelindex, &num, NULL, NULL);
+	for (i = 0; i < num; i++)
+	{
+		if (!strcmp(frames[i].name, "idle"))
+		{
+			self->think = dynamicspawn_think;
+			self->nextthink = level.time + FRAMETIME;
+			VectorCopy(frames[i].mins, self->mins);
+			VectorCopy(frames[i].maxs, self->maxs);
+
+			break;
+		}
+	}
+
 	self->touch = dynamicspawn_touch;
 
 	gi.linkentity(self);
@@ -421,7 +451,7 @@ ED_CallSpawn(edict_t *ent)
 			strncpy(self.classname, ent->classname, sizeof(self.classname));
 			snprintf(self.model_path, sizeof(self.model_path), "models/%s", ent->model);
 
-			if (gi.FS_LoadFile(self.model_path, NULL) > 4)
+			if (gi.LoadFile(self.model_path, NULL) > 4)
 			{
 				/* Set default size */
 				VectorSet(self.mins, -16, -16, -16);
@@ -497,10 +527,10 @@ ED_ParseColorField(const char *value)
 	{
 		float v[4] = { 0, 0, 0, 1.0f };
 		qboolean is_float = true;
-		char color_buffer[16], *tmp;
+		char *color_buffer, *tmp;
 		int i;
 
-		strncpy(color_buffer, value, sizeof(color_buffer) - 1);
+		color_buffer = strdup(value);
 		tmp = color_buffer;
 
 		for (i = 0; i < 4; i++)
@@ -517,6 +547,7 @@ ED_ParseColorField(const char *value)
 				break;
 			}
 		}
+		free(color_buffer);
 
 		/* convert to bytes */
 		if (is_float)
@@ -1522,7 +1553,7 @@ DynamicSpawnInit(void)
 	ndynamicentities = 0;
 
 	/* load the aidata file */
-	len_ai = gi.FS_LoadFile("aidata.vsc", (void **)&raw);
+	len_ai = gi.LoadFile("aidata.vsc", (void **)&raw);
 	if (len_ai > 1)
 	{
 		if (len_ai > 4 && !strncmp(raw, "CVSC", 4))
@@ -1538,17 +1569,17 @@ DynamicSpawnInit(void)
 			}
 			buf_ai[len_ai] = 0;
 		}
-		gi.FS_FreeFile(raw);
+		gi.FreeFile(raw);
 	}
 
 	/* load the file */
-	len_ent = gi.FS_LoadFile("models/entity.dat", (void **)&raw);
+	len_ent = gi.LoadFile("models/entity.dat", (void **)&raw);
 	if (len_ent > 1)
 	{
 		buf_ent = malloc(len_ent + 1);
 		memcpy(buf_ent, raw, len_ent);
 		buf_ent[len_ent] = 0;
-		gi.FS_FreeFile(raw);
+		gi.FreeFile(raw);
 	}
 
 	/* aidata definition lines count */

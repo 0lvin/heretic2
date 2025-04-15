@@ -52,7 +52,7 @@ void WaterSplash(centity_t *owner, int type, int flags, vec3_t origin)
 
 static float avertexnormals[NUMVERTEXNORMALS][3] =
 {
-#include "../../client/refresh/constants/anorms.h"
+#include "../../common/models/anorms.h"
 };
 
 // This needs work. . .

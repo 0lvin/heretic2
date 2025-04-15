@@ -349,7 +349,7 @@ ShutdownGame(void)
 	}
 	game.entitiesSpawned = false;
 
-	gi.FS_FreeFile(game_msgbuf);
+	gi.FreeFile(game_msgbuf);
 
 	gi.FreeTags(TAG_LEVEL);
 	gi.FreeTags(TAG_GAME);

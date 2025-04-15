@@ -169,7 +169,6 @@ static void
 PF_setmodel(edict_t *ent, const char *name)
 {
 	int i;
-	cmodel_t *mod;
 
 	if (!name)
 	{
@@ -185,6 +184,8 @@ PF_setmodel(edict_t *ent, const char *name)
 	   the size information for it */
 	if (name[0] == '*')
 	{
+		cmodel_t *mod;
+
 		mod = CM_InlineModel(name);
 		VectorCopy(mod->mins, ent->mins);
 		VectorCopy(mod->maxs, ent->maxs);
@@ -228,7 +229,7 @@ PF_Configstring(int index, const char *val)
 
 /* Direct get value for config string, index in library range */
 static const char *
-PF_ConfigstringGet(int index)
+PF_ConfigStringGet(int index)
 {
 	index = P_ConvertConfigStringFrom(index, SV_GetRecomendedProtocol());
 
@@ -239,6 +240,61 @@ PF_ConfigstringGet(int index)
 
 	/* change the string in sv */
 	return sv.configstrings[index];
+}
+
+static void
+PF_GetModelFrameInfo(int index, int num, float *mins, float *maxs)
+{
+	if (index < MAX_MODELS)
+	{
+		if (sv.configstrings[CS_MODELS + index][0] == '*')
+		{
+			if (maxs && mins)
+			{
+				cmodel_t *mod;
+
+				mod = CM_InlineModel(sv.configstrings[CS_MODELS + index]);
+				VectorCopy(mod->mins, mins);
+				VectorCopy(mod->maxs, maxs);
+			}
+		}
+		else
+		{
+			Mod_GetModelFrameInfo(sv.configstrings[CS_MODELS + index],
+				num, mins, maxs);
+		}
+	}
+}
+
+static const dmdxframegroup_t *
+PF_GetModelInfo(int index, int *num, float *mins, float *maxs)
+{
+	if (index < MAX_MODELS)
+	{
+		if (sv.configstrings[CS_MODELS + index][0] == '*')
+		{
+			if (maxs && mins)
+			{
+				cmodel_t *mod;
+
+				mod = CM_InlineModel(sv.configstrings[CS_MODELS + index]);
+				VectorCopy(mod->mins, mins);
+				VectorCopy(mod->maxs, maxs);
+			}
+		}
+		else
+		{
+			return Mod_GetModelInfo(sv.configstrings[CS_MODELS + index],
+				num, mins, maxs);
+		}
+	}
+
+	if (num)
+	{
+		*num = 0;
+	}
+
+	return NULL;
 }
 
 static void
@@ -750,7 +806,6 @@ SV_InitGameProgs(void)
 	import.imageindex = SV_ImageIndex;
 
 	import.configstring = PF_Configstring;
-	import.get_configstring = PF_ConfigstringGet;
 	import.sound = PF_StartSound;
 	import.positioned_sound = SV_StartSound;
 
@@ -785,10 +840,13 @@ SV_InitGameProgs(void)
 	import.AreasConnected = CM_AreasConnected;
 
 	/* Extension to classic Quake2 API */
-	import.FS_LoadFile = FS_LoadFile;
-	import.FS_FreeFile = FS_FreeFile;
-	import.FS_Gamedir = FS_Gamedir;
-	import.FS_CreatePath = FS_CreatePath;
+	import.LoadFile = FS_LoadFile;
+	import.FreeFile = FS_FreeFile;
+	import.Gamedir = FS_Gamedir;
+	import.CreatePath = FS_CreatePath;
+	import.GetConfigString = PF_ConfigStringGet;
+	import.GetModelInfo = PF_GetModelInfo;
+	import.GetModelFrameInfo = PF_GetModelFrameInfo;
 
 	/* Heretic 2 specific */
 	import.FS_NextPath = FS_NextPath;
