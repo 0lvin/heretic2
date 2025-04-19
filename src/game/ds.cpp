@@ -500,7 +500,7 @@ void Variable::Write(FILE *FH, CScript *Script, int ID)
 
 void Variable::Debug(CScript *Script)
 {
-	Script->DebugLine("   Name: %s\n",Name);
+	Com_Printf("   Name: %s\n",Name);
 }
 
 //==========================================================================
@@ -533,7 +533,7 @@ void IntVar::Debug(CScript *Script)
 {
 	Variable::Debug(Script);
 
-	Script->DebugLine("      Integer Value: %d\n",Value);
+	Com_Printf("      Integer Value: %d\n",Value);
 }
 
 void IntVar::Signal(edict_t *Which)
@@ -601,7 +601,7 @@ void FloatVar::Debug(CScript *Script)
 {
 	Variable::Debug(Script);
 
-	Script->DebugLine("      Float Value: %0.f\n",Value);
+	Com_Printf("      Float Value: %0.f\n",Value);
 }
 
 Variable *FloatVar::operator +(Variable *VI)
@@ -676,7 +676,7 @@ void VectorVar::Debug(CScript *Script)
 {
 	Variable::Debug(Script);
 
-	Script->DebugLine("      Vector Value: [%0.f, %0.f, %0.f]\n",Value[0],Value[1],Value[2]);
+	Com_Printf("      Vector Value: [%0.f, %0.f, %0.f]\n",Value[0],Value[1],Value[2]);
 }
 
 Variable *VectorVar::operator +(Variable *VI)
@@ -955,7 +955,7 @@ void EntityVar::Debug(CScript *Script)
 {
 	Variable::Debug(Script);
 
-	Script->DebugLine("      Entity Value: %d\n",GetIntValue());
+	Com_Printf("      Entity Value: %d\n",GetIntValue());
 }
 
 int EntityVar::GetIntValue(void)
@@ -2727,7 +2727,7 @@ void CScript::HandleDebug(void)
 
 		if (!ParameterVariables.empty())
 		{
-			DebugLine("   Parameters:\n");
+			Com_Printf("   Parameters:\n");
 			for (vit iv=ParameterVariables.begin();iv != ParameterVariables.end();iv++)
 			{
 				(*iv)->Debug(this);
@@ -2736,7 +2736,7 @@ void CScript::HandleDebug(void)
 
 		if (!GlobalVariables.empty())
 		{
-			DebugLine("   Global Variables:\n");
+			Com_Printf("   Global Variables:\n");
 			for (vit iv=GlobalVariables.begin();iv != GlobalVariables.end();iv++)
 			{
 				(*iv)->Debug(this);
@@ -2745,7 +2745,7 @@ void CScript::HandleDebug(void)
 
 		if (!LocalVariables.empty())
 		{
-			DebugLine("   Local Variables:\n");
+			Com_Printf("   Local Variables:\n");
 			for (vit iv=LocalVariables.begin();iv != LocalVariables.end();iv++)
 			{
 				(*iv)->Debug(this);
@@ -2757,7 +2757,7 @@ void CScript::HandleDebug(void)
 
 void CScript::HandleDebugStatement(void)
 {
-	DebugLine("%s\n",ReadString());
+	Com_Printf("%s\n",ReadString());
 }
 
 void CScript::HandleAddAssignment(void)
@@ -3330,9 +3330,9 @@ void CScript::HandleMove(void)
 			if (DebugFlags & DEBUG_MOVE)
 			{
 				StartDebug();
-				DebugLine("   Moving Entity %d\n",Entity->GetIntValue());
-				DebugLine("      From (%7.3f, %7.3f, %7.3f)\n",ent->s.origin[0],ent->s.origin[1],ent->s.origin[2]);
-				DebugLine("      To   (%7.3f, %7.3f, %7.3f)\n",Dest[0], Dest[1], Dest[2]);
+				Com_Printf("   Moving Entity %d\n",Entity->GetIntValue());
+				Com_Printf("      From (%7.3f, %7.3f, %7.3f)\n",ent->s.origin[0],ent->s.origin[1],ent->s.origin[2]);
+				Com_Printf("      To   (%7.3f, %7.3f, %7.3f)\n",Dest[0], Dest[1], Dest[2]);
 				EndDebug();
 			}
 
@@ -3441,9 +3441,9 @@ void CScript::HandleRotate(void)
 			if (DebugFlags & DEBUG_ROTATE)
 			{
 				StartDebug();
-				DebugLine("   Rotating Entity %d\n",Entity->GetIntValue());
-				DebugLine("      From (%7.3f, %7.3f, %7.3f)\n",ent->s.angles[0],ent->s.angles[1],ent->s.angles[2]);
-				DebugLine("      To   (%7.3f, %7.3f, %7.3f)\n",ent->moveinfo.end_angles[0], ent->moveinfo.end_angles[1], ent->moveinfo.end_angles[2]);
+				Com_Printf("   Rotating Entity %d\n",Entity->GetIntValue());
+				Com_Printf("      From (%7.3f, %7.3f, %7.3f)\n",ent->s.angles[0],ent->s.angles[1],ent->s.angles[2]);
+				Com_Printf("      To   (%7.3f, %7.3f, %7.3f)\n",ent->moveinfo.end_angles[0], ent->moveinfo.end_angles[1], ent->moveinfo.end_angles[2]);
 				EndDebug();
 			}
 
@@ -3750,20 +3750,6 @@ void CScript::AddEvent(Event *Which)
 	{
 		Events.push_back(Which);
 	}
-
-#ifdef _DEBUG
-	float				testtime;
-
-	time = 0;
-	for (ie=Events.begin();ie != Events.end();ie++)
-	{
-		testtime = (*ie)->GetTime();
-		if (testtime < time)
-		{
-			DebugBreak();
-		}
-	}
-#endif
 }
 
 void CScript::ProcessEvents(void)
@@ -3923,30 +3909,14 @@ void CScript::Error (const char *error, ...)
 
 void CScript::StartDebug(void)
 {
-	DebugLine("-------------------------------\n");
-	DebugLine("Script: %s\n", this->Name);
-	DebugLine("   DEBUG at %d\n", Position);
+	Com_Printf("-------------------------------\n");
+	Com_Printf("Script: %s\n", this->Name);
+	Com_Printf("   DEBUG at %d\n", Position);
 }
 
 void CScript::EndDebug(void)
 {
-	DebugLine("-------------------------------\n");
-}
-
-void CScript::DebugLine (const char *debugtext, ...)
-{
-	va_list argptr;
-	char	text[1024];
-
-	va_start (argptr, debugtext);
-	vsprintf (text, debugtext, argptr);
-	va_end (argptr);
-
-	Com_Printf("%s",text);
-
-#ifdef _DEBUG
-	OutputDebugString(text);
-#endif
+	Com_Printf("-------------------------------\n");
 }
 
 void CScript::Think(void)
@@ -3967,7 +3937,7 @@ ScriptConditionT CScript::Execute(edict_t *new_other, edict_t *new_activator)
 	if (DebugFlags & DEBUG_TIME)
 	{
 		StartDebug();
-		DebugLine("   Current Time: %10.1f\n",level.time);
+		Com_Printf("   Current Time: %10.1f\n",level.time);
 		EndDebug();
 	}
 

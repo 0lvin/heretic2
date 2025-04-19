@@ -5,8 +5,6 @@
 #ifndef QCOMMON_ANGLES_H
 #define QCOMMON_ANGLES_H
 
-#include "../../common/header/common.h"
-
 // Angles in radians
 
 #define ANGLE_0			0.0F

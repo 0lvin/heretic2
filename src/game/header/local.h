@@ -1074,7 +1074,7 @@ typedef enum
 typedef struct
 {
 	const char *name;
-	int ofs;
+	size_t ofs;
 	fieldtype_t type;
 	int flags;
 	short save_ver;
@@ -1797,9 +1797,6 @@ extern pushed_t	pushed[MAX_EDICTS], * pushed_p;
 extern edict_t *obstacle;
 extern player_export_t *playerExport;	// interface to player library.
 
-#include "../player/library/player.h"
-#include "../../common/header/common.h"
-#include "g_message.h"
 #include "../common/message.h"
 #include "g_classstatics.h"
 

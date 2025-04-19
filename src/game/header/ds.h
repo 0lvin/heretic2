@@ -516,7 +516,6 @@ public:
 	void				Error (const char *error, ...);
 	void				StartDebug(void);
 	void				EndDebug(void);
-	void				DebugLine (const char *debugtext, ...);
 
 	void				Think(void);
 	ScriptConditionT	Execute(edict_t *new_other, edict_t *new_activator);

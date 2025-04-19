@@ -3,7 +3,7 @@ run-name: testbuild_windows
 on:
   push:
     branches:
-      - 'master'
+      - 'msvc'
   pull_request:
     types:
       - edited

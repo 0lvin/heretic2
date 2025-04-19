@@ -261,10 +261,11 @@ trig_message_t	game_msgtxt[MAX_MESSAGESTRINGS];
 unsigned		*game_msgbuf;
 
 
-static int LoadTextFile(char *name, char **addr)
+static int
+LoadTextFile(char *name, char **addr)
 {
 	int		length;
-	char	*buffer;
+	char	*buffer = NULL;
 
 	length = gi.LoadFile(name, (void **)&buffer);
 	if(length <= 0)
