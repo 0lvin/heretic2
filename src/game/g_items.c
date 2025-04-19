@@ -1361,14 +1361,14 @@ void InitItems(void)
 	// weapon_swordstaff
 	// This can't be placed in the editor
 
-	p_itemlist[1].pickup=Pickup_Weapon;
+	p_itemlist[1].pickup = Pickup_Weapon;
 	p_itemlist[1].use=playerExport->Weapon_EquipSwordStaff;
 	p_itemlist[1].weaponthink=WeaponThink_SwordStaff;
 
 	// weapon_flyingfist
 	// This can't be placed in the editor
 
-	p_itemlist[2].pickup=Pickup_Weapon;
+	p_itemlist[2].pickup = Pickup_Weapon;
 	p_itemlist[2].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[2].weaponthink=WeaponThink_FlyingFist;
 
@@ -1378,7 +1378,7 @@ void InitItems(void)
 Pickup for the hellstaff weapon.
 */
 
-	p_itemlist[3].pickup=Pickup_Weapon;
+	p_itemlist[3].pickup = Pickup_Weapon;
 	p_itemlist[3].use=playerExport->Weapon_EquipHellStaff;
 	p_itemlist[3].weaponthink=WeaponThink_HellStaff;
 
@@ -1388,7 +1388,7 @@ Pickup for the hellstaff weapon.
 Pickup for the Magic Missile weapon.
 */
 
-	p_itemlist[4].pickup=Pickup_Weapon;
+	p_itemlist[4].pickup = Pickup_Weapon;
 	p_itemlist[4].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[4].weaponthink=WeaponThink_MagicMissileSpread;
 
@@ -1398,7 +1398,7 @@ Pickup for the Magic Missile weapon.
 Pickup for the Red Rain Bow weapon.
 */
 
-	p_itemlist[5].pickup=Pickup_Weapon;
+	p_itemlist[5].pickup = Pickup_Weapon;
 	p_itemlist[5].use=playerExport->Weapon_EquipBow;
 	p_itemlist[5].weaponthink=WeaponThink_RedRainBow;
 
@@ -1408,7 +1408,7 @@ Pickup for the Red Rain Bow weapon.
 Pickup for the Fire Wall weapon.
 */
 
-	p_itemlist[6].pickup=Pickup_Weapon;
+	p_itemlist[6].pickup = Pickup_Weapon;
 	p_itemlist[6].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[6].weaponthink=WeaponThink_Firewall;
 
@@ -1418,7 +1418,7 @@ Pickup for the Fire Wall weapon.
 Pickup for the Phoenix Bow weapon.
 */
 
-	p_itemlist[7].pickup=Pickup_Weapon;
+	p_itemlist[7].pickup = Pickup_Weapon;
 	p_itemlist[7].use=playerExport->Weapon_EquipBow;
 	p_itemlist[7].weaponthink=WeaponThink_PhoenixBow;
 
@@ -1428,7 +1428,7 @@ Pickup for the Phoenix Bow weapon.
 Pickup for the Sphere Annihilation weapon.
 */
 
-	p_itemlist[8].pickup=Pickup_Weapon;
+	p_itemlist[8].pickup = Pickup_Weapon;
 	p_itemlist[8].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[8].weaponthink=WeaponThink_SphereOfAnnihilation;
 
@@ -1438,16 +1438,16 @@ Pickup for the Sphere Annihilation weapon.
 Pickup for the Mace Balls weapon.
 */
 
-	p_itemlist[9].pickup=Pickup_Weapon;
+	p_itemlist[9].pickup = Pickup_Weapon;
 	p_itemlist[9].use=playerExport->Weapon_EquipSpell;
 	p_itemlist[9].weaponthink=WeaponThink_Maceballs;
 
 	// item_defense_powerup
 	// This can't be placed in the editor
 
-	p_itemlist[10].pickup=Pickup_Defense;
-	p_itemlist[10].use=Use_Defence;
-	p_itemlist[10].weaponthink=DefenceThink_Powerup;
+	p_itemlist[10].pickup = Pickup_Defense;
+	p_itemlist[10].use = Use_Defence;
+	p_itemlist[10].weaponthink = DefenceThink_Powerup;
 
 	// item_defense_ringofrepulsion
 /*
@@ -1455,9 +1455,9 @@ Pickup for the Mace Balls weapon.
 Pickup for the Ring of Repulsion defensive spell.
 */
 
-	p_itemlist[11].pickup=Pickup_Defense;
-	p_itemlist[11].use=Use_Defence;
-	p_itemlist[11].weaponthink=DefenceThink_RingOfRepulsion;
+	p_itemlist[11].pickup = Pickup_Defense;
+	p_itemlist[11].use = Use_Defence;
+	p_itemlist[11].weaponthink = DefenceThink_RingOfRepulsion;
 
 	// item_defense_shield
 /*
@@ -1465,9 +1465,9 @@ Pickup for the Ring of Repulsion defensive spell.
 Pickup for the Shield defensive spell.
 */
 
-	p_itemlist[12].pickup=Pickup_Defense;
-	p_itemlist[12].use=Use_Defence;
-	p_itemlist[12].weaponthink=DefenceThink_Shield;
+	p_itemlist[12].pickup = Pickup_Defense;
+	p_itemlist[12].use = Use_Defence;
+	p_itemlist[12].weaponthink = DefenceThink_Shield;
 
 	// item_defense_teleport
 /*
@@ -1475,9 +1475,9 @@ Pickup for the Shield defensive spell.
 Pickup for the Teleport defensive spell.
 */
 
-	p_itemlist[13].pickup=Pickup_Defense;
-	p_itemlist[13].use=Use_Defence;
-	p_itemlist[13].weaponthink=DefenceThink_Teleport;
+	p_itemlist[13].pickup = Pickup_Defense;
+	p_itemlist[13].use = Use_Defence;
+	p_itemlist[13].weaponthink = DefenceThink_Teleport;
 
 	// item_defense_polymorph
 /*
@@ -1485,9 +1485,9 @@ Pickup for the Teleport defensive spell.
 Pickup for the Polymorph Barrier defensive spell.
 */
 
-	p_itemlist[14].pickup=Pickup_Defense;
-	p_itemlist[14].use=Use_Defence;
-	p_itemlist[14].weaponthink=DefenceThink_Morph;
+	p_itemlist[14].pickup = Pickup_Defense;
+	p_itemlist[14].use = Use_Defence;
+	p_itemlist[14].weaponthink = DefenceThink_Morph;
 
 	// item_defense_meteorbarrier
 /*
@@ -1495,16 +1495,16 @@ Pickup for the Polymorph Barrier defensive spell.
 Pickup for the Meteor Barrier defensive spell.
 */
 
-	p_itemlist[15].pickup=Pickup_Defense;
-	p_itemlist[15].use=Use_Defence;
-	p_itemlist[15].weaponthink=DefenceThink_MeteorBarrier;
+	p_itemlist[15].pickup = Pickup_Defense;
+	p_itemlist[15].use = Use_Defence;
+	p_itemlist[15].weaponthink = DefenceThink_MeteorBarrier;
 
 	// item_mana_offensive_half
 /*
  * QUAKED item_mana_offensive_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
 Pickup for the offensive mana (50 points).
 */
-	p_itemlist[16].pickup=Pickup_Mana;
+	p_itemlist[16].pickup = Pickup_Mana;
 
 	// item_mana_offensive_full
 /*
@@ -1512,7 +1512,7 @@ Pickup for the offensive mana (50 points).
 Pickup for the offensive mana (100 points).
 */
 
-	p_itemlist[17].pickup=Pickup_Mana;
+	p_itemlist[17].pickup = Pickup_Mana;
 
 	// item_mana_defensive_half
 /*
@@ -1520,7 +1520,7 @@ Pickup for the offensive mana (100 points).
 Pickup for the defensive mana (50 points).
 */
 
-	p_itemlist[18].pickup=Pickup_Mana;
+	p_itemlist[18].pickup = Pickup_Mana;
 
 	// item_mana_defensive_full
 /*
@@ -1528,7 +1528,7 @@ Pickup for the defensive mana (50 points).
 Pickup for the defensive mana (100 points).
 */
 
-	p_itemlist[19].pickup=Pickup_Mana;
+	p_itemlist[19].pickup = Pickup_Mana;
 
 	// item_mana_combo_quarter
 /*
@@ -1536,7 +1536,7 @@ Pickup for the defensive mana (100 points).
 Pickup for both defensive & offensive mana (25 points).
 */
 
-	p_itemlist[20].pickup=Pickup_Mana;
+	p_itemlist[20].pickup = Pickup_Mana;
 
 	// item_mana_combo_half
 /*
@@ -1544,7 +1544,7 @@ Pickup for both defensive & offensive mana (25 points).
 Pickup for both defensive & offensive mana (50 points).
 */
 
-	p_itemlist[21].pickup=Pickup_Mana;
+	p_itemlist[21].pickup = Pickup_Mana;
 
 	// item_ammo_redrain
 /*
@@ -1552,7 +1552,7 @@ Pickup for both defensive & offensive mana (50 points).
 Pickup ammo for the Red Rain Bow
 */
 
-	p_itemlist[22].pickup=Pickup_Ammo;
+	p_itemlist[22].pickup = Pickup_Ammo;
 
 	// item_ammo_phoenix
 /*
@@ -1560,7 +1560,7 @@ Pickup ammo for the Red Rain Bow
 Pickup ammo for the Phoenix Bow
 */
 
-	p_itemlist[23].pickup=Pickup_Ammo;
+	p_itemlist[23].pickup = Pickup_Ammo;
 
 	// item_ammo_hellstaff
 /*
@@ -1568,7 +1568,7 @@ Pickup ammo for the Phoenix Bow
 Pickup ammo for the Hellstaff
 */
 
-	p_itemlist[24].pickup=Pickup_Ammo;
+	p_itemlist[24].pickup = Pickup_Ammo;
 
 	// item_health_half
 /*
@@ -1576,7 +1576,7 @@ Pickup ammo for the Hellstaff
 Pickup health (10 points)
 */
 
-	p_itemlist[25].pickup=Pickup_Health;
+	p_itemlist[25].pickup = Pickup_Health;
 
 	// item_health_full
 /*
@@ -1584,7 +1584,7 @@ Pickup health (10 points)
 Pickup health (30 points)
 */
 
-	p_itemlist[26].pickup=Pickup_Health;
+	p_itemlist[26].pickup = Pickup_Health;
 
 /*
  * QUAKED item_puzzle_townkey (.3 .3 1) (-8 -8 -4) (8 8 4)  x NO_DROP
@@ -1752,9 +1752,9 @@ NO_DROP - won't drop to ground
  * QUAKED item_defense_tornado (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
 Pickup for the Tornado defensive spell.
 */
-	p_itemlist[47].pickup=Pickup_Defense;
-	p_itemlist[47].use=Use_Defence;
-	p_itemlist[47].weaponthink=DefenceThink_Tornado;
+	p_itemlist[47].pickup = Pickup_Defense;
+	p_itemlist[47].use = Use_Defence;
+	p_itemlist[47].weaponthink = DefenceThink_Tornado;
 
 	// ********************************************************************************************
 	// Initialise game variables.
