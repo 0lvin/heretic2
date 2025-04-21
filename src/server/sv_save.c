@@ -182,8 +182,7 @@ SV_WriteLevelFile(void)
 
 	Com_DPrintf("%s()\n", __func__);
 
-	strncpy(savename, sv.name, sizeof(savename));
-	savename[sizeof(savename) - 1] = 0;
+	Q_strlcpy(savename, sv.name, sizeof(savename));
 	SV_CleanLevelFileName(savename);
 
 	Com_sprintf(name, sizeof(name), "%s/save/current/%s.sv2",
@@ -227,8 +226,7 @@ SV_ReadLevelFile(void)
 
 	Com_DPrintf("%s()\n", __func__);
 
-	strncpy(savename, sv.name, sizeof(savename));
-	savename[sizeof(savename) - 1] = 0;
+	Q_strlcpy(savename, sv.name, sizeof(savename));
 	SV_CleanLevelFileName(savename);
 
 	Com_sprintf(name, sizeof(name), "save/current/%s.sv2", savename);
@@ -398,7 +396,7 @@ SV_ReadServerFile(void)
 	/* start a new game fresh with new cvars */
 	SV_InitGame();
 
-	strcpy(svs.mapcmd, mapcmd);
+	Q_strlcpy(svs.mapcmd, mapcmd, sizeof(svs.mapcmd));
 
 	/* read game state */
 	Com_sprintf(name, sizeof(name), "%s/save/current", FS_Gamedir());

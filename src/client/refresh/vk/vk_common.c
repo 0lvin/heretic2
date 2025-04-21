@@ -1191,7 +1191,8 @@ static void CreateStagingBuffers()
 }
 
 // Records a memory barrier in the given command buffer.
-void Qvk_MemoryBarrier(VkCommandBuffer cmdBuffer, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask)
+static void
+Qvk_MemoryBarrier(VkCommandBuffer cmdBuffer, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask)
 {
 	const VkMemoryBarrier memBarrier = {
 		.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER,
@@ -1540,7 +1541,8 @@ static void DestroyStagingBuffer(qvkstagingbuffer_t *dstBuffer)
 **
 ** Destroy all Vulkan related resources.
 */
-void QVk_Shutdown( void )
+static void
+QVk_Shutdown(void)
 {
 	if (!vk_initialized)
 	{
@@ -1721,15 +1723,6 @@ QVk_WaitAndShutdownAll(void)
 	vk_initialized = false;
 }
 
-void QVk_Restart(void)
-{
-	QVk_WaitAndShutdownAll();
-	if (!QVk_Init())
-		Com_Error(ERR_FATAL, "Unable to restart Vulkan renderer");
-	QVk_PostInit();
-	ri.Vid_RequestRestart(RESTART_PARTIAL);
-}
-
 void QVk_PostInit(void)
 {
 	R_VertBufferInit();
@@ -1770,18 +1763,10 @@ qboolean QVk_Init(void)
 
 	uint32_t extCount;
 	char **wantedExtensions;
-	memset(vk_config.supported_present_modes, 0, sizeof(vk_config.supported_present_modes));
-	memset(vk_config.extensions, 0, sizeof(vk_config.extensions));
-	memset(vk_config.layers, 0, sizeof(vk_config.layers));
+	memset(&vk_config, 0, sizeof(vk_config));
 	vk_config.vk_version = instanceVersion;
-	vk_config.vertex_buffer_usage  = 0;
-	vk_config.vertex_buffer_max_usage = 0;
 	vk_config.vertex_buffer_size   = VERTEX_BUFFER_SIZE;
-	vk_config.index_buffer_usage   = 0;
-	vk_config.index_buffer_max_usage = 0;
 	vk_config.index_buffer_size    = INDEX_BUFFER_SIZE;
-	vk_config.uniform_buffer_usage = 0;
-	vk_config.uniform_buffer_max_usage = 0;
 	vk_config.uniform_buffer_size  = UNIFORM_BUFFER_SIZE;
 
 #ifdef USE_SDL3
@@ -1797,7 +1782,9 @@ qboolean QVk_Init(void)
 
 	// add space for validation layer
 	if (r_validation->value > 0)
+	{
 		extCount++;
+	}
 
 #if defined(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME) && defined(__APPLE__)
 	extCount++;

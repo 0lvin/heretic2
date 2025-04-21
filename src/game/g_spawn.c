@@ -448,7 +448,7 @@ ED_CallSpawn(edict_t *ent)
 		{
 			dynamicentity_t self = {0};
 
-			strncpy(self.classname, ent->classname, sizeof(self.classname));
+			Q_strlcpy(self.classname, ent->classname, sizeof(self.classname));
 			snprintf(self.model_path, sizeof(self.model_path), "models/%s", ent->model);
 
 			if (gi.LoadFile(self.model_path, NULL) > 4)
@@ -1467,7 +1467,7 @@ DynamicStringParse(char *line, char *field, int size, char separator)
 	}
 
 	/* copy current line state */
-	strncpy(field, current_section, size);
+	Q_strlcpy(field, current_section, size);
 
 	return line;
 }

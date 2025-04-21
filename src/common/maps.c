@@ -409,7 +409,7 @@ Mod_Load2QBSP_IBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 		out->nexttexinfo = LittleLong(in->nexttexinfo);
 		memset(out->material, 0, sizeof(out->material));
 		Mod_LoadMaterialConvertFlags(inflags, maptype, out->material);
-		strncpy(out->texture, in->texture,
+		Q_strlcpy(out->texture, in->texture,
 			Q_min(sizeof(out->texture), sizeof(in->texture)));
 
 		/* Fix backslashes */
@@ -451,7 +451,7 @@ Mod_Load2QBSP_RBSP_TEXINFO(byte *outbuf, dheader_t *outheader,
 		out->nexttexinfo = LittleLong(in->nexttexinfo);
 		memset(out->material, 0, sizeof(out->material));
 		Mod_LoadMaterialConvertFlags(inflags, maptype, out->material);
-		strncpy(out->texture, in->texture,
+		Q_strlcpy(out->texture, in->texture,
 			Q_min(sizeof(out->texture), sizeof(in->texture)));
 
 		/* Fix backslashes */
@@ -1254,7 +1254,7 @@ Mod_Load2QBSP(const char *name, byte *inbuf, size_t filesize, size_t *out_len,
 	{
 		if (rules[s].size && (rules[s].pos >= 0))
 		{
-			int pos;
+			size_t pos;
 
 			pos = rules[s].pos;
 			outheader->lumps[pos].fileofs = ofs;
@@ -1288,7 +1288,7 @@ Mod_Load2QBSP(const char *name, byte *inbuf, size_t filesize, size_t *out_len,
 		lump = (bspx_lump_t*)(bspx_header + 1);
 		for (i = 0; i < numlumps; i++, lump++)
 		{
-			int fileofs;
+			size_t fileofs;
 
 			/* move fileofs to correct place */
 			fileofs = LittleLong(lump->fileofs);

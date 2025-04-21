@@ -622,13 +622,13 @@ GL4_FindImage(const char *originname, imagetype_t type)
 		return NULL;
 	}
 
-	strncpy(name, originname, sizeof(name) - 1);
+	Q_strlcpy(name, originname, sizeof(name));
 
 	/* fix backslashes */
 	Q_replacebackslash(name);
 
 	ext = COM_FileExtension(name);
-	if(!ext[0])
+	if (!ext[0])
 	{
 		/* file has no extension */
 		return NULL;

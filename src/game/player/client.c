@@ -1667,7 +1667,7 @@ Player_GiveStartItems(edict_t *ent, const char *ptr)
 		{
 			buffer_end = ptr + strlen(ptr);
 		}
-		strncpy(buffer, ptr, Q_min(MAX_QPATH, buffer_end - ptr));
+		Q_strlcpy(buffer, ptr, Q_min(MAX_QPATH, buffer_end - ptr));
 
 		curr_buf = buffer;
 		item_name = COM_Parse(&curr_buf);
@@ -1693,15 +1693,16 @@ Player_GiveStartItems(edict_t *ent, const char *ptr)
 				if (count == 0)
 				{
 					ent->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 0;
-					continue;
 				}
-
-				dummy = G_Spawn();
-				dummy->item = item;
-				dummy->count = count;
-				dummy->spawnflags |= DROPPED_PLAYER_ITEM;
-				item->pickup(dummy, ent);
-				G_FreeEdict(dummy);
+				else
+				{
+					dummy = G_Spawn();
+					dummy->item = item;
+					dummy->count = count;
+					dummy->spawnflags |= DROPPED_PLAYER_ITEM;
+					item->pickup(dummy, ent);
+					G_FreeEdict(dummy);
+				}
 			}
 		}
 

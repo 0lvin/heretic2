@@ -612,6 +612,8 @@ WriteField1(FILE *f, field_t *field, byte *base)
 	void *p;
 	size_t len;
 	int index;
+	functionList_t *func;
+	mmoveList_t *mmove;
 
 	if (field->flags & FFL_SPAWNTEMP)
 	{
@@ -678,10 +680,54 @@ WriteField1(FILE *f, field_t *field, byte *base)
 				index = -1;
 			}
 			else
+			{
 				index = *(gitem_t **)p - playerExport->GetPlayerItems();
+			}
+
 			*(int *)p = index;
 			break;
+		case F_FUNCTION:
 
+			if (*(byte **)p == NULL)
+			{
+				len = 0;
+			}
+			else
+			{
+				func = GetFunctionByAddress (*(byte **)p);
+
+				if (!func)
+				{
+					gi.error("%s: function not in list, can't save game",
+						__func__);
+				}
+
+				len = strlen(func->funcStr) + 1;
+			}
+
+			*(int *)p = len;
+			break;
+		case F_MMOVE:
+
+			if (*(byte **)p == NULL)
+			{
+				len = 0;
+			}
+			else
+			{
+				mmove = GetMmoveByAddress (*(mmove_t **)p);
+
+				if (!mmove)
+				{
+					gi.error("%s: mmove not in list, can't save game",
+						__func__);
+				}
+
+				len = strlen(mmove->mmoveStr) + 1;
+			}
+
+			*(int *)p = len;
+			break;
 		default:
 			gi.error("%s: unknown field type", __func__);
 	}
@@ -692,6 +738,8 @@ WriteField2(FILE *f, field_t *field, byte *base)
 {
 	size_t len;
 	void *p;
+	functionList_t *func;
+	mmoveList_t *mmove;
 
 	if (field->flags & FFL_SPAWNTEMP)
 	{
@@ -710,6 +758,39 @@ WriteField2(FILE *f, field_t *field, byte *base)
 			{
 				len = strlen(*(char **)p) + 1;
 				fwrite(*(char **)p, len, 1, f);
+			}
+
+			break;
+		case F_FUNCTION:
+
+			if (*(byte **)p)
+			{
+				func = GetFunctionByAddress (*(byte **)p);
+
+				if (!func)
+				{
+					gi.error("%s: function not in list, can't save game",
+						__func__);
+				}
+
+				len = strlen(func->funcStr)+1;
+				fwrite (func->funcStr, len, 1, f);
+			}
+
+			break;
+		case F_MMOVE:
+
+			if (*(byte **)p)
+			{
+				mmove = GetMmoveByAddress (*(mmove_t **)p);
+				if (!mmove)
+				{
+					gi.error("%s: mmove not in list, can't save game",
+						__func__);
+				}
+
+				len = strlen(mmove->mmoveStr)+1;
+				fwrite (mmove->mmoveStr, len, 1, f);
 			}
 
 			break;
@@ -733,8 +814,15 @@ ReadField(FILE *f, field_t *field, byte *base)
 	void *p;
 	int len;
 	int index;
+	char funcStr[2048];
+
+	if (field->flags & FFL_SPAWNTEMP)
+	{
+		return;
+	}
 
 	p = (void *)(base + field->ofs);
+
 	switch (field->type)
 	{
 		case F_INT:
@@ -755,7 +843,7 @@ ReadField(FILE *f, field_t *field, byte *base)
 			}
 			else
 			{
-				*(char **)p = (char *)gi.TagMalloc (len, TAG_LEVEL);
+				*(char **)p = gi.TagMalloc(32 + len, TAG_LEVEL);
 				fread(*(char **)p, len, 1, f);
 			}
 
@@ -804,7 +892,59 @@ ReadField(FILE *f, field_t *field, byte *base)
 				*(gitem_t **)p = NULL;
 			}
 			else
+			{
 				*(gitem_t **)p = playerExport->GetPlayerItems() + index;
+			}
+
+			break;
+		case F_FUNCTION:
+			len = *(int *)p;
+
+			if (!len)
+			{
+				*(byte **)p = NULL;
+			}
+			else
+			{
+				if (len > sizeof(funcStr))
+				{
+					gi.error("%s: function name is longer than buffer (%i chars)",
+							__func__, (int)sizeof(funcStr));
+				}
+
+				fread (funcStr, len, 1, f);
+
+				if ( !(*(byte **)p = FindFunctionByName (funcStr)) )
+				{
+					gi.error("%s: function %s not found in table, can't load game",
+						__func__, funcStr);
+				}
+
+			}
+			break;
+		case F_MMOVE:
+			len = *(int *)p;
+
+			if (!len)
+			{
+				*(byte **)p = NULL;
+			}
+			else
+			{
+				if (len > sizeof(funcStr))
+				{
+					gi.error("%s: mmove name is longer than buffer (%i chars)",
+							__func__, (int)sizeof(funcStr));
+				}
+
+				fread (funcStr, len, 1, f);
+
+				if ( !(*(mmove_t **)p = FindMmoveByName (funcStr)) )
+				{
+					gi.error("%s: mmove %s not found in table, can't load game",
+						__func__, funcStr);
+				}
+			}
 			break;
 
 		default:
@@ -1109,10 +1249,12 @@ WriteLevel(const char *filename)
 		// and they have problems if they are targeted at a player that has no data in them, even if the player is
 		// not inuse.
 		if (!ent->inuse && !ent->client)
+		{
 			continue;
+		}
 
-		fwrite (&i, sizeof(i), 1, f);
-		WriteEdict (f, ent);
+		fwrite(&i, sizeof(i), 1, f);
+		WriteEdict(f, ent);
 	}
 
 	i = -1;
