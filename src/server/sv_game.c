@@ -847,6 +847,7 @@ SV_InitGameProgs(void)
 	import.GetConfigString = PF_ConfigStringGet;
 	import.GetModelInfo = PF_GetModelInfo;
 	import.GetModelFrameInfo = PF_GetModelFrameInfo;
+	import.PmoveEx = PmoveEx;
 
 	/* Heretic 2 specific */
 	import.FS_NextPath = FS_NextPath;
