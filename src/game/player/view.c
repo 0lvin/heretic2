@@ -159,6 +159,79 @@ P_DamageFeedback(edict_t *player)
 static void
 SV_CalcViewOffset(edict_t *ent)
 {
+	vec3_t v;
+
+	if (!ent)
+	{
+		return;
+	}
+
+#if 0
+	VectorSet(v, 0, 0, 10);
+	VectorCopy(v, ent->client->ps.viewoffset);
+	vec3_t forward, right, up;
+	vec3_t view;
+	vec3_t focusAngles;
+	trace_t trace;
+	static vec3_t mins = { -4, -4, -4 };
+	static vec3_t maxs = { 4, 4, 4 };
+	vec3_t focusPoint;
+	float focusDist;
+	float forwardScale, sideScale;
+
+	VectorCopy(self->client->ps.viewangles, focusAngles);
+
+	if (focusAngles[PITCH] > 45) {
+		focusAngles[PITCH] = 45;        // don't go too far overhead
+	}
+
+	AngleVectors(focusAngles, forward, NULL, NULL);
+
+	VectorMA2(cl.refdef.vieworg, FOCUS_DISTANCE, forward, focusPoint);
+
+	VectorCopy(cl.refdef.vieworg, view);
+
+	view[2] += 24; // TODO: view height
+
+	self->client->ps.viewangles[PITCH] *= 0.5;
+
+	AngleVectors(self->client->ps.viewangles, forward, right, up);
+
+	float cg_thirdPersonAngle = 0.0f;
+	float cg_thirdPersonRange = 64.0f; // TODO: view range
+
+	forwardScale = cos(cg_thirdPersonAngle / 180 * M_PI);
+	sideScale = sin(cg_thirdPersonAngle / 180 * M_PI);
+
+	VectorMA2(view, -cg_thirdPersonRange * forwardScale, forward, view);
+	VectorMA2(view, -cg_thirdPersonRange * sideScale, right, view);
+
+	// trace a ray from the origin to the viewpoint to make sure the view isn't
+	// in a solid block.  Use an 8 by 8 block to prevent the view from near clipping anything
+
+	trace = CM_BoxTrace( cl.refdef.vieworg, view, mins, maxs,  0, MASK_PLAYERSOLID);
+
+	if (trace.fraction != 1.0) {
+		VectorCopy(trace.endpos, view);
+		view[2] += (1.0 - trace.fraction) * 32;
+		// try another trace to this position, because a tunnel may have the ceiling
+		// close enogh that this is poking out
+
+		trace = CM_BoxTrace(cl.refdef.vieworg, view, mins, maxs, 0, MASK_PLAYERSOLID);
+		VectorCopy(trace.endpos, view);
+	}
+
+	VectorCopy(view, cl.refdef.vieworg);
+
+	// select pitch to look at focus point from vieword
+	VectorSubtract(focusPoint, cl.refdef.vieworg, focusPoint);
+	focusDist = sqrt(focusPoint[0] * focusPoint[0] + focusPoint[1] * focusPoint[1]);
+	if (focusDist < 1) {
+		focusDist = 1;  // should never happen
+	}
+	self->client->ps.viewangles[PITCH] = -180 / M_PI * atan2(focusPoint[2], focusDist);
+	self->client->ps.viewangles[YAW] -= cg_thirdPersonAngle;
+#endif
 }
 
 extern void Cmd_WeapPrev_f(edict_t *ent);
