@@ -721,7 +721,6 @@ CL_OffsetThirdPersonView
 
 ===============
 */
-#define FOCUS_DISTANCE  512
 #define VectorMA2(v, s, b, o) \
 	{	\
 		(o)[0] = (v)[0] + (b)[0] * (s);	\
@@ -750,7 +749,7 @@ CL_OffsetThirdPersonView(void)
 
 	AngleVectors(focusAngles, forward, NULL, NULL);
 
-	VectorMA2(cl.refdef.vieworg, FOCUS_DISTANCE, forward, focusPoint);
+	VectorMA2(cl.refdef.vieworg, 512, forward, focusPoint);
 
 	VectorCopy(cl.refdef.vieworg, view);
 

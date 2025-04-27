@@ -45,12 +45,121 @@
 static edict_t *current_player;
 static gclient_t *current_client;
 
-static vec3_t forward, right, up;
+static vec3_t right;
 static float xyspeed;
 
 static float bobmove;
 static int bobcycle; /* odd cycles are right foot going forward */
 static float bobfracsin; /* sin(bobfrac*M_PI) */
+
+static float
+SV_CalcRoll(vec3_t angles, vec3_t velocity)
+{
+	float sign;
+	float side;
+	float value;
+
+	side = DotProduct(velocity, right);
+	sign = side < 0 ? -1 : 1;
+	side = fabs(side);
+
+	value = sv_rollangle->value;
+
+	if (side < sv_rollspeed->value)
+	{
+		side = side * value / sv_rollspeed->value;
+	}
+	else
+	{
+		side = value;
+	}
+
+	return side * sign;
+}
+
+/*
+ * Handles color blends and view kicks
+ */
+static void
+P_DamageFeedback(edict_t *player)
+{
+	gclient_t *client;
+	int count;
+
+	if (!player)
+	{
+		return;
+	}
+
+	client = player->client;
+
+	/* flash the backgrounds behind the status numbers */
+	client->ps.stats[STAT_FLASHES] = 0;
+
+	if (client->damage_blood)
+	{
+		client->ps.stats[STAT_FLASHES] |= 1;
+	}
+
+	/* total points of damage shot at the player this frame */
+	count = client->damage_blood;
+	if (count == 0)
+	{
+		return; /* didn't take any damage */
+	}
+
+	//Check for gasssss damage
+	if (player->pain_debounce_time < level.time && client->damage_gas)
+	{
+		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
+			playerExport->PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
+
+		playerExport->PlayerPlayPain(&client->playerinfo, 1);
+	}
+	else if (((!irand(0, 4)) || count > 8) && (player->pain_debounce_time < level.time)) // Play pain animation.
+	{
+		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
+			playerExport->PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
+
+		if (count <= 4)
+			playerExport->PlayerPlayPain(&client->playerinfo, 2);
+		else
+			playerExport->PlayerPlayPain(&client->playerinfo, 0);
+
+		player->pain_debounce_time = level.time + 0.5;
+	}
+
+	/* play an apropriate pain sound */
+	if ((level.time > player->pain_debounce_time) &&
+		!(player->flags & FL_GODMODE) &&
+		(client->invincible_framenum <= level.framenum) &&
+		player->health > 0)
+	{
+		player->pain_debounce_time = level.time + 0.7;
+	}
+
+	/* clear totals */
+	client->damage_blood = 0;
+	client->damage_armor = 0;
+	client->damage_parmor = 0;
+	client->damage_knockback = 0;
+}
+
+/*
+ * Auto pitching on slopes?
+ *
+ * fall from 128: 400 = 160000
+ * fall from 256: 580 = 336400
+ * fall from 384: 720 = 518400
+ * fall from 512: 800 = 640000
+ * fall from 640: 960 =
+ *
+ * damage = deltavelocity*deltavelocity  * 0.0001
+ */
+static void
+SV_CalcViewOffset(edict_t *ent)
+{
+}
 
 extern void Cmd_WeapPrev_f(edict_t *ent);
 extern void Cmd_Use_f(edict_t *ent);
@@ -418,64 +527,6 @@ void PlayerTimerUpdate(edict_t *ent)
 
 	if (playerinfo->ghost_timer < level.time)
 		playerinfo->renderfx &= ~RF_TRANS_GHOST;
-}
-
-/*
- * Handles color blends and view kicks
- */
-static void
-P_DamageFeedback(edict_t *player)
-{
-	gclient_t	*client;
-	int			count;
-
-	client = player->client;
-
-	// Flash the backgrounds behind the status numbers.
-
-	client->ps.stats[STAT_FLASHES] = 0;
-
-	if (client->damage_blood)
-		client->ps.stats[STAT_FLASHES] |= 1;
-
-	// Total up the points of damage shot at the player this frame.
-
-	if((count = client->damage_blood) == 0)
-	{
-		// Didn't take any damage.
-		return;
-	}
-
-	//Check for gasssss damage
-	if (player->pain_debounce_time < level.time && client->damage_gas)
-	{
-		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
-			playerExport->PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
-
-		playerExport->PlayerPlayPain(&client->playerinfo, 1);
-	}
-	else if (((!irand(0, 4)) || count > 8) && (player->pain_debounce_time < level.time)) // Play pain animation.
-	{
-		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
-			playerExport->PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
-
-		if (count <= 4)
-			playerExport->PlayerPlayPain(&client->playerinfo, 2);
-		else
-			playerExport->PlayerPlayPain(&client->playerinfo, 0);
-
-		player->pain_debounce_time = level.time + 0.5;
-	}
-
-	// Reset the player's pain_debounce_time.
-
-	if (level.time > player->pain_debounce_time)
-		player->pain_debounce_time = level.time + 0.7;
-
-	// Clear damage totals.
-
-	client->damage_blood = 0;
-	client->damage_knockback = 0;
 }
 
 void
@@ -916,6 +967,9 @@ ClientEndServerFrame(edict_t *ent)
 
 	/* apply all the damage taken this frame */
 	P_DamageFeedback(ent);
+
+	/* determine the view offsets */
+	SV_CalcViewOffset(ent);
 
 	WritePlayerinfo(ent);
 
