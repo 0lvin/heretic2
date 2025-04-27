@@ -159,16 +159,6 @@ P_DamageFeedback(edict_t *player)
 static void
 SV_CalcViewOffset(edict_t *ent)
 {
-	vec3_t v;
-
-	if (!ent)
-	{
-		return;
-	}
-
-#if 0
-	VectorSet(v, 0, 0, 10);
-	VectorCopy(v, ent->client->ps.viewoffset);
 	vec3_t forward, right, up;
 	vec3_t view;
 	vec3_t focusAngles;
@@ -178,24 +168,41 @@ SV_CalcViewOffset(edict_t *ent)
 	vec3_t focusPoint;
 	float focusDist;
 	float forwardScale, sideScale;
+	vec3_t vieworg;
 
-	VectorCopy(self->client->ps.viewangles, focusAngles);
+#define VectorMA2(v, s, b, o) \
+	{	\
+		(o)[0] = (v)[0] + (b)[0] * (s);	\
+		(o)[1] = (v)[1] + (b)[1] * (s);	\
+		(o)[2] = (v)[2] + (b)[2] * (s);	\
+	}
 
-	if (focusAngles[PITCH] > 45) {
+	if (!ent)
+	{
+		return;
+	}
+
+	VectorCopy(ent->client->ps.viewangles, focusAngles);
+	VectorCopy(ent->s.origin, vieworg);
+
+	vieworg[0] += 31;
+	vieworg[2] += 24;
+/*	if (focusAngles[PITCH] > 45)
+	{
 		focusAngles[PITCH] = 45;        // don't go too far overhead
 	}
 
 	AngleVectors(focusAngles, forward, NULL, NULL);
 
-	VectorMA2(cl.refdef.vieworg, FOCUS_DISTANCE, forward, focusPoint);
+	VectorMA2(vieworg, 512, forward, focusPoint);
 
-	VectorCopy(cl.refdef.vieworg, view);
+	VectorCopy(vieworg, view);
 
 	view[2] += 24; // TODO: view height
 
-	self->client->ps.viewangles[PITCH] *= 0.5;
+	ent->client->ps.viewangles[PITCH] *= 0.5;
 
-	AngleVectors(self->client->ps.viewangles, forward, right, up);
+	AngleVectors(ent->client->ps.viewangles, forward, right, up);
 
 	float cg_thirdPersonAngle = 0.0f;
 	float cg_thirdPersonRange = 64.0f; // TODO: view range
@@ -209,7 +216,7 @@ SV_CalcViewOffset(edict_t *ent)
 	// trace a ray from the origin to the viewpoint to make sure the view isn't
 	// in a solid block.  Use an 8 by 8 block to prevent the view from near clipping anything
 
-	trace = CM_BoxTrace( cl.refdef.vieworg, view, mins, maxs,  0, MASK_PLAYERSOLID);
+	trace = gi.trace(vieworg, view, mins, maxs,  0, MASK_PLAYERSOLID);
 
 	if (trace.fraction != 1.0) {
 		VectorCopy(trace.endpos, view);
@@ -217,21 +224,22 @@ SV_CalcViewOffset(edict_t *ent)
 		// try another trace to this position, because a tunnel may have the ceiling
 		// close enogh that this is poking out
 
-		trace = CM_BoxTrace(cl.refdef.vieworg, view, mins, maxs, 0, MASK_PLAYERSOLID);
+		trace = gi.trace(vieworg, view, mins, maxs, 0, MASK_PLAYERSOLID);
 		VectorCopy(trace.endpos, view);
 	}
 
-	VectorCopy(view, cl.refdef.vieworg);
+	VectorCopy(view, vieworg);
 
 	// select pitch to look at focus point from vieword
-	VectorSubtract(focusPoint, cl.refdef.vieworg, focusPoint);
+	VectorSubtract(focusPoint, vieworg, focusPoint);
 	focusDist = sqrt(focusPoint[0] * focusPoint[0] + focusPoint[1] * focusPoint[1]);
 	if (focusDist < 1) {
 		focusDist = 1;  // should never happen
 	}
-	self->client->ps.viewangles[PITCH] = -180 / M_PI * atan2(focusPoint[2], focusDist);
-	self->client->ps.viewangles[YAW] -= cg_thirdPersonAngle;
-#endif
+	ent->client->ps.viewangles[PITCH] = -180 / M_PI * atan2(focusPoint[2], focusDist);
+	ent->client->ps.viewangles[YAW] -= cg_thirdPersonAngle;
+*/
+	VectorSubtract(vieworg, ent->s.origin, ent->client->ps.viewoffset);
 }
 
 extern void Cmd_WeapPrev_f(edict_t *ent);

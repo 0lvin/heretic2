@@ -920,7 +920,7 @@ CL_CalcViewValues(void)
 		}
 	}
 
-	CL_OffsetThirdPersonView();
+	// CL_OffsetThirdPersonView();
 
 	AngleVectors(cl.refdef.viewangles, cl.v_forward, cl.v_right, cl.v_up);
 
