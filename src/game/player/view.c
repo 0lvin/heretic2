@@ -185,8 +185,8 @@ SV_CalcViewOffset(edict_t *ent)
 	VectorCopy(ent->client->ps.viewangles, focusAngles);
 	VectorCopy(ent->s.origin, vieworg);
 
-	vieworg[0] += 31;
-	vieworg[2] += 24;
+	vieworg[0] += 31.5;
+	vieworg[2] += 31.5;
 /*	if (focusAngles[PITCH] > 45)
 	{
 		focusAngles[PITCH] = 45;        // don't go too far overhead
