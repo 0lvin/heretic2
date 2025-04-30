@@ -153,22 +153,25 @@ static void
 SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		sizebuf_t *msg, int protocol)
 {
-	int i;
-	int pflags;
+	int statbits, pflags, i, *origin, *oorig, idummy[3];
 	player_state_t *ps, *ops;
 	player_state_t dummy;
-	int statbits;
 
 	ps = &to->ps;
+	origin = to->origin;
 
 	if (!from)
 	{
+		memset(&idummy, 0, sizeof(idummy));
+		oorig = idummy;
+
 		memset(&dummy, 0, sizeof(dummy));
 		ops = &dummy;
 	}
 	else
 	{
 		ops = &from->ps;
+		oorig = from->origin;
 	}
 
 	/* determine what needs to be sent */
@@ -179,11 +182,23 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		pflags |= PS_M_TYPE;
 	}
 
-	if ((ps->pmove.origin[0] != ops->pmove.origin[0]) ||
-		(ps->pmove.origin[1] != ops->pmove.origin[1]) ||
-		(ps->pmove.origin[2] != ops->pmove.origin[2]))
+	if (IS_QII97_PROTOCOL(protocol))
 	{
-		pflags |= PS_M_ORIGIN;
+		if ((ps->pmove.origin[0] != ops->pmove.origin[0]) ||
+			(ps->pmove.origin[1] != ops->pmove.origin[1]) ||
+			(ps->pmove.origin[2] != ops->pmove.origin[2]))
+		{
+			pflags |= PS_M_ORIGIN;
+		}
+	}
+	else
+	{
+		if ((origin[0] != oorig[0]) ||
+			(origin[1] != oorig[1]) ||
+			(origin[2] != oorig[2]))
+		{
+			pflags |= PS_M_ORIGIN;
+		}
 	}
 
 	if ((ps->pmove.velocity[0] != ops->pmove.velocity[0]) ||
@@ -295,9 +310,9 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		}
 		else
 		{
-			MSG_WriteLong(msg, ps->pmove.origin[0]);
-			MSG_WriteLong(msg, ps->pmove.origin[1]);
-			MSG_WriteLong(msg, ps->pmove.origin[2]);
+			MSG_WriteLong(msg, origin[0]);
+			MSG_WriteLong(msg, origin[1]);
+			MSG_WriteLong(msg, origin[2]);
 		}
 	}
 
@@ -558,11 +573,27 @@ SV_BuildClientFrame(client_t *client)
 
 	frame->senttime = svs.realtime; /* save it for ping calc later */
 
-	/* find the client's PVS */
-	for (i = 0; i < 3; i++)
+	if (IS_QII97_PROTOCOL(client->protocol))
 	{
-		org[i] = clent->client->ps.pmove.origin[i] * 0.125 +
-				 clent->client->ps.viewoffset[i];
+		/* find the client's PVS */
+		for (i = 0; i < 3; i++)
+		{
+			org[i] = clent->client->ps.pmove.origin[i] * 0.125 +
+					 clent->client->ps.viewoffset[i];
+		}
+		/* store origin in 28.3 format */
+		VectorCopy(clent->s.origin, frame->origin);
+	}
+	else
+	{
+		/* find the client's PVS */
+		for (i = 0; i < 3; i++)
+		{
+			org[i] = clent->s.origin[i] +
+					 clent->client->ps.viewoffset[i];
+			/* store origin in 28.3 format */
+			frame->origin[i] = clent->s.origin[i] * 8;
+		}
 	}
 
 	leafnum = CM_PointLeafnum(org);

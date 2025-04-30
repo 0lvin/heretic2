@@ -45,7 +45,7 @@
 static edict_t *current_player;
 static gclient_t *current_client;
 
-static vec3_t right;
+static vec3_t forward, right, up;
 static float xyspeed;
 
 static float bobmove;
@@ -159,6 +159,190 @@ P_DamageFeedback(edict_t *player)
 static void
 SV_CalcViewOffset(edict_t *ent)
 {
+	float *angles;
+	float bob;
+	float ratio;
+	float delta;
+	vec3_t v;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	/* base angles */
+	angles = ent->client->ps.kick_angles;
+
+	/* if dead, fix the angle and don't add any kick */
+	if (ent->deadflag)
+	{
+		VectorClear(angles);
+
+		if (ent->flags & FL_SAM_RAIMI)
+		{
+			ent->client->ps.viewangles[ROLL] = 0;
+			ent->client->ps.viewangles[PITCH] = 0;
+		}
+		else
+		{
+			ent->client->ps.viewangles[ROLL] = 40;
+			ent->client->ps.viewangles[PITCH] = -15;
+		}
+
+		ent->client->ps.viewangles[YAW] = ent->client->killer_yaw;
+	}
+	else
+	{
+		/* add angles based on weapon kick */
+		VectorCopy(ent->client->kick_angles, angles);
+
+		/* add angles based on damage kick */
+		ratio = (ent->client->v_dmg_time - level.time) / DAMAGE_TIME;
+
+		if (ratio < 0)
+		{
+			ratio = 0;
+			ent->client->v_dmg_pitch = 0;
+			ent->client->v_dmg_roll = 0;
+		}
+
+		angles[PITCH] += ratio * ent->client->v_dmg_pitch;
+		angles[ROLL] += ratio * ent->client->v_dmg_roll;
+
+		/* add pitch based on fall kick */
+		ratio = (ent->client->fall_time - level.time) / FALL_TIME;
+
+		if (ratio < 0)
+		{
+			ratio = 0;
+		}
+
+		angles[PITCH] += ratio * ent->client->fall_value;
+
+		/* add angles based on velocity */
+		delta = DotProduct(ent->velocity, forward);
+		angles[PITCH] += delta * run_pitch->value;
+
+		delta = DotProduct(ent->velocity, right);
+		angles[ROLL] += delta * run_roll->value;
+
+		/* add angles based on bob */
+		delta = bobfracsin * bob_pitch->value * xyspeed;
+
+		if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
+		{
+			delta *= 6; /* crouching */
+		}
+
+		angles[PITCH] += delta;
+		delta = bobfracsin * bob_roll->value * xyspeed;
+
+		if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
+		{
+			delta *= 6; /* crouching */
+		}
+
+		if (bobcycle & 1)
+		{
+			delta = -delta;
+		}
+
+		angles[ROLL] += delta;
+	}
+
+	/* =================================== */
+
+	/* base origin */
+	VectorClear(v);
+
+	/* add view height */
+	v[2] += ent->viewheight;
+
+	/* add fall height */
+	ratio = (ent->client->fall_time - level.time) / FALL_TIME;
+
+	if (ratio < 0)
+	{
+		ratio = 0;
+	}
+
+	v[2] -= ratio * ent->client->fall_value * 0.4;
+
+	/* add bob height */
+	bob = bobfracsin * xyspeed * bob_up->value;
+
+	if (bob > 6)
+	{
+		bob = 6;
+	}
+
+	v[2] += bob;
+
+	/* add kick offset */
+	VectorAdd(v, ent->client->kick_origin, v);
+
+	/* absolutely bound offsets
+	   so the view can never be
+	   outside the player box */
+	if (!ent->client->chasetoggle)
+	{
+		if (v[0] < -14)
+		{
+			v[0] = -14;
+		}
+		else if (v[0] > 14)
+		{
+			v[0] = 14;
+		}
+
+		if (v[1] < -14)
+		{
+			v[1] = -14;
+		}
+		else if (v[1] > 14)
+		{
+			v[1] = 14;
+		}
+
+		if (v[2] < -22)
+		{
+			v[2] = -22;
+		}
+		else if (v[2] > 30)
+		{
+			v[2] = 30;
+		}
+	}
+	else
+	{
+		VectorSet(v, 0, 0, 0);
+		if (ent->client->chasecam)
+		{
+			int i;
+
+			/*
+			 * code had used ent->client->ps.pmove.origin,
+			 * that can't be unused with 4k+ coordinates,
+			 * so use viewoffset with clamp
+			 */
+			VectorSubtract(ent->client->chasecam->s.origin, ent->s.origin, v);
+
+			/* Clamp coordinates to -30..30 */
+			for (i = 0; i < 3; i++)
+			{
+				if (v[i] > 30)
+				{
+					v[i] = 30;
+				}
+				else if (v[i] < -30)
+				{
+					v[i] = -30;
+				}
+			}
+		}
+	}
+
+	VectorCopy(v, ent->client->ps.viewoffset);
 }
 
 extern void Cmd_WeapPrev_f(edict_t *ent);
@@ -435,7 +619,8 @@ WritePlayerinfo(edict_t *ent)
 // -----------------------
 // ************************************************************************************************
 
-void SetupPlayerinfo_effects(edict_t *ent)
+void
+SetupPlayerinfo_effects(edict_t *ent)
 {
 	int i;
 
@@ -868,29 +1053,43 @@ G_SetClientFrame(edict_t *ent, float speed)
 void
 ClientEndServerFrame(edict_t *ent)
 {
-	float	bobtime;
-	int		i,index;
+	float bobtime;
+	int i, index;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	current_player = ent;
 	current_client = ent->client;
 
-	// ********************************************************************************************
-	// If end of unit layout is displayed, don't give the player any normal movement attributes.
-	// ********************************************************************************************
+	/* If the origin or velocity have changed since ClientThink(),
+	   update the pmove values. This will happen when the client
+	   is pushed by a bmodel or kicked by an explosion.
+	   If it wasn't updated here, the view position would lag a frame
+	   behind the body position when pushed -- "sinking into plats" */
+	for (i = 0; i < 3; i++)
+	{
+		/*
+		 * set ps.pmove.origin is not required as server uses ent.origin instead
+		 */
+		current_client->ps.pmove.velocity[i] = ent->velocity[i] * 8.0;
+	}
 
+	/* If the end of unit layout is displayed, don't give
+	   the player any normal movement attributes */
 	if (level.intermissiontime)
 	{
 		current_client->ps.fov = 75;
 		G_SetStats(ent);
-
 		return;
 	}
 
-	// ********************************************************************************************
-	// Apply world effect, e.g. burn from lava, etc.
-	// ********************************************************************************************
+	AngleVectors(ent->client->v_angle, forward, right, up);
 
-	P_WorldEffects ();
+	/* burn from lava, etc */
+	P_WorldEffects();
 
 	// ********************************************************************************************
 	// Set the player entity's model angles.
@@ -926,19 +1125,24 @@ ClientEndServerFrame(edict_t *ent)
 
 	if (xyspeed < 5)
 	{
-		// Start at beginning of cycle again.
 		bobmove = 0;
-		current_client->bobtime = 0;
+		current_client->bobtime = 0; /* start at beginning of cycle again */
 	}
-	else if(ent->groundentity && !current_player->waterlevel)
+	else if (ent->groundentity && !current_player->waterlevel)
 	{
-		// So bobbing only cycles when on ground.
-		if(xyspeed > 210)
+		/* so bobbing only cycles when on ground */
+		if (xyspeed > 210)
+		{
 			bobmove = 0.25;
-		else if(xyspeed > 100)
+		}
+		else if (xyspeed > 100)
+		{
 			bobmove = 0.125;
+		}
 		else
+		{
 			bobmove = 0.0625;
+		}
 	}
 	else if(current_player->waterlevel)
 	{
@@ -954,7 +1158,7 @@ ClientEndServerFrame(edict_t *ent)
 
 	bobtime = (current_client->bobtime += bobmove);
 	bobcycle = (int)bobtime;
-	bobfracsin = Q_fabs(sin(bobtime * M_PI));
+	bobfracsin = fabs(sin(bobtime * M_PI));
 
 	// ********************************************************************************************
 	// Calculate damage (if any) from hitting the floor and apply the damage taken this frame from
@@ -1134,6 +1338,13 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.advancedstaff = current_client->playerinfo.advancedstaff;
 
 	current_client->ps.cinematicfreeze = current_client->playerinfo.sv_cinematicfreeze;
+
+	/* if the inventory is up, update it */
+	if (ent->client->showinventory)
+	{
+		InventoryMessage(ent);
+		gi.unicast(ent, false);
+	}
 
 	if (ent->client->chasetoggle == 1)
 	{

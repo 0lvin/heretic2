@@ -53,16 +53,31 @@ MoveClientToIntermission(edict_t *ent)
 		ent->client->playerinfo.showscores = true;
 	}
 
+	/*
+	 * set ps.pmove.origin is not required as server uses ent.origin instead
+	 */
 	VectorCopy(level.intermission_origin, ent->s.origin);
-	ent->client->ps.pmove.origin[0] = level.intermission_origin[0] * 8;
-	ent->client->ps.pmove.origin[1] = level.intermission_origin[1] * 8;
-	ent->client->ps.pmove.origin[2] = level.intermission_origin[2] * 8;
 	VectorCopy(level.intermission_angle, ent->client->ps.viewangles);
 	ent->client->ps.pmove.pm_type = PM_INTERMISSION;
 	ent->client->ps.rdflags &= ~RDF_UNDERWATER;
 
 	/* clean up powerup info */
+	ent->client->quad_framenum = 0;
 	ent->client->invincible_framenum = 0;
+	ent->client->invisible_framenum = 0;
+	ent->client->breather_framenum = 0;
+	ent->client->enviro_framenum = 0;
+	ent->client->grenade_blew_up = false;
+	ent->client->grenade_time = 0;
+	ent->client->quadfire_framenum = 0;
+	ent->client->trap_blew_up = false;
+	ent->client->trap_time = 0;
+	ent->client->ir_framenum = 0;
+	ent->client->nuke_framenum = 0;
+	ent->client->double_framenum = 0;
+
+	ent->client->ps.rdflags &= ~RDF_IRGOGGLES;
+
 
 	ent->viewheight = 0;
 	ent->s.modelindex = 0;
@@ -72,6 +87,8 @@ MoveClientToIntermission(edict_t *ent)
 	ent->s.effects = 0;
 	ent->s.sound = 0;
 	ent->solid = SOLID_NOT;
+
+	gi.linkentity(ent);
 
 	/* add the layout */
 	if (deathmatch->value || coop->value)
@@ -494,6 +511,29 @@ HelpComputerMessage(edict_t *ent)
 }
 
 /*
+ * Display the current help message
+ */
+void
+InventoryMessage(edict_t *ent)
+{
+#if 0
+	int i;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	gi.WriteByte(svc_inventory);
+
+	for (i = 0; i < MAX_ITEMS; i++)
+	{
+		gi.WriteShort(ent->client->pers.inventory[i]);
+	}
+#endif
+}
+
+/*
 ==================
 DeathmatchScoreboard
 
@@ -539,7 +579,8 @@ G_GetShrineTime
 ===============
 */
 
-short GetShrineTime(float time)
+short
+GetShrineTime(float time)
 {
 	float		duration;
 	short		result;

@@ -713,7 +713,7 @@ M_ChangePitch(edict_t *ent)
  * Turns to the movement direction, and
  * walks the current distance if facing it.
  */
-qboolean
+static qboolean
 SV_StepDirection(edict_t *ent, float yaw, float dist)
 {
 	vec3_t move, oldorigin;
@@ -916,7 +916,7 @@ SV_NewChaseDir(edict_t *actor, edict_t *enemy, float dist)
 	}
 }
 
-qboolean
+static qboolean
 SV_CloseEnough(edict_t *ent, edict_t *goal, float dist)
 {
 	int i;

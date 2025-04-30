@@ -30,10 +30,13 @@
 
 #define STOP_EPSILON 0.1
 #define MAX_CLIP_PLANES 5
+#define FRICTION 6
+#define WATERFRICTION 1
+
+static void SV_Physics_NewToss(edict_t *ent);
 
 #define KNOCKBACK_SCALING 0.5
 #define KNOCKBACK_THRESH .5
-
 
 /*
  * pushmove objects do not obey gravity, and do not interact with each other or
@@ -86,7 +89,7 @@ SV_TestEntityPosition(edict_t *ent)
 	return NULL;
 }
 
-void
+static void
 SV_CheckVelocity(edict_t *ent)
 {
 	int i;
@@ -112,7 +115,7 @@ SV_CheckVelocity(edict_t *ent)
  * Runs thinking code for
  * this frame if necessary
  */
-qboolean
+static qboolean
 SV_RunThink(edict_t *ent)
 {
 	float thinktime;
@@ -158,7 +161,7 @@ SV_RunThink(edict_t *ent)
  * Two entities have touched, so
  * run their touch functions
  */
-void
+static void
 SV_Impact(edict_t *e1, trace_t *trace)
 {
 	edict_t *e2;
@@ -232,7 +235,7 @@ ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce)
  * 2 = wall / step
  * 4 = dead stop
  */
-int
+static int
 SV_FlyMove(edict_t *ent, float time, int mask)
 {
 	edict_t *hit;
@@ -813,7 +816,7 @@ SV_Push(edict_t *pusher, vec3_t move, vec3_t amove)
  * Bmodel objects don't interact with each
  * other, but push all box objects
  */
-void
+static void
 SV_Physics_Pusher(edict_t *ent)
 {
 	vec3_t move, amove;
@@ -892,7 +895,7 @@ SV_Physics_Pusher(edict_t *ent)
 /*
  * Non moving objects can only think
  */
-void
+static void
 SV_Physics_None(edict_t *ent)
 {
 	if (!ent)
@@ -907,7 +910,7 @@ SV_Physics_None(edict_t *ent)
 /*
  * A moving object that doesn't obey physics
  */
-void
+static void
 SV_Physics_Noclip(edict_t *ent)
 {
 	if (!ent)
@@ -937,7 +940,7 @@ void PhysicsCheckWaterTransition(edict_t *self);
  * Toss, bounce, and fly movement.
  * When onground, do nothing.
  */
-void
+static void
 SV_Physics_Toss(edict_t *ent)
 {
 	trace_t trace;
@@ -1102,7 +1105,7 @@ SV_Physics_Toss(edict_t *ent)
 #define sv_friction			6
 #define sv_waterfriction	1
 
-void
+static void
 SV_AddRotationalFriction(edict_t *ent)
 {
 	int n;
@@ -1138,7 +1141,7 @@ SV_AddRotationalFriction(edict_t *ent)
 	}
 }
 
-void
+static void
 SV_Physics_Step(edict_t *ent)
 {
 	qboolean wasonground;
@@ -1383,6 +1386,7 @@ SV_Physics_Script_Angular(edict_t *ent)
 		gi.linkentity(ent);
 	}
 
+	/* regular thinking */
 	SV_RunThink(ent);
 }
 
@@ -1391,7 +1395,24 @@ SV_Physics_Script_Angular(edict_t *ent)
 void
 G_RunEntity(edict_t *ent)
 {
-	assert(ent->inuse);
+	trace_t trace;
+	vec3_t previous_origin;
+	qboolean saved_origin;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->movetype == MOVETYPE_STEP)
+	{
+		VectorCopy(ent->s.origin, previous_origin);
+		saved_origin = true;
+	}
+	else
+	{
+		saved_origin = false;
+	}
 
 	if (ent->prethink)
 	{
@@ -1425,11 +1446,166 @@ G_RunEntity(edict_t *ent)
 		case MOVETYPE_WALLBOUNCE:
 			SV_Physics_Toss(ent);
 			break;
-
+		case MOVETYPE_NEWTOSS:
+			SV_Physics_NewToss(ent);
+			break;
 		case MOVETYPE_SCRIPT_ANGULAR:
 			SV_Physics_Script_Angular(ent);
 			break;
 		default:
 			gi.error("SV_Physics: bad movetype %i", (int)ent->movetype);
+	}
+
+	/* if we moved, check and fix origin if needed */
+	/* also check inuse since entities are very often freed while thinking */
+	if (saved_origin && ent->inuse && !VectorCompare(ent->s.origin, previous_origin))
+	{
+		trace = gi.trace(ent->s.origin, ent->mins, ent->maxs,
+				previous_origin, ent, MASK_MONSTERSOLID);
+
+		if (trace.allsolid || trace.startsolid)
+		{
+			VectorCopy(previous_origin, ent->s.origin);
+		}
+	}
+}
+
+/*
+ * Toss, bounce, and fly movement. When on ground and
+ * no velocity, do nothing. With velocity, slide.
+ */
+static void
+SV_Physics_NewToss(edict_t *ent)
+{
+	trace_t trace;
+	vec3_t move;
+	edict_t *slave;
+	qboolean wasinwater;
+	qboolean isinwater;
+	float speed, newspeed;
+	vec3_t old_origin;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	/* regular thinking */
+	SV_RunThink(ent);
+
+	/* if not a team captain, so movement will be handled elsewhere */
+	if (ent->flags & FL_TEAMSLAVE)
+	{
+		return;
+	}
+
+	/* find out what we're sitting on. */
+	VectorCopy(ent->s.origin, move);
+	move[2] -= 0.25;
+	trace = gi.trace(ent->s.origin, ent->mins, ent->maxs,
+			move, ent, ent->clipmask);
+
+	if (ent->groundentity && ent->groundentity->inuse)
+	{
+		ent->groundentity = trace.ent;
+	}
+	else
+	{
+		ent->groundentity = NULL;
+	}
+
+	/* if we're sitting on something flat and have no velocity of our own, return. */
+	if (ent->groundentity && (trace.plane.normal[2] == 1.0) &&
+		!ent->velocity[0] && !ent->velocity[1] && !ent->velocity[2])
+	{
+		return;
+	}
+
+	/* store the old origin */
+	VectorCopy(ent->s.origin, old_origin);
+
+	SV_CheckVelocity(ent);
+
+	/* add gravity */
+	SV_AddGravity(ent);
+
+	if (ent->avelocity[0] || ent->avelocity[1] || ent->avelocity[2])
+	{
+		SV_AddRotationalFriction(ent);
+	}
+
+	/* add friction */
+	speed = VectorLength(ent->velocity);
+
+	if (ent->waterlevel) /* friction for water movement */
+	{
+		newspeed = speed - (WATERFRICTION * 6 * ent->waterlevel);
+
+		if (newspeed < 0)
+		{
+			newspeed = 0;
+		}
+
+		newspeed /= speed;
+		VectorScale(ent->velocity, newspeed, ent->velocity);
+	}
+	else if (!ent->groundentity) /* friction for air movement */
+	{
+		newspeed = speed - ((FRICTION));
+
+		if (newspeed < 0)
+		{
+			newspeed = 0;
+		}
+
+		newspeed /= speed;
+		VectorScale(ent->velocity, newspeed, ent->velocity);
+	}
+	else /* use ground friction */
+	{
+		newspeed = speed - (FRICTION * 6);
+
+		if (newspeed < 0)
+		{
+			newspeed = 0;
+		}
+
+		newspeed /= speed;
+		VectorScale(ent->velocity, newspeed, ent->velocity);
+	}
+
+	SV_FlyMove(ent, FRAMETIME, ent->clipmask);
+	gi.linkentity(ent);
+
+	G_TouchTriggers(ent);
+
+	/* check for water transition */
+	wasinwater = (ent->watertype & MASK_WATER);
+	ent->watertype = gi.pointcontents(ent->s.origin);
+	isinwater = ent->watertype & MASK_WATER;
+
+	if (isinwater)
+	{
+		ent->waterlevel = 1;
+	}
+	else
+	{
+		ent->waterlevel = 0;
+	}
+
+	if (!wasinwater && isinwater)
+	{
+		gi.positioned_sound(old_origin, g_edicts, CHAN_AUTO, gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
+	}
+	else if (wasinwater && !isinwater)
+	{
+		gi.positioned_sound(ent->s.origin, g_edicts, CHAN_AUTO, gi.soundindex("misc/h2ohit1.wav"), 1, 1, 0);
+	}
+
+	/* move teamslaves */
+	for (slave = ent->teamchain; slave; slave = slave->teamchain)
+	{
+		VectorCopy(ent->s.origin, slave->s.origin);
+		gi.linkentity(slave);
 	}
 }

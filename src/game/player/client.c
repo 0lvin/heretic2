@@ -2190,7 +2190,14 @@ SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 
 	if (deathmatch->value)
 	{
-		spot = SelectDeathmatchSpawnPoint();
+		if (ctf->value)
+		{
+			spot = SelectCTFSpawnPoint(ent);
+		}
+		else
+		{
+			spot = SelectDeathmatchSpawnPoint();
+		}
 	}
 	else if (coop->value)
 	{
@@ -2236,7 +2243,7 @@ SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 	endpos[2] -= 1000;
 	tr = gi.trace (spot->s.origin, vec3_origin, vec3_origin, endpos, NULL, CONTENTS_WORLD_ONLY|MASK_PLAYERSOLID);
 
-	VectorCopy(tr.endpos,origin);
+	VectorCopy(tr.endpos, origin);
 	origin[2] -= mins[2];
 
 	// ???
@@ -2249,15 +2256,18 @@ SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 void
 InitBodyQue(void)
 {
-	int i;
-	edict_t *ent;
-
-	level.body_que = 0;
-
-	for (i = 0; i < BODY_QUEUE_SIZE; i++)
+	if (deathmatch->value || coop->value)
 	{
-		ent = G_Spawn();
-		ent->classname = "bodyque";
+		int i;
+		edict_t *ent;
+
+		level.body_que = 0;
+
+		for (i = 0; i < BODY_QUEUE_SIZE; i++)
+		{
+			ent = G_Spawn();
+			ent->classname = "bodyque";
+		}
 	}
 }
 
@@ -2276,7 +2286,7 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 	float	mag;
 	vec3_t	mins;
 
-	VectorCopy(self->mins,mins);
+	VectorCopy(self->mins, mins);
 	mins[2]=-30.0;
 
 	gi.sound(self,CHAN_BODY,gi.soundindex("misc/fleshbreak.wav"),1,ATTN_NORM,0);
@@ -2344,14 +2354,15 @@ CopyToBodyQue(edict_t *ent)
 		return;
 	}
 
-	body = &g_edicts[(int)maxclients->value + 1 + level.body_que];
+	/* grab a body que and cycle to the next one */
+	body = &g_edicts[(int)maxclients->value + level.body_que + 1];
 	level.body_que = (level.body_que + 1) % BODY_QUEUE_SIZE;
 
 	gi.unlinkentity(ent);
 
 	// If the body was being used, then lets put an effect on it before removing it.
 
-	if (body->inuse&&(body->s.modelindex!=0))
+	if (body->inuse && (body->s.modelindex!=0))
 	{
 		VectorCopy(body->s.origin, origin);
 		origin[2] += (body->mins[2] + 8.0f);
@@ -2367,13 +2378,13 @@ CopyToBodyQue(edict_t *ent)
 	body->s.rootJoint = NULL_ROOT_JOINT;
 	body->s.swapFrame = NO_SWAP_FRAME;
 	body->owner = ent->owner;
-	VectorScale(ent->mins,0.5,body->mins);
-	VectorScale(ent->maxs,0.5,body->maxs);
+	VectorScale(ent->mins, 0.5, body->mins);
+	VectorScale(ent->maxs, 0.5, body->maxs);
 	body->maxs[2] = 10;
-	VectorCopy(ent->absmin,body->absmin);
-	VectorCopy(ent->absmax,body->absmax);
+	VectorCopy(ent->absmin, body->absmin);
+	VectorCopy(ent->absmax, body->absmax);
 	body->absmax[2] = 10;
-	VectorCopy(ent->size,body->size);
+	VectorCopy(ent->size, body->size);
 	body->svflags = ent->svflags|SVF_DEADMONSTER; // Stops player getting stuck.
 	body->movetype = MOVETYPE_STEP;
 	body->solid = SOLID_BBOX;
@@ -2388,8 +2399,7 @@ CopyToBodyQue(edict_t *ent)
 
 	// Clear out any client effectsBuffer_t on the corpse (inherited from the player who just died)
 	// as the engine will take care of deallocating any effects still on the player.
-
-	memset(&body->s.clientEffects,0,sizeof(EffectsBuffer_t));
+	memset(&body->s.clientEffects, 0, sizeof(EffectsBuffer_t));
 }
 
 void
@@ -2946,24 +2956,23 @@ PutClientInServer(edict_t *ent)
 	// Initialize the player's gclient_t and playerstate_t.
 	// ********************************************************************************************
 
-	client->ps.pmove.origin[0] = spawn_origin[0] * 8;
-	client->ps.pmove.origin[1] = spawn_origin[1] * 8;
-	client->ps.pmove.origin[2] = spawn_origin[2] * 8;
+	/*
+	 * set ps.pmove.origin is not required as server uses ent.origin instead
+	 */
+
 
 	client->ps.fov = atoi(Info_ValueForKey(client->playerinfo.pers.userinfo, "fov"));
 
 	if (client->ps.fov < 1)
+	{
 		client->ps.fov = FOV_DEFAULT;
+	}
 	else if (client->ps.fov > 160)
+	{
 		client->ps.fov = 160;
+	}
 
 	VectorClear(client->ps.offsetangles);
-
-	/* set the delta angles. */
-	for (i=0 ; i<3 ; i++)
-	{
-		client->ps.pmove.delta_angles[i] = ANGLE2SHORT(spawn_angles[i] - client->resp.cmd_angles[i]);
-	}
 
 	// Reset the camera delta angles.
 
@@ -2974,19 +2983,20 @@ PutClientInServer(edict_t *ent)
 	// Initialize the player's entity_state_t.
 	// ********************************************************************************************
 
-	// Zero the current animation frame.
+	ent->s.modelindex = CUSTOM_PLAYER_MODEL; /* will use the skin specified model */
+	ent->s.modelindex2 = CUSTOM_PLAYER_MODEL; /* custom gun model */
 
-	ent->s.frame=0;
-
-	// Modelindex is always 255 for player models.
-
-	ent->s.modelindex = CUSTOM_PLAYER_MODEL;
-
-	// Set up the model's origin, making sure it's off the ground.
-
+	ent->s.frame = 0;
 	VectorCopy(spawn_origin, ent->s.origin);
-	ent->s.origin[2] += 1;
+	ent->s.origin[2] += 1;  /* make sure off ground */
 	VectorCopy(ent->s.origin, ent->s.old_origin);
+
+	/* set the delta angle */
+	for (i = 0; i < 3; i++)
+	{
+		client->ps.pmove.delta_angles[i] = ANGLE2SHORT(
+				spawn_angles[i] - client->resp.cmd_angles[i]);
+	}
 
 	ent->s.angles[PITCH] = 0;
 	ent->s.angles[YAW] = spawn_angles[YAW];
