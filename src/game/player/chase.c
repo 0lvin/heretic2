@@ -98,6 +98,7 @@ ChasecamRemove(edict_t *ent)
 {
 	/* Stop the chasecam from moving */
 	VectorClear(ent->client->chasecam->velocity);
+
 #if 0
 	/*
 	 * quake2 specific
