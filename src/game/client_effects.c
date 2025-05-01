@@ -237,7 +237,7 @@ E_Load(void)
 	client_fx_export_t *(*P_GetFXAPI)(client_fx_import_t import);
 
 	char name[MAX_OSPATH];
-	char *path;
+	const char *path;
 #if defined(_WIN32)
 	WCHAR wname[MAX_OSPATH];
 	const char *effectsname = "effects.dll";
@@ -300,7 +300,7 @@ E_Load(void)
 #ifndef _WIN32
 		else
 		{
-			char *str_p;
+			const char *str_p;
 
 			Com_Printf("Failed to load library: %s\n: ", name);
 

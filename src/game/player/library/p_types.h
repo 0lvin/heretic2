@@ -232,27 +232,31 @@ typedef struct inventory_s
 
 typedef struct
 {
+	char userinfo[MAX_INFO_STRING];
+	char netname[16];
+	int hand;
+
+	qboolean connected;             /* a loadgame will leave valid entities that
+	                                   just don't have a connection yet */
+
+	/* values saved and restored from
+	   edicts when changing levels */
+	int health;
+	int max_health;
+	int savedFlags;
+
+	int selected_item;
+
 	// ********************************************************************************************
 	// User info.
 	// ********************************************************************************************
 
-	char		userinfo[MAX_INFO_STRING];
-	char		netname[16];
 	char		sounddir[MAX_QPATH];
 	int			autoweapon;
-
-	// A loadgame will leave valid entities that just don't have a connection yet.
-
-	qboolean	connected;
 
 	// ********************************************************************************************
 	// Values that are saved from and restored to 'edict_t's when changing levels.
 	// ********************************************************************************************
-
-	// Health.
-
-	int			health;
-	int			max_health;
 
 	short		mission_num1;
 	short		mission_num2;
@@ -273,7 +277,6 @@ typedef struct
 
 	inventory_t	inventory;
 	inventory_t	old_inventory;
-	int			selected_item;
 
 	// Ammo capacities.
 

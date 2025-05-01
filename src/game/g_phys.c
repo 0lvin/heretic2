@@ -3489,7 +3489,8 @@ qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, f
 	return true;
 }
 
-edict_t	*TestEntityPosition(edict_t *self)
+static edict_t *
+TestEntityPosition(edict_t *self)
 {
 	FormMove_t formMove;
 

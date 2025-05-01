@@ -2644,7 +2644,6 @@ smart_door_side_check(edict_t *self, edict_t *activator)
 	return false;
 }
 
-edict_t	*TestEntityPosition(edict_t *self);
 void
 door_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 {

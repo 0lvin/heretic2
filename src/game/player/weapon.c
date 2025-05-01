@@ -133,7 +133,6 @@ P_DamageModifier(edict_t *ent)
 	return damage_multiplier;
 }
 
-#if 0
 void
 P_ProjectSource(edict_t *ent, vec3_t distance,
 		vec3_t forward, vec3_t right, vec3_t result)
@@ -323,12 +322,10 @@ PlayerNoise_Verify(edict_t *who)
 	who->mynoise = n1;
 	who->mynoise2 = n2;
 }
-#endif
 
 void
 PlayerNoise(edict_t *who, vec3_t where, int type)
 {
-#if 0
 	edict_t *noise;
 
 	if (!who || !who->client)
@@ -408,7 +405,6 @@ PlayerNoise(edict_t *who, vec3_t where, int type)
 	VectorAdd(where, noise->maxs, noise->absmax);
 	noise->last_sound_time = level.time;
 	gi.linkentity(noise);
-#endif
 }
 
 #if 0
@@ -655,6 +651,7 @@ NoAmmoWeaponChange(edict_t *ent)
 
 	ent->client->newweapon = FindItem("blaster");
 }
+#endif
 
 /*
  * Called by ClientBeginServerFrame and ClientThink
@@ -667,6 +664,7 @@ Think_Weapon(edict_t *ent)
 		return;
 	}
 
+#if 0
 	/* if just died, put the weapon away */
 	if (ent->health < 1)
 	{
@@ -690,8 +688,10 @@ Think_Weapon(edict_t *ent)
 
 		ent->client->pers.weapon->weaponthink(ent);
 	}
+#endif
 }
 
+#if 0
 /*
  * Make the weapon ready if there is ammo
  */

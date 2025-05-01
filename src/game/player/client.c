@@ -341,6 +341,33 @@ SP_CreateUnnamedSpawn(edict_t *self)
 void
 SP_info_player_start(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
+	DynamicResetSpawnModels(self);
+
+#if 0
+	/* Call function to hack unnamed spawn points */
+	self->think = SP_CreateUnnamedSpawn;
+	self->nextthink = level.time + FRAMETIME;
+
+	if (!coop->value)
+	{
+		return;
+	}
+
+	if (Q_stricmp(level.mapname, "security") == 0)
+	{
+		/* invoke one of our gross, ugly, disgusting hacks */
+		self->think = SP_CreateCoopSpots;
+		self->nextthink = level.time + FRAMETIME;
+	}
+
+	/* Fix coop spawn points */
+	SP_FixCoopSpots(self);
+#endif
 }
 
 /*
@@ -362,7 +389,8 @@ SP_info_player_deathmatch(edict_t *self)
 		return;
 	}
 
-//	SP_misc_teleporter_dest(self);
+	DynamicResetSpawnModels(self);
+	// SP_misc_teleporter_dest(self);
 }
 
 /*
@@ -382,7 +410,55 @@ SP_info_player_coop(edict_t *self)
 		G_FreeEdict(self);
 		return;
 	}
-//	SP_misc_teleporter_dest(self);
+
+	DynamicResetSpawnModels(self);
+
+	if ((Q_stricmp(level.mapname, "jail2") == 0) ||
+		(Q_stricmp(level.mapname, "jail4") == 0) ||
+		(Q_stricmp(level.mapname, "mintro") == 0) ||
+		(Q_stricmp(level.mapname, "mine1") == 0) ||
+		(Q_stricmp(level.mapname, "mine2") == 0) ||
+		(Q_stricmp(level.mapname, "mine3") == 0) ||
+		(Q_stricmp(level.mapname, "mine4") == 0) ||
+		(Q_stricmp(level.mapname, "lab") == 0) ||
+		(Q_stricmp(level.mapname, "boss1") == 0) ||
+		(Q_stricmp(level.mapname, "fact1") == 0) ||
+		(Q_stricmp(level.mapname, "fact3") == 0) ||
+		(Q_stricmp(level.mapname, "waste1") == 0) || /* really? */
+		(Q_stricmp(level.mapname, "biggun") == 0) ||
+		(Q_stricmp(level.mapname, "space") == 0) ||
+		(Q_stricmp(level.mapname, "command") == 0) ||
+		(Q_stricmp(level.mapname, "power2") == 0) ||
+		(Q_stricmp(level.mapname, "strike") == 0) ||
+		(Q_stricmp(level.mapname, "city2") == 0))
+	{
+		/* invoke one of our gross, ugly, disgusting hacks */
+		self->think = SP_FixCoopSpots;
+		self->nextthink = level.time + FRAMETIME;
+	}
+}
+
+/*
+ * QUAKED info_player_coop_lava (1 0 1) (-16 -16 -24) (16 16 32)
+ *
+ * potential spawning position for coop games on rmine2 where lava level
+ * needs to be checked
+ */
+void
+SP_info_player_coop_lava(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (!coop->value)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	DynamicResetSpawnModels(self);
 }
 
 /*
@@ -402,6 +478,79 @@ SP_info_player_intermission(edict_t *self)
 	DynamicResetSpawnModels(self);
 }
 
+/* ======================================================================= */
+
+void
+player_pain(edict_t *self /* unused */, edict_t *other /* unused */,
+		float kick /* unused */, int damage /* unused */)
+{
+	/* Player pain is handled at the end
+	 * of the frame in P_DamageFeedback.
+	 * This function is still here since
+	 * the player is an entity and needs
+	 * a pain callback */
+}
+
+qboolean
+IsFemale(edict_t *ent)
+{
+	char *info;
+
+	if (!ent)
+	{
+		return false;
+	}
+
+	if (!ent->client)
+	{
+		return false;
+	}
+
+	info = Info_ValueForKey(ent->client->pers.userinfo, "gender");
+
+	if (strstr(info, "crakhor"))
+	{
+		return true;
+	}
+
+	if ((info[0] == 'f') || (info[0] == 'F'))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+qboolean
+IsNeutral(edict_t *ent)
+{
+	char *info;
+
+	if (!ent)
+	{
+		return false;
+	}
+
+	if (!ent->client)
+	{
+		return false;
+	}
+
+	info = Info_ValueForKey(ent->client->pers.userinfo, "gender");
+
+	if (strstr(info, "crakhor"))
+	{
+		return false;
+	}
+
+	if ((info[0] != 'f') && (info[0] != 'F') && (info[0] != 'm') &&
+		(info[0] != 'M'))
+	{
+		return true;
+	}
+
+	return false;
+}
 
 int
 SexedSoundIndex(edict_t *ent, char *base)
@@ -424,20 +573,6 @@ ClientSetSkinType(edict_t *ent, char *skinname)
 	playerExport->PlayerUpdateModelAttributes(playerinfo);
 	WritePlayerinfo_effects(ent);
 
-}
-
-
-/* ======================================================================= */
-
-void
-player_pain(edict_t *self /* unused */, edict_t *other /* unused */,
-		float kick /* unused */, int damage /* unused */)
-{
-	/* Player pain is handled at the end
-	 * of the frame in P_DamageFeedback.
-	 * This function is still here since
-	 * the player is an entity and needs
-	 * a pain callback */
 }
 
 void
@@ -3719,18 +3854,6 @@ PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 	}
 }
 
-unsigned
-CheckBlock(void *b, int c)
-{
-	int	v,i;
-	v = 0;
-	for (i=0 ; i<c ; i++)
-		v+= ((byte *)b)[i];
-	return v;
-}
-
-extern edict_t	*TestEntityPosition(edict_t *self);
-
 /*
  * This will be called once for each client frame, which will
  * usually be a couple times for each server frame.
@@ -3847,7 +3970,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			client->ps.pmove.pm_type = PM_NORMAL;
 		}
 
-		client->ps.pmove.gravity = sv_gravity->value;
+		client->ps.pmove.gravity = sv_gravity->value * ent->gravity;
 
 		// If we are not currently on a rope, then clear out any ropes as valid for a check.
 		if (!(client->playerinfo.flags & PLAYER_FLAG_ONROPE))
@@ -4267,6 +4390,25 @@ ClientBeginServerFrame(edict_t *ent)
 	if (client->delayedstart == 1)
 	{
 		ChasecamStart(ent);
+	}
+
+	if (deathmatch->value &&
+		(client->pers.spectator != client->resp.spectator) &&
+		((level.time - client->respawn_time) >= 5))
+	{
+		spectator_respawn(ent);
+		return;
+	}
+
+	/* run weapon animations if it hasn't been done by a ucmd_t */
+	if (!client->weapon_thunk && !client->resp.spectator
+		&& (ent->movetype != MOVETYPE_NOCLIP))
+	{
+		Think_Weapon(ent);
+	}
+	else
+	{
+		client->weapon_thunk = false;
 	}
 
 	if (ent->deadflag & DEAD_DEAD)
