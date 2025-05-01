@@ -1786,16 +1786,6 @@ void reinstate_non_cinematic_entites(edict_t *owner);
 void ProcessScripts(void);
 void ShutdownScripts(qboolean Complete);
 
-typedef struct pushed_s
-{
-	edict_t* ent;
-	vec3_t	origin;
-	vec3_t	angles;
-	float	deltayaw;
-} pushed_t;
-extern pushed_t	pushed[MAX_EDICTS], * pushed_p;
-
-extern edict_t *obstacle;
 extern player_export_t *playerExport;	// interface to player library.
 
 #include "../common/message.h"

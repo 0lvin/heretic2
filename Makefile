@@ -1049,7 +1049,6 @@ GAME_OBJS_ = \
 	src/game/g_newai.o \
 	src/game/g_newweap.o \
 	src/game/g_obj.o \
-	src/game/g_physics.o \
 	src/game/g_phys.o \
 	src/game/g_resourcemanagers.o \
 	src/game/g_rope.o \

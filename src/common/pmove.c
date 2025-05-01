@@ -1708,7 +1708,7 @@ PM_WaterSurfMove()
 	else
 	{
 		pml.velocity[2] = (pm->waterheight/* - *(float*)&pml.desiredWaterHeight*/) / pml.frametime;
-		pml.velocity[2] = sin(Sys_Milliseconds() * 0.006666666666666667) * 8.0 + pml.velocity[2];
+		pml.velocity[2] = sin(Sys_Milliseconds() / 150.0) * 8.0 + pml.velocity[2];
 	}
 
 	PM_StepSlideMove(true);

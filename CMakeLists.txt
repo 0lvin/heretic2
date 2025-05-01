@@ -420,7 +420,6 @@ set(Game-Source
 	${GAME_SRC_DIR}/g_newai.c
 	${GAME_SRC_DIR}/g_newweap.c
 	${GAME_SRC_DIR}/g_obj.c
-	${GAME_SRC_DIR}/g_physics.c
 	${GAME_SRC_DIR}/g_phys.c
 	${GAME_SRC_DIR}/g_resourcemanagers.c
 	${GAME_SRC_DIR}/g_rope.c
