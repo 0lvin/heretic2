@@ -20,7 +20,6 @@
 
 
 void gorgon_land(edict_t *self);
-void M_movetoside (edict_t *self,float yaw, float dist);
 void ai_charge2 (edict_t *self, float dist);
 float MG_FaceGoal (edict_t *self, qboolean doturn);
 void ai_moveright (edict_t *self, float dist);
@@ -558,7 +557,7 @@ void gorgondeath1_fall (edict_t *self)
 	if (self->s.frame == FRAME_deatha13)
 		gorgon_smoke(self);
 
-	M_movetoside(self,flrand(180, 345), flrand(0, -8));
+	M_walkmove(self,flrand(180, 345), flrand(0, -8));
 }
 
 static mframe_t gorgon_frames_die1 [] =

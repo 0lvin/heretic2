@@ -28,7 +28,6 @@
  */
 
 #include "../../header/local.h"
-#include "../../common/h2rand.h"
 
 #define STEPSIZE 18
 #define DI_NODIR -1
@@ -198,39 +197,6 @@ IsBadAhead(edict_t *self, edict_t *bad, vec3_t move)
 	}
 
 	return false;
-}
-
-/*
-=============
-M_CheckTop
-
-Returns false if any part of the top of the entity touching something solid
-
-=============
-*/
-
-qboolean
-M_CheckTop(edict_t *ent)
-{
-	vec3_t	mins, maxs, start;
-	int		x, y;
-
-	VectorAdd (ent->s.origin, ent->mins, mins);
-	VectorAdd (ent->s.origin, ent->maxs, maxs);
-
-// if any of the points over the corners are solid world, don't bother
-// with the tougher checks
-// the corners must be within 16 of the midpoint
-	start[2] = maxs[2] + 1;
-	for	(x=0 ; x<=1 ; x++)
-		for	(y=0 ; y<=1 ; y++)
-		{
-			start[0] = x ? maxs[0] : mins[0];
-			start[1] = y ? maxs[1] : mins[1];
-			if (gi.pointcontents (start) == CONTENTS_SOLID)
-				return false;
-		}
-	return true;
 }
 
 /*
@@ -677,39 +643,6 @@ M_ChangeYaw(edict_t *ent)
 }
 
 /*
-===============
-M_ChangePitch
-
-===============
-*/
-void
-M_ChangePitch(edict_t *ent)
-{
-	float	current;
-	float	move;
-
-	current = anglemod(ent->s.angles[PITCH]);
-
-	if (current == ent->ideal_pitch)
-		return;
-
-	move = ent->ideal_pitch - current;
-	if (ent->ideal_pitch > current)
-	{
-		if (move >= 180)
-			move = move - 360;
-	}
-	else
-	{
-		if (move <= -180)
-			move = move + 360;
-	}
-	//FIXME do we need a pitchspeed?
-
-	ent->s.angles[PITCH] = anglemod(current + move);
-}
-
-/*
  * Turns to the movement direction, and
  * walks the current distance if facing it.
  */
@@ -942,29 +875,6 @@ SV_CloseEnough(edict_t *ent, edict_t *goal, float dist)
 	return true;
 }
 
-/*
-======================
-M_MoveFromGoal
-======================
-*/
-void M_MoveAwayFromGoal (edict_t *ent, float dist)
-{
-	float	tdir, olddir, turnaround;
-
-	olddir = anglemod( (int)(ent->ideal_yaw/45)*45 );
-	turnaround = anglemod(olddir - 180);
-
-	// bump around...
-	if (!SV_StepDirection (ent, ent->ideal_yaw, dist))
-	{
-		for (tdir=0 ; tdir<=315 ; tdir += 45)
-		{
-			if (tdir!=turnaround && SV_StepDirection(ent, tdir, dist))
-					return;
-		}
-	}
-}
-
 void
 M_MoveToGoal(edict_t *ent, float dist)
 {
@@ -1006,17 +916,6 @@ M_MoveToGoal(edict_t *ent, float dist)
 	}
 }
 
-/*
-===============
-M_movetoside - move creature to the side determined by the given yaw
-===============
-*/
-void
-M_movetoside(edict_t *self,float yaw, float dist)
-{
-	M_walkmove(self, yaw, dist);
-}
-
 qboolean
 M_walkmove(edict_t *ent, float yaw, float dist)
 {
@@ -1042,4 +941,28 @@ M_walkmove(edict_t *ent, float yaw, float dist)
 	retval = SV_movestep(ent, move, true);
 	ent->monsterinfo.aiflags &= ~AI_BLOCKED;
 	return retval;
+}
+
+/*
+======================
+M_MoveFromGoal
+======================
+*/
+void
+M_MoveAwayFromGoal(edict_t *ent, float dist)
+{
+	float	tdir, olddir, turnaround;
+
+	olddir = anglemod( (int)(ent->ideal_yaw/45)*45 );
+	turnaround = anglemod(olddir - 180);
+
+	// bump around...
+	if (!SV_StepDirection (ent, ent->ideal_yaw, dist))
+	{
+		for (tdir=0 ; tdir<=315 ; tdir += 45)
+		{
+			if (tdir!=turnaround && SV_StepDirection(ent, tdir, dist))
+					return;
+		}
+	}
 }

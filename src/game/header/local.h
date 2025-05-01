@@ -1381,11 +1381,9 @@ void G_InitResourceManagers();
 
 /* m_move.c */
 qboolean M_CheckBottom(edict_t *ent);
-qboolean M_CheckTop(edict_t *ent);
 qboolean M_walkmove(edict_t *ent, float yaw, float dist);
 void M_MoveToGoal(edict_t *ent, float dist);
 float M_ChangeYaw(edict_t *ent);
-void M_ChangePitch(edict_t *ent);
 void M_MoveAwayFromGoal(edict_t *ent, float dist);
 void M_SetAnimGroupFrame(edict_t *self, const char *name);
 
