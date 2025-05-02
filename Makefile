@@ -1058,7 +1058,6 @@ GAME_OBJS_ = \
 	src/game/g_utils.o \
 	src/game/g_weapon.o \
 	src/game/g_waterfx.o \
-	src/game/mg_ai.o \
 	src/game/mg_guide.o \
 	src/game/monster/assassin/assassin_anim.o \
 	src/game/monster/assassin/assassin.o \

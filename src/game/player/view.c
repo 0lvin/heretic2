@@ -714,7 +714,7 @@ void PlayerTimerUpdate(edict_t *ent)
 		playerinfo->renderfx &= ~RF_TRANS_GHOST;
 }
 
-void
+static void
 P_WorldEffects(void)
 {
 	int waterlevel, old_waterlevel;
@@ -725,26 +725,18 @@ P_WorldEffects(void)
 
 	// If we are in no clip, or we have special lungs, we don't need air.
 
-	if(current_player->movetype == MOVETYPE_NOCLIP)
+	if (current_player->movetype == MOVETYPE_NOCLIP)
 	{
-		current_player->air_finished = level.time+HOLD_BREATH_TIME;
-
-		if(current_player->movetype == MOVETYPE_NOCLIP)
-		{
-			return;
-		}
+		current_player->air_finished = level.time + HOLD_BREATH_TIME;
+		return;
 	}
 
 	waterlevel = current_player->waterlevel;
 	old_waterlevel = current_client->old_waterlevel;
 	current_client->old_waterlevel = waterlevel;
 
-	//
-	// If the current player just entered a water volume, play a sound and start a water-ripple
-	// client effect.
-	//
-
-	if(!old_waterlevel&&waterlevel)
+	/* if just entered a water volume, play a sound */
+	if (!old_waterlevel && waterlevel)
 	{
 		// Clear damage_debounce, so the pain sound will play immediately.
 
@@ -752,18 +744,22 @@ P_WorldEffects(void)
 
 		if (current_player->watertype & CONTENTS_LAVA)
 		{
-			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/inlava.wav"), 1, ATTN_NORM, 0);
+			gi.sound(current_player, CHAN_BODY,
+					gi.soundindex("player/inlava.wav"), 1, ATTN_NORM, 0);
 			current_player->flags |= FL_INLAVA;
 		}
 		else if (current_player->watertype & CONTENTS_SLIME)
 		{
-			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/muckin.wav"), 1, ATTN_NORM, 0);
+			gi.sound(current_player, CHAN_BODY,
+					gi.soundindex("player/muckin.wav"), 1, ATTN_NORM, 0);
 			current_player->flags |=  FL_INSLIME;
 		}
 		else
 		{
-			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/Water Enter.wav"),1,ATTN_NORM,0);
+			gi.sound(current_player, CHAN_BODY,
+					gi.soundindex("player/Water Enter.wav"),1,ATTN_NORM,0);
 		}
+
 		current_player->flags |= FL_INWATER;
 
 		VectorCopy(current_player->s.origin,Origin);
@@ -796,12 +792,12 @@ P_WorldEffects(void)
 		// INWATER is set whether in lava, slime or water.
 		if (current_player->flags & FL_INLAVA)
 		{
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/inlava.wav"), 1, ATTN_NORM, 0);
+			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/inlava.wav"), 1, ATTN_NORM, 0);
 			current_player->flags &= ~FL_INLAVA;
 		}
 		else if (current_player->flags & FL_INSLIME)
 		{
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/muckexit.wav"), 1, ATTN_NORM, 0);
+			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/muckexit.wav"), 1, ATTN_NORM, 0);
 			current_player->flags &= ~FL_INSLIME;
 		}
 		else
@@ -874,32 +870,26 @@ P_WorldEffects(void)
 		}
 	}
 
-	//
-	// Check for head just coming out of water.
-	//
-
-	if (old_waterlevel == 3 && waterlevel != 3)
+	/* check for head just coming out of water */
+	if ((old_waterlevel == 3) && (waterlevel != 3))
 	{
 		if (current_player->air_finished < level.time)
 		{
-			// Gasp for air.
+			/* gasp for air */
 			if (irand(0,1))
-				gi.sound (current_player, CHAN_BODY, gi.soundindex("*gasp1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(current_player, CHAN_BODY, gi.soundindex("*gasp1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound (current_player, CHAN_BODY, gi.soundindex("*gasp2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(current_player, CHAN_BODY, gi.soundindex("*gasp2.wav"), 1, ATTN_NORM, 0);
 
 		}
-		else  if (current_player->air_finished < level.time + 11)
+		else if (current_player->air_finished < level.time + 11)
 		{
-			// Broke surface, low on air
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("*waterresurface.wav"), 1, ATTN_NORM, 0);
+			/* just break surface */
+			gi.sound(current_player, CHAN_BODY, gi.soundindex("*waterresurface.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 
-	// ********************************************************************************************
-	// Handle drowning.
-	// ********************************************************************************************
-
+	/* check for drowning */
 	if (waterlevel == 3)
 	{
 		if(current_player->watertype & CONTENTS_SLIME)
@@ -954,7 +944,7 @@ P_WorldEffects(void)
 				else if (randk() & 1)
 				{
 					gi.sound(current_player, CHAN_VOICE,
-						gi.soundindex("*drowning1.wav"), 1, ATTN_NORM, 0);
+							gi.soundindex("*drowning1.wav"), 1, ATTN_NORM, 0);
 				}
 				else
 				{
@@ -1044,12 +1034,10 @@ G_SetClientFrame(edict_t *ent, float speed)
 	}
 }
 
-// ************************************************************************************************
-// ClientEndServerFrame
-// --------------------
-// Called for each player at the end of the server frame and right after spawning.
-// ************************************************************************************************
-
+/*
+ * Called for each player at the end of
+ * the server frame and right after spawning
+ */
 void
 ClientEndServerFrame(edict_t *ent)
 {
@@ -1157,6 +1145,7 @@ ClientEndServerFrame(edict_t *ent)
 	}
 
 	bobtime = (current_client->bobtime += bobmove);
+
 	bobcycle = (int)bobtime;
 	bobfracsin = fabs(sin(bobtime * M_PI));
 

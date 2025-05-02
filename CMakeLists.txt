@@ -435,7 +435,6 @@ set(Game-Source
 	${GAME_SRC_DIR}/g_utils.c
 	${GAME_SRC_DIR}/g_weapon.c
 	${GAME_SRC_DIR}/g_waterfx.c
-	${GAME_SRC_DIR}/mg_ai.c
 	${GAME_SRC_DIR}/mg_guide.c
 	${GAME_SRC_DIR}/monster/assassin/assassin_anim.c
 	${GAME_SRC_DIR}/monster/assassin/assassin.c
