@@ -664,8 +664,6 @@ typedef struct
 	short gravity;
 	short delta_angles[3];      /* add to command angles to get view direction
 								 * changed by spawns, rotating objects, and teleporters */
-	short camera_delta_angles[3]; /* add to command angles to get view direction
-								 * changed by spawns, rotating objects, and teleporters */
 	byte w_flags;              /* water state */
 	byte c_flags;              /* collision */
 } pmove_state_t;
@@ -722,16 +720,11 @@ typedef struct
 	trace_t (*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 	int (*pointcontents)(vec3_t point);
 
-	vec3_t	camera_viewangles;	/* camera angles from client */
-	float *origin;
 	float *velocity;
-	float *intentMins;
-	float *intentMaxs;
 
 	csurface_t *GroundSurface;
 	cplane_t    GroundPlane;
 	int *GroundContents;
-	float knockbackfactor;
 	struct edict_s* self;
 
 	qboolean run_shrine;
@@ -739,9 +732,6 @@ typedef struct
 
 	/* In and outn */
 	float waterheight;
-	float desiredWaterHeight;
-
-
 } pmove_t;
 
 /* entity_state_t->effects

@@ -3120,11 +3120,6 @@ PutClientInServer(edict_t *ent)
 
 	VectorClear(client->ps.offsetangles);
 
-	// Reset the camera delta angles.
-
-	for (i=0 ; i<3 ; i++)
-		client->ps.pmove.camera_delta_angles[i]=0;
-
 	// ********************************************************************************************
 	// Initialize the player's entity_state_t.
 	// ********************************************************************************************
@@ -3323,14 +3318,6 @@ ClientBegin(edict_t *ent)
 			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(
 					ent->client->v_angle[i]);
 		}
-
-		// The client has cleared the client side cl.viewangles upon connecting to the server, which
-		// is different from the state when the game is saved, so we need to compensate with
-		// camara_delta_angles.
-
-		for(i=0;i<3;i++)
-			ent->client->ps.pmove.camera_delta_angles[i]=
-				ANGLE2SHORT(ent->client->ps.viewangles[i])-ent->client->ps.pmove.delta_angles[i];
 
 		SpawnInitialPlayerEffects(ent);
 
@@ -3865,7 +3852,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	edict_t *other;
 	int i, j;
 	vec3_t		LOSOrigin, ang;
-	float		knockback;
 	edict_t		*TargetEnt;
 
 	if (!ent || !ucmd)
@@ -4032,25 +4018,11 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		// Input the DESIRED waterheight.
 		// FIXME: This should be retrieved from the animation frame eventually.
 
-		pm.desiredWaterHeight = 15.00;
 		pm.waterheight = client->playerinfo.waterheight;
 		pm.waterlevel = ent->waterlevel;
 		pm.viewheight = ent->viewheight;
 		pm.watertype = ent->watertype;
 		pm.groundentity = ent->groundentity;
-
-		// This is a scale of 0 to 1 describing how much knockback to take into account.
-
-		knockback = client->playerinfo.knockbacktime - level.time;
-		if (knockback > 1.0)
-		{
-			knockback = 1.0;
-		}
-		else if (knockback < 0.0)
-		{
-			knockback = 0.0;
-		}
-		pm.knockbackfactor = knockback;
 
 		// Handle lockmove cases.
 
@@ -4099,7 +4071,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			}
 		}
 
-		pm.origin = client->playerinfo.origin;
 		pm.velocity = client->playerinfo.velocity;
 
 		// If not the chicken, and not explicitly resizing the bounding box...
@@ -4112,9 +4083,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			VectorCopy(maxs, ent->intentMaxs);
 
 			ent->physicsFlags |= PF_RESIZE;
-
-			pm.intentMins = ent->intentMins;
-			pm.intentMaxs = ent->intentMaxs;
 		}
 		else
 		{
@@ -4130,9 +4098,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 				VectorSet(ent->mins, -16, -16, -36);
 				VectorSet(ent->maxs, 16, 16, 36);
 			}
-
-			pm.intentMins = ent->mins;
-			pm.intentMaxs = ent->maxs;
 		}
 
 		pm.GroundSurface = client->playerinfo.GroundSurface;

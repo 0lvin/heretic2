@@ -33,11 +33,6 @@
 
 #include "../game/header/g_physics.h"
 
-#if !defined(DEDICATED_ONLY) && defined(USE_OPENAL)
-void AL_Underwater();
-void AL_Overwater();
-#endif
-
 #define OVERCLIP 1.001f
 /* TODO: Rewrite: Gravity is hardcoded? */
 #define GRAVITY 675.0f
@@ -666,7 +661,7 @@ PM_AddCurrents(vec3_t wishvel)
 		}
 	}
 
-	/* add water currents  */
+	/* add water currents */
 	if (pm->watertype & MASK_CURRENT)
 	{
 		vec3_t v;
@@ -1683,7 +1678,7 @@ PM_CheckInWater()
 			tr = pm->trace(origin2, tminmax, tminmax, origin);
 			_pm = pm;
 			pm->waterheight = tr.endpos[2] - pml.origin[2];
-			if (tr.fraction < 1.0 /*&& *(float*)&pml.desiredWaterHeight < (long double)_pm->waterheight*/)
+			if (tr.fraction < 1.0)
 				_pm->waterlevel = 2;
 		}
 	}
@@ -1709,7 +1704,6 @@ PM_WaterSurfMove()
 	}
 	else
 	{
-		pml.velocity[2] = (pm->waterheight/* - *(float*)&pml.desiredWaterHeight*/) / pml.frametime;
 		pml.velocity[2] = sin(Sys_Milliseconds() / 150.0) * 8.0 + pml.velocity[2];
 	}
 
