@@ -39,7 +39,6 @@
 #include "header/g_playstats.h"
 #include "common/fx.h"
 
-#define STEPSIZE 18
 #define YAW_IDEAL 1
 #define YAW_BEST_MOVE 0
 
@@ -50,8 +49,6 @@ static qboolean enemy_infront;
 static int enemy_range;
 static float enemy_yaw;
 
-qboolean FindTarget(edict_t *self);
-qboolean ai_checkattack(edict_t *self, float dist);
 void SV_NewChaseDir(edict_t *actor, edict_t *enemy, float dist);
 
 void ssithraCheckJump(edict_t *self);

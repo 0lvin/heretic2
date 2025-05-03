@@ -46,8 +46,6 @@ void MG_PostDeathThink (edict_t *self);
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
 
-void M_SetEffects(edict_t *self);
-
 /*
  * clean up heal targets for medic
  */

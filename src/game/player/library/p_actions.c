@@ -2909,7 +2909,7 @@ void PlayerActionIdleSound(playerinfo_t *playerinfo, float value)
 void PlayerActionVaultSound(playerinfo_t *playerinfo, float value)
 {
 	char VaultSound[64];
-	char *Material = NULL;
+	const char *Material = NULL;
 
 	Material = GetClientGroundSurfaceMaterialName(playerinfo);
 
