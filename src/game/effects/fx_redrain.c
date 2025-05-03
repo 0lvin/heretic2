@@ -69,7 +69,6 @@ qboolean FXRedRainSplashThink(client_entity_t *splash, centity_t *owner)
 	int i;
 	paletteRGBA_t		pal;
 	int					sparktype;
-	float				grav;
 
 	mist = ClientEntity_new(-1, CEF_NO_DRAW | CEF_ADDITIVE_PARTS, splash->r.origin, NULL, 500);
 	AddEffect(NULL, mist);
@@ -78,12 +77,10 @@ qboolean FXRedRainSplashThink(client_entity_t *splash, centity_t *owner)
 	if (splash->SpawnInfo)
 	{	// Powered up rain
 		sparktype = PART_16x16_SPARK_G;
-		grav = PARTICLE_GRAVITY * 4.0;
 	}
 	else
 	{
 		sparktype = PART_16x16_SPARK_R;
-		grav = -PARTICLE_GRAVITY * 3.0;
 	}
 
 	for (i=0; i<4; i++)

@@ -295,11 +295,7 @@ void FXBodyPart(centity_t *owner,int type, int flags, vec3_t origin)
 
 void FXBodyPart_Spawn(centity_t *owner, int BodyPart, vec3_t origin, float ke, int frame, int type, byte modelindex, int flags, centity_t *harpy)
 {
-	vec3_t				spray_org;
-
 	FXBodyPart_Throw(owner, BodyPart, origin, ke, frame, type, modelindex, flags, harpy);
-
-	VectorAdd(origin, owner->origin, spray_org);
 
 	if(ke && type!=FX_THROWWEAPON)
 	{

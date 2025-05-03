@@ -2411,7 +2411,6 @@ qboolean FXBuoyPathDelayedStart (struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t	v;
-	float dist;
 
 	TrailEnt=ClientEntity_new(FX_BUOY,
 							  CEF_DONT_LINK,
@@ -2431,7 +2430,6 @@ qboolean FXBuoyPathDelayedStart (struct client_entity_s *self, centity_t *owner)
 	VectorSet(TrailEnt->r.scale, 7.0, 7.0, 7.0);
 
 	VectorSubtract(self->startpos, self->endpos, v);
-	dist = VectorLength(v);
 	if(VectorLength(v)<64)
 		TrailEnt->r.tile = 1;
 	else
@@ -2642,21 +2640,17 @@ void FXUnderWaterWake (centity_t *owner)
 void FXQuakeRing ( vec3_t origin )
 {
 	client_entity_t		*ring;
-	paletteRGBA_t		color;
 	int					i, j;
 	vec3_t				norm = {0,0,1};
 	vec3_t				up, right, lastvel;
 	float				curyaw;
 	float				ring_vel = MACEBALL_RING_VEL;
 
-	color.c = 0xffffffff;
-
 	// Take the normal and find two "axis" vectors that are in the plane the normal defines
 	PerpendicularVector(up, norm);
 	CrossProduct(up, norm, right);
 
 	VectorScale(norm, 8.0, norm);
-	color.c = 0xffffffff;
 
 	// Draw a circle of expanding lines.
 	for(j = 0; j < NUM_RINGS; j++)

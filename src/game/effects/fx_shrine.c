@@ -171,7 +171,7 @@ FXShrineManaThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
-	vec3_t				vel, org;
+	vec3_t				vel;
 	int					i;
 	int					count;
 
@@ -187,8 +187,6 @@ FXShrineManaThink(struct client_entity_s *self, centity_t *owner)
 		{
 			// Calc spherical offset around left hand ref point
 			VectorSet(vel, flrand(-1.0, 1.0), flrand(-1.0, 1.0), flrand(-1.0, 1.0));
-			if(Vec3IsZero(vel))
-				org[2] = 1.0;			// Safety in case flrand gens all zeros (VERY unlikely)
 			VectorNormalize(vel);
 			VectorScale(vel, MANA_RAD, vel);
 
@@ -242,7 +240,7 @@ FXShrineArmorThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
-	vec3_t				vel, org;
+	vec3_t				vel;
 	int					i;
 	int					count;
 
@@ -258,8 +256,6 @@ FXShrineArmorThink(struct client_entity_s *self, centity_t *owner)
 		{
 			// Calc spherical offset around left hand ref point
 			VectorSet(vel, flrand(-1.0, 1.0), flrand(-1.0, 1.0), flrand(-1.0, 1.0));
-			if(Vec3IsZero(vel))
-				org[2] = 1.0;			// Safety in case flrand gens all zeros (VERY unlikely)
 			VectorNormalize(vel);
 			VectorScale(vel, ARMOR_RAD, vel);
 
@@ -516,7 +512,6 @@ Health Lightning routines
 void FXLightningSplit(struct client_entity_s *self, vec3_t org, vec3_t dir, int rand_chance, float stop_height)
 {
 	client_particle_t		*ce;
-	float						start_height;
 	vec3_t					dir2;
 	vec3_t					dir_effect;
 	paletteRGBA_t			color;
@@ -526,7 +521,6 @@ void FXLightningSplit(struct client_entity_s *self, vec3_t org, vec3_t dir, int 
 
 	VectorCopy(org, org2);
 
-	start_height = org[2];
 	color.c = 0xffffff;
 
 	// create lightning particle

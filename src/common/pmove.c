@@ -1004,7 +1004,7 @@ PM_CheckJump(void)
 		return;
 	}
 
-	if ((pm->s.pm_flags & 8) == 0 && pm->cmd.upmove > 9)
+	if ((pm->s.pm_flags & PMF_TIME_WATERJUMP) == 0 && pm->cmd.upmove > 9)
 	{
 		pm->groundentity = NULL;
 		pml.velocity[2] = 200.0;
@@ -1585,7 +1585,7 @@ PM_GroundTrace(void)
 
 	pm->numtouch = 0;
 
-	if (pm->numtouch < 31)
+	if (pm->numtouch < MAXTOUCH)
 	{
 		if (pm->groundentity)
 		{
@@ -1648,46 +1648,45 @@ PM_WalkMove(float fmove, float smove)
 static void
 PM_CheckInWater()
 {
-	int contents;
-	pmove_t* _pm;
+	int cont;
 	trace_t tr;
-	float origin2[3];
-	float origin[3];
+	float point2[3];
+	float point[3];
 
-	origin[0] = pml.origin[0];
-	origin[1] = pml.origin[1];
-	origin[2] = pml.origin[2] + pm->mins[2] + 1.0;
-	contents = pm->pointcontents(origin);
-	if ((contents & 0x38) != 0)
+	point[0] = pml.origin[0];
+	point[1] = pml.origin[1];
+	point[2] = pml.origin[2] + pm->mins[2] + 1.0;
+	cont = pm->pointcontents(point);
+	if (cont & MASK_WATER)
 	{
-		_pm = pm;
-		pm->watertype = contents;
-		_pm->waterlevel = 1;
-		origin2[0] = origin[0];
-		origin2[1] = origin[1];
-		origin2[2] = pml.origin[2] + _pm->maxs[2];
-		if ((_pm->pointcontents(origin2) & 0x38) != 0)
+		pm->watertype = cont;
+		pm->waterlevel = 1;
+		point2[0] = point[0];
+		point2[1] = point[1];
+		point2[2] = pml.origin[2] + pm->maxs[2];
+
+		cont = pm->pointcontents(point2);
+		if (cont & MASK_WATER)
 		{
-			_pm = pm;
 			pm->waterlevel = 3;
-			_pm->waterheight = _pm->maxs[2];
+			pm->waterheight = pm->maxs[2];
 		}
 		else
 		{
 			vec3_t tminmax = {0, 0, 0};
-			tr = pm->trace(origin2, tminmax, tminmax, origin);
-			_pm = pm;
+			tr = pm->trace(point2, tminmax, tminmax, point);
 			pm->waterheight = tr.endpos[2] - pml.origin[2];
 			if (tr.fraction < 1.0)
-				_pm->waterlevel = 2;
+			{
+				pm->waterlevel = 2;
+			}
 		}
 	}
 	else
 	{
-		_pm = pm;
 		pm->waterlevel = 0;
-		_pm->watertype = 0;
-		_pm->waterheight = _pm->mins[2];
+		pm->watertype = 0;
+		pm->waterheight = pm->mins[2];
 	}
 }
 
@@ -1704,7 +1703,7 @@ PM_WaterSurfMove()
 	}
 	else
 	{
-		pml.velocity[2] = sin(Sys_Milliseconds() / 150.0) * 8.0 + pml.velocity[2];
+		pml.velocity[2] += sin(Sys_Milliseconds() / 150.0) * 8.0;
 	}
 
 	PM_StepSlideMove(true);
@@ -1746,8 +1745,6 @@ Pmove_(void)
 		PM_SnapPosition();
 		return;
 	}
-
-	AngleVectors(pm->viewangles, pml.forward, pml.right, pml.up);
 
 	if (pm->s.pm_type >= PM_DEAD)
 	{

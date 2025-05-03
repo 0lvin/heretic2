@@ -720,12 +720,9 @@ typedef struct
 	trace_t (*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 	int (*pointcontents)(vec3_t point);
 
-	float *velocity;
-
 	csurface_t *GroundSurface;
 	cplane_t    GroundPlane;
 	int *GroundContents;
-	struct edict_s* self;
 
 	qboolean run_shrine;
 	qboolean high_max;

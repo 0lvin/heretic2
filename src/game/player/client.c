@@ -4071,8 +4071,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			}
 		}
 
-		pm.velocity = client->playerinfo.velocity;
-
 		// If not the chicken, and not explicitly resizing the bounding box...
 
 		if ( (!(client->playerinfo.edictflags & FL_CHICKEN)) && (!(client->playerinfo.flags & PLAYER_FLAG_RESIZED)) )
@@ -4103,8 +4101,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		pm.GroundSurface = client->playerinfo.GroundSurface;
 		pm.GroundPlane = client->playerinfo.GroundPlane;
 		pm.GroundContents = &client->playerinfo.GroundContents;
-
-		pm.self = ent;
 
 		pm.trace = PM_trace; /* adds default parms */
 		pm.pointcontents = gi.pointcontents;
@@ -4171,7 +4167,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		for (i = 0; i < 3; i++)
 		{
 			ent->s.origin[i] = origin[i] * 0.125;
-			ent->velocity[i] = pm.velocity[i] * 0.125;
+			ent->velocity[i] = client->playerinfo.velocity[i] * 0.125;
 		}
 
 		VectorCopy(pm.mins, ent->mins);

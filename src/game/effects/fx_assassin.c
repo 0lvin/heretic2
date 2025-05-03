@@ -79,7 +79,6 @@ void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t *owner)
 {
 	vec3_t sight_vec, endpos;
-	trace_t trace;
 
 	if(owner->entity->skinnum != 100)
 	{
@@ -89,12 +88,15 @@ static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t
 	VectorCopy(owner->origin, sight_vec);
 	VectorNormalize(sight_vec);
 	VectorMA(owner->origin, 1024, sight_vec, endpos);
-	//now look along that vector for first surface and take that texture
-	trace = fxi.Trace(owner->origin, vec3_origin, vec3_origin, endpos, MASK_SHOT, CEF_CLIP_TO_WORLD);
 	/*
 	 * TODO: rewrite, use skinname from surface? Unused in render
 	 */
 #if 0
+	trace_t trace;
+
+	//now look along that vector for first surface and take that texture
+	trace = fxi.Trace(owner->origin, vec3_origin, vec3_origin, endpos, MASK_SHOT, CEF_CLIP_TO_WORLD);
+
 	strcpy(string, "textures/");
 	strcat(string, trace.surface->name);
 	strcpy(owner->entity->skinname, string);

@@ -145,7 +145,7 @@ FXRopeMiddleDrawAttached(struct client_entity_s *self, centity_t *owner)
 static qboolean
 FXRopeBottomDrawAttached(struct client_entity_s *self, centity_t *owner)
 {
-	centity_t		*end, *grab;
+	centity_t		*end;
 	qboolean		ret;
 	vec3_t			diffpos2, vec, c_vec, c_down;
 	float			lerp, oldtime, newtime, dist, c_segs, c_length;
@@ -160,7 +160,6 @@ FXRopeBottomDrawAttached(struct client_entity_s *self, centity_t *owner)
 	}
 
 	//Setup our two entities to base positions on
-	grab = &fxi.server_entities[self->LifeTime];
 	end  = (centity_t *)self->extra;
 
 	//Setup the start position for the line
@@ -313,7 +312,6 @@ FXRopeTopDraw(struct client_entity_s *self, centity_t *owner)
 void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*rope, *ropeb, *ropem;
-	centity_t		*grab, *end;
 	qboolean		attached;
 	vec3_t			top, vec, grab_pos, end_pos;
 	float			radius;
@@ -325,10 +323,6 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	//This is set if the effect should be attached to something
 	attached = (Flags & CEF_FLAG6);
-
-	//Setup the entities
-	end  = &fxi.server_entities[end_id];
-	grab = &fxi.server_entities[grab_id];
 
 	//Create the rope piece that hangs from the top to the end of the rope, while the player is NOT on it
 
