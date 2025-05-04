@@ -31,12 +31,6 @@
 
 #define STEPSIZE 18
 
-#include "../game/header/g_physics.h"
-
-#define OVERCLIP 1.001f
-/* TODO: Rewrite: Gravity is hardcoded? */
-#define GRAVITY 675.0f
-
 /* all of the locals will be zeroed before each
  * pmove, just to make damn sure we don't have
  * any differences when running on client or server */
@@ -238,7 +232,11 @@ PM_SlideMove
 Returns qtrue if the velocity was clipped in some way
 ==================
 */
-#define	MAX_CLIP_PLANES	5
+/* TODO: Rewrite: Gravity is hardcoded? */
+#define GRAVITY 675.0f
+#define MAX_CLIP_PLANES 5
+#define OVERCLIP 1.001f
+
 static qboolean
 PM_SlideMove(qboolean gravity)
 {
@@ -460,8 +458,8 @@ PM_StepSlideMove(qboolean gravity)
 	VectorCopy(start_o, up);
 	up[2] += STEPSIZE;
 
-	// test the player position if they were a stepheight higher
-	trace = pm->trace(start_o, pm->mins, pm->maxs, up);
+	trace = pm->trace(up, pm->mins, pm->maxs, up);
+
 	if (trace.allsolid)
 	{
 		return; /* can't step up */
@@ -775,7 +773,7 @@ PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
 
 // TODO: Rewrite
 static void
-PM_SetVelInLiquid(float a1)
+PM_SetVelInLiquid(void)
 {
 	float forwardmove;
 	qboolean runshrine;
@@ -809,10 +807,10 @@ PM_SetVelInLiquid(float a1)
 }
 
 static void
-PM_WaterMove(void)
+PM_WaterMove(qboolean gravity)
 {
-	PM_SetVelInLiquid(0.5);
-	PM_StepSlideMove(false);
+	PM_SetVelInLiquid();
+	PM_StepSlideMove(gravity);
 }
 
 static void
@@ -842,6 +840,8 @@ PM_AirMove(void)
 	}
 
 	wishvel[2] = 0;
+
+	PM_AddCurrents(wishvel);
 
 	VectorCopy(wishvel, wishdir);
 	wishspeed = VectorNormalize(wishdir);
@@ -1006,6 +1006,7 @@ PM_CheckJump(void)
 
 	if ((pm->s.pm_flags & PMF_TIME_WATERJUMP) == 0 && pm->cmd.upmove > 9)
 	{
+		/* swimming, not jumping */
 		pm->groundentity = NULL;
 		pml.velocity[2] = 200.0;
 		pml.walking = false;
@@ -1689,13 +1690,6 @@ PM_CheckInWater()
 	}
 }
 
-static void
-PM_WaterSurfMove()
-{
-	PM_SetVelInLiquid(0.5);
-	PM_StepSlideMove(true);
-}
-
 /*
  * Can be called by either the server or the client
  */
@@ -1757,6 +1751,12 @@ Pmove_(void)
 	/* set mins, maxs, and viewheight */
 	PM_CheckDuck();
 
+#ifndef DEDICATED_ONLY
+	/* reset min/max to previous values */
+	VectorCopy(cl.frame.playerstate.mins, pm->mins);
+	VectorCopy(cl.frame.playerstate.maxs, pm->maxs);
+#endif
+
 	if (pm->snapinitial)
 	{
 		PM_InitialSnapPosition();
@@ -1795,10 +1795,10 @@ Pmove_(void)
 		}
 	}
 
-#ifndef DEDICATED_ONLY
-	VectorCopy(cl.frame.playerstate.mins, pm->mins);
-	VectorCopy(cl.frame.playerstate.maxs, pm->maxs);
-#endif
+	if (pm->s.pm_flags & PMF_TIME_TELEPORT)
+	{
+		/* teleport pause stays exactly in place */
+	}
 
 	PM_GroundTrace();
 
@@ -1808,22 +1808,22 @@ Pmove_(void)
 
 	if (pm->waterlevel == 1)
 	{
-		PM_WaterSurfMove();
+		PM_WaterMove(true);
 	}
 	else if (pm->waterlevel == 2)
 	{
 		if (pm->viewangles[0] > 40.0)
 		{
-			PM_WaterMove();
+			PM_WaterMove(false);
 		}
 		else
 		{
-			PM_WaterSurfMove();
+			PM_WaterMove(true);
 		}
 	}
 	else if (pm->waterlevel >= 2)
 	{
-		PM_WaterMove();
+		PM_WaterMove(false);
 	}
 	else if (pml.walking)
 	{
@@ -1835,6 +1835,13 @@ Pmove_(void)
 		// airborne
 		PM_AirMove();
 	}
+
+	/* set groundentity, watertype, and waterlevel for final spot */
+	PM_CatagorizePosition();
+
+#if !defined(DEDICATED_ONLY)
+	PM_UpdateUnderwaterSfx();
+#endif
 
 	PM_SnapPosition();
 }
