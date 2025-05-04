@@ -572,12 +572,6 @@ typedef struct playerinfo_s
 	float				ideal_yaw;
 	void				*groundentity;
 
-	// From pmove_t.
-
-	csurface_t			*GroundSurface;
-	cplane_t			GroundPlane;
-	int					GroundContents;
-
 	// Pointer to entity_state_t of player's enemy edict.
 
 	entity_state_t		*enemystate;

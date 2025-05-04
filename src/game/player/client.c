@@ -4061,7 +4061,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 			if (client->playerinfo.seqcmd[ACMDL_CROUCH])
 			{
-				pm.s.w_flags |= WF_SINK;
+				ent->client->playerinfo.pm_w_flags |= WF_SINK;
 				client->playerinfo.velocity[2] -= SWIM_ADJUST_AMOUNT;
 			}
 
@@ -4098,10 +4098,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			}
 		}
 
-		pm.GroundSurface = client->playerinfo.GroundSurface;
-		pm.GroundPlane = client->playerinfo.GroundPlane;
-		pm.GroundContents = &client->playerinfo.GroundContents;
-
 		pm.trace = PM_trace; /* adds default parms */
 		pm.pointcontents = gi.pointcontents;
 
@@ -4120,16 +4116,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			pm.run_shrine = false;
 		}
 
-		// set up speed up if we have been hit recently
-		if (client->playerinfo.effects & EF_HIGH_MAX)
-		{
-			pm.high_max = true;
-		}
-		else
-		{
-			pm.high_max = false;
-		}
-
 		/* perform a pmove */
 		gi.PmoveEx(&pm, origin);
 
@@ -4140,22 +4126,12 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 		client->playerinfo.flags &= ~(PLAYER_FLAG_COLLISION | PLAYER_FLAG_SLIDE);
 
-		if (pm.s.c_flags & PC_COLLISION)
-		{
-			client->playerinfo.flags |= PLAYER_FLAG_COLLISION;
-		}
-
-		if ((pm.s.c_flags & PC_SLIDING))
-		{
-			client->playerinfo.flags |= PLAYER_FLAG_SLIDE;
-
-			if(Vec3NotZero(pm.GroundPlane.normal))
-			{
-				VectoAngles(pm.GroundPlane.normal, ang);
-				ent->ideal_yaw = ang[YAW];
-			}
-		}
-		else if (pm.s.w_flags & WF_DIVE)
+		/*
+		 * TODO: Rewrite to apply !WF_SINK
+		 * previosly
+		 * pml.velocity[2] += sin(Sys_Milliseconds() / 150.0) * 8.0;
+		 */
+		if (client->playerinfo.pm_w_flags & WF_DIVE)
 		{
 			client->playerinfo.flags |= PLAYER_FLAG_DIVE;
 		}
@@ -4182,15 +4158,11 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		VectorCopy(ent->velocity, client->playerinfo.velocity);
 		// jmarshall end
 
-		client->playerinfo.GroundSurface = pm.GroundSurface;
-		memcpy(&client->playerinfo.GroundPlane, &pm.GroundPlane, sizeof(cplane_t));
-		client->playerinfo.GroundContents =* pm.GroundContents;
-
 		// If we're move-locked, don't update the edict's origin and velocity, otherwise copy the
 		// origin and velocity from playerinfo (which have been written by Pmove()) into the edict's
 		// origin and velocity.
 
-		if((client->ps.pmove.pm_flags&PMF_LOCKMOVE))
+		if (client->ps.pmove.pm_flags & PMF_LOCKMOVE)
 		{
 			client->playerinfo.flags |= PLAYER_FLAG_LOCKMOVE_WAS_SET;
 		}

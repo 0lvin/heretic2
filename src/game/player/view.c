@@ -553,7 +553,6 @@ SetupPlayerinfo(edict_t *ent)
 
 	// From pmove_state_t.
 	ent->client->playerinfo.pm_flags = ent->client->ps.pmove.pm_flags;
-	ent->client->playerinfo.pm_w_flags = ent->client->ps.pmove.w_flags;
 }
 
 void
@@ -604,7 +603,6 @@ WritePlayerinfo(edict_t *ent)
 
 	// From pmove_state_t.
 	ent->client->ps.pmove.pm_flags = ent->client->playerinfo.pm_flags;
-	ent->client->ps.pmove.w_flags = ent->client->playerinfo.pm_w_flags;
 
 	// ********************************************************************************************
 	// Outputs only.
@@ -1087,7 +1085,7 @@ ClientEndServerFrame(edict_t *ent)
 	{
 		// PITCH.
 
-		if((ent->client->ps.pmove.w_flags & (WF_DIVING | WF_SWIMFREE)))
+		if((ent->client->playerinfo.pm_w_flags & (WF_DIVING | WF_SWIMFREE)))
 		{
 			if(ent->client->v_angle[PITCH] > 180.0)
 				ent->s.angles[PITCH] = -(-360.0 + ent->client->v_angle[PITCH]);
@@ -1260,12 +1258,6 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.mins[0] = current_client->playerinfo.mins[0];
 	current_client->ps.mins[1] = current_client->playerinfo.mins[1];
 	current_client->ps.mins[2] = current_client->playerinfo.mins[2];
-
-	current_client->ps.NonNullgroundentity = (byte)(current_client->playerinfo.groundentity ? 1 : 0);
-	current_client->ps.GroundPlane = current_client->playerinfo.GroundPlane;
-	current_client->ps.GroundContents = current_client->playerinfo.GroundContents;
-	current_client->ps.GroundSurface.flags =
-		(current_client->playerinfo.GroundSurface!= NULL) ? current_client->playerinfo.GroundSurface->flags : 0;
 
 	current_client->ps.watertype = current_client->playerinfo.watertype;
 	current_client->ps.waterlevel = current_client->playerinfo.waterlevel;

@@ -1467,6 +1467,8 @@ void PlayerActionBowTrailEnd(playerinfo_t *playerinfo, float value)
 const char *
 GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo)
 {
+	/* TODO: Rewrite to trace down ? */
+#if 0
 	csurface_t *groundSurface;
 
 	groundSurface = playerinfo->GroundSurface;
@@ -1474,7 +1476,7 @@ GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo)
 	{
 		return groundSurface->material;
 	}
-
+#endif
 	return NULL;
 }
 

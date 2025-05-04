@@ -1566,7 +1566,6 @@ PM_GroundTrace(void)
 	}
 
 	pm->groundentity = trace.ent;
-	pm->GroundContents = &trace.contents;
 
 	if (trace.allsolid)
 	{
@@ -1693,19 +1692,7 @@ PM_CheckInWater()
 static void
 PM_WaterSurfMove()
 {
-	byte flags;
-
 	PM_SetVelInLiquid(0.5);
-	flags = pm->s.w_flags;
-	if (flags & WF_SINK)
-	{
-		pm->s.w_flags = flags & ~WF_SINK;
-	}
-	else
-	{
-		pml.velocity[2] += sin(Sys_Milliseconds() / 150.0) * 8.0;
-	}
-
 	PM_StepSlideMove(true);
 }
 

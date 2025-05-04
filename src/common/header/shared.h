@@ -618,8 +618,6 @@ typedef struct
 	struct edict_s *ent;    /* not set by CM_*() functions */
 
 	byte succeeded;         /* not always set, just in special cases, subjective */
-	// N&C: Custom added.
-	vec3_t offsets[8];	/* [signbits][x] = either size[0][x] or size[1][x] */
 } trace_t;
 
 /* pmove_state_t is the information necessary for client side movement */
@@ -664,8 +662,6 @@ typedef struct
 	short gravity;
 	short delta_angles[3];      /* add to command angles to get view direction
 								 * changed by spawns, rotating objects, and teleporters */
-	byte w_flags;              /* water state */
-	byte c_flags;              /* collision */
 } pmove_state_t;
 
 /* button bits */
@@ -673,6 +669,7 @@ typedef struct
 #define BUTTON_USE 2
 #define BUTTON_DEFEND 2
 #define BUTTON_ACTION 4
+/* TODO: Rewrite and make next as commands */
 #define BUTTON_CREEP 8
 #define BUTTON_RUN 16
 #define BUTTON_AUTOAIM 32
@@ -720,12 +717,7 @@ typedef struct
 	trace_t (*trace)(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end);
 	int (*pointcontents)(vec3_t point);
 
-	csurface_t *GroundSurface;
-	cplane_t    GroundPlane;
-	int *GroundContents;
-
 	qboolean run_shrine;
-	qboolean high_max;
 
 	/* In and outn */
 	float waterheight;
@@ -1616,13 +1608,6 @@ typedef struct
 	byte			NoOfItems,
 		inventory_changes[256],
 		inventory_remaining[256];
-
-	// Ground attributes.
-
-	byte			NonNullgroundentity;		// boolean
-	cplane_t		GroundPlane;
-	int				GroundContents;
-	csurface_t		GroundSurface;
 
 	// Water attributes.
 
