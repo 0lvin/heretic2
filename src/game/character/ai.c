@@ -15,10 +15,6 @@
 #include "corvus/corvus1_anim.h"
 #include "../player/library/p_main.h"
 
-
-
-trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink);
-
 #define	NUM_C_SOUNDS	2
 
 static	char *c_wavname[NUM_C_SOUNDS] =
@@ -114,7 +110,8 @@ void ai_c_move (edict_t *self,float forward,float right,float up)
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
 
-	MG_MoveStep(self, move, true);
+	qboolean trace_succeeded = false;
+	MG_MoveStep(self, move, true, &trace_succeeded);
 
 //	if (dist <0)
 //		self->monsterinfo.c_dist += dist;

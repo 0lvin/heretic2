@@ -2481,6 +2481,8 @@ void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
 #define WALL_ENTITY (struct edict_s *)1
 #define AVG_VEC3T(scale) (((scale)[0] + (scale)[1] + (scale)[2]) / 3)
 
+trace_t MG_WalkMove(edict_t *self, float yaw, float dist, qboolean *trace_succeeded);
+trace_t MG_MoveStep(edict_t *self, vec3_t move, qboolean relink, qboolean *trace_succeeded);
 unsigned GenNoDrawInfo(fmnodeinfo_t *fmnodeinfo);
 void G_CPrintf(edict_t* ent, int printlevel, short stringid);
 void G_BCaption(int printlevel, short stringid);

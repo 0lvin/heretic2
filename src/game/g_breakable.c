@@ -133,8 +133,7 @@ qboolean EntitiesTouching(edict_t *e1,edict_t *e2)
 ----------------------------------------*/
 void LinkBreakables(edict_t *self)
 {
-  edict_t   *t, *ent;
-  vec3_t	cmins, cmaxs;
+	edict_t   *t, *ent;
 
 	self->think = NULL;
 
@@ -142,9 +141,6 @@ void LinkBreakables(edict_t *self)
 	{
 		return;
 	}
-
-	VectorCopy(self->mins,cmins);
-	VectorCopy(self->maxs,cmaxs);
 
 	t = ent = self;
 

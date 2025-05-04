@@ -743,15 +743,15 @@ void CalculatePIV(edict_t *player)
 	FOV	= cos(player->client->ps.fov * ANGLE_TO_RAD * 0.5);
 
 	// Grab camera angles
-	angles[0] = SHORT2ANGLE(player->client->playerinfo.pcmd.camera_viewangles[0]);
-	angles[1] = SHORT2ANGLE(player->client->playerinfo.pcmd.camera_viewangles[1]);
-	angles[2] = SHORT2ANGLE(player->client->playerinfo.pcmd.camera_viewangles[2]);
+	angles[0] = SHORT2ANGLE(player->client->playerinfo.camera_viewangles[0]);
+	angles[1] = SHORT2ANGLE(player->client->playerinfo.camera_viewangles[1]);
+	angles[2] = SHORT2ANGLE(player->client->playerinfo.camera_viewangles[2]);
 	AngleVectors(angles, movedir, NULL, NULL);
 
 	// Grab camera coords
-	org[0] = player->client->playerinfo.pcmd.camera_vieworigin[0] * 0.125F;
-	org[1] = player->client->playerinfo.pcmd.camera_vieworigin[1] * 0.125F;
-	org[2] = player->client->playerinfo.pcmd.camera_vieworigin[2] * 0.125F;
+	org[0] = player->client->playerinfo.camera_vieworigin[0] * 0.125F;
+	org[1] = player->client->playerinfo.camera_vieworigin[1] * 0.125F;
+	org[2] = player->client->playerinfo.camera_vieworigin[2] * 0.125F;
 
 	VectorScale(player->mins, 0.25F, mins);
 	VectorScale(player->maxs, 0.25F, maxs);

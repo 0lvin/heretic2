@@ -704,6 +704,9 @@ typedef struct playerinfo_s
 	vec3_t				grabloc;
 	float				grabangle;
 
+	short camera_vieworigin[3];
+	short camera_viewangles[3];
+
 } playerinfo_t;
 
 #endif // _P_TYPES_H_

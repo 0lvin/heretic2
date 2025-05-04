@@ -616,8 +616,6 @@ typedef struct
 	csurface_t *surface;    /* surface hit */
 	int contents;           /* contents on other side of surface hit */
 	struct edict_s *ent;    /* not set by CM_*() functions */
-
-	byte succeeded;         /* not always set, just in special cases, subjective */
 } trace_t;
 
 /* pmove_state_t is the information necessary for client side movement */
@@ -686,8 +684,6 @@ typedef struct usercmd_s
 	short forwardmove, sidemove, upmove;
 	byte impulse;           /* remove? */
 	byte lightlevel;        /* light level the player is standing on */
-	short camera_vieworigin[3];
-	short camera_viewangles[3];
 } usercmd_t;
 
 #define MAXTOUCH 32

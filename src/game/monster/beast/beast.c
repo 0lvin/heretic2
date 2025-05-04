@@ -39,7 +39,6 @@ TBEAST
 void BecomeDebris(edict_t *self);
 qboolean clear_visible (edict_t *self, edict_t *other);
 qboolean MG_MoveToGoal (edict_t *self, float dist);
-trace_t MG_WalkMove (edict_t *self, float yaw, float dist);
 int tbeast_inwalkframes(edict_t *self);
 
 static vec3_t GetLeftFootOffsetForFrameIndex[18] =
@@ -145,14 +144,14 @@ qboolean visible_to_client (edict_t *self)
 			temp = G_Spawn();
 
 			VectorSet(temp->s.origin,
-				ent->client->playerinfo.pcmd.camera_vieworigin[0] * 0.125,
-				ent->client->playerinfo.pcmd.camera_vieworigin[1] * 0.125,
-				ent->client->playerinfo.pcmd.camera_vieworigin[2] * 0.125);
+				ent->client->playerinfo.camera_vieworigin[0] * 0.125,
+				ent->client->playerinfo.camera_vieworigin[1] * 0.125,
+				ent->client->playerinfo.camera_vieworigin[2] * 0.125);
 
 			VectorSet(temp->s.angles,
-				SHORT2ANGLE(ent->client->playerinfo.pcmd.camera_viewangles[0]),
-				SHORT2ANGLE(ent->client->playerinfo.pcmd.camera_viewangles[1]),
-				SHORT2ANGLE(ent->client->playerinfo.pcmd.camera_viewangles[2]));
+				SHORT2ANGLE(ent->client->playerinfo.camera_viewangles[0]),
+				SHORT2ANGLE(ent->client->playerinfo.camera_viewangles[1]),
+				SHORT2ANGLE(ent->client->playerinfo.camera_viewangles[2]));
 
 			if(infront_pos(temp, self->s.origin) && gi.inPVS(temp->s.origin, self->s.origin))
 			{
@@ -301,7 +300,8 @@ void tbeast_charge (edict_t *self, float force)
 	if(DotProduct(forward, enemy_dir) < 0.75)//enemy not generally ahead
 		ai_charge(self, 0);
 
-	MG_WalkMove (self, self->s.angles[YAW], force);
+	qboolean trace_succeeded = false;
+	MG_WalkMove (self, self->s.angles[YAW], force, &trace_succeeded);
 
 	if(self->groundentity)
 	{

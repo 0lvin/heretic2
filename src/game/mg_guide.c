@@ -1509,9 +1509,9 @@ qboolean MG_MonsterAttemptTeleport(edict_t *self, vec3_t destination, qboolean i
 					temp = G_Spawn();
 
 					VectorSet(temp->s.origin,
-						ent->client->playerinfo.pcmd.camera_vieworigin[0] * 0.125,
-						ent->client->playerinfo.pcmd.camera_vieworigin[1] * 0.125,
-						ent->client->playerinfo.pcmd.camera_vieworigin[2] * 0.125);
+						ent->client->playerinfo.camera_vieworigin[0] * 0.125,
+						ent->client->playerinfo.camera_vieworigin[1] * 0.125,
+						ent->client->playerinfo.camera_vieworigin[2] * 0.125);
 
 					if(gi.inPVS(temp->s.origin, destination))
 					{

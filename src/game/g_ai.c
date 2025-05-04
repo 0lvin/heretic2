@@ -53,7 +53,6 @@ void SV_NewChaseDir(edict_t *actor, edict_t *enemy, float dist);
 
 void ssithraCheckJump(edict_t *self);
 void SV_FixCheckBottom(edict_t *ent);
-trace_t MG_WalkMove(edict_t *self, float yaw, float dist);
 qboolean MG_MoveToGoal(edict_t *self, float dist);
 float MG_ChangeYaw(edict_t *self);
 void MG_BuoyNavigate(edict_t *self);
@@ -133,7 +132,8 @@ ai_move(edict_t *self, float dist)
 		return;
 	}
 
-	MG_WalkMove(self, self->s.angles[YAW], dist);
+	qboolean trace_succeeded = false;
+	MG_WalkMove(self, self->s.angles[YAW], dist, &trace_succeeded);
 }
 
 // ****************************************************************************
@@ -550,7 +550,9 @@ ai_charge(edict_t *self, float dist)
 
 	if (dist)
 	{
-		MG_WalkMove(self, self->s.angles[YAW], dist);
+		qboolean trace_succeeded = false;
+
+		MG_WalkMove(self, self->s.angles[YAW], dist, &trace_succeeded);
 	}
 }
 
@@ -579,7 +581,8 @@ ai_moveright(edict_t *self, float dist)
 
 	movedir = vectoyaw(right);
 
-	MG_WalkMove (self, movedir, dist);
+	qboolean trace_succeeded = false;
+	MG_WalkMove (self, movedir, dist, &trace_succeeded);
 }
 
 /*
@@ -599,7 +602,11 @@ ai_goal_charge(edict_t *self, float dist)
 		return;
 
 	if (dist)
-		MG_WalkMove (self, self->s.angles[YAW], dist);
+	{
+		qboolean trace_succeeded = false;
+
+		MG_WalkMove (self, self->s.angles[YAW], dist, &trace_succeeded);
+	}
 }
 
 /*
@@ -629,7 +636,9 @@ ai_charge2(edict_t *self, float dist)
 
 	if (dist)
 	{
-		MG_WalkMove(self, self->s.angles[YAW], dist);
+		qboolean trace_succeeded = false;
+
+		MG_WalkMove(self, self->s.angles[YAW], dist, &trace_succeeded);
 	}
 }
 
@@ -3460,7 +3469,8 @@ pr_global_struct->trace_normal is set to the normal of the blocking wall
 */
 //FIXME since we need to test end position contents here, can we avoid doing
 //it again later in catagorize position?
-trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
+trace_t
+MG_MoveStep(edict_t *self, vec3_t move, qboolean relink, qboolean *trace_succeeded)
 {//only relinks if move succeeds
 	float		dz;
 	vec3_t		save_org, test_org, end;
@@ -3471,7 +3481,8 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 	int			contents = 0, clipmask;
 	qboolean	slip_under = false;
 
-	trace.succeeded = false;
+	*trace_succeeded = false;
+
 	// try the move
 	VectorCopy(self->s.origin, save_org);
 	if(self->monsterinfo.scale)
@@ -3649,7 +3660,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 			}
 			self->groundentity = NULL;
 //	SV_Printf ("fall down\n");
-			trace.succeeded = true;
+			*trace_succeeded = true;
 			return trace;//true!
 		}
 		G_QPostMessage(self, MSG_BLOCKED, PRI_DIRECTIVE, NULL);
@@ -3672,7 +3683,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 				gi.linkentity(self);
 				G_TouchTriggers (self);
 			}
-			trace.succeeded = true;
+			*trace_succeeded = true;
 			return trace;//true!
 		}
 		//whoops, let's not make that move after all
@@ -3698,7 +3709,7 @@ trace_t MG_MoveStep (edict_t *self, vec3_t move, qboolean relink)
 	else
 		VectorCopy(save_org, self->s.origin);
 
-	trace.succeeded = true;
+	*trace_succeeded = true;
 	return trace;//true!
 }
 
@@ -3847,7 +3858,6 @@ facing it.
 qboolean MG_StepDirection (edict_t *self, float yaw, float dist)
 {
 	vec3_t		move, forward, test_angles;
-	trace_t		trace;
 
 	//find vector offset (move to add to origin)
 	test_angles[PITCH] = test_angles[ROLL] = 0;
@@ -3856,10 +3866,12 @@ qboolean MG_StepDirection (edict_t *self, float yaw, float dist)
 	VectorScale(forward, dist, move);
 
 	//see if can move that way, but don't actually move
-	trace = MG_MoveStep (self, move, false);
+	qboolean trace_succeeded = false;
+	MG_MoveStep (self, move, false, &trace_succeeded);
 
-	if (trace.succeeded)
-	{//move was allowed
+	if (trace_succeeded)
+	{
+		/* move was allowed */
 		self->best_move_yaw = yaw;//new
 		self->monsterinfo.idle_time = level.time + flrand(0.5, 1.25);
 //		MG_ChangeWhichYaw (self, YAW_BEST_MOVE);//new
@@ -4528,7 +4540,8 @@ MG_WalkMove
   Tries to step forward dist, returns the trace
 ===============
 */
-trace_t MG_WalkMove (edict_t *self, float yaw, float dist)
+trace_t
+MG_WalkMove (edict_t *self, float yaw, float dist, 	qboolean *trace_succeeded)
 {
 	vec3_t	move, endpos;
 	trace_t trace;
@@ -4539,8 +4552,8 @@ trace_t MG_WalkMove (edict_t *self, float yaw, float dist)
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
 
-	trace = MG_MoveStep(self, move, true);
-	if(trace.succeeded)
+	trace = MG_MoveStep(self, move, true, trace_succeeded);
+	if (*trace_succeeded)
 	{
 		return trace;
 	}
@@ -4548,7 +4561,7 @@ trace_t MG_WalkMove (edict_t *self, float yaw, float dist)
 	VectorAdd(self->s.origin, move, endpos);
 	//up mins for stairs?
 	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
-	trace.succeeded = false;
+	*trace_succeeded = false;
 	return trace;
 }
 
@@ -4562,7 +4575,6 @@ MG_BoolWalkMove
 qboolean MG_BoolWalkMove (edict_t *self, float yaw, float dist)
 {
 	vec3_t	move;
-	trace_t trace;
 
 	yaw = yaw*M_PI*2 / 360;
 
@@ -4570,8 +4582,9 @@ qboolean MG_BoolWalkMove (edict_t *self, float yaw, float dist)
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
 
-	trace = MG_MoveStep(self, move, true);
-	if(trace.succeeded)
+	qboolean trace_succeeded = false;
+	MG_MoveStep(self, move, true, &trace_succeeded);
+	if(trace_succeeded)
 	{
 		return true;
 	}
@@ -4589,7 +4602,6 @@ MG_TestMove
 qboolean MG_TestMove (edict_t *self, float yaw, float dist)
 {
 	vec3_t	move;
-	trace_t trace;
 
 	yaw = yaw*M_PI*2 / 360;
 
@@ -4597,8 +4609,9 @@ qboolean MG_TestMove (edict_t *self, float yaw, float dist)
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
 
-	trace = MG_MoveStep(self, move, false);
-	if(trace.succeeded)
+	qboolean trace_succeeded = false;
+	MG_MoveStep(self, move, false, &trace_succeeded);
+	if(trace_succeeded)
 		return true;
 
 	return false;
@@ -4776,7 +4789,10 @@ void mg_ai_charge (edict_t *self, float dist)
 	MG_ChangeYaw (self);
 
 	if (dist)
-		MG_WalkMove (self, self->s.angles[YAW], dist);
+	{
+		qboolean trace_succeeded = false;
+		MG_WalkMove (self, self->s.angles[YAW], dist, &trace_succeeded);
+	}
 
 	if(self->classID!=CID_ASSASSIN)//does his own checks
 		if(classStatics[self->classID].msgReceivers[MSG_EVADE])
@@ -4826,7 +4842,8 @@ void body_phase_out (edict_t *self)
 	}
 }
 
-trace_t MG_AirMove(edict_t *self, vec3_t goalpos, float dist)
+static trace_t
+MG_AirMove(edict_t *self, vec3_t goalpos, float dist, qboolean *trace_succeeded)
 {
 	trace_t		trace;
 	vec3_t		endpos, movedir;
@@ -4840,7 +4857,7 @@ trace_t MG_AirMove(edict_t *self, vec3_t goalpos, float dist)
 
 	if(trace.allsolid || trace.startsolid || trace.fraction <= 0.01)
 	{
-		trace.succeeded = false;
+		*trace_succeeded = false;
 		return trace;
 	}
 
@@ -4848,7 +4865,7 @@ trace_t MG_AirMove(edict_t *self, vec3_t goalpos, float dist)
 
 	gi.linkentity(self);
 
-	trace.succeeded = true;
+	*trace_succeeded = true;
 	return trace;
 }
 
@@ -5299,8 +5316,6 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 	if(!self->groundentity&&!(self->flags&FL_SWIM)&&!(self->flags&FL_FLY))
 		return false;//in air!
 
-	trace.succeeded = false;
-
 	if(self->classID != CID_GORGON)//they do their own yawing
 		MG_FaceGoal(self, false);//get ideal yaw, but don't turn
 
@@ -5368,10 +5383,10 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 	distloss = turnamt/self->yaw_speed * 0.8;//0.3;
 	adj_dist = dist - (dist * distloss);
 
-	trace = MG_WalkMove(self, self->s.angles[YAW], dist);
-	if(trace.succeeded)
+	qboolean trace_succeeded = false;
+	trace = MG_WalkMove(self, self->s.angles[YAW], dist, &trace_succeeded);
+	if(trace_succeeded)
 	{
-
 		if(mgai_debug->value)
 			gi.dprintf("Move forward succeeded!\n");
 
@@ -5682,15 +5697,14 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 	return false;
 }
 
-qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
+qboolean
+MG_SwimFlyToGoal(edict_t *self, float dist)
 {
 	trace_t		trace;
 	float		turnamt, distloss, adj_dist, save_yaw, save_yaw_speed, WallDot;//, save_ideal_yaw;
 	vec3_t		mins, source, goal_dir, goalpos;
 	qboolean	goal_vis=false, hitworld = false, new_best_yaw = false;
 	float		goal_dist, oby;
-
-	trace.succeeded = false;
 
 	if(self->classID != CID_GORGON)//they do their own yawing
 		MG_FaceGoal(self, false);//get ideal yaw, but don't turn
@@ -5761,11 +5775,14 @@ qboolean MG_SwimFlyToGoal (edict_t *self, float dist)
 
 	MG_GetGoalPos(self, goalpos);
 
-	trace = MG_AirMove(self, goalpos, dist);
-	if(trace.succeeded)
+	qboolean trace_succeeded = false;
+	trace = MG_AirMove(self, goalpos, dist, &trace_succeeded);
+	if (trace_succeeded)
 	{
-		if(mgai_debug->value)
+		if (mgai_debug->value)
+		{
 			gi.dprintf("Move forward succeeded!\n");
+		}
 
 		return true;
 	}
