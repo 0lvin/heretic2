@@ -1186,21 +1186,22 @@ PM_CheckDuck(void)
 {
 	trace_t trace;
 
-	pm->mins[0] = -16;
-	pm->mins[1] = -16;
+	/* set default stand up values */
+	pm->mins[0] = -14;
+	pm->mins[1] = -14;
+	pm->mins[2] = -34;
 
-	pm->maxs[0] = 16;
-	pm->maxs[1] = 16;
+	pm->maxs[0] = 14;
+	pm->maxs[1] = 14;
+	pm->maxs[2] = 25;
 
 	if (pm->s.pm_type == PM_GIB)
 	{
-		pm->mins[2] = 0;
+		// pm->mins[2] = 0;
 		pm->maxs[2] = 16;
 		pm->viewheight = 8;
 		return;
 	}
-
-	pm->mins[2] = -24;
 
 	if (pm->s.pm_type == PM_DEAD)
 	{
@@ -1217,7 +1218,6 @@ PM_CheckDuck(void)
 		if (pm->s.pm_flags & PMF_DUCKED)
 		{
 			/* try to stand up */
-			pm->maxs[2] = 32;
 			trace = pm->trace(pml.origin, pm->mins, pm->maxs, pml.origin);
 
 			if (!trace.allsolid)
@@ -1234,7 +1234,6 @@ PM_CheckDuck(void)
 	}
 	else
 	{
-		pm->maxs[2] = 32;
 		pm->viewheight = 22;
 	}
 }
@@ -1750,12 +1749,6 @@ Pmove_(void)
 
 	/* set mins, maxs, and viewheight */
 	PM_CheckDuck();
-
-#ifndef DEDICATED_ONLY
-	/* reset min/max to previous values */
-	VectorCopy(cl.frame.playerstate.mins, pm->mins);
-	VectorCopy(cl.frame.playerstate.maxs, pm->maxs);
-#endif
 
 	if (pm->snapinitial)
 	{
