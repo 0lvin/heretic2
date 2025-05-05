@@ -785,17 +785,6 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 		state->rdflags = MSG_ReadByte(&net_message);
 	}
 
-	if (flags & PS_MINSMAXS)
-	{
-		state->mins[0] = MSG_ReadFloat(&net_message);
-		state->mins[1] = MSG_ReadFloat(&net_message);
-		state->mins[2] = MSG_ReadFloat(&net_message);
-
-		state->maxs[0] = MSG_ReadFloat(&net_message);
-		state->maxs[1] = MSG_ReadFloat(&net_message);
-		state->maxs[2] = MSG_ReadFloat(&net_message);
-	}
-
 	/* parse stats */
 	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
 }

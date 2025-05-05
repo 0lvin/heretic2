@@ -284,12 +284,6 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 
 	pflags |= PS_WEAPONINDEX;
 
-	if (ps->mins[0] != ops->mins[0] || ps->mins[1] != ops->mins[1] || ps->mins[2] != ops->mins[2] ||
-		ps->maxs[0] != ops->maxs[0] || ps->maxs[1] != ops->maxs[1] || ps->maxs[2] != ops->maxs[2])
-	{
-		pflags |= PS_MINSMAXS;
-	}
-
 	/* write it */
 	MSG_WriteByte(msg, svc_playerinfo);
 	MSG_WriteShort(msg, pflags);
@@ -414,17 +408,6 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 	if (pflags & PS_RDFLAGS)
 	{
 		MSG_WriteByte(msg, ps->rdflags);
-	}
-
-	if (pflags & PS_MINSMAXS)
-	{
-		MSG_WriteFloat(msg, ps->mins[0]);
-		MSG_WriteFloat(msg, ps->mins[1]);
-		MSG_WriteFloat(msg, ps->mins[2]);
-
-		MSG_WriteFloat(msg, ps->maxs[0]);
-		MSG_WriteFloat(msg, ps->maxs[1]);
-		MSG_WriteFloat(msg, ps->maxs[2]);
 	}
 
 	/* send stats */

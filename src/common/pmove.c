@@ -1186,14 +1186,17 @@ PM_CheckDuck(void)
 {
 	trace_t trace;
 
-	/* set default stand up values */
-	pm->mins[0] = -14;
-	pm->mins[1] = -14;
-	pm->mins[2] = -34;
-
-	pm->maxs[0] = 14;
-	pm->maxs[1] = 14;
-	pm->maxs[2] = 25;
+	if (!pm->mins[0] &&
+		!pm->mins[1] &&
+		!pm->mins[2] &&
+		!pm->maxs[0] &&
+		!pm->maxs[1] &&
+		!pm->maxs[2])
+	{
+		/* set default stand up values */
+		VectorSet(pm->mins, -16, -16, -34);
+		VectorSet(pm->maxs, 16, 16, 32);
+	}
 
 	if (pm->s.pm_type == PM_GIB)
 	{
