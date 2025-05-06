@@ -37,25 +37,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
-#ifndef __cplusplus
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202000L // C23 or newer
-typedef bool qboolean;
-#else
-#ifdef true
- #undef true
-#endif
-
-#ifdef false
- #undef false
-#endif
-
-typedef enum {false, true}  qboolean;
-#endif
-#else
 typedef int qboolean;
-#endif
-
 typedef unsigned char byte;
 
 #ifndef NULL
