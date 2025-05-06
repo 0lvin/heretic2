@@ -1579,10 +1579,6 @@ typedef struct
 	// this... expect additions / removals / packet size reduction.
 	// ********************************************************************************************
 
-	// Player's acurate mins and maxs.
-
-	vec3_t			mins, maxs;
-
 	// Inventory changes.
 
 	byte			NoOfItems,

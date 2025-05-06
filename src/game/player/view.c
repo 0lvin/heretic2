@@ -1251,13 +1251,6 @@ ClientEndServerFrame(edict_t *ent)
 	// ********************************************************************************************
 	// Write all the shit that animation system modifies out to the playerstate (for prediction).
 	// ********************************************************************************************
-	current_client->ps.maxs[0] = current_client->playerinfo.maxs[0];
-	current_client->ps.maxs[1] = current_client->playerinfo.maxs[1];
-	current_client->ps.maxs[2] = current_client->playerinfo.maxs[2];
-
-	current_client->ps.mins[0] = current_client->playerinfo.mins[0];
-	current_client->ps.mins[1] = current_client->playerinfo.mins[1];
-	current_client->ps.mins[2] = current_client->playerinfo.mins[2];
 
 	current_client->ps.watertype = current_client->playerinfo.watertype;
 	current_client->ps.waterlevel = current_client->playerinfo.waterlevel;
