@@ -511,14 +511,11 @@ PM_Friction(void)
 	drop = 0;
 
 	/* apply ground friction */
-	if (pm->waterlevel <= 1)
+	if ((pm->groundentity && pml.groundsurface &&
+		 !(pml.groundsurface->flags & SURF_SLICK)) || (pml.ladder))
 	{
-		if (pml.walking)
-		{
-			/* if getting knocked back, no friction */
-			control = speed < pm_stopspeed ? pm_stopspeed : speed;
-			drop += control * pm_friction * pml.frametime;
-		}
+		control = speed < pm_stopspeed ? pm_stopspeed : speed;
+		drop += control * pm_friction * pml.frametime;
 	}
 
 	/* apply water friction */
@@ -775,29 +772,28 @@ PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
 static void
 PM_SetVelInLiquid(void)
 {
-	float forwardmove;
 	qboolean runshrine;
-	float v15;
-	float v16;
-	vec3_t norm;
-	vec3_t vel;
+	float forwardmove;
+	vec3_t norm, vel;
 
 	PM_Friction();
 	forwardmove = pm->cmd.forwardmove;
-	v15 = forwardmove;
 	runshrine = false;
-	v16 = (float)pm->cmd.sidemove;
+
 	if (pm->run_shrine && forwardmove > 0.0)
 	{
 		runshrine = true;
-		v15 = forwardmove * 1.65;
+		forwardmove *= 1.65;
 	}
-	vel[0] = pml.forward[0] * v15 + pml.right[0] * v16;
-	vel[1] = pml.forward[1] * v15 + pml.right[1] * v16;
-	vel[2] = v15 * pml.forward[2] + v16 * pml.right[2];
+
+	vel[0] = pml.forward[0] * forwardmove + pml.right[0] * pm->cmd.sidemove;
+	vel[1] = pml.forward[1] * forwardmove + pml.right[1] * pm->cmd.sidemove;
+	vel[2] = pml.forward[2] * forwardmove + pml.right[2] * pm->cmd.sidemove;
+
 	PM_AddCurrents(vel);
 	PM_BoundVelocity(vel, norm, runshrine, 0);
 	PM_Accelerate(vel, pm_airaccelerate, 10.0);
+
 	if (pm->groundentity)
 	{
 		pml.velocity[0] = vel[0];
