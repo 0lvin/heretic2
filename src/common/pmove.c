@@ -561,7 +561,11 @@ PM_Accelerate(vec3_t wishdir, float wishspeed, float accel)
 	float addspeed, accelspeed, currentspeed;
 
 	currentspeed = DotProduct(pml.velocity, wishdir);
-	currentspeed *= 8;
+	if (wishspeed > 1000)
+	{
+		printf("%s: %.3f => %.3f\n", __func__, wishspeed, currentspeed);
+	}
+
 	addspeed = wishspeed - currentspeed;
 
 	if (addspeed <= 0)
@@ -578,7 +582,7 @@ PM_Accelerate(vec3_t wishdir, float wishspeed, float accel)
 
 	for (i = 0; i < 3; i++)
 	{
-		pml.velocity[i] += accelspeed * wishdir[i];
+		pml.velocity[i] += accelspeed * wishdir[i] * 8;
 	}
 }
 
@@ -1673,7 +1677,7 @@ PM_WalkMove(float fmove, float smove)
 	VectorCopy(wishvel, wishdir);
 	wishspeed = VectorNormalize(wishdir);
 
-	PM_Accelerate(wishdir, wishspeed, pm_accelerate);
+	PM_Accelerate(wishdir, wishspeed / 8.0, pm_accelerate);
 
 	float vel = VectorLength(pml.velocity);
 	// slide along the ground plane
