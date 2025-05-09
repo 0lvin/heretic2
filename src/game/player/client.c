@@ -4120,15 +4120,18 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		gi.PmoveEx(&pm, origin);
 
 		if(ent->waterlevel)
+		{
 			client->playerinfo.flags |= FL_INWATER;
+		}
 		else
+		{
 			client->playerinfo.flags &= ~FL_INWATER;
+		}
 
 		client->playerinfo.flags &= ~(PLAYER_FLAG_COLLISION | PLAYER_FLAG_SLIDE);
 
 		/*
-		 * TODO: Rewrite to apply !WF_SINK
-		 * previosly
+		 * TODO: Rewrite to apply !WF_SINK previously was
 		 * pml.velocity[2] += sin(Sys_Milliseconds() / 150.0) * 8.0;
 		 */
 		if (client->playerinfo.pm_w_flags & WF_DIVE)

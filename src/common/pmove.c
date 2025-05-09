@@ -432,9 +432,10 @@ static void
 PM_StepSlideMove(qboolean gravity)
 {
 	vec3_t start_o, start_v;
+	vec3_t down_o, down_v;
 	trace_t trace;
+	float down_dist, up_dist;
 	vec3_t up, down;
-	float stepSize;
 
 	VectorCopy(pml.origin, start_o);
 	VectorCopy(pml.velocity, start_v);
@@ -444,16 +445,8 @@ PM_StepSlideMove(qboolean gravity)
 		return;		// we got exactly where we wanted to go first try
 	}
 
-	VectorCopy(start_o, down);
-	down[2] -= STEPSIZE;
-	trace = pm->trace(start_o, pm->mins, pm->maxs, down);
-	VectorSet(up, 0, 0, 1);
-	// never step up when you still have up velocity
-	if (pml.velocity[2] > 0 && (trace.fraction == 1.0 ||
-		DotProduct(trace.plane.normal, up) < 0.7))
-	{
-		return;
-	}
+	VectorCopy(pml.origin, down_o);
+	VectorCopy(pml.velocity, down_v);
 
 	VectorCopy(start_o, up);
 	up[2] += STEPSIZE;
@@ -465,26 +458,38 @@ PM_StepSlideMove(qboolean gravity)
 		return; /* can't step up */
 	}
 
-	stepSize = trace.endpos[2] - start_o[2];
-	// try slidemove from this position
-	VectorCopy(trace.endpos, pml.origin);
+	/* try sliding above */
+	VectorCopy(up, pml.origin);
 	VectorCopy(start_v, pml.velocity);
 
-	PM_SlideMove(gravity);
+	PM_StepSlideMove_();
 
 	/* push down the final amount */
 	VectorCopy(pml.origin, down);
-	down[2] -= stepSize;
+	down[2] -= STEPSIZE;
 	trace = pm->trace(pml.origin, pm->mins, pm->maxs, down);
 
 	if (!trace.allsolid)
 	{
 		VectorCopy(trace.endpos, pml.origin);
 	}
-	if (trace.fraction < 1.0)
+
+	VectorCopy(pml.origin, up);
+
+	/* decide which one went farther */
+	down_dist = (down_o[0] - start_o[0]) * (down_o[0] - start_o[0])
+				+ (down_o[1] - start_o[1]) * (down_o[1] - start_o[1]);
+	up_dist = (up[0] - start_o[0]) * (up[0] - start_o[0])
+			  + (up[1] - start_o[1]) * (up[1] - start_o[1]);
+
+	if ((down_dist > up_dist) || (trace.plane.normal[2] < MIN_STEP_NORMAL))
 	{
-		PM_ClipVelocity(pml.velocity, trace.plane.normal, pml.velocity, OVERCLIP);
+		VectorCopy(down_o, pml.origin);
+		VectorCopy(down_v, pml.velocity);
+		return;
 	}
+
+	pml.velocity[2] = down_v[2];
 }
 
 /*
@@ -747,30 +752,29 @@ PM_AddCurrents(vec3_t wishvel)
 
 // TODO: Rewrite
 static void
-PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine, qboolean high_max)
+PM_BoundVelocity(vec3_t vel, vec3_t norm, qboolean runshrine)
 {
-	vec_t v;
+	vec_t scale;
 
-	if (high_max || runshrine)
+	if (runshrine)
 	{
-		v = 600.0;
+		scale = 600.0;
 	}
 	else
 	{
-		v = 300.0;
+		scale = 300.0;
 	}
 
-	if (v < VectorNormalize2(vel, norm))
+	if (scale < VectorNormalize2(vel, norm))
 	{
-		vel[0] = norm[0] * v;
-		vel[1] = norm[1] * v;
-		vel[2] = norm[2] * v;
+		vel[0] = norm[0] * scale;
+		vel[1] = norm[1] * scale;
+		vel[2] = norm[2] * scale;
 	}
 }
 
-// TODO: Rewrite
 static void
-PM_SetVelInLiquid(void)
+PM_WaterMove(qboolean gravity)
 {
 	qboolean runshrine;
 	float forwardmove;
@@ -791,7 +795,7 @@ PM_SetVelInLiquid(void)
 	vel[2] = pml.forward[2] * forwardmove + pml.right[2] * pm->cmd.sidemove;
 
 	PM_AddCurrents(vel);
-	PM_BoundVelocity(vel, norm, runshrine, 0);
+	PM_BoundVelocity(vel, norm, runshrine);
 	PM_Accelerate(vel, pm_airaccelerate, 10.0);
 
 	if (pm->groundentity)
@@ -800,12 +804,7 @@ PM_SetVelInLiquid(void)
 		pml.velocity[1] = vel[1];
 		pml.velocity[2] = vel[2];
 	}
-}
 
-static void
-PM_WaterMove(qboolean gravity)
-{
-	PM_SetVelInLiquid();
 	PM_StepSlideMove(gravity);
 }
 
@@ -821,14 +820,6 @@ PM_AirMove(void)
 
 	fmove = pm->cmd.forwardmove;
 	smove = pm->cmd.sidemove;
-
-	PM_Friction();
-
-	// project moves down to flat plane
-	pml.forward[2] = 0;
-	pml.right[2] = 0;
-	VectorNormalize(pml.forward);
-	VectorNormalize(pml.right);
 
 	for (i = 0; i < 2; i++)
 	{
@@ -849,6 +840,35 @@ PM_AirMove(void)
 	{
 		VectorScale(wishvel, maxspeed / wishspeed, wishvel);
 		wishspeed = maxspeed;
+	}
+
+	if (pml.ladder)
+	{
+		PM_Accelerate(wishdir, wishspeed, pm_accelerate);
+
+		if (!wishvel[2])
+		{
+			if (pml.velocity[2] > 0)
+			{
+				pml.velocity[2] -= pm->s.gravity * pml.frametime;
+
+				if (pml.velocity[2] < 0)
+				{
+					pml.velocity[2] = 0;
+				}
+			}
+			else
+			{
+				pml.velocity[2] += pm->s.gravity * pml.frametime;
+
+				if (pml.velocity[2] > 0)
+				{
+					pml.velocity[2] = 0;
+				}
+			}
+		}
+
+		PM_StepSlideMove(true);
 	}
 
 	// not on ground, so little effect on velocity
@@ -998,6 +1018,37 @@ PM_CheckJump(void)
 	if (pm->s.pm_type == PM_DEAD)
 	{
 		return;
+	}
+
+	if (pm->waterlevel >= 2)
+	{
+		/* swimming, not jumping */
+		pm->groundentity = NULL;
+
+		if (pml.velocity[2] <= -300)
+		{
+			return;
+		}
+
+		if (pm->watertype == CONTENTS_WATER)
+		{
+			pml.velocity[2] = 100;
+		}
+		else if (pm->watertype == CONTENTS_SLIME)
+		{
+			pml.velocity[2] = 80;
+		}
+		else
+		{
+			pml.velocity[2] = 50;
+		}
+
+		return;
+	}
+
+	if (pm->groundentity == NULL)
+	{
+		return; /* in air, so no effect */
 	}
 
 	if ((pm->s.pm_flags & PMF_TIME_WATERJUMP) == 0 && pm->cmd.upmove > 9)
@@ -1196,7 +1247,6 @@ PM_CheckDuck(void)
 
 	if (pm->s.pm_type == PM_GIB)
 	{
-		// pm->mins[2] = 0;
 		pm->maxs[2] = 16;
 		pm->viewheight = 8;
 		return;
@@ -1791,41 +1841,59 @@ Pmove_(void)
 	{
 		/* teleport pause stays exactly in place */
 	}
-
-	PM_GroundTrace();
-
-	PM_CheckJump();
-
-	PM_CheckInWater();
-
-	if (pm->waterlevel == 1)
+	else if (pm->s.pm_flags & PMF_TIME_WATERJUMP)
 	{
-		PM_WaterMove(true);
-	}
-	else if (pm->waterlevel == 2)
-	{
-		if (pm->viewangles[0] > 40.0)
+		/* waterjump has no control, but falls */
+		pml.velocity[2] -= pm->s.gravity * pml.frametime;
+
+		if (pml.velocity[2] < 0)
 		{
-			PM_WaterMove(false);
+			/* cancel as soon as we are falling down again */
+			pm->s.pm_flags &= ~(PMF_TIME_WATERJUMP | PMF_TIME_LAND | PMF_TIME_TELEPORT);
+			pm->s.pm_time = 0;
 		}
-		else
-		{
-			PM_WaterMove(true);
-		}
-	}
-	else if (pm->waterlevel >= 2)
-	{
-		PM_WaterMove(false);
-	}
-	else if (pml.walking)
-	{
-		// walking on ground
-		PM_WalkMove(pm->cmd.forwardmove * 8, pm->cmd.sidemove * 8);
+
+		PM_StepSlideMove(true);
 	}
 	else
 	{
-		// airborne
-		PM_AirMove();
+		PM_GroundTrace();
+
+		PM_CheckJump();
+
+		PM_Friction();
+
+		PM_CheckInWater();
+
+		if (pm->waterlevel == 1)
+		{
+			PM_WaterMove(true);
+		}
+		else if (pm->waterlevel == 2)
+		{
+			if (pm->viewangles[0] > 40.0)
+			{
+				PM_WaterMove(false);
+			}
+			else
+			{
+				PM_WaterMove(true);
+			}
+		}
+		else if (pm->waterlevel >= 2)
+		{
+			PM_WaterMove(false);
+		}
+		else if (pml.walking)
+		{
+			// walking on ground
+			PM_WalkMove(pm->cmd.forwardmove * 8, pm->cmd.sidemove * 8);
+		}
+		else
+		{
+			// airborne
+			PM_AirMove();
+		}
 	}
 
 	/* set groundentity, watertype, and waterlevel for final spot */
