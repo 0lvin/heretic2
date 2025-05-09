@@ -4126,8 +4126,8 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		for (i = 0; i < 3; i++)
 		{
 			ent->s.origin[i] = origin[i] * 0.125;
-			ent->velocity[i] = pm.s.velocity[i] * 0.125 * 0.125;
-			client->playerinfo.velocity[i] = pm.s.velocity[i] * 0.125;
+			ent->velocity[i] = pm.s.velocity[i] * 0.125;
+			client->playerinfo.velocity[i] = pm.s.velocity[i];
 		}
 
 		VectorCopy(pm.mins, ent->mins);
