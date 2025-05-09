@@ -3981,24 +3981,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		client->oldcmdangles[0] = ucmd->angles[0];
 		client->oldcmdangles[1] = ucmd->angles[1];
 		client->oldcmdangles[2] = ucmd->angles[2];
-
-		pm.s = client->ps.pmove;
-
-		for (i = 0; i < 3; i++)
-		{
-			origin[i] = ent->s.origin[i] * 8;
-			/* save to an int first, in case the short overflows
-			 * so we get defined behavior (at least with -fwrapv) */
-			int tmpVel = ent->velocity[i] * 8;
-			pm.s.velocity[i] = tmpVel;
-		}
-
-		if (memcmp(&client->old_pmove, &pm.s, sizeof(pm.s)))
-		{
-			pm.snapinitial = true;
-		}
-
-		pm.cmd = *ucmd;
 		client->pcmd = *ucmd;
 
 		if (ent->movetype != MOVETYPE_NOCLIP)
@@ -4098,9 +4080,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			}
 		}
 
-		pm.trace = PM_trace; /* adds default parms */
-		pm.pointcontents = gi.pointcontents;
-
 		pm.viewheight = ent->viewheight;
 
 		VectorCopy(ent->mins, pm.mins);
@@ -4116,8 +4095,47 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			pm.run_shrine = false;
 		}
 
+		pm.s = client->ps.pmove;
+
+		for (i = 0; i < 3; i++)
+		{
+			origin[i] = ent->s.origin[i] * 8;
+			/* save to an int first, in case the short overflows
+			 * so we get defined behavior (at least with -fwrapv) */
+			int tmpVel = ent->velocity[i] * 8;
+			pm.s.velocity[i] = tmpVel;
+		}
+
+		if (memcmp(&client->old_pmove, &pm.s, sizeof(pm.s)))
+		{
+			pm.snapinitial = true;
+		}
+
+		pm.cmd = *ucmd;
+
+		pm.trace = PM_trace; /* adds default parms */
+		pm.pointcontents = gi.pointcontents;
+
 		/* perform a pmove */
 		gi.PmoveEx(&pm, origin);
+
+		/* save results of pmove */
+		client->ps.pmove = pm.s;
+		client->old_pmove = pm.s;
+
+		for (i = 0; i < 3; i++)
+		{
+			ent->s.origin[i] = origin[i] * 0.125;
+			ent->velocity[i] = pm.s.velocity[i] * 0.125 * 0.125;
+			client->playerinfo.velocity[i] = pm.s.velocity[i] * 0.125;
+		}
+
+		VectorCopy(pm.mins, ent->mins);
+		VectorCopy(pm.maxs, ent->maxs);
+
+		client->resp.cmd_angles[0] = SHORT2ANGLE(ucmd->angles[0]);
+		client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
+		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
 
 		if(ent->waterlevel)
 		{
@@ -4138,23 +4156,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		{
 			client->playerinfo.flags |= PLAYER_FLAG_DIVE;
 		}
-
-		/* save results of pmove */
-		client->ps.pmove = pm.s;
-		client->old_pmove = pm.s;
-
-		for (i = 0; i < 3; i++)
-		{
-			ent->s.origin[i] = origin[i] * 0.125;
-			ent->velocity[i] = client->playerinfo.velocity[i] * 0.125;
-		}
-
-		VectorCopy(pm.mins, ent->mins);
-		VectorCopy(pm.maxs, ent->maxs);
-
-		client->resp.cmd_angles[0] = SHORT2ANGLE(ucmd->angles[0]);
-		client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
-		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
 
 		// jmarshall - this used to be done in the engine with the client prediction.
 		VectorCopy(ent->s.origin, client->playerinfo.origin);
@@ -4185,10 +4186,9 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		client->playerinfo.waterlevel = pm.waterlevel;
 		client->playerinfo.waterheight = pm.waterheight;
 		client->playerinfo.watertype = pm.watertype;
-
+		ent->viewheight = pm.viewheight;
 
 		ent->waterlevel = pm.waterlevel;
-		ent->viewheight = pm.viewheight;
 		ent->watertype = pm.watertype;
 		ent->groundentity = pm.groundentity;
 
@@ -4204,15 +4204,12 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			client->aimangles[0] = SHORT2ANGLE(ucmd->angles[0]);
 			client->aimangles[1] = SHORT2ANGLE(ucmd->angles[1]);
 			client->aimangles[2] = SHORT2ANGLE(ucmd->angles[2]);
-
 			VectorCopy(client->aimangles, client->ps.viewangles);
 		}
 
 		gi.linkentity(ent);
 
 		ent->gravity = 1.0;
-
-		// Process touch triggers that the client could activate.
 
 		if (ent->movetype != MOVETYPE_NOCLIP)
 		{
