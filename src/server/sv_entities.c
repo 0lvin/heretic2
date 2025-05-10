@@ -153,7 +153,7 @@ static void
 SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		sizebuf_t *msg, int protocol)
 {
-	int statbits, pflags, i, *origin, *oorig, idummy[3];
+	int statbits[8], stats_size, pflags, i, *origin, *oorig, idummy[3];
 	player_state_t *ps, *ops;
 	player_state_t dummy;
 
@@ -410,30 +410,36 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 		MSG_WriteByte(msg, ps->rdflags);
 	}
 
-	/* send stats */
-#ifdef NATIVEQUAKE2
-	statbits = 0;
+	stats_size = 0;
+	memset(statbits, 0, sizeof(statbits));
 
 	for (i = 0; i < MAX_STATS; i++)
 	{
 		if (ps->stats[i] != ops->stats[i])
 		{
-			statbits |= 1 << i;
+			statbits[(int)(i / 32)] |= 1 << (i % 32);
+			stats_size = i;
 		}
 	}
 
-	MSG_WriteLong(msg, statbits);
-
-	for (i = 0; i < MAX_STATS; i++)
+	/* send stats */
+	if (!IS_QII97_PROTOCOL(protocol))
 	{
-		if (statbits & (1 << i))
+		MSG_WriteByte(msg, stats_size);
+	}
+
+	for (i = 0; i < (int)((stats_size + 31) / 32); i++)
+	{
+		MSG_WriteLong(msg, statbits[i]);
+	}
+
+	for (i = 0; i < stats_size; i++)
+	{
+		if (statbits[(int)(i / 32)] & (1u << (i % 32)))
 		{
 			MSG_WriteShort(msg, ps->stats[i]);
 		}
 	}
-#else
-	MSG_WriteData(msg, (byte *)&ps->stats[0], sizeof(ps->stats));
-#endif
 }
 
 void
