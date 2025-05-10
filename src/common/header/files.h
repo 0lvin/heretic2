@@ -752,7 +752,6 @@ typedef struct
  * - multiple brushes can be in a single leaf */
 
 /* lower bits are stronger, and will eat weaker brushes completely */
-#define	CONTENTS_EMPTY			0x00000000	// nothing
 #define CONTENTS_SOLID 1  /* an eye is never valid in a solid */
 #define CONTENTS_WINDOW 2 /* translucent, but not watery */
 #define CONTENTS_AUX 4
@@ -783,9 +782,6 @@ typedef struct
 #define CONTENTS_DETAIL 0x8000000       /* brushes to be added after vis leafs */
 #define CONTENTS_TRANSLUCENT 0x10000000 /* auto set if any surface has trans */
 #define CONTENTS_LADDER 0x20000000
-// Only do the trace against the world, not entities within it. Not stored in the .bsp and passed
-// only as an argument to trace fucntions.
-#define CONTENTS_WORLD_ONLY		0x80000000
 
 #define SURF_LIGHT 0x1    /* value will hold the light strength */
 

@@ -411,10 +411,30 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 	}
 
 	/* send stats */
-	MSG_WriteData(msg, (byte *)&ps->stats[0], sizeof(ps->stats));
-}
+#ifdef NATIVEQUAKE2
+	statbits = 0;
 
-void SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, sizebuf_t* msg);
+	for (i = 0; i < MAX_STATS; i++)
+	{
+		if (ps->stats[i] != ops->stats[i])
+		{
+			statbits |= 1 << i;
+		}
+	}
+
+	MSG_WriteLong(msg, statbits);
+
+	for (i = 0; i < MAX_STATS; i++)
+	{
+		if (statbits & (1 << i))
+		{
+			MSG_WriteShort(msg, ps->stats[i]);
+		}
+	}
+#else
+	MSG_WriteData(msg, (byte *)&ps->stats[0], sizeof(ps->stats));
+#endif
+}
 
 void
 SV_WriteFrameToClient(client_t *client, sizebuf_t *msg)

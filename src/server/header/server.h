@@ -291,6 +291,7 @@ trace_t SV_Trace(vec3_t start, vec3_t mins, vec3_t maxs,
 		vec3_t end, edict_t *passedict, int contentmask);
 
 void SV_ClearPersistantEffects(void);
+void SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, sizebuf_t* msg);
 
 #endif
 

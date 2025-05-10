@@ -348,11 +348,17 @@ CL_PrepRefresh(void)
 	SCR_TouchPics();
 	CL_PrintInSameLine("Temporary models");
 
-	//CL_RegisterTEntModels ();
+#ifdef NATIVEQUAKE2
+	CL_RegisterTEntModels();
+
+	num_cl_weaponmodels = 1;
+	strcpy(cl_weaponmodels[0], "weapon.md2");
+#else
 	if (fxe && fxe->RegisterModels)
 	{
 		fxe->RegisterModels();
 	}
+#endif
 
 	CL_PrintInSameLine("Models");
 	for (i = 1; i < MAX_MODELS && cl.configstrings[CS_MODELS + i][0]; i++)

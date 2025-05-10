@@ -988,14 +988,18 @@ CL_AddEntities(void)
 
 	CL_CalcViewValues();
 	CL_AddPacketEntities(&cl.frame);
-	CL_AddParticles();
-	CL_AddDLights();
+#ifdef NATIVEQUAKE2
+	CL_AddTEnts();
+#else
 	// jmarshall - this is in client effects.dll
 	if (fxe && fxe->AddEffects)
 	{
 		fxe->AddEffects(false);
 	}
 	// jmarshall end
+#endif
+	CL_AddParticles();
+	CL_AddDLights();
 	CL_AddLightStyles();
 }
 

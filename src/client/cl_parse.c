@@ -786,7 +786,25 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 	}
 
 	/* parse stats */
+#ifdef NATIVEQUAKE2
+	statbits = MSG_ReadLong(&net_message);
+
+	for (i = 0; i < MAX_STATS; i++)
+	{
+		if (statbits & (1u << i))
+		{
+			state->stats[i] = MSG_ReadShort(&net_message);
+
+			if (i == STAT_PICKUP_STRING)
+			{
+				state->stats[i] = P_ConvertConfigStringFrom(state->stats[i],
+					protocol);
+			}
+		}
+	}
+#else
 	MSG_ReadData(&net_message, (byte*)&state->stats[0], sizeof(state->stats));
+#endif
 }
 
 static void
