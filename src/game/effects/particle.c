@@ -154,7 +154,6 @@ int AddParticlesToView(client_entity_t *ce)
 
 		assert(ptype < NUM_PARTICLE_TYPES);
 
-		r->type = current->type;
 		r->color = current->color.c;
 
 		if(alpha > 255 || !((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE)))

@@ -36,12 +36,14 @@ server_t sv; /* local server */
 static int
 SV_FindIndex(const char *name, int start, int max, qboolean create)
 {
-	int i;
+	int i, protocol;
 
 	if (!name || !name[0])
 	{
 		return 0;
 	}
+
+	protocol = sv_client ? sv_client->protocol : PROTOCOL_VERSION;
 
 	for (i = 1; i < max && sv.configstrings[start + i][0]; i++)
 	{
@@ -69,7 +71,7 @@ SV_FindIndex(const char *name, int start, int max, qboolean create)
 		MSG_WriteChar(&sv.multicast, svc_configstring);
 		/* i in native server range */
 		MSG_WriteShort(&sv.multicast,
-				P_ConvertConfigStringTo(start + i, sv_client->protocol));
+				P_ConvertConfigStringTo(start + i, protocol));
 		MSG_WriteString(&sv.multicast, name);
 		SV_Multicast(vec3_origin, MULTICAST_ALL_R);
 	}

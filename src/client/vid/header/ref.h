@@ -112,7 +112,6 @@ typedef struct {
 	unsigned	color;
 	float	alpha;
 	float	scale;
-	int		type;
 } particle_t;
 
 typedef struct {
