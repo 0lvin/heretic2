@@ -5,6 +5,7 @@
 #include "../../common/header/common.h"
 #include "../../client/header/client.h"
 #include "../common/cl_strings.h"
+#include "../common/levelmaps.h"
 
 #define MAX_MAPS		26
 

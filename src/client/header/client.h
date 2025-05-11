@@ -58,10 +58,7 @@
 #include "keyboard.h"
 #include "console.h"
 
-#include "../../game/common/angles.h"
-#include "../../game/common/vector.h"
 #include "../../game/player/library/player.h"
-#include "../../game/common/levelmaps.h"
 
 typedef struct
 {
@@ -88,18 +85,12 @@ typedef struct
 	vec3_t		lerp_origin; /* for trails (variable hz) */
 
 	int			fly_stoptime;
-
 	int			flags;			// What freaking flags go in here??!?!
-
 	vec3_t			origin;			// current interpolated origin
-
-	vec3_t			lerp_angles;	// current interpolated angles
-
 	struct entity_s		*entity;		// so client fx can play with its owners entity
-
-	struct client_entity_s		*effects;		// client effects, only has meaning within the
-												// Client Effects DLL
-
+	vec3_t			lerp_angles;		// current interpolated angles
+	struct client_entity_s		*effects;	// client effects, only has meaning within the
+							// Client Effects DLL
 	struct LERPedReferences_s	*referenceInfo;
 } centity_t;
 

@@ -335,6 +335,10 @@ typedef struct
 	qboolean entitiesSpawned;
 } game_locals_t;
 
+#define	CONTENTS_EMPTY			0x00000000	// nothing
+// Only do the trace against the world, not entities within it. Not stored in the .bsp and passed
+// only as an argument to trace fucntions.
+#define CONTENTS_WORLD_ONLY		0x80000000
 #define MONSTER_THINK_INC   0.099
 #define FRAMES_PER_SECOND	10.0
 
@@ -1026,7 +1030,6 @@ extern cvar_t *sv_jumpcinematic;
 extern cvar_t *sv_freezemonsters;
 extern cvar_t *flood_killdelay;
 
-extern edict_t *g_edicts;
 extern int self_spawn;
 
 /* this is for the count of monsters */
