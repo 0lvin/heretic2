@@ -1082,7 +1082,7 @@ GL3_DrawEntitiesOnList(void)
 	{
 		entity_t *currententity = &gl3_newrefdef.entities[i];
 
-		if (currententity->flags & RF_TRANSLUCENT)
+		if (currententity->flags & RF_TRANSLUCENT || currententity->flags & RF_FLARE)
 		{
 			continue; /* solid */
 		}
@@ -1129,7 +1129,7 @@ GL3_DrawEntitiesOnList(void)
 	{
 		entity_t *currententity = &gl3_newrefdef.entities[i];
 
-		if (!(currententity->flags & RF_TRANSLUCENT))
+		if (!(currententity->flags & RF_TRANSLUCENT) || currententity->flags & RF_FLARE)
 		{
 			continue; /* solid */
 		}

@@ -780,7 +780,7 @@ typedef struct
 												// a chicken, and not corvus.
 
 /* entity_state_t->rr_effects
- * ReRelease flags, values are diffeent to quake 2 RR code */
+ * ReRelease flags, values are different to quake 2 RR code */
 #define EF_FLASHLIGHT 0x00000001         /* project flashlight, only for players */
 
 /* entity_state_t->renderfx flags */
@@ -822,6 +822,10 @@ typedef struct
 											// a signifiant amount of screen real-estate, the poly will be culled. Used
 											// for particles in software
 #define RF_TRANS_ANY		(RF_TRANS_ADD | RF_TRANS_GHOST | RF_TRANSLUCENT)
+
+/* ReRelease flags */
+#define RF_FLARE 0x00200000
+#define RF_FLARE_LOCK_ANGLE RF_MINLIGHT
 
 /* player_state_t->refdef flags */
 #define RDF_UNDERWATER 1            /* warp the screen as apropriate */
@@ -1294,8 +1298,9 @@ typedef enum
 #define CS_AIRACCEL 29              /* air acceleration control */
 #define CS_MAXCLIENTS 30
 #define CS_MAPCHECKSUM 31           /* for catching cheater maps */
+#define CS_SKIP 32                  /* Skip config string */
 
-#define CS_MODELS 32
+#define CS_MODELS 33
 #define CS_SOUNDS (CS_MODELS + MAX_MODELS)
 #define CS_IMAGES (CS_SOUNDS + MAX_SOUNDS)
 #define CS_LIGHTS (CS_IMAGES + MAX_IMAGES)
