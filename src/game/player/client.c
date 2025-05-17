@@ -3429,7 +3429,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			}
 		}
 
-		gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
+		gi.configstring(CS_PLAYERSKINS + playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
 	}
 	else if (coop->value)
 	{	// In coop only allow skins that have full plague levels...
@@ -3480,16 +3480,19 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				sprintf(filename, "players/%sP1.m8", skin);
 				if (gi.LoadFile(filename, NULL) != -1)
 				{	// The plague1 skin exists.
-					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
+					gi.configstring(CS_PLAYERSKINS + playernum,
+						va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 				}
 				else
 				{	// Just use the basic skin, then.
-					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
+					gi.configstring(CS_PLAYERSKINS + playernum,
+						va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
 				}
 			}
 			else
 			{
-				gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
+				gi.configstring(CS_PLAYERSKINS + playernum,
+					va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 			}
 			break;
 		case 2:		// Plague level 2
@@ -3499,7 +3502,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				if (gi.LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
-					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
+					gi.configstring(CS_PLAYERSKINS + playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
 				}
 				else
 				{	// No plague 2 skin, try for a plague 1 skin.
@@ -3507,21 +3510,25 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 					if (gi.LoadFile(filename, NULL) != -1)
 					{
 						/* The plague1 skin exists. */
-						gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
+						gi.configstring(CS_PLAYERSKINS + playernum,
+							va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 					}
 					else
 					{	// Just use the basic skin, then.
-						gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
+						gi.configstring(CS_PLAYERSKINS + playernum,
+							va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
 					}
 				}
 			}
 			else
 			{
-				gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
+				gi.configstring(CS_PLAYERSKINS + playernum,
+					va("%s\\%sP2", ent->client->playerinfo.pers.netname, skin) );
 			}
 			break;
 		default:
-			gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
+			gi.configstring(CS_PLAYERSKINS + playernum,
+				va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
 		}
 	}
 	else
@@ -3552,11 +3559,13 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				if (gi.LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
-					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
+					gi.configstring(CS_PLAYERSKINS + playernum,
+						va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 				}
 				else
 				{	// Just use the basic skin, then.
-					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
+					gi.configstring(CS_PLAYERSKINS + playernum,
+						va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
 				}
 				break;
 			case 2:		// Plague level 2
@@ -3565,7 +3574,8 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				if (gi.LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
-					gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
+					gi.configstring(CS_PLAYERSKINS + playernum,
+						va("%s\\%sP2", ent->client->playerinfo.pers.netname, skin) );
 				}
 				else
 				{
@@ -3576,16 +3586,19 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 					if (gi.LoadFile(filename, NULL) != -1)
 					{
 						// The plague1 skin exists.
-						gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%sP1", ent->client->playerinfo.pers.netname, skin) );
+						gi.configstring(CS_PLAYERSKINS + playernum,
+							va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
 					}
 					else
 					{	// Just use the basic skin, then.
-						gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
+						gi.configstring(CS_PLAYERSKINS + playernum,
+							va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
 					}
 				}
 				break;
 			default:
-				gi.configstring (CS_PLAYERSKINS+playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
+				gi.configstring(CS_PLAYERSKINS+playernum,
+					va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
 				break;
 			}
 		}
@@ -3594,13 +3607,15 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			switch(ent->client->playerinfo.plaguelevel)
 			{
 			case 1:		// Plague level 1
-				gi.configstring (CS_PLAYERSKINS+playernum, va("%s/male/CorvusP1", ent->client->playerinfo.pers.netname) );
+				gi.configstring(CS_PLAYERSKINS + playernum,
+					va("%s\\male/CorvusP1", ent->client->playerinfo.pers.netname) );
 				break;
 			case 2:		// Plague level 2
-				gi.configstring (CS_PLAYERSKINS+playernum, va("%s/male/CorvusP2", ent->client->playerinfo.pers.netname) );
+				gi.configstring(CS_PLAYERSKINS + playernum,
+					va("%s\\male/CorvusP2", ent->client->playerinfo.pers.netname) );
 				break;
 			default:
-				gi.configstring (CS_PLAYERSKINS+playernum, va("%s/male/Corvus", ent->client->playerinfo.pers.netname) );
+				gi.configstring(CS_PLAYERSKINS + playernum, va("%s\\male/Corvus", ent->client->playerinfo.pers.netname) );
 				break;
 			}
 		}
