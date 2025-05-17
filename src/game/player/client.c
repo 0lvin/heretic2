@@ -4141,8 +4141,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		for (i = 0; i < 3; i++)
 		{
 			ent->s.origin[i] = origin[i] * 0.125;
-			ent->velocity[i] = pm.s.velocity[i] * 0.125 * 0.125;
-			client->playerinfo.velocity[i] = pm.s.velocity[i] * 0.125;
+			ent->velocity[i] = pm.s.velocity[i] * 0.125;
 		}
 
 		VectorCopy(pm.mins, ent->mins);
@@ -4152,6 +4151,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
 		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
 
+		VectorCopy(pm.s.velocity, client->playerinfo.velocity);
 		if(ent->waterlevel)
 		{
 			client->playerinfo.flags |= FL_INWATER;
