@@ -1261,8 +1261,7 @@ CL_LoadClientinfo(clientinfo_t *ci, char *s)
 	}
 
 	/* must have loaded all data types to be valid */
-	/*
-	if (!ci->skin || !ci->icon || !ci->model || !ci->weaponmodel[0])
+	if (!ci->skin || !ci->icon || !ci->model)
 	{
 		ci->skin = NULL;
 		ci->icon = NULL;
@@ -1270,7 +1269,6 @@ CL_LoadClientinfo(clientinfo_t *ci, char *s)
 		ci->weaponmodel[0] = NULL;
 		return;
 	}
-	*/
 }
 
 /*

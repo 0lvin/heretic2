@@ -824,6 +824,7 @@ typedef struct
 #define RF_TRANS_ANY		(RF_TRANS_ADD | RF_TRANS_GHOST | RF_TRANSLUCENT)
 
 /* ReRelease flags */
+#define RF_CUSTOM_LIGHT 0x00100000
 #define RF_FLARE 0x00200000
 #define RF_FLARE_LOCK_ANGLE RF_MINLIGHT
 
