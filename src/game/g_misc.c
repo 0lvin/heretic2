@@ -2773,7 +2773,8 @@ SP_misc_flare(edict_t* ent)
 {
 	int i;
 
-	ent->s.modelindex = 1;
+	ent->s.modelindex = gi.modelindex("misc/flare.tga");
+	ent->s.frame = 0;
 	ent->s.renderfx = RF_FLARE;
 	ent->solid = SOLID_NOT;
 
@@ -2806,7 +2807,7 @@ SP_misc_flare(edict_t* ent)
 	if (st.image && *st.image)
 	{
 		ent->s.renderfx |= RF_CUSTOMSKIN;
-		ent->s.frame = gi.imageindex(st.image);
+		ent->s.modelindex = gi.modelindex(st.image);
 	}
 
 	VectorSet(ent->mins, -32, -32, -32);
