@@ -49,7 +49,7 @@ void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 10000);
 
 	hellbolt->r.model = hell_models[0];
-	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	hellbolt->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	hellbolt->r.frame = irand(0, 1);
 	VectoAngles(vel, hellbolt->r.angles);
 	VectorCopy(vel, hellbolt->velocity);
@@ -195,7 +195,7 @@ FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	//make the line beam
 	beam = ClientEntity_new(-1, CEF_DONT_LINK | CEF_ABSOLUTE_PARTS | CEF_ADDITIVE_PARTS, origin, NULL, 333);
 	beam->r.model = hell_models[1];
-	beam->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	beam->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	scale = flrand(6.0, 10.0);
 	VectorSet(beam->r.scale, scale, scale, scale);
 	beam->r.tile = len/flrand(40.0, 48.0);
@@ -212,7 +212,7 @@ FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	beam2 = ClientEntity_new(-1, CEF_DONT_LINK, origin, NULL, 500);
 	beam2->r.model = hell_models[1];
 	beam2->r.frame = 1;
-	beam2->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	beam2->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	scale *= 1.4;
 	VectorSet(beam2->r.scale, scale, scale, scale);
 	beam2->r.tile = beam->r.tile;

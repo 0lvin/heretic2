@@ -167,7 +167,7 @@ void FXSpellHands(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 			continue;
 
 		Trail=ClientEntity_new(Type,Flags|CEF_NO_DRAW|CEF_ADDITIVE_PARTS,Origin,0,cast_speed);
-		Trail->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+		Trail->r.flags=RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 		Trail->Update=FXSpellHandsThink;
 		Trail->SpawnInfo= ((Flags&(CEF_FLAG7|CEF_FLAG8)) >> 6);
 		Trail->AddToView = LinkedEntityUpdatePlacement;

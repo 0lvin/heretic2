@@ -160,7 +160,7 @@ void FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, ve
 		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale = -4.0;
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.frame=0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, flrand(16.0, 128.0));
@@ -411,7 +411,7 @@ FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
 
 		flash = ClientEntity_new(-1, explosion->r.flags, explosion->origin, NULL, 250);
 		flash->r.model = Morkpp_models[2];
-		flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+		flash->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 		flash->r.frame = 1;
 		flash->radius = 128;
 		VectorSet(flash->r.scale, 1.0, 1.0, 1.0);
@@ -485,7 +485,7 @@ FXMPPExplosionCoreThink(client_entity_t *core, centity_t *owner)
 	newcore->r.model = Morkpp_models[3];
 	newcore->r.color.c = 0xFF0077ff;
 	newcore->r.frame = 0;//1
-	newcore->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	newcore->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	newcore->radius	= 128;
 	VectorCopy(core->r.scale, newcore->r.scale);
 	newcore->alpha	= core->alpha;
@@ -515,7 +515,7 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 		ballorigin[2] = origin[2] + flrand(-EXPLODE_BALL_RANGE, EXPLODE_BALL_RANGE) + (dir[2]*EXPLODE_BALL_RANGE);
 		subexplosion = ClientEntity_new(type, flags, ballorigin, NULL, 17);
 		subexplosion->r.model = Morkpp_models[4];
-		subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+		subexplosion->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 		subexplosion->alpha = 0.1;
 		VectorSet(subexplosion->r.scale, 0.01, 0.01, 0.01);
 		subexplosion->radius=128;
@@ -541,7 +541,7 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 	explosion->r.frame = 0;
 
 	//	explosion->r.model = Morkpp_models[5];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	explosion->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->flags |= CEF_ADDITIVE_PARTS;
 	explosion->alpha = 1.0;
 	VectorSet(explosion->r.scale, 2, 2, 2);//0.1;
@@ -579,7 +579,7 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 	// ...and a big-ass flash
 	explosion = ClientEntity_new(-1, flags, origin, NULL, 250);
 	explosion->r.model = Morkpp_models[2];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	explosion->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 1;
 	explosion->radius = 128;
 	VectorSet(explosion->r.scale, 1.5, 1.5, 1.5);
@@ -590,7 +590,7 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 	// ...and draw the MPP rising from the explosion
 	explosion = ClientEntity_new(type, flags, origin, NULL, 100);
 	explosion->r.model = Morkpp_models[3];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	explosion->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.color.c = 0xFF00aaFF;
 	explosion->r.frame = 0;
 	explosion->radius=128;
@@ -633,7 +633,7 @@ void FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t
 		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale=-2.0;
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.frame = 0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, flrand(16.0, 64.0));
@@ -821,7 +821,7 @@ client_entity_t *MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, 
 		lightning->r.model = Morklightning_models[0];
 		lightning->alpha = 0.95;
 	}
-	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	lightning->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(lightning->r.scale,
 		M_LIGHTNING_WIDTH, M_LIGHTNING_WIDTH, M_LIGHTNING_WIDTH);
 	lightning->r.tile = tile_num;
@@ -837,7 +837,7 @@ client_entity_t *MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, 
 	lightning = ClientEntity_new(-1, CEF_DONT_LINK, start, NULL, lifetime * 2);
 	lightning->r.model = Morklightning_models[1];
 	lightning->r.frame = irand(0, 1);
-	lightning->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	lightning->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(lightning->r.scale,
 		M_LIGHTNING_WIDTH2, M_LIGHTNING_WIDTH2, M_LIGHTNING_WIDTH2);
 	lightning->radius = radius;
@@ -1236,7 +1236,7 @@ VectorCopy		((centity_t *)(self->extra))->referenceInfo->references[MORK_LEYEREF
 	fx=ClientEntity_new(FX_M_EFFECTS, 0, pos, NULL, 20);
 	fx->r.color.c = 0xe5007fff;
 	fx->r.model = Morkproj_models[3];
-	fx->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	fx->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	scale = flrand(0.15, 0.25);
 	VectorSet(fx->r.scale, scale, scale, scale);
 	fx->alpha = flrand(0.85, 0.95);
@@ -1948,7 +1948,7 @@ void DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad (centity_t *owner
 
 	fx->r.color.c = 0xFFFFFFFF;
 	fx->r.model = Morkproj_models[3];
-	fx->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	fx->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(fx->r.scale, 3, 3, 3);
 	fx->alpha = 1;
 	fx->Update = KeepSelfAI;
@@ -1980,7 +1980,7 @@ void ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t d
 		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale=-2.0;
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.frame = 0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, flrand(16.0, 64.0));
@@ -2051,7 +2051,7 @@ qboolean ImpFireBallUpdate (struct client_entity_s *self, centity_t *owner)
 
 	VectorCopy( owner->origin, TrailEnt->origin );
 
-	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_TRANS_ADD;
+	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_FLARE;
 	TrailEnt->r.model = Morkproj_models[2];
 
 	TrailEnt->r.color.r = 180;
@@ -2132,7 +2132,7 @@ qboolean FXCWUpdate (struct client_entity_s *self, centity_t *owner)
 
 	TrailEnt->radius = 2000;
 
-	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	TrailEnt->r.model = CW_models[0];
 
 	TrailEnt->r.spriteType = SPRITE_LINE;
@@ -2175,7 +2175,7 @@ qboolean FXCWUpdate (struct client_entity_s *self, centity_t *owner)
 
 	TrailEnt->r.spriteType = SPRITE_LINE;
 
-	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	TrailEnt->r.color.c = 0xFFFFaacc;
 	TrailEnt->alpha = flrand(1.0, 0.75);
 	TrailEnt->d_alpha = -1.0;
@@ -2225,7 +2225,7 @@ void FXCWStars (centity_t *owner,int type,int flags, vec3_t vel)
 	fx->r.color.r = 10;
 	fx->r.color.g = 50;
 	fx->r.color.b = 255;
-	fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(fx->r.scale, 0.8, 0.8, 0.8);
 	fx->AddToView = LinkedEntityUpdatePlacement;
 
@@ -2420,7 +2420,7 @@ qboolean FXBuoyPathDelayedStart (struct client_entity_s *self, centity_t *owner)
 	TrailEnt->updateTime = 16384;
 	TrailEnt->radius = 500;
 
-	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	TrailEnt->r.model = buoy_models[0];
 
 	TrailEnt->r.spriteType = SPRITE_LINE;
@@ -2667,7 +2667,7 @@ void FXQuakeRing ( vec3_t origin )
 			ring->r.frame = 0;
 			ring->r.spriteType = SPRITE_LINE;
 			ring->r.frame = 1;
-			ring->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			ring->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 			ring->radius = 256.0;
 			ring->r.tile = 1;
 
@@ -2866,7 +2866,7 @@ void FXMorkMissile ( centity_t *owner, vec3_t startpos )
 		fx = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN, startpos, NULL, 17);
 
 		fx->r.spriteType = SPRITE_LINE;
-		fx->r.flags |= RF_TRANS_ADD | RF_TRANSLUCENT | RF_FULLBRIGHT;
+		fx->r.flags |= RF_FLARE | RF_TRANSLUCENT | RF_FULLBRIGHT;
 
 		fx->radius = 1024;
 		fx->r.model = morc_models[1];
@@ -2894,7 +2894,7 @@ void FXMorkMissile ( centity_t *owner, vec3_t startpos )
 	fx = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, startpos, NULL, 100);
 	fx->dlight = CE_DLight_new(LightColor,10.0f,0.0f);
 	fx->r.model = morc_models[2];
-	fx->r.flags |= RF_TRANS_ADD | RF_TRANSLUCENT | RF_FULLBRIGHT;
+	fx->r.flags |= RF_FLARE | RF_TRANSLUCENT | RF_FULLBRIGHT;
 	fx->alpha = 0.1;
 	VectorSet(fx->r.scale, 0.1, 0.1, 0.1);
 
@@ -2906,7 +2906,7 @@ void FXMorkMissile ( centity_t *owner, vec3_t startpos )
 	//The white core
 	fx = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, startpos, NULL, 100);
 	fx->r.model = morc_models[3];
-	fx->r.flags |= RF_TRANS_ADD | RF_TRANSLUCENT | RF_FULLBRIGHT;
+	fx->r.flags |= RF_FLARE | RF_TRANSLUCENT | RF_FULLBRIGHT;
 	fx->alpha = 0.1;
 	VectorSet(fx->r.scale, 0.1, 0.1, 0.1);
 
@@ -2955,7 +2955,7 @@ void FXMorkMissileHit ( vec3_t origin, vec3_t dir )
 	//The white core
 	fx = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, origin, NULL, 2000);
 	fx->r.model = morc_models[3];
-	fx->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT | RF_FULLBRIGHT | RF_NODEPTHTEST;
+	fx->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT | RF_FULLBRIGHT | RF_NODEPTHTEST;
 	VectorSet(fx->r.scale, 1.0, 1.0, 1.0);
 	fx->alpha = 0.5;
 	fx->d_alpha = -1.0;
@@ -3046,7 +3046,7 @@ void FXMorkTrackingMissile ( centity_t *owner, vec3_t origin, vec3_t velocity )
 	Trail->radius = 500;
 	Trail->r.model = morc_models[4];
 	Trail->r.color.c = 0xFFFFFFFF;
-	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(Trail->r.scale, 1.0, 1.0, 1.0);
 	Trail->AddToView = LinkedEntityUpdatePlacement;
 
@@ -3071,7 +3071,7 @@ void FXMorkRecharge( centity_t *owner, vec3_t velocity )
 		Trail->radius = 500;
 		Trail->r.model = morc_models[irand(6, 8)];
 		Trail->r.color.c = 0xFFFFFFFF;
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		VectorSet(Trail->r.scale, 0.1, 0.1, 0.1);
 		Trail->velocity[2] = 32;
 		Trail->acceleration[2] = 64;
@@ -3111,7 +3111,7 @@ qboolean mssithra_explosion_think (client_entity_t *self, centity_t *owner)
 	explosion = ClientEntity_new( FX_M_EFFECTS, 0, self->origin, NULL, 1000);
 	explosion->r.model = mssithra_models[5];
 
-	explosion->r.flags |= RF_FULLBRIGHT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	explosion->r.flags |= RF_FULLBRIGHT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(explosion->r.scale, 0.1, 0.1, 0.1);
 	explosion->radius = 500;
 	explosion->r.color.c = 0xFFFFFFFF;
@@ -3197,7 +3197,7 @@ qboolean mssithra_explosion_think (client_entity_t *self, centity_t *owner)
 
 			TrailEnt->r.spriteType = SPRITE_LINE;
 
-			TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			TrailEnt->r.color.c = 0xFFFFFFFF;
 			scale = flrand(1.0, 2.5);
 			VectorSet(TrailEnt->r.scale, scale, scale, scale);
@@ -3327,7 +3327,7 @@ void FXMSsithraArrow( centity_t *owner, vec3_t velocity, qboolean super )
 	spawner = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN, owner->current.origin, NULL, 20);
 	spawner->r.model = mssithra_models[2];
 	spawner->r.spriteType = SPRITE_LINE;
-	spawner->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	spawner->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	spawner->r.color.c = 0xFFFFFFFF;
 	VectorSet(spawner->r.scale, 1.0, 1.0, 1.0);
 	spawner->alpha = 1.0;
@@ -3374,7 +3374,7 @@ void FXMSsithraArrowCharge( vec3_t startpos )
 
 		TrailEnt->r.spriteType = SPRITE_LINE;
 
-		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		TrailEnt->flags |= CEF_USE_VELOCITY2;
 		TrailEnt->r.color.c = 0xFFFFFFFF;
 		scale = flrand(4.0, 6.0);
@@ -3449,7 +3449,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 			fx->r.color.r = 10;
 			fx->r.color.g = 50;
 			fx->r.color.b = 200;
-			fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			VectorSet(fx->r.scale, 0.35, 0.35, 0.35);
 			fx->d_scale = 1.5;
 			fx->AddToView = LinkedEntityUpdatePlacement;
@@ -3494,7 +3494,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 			fx->r.color.r = 250;
 			fx->r.color.g = 200;
 			fx->r.color.b = 110;
-			fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			VectorSet(fx->r.scale, 0.5, 0.5, 0.5);
 			fx->AddToView = LinkedEntityUpdatePlacement;
 
@@ -3518,7 +3518,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 			fx->Update=FXMorkBeam;
 			fx->dlight=CE_DLight_new(LightColor,150.0f,0.0f);
 			fx->radius = 500;
-			fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			fx->AddToView = LinkedEntityUpdatePlacement;
 
 			VectorCopy(owner->origin, fx->startpos);
@@ -3535,7 +3535,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 				fx->Update=FXMorkBeamCircle;
 				fx->radius = 500;
 				fx->r.model = Morkproj_models[3];
-				fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+				fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 				VectorSet(fx->r.scale, 0.5, 0.5, 0.5);
 				fx->LifeTime = i * 120;
 
@@ -3622,7 +3622,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 			fx->r.color.b = 10;
 			fx->r.color.a = 10;
 			fx->dlight=CE_DLight_new(fx->r.color,150.0f,0.0f);
-			fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			fx->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			VectorSet(fx->r.scale, 0.1, 0.1, 0.1);
 			fx->d_scale = 0.5;
 
@@ -3647,7 +3647,7 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 		case FX_IMP_FIRE:
 			fx = ClientEntity_new(FX_SPARKS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK | CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS, org, NULL, 20);
 
-			fx->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			fx->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			fx->r.model = Imp_models[2];
 
 			VectoAngles(vel, fx->r.angles);

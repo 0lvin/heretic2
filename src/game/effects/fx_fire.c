@@ -47,7 +47,7 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 	// Add a big ol' flash.
 	spawner = ClientEntity_new(type, flags | CEF_ADDITIVE_PARTS, origin, NULL, 500);
 	spawner->r.model = flareup_models[0];		// The starry halo.
-	spawner->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	spawner->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	spawner->radius = 128.0;
 
 	VectorSet(spawner->r.scale, 1.0, 1.0, 1.0);
@@ -152,7 +152,7 @@ void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorSet(spawner->r.scale,
 		scale / 32.0, scale / 32.0, scale / 32.0);
 
-	spawner->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	spawner->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	spawner->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_CULLED | CEF_CHECK_OWNER | CEF_VIEWSTATUSCHANGED;
 	spawner->color.c = 0xe5007fff;
 	spawner->radius = 96.0;
@@ -323,7 +323,7 @@ void FXFireOnEntity(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorSet(spawner->r.scale, scalef, scalef, scalef);
 	spawner->nextEventTime = fxi.cl->time + (100*(int)lifetime);		// How long to last.  Lifetime was in 10th secs.
 
-	spawner->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+	spawner->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 	spawner->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS | CEF_CULLED | CEF_CHECK_OWNER;
 //	spawner->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS | CEF_CULLED | CEF_VIEWSTATUSCHANGED;
 	spawner->color.c = 0xe5007fff;

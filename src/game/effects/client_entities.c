@@ -363,23 +363,20 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 
 
 void AddEffect(centity_t* owner, client_entity_t* fx)
+{
+	if (owner)
 	{
-		if (owner)
+		AddEffectToList(&owner->effects, fx);
+		if (owner->referenceInfo && fx->refMask)
 		{
-			AddEffectToList(&owner->effects, fx);
-			if (owner->referenceInfo && fx->refMask)
-			{
-				EnableRefPoints(owner->referenceInfo, fx->refMask);
-			}
+			EnableRefPoints(owner->referenceInfo, fx->refMask);
 		}
-		else
-		{
-			AddEffectToList(&clientEnts, fx);
-		}
-
-		// copy up the scale on a model so it can be culled properly
-		VectorCopy(fx->r.scale, fx->r.scale);
 	}
+	else
+	{
+		AddEffectToList(&clientEnts, fx);
+	}
+}
 
 #define NUM_TRACES 100		// I really, really hope we don't ever see more than _this
 
@@ -592,17 +589,23 @@ qboolean AddEntityToView(entity_t *ent)
 {
 	if (!ent->model)
 	{
-		fxi.Com_Printf("AddEntityToView: NULL Model\n");
+		fxi.Com_Printf("%s: NULL Model\n", __func__);
 	}
-	if((ent->flags & RF_TRANS_ADD) && (ent->flags & RF_ALPHA_TEXTURE))
+	if((ent->flags & RF_FLARE) && (ent->flags & RF_ALPHA_TEXTURE))
 	{
-		fxi.Com_Printf("AddEntityToView: Cannot have additive alpha mapped image. UNSUPPORTED !!\n");
+		fxi.Com_Printf("%s: Cannot have additive alpha mapped image. UNSUPPORTED !!\n",
+			__func__);
 	}
 
 	if(ent->color.a != 255)
 	{
 		ent->flags |= RF_TRANSLUCENT;
 	}
+
+	/*if (ent->flags & RF_FLARE)
+	{
+		ent->skinnum = ent->color.c;
+	}*/
 
 	if((*fxi.r_numentities) < MAX_ENTITIES)
 	{

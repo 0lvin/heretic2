@@ -193,7 +193,7 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 		alpha = currententity->alpha;
 	}
 
-	if (currententity->flags & (RF_FLARE | RF_TRANS_ADD))
+	if (currententity->flags & RF_FLARE)
 	{
 		YQ2_ALIGNAS_TYPE(unsigned) byte color[4];
 

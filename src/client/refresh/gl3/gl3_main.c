@@ -878,7 +878,7 @@ GL3_DrawSpriteModel(entity_t *e, const gl3model_t *currentmodel)
 
 	GL3_Bind(skin->texnum);
 
-	if (e->flags & (RF_FLARE | RF_TRANS_ADD))
+	if (e->flags & RF_FLARE)
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);

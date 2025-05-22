@@ -97,7 +97,7 @@ void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 	CrossProduct(up, norm, right);
 
 	hitfx = ClientEntity_new(type, flags, origin, NULL, BOUNCE_LIFETIME);
-	hitfx->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+	hitfx->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 	hitfx->flags |= CEF_NO_DRAW | CEF_ADDITIVE_PARTS;
 	hitfx->radius = BALL_RADIUS;
 	VectorScale(norm, MACEBALL_SPARK_VEL, hitfx->velocity);		// This velocity is used by the sparks.
@@ -118,7 +118,7 @@ void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 		ring->r.model = mace_models[2];
 		ring->r.frame = 1;
 		ring->r.spriteType = SPRITE_LINE;
-		ring->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		ring->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		ring->radius = 64.0;
 
 		// The startpos and startvel comes from the last velocity.
@@ -271,7 +271,7 @@ FXRipperExplodeBallThink(struct client_entity_s *self, centity_t *owner)
 	{
 		trail = ClientEntity_new(FX_WEAPON_RIPPEREXPLODE, 0, curpos, NULL, 500);
 		trail->r.model = mace_models[6];
-		trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		trail->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		VectorCopy(self->velocity, trail->velocity);
 		VectorScale(trail->velocity, -1.0, trail->acceleration);
 		VectorSet(trail->r.scale, scale, scale, scale);
@@ -357,7 +357,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	flash = ClientEntity_new(type, 0, origin, NULL, 50);
 	flash->r.model = mace_models[1];
 	flash->r.frame = 1;
-	flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	flash->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	flash->radius = 20.0;
 
 	VectorSet(flash->r.scale, 0.75, 0.75, 0.75);
@@ -382,7 +382,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		ring->r.model = mace_models[2];
 		ring->r.frame = 1;
 		ring->r.spriteType = SPRITE_LINE;
-		ring->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		ring->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		ring->radius = 64.0;
 
 		// The startpos and startvel comes from the last velocity.
@@ -432,7 +432,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		flash = ClientEntity_new(FX_WEAPON_RIPPEREXPLODE, CEF_AUTO_ORIGIN, casterpos, NULL, 500);
 		flash->r.model = mace_models[4];
 		flash->r.spriteType = SPRITE_LINE;
-		flash->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		flash->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		VectorCopy(casterpos, flash->r.endpos);
 		VectorCopy(origin, flash->r.startpos);
@@ -456,7 +456,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 			flash = ClientEntity_new(FX_WEAPON_RIPPEREXPLODE, 0, curpos, NULL, 500);
 			flash->r.model = mace_models[5];
 			flash->r.frame = 1;
-			flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			flash->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 			VectorSet(flash->r.scale, .16, .16, .16);
 			flash->d_scale = -.16;

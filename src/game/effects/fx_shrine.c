@@ -371,7 +371,7 @@ void FXShrineLightEffect(centity_t *owner, int type, int flags, vec3_t origin)
 
 	VectorClear(glow->origin);
 	glow->r.model = shrine_models[0];
-	glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	glow->AddToView = LinkedEntityUpdatePlacement;
 	glow->d_scale = 5.0;
 	VectorSet(glow->r.scale, 0.1, 0.1, 0.1);
@@ -823,7 +823,7 @@ FXShrineGhostThink(struct client_entity_s *self, centity_t *owner)
 		glow = ClientEntity_new(FX_SHRINE_GHOST, CEF_OWNERS_ORIGIN, origin, 0, 300);
 
 		glow->r.model = shrine_models[0];
-		glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		glow->SpawnInfo = 2;
 		glow->AddToView = OffsetLinkedEntityUpdatePlacement;
 		glow->d_scale = flrand(0.5, 2.0);
@@ -1205,7 +1205,7 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// ...and a big-ass flash
 	burst = ClientEntity_new(-1, flags, origin, NULL, 250);
 	burst->r.model = shrine_models[1];
-	burst->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	burst->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	burst->r.frame = 1;
 	burst->radius=64;
 	VectorSet(burst->r.scale, 1.0, 1.0, 1.0);

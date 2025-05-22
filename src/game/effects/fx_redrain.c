@@ -156,7 +156,7 @@ FXRedRainThink(client_entity_t *rain, centity_t *owner)
 		drop = ClientEntity_new(-1, CEF_DONT_LINK, origin, NULL, duration);
 		drop->r.model = rain_models[3];
 		drop->r.frame = rain->SpawnInfo;
-		drop->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		drop->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		drop->alpha = 0.75;
 		drop->SpawnInfo = rain->SpawnInfo;
 		VectorSet(drop->r.scale, width, width, width);
@@ -261,7 +261,7 @@ FXRedRainMissileThink(client_entity_t *missile, centity_t *owner)
 		VectorSet(ce->r.scale, 1.0F, 1.0F, 1.0F);
 		ce->d_scale = 2.0F;
 		ce->r.frame = 0;
-		ce->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		ce->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		ce->radius = 16.0F;
 		ce->d_alpha = -2.2F;
 		AddEffect(NULL, ce);
@@ -425,7 +425,7 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 		explo = ClientEntity_new(FX_WEAPON_REDRAIN, CEF_DONT_LINK, org, NULL, 100);
 
 		explo->r.model = rain_models[2];
-		explo->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		explo->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		explo->radius = 16.0F;
 		VectorSet(explo->velocity, flrand(-128.0, 128.0), flrand(-128.0, 128.0), flrand(-128.0, 0.0));
 		explo->r.angles[YAW] = (float)i*degreeinc;
@@ -460,7 +460,7 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 		explo->r.model = rain_models[0];
 	}
 	explo->r.frame = 0;
-	explo->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	explo->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	explo->radius = 16.0F;
 	VectorSet(explo->r.scale, 8.0F, 8.0F, 8.0F);
 	explo->d_scale = -16.0F;

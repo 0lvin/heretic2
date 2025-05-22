@@ -72,7 +72,7 @@ static qboolean FXCWBeamUpdate(struct client_entity_s *self, centity_t *owner)
 		spawner->r.model = cwmodels[CWM_BEAM_LINE];
 		spawner->radius = 400;
 
-		spawner->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		spawner->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		spawner->flags |= CEF_USE_VELOCITY2;
 
 		spawner->r.spriteType = SPRITE_LINE;
@@ -168,7 +168,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		spawner->radius = 400;
 
 		spawner->r.frame = 0;
-		spawner->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		spawner->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		VectorSet(spawner->r.scale, 0.8, 0.8, 0.8);
 		spawner->alpha=0.5;
 		spawner->d_alpha=0.0;
@@ -184,7 +184,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		spawner->radius = 400;
 
 		spawner->r.frame = 1;
-		spawner->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD;
+		spawner->r.flags |= RF_TRANSLUCENT | RF_FLARE;
 		VectorSet(spawner->r.scale, 0.5, 0.5, 0.5);
 		spawner->alpha=0.75;
 		spawner->d_alpha=0.0;
@@ -215,7 +215,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 			spawner->radius = 400;
 
 			spawner->r.frame = 1;
-			spawner->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			spawner->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			scale = flrand(0.5, 0.25);
 			VectorSet(spawner->r.scale, scale, scale, scale);
 			spawner->alpha=0.75;
@@ -239,7 +239,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 			spawner->r.model = cwmodels[CWM_STAR_TRAIL];
 			spawner->radius = 400;
 
-			spawner->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			spawner->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			spawner->flags |= CEF_USE_VELOCITY2;
 
 			spawner->r.spriteType = SPRITE_LINE;
@@ -270,7 +270,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		spawner->r.model = cwmodels[CWM_BEAM];
 		spawner->radius = 400;
 
-		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
+		spawner->r.flags = RF_FLARE | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
 		VectorSet(spawner->r.scale, 16, 16, 16);
 		spawner->r.color.c = 0xA0FFFFFF;
 		spawner->r.spriteType = SPRITE_LINE;
@@ -289,7 +289,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		spawner->r.model = cwmodels[CWM_BEAM_HALO];
 		spawner->radius = 400;
 
-		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
+		spawner->r.flags = RF_FLARE | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
 		VectorSet(spawner->r.scale, 2.5, 2.5, 2.5);
 		spawner->r.color.c = 0xFFFFFFFF;
 
@@ -313,7 +313,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		spawner->r.model = cwmodels[CWM_BEAM_HALO];
 		spawner->radius = 400;
 
-		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
+		spawner->r.flags = RF_FLARE | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
 		VectorSet(spawner->r.scale, 2.5, 2.5, 2.5);
 		spawner->r.color.c = 0xFFFFFFFF;
 

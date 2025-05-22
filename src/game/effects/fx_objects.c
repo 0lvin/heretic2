@@ -71,7 +71,7 @@ void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// Create the main big explosion sphere.
 	explosion = ClientEntity_new(type, flags, origin, NULL, 17);
 	explosion->r.model = obj_models[0];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	explosion->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->flags |= CEF_ADDITIVE_PARTS | CEF_PULSE_ALPHA;
 	explosion->alpha = 0.1;
 	VectorSet(explosion->r.scale, 0.1, 0.1, 0.1);
@@ -109,7 +109,7 @@ void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// ...and a big-ass flash
 	explosion = ClientEntity_new(-1, flags, origin, NULL, 250);
 	explosion->r.model = obj_models[1];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	explosion->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	explosion->r.frame = 1;
 	explosion->radius=128;
 	VectorSet(explosion->r.scale, 2.0, 2.0, 2.0);

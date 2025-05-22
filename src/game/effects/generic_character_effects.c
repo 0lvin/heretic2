@@ -130,7 +130,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 		effect = ClientEntity_new(type, flags, origin, NULL, 500);
 
 		effect->r.model = genfx_models[0];
-		effect->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		effect->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		if(speed>1.0f)
 		{
@@ -256,7 +256,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 
 		effect->r.model = genfx_models[0];
 
-		effect->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		effect->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		VectorRandomCopy(dir, work, 0.5);
 		VectorScale(work, 50.0, effect->velocity);
@@ -276,7 +276,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 
 		effect->r.model = genfx_models[5];
 		effect->r.frame = 0;
-		effect->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		effect->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		VectorSet(effect->r.scale, 0.4, 0.4, 0.4);
 		effect->alpha = .95;
 		effect->d_scale = -1.6;
@@ -607,7 +607,7 @@ void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
 	assert(owner);
 
 	flags |= CEF_ABSOLUTE_PARTS | CEF_DONT_LINK | CEF_ADDITIVE_PARTS | CEF_NO_DRAW;
-	rflags = RF_GLOW | RF_TRANSLUCENT | RF_TRANS_ADD;
+	rflags = RF_GLOW | RF_TRANSLUCENT | RF_FLARE;
 	// Spawn each directional
 	//NORTH
 	effect = ClientEntity_new(type, flags, origin, NULL, 25);

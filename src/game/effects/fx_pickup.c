@@ -33,7 +33,7 @@ void FXPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	ce->r.model = pickup_models[0];
 	ce->r.frame = 1;
-	ce->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	ce->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(ce->r.scale, 0.4, 0.4, 0.4);
 	ce->alpha = .75;
 	ce->d_scale = 1.0;

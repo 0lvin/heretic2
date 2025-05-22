@@ -570,13 +570,13 @@ AddServerEntities(frame_t *frame)
 
 	numEntsToAdd = frame->num_entities;
 
-	if(numEntsToAdd > MAX_ENTITIES)
+	if (numEntsToAdd > MAX_ENTITIES)
 	{
 		fxi.Com_Printf("Overflow:  Too many (%d : %d) server entities to add to view\n", numEntsToAdd, MAX_ENTITIES);
 		numEntsToAdd = MAX_ENTITIES;
 	}
 
-	for(pnum = 0, ent = sv_ents; pnum<numEntsToAdd; ++pnum)
+	for (pnum = 0, ent = sv_ents; pnum<numEntsToAdd; ++pnum)
 	{
 		entity_xstate_t *s1;
 
@@ -585,17 +585,17 @@ AddServerEntities(frame_t *frame)
 
 		cent = fxi.server_entities + s1->number;
 
-		if((fxi.cl_predict->value)&&(s1->number==fxi.cl->playernum+1))
+		if((fxi.cl_predict->value) && (s1->number==fxi.cl->playernum+1))
 		{
 			// We are dealing with the client's model under prediction.
 
-			isPredictedPlayer=true;
+			isPredictedPlayer = true;
 		}
 		else
 		{
 			// We are dealing with a non predicted model (i.e. everything except the client's model).
 
-			isPredictedPlayer=false;
+			isPredictedPlayer = false;
 		}
 
 		// Setup effects, renderfx, skinnum and clientnum stuff.
@@ -784,7 +784,7 @@ AddServerEntities(frame_t *frame)
 			cent->prev.frame = ent->frame;
 			cent->current.frame = ent->frame;
 // jmarshall end
-			if((effects & EF_SWAPFRAME)&&(cent->current.swapFrame!=cent->current.frame))
+			if((effects & EF_SWAPFRAME) && (cent->current.swapFrame!=cent->current.frame))
 			{
 				ent->swapFrame=cent->current.swapFrame;
 				ent->oldSwapFrame=cent->prev.swapFrame;

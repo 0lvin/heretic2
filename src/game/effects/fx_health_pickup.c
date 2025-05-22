@@ -79,7 +79,7 @@ void FXHealthPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	VectorCopy(ce->r.origin, ce->origin);
 	ce->r.model = health_models[(flags & CEF_FLAG6) >> 5];
-	ce->r.flags = RF_GLOW | RF_TRANSLUCENT | RF_TRANS_ADD;
+	ce->r.flags = RF_GLOW | RF_TRANSLUCENT | RF_FLARE;
 
 	if ((flags & CEF_FLAG6) >> 5)	// Full health
 		VectorSet(ce->r.scale, 1.0, 1.0, 1.0);

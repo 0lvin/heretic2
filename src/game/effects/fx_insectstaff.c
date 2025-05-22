@@ -127,7 +127,7 @@ FXInsectStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 			VectorMA(TrailStart,FIST_SPIRAL_RAD*cos(Theta),Right,TrailEnt->r.origin);
 			VectorMA(TrailStart,FIST_SPIRAL_RAD*sin(Theta),Up,TrailEnt->r.origin);
 
-			TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
+			TrailEnt->r.flags=RF_TRANSLUCENT|RF_FLARE;
 
 			VectorRandomCopy(self->velocity, TrailEnt->velocity, flrand(0, 4));
 
@@ -165,7 +165,7 @@ void FXInsectStaff(centity_t *owner,int type,int flags,vec3_t origin)
 	Trail=ClientEntity_new(type, flags, origin, NULL, 17);
 
 	Trail->r.model = ins_models[0];
-	Trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD;
+	Trail->r.flags = RF_TRANSLUCENT | RF_FLARE;
 	scale = flrand(0.8, 1.3);
 	VectorSet(Trail->r.scale, scale, scale, scale);
 	Trail->d_alpha = 0.0f;
@@ -206,7 +206,7 @@ void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,1000);
 
 		SmokePuff->r.model = ins_models[0];
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.frame=0;
 
 		VectorRandomCopy(Dir, SmokePuff->velocity, flrand(16.0, 128.0));
@@ -291,7 +291,7 @@ FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner)
 								  500);
 
 		TrailEnt->r.model = globe_models[0];
-		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags=RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 		if (r_detail->value < DETAIL_NORMAL)
 			TrailEnt->Scale=FX_SOFT_GLOBE_AURA_SCALE+flrand(0.0, 0.1);
 		else
@@ -352,7 +352,7 @@ void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short Cast
 	GlobeThinker = ClientEntity_new(type, flags, origin, NULL, 100);
 
 	GlobeThinker->r.model = globe_models[1];
-	GlobeThinker->r.flags |= RF_TRANSLUCENT|RF_TRANS_ADD;
+	GlobeThinker->r.flags |= RF_TRANSLUCENT|RF_FLARE;
 	scale = flrand(0.15, 0.20);
 	VectorSet(GlobeThinker->r.scale, scale, scale, scale);
 
@@ -391,7 +391,7 @@ FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, centity_t *owner)
 							   500);
 
 		Spark->r.model = globe_models[2];
-		Spark->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Spark->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		scale = FIST_SCALE + flrand(0.0, 0.05);
 		VectorSet(Spark->r.scale, scale, scale, scale);
 		Spark->d_alpha = flrand(-1.75, -2);
@@ -502,7 +502,7 @@ FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *
 		// Fill in the rest of my info.
 		Glowball->r.model = globe_models[2];
 
-		Glowball->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
+		Glowball->r.flags=RF_TRANSLUCENT|RF_FLARE;
 		Glowball->r.color.r= irand(128, 180);
 		Glowball->r.color.g= irand(128, 180);
 		Glowball->r.color.b= irand(180, 255);
@@ -587,7 +587,7 @@ void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 	hellbolt = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 10000);
 
 	hellbolt->r.model = spear_models[0];
-	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	hellbolt->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 	VectorSet(hellbolt->r.scale, 1.0, 1.0, 1.0);
 	hellbolt->r.color = LightColor;
@@ -657,7 +657,7 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt = ClientEntity_new(type, CEF_OWNERS_ORIGIN | CEF_ABSOLUTE_PARTS, origin, NULL, 20);
 
 	hellbolt->r.model = spear_models[3];
-	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	hellbolt->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 	hellbolt->r.color.c = 0xffffffff;
 	scale = flrand(0.2, 0.4);
@@ -678,7 +678,7 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt = ClientEntity_new(type, CEF_OWNERS_ORIGIN, origin, NULL, 10000);
 
 	hellbolt->r.model = spear_models[2];
-	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	hellbolt->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 	hellbolt->r.color.c = 0x33ffffff;
 	scale = flrand(1, 2);
@@ -714,7 +714,7 @@ void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Di
 		smokepuff = ClientEntity_new(type, flags, origin, NULL, 500);
 
 		smokepuff->r.model = spear_models[1];
-		smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		smokepuff->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		scale = flrand(0.2, 0.3);
 		VectorSet(smokepuff->r.scale, scale, scale, scale);
 		smokepuff->r.color = lightcolor;
@@ -751,7 +751,7 @@ void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t D
 		smokepuff = ClientEntity_new(type, flags, origin, NULL, 500);
 
 		smokepuff->r.model = spear_models[2];
-		smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		smokepuff->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		scale = flrand(0.7, 1);
 		VectorSet(smokepuff->r.scale, scale, scale, scale);
 
@@ -774,7 +774,7 @@ void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t D
 
 	smokepuff->r.model = spear_models[3];
 	smokepuff->r.frame = 1;
-	smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	smokepuff->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 	smokepuff->r.color.c = 0x77ffffff;
 	scale = flrand(0.3, 0.5);
@@ -879,7 +879,7 @@ FXISwordTrailThink(struct client_entity_s *self, centity_t *owner)
 		VectorCopy(newpoint, TrailEnt->origin);
 		TrailEnt->r.model = sword_models[0];
 		TrailEnt->alpha=.3;
-		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags=RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 		TrailEnt->r.frame=1;
 		TrailEnt->d_scale=-0.25;
 		TrailEnt->d_alpha=-0.1;

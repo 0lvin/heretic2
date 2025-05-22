@@ -374,7 +374,7 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			Explosion->LifeTime = 4000 + fxi.cl->time;
 
 
-		Explosion->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA|RF_NODEPTHTEST;
+		Explosion->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA|RF_NODEPTHTEST;
 		Explosion->Scale=flare_scale[I];
 		Explosion->r.frame=0;
 		Explosion->d_scale=0.0;
@@ -494,7 +494,7 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 		if (lifeTime > 0)
 			Explosion->LifeTime = (lifeTime*1000)+fxi.cl->time;
 
-		Explosion->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA|RF_NODEPTHTEST;
+		Explosion->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA|RF_NODEPTHTEST;
 		Explosion->Scale=flare_scale[I];
 		Explosion->r.frame=0;
 		Explosion->d_scale=0.0;
