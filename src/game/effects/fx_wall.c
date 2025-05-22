@@ -80,7 +80,7 @@ FXFireWormThink(client_entity_t *worm, centity_t *owner)
 			blast = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_ADDITIVE_PARTS, worm->endpos, NULL, 500);
 			blast->r.model = wall_models[2];
 			blast->r.frame = 2;		// Circular halo for blast.
-			blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			blast->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 			blast->alpha = 0.95;
 			blast->d_alpha = -0.5;
 			scale = 0.25 * AVG_VEC3T(worm->r.scale);
@@ -223,7 +223,7 @@ static void FXFireWaveImpact(client_entity_t *wall)
 		blast = ClientEntity_new(FX_WEAPON_FIREWAVE, 0, blastpt, NULL, 500);
 		blast->r.model = wall_models[2];
 		blast->r.frame = 2;
-		blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		blast->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		blast->radius = 64.0;
 
 		blast->alpha = 0.95;
@@ -328,7 +328,7 @@ FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 
 		blast = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_PULSE_ALPHA, spawnpt, NULL, 500);
 		blast->r.model = wall_models[0];
-		blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		blast->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		blast->radius = 64.0;
 
 		VectorMA(spawnvel, flrand(0.1, 0.2), wall->velocity, blast->velocity);
@@ -375,7 +375,7 @@ FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 
 		blast = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_PULSE_ALPHA, spawnpt, NULL, 500);
 		blast->r.model = wall_models[0];
-		blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		blast->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		blast->radius = 64.0;
 
 		VectorMA(spawnvel, flrand(0.1, 0.2), wall->velocity, blast->velocity);
@@ -414,7 +414,7 @@ FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		worm = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_ADDITIVE_PARTS, spawnpt, NULL, 75);
 		worm->r.model = wall_models[2];
 		worm->r.frame = 2;
-		worm->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		worm->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		worm->radius = 64.0;
 
 		VectorCopy(spawnpt, worm->startpos);
@@ -532,7 +532,7 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 	worm = ClientEntity_new(FX_WEAPON_FIREWAVE, flags | CEF_ADDITIVE_PARTS, spawnpt, NULL, 75);
 	worm->r.model = wall_models[2];
 	worm->r.frame = 2;
-	worm->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	worm->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	worm->radius = 64.0;
 
 	VectorCopy(spawnpt, worm->startpos);
@@ -589,7 +589,7 @@ static void FXFireBurstImpact(client_entity_t *wall)
 		blast = ClientEntity_new(FX_WEAPON_FIREBURST, 0, blastpt, NULL, 500);
 		blast->r.model = wall_models[2];
 		blast->r.frame = 2;
-		blast->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		blast->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		blast->radius = 64.0;
 
 		blast->alpha = 0.95;
@@ -693,7 +693,7 @@ FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 
 			burst->r.model = wall_models[1];
 
-			burst->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			burst->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			burst->r.frame = 0;
 
 			VectorScale(newDir, FIREBURST_PART_SPEED + irand(0, 40) - (edgeVal*10) + (j*20), burst->velocity);
@@ -773,7 +773,7 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 	// Add a big ol' flash.
 	wall = ClientEntity_new(type, flags | CEF_ADDITIVE_PARTS, origin, NULL, 1000);
 	wall->r.model = wall_models[2];		// The starry halo.
-	wall->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	wall->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	wall->radius = 64.0;
 
 	VectorSet(wall->r.scale, 0.1, 0.1, 0.1);

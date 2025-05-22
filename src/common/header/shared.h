@@ -829,13 +829,12 @@ typedef struct
 											// and up vector, by default, a
 											// sprite is always oriented to the
 											// view (no effect on models)
-#define RF_TRANS_ADD		0x01000000		// Additive transparency
 #define RF_TRANS_ADD_ALPHA	0x02008000		// Adds emulation of alpha for additive transparent objects using tint
 #define RF_TRANS_GHOST		0x04000000		// Like subtractive translucency
 #define RF_ALPHA_TEXTURE	0x08000000		// Object has an alpha texture map
 #define RF_NODEPTHTEST		0x10000000		// Turns off depth testing for sprites only
 #define RF_IGNORE_REFS		0x20000000		// don't update the ref points for a model
-#define RF_TRANS_ANY		(RF_TRANS_ADD | RF_TRANS_GHOST | RF_TRANSLUCENT)
+#define RF_TRANS_ANY		(RF_FLARE | RF_TRANS_GHOST | RF_TRANSLUCENT)
 
 /* player_state_t->refdef flags */
 #define RDF_UNDERWATER 1            /* warp the screen as apropriate */

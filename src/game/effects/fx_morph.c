@@ -190,7 +190,7 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 		glow = ClientEntity_new(type, flags, origin, 0, 800);
 		glow->r.model = morph_models[0];
 
-		glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		glow->color.c = MORPH_COL;
 		glow->r.color.c = MORPH_COL;

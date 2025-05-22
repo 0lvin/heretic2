@@ -80,7 +80,7 @@ FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner)
 		}
 
 		trail->r.model = array_models[0];
-		trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		trail->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		scale = flrand(ARRAY_TRAIL_SCALE, ARRAY_TRAIL_SCALE + 0.1);
 		VectorSet(trail->r.scale, scale, scale, scale);
 		trail->d_scale = -1.0;
@@ -98,7 +98,7 @@ FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner)
 
 	trail->r.model = array_models[2];
 	trail->r.spriteType = SPRITE_LINE;
-	trail->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	trail->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorCopy(trail->r.origin, trail->r.startpos);
 	VectorMA(trail->r.origin, -0.1, Self->velocity, trail->r.endpos);
 	VectorScale(Self->velocity, 0.9, trail->velocity);
@@ -177,7 +177,7 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	VectorMA(up, 2.0, right, Missile->up);
 	VectorScale(Missile->up, TRAIL_SPEED, Missile->up);
 
-	Missile->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD;
+	Missile->r.flags |= RF_TRANSLUCENT | RF_FLARE;
 	VectorSet(Missile->r.scale, 0.4, 0.4, 0.4);
 	Missile->alpha=1.0;
 	Missile->d_alpha=0.0;
@@ -220,7 +220,7 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		smokepuff->r.model = array_models[1];
 		scale = flrand(ARRAY_SCALE * 0.75, ARRAY_SCALE * 1.5);
 		VectorSet(smokepuff->r.scale, scale, scale, scale);
-		smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		smokepuff->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		VectorRandomCopy(dir, smokepuff->velocity, ARRAY_EXPLODE_SPEED);
 		smokepuff->acceleration[2] = GetGravity()*0.3;
@@ -239,7 +239,7 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	smokepuff->r.frame = 0;
 
 	VectorSet(smokepuff->r.scale, 2.0, 2.0, 2.0);
-	smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	smokepuff->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 	VectorScale(dir, 8.0, smokepuff->velocity);
 
@@ -303,7 +303,7 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 		{
 			puff = ClientEntity_new(type, flags | CEF_ADDITIVE_PARTS, curpos, NULL, 750);
 			puff->r.model = array_models[1];
-			puff->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			puff->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 			VectorSet(puff->r.scale, scale, scale, scale);
 			puff->radius = 14.0;
 			puff->alpha = 0.95;
@@ -322,7 +322,7 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 		puff = ClientEntity_new(type, CEF_ADDITIVE_PARTS, endpos, NULL, 1000);
 		puff->r.model = array_models[0];
 		puff->r.frame = 0;
-		puff->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		puff->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		scale = 1.0 + length * 0.001;		// Bigger when further out.
 		VectorSet(puff->r.scale, scale, scale, scale);
 		puff->alpha = 0.95;
