@@ -47,7 +47,7 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		TrailEnt->r.spriteType = SPRITE_LINE;
 
-		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		TrailEnt->r.color.c = 0xFFFFFFFF;
 		scale = flrand(1.0, 2.5);
 		VectorSet(TrailEnt->r.scale, scale, scale, scale);

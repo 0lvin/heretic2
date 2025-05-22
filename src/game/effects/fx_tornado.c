@@ -92,7 +92,7 @@ void FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin)
 	// create the dummy entity, so particles can be attached
 	glow = ClientEntity_new(type, (flags | CEF_VIEWSTATUSCHANGED) , origin, 0, 60);
 	glow->Update = FXTornadoBallThink;
-	glow->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+	glow->r.flags=RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 	glow->radius = 50;
 	glow->LifeTime = fxi.cl->time + (TORN_DUR * 1000) + 200;
 
@@ -194,7 +194,7 @@ void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 	if (r_detail->value >= DETAIL_HIGH)
 		glow->dlight = CE_DLight_new(color, 170.0F, 00.0F);
 
-	glow->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+	glow->r.flags=RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 
 	AddEffect(owner, glow);
 }
@@ -264,7 +264,7 @@ void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	// ...and a big-ass flash
 	burst = ClientEntity_new(-1, flags, origin, NULL, 250);
 	burst->r.model = torn_models[3];
-	burst->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	burst->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
 	burst->r.frame = 1;
 	burst->radius=64;
 	VectorSet(burst->r.scale, 1.0, 1.0, 1.0);
@@ -345,7 +345,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 
 		TrailEnt->r.spriteType = SPRITE_LINE;
 
-		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		TrailEnt->r.color.c = 0xFFFFFFFF;
 		TrailEnt->r.scale = flrand(1.0, 2.5);
 		TrailEnt->alpha = flrand(1.0, 0.75);
@@ -419,7 +419,7 @@ void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 	if (r_detail->value >= DETAIL_HIGH)
 		glow->dlight = CE_DLight_new(color, 170.0F, 00.0F);
 
-	glow->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+	glow->r.flags=RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 
 	glow->yaw = flrand(-3.14, 3.14);
 	glow->SpawnData = flrand(-3.14, 3.14);
@@ -483,7 +483,7 @@ void FXTornado(centity_t *owner,int type,int flags, vec3_t origin)
 	if (r_detail->value >= DETAIL_HIGH)
 		torn->dlight = CE_DLight_new(color, 170.0F, 00.0F);
 
-//	torn->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+//	torn->r.flags=RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 
 //	torn->r.model = torn_models[0];
 //	torn->r.scale = 1;

@@ -128,7 +128,7 @@ FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 								  dur);
 
 		TrailEnt->r.model = sphere_models[0];
-		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags=RF_TRANSLUCENT|RF_FLARE |RF_TRANS_ADD_ALPHA;
 		if (r_detail->value < DETAIL_NORMAL)
 			TrailEnt->Scale=FX_SOFT_SPHERE_AURA_SCALE+flrand(0.0, 0.1);
 		else
@@ -236,7 +236,7 @@ FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Own
 							   dur);
 
 		Spark->r.model = sphere_models[2];
-		Spark->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
+		Spark->r.flags=RF_TRANSLUCENT|RF_FLARE;
 		Spark->r.color.r=irand(128, 180);
 		Spark->r.color.g=irand(128, 180);
 		Spark->r.color.b=irand(180, 255);
@@ -379,7 +379,7 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 		// Fill in the rest of my info.
 
 		Glowball->r.model = sphere_models[2];
-		Glowball->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
+		Glowball->r.flags=RF_TRANSLUCENT|RF_FLARE;
 		Glowball->r.color.r= irand(128, 180);
 		Glowball->r.color.g= irand(128, 180);
 		Glowball->r.color.b= irand(180, 255);
@@ -507,7 +507,7 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 	Explosion = ClientEntity_new(Type,Flags | CEF_ADDITIVE_PARTS,Origin,NULL,50);
 
 	Explosion->r.model = sphere_models[3];
-	Explosion->r.flags = RF_FULLBRIGHT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	Explosion->r.flags = RF_FULLBRIGHT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(Explosion->r.scale, 0.01, 0.01, 0.01);
 	Explosion->color.c = 0xffffffff;
 	Explosion->d_scale = 2.5;
@@ -581,7 +581,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	// make the flares at the start
 	exp1 = ClientEntity_new(Type,Flags | CEF_ADDITIVE_PARTS, spot1, NULL, 500);
 	exp1->r.model = sphere_models[6];
-	exp1->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
+	exp1->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 	exp1->r.frame = 0;
 	exp1->radius = 128;
 	exp1->d_alpha = -4.0;
@@ -604,7 +604,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	beam = ClientEntity_new(-1, CEF_DONT_LINK, spot1, NULL, 200);
 	beam->r.model = sphere_models[5];
 	beam->r.spriteType = SPRITE_LINE;
-	beam->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	beam->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 	scale = (size - 3) * 6;
 	VectorSet(beam->r.scale, scale, scale, scale);
 	beam->radius = 256;
@@ -647,7 +647,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 		// make the flares at the end of the line
 		exp1 = ClientEntity_new(Type,Flags | CEF_ADDITIVE_PARTS, tempSpot, NULL, 500);
 		exp1->r.model = sphere_models[6];
-		exp1->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
+		exp1->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 		exp1->r.frame = 0;
 		exp1->radius=128;
 		VectorSet(exp1->r.scale, 1.0, 1.0, 1.0);
@@ -762,7 +762,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	explosion=ClientEntity_new(Type,Flags | CEF_ADDITIVE_PARTS,Origin,NULL,50);
 
 	explosion->r.model = sphere_models[3];
-	explosion->r.flags=RF_FULLBRIGHT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	explosion->r.flags=RF_FULLBRIGHT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(explosion->r.scale, 0.01, 0.01, 0.01);
 	explosion->color.c=0xffffffff;
 	explosion->alpha = 1.0;
@@ -790,7 +790,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	{
 		glowball = ClientEntity_new(Type, Flags & (~CEF_OWNERS_ORIGIN), Origin, NULL, 5000);
 		glowball->r.model = sphere_models[7];
-		glowball->r.flags = RF_FULLBRIGHT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		glowball->r.flags = RF_FULLBRIGHT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		glowball->AddToView = FXSpherePlayerExplodeGlowballThink;
 		glowball->alpha = 1.0;
 		glowball->d_alpha = 0.0;
@@ -826,7 +826,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	// Now make a big mutha flash
 	explosion = ClientEntity_new(Type, Flags, Origin, NULL, 250);
 	explosion->r.model = sphere_models[4];		// hp_halo
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
+	explosion->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 	explosion->r.frame = 1;
 	explosion->radius= 128;
 	explosion->d_alpha= -4.0;

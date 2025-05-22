@@ -70,7 +70,7 @@ FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t *owner)
 			float scale;
 
 			//powered
-			TrailEnt->r.flags |= (RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA);
+			TrailEnt->r.flags |= (RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA);
 			TrailEnt->r.model = arrow_models[1];
 			scale = (ARROW_SCALE + flrand(0.0, 0.05));
 			VectorSet(TrailEnt->r.scale, scale, scale, scale);
@@ -268,7 +268,7 @@ void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3
 		SmokePuff->velocity[2] += 100.0;
 		SmokePuff->acceleration[2] = -400.0;
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.frame=0;
 
 		SmokePuff->d_alpha= -0.4;

@@ -48,7 +48,7 @@ void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 	DustPuff = ClientEntity_new(type, flags, origin, NULL, 100);
 
 	DustPuff->r.model = tb_dustpuff_models[0];
-	DustPuff->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	DustPuff->r.flags |= RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	DustPuff->Update = FXTBDustPuffThink;
 	DustPuff->radius = 1.0F;
 	DustPuff->alpha = 0.5F;

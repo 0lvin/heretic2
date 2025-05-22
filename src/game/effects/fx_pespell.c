@@ -66,7 +66,7 @@ FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
 		float scale;
 
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
-		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
@@ -176,7 +176,7 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 		SmokePuff->acceleration[1] = flrand(-200, 200);
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.color.r = irand(40, 60);
 		SmokePuff->r.color.g = irand(245, 255);
 		SmokePuff->r.color.b = irand(95, 105);
@@ -223,7 +223,7 @@ FXPESpell2TrailThink(struct client_entity_s *self, centity_t *owner)
 		float scale;
 
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
-		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
@@ -335,7 +335,7 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		SmokePuff->acceleration[1] = flrand(-200, 200);
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		/*
 		SmokePuff->r.color.g = irand(40, 60);
 		SmokePuff->r.color.b = irand(245, 255);
@@ -383,7 +383,7 @@ FXPESpell3TrailThink(struct client_entity_s *self, centity_t *owner)
 		float scale;
 
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
-		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
@@ -493,7 +493,7 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		SmokePuff->acceleration[1] = flrand(-200, 200);
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		/*
 		SmokePuff->r.color.g = irand(40, 60);
 		SmokePuff->r.color.r = irand(245, 255);
