@@ -233,7 +233,7 @@ FXHPMissileSpawnerThink(struct client_entity_s *self, centity_t *Owner)
 
 	TrailEnt->radius = 500;
 
-	TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	TrailEnt->r.model = hpproj_models[3];
 
 	TrailEnt->r.color.c = 0xFFFFFFFF;
@@ -274,7 +274,7 @@ FXHPMissileSpawnerThink2(struct client_entity_s *self, centity_t *Owner)
 
 	TrailEnt->radius = 500;
 
-	TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	TrailEnt->r.model = hpproj_models[4];
 
 	TrailEnt->r.color.r = 229;
@@ -585,7 +585,7 @@ void FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
 		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale = flrand(-1.0, -1.5);
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.frame = 0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, flrand(64.0, 128.0));
@@ -630,7 +630,7 @@ void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 		VectorSet(SmokePuff->r.scale, scale, scale, scale);
 		SmokePuff->d_scale=-2.0;
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.frame = 0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, flrand(16.0, 64.0));
@@ -660,7 +660,7 @@ void FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	Trail->radius = 500;
 	Trail->r.model = hpproj_models[3];
 	Trail->r.color.c = 0xffff5555;
-	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 	VectorSet(Trail->r.scale, 0.1, 0.1, 0.1);
 	Trail->d_scale = 2.0;
 	Trail->d_alpha = -2.0;
@@ -711,7 +711,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models[3];
 		Trail->r.color.c = 0x00999999;
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		VectorSet(Trail->r.scale, 0.5, 0.5, 0.5);
 		Trail->AddToView = PriestessLinkedEntityUpdatePlacement;
 
@@ -736,7 +736,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models[3];
 		Trail->r.color.c = 0x00999999;
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		VectorSet(Trail->r.scale, 0.45, 0.45, 0.45);
 		Trail->AddToView = PriestessLinkedEntityUpdatePlacement;
 
@@ -790,7 +790,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		Trail->alpha = 0.5;
 
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		scale = flrand(0.3, 0.4);
 		VectorSet(Trail->r.scale, scale, scale, scale);
@@ -817,7 +817,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 			Trail = ClientEntity_new( Type, CEF_DONT_LINK, Origin, NULL, 2000);
 
 			Trail->radius = 500;
-			Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+			Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 			Trail->r.model = hpproj_models[7];
 
 			Trail->r.spriteType = SPRITE_LINE;
@@ -882,7 +882,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 				}
 
 				Trail->radius = 500;
-				Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+				Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 				Trail->r.model = hpproj_models[10];
 
 				Trail->r.spriteType = SPRITE_LINE;
@@ -953,7 +953,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models[3];
 		Trail->r.color.c = 0xFFFFFFFF;
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		Trail->dlight=CE_DLight_new(LightColor,200.0f,0.0f);
 		Trail->LifeTime = fxi.cl->time + 4000;
 
@@ -987,7 +987,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		VectorCopy( Origin, Trail->origin );
 
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		Trail->r.model = hpproj_models[4];
 		VectorSet(Trail->r.scale, 0.1, 0.1, 0.1);
@@ -1004,7 +1004,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		VectorCopy( Origin, Trail->origin );
 
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		Trail->Update=FXHPMissileSpawnerThink3;
 
 		Trail->r.model = hpproj_models[4];
@@ -1035,7 +1035,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		VectorCopy( Origin, Trail->origin );
 
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		Trail->Update=FXHPTeleportLineThink;
 
 		Trail->r.model = hpproj_models[7];
@@ -1066,7 +1066,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 		VectorCopy( Origin, Trail->origin );
 
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 		Trail->Update=FXHPTeleportLineThink2;
 
 		Trail->r.model = hpproj_models[7];
@@ -1138,7 +1138,7 @@ qboolean HPStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 
 	Trail = ClientEntity_new( FX_HP_STAFF, CEF_DONT_LINK, self->r.origin, NULL, 2000);
 
-	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 	Trail->r.model = hpstaff_models[0];
 	VectorSet(Trail->r.scale, 0.75, 0.75, 0.75);

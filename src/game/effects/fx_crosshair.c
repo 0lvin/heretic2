@@ -45,7 +45,7 @@ static qboolean FXDrawCrosshair(struct client_entity_s *cross_hair, centity_t *o
 			cross_hair->r.frame = type;
 		}
 
-		cross_hair->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
+		cross_hair->r.flags = RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
 
 		alpha = 0.5 + (Q_fabs(sin(fxi.cl->time / 800.0)) * 0.5);
 

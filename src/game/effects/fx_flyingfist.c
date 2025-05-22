@@ -65,7 +65,7 @@ FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *owner)
 	while(i--)
 	{
 		TrailEnt = ClientEntity_new(FX_WEAPON_FLYINGFIST, 0, self->r.origin, NULL, 1000);
-		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA;
 
 		VectorCopy(self->velocity, accel_dir);
 		VectorNormalize(accel_dir);
@@ -279,7 +279,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 			SmokePuff->acceleration[2] = flrand(-40, -60);
 		}
 
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_FLARE | RF_TRANS_ADD_ALPHA;
 		SmokePuff->r.frame=0;
 
 		SmokePuff->d_alpha= -0.4;

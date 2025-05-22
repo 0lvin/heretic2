@@ -108,7 +108,7 @@ void FXLightningShield(centity_t *owner,int type,int flags,vec3_t origin)
 	{
 		shield=ClientEntity_new(type, flags&(~CEF_OWNERS_ORIGIN), origin, 0, (int)SHIELD_DURATION*1000);
 		shield->flags |= CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS;
-		shield->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
+		shield->r.flags |= RF_FLARE | RF_TRANS_ADD_ALPHA;
 		shield->r.model = shield_models[0];
 		shield->radius = SHIELD_RADIUS;
 		shield->AddToView = FXShieldSparkThink;

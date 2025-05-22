@@ -160,7 +160,7 @@ void FXHalo(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	else
 		halo->r.model = halo_models[0];
 
-	halo->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
+	halo->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_FLARE | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
 
 	// to figure out tint, we only want the top two bits of flags
 	Flags &= CEF_FLAG7 | CEF_FLAG8;
