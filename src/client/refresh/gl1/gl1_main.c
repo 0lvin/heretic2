@@ -195,14 +195,14 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 		alpha = currententity->alpha;
 	}
 
-	if (currententity->flags & RF_FLARE)
+	if (currententity->flags & (RF_FLARE | RF_TRANS_ADD))
 	{
 		YQ2_ALIGNAS_TYPE(unsigned) byte color[4];
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);
 
-		*(unsigned *) color = currententity->skinnum;
+		*(unsigned *) color = currententity->color.c;
 		glColor4f(
 			color[0] / 255.0f,
 			color[1] / 255.0f,
@@ -236,11 +236,6 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 	else
 	{
 		glDisable(GL_ALPHA_TEST);
-	}
-
-	if (currententity->flags & RF_TRANS_ADD)
-	{
-		glBlendFunc(GL_ONE, GL_ONE);
 	}
 
 	GLfloat tex[] = {

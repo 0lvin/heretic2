@@ -809,17 +809,17 @@ typedef struct
 #define RF_FLARE_LOCK_ANGLE RF_MINLIGHT
 
 /* Heretic 2 flags */
-#define RF_REFLECTION		0x00000002		// Use GL spherical mapping, if available
-#define RF_FIXED			0x00002000		// the sprite has a fixed direction
+#define RF_REFLECTION		0x00400000		// Use GL spherical mapping, if available
+#define RF_FIXED			0x00800000		// the sprite has a fixed direction
 											// and up vector, by default, a
 											// sprite is always oriented to the
 											// view (no effect on models)
-#define RF_TRANS_ADD		0x00004000		// Additive transparency
-#define RF_TRANS_ADD_ALPHA	0x00008000		// Adds emulation of alpha for additive transparent objects using tint
-#define RF_TRANS_GHOST		0x00010000		// Like subtractive translucency
-#define RF_ALPHA_TEXTURE	0x00020000		// Object has an alpha texture map
-#define RF_NODEPTHTEST		0x00080000		// Turns off depth testing for sprites only
-#define RF_IGNORE_REFS		0x00100000		// don't update the ref points for a model
+#define RF_TRANS_ADD		0x01000000		// Additive transparency
+#define RF_TRANS_ADD_ALPHA	0x02008000		// Adds emulation of alpha for additive transparent objects using tint
+#define RF_TRANS_GHOST		0x04000000		// Like subtractive translucency
+#define RF_ALPHA_TEXTURE	0x08000000		// Object has an alpha texture map
+#define RF_NODEPTHTEST		0x10000000		// Turns off depth testing for sprites only
+#define RF_IGNORE_REFS		0x20000000		// don't update the ref points for a model
 #define RF_TRANS_ANY		(RF_TRANS_ADD | RF_TRANS_GHOST | RF_TRANSLUCENT)
 
 /* player_state_t->refdef flags */

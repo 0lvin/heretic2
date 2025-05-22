@@ -879,7 +879,7 @@ GL3_DrawSpriteModel(entity_t *e, const gl3model_t *currentmodel)
 
 	GL3_Bind(skin->texnum);
 
-	if (e->flags & RF_FLARE)
+	if (e->flags & (RF_FLARE | RF_TRANS_ADD))
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);
@@ -899,11 +899,6 @@ GL3_DrawSpriteModel(entity_t *e, const gl3model_t *currentmodel)
 
 			GL3_UseProgram(gl3state.si3Dsprite.shaderProgram);
 		}
-	}
-
-	if (e->flags & RF_TRANS_ADD)
-	{
-		glBlendFunc(GL_ONE, GL_ONE);
 	}
 
 	verts[0].texCoord[0] = 0;
