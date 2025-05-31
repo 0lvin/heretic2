@@ -1035,6 +1035,7 @@ GL4_DrawParticles(void)
 static void
 GL4_DrawEntitiesOnList(void)
 {
+	qboolean translucent_entities = false;
 	int i;
 
 	if (!r_drawentities->value)
@@ -1049,9 +1050,10 @@ GL4_DrawEntitiesOnList(void)
 	{
 		entity_t *currententity = &gl4_newrefdef.entities[i];
 
-		if (currententity->flags & RF_TRANSLUCENT || currententity->flags & RF_FLARE)
+		if (currententity->flags & (RF_TRANSLUCENT | RF_FLARE))
 		{
-			continue; /* solid */
+			translucent_entities = true;
+			continue; /* not solid */
 		}
 
 		if (currententity->flags & RF_BEAM)
@@ -1087,6 +1089,11 @@ GL4_DrawEntitiesOnList(void)
 		}
 	}
 
+	if (!translucent_entities)
+	{
+		return;
+	}
+
 	/* draw transparent entities
 	   we could sort these if it ever
 	   becomes a problem... */
@@ -1096,7 +1103,7 @@ GL4_DrawEntitiesOnList(void)
 	{
 		entity_t *currententity = &gl4_newrefdef.entities[i];
 
-		if (!(currententity->flags & RF_TRANSLUCENT))
+		if (!(currententity->flags & (RF_TRANSLUCENT | RF_FLARE)))
 		{
 			continue; /* solid */
 		}
