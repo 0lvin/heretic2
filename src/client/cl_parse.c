@@ -31,7 +31,7 @@
 
 static int bitcounts[32]; /* just for protocol profiling */
 
-static const char *svc_strings[256] = {
+static const char *svc_strings[] = {
 	"svc_bad",
 
 	"svc_muzzleflash",
@@ -862,6 +862,27 @@ SHOWNET(const char *s)
 }
 
 static void
+CL_ShowNetCmd(int cmd)
+{
+	if (cmd < 0)
+	{
+		Com_Error(ERR_DROP, "%3i: unexpected message end",
+			net_message.readcount - 1);
+	}
+
+	if (cl_shownet->value >= 2)
+	{
+		if (cmd >= (sizeof(svc_strings) / sizeof(*svc_strings)))
+		{
+			Com_Printf("%3i:BAD CMD %i\n", net_message.readcount - 1, cmd);
+			return;
+		}
+
+		SHOWNET(svc_strings[cmd]);
+	}
+}
+
+static void
 CL_ParseFrame(void)
 {
 	int cmd;
@@ -940,12 +961,7 @@ CL_ParseFrame(void)
 
 	/* read playerinfo */
 	cmd = MSG_ReadByte(&net_message);
-	if (cmd < 0)
-	{
-		Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
-	}
-
-	SHOWNET(svc_strings[cmd]);
+	CL_ShowNetCmd(cmd);
 
 	if (cmd != svc_playerinfo)
 	{
@@ -957,7 +973,7 @@ CL_ParseFrame(void)
 
 	/* read packet entities */
 	cmd = MSG_ReadByte(&net_message);
-	SHOWNET(svc_strings[cmd]);
+	CL_ShowNetCmd(cmd);
 
 	if (cmd != svc_packetentities)
 	{
@@ -1178,7 +1194,7 @@ CL_LoadClientinfo(clientinfo_t *ci, char *s)
 	else
 	{
 		/* isolate the model name */
-		strcpy(model_name, s);
+		Q_strlcpy(model_name, s, sizeof(model_name));
 		t = strstr(model_name, "/");
 
 		if (!t)
@@ -1194,7 +1210,7 @@ CL_LoadClientinfo(clientinfo_t *ci, char *s)
 		*t = 0;
 
 		/* isolate the skin name */
-		strcpy(skin_name, s + strlen(model_name) + 1);
+		 Q_strlcpy(skin_name, s + strlen(model_name) + 1, sizeof(skin_name));
 
 		/* model file */
 		Com_sprintf(model_filename, sizeof(model_filename),
@@ -1528,18 +1544,7 @@ CL_ParseServerMessage(void)
 			break;
 		}
 
-		if (cl_shownet->value >= 2)
-		{
-			if (!svc_strings[cmd])
-			{
-				Com_Printf("%3i:BAD CMD %i\n", net_message.readcount - 1, cmd);
-			}
-
-			else
-			{
-				SHOWNET(svc_strings[cmd]);
-			}
-		}
+		CL_ShowNetCmd(cmd);
 
 		/* other commands */
 		switch (cmd)
