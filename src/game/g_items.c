@@ -559,12 +559,7 @@ Add_Ammo(edict_t *ent, gitem_t *item, int count)
 	int bo;
 	int max;
 
-	if (!ent || !item)
-	{
-		return false;
-	}
-
-	if (!ent->client)
+	if (!ent || !item || !ent->client)
 	{
 		return false;
 	}

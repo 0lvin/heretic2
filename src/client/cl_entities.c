@@ -211,12 +211,9 @@ CL_AddPacketEntities(frame_t *frame)
 			}
 
 			V_AddLight(ent.origin, DLIGHT_CUTOFF + s1->frame,
-						((char *)&color)[0]  / 255.0f,
+						((char *)&color)[0] / 255.0f,
 						((char *)&color)[1] / 255.0f,
 						((char *)&color)[2] / 255.0f);
-
-			V_AddEntity(&ent);
-			VectorCopy(ent.origin, cent->lerp_origin);
 
 			continue;
 		}
@@ -1070,24 +1067,6 @@ CL_AddEntities(void)
 	CL_AddParticles();
 	CL_AddDLights();
 	CL_AddLightStyles();
-}
-
-/*
- * Called to get the sound spatialization origin
- */
-void
-CL_GetEntitySoundOrigin(int ent, vec3_t org)
-{
-	centity_t *old;
-
-	if ((ent < 0) || (ent >= MAX_EDICTS))
-	{
-		Com_Error(ERR_DROP, "%s: bad entity %d >= %d\n",
-			__func__, ent, MAX_EDICTS);
-	}
-
-	old = &cl_entities[ent];
-	VectorCopy(old->lerp_origin, org);
 }
 
 /*
