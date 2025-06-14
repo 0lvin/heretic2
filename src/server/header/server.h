@@ -294,8 +294,8 @@ int SV_AreaEdicts(vec3_t mins, vec3_t maxs, edict_t **list,
 
 int SV_PointContents(vec3_t p);
 
-trace_t SV_Trace(vec3_t start, vec3_t mins, vec3_t maxs,
-		vec3_t end, edict_t *passedict, int contentmask);
+trace_t SV_Trace(const vec3_t start, const vec3_t mins, const vec3_t maxs,
+		const vec3_t end, const edict_t *passedict, int contentmask);
 
 void SV_ClearPersistantEffects(void);
 void SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, sizebuf_t* msg);

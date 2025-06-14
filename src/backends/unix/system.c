@@ -33,6 +33,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include <sys/select.h> /* for fd_set */
 #ifndef FNDELAY
@@ -313,12 +314,12 @@ Sys_FindFirst(const char *path, unsigned musthave, unsigned canhave)
 		Sys_Error("Sys_BeginFind without close");
 	}
 
-	strcpy(findbase, path);
+	Q_strlcpy(findbase, path, sizeof(findbase));
 
 	if ((p = strrchr(findbase, '/')) != NULL)
 	{
 		*p = 0;
-		strcpy(findpattern, p + 1);
+		Q_strlcpy(findpattern, p + 1, sizeof(findpattern));
 	}
 	else
 	{
@@ -562,7 +563,11 @@ Sys_GetHomeDir(void)
 void
 Sys_Remove(const char *path)
 {
-	remove(path);
+	if (remove(path) == -1 && errno != ENOENT)
+	{
+		Com_Printf("%s: remove %s: %s\n",
+			__func__, path, strerror(errno));
+	}
 }
 
 int

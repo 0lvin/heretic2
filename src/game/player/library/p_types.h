@@ -491,7 +491,8 @@ typedef struct playerinfo_s
 
 	void (*G_L_Sound)(edict_t *entity,int sound_num);
 	void (*G_Sound)(byte EventId,float leveltime, edict_t *entity,int channel,int sound_num,float volume,float attenuation,float timeofs);
-	trace_t (*G_Trace)(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,edict_t *passent,int contentmask);
+	trace_t (*G_Trace)(const vec3_t start, const vec3_t mins, const vec3_t maxs,
+			const vec3_t end, const edict_t *passent, int contentmask);
 	void (*G_CreateEffect)(byte EventId, edict_t *state, int type, int flags, vec3_t origin, char *format,...);
 	void (*G_RemoveEffects)(byte Eventid, edict_t *state, int type);
 

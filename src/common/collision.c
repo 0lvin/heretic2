@@ -997,7 +997,7 @@ CM_TestInLeaf(int leafnum)
 }
 
 static void
-CM_RecursiveHullCheck(int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
+CM_RecursiveHullCheck(int num, float p1f, float p2f, const vec3_t p1, const vec3_t p2)
 {
 	cnode_t *node;
 	cplane_t *plane;
@@ -1136,7 +1136,7 @@ CM_RecursiveHullCheck(int num, float p1f, float p2f, vec3_t p1, vec3_t p2)
 }
 
 trace_t
-CM_BoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
+CM_BoxTrace(const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs,
 		int headnode, int brushmask)
 {
 	checkcount++; /* for multi-check avoidance */
@@ -1237,8 +1237,9 @@ CM_BoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
  * rotating entities
  */
 trace_t
-CM_TransformedBoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
-		int headnode, int brushmask, vec3_t origin, vec3_t angles)
+CM_TransformedBoxTrace(const vec3_t start, const vec3_t end,
+		const vec3_t mins, const vec3_t maxs, int headnode, int brushmask,
+		const vec3_t origin, const vec3_t angles)
 {
 	vec3_t forward, right, up;
 	vec3_t start_l, end_l;
@@ -1256,6 +1257,7 @@ CM_TransformedBoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
 	{
 		rotated = true;
 	}
+
 	else
 	{
 		rotated = false;
@@ -1300,7 +1302,7 @@ CM_TransformedBoxTrace(vec3_t start, vec3_t end, vec3_t mins, vec3_t maxs,
 }
 
 static void
-CMod_LoadSubmodels(const char *name, cmodel_t *map_cmodels, int *numcmodels,
+CMod_LoadSubmodels(const char *name, cmodel_t *map_cmodels, int *numcmodels, int numnodes,
 	const byte *cmod_base, const lump_t *l)
 {
 	dmodel_t *in;
@@ -1341,6 +1343,13 @@ CMod_LoadSubmodels(const char *name, cmodel_t *map_cmodels, int *numcmodels,
 		}
 
 		out->headnode = in->headnode;
+
+		/* check limits */
+		if (out->headnode >= numnodes)
+		{
+			Com_Error(ERR_DROP, "%s: Inline model %i has bad firstnode",
+					__func__, i);
+		}
 	}
 }
 
@@ -1861,10 +1870,10 @@ CM_LoadCachedMap(const char *name, model_t *mod)
 	CMod_LoadBrushSides(mod->name, &mod->map_brushsides, &mod->numbrushsides,
 		mod->map_planes, mod->numplanes, mod->map_surfaces, mod->numtexinfo,
 		mod->cache, &header->lumps[LUMP_BRUSHSIDES]);
-	CMod_LoadSubmodels(mod->name, mod->map_cmodels, &mod->numcmodels,
-		mod->cache, &header->lumps[LUMP_MODELS]);
 	CMod_LoadNodes(mod->name, &mod->map_nodes, &mod->numnodes,
 		mod->map_planes, mod->cache, &header->lumps[LUMP_NODES]);
+	CMod_LoadSubmodels(mod->name, mod->map_cmodels, &mod->numcmodels, mod->numnodes,
+		mod->cache, &header->lumps[LUMP_MODELS]);
 	CMod_LoadAreas(mod->name, &mod->map_areas, &mod->numareas, mod->cache,
 		&header->lumps[LUMP_AREAS]);
 	CMod_LoadAreaPortals(mod->name, &mod->map_areaportals,

@@ -236,7 +236,7 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 	sv.attractloop = attractloop;
 
 	/* save name for levels that don't set message */
-	strcpy(sv.configstrings[CS_NAME], server);
+	Q_strlcpy(sv.configstrings[CS_NAME], server, sizeof(sv.configstrings[CS_NAME]));
 
 	if (Cvar_VariableValue("deathmatch"))
 	{
@@ -251,7 +251,7 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 
 	SZ_Init(&sv.multicast, sv.multicast_buf, sizeof(sv.multicast_buf));
 
-	strcpy(sv.name, server);
+	Q_strlcpy(sv.name, server, sizeof(sv.name));
 
 	/* leave slots at start for clients only */
 	for (i = 0; i < maxclients->value; i++)
@@ -267,8 +267,9 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 
 	sv.time = 1000;
 
-	strcpy(sv.name, server);
-	strcpy(sv.configstrings[CS_NAME], server);
+	Q_strlcpy(sv.name, server, sizeof(sv.name));
+	Q_strlcpy(sv.configstrings[CS_NAME], server,
+		sizeof(sv.configstrings[CS_NAME]));
 
 	SV_ClearPersistantEffects();
 
@@ -548,7 +549,7 @@ SV_Map(qboolean attractloop, char *levelstring, qboolean loadgame, qboolean isau
 		SV_InitGame(); /* the game is just starting */
 	}
 
-	strcpy(level, levelstring);
+	Q_strlcpy(level, levelstring, sizeof(level));
 
 	/* if there is a + in the map, set nextserver to the remainder */
 	ch = strstr(level, "+");
@@ -583,7 +584,7 @@ SV_Map(qboolean attractloop, char *levelstring, qboolean loadgame, qboolean isau
 	if (ch)
 	{
 		*ch = 0;
-		strcpy(spawnpoint, ch + 1);
+		Q_strlcpy(spawnpoint, ch + 1, sizeof(spawnpoint));
 	}
 	else
 	{

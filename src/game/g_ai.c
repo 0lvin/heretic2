@@ -1078,22 +1078,27 @@ FoundTarget - a target has been found, let other monsters know this. Then hunt i
 void
 FoundTarget(edict_t *self, qboolean setsightent)
 {
-	char	*o_target;
+	edict_t *combatpoint;
+	vec3_t v;
+	char *o_target;
+
 	// let other monsters see this monster for a while
-	if (!self->enemy)
+	if (!self || !self->enemy || !self->enemy->inuse)
 	{
 		return;
 	}
 
 	if(self->classID == CID_OGLE)
+	{
 		self->spawnflags = 0;
+	}
 
 	self->monsterinfo.awake = true;
 	self->spawnflags &= ~MSF_AMBUSH;
 	self->targetname = NULL;
 	self->monsterinfo.pausetime = -1;//was 0;
 
-	if(self->wakeup_target)
+	if (self->wakeup_target)
 	{
 		o_target = self->target;
 		self->target = self->wakeup_target;
@@ -1124,58 +1129,86 @@ FoundTarget(edict_t *self, qboolean setsightent)
 
 		if (!self->oldenemy)
 		{
-			if (!(self->monsterinfo.aiflags & AI_SOUND_TARGET) )
-				G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be", SIGHT_SOUND_TARGET, self->enemy);
+			if (!(self->monsterinfo.aiflags & AI_SOUND_TARGET))
+			{
+				G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be",
+					SIGHT_SOUND_TARGET, self->enemy);
+			}
 			else
-				G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be", SIGHT_VISIBLE_TARGET, self->enemy);
+			{
+				G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be",
+					SIGHT_VISIBLE_TARGET, self->enemy);
+			}
 		}
 
 		self->spawnflags &= ~MSF_AMBUSH;
 		return;
 	}
 
-	self->goalentity = self->movetarget = G_PickTarget(self->combattarget);
+	combatpoint = G_PickTarget(self->combattarget);
 
-	if (!self->movetarget)
+	if (!combatpoint)
 	{
-		self->goalentity = self->movetarget = self->enemy;
-		// dont want to do this if we are a fish
+		gi.dprintf("%s at %s, combattarget %s not found\n",
+				self->classname,
+				vtos(self->s.origin),
+				self->combattarget);
+
 		if (self->classID != CID_FISH)
 		{
+			/* dont want to do this if we are a fish */
 			HuntTarget(self);
 		}
 
 		if (!self->oldenemy)
 		{
-			if (!(self->monsterinfo.aiflags & AI_SOUND_TARGET) )
-				G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be", SIGHT_SOUND_TARGET, self->enemy);
+			if (!(self->monsterinfo.aiflags & AI_SOUND_TARGET))
+			{
+				G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be",
+					SIGHT_SOUND_TARGET, self->enemy);
+			}
 			else
-				G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be", SIGHT_VISIBLE_TARGET, self->enemy);
+			{
+				G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be",
+					SIGHT_VISIBLE_TARGET, self->enemy);
+			}
 		}
 
-//		gi.dprintf("%s at %s, combattarget %s not found\n", self->classname, vtos(self->s.origin), self->combattarget);
 		self->spawnflags &= ~MSF_AMBUSH;
 		return;
 	}
 
+	VectorSubtract(combatpoint->s.origin, self->s.origin, v);
+	self->ideal_yaw = vectoyaw(v);
+
 	/* clear out our combattarget, these are a one shot deal */
 	self->combattarget = NULL;
 	self->monsterinfo.aiflags |= AI_COMBAT_POINT;
+	self->monsterinfo.pausetime = 0;
 
 	/* clear the targetname, that point is ours! */
-	self->movetarget->targetname = NULL;
+	combatpoint->targetname = NULL;
+	self->goalentity = self->movetarget = combatpoint;
 
-	// run for it , assuming we aren't a fish
+	/* run for it , assuming we aren't a fish */
 	if (self->classID != CID_FISH)
+	{
 		G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
+	}
 
-	//Make a sight sound
+	/* Make a sight sound */
 	if (!self->oldenemy)
 	{
-		if (!(self->monsterinfo.aiflags & AI_SOUND_TARGET) )
-			G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be", SIGHT_SOUND_TARGET, self->enemy);
+		if (!(self->monsterinfo.aiflags & AI_SOUND_TARGET))
+		{
+			G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be",
+				SIGHT_SOUND_TARGET, self->enemy);
+		}
 		else
-			G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be", SIGHT_VISIBLE_TARGET, self->enemy);
+		{
+			G_QPostMessage(self, MSG_VOICE_SIGHT, PRI_DIRECTIVE, "be",
+				SIGHT_VISIBLE_TARGET, self->enemy);
+		}
 	}
 
 	self->spawnflags &= ~MSF_AMBUSH;

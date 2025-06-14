@@ -189,9 +189,9 @@ Mod_LoadSubmodels(model_t *loadmodel, const byte *mod_base, const lump_t *l)
 		out->firstnode = in->headnode;
 		out->firstmodelsurface = in->firstface;
 		out->nummodelsurfaces = in->numfaces;
-		// visleafs
+		/* visleafs */
 		out->numleafs = 0;
-		//  check limits
+		/* check limits */
 		if (out->firstnode >= loadmodel->numnodes)
 		{
 			Com_Error(ERR_DROP, "%s: Inline model %i has bad firstnode",
@@ -470,7 +470,7 @@ Mod_ForName(const char *name, model_t *parent_model, qboolean crash)
 		mod_numknown++;
 	}
 
-	strcpy(mod->name, name);
+	Q_strlcpy(mod->name, name, sizeof(mod->name));
 
 	/* Anachronox has tags in model path*/
 	Q_strlcpy(filename, name, sizeof(filename));

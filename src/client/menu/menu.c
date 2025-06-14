@@ -214,8 +214,7 @@ M_PushMenu(menuframework_s* menu)
 
 	/* if this menu is already open (and on top),
 	   close it => toggling behaviour */
-	if ((m_active.draw == menu->draw) &&
-		(m_active.key  == menu->key))
+	if ((m_active.draw == menu->draw) && (m_active.key  == menu->key))
 	{
 		M_PopMenu();
 		return;
@@ -225,8 +224,7 @@ M_PushMenu(menuframework_s* menu)
 	   that level to avoid stacking menus by hotkeys */
 	for (i = 0; i < m_menudepth; i++)
 	{
-		if ((m_layers[i].draw == menu->draw) &&
-			(m_layers[i].key == menu->key))
+		if ((m_layers[i].draw == menu->draw) && (m_layers[i].key  == menu->key))
 		{
 			alreadyPresent = 1;
 			break;
@@ -3020,10 +3018,12 @@ M_Credits_Draw(void)
 	float scale = SCR_GetMenuScale();
 
 	/* draw the credits */
-	for (i = 0,
-			y = (int)(viddef.height / scale - ((cls.realtime - credits_start_time) / 40.0F));
-			credits[i] && y < viddef.height / scale;
-			y += 10, i++)
+	for (
+		i = 0,
+		y = (int)(viddef.height / scale - ((cls.realtime - credits_start_time) / 40.0F));
+		credits[i] && y < viddef.height / scale;
+		y += 10, i++
+		)
 	{
 		int j, stringoffset = 0;
 		int bold = false;
@@ -3247,17 +3247,16 @@ ModsApplyActionFunc(void *unused)
 static void
 Mods_MenuInit(void)
 {
-	int currentmod;
-	int x = 0;
-	int y = 0;
-	char modname[MAX_QPATH]; //TG626
+	int currentmod, x = 0, y = 0, i;
+	char modname[MAX_QPATH]; /* TG626 */
+	char **displaynames;
 
 	Mods_NamesInit();
 
-	// create array of bracketed display names from folder names - TG626
-	char **displaynames=malloc(sizeof(*displaynames) * (nummods+1));
+	/* create array of bracketed display names from folder names - TG626 */
+	displaynames = malloc(sizeof(*displaynames) * (nummods + 1));
 
-	for (int i=0; i < nummods; i++)
+	for (i = 0; i < nummods; i++)
 	{
 		strcpy(modname, "[");
 		if (strlen(modnames[i]) < 16)
@@ -3279,9 +3278,9 @@ Mods_MenuInit(void)
 		strcpy(displaynames[i], modname);
 	}
 	displaynames[nummods] = NULL;
-	//end TG626
+	/* end TG626 */
 
-	// pre-select the current mod for display in the list
+	/* pre-select the current mod for display in the list */
 	for (currentmod = 0; currentmod < nummods; currentmod++)
 	{
 		if (M_IsGame(modnames[currentmod]))
@@ -4277,7 +4276,8 @@ StartServerActionFunc(void *self)
 	float maxclients;
 	char *spot;
 
-	strcpy(startmap, strchr(mapnames[s_startmap_list.curvalue], '\n') + 1);
+	Q_strlcpy(startmap, strchr(mapnames[s_startmap_list.curvalue], '\n') + 1,
+		sizeof(startmap));
 
 	maxclients = (float)strtod(s_maxclients_field.buffer, (char **)NULL);
 	timelimit = (float)strtod(s_timelimit_field.buffer, (char **)NULL);
@@ -4433,7 +4433,7 @@ StartServer_MenuInit(void)
 			char scratch[200];
 			size_t j, l;
 
-			strcpy(shortname, COM_Parse(&s));
+			Q_strlcpy(shortname, COM_Parse(&s), sizeof(shortname));
 			l = strlen(shortname);
 
 			for (j = 0; j < l; j++)
@@ -4441,7 +4441,7 @@ StartServer_MenuInit(void)
 				shortname[j] = toupper((unsigned char)shortname[j]);
 			}
 
-			strcpy(longname, COM_Parse(&s));
+			Q_strlcpy(longname, COM_Parse(&s), sizeof(longname));
 			Com_sprintf(scratch, sizeof(scratch), "%s\n%s", longname, shortname);
 
 			mapnames[i] = strdup(scratch);
@@ -4477,7 +4477,8 @@ StartServer_MenuInit(void)
 		s_capturelimit_field.generic.statusbar = "0 = no limit";
 		s_capturelimit_field.length = 3;
 		s_capturelimit_field.visible_length = 3;
-		strcpy(s_capturelimit_field.buffer, Cvar_VariableString("capturelimit"));
+		Q_strlcpy(s_capturelimit_field.buffer, Cvar_VariableString("capturelimit"),
+			sizeof(s_capturelimit_field.buffer));
 	}
 	else
 	{
@@ -4516,7 +4517,8 @@ StartServer_MenuInit(void)
 	s_timelimit_field.generic.statusbar = "0 = no limit";
 	s_timelimit_field.length = 3;
 	s_timelimit_field.visible_length = 3;
-	strcpy(s_timelimit_field.buffer, Cvar_VariableString("timelimit"));
+	Q_strlcpy(s_timelimit_field.buffer, Cvar_VariableString("timelimit"),
+		sizeof(s_timelimit_field.buffer));
 
 	s_fraglimit_field.generic.type = MTYPE_FIELD;
 	s_fraglimit_field.generic.name = "frag limit";
@@ -4526,7 +4528,8 @@ StartServer_MenuInit(void)
 	s_fraglimit_field.generic.statusbar = "0 = no limit";
 	s_fraglimit_field.length = 3;
 	s_fraglimit_field.visible_length = 3;
-	strcpy(s_fraglimit_field.buffer, Cvar_VariableString("fraglimit"));
+	Q_strlcpy(s_fraglimit_field.buffer, Cvar_VariableString("fraglimit"),
+		sizeof(s_fraglimit_field.buffer));
 
 	/* maxclients determines the maximum number of players that can join
 	   the game. If maxclients is only "1" then we should default the menu
@@ -4547,7 +4550,8 @@ StartServer_MenuInit(void)
 	}
 	else
 	{
-		strcpy(s_maxclients_field.buffer, Cvar_VariableString("maxclients"));
+		Q_strlcpy(s_maxclients_field.buffer, Cvar_VariableString("maxclients"),
+			sizeof(s_maxclients_field.buffer));
 	}
 
 	s_hostname_field.generic.type = MTYPE_FIELD;
@@ -4558,7 +4562,8 @@ StartServer_MenuInit(void)
 	s_hostname_field.generic.statusbar = NULL;
 	s_hostname_field.length = 12;
 	s_hostname_field.visible_length = 12;
-	strcpy(s_hostname_field.buffer, Cvar_VariableString("hostname"));
+	Q_strlcpy(s_hostname_field.buffer, Cvar_VariableString("hostname"),
+		sizeof(s_hostname_field.buffer));
 	s_hostname_field.cursor = strlen(s_hostname_field.buffer);
 
 	s_startserver_dmoptions_action.generic.type = MTYPE_ACTION;
@@ -5431,7 +5436,7 @@ IconOfSkinExists(const char* skin, char** pcxfiles, int npcxfiles,
 	int i;
 	char scratch[1024];
 
-	strcpy(scratch, skin);
+	Q_strlcpy(scratch, skin, sizeof(scratch));
 	*strrchr(scratch, '.') = 0;
 	strcat(scratch, "_i.");
 	strcat(scratch, ext);
@@ -5717,9 +5722,7 @@ HasSkinInDir(const char *dirname, const char *ext, int *num)
 {
 	char findname[MAX_QPATH];
 
-	strcpy(findname, dirname);
-	strcat(findname, "/*.");
-	strcat(findname, ext);
+	snprintf(findname, sizeof(findname), "%s/*.%s", dirname, ext);
 
 	return FS_ListFiles2(findname, num, 0, 0);
 }
@@ -5754,7 +5757,7 @@ HasSkinsInDir(const char *dirname, int *num)
 		*num += num_m8 - 1;
 	}
 
-	if (num)
+	if (*num)
 	{
 		curr = list = malloc(sizeof(char *) * (*num + 1));
 		YQ2_COM_CHECK_OOM(list, "realloc()", (size_t)sizeof(char *) * (*num + 1))
@@ -5779,8 +5782,6 @@ HasSkinsInDir(const char *dirname, int *num)
 					}
 				}
 			}
-
-			free(list_png);
 		}
 
 		if (list_pcx)
@@ -5803,8 +5804,6 @@ HasSkinsInDir(const char *dirname, int *num)
 					}
 				}
 			}
-
-			free(list_pcx);
 		}
 
 		if (list_m8)
@@ -5827,13 +5826,26 @@ HasSkinsInDir(const char *dirname, int *num)
 					}
 				}
 			}
-
-			free(list_m8);
 		}
 
 		*curr = NULL;
 		curr++;
 		*num = curr - list;
+	}
+
+	if (list_png)
+	{
+		free(list_png);
+	}
+
+	if (list_pcx)
+	{
+		free(list_pcx);
+	}
+
+	if (list_m8)
+	{
+		free(list_m8);
 	}
 
 	return list;
@@ -6106,7 +6118,8 @@ PlayerConfig_MenuInit(void)
 	s_player_name_field.generic.y = 0;
 	s_player_name_field.length = 20;
 	s_player_name_field.visible_length = 20;
-	strcpy(s_player_name_field.buffer, name->string);
+	Q_strlcpy(s_player_name_field.buffer, name->string,
+		sizeof(s_player_name_field.buffer));
 	s_player_name_field.cursor = strlen(name->string);
 
 	s_player_icon_bitmap.generic.type = MTYPE_BITMAP;

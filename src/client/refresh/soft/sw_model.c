@@ -193,9 +193,9 @@ Mod_LoadSubmodels(model_t *loadmodel, const byte *mod_base, const lump_t *l)
 		out->firstnode = in->headnode;
 		out->firstmodelsurface = in->firstface;
 		out->nummodelsurfaces = in->numfaces;
-		// visleafs
+		/* visleafs */
 		out->numleafs = 0;
-		//  check limits
+		/* check limits */
 		if (out->firstnode >= loadmodel->numnodes)
 		{
 			Com_Error(ERR_DROP, "%s: Inline model %i has bad firstnode",
@@ -281,7 +281,7 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 		}
 
 		Mod_LoadSetSurfaceLighting(loadmodel->lightdata, loadmodel->numlightdata,
-			out, in->styles, in->lightofs);
+			out, in->styles, lightofs);
 
 		if (!out->texinfo->image)
 			continue;
