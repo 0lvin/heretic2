@@ -381,6 +381,7 @@ void
 ai_stand(edict_t *self, float dist)
 {
 	vec3_t v;
+	qboolean retval;
 
 	if (!self)
 	{
@@ -415,7 +416,25 @@ ai_stand(edict_t *self, float dist)
 				M_ChangeYaw(self);
 			}
 
-			ai_checkattack(self, 0);
+			/* find out if we're going to be shooting */
+			retval = ai_checkattack(self, 0);
+
+			/* record sightings of player */
+			if ((self->enemy) && (self->enemy->inuse) &&
+				(visible(self, self->enemy)))
+			{
+				self->monsterinfo.aiflags &= ~AI_LOST_SIGHT;
+				VectorCopy(self->enemy->s.origin, self->monsterinfo.last_sighting);
+				VectorCopy(self->enemy->s.origin, self->monsterinfo.blind_fire_target);
+				self->monsterinfo.trail_time = level.time;
+				self->monsterinfo.blind_fire_delay = 0;
+			}
+			/* check retval to make sure we're not blindfiring */
+			else if (!retval)
+			{
+				FindTarget(self);
+				return;
+			}
 		}
 		else
 		{
@@ -471,6 +490,8 @@ ai_walk(edict_t *self, float dist)
 		return;
 	}
 
+	M_MoveToGoal(self, dist);
+
 	/* check for noticing a player */
 	if (FindTarget(self))
 	{
@@ -505,8 +526,6 @@ ai_walk(edict_t *self, float dist)
 			G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 		}
 	}
-
-	MG_MoveToGoal(self, dist);
 }
 
 /*
@@ -656,9 +675,13 @@ ai_turn(edict_t *self, float dist)
 		return;
 	}
 
-	if(!(self->spawnflags & MSF_FIXED))
-		if (dist)
+	if (dist)
+	{
+		if(!(self->spawnflags & MSF_FIXED))
+		{
 			M_walkmove(self, self->s.angles[YAW], dist);
+		}
+	}
 
 	if (FindTarget(self))
 	{
@@ -810,7 +833,7 @@ visible(edict_t *self, edict_t *other)
 	spot2[2] += other->viewheight;
 	trace = gi.trace(spot1, vec3_origin, vec3_origin, spot2, self, MASK_OPAQUE);
 
-	if (trace.fraction == 1.0)
+	if ((trace.fraction == 1.0) || (trace.ent == other))
 	{
 		return true;
 	}
@@ -888,147 +911,6 @@ infront(edict_t *self, edict_t *other)
 
 /* ============================================================================ */
 
-/*
-Alerted
-
-Checks and see if an alert entity is capable of waking up a monster
-*/
-qboolean
-Alerted(edict_t *self)
-{
-	//This alert entity wakes up monsters, let's see what's up...
-	edict_t		*enemy = NULL;
-	alertent_t	*alerter;
-	vec3_t		e_spot, viewspot, dir;
-	qboolean	saw_it = false;
-	float		dist;
-
-	if(self->monsterinfo.aiflags&AI_NO_ALERT)
-		return false;
-
-	//start the search from the most recent alert to the oldest
-	alerter = level.last_alert;//OOPS, SKIPS LAST
-
-alertloop:
-
-	if(self->enemy)
-		goto loopagain;
-
-	//alerter is gone
-	if(!alerter)
-		goto loopagain;
-
-	if(!alerter->inuse)//loading a saved game invalidates all alerts
-		goto loopagain;
-
-	if(alerter->lifetime < level.time)
-	{//alert timed out, remove from list
-		alert_timed_out(alerter);
-		goto loopagain;
-	}
-
-	if(self->last_alert)//don't be woken up by the same alert twice
-	{
-		if(self->last_alert->inuse)
-		{
-			if(alerter == self->last_alert && self->last_alert->inuse)
-				goto loopagain;
-		}
-		else
-			self->last_alert = NULL;
-	}
-
-	//alerter's enemy is gone
-	if(!alerter->enemy)
-		goto loopagain;
-
-	if(alerter->enemy->client)
-	{//no alerts for notarget players
-		if(alerter->enemy->flags & FL_NOTARGET)
-			goto loopagain;
-	}
-
-	//NEVER alert ambush monsters?
-	//if(!(self->spawnflags & MSF_AMBUSH))
-	//	goto loopagain;
-
-	 if(!(self->svflags&SVF_MONSTER))
-		goto loopagain;
-
-	if(self->health<=0)
-		goto loopagain;
-
-	//eating or in a cinematic or not awake, leave them alone
-	if(!ok_to_wake(self, false, true))
-		goto loopagain;
-
-	//should we keep track of owner in case they move to move the alert with them?  Only for monsters
-	//if(alerter->owner)
-	//	VectorCopy(alerter->owner->s.origin, alerter->s.origin);
-
-	VectorSubtract(self->s.origin, alerter->origin, dir);
-	dist = VectorLength(dir);
-
-	//if monster's wakeup_distance is shorter than dist to alerter, leave it alone
-	if(dist > self->wakeup_distance)
-		goto loopagain;
-
-	//closer means better chance to alert
-	//problem - different alerts might be more likely to be heard/seen...
-	if(dist > flrand(100, self->wakeup_distance))//if within 100 always wake up?
-		goto loopagain;
-
-	//if not a player, a player's missile or a monster, goto loopagain?
-	//get center of alert enemy
-	enemy = alerter->enemy;
-
-	VectorAdd(enemy->s.origin, enemy->mins, e_spot);
-	VectorMA(e_spot, 0.5, enemy->size, e_spot);
-
-	//get my view spot
-	VectorCopy(self->s.origin, viewspot);
-	viewspot[2] += self->viewheight;
-
-	//if being alerted by a monster and not waiting to ambush
-	if(alerter->alert_svflags&SVF_MONSTER && !(self->spawnflags&MSF_AMBUSH))
-	{//can "see" the owner of the alert even around a corner
-		saw_it = gi.inPVS(e_spot, viewspot);
-	}
-	else
-	{//alerter not a monster, a projectile or player
-		//can I see (even through translucent brushes) the owner of the alert?
-		//if so, ok even if I'm an ambush monster
-		saw_it = visible_pos(self, e_spot);
-
-		if(!saw_it&&!(self->spawnflags&MSF_AMBUSH))
-		{//no line of sight and not an ambush monster
-			if(gi.inPVS(viewspot, alerter->origin))
-			{//25% chance will see impact(alerter) and detect alert owner anyway
-				if(!irand(0,3))
-					saw_it = true;//go ahead and go for it
-			}
-		}
-	}
-
-	if(!saw_it)
-		goto loopagain;
-
-	if(!self->monsterinfo.alert)
-		goto loopagain;
-
-	self->last_alert = alerter;
-	return self->monsterinfo.alert(self, alerter, enemy);
-
-loopagain:
-	if(alerter)
-	{
-		alerter = alerter->prev_alert;
-		if(alerter)
-			goto alertloop;
-	}
-
-	return false;
-}
 
 /*
 ===========
@@ -1042,7 +924,13 @@ HuntTarget(edict_t *self)
 	vec3_t vec;
 	int r;
 
+	if (!self)
+	{
+		return;
+	}
+
 	self->goalentity = self->enemy;
+
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 	{
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
@@ -1059,7 +947,15 @@ HuntTarget(edict_t *self)
 			G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
 		}
 	}
-	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
+
+	if(visible(self, self->enemy))
+	{
+		VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
+	}
+	else
+	{
+		VectorClear(vec);
+	}
 
 	self->ideal_yaw = vectoyaw(vec);
 
@@ -1214,30 +1110,7 @@ FoundTarget(edict_t *self, qboolean setsightent)
 	self->spawnflags &= ~MSF_AMBUSH;
 }
 
-/*
-qboolean ok_to_wake (edict_t *monster, qboolean gorgon_roar)
-
-Can this monster be woken up by something other than direct line of sight to player
-*/
-qboolean
-ok_to_wake(edict_t *monster, qboolean gorgon_roar, qboolean ignore_ambush)
-{
-	if(gorgon_roar)
-	{
-		if(monster->monsterinfo.c_mode)
-			return false;
-	}
-	else if(monster->monsterinfo.aiflags & AI_EATING ||//eating or perching
-		monster->targetname ||//a monster that's supposed to be triggered - problem, one a monster is used and woken up, won't respond to alerts like others...?
-		monster->monsterinfo.c_mode ||//cinematic
-		monster->spawnflags & MSF_ASLEEP ||//shouldn't happen, but just in case
-		(monster->spawnflags & MSF_AMBUSH && !ignore_ambush))
-		return false;
-
-	return true;
-}
-
-qboolean
+static qboolean
 PlayerCreeping(playerinfo_t *playerinfo)
 {
 	if(playerinfo->upperseq == ASEQ_CREEPF ||
@@ -1265,6 +1138,148 @@ PlayerCreeping(playerinfo_t *playerinfo)
 		return (true);
 
 	return (false);
+}
+
+/*
+Alerted
+
+Checks and see if an alert entity is capable of waking up a monster
+*/
+static qboolean
+Alerted(edict_t *self)
+{
+	//This alert entity wakes up monsters, let's see what's up...
+	edict_t		*enemy = NULL;
+	alertent_t	*alerter;
+	vec3_t		e_spot, viewspot, dir;
+	qboolean	saw_it = false;
+	float		dist;
+
+	if(self->monsterinfo.aiflags&AI_NO_ALERT)
+		return false;
+
+	//start the search from the most recent alert to the oldest
+	alerter = level.last_alert;//OOPS, SKIPS LAST
+
+alertloop:
+
+	if(self->enemy)
+		goto loopagain;
+
+	//alerter is gone
+	if(!alerter)
+		goto loopagain;
+
+	if(!alerter->inuse)//loading a saved game invalidates all alerts
+		goto loopagain;
+
+	if(alerter->lifetime < level.time)
+	{//alert timed out, remove from list
+		alert_timed_out(alerter);
+		goto loopagain;
+	}
+
+	if(self->last_alert)//don't be woken up by the same alert twice
+	{
+		if(self->last_alert->inuse)
+		{
+			if(alerter == self->last_alert && self->last_alert->inuse)
+				goto loopagain;
+		}
+		else
+			self->last_alert = NULL;
+	}
+
+	//alerter's enemy is gone
+	if(!alerter->enemy)
+		goto loopagain;
+
+	if(alerter->enemy->client)
+	{//no alerts for notarget players
+		if(alerter->enemy->flags & FL_NOTARGET)
+			goto loopagain;
+	}
+
+	//NEVER alert ambush monsters?
+	//if(!(self->spawnflags & MSF_AMBUSH))
+	//	goto loopagain;
+
+	 if(!(self->svflags&SVF_MONSTER))
+		goto loopagain;
+
+	if(self->health<=0)
+		goto loopagain;
+
+	//eating or in a cinematic or not awake, leave them alone
+	if(!ok_to_wake(self, false, true))
+		goto loopagain;
+
+	//should we keep track of owner in case they move to move the alert with them?  Only for monsters
+	//if(alerter->owner)
+	//	VectorCopy(alerter->owner->s.origin, alerter->s.origin);
+
+	VectorSubtract(self->s.origin, alerter->origin, dir);
+	dist = VectorLength(dir);
+
+	//if monster's wakeup_distance is shorter than dist to alerter, leave it alone
+	if(dist > self->wakeup_distance)
+		goto loopagain;
+
+	//closer means better chance to alert
+	//problem - different alerts might be more likely to be heard/seen...
+	if(dist > flrand(100, self->wakeup_distance))//if within 100 always wake up?
+		goto loopagain;
+
+	//if not a player, a player's missile or a monster, goto loopagain?
+	//get center of alert enemy
+	enemy = alerter->enemy;
+
+	VectorAdd(enemy->s.origin, enemy->mins, e_spot);
+	VectorMA(e_spot, 0.5, enemy->size, e_spot);
+
+	//get my view spot
+	VectorCopy(self->s.origin, viewspot);
+	viewspot[2] += self->viewheight;
+
+	//if being alerted by a monster and not waiting to ambush
+	if(alerter->alert_svflags&SVF_MONSTER && !(self->spawnflags&MSF_AMBUSH))
+	{//can "see" the owner of the alert even around a corner
+		saw_it = gi.inPVS(e_spot, viewspot);
+	}
+	else
+	{//alerter not a monster, a projectile or player
+		//can I see (even through translucent brushes) the owner of the alert?
+		//if so, ok even if I'm an ambush monster
+		saw_it = visible_pos(self, e_spot);
+
+		if(!saw_it&&!(self->spawnflags&MSF_AMBUSH))
+		{//no line of sight and not an ambush monster
+			if(gi.inPVS(viewspot, alerter->origin))
+			{//25% chance will see impact(alerter) and detect alert owner anyway
+				if(!irand(0,3))
+					saw_it = true;//go ahead and go for it
+			}
+		}
+	}
+
+	if(!saw_it)
+		goto loopagain;
+
+	if(!self->monsterinfo.alert)
+		goto loopagain;
+
+	self->last_alert = alerter;
+	return self->monsterinfo.alert(self, alerter, enemy);
+
+loopagain:
+	if(alerter)
+	{
+		alerter = alerter->prev_alert;
+		if(alerter)
+			goto alertloop;
+	}
+
+	return false;
 }
 
 /*
@@ -1496,7 +1511,7 @@ startcheck:
 		else
 			e_infront = infront(self, client);
 
-		if(!e_infront && client->client)
+		if (!e_infront && client->client)
 		{
 			if(PlayerCreeping(&client->client->playerinfo))
 				goto nextcheck;
@@ -3216,6 +3231,29 @@ ai_run(edict_t *self, float dist)
 	self->goalentity = save;
 }
 #endif
+
+/*
+qboolean ok_to_wake (edict_t *monster, qboolean gorgon_roar)
+
+Can this monster be woken up by something other than direct line of sight to player
+*/
+qboolean
+ok_to_wake(edict_t *monster, qboolean gorgon_roar, qboolean ignore_ambush)
+{
+	if(gorgon_roar)
+	{
+		if(monster->monsterinfo.c_mode)
+			return false;
+	}
+	else if(monster->monsterinfo.aiflags & AI_EATING ||//eating or perching
+		monster->targetname ||//a monster that's supposed to be triggered - problem, one a monster is used and woken up, won't respond to alerts like others...?
+		monster->monsterinfo.c_mode ||//cinematic
+		monster->spawnflags & MSF_ASLEEP ||//shouldn't happen, but just in case
+		(monster->spawnflags & MSF_AMBUSH && !ignore_ambush))
+		return false;
+
+	return true;
+}
 
 /*
 ==============================
