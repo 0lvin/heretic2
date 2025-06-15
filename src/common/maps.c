@@ -1272,6 +1272,29 @@ static const rule_t xbsplumps[HEADER_LUMPS] = {
 	{LUMP_AREAPORTALS, sizeof(dareaportal_t), Mod_Load2QBSP_IBSP_Copy},
 };
 
+/* keep it same as xbsplumps size */
+static const char *lump_names[HEADER_LUMPS] = {
+	"ENTITIES",
+	"PLANES",
+	"VERTEXES",
+	"VISIBILITY",
+	"NODES",
+	"TEXINFO",
+	"FACES",
+	"LIGHTING",
+	"LEAFS",
+	"LEAFFACES",
+	"LEAFBRUSHES",
+	"EDGES",
+	"SURFEDGES",
+	"MODELS",
+	"BRUSHES",
+	"BRUSHSIDES",
+	"POP",
+	"AREAS",
+	"AREAPORTALS"
+};
+
 static const char*
 Mod_MaptypeName(maptype_t maptype)
 {
@@ -1391,11 +1414,21 @@ Mod_Load2QBSPValidateRules(const char *name, const rule_t *rules, size_t numrule
 					error = true;
 				}
 
-				if (rules[s].pos >= 0)
+				if (rules[s].pos >= HEADER_LUMPS)
+				{
+					Com_Printf("%s: Map %s lump #%d: incorrect lump id #%d\n",
+						__func__, name, s, rules[s].pos);
+					error = true;
+				}
+
+				else if (rules[s].pos >= 0)
 				{
 					result_size += (
 						xbsplumps[rules[s].pos].size * lumps[s].filelen / rules[s].size
 					);
+
+					Com_DPrintf("%s: #%s Lump: " YQ2_COM_PRIdS " elmenents\n",
+						__func__, lump_names[rules[s].pos], lumps[s].filelen / rules[s].size);
 				}
 			}
 		}
@@ -1519,12 +1552,20 @@ Mod_Load2QBSP(const char *name, byte *inbuf, size_t filesize, size_t *out_len,
 
 	if (detected_maptype == map_quake1)
 	{
-		result_size += (lumps[8].filelen * 3 + 3) & ~3;
-		result_size += (lumps[10].filelen * sizeof(int) / sizeof(dq1leaf_t) + 3) & ~3;
-		result_size += (lumps[10].filelen * sizeof(dbrush_t) / sizeof(dq1leaf_t) + 3) & ~3;
-		result_size += (lumps[10].filelen * sizeof(dqbrushside_t) / sizeof(dq1leaf_t) + 3) & ~3;
-		result_size += (lumps[10].filelen * sizeof(darea_t) / sizeof(dq1leaf_t) + 3) & ~3;
-		result_size += (lumps[10].filelen * sizeof(dareaportal_t) / sizeof(dq1leaf_t) + 3) & ~3;
+		/* lights is white only in quake 1, extend to rgb */
+		result_size += (lumps[LUMP_BSP29_LIGHTING].filelen * 3 + 3) & ~3;
+
+		/* quake 1 does not have any areas, marks as single area */
+		result_size += (sizeof(darea_t) + 3) & ~3;
+		result_size += (sizeof(dareaportal_t) + 3) & ~3;
+
+		/* unfinished quake 1 convert code */
+		result_size += (lumps[LUMP_BSP29_LEAFS].filelen * sizeof(int) /
+			sizeof(dq1leaf_t) + 3) & ~3;
+		result_size += (lumps[LUMP_BSP29_LEAFS].filelen * sizeof(dbrush_t) /
+			sizeof(dq1leaf_t) + 3) & ~3;
+		result_size += (lumps[LUMP_BSP29_LEAFS].filelen * sizeof(dqbrushside_t) /
+			sizeof(dq1leaf_t) + 3) & ~3;
 	}
 
 	outbuf = malloc(result_size);
@@ -1543,35 +1584,43 @@ Mod_Load2QBSP(const char *name, byte *inbuf, size_t filesize, size_t *out_len,
 
 	if (detected_maptype == map_quake1)
 	{
-		/* Lighting */
+		/* Lighting, lights is white only in quake 1, extend to rgb */
 		outheader->lumps[LUMP_LIGHTING].fileofs = ofs;
-		outheader->lumps[LUMP_LIGHTING].filelen = lumps[8].filelen * 3;
+		outheader->lumps[LUMP_LIGHTING].filelen =
+			(lumps[LUMP_BSP29_LIGHTING].filelen * 3 + 3) & ~3;
 		ofs += outheader->lumps[LUMP_LIGHTING].filelen;
-
-		/* LeafBrushes */
-		outheader->lumps[LUMP_LEAFBRUSHES].fileofs = ofs;
-		outheader->lumps[LUMP_LEAFBRUSHES].filelen = lumps[10].filelen * sizeof(int) / sizeof(dq1leaf_t);
-		ofs += outheader->lumps[LUMP_LEAFBRUSHES].filelen;
-
-		/* Brushes */
-		outheader->lumps[LUMP_BRUSHES].fileofs = ofs;
-		outheader->lumps[LUMP_BRUSHES].filelen = lumps[10].filelen * sizeof(dbrush_t) / sizeof(dq1leaf_t);
-		ofs += outheader->lumps[LUMP_BRUSHES].filelen;
-
-		/* BrusheSides */
-		outheader->lumps[LUMP_BRUSHSIDES].fileofs = ofs;
-		outheader->lumps[LUMP_BRUSHSIDES].filelen = lumps[10].filelen * sizeof(dqbrushside_t) / sizeof(dq1leaf_t);
-		ofs += outheader->lumps[LUMP_BRUSHSIDES].filelen;
 
 		/* Areas */
 		outheader->lumps[LUMP_AREAS].fileofs = ofs;
-		outheader->lumps[LUMP_AREAS].filelen = lumps[10].filelen * sizeof(darea_t) / sizeof(dq1leaf_t);
+		outheader->lumps[LUMP_AREAS].filelen =
+			(sizeof(darea_t) + 3) & ~3;
 		ofs += outheader->lumps[LUMP_AREAS].filelen;
 
 		/* Areas Portals */
 		outheader->lumps[LUMP_AREAPORTALS].fileofs = ofs;
-		outheader->lumps[LUMP_AREAPORTALS].filelen = lumps[10].filelen * sizeof(dareaportal_t) / sizeof(dq1leaf_t);
+		outheader->lumps[LUMP_AREAPORTALS].filelen =
+			(sizeof(dareaportal_t) + 3) & ~3;
 		ofs += outheader->lumps[LUMP_AREAPORTALS].filelen;
+
+		/* unfinished quake 1 convert code */
+
+		/* LeafBrushes */
+		outheader->lumps[LUMP_LEAFBRUSHES].fileofs = ofs;
+		outheader->lumps[LUMP_LEAFBRUSHES].filelen = lumps[LUMP_BSP29_LEAFS].filelen *
+			sizeof(int) / sizeof(dq1leaf_t);
+		ofs += outheader->lumps[LUMP_LEAFBRUSHES].filelen;
+
+		/* Brushes */
+		outheader->lumps[LUMP_BRUSHES].fileofs = ofs;
+		outheader->lumps[LUMP_BRUSHES].filelen = lumps[LUMP_BSP29_LEAFS].filelen *
+			sizeof(dbrush_t) / sizeof(dq1leaf_t);
+		ofs += outheader->lumps[LUMP_BRUSHES].filelen;
+
+		/* BrusheSides */
+		outheader->lumps[LUMP_BRUSHSIDES].fileofs = ofs;
+		outheader->lumps[LUMP_BRUSHSIDES].filelen = lumps[LUMP_BSP29_LEAFS].filelen *
+			sizeof(dqbrushside_t) / sizeof(dq1leaf_t);
+		ofs += outheader->lumps[LUMP_BRUSHSIDES].filelen;
 	}
 
 	if (filesize > xofs)
@@ -1635,6 +1684,7 @@ Mod_Load2QBSP(const char *name, byte *inbuf, size_t filesize, size_t *out_len,
 		int size, count, i;
 		byte *out;
 
+		/* fix textures path */
 		count = outheader->lumps[LUMP_TEXINFO].filelen / sizeof(xtexinfo_t);
 		out_texinfo = (xtexinfo_t *)(outbuf + outheader->lumps[LUMP_TEXINFO].fileofs);
 
@@ -1647,10 +1697,21 @@ Mod_Load2QBSP(const char *name, byte *inbuf, size_t filesize, size_t *out_len,
 			Q_strlcpy(out_texinfo[i].texture, texturename, sizeof(out_texinfo[i].texture));
 		}
 
-		/* convert LIGHTING */
+		/* lights is white only in quake 1, extend to rgb */
 		Mod_Load2QBSP_IBSP29_LIGHTING(outbuf, outheader, inbuf, lumps, sizeof(char), *maptype,
-			LUMP_LIGHTING, 8);
+			LUMP_LIGHTING, LUMP_BSP29_LIGHTING);
 
+		/* Areas */
+		size = outheader->lumps[LUMP_AREAS].filelen;
+		out = (byte *)(outbuf + outheader->lumps[LUMP_AREAS].fileofs);
+		memset(out, 0, size);
+
+		/* Areas Portals */
+		size = outheader->lumps[LUMP_AREAPORTALS].filelen;
+		out = (byte *)(outbuf + outheader->lumps[LUMP_AREAPORTALS].fileofs);
+		memset(out, 0, size);
+
+		/* unfinished quake 1 convert code */
 		size = outheader->lumps[LUMP_LEAFBRUSHES].filelen;
 		out = (byte *)(outbuf + outheader->lumps[LUMP_LEAFBRUSHES].fileofs);
 		memset(out, 0, size);
@@ -1661,14 +1722,6 @@ Mod_Load2QBSP(const char *name, byte *inbuf, size_t filesize, size_t *out_len,
 
 		size = outheader->lumps[LUMP_BRUSHSIDES].filelen;
 		out = (byte *)(outbuf + outheader->lumps[LUMP_BRUSHSIDES].fileofs);
-		memset(out, 0, size);
-
-		size = outheader->lumps[LUMP_AREAS].filelen;
-		out = (byte *)(outbuf + outheader->lumps[LUMP_AREAS].fileofs);
-		memset(out, 0, size);
-
-		size = outheader->lumps[LUMP_AREAPORTALS].filelen;
-		out = (byte *)(outbuf + outheader->lumps[LUMP_AREAPORTALS].fileofs);
 		memset(out, 0, size);
 	}
 

@@ -59,6 +59,11 @@ CL_AddMuzzleFlash(void)
 	}
 
 	weapon = MSG_ReadByte(&net_message);
+	if (weapon < 0)
+	{
+		Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+	}
+
 	silenced = weapon & MZ_SILENCED;
 	weapon &= ~MZ_SILENCED;
 
@@ -326,7 +331,7 @@ CL_AddMuzzleFlash2(void)
 {
 	int ent;
 	vec3_t origin;
-	unsigned flash_number;
+	int flash_number;
 	cdlight_t *dl;
 	vec3_t forward, right;
 	char soundname[64];
@@ -340,8 +345,12 @@ CL_AddMuzzleFlash2(void)
 	}
 
 	flash_number = MSG_ReadByte(&net_message);
+	if (flash_number < 0)
+	{
+		Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+	}
 
-	if (flash_number > 210)
+	if (flash_number > MZ2_EFFECT_MAX)
 	{
 		Com_DPrintf("%s: bad offset\n", __func__);
 		return;

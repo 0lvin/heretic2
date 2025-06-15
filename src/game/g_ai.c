@@ -978,7 +978,6 @@ FoundTarget(edict_t *self, qboolean setsightent)
 	vec3_t v;
 	char *o_target;
 
-	// let other monsters see this monster for a while
 	if (!self || !self->enemy || !self->enemy->inuse)
 	{
 		return;
@@ -1003,6 +1002,7 @@ FoundTarget(edict_t *self, qboolean setsightent)
 		self->wakeup_target = NULL;
 	}
 
+	/* let other monsters see this monster for a while */
 	if (self->enemy->client && setsightent)
 	{
 		level.sight_entity = self;
@@ -1283,40 +1283,43 @@ loopagain:
 }
 
 /*
-===========
-FindTarget
-
-Self is currently not attacking anything, so try to find a target
-
-Returns TRUE if an enemy was sighted
-
-When a player fires a missile or does other things to make noise, the
-point of impact becomes an alertent so that monsters that see the
-impact will respond as if they had seen the player.
-
-Since FindTarget is not called every frame for monsters (average
-about once every 3 frames per monster), this does two potential checks.
-
-First it checks against the current sight_client which cycles through
-the players.
-
-If that check fails, it will check for all the secondary alerts and
-enemies.  if it can't find any, it will check for another player if
-it can find one other than the first one it checked.
-============
-*/
+ * Self is currently not attacking anything,
+ * so try to find a target
+ *
+ * Returns TRUE if an enemy was sighted
+ *
+ * When a player fires a missile or does other things to make noise, the point
+ * of impact becomes an alertent so that
+ * monsters that see the impact will respond
+ * as if they had seen the player.
+ *
+ * Since FindTarget is not called every frame for monsters (average
+ * about once every 3 frames per monster), this does two potential checks.
+ *
+ * First it checks against the current sight_client which cycles through
+ * the players.
+ *
+ * If that check fails, it will check for all the secondary alerts and
+ * enemies.  if it can't find any, it will check for another player if
+ * it can find one other than the first one it checked.
+ */
 qboolean
 FindTarget(edict_t *self)
 {
-	edict_t		*client, *firstclient = NULL;
-	qboolean	heardit = false;
-	int			r;
-	edict_t		*ent;
-	int			flag;
-	qboolean	clientonly = true;
-	qboolean	e_infront = false;
-	vec3_t		v;
-	float		dist;
+	edict_t *client;
+	qboolean heardit;
+	int r;
+	edict_t *ent, *firstclient = NULL;
+	int flag;
+	qboolean clientonly = true;
+	qboolean e_infront = false;
+	vec3_t v;
+	float dist;
+
+	if (!self)
+	{
+		return false;
+	}
 
 //FIXME: wakeup_distance -1 never look?
 	if(self->classID == CID_OGLE)
@@ -1340,15 +1343,18 @@ FindTarget(edict_t *self)
 		return false;
 	}
 
-	if(self->ai_mood_flags&AI_MOOD_FLAG_IGNORE_ENEMY)
-	{//being forced to use buoys, and ignore enemy until get to forced_buoy
-		return false;
-	}
-
 	/* if the first spawnflag bit is set, the monster
 	   will only wake up on really seeing the player,
 	   not another monster getting angry or hearing
 	   something */
+
+	heardit = false;
+
+	if(self->ai_mood_flags & AI_MOOD_FLAG_IGNORE_ENEMY)
+	{
+		/* being forced to use buoys, and ignore enemy until get to forced_buoy */
+		return false;
+	}
 
 // revised behavior so they will wake up if they "see" a player make a noise
 // but not weapon impact/explosion noises
@@ -1498,8 +1504,10 @@ startcheck:
 	}
 	else if (heardit)
 	{
-		if (client->owner->flags & FL_NOTARGET)
-			goto nextcheck;
+		if ((client->owner) && (client->owner->flags & FL_NOTARGET))
+		{
+			return false;
+		}
 	}
 	else
 		goto nextcheck;
