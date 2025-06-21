@@ -746,6 +746,7 @@ set(GL1-Source
 	${REF_SRC_DIR}/gl1/gl1_warp.c
 	${REF_SRC_DIR}/gl1/gl1_sdl.c
 	${REF_SRC_DIR}/gl1/gl1_buffer.c
+	${REF_SRC_DIR}/files/common.c
 	${REF_SRC_DIR}/files/light.c
 	${REF_SRC_DIR}/files/maps.c
 	${REF_SRC_DIR}/files/mesh.c
@@ -792,6 +793,7 @@ set(GL3-Source
 	${REF_SRC_DIR}/gl3/gl3_surf.c
 	${REF_SRC_DIR}/gl3/gl3_warp.c
 	${REF_SRC_DIR}/gl3/gl3_shaders.c
+	${REF_SRC_DIR}/files/common.c
 	${REF_SRC_DIR}/files/glshaders.c
 	${REF_SRC_DIR}/files/light.c
 	${REF_SRC_DIR}/files/maps.c
@@ -845,6 +847,7 @@ set(GL4-Source
 	${REF_SRC_DIR}/gl4/gl4_surf.c
 	${REF_SRC_DIR}/gl4/gl4_warp.c
 	${REF_SRC_DIR}/gl4/gl4_shaders.c
+	${REF_SRC_DIR}/files/common.c
 	${REF_SRC_DIR}/files/glshaders.c
 	${REF_SRC_DIR}/files/light.c
 	${REF_SRC_DIR}/files/maps.c
@@ -898,6 +901,7 @@ set(SOFT-Source
 	${REF_SRC_DIR}/soft/sw_sprite.c
 	${REF_SRC_DIR}/soft/sw_surf.c
 	${REF_SRC_DIR}/soft/sw_warp.c
+	${REF_SRC_DIR}/files/common.c
 	${REF_SRC_DIR}/files/light.c
 	${REF_SRC_DIR}/files/maps.c
 	${REF_SRC_DIR}/files/mesh.c
@@ -942,6 +946,7 @@ set(VK-Source
 	${REF_SRC_DIR}/vk/vk_validation.c
 	${REF_SRC_DIR}/vk/vk_warp.c
 	${REF_SRC_DIR}/vk/volk/volk.c
+	${REF_SRC_DIR}/files/common.c
 	${REF_SRC_DIR}/files/light.c
 	${REF_SRC_DIR}/files/maps.c
 	${REF_SRC_DIR}/files/mesh.c
