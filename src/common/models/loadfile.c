@@ -506,15 +506,9 @@ Mod_LoadAndStoreModel(const char *name)
 	memcpy(namewe, name, len);
 	namewe[len] = 0;
 
-	if (!strcmp(ext, "sp2"))
+	if (!strcmp(ext, "sp2") || !strcmp(ext, "spr"))
 	{
 		filesize = FS_LoadFile(name, &buffer);
-	}
-	else if (!strcmp(ext, "spr"))
-	{
-		Com_DPrintf("%s: %s is unsupported, and should be converted to sp2.\n",
-			__func__, name);
-		filesize = -1;
 	}
 	else if (!strcmp(ext, "png") || !strcmp(ext, "tga"))
 	{
@@ -611,6 +605,91 @@ Mod_GetModelFrameInfo(const char *name, int num, float *mins, float *maxs)
 			Mod_UpdateMinMaxByFrames(paliashdr, num, num + 1, mins, maxs);
 		}
 	}
+}
+
+byte *
+Mod_LoadEmbededLMP(const char *mod_name, int *width, int *height, int *bitsPerPixel)
+{
+	char mainname[MAX_QPATH], texture_index[MAX_QPATH], *mainfile;
+	size_t len;
+	byte *pic;
+
+	mainfile = strstr(mod_name, ".bsp#");
+
+	/* Container is not BSP */
+	if (!mainfile)
+	{
+		mainfile = strstr(mod_name, ".spr#");
+	}
+
+	/* Container is not SPR */
+	if (!mainfile)
+	{
+		mainfile = strstr(mod_name, ".mdl#");
+	}
+
+	/* Container is not MDL */
+	if (!mainfile)
+	{
+		mainfile = strstr(mod_name, ".md2#");
+	}
+
+	/* Unknow container */
+	if (!mainfile)
+	{
+		return NULL;
+	}
+
+	/* get bsp file path */
+	len = Q_min(mainfile - mod_name + 4, sizeof(mainname) - 1);
+	memcpy(mainname, mod_name, len);
+	mainname[len] = 0;
+
+	/* get texture id */
+	Q_strlcpy(texture_index, mod_name + len + 1, sizeof(texture_index));
+	/* remove ext */
+	texture_index[strlen(texture_index) - 4] = 0;
+
+	if ((!strcmp(mainname + strlen(mainname) - 4, ".mdl")) ||
+		(!strcmp(mainname + strlen(mainname) - 4, ".md2")))
+	{
+		/* Could have some embded image in cached object */
+		const model_t *mod;
+
+		mod = Mod_FindModel(mainname);
+		if (!mod)
+		{
+			mod = Mod_LoadAndStoreModel(mainname);
+		}
+
+		if (!mod)
+		{
+			return NULL;
+		}
+
+		pic = Mod_LoadEmbdedImage(mainname, strtol(texture_index, (char **)NULL, 10),
+			mod->extradata, mod->extradatasize, width, height, bitsPerPixel);
+	}
+	else
+	{
+		byte *raw;
+
+		/* load the file */
+		len = FS_LoadFile(mainname, (void **)&raw);
+
+		if (!raw || len <= 0)
+		{
+			/* no such file */
+			return NULL;
+		}
+
+		pic = Mod_LoadEmbdedImage(mainname, strtol(texture_index, (char **)NULL, 10),
+			raw, len, width, height, bitsPerPixel);
+
+		FS_FreeFile(raw);
+	}
+
+	return pic;
 }
 
 const dmdxframegroup_t *

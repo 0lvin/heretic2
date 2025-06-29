@@ -125,7 +125,7 @@ typedef struct
 	qboolean	(*Get_Crosshair)(vec3_t origin, byte *type);
 
 	void	(*S_StartSound)(vec3_t origin, int entnum, int entchannel, sfx_t *sfx, float fvol, float attenuation, float timeofs);
-	struct sfx_s	*(*S_RegisterSound)(char *name);
+	struct sfx_s	*(*S_RegisterSound)(const char *name);
 	struct model_s *(*RegisterModel) (const char *name);
 
 	int		(*GetEffect)(centity_t *ent, int flags, char *format, ...);

@@ -516,6 +516,25 @@ typedef struct
 	dsprframe_t frames[1]; /* variable sized */
 } dsprite_t;
 
+/* Quake 1 Sprite */
+
+#define IDQ1SPRITEHEADER (('P' << 24) + ('S' << 16) + ('D' << 8) + 'I') /* little-endian "IDSP" */
+#define IDQ1SPRITE_VERSION 1
+
+typedef struct
+{
+	int ident;
+	int version;
+
+	int type;                   /* See below */
+	float radius;               /* Bounding Radius */
+	int maxwidth;               /* Width of the largest frame */
+	int maxheight;              /* Height of the largest frame */
+	int nframes;                /* Number of frames */
+	float beamlength;
+	int synchtype;              /* 0 = synchron 1 = random */
+} dq1sprite_t;
+
 /* .WAL texture file format */
 
 #define MIPLEVELS 4
@@ -1317,6 +1336,99 @@ typedef struct
 	int firstface, numfaces;   /* submodels just draw faces without
 							      walking the bsp tree */
 } dh2model_t;
+
+/* HalfLife 1 BSP */
+#define BSPHL1VERSION 30
+
+/* Quake 3 BSP */
+#define BSPQ3VERSION 46
+#define HEADER_Q3LUMPS 17
+
+#define LUMP_BSP46_ENTITIES 0
+#define LUMP_BSP46_SHADERS 1
+#define LUMP_BSP46_PLANES 2
+#define LUMP_BSP46_NODES 3
+#define LUMP_BSP46_LEAFS 4
+#define LUMP_BSP46_LEAFSURFACES 5
+#define LUMP_BSP46_LEAFBRUSHES 6
+#define LUMP_BSP46_MODELS 7
+#define LUMP_BSP46_BRUSHES 8
+#define LUMP_BSP46_BRUSHSIDES 9
+#define LUMP_BSP46_DRAWVERTS 10
+#define LUMP_BSP46_DRAWINDEXES 11
+#define LUMP_BSP46_FOGS 12
+#define LUMP_BSP46_SURFACES 13
+#define LUMP_BSP46_LIGHTMAPS 14
+#define LUMP_BSP46_LIGHTGRID 15
+#define LUMP_BSP46_VISIBILITY 16
+
+typedef struct {
+	float mins[3], maxs[3];
+	int firstface, numfaces; /* submodels just draw faces without
+							    walking the bsp tree */
+	int firstbrush, numbrushes;
+} dq3model_t;
+
+typedef struct {
+	char shader[64];
+	int surface_flags;
+	int content_flags;
+} dshader_t;
+
+/* planes x^1 is allways the opposite of plane x */
+typedef struct {
+	vec3_t normal;
+	float dist;
+} dq3plane_t;
+
+typedef struct {
+	unsigned int planenum;
+	int children[2];         /* negative numbers are -(leafs+1), not nodes */
+	int mins[3];             /* for frustom culling */
+	int maxs[3];
+} dq3node_t;
+
+typedef struct {
+	int cluster; /* -1 = opaque cluster */
+	int area;
+
+	int mins[3]; /* for frustum culling */
+	int maxs[3];
+
+	unsigned firstleafface;
+	unsigned numleaffaces;
+
+	unsigned int firstleafbrush;
+	unsigned int numleafbrushes;
+} dq3leaf_t;
+
+typedef struct {
+	unsigned int firstside;
+	unsigned int numsides;
+	unsigned int shader_index; /* the shader that determines the contents flags */
+} dq3brush_t;
+
+typedef struct {
+	int texinfo;
+	int fog;
+	int type;
+
+	int firstvert;
+	int numverts;
+
+	int firstindex;
+	int numindexes;
+
+	int lightmapnum;
+	int lightmap_x, lightmap_y;
+	int lightmap_width, lightmap_height;
+
+	vec3_t lightmap_origin;
+	vec3_t lightmap_vecs[3];	// for patches, [0] and [1] are lodbounds
+
+	int patch_width;
+	int patch_height;
+} dq3surface_t;
 
 #endif
 

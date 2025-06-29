@@ -56,5 +56,7 @@ void Mod_LoadFixImages(const char* mod_name, dmdx_t *pheader, qboolean internal)
 void Mod_LoadAnimGroupList(dmdx_t *pheader);
 dmdx_t *Mod_LoadAllocate(const char *mod_name, dmdx_t *dmdxheader, void **extradata);
 void *Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen);
+byte *Mod_LoadEmbdedImage(const char *mod_name, int texture_index, byte *raw, int len,
+	int *width, int *height, int *bitsPerPixel);
 
 #endif /* SRC_CLIENT_REFRESH_FILES_MODELS_H_ */

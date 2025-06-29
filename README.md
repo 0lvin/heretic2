@@ -135,21 +135,23 @@ Texture support:
 
 Sprites support:
 
-| Format | Original Game  | Comments                               |
-| ------ | -------------- | -------------------------------------- |
-| spr    | Quake          | Unfinished                             |
-| sp2    | Quake 2        |                                        |
-| atd    | Anachronox     | Convert first frame to surface texture |
-| png    |                | Convert to sp2                         |
-| tga    | ReRelease      | Convert to sp2                         |
+| Format | Original Game  | Comments                                       |
+| ------ | -------------- | ---------------------------------------------- |
+| spr    | Quake          | Unsupported grouped textures, converted to sp2 |
+| sp2    | Quake 2        |                                                |
+| atd    | Anachronox     | Convert first frame to surface texture         |
+| png    |                | Convert to sp2                                 |
+| tga    | ReRelease      | Convert to sp2                                 |
 
 Maps support:
 
 | Format | Version | Game                                       |
 | ------ | ------- | ------------------------------------------ |
 | IBSP   | 29      | Quake 1 / Hexen II (unfinished)            |
+| IBSP   | 30      | Half Life 1 (unfinished)                   |
 | IBSP   | 38      | Quake 2 / Anachronox / Kingpin / Heretic 2 |
 | IBSP   | 41      | Daikatana / SIN                            |
+| IBSP   | 46      | Quake 3 (broken)                           |
 | RBSP   | 1       | SIN                                        |
 | QBSP   | 38      | Quake 2 ReRelease                          |
 | BSPX   | 38      | Quake 2 ReRelease (Extension to IBSP)      |
@@ -272,9 +274,9 @@ Goals, fully finished goals could be checked in [here](CHANGELOG):
 * [ ] ReRelease: broken fire effect for Guardian.
 * [ ] ReRelease: fix invisiable entities in basicsjam1_ziutek,
 * [ ] ReRelease: make lightmap textures dynamic n64jam_palmlix,
-* [ ] ReRelease: support textures/*/*.mat load texture effects,
-* [ ] ReRelease: support textures/*/*_glow.png load,
-* [ ] ReRelease: support tactile/*/*.bnvib/.wav feedback load,
+* [ ] ReRelease: support `textures/*/*.mat load` texture effects,
+* [ ] ReRelease: support `textures/*/*_glow.png` load,
+* [ ] ReRelease: support `tactile/*/*.bnvib/.wav` feedback load,
 * [ ] ReRelease: console `~` incorrectly show multibyte characters,
 * [ ] ReRelease: basicsjam1_detrohogga: fix droptofloor startsolid,
 * [ ] ReRelease: fully implement `dynamic_light`,
@@ -307,11 +309,13 @@ Not a goal:
 
 # Additional requirements:
 
-Localization requires `Q2Game.kpf` file in root directory of game. If you
-like to support your language put it to localization/loc_<your language>.txt
-and extend MAX_FONTCODE to your [max symbol code](https://en.wikipedia.org/wiki/List_of_Unicode_characters).
-Used font and language file are defined by `g_language` and `r_ttffont`, as
-an example could be used fonts like [unifont](https://unifoundry.com/pub/unifont/unifont-15.0.06/font-builds/unifont-15.0.06.ttf).
+* ReRelease localization requires `Q2Game.kpf` file in root directory of game. If you
+  like to support your language put it to localization/loc_<your language>.txt
+  and extend MAX_FONTCODE to your [max symbol code](https://en.wikipedia.org/wiki/List_of_Unicode_characters).
+  Used font and language file are defined by `g_language` and `r_ttffont`, as
+  an example could be used fonts like [unifont](https://unifoundry.com/pub/unifont/unifont-15.0.06/font-builds/unifont-15.0.06.ttf).
+* Heretic 2 localization requires `levelmsg.txt` in game directory.
+* Hexen 2 localization requires `Strings.txt` in game directory.
 
 Additional models:
 

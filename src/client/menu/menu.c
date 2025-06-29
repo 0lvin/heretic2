@@ -32,6 +32,7 @@
 #include <ctype.h>
 #include "../header/client.h"
 #include "../header/console.h"
+#include "../input/header/gyro.h"
 #include "../sound/header/local.h"
 #include "header/qmenu.h"
 
@@ -160,6 +161,29 @@ M_PopMenu(void)
 		{
 			Cbuf_AddText("ogg toggle\n");
 		}
+	}
+}
+
+// Similar to M_PopMenu but silent and doesn't toggle music or paused state
+static void
+M_PopMenuSilent(void)
+{
+	if (m_menudepth < 1)
+	{
+		Com_Error(ERR_FATAL, "%s: depth < 1", __func__);
+	}
+
+	m_menudepth--;
+
+	if (m_menudepth)
+	{
+		m_active.draw = m_layers[m_menudepth].draw;
+		m_active.key  = m_layers[m_menudepth].key;
+	}
+	else
+	{
+		m_active.draw = NULL;
+		m_active.key  = NULL;
 	}
 }
 
@@ -1712,9 +1736,10 @@ M_Menu_ControllerAltButtons_f(void)
 static menuframework_s s_sticks_config_menu;
 
 static menulist_s s_stk_layout_box;
-static menuseparator_s s_stk_title_text[2];
+static menuseparator_s s_stk_title_text[3];
 static menuslider_s s_stk_expo_slider[2];
 static menuslider_s s_stk_deadzone_slider[4];
+static menuslider_s s_stk_threshold_slider;
 
 extern qboolean show_gyro;
 
@@ -1815,10 +1840,24 @@ Stick_MenuInit(void)
 		s_stk_deadzone_slider[i].generic.type = MTYPE_SLIDER;
 		s_stk_deadzone_slider[i].generic.x = 0;
 		s_stk_deadzone_slider[i].minvalue = 0.0f;
-		s_stk_deadzone_slider[i].maxvalue = 0.30f;
+		s_stk_deadzone_slider[i].maxvalue = 0.50f;
 		s_stk_deadzone_slider[i].slidestep = 0.01f;
 		s_stk_deadzone_slider[i].printformat = "%.2f";
 	}
+
+	s_stk_title_text[2].generic.type = MTYPE_SEPARATOR;
+	s_stk_title_text[2].generic.x = 48 * scale;
+	s_stk_title_text[2].generic.y = (y += 22);
+	s_stk_title_text[2].generic.name = "both sticks";
+
+	s_stk_threshold_slider.generic.name = "outer thresh";
+	s_stk_threshold_slider.generic.x = 0;
+	s_stk_threshold_slider.generic.y = (y += 14);
+	s_stk_threshold_slider.cvar = "joy_outer_threshold";
+	s_stk_threshold_slider.minvalue = 0.0f;
+	s_stk_threshold_slider.maxvalue = 0.30f;
+	s_stk_threshold_slider.slidestep = 0.01f;
+	s_stk_threshold_slider.printformat = "%.2f";
 
 	Menu_AddItem(&s_sticks_config_menu, (void *)&s_stk_layout_box);
 	Menu_AddItem(&s_sticks_config_menu, (void *)&s_stk_title_text[0]);
@@ -1829,6 +1868,8 @@ Stick_MenuInit(void)
 	Menu_AddItem(&s_sticks_config_menu, (void *)&s_stk_expo_slider[1]);
 	Menu_AddItem(&s_sticks_config_menu, (void *)&s_stk_deadzone_slider[2]);
 	Menu_AddItem(&s_sticks_config_menu, (void *)&s_stk_deadzone_slider[3]);
+	Menu_AddItem(&s_sticks_config_menu, (void *)&s_stk_title_text[2]);
+	Menu_AddItem(&s_sticks_config_menu, (void *)&s_stk_threshold_slider);
 
 	Menu_Center(&s_sticks_config_menu);
 }
@@ -1863,17 +1904,24 @@ M_Menu_Stick_f(void)
 static menuframework_s s_gyro_menu;
 
 static menulist_s s_gyro_mode_box;
-static menulist_s s_turning_axis_box;
+static menulist_s s_gyro_space_box;
+static menulist_s s_gyro_local_roll_box;
 static menuslider_s s_gyro_yawsensitivity_slider;
 static menuslider_s s_gyro_pitchsensitivity_slider;
-static menulist_s s_gyro_invertyaw_box;
-static menulist_s s_gyro_invertpitch_box;
 static menuslider_s s_gyro_tightening_slider;
+static menuslider_s s_gyro_smoothing_slider;
+static menulist_s s_gyro_acceleration_box;
+static menuslider_s s_gyro_accel_mult_slider;
+static menuslider_s s_gyro_accel_lower_thresh_slider;
+static menuslider_s s_gyro_accel_upper_thresh_slider;
 static menuseparator_s s_calibrating_text[2];
 static menuaction_s s_calibrate_gyro;
 
 extern void StartCalibration(void);
 extern qboolean IsCalibrationZero(void);
+
+static void M_Menu_Joy_f(void);
+static void M_Menu_Gyro_f(void);
 
 static void
 CalibrateGyroFunc(void *unused)
@@ -1907,21 +1955,40 @@ GyroModeFunc(void *unused)
 }
 
 static void
-TurningAxisFunc(void *unused)
+GyroSpaceFunc(void *unused)
 {
-	Cvar_SetValue("gyro_turning_axis", (int)s_turning_axis_box.curvalue);
+	Cvar_SetValue("gyro_space", s_gyro_space_box.curvalue);
+
+	// Force the menu to refresh.
+	M_PopMenuSilent();
+	M_Menu_Gyro_f();
 }
 
 static void
-InvertGyroYawFunc(void *unused)
+GyroLocalRollFunc(void *unused)
 {
-	Cvar_SetValue("gyro_yawsensitivity", -Cvar_VariableValue("gyro_yawsensitivity"));
+	Cvar_SetValue("gyro_local_roll", s_gyro_local_roll_box.curvalue);
 }
 
 static void
-InvertGyroPitchFunc(void *unused)
+GyroAccelerationFunc(void *unused)
 {
-	Cvar_SetValue("gyro_pitchsensitivity", -Cvar_VariableValue("gyro_pitchsensitivity"));
+	Cvar_SetValue("gyro_acceleration", s_gyro_acceleration_box.curvalue);
+
+	// Force the menu to refresh.
+	M_PopMenuSilent();
+	M_Menu_Gyro_f();
+}
+
+static void
+GyroAcceThreshFunc(void *unused)
+{
+	// Make sure the accel upper threshold is always greater than or equal to
+	// the accel lower threshold.
+	const float min_value = Cvar_VariableValue("gyro_accel_lower_thresh");
+	float value = Cvar_VariableValue("gyro_accel_upper_thresh");
+	value = ClampCvar(min_value, GYRO_MAX_ACCEL_THRESH, value);
+	Cvar_SetValue("gyro_accel_upper_thresh", value);
 }
 
 static void
@@ -1936,17 +2003,26 @@ Gyro_MenuInit(void)
 		0
 	};
 
-	static const char *axis_choices[] =
+	static const char *gyro_space_choices[] =
 	{
-		"yaw (turn)",
-		"roll (lean)",
+		"local",
+		"player",
+		"world",
 		0
 	};
 
-	static const char *yesno_names[] =
+	static const char *gyro_local_roll_choices[] =
 	{
-		"no",
-		"yes",
+		"off",
+		"on",
+		"on, invert",
+		0
+	};
+
+	static const char *onoff_names[] =
+	{
+		"off",
+		"on",
 		0
 	};
 
@@ -1964,21 +2040,37 @@ Gyro_MenuInit(void)
 	s_gyro_mode_box.itemnames = gyro_modes;
 	s_gyro_mode_box.curvalue = ClampCvar(0, 3, gyro_mode->value);
 
-	s_turning_axis_box.generic.type = MTYPE_SPINCONTROL;
-	s_turning_axis_box.generic.x = 0;
-	s_turning_axis_box.generic.y = (y += 10);
-	s_turning_axis_box.generic.name = "turning axis";
-	s_turning_axis_box.generic.callback = TurningAxisFunc;
-	s_turning_axis_box.itemnames = axis_choices;
-	s_turning_axis_box.curvalue = ClampCvar(0, 1, gyro_turning_axis->value);
+	s_gyro_space_box.generic.type = MTYPE_SPINCONTROL;
+	s_gyro_space_box.generic.x = 0;
+	s_gyro_space_box.generic.y = (y += 10);
+	s_gyro_space_box.generic.name = "gyro space";
+	s_gyro_space_box.generic.callback = GyroSpaceFunc;
+	s_gyro_space_box.itemnames = gyro_space_choices;
+	s_gyro_space_box.curvalue =
+		ClampCvar(GYRO_SPACE_LOCAL, GYRO_SPACE_WORLD,
+				  Cvar_VariableValue("gyro_space"));
+
+	if (s_gyro_space_box.curvalue == GYRO_SPACE_LOCAL)
+	{
+		s_gyro_local_roll_box.generic.type = MTYPE_SPINCONTROL;
+		s_gyro_local_roll_box.generic.x = 0;
+		s_gyro_local_roll_box.generic.y = (y += 10);
+		s_gyro_local_roll_box.generic.name = "local roll";
+		s_gyro_local_roll_box.generic.callback = GyroLocalRollFunc;
+		s_gyro_local_roll_box.itemnames = gyro_local_roll_choices;
+		s_gyro_local_roll_box.curvalue =
+			ClampCvar(GYRO_LOCAL_ROLL_OFF, GYRO_LOCAL_ROLL_INVERT,
+					  Cvar_VariableValue("gyro_local_roll"));
+	}
 
 	s_gyro_yawsensitivity_slider.generic.type = MTYPE_SLIDER;
 	s_gyro_yawsensitivity_slider.generic.x = 0;
 	s_gyro_yawsensitivity_slider.generic.y = (y += 20);
 	s_gyro_yawsensitivity_slider.generic.name = "yaw sensitivity";
 	s_gyro_yawsensitivity_slider.cvar = "gyro_yawsensitivity";
-	s_gyro_yawsensitivity_slider.minvalue = 0.1f;
-	s_gyro_yawsensitivity_slider.maxvalue = 8.0f;
+	s_gyro_yawsensitivity_slider.minvalue = GYRO_MIN_SENS;
+	s_gyro_yawsensitivity_slider.maxvalue = GYRO_MAX_SENS;
+	s_gyro_yawsensitivity_slider.slidestep = GYRO_STEP_SENS;
 	s_gyro_yawsensitivity_slider.abs = true;
 
 	s_gyro_pitchsensitivity_slider.generic.type = MTYPE_SLIDER;
@@ -1986,34 +2078,71 @@ Gyro_MenuInit(void)
 	s_gyro_pitchsensitivity_slider.generic.y = (y += 10);
 	s_gyro_pitchsensitivity_slider.generic.name = "pitch sensitivity";
 	s_gyro_pitchsensitivity_slider.cvar = "gyro_pitchsensitivity";
-	s_gyro_pitchsensitivity_slider.minvalue = 0.1f;
-	s_gyro_pitchsensitivity_slider.maxvalue = 8.0f;
+	s_gyro_pitchsensitivity_slider.minvalue = GYRO_MIN_SENS;
+	s_gyro_pitchsensitivity_slider.maxvalue = GYRO_MAX_SENS;
+	s_gyro_pitchsensitivity_slider.slidestep = GYRO_STEP_SENS;
 	s_gyro_pitchsensitivity_slider.abs = true;
-
-	s_gyro_invertyaw_box.generic.type = MTYPE_SPINCONTROL;
-	s_gyro_invertyaw_box.generic.x = 0;
-	s_gyro_invertyaw_box.generic.y = (y += 10);
-	s_gyro_invertyaw_box.generic.name = "invert yaw";
-	s_gyro_invertyaw_box.generic.callback = InvertGyroYawFunc;
-	s_gyro_invertyaw_box.itemnames = yesno_names;
-	s_gyro_invertyaw_box.curvalue = (Cvar_VariableValue("gyro_yawsensitivity") < 0);
-
-	s_gyro_invertpitch_box.generic.type = MTYPE_SPINCONTROL;
-	s_gyro_invertpitch_box.generic.x = 0;
-	s_gyro_invertpitch_box.generic.y = (y += 10);
-	s_gyro_invertpitch_box.generic.name = "invert pitch";
-	s_gyro_invertpitch_box.generic.callback = InvertGyroPitchFunc;
-	s_gyro_invertpitch_box.itemnames = yesno_names;
-	s_gyro_invertpitch_box.curvalue = (Cvar_VariableValue("gyro_pitchsensitivity") < 0);
 
 	s_gyro_tightening_slider.generic.type = MTYPE_SLIDER;
 	s_gyro_tightening_slider.generic.x = 0;
 	s_gyro_tightening_slider.generic.y = (y += 20);
-	s_gyro_tightening_slider.generic.name = "tightening thresh";
+	s_gyro_tightening_slider.generic.name = "tightening";
 	s_gyro_tightening_slider.cvar = "gyro_tightening";
-	s_gyro_tightening_slider.minvalue = 0.0f;
-	s_gyro_tightening_slider.maxvalue = 12.0f;
-	s_gyro_tightening_slider.slidestep = 0.5f;
+	s_gyro_tightening_slider.minvalue = GYRO_MIN_TIGHT_THRESH;
+	s_gyro_tightening_slider.maxvalue = GYRO_MAX_TIGHT_THRESH;
+	s_gyro_tightening_slider.slidestep = GYRO_STEP_TIGHT_THRESH;
+
+	s_gyro_smoothing_slider.generic.type = MTYPE_SLIDER;
+	s_gyro_smoothing_slider.generic.x = 0;
+	s_gyro_smoothing_slider.generic.y = (y += 10);
+	s_gyro_smoothing_slider.generic.name = "smoothing";
+	s_gyro_smoothing_slider.cvar = "gyro_smoothing";
+	s_gyro_smoothing_slider.minvalue = GYRO_MIN_SMOOTH_THRESH;
+	s_gyro_smoothing_slider.maxvalue = GYRO_MAX_SMOOTH_THRESH;
+	s_gyro_smoothing_slider.slidestep = GYRO_STEP_SMOOTH_THRESH;
+
+	s_gyro_acceleration_box.generic.type = MTYPE_SPINCONTROL;
+	s_gyro_acceleration_box.generic.x = 0;
+	s_gyro_acceleration_box.generic.y = (y += 20);
+	s_gyro_acceleration_box.generic.name = "acceleration";
+	s_gyro_acceleration_box.generic.callback = GyroAccelerationFunc;
+	s_gyro_acceleration_box.itemnames = onoff_names;
+	s_gyro_acceleration_box.curvalue =
+		(Cvar_VariableValue("gyro_acceleration") > 0);
+
+	if (s_gyro_acceleration_box.curvalue)
+	{
+		s_gyro_accel_mult_slider.generic.type = MTYPE_SLIDER;
+		s_gyro_accel_mult_slider.generic.x = 0;
+		s_gyro_accel_mult_slider.generic.y = (y += 10);
+		s_gyro_accel_mult_slider.generic.name = "multiplier";
+		s_gyro_accel_mult_slider.cvar = "gyro_accel_multiplier";
+		s_gyro_accel_mult_slider.minvalue = GYRO_MIN_ACCEL_MULT;
+		s_gyro_accel_mult_slider.maxvalue = GYRO_MAX_ACCEL_MULT;
+		s_gyro_accel_mult_slider.slidestep = GYRO_STEP_ACCEL_MULT;
+
+		s_gyro_accel_lower_thresh_slider.generic.type = MTYPE_SLIDER;
+		s_gyro_accel_lower_thresh_slider.generic.x = 0;
+		s_gyro_accel_lower_thresh_slider.generic.y = (y += 10);
+		s_gyro_accel_lower_thresh_slider.generic.name = "lower thresh";
+		s_gyro_accel_lower_thresh_slider.generic.callback = GyroAcceThreshFunc;
+		s_gyro_accel_lower_thresh_slider.cvar = "gyro_accel_lower_thresh";
+		s_gyro_accel_lower_thresh_slider.minvalue = GYRO_MIN_ACCEL_THRESH;
+		s_gyro_accel_lower_thresh_slider.maxvalue = GYRO_MAX_ACCEL_THRESH;
+		s_gyro_accel_lower_thresh_slider.slidestep = GYRO_STEP_ACCEL_THRESH;
+		s_gyro_accel_lower_thresh_slider.printformat = "%.0f";
+
+		s_gyro_accel_upper_thresh_slider.generic.type = MTYPE_SLIDER;
+		s_gyro_accel_upper_thresh_slider.generic.x = 0;
+		s_gyro_accel_upper_thresh_slider.generic.y = (y += 10);
+		s_gyro_accel_upper_thresh_slider.generic.name = "upper thresh";
+		s_gyro_accel_upper_thresh_slider.generic.callback = GyroAcceThreshFunc;
+		s_gyro_accel_upper_thresh_slider.cvar = "gyro_accel_upper_thresh";
+		s_gyro_accel_upper_thresh_slider.minvalue = GYRO_MIN_ACCEL_THRESH;
+		s_gyro_accel_upper_thresh_slider.maxvalue = GYRO_MAX_ACCEL_THRESH;
+		s_gyro_accel_upper_thresh_slider.slidestep = GYRO_STEP_ACCEL_THRESH;
+		s_gyro_accel_upper_thresh_slider.printformat = "%.0f";
+	}
 
 	s_calibrating_text[0].generic.type = MTYPE_SEPARATOR;
 	s_calibrating_text[0].generic.x = 48 * scale + 32;
@@ -2032,12 +2161,26 @@ Gyro_MenuInit(void)
 	s_calibrate_gyro.generic.callback = CalibrateGyroFunc;
 
 	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_mode_box);
-	Menu_AddItem(&s_gyro_menu, (void *)&s_turning_axis_box);
+	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_space_box);
+
+	if (s_gyro_space_box.curvalue == GYRO_SPACE_LOCAL)
+	{
+		Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_local_roll_box);
+	}
+
 	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_yawsensitivity_slider);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_pitchsensitivity_slider);
-	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_invertyaw_box);
-	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_invertpitch_box);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_tightening_slider);
+	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_smoothing_slider);
+	Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_acceleration_box);
+
+	if (s_gyro_acceleration_box.curvalue)
+	{
+		Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_accel_mult_slider);
+		Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_accel_lower_thresh_slider);
+		Menu_AddItem(&s_gyro_menu, (void *)&s_gyro_accel_upper_thresh_slider);
+	}
+
 	Menu_AddItem(&s_gyro_menu, (void *)&s_calibrating_text[0]);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_calibrating_text[1]);
 	Menu_AddItem(&s_gyro_menu, (void *)&s_calibrate_gyro);
@@ -2077,9 +2220,15 @@ M_Menu_Gyro_f(void)
 /*
  * JOY MENU
  */
+static menuslider_s s_joy_preset_slider;
+static menulist_s s_joy_preset_box;
+static menulist_s s_joy_advanced_box;
 static menulist_s s_joy_invertpitch_box;
-static menuslider_s s_joy_yawsensitivity_slider;
-static menuslider_s s_joy_pitchsensitivity_slider;
+static menuslider_s s_joy_yawspeed_slider;
+static menuslider_s s_joy_pitchspeed_slider;
+static menuslider_s s_joy_extra_yawspeed_slider;
+static menuslider_s s_joy_extra_pitchspeed_slider;
+static menuslider_s s_joy_ramp_time_slider;
 static menuslider_s s_joy_forwardsensitivity_slider;
 static menuslider_s s_joy_sidesensitivity_slider;
 static menuslider_s s_joy_haptic_slider;
@@ -2087,6 +2236,30 @@ static menuaction_s s_joy_stickcfg_action;
 static menuaction_s s_joy_gyro_action;
 static menuaction_s s_joy_customize_buttons_action;
 static menuaction_s s_joy_customize_alt_buttons_action;
+
+extern void IN_ApplyJoyPreset(void);
+extern qboolean IN_MatchJoyPreset(void);
+
+static void
+RefreshJoyMenuFunc(void *unused)
+{
+	M_PopMenuSilent();
+	M_Menu_Joy_f();
+}
+
+static void
+JoyPresetFunc(void *unused)
+{
+	IN_ApplyJoyPreset();
+	RefreshJoyMenuFunc(NULL);
+}
+
+static void
+JoyAdvancedFunc(void *unused)
+{
+	Cvar_SetValue("joy_advanced", s_joy_advanced_box.curvalue);
+	RefreshJoyMenuFunc(NULL);
+}
 
 static void
 CustomizeControllerButtonsFunc(void *unused)
@@ -2115,7 +2288,7 @@ ConfigGyroFunc(void *unused)
 static void
 InvertJoyPitchFunc(void *unused)
 {
-	Cvar_SetValue("joy_pitchsensitivity", -Cvar_VariableValue("joy_pitchsensitivity"));
+	Cvar_SetValue("joy_pitchspeed", -Cvar_VariableValue("joy_pitchspeed"));
 }
 
 static void
@@ -2128,30 +2301,118 @@ Joy_MenuInit(void)
 		0
 	};
 
+	static const char *custom_names[] =
+	{
+		"",
+		"custom",
+		"",
+		0,
+	};
+
 	extern qboolean show_haptic;
 	unsigned short int y = 0;
 
 	s_joy_menu.x = (int)(viddef.width * 0.50f);
 	s_joy_menu.nitems = 0;
 
-	s_joy_yawsensitivity_slider.generic.type = MTYPE_SLIDER;
-	s_joy_yawsensitivity_slider.generic.x = 0;
-	s_joy_yawsensitivity_slider.generic.y = y;
-	s_joy_yawsensitivity_slider.generic.name = "yaw sensitivity";
-	s_joy_yawsensitivity_slider.cvar = "joy_yawsensitivity";
-	s_joy_yawsensitivity_slider.minvalue = 0.0f;
-	s_joy_yawsensitivity_slider.maxvalue = 7.0f;
-	Menu_AddItem(&s_joy_menu, (void *)&s_joy_yawsensitivity_slider);
+	if (IN_MatchJoyPreset())
+	{
+		s_joy_preset_slider.generic.type = MTYPE_SLIDER;
+		s_joy_preset_slider.generic.x = 0;
+		s_joy_preset_slider.generic.y = y;
+		s_joy_preset_slider.generic.name = "look sensitivity";
+		s_joy_preset_slider.generic.callback = JoyPresetFunc;
+		s_joy_preset_slider.cvar = "joy_sensitivity";
+		s_joy_preset_slider.minvalue = 0.0f;
+		s_joy_preset_slider.maxvalue = 8.0f;
+		s_joy_preset_slider.slidestep = 1.0f;
+		s_joy_preset_slider.printformat = "%.0f";
+		Menu_AddItem(&s_joy_menu, (void *)&s_joy_preset_slider);
+	}
+	else // Display "custom"
+	{
+		s_joy_preset_box.generic.type = MTYPE_SPINCONTROL;
+		s_joy_preset_box.generic.x = 0;
+		s_joy_preset_box.generic.y = y;
+		s_joy_preset_box.generic.name = "look sensitivity";
+		s_joy_preset_box.generic.callback = JoyPresetFunc;
+		s_joy_preset_box.itemnames = custom_names;
+		s_joy_preset_box.curvalue = 1;
+		Menu_AddItem(&s_joy_menu, (void *)&s_joy_preset_box);
+	}
 
-	s_joy_pitchsensitivity_slider.generic.type = MTYPE_SLIDER;
-	s_joy_pitchsensitivity_slider.generic.x = 0;
-	s_joy_pitchsensitivity_slider.generic.y = (y += 10);
-	s_joy_pitchsensitivity_slider.generic.name = "pitch sensitivity";
-	s_joy_pitchsensitivity_slider.cvar = "joy_pitchsensitivity";
-	s_joy_pitchsensitivity_slider.minvalue = 0.0f;
-	s_joy_pitchsensitivity_slider.maxvalue = 7.0f;
-	s_joy_pitchsensitivity_slider.abs = true;
-	Menu_AddItem(&s_joy_menu, (void *)&s_joy_pitchsensitivity_slider);
+	s_joy_advanced_box.generic.type = MTYPE_SPINCONTROL;
+	s_joy_advanced_box.generic.x = 0;
+	s_joy_advanced_box.generic.y = (y += 10);
+	s_joy_advanced_box.generic.name = "show advanced";
+	s_joy_advanced_box.generic.callback = JoyAdvancedFunc;
+	s_joy_advanced_box.itemnames = yesno_names;
+	s_joy_advanced_box.curvalue = (Cvar_VariableValue("joy_advanced") > 0);
+	Menu_AddItem(&s_joy_menu, (void *)&s_joy_advanced_box);
+
+	if (s_joy_advanced_box.curvalue)
+	{
+		s_joy_yawspeed_slider.generic.type = MTYPE_SLIDER;
+		s_joy_yawspeed_slider.generic.x = 0;
+		s_joy_yawspeed_slider.generic.y = (y += 10);
+		s_joy_yawspeed_slider.generic.name = "yaw speed";
+		s_joy_yawspeed_slider.generic.callback = RefreshJoyMenuFunc;
+		s_joy_yawspeed_slider.cvar = "joy_yawspeed";
+		s_joy_yawspeed_slider.minvalue = 0.0f;
+		s_joy_yawspeed_slider.maxvalue = 720.0f;
+		s_joy_yawspeed_slider.slidestep = 10.0f;
+		s_joy_yawspeed_slider.printformat = "%.0f";
+		Menu_AddItem(&s_joy_menu, (void *)&s_joy_yawspeed_slider);
+
+		s_joy_pitchspeed_slider.generic.type = MTYPE_SLIDER;
+		s_joy_pitchspeed_slider.generic.x = 0;
+		s_joy_pitchspeed_slider.generic.y = (y += 10);
+		s_joy_pitchspeed_slider.generic.name = "pitch speed";
+		s_joy_pitchspeed_slider.generic.callback = RefreshJoyMenuFunc;
+		s_joy_pitchspeed_slider.cvar = "joy_pitchspeed";
+		s_joy_pitchspeed_slider.minvalue = 0.0f;
+		s_joy_pitchspeed_slider.maxvalue = 720.0f;
+		s_joy_pitchspeed_slider.slidestep = 10.0f;
+		s_joy_pitchspeed_slider.printformat = "%.0f";
+		s_joy_pitchspeed_slider.abs = true;
+		Menu_AddItem(&s_joy_menu, (void *)&s_joy_pitchspeed_slider);
+
+		s_joy_extra_yawspeed_slider.generic.type = MTYPE_SLIDER;
+		s_joy_extra_yawspeed_slider.generic.x = 0;
+		s_joy_extra_yawspeed_slider.generic.y = (y += 10);
+		s_joy_extra_yawspeed_slider.generic.name = "extra yaw speed";
+		s_joy_extra_yawspeed_slider.cvar = "joy_extra_yawspeed";
+		s_joy_extra_yawspeed_slider.generic.callback = RefreshJoyMenuFunc;
+		s_joy_extra_yawspeed_slider.minvalue = 0.0f;
+		s_joy_extra_yawspeed_slider.maxvalue = 720.0f;
+		s_joy_extra_yawspeed_slider.slidestep = 10.0f;
+		s_joy_extra_yawspeed_slider.printformat = "%.0f";
+		Menu_AddItem(&s_joy_menu, (void *)&s_joy_extra_yawspeed_slider);
+
+		s_joy_extra_pitchspeed_slider.generic.type = MTYPE_SLIDER;
+		s_joy_extra_pitchspeed_slider.generic.x = 0;
+		s_joy_extra_pitchspeed_slider.generic.y = (y += 10);
+		s_joy_extra_pitchspeed_slider.generic.name = "extra pitch speed";
+		s_joy_extra_pitchspeed_slider.cvar = "joy_extra_pitchspeed";
+		s_joy_extra_pitchspeed_slider.generic.callback = RefreshJoyMenuFunc;
+		s_joy_extra_pitchspeed_slider.minvalue = 0.0f;
+		s_joy_extra_pitchspeed_slider.maxvalue = 720.0f;
+		s_joy_extra_pitchspeed_slider.slidestep = 10.0f;
+		s_joy_extra_pitchspeed_slider.printformat = "%.0f";
+		Menu_AddItem(&s_joy_menu, (void *)&s_joy_extra_pitchspeed_slider);
+
+		s_joy_ramp_time_slider.generic.type = MTYPE_SLIDER;
+		s_joy_ramp_time_slider.generic.x = 0;
+		s_joy_ramp_time_slider.generic.y = (y += 10);
+		s_joy_ramp_time_slider.generic.name = "ramp time";
+		s_joy_ramp_time_slider.cvar = "joy_ramp_time";
+		s_joy_ramp_time_slider.generic.callback = RefreshJoyMenuFunc;
+		s_joy_ramp_time_slider.minvalue = 0.0f;
+		s_joy_ramp_time_slider.maxvalue = 1.0f;
+		s_joy_ramp_time_slider.slidestep = 0.05f;
+		s_joy_ramp_time_slider.printformat = "%.2f";
+		Menu_AddItem(&s_joy_menu, (void *)&s_joy_ramp_time_slider);
+	}
 
 	s_joy_invertpitch_box.generic.type = MTYPE_SPINCONTROL;
 	s_joy_invertpitch_box.generic.x = 0;
@@ -2159,7 +2420,7 @@ Joy_MenuInit(void)
 	s_joy_invertpitch_box.generic.name = "invert pitch";
 	s_joy_invertpitch_box.generic.callback = InvertJoyPitchFunc;
 	s_joy_invertpitch_box.itemnames = yesno_names;
-	s_joy_invertpitch_box.curvalue = (Cvar_VariableValue("joy_pitchsensitivity") < 0);
+	s_joy_invertpitch_box.curvalue = (Cvar_VariableValue("joy_pitchspeed") < 0);
 	Menu_AddItem(&s_joy_menu, (void *)&s_joy_invertpitch_box);
 
 	s_joy_forwardsensitivity_slider.generic.type = MTYPE_SLIDER;
@@ -3643,6 +3904,7 @@ Create_Savestrings(void)
 
 		FS_Read(tmp, sizeof(tmp), f);
 		FS_FCloseFile(f);
+		tmp[sizeof(tmp) - 1] = 0;
 
 		if (strlen(tmp) > 12)
 		{

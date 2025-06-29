@@ -379,7 +379,7 @@ VID_ShutdownRenderer(void)
 		memset(&re, 0, sizeof(re));
 	}
 
-	// Declare the refresher as inactive
+	/* Declare the refresher as inactive */
 	ref_active = false;
 }
 
@@ -514,10 +514,14 @@ VID_CheckChanges(void)
 		{
 			rs = RESTART_FULL;
 			vid_fullscreen->modified = false;
-		} else {
+		}
+		else
+		{
 			rs = RESTART_NO;
 		}
-	} else {
+	}
+	else
+	{
 		rs = restart_state;
 		restart_state = RESTART_NO;
 	}

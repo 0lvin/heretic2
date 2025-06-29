@@ -844,7 +844,10 @@ ReadField(FILE *f, field_t *field, byte *base)
 			else
 			{
 				*(char **)p = gi.TagMalloc(32 + len, TAG_LEVEL);
-				fread(*(char **)p, len, 1, f);
+				if (fread(*(char **)p, len, 1, f) != 1)
+				{
+					gi.error("%s: can't tag", __func__);
+				}
 			}
 
 			break;
@@ -912,7 +915,12 @@ ReadField(FILE *f, field_t *field, byte *base)
 							__func__, (int)sizeof(funcStr));
 				}
 
-				fread (funcStr, len, 1, f);
+				if (fread (funcStr, len, 1, f) != 1)
+				{
+					gi.error("%s: can't function name", __func__);
+				}
+
+				funcStr[sizeof(funcStr) - 1] = 0;
 
 				if ( !(*(byte **)p = FindFunctionByName (funcStr)) )
 				{
@@ -937,7 +945,12 @@ ReadField(FILE *f, field_t *field, byte *base)
 							__func__, (int)sizeof(funcStr));
 				}
 
-				fread (funcStr, len, 1, f);
+				if (fread(funcStr, len, 1, f) != 1)
+				{
+					gi.error("%s: can't move name", __func__);
+				}
+
+				funcStr[sizeof(funcStr) - 1] = 0;
 
 				if ( !(*(mmove_t **)p = FindMmoveByName (funcStr)) )
 				{
@@ -990,7 +1003,11 @@ ReadClient(FILE *f, gclient_t *client)
 {
 	field_t *field;
 
-	fread(client, sizeof(*client), 1, f);
+	if (fread(client, sizeof(*client), 1, f) != 1)
+	{
+		fclose(f);
+		gi.error("%s: can't read client", __func__);
+	}
 
 	for (field = clientfields; field->name; field++)
 	{
@@ -1087,7 +1104,11 @@ ReadGame(const char *filename)
 		gi.error("%s: Couldn't open %s", __func__, filename);
 	}
 
-	fread (str, sizeof(str), 1, f);
+	if (fread(str, sizeof(str), 1, f) != 1)
+	{
+		fclose(f);
+		gi.error("%s: can't read save file", __func__);
+	}
 
 	if (strcmp (str, __DATE__))
 	{
@@ -1101,7 +1122,12 @@ ReadGame(const char *filename)
 	g_edicts = (edict_t *) gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;
 
-	fread(&game, sizeof(game), 1, f);
+	if (fread(&game, sizeof(game), 1, f) != 1)
+	{
+		fclose(f);
+		gi.error("%s: can't read game", __func__);
+	}
+
 	game.clients = gi.TagMalloc(game.maxclients * sizeof(game.clients[0]),
 			TAG_GAME);
 
@@ -1314,9 +1340,13 @@ ReadEdict(FILE *f, edict_t *ent)
 	msgs = ent->msgQ.msgs;
 
 	s = ent->script;
-	fread(ent, sizeof(*ent), 1, f);
-	ent->script = s;
+	if (fread(ent, sizeof(*ent), 1, f) != 1)
+	{
+		fclose(f);
+		gi.error("%s: can't read edict", __func__);
+	}
 
+	ent->script = s;
 	ent->s.clientEffects.buf = temp;
 
 	ent->msgQ.msgs = msgs;
@@ -1341,7 +1371,11 @@ ReadLevelLocals(FILE *f)
 	char		temp[20];
 	int			i;
 
-	fread(&level, sizeof(level), 1, f);
+	if (fread(&level, sizeof(level), 1, f) != 1)
+	{
+		fclose(f);
+		gi.error("%s: can't read level", __func__);
+	}
 
 	for (field = levelfields; field->name; field++)
 	{
@@ -1413,7 +1447,11 @@ ReadLevel(const char *filename)
 	globals.num_edicts = maxclients->value + 1;
 
 	/* check edict size */
-	fread(&i, sizeof(i), 1, f);
+	if (fread(&i, sizeof(i), 1, f) != 1)
+	{
+		fclose(f);
+		gi.error("%s: can't read edict size", __func__);
+	}
 
 	if (i != sizeof(edict_t))
 	{

@@ -412,6 +412,7 @@ extern void SP_obj_wheelbarrow(edict_t *ent);
 extern void SP_obj_woodpile(edict_t *ent);
 extern void SP_path_corner(edict_t * self);
 extern void SP_point_combat(edict_t * self);
+extern void SP_quake_light_flame(edict_t * self);
 extern void SP_rotating_light(edict_t * self);
 extern void SP_script_runner (edict_t *ent);
 extern void SP_sound_ambient_andoria (edict_t *ent);

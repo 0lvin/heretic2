@@ -228,15 +228,6 @@ float Vector2Length(vec3_t p1, vec3_t p2)
 	return sqrt(x * x + y * y);
 }
 
-vec_t VectorLengthSquared(vec3_t v)
-{
-	float	length;
-
-	length = DotProduct(v, v);
-
-	return length;
-}
-
 void VectorDegreesToRadians (vec3_t in, vec3_t out)
 {
 	//assert(out != vec3_origin);

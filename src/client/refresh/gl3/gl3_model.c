@@ -281,8 +281,8 @@ Mod_LoadQFaces(gl3model_t *loadmodel, const byte *mod_base, const lump_t *l,
 			out->lmvlen[0] = 1.0f;
 			out->lmvlen[1] = 1.0f;
 
-			Mod_CalcSurfaceExtents(loadmodel->surfedges, loadmodel->vertexes,
-				loadmodel->edges, out);
+			Mod_CalcSurfaceExtents(loadmodel->surfedges, loadmodel->numsurfedges,
+				loadmodel->vertexes, loadmodel->edges, out);
 
 			lightofs = in->lightofs;
 		}
@@ -513,8 +513,7 @@ Mod_ForName(const char *name, gl3model_t *parent_model, qboolean crash)
 				mod->extradata = Mod_LoadModel(mod->name, buf, modfilelen,
 					mod->mins, mod->maxs,
 					(struct image_s ***)&mod->skins, &mod->numskins,
-					(findimage_t)GL3_FindImage, (loadimage_t)GL3_LoadPic,
-					&(mod->type));
+					(findimage_t)GL3_FindImage, &(mod->type));
 				if (!mod->extradata)
 				{
 					Com_Error(ERR_DROP, "%s: Failed to load %s",
@@ -654,8 +653,7 @@ GL3_RegisterModel(const char *name)
 		{
 			/* numframes is unused for SP2 but lets set it also  */
 			mod->numframes = Mod_ReLoadSkins(name, (struct image_s **)mod->skins,
-				(findimage_t)GL3_FindImage, (loadimage_t)GL3_LoadPic,
-				mod->extradata, mod->type);
+				(findimage_t)GL3_FindImage, mod->extradata, mod->type);
 		}
 	}
 

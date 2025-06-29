@@ -16,7 +16,6 @@ void VectorAverage(vec3_t veca, vec3_t vecb, vec3_t vecc);
 void VectorGetOffsetOrigin(vec3_t off, vec3_t org, vec_t degree, vec3_t out);
 vec_t VectorSeparation(vec3_t ina, vec3_t inb);
 void VectorRandomCopy(vec3_t, vec3_t, float);
-vec_t VectorLengthSquared(vec3_t v);
 void VectorRandomAdd(vec3_t veca, vec3_t vecb, vec3_t out);
 float Vector2Length(vec3_t p1, vec3_t p2);
 void Create_rand_relect_vect(vec3_t in, vec3_t out);
