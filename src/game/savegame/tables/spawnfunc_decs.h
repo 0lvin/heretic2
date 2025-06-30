@@ -481,7 +481,6 @@ extern void SP_trigger_push(edict_t * self);
 extern void SP_trigger_puzzle (edict_t *ent);
 extern void SP_trigger_quake (edict_t *ent);
 extern void SP_trigger_quit_to_menu(edict_t *self);
-extern void SP_trigger_Relay (edict_t *ent);
 extern void SP_trigger_relay(edict_t * self);
 extern void SP_trigger_teleport(edict_t * self);
 extern void SP_turret_base(edict_t * self);

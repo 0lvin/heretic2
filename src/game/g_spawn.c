@@ -38,7 +38,6 @@ typedef struct
 {
 	const char *name;
 	void (*spawn)(edict_t *ent);
-	int		CID;
 } spawn_t;
 
 static spawn_t spawns[] = {
@@ -293,6 +292,307 @@ Spawn_CheckCoop_MapHacks(edict_t *ent)
 	return false;
 }
 
+typedef struct {
+	const char *name;
+	int cid;
+} names2cid_t;
+
+static names2cid_t names2cid[] = {
+	{"func_button", CID_BUTTON},
+	{"func_door", CID_FUNC_DOOR},
+	{"func_door_rotating", CID_FUNC_ROTATE},
+	{"func_rotating", CID_FUNC_ROTATE},
+	{"trigger_Activate", CID_TRIGGER},
+	{"trigger_always", CID_TRIGGER},
+	{"trigger_Damage", CID_TRIG_DAMAGE},
+	{"trigger_Deactivate", CID_TRIGGER},
+	{"trigger_counter", CID_TRIGGER},
+	{"trigger_elevator", CID_TRIGGER},
+	{"trigger_fogdensity", CID_TRIGGER},
+	{"trigger_lightning", CID_TRIGGER},
+	{"trigger_mappercentage", CID_TRIGGER},
+	{"trigger_quit_to_menu", CID_TRIGGER},
+	{"trigger_mission_give", CID_TRIGGER},
+	{"trigger_mission_take", CID_TRIGGER},
+	{"trigger_multiple", CID_TRIGGER},
+	{"trigger_playerpushbutton", CID_TRIGGER},
+	{"trigger_playerpushlever", CID_TRIGGER},
+	{"trigger_playerusepuzzle", CID_TRIGGER},
+	{"trigger_push", CID_TRIG_PUSH},
+	{"trigger_puzzle", CID_TRIGGER},
+	{"trigger_once", CID_TRIGGER},
+	{"trigger_quake", CID_TRIGGER},
+	{"trigger_relay", CID_TRIGGER},
+	{"trigger_farclip", CID_TRIGGER},
+	{"trigger_endgame", CID_TRIGGER},
+	{"misc_teleporter", CID_TELEPORTER},
+	{"misc_update_spawner", CID_TRIGGER},
+	{"monster_gorgon", CID_GORGON},
+	{"monster_rat", CID_RAT},
+	{"monster_plagueElf", CID_PLAGUEELF},
+	{"monster_fish", CID_FISH},
+	{"monster_harpy", CID_HARPY},
+	{"monster_spreader", CID_SPREADER},
+	{"monster_assassin", CID_ASSASSIN},
+	{"monster_chicken", CID_CHICKEN},
+	{"monster_tcheckrik_male", CID_TCHECKRIK},
+	{"monster_gkrokon", CID_GKROKON},
+	{"monster_gorgon_leader", CID_GORGON},
+	{"monster_rat_giant", CID_RAT},
+	{"monster_palace_plague_guard", CID_PLAGUEELF},
+	{"monster_palace_plague_guard_invisible", CID_PLAGUEELF},
+	{"monster_elflord", CID_ELFLORD},
+	{"monster_ssithra", CID_SSITHRA},
+	{"monster_mssithra", CID_MSSITHRA},
+	{"monster_chkroktk", CID_RAT},
+	{"monster_tcheckrik_female", CID_TCHECKRIK},
+	{"monster_tcheckrik_mothers", CID_MOTHER},
+	{"monster_high_priestess", CID_HIGHPRIESTESS},
+	{"monster_ogle", CID_OGLE},
+	{"monster_seraph_overlord", CID_SERAPH_OVERLORD},
+	{"monster_seraph_guard", CID_SERAPH_GUARD},
+	{"monster_bee", CID_BEE},
+	{"monster_morcalavin", CID_MORK},
+	{"monster_trial_beast", CID_TBEAST},
+	{"monster_imp", CID_IMP},
+	{"character_corvus1", CID_CORVUS},
+	{"character_corvus2", CID_CORVUS2},
+	{"character_corvus3", CID_CORVUS3},
+	{"character_corvus4", CID_CORVUS4},
+	{"character_corvus5", CID_CORVUS5},
+	{"character_corvus6", CID_CORVUS6},
+	{"character_corvus7", CID_CORVUS7},
+	{"character_corvus8", CID_CORVUS8},
+	{"character_corvus9", CID_CORVUS9},
+	{"character_dranor", CID_DRANOR},
+	{"character_elflord", CID_C_ELFLORD},
+	{"character_highpriestess", CID_C_HIGHPRIESTESS},
+	{"character_highpriestess2", CID_C_HIGHPRIESTESS2},
+	{"character_morcalavin", CID_C_MORCALAVIN},
+	{"character_sidhe_guard", CID_PLAGUEELF},
+	{"character_siernan1", CID_C_SIERNAN1},
+	{"character_siernan2", CID_C_SIERNAN2},
+	{"character_ssithra_scout", CID_SSITHRA_SCOUT},
+	{"character_ssithra_victim", CID_SSITHRA_VICTIM},
+	{"character_tome", CID_C_TOME},
+	{"breakable_brush", CID_BBRUSH},
+	{"light_walltorch", CID_LIGHT},
+	{"light_floortorch", CID_LIGHT},
+	{"light_torch1", CID_LIGHT},
+	{"light_gem2", CID_LIGHT},
+	{"light_chandelier1", CID_LIGHT},
+	{"light_chandelier2", CID_LIGHT},
+	{"light_chandelier3", CID_LIGHT},
+	{"light_lantern1", CID_LIGHT},
+	{"light_lantern2", CID_LIGHT},
+	{"light_lantern3", CID_LIGHT},
+	{"light_lantern4", CID_LIGHT},
+	{"light_lantern5", CID_LIGHT},
+	{"light_buglight", CID_LIGHT},
+	{"env_fire", CID_OBJECT},
+	{"env_dust", CID_OBJECT},
+	{"env_smoke", CID_OBJECT},
+	{"env_mist", CID_OBJECT},
+	{"env_bubbler", CID_OBJECT},
+	{"env_water_drip", CID_OBJECT},
+	{"env_water_fountain", CID_OBJECT},
+	{"env_waterfall_base", CID_OBJECT},
+	{"env_sun1", CID_OBJECT},
+	{"env_muck", CID_OBJECT},
+	{"obj_andwallhanging", CID_OBJECT},
+	{"obj_banner", CID_OBJECT},
+	{"obj_banneronpole", CID_OBJECT},
+	{"obj_barrel", CID_OBJECT},
+	{"obj_barrel_explosive", CID_OBJECT},
+	{"obj_barrel_metal", CID_OBJECT},
+	{"obj_basket", CID_OBJECT},
+	{"obj_bench", CID_OBJECT},
+	{"obj_bigcrystal", CID_OBJECT},
+	{"obj_biotank", CID_OBJECT},
+	{"obj_bloodsplat", CID_OBJECT},
+	{"obj_bookclosed", CID_OBJECT},
+	{"obj_bookopen", CID_OBJECT},
+	{"obj_bottle1", CID_OBJECT},
+	{"obj_broom", CID_OBJECT},
+	{"obj_bucket", CID_OBJECT},
+	{"obj_bush1", CID_OBJECT},
+	{"obj_bush2", CID_OBJECT},
+	{"obj_cactus", CID_OBJECT},
+	{"obj_cactus3", CID_OBJECT},
+	{"obj_cactus4", CID_OBJECT},
+	{"obj_cauldron", CID_OBJECT},
+	{"obj_chair1", CID_OBJECT},
+	{"obj_chair2", CID_OBJECT},
+	{"obj_chair3", CID_OBJECT},
+	{"obj_chest1", CID_OBJECT},
+	{"obj_chest2", CID_OBJECT},
+	{"obj_chest3", CID_OBJECT},
+	{"obj_choppeddude", CID_OBJECT},
+	{"obj_claybowl", CID_OBJECT},
+	{"obj_clayjar", CID_OBJECT},
+	{"obj_cocoon", CID_OBJECT},
+	{"obj_cocoonopen", CID_OBJECT},
+	{"obj_cog1", CID_OBJECT},
+	{"obj_corpse1", CID_OBJECT},
+	{"obj_corpse2", CID_OBJECT},
+	{"obj_corpse_ogle", CID_OBJECT},
+	{"obj_corpse_ssithra", CID_OBJECT},
+	{"obj_dying_elf", CID_OBJECT},
+	{"obj_eggpan", CID_OBJECT},
+	{"obj_eyeball_jar", CID_OBJECT},
+	{"obj_firepot", CID_OBJECT},
+	{"obj_fishhead1", CID_OBJECT},
+	{"obj_fishhead2", CID_OBJECT},
+	{"obj_fishtrap", CID_OBJECT},
+	{"obj_flagonpole", CID_OBJECT},
+	{"obj_floor_candelabrum", CID_OBJECT},
+	{"obj_fountain_fish", CID_OBJECT},
+	{"obj_frypan", CID_OBJECT},
+	{"obj_gascan", CID_OBJECT},
+	{"obj_gorgonbones", CID_OBJECT},
+	{"obj_grass", CID_OBJECT},
+	{"obj_hangingdude", CID_OBJECT},
+	{"obj_hanging_ogle", CID_OBJECT},
+	{"obj_hivepriestessssymbol", CID_OBJECT},
+	{"obj_jawbone", CID_OBJECT},
+	{"obj_jug1", CID_OBJECT},
+	{"obj_kettle", CID_OBJECT},
+	{"obj_lab_parts_container", CID_OBJECT},
+	{"obj_lab_tray", CID_OBJECT},
+	{"obj_larva", CID_OBJECT},
+	{"obj_larvabrokenegg", CID_OBJECT},
+	{"obj_larvaegg", CID_OBJECT},
+	{"obj_lever1", CID_LEVER},
+	{"obj_lever2", CID_LEVER},
+	{"obj_lever3", CID_LEVER},
+	{"obj_metalchunk1", CID_OBJECT},
+	{"obj_metalchunk2", CID_OBJECT},
+	{"obj_metalchunk3", CID_OBJECT},
+	{"obj_minecart", CID_OBJECT},
+	{"obj_minecart2", CID_OBJECT},
+	{"obj_minecart3", CID_OBJECT},
+	{"obj_moss1", CID_OBJECT},
+	{"obj_moss2", CID_OBJECT},
+	{"obj_moss3", CID_OBJECT},
+	{"obj_moss4", CID_OBJECT},
+	{"obj_moss5", CID_OBJECT},
+	{"obj_nest", CID_OBJECT},
+	{"obj_pick", CID_OBJECT},
+	{"obj_pipe1", CID_OBJECT},
+	{"obj_pipe2", CID_OBJECT},
+	{"obj_pipewheel", CID_OBJECT},
+	{"obj_plant1", CID_OBJECT},
+	{"obj_plant2", CID_OBJECT},
+	{"obj_plant3", CID_OBJECT},
+	{"obj_pot1", CID_OBJECT},
+	{"obj_pot2", CID_OBJECT},
+	{"obj_pottedplant", CID_OBJECT},
+	{"obj_pushcart", CID_OBJECT},
+	{"obj_queenthrone", CID_OBJECT},
+	{"obj_queenchair", CID_OBJECT},
+	{"obj_ring_plaque2", CID_OBJECT},
+	{"obj_rocks1", CID_OBJECT},
+	{"obj_rocks2", CID_OBJECT},
+	{"obj_rope", CID_OBJECT},
+	{"obj_ropechain", CID_OBJECT},
+	{"obj_scroll", CID_OBJECT},
+	{"obj_seasonglobe", CID_OBJECT},
+	{"obj_shovel", CID_OBJECT},
+	{"obj_shrine", CID_OBJECT},
+	{"obj_sign1", CID_OBJECT},
+	{"obj_sign4", CID_OBJECT},
+	{"obj_skullpole", CID_OBJECT},
+	{"obj_spellbook", CID_OBJECT},
+	{"obj_stalactite1", CID_OBJECT},
+	{"obj_stalactite2", CID_OBJECT},
+	{"obj_stalactite3", CID_OBJECT},
+	{"obj_stalagmite1", CID_OBJECT},
+	{"obj_stalagmite2", CID_OBJECT},
+	{"obj_stalagmite3", CID_OBJECT},
+	{"obj_statue_boulderfish", CID_OBJECT},
+	{"obj_statue_corvus", CID_OBJECT},
+	{"obj_statue_dolphin1", CID_OBJECT},
+	{"obj_statue_dolphin2", CID_OBJECT},
+	{"obj_statue_dolphin3", CID_OBJECT},
+	{"obj_statue_dolphin4", CID_OBJECT},
+	{"obj_statue_dragon", CID_OBJECT},
+	{"obj_statue_dragonhead", CID_OBJECT},
+	{"obj_statue_duckbill1", CID_OBJECT},
+	{"obj_statue_duckbill2", CID_OBJECT},
+	{"obj_statue_guardian", CID_OBJECT},
+	{"obj_statue_saraphbust", CID_OBJECT},
+	{"obj_statue_sariph", CID_OBJECT},
+	{"obj_statue_sithraguard", CID_OBJECT},
+	{"obj_statue_tchecktrik_bust", CID_OBJECT},
+	{"obj_statue_techeckrikleft", CID_OBJECT},
+	{"obj_statue_techeckrikright", CID_OBJECT},
+	{"obj_statue_techeckriktomb", CID_OBJECT},
+	{"obj_stein", CID_OBJECT},
+	{"obj_swampflat_top", CID_OBJECT},
+	{"obj_swampflat_bottom", CID_OBJECT},
+	{"obj_table1", CID_OBJECT},
+	{"obj_table2", CID_OBJECT},
+	{"obj_tapper", CID_OBJECT},
+	{"obj_throne", CID_OBJECT},
+	{"obj_torture_bed", CID_OBJECT},
+	{"obj_torture_ironmaiden", CID_OBJECT},
+	{"obj_torture_rack", CID_OBJECT},
+	{"obj_torture_table", CID_OBJECT},
+	{"obj_torture_wallring", CID_OBJECT},
+	{"obj_tree", CID_OBJECT},
+	{"obj_tree2", CID_OBJECT},
+	{"obj_tree3", CID_OBJECT},
+	{"obj_treefallen", CID_OBJECT},
+	{"obj_treestump", CID_OBJECT},
+	{"obj_treetall", CID_OBJECT},
+	{"obj_treetop", CID_OBJECT},
+	{"obj_urn", CID_OBJECT},
+	{"obj_venusflytrap", CID_OBJECT},
+	{"obj_wallringplaque", CID_OBJECT},
+	{"obj_web", CID_OBJECT},
+	{"obj_wheelbarrow", CID_OBJECT},
+	{"obj_wheelbarrowdamaged", CID_OBJECT},
+	{"obj_woodpile", CID_OBJECT},
+	{"obj_morcalavin_barrier", CID_OBJECT},
+	{"flamethrower", CID_FLAMETHROWER},
+	{"shrine_heal", CID_TRIGGER},
+	{"shrine_armor", CID_TRIGGER},
+	{"shrine_staff", CID_TRIGGER},
+	{"shrine_lung", CID_TRIGGER},
+	{"shrine_armor_gold", CID_TRIGGER},
+	{"shrine_light", CID_TRIGGER},
+	{"shrine_mana", CID_TRIGGER},
+	{"shrine_ghost", CID_TRIGGER},
+	{"shrine_reflect", CID_TRIGGER},
+	{"shrine_powerup", CID_TRIGGER},
+	{"shrine_speed", CID_TRIGGER},
+	{"shrine_random", CID_TRIGGER},
+	{"script_runner", CID_TRIGGER},
+};
+
+#define NUM_CID_NAMES (sizeof(names2cid) / sizeof(names2cid[0]))
+
+static int
+GetCIDForName(const char *name)
+{
+	size_t i;
+
+	if (!name || !*name)
+	{
+		return -1;
+	}
+
+	for (i = 0; i < NUM_CID_NAMES; i++)
+	{
+		if (!strcmp(names2cid[i].name, name))
+		{
+			return names2cid[i].cid;
+		}
+	}
+
+	return -1;
+}
+
 static const spawn_t *
 StaticSpawnSearch(const char *classname)
 {
@@ -335,7 +635,7 @@ ED_CallSpawn(edict_t *ent)
 {
 	const spawn_t *s;
 	gitem_t *item;
-	int i, dyn_id;
+	int dyn_id;
 
 	if (!ent)
 	{
@@ -355,7 +655,7 @@ ED_CallSpawn(edict_t *ent)
 
 	if (st.health_multiplier <= 0)
 	{
-			st.health_multiplier = 1.0;
+		st.health_multiplier = 1.0;
 	}
 
 	if (!strcmp(ent->classname, "weapon_nailgun"))
@@ -410,18 +710,22 @@ ED_CallSpawn(edict_t *ent)
 	s = StaticSpawnSearch(ent->classname);
 	if (s)
 	{
+		int s_sid;
+
+		s_sid = GetCIDForName(ent->classname);
+
 		// found it
-		if((s->CID != -1) && !Cid_init[s->CID])		// Need to call once per level that item is on
+		if((s_sid != -1) && !Cid_init[s_sid])		// Need to call once per level that item is on
 		{
-			classStaticsInits[s->CID]();
-			Cid_init[s->CID] = -1;
-			ent->classID = s->CID;						// Make sure classID is set
+			classStaticsInits[s_sid]();
+			Cid_init[s_sid] = -1;
+			ent->classID = s_sid;						// Make sure classID is set
 		}
 
 		ent->classID = 0;
-		if(s->CID != -1)
+		if(s_sid != -1)
 		{
-			ent->classID = s->CID;
+			ent->classID = s_sid;
 		}
 
 		/* found it */
@@ -986,18 +1290,46 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 					continue;
 				}
 			}
-			else
+			else if (coop->value && !coop_baseq2->value)
 			{
-				if (((coop->value) && (ent->spawnflags & SPAWNFLAG_NOT_COOP)) ||
-					((skill->value == SKILL_EASY) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
-					((skill->value == SKILL_MEDIUM) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
-					((skill->value >= SKILL_HARD) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
-					)
+				if (ent->spawnflags & SPAWNFLAG_NOT_COOP)
+				{
+					G_FreeEdict(ent);
+					inhibit++;
+					continue;
+				}
+
+				/* stuff marked !easy & !med & !hard are coop only, all levels */
+				if (!((ent->spawnflags & SPAWNFLAG_NOT_EASY) &&
+					  (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM) &&
+					  (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
+				{
+					if (((skill->value == SKILL_EASY) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
+						((skill->value == SKILL_MEDIUM) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
+						(((skill->value == SKILL_HARD) || (skill->value == SKILL_HARDPLUS)) && (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
 					{
 						G_FreeEdict(ent);
 						inhibit++;
 						continue;
 					}
+				}
+			}
+			else
+			{
+				if (Spawn_CheckCoop_MapHacks(ent) || (
+					((skill->value == SKILL_EASY) &&
+					 (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
+					((skill->value == SKILL_MEDIUM) &&
+					 (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
+					(((skill->value == SKILL_HARD) ||
+					  (skill->value == SKILL_HARDPLUS)) &&
+					 (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
+					)
+				{
+					G_FreeEdict(ent);
+					inhibit++;
+					continue;
+				}
 			}
 
 			// Check if it's a monster and if we're nomonster here...

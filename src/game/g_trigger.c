@@ -291,14 +291,16 @@ void trigger_relay_use(edict_t *self, edict_t *other, edict_t *activator);
 /*QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)
 This fixed size trigger cannot be touched, it can only be fired by other events.
 */
-void SP_trigger_Relay(edict_t *self)
+void
+SP_trigger_relay(edict_t *self)
 {
 	self->use = trigger_relay_use;
 }
 
-void trigger_relay_use(edict_t *self, edict_t *other, edict_t *activator)
+void
+trigger_relay_use(edict_t *self, edict_t *other, edict_t *activator)
 {
-	G_UseTargets (self, activator);
+	G_UseTargets(self, activator);
 }
 
 //----------------------------------------------------------------------
