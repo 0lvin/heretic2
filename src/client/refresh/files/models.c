@@ -1221,6 +1221,28 @@ static void *
 Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen,
 	modtype_t *type)
 {
+	const hlmdl_header_t pinmodel;
+	int i;
+
+	for (i = 0; i < sizeof(pinmodel) / sizeof(int); i++)
+	{
+		((int *)&pinmodel)[i] = LittleLong(((int *)buffer)[i]);
+	}
+
+	if (pinmodel.version != HLMDL_VERSION)
+	{
+		R_Printf(PRINT_ALL, "%s: %s has wrong version number (%i should be %i)\n",
+				__func__, mod_name, pinmodel.version, ALIAS_VERSION);
+		return NULL;
+	}
+
+	if (pinmodel.ofs_end < 0 || pinmodel.ofs_end > modfilelen)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s file size(%d) too small, should be %d\n",
+				__func__, mod_name, modfilelen, pinmodel.ofs_end);
+		return NULL;
+	}
+
 	return NULL;
 }
 
