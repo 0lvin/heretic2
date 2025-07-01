@@ -1,0 +1,7 @@
+*.o
+*.mdl
+*.md2
+*.md3
+
+modelconv
+viewer

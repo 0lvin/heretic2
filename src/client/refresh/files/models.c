@@ -1212,6 +1212,18 @@ Mod_LoadModel_MDL(const char *mod_name, const void *buffer, int modfilelen,
 	return extradata;
 }
 
+/*
+=================
+Mod_LoadModel_HLMDL
+=================
+*/
+static void *
+Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen,
+	modtype_t *type)
+{
+	return NULL;
+}
+
 /* glcmds generation */
 static int
 Mod_LoadCmdStripLength(int starttri, int startv, dtriangle_t *triangles, int num_tris,
@@ -3579,6 +3591,11 @@ Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen,
 
 		case IDMDLHEADER:
 			extradata = Mod_LoadModel_MDL(mod_name, buffer, modfilelen,
+				type);
+			break;
+
+		case IDHLMDLHEADER:
+			extradata = Mod_LoadModel_HLMDL(mod_name, buffer, modfilelen,
 				type);
 			break;
 

@@ -1,0 +1,34 @@
+
+ +-----------+
+ | Important |
+ +-----------+
+
+Features: import mdl, md2, or md3; export mdl.
+
+- Fix crash when exporting a model with no textures.
+- Merge meshes with different textures.
+- Fix byte swapping.
+
+ +----+
+ |TODO|
+ +----+
+
+- Keep compressed MDL vertex coordinates, indices, etc. intact in the case of
+  importing, processing & exporting an MDL (don't want any "drift", and don't
+  want the vertices unnecessarily split up).
+- Command for drawing wireframe lines on the skin.
+- Allow importing alternate palettes for MDLs.
+- Allow configuration of the fullbright rules when downsampling to the palette
+  when exporting MDLs. Possibly just import the colormap, and tell it to ignore
+  fullbrights.
+- Write an MD3 writer.
+- Do air-tight error checking to avoid all potential crashes (and detect all
+  invalid data imported models).
+- The viewer shouldn't use 100% CPU usage.
+- Test exporting empty models (no vertices/triangles) to each format. Note in
+  compatibility notes whether engines will be able to load empty models (or
+  whether a 'null' model should instead be a single degenerate triangle).
+- Modes to emulate certain engines' rendering exactly, including lighting,
+  texture coordinate rounding, and crappy GLQuake texture resampling.
+- Optional stencil shadows mode.
+- Rewrite command-line argument parsing.
