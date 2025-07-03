@@ -1222,6 +1222,7 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen,
 	modtype_t *type)
 {
 	const hlmdl_header_t pinmodel;
+	hlmdl_texture_t *skins;
 	int i;
 
 	for (i = 0; i < sizeof(pinmodel) / sizeof(int); i++)
@@ -1241,6 +1242,28 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen,
 		R_Printf(PRINT_ALL, "%s: model %s file size(%d) too small, should be %d\n",
 				__func__, mod_name, modfilelen, pinmodel.ofs_end);
 		return NULL;
+	}
+
+	if (pinmodel.ofs_texture < 0)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s incorrect texture possition\n",
+				__func__, mod_name);
+		return NULL;
+	}
+
+	if ((pinmodel.ofs_texture + sizeof(hlmdl_texture_t) * pinmodel.num_skins) < pinmodel.ofs_end)
+	{
+		R_Printf(PRINT_ALL, "%s: model %s incorrect texture size\n",
+				__func__, mod_name);
+		return NULL;
+	}
+
+	printf("skins %d\n", pinmodel.num_skins);
+	skins = (hlmdl_texture_t *)((byte *)buffer + pinmodel.ofs_texture);
+	for (i = 0; i < pinmodel.num_skins; i++)
+	{
+		printf("%s: %d %dx%d\n",
+			skins[i].name, skins[i].offset, skins[i].width, skins[i].height);
 	}
 
 	return NULL;

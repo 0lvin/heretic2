@@ -196,6 +196,16 @@ typedef struct hlmdl_header_s
 								the sequence transition graph. */
 } hlmdl_header_t;
 
+typedef struct hlmdl_texture_s
+{
+	char name[64];           /* The texture name. */
+	int flags;               /* One or more texture flags. */
+	int width;               /* Width in pixel. */
+	int height;              /* Height in pixel. */
+	int offset;              /* The offset of the pixel data from file start:
+								width * height + palette. */
+} hlmdl_texture_t;
+
 /* .MD2 triangle model file format */
 
 #define IDALIASHEADER (('2' << 24) + ('P' << 16) + ('D' << 8) + 'I')
