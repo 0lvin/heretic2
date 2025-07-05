@@ -206,6 +206,13 @@ typedef struct hlmdl_texture_s
 								width * height + palette. */
 } hlmdl_texture_t;
 
+typedef struct hlmdl_framegroup_s
+{
+	char label[32];          /* The sequence group name. */
+	char name[64];           /* The sequence group file name. */
+	int unused[2];
+} hlmdl_framegroup_t;
+
 /* .MD2 triangle model file format */
 
 #define IDALIASHEADER (('2' << 24) + ('P' << 16) + ('D' << 8) + 'I')

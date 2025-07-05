@@ -1223,6 +1223,7 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen,
 {
 	const hlmdl_header_t pinmodel;
 	hlmdl_texture_t *skins;
+	hlmdl_framegroup_t *seqgroups;
 	int i;
 
 	for (i = 0; i < sizeof(pinmodel) / sizeof(int); i++)
@@ -1251,7 +1252,7 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen,
 		return NULL;
 	}
 
-	if ((pinmodel.ofs_texture + sizeof(hlmdl_texture_t) * pinmodel.num_skins) < pinmodel.ofs_end)
+	if ((pinmodel.ofs_texture + sizeof(hlmdl_texture_t) * pinmodel.num_skins) > pinmodel.ofs_end)
 	{
 		R_Printf(PRINT_ALL, "%s: model %s incorrect texture size\n",
 				__func__, mod_name);
@@ -1262,9 +1263,18 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen,
 	skins = (hlmdl_texture_t *)((byte *)buffer + pinmodel.ofs_texture);
 	for (i = 0; i < pinmodel.num_skins; i++)
 	{
-		printf("%s: %d %dx%d\n",
-			skins[i].name, skins[i].offset, skins[i].width, skins[i].height);
+		R_Printf(PRINT_ALL, "%s: %s: %d %dx%d\n",
+			__func__, skins[i].name, skins[i].offset, skins[i].width, skins[i].height);
 	}
+
+	printf("framegroups %d\n", pinmodel.num_seqgroups);
+	seqgroups = (hlmdl_framegroup_t *)((byte *)buffer + pinmodel.ofs_seqgroup);
+	for (i = 0; i < pinmodel.num_seqgroups; i++)
+	{
+		R_Printf(PRINT_ALL, "%s: %s: %s\n",
+			__func__, seqgroups[i].label, seqgroups[i].name);
+	}
+
 
 	return NULL;
 }
