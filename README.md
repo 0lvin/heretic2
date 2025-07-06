@@ -101,7 +101,8 @@ Models support:
 
 | Format | Original Game   | Frame vertex | Meshes   | Comments                                |
 | ------ | --------------- | ------------ | -------- | --------------------------------------- |
-| mdl    | Quake 1         | 8 bit        | Single   | Unsupported grouped textures            |
+| mdl    | Quake / Hexen 2 | 8 bit        | Single   | Unsupported grouped textures            |
+| mdl    | Half-Life       | N/A          | N/A      | Unsupported                             |
 | md2    | Quake 2         | 8 bit        | Single   |                                         |
 | mda    | Anachronox      | Part of md2  | Single   | Unsupported skin pass combine           |
 | md2    | Anachronox      | 8/10/16 bit  | Single   | Unchecked with game                     |
@@ -297,6 +298,8 @@ Goals, fully finished goals could be checked in [here](CHANGELOG):
 
 Other games support goals:
 
+* [ ] quake, half-life, hexen 2: fix brush flags,
+* [ ] half-life: support mdl,
 * [ ] jabot: fix crash in SZ_GetSpace,
 * [ ] Anachronox: skins load broken with mingw win64 build,
 * [ ] Anachronox: rowdys map models disappear on dance space,

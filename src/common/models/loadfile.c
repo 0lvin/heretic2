@@ -53,10 +53,8 @@ Mod_LoadSkinList_MD2(const char *mod_name, const void *buffer, int modfilelen,
 		return;
 	}
 
-	for (i = 0; i < sizeof(pinmodel) / sizeof(int); i++)
-	{
-		((int *)&pinmodel)[i] = LittleLong(((int *)buffer)[i]);
-	}
+	Mod_LittleHeader((int *)buffer, sizeof(pinmodel) / sizeof(int),
+		(int *)&pinmodel);
 
 	if (pinmodel.version != ALIAS_VERSION)
 	{
@@ -448,7 +446,7 @@ Mod_LoadFileWithoutExtModel(const char *namewe, size_t tlen, void **buffer)
 	filesize = FS_LoadFile(newname, buffer);
 	if (filesize > 0)
 	{
-		Com_DPrintf("%s: %s loaded as mdl (Quake 1)\n",
+		Com_DPrintf("%s: %s loaded as mdl (Quake/Half-Life)\n",
 			__func__, namewe);
 		return filesize;
 	}

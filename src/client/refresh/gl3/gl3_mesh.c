@@ -717,23 +717,13 @@ GL3_DrawAliasModel(entity_t *entity)
 
 	if (entity->flags & RF_WEAPONMODEL)
 	{
-		extern hmm_mat4 GL3_MYgluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
+		extern hmm_mat4 GL3_SetPerspective(GLdouble fovy);
 
 		origProjViewMat = gl3state.uni3DData.transProjViewMat4;
 
 		// render weapon with a different FOV (r_gunfov) so it's not distorted at high view FOV
-		float screenaspect = (float)gl3_newrefdef.width / gl3_newrefdef.height;
-		float dist = (r_farsee->value == 0) ? 4096.0f : 8192.0f;
-
-		hmm_mat4 projMat;
-		if (r_gunfov->value < 0)
-		{
-			projMat = GL3_MYgluPerspective(gl3_newrefdef.fov_y, screenaspect, 2, dist);
-		}
-		else
-		{
-			projMat = GL3_MYgluPerspective(r_gunfov->value, screenaspect, 2, dist);
-		}
+		hmm_mat4 projMat = GL3_SetPerspective( (r_gunfov->value < 0)?
+				gl3_newrefdef.fov_y : r_gunfov->value );
 
 		if(gl_lefthand->value == 1.0F)
 		{
@@ -769,7 +759,7 @@ GL3_DrawAliasModel(entity_t *entity)
 			skin = model->skins[entity->skinnum];
 		}
 
-		if (!skin)
+		if (!skin && model->numskins)
 		{
 			skin = model->skins[0];
 		}
@@ -791,8 +781,8 @@ GL3_DrawAliasModel(entity_t *entity)
 	if ((entity->frame >= paliashdr->num_frames) ||
 		(entity->frame < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "R_DrawAliasModel %s: no such frame %d\n",
-				model->name, entity->frame);
+		R_Printf(PRINT_DEVELOPER, "%s %s: no such frame %d\n",
+				__func__, model->name, entity->frame);
 		entity->frame = 0;
 		entity->oldframe = 0;
 	}
@@ -800,8 +790,8 @@ GL3_DrawAliasModel(entity_t *entity)
 	if ((entity->oldframe >= paliashdr->num_frames) ||
 		(entity->oldframe < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "R_DrawAliasModel %s: no such oldframe %d\n",
-				model->name, entity->oldframe);
+		R_Printf(PRINT_DEVELOPER, "%s %s: no such oldframe %d\n",
+				__func__, model->name, entity->oldframe);
 		entity->frame = 0;
 		entity->oldframe = 0;
 	}

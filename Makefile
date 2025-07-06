@@ -1400,8 +1400,15 @@ CLIENT_OBJS_ := \
 	src/common/models/image.o \
 	src/common/models/loadfile.o \
 	src/common/models/models.o \
+	src/common/models/models_hlmdl.o \
+	src/common/models/models_image.o \
 	src/common/models/models_md5.o \
+	src/common/models/models_mda.o \
+	src/common/models/models_mdl.o \
 	src/common/models/models_mdr.o \
+	src/common/models/models_sdef.o \
+	src/common/models/models_utils.o \
+	src/common/models/sprites.o \
 	src/common/movemsg.o \
 	src/common/frame.o \
 	src/common/netchan.o \
@@ -1688,8 +1695,15 @@ SERVER_OBJS_ := \
 	src/common/models/image.o \
 	src/common/models/loadfile.o \
 	src/common/models/models.o \
+	src/common/models/models_hlmdl.o \
+	src/common/models/models_image.o \
 	src/common/models/models_md5.o \
+	src/common/models/models_mda.o \
+	src/common/models/models_mdl.o \
 	src/common/models/models_mdr.o \
+	src/common/models/models_sdef.o \
+	src/common/models/models_utils.o \
+	src/common/models/sprites.o \
 	src/common/movemsg.o \
 	src/common/netchan.o \
 	src/common/pmove.o \

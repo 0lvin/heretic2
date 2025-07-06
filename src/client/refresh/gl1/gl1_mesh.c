@@ -58,7 +58,8 @@ R_DrawAliasDrawCommands(const entity_t *currententity, int *order, const int *or
 		{
 			do
 			{
-				int index_xyz;
+				int index_xyz, i;
+				int idx[3];
 
 				index_xyz = order[2];
 				order += 3;
@@ -66,8 +67,15 @@ R_DrawAliasDrawCommands(const entity_t *currententity, int *order, const int *or
 				GLBUFFER_VERTEX(s_lerped[index_xyz][0],
 					s_lerped[index_xyz][1], s_lerped[index_xyz][2])
 
-				GLBUFFER_COLOR(shadelight[0], shadelight[1],
-					shadelight[2], alpha)
+				for (i = 0; i < 3; i++)
+				{
+					idx[i] = shadelight[i] * 255;
+					idx[i] = Q_clamp(idx[i], 0, 255);
+				}
+
+				GLBUFFER_COLOR(gammatable[idx[0]],
+					gammatable[idx[1]],
+					gammatable[idx[2]], alpha * 255)
 			}
 			while (--count);
 		}
@@ -78,6 +86,7 @@ R_DrawAliasDrawCommands(const entity_t *currententity, int *order, const int *or
 				int i, index_xyz;
 				vec3_t normal;
 				float l, tex[2];
+				int idx[3];
 
 				/* texture coordinates come from the draw list */
 				tex[0] = ((float *)order)[0];
@@ -101,8 +110,15 @@ R_DrawAliasDrawCommands(const entity_t *currententity, int *order, const int *or
 
 				GLBUFFER_SINGLETEX(tex[0], tex[1])
 
-				GLBUFFER_COLOR(l * shadelight[0], l * shadelight[1],
-					l * shadelight[2], alpha)
+				for (i = 0; i < 3; i++)
+				{
+					idx[i] = l * shadelight[i] * 255;
+					idx[i] = Q_clamp(idx[i], 0, 255);
+				}
+
+				GLBUFFER_COLOR(gammatable[idx[0]],
+					gammatable[idx[1]],
+					gammatable[idx[2]], alpha * 255)
 			}
 			while (--count);
 		}
@@ -522,7 +538,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 			skin = currentmodel->skins[currententity->skinnum];
 		}
 
-		if (!skin)
+		if (!skin && currentmodel->numskins)
 		{
 			skin = currentmodel->skins[0];
 		}
@@ -536,8 +552,8 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	if ((currententity->frame >= paliashdr->num_frames) ||
 		(currententity->frame < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "R_DrawAliasModel %s: no such frame %d\n",
-				currentmodel->name, currententity->frame);
+		R_Printf(PRINT_DEVELOPER, "%s %s: no such frame %d\n",
+				__func__, currentmodel->name, currententity->frame);
 		currententity->frame = 0;
 		currententity->oldframe = 0;
 	}
@@ -545,8 +561,8 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	if ((currententity->oldframe >= paliashdr->num_frames) ||
 		(currententity->oldframe < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "R_DrawAliasModel %s: no such oldframe %d\n",
-				currentmodel->name, currententity->oldframe);
+		R_Printf(PRINT_DEVELOPER, "%s %s: no such oldframe %d\n",
+				__func__, currentmodel->name, currententity->oldframe);
 		currententity->frame = 0;
 		currententity->oldframe = 0;
 	}
