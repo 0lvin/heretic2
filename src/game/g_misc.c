@@ -27,183 +27,67 @@
 
 #include "header/local.h"
 #include "monster/misc/player.h"
-#include "header/g_defaultmessagehandler.h"
-#include "header/g_misc.h"
-#include "common/fx.h"
-#include "common/h2rand.h"
-#include "header/g_monster.h"
-#include "header/g_teleport.h"
-#include "header/g_hitlocation.h"
-#include "monster/stats/stats.h"
-#include "header/g_playstats.h"
-
 
 int debristhisframe;
 int gibsthisframe;
 
-void ED_CallSpawn(edict_t *ent);
-
-extern	vec3_t	mins;
-
-#define CAMERA_SCRIPTED 2
-
-int AndoriaSoundID[AS_MAX] =
-{
-	AS_NOTHING,
-	AS_SMALLFOUNTAIN,
-	AS_LARGEFOUNTAIN,
-	AS_SEWERWATER,
-	AS_OUTSIDEWATERWAY,
-	AS_WINDCHIME,
-};
-
-
-
-int CloudSoundID[AS_MAX] =
-{
-	AS_NOTHING,
-	AS_CAULDRONBUBBLE,
-	AS_WINDEERIE,
-	AS_WINDNOISY,
-	AS_WINDSOFTHI,
-	AS_WINDSOFTLO,
-	AS_WINDSTRONG1,
-	AS_WINDSTRONG2,
-	AS_WINDWHISTLE,
-};
-
-int HiveSoundID[AS_MAX] =
-{
-	AS_NOTHING,
-	AS_GONG,
-	AS_WINDEERIE,
-	AS_WINDNOISY,
-	AS_WINDSOFTHI,
-	AS_WINDSOFTLO,
-	AS_WINDSTRONG1,
-	AS_WINDSTRONG2,
-	AS_WINDWHISTLE,
-};
-
-int MineSoundID[AS_MAX] =
-{
-	AS_NOTHING,
-	AS_MUDPOOL,
-	AS_ROCKS,
-	AS_WINDEERIE,
-	AS_WINDSOFTLO,
-	AS_CONVEYOR,
-	AS_BUCKETCONVEYOR,
-	AS_CAVECREAK,
-};
-
-int SilverSpringSoundID[AS_MAX] =
-{
-	AS_NOTHING,
-	AS_FIRE,
-	AS_WATERLAPPING,
-	AS_SEAGULLS,
-	AS_OCEAN,
-	AS_BIRDS,
-	AS_CRICKETS,
-	AS_FROGS,
-	AS_CRYING,
-	AS_MOSQUITOES,
-	AS_BUBBLES,
-	AS_BELL,
-	AS_FOOTSTEPS,
-	AS_MOANS,
-	AS_SEWERDRIPS,
-	AS_WATERDRIPS,
-	AS_HEAVYDRIPS,
-	AS_CAULDRONBUBBLE,
-	AS_SPIT,
-};
-
-int SwampCanyonSoundID[AS_MAX] =
-{
-	AS_NOTHING,
-	AS_BIRD1,
-	AS_BIRD2,
-	AS_HUGEWATERFALL,
-	AS_MUDPOOL,
-	AS_WINDEERIE,
-	AS_WINDNOISY,
-	AS_WINDSOFTHI,
-	AS_WINDSOFTLO,
-	AS_WINDSTRONG1,
-	AS_WINDSTRONG2,
-	AS_WINDWHISTLE,
-};
-
-
-typedef struct DebrisSound
-{
-	char	*Name;
-} DebrisSound_t;
-
-DebrisSound_t DebrisSound [NUM_MAT]=
-{
-	{"misc/breakstone.wav"},	// MAT_STONE
-	{"misc/breakstone.wav"},	// MAT_GREYSTONE
-	{"misc/tearcloth.wav"},	// MAT_CLOTH
-	{"misc/metalbreak.wav"},	// MAT_METAL
-	{"misc/fleshbreak.wav"},	// MAT_FLESH
-	{"misc/potbreak.wav"},	// MAT_POTTERY
-	{"misc/glassbreak2.wav"},	// MAT_GLASS
-	{"misc/breakstone.wav"},	// MAT_LEAF	FIXME
-	{"misc/breakwood.wav"},	// MAT_WOOD
-	{"misc/breakstone.wav"},	// MAT_BROWNSTONE
-	{"misc/bushbreak.wav"},	// MAT_NONE
-	{NULL},					// MAT_INSECT
-};
-
+extern void M_WorldEffects(edict_t *ent);
 
 /*
  * QUAKED func_group (0 0 0) ?
- *
  * Used to group brushes together just for editor convenience.
  */
 
-//=====================================================
+/* ===================================================== */
 
-void Use_Areaportal (edict_t *ent, edict_t *other, edict_t *activator)
+void
+Use_Areaportal(edict_t *ent, edict_t *other /* unused */, edict_t *activator /* unused */)
 {
-	ent->count ^= 1;		// toggle state
-//	gi.dprintf ("portalstate: %i = %i\n", ent->style, ent->count);
-	gi.SetAreaPortalState (ent->style, ent->count);
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->count ^= 1; /* toggle state */
+	gi.SetAreaPortalState(ent->style, ent->count);
 }
-
-/*QUAKED func_areaportal (0 0 0) ?
-
-	This is a non-visible object that divides the world into
-	areas that are seperated when this portal is not activated.
-	Usually enclosed in the middle of a door.
-*/
-void SP_func_areaportal (edict_t *ent)
-{
-	ent->use = Use_Areaportal;
-	ent->count = 0;		// allways start closed;
-}
-
-//=====================================================
 
 /*
-=================
-Misc functions
-=================
-*/
-
-void VelocityForDamage (int damage, vec3_t v)
+ * QUAKED func_areaportal (0 0 0) ?
+ *
+ * This is a non-visible object that divides the world into
+ * areas that are seperated when this portal is not activated.
+ * Usually enclosed in the middle of a door.
+ */
+void
+SP_func_areaportal(edict_t *ent)
 {
-	v[0] = flrand(-100.0F, 100.0F);
-	v[1] = flrand(-100.0F, 100.0F);
-	v[2] = flrand(200.0F, 300.0F);
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->use = Use_Areaportal;
+	ent->count = 0; /* always start closed; */
+}
+
+/* ===================================================== */
+
+static void
+VelocityForDamage(int damage, vec3_t v)
+{
+	v[0] = 100.0 * crandom();
+	v[1] = 100.0 * crandom();
+	v[2] = 200.0 + 100.0 * random();
 
 	if (damage < 50)
-		VectorScale (v, 0.7, v);
+	{
+		VectorScale(v, 0.7, v);
+	}
 	else
-		VectorScale (v, 1.2, v);
+	{
+		VectorScale(v, 1.2, v);
+	}
 }
 
 void
@@ -309,6 +193,131 @@ gib_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unu
 	G_FreeEdict(self);
 }
 
+#include "header/g_defaultmessagehandler.h"
+#include "header/g_misc.h"
+#include "common/fx.h"
+#include "common/h2rand.h"
+#include "header/g_monster.h"
+#include "header/g_teleport.h"
+#include "header/g_hitlocation.h"
+#include "monster/stats/stats.h"
+#include "header/g_playstats.h"
+
+void ED_CallSpawn(edict_t *ent);
+
+extern	vec3_t	mins;
+
+#define CAMERA_SCRIPTED 2
+
+int AndoriaSoundID[AS_MAX] =
+{
+	AS_NOTHING,
+	AS_SMALLFOUNTAIN,
+	AS_LARGEFOUNTAIN,
+	AS_SEWERWATER,
+	AS_OUTSIDEWATERWAY,
+	AS_WINDCHIME,
+};
+
+int CloudSoundID[AS_MAX] =
+{
+	AS_NOTHING,
+	AS_CAULDRONBUBBLE,
+	AS_WINDEERIE,
+	AS_WINDNOISY,
+	AS_WINDSOFTHI,
+	AS_WINDSOFTLO,
+	AS_WINDSTRONG1,
+	AS_WINDSTRONG2,
+	AS_WINDWHISTLE,
+};
+
+int HiveSoundID[AS_MAX] =
+{
+	AS_NOTHING,
+	AS_GONG,
+	AS_WINDEERIE,
+	AS_WINDNOISY,
+	AS_WINDSOFTHI,
+	AS_WINDSOFTLO,
+	AS_WINDSTRONG1,
+	AS_WINDSTRONG2,
+	AS_WINDWHISTLE,
+};
+
+int MineSoundID[AS_MAX] =
+{
+	AS_NOTHING,
+	AS_MUDPOOL,
+	AS_ROCKS,
+	AS_WINDEERIE,
+	AS_WINDSOFTLO,
+	AS_CONVEYOR,
+	AS_BUCKETCONVEYOR,
+	AS_CAVECREAK,
+};
+
+int SilverSpringSoundID[AS_MAX] =
+{
+	AS_NOTHING,
+	AS_FIRE,
+	AS_WATERLAPPING,
+	AS_SEAGULLS,
+	AS_OCEAN,
+	AS_BIRDS,
+	AS_CRICKETS,
+	AS_FROGS,
+	AS_CRYING,
+	AS_MOSQUITOES,
+	AS_BUBBLES,
+	AS_BELL,
+	AS_FOOTSTEPS,
+	AS_MOANS,
+	AS_SEWERDRIPS,
+	AS_WATERDRIPS,
+	AS_HEAVYDRIPS,
+	AS_CAULDRONBUBBLE,
+	AS_SPIT,
+};
+
+int SwampCanyonSoundID[AS_MAX] =
+{
+	AS_NOTHING,
+	AS_BIRD1,
+	AS_BIRD2,
+	AS_HUGEWATERFALL,
+	AS_MUDPOOL,
+	AS_WINDEERIE,
+	AS_WINDNOISY,
+	AS_WINDSOFTHI,
+	AS_WINDSOFTLO,
+	AS_WINDSTRONG1,
+	AS_WINDSTRONG2,
+	AS_WINDWHISTLE,
+};
+
+
+typedef struct DebrisSound
+{
+	char	*Name;
+} DebrisSound_t;
+
+DebrisSound_t DebrisSound [NUM_MAT]=
+{
+	{"misc/breakstone.wav"},	// MAT_STONE
+	{"misc/breakstone.wav"},	// MAT_GREYSTONE
+	{"misc/tearcloth.wav"},	// MAT_CLOTH
+	{"misc/metalbreak.wav"},	// MAT_METAL
+	{"misc/fleshbreak.wav"},	// MAT_FLESH
+	{"misc/potbreak.wav"},	// MAT_POTTERY
+	{"misc/glassbreak2.wav"},	// MAT_GLASS
+	{"misc/breakstone.wav"},	// MAT_LEAF	FIXME
+	{"misc/breakwood.wav"},	// MAT_WOOD
+	{"misc/breakstone.wav"},	// MAT_BROWNSTONE
+	{"misc/bushbreak.wav"},	// MAT_NONE
+	{NULL},					// MAT_INSECT
+};
+
 void
 ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 {
@@ -323,12 +332,19 @@ ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 		return;
 	}
 
+	if (gibsthisframe >= MAX_GIBS)
+	{
+		return;
+	}
+
 	gib = G_Spawn();
 
 	if (!gib)
 	{
 		return;
 	}
+
+	gibsthisframe++;
 
 	VectorScale(self->size, 0.5, size);
 	VectorAdd(self->absmin, size, origin);
@@ -354,6 +370,131 @@ ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 	else
 	{
 		gib->movetype = MOVETYPE_STEP;
+		vscale = 1.0;
+	}
+
+	VelocityForDamage(damage, vd);
+	VectorMA(self->velocity, vscale, vd, gib->velocity);
+	ClipGibVelocity(gib);
+	gib->avelocity[0] = random() * 600;
+	gib->avelocity[1] = random() * 600;
+	gib->avelocity[2] = random() * 600;
+
+	gib->think = G_FreeEdict;
+	gib->nextthink = level.time + 10 + random() * 10;
+
+	gi.linkentity(gib);
+}
+
+void
+ThrowHead(edict_t *self, const char *gibname, int damage, int type)
+{
+	vec3_t vd;
+	float vscale;
+
+	if (!self || !gibname)
+	{
+		return;
+	}
+
+	self->s.skinnum = 0;
+	self->s.frame = 0;
+	VectorClear(self->mins);
+	VectorClear(self->maxs);
+
+	self->s.modelindex2 = 0;
+	gi.setmodel(self, gibname);
+	self->solid = SOLID_BBOX;
+	self->s.effects |= EF_GIB;
+	self->s.effects &= ~EF_FLIES;
+	self->s.sound = 0;
+	self->flags |= FL_NO_KNOCKBACK;
+	self->svflags &= ~SVF_MONSTER;
+	self->takedamage = DAMAGE_YES;
+	self->targetname = NULL;
+	self->die = gib_die;
+
+	// The entity still has the monsters clipmaks.
+	// Reset it to MASK_SHOT to be on the save side.
+	// (MASK_SHOT is used by xatrix)
+	self->clipmask = MASK_SHOT;
+
+	if (type == GIB_ORGANIC)
+	{
+		self->movetype = MOVETYPE_TOSS;
+		self->touch = gib_touch;
+		vscale = 0.5;
+	}
+	else
+	{
+		self->movetype = MOVETYPE_BOUNCE;
+		vscale = 1.0;
+	}
+
+	VelocityForDamage(damage, vd);
+	VectorMA(self->velocity, vscale, vd, self->velocity);
+	ClipGibVelocity(self);
+
+	self->avelocity[YAW] = crandom() * 600;
+
+	self->think = G_FreeEdict;
+	self->nextthink = level.time + 10 + random() * 10;
+
+	gi.linkentity(self);
+}
+
+void
+ThrowGibACID(edict_t *self, const char *gibname, int damage, int type)
+{
+	edict_t *gib;
+	vec3_t vd;
+	vec3_t origin;
+	vec3_t size;
+	float vscale;
+
+	if (!self || !gibname)
+	{
+		return;
+	}
+
+	gibsthisframe++;
+
+	if (gibsthisframe > MAX_GIBS)
+	{
+		return;
+	}
+
+	gib = G_Spawn();
+
+	VectorScale(self->size, 0.5, size);
+	VectorAdd(self->absmin, size, origin);
+	gib->s.origin[0] = origin[0] + crandom() * size[0];
+	gib->s.origin[1] = origin[1] + crandom() * size[1];
+	gib->s.origin[2] = origin[2] + crandom() * size[2];
+
+	/* gi.setmodel (gib, gibname); */
+	gib->s.modelindex = gi.modelindex(gibname);
+
+	gib->clipmask = MASK_SHOT;
+	gib->solid = SOLID_BBOX;
+
+	gib->s.effects |= EF_GREENGIB;
+	/* note to self check this */
+	gib->s.renderfx |= RF_FULLBRIGHT;
+	gib->flags |= FL_NO_KNOCKBACK;
+	gib->takedamage = DAMAGE_YES;
+	gib->die = gib_die;
+	gib->dmg = 2;
+	gib->health = 250;
+
+	if (type == GIB_ORGANIC)
+	{
+		gib->movetype = MOVETYPE_TOSS;
+		vscale = 3.0;
+	}
+	else
+	{
+		gib->movetype = MOVETYPE_BOUNCE;
 		vscale = 1.0;
 	}
 
@@ -470,7 +611,6 @@ ThrowClientHead(edict_t *self, int damage)
 
 	if (self->client) /* bodies in the queue don't have a client anymore */
 	{
-		// self->client->anim_priority = ANIM_DEATH;
 		self->client->anim_end = self->s.frame;
 	}
 	else
@@ -542,9 +682,32 @@ ThrowDebris(edict_t *self, char *modelname, float speed, vec3_t origin)
 	chunk->health = 250;
 	gi.linkentity(chunk);
 }
+
 void
 BecomeExplosion1(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
+	/* flags are important */
+	if (strcmp(self->classname, "item_flag_team1") == 0)
+	{
+		// CTFResetFlag(CTF_TEAM1); /* this will free self! */
+		gi.bprintf(PRINT_HIGH, "The %s flag has returned!\n",
+				CTFTeamName(CTF_TEAM1));
+		return;
+	}
+
+	if (strcmp(self->classname, "item_flag_team2") == 0)
+	{
+		// CTFResetFlag(CTF_TEAM2); /* this will free self! */
+		gi.bprintf(PRINT_HIGH, "The %s flag has returned!\n",
+				CTFTeamName(CTF_TEAM2));
+		return;
+	}
+
 	gi.CreateEffect(NULL, FX_EXPLOSION1, 0, self->s.origin, NULL);
 
 	G_FreeEdict(self);
@@ -553,6 +716,11 @@ BecomeExplosion1(edict_t *self)
 void
 BecomeExplosion2(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.CreateEffect(NULL, FX_EXPLOSION2, 0, self->s.origin, NULL);
 
 	G_FreeEdict(self);
@@ -956,8 +1124,6 @@ path_corner_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 	{
 		other->monsterinfo.pausetime = level.time + self->wait;
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
-//		M_GiveOrder(ORD_STAND,other,other,PR_LOW, 0,0,0,0,0,0);
-//		other->monsterinfo.stand (other);
 		return;
 	}
 
@@ -965,8 +1131,6 @@ path_corner_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 	{
 		other->monsterinfo.pausetime = level.time + 100000000;
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
-//		M_GiveOrder(ORD_STAND,other,other,PR_LOW, 0,0,0,0,0,0);
-//		other->monsterinfo.stand (other);
 	}
 	else
 	{
@@ -1202,26 +1366,88 @@ SP_info_notnull(edict_t *self)
 
 	self->solid = SOLID_TRIGGER;
 	self->movetype = MOVETYPE_NONE;
+}
 
-};
+#define START_OFF 1
 
-
-/*QUAKED func_wall (0 .5 .8) ? TRIGGER_SPAWN TOGGLE START_ON ANIMATED ANIMATED_FAST
-
-	This is just a solid wall if not inhibited
-
-	TRIGGER_SPAWN	the wall will not be present until triggered
-					it will then blink in to existance; it will
-					kill anything that was in it's way
-
-	TOGGLE			only valid for TRIGGER_SPAWN walls
-					this allows the wall to be turned on and off
-
-	START_ON		only valid for TRIGGER_SPAWN walls
-					the wall will initially be present
-*/
+/*
+ * QUAKED light (0 1 0) (-8 -8 -8) (8 8 8) START_OFF
+ *
+ * Non-displayed light.
+ * Default light value is 300.
+ * Default style is 0.
+ * If targeted, will toggle between on and off.
+ * Default _cone value is 10 (used to set size of light for spotlights)
+ */
 void
-func_wall_use(edict_t *self, edict_t *other, edict_t *activator)
+light_use(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->spawnflags & START_OFF)
+	{
+		gi.configstring(CS_LIGHTS + self->style, "m");
+		self->spawnflags &= ~START_OFF;
+	}
+	else
+	{
+		gi.configstring(CS_LIGHTS + self->style, "a");
+		self->spawnflags |= START_OFF;
+	}
+}
+
+void
+SP_light(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	/* no targeted lights in deathmatch, because they cause global messages */
+	if (!self->targetname || deathmatch->value)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	if (self->style >= 32)
+	{
+		self->use = light_use;
+
+		if (self->spawnflags & START_OFF)
+		{
+			gi.configstring(CS_LIGHTS + self->style, "a");
+		}
+		else
+		{
+			gi.configstring(CS_LIGHTS + self->style, "m");
+		}
+	}
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED func_wall (0 .5 .8) ? TRIGGER_SPAWN TOGGLE START_ON ANIMATED ANIMATED_FAST
+ * This is just a solid wall if not inhibited
+ *
+ * TRIGGER_SPAWN	the wall will not be present until triggered
+ *                  it will then blink in to existance; it will
+ *                  kill anything that was in it's way
+ *
+ * TOGGLE			only valid for TRIGGER_SPAWN walls
+ *                  this allows the wall to be turned on and off
+ *
+ * START_ON		only valid for TRIGGER_SPAWN walls
+ *              the wall will initially be present
+ */
+
+void
+func_wall_use(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
 {
 	if (!self)
 	{
@@ -1421,8 +1647,253 @@ SP_func_object(edict_t *self)
 	gi.linkentity(self);
 }
 
+/* ===================================================== */
 
-void ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
+/*
+ * QUAKED func_explosive (0 .5 .8) ? Trigger_Spawn ANIMATED ANIMATED_FAST INACTIVE
+ *
+ * Any brush that you want to explode or break apart.  If you want an
+ * explosion, set dmg and it will do a radius explosion of that amount
+ * at the center of the bursh.
+ *
+ * If targeted it will not be shootable.
+ *
+ * INACTIVE - specifies that the entity is not explodable until triggered. If you use this you must
+ * target the entity you want to trigger it. This is the only entity approved to activate it.
+ *
+ * health defaults to 100.
+ *
+ * mass defaults to 75.  This determines how much debris is emitted when
+ * it explodes.  You get one large chunk per 100 of mass (up to 8) and
+ * one small chunk per 25 of mass (up to 16).  So 800 gives the most.
+ */
+void
+func_explosive_explode(edict_t *self, edict_t *inflictor, edict_t *attacker,
+		int damage /* unused */, vec3_t point /* unused */)
+{
+	vec3_t origin;
+	vec3_t chunkorigin;
+	vec3_t size;
+	int count;
+	int mass;
+	edict_t *master;
+
+	if (!self || !inflictor || !attacker)
+	{
+		return;
+	}
+
+	/* bmodel origins are (0 0 0), we need to adjust that here */
+	VectorScale(self->size, 0.5, size);
+	VectorAdd(self->absmin, size, origin);
+	VectorCopy(origin, self->s.origin);
+
+	self->takedamage = DAMAGE_NO;
+
+	if (self->dmg)
+	{
+		T_RadiusDamage(self, attacker, self->dmg, NULL,
+				self->dmg + 40, MOD_EXPLOSIVE);
+	}
+
+	VectorSubtract(self->s.origin, inflictor->s.origin, self->velocity);
+	VectorNormalize(self->velocity);
+	VectorScale(self->velocity, 150, self->velocity);
+
+	/* start chunks towards the center */
+	VectorScale(size, 0.5, size);
+
+	mass = self->mass;
+
+	if (!mass)
+	{
+		mass = 75;
+	}
+
+	/* big chunks */
+	if (mass >= 100)
+	{
+		count = mass / 100;
+
+		if (count > 8)
+		{
+			count = 8;
+		}
+
+		while (count--)
+		{
+			chunkorigin[0] = origin[0] + crandom() * size[0];
+			chunkorigin[1] = origin[1] + crandom() * size[1];
+			chunkorigin[2] = origin[2] + crandom() * size[2];
+			ThrowDebris(self, "models/objects/debris1/tris.md2", 1, chunkorigin);
+		}
+	}
+
+	/* small chunks */
+	count = mass / 25;
+
+	if (count > 16)
+	{
+		count = 16;
+	}
+
+	while (count--)
+	{
+		chunkorigin[0] = origin[0] + crandom() * size[0];
+		chunkorigin[1] = origin[1] + crandom() * size[1];
+		chunkorigin[2] = origin[2] + crandom() * size[2];
+		ThrowDebris(self, "models/objects/debris2/tris.md2", 2, chunkorigin);
+	}
+
+	if (self->flags & FL_TEAMSLAVE)
+	{
+		master = self->teammaster;
+
+		/* because mappers (other than jim (usually)) are stupid.... */
+		while (master)
+		{
+			if (master->teamchain == self)
+			{
+				master->teamchain = self->teamchain;
+				break;
+			}
+
+			master = master->teamchain;
+		}
+	}
+
+	G_UseTargets(self, attacker);
+
+	if (self->dmg)
+	{
+		BecomeExplosion1(self);
+	}
+	else
+	{
+		G_FreeEdict(self);
+	}
+}
+
+void
+func_explosive_use(edict_t *self, edict_t *other, edict_t *activator /* unused */)
+{
+	if (!self || !other)
+	{
+		return;
+	}
+
+	func_explosive_explode(self, self, other, self->health, vec3_origin);
+}
+
+void
+func_explosive_activate(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->use = func_explosive_use;
+
+	if (!self->health)
+	{
+		self->health = 100;
+	}
+
+	self->die = func_explosive_explode;
+	self->takedamage = DAMAGE_YES;
+}
+
+void
+func_explosive_spawn(edict_t *self, edict_t *other, edict_t *activator)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->solid = SOLID_BSP;
+	self->svflags &= ~SVF_NOCLIENT;
+	self->use = NULL;
+	KillBox(self);
+	gi.linkentity(self);
+}
+
+void
+SP_func_explosive(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value)
+	{
+		/* auto-remove for deathmatch */
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->movetype = MOVETYPE_PUSH;
+
+	gi.modelindex("models/objects/debris1/tris.md2");
+	gi.modelindex("models/objects/debris2/tris.md2");
+
+	gi.setmodel(self, self->model);
+
+	if (self->spawnflags & 1)
+	{
+		self->svflags |= SVF_NOCLIENT;
+		self->solid = SOLID_NOT;
+		self->use = func_explosive_spawn;
+	}
+	else if (self->spawnflags & 8)
+	{
+		self->solid = SOLID_BSP;
+
+		if (self->targetname)
+		{
+			self->use = func_explosive_activate;
+		}
+	}
+	else
+	{
+		self->solid = SOLID_BSP;
+
+		if (self->targetname)
+		{
+			self->use = func_explosive_use;
+		}
+	}
+
+	if (self->spawnflags & 2)
+	{
+		self->s.effects |= EF_ANIM_ALL;
+	}
+
+	if (self->spawnflags & 4)
+	{
+		self->s.effects |= EF_ANIM_ALLFAST;
+	}
+
+	if ((self->use != func_explosive_use) &&
+		(self->use != func_explosive_activate))
+	{
+		if (!self->health)
+		{
+			self->health = 100;
+		}
+
+		self->die = func_explosive_explode;
+		self->takedamage = DAMAGE_YES;
+	}
+
+	gi.linkentity(self);
+}
+
+
+void
+ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
 {
 	int i1;
 	gitem_t	*item;
@@ -1716,7 +2187,8 @@ void SP_misc_teleporter_dest (edict_t *ent)
 
 
 extern void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator);
-void misc_magic_portal_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+misc_magic_portal_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	edict_t *ent=NULL;
 
@@ -1741,8 +2213,8 @@ void misc_magic_portal_touch (edict_t *self, edict_t *other, cplane_t *plane, cs
 	return;
 }
 
-
-void misc_magic_portal_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+misc_magic_portal_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (level.time < self->impact_debounce_time)
 		return;
@@ -1777,8 +2249,6 @@ void misc_magic_portal_use (edict_t *self, edict_t *other, edict_t *activator)
 	self->impact_debounce_time = level.time + 4.0;
 }
 
-
-
 #define START_OFF	1
 
 /*QUAKED misc_magic_portal (1 .5 0) (-16 -16 -32) (16 16 32)  START_OFF
@@ -1794,7 +2264,8 @@ In order to be functional as a world teleport,
   it must target a target_changelevel
 
 */
-void SP_misc_magic_portal (edict_t *self)
+void
+SP_misc_magic_portal(edict_t *self)
 {
 	// Set up the basics.
 	VectorSet(self->mins, -16, -16, -32);
@@ -1930,8 +2401,8 @@ void soundambient_think(edict_t *self)
 	self->think = NULL;
 }
 
-
-void sound_ambient_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+sound_ambient_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->count)	// This is just a flag to show it's on
 	{
@@ -1988,9 +2459,6 @@ void sound_ambient_init(edict_t *self)
 
 	gi.linkentity(self);
 }
-
-
-
 
 /*QUAKED sound_ambient_cloudfortress (1 0 0) (-4 -4 0) (4 4 4) NON_LOCAL START_OFF
 Generates an ambient sound for cloud fortress levels
@@ -2097,7 +2565,6 @@ void SP_sound_ambient_hive (edict_t *self)
 
 	self->style = HiveSoundID[self->style];
 }
-
 
 /*QUAKED sound_ambient_andoria (1 0 0) (-4 -4 0) (4 4 4) NON_LOCAL  START_OFF
 Generates an ambient sound for andoria levels
@@ -2277,42 +2744,6 @@ misc_remote_camera_think(edict_t *self)
 		{
 			VectorCopy(self->enemy->s.origin, self->s.origin);
 		}
-
-#if 0
-		// Update the position on client(s).
-
-		if(self->spawnflags & 1)
-		{
-			// Just for the activator.
-
-			if(self->activator->client->RemoteCameraNumber == self->s.number)
-			{
-				VectorCopy(self->s.origin, self->activator->client->ps.remote_vieworigin);
-			}
-		}
-		else
-		{
-			/* For all clients. */
-			int i;
-
-			for(i = 0; i < game.maxclients; i++)
-			{
-				edict_t *cl_ent;
-
-				cl_ent = g_edicts + 1 + i;
-
-				if(!cl_ent->inuse)
-				{
-					continue;
-				}
-
-				if(cl_ent->client->RemoteCameraNumber == self->s.number)
-				{
-					VectorCopy(self->s.origin, cl_ent->client->ps.remote_vieworigin);
-				}
-			}
-		}
-#endif
 	}
 
 	// ********************************************************************************************
@@ -2329,39 +2760,6 @@ misc_remote_camera_think(edict_t *self)
 		VectoAngles(forward, self->s.angles);
 		self->s.angles[PITCH] = -self->s.angles[PITCH];
 
-#if 0
-		/* Update the angles on client(s). */
-		if(self->spawnflags & 1)
-		{
-			/* Just for the activator. */
-			if(self->activator->client->RemoteCameraNumber == self->s.number)
-			{
-				VectorCopy(self->s.angles, self->activator->client->ps.remote_viewangles);
-			}
-		}
-		else
-		{
-			/* For all clients */
-			int i;
-
-			for(i=0;i<game.maxclients;i++)
-			{
-				edict_t *cl_ent;
-
-				cl_ent = g_edicts + 1 + i;
-
-				if(!cl_ent->inuse)
-				{
-					continue;
-				}
-
-				if(cl_ent->client->RemoteCameraNumber == self->s.number)
-				{
-					VectorCopy(self->s.angles, cl_ent->client->ps.remote_viewangles);
-				}
-			}
-		}
-#endif
 	}
 
 	// Think again or remove myself?
@@ -2455,9 +2853,6 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 		{
 			/* Just for the activator. */
 			self->enemy = NULL;
-#if 0
-			VectorCopy(self->s.origin, self->activator->client->ps.remote_vieworigin);
-#endif
 		}
 		else
 		{
@@ -2476,9 +2871,6 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 				{
 					continue;
 				}
-#if 0
-				VectorCopy(self->s.origin, cl_ent->client->ps.remote_vieworigin);
-#endif
 			}
 		}
 	}
@@ -2493,40 +2885,6 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 			{
 				VectorCopy(self->enemy->s.origin, self->s.origin);
 			}
-
-#if 0
-			/* Update the position on client(s). */
-			if (self->spawnflags&1)
-			{
-				/* Just for the activator. */
-				if(self->activator->client->RemoteCameraNumber == self->s.number)
-				{
-					VectorCopy(self->s.origin, self->activator->client->ps.remote_vieworigin);
-				}
-			}
-			else
-			{
-				/* For all clients. */
-				int	i;
-
-				for (i = 0; i < game.maxclients; i++)
-				{
-					edict_t *cl_ent;
-
-					cl_ent=g_edicts+1+i;
-
-					if(!cl_ent->inuse)
-					{
-						continue;
-					}
-
-					if(cl_ent->client->RemoteCameraNumber == self->s.number)
-					{
-						VectorCopy(self->s.origin, cl_ent->client->ps.remote_vieworigin);
-					}
-				}
-			}
-#endif
 		}
 	}
 	// ********************************************************************************************
@@ -2538,40 +2896,6 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 	VectorNormalize(forward);
 	VectoAngles(forward, self->s.angles);
 	self->s.angles[PITCH] = -self->s.angles[PITCH];
-
-#if 0
-	/* Update the angles on client(s). */
-	if (self->spawnflags & 1)
-	{
-		/* Just for the activator. */
-		if(self->activator->client->RemoteCameraNumber == self->s.number)
-		{
-			VectorCopy(self->s.angles, self->activator->client->ps.remote_viewangles);
-		}
-	}
-	else
-	{
-		/* For all clients. */
-		int		i;
-
-		for (i = 0; i < game.maxclients; i++)
-		{
-			edict_t *cl_ent;
-
-			cl_ent = g_edicts + 1 + i;
-
-			if(!cl_ent->inuse)
-			{
-				continue;
-			}
-
-			if (cl_ent->client->RemoteCameraNumber == self->s.number)
-			{
-				VectorCopy(self->s.angles[j], cl_ent->client->ps.remote_viewangles);
-			}
-		}
-	}
-#endif
 
 	// ********************************************************************************************
 	// Setup next think stuff.
@@ -2745,7 +3069,8 @@ fire_spark_use(edict_t *self, edict_t *other, edict_t *activator)
   "delay" - how long to live for... (default is forever)
 */
 
-void SP_misc_fire_sparker (edict_t *self)
+void
+SP_misc_fire_sparker(edict_t *self)
 {
 
 	if(self->spawnflags & 1)
