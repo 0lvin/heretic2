@@ -870,6 +870,7 @@ CTFCheckHurtCarrier(edict_t *targ, edict_t *attacker)
 		attacker->client->resp.ctf_lasthurtcarrier = level.time;
 	}
 }
+#endif
 
 /*------------------------------------------------------------------------*/
 
@@ -909,6 +910,7 @@ CTFResetFlag(int ctf_team)
 	}
 }
 
+#if 0
 static void
 CTFResetFlags(void)
 {

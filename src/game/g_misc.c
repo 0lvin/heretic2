@@ -280,44 +280,6 @@ int SilverSpringSoundID[AS_MAX] =
 	AS_SPIT,
 };
 
-int SwampCanyonSoundID[AS_MAX] =
-{
-	AS_NOTHING,
-	AS_BIRD1,
-	AS_BIRD2,
-	AS_HUGEWATERFALL,
-	AS_MUDPOOL,
-	AS_WINDEERIE,
-	AS_WINDNOISY,
-	AS_WINDSOFTHI,
-	AS_WINDSOFTLO,
-	AS_WINDSTRONG1,
-	AS_WINDSTRONG2,
-	AS_WINDWHISTLE,
-};
-
-
-typedef struct DebrisSound
-{
-	char	*Name;
-} DebrisSound_t;
-
-DebrisSound_t DebrisSound [NUM_MAT]=
-{
-	{"misc/breakstone.wav"},	// MAT_STONE
-	{"misc/breakstone.wav"},	// MAT_GREYSTONE
-	{"misc/tearcloth.wav"},	// MAT_CLOTH
-	{"misc/metalbreak.wav"},	// MAT_METAL
-	{"misc/fleshbreak.wav"},	// MAT_FLESH
-	{"misc/potbreak.wav"},	// MAT_POTTERY
-	{"misc/glassbreak2.wav"},	// MAT_GLASS
-	{"misc/breakstone.wav"},	// MAT_LEAF	FIXME
-	{"misc/breakwood.wav"},	// MAT_WOOD
-	{"misc/breakstone.wav"},	// MAT_BROWNSTONE
-	{"misc/bushbreak.wav"},	// MAT_NONE
-	{NULL},					// MAT_INSECT
-};
-
 void
 ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 {
@@ -337,7 +299,7 @@ ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 		return;
 	}
 
-	gib = G_Spawn();
+	gib = G_SpawnOptional();
 
 	if (!gib)
 	{
@@ -694,7 +656,7 @@ BecomeExplosion1(edict_t *self)
 	/* flags are important */
 	if (strcmp(self->classname, "item_flag_team1") == 0)
 	{
-		// CTFResetFlag(CTF_TEAM1); /* this will free self! */
+		CTFResetFlag(CTF_TEAM1); /* this will free self! */
 		gi.bprintf(PRINT_HIGH, "The %s flag has returned!\n",
 				CTFTeamName(CTF_TEAM1));
 		return;
@@ -702,7 +664,7 @@ BecomeExplosion1(edict_t *self)
 
 	if (strcmp(self->classname, "item_flag_team2") == 0)
 	{
-		// CTFResetFlag(CTF_TEAM2); /* this will free self! */
+		CTFResetFlag(CTF_TEAM2); /* this will free self! */
 		gi.bprintf(PRINT_HIGH, "The %s flag has returned!\n",
 				CTFTeamName(CTF_TEAM2));
 		return;
@@ -726,339 +688,6 @@ BecomeExplosion2(edict_t *self)
 	G_FreeEdict(self);
 }
 
-void
-SpawnDebris(edict_t *self, float size, vec3_t origin)
-{
-	byte		sizeb, magb;
-	vec3_t		halfsize;
-	float		mag;
-	int			flags = 0;
-	int			violence=VIOLENCE_DEFAULT;
-
-	size /=10;
-	sizeb = Clamp(size, 1.0, 255.0);
-	VectorScale(self->size, 0.5, halfsize);
-	mag = VectorLength(halfsize);
-	magb = Clamp(mag, 1.0, 255.0);
-
-	if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
-		flags |= CEF_FLAG6;
-
-	if (self->materialtype == MAT_FLESH || self->materialtype == MAT_INSECT)
-	{
-		if (blood_level)
-			violence = blood_level->value;
-
-		if(violence < VIOLENCE_NORMAL)
-		{
-			size /= 10;
-			sizeb = Clamp(size, 1.0, 255.0);
-			gi.CreateEffect(NULL,
-							FX_DEBRIS,
-							flags, origin,
-							"bbdb",
-							sizeb,
-							MAT_STONE,
-							halfsize, magb);
-		}
-		else
-		{
-			if(violence > VIOLENCE_NORMAL)
-			{
-				sizeb *= (violence - VIOLENCE_NORMAL);
-				if(sizeb > 255)
-					sizeb = 255;
-			}
-
-			if(self->materialtype == MAT_INSECT)
-				flags |= CEF_FLAG8;
-
-			if(!Q_stricmp(self->classname, "monster_tcheckrik_male"))
-				flags |= CEF_FLAG7;//use male insect skin on chunks
-
-			gi.CreateEffect(NULL,
-							FX_FLESH_DEBRIS,
-							flags, origin,
-							"bdb",
-							sizeb,
-							halfsize, magb);
-		}
-	}
-	else
-	{
-		if(self->s.renderfx & RF_REFLECTION)
-			flags |= CEF_FLAG8;
-
-		gi.CreateEffect(NULL,
-						FX_DEBRIS,
-						flags, origin,
-						"bbdb",
-						sizeb,
-						(byte)self->materialtype,
-						halfsize, magb);
-	}
-
-	if(self->classID == CID_OBJECT)
-		if(!strcmp(self->classname, "obj_larvabrokenegg") || !strcmp(self->classname, "obj_larvaegg"))
-			self->materialtype = MAT_POTTERY;
-
-	if (DebrisSound[self->materialtype].Name)
-	{
-		gi.sound(self, CHAN_VOICE,
-			gi.soundindex(DebrisSound[self->materialtype].Name), 1, ATTN_NORM, 0);
-	}
-}
-
-void
-BecomeDebris2(edict_t *self, float damage)
-{
-	float		size;
-	int			violence=VIOLENCE_DEFAULT;
-
-	if (blood_level)
-		violence = blood_level->value;
-
-	if (violence > VIOLENCE_BLOOD)
-	{
-		if(!(self->svflags & SVF_PARTS_GIBBED))
-		{//haven't yet thrown parts
-			if(self->monsterinfo.dismember)
-			{//FIXME:have a generic GibParts effect that throws flesh and several body parts- much cheaper?
-				int	i, num_limbs;
-
-				num_limbs = irand(3, 10);
-
-				if(violence > VIOLENCE_NORMAL)
-					num_limbs *= (violence - VIOLENCE_NORMAL);
-
-				for(i = 0; i < num_limbs; i++)
-				{
-					if(self->svflags&SVF_MONSTER)
-						self->monsterinfo.dismember(self, flrand(80, 160), irand(hl_Head, hl_LegLowerRight) | hl_MeleeHit);
-				}
-				self->svflags |= SVF_PARTS_GIBBED;
-				self->think = BecomeDebris;
-				self->nextthink = level.time + 0.1;
-				return;
-			}
-		}
-	}
-	// Set my message handler to the special message handler for dead entities.
-	self->msgHandler=DeadMsgHandler;
-
-	//What the hell is this???
-	if (self->spawnflags & 4 && !(self->svflags&SVF_MONSTER))
-	{   // Need to create an explosion effect for this
-		if(self->owner)
-		{
-			T_DamageRadius(self, self->owner, self, 60.0,
-						self->dmg, self->dmg/2, DAMAGE_NORMAL|DAMAGE_AVOID_ARMOR,MOD_DIED);
-		}
-		else
-		{
-			T_DamageRadius(self, self, self, 60.0,
-						self->dmg, self->dmg/2, DAMAGE_NORMAL|DAMAGE_AVOID_ARMOR,MOD_DIED);
-		}
-	}
-
-	// A zero mass is well and truly illegal!
-	if (self->mass<0)
-		gi.dprintf("ERROR: %s needs a mass to generate debris",self->classname);
-
-	// Create a chunk-spitting client effect and remove me now that I've been chunked.
-
-	// This only yields 4, 8, 12, or 16 chunks, generally seems to yield 16
-	if(self->svflags&SVF_MONSTER && self->classID != CID_MOTHER)
-	{
-		size = VectorLength(self->size);
-		size *= 100;
-		assert(size >= 0);
-	}
-	else
-	{
-		if (Vec3IsZero(self->s.origin))
-		{// Set this brush up as if it were an object so the debris will be thrown properly
-		// If I'm a BModel (and therefore don't have an origin), calculate one to use instead and
-		// slap that into my origin.
-//			self->solid = SOLID_NOT;		// This causes the breakable brushes to generate a sound
-			VectorMA(self->absmin,0.5,self->size,self->s.origin);
-		}
-
-		size = VectorLength(self->size) * 3;
-
-		if(self->solid == SOLID_BSP)
-			size *= 3;
-		else if(self->classID == CID_MOTHER)
-			size *= 10;
-
-		if (!self->mass)
-			self->mass = size / 10;
-	}
-
-	SpawnDebris(self, size, self->s.origin);
-
-	self->s.modelindex = 0;
-	self->solid = SOLID_NOT;
-	self->deadflag = DEAD_DEAD;
-
-	G_SetToFree(self);
-	self->nextthink = level.time + 2;
-}
-
-void
-BecomeDebris(edict_t *self)
-{
-	if(self->health<0)
-		BecomeDebris2(self, abs(self->health)+10.0f);
-	else
-		BecomeDebris2(self, 10.0f);
-}
-
-void
-SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
-{
-	byte		magb, mat;
-	float		mag, size;
-	int			flags = 0;
-	int			violence=VIOLENCE_DEFAULT;
-
-	mag = VectorLength(self->mins);
-
-	mat = (byte)(self->materialtype);
-	magb = Clamp(mag, 1.0, 255.0);
-
-	if(mat == MAT_FLESH || mat == MAT_INSECT)
-	{
-		if (blood_level)
-			violence = blood_level->value;
-
-		if (violence < VIOLENCE_NORMAL)
-		{
-			mat = MAT_STONE;
-		}
-		else if(violence > VIOLENCE_NORMAL)
-		{
-			NoOfChunks *= (violence - VIOLENCE_NORMAL);
-			if(NoOfChunks > 255)
-				NoOfChunks = 255;
-		}
-	}
-
-	if(mat == MAT_FLESH || mat == MAT_INSECT)
-	{
-		if(self->materialtype == MAT_INSECT)
-		{
-			flags |= CEF_FLAG8;
-			if(!Q_stricmp(self->classname, "monster_tcheckrik_male"))
-				flags |= CEF_FLAG7;//use male insect skin on chunks
-		}
-
-		if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
-			flags |= CEF_FLAG6;
-
-		gi.CreateEffect(NULL,
-						FX_FLESH_DEBRIS,
-						flags,
-						spot,
-						"bdb",
-						NoOfChunks, self->mins, magb);
-	}
-	else
-	{
-		size = (float)(NoOfChunks/100);
-		NoOfChunks = Clamp(size, 1.0, 255.0);
-
-		gi.CreateEffect(NULL,
-						FX_DEBRIS,
-						flags, spot,
-						"bbdb",
-						NoOfChunks,
-						MAT_STONE,
-						self->mins, magb);
-	}
-}
-
-void
-DefaultObjectDieHandler(edict_t *self, G_Message_t *msg)
-{
-	edict_t *inflictor;
-
-	G_ParseMsgParms(msg, "ee", &inflictor, &inflictor);
-
-	G_UseTargets(self, inflictor);
-
-	if (self->target_ent)
-		BecomeDebris(self->target_ent);
-
-	BecomeDebris(self);
-}
-
-void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, int flags);
-void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int frame)
-{//add blood spew to sever loc and blood trail on flying part
-	vec3_t	spot2;
-	int	flags;
-
-	if (damage)
-	{
-		if (damage>255)
-		{
-			damage = 255;
-		}
-		gi.sound (self, CHAN_VOICE, gi.soundindex("misc/fleshbreak.wav") , 1, ATTN_NORM, 0);
-	}
-
-	VectorAdd(self->s.origin, *spot, spot2);
-
-	if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
-		flags = CEF_FLAG6;
-	else
-		flags = 0;
-
-	if(self->materialtype == MAT_INSECT)
-		flags |= CEF_FLAG8;
-
-	if(give_head_to_harpy && take_head_from == self)
-	{
-		harpy_take_head(give_head_to_harpy, self, BodyPart, frame, flags);
-		SprayDebris(self, *spot, 5, damage);
-		return;
-	}
-
-	gi.CreateEffect(NULL,//owner
-					FX_BODYPART,//type
-					flags,//can't mess with this, sends only 1st byte and effects message
-					spot2,//spot,
-					"ssbbb",//int int float byte
-					(short)frame,//only 1 frame, sorry no anim
-					(short)BodyPart,//bitwise - node(s) to leave on
-					(byte)damage,//speed
-					self->s.modelindex,//my modelindex
-					self->s.number);//my number
-}
-
-void
-ThrowWeapon(edict_t *self, vec3_t *spot, int BodyPart, float damage, int frame)
-{//same but no blood and metal sound when hits ground
-	vec3_t	spot2;
-
-	if (damage>255)
-	{
-		damage = 255;
-	}
-
-	VectorAdd(self->s.origin, *spot, spot2);
-	gi.CreateEffect(NULL,//owner
-					FX_THROWWEAPON,//type
-					0,//can't mess with this, sends only 1st byte and effects message
-					spot2,//spot,
-					"ssbbb",// int int float byte
-					(short)frame,//only 1 frame, sorry no anim
-					(short)BodyPart,//bitwise - node(s) to leave on
-					(byte)damage,//speed
-					self->s.modelindex,//my modelindex
-					self->s.number);//my number
-}
 /* ===================================================== */
 
 /*
@@ -1891,6 +1520,1964 @@ SP_func_explosive(edict_t *self)
 	gi.linkentity(self);
 }
 
+/* ===================================================== */
+
+/*
+ * QUAKED misc_explobox (0 .5 .8) (-16 -16 0) (16 16 40)
+ *
+ * Large exploding box.  You can override its mass (100),
+ * health (80), and dmg (150).
+ */
+
+void
+barrel_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /*unused */)
+{
+	float ratio;
+	vec3_t v;
+
+	if (!self || !other)
+	{
+		return;
+	}
+
+	if ((!other->groundentity) || (other->groundentity == self))
+	{
+		return;
+	}
+
+	ratio = (float)other->mass / (float)self->mass;
+	VectorSubtract(self->s.origin, other->s.origin, v);
+	M_walkmove(self, vectoyaw(v), 20 * ratio * FRAMETIME);
+}
+
+void
+barrel_explode(edict_t *self)
+{
+	vec3_t org;
+	float spd;
+	vec3_t save;
+
+	if (!self)
+	{
+		return;
+	}
+
+	T_RadiusDamage(self, self->activator, self->dmg, NULL,
+			self->dmg + 40, MOD_BARREL);
+	VectorCopy(self->s.origin, save);
+	VectorMA(self->absmin, 0.5, self->size, self->s.origin);
+
+	/* a few big chunks */
+	spd = 1.5 * (float)self->dmg / 200.0;
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris1/tris.md2", spd, org);
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris1/tris.md2", spd, org);
+
+	/* bottom corners */
+	spd = 1.75 * (float)self->dmg / 200.0;
+	VectorCopy(self->absmin, org);
+	ThrowDebris(self, "models/objects/debris3/tris.md2", spd, org);
+	VectorCopy(self->absmin, org);
+	org[0] += self->size[0];
+	ThrowDebris(self, "models/objects/debris3/tris.md2", spd, org);
+	VectorCopy(self->absmin, org);
+	org[1] += self->size[1];
+	ThrowDebris(self, "models/objects/debris3/tris.md2", spd, org);
+	VectorCopy(self->absmin, org);
+	org[0] += self->size[0];
+	org[1] += self->size[1];
+	ThrowDebris(self, "models/objects/debris3/tris.md2", spd, org);
+
+	/* a bunch of little chunks */
+	spd = 2.0 * (float)self->dmg / 200.0;
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
+
+	VectorCopy(save, self->s.origin);
+
+	if (self->groundentity)
+	{
+		BecomeExplosion2(self);
+	}
+	else
+	{
+		BecomeExplosion1(self);
+	}
+}
+
+void
+barrel_delay(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker,
+		int damage /* unused */, vec3_t point /* unused */)
+{
+	if (!self || !attacker)
+	{
+		return;
+	}
+
+	self->takedamage = DAMAGE_NO;
+	self->nextthink = level.time + 2 * FRAMETIME;
+	self->think = barrel_explode;
+	self->activator = attacker;
+}
+
+void
+barrel_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	/* the think needs to be first since later stuff may override. */
+	self->think = barrel_think;
+	self->nextthink = level.time + FRAMETIME;
+
+	M_CatagorizePosition(self);
+	self->flags |= FL_IMMUNE_SLIME;
+	self->air_finished = level.time + 100;
+	M_WorldEffects(self);
+}
+
+void
+barrel_start(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	M_droptofloor(self);
+	self->think = barrel_think;
+	self->nextthink = level.time + FRAMETIME;
+}
+
+void
+SP_misc_explobox(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value)
+	{
+		/* auto-remove for deathmatch */
+		G_FreeEdict(self);
+		return;
+	}
+
+	gi.modelindex("models/objects/debris1/tris.md2");
+	gi.modelindex("models/objects/debris2/tris.md2");
+	gi.modelindex("models/objects/debris3/tris.md2");
+
+	self->solid = SOLID_BBOX;
+	self->movetype = MOVETYPE_STEP;
+
+	self->model = "models/objects/barrels/tris.md2";
+	self->s.modelindex = gi.modelindex(self->model);
+	VectorSet(self->mins, -16, -16, 0);
+	VectorSet(self->maxs, 16, 16, 40);
+
+	if (!self->mass)
+	{
+		self->mass = 400;
+	}
+
+	if (!self->health)
+	{
+		self->health = 10;
+	}
+
+	if (!self->dmg)
+	{
+		self->dmg = 150;
+	}
+
+	self->die = barrel_delay;
+	self->takedamage = DAMAGE_YES;
+	self->monsterinfo.aiflags = AI_NOSTEP;
+
+	self->touch = barrel_touch;
+	self->think = barrel_start;
+	self->nextthink = level.time + 2 * FRAMETIME;
+
+	gi.linkentity(self);
+}
+
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_blackhole (1 .5 0) (-8 -8 -8) (8 8 8)
+ */
+void
+misc_blackhole_use(edict_t *ent, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	G_FreeEdict(ent);
+}
+
+void
+misc_blackhole_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (++self->s.frame < 19)
+	{
+		self->nextthink = level.time + FRAMETIME;
+	}
+	else
+	{
+		self->s.frame = 0;
+		self->nextthink = level.time + FRAMETIME;
+	}
+}
+
+void misc_blackhole_transparent (edict_t *ent)
+{
+	ent->s.renderfx = RF_TRANSLUCENT|RF_NOSHADOW;
+	ent->prethink = NULL;
+	gi.linkentity(ent);
+}
+
+void
+SP_misc_blackhole(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_NOT;
+	VectorSet(ent->mins, -64, -64, 0);
+	VectorSet(ent->maxs, 64, 64, 8);
+	ent->s.modelindex = gi.modelindex("models/objects/black/tris.md2");
+	ent->s.renderfx = RF_TRANSLUCENT;
+	ent->use = misc_blackhole_use;
+	ent->think = misc_blackhole_think;
+	ent->prethink = misc_blackhole_transparent;
+	ent->nextthink = level.time + 2 * FRAMETIME;
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_eastertank (1 .5 0) (-32 -32 -16) (32 32 32)
+ */
+void
+misc_eastertank_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (++self->s.frame < 293)
+	{
+		self->nextthink = level.time + FRAMETIME;
+	}
+	else
+	{
+		self->s.frame = 254;
+		self->nextthink = level.time + FRAMETIME;
+	}
+}
+
+void
+SP_misc_eastertank(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	VectorSet(ent->mins, -32, -32, -16);
+	VectorSet(ent->maxs, 32, 32, 32);
+	ent->s.modelindex = gi.modelindex("models/monsters/tank/tris.md2");
+	ent->s.frame = 254;
+	ent->think = misc_eastertank_think;
+	ent->nextthink = level.time + 2 * FRAMETIME;
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_easterchick (1 .5 0) (-32 -32 0) (32 32 32)
+ */
+void
+misc_easterchick_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (++self->s.frame < 247)
+	{
+		self->nextthink = level.time + FRAMETIME;
+	}
+	else
+	{
+		self->s.frame = 208;
+		self->nextthink = level.time + FRAMETIME;
+	}
+}
+
+void
+SP_misc_easterchick(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	VectorSet(ent->mins, -32, -32, 0);
+	VectorSet(ent->maxs, 32, 32, 32);
+	ent->s.modelindex = gi.modelindex("models/monsters/bitch/tris.md2");
+	ent->s.frame = 208;
+	ent->think = misc_easterchick_think;
+	ent->nextthink = level.time + 2 * FRAMETIME;
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED misc_easterchick2 (1 .5 0) (-32 -32 0) (32 32 32)
+ */
+void
+misc_easterchick2_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (++self->s.frame < 287)
+	{
+		self->nextthink = level.time + FRAMETIME;
+	}
+	else
+	{
+		self->s.frame = 248;
+		self->nextthink = level.time + FRAMETIME;
+	}
+}
+
+void
+SP_misc_easterchick2(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	VectorSet(ent->mins, -32, -32, 0);
+	VectorSet(ent->maxs, 32, 32, 32);
+	ent->s.modelindex = gi.modelindex("models/monsters/bitch/tris.md2");
+	ent->s.frame = 248;
+	ent->think = misc_easterchick2_think;
+	ent->nextthink = level.time + 2 * FRAMETIME;
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED monster_commander_body (1 .5 0) (-32 -32 0) (32 32 48)
+ *
+ * Not really a monster, this is the Tank Commander's decapitated body.
+ * There should be a item_commander_head that has this as it's target.
+ */
+void
+commander_body_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (++self->s.frame < 24)
+	{
+		self->nextthink = level.time + FRAMETIME;
+	}
+	else
+	{
+		self->nextthink = 0;
+	}
+
+	if (self->s.frame == 22)
+	{
+		gi.sound(self, CHAN_BODY, gi.soundindex(
+						"tank/thud.wav"), 1, ATTN_NORM, 0);
+	}
+}
+
+void
+commander_body_use(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->think = commander_body_think;
+	self->nextthink = level.time + FRAMETIME;
+	gi.sound(self, CHAN_BODY, gi.soundindex("tank/pain.wav"), 1, ATTN_NORM, 0);
+}
+
+void
+commander_body_drop(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_TOSS;
+	self->s.origin[2] += 2;
+}
+
+void
+commander_body_die(edict_t *self, edict_t *inflictor /* unused */,
+		edict_t *attacker /* unused */, int damage, vec3_t point /* unused */)
+{
+	int n;
+
+	if (!self)
+	{
+		return;
+	}
+
+	/* check for gib */
+	if (self->health <= self->gib_health)
+	{
+		gi.sound(self, CHAN_BODY, gi.soundindex("tank/pain.wav"), 1, ATTN_NORM, 0);
+
+		ThrowGib(self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
+
+		for (n = 0; n < 4; n++)
+		{
+			ThrowGib(self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
+		}
+
+		ThrowGib(self, "models/objects/gibs/chest/tris.md2", damage, GIB_ORGANIC);
+		ThrowHead(self, "models/objects/gibs/gear/tris.md2", damage, GIB_METALLIC);
+		self->deadflag = DEAD_DEAD;
+
+		return;
+	}
+}
+
+void
+SP_monster_commander_body(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_NONE;
+	self->solid = SOLID_BBOX;
+	self->model = "models/monsters/commandr/tris.md2";
+	self->s.modelindex = gi.modelindex(self->model);
+	VectorSet(self->mins, -32, -32, 0);
+	VectorSet(self->maxs, 32, 32, 48);
+	self->use = commander_body_use;
+	self->takedamage = DAMAGE_YES;
+	self->s.renderfx |= RF_FRAMELERP;
+
+	if (g_commanderbody_nogod->value)
+	{
+		self->deadflag = DEAD_DEAD;
+		self->svflags |= SVF_MONSTER | SVF_DEADMONSTER;
+		self->die = commander_body_die;
+	}
+	else
+	{
+		self->flags = FL_GODMODE;
+	}
+
+	gi.linkentity(self);
+
+	gi.soundindex("tank/thud.wav");
+	gi.soundindex("tank/pain.wav");
+
+	self->think = commander_body_drop;
+	self->nextthink = level.time + 5 * FRAMETIME;
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_banner (1 .5 0) (-4 -4 -4) (4 4 4)
+ *
+ * The origin is the bottom of the banner.
+ * The banner is 128 tall.
+ */
+void
+misc_banner_think(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->s.frame = (ent->s.frame + 1) % 16;
+	ent->nextthink = level.time + FRAMETIME;
+}
+
+void
+SP_misc_banner(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_NOT;
+	ent->s.modelindex = gi.modelindex("models/objects/banner/tris.md2");
+	ent->s.frame = randk() % 16;
+	gi.linkentity(ent);
+
+	ent->think = misc_banner_think;
+	ent->nextthink = level.time + FRAMETIME;
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_deadsoldier (1 .5 0) (-16 -16 0) (16 16 16) ON_BACK ON_STOMACH BACK_DECAP FETAL_POS SIT_DECAP IMPALED
+ *
+ * This is the dead player model. Comes in 6 exciting different poses!
+ */
+void
+misc_deadsoldier_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
+		int damage, vec3_t point /* unused */)
+{
+	int n;
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->health > -80)
+	{
+		return;
+	}
+
+	gi.sound(self, CHAN_BODY, gi.soundindex(
+		"misc/udeath.wav"), 1, ATTN_NORM, 0);
+
+	for (n = 0; n < 4; n++)
+	{
+		ThrowGib(self,
+				"models/objects/gibs/sm_meat/tris.md2",
+				damage,
+				GIB_ORGANIC);
+	}
+
+	ThrowHead(self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
+}
+
+void
+SP_misc_deadsoldier(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (deathmatch->value)
+	{
+		/* auto-remove for deathmatch */
+		G_FreeEdict(ent);
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	ent->s.modelindex = gi.modelindex("models/deadbods/dude/tris.md2");
+
+	/* Defaults to frame 0 */
+	if (ent->spawnflags & 2)
+	{
+		ent->s.frame = 1;
+	}
+	else if (ent->spawnflags & 4)
+	{
+		ent->s.frame = 2;
+	}
+	else if (ent->spawnflags & 8)
+	{
+		ent->s.frame = 3;
+	}
+	else if (ent->spawnflags & 16)
+	{
+		ent->s.frame = 4;
+	}
+	else if (ent->spawnflags & 32)
+	{
+		ent->s.frame = 5;
+	}
+	else
+	{
+		ent->s.frame = 0;
+	}
+
+	VectorSet(ent->mins, -16, -16, 0);
+	VectorSet(ent->maxs, 16, 16, 16);
+	ent->deadflag = DEAD_DEAD;
+	ent->takedamage = DAMAGE_YES;
+	ent->svflags |= SVF_MONSTER | SVF_DEADMONSTER;
+	ent->die = misc_deadsoldier_die;
+	ent->monsterinfo.aiflags |= AI_GOOD_GUY;
+
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_viper (1 .5 0) (-16 -16 0) (16 16 32)
+ *
+ * This is the Viper for the flyby bombing.
+ * It is trigger_spawned, so you must have something use it for it to show up.
+ * There must be a path for it to follow once it is activated.
+ *
+ * "speed"		How fast the Viper should fly
+ */
+
+extern void train_use(edict_t *self, edict_t *other, edict_t *activator);
+extern void func_train_find(edict_t *self);
+
+void
+misc_viper_use(edict_t *self, edict_t *other, edict_t *activator)
+{
+	if (!self || !other || !activator)
+	{
+		return;
+	}
+
+	self->svflags &= ~SVF_NOCLIENT;
+	self->use = train_use;
+	train_use(self, other, activator);
+}
+
+void
+SP_misc_viper(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (!ent->target)
+	{
+		gi.dprintf("misc_viper without a target at %s\n", vtos(ent->absmin));
+		G_FreeEdict(ent);
+		return;
+	}
+
+	if (!ent->speed)
+	{
+		ent->speed = 300;
+	}
+
+	ent->movetype = MOVETYPE_PUSH;
+	ent->solid = SOLID_NOT;
+	ent->s.modelindex = gi.modelindex("models/ships/viper/tris.md2");
+	VectorSet(ent->mins, -16, -16, 0);
+	VectorSet(ent->maxs, 16, 16, 32);
+
+	ent->think = func_train_find;
+	ent->nextthink = level.time + FRAMETIME;
+	ent->use = misc_viper_use;
+	ent->svflags |= SVF_NOCLIENT;
+	ent->moveinfo.accel = ent->moveinfo.decel = ent->moveinfo.speed =
+													ent->speed;
+
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED misc_crashviper (1 .5 0) (-176 -120 -24) (176 120 72)
+ * This is a large viper about to crash
+ */
+void
+SP_misc_crashviper(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (!ent->target)
+	{
+		gi.dprintf("misc_viper without a target at %s\n", vtos(ent->absmin));
+		G_FreeEdict(ent);
+		return;
+	}
+
+	if (!ent->speed)
+	{
+		ent->speed = 300;
+	}
+
+	ent->movetype = MOVETYPE_PUSH;
+	ent->solid = SOLID_NOT;
+	ent->s.modelindex = gi.modelindex("models/ships/bigviper/tris.md2");
+	VectorSet(ent->mins, -16, -16, 0);
+	VectorSet(ent->maxs, 16, 16, 32);
+
+	ent->think = func_train_find;
+	ent->nextthink = level.time + FRAMETIME;
+	ent->use = misc_viper_use;
+	ent->svflags |= SVF_NOCLIENT;
+	ent->moveinfo.accel = ent->moveinfo.decel = ent->moveinfo.speed = ent->speed;
+
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED misc_bigviper (1 .5 0) (-176 -120 -24) (176 120 72)
+ *
+ * This is a large stationary viper as seen in Paul's intro
+ */
+void
+SP_misc_bigviper(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	VectorSet(ent->mins, -176, -120, -24);
+	VectorSet(ent->maxs, 176, 120, 72);
+	ent->s.modelindex = gi.modelindex("models/ships/bigviper/tris.md2");
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_viper_bomb (1 0 0) (-8 -8 -8) (8 8 8)
+ *
+ * "dmg"	how much boom should the bomb make?
+ */
+void
+misc_viper_bomb_touch(edict_t *self, edict_t *other /* unused */, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	G_UseTargets(self, self->activator);
+
+	self->s.origin[2] = self->absmin[2] + 1;
+	T_RadiusDamage(self, self, self->dmg, NULL, self->dmg + 40, MOD_BOMB);
+	BecomeExplosion2(self);
+}
+
+void
+misc_viper_bomb_prethink(edict_t *self)
+{
+	vec3_t v;
+	float diff;
+
+	if (!self)
+	{
+		return;
+	}
+
+	self->groundentity = NULL;
+
+	diff = self->timestamp - level.time;
+
+	if (diff < -1.0)
+	{
+		diff = -1.0;
+	}
+
+	VectorScale(self->moveinfo.dir, 1.0 + diff, v);
+	v[2] = diff;
+
+	diff = self->s.angles[2];
+	vectoangles(v, self->s.angles);
+	self->s.angles[2] = diff + 10;
+}
+
+void
+misc_viper_bomb_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
+{
+	edict_t *viper;
+
+	if (!self || !activator)
+	{
+		return;
+	}
+
+	self->solid = SOLID_BBOX;
+	self->svflags &= ~SVF_NOCLIENT;
+	self->s.effects |= EF_ROCKET;
+	self->use = NULL;
+	self->movetype = MOVETYPE_TOSS;
+	self->prethink = misc_viper_bomb_prethink;
+	self->touch = misc_viper_bomb_touch;
+	self->activator = activator;
+
+	viper = G_Find(NULL, FOFS(classname), "misc_viper");
+	VectorScale(viper->moveinfo.dir, viper->moveinfo.speed, self->velocity);
+
+	self->timestamp = level.time;
+	VectorCopy(viper->moveinfo.dir, self->moveinfo.dir);
+}
+
+void
+SP_misc_viper_bomb(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_NONE;
+	self->solid = SOLID_NOT;
+	VectorSet(self->mins, -8, -8, -8);
+	VectorSet(self->maxs, 8, 8, 8);
+
+	self->s.modelindex = gi.modelindex("models/objects/bomb/tris.md2");
+
+	if (!self->dmg)
+	{
+		self->dmg = 1000;
+	}
+
+	self->use = misc_viper_bomb_use;
+	self->svflags |= SVF_NOCLIENT;
+
+	gi.linkentity(self);
+}
+
+/*
+ * QUAKED misc_viper_missile (1 0 0) (-8 -8 -8) (8 8 8)
+ * "dmg"	how much boom should the bomb make? the default value is 250
+ */
+
+void
+misc_viper_missile_use(edict_t *self, edict_t *other, edict_t *activator)
+{
+	vec3_t forward, right, up;
+	vec3_t start, dir;
+	vec3_t vec;
+
+	if (!self)
+	{
+		return;
+	}
+
+	AngleVectors(self->s.angles, forward, right, up);
+
+	self->enemy = G_Find(NULL, FOFS(targetname), self->target);
+
+	VectorCopy(self->enemy->s.origin, vec);
+
+	VectorCopy(self->s.origin, start);
+	VectorSubtract(vec, start, dir);
+	VectorNormalize(dir);
+
+	monster_fire_rocket(self, start, dir, self->dmg, 500, MZ2_CHICK_ROCKET_1);
+
+	self->nextthink = level.time + 0.1;
+	self->think = G_FreeEdict;
+}
+
+void
+SP_misc_viper_missile(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_NONE;
+	self->solid = SOLID_NOT;
+	VectorSet(self->mins, -8, -8, -8);
+	VectorSet(self->maxs, 8, 8, 8);
+
+	if (!self->dmg)
+	{
+		self->dmg = 250;
+	}
+
+	self->s.modelindex = gi.modelindex("models/objects/bomb/tris.md2");
+
+	self->use = misc_viper_missile_use;
+	self->svflags |= SVF_NOCLIENT;
+
+	gi.linkentity(self);
+}
+
+/*
+ * QUAKED misc_strogg_ship (1 .5 0) (-16 -16 0) (16 16 32)
+ *
+ * This is a Storgg ship for the flybys.
+ * It is trigger_spawned, so you must have something use it for it to show up.
+ * There must be a path for it to follow once it is activated.
+ *
+ * "speed"		How fast it should fly
+ */
+
+extern void train_use(edict_t *self, edict_t *other, edict_t *activator);
+extern void func_train_find(edict_t *self);
+
+void
+misc_strogg_ship_use(edict_t *self, edict_t *other /* other */, edict_t *activator)
+{
+	if (!self || !activator)
+	{
+		return;
+	}
+
+	self->svflags &= ~SVF_NOCLIENT;
+	self->use = train_use;
+	train_use(self, other, activator);
+}
+
+void
+SP_misc_strogg_ship(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (!ent->target)
+	{
+		gi.dprintf("%s without a target at %s\n", ent->classname,
+				vtos(ent->absmin));
+		G_FreeEdict(ent);
+		return;
+	}
+
+	if (!ent->speed)
+	{
+		ent->speed = 300;
+	}
+
+	ent->movetype = MOVETYPE_PUSH;
+	ent->solid = SOLID_NOT;
+	ent->s.modelindex = gi.modelindex("models/ships/strogg1/tris.md2");
+	VectorSet(ent->mins, -16, -16, 0);
+	VectorSet(ent->maxs, 16, 16, 32);
+
+	ent->think = func_train_find;
+	ent->nextthink = level.time + FRAMETIME;
+	ent->use = misc_strogg_ship_use;
+	ent->svflags |= SVF_NOCLIENT;
+	ent->moveinfo.accel = ent->moveinfo.decel =
+		ent->moveinfo.speed = ent->speed;
+
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED misc_transport (1 0 0) (-8 -8 -8) (8 8 8) TRIGGER_SPAWN
+ * Maxx's transport at end of game
+ */
+void
+SP_misc_transport(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (!ent->target)
+	{
+		gi.dprintf("%s without a target at %s\n", ent->classname,
+				vtos(ent->absmin));
+		G_FreeEdict(ent);
+		return;
+	}
+
+	if (!ent->speed)
+	{
+		ent->speed = 300;
+	}
+
+	ent->movetype = MOVETYPE_PUSH;
+	ent->solid = SOLID_NOT;
+	ent->s.modelindex = gi.modelindex("models/objects/ship/tris.md2");
+
+	VectorSet(ent->mins, -16, -16, 0);
+	VectorSet(ent->maxs, 16, 16, 32);
+
+	ent->think = func_train_find;
+	ent->nextthink = level.time + FRAMETIME;
+	ent->use = misc_strogg_ship_use;
+	ent->svflags |= SVF_NOCLIENT;
+	ent->moveinfo.accel = ent->moveinfo.decel = ent->moveinfo.speed = ent->speed;
+
+	if (!(ent->spawnflags & 1))
+	{
+		ent->spawnflags |= 1;
+	}
+
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_satellite_dish (1 .5 0) (-64 -64 0) (64 64 128)
+ */
+void
+misc_satellite_dish_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->s.frame++;
+
+	if (self->s.frame < 38)
+	{
+		self->nextthink = level.time + FRAMETIME;
+	}
+}
+
+void
+misc_satellite_dish_use(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->s.frame = 0;
+	self->think = misc_satellite_dish_think;
+	self->nextthink = level.time + FRAMETIME;
+}
+
+void
+SP_misc_satellite_dish(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	VectorSet(ent->mins, -64, -64, 0);
+	VectorSet(ent->maxs, 64, 64, 128);
+	ent->s.modelindex = gi.modelindex("models/objects/satellite/tris.md2");
+	ent->use = misc_satellite_dish_use;
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED light_mine1 (0 1 0) (-2 -2 -12) (2 2 12)
+ */
+void
+SP_light_mine1(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	ent->s.modelindex =
+		gi.modelindex("models/objects/minelite/light1/tris.md2");
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED light_mine2 (0 1 0) (-2 -2 -12) (2 2 12)
+ */
+void
+SP_light_mine2(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->movetype = MOVETYPE_NONE;
+	ent->solid = SOLID_BBOX;
+	ent->s.modelindex =
+		gi.modelindex("models/objects/minelite/light2/tris.md2");
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED misc_gib_arm (1 0 0) (-8 -8 -8) (8 8 8)
+ *
+ * Intended for use with the target_spawner
+ */
+void
+SP_misc_gib_arm(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	gi.setmodel(ent, "models/objects/gibs/arm/tris.md2");
+	ent->solid = SOLID_BBOX;
+	ent->s.effects |= EF_GIB;
+	ent->takedamage = DAMAGE_YES;
+	ent->die = gib_die;
+	ent->movetype = MOVETYPE_TOSS;
+	ent->svflags |= SVF_MONSTER;
+	ent->deadflag = DEAD_DEAD;
+	ent->avelocity[0] = random() * 200;
+	ent->avelocity[1] = random() * 200;
+	ent->avelocity[2] = random() * 200;
+	ent->think = G_FreeEdict;
+	ent->nextthink = level.time + 30;
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED misc_gib_leg (1 0 0) (-8 -8 -8) (8 8 8)
+ * Intended for use with the target_spawner
+ */
+void
+SP_misc_gib_leg(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	gi.setmodel(ent, "models/objects/gibs/leg/tris.md2");
+	ent->solid = SOLID_BBOX;
+	ent->s.effects |= EF_GIB;
+	ent->takedamage = DAMAGE_YES;
+	ent->die = gib_die;
+	ent->movetype = MOVETYPE_TOSS;
+	ent->svflags |= SVF_MONSTER;
+	ent->deadflag = DEAD_DEAD;
+	ent->avelocity[0] = random() * 200;
+	ent->avelocity[1] = random() * 200;
+	ent->avelocity[2] = random() * 200;
+	ent->think = G_FreeEdict;
+	ent->nextthink = level.time + 30;
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED misc_gib_head (1 0 0) (-8 -8 -8) (8 8 8)
+ * Intended for use with the target_spawner
+ */
+void
+SP_misc_gib_head(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	gi.setmodel(ent, "models/objects/gibs/head/tris.md2");
+	ent->solid = SOLID_BBOX;
+	ent->s.effects |= EF_GIB;
+	ent->takedamage = DAMAGE_YES;
+	ent->die = gib_die;
+	ent->movetype = MOVETYPE_TOSS;
+	ent->svflags |= SVF_MONSTER;
+	ent->deadflag = DEAD_DEAD;
+	ent->avelocity[0] = random() * 200;
+	ent->avelocity[1] = random() * 200;
+	ent->avelocity[2] = random() * 200;
+	ent->think = G_FreeEdict;
+	ent->nextthink = level.time + 30;
+	gi.linkentity(ent);
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED target_character (0 0 1) ?
+ *
+ * used with target_string (must be on same "team")
+ * "count" is position in the string (starts at 1)
+ */
+
+void
+SP_target_character(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_PUSH;
+	gi.setmodel(self, self->model);
+	self->solid = SOLID_BSP;
+	self->s.frame = 12;
+	gi.linkentity(self);
+	return;
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED target_string (0 0 1) (-8 -8 -8) (8 8 8)
+ */
+void
+target_string_use(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	edict_t *e;
+	size_t l;
+	int n;
+	char c;
+
+	if (!self)
+	{
+		return;
+	}
+
+	l = strlen(self->message);
+
+	for (e = self->teammaster; e; e = e->teamchain)
+	{
+		if (!e->count)
+		{
+			continue;
+		}
+
+		n = e->count - 1;
+
+		if (n > l)
+		{
+			e->s.frame = 12;
+			continue;
+		}
+
+		c = self->message[n];
+
+		if ((c >= '0') && (c <= '9'))
+		{
+			e->s.frame = c - '0';
+		}
+		else if (c == '-')
+		{
+			e->s.frame = 10;
+		}
+		else if (c == ':')
+		{
+			e->s.frame = 11;
+		}
+		else
+		{
+			e->s.frame = 12;
+		}
+	}
+}
+
+void
+SP_target_string(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (!self->message)
+	{
+		self->message = "";
+	}
+
+	self->use = target_string_use;
+}
+
+/* ===================================================== */
+
+/*
+ * QUAKED func_clock (0 0 1) (-8 -8 -8) (8 8 8) TIMER_UP TIMER_DOWN START_OFF MULTI_USE
+ *
+ * target a target_string with this
+ *
+ * The default is to be a time of day clock
+ *
+ * TIMER_UP and TIMER_DOWN run for "count" seconds and the fire "pathtarget"
+ * If START_OFF, this entity must be used before it starts
+ *
+ * "style"	0 "xx"
+ *          1 "xx:xx"
+ *          2 "xx:xx:xx"
+ */
+
+#define CLOCK_MESSAGE_SIZE 16
+
+/* don't let field width of any clock messages change, or it
+   could cause an overwrite after a game load */
+
+void
+func_clock_reset(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->activator = NULL;
+
+	if (self->spawnflags & 1)
+	{
+		self->health = 0;
+		self->wait = self->count;
+	}
+	else if (self->spawnflags & 2)
+	{
+		self->health = self->count;
+		self->wait = 0;
+	}
+}
+
+/*
+ * This is an evil hack to
+ * prevent a rare crahs at
+ * biggun exit. */
+typedef struct zhead_s
+{
+   struct zhead_s *prev, *next;
+   short magic;
+   short tag;
+   int size;
+} zhead_t;
+
+void
+func_clock_format_countdown(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	zhead_t *z = ( zhead_t * )self->message - 1;
+	int size = z->size - sizeof (zhead_t);
+
+	if (size < CLOCK_MESSAGE_SIZE)
+	{
+		gi.TagFree (self->message);
+		self->message = gi.TagMalloc (CLOCK_MESSAGE_SIZE, TAG_LEVEL);
+	}
+
+	if (self->style == 0)
+	{
+		Com_sprintf(self->message, CLOCK_MESSAGE_SIZE, "%2i", self->health);
+		return;
+	}
+
+	if (self->style == 1)
+	{
+		Com_sprintf(self->message, CLOCK_MESSAGE_SIZE, "%2i:%2i",
+				self->health / 60, self->health % 60);
+
+		if (self->message[3] == ' ')
+		{
+			self->message[3] = '0';
+		}
+
+		return;
+	}
+
+	if (self->style == 2)
+	{
+		Com_sprintf(self->message, CLOCK_MESSAGE_SIZE, "%2i:%2i:%2i",
+				self->health / 3600,
+				(self->health - (self->health / 3600) * 3600) / 60,
+				self->health % 60);
+
+		if (self->message[3] == ' ')
+		{
+			self->message[3] = '0';
+		}
+
+		if (self->message[6] == ' ')
+		{
+			self->message[6] = '0';
+		}
+
+		return;
+	}
+}
+
+void
+func_clock_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (!self->enemy)
+	{
+		self->enemy = G_Find(NULL, FOFS(targetname), self->target);
+
+		if (!self->enemy)
+		{
+			return;
+		}
+	}
+
+	if (self->spawnflags & 1)
+	{
+		func_clock_format_countdown(self);
+		self->health++;
+	}
+	else if (self->spawnflags & 2)
+	{
+		func_clock_format_countdown(self);
+		self->health--;
+	}
+	else
+	{
+		struct tm *ltime;
+		time_t gmtime;
+
+		time(&gmtime);
+		ltime = localtime(&gmtime);
+		Com_sprintf(self->message, CLOCK_MESSAGE_SIZE, "%2i:%2i:%2i",
+				ltime->tm_hour, ltime->tm_min, ltime->tm_sec);
+
+		if (self->message[3] == ' ')
+		{
+			self->message[3] = '0';
+		}
+
+		if (self->message[6] == ' ')
+		{
+			self->message[6] = '0';
+		}
+	}
+
+	self->enemy->message = self->message;
+	self->enemy->use(self->enemy, self, self);
+
+	if (((self->spawnflags & 1) && (self->health > self->wait)) ||
+		((self->spawnflags & 2) && (self->health < self->wait)))
+	{
+		if (self->pathtarget)
+		{
+			char *savetarget;
+			char *savemessage;
+
+			savetarget = self->target;
+			savemessage = self->message;
+			self->target = self->pathtarget;
+			self->message = NULL;
+			G_UseTargets(self, self->activator);
+			self->target = savetarget;
+			self->message = savemessage;
+		}
+
+		if (!(self->spawnflags & 8))
+		{
+			self->think = G_FreeEdict;
+			self->nextthink = level.time + 1;
+			return;
+		}
+
+		func_clock_reset(self);
+
+		if (self->spawnflags & 4)
+		{
+			return;
+		}
+	}
+
+	self->nextthink = level.time + 1;
+}
+
+void
+func_clock_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
+{
+	if (!self || !activator)
+	{
+		return;
+	}
+
+	if (!(self->spawnflags & 8))
+	{
+		self->use = NULL;
+	}
+
+	if (self->activator)
+	{
+		return;
+	}
+
+	self->activator = activator;
+	self->think(self);
+}
+
+void
+SP_func_clock(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (!self->target)
+	{
+		gi.dprintf("%s with no target at %s\n", self->classname,
+				vtos(self->s.origin));
+		G_FreeEdict(self);
+		return;
+	}
+
+	if ((self->spawnflags & 2) && (!self->count))
+	{
+		gi.dprintf("%s with no count at %s\n", self->classname,
+				vtos(self->s.origin));
+		G_FreeEdict(self);
+		return;
+	}
+
+	if ((self->spawnflags & 1) && (!self->count))
+	{
+		self->count = 60 * 60;
+	}
+
+	func_clock_reset(self);
+
+	self->message = gi.TagMalloc(CLOCK_MESSAGE_SIZE, TAG_LEVEL);
+
+	self->think = func_clock_think;
+
+	if (self->spawnflags & 4)
+	{
+		self->use = func_clock_use;
+	}
+	else
+	{
+		self->nextthink = level.time + 1;
+	}
+}
+
+/* ================================================================================= */
+
+typedef struct DebrisSound
+{
+	char	*Name;
+} DebrisSound_t;
+
+static DebrisSound_t DebrisSound [NUM_MAT]=
+{
+	{"misc/breakstone.wav"},	// MAT_STONE
+	{"misc/breakstone.wav"},	// MAT_GREYSTONE
+	{"misc/tearcloth.wav"},	// MAT_CLOTH
+	{"misc/metalbreak.wav"},	// MAT_METAL
+	{"misc/fleshbreak.wav"},	// MAT_FLESH
+	{"misc/potbreak.wav"},	// MAT_POTTERY
+	{"misc/glassbreak2.wav"},	// MAT_GLASS
+	{"misc/breakstone.wav"},	// MAT_LEAF	FIXME
+	{"misc/breakwood.wav"},	// MAT_WOOD
+	{"misc/breakstone.wav"},	// MAT_BROWNSTONE
+	{"misc/bushbreak.wav"},	// MAT_NONE
+	{NULL},					// MAT_INSECT
+};
+
+void
+SpawnDebris(edict_t *self, float size, vec3_t origin)
+{
+	byte		sizeb, magb;
+	vec3_t		halfsize;
+	float		mag;
+	int			flags = 0;
+	int			violence=VIOLENCE_DEFAULT;
+
+	size /=10;
+	sizeb = Clamp(size, 1.0, 255.0);
+	VectorScale(self->size, 0.5, halfsize);
+	mag = VectorLength(halfsize);
+	magb = Clamp(mag, 1.0, 255.0);
+
+	if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
+		flags |= CEF_FLAG6;
+
+	if (self->materialtype == MAT_FLESH || self->materialtype == MAT_INSECT)
+	{
+		if (blood_level)
+			violence = blood_level->value;
+
+		if(violence < VIOLENCE_NORMAL)
+		{
+			size /= 10;
+			sizeb = Clamp(size, 1.0, 255.0);
+			gi.CreateEffect(NULL,
+							FX_DEBRIS,
+							flags, origin,
+							"bbdb",
+							sizeb,
+							MAT_STONE,
+							halfsize, magb);
+		}
+		else
+		{
+			if(violence > VIOLENCE_NORMAL)
+			{
+				sizeb *= (violence - VIOLENCE_NORMAL);
+				if(sizeb > 255)
+					sizeb = 255;
+			}
+
+			if(self->materialtype == MAT_INSECT)
+				flags |= CEF_FLAG8;
+
+			if(!Q_stricmp(self->classname, "monster_tcheckrik_male"))
+				flags |= CEF_FLAG7;//use male insect skin on chunks
+
+			gi.CreateEffect(NULL,
+							FX_FLESH_DEBRIS,
+							flags, origin,
+							"bdb",
+							sizeb,
+							halfsize, magb);
+		}
+	}
+	else
+	{
+		if(self->s.renderfx & RF_REFLECTION)
+			flags |= CEF_FLAG8;
+
+		gi.CreateEffect(NULL,
+						FX_DEBRIS,
+						flags, origin,
+						"bbdb",
+						sizeb,
+						(byte)self->materialtype,
+						halfsize, magb);
+	}
+
+	if(self->classID == CID_OBJECT)
+		if(!strcmp(self->classname, "obj_larvabrokenegg") || !strcmp(self->classname, "obj_larvaegg"))
+			self->materialtype = MAT_POTTERY;
+
+	if (DebrisSound[self->materialtype].Name)
+	{
+		gi.sound(self, CHAN_VOICE,
+			gi.soundindex(DebrisSound[self->materialtype].Name), 1, ATTN_NORM, 0);
+	}
+}
+
+void
+BecomeDebris2(edict_t *self, float damage)
+{
+	float		size;
+	int			violence=VIOLENCE_DEFAULT;
+
+	if (blood_level)
+		violence = blood_level->value;
+
+	if (violence > VIOLENCE_BLOOD)
+	{
+		if(!(self->svflags & SVF_PARTS_GIBBED))
+		{//haven't yet thrown parts
+			if(self->monsterinfo.dismember)
+			{//FIXME:have a generic GibParts effect that throws flesh and several body parts- much cheaper?
+				int	i, num_limbs;
+
+				num_limbs = irand(3, 10);
+
+				if(violence > VIOLENCE_NORMAL)
+					num_limbs *= (violence - VIOLENCE_NORMAL);
+
+				for(i = 0; i < num_limbs; i++)
+				{
+					if(self->svflags&SVF_MONSTER)
+						self->monsterinfo.dismember(self, flrand(80, 160), irand(hl_Head, hl_LegLowerRight) | hl_MeleeHit);
+				}
+				self->svflags |= SVF_PARTS_GIBBED;
+				self->think = BecomeDebris;
+				self->nextthink = level.time + 0.1;
+				return;
+			}
+		}
+	}
+	// Set my message handler to the special message handler for dead entities.
+	self->msgHandler=DeadMsgHandler;
+
+	//What the hell is this???
+	if (self->spawnflags & 4 && !(self->svflags&SVF_MONSTER))
+	{   // Need to create an explosion effect for this
+		if(self->owner)
+		{
+			T_DamageRadius(self, self->owner, self, 60.0,
+						self->dmg, self->dmg/2, DAMAGE_NORMAL|DAMAGE_AVOID_ARMOR,MOD_DIED);
+		}
+		else
+		{
+			T_DamageRadius(self, self, self, 60.0,
+						self->dmg, self->dmg/2, DAMAGE_NORMAL|DAMAGE_AVOID_ARMOR,MOD_DIED);
+		}
+	}
+
+	// A zero mass is well and truly illegal!
+	if (self->mass<0)
+		gi.dprintf("ERROR: %s needs a mass to generate debris",self->classname);
+
+	// Create a chunk-spitting client effect and remove me now that I've been chunked.
+
+	// This only yields 4, 8, 12, or 16 chunks, generally seems to yield 16
+	if(self->svflags&SVF_MONSTER && self->classID != CID_MOTHER)
+	{
+		size = VectorLength(self->size);
+		size *= 100;
+		assert(size >= 0);
+	}
+	else
+	{
+		if (Vec3IsZero(self->s.origin))
+		{// Set this brush up as if it were an object so the debris will be thrown properly
+		// If I'm a BModel (and therefore don't have an origin), calculate one to use instead and
+		// slap that into my origin.
+//			self->solid = SOLID_NOT;		// This causes the breakable brushes to generate a sound
+			VectorMA(self->absmin,0.5,self->size,self->s.origin);
+		}
+
+		size = VectorLength(self->size) * 3;
+
+		if(self->solid == SOLID_BSP)
+			size *= 3;
+		else if(self->classID == CID_MOTHER)
+			size *= 10;
+
+		if (!self->mass)
+			self->mass = size / 10;
+	}
+
+	SpawnDebris(self, size, self->s.origin);
+
+	self->s.modelindex = 0;
+	self->solid = SOLID_NOT;
+	self->deadflag = DEAD_DEAD;
+
+	G_SetToFree(self);
+	self->nextthink = level.time + 2;
+}
+
+void
+BecomeDebris(edict_t *self)
+{
+	if(self->health<0)
+		BecomeDebris2(self, abs(self->health)+10.0f);
+	else
+		BecomeDebris2(self, 10.0f);
+}
+
+void
+SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
+{
+	byte		magb, mat;
+	float		mag, size;
+	int			flags = 0;
+	int			violence=VIOLENCE_DEFAULT;
+
+	mag = VectorLength(self->mins);
+
+	mat = (byte)(self->materialtype);
+	magb = Clamp(mag, 1.0, 255.0);
+
+	if(mat == MAT_FLESH || mat == MAT_INSECT)
+	{
+		if (blood_level)
+			violence = blood_level->value;
+
+		if (violence < VIOLENCE_NORMAL)
+		{
+			mat = MAT_STONE;
+		}
+		else if(violence > VIOLENCE_NORMAL)
+		{
+			NoOfChunks *= (violence - VIOLENCE_NORMAL);
+			if(NoOfChunks > 255)
+				NoOfChunks = 255;
+		}
+	}
+
+	if(mat == MAT_FLESH || mat == MAT_INSECT)
+	{
+		if(self->materialtype == MAT_INSECT)
+		{
+			flags |= CEF_FLAG8;
+			if(!Q_stricmp(self->classname, "monster_tcheckrik_male"))
+				flags |= CEF_FLAG7;//use male insect skin on chunks
+		}
+
+		if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
+			flags |= CEF_FLAG6;
+
+		gi.CreateEffect(NULL,
+						FX_FLESH_DEBRIS,
+						flags,
+						spot,
+						"bdb",
+						NoOfChunks, self->mins, magb);
+	}
+	else
+	{
+		size = (float)(NoOfChunks/100);
+		NoOfChunks = Clamp(size, 1.0, 255.0);
+
+		gi.CreateEffect(NULL,
+						FX_DEBRIS,
+						flags, spot,
+						"bbdb",
+						NoOfChunks,
+						MAT_STONE,
+						self->mins, magb);
+	}
+}
+
+void
+DefaultObjectDieHandler(edict_t *self, G_Message_t *msg)
+{
+	edict_t *inflictor;
+
+	G_ParseMsgParms(msg, "ee", &inflictor, &inflictor);
+
+	G_UseTargets(self, inflictor);
+
+	if (self->target_ent)
+		BecomeDebris(self->target_ent);
+
+	BecomeDebris(self);
+}
+
+void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, int flags);
+void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int frame)
+{//add blood spew to sever loc and blood trail on flying part
+	vec3_t	spot2;
+	int	flags;
+
+	if (damage)
+	{
+		if (damage>255)
+		{
+			damage = 255;
+		}
+		gi.sound (self, CHAN_VOICE, gi.soundindex("misc/fleshbreak.wav") , 1, ATTN_NORM, 0);
+	}
+
+	VectorAdd(self->s.origin, *spot, spot2);
+
+	if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
+		flags = CEF_FLAG6;
+	else
+		flags = 0;
+
+	if(self->materialtype == MAT_INSECT)
+		flags |= CEF_FLAG8;
+
+	if(give_head_to_harpy && take_head_from == self)
+	{
+		harpy_take_head(give_head_to_harpy, self, BodyPart, frame, flags);
+		SprayDebris(self, *spot, 5, damage);
+		return;
+	}
+
+	gi.CreateEffect(NULL,//owner
+					FX_BODYPART,//type
+					flags,//can't mess with this, sends only 1st byte and effects message
+					spot2,//spot,
+					"ssbbb",//int int float byte
+					(short)frame,//only 1 frame, sorry no anim
+					(short)BodyPart,//bitwise - node(s) to leave on
+					(byte)damage,//speed
+					self->s.modelindex,//my modelindex
+					self->s.number);//my number
+}
+
+void
+ThrowWeapon(edict_t *self, vec3_t *spot, int BodyPart, float damage, int frame)
+{//same but no blood and metal sound when hits ground
+	vec3_t	spot2;
+
+	if (damage>255)
+	{
+		damage = 255;
+	}
+
+	VectorAdd(self->s.origin, *spot, spot2);
+	gi.CreateEffect(NULL,//owner
+					FX_THROWWEAPON,//type
+					0,//can't mess with this, sends only 1st byte and effects message
+					spot2,//spot,
+					"ssbbb",// int int float byte
+					(short)frame,//only 1 frame, sorry no anim
+					(short)BodyPart,//bitwise - node(s) to leave on
+					(byte)damage,//speed
+					self->s.modelindex,//my modelindex
+					self->s.number);//my number
+}
 
 void
 ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
@@ -1970,7 +3557,8 @@ count - number of items being spit out (default 1)
 radius - distance from item_spitter origin that items will be spawned
 spawnflags2 - the spawnflags for the item being created.
 */
-void SP_item_spitter(edict_t *self)
+void
+SP_item_spitter(edict_t *self)
 {
 	self->style = 1;	// To show it hasn't been used yet
 
@@ -2160,14 +3748,21 @@ void SP_misc_teleporter (edict_t *ent)
 
 }
 
-/*QUAKED misc_teleporter_dest (1 0 0) (-32 -32 -24) (32 32 -16)
-
-	Point teleporters at these.
-*/
-void SP_misc_teleporter_dest (edict_t *ent)
+/*
+ * QUAKED misc_teleporter_dest (1 0 0) (-32 -32 -24) (32 32 -16)
+ *
+ * Point teleporters at these.
+ */
+void
+SP_misc_teleporter_dest(edict_t *ent)
 {
 	trace_t		tr;
 	vec3_t		endpos;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	ent->s.skinnum = 0;
 	ent->solid = SOLID_NOT;
@@ -2181,7 +3776,6 @@ void SP_misc_teleporter_dest (edict_t *ent)
 
 	VectorCopy(tr.endpos,ent->last_org);
 	ent->last_org[2] -= mins[2];
-
 }
 
 
@@ -2302,13 +3896,9 @@ void flame_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *su
 	}
 }
 
-void flame_think (edict_t *self)
+void
+flame_think(edict_t *self)
 {
-//	self->s.frame++;
-//	if (self->s.frame > 5)
-//		self->s.frame = 0;
-
-//	self->nextthink = level.time + FRAMETIME;
 	self->nextthink = level.time + 200;
 }
 
@@ -2630,6 +4220,23 @@ volume   range of .1 to 1   (default .5)
   1 - full volume
 -----------------------------------
 */
+
+static int SwampCanyonSoundID[AS_MAX] =
+{
+	AS_NOTHING,
+	AS_BIRD1,
+	AS_BIRD2,
+	AS_HUGEWATERFALL,
+	AS_MUDPOOL,
+	AS_WINDEERIE,
+	AS_WINDNOISY,
+	AS_WINDSOFTHI,
+	AS_WINDSOFTLO,
+	AS_WINDSTRONG1,
+	AS_WINDSTRONG2,
+	AS_WINDWHISTLE,
+};
+
 void SP_sound_ambient_swampcanyon (edict_t *self)
 {
 	self->style = SwampCanyonSoundID[self->style];
@@ -3085,6 +4692,120 @@ SP_misc_fire_sparker(edict_t *self)
 }
 
 /*
+ * QUAKED misc_amb4 (1 0 0) (-16 -16 -16) (16 16 16)
+ * Mal's amb4 loop entity
+ */
+static int amb4sound;
+
+void
+amb4_think(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->nextthink = level.time + 2.0;
+	gi.sound(ent, CHAN_VOICE, amb4sound, 1, ATTN_NONE, 0);
+}
+
+void
+SP_misc_amb4(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->think = amb4_think;
+	ent->nextthink = level.time + 1;
+	amb4sound = gi.soundindex("world/amb4.wav");
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED misc_nuke (1 0 0) (-16 -16 -16) (16 16 16)
+ */
+void
+use_nuke(edict_t *self, edict_t *other, edict_t *activator)
+{
+	edict_t *from = g_edicts;
+
+	if (!self)
+	{
+		return;
+	}
+
+	for ( ; from < &g_edicts[globals.num_edicts]; from++)
+	{
+		if (from == self)
+		{
+			continue;
+		}
+
+		if (from->client)
+		{
+			T_Damage(from, self, self, vec3_origin, from->s.origin,
+					vec3_origin, 100000, 1, 0, MOD_TRAP);
+		}
+		else if (from->svflags & SVF_MONSTER)
+		{
+			G_FreeEdict(from);
+		}
+	}
+
+	self->use = NULL;
+}
+
+void
+SP_misc_nuke(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->use = use_nuke;
+}
+
+void
+misc_nuke_core_use(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->svflags & SVF_NOCLIENT)
+	{
+		self->svflags &= ~SVF_NOCLIENT;
+	}
+	else
+	{
+		self->svflags |= SVF_NOCLIENT;
+	}
+}
+
+/*
+ * QUAKED misc_nuke_core (1 0 0) (-16 -16 -16) (16 16 16)
+ *
+ * toggles visible/not visible. starts visible.
+ */
+void
+SP_misc_nuke_core(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	gi.setmodel(ent, "models/objects/core/tris.md2");
+	gi.linkentity(ent);
+
+	ent->use = misc_nuke_core_use;
+}
+
+/*
  * QUAKED misc_flare (1.0 1.0 0.0) (-32 -32 -32) (32 32 32) RED GREEN BLUE LOCK_ANGLE
  * Creates a flare seen in the N64 version.
  */
@@ -3204,6 +4925,7 @@ misc_player_mannequin_think(edict_t * self)
 	if (self->last_sound_time <= level.time)
 	{
 		self->s.frame++;
+
 #if 0
 		if ((self->monsterinfo.aiflags & AI_TARGET_ANGER) == 0)
 		{
