@@ -1012,16 +1012,6 @@ CL_ParseFrame(void)
 
 	CL_ParsePacketEntities(old, &cl.frame);
 
-	cmd = MSG_ReadByte(&net_message);
-	if (cmd != svc_client_effect) {
-		Com_Error(ERR_DROP, "CL_ParseFrame: not client effects");
-	}
-
-	if (fxe && fxe->ParseClientEffects)
-	{
-		fxe->ParseClientEffects(NULL);
-	}
-
 	/* save the frame off in the backup array for later delta comparisons */
 	cl.frames[cl.frame.serverframe & UPDATE_MASK] = cl.frame;
 
@@ -1690,6 +1680,13 @@ CL_ParseServerMessage(void)
 
 			case svc_frame:
 				CL_ParseFrame();
+				break;
+
+			case svc_client_effect:
+				if (fxe && fxe->ParseClientEffects)
+				{
+					fxe->ParseClientEffects(NULL);
+				}
 				break;
 
 			case svc_inventory:
