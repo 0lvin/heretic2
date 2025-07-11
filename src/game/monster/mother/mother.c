@@ -103,8 +103,8 @@ void MotherStaticsInit()
 	classStatics[CID_MOTHER].msgReceivers[MSG_PAIN] = mother_pain;
 	classStatics[CID_MOTHER].msgReceivers[MSG_DEATH] = mother_gib;
 
-	sounds[SND_GROWL1]=gi.soundindex("monsters/insect/growlf1.wav");
-	sounds[SND_GROWL2] = gi.soundindex ("monsters/insect/growlf2.wav");
+	sounds[SND_GROWL1] = gi.soundindex("monsters/insect/growlf1.wav");
+	sounds[SND_GROWL2] = gi.soundindex("monsters/insect/growlf2.wav");
 	sounds[SND_PAIN] = gi.soundindex("monsters/insect/painf.wav");
 	sounds[SND_GIB] = gi.soundindex("monsters/insect/gib.wav");
 

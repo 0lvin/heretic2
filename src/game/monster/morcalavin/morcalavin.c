@@ -158,7 +158,7 @@ void morcalavin_big_shot( edict_t *self )
 					FX_MORK_MISSILE,
 					proj->s.origin);
 
-	gi.sound (self, CHAN_AUTO, sounds[SND_PPCHARGE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_PPCHARGE], 1, ATTN_NORM, 0);
 }
 
 /*-----------------------------------------------
@@ -292,7 +292,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	else
 		proj->nextthink = level.time + flrand(1.5, 3.0);
 
-	gi.sound (self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
 
 	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
@@ -614,12 +614,12 @@ void morcalavin_start_missile(edict_t *self)
 					FX_MORK_MISSILE,
 					proj->s.origin);
 
-	gi.sound (self, CHAN_AUTO, sounds[SND_PPCHARGE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_PPCHARGE], 1, ATTN_NORM, 0);
 }
 
 void morcalavin_release_missile(edict_t *self)
 {
-	gi.sound (self, CHAN_AUTO, sounds[SND_PPFIRE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_PPFIRE], 1, ATTN_NORM, 0);
 }
 
 /*-----------------------------------------------
@@ -766,7 +766,7 @@ void morcalavin_taunt_shot(edict_t *self)
 
 	VectoAngles(proj->velocity, proj->s.angles);
 
-	gi.sound (self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_HOMING], 1, ATTN_NORM, 0);
 
 	gi.CreateEffect(proj,
 				FX_M_EFFECTS,
@@ -1500,39 +1500,39 @@ void morcalavinStaticsInit()
 	resInfo.sounds = sounds;
 
 //quake attack
-	sounds[SND_QUAKE]=gi.soundindex("monsters/mork/quake.wav");
+	sounds[SND_QUAKE] = gi.soundindex("monsters/mork/quake.wav");
 //straightt-fire beam
-	sounds[SND_BEAM]=gi.soundindex("monsters/mork/beam.wav");
-	sounds[SND_BEAMHIT]=gi.soundindex("monsters/mork/beamhit.wav");
+	sounds[SND_BEAM] = gi.soundindex("monsters/mork/beam.wav");
+	sounds[SND_BEAMHIT] = gi.soundindex("monsters/mork/beamhit.wav");
 //homing balls
-	sounds[SND_HOMING]=gi.soundindex("monsters/mork/homing.wav");
-	sounds[SND_HOMEHIT]=gi.soundindex("monsters/mork/homehit.wav");
+	sounds[SND_HOMING] = gi.soundindex("monsters/mork/homing.wav");
+	sounds[SND_HOMEHIT] = gi.soundindex("monsters/mork/homehit.wav");
 //power Puff
-	sounds[SND_PPCHARGE]=gi.soundindex("monsters/mork/ppcharge.wav");
-	sounds[SND_PPFIRE]=gi.soundindex("monsters/mork/ppfire.wav");
-	sounds[SND_PPEXPLODE]=gi.soundindex("monsters/mork/ppexplode.wav");
+	sounds[SND_PPCHARGE] = gi.soundindex("monsters/mork/ppcharge.wav");
+	sounds[SND_PPFIRE] = gi.soundindex("monsters/mork/ppfire.wav");
+	sounds[SND_PPEXPLODE] = gi.soundindex("monsters/mork/ppexplode.wav");
 //Lightning from eyes
-	sounds[SND_LIGHTNING]=gi.soundindex("monsters/mork/lightning.wav");
-	sounds[SND_LGHTNGHIT]=gi.soundindex("monsters/mork/lghtnghit.wav");
+	sounds[SND_LIGHTNING] = gi.soundindex("monsters/mork/lightning.wav");
+	sounds[SND_LGHTNGHIT] = gi.soundindex("monsters/mork/lghtnghit.wav");
 //Shove
-	sounds[SND_FORCEWALL]=gi.soundindex("monsters/mork/forcewall.wav");
+	sounds[SND_FORCEWALL] = gi.soundindex("monsters/mork/forcewall.wav");
 //Shield
-	sounds[SND_MAKESHIELD]=gi.soundindex("monsters/mork/makeshield.wav");
-	sounds[SND_SHIELDHIT]=gi.soundindex("monsters/mork/shieldhit.wav");
-	sounds[SND_SHIELDPULSE]=gi.soundindex("monsters/mork/shieldpulse.wav");
-	sounds[SND_SHIELDGONE]=gi.soundindex("monsters/mork/shieldgone.wav");
-	sounds[SND_SHIELDBREAK]=gi.soundindex("monsters/mork/shieldbreak.wav");
+	sounds[SND_MAKESHIELD] = gi.soundindex("monsters/mork/makeshield.wav");
+	sounds[SND_SHIELDHIT] = gi.soundindex("monsters/mork/shieldhit.wav");
+	sounds[SND_SHIELDPULSE] = gi.soundindex("monsters/mork/shieldpulse.wav");
+	sounds[SND_SHIELDGONE] = gi.soundindex("monsters/mork/shieldgone.wav");
+	sounds[SND_SHIELDBREAK] = gi.soundindex("monsters/mork/shieldbreak.wav");
 //Fly forward
-	sounds[SND_RUSH]=gi.soundindex("monsters/mork/rush.wav");
+	sounds[SND_RUSH] = gi.soundindex("monsters/mork/rush.wav");
 //hurt and get up
-	sounds[SND_FALL]=gi.soundindex("monsters/mork/fall.wav");
-	sounds[SND_REVIVE]=gi.soundindex("monsters/mork/revive.wav");
+	sounds[SND_FALL] = gi.soundindex("monsters/mork/fall.wav");
+	sounds[SND_REVIVE] = gi.soundindex("monsters/mork/revive.wav");
 //strafing beams attack
-	sounds[SND_STRAFEON]=gi.soundindex("monsters/mork/strafeon.wav");
-	sounds[SND_STRFSWNG]=gi.soundindex("monsters/mork/strfswng.wav");
-	sounds[SND_STRAFEOFF]=gi.soundindex("monsters/mork/strafeoff.wav");
+	sounds[SND_STRAFEON] = gi.soundindex("monsters/mork/strafeon.wav");
+	sounds[SND_STRFSWNG] = gi.soundindex("monsters/mork/strfswng.wav");
+	sounds[SND_STRAFEOFF] = gi.soundindex("monsters/mork/strafeoff.wav");
 //hurt/kill player laugh
-	sounds[SND_LAUGH]=gi.soundindex("monsters/mork/laugh.wav");
+	sounds[SND_LAUGH] = gi.soundindex("monsters/mork/laugh.wav");
 
 //Taunts
 	sounds[TAUNT_LAUGH1] =gi.soundindex("monsters/mork/laugh1.wav");

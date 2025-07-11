@@ -816,7 +816,7 @@ void GetVectorsToActor(edict_t *self, edict_t *actor, vec3_t vec)
 
 void QPlaySound(edict_t *self, int sound, int channel)
 {
-	gi.sound (self, channel, classStatics[self->classID].resInfo->sounds[sound], 1, ATTN_NORM, 0);
+	gi.sound(self, channel, classStatics[self->classID].resInfo->sounds[sound], 1, ATTN_NORM, 0);
 }
 
 #define EXTRA_KNOCKBACK_PRE_MULT 2

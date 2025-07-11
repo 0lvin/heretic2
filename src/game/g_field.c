@@ -174,7 +174,7 @@ void DamageField_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	if (!(self->spawnflags & 4))
 	{
 		if ((level.framenum % 10) == 0)
-			gi.sound (other, CHAN_AUTO, self->noise_index, 1, ATTN_NORM, 0);
+			gi.sound(other, CHAN_AUTO, self->noise_index, 1, ATTN_NORM, 0);
 	}
 
 	if (self->spawnflags & 8)

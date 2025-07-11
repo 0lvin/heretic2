@@ -186,7 +186,7 @@ void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *S
 					"d",
 					planeDir);
 
-	gi.sound(self,CHAN_WEAPON,gi.soundindex("monsters/rat/gib.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_WEAPON, gi.soundindex("monsters/rat/gib.wav"), 1, ATTN_NORM, 0);
 
 	G_SetToFree(self);
 }
@@ -304,9 +304,9 @@ void GkrokonBite(edict_t *self, float value)
 			//Create a puff effect
 			//gi.CreateEffect(NULL, FX_SPARKS, 0, hitPos, "db", vec3_origin, irand(1,3));
 			if (irand(0,1))
-				gi.sound (self, CHAN_WEAPON, sounds[SND_BITEMISS1], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_BITEMISS1], 1, ATTN_NORM, 0);
 			else
-				gi.sound (self, CHAN_WEAPON, sounds[SND_BITEMISS2], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_BITEMISS2], 1, ATTN_NORM, 0);
 		}
 		else
 		{
@@ -315,18 +315,18 @@ void GkrokonBite(edict_t *self, float value)
 					damage, damage, DAMAGE_NORMAL,MOD_DIED);
 
 			if (irand(0,1))
-				gi.sound (self, CHAN_WEAPON, sounds[SND_BITEHIT1], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_BITEHIT1], 1, ATTN_NORM, 0);
 			else
-				gi.sound (self, CHAN_WEAPON, sounds[SND_BITEHIT2], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_BITEHIT2], 1, ATTN_NORM, 0);
 		}
 	}
 	else
 	{
 		//Play swoosh sound?
 		if (irand(0,1))
-			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEMISS1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_BITEMISS1], 1, ATTN_NORM, 0);
 		else
-			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEMISS2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_BITEMISS2], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -608,9 +608,9 @@ void beetle_pain(edict_t *self,G_Message_t *Msg)
 	if (force_damage||((flrand(0, self->max_health+50) > self->health) && irand(0,2)))
 	{
 		if(irand(0,1))
-			gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 		else
-			gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 
 		SetAnim(self, GKROKON_ANIM_PAIN1);
 	}
@@ -682,7 +682,7 @@ void beetle_death(edict_t *self,G_Message_t *Msg)
 		SetAnim(self, GKROKON_ANIM_DIE1);
 	}
 
-	gi.sound (self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
 }
 
 int Bit_for_MeshNode_gk [NUM_MESH_NODES] =
@@ -993,23 +993,23 @@ void GkrokonStaticsInit(void)
 	resInfo.animations = Animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/gkrokon/tris.fm");
 
-	sounds[SND_PAIN1]=gi.soundindex("monsters/beetle/pain1.wav");
-	sounds[SND_PAIN2]=gi.soundindex("monsters/beetle/pain2.wav");
-	sounds[SND_DIE]=gi.soundindex("monsters/beetle/death.wav");
-	sounds[SND_GIB]=gi.soundindex("monsters/insect/gib.wav");
-	sounds[SND_SPOO]=gi.soundindex("monsters/beetle/spoo.wav");
-	sounds[SND_IDLE1]=gi.soundindex("monsters/beetle/idle1.wav");
-	sounds[SND_IDLE2]=gi.soundindex("monsters/beetle/idle2.wav");
-	sounds[SND_SIGHT]=gi.soundindex("monsters/beetle/sight.wav");
-	sounds[SND_WALK1]=gi.soundindex("monsters/beetle/walk1.wav");
-	sounds[SND_WALK2]=gi.soundindex("monsters/beetle/walk2.wav");
-	sounds[SND_FLEE]=gi.soundindex("monsters/beetle/flee.wav");
-	sounds[SND_ANGRY]=gi.soundindex("monsters/beetle/angry.wav");
-	sounds[SND_EATING]=gi.soundindex("monsters/beetle/eating.wav");
-	sounds[SND_BITEHIT1]=gi.soundindex("monsters/beetle/meleehit1.wav");
-	sounds[SND_BITEHIT2]=gi.soundindex("monsters/beetle/meleehit2.wav");
-	sounds[SND_BITEMISS1]=gi.soundindex("monsters/beetle/meleemiss1.wav");
-	sounds[SND_BITEMISS2]=gi.soundindex("monsters/beetle/meleemiss2.wav");
+	sounds[SND_PAIN1] = gi.soundindex("monsters/beetle/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex("monsters/beetle/pain2.wav");
+	sounds[SND_DIE] = gi.soundindex("monsters/beetle/death.wav");
+	sounds[SND_GIB] = gi.soundindex("monsters/insect/gib.wav");
+	sounds[SND_SPOO] = gi.soundindex("monsters/beetle/spoo.wav");
+	sounds[SND_IDLE1] = gi.soundindex("monsters/beetle/idle1.wav");
+	sounds[SND_IDLE2] = gi.soundindex("monsters/beetle/idle2.wav");
+	sounds[SND_SIGHT] = gi.soundindex("monsters/beetle/sight.wav");
+	sounds[SND_WALK1] = gi.soundindex("monsters/beetle/walk1.wav");
+	sounds[SND_WALK2] = gi.soundindex("monsters/beetle/walk2.wav");
+	sounds[SND_FLEE] = gi.soundindex("monsters/beetle/flee.wav");
+	sounds[SND_ANGRY] = gi.soundindex("monsters/beetle/angry.wav");
+	sounds[SND_EATING] = gi.soundindex("monsters/beetle/eating.wav");
+	sounds[SND_BITEHIT1] = gi.soundindex("monsters/beetle/meleehit1.wav");
+	sounds[SND_BITEHIT2] = gi.soundindex("monsters/beetle/meleehit2.wav");
+	sounds[SND_BITEMISS1] = gi.soundindex("monsters/beetle/meleemiss1.wav");
+	sounds[SND_BITEMISS2] = gi.soundindex("monsters/beetle/meleemiss2.wav");
 
 	resInfo.numSounds=NUM_SOUNDS;
 	resInfo.sounds=sounds;

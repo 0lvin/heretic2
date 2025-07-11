@@ -362,7 +362,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 					FX_I_GLOW,
 					tempvec);
 
-//	gi.sound(Globe,CHAN_WEAPON,gi.soundindex("weapons/GlobeOfOuchinessGrow.wav"),1,ATTN_NORM,0);
+//	gi.sound(Globe,CHAN_WEAPON, gi.soundindex("weapons/GlobeOfOuchinessGrow.wav"), 1, ATTN_NORM, 0);
 }
 
 //Spear Projectiles

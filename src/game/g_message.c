@@ -156,7 +156,8 @@ int G_ParseMsgParms(G_Message_t *_this, char *format, ...)
 	return args_filled;
 }
 
-void G_ProcessMessages(edict_t *self)
+void
+G_ProcessMessages(edict_t *self)
 {
 	SinglyLinkedList_t *msgs;
 	SinglyLinkedList_t *parms;
@@ -166,18 +167,18 @@ void G_ProcessMessages(edict_t *self)
 
 	msgs = &self->msgQ.msgs;
 
-	if(!SLList_IsEmpty(msgs))
+	if (!SLList_IsEmpty(msgs))
 	{
 		self->flags &= ~FL_SUSPENDED;
 	}
 
-	while(!SLList_IsEmpty(msgs))
+	while (!SLList_IsEmpty(msgs))
 	{
 		msg = (G_Message_t*)SLList_Pop(msgs).t_void_p;
 
 		parms = &msg->parms;
 
-		if(!SLList_AtLast(parms) && !SLList_AtEnd(parms))
+		if (!SLList_AtLast(parms) && !SLList_AtEnd(parms))
 		{
 			SLList_Chop(parms);
 		}

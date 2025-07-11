@@ -43,7 +43,7 @@ void Elflord_c_gib(edict_t *self, G_Message_t *msg)
 	gi.CreateEffect(self, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN, NULL,
 					"db", self->movedir, (byte)(AVG_VEC3T(self->rrs.scale) * 7.5));
 
-	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereImpact.wav"),2,ATTN_NORM,0);
+	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/SphereImpact.wav"), 1, ATTN_NORM, 0);
 
 	self->think = BecomeDebris;
 	self->nextthink = level.time + 0.1;
@@ -62,7 +62,7 @@ void Elflord_c_throwhead(edict_t *self)
 
 	VectorClear(gore_spot);
 	ThrowBodyPart(self, &gore_spot, 8, 15, FRAME_idle1);
-	gi.sound(self,CHAN_BODY,gi.soundindex("monsters/elflord/death1.wav"),2,ATTN_NORM,0);
+	gi.sound(self, CHAN_BODY, gi.soundindex("monsters/elflord/death1.wav"), 1, ATTN_NORM, 0);
 }
 
 /*-------------------------------------------------------------------------

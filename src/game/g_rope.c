@@ -539,11 +539,11 @@ void hanging_chicken_pain(edict_t *self, edict_t *other, float kick, int damage)
 
 	if (irand(0,1))
 	{
-		gi.sound (self, CHAN_AUTO, gi.soundindex("monsters/chicken/pain1.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, gi.soundindex("monsters/chicken/pain1.wav"), 1, ATTN_NORM, 0);
 	}
 	else
 	{
-		gi.sound (self, CHAN_AUTO, gi.soundindex("monsters/chicken/pain2.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, gi.soundindex("monsters/chicken/pain2.wav"), 1, ATTN_NORM, 0);
 	}
 }
 
@@ -686,9 +686,9 @@ void hanging_chicken_think(edict_t *self)
 	if (!irand(0,100))
 	{
 		if (irand(0,1))
-			gi.sound (self, CHAN_AUTO, gi.soundindex("monsters/chicken/cluck1.wav"), 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_AUTO, gi.soundindex("monsters/chicken/cluck1.wav"), 1, ATTN_NORM, 0);
 		else
-			gi.sound (self, CHAN_AUTO, gi.soundindex("monsters/chicken/cluck2.wav"), 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_AUTO, gi.soundindex("monsters/chicken/cluck2.wav"), 1, ATTN_NORM, 0);
 	}
 
 	VectorClear(self->velocity);

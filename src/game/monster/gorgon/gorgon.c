@@ -2170,27 +2170,27 @@ void GorgonStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/gorgon/tris.fm");
 
-	sounds[SND_PAIN1]= gi.soundindex ("monsters/gorgon/pain1.wav");
-	sounds[SND_PAIN2]= gi.soundindex ("monsters/gorgon/pain2.wav");
-	sounds[SND_DIE]= gi.soundindex ("monsters/gorgon/death1.wav");
-	sounds[SND_GURGLE]= gi.soundindex ("monsters/gorgon/gurgle.wav");	//what is this for?
-	sounds[SND_GIB]= gi.soundindex ("monsters/gorgon/gib.wav");
+	sounds[SND_PAIN1]= gi.soundindex("monsters/gorgon/pain1.wav");
+	sounds[SND_PAIN2]= gi.soundindex("monsters/gorgon/pain2.wav");
+	sounds[SND_DIE]= gi.soundindex("monsters/gorgon/death1.wav");
+	sounds[SND_GURGLE]= gi.soundindex("monsters/gorgon/gurgle.wav");	//what is this for?
+	sounds[SND_GIB]= gi.soundindex("monsters/gorgon/gib.wav");
 
-	sounds[SND_MELEEHIT1]= gi.soundindex ("monsters/gorgon/meleehit1.wav");
-	sounds[SND_MELEEHIT2] = gi.soundindex ("monsters/gorgon/meleehit2.wav");
-	sounds[SND_MELEEMISS1] = gi.soundindex ("monsters/gorgon/meleemiss1.wav");
-	sounds[SND_MELEEMISS2] = gi.soundindex ("monsters/gorgon/meleemiss2.wav");
+	sounds[SND_MELEEHIT1]= gi.soundindex("monsters/gorgon/meleehit1.wav");
+	sounds[SND_MELEEHIT2] = gi.soundindex("monsters/gorgon/meleehit2.wav");
+	sounds[SND_MELEEMISS1] = gi.soundindex("monsters/gorgon/meleemiss1.wav");
+	sounds[SND_MELEEMISS2] = gi.soundindex("monsters/gorgon/meleemiss2.wav");
 
-	sounds[SND_STEP1]  = gi.soundindex ("monsters/gorgon/footstep1.wav");
-	sounds[SND_STEP2] = gi.soundindex ("monsters/gorgon/footstep2.wav");
-	sounds[SND_STEP3]  = gi.soundindex ("monsters/gorgon/footstep3.wav");
-	sounds[SND_STEP4]  = gi.soundindex ("monsters/gorgon/footstep4.wav");
+	sounds[SND_STEP1]  = gi.soundindex("monsters/gorgon/footstep1.wav");
+	sounds[SND_STEP2] = gi.soundindex("monsters/gorgon/footstep2.wav");
+	sounds[SND_STEP3]  = gi.soundindex("monsters/gorgon/footstep3.wav");
+	sounds[SND_STEP4]  = gi.soundindex("monsters/gorgon/footstep4.wav");
 
-	sounds[SND_GROWL1]     = gi.soundindex ("monsters/gorgon/growl1.wav");
-	sounds[SND_GROWL2]     = gi.soundindex ("monsters/gorgon/growl2.wav");
-	sounds[SND_GROWL3]     = gi.soundindex ("monsters/gorgon/growl3.wav");
+	sounds[SND_GROWL1]     = gi.soundindex("monsters/gorgon/growl1.wav");
+	sounds[SND_GROWL2]     = gi.soundindex("monsters/gorgon/growl2.wav");
+	sounds[SND_GROWL3]     = gi.soundindex("monsters/gorgon/growl3.wav");
 
-	sounds[SND_LAND]     = gi.soundindex ("monsters/gorgon/land.wav");
+	sounds[SND_LAND]     = gi.soundindex("monsters/gorgon/land.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;

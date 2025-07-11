@@ -509,7 +509,7 @@ void player_shrine_health_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine4.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine4.wav"), 1, ATTN_NORM, 0);
 }
 
 void shrine_heal_core(edict_t *self,edict_t *other)
@@ -617,7 +617,7 @@ void player_shrine_armor_silver_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine2.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine2.wav"), 1, ATTN_NORM, 0);
 }
 
 void shrine_armor_silver_core(edict_t *self,edict_t *other)
@@ -732,7 +732,7 @@ void player_shrine_armor_gold_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine2.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine2.wav"), 1, ATTN_NORM, 0);
 }
 
 void shrine_armor_gold_core(edict_t *self,edict_t *other)
@@ -841,10 +841,10 @@ void player_shrine_staff_effect(edict_t *self)
 	if (self->client->playerinfo.pers.stafflevel == STAFF_LEVEL_POWER2)
 	{
 		flags |= CEF_FLAG6;
-		gi.sound(self,CHAN_ITEM,gi.soundindex("weapons/FirewallPowerCast.wav"),1,ATTN_NORM,0);
+		gi.sound(self,CHAN_ITEM, gi.soundindex("weapons/FirewallPowerCast.wav"), 1, ATTN_NORM, 0);
 	}
 	else
-		gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine7.wav"),1,ATTN_NORM,0);
+		gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine7.wav"), 1, ATTN_NORM, 0);
 
 	gi.CreateEffect(self, FX_SHRINE_STAFF, flags, NULL, "");
 
@@ -957,7 +957,7 @@ void player_shrine_lungs_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine9.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine9.wav"), 1, ATTN_NORM, 0);
 }
 
 void shrine_lung_core(edict_t *self, edict_t *other)
@@ -1068,7 +1068,7 @@ void player_shrine_light_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine8.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine8.wav"), 1, ATTN_NORM, 0);
 
 }
 
@@ -1175,7 +1175,7 @@ void player_shrine_mana_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine1.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine1.wav"), 1, ATTN_NORM, 0);
 }
 
 void shrine_mana_core(edict_t *self, edict_t *other)
@@ -1280,7 +1280,7 @@ void player_shrine_ghost_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine6.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine6.wav"), 1, ATTN_NORM, 0);
 }
 
 void shrine_ghost_core(edict_t *self,edict_t *other)
@@ -1390,7 +1390,7 @@ void player_shrine_reflect_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine3.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine3.wav"), 1, ATTN_NORM, 0);
 }
 
 void shrine_reflect_core(edict_t *self,edict_t *other)
@@ -1511,7 +1511,7 @@ void player_shrine_powerup_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine5.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine5.wav"), 1, ATTN_NORM, 0);
 }
 
 // Fire off an effect and give us a powerup for a while.
@@ -1619,7 +1619,7 @@ void player_shrine_speed_effect(edict_t *self)
 
 	// Do the SHRINE sound.
 
-	gi.sound(self,CHAN_ITEM,gi.soundindex("items/shrine10.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_ITEM, gi.soundindex("items/shrine10.wav"), 1, ATTN_NORM, 0);
 }
 
 // Fire off an effect and give us double speed for a while

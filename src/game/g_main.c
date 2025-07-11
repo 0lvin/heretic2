@@ -896,13 +896,12 @@ G_RunFrame(void)
 
 				// If not in our PVS, we don't care.
 
-				for(j=0;j<maxclients->value;j++)
+				for (j = 0; j < maxclients->value; j++)
 				{
-					client_ent=g_edicts+1+j;
+					client_ent = g_edicts + 1 + j;
 
-					if(client_ent->inuse)
+					if (client_ent->inuse)
 					{
-//						if (!gi.inPVS(ent->s.origin, level.sight_client->s.origin))
 						if (!gi.inPVS(ent->s.origin, client_ent->s.origin))
 						{
 							continue;
@@ -914,12 +913,12 @@ G_RunFrame(void)
 
 		level.current_entity = ent;
 
-		if(ent->msgHandler)	// eventually this check wont be needed
+		if (ent->msgHandler)	// eventually this check wont be needed
 		{
 			G_ProcessMessages(ent);
 		}
 
-		if(ent->flags & FL_SUSPENDED)
+		if (ent->flags & FL_SUSPENDED)
 		{
 			continue;
 		}
@@ -931,7 +930,7 @@ G_RunFrame(void)
 		if(ent->groundentity)
 		{
 			// check for the groundentity being freed
-			if(!ent->groundentity->inuse)
+			if (!ent->groundentity->inuse)
 			{
 				ent->groundentity = NULL;
 			}
@@ -961,13 +960,13 @@ G_RunFrame(void)
 
 		// Use new physics for everything except flymissile (and movetype none)
 		// The scripts work using the new physics now
-		if(ent->movetype != MOVETYPE_FLYMISSILE)
+		if (ent->movetype != MOVETYPE_FLYMISSILE)
 		{
 			EntityThink(ent);
 
 			assert(ent->movetype <= MOVETYPE_SCRIPT_ANGULAR);
 
-			if(!ent->inuse)
+			if (!ent->inuse)
 			{
 				continue;
 			}

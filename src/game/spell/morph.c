@@ -96,7 +96,7 @@ void MorphFadeOut(edict_t *self)
 		newent->think = MorphFadeIn;
 		gi.CreateEffect(newent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "" );
 		// do the teleport sound
-		gi.sound(newent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+		gi.sound(newent,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 
 		G_SetToFree(self);
 	}
@@ -242,7 +242,7 @@ void MorphChickenToPlayer(edict_t *self)
 	// draw the teleport splash at the teleport source
 	gi.CreateEffect(self, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN |CEF_FLAG6, NULL, "" );
 	// do the teleport sound
-	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 
 
 }
@@ -420,7 +420,7 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 	// draw the teleport splash at the teleport source
 	gi.CreateEffect(self, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL, "");
 		// do the teleport sound
-	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 
 }
 
@@ -479,7 +479,7 @@ void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 	// draw the teleport splash at the teleport source
 	gi.CreateEffect(self, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | CEF_FLAG6, NULL, "");
 		// do the teleport sound
-	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 
 }
 
@@ -541,7 +541,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 		if ( (other->client) && (other->client->playerinfo.edictflags & FL_SUPER_CHICKEN) )
 		{
 			// Turn off the client effect
-			gi.sound(other,CHAN_WEAPON,gi.soundindex("misc/null.wav"),1,ATTN_NORM,0);
+			gi.sound(other,CHAN_WEAPON, gi.soundindex("misc/null.wav"), 1, ATTN_NORM, 0);
 			gi.CreateEffect(NULL, FX_SPELL_MORPHEXPLODE, 0, self->s.origin, "d", self->movedir);
 			G_SetToFree(self);
 			return;
@@ -553,7 +553,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 			if (OnSameTeam(other, self->owner))
 			{
 				// Turn off the client effect
-				gi.sound(other,CHAN_WEAPON,gi.soundindex("misc/null.wav"),1,ATTN_NORM,0);
+				gi.sound(other,CHAN_WEAPON, gi.soundindex("misc/null.wav"), 1, ATTN_NORM, 0);
 				gi.CreateEffect(NULL, FX_SPELL_MORPHEXPLODE, 0, self->s.origin, "d", self->movedir);
 				G_SetToFree(self);
 				return;
@@ -580,16 +580,16 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 			assert(other->client);
 
 			if ( (other->client) && (other->client->playerinfo.edictflags & FL_SUPER_CHICKEN) )
-				gi.sound(other,CHAN_VOICE,gi.soundindex("weapons/supercrow.wav"),1,ATTN_NONE,0);
+				gi.sound(other,CHAN_VOICE, gi.soundindex("weapons/supercrow.wav"),1,ATTN_NONE,0);
 			else
-				gi.sound(other,CHAN_VOICE,gi.soundindex("weapons/crow.wav"),1,ATTN_NONE,0);
+				gi.sound(other,CHAN_VOICE, gi.soundindex("weapons/crow.wav"),1,ATTN_NONE,0);
 		}
 		else
 		{
-			gi.sound(other,CHAN_VOICE,gi.soundindex("weapons/crow.wav"),1,ATTN_NORM,0);
+			gi.sound(other,CHAN_VOICE, gi.soundindex("weapons/crow.wav"), 1, ATTN_NORM, 0);
 		}
 
-		gi.sound(other,CHAN_WEAPON,gi.soundindex("misc/null.wav"),1,ATTN_NORM,0);
+		gi.sound(other,CHAN_WEAPON, gi.soundindex("misc/null.wav"), 1, ATTN_NORM, 0);
 		gi.CreateEffect(NULL, FX_SPELL_MORPHEXPLODE, 0, self->s.origin, "d", self->movedir);
 	}
 	// else we hit a wall / object

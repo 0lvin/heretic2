@@ -4274,7 +4274,7 @@ door_secret_move2(edict_t *self)
 
 	if (self->moveinfo.sound_middle)
 	{
-		gi.sound (self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_middle, 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_middle, 1, ATTN_IDLE, 0);
 	}
 
 	Move_Calc(self, self->pos2, door_secret_move3);
@@ -4290,7 +4290,7 @@ door_secret_move3(edict_t *self)
 
 	if (self->moveinfo.sound_end)
 	{
-		gi.sound (self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
 	}
 
 	if (self->wait == -1)
@@ -4345,7 +4345,7 @@ door_secret_move6(edict_t *self)
 
 	if (self->moveinfo.sound_start)
 	{
-		gi.sound (self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_start, 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_start, 1, ATTN_IDLE, 0);
 	}
 
 	Move_Calc(self, vec3_origin, door_secret_done);

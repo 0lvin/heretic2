@@ -400,9 +400,9 @@ void ogle_mood_think ( edict_t *self )
 			if (self->teamchain->health < SERAPH_HEALTH/2 || self->teamchain->ai_mood == AI_MOOD_FLEE)
 			{
 				if (irand(0,1))
-					gi.sound (self, CHAN_BODY, sounds[SND_ENRAGE1], 1, ATTN_NORM, 0);
+					gi.sound(self, CHAN_BODY, sounds[SND_ENRAGE1], 1, ATTN_NORM, 0);
 				else
-					gi.sound (self, CHAN_BODY, sounds[SND_ENRAGE2], 1, ATTN_NORM, 0);
+					gi.sound(self, CHAN_BODY, sounds[SND_ENRAGE2], 1, ATTN_NORM, 0);
 
 				self->enemy = self->teamchain;
 				self->ai_mood = AI_MOOD_PURSUE;
@@ -577,7 +577,7 @@ void ogle_sing (edict_t *self)
 		break;
 
 	case 1:
-		gi.sound (self, CHAN_VOICE, sounds[SND_SOLO1], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_VOICE, sounds[SND_SOLO1], 1, ATTN_NORM, 0);
 		self->monsterinfo.jump_time = level.time + 4;
 		break;
 
@@ -585,13 +585,13 @@ void ogle_sing (edict_t *self)
 		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
 			if(!ogle->monsterinfo.awake)
-				gi.sound (ogle, CHAN_VOICE, sounds[SND_CHORUS2], 0.25, ATTN_NORM, 0);
+				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS2], 0.25, ATTN_NORM, 0);
 		}
 		self->monsterinfo.jump_time = level.time + 3;
 		break;
 
 	case 3:
-		gi.sound (self, CHAN_VOICE, sounds[SND_SOLO2], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_VOICE, sounds[SND_SOLO2], 1, ATTN_NORM, 0);
 		self->monsterinfo.jump_time = level.time + 4;
 		break;
 
@@ -599,7 +599,7 @@ void ogle_sing (edict_t *self)
 		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
 			if(!ogle->monsterinfo.awake)
-				gi.sound (ogle, CHAN_VOICE, sounds[SND_CHORUS3], 0.25, ATTN_NORM, 0);
+				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS3], 0.25, ATTN_NORM, 0);
 		}
 		self->monsterinfo.jump_time = level.time + 4;
 		break;
@@ -681,7 +681,7 @@ void ogle_pause(edict_t *self)
 			{
 				if (chance < 30)
 				{
-					gi.sound (self, CHAN_BODY, sounds[SND_WIPE_BROW], 1, ATTN_IDLE, 0);
+					gi.sound(self, CHAN_BODY, sounds[SND_WIPE_BROW], 1, ATTN_IDLE, 0);
 					SetAnim(self, ANIM_REST2_WIPE);
 					self->ai_mood = AI_MOOD_NORMAL;
 				}
@@ -696,7 +696,7 @@ void ogle_pause(edict_t *self)
 			}
 			else if (self->curAnimID == ANIM_WORK1 || self->curAnimID == ANIM_WORK2)
 			{
-				gi.sound (self, CHAN_BODY, sounds[SND_WIPE_BROW], 1, ATTN_IDLE, 0);
+				gi.sound(self, CHAN_BODY, sounds[SND_WIPE_BROW], 1, ATTN_IDLE, 0);
 				SetAnim(self, ANIM_REST3_WIPE);
 				self->ai_mood = AI_MOOD_NORMAL;
 			}
@@ -775,9 +775,9 @@ void ogle_strike(edict_t *self)
 		{
 			//Hurt whatever we were whacking away at
 			if (!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
-				gi.sound (self, CHAN_WEAPON, sounds[SND_HAMMER_FLESH], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_HAMMER_FLESH], 1, ATTN_NORM, 0);
 			else
-				gi.sound (self, CHAN_WEAPON, sounds[SND_PICK_FLESH], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_PICK_FLESH], 1, ATTN_NORM, 0);
 
 			T_Damage(victim, self, self, direction, trace.endpos, bloodDir, damage, damage*2, 0,MOD_DIED);
 		}
@@ -796,11 +796,11 @@ void ogle_celebrate(edict_t *self)
 	if (!irand(0, 10))
 	{
 		if (chance < 33)
-			gi.sound (self, CHAN_VOICE, sounds[SND_CHEER1], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_VOICE, sounds[SND_CHEER1], 1, ATTN_IDLE, 0);
 		else if (chance < 66)
-			gi.sound (self, CHAN_VOICE, sounds[SND_CHEER2], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_VOICE, sounds[SND_CHEER2], 1, ATTN_IDLE, 0);
 		else
-			gi.sound (self, CHAN_VOICE, sounds[SND_CHEER3], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_VOICE, sounds[SND_CHEER3], 1, ATTN_IDLE, 0);
 	}
 
 	switch (self->curAnimID)
@@ -919,23 +919,23 @@ void ogle_pick_dust(edict_t *self)
 	if (!(self->s.fmnodeinfo[MESH__NAIL].flags & FMNI_NO_DRAW))
 	{
 		if (irand(0,1))
-			gi.sound (self, CHAN_WEAPON, sounds[SND_SPIKE1], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_SPIKE1], 1, ATTN_IDLE, 0);
 		else
-			gi.sound (self, CHAN_WEAPON, sounds[SND_SPIKE2], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_SPIKE2], 1, ATTN_IDLE, 0);
 	}
 	else if (!(self->s.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
 	{
 		if (irand(0,1))
-			gi.sound (self, CHAN_WEAPON, sounds[SND_PICK1], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_PICK1], 1, ATTN_IDLE, 0);
 		else
-			gi.sound (self, CHAN_WEAPON, sounds[SND_PICK2], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_PICK2], 1, ATTN_IDLE, 0);
 	}
 	else
 	{
 		if (irand(0,1))
-			gi.sound (self, CHAN_WEAPON, sounds[SND_HAMMER1], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_HAMMER1], 1, ATTN_IDLE, 0);
 		else
-			gi.sound (self, CHAN_WEAPON, sounds[SND_HAMMER2], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_HAMMER2], 1, ATTN_IDLE, 0);
 	}
 }
 
@@ -1241,7 +1241,7 @@ void ogle_death(edict_t *self, G_Message_t *msg)
 		SetAnim(self, ANIM_DEATH1);
 	}
 
-	gi.sound (self, CHAN_BODY, sounds[SND_DEATH], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, sounds[SND_DEATH], 1, ATTN_NORM, 0);
 
 }
 
@@ -1552,7 +1552,7 @@ void ogle_push (edict_t *self, float dist)
 		SetAnim(self, ANIM_REST4_TRANS);
 	else
 	{
-		gi.sound (self, CHAN_VOICE, sounds[SND_WIPE_BROW], 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_VOICE, sounds[SND_WIPE_BROW], 1, ATTN_IDLE, 0);
 		SetAnim(self, ANIM_REST1_WIPE);
 	}
 	self->ai_mood = AI_MOOD_REST;

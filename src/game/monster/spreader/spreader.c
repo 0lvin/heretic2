@@ -389,7 +389,7 @@ void spreader_pain(edict_t *self, G_Message_t *msg)
 	//Weighted random based on health compared to the maximum it was at
 	if (force_pain||((flrand(0, self->max_health+50) > self->health) && irand(0,2)))
 	{
-		gi.sound (self, CHAN_BODY, sounds[SND_PAIN], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, sounds[SND_PAIN], 1, ATTN_NORM, 0);
 		SetAnim(self, ANIM_PAIN1);
 	}
 }
@@ -677,7 +677,7 @@ void spreader_death(edict_t *self, G_Message_t *msg)
 		SetAnim(self, ANIM_DEATH2);
 	}
 
-	gi.sound (self, CHAN_BODY, sounds[SND_DEATH], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, sounds[SND_DEATH], 1, ATTN_NORM, 0);
 }
 
 

@@ -101,7 +101,7 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
 				gi.CreateEffect(trace->ent, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
-				gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/FirewallDamage.wav"),1,ATTN_NORM,0);
+				gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/FirewallDamage.wav"), 1, ATTN_NORM, 0);
 
 				trace->ent->fire_timestamp = self->fire_timestamp;		// Mark so the fire doesn't damage an ent twice.
 			}
@@ -173,7 +173,7 @@ void FireBlastThink(edict_t *self)
 					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
 			gi.CreateEffect(ent, FX_FLAREUP, CEF_OWNERS_ORIGIN, NULL, "");
 
-			gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/FirewallDamage.wav"),1,ATTN_NORM,0);
+			gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/FirewallDamage.wav"), 1, ATTN_NORM, 0);
 
 			ent->fire_timestamp = self->fire_timestamp;		// Mark so the fire doesn't damage an ent twice.
 		}
@@ -355,7 +355,7 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 				worm->owner = self->owner;
 				gi.linkentity(worm);
 
-				gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/FirewallDamage.wav"),1,ATTN_NORM,0);
+				gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/FirewallDamage.wav"), 1, ATTN_NORM, 0);
 			}
 		}
 	}
@@ -437,7 +437,7 @@ void WallMissileThink(edict_t *self)
 			worm->owner = self->owner;
 			gi.linkentity(worm);
 
-			gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/FirewallDamage.wav"),1,ATTN_NORM,0);
+			gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/FirewallDamage.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 

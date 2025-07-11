@@ -134,7 +134,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 		VectorSet(self->maxs, SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS);
 
 		self->s.sound = 0;
-		gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereFire.wav"),1,ATTN_NORM,0);
+		gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/SphereFire.wav"), 1, ATTN_NORM, 0);
 
 		trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, self->s.origin, self->owner, MASK_PLAYERSOLID);
 		if (trace.startsolid)
@@ -344,7 +344,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 		G_LinkMissile(laser);
 		SpherePowerLaserThink(laser);
 
-		gi.sound(self->owner,CHAN_WEAPON,gi.soundindex("weapons/SpherePowerFire.wav"),1,ATTN_NORM,0);
+		gi.sound(self->owner,CHAN_WEAPON, gi.soundindex("weapons/SpherePowerFire.wav"), 1, ATTN_NORM, 0);
 		G_SetToFree(self);
 	}
 }
@@ -468,7 +468,7 @@ static void SphereOfAnnihilationTouch(edict_t *self, edict_t *other, cplane_t *P
 	gi.CreateEffect(self, FX_WEAPON_SPHEREPLAYEREXPLODE, CEF_OWNERS_ORIGIN, NULL,
 					"db", self->movedir, (byte)(self->count));
 
-	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereImpact.wav"),2,ATTN_NORM,0);
+	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/SphereImpact.wav"), 1, ATTN_NORM, 0);
 
 	G_SetToFree(self);
 
@@ -812,7 +812,7 @@ static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, c
 	gi.CreateEffect(self, FX_WEAPON_SPHEREEXPLODE, CEF_OWNERS_ORIGIN | makeScorch, NULL,
 					"db", self->movedir, (byte)(AVG_VEC3T(self->rrs.scale) * 7.5));
 
-	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/SphereImpact.wav"),2,ATTN_NORM,0);
+	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/SphereImpact.wav"), 1, ATTN_NORM, 0);
 
 	G_SetToFree(self);
 }

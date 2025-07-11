@@ -56,7 +56,7 @@ static void MeteorBarrierDie(edict_t *self, int Flags)
 						"d",
 						ExplodeDir);
 
-		gi.sound(self, CHAN_BODY, gi.soundindex("weapons/MeteorBarrierImpact.wav"), 2, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("weapons/MeteorBarrierImpact.wav"), 1, ATTN_NORM, 0);
 	}
 
 	// remove the persistant effect from the persistant effect list
@@ -310,7 +310,7 @@ static void MeteorBarrierSearchThink(edict_t *self)
 				return;
 			}
 
-			gi.sound(self,CHAN_BODY,gi.soundindex("weapons/MeteorBarrierSeek.wav"),1,ATTN_NORM,0);
+			gi.sound(self,CHAN_BODY, gi.soundindex("weapons/MeteorBarrierSeek.wav"), 1, ATTN_NORM, 0);
 			gi.CreateEffect(self, FX_SPELL_METEORBARRIER_TRAVEL, CEF_BROADCAST|CEF_OWNERS_ORIGIN, NULL, "");
 
 			// remove the persistant effect from the persistant effect list
@@ -449,7 +449,7 @@ void SpellCastMeteorBarrier(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec
 	}
 	if(cast)
 	{
-		gi.sound(caster,CHAN_WEAPON,gi.soundindex("weapons/MeteorBarrierCast.wav"),1,ATTN_NORM,0);
+		gi.sound(caster,CHAN_WEAPON, gi.soundindex("weapons/MeteorBarrierCast.wav"), 1, ATTN_NORM, 0);
 		caster->s.sound = gi.soundindex("weapons/MeteorBarrierAmbient.wav");
 		caster->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 	}

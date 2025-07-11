@@ -467,9 +467,9 @@ void assassindagger (edict_t *self, float right_ofs)
 		if (infront(self, self->enemy))
 		{
 			if (1)//one or two hands?
-				gi.sound (self, CHAN_WEAPON, Sounds[SND_SLASH1], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, Sounds[SND_SLASH1], 1, ATTN_NORM, 0);
 			else
-				gi.sound (self, CHAN_WEAPON, Sounds[SND_SLASH2], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, Sounds[SND_SLASH2], 1, ATTN_NORM, 0);
 
 			VectorSet(off, 35.0, 0.0, 32.0);
 			VectorGetOffsetOrigin(off, self->s.origin, self->s.angles[YAW], org);
@@ -526,9 +526,9 @@ void assassindagger (edict_t *self, float right_ofs)
 		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 		if(thrownum>1)
-			gi.sound (self, CHAN_WEAPON, Sounds[SND_THROW2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, Sounds[SND_THROW2], 1, ATTN_NORM, 0);
 		else if(thrownum>0)
-			gi.sound (self, CHAN_WEAPON, Sounds[SND_THROW1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, Sounds[SND_THROW1], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -710,7 +710,7 @@ void assassingrowl (edict_t *self)
 	{
 		chance = irand(0, 9);
 		if (chance < 3)
-			gi.sound (self, CHAN_AUTO, Sounds[SND_GROWL1], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_AUTO, Sounds[SND_GROWL1], 1, ATTN_IDLE, 0);
 		else if (chance < 6)
 			gi.sound(self, CHAN_AUTO, Sounds[SND_GROWL2], 1, ATTN_IDLE, 0);
 		else
@@ -2110,7 +2110,7 @@ void assassinUndoCrouched (edict_t *self)
 
 void assassin_sound(edict_t *self, float channel, float soundnum, float attn)
 {
-	gi.sound (self, (int)(channel), Sounds[(int)(soundnum)], 1, (int)(attn), 0);
+	gi.sound(self, (int)(channel), Sounds[(int)(soundnum)], 1, (int)(attn), 0);
 }
 
 void assassinGoJump (edict_t *self, float fwdspd,float upspd,float rtspd)
@@ -2757,26 +2757,26 @@ void AssassinStaticsInit()
 	//note that the name is different in the path
 	resInfo.modelIndex = gi.modelindex("models/monsters/assassin/tris.fm");
 
-	Sounds[SND_PAIN1]=gi.soundindex("monsters/assassin/pain1.wav");
-	Sounds[SND_PAIN2]=gi.soundindex("monsters/assassin/pain2.wav");
-	Sounds[SND_DIE1]=gi.soundindex("monsters/assassin/death1.wav");
-	Sounds[SND_GIB]=gi.soundindex("monsters/assassin/gib.wav");
-	Sounds[SND_THROW1]=gi.soundindex("monsters/assassin/throw1.wav");
-	Sounds[SND_THROW2]=gi.soundindex("monsters/assassin/throw2.wav");
-	Sounds[SND_DAGHITF]=gi.soundindex("monsters/assassin/daghitf.wav");
-	Sounds[SND_DAGHITW]=gi.soundindex("monsters/assassin/daghitw.wav");
-	Sounds[SND_JUMP]=gi.soundindex("monsters/assassin/jump.wav");
-	Sounds[SND_FLIP]=gi.soundindex("monsters/assassin/flip.wav");
-	Sounds[SND_LAND]=gi.soundindex("monsters/assassin/land.wav");
-	Sounds[SND_LANDF]=gi.soundindex("monsters/assassin/landf.wav");
-	Sounds[SND_SLIDE]=gi.soundindex("monsters/assassin/slide.wav");
-	Sounds[SND_SLASH1]=gi.soundindex("monsters/assassin/slash1.wav");
-	Sounds[SND_SLASH2]=gi.soundindex("monsters/assassin/slash2.wav");
-	Sounds[SND_GROWL1] = gi.soundindex ("monsters/assassin/growl1.wav");
-	Sounds[SND_GROWL2]=gi.soundindex("monsters/assassin/growl2.wav");
-	Sounds[SND_GROWL3] = gi.soundindex ("monsters/assassin/growl3.wav");
-	Sounds[SND_CLOAK]=gi.soundindex("monsters/assassin/cloak.wav");
-	Sounds[SND_DECLOAK] = gi.soundindex ("monsters/assassin/decloak.wav");
+	Sounds[SND_PAIN1] = gi.soundindex("monsters/assassin/pain1.wav");
+	Sounds[SND_PAIN2] = gi.soundindex("monsters/assassin/pain2.wav");
+	Sounds[SND_DIE1] = gi.soundindex("monsters/assassin/death1.wav");
+	Sounds[SND_GIB] = gi.soundindex("monsters/assassin/gib.wav");
+	Sounds[SND_THROW1] = gi.soundindex("monsters/assassin/throw1.wav");
+	Sounds[SND_THROW2] = gi.soundindex("monsters/assassin/throw2.wav");
+	Sounds[SND_DAGHITF] = gi.soundindex("monsters/assassin/daghitf.wav");
+	Sounds[SND_DAGHITW] = gi.soundindex("monsters/assassin/daghitw.wav");
+	Sounds[SND_JUMP] = gi.soundindex("monsters/assassin/jump.wav");
+	Sounds[SND_FLIP] = gi.soundindex("monsters/assassin/flip.wav");
+	Sounds[SND_LAND] = gi.soundindex("monsters/assassin/land.wav");
+	Sounds[SND_LANDF] = gi.soundindex("monsters/assassin/landf.wav");
+	Sounds[SND_SLIDE] = gi.soundindex("monsters/assassin/slide.wav");
+	Sounds[SND_SLASH1] = gi.soundindex("monsters/assassin/slash1.wav");
+	Sounds[SND_SLASH2] = gi.soundindex("monsters/assassin/slash2.wav");
+	Sounds[SND_GROWL1] = gi.soundindex("monsters/assassin/growl1.wav");
+	Sounds[SND_GROWL2] = gi.soundindex("monsters/assassin/growl2.wav");
+	Sounds[SND_GROWL3] = gi.soundindex("monsters/assassin/growl3.wav");
+	Sounds[SND_CLOAK] = gi.soundindex("monsters/assassin/cloak.wav");
+	Sounds[SND_DECLOAK] = gi.soundindex("monsters/assassin/decloak.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = Sounds;

@@ -299,9 +299,9 @@ void imp_ai_pirch(edict_t *self)
 		self->monsterinfo.attack_finished = level.time + 5;
 
 		if (irand(0,1))
-			gi.sound (self, CHAN_VOICE, sounds[SND_IDLE1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_VOICE, sounds[SND_IDLE1], 1, ATTN_NORM, 0);
 		else
-			gi.sound (self, CHAN_VOICE, sounds[SND_IDLE2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_VOICE, sounds[SND_IDLE2], 1, ATTN_NORM, 0);
 	}
 */
 	AngleVectors(self->s.angles, vf, vr, NULL);
@@ -1133,7 +1133,7 @@ void imp_hover_anim(edict_t *self)
 void FireFizzle (edict_t *self)
 {
 	vec3_t dir;
-	gi.sound (self, CHAN_BODY, sounds[SND_FIZZLE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, sounds[SND_FIZZLE], 1, ATTN_NORM, 0);
 	VectorSet(dir, flrand(0, 1),flrand(0, 1), flrand(0.5, 1));
 	VectorNormalize(dir);
 	gi.CreateEffect(self,
@@ -1342,15 +1342,15 @@ void ImpStaticsInit()
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
-	sounds[SND_GIB]=gi.soundindex("misc/fleshbreak.wav");
-	sounds[SND_FLAP]=gi.soundindex("monsters/imp/fly.wav");
-	sounds[SND_SCREAM]=gi.soundindex("monsters/imp/up.wav");
-	sounds[SND_DIVE]=gi.soundindex("monsters/imp/swoop.wav");
-	sounds[SND_DEATH]=gi.soundindex("monsters/imp/die.wav");
-	sounds[SND_HIT]=gi.soundindex("monsters/imp/swoophit.wav");
-	sounds[SND_ATTACK]=gi.soundindex("monsters/imp/fireball.wav");
-	sounds[SND_FIZZLE]=gi.soundindex("monsters/imp/fout.wav");
-	sounds[SND_FBHIT]=gi.soundindex("monsters/imp/fbfire.wav");
+	sounds[SND_GIB] = gi.soundindex("misc/fleshbreak.wav");
+	sounds[SND_FLAP] = gi.soundindex("monsters/imp/fly.wav");
+	sounds[SND_SCREAM] = gi.soundindex("monsters/imp/up.wav");
+	sounds[SND_DIVE] = gi.soundindex("monsters/imp/swoop.wav");
+	sounds[SND_DEATH] = gi.soundindex("monsters/imp/die.wav");
+	sounds[SND_HIT] = gi.soundindex("monsters/imp/swoophit.wav");
+	sounds[SND_ATTACK] = gi.soundindex("monsters/imp/fireball.wav");
+	sounds[SND_FIZZLE] = gi.soundindex("monsters/imp/fout.wav");
+	sounds[SND_FBHIT] = gi.soundindex("monsters/imp/fbfire.wav");
 
 	classStatics[CID_IMP].resInfo = &resInfo;
 }

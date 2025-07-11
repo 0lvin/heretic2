@@ -96,7 +96,7 @@ void rat_dead_pain (edict_t *self, G_Message_t *msg)
 {
 	if (self->health <= -80)
 	{
-		gi.sound (self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 		BecomeDebris(self);
 	}
 	return;
@@ -133,7 +133,7 @@ void rat_death(edict_t *self, G_Message_t *msg)
 
 	if (self->health <= -40 + irand(0, 20))
 	{
-		gi.sound (self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 		BecomeDebris(self);
 	}
 	else
@@ -329,15 +329,15 @@ void ratchew (edict_t *self)
 
 	if (chance > 50 && chance < 65)
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_CHEW1], 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_CHEW1], 1, ATTN_IDLE, 0);
 	}
 	else if (chance < 85)
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_CHEW2], 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_CHEW2], 1, ATTN_IDLE, 0);
 	}
 	else
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_CHEW3], 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_CHEW3], 1, ATTN_IDLE, 0);
 	}
 }
 
@@ -349,47 +349,47 @@ void ratchatter (edict_t *self)
 
 	if (chance < 1)
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_CHATTER1], 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_CHATTER1], 1, ATTN_IDLE, 0);
 	}
 	else if (chance < 2)
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_CHATTER2], 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_CHATTER2], 1, ATTN_IDLE, 0);
 	}
 	else if (chance < 3)
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_CHATTER3], 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_CHATTER3], 1, ATTN_IDLE, 0);
 	}
 }
 
 void ratswallow (edict_t *self)
 {
-	gi.sound (self, CHAN_WEAPON, sounds[SND_SWALLOW], 1, ATTN_IDLE, 0);
+	gi.sound(self, CHAN_WEAPON, sounds[SND_SWALLOW], 1, ATTN_IDLE, 0);
 }
 
 void rathiss (edict_t *self)
 {
-	gi.sound (self, CHAN_WEAPON, sounds[SND_HISS], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_WEAPON, sounds[SND_HISS], 1, ATTN_NORM, 0);
 }
 
 void ratscratch (edict_t *self)
 {
-	gi.sound (self, CHAN_WEAPON, sounds[SND_SCRATCH], 1, ATTN_IDLE, 0);
+	gi.sound(self, CHAN_WEAPON, sounds[SND_SCRATCH], 1, ATTN_IDLE, 0);
 }
 
 void ratdeathsqueal (edict_t *self)
 {
-	gi.sound (self, CHAN_WEAPON, sounds[SND_DIE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_WEAPON, sounds[SND_DIE], 1, ATTN_NORM, 0);
 }
 
 void ratsqueal (edict_t *self)
 {
 	if (irand(0, 1))
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	}
 	else
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -425,7 +425,7 @@ void ratbite (edict_t *self)
 
 		if (trace.ent->takedamage)	// A hit
 		{
-			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEHIT1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_BITEHIT1], 1, ATTN_NORM, 0);
 			VectorMA(trace.endpos, flrand(0, 8), dir, endpos);
 			VectorScale(dir, -1, normal);
 			// do 1 point.
@@ -439,11 +439,11 @@ void ratbite (edict_t *self)
 // A misssss
 	if (irand(0, 1))
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_BITEMISS1], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_BITEMISS1], 1, ATTN_NORM, 0);
 	}
 	else
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_BITEMISS2], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_BITEMISS2], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -663,26 +663,26 @@ void RatStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/rat/tris.fm");
 
-	sounds[SND_BITEHIT1] = gi.soundindex ("monsters/rat/meleehit1.wav");
-	sounds[SND_BITEMISS1] = gi.soundindex ("monsters/rat/meleemiss1.wav");
-	sounds[SND_BITEMISS2] = gi.soundindex ("monsters/rat/meleemiss2.wav");
-	sounds[SND_HISS] = gi.soundindex ("monsters/rat/hiss.wav");
-	sounds[SND_SCRATCH] = gi.soundindex ("monsters/rat/scratch.wav");
-	sounds[SND_PAIN1] = gi.soundindex ("monsters/rat/pain1.wav");
-	sounds[SND_PAIN2] = gi.soundindex ("monsters/rat/pain2.wav");
+	sounds[SND_BITEHIT1] = gi.soundindex("monsters/rat/meleehit1.wav");
+	sounds[SND_BITEMISS1] = gi.soundindex("monsters/rat/meleemiss1.wav");
+	sounds[SND_BITEMISS2] = gi.soundindex("monsters/rat/meleemiss2.wav");
+	sounds[SND_HISS] = gi.soundindex("monsters/rat/hiss.wav");
+	sounds[SND_SCRATCH] = gi.soundindex("monsters/rat/scratch.wav");
+	sounds[SND_PAIN1] = gi.soundindex("monsters/rat/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex("monsters/rat/pain2.wav");
 
-	sounds[SND_CHATTER1] = gi.soundindex ("monsters/rat/chatter1.wav");
-	sounds[SND_CHATTER2] = gi.soundindex ("monsters/rat/chatter2.wav");
-	sounds[SND_CHATTER3] = gi.soundindex ("monsters/rat/chatter3.wav");
+	sounds[SND_CHATTER1] = gi.soundindex("monsters/rat/chatter1.wav");
+	sounds[SND_CHATTER2] = gi.soundindex("monsters/rat/chatter2.wav");
+	sounds[SND_CHATTER3] = gi.soundindex("monsters/rat/chatter3.wav");
 
-	sounds[SND_CHEW1] = gi.soundindex ("monsters/rat/chew1.wav");
-	sounds[SND_CHEW2] = gi.soundindex ("monsters/rat/chew2.wav");
-	sounds[SND_CHEW3] = gi.soundindex ("monsters/rat/chew3.wav");
+	sounds[SND_CHEW1] = gi.soundindex("monsters/rat/chew1.wav");
+	sounds[SND_CHEW2] = gi.soundindex("monsters/rat/chew2.wav");
+	sounds[SND_CHEW3] = gi.soundindex("monsters/rat/chew3.wav");
 
-	sounds[SND_SWALLOW] = gi.soundindex ("monsters/rat/swallow.wav");
+	sounds[SND_SWALLOW] = gi.soundindex("monsters/rat/swallow.wav");
 
-	sounds[SND_DIE] = gi.soundindex ("monsters/rat/death1.wav");
-	sounds[SND_GIB] = gi.soundindex ("monsters/rat/gib.wav");
+	sounds[SND_DIE] = gi.soundindex("monsters/rat/death1.wav");
+	sounds[SND_GIB] = gi.soundindex("monsters/rat/gib.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;

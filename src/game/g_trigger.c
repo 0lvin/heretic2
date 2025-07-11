@@ -199,9 +199,9 @@ void Trigger_Activate(edict_t *self, G_Message_t *msg)
 void Trigger_Sounds(edict_t *self)
 {
 	if (self->sounds == 1)
-		self->noise_index = gi.soundindex ("misc/secret.wav");
+		self->noise_index = gi.soundindex("misc/secret.wav");
 	else if (self->sounds == 3)
-		self->noise_index = gi.soundindex ("misc/talk.wav");
+		self->noise_index = gi.soundindex("misc/talk.wav");
 	else
 		self->noise_index = 0;
 }
@@ -408,7 +408,7 @@ trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 		}
 	}
 
-	gi.sound (self, CHAN_AUTO, gi.soundindex ("player/useobject.wav"), 2, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, gi.soundindex("player/useobject.wav"), 1, ATTN_NORM, 0);
 
 	G_UseTargets (self, activator);
 
@@ -468,7 +468,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 		if (! (self->spawnflags & TRIGGER_COUNTER_NOMESSAGE))
 		{
 			G_CPrintf(activator, PRINT_HIGH, (short)(self->count + GM_SEQCOMPLETE));
-//			gi.sound (activator, CHAN_AUTO, gi.soundindex ("misc/talk1.wav"), 1, ATTN_NORM, 0);
+//			gi.sound(activator, CHAN_AUTO, gi.soundindex("misc/talk1.wav"), 1, ATTN_NORM, 0);
 		}
 		return;
 	}
@@ -476,7 +476,7 @@ void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
 	if (! (self->spawnflags & TRIGGER_COUNTER_NOMESSAGE))
 	{
 		G_CPrintf(activator, PRINT_HIGH, GM_SEQCOMPLETE);
-//		gi.sound (activator, CHAN_AUTO, gi.soundindex ("misc/talk1.wav"), 1, ATTN_NORM, 0);
+//		gi.sound(activator, CHAN_AUTO, gi.soundindex("misc/talk1.wav"), 1, ATTN_NORM, 0);
 	}
 
 	self->activator = activator;
@@ -765,7 +765,7 @@ void lightning_use (edict_t *self, edict_t *other)
 	if (self->pain_debounce_time < level.time)
 	{
 		self->pain_debounce_time = level.time + 2;
-		gi.sound (self, CHAN_AUTO, gi.soundindex ("world/lightningloop.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, gi.soundindex("world/lightningloop.wav"), 1, ATTN_NORM, 0);
 	}
 }
 void lightning_go (edict_t *self, edict_t *other, edict_t *activator)
@@ -803,7 +803,7 @@ void SP_trigger_lightning (edict_t *self)
 
 void quake_quiet(edict_t *self)
 {
-	gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE,self->moveinfo.sound_end, 2, ATTN_NORM, 0);
+	gi.sound(self, CHAN_NO_PHS_ADD+CHAN_VOICE,self->moveinfo.sound_end, 1, ATTN_NORM, 0);
 	self->nextthink = level.time + FRAMETIME;
 	self->think = G_FreeEdict;
 }
@@ -836,7 +836,7 @@ void quake_use (edict_t *self, edict_t *other)
 	// so I can then kill the sound at the right time
 	killsound = G_Spawn();
 
-	gi.sound (killsound, CHAN_NO_PHS_ADD+CHAN_VOICE,self->moveinfo.sound_middle, 2, ATTN_NORM, 0);
+	gi.sound(killsound, CHAN_NO_PHS_ADD+CHAN_VOICE,self->moveinfo.sound_middle, 1, ATTN_NORM, 0);
 	VectorCopy(self->s.origin,killsound->s.origin);
 	killsound->moveinfo.sound_end = self->moveinfo.sound_end;
 	killsound->nextthink = level.time + self->time;
@@ -865,8 +865,8 @@ void SP_trigger_quake (edict_t *self)
 	if (!self->wait)
 		self->wait = 10;
 
-	self->moveinfo.sound_middle = gi.soundindex ("world/quake.wav");
-	self->moveinfo.sound_end = gi.soundindex ("world/quakend.wav");
+	self->moveinfo.sound_middle = gi.soundindex("world/quake.wav");
+	self->moveinfo.sound_end = gi.soundindex("world/quakend.wav");
 
 	InitTrigger(self);
 

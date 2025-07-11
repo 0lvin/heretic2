@@ -80,7 +80,7 @@ static void TornadoThink(edict_t *self)
 		VectorAdd(endpos, self->s.origin, endpos);
 		gi.CreateEffect(NULL, FX_LIGHTNING, 0,
 			self->s.origin, "vbb", endpos, (byte)RED_RAIN_LIGHTNING_WIDTH, (byte)0);
-		gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/Lightning.wav"),1,ATTN_NORM,0);
+		gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/Lightning.wav"), 1, ATTN_NORM, 0);
 		self->jump_time = level.time + flrand(0.2, 1.0);
 	}
 

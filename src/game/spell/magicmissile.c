@@ -154,7 +154,7 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 		makeScorch = CEF_FLAG6;
 	}
 	gi.CreateEffect(self, FX_WEAPON_MAGICMISSILEEXPLODE, CEF_OWNERS_ORIGIN | makeScorch, self->s.origin, "d", self->movedir);
-	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/MagicMissileHit.wav"), 2, ATTN_NORM, 0);
+	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/MagicMissileHit.wav"), 1, ATTN_NORM, 0);
 
 	G_SetToFree(self);
 }

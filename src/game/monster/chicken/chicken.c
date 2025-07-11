@@ -66,28 +66,28 @@ void ChickenStaticsInit()
 	resInfo.modelIndex = gi.modelindex("models/monsters/chicken2/tris.fm");
 
 	//for the cluck animation
-	sounds[SND_CLUCK1]= gi.soundindex ("monsters/chicken/cluck1.wav");
-	sounds[SND_CLUCK2]= gi.soundindex ("monsters/chicken/cluck2.wav");
+	sounds[SND_CLUCK1]= gi.soundindex("monsters/chicken/cluck1.wav");
+	sounds[SND_CLUCK2]= gi.soundindex("monsters/chicken/cluck2.wav");
 
 	//for getting hit - even though right now, it dies immediately - they want this changed
-	sounds[SND_PAIN1]= gi.soundindex ("monsters/chicken/pain1.wav");
-	sounds[SND_PAIN2]= gi.soundindex ("monsters/chicken/pain2.wav");
+	sounds[SND_PAIN1]= gi.soundindex("monsters/chicken/pain1.wav");
+	sounds[SND_PAIN2]= gi.soundindex("monsters/chicken/pain2.wav");
 
 	//for dying - we only ever get gibbed, so no other sound is required
-	sounds[SND_DIE]= gi.soundindex ("monsters/chicken/die.wav");
+	sounds[SND_DIE]= gi.soundindex("monsters/chicken/die.wav");
 
 	//for biting the player
-	sounds[SND_BITE1]= gi.soundindex ("monsters/chicken/bite1.wav");
-	sounds[SND_BITE2]= gi.soundindex ("monsters/chicken/bite2.wav");
+	sounds[SND_BITE1]= gi.soundindex("monsters/chicken/bite1.wav");
+	sounds[SND_BITE2]= gi.soundindex("monsters/chicken/bite2.wav");
 
 	//for pecking the ground
-	sounds[SND_PECK1]= gi.soundindex ("monsters/chicken/peck1.wav");
-	sounds[SND_PECK2]= gi.soundindex ("monsters/chicken/peck2.wav");
+	sounds[SND_PECK1]= gi.soundindex("monsters/chicken/peck1.wav");
+	sounds[SND_PECK2]= gi.soundindex("monsters/chicken/peck2.wav");
 
 	//and lastly, I thought it might be cool to have some cries for when the chicken jumps
-	sounds[SND_JUMP1]= gi.soundindex ("monsters/chicken/jump1.wav");
-	sounds[SND_JUMP2]= gi.soundindex ("monsters/chicken/jump2.wav");
-	sounds[SND_JUMP3]= gi.soundindex ("monsters/chicken/jump3.wav");
+	sounds[SND_JUMP1]= gi.soundindex("monsters/chicken/jump1.wav");
+	sounds[SND_JUMP2]= gi.soundindex("monsters/chicken/jump2.wav");
+	sounds[SND_JUMP3]= gi.soundindex("monsters/chicken/jump3.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
@@ -151,7 +151,7 @@ void chicken_death(edict_t *self, G_Message_t *msg)
 	// if we have a use, fire it off.
 //	monster_death_use (self);
 
-	gi.sound (self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, sounds[SND_DIE], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	BecomeDebris(self);
 	gi.CreateEffect(self, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
@@ -209,7 +209,7 @@ void MorphChickenOut(edict_t *self)
 		newent->physicsFlags |= PF_RESIZE;
 
 		// do the teleport sound
-		gi.sound(newent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+		gi.sound(newent,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 		// do the teleport effect
 		gi.CreateEffect(newent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, NULL, "" );
 		G_FreeEdict(self);
@@ -442,9 +442,9 @@ void chicken_stand(edict_t *self, G_Message_t *msg)
 void chickensqueal (edict_t *self)
 {
 	if(!irand(0, 1))
-		gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	else
-		gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 }
 
 void ChickenGlide (playerinfo_t *playerinfo)

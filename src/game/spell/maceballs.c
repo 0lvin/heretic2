@@ -76,7 +76,7 @@ void MaceballThink(edict_t *self)
 	// Now check if we should die soon.
 	if (killme || self->deadflag == DEAD_DYING || self->touch_debounce_time + MACEBALL_EXTRALIFE <= level.time)
 	{
-		gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/MaceBallDeath.wav"), 2, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/MaceBallDeath.wav"), 1, ATTN_NORM, 0);
 		gi.CreateEffect(NULL,
 						FX_WEAPON_MACEBALLEXPLODE,
 						0,
@@ -284,7 +284,7 @@ void SpellCastMaceball(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	{	// Spawning in something, give up now, and kill the thang.
 		VectorClear(ball->velocity);
 
-		gi.sound(ball, CHAN_WEAPON, gi.soundindex("weapons/MaceBallDeath.wav"), 2, ATTN_NORM, 0);
+		gi.sound(ball, CHAN_WEAPON, gi.soundindex("weapons/MaceBallDeath.wav"), 1, ATTN_NORM, 0);
 		gi.CreateEffect(NULL,
 						FX_WEAPON_MACEBALLEXPLODE,
 						0,

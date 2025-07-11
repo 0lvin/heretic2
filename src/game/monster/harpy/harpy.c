@@ -545,9 +545,9 @@ void harpy_ai_pirch(edict_t *self)
 		self->monsterinfo.attack_finished = level.time + 5;
 
 		if (irand(0,1))
-			gi.sound (self, CHAN_WEAPON, sounds[SND_IDLE1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_IDLE1], 1, ATTN_NORM, 0);
 		else
-			gi.sound (self, CHAN_WEAPON, sounds[SND_IDLE2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_IDLE2], 1, ATTN_NORM, 0);
 	}
 
 	AngleVectors(self->s.angles, vf, vr, NULL);
@@ -1604,18 +1604,18 @@ void HarpyStaticsInit()
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
-	sounds[SND_GIB]=gi.soundindex("misc/fleshbreak.wav");
-	sounds[SND_FLAP]=gi.soundindex("monsters/harpy/flap.wav");
-	sounds[SND_SCREAM]=gi.soundindex("monsters/harpy/scream.wav");
-	sounds[SND_FLAP_FAST]=gi.soundindex("monsters/harpy/flap_quick.wav");
-	sounds[SND_DIVE]=gi.soundindex("monsters/harpy/dive.wav");
-	sounds[SND_DEATH]=gi.soundindex("monsters/harpy/death.wav");
-	sounds[SND_PAIN1]=gi.soundindex("monsters/harpy/pain1.wav");
-	sounds[SND_PAIN2]=gi.soundindex("monsters/harpy/pain2.wav");
-	sounds[SND_ATTACK]=gi.soundindex("monsters/harpy/attack.wav");
+	sounds[SND_GIB] = gi.soundindex("misc/fleshbreak.wav");
+	sounds[SND_FLAP] = gi.soundindex("monsters/harpy/flap.wav");
+	sounds[SND_SCREAM] = gi.soundindex("monsters/harpy/scream.wav");
+	sounds[SND_FLAP_FAST] = gi.soundindex("monsters/harpy/flap_quick.wav");
+	sounds[SND_DIVE] = gi.soundindex("monsters/harpy/dive.wav");
+	sounds[SND_DEATH] = gi.soundindex("monsters/harpy/death.wav");
+	sounds[SND_PAIN1] = gi.soundindex("monsters/harpy/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex("monsters/harpy/pain2.wav");
+	sounds[SND_ATTACK] = gi.soundindex("monsters/harpy/attack.wav");
 
-	sounds[SND_IDLE1]=gi.soundindex("monsters/harpy/pain1.wav");
-	sounds[SND_IDLE2]=gi.soundindex("monsters/harpy/pain2.wav");
+	sounds[SND_IDLE1] = gi.soundindex("monsters/harpy/pain1.wav");
+	sounds[SND_IDLE2] = gi.soundindex("monsters/harpy/pain2.wav");
 
 	classStatics[CID_HARPY].resInfo = &resInfo;
 }

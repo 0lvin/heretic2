@@ -769,17 +769,17 @@ void ElflordStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/elflord/tris.fm");
 
-	sounds[SND_PAIN1] = gi.soundindex ("monsters/elflord/pain1.wav");
-	sounds[SND_PAIN2] = gi.soundindex ("monsters/elflord/pain2.wav");
-	sounds[SND_DIE] = gi.soundindex ("monsters/elflord/death1.wav");
+	sounds[SND_PAIN1] = gi.soundindex("monsters/elflord/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex("monsters/elflord/pain2.wav");
+	sounds[SND_DIE] = gi.soundindex("monsters/elflord/death1.wav");
 
 	//use sphere sounds
-	sounds[SND_SACHARGE] = gi.soundindex ("weapons/SphereGrow.wav");
-	sounds[SND_SAFIRE] = gi.soundindex ("weapons/SphereFire.wav");
-	sounds[SND_SAHIT] = gi.soundindex ("weapons/SphereImpact.wav");
+	sounds[SND_SACHARGE] = gi.soundindex("weapons/SphereGrow.wav");
+	sounds[SND_SAFIRE] = gi.soundindex("weapons/SphereFire.wav");
+	sounds[SND_SAHIT] = gi.soundindex("weapons/SphereImpact.wav");
 
-	sounds[SND_PROJ1] = gi.soundindex ("monsters/elflord/shoot.wav");
-	sounds[SND_BEAM] = gi.soundindex ("monsters/elflord/beam.wav");
+	sounds[SND_PROJ1] = gi.soundindex("monsters/elflord/shoot.wav");
+	sounds[SND_BEAM] = gi.soundindex("monsters/elflord/beam.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;

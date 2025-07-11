@@ -49,10 +49,10 @@ void BeeStaticsInit()
 	resInfo.animations = animations; */
 	resInfo.modelIndex = gi.modelindex("models/monsters/bee/tris.fm");
 
-	sounds[SND_BUZZ1] = gi.soundindex ("monsters/bee/buzz1.wav");
-	sounds[SND_BUZZ2] = gi.soundindex ("monsters/bee/buzz2.wav");
-	sounds[SND_STING] = gi.soundindex ("monsters/bee/sting.wav");
-	sounds[SND_GIB] = gi.soundindex ("monsters/bee/gib.wav");
+	sounds[SND_BUZZ1] = gi.soundindex("monsters/bee/buzz1.wav");
+	sounds[SND_BUZZ2] = gi.soundindex("monsters/bee/buzz2.wav");
+	sounds[SND_STING] = gi.soundindex("monsters/bee/sting.wav");
+	sounds[SND_GIB] = gi.soundindex("monsters/bee/gib.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;

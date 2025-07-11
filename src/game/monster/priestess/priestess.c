@@ -98,7 +98,7 @@ static mmove_t *animations[NUM_ANIMS] =
 
 void priestess_teleport_go ( edict_t *self )
 {
-	gi.sound (self, CHAN_AUTO, sounds[SND_TPORT_OUT], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_TPORT_OUT], 1, ATTN_NORM, 0);
 
 	self->takedamage = DAMAGE_NO;
 
@@ -117,7 +117,7 @@ void priestess_teleport_go ( edict_t *self )
 
 void priestess_teleport_end ( edict_t *self )
 {
-	gi.sound (self, CHAN_AUTO, sounds[SND_TPORT_IN], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_TPORT_IN], 1, ATTN_NORM, 0);
 
 	gi.CreateEffect(NULL,
 				FX_HP_MISSILE,
@@ -332,7 +332,7 @@ void priestess_proj1_think( edict_t *self )
 	//Timeout?
 	if (self->monsterinfo.attack_finished < level.time)
 	{
-		gi.sound (self, CHAN_BODY, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
 
 		gi.CreateEffect(self,
 					FX_HP_MISSILE,
@@ -383,7 +383,7 @@ void priestess_proj1_think( edict_t *self )
 void
 priestess_proj2_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	gi.sound (self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
 
 	gi.CreateEffect(self,
 				FX_HP_MISSILE,
@@ -406,7 +406,7 @@ void priestess_proj2_think( edict_t *self )
 	//Timeout?
 	if (self->monsterinfo.attack_finished < level.time)
 	{
-		gi.sound (self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
 
 		gi.CreateEffect(self,
 					FX_HP_MISSILE,
@@ -498,25 +498,25 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 	case AS_QUEENS_FURY:
 		exp = HPMISSILE1_EXPLODE;
 		damage = irand(HP_DMG_FURY_MIN, HP_DMG_FURY_MAX);
-		gi.sound (self, CHAN_AUTO, sounds[SND_HOMINGHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_HOMINGHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_BROODS_SACRIFICE:
 		exp = HPMISSILE3_EXPLODE;
 		damage = irand(HP_DMG_BROOD_MIN, HP_DMG_BROOD_MAX);
-		gi.sound (self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_HEAVENS_RAIN:
 		exp = HPMISSILE2_EXPLODE;
 		damage = HP_DMG_RAIN;
-		gi.sound (self, CHAN_AUTO, sounds[SND_ZAPHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_ZAPHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_LIGHT_MISSILE:
 		exp = HPMISSILE1_EXPLODE;
 		damage = irand(HP_DMG_MISSILE_MIN, HP_DMG_MISSILE_MAX);
-		gi.sound (self, CHAN_AUTO, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
 		break;
 
 	default:
@@ -564,22 +564,22 @@ void priestess_proj1_touch( edict_t *self, edict_t *other, cplane_t *plane, csur
 	{
 	case AS_QUEENS_FURY:
 		damage = irand(HP_DMG_FURY_MIN, HP_DMG_FURY_MAX);
-		gi.sound (self, CHAN_AUTO, sounds[SND_HOMINGHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_HOMINGHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_BROODS_SACRIFICE:
 		damage = irand(HP_DMG_BROOD_MIN, HP_DMG_BROOD_MAX);
-		gi.sound (self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_HEAVENS_RAIN:
 		damage = HP_DMG_RAIN;
-		gi.sound (self, CHAN_AUTO, sounds[SND_ZAPHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_ZAPHIT], 1, ATTN_NORM, 0);
 		break;
 
 	case AS_LIGHT_MISSILE:
 		damage = irand(HP_DMG_MISSILE_MIN, HP_DMG_MISSILE_MAX);
-		gi.sound (self, CHAN_AUTO, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_BALLHIT], 1, ATTN_NORM, 0);
 		break;
 
 	default:
@@ -687,7 +687,7 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 		VectoAngles(proj->velocity, proj->s.angles);
 
-		gi.sound (self, CHAN_AUTO, sounds[SND_3BALLATK], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_3BALLATK], 1, ATTN_NORM, 0);
 
 		//One in ten wander off drunkenly
 		if (!irand(0,10))
@@ -752,7 +752,7 @@ void priestess_fire2( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 	else
 		proj->think=priestess_proj1_think;
 
-	gi.sound (self, CHAN_AUTO, sounds[SND_HOMINGATK], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_HOMINGATK], 1, ATTN_NORM, 0);
 
 	gi.CreateEffect(proj,
 				FX_HP_MISSILE,
@@ -825,7 +825,7 @@ void priestess_fire3( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	proj->think=priestess_proj2_think;
 
-	gi.sound (self, CHAN_AUTO, sounds[SND_BUGS], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, sounds[SND_BUGS], 1, ATTN_NORM, 0);
 
 	gi.CreateEffect(proj,
 				FX_HP_MISSILE,
@@ -853,7 +853,7 @@ void priestess_fire4( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 
 	if (self->monsterinfo.sound_finished < level.time)
 	{
-		gi.sound (self, CHAN_AUTO, sounds[SND_ZAP], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_ZAP], 1, ATTN_NORM, 0);
 		self->monsterinfo.sound_finished = level.time + 5;
 	}
 
@@ -896,7 +896,7 @@ void priestess_fire4( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 			T_Damage(trace.ent, self, self, vf, trace.endpos, trace.plane.normal,
 					irand(HP_DMG_FIRE_MIN, HP_DMG_FIRE_MAX), 0, DAMAGE_DISMEMBER,MOD_DIED);
 
-			gi.sound (self, CHAN_AUTO, sounds[SND_ZAPHIT], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_AUTO, sounds[SND_ZAPHIT], 1, ATTN_NORM, 0);
 		}
 
 		gi.CreateEffect(NULL,
@@ -1244,19 +1244,19 @@ void priestess_strike ( edict_t *self, float damage )
 		{
 			//Create a spark effect
 			gi.CreateEffect(NULL, FX_SPARKS, CEF_FLAG6, trace.endpos, "d", direction);
-			gi.sound (self, CHAN_WEAPON, sounds[SND_SWIPEWALL], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_SWIPEWALL], 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			//Hurt whatever we were whacking away at
 			T_Damage(victim, self, self, direction, trace.endpos, bloodDir, damage, damage*2, DAMAGE_DISMEMBER,MOD_DIED);
-			gi.sound (self, CHAN_WEAPON, sounds[SND_SWIPE], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_SWIPE], 1, ATTN_NORM, 0);
 		}
 	}
 	else
 	{
 		//Play swoosh sound
-		gi.sound (self, CHAN_AUTO, sounds[SND_SWIPEMISS], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, sounds[SND_SWIPEMISS], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -1540,9 +1540,9 @@ void priestess_pain(edict_t *self, G_Message_t *msg)
 	if (force_pain || ((irand(0, self->max_health+50) > self->health) && !irand(0,2)))
 	{
 		if (irand(0,1))
-			gi.sound (self, CHAN_AUTO, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_AUTO, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 		else
-			gi.sound (self, CHAN_AUTO, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_AUTO, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 
 		SetAnim(self, PRIESTESS_ANIM_PAIN);
 	}
@@ -1589,25 +1589,25 @@ void HighPriestessStaticsInit()
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;
 
-	sounds[SND_PAIN1]=gi.soundindex("monsters/highpriestess/pain1.wav");
-	sounds[SND_PAIN2]=gi.soundindex("monsters/highpriestess/pain2.wav");
-	sounds[SND_FALL]=gi.soundindex("monsters/highpriestess/fall.wav");
-	sounds[SND_3BALLATK]=gi.soundindex("monsters/highpriestess/3ballatk.wav");
-	sounds[SND_BALLHIT]=gi.soundindex("monsters/highpriestess/ballhit.wav");
-	sounds[SND_WHIRL]=gi.soundindex("weapons/stafftwirl_2.wav");
-	sounds[SND_BUGS]=gi.soundindex("monsters/highpriestess/bugs.wav");
-	sounds[SND_BUGBUZZ]=gi.soundindex("monsters/highpriestess/bugbuzz.wav");
-	sounds[SND_BUGHIT]=gi.soundindex("monsters/highpriestess/bughit.wav");
-	sounds[SND_ZAP]=gi.soundindex("monsters/highpriestess/zap.wav");
-	sounds[SND_ZAPHIT]=gi.soundindex("monsters/highpriestess/zaphit.wav");
-	sounds[SND_HOMINGATK]=gi.soundindex("monsters/highpriestess/homatk.wav");
-	sounds[SND_HOMINGHIT]=gi.soundindex("monsters/highpriestess/homhit.wav");
-	sounds[SND_TPORT_IN]=gi.soundindex("monsters/highpriestess/tportin.wav");
-	sounds[SND_TPORT_OUT]=gi.soundindex("monsters/highpriestess/tpotout.wav");
-	sounds[SND_SWIPE]=gi.soundindex("weapons/staffswing_2.wav");
-	sounds[SND_SWIPEHIT]=gi.soundindex("weapons/staffhit_2.wav");
-	sounds[SND_SWIPEMISS]=gi.soundindex("monsters/seraph/guard/attack_miss.wav");
-	sounds[SND_SWIPEWALL]=gi.soundindex("weapons/staffhitwall.wav");
+	sounds[SND_PAIN1] = gi.soundindex("monsters/highpriestess/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex("monsters/highpriestess/pain2.wav");
+	sounds[SND_FALL] = gi.soundindex("monsters/highpriestess/fall.wav");
+	sounds[SND_3BALLATK] = gi.soundindex("monsters/highpriestess/3ballatk.wav");
+	sounds[SND_BALLHIT] = gi.soundindex("monsters/highpriestess/ballhit.wav");
+	sounds[SND_WHIRL] = gi.soundindex("weapons/stafftwirl_2.wav");
+	sounds[SND_BUGS] = gi.soundindex("monsters/highpriestess/bugs.wav");
+	sounds[SND_BUGBUZZ] = gi.soundindex("monsters/highpriestess/bugbuzz.wav");
+	sounds[SND_BUGHIT] = gi.soundindex("monsters/highpriestess/bughit.wav");
+	sounds[SND_ZAP] = gi.soundindex("monsters/highpriestess/zap.wav");
+	sounds[SND_ZAPHIT] = gi.soundindex("monsters/highpriestess/zaphit.wav");
+	sounds[SND_HOMINGATK] = gi.soundindex("monsters/highpriestess/homatk.wav");
+	sounds[SND_HOMINGHIT] = gi.soundindex("monsters/highpriestess/homhit.wav");
+	sounds[SND_TPORT_IN] = gi.soundindex("monsters/highpriestess/tportin.wav");
+	sounds[SND_TPORT_OUT] = gi.soundindex("monsters/highpriestess/tpotout.wav");
+	sounds[SND_SWIPE] = gi.soundindex("weapons/staffswing_2.wav");
+	sounds[SND_SWIPEHIT] = gi.soundindex("weapons/staffhit_2.wav");
+	sounds[SND_SWIPEMISS] = gi.soundindex("monsters/seraph/guard/attack_miss.wav");
+	sounds[SND_SWIPEWALL] = gi.soundindex("weapons/staffhitwall.wav");
 
 	classStatics[CID_HIGHPRIESTESS].resInfo = &resInfo;
 }

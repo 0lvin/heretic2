@@ -398,7 +398,7 @@ void fish_think (edict_t *self)
 					gi.CreateEffect(NULL, FX_WATER_WAKE, 0,	trace.endpos, "sbv", self->s.number,
 						angle_byte, dir);
 
-				gi.sound (self, CHAN_WEAPON, sounds[SND_SPLASH], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_SPLASH], 1, ATTN_NORM, 0);
 				self->count = 6;
 			}
 		}
@@ -462,9 +462,9 @@ void fish_swim_sound (edict_t *self, float fast)
 			return;
 
 		if(irand(0,1))
-			gi.sound (self, CHAN_BODY, sounds[SND_FAST_SWIM1], 0.75, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_BODY, sounds[SND_FAST_SWIM1], 0.75, ATTN_IDLE, 0);
 		else
-			gi.sound (self, CHAN_BODY, sounds[SND_FAST_SWIM2], 0.75, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_BODY, sounds[SND_FAST_SWIM2], 0.75, ATTN_IDLE, 0);
 	}
 	else
 	{
@@ -472,9 +472,9 @@ void fish_swim_sound (edict_t *self, float fast)
 			return;
 
 		if(irand(0,1))
-			gi.sound (self, CHAN_BODY, sounds[SND_SLOW_SWIM1], 0.5, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_BODY, sounds[SND_SLOW_SWIM1], 0.5, ATTN_IDLE, 0);
 		else
-			gi.sound (self, CHAN_BODY, sounds[SND_SLOW_SWIM2], 0.5, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_BODY, sounds[SND_SLOW_SWIM2], 0.5, ATTN_IDLE, 0);
 	}
 }
 /*-------------------------------------------------------------------------
@@ -662,7 +662,7 @@ void fish_death(edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-	gi.sound (self, CHAN_WEAPON, sounds[SND_DIE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_WEAPON, sounds[SND_DIE], 1, ATTN_NORM, 0);
 
 	if(self->s.skinnum == FISH_SKIN1 || self->s.skinnum == FISH_SKIN2)
 		self->s.skinnum += 1;
@@ -695,11 +695,11 @@ void fish_pain(edict_t *self, G_Message_t *msg)
 
 	if (irand(0, 1))
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	}
 	else
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 	}
 
 }
@@ -826,11 +826,11 @@ void fishbite (edict_t *self)
 	{
 		if (irand(0, 1))
 		{
-			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEHIT1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_BITEHIT1], 1, ATTN_NORM, 0);
 		}
 		else
 		{
-			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEHIT2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_BITEHIT2], 1, ATTN_NORM, 0);
 		}
 
 		scale = -3;
@@ -844,11 +844,11 @@ void fishbite (edict_t *self)
 	{
 		if (irand(0, 1))
 		{
-			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEMISS1], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_BITEMISS1], 1, ATTN_NORM, 0);
 		}
 		else
 		{
-			gi.sound (self, CHAN_WEAPON, sounds[SND_BITEMISS2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_BITEMISS2], 1, ATTN_NORM, 0);
 		}
 	}
 }
@@ -1038,15 +1038,15 @@ void fish_growl (edict_t *self)
 	}
 	else if (chance < 20 )
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_GROWL1], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_GROWL1], 1, ATTN_NORM, 0);
 	}
 	else if (chance < 40)
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_GROWL2], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_GROWL2], 1, ATTN_NORM, 0);
 	}
 	else
 	{
-		gi.sound (self, CHAN_WEAPON, sounds[SND_GROWL3], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_GROWL3], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -1061,17 +1061,17 @@ void FishStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/fish/tris.fm");
 
-	sounds[SND_PAIN1] = gi.soundindex ("monsters/fish/pain1.wav");
-	sounds[SND_PAIN2] = gi.soundindex ("monsters/fish/pain2.wav");
-	sounds[SND_DIE] = gi.soundindex ("monsters/fish/death1.wav");
-	sounds[SND_GIB] = gi.soundindex ("monsters/fish/gib.wav");
-	sounds[SND_BITEHIT1] = gi.soundindex ("monsters/fish/meleehit1.wav");
-	sounds[SND_BITEHIT2] = gi.soundindex ("monsters/fish/meleehit2.wav");
-	sounds[SND_BITEMISS1] = gi.soundindex ("monsters/fish/meleemiss1.wav");
-	sounds[SND_BITEMISS2] = gi.soundindex ("monsters/fish/meleemiss2.wav");
-	sounds[SND_GROWL1] = gi.soundindex ("monsters/fish/growl1.wav");
-	sounds[SND_GROWL2] = gi.soundindex ("monsters/fish/growl2.wav");
-	sounds[SND_GROWL3] = gi.soundindex ("monsters/fish/growl3.wav");
+	sounds[SND_PAIN1] = gi.soundindex("monsters/fish/pain1.wav");
+	sounds[SND_PAIN2] = gi.soundindex("monsters/fish/pain2.wav");
+	sounds[SND_DIE] = gi.soundindex("monsters/fish/death1.wav");
+	sounds[SND_GIB] = gi.soundindex("monsters/fish/gib.wav");
+	sounds[SND_BITEHIT1] = gi.soundindex("monsters/fish/meleehit1.wav");
+	sounds[SND_BITEHIT2] = gi.soundindex("monsters/fish/meleehit2.wav");
+	sounds[SND_BITEMISS1] = gi.soundindex("monsters/fish/meleemiss1.wav");
+	sounds[SND_BITEMISS2] = gi.soundindex("monsters/fish/meleemiss2.wav");
+	sounds[SND_GROWL1] = gi.soundindex("monsters/fish/growl1.wav");
+	sounds[SND_GROWL2] = gi.soundindex("monsters/fish/growl2.wav");
+	sounds[SND_GROWL3] = gi.soundindex("monsters/fish/growl3.wav");
 	sounds[SND_SPLASH] = gi.soundindex("player/breaststroke.wav");
 
 	sounds[SND_SLOW_SWIM1] = gi.soundindex("monsters/fish/fishmov3.wav");

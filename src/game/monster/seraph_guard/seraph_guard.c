@@ -360,7 +360,7 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 		{
 			//Create a spark effect
 			gi.CreateEffect(NULL, FX_SPARKS, CEF_FLAG6, trace.endpos, "d", direction);
-			gi.sound (self, CHAN_WEAPON, sounds[SND_HIT_WALL], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_HIT_WALL], 1, ATTN_NORM, 0);
 		}
 		else
 		{
@@ -380,10 +380,10 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 					trace.plane.normal,
 					2);
 
-				gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/staffhit_2.wav"),1,ATTN_NORM,0);
+				gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/staffhit_2.wav"), 1, ATTN_NORM, 0);
 			}
 			else
-				gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
 			//Hurt whatever we were whacking away at
 			damage *= ((skill->value + 1)/3)		//skill 0 = 1/3, skill 3 = 1 1/3
 						* flrand(0.85, 1.15);		// Add some variance to the hit, since it passes a constant.
@@ -415,7 +415,7 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 	else
 	{
 		//Play swoosh sound
-		gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACK_MISS], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACK_MISS], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -506,7 +506,7 @@ void seraph_guard_pain(edict_t *self, G_Message_t *msg)
 	if (force_damage || ((irand(0, self->max_health+50) > self->health) && irand(0,2)))
 	{
 		soundID = irand(SND_PAIN1, SND_PAIN4);
-		gi.sound (self, CHAN_WEAPON, sounds[soundID], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[soundID], 1, ATTN_NORM, 0);
 
 		SetAnim(self, SERAPH_GUARD_ANIM_PAIN);
 	}
@@ -620,7 +620,7 @@ void seraph_guard_fire (edict_t *self)
 		{
 			if (victim == self)
 			{
-				gi.sound (self, CHAN_WEAPON, sounds[SND_FIST_HIT_WALL], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_FIST_HIT_WALL], 1, ATTN_NORM, 0);
 			}
 			else
 			{
@@ -628,7 +628,7 @@ void seraph_guard_fire (edict_t *self)
 				damage *= (skill->value + 1)/3;//skill 0 = 1/3, skill 3 = 1 1/3
 				T_Damage(victim, self, self, direction, trace.endpos, bloodDir,
 						damage, damage*20, DAMAGE_EXTRA_KNOCKBACK, MOD_DIED);
-				gi.sound (self, CHAN_WEAPON, sounds[SND_HIT_WALL], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_HIT_WALL], 1, ATTN_NORM, 0);
 				if(victim->client)
 				{
 					if(victim->health > 0)
@@ -644,7 +644,7 @@ void seraph_guard_fire (edict_t *self)
 		else
 		{
 			//Play swoosh sound
-			gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACK_MISS], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACK_MISS], 1, ATTN_NORM, 0);
 		}
 	}
 	else
@@ -748,7 +748,7 @@ void seraph_guard_death(edict_t *self, G_Message_t *msg)
 	}
 
 	soundID = irand(SND_DEATH1, SND_DEATH4);
-	gi.sound (self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
 }
 
 /*--------------------------------------

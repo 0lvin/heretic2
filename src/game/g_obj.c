@@ -59,7 +59,7 @@ void objpush_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 		if (self->pain_debounce_time < level.time)
 		{
 			// there are going to be more sounds to choose from, dependant on the mass of the object
-			gi.sound (self, CHAN_BODY, gi.soundindex("misc/barrelmove.wav"), 1, ATTN_STATIC, 0);
+			gi.sound(self, CHAN_BODY, gi.soundindex("misc/barrelmove.wav"), 1, ATTN_STATIC, 0);
 			self->pain_debounce_time = level.time + 1.2;
 		}
 	}
@@ -559,7 +559,7 @@ void chest1_anim (edict_t *self)
 
 void chest1_use (edict_t *self, edict_t *other, edict_t *activator)
 {
-	gi.sound (self, CHAN_VOICE, gi.soundindex("objects/chest.wav"), 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, gi.soundindex("objects/chest.wav"), 1, ATTN_NORM, 0);
 
 	chest1_anim(self);
 }
@@ -647,14 +647,14 @@ void cog1_anim (edict_t *self)
 	}
 	else
 	{
-		gi.sound (self, CHAN_VOICE, gi.soundindex("misc/null.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_VOICE, gi.soundindex("misc/null.wav"), 1, ATTN_NORM, 0);
 		self->think = NULL;
 	}
 }
 
 void cog1_use (edict_t *self, edict_t *other, edict_t *activator)
 {
-	gi.sound (self, CHAN_VOICE, gi.soundindex("items/cogsturn.wav"), 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, gi.soundindex("items/cogsturn.wav"), 1, ATTN_NORM, 0);
 
 	self->touch_debounce_time = level.time + (FRAMETIME * 30);
 
@@ -836,15 +836,15 @@ void dying_elf_sounds (edict_t *self, int type)
 	{
 	case DYING_ELF_PAIN_VOICE:
 		strcat(sound_string, dying_pelf_pain_voices[irand(0, PELF_NUM_PAIN_VOICES - 1)]);
-		gi.sound (self, CHAN_VOICE, gi.soundindex(sound_string), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_VOICE, gi.soundindex(sound_string), 1, ATTN_NORM, 0);
 		break;
 	case DYING_ELF_IDLE_VOICE:
 		strcat(sound_string, dying_pelf_idle_voices[irand(0, PELF_NUM_IDLE_VOICES - 1)]);
-		gi.sound (self, CHAN_VOICE, gi.soundindex(sound_string), 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_VOICE, gi.soundindex(sound_string), 1, ATTN_IDLE, 0);
 		break;
 	case DYING_ELF_TOUCH_VOICE:
 		strcat(sound_string, dying_pelf_touch_voices[irand(0, PELF_NUM_TOUCH_VOICES - 1)]);
-		gi.sound (self, CHAN_VOICE, gi.soundindex(sound_string), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_VOICE, gi.soundindex(sound_string), 1, ATTN_NORM, 0);
 		break;
 	}
 }
@@ -1546,7 +1546,7 @@ void globetop_use (edict_t *self, edict_t *other, edict_t *activator)
 	if (self->monsterinfo.idle_time)
 		return;
 
-	gi.sound (self, CHAN_BODY, gi.soundindex("objects/globetop.wav"), 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, gi.soundindex("objects/globetop.wav"), 1, ATTN_NORM, 0);
 
 	self->monsterinfo.idle_time = 1;
 
@@ -1561,7 +1561,7 @@ void globebottom_use (edict_t *self, edict_t *other, edict_t *activator)
 	if (self->monsterinfo.idle_time)
 		return;
 
-	gi.sound (self, CHAN_BODY, gi.soundindex("objects/globebottomstart.wav"), 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, gi.soundindex("objects/globebottomstart.wav"), 1, ATTN_NORM, 0);
 
 	self->monsterinfo.idle_time = 1;
 
@@ -2483,13 +2483,13 @@ void lever1_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
 		self->think = lever1downthink;
 		self->nextthink = level.time + FRAMETIME;
 	}
 	else if (self->s.frame == 5)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
 		self->think = lever1upthink;
 		self->nextthink = level.time + FRAMETIME;
 	}
@@ -2554,12 +2554,12 @@ void lever2_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever2.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("objects/lever2.wav"), 1, ATTN_NORM, 0);
 		self->think = lever2downthink;
 	}
 	else if (self->s.frame == 4)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever2.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("objects/lever2.wav"), 1, ATTN_NORM, 0);
 		self->think = lever2upthink;
 	}
 	self->nextthink = level.time + FRAMETIME;
@@ -2621,12 +2621,12 @@ void lever3_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever3.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("objects/lever3.wav"), 1, ATTN_NORM, 0);
 		self->think = lever3downthink;
 	}
 	else if (self->s.frame == 5)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever3.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("objects/lever3.wav"), 1, ATTN_NORM, 0);
 		self->think = lever3upthink;
 	}
 	self->nextthink = level.time + FRAMETIME;
@@ -2677,7 +2677,7 @@ void bush_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 	if (self->touch_debounce_time > level.time)
 		return;
 
-	//gi.sound (self, CHAN_BODY, gi.soundindex("objects/bush.wav"), 1, ATTN_NORM, 0);
+	//gi.sound(self, CHAN_BODY, gi.soundindex("objects/bush.wav"), 1, ATTN_NORM, 0);
 	self->touch_debounce_time = level.time + 1;
 }
 
@@ -2828,12 +2828,12 @@ void cactus4_use (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
 		self->think = cactus_open;
 	}
 	else if (self->s.frame == 16)
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("objects/lever1.wav"), 1, ATTN_NORM, 0);
 		self->think = cactus_close;
 	}
 	self->nextthink = level.time + FRAMETIME;
@@ -3854,7 +3854,7 @@ void spellbook_anim (edict_t *self)
 	}
 	else
 	{
-		gi.sound (self, CHAN_BODY, gi.soundindex("misc/spbkcls.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("misc/spbkcls.wav"), 1, ATTN_NORM, 0);
 		self->think = NULL;
 	}
 
@@ -3866,7 +3866,7 @@ void spellbook_use (edict_t *self, edict_t *other, edict_t *activator)
 
 	G_FreeEdict(self->target_ent);
 
-	gi.sound (self, CHAN_BODY, gi.soundindex("misc/spbook.wav"), 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, gi.soundindex("misc/spbook.wav"), 1, ATTN_NORM, 0);
 
 }
 
@@ -4135,7 +4135,7 @@ void statue_sithraguard_use (edict_t *self, edict_t *other, edict_t *activator)
 	edict_t *shield;
 
 	statue_sithraguard_think(self);
-	gi.sound (self, CHAN_BODY, gi.soundindex("items/statuearm.wav"), 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, gi.soundindex("items/statuearm.wav"), 1, ATTN_NORM, 0);
 
 	shield = G_Spawn();
 	VectorCopy(self->s.origin,shield->s.origin);
@@ -4185,7 +4185,7 @@ void ironmaiden_open (edict_t *self)
 {
 
 	if (self->s.frame == 9)
-		gi.sound (self, CHAN_BODY, gi.soundindex("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, gi.soundindex("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
 
 	if (self->s.frame > 0)
 	{
@@ -4224,7 +4224,7 @@ void ironmaiden_use (edict_t *self, edict_t *other, edict_t *activator)
 	self->touch  = NULL;
 
 	ironmaiden_close(self);
-	gi.sound (self, CHAN_BODY, gi.soundindex("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, gi.soundindex("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
 
 }
 

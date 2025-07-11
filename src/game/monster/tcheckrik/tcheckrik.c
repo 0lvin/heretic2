@@ -257,7 +257,7 @@ void insectCut (edict_t *self, float attacktype)
 	{//ping!
 		VectoAngles(trace.plane.normal, hitangles);
 		gi.CreateEffect(NULL, FX_SPARKS, 0, trace.endpos, "d", hitangles);
-		gi.sound (self, CHAN_AUTO, Sounds[SND_SWIPEHITW], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, Sounds[SND_SWIPEHITW], 1, ATTN_NORM, 0);
 //		gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/staffhitwall.wav"), 1, ATTN_NORM, 0);
 		return;
 	}
@@ -265,7 +265,7 @@ void insectCut (edict_t *self, float attacktype)
 	//hit someone, cut em!
 
 	VectorSubtract(pos2, pos1, dir);
-	gi.sound (self, CHAN_AUTO, Sounds[SND_SWIPEHITF], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_AUTO, Sounds[SND_SWIPEHITF], 1, ATTN_NORM, 0);
 //	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/staffhit.wav"), 1, ATTN_NORM, 0);
 
 	T_Damage (trace.ent, self, self, dir, trace.endpos, vec3_origin, damage, damage*2, DAMAGE_DISMEMBER,MOD_DIED);
@@ -471,16 +471,16 @@ void insectgrowl (edict_t *self)
 		if(irand(0, 1))
 		{
 			if(self->mass == MASS_TC_MALE)
-				gi.sound (self, CHAN_WEAPON, Sounds[SND_GROWLM1], 1, ATTN_IDLE, 0);
+				gi.sound(self, CHAN_WEAPON, Sounds[SND_GROWLM1], 1, ATTN_IDLE, 0);
 			else
-				gi.sound (self, CHAN_WEAPON, Sounds[SND_GROWLF1], 1, ATTN_IDLE, 0);
+				gi.sound(self, CHAN_WEAPON, Sounds[SND_GROWLF1], 1, ATTN_IDLE, 0);
 		}
 		else
 		{
 			if(self->mass == MASS_TC_MALE)
-				gi.sound (self, CHAN_WEAPON, Sounds[SND_GROWLM2], 1, ATTN_IDLE, 0);
+				gi.sound(self, CHAN_WEAPON, Sounds[SND_GROWLM2], 1, ATTN_IDLE, 0);
 			else
-				gi.sound (self, CHAN_WEAPON, Sounds[SND_GROWLF2], 1, ATTN_IDLE, 0);
+				gi.sound(self, CHAN_WEAPON, Sounds[SND_GROWLF2], 1, ATTN_IDLE, 0);
 		}
 	}
 }
@@ -537,7 +537,7 @@ void insect_backpedal(edict_t *self, G_Message_t *msg)
 
 void insect_sound(edict_t *self, float channel, float soundnum, float attn)
 {
-	gi.sound (self, (int)(channel), Sounds[(int)(soundnum)], 1, (int)(attn), 0);
+	gi.sound(self, (int)(channel), Sounds[(int)(soundnum)], 1, (int)(attn), 0);
 }
 
 void insect_melee(edict_t *self, G_Message_t *msg)
@@ -632,13 +632,13 @@ void insectStaff(edict_t *self)
 				SpellCastInsectSpear(self, org, self->s.angles, 2);
 				SpellCastInsectSpear(self, org, self->s.angles, 3);
 			}
-			gi.sound (self, CHAN_WEAPON, Sounds[SND_SPELLM2], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, Sounds[SND_SPELLM2], 1, ATTN_NORM, 0);
 		}
 	}
 	else
 	{
 		SpellCastInsectSpear(self, org, self->s.angles, false);
-		gi.sound (self, CHAN_WEAPON, Sounds[SND_SPELLM], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, Sounds[SND_SPELLM], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -661,7 +661,7 @@ void insectSpell(edict_t *self, float whichspell)
 			VectorMA(org, 2, right, org);
 			org[2] += 6;
 			SpellCastInsectStaff(self, org, self->s.angles, forward, 0);
-			gi.sound (self, CHAN_WEAPON, Sounds[SND_SPELLF], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, Sounds[SND_SPELLF], 1, ATTN_NORM, 0);
 			//SpellCastFlyingFist(self, org, self->s.angles, forward, 0);
 		}
 		else
@@ -674,7 +674,7 @@ void insectSpell(edict_t *self, float whichspell)
 			self->s.effects &= ~(EF_DISABLE_EXTRA_FX | EF_MARCUS_FLAG1);
 			self->damage_debounce_time = false;
 			SpellCastGlobeOfOuchiness(self, org, self->s.angles, forward);
-			gi.sound (self, CHAN_ITEM, Sounds[SND_SPLPWRUPF], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_ITEM, Sounds[SND_SPLPWRUPF], 1, ATTN_NORM, 0);
 		}
 		break;
 	case TC_SPL_FIRE:
@@ -684,7 +684,7 @@ void insectSpell(edict_t *self, float whichspell)
 			VectorMA(org, 16, forward, org);
 			org[2] += 12;
 			SpellCastInsectStaff(self, org, self->s.angles, forward, 0);
-			gi.sound (self, CHAN_AUTO, Sounds[SND_SPELLF], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_AUTO, Sounds[SND_SPELLF], 1, ATTN_NORM, 0);
 			return;
 		}
 		else
@@ -693,7 +693,7 @@ void insectSpell(edict_t *self, float whichspell)
 			VectorMA(org, 16, forward, org);
 			org[2] += 12;
 			SpellCastInsectStaff(self, org, self->s.angles, forward, 0);
-			gi.sound (self, CHAN_AUTO, Sounds[SND_SPELLF], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_AUTO, Sounds[SND_SPELLF], 1, ATTN_NORM, 0);
 		}
 		break;
 	case TC_SPL_FIRE2:
@@ -711,7 +711,7 @@ void insectSpell(edict_t *self, float whichspell)
 			VectorMA(org, 16, forward, org);
 			org[2] += 12;
 			SpellCastInsectStaff(self, org, self->s.angles, forward, 0);
-			gi.sound (self, CHAN_AUTO, Sounds[SND_SPELLF], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_AUTO, Sounds[SND_SPELLF], 1, ATTN_NORM, 0);
 		}
 		break;
 	}
@@ -1554,23 +1554,23 @@ void TcheckrikStaticsInit()
 	//note that the name is different in the path
 	resInfo.modelIndex = gi.modelindex("models/monsters/tcheckrik/male/tris.fm");
 
-	Sounds[SND_PAINM]=gi.soundindex("monsters/insect/painm.wav");
-	Sounds[SND_PAINF]=gi.soundindex("monsters/insect/painf.wav");
-	Sounds[SND_DIEM]=gi.soundindex("monsters/insect/deathm.wav");
-	Sounds[SND_DIEF]=gi.soundindex("monsters/insect/deathf.wav");
-	Sounds[SND_GIB]=gi.soundindex("monsters/insect/gib.wav");
-	Sounds[SND_SWIPE]=gi.soundindex("monsters/insect/swipe.wav");
-	Sounds[SND_SWIPEHITF]=gi.soundindex("monsters/plagueelf/hookhit.wav");
-	Sounds[SND_SWIPEHITW]=gi.soundindex("monsters/insect/swipehitw.wav");
-	Sounds[SND_SPELLM]=gi.soundindex("monsters/insect/spellm.wav");
-	Sounds[SND_SPELLM2]=gi.soundindex("monsters/insect/spellm2.wav");
-	Sounds[SND_SPLPWRUPF]=gi.soundindex("monsters/insect/splpwrupf.wav");
-	Sounds[SND_SPELLF]=gi.soundindex("monsters/insect/spellf.wav");
-	Sounds[SND_GROWLM1]=gi.soundindex("monsters/insect/growlm1.wav");
-	Sounds[SND_GROWLM2] = gi.soundindex ("monsters/insect/growlm2.wav");
-	Sounds[SND_GROWLF1]=gi.soundindex("monsters/insect/growlf1.wav");
-	Sounds[SND_GROWLF2] = gi.soundindex ("monsters/insect/growlf2.wav");
-	Sounds[SND_THUD] = gi.soundindex ("monsters/insect/thud.wav");
+	Sounds[SND_PAINM] = gi.soundindex("monsters/insect/painm.wav");
+	Sounds[SND_PAINF] = gi.soundindex("monsters/insect/painf.wav");
+	Sounds[SND_DIEM] = gi.soundindex("monsters/insect/deathm.wav");
+	Sounds[SND_DIEF] = gi.soundindex("monsters/insect/deathf.wav");
+	Sounds[SND_GIB] = gi.soundindex("monsters/insect/gib.wav");
+	Sounds[SND_SWIPE] = gi.soundindex("monsters/insect/swipe.wav");
+	Sounds[SND_SWIPEHITF] = gi.soundindex("monsters/plagueelf/hookhit.wav");
+	Sounds[SND_SWIPEHITW] = gi.soundindex("monsters/insect/swipehitw.wav");
+	Sounds[SND_SPELLM] = gi.soundindex("monsters/insect/spellm.wav");
+	Sounds[SND_SPELLM2] = gi.soundindex("monsters/insect/spellm2.wav");
+	Sounds[SND_SPLPWRUPF] = gi.soundindex("monsters/insect/splpwrupf.wav");
+	Sounds[SND_SPELLF] = gi.soundindex("monsters/insect/spellf.wav");
+	Sounds[SND_GROWLM1] = gi.soundindex("monsters/insect/growlm1.wav");
+	Sounds[SND_GROWLM2] = gi.soundindex("monsters/insect/growlm2.wav");
+	Sounds[SND_GROWLF1] = gi.soundindex("monsters/insect/growlf1.wav");
+	Sounds[SND_GROWLF2] = gi.soundindex("monsters/insect/growlf2.wav");
+	Sounds[SND_THUD] = gi.soundindex("monsters/insect/thud.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = Sounds;

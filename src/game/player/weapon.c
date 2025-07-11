@@ -4036,7 +4036,7 @@ WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
 				switch (powerlevel)
 				{
 				case STAFF_LEVEL_BASIC:
-					gi.sound(caster, CHAN_AUTO,gi.soundindex("weapons/staffhit.wav"),1,ATTN_NORM,0);
+					gi.sound(caster, CHAN_AUTO, gi.soundindex("weapons/staffhit.wav"), 1, ATTN_NORM, 0);
 					break;
 
 				case STAFF_LEVEL_POWER1:
@@ -4048,7 +4048,7 @@ WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
 									trace.plane.normal,
 									powerlevel);
 
-					gi.sound(caster, CHAN_AUTO,gi.soundindex("weapons/staffhit_2.wav"),1,ATTN_NORM,0);
+					gi.sound(caster, CHAN_AUTO, gi.soundindex("weapons/staffhit_2.wav"), 1, ATTN_NORM, 0);
 					break;
 
 				case STAFF_LEVEL_POWER2:
@@ -4060,7 +4060,7 @@ WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
 									trace.plane.normal,
 									powerlevel);
 
-					gi.sound(caster, CHAN_AUTO,gi.soundindex("weapons/staffhit_3.wav"),1,ATTN_NORM,0);
+					gi.sound(caster, CHAN_AUTO, gi.soundindex("weapons/staffhit_3.wav"), 1, ATTN_NORM, 0);
 					break;
 				}
 
@@ -4225,7 +4225,7 @@ WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
 	SpellCastMagicMissile(caster, StartPos, fireangles, fwd);
 
 	if (missilepos == -1.0)
-		gi.sound(caster,CHAN_WEAPON,gi.soundindex("weapons/MagicMissileSpreadFire.wav"),1,ATTN_NORM,0);
+		gi.sound(caster,CHAN_WEAPON, gi.soundindex("weapons/MagicMissileSpreadFire.wav"), 1, ATTN_NORM, 0);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index]--;
@@ -4403,5 +4403,5 @@ WeaponThink_Blast(edict_t *caster,char *Format,...)
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->playerinfo.pers.inventory.Items[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
 
-	gi.sound(caster,CHAN_WEAPON,gi.soundindex("weapons/BlastFire.wav"),1,ATTN_NORM,0);
+	gi.sound(caster,CHAN_WEAPON, gi.soundindex("weapons/BlastFire.wav"), 1, ATTN_NORM, 0);
 }

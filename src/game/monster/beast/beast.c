@@ -2631,37 +2631,37 @@ void TBeastStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/beast/tris.fm");
 
-	sounds[SND_ROAR]  = gi.soundindex ("monsters/tbeast/roar.wav");
-	sounds[SND_ROAR2]  = gi.soundindex ("monsters/tbeast/roar2.wav");
-	sounds[SND_SNORT1]  = gi.soundindex ("monsters/tbeast/snort1.wav");
-	sounds[SND_SNORT2]  = gi.soundindex ("monsters/tbeast/snort2.wav");
+	sounds[SND_ROAR]  = gi.soundindex("monsters/tbeast/roar.wav");
+	sounds[SND_ROAR2]  = gi.soundindex("monsters/tbeast/roar2.wav");
+	sounds[SND_SNORT1]  = gi.soundindex("monsters/tbeast/snort1.wav");
+	sounds[SND_SNORT2]  = gi.soundindex("monsters/tbeast/snort2.wav");
 
-	sounds[SND_STEP1]  = gi.soundindex ("monsters/tbeast/step1.wav");
-	sounds[SND_STEP2] = gi.soundindex ("monsters/tbeast/step2.wav");
-	sounds[SND_LAND]     = gi.soundindex ("monsters/tbeast/land.wav");
+	sounds[SND_STEP1]  = gi.soundindex("monsters/tbeast/step1.wav");
+	sounds[SND_STEP2] = gi.soundindex("monsters/tbeast/step2.wav");
+	sounds[SND_LAND]     = gi.soundindex("monsters/tbeast/land.wav");
 
-	sounds[SND_GROWL1]     = gi.soundindex ("monsters/tbeast/growl1.wav");
-	sounds[SND_GROWL2]     = gi.soundindex ("monsters/tbeast/growl2.wav");
-	sounds[SND_GROWL3]     = gi.soundindex ("monsters/tbeast/growl3.wav");
+	sounds[SND_GROWL1]     = gi.soundindex("monsters/tbeast/growl1.wav");
+	sounds[SND_GROWL2]     = gi.soundindex("monsters/tbeast/growl2.wav");
+	sounds[SND_GROWL3]     = gi.soundindex("monsters/tbeast/growl3.wav");
 
-//	sounds[SND_SWIPE]= gi.soundindex ("monsters/tbeast/swipe.wav");
-	sounds[SND_SLAM]= gi.soundindex ("monsters/tbeast/slam.wav");
-	sounds[SND_SNATCH]= gi.soundindex ("monsters/tbeast/snatch.wav");
-	sounds[SND_CHOMP]= gi.soundindex ("monsters/tbeast/chomp.wav");
-	sounds[SND_TEAR1]= gi.soundindex ("monsters/tbeast/tear1.wav");
-	sounds[SND_TEAR2]= gi.soundindex ("monsters/tbeast/tear2.wav");
-	sounds[SND_THROW]= gi.soundindex ("monsters/tbeast/throw.wav");
-	sounds[SND_CATCH]= gi.soundindex ("monsters/tbeast/catch.wav");
-//	sounds[SND_SWALLOW]= gi.soundindex ("monsters/tbeast/swallow.wav");
+//	sounds[SND_SWIPE]= gi.soundindex("monsters/tbeast/swipe.wav");
+	sounds[SND_SLAM]= gi.soundindex("monsters/tbeast/slam.wav");
+	sounds[SND_SNATCH]= gi.soundindex("monsters/tbeast/snatch.wav");
+	sounds[SND_CHOMP]= gi.soundindex("monsters/tbeast/chomp.wav");
+	sounds[SND_TEAR1]= gi.soundindex("monsters/tbeast/tear1.wav");
+	sounds[SND_TEAR2]= gi.soundindex("monsters/tbeast/tear2.wav");
+	sounds[SND_THROW]= gi.soundindex("monsters/tbeast/throw.wav");
+	sounds[SND_CATCH]= gi.soundindex("monsters/tbeast/catch.wav");
+//	sounds[SND_SWALLOW]= gi.soundindex("monsters/tbeast/swallow.wav");
 
-	sounds[SND_PAIN1]= gi.soundindex ("monsters/tbeast/pain1.wav");
-	sounds[SND_PAIN2]= gi.soundindex ("monsters/tbeast/pain2.wav");
-	sounds[SND_DIE]= gi.soundindex ("monsters/tbeast/die.wav");
+	sounds[SND_PAIN1]= gi.soundindex("monsters/tbeast/pain1.wav");
+	sounds[SND_PAIN2]= gi.soundindex("monsters/tbeast/pain2.wav");
+	sounds[SND_DIE]= gi.soundindex("monsters/tbeast/die.wav");
 
-	sounds[SND_CORVUS_SCREAM1] = gi.soundindex ("corvus/bdeath1.wav");
-	sounds[SND_CORVUS_SCREAM2] = gi.soundindex ("corvus/bdeath2.wav");
-	sounds[SND_CORVUS_SCREAM3] = gi.soundindex ("corvus/bdeath3.wav");
-	sounds[SND_CORVUS_DIE] = gi.soundindex ("player/falldeath1.wav");
+	sounds[SND_CORVUS_SCREAM1] = gi.soundindex("corvus/bdeath1.wav");
+	sounds[SND_CORVUS_SCREAM2] = gi.soundindex("corvus/bdeath2.wav");
+	sounds[SND_CORVUS_SCREAM3] = gi.soundindex("corvus/bdeath3.wav");
+	sounds[SND_CORVUS_DIE] = gi.soundindex("player/falldeath1.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = sounds;

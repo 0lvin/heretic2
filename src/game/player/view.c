@@ -762,7 +762,7 @@ P_WorldEffects(void)
 		else
 		{
 			gi.sound(current_player, CHAN_BODY,
-					gi.soundindex("player/Water Enter.wav"),1,ATTN_NORM,0);
+					gi.soundindex("player/Water Enter.wav"), 1, ATTN_NORM, 0);
 		}
 
 		current_player->flags |= FL_INWATER;
@@ -807,7 +807,7 @@ P_WorldEffects(void)
 		}
 		else
 		{
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/Water Exit.wav"), 1, ATTN_NORM, 0);
+			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/Water Exit.wav"), 1, ATTN_NORM, 0);
 		}
 		current_player->flags &= ~FL_INWATER;
 
@@ -906,9 +906,9 @@ P_WorldEffects(void)
 			// Play a gurp sound instead of a normal pain sound.
 
 			if (irand(0, 1))
-				gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(current_player, CHAN_VOICE, gi.soundindex("*drowning1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound (current_player, CHAN_VOICE, gi.soundindex("*drowning2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(current_player, CHAN_VOICE, gi.soundindex("*drowning2.wav"), 1, ATTN_NORM, 0);
 
 			current_player->pain_debounce_time = level.time;
 
@@ -983,14 +983,14 @@ P_WorldEffects(void)
 
 		if (old_waterlevel !=  3)
 		{	// We weren't underwater before this, so play a submerged sound
-			gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/underwater.wav"), 1, ATTN_IDLE, 0);
+			gi.sound(current_player, CHAN_VOICE, gi.soundindex("player/underwater.wav"), 1, ATTN_IDLE, 0);
 		}
 
 		// Play an underwater sound every 4 seconds!
 		if (((int)(level.time/4.0))*4.0 == level.time)
 		{	// Underwater ambient
 			// Play local only?
-			gi.sound (current_player, CHAN_BODY, gi.soundindex("player/underwater.wav"), 1, ATTN_IDLE, 0);
+			gi.sound(current_player, CHAN_BODY, gi.soundindex("player/underwater.wav"), 1, ATTN_IDLE, 0);
 		}
 	}
 	else
@@ -1007,7 +1007,7 @@ P_WorldEffects(void)
 	{
 		if (current_player->health > 0 && current_player->pain_debounce_time <= level.time)
 		{
-			gi.sound (current_player, CHAN_VOICE, gi.soundindex("player/lavadamage.wav"), 1, ATTN_NORM, 0);
+			gi.sound(current_player, CHAN_VOICE, gi.soundindex("player/lavadamage.wav"), 1, ATTN_NORM, 0);
 
 			current_player->pain_debounce_time = level.time + 1;
 		}

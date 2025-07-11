@@ -123,7 +123,7 @@ void RedRainThink(edict_t *self)
 					{
 						gi.CreateEffect(NULL, FX_LIGHTNING, CEF_FLAG6,
 								startpos, "vbb", endpos, (byte)RED_RAIN_LIGHTNING_WIDTH, (byte)0);
-						gi.sound(victim,CHAN_WEAPON,gi.soundindex("weapons/Lightning.wav"),1,ATTN_NORM,0);
+						gi.sound(victim,CHAN_WEAPON, gi.soundindex("weapons/Lightning.wav"), 1, ATTN_NORM, 0);
 
 						// Do a nasty looking blast at the impact point
 						gi.CreateEffect(victim, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN | CEF_FLAG7, NULL, "t", diffpos);
@@ -138,7 +138,7 @@ void RedRainThink(edict_t *self)
 					{
 						gi.CreateEffect(NULL, FX_POWER_LIGHTNING, 0,
 								startpos, "vb", endpos, (byte)POWER_RAIN_LIGHTNING_WIDTH);
-						gi.sound(victim,CHAN_WEAPON,gi.soundindex("weapons/LightningPower.wav"),1,ATTN_NORM,0);
+						gi.sound(victim,CHAN_WEAPON, gi.soundindex("weapons/LightningPower.wav"), 1, ATTN_NORM, 0);
 
 						if(!(EntReflecting(victim, true, true)))
 						{
@@ -166,13 +166,13 @@ void RedRainThink(edict_t *self)
 				{
 					gi.CreateEffect(NULL, FX_LIGHTNING, CEF_FLAG6,
 							startpos, "vbb", endpos, (byte)RED_RAIN_LIGHTNING_WIDTH, (byte)0);
-					gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/Lightning.wav"), 2, ATTN_NORM,0);
+					gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/Lightning.wav"), 1, ATTN_NORM,0);
 				}
 				else
 				{
 					gi.CreateEffect(NULL, FX_POWER_LIGHTNING, 0,
 							startpos, "vb", endpos, (byte)POWER_RAIN_LIGHTNING_WIDTH);
-					gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/LightningPower.wav"), 2, ATTN_NORM,0);
+					gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/LightningPower.wav"), 1, ATTN_NORM,0);
 
 					// The lightning does radius damage even if no target.
 					damage = irand(POWER_RAIN_DMG_LIGHTNING_MIN, POWER_RAIN_DMG_LIGHTNING_MAX);
@@ -334,7 +334,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	// Send along the health as a flag, to indicate if powered up.
 	gi.CreateEffect(damagearea, FX_WEAPON_REDRAIN, CEF_BROADCAST|(self->health<<5), org, "");
 
-//	gi.sound(damagearea, CHAN_VOICE, gi.soundindex("weapons/RedRainFall.wav"), 2, ATTN_NORM,0);
+//	gi.sound(damagearea, CHAN_VOICE, gi.soundindex("weapons/RedRainFall.wav"), 1, ATTN_NORM,0);
 	damagearea->s.sound = gi.soundindex("weapons/RedRainFall.wav");
 	damagearea->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 

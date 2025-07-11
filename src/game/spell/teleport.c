@@ -177,7 +177,7 @@ void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	// draw the teleport splash at the teleport source
 	gi.CreateEffect(other, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)other->client->tele_type << 5), NULL, "" );
 	// do the teleport sound
-	gi.sound(other,CHAN_VOICE,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+	gi.sound(other,CHAN_VOICE, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 
 }
 
@@ -233,5 +233,5 @@ void SpellCastTeleport(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3_t A
 	// draw the teleport splash at the teleport source
 	gi.CreateEffect(caster, FX_PLAYER_TELEPORT_OUT, CEF_OWNERS_ORIGIN | ((byte)caster->client->tele_type << 5), NULL, "" );
 	// do the teleport sound
-	gi.sound(caster,CHAN_VOICE,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+	gi.sound(caster,CHAN_VOICE, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 }

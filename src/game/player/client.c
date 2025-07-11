@@ -1581,7 +1581,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 	if((self->health<-40) && !(self->flags & FL_CHICKEN))
 	{
-		gi.sound(self,CHAN_BODY,gi.soundindex("*gib.wav"),1,ATTN_NORM,0);
+		gi.sound(self,CHAN_BODY, gi.soundindex("*gib.wav"), 1, ATTN_NORM, 0);
 
 		player_make_gib(self, attacker);
 
@@ -1624,20 +1624,20 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 			else if ( (self->client->playerinfo.flags & PLAYER_FLAG_SURFSWIM) || (self->waterlevel >= 2) )
 			{
 				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DROWN);
-				gi.sound(self,CHAN_BODY,gi.soundindex("*drowndeath.wav"),1,ATTN_NORM,0);
+				gi.sound(self,CHAN_BODY, gi.soundindex("*drowndeath.wav"), 1, ATTN_NORM, 0);
 			}
 			else if ( !Q_stricmp(inflictor->classname, "plague_mist"))
 			{
 				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_CHOKE);
-				gi.sound(self,CHAN_BODY,gi.soundindex("*chokedeath.wav"),1,ATTN_NORM,0);
+				gi.sound(self,CHAN_BODY, gi.soundindex("*chokedeath.wav"), 1, ATTN_NORM, 0);
 			}
 			else if ( self->fire_damage_time == -1 )
 			{
 				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_B);
 				if (blood_level && (int)(blood_level->value) <= VIOLENCE_BLOOD)	// Don't scream bloody murder in Germany.
-					gi.sound(self,CHAN_BODY,gi.soundindex("*death1.wav"),1,ATTN_NORM,0);
+					gi.sound(self,CHAN_BODY, gi.soundindex("*death1.wav"), 1, ATTN_NORM, 0);
 				else
-					gi.sound(self,CHAN_BODY,gi.soundindex("*firedeath.wav"),1,ATTN_NORM,0);
+					gi.sound(self,CHAN_BODY, gi.soundindex("*firedeath.wav"), 1, ATTN_NORM, 0);
 			}
 			else
 			{	// "Normal" deaths.
@@ -1663,9 +1663,9 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 				}
 
 				if (irand(0,1))
-					gi.sound(self,CHAN_BODY,gi.soundindex("*death1.wav"),1,ATTN_NORM,0);
+					gi.sound(self,CHAN_BODY, gi.soundindex("*death1.wav"), 1, ATTN_NORM, 0);
 				else
-					gi.sound(self,CHAN_BODY,gi.soundindex("*death2.wav"),1,ATTN_NORM,0);
+					gi.sound(self,CHAN_BODY, gi.soundindex("*death2.wav"), 1, ATTN_NORM, 0);
 			}
 
 			// Make sure it doesn't try and finish an animation.
@@ -2339,7 +2339,7 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 	VectorCopy(self->mins, mins);
 	mins[2]=-30.0;
 
-	gi.sound(self,CHAN_BODY,gi.soundindex("misc/fleshbreak.wav"),1,ATTN_NORM,0);
+	gi.sound(self,CHAN_BODY, gi.soundindex("misc/fleshbreak.wav"), 1, ATTN_NORM, 0);
 
 	mag = VectorLength(mins);
 	magb = Clamp(mag, 1.0, 255.0);
@@ -2506,7 +2506,7 @@ respawn(edict_t *self)
 
 		// Do the teleport sound.
 
-		gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+		gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 
 		// Add a teleportation effect.
 
@@ -3179,7 +3179,7 @@ ClientBeginDeathmatch(edict_t *ent)
 	// Do the teleport sound and client effect and announce the player's entry into the
 	// level.
 
-	gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+	gi.sound(ent,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 	gi.CreateEffect(ent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 	G_BroadcastObituary(PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 
@@ -3257,7 +3257,7 @@ ClientBegin(edict_t *ent)
 			// Do the teleport sound and client effect and announce the player's entry into the
 			// level.
 
-			gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+			gi.sound(ent,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 			gi.CreateEffect(ent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
 			G_BroadcastObituary (PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
 		}
@@ -3693,7 +3693,7 @@ ClientDisconnect(edict_t *ent)
 
 	// Do the teleport sound.
 
-	gi.sound(ent,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+	gi.sound(ent,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 
 	// Send teleport effect.
 

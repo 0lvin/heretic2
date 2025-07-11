@@ -363,10 +363,10 @@ void plagueElf_strike (edict_t *self)
 		{
 			if (!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW) || !(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
 			{//it's the hoe or the hook
-				gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACKHIT1], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACKHIT1], 1, ATTN_NORM, 0);
 			}
 			else //it's the hammer or handle
-				gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACKHIT2], 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACKHIT2], 1, ATTN_NORM, 0);
 
 			damage = irand(PLAGUEELF_DMG_MIN, PLAGUEELF_DMG_MAX);
 
@@ -384,7 +384,7 @@ void plagueElf_strike (edict_t *self)
 	else
 	{
 		//Play a swish sound
-		gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACKMISS1], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACKMISS1], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -503,9 +503,9 @@ void plagueElfgrowl (edict_t *self)
 		chance = irand(0, 12);
 		if (chance < 3)
 			return;
-			//gi.sound (self, CHAN_WEAPON, sounds[SND_GASP], 1, ATTN_IDLE, 0);
+			//gi.sound(self, CHAN_WEAPON, sounds[SND_GASP], 1, ATTN_IDLE, 0);
 		else if ( chance < 6)
-			gi.sound (self, CHAN_VOICE, sounds[SND_PANT], 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_VOICE, sounds[SND_PANT], 1, ATTN_IDLE, 0);
 		else if (chance < 9)
 			gi.sound(self, CHAN_VOICE, sounds[SND_MOAN1], 1, ATTN_IDLE, 0);
 		else
@@ -522,7 +522,7 @@ void plagueElfattack(edict_t *self)
 	if (chance < 5)
 	{
 		sound =  irand(SND_ATTACK1, SND_ATTACK2);
-		gi.sound (self, CHAN_VOICE, sounds[sound], 1, ATTN_IDLE, 0);
+		gi.sound(self, CHAN_VOICE, sounds[sound], 1, ATTN_IDLE, 0);
 	}
 }
 

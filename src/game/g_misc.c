@@ -3424,7 +3424,7 @@ void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int 
 		{
 			damage = 255;
 		}
-		gi.sound (self, CHAN_VOICE, gi.soundindex("misc/fleshbreak.wav") , 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_VOICE, gi.soundindex("misc/fleshbreak.wav"), 1, ATTN_NORM, 0);
 	}
 
 	VectorAdd(self->s.origin, *spot, spot2);

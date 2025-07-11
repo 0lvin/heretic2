@@ -155,17 +155,17 @@ void seraph_check_land ( edict_t *self )
 
 void seraph_sound_startle(edict_t *self)
 {
-	gi.sound (self, CHAN_VOICE, sounds[SND_STARTLE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, sounds[SND_STARTLE], 1, ATTN_NORM, 0);
 }
 
 void seraph_sound_slap(edict_t *self)
 {
-	gi.sound (self, CHAN_WEAPON, sounds[SND_SLAP], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_WEAPON, sounds[SND_SLAP], 1, ATTN_NORM, 0);
 }
 
 void seraph_sound_scold(edict_t *self)
 {//no talking!
-	gi.sound (self, CHAN_VOICE, sounds[SND_SCOLD3], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, sounds[SND_SCOLD3], 1, ATTN_NORM, 0);
 }
 
 void seraph_sound_scold2(edict_t *self)
@@ -178,12 +178,12 @@ void seraph_sound_scold2(edict_t *self)
 
 void seraph_sound_yell(edict_t *self)
 {
-	gi.sound (self, CHAN_VOICE, sounds[SND_SCARE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, sounds[SND_SCARE], 1, ATTN_NORM, 0);
 }
 
 void seraph_sound_whip(edict_t *self)
 {
-	gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
 }
 
 //Become startled and look around
@@ -477,20 +477,20 @@ void seraph_strike(edict_t *self, float damage, float a, float b)
 		{
 			//Create a puff effect
 			//gi.CreateEffect(NULL, FX_SPARKS, 0, hitPos, "db", vec3_origin, irand(1,3));
-			gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			//Hurt whatever we were whacking away at
 			T_Damage(victim, self, self, direction, trace.endpos, bloodDir,
 					damage, damage, DAMAGE_EXTRA_BLOOD|DAMAGE_EXTRA_KNOCKBACK,MOD_DIED);
-			gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
 		}
 	}
 	else
 	{
 		//Play swoosh sound?
-		gi.sound (self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_WEAPON, sounds[SND_ATTACK], 1, ATTN_NORM, 0);
 	}
 }
 
@@ -534,7 +534,7 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 		SetAnim(self, SERAPH_ANIM_DEATH1);
 
 		soundID = irand(SND_DEATH1, SND_DEATH4);
-		gi.sound (self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
 
 		return;
 	}
@@ -571,7 +571,7 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 	}
 
 	soundID = irand(SND_DEATH1, SND_DEATH4);
-	gi.sound (self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
 }
 
 //Check to see if the Seraph is already standing, if not, transition into it
@@ -660,7 +660,7 @@ void seraph_pain(edict_t *self, G_Message_t *msg)
 	{
 		soundID = irand(SND_PAIN1, SND_PAIN4);
 
-		gi.sound (self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_BODY, sounds[soundID], 1, ATTN_NORM, 0);
 
 		SetAnim(self, SERAPH_ANIM_PAIN);
 	}

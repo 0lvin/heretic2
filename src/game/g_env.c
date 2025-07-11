@@ -17,7 +17,7 @@ void env_dust_use(edict_t *self, edict_t *other, edict_t *activator)
 	byte	count, magb;
 	float	mag;
 
-	gi.sound (self, CHAN_NO_PHS_ADD+CHAN_VOICE,self->moveinfo.sound_middle, 2, ATTN_NORM, 0);
+	gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,self->moveinfo.sound_middle, 1, ATTN_NORM, 0);
 
 	if(!self->count)
 	{
@@ -61,7 +61,7 @@ void SP_env_dust (edict_t *self)
 
 	self->use = env_dust_use;
 
-	self->moveinfo.sound_middle = gi.soundindex ("world/quakeshort.wav");
+	self->moveinfo.sound_middle = gi.soundindex("world/quakeshort.wav");
 
 	gi.setmodel (self, self->model);
 	gi.linkentity(self);

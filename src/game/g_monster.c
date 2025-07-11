@@ -771,17 +771,17 @@ M_WorldEffects(edict_t *ent)
 		{
 			if (ent->flags & FL_INLAVA)
 			{
-				gi.sound (ent, CHAN_BODY, gi.soundindex("player/inlava.wav"), 1, ATTN_NORM, 0);
+				gi.sound(ent, CHAN_BODY, gi.soundindex("player/inlava.wav"), 1, ATTN_NORM, 0);
 				ent->flags &= ~FL_INLAVA;
 			}
 			else if (ent->flags & FL_INSLIME)
 			{
-				gi.sound (ent, CHAN_BODY, gi.soundindex("player/muckexit.wav"), 1, ATTN_NORM, 0);
+				gi.sound(ent, CHAN_BODY, gi.soundindex("player/muckexit.wav"), 1, ATTN_NORM, 0);
 				ent->flags &= ~FL_INSLIME;
 			}
 			else
 			{
-				gi.sound (ent, CHAN_BODY, gi.soundindex("player/Water Exit.wav"), 1, ATTN_NORM, 0);
+				gi.sound(ent, CHAN_BODY, gi.soundindex("player/Water Exit.wav"), 1, ATTN_NORM, 0);
 			}
 
 			ent->flags &= ~FL_INWATER;

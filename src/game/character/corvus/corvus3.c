@@ -94,9 +94,10 @@ void corvus3_teleportsmalleffect (edict_t *self)
 	gi.CreateEffect(NULL, FX_PICKUP, 0, holdorigin, NULL);
 }
 
-void corvus3_teleporteffect (edict_t *self)
+void
+corvus3_teleporteffect(edict_t *self)
 {
-	gi.sound(self,CHAN_WEAPON,gi.soundindex("weapons/teleport.wav"),1,ATTN_NORM,0);
+	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 	gi.CreateEffect(self, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
 }
 

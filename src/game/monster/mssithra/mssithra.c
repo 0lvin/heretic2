@@ -104,9 +104,9 @@ void mssithra_pain(edict_t *self, G_Message_t *msg)
 	self->pain_debounce_time = level.time + 2;
 
 	if(irand(0,10)<5)
-		gi.sound (self, CHAN_VOICE, Sounds[SND_PAIN1], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_VOICE, Sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	else
-		gi.sound (self, CHAN_VOICE, Sounds[SND_PAIN2], 1, ATTN_NORM, 0);
+		gi.sound(self, CHAN_VOICE, Sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 
 	if (self->flags&FL_INWATER)
 		self->flags |= FL_SWIM;
@@ -147,7 +147,7 @@ void mssithra_death(edict_t *self, G_Message_t *msg)
 
 	self->deadflag = DEAD_DEAD;
 
-	gi.sound (self, CHAN_VOICE, Sounds[SND_DIE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, Sounds[SND_DIE], 1, ATTN_NORM, 0);
 	if (self->flags&FL_INWATER)
 		self->flags |= FL_SWIM;
 	else
@@ -262,7 +262,7 @@ void mssithraSwipe (edict_t *self)
 	{
 		if (infront(self, self->enemy))
 		{
-			gi.sound (self, CHAN_WEAPON, Sounds[SND_SWIPEHIT], 1, ATTN_NORM, 0);
+			gi.sound(self, CHAN_WEAPON, Sounds[SND_SWIPEHIT], 1, ATTN_NORM, 0);
 			VectorSet(off, 35.0, 0.0, 32.0);
 			VectorGetOffsetOrigin(off, self->s.origin, self->s.angles[YAW], org);
 			VectorCopy(self->s.angles, ang);
@@ -282,7 +282,7 @@ void mssithraSwipe (edict_t *self)
 			return;
 		}
 	}
-	gi.sound (self, CHAN_WEAPON, Sounds[SND_SWIPE], 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_WEAPON, Sounds[SND_SWIPE], 1, ATTN_NORM, 0);
 }
 
 void mssithra_missile_explode(edict_t *self)
@@ -652,18 +652,18 @@ void MssithraStaticsInit()
 	resInfo.animations = animations;
 	resInfo.modelIndex = gi.modelindex("models/monsters/mutantsithra/tris.fm");
 
-	Sounds[SND_PAIN1]=gi.soundindex("monsters/mssithra/pain1.wav");
-	Sounds[SND_PAIN2]=gi.soundindex("monsters/mssithra/pain2.wav");
-	Sounds[SND_DIE]=gi.soundindex("monsters/mssithra/death1.wav");
-	Sounds[SND_SWIPE] = gi.soundindex ("monsters/mssithra/swipe.wav");
-	Sounds[SND_SWIPEHIT]=gi.soundindex("monsters/mssithra/swipehit.wav");
-	Sounds[SND_ARROW]=gi.soundindex("weapons/RedRainPowerFire.wav");
-	Sounds[SND_AEXPLODE]=gi.soundindex("weapons/FlyingFistImpact.wav");
-	Sounds[SND_GROWL1]=gi.soundindex("monsters/mssithra/growl1.wav");
-	Sounds[SND_GROWL2] = gi.soundindex ("monsters/mssithra/growl2.wav");
-	Sounds[SND_GROWL3] = gi.soundindex ("monsters/mssithra/growl3.wav");
-	Sounds[SND_ROAR]=gi.soundindex("monsters/mssithra/roar.wav");
-	Sounds[SND_INWALL]=gi.soundindex("weapons/staffhitwall.wav");
+	Sounds[SND_PAIN1] = gi.soundindex("monsters/mssithra/pain1.wav");
+	Sounds[SND_PAIN2] = gi.soundindex("monsters/mssithra/pain2.wav");
+	Sounds[SND_DIE] = gi.soundindex("monsters/mssithra/death1.wav");
+	Sounds[SND_SWIPE] = gi.soundindex("monsters/mssithra/swipe.wav");
+	Sounds[SND_SWIPEHIT] = gi.soundindex("monsters/mssithra/swipehit.wav");
+	Sounds[SND_ARROW] = gi.soundindex("weapons/RedRainPowerFire.wav");
+	Sounds[SND_AEXPLODE] = gi.soundindex("weapons/FlyingFistImpact.wav");
+	Sounds[SND_GROWL1] = gi.soundindex("monsters/mssithra/growl1.wav");
+	Sounds[SND_GROWL2] = gi.soundindex("monsters/mssithra/growl2.wav");
+	Sounds[SND_GROWL3] = gi.soundindex("monsters/mssithra/growl3.wav");
+	Sounds[SND_ROAR] = gi.soundindex("monsters/mssithra/roar.wav");
+	Sounds[SND_INWALL] = gi.soundindex("weapons/staffhitwall.wav");
 
 	resInfo.numSounds = NUM_SOUNDS;
 	resInfo.sounds = Sounds;

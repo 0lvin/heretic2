@@ -831,14 +831,16 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 							normal);
 
 			if (dflags & DAMAGE_SPELL)
-				gi.sound(targ,CHAN_WEAPON,gi.soundindex("weapons/spellric.wav"),2,ATTN_NORM,0);
+			{
+				gi.sound(targ, CHAN_WEAPON, gi.soundindex("weapons/spellric.wav"), 1, ATTN_NORM, 0);
+			}
 			else
 			{
 				// don't always make sound - being attacked by rats makes this go off incesantly
 				if (!(irand(0,2)))
 				{
 					sprintf(armor_sound, "weapons/armorric%d.wav",irand(1,3));
-					gi.sound(targ,CHAN_WEAPON,gi.soundindex(armor_sound),2,ATTN_NORM,0);
+					gi.sound(targ, CHAN_WEAPON, gi.soundindex(armor_sound), 1, ATTN_NORM, 0);
 				}
 			}
 

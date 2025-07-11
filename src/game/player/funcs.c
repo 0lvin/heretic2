@@ -971,7 +971,7 @@ void PlayerChickenDeath(edict_t *self)
 {
 	//FIXME:
 
-	//gi.sound (self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
+	//gi.sound(self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->client->playerinfo.deadflag = DEAD_DEAD;
 	gi.CreateEffect(self, FX_CHICKEN_EXPLODE, CEF_OWNERS_ORIGIN, NULL, "" );
@@ -1096,17 +1096,17 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 		{
 			// Sound for hitting.
 			if (irand(0,1))
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex ("monsters/superchicken/bite1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex ("monsters/superchicken/bite2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite2.wav"), 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			// Sound for hitting.
 			if (irand(0,1))
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex ("monsters/chicken/bite1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/bite1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex ("monsters/chicken/bite2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/bite2.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 	else
@@ -1114,16 +1114,16 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 		if (playerinfo->edictflags & FL_SUPER_CHICKEN)
 		{
 			if (irand(0,1))
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex ("monsters/superchicken/peck1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex ("monsters/superchicken/peck2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck2.wav"), 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			if (irand(0,1))
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex ("monsters/chicken/peck1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/peck1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex ("monsters/chicken/peck2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/peck2.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 }

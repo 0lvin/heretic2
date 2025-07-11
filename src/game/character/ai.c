@@ -27,7 +27,7 @@ static	char *c_wavname[NUM_C_SOUNDS] =
 
 void ai_c_wav (edict_t *self,float wav_num)
 {
-	gi.sound (self, CHAN_WEAPON, gi.soundindex(c_wavname[(int)wav_num]), 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_WEAPON, gi.soundindex(c_wavname[(int)wav_num]), 1, ATTN_NORM, 0);
 }
 
 
