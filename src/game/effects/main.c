@@ -12,13 +12,8 @@
 #include "client_entities.h"
 #include "particle.h"
 #include "ce_dlight.h"
-#include "../common/singlylinkedlist.h"
-#include "ce_message.h"
-#include "../common/angles.h"
 #include "../common/skeletons.h"
-#include "../header/g_physics.h"
 #include "../header/g_playstats.h"
-#include "../../common/header/common.h"
 #include "../header/game.h"
 
 
@@ -49,17 +44,8 @@ int	numrenderedparticles;
 
 qboolean fx_FreezeWorld = false;
 
-void Init();
-void Clear();
-void ShutDown();
-void RegisterSounds();
-void RegisterModels(void); // jmarshall: function prototype misamtch
-void AddEffects(qboolean freeze);
-static void PostRenderUpdate();
-struct level_map_info_s *GetLMI();
-int GetLMIMax();
-
-static void RemoveEffectsFromCent(centity_t *cent)
+static void
+RemoveEffectsFromCent(centity_t *cent)
 {
 	if(cent->effects)
 	{
@@ -67,11 +53,50 @@ static void RemoveEffectsFromCent(centity_t *cent)
 	}
 }
 
-extern void (*cg_classStaticsInits[CE_NUM_CLASSIDS])();
-void InitEntityMngr();
-void InitFMNodeInfoMngr();
+static void
+Clear(void)
+{
+	centity_t *owner;
+	int i;
 
-void Init()
+	if(clientEnts)
+	{
+		RemoveEffectList(&clientEnts);
+	}
+
+	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)
+	{
+		if(owner->effects)
+		{
+			RemoveOwnedEffectList(owner);
+		}
+
+		if (owner->current.clientEffects.buf)
+		{
+			fxi.TagFree(owner->current.clientEffects.buf);
+			owner->current.clientEffects.buf = NULL;
+		}
+	}
+
+	fxi.CL_ClearLightStyles();
+
+	memset(&CircularList[0],0,sizeof(CircularList));
+	if (r_detail && r_detail->value == DETAIL_LOW)
+	{
+		total_circle_entries = 30;
+	}
+	else if (r_detail && r_detail->value == DETAIL_NORMAL)
+	{
+		total_circle_entries = 50;
+	}
+	else
+	{
+		total_circle_entries = MAX_ENTRIES_IN_CIRCLE_LIST;
+	}
+}
+
+static void
+Init(void)
 {
 	int i;
 
@@ -110,52 +135,9 @@ void Init()
 	Clear();
 }
 
-void Clear()
+static void
+ShutDown(void)
 {
-	int i;
-	centity_t *owner;
-
-	if(clientEnts)
-	{
-		RemoveEffectList(&clientEnts);
-	}
-
-	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)
-	{
-		if(owner->effects)
-		{
-			RemoveOwnedEffectList(owner);
-		}
-
-		if(owner->current.clientEffects.buf)
-		{
-			fxi.TagFree(owner->current.clientEffects.buf);
-			owner->current.clientEffects.buf = 0;
-		}
-	}
-
-	fxi.CL_ClearLightStyles();
-
-	memset(&CircularList[0],0,sizeof(CircularList));
-	if (r_detail && r_detail->value == DETAIL_LOW)
-	{
-		total_circle_entries = 30;
-	}
-	else if (r_detail && r_detail->value == DETAIL_NORMAL)
-	{
-		total_circle_entries = 50;
-	}
-	else
-	{
-		total_circle_entries = MAX_ENTRIES_IN_CIRCLE_LIST;
-	}
-}
-
-void ShutDown()
-{
-	void ReleaseEntityMngr();
-	void ReleaseFMNodeInfoMngr();
-
 	Clear();
 
 	ReleaseParticleMngrMngr();

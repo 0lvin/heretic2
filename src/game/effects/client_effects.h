@@ -276,11 +276,16 @@ void PreCacheTorn(void);
 qboolean Vec3IsZeroEpsilon(vec3_t in);
 
 void *E_Load(void);
-void E_Freelib();
+void E_Freelib(void);
 
 void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir);
 void MSG_ReadYawPitch(sizebuf_t *sb, vec3_t vector);
 void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t vector);
+
+void RegisterSounds();
+void RegisterModels(void); // jmarshall: function prototype misamtch
+struct level_map_info_s *GetLMI();
+int GetLMIMax();
 
 #endif
 
