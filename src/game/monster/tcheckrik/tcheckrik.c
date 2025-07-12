@@ -38,7 +38,6 @@
 #include "tcheckrik_anim.h"
 #include "../../header/g_hitlocation.h"
 #include "../../header/g_misc.h"
-#include "../../common/angles.h"
 #include "../../header/g_hitlocation.h"
 #include "../../character/ai.h"
 

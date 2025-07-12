@@ -387,7 +387,7 @@ void ssithraCheckRipple (edict_t *self)
 
 	AngleVectors(self->s.angles,dir,NULL,NULL);
 	VectorScale(dir,200,dir);
-	angle_byte = Q_ftol(((self->s.angles[YAW] + DEGREE_180)/360.0) * 255.0);
+	angle_byte = Q_ftol(((self->s.angles[YAW] + 180.0F)/360.0) * 255.0);
 
 	gi.CreateEffect(NULL, FX_WATER_WAKE, 0,	trace.endpos, "sbv", self->s.number,
 		angle_byte, dir);

@@ -21,7 +21,6 @@
 #include "spreader_anim.h"
 #include "spreadermist.h"
 #include "../../common/matrix.h"
-#include "../../common/angles.h"
 #include "../../header/g_misc.h"
 #include "../../header/g_hitlocation.h"
 #include "../stats/stats.h"

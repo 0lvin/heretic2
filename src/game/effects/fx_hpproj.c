@@ -10,6 +10,7 @@
 #include "client_entities.h"
 #include "particle.h"
 #include "../common/resourcemanager.h"
+#include "../common/angles.h"
 #include "../common/fx.h"
 #include "ce_dlight.h"
 #include "../common/h2rand.h"

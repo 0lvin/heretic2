@@ -6,7 +6,6 @@
 //
 
 #include "../../common/header/common.h"
-#include "../common/angles.h"
 #include "client_entities.h"
 #include "client_effects.h"
 #include "../common/effectflags.h"

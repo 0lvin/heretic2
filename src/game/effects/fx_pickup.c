@@ -14,7 +14,6 @@
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "../common/angles.h"
 
 #define	NUM_PICKUP_MODELS	1
 static struct model_s *pickup_models[NUM_PICKUP_MODELS];

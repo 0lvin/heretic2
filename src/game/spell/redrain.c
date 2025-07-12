@@ -5,7 +5,6 @@
 
 #include "../header/local.h"
 #include "../common/fx.h"
-#include "../common/angles.h"
 #include "../common/matrix.h"
 #include "../header/g_volume_effect.h"
 #include "../header/utilities.h"

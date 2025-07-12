@@ -135,9 +135,9 @@ void VectoAngles(vec3_t vec, vec3_t angles) {
 	{
 		VectorNormalize2(vec, v3);
 		AnglesFromDir(v3, angles);
-		angles[0] = angles[0] / ANGLE_1;
-		angles[1] = angles[1] / ANGLE_1;
-		angles[2] = angles[2] / ANGLE_1;
+		angles[0] = angles[0] * RAD_TO_ANGLE;
+		angles[1] = angles[1] * RAD_TO_ANGLE;
+		angles[2] = angles[2] * RAD_TO_ANGLE;
 	}
 	else
 	{

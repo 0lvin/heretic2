@@ -11,7 +11,6 @@
 #include "../common/fx.h"
 #include "../common/matrix.h"
 #include "../header/g_skeletons.h"
-#include "../common/angles.h"
 
 void SpellCastPowerup(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);
 void SpellCastBlueRing(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimDir, float value);

@@ -14,7 +14,6 @@
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "../common/angles.h"
 #include "q_sprite.h"
 #include "ce_dlight.h"
 #include "../header/g_playstats.h"

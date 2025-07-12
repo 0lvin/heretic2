@@ -39,7 +39,6 @@
 #include "../player/library/p_anims.h"
 #include "../common/fx.h"
 #include "../common/matrix.h"
-#include "../common/angles.h"
 #include "../common/reference.h"
 #include "../common/h2rand.h"
 

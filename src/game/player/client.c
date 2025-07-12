@@ -4194,8 +4194,9 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 		TargetEnt=FindNearestVisibleActorInFrustum(ent,
 												   ent->client->aimangles,
-												   0.0,500.0,
-												   35*ANGLE_TO_RAD,160*ANGLE_TO_RAD,
+												   0.0, 500.0,
+												   35 * ANGLE_TO_RAD,
+												   160 * ANGLE_TO_RAD,
 												   SVF_MONSTER,
 												   LOSOrigin,
 												   NULL,NULL);

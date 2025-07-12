@@ -6,7 +6,6 @@
 #define PLAYER_H
 
 #include "p_types.h"
-#include "../../common/angles.h"
 #include "../../common/vector.h"
 
 // **************

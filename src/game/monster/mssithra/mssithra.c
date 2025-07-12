@@ -266,7 +266,7 @@ void mssithraSwipe (edict_t *self)
 			VectorSet(off, 35.0, 0.0, 32.0);
 			VectorGetOffsetOrigin(off, self->s.origin, self->s.angles[YAW], org);
 			VectorCopy(self->s.angles, ang);
-			ang[YAW] += DEGREE_90;
+			ang[YAW] += 90.0F;
 			AngleVectors(ang, dir, NULL, NULL);
 			T_Damage (self->enemy, self, self, dir, org, vec3_origin,
 					MSSITHRA_DMG_SWIPE, 0, DAMAGE_DISMEMBER,MOD_DIED);

@@ -9,6 +9,7 @@
 #include "ce_defaultmessagehandler.h"
 #include "particle.h"
 #include "../common/resourcemanager.h"
+#include "../common/angles.h"
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "motion.h"

@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../../header/utilities.h"
 #include "../../header/g_defaultmessagehandler.h"
 #include "../../header/g_monster.h"
+#include "../../common/angles.h"
 #include "../../common/fx.h"
 #include "../../common/h2rand.h"
 #include "../../header/buoy.h"
@@ -391,7 +392,7 @@ void fish_think (edict_t *self)
 			{
 				AngleVectors(self->s.angles,dir,NULL,NULL);
 				VectorScale(dir,200,dir);
-				angle_byte = Q_ftol(((self->s.angles[YAW] + DEGREE_180)/360.0) * 255.0);
+				angle_byte = Q_ftol(((self->s.angles[YAW] + 180.0F)/360.0) * 255.0);
 
 				// no ripples while in cinematics
 				if (!sv_cinematicfreeze->value)

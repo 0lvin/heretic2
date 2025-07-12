@@ -13,7 +13,6 @@
 #include "../common/resourcemanager.h"
 #include "../common/fx.h"
 #include "utilities.h"
-#include "../common/angles.h"
 #include "../common/h2rand.h"
 
 typedef struct FXAnimModel

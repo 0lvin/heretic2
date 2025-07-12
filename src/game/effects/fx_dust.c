@@ -5,7 +5,6 @@
 // Copyright 1998 Raven Software
 //
 #include "../../common/header/common.h"
-#include "../common/angles.h"
 #include "client_entities.h"
 #include "client_effects.h"
 #include "ce_defaultmessagehandler.h"

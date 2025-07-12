@@ -16,6 +16,7 @@
 #include "player/library/p_main.h"
 #include "monster/misc/player.h"
 #include "header/p_funcs.h"
+#include "common/angles.h"
 #include "common/cl_strings.h"
 
 // Set up those shrines that are randomly selectable.

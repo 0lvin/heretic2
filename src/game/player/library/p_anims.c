@@ -13,7 +13,6 @@
 #include "p_anims.h"
 #include "p_main.h"
 #include "../../header/g_skeletons.h"
-#include "../../common/angles.h"
 #include "../../common/fx.h"
 #include "../../common/h2rand.h"
 #include "../../../common/header/common.h"

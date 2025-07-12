@@ -36,7 +36,6 @@
 #include "../header/p_funcs.h"
 #include "../player/library/p_main.h"
 #include "../player/library/p_weapon.h"
-#include "../common/angles.h"
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "../header/utilities.h"
@@ -862,7 +861,7 @@ P_WorldEffects(void)
 
 			Origin[2] += current_player->client->playerinfo.waterheight;
 
-			angle_byte = Q_ftol(((Angles[YAW] + DEGREE_180)/360.0) * 255.0);
+			angle_byte = Q_ftol(((Angles[YAW] + 180.0F)/360.0) * 255.0);
 
 			gi.CreateEffect(NULL,
 							FX_WATER_WAKE,

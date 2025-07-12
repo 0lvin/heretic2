@@ -39,7 +39,6 @@
 #include "../../header/g_hitlocation.h"
 #include "../../header/g_misc.h"
 #include "../../character/ai.h"
-#include "../../common/angles.h"
 #include "../../player/library/p_anim_branch.h"
 #include "../../player/library/p_anims.h"
 #include "../stats/stats.h"
@@ -474,7 +473,7 @@ void assassindagger (edict_t *self, float right_ofs)
 			VectorSet(off, 35.0, 0.0, 32.0);
 			VectorGetOffsetOrigin(off, self->s.origin, self->s.angles[YAW], org);
 			VectorCopy(self->s.angles, ang);
-			ang[YAW] += DEGREE_90;
+			ang[YAW] += 90.0F;
 			AngleVectors(ang, dir, NULL, NULL);
 			//4 to 8
 			damage = irand(ASSASSIN_MIN_DAMAGE, ASSASSIN_MAX_DAMAGE);

@@ -8,6 +8,7 @@
 #include "client_entities.h"
 #include "particle.h"
 #include "../common/resourcemanager.h"
+#include "../common/angles.h"
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "string.h"

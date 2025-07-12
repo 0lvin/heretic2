@@ -337,7 +337,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	// Draw a circle of expanding lines.
 	curang = 0;
-	degreeinc = (360.0*ANGLE_TO_RAD)/(float)NUM_LIGHTNING_RINGBITS;
+	degreeinc = (360.0 * ANGLE_TO_RAD) / (float)NUM_LIGHTNING_RINGBITS;
 	VectorSet(lastvel, LIGHTNING_RING_VEL, 0.0, 0.0);
 	VectorSet(upvel, 0, 0, 32.0);
 	for(i = 0; i < NUM_LIGHTNING_RINGBITS; i++)

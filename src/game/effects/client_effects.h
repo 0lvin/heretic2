@@ -6,7 +6,6 @@
 #define CLIENT_EFFECTS_H
 
 #include "../../common/header/common.h"
-#include "../common/angles.h"
 #include "../common/vector.h"
 #include "../../client/header/client.h"
 #include "../header/client_effects.h"

@@ -24,7 +24,6 @@
 #include "mother.h"
 #include "mother_anim.h"
 #include "../../header/g_misc.h"
-#include "../../common/angles.h"
 #include "../../character/ai.h"
 #include "../stats/stats.h"
 

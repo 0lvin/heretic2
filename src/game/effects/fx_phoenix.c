@@ -10,7 +10,6 @@
 #include "particle.h"
 #include "../common/resourcemanager.h"
 #include "../common/fx.h"
-#include "../common/angles.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
 #include "motion.h"

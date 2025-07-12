@@ -12,7 +12,6 @@
 #include "../common/resourcemanager.h"
 #include "../common/fx.h"
 #include "ce_dlight.h"
-#include "../common/angles.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
 #include "q_sprite.h"

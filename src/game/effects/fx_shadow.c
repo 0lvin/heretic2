@@ -11,7 +11,6 @@
 #include "particle.h"
 #include "../common/resourcemanager.h"
 #include "../common/fx.h"
-#include "../common/angles.h"
 #include "utilities.h"
 #include "../common/matrix.h"
 #include "../common/reference.h"

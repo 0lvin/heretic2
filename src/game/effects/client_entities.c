@@ -230,11 +230,11 @@ void PrepAddEffectsToView()
 
 	if(refDef->fov_x > refDef->fov_y)
 	{
-		viewFOV = cos(refDef->fov_x*0.5*ANGLE_TO_RAD*1.2);
+		viewFOV = cos(refDef->fov_x * 0.5 * ANGLE_TO_RAD * 1.2);
 	}
 	else
 	{
-		viewFOV = cos(refDef->fov_y*0.5*ANGLE_TO_RAD*1.2);
+		viewFOV = cos(refDef->fov_y * 0.5 * ANGLE_TO_RAD * 1.2);
 	}
 
 	AngleVectors (refDef->viewangles, viewDir, NULL, NULL);

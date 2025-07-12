@@ -8,7 +8,6 @@
 
 #include "../header/local.h"
 #include "../common/fx.h"
-#include "../common/angles.h"
 #include "../header/utilities.h"
 #include "../common/h2rand.h"
 #include "../header/g_teleport.h"

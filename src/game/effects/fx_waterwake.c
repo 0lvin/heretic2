@@ -11,7 +11,6 @@
 #include "particle.h"
 #include "../common/resourcemanager.h"
 #include "../common/fx.h"
-#include "../common/angles.h"
 #include "../header/g_playstats.h"
 #include "../common/h2rand.h"
 
