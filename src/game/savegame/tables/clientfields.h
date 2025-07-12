@@ -27,6 +27,7 @@
  */
 
 {"newweapon", CLOFS(playerinfo.pers.newweapon), F_ITEM},
+{"owned_sphere", CLOFS(owned_sphere), F_EDICT},
 {"pers.weapon", CLOFS(playerinfo.pers.weapon), F_ITEM},
 {"pers.lastweapon", CLOFS(playerinfo.pers.lastweapon), F_ITEM},
 {"", CLOFS(playerinfo.pers.defence), F_ITEM},

@@ -70,15 +70,8 @@
 #include "../../common/header/common.h" // YQ2ARCH
 #include "../header/local.h"
 #include "savegame.h"
-#include "../header/g_skeletons.h"
-#include "../header/g_physics.h"
 #include "../header/g_playstats.h"
 #include "../header/utilities.h"
-#include "../header/g_hitlocation.h"
-#include "../player/library/p_anims.h"
-#include "../effects/client_effects.h"
-#include "../common/arrayed_list.h"
-#include "../common/message.h"
 #include "../common/fx.h"
 
 /*
@@ -214,58 +207,14 @@ void SaveScripts(FILE* FH, qboolean DoGlobals);
 // some of these, and if one were accidentally present twice
 // it would double swizzle (fuck) the pointer.
 
-/*
- * Fields to be saved (used in g_spawn.c)
- */
-static field_t		savefields[] =
-{
-	{"", FOFS(classname), F_LSTRING},
-	{"", FOFS(target), F_LSTRING},
-	{"", FOFS(target2), F_LSTRING},
-	{"", FOFS(targetname), F_LSTRING},
-	{"", FOFS(scripttarget), F_LSTRING},
-	{"", FOFS(killtarget), F_LSTRING},
-	{"", FOFS(team), F_LSTRING},
-	{"", FOFS(pathtarget), F_LSTRING},
-	{"", FOFS(deathtarget), F_LSTRING},
-	{"", FOFS(combattarget), F_LSTRING},
-	{"", FOFS(model), F_LSTRING},
-	{"", FOFS(map), F_LSTRING},
-	{"", FOFS(message), F_LSTRING},
-	{"", FOFS(client), F_CLIENT},
-	{"", FOFS(item), F_ITEM},
-	{"", FOFS(goalentity), F_EDICT},
-	{"", FOFS(movetarget), F_EDICT},
-	{"", FOFS(enemy), F_EDICT},
-	{"", FOFS(oldenemy), F_EDICT},
-	{"", FOFS(activator), F_EDICT},
-	{"", FOFS(groundentity), F_EDICT},
-	{"", FOFS(teamchain), F_EDICT},
-	{"", FOFS(teammaster), F_EDICT},
-	{"", FOFS(owner), F_EDICT},
-	{"", FOFS(mynoise), F_EDICT},
-	{"", FOFS(mynoise2), F_EDICT},
-	{"", FOFS(target_ent), F_EDICT},
-	{"", FOFS(chain), F_EDICT},
-	{"", FOFS(blockingEntity), F_EDICT},
-	{"", FOFS(last_buoyed_enemy), F_EDICT},
-	{"", FOFS(placeholder), F_EDICT},
-	{"", FOFS(fire_damage_enemy), F_EDICT},
-
-	{NULL, 0, F_INT}
-};
-
-
-
 trig_message_t	game_msgtxt[MAX_MESSAGESTRINGS];
-unsigned		*game_msgbuf;
-
+unsigned *game_msgbuf;
 
 static int
 LoadTextFile(char *name, char **addr)
 {
-	int		length;
-	char	*buffer = NULL;
+	int length;
+	char *buffer = NULL;
 
 	length = gi.LoadFile(name, (void **)&buffer);
 	if(length <= 0)
@@ -281,10 +230,11 @@ LoadTextFile(char *name, char **addr)
 	return(length + 1);
 }
 
-static void Load_FileStrings(char *buffer, trig_message_t *msgtxt, int length)
+static void
+Load_FileStrings(char *buffer, trig_message_t *msgtxt, int length)
 {
-	char	*p, *startp,*return_p;
-	int		i;
+	char *p, *startp,*return_p;
+	int i;
 
 	startp = buffer;
 	p = 0;
@@ -328,18 +278,18 @@ static void Load_FileStrings(char *buffer, trig_message_t *msgtxt, int length)
 	}
 }
 
-static void Load_Strings(void)
+static void
+Load_Strings(void)
 {
-	cvar_t	*gamemsg_name;
-	char	*buffer;
-	int		length;
+	cvar_t *gamemsg_name;
+	char *buffer;
+	int length;
 
 	gamemsg_name = gi.cvar("file_gamemsg", "gamemsg.txt", 1);
 	length = LoadTextFile (gamemsg_name->string, &buffer);
 	game_msgbuf = (unsigned *) buffer;
 	Load_FileStrings(buffer, game_msgtxt, length);
 }
-
 
 /*
  * This will be called when the dll is first loaded,
@@ -486,6 +436,7 @@ InitGame(void)
 
 	// Server side only elements.
 
+	/* items */
 	InitItems();
 
 	Com_sprintf(game.helpmessage1, sizeof(game.helpmessage1), "");
@@ -999,7 +950,7 @@ WriteClient(FILE *f, gclient_t *client)
  * Read the client struct from a file
  */
 static void
-ReadClient(FILE *f, gclient_t *client)
+ReadClient(FILE *f, gclient_t *client, short save_ver)
 {
 	field_t *field;
 
@@ -1011,7 +962,15 @@ ReadClient(FILE *f, gclient_t *client)
 
 	for (field = clientfields; field->name; field++)
 	{
-		ReadField(f, field, (byte *)client);
+		if (field->save_ver <= save_ver)
+		{
+			ReadField(f, field, (byte *)client);
+		}
+	}
+
+	if (save_ver < 3)
+	{
+		InitClientResp(client);
 	}
 }
 
@@ -1030,12 +989,15 @@ ReadClient(FILE *f, gclient_t *client)
 void
 WriteGame(const char *filename, qboolean autosave)
 {
+	savegameHeader_t sv;
 	FILE *f;
 	int i;
-	char	str[16];
 	PerEffectsBuffer_t	*peffect;
 
-	SaveClientData();
+	if (!autosave)
+	{
+		SaveClientData();
+	}
 
 	f = Q_fopen(filename, "wb");
 
@@ -1044,9 +1006,15 @@ WriteGame(const char *filename, qboolean autosave)
 		gi.error("%s: Couldn't open %s", __func__, filename);
 	}
 
-	memset(str, 0, sizeof(str));
-	strcpy(str, __DATE__);
-	fwrite(str, sizeof(str), 1, f);
+	/* Savegame identification */
+	memset(&sv, 0, sizeof(sv));
+
+	Q_strlcpy(sv.ver, SAVEGAMEVER, sizeof(sv.ver) - 1);
+	Q_strlcpy(sv.game, GAMEVERSION, sizeof(sv.game) - 1);
+	Q_strlcpy(sv.os, YQ2OSTYPE, sizeof(sv.os) - 1);
+	Q_strlcpy(sv.arch, YQ2ARCH, sizeof(sv.arch) - 1);
+
+	fwrite(&sv, sizeof(sv), 1, f);
 
 	game.autosaved = autosave;
 	fwrite(&game, sizeof(game), 1, f);
@@ -1092,10 +1060,13 @@ WriteGame(const char *filename, qboolean autosave)
 void
 ReadGame(const char *filename)
 {
+	savegameHeader_t sv;
 	FILE *f;
 	int i;
-	char	str[16];
 
+	short save_ver = 0;
+
+	gi.FreeTags(TAG_GAME);
 
 	f = Q_fopen(filename, "rb");
 
@@ -1104,22 +1075,96 @@ ReadGame(const char *filename)
 		gi.error("%s: Couldn't open %s", __func__, filename);
 	}
 
-	if (fread(str, sizeof(str), 1, f) != 1)
+	/* Sanity checks */
+	if (fread(&sv, sizeof(sv), 1, f) != 1)
 	{
 		fclose(f);
 		gi.error("%s: can't read save file", __func__);
 	}
 
-	if (strcmp (str, __DATE__))
+	static const struct {
+		const char* verstr;
+		int vernum;
+	} version_mappings[] = {
+		{"YQ2-1", 1},
+		{"YQ2-2", 2},
+		{"YQ2-3", 3},
+		{"YQ2-4", 4},
+		{"YQ2-5", 5},
+		{"YQ2-6", 6},
+	};
+
+	for (i=0; i < sizeof(version_mappings)/sizeof(version_mappings[0]); ++i)
 	{
-		fclose (f);
-		gi.error ("Savegame from an older version.\n");
-		return;
+		if (strcmp(version_mappings[i].verstr, sv.ver) == 0)
+		{
+			save_ver = version_mappings[i].vernum;
+			break;
+		}
 	}
 
-	gi.FreeTags (TAG_GAME);
+	if (save_ver == 0) // not found in mappings table
+	{
+		fclose(f);
+		gi.error("Savegame from an incompatible version.\n");
+	}
+	else if (save_ver == 1)
+	{
+		if (strcmp(sv.game, GAMEVERSION) != 0)
+		{
+			fclose(f);
+			gi.error("Savegame from another game.so.\n");
+		}
+		else if (strcmp(sv.os, OSTYPE_1) != 0)
+		{
+			fclose(f);
+			gi.error("Savegame from another os.\n");
+		}
 
-	g_edicts = (edict_t *) gi.TagMalloc (game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
+#ifdef _WIN32
+		/* Windows was forced to i386 */
+		if (strcmp(sv.arch, "i386") != 0)
+		{
+			fclose(f);
+			gi.error("Savegame from another architecture.\n");
+		}
+#else
+		if (strcmp(sv.arch, ARCH_1) != 0)
+		{
+			fclose(f);
+			gi.error("Savegame from another architecture.\n");
+		}
+#endif
+	}
+	else // all newer savegame versions
+	{
+		if (strcmp(sv.game, GAMEVERSION) != 0)
+		{
+			fclose(f);
+			gi.error("Savegame from another game.so.\n");
+		}
+		else if (strcmp(sv.os, YQ2OSTYPE) != 0)
+		{
+			fclose(f);
+			gi.error("Savegame from another os.\n");
+		}
+		else if (strcmp(sv.arch, YQ2ARCH) != 0)
+		{
+#if defined(_WIN32) && (defined(__i386__) || defined(_M_IX86))
+			// before savegame version "YQ2-4" (and after version 1),
+			// the official Win32 binaries accidentally had the YQ2ARCH "AMD64"
+			// instead of "i386" set due to a bug in the Makefile.
+			// This quirk allows loading those savegames anyway
+			if (save_ver >= 4 || strcmp(sv.arch, "AMD64") != 0)
+#endif
+			{
+				fclose(f);
+				gi.error("Savegame from another architecture.\n");
+			}
+		}
+	}
+
+	g_edicts = gi.TagMalloc(game.maxentities * sizeof(g_edicts[0]), TAG_GAME);
 	globals.edicts = g_edicts;
 
 	if (fread(&game, sizeof(game), 1, f) != 1)
@@ -1133,7 +1178,7 @@ ReadGame(const char *filename)
 
 	for (i = 0; i < game.maxclients; i++)
 	{
-		ReadClient(f, &game.clients[i]);
+		ReadClient(f, &game.clients[i], save_ver);
 	}
 
 	LoadScripts(f, true);
@@ -1158,7 +1203,7 @@ WriteEdict(FILE *f, edict_t *ent)
 	temp = *ent;
 
 	/* change the pointers to lengths or indexes */
-	for (field = savefields; field->name; field++)
+	for (field = fields; field->name; field++)
 	{
 		WriteField1(f, field, (byte *)&temp);
 	}
@@ -1167,7 +1212,7 @@ WriteEdict(FILE *f, edict_t *ent)
 	fwrite(&temp, sizeof(temp), 1, f);
 
 	/* now write any allocated data following the edict */
-	for (field = savefields; field->name; field++)
+	for (field = fields; field->name; field++)
 	{
 		WriteField2(f, field, (byte *)ent);
 	}
@@ -1183,18 +1228,7 @@ WriteLevelLocals(FILE *f)
 {
 	field_t *field;
 	level_locals_t temp;
-	cvar_t *r_farclipdist;
-	cvar_t *r_fog;
-	cvar_t *r_fog_density;
-	int			i;
-
-	// set up some console vars as level save variables
-	r_farclipdist = gi.cvar("r_farclipdist", FAR_CLIP_DIST, 0);
-	level.far_clip_dist_f = r_farclipdist->value;
-	r_fog = gi.cvar("r_fog", "0", 0);
-	level.fog = r_fog->value;
-	r_fog_density = gi.cvar("r_fog_density", "0", 0);
-	level.fog_density = r_fog_density->value;
+	int i;
 
 	/* all of the ints, floats, and vectors stay as they are */
 	temp = level;
@@ -1244,7 +1278,6 @@ WriteLevel(const char *filename)
 	int i;
 	edict_t *ent;
 	FILE *f;
-	void	*base;
 	PerEffectsBuffer_t	*peffect;
 
 	f = Q_fopen(filename, "wb");
@@ -1258,10 +1291,6 @@ WriteLevel(const char *filename)
 	i = sizeof(edict_t);
 	fwrite(&i, sizeof(i), 1, f);
 
-	// write out a function pointer for checking
-	base = (void *)InitGame;
-	fwrite (&base, sizeof(base), 1, f);
-
 	/* write out level_locals_t */
 	WriteLevelLocals(f);
 
@@ -1270,11 +1299,7 @@ WriteLevel(const char *filename)
 	{
 		ent = &g_edicts[i];
 
-		// we don't want to not save player entities, even if they are not in use, since when we go from
-		// level to a level we've already been to, there maybe monsters that are targeting the player,
-		// and they have problems if they are targeted at a player that has no data in them, even if the player is
-		// not inuse.
-		if (!ent->inuse && !ent->client)
+		if (!ent->inuse)
 		{
 			continue;
 		}
@@ -1352,7 +1377,7 @@ ReadEdict(FILE *f, edict_t *ent)
 	ent->msgQ.msgs = msgs;
 	ent->last_alert = NULL;
 
-	for (field = savefields; field->name; field++)
+	for (field = fields; field->name; field++)
 	{
 		ReadField(f, field, (byte *)ent);
 	}
@@ -1368,7 +1393,6 @@ static void
 ReadLevelLocals(FILE *f)
 {
 	field_t *field;
-	char		temp[20];
 	int			i;
 
 	if (fread(&level, sizeof(level), 1, f) != 1)
@@ -1390,15 +1414,6 @@ ReadLevelLocals(FILE *f)
 			ReadField (f, field, (byte *)&level.buoy_list[i]);
 		}
 	}
-
-
-	// set those console vars we should
-	sprintf(temp, "%f", level.far_clip_dist_f);
-	gi.cvar_set("r_farclipdist", temp);
-	sprintf(temp, "%f", level.fog);
-	gi.cvar_set("r_fog", temp);
-	sprintf(temp, "%f", level.fog_density);
-	gi.cvar_set("r_fog_density", temp);
 
 	// these are pointers and should be reset.
 	level.alert_entity = NULL;
@@ -1423,12 +1438,9 @@ ReadLevelLocals(FILE *f)
 void
 ReadLevel(const char *filename)
 {
-	void G_ClearMessageQueues();
-
 	int entnum;
 	FILE *f;
 	int i;
-	void *base;
 	edict_t *ent;
 
 	f = Q_fopen(filename, "rb");
@@ -1457,13 +1469,6 @@ ReadLevel(const char *filename)
 	{
 		fclose(f);
 		gi.error("%s: mismatched edict size", __func__);
-	}
-
-	fread(&base, sizeof(base), 1, f);
-	if (base != (void *)InitGame)
-	{
-		fclose (f);
-		gi.error ("ReadLevel: function pointers have moved - file was saved on different version.");
 	}
 
 	/* load the level locals */

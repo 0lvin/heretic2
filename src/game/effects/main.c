@@ -444,8 +444,18 @@ ParseEffects(centity_t *owner)
 
 			if(index)	// 0 should indicate the world
 			{
-				assert(index > 0);
-				assert(index < MAX_EDICTS);
+				if (index < 0)
+				{
+					fxi.Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+					return;
+				}
+
+				if (index >= MAX_EDICTS)
+				{
+					fxi.Com_Error(ERR_DROP, "%s: unexpected entity index %d",
+						__func__, index);
+					return;
+				}
 
 				tempOwner = fxi.server_entities + index;
 			}
