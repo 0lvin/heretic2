@@ -55,7 +55,6 @@ typedef struct
 
 	level_map_info_t *(*GetLMI)();
 	int (*GetLMIMax)();
-	char *(client_string);
 
 	sizebuf_t	*fxMsgBuf;
 } client_fx_export_t;
