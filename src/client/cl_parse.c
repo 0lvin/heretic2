@@ -364,7 +364,6 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		to->origin[2] = MSG_ReadCoord(&net_message, cls.serverProtocol);
 	}
 
-// jmarshall - Heretic 2 rotation fix from their ref_gl.dll
 	if (bits & U_ANGLE1)
 	{
 		to->angles[0] = MSG_ReadAngle(&net_message);
@@ -379,7 +378,6 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 	{
 		to->angles[2] = MSG_ReadAngle(&net_message);
 	}
-// jmarshall end
 
 	if (bits & U_OLDORIGIN)
 	{

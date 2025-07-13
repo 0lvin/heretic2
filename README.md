@@ -8,6 +8,22 @@ Updated code based on [Heretic 2 Reconstruction Project](https://github.com/jmar
 
 Tested with [Heretic 2 Loki](https://archive.org/details/heretic-2-linux) release.
 
+[![Coverity Scan](https://img.shields.io/coverity/scan/31781)](https://scan.coverity.com/projects/0lvin-heretic2)
+[![Top Language](https://img.shields.io/github/languages/top/0lvin/heretic2.svg)](https://github.com/0lvin/heretic2)
+[![Code Size](https://img.shields.io/github/languages/code-size/0lvin/heretic2.svg)](https://github.com/0lvin/heretic2)
+[![Release](https://img.shields.io/github/release/0lvin/heretic2.svg)](https://github.com/0lvin/heretic2/releases/latest)
+[![Release Date](https://img.shields.io/github/release-date/0lvin/heretic2.svg)](https://github.com/0lvin/heretic2/releases/latest)
+[![Downloads (total)](https://img.shields.io/github/downloads/0lvin/heretic2/total)](https://github.com/0lvin/heretic2/releases/latest)
+[![Downloads (latest)](https://img.shields.io/github/downloads/0lvin/heretic2/latest/total.svg)](https://github.com/0lvin/heretic2/releases/latest)
+[![Commits](https://img.shields.io/github/commits-since/0lvin/heretic2/latest.svg)](https://github.com/0lvin/heretic2/commits/master)
+[![Last Commit](https://img.shields.io/github/last-commit/0lvin/heretic2.svg)](https://github.com/0lvin/heretic2/commits/master)
+[![Build Status](https://github.com/0lvin/heretic2/actions/workflows/coverity.yml/badge.svg)](https://github.com/0lvin/heretic2/actions/workflows/coverity.yml)
+[![Build Status](https://github.com/0lvin/heretic2/actions/workflows/linux_aarch64.yml/badge.svg)](https://github.com/0lvin/heretic2/actions/workflows/linux_aarch64.yml)
+[![Build Status](https://github.com/0lvin/heretic2/actions/workflows/linux_x86_64.yml/badge.svg)](https://github.com/0lvin/heretic2/actions/workflows/linux_x86_64.yml)
+[![Build Status](https://github.com/0lvin/heretic2/actions/workflows/macos.yml/badge.svg)](https://github.com/0lvin/heretic2/actions/workflows/macos.yml)
+[![Build Status](https://github.com/0lvin/heretic2/actions/workflows/win32.yml/badge.svg)](https://github.com/0lvin/heretic2/actions/workflows/win32.yml)
+[![Build Status](https://github.com/0lvin/heretic2/actions/workflows/win64.yml/badge.svg)](https://github.com/0lvin/heretic2/actions/workflows/win64.yml)
+
 ### cleanup code
 ```shell
 sed -i 's/[[:blank:]]*$//' */*.{c,h}
@@ -27,15 +43,17 @@ Drawbacks:
 * need to rewrite RF_TRANS_ADD to use quake2 logic
 
 To check:
- * [ ] code use different angles values to quake2
+ * [x] code use different angles values to quake2,
+ * [ ] fix attack angle direction,
  * [ ] unsupported foodstep with unsupported player ground surface,
- * [ ] broken jumps
- * [ ] third person code is different to quake 2
- * [ ] effects protocol is different to quake 2
- * [ ] progress bars has custom implementation
+ * [ ] broken jumps,
+ * [ ] third person code is different to quake 2,
+ * [ ] effects protocol is different to quake 2,
+ * [ ] progress bars has custom implementation,
  * [ ] color type/paticles,
  * [ ] ANGLE_1 usage in client code,
- * [ ] different move code and noclip
+ * [ ] different move code and noclip,
+ * [ ] implement books as sprite,
  * [x] Incorrect 16 bit frame flag unset,
  * [x] MAX_MODELS/MAX_SOUND define hardcode,
  * [ ] no action on button press,
