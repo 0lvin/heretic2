@@ -283,8 +283,6 @@ void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t vector);
 
 void RegisterSounds();
 void RegisterModels(void); // jmarshall: function prototype misamtch
-struct level_map_info_s *GetLMI();
-int GetLMIMax();
 
 #endif
 

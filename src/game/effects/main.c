@@ -914,8 +914,6 @@ GetFXAPI(client_fx_import_t import)
 	// Lastly.
 	effectsExport.UpdateEffects = PostRenderUpdate;
 
-	effectsExport.GetLMI = GetLMI;
-	effectsExport.GetLMIMax = GetLMIMax;
 	effectsExport.RemoveClientEffects = RemoveEffectsFromCent;
 	effectsExport.fxMsgBuf = NULL;
 

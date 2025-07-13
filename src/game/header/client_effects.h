@@ -7,7 +7,6 @@
 
 //=============================================================================
 #include <limits.h>
-#include "../common/levelmaps.h"
 
 // ********************************************************************************************
 // predictinfo_t
@@ -52,9 +51,6 @@ typedef struct
 	void (*AddPacketEntities)(frame_t *frame);
 	void (*AddEffects)(qboolean freeze);
 	void (*UpdateEffects)();
-
-	level_map_info_t *(*GetLMI)();
-	int (*GetLMIMax)();
 
 	sizebuf_t	*fxMsgBuf;
 } client_fx_export_t;
