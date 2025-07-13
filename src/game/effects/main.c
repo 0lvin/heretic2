@@ -749,7 +749,6 @@ AddServerEntities(frame_t *frame)
 				}
 			}
 
-			VectorDegreesToRadians(ent->angles, ent->angles);
 			VectorCopy(ent->angles, cent->lerp_angles);
 		}
 

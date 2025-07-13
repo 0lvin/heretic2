@@ -27,7 +27,6 @@
 #include "header/client.h"
 #include "input/header/input.h"
 #include "../game/header/client_effects.h"
-#include "../game/common/angles.h"
 
 static int bitcounts[32]; /* just for protocol profiling */
 
@@ -368,17 +367,17 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 // jmarshall - Heretic 2 rotation fix from their ref_gl.dll
 	if (bits & U_ANGLE1)
 	{
-		to->angles[0] = MSG_ReadAngle(&net_message) * RAD_TO_ANGLE;
+		to->angles[0] = MSG_ReadAngle(&net_message);
 	}
 
 	if (bits & U_ANGLE2)
 	{
-		to->angles[1] = MSG_ReadAngle(&net_message) * RAD_TO_ANGLE;
+		to->angles[1] = MSG_ReadAngle(&net_message);
 	}
 
 	if (bits & U_ANGLE3)
 	{
-		to->angles[2] = MSG_ReadAngle(&net_message) * RAD_TO_ANGLE;
+		to->angles[2] = MSG_ReadAngle(&net_message);
 	}
 // jmarshall end
 
