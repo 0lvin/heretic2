@@ -156,9 +156,10 @@ Sprites support:
 
 | Format | Original Game  | Comments                                       |
 | ------ | -------------- | ---------------------------------------------- |
+| bk     | Heretic 2      | Combine frames to single one, converted to sp2 |
 | spr    | Quake          | Unsupported grouped textures, converted to sp2 |
 | sp2    | Quake 2        |                                                |
-| atd    | Anachronox     | Convert first frame to surface texture         |
+| atd    | Anachronox     | Convert first frame to wall surface texture    |
 | png    |                | Convert to sp2                                 |
 | tga    | ReRelease      | Convert to sp2                                 |
 
@@ -279,7 +280,8 @@ Goals, fully finished goals could be checked in [here](CHANGELOG):
 * [ ] soft: fix crash with md5 models in player model select and ASAN=1
 * [ ] soft: q64/outpost scale textures unsupported,
 * [ ] soft: broken wall light and wall glitch,
-* [ ] soft: build with SDL3 has glitch in menu,
+* [x] soft: build with SDL3 has glitch in menu,
+* [ ] soft: rework 32bit color cinema workarrounds,
 * [ ] soft: support scalled textures for models and walls, and fix
     lighting with remastered maps,
 * [ ] soft: use separete texture hi-color buffer for ui in soft render,
@@ -316,15 +318,18 @@ Goals, fully finished goals could be checked in [here](CHANGELOG):
 
 Other games support goals:
 
-* [ ] quake, half-life, hexen 2: fix brush flags,
-* [ ] half-life: support mdl,
-* [ ] jabot: fix crash in SZ_GetSpace,
+* [ ] Jabot: fix crash in SZ_GetSpace,
+* [ ] Quake, Half-Life, Hexen 2: fix brush flags,
+* [ ] Half-Life: support mdl,
+* [x] Heretic 2: combine all tiles in book sprite,
+* [ ] Anachronox: load atd as sprite,
 * [ ] Anachronox: skins load broken with mingw win64 build,
 * [ ] Anachronox: rowdys map models disappear on dance space,
 * [ ] Anachronox: rowdys save entity disappear in a8080c05,
 * [ ] Anachronox: CTC entity format,
 * [ ] Anachronox: support material load textures/textureinfo.dat,
 * [ ] Daikatana/SiN: Fix transparent textures in maps,
+* [ ] DoD: implement dynamic animations for monsters,
 * [ ] DoD: fix statusbar `roarke`.
 
 Not a goal:

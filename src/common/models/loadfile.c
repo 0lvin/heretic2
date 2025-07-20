@@ -504,7 +504,9 @@ Mod_LoadAndStoreModel(const char *name)
 	memcpy(namewe, name, len);
 	namewe[len] = 0;
 
-	if (!strcmp(ext, "sp2") || !strcmp(ext, "spr"))
+	if (!strcmp(ext, "bk") ||
+		!strcmp(ext, "sp2") ||
+		!strcmp(ext, "spr"))
 	{
 		filesize = FS_LoadFile(name, &buffer);
 	}
@@ -592,7 +594,9 @@ Mod_GetModelFrameInfo(const char *name, int num, float *mins, float *maxs)
 		mod = Mod_LoadAndStoreModel(name);
 	}
 
-	if (mod)
+	if (mod &&
+		(mod->extradatasize > 4) &&
+		(((int *)mod->extradata)[0] == IDALIASHEADER))
 	{
 		dmdx_t *paliashdr;
 
@@ -608,8 +612,9 @@ Mod_GetModelFrameInfo(const char *name, int num, float *mins, float *maxs)
 byte *
 Mod_LoadEmbededLMP(const char *mod_name, int *width, int *height, int *bitsPerPixel)
 {
-	char mainname[MAX_QPATH], texture_index[MAX_QPATH], *mainfile;
-	size_t len;
+	char mainname[MAX_QPATH], texture_index[MAX_QPATH];
+	size_t len, ext_len = 4;
+	const char *mainfile;
 	byte *pic;
 
 	mainfile = strstr(mod_name, ".bsp#");
@@ -632,6 +637,13 @@ Mod_LoadEmbededLMP(const char *mod_name, int *width, int *height, int *bitsPerPi
 		mainfile = strstr(mod_name, ".md2#");
 	}
 
+	/* Container is not MD2 */
+	if (!mainfile)
+	{
+		mainfile = strstr(mod_name, ".bk#");
+		ext_len = 3;
+	}
+
 	/* Unknow container */
 	if (!mainfile)
 	{
@@ -639,17 +651,17 @@ Mod_LoadEmbededLMP(const char *mod_name, int *width, int *height, int *bitsPerPi
 	}
 
 	/* get bsp file path */
-	len = Q_min(mainfile - mod_name + 4, sizeof(mainname) - 1);
+	len = Q_min(mainfile - mod_name + ext_len, sizeof(mainname) - 1);
 	memcpy(mainname, mod_name, len);
 	mainname[len] = 0;
 
 	/* get texture id */
 	Q_strlcpy(texture_index, mod_name + len + 1, sizeof(texture_index));
 	/* remove ext */
-	texture_index[strlen(texture_index) - 4] = 0;
+	texture_index[strlen(texture_index) - ext_len] = 0;
 
-	if ((!strcmp(mainname + strlen(mainname) - 4, ".mdl")) ||
-		(!strcmp(mainname + strlen(mainname) - 4, ".md2")))
+	if ((!strcmp(mainname + strlen(mainname) - ext_len, ".mdl")) ||
+		(!strcmp(mainname + strlen(mainname) - ext_len, ".md2")))
 	{
 		/* Could have some embded image in cached object */
 		const model_t *mod;
@@ -701,7 +713,9 @@ Mod_GetModelInfo(const char *name, int *num, float *mins, float *maxs)
 		mod = Mod_LoadAndStoreModel(name);
 	}
 
-	if (mod)
+	if (mod &&
+		(mod->extradatasize > 4) &&
+		(((int *)mod->extradata)[0] == IDALIASHEADER))
 	{
 		dmdx_t *paliashdr;
 
@@ -767,6 +781,7 @@ Mod_LoadFile(const char *name, void **buffer)
 		!strcmp(ext, "mdx") ||
 		!strcmp(ext, "mdl") ||
 		/* sprites */
+		!strcmp(ext, "bk") ||
 		!strcmp(ext, "sp2") ||
 		!strcmp(ext, "spr") ||
 		!strcmp(ext, "png") ||

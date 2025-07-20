@@ -27,6 +27,171 @@
 
 #include "models.h"
 
+static void
+Mod_LoadPicReplaceTile(byte *pic, int line, const char* name,
+	int width, int height, int offset_x, int offset_y)
+{
+	byte *raw;
+	int len;
+
+	/* load the file */
+	len = FS_LoadFile(name, (void **)&raw);
+	if (len > 0)
+	{
+		int sub_width, sub_height, bitsPerPixel;
+		byte *sub_pic, *palette;
+
+		Mod_RawDecodeImageWithPalette(name, raw, len, &sub_pic, &palette,
+			&sub_width, &sub_height, &bitsPerPixel);
+
+		if ((sub_width == width) &&
+			(sub_height == height))
+		{
+			if ((bitsPerPixel == 8) && palette)
+			{
+				byte *src;
+				int y;
+
+				src = sub_pic;
+
+				for (y = 0; y < height; y ++)
+				{
+					byte *pos;
+					int x;
+
+					pos = pic + (line * (y + offset_y) + offset_x) * 4;
+
+					for (x = 0; x < width; x++)
+					{
+						char v;
+
+						v = *src;
+						src++;
+
+						if (v != 255)
+						{
+							pos[0] = palette[v * 3 + 0];
+							pos[1] = palette[v * 3 + 1];
+							pos[2] = palette[v * 3 + 2];
+							pos[3] = 255;
+						}
+
+						pos += 4;
+					}
+				}
+			}
+			else if (bitsPerPixel == 32)
+			{
+				byte *src;
+				int y;
+
+				src = sub_pic;
+
+				for (y = 0; y < height; y ++)
+				{
+					byte *pos;
+
+					pos = pic + (line * (y + offset_y) + offset_x) * 4;
+					memcpy(pos, src, width * 4);
+					src += width * 4;
+				}
+			}
+		}
+
+		if (sub_pic)
+		{
+			free(sub_pic);
+		}
+
+		if (palette)
+		{
+			free(palette);
+		}
+	}
+
+	FS_FreeFile(raw);
+}
+
+static byte *
+Mod_LoadBKImage(const char *mod_name, int texture_index, byte *buffer, int modfilelen,
+	int *width, int *height)
+{
+	const dbksprite_t *sprin;
+	dbksprite_t header;
+	int i, size;
+	byte *pic;
+
+	if (modfilelen < sizeof(sprin))
+	{
+		Com_Printf("%s: %s has incorrect header size (%i should be " YQ2_COM_PRIdS ")\n",
+				__func__, mod_name, modfilelen, sizeof(sprin));
+		return NULL;
+	}
+
+	Mod_LittleHeader((int *)buffer,
+		(sizeof(header) - sizeof(dbksprframe_t)) / sizeof(int), (int *)&header);
+
+	if (header.version != SPRITE_VERSION)
+	{
+		Com_Printf("%s has wrong version number (%i should be %i)\n",
+				mod_name, header.version, SPRITE_VERSION);
+		return NULL;
+	}
+
+	if (header.numframes < 1)
+	{
+		Com_Printf("%s has wrong number of frames %d\n",
+				mod_name, header.numframes);
+		return NULL;
+	}
+
+	size = sizeof(header) + (header.numframes - 1) * sizeof(dbksprframe_t);
+
+	if (size > modfilelen)
+	{
+		Com_Printf("%s has wrong size %d > %d\n",
+				mod_name, size, modfilelen);
+		return NULL;
+	}
+
+	sprin = (dbksprite_t *)buffer;
+
+	Com_DPrintf("%s: %s has %dx%d size\n",
+			__func__, mod_name, header.width, header.height);
+
+	*width = header.width;
+	*height = header.height;
+	pic = malloc(header.width * header.height * 4);
+	memset(pic, 0, header.width * header.height * 4);
+
+	for (i = 0; i < header.numframes; i++)
+	{
+		int width, height, offset_x, offset_y;
+		char name[MAX_QPATH * 2];
+
+		/* Heretic 2 has coordinates inside whole combined image  */
+		width = LittleLong(sprin->frames[i].width);
+		height = LittleLong(sprin->frames[i].height);
+		offset_x = LittleLong(sprin->frames[i].x);
+		offset_y = LittleLong(sprin->frames[i].y);
+		snprintf(name, sizeof(name), "book/%s", sprin->frames[i].name);
+
+		if ((offset_x + width > header.width) ||
+			(offset_y + height > header.height))
+		{
+			Com_DPrintf("%s:#%d %s incorrect coordinates %dx%d -> %dx%d\n",
+					mod_name, i, sprin->frames[i].name,
+					offset_x, offset_y, width, height);
+			continue;
+		}
+
+		Mod_LoadPicReplaceTile(pic, header.width, name,
+			width, height, offset_x, offset_y);
+	}
+
+	return pic;
+}
+
 static byte *
 Mod_LoadSPRImage(const char *mod_name, int texture_index, byte *buffer, int modfilelen,
 	int *width, int *height)
@@ -295,6 +460,11 @@ Mod_LoadEmbdedImage(const char *mod_name, int texture_index, byte *raw, int len,
 		case BSPHL1VERSION:
 			return Mod_LoadBSPImage(mod_name, texture_index, raw, len,
 				width, height, bitsPerPixel);
+		case IDBKHEADER:
+			/* combined image could be only 32bits */
+			*bitsPerPixel = 32;
+			return Mod_LoadBKImage(mod_name, texture_index, raw, len,
+				width, height);
 		case IDQ1SPRITEHEADER:
 			*bitsPerPixel = 8;
 			return Mod_LoadSPRImage(mod_name, texture_index, raw, len,
