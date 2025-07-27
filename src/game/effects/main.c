@@ -897,8 +897,7 @@ GetFXAPI(client_fx_import_t import)
 	effectsExport.api_version = GAME_API_VERSION;
 	effectsExport.Init = Init;
 	effectsExport.ShutDown = ShutDown;
-	effectsExport.Clear=Clear;
-	effectsExport.RegisterSounds = RegisterSounds;
+	effectsExport.Clear = Clear;
 	effectsExport.RegisterModels = RegisterModels;
 
 	// In the client code in the executable the following functions are called first.

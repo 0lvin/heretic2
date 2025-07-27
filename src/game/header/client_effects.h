@@ -42,7 +42,6 @@ typedef struct
 
 	void (*Clear)();
 
-	void (*RegisterSounds)();
 	void (*RegisterModels)();
 
 	void (*ParseClientEffects)(centity_t *cent);

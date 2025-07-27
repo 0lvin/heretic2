@@ -281,7 +281,6 @@ void MSG_ReadDirMag(sizebuf_t *sb, vec3_t dir);
 void MSG_ReadYawPitch(sizebuf_t *sb, vec3_t vector);
 void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t vector);
 
-void RegisterSounds();
 void RegisterModels(void); // jmarshall: function prototype misamtch
 
 #endif

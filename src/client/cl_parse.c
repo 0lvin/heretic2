@@ -63,10 +63,6 @@ CL_RegisterSounds(void)
 	int i;
 
 	S_BeginRegistration();
-	if (fxe && fxe->RegisterSounds)
-	{
-		fxe->RegisterSounds();
-	}
 
 	for (i = 1; i < MAX_SOUNDS; i++)
 	{
