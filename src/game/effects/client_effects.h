@@ -192,7 +192,6 @@ void FXTestBBox(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXSsithraArrow(centity_t *owner,int type,int flags, vec3_t org);
 void FXPESpell(centity_t *owner,int type,int flags, vec3_t org);
 void FXLightningHit(centity_t *owner,int type,int flags, vec3_t org);
-void NullEffect(centity_t *owner, int type, int flags, vec3_t origin);
 void FXStaffStrike(centity_t *owner, int type, int flags, vec3_t origin);
 void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin);
 void FXBarrelExplode(centity_t *owner,int Type,int Flags,vec3_t Origin);

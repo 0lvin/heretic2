@@ -9,6 +9,11 @@
 
 // NB. The assassin tport go is not precached
 
+static void
+NullEffect(centity_t *owner, int type, int flags, vec3_t origin)
+{
+}
+
 ClientEffect_t clientEffectSpawners[NUM_FX] =
 {
 	// ***NOTE*** We currently have 113 client effects, and we don't want to exceed 32768!  Ha!
@@ -165,10 +170,6 @@ void (*cg_classStaticsInits[CE_NUM_CLASSIDS])()=
 {
 	InitDebrisStatics
 };
-
-void NullEffect(centity_t *owner, int type, int flags, vec3_t origin)
-{
-}
 
 void RemoveEffects(centity_t *owner, int type, int flags, vec3_t origin)
 {
