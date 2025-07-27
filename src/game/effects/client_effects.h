@@ -57,7 +57,6 @@ extern struct sfx_s	*cl_sfx_ric3;
 extern void InitDebrisStatics(void);
 extern void InitWallStatics(void);
 
-extern float cl_turbsin[];
 // ***************************************************************************************
 // Client-effect functions.
 // ***************************************************************************************
