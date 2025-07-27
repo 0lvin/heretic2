@@ -28,7 +28,7 @@
 #include "header/client.h"
 #include "../game/header/client_effects.h"
 
-void
+static void
 CL_AddPacketEntities(frame_t *frame)
 {
 	float autorotate, autobob;
@@ -37,12 +37,6 @@ CL_AddPacketEntities(frame_t *frame)
 
 	/* To distinguish baseq2, xatrix and rogue. */
 	cvar_t *gametype = Cvar_Get("gametype",  "", CVAR_LATCH | CVAR_SERVERINFO);
-	if (strcmp(gametype->string, "") == 0 && fxe && fxe->AddPacketEntities)
-	{
-		// TODO: Rewrite game type
-		fxe->AddPacketEntities(frame);
-		return;
-	}
 
 	/* bonus items rotate at a fixed rate */
 	autorotate = anglemod(cl.time * 0.1f);
@@ -709,7 +703,7 @@ CL_AddPacketEntities(frame_t *frame)
 	}
 }
 
-void
+static void
 CL_AddViewWeapon(player_state_t *ps, player_state_t *ops)
 {
 	entity_t gun = {0}; /* view model */
@@ -792,7 +786,7 @@ CL_OffsetThirdPersonView
 		(o)[2] = (v)[2] + (b)[2] * (s);	\
 	}
 
-void
+static void
 CL_OffsetThirdPersonView(void)
 {
 	vec3_t forward, right, up;
@@ -1051,17 +1045,18 @@ CL_AddEntities(void)
 	}
 
 	CL_CalcViewValues();
-	CL_AddPacketEntities(&cl.frame);
-#ifdef NATIVEQUAKE2
-	CL_AddTEnts();
-#else
-	// jmarshall - this is in client effects.dll
-	if (fxe && fxe->AddEffects)
+
+	if (fxe)
 	{
+		fxe->AddPacketEntities(&cl.frame);
 		fxe->AddEffects(false);
 	}
-	// jmarshall end
-#endif
+	else
+	{
+		CL_AddPacketEntities(&cl.frame);
+		CL_AddTEnts();
+	}
+
 	CL_AddParticles();
 	CL_AddDLights();
 	CL_AddLightStyles();
