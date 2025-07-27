@@ -19,7 +19,7 @@
  *
  * =======================================================================
  *
- * Refresher common initialization code
+ * Refresh common initialization code
  *
  * =======================================================================
  */
@@ -84,3 +84,7 @@ Com_Error(int code, const char *fmt, ...)
 
 	ri.Sys_Error(code, "%s", text);
 }
+
+/* shared variables */
+refdef_t r_newrefdef;
+viddef_t vid;

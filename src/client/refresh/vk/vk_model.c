@@ -141,13 +141,13 @@ Mod_LoadSubmodels(model_t *loadmodel, const byte *mod_base, const lump_t *l)
 	{
 		if (i == 0)
 		{
-			// copy parent as template for first model
+			/* copy parent as template for first model */
 			memcpy(out, loadmodel, sizeof(*out));
 		}
 		else
 		{
-			// copy first as template for model
-			memcpy(out, loadmodel->submodels, sizeof(*out));
+			/* copy first as template for model */
+			memmove(out, loadmodel->submodels, sizeof(*out));
 		}
 
 		Com_sprintf (out->name, sizeof(out->name), "*%d", i);
@@ -558,7 +558,7 @@ Mod_Free(model_t *mod)
 	mod_loaded --;
 	if (mod_loaded < 0)
 	{
-		ri.Sys_Error (ERR_DROP, "%s: Broken unload", __func__);
+		Com_Error(ERR_DROP, "%s: Broken unload", __func__);
 	}
 }
 
