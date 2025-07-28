@@ -88,11 +88,9 @@ typedef struct
 	// Client prediction stuff.
 
 	cvar_t			*cl_predict;
-	int				*cl_effectpredict;
 	predictinfo_t	*predictinfo;
 	float			*leveltime;
 	float			*EffectEventIdTimeArray;
-	EffectsBuffer_t *clientPredEffects;
 	//
 
 	void	(*Sys_Error) (int err_level, const char *str, ...);

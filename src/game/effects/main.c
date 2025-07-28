@@ -35,6 +35,8 @@ cvar_t	*cl_timedemo;
 cvar_t	*crosshair;
 cvar_t	*compass;
 
+static qboolean cl_effectpredict;
+
 int	numprocessedparticles;
 int	numrenderedparticles;
 
@@ -223,6 +225,8 @@ PostRenderUpdate(void)
 	}
 }
 
+static EffectsBuffer_t clientPredEffects;
+
 int DummyEffectParams(centity_t *ent, int flags, int effect)
 {
 	char			current;
@@ -233,26 +237,17 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 	EffectsBuffer_t *fxBuf = NULL;
 	char			*format;
 
-	format=clientEffectSpawners[effect].formatString;
+	format = clientEffectSpawners[effect].formatString;
 
 	if(!format)
-		return(0);
-
-//#if	_DEVEL
-#if 0
-	if(strcmp(format, fxi.Cvar_VariableString("cfxpl")))
-	{
-		fxi.Com_Printf("Parameter mismatch !!!!!!!!!\n");
-		assert(0);
-	}
-#endif
+		return 0;
 
 	if(ent && !(flags&(CEF_BROADCAST|CEF_MULTICAST)))
 	{
-		if(!(*fxi.cl_effectpredict))
+		if(!cl_effectpredict)
 			fxBuf = &ent->current.clientEffects;
 		else
-			fxBuf = fxi.clientPredEffects;
+			fxBuf = &clientPredEffects;
 
 		msg_read = &tempBuf;
 
@@ -361,7 +356,7 @@ ParseEffects(centity_t *owner)
 	{
 		// Where do we pull the effect from?
 
-		//if(!(*fxi.cl_effectpredict))
+		//if(!cl_effectpredict)
 		{
 			// Effects received as part of entity_state_t from server.
 
@@ -371,7 +366,7 @@ ParseEffects(centity_t *owner)
 		//{
 		//	// Predicted effects are pulled from here...
 		//
-		//	fxBuf=fxi.clientPredEffects;
+		//	fxBuf = &clientPredEffects;
 		//
 		//	// We are dealing with preicted effects, so reset freeblock for reading, as writing
 		//	// will have left it at the end of the written data.
@@ -483,7 +478,7 @@ ParseEffects(centity_t *owner)
 
 		// Do we want to start _this client-effect if client-prediction has already started it?
 
-		if((!(*fxi.cl_effectpredict))&&fxi.cl_predict->value&&EffectIsFromServer&&
+		if((!cl_effectpredict) && fxi.cl_predict->value&&EffectIsFromServer&&
 		   (fxi.EffectEventIdTimeArray[eventId]<=*fxi.leveltime)&&(fxi.EffectEventIdTimeArray[eventId]!=0.0))
 		{
 			// The client-effect has already been started by client-prediction, so just skip it.
@@ -808,7 +803,7 @@ AddServerEntities(frame_t *frame)
 
 		if(cent->current.clientEffects.numEffects)
 		{
-			*(fxi.cl_effectpredict)=0;
+			cl_effectpredict = false;
 			ParseEffects(cent);
 		}
 
@@ -817,11 +812,11 @@ AddServerEntities(frame_t *frame)
 
 		if(s1->number == fxi.cl->playernum + 1)
 		{
-			if((fxi.cl_predict->value) && (fxi.clientPredEffects->numEffects))
+			if((fxi.cl_predict->value) && (clientPredEffects.numEffects))
 			{
-				*(fxi.cl_effectpredict)=1;
+				cl_effectpredict = true;
 				ParseEffects(cent);
-				*(fxi.cl_effectpredict)=0;
+				cl_effectpredict = false;
 			}
 
 			// This is the player.
@@ -849,7 +844,7 @@ AddServerEntities(frame_t *frame)
 
 			cent->entity = ent;
 
-			if(cent->effects && !(effects&(EF_DISABLE_ALL_CFX|EF_ALWAYS_ADD_EFFECTS)))
+			if (cent->effects && !(effects & (EF_DISABLE_ALL_CFX | EF_ALWAYS_ADD_EFFECTS)))
 			{
 				num_owned_inview += AddEffectsToView(&cent->effects, cent);
 			}
@@ -875,7 +870,7 @@ AddServerEntities(frame_t *frame)
 			++ent;
 		}
 
-		if(cent->effects && !(effects&(EF_DISABLE_ALL_CFX|EF_ALWAYS_ADD_EFFECTS)))
+		if (cent->effects && !(effects & (EF_DISABLE_ALL_CFX | EF_ALWAYS_ADD_EFFECTS)))
 		{
 			num_owned_inview += AddEffectsToView(&cent->effects, cent);
 		}
