@@ -8,27 +8,6 @@
 //=============================================================================
 #include <limits.h>
 
-// ********************************************************************************************
-// predictinfo_t
-// -------------
-// Repositiory for all elements of player rendering that need to be predicted. When prediction
-// is active, the values below are written by CL_DoPrediction() and read by AddServerEntities()
-// instead of using values derived from server sent data.
-// ********************************************************************************************
-
-typedef struct
-{
-	int				prevFrame,currFrame,
-					prevSwapFrame,currSwapFrame;
-	vec3_t			prevAngles,currAngles;
-	float			playerLerp;
-	int				effects,
-					renderfx,
-					skinnum,
-					clientnum;
-	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
-} predictinfo_t;
-
 //
 // these are the data and functions exported by the client fx module
 //
@@ -82,15 +61,11 @@ typedef struct
 	entity_xstate_t	*parse_entities;
 
 	sizebuf_t		*net_message;
-	float			*PlayerAlpha;
-	entity_t		**PlayerEntPtr;
 
 	// Client prediction stuff.
 
 	cvar_t			*cl_predict;
-	predictinfo_t	*predictinfo;
 	float			*leveltime;
-	float			*EffectEventIdTimeArray;
 	//
 
 	void	(*Sys_Error) (int err_level, const char *str, ...);

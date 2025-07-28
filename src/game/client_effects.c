@@ -24,10 +24,6 @@ client_fx_export_t *fxe;
 
 static void *effects_library = NULL;
 
-float EffectEventIdTimeArray[1000];
-
-predictinfo_t predictInfo;
-float PlayerAlpha = 1.0f;
 void CL_ClearLightStyles(void);
 
 static int
@@ -345,12 +341,8 @@ E_Load(void)
 
 	cl_game_import.server_entities = cl_entities;
 	cl_game_import.parse_entities = cl_parse_entities;
-	cl_game_import.EffectEventIdTimeArray = EffectEventIdTimeArray;
 	cl_game_import.leveltime = (float*)&cl.time;
 	cl_game_import.net_message = &net_message;
-	cl_game_import.PlayerEntPtr = (entity_t**)&cl_entities[0];
-	cl_game_import.PlayerAlpha = (float*)&PlayerAlpha;
-	cl_game_import.predictinfo = &predictInfo;
 	cl_game_import.Sys_Error = CL_Sys_Error;
 	cl_game_import.Com_Error = Com_Error;
 	cl_game_import.Con_Printf = CL_Printf;
