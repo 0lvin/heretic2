@@ -27,7 +27,7 @@ typedef struct
 	void (*RemoveClientEffects)(centity_t *cent);
 
 	void (*AddPacketEntities)(frame_t *frame);
-	void (*AddEffects)(qboolean freeze);
+	void (*AddEffects)(void);
 	void (*UpdateEffects)();
 
 	sizebuf_t	*fxMsgBuf;

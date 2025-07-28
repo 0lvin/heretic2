@@ -1049,7 +1049,7 @@ CL_AddEntities(void)
 	if (fxe)
 	{
 		fxe->AddPacketEntities(&cl.frame);
-		fxe->AddEffects(false);
+		fxe->AddEffects();
 	}
 	else
 	{

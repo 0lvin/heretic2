@@ -40,8 +40,6 @@ static qboolean cl_effectpredict;
 int	numprocessedparticles;
 int	numrenderedparticles;
 
-qboolean fx_FreezeWorld = false;
-
 // ********************************************************************************************
 // predictinfo_t
 // -------------
@@ -179,14 +177,11 @@ AddEffects
 */
 static int	num_owned_inview;
 
-void AddEffects(qboolean freeze)
+void AddEffects(void)
 {
 	int i;
 	centity_t *owner;
 	int	num_free_inview = 0;
-
-	// If the world is frozen then the client effects, particularly the particles shouldn't update.
-	fx_FreezeWorld = freeze;
 
 	if(clientEnts)
 	{
@@ -569,7 +564,7 @@ AddServerEntities(frame_t *frame)
 
 	// Brush models can auto animate their frames.
 
-	autoanim = 2*fxi.cl->time/1000;
+	autoanim = 2 * fxi.cl->time/1000;
 
 	memset (sv_ents, 0, sizeof(sv_ents));
 

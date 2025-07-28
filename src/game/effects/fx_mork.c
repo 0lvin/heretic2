@@ -1735,85 +1735,82 @@ DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_ParticleUpdate_opt (st
 	dir[1] /= sum;
 	dir[2] /= sum;
 
-	if (!fx_FreezeWorld)
+	if(dist< 22500)
 	{
-		if(dist< 22500)
-		{
-			if(self->color.g<250)
-				self->color.g+=2;
+		if(self->color.g<250)
+			self->color.g+=2;
 
-			if(self->color.b<254)
-				self->color.b+=2;
+		if(self->color.b<254)
+			self->color.b+=2;
 
-			if(self->color.r<250)
-				self->color.r+=2;
-		}
-		else if(dist<32400)
-		{
-			if(self->color.b<255)
-				self->color.b++;
-		}
+		if(self->color.r<250)
+			self->color.r+=2;
+	}
+	else if(dist<32400)
+	{
+		if(self->color.b<255)
+			self->color.b++;
+	}
 
-		if(dist < 100)
-		{//shoot out sooner?
-			if(!irand(0, 10))
-			{//spray out
-				VectorCopy(self->acceleration, self->origin);
-				if(!irand(0, 1))
-					VectorSet(self->acceleration, 0, 0, 10);
-				else
-					VectorSet(self->acceleration, 0, 0, -10);
-				VectorClear(self->velocity);
-				VectorSet(self->velocity, flrand(-2, 2), flrand(-2, 2), 0);
-				self->d_alpha = -40.0f;
-				self->scale = flrand(2.0, 3.0);
-				self->d_scale = 0.5f;
+	if(dist < 100)
+	{//shoot out sooner?
+		if(!irand(0, 10))
+		{//spray out
+			VectorCopy(self->acceleration, self->origin);
+			if(!irand(0, 1))
+				VectorSet(self->acceleration, 0, 0, 10);
+			else
+				VectorSet(self->acceleration, 0, 0, -10);
+			VectorClear(self->velocity);
+			VectorSet(self->velocity, flrand(-2, 2), flrand(-2, 2), 0);
+			self->d_alpha = -40.0f;
+			self->scale = flrand(2.0, 3.0);
+			self->d_scale = 0.5f;
 //				self->extraUpdate = NULL;
-				self->duration = Q_fabs((self->color.a/(self->d_alpha/255)) * 1000);
-				self->startTime = fxi.cl->time;
-				return (true);
-			}
-			self->scale = 20;//dist == 200, scale = 0.1; dist = 0, scale = 5
+			self->duration = Q_fabs((self->color.a/(self->d_alpha/255)) * 1000);
+			self->startTime = fxi.cl->time;
+			return (true);
 		}
-		else if(dist<2500)
-		{
-			self->scale = (10000 - dist)/10000 * 14;//dist == 200, scale = 0.1; dist = 0, scale = 5
-			self->d_scale = 0.0f;
-		}
-		else if(dist<22500)
-		{
-			self->scale = (44100 - dist)/44100 * 7;//dist == 200, scale = 0.1; dist = 0, scale = 5
-			self->d_scale = 0.0f;
-		}
+		self->scale = 20;//dist == 200, scale = 0.1; dist = 0, scale = 5
+	}
+	else if(dist<2500)
+	{
+		self->scale = (10000 - dist)/10000 * 14;//dist == 200, scale = 0.1; dist = 0, scale = 5
+		self->d_scale = 0.0f;
+	}
+	else if(dist<22500)
+	{
+		self->scale = (44100 - dist)/44100 * 7;//dist == 200, scale = 0.1; dist = 0, scale = 5
+		self->d_scale = 0.0f;
+	}
 
-		if (dir[YAW] == 0 && dir[PITCH] == 0)
-			yaw = 0;
-		else
-		{//ignore pitch? shouldn't be any!
-			yaw = (int) (atan2(dir[YAW], dir[PITCH]) * 180 / M_PI);
-			if (yaw < 0)
-				yaw += 360;
-		}
+	if (dir[YAW] == 0 && dir[PITCH] == 0)
+		yaw = 0;
+	else
+	{//ignore pitch? shouldn't be any!
+		yaw = (int) (atan2(dir[YAW], dir[PITCH]) * 180 / M_PI);
+		if (yaw < 0)
+			yaw += 360;
+	}
 
-		VectorSet(angles, 0, yaw, 0);
-		AngleVectors(angles, NULL, right, NULL);
+	VectorSet(angles, 0, yaw, 0);
+	AngleVectors(angles, NULL, right, NULL);
 
-		counter = self->duration - 1000000000;
-		self->duration = 1000000000 + counter + 1;
-		if(counter>1000)
-			counter = 1000;
+	counter = self->duration - 1000000000;
+	self->duration = 1000000000 + counter + 1;
+	if(counter>1000)
+		counter = 1000;
 
-		VectorScale(right, -1000/(1000 - counter), right);
-		VectorScale(dir, 1000/(1000 - counter), dir);
-		VectorAdd(dir, right, dir);
-		sum = Q_fabs(dir[0]) + Q_fabs(dir[1]) + Q_fabs(dir[2]);
-		dir[0] /= sum;
-		dir[1] /= sum;
-		dir[2] /= sum;
+	VectorScale(right, -1000/(1000 - counter), right);
+	VectorScale(dir, 1000/(1000 - counter), dir);
+	VectorAdd(dir, right, dir);
+	sum = Q_fabs(dir[0]) + Q_fabs(dir[1]) + Q_fabs(dir[2]);
+	dir[0] /= sum;
+	dir[1] /= sum;
+	dir[2] /= sum;
 //Store oldorigin in velocity for particles that trail me
 //use velocity as offset for trailing particles
-		VectorAdd(self->origin, dir, self->origin);
-	}
+	VectorAdd(self->origin, dir, self->origin);
 
 //L-o-D
 /*Only if one of below used

@@ -31,8 +31,6 @@ extern cvar_t	*cl_timedemo;
 extern cvar_t	*compass;
 extern cvar_t	*cl_camera_under_surface;
 
-extern qboolean fx_FreezeWorld;
-
 typedef struct ClientEffect_s
 {
 	void (*SpawnCFX)(centity_t *owner, int type, int flags, vec3_t origin);
