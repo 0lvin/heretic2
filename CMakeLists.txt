@@ -418,6 +418,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/g_monster.c
 	${GAME_SRC_DIR}/g_moveinfo.c
 	${GAME_SRC_DIR}/g_newai.c
+	${GAME_SRC_DIR}/g_newdm.c
 	${GAME_SRC_DIR}/g_newweap.c
 	${GAME_SRC_DIR}/g_obj.c
 	${GAME_SRC_DIR}/g_phys.c

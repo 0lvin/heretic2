@@ -182,25 +182,58 @@ RespawnedThink(edict_t *ent)
 void
 DoRespawn(edict_t *ent)
 {
-	if(ent->team)
+	if (!ent)
 	{
-		edict_t	*Master;
-		int		Count;
-		int		Choice;
-
-		Master=ent->teammaster;
-
-		for(Count=0,ent=Master;ent;ent=ent->chain,Count++)
-			;
-
-		Choice=irand(0, Count - 1);
-
-		for(Count=0,ent=Master;Count<Choice;ent=ent->chain,Count++)
-			;
+		return;
 	}
 
-	ent->solid=SOLID_TRIGGER;
+	if (ent->team)
+	{
+		edict_t *master;
 
+		master = ent->teammaster;
+
+		/* in ctf, when we are weapons stay, only the master
+		   of a team of weapons is spawned */
+		if (ctf->value &&
+			((int)dmflags->value & DF_WEAPONS_STAY) &&
+			master->item && (master->item->flags & IT_WEAPON))
+		{
+			ent = master;
+		}
+		else
+		{
+			int count, choice;
+
+			for (count = 0, ent = master; ent; ent = ent->chain, count++)
+			{
+			}
+
+			choice = count ? randk() % count : 0;
+
+			for (count = 0, ent = master; count < choice; ent = ent->chain, count++)
+			{
+			}
+		}
+	}
+
+	if (randomrespawn && randomrespawn->value)
+	{
+		edict_t *newEnt;
+
+		newEnt = DoRandomRespawn(ent);
+
+		/* if we've changed entities, then do some sleight
+		 * of hand. otherwise, the old entity will respawn */
+		if (newEnt)
+		{
+			G_FreeEdict(ent);
+			ent = newEnt;
+		}
+	}
+
+	ent->svflags &= ~SVF_NOCLIENT;
+	ent->solid = SOLID_TRIGGER;
 	gi.linkentity(ent);
 
 	// Create a respawn client-effect (this isn't currenlty doing anything on the client).
@@ -208,8 +241,6 @@ DoRespawn(edict_t *ent)
 	//gi.CreateEffect(ent,FX_ITEM_RESPAWN,CEF_OWNERS_ORIGIN,ent->s.origin,NULL);
 
 	// So it'll get sent to the client again.
-
-//	ent->svflags &= ~SVF_NOCLIENT;
 
 	// Re-enable the persistent effect.
 

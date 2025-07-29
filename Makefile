@@ -1045,6 +1045,7 @@ GAME_OBJS_ = \
 	src/game/g_monster.o \
 	src/game/g_moveinfo.o \
 	src/game/g_newai.o \
+	src/game/g_newdm.o \
 	src/game/g_newweap.o \
 	src/game/g_obj.o \
 	src/game/g_phys.o \
