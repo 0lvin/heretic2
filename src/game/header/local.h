@@ -1754,7 +1754,6 @@ typedef enum Box_BoundingForm_Sides_e
 
 
 void SpawnItemEffect(edict_t *ent, gitem_t *item);
-gitem_t	*IsItem(edict_t *ent);
 
 edict_t *newfindradius(edict_t *from, vec3_t org, float rad);
 edict_t *findinblocking(edict_t *from, edict_t *checkent);

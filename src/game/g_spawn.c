@@ -635,7 +635,7 @@ ED_CallSpawn(edict_t *ent)
 {
 	const spawn_t *s;
 	gitem_t *item;
-	int dyn_id;
+	int i, dyn_id;
 
 	if (!ent)
 	{
@@ -699,11 +699,19 @@ ED_CallSpawn(edict_t *ent)
 	}
 
 	/* check item spawn functions */
-	if((item = IsItem(ent)))
+	for (i = 0, item = itemlist; i < game.num_items; i++, item++)
 	{
-		SpawnItem(ent, item);
+		if (!item->classname)
+		{
+			continue;
+		}
 
-		return;
+		if (!strcmp(item->classname, ent->classname))
+		{
+			/* found it */
+			SpawnItem(ent, item);
+			return;
+		}
 	}
 
 	/* check normal spawn functions */

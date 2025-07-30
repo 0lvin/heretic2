@@ -711,6 +711,34 @@ Drop_Ammo(edict_t *ent, gitem_t *item)
 	ValidateSelectedItem(ent);
 }
 
+/* ====================================================================== */
+
+void
+MegaHealth_think(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if ((self->owner->health > self->owner->max_health)
+		&& !CTFHasRegeneration(self->owner))
+	{
+		self->nextthink = level.time + 1;
+		self->owner->health -= 1;
+		return;
+	}
+
+	if (!(self->spawnflags & DROPPED_ITEM) && (deathmatch->value))
+	{
+		SetRespawn(self, 20);
+	}
+	else
+	{
+		G_FreeEdict(self);
+	}
+}
+
 qboolean
 Pickup_Health(edict_t *ent, edict_t *other)
 {
@@ -1310,39 +1338,6 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	}
 }
 
-// ************************************************************************************************
-// IsItem
-// ------
-// ************************************************************************************************
-
-gitem_t	*IsItem(edict_t *ent)
-{
-	gitem_t	*item;
-	int i;
-
-	if(!ent->classname)
-	{
-		return NULL;
-	}
-
-	for(i = 0, item = itemlist; i < game.num_items; ++i, ++item)
-	{
-		if(!item->classname)
-		{
-			continue;
-		}
-
-		if(!strcmp(item->classname, ent->classname))
-		{
-			// Found it.
-
-			return item;
-		}
-	}
-
-	return NULL;
-}
-
 
 void
 P_ToggleFlashlight(edict_t *ent, qboolean state)
@@ -1368,13 +1363,10 @@ Use_Flashlight(edict_t *ent, gitem_t *inv)
 
 /* ====================================================================== */
 
-static const gitem_t gameitemlist[] =
-{
-	// Leave index 0 empty.
-
+static const gitem_t gameitemlist[] = {
 	{
 		NULL
-	},
+	}, /* leave index 0 alone */
 
 	// =============================================================================================
 

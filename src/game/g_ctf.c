@@ -2758,6 +2758,7 @@ CTFApplyRegeneration(edict_t *ent)
 		}
 	}
 }
+#endif
 
 qboolean
 CTFHasRegeneration(edict_t *ent)
@@ -2769,15 +2770,18 @@ CTFHasRegeneration(edict_t *ent)
 		tech = FindItemByClassname("item_tech4");
 	}
 
+/*
 	if (tech && ent->client &&
 		ent->client->pers.inventory[ITEM_INDEX(tech)])
 	{
 		return true;
 	}
+*/
 
 	return false;
 }
 
+#if 0
 /*
  * ======================================================================
  *
