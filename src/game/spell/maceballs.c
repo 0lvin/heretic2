@@ -155,8 +155,16 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 			// firstly, are we a player ?
 			if (trace->ent->client)
 			{
+				gitem_t *it;
+
 				Defence = trace->ent->client->playerinfo.pers.defence;
-				Quantity = itemlist[12].quantity;
+
+				it = FindItem("lshield");
+				if (it)
+				{
+					Quantity = it->quantity;
+				}
+
 				if(Defence->ammo && Quantity)
 				{
 					// do we have enough mana to teleport ?
