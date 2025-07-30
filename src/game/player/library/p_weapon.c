@@ -43,9 +43,9 @@ void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 	playerinfo->pers.weapon=Weapon;
 
 	if(playerinfo->pers.weapon && playerinfo->pers.weapon->ammo)
-		playerinfo->weap_ammo_index = ITEM_INDEX(FindItem(playerinfo->pers.weapon->ammo));
+		playerinfo->weap_ammo_index = pi.GetItemIndex(pi.FindItem(playerinfo->pers.weapon->ammo));
 	else
-		playerinfo->weap_ammo_index=0;
+		playerinfo->weap_ammo_index = 0;
 }
 
 // ************************************************************************************************
@@ -110,7 +110,7 @@ void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon)
 	// if its anything other than the flying fist, see if we have mana for it.
 	if (Weapon->tag != ITEM_WEAPON_FLYINGFIST)
 	{
-		if (playerinfo->pers.inventory.Items[ITEM_INDEX(FindItem(Weapon->ammo))] < Weapon->quantity)
+		if (playerinfo->pers.inventory.Items[pi.GetItemIndex(pi.FindItem(Weapon->ammo))] < Weapon->quantity)
 		{
 			playerinfo->G_cprintf(playerinfo->self, PRINT_HIGH, GM_NOMANA);
 			return;
@@ -149,8 +149,8 @@ void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 		return;
 
 	// see if we actually have any ammo for it
-	AmmoItem=FindItem(Weapon->ammo);
-	AmmoIndex=ITEM_INDEX(AmmoItem);
+	AmmoItem = pi.FindItem(Weapon->ammo);
+	AmmoIndex = pi.GetItemIndex(AmmoItem);
 
     if(!playerinfo->pers.inventory.Items[AmmoIndex])
 	{
@@ -194,8 +194,8 @@ void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon)
 		return;
 
 	// see if we actually have any ammo for it
-	AmmoItem=FindItem(Weapon->ammo);
-	AmmoIndex=ITEM_INDEX(AmmoItem);
+	AmmoItem = pi.FindItem(Weapon->ammo);
+	AmmoIndex = pi.GetItemIndex(AmmoItem);
 
     if(!playerinfo->pers.inventory.Items[AmmoIndex])
 	{
@@ -250,8 +250,8 @@ int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 
 	if(Weapon->ammo&&(Weapon->quantity))
 	{
-		AmmoItem=FindItem(Weapon->ammo);
-		AmmoIndex=ITEM_INDEX(AmmoItem);
+		AmmoItem = pi.FindItem(Weapon->ammo);
+		AmmoIndex = pi.GetItemIndex(AmmoItem);
 
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_MACEBALLS && playerinfo->powerup_timer > playerinfo->leveltime)
 			return(playerinfo->pers.inventory.Items[AmmoIndex]/(Weapon->quantity*2.0));		// Double consumption for mace.
@@ -281,8 +281,8 @@ int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent)
 
 	if(Defence->ammo && Defence->quantity)
 	{
-		ManaItem = FindItem(Defence->ammo);
-		ManaIndex = ITEM_INDEX(ManaItem);
+		ManaItem = pi.FindItem(Defence->ammo);
+		ManaIndex = pi.GetItemIndex(ManaItem);
 
 		return(playerinfo->pers.inventory.Items[ManaIndex]/Defence->quantity);
 

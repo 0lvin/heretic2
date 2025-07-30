@@ -1287,13 +1287,13 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.uppermove_index = current_client->playerinfo.uppermove_index;
 	current_client->ps.lowermove_index = current_client->playerinfo.lowermove_index;
 
-	current_client->ps.weapon = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.weapon);
-	current_client->ps.defense = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.defence);
-	current_client->ps.lastweapon = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.lastweapon);
-	current_client->ps.lastdefense = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.lastdefence);
+	current_client->ps.weapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.weapon);
+	current_client->ps.defense = (byte)ITEM_INDEX(current_client->playerinfo.pers.defence);
+	current_client->ps.lastweapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.lastweapon);
+	current_client->ps.lastdefense = (byte)ITEM_INDEX(current_client->playerinfo.pers.lastdefence);
 	current_client->ps.weaponready = (byte)current_client->playerinfo.pers.weaponready;
 	current_client->ps.switchtoweapon = (byte)current_client->playerinfo.switchtoweapon;
-	current_client->ps.newweapon = (byte)playerExport->GetItemIndex(current_client->playerinfo.pers.newweapon);
+	current_client->ps.newweapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.newweapon);
 	current_client->ps.weap_ammo_index = (byte)current_client->playerinfo.weap_ammo_index;
 	current_client->ps.def_ammo_index = (byte)current_client->playerinfo.def_ammo_index;
 	current_client->ps.weaponcharge = (byte)current_client->playerinfo.weaponcharge;

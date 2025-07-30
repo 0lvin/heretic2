@@ -1465,7 +1465,7 @@ monster_start(edict_t *self)
 
 	if (st.item)
 	{
-		self->item = playerExport->FindItemByClassname (st.item);
+		self->item = FindItemByClassname(st.item);
 		if (!self->item)
 		{
 			gi.dprintf("%s at %s has bad item: %s\n", self->classname,

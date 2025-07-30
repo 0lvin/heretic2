@@ -6,35 +6,23 @@
 #include "../../header/game.h"
 #include "player.h"
 #include "p_anim_data.h"
-static game_import_t gi;
+
+player_import_t pi;
 
 void P_Init(void)
 {
-	InitItems();
 }
 
 void P_Shutdown(void)
 {
 }
 
-gitem_t*
-GetPlayerItems(void)
-{
-	return p_itemlist;
-}
-
-int
-GetPlayerItemsCount(void)
-{
-	return p_num_items;
-}
-
 player_export_t playerExport;
 
 Q2_DLL_EXPORTED player_export_t *
-GetPlayerAPI(game_import_t *import)
+GetPlayerAPI(player_import_t *import)
 {
-	gi = *import;
+	pi = *import;
 
 	playerExport.Init = P_Init;
 	playerExport.Shutdown = P_Shutdown;
@@ -82,14 +70,6 @@ GetPlayerAPI(game_import_t *import)
 	playerExport.Weapon_CurrentShotsLeft = Weapon_CurrentShotsLeft;
 	playerExport.Defence_CurrentShotsLeft = Defence_CurrentShotsLeft;
 
-	playerExport.GetItemIndex = GetItemIndex;
-	playerExport.GetItemByIndex = GetItemByIndex;
-	playerExport.FindItemByClassname = FindItemByClassname;
-	playerExport.FindItem = FindItem;
-	playerExport.InitItems = InitItems;
-	playerExport.GetPlayerItems = GetPlayerItems;
-	playerExport.GetPlayerItemsCount = GetPlayerItemsCount;
-
 	return &playerExport;
 }
 
@@ -103,5 +83,5 @@ Com_Printf(const char *msg, ...)
 	vsnprintf(text, sizeof(text), msg, argptr);
 	va_end(argptr);
 
-	gi.dprintf("%s", text);
+	pi.dprintf("%s", text);
 }

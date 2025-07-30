@@ -75,8 +75,6 @@ typedef struct
 {
 	void (*Init)(void);
 	void (*Shutdown)(void);
-	gitem_t* (*GetPlayerItems)(void);
-	int (*GetPlayerItemsCount)(void);
 
 	void (*PlayerReleaseRope)(playerinfo_t *playerinfo);
 	void (*KnockDownPlayer)(playerinfo_t *playerinfo);
@@ -120,13 +118,16 @@ typedef struct
 	void (*Weapon_EquipArmor)(playerinfo_t *playerinfo, gitem_t *Weapon);
 	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
 	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
-
-	int (*GetItemIndex)(gitem_t* x);
-	gitem_t* (*GetItemByIndex)(int index);
-	gitem_t* (*FindItemByClassname)(const char *classname);
-	gitem_t* (*FindItem)(const char *pickupname);
-	void (*InitItems)(void);
 } player_export_t;
+
+typedef struct
+{
+	void (*dprintf)(const char *fmt, ...);
+	gitem_t *(*FindItem)(const char *pickup_name);
+	int (*GetItemIndex)(const gitem_t *item);
+} player_import_t;
+
+extern player_import_t pi;
 
 void P_Freelib(void);
 void* P_Load(void);

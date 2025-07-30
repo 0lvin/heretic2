@@ -650,9 +650,9 @@ G_SetStats(edict_t *ent)
 
 	if(pers->weapon->ammo && pers->weapon->count_width)
 	{
-		item=playerExport->FindItem(pers->weapon->ammo);
+		item=FindItem(pers->weapon->ammo);
 		ps->stats[STAT_AMMO_ICON] = gi.imageindex(item->icon);
-		ps->stats[STAT_AMMO] = pers->inventory.Items[playerExport->GetItemIndex(item)];
+		ps->stats[STAT_AMMO] = pers->inventory.Items[ITEM_INDEX(item)];
 	}
 	else
 	{
@@ -665,8 +665,8 @@ G_SetStats(edict_t *ent)
 
 	ps->stats[STAT_OFFMANA_ICON] = gi.imageindex("icons/green-mana");
 	ps->stats[STAT_OFFMANA_BACK] = gi.imageindex("icons/green-mana2");
-	item = playerExport->FindItem("Off-mana");
-	ps->stats[STAT_OFFMANA] = (pers->inventory.Items[playerExport->GetItemIndex(item)] * 100) / MAX_OFF_MANA;
+	item = FindItem("Off-mana");
+	ps->stats[STAT_OFFMANA] = (pers->inventory.Items[ITEM_INDEX(item)] * 100) / MAX_OFF_MANA;
 	if(ps->stats[STAT_OFFMANA] < 0)
 	{
 		ps->stats[STAT_OFFMANA] = 0;
@@ -678,8 +678,8 @@ G_SetStats(edict_t *ent)
 
 	ps->stats[STAT_DEFMANA_ICON] = gi.imageindex("icons/blue-mana");
 	ps->stats[STAT_DEFMANA_BACK] = gi.imageindex("icons/blue-mana2");
-	item = playerExport->FindItem("Def-mana");
-	ps->stats[STAT_DEFMANA] = (pers->inventory.Items[playerExport->GetItemIndex(item)] * 100) / MAX_DEF_MANA;
+	item = FindItem("Def-mana");
+	ps->stats[STAT_DEFMANA] = (pers->inventory.Items[ITEM_INDEX(item)] * 100) / MAX_DEF_MANA;
 	if(ps->stats[STAT_DEFMANA] < 0)
 	{
 		ps->stats[STAT_DEFMANA] = 0;
@@ -750,7 +750,7 @@ G_SetStats(edict_t *ent)
 
 	// Scan through inventory to handle puzzle pieces.
 
-	item = playerExport->GetPlayerItems();
+	item = itemlist;
 	count = STAT_PUZZLE_ITEM1;
 	ps->stats[STAT_PUZZLE_COUNT] = 0;
 	for(i = 0; i < MAX_ITEMS; i++, item++)

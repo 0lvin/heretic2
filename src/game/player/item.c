@@ -26,7 +26,7 @@ void Use_Defence(playerinfo_t *playerinfo, gitem_t *defence)
 	playerinfo->pers.defence=defence;
 
 	if(playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
-		playerinfo->def_ammo_index=playerExport->GetItemIndex(playerExport->FindItem(playerinfo->pers.defence->ammo));
+		playerinfo->def_ammo_index=ITEM_INDEX(FindItem(playerinfo->pers.defence->ammo));
 	else
 		playerinfo->def_ammo_index=0;
 }

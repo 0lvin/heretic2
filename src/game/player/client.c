@@ -1742,7 +1742,7 @@ Player_GiveStartItems(edict_t *ent, const char *ptr)
 
 				if (count == 0)
 				{
-					ent->client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 0;
+					ent->client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 0;
 				}
 				else
 				{
@@ -1811,24 +1811,24 @@ InitClientPersistant(edict_t *ent)
 
 	// Give just the sword-staff and flying-fist to the player as starting weapons.
 
-	item = playerExport->FindItem("staff");
+	item = FindItem("staff");
 	AddWeaponToInventory(item, ent);
-	client->playerinfo.pers.selected_item = playerExport->GetItemIndex(item);
+	client->playerinfo.pers.selected_item = ITEM_INDEX(item);
 	client->playerinfo.pers.weapon = item;
 	client->playerinfo.pers.lastweapon = item;
 	client->playerinfo.weap_ammo_index = 0;
 
 	if(!(((int)dmflags->value) & DF_NO_OFFENSIVE_SPELL))
 	{
-		item = playerExport->FindItem("fball");
+		item = FindItem("fball");
 		AddWeaponToInventory(item, ent);
-		client->playerinfo.pers.selected_item = playerExport->GetItemIndex(item);
+		client->playerinfo.pers.selected_item = ITEM_INDEX(item);
 		client->playerinfo.pers.weapon = item;
 		client->playerinfo.pers.lastweapon = item;
-		client->playerinfo.weap_ammo_index = playerExport->GetItemIndex(playerExport->FindItem(item->ammo));
+		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(item->ammo));
 	}
 
-	item = playerExport->FindItem("powerup");
+	item = FindItem("powerup");
 	AddDefenseToInventory(item, ent);
 	client->playerinfo.pers.defence = item;
 
@@ -1836,11 +1836,11 @@ InitClientPersistant(edict_t *ent)
 	// Start player with half offensive and defensive mana - as instructed by Brian P.
 	// ********************************************************************************************
 
-	item = playerExport->FindItem("Off-mana");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = client->playerinfo.pers.max_offmana / 2;
+	item = FindItem("Off-mana");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = client->playerinfo.pers.max_offmana / 2;
 
-	item = playerExport->FindItem("Def-mana");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = client->playerinfo.pers.max_defmana / 2;
+	item = FindItem("Def-mana");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = client->playerinfo.pers.max_defmana / 2;
 
 #ifdef G_NOAMMO
 
@@ -1848,32 +1848,32 @@ InitClientPersistant(edict_t *ent)
 
 	gi.dprintf("Starting with unlimited ammo.\n");
 
-	item = playerExport->FindItem("hell");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("hell");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
-	item = playerExport->FindItem("array");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("array");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
-	item = playerExport->FindItem("rain");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("rain");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
-	item = playerExport->FindItem("sphere");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("sphere");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
-	item = playerExport->FindItem("phoen");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("phoen");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
-	item = playerExport->FindItem("mace");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("mace");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
-	item = playerExport->FindItem("fwall");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("fwall");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
-	item = playerExport->FindItem("meteor");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("meteor");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
-	item = playerExport->FindItem("morph");
-	client->playerinfo.pers.inventory.Items[playerExport->GetItemIndex(item)] = 1;
+	item = FindItem("morph");
+	client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
 
 	client->bowtype = BOW_TYPE_REDRAIN;
 	client->armortype = ARMOR_TYPE_SILVER;
@@ -2677,10 +2677,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&1)
 	{
-		item=playerExport->FindItem("staff");
+		item=FindItem("staff");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2691,10 +2691,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&2)
 	{
-		item=playerExport->FindItem("fball");
+		item=FindItem("fball");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2705,10 +2705,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&4)
 	{
-		item=playerExport->FindItem("hell");
+		item=FindItem("hell");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2719,10 +2719,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&8)
 	{
-		item=playerExport->FindItem("array");
+		item=FindItem("array");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2733,10 +2733,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&16)
 	{
-		item=playerExport->FindItem("rain");
+		item=FindItem("rain");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2747,10 +2747,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&32)
 	{
-		item=playerExport->FindItem("sphere");
+		item=FindItem("sphere");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2761,10 +2761,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&64)
 	{
-		item=playerExport->FindItem("phoen");
+		item=FindItem("phoen");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2775,10 +2775,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&128)
 	{
-		item=playerExport->FindItem("mace");
+		item=FindItem("mace");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2789,10 +2789,10 @@ GiveLevelItems(edict_t *player)
 
 	if(level.offensive_weapons&256)
 	{
-		item=playerExport->FindItem("fwall");
+		item=FindItem("fwall");
 		if(AddWeaponToInventory(item,player))
 		{
-			if((playerExport->GetItemIndex(item) > playerExport->GetItemIndex(weapon))&&(client->playerinfo.pers.autoweapon))
+			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2803,31 +2803,31 @@ GiveLevelItems(edict_t *player)
 
 	if(level.defensive_weapons&1)
 	{
-		item=playerExport->FindItem("ring");
+		item=FindItem("ring");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&2)
 	{
-		item=playerExport->FindItem("lshield");
+		item=FindItem("lshield");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&4)
 	{
-		item=playerExport->FindItem("tele");
+		item=FindItem("tele");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&8)
 	{
-		item=playerExport->FindItem("morph");
+		item=FindItem("morph");
 		AddDefenseToInventory(item,player);
 	}
 
 	if(level.defensive_weapons&16)
 	{
-		item=playerExport->FindItem("meteor");
+		item=FindItem("meteor");
 		AddDefenseToInventory(item,player);
 	}
 
@@ -3099,10 +3099,10 @@ PutClientInServer(edict_t *ent)
 	// Set the player's current offensive and defensive ammo indexes.
 
 	if (client->playerinfo.pers.weapon->ammo)
-		client->playerinfo.weap_ammo_index = playerExport->GetItemIndex(playerExport->FindItem(client->playerinfo.pers.weapon->ammo));
+		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.weapon->ammo));
 
 	if (client->playerinfo.pers.defence)
-		client->playerinfo.def_ammo_index = playerExport->GetItemIndex(playerExport->FindItem(client->playerinfo.pers.defence->ammo));
+		client->playerinfo.def_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.defence->ammo));
 
 	VectorCopy(spawn_origin,client->playerinfo.origin);
 	VectorClear(client->playerinfo.velocity);
@@ -3151,7 +3151,7 @@ PutClientInServer(edict_t *ent)
 
 		gitem_t *item;
 
-		item=playerExport->FindItem("staff");
+		item=FindItem("staff");
 		client->playerinfo.pers.newweapon=item;
 		client->playerinfo.switchtoweapon=WEAPON_READY_SWORDSTAFF;
 	}

@@ -1202,7 +1202,6 @@ PLAYER_OBJS_ = \
 	src/game/player/library/p_chicken_anim.o \
 	src/game/player/library/p_chicken.o \
 	src/game/player/library/p_ctrl.o \
-	src/game/player/library/p_items.o \
 	src/game/player/library/player_main.o \
 	src/game/player/library/p_main.o \
 	src/game/player/library/p_weapon.o

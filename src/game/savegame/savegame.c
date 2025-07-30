@@ -632,7 +632,7 @@ WriteField1(FILE *f, field_t *field, byte *base)
 			}
 			else
 			{
-				index = *(gitem_t **)p - playerExport->GetPlayerItems();
+				index = *(gitem_t **)p - itemlist;
 			}
 
 			*(int *)p = index;
@@ -847,7 +847,7 @@ ReadField(FILE *f, field_t *field, byte *base)
 			}
 			else
 			{
-				*(gitem_t **)p = playerExport->GetPlayerItems() + index;
+				*(gitem_t **)p = &itemlist[index];
 			}
 
 			break;

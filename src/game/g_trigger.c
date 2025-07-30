@@ -326,7 +326,7 @@ void SP_trigger_puzzle(edict_t *self)
 		gi.dprintf("no key item for trigger_key at %s\n", vtos(self->s.origin));
 		return;
 	}
-	self->item = playerExport->FindItemByClassname (st.item);
+	self->item = FindItemByClassname(st.item);
 
 	if (!self->item)
 	{
@@ -354,7 +354,7 @@ trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 	if (!activator->client)
 		return;
 
-	index = playerExport->GetItemIndex(self->item);
+	index = ITEM_INDEX(self->item);
 
 	if (!activator->client->playerinfo.pers.inventory.Items[index])
 	{

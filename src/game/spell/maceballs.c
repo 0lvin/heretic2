@@ -156,12 +156,12 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 			if (trace->ent->client)
 			{
 				Defence = trace->ent->client->playerinfo.pers.defence;
-				Quantity = playerExport->GetPlayerItems()[12].quantity;
+				Quantity = itemlist[12].quantity;
 				if(Defence->ammo && Quantity)
 				{
 					// do we have enough mana to teleport ?
-					ManaItem = playerExport->FindItem(Defence->ammo);
-					ManaIndex = playerExport->GetItemIndex(ManaItem);
+					ManaItem = FindItem(Defence->ammo);
+					ManaIndex = ITEM_INDEX(ManaItem);
 					if (trace->ent->client->playerinfo.pers.inventory.Items[ManaIndex]/Quantity > 0)
 					{
 						// yes, do we actually have a teleport ?

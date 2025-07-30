@@ -1108,6 +1108,8 @@ void SetItemNames(void);
 gitem_t *FindItem(const char *pickup_name);
 gitem_t *FindItemByClassname(const char *classname);
 
+#define ITEM_INDEX(x) ((x) - itemlist)
+
 edict_t *Drop_Item(edict_t *ent, gitem_t *item);
 void SetRespawn(edict_t *ent, float delay);
 void ChangeWeapon(edict_t *ent);
@@ -1795,6 +1797,7 @@ void ProcessScripts(void);
 void ShutdownScripts(qboolean Complete);
 
 extern player_export_t *playerExport;	// interface to player library.
+extern player_import_t playerImport;	// interface to player library.
 
 #include "../common/message.h"
 #include "g_classstatics.h"

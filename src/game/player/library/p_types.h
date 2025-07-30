@@ -201,17 +201,6 @@ typedef struct gitem_s
 	char		*icon;
 } gitem_t;
 
-extern gitem_t *p_itemlist;
-extern int p_num_items;
-
-extern int GetItemIndex(gitem_t* x);
-extern gitem_t *GetItemByIndex(int index);
-extern gitem_t *FindItemByClassname(const char *classname);
-extern gitem_t *FindItem(const char *pickupname);
-extern void InitItems(void);
-
-#define	ITEM_INDEX(x) GetItemIndex(x)
-
 // ************************************************************************************************
 // inventory_t
 // -----------

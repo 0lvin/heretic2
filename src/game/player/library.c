@@ -22,6 +22,7 @@
 // Structure containing functions and data pointers exported from the player DLL.
 
 player_export_t	*playerExport;
+player_import_t	playerImport;
 
 // Handle to player DLL.
 
@@ -53,6 +54,12 @@ void P_Freelib()
 	player_library = NULL;
 }
 
+static int
+GetItemIndex(const gitem_t *item)
+{
+	return ITEM_INDEX(item);
+}
+
 // ************************************************************************************************
 // P_Load
 // ------
@@ -61,8 +68,7 @@ void P_Freelib()
 void *
 P_Load(void)
 {
-
-	player_export_t *(*P_GetPlayerAPI)(game_import_t *import);
+	player_export_t *(*P_GetPlayerAPI)(player_import_t *import);
 
 	char name[MAX_OSPATH];
 	const char *path;
@@ -167,7 +173,11 @@ P_Load(void)
 		return NULL;
 	}
 
-	playerExport = P_GetPlayerAPI(&gi);
+	playerImport.dprintf = gi.dprintf;
+	playerImport.FindItem = FindItem;
+	playerImport.GetItemIndex = GetItemIndex;
+
+	playerExport = P_GetPlayerAPI(&playerImport);
 	playerExport->Init();
 
 	Com_Printf("------------------------------------\n");
