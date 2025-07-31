@@ -1368,19 +1368,20 @@ static const gitem_t gameitemlist[] = {
 		NULL
 	}, /* leave index 0 alone */
 
-	// =============================================================================================
 
-	// Weapon items.
-
+	/*
+	 * QUAKED weapon_swordstaff
+	 * This can't be placed in the editor
+	 */
 	{
 		"Weapon_SwordStaff",					// Spawnname (char *)
 		"staff",								// Pickup name (char *)
 		0,										// pickup message
 		0,										// can`t use message
-		NULL,	 								// Pickup (f)
+		Pickup_Weapon,	 						// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
+		WeaponThink_SwordStaff,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		0,										// world model flags
@@ -1398,16 +1399,20 @@ static const gitem_t gameitemlist[] = {
 		"icons/i_staff.m8",				// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED weapon_flyingfist
+	 * This can't be placed in the editor
+	 */
 	{
 		"Weapon_FlyingFist", 					// Spawnname
 		"fball",								// Pickup name (char *)
 		0,										// pickup message
 		GM_NOFLYINGFIST,						// can`t use message
-		NULL,									// Pickup (f)
+		Pickup_Weapon,							// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		WeaponThink_FlyingFist,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		0,										// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1424,16 +1429,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_fball.m8",   			// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_weapon_hellstaff (.3 .3 1) (-16 -16 -16) (16 16 16) COOP_ONLY
+	 * Pickup for the hellstaff weapon.
+	 */
 	{
 		"item_weapon_hellstaff",				// Spawnname
 		"hell",									// Pickup name (char *)
 		GM_HELLSTAFF,							// pickup message
-		GM_NOHELLORBS,										// can`t use message
-		NULL,	 								// Pickup (f)
+		GM_NOHELLORBS,							// can`t use message
+		Pickup_Weapon,	 						// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		WeaponThink_HellStaff,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		0,										// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1450,16 +1459,20 @@ static const gitem_t gameitemlist[] = {
 		"icons/i_hell.m8",				// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_weapon_magicmissile (.3 .3 1) (-16 -16 -16) (16 16 16) COOP_ONLY
+	 * Pickup for the Magic Missile weapon.
+	 */
 	{
 		"item_weapon_magicmissile",				// Spawnname
 		"array",								// Pickup name (char *)
 		GM_FORCEBLAST, 							// pickup message
-		GM_NOFORCE,										// can`t use message
-		NULL,									// Pickup (f)
+		GM_NOFORCE,								// can`t use message
+		Pickup_Weapon,							// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		WeaponThink_MagicMissileSpread,			// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1476,16 +1489,20 @@ static const gitem_t gameitemlist[] = {
 		"icons/i_array.m8",				// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_weapon_redrain_bow (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
+	 * Pickup for the Red Rain Bow weapon.
+	 */
 	{
 		"item_weapon_redrain_bow", 				// Spawnname
 		"rain",									// Pickup name (char *)
-		GM_STORMBOW,										// pickup message
-		GM_NOSTORMBOW,										// can`t use message
-		NULL,	 								// Pickup (f)
+		GM_STORMBOW,							// pickup message
+		GM_NOSTORMBOW,							// can`t use message
+		Pickup_Weapon,	 						// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		WeaponThink_RedRainBow,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		0,										// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1502,16 +1519,20 @@ static const gitem_t gameitemlist[] = {
 		"icons/i_rain.m8",				// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_weapon_firewall (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the Fire Wall weapon.
+	 */
 	{
 		"item_weapon_firewall",					// Spawnname
 		"fwall",								// Pickup name (char *)
-		GM_FIREWALL,										// pickup message
-		GM_NOFIREWALL,										// can`t use message
-		NULL,									// Pickup (f)
+		GM_FIREWALL,							// pickup message
+		GM_NOFIREWALL,							// can`t use message
+		Pickup_Weapon,							// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		WeaponThink_Firewall,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		PICKUP_MIN,								// Bounding box mins
 		PICKUP_MAX,								// Bounding box maxs
@@ -1528,16 +1549,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_fwall.m8",					// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_weapon_phoenixbow (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
+	 * Pickup for the Phoenix Bow weapon.
+	 */
 	{
 		"item_weapon_phoenixbow", 				// Spawnname
-		"phoen",							// Pickup name (char *)
-		GM_PHOENIX,										// pickup message
-		GM_NOPHOENIX,										// can`t use message
-		NULL,	 								// Pickup (f)
+		"phoen",								// Pickup name (char *)
+		GM_PHOENIX,								// pickup message
+		GM_NOPHOENIX,							// can`t use message
+		Pickup_Weapon,	 						// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		WeaponThink_PhoenixBow,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		0,										// world model flags
 		0, 0, 0,								// Bounding box mins
@@ -1554,16 +1579,20 @@ static const gitem_t gameitemlist[] = {
 		"icons/i_phoen.m8", 				// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_weapon_sphereofannihilation (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
+	 * Pickup for the Sphere Annihilation weapon.
+	 */
 	{
 		"item_weapon_sphereofannihilation",		// Spawnname
 		"sphere",								// Pickup name (char *)
-		GM_SPHERE,										// pickup message
-		GM_NOSPHERE,										// can`t use message
-		NULL,									// Pickup (f)
+		GM_SPHERE,								// pickup message
+		GM_NOSPHERE,							// can`t use message
+		Pickup_Weapon,							// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		WeaponThink_SphereOfAnnihilation,		// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1580,16 +1609,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_sphere.m8",			// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_weapon_maceballs (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
+	 * Pickup for the Mace Balls weapon.
+	 */
 	{
 		"item_weapon_maceballs",				// Spawnname
 		"mace",									// Pickup name (char *)
-		GM_IRONDOOM,										// pickup message
-		GM_NOIRONDOOM,										// can`t use message
-		NULL,									// Pickup (f)
+		GM_IRONDOOM,							// pickup message
+		GM_NOIRONDOOM,							// can`t use message
+		Pickup_Weapon,							// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		WeaponThink_Maceballs,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1606,16 +1639,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_mace.m8",				// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_defense_powerup (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
+	 * This can't be placed in the editor
+	 */
 	{
 		"item_defense_powerup",					// Spawnname
 		"powerup",								// Pickup name (char *)
 		GM_TOME, 								// pickup message
-		GM_NOTOME,										// can`t use message
-		NULL,									// Pickup (f)
-		NULL,									// Use (f)
+		GM_NOTOME,								// can`t use message
+		Pickup_Defense,							// Pickup (f)
+		Use_Defence,							// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		DefenceThink_Powerup,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1632,16 +1669,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_tome.m8",				// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_defense_ringofrepulsion (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the Ring of Repulsion defensive spell.
+	 */
 	{
 		"item_defense_ringofrepulsion",			// Spawnname
 		"ring",									// Pickup name (char *)
-		GM_RING,										// pickup message
-		GM_NORING,										// can`t use message
-		NULL,									// Pickup (f)
-		NULL,									// Use (f)
+		GM_RING,								// pickup message
+		GM_NORING,								// can`t use message
+		Pickup_Defense,							// Pickup (f)
+		Use_Defence,							// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		DefenceThink_RingOfRepulsion,			// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1658,16 +1699,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_ring.m8",			// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_defense_shield (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the Shield defensive spell.
+	 */
 	{
 		"item_defense_shield",					// Spawnname
 		"lshield",								// Pickup name (char *)
-		GM_SHIELD,										// pickup message
-		GM_NOSHIELD,										// can`t use message
-		NULL,									// Pickup (f)
-		NULL,									// Use (f)
+		GM_SHIELD,								// pickup message
+		GM_NOSHIELD,							// can`t use message
+		Pickup_Defense,							// Pickup (f)
+		Use_Defence,							// Use (f)
 		NULL,									// Drop	(f)
-		NULL,	 								// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		DefenceThink_Shield,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1684,16 +1729,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_shield.m8",			// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_defense_teleport (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the Teleport defensive spell.
+	 */
 	{
 		"item_defense_teleport",				// Spawnname
 		"tele",									// Pickup name (char *)
-		GM_TELEPORT,										// pickup message
-		GM_NOTELEPORT,										// can`t use message
-		NULL,									// Pickup (f)
-		NULL,									// Use (f)
+		GM_TELEPORT,							// pickup message
+		GM_NOTELEPORT,							// can`t use message
+		Pickup_Defense,							// Pickup (f)
+		Use_Defence,							// Use (f)
 		NULL,									// Drop	(f)
-		NULL,  									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		DefenceThink_Teleport,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1710,16 +1759,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_tele.m8",					// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_defense_polymorph (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the Polymorph Barrier defensive spell.
+	 */
 	{
-		"item_defense_polymorph",			    // Spawnname
-		"morph",						    // Pickup name (char *)
-		GM_MORPH,										// pickup message
-		GM_NOMORPH,										// can`t use message
-		NULL,								    // Pickup (f)
-		NULL,									// Use (f)
+		"item_defense_polymorph",				// Spawnname
+		"morph",								// Pickup name (char *)
+		GM_MORPH,								// pickup message
+		GM_NOMORPH,								// can`t use message
+		Pickup_Defense,							// Pickup (f)
+		Use_Defence,							// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		DefenceThink_Morph,						// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1736,16 +1789,20 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_morph.m8",					// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_defense_meteorbarrier (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the Meteor Barrier defensive spell.
+	 */
 	{
 		"item_defense_meteorbarrier",			// Spawnname
 		"meteor",								// Pickup name (char *)
-		GM_METEOR,										// pickup message
-		GM_NOMETEOR,										// can`t use message
-		NULL,									// Pickup (f)
-		NULL,									// Use (f)
+		GM_METEOR,								// pickup message
+		GM_NOMETEOR,							// can`t use message
+		Pickup_Defense,							// Pickup (f)
+		Use_Defence,							// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		DefenceThink_MeteorBarrier,				// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -1767,12 +1824,16 @@ static const gitem_t gameitemlist[] = {
 
 	// Ammo items.
 
+	/*
+	 * QUAKED item_mana_offensive_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the offensive mana (50 points).
+	 */
 	{
 		"item_mana_offensive_half",				// Spawnname
 		"Off-mana",								// Pickup name (char *)
 		GM_OFFMANAS,										// pickup message
 		0,
-		NULL, 									// Pickup (f)
+		Pickup_Mana, 									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
@@ -1793,12 +1854,16 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_mana_offensive_full (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the offensive mana (100 points).
+	 */
 	{
 		"item_mana_offensive_full",				// Spawnname
 		"Off-mana",								// Pickup name (char *)
 		GM_OFFMANAB,										// pickup message
 		0,
-		NULL, 									// Pickup (f)
+		Pickup_Mana, 									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
@@ -1819,12 +1884,16 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_mana_defensive_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the defensive mana (50 points).
+	 */
 	{
 		"item_mana_defensive_half",				// Spawnname
 		"Def-mana",								// Pickup name (char *)
 		GM_DEFMANAS,							// pickup message
 		0,
-		NULL,									// Pickup (f)
+		Pickup_Mana,									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
@@ -1845,12 +1914,16 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_mana_defensive_full (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the defensive mana (100 points).
+	 */
 	{
 		"item_mana_defensive_full",				// Spawnname
 		"Def-mana",								// Pickup name (char *)
 		GM_DEFMANAB,							// pickup message
 		0,
-		NULL,									// Pickup (f)
+		Pickup_Mana,									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
@@ -1871,13 +1944,16 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// Icon name (char *)
 	},
 
-
+	/*
+	 * QUAKED item_mana_combo_quarter (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for both defensive & offensive mana (25 points).
+	 */
 	{
 		"item_mana_combo_quarter",					  // Spawnname
 		"Def-mana",									  // Pickup name (char *)
 		GM_COMBMANAS,										// pickup message
 		0,
-		NULL,								  // Pickup (f)
+		Pickup_Mana,								  // Pickup (f)
 		NULL,										  // Use (f)
 		NULL,										  // Drop	(f)
 		NULL,										  // Think (f)
@@ -1898,12 +1974,16 @@ static const gitem_t gameitemlist[] = {
 		NULL,										  // Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_mana_combo_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for both defensive & offensive mana (50 points).
+	 */
 	{
 		"item_mana_combo_half",					  // Spawnname
 		"Def-mana",									  // Pickup name (char *)
 		GM_COMBMANAB,										// pickup message
 		0,
-		NULL,								  // Pickup (f)
+		Pickup_Mana,								  // Pickup (f)
 		NULL,										  // Use (f)
 		NULL,										  // Drop	(f)
 		NULL,										  // Think (f)
@@ -1924,12 +2004,16 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_ammo_redrain (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup ammo for the Red Rain Bow
+	 */
 	{
 		"item_ammo_redrain",						  // Spawnname
 		"Red-Rain-Arrows",							  // Pickup name (char *)
 		GM_STORMARROWS,										// pickup message
 		0,
-		NULL,								  // Pickup (f)
+		Pickup_Ammo,								  // Pickup (f)
 		NULL,										  // Use (f)
 		NULL,										  // Drop	(f)
 		NULL,										  // Think (f)
@@ -1950,12 +2034,16 @@ static const gitem_t gameitemlist[] = {
 		"icons/i_ammo-redrain.m8",								  // Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_ammo_phoenix (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup ammo for the Phoenix Bow
+	 */
 	{
 		"item_ammo_phoenix",							  // Spawnname
 		"Phoenix-Arrows",							  // Pickup name (char *)
 		GM_PHOENARROWS,										// pickup message
 		0,
-		NULL,										  // Pickup (f)
+		Pickup_Ammo,								  // Pickup (f)
 		NULL,										  // Use (f)
 		NULL,										  // Drop	(f)
 		NULL,										  // Think (f)
@@ -1976,12 +2064,16 @@ static const gitem_t gameitemlist[] = {
 		"icons/i_ammo-phoen.m8",								  // Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_ammo_hellstaff (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup ammo for the Hellstaff
+	 */
 	{
 		"item_ammo_hellstaff",						  // Spawnname
 		"Hell-staff-ammo",							  // Pickup name (char *)
 		GM_HELLORB,										// pickup message
 		0,
-		NULL,										  // Pickup (f)
+		Pickup_Ammo,								  // Pickup (f)
 		NULL,										  // Use (f)
 		NULL,										  // Drop	(f)
 		NULL,										  // Think (f)
@@ -2006,12 +2098,16 @@ static const gitem_t gameitemlist[] = {
 
 	// Other items.
 
+	/*
+	 * QUAKED item_health_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup health (10 points)
+	 */
 	{
 		"item_health_half",							// Spawnname
 		"Minor health",								// Pickup name (char *)
 		GM_HEALTHVIAL,										// pickup message
 		0,
-		NULL, 								// Pickup (f)
+		Pickup_Health, 								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2032,12 +2128,16 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_health_full (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup health (30 points)
+	 */
 	{
 		"item_health_full",							// Spawnname
 		"Major health",								// Pickup name (char *)
 		GM_HEALTHPOTION,										// pickup message
 		0,
-		NULL, 								// Pickup (f)
+		Pickup_Health, 								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2062,12 +2162,18 @@ static const gitem_t gameitemlist[] = {
 
 	// Puzzle Pieces
 
+	/*
+	 * QUAKED item_puzzle_townkey (.3 .3 1) (-8 -8 -4) (8 8 4)  x NO_DROP
+	 * Key puzzle piece
+	 * Town Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_townkey",						// Spawnname
 		"Town Key",									// Pickup name (char *)
-		GM_F_TOWNKEY,										// pickup message
-		GM_NEED_TOWNKEY,										// can`t use message
-		NULL,				 						// Pickup (f)
+		GM_F_TOWNKEY,								// pickup message
+		GM_NEED_TOWNKEY,							// can`t use message
+		Pickup_Puzzle,		 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2088,12 +2194,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_townkey.m8",					// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_cog (.3 .3 1) (-10 -10 -24) (10 10 20)  x  NO_DROP
+	 * Cog puzzle piece
+	 * Palace level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_cog",							// Spawnname
 		"Cog",										// Pickup name (char *)
-		GM_F_COG,										// pickup message
-		GM_NEED_COG,										// can`t use message
-		NULL,				 						// Pickup (f)
+		GM_F_COG,									// pickup message
+		GM_NEED_COG,								// can`t use message
+		Pickup_Puzzle,		 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2114,18 +2226,25 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_cog.m8",							// Icon name (char *)
 	},
 
+
+	/*
+	 * QUAKED item_puzzle_shield (.3 .3 1) (-2 -6 -12) (2 6 12)  x  NO_DROP
+	 * Sithra Shield puzzle item
+	 * Healer Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_shield",					// Spawnname
 		"Defensive Shield",						// Pickup name (char *)
-		GM_F_SHIELD,										// pickup message
-		GM_NEED_SHIELD,										// can`t use message
-		NULL,				 						// Pickup (f)
-		NULL,										// Use (f)
-		NULL,										// Drop	(f)
-		NULL,										// Think (f)
-		"player/picup.wav",							// Pickup sound (char *)
+		GM_F_SHIELD,							// pickup message
+		GM_NEED_SHIELD,							// can`t use message
+		Pickup_Puzzle,	 						// Pickup (f)
+		NULL,									// Use (f)
+		NULL,									// Drop	(f)
+		NULL,									// Think (f)
+		"player/picup.wav",						// Pickup sound (char *)
 		NULL,	// world model (char *)
-		0,											// world model flags
+		0,										// world model flags
 		-2, -6, -12,							// Bounding box mins
 		 2,  6,  12,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
@@ -2140,12 +2259,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_shield.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_potion (.3 .3 1) (-3 -3 -10) (3 3 10)  x  NO_DROP
+	 * Potion puzzle item
+	 * Healer Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_potion",						// Spawnname
 		"Potion",									// Pickup name (char *)
-		GM_F_POTION,										// pickup message
-		GM_NEED_POTION,										// can`t use message
-		NULL,				 						// Pickup (f)
+		GM_F_POTION,								// pickup message
+		GM_NEED_POTION,								// can`t use message
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2166,13 +2291,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_potion.m8",						// Icon name (char *)
 	},
 
-
+	/*
+	 * QUAKED item_puzzle_plazacontainer (.3 .3 1) (-6 -6 -8) (6 6 6)  x  NO_DROP
+	 * Container puzzle item
+	 * Plaza Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_plazacontainer",				// Spawnname
 		"Container",								// Pickup name (char *)
 		GM_F_CONT,										// pickup message
 		GM_NEED_CONT,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2193,13 +2323,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_plazajug.m8",						// Icon name (char *)
 	},
 
-
+	/*
+	 * QUAKED item_puzzle_slumcontainer (.3 .3 1) (-6 -6 -8) (6 6 6)  x  NO_DROP
+	 * Full Container puzzle item
+	 * Slum Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_slumcontainer",				// Spawnname
 		"Full Container",							// Pickup name (char *)
 		GM_F_CONTFULL,										// pickup message
 		GM_NEED_CONTFULL,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2220,12 +2355,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_jugfill.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_crystal (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
+	 * Crystal puzzle item
+	 * Academic Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_crystal",						// Spawnname
 		"Crystal",									// Pickup name (char *)
 		GM_F_CRYSTAL,										// pickup message
 		GM_NEED_CRYSTAL,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2246,12 +2387,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_crystal.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_canyonkey (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
+	 * Key puzzle item
+	 * Canyon Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_canyonkey",					// Spawnname
 		"Canyon Key",								// Pickup name (char *)
 		GM_F_CANYONKEY,										// pickup message
 		GM_NEED_CANYONKEY,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2272,12 +2419,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_canyonkey.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_hive2amulet (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
+	 * Amulet puzzle item
+	 * Hive 2 Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_hive2amulet",					// Spawnname
 		"Hive 2 Amulet",							// Pickup name (char *)
 		GM_F_AMULET,										// pickup message
 		GM_NEED_AMULET,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2298,12 +2451,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_tcheckrikbust.m8",					// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_hive2spear (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
+	 * Spear puzzle item
+	 * Hive 2 Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_hive2spear",					// Spawnname
 		"Hive 2 Spear",								// Pickup name (char *)
 		GM_F_SPEAR,										// pickup message
 		GM_NEED_SPEAR,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2324,12 +2483,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_spear.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_hive2gem (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
+	 * Gem puzzle item
+	 * Hive 2 Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_hive2gem",						// Spawnname
 		"Hive 2 Gem",								// Pickup name (char *)
 		GM_F_GEM,										// pickup message
 		GM_NEED_GEM,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2350,12 +2515,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_tcheckrikgem.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_minecartwheel (.3 .3 1) (-1 -6 -6) (1 6 6)  x  NO_DROP
+	 * Mine Cart Wheel puzzle item
+	 * Mine 1 Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_minecartwheel",				// Spawnname
 		"Minecart Wheel",							// Pickup name (char *)
 		GM_F_CARTWHEEL,										// pickup message
 		GM_NEED_CARTWHEEL,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2376,6 +2547,13 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_wheel.m8",							// Icon name (char *)
 	},
 
+
+	/*
+	 * QUAKED item_puzzle_ore (.3 .3 1) (-10 -10 -8) (10 10 8)  x  NO_DROP
+	 * Unrefined Ore puzzle item
+	 * Mine 2 Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_ore",							// Spawnname
 		"Ore",										// Pickup name (char *)
@@ -2402,12 +2580,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_oreunrefined.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_refinedore (.3 .3 1) (-3 -12 -2) (3 12 2) x   NO_DROP
+	 * Refined Ore puzzle item
+	 * Mine 2 Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_refinedore",					// Spawnname
 		"Refined Ore",								// Pickup name (char *)
 		GM_F_REFORE,										// pickup message
 		GM_NEED_REFORE,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2428,12 +2612,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_orerefined.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_dungeonkey (.3 .3 1) (-1 -18 -9) (1 18 9)  x  NO_DROP
+	 * Amulet puzzle item
+	 * Dungeon Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_dungeonkey",					// Spawnname
 		"Dungeon Key",								// Pickup name (char *)
 		GM_F_DUNGEONKEY,										// pickup message
 		GM_NEED_DUNGEONKEY,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2454,12 +2644,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_dungeonkey.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_cloudkey (.3 .3 1) (-8 -8 -3) (8 8 6)  x  NO_DROP
+	 * Key puzzle item
+	 * Cloud Quarters 2 Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_cloudkey",						// Spawnname
 		"Cloud Key",								// Pickup name (char *)
 		GM_F_CLOUDKEY,										// pickup message
 		GM_NEED_CLOUDKEY,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2480,13 +2676,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_cloudkey.m8",						// Icon name (char *)
 	},
 
-
+	/*
+	 * QUAKED item_puzzle_highpriestesskey (.3 .3 1) (-12 -12 -6) (12 12 6) x   NO_DROP
+	 * Key puzzle item
+	 * High Priestess Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_highpriestesskey",				// Spawnname
 		"Key",										// Pickup name (char *)
 		GM_F_HIGHKEY,										// pickup message
 		GM_NEED_HIGHKEY,										// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2507,12 +2708,18 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_hivekey.m8",						// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_puzzle_highpriestesssymbol (.3 .3 1) (-12 -12 -4) (12 12 4) x   NO_DROP
+	 * Key puzzle item
+	 * High Priestess Level
+	 * NO_DROP - won't drop to ground
+	*/
 	{
 		"item_puzzle_highpriestesssymbol",			// Spawnname
 		"Symbol",									// Pickup name (char *)
-		GM_F_SYMBOL,										// pickup message
-		GM_NEED_SYMBOL,										// can`t use message
-		NULL,				 						// Pickup (f)
+		GM_F_SYMBOL,								// pickup message
+		GM_NEED_SYMBOL,								// can`t use message
+		Pickup_Puzzle,	 							// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2532,13 +2739,18 @@ static const gitem_t gameitemlist[] = {
 		ITEM_HPSYM,				 							// tag ?
 		"icons/p_queenkey.m8",						// Icon name (char *)
 	},
-
+	/*
+	 * QUAKED item_puzzle_tome (.3 .3 1) (-12 -12 -4) (12 12 4)  x  NO_DROP
+	 * Tome puzzle piece
+	 * 2 Cloud Levels
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_tome",							// Spawnname
 		"Tome",										// Pickup name (char *)
-		GM_F_TOME,										// pickup message
-		GM_NEED_TOME,										// can`t use message
-		NULL,				 						// Pickup (f)
+		GM_F_TOME,									// pickup message
+		GM_NEED_TOME,								// can`t use message
+		Pickup_Puzzle,		 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2558,12 +2770,18 @@ static const gitem_t gameitemlist[] = {
 		ITEM_TOME,				 							// tag ?
 		"icons/p_tomepower.m8",						// Icon name (char *)
 	},
+	/*
+	 * QUAKED item_puzzle_tavernkey (.3 .3 1) (-8 -8 -4) (8 8 4)    x   NO_DROP
+	 * Key puzzle piece
+	 * Ssdocks Level
+	 * NO_DROP - won't drop to ground
+	 */
 	{
 		"item_puzzle_tavernkey",					// Spawnname
 		"Tavern Key",								// Pickup name (char *)
 		GM_F_TAVERNKEY,								// pickup message
 		GM_NEED_TAVERNKEY,							// can`t use message
-		NULL,				 						// Pickup (f)
+		Pickup_Puzzle,		 						// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -2584,16 +2802,20 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_tavernkey.m8",					// Icon name (char *)
 	},
 
+	/*
+	 * QUAKED item_defense_tornado (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
+	 * Pickup for the Tornado defensive spell.
+	 */
 	{
 		"item_defense_tornado",					// Spawnname
 		"tornado",								// Pickup name (char *)
-		GM_TORNADO,										// pickup message
-		GM_NOTORNADO,										// can`t use message
-		NULL,									// Pickup (f)
-		NULL,									// Use (f)
+		GM_TORNADO,								// pickup message
+		GM_NOTORNADO,							// can`t use message
+		Pickup_Defense,							// Pickup (f)
+		Use_Defence,							// Use (f)
 		NULL,									// Drop	(f)
-		NULL,									// Think (f)
-		"player/getweapon.wav",						// Pickup sound (char *)
+		DefenceThink_Tornado,					// Think (f)
+		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
 		EF_ROTATE,								// world model flags
 		PICKUP_MIN,								// Bounding box mins
@@ -2647,409 +2869,24 @@ InitItems(void)
 	memcpy(itemlist, gameitemlist, sizeof(gameitemlist));
 	game.num_items = sizeof(gameitemlist) / sizeof(gameitemlist[0]) - 1;
 
-	// ********************************************************************************************
-	// Setup item function pointers which yield pick-up, use, drop and weaponthink functionality.
-	// ********************************************************************************************
-
-	// Leave index 0 empty.
-
-	// weapon_swordstaff
-	// This can't be placed in the editor
-
-	itemlist[1].pickup = Pickup_Weapon;
-	itemlist[1].use=playerExport->Weapon_EquipSwordStaff;
-	itemlist[1].weaponthink=WeaponThink_SwordStaff;
-
-	// weapon_flyingfist
-	// This can't be placed in the editor
-
-	itemlist[2].pickup = Pickup_Weapon;
-	itemlist[2].use=playerExport->Weapon_EquipSpell;
-	itemlist[2].weaponthink=WeaponThink_FlyingFist;
-
-	// item_weapon_hellstaff
-/*
- * QUAKED item_weapon_hellstaff (.3 .3 1) (-16 -16 -16) (16 16 16) COOP_ONLY
-Pickup for the hellstaff weapon.
-*/
-
-	itemlist[3].pickup = Pickup_Weapon;
-	itemlist[3].use=playerExport->Weapon_EquipHellStaff;
-	itemlist[3].weaponthink=WeaponThink_HellStaff;
-
-	// item_weapon_magicmissile
-/*
- * QUAKED item_weapon_magicmissile (.3 .3 1) (-16 -16 -16) (16 16 16) COOP_ONLY
-Pickup for the Magic Missile weapon.
-*/
-
-	itemlist[4].pickup = Pickup_Weapon;
-	itemlist[4].use=playerExport->Weapon_EquipSpell;
-	itemlist[4].weaponthink=WeaponThink_MagicMissileSpread;
-
-	// item_weapon_redrain_bow
-/*
- * QUAKED item_weapon_redrain_bow (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
-Pickup for the Red Rain Bow weapon.
-*/
-
-	itemlist[5].pickup = Pickup_Weapon;
-	itemlist[5].use=playerExport->Weapon_EquipBow;
-	itemlist[5].weaponthink=WeaponThink_RedRainBow;
-
-	// item_weapon_firewall
-/*
- * QUAKED item_weapon_firewall (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the Fire Wall weapon.
-*/
-
-	itemlist[6].pickup = Pickup_Weapon;
-	itemlist[6].use=playerExport->Weapon_EquipSpell;
-	itemlist[6].weaponthink=WeaponThink_Firewall;
-
-	// item_weapon_phoenixbow
-/*
- * QUAKED item_weapon_phoenixbow (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
-Pickup for the Phoenix Bow weapon.
-*/
-
-	itemlist[7].pickup = Pickup_Weapon;
-	itemlist[7].use=playerExport->Weapon_EquipBow;
-	itemlist[7].weaponthink=WeaponThink_PhoenixBow;
-
-	// item_weapon_sphereofannihilation
-/*
- * QUAKED item_weapon_sphereofannihilation (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
-Pickup for the Sphere Annihilation weapon.
-*/
-
-	itemlist[8].pickup = Pickup_Weapon;
-	itemlist[8].use=playerExport->Weapon_EquipSpell;
-	itemlist[8].weaponthink=WeaponThink_SphereOfAnnihilation;
-
-	// item_weapon_maceballs
-/*
- * QUAKED item_weapon_maceballs (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
-Pickup for the Mace Balls weapon.
-*/
-
-	itemlist[9].pickup = Pickup_Weapon;
-	itemlist[9].use=playerExport->Weapon_EquipSpell;
-	itemlist[9].weaponthink=WeaponThink_Maceballs;
-
-	// item_defense_powerup
-	// This can't be placed in the editor
-
-	itemlist[10].pickup = Pickup_Defense;
-	itemlist[10].use = Use_Defence;
-	itemlist[10].weaponthink = DefenceThink_Powerup;
-
-	// item_defense_ringofrepulsion
-/*
- * QUAKED item_defense_ringofrepulsion (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the Ring of Repulsion defensive spell.
-*/
-
-	itemlist[11].pickup = Pickup_Defense;
-	itemlist[11].use = Use_Defence;
-	itemlist[11].weaponthink = DefenceThink_RingOfRepulsion;
-
-	// item_defense_shield
-/*
- * QUAKED item_defense_shield (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the Shield defensive spell.
-*/
-
-	itemlist[12].pickup = Pickup_Defense;
-	itemlist[12].use = Use_Defence;
-	itemlist[12].weaponthink = DefenceThink_Shield;
-
-	// item_defense_teleport
-/*
- * QUAKED item_defense_teleport (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the Teleport defensive spell.
-*/
-
-	itemlist[13].pickup = Pickup_Defense;
-	itemlist[13].use = Use_Defence;
-	itemlist[13].weaponthink = DefenceThink_Teleport;
-
-	// item_defense_polymorph
-/*
- * QUAKED item_defense_polymorph (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the Polymorph Barrier defensive spell.
-*/
-
-	itemlist[14].pickup = Pickup_Defense;
-	itemlist[14].use = Use_Defence;
-	itemlist[14].weaponthink = DefenceThink_Morph;
-
-	// item_defense_meteorbarrier
-/*
- * QUAKED item_defense_meteorbarrier (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the Meteor Barrier defensive spell.
-*/
-
-	itemlist[15].pickup = Pickup_Defense;
-	itemlist[15].use = Use_Defence;
-	itemlist[15].weaponthink = DefenceThink_MeteorBarrier;
-
-	// item_mana_offensive_half
-/*
- * QUAKED item_mana_offensive_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the offensive mana (50 points).
-*/
-	itemlist[16].pickup = Pickup_Mana;
-
-	// item_mana_offensive_full
-/*
- * QUAKED item_mana_offensive_full (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the offensive mana (100 points).
-*/
-
-	itemlist[17].pickup = Pickup_Mana;
-
-	// item_mana_defensive_half
-/*
- * QUAKED item_mana_defensive_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the defensive mana (50 points).
-*/
-
-	itemlist[18].pickup = Pickup_Mana;
-
-	// item_mana_defensive_full
-/*
- * QUAKED item_mana_defensive_full (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the defensive mana (100 points).
-*/
-
-	itemlist[19].pickup = Pickup_Mana;
-
-	// item_mana_combo_quarter
-/*
- * QUAKED item_mana_combo_quarter (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for both defensive & offensive mana (25 points).
-*/
-
-	itemlist[20].pickup = Pickup_Mana;
-
-	// item_mana_combo_half
-/*
- * QUAKED item_mana_combo_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for both defensive & offensive mana (50 points).
-*/
-
-	itemlist[21].pickup = Pickup_Mana;
-
-	// item_ammo_redrain
-/*
- * QUAKED item_ammo_redrain (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup ammo for the Red Rain Bow
-*/
-
-	itemlist[22].pickup = Pickup_Ammo;
-
-	// item_ammo_phoenix
-/*
- * QUAKED item_ammo_phoenix (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup ammo for the Phoenix Bow
-*/
-
-	itemlist[23].pickup = Pickup_Ammo;
-
-	// item_ammo_hellstaff
-/*
- * QUAKED item_ammo_hellstaff (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup ammo for the Hellstaff
-*/
-
-	itemlist[24].pickup = Pickup_Ammo;
-
-	// item_health_half
-/*
- * QUAKED item_health_half (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup health (10 points)
-*/
-
-	itemlist[25].pickup = Pickup_Health;
-
-	// item_health_full
-/*
- * QUAKED item_health_full (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup health (30 points)
-*/
-
-	itemlist[26].pickup = Pickup_Health;
-
-/*
- * QUAKED item_puzzle_townkey (.3 .3 1) (-8 -8 -4) (8 8 4)  x NO_DROP
-Key puzzle piece
-Town Level
-NO_DROP - won't drop to ground
-
-*/
-	itemlist[27].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_cog (.3 .3 1) (-10 -10 -24) (10 10 20)  x  NO_DROP
-Cog puzzle piece
-Palace level
-NO_DROP - won't drop to ground
-*/
-	itemlist[28].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_shield (.3 .3 1) (-2 -6 -12) (2 6 12)  x  NO_DROP
-Sithra Shield puzzle item
-Healer Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[29].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_potion (.3 .3 1) (-3 -3 -10) (3 3 10)  x  NO_DROP
-Potion puzzle item
-Healer Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[30].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_plazacontainer (.3 .3 1) (-6 -6 -8) (6 6 6)  x  NO_DROP
-Container puzzle item
-Plaza Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[31].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_slumcontainer (.3 .3 1) (-6 -6 -8) (6 6 6)  x  NO_DROP
-Full Container puzzle item
-Slum Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[32].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_crystal (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
-Crystal puzzle item
-Academic Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[33].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_canyonkey (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
-Key puzzle item
-Canyon Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[34].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_hive2amulet (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
-Amulet puzzle item
-Hive 2 Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[35].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_hive2spear (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
-Spear puzzle item
-Hive 2 Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[36].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_hive2gem (.3 .3 1) (-16 -16 -16) (16 16 16)  x  NO_DROP
-Gem puzzle item
-Hive 2 Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[37].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_minecartwheel (.3 .3 1) (-1 -6 -6) (1 6 6)  x  NO_DROP
-Mine Cart Wheel puzzle item
-Mine 1 Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[38].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_ore (.3 .3 1) (-10 -10 -8) (10 10 8)  x  NO_DROP
-Unrefined Ore puzzle item
-Mine 2 Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[39].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_refinedore (.3 .3 1) (-3 -12 -2) (3 12 2) x   NO_DROP
-Refined Ore puzzle item
-Mine 2 Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[40].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_dungeonkey (.3 .3 1) (-1 -18 -9) (1 18 9)  x  NO_DROP
-Amulet puzzle item
-Dungeon Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[41].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_cloudkey (.3 .3 1) (-8 -8 -3) (8 8 6)  x  NO_DROP
-Key puzzle item
-Cloud Quarters 2 Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[42].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_highpriestesskey (.3 .3 1) (-12 -12 -6) (12 12 6) x   NO_DROP
-Key puzzle item
-High Priestess Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[43].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_highpriestesssymbol (.3 .3 1) (-12 -12 -4) (12 12 4) x   NO_DROP
-Key puzzle item
-High Priestess Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[44].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_tome (.3 .3 1) (-12 -12 -4) (12 12 4)  x  NO_DROP
-Tome puzzle piece
-2 Cloud Levels
-NO_DROP - won't drop to ground
-*/
-	itemlist[45].pickup = Pickup_Puzzle;
-
-/*
- * QUAKED item_puzzle_tavernkey (.3 .3 1) (-8 -8 -4) (8 8 4)    x   NO_DROP
-Key puzzle piece
-Ssdocks Level
-NO_DROP - won't drop to ground
-*/
-	itemlist[46].pickup = Pickup_Puzzle;
-
-	// item_defense_tornado
-/*
- * QUAKED item_defense_tornado (.3 .3 1) (-16 -16 -16) (16 16 16)   COOP_ONLY
-Pickup for the Tornado defensive spell.
-*/
-	itemlist[47].pickup = Pickup_Defense;
-	itemlist[47].use = Use_Defence;
-	itemlist[47].weaponthink = DefenceThink_Tornado;
+	/* weapon_swordstaff */
+	itemlist[1].use = playerExport->Weapon_EquipSwordStaff;
+	/* weapon_flyingfist */
+	itemlist[2].use = playerExport->Weapon_EquipSpell;
+	/* item_weapon_hellstaff */
+	itemlist[3].use = playerExport->Weapon_EquipHellStaff;
+	/* item_weapon_magicmissile */
+	itemlist[4].use = playerExport->Weapon_EquipSpell;
+	/* item_weapon_redrain_bow */
+	itemlist[5].use = playerExport->Weapon_EquipBow;
+	/* item_weapon_firewall */
+	itemlist[6].use = playerExport->Weapon_EquipSpell;
+	/* item_weapon_phoenixbow */
+	itemlist[7].use = playerExport->Weapon_EquipBow;
+	/* item_weapon_sphereofannihilation */
+	itemlist[8].use = playerExport->Weapon_EquipSpell;
+	/* item_weapon_maceballs */
+	itemlist[9].use = playerExport->Weapon_EquipSpell;
 }
 
 /*
@@ -3066,6 +2903,12 @@ SetItemNames(void)
 		it = &itemlist[i];
 		gi.configstring(CS_ITEMS + i, it->pickup_name);
 	}
+
+	jacket_armor_index = ITEM_INDEX(FindItem("Jacket Armor"));
+	combat_armor_index = ITEM_INDEX(FindItem("Combat Armor"));
+	body_armor_index = ITEM_INDEX(FindItem("Body Armor"));
+	power_screen_index = ITEM_INDEX(FindItem("Power Screen"));
+	power_shield_index = ITEM_INDEX(FindItem("Power Shield"));
 }
 
 void
