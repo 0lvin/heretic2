@@ -16,7 +16,6 @@
 // Applicable to all player-weapon types.
 // ************************************************************************************************
 
-void Weapon_Ready(playerinfo_t *playerinfo,gitem_t *Weapon);
 void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon);
 void Weapon_EquipSwordStaff(playerinfo_t *playerinfo,gitem_t *Weapon);
 void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon);

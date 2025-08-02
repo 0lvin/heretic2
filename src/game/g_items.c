@@ -73,6 +73,11 @@ void Weapon_Ionripper(edict_t *ent);
 void Weapon_Phalanx(edict_t *ent);
 void Weapon_Trap(edict_t *ent);
 
+void Weapon_EquipSpell(playerinfo_t *playerinfo,gitem_t *Weapon);
+void Weapon_EquipSwordStaff(playerinfo_t *playerinfo,gitem_t *Weapon);
+void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon);
+void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon);
+
 gitem_armor_t jacketarmor_info = {25, 50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info = {50, 100, .60, .30, ARMOR_COMBAT};
 gitem_armor_t bodyarmor_info = {100, 200, .80, .60, ARMOR_BODY};
@@ -2870,23 +2875,23 @@ InitItems(void)
 	game.num_items = sizeof(gameitemlist) / sizeof(gameitemlist[0]) - 1;
 
 	/* weapon_swordstaff */
-	itemlist[1].use = playerExport->Weapon_EquipSwordStaff;
+	itemlist[1].use = Weapon_EquipSwordStaff;
 	/* weapon_flyingfist */
-	itemlist[2].use = playerExport->Weapon_EquipSpell;
+	itemlist[2].use = Weapon_EquipSpell;
 	/* item_weapon_hellstaff */
-	itemlist[3].use = playerExport->Weapon_EquipHellStaff;
+	itemlist[3].use = Weapon_EquipHellStaff;
 	/* item_weapon_magicmissile */
-	itemlist[4].use = playerExport->Weapon_EquipSpell;
+	itemlist[4].use = Weapon_EquipSpell;
 	/* item_weapon_redrain_bow */
-	itemlist[5].use = playerExport->Weapon_EquipBow;
+	itemlist[5].use = Weapon_EquipBow;
 	/* item_weapon_firewall */
-	itemlist[6].use = playerExport->Weapon_EquipSpell;
+	itemlist[6].use = Weapon_EquipSpell;
 	/* item_weapon_phoenixbow */
-	itemlist[7].use = playerExport->Weapon_EquipBow;
+	itemlist[7].use = Weapon_EquipBow;
 	/* item_weapon_sphereofannihilation */
-	itemlist[8].use = playerExport->Weapon_EquipSpell;
+	itemlist[8].use = Weapon_EquipSpell;
 	/* item_weapon_maceballs */
-	itemlist[9].use = playerExport->Weapon_EquipSpell;
+	itemlist[9].use = Weapon_EquipSpell;
 }
 
 /*

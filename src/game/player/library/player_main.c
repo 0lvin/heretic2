@@ -61,7 +61,6 @@ GetPlayerAPI(player_import_t *import)
 	playerExport.PlayerUpdateCmdFlags = PlayerUpdateCmdFlags;
 	playerExport.PlayerUpdateModelAttributes = PlayerUpdateModelAttributes;
 
-	playerExport.Weapon_Ready = Weapon_Ready;
 	playerExport.Weapon_EquipSpell = Weapon_EquipSpell;
 	playerExport.Weapon_EquipSwordStaff = Weapon_EquipSwordStaff;
 	playerExport.Weapon_EquipHellStaff = Weapon_EquipHellStaff;

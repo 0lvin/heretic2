@@ -15,38 +15,6 @@
 //FIXME:  Include header
 qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);
 
-// ************************************************************************************************
-// Weapon_Ready
-// ------------
-// Make the specified weapon ready if the owner has enough ammo for it. Assumes that the owner does
-// actually have the weapon. Called by Cmd_InvUse_f() and other functions which do check the
-// availability first anyhow.
-// ************************************************************************************************
-
-void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
-{
-
-//	gi.dprintf("Weapon=%s\n",Weapon->pickup_name);
-
-	assert(Weapon);
-
-	// See if we're already using the weapon.
-	if(Weapon==playerinfo->pers.weapon)
-		return;
-
-	//Make sure we have an arm to do it
-	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
-		return;
-
-	// Change to this weapon and set the weapon owner's ammo_index to reflect this.
-	playerinfo->pers.lastweapon=playerinfo->pers.weapon;
-	playerinfo->pers.weapon=Weapon;
-
-	if(playerinfo->pers.weapon && playerinfo->pers.weapon->ammo)
-		playerinfo->weap_ammo_index = pi.GetItemIndex(pi.FindItem(playerinfo->pers.weapon->ammo));
-	else
-		playerinfo->weap_ammo_index = 0;
-}
 
 // ************************************************************************************************
 // Weapon_EquipSwordStaff

@@ -110,7 +110,6 @@ typedef struct
 	void (*PlayerUpdateCmdFlags)(playerinfo_t *playerinfo);
 	void (*PlayerUpdateModelAttributes)(playerinfo_t *playerinfo);
 
-	void (*Weapon_Ready)(playerinfo_t *playerinfo,gitem_t *Weapon);
 	void (*Weapon_EquipSpell)(playerinfo_t *playerinfo,gitem_t *Weapon);
 	void (*Weapon_EquipSwordStaff)(playerinfo_t *playerinfo,gitem_t *Weapon);
 	void (*Weapon_EquipHellStaff)(playerinfo_t *playerinfo,gitem_t *Weapon);
@@ -169,7 +168,6 @@ void PlayerUpdate(playerinfo_t* playerinfo);
 void PlayerUpdateCmdFlags(playerinfo_t* playerinfo);
 void PlayerUpdateModelAttributes(playerinfo_t* playerinfo);
 
-void Weapon_Ready(playerinfo_t* playerinfo, gitem_t* Weapon);
 void Weapon_EquipSpell(playerinfo_t* playerinfo, gitem_t* Weapon);
 void Weapon_EquipSwordStaff(playerinfo_t* playerinfo, gitem_t* Weapon);
 void Weapon_EquipHellStaff(playerinfo_t* playerinfo, gitem_t* Weapon);
