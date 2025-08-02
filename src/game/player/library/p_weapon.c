@@ -53,7 +53,7 @@ void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 // ----------------------
 // ************************************************************************************************
 
-void Weapon_EquipSwordStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
+void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon)
 {
 	assert(playerinfo);
 
