@@ -11,8 +11,6 @@
 #include "p_types.h"
 #include "p_actions.h"
 #include "p_main.h"
-#include "p_weapon.h"
-#include "p_weapon.h"
 #include "../../header/g_items.h"
 #include "../../monster/misc/player.h"
 #include "../../common/fx.h"
@@ -41,7 +39,6 @@ int		traillength[TRAIL_MAX] =
 	6,		//	TRAIL_COUNTERLEFT,
 	6,		//	TRAIL_COUNTERRIGHT,
 };
-
 
 /*-----------------------------------------------
 	CL_NormaliseAngle
@@ -445,7 +442,9 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 		}
 	}
 
-	if(playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+	if (playerinfo->seqcmd[ACMDU_ATTACK] &&
+		!(playerinfo->edictflags & FL_CHICKEN) &&
+		pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{	// Shooting is the other!
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 		{
@@ -457,7 +456,7 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 		}
 	}
 	else
-	if (!playerinfo->isclient&&!(Weapon_CurrentShotsLeft(playerinfo)))
+	if (!playerinfo->isclient&&!(pi.Weapon_CurrentShotsLeft(playerinfo)))
 		playerinfo->G_WeapNext(playerinfo->self);
 
 }
@@ -535,7 +534,7 @@ void PlayerActionSpellArray(playerinfo_t *playerinfo, float value)
 {
 	int shotsleft;
 
-	shotsleft=Weapon_CurrentShotsLeft(playerinfo);
+	shotsleft=pi.Weapon_CurrentShotsLeft(playerinfo);
 
 	if (shotsleft <= 0)
 		return;		// Outta ammo
@@ -570,7 +569,7 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 
 	if(playerinfo->seqcmd[ACMDU_ATTACK] &&
 			(playerinfo->weaponcharge < SPHERE_MAX_MANA_CHARGE) &&
-			((Weapon_CurrentShotsLeft(playerinfo)) ||
+			((pi.Weapon_CurrentShotsLeft(playerinfo)) ||
 					(playerinfo->pers.inventory.Items[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
 	{
 		if (!(playerinfo->dmflags & DF_INFINITE_MANA))
@@ -582,7 +581,7 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 		}
 	}
 
-	if ((!Weapon_CurrentShotsLeft(playerinfo) && value != 4.0) || !(playerinfo->seqcmd[ACMDU_ATTACK]))
+	if ((!pi.Weapon_CurrentShotsLeft(playerinfo) && value != 4.0) || !(playerinfo->seqcmd[ACMDU_ATTACK]))
 	{	// If we are out of ammo, or if we have let go of the button, then fire.
 		switch((int)value)
 		{
@@ -647,7 +646,7 @@ void PlayerActionSpellFirewall(playerinfo_t *playerinfo, float value)
 
 void PlayerActionRedRainBowAttack(playerinfo_t *playerinfo, float value)
 {
-	if (Weapon_CurrentShotsLeft(playerinfo) <= 0)
+	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 
 	playerinfo->PlayerActionRedRainBowAttack(playerinfo);
@@ -659,7 +658,7 @@ void PlayerActionRedRainBowAttack(playerinfo_t *playerinfo, float value)
 
 void PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo, float value)
 {
-	if (Weapon_CurrentShotsLeft(playerinfo) <= 0)
+	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 
 	playerinfo->PlayerActionPhoenixBowAttack(playerinfo);
@@ -671,7 +670,7 @@ void PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo, float value)
 
 void PlayerActionHellstaffAttack(playerinfo_t *playerinfo, float value)
 {
-	if (Weapon_CurrentShotsLeft(playerinfo) <= 0)
+	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 	playerinfo->PlayerActionHellstaffAttack(playerinfo);
 }
@@ -703,7 +702,7 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo->pers.newweapon);
 
-	Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
+	pi.Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
 	playerinfo->pers.newweapon = NULL;
 
 	// Do some fancy effect.
@@ -788,7 +787,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo->pers.newweapon);
 
-	Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
+	pi.Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
 	playerinfo->pers.newweapon = NULL;
 
 	// Do some fancy effect.
@@ -882,7 +881,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	else
 	{
 		assert(playerinfo->pers.newweapon);
-		Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
+		pi.Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
 		playerinfo->pers.weaponready = playerinfo->switchtoweapon;
 		PlayerUpdateModelAttributes(playerinfo);
 		playerinfo->pers.newweapon = NULL;

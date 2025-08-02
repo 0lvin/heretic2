@@ -10,7 +10,6 @@
 #include "p_anim_data.h"
 #include "p_anims.h"
 #include "p_main.h"
-#include "p_weapon.h"
 #include "p_types.h"
 #include "../../common/fx.h"
 #include "../../monster/misc/player.h"
@@ -287,7 +286,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 
 		if(!playerinfo->isclient && playerinfo->pers.defence)
 		{
-			if(Defence_CurrentShotsLeft(playerinfo, 0)>0)
+			if (pi.Defence_CurrentShotsLeft(playerinfo, 0)>0)
 			{
 				playerinfo->PlayerActionSpellDefensive(playerinfo);
 			}

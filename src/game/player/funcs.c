@@ -14,7 +14,6 @@
 #include "../player/library/p_ctrl.h"
 #include "../header/p_funcs.h"
 #include "../player/library/p_main.h"
-#include "../player/library/p_weapon.h"
 #include "../header/local.h"
 #include "../header/g_skeletons.h"
 #include "../header/g_teleport.h"
@@ -1388,7 +1387,7 @@ void G_PlayerActionSpellDefensive(playerinfo_t *playerinfo)
 		// if we've run out of defence shots, and we have the ring of repulsion - switch to that.
 		it = FindItem("ring");
 		index = ITEM_INDEX(it);
-		if ((playerExport->Defence_CurrentShotsLeft(playerinfo, 1) <=0) && playerinfo->pers.inventory.Items[index])
+		if ((Defence_CurrentShotsLeft(playerinfo, 1) <=0) && playerinfo->pers.inventory.Items[index])
 		{
 			playerinfo->G_UseItem((edict_t*)playerinfo->self);
 		}

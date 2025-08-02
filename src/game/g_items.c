@@ -31,7 +31,6 @@
 #include "header/g_itemstats.h"
 #include "header/g_weapon.h"
 #include "player/library/player.h"
-#include "player/library/p_weapon.h"
 #include "player/library/p_anims.h"
 #include "player/library/p_anim_data.h"
 #include "player/library/p_items.h"
@@ -72,6 +71,11 @@ void Weapon_ProxLauncher(edict_t *ent);
 void Weapon_Ionripper(edict_t *ent);
 void Weapon_Phalanx(edict_t *ent);
 void Weapon_Trap(edict_t *ent);
+
+void Weapon_EquipSpell(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_EquipHellStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_EquipBow(playerinfo_t *playerinfo, gitem_t *Weapon);
 
 gitem_armor_t jacketarmor_info = {25, 50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info = {50, 100, .60, .30, ARMOR_COMBAT};
@@ -159,9 +163,6 @@ FindItem(const char *pickup_name)
 
 	return NULL;
 }
-
-#define ITEM_COOP_ONLY		1
-#define ITEM_NO_DROP		2
 
 // ************************************************************************************************
 // RespawnedThink
@@ -484,7 +485,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 // ************************************************************************************************
 
 qboolean
-Pickup_Weapon(edict_t *ent,edict_t *other)
+Pickup_Weapon(edict_t *ent, edict_t *other)
 {
 	if (other->flags & FL_CHICKEN)
 	{
@@ -1379,7 +1380,7 @@ static const gitem_t gameitemlist[] = {
 		0,										// pickup message
 		0,										// can`t use message
 		Pickup_Weapon,	 						// Pickup (f)
-		NULL,									// Use (f)
+		Weapon_EquipSwordStaff,					// Use (f)
 		NULL,									// Drop	(f)
 		WeaponThink_SwordStaff,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
@@ -1409,7 +1410,7 @@ static const gitem_t gameitemlist[] = {
 		0,										// pickup message
 		GM_NOFLYINGFIST,						// can`t use message
 		Pickup_Weapon,							// Pickup (f)
-		NULL,									// Use (f)
+		Weapon_EquipSpell,						// Use (f)
 		NULL,									// Drop	(f)
 		WeaponThink_FlyingFist,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
@@ -1439,8 +1440,8 @@ static const gitem_t gameitemlist[] = {
 		GM_HELLSTAFF,							// pickup message
 		GM_NOHELLORBS,							// can`t use message
 		Pickup_Weapon,	 						// Pickup (f)
-		NULL,									// Use (f)
-		NULL,									// Drop	(f)
+		Weapon_EquipHellStaff,					// Use (f)
+		Drop_Weapon,							// Drop	(f)
 		WeaponThink_HellStaff,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
@@ -1469,8 +1470,8 @@ static const gitem_t gameitemlist[] = {
 		GM_FORCEBLAST, 							// pickup message
 		GM_NOFORCE,								// can`t use message
 		Pickup_Weapon,							// Pickup (f)
-		NULL,									// Use (f)
-		NULL,									// Drop	(f)
+		Weapon_EquipSpell,						// Use (f)
+		Drop_Weapon,							// Drop	(f)
 		WeaponThink_MagicMissileSpread,			// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
@@ -1499,8 +1500,8 @@ static const gitem_t gameitemlist[] = {
 		GM_STORMBOW,							// pickup message
 		GM_NOSTORMBOW,							// can`t use message
 		Pickup_Weapon,	 						// Pickup (f)
-		NULL,									// Use (f)
-		NULL,									// Drop	(f)
+		Weapon_EquipBow,						// Use (f)
+		Drop_Weapon,							// Drop	(f)
 		WeaponThink_RedRainBow,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
@@ -1529,8 +1530,8 @@ static const gitem_t gameitemlist[] = {
 		GM_FIREWALL,							// pickup message
 		GM_NOFIREWALL,							// can`t use message
 		Pickup_Weapon,							// Pickup (f)
-		NULL,									// Use (f)
-		NULL,									// Drop	(f)
+		Weapon_EquipSpell,						// Use (f)
+		Drop_Weapon,							// Drop	(f)
 		WeaponThink_Firewall,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
@@ -1559,8 +1560,8 @@ static const gitem_t gameitemlist[] = {
 		GM_PHOENIX,								// pickup message
 		GM_NOPHOENIX,							// can`t use message
 		Pickup_Weapon,	 						// Pickup (f)
-		NULL,									// Use (f)
-		NULL,									// Drop	(f)
+		Weapon_EquipBow,						// Use (f)
+		Drop_Weapon,							// Drop	(f)
 		WeaponThink_PhoenixBow,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
@@ -1589,8 +1590,8 @@ static const gitem_t gameitemlist[] = {
 		GM_SPHERE,								// pickup message
 		GM_NOSPHERE,							// can`t use message
 		Pickup_Weapon,							// Pickup (f)
-		NULL,									// Use (f)
-		NULL,									// Drop	(f)
+		Weapon_EquipSpell,						// Use (f)
+		Drop_Weapon,							// Drop	(f)
 		WeaponThink_SphereOfAnnihilation,		// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
@@ -1619,8 +1620,8 @@ static const gitem_t gameitemlist[] = {
 		GM_IRONDOOM,							// pickup message
 		GM_NOIRONDOOM,							// can`t use message
 		Pickup_Weapon,							// Pickup (f)
-		NULL,									// Use (f)
-		NULL,									// Drop	(f)
+		Weapon_EquipSpell,						// Use (f)
+		Drop_Weapon,							// Drop	(f)
 		WeaponThink_Maceballs,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
@@ -2547,7 +2548,6 @@ static const gitem_t gameitemlist[] = {
 		"icons/p_wheel.m8",							// Icon name (char *)
 	},
 
-
 	/*
 	 * QUAKED item_puzzle_ore (.3 .3 1) (-10 -10 -8) (10 10 8)  x  NO_DROP
 	 * Unrefined Ore puzzle item
@@ -2739,6 +2739,7 @@ static const gitem_t gameitemlist[] = {
 		ITEM_HPSYM,				 							// tag ?
 		"icons/p_queenkey.m8",						// Icon name (char *)
 	},
+
 	/*
 	 * QUAKED item_puzzle_tome (.3 .3 1) (-12 -12 -4) (12 12 4)  x  NO_DROP
 	 * Tome puzzle piece
@@ -2770,6 +2771,7 @@ static const gitem_t gameitemlist[] = {
 		ITEM_TOME,				 							// tag ?
 		"icons/p_tomepower.m8",						// Icon name (char *)
 	},
+
 	/*
 	 * QUAKED item_puzzle_tavernkey (.3 .3 1) (-8 -8 -4) (8 8 4)    x   NO_DROP
 	 * Key puzzle piece
@@ -2832,13 +2834,105 @@ static const gitem_t gameitemlist[] = {
  		"icons/i_tornado.m8",					// Icon name (char *)
 	},
 
-
-	// End of list marker.
-
+	/* end of list marker */
 	{NULL}
 };
 
 gitem_t itemlist[MAX_ITEMS];
+
+/*
+ * QUAKED item_health (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+ */
+void
+SP_item_health(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->model = "models/items/healing/medium/tris.md2";
+	self->count = 10;
+	SpawnItem(self, FindItem("Health"));
+	gi.soundindex("items/n_health.wav");
+}
+
+/*
+ * QUAKED item_health_small (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+ */
+void
+SP_item_health_small(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->model = "models/items/healing/stimpack/tris.md2";
+	self->count = 2;
+	SpawnItem(self, FindItem("Health"));
+	self->style = HEALTH_IGNORE_MAX;
+	gi.soundindex("items/s_health.wav");
+}
+
+/*
+ * QUAKED item_health_large (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+ */
+void
+SP_item_health_large(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->model = "models/items/healing/large/tris.md2";
+	self->count = 25;
+	SpawnItem(self, FindItem("Health"));
+	gi.soundindex("items/l_health.wav");
+}
+
+/*
+ * QUAKED item_health_mega (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+ */
+void
+SP_item_health_mega(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->model = "models/items/mega_h/tris.md2";
+	self->count = 100;
+	SpawnItem(self, FindItem("Health"));
+	gi.soundindex("items/m_health.wav");
+	self->style = HEALTH_IGNORE_MAX | HEALTH_TIMED;
+}
 
 void
 SP_item_foodcube(edict_t *self)
@@ -2865,28 +2959,14 @@ SP_item_foodcube(edict_t *self)
 void
 InitItems(void)
 {
+	if (sizeof(gameitemlist) > sizeof(itemlist))
+	{
+		gi.error("Defined items more than %d\n", MAX_ITEMS);
+	}
+
 	memset(itemlist, 0, sizeof(itemlist));
 	memcpy(itemlist, gameitemlist, sizeof(gameitemlist));
 	game.num_items = sizeof(gameitemlist) / sizeof(gameitemlist[0]) - 1;
-
-	/* weapon_swordstaff */
-	itemlist[1].use = playerExport->Weapon_EquipSwordStaff;
-	/* weapon_flyingfist */
-	itemlist[2].use = playerExport->Weapon_EquipSpell;
-	/* item_weapon_hellstaff */
-	itemlist[3].use = playerExport->Weapon_EquipHellStaff;
-	/* item_weapon_magicmissile */
-	itemlist[4].use = playerExport->Weapon_EquipSpell;
-	/* item_weapon_redrain_bow */
-	itemlist[5].use = playerExport->Weapon_EquipBow;
-	/* item_weapon_firewall */
-	itemlist[6].use = playerExport->Weapon_EquipSpell;
-	/* item_weapon_phoenixbow */
-	itemlist[7].use = playerExport->Weapon_EquipBow;
-	/* item_weapon_sphereofannihilation */
-	itemlist[8].use = playerExport->Weapon_EquipSpell;
-	/* item_weapon_maceballs */
-	itemlist[9].use = playerExport->Weapon_EquipSpell;
 }
 
 /*

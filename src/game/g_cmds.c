@@ -852,7 +852,7 @@ Cmd_Use_f(edict_t *ent)
 			playerinfo->pers.lastdefence = playerinfo->pers.defence;
 			playerinfo->pers.defence=it;
 
-			if (playerExport->Defence_CurrentShotsLeft(playerinfo, 1) > 0)
+			if (Defence_CurrentShotsLeft(playerinfo, 1) > 0)
 			{	// Only if there is ammo
 				it->weaponthink(ent,"");
 

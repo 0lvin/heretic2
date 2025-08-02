@@ -109,22 +109,16 @@ typedef struct
 	void (*PlayerUpdate)(playerinfo_t *playerinfo);
 	void (*PlayerUpdateCmdFlags)(playerinfo_t *playerinfo);
 	void (*PlayerUpdateModelAttributes)(playerinfo_t *playerinfo);
-
-	void (*Weapon_Ready)(playerinfo_t *playerinfo,gitem_t *Weapon);
-	void (*Weapon_EquipSpell)(playerinfo_t *playerinfo,gitem_t *Weapon);
-	void (*Weapon_EquipSwordStaff)(playerinfo_t *playerinfo,gitem_t *Weapon);
-	void (*Weapon_EquipHellStaff)(playerinfo_t *playerinfo,gitem_t *Weapon);
-	void (*Weapon_EquipBow)(playerinfo_t *playerinfo,gitem_t *Weapon);
-	void (*Weapon_EquipArmor)(playerinfo_t *playerinfo, gitem_t *Weapon);
-	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
-	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
 } player_export_t;
 
 typedef struct
 {
 	void (*dprintf)(const char *fmt, ...);
 	gitem_t *(*FindItem)(const char *pickup_name);
-	int (*GetItemIndex)(const gitem_t *item);
+	void (*Weapon_EquipSpell)(playerinfo_t *playerinfo, gitem_t *Weapon);
+	void (*Weapon_Ready)(playerinfo_t *playerinfo, gitem_t *Weapon);
+	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
+	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
 } player_import_t;
 
 extern player_import_t pi;
@@ -169,14 +163,6 @@ void PlayerUpdate(playerinfo_t* playerinfo);
 void PlayerUpdateCmdFlags(playerinfo_t* playerinfo);
 void PlayerUpdateModelAttributes(playerinfo_t* playerinfo);
 
-void Weapon_Ready(playerinfo_t* playerinfo, gitem_t* Weapon);
-void Weapon_EquipSpell(playerinfo_t* playerinfo, gitem_t* Weapon);
-void Weapon_EquipSwordStaff(playerinfo_t* playerinfo, gitem_t* Weapon);
-void Weapon_EquipHellStaff(playerinfo_t* playerinfo, gitem_t* Weapon);
-void Weapon_EquipBow(playerinfo_t* playerinfo, gitem_t* Weapon);
-void Weapon_EquipArmor(playerinfo_t* playerinfo, gitem_t* Weapon);
-int Weapon_CurrentShotsLeft(playerinfo_t* playerinfo);
-int Defence_CurrentShotsLeft(playerinfo_t* playerinfo, int intent);
 const char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
 
 #endif	// PLAYER_H

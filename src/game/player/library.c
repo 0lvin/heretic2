@@ -54,12 +54,6 @@ void P_Freelib()
 	player_library = NULL;
 }
 
-static int
-GetItemIndex(const gitem_t *item)
-{
-	return ITEM_INDEX(item);
-}
-
 // ************************************************************************************************
 // P_Load
 // ------
@@ -174,8 +168,11 @@ P_Load(void)
 	}
 
 	playerImport.dprintf = gi.dprintf;
+	playerImport.Weapon_EquipSpell = Weapon_EquipSpell;
+	playerImport.Weapon_Ready = Weapon_Ready;
+	playerImport.Weapon_CurrentShotsLeft = Weapon_CurrentShotsLeft;
+	playerImport.Defence_CurrentShotsLeft = Defence_CurrentShotsLeft;
 	playerImport.FindItem = FindItem;
-	playerImport.GetItemIndex = GetItemIndex;
 
 	playerExport = P_GetPlayerAPI(&playerImport);
 	playerExport->Init();

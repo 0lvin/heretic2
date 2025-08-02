@@ -35,7 +35,6 @@
 #include "../player/library/p_ctrl.h"
 #include "../header/p_funcs.h"
 #include "../player/library/p_main.h"
-#include "../player/library/p_weapon.h"
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "../header/utilities.h"

@@ -6,7 +6,6 @@
 
 #include "../header/local.h"
 #include "../player/library/player.h"
-#include "../player/library/p_weapon.h"
 #include "../monster/misc/player.h"
 #include "../common/fx.h"
 #include "../common/matrix.h"

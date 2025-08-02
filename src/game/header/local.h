@@ -2505,6 +2505,14 @@ void G_SoundRemove(char* name);
 void G_CleanLevel(void);
 void G_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
 
+int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent);
+int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo);
+void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_EquipSpell(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_EquipHellStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_EquipBow(playerinfo_t *playerinfo, gitem_t *Weapon);
+
 #define	SVF_INUSE				0x00000008	// Used to replace the inuse field.
 #define SVF_ALWAYS_SEND			0x00000010	// Always send the ent to all the clients, regardless of
 											// of PVS or view culling

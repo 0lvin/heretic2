@@ -61,15 +61,6 @@ GetPlayerAPI(player_import_t *import)
 	playerExport.PlayerUpdateCmdFlags = PlayerUpdateCmdFlags;
 	playerExport.PlayerUpdateModelAttributes = PlayerUpdateModelAttributes;
 
-	playerExport.Weapon_Ready = Weapon_Ready;
-	playerExport.Weapon_EquipSpell = Weapon_EquipSpell;
-	playerExport.Weapon_EquipSwordStaff = Weapon_EquipSwordStaff;
-	playerExport.Weapon_EquipHellStaff = Weapon_EquipHellStaff;
-	playerExport.Weapon_EquipBow = Weapon_EquipBow;
-	playerExport.Weapon_EquipArmor = Weapon_EquipArmor;
-	playerExport.Weapon_CurrentShotsLeft = Weapon_CurrentShotsLeft;
-	playerExport.Defence_CurrentShotsLeft = Defence_CurrentShotsLeft;
-
 	return &playerExport;
 }
 

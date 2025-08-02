@@ -11,7 +11,6 @@
 #include "p_anims.h"
 #include "../../header/g_items.h"
 #include "p_main.h"
-#include "p_weapon.h"
 #include "../../common/fx.h"
 #include "../../common/h2rand.h"
 #include "../../../common/header/common.h"
@@ -1719,7 +1718,7 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 
 	if ((playerinfo->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
 	{
-		Weapon_EquipSpell(playerinfo, Weapon);
+		pi.Weapon_EquipSpell(playerinfo, Weapon);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
@@ -1820,7 +1819,7 @@ int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 
 	if ((playerinfo->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
 	{
-		Weapon_EquipSpell(playerinfo, Weapon);
+		pi.Weapon_EquipSpell(playerinfo, Weapon);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
@@ -1925,7 +1924,7 @@ int BranchUprReadyHands(playerinfo_t *playerinfo)
 		playerinfo->idletime=playerinfo->leveltime;
 
 		// Check Offensive mana.
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST || Weapon_CurrentShotsLeft(playerinfo))
+		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST || pi.Weapon_CurrentShotsLeft(playerinfo))
 		{
 			// Fireballs have free mana, but if powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
@@ -2014,7 +2013,7 @@ int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 	if (playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
 
-	if(playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+	if(playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
@@ -2045,9 +2044,9 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 	if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
 
-	Weapon_CurrentShotsLeft(playerinfo);
+	pi.Weapon_CurrentShotsLeft(playerinfo);
 
-	if(playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+	if(playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
@@ -2073,7 +2072,7 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 
 int BranchCheckAmmo(playerinfo_t *playerinfo)
 {
-	if (Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
+	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
 		return(ASEQ_NONE);
 
 	playerinfo->G_WeapNext(playerinfo->self);
@@ -2097,7 +2096,7 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 
 int BranchCheckHellAmmo(playerinfo_t *playerinfo)
 {
-	if (Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
+	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
 		return(ASEQ_NONE);
 
 	playerinfo->G_WeapNext(playerinfo->self);
@@ -2149,7 +2148,7 @@ int BranchUprReady(playerinfo_t *playerinfo)
 // if we are out of offensive mana, then switch us to the next weapon
 int BranchCheckMana(playerinfo_t *playerinfo)
 {
-	if (Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
+	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
 		return(BranchUprReady(playerinfo));
 
 	playerinfo->G_WeapNext(playerinfo->self);
