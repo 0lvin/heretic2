@@ -356,7 +356,7 @@ trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 
 	index = ITEM_INDEX(self->item);
 
-	if (!activator->client->playerinfo.pers.inventory.Items[index])
+	if (!activator->client->playerinfo.pers.inventory[index])
 	{
 		if (level.time < self->touch_debounce_time)
 			return;
@@ -404,7 +404,7 @@ trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 			if (!ent->inuse)
 				continue;
 
-			ent->client->playerinfo.pers.inventory.Items[index]=0;
+			ent->client->playerinfo.pers.inventory[index]=0;
 		}
 	}
 

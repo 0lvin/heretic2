@@ -202,18 +202,6 @@ typedef struct gitem_s
 } gitem_t;
 
 // ************************************************************************************************
-// inventory_t
-// -----------
-// Holds the players inventory.
-// ************************************************************************************************
-
-typedef struct inventory_s
-{
-	int	Items[MAX_ITEMS];		// No held of each item type.
-	float Timer[MAX_ITEMS];		// Timer (if this item requires one).
-} inventory_t;
-
-// ************************************************************************************************
 // client_persistant_t
 // -------------------
 // Client data that stays across multiple level loads.
@@ -264,8 +252,8 @@ typedef struct
 
 	// Inventory.
 
-	inventory_t	inventory;
-	inventory_t	old_inventory;
+	int inventory[MAX_ITEMS];		// No held of each item type.
+	int old_inventory[MAX_ITEMS];
 
 	// Ammo capacities.
 

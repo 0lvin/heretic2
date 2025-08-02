@@ -356,9 +356,9 @@ Pickup_Puzzle(edict_t *ent, edict_t *other)
 
 	item = FindItemByClassname(ent->classname);
 
-	if (!other->client->playerinfo.pers.inventory.Items[ITEM_INDEX(ent->item)])
+	if (!other->client->playerinfo.pers.inventory[ITEM_INDEX(ent->item)])
 	{
-		other->client->playerinfo.pers.inventory.Items[ITEM_INDEX(ent->item)] = 1;
+		other->client->playerinfo.pers.inventory[ITEM_INDEX(ent->item)] = 1;
 
 		G_CPrintf(other, PRINT_HIGH, ent->item->msg_pickup);
 
@@ -382,7 +382,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 
 	// Do we already have this weapon?
 
-	if(!player->client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)])
+	if(!player->client->playerinfo.pers.inventory[ITEM_INDEX(item)])
 	{
 		// We don't already have it, so get the weapon and some ammo.
 
@@ -405,7 +405,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 		else
 			count = AMMO_COUNT_MOST;
 
-		player->client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)] = 1;
+		player->client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
 
 		if(count)
 		{
@@ -513,9 +513,9 @@ Pickup_Weapon(edict_t *ent, edict_t *other)
 
 qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
 {
-	if(!player->client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)])
+	if(!player->client->playerinfo.pers.inventory[ITEM_INDEX(item)])
 	{
-		player->client->playerinfo.pers.inventory.Items[ITEM_INDEX(item)]=1;
+		player->client->playerinfo.pers.inventory[ITEM_INDEX(item)]=1;
 
 		// Now decide if we want to swap defenses or not.
 
@@ -570,13 +570,13 @@ qboolean Add_AmmoToInventory (edict_t *ent, gitem_t *item, int count,int max)
 
 	index = ITEM_INDEX(item);
 
-	if (ent->client->playerinfo.pers.inventory.Items[index] == max)
+	if (ent->client->playerinfo.pers.inventory[index] == max)
 		return false;
 
-	ent->client->playerinfo.pers.inventory.Items[index] += count;
+	ent->client->playerinfo.pers.inventory[index] += count;
 
-	if (ent->client->playerinfo.pers.inventory.Items[index] > max)
-		ent->client->playerinfo.pers.inventory.Items[index] = max;
+	if (ent->client->playerinfo.pers.inventory[index] > max)
+		ent->client->playerinfo.pers.inventory[index] = max;
 
 	return true;
 }
@@ -698,16 +698,16 @@ Drop_Ammo(edict_t *ent, gitem_t *item)
 	index = ITEM_INDEX(item);
 	dropped = Drop_Item(ent, item);
 
-	if (ent->client->playerinfo.pers.inventory.Items[index] >= item->quantity)
+	if (ent->client->playerinfo.pers.inventory[index] >= item->quantity)
 	{
 		dropped->count = item->quantity;
 	}
 	else
 	{
-		dropped->count = ent->client->playerinfo.pers.inventory.Items[index];
+		dropped->count = ent->client->playerinfo.pers.inventory[index];
 	}
 
-	ent->client->playerinfo.pers.inventory.Items[index] -= dropped->count;
+	ent->client->playerinfo.pers.inventory[index] -= dropped->count;
 
 	ValidateSelectedItem(ent);
 }

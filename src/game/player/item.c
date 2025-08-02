@@ -44,7 +44,7 @@ void DefenceThink_Tornado(edict_t *Caster,char *Format,...)
 
 	// Take off mana
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		Caster->client->playerinfo.pers.inventory.Items[Caster->client->playerinfo.def_ammo_index]-= Caster->client->playerinfo.pers.defence->quantity;
+		Caster->client->playerinfo.pers.inventory[Caster->client->playerinfo.def_ammo_index]-= Caster->client->playerinfo.pers.defence->quantity;
 }
 
 
@@ -60,7 +60,7 @@ void DefenceThink_Powerup(edict_t *Caster, char *Format,...)
 	assert(playerinfo->def_ammo_index);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		playerinfo->pers.inventory.Items[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+		playerinfo->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
 }
 
 // ************************************************************************************************
@@ -75,7 +75,7 @@ void DefenceThink_RingOfRepulsion(edict_t *Caster, char *Format,...)
 	assert(playerinfo->def_ammo_index);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		playerinfo->pers.inventory.Items[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+		playerinfo->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
 }
 
 // ************************************************************************************************
@@ -106,7 +106,7 @@ void DefenceThink_Morph(edict_t *Caster, char *Format,...)
 
 	assert(playerinfo->def_ammo_index);
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		playerinfo->pers.inventory.Items[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+		playerinfo->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
 }
 
 // ************************************************************************************************
@@ -121,7 +121,7 @@ void DefenceThink_Teleport(edict_t *Caster, char *Format,...)
 
 	assert(playerinfo->def_ammo_index);
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		playerinfo->pers.inventory.Items[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+		playerinfo->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
 }
 
 // ************************************************************************************************
@@ -140,6 +140,6 @@ void DefenceThink_Shield(edict_t *Caster, char *Format,...)
 
 		assert(playerinfo->def_ammo_index);
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			playerinfo->pers.inventory.Items[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+			playerinfo->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
 	}
 }

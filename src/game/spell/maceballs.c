@@ -170,14 +170,14 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 					// do we have enough mana to teleport ?
 					ManaItem = FindItem(Defence->ammo);
 					ManaIndex = ITEM_INDEX(ManaItem);
-					if (trace->ent->client->playerinfo.pers.inventory.Items[ManaIndex]/Quantity > 0)
+					if (trace->ent->client->playerinfo.pers.inventory[ManaIndex]/Quantity > 0)
 					{
 						// yes, do we actually have a teleport ?
-						if (trace->ent->client->playerinfo.pers.inventory.Items[13])
+						if (trace->ent->client->playerinfo.pers.inventory[13])
 						{
 							SpellCastTeleport(trace->ent, trace->ent->s.origin, NULL, NULL, 0.0F);
 							if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-								trace->ent->client->playerinfo.pers.inventory.Items[ManaIndex] -= Quantity;
+								trace->ent->client->playerinfo.pers.inventory[ManaIndex] -= Quantity;
 							no_teleport = 0;
 						}
 					}

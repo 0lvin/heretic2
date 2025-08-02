@@ -1226,13 +1226,13 @@ ClientEndServerFrame(edict_t *ent)
 
 	for(index = 0;index < MAX_ITEMS;index++)
 	{
-		if(current_client->playerinfo.pers.inventory.Items[index] != current_client->playerinfo.pers.old_inventory.Items[index])
+		if(current_client->playerinfo.pers.inventory[index] != current_client->playerinfo.pers.old_inventory[index])
 		{
 			current_client->ps.inventory_changes[i] = index;
 
-			current_client->ps.inventory_remaining[i] = current_client->playerinfo.pers.inventory.Items[index];
+			current_client->ps.inventory_remaining[i] = current_client->playerinfo.pers.inventory[index];
 
-			current_client->playerinfo.pers.old_inventory.Items[index] = current_client->playerinfo.pers.inventory.Items[index];
+			current_client->playerinfo.pers.old_inventory[index] = current_client->playerinfo.pers.inventory[index];
 
 			i++;
 		}

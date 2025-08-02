@@ -570,11 +570,11 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 	if(playerinfo->seqcmd[ACMDU_ATTACK] &&
 			(playerinfo->weaponcharge < SPHERE_MAX_MANA_CHARGE) &&
 			((pi.Weapon_CurrentShotsLeft(playerinfo)) ||
-					(playerinfo->pers.inventory.Items[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
+					(playerinfo->pers.inventory[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
 	{
 		if (!(playerinfo->dmflags & DF_INFINITE_MANA))
 		{
-			playerinfo->pers.inventory.Items[playerinfo->weap_ammo_index] -= SPHERE_MANA_PER_CHARGE;
+			playerinfo->pers.inventory[playerinfo->weap_ammo_index] -= SPHERE_MANA_PER_CHARGE;
 			playerinfo->weaponcharge++;
 
 			return;
