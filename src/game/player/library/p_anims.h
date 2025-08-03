@@ -8,7 +8,7 @@
 #ifndef _P_ANIMS2_H_
 #define _P_ANIMS2_H_
 
-#include "p_types.h"
+#include "../../header/local.h"
 
 extern void PlayerBasicAnimReset(playerinfo_t *playerinfo);
 extern void PlayerAnimReset(playerinfo_t *playerinfo);

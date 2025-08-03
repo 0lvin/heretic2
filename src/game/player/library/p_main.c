@@ -5,15 +5,12 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
+#include "../../header/local.h"
+#include "../../monster/misc/player.h"
 #include "p_animactor.h"
 #include "p_anim_data.h"
 #include "p_anims.h"
 #include "p_main.h"
-#include "p_types.h"
-#include "../../common/fx.h"
-#include "../../monster/misc/player.h"
-#include "../../header/local.h"
 
 //FIXME:  Include header
 qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);

@@ -5,8 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
-#include "p_types.h"
+#include "../../header/local.h"
 #include "p_actions.h"
 #include "p_anims.h"
 #include "p_ctrl.h"

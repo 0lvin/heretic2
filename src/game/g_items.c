@@ -26,7 +26,6 @@
  */
 
 #include "header/local.h"
-#include "header/p_item.h"
 #include "header/g_items.h"
 #include "header/g_itemstats.h"
 #include "header/g_weapon.h"

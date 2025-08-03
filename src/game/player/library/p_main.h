@@ -8,7 +8,7 @@
 #ifndef _P_MAIN2_H_
 #define _P_MAIN2_H_
 
-#include "p_types.h"
+#include "../../header/local.h"
 
 #define PLAYER_FLAG_NONE				0x00000000
 #define PLAYER_FLAG_FALLING				0x00000001

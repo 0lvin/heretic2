@@ -10,7 +10,6 @@
 #include "../header/g_classstatics.h"
 #include "../header/g_physics.h"
 #include "../common/h2rand.h"
-#include "../header/p_item.h"
 #include "../header/g_teleport.h"
 
 #define MACEBALL_UPSPEED	200.0F

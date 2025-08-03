@@ -8,7 +8,7 @@
 #ifndef _P_ACTIONS2_H_
 #define _P_ACTIONS2_H_
 
-#include "p_types.h"
+#include "../../header/local.h"
 #include "p_anims.h"
 
 #define SOUND_SWIM_FORWARD	0

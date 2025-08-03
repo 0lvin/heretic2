@@ -36,7 +36,9 @@
 #define GAME_INCLUDE
 #include "game.h"
 #include "buoy.h"
-#include "../player/library/player.h"
+#include "../../common/header/common.h"
+#include "../common/vector.h"
+#include "g_itemstats.h"
 #include "../common/q_physics.h"
 #include "../header/g_playstats.h"
 #include "../header/utilities.h"
@@ -272,11 +274,6 @@ typedef struct
 #define IT_HEALTH 0x000000400 /* JABot */
 #define IT_FLAG	0x000000800 /* JABot */
 
-/* Custom heretic 2 IT_* flags */
-#define IT_PUZZLE 0x00001000
-#define IT_DEFENSE 0x00002000
-#define IT_OFFENSE 0x00004000
-
 /* gitem_t->weapmodel for weapons indicates model index */
 #define WEAP_BLASTER 1
 #define WEAP_SHOTGUN 2
@@ -302,6 +299,45 @@ typedef struct
 #define WEAP_NONE			0
 #define WEAP_TOTAL			20
 //JABot[end]
+
+// Forward define 'playerinfo_t' for use in 'panimframe_t' and 'panimmove_t'.
+typedef struct playerinfo_s playerinfo_t;
+
+typedef struct gitem_s
+{
+	char *classname; /* spawning name */
+	char *pickup_name; /* for printing on pickup */
+	short		msg_pickup;		// Pickup string id.
+	short		msg_nouse;		// Can`t use.
+	qboolean (*pickup)(struct edict_s *ent, struct edict_s *other);
+	void (*use)(playerinfo_t *playerinfo, struct gitem_s *item);
+	void (*drop)(struct edict_s *ent, struct gitem_s *item);
+	void (*weaponthink)(struct edict_s *ent, char *Format,...);
+
+	char *pickup_sound;
+	char *world_model;
+	int world_model_flags;
+
+	vec3_t mins;			// Bounding box
+	vec3_t maxs;			// Bounding box
+
+	int playeranimseq;	// The ASEQ_ player sequence that should be engaged when this item is used.
+	int altanimseq;		// Powerup animation sequence
+
+	int MaxActive;		// Maximum allowable active uses of items of this type by a single
+				// player, at any instant in time. -1 indicates no limit.
+
+	int count_width;            /* number of digits to display by icon */
+
+	int quantity;               /* for ammo how much, for weapons how much is used per shot */
+	char *ammo;                 /* for weapons */
+	int flags;                  /* IT_* flags */
+
+	void *info;
+	int tag;
+
+	char *icon;
+} gitem_t;
 
 /* this structure is left intact through an entire game
    it should be initialized at dll load time, and read/written to
@@ -337,6 +373,416 @@ typedef struct
 
 	qboolean entitiesSpawned;
 } game_locals_t;
+
+// ************************************************************************************************
+// panimframe_t
+// ------------
+// ************************************************************************************************
+
+typedef struct
+{
+	int		framenum;
+	void	(*movefunc)(playerinfo_t *playerinfo,float var1,float var2,float var3);
+	float	var1,var2,var3;
+	void	(*actionfunc)(playerinfo_t *playerinfo,float var4);
+	float	var4;
+	void	(*thinkfunc)(playerinfo_t *playerinfo);
+} panimframe_t;
+
+// ************************************************************************************************
+// panimmove_t
+// -----------
+// ************************************************************************************************
+
+typedef struct
+{
+	int				numframes;
+	panimframe_t	*frame;
+	void			(*endfunc)(playerinfo_t *playerinfo);
+} panimmove_t;
+
+// ************************************************************************************************
+// paceldata_t
+// -----------
+// ************************************************************************************************
+
+typedef struct
+{
+	panimmove_t	*move;
+	short		fly;
+	short		lockmove;
+	int			playerflags;
+} paceldata_t;
+
+// ************************************************************************************************
+// pacelsizes_t
+// ------------
+// ************************************************************************************************
+
+typedef struct
+{
+	vec3_t	boundbox[2];
+	int		altmove;
+	float	viewheight;
+	float	waterheight;
+} pacelsizes_t;
+
+// ************************************************************************************************
+// weaponready_e
+// -------------
+// Indicates what actual weapon model the player has readied.
+// ************************************************************************************************
+
+enum weaponready_e
+{
+	WEAPON_READY_NONE,
+	WEAPON_READY_HANDS,
+	WEAPON_READY_STAFFSTUB,
+	WEAPON_READY_SWORDSTAFF,
+	WEAPON_READY_HELLSTAFF,
+	WEAPON_READY_BOW,
+	WEAPON_READY_MAX
+};
+
+// ************************************************************************************************
+// armortype_e
+// -----------
+// Indicates what actual armor the player is wearing.
+// ************************************************************************************************
+
+enum armortype_e
+{
+	ARMOR_TYPE_NONE,
+	ARMOR_TYPE_SILVER,
+	ARMOR_TYPE_GOLD
+};
+
+// ************************************************************************************************
+// bowtype_e
+// -----------
+// Indicates what actual bow the player has currently on his back.
+// ************************************************************************************************
+
+enum bowtype_e
+{
+	BOW_TYPE_NONE,
+	BOW_TYPE_REDRAIN,
+	BOW_TYPE_PHOENIX
+};
+
+// ************************************************************************************************
+// stafftype_e
+// -----------
+// Indicates what powerup level of the staff the player has.
+// ************************************************************************************************
+
+enum stafftype_e
+{
+	STAFF_LEVEL_NONE,
+	STAFF_LEVEL_BASIC,
+	STAFF_LEVEL_POWER1,
+	STAFF_LEVEL_POWER2,
+	STAFF_LEVEL_MAX
+};
+
+// ************************************************************************************************
+// helltype_e
+// -----------
+// Indicates what powerup level of the staff the player has.
+// ************************************************************************************************
+
+enum helltype_e
+{
+	HELL_TYPE_NONE,
+	HELL_TYPE_BASIC,
+	HELL_TYPE_POWER
+};
+
+#define PICKUP_MIN  0, 0, 0
+#define PICKUP_MAX  0, 0, 0
+
+// ************************************************************************************************
+// PNOISE_XXX
+// ----------
+// Noise types for 'PlayerNoise'.
+// ************************************************************************************************
+
+#define PNOISE_SELF		0
+#define PNOISE_WEAPON	1
+#define PNOISE_IMPACT	2
+
+// ************************************************************************************************
+// FL_XXX
+// ------
+// Held in 'edict_t'->flags.
+// ************************************************************************************************
+
+#define	FL_FLY				0x00000001
+#define	FL_SWIM				0x00000002	// implied immunity to drowining
+#define FL_SUSPENDED		0x00000004
+#define	FL_INWATER			0x00000008
+#define	FL_GODMODE			0x00000010
+#define	FL_NOTARGET			0x00000020
+#define FL_IMMUNE_SLIME		0x00000040
+#define FL_IMMUNE_LAVA		0x00000080
+#define	FL_PARTIALGROUND	0x00000100	// not all corners are valid
+#define	FL_INLAVA			0x00000200	// INWATER is set when in lava, but this is a modifier so we know when we leave
+#define	FL_TEAMSLAVE		0x00000400	// not the first on the team
+#define FL_NO_KNOCKBACK		0x00000800
+#define	FL_INSLIME			0x00001000	// INWATER is set when in muck, but this is a modifier so we know when we leave
+#define FL_LOCKMOVE			0x00002000	// Move updates should not process, actor can only move explicitly
+#define FL_DONTANIMATE		0x00004000	// stop animating
+#define FL_AVERAGE_CHICKEN	0x00008000	// Currently a chicken.
+#define	FL_AMPHIBIAN		0x00010000	// Does not drown on land or in water, but is damaged by muck and lava
+#define FL_SUPER_CHICKEN	0x00020000	// Ah yeah...
+#define FL_RESPAWN			0x80000000	// used for item respawning
+
+#define FL_CHICKEN			(FL_AVERAGE_CHICKEN | FL_SUPER_CHICKEN)
+
+// ************************************************************************************************
+// HANDFX_XXX
+// ----------
+// Hand effects, glowing for spells. Can be used for staff and bow, or others that are used by the
+// upper torso half and toggle.
+// ************************************************************************************************
+
+typedef enum handfx_e
+{
+	HANDFX_NONE=0,
+	HANDFX_FIREBALL,
+	HANDFX_MISSILE,
+	HANDFX_SPHERE,
+	HANDFX_MACEBALL,
+	HANDFX_FIREWALL,
+	HANDFX_REDRAIN,
+	HANDFX_POWERREDRAIN,
+	HANDFX_PHOENIX,
+	HANDFX_POWERPHOENIX,
+	HANDFX_STAFF1,
+	HANDFX_STAFF2,
+	HANDFX_STAFF3,
+	HANDFX_MAX,
+} handfx_t;
+
+// Unique sound IDs required for correct prediction of sounds played from player.dll. Each ID MUST
+// be used ONCE only as it identifies the exact sound call in the player .dll that is responsible
+// for playing a sound. These can be be compared with ID's recieved from the server sent sound
+// packets (generated by running player.dll code on the server) so that we can decide whether to
+// play the server sent sound or not (it may have already been played on the client by client
+// prediction. IDs must never exeed +127.
+
+enum
+{
+	SND_PRED_NULL	= -1,
+	SND_PRED_ID0	=  0,
+	SND_PRED_ID1,
+	SND_PRED_ID2,
+	SND_PRED_ID3,
+	SND_PRED_ID4,	// Unused.
+	SND_PRED_ID5,
+	SND_PRED_ID6,
+	SND_PRED_ID7,
+	SND_PRED_ID8,
+	SND_PRED_ID9,
+	SND_PRED_ID10,
+	SND_PRED_ID11,
+	SND_PRED_ID12,
+	SND_PRED_ID13,
+	SND_PRED_ID14,
+	SND_PRED_ID15,
+	SND_PRED_ID16,
+	SND_PRED_ID17,
+	SND_PRED_ID18,
+	SND_PRED_ID19,
+	SND_PRED_ID20,
+	SND_PRED_ID21,
+	SND_PRED_ID22,
+	SND_PRED_ID23,
+	SND_PRED_ID24,
+	SND_PRED_ID25,
+	SND_PRED_ID26,
+	SND_PRED_ID27,
+	SND_PRED_ID28,
+	SND_PRED_ID29,
+	SND_PRED_ID30,
+	SND_PRED_ID31,
+	SND_PRED_ID32,
+	SND_PRED_ID33,
+	SND_PRED_ID34,
+	SND_PRED_ID35,
+	SND_PRED_ID36,
+	SND_PRED_ID37,
+	SND_PRED_ID38,
+	SND_PRED_ID39,
+	SND_PRED_ID40,
+	SND_PRED_ID41,
+	SND_PRED_ID42,
+	SND_PRED_ID43,
+	SND_PRED_ID44,
+	SND_PRED_ID45,
+	SND_PRED_ID46,
+	SND_PRED_ID47,
+	SND_PRED_ID48,
+	SND_PRED_ID49,
+	SND_PRED_ID50,
+	SND_PRED_ID51,
+	SND_PRED_ID52,
+	SND_PRED_ID53,
+	SND_PRED_MAX		= 127
+};
+
+// Unique client-effect IDs required for correct prediction of effects started from player.dll. Each ID MUST
+// be used ONCE only as it identifies the exact client-effects call in the player .dll that is responsible
+// for starting a client-effect. These can be be compared with ID's recieved from the server sent client-effects
+// (generated by running player.dll code on the server) so that we can decide whether to start the server sent
+// client-effect or not (it may have already been started on the client by client prediction. IDs must never
+// exeed +127.
+
+enum
+{
+	EFFECT_PRED_NULL	= -1,
+	EFFECT_PRED_ID0		=  0,
+	EFFECT_PRED_ID1,
+	EFFECT_PRED_ID2,
+	EFFECT_PRED_ID3,
+	EFFECT_PRED_ID4,
+	EFFECT_PRED_ID5,
+	EFFECT_PRED_ID6,
+	EFFECT_PRED_ID7,
+	EFFECT_PRED_ID8,
+	EFFECT_PRED_ID9,
+	EFFECT_PRED_ID10,
+	EFFECT_PRED_ID11,
+	EFFECT_PRED_ID12,
+	EFFECT_PRED_ID13,
+	EFFECT_PRED_ID14,
+	EFFECT_PRED_ID15,
+	EFFECT_PRED_ID16,
+	EFFECT_PRED_ID17,
+	EFFECT_PRED_ID18,
+	EFFECT_PRED_ID19,
+	EFFECT_PRED_ID20,
+	EFFECT_PRED_ID21,
+	EFFECT_PRED_ID22,
+	EFFECT_PRED_ID23,
+	EFFECT_PRED_ID24,
+	EFFECT_PRED_ID25,
+	EFFECT_PRED_ID26,
+	EFFECT_PRED_ID27,
+	EFFECT_PRED_ID28,
+	EFFECT_PRED_ID29,
+	EFFECT_PRED_ID30,
+	EFFECT_PRED_ID31,
+	EFFECT_PRED_ID32,
+	EFFECT_PRED_ID33,
+	EFFECT_PRED_ID34,
+	EFFECT_PRED_MAX		=127
+};
+
+// **************
+// Movement rates
+// **************
+
+#define IN_MOVE_CREEP_MIN	16
+#define IN_MOVE_CREEP		32
+#define IN_MOVE_WALK_MIN	48
+#define IN_MOVE_WALK		64
+#define IN_MOVE_RUN_MIN		80
+#define IN_MOVE_RUN			96
+
+#define IN_MOVE_THRESHOLD	IN_MOVE_CREEP_MIN
+
+#define BUTTON_WALK			0
+
+enum movefwd_e
+{
+	MOVE_BACK_RUN,
+	MOVE_BACK_WALK,
+	MOVE_BACK_CREEP,
+	MOVE_FWD_NONE,
+	MOVE_FWD_CREEP,
+	MOVE_FWD_WALK,
+	MOVE_FWD_RUN,
+	MOVE_FWD_MAX
+};
+
+enum moveright_e
+{
+	MOVE_LEFT_RUN,
+	MOVE_LEFT_WALK,
+	MOVE_LEFT_CREEP,
+	MOVE_RIGHT_NONE,
+	MOVE_RIGHT_CREEP,
+	MOVE_RIGHT_WALK,
+	MOVE_RIGHT_RUN,
+	MOVE_RIGHT_MAX
+};
+
+enum moveplus_e
+{
+	MOVE_NORM,
+	MOVE_NOFWD,
+	MOVE_NOSIDE,
+};
+
+// ************************************************************************************************
+// Skin defines
+// -----------
+// Indicates what skin Corvus has.
+// When indicated on the model, each odd-numbered skin is the damaged version of the previous skin.
+// ************************************************************************************************
+
+// For code clarity
+#define PLAGUE_NUM_LEVELS 3
+#define DAMAGE_NUM_LEVELS 2
+
+#define SKIN_REFLECTION	(DAMAGE_NUM_LEVELS)		// We don't maintain a skin for every plague level anymore.
+
+#define SKIN_MAX		(SKIN_REFLECTION + 1)
+
+#define DEFAULT_PLAYER_LIB "player.so"
+
+void P_Freelib(void);
+void* P_Load(void);
+
+void P_Init(void);
+void P_Shutdown(void);
+
+void PlayerReleaseRope(playerinfo_t* playerinfo);
+void KnockDownPlayer(playerinfo_t* playerinfo);
+void PlayFly(playerinfo_t* playerinfo, float dist);
+void PlaySlap(playerinfo_t* playerinfo, float dist);
+void PlayScratch(playerinfo_t* playerinfo, float dist);
+void PlaySigh(playerinfo_t* playerinfo, float dist);
+void SpawnDustPuff(playerinfo_t* playerinfo, float dist);
+void PlayerInterruptAction(playerinfo_t* playerinfo);
+
+qboolean BranchCheckDismemberAction(playerinfo_t* playerinfo, int weapon);
+
+void TurnOffPlayerEffects(playerinfo_t* playerinfo);
+void AnimUpdateFrame(playerinfo_t* playerinfo);
+void PlayerFallingDamage(playerinfo_t* playerinfo);
+
+void PlayerBasicAnimReset(playerinfo_t* playerinfo);
+void PlayerAnimReset(playerinfo_t* playerinfo);
+void PlayerAnimSetLowerSeq(playerinfo_t* playerinfo, int seq);
+void PlayerAnimSetUpperSeq(playerinfo_t* playerinfo, int seq);
+void PlayerAnimUpperIdle(playerinfo_t* playerinfo);
+void PlayerAnimLowerIdle(playerinfo_t* playerinfo);
+void PlayerAnimUpperUpdate(playerinfo_t* playerinfo);
+void PlayerAnimLowerUpdate(playerinfo_t* playerinfo);
+void PlayerAnimSetVault(playerinfo_t* playerinfo, int seq);
+void PlayerPlayPain(playerinfo_t* playerinfo, int type);
+
+void PlayerIntLand(playerinfo_t* playerinfo_t, float landspeed);
+
+void PlayerInit(playerinfo_t* playerinfo, int complete_reset);
+void PlayerClearEffects(playerinfo_t* playerinfo);
+void PlayerUpdate(playerinfo_t* playerinfo);
+void PlayerUpdateCmdFlags(playerinfo_t* playerinfo);
+void PlayerUpdateModelAttributes(playerinfo_t* playerinfo);
+
+const char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
 
 #define	CONTENTS_EMPTY			0x00000000	// nothing
 // Only do the trace against the world, not entities within it. Not stored in the .bsp and passed
@@ -672,36 +1118,6 @@ typedef struct
 	void (*endfunc)(edict_t *);
 } moveinfo_t;
 
-// ************************************************************************************************
-// C_ANIM_XXX
-// ------
-// Cinmatic Animation flags
-// ************************************************************************************************
-#define C_ANIM_MOVE		1
-#define C_ANIM_REPEAT	2
-#define C_ANIM_DONE		4
-#define C_ANIM_IDLE		8
-
-// ************************************************************************************************
-// OBJ_XXX
-// ------
-// Flags for object entities
-// ************************************************************************************************
-#define OBJ_INVULNERABLE	1
-#define OBJ_ANIMATE			2
-#define OBJ_EXPLODING		4
-#define OBJ_NOPUSH			8
-
-
-// ************************************************************************************************
-// SIGHT_XXX
-// ------
-// Type of target aquisition
-// ************************************************************************************************
-#define SIGHT_SOUND_TARGET 0		//Heard the target make this noise
-#define SIGHT_VISIBLE_TARGET 1		//Saw this target
-#define SIGHT_ANNOUNCED_TARGET 2	//Target was announced by another monster
-
 typedef struct
 {
 	int framenum;
@@ -718,18 +1134,6 @@ typedef struct
 	mframe_t *frame;
 	void (*endfunc)(edict_t *self);
 } mmove_t;
-
-
-// ************************************************************************************************
-// c_animflags_t
-// ----------
-// ************************************************************************************************
-typedef struct
-{
-	qboolean moving;		// Does this action support moving
-	qboolean repeat;		// Does this action support repeating
-	qboolean turning;	// Does this action support turning
-} c_animflags_t;
 
 typedef struct
 {
@@ -1124,6 +1528,8 @@ gitem_t *GetItemByIndex(int index);
 qboolean Add_Ammo(edict_t *ent, gitem_t *item, int count);
 void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane,
 		csurface_t *surf);
+void Use_Quad(edict_t *ent, gitem_t *item);
+void Use_QuadFire(edict_t *ent, gitem_t *item);
 
 /* g_utils.c */
 qboolean KillBox(edict_t *ent);
@@ -1388,9 +1794,31 @@ void P_ProjectSource(const edict_t *ent, const vec3_t distance,
 void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames,
 		int *fire_frames, void (*fire)(edict_t *ent));
-
-/* g_resourcemanagers.c */
-void G_InitResourceManagers();
+qboolean Pickup_Weapon(edict_t *ent, edict_t *other);
+void Use_Weapon(edict_t *ent, gitem_t *inv);
+void Use_Weapon2(edict_t *ent, gitem_t *inv);
+void Drop_Weapon(edict_t *ent, gitem_t *inv);
+void Weapon_Blaster(edict_t *ent);
+void Weapon_Shotgun(edict_t *ent);
+void Weapon_SuperShotgun(edict_t *ent);
+void Weapon_Machinegun(edict_t *ent);
+void Weapon_Chaingun(edict_t *ent);
+void Weapon_HyperBlaster(edict_t *ent);
+void Weapon_RocketLauncher(edict_t *ent);
+void Weapon_Grenade(edict_t *ent);
+void Weapon_GrenadeLauncher(edict_t *ent);
+void Weapon_Railgun(edict_t *ent);
+void Weapon_BFG(edict_t *ent);
+void Weapon_ChainFist(edict_t *ent);
+void Weapon_Disintegrator(edict_t *ent);
+void Weapon_ETF_Rifle(edict_t *ent);
+void Weapon_Heatbeam(edict_t *ent);
+void Weapon_Prox(edict_t *ent);
+void Weapon_Tesla(edict_t *ent);
+void Weapon_ProxLauncher(edict_t *ent);
+void Weapon_Ionripper(edict_t *ent);
+void Weapon_Phalanx(edict_t *ent);
+void Weapon_Trap(edict_t *ent);
 
 /* m_move.c */
 qboolean M_CheckBottom(edict_t *ent);
@@ -1495,13 +1923,6 @@ void Tag_DropToken(edict_t *ent, gitem_t *item);
 void Tag_PlayerDeath(edict_t *targ, edict_t *inflictor, edict_t *attacker);
 void fire_doppleganger(edict_t *ent, vec3_t start, vec3_t aimdir);
 
-/* g_breakable.c */
-void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage);
-
-/* g_obj.c */
-void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
-
-
 /* g_spawn.c */
 void ED_CallSpawn(edict_t *ent);
 void DynamicResetSpawnModels(edict_t *self);
@@ -1528,6 +1949,15 @@ void spawngrow_think(edict_t *self);
 /* p_client.c */
 void RemoveAttackingPainDaemons(edict_t *self);
 
+/* g_resourcemanagers.c */
+void G_InitResourceManagers();
+
+/* g_breakable.c */
+void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage);
+
+/* g_obj.c */
+void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
+
 /* ============================================================================ */
 
 #include "ai.h"//JABot
@@ -1540,6 +1970,371 @@ void RemoveAttackingPainDaemons(edict_t *self);
 #define ANIM_ATTACK 4
 #define ANIM_DEATH 5
 #define ANIM_REVERSE 6
+
+/* client data that stays across multiple level loads */
+typedef struct
+{
+	char userinfo[MAX_INFO_STRING];
+	char netname[16];
+	int hand;
+
+	qboolean connected;             /* a loadgame will leave valid entities that
+	                                   just don't have a connection yet */
+
+	/* values saved and restored from
+	   edicts when changing levels */
+	int health;
+	int max_health;
+	int savedFlags;
+
+	int selected_item;
+	int inventory[MAX_ITEMS];
+
+	// ********************************************************************************************
+	// User info.
+	// ********************************************************************************************
+
+	char		sounddir[MAX_QPATH];
+	int			autoweapon;
+
+	// ********************************************************************************************
+	// Values that are saved from and restored to 'edict_t's when changing levels.
+	// ********************************************************************************************
+
+	short		mission_num1;
+	short		mission_num2;
+
+	// Visible model attributes.
+
+	int			weaponready;
+	byte		armortype;			// Current armour Corvus is wearing.
+	byte		bowtype;			// Current bow and what kind (when it is on Corvus' back too).
+	byte		stafflevel;			// Current powerup level for the staff.
+	byte		helltype;			// Current skin on the hellstaff.
+	byte		handfxtype;			// Current spell effect Corvus has attached to his refpoints.
+	float		armor_count; 		// Not used on client.
+	short		skintype;			// Skin index that reflects plague stages and alternate skins
+	unsigned int altparts;			// Missing hands, heads etc.
+
+	// Inventory.
+
+	int old_inventory[MAX_ITEMS];
+
+	// Ammo capacities.
+
+	int			max_offmana;
+	int			max_defmana;
+	int			max_redarrow;
+	int			max_phoenarr;
+	int			max_hellstaff;
+
+	// Offenses and defenses.
+
+	gitem_t		*weapon,*lastweapon,
+				*defence,*lastdefence,
+				*newweapon;
+
+	// For calculating total unit score in co-op games.
+	int			score;
+
+	qboolean spectator;         /* client is a spectator */
+	int chasetoggle;       /* Chasetoggle */
+	int helpchanged;
+} client_persistant_t;
+
+// ************************************************************************************************
+// playerinfo_t
+// ------------
+// This is the information needed by the player animation system on both the client and server.
+// ************************************************************************************************
+
+typedef struct playerinfo_s
+{
+	// ********************************************************************************************
+	// Inputs only.
+	// ********************************************************************************************
+
+	// Client side function callbacks (approximating functionality of server function callbacks).
+
+	void (*CL_Sound)(byte EventId,vec3_t origin,int channel,char *soundname,float fvol,int attenuation,float timeofs);
+	trace_t (*CL_Trace)(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,int brushmask,int flags);
+	int (*CL_CreateEffect)(byte EventId,void *owner,unsigned short type,int flags,vec3_t position,char *format,...);
+	void (*CL_RemoveEffects)(byte EventId,void *owner,int fx);
+
+	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
+
+	void (*G_L_Sound)(edict_t *entity,int sound_num);
+	void (*G_Sound)(byte EventId,float leveltime, edict_t *entity,int channel,int sound_num,float volume,float attenuation,float timeofs);
+	trace_t (*G_Trace)(const vec3_t start, const vec3_t mins, const vec3_t maxs,
+			const vec3_t end, const edict_t *passent, int contentmask);
+	void (*G_CreateEffect)(byte EventId, edict_t *state, int type, int flags, vec3_t origin, char *format,...);
+	void (*G_RemoveEffects)(byte Eventid, edict_t *state, int type);
+
+	// Server (game) function callbacks that have no client side equivalent.
+
+	int (*G_SoundIndex)(const char *name);
+	void (*G_SoundRemove)(char *name);
+	void (*G_UseTargets)(edict_t *ent,edict_t *activator);
+	entity_state_t *(*G_GetEntityStatePtr)(edict_t *entity);
+	int (*G_BranchLwrClimbing)(playerinfo_t *playerinfo);
+	qboolean (*G_PlayerActionCheckRopeGrab)(playerinfo_t *playerinfo, float stomp_org);
+	void (*G_PlayerClimbingMoveFunc)(playerinfo_t *playerinfo, float height, float var2, float var3);
+	qboolean (*G_PlayerActionCheckPuzzleGrab)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionTakePuzzle)(playerinfo_t *playerinfo);
+	qboolean (*G_PlayerActionUsePuzzle)(playerinfo_t *playerinfo);
+	qboolean (*G_PlayerActionCheckPushPull_Ent)(edict_t *ent);
+	void (*G_PlayerActionMoveItem)(playerinfo_t *playerinfo,float distance);
+	qboolean (*G_PlayerActionCheckPushButton)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionPushButton)(playerinfo_t *playerinfo);
+	qboolean (*G_PlayerActionCheckPushLever)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionPushLever)(playerinfo_t *playerinfo);
+	qboolean (*G_HandleTeleport)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionShrineEffect)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionChickenBite)(playerinfo_t *playerinfo);
+	void (*G_PlayerFallingDamage)(playerinfo_t *playerinfo,float delta);
+	void (*G_PlayerSpellShieldAttack)(playerinfo_t *playerinfo);
+	void (*G_PlayerSpellStopShieldAttack)(playerinfo_t *playerinfo);
+	void (*G_PlayerVaultKick)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionCheckRopeMove)(playerinfo_t *playerinfo);
+	void (*G_cprintf)(edict_t *ent, int printlevel, short stringid);
+	void (*G_WeapNext)(edict_t *ent);
+	void (*G_UseItem)(edict_t *ent);
+
+	// Common client & server (game) function callbacks.
+
+	int (*PointContents)(vec3_t point);
+	void (*SetJointAngles)(playerinfo_t *playerinfo);
+	void (*ResetJointAngles)(playerinfo_t *playerinfo);
+	void (*PlayerActionSwordAttack)(playerinfo_t *playerinfo,int value);
+	void (*PlayerActionSpellFireball)(playerinfo_t *playerinfo);
+	void (*PlayerActionSpellBlast)(playerinfo_t *playerinfo);
+	void (*PlayerActionSpellArray)(playerinfo_t *playerinfo,int value);
+	void (*PlayerActionSpellSphereCreate)(playerinfo_t *playerinfo,qboolean *Charging);
+	void (*PlayerActionSpellFirewall)(playerinfo_t *playerinfo);
+	void (*PlayerActionSpellBigBall)(playerinfo_t *playerinfo);
+	void (*PlayerActionRedRainBowAttack)(playerinfo_t *playerinfo);
+	void (*PlayerActionPhoenixBowAttack)(playerinfo_t *playerinfo);
+	void (*PlayerActionHellstaffAttack)(playerinfo_t *playerinfo);
+	void (*PlayerActionSpellDefensive)(playerinfo_t *playerinfo);
+	qboolean (*G_EntIsAButton)(edict_t *ent);
+	int (*irand)(playerinfo_t *playerinfo,int mn,int mx);
+
+	// Indicates whether this playerinfo_t is held on the client or server.
+
+	qboolean			isclient;
+
+	// This is client only and records the highest level time the anim has run... we use this to
+	// prevent multiple sounds etc. Logic is basically if(!ishistory) playsound...
+	qboolean			ishistory;
+
+	// Pointer to the associated player's edict_t.
+
+	edict_t				*self;
+
+	// Game .dll variables.
+
+	float				leveltime;
+	float				quickturnEndTime;
+
+	// Server variables.
+
+	float				sv_gravity;
+	float				sv_cinematicfreeze;		// Not used on client.
+	float				sv_jumpcinematic;		// Jumping through cinematic. Not used on client.
+
+	// From edict_t.
+
+	float				ideal_yaw;
+	void				*groundentity;
+
+	// Pointer to entity_state_t of player's enemy edict.
+
+	entity_state_t		*enemystate;
+
+	// Spell / weapon aiming direction (from g_client_t).
+
+	vec3_t				aimangles;
+
+	// Deathmatch flags.
+
+	int	dmflags;
+
+	// ********************************************************************************************
+	// Inputs & outputs.
+	// ********************************************************************************************
+
+	// Data that must be maintatined over the duration of a level.
+
+	client_persistant_t	pers;
+
+	// Last usercmd_t.
+
+	usercmd_t			pcmd;
+
+	// Status of controller buttons.
+
+	int					buttons;
+	int					oldbuttons;
+	int					latched_buttons;
+	int					remember_buttons;
+
+	// Weapons & defenses.
+
+	qboolean			autoaim;				// Set on client from a flag.
+	int					switchtoweapon;
+	int					weap_ammo_index;
+	int					def_ammo_index;			// Not used on client.
+	int					weaponcharge;
+	float				defensive_debounce;		// Used on client? Defensive spell delay.
+	byte				meteor_count;
+
+	// Visible model attributes.
+	byte				plaguelevel;			// Current plague level: 0=none, 2=max.
+
+	// Shrine stuff. Used by the player to determine the time for the torch to be lit, reflection
+	// to work and invisibilty to work (xxx_timer).
+	float				light_timer;			// Not used on client.
+	float				reflect_timer;			// FIXME not transmitted yet.
+	float				ghost_timer;			// FIXME not transmitted yet.
+	float				powerup_timer;
+	float				lungs_timer;			// Not used on client.
+	float				shield_timer;			// FIXME not transmitted yet.
+	float				speed_timer;			// FIXME not transmitted yet.
+	float				block_timer;			// FIXME not transmitted yet.
+
+	float				cinematic_starttime;	// Not used on client. Time cinematic started.
+	float				cin_shield_timer;		// What the shield timer was set at the beginning of the cinematic
+	int					c_mode;					// Show cinematics is on
+
+	// Movement & animation.
+	int					flags;
+	float				fwdvel, sidevel, upvel;
+	float				turncmd;
+	float				waterheight;
+	vec3_t				LastWatersplashPos;		// Not used on client.
+	vec3_t				oldvelocity;
+	qboolean			chargingspell;
+	float				quickturn_rate;
+
+	// From edict_t.
+	vec3_t				origin;
+	vec3_t				angles;
+	vec3_t				velocity;
+	vec3_t				mins,maxs;
+	void				*enemy;					// Not used on client.
+	void				*target;				// Not used on client.
+	void				*target_ent;			// Not used on client.
+	void				*targetEnt;				// FIXME - always 0 on client, but checked by client.
+	float				nextthink;				// Not used on client.
+	float				viewheight;
+	float				knockbacktime;			// FIXME Used on client, but not transmitted yet?  --Pat
+	int					watertype;
+	int					waterlevel;
+	int					deadflag;
+	int					movetype;
+	int					edictflags;
+
+	// From entity_state_t.
+	int					frame,swapFrame;
+	int					effects;
+	int					renderfx;
+	int					skinnum;
+	int					clientnum;
+	fmnodeinfo_t		fmnodeinfo[MAX_FM_MESH_NODES];
+
+	// From pmove_state_t.
+
+	int					pm_flags,pm_w_flags;
+
+	// ********************************************************************************************
+	// Outputs only.
+	// ********************************************************************************************
+
+	// From playerstate_t.
+
+	vec3_t				offsetangles;
+
+	qboolean			advancedstaff;
+
+	// Torso angle twisting stuff which is derived entirely from various inputs to the animation
+	// system.
+
+	qboolean			headjointonly;
+	vec3_t				targetjointangles;
+	qboolean			showscores;				// Set layout stat.
+	qboolean			showpuzzleinventory;	// Set layout stat.
+
+	// ********************************************************************************************
+	// Internal state info.
+	// ********************************************************************************************
+
+	int					seqcmd[20];
+	panimmove_t			*uppermove,*lowermove;
+	int					uppermove_index,lowermove_index;
+	panimframe_t		*upperframeptr,*lowerframeptr;
+	int					upperframe,lowerframe;
+	qboolean			upperidle,loweridle;
+	int					upperseq,lowerseq;
+	float				idletime;
+	vec3_t				grabloc;
+	float				grabangle;
+
+	short camera_vieworigin[3];
+	short camera_viewangles[3];
+
+} playerinfo_t;
+
+typedef struct
+{
+	void (*Init)(void);
+	void (*Shutdown)(void);
+
+	void (*PlayerReleaseRope)(playerinfo_t *playerinfo);
+	void (*KnockDownPlayer)(playerinfo_t *playerinfo);
+	void (*PlayFly)(playerinfo_t *playerinfo, float dist);
+	void (*PlaySlap)(playerinfo_t *playerinfo, float dist);
+	void (*PlayScratch)(playerinfo_t *playerinfo, float dist);
+	void (*PlaySigh)(playerinfo_t *playerinfo, float dist);
+	void (*SpawnDustPuff)(playerinfo_t *playerinfo, float dist);
+	void (*PlayerInterruptAction)(playerinfo_t *playerinfo);
+
+	qboolean (*BranchCheckDismemberAction)(playerinfo_t *playerinfo, int weapon);
+
+	void (*TurnOffPlayerEffects)(playerinfo_t *playerinfo);
+	void (*AnimUpdateFrame)(playerinfo_t *playerinfo);
+	void (*PlayerFallingDamage)(playerinfo_t *playerinfo);
+
+	void (*PlayerBasicAnimReset)(playerinfo_t *playerinfo);
+	void (*PlayerAnimReset)(playerinfo_t *playerinfo);
+	void (*PlayerAnimSetLowerSeq)(playerinfo_t *playerinfo, int seq);
+	void (*PlayerAnimSetUpperSeq)(playerinfo_t *playerinfo, int seq);
+	void (*PlayerAnimUpperIdle)(playerinfo_t *playerinfo);
+	void (*PlayerAnimLowerIdle)(playerinfo_t *playerinfo);
+	void (*PlayerAnimUpperUpdate)(playerinfo_t *playerinfo);
+	void (*PlayerAnimLowerUpdate)(playerinfo_t *playerinfo);
+	void (*PlayerAnimSetVault)(playerinfo_t *playerinfo, int seq);
+	void (*PlayerPlayPain)(playerinfo_t *playerinfo, int type);
+
+	void (*PlayerIntLand)(playerinfo_t *playerinfo_t, float landspeed);
+
+	void (*PlayerInit)(playerinfo_t *playerinfo, int complete_reset);
+	void (*PlayerClearEffects)(playerinfo_t *playerinfo);
+	void (*PlayerUpdate)(playerinfo_t *playerinfo);
+	void (*PlayerUpdateCmdFlags)(playerinfo_t *playerinfo);
+	void (*PlayerUpdateModelAttributes)(playerinfo_t *playerinfo);
+} player_export_t;
+
+typedef struct
+{
+	void (*dprintf)(const char *fmt, ...);
+	gitem_t *(*FindItem)(const char *pickup_name);
+	void (*Weapon_EquipSpell)(playerinfo_t *playerinfo, gitem_t *Weapon);
+	void (*Weapon_Ready)(playerinfo_t *playerinfo, gitem_t *Weapon);
+	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
+	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
+} player_import_t;
+
+extern player_import_t pi;
 
 /* client data that stays across deathmatch respawns */
 typedef struct
@@ -1742,64 +2537,6 @@ struct gclient_s
 	playerinfo_t		playerinfo;
 
 };
-
-// sides for a nonrotating box
-typedef enum Box_BoundingForm_Sides_e
-{
-	BOX_BOUNDINGFORM_SIDE_WEST,
-	BOX_BOUNDINGFORM_SIDE_NORTH,
-	BOX_BOUNDINGFORM_SIDE_SOUTH,
-	BOX_BOUNDINGFORM_SIDE_EAST,
-	BOX_BOUNDINGFORM_SIDE_BOTTOM,
-	BOX_BOUNDINGFORM_SIDE_TOP,
-	NUM_BOX_BOUNDINGFORM_SIDES
-} Box_BoundingForm_Sides_t;
-
-
-void SpawnItemEffect(edict_t *ent, gitem_t *item);
-
-edict_t *newfindradius(edict_t *from, vec3_t org, float rad);
-edict_t *findinblocking(edict_t *from, edict_t *checkent);
-edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max);
-edict_t *oldfindinbounds(edict_t *from, vec3_t min, vec3_t max);
-edict_t *finddistance(edict_t *from, vec3_t org, float mindist, float maxdist);
-edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos);
-
-//commonly used functions
-int range(edict_t *self, edict_t *other);
-qboolean clear_visible(edict_t *self, edict_t *other);
-qboolean visible(edict_t *self, edict_t *other);
-qboolean visible_pos(edict_t *self, vec3_t spot2);
-qboolean infront(edict_t *self, edict_t *other);
-qboolean infront_pos(edict_t *self, vec3_t pos);
-qboolean ahead(edict_t *self, edict_t *other);
-
-void G_SetToFree(edict_t *);
-void G_LinkMissile(edict_t *ent);
-
-qboolean CanDamageFromLoc(edict_t *targ, edict_t *inflictor, vec3_t origin);
-void T_DamageRadius(edict_t *inflictor, edict_t *attacker,
-		edict_t *ignore, float radius,
-		float maxdamage, float mindamage, int dflags,int MeansOfDeath);
-void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
-							float maxdamage, float mindamage, int dflags,int MeansOfDeath);
-void PauseTime(edict_t *self, float time);
-
-qboolean FindTarget(edict_t *self);
-void MG_PostDeathThink(edict_t *self);
-qboolean movable (edict_t *ent);
-qboolean EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer);
-void SkyFly (edict_t *self);
-void Use_Multi(edict_t *self, edict_t *other, edict_t *activator);
-void c_swapplayer(edict_t *Self,edict_t *Cinematic);
-void remove_non_cinematic_entites(edict_t *owner);
-void reinstate_non_cinematic_entites(edict_t *owner);
-
-void ProcessScripts(void);
-void ShutdownScripts(qboolean Complete);
-
-extern player_export_t *playerExport;	// interface to player library.
-extern player_import_t playerImport;	// interface to player library.
 
 #include "../common/message.h"
 #include "g_classstatics.h"
@@ -2456,6 +3193,100 @@ void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
 #endif
 
 /* Heretic 2 */
+
+// ************************************************************************************************
+// C_ANIM_XXX
+// ------
+// Cinmatic Animation flags
+// ************************************************************************************************
+#define C_ANIM_MOVE		1
+#define C_ANIM_REPEAT	2
+#define C_ANIM_DONE		4
+#define C_ANIM_IDLE		8
+
+// ************************************************************************************************
+// OBJ_XXX
+// ------
+// Flags for object entities
+// ************************************************************************************************
+#define OBJ_INVULNERABLE	1
+#define OBJ_ANIMATE			2
+#define OBJ_EXPLODING		4
+#define OBJ_NOPUSH			8
+
+
+// ************************************************************************************************
+// SIGHT_XXX
+// ------
+// Type of target aquisition
+// ************************************************************************************************
+#define SIGHT_SOUND_TARGET 0		//Heard the target make this noise
+#define SIGHT_VISIBLE_TARGET 1		//Saw this target
+#define SIGHT_ANNOUNCED_TARGET 2	//Target was announced by another monster
+
+/* Custom heretic 2 IT_* flags */
+#define IT_PUZZLE 0x00001000
+#define IT_DEFENSE 0x00002000
+#define IT_OFFENSE 0x00004000
+
+// sides for a nonrotating box
+typedef enum Box_BoundingForm_Sides_e
+{
+	BOX_BOUNDINGFORM_SIDE_WEST,
+	BOX_BOUNDINGFORM_SIDE_NORTH,
+	BOX_BOUNDINGFORM_SIDE_SOUTH,
+	BOX_BOUNDINGFORM_SIDE_EAST,
+	BOX_BOUNDINGFORM_SIDE_BOTTOM,
+	BOX_BOUNDINGFORM_SIDE_TOP,
+	NUM_BOX_BOUNDINGFORM_SIDES
+} Box_BoundingForm_Sides_t;
+
+
+void SpawnItemEffect(edict_t *ent, gitem_t *item);
+
+edict_t *newfindradius(edict_t *from, vec3_t org, float rad);
+edict_t *findinblocking(edict_t *from, edict_t *checkent);
+edict_t *findinbounds(edict_t *from, vec3_t min, vec3_t max);
+edict_t *oldfindinbounds(edict_t *from, vec3_t min, vec3_t max);
+edict_t *finddistance(edict_t *from, vec3_t org, float mindist, float maxdist);
+edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos);
+
+//commonly used functions
+int range(edict_t *self, edict_t *other);
+qboolean clear_visible(edict_t *self, edict_t *other);
+qboolean visible(edict_t *self, edict_t *other);
+qboolean visible_pos(edict_t *self, vec3_t spot2);
+qboolean infront(edict_t *self, edict_t *other);
+qboolean infront_pos(edict_t *self, vec3_t pos);
+qboolean ahead(edict_t *self, edict_t *other);
+
+void G_SetToFree(edict_t *);
+void G_LinkMissile(edict_t *ent);
+
+qboolean CanDamageFromLoc(edict_t *targ, edict_t *inflictor, vec3_t origin);
+void T_DamageRadius(edict_t *inflictor, edict_t *attacker,
+		edict_t *ignore, float radius,
+		float maxdamage, float mindamage, int dflags,int MeansOfDeath);
+void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edict_t *ignore, float radius,
+							float maxdamage, float mindamage, int dflags,int MeansOfDeath);
+void PauseTime(edict_t *self, float time);
+
+qboolean FindTarget(edict_t *self);
+void MG_PostDeathThink(edict_t *self);
+qboolean movable (edict_t *ent);
+qboolean EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer);
+void SkyFly (edict_t *self);
+void Use_Multi(edict_t *self, edict_t *other, edict_t *activator);
+void c_swapplayer(edict_t *Self,edict_t *Cinematic);
+void remove_non_cinematic_entites(edict_t *owner);
+void reinstate_non_cinematic_entites(edict_t *owner);
+
+void ProcessScripts(void);
+void ShutdownScripts(qboolean Complete);
+
+extern player_export_t *playerExport;	// interface to player library.
+extern player_import_t playerImport;	// interface to player library.
+
 #define AI_EATING				0x00002000
 #define AI_FLEE					0x00008000
 #define AI_FALLBACK				0x00010000
@@ -2516,6 +3347,15 @@ void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
 void Weapon_EquipHellStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
 void Weapon_EquipBow(playerinfo_t *playerinfo, gitem_t *Weapon);
 qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurface_t *surface,cplane_t *plane, vec3_t planeDir);
+
+void Use_Defence(playerinfo_t *playerinfo, gitem_t *defence);
+void DefenceThink_Powerup(edict_t *Caster, char *Format, ...);
+void DefenceThink_RingOfRepulsion(edict_t *Caster, char *Format, ...);
+void DefenceThink_MeteorBarrier(edict_t *Caster, char *Format, ...);
+void DefenceThink_Teleport(edict_t *Caster, char *Format, ...);
+void DefenceThink_Morph(edict_t *Caster, char *Format, ...);
+void DefenceThink_Shield(edict_t *Caster, char *Format, ...);
+void DefenceThink_Tornado(edict_t *Caster, char *Format, ...);
 
 #define	SVF_INUSE				0x00000008	// Used to replace the inuse field.
 #define SVF_ALWAYS_SEND			0x00000010	// Always send the ent to all the clients, regardless of

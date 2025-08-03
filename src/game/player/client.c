@@ -29,7 +29,6 @@
 #include "../monster/misc/player.h"
 #include "../header/g_defaultmessagehandler.h"
 #include "../header/g_skeletons.h"
-#include "../player/library/p_newmove.h"
 #include "../player/library/p_main.h"
 #include "../player/library/p_ctrl.h"
 #include "../player/library/p_chicken.h"

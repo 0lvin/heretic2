@@ -5,7 +5,7 @@
 #ifndef _P_CHICKEN_H_
 #define _P_CHICKEN_H_
 
-#include "p_types.h"
+#include "../../header/local.h"
 
 typedef enum SoundID_e
 {

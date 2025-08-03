@@ -8,7 +8,7 @@
 #ifndef _P_ANIMACTOR_H_
 #define _P_ANIMACTOR_H_
 
-#include "p_types.h"
+#include "../../header/local.h"
 
 extern void TurnOffPlayerEffects(playerinfo_t *playerinfo);
 extern void AnimUpdateFrame(playerinfo_t *playerinfo);

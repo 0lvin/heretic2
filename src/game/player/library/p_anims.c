@@ -5,8 +5,7 @@
 // Copyright 1998 Raven Software
 //
 
-#include "player.h"
-#include "p_types.h"
+#include "../../header/local.h"
 #include "p_animactor.h"
 #include "p_anim_branch.h"
 #include "p_anim_data.h"
