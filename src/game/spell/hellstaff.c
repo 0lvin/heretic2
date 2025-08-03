@@ -6,12 +6,8 @@
 //
 
 #include "../header/local.h"
-#include "../common/fx.h"
-#include "../header/utilities.h"
 #include "../common/h2rand.h"
-#include "../header/decals.h"
 #include "../player/library/p_main.h"
-#include "../header/g_playstats.h"
 #include "../monster/beast/beast.h"
 
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);

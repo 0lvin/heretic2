@@ -3,7 +3,6 @@
 // Copyright 1998 Raven Software
 //
 #include "../../header/local.h"
-#include "../../common/fx.h"
 #include "spreadermist.h"
 #include "spreaderbomb_anim.h"
 #include "../../common/angles.h"

@@ -9,12 +9,10 @@
 #include <assert.h>
 
 #include "header/local.h"
-#include "header/utilities.h"
 #include "common/angles.h"
 #include "header/g_hitlocation.h"
 #include "header/g_physics.h"
 #include "common/h2rand.h"
-#include "common/fx.h"
 #include "player/library/p_main.h"
 
 #define TIME_EPSILON		0.01

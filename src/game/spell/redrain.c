@@ -4,11 +4,8 @@
 //
 
 #include "../header/local.h"
-#include "../common/fx.h"
 #include "../common/matrix.h"
 #include "../header/g_volume_effect.h"
-#include "../header/utilities.h"
-#include "../header/g_playstats.h"
 #include "../common/h2rand.h"
 
 #define ARROW_RADIUS			2.0F

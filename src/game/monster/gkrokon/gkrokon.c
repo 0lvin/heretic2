@@ -8,14 +8,10 @@
 //==============================================================================
 
 #include "../../header/local.h"
-#include "../../header/utilities.h"
 #include "../../header/g_defaultmessagehandler.h"
 #include "../../header/g_monster.h"
-#include "../../common/fx.h"
 #include "../../common/h2rand.h"
 #include "../../header/buoy.h"
-#include "../../header/decals.h"
-#include "../../header/g_playstats.h"
 #include "gkrokon.h"
 #include "gkrokon_anim.h"
 #include "../stats/stats.h"

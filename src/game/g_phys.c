@@ -28,17 +28,12 @@
 #include "header/local.h"
 #include "common/message.h"
 #include "header/g_physics.h"
-
 #include "common/angles.h"
 #include "common/singlylinkedlist.h"
-#include "header/g_physics.h"
-#include "header/utilities.h"
 #include "player/library/p_main.h"
 #include "common/h2rand.h"
 #include "player/library/p_anim_branch.h"
 #include "player/library/p_anims.h"
-#include "common/fx.h"
-#include "header/g_playstats.h"
 #include "player/library/p_actions.h"
 #include <stdint.h>
 
@@ -2234,6 +2229,8 @@ void MoveEntity_Bounce(edict_t *self, FormMove_t *formMove)
 		HandleCollision(self, &formMove->trace, move, (self->physicsFlags & PF_FORCEFUL_COLLISIONS), CH_STANDARD);
 	}
 }
+
+#define FLOAT_ZERO_EPSILON 0.0005f
 
 static qboolean
 FloatIsZeroEpsilon(float f)

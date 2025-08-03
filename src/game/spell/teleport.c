@@ -7,12 +7,9 @@
 // Written by Jake Simpson
 
 #include "../header/local.h"
-#include "../common/fx.h"
-#include "../header/utilities.h"
 #include "../common/h2rand.h"
 #include "../header/g_teleport.h"
 #include "../player/library/p_main.h"
-#include "../header/g_playstats.h"
 
 extern void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles);
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);

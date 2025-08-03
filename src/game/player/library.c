@@ -9,9 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../player/library/player.h"
 #include "../header/local.h"
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 
 #if defined(_WIN32)
 #include <windows.h>

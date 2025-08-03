@@ -6,12 +6,9 @@
 //
 
 #include "../header/local.h"
-#include "../common/fx.h"
 #include "../common/angles.h"
-#include "../header/utilities.h"
 #include "../common/h2rand.h"
-#include "../header/decals.h"
-#include "../header/g_playstats.h"
+
 
 #define ARROW_RADIUS			2.0F
 

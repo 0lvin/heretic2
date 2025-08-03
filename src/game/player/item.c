@@ -5,9 +5,7 @@
 // Created by JJS
 
 #include "../header/local.h"
-#include "../player/library/player.h"
 #include "../monster/misc/player.h"
-#include "../common/fx.h"
 #include "../common/matrix.h"
 #include "../header/g_skeletons.h"
 

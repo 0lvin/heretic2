@@ -2,9 +2,8 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../../../common/header/common.h"
-#include "../../header/game.h"
-#include "player.h"
+
+#include "../../header/local.h"
 #include "p_anim_data.h"
 
 player_import_t pi;
@@ -17,51 +16,51 @@ void P_Shutdown(void)
 {
 }
 
-player_export_t playerExport;
+static player_export_t pe;
 
 Q2_DLL_EXPORTED player_export_t *
 GetPlayerAPI(player_import_t *import)
 {
 	pi = *import;
 
-	playerExport.Init = P_Init;
-	playerExport.Shutdown = P_Shutdown;
+	pe.Init = P_Init;
+	pe.Shutdown = P_Shutdown;
 
-	playerExport.PlayerReleaseRope = PlayerReleaseRope;
-	playerExport.KnockDownPlayer = KnockDownPlayer;
-	playerExport.PlayFly = PlayFly;
-	playerExport.PlaySlap = PlaySlap;
-	playerExport.PlayScratch = PlayScratch;
-	playerExport.PlaySigh = PlaySigh;
-	playerExport.SpawnDustPuff = SpawnDustPuff;
-	playerExport.PlayerInterruptAction = PlayerInterruptAction;
+	pe.PlayerReleaseRope = PlayerReleaseRope;
+	pe.KnockDownPlayer = KnockDownPlayer;
+	pe.PlayFly = PlayFly;
+	pe.PlaySlap = PlaySlap;
+	pe.PlayScratch = PlayScratch;
+	pe.PlaySigh = PlaySigh;
+	pe.SpawnDustPuff = SpawnDustPuff;
+	pe.PlayerInterruptAction = PlayerInterruptAction;
 
-	playerExport.BranchCheckDismemberAction = BranchCheckDismemberAction;
+	pe.BranchCheckDismemberAction = BranchCheckDismemberAction;
 
-	playerExport.TurnOffPlayerEffects = TurnOffPlayerEffects;
-	playerExport.AnimUpdateFrame = AnimUpdateFrame;
-	playerExport.PlayerFallingDamage = PlayerFallingDamage;
+	pe.TurnOffPlayerEffects = TurnOffPlayerEffects;
+	pe.AnimUpdateFrame = AnimUpdateFrame;
+	pe.PlayerFallingDamage = PlayerFallingDamage;
 
-	playerExport.PlayerBasicAnimReset = PlayerBasicAnimReset;
-	playerExport.PlayerAnimReset = PlayerAnimReset;
-	playerExport.PlayerAnimSetLowerSeq = PlayerAnimSetLowerSeq;
-	playerExport.PlayerAnimSetUpperSeq = PlayerAnimSetUpperSeq;
-	playerExport.PlayerAnimUpperIdle = PlayerAnimUpperIdle;
-	playerExport.PlayerAnimLowerIdle = PlayerAnimLowerIdle;
-	playerExport.PlayerAnimUpperUpdate = PlayerAnimUpperUpdate;
-	playerExport.PlayerAnimLowerUpdate = PlayerAnimLowerUpdate;
-	playerExport.PlayerAnimSetVault = PlayerAnimSetVault;
-	playerExport.PlayerPlayPain = PlayerPlayPain;
+	pe.PlayerBasicAnimReset = PlayerBasicAnimReset;
+	pe.PlayerAnimReset = PlayerAnimReset;
+	pe.PlayerAnimSetLowerSeq = PlayerAnimSetLowerSeq;
+	pe.PlayerAnimSetUpperSeq = PlayerAnimSetUpperSeq;
+	pe.PlayerAnimUpperIdle = PlayerAnimUpperIdle;
+	pe.PlayerAnimLowerIdle = PlayerAnimLowerIdle;
+	pe.PlayerAnimUpperUpdate = PlayerAnimUpperUpdate;
+	pe.PlayerAnimLowerUpdate = PlayerAnimLowerUpdate;
+	pe.PlayerAnimSetVault = PlayerAnimSetVault;
+	pe.PlayerPlayPain = PlayerPlayPain;
 
-	playerExport.PlayerIntLand = PlayerIntLand;
+	pe.PlayerIntLand = PlayerIntLand;
 
-	playerExport.PlayerInit = PlayerInit;
-	playerExport.PlayerClearEffects = PlayerClearEffects;
-	playerExport.PlayerUpdate = PlayerUpdate;
-	playerExport.PlayerUpdateCmdFlags = PlayerUpdateCmdFlags;
-	playerExport.PlayerUpdateModelAttributes = PlayerUpdateModelAttributes;
+	pe.PlayerInit = PlayerInit;
+	pe.PlayerClearEffects = PlayerClearEffects;
+	pe.PlayerUpdate = PlayerUpdate;
+	pe.PlayerUpdateCmdFlags = PlayerUpdateCmdFlags;
+	pe.PlayerUpdateModelAttributes = PlayerUpdateModelAttributes;
 
-	return &playerExport;
+	return &pe;
 }
 
 void

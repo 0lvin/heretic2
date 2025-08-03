@@ -8,7 +8,6 @@
 //
 
 #include "header/local.h"
-#include "common/fx.h"
 #include "header/g_itemstats.h"
 #include "common/h2rand.h"
 #include "player/library/p_actions.h"

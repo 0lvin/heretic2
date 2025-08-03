@@ -26,10 +26,8 @@
  */
 
 #include "header/local.h"
-#include "header/utilities.h"
 #include "header/g_hitlocation.h"
 #include "header/g_defaultmessagehandler.h"
-#include "common/fx.h"
 #include "common/h2rand.h"
 #include "header/g_misc.h"
 #include "player/library/p_main.h"

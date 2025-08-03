@@ -7,11 +7,9 @@
 //
 //==============================================================================
 #include "../../header/local.h"
-#include "../../header/utilities.h"
 #include "../../header/g_defaultmessagehandler.h"
 #include "../../header/g_monster.h"
 #include "../../common/angles.h"
-#include "../../common/fx.h"
 #include "../../common/h2rand.h"
 #include "../../header/g_misc.h"
 #include "../../common/matrix.h"

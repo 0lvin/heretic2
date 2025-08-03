@@ -2,7 +2,7 @@
 // Heretic II
 // Copyright 1998 Raven Software
 //
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 
 #define SCRIPT_VERSION 3
 

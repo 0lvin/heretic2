@@ -27,6 +27,7 @@
 
 #include "header/local.h"
 #include "monster/misc/player.h"
+#include "effects/ambientsound.h"
 
 int debristhisframe;
 int gibsthisframe;
@@ -195,7 +196,6 @@ gib_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unu
 
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_misc.h"
-#include "common/fx.h"
 #include "common/h2rand.h"
 #include "header/g_monster.h"
 #include "header/g_teleport.h"

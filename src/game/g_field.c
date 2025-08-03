@@ -3,7 +3,6 @@
 // Copyright 1998 Raven Software
 //
 #include "header/local.h"
-#include "player/library/player.h"
 #include "player/library/p_actions.h"
 #include "header/g_defaultmessagehandler.h"
 #include "player/library/p_main.h"

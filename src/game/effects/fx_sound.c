@@ -12,6 +12,7 @@
 #include "../common/resourcemanager.h"
 #include "../common/fx.h"
 #include "../common/h2rand.h"
+#include "ambientsound.h"
 #define TAG_LEVEL 766 // tags get cleared at each new level
 
 typedef struct soundthinkinfo_s

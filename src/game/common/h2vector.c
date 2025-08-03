@@ -5,7 +5,7 @@
 // H2Vector.c
 //
 
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 #include "angles.h"
 #include "vector.h"
 #include "matrix.h"

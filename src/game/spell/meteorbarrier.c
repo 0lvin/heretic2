@@ -6,12 +6,8 @@
 //
 
 #include "../header/local.h"
-#include "../common/fx.h"
 #include "../common/angles.h"
-#include "../header/utilities.h"
 #include "../common/h2rand.h"
-#include "../header/decals.h"
-#include "../header/g_playstats.h"
 
 #define METEOR_BARRIER_DIE_EXPLODE			1
 #define METEOR_BARRIER_DIE_EXPLODEIMPACT	2

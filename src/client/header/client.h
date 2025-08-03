@@ -58,8 +58,6 @@
 #include "keyboard.h"
 #include "console.h"
 
-#include "../../game/player/library/player.h"
-
 typedef struct
 {
 	qboolean		valid; /* cleared if delta parsing was invalid */

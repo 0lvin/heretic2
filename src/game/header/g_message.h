@@ -5,7 +5,7 @@
 #ifndef G_MESSAGE_H
 #define G_MESSAGE_H
 
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 #include "../common/singlylinkedlist.h"
 
 // Be sure to update DefaultMessageReceivers after adding a new message

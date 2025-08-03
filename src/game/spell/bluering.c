@@ -6,9 +6,7 @@
 //
 
 #include "../header/local.h"
-#include "../common/fx.h"
 #include "../common/h2rand.h"
-#include "../header/g_playstats.h"
 #include "../player/library/p_actions.h"
 
 

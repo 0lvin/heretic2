@@ -5,8 +5,6 @@
 // Copyright 1998 Raven Software
 //
 
-#include "../../../common/header/common.h"
-
 #include "player.h"
 #include "p_types.h"
 #include "p_actions.h"

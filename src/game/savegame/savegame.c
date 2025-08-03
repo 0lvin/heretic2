@@ -70,10 +70,6 @@
 #include "../../common/header/common.h" // YQ2ARCH
 #include "../header/local.h"
 #include "savegame.h"
-#include "../header/g_playstats.h"
-#include "../header/utilities.h"
-#include "../common/fx.h"
-
 /*
  * When ever the savegame version is changed, q2 will refuse to
  * load older savegames. This should be bumped if the files
@@ -429,12 +425,6 @@ InitGame(void)
 	{
 		Sys_Error("Unable to player library");
 	}
-
-	// ********************************************************************************************
-	// Initialise the inventory items.
-	// ********************************************************************************************
-
-	// Server side only elements.
 
 	/* items */
 	InitItems();

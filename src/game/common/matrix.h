@@ -4,8 +4,7 @@
 //
 #ifndef MATRIX_H
 #define MATRIX_H
-#include "../../common/header/common.h"
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 
 typedef float matrix3_t[3][3];
 

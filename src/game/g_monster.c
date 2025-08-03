@@ -31,7 +31,6 @@
 #include "header/local.h"
 #include "header/g_monster.h"
 #include "monster/stats/stats.h"
-#include "common/fx.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_playstats.h"
 
@@ -39,7 +38,6 @@
 
 //JWEIER START INCLUDES
 #include "header/g_misc.h"
-#include "header/utilities.h"
 //JWEIER END INCLUDES
 #include "header/g_hitlocation.h"
 #include "header/mg_guide.h"

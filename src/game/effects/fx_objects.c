@@ -13,9 +13,6 @@
 #include "../common/fx.h"
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
-#include "utilities.h"
-#include "fx_debris.h"
-#include "../header/g_playstats.h"
 #include "fx_debris.h"
 
 #define BARREL_EXPLODE_SPEED	80.0

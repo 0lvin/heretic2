@@ -10,11 +10,9 @@
 #include "../../header/local.h"
 #include "priestess.h"
 #include "priestess_anim.h"
-#include "../../header/utilities.h"
 #include "../../header/g_defaultmessagehandler.h"
 #include "../../header/g_monster.h"
 #include "../../common/h2rand.h"
-#include "../../common/fx.h"
 #include "../../header/g_hitlocation.h"
 
 #include "../stats/stats.h"

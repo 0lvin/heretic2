@@ -35,9 +35,7 @@
 #include "monster/stats/stats.h"
 #include "player/library/p_anims.h"
 #include "header/g_hitlocation.h"
-#include "header/utilities.h"
 #include "header/g_playstats.h"
-#include "common/fx.h"
 
 #define YAW_IDEAL 1
 #define YAW_BEST_MOVE 0

@@ -5,7 +5,7 @@
 #ifndef Q_PHYSICS_H
 #define Q_PHYSICS_H
 
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 
 #define ELASTICITY_NONE				0.0f
 #define ELASTICITY_SLIDE			1.0001f

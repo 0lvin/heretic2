@@ -30,13 +30,10 @@
 #include "common/arrayed_list.h"
 #include "header/g_physics.h"
 #include "header/g_volume_effect.h"
-#include "common/fx.h"
-#include "header/utilities.h"
 #include "common/h2rand.h"
 #include "header/g_playstats.h"
 #include "player/library/p_anims.h"
 #include "common/cl_strings.h"
-#include "effects/client_effects.h"
 
 game_locals_t game;
 level_locals_t level;

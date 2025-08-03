@@ -13,7 +13,6 @@
 #include "p_main.h"
 #include "../../common/fx.h"
 #include "../../common/h2rand.h"
-#include "../../../common/header/common.h"
 #include "../../header/g_physics.h"
 #include "p_anim_data.h"
 #include "../../monster/misc/player.h"

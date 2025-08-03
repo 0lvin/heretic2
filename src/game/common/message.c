@@ -6,7 +6,7 @@
 // Heretic II
 //
 
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 #include "message.h"
 #include "singlylinkedlist.h"
 #include "../header/local.h"

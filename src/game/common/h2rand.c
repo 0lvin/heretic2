@@ -5,7 +5,7 @@
 // H2Rand.c
 //
 
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 
 #include <stdio.h>
 

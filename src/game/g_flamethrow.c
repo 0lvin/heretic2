@@ -8,7 +8,6 @@
 // jweier
 
 #include "header/local.h"
-#include "common/fx.h"
 #include "header/g_playstats.h"
 #include "header/g_defaultmessagehandler.h"
 

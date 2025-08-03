@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include "resourcemanager.h"
 #include <assert.h>
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 
 typedef struct ResMngr_Block_s
 {

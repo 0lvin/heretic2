@@ -5,7 +5,7 @@
 // H2Physics.c
 //
 
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 
 /* TODO: Rewrite */
 void

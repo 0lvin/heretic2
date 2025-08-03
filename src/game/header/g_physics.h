@@ -5,7 +5,7 @@
 #ifndef G_PHYSICS_H
 #define G_PHYSICS_H
 
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 #include "../common/q_physics.h"
 
 #define	FRICTION_STOPSPEED			100

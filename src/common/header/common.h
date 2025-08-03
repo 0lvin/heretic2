@@ -924,60 +924,6 @@ void Sys_SetupFPU(void);
 
 void Mods_NamesFinish(void);
 
-/* For ambient sounds. */
-typedef enum AmbientSoundID_e
-{
-	AS_NOTHING = 0,
-	AS_FIRE,
-	AS_WATERLAPPING,
-	AS_SEAGULLS,
-	AS_OCEAN,
-	AS_BIRDS,
-	AS_CRICKETS,
-	AS_FROGS,
-	AS_CRYING,
-	AS_MOSQUITOES,
-	AS_BUBBLES,    // 10
-
-	AS_BELL,
-	AS_FOOTSTEPS,
-	AS_MOANS,
-	AS_SEWERDRIPS,
-	AS_WATERDRIPS,
-	AS_HEAVYDRIPS,
-	AS_SMALLFOUNTAIN,
-	AS_LARGEFOUNTAIN,
-	AS_SEWERWATER,
-	AS_OUTSIDEWATERWAY,	// 20
-
-	AS_WINDCHIME,
-	AS_BIRD1,
-	AS_BIRD2,
-	AS_CAULDRONBUBBLE,
-	AS_HUGEWATERFALL,
-	AS_GONG,
-	AS_MUDPOOL,
-	AS_ROCKS,
-	AS_WINDEERIE,
-	AS_WINDNOISY,		// 30
-
-	AS_WINDSOFTHI,
-	AS_WINDSOFTLO,
-	AS_WINDSTRONG1,
-	AS_WINDSTRONG2,
-	AS_WINDWHISTLE,
-	AS_CONVEYOR,
-	AS_BUCKETCONVEYOR,
-
-	AS_CAVECREAK,
-	AS_SPIT,		// 39
-
-	AS_MAX
-} AmbientSoundID_t;
-
-#define ENTITY_FX_BUF_SIZE 192
-#define FLOAT_ZERO_EPSILON 0.0005f
-
 typedef struct edict_s edict_t;
 typedef struct sfx_s sfx_t;
 typedef struct client_entity_s client_entity_t;

@@ -38,6 +38,9 @@
 #include "buoy.h"
 #include "../player/library/player.h"
 #include "../common/q_physics.h"
+#include "../header/g_playstats.h"
+#include "../header/utilities.h"
+#include "../common/fx.h"
 
 /* the "gameversion" client command will print this plus compile date */
 #define GAMEVERSION "yQRHeretic2"
@@ -2512,6 +2515,7 @@ void Weapon_EquipSpell(playerinfo_t *playerinfo, gitem_t *Weapon);
 void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
 void Weapon_EquipHellStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
 void Weapon_EquipBow(playerinfo_t *playerinfo, gitem_t *Weapon);
+qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurface_t *surface,cplane_t *plane, vec3_t planeDir);
 
 #define	SVF_INUSE				0x00000008	// Used to replace the inuse field.
 #define SVF_ALWAYS_SEND			0x00000010	// Always send the ent to all the clients, regardless of

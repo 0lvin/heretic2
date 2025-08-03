@@ -26,7 +26,6 @@
  */
 
 #include "header/local.h"
-#include "common/fx.h"
 #include "header/g_skeletons.h"
 #include "common/h2rand.h"
 #include "header/g_physics.h"

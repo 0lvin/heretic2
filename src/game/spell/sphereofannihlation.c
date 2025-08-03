@@ -6,11 +6,8 @@
 //
 
 #include "../header/local.h"
-#include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "../header/utilities.h"
-#include "../header/decals.h"
-#include "../header/g_playstats.h"
 #include "../player/library/p_main.h"	//for ITEM_WEAPON_SPHEREOFANNIHILATION
 #include "../monster/beast/beast.h"
 

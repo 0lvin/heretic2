@@ -6,13 +6,9 @@
 //
 
 #include "../../header/local.h"
-#include "../../common/fx.h"
 #include "../../common/h2rand.h"
-#include "../../header/decals.h"
 #include "tcheckrik.h"
-#include "../../header/utilities.h"
 #include "../stats/stats.h"
-#include "../../header/g_playstats.h"
 
 
 extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean sound_alert);

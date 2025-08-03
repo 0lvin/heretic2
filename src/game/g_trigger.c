@@ -27,7 +27,6 @@
 
 #include "header/local.h"
 #include "header/g_defaultmessagehandler.h"
-#include "common/fx.h"
 #include "header/g_playstats.h"
 #include "common/cl_strings.h"
 #include "player/library/p_main.h"

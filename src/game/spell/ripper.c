@@ -5,14 +5,10 @@
 
 #include "../header/local.h"
 #include "../common/angles.h"
-#include "../common/fx.h"
 #include "../common/matrix.h"
 #include "../header/g_volume_effect.h"
-#include "../header/utilities.h"
 #include "../header/g_classstatics.h"
 #include "../header/g_physics.h"
-#include "../header/g_playstats.h"
-#include "../header/decals.h"
 #include "../common/h2rand.h"
 #include "../monster/beast/beast.h"
 

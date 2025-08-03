@@ -30,11 +30,9 @@
 #include "header/g_items.h"
 #include "header/g_itemstats.h"
 #include "header/g_weapon.h"
-#include "player/library/player.h"
 #include "player/library/p_anims.h"
 #include "player/library/p_anim_data.h"
 #include "player/library/p_items.h"
-#include "common/fx.h"
 #include "common/h2rand.h"
 #include "common/cl_strings.h"
 
@@ -71,11 +69,6 @@ void Weapon_ProxLauncher(edict_t *ent);
 void Weapon_Ionripper(edict_t *ent);
 void Weapon_Phalanx(edict_t *ent);
 void Weapon_Trap(edict_t *ent);
-
-void Weapon_EquipSpell(playerinfo_t *playerinfo, gitem_t *Weapon);
-void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
-void Weapon_EquipHellStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
-void Weapon_EquipBow(playerinfo_t *playerinfo, gitem_t *Weapon);
 
 gitem_armor_t jacketarmor_info = {25, 50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info = {50, 100, .60, .30, ARMOR_COMBAT};
@@ -519,7 +512,6 @@ qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
 
 		// Now decide if we want to swap defenses or not.
 
-//		if(player->client->playerinfo.pers.autoweapon || !player->client->playerinfo.pers.defence)
 		if(player->client->playerinfo.pers.autoweapon )
 		{
 			item->use(&player->client->playerinfo,item);
@@ -645,13 +637,25 @@ qboolean
 Pickup_Ammo(edict_t *ent, edict_t *other)
 {
 	int count;
+	qboolean weapon;
+
+	if (!ent || !other)
+	{
+		return false;
+	}
 
 	if (other->flags & FL_CHICKEN)
 	{
 		return false;
 	}
 
-	if (ent->count)
+	weapon = (ent->item->flags & IT_WEAPON);
+
+	if ((weapon) && ((int)dmflags->value & DF_INFINITE_AMMO))
+	{
+		count = 1000;
+	}
+	else if (ent->count)
 	{
 		count = ent->count;
 	}

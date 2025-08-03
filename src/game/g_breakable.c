@@ -11,7 +11,6 @@
 */
 #include "header/local.h"
 #include "header/g_misc.h"
-#include "common/fx.h"
 #include "header/g_defaultmessagehandler.h"
 
 int BREAK_KILLALL		= 1;

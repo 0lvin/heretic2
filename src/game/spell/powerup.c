@@ -6,7 +6,6 @@
 //
 
 #include "../header/local.h"
-#include "../common/fx.h"
 #include "../header/g_itemstats.h"
 
 

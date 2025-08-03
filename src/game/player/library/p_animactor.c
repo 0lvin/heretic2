@@ -16,7 +16,6 @@
 #include "p_main.h"
 #include "../../common/angles.h"
 #include "../../header/g_teleport.h"
-#include "../../../common/header/common.h"
 #include "../../header/utilities.h"
 #include "../../common/fx.h"
 

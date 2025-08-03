@@ -27,6 +27,7 @@
 #include "header/client.h"
 #include "input/header/input.h"
 #include "../game/header/client_effects.h"
+#include "../game/common/fx.h"
 
 static int bitcounts[32]; /* just for protocol profiling */
 

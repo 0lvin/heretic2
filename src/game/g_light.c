@@ -27,7 +27,6 @@
  */
 
 #include "header/local.h"
-#include "common/fx.h"
 #include "common/effectflags.h"
 #include "header/g_misc.h"
 #include "header/g_defaultmessagehandler.h"

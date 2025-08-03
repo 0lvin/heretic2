@@ -15,7 +15,6 @@
 #include "../../header/g_skeletons.h"
 #include "../../common/fx.h"
 #include "../../common/h2rand.h"
-#include "../../../common/header/common.h"
 #include "../../common/effectflags.h"
 
 void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)

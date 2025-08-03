@@ -287,7 +287,7 @@ typedef enum HighPriestessStaff_e
 	HP_STAFF_TRAIL,
 } HighPriestessStaff_t;
 
-
+#define ENTITY_FX_BUF_SIZE 192
 #define MAX_PERSISTANT_EFFECTS		512
 
 typedef struct PerEffectsBuffer_s

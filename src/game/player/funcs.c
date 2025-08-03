@@ -12,16 +12,11 @@
 #include "../player/library/p_animactor.h"
 #include "../player/library/p_anims.h"
 #include "../player/library/p_ctrl.h"
-#include "../header/p_funcs.h"
 #include "../player/library/p_main.h"
-#include "../header/local.h"
 #include "../header/g_skeletons.h"
 #include "../header/g_teleport.h"
 #include "../common/angles.h"
-#include "../common/fx.h"
 #include "../common/h2rand.h"
-#include "../header/utilities.h"
-#include "../header/g_playstats.h"
 #include "../header/g_weapon.h"
 
 // ************************************************************************************************

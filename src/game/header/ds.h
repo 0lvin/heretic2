@@ -5,7 +5,7 @@
 #ifndef __DS
 #define __DS
 
-#include "../../common/header/common.h"
+#include "../../common/header/shared.h"
 #include "pcode.h"
 #include <list>
 

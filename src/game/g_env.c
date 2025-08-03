@@ -8,7 +8,6 @@
 */
 
 #include "header/local.h"
-#include "common/fx.h"
 #include "common/h2rand.h"
 
 

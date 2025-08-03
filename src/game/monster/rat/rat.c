@@ -42,18 +42,13 @@
 //==============================================================================
 
 #include "../../header/local.h"
-#include "../../header/utilities.h"
 #include "../../header/g_defaultmessagehandler.h"
 #include "../../header/g_monster.h"
-#include "../../common/fx.h"
 #include "../../common/h2rand.h"
-
 #include "rat.h"
 #include "rat_anim.h"
 #include "../../header/g_misc.h"
 #include "../stats/stats.h"
-
-#include "../../header/g_monster.h"
 
 void ai_runaway (edict_t *self, float dist);
 
