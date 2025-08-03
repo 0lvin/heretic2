@@ -306,18 +306,19 @@ typedef struct playerinfo_s playerinfo_t;
 typedef struct gitem_s
 {
 	char *classname; /* spawning name */
-	char *pickup_name; /* for printing on pickup */
 	short		msg_pickup;		// Pickup string id.
 	short		msg_nouse;		// Can`t use.
 	qboolean (*pickup)(struct edict_s *ent, struct edict_s *other);
-	void (*use)(playerinfo_t *playerinfo, struct gitem_s *item);
+	void (*use)(struct edict_s *ent, struct gitem_s *item);
 	void (*drop)(struct edict_s *ent, struct gitem_s *item);
 	void (*weaponthink)(struct edict_s *ent, char *Format,...);
-
 	char *pickup_sound;
 	char *world_model;
 	int world_model_flags;
 
+	/* client side info */
+	char *icon;
+	char *pickup_name;          /* for printing on pickup */
 	vec3_t mins;			// Bounding box
 	vec3_t maxs;			// Bounding box
 
@@ -335,8 +336,6 @@ typedef struct gitem_s
 
 	void *info;
 	int tag;
-
-	char *icon;
 } gitem_t;
 
 /* this structure is left intact through an entire game
@@ -498,8 +497,8 @@ enum helltype_e
 	HELL_TYPE_POWER
 };
 
-#define PICKUP_MIN  0, 0, 0
-#define PICKUP_MAX  0, 0, 0
+#define PICKUP_MIN  {0, 0, 0}
+#define PICKUP_MAX  {0, 0, 0}
 
 // ************************************************************************************************
 // PNOISE_XXX
@@ -2328,7 +2327,7 @@ typedef struct
 {
 	void (*dprintf)(const char *fmt, ...);
 	gitem_t *(*FindItem)(const char *pickup_name);
-	void (*Weapon_EquipSpell)(playerinfo_t *playerinfo, gitem_t *Weapon);
+	void (*Weapon_EquipSpell)(struct edict_s *ent, gitem_t *Weapon);
 	void (*Weapon_Ready)(playerinfo_t *playerinfo, gitem_t *Weapon);
 	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
 	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
@@ -3342,13 +3341,13 @@ void G_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int 
 int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent);
 int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo);
 void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon);
-void Weapon_EquipSpell(playerinfo_t *playerinfo, gitem_t *Weapon);
-void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
-void Weapon_EquipHellStaff(playerinfo_t *playerinfo, gitem_t *Weapon);
-void Weapon_EquipBow(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon);
+void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon);
+void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon);
+void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon);
 qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurface_t *surface,cplane_t *plane, vec3_t planeDir);
 
-void Use_Defence(playerinfo_t *playerinfo, gitem_t *defence);
+void Use_Defence(struct edict_s *ent, gitem_t *defence);
 void DefenceThink_Powerup(edict_t *Caster, char *Format, ...);
 void DefenceThink_RingOfRepulsion(edict_t *Caster, char *Format, ...);
 void DefenceThink_MeteorBarrier(edict_t *Caster, char *Format, ...);

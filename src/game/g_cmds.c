@@ -853,8 +853,9 @@ Cmd_Use_f(edict_t *ent)
 			playerinfo->pers.defence=it;
 
 			if (Defence_CurrentShotsLeft(playerinfo, 1) > 0)
-			{	// Only if there is ammo
-				it->weaponthink(ent,"");
+			{
+				/* Only if there is ammo */
+				it->weaponthink(ent, "");
 
 				if(playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
 					playerinfo->def_ammo_index=ITEM_INDEX(FindItem(playerinfo->pers.defence->ammo));
@@ -864,7 +865,8 @@ Cmd_Use_f(edict_t *ent)
 				playerinfo->defensive_debounce = playerinfo->leveltime + DEFENSE_DEBOUNCE;
 			}
 			else
-			{	//Play a sound to tell the player they're out of mana
+			{
+				/* Play a sound to tell the player they're out of mana */
 				gi.sound(ent, CHAN_VOICE, gi.soundindex("*nomana.wav"), 0.75, ATTN_NORM, 0);
 			}
 
@@ -875,7 +877,7 @@ Cmd_Use_f(edict_t *ent)
 	}
 	else
 	{
-		it->use(&ent->client->playerinfo,it);
+		it->use(ent, it);
 	}
 }
 
@@ -954,7 +956,7 @@ Cmd_WeapPrev_f(edict_t *ent)
 			 (it->tag == ITEM_WEAPON_PHOENIXBOW)))
 			continue;
 
-		it->use(&ent->client->playerinfo,it);
+		it->use(ent, it);
 		if (ent->client->playerinfo.pers.newweapon == it)
 			return;	// successful
 	}
@@ -1001,7 +1003,7 @@ Cmd_WeapNext_f(edict_t *ent)
 			(it->tag == ITEM_WEAPON_PHOENIXBOW)))
 			continue;
 
-		it->use(&ent->client->playerinfo,it);
+		it->use(ent, it);
 		if (ent->client->playerinfo.pers.newweapon == it)
 			return;	// successful
 	}
@@ -1046,7 +1048,7 @@ Cmd_DefPrev_f(edict_t *ent)
 		if (! (it->flags & IT_DEFENSE) )
 			continue;
 
-		it->use(&ent->client->playerinfo,it);
+		it->use(ent, it);
 		if (cl->playerinfo.pers.defence == it)
 		{
 			selected_defence = index;
@@ -1103,7 +1105,7 @@ Cmd_DefNext_f(edict_t *ent)
 		if (! (it->flags & IT_DEFENSE) )
 			continue;
 
-		it->use(&ent->client->playerinfo,it);
+		it->use(ent, it);
 		if (cl->playerinfo.pers.defence == it)
 		{
 			selected_defence = index;
@@ -1147,7 +1149,7 @@ Cmd_WeapLast_f(edict_t *ent)
 	if (! (it->flags & IT_WEAPON) )
 		return;
 
-	it->use(&ent->client->playerinfo,it);
+	it->use(ent, it);
 }
 
 static void

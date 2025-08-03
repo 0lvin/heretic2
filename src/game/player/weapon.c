@@ -4414,9 +4414,6 @@ WeaponThink_Blast(edict_t *caster,char *Format,...)
 void
 Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 {
-
-//	gi.dprintf("Weapon=%s\n",Weapon->pickup_name);
-
 	assert(Weapon);
 
 	// See if we're already using the weapon.
@@ -4442,8 +4439,9 @@ Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 // ----------------------
 // ************************************************************************************************
 
-void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon)
+void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon)
 {
+	playerinfo_t *playerinfo = &ent->client->playerinfo;
 	assert(playerinfo);
 
 	// See if we're already using the sword-staff.
@@ -4471,8 +4469,9 @@ void Weapon_EquipSwordStaff(playerinfo_t *playerinfo, gitem_t *Weapon)
 // ************************************************************************************************
 
 void
-Weapon_EquipSpell(playerinfo_t *playerinfo, gitem_t *Weapon)
+Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 {
+	playerinfo_t *playerinfo = &ent->client->playerinfo;
 	assert(playerinfo);
 
 	// See if we're already using this particular spell.
@@ -4516,8 +4515,9 @@ Weapon_EquipSpell(playerinfo_t *playerinfo, gitem_t *Weapon)
 // ---------------------
 // ************************************************************************************************
 
-void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
+void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 {
+	playerinfo_t *playerinfo = &ent->client->playerinfo;
 	gitem_t	*AmmoItem;
 	int		AmmoIndex;
 
@@ -4557,9 +4557,9 @@ void Weapon_EquipHellStaff(playerinfo_t *playerinfo,gitem_t *Weapon)
 // ---------------
 // ************************************************************************************************
 
-void Weapon_EquipBow(playerinfo_t *playerinfo,gitem_t *Weapon)
+void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 {
-
+	playerinfo_t *playerinfo = &ent->client->playerinfo;
 	gitem_t	*AmmoItem;
 	int		AmmoIndex;
 

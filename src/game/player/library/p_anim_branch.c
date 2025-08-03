@@ -1716,7 +1716,7 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 
 	if ((playerinfo->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
 	{
-		pi.Weapon_EquipSpell(playerinfo, Weapon);
+		pi.Weapon_EquipSpell(playerinfo->self, Weapon);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
@@ -1817,7 +1817,7 @@ int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 
 	if ((playerinfo->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
 	{
-		pi.Weapon_EquipSpell(playerinfo, Weapon);
+		pi.Weapon_EquipSpell(playerinfo->self, Weapon);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
